@@ -18,7 +18,7 @@ function swatch(token: string, theme: 'light' | 'dark') {
   const value = getComputedStyle(root).getPropertyValue(token).trim();
   const isWhite = /^(#fff(f)?|rgb\(255,\s*255,\s*255\))$/i.test(value);
   const bg = isWhite
-    ? 'repeating-conic-gradient(#eee 0% 25%, #fff 0% 50%) 50%/12px 12px'
+    ? 'repeating-conic-gradient(#eee 0% 25%, var(--ubits-bg-1) 0% 50%) 50%/12px 12px'
     : value;
   const wrap = document.createElement('div');
   wrap.style.display = 'grid';

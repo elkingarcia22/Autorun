@@ -1,0 +1,144 @@
+# UBITS Playground - Cursor AI Rules
+
+## 🚨 MANDATORY: UBITS VALIDATION SYSTEM
+
+**BEFORE creating ANY component, style, or UI element:**
+
+1. ✅ **ALWAYS** check `.ubits/component-inventory.json` for existing components
+2. ✅ **NEVER** create custom components when official ones exist
+3. ✅ **ALWAYS** use UBITS tokens (`var(--ubits-*)`) - NEVER hardcoded colors
+4. ✅ **ALWAYS** use official UBITS typography classes (see `.ubits/component-inventory.json` → `tokens.typography.validClasses`)
+5. ✅ **ALWAYS** import component CSS when using components
+
+## 📋 COMPONENT INVENTORY
+
+**Location:** `.ubits/component-inventory.json`
+
+**Before creating ANY UI element, check this file first!**
+
+### Available Components:
+- `button` - Button component with variants (primary, secondary, tertiary)
+- `badge` - Badge component with variants (dot, number)
+- `alert` - Alert component with variants (info, success, warning, error)
+- `toast` - Toast notifications with auto-close
+- `input` - Input component with 11 types (text, email, password, etc.)
+- `list` - List component with selection
+- `sidebar` - Sidebar navigation
+- `subnav` - Sub-navigation tabs
+- `tabbar` - Mobile tab bar
+- `card-content` - Content cards
+
+**If you need to create a component that's not in the inventory:**
+1. Create it as a new add-on in `packages/addons/[name]/`
+2. **IMMEDIATELY** update `.ubits/component-inventory.json`
+3. Follow the structure of existing components
+
+## 🎨 TOKENS UBITS
+
+### Colors:
+- ✅ `var(--ubits-fg-*)` - Text colors
+- ✅ `var(--ubits-bg-*)` - Background colors
+- ✅ `var(--ubits-border-*)` - Border colors
+- ✅ `var(--ubits-accent-*)` - Accent colors
+- ✅ `var(--ubits-feedback-*)` - Feedback colors
+
+### Typography Classes (ONLY THESE EXIST):
+**Display:**
+- `ubits-display-d1-regular`, `ubits-display-d1-semibold`, `ubits-display-d1-bold`
+- `ubits-display-d2-regular`, `ubits-display-d2-semibold`, `ubits-display-d2-bold`
+- `ubits-display-d3-regular`, `ubits-display-d3-semibold`, `ubits-display-d3-bold`
+- `ubits-display-d4-regular`, `ubits-display-d4-semibold`, `ubits-display-d4-bold`
+
+**Headings (ONLY TWO):**
+- `ubits-heading-h1` (24px)
+- `ubits-heading-h2` (20px)
+
+**Body:**
+- `ubits-body-md-regular`, `ubits-body-md-semibold`, `ubits-body-md-bold` (16px)
+- `ubits-body-sm-regular`, `ubits-body-sm-semibold`, `ubits-body-sm-bold` (14px)
+
+### ❌ PROHIBITED Typography Classes:
+- `ubits-h1`, `ubits-h2`, `ubits-h3`, `ubits-h4`, `ubits-h5`, `ubits-h6`
+- `ubits-title`, `ubits-subtitle`, `ubits-text`, `ubits-paragraph`
+- `ubits-label`, `ubits-caption`
+
+**NEVER invent typography classes that don't exist!**
+
+## 🔴 VALIDATION WORKFLOW
+
+### Before Every Code Generation:
+1. Check `.ubits/component-inventory.json` for existing components
+2. If component exists → USE IT (never create custom)
+3. If component doesn't exist → Create as new add-on and update inventory
+
+### After Code Generation:
+1. Run `npm run validate` to check for issues
+2. Fix any errors before committing
+3. Ensure all components import their CSS
+
+## 📝 EXAMPLES
+
+### ✅ CORRECT:
+```html
+<!-- Using official component -->
+<script>
+window.createButton({
+  variant: 'primary',
+  size: 'md',
+  label: 'Click me'
+});
+</script>
+<link rel="stylesheet" href="packages/addons/button/src/styles/button.css">
+```
+
+```css
+/* Using UBITS tokens */
+.my-element {
+  color: var(--ubits-fg-1-high);
+  background: var(--ubits-bg-1);
+  border: 1px solid var(--ubits-border-1);
+}
+```
+
+```html
+<!-- Using official typography -->
+<h2 class="ubits-heading-h1">Title</h2>
+<p class="ubits-body-md-regular">Description</p>
+```
+
+### ❌ INCORRECT:
+```html
+<!-- Creating custom component when official exists -->
+<button class="my-custom-button">Click</button>
+```
+
+```css
+/* Using hardcoded colors */
+.my-element {
+  color: #000000;
+  background: white;
+}
+```
+
+```html
+<!-- Using invented typography class -->
+<h1 class="ubits-h1">Title</h1>
+```
+
+## 🚀 QUICK REFERENCE
+
+- **Component Inventory:** `.ubits/component-inventory.json`
+- **Validation Rules:** `.ubits/validation-rules.md`
+- **Validation Script:** `scripts/validate-ubits.js`
+- **Run Validation:** `npm run validate`
+
+## ⚠️ CRITICAL RULES
+
+1. **NEVER** create components without checking the inventory first
+2. **NEVER** use hardcoded colors - ALWAYS use tokens
+3. **NEVER** invent typography classes - ONLY use official ones
+4. **ALWAYS** import component CSS when using components
+5. **ALWAYS** update inventory when creating new components
+
+**This system prevents duplicate components and ensures UBITS standards compliance.**
+

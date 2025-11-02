@@ -479,9 +479,10 @@
    RESPONSIVE DESIGN
    ======================================== */
 
-@media (max-width: 768px) {
+/* ⚠️ IMPORTANTE: Ocultar Sidebar en resoluciones menores a 1024px (mismo breakpoint que TabBar) */
+@media (max-width: 1023px) {
     .ubits-sidebar {
-        display: none; /* Oculto en móvil, se reemplaza por TabBar */
+        display: none !important; /* Oculto en móvil/tablet, se reemplaza por TabBar */
     }
 }
 

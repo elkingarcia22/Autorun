@@ -1,9 +1,23 @@
-node_modules
-.dist
-.vite
-storybook-static
-dist
-.DS_Store
-.env*
+# Dependencies
+node_modules/
 
-*storybook.log
+# Build outputs
+dist/
+*.tsbuildinfo
+
+# Environment
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Husky
+.husky/_/

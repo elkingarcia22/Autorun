@@ -17,7 +17,7 @@
 }
 
 /* helpers */
-.typo-sample{ display:flex; align-items:center; gap:12px; padding:8px 10px; border:1px solid #e5e7eb; border-radius:10px; }
+.typo-sample{ display:flex; align-items:center; gap:12px; padding:8px 10px; border:1px solid var(--ubits-border-1); border-radius:10px; }
 .typo-box{ min-width:140px; color:#6b7280; font-size:12px }
 
 

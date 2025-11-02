@@ -51,8 +51,8 @@ function renderSidebar(options) {
     return path;
   };
   
-  const finalLogoImage = normalizeImagePath(options.logoImage) || 'images/Ubits-logo.svg';
-  const finalAvatarImage = normalizeImagePath(options.avatarImage) || 'images/Profile-image.jpg';
+  const finalLogoImage = normalizeImagePath(options.logoImage) || 'assets/images/Ubits-logo.svg';
+  const finalAvatarImage = normalizeImagePath(options.avatarImage) || 'assets/images/Profile-image.jpg';
   const profileMenuItems = options.profileMenuItems || [];
   const darkModeEnabled = options.darkModeEnabled !== false;
 

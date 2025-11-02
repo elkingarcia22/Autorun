@@ -9,6 +9,9 @@ import '../../addons/toast/src/styles/toast.css'
 import '../../addons/list/src/styles/list.css'
 import '../../addons/input/src/styles/input.css'
 import '../../addons/sidebar/src/styles/sidebar.css'
+import '../../addons/subnav/src/styles/subnav.css'
+import '../../addons/tabbar/src/styles/tabbar.css'
+import '../../addons/card/src/styles/card.css'
 import './fontawesome-icons.css'
 
 const preview: Preview = {

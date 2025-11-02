@@ -144,16 +144,14 @@ export const DEFAULT_PROFILE_MENU_ITEMS: ProfileMenuItem[] = [
     icon: 'fa-key',
     label: 'Cambio de contraseña',
     onClick: () => {
-      // Implementar lógica de cambio de contraseña
-      console.log('Cambio de contraseña');
+      // Sin acción
     }
   },
   {
     icon: 'fa-sign-out',
     label: 'Cerrar sesión',
     onClick: () => {
-      // Implementar lógica de logout
-      console.log('Cerrar sesión');
+      // Sin acción
     }
   }
 ];
@@ -182,16 +180,14 @@ export const ADMIN_PROFILE_MENU_ITEMS: ProfileMenuItem[] = [
     icon: 'fa-key',
     label: 'Cambio de contraseña',
     onClick: () => {
-      // Implementar lógica de cambio de contraseña
-      console.log('Cambio de contraseña');
+      // Sin acción
     }
   },
   {
     icon: 'fa-sign-out',
     label: 'Cerrar sesión',
     onClick: () => {
-      // Implementar lógica de logout
-      console.log('Cerrar sesión');
+      // Sin acción
     }
   }
 ];

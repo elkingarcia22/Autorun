@@ -1,0 +1,152 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "version": "1.0.0",
+  "components": {
+    "button": {
+      "name": "Button",
+      "package": "@ubits/button",
+      "path": "packages/addons/button",
+      "provider": "createButton",
+      "globalFunction": "window.createButton",
+      "cssFile": "packages/addons/button/src/styles/button.css",
+      "storybookStory": "Button.stories.ts",
+      "variants": ["primary", "secondary", "tertiary"],
+      "sizes": ["xs", "sm", "md", "lg", "xl"],
+      "states": ["default", "hover", "active", "disabled", "loading"],
+      "features": ["icon-left", "icon-right", "icon-only", "badge", "dropdown"]
+    },
+    "badge": {
+      "name": "Badge",
+      "package": "@ubits/badge",
+      "path": "packages/addons/badge",
+      "provider": "createBadge",
+      "globalFunction": "window.createBadge",
+      "cssFile": "packages/addons/badge/src/styles/badge.css",
+      "storybookStory": "Badge.stories.ts",
+      "variants": ["dot", "number"],
+      "sizes": ["xs", "sm", "md", "lg"],
+      "states": ["default", "hover", "active", "disabled"]
+    },
+    "alert": {
+      "name": "Alert",
+      "package": "@ubits/alert",
+      "path": "packages/addons/alert",
+      "provider": "createAlert",
+      "globalFunction": "window.createAlert",
+      "cssFile": "packages/addons/alert/src/styles/alert.css",
+      "storybookStory": "Alert.stories.ts",
+      "variants": ["info", "success", "warning", "error"],
+      "features": ["close-button", "action-button"]
+    },
+    "toast": {
+      "name": "Toast",
+      "package": "@ubits/toast",
+      "path": "packages/addons/toast",
+      "provider": "createToast",
+      "globalFunction": "window.createToast",
+      "cssFile": "packages/addons/toast/src/styles/toast.css",
+      "storybookStory": "Toast.stories.ts",
+      "variants": ["info", "success", "warning", "error"],
+      "features": ["title", "body", "action-button", "close-button", "auto-close"]
+    },
+    "input": {
+      "name": "Input",
+      "package": "@ubits/input",
+      "path": "packages/addons/input",
+      "provider": "createInput",
+      "globalFunction": "window.createInput",
+      "cssFile": "packages/addons/input/src/styles/input.css",
+      "storybookStory": "Input.stories.ts",
+      "types": ["text", "email", "password", "number", "tel", "url", "search", "textarea", "select", "autocomplete", "calendar"],
+      "sizes": ["xs", "sm", "md", "lg"],
+      "states": ["default", "hover", "focus", "disabled", "error", "success"]
+    },
+    "list": {
+      "name": "List",
+      "package": "@ubits/list",
+      "path": "packages/addons/list",
+      "provider": "createList",
+      "globalFunction": "window.createList",
+      "cssFile": "packages/addons/list/src/styles/list.css",
+      "storybookStory": "List.stories.ts",
+      "sizes": ["xs", "sm", "md", "lg"],
+      "states": ["default", "hover", "active", "disabled"],
+      "features": ["single-selection", "multiple-selection", "keyboard-navigation"]
+    },
+    "sidebar": {
+      "name": "Sidebar",
+      "package": "@ubits/sidebar",
+      "path": "packages/addons/sidebar",
+      "provider": "createSidebar",
+      "globalFunction": "window.createSidebar",
+      "cssFile": "packages/addons/sidebar/src/styles/sidebar.css",
+      "storybookStory": "Sidebar.stories.ts",
+      "variants": ["colaborador", "admin"],
+      "features": ["profile-menu", "dark-mode-toggle", "tooltips"]
+    },
+    "subnav": {
+      "name": "SubNav",
+      "package": "@ubits/subnav",
+      "path": "packages/addons/subnav",
+      "provider": "createSubNav",
+      "globalFunction": "window.createSubNav",
+      "cssFile": "packages/addons/subnav/src/styles/subnav.css",
+      "storybookStory": "SubNav.stories.ts",
+      "variants": ["aprendizaje", "diagnóstico", "desempeño", "admin", "template"],
+      "features": ["tabs", "icons", "active-state"]
+    },
+    "tabbar": {
+      "name": "TabBar",
+      "package": "@ubits/tabbar",
+      "path": "packages/addons/tabbar",
+      "provider": "createTabBar",
+      "globalFunction": "window.createTabBar",
+      "cssFile": "packages/addons/tabbar/src/styles/tabbar.css",
+      "storybookStory": "TabBar.stories.ts",
+      "features": ["floating-menu", "profile-menu", "dark-mode-toggle"]
+    },
+    "card-content": {
+      "name": "Card Content",
+      "package": "@ubits/card",
+      "path": "packages/addons/card",
+      "provider": "createCardContent",
+      "globalFunction": "window.createCardContent",
+      "cssFile": "packages/addons/card/src/styles/card.css",
+      "storybookStory": "CardContent.stories.ts",
+      "types": ["curso", "video", "articulo", "podcast", "infografia", "libro", "webinar", "evento", "plan", "retroalimentacion", "certificado"],
+      "states": ["default", "progress", "completed"]
+    }
+  },
+  "tokens": {
+    "colors": {
+      "requiredImport": "../../tokens/dist/tokens.css",
+      "prefix": "--ubits-",
+      "categories": ["fg", "bg", "border", "accent", "feedback"]
+    },
+    "typography": {
+      "requiredImport": "../../typography/tokens-typography.css",
+      "validClasses": [
+        "ubits-display-d1-regular", "ubits-display-d1-semibold", "ubits-display-d1-bold",
+        "ubits-display-d2-regular", "ubits-display-d2-semibold", "ubits-display-d2-bold",
+        "ubits-display-d3-regular", "ubits-display-d3-semibold", "ubits-display-d3-bold",
+        "ubits-display-d4-regular", "ubits-display-d4-semibold", "ubits-display-d4-bold",
+        "ubits-heading-h1", "ubits-heading-h2",
+        "ubits-body-md-regular", "ubits-body-md-semibold", "ubits-body-md-bold",
+        "ubits-body-sm-regular", "ubits-body-sm-semibold", "ubits-body-sm-bold"
+      ],
+      "prohibitedClasses": [
+        "ubits-h1", "ubits-h2", "ubits-h3", "ubits-h4", "ubits-h5", "ubits-h6",
+        "ubits-title", "ubits-subtitle", "ubits-text", "ubits-paragraph",
+        "ubits-label", "ubits-caption"
+      ]
+    }
+  },
+  "validationRules": {
+    "mustUseTokens": true,
+    "mustUseComponents": true,
+    "noHardcodedColors": true,
+    "noCustomComponentsWhenExists": true,
+    "mustImportComponentCSS": true
+  }
+}
+

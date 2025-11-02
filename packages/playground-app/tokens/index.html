@@ -2942,6 +2942,18 @@
                     window.updateSubNavPreview('subnav');
                   } else if (componentId === 'tabbar' && typeof window.updateTabBarPreview === 'function') {
                     window.updateTabBarPreview('tabbar');
+                    // Inicializar estado del controlador de variante
+                    setTimeout(() => {
+                      const state = window.initTabBarPreviewState ? window.initTabBarPreviewState('tabbar') : { variant: 'colaborador' };
+                      const buttons = document.querySelectorAll('[data-component="tabbar"][data-option="variant"]');
+                      buttons.forEach(btn => {
+                        if (btn.getAttribute('data-value') === state.variant) {
+                          btn.classList.add('active');
+                        } else {
+                          btn.classList.remove('active');
+                        }
+                      });
+                    }, 150);
                   } else if (componentId === 'card-content' && typeof window.updateCardPreview === 'function') {
                     window.updateCardPreview('card-content');
                   }
@@ -3792,6 +3804,19 @@
                             </h4>
                             
                             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px;">
+                              <!-- Variante -->
+                              <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); text-transform: uppercase; letter-spacing: 0.5px;">Variante</label>
+                                <div style="display: flex; gap: 6px;">
+                                  <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" data-component="${componentId}" data-option="variant" data-value="colaborador" onclick="setTabBarControl('variant', 'colaborador', '${componentId}')">
+                                    <span>Colaborador</span>
+                                  </button>
+                                  <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-component="${componentId}" data-option="variant" data-value="admin" onclick="setTabBarControl('variant', 'admin', '${componentId}')">
+                                    <span>Admin</span>
+                                  </button>
+                                </div>
+                              </div>
+                              
                               <!-- Tab Activo -->
                               <div style="display: flex; flex-direction: column; gap: 8px;">
                                 <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); text-transform: uppercase; letter-spacing: 0.5px;">Tab Activo</label>
@@ -6539,7 +6564,7 @@
             <div class="ubits-sidebar-main">
               <div class="ubits-sidebar-header">
                 <div class="ubits-sidebar-logo">
-                  <img src="../../../../template-ubits/images/Ubits-logo.svg" alt="UBITS Logo" style="width: 24px; height: 25px;" />
+                  <img src="../assets/images/Ubits-logo.svg" alt="UBITS Logo" style="width: 24px; height: 25px;" />
                 </div>
               </div>
               <div class="ubits-sidebar-body">
@@ -6568,7 +6593,7 @@
               </button>
               <div class="ubits-sidebar-user-avatar-container">
                 <div class="ubits-sidebar-user-avatar">
-                  <img src="../../../../template-ubits/images/Profile-image.jpg" alt="Usuario" class="ubits-sidebar-avatar-image" />
+                  <img src="../assets/images/Profile-image.jpg" alt="Usuario" class="ubits-sidebar-avatar-image" />
                 </div>
               </div>
             </div>
@@ -7126,15 +7151,8 @@
       
       const tabBarPreviewState = {};
       
-      // Items estándar del TabBar
-      const defaultTabBarItems = [
-        { id: 'modulos', label: 'Módulos', icon: 'th-large' },
-        { id: 'perfil', label: 'Mi perfil', avatar: '../../../../template-ubits/images/Profile-image.jpg', avatarAlt: 'Mi perfil' },
-        { id: 'modo-oscuro', label: 'Modo oscuro', icon: 'moon' }
-      ];
-      
-      // Secciones del Floating Menu por defecto
-      const defaultFloatingMenuSections = [
+      // Configuraciones de Floating Menu para cada variante
+      const colaboradorFloatingMenuSections = [
         {
           id: 'aprendizaje',
           title: 'Aprendizaje',
@@ -7200,16 +7218,93 @@
         }
       ];
       
-      // Items del Profile Menu por defecto para TabBar
-      const defaultTabBarProfileMenuItems = [
+      const adminFloatingMenuSections = [
+        {
+          id: 'inicio',
+          title: 'Inicio',
+          icon: 'house',
+          url: null,
+          isLink: false
+        },
+        {
+          id: 'empresa',
+          title: 'Empresa',
+          icon: 'building',
+          subitems: [
+            { id: 'gestion-usuarios', title: 'Gestión de usuarios', icon: 'users' },
+            { id: 'organigrama', title: 'Organigrama', icon: 'sitemap' },
+            { id: 'datos-empresa', title: 'Datos de empresa', icon: 'building' },
+            { id: 'personalizacion', title: 'Personalización', icon: 'paint-brush' },
+            { id: 'roles-permisos', title: 'Roles y permisos', icon: 'user-shield' },
+            { id: 'comunicaciones', title: 'Comunicaciones', icon: 'envelope' }
+          ]
+        },
+        {
+          id: 'aprendizaje',
+          title: 'Aprendizaje',
+          icon: 'graduation-cap',
+          subitems: [
+            { id: 'lms-cursos', title: 'LMS - Cursos propios', icon: 'book' },
+            { id: 'plan-formacion', title: 'Plan de formación', icon: 'clipboard-list-check' },
+            { id: 'certificados', title: 'Certificados', icon: 'file-certificate' },
+            { id: 'metricas-empresa', title: 'Métricas de empresa', icon: 'chart-line' }
+          ]
+        },
+        {
+          id: 'diagnóstico',
+          title: 'Diagnóstico',
+          icon: 'chart-mixed',
+          url: null,
+          isLink: false
+        },
+        {
+          id: 'desempeño',
+          title: 'Desempeño',
+          icon: 'bars-progress',
+          subitems: [
+            { id: 'evaluations', title: 'Evaluaciones 360', icon: 'chart-pie' },
+            { id: 'objectives', title: 'Objetivos', icon: 'bullseye' },
+            { id: 'matriz-talento', title: 'Matriz de Talento', icon: 'sitemap' }
+          ]
+        },
+        {
+          id: 'encuestas',
+          title: 'Encuestas',
+          icon: 'clipboard-list-check',
+          url: null,
+          isLink: false
+        }
+      ];
+      
+      // Items del Profile Menu por variante (TabBar)
+      const tabBarColaboradorProfileMenuItems = [
         { id: 'ver-perfil', label: 'Ver mi perfil', icon: 'user', url: '#' },
+        { id: 'admin-mode', label: 'Modo Administrador', icon: 'laptop', url: '#' },
         { id: 'cambio-contraseña', label: 'Cambio de contraseña', icon: 'key' },
         { id: 'cerrar-sesion', label: 'Cerrar sesión', icon: 'sign-out-alt' }
       ];
       
+      const tabBarAdminProfileMenuItems = [
+        { id: 'ver-perfil', label: 'Ver mi perfil', icon: 'user', url: '#' },
+        { id: 'modo-colaborador', label: 'Modo colaborador', icon: 'user-gear', url: '#' },
+        { id: 'cambio-contraseña', label: 'Cambio de contraseña', icon: 'key' },
+        { id: 'cerrar-sesion', label: 'Cerrar sesión', icon: 'sign-out-alt' }
+      ];
+      
+      // Items estándar del TabBar
+      const defaultTabBarItems = [
+        { id: 'modulos', label: 'Módulos', icon: 'th-large' },
+        { id: 'perfil', label: 'Mi perfil', avatar: '../assets/images/Profile-image.jpg', avatarAlt: 'Mi perfil' },
+        { id: 'modo-oscuro', label: 'Modo oscuro', icon: 'moon' }
+      ];
+      
+      // Secciones del Floating Menu por defecto (deprecated, usar según variante)
+      const defaultFloatingMenuSections = colaboradorFloatingMenuSections;
+      
       function initTabBarPreviewState(componentId) {
         if (!tabBarPreviewState[componentId]) {
           tabBarPreviewState[componentId] = {
+            variant: 'colaborador',
             activeTabId: 'modulos',
             darkModeEnabled: true
           };
@@ -7217,9 +7312,13 @@
         return tabBarPreviewState[componentId];
       }
       
+      // Exponer función para uso externo
+      window.initTabBarPreviewState = initTabBarPreviewState;
+      
       // Función para actualizar el preview del TabBar
       window.updateTabBarPreview = function(componentId, preserveMenus) {
-        const state = initTabBarPreviewState(componentId);
+        // Obtener el estado directamente del objeto tabBarPreviewState para asegurar que sea el más reciente
+        const state = tabBarPreviewState[componentId] || initTabBarPreviewState(componentId);
         const preview = document.getElementById(`tabbar-preview-${componentId}`);
         
         if (!preview) {
@@ -7227,7 +7326,8 @@
           return;
         }
         
-        console.log('🔄 Actualizando preview de TabBar:', state);
+        console.log('🔄 [updateTabBarPreview] INICIO - componentId:', componentId);
+        console.log('🔄 Actualizando preview de TabBar:', JSON.stringify(state, null, 2));
         
         // Guardar estado de los menús si se debe preservar
         const floatingMenuContainer = document.getElementById(`ubits-floating-menu-container-${componentId}`);
@@ -7244,8 +7344,28 @@
           }
         }
         
+        // Obtener configuraciones según la variante
+        console.log('🔍 [updateTabBarPreview] Estado actual:', JSON.stringify(state, null, 2));
+        console.log('🔍 [updateTabBarPreview] Variante en estado:', state.variant, 'Tipo:', typeof state.variant);
+        console.log('🔍 [updateTabBarPreview] Comparando con admin:', state.variant === 'admin');
+        console.log('🔍 [updateTabBarPreview] adminFloatingMenuSections disponible:', typeof adminFloatingMenuSections !== 'undefined');
+        console.log('🔍 [updateTabBarPreview] colaboradorFloatingMenuSections disponible:', typeof colaboradorFloatingMenuSections !== 'undefined');
+        
+        const floatingMenuSections = state.variant === 'admin' ? adminFloatingMenuSections : colaboradorFloatingMenuSections;
+        const profileMenuItems = state.variant === 'admin' ? tabBarAdminProfileMenuItems : tabBarColaboradorProfileMenuItems;
+        
+        console.log('📋 [updateTabBarPreview] Configuraciones seleccionadas:', {
+          variant: state.variant,
+          floatingMenuSectionsCount: floatingMenuSections.length,
+          profileMenuItemsCount: profileMenuItems.length,
+          firstFloatingSection: floatingMenuSections[0]?.title,
+          firstProfileItem: profileMenuItems[0]?.label,
+          allFloatingSections: floatingMenuSections.map(s => s.title),
+          allProfileItems: profileMenuItems.map(i => i.label)
+        });
+        
         // Renderizar directamente HTML estático
-        renderTabBarStatic(preview, state, defaultTabBarItems, componentId);
+        renderTabBarStatic(preview, state, defaultTabBarItems, componentId, floatingMenuSections, profileMenuItems);
         
         // Restaurar estado de los menús si se debe preservar
         if (preserveMenus) {
@@ -7269,16 +7389,55 @@
       };
       
       // Función para renderizar TabBar estático con Floating Menu y Profile Menu
-      function renderTabBarStatic(container, state, items, componentId) {
+      function renderTabBarStatic(container, state, items, componentId, floatingMenuSections, profileMenuItems) {
         const activeTabId = state.activeTabId || 'modulos';
         const darkModeEnabled = state.darkModeEnabled !== false;
         const finalComponentId = componentId || 'tabbar';
+        
+        console.log('🎨 [renderTabBarStatic] INICIO - Parámetros recibidos:', {
+          variant: state.variant,
+          floatingMenuSectionsReceived: floatingMenuSections?.length || 0,
+          profileMenuItemsReceived: profileMenuItems?.length || 0,
+          floatingMenuSectionsType: typeof floatingMenuSections,
+          profileMenuItemsType: typeof profileMenuItems
+        });
+        
+        // IMPORTANTE: Usar los parámetros pasados si están definidos, de lo contrario usar fallback según variante
+        let finalFloatingMenuSections;
+        let finalProfileMenuItems;
+        
+        if (floatingMenuSections && Array.isArray(floatingMenuSections) && floatingMenuSections.length > 0) {
+          console.log('✅ [renderTabBarStatic] Usando floatingMenuSections pasados como parámetro');
+          finalFloatingMenuSections = floatingMenuSections;
+        } else {
+          console.log('⚠️ [renderTabBarStatic] Usando fallback según variante:', state.variant);
+          // Fallback según variante
+          finalFloatingMenuSections = (state.variant === 'admin' ? adminFloatingMenuSections : colaboradorFloatingMenuSections);
+        }
+        
+        if (profileMenuItems && Array.isArray(profileMenuItems) && profileMenuItems.length > 0) {
+          console.log('✅ [renderTabBarStatic] Usando profileMenuItems pasados como parámetro');
+          finalProfileMenuItems = profileMenuItems;
+        } else {
+          console.log('⚠️ [renderTabBarStatic] Usando fallback según variante:', state.variant);
+          // Fallback según variante
+          finalProfileMenuItems = (state.variant === 'admin' ? tabBarAdminProfileMenuItems : tabBarColaboradorProfileMenuItems);
+        }
         
         console.log('🎨 Renderizando TabBar estático:', {
           activeTabId,
           darkModeEnabled,
           itemsCount: items.length,
-          componentId: finalComponentId
+          componentId: finalComponentId,
+          variant: state.variant,
+          floatingMenuSectionsReceived: floatingMenuSections?.length || 0,
+          profileMenuItemsReceived: profileMenuItems?.length || 0,
+          finalFloatingMenuSectionsCount: finalFloatingMenuSections.length,
+          finalProfileMenuItemsCount: finalProfileMenuItems.length,
+          firstFloatingSection: finalFloatingMenuSections[0]?.title,
+          firstProfileItem: finalProfileMenuItems[0]?.label,
+          allFloatingSections: finalFloatingMenuSections.map(s => s.title),
+          allProfileItems: finalProfileMenuItems.map(i => i.label)
         });
         
         // Helper para renderizar iconos
@@ -7313,10 +7472,24 @@
         
         // Renderizar Floating Menu
         function renderFloatingMenuStatic(sections) {
+          console.log('📝 [renderFloatingMenuStatic] Renderizando secciones:', sections.length);
+          sections.forEach((section, idx) => {
+            console.log(`📝 [renderFloatingMenuStatic] Sección ${idx}:`, {
+              id: section.id,
+              title: section.title,
+              isLink: section.isLink,
+              hasSubitems: !!(section.subitems && section.subitems.length > 0),
+              subitemsCount: section.subitems?.length || 0
+            });
+          });
+          
           const sectionsHTML = sections.map(section => {
-            if (section.isLink) {
+            // Si es un link directo O no tiene subitems y no es link, renderizar como link directo
+            if (section.isLink || (!section.subitems || section.subitems.length === 0)) {
+              const url = section.url || '#';
+              console.log(`📝 [renderFloatingMenuStatic] Renderizando como link directo:`, section.title, 'url:', url);
               return `
-                <a href="${section.url || '#'}" class="ubits-accordion-link ubits-accordion-link--direct" data-section-id="${section.id}">
+                <a href="${url}" class="ubits-accordion-link ubits-accordion-link--direct" data-section-id="${section.id}">
                   <div class="ubits-accordion-icon-circle" data-circle-id="${section.id}">
                     ${renderIcon(section.icon)}
                   </div>
@@ -7326,8 +7499,9 @@
               `;
             }
             
+            // Si tiene subitems, renderizar como accordion
             const subitemsHTML = (section.subitems || []).map(subitem => `
-              <a href="${subitem.url}" class="ubits-accordion-link" data-subitem-id="${subitem.id}">
+              <a href="${subitem.url || '#'}" class="ubits-accordion-link" data-subitem-id="${subitem.id}">
                 <div class="ubits-accordion-icon-circle" data-circle-id="${subitem.id}">
                   ${renderIcon(subitem.icon)}
                 </div>
@@ -7335,6 +7509,7 @@
               </a>
             `).join('');
 
+            console.log(`📝 [renderFloatingMenuStatic] Renderizando como accordion:`, section.title, 'subitems:', section.subitems.length);
             return `
               <div class="ubits-accordion-item">
                 <div class="ubits-accordion-header" data-accordion-id="${section.id}" onclick="handleTabBarAccordionClick('${section.id}', '${finalComponentId}')">
@@ -7371,6 +7546,16 @@
         // Renderizar Profile Menu
         function renderProfileMenuStatic(items, componentId) {
           const finalComponentId = componentId || 'tabbar';
+          
+          console.log('👤 [renderProfileMenuStatic] Renderizando items del Profile Menu:', items.length);
+          items.forEach((item, idx) => {
+            console.log(`👤 [renderProfileMenuStatic] Item ${idx}:`, {
+              id: item.id,
+              label: item.label,
+              icon: item.icon
+            });
+          });
+          
           const itemsHTML = items.map(item => `
             <div class="ubits-profile-menu-item" data-profile-item-id="${item.id}">
               ${renderIcon(item.icon)}
@@ -7396,10 +7581,10 @@
             </div>
           </div>
           <div id="ubits-floating-menu-container-${finalComponentId}" style="position: absolute; top: 0; left: 0; right: 0; bottom: 76px; width: 100%; height: 500px; display: none; z-index: 2000; overflow: visible;">
-            ${renderFloatingMenuStatic(defaultFloatingMenuSections)}
+            ${renderFloatingMenuStatic(finalFloatingMenuSections)}
           </div>
           <div id="ubits-profile-menu-container-${finalComponentId}" style="position: absolute; bottom: 76px; left: 0; right: 0; width: 100%; display: none; z-index: 2001; overflow: visible;">
-            ${renderProfileMenuStatic(defaultTabBarProfileMenuItems, finalComponentId)}
+            ${renderProfileMenuStatic(finalProfileMenuItems, finalComponentId)}
           </div>
         `;
         
@@ -7638,11 +7823,88 @@
       
       // Función para establecer controles
       window.setTabBarControl = function(option, value, componentId) {
+        // Asegurar que componentId tenga un valor por defecto
+        componentId = componentId || 'tabbar';
+        
+        console.log('🔧 [setTabBarControl] INICIO - Parámetros recibidos:', { option, value, componentId });
+        
+        // Obtener estado actual
         const state = initTabBarPreviewState(componentId);
+        console.log('🔧 [setTabBarControl] Estado ANTES de actualizar:', JSON.stringify(state, null, 2));
+        
+        // ACTUALIZAR EL ESTADO DIRECTAMENTE
         state[option] = value;
         
-        // Actualizar preview
+        // FORZAR PERSISTENCIA: Asegurar que el estado se guarde correctamente
+        tabBarPreviewState[componentId] = { ...state };
+        
+        // Verificar que el estado se guardó correctamente
+        const storedState = tabBarPreviewState[componentId];
+        console.log('🔧 [setTabBarControl] Estado DESPUÉS de actualizar:', JSON.stringify(state, null, 2));
+        console.log('🔧 [setTabBarControl] Estado guardado en tabBarPreviewState:', JSON.stringify(storedState, null, 2));
+        console.log('🔧 [setTabBarControl] Verificando cambio:', { 
+          option, 
+          value, 
+          stateValue: state[option], 
+          storedValue: storedState[option],
+          stateVariant: state.variant,
+          storedVariant: storedState.variant
+        });
+        
+        // Si se cambia la variante, actualizar los botones activos de los controles
+        if (option === 'variant') {
+          console.log('🔄 [setTabBarControl] Cambiando variante a:', value);
+          console.log('🔄 [setTabBarControl] Verificando estado.variant:', state.variant);
+          console.log('🔄 [setTabBarControl] Verificando estado guardado:', storedState.variant);
+          
+          // Actualizar el estado activo de los botones de variante
+          const selector = `[data-component="${componentId}"][data-option="variant"]`;
+          console.log('🔘 [setTabBarControl] Buscando botones con selector:', selector);
+          const buttons = document.querySelectorAll(selector);
+          console.log('🔘 [setTabBarControl] Botones encontrados:', buttons.length);
+          
+          if (buttons.length === 0) {
+            console.error('❌ [setTabBarControl] NO se encontraron botones de variante con selector:', selector);
+            // Intentar buscar sin el componente específico
+            const allButtons = document.querySelectorAll('[data-option="variant"]');
+            console.log('🔘 [setTabBarControl] Botones encontrados sin filtro de componente:', allButtons.length);
+          }
+          
+          buttons.forEach((btn, index) => {
+            const btnValue = btn.getAttribute('data-value');
+            const btnComponent = btn.getAttribute('data-component');
+            const isMatch = btnValue === value;
+            console.log(`🔘 [setTabBarControl] Botón ${index}:`, { 
+              btnValue, 
+              btnComponent,
+              value, 
+              isMatch, 
+              hasActive: btn.classList.contains('active') 
+            });
+            if (isMatch) {
+              btn.classList.add('active');
+              console.log(`✅ [setTabBarControl] Botón ${index} marcado como activo`);
+            } else {
+              btn.classList.remove('active');
+              console.log(`❌ [setTabBarControl] Botón ${index} desmarcado`);
+            }
+          });
+        }
+        
+        // Actualizar preview - Asegurar que se pase el estado correcto
+        console.log('🔄 [setTabBarControl] Llamando updateTabBarPreview con componentId:', componentId);
+        console.log('🔄 [setTabBarControl] Estado que se pasará:', JSON.stringify(tabBarPreviewState[componentId], null, 2));
+        
+        // Verificar que el preview existe antes de actualizar
+        const previewElement = document.getElementById(`tabbar-preview-${componentId}`);
+        if (!previewElement) {
+          console.error('❌ [setTabBarControl] Preview no encontrado:', `tabbar-preview-${componentId}`);
+        } else {
+          console.log('✅ [setTabBarControl] Preview encontrado:', previewElement);
+        }
+        
         window.updateTabBarPreview(componentId);
+        console.log('🔧 [setTabBarControl] FIN');
       };
       
       // Función para inicializar dark mode toggle en TabBar
@@ -7685,24 +7947,24 @@
       
       // Proveedores con sus logos (mapeo) - Usando rutas relativas desde playground
       const PROVIDER_LOGOS = {
-        'UBITS': '../../../../template-ubits/images/Favicons/UBITS.jpg',
-        'Microsoft': '../../../../template-ubits/images/Favicons/Microsoft.jpg',
-        'Hubspot': '../../../../template-ubits/images/Favicons/Hubspot.jpg',
-        'Harvard Business Publishing': '../../../../template-ubits/images/Favicons/Harvard-Business-Publishing.jpg',
-        'TED': '../../../../template-ubits/images/Favicons/TED.jpg',
-        'AWS': '../../../../template-ubits/images/Favicons/AWS.jpg',
-        'Universidad de Los Andes': '../../../../template-ubits/images/Favicons/Universidad-de-Los Andes.jpg',
-        'Advanced English': '../../../../template-ubits/images/Favicons/Advanced-English.jpg',
-        'IE University': '../../../../template-ubits/images/Favicons/IE-University-Publishing.jpg',
-        'Código Facilito': '../../../../template-ubits/images/Favicons/Código-Facilito.jpg',
-        'Hackers del Talento': '../../../../template-ubits/images/Favicons/Hackers-del-Talento.jpg',
-        'All Ears English': '../../../../template-ubits/images/Favicons/All Ears English.jpg',
-        'American & British Academy': '../../../../template-ubits/images/Favicons/American & British Academy.jpg',
-        'Bureau Veritas': '../../../../template-ubits/images/Favicons/Bureau-Veritas.jpg',
-        'Welu': '../../../../template-ubits/images/Favicons/Welu.jpg',
-        'Figsha Smart Consulting': '../../../../template-ubits/images/Favicons/Figsha Smart Consulting.jpg',
-        'Instafit': '../../../../template-ubits/images/Favicons/Instafit.jpg',
-        'WOBI': '../../../../template-ubits/images/Favicons/WOBI.jpg'
+        'UBITS': '../assets/images/Favicons/UBITS.jpg',
+        'Microsoft': '../assets/images/Favicons/Microsoft.jpg',
+        'Hubspot': '../assets/images/Favicons/Hubspot.jpg',
+        'Harvard Business Publishing': '../assets/images/Favicons/Harvard-Business-Publishing.jpg',
+        'TED': '../assets/images/Favicons/TED.jpg',
+        'AWS': '../assets/images/Favicons/AWS.jpg',
+        'Universidad de Los Andes': '../assets/images/Favicons/Universidad-de-Los Andes.jpg',
+        'Advanced English': '../assets/images/Favicons/Advanced-English.jpg',
+        'IE University': '../assets/images/Favicons/IE-University-Publishing.jpg',
+        'Código Facilito': '../assets/images/Favicons/Código-Facilito.jpg',
+        'Hackers del Talento': '../assets/images/Favicons/Hackers-del-Talento.jpg',
+        'All Ears English': '../assets/images/Favicons/All Ears English.jpg',
+        'American & British Academy': '../assets/images/Favicons/American & British Academy.jpg',
+        'Bureau Veritas': '../assets/images/Favicons/Bureau-Veritas.jpg',
+        'Welu': '../assets/images/Favicons/Welu.jpg',
+        'Figsha Smart Consulting': '../assets/images/Favicons/Figsha Smart Consulting.jpg',
+        'Instafit': '../assets/images/Favicons/Instafit.jpg',
+        'WOBI': '../assets/images/Favicons/WOBI.jpg'
       };
       
       // Niveles con iconos
@@ -7732,7 +7994,7 @@
             language: 'Español',
             title: 'Segmenta la experiencia del cliente',
             duration: '60 min',
-            image: '../../../../template-ubits/images/cards-learn/segmenta-la-experiencia-del-cliente.jpg'
+            image: '../assets/images/cards-learn/segmenta-la-experiencia-del-cliente.jpg'
           };
         }
         return cardPreviewState[componentId];
@@ -7748,8 +8010,8 @@
         
         // Asegurar que la imagen tenga la ruta completa si no la tiene
         let imagePath = state.image;
-        if (!imagePath.startsWith('../../../../template-ubits/') && !imagePath.startsWith('http')) {
-          imagePath = '../../../../template-ubits/' + imagePath.replace(/^images\//, 'images/');
+        if (!imagePath.startsWith('../assets/images/') && !imagePath.startsWith('http')) {
+          imagePath = '../assets/images/' + imagePath.replace(/^images\//, 'images/');
         }
         
         return `
@@ -7774,7 +8036,7 @@
               <h3 class="course-title ubits-body-sm-bold">${state.title}</h3>
               <div class="course-provider">
                 <div class="provider-avatar">
-                  <img src="${providerLogo}" alt="${state.provider}" class="provider-icon" onerror="this.onerror=null; this.src='../../../../template-ubits/images/Favicons/UBITS.jpg';">
+                  <img src="${providerLogo}" alt="${state.provider}" class="provider-icon" onerror="this.onerror=null; this.src='../assets/images/Favicons/UBITS.jpg';">
                 </div>
                 <span class="provider-name ubits-body-sm-regular">${state.provider}</span>
               </div>
