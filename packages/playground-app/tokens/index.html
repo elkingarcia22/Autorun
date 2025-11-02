@@ -7,8 +7,10 @@
     <link rel="stylesheet" href="../../tokens/dist/tokens.css" />
     <link rel="stylesheet" href="../../typography/fonts.css" />
     <link rel="stylesheet" href="../../typography/tokens-typography.css" />
-    <link rel="stylesheet" href="../../../../template-ubits/fontawesome-icons.css" />
+    <link rel="stylesheet" href="../assets/fontawesome/css/all.min.css" />
     <link rel="stylesheet" href="../../addons/sidebar/src/styles/sidebar.css" />
+    <link rel="stylesheet" href="../../addons/subnav/src/styles/subnav.css" />
+    <link rel="stylesheet" href="../../addons/tabbar/src/styles/tabbar.css" />
     <!-- Button Component CSS - COMPLETO INLINE (porque @import falla con file://) -->
     <style id="button-component-css">
       /* ========================================
@@ -433,6 +435,7 @@
     <link rel="stylesheet" href="../../addons/toast/src/styles/toast.css" />
     <link rel="stylesheet" href="../../addons/input/src/styles/input.css" />
     <link rel="stylesheet" href="../../addons/list/src/styles/list.css" />
+    <link rel="stylesheet" href="../../addons/card/src/styles/card.css" />
     <style>
       /* Asegurar que FontAwesome se cargue correctamente */
       /* Si las fuentes no cargan, las clases .fa-*::before mostrarán el contenido unicode */
@@ -2784,6 +2787,52 @@
               class: 'ubits-sidebar ubits-sidebar-nav-button ubits-sidebar-nav-button--active',
               example: 'createSidebar({\n  containerId: \'sidebar-container\',\n  variant: \'colaborador\',\n  bodyButtons: [...],\n  footerButtons: [...],\n  profileMenuItems: [...]\n})',
               hasPreview: true
+            },
+            {
+              name: 'SubNav',
+              description: 'Componente de navegación superior horizontal con 8 variantes. Muestra sub-navegaciones de los módulos principales con tabs y navegación por URL o callbacks.',
+              files: {
+                css: 'addons/subnav/src/styles/subnav.css',
+                ts: 'addons/subnav/src/SubNavProvider.ts'
+              },
+              variants: ['template', 'aprendizaje', 'desempeño', 'encuestas', 'tareas', 'empresa', 'admin-aprendizaje', 'admin-desempeno'],
+              sizes: [],
+              states: ['default', 'hover', 'active'],
+              features: ['8 variantes predefinidas', 'Tabs personalizables', 'Navegación por URL o callbacks', 'Responsive design', 'Dark mode support', 'Indicador visual activo (línea inferior)'],
+              class: 'ubits-sub-nav ubits-sub-nav-tab ubits-sub-nav-tab--active',
+              example: 'createSubNav({\n  containerId: \'subnav-container\',\n  variant: \'template\',\n  tabs: [...],\n  activeTabId: \'section1\'\n})',
+              hasPreview: true
+            },
+            {
+              name: 'TabBar',
+              description: 'Componente de navegación inferior para dispositivos móviles. Reemplaza al sidebar en pantallas pequeñas con items personalizables con iconos o avatares. Incluye Floating Menu (accordions) que se muestra al hacer click en "Módulos" y Profile Menu que se muestra al hacer click en "Mi perfil".',
+              files: {
+                css: 'addons/tabbar/src/styles/tabbar.css',
+                ts: 'addons/tabbar/src/TabBarProvider.ts'
+              },
+              variants: [],
+              sizes: [],
+              states: ['default', 'hover', 'active'],
+              features: ['Items personalizables', 'Iconos o avatares', 'Dark mode toggle', 'Callbacks por item', 'Responsive (< 1024px)', 'Altura fija 60px', 'Transiciones suaves', 'Floating Menu con accordions', 'Profile Menu dropdown', 'Solo visible en móvil'],
+              class: 'ubits-tabbar ubits-tabbar-item ubits-tabbar-item--active',
+              example: 'createTabBar({\n  containerId: \'tabbar-container\',\n  items: [\n    { id: \'modulos\', label: \'Módulos\', icon: \'th-large\' },\n    { id: \'perfil\', label: \'Mi perfil\', avatar: \'images/Profile-image.jpg\' },\n    { id: \'modo-oscuro\', label: \'Modo oscuro\', icon: \'moon\' }\n  ],\n  activeTabId: \'modulos\',\n  floatingMenuSections: [...],\n  profileMenuItems: [...]\n})',
+              hasPreview: true
+            },
+            {
+              name: 'Card Content',
+              description: 'Componente para mostrar cards de contenido de aprendizaje. Incluye imagen, título, proveedor, competencia, nivel, duración, idioma y barra de progreso. Soporta 11 tipos de contenido, 35 competencias oficiales y 3 estados (default, progress, completed).',
+              files: {
+                css: 'addons/card/src/styles/card.css',
+                ts: 'addons/card/src/index.ts'
+              },
+              variants: [],
+              sizes: [],
+              states: ['default', 'progress', 'completed'],
+              types: ['Curso', 'Cápsula', 'Charla', 'Artículo', 'Podcast', 'Libro', 'Ideas de libro', 'Caso de estudio', 'Documento técnico', 'Ejercicios de práctica', 'Ruta de aprendizaje'],
+              features: ['11 tipos de contenido', '35 competencias oficiales', '18 proveedores oficiales', '3 niveles (Básico, Intermedio, Avanzado)', '9 duraciones oficiales', '3 idiomas', '3 estados', 'Barra de progreso animada', 'Imagen con zoom en hover', 'Aspect ratio 16:9', 'Avatar circular del proveedor', 'Iconos FontAwesome para specs'],
+              class: 'course-card course-card[data-progress="{progress}"] course-card[data-status="{status}"]',
+              example: 'loadCardContent({\n  containerId: \'cards-container\',\n  cards: [{\n    type: \'Cápsula\',\n    title: \'Mi contenido\',\n    provider: \'UBITS\',\n    providerLogo: \'images/Favicons/UBITS.jpg\',\n    duration: \'15 min\',\n    level: \'Básico\',\n    progress: 50,\n    status: \'progress\',\n    image: \'images/cards-learn/imagen.jpg\',\n    competency: \'Product design\',\n    language: \'Español\'\n  }]\n})',
+              hasPreview: true
             }
           ]
         };
@@ -2889,6 +2938,12 @@
                     window.updateListPreview('list');
                   } else if (componentId === 'sidebar' && typeof window.updateSidebarPreview === 'function') {
                     window.updateSidebarPreview('sidebar');
+                  } else if (componentId === 'subnav' && typeof window.updateSubNavPreview === 'function') {
+                    window.updateSubNavPreview('subnav');
+                  } else if (componentId === 'tabbar' && typeof window.updateTabBarPreview === 'function') {
+                    window.updateTabBarPreview('tabbar');
+                  } else if (componentId === 'card-content' && typeof window.updateCardPreview === 'function') {
+                    window.updateCardPreview('card-content');
                   }
                 }, 100);
               }
@@ -3675,6 +3730,243 @@
                           <!-- PREVIEW EN EL MEDIO -->
                           <div style="background: var(--ubits-bg-1); padding: 48px; border-radius: 8px; border: 1px solid var(--ubits-border-1); margin-bottom: 24px; display: flex; align-items: flex-start; justify-content: center; min-height: 650px; position: relative;">
                             <div id="sidebar-preview-${componentId}" style="position: relative; overflow: visible !important;">
+                              <!-- Se generará dinámicamente -->
+                            </div>
+                          </div>
+                        </div>
+                      ` : ''}
+                      
+                      ${hasPreview && component.name === 'SubNav' ? `
+                        <!-- Preview Section for SubNav -->
+                        <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: 1px solid var(--ubits-border-1); margin-bottom: 24px;">
+                          <!-- CONTROLES ARRIBA -->
+                          <div style="margin-bottom: 24px;">
+                            <h4 style="margin: 0 0 20px 0; color: var(--ubits-fg-1-high); font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand);"></i>
+                              Controles
+                            </h4>
+                            
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px;">
+                              <!-- Variante -->
+                              <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); text-transform: uppercase; letter-spacing: 0.5px;">Variante</label>
+                                <select id="subnav-variant-select-${componentId}" onchange="setSubNavControl('variant', this.value, '${componentId}')" style="width: 100%; padding: 10px 32px 10px 12px; border: 1px solid var(--ubits-border-1); border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); cursor: pointer; box-sizing: border-box; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23666%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226,9 12,15 18,9%22></polyline></svg>'); background-repeat: no-repeat; background-position: right 10px center; background-size: 16px;">
+                                  <option value="template" selected>Template</option>
+                                  <option value="aprendizaje">Aprendizaje</option>
+                                  <option value="desempeno">Desempeño</option>
+                                  <option value="encuestas">Encuestas</option>
+                                  <option value="tareas">Tareas</option>
+                                  <option value="empresa">Empresa</option>
+                                  <option value="admin-aprendizaje">Admin - Aprendizaje</option>
+                                  <option value="admin-desempeno">Admin - Desempeño</option>
+                                </select>
+                              </div>
+                              
+                              <!-- Tab Activo -->
+                              <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); text-transform: uppercase; letter-spacing: 0.5px;">Tab Activo</label>
+                                <select id="subnav-active-tab-select-${componentId}" onchange="setSubNavControl('activeTabId', this.value, '${componentId}')" style="width: 100%; padding: 10px 32px 10px 12px; border: 1px solid var(--ubits-border-1); border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); cursor: pointer; box-sizing: border-box; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23666%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226,9 12,15 18,9%22></polyline></svg>'); background-repeat: no-repeat; background-position: right 10px center; background-size: 16px;">
+                                  <!-- Se actualizará dinámicamente según la variante -->
+                                </select>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <!-- PREVIEW EN EL MEDIO -->
+                          <div style="background: var(--ubits-bg-1); padding: 24px; border-radius: 8px; border: 1px solid var(--ubits-border-1); margin-bottom: 24px; min-height: 80px; display: flex; align-items: center; justify-content: center;">
+                            <div id="subnav-preview-${componentId}" style="width: 100%; max-width: 100%;">
+                              <!-- Se generará dinámicamente -->
+                            </div>
+                          </div>
+                        </div>
+                      ` : ''}
+                      
+                      ${hasPreview && component.name === 'TabBar' ? `
+                        <!-- Preview Section for TabBar -->
+                        <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: 1px solid var(--ubits-border-1); margin-bottom: 24px;">
+                          <!-- CONTROLES ARRIBA -->
+                          <div style="margin-bottom: 24px;">
+                            <h4 style="margin: 0 0 20px 0; color: var(--ubits-fg-1-high); font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand);"></i>
+                              Controles
+                            </h4>
+                            
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px;">
+                              <!-- Tab Activo -->
+                              <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); text-transform: uppercase; letter-spacing: 0.5px;">Tab Activo</label>
+                                <select id="tabbar-active-tab-select-${componentId}" onchange="setTabBarControl('activeTabId', this.value, '${componentId}')" style="width: 100%; padding: 10px 32px 10px 12px; border: 1px solid var(--ubits-border-1); border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); cursor: pointer; box-sizing: border-box; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23666%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226,9 12,15 18,9%22></polyline></svg>'); background-repeat: no-repeat; background-position: right 10px center; background-size: 16px;">
+                                  <option value="modulos" selected>Módulos</option>
+                                  <option value="perfil">Mi perfil</option>
+                                  <option value="modo-oscuro">Modo oscuro</option>
+                                </select>
+                              </div>
+                              
+                              <!-- Dark Mode Toggle -->
+                              <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); text-transform: uppercase; letter-spacing: 0.5px;">Dark Mode Toggle</label>
+                                <label class="switch" style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                                  <input type="checkbox" id="tabbar-darkmode-toggle-${componentId}" checked onchange="setTabBarControl('darkModeEnabled', this.checked, '${componentId}')">
+                                  <span class="slider"></span>
+                                  <span style="font-size: 14px; color: var(--ubits-fg-1-high);">Habilitado</span>
+                                </label>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <!-- PREVIEW EN EL MEDIO -->
+                          <div style="background: var(--ubits-bg-1); padding: 24px; border-radius: 8px; border: 1px solid var(--ubits-border-1); margin-bottom: 24px; min-height: 80px; display: flex; align-items: flex-end; justify-content: center; position: relative;">
+                            <div id="tabbar-preview-${componentId}" class="ubits-tabbar-preview-container" style="width: 100%; max-width: 400px; position: relative;">
+                              <!-- Se generará dinámicamente -->
+                            </div>
+                          </div>
+                        </div>
+                      ` : ''}
+                      
+                      ${hasPreview && component.name === 'Card Content' ? `
+                        <!-- Preview Section for Card Content -->
+                        <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: 1px solid var(--ubits-border-1); margin-bottom: 24px;">
+                          <!-- CONTROLES ARRIBA -->
+                          <div style="margin-bottom: 24px;">
+                            <h4 style="margin: 0 0 20px 0; color: var(--ubits-fg-1-high); font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand);"></i>
+                              Controles
+                            </h4>
+                            
+                            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 16px;">
+                              <!-- Estado -->
+                              <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); text-transform: uppercase; letter-spacing: 0.5px;">Estado</label>
+                                <select id="card-status-select-${componentId}" onchange="setCardControl('status', this.value, '${componentId}')" style="width: 100%; padding: 10px 32px 10px 12px; border: 1px solid var(--ubits-border-1); border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); cursor: pointer; box-sizing: border-box; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23666%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226,9 12,15 18,9%22></polyline></svg>'); background-repeat: no-repeat; background-position: right 10px center; background-size: 16px;">
+                                  <option value="default" selected>Default</option>
+                                  <option value="progress">En progreso</option>
+                                  <option value="completed">Completado</option>
+                                </select>
+                              </div>
+                              
+                              <!-- Progreso -->
+                              <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); text-transform: uppercase; letter-spacing: 0.5px;">Progreso</label>
+                                <select id="card-progress-select-${componentId}" onchange="setCardControl('progress', this.value, '${componentId}')" style="width: 100%; padding: 10px 32px 10px 12px; border: 1px solid var(--ubits-border-1); border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); cursor: pointer; box-sizing: border-box; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23666%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226,9 12,15 18,9%22></polyline></svg>'); background-repeat: no-repeat; background-position: right 10px center; background-size: 16px;">
+                                  <option value="0" selected>Default (0%)</option>
+                                  <option value="25">25%</option>
+                                  <option value="50">50%</option>
+                                  <option value="75">75%</option>
+                                  <option value="100">100%</option>
+                                </select>
+                              </div>
+                              
+                              <!-- Aliado -->
+                              <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); text-transform: uppercase; letter-spacing: 0.5px;">Aliado</label>
+                                <select id="card-provider-select-${componentId}" onchange="setCardControl('provider', this.value, '${componentId}')" style="width: 100%; padding: 10px 32px 10px 12px; border: 1px solid var(--ubits-border-1); border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); cursor: pointer; box-sizing: border-box; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23666%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226,9 12,15 18,9%22></polyline></svg>'); background-repeat: no-repeat; background-position: right 10px center; background-size: 16px;">
+                                  <option value="UBITS" selected>UBITS</option>
+                                  <option value="Microsoft">Microsoft</option>
+                                  <option value="Hubspot">Hubspot</option>
+                                  <option value="Harvard Business Publishing">Harvard Business Publishing</option>
+                                  <option value="TED">TED</option>
+                                  <option value="AWS">AWS</option>
+                                  <option value="Universidad de Los Andes">Universidad de Los Andes</option>
+                                  <option value="Advanced English">Advanced English</option>
+                                  <option value="IE University">IE University</option>
+                                  <option value="Código Facilito">Código Facilito</option>
+                                  <option value="Hackers del Talento">Hackers del Talento</option>
+                                  <option value="All Ears English">All Ears English</option>
+                                  <option value="American & British Academy">American & British Academy</option>
+                                  <option value="Bureau Veritas">Bureau Veritas</option>
+                                  <option value="Welu">Welu</option>
+                                  <option value="Figsha Smart Consulting">Figsha Smart Consulting</option>
+                                  <option value="Instafit">Instafit</option>
+                                  <option value="WOBI">WOBI</option>
+                                </select>
+                              </div>
+                              
+                              <!-- Competencia -->
+                              <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); text-transform: uppercase; letter-spacing: 0.5px;">Competencia</label>
+                                <select id="card-competency-select-${componentId}" onchange="setCardControl('competency', this.value, '${componentId}')" style="width: 100%; padding: 10px 32px 10px 12px; border: 1px solid var(--ubits-border-1); border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); cursor: pointer; box-sizing: border-box; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23666%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226,9 12,15 18,9%22></polyline></svg>'); background-repeat: no-repeat; background-position: right 10px center; background-size: 16px;">
+                                  <option value="Product design" selected>Product design</option>
+                                  <option value="Accountability">Accountability</option>
+                                  <option value="Administración de negocios">Administración de negocios</option>
+                                  <option value="Agilidad">Agilidad</option>
+                                  <option value="Comunicación">Comunicación</option>
+                                  <option value="Cumplimiento (Compliance)">Cumplimiento (Compliance)</option>
+                                  <option value="Data skills">Data skills</option>
+                                  <option value="Desarrollo de software">Desarrollo de software</option>
+                                  <option value="Desarrollo web">Desarrollo web</option>
+                                  <option value="Digital skills">Digital skills</option>
+                                  <option value="e-Commerce">e-Commerce</option>
+                                  <option value="Emprendimiento">Emprendimiento</option>
+                                  <option value="Experiencia del cliente">Experiencia del cliente</option>
+                                  <option value="Gestión de procesos y operaciones">Gestión de procesos y operaciones</option>
+                                  <option value="Gestión de proyectos">Gestión de proyectos</option>
+                                  <option value="Gestión de recursos tecnológicos">Gestión de recursos tecnológicos</option>
+                                  <option value="Gestión del cambio">Gestión del cambio</option>
+                                  <option value="Gestión del riesgo">Gestión del riesgo</option>
+                                  <option value="Gestión financiera">Gestión financiera</option>
+                                  <option value="Herramientas tecnológicas">Herramientas tecnológicas</option>
+                                  <option value="Inglés">Inglés</option>
+                                  <option value="Innovación">Innovación</option>
+                                  <option value="Inteligencia emocional">Inteligencia emocional</option>
+                                  <option value="Lenguajes de Programación">Lenguajes de Programación</option>
+                                  <option value="Liderazgo">Liderazgo</option>
+                                  <option value="Marketing">Marketing</option>
+                                  <option value="Marketing digital">Marketing digital</option>
+                                  <option value="Negociación">Negociación</option>
+                                  <option value="People management">People management</option>
+                                  <option value="Productividad">Productividad</option>
+                                  <option value="Resolución de problemas">Resolución de problemas</option>
+                                  <option value="Trabajo en equipo">Trabajo en equipo</option>
+                                  <option value="Ventas">Ventas</option>
+                                  <option value="Wellness">Wellness</option>
+                                </select>
+                              </div>
+                            </div>
+                            
+                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+                              <!-- Tipo de contenido -->
+                              <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); text-transform: uppercase; letter-spacing: 0.5px;">Tipo de contenido</label>
+                                <select id="card-type-select-${componentId}" onchange="setCardControl('type', this.value, '${componentId}')" style="width: 100%; padding: 10px 32px 10px 12px; border: 1px solid var(--ubits-border-1); border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); cursor: pointer; box-sizing: border-box; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23666%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226,9 12,15 18,9%22></polyline></svg>'); background-repeat: no-repeat; background-position: right 10px center; background-size: 16px;">
+                                  <option value="Curso" selected>Curso</option>
+                                  <option value="Cápsula">Cápsula</option>
+                                  <option value="Charla">Charla</option>
+                                  <option value="Artículo">Artículo</option>
+                                  <option value="Podcast">Podcast</option>
+                                  <option value="Libro">Libro</option>
+                                  <option value="Ideas de libro">Ideas de libro</option>
+                                  <option value="Caso de estudio">Caso de estudio</option>
+                                  <option value="Documento técnico">Documento técnico</option>
+                                  <option value="Ejercicios de práctica">Ejercicios de práctica</option>
+                                  <option value="Ruta de aprendizaje">Ruta de aprendizaje</option>
+                                </select>
+                              </div>
+                              
+                              <!-- Nivel -->
+                              <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); text-transform: uppercase; letter-spacing: 0.5px;">Nivel</label>
+                                <select id="card-level-select-${componentId}" onchange="setCardControl('level', this.value, '${componentId}')" style="width: 100%; padding: 10px 32px 10px 12px; border: 1px solid var(--ubits-border-1); border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); cursor: pointer; box-sizing: border-box; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23666%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226,9 12,15 18,9%22></polyline></svg>'); background-repeat: no-repeat; background-position: right 10px center; background-size: 16px;">
+                                  <option value="Básico" selected>Básico</option>
+                                  <option value="Intermedio">Intermedio</option>
+                                  <option value="Avanzado">Avanzado</option>
+                                </select>
+                              </div>
+                              
+                              <!-- Idioma -->
+                              <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); text-transform: uppercase; letter-spacing: 0.5px;">Idioma</label>
+                                <select id="card-language-select-${componentId}" onchange="setCardControl('language', this.value, '${componentId}')" style="width: 100%; padding: 10px 32px 10px 12px; border: 1px solid var(--ubits-border-1); border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); cursor: pointer; box-sizing: border-box; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23666%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226,9 12,15 18,9%22></polyline></svg>'); background-repeat: no-repeat; background-position: right 10px center; background-size: 16px;">
+                                  <option value="Español" selected>Español</option>
+                                  <option value="Inglés">Inglés</option>
+                                  <option value="Portugués">Portugués</option>
+                                </select>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <!-- PREVIEW EN EL MEDIO -->
+                          <div style="background: var(--ubits-bg-1); padding: 48px; border-radius: 8px; border: 1px solid var(--ubits-border-1); margin-bottom: 24px; display: flex; align-items: flex-start; justify-content: center; min-height: 400px;">
+                            <div id="card-preview-${componentId}" style="max-width: 360px; width: 100%;">
                               <!-- Se generará dinámicamente -->
                             </div>
                           </div>
@@ -6629,6 +6921,975 @@
           console.log('👁️ Observador de visibilidad activado para List');
         }
       }
+      
+      // ========================================
+      // SUBNAV PREVIEW STATE & FUNCTIONS
+      // ========================================
+      
+      const subNavPreviewState = {};
+      
+      // Configuraciones de tabs por variante
+      const subNavVariantsConfig = {
+        template: [
+          { id: 'section1', label: 'Sección 1', icon: 'fa-home' },
+          { id: 'section2', label: 'Sección 2', icon: 'fa-book' },
+          { id: 'section3', label: 'Sección 3', icon: 'fa-chart-line' },
+          { id: 'section4', label: 'Sección 4', icon: 'fa-cog' },
+          { id: 'section5', label: 'Sección 5', icon: 'fa-star' }
+        ],
+        aprendizaje: [
+          { id: 'home', label: 'Inicio', icon: 'fa-home' },
+          { id: 'catalog', label: 'Catálogo', icon: 'fa-book' },
+          { id: 'corporate', label: 'U. Corporativa', icon: 'fa-building-columns' },
+          { id: 'study-zone', label: 'Zona de estudio', icon: 'fa-books' }
+        ],
+        desempeno: [
+          { id: 'evaluations', label: 'Evaluaciones 360', icon: 'fa-chart-pie' },
+          { id: 'objectives', label: 'Objetivos', icon: 'fa-bullseye' },
+          { id: 'metrics', label: 'Métricas', icon: 'fa-chart-line' },
+          { id: 'reports', label: 'Reportes', icon: 'fa-file-chart-line' }
+        ],
+        encuestas: [
+          { id: 'encuestas', label: 'Encuestas', icon: 'fa-clipboard-list-check' }
+        ],
+        tareas: [
+          { id: 'plans', label: 'Planes', icon: 'fa-layer-group' },
+          { id: 'tasks', label: 'Tareas', icon: 'fa-tasks' }
+        ],
+        empresa: [
+          { id: 'gestion-usuarios', label: 'Gestión de usuarios', icon: 'fa-users' },
+          { id: 'organigrama', label: 'Organigrama', icon: 'fa-sitemap' },
+          { id: 'datos-empresa', label: 'Datos de empresa', icon: 'fa-building' },
+          { id: 'personalizacion', label: 'Personalización', icon: 'fa-paint-brush' },
+          { id: 'roles-permisos', label: 'Roles y permisos', icon: 'fa-user-shield' },
+          { id: 'comunicaciones', label: 'Comunicaciones', icon: 'fa-envelope' }
+        ],
+        'admin-aprendizaje': [
+          { id: 'lms-cursos', label: 'LMS - Cursos propios', icon: 'fa-book' },
+          { id: 'plan-formacion', label: 'Plan de formación', icon: 'fa-clipboard-list-check' },
+          { id: 'certificados', label: 'Certificados', icon: 'fa-file-certificate' },
+          { id: 'metricas-empresa', label: 'Métricas de empresa', icon: 'fa-chart-line' }
+        ],
+        'admin-desempeno': [
+          { id: 'evaluations', label: 'Evaluaciones 360', icon: 'fa-chart-pie' },
+          { id: 'objectives', label: 'Objetivos', icon: 'fa-bullseye' },
+          { id: 'matriz-talento', label: 'Matriz de Talento', icon: 'fa-sitemap' }
+        ]
+      };
+      
+      function initSubNavPreviewState(componentId) {
+        if (!subNavPreviewState[componentId]) {
+          subNavPreviewState[componentId] = {
+            variant: 'template',
+            activeTabId: ''
+          };
+        }
+        return subNavPreviewState[componentId];
+      }
+      
+      // Función para actualizar el preview del SubNav
+      window.updateSubNavPreview = function(componentId) {
+        const state = initSubNavPreviewState(componentId);
+        const preview = document.getElementById(`subnav-preview-${componentId}`);
+        
+        if (!preview) {
+          console.error('❌ Preview de SubNav no encontrado:', `subnav-preview-${componentId}`);
+          return;
+        }
+        
+        console.log('🔄 Actualizando preview de SubNav:', state);
+        
+        // Obtener tabs según la variante
+        const tabs = subNavVariantsConfig[state.variant] || subNavVariantsConfig.template;
+        
+        // Determinar tab activo
+        const activeTabId = state.activeTabId || (tabs.length > 0 ? tabs[0].id : '');
+        
+        // Renderizar directamente HTML estático
+        renderSubNavStatic(preview, state, tabs, activeTabId);
+        
+        console.log('✅ Preview de SubNav actualizado:', state);
+      };
+      
+      // Función para renderizar SubNav estático
+      function renderSubNavStatic(container, state, tabs, activeTabId) {
+        const variant = state.variant || 'template';
+        
+        console.log('🎨 Renderizando SubNav estático:', {
+          variant,
+          tabsCount: tabs.length,
+          activeTabId
+        });
+        
+        // Helper para renderizar iconos
+        function renderIcon(iconName) {
+          const name = iconName.startsWith('fa-') ? iconName : `fa-${iconName}`;
+          return `<i class="far ${name}"></i>`;
+        }
+        
+        // Renderizar tabs
+        const tabsHTML = tabs.map(tab => {
+          const isActive = tab.id === activeTabId;
+          const activeClass = isActive ? 'ubits-sub-nav-tab--active' : '';
+          
+          return `
+            <button 
+              class="ubits-sub-nav-tab ${activeClass}" 
+              data-tab="${tab.id}"
+              onclick="handleSubNavTabClick('${tab.id}', '${variant}')"
+            >
+              ${renderIcon(tab.icon)}
+              <span>${tab.label}</span>
+            </button>
+          `;
+        }).join('');
+        
+        const subNavHTML = `
+          <nav class="ubits-sub-nav" data-variant="${variant}">
+            <div class="ubits-sub-nav-tabs">
+              ${tabsHTML}
+            </div>
+          </nav>
+        `;
+        
+        container.innerHTML = subNavHTML;
+      }
+      
+      // Handler para clicks en tabs
+      window.handleSubNavTabClick = function(tabId, variant) {
+        console.log('🖱️ Tab clickeado:', tabId);
+        
+        // Actualizar estado activo en todos los componentes SubNav
+        Object.keys(subNavPreviewState).forEach(componentId => {
+          const state = subNavPreviewState[componentId];
+          if (state.variant === variant) {
+            state.activeTabId = tabId;
+            window.updateSubNavPreview(componentId);
+          }
+        });
+      };
+      
+      // Función para establecer controles
+      window.setSubNavControl = function(option, value, componentId) {
+        const state = initSubNavPreviewState(componentId);
+        state[option] = value;
+        
+        // Si cambia la variante, resetear el tab activo al primero y actualizar dropdown
+        if (option === 'variant') {
+          const tabs = subNavVariantsConfig[value] || subNavVariantsConfig.template;
+          state.activeTabId = tabs.length > 0 ? tabs[0].id : '';
+          
+          // Actualizar dropdown de tabs activos
+          const tabSelect = document.getElementById(`subnav-active-tab-select-${componentId}`);
+          if (tabSelect) {
+            tabSelect.innerHTML = tabs.map(tab => 
+              `<option value="${tab.id}" ${tab.id === state.activeTabId ? 'selected' : ''}>${tab.label}</option>`
+            ).join('');
+          }
+        }
+        
+        window.updateSubNavPreview(componentId);
+      };
+      
+      // Función para actualizar dropdown de tabs cuando cambia la variante
+      function updateSubNavTabDropdown(componentId, variant) {
+        const tabs = subNavVariantsConfig[variant] || subNavVariantsConfig.template;
+        const tabSelect = document.getElementById(`subnav-active-tab-select-${componentId}`);
+        const state = initSubNavPreviewState(componentId);
+        
+        if (tabSelect) {
+          tabSelect.innerHTML = tabs.map(tab => 
+            `<option value="${tab.id}" ${tab.id === state.activeTabId ? 'selected' : ''}>${tab.label}</option>`
+          ).join('');
+        }
+      }
+      
+      // Actualizar dropdown cuando se renderiza el componente
+      setTimeout(() => {
+        const subNavComponent = document.getElementById('component-subnav');
+        if (subNavComponent) {
+          const variantSelect = document.getElementById('subnav-variant-select-subnav');
+          if (variantSelect) {
+            updateSubNavTabDropdown('subnav', variantSelect.value);
+            
+            // Listener para cambios en variante
+            variantSelect.addEventListener('change', function() {
+              updateSubNavTabDropdown('subnav', this.value);
+            });
+          }
+        }
+      }, 500);
+      
+      // ========================================
+      // TABBAR PREVIEW STATE & FUNCTIONS
+      // ========================================
+      
+      const tabBarPreviewState = {};
+      
+      // Items estándar del TabBar
+      const defaultTabBarItems = [
+        { id: 'modulos', label: 'Módulos', icon: 'th-large' },
+        { id: 'perfil', label: 'Mi perfil', avatar: '../../../../template-ubits/images/Profile-image.jpg', avatarAlt: 'Mi perfil' },
+        { id: 'modo-oscuro', label: 'Modo oscuro', icon: 'moon' }
+      ];
+      
+      // Secciones del Floating Menu por defecto
+      const defaultFloatingMenuSections = [
+        {
+          id: 'aprendizaje',
+          title: 'Aprendizaje',
+          icon: 'graduation-cap',
+          subitems: [
+            { id: 'inicio', title: 'Inicio', icon: 'home', url: '#' },
+            { id: 'catalogo', title: 'Catálogo', icon: 'book', url: '#' },
+            { id: 'corporativa', title: 'U. Corporativa', icon: 'building-columns', url: '#' },
+            { id: 'zona-estudio', title: 'Zona de estudio', icon: 'books', url: '#' }
+          ]
+        },
+        {
+          id: 'diagnostico',
+          title: 'Diagnóstico',
+          icon: 'chart-mixed',
+          url: '#',
+          isLink: true,
+          clickable: true
+        },
+        {
+          id: 'desempeno',
+          title: 'Desempeño',
+          icon: 'bars-progress',
+          subitems: [
+            { id: 'evaluaciones-360', title: 'Evaluaciones 360', icon: 'chart-pie', url: '#' },
+            { id: 'objetivos', title: 'Objetivos', icon: 'bullseye', url: '#' },
+            { id: 'metricas', title: 'Métricas', icon: 'chart-line', url: '#' },
+            { id: 'reportes', title: 'Reportes', icon: 'file-chart-line', url: '#' }
+          ]
+        },
+        {
+          id: 'encuestas',
+          title: 'Encuestas',
+          icon: 'clipboard-list-check',
+          url: '#',
+          isLink: true,
+          clickable: false
+        },
+        {
+          id: 'reclutamiento',
+          title: 'Reclutamiento',
+          icon: 'users',
+          url: '#',
+          isLink: true,
+          clickable: true
+        },
+        {
+          id: 'tareas',
+          title: 'Tareas',
+          icon: 'layer-group',
+          subitems: [
+            { id: 'planes', title: 'Planes', icon: 'calendar', url: '#' },
+            { id: 'tareas', title: 'Tareas', icon: 'tasks', url: '#' }
+          ]
+        },
+        {
+          id: 'ubits-ai',
+          title: 'UBITS AI',
+          icon: 'sparkles',
+          url: '#',
+          isLink: true,
+          clickable: true
+        }
+      ];
+      
+      // Items del Profile Menu por defecto para TabBar
+      const defaultTabBarProfileMenuItems = [
+        { id: 'ver-perfil', label: 'Ver mi perfil', icon: 'user', url: '#' },
+        { id: 'cambio-contraseña', label: 'Cambio de contraseña', icon: 'key' },
+        { id: 'cerrar-sesion', label: 'Cerrar sesión', icon: 'sign-out-alt' }
+      ];
+      
+      function initTabBarPreviewState(componentId) {
+        if (!tabBarPreviewState[componentId]) {
+          tabBarPreviewState[componentId] = {
+            activeTabId: 'modulos',
+            darkModeEnabled: true
+          };
+        }
+        return tabBarPreviewState[componentId];
+      }
+      
+      // Función para actualizar el preview del TabBar
+      window.updateTabBarPreview = function(componentId, preserveMenus) {
+        const state = initTabBarPreviewState(componentId);
+        const preview = document.getElementById(`tabbar-preview-${componentId}`);
+        
+        if (!preview) {
+          console.error('❌ Preview de TabBar no encontrado:', `tabbar-preview-${componentId}`);
+          return;
+        }
+        
+        console.log('🔄 Actualizando preview de TabBar:', state);
+        
+        // Guardar estado de los menús si se debe preservar
+        const floatingMenuContainer = document.getElementById(`ubits-floating-menu-container-${componentId}`);
+        const profileMenuContainer = document.getElementById(`ubits-profile-menu-container-${componentId}`);
+        let floatingMenuVisible = false;
+        let profileMenuVisible = false;
+        
+        if (preserveMenus) {
+          if (floatingMenuContainer) {
+            floatingMenuVisible = floatingMenuContainer.style.display !== 'none' && floatingMenuContainer.style.display !== '';
+          }
+          if (profileMenuContainer) {
+            profileMenuVisible = profileMenuContainer.style.display !== 'none' && profileMenuContainer.style.display !== '';
+          }
+        }
+        
+        // Renderizar directamente HTML estático
+        renderTabBarStatic(preview, state, defaultTabBarItems, componentId);
+        
+        // Restaurar estado de los menús si se debe preservar
+        if (preserveMenus) {
+          const newFloatingMenuContainer = document.getElementById(`ubits-floating-menu-container-${componentId}`);
+          const newProfileMenuContainer = document.getElementById(`ubits-profile-menu-container-${componentId}`);
+          const newFloatingMenu = newFloatingMenuContainer ? newFloatingMenuContainer.querySelector('.ubits-floating-menu') : null;
+          const newProfileMenu = newProfileMenuContainer ? newProfileMenuContainer.querySelector('.ubits-profile-menu') : null;
+          
+          if (floatingMenuVisible && newFloatingMenuContainer && newFloatingMenu) {
+            newFloatingMenuContainer.style.display = 'block';
+            newFloatingMenu.classList.add('ubits-floating-menu--show');
+          }
+          
+          if (profileMenuVisible && newProfileMenuContainer && newProfileMenu) {
+            newProfileMenuContainer.style.display = 'block';
+            newProfileMenu.classList.add('ubits-profile-menu--show');
+          }
+        }
+        
+        console.log('✅ Preview de TabBar actualizado:', state);
+      };
+      
+      // Función para renderizar TabBar estático con Floating Menu y Profile Menu
+      function renderTabBarStatic(container, state, items, componentId) {
+        const activeTabId = state.activeTabId || 'modulos';
+        const darkModeEnabled = state.darkModeEnabled !== false;
+        const finalComponentId = componentId || 'tabbar';
+        
+        console.log('🎨 Renderizando TabBar estático:', {
+          activeTabId,
+          darkModeEnabled,
+          itemsCount: items.length,
+          componentId: finalComponentId
+        });
+        
+        // Helper para renderizar iconos
+        function renderIcon(iconName) {
+          const name = iconName.startsWith('fa-') ? iconName : `fa-${iconName}`;
+          return `<i class="far ${name}" style="font-size: 20px; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; line-height: 1; margin: 0; padding: 0; box-sizing: border-box;"></i>`;
+        }
+        
+        // Renderizar items del TabBar
+        const itemsHTML = items.map(item => {
+          const isActive = item.id === activeTabId;
+          const activeClass = isActive ? 'ubits-tabbar-item--active' : '';
+          
+          let iconOrAvatarHTML = '';
+          if (item.avatar) {
+            iconOrAvatarHTML = `<img src="${item.avatar}" alt="${item.avatarAlt || item.label}" class="ubits-tabbar-avatar">`;
+          } else if (item.icon) {
+            iconOrAvatarHTML = `<span class="ubits-tabbar-icon">${renderIcon(item.icon)}</span>`;
+          }
+          
+          return `
+            <div 
+              class="ubits-tabbar-item ${activeClass}" 
+              data-tab-id="${item.id}"
+              onclick="handleTabBarItemClick('${item.id}', '${finalComponentId}')"
+            >
+              ${iconOrAvatarHTML}
+              <span class="ubits-tabbar-text">${item.label}</span>
+            </div>
+          `;
+        }).join('');
+        
+        // Renderizar Floating Menu
+        function renderFloatingMenuStatic(sections) {
+          const sectionsHTML = sections.map(section => {
+            if (section.isLink) {
+              return `
+                <a href="${section.url || '#'}" class="ubits-accordion-link ubits-accordion-link--direct" data-section-id="${section.id}">
+                  <div class="ubits-accordion-icon-circle" data-circle-id="${section.id}">
+                    ${renderIcon(section.icon)}
+                  </div>
+                  <span>${section.title}</span>
+                  <i class="far fa-chevron-right ubits-accordion-chevron"></i>
+                </a>
+              `;
+            }
+            
+            const subitemsHTML = (section.subitems || []).map(subitem => `
+              <a href="${subitem.url}" class="ubits-accordion-link" data-subitem-id="${subitem.id}">
+                <div class="ubits-accordion-icon-circle" data-circle-id="${subitem.id}">
+                  ${renderIcon(subitem.icon)}
+                </div>
+                <span>${subitem.title}</span>
+              </a>
+            `).join('');
+
+            return `
+              <div class="ubits-accordion-item">
+                <div class="ubits-accordion-header" data-accordion-id="${section.id}" onclick="handleTabBarAccordionClick('${section.id}', '${finalComponentId}')">
+                  <div class="ubits-accordion-title">
+                    <div class="ubits-accordion-icon-circle" data-circle-id="${section.id}">
+                      ${renderIcon(section.icon)}
+                    </div>
+                    <span>${section.title}</span>
+                  </div>
+                  <i class="far fa-chevron-down ubits-accordion-chevron" data-chevron-id="${section.id}"></i>
+                </div>
+                <div class="ubits-accordion-body" data-body-id="${section.id}">
+                  ${subitemsHTML}
+                </div>
+              </div>
+            `;
+          }).join('');
+          
+          return `
+            <div class="ubits-floating-menu ubits-floating-menu--preview" id="ubits-floating-menu-${finalComponentId}" style="display: block; position: absolute; top: 0; left: 0; right: 0; bottom: 0; max-height: 500px; border-radius: 8px;">
+              <div class="ubits-floating-menu-header">
+                <h2 class="ubits-floating-menu-title">Módulos</h2>
+                <button class="ubits-floating-menu-close" onclick="handleTabBarCloseMenu('${finalComponentId}')">
+                  ${renderIcon('times')}
+                </button>
+              </div>
+              <div class="ubits-floating-menu-content">
+                ${sectionsHTML}
+              </div>
+            </div>
+          `;
+        }
+        
+        // Renderizar Profile Menu
+        function renderProfileMenuStatic(items, componentId) {
+          const finalComponentId = componentId || 'tabbar';
+          const itemsHTML = items.map(item => `
+            <div class="ubits-profile-menu-item" data-profile-item-id="${item.id}">
+              ${renderIcon(item.icon)}
+              <span class="ubits-profile-menu-text">${item.label}</span>
+            </div>
+          `).join('');
+          
+          return `
+            <div class="ubits-profile-menu ubits-profile-menu--preview" id="ubits-profile-menu-${finalComponentId}" style="display: block; position: absolute; bottom: 0; left: 0; right: 0; width: 100%; max-width: 100%;">
+              ${itemsHTML}
+            </div>
+          `;
+        }
+        
+        // Wrapper para contener TabBar, Floating Menu y Profile Menu (para posicionamiento relativo)
+        const tabBarWrapper = document.createElement('div');
+        tabBarWrapper.style.cssText = 'position: relative; width: 100%; min-height: 576px;'; // 60px TabBar + 500px Floating Menu + 16px espacio
+        
+        const tabBarHTML = `
+          <div class="ubits-tabbar ubits-tabbar--visible ubits-tabbar--preview" id="ubits-tabbar-${finalComponentId}" data-theme="light" style="position: absolute; bottom: 0; left: 0; right: 0; width: 100%;">
+            <div class="ubits-tabbar-content">
+              ${itemsHTML}
+            </div>
+          </div>
+          <div id="ubits-floating-menu-container-${finalComponentId}" style="position: absolute; top: 0; left: 0; right: 0; bottom: 76px; width: 100%; height: 500px; display: none; z-index: 2000; overflow: visible;">
+            ${renderFloatingMenuStatic(defaultFloatingMenuSections)}
+          </div>
+          <div id="ubits-profile-menu-container-${finalComponentId}" style="position: absolute; bottom: 76px; left: 0; right: 0; width: 100%; display: none; z-index: 2001; overflow: visible;">
+            ${renderProfileMenuStatic(defaultTabBarProfileMenuItems, finalComponentId)}
+          </div>
+        `;
+        
+        tabBarWrapper.innerHTML = tabBarHTML;
+        
+        container.innerHTML = '';
+        container.appendChild(tabBarWrapper);
+        
+        // Inicializar dark mode toggle si está habilitado
+        if (darkModeEnabled) {
+          initTabBarDarkModeToggle(container.querySelector('.ubits-tabbar'), finalComponentId);
+        }
+      }
+      
+      // Handler para clicks en accordions del Floating Menu
+      window.handleTabBarAccordionClick = function(sectionId, componentId) {
+        const body = document.querySelector(`#ubits-floating-menu-${componentId} [data-body-id="${sectionId}"]`);
+        const chevron = document.querySelector(`#ubits-floating-menu-${componentId} [data-chevron-id="${sectionId}"]`);
+        const circle = document.querySelector(`#ubits-floating-menu-${componentId} [data-circle-id="${sectionId}"]`);
+        const title = document.querySelector(`#ubits-floating-menu-${componentId} [data-accordion-id="${sectionId}"] .ubits-accordion-title`);
+        
+        if (!body || !chevron || !circle || !title) return;
+        
+        const isCurrentlyOpen = body.style.display === 'block';
+        
+        // Cerrar todos los accordions primero
+        document.querySelectorAll(`#ubits-floating-menu-${componentId} .ubits-accordion-body`).forEach(b => b.style.display = 'none');
+        document.querySelectorAll(`#ubits-floating-menu-${componentId} .ubits-accordion-chevron`).forEach(c => c.style.transform = 'rotate(0deg)');
+        document.querySelectorAll(`#ubits-floating-menu-${componentId} .ubits-accordion-icon-circle`).forEach(c => c.classList.remove('active'));
+        document.querySelectorAll(`#ubits-floating-menu-${componentId} .ubits-accordion-title`).forEach(t => t.classList.remove('active'));
+        
+        if (!isCurrentlyOpen) {
+          body.style.display = 'block';
+          chevron.style.transform = 'rotate(180deg)';
+          title.classList.add('active');
+          circle.classList.add('active');
+        }
+      };
+      
+      // Handler para cerrar Floating Menu
+      window.handleTabBarCloseMenu = function(componentId) {
+        const floatingMenuContainer = document.getElementById(`ubits-floating-menu-container-${componentId}`);
+        if (floatingMenuContainer) {
+          floatingMenuContainer.style.display = 'none';
+          const floatingMenu = floatingMenuContainer.querySelector('.ubits-floating-menu');
+          if (floatingMenu) floatingMenu.classList.remove('ubits-floating-menu--show');
+        }
+      };
+      
+      // Handler para clicks en items del TabBar
+      window.handleTabBarItemClick = function(tabId, componentId) {
+        console.log('🖱️ TabBar item clickeado:', tabId);
+        
+        const state = initTabBarPreviewState(componentId);
+        state.activeTabId = tabId;
+        
+        const floatingMenuContainer = document.getElementById(`ubits-floating-menu-container-${componentId}`);
+        const profileMenuContainer = document.getElementById(`ubits-profile-menu-container-${componentId}`);
+        
+        // Si es modo oscuro, toggle del tema
+        if (tabId === 'modo-oscuro') {
+          const tabBarElement = document.querySelector(`#ubits-tabbar-${componentId}`);
+          if (tabBarElement) {
+            const currentTheme = tabBarElement.getAttribute('data-theme') || 'light';
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            tabBarElement.setAttribute('data-theme', newTheme);
+            
+            // Actualizar icono del modo oscuro
+            const darkModeItem = tabBarElement.querySelector('[data-tab-id="modo-oscuro"]');
+            if (darkModeItem) {
+              const iconElement = darkModeItem.querySelector('.ubits-tabbar-icon i');
+              if (iconElement) {
+                iconElement.classList.remove('fa-moon', 'fa-sun', 'fa-sun-bright', 'fa-solid', 'fa-regular', 'far');
+                if (newTheme === 'dark') {
+                  iconElement.classList.add('fa-solid', 'fa-sun-bright');
+                } else {
+                  iconElement.classList.add('far', 'fa-moon');
+                }
+              }
+            }
+            
+            console.log('🌓 Tema cambiado a:', newTheme);
+          }
+          
+          // Cerrar otros menús
+          if (floatingMenuContainer) floatingMenuContainer.style.display = 'none';
+          if (profileMenuContainer) profileMenuContainer.style.display = 'none';
+          return;
+        }
+        
+        // Si es módulos, toggle Floating Menu
+        if (tabId === 'modulos') {
+          console.log('🔍 Buscando contenedores:', {
+            floatingMenu: `ubits-floating-menu-container-${componentId}`,
+            profileMenu: `ubits-profile-menu-container-${componentId}`
+          });
+          
+          if (floatingMenuContainer) {
+            const floatingMenu = floatingMenuContainer.querySelector('.ubits-floating-menu');
+            const isCurrentlyVisible = floatingMenuContainer.style.display !== 'none' && floatingMenuContainer.style.display !== '';
+            
+            console.log('📦 Estado Floating Menu:', {
+              containerFound: !!floatingMenuContainer,
+              menuFound: !!floatingMenu,
+              isCurrentlyVisible,
+              currentDisplay: floatingMenuContainer.style.display
+            });
+            
+            if (isCurrentlyVisible) {
+              // Ocultar
+              floatingMenuContainer.style.display = 'none';
+              if (floatingMenu) floatingMenu.classList.remove('ubits-floating-menu--show');
+              console.log('❌ Floating Menu ocultado');
+            } else {
+              // Mostrar
+              floatingMenuContainer.style.display = 'block';
+              floatingMenuContainer.style.zIndex = '2000';
+              floatingMenuContainer.style.overflow = 'visible';
+              floatingMenuContainer.style.position = 'absolute';
+              floatingMenuContainer.style.top = '0';
+              floatingMenuContainer.style.left = '0';
+              floatingMenuContainer.style.right = '0';
+              floatingMenuContainer.style.bottom = '76px';
+              floatingMenuContainer.style.width = '100%';
+              floatingMenuContainer.style.height = '500px';
+              if (floatingMenu) {
+                floatingMenu.classList.add('ubits-floating-menu--show', 'ubits-floating-menu--preview');
+                floatingMenu.style.cssText = 'display: block !important; position: absolute !important; top: 0 !important; left: 0 !important; right: 0 !important; bottom: 0 !important; max-height: 500px !important; border-radius: 8px !important; z-index: 2000 !important;';
+              }
+              console.log('✅ Floating Menu mostrado:', {
+                containerDisplay: floatingMenuContainer.style.display,
+                containerZIndex: floatingMenuContainer.style.zIndex,
+                menuClasses: floatingMenu ? floatingMenu.className : 'N/A',
+                menuDisplay: floatingMenu ? floatingMenu.style.display : 'N/A'
+              });
+              
+              // Cerrar Profile Menu si está abierto
+              if (profileMenuContainer) {
+                profileMenuContainer.style.display = 'none';
+                const profileMenu = profileMenuContainer.querySelector('.ubits-profile-menu');
+                if (profileMenu) profileMenu.classList.remove('ubits-profile-menu--show');
+              }
+            }
+          } else {
+            console.error('❌ Floating Menu Container no encontrado');
+          }
+          
+          // Actualizar solo el tab activo sin re-renderizar
+          const tabBarElement = document.querySelector(`#ubits-tabbar-${componentId}`);
+          if (tabBarElement) {
+            tabBarElement.querySelectorAll('.ubits-tabbar-item').forEach(item => {
+              item.classList.remove('ubits-tabbar-item--active');
+            });
+            const activeItem = tabBarElement.querySelector(`[data-tab-id="${tabId}"]`);
+            if (activeItem) {
+              activeItem.classList.add('ubits-tabbar-item--active');
+            }
+          }
+          
+          return;
+        }
+        
+        // Si es perfil, toggle Profile Menu
+        if (tabId === 'perfil') {
+          console.log('🔍 Buscando contenedores:', {
+            floatingMenu: `ubits-floating-menu-container-${componentId}`,
+            profileMenu: `ubits-profile-menu-container-${componentId}`
+          });
+          
+          if (profileMenuContainer) {
+            const profileMenu = profileMenuContainer.querySelector('.ubits-profile-menu');
+            const isCurrentlyVisible = profileMenuContainer.style.display !== 'none' && profileMenuContainer.style.display !== '';
+            
+            console.log('📦 Estado Profile Menu:', {
+              containerFound: !!profileMenuContainer,
+              menuFound: !!profileMenu,
+              isCurrentlyVisible,
+              currentDisplay: profileMenuContainer.style.display
+            });
+            
+            if (isCurrentlyVisible) {
+              // Ocultar
+              profileMenuContainer.style.display = 'none';
+              if (profileMenu) profileMenu.classList.remove('ubits-profile-menu--show');
+              console.log('❌ Profile Menu ocultado');
+            } else {
+              // Mostrar
+              profileMenuContainer.style.display = 'block';
+              profileMenuContainer.style.zIndex = '2001';
+              profileMenuContainer.style.overflow = 'visible';
+              profileMenuContainer.style.position = 'absolute';
+              profileMenuContainer.style.bottom = '76px';
+              profileMenuContainer.style.left = '0';
+              profileMenuContainer.style.right = '0';
+              profileMenuContainer.style.width = '100%';
+              if (profileMenu) {
+                profileMenu.classList.add('ubits-profile-menu--show', 'ubits-profile-menu--preview');
+                profileMenu.style.cssText = 'display: block !important; position: absolute !important; bottom: 0 !important; left: 0 !important; right: 0 !important; width: 100% !important; max-width: 100% !important; z-index: 2001 !important;';
+              }
+              console.log('✅ Profile Menu mostrado:', {
+                containerDisplay: profileMenuContainer.style.display,
+                containerZIndex: profileMenuContainer.style.zIndex,
+                menuClasses: profileMenu ? profileMenu.className : 'N/A',
+                menuDisplay: profileMenu ? profileMenu.style.display : 'N/A'
+              });
+              
+              // Cerrar Floating Menu si está abierto
+              if (floatingMenuContainer) {
+                floatingMenuContainer.style.display = 'none';
+                const floatingMenu = floatingMenuContainer.querySelector('.ubits-floating-menu');
+                if (floatingMenu) floatingMenu.classList.remove('ubits-floating-menu--show');
+              }
+            }
+          } else {
+            console.error('❌ Profile Menu Container no encontrado');
+          }
+          
+          // Actualizar solo el tab activo sin re-renderizar
+          const tabBarElement = document.querySelector(`#ubits-tabbar-${componentId}`);
+          if (tabBarElement) {
+            tabBarElement.querySelectorAll('.ubits-tabbar-item').forEach(item => {
+              item.classList.remove('ubits-tabbar-item--active');
+            });
+            const activeItem = tabBarElement.querySelector(`[data-tab-id="${tabId}"]`);
+            if (activeItem) {
+              activeItem.classList.add('ubits-tabbar-item--active');
+            }
+          }
+          
+          return;
+        }
+        
+        // Actualizar preview para otros tabs (sin preservar menús)
+        window.updateTabBarPreview(componentId, false);
+      };
+      
+      // Función para establecer controles
+      window.setTabBarControl = function(option, value, componentId) {
+        const state = initTabBarPreviewState(componentId);
+        state[option] = value;
+        
+        // Actualizar preview
+        window.updateTabBarPreview(componentId);
+      };
+      
+      // Función para inicializar dark mode toggle en TabBar
+      function initTabBarDarkModeToggle(tabBarElement, componentId) {
+        if (!tabBarElement) return;
+        
+        const darkModeItem = tabBarElement.querySelector('[data-tab-id="modo-oscuro"]');
+        if (!darkModeItem) return;
+        
+        darkModeItem.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          
+          const currentTheme = tabBarElement.getAttribute('data-theme') || 'light';
+          const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+          
+          tabBarElement.setAttribute('data-theme', newTheme);
+          
+          // Actualizar icono del modo oscuro
+          const iconElement = darkModeItem.querySelector('.ubits-tabbar-icon i');
+          if (iconElement) {
+            iconElement.classList.remove('fa-moon', 'fa-sun', 'fa-sun-bright', 'fa-solid', 'fa-regular', 'far');
+            if (newTheme === 'dark') {
+              iconElement.classList.add('fa-solid', 'fa-sun-bright');
+            } else {
+              iconElement.classList.add('far', 'fa-moon');
+            }
+          }
+          
+          console.log('🌓 Tema cambiado a:', newTheme);
+        });
+      }
+      
+      // ========================================
+      // CARD CONTENT PREVIEW FUNCTIONS
+      // ========================================
+      
+      // Estado del preview del Card Content
+      const cardPreviewState = {};
+      
+      // Proveedores con sus logos (mapeo) - Usando rutas relativas desde playground
+      const PROVIDER_LOGOS = {
+        'UBITS': '../../../../template-ubits/images/Favicons/UBITS.jpg',
+        'Microsoft': '../../../../template-ubits/images/Favicons/Microsoft.jpg',
+        'Hubspot': '../../../../template-ubits/images/Favicons/Hubspot.jpg',
+        'Harvard Business Publishing': '../../../../template-ubits/images/Favicons/Harvard-Business-Publishing.jpg',
+        'TED': '../../../../template-ubits/images/Favicons/TED.jpg',
+        'AWS': '../../../../template-ubits/images/Favicons/AWS.jpg',
+        'Universidad de Los Andes': '../../../../template-ubits/images/Favicons/Universidad-de-Los Andes.jpg',
+        'Advanced English': '../../../../template-ubits/images/Favicons/Advanced-English.jpg',
+        'IE University': '../../../../template-ubits/images/Favicons/IE-University-Publishing.jpg',
+        'Código Facilito': '../../../../template-ubits/images/Favicons/Código-Facilito.jpg',
+        'Hackers del Talento': '../../../../template-ubits/images/Favicons/Hackers-del-Talento.jpg',
+        'All Ears English': '../../../../template-ubits/images/Favicons/All Ears English.jpg',
+        'American & British Academy': '../../../../template-ubits/images/Favicons/American & British Academy.jpg',
+        'Bureau Veritas': '../../../../template-ubits/images/Favicons/Bureau-Veritas.jpg',
+        'Welu': '../../../../template-ubits/images/Favicons/Welu.jpg',
+        'Figsha Smart Consulting': '../../../../template-ubits/images/Favicons/Figsha Smart Consulting.jpg',
+        'Instafit': '../../../../template-ubits/images/Favicons/Instafit.jpg',
+        'WOBI': '../../../../template-ubits/images/Favicons/WOBI.jpg'
+      };
+      
+      // Niveles con iconos
+      const LEVEL_ICONS = {
+        'Básico': 'far fa-gauge-min',
+        'Intermedio': 'far fa-gauge',
+        'Avanzado': 'far fa-gauge-max'
+      };
+      
+      // Estados con clases y textos
+      const STATUS_CONFIG = {
+        'default': { class: '', text: '' },
+        'progress': { class: 'course-status--progress', text: 'En progreso' },
+        'completed': { class: 'course-status--completed', text: 'Completado' }
+      };
+      
+      // Inicializar estado por componente
+      function initCardPreviewState(componentId) {
+        if (!cardPreviewState[componentId]) {
+          cardPreviewState[componentId] = {
+            status: 'default',
+            progress: 0,
+            type: 'Curso',
+            provider: 'UBITS',
+            competency: 'Product design',
+            level: 'Básico',
+            language: 'Español',
+            title: 'Segmenta la experiencia del cliente',
+            duration: '60 min',
+            image: '../../../../template-ubits/images/cards-learn/segmenta-la-experiencia-del-cliente.jpg'
+          };
+        }
+        return cardPreviewState[componentId];
+      }
+      
+      // Función para generar HTML de card (similar a renderCardContent)
+      function generateCardHTML(state) {
+        const statusConfig = STATUS_CONFIG[state.status] || STATUS_CONFIG.default;
+        const statusClass = statusConfig.class;
+        const statusText = statusConfig.text;
+        const levelIcon = LEVEL_ICONS[state.level] || LEVEL_ICONS['Intermedio'];
+        const providerLogo = PROVIDER_LOGOS[state.provider] || PROVIDER_LOGOS['UBITS'];
+        
+        // Asegurar que la imagen tenga la ruta completa si no la tiene
+        let imagePath = state.image;
+        if (!imagePath.startsWith('../../../../template-ubits/') && !imagePath.startsWith('http')) {
+          imagePath = '../../../../template-ubits/' + imagePath.replace(/^images\//, 'images/');
+        }
+        
+        return `
+          <div class="course-card" data-progress="${state.progress}" data-status="${state.status}">
+            <div class="course-thumbnail-wrapper">
+              <div class="course-thumbnail">
+                <img src="${imagePath}" alt="${state.title}" class="course-image" onerror="this.onerror=null; this.style.display='none'; this.parentElement.style.background='linear-gradient(135deg, var(--ubits-accent-brand), var(--ubits-accent-brand-static))'; this.parentElement.innerHTML='<i class=\\'far fa-image\\' style=\\'font-size: 48px; color: var(--ubits-btn-primary-fg);\\'></i>';">
+              </div>
+              <div class="course-progress-overlay">
+                <div class="progress-bar">
+                  <div class="progress-fill" style="width: ${state.progress}%"></div>
+                </div>
+              </div>
+            </div>
+            <div class="course-content">
+              <div class="course-header">
+                <div class="course-type-status">
+                  <span class="course-type ubits-body-sm-regular">${state.type}</span>
+                  ${statusText ? `<span class="course-status ${statusClass} ubits-body-sm-bold">${statusText}</span>` : ''}
+                </div>
+              </div>
+              <h3 class="course-title ubits-body-sm-bold">${state.title}</h3>
+              <div class="course-provider">
+                <div class="provider-avatar">
+                  <img src="${providerLogo}" alt="${state.provider}" class="provider-icon" onerror="this.onerror=null; this.src='../../../../template-ubits/images/Favicons/UBITS.jpg';">
+                </div>
+                <span class="provider-name ubits-body-sm-regular">${state.provider}</span>
+              </div>
+              <div class="course-competency">
+                <div class="spec-icon">
+                  <i class="far fa-tag"></i>
+                </div>
+                <span class="ubits-body-sm-regular">${state.competency}</span>
+              </div>
+              <div class="course-specs">
+                <div class="spec-item">
+                  <div class="spec-icon">
+                    <i class="${levelIcon}"></i>
+                  </div>
+                  <span class="ubits-body-sm-regular">${state.level}</span>
+                </div>
+                <div class="spec-item">
+                  <div class="spec-icon">
+                    <i class="far fa-clock"></i>
+                  </div>
+                  <span class="ubits-body-sm-regular">${state.duration}</span>
+                </div>
+                <div class="spec-item">
+                  <div class="spec-icon">
+                    <i class="far fa-globe"></i>
+                  </div>
+                  <span class="ubits-body-sm-regular">${state.language}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        `.trim();
+      }
+      
+      // Función para actualizar el preview del Card Content
+      window.updateCardPreview = function(componentId) {
+        const state = initCardPreviewState(componentId);
+        const preview = document.getElementById(`card-preview-${componentId}`);
+        
+        if (!preview) {
+          console.error('❌ Preview de Card Content no encontrado:', `card-preview-${componentId}`);
+          return;
+        }
+        
+        // Si el progreso cambió a 0 y el estado es default, asegurar que no se muestre barra
+        if (state.progress === 0 && state.status === 'default') {
+          state.progress = 0;
+        } else if (state.status === 'progress' && state.progress === 0) {
+          state.progress = 25; // Si está en progreso pero el valor es 0, poner un valor por defecto
+        }
+        
+        // Generar HTML de la card
+        const cardHTML = generateCardHTML(state);
+        preview.innerHTML = cardHTML;
+        
+        console.log('✅ Preview de Card Content actualizado:', state);
+      };
+      
+      // Función para establecer controles
+      window.setCardControl = function(option, value, componentId) {
+        const state = initCardPreviewState(componentId);
+        
+        if (option === 'status') {
+          state.status = value;
+          const select = document.getElementById(`card-status-select-${componentId}`);
+          if (select) select.value = value;
+          
+          // Si cambia a default, resetear progreso a 0
+          if (value === 'default') {
+            state.progress = 0;
+            const progressSelect = document.getElementById(`card-progress-select-${componentId}`);
+            if (progressSelect) progressSelect.value = '0';
+          } else if (value === 'progress' && state.progress === 0) {
+            // Si cambia a progress y está en 0, poner 25%
+            state.progress = 25;
+            const progressSelect = document.getElementById(`card-progress-select-${componentId}`);
+            if (progressSelect) progressSelect.value = '25';
+          }
+        } else if (option === 'progress') {
+          const progressValue = parseInt(value);
+          state.progress = isNaN(progressValue) ? 0 : progressValue;
+          const select = document.getElementById(`card-progress-select-${componentId}`);
+          if (select) select.value = value;
+          
+          // Si el progreso es mayor a 0 y el estado es default, cambiar a progress
+          if (state.progress > 0 && state.status === 'default') {
+            state.status = 'progress';
+            const statusSelect = document.getElementById(`card-status-select-${componentId}`);
+            if (statusSelect) statusSelect.value = 'progress';
+          }
+        } else if (option === 'type') {
+          state.type = value;
+          const select = document.getElementById(`card-type-select-${componentId}`);
+          if (select) select.value = value;
+        } else if (option === 'provider') {
+          state.provider = value;
+          const select = document.getElementById(`card-provider-select-${componentId}`);
+          if (select) select.value = value;
+        } else if (option === 'competency') {
+          state.competency = value;
+          const select = document.getElementById(`card-competency-select-${componentId}`);
+          if (select) select.value = value;
+        } else if (option === 'level') {
+          state.level = value;
+          const select = document.getElementById(`card-level-select-${componentId}`);
+          if (select) select.value = value;
+        } else if (option === 'language') {
+          state.language = value;
+          const select = document.getElementById(`card-language-select-${componentId}`);
+          if (select) select.value = value;
+        }
+        
+        // Actualizar preview
+        window.updateCardPreview(componentId);
+      };
     </script>
   </body>
 </html>
