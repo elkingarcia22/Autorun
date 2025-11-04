@@ -1,0 +1,244 @@
+/* ========================================
+   UBITS FILE UPLOAD COMPONENT
+   Componente para subir archivos con drag & drop
+   Usando tokens UBITS exclusivamente
+   ======================================== */
+
+/* ========================================
+   BASE FILE UPLOAD STYLES
+   ======================================== */
+
+.ubits-file-upload {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--ubits-spacing-lg, 16px);
+    padding: var(--ubits-spacing-6xl, 48px);
+    border: 2px dashed;
+    border-radius: var(--ubits-border-radius-sm, 8px);
+    background-color: var(--ubits-bg-1, #ffffff);
+    border-color: var(--ubits-border-1, #d0d2d5);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 200px;
+    font-family: var(--font-sans);
+}
+
+.ubits-file-upload:hover:not(.ubits-file-upload--disabled) {
+    border-color: var(--ubits-accent-brand, #0c5bef);
+    background-color: var(--ubits-bg-2, #f3f3f4);
+}
+
+.ubits-file-upload:focus-visible {
+    outline: 2px solid var(--ubits-button-focus-ring, rgba(82, 151, 244, 0.3));
+    outline-offset: 2px;
+}
+
+/* ========================================
+   FILE UPLOAD STATES
+   ======================================== */
+
+/* Estado Dragging */
+.ubits-file-upload--dragging,
+.ubits-file-upload--dragging:hover {
+    border-color: var(--ubits-accent-brand, #0c5bef);
+    background-color: var(--ubits-bg-1, #ffffff);
+}
+
+/* Estado Error */
+.ubits-file-upload--error {
+    border-color: var(--ubits-feedback-accent-error, #e9343c);
+    background-color: var(--ubits-bg-1, #ffffff);
+}
+
+/* Estado Disabled */
+.ubits-file-upload--disabled {
+    background-color: var(--ubits-bg-disabled, #edeeef);
+    border-color: var(--ubits-border-disabled, #e1e2e5);
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.ubits-file-upload--disabled:hover {
+    border-color: var(--ubits-border-disabled, #e1e2e5);
+    background-color: var(--ubits-bg-disabled, #edeeef);
+}
+
+/* ========================================
+   FILE UPLOAD CONTAINER
+   ======================================== */
+
+.ubits-file-upload__container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ubits-spacing-sm, 8px);
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+/* ========================================
+   FILE UPLOAD ICONS
+   ======================================== */
+
+/* Icono pequeño en círculo (Default) */
+.ubits-file-upload__icon-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: 1px solid var(--ubits-border-1, #d0d2d5);
+    border-radius: var(--ubits-border-radius-full, 1000px);
+    padding: var(--ubits-spacing-md, 12px);
+    box-sizing: border-box;
+}
+
+.ubits-file-upload__icon-container i {
+    font-size: 16px;
+    color: var(--ubits-fg-1-medium, #5c646f);
+}
+
+/* Icono grande (Dragging, Error, Disabled) */
+.ubits-file-upload__icon-large {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+}
+
+.ubits-file-upload__icon-large i {
+    font-size: 32px;
+    color: var(--ubits-fg-1-medium, #5c646f);
+}
+
+.ubits-file-upload--disabled .ubits-file-upload__icon-large i {
+    color: var(--ubits-fg-on-disabled, #8d9199);
+}
+
+/* ========================================
+   FILE UPLOAD CONTENT
+   ======================================== */
+
+.ubits-file-upload__content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--ubits-spacing-xs, 4px);
+}
+
+.ubits-file-upload__file-name {
+    font-size: var(--font-body-md-size, 16px);
+    line-height: var(--font-body-md-line, 24px);
+    font-weight: var(--weight-regular, 400);
+    color: var(--ubits-fg-1-medium, #5c646f);
+    text-align: center;
+    white-space: nowrap;
+}
+
+.ubits-file-upload--disabled .ubits-file-upload__file-name {
+    color: var(--ubits-fg-on-disabled, #8d9199);
+}
+
+.ubits-file-upload__file-size {
+    font-size: var(--font-body-md-size, 16px);
+    line-height: var(--font-body-md-line, 24px);
+    font-weight: var(--weight-regular, 400);
+    color: var(--ubits-fg-1-medium, #5c646f);
+    text-align: center;
+    display: flex;
+    align-items: center;
+    gap: var(--ubits-spacing-xs, 4px);
+}
+
+.ubits-file-upload--disabled .ubits-file-upload__file-size {
+    color: var(--ubits-fg-on-disabled, #8d9199);
+}
+
+/* ========================================
+   FILE UPLOAD ACTIONS
+   ======================================== */
+
+.ubits-file-upload__actions {
+    position: absolute;
+    top: var(--ubits-spacing-md, 12px);
+    right: var(--ubits-spacing-md, 12px);
+    display: flex;
+    gap: var(--ubits-spacing-md, 12px);
+    align-items: center;
+}
+
+.ubits-file-upload__action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 9.5px;
+    border: 1px solid var(--ubits-btn-secondary-border, #d0d2d5);
+    border-radius: var(--ubits-border-radius-sm, 8px);
+    background-color: var(--ubits-btn-secondary-bg-default, #ffffff);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+}
+
+.ubits-file-upload__action:hover {
+    background-color: var(--ubits-btn-secondary-bg-hover, #f3f3f4);
+    border-color: var(--ubits-btn-secondary-border, #d0d2d5);
+}
+
+.ubits-file-upload__action:active {
+    background-color: var(--ubits-btn-secondary-bg-pressed, #e7e8ea);
+}
+
+.ubits-file-upload__action i {
+    font-size: 16px;
+    color: var(--ubits-fg-1-high, #303a47);
+}
+
+/* Botón de eliminar con borde rojo */
+.ubits-file-upload__action--remove {
+    border-color: var(--ubits-feedback-border-error-static, #fd8a82);
+}
+
+.ubits-file-upload__action--remove:hover {
+    border-color: var(--ubits-feedback-accent-error, #e9343c);
+    background-color: var(--ubits-feedback-bg-error-subtle, #fff0ee);
+}
+
+.ubits-file-upload__action--remove:active {
+    background-color: var(--ubits-feedback-bg-error-subtle, #fff0ee);
+}
+
+.ubits-file-upload__action--remove i {
+    color: var(--ubits-feedback-accent-error, #e9343c);
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+@media (max-width: 767px) {
+    .ubits-file-upload {
+        padding: var(--ubits-spacing-4xl, 32px);
+        min-height: 160px;
+    }
+
+    .ubits-file-upload__file-name {
+        font-size: var(--font-body-sm-size, 14px);
+        line-height: var(--font-body-sm-line, 20px);
+    }
+
+    .ubits-file-upload__file-size {
+        font-size: var(--font-body-sm-size, 14px);
+        line-height: var(--font-body-sm-line, 20px);
+    }
+}
+

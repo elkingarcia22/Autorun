@@ -4135,6 +4135,21 @@ Reglas Importantes:
               class: 'ubits-progress-bar ubits-progress-bar--{size} ubits-progress-bar--{variant}',
               example: 'createProgressBar({\n  size: \'md\',\n  value: 75,\n  variant: \'default\',\n  indicator: true\n})',
               hasPreview: true
+            },
+            {
+              name: 'File Upload',
+              description: 'Componente para subir archivos con drag & drop. Soporta múltiples estados (default, dragging, error, disabled) y muestra información del archivo (nombre, extensión, tamaño). Incluye botones de acción opcionales (re-subir y eliminar).',
+              files: {
+                css: 'addons/file-upload/src/styles/file-upload.css',
+                ts: 'addons/file-upload/src/FileUploadProvider.ts'
+              },
+              variants: [],
+              sizes: [],
+              states: ['default', 'dragging', 'error', 'disabled'],
+              features: ['4 estados (default, dragging, error, disabled)', 'Drag & drop', 'Mostrar nombre y extensión de archivo', 'Tamaño de archivo formateado (KB, MB, GB)', 'Botones de acción opcionales (re-subir, eliminar)', 'Iconos diferentes según estado', 'Usa tokens UBITS exclusivamente'],
+              class: 'ubits-file-upload ubits-file-upload--{state}',
+              example: 'createFileUpload({\n  state: \'default\',\n  uploadText: \'Haz clic para subir archivo\',\n  showFileSize: true,\n  showActions: true\n})',
+              hasPreview: true
             }
           ],
           'UI': [
@@ -4307,6 +4322,8 @@ Reglas Importantes:
                     window.updateScrollbarPreview('scrollbar');
                   } else if (componentId === 'progress-bar' && typeof window.updateProgressBarPreview === 'function') {
                     window.updateProgressBarPreview('progress-bar');
+                  } else if (componentId === 'file-upload' && typeof window.updateFileUploadPreview === 'function') {
+                    window.updateFileUploadPreview('file-upload');
                   } else if (componentId === 'alert' && typeof window.updateAlertPreview === 'function') {
                     window.updateAlertPreview('alert');
                     initializeAlertPreview('alert');
@@ -5388,6 +5405,85 @@ Reglas Importantes:
                           <!-- PREVIEW EN EL MEDIO -->
                           <div style="background: var(--ubits-bg-1); padding: 48px; border-radius: 8px; border: none; margin-bottom: 24px; min-height: 120px;">
                             <div id="alert-preview-${componentId}">
+                              <!-- Se generará dinámicamente -->
+                            </div>
+                          </div>
+                        </div>
+                      ` : ''}
+                      
+                      ${hasPreview && component.name === 'File Upload' ? `
+                        <!-- Preview Section for File Upload -->
+                        <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: none; margin-bottom: 24px;">
+                          <!-- CONTROLES ARRIBA -->
+                          <div style="margin-bottom: 24px;">
+                            <h4 style="margin: 0 0 20px 0; color: var(--ubits-fg-1-high); font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand);"></i>
+                              Controles
+                            </h4>
+                            
+                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
+                              <!-- Estado -->
+                              <div style="flex: 0 0 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Estado</label>
+                                <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                                  <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" data-component="${componentId}" data-option="state" data-value="default" onclick="setFileUploadControl('state', 'default', '${componentId}')">
+                                    <span>Default</span>
+                                  </button>
+                                  <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-component="${componentId}" data-option="state" data-value="dragging" onclick="setFileUploadControl('state', 'dragging', '${componentId}')">
+                                    <span>Dragging</span>
+                                  </button>
+                                  <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-component="${componentId}" data-option="state" data-value="error" onclick="setFileUploadControl('state', 'error', '${componentId}')">
+                                    <span>Error</span>
+                                  </button>
+                                  <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-component="${componentId}" data-option="state" data-value="disabled" onclick="setFileUploadControl('state', 'disabled', '${componentId}')">
+                                    <span>Disabled</span>
+                                  </button>
+                                </div>
+                              </div>
+                              
+                              <!-- Nombre del archivo -->
+                              <div style="flex: 1 1 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Nombre del archivo</label>
+                                <input type="text" id="file-upload-name-input-${componentId}" value="" onchange="setFileUploadControl('fileName', this.value, '${componentId}')" placeholder="archivo" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                              
+                              <!-- Extensión -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Extensión</label>
+                                <input type="text" id="file-upload-extension-input-${componentId}" value="" onchange="setFileUploadControl('fileExtension', this.value, '${componentId}')" placeholder="pdf" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                              
+                              <!-- Tamaño del archivo (MB) -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Tamaño (MB)</label>
+                                <input type="number" id="file-upload-size-input-${componentId}" value="2" min="0" step="0.1" onchange="setFileUploadControl('fileSize', parseFloat(this.value) * 1024 * 1024, '${componentId}')" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                              
+                              <!-- Mostrar tamaño -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Mostrar Tamaño</label>
+                                <label class="switch" style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                                  <input type="checkbox" id="file-upload-showsize-toggle-${componentId}" checked onchange="setFileUploadControl('showFileSize', this.checked, '${componentId}')">
+                                  <span class="slider"></span>
+                                  <span id="file-upload-showsize-status-${componentId}" style="font-size: 14px; color: var(--ubits-fg-1-high);">Activado</span>
+                                </label>
+                              </div>
+                              
+                              <!-- Mostrar acciones -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Mostrar Acciones</label>
+                                <label class="switch" style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                                  <input type="checkbox" id="file-upload-showactions-toggle-${componentId}" checked onchange="setFileUploadControl('showActions', this.checked, '${componentId}')">
+                                  <span class="slider"></span>
+                                  <span id="file-upload-showactions-status-${componentId}" style="font-size: 14px; color: var(--ubits-fg-1-high);">Activado</span>
+                                </label>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <!-- PREVIEW EN EL MEDIO -->
+                          <div style="background: var(--ubits-bg-1); padding: 48px; border-radius: 8px; border: none; margin-bottom: 24px; min-height: 200px;">
+                            <div id="file-upload-preview-${componentId}">
                               <!-- Se generará dinámicamente -->
                             </div>
                           </div>
@@ -8926,6 +9022,241 @@ Reglas Importantes:
         }
         
         updateProgressBarPreview(componentId);
+      };
+      
+      // ========================================
+      // FILE UPLOAD PREVIEW FUNCTIONS
+      // ========================================
+      
+      // Estado del preview del File Upload
+      const fileUploadPreviewState = {};
+      
+      // Instancias del File Upload
+      const fileUploadInstances = {};
+      
+      // Inicializar estado del File Upload
+      function initFileUploadPreviewState(componentId) {
+        if (!fileUploadPreviewState[componentId]) {
+          fileUploadPreviewState[componentId] = {
+            state: 'default',
+            fileName: '',
+            fileExtension: '',
+            fileSize: 2 * 1024 * 1024, // 2 MB en bytes
+            showFileSize: true,
+            showActions: true,
+            uploadText: 'Haz clic para subir archivo'
+          };
+        }
+        return fileUploadPreviewState[componentId];
+      }
+      
+      // Función para renderizar File Upload localmente
+      function renderFileUploadLocal(options) {
+        const {
+          state = 'default',
+          fileName = '',
+          fileExtension = '',
+          fileSize = 0,
+          showFileSize = true,
+          showActions = true,
+          uploadText = 'Haz clic para subir archivo'
+        } = options;
+        
+        // Formatear tamaño del archivo
+        function formatFileSize(bytes) {
+          if (bytes === 0) return '0 B';
+          const k = 1024;
+          const sizes = ['B', 'KB', 'MB', 'GB'];
+          const i = Math.floor(Math.log(bytes) / Math.log(k));
+          return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+        }
+        
+        // Determinar estilos del borde según el estado
+        let borderColor = 'var(--ubits-border-1, #d0d2d5)';
+        let backgroundColor = 'var(--ubits-bg-1, #ffffff)';
+        let textColor = 'var(--ubits-fg-1-medium, #5c646f)';
+        
+        if (state === 'dragging') {
+          borderColor = 'var(--ubits-accent-brand, #0c5bef)';
+        } else if (state === 'error') {
+          borderColor = 'var(--ubits-feedback-accent-error, #e9343c)';
+        } else if (state === 'disabled') {
+          backgroundColor = 'var(--ubits-bg-disabled, #edeeef)';
+          borderColor = 'var(--ubits-border-disabled, #e1e2e5)';
+          textColor = 'var(--ubits-fg-on-disabled, #8d9199)';
+        }
+        
+        // Determinar qué icono mostrar según el estado
+        let iconHtml = '';
+        if (state === 'dragging' || state === 'error' || state === 'disabled') {
+          iconHtml = `
+            <div class="ubits-file-upload__icon-large">
+              <i class="far fa-arrow-up-from-bracket"></i>
+            </div>
+          `;
+        } else {
+          iconHtml = `
+            <div class="ubits-file-upload__icon-container">
+              <i class="far fa-file-arrow-up"></i>
+            </div>
+          `;
+        }
+        
+        // Construir texto del archivo
+        let fileNameHtml = '';
+        if (fileName || fileExtension) {
+          const parts = [];
+          parts.push(uploadText || 'Haz clic para subir archivo');
+          if (fileExtension) {
+            parts.push('.');
+            parts.push(fileExtension);
+          }
+          fileNameHtml = `
+            <div class="ubits-file-upload__file-name">
+              ${parts.join('')}
+            </div>
+          `;
+        } else {
+          fileNameHtml = `
+            <div class="ubits-file-upload__file-name">
+              ${uploadText}
+            </div>
+          `;
+        }
+        
+        // Construir tamaño del archivo si está disponible
+        let fileSizeHtml = '';
+        if (showFileSize && fileSize && fileSize > 0) {
+          fileSizeHtml = `
+            <div class="ubits-file-upload__file-size">
+              ${formatFileSize(fileSize)}
+            </div>
+          `;
+        }
+        
+        // Construir botones de acción si están habilitados
+        let actionsHtml = '';
+        if (showActions && (fileName || state === 'error')) {
+          actionsHtml = `
+            <div class="ubits-file-upload__actions">
+              <button class="ubits-file-upload__action ubits-file-upload__action--reupload" aria-label="Re-subir archivo">
+                <i class="far fa-arrow-up-from-bracket"></i>
+              </button>
+              <button class="ubits-file-upload__action ubits-file-upload__action--remove" aria-label="Eliminar archivo">
+                <i class="far fa-trash"></i>
+              </button>
+            </div>
+          `;
+        }
+        
+        const classes = [
+          'ubits-file-upload',
+          `ubits-file-upload--${state}`
+        ].filter(Boolean).join(' ');
+        
+        return `
+          <div class="${classes}" 
+               style="background-color: ${backgroundColor}; border-color: ${borderColor}; color: ${textColor};"
+               tabindex="${state === 'disabled' ? '-1' : '0'}"
+               role="button"
+               aria-disabled="${state === 'disabled' ? 'true' : 'false'}">
+            <div class="ubits-file-upload__container">
+              ${iconHtml}
+              <div class="ubits-file-upload__content">
+                ${fileNameHtml}
+                ${fileSizeHtml}
+              </div>
+            </div>
+            ${actionsHtml}
+          </div>
+        `.trim();
+      }
+      
+      // Función para actualizar el preview del File Upload
+      window.updateFileUploadPreview = function(componentId) {
+        const state = initFileUploadPreviewState(componentId);
+        
+        // Limpiar instancia anterior
+        if (fileUploadInstances[componentId]) {
+          fileUploadInstances[componentId].destroy();
+        }
+        
+        const previewContainer = document.getElementById(`file-upload-preview-${componentId}`);
+        if (!previewContainer) {
+          return;
+        }
+        
+        // Cargar CSS si no está cargado
+        const cssLinkId = 'file-upload-css';
+        if (!document.getElementById(cssLinkId)) {
+          const link = document.createElement('link');
+          link.id = cssLinkId;
+          link.rel = 'stylesheet';
+          link.href = '../../addons/file-upload/src/styles/file-upload.css';
+          document.head.appendChild(link);
+        }
+        
+        // Renderizar File Upload
+        const html = renderFileUploadLocal({
+          state: state.state,
+          fileName: state.fileName,
+          fileExtension: state.fileExtension,
+          fileSize: state.fileSize,
+          showFileSize: state.showFileSize,
+          showActions: state.showActions,
+          uploadText: state.uploadText
+        });
+        
+        previewContainer.innerHTML = html;
+        
+        // Guardar instancia (simulada para compatibilidad)
+        fileUploadInstances[componentId] = {
+          destroy: () => {
+            previewContainer.innerHTML = '';
+          }
+        };
+        
+        // Actualizar estados de los controles
+        const stateButtons = document.querySelectorAll(`[data-component="${componentId}"][data-option="state"]`);
+        stateButtons.forEach(btn => {
+          if (btn.getAttribute('data-value') === state.state) {
+            btn.classList.add('active');
+          } else {
+            btn.classList.remove('active');
+          }
+        });
+        
+        // Actualizar estados de los switches
+        const showSizeStatus = document.getElementById(`file-upload-showsize-status-${componentId}`);
+        if (showSizeStatus) {
+          showSizeStatus.textContent = state.showFileSize ? 'Activado' : 'Desactivado';
+        }
+        
+        const showActionsStatus = document.getElementById(`file-upload-showactions-status-${componentId}`);
+        if (showActionsStatus) {
+          showActionsStatus.textContent = state.showActions ? 'Activado' : 'Desactivado';
+        }
+      };
+      
+      // Función para actualizar controles del File Upload
+      window.setFileUploadControl = function(option, value, componentId) {
+        const state = initFileUploadPreviewState(componentId);
+        
+        if (option === 'state') {
+          state.state = value;
+        } else if (option === 'fileName') {
+          state.fileName = value;
+        } else if (option === 'fileExtension') {
+          state.fileExtension = value;
+        } else if (option === 'fileSize') {
+          state.fileSize = value;
+        } else if (option === 'showFileSize') {
+          state.showFileSize = value;
+        } else if (option === 'showActions') {
+          state.showActions = value;
+        }
+        
+        updateFileUploadPreview(componentId);
       };
       
       // ========================================
