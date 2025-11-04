@@ -8141,6 +8141,14 @@ Reglas Importantes:
           const handleScrollbarClick = (e) => {
             if (!targetElement || !barElement) return;
             
+            // Prevenir que el clic en la barra misma active el scroll
+            if (e.target === barElement) {
+              return;
+            }
+            
+            e.preventDefault();
+            e.stopPropagation();
+            
             const isVertical = orientation === 'vertical';
             const rect = scrollbarElement.getBoundingClientRect();
             const clickPosition = isVertical 
@@ -8161,6 +8169,55 @@ Reglas Importantes:
             }
           };
           
+          // Función para arrastrar el scrollbar
+          let isDragging = false;
+          let startPosition = 0;
+          let startScroll = 0;
+          
+          const handleMouseDown = (e) => {
+            if (!targetElement || !barElement) return;
+            if (e.target !== barElement) return;
+            
+            e.preventDefault();
+            e.stopPropagation();
+            
+            isDragging = true;
+            const isVertical = orientation === 'vertical';
+            startPosition = isVertical ? e.clientY : e.clientX;
+            startScroll = isVertical ? targetElement.scrollTop : targetElement.scrollLeft;
+            
+            document.addEventListener('mousemove', handleMouseMove);
+            document.addEventListener('mouseup', handleMouseUp);
+          };
+          
+          const handleMouseMove = (e) => {
+            if (!isDragging || !targetElement || !barElement) return;
+            
+            const isVertical = orientation === 'vertical';
+            const currentPosition = isVertical ? e.clientY : e.clientX;
+            const delta = currentPosition - startPosition;
+            
+            const scrollbarSize = isVertical ? scrollbarElement.clientHeight : scrollbarElement.clientWidth;
+            const clientSize = isVertical ? targetElement.clientHeight : targetElement.clientWidth;
+            const scrollSize = isVertical ? targetElement.scrollHeight : targetElement.scrollWidth;
+            const maxScroll = scrollSize - clientSize;
+            
+            const scrollRatio = maxScroll / scrollbarSize;
+            const newScroll = startScroll + (delta * scrollRatio);
+            
+            if (isVertical) {
+              targetElement.scrollTop = Math.max(0, Math.min(maxScroll, newScroll));
+            } else {
+              targetElement.scrollLeft = Math.max(0, Math.min(maxScroll, newScroll));
+            }
+          };
+          
+          const handleMouseUp = () => {
+            isDragging = false;
+            document.removeEventListener('mousemove', handleMouseMove);
+            document.removeEventListener('mouseup', handleMouseUp);
+          };
+          
           // Event listeners
           targetElement.addEventListener('scroll', updateScrollbar);
           targetElement.addEventListener('resize', updateScrollbar);
@@ -8171,7 +8228,13 @@ Reglas Importantes:
           });
           resizeObserver.observe(targetElement);
           
+          // Eventos del scrollbar
           scrollbarElement.addEventListener('click', handleScrollbarClick);
+          barElement.addEventListener('mousedown', handleMouseDown);
+          
+          // Guardar funciones para poder limpiarlas después
+          scrollbarElement.__handleMouseUp = handleMouseUp;
+          scrollbarElement.__handleMouseMove = handleMouseMove;
           
           // Actualizar inicialmente
           setTimeout(() => {
@@ -8187,6 +8250,14 @@ Reglas Importantes:
               targetElement.removeEventListener('resize', updateScrollbar);
               resizeObserver.disconnect();
               scrollbarElement.removeEventListener('click', handleScrollbarClick);
+              barElement.removeEventListener('mousedown', handleMouseDown);
+              
+              // Limpiar listeners de drag si existen
+              if (scrollbarElement.__handleMouseUp) {
+                document.removeEventListener('mousemove', scrollbarElement.__handleMouseMove);
+                document.removeEventListener('mouseup', scrollbarElement.__handleMouseUp);
+              }
+              
               scrollbarElement.remove();
             }
           };

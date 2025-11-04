@@ -39,9 +39,10 @@
     left: var(--ubits-spacing-xs, 4px);
     right: var(--ubits-spacing-xs, 4px);
     transition: opacity 0.3s ease, transform 0.1s ease;
-    cursor: pointer;
+    cursor: grab;
     opacity: 0;
     pointer-events: none;
+    user-select: none;
 }
 
 .ubits-scrollbar--vertical:hover .ubits-scrollbar__bar {
@@ -49,11 +50,15 @@
     pointer-events: auto;
 }
 
+.ubits-scrollbar--vertical .ubits-scrollbar__bar:active {
+    cursor: grabbing;
+}
+
 /* Mostrar scrollbar cuando el contenedor scrollable tiene hover */
 [id*="scrollbar-scrollable-vertical"]:hover ~ [id*="scrollbar-vertical"] .ubits-scrollbar__bar,
 [id*="scrollbar-wrapper-vertical"]:hover .ubits-scrollbar__bar {
     opacity: 1 !important;
-    pointer-events: auto;
+    pointer-events: auto !important;
 }
 
 /* ========================================
@@ -78,9 +83,10 @@
     top: var(--ubits-spacing-xs, 4px);
     bottom: var(--ubits-spacing-xs, 4px);
     transition: opacity 0.3s ease, transform 0.1s ease;
-    cursor: pointer;
+    cursor: grab;
     opacity: 0;
     pointer-events: none;
+    user-select: none;
 }
 
 .ubits-scrollbar--horizontal:hover .ubits-scrollbar__bar {
@@ -88,11 +94,15 @@
     pointer-events: auto;
 }
 
+.ubits-scrollbar--horizontal .ubits-scrollbar__bar:active {
+    cursor: grabbing;
+}
+
 /* Mostrar scrollbar cuando el contenedor scrollable tiene hover */
 [id*="scrollbar-scrollable-horizontal"]:hover ~ [id*="scrollbar-horizontal"] .ubits-scrollbar__bar,
 [id*="scrollbar-wrapper-horizontal"]:hover .ubits-scrollbar__bar {
     opacity: 1 !important;
-    pointer-events: auto;
+    pointer-events: auto !important;
 }
 
 /* ========================================
