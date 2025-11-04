@@ -3981,6 +3981,21 @@ Reglas Importantes:
               class: 'ubits-drawer-overlay ubits-drawer',
               example: 'createDrawer({\n  title: \'Título del drawer\',\n  complementaryText: \'Texto complementario opcional\',\n  width: 40,\n  bodyContent: \'<p>Contenido del drawer</p>\',\n  footerButtons: {\n    tertiary: { label: \'Cancelar\', onClick: () => {} },\n    secondary: { label: \'Guardar\', onClick: () => {} },\n    primary: { label: \'Aplicar\', onClick: () => {} }\n  },\n  onClose: () => {}\n})',
               hasPreview: true
+            },
+            {
+              name: 'Modal',
+              description: 'Componente modal centrado con overlay. Se usa para diálogos, confirmaciones y formularios. Tiene diferentes tamaños (sm: 320px, md: 480px, lg: 640px, xl: 800px, full: 1280px). Incluye header con título y botón de cerrar, body con contenido scrollable y footer con botones primario, secundario y terciario. Soporta variante full-screen.',
+              files: {
+                css: 'addons/modal/src/styles/modal.css',
+                ts: 'addons/modal/src/ModalProvider.ts'
+              },
+              variants: ['default', 'full-screen'],
+              sizes: ['sm', 'md', 'lg', 'xl', 'full'],
+              states: ['closed', 'open'],
+              features: ['5 tamaños (sm: 320px, md: 480px, lg: 640px, xl: 800px, full: 1280px)', 'Overlay semitransparente', 'Header con título y botón de cerrar', 'Body con scroll personalizado', 'Footer con botones opcionales (tertiary, secondary, primary)', 'Variante full-screen para contenido extenso', 'Cierre con ESC y clic en overlay', 'Animaciones suaves de apertura/cierre', 'Responsive (100% en móvil)', 'Métodos open/close/updateContent', 'Usa tokens UBITS exclusivamente', 'Usa componente Button existente para footer'],
+              class: 'ubits-modal-overlay ubits-modal',
+              example: 'createModal({\n  title: \'Título del modal\',\n  size: \'md\',\n  fullScreen: false,\n  bodyContent: \'<p>Contenido del modal</p>\',\n  footerButtons: {\n    tertiary: { label: \'Cancelar\', onClick: () => {} },\n    secondary: { label: \'Guardar\', onClick: () => {} },\n    primary: { label: \'Aplicar\', onClick: () => {} }\n  },\n  onClose: () => {}\n})',
+              hasPreview: true
             }
           ],
           'Formularios': [
@@ -4256,6 +4271,8 @@ Reglas Importantes:
                     window.updateAvatarPreview('avatar');
                   } else if (componentId === 'drawer-navigation' && typeof window.updateDrawerPreview === 'function') {
                     window.updateDrawerPreview('drawer-navigation');
+                  } else if (componentId === 'modal' && typeof window.updateModalPreview === 'function') {
+                    window.updateModalPreview('modal');
                   } else if (componentId === 'alert' && typeof window.updateAlertPreview === 'function') {
                     window.updateAlertPreview('alert');
                     initializeAlertPreview('alert');
@@ -4924,6 +4941,104 @@ Reglas Importantes:
                           <div style="background: var(--ubits-bg-1); padding: 48px; border-radius: 8px; border: none; margin-bottom: 24px; display: flex; align-items: center; justify-content: center; min-height: 400px; position: relative;">
                             <div id="drawer-preview-container-${componentId}" style="width: 100%; height: 100%; position: relative;">
                               <!-- El drawer se renderizará aquí -->
+                            </div>
+                          </div>
+                        </div>
+                      ` : ''}
+                      
+                      ${hasPreview && component.name === 'Modal' ? `
+                        <!-- Preview Section for Modal -->
+                        <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: none; margin-bottom: 24px;">
+                          <!-- CONTROLES ARRIBA -->
+                          <div style="margin-bottom: 24px;">
+                            <h4 style="margin: 0 0 20px 0; color: var(--ubits-fg-1-high); font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand);"></i>
+                              Controles
+                            </h4>
+                            
+                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-end;">
+                              <!-- Título -->
+                              <div style="flex: 1 1 auto; min-width: 250px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Título</label>
+                                <input type="text" id="modal-title-input-${componentId}" value="Título del modal" onchange="setModalControl('title', this.value, '${componentId}')" placeholder="Título del modal" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: var(--font-body-sm-size, 13px); font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                              
+                              <!-- Tamaño -->
+                              <div style="flex: 0 0 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Tamaño</label>
+                                <select id="modal-size-select-${componentId}" onchange="setModalControl('size', this.value, '${componentId}')" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: var(--font-body-sm-size, 13px); font-family: var(--font-sans); cursor: pointer; box-sizing: border-box;">
+                                  <option value="sm">SM (320px)</option>
+                                  <option value="md" selected>MD (480px)</option>
+                                  <option value="lg">LG (640px)</option>
+                                  <option value="xl">XL (800px)</option>
+                                  <option value="full">Full (1280px)</option>
+                                </select>
+                              </div>
+                              
+                              <!-- Full Screen -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Full Screen</label>
+                                <label class="switch" style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                  <input type="checkbox" id="modal-fullscreen-toggle-${componentId}" onchange="setModalControl('fullScreen', this.checked, '${componentId}')">
+                                  <span class="slider"></span>
+                                </label>
+                              </div>
+                              
+                              <!-- Botón Abrir/Cerrar -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <button class="ubits-button ubits-button--primary ubits-button--md" onclick="toggleModal('${componentId}')" style="width: 100%;">
+                                  <span id="modal-toggle-button-text-${componentId}">Abrir Modal</span>
+                                </button>
+                              </div>
+                            </div>
+                            
+                            <!-- Botones del Footer -->
+                            <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--ubits-border-1);">
+                              <h5 style="margin: 0 0 16px 0; color: var(--ubits-fg-1-high); font-size: 14px; font-weight: 600;">Botones del Footer</h5>
+                              <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
+                                <!-- Botón Tertiary -->
+                                <div style="flex: 0 0 auto; min-width: 200px;">
+                                  <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Tertiary (Izquierda)</label>
+                                  <div style="display: flex; gap: 8px;">
+                                    <input type="text" id="modal-tertiary-label-input-${componentId}" value="Cancelar" onchange="setModalControl('tertiaryLabel', this.value, '${componentId}')" placeholder="Label" style="flex: 1; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: var(--font-body-sm-size, 13px); font-family: var(--font-sans); box-sizing: border-box;">
+                                    <label class="switch" style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                      <input type="checkbox" id="modal-tertiary-toggle-${componentId}" checked onchange="setModalControl('tertiaryEnabled', this.checked, '${componentId}')">
+                                      <span class="slider"></span>
+                                    </label>
+                                  </div>
+                                </div>
+                                
+                                <!-- Botón Secondary -->
+                                <div style="flex: 0 0 auto; min-width: 200px;">
+                                  <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Secondary (Derecha)</label>
+                                  <div style="display: flex; gap: 8px;">
+                                    <input type="text" id="modal-secondary-label-input-${componentId}" value="Guardar" onchange="setModalControl('secondaryLabel', this.value, '${componentId}')" placeholder="Label" style="flex: 1; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: var(--font-body-sm-size, 13px); font-family: var(--font-sans); box-sizing: border-box;">
+                                    <label class="switch" style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                      <input type="checkbox" id="modal-secondary-toggle-${componentId}" checked onchange="setModalControl('secondaryEnabled', this.checked, '${componentId}')">
+                                      <span class="slider"></span>
+                                    </label>
+                                  </div>
+                                </div>
+                                
+                                <!-- Botón Primary -->
+                                <div style="flex: 0 0 auto; min-width: 200px;">
+                                  <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Primary (Derecha)</label>
+                                  <div style="display: flex; gap: 8px;">
+                                    <input type="text" id="modal-primary-label-input-${componentId}" value="Aplicar" onchange="setModalControl('primaryLabel', this.value, '${componentId}')" placeholder="Label" style="flex: 1; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: var(--font-body-sm-size, 13px); font-family: var(--font-sans); box-sizing: border-box;">
+                                    <label class="switch" style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                      <input type="checkbox" id="modal-primary-toggle-${componentId}" checked onchange="setModalControl('primaryEnabled', this.checked, '${componentId}')">
+                                      <span class="slider"></span>
+                                    </label>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <!-- PREVIEW EN EL MEDIO -->
+                          <div style="background: var(--ubits-bg-1); padding: 48px; border-radius: 8px; border: none; margin-bottom: 24px; display: flex; align-items: center; justify-content: center; min-height: 400px; position: relative;">
+                            <div id="modal-preview-container-${componentId}" style="width: 100%; height: 100%; position: relative;">
+                              <!-- El modal se renderizará aquí -->
                             </div>
                           </div>
                         </div>
@@ -7490,6 +7605,342 @@ Reglas Importantes:
           window.updateDrawerPreview(componentId);
           setTimeout(() => {
             const instance = drawerInstances[componentId];
+            if (instance && instance.open) {
+              instance.open();
+            }
+          }, 100);
+        }
+      };
+      
+      // ========================================
+      // MODAL PREVIEW FUNCTIONS
+      // ========================================
+      
+      // Estado del preview del Modal
+      const modalPreviewState = {};
+      const modalInstances = {}; // Guardar instancias de modal por componentId
+      
+      // Inicializar estado del Modal
+      function initModalPreviewState(componentId) {
+        if (!modalPreviewState[componentId]) {
+          modalPreviewState[componentId] = {
+            title: 'Título del modal',
+            size: 'md',
+            fullScreen: false,
+            bodyContent: `
+              <div style="padding: 16px;">
+                <p style="margin: 0; font-size: var(--font-body-md-size, 16px); color: var(--ubits-fg-1-high); line-height: var(--font-body-md-line-height, 24px);">
+                  Este es el contenido del modal. Puedes agregar cualquier contenido HTML aquí, como formularios, texto, imágenes, etc.
+                </p>
+              </div>
+            `,
+            tertiaryEnabled: true,
+            tertiaryLabel: 'Cancelar',
+            secondaryEnabled: true,
+            secondaryLabel: 'Guardar',
+            primaryEnabled: true,
+            primaryLabel: 'Aplicar',
+            isOpen: false
+          };
+        }
+        return modalPreviewState[componentId];
+      }
+      
+      // Función para generar HTML del Modal manualmente
+      function generateModalHTML(state, componentId) {
+        const modalSizes = { sm: '320px', md: '480px', lg: '640px', xl: '800px', full: '1280px' };
+        const modalWidth = modalSizes[state.size] || modalSizes.md;
+        const modalSizeClass = `ubits-modal--size-${state.size}`;
+        const fullScreenClass = state.fullScreen ? 'ubits-modal--full-screen' : '';
+        
+        const headerHTML = `
+          <div class="ubits-modal__header">
+            <div class="ubits-modal__header-text">
+              <div class="ubits-modal__header-title">
+                <p class="ubits-heading-h2">${state.title}</p>
+              </div>
+            </div>
+            <button class="ubits-modal__close" aria-label="Cerrar modal" type="button">
+              <i class="far fa-times"></i>
+            </button>
+          </div>
+        `;
+        
+        const bodyHTML = `
+          <div class="ubits-modal__body">
+            <div class="ubits-modal__body-content">
+              ${state.bodyContent}
+            </div>
+            <div class="ubits-modal__scrollbar">
+              <div class="ubits-modal__scrollbar-bar"></div>
+            </div>
+          </div>
+        `;
+        
+        const footerHTML = (state.tertiaryEnabled || state.secondaryEnabled || state.primaryEnabled) ? `
+          <div class="ubits-modal__footer">
+            <div class="ubits-modal__footer-actions">
+              ${state.tertiaryEnabled ? `
+              <div class="ubits-modal__footer-left">
+                <button class="ubits-button ubits-button--tertiary ubits-button--md ubits-modal__footer-button" type="button">
+                  <span>${state.tertiaryLabel}</span>
+                </button>
+              </div>
+              ` : ''}
+              <div class="ubits-modal__footer-right">
+                ${state.secondaryEnabled ? `
+                <button class="ubits-button ubits-button--secondary ubits-button--md ubits-modal__footer-button" type="button">
+                  <span>${state.secondaryLabel}</span>
+                </button>
+                ` : ''}
+                ${state.primaryEnabled ? `
+                <button class="ubits-button ubits-button--primary ubits-button--md ubits-modal__footer-button" type="button">
+                  <span>${state.primaryLabel}</span>
+                </button>
+                ` : ''}
+              </div>
+            </div>
+          </div>
+        ` : '';
+        
+        return `
+          <div class="ubits-modal-overlay">
+            <div class="ubits-modal ${modalSizeClass} ${fullScreenClass}" style="max-width: ${modalWidth};">
+              ${headerHTML}
+              ${bodyHTML}
+              ${footerHTML}
+            </div>
+          </div>
+        `.trim();
+      }
+      
+      // Función para actualizar el preview del Modal
+      window.updateModalPreview = function(componentId) {
+        const state = initModalPreviewState(componentId);
+        const container = document.getElementById(`modal-preview-container-${componentId}`);
+        
+        if (!container) {
+          console.error('❌ Preview container de Modal no encontrado:', `modal-preview-container-${componentId}`);
+          return;
+        }
+        
+        // Limpiar modal anterior si existe
+        if (modalInstances[componentId] && modalInstances[componentId].element) {
+          modalInstances[componentId].element.remove();
+          modalInstances[componentId] = null;
+        }
+        
+        // Cargar CSS si no está cargado
+        const existingModalLink = document.querySelector('link[href*="modal.css"]');
+        if (!existingModalLink) {
+          const link = document.createElement('link');
+          link.rel = 'stylesheet';
+          link.href = '../../addons/modal/src/styles/modal.css';
+          document.head.appendChild(link);
+        }
+        
+        // Cargar CSS del button si no está cargado (para los botones del footer)
+        const existingButtonLink = document.querySelector('link[href*="button.css"]');
+        if (!existingButtonLink) {
+          const link = document.createElement('link');
+          link.rel = 'stylesheet';
+          link.href = '../../addons/button/src/styles/button.css';
+          document.head.appendChild(link);
+        }
+        
+        // Generar HTML del modal manualmente
+        const modalHTML = generateModalHTML(state, componentId);
+        
+        // Crear wrapper temporal para parsear el HTML
+        const wrapper = document.createElement('div');
+        wrapper.innerHTML = modalHTML;
+        const modalOverlay = wrapper.firstElementChild;
+        
+        if (!modalOverlay) {
+          console.error('❌ No se pudo crear el modal');
+          return;
+        }
+        
+        // Añadir el overlay al body, no al contenedor del preview
+        document.body.appendChild(modalOverlay);
+        
+        const modal = modalOverlay.querySelector('.ubits-modal');
+        const closeButton = modalOverlay.querySelector('.ubits-modal__close');
+        
+        if (!modal) {
+          console.error('❌ No se pudo encontrar el modal');
+          return;
+        }
+        
+        // Funciones de control
+        const openModal = () => {
+          modalOverlay.classList.add('ubits-modal-overlay--open');
+          document.body.style.overflow = 'hidden';
+          state.isOpen = true;
+          const toggleButton = document.getElementById(`modal-toggle-button-text-${componentId}`);
+          if (toggleButton) {
+            toggleButton.textContent = 'Cerrar Modal';
+          }
+        };
+        
+        const closeModal = () => {
+          modalOverlay.classList.remove('ubits-modal-overlay--open');
+          document.body.style.overflow = '';
+          state.isOpen = false;
+          const toggleButton = document.getElementById(`modal-toggle-button-text-${componentId}`);
+          if (toggleButton) {
+            toggleButton.textContent = 'Abrir Modal';
+          }
+        };
+        
+        // Event listeners
+        if (closeButton) {
+          closeButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            closeModal();
+          });
+        }
+        
+        if (modalOverlay) {
+          modalOverlay.addEventListener('click', (e) => {
+            if (e.target === modalOverlay) {
+              closeModal();
+            }
+          });
+        }
+        
+        // Cerrar con ESC
+        const handleEsc = (e) => {
+          if (e.key === 'Escape' && modalOverlay.classList.contains('ubits-modal-overlay--open')) {
+            closeModal();
+          }
+        };
+        document.addEventListener('keydown', handleEsc);
+        
+        // Guardar referencia al handler para poder removerlo después
+        modalOverlay.__escHandler = handleEsc;
+        
+        // Agregar event listeners a los botones del footer
+        if (state.tertiaryEnabled) {
+          const tertiaryButton = modalOverlay.querySelector('.ubits-modal__footer-left .ubits-modal__footer-button');
+          if (tertiaryButton) {
+            tertiaryButton.addEventListener('click', () => {
+              console.log('Botón Tertiary clickeado');
+            });
+          }
+        }
+        
+        if (state.secondaryEnabled) {
+          const secondaryButton = modalOverlay.querySelector('.ubits-modal__footer-right .ubits-button--secondary');
+          if (secondaryButton) {
+            secondaryButton.addEventListener('click', () => {
+              console.log('Botón Secondary clickeado');
+            });
+          }
+        }
+        
+        if (state.primaryEnabled) {
+          const primaryButton = modalOverlay.querySelector('.ubits-modal__footer-right .ubits-button--primary');
+          if (primaryButton) {
+            primaryButton.addEventListener('click', () => {
+              console.log('Botón Primary clickeado');
+            });
+          }
+        }
+        
+        // Guardar instancia
+        modalInstances[componentId] = {
+          element: modalOverlay,
+          open: openModal,
+          close: closeModal,
+          updateContent: (content) => {
+            const bodyContentElement = modalOverlay.querySelector('.ubits-modal__body-content');
+            if (bodyContentElement) {
+              const contentHTML = typeof content === 'function' ? content() : content;
+              bodyContentElement.innerHTML = contentHTML;
+            }
+          }
+        };
+        
+        // Abrir si está configurado para abrirse inicialmente
+        if (state.isOpen) {
+          openModal();
+        }
+        
+        // Actualizar estado del botón toggle
+        const toggleButton = document.getElementById(`modal-toggle-button-text-${componentId}`);
+        if (toggleButton) {
+          toggleButton.textContent = state.isOpen ? 'Cerrar Modal' : 'Abrir Modal';
+        }
+      };
+      
+      // Función unificada para controles del Modal
+      window.setModalControl = function(option, value, componentId) {
+        const state = initModalPreviewState(componentId);
+        
+        if (option === 'title') {
+          state.title = value;
+        } else if (option === 'size') {
+          state.size = value;
+        } else if (option === 'fullScreen') {
+          state.fullScreen = value;
+        } else if (option === 'tertiaryLabel') {
+          state.tertiaryLabel = value;
+        } else if (option === 'tertiaryEnabled') {
+          state.tertiaryEnabled = value;
+        } else if (option === 'secondaryLabel') {
+          state.secondaryLabel = value;
+        } else if (option === 'secondaryEnabled') {
+          state.secondaryEnabled = value;
+        } else if (option === 'primaryLabel') {
+          state.primaryLabel = value;
+        } else if (option === 'primaryEnabled') {
+          state.primaryEnabled = value;
+        }
+        
+        // Actualizar modal si existe, o recrearlo si cambió algo importante
+        const modalInstance = modalInstances[componentId];
+        const wasOpen = modalInstance && state.isOpen;
+        
+        // Recrear modal con nuevas opciones
+        window.updateModalPreview(componentId);
+        
+        // Si estaba abierto, abrirlo de nuevo
+        if (wasOpen) {
+          setTimeout(() => {
+            const newInstance = modalInstances[componentId];
+            if (newInstance) {
+              newInstance.open();
+            }
+          }, 50);
+        }
+      };
+      
+      // Función para toggle del modal
+      window.toggleModal = function(componentId) {
+        const state = initModalPreviewState(componentId);
+        const modalInstance = modalInstances[componentId];
+        
+        if (modalInstance && modalInstance.open && modalInstance.close) {
+          if (state.isOpen) {
+            modalInstance.close();
+            state.isOpen = false;
+          } else {
+            modalInstance.open();
+            state.isOpen = true;
+          }
+          
+          const toggleButton = document.getElementById(`modal-toggle-button-text-${componentId}`);
+          if (toggleButton) {
+            toggleButton.textContent = state.isOpen ? 'Cerrar Modal' : 'Abrir Modal';
+          }
+        } else {
+          // Si no existe, crear y abrir
+          state.isOpen = true;
+          window.updateModalPreview(componentId);
+          setTimeout(() => {
+            const instance = modalInstances[componentId];
             if (instance && instance.open) {
               instance.open();
             }
