@@ -152,6 +152,18 @@
       "sizes": ["xs", "sm", "md", "lg"],
       "states": ["default", "hover", "active"],
       "features": ["4 tamaños (xs: 20px, sm: 28px, md: 36px, lg: 40px)", "3 variantes (Photo, Initials, Icon)", "Badge opcional con colores (green, red, blue, orange, gray)", "Badge con contenido (texto/números) o solo punto", "Badge siempre 10px (md) independiente del tamaño del avatar", "Badge posicionado bottom-right (mitad dentro, mitad fuera)", "Clickeable opcional", "Usa tokens UBITS exclusivamente", "Usa componente Badge existente"]
+    },
+    "drawer": {
+      "name": "Drawer Navigation",
+      "package": "@ubits/drawer",
+      "path": "packages/addons/drawer",
+      "provider": "createDrawer",
+      "globalFunction": "window.createDrawer",
+      "cssFile": "packages/addons/drawer/src/styles/drawer.css",
+      "storybookStory": "Drawer.stories.ts",
+      "sizes": ["100%", "80%", "60%", "50%", "40%", "30%"],
+      "states": ["closed", "open"],
+      "features": ["6 tamaños de ancho (100%, 80%, 60%, 50%, 40%, 30%)", "Overlay semitransparente", "Header con título y texto complementario opcional", "Botón de cerrar", "Body con scroll personalizado y scrollbar visual", "Footer con botones opcionales (tertiary, secondary, primary)", "Cierre con ESC y clic en overlay", "Animaciones suaves de apertura/cierre", "Responsive (100% en móvil)", "Métodos open/close/updateContent", "Usa tokens UBITS exclusivamente", "Usa componente Button existente para footer"]
     }
   },
   "tokens": {

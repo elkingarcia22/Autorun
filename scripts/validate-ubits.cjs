@@ -195,8 +195,10 @@ function validateFile(filePath, autoFix = false) {
         }
         if (filePath.endsWith('.css') && match.startsWith('rgba(')) {
           const context = before + match + after;
-          if (context.includes('box-shadow') || context.includes('text-shadow') || 
-              context.includes('backdrop-filter') || context.includes('background:') && context.includes('rgba')) {
+          const fullLine = content.substring(Math.max(0, content.lastIndexOf('\n', matchIndex) + 1), Math.min(content.length, content.indexOf('\n', matchIndex + match.length) || content.length));
+          if (fullLine.includes('box-shadow') || fullLine.includes('text-shadow') || 
+              context.includes('box-shadow') || context.includes('text-shadow') || 
+              context.includes('backdrop-filter') || (context.includes('background:') && context.includes('rgba'))) {
             return false;
           }
         }

@@ -912,7 +912,7 @@ npm run dev</code></pre>
       <div class="kcard" style="background: var(--ubits-bg-1); border: none; border-radius: 12px; padding: 24px; margin-bottom: 24px;">
         <h3 class="ubits-heading-h3" style="color: var(--ubits-fg-1-high); margin: 0 0 16px 0; font-size: 18px; font-weight: 600;">🛡️ Validación Automática</h3>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-          <div style="<h4 style="color: var(--ubits-fg-2-high);
+          <div>
             <h4 style="color: var(--ubits-fg-1-high); font-size: 14px; font-weight: 600; margin: 0 0 12px 0;">Qué Valida</h4>
             <ul style="color: var(--ubits-fg-1-medium); font-size: 13px; margin: 0; padding-left: 20px; line-height: 1.8;">
               <li>Colores hardcodeados</li>
@@ -921,7 +921,7 @@ npm run dev</code></pre>
               <li>CSS faltante</li>
             </ul>
           </div>
-          <div style="<h4 style="color: var(--ubits-fg-2-high);
+          <div>
             <h4 style="color: var(--ubits-fg-1-high); font-size: 14px; font-weight: 600; margin: 0 0 12px 0;">Auto-Corrección</h4>
             <ul style="color: var(--ubits-fg-1-medium); font-size: 13px; margin: 0; padding-left: 20px; line-height: 1.8;">
               <li><code style="font-size: 12px;">white</code> → <code style="font-size: 12px;">var(--ubits-bg-1)</code></li>
@@ -3966,6 +3966,21 @@ Reglas Importantes:
               class: 'ubits-tabbar ubits-tabbar-item ubits-tabbar-item--active',
               example: 'createTabBar({\n  containerId: \'tabbar-container\',\n  items: [\n    { id: \'modulos\', label: \'Módulos\', icon: \'th-large\' },\n    { id: \'perfil\', label: \'Mi perfil\', avatar: \'images/Profile-image.jpg\' },\n    { id: \'modo-oscuro\', label: \'Modo oscuro\', icon: \'moon\' }\n  ],\n  activeTabId: \'modulos\',\n  floatingMenuSections: [...],\n  profileMenuItems: [...]\n})',
               hasPreview: true
+            },
+            {
+              name: 'Drawer Navigation',
+              description: 'Componente drawer que sale de izquierda a derecha con overlay. Se usa para vistas de elementos, filtros en tablas, etc. Tiene diferentes tamaños horizontalmente (100%, 80%, 60%, 50%, 40%, 30%). Incluye header con título y botón de cerrar, body con contenido scrollable y footer con botones primario, secundario y terciario.',
+              files: {
+                css: 'addons/drawer/src/styles/drawer.css',
+                ts: 'addons/drawer/src/DrawerProvider.ts'
+              },
+              variants: [],
+              sizes: ['100%', '80%', '60%', '50%', '40%', '30%'],
+              states: ['closed', 'open'],
+              features: ['6 tamaños de ancho (100%, 80%, 60%, 50%, 40%, 30%)', 'Overlay semitransparente', 'Header con título y texto complementario', 'Botón de cerrar', 'Body con scroll personalizado', 'Footer con botones opcionales (tertiary, secondary, primary)', 'Cierre con ESC y clic en overlay', 'Animaciones suaves', 'Responsive (100% en móvil)'],
+              class: 'ubits-drawer-overlay ubits-drawer',
+              example: 'createDrawer({\n  title: \'Título del drawer\',\n  complementaryText: \'Texto complementario opcional\',\n  width: 40,\n  bodyContent: \'<p>Contenido del drawer</p>\',\n  footerButtons: {\n    tertiary: { label: \'Cancelar\', onClick: () => {} },\n    secondary: { label: \'Guardar\', onClick: () => {} },\n    primary: { label: \'Aplicar\', onClick: () => {} }\n  },\n  onClose: () => {}\n})',
+              hasPreview: true
             }
           ],
           'Formularios': [
@@ -4239,6 +4254,8 @@ Reglas Importantes:
                     window.updateStatusTagPreview('status-tag');
                   } else if (componentId === 'avatar' && typeof window.updateAvatarPreview === 'function') {
                     window.updateAvatarPreview('avatar');
+                  } else if (componentId === 'drawer-navigation' && typeof window.updateDrawerPreview === 'function') {
+                    window.updateDrawerPreview('drawer-navigation');
                   } else if (componentId === 'alert' && typeof window.updateAlertPreview === 'function') {
                     window.updateAlertPreview('alert');
                     initializeAlertPreview('alert');
@@ -4811,6 +4828,102 @@ Reglas Importantes:
                           <div style="background: var(--ubits-bg-1); padding: 48px; border-radius: 8px; border: none; margin-bottom: 24px; display: flex; align-items: center; justify-content: center; min-height: 120px;">
                             <div id="avatar-preview-${componentId}">
                               <!-- Se generará dinámicamente -->
+                            </div>
+                          </div>
+                        </div>
+                      ` : ''}
+                      
+                      ${hasPreview && component.name === 'Drawer Navigation' ? `
+                        <!-- Preview Section for Drawer Navigation -->
+                        <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: none; margin-bottom: 24px;">
+                          <!-- CONTROLES ARRIBA -->
+                          <div style="margin-bottom: 24px;">
+                            <h4 style="margin: 0 0 20px 0; color: var(--ubits-fg-1-high); font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand);"></i>
+                              Controles
+                            </h4>
+                            
+                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
+                              <!-- Título -->
+                              <div style="flex: 1 1 auto; min-width: 250px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Título</label>
+                                <input type="text" id="drawer-title-input-${componentId}" value="Crear dato demográfico" onchange="setDrawerControl('title', this.value, '${componentId}')" placeholder="Título del drawer" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: var(--font-body-sm-size, 13px); font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                              
+                              <!-- Texto Complementario -->
+                              <div style="flex: 1 1 auto; min-width: 250px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Texto Complementario</label>
+                                <input type="text" id="drawer-complementary-input-${componentId}" value="" onchange="setDrawerControl('complementaryText', this.value, '${componentId}')" placeholder="Texto opcional debajo del título" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: var(--font-body-sm-size, 13px); font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                              
+                              <!-- Ancho -->
+                              <div style="flex: 0 0 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Ancho</label>
+                                <select id="drawer-width-select-${componentId}" onchange="setDrawerControl('width', parseInt(this.value), '${componentId}')" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: var(--font-body-sm-size, 13px); font-family: var(--font-sans); cursor: pointer; box-sizing: border-box;">
+                                  <option value="100">100%</option>
+                                  <option value="80">80%</option>
+                                  <option value="60">60%</option>
+                                  <option value="50">50%</option>
+                                  <option value="40" selected>40%</option>
+                                  <option value="30">30%</option>
+                                </select>
+                              </div>
+                              
+                              <!-- Botón Abrir/Cerrar -->
+                              <div style="flex: 0 0 auto; min-width: 150px; display: flex; align-items: flex-end;">
+                                <button class="ubits-button ubits-button--primary ubits-button--md" onclick="toggleDrawer('${componentId}')" style="width: 100%;">
+                                  <span id="drawer-toggle-button-text-${componentId}">Abrir Drawer</span>
+                                </button>
+                              </div>
+                            </div>
+                            
+                            <!-- Botones del Footer -->
+                            <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--ubits-border-1);">
+                              <h5 style="margin: 0 0 16px 0; color: var(--ubits-fg-1-high); font-size: 14px; font-weight: 600;">Botones del Footer</h5>
+                              <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
+                                <!-- Botón Tertiary -->
+                                <div style="flex: 0 0 auto; min-width: 200px;">
+                                  <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Tertiary (Izquierda)</label>
+                                  <div style="display: flex; gap: 8px;">
+                                    <input type="text" id="drawer-tertiary-label-input-${componentId}" value="Cancelar" onchange="setDrawerControl('tertiaryLabel', this.value, '${componentId}')" placeholder="Label" style="flex: 1; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: var(--font-body-sm-size, 13px); font-family: var(--font-sans); box-sizing: border-box;">
+                                    <label class="switch" style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                      <input type="checkbox" id="drawer-tertiary-toggle-${componentId}" checked onchange="setDrawerControl('tertiaryEnabled', this.checked, '${componentId}')">
+                                      <span class="slider"></span>
+                                    </label>
+                                  </div>
+                                </div>
+                                
+                                <!-- Botón Secondary -->
+                                <div style="flex: 0 0 auto; min-width: 200px;">
+                                  <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Secondary (Derecha)</label>
+                                  <div style="display: flex; gap: 8px;">
+                                    <input type="text" id="drawer-secondary-label-input-${componentId}" value="Guardar" onchange="setDrawerControl('secondaryLabel', this.value, '${componentId}')" placeholder="Label" style="flex: 1; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: var(--font-body-sm-size, 13px); font-family: var(--font-sans); box-sizing: border-box;">
+                                    <label class="switch" style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                      <input type="checkbox" id="drawer-secondary-toggle-${componentId}" checked onchange="setDrawerControl('secondaryEnabled', this.checked, '${componentId}')">
+                                      <span class="slider"></span>
+                                    </label>
+                                  </div>
+                                </div>
+                                
+                                <!-- Botón Primary -->
+                                <div style="flex: 0 0 auto; min-width: 200px;">
+                                  <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Primary (Derecha)</label>
+                                  <div style="display: flex; gap: 8px;">
+                                    <input type="text" id="drawer-primary-label-input-${componentId}" value="Crear" onchange="setDrawerControl('primaryLabel', this.value, '${componentId}')" placeholder="Label" style="flex: 1; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: var(--font-body-sm-size, 13px); font-family: var(--font-sans); box-sizing: border-box;">
+                                    <label class="switch" style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                      <input type="checkbox" id="drawer-primary-toggle-${componentId}" checked onchange="setDrawerControl('primaryEnabled', this.checked, '${componentId}')">
+                                      <span class="slider"></span>
+                                    </label>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <!-- PREVIEW EN EL MEDIO -->
+                          <div style="background: var(--ubits-bg-1); padding: 48px; border-radius: 8px; border: none; margin-bottom: 24px; display: flex; align-items: center; justify-content: center; min-height: 400px; position: relative;">
+                            <div id="drawer-preview-container-${componentId}" style="width: 100%; height: 100%; position: relative;">
+                              <!-- El drawer se renderizará aquí -->
                             </div>
                           </div>
                         </div>
@@ -7018,6 +7131,250 @@ Reglas Importantes:
         
         // Actualizar preview
         updateAvatarPreview(componentId);
+      };
+      
+      // ========================================
+      // DRAWER NAVIGATION PREVIEW FUNCTIONS
+      // ========================================
+      
+      // Estado del preview del Drawer
+      const drawerPreviewState = {};
+      const drawerInstances = {}; // Guardar instancias de drawer por componentId
+      
+      // Inicializar estado del Drawer
+      function initDrawerPreviewState(componentId) {
+        if (!drawerPreviewState[componentId]) {
+          drawerPreviewState[componentId] = {
+            title: 'Crear dato demográfico',
+            complementaryText: '',
+            width: 40,
+            bodyContent: `
+              <div style="padding: 16px;">
+                <div style="margin-bottom: 16px;">
+                  <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 8px;">Pregunta</label>
+                  <textarea placeholder="Escribe tu pregunta aquí..." style="width: 100%; min-height: 100px; padding: 12px; border: 1px solid var(--ubits-border-1); border-radius: 8px; font-family: var(--font-sans); font-size: var(--font-body-sm-size, 13px); resize: vertical; box-sizing: border-box;"></textarea>
+                </div>
+                <div style="margin-bottom: 16px; padding: 12px; background: var(--ubits-feedback-bg-info-subtle); border-radius: 8px; display: flex; align-items: flex-start; gap: 8px;">
+                  <i class="far fa-info-circle" style="color: var(--ubits-feedback-fg-info-subtle); font-size: 16px; margin-top: 2px;"></i>
+                  <p style="margin: 0; font-size: var(--font-body-sm-size, 13px); color: var(--ubits-fg-1-medium);">Debes tener al menos dos opciones de respuesta</p>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 12px;">
+                  <div style="display: flex; gap: 8px; align-items: center;">
+                    <span style="font-size: var(--font-body-sm-size, 13px); color: var(--ubits-fg-1-medium); min-width: 20px;">1</span>
+                    <input type="text" placeholder="Label" style="flex: 1; padding: 10px 12px; border: 1px solid var(--ubits-border-1); border-radius: 8px; font-family: var(--font-sans); font-size: var(--font-body-sm-size, 13px); box-sizing: border-box;">
+                    <button style="padding: 8px; border: none; background: transparent; color: var(--ubits-fg-1-medium); cursor: pointer; border-radius: 4px;">
+                      <i class="far fa-trash"></i>
+                    </button>
+                  </div>
+                  <div style="display: flex; gap: 8px; align-items: center;">
+                    <span style="font-size: var(--font-body-sm-size, 13px); color: var(--ubits-fg-1-medium); min-width: 20px;">2</span>
+                    <input type="text" placeholder="Label" style="flex: 1; padding: 10px 12px; border: 1px solid var(--ubits-border-1); border-radius: 8px; font-family: var(--font-sans); font-size: var(--font-body-sm-size, 13px); box-sizing: border-box;">
+                    <button style="padding: 8px; border: none; background: transparent; color: var(--ubits-fg-1-medium); cursor: pointer; border-radius: 4px;">
+                      <i class="far fa-trash"></i>
+                    </button>
+                  </div>
+                </div>
+                <button style="margin-top: 16px; padding: 10px 12px; border: 1px dashed var(--ubits-border-1); background: transparent; border-radius: 8px; color: var(--ubits-fg-1-medium); font-family: var(--font-sans); font-size: var(--font-body-sm-size, 13px); cursor: pointer; display: flex; align-items: center; gap: 8px; width: 100%;">
+                  <i class="far fa-plus"></i>
+                  <span>Añadir opción de respuesta</span>
+                </button>
+              </div>
+            `,
+            tertiaryEnabled: true,
+            tertiaryLabel: 'Cancelar',
+            secondaryEnabled: true,
+            secondaryLabel: 'Guardar',
+            primaryEnabled: true,
+            primaryLabel: 'Crear',
+            isOpen: false
+          };
+        }
+        return drawerPreviewState[componentId];
+      }
+      
+      // Función para actualizar el preview del Drawer
+      window.updateDrawerPreview = function(componentId) {
+        const state = initDrawerPreviewState(componentId);
+        const container = document.getElementById(`drawer-preview-container-${componentId}`);
+        
+        if (!container) {
+          console.error('❌ Preview container de Drawer no encontrado:', `drawer-preview-container-${componentId}`);
+          return;
+        }
+        
+        // Limpiar contenedor
+        container.innerHTML = '';
+        
+        // Cargar CSS si no está cargado
+        const existingDrawerLink = document.querySelector('link[href*="drawer.css"]');
+        if (!existingDrawerLink) {
+          const link = document.createElement('link');
+          link.rel = 'stylesheet';
+          link.href = '../../addons/drawer/src/styles/drawer.css';
+          document.head.appendChild(link);
+        }
+        
+        // Cargar CSS del button si no está cargado (para los botones del footer)
+        const existingButtonLink = document.querySelector('link[href*="button.css"]');
+        if (!existingButtonLink) {
+          const link = document.createElement('link');
+          link.rel = 'stylesheet';
+          link.href = '../../addons/button/src/styles/button.css';
+          document.head.appendChild(link);
+        }
+        
+        // Cargar script si no está cargado
+        const existingScript = document.querySelector('script[src*="DrawerProvider"]');
+        if (!existingScript && typeof window.createDrawer === 'undefined') {
+          const script = document.createElement('script');
+          script.type = 'module';
+          script.src = '../../addons/drawer/src/DrawerProvider.ts';
+          document.head.appendChild(script);
+        }
+        
+        // Esperar a que el script esté cargado
+        const checkDrawerReady = setInterval(() => {
+          if (typeof window.createDrawer !== 'undefined') {
+            clearInterval(checkDrawerReady);
+            
+            // Crear drawer con las opciones actuales
+            const footerButtons = {};
+            if (state.tertiaryEnabled) {
+              footerButtons.tertiary = {
+                label: state.tertiaryLabel,
+                onClick: () => {
+                  console.log('Botón Tertiary clickeado');
+                }
+              };
+            }
+            if (state.secondaryEnabled) {
+              footerButtons.secondary = {
+                label: state.secondaryLabel,
+                onClick: () => {
+                  console.log('Botón Secondary clickeado');
+                }
+              };
+            }
+            if (state.primaryEnabled) {
+              footerButtons.primary = {
+                label: state.primaryLabel,
+                onClick: () => {
+                  console.log('Botón Primary clickeado');
+                }
+              };
+            }
+            
+            const drawerInstance = window.createDrawer({
+              containerId: `drawer-preview-container-${componentId}`,
+              title: state.title,
+              complementaryText: state.complementaryText || undefined,
+              width: state.width,
+              bodyContent: state.bodyContent,
+              footerButtons: Object.keys(footerButtons).length > 0 ? footerButtons : undefined,
+              open: state.isOpen,
+              closeOnOverlayClick: true,
+              onClose: () => {
+                state.isOpen = false;
+                const toggleButton = document.getElementById(`drawer-toggle-button-text-${componentId}`);
+                if (toggleButton) {
+                  toggleButton.textContent = 'Abrir Drawer';
+                }
+              }
+            });
+            
+            drawerInstances[componentId] = drawerInstance;
+            
+            // Actualizar estado del botón toggle
+            const toggleButton = document.getElementById(`drawer-toggle-button-text-${componentId}`);
+            if (toggleButton) {
+              toggleButton.textContent = state.isOpen ? 'Cerrar Drawer' : 'Abrir Drawer';
+            }
+          }
+        }, 100);
+        
+        // Timeout de seguridad
+        setTimeout(() => {
+          clearInterval(checkDrawerReady);
+        }, 5000);
+      };
+      
+      // Función unificada para controles del Drawer
+      window.setDrawerControl = function(option, value, componentId) {
+        const state = initDrawerPreviewState(componentId);
+        
+        if (option === 'title') {
+          state.title = value;
+        } else if (option === 'complementaryText') {
+          state.complementaryText = value;
+        } else if (option === 'width') {
+          state.width = value;
+        } else if (option === 'tertiaryLabel') {
+          state.tertiaryLabel = value;
+        } else if (option === 'tertiaryEnabled') {
+          state.tertiaryEnabled = value;
+        } else if (option === 'secondaryLabel') {
+          state.secondaryLabel = value;
+        } else if (option === 'secondaryEnabled') {
+          state.secondaryEnabled = value;
+        } else if (option === 'primaryLabel') {
+          state.primaryLabel = value;
+        } else if (option === 'primaryEnabled') {
+          state.primaryEnabled = value;
+        }
+        
+        // Actualizar drawer si existe
+        const drawerInstance = drawerInstances[componentId];
+        if (drawerInstance) {
+          // Recrear drawer con nuevas opciones
+          if (drawerInstance.element && drawerInstance.element.parentNode) {
+            drawerInstance.close();
+            drawerInstance.element.remove();
+          }
+          
+          // Actualizar contenido si es necesario
+          if (option === 'title' || option === 'complementaryText' || option === 'width' || 
+              option.startsWith('tertiary') || option.startsWith('secondary') || option.startsWith('primary')) {
+            setTimeout(() => {
+              window.updateDrawerPreview(componentId);
+            }, 50);
+          }
+        } else {
+          // Si no existe, crear uno nuevo
+          setTimeout(() => {
+            window.updateDrawerPreview(componentId);
+          }, 50);
+        }
+      };
+      
+      // Función para toggle del drawer
+      window.toggleDrawer = function(componentId) {
+        const state = initDrawerPreviewState(componentId);
+        const drawerInstance = drawerInstances[componentId];
+        
+        if (drawerInstance) {
+          if (state.isOpen) {
+            drawerInstance.close();
+            state.isOpen = false;
+          } else {
+            drawerInstance.open();
+            state.isOpen = true;
+          }
+          
+          const toggleButton = document.getElementById(`drawer-toggle-button-text-${componentId}`);
+          if (toggleButton) {
+            toggleButton.textContent = state.isOpen ? 'Cerrar Drawer' : 'Abrir Drawer';
+          }
+        } else {
+          // Si no existe, crear y abrir
+          state.isOpen = true;
+          window.updateDrawerPreview(componentId);
+          setTimeout(() => {
+            const instance = drawerInstances[componentId];
+            if (instance) {
+              instance.open();
+            }
+          }, 300);
+        }
       };
       
       // ========================================
