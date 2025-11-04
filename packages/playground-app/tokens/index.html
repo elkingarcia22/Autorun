@@ -3996,6 +3996,21 @@ Reglas Importantes:
               class: 'ubits-modal-overlay ubits-modal',
               example: 'createModal({\n  title: \'Título del modal\',\n  size: \'md\',\n  fullScreen: false,\n  bodyContent: \'<p>Contenido del modal</p>\',\n  footerButtons: {\n    tertiary: { label: \'Cancelar\', onClick: () => {} },\n    secondary: { label: \'Guardar\', onClick: () => {} },\n    primary: { label: \'Aplicar\', onClick: () => {} }\n  },\n  onClose: () => {}\n})',
               hasPreview: true
+            },
+            {
+              name: 'Scrollbar',
+              description: 'Componente scrollbar personalizado UBITS. Se usa para crear scrollbars personalizados en elementos scrollable. Soporta orientación vertical y horizontal. Se sincroniza automáticamente con el elemento scrollable asociado. Aparece en hover y se adapta al tamaño del contenido.',
+              files: {
+                css: 'addons/scroll/src/styles/scroll.css',
+                ts: 'addons/scroll/src/ScrollProvider.ts'
+              },
+              variants: [],
+              sizes: [],
+              states: ['default'],
+              features: ['Orientación vertical y horizontal', 'Sincronización automática con elemento scrollable', 'Aparece en hover', 'Se adapta al tamaño del contenido', 'Responsive (2px en móvil)', 'Métodos update/destroy', 'Usa tokens UBITS exclusivamente'],
+              class: 'ubits-scrollbar ubits-scrollbar--vertical ubits-scrollbar--horizontal',
+              example: 'createScrollbar({\n  orientation: \'vertical\',\n  targetId: \'scrollable-container\',\n  containerId: \'scrollbar-container\'\n})',
+              hasPreview: true
             }
           ],
           'Formularios': [
@@ -4273,6 +4288,8 @@ Reglas Importantes:
                     window.updateDrawerPreview('drawer-navigation');
                   } else if (componentId === 'modal' && typeof window.updateModalPreview === 'function') {
                     window.updateModalPreview('modal');
+                  } else if (componentId === 'scrollbar' && typeof window.updateScrollbarPreview === 'function') {
+                    window.updateScrollbarPreview('scrollbar');
                   } else if (componentId === 'alert' && typeof window.updateAlertPreview === 'function') {
                     window.updateAlertPreview('alert');
                     initializeAlertPreview('alert');
@@ -5039,6 +5056,77 @@ Reglas Importantes:
                           <div style="background: var(--ubits-bg-1); padding: 48px; border-radius: 8px; border: none; margin-bottom: 24px; display: flex; align-items: center; justify-content: center; min-height: 400px; position: relative;">
                             <div id="modal-preview-container-${componentId}" style="width: 100%; height: 100%; position: relative;">
                               <!-- El modal se renderizará aquí -->
+                            </div>
+                          </div>
+                        </div>
+                      ` : ''}
+                      
+                      ${hasPreview && component.name === 'Scrollbar' ? `
+                        <!-- Preview Section for Scrollbar -->
+                        <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: none; margin-bottom: 24px;">
+                          <!-- CONTROLES ARRIBA -->
+                          <div style="margin-bottom: 24px;">
+                            <h4 style="margin: 0 0 20px 0; color: var(--ubits-fg-1-high); font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand);"></i>
+                              Controles
+                            </h4>
+                            
+                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
+                              <!-- Orientación -->
+                              <div style="flex: 0 0 auto; min-width: 250px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Orientación</label>
+                                <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                                  <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" data-component="${componentId}" data-option="orientation" data-value="vertical" onclick="setScrollbarControl('orientation', 'vertical', '${componentId}')">
+                                    <span>Vertical</span>
+                                  </button>
+                                  <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-component="${componentId}" data-option="orientation" data-value="horizontal" onclick="setScrollbarControl('orientation', 'horizontal', '${componentId}')">
+                                    <span>Horizontal</span>
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <!-- PREVIEW EN EL MEDIO -->
+                          <div style="background: var(--ubits-bg-1); padding: 48px; border-radius: 8px; border: none; margin-bottom: 24px; display: flex; align-items: center; justify-content: center; min-height: 400px; position: relative;">
+                            <div id="scrollbar-preview-container-${componentId}" style="width: 100%; height: 100%; position: relative;">
+                              <!-- Contenedor scrollable vertical con su scrollbar -->
+                              <div id="scrollbar-wrapper-vertical-${componentId}" style="display: flex; align-items: stretch; gap: 8px; height: 300px;">
+                                <div id="scrollbar-scrollable-vertical-${componentId}" style="flex: 1; overflow-y: auto; overflow-x: hidden; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px; border: 1px solid var(--ubits-border-1); -ms-overflow-style: none; scrollbar-width: none;">
+                                  <div style="height: 800px; padding: 16px;">
+                                    <p style="margin: 0 0 16px 0; color: var(--ubits-fg-1-high); font-size: var(--font-body-md-size, 16px);">Contenido scrollable vertical</p>
+                                    <p style="margin: 0 0 16px 0; color: var(--ubits-fg-1-medium); font-size: var(--font-body-sm-size, 13px);">Este es un ejemplo de contenido largo que requiere scroll vertical. El scrollbar aparecerá a la derecha cuando pases el mouse sobre el contenedor.</p>
+                                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                                      ${Array.from({ length: 20 }, (_, i) => `
+                                        <div style="padding: 12px; background: var(--ubits-bg-1); border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                                          <p style="margin: 0; color: var(--ubits-fg-1-high); font-size: var(--font-body-sm-size, 13px);">Elemento ${i + 1}</p>
+                                        </div>
+                                      `).join('')}
+                                    </div>
+                                  </div>
+                                </div>
+                                <!-- Scrollbar vertical -->
+                                <div id="scrollbar-vertical-${componentId}" style="height: 100%;"></div>
+                              </div>
+                              
+                              <!-- Contenedor scrollable horizontal con su scrollbar -->
+                              <div id="scrollbar-wrapper-horizontal-${componentId}" style="display: none; flex-direction: column; gap: 8px; width: 100%; height: 200px;">
+                                <div id="scrollbar-scrollable-horizontal-${componentId}" style="flex: 1; overflow-x: auto; overflow-y: hidden; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px; border: 1px solid var(--ubits-border-1); -ms-overflow-style: none; scrollbar-width: none;">
+                                  <div style="width: 1200px; padding: 16px;">
+                                    <p style="margin: 0 0 16px 0; color: var(--ubits-fg-1-high); font-size: var(--font-body-md-size, 16px);">Contenido scrollable horizontal</p>
+                                    <p style="margin: 0 0 16px 0; color: var(--ubits-fg-1-medium); font-size: var(--font-body-sm-size, 13px);">Este es un ejemplo de contenido ancho que requiere scroll horizontal. El scrollbar aparecerá abajo cuando pases el mouse sobre el contenedor.</p>
+                                    <div style="display: flex; gap: 12px;">
+                                      ${Array.from({ length: 15 }, (_, i) => `
+                                        <div style="min-width: 150px; padding: 12px; background: var(--ubits-bg-1); border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                                          <p style="margin: 0; color: var(--ubits-fg-1-high); font-size: var(--font-body-sm-size, 13px);">Elemento ${i + 1}</p>
+                                        </div>
+                                      `).join('')}
+                                    </div>
+                                  </div>
+                                </div>
+                                <!-- Scrollbar horizontal -->
+                                <div id="scrollbar-horizontal-${componentId}" style="width: 100%;"></div>
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -7946,6 +8034,194 @@ Reglas Importantes:
             }
           }, 100);
         }
+      };
+      
+      // ========================================
+      // SCROLLBAR PREVIEW FUNCTIONS
+      // ========================================
+      
+      // Estado del preview del Scrollbar
+      const scrollbarPreviewState = {};
+      const scrollbarInstances = {};
+      
+      // Inicializar estado del Scrollbar
+      function initScrollbarPreviewState(componentId) {
+        if (!scrollbarPreviewState[componentId]) {
+          scrollbarPreviewState[componentId] = {
+            orientation: 'vertical'
+          };
+        }
+        return scrollbarPreviewState[componentId];
+      }
+      
+      // Función para actualizar el preview del Scrollbar
+      window.updateScrollbarPreview = function(componentId) {
+        const state = initScrollbarPreviewState(componentId);
+        
+        // Limpiar instancias anteriores
+        if (scrollbarInstances[componentId]) {
+          if (scrollbarInstances[componentId].vertical) {
+            scrollbarInstances[componentId].vertical.destroy();
+          }
+          if (scrollbarInstances[componentId].horizontal) {
+            scrollbarInstances[componentId].horizontal.destroy();
+          }
+        }
+        scrollbarInstances[componentId] = {};
+        
+        // Ocultar todos los contenedores
+        const verticalWrapper = document.getElementById(`scrollbar-wrapper-vertical-${componentId}`);
+        const horizontalWrapper = document.getElementById(`scrollbar-wrapper-horizontal-${componentId}`);
+        const verticalContainer = document.getElementById(`scrollbar-scrollable-vertical-${componentId}`);
+        const horizontalContainer = document.getElementById(`scrollbar-scrollable-horizontal-${componentId}`);
+        const verticalScrollbar = document.getElementById(`scrollbar-vertical-${componentId}`);
+        const horizontalScrollbar = document.getElementById(`scrollbar-horizontal-${componentId}`);
+        
+        if (!verticalContainer || !horizontalContainer || !verticalScrollbar || !horizontalScrollbar || !verticalWrapper || !horizontalWrapper) {
+          return;
+        }
+        
+        // Cargar CSS si no está cargado
+        const cssLinkId = 'scrollbar-css';
+        if (!document.getElementById(cssLinkId)) {
+          const link = document.createElement('link');
+          link.id = cssLinkId;
+          link.rel = 'stylesheet';
+          link.href = '../../addons/scroll/src/styles/scroll.css';
+          document.head.appendChild(link);
+        }
+        
+        // Cargar el script del scrollbar si no está cargado
+        if (typeof window.createScrollbar === 'undefined') {
+          // Intentar cargar desde el módulo compilado o fuente
+          const script = document.createElement('script');
+          script.src = '../../addons/scroll/dist/scrollbar.js';
+          script.type = 'module';
+          script.onerror = () => {
+            // Si falla, intentar cargar desde el src directamente
+            const script2 = document.createElement('script');
+            script2.src = '../../addons/scroll/src/index.ts';
+            script2.type = 'module';
+            document.head.appendChild(script2);
+          };
+          document.head.appendChild(script);
+        }
+        
+        if (state.orientation === 'vertical') {
+          // Mostrar contenedor vertical y ocultar horizontal
+          verticalWrapper.style.display = 'flex';
+          horizontalWrapper.style.display = 'none';
+          
+          // Configurar el contenedor para que sea scrollable
+          verticalContainer.setAttribute('data-scrollable', 'true');
+          
+          // Ocultar scrollbar nativo
+          verticalContainer.style.setProperty('-ms-overflow-style', 'none');
+          verticalContainer.style.setProperty('scrollbar-width', 'none');
+          const style = document.createElement('style');
+          style.textContent = `#scrollbar-scrollable-vertical-${componentId}::-webkit-scrollbar { display: none; }`;
+          document.head.appendChild(style);
+          
+          // Esperar a que el DOM esté listo y crear el scrollbar vertical
+          setTimeout(() => {
+            if (typeof window.createScrollbar !== 'undefined') {
+              try {
+                const instance = window.createScrollbar({
+                  orientation: 'vertical',
+                  targetId: `scrollbar-scrollable-vertical-${componentId}`,
+                  containerId: `scrollbar-vertical-${componentId}`
+                });
+                scrollbarInstances[componentId].vertical = instance;
+              } catch (error) {
+                console.error('Error al crear scrollbar vertical:', error);
+              }
+            } else {
+              // Si aún no está disponible, intentar de nuevo
+              setTimeout(() => {
+                if (typeof window.createScrollbar !== 'undefined') {
+                  try {
+                    const instance = window.createScrollbar({
+                      orientation: 'vertical',
+                      targetId: `scrollbar-scrollable-vertical-${componentId}`,
+                      containerId: `scrollbar-vertical-${componentId}`
+                    });
+                    scrollbarInstances[componentId].vertical = instance;
+                  } catch (error) {
+                    console.error('Error al crear scrollbar vertical:', error);
+                  }
+                }
+              }, 500);
+            }
+          }, 100);
+        } else {
+          // Mostrar contenedor horizontal y ocultar vertical
+          verticalWrapper.style.display = 'none';
+          horizontalWrapper.style.display = 'flex';
+          
+          // Configurar el contenedor para que sea scrollable
+          horizontalContainer.setAttribute('data-scrollable', 'true');
+          
+          // Ocultar scrollbar nativo
+          horizontalContainer.style.setProperty('-ms-overflow-style', 'none');
+          horizontalContainer.style.setProperty('scrollbar-width', 'none');
+          const style = document.createElement('style');
+          style.textContent = `#scrollbar-scrollable-horizontal-${componentId}::-webkit-scrollbar { display: none; }`;
+          document.head.appendChild(style);
+          
+          // Esperar a que el DOM esté listo y crear el scrollbar horizontal
+          setTimeout(() => {
+            if (typeof window.createScrollbar !== 'undefined') {
+              try {
+                const instance = window.createScrollbar({
+                  orientation: 'horizontal',
+                  targetId: `scrollbar-scrollable-horizontal-${componentId}`,
+                  containerId: `scrollbar-horizontal-${componentId}`
+                });
+                scrollbarInstances[componentId].horizontal = instance;
+              } catch (error) {
+                console.error('Error al crear scrollbar horizontal:', error);
+              }
+            } else {
+              // Si aún no está disponible, intentar de nuevo
+              setTimeout(() => {
+                if (typeof window.createScrollbar !== 'undefined') {
+                  try {
+                    const instance = window.createScrollbar({
+                      orientation: 'horizontal',
+                      targetId: `scrollbar-scrollable-horizontal-${componentId}`,
+                      containerId: `scrollbar-horizontal-${componentId}`
+                    });
+                    scrollbarInstances[componentId].horizontal = instance;
+                  } catch (error) {
+                    console.error('Error al crear scrollbar horizontal:', error);
+                  }
+                }
+              }, 500);
+            }
+          }, 100);
+        }
+      };
+      
+      // Función para actualizar controles del Scrollbar
+      window.setScrollbarControl = function(option, value, componentId) {
+        const state = initScrollbarPreviewState(componentId);
+        
+        if (option === 'orientation') {
+          state.orientation = value;
+          
+          // Actualizar botones activos
+          const buttons = document.querySelectorAll(`[data-component="${componentId}"][data-option="orientation"]`);
+          buttons.forEach(btn => {
+            if (btn.getAttribute('data-value') === value) {
+              btn.classList.add('active');
+            } else {
+              btn.classList.remove('active');
+            }
+          });
+        }
+        
+        // Actualizar preview
+        window.updateScrollbarPreview(componentId);
       };
       
       // ========================================

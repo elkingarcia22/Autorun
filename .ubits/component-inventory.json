@@ -177,6 +177,19 @@
       "sizes": ["sm", "md", "lg", "xl", "full"],
       "states": ["closed", "open"],
       "features": ["5 tamaños (sm: 320px, md: 480px, lg: 640px, xl: 800px, full: 1280px)", "Overlay semitransparente", "Header con título y botón de cerrar", "Body con scroll personalizado y scrollbar visual", "Footer con botones opcionales (tertiary, secondary, primary)", "Variante full-screen para contenido extenso", "Cierre con ESC y clic en overlay", "Animaciones suaves de apertura/cierre", "Responsive (100% en móvil)", "Métodos open/close/updateContent", "Usa tokens UBITS exclusivamente", "Usa componente Button existente para footer"]
+    },
+    "scrollbar": {
+      "name": "Scrollbar",
+      "package": "@ubits/scroll",
+      "path": "packages/addons/scroll",
+      "provider": "createScrollbar",
+      "globalFunction": "window.createScrollbar",
+      "cssFile": "packages/addons/scroll/src/styles/scroll.css",
+      "storybookStory": "Scrollbar.stories.ts",
+      "variants": [],
+      "sizes": [],
+      "states": ["default"],
+      "features": ["Orientación vertical y horizontal", "Sincronización automática con elemento scrollable", "Aparece en hover", "Se adapta al tamaño del contenido", "Navegación por clic en scrollbar", "Responsive (2px en móvil)", "Métodos update/destroy", "Usa tokens UBITS exclusivamente"]
     }
   },
   "tokens": {
