@@ -5213,6 +5213,119 @@ Reglas Importantes:
                                 </label>
                               </div>
                             </div>
+                            
+                            <!-- Controles Multi-color (solo visible cuando variant es multi-color) -->
+                            <div id="progress-multicolor-controls-${componentId}" style="display: none; margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--ubits-border-1);">
+                              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                                <h5 style="margin: 0; color: var(--ubits-fg-1-high); font-size: 14px; font-weight: 600;">Segmentos Multi-color</h5>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                  <label style="font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); text-transform: uppercase; letter-spacing: 0.5px;">Número de segmentos:</label>
+                                  <select id="progress-segments-count-${componentId}" onchange="setProgressBarSegmentCount(parseInt(this.value), '${componentId}')" style="padding: 8px 28px 8px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); cursor: pointer; box-sizing: border-box; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23666%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226,9 12,15 18,9%22></polyline></svg>'); background-repeat: no-repeat; background-position: right 8px center; background-size: 16px;">
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4" selected>4</option>
+                                    <option value="5">5</option>
+                                  </select>
+                                </div>
+                              </div>
+                              <div id="progress-segments-container-${componentId}" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                                <!-- Segmento 1 -->
+                                <div id="progress-segment-1-wrapper-${componentId}" style="display: flex; flex-direction: column; gap: 12px;">
+                                  <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); text-transform: uppercase; letter-spacing: 0.5px;">Segmento 1</label>
+                                  <select id="progress-segment-1-color-${componentId}" onchange="setProgressBarSegmentControl(1, 'color', this.value, '${componentId}')" style="width: 100%; padding: 10px 32px 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); cursor: pointer; box-sizing: border-box; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23666%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226,9 12,15 18,9%22></polyline></svg>'); background-repeat: no-repeat; background-position: right 10px center; background-size: 16px;">
+                                    <option value="green">Green</option>
+                                    <option value="info" selected>Info (Blue)</option>
+                                    <option value="yellow">Yellow</option>
+                                    <option value="error">Error (Red)</option>
+                                    <option value="gray">Gray</option>
+                                  </select>
+                                  <input type="range" id="progress-segment-1-value-${componentId}" min="0" max="100" value="30" oninput="setProgressBarSegmentControl(1, 'value', parseInt(this.value), '${componentId}')" style="width: 100%;">
+                                  <div style="display: flex; justify-content: space-between;">
+                                    <span style="font-size: 11px; color: var(--ubits-fg-1-medium);">0%</span>
+                                    <span id="progress-segment-1-display-${componentId}" style="font-size: 11px; color: var(--ubits-fg-1-high); font-weight: 600;">30%</span>
+                                    <span style="font-size: 11px; color: var(--ubits-fg-1-medium);">100%</span>
+                                  </div>
+                                </div>
+                                
+                                <!-- Segmento 2 -->
+                                <div id="progress-segment-2-wrapper-${componentId}" style="display: flex; flex-direction: column; gap: 12px;">
+                                  <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); text-transform: uppercase; letter-spacing: 0.5px;">Segmento 2</label>
+                                  <select id="progress-segment-2-color-${componentId}" onchange="setProgressBarSegmentControl(2, 'color', this.value, '${componentId}')" style="width: 100%; padding: 10px 32px 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); cursor: pointer; box-sizing: border-box; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23666%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226,9 12,15 18,9%22></polyline></svg>'); background-repeat: no-repeat; background-position: right 10px center; background-size: 16px;">
+                                    <option value="green">Green</option>
+                                    <option value="info">Info (Blue)</option>
+                                    <option value="yellow" selected>Yellow</option>
+                                    <option value="error">Error (Red)</option>
+                                    <option value="gray">Gray</option>
+                                  </select>
+                                  <input type="range" id="progress-segment-2-value-${componentId}" min="0" max="100" value="25" oninput="setProgressBarSegmentControl(2, 'value', parseInt(this.value), '${componentId}')" style="width: 100%;">
+                                  <div style="display: flex; justify-content: space-between;">
+                                    <span style="font-size: 11px; color: var(--ubits-fg-1-medium);">0%</span>
+                                    <span id="progress-segment-2-display-${componentId}" style="font-size: 11px; color: var(--ubits-fg-1-high); font-weight: 600;">25%</span>
+                                    <span style="font-size: 11px; color: var(--ubits-fg-1-medium);">100%</span>
+                                  </div>
+                                </div>
+                                
+                                <!-- Segmento 3 -->
+                                <div id="progress-segment-3-wrapper-${componentId}" style="display: flex; flex-direction: column; gap: 12px;">
+                                  <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); text-transform: uppercase; letter-spacing: 0.5px;">Segmento 3</label>
+                                  <select id="progress-segment-3-color-${componentId}" onchange="setProgressBarSegmentControl(3, 'color', this.value, '${componentId}')" style="width: 100%; padding: 10px 32px 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); cursor: pointer; box-sizing: border-box; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23666%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226,9 12,15 18,9%22></polyline></svg>'); background-repeat: no-repeat; background-position: right 10px center; background-size: 16px;">
+                                    <option value="green" selected>Green</option>
+                                    <option value="info">Info (Blue)</option>
+                                    <option value="yellow">Yellow</option>
+                                    <option value="error">Error (Red)</option>
+                                    <option value="gray">Gray</option>
+                                  </select>
+                                  <input type="range" id="progress-segment-3-value-${componentId}" min="0" max="100" value="20" oninput="setProgressBarSegmentControl(3, 'value', parseInt(this.value), '${componentId}')" style="width: 100%;">
+                                  <div style="display: flex; justify-content: space-between;">
+                                    <span style="font-size: 11px; color: var(--ubits-fg-1-medium);">0%</span>
+                                    <span id="progress-segment-3-display-${componentId}" style="font-size: 11px; color: var(--ubits-fg-1-high); font-weight: 600;">20%</span>
+                                    <span style="font-size: 11px; color: var(--ubits-fg-1-medium);">100%</span>
+                                  </div>
+                                </div>
+                                
+                                <!-- Segmento 4 -->
+                                <div id="progress-segment-4-wrapper-${componentId}" style="display: flex; flex-direction: column; gap: 12px;">
+                                  <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); text-transform: uppercase; letter-spacing: 0.5px;">Segmento 4</label>
+                                  <select id="progress-segment-4-color-${componentId}" onchange="setProgressBarSegmentControl(4, 'color', this.value, '${componentId}')" style="width: 100%; padding: 10px 32px 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); cursor: pointer; box-sizing: border-box; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23666%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226,9 12,15 18,9%22></polyline></svg>'); background-repeat: no-repeat; background-position: right 10px center; background-size: 16px;">
+                                    <option value="green">Green</option>
+                                    <option value="info">Info (Blue)</option>
+                                    <option value="yellow">Yellow</option>
+                                    <option value="error" selected>Error (Red)</option>
+                                    <option value="gray">Gray</option>
+                                  </select>
+                                  <input type="range" id="progress-segment-4-value-${componentId}" min="0" max="100" value="25" oninput="setProgressBarSegmentControl(4, 'value', parseInt(this.value), '${componentId}')" style="width: 100%;">
+                                  <div style="display: flex; justify-content: space-between;">
+                                    <span style="font-size: 11px; color: var(--ubits-fg-1-medium);">0%</span>
+                                    <span id="progress-segment-4-display-${componentId}" style="font-size: 11px; color: var(--ubits-fg-1-high); font-weight: 600;">25%</span>
+                                    <span style="font-size: 11px; color: var(--ubits-fg-1-medium);">100%</span>
+                                  </div>
+                                </div>
+                                
+                                <!-- Segmento 5 -->
+                                <div id="progress-segment-5-wrapper-${componentId}" style="display: none; flex-direction: column; gap: 12px;">
+                                  <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); text-transform: uppercase; letter-spacing: 0.5px;">Segmento 5</label>
+                                  <select id="progress-segment-5-color-${componentId}" onchange="setProgressBarSegmentControl(5, 'color', this.value, '${componentId}')" style="width: 100%; padding: 10px 32px 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); cursor: pointer; box-sizing: border-box; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23666%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226,9 12,15 18,9%22></polyline></svg>'); background-repeat: no-repeat; background-position: right 10px center; background-size: 16px;">
+                                    <option value="green">Green</option>
+                                    <option value="info">Info (Blue)</option>
+                                    <option value="yellow">Yellow</option>
+                                    <option value="error">Error (Red)</option>
+                                    <option value="gray">Gray</option>
+                                  </select>
+                                  <input type="range" id="progress-segment-5-value-${componentId}" min="0" max="100" value="0" oninput="setProgressBarSegmentControl(5, 'value', parseInt(this.value), '${componentId}')" style="width: 100%;">
+                                  <div style="display: flex; justify-content: space-between;">
+                                    <span style="font-size: 11px; color: var(--ubits-fg-1-medium);">0%</span>
+                                    <span id="progress-segment-5-display-${componentId}" style="font-size: 11px; color: var(--ubits-fg-1-high); font-weight: 600;">0%</span>
+                                    <span style="font-size: 11px; color: var(--ubits-fg-1-medium);">100%</span>
+                                  </div>
+                                </div>
+                              </div>
+                              <div style="margin-top: 16px; padding: 12px; background: var(--ubits-bg-1); border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                                <p style="margin: 0; font-size: 12px; color: var(--ubits-fg-1-medium); line-height: 1.5;">
+                                  <strong style="color: var(--ubits-fg-1-high);">Nota:</strong> El segmento gris se calcula automáticamente como el resto que falta para llegar a 100%. Solo se muestra si la suma de los segmentos activos es menor a 100%.
+                                </p>
+                              </div>
+                            </div>
                           </div>
                           
                           <!-- PREVIEW EN EL MEDIO -->
@@ -8467,7 +8580,14 @@ Reglas Importantes:
             size: 'md',
             variant: 'default',
             value: 75,
-            indicator: true
+            indicator: true,
+            numSegments: 4,
+            segments: [
+              { value: 30, color: 'info' },
+              { value: 25, color: 'yellow' },
+              { value: 20, color: 'green' },
+              { value: 25, color: 'error' }
+            ]
           };
         }
         return progressBarPreviewState[componentId];
@@ -8503,22 +8623,33 @@ Reglas Importantes:
         }
         
         const colorTokens = {
-          yellow: 'var(--ubits-feedback-accent-warning, #f5a623)',
-          green: 'var(--ubits-feedback-accent-success, #4ab028)',
+          yellow: 'var(--ubits-fg-yellow-subtle-inverted, #ffd555)',
+          green: 'var(--ubits-feedback-accent-success, #56ce51)',
           gray: 'var(--ubits-bg-4, #dbdde0)',
-          info: 'var(--ubits-accent-brand, #0c5bef)',
-          error: 'var(--ubits-feedback-accent-error, #cf0e34)'
+          info: 'var(--ubits-feedback-accent-info-static-inverted, #4a74ee)',
+          error: 'var(--ubits-button-badge, #cf0e34)'
         };
         
         let progressIndicatorHtml = '';
         
         if (variant === 'multi-color' && segments.length > 0) {
-          const total = segments.reduce((sum, seg) => sum + seg.value, 0);
-          const segmentsHtml = segments.map((segment, index) => {
-            const width = total > 0 ? (segment.value / total) * 100 : 0;
+          // Calcular el total de los segmentos definidos
+          const totalDefined = segments.reduce((sum, seg) => sum + seg.value, 0);
+          // Calcular el resto (lo que falta para llegar a 100%)
+          const remainder = Math.max(0, 100 - totalDefined);
+          
+          // Crear array con todos los segmentos (incluyendo el resto gris si es necesario)
+          const allSegments = [...segments];
+          if (remainder > 0) {
+            allSegments.push({ value: remainder, color: 'gray' });
+          }
+          
+          // Generar segmentos HTML
+          const segmentsHtml = allSegments.map((segment, index) => {
+            const width = segment.value; // Ya está en porcentaje (0-100)
             const color = colorTokens[segment.color] || colorTokens.gray;
             const isFirst = index === 0;
-            const isLast = index === segments.length - 1;
+            const isLast = index === allSegments.length - 1;
             const borderRadius = `border-radius: ${isFirst ? '1000px 0 0 1000px' : isLast ? '0 1000px 1000px 0' : '0'};`;
             
             return `<div 
@@ -8579,15 +8710,22 @@ Reglas Importantes:
           indicator: state.indicator
         };
         
-        // Si es multi-color, usar segmentos de ejemplo
+        // Si es multi-color, usar solo los segmentos activos según numSegments
         if (state.variant === 'multi-color') {
-          options.segments = [
-            { value: 30, color: 'green' },
-            { value: 25, color: 'info' },
-            { value: 20, color: 'yellow' },
-            { value: 15, color: 'error' },
-            { value: 10, color: 'gray' }
-          ];
+          const numSegments = state.numSegments || 4;
+          // Asegurar que hay suficientes segmentos
+          if (!state.segments || state.segments.length < numSegments) {
+            const defaultSegments = [
+              { value: 30, color: 'info' },
+              { value: 25, color: 'yellow' },
+              { value: 20, color: 'green' },
+              { value: 25, color: 'error' },
+              { value: 0, color: 'gray' }
+            ];
+            state.segments = defaultSegments.slice(0, numSegments);
+          }
+          // Usar solo los segmentos activos
+          options.segments = state.segments.slice(0, numSegments);
           options.value = undefined;
         }
         
@@ -8606,6 +8744,51 @@ Reglas Importantes:
         const valueControl = document.getElementById(`progress-value-control-${componentId}`);
         if (valueControl) {
           valueControl.style.display = state.variant === 'default' ? 'block' : 'none';
+        }
+        
+        // Actualizar visibilidad de controles multi-color
+        const multicolorControls = document.getElementById(`progress-multicolor-controls-${componentId}`);
+        if (multicolorControls) {
+          multicolorControls.style.display = state.variant === 'multi-color' ? 'block' : 'none';
+        }
+        
+        // Actualizar visibilidad y valores de controles de segmentos si es multi-color
+        if (state.variant === 'multi-color') {
+          const numSegments = state.numSegments || 4;
+          
+          // Mostrar/ocultar wrappers de segmentos según numSegments
+          for (let i = 1; i <= 5; i++) {
+            const wrapper = document.getElementById(`progress-segment-${i}-wrapper-${componentId}`);
+            if (wrapper) {
+              wrapper.style.display = i <= numSegments ? 'flex' : 'none';
+            }
+          }
+          
+          // Actualizar valores de controles de segmentos activos
+          if (state.segments) {
+            state.segments.forEach((segment, index) => {
+              const segmentNum = index + 1;
+              if (segmentNum > numSegments) return;
+              
+              const colorSelect = document.getElementById(`progress-segment-${segmentNum}-color-${componentId}`);
+              const valueInput = document.getElementById(`progress-segment-${segmentNum}-value-${componentId}`);
+              const valueDisplay = document.getElementById(`progress-segment-${segmentNum}-display-${componentId}`);
+              
+              if (colorSelect) colorSelect.value = segment.color;
+              if (valueInput) {
+                valueInput.value = segment.value;
+              }
+              if (valueDisplay) {
+                valueDisplay.textContent = `${segment.value}%`;
+              }
+            });
+          }
+          
+          // Actualizar selector de número de segmentos
+          const segmentsCountSelect = document.getElementById(`progress-segments-count-${componentId}`);
+          if (segmentsCountSelect) {
+            segmentsCountSelect.value = numSegments;
+          }
         }
         
         // Actualizar valor del slider
@@ -8668,6 +8851,77 @@ Reglas Importantes:
           const indicatorStatus = document.getElementById(`progress-indicator-status-${componentId}`);
           if (indicatorStatus) {
             indicatorStatus.textContent = value ? 'Activado' : 'Desactivado';
+          }
+        }
+        
+        updateProgressBarPreview(componentId);
+      };
+      
+      // Función para actualizar controles de segmentos multi-color
+      window.setProgressBarSegmentControl = function(segmentNum, option, value, componentId) {
+        const state = initProgressBarPreviewState(componentId);
+        
+        // Asegurar que el array tenga suficientes segmentos (hasta 5)
+        if (!state.segments || state.segments.length < 5) {
+          const defaultSegments = [
+            { value: 30, color: 'info' },
+            { value: 25, color: 'yellow' },
+            { value: 20, color: 'green' },
+            { value: 25, color: 'error' },
+            { value: 0, color: 'gray' }
+          ];
+          if (!state.segments) {
+            state.segments = defaultSegments.slice(0, state.numSegments || 4);
+          } else {
+            // Asegurar que hay 5 segmentos disponibles
+            while (state.segments.length < 5) {
+              state.segments.push({ value: 0, color: 'gray' });
+            }
+          }
+        }
+        
+        const segmentIndex = segmentNum - 1;
+        if (segmentIndex >= 0 && segmentIndex < state.segments.length && segmentIndex < 5) {
+          if (option === 'color') {
+            state.segments[segmentIndex].color = value;
+          } else if (option === 'value') {
+            state.segments[segmentIndex].value = value;
+            
+            // Actualizar display
+            const valueDisplay = document.getElementById(`progress-segment-${segmentNum}-display-${componentId}`);
+            if (valueDisplay) {
+              valueDisplay.textContent = `${value}%`;
+            }
+          }
+        }
+        
+        updateProgressBarPreview(componentId);
+      };
+      
+      // Función para cambiar el número de segmentos activos
+      window.setProgressBarSegmentCount = function(count, componentId) {
+        const state = initProgressBarPreviewState(componentId);
+        
+        // Validar que el count esté entre 1 y 5
+        count = Math.max(1, Math.min(5, parseInt(count)));
+        state.numSegments = count;
+        
+        // Asegurar que hay suficientes segmentos en el array
+        if (!state.segments || state.segments.length < count) {
+          const defaultSegments = [
+            { value: 30, color: 'info' },
+            { value: 25, color: 'yellow' },
+            { value: 20, color: 'green' },
+            { value: 25, color: 'error' },
+            { value: 0, color: 'gray' }
+          ];
+          if (!state.segments) {
+            state.segments = [];
+          }
+          // Agregar segmentos faltantes con valores por defecto
+          while (state.segments.length < count) {
+            const defaultIndex = state.segments.length;
+            state.segments.push(defaultSegments[defaultIndex] || { value: 0, color: 'gray' });
           }
         }
         

@@ -202,7 +202,7 @@
       "variants": ["default", "multi-color"],
       "sizes": ["xs", "sm", "md", "lg"],
       "states": [],
-      "features": ["4 tamaños (xs: 4px, sm: 8px, md: 16px, lg: 20px)", "2 variantes (default, multi-color)", "Progreso simple con valor 0-100", "Múltiples segmentos con colores (yellow, green, gray, info, error)", "Indicador opcional (texto o porcentaje)", "Métodos update/destroy", "Usa tokens UBITS exclusivamente"]
+      "features": ["4 tamaños (xs: 4px, sm: 8px, md: 16px, lg: 20px)", "2 variantes (default, multi-color)", "Progreso simple con valor 0-100", "Hasta 5 segmentos configurables (1-5)", "Múltiples segmentos con colores (yellow: #ffd555, green: #56ce51, gray: #dbdde0, info: #4a74ee, error: #cf0e34)", "Segmento gris automático que representa el resto faltante para llegar a 100%", "Indicador opcional (texto o porcentaje)", "Métodos update/destroy", "Usa tokens UBITS exclusivamente (--ubits-fg-yellow-subtle-inverted, --ubits-feedback-accent-success, --ubits-bg-4, --ubits-feedback-accent-info-static-inverted, --ubits-button-badge)"]
     }
   },
   "tokens": {

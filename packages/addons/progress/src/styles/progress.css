@@ -38,7 +38,7 @@
 
 .ubits-progress-bar__indicator-wrapper {
     height: 100%;
-    background-color: var(--ubits-accent-brand, #0c5bef);
+    background-color: var(--ubits-chart-color-bg-neutral-blue-base, #557593);
     border-radius: var(--ubits-border-radius-full, 1000px);
     transition: width 0.3s ease;
     min-width: 0;

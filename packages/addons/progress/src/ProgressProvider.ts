@@ -4,11 +4,11 @@ import type { ProgressOptions, ProgressSegment } from './types/ProgressOptions';
  * Mapeo de colores de segmentos a tokens UBITS
  */
 const COLOR_TOKENS: Record<string, string> = {
-  yellow: 'var(--ubits-feedback-accent-warning, #f5a623)',
-  green: 'var(--ubits-feedback-accent-success, #4ab028)',
+  yellow: 'var(--ubits-fg-yellow-subtle-inverted, #ffd555)',
+  green: 'var(--ubits-feedback-accent-success, #56ce51)',
   gray: 'var(--ubits-bg-4, #dbdde0)',
-  info: 'var(--ubits-accent-brand, #0c5bef)',
-  error: 'var(--ubits-feedback-accent-error, #cf0e34)'
+  info: 'var(--ubits-feedback-accent-info-static-inverted, #4a74ee)',
+  error: 'var(--ubits-button-badge, #cf0e34)'
 };
 
 /**
@@ -51,17 +51,28 @@ export function renderProgressBar(options: ProgressOptions): string {
   let progressIndicatorHtml = '';
   
   if (variant === 'multi-color' && segments.length > 0) {
-    // Calcular el total de los segmentos para normalizar
-    const total = segments.reduce((sum, seg) => sum + seg.value, 0);
+    // Calcular el total de los segmentos definidos
+    const totalDefined = segments.reduce((sum, seg) => sum + seg.value, 0);
+    // Calcular el resto (lo que falta para llegar a 100%)
+    const remainder = Math.max(0, 100 - totalDefined);
     
-    // Generar segmentos
-    const segmentsHtml = segments.map((segment, index) => {
-      const width = total > 0 ? (segment.value / total) * 100 : 0;
+    // Crear array con todos los segmentos (incluyendo el resto gris si es necesario)
+    const allSegments = [...segments];
+    if (remainder > 0) {
+      allSegments.push({ value: remainder, color: 'gray' });
+    }
+    
+    // Generar segmentos HTML
+    const segmentsHtml = allSegments.map((segment, index) => {
+      const width = segment.value; // Ya está en porcentaje (0-100)
       const color = COLOR_TOKENS[segment.color] || COLOR_TOKENS.gray;
+      const isFirst = index === 0;
+      const isLast = index === allSegments.length - 1;
+      const borderRadius = `border-radius: ${isFirst ? '1000px 0 0 1000px' : isLast ? '0 1000px 1000px 0' : '0'};`;
       
       return `<div 
         class="ubits-progress-bar__segment" 
-        style="width: ${width}%; background-color: ${color};"
+        style="width: ${width}%; background-color: ${color}; ${borderRadius}"
         data-color="${segment.color}"
       ></div>`;
     }).join('');
