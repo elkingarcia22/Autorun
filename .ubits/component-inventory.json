@@ -140,6 +140,19 @@
       "states": ["completed", "published", "fulfilled", "created", "active", "not-fulfilled", "denied", "draft", "in-progress", "syncing", "pending", "pending-approval", "not-started", "finished", "archived", "disabled", "paused", "hidden"],
       "features": ["3 tamaños (xs, sm, md)", "19 estados predefinidos", "Icono izquierdo (punto de color)", "Icono derecho opcional", "Colores según estado (verde, rojo, azul, naranja, gris)", "Clickeable opcional", "Usa tokens UBITS exclusivamente"]
     },
+    "chip": {
+      "name": "Chip",
+      "package": "@ubits/chip",
+      "path": "packages/addons/chip",
+      "provider": "createChip",
+      "globalFunction": "window.createChip",
+      "cssFile": "packages/addons/chip/src/styles/chip.css",
+      "storybookStory": "Chip.stories.ts",
+      "variants": [],
+      "sizes": ["xs", "sm", "md", "lg"],
+      "states": ["default", "hover", "active", "pressed", "focus", "disabled"],
+      "features": ["4 tamaños (xs: 20px, sm: 24px, md: 28px, lg: 36px)", "6 estados (default, hover, active, pressed, focus, disabled)", "Icono izquierdo opcional", "Icono derecho opcional (botón cerrar)", "Clickeable opcional", "Botón de cerrar (closable)", "Usa tokens UBITS exclusivamente"]
+    },
     "avatar": {
       "name": "Avatar",
       "package": "@ubits/avatar",

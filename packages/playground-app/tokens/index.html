@@ -3998,6 +3998,21 @@ Reglas Importantes:
               hasPreview: true
             },
             {
+              name: 'Popover',
+              description: 'Componente popover con tail (flecha) para mostrar información contextual. Similar al modal pero más pequeño y con tail. Se usa para mostrar información adicional, tooltips avanzados o acciones contextuales. Tiene diferentes tamaños (sm: 240px, md: 320px, lg: 400px, xl: 480px) y posiciones de tail (top, bottom, left, right). Incluye header opcional con título, body con contenido scrollable y footer con botones primario, secundario y terciario.',
+              files: {
+                css: 'addons/popover/src/styles/popover.css',
+                ts: 'addons/popover/src/PopoverProvider.ts'
+              },
+              variants: [],
+              sizes: ['sm', 'md', 'lg', 'xl'],
+              states: ['closed', 'open'],
+              features: ['4 tamaños (sm: 240px, md: 320px, lg: 400px, xl: 480px)', 'Tail (flecha) posicionable (top, bottom, left, right)', 'Header opcional con título', 'Body con scroll personalizado y scrollbar visual', 'Footer con botones opcionales (tertiary, secondary, primary)', 'Posicionamiento absoluto o relativo a elemento de referencia', 'Cierre con clic fuera', 'Animaciones suaves de apertura/cierre', 'Responsive (100% en móvil)', 'Métodos open/close/updateContent/updatePosition/destroy', 'Usa tokens UBITS exclusivamente', 'Usa componente Button existente para footer'],
+              class: 'ubits-popover ubits-popover--open',
+              example: 'createPopover({\n  title: \'Título del popover\',\n  width: \'md\',\n  tailPosition: \'top\',\n  bodyContent: \'<p>Contenido del popover</p>\',\n  footerButtons: {\n    tertiary: { label: \'Cancelar\', onClick: () => {} },\n    secondary: { label: \'Guardar\', onClick: () => {} },\n    primary: { label: \'Aplicar\', onClick: () => {} }\n  },\n  position: { top: 100, left: 100 },\n  onClose: () => {}\n})',
+              hasPreview: true
+            },
+            {
               name: 'Scrollbar',
               description: 'Componente scrollbar personalizado UBITS. Se usa para crear scrollbars personalizados en elementos scrollable. Soporta orientación vertical y horizontal. Se sincroniza automáticamente con el elemento scrollable asociado. Aparece en hover y se adapta al tamaño del contenido.',
               files: {
@@ -4104,6 +4119,21 @@ Reglas Importantes:
               features: ['3 tamaños (xs, sm, md)', '19 estados predefinidos', 'Icono izquierdo (punto de color)', 'Icono derecho opcional', 'Colores según estado (verde, rojo, azul, naranja, gris)', 'Clickeable opcional', 'Usa tokens UBITS exclusivamente'],
               class: 'ubits-status-tag ubits-status-tag--{size}',
               example: 'renderStatusTag({\n  label: \'Completado\',\n  size: \'md\',\n  status: \'completed\',\n  rightIcon: \'chevron-down\',\n  clickable: true\n})',
+              hasPreview: true
+            },
+            {
+              name: 'Chip',
+              description: 'Componente chip para mostrar etiquetas o tags interactivas. Múltiples tamaños, estados y soporte para iconos izquierdo y derecho (botón de cerrar). Usa tokens UBITS exclusivamente.',
+              files: {
+                css: 'addons/chip/src/styles/chip.css',
+                ts: 'addons/chip/src/ChipProvider.ts'
+              },
+              variants: [],
+              sizes: ['xs', 'sm', 'md', 'lg'],
+              states: ['default', 'hover', 'active', 'pressed', 'focus', 'disabled'],
+              features: ['4 tamaños (xs: 20px, sm: 24px, md: 28px, lg: 36px)', '6 estados (default, hover, active, pressed, focus, disabled)', 'Icono izquierdo opcional', 'Icono derecho opcional (botón cerrar)', 'Clickeable opcional', 'Botón de cerrar (closable)', 'Usa tokens UBITS exclusivamente'],
+              class: 'ubits-chip ubits-chip--{size} ubits-chip--{state}',
+              example: 'renderChip({\n  label: \'Chip\',\n  size: \'md\',\n  state: \'default\',\n  leftIcon: \'tag\',\n  closable: true,\n  clickable: true\n})',
               hasPreview: true
             },
             {
@@ -4312,12 +4342,16 @@ Reglas Importantes:
                     window.updateBadgePreview('badge');
                   } else if (componentId === 'status-tag' && typeof window.updateStatusTagPreview === 'function') {
                     window.updateStatusTagPreview('status-tag');
+                  } else if (componentId === 'chip' && typeof window.updateChipPreview === 'function') {
+                    window.updateChipPreview('chip');
                   } else if (componentId === 'avatar' && typeof window.updateAvatarPreview === 'function') {
                     window.updateAvatarPreview('avatar');
                   } else if (componentId === 'drawer-navigation' && typeof window.updateDrawerPreview === 'function') {
                     window.updateDrawerPreview('drawer-navigation');
                   } else if (componentId === 'modal' && typeof window.updateModalPreview === 'function') {
                     window.updateModalPreview('modal');
+                  } else if (componentId === 'popover' && typeof window.updatePopoverPreview === 'function') {
+                    window.updatePopoverPreview('popover');
                   } else if (componentId === 'scrollbar' && typeof window.updateScrollbarPreview === 'function') {
                     window.updateScrollbarPreview('scrollbar');
                   } else if (componentId === 'progress-bar' && typeof window.updateProgressBarPreview === 'function') {
@@ -4810,6 +4844,85 @@ Reglas Importantes:
                         </div>
                       ` : ''}
                       
+                      ${hasPreview && component.name === 'Chip' ? `
+                        <!-- Preview Section for Chip -->
+                        <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: none; margin-bottom: 24px;">
+                          <!-- CONTROLES ARRIBA -->
+                          <div style="margin-bottom: 24px;">
+                            <h4 style="margin: 0 0 20px 0; color: var(--ubits-fg-1-high); font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand);"></i>
+                              Controles
+                            </h4>
+                            
+                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
+                              <!-- Tamaño -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Tamaño</label>
+                                <select id="chip-size-select-${componentId}" onchange="setChipControl('size', this.value, '${componentId}')" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: var(--font-body-sm-size, 13px); font-family: var(--font-sans); cursor: pointer; box-sizing: border-box;">
+                                  <option value="xs">XS (20px)</option>
+                                  <option value="sm">SM (24px)</option>
+                                  <option value="md" selected>MD (28px)</option>
+                                  <option value="lg">LG (36px)</option>
+                                </select>
+                              </div>
+                              
+                              <!-- Estado -->
+                              <div style="flex: 0 0 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Estado</label>
+                                <select id="chip-state-select-${componentId}" onchange="setChipControl('state', this.value, '${componentId}')" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: var(--font-body-sm-size, 13px); font-family: var(--font-sans); cursor: pointer; box-sizing: border-box;">
+                                  <option value="default" selected>Default</option>
+                                  <option value="hover">Hover</option>
+                                  <option value="active">Active</option>
+                                  <option value="pressed">Pressed</option>
+                                  <option value="focus">Focus</option>
+                                  <option value="disabled">Disabled</option>
+                                </select>
+                              </div>
+                              
+                              <!-- Label -->
+                              <div style="flex: 1 1 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Texto</label>
+                                <input type="text" id="chip-label-input-${componentId}" value="Chip" onchange="setChipControl('label', this.value, '${componentId}')" placeholder="Texto del chip" style="width: 100%; max-width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: var(--font-body-sm-size, 13px); font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                              
+                              <!-- Icono izquierdo -->
+                              <div style="flex: 0 0 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Icono Izquierdo</label>
+                                <input type="text" id="chip-left-icon-input-${componentId}" value="" onchange="setChipControl('leftIcon', this.value || null, '${componentId}')" placeholder="tag, user, etc." style="width: 100%; max-width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: var(--font-body-sm-size, 13px); font-family: var(--font-sans); box-sizing: border-box;">
+                                <small style="display: block; margin-top: 6px; font-size: 11px; color: var(--ubits-fg-1-medium);">Dejar vacío para ocultar</small>
+                              </div>
+                              
+                              <!-- Closable -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Botón Cerrar</label>
+                                <label class="switch" style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                                  <input type="checkbox" id="chip-closable-toggle-${componentId}" onchange="setChipControl('closable', this.checked, '${componentId}')">
+                                  <span class="slider"></span>
+                                  <span id="chip-closable-status-${componentId}" style="font-size: 14px; color: var(--ubits-fg-1-high);">Desactivado</span>
+                                </label>
+                              </div>
+                              
+                              <!-- Clickeable -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Clickeable</label>
+                                <label class="switch" style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                                  <input type="checkbox" id="chip-clickable-toggle-${componentId}" onchange="setChipControl('clickable', this.checked, '${componentId}')">
+                                  <span class="slider"></span>
+                                  <span id="chip-clickable-status-${componentId}" style="font-size: 14px; color: var(--ubits-fg-1-high);">Desactivado</span>
+                                </label>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <!-- PREVIEW EN EL MEDIO -->
+                          <div style="background: var(--ubits-bg-1); padding: 48px; border-radius: 8px; border: none; margin-bottom: 24px; display: flex; align-items: center; justify-content: center; min-height: 120px;">
+                            <div id="chip-preview-${componentId}">
+                              <!-- Se generará dinámicamente -->
+                            </div>
+                          </div>
+                        </div>
+                      ` : ''}
+                      
                       ${hasPreview && component.name === 'Avatar' ? `
                         <!-- Preview Section for Avatar -->
                         <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: none; margin-bottom: 24px;">
@@ -5090,6 +5203,105 @@ Reglas Importantes:
                           <div style="background: var(--ubits-bg-1); padding: 48px; border-radius: 8px; border: none; margin-bottom: 24px; display: flex; align-items: center; justify-content: center; min-height: 400px; position: relative;">
                             <div id="modal-preview-container-${componentId}" style="width: 100%; height: 100%; position: relative;">
                               <!-- El modal se renderizará aquí -->
+                            </div>
+                          </div>
+                        </div>
+                      ` : ''}
+                      
+                      ${hasPreview && component.name === 'Popover' ? `
+                        <!-- Preview Section for Popover -->
+                        <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: none; margin-bottom: 24px;">
+                          <!-- CONTROLES ARRIBA -->
+                          <div style="margin-bottom: 24px;">
+                            <h4 style="margin: 0 0 20px 0; color: var(--ubits-fg-1-high); font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand);"></i>
+                              Controles
+                            </h4>
+                            
+                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-end;">
+                              <!-- Título -->
+                              <div style="flex: 1 1 auto; min-width: 250px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Título</label>
+                                <input type="text" id="popover-title-input-${componentId}" value="Title" onchange="setPopoverControl('title', this.value, '${componentId}')" placeholder="Título del popover" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: var(--font-body-sm-size, 13px); font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                              
+                              <!-- Tamaño -->
+                              <div style="flex: 0 0 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Tamaño</label>
+                                <select id="popover-width-select-${componentId}" onchange="setPopoverControl('width', this.value, '${componentId}')" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: var(--font-body-sm-size, 13px); font-family: var(--font-sans); cursor: pointer; box-sizing: border-box;">
+                                  <option value="sm">SM (240px)</option>
+                                  <option value="md" selected>MD (320px)</option>
+                                  <option value="lg">LG (400px)</option>
+                                  <option value="xl">XL (480px)</option>
+                                </select>
+                              </div>
+                              
+                              <!-- Posición del Tail -->
+                              <div style="flex: 0 0 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Posición Tail</label>
+                                <select id="popover-tail-position-select-${componentId}" onchange="setPopoverControl('tailPosition', this.value, '${componentId}')" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: var(--font-body-sm-size, 13px); font-family: var(--font-sans); cursor: pointer; box-sizing: border-box;">
+                                  <option value="top" selected>Top</option>
+                                  <option value="bottom">Bottom</option>
+                                  <option value="left">Left</option>
+                                  <option value="right">Right</option>
+                                </select>
+                              </div>
+                              
+                              <!-- Botón Abrir/Cerrar -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <button class="ubits-button ubits-button--primary ubits-button--md" onclick="togglePopoverComponent('${componentId}')" style="width: 100%;">
+                                  <span id="popover-toggle-button-text-${componentId}">Abrir Popover</span>
+                                </button>
+                              </div>
+                            </div>
+                            
+                            <!-- Botones del Footer -->
+                            <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--ubits-border-1);">
+                              <h5 style="margin: 0 0 16px 0; color: var(--ubits-fg-1-high); font-size: 14px; font-weight: 600;">Botones del Footer</h5>
+                              <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
+                                <!-- Botón Tertiary -->
+                                <div style="flex: 0 0 auto; min-width: 200px;">
+                                  <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Tertiary (Izquierda)</label>
+                                  <div style="display: flex; gap: 8px;">
+                                    <input type="text" id="popover-tertiary-label-input-${componentId}" value="Tertiary" onchange="setPopoverControl('tertiaryLabel', this.value, '${componentId}')" placeholder="Label" style="flex: 1; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: var(--font-body-sm-size, 13px); font-family: var(--font-sans); box-sizing: border-box;">
+                                    <label class="switch" style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                      <input type="checkbox" id="popover-tertiary-toggle-${componentId}" checked onchange="setPopoverControl('tertiaryEnabled', this.checked, '${componentId}')">
+                                      <span class="slider"></span>
+                                    </label>
+                                  </div>
+                                </div>
+                                
+                                <!-- Botón Secondary -->
+                                <div style="flex: 0 0 auto; min-width: 200px;">
+                                  <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Secondary (Derecha)</label>
+                                  <div style="display: flex; gap: 8px;">
+                                    <input type="text" id="popover-secondary-label-input-${componentId}" value="Secondary" onchange="setPopoverControl('secondaryLabel', this.value, '${componentId}')" placeholder="Label" style="flex: 1; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: var(--font-body-sm-size, 13px); font-family: var(--font-sans); box-sizing: border-box;">
+                                    <label class="switch" style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                      <input type="checkbox" id="popover-secondary-toggle-${componentId}" checked onchange="setPopoverControl('secondaryEnabled', this.checked, '${componentId}')">
+                                      <span class="slider"></span>
+                                    </label>
+                                  </div>
+                                </div>
+                                
+                                <!-- Botón Primary -->
+                                <div style="flex: 0 0 auto; min-width: 200px;">
+                                  <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Primary (Derecha)</label>
+                                  <div style="display: flex; gap: 8px;">
+                                    <input type="text" id="popover-primary-label-input-${componentId}" value="Primary" onchange="setPopoverControl('primaryLabel', this.value, '${componentId}')" placeholder="Label" style="flex: 1; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: var(--font-body-sm-size, 13px); font-family: var(--font-sans); box-sizing: border-box;">
+                                    <label class="switch" style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                      <input type="checkbox" id="popover-primary-toggle-${componentId}" checked onchange="setPopoverControl('primaryEnabled', this.checked, '${componentId}')">
+                                      <span class="slider"></span>
+                                    </label>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <!-- PREVIEW EN EL MEDIO -->
+                          <div style="background: var(--ubits-bg-2); padding: 48px; border-radius: 8px; border: none; margin-bottom: 24px; display: flex; align-items: center; justify-content: center; min-height: 400px; position: relative;">
+                            <div id="popover-preview-container-${componentId}" style="position: relative; width: 100%; height: 100%;">
+                              <!-- El popover se renderizará aquí -->
                             </div>
                           </div>
                         </div>
@@ -5437,6 +5649,9 @@ Reglas Importantes:
                                   </button>
                                   <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-component="${componentId}" data-option="state" data-value="disabled" onclick="setFileUploadControl('state', 'disabled', '${componentId}')">
                                     <span>Disabled</span>
+                                  </button>
+                                  <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-component="${componentId}" data-option="state" data-value="filled" onclick="setFileUploadControl('state', 'filled', '${componentId}')">
+                                    <span>Filled</span>
                                   </button>
                                 </div>
                               </div>
@@ -7415,6 +7630,146 @@ Reglas Importantes:
       };
       
       // ========================================
+      // CHIP PREVIEW FUNCTIONS
+      // ========================================
+      
+      const chipPreviewState = {};
+      
+      // Inicializar estado del Chip
+      function initChipPreviewState(componentId) {
+        if (!chipPreviewState[componentId]) {
+          chipPreviewState[componentId] = {
+            size: 'md',
+            state: 'default',
+            label: 'Chip',
+            leftIcon: null,
+            closable: false,
+            clickable: false
+          };
+        }
+        return chipPreviewState[componentId];
+      }
+      
+      // Función para generar HTML del Chip
+      function generateChipHTML(state, componentId) {
+        const { size, state: chipState, label, leftIcon, closable, clickable } = state;
+        
+        const classes = [
+          'ubits-chip',
+          `ubits-chip--${size}`,
+          chipState !== 'default' ? `ubits-chip--${chipState}` : '',
+          clickable ? 'ubits-chip--clickable' : '',
+          closable ? 'ubits-chip--closable' : ''
+        ].filter(Boolean).join(' ');
+        
+        // Icono izquierdo
+        const leftIconHTML = leftIcon 
+          ? `<span class="ubits-chip__left-icon" aria-hidden="true"><i class="far fa-${leftIcon}"></i></span>`
+          : '';
+        
+        // Icono derecho (botón de cerrar)
+        const rightIconHTML = closable
+          ? `<button class="ubits-chip__right-icon" type="button" aria-label="Cerrar chip" ${chipState === 'disabled' ? 'disabled' : ''}>
+              <i class="far fa-xmark"></i>
+            </button>`
+          : '';
+        
+        // Determinar role y aria attributes
+        const role = clickable ? 'button' : 'none';
+        const tabIndex = clickable && chipState !== 'disabled' ? '0' : '-1';
+        const ariaDisabled = chipState === 'disabled' ? 'true' : 'false';
+        
+        return `
+          <span class="${classes}" role="${role}" tabindex="${tabIndex}" aria-disabled="${ariaDisabled}">
+            ${leftIconHTML}
+            <span class="ubits-chip__label">${label}</span>
+            ${rightIconHTML}
+          </span>
+        `.trim();
+      }
+      
+      // Función para actualizar el preview del Chip
+      window.updateChipPreview = function(componentId) {
+        const state = initChipPreviewState(componentId);
+        const preview = document.getElementById(`chip-preview-${componentId}`);
+        
+        if (!preview) {
+          console.error('❌ Preview de Chip no encontrado:', `chip-preview-${componentId}`);
+          return;
+        }
+        
+        const chipHTML = generateChipHTML(state, componentId);
+        preview.innerHTML = chipHTML;
+        
+        // Cargar CSS si no está cargado
+        const existingLink = document.querySelector('link[href*="chip.css"]');
+        if (!existingLink) {
+          const link = document.createElement('link');
+          link.rel = 'stylesheet';
+          link.href = '../../addons/chip/src/styles/chip.css';
+          document.head.appendChild(link);
+        }
+        
+        // Agregar event listener para el botón de cerrar
+        const closeButton = preview.querySelector('.ubits-chip__right-icon');
+        if (closeButton) {
+          closeButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            alert('Chip cerrado');
+          });
+        }
+        
+        // Agregar event listener para chip clickeable
+        if (state.clickable && state.state !== 'disabled') {
+          const chipElement = preview.querySelector('.ubits-chip');
+          if (chipElement) {
+            chipElement.addEventListener('click', function(e) {
+              e.preventDefault();
+              e.stopPropagation();
+              alert('Chip clickeado');
+            });
+          }
+        }
+      };
+      
+      // Función unificada para controles del Chip
+      window.setChipControl = function(option, value, componentId) {
+        const state = initChipPreviewState(componentId);
+        
+        // Actualizar estado según la opción
+        if (option === 'size') {
+          state.size = value;
+        } else if (option === 'state') {
+          state.state = value;
+        } else if (option === 'label') {
+          state.label = value;
+        } else if (option === 'leftIcon') {
+          state.leftIcon = value;
+        } else if (option === 'closable') {
+          state.closable = value;
+          // Actualizar toggle
+          const closableToggle = document.getElementById(`chip-closable-toggle-${componentId}`);
+          const closableStatus = document.getElementById(`chip-closable-status-${componentId}`);
+          if (closableToggle && closableStatus) {
+            closableToggle.checked = value;
+            closableStatus.textContent = value ? 'Activado' : 'Desactivado';
+          }
+        } else if (option === 'clickable') {
+          state.clickable = value;
+          // Actualizar toggle
+          const clickableToggle = document.getElementById(`chip-clickable-toggle-${componentId}`);
+          const clickableStatus = document.getElementById(`chip-clickable-status-${componentId}`);
+          if (clickableToggle && clickableStatus) {
+            clickableToggle.checked = value;
+            clickableStatus.textContent = value ? 'Activado' : 'Desactivado';
+          }
+        }
+        
+        updateChipPreview(componentId);
+      };
+      
+      // ========================================
       // AVATAR PREVIEW FUNCTIONS
       // ========================================
       
@@ -8338,6 +8693,276 @@ Reglas Importantes:
       };
       
       // ========================================
+      // POPOVER PREVIEW FUNCTIONS
+      // ========================================
+      
+      // Estado del preview del Popover
+      const popoverPreviewState = {};
+      const popoverInstances = {}; // Guardar instancias de popover por componentId
+      
+      // Inicializar estado del Popover
+      function initPopoverPreviewState(componentId) {
+        if (!popoverPreviewState[componentId]) {
+          popoverPreviewState[componentId] = {
+            title: 'Title',
+            width: 'md',
+            tailPosition: 'top',
+            bodyContent: `
+              <p style="margin: 0; font-size: var(--font-body-sm-size, 13px); color: var(--ubits-fg-1-high-static-inverted, #edeeef); line-height: var(--ubits-line-height-md, 19.5px);">
+                Tooltips are used to describe or identify an element. In most scenarios, tooltips help the user understand the meaning, function or alt-text of an element.
+              </p>
+            `,
+            tertiaryEnabled: true,
+            tertiaryLabel: 'Tertiary',
+            secondaryEnabled: true,
+            secondaryLabel: 'Secondary',
+            primaryEnabled: true,
+            primaryLabel: 'Primary',
+            isOpen: false
+          };
+        }
+        return popoverPreviewState[componentId];
+      }
+      
+      // Función para generar HTML del Popover manualmente
+      function generatePopoverHTML(state, componentId) {
+        const popoverWidths = { sm: '240px', md: '360px', lg: '400px', xl: '480px' };
+        const popoverWidth = popoverWidths[state.width] || popoverWidths.md;
+        const popoverWidthClass = `ubits-popover--width-${state.width}`;
+        const tailPositionClass = `ubits-popover--tail-${state.tailPosition}`;
+        
+        const tailHTML = `
+          <div class="ubits-popover__tail" style="${state.tailPosition === 'top' || state.tailPosition === 'bottom' ? `left: ${state.tailOffset ? `calc(50% + ${state.tailOffset}px)` : '50%'};` : `top: ${state.tailOffset ? `calc(50% + ${state.tailOffset}px)` : '50%'};`}">
+            <div class="ubits-popover__tail-inner"></div>
+          </div>
+        `;
+        
+        const headerHTML = state.title ? `
+          <div class="ubits-popover__header">
+            <div class="ubits-popover__header-title">
+              <p class="ubits-body-md-semibold">${state.title}</p>
+            </div>
+          </div>
+        ` : '';
+        
+        const bodyHTML = `
+          <div class="ubits-popover__body">
+            <div class="ubits-popover__body-content">
+              ${state.bodyContent}
+            </div>
+            <div class="ubits-popover__scrollbar">
+              <div class="ubits-popover__scrollbar-bar"></div>
+            </div>
+          </div>
+        `;
+        
+        const footerHTML = (state.tertiaryEnabled || state.secondaryEnabled || state.primaryEnabled) ? `
+          <div class="ubits-popover__footer">
+            <div class="ubits-popover__footer-actions${!state.tertiaryEnabled ? ' ubits-popover__footer-actions--no-tertiary' : ''}">
+              ${state.tertiaryEnabled ? `
+              <div class="ubits-popover__footer-left">
+                <button class="ubits-button ubits-button--tertiary ubits-button--md ubits-popover__footer-button" type="button">
+                  <span>${state.tertiaryLabel}</span>
+                </button>
+              </div>
+              ` : ''}
+              <div class="ubits-popover__footer-right">
+                ${state.secondaryEnabled ? `
+                <button class="ubits-button ubits-button--secondary ubits-button--md ubits-popover__footer-button" type="button">
+                  <span>${state.secondaryLabel}</span>
+                </button>
+                ` : ''}
+                ${state.primaryEnabled ? `
+                <button class="ubits-button ubits-button--primary ubits-button--md ubits-popover__footer-button" type="button">
+                  <span>${state.primaryLabel}</span>
+                </button>
+                ` : ''}
+              </div>
+            </div>
+          </div>
+        ` : '';
+        
+        return `
+          <div class="ubits-popover ${popoverWidthClass} ${tailPositionClass}" style="width: ${popoverWidth}; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+            ${tailHTML}
+            <div class="ubits-popover__content">
+              ${headerHTML}
+              ${bodyHTML}
+              ${footerHTML}
+            </div>
+          </div>
+        `.trim();
+      }
+      
+      // Función para actualizar el preview del Popover
+      window.updatePopoverPreview = function(componentId) {
+        const state = initPopoverPreviewState(componentId);
+        const container = document.getElementById(`popover-preview-container-${componentId}`);
+        
+        if (!container) {
+          console.error('❌ Preview container de Popover no encontrado:', `popover-preview-container-${componentId}`);
+          return;
+        }
+        
+        // Limpiar popover anterior si existe
+        if (popoverInstances[componentId] && popoverInstances[componentId].element) {
+          popoverInstances[componentId].element.remove();
+          popoverInstances[componentId] = null;
+        }
+        
+        // Cargar CSS si no está cargado
+        const existingPopoverLink = document.querySelector('link[href*="popover.css"]');
+        if (!existingPopoverLink) {
+          const link = document.createElement('link');
+          link.rel = 'stylesheet';
+          link.href = '../../addons/popover/src/styles/popover.css';
+          document.head.appendChild(link);
+        }
+        
+        // Cargar CSS del button si no está cargado (para los botones del footer)
+        const existingButtonLink = document.querySelector('link[href*="button.css"]');
+        if (!existingButtonLink) {
+          const link = document.createElement('link');
+          link.rel = 'stylesheet';
+          link.href = '../../addons/button/src/styles/button.css';
+          document.head.appendChild(link);
+        }
+        
+        // Generar HTML del popover manualmente
+        const popoverHTML = generatePopoverHTML(state, componentId);
+        
+        // Crear wrapper temporal para parsear el HTML
+        const wrapper = document.createElement('div');
+        wrapper.innerHTML = popoverHTML;
+        const popover = wrapper.firstElementChild;
+        
+        if (!popover) {
+          console.error('❌ No se pudo crear el popover');
+          return;
+        }
+        
+        // Añadir el popover al contenedor del preview
+        container.appendChild(popover);
+        
+        console.log('✅ Popover agregado al DOM:', popover);
+        console.log('✅ Clases del popover:', popover.className);
+        console.log('✅ Estilos del popover:', popover.style.cssText);
+        
+        // Funciones de control
+        const openPopover = () => {
+          if (!popover || !popover.classList) {
+            console.error('❌ Popover element no válido');
+            return;
+          }
+          console.log('🔵 Abriendo popover, agregando clase ubits-popover--open');
+          popover.classList.add('ubits-popover--open');
+          state.isOpen = true;
+          const toggleButton = document.getElementById(`popover-toggle-button-text-${componentId}`);
+          if (toggleButton) {
+            toggleButton.textContent = 'Cerrar Popover';
+          }
+          console.log('✅ Popover abierto, clases:', popover.className);
+          console.log('✅ Estilos después de abrir:', window.getComputedStyle(popover).opacity, window.getComputedStyle(popover).visibility);
+        };
+        
+        const closePopover = () => {
+          if (!popover || !popover.classList) {
+            console.error('❌ Popover element no válido');
+            return;
+          }
+          console.log('🔵 Cerrando popover, removiendo clase ubits-popover--open');
+          popover.classList.remove('ubits-popover--open');
+          state.isOpen = false;
+          const toggleButton = document.getElementById(`popover-toggle-button-text-${componentId}`);
+          if (toggleButton) {
+            toggleButton.textContent = 'Abrir Popover';
+          }
+        };
+        
+        // Guardar instancia
+        popoverInstances[componentId] = {
+          element: popover,
+          open: openPopover,
+          close: closePopover
+        };
+        
+        console.log('✅ Popover creado y guardado en instancia:', componentId);
+      };
+      
+      // Función para toggle del Popover
+      window.togglePopoverComponent = function(componentId) {
+        console.log('🔵 togglePopoverComponent llamado con componentId:', componentId);
+        const state = initPopoverPreviewState(componentId);
+        let instance = popoverInstances[componentId];
+        
+        console.log('🔵 Estado actual:', { isOpen: state.isOpen, instanceExists: !!instance });
+        
+        if (!instance || !instance.element || !instance.element.parentElement) {
+          console.log('🔵 No existe instancia, creando...');
+          // Si no existe o fue removido, crear primero
+          window.updatePopoverPreview(componentId);
+          // Esperar a que se cree y luego abrir
+          setTimeout(() => {
+            instance = popoverInstances[componentId];
+            console.log('🔵 Instancia después de crear:', instance);
+            if (instance && instance.open) {
+              console.log('🔵 Abriendo popover...');
+              instance.open();
+            } else {
+              console.error('❌ No se pudo crear o abrir el popover');
+            }
+          }, 100);
+          return;
+        }
+        
+        console.log('🔵 Toggleando estado:', state.isOpen ? 'cerrar' : 'abrir');
+        if (state.isOpen) {
+          instance.close();
+        } else {
+          instance.open();
+        }
+      };
+      
+      // Función unificada para controles del Popover
+      window.setPopoverControl = function(option, value, componentId) {
+        const state = initPopoverPreviewState(componentId);
+        
+        // Actualizar estado según la opción
+        if (option === 'title') {
+          state.title = value;
+        } else if (option === 'width') {
+          state.width = value;
+        } else if (option === 'tailPosition') {
+          state.tailPosition = value;
+        } else if (option === 'tertiaryLabel') {
+          state.tertiaryLabel = value;
+        } else if (option === 'tertiaryEnabled') {
+          state.tertiaryEnabled = value;
+        } else if (option === 'secondaryLabel') {
+          state.secondaryLabel = value;
+        } else if (option === 'secondaryEnabled') {
+          state.secondaryEnabled = value;
+        } else if (option === 'primaryLabel') {
+          state.primaryLabel = value;
+        } else if (option === 'primaryEnabled') {
+          state.primaryEnabled = value;
+        }
+        
+        // Actualizar preview
+        window.updatePopoverPreview(componentId);
+        
+        // Si estaba abierto, mantenerlo abierto
+        if (state.isOpen && popoverInstances[componentId]) {
+          setTimeout(() => {
+            const instance = popoverInstances[componentId];
+            if (instance && instance.open) {
+              instance.open();
+            }
+          }, 50);
+        }
+      };
+      
+      // ========================================
       // SCROLLBAR PREVIEW FUNCTIONS
       // ========================================
       
@@ -9044,7 +9669,8 @@ Reglas Importantes:
             fileSize: 2 * 1024 * 1024, // 2 MB en bytes
             showFileSize: true,
             showActions: true,
-            uploadText: 'Haz clic para subir archivo'
+            uploadText: 'Haz clic para subir archivo',
+            fileStatus: 'pending'
           };
         }
         return fileUploadPreviewState[componentId];
@@ -9059,7 +9685,8 @@ Reglas Importantes:
           fileSize = 0,
           showFileSize = true,
           showActions = true,
-          uploadText = 'Haz clic para subir archivo'
+          uploadText = 'Haz clic para subir archivo',
+          fileStatus = 'pending'
         } = options;
         
         // Formatear tamaño del archivo
@@ -9084,11 +9711,21 @@ Reglas Importantes:
           backgroundColor = 'var(--ubits-bg-disabled, #edeeef)';
           borderColor = 'var(--ubits-border-disabled, #e1e2e5)';
           textColor = 'var(--ubits-fg-on-disabled, #8d9199)';
+        } else if (state === 'filled') {
+          borderColor = 'var(--ubits-border-1, #d0d2d5)';
+          backgroundColor = 'var(--ubits-bg-2, #f3f3f4)';
+          textColor = 'var(--ubits-fg-1-high, #303a47)';
         }
         
         // Determinar qué icono mostrar según el estado
         let iconHtml = '';
-        if (state === 'dragging' || state === 'error' || state === 'disabled') {
+        if (state === 'filled') {
+          iconHtml = `
+            <div class="ubits-file-upload__icon-filled">
+              <i class="far fa-file-check"></i>
+            </div>
+          `;
+        } else if (state === 'dragging' || state === 'error' || state === 'disabled') {
           iconHtml = `
             <div class="ubits-file-upload__icon-large">
               <i class="far fa-arrow-up-from-bracket"></i>
@@ -9104,7 +9741,17 @@ Reglas Importantes:
         
         // Construir texto del archivo
         let fileNameHtml = '';
-        if (fileName || fileExtension) {
+        if (state === 'filled') {
+          // Estado filled: siempre mostrar nombre del archivo, usar valores por defecto si están vacíos
+          const displayFileName = fileName || 'archivo';
+          const displayExtension = fileExtension || 'pdf';
+          const fullFileName = displayExtension ? `${displayFileName}.${displayExtension}` : displayFileName;
+          fileNameHtml = `
+            <div class="ubits-file-upload__file-name">
+              ${fullFileName}
+            </div>
+          `;
+        } else if (fileName || fileExtension) {
           const parts = [];
           parts.push(uploadText || 'Haz clic para subir archivo');
           if (fileExtension) {
@@ -9136,17 +9783,27 @@ Reglas Importantes:
         
         // Construir botones de acción si están habilitados
         let actionsHtml = '';
-        if (showActions && (fileName || state === 'error')) {
-          actionsHtml = `
-            <div class="ubits-file-upload__actions">
-              <button class="ubits-file-upload__action ubits-file-upload__action--reupload" aria-label="Re-subir archivo">
-                <i class="far fa-arrow-up-from-bracket"></i>
-              </button>
-              <button class="ubits-file-upload__action ubits-file-upload__action--remove" aria-label="Eliminar archivo">
-                <i class="far fa-trash"></i>
-              </button>
-            </div>
-          `;
+        if (showActions) {
+          if (state === 'filled') {
+            actionsHtml = `
+              <div class="ubits-file-upload__actions">
+                <button class="ubits-file-upload__action ubits-file-upload__action--remove" aria-label="Eliminar archivo">
+                  <i class="far fa-xmark"></i>
+                </button>
+              </div>
+            `;
+          } else if (state === 'default' || state === 'error') {
+            actionsHtml = `
+              <div class="ubits-file-upload__actions">
+                <button class="ubits-file-upload__action ubits-file-upload__action--reupload" aria-label="Re-subir archivo">
+                  <i class="far fa-arrow-up-from-bracket"></i>
+                </button>
+                <button class="ubits-file-upload__action ubits-file-upload__action--remove" aria-label="Eliminar archivo">
+                  <i class="far fa-trash"></i>
+                </button>
+              </div>
+            `;
+          }
         }
         
         const classes = [
@@ -9154,11 +9811,11 @@ Reglas Importantes:
           `ubits-file-upload--${state}`
         ].filter(Boolean).join(' ');
         
-        return `
+        const finalHtml = `
           <div class="${classes}" 
                style="background-color: ${backgroundColor}; border-color: ${borderColor}; color: ${textColor};"
-               tabindex="${state === 'disabled' ? '-1' : '0'}"
-               role="button"
+               tabindex="${state === 'disabled' || state === 'filled' ? '-1' : '0'}"
+               role="${state === 'filled' ? 'region' : 'button'}"
                aria-disabled="${state === 'disabled' ? 'true' : 'false'}">
             <div class="ubits-file-upload__container">
               ${iconHtml}
@@ -9170,11 +9827,28 @@ Reglas Importantes:
             ${actionsHtml}
           </div>
         `.trim();
+        
+        return finalHtml;
       }
       
       // Función para actualizar el preview del File Upload
       window.updateFileUploadPreview = function(componentId) {
         const state = initFileUploadPreviewState(componentId);
+        
+        // Leer valores de los inputs si existen
+        const nameInput = document.getElementById(`file-upload-name-input-${componentId}`);
+        const extensionInput = document.getElementById(`file-upload-extension-input-${componentId}`);
+        const sizeInput = document.getElementById(`file-upload-size-input-${componentId}`);
+        
+        if (nameInput && nameInput.value) {
+          state.fileName = nameInput.value;
+        }
+        if (extensionInput && extensionInput.value) {
+          state.fileExtension = extensionInput.value;
+        }
+        if (sizeInput && sizeInput.value) {
+          state.fileSize = parseFloat(sizeInput.value) * 1024 * 1024; // Convertir MB a bytes
+        }
         
         // Limpiar instancia anterior
         if (fileUploadInstances[componentId]) {
@@ -9204,7 +9878,8 @@ Reglas Importantes:
           fileSize: state.fileSize,
           showFileSize: state.showFileSize,
           showActions: state.showActions,
-          uploadText: state.uploadText
+          uploadText: state.uploadText,
+          fileStatus: state.fileStatus
         });
         
         previewContainer.innerHTML = html;
