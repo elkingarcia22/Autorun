@@ -16,7 +16,7 @@
     padding: var(--ubits-spacing-xs, 4px) var(--ubits-spacing-sm, 8px);
     border-radius: var(--ubits-border-radius-sm, 8px);
     border: 1px solid var(--ubits-border-1, #d0d2d5);
-    background-color: var(--ubits-bg-1, #ffffff);
+    background-color: var(--ubits-bg-2, #F3F3F4);
     color: var(--ubits-fg-1-high, #303a47);
     font-family: var(--font-sans, 'Noto Sans', sans-serif);
     font-size: var(--ubits-font-size-md, 13px);
@@ -136,7 +136,7 @@
 
 /* Default State */
 .ubits-chip--default {
-    background-color: var(--ubits-bg-1, #ffffff);
+    background-color: var(--ubits-bg-2, #F3F3F4);
     color: var(--ubits-fg-1-high, #303a47);
     border-color: var(--ubits-border-1, #d0d2d5);
 }
@@ -144,27 +144,27 @@
 /* Hover State */
 .ubits-chip--hover:not(.ubits-chip--disabled),
 .ubits-chip:hover:not(.ubits-chip--disabled) {
-    background-color: var(--ubits-bg-2, #f3f3f4);
+    background-color: var(--ubits-bg-4, #dbdde0);
     color: var(--ubits-fg-1-high, #303a47);
     border-color: var(--ubits-border-1, #d0d2d5);
 }
 
 /* Active State */
 .ubits-chip--active {
-    background-color: var(--ubits-accent-brand, #0c5bef);
-    color: var(--ubits-fg-on-accent-brand, #ffffff);
-    border-color: var(--ubits-accent-brand, #0c5bef);
+    background-color: var(--ubits-bg-active, rgba(12, 91, 239, 0.2));
+    color: var(--ubits-fg-1-high, #303a47);
+    border-color: var(--ubits-border-1, #d0d2d5);
 }
 
 .ubits-chip--active .ubits-chip__left-icon,
 .ubits-chip--active .ubits-chip__right-icon {
-    color: var(--ubits-fg-on-accent-brand, #ffffff);
+    color: var(--ubits-fg-1-high, #303a47);
 }
 
 /* Pressed State */
 .ubits-chip--pressed:not(.ubits-chip--disabled),
 .ubits-chip:active:not(.ubits-chip--disabled) {
-    background-color: var(--ubits-bg-3, #e5e7eb);
+    background-color: var(--ubits-fg-gray-subtle-hover, #c5c6cb);
     color: var(--ubits-fg-1-high, #303a47);
     border-color: var(--ubits-border-1, #d0d2d5);
     transform: translateY(1px);
@@ -181,7 +181,7 @@
 /* Disabled State */
 .ubits-chip--disabled,
 .ubits-chip[aria-disabled="true"] {
-    background-color: var(--ubits-bg-disabled-button, #f3f3f4);
+    background-color: var(--ubits-bg-disabled, #edeeef);
     color: var(--ubits-fg-on-disabled-button, #979ba3);
     border-color: var(--ubits-border-disabled-button, #d0d2d5);
     cursor: not-allowed;
@@ -206,11 +206,11 @@
 }
 
 .ubits-chip--clickable:not(.ubits-chip--disabled):hover {
-    background-color: var(--ubits-bg-2, #f3f3f4);
+    background-color: var(--ubits-bg-4, #dbdde0);
 }
 
 .ubits-chip--clickable:not(.ubits-chip--disabled):active {
-    background-color: var(--ubits-bg-3, #e5e7eb);
+    background-color: var(--ubits-fg-gray-subtle-hover, #c5c6cb);
     transform: translateY(1px);
 }
 
@@ -219,12 +219,12 @@
    ======================================== */
 
 .ubits-chip--closable .ubits-chip__right-icon:hover:not(:disabled) {
-    background-color: var(--ubits-bg-3, #e5e7eb);
+    background-color: var(--ubits-bg-4, #dbdde0);
     border-radius: var(--ubits-border-radius-xs, 4px);
 }
 
 .ubits-chip--closable .ubits-chip__right-icon:active:not(:disabled) {
-    background-color: var(--ubits-bg-4, #dbdde0);
+    background-color: var(--ubits-fg-gray-subtle-hover, #c5c6cb);
     transform: scale(0.95);
 }
 
