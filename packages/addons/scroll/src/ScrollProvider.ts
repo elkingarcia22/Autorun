@@ -180,6 +180,14 @@ export function createScrollbar(options: ScrollOptions): {
         }
       }
       scrollbarElement.removeEventListener('click', handleScrollbarClick);
+      barElement.removeEventListener('mousedown', handleMouseDown);
+      
+      // Limpiar listeners de drag si existen
+      if ((scrollbarElement as any).__handleMouseUp) {
+        document.removeEventListener('mousemove', (scrollbarElement as any).__handleMouseMove);
+        document.removeEventListener('mouseup', (scrollbarElement as any).__handleMouseUp);
+      }
+      
       scrollbarElement.remove();
     }
   };
