@@ -178,6 +178,41 @@
       "states": ["closed", "open"],
       "features": ["5 tamaños (sm: 320px, md: 480px, lg: 640px, xl: 800px, full: 1280px)", "Overlay semitransparente", "Header con título y botón de cerrar", "Body con scroll personalizado y scrollbar visual", "Footer con botones opcionales (tertiary, secondary, primary)", "Variante full-screen para contenido extenso", "Cierre con ESC y clic en overlay", "Animaciones suaves de apertura/cierre", "Responsive (100% en móvil)", "Métodos open/close/updateContent", "Usa tokens UBITS exclusivamente", "Usa componente Button existente para footer"]
     },
+    "popover": {
+      "name": "Popover",
+      "package": "@ubits/popover",
+      "path": "packages/addons/popover",
+      "provider": "createPopover",
+      "globalFunction": "window.createPopover",
+      "cssFile": "packages/addons/popover/src/styles/popover.css",
+      "storybookStory": "Popover.stories.ts",
+      "variants": [],
+      "sizes": ["sm", "md", "lg", "xl"],
+      "states": ["closed", "open"],
+      "features": [
+        "4 tamaños (sm: 240px, md: 360px, lg: 400px, xl: 480px)",
+        "Tail (flecha) posicionable (top, bottom, left, right)",
+        "Posicionamiento inteligente según tailPosition",
+        "top: debajo del botón, centrado horizontalmente",
+        "bottom: arriba del botón, centrado horizontalmente",
+        "left: a la derecha del botón, centrado verticalmente",
+        "right: a la izquierda del botón, centrado verticalmente",
+        "Header opcional con título",
+        "Body con scroll personalizado y scrollbar visual",
+        "Footer con botones opcionales (tertiary, secondary, primary)",
+        "Footer buttons alineados a la derecha cuando no hay botón terciario",
+        "Posicionamiento absoluto o relativo a elemento de referencia",
+        "Cierre con clic fuera (detecta correctamente el botón trigger con data-popover-trigger)",
+        "Animaciones suaves de apertura/cierre con scale",
+        "Transform correcto según tailPosition (translateX para top/bottom, translateY para left/right)",
+        "updatePosition mantiene transform correcto según tailPosition",
+        "Responsive (100% en móvil)",
+        "Métodos open/close/updateContent/updatePosition/destroy",
+        "Usa tokens UBITS exclusivamente",
+        "Usa componente Button existente para footer",
+        "Botones dentro del popover mantienen sus transforms correctamente"
+      ]
+    },
     "scrollbar": {
       "name": "Scrollbar",
       "package": "@ubits/scroll",
@@ -214,8 +249,8 @@
       "storybookStory": "FileUpload.stories.ts",
       "variants": [],
       "sizes": [],
-      "states": ["default", "dragging", "error", "disabled"],
-      "features": ["4 estados (default, dragging, error, disabled)", "Drag & drop", "Mostrar nombre y extensión de archivo", "Tamaño de archivo formateado (KB, MB, GB)", "Botones de acción opcionales (re-subir, eliminar)", "Iconos diferentes según estado", "Callback para onClick, onReupload, onRemove, onDragOver, onDrop", "Métodos update/destroy", "Usa tokens UBITS exclusivamente"]
+      "states": ["default", "dragging", "error", "disabled", "filled"],
+      "features": ["5 estados (default, dragging, error, disabled, filled)", "Estado filled muestra archivo subido con icono de check verde", "Drag & drop", "Mostrar nombre y extensión de archivo", "Tamaño de archivo formateado (KB, MB, GB)", "Botones de acción opcionales (re-subir, eliminar)", "Estado filled solo muestra botón eliminar", "Iconos diferentes según estado", "Callback para onClick, onReupload, onRemove, onDragOver, onDrop", "Métodos update/destroy", "Usa tokens UBITS exclusivamente"]
     }
   },
   "tokens": {
