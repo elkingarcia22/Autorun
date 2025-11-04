@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/html';
-import { createDrawer, renderDrawer } from '../../addons/drawer/src/DrawerProvider';
+import { createDrawer } from '../../addons/drawer/src/DrawerProvider';
 import type { DrawerOptions } from '../../addons/drawer/src/types/DrawerOptions';
 import '../../addons/drawer/src/styles/drawer.css';
 import '../../addons/button/src/styles/button.css';
@@ -10,7 +10,7 @@ const meta: Meta<DrawerOptions> = {
   parameters: {
     docs: {
       description: {
-        component: 'Componente Drawer Navigation UBITS que sale de izquierda a derecha con overlay. Se usa para vistas de elementos, filtros en tablas, etc. Tiene diferentes tamaños horizontalmente (100%, 80%, 60%, 50%, 40%, 30%). Incluye header con título y botón de cerrar, body con contenido scrollable y footer con botones primario, secundario y terciario.',
+        component: 'Componente Drawer Navigation UBITS que se desliza desde la derecha de la pantalla. Ideal para formularios, filtros o vistas de detalle. Soporta diferentes anchos, un header con título y texto complementario, un body con contenido scrollable y un footer con botones de acción.',
       },
     },
     layout: 'fullscreen',
@@ -18,16 +18,16 @@ const meta: Meta<DrawerOptions> = {
   argTypes: {
     title: {
       control: { type: 'text' },
-      description: 'Título del drawer (requerido)',
+      description: 'Título principal del drawer.',
       table: {
         type: { summary: 'string' },
-        defaultValue: { summary: 'Título del drawer' },
+        defaultValue: { summary: 'Crear dato demográfico' },
         category: 'Contenido',
       },
     },
     complementaryText: {
       control: { type: 'text' },
-      description: 'Text complementario opcional debajo del título',
+      description: 'Texto secundario opcional que aparece debajo del título.',
       table: {
         type: { summary: 'string' },
         defaultValue: { summary: '' },
@@ -37,60 +37,72 @@ const meta: Meta<DrawerOptions> = {
     width: {
       control: { type: 'select' },
       options: [100, 80, 60, 50, 40, 30],
-      description: 'Ancho del drawer como porcentaje del viewport (100%, 80%, 60%, 50%, 40%, 30%)',
+      description: 'Ancho del drawer como porcentaje del viewport (100, 80, 60, 50, 40, 30). En móvil siempre es 100%.',
       table: {
+        type: { summary: 'number' },
         defaultValue: { summary: 40 },
-        type: { summary: '100 | 80 | 60 | 50 | 40 | 30' },
         category: 'Apariencia',
       },
     },
     bodyContent: {
       control: { type: 'text' },
-      description: 'Contenido del body del drawer (HTML string)',
+      description: 'Contenido HTML del cuerpo del drawer. Puede ser una cadena HTML o una función que devuelve HTML.',
       table: {
         type: { summary: 'string | (() => string)' },
-        defaultValue: { summary: '<p>Contenido del drawer</p>' },
+        defaultValue: { summary: '...' },
         category: 'Contenido',
       },
     },
-    open: {
+    'footerButtons.tertiary.label': {
+      control: { type: 'text' },
+      name: 'Label Botón Terciario',
+      description: 'Label del botón terciario (izquierda del footer).',
+      table: { category: 'Footer Buttons' },
+    },
+    'footerButtons.tertiary.enabled': {
       control: { type: 'boolean' },
-      description: 'Si el drawer está abierto inicialmente',
-      table: {
-        defaultValue: { summary: false },
-        category: 'Comportamiento',
-      },
+      name: 'Habilitar Botón Terciario',
+      description: 'Controla la visibilidad del botón terciario.',
+      table: { category: 'Footer Buttons' },
+    },
+    'footerButtons.secondary.label': {
+      control: { type: 'text' },
+      name: 'Label Botón Secundario',
+      description: 'Label del botón secundario (derecha del footer).',
+      table: { category: 'Footer Buttons' },
+    },
+    'footerButtons.secondary.enabled': {
+      control: { type: 'boolean' },
+      name: 'Habilitar Botón Secundario',
+      description: 'Controla la visibilidad del botón secundario.',
+      table: { category: 'Footer Buttons' },
+    },
+    'footerButtons.primary.label': {
+      control: { type: 'text' },
+      name: 'Label Botón Primario',
+      description: 'Label del botón primario (derecha del footer).',
+      table: { category: 'Footer Buttons' },
+    },
+    'footerButtons.primary.enabled': {
+      control: { type: 'boolean' },
+      name: 'Habilitar Botón Primario',
+      description: 'Controla la visibilidad del botón primario.',
+      table: { category: 'Footer Buttons' },
     },
     closeOnOverlayClick: {
       control: { type: 'boolean' },
-      description: 'Si se debe cerrar al hacer clic en el overlay',
+      description: 'Si el drawer se cierra al hacer clic fuera de él.',
       table: {
+        type: { summary: 'boolean' },
         defaultValue: { summary: true },
         category: 'Comportamiento',
       },
     },
-    footerButtons: {
-      control: { type: 'object' },
-      description: 'Configuración de botones del footer',
-      table: {
-        type: { summary: 'object' },
-        category: 'Footer',
-      },
-    },
     onClose: {
       action: 'closed',
-      description: 'Callback cuando se hace clic en el botón de cerrar',
+      description: 'Callback que se ejecuta cuando el drawer se cierra.',
       table: {
         disable: true,
-      },
-    },
-    className: {
-      control: { type: 'text' },
-      description: 'Clases CSS adicionales',
-      table: {
-        type: { summary: 'string' },
-        defaultValue: { summary: '' },
-        category: 'Avanzado',
       },
     },
   },
@@ -136,27 +148,12 @@ export const Default: Story = {
         </button>
       </div>
     `,
-    footerButtons: {
-      tertiary: {
-        label: 'Cancelar',
-        onClick: () => {
-          console.log('Botón Tertiary clickeado');
-        },
-      },
-      secondary: {
-        label: 'Guardar',
-        onClick: () => {
-          console.log('Botón Secondary clickeado');
-        },
-      },
-      primary: {
-        label: 'Crear',
-        onClick: () => {
-          console.log('Botón Primary clickeado');
-        },
-      },
-    },
-    open: false,
+    'footerButtons.tertiary.label': 'Cancelar',
+    'footerButtons.tertiary.enabled': true,
+    'footerButtons.secondary.label': 'Guardar',
+    'footerButtons.secondary.enabled': true,
+    'footerButtons.primary.label': 'Crear',
+    'footerButtons.primary.enabled': true,
     closeOnOverlayClick: true,
   },
   render: (args) => {
@@ -167,32 +164,67 @@ export const Default: Story = {
     container.style.position = 'relative';
     container.style.overflow = 'hidden';
     container.style.background = 'var(--ubits-bg-2, #f9fafb)';
+    container.style.display = 'flex';
+    container.style.alignItems = 'center';
+    container.style.justifyContent = 'center';
+    container.style.padding = '40px';
     
-    // Crear botón para abrir el drawer
     const openButton = document.createElement('button');
     openButton.className = 'ubits-button ubits-button--primary ubits-button--md';
-    openButton.style.position = 'absolute';
-    openButton.style.top = '50%';
-    openButton.style.left = '50%';
-    openButton.style.transform = 'translate(-50%, -50%)';
-    openButton.style.zIndex = '100';
     openButton.innerHTML = '<span>Abrir Drawer</span>';
     
     let drawerInstance: ReturnType<typeof createDrawer> | null = null;
     
     openButton.addEventListener('click', () => {
       if (!drawerInstance) {
+        // Construir footerButtons desde los args individuales
+        const footerButtons: any = {};
+        
+        if (args['footerButtons.tertiary.enabled']) {
+          footerButtons['tertiary'] = {
+            label: args['footerButtons.tertiary.label'] || 'Cancelar',
+            onClick: () => {
+              console.log('Botón Tertiary clickeado');
+            },
+          };
+        }
+        
+        if (args['footerButtons.secondary.enabled']) {
+          footerButtons['secondary'] = {
+            label: args['footerButtons.secondary.label'] || 'Guardar',
+            onClick: () => {
+              console.log('Botón Secondary clickeado');
+            },
+          };
+        }
+        
+        if (args['footerButtons.primary.enabled']) {
+          footerButtons['primary'] = {
+            label: args['footerButtons.primary.label'] || 'Crear',
+            onClick: () => {
+              console.log('Botón Primary clickeado');
+            },
+          };
+        }
+        
         drawerInstance = createDrawer({
-          ...args,
+          title: args.title,
+          complementaryText: args.complementaryText,
+          width: args.width,
+          bodyContent: args.bodyContent,
+          footerButtons: Object.keys(footerButtons).length > 0 ? footerButtons : undefined,
           containerId: container.id,
+          closeOnOverlayClick: args.closeOnOverlayClick,
           onClose: () => {
             if (args.onClose) {
               args.onClose();
             }
             drawerInstance = null;
+            openButton.style.display = 'block';
           },
+          open: true,
         });
-        drawerInstance.open();
+        
         openButton.style.display = 'none';
       }
     });
