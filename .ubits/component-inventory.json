@@ -115,6 +115,43 @@
       "storybookStory": "CardContent.stories.ts",
       "types": ["curso", "video", "articulo", "podcast", "infografia", "libro", "webinar", "evento", "plan", "retroalimentacion", "certificado"],
       "states": ["default", "progress", "completed"]
+    },
+    "contenedor": {
+      "name": "Contenedor",
+      "package": "@ubits/contenedor",
+      "path": "N/A",
+      "provider": "N/A",
+      "globalFunction": "N/A",
+      "cssFile": "Tokens UBITS (inline styles)",
+      "storybookStory": "Contenedor.stories.ts",
+      "class": "ubits-container",
+      "features": ["bg-1 background", "border-radius 8px", "padding 12px", "UBITS tokens", "responsive"],
+      "states": ["default"]
+    },
+    "status-tag": {
+      "name": "Status Tag",
+      "package": "@ubits/status-tag",
+      "path": "packages/addons/status-tag",
+      "provider": "createStatusTag",
+      "globalFunction": "window.createStatusTag",
+      "cssFile": "packages/addons/status-tag/src/styles/status-tag.css",
+      "storybookStory": "StatusTag.stories.ts",
+      "sizes": ["xs", "sm", "md"],
+      "states": ["completed", "published", "fulfilled", "created", "active", "not-fulfilled", "denied", "draft", "in-progress", "syncing", "pending", "pending-approval", "not-started", "finished", "archived", "disabled", "paused", "hidden"],
+      "features": ["3 tamaños (xs, sm, md)", "19 estados predefinidos", "Icono izquierdo (punto de color)", "Icono derecho opcional", "Colores según estado (verde, rojo, azul, naranja, gris)", "Clickeable opcional", "Usa tokens UBITS exclusivamente"]
+    },
+    "avatar": {
+      "name": "Avatar",
+      "package": "@ubits/avatar",
+      "path": "packages/addons/avatar",
+      "provider": "createAvatar",
+      "globalFunction": "window.createAvatar",
+      "cssFile": "packages/addons/avatar/src/styles/avatar.css",
+      "storybookStory": "Avatar.stories.ts",
+      "variants": ["photo", "initials", "icon"],
+      "sizes": ["xs", "sm", "md", "lg"],
+      "states": ["default", "hover", "active"],
+      "features": ["4 tamaños (xs: 20px, sm: 28px, md: 36px, lg: 40px)", "3 variantes (Photo, Initials, Icon)", "Badge opcional con colores (green, red, blue, orange, gray)", "Badge con contenido (texto/números) o solo punto", "Badge siempre 10px (md) independiente del tamaño del avatar", "Badge posicionado bottom-right (mitad dentro, mitad fuera)", "Clickeable opcional", "Usa tokens UBITS exclusivamente", "Usa componente Badge existente"]
     }
   },
   "tokens": {
@@ -138,6 +175,45 @@
         "ubits-h1", "ubits-h2", "ubits-h3", "ubits-h4", "ubits-h5", "ubits-h6",
         "ubits-title", "ubits-subtitle", "ubits-text", "ubits-paragraph",
         "ubits-label", "ubits-caption"
+      ]
+    },
+    "spacing": {
+      "requiredImport": "../../tokens/dist/tokens.css",
+      "prefix": "--ubits-spacing-",
+      "tokens": [
+        "--ubits-spacing-none",
+        "--ubits-spacing-xs",
+        "--ubits-spacing-sm",
+        "--ubits-spacing-md",
+        "--ubits-spacing-lg",
+        "--ubits-spacing-xl",
+        "--ubits-spacing-2xl",
+        "--ubits-spacing-3xl",
+        "--ubits-spacing-4xl",
+        "--ubits-spacing-5xl",
+        "--ubits-spacing-6xl",
+        "--ubits-spacing-7",
+        "--ubits-spacing-8",
+        "--ubits-spacing-10",
+        "--ubits-spacing-12",
+        "--ubits-spacing-16",
+        "--ubits-spacing-20",
+        "--ubits-spacing-24",
+        "--ubits-spacing-32",
+        "--ubits-spacing-40"
+      ]
+    },
+    "borderRadius": {
+      "requiredImport": "../../tokens/dist/tokens.css",
+      "prefix": "--ubits-border-radius-",
+      "tokens": [
+        "--ubits-border-radius-none",
+        "--ubits-border-radius-xs",
+        "--ubits-border-radius-sm",
+        "--ubits-border-radius-md",
+        "--ubits-border-radius-lg",
+        "--ubits-border-radius-xl",
+        "--ubits-border-radius-full"
       ]
     }
   },

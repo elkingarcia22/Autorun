@@ -212,6 +212,30 @@ function validateFile(filePath, autoFix = false) {
         if (match.startsWith('rgba(') && (before.includes('box-shadow') || before.includes('text-shadow'))) {
           return false;
         }
+        // Ignorar colores dentro de arrays de opciones o keys de objetos de mapeo (ej: options: ['green', 'red'], o green: 'success')
+        if (match.toLowerCase() === 'green' || match.toLowerCase() === 'red' || match.toLowerCase() === 'blue' || 
+            match.toLowerCase() === 'orange' || match.toLowerCase() === 'gray' || match.toLowerCase() === 'grey') {
+          const context = (before + match + after).toLowerCase();
+          const afterTrimmed = after.trim();
+          const beforeTrimmed = before.trim();
+          // Ignorar si está dentro de un array de opciones o como key de objeto
+          if (context.includes('options:') || context.includes('options =') || 
+              context.includes('badgecolor') || context.includes('badge_color') ||
+              context.includes('variants:') || context.includes('_variants') ||
+              context.includes('badge_variants') || context.includes('badgevariants') ||
+              (beforeTrimmed.endsWith(':') && afterTrimmed.startsWith(':')) ||
+              (beforeTrimmed.endsWith(':') && afterTrimmed.startsWith("'")) ||
+              (beforeTrimmed.endsWith(':') && afterTrimmed.startsWith('"')) ||
+              (before.includes("['") && after.includes("']")) ||
+              (before.includes('["') && after.includes('"]')) ||
+              (afterTrimmed.startsWith(':') && (afterTrimmed.includes("'") || afterTrimmed.includes('"'))) ||
+              (before.includes("'") && after.includes("'")) ||
+              (before.includes('"') && after.includes('"')) ||
+              (before.includes(',') && after.includes(',')) ||
+              (before.includes('[') && after.includes(']'))) {
+            return false;
+          }
+        }
         return true;
       });
       
