@@ -41,10 +41,19 @@
     transition: opacity 0.3s ease, transform 0.1s ease;
     cursor: pointer;
     opacity: 0;
+    pointer-events: none;
 }
 
 .ubits-scrollbar--vertical:hover .ubits-scrollbar__bar {
     opacity: 1;
+    pointer-events: auto;
+}
+
+/* Mostrar scrollbar cuando el contenedor scrollable tiene hover */
+[id*="scrollbar-scrollable-vertical"]:hover ~ [id*="scrollbar-vertical"] .ubits-scrollbar__bar,
+[id*="scrollbar-wrapper-vertical"]:hover .ubits-scrollbar__bar {
+    opacity: 1 !important;
+    pointer-events: auto;
 }
 
 /* ========================================
@@ -71,10 +80,19 @@
     transition: opacity 0.3s ease, transform 0.1s ease;
     cursor: pointer;
     opacity: 0;
+    pointer-events: none;
 }
 
 .ubits-scrollbar--horizontal:hover .ubits-scrollbar__bar {
     opacity: 1;
+    pointer-events: auto;
+}
+
+/* Mostrar scrollbar cuando el contenedor scrollable tiene hover */
+[id*="scrollbar-scrollable-horizontal"]:hover ~ [id*="scrollbar-horizontal"] .ubits-scrollbar__bar,
+[id*="scrollbar-wrapper-horizontal"]:hover .ubits-scrollbar__bar {
+    opacity: 1 !important;
+    pointer-events: auto;
 }
 
 /* ========================================
