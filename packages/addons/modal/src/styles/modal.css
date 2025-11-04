@@ -258,7 +258,7 @@
 
 .ubits-modal__footer-actions {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
     gap: var(--ubits-spacing-md, 12px);
 }
@@ -266,6 +266,7 @@
 .ubits-modal__footer-left {
     display: flex;
     gap: var(--ubits-spacing-md, 12px);
+    margin-right: auto;
 }
 
 .ubits-modal__footer-right {
