@@ -4888,8 +4888,12 @@ Reglas Importantes:
                               <!-- Icono izquierdo -->
                               <div style="flex: 0 0 auto; min-width: 200px;">
                                 <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Icono Izquierdo</label>
-                                <input type="text" id="chip-left-icon-input-${componentId}" value="" onchange="setChipControl('leftIcon', this.value || null, '${componentId}')" placeholder="tag, user, etc." style="width: 100%; max-width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: var(--font-body-sm-size, 13px); font-family: var(--font-sans); box-sizing: border-box;">
-                                <small style="display: block; margin-top: 6px; font-size: 11px; color: var(--ubits-fg-1-medium);">Dejar vacío para ocultar</small>
+                                <input type="text" id="chip-left-icon-input-${componentId}" value="" onchange="const toggle = document.getElementById('chip-left-icon-toggle-${componentId}'); if (this.value) { toggle.checked = true; setChipControl('leftIcon', this.value, '${componentId}'); } else { toggle.checked = false; setChipControl('leftIcon', null, '${componentId}'); }" placeholder="tag, user, etc." style="width: 100%; max-width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: var(--font-body-sm-size, 13px); font-family: var(--font-sans); box-sizing: border-box; margin-bottom: 8px;">
+                                <label class="switch" style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                                  <input type="checkbox" id="chip-left-icon-toggle-${componentId}" onchange="const input = document.getElementById('chip-left-icon-input-${componentId}'); const iconValue = this.checked ? (input.value || 'tag') : null; setChipControl('leftIcon', iconValue, '${componentId}')">
+                                  <span class="slider"></span>
+                                  <span id="chip-left-icon-status-${componentId}" style="font-size: 14px; color: var(--ubits-fg-1-high);">Desactivado</span>
+                                </label>
                               </div>
                               
                               <!-- Closable -->
@@ -7746,6 +7750,17 @@ Reglas Importantes:
           state.label = value;
         } else if (option === 'leftIcon') {
           state.leftIcon = value;
+          // Actualizar toggle y input
+          const leftIconToggle = document.getElementById(`chip-left-icon-toggle-${componentId}`);
+          const leftIconStatus = document.getElementById(`chip-left-icon-status-${componentId}`);
+          const leftIconInput = document.getElementById(`chip-left-icon-input-${componentId}`);
+          if (leftIconToggle && leftIconStatus) {
+            leftIconToggle.checked = value !== null && value !== undefined;
+            leftIconStatus.textContent = value !== null && value !== undefined ? 'Activado' : 'Desactivado';
+          }
+          if (leftIconInput) {
+            leftIconInput.value = value || '';
+          }
         } else if (option === 'closable') {
           state.closable = value;
           // Actualizar toggle
