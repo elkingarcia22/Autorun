@@ -8115,6 +8115,7 @@ Reglas Importantes:
             if (scrollSize <= clientSize) {
               // No hay scroll necesario
               barElement.style.opacity = '0';
+              barElement.style.pointerEvents = 'none';
               return;
             }
             
@@ -8132,14 +8133,8 @@ Reglas Importantes:
               barElement.style.transform = `translateX(${thumbPosition}px)`;
             }
             
-            // Mostrar el scrollbar cuando hay contenido para hacer scroll
-            if (scrollSize > clientSize) {
-              barElement.style.opacity = '1';
-              barElement.style.pointerEvents = 'auto';
-            } else {
-              barElement.style.opacity = '0';
-              barElement.style.pointerEvents = 'none';
-            }
+            // El scrollbar se mostrará en hover gracias al CSS
+            // No establecemos opacity aquí, dejamos que el CSS lo maneje
           };
           
           // Función para hacer scroll al hacer clic en el scrollbar
