@@ -121,6 +121,14 @@ export function createScrollbar(options: ScrollOptions): {
   const handleScrollbarClick = (e: MouseEvent) => {
     if (!targetElement || !barElement) return;
 
+    // Prevenir que el clic en la barra misma active el scroll
+    if (e.target === barElement) {
+      return;
+    }
+
+    e.preventDefault();
+    e.stopPropagation();
+
     const isVertical = orientation === 'vertical';
     const rect = scrollbarElement.getBoundingClientRect();
     const clickPosition = isVertical 
@@ -141,6 +149,55 @@ export function createScrollbar(options: ScrollOptions): {
     targetElement[scrollProperty] = percentage * maxScroll;
   };
 
+  // Función para arrastrar el scrollbar
+  let isDragging = false;
+  let startPosition = 0;
+  let startScroll = 0;
+
+  const handleMouseDown = (e: MouseEvent) => {
+    if (!targetElement || !barElement) return;
+    if (e.target !== barElement) return;
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    isDragging = true;
+    const isVertical = orientation === 'vertical';
+    startPosition = isVertical ? e.clientY : e.clientX;
+    startScroll = isVertical ? targetElement.scrollTop : targetElement.scrollLeft;
+
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+  };
+
+  const handleMouseMove = (e: MouseEvent) => {
+    if (!isDragging || !targetElement || !barElement) return;
+
+    const isVertical = orientation === 'vertical';
+    const currentPosition = isVertical ? e.clientY : e.clientX;
+    const delta = currentPosition - startPosition;
+
+    const scrollbarSize = isVertical ? scrollbarElement.clientHeight : scrollbarElement.clientWidth;
+    const clientSize = isVertical ? targetElement.clientHeight : targetElement.clientWidth;
+    const scrollSize = isVertical ? targetElement.scrollHeight : targetElement.scrollWidth;
+    const maxScroll = scrollSize - clientSize;
+
+    const scrollRatio = maxScroll / scrollbarSize;
+    const newScroll = startScroll + (delta * scrollRatio);
+
+    if (isVertical) {
+      targetElement.scrollTop = Math.max(0, Math.min(maxScroll, newScroll));
+    } else {
+      targetElement.scrollLeft = Math.max(0, Math.min(maxScroll, newScroll));
+    }
+  };
+
+  const handleMouseUp = () => {
+    isDragging = false;
+    document.removeEventListener('mousemove', handleMouseMove);
+    document.removeEventListener('mouseup', handleMouseUp);
+  };
+
   // Event listeners
   if (targetElement) {
     targetElement.addEventListener('scroll', updateScrollbar);
@@ -156,7 +213,13 @@ export function createScrollbar(options: ScrollOptions): {
     (scrollbarElement as any).__resizeObserver = resizeObserver;
   }
 
+  // Eventos del scrollbar
   scrollbarElement.addEventListener('click', handleScrollbarClick);
+  barElement.addEventListener('mousedown', handleMouseDown);
+
+  // Guardar funciones para poder limpiarlas después
+  (scrollbarElement as any).__handleMouseUp = handleMouseUp;
+  (scrollbarElement as any).__handleMouseMove = handleMouseMove;
 
   // Agregar al DOM
   container.appendChild(scrollbarElement);
