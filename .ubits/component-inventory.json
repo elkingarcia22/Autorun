@@ -190,6 +190,19 @@
       "sizes": [],
       "states": ["default"],
       "features": ["Orientación vertical y horizontal", "Sincronización automática con elemento scrollable", "Aparece en hover", "Se adapta al tamaño del contenido", "Navegación por clic en scrollbar", "Responsive (2px en móvil)", "Métodos update/destroy", "Usa tokens UBITS exclusivamente"]
+    },
+    "progress-bar": {
+      "name": "Progress Bar",
+      "package": "@ubits/progress",
+      "path": "packages/addons/progress",
+      "provider": "createProgressBar",
+      "globalFunction": "window.createProgressBar",
+      "cssFile": "packages/addons/progress/src/styles/progress.css",
+      "storybookStory": "ProgressBar.stories.ts",
+      "variants": ["default", "multi-color"],
+      "sizes": ["xs", "sm", "md", "lg"],
+      "states": [],
+      "features": ["4 tamaños (xs: 4px, sm: 8px, md: 16px, lg: 20px)", "2 variantes (default, multi-color)", "Progreso simple con valor 0-100", "Múltiples segmentos con colores (yellow, green, gray, info, error)", "Indicador opcional (texto o porcentaje)", "Métodos update/destroy", "Usa tokens UBITS exclusivamente"]
     }
   },
   "tokens": {

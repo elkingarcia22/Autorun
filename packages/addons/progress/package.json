@@ -1,0 +1,26 @@
+{
+  "name": "@ubits/progress",
+  "version": "1.0.0",
+  "description": "UBITS Progress Bar Component",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite build --watch"
+  },
+  "keywords": [
+    "ubits",
+    "progress",
+    "progress-bar",
+    "component"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "vite": "^5.0.0",
+    "vite-plugin-dts": "^3.0.0"
+  },
+  "dependencies": {}
+}
+

@@ -4120,6 +4120,21 @@ Reglas Importantes:
               class: 'ubits-avatar ubits-avatar--{size} ubits-avatar--{variant}',
               example: 'renderAvatar({\n  imageUrl: \'https://example.com/photo.jpg\',\n  size: \'md\',\n  badgeColor: \'green\'\n})',
               hasPreview: true
+            },
+            {
+              name: 'Progress Bar',
+              description: 'Componente de barra de progreso con 4 tamaños y variante multi-color. Permite mostrar progreso simple o múltiples segmentos con diferentes colores (yellow, green, gray, info, error). Incluye indicador opcional de texto/porcentaje.',
+              files: {
+                css: 'addons/progress/src/styles/progress.css',
+                ts: 'addons/progress/src/ProgressProvider.ts'
+              },
+              variants: ['default', 'multi-color'],
+              sizes: ['xs', 'sm', 'md', 'lg'],
+              states: [],
+              features: ['4 tamaños (xs: 4px, sm: 8px, md: 16px, lg: 20px)', '2 variantes (default, multi-color)', 'Progreso simple con valor 0-100', 'Múltiples segmentos con colores (yellow, green, gray, info, error)', 'Indicador opcional (texto o porcentaje)', 'Usa tokens UBITS exclusivamente'],
+              class: 'ubits-progress-bar ubits-progress-bar--{size} ubits-progress-bar--{variant}',
+              example: 'createProgressBar({\n  size: \'md\',\n  value: 75,\n  variant: \'default\',\n  indicator: true\n})',
+              hasPreview: true
             }
           ],
           'UI': [
@@ -4290,6 +4305,8 @@ Reglas Importantes:
                     window.updateModalPreview('modal');
                   } else if (componentId === 'scrollbar' && typeof window.updateScrollbarPreview === 'function') {
                     window.updateScrollbarPreview('scrollbar');
+                  } else if (componentId === 'progress-bar' && typeof window.updateProgressBarPreview === 'function') {
+                    window.updateProgressBarPreview('progress-bar');
                   } else if (componentId === 'alert' && typeof window.updateAlertPreview === 'function') {
                     window.updateAlertPreview('alert');
                     initializeAlertPreview('alert');
@@ -5127,6 +5144,81 @@ Reglas Importantes:
                                 <!-- Scrollbar horizontal -->
                                 <div id="scrollbar-horizontal-${componentId}" style="width: 100%;"></div>
                               </div>
+                            </div>
+                          </div>
+                        </div>
+                      ` : ''}
+                      
+                      ${hasPreview && component.name === 'Progress Bar' ? `
+                        <!-- Preview Section for Progress Bar -->
+                        <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: none; margin-bottom: 24px;">
+                          <!-- CONTROLES ARRIBA -->
+                          <div style="margin-bottom: 24px;">
+                            <h4 style="margin: 0 0 20px 0; color: var(--ubits-fg-1-high); font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand);"></i>
+                              Controles
+                            </h4>
+                            
+                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
+                              <!-- Size -->
+                              <div style="flex: 0 0 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Tamaño</label>
+                                <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                                  <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-component="${componentId}" data-option="size" data-value="xs" onclick="setProgressBarControl('size', 'xs', '${componentId}')">
+                                    <span>XS (4px)</span>
+                                  </button>
+                                  <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-component="${componentId}" data-option="size" data-value="sm" onclick="setProgressBarControl('size', 'sm', '${componentId}')">
+                                    <span>SM (8px)</span>
+                                  </button>
+                                  <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" data-component="${componentId}" data-option="size" data-value="md" onclick="setProgressBarControl('size', 'md', '${componentId}')">
+                                    <span>MD (16px)</span>
+                                  </button>
+                                  <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-component="${componentId}" data-option="size" data-value="lg" onclick="setProgressBarControl('size', 'lg', '${componentId}')">
+                                    <span>LG (20px)</span>
+                                  </button>
+                                </div>
+                              </div>
+                              
+                              <!-- Variant -->
+                              <div style="flex: 0 0 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Variante</label>
+                                <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                                  <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" data-component="${componentId}" data-option="variant" data-value="default" onclick="setProgressBarControl('variant', 'default', '${componentId}')">
+                                    <span>Default</span>
+                                  </button>
+                                  <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-component="${componentId}" data-option="variant" data-value="multi-color" onclick="setProgressBarControl('variant', 'multi-color', '${componentId}')">
+                                    <span>Multi-color</span>
+                                  </button>
+                                </div>
+                              </div>
+                              
+                              <!-- Value (solo para default) -->
+                              <div style="flex: 0 0 auto; min-width: 200px;" id="progress-value-control-${componentId}">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Valor (%)</label>
+                                <input type="range" id="progress-value-input-${componentId}" min="0" max="100" value="75" oninput="setProgressBarControl('value', parseInt(this.value), '${componentId}')" style="width: 100%;">
+                                <div style="display: flex; justify-content: space-between; margin-top: 4px;">
+                                  <span style="font-size: 11px; color: var(--ubits-fg-1-medium);">0</span>
+                                  <span id="progress-value-display-${componentId}" style="font-size: 11px; color: var(--ubits-fg-1-high); font-weight: 600;">75%</span>
+                                  <span style="font-size: 11px; color: var(--ubits-fg-1-medium);">100</span>
+                                </div>
+                              </div>
+                              
+                              <!-- Indicator -->
+                              <div style="flex: 0 0 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Indicador</label>
+                                <label class="switch" style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                                  <input type="checkbox" id="progress-indicator-toggle-${componentId}" checked onchange="setProgressBarControl('indicator', this.checked, '${componentId}')">
+                                  <span class="slider"></span>
+                                  <span id="progress-indicator-status-${componentId}" style="font-size: 14px; color: var(--ubits-fg-1-high);">Activado</span>
+                                </label>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <!-- PREVIEW EN EL MEDIO -->
+                          <div style="background: var(--ubits-bg-1); padding: 48px; border-radius: 8px; border: none; margin-bottom: 24px; min-height: 200px;">
+                            <div id="progress-bar-preview-${componentId}" style="width: 100%;">
+                              <!-- Se generará dinámicamente -->
                             </div>
                           </div>
                         </div>
@@ -8356,6 +8448,230 @@ Reglas Importantes:
         
         // Actualizar preview
         window.updateScrollbarPreview(componentId);
+      };
+      
+      // ========================================
+      // PROGRESS BAR PREVIEW FUNCTIONS
+      // ========================================
+      
+      // Estado del preview del Progress Bar
+      const progressBarPreviewState = {};
+      
+      // Instancias del Progress Bar
+      const progressBarInstances = {};
+      
+      // Inicializar estado del preview del Progress Bar
+      window.initProgressBarPreviewState = function(componentId) {
+        if (!progressBarPreviewState[componentId]) {
+          progressBarPreviewState[componentId] = {
+            size: 'md',
+            variant: 'default',
+            value: 75,
+            indicator: true
+          };
+        }
+        return progressBarPreviewState[componentId];
+      };
+      
+      // Función para renderizar Progress Bar localmente
+      function renderProgressBarLocal(options) {
+        const {
+          size = 'md',
+          value = 0,
+          variant = 'default',
+          segments = [],
+          indicator = false
+        } = options;
+        
+        const sizeConfig = {
+          xs: { height: 4, fontSize: 'var(--font-body-xs-size, 11px)' },
+          sm: { height: 8, fontSize: 'var(--font-body-sm-size, 13px)' },
+          md: { height: 16, fontSize: 'var(--font-body-md-size, 16px)' },
+          lg: { height: 20, fontSize: 'var(--font-body-lg-size, 18px)' }
+        }[size] || { height: 16, fontSize: 'var(--font-body-md-size, 16px)' };
+        
+        const classes = [
+          'ubits-progress-bar',
+          `ubits-progress-bar--${size}`,
+          variant === 'multi-color' ? 'ubits-progress-bar--multi-color' : ''
+        ].filter(Boolean).join(' ');
+        
+        let indicatorHtml = '';
+        if (indicator !== undefined && indicator !== false) {
+          const indicatorText = typeof indicator === 'string' ? indicator : `${Math.round(value)}%`;
+          indicatorHtml = `<span class="ubits-progress-bar__indicator">${indicatorText}</span>`;
+        }
+        
+        const colorTokens = {
+          yellow: 'var(--ubits-feedback-accent-warning, #f5a623)',
+          green: 'var(--ubits-feedback-accent-success, #4ab028)',
+          gray: 'var(--ubits-bg-4, #dbdde0)',
+          info: 'var(--ubits-accent-brand, #0c5bef)',
+          error: 'var(--ubits-feedback-accent-error, #cf0e34)'
+        };
+        
+        let progressIndicatorHtml = '';
+        
+        if (variant === 'multi-color' && segments.length > 0) {
+          const total = segments.reduce((sum, seg) => sum + seg.value, 0);
+          const segmentsHtml = segments.map((segment, index) => {
+            const width = total > 0 ? (segment.value / total) * 100 : 0;
+            const color = colorTokens[segment.color] || colorTokens.gray;
+            const isFirst = index === 0;
+            const isLast = index === segments.length - 1;
+            const borderRadius = `border-radius: ${isFirst ? '1000px 0 0 1000px' : isLast ? '0 1000px 1000px 0' : '0'};`;
+            
+            return `<div 
+              class="ubits-progress-bar__segment" 
+              style="width: ${width}%; background-color: ${color}; ${borderRadius}"
+              data-color="${segment.color}"
+            ></div>`;
+          }).join('');
+          
+          progressIndicatorHtml = `<div class="ubits-progress-bar__indicator-wrapper">${segmentsHtml}</div>`;
+        } else {
+          const clampedValue = Math.max(0, Math.min(100, value));
+          progressIndicatorHtml = `<div 
+            class="ubits-progress-bar__indicator-wrapper" 
+            style="width: ${clampedValue}%;"
+          ></div>`;
+        }
+        
+        return `
+          <div class="${classes}" style="height: ${sizeConfig.height}px;">
+            <div class="ubits-progress-bar__container">
+              ${progressIndicatorHtml}
+            </div>
+            ${indicatorHtml}
+          </div>
+        `.trim();
+      }
+      
+      // Función para actualizar el preview del Progress Bar
+      window.updateProgressBarPreview = function(componentId) {
+        const state = initProgressBarPreviewState(componentId);
+        
+        // Limpiar instancia anterior
+        if (progressBarInstances[componentId]) {
+          progressBarInstances[componentId].destroy();
+        }
+        
+        const previewContainer = document.getElementById(`progress-bar-preview-${componentId}`);
+        if (!previewContainer) {
+          return;
+        }
+        
+        // Cargar CSS si no está cargado
+        const cssLinkId = 'progress-bar-css';
+        if (!document.getElementById(cssLinkId)) {
+          const link = document.createElement('link');
+          link.id = cssLinkId;
+          link.rel = 'stylesheet';
+          link.href = '../../addons/progress/src/styles/progress.css';
+          document.head.appendChild(link);
+        }
+        
+        // Preparar opciones
+        let options = {
+          size: state.size,
+          variant: state.variant,
+          value: state.value,
+          indicator: state.indicator
+        };
+        
+        // Si es multi-color, usar segmentos de ejemplo
+        if (state.variant === 'multi-color') {
+          options.segments = [
+            { value: 30, color: 'green' },
+            { value: 25, color: 'info' },
+            { value: 20, color: 'yellow' },
+            { value: 15, color: 'error' },
+            { value: 10, color: 'gray' }
+          ];
+          options.value = undefined;
+        }
+        
+        // Renderizar Progress Bar
+        const html = renderProgressBarLocal(options);
+        previewContainer.innerHTML = html;
+        
+        // Guardar instancia (simulada para compatibilidad)
+        progressBarInstances[componentId] = {
+          destroy: () => {
+            previewContainer.innerHTML = '';
+          }
+        };
+        
+        // Actualizar visibilidad del control de valor
+        const valueControl = document.getElementById(`progress-value-control-${componentId}`);
+        if (valueControl) {
+          valueControl.style.display = state.variant === 'default' ? 'block' : 'none';
+        }
+        
+        // Actualizar valor del slider
+        const valueInput = document.getElementById(`progress-value-input-${componentId}`);
+        const valueDisplay = document.getElementById(`progress-value-display-${componentId}`);
+        if (valueInput && valueDisplay) {
+          valueInput.value = state.value;
+          valueDisplay.textContent = `${state.value}%`;
+        }
+        
+        // Actualizar estado del toggle de indicador
+        const indicatorToggle = document.getElementById(`progress-indicator-toggle-${componentId}`);
+        const indicatorStatus = document.getElementById(`progress-indicator-status-${componentId}`);
+        if (indicatorToggle && indicatorStatus) {
+          indicatorToggle.checked = state.indicator;
+          indicatorStatus.textContent = state.indicator ? 'Activado' : 'Desactivado';
+        }
+      };
+      
+      // Función para actualizar controles del Progress Bar
+      window.setProgressBarControl = function(option, value, componentId) {
+        const state = initProgressBarPreviewState(componentId);
+        
+        if (option === 'size') {
+          state.size = value;
+          
+          // Actualizar botones activos
+          const buttons = document.querySelectorAll(`[data-component="${componentId}"][data-option="size"]`);
+          buttons.forEach(btn => {
+            if (btn.getAttribute('data-value') === value) {
+              btn.classList.add('active');
+            } else {
+              btn.classList.remove('active');
+            }
+          });
+        } else if (option === 'variant') {
+          state.variant = value;
+          
+          // Actualizar botones activos
+          const buttons = document.querySelectorAll(`[data-component="${componentId}"][data-option="variant"]`);
+          buttons.forEach(btn => {
+            if (btn.getAttribute('data-value') === value) {
+              btn.classList.add('active');
+            } else {
+              btn.classList.remove('active');
+            }
+          });
+        } else if (option === 'value') {
+          state.value = value;
+          
+          // Actualizar display
+          const valueDisplay = document.getElementById(`progress-value-display-${componentId}`);
+          if (valueDisplay) {
+            valueDisplay.textContent = `${value}%`;
+          }
+        } else if (option === 'indicator') {
+          state.indicator = value;
+          
+          // Actualizar estado del toggle
+          const indicatorStatus = document.getElementById(`progress-indicator-status-${componentId}`);
+          if (indicatorStatus) {
+            indicatorStatus.textContent = value ? 'Activado' : 'Desactivado';
+          }
+        }
+        
+        updateProgressBarPreview(componentId);
       };
       
       // ========================================

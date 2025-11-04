@@ -216,7 +216,8 @@ function validateFile(filePath, autoFix = false) {
         }
         // Ignorar colores dentro de arrays de opciones o keys de objetos de mapeo (ej: options: ['green', 'red'], o green: 'success')
         if (match.toLowerCase() === 'green' || match.toLowerCase() === 'red' || match.toLowerCase() === 'blue' || 
-            match.toLowerCase() === 'orange' || match.toLowerCase() === 'gray' || match.toLowerCase() === 'grey') {
+            match.toLowerCase() === 'orange' || match.toLowerCase() === 'gray' || match.toLowerCase() === 'grey' ||
+            match.toLowerCase() === 'yellow' || match.toLowerCase() === 'black' || match.toLowerCase() === 'white') {
           const context = (before + match + after).toLowerCase();
           const afterTrimmed = after.trim();
           const beforeTrimmed = before.trim();
@@ -225,9 +226,10 @@ function validateFile(filePath, autoFix = false) {
               context.includes('badgecolor') || context.includes('badge_color') ||
               context.includes('variants:') || context.includes('_variants') ||
               context.includes('badge_variants') || context.includes('badgevariants') ||
-              (beforeTrimmed.endsWith(':') && afterTrimmed.startsWith(':')) ||
-              (beforeTrimmed.endsWith(':') && afterTrimmed.startsWith("'")) ||
-              (beforeTrimmed.endsWith(':') && afterTrimmed.startsWith('"')) ||
+              context.includes('color_tokens') || context.includes('colorTokens') ||
+              context.includes('color_map') || context.includes('colorMap') ||
+              context.includes('segments') || context.includes('segment') ||
+              (beforeTrimmed.endsWith(':') && (afterTrimmed.startsWith(':') || afterTrimmed.startsWith("'") || afterTrimmed.startsWith('"'))) ||
               (before.includes("['") && after.includes("']")) ||
               (before.includes('["') && after.includes('"]')) ||
               (afterTrimmed.startsWith(':') && (afterTrimmed.includes("'") || afterTrimmed.includes('"'))) ||
