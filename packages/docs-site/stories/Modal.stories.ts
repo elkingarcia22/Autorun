@@ -147,6 +147,8 @@ export const Default: Story = {
     const openButton = document.createElement('button');
     openButton.className = 'ubits-button ubits-button--primary ubits-button--md';
     openButton.innerHTML = '<span>Abrir Modal</span>';
+    openButton.style.width = 'auto';
+    openButton.style.minWidth = 'auto';
     
     let modalInstance: ReturnType<typeof createModal> | null = null;
     
