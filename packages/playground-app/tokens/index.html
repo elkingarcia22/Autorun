@@ -8091,20 +8091,103 @@ Reglas Importantes:
           document.head.appendChild(link);
         }
         
-        // Cargar el script del scrollbar si no está cargado
-        if (typeof window.createScrollbar === 'undefined') {
-          // Intentar cargar desde el módulo compilado o fuente
-          const script = document.createElement('script');
-          script.src = '../../addons/scroll/dist/scrollbar.js';
-          script.type = 'module';
-          script.onerror = () => {
-            // Si falla, intentar cargar desde el src directamente
-            const script2 = document.createElement('script');
-            script2.src = '../../addons/scroll/src/index.ts';
-            script2.type = 'module';
-            document.head.appendChild(script2);
+        // Función para crear scrollbar directamente (sin módulo externo)
+        function createScrollbarLocal(targetElement, scrollbarContainer, orientation) {
+          // Crear elemento del scrollbar
+          const scrollbarElement = document.createElement('div');
+          scrollbarElement.className = `ubits-scrollbar ubits-scrollbar--${orientation} ubits-scrollbar--default`;
+          
+          const barElement = document.createElement('div');
+          barElement.className = 'ubits-scrollbar__bar';
+          scrollbarElement.appendChild(barElement);
+          
+          scrollbarContainer.appendChild(scrollbarElement);
+          
+          // Función para actualizar el scrollbar
+          const updateScrollbar = () => {
+            if (!targetElement || !barElement || !scrollbarElement) return;
+            
+            const isVertical = orientation === 'vertical';
+            const scroll = isVertical ? targetElement.scrollTop : targetElement.scrollLeft;
+            const clientSize = isVertical ? targetElement.clientHeight : targetElement.clientWidth;
+            const scrollSize = isVertical ? targetElement.scrollHeight : targetElement.scrollWidth;
+            
+            if (scrollSize <= clientSize) {
+              // No hay scroll necesario
+              barElement.style.opacity = '0';
+              return;
+            }
+            
+            // Calcular posición y tamaño del thumb
+            const scrollbarSize = isVertical ? scrollbarElement.clientHeight : scrollbarElement.clientWidth;
+            const thumbSize = Math.max((clientSize / scrollSize) * scrollbarSize, 20); // Mínimo 20px
+            const maxThumbPosition = scrollbarSize - thumbSize;
+            const thumbPosition = (scroll / (scrollSize - clientSize)) * maxThumbPosition;
+            
+            if (isVertical) {
+              barElement.style.height = `${thumbSize}px`;
+              barElement.style.transform = `translateY(${thumbPosition}px)`;
+            } else {
+              barElement.style.width = `${thumbSize}px`;
+              barElement.style.transform = `translateX(${thumbPosition}px)`;
+            }
+            
+            barElement.style.opacity = '1';
           };
-          document.head.appendChild(script);
+          
+          // Función para hacer scroll al hacer clic en el scrollbar
+          const handleScrollbarClick = (e) => {
+            if (!targetElement || !barElement) return;
+            
+            const isVertical = orientation === 'vertical';
+            const rect = scrollbarElement.getBoundingClientRect();
+            const clickPosition = isVertical 
+              ? e.clientY - rect.top 
+              : e.clientX - rect.left;
+            
+            const scrollbarSize = isVertical ? scrollbarElement.clientHeight : scrollbarElement.clientWidth;
+            const percentage = clickPosition / scrollbarSize;
+            
+            const clientSize = isVertical ? targetElement.clientHeight : targetElement.clientWidth;
+            const scrollSize = isVertical ? targetElement.scrollHeight : targetElement.scrollWidth;
+            const maxScroll = scrollSize - clientSize;
+            
+            if (isVertical) {
+              targetElement.scrollTop = percentage * maxScroll;
+            } else {
+              targetElement.scrollLeft = percentage * maxScroll;
+            }
+          };
+          
+          // Event listeners
+          targetElement.addEventListener('scroll', updateScrollbar);
+          targetElement.addEventListener('resize', updateScrollbar);
+          
+          // Observar cambios en el contenido
+          const resizeObserver = new ResizeObserver(() => {
+            updateScrollbar();
+          });
+          resizeObserver.observe(targetElement);
+          
+          scrollbarElement.addEventListener('click', handleScrollbarClick);
+          
+          // Actualizar inicialmente
+          setTimeout(() => {
+            updateScrollbar();
+          }, 100);
+          
+          // Retornar objeto con métodos
+          return {
+            element: scrollbarElement,
+            update: updateScrollbar,
+            destroy: () => {
+              targetElement.removeEventListener('scroll', updateScrollbar);
+              targetElement.removeEventListener('resize', updateScrollbar);
+              resizeObserver.disconnect();
+              scrollbarElement.removeEventListener('click', handleScrollbarClick);
+              scrollbarElement.remove();
+            }
+          };
         }
         
         if (state.orientation === 'vertical') {
@@ -8112,45 +8195,34 @@ Reglas Importantes:
           verticalWrapper.style.display = 'flex';
           horizontalWrapper.style.display = 'none';
           
+          // Limpiar scrollbar anterior si existe
+          verticalScrollbar.innerHTML = '';
+          
           // Configurar el contenedor para que sea scrollable
           verticalContainer.setAttribute('data-scrollable', 'true');
           
           // Ocultar scrollbar nativo
           verticalContainer.style.setProperty('-ms-overflow-style', 'none');
           verticalContainer.style.setProperty('scrollbar-width', 'none');
-          const style = document.createElement('style');
-          style.textContent = `#scrollbar-scrollable-vertical-${componentId}::-webkit-scrollbar { display: none; }`;
-          document.head.appendChild(style);
+          const styleId = `scrollbar-style-vertical-${componentId}`;
+          if (!document.getElementById(styleId)) {
+            const style = document.createElement('style');
+            style.id = styleId;
+            style.textContent = `#scrollbar-scrollable-vertical-${componentId}::-webkit-scrollbar { display: none; }`;
+            document.head.appendChild(style);
+          }
           
-          // Esperar a que el DOM esté listo y crear el scrollbar vertical
+          // Crear scrollbar vertical
           setTimeout(() => {
-            if (typeof window.createScrollbar !== 'undefined') {
-              try {
-                const instance = window.createScrollbar({
-                  orientation: 'vertical',
-                  targetId: `scrollbar-scrollable-vertical-${componentId}`,
-                  containerId: `scrollbar-vertical-${componentId}`
-                });
-                scrollbarInstances[componentId].vertical = instance;
-              } catch (error) {
-                console.error('Error al crear scrollbar vertical:', error);
-              }
-            } else {
-              // Si aún no está disponible, intentar de nuevo
-              setTimeout(() => {
-                if (typeof window.createScrollbar !== 'undefined') {
-                  try {
-                    const instance = window.createScrollbar({
-                      orientation: 'vertical',
-                      targetId: `scrollbar-scrollable-vertical-${componentId}`,
-                      containerId: `scrollbar-vertical-${componentId}`
-                    });
-                    scrollbarInstances[componentId].vertical = instance;
-                  } catch (error) {
-                    console.error('Error al crear scrollbar vertical:', error);
-                  }
-                }
-              }, 500);
+            try {
+              const instance = createScrollbarLocal(
+                verticalContainer,
+                verticalScrollbar,
+                'vertical'
+              );
+              scrollbarInstances[componentId].vertical = instance;
+            } catch (error) {
+              console.error('Error al crear scrollbar vertical:', error);
             }
           }, 100);
         } else {
@@ -8158,45 +8230,34 @@ Reglas Importantes:
           verticalWrapper.style.display = 'none';
           horizontalWrapper.style.display = 'flex';
           
+          // Limpiar scrollbar anterior si existe
+          horizontalScrollbar.innerHTML = '';
+          
           // Configurar el contenedor para que sea scrollable
           horizontalContainer.setAttribute('data-scrollable', 'true');
           
           // Ocultar scrollbar nativo
           horizontalContainer.style.setProperty('-ms-overflow-style', 'none');
           horizontalContainer.style.setProperty('scrollbar-width', 'none');
-          const style = document.createElement('style');
-          style.textContent = `#scrollbar-scrollable-horizontal-${componentId}::-webkit-scrollbar { display: none; }`;
-          document.head.appendChild(style);
+          const styleId = `scrollbar-style-horizontal-${componentId}`;
+          if (!document.getElementById(styleId)) {
+            const style = document.createElement('style');
+            style.id = styleId;
+            style.textContent = `#scrollbar-scrollable-horizontal-${componentId}::-webkit-scrollbar { display: none; }`;
+            document.head.appendChild(style);
+          }
           
-          // Esperar a que el DOM esté listo y crear el scrollbar horizontal
+          // Crear scrollbar horizontal
           setTimeout(() => {
-            if (typeof window.createScrollbar !== 'undefined') {
-              try {
-                const instance = window.createScrollbar({
-                  orientation: 'horizontal',
-                  targetId: `scrollbar-scrollable-horizontal-${componentId}`,
-                  containerId: `scrollbar-horizontal-${componentId}`
-                });
-                scrollbarInstances[componentId].horizontal = instance;
-              } catch (error) {
-                console.error('Error al crear scrollbar horizontal:', error);
-              }
-            } else {
-              // Si aún no está disponible, intentar de nuevo
-              setTimeout(() => {
-                if (typeof window.createScrollbar !== 'undefined') {
-                  try {
-                    const instance = window.createScrollbar({
-                      orientation: 'horizontal',
-                      targetId: `scrollbar-scrollable-horizontal-${componentId}`,
-                      containerId: `scrollbar-horizontal-${componentId}`
-                    });
-                    scrollbarInstances[componentId].horizontal = instance;
-                  } catch (error) {
-                    console.error('Error al crear scrollbar horizontal:', error);
-                  }
-                }
-              }, 500);
+            try {
+              const instance = createScrollbarLocal(
+                horizontalContainer,
+                horizontalScrollbar,
+                'horizontal'
+              );
+              scrollbarInstances[componentId].horizontal = instance;
+            } catch (error) {
+              console.error('Error al crear scrollbar horizontal:', error);
             }
           }, 100);
         }
