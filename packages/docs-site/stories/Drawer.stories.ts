@@ -172,10 +172,12 @@ export const Default: Story = {
     const openButton = document.createElement('button');
     openButton.className = 'ubits-button ubits-button--primary ubits-button--md';
     openButton.innerHTML = '<span>Abrir Drawer</span>';
+    openButton.style.width = 'auto';
+    openButton.style.minWidth = 'auto';
     
     let drawerInstance: ReturnType<typeof createDrawer> | null = null;
     
-    openButton.addEventListener('click', () => {
+    const handleOpenDrawer = () => {
       if (!drawerInstance) {
         // Construir footerButtons desde los args individuales
         const footerButtons: any = {};
@@ -213,21 +215,31 @@ export const Default: Story = {
           width: args.width,
           bodyContent: args.bodyContent,
           footerButtons: Object.keys(footerButtons).length > 0 ? footerButtons : undefined,
-          containerId: container.id,
+          containerId: undefined, // Añadir al body, no al contenedor
           closeOnOverlayClick: args.closeOnOverlayClick,
           onClose: () => {
             if (args.onClose) {
               args.onClose();
             }
+            // Limpiar la instancia
+            if (drawerInstance && drawerInstance.element) {
+              drawerInstance.element.remove();
+            }
             drawerInstance = null;
-            openButton.style.display = 'block';
+            // Restaurar el botón
+            openButton.style.display = 'flex';
+            openButton.style.visibility = 'visible';
           },
           open: true,
         });
         
+        // Ocultar el botón
         openButton.style.display = 'none';
+        openButton.style.visibility = 'hidden';
       }
-    });
+    };
+    
+    openButton.addEventListener('click', handleOpenDrawer);
     
     container.appendChild(openButton);
     
