@@ -152,7 +152,7 @@ export const Default: Story = {
     
     let modalInstance: ReturnType<typeof createModal> | null = null;
     
-    openButton.addEventListener('click', () => {
+    const handleOpenModal = () => {
       if (!modalInstance) {
         // Construir footerButtons desde los args individuales
         const footerButtons: any = {};
@@ -190,21 +190,31 @@ export const Default: Story = {
           fullScreen: args.fullScreen,
           bodyContent: args.bodyContent,
           footerButtons: Object.keys(footerButtons).length > 0 ? footerButtons : undefined,
-          containerId: container.id,
+          containerId: undefined, // Añadir al body, no al contenedor
           closeOnOverlayClick: args.closeOnOverlayClick,
           onClose: () => {
             if (args.onClose) {
               args.onClose();
             }
+            // Limpiar la instancia
+            if (modalInstance && modalInstance.element) {
+              modalInstance.element.remove();
+            }
             modalInstance = null;
-            openButton.style.display = 'block';
+            // Restaurar el botón
+            openButton.style.display = 'flex';
+            openButton.style.visibility = 'visible';
           },
           open: true,
         });
         
+        // Ocultar el botón
         openButton.style.display = 'none';
+        openButton.style.visibility = 'hidden';
       }
-    });
+    };
+    
+    openButton.addEventListener('click', handleOpenModal);
     
     container.appendChild(openButton);
     
