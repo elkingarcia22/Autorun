@@ -48,6 +48,12 @@ const config: StorybookConfig = {
       config.resolve.conditions.push('import');
     }
     
+    // Configurar server para manejar mejor las rutas con espacios
+    config.server = config.server || {};
+    config.server.fs = config.server.fs || {};
+    config.server.fs.allow = config.server.fs.allow || [];
+    config.server.fs.allow.push(rootDir);
+    
     // Configurar optimización para mejorar la resolución de módulos
     config.optimizeDeps = config.optimizeDeps || {};
     config.optimizeDeps.include = config.optimizeDeps.include || [];
