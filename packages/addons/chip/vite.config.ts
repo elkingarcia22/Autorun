@@ -16,11 +16,17 @@ export default defineConfig({
     },
   },
   esbuild: {
-    // Configurar esbuild para manejar mejor las rutas con espacios
+    // Configurar esbuild para evitar problemas con tsconfig.node.json y rutas con espacios
     tsconfigRaw: {
       compilerOptions: {
         skipLibCheck: true,
+        module: 'ESNext',
+        moduleResolution: 'bundler',
+        allowSyntheticDefaultImports: true,
+        strict: false,
       },
     },
+    // Evitar que esbuild busque tsconfig.node.json
+    tsconfig: false,
   },
 });
