@@ -125,8 +125,10 @@
 }
 
 .ubits-chip__right-icon:focus-visible {
-    outline: 2px solid var(--ubits-button-focus-ring, rgba(12, 91, 239, 0.4));
-    outline-offset: 2px;
+    /* Efecto Focus de los tokens UBITS */
+    outline: none;
+    border: 2px solid var(--ubits-accent-brand, #5297F4);
+    box-shadow: 0px 0px 0px 4px rgba(82, 151, 244, 0.3);
     border-radius: var(--ubits-border-radius-xs, 4px);
 }
 
@@ -173,9 +175,12 @@
 /* Focus State */
 .ubits-chip--focus:focus-visible,
 .ubits-chip:focus-visible {
-    outline: 2px solid var(--ubits-button-focus-ring, rgba(12, 91, 239, 0.4));
-    outline-offset: 2px;
-    border-color: var(--ubits-accent-brand, #0c5bef);
+    /* Efecto Focus de los tokens UBITS */
+    /* Border: 2px solid del color de focus */
+    border: 2px solid var(--ubits-accent-brand, #5297F4);
+    /* Box-shadow: 0px 0px 0px 4px con spread de 4px y opacidad 30% */
+    box-shadow: 0px 0px 0px 4px rgba(82, 151, 244, 0.3);
+    outline: none;
 }
 
 /* Disabled State */
