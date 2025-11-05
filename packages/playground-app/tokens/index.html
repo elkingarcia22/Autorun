@@ -2474,9 +2474,12 @@ npm run dev</code></pre>
           document.body.insertBefore(m, document.querySelector('.tabs-wrap'));
           return m;
         })();
-        ['section-template','section-colores','section-texto','section-iconos','section-componentes','section-espaciado','section-grid-breakpoints'].forEach(id=>{
+        ['section-template','section-colores','section-texto','section-iconos','section-componentes','section-espaciado','section-grid-breakpoints','section-effects'].forEach(id=>{
           const el = document.getElementById(id);
-          if (el && el.parentElement !== host) host.appendChild(el);
+          if (el && el.parentElement !== host) {
+            host.appendChild(el);
+            console.log('[ensureHost] Moved', id, 'to sections-host');
+          }
         });
       })();
 
@@ -10229,16 +10232,16 @@ Reglas Importantes:
               </div>
             `;
           } else if (state === 'default' || state === 'error') {
-            actionsHtml = `
-              <div class="ubits-file-upload__actions">
-                <button class="ubits-file-upload__action ubits-file-upload__action--reupload" aria-label="Re-subir archivo">
-                  <i class="far fa-arrow-up-from-bracket"></i>
-                </button>
-                <button class="ubits-file-upload__action ubits-file-upload__action--remove" aria-label="Eliminar archivo">
-                  <i class="far fa-trash"></i>
-                </button>
-              </div>
-            `;
+          actionsHtml = `
+            <div class="ubits-file-upload__actions">
+              <button class="ubits-file-upload__action ubits-file-upload__action--reupload" aria-label="Re-subir archivo">
+                <i class="far fa-arrow-up-from-bracket"></i>
+              </button>
+              <button class="ubits-file-upload__action ubits-file-upload__action--remove" aria-label="Eliminar archivo">
+                <i class="far fa-trash"></i>
+              </button>
+            </div>
+          `;
           }
         }
         
