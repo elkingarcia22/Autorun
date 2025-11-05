@@ -41,6 +41,17 @@ const config: StorybookConfig = {
       ...config.resolve.alias,
       '@ubits/icons': resolve(rootDir, 'icons/src/index.ts'),
     };
+    
+    // Asegurar que Vite puede resolver módulos TypeScript correctamente
+    config.resolve.conditions = config.resolve.conditions || [];
+    if (!config.resolve.conditions.includes('import')) {
+      config.resolve.conditions.push('import');
+    }
+    
+    // Configurar optimización para mejorar la resolución de módulos
+    config.optimizeDeps = config.optimizeDeps || {};
+    config.optimizeDeps.include = config.optimizeDeps.include || [];
+    
     return config;
   },
 };
