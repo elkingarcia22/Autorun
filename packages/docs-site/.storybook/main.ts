@@ -1,6 +1,7 @@
 import type { StorybookConfig } from '@storybook/html-vite';
 import { dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
+import { ignoreTsconfigNodeJsonPlugin } from './plugins/ignore-tsconfig-node-json';
 
 /**
 * This function is used to resolve the absolute path of a package.
@@ -41,6 +42,10 @@ const config: StorybookConfig = {
       ...config.resolve.alias,
       '@ubits/icons': resolve(rootDir, 'icons/src/index.ts'),
     };
+    
+    // Agregar plugin personalizado para ignorar tsconfig.node.json
+    config.plugins = config.plugins || [];
+    config.plugins.push(ignoreTsconfigNodeJsonPlugin());
     
     // Asegurar que Vite puede resolver módulos TypeScript correctamente
     config.resolve.conditions = config.resolve.conditions || [];
