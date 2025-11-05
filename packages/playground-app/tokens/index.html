@@ -4589,6 +4589,21 @@ Reglas Importantes:
               hasPreview: true
             },
             {
+              name: 'Checkbox',
+              description: 'Componente checkbox para selección múltiple. Múltiples tamaños, estados y soporte para texto complementario. Usa tokens UBITS exclusivamente.',
+              files: {
+                css: 'addons/checkbox/src/styles/checkbox.css',
+                ts: 'addons/checkbox/src/CheckboxProvider.ts'
+              },
+              variants: [],
+              sizes: ['sm', 'md'],
+              states: ['default', 'hover', 'active', 'disabled'],
+              features: ['2 tamaños (sm: 16px, md: 20px)', '4 estados (default, hover, active, disabled)', 'Texto complementario opcional', 'Checkmark animado', 'Usa tokens UBITS exclusivamente'],
+              class: 'ubits-checkbox ubits-checkbox--{size} ubits-checkbox--{state}',
+              example: 'renderCheckbox({\n  label: \'Label\',\n  size: \'md\',\n  state: \'default\',\n  checked: false\n})',
+              hasPreview: true
+            },
+            {
               name: 'Avatar',
               description: 'Componente de avatar con soporte para imagen, iniciales e icono. Múltiples tamaños y badge opcional. Usa tokens UBITS exclusivamente.',
               files: {
@@ -4798,6 +4813,8 @@ Reglas Importantes:
                     window.updateChipPreview('chip');
                   } else if (componentId === 'radio-button' && typeof window.updateRadioButtonPreview === 'function') {
                     window.updateRadioButtonPreview('radio-button');
+                  } else if (componentId === 'checkbox' && typeof window.updateCheckboxPreview === 'function') {
+                    window.updateCheckboxPreview('checkbox');
                   } else if (componentId === 'avatar' && typeof window.updateAvatarPreview === 'function') {
                     window.updateAvatarPreview('avatar');
                   } else if (componentId === 'drawer-navigation' && typeof window.updateDrawerPreview === 'function') {
@@ -5439,6 +5456,70 @@ Reglas Importantes:
                           <!-- PREVIEW EN EL MEDIO -->
                           <div style="background: var(--ubits-bg-1); padding: 48px; border-radius: 8px; border: none; margin-bottom: 24px; display: flex; align-items: center; justify-content: center; min-height: 120px;">
                             <div id="radio-button-preview-${componentId}">
+                              <!-- Se generará dinámicamente -->
+                            </div>
+                          </div>
+                        </div>
+                      ` : ''}
+                      
+                      ${hasPreview && component.name === 'Checkbox' ? `
+                        <!-- Preview Section for Checkbox -->
+                        <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: none; margin-bottom: 24px;">
+                          <!-- CONTROLES ARRIBA -->
+                          <div style="margin-bottom: 24px;">
+                            <h4 style="margin: 0 0 20px 0; color: var(--ubits-fg-1-high); font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand);"></i>
+                              Controles
+                            </h4>
+                            
+                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
+                              <!-- Tamaño -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Tamaño</label>
+                                <select id="checkbox-size-select-${componentId}" onchange="setCheckboxControl('size', this.value, '${componentId}')" style="width: 100%; padding: 10px 32px 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: var(--font-body-sm-size, 13px); font-family: var(--font-sans); cursor: pointer; box-sizing: border-box; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23666%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226,9 12,15 18,9%22></polyline></svg>'); background-repeat: no-repeat; background-position: right 10px center; background-size: 16px;">
+                                  <option value="sm">SM (16px)</option>
+                                  <option value="md" selected>MD (20px)</option>
+                                </select>
+                              </div>
+                              
+                              <!-- Estado -->
+                              <div style="flex: 0 0 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Estado</label>
+                                <select id="checkbox-state-select-${componentId}" onchange="setCheckboxControl('state', this.value, '${componentId}')" style="width: 100%; padding: 10px 32px 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: var(--font-body-sm-size, 13px); font-family: var(--font-sans); cursor: pointer; box-sizing: border-box; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23666%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226,9 12,15 18,9%22></polyline></svg>'); background-repeat: no-repeat; background-position: right 10px center; background-size: 16px;">
+                                  <option value="default" selected>Default</option>
+                                  <option value="hover">Hover</option>
+                                  <option value="active">Active</option>
+                                  <option value="disabled">Disabled</option>
+                                </select>
+                              </div>
+                              
+                              <!-- Label -->
+                              <div style="flex: 1 1 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Label</label>
+                                <input type="text" id="checkbox-label-input-${componentId}" value="Label" onchange="setCheckboxControl('label', this.value, '${componentId}')" placeholder="Texto del label" style="width: 100%; max-width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: var(--font-body-sm-size, 13px); font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                              
+                              <!-- Complementary Text -->
+                              <div style="flex: 1 1 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Texto Complementario</label>
+                                <input type="text" id="checkbox-complementary-text-input-${componentId}" value="" onchange="setCheckboxControl('complementaryText', this.value, '${componentId}')" placeholder="Texto complementario (opcional)" style="width: 100%; max-width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: var(--font-body-sm-size, 13px); font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                              
+                              <!-- Checked -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Seleccionado</label>
+                                <label class="switch" style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                                  <input type="checkbox" id="checkbox-checked-toggle-${componentId}" onchange="setCheckboxControl('checked', this.checked, '${componentId}')">
+                                  <span class="slider"></span>
+                                  <span id="checkbox-checked-status-${componentId}" style="font-size: 14px; color: var(--ubits-fg-1-high);">Desactivado</span>
+                                </label>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <!-- PREVIEW EN EL MEDIO -->
+                          <div style="background: var(--ubits-bg-1); padding: 48px; border-radius: 8px; border: none; margin-bottom: 24px; display: flex; align-items: center; justify-content: center; min-height: 120px;">
+                            <div id="checkbox-preview-${componentId}">
                               <!-- Se generará dinámicamente -->
                             </div>
                           </div>
@@ -8448,6 +8529,141 @@ Reglas Importantes:
         }
         
         updateRadioButtonPreview(componentId);
+      };
+      
+      // ========================================
+      // CHECKBOX PREVIEW FUNCTIONS
+      // ========================================
+      
+      // Estado del preview del Checkbox
+      const checkboxPreviewState = {};
+      
+      // Inicializar estado del Checkbox
+      function initCheckboxPreviewState(componentId) {
+        if (!checkboxPreviewState[componentId]) {
+          checkboxPreviewState[componentId] = {
+            size: 'md',
+            state: 'default',
+            label: 'Label',
+            complementaryText: '',
+            checked: false,
+            name: 'checkbox-group-' + componentId,
+            value: 'option1'
+          };
+        }
+        return checkboxPreviewState[componentId];
+      }
+      
+      // Función para generar HTML del Checkbox
+      function generateCheckboxHTML(state, componentId) {
+        const { size, state: checkboxState, label, complementaryText, checked, name, value } = state;
+        
+        const isDisabled = checkboxState === 'disabled';
+        
+        // Construir clases
+        const classes = [
+          'ubits-checkbox',
+          `ubits-checkbox--${size}`,
+          checkboxState !== 'default' ? `ubits-checkbox--${checkboxState}` : '',
+          checked ? 'ubits-checkbox--checked' : '',
+          isDisabled ? 'ubits-checkbox--disabled' : ''
+        ].filter(Boolean).join(' ');
+        
+        // Checkbox input
+        const checkboxInput = `
+          <input
+            type="checkbox"
+            id="checkbox-${name}-${value}-${componentId}"
+            ${name ? `name="${name}"` : ''}
+            ${value ? `value="${value}"` : ''}
+            ${checked ? 'checked' : ''}
+            ${isDisabled ? 'disabled' : ''}
+            class="ubits-checkbox__input"
+          />
+        `;
+        
+        // Checkbox square (visual)
+        const checkboxSquare = `
+          <span class="ubits-checkbox__square" aria-hidden="true">
+            ${checked || (checkboxState === 'active' && !checked) ? '<span class="ubits-checkbox__checkmark"></span>' : ''}
+          </span>
+        `;
+        
+        // Label text
+        const labelHTML = `
+          <span class="ubits-checkbox__label">${label}</span>
+        `;
+        
+        // Complementary text
+        const complementaryTextHTML = complementaryText
+          ? `<span class="ubits-checkbox__complementary-text">${complementaryText}</span>`
+          : '';
+        
+        // Text content wrapper
+        const textContentHTML = `
+          <div class="ubits-checkbox__text-content">
+            ${labelHTML}
+            ${complementaryTextHTML}
+          </div>
+        `;
+        
+        return `
+          <label class="${classes}">
+            ${checkboxInput}
+            ${checkboxSquare}
+            ${textContentHTML}
+          </label>
+        `.trim();
+      }
+      
+      // Función para actualizar el preview del Checkbox
+      window.updateCheckboxPreview = function(componentId) {
+        const state = initCheckboxPreviewState(componentId);
+        const preview = document.getElementById(`checkbox-preview-${componentId}`);
+        
+        if (!preview) {
+          console.error('❌ Preview de Checkbox no encontrado:', `checkbox-preview-${componentId}`);
+          return;
+        }
+        
+        const checkboxHTML = generateCheckboxHTML(state, componentId);
+        preview.innerHTML = checkboxHTML;
+        
+        // Cargar CSS si no está cargado
+        const existingLink = document.querySelector('link[href*="checkbox.css"]');
+        if (!existingLink) {
+          const link = document.createElement('link');
+          link.rel = 'stylesheet';
+          link.href = '../../addons/checkbox/src/styles/checkbox.css';
+          document.head.appendChild(link);
+        }
+      };
+      
+      // Función unificada para controles del Checkbox
+      window.setCheckboxControl = function(option, value, componentId) {
+        const state = initCheckboxPreviewState(componentId);
+        
+        // Actualizar estado según la opción
+        if (option === 'size') {
+          state.size = value;
+        } else if (option === 'state') {
+          state.state = value;
+        } else if (option === 'label') {
+          state.label = value;
+        } else if (option === 'complementaryText') {
+          state.complementaryText = value;
+        } else if (option === 'checked') {
+          state.checked = value;
+          // Actualizar toggle
+          const checkedToggle = document.getElementById(`checkbox-checked-toggle-${componentId}`);
+          const checkedStatus = document.getElementById(`checkbox-checked-status-${componentId}`);
+          if (checkedToggle && checkedStatus) {
+            checkedToggle.checked = value;
+            checkedStatus.textContent = value ? 'Activado' : 'Desactivado';
+          }
+        }
+        
+        updateCheckboxPreview(componentId);
       };
       
       // ========================================

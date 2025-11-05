@@ -179,6 +179,30 @@
         "Usa tokens UBITS exclusivamente (--ubits-accent-brand, --ubits-border-1, --ubits-bg-1, --ubits-border-disabled-button, --ubits-fg-on-disabled-button)"
       ]
     },
+    "checkbox": {
+      "name": "Checkbox",
+      "package": "@ubits/checkbox",
+      "path": "packages/addons/checkbox",
+      "provider": "createCheckbox",
+      "globalFunction": "window.createCheckbox",
+      "cssFile": "packages/addons/checkbox/src/styles/checkbox.css",
+      "storybookStory": "Checkbox.stories.ts",
+      "variants": [],
+      "sizes": ["sm", "md"],
+      "states": ["default", "hover", "active", "checked", "disabled"],
+      "features": [
+        "2 tamaños (sm: 16px, md: 20px)",
+        "5 estados (default, hover, active, checked, disabled)",
+        "Estado hover: borde azul brand, fondo blanco",
+        "Estado active: cuadrado azul brand con checkmark blanco (solo cuando NO está checked)",
+        "Estado checked: borde gris, fondo azul brand, checkmark blanco",
+        "Estado disabled: borde gris claro, fondo blanco, checkmark gris oscuro",
+        "Texto complementario opcional debajo del label",
+        "Checkmark animado con scale y opacity transitions",
+        "Event onChange para manejar cambios",
+        "Usa tokens UBITS exclusivamente (--ubits-accent-brand, --ubits-border-1, --ubits-bg-1, --ubits-border-disabled-button, --ubits-fg-on-disabled-button)"
+      ]
+    },
     "avatar": {
       "name": "Avatar",
       "package": "@ubits/avatar",
