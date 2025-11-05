@@ -52,11 +52,20 @@ const config: StorybookConfig = {
     config.server = config.server || {};
     config.server.fs = config.server.fs || {};
     config.server.fs.allow = config.server.fs.allow || [];
+    // Permitir acceso al directorio raíz completo
     config.server.fs.allow.push(rootDir);
+    // También permitir acceso a directorios padre por si acaso
+    config.server.fs.allow.push(resolve(rootDir, '..'));
     
     // Configurar optimización para mejorar la resolución de módulos
     config.optimizeDeps = config.optimizeDeps || {};
     config.optimizeDeps.include = config.optimizeDeps.include || [];
+    
+    // Asegurar que Vite puede resolver extensiones .ts
+    config.resolve.extensions = config.resolve.extensions || ['.mjs', '.js', '.mts', '.ts', '.jsx', '.tsx', '.json'];
+    if (!config.resolve.extensions.includes('.ts')) {
+      config.resolve.extensions.push('.ts');
+    }
     
     return config;
   },
