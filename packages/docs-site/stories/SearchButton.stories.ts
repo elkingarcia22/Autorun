@@ -143,9 +143,12 @@ export const Default: Story = {
     container.style.justifyContent = 'center';
     container.style.minHeight = '100px';
 
-    const renderSearchComponent = () => {
+      // Estado interno para manejar el toggle
+      let isActive = args.active !== undefined ? args.active : false;
+
+      const renderSearchComponent = () => {
       const searchHTML = renderSearchButton({
-        active: args.active !== undefined ? args.active : false,
+        active: isActive,
         size: args.size || 'md',
         state: args.state || 'default',
         disabled: args.disabled !== undefined ? args.disabled : false,
@@ -157,10 +160,59 @@ export const Default: Story = {
 
       container.innerHTML = searchHTML;
 
-      // Agregar event listeners
-      if (args.active) {
+      // Agregar interactividad: click en botón para desplegar input
+      if (!isActive) {
+        const buttonElement = container.querySelector('button') as HTMLButtonElement;
+        if (buttonElement) {
+          buttonElement.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            isActive = true;
+            if (args.onClick) {
+              args.onClick(e);
+            }
+            renderSearchComponent();
+            // Focus en el input después de un pequeño delay
+            setTimeout(() => {
+              const inputElement = container.querySelector('.ubits-search-button__input') as HTMLInputElement;
+              if (inputElement) {
+                inputElement.focus();
+              }
+            }, 50);
+          });
+        }
+      } else {
+        // Si está activo, agregar listeners para contraer
         const inputElement = container.querySelector('.ubits-search-button__input') as HTMLInputElement;
+        
         if (inputElement) {
+          // ESC para contraer
+          inputElement.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+              e.preventDefault();
+              e.stopPropagation();
+              isActive = false;
+              renderSearchComponent();
+            }
+          });
+          
+          // Blur para contraer cuando se hace click fuera (si el input está vacío)
+          inputElement.addEventListener('blur', (e) => {
+            if (args.onBlur) {
+              args.onBlur(e);
+            }
+            // Solo contraer si el input está vacío
+            if (!inputElement.value.trim()) {
+              setTimeout(() => {
+                if (document.activeElement !== inputElement && !inputElement.value.trim()) {
+                  isActive = false;
+                  renderSearchComponent();
+                }
+              }, 200);
+            }
+          });
+          
+          // Event listeners para onChange y onFocus
           if (args.onChange) {
             inputElement.addEventListener('input', (e) => {
               if (args.onChange) {
@@ -173,6 +225,7 @@ export const Default: Story = {
               }
             });
           }
+          
           if (args.onFocus) {
             inputElement.addEventListener('focus', (e) => {
               if (args.onFocus) {
@@ -180,22 +233,6 @@ export const Default: Story = {
               }
             });
           }
-          if (args.onBlur) {
-            inputElement.addEventListener('blur', (e) => {
-              if (args.onBlur) {
-                args.onBlur(e);
-              }
-            });
-          }
-        }
-      } else {
-        const buttonElement = container.querySelector('button') as HTMLButtonElement;
-        if (buttonElement && args.onClick) {
-          buttonElement.addEventListener('click', (e) => {
-            if (args.onClick) {
-              args.onClick(e);
-            }
-          });
         }
       }
     };

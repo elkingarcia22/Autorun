@@ -9091,6 +9091,83 @@ Reglas Importantes:
           faLink.href = '../../icons/dist/fontawesome.css';
           document.head.appendChild(faLink);
         }
+        
+        // Agregar interactividad: click en botón para desplegar input
+        if (!state.active) {
+          const buttonElement = preview.querySelector('button');
+          if (buttonElement) {
+            buttonElement.addEventListener('click', function(e) {
+              e.preventDefault();
+              e.stopPropagation();
+              // Activar el modo input
+              state.active = true;
+              // Actualizar el toggle en los controles
+              const activeToggle = document.getElementById(`search-button-active-toggle-${componentId}`);
+              const activeStatus = document.getElementById(`search-button-active-status-${componentId}`);
+              if (activeToggle && activeStatus) {
+                activeToggle.checked = true;
+                activeStatus.textContent = 'Input';
+              }
+              // Re-renderizar
+              updateSearchButtonPreview(componentId);
+              // Focus en el input después de un pequeño delay
+              setTimeout(() => {
+                const inputElement = preview.querySelector('.ubits-search-button__input');
+                if (inputElement) {
+                  inputElement.focus();
+                }
+              }, 50);
+            });
+          }
+        } else {
+          // Si está activo, agregar listeners para contraer
+          const inputElement = preview.querySelector('.ubits-search-button__input');
+          const inputWrapper = preview.querySelector('.ubits-search-button__input-wrapper');
+          
+          if (inputElement) {
+            // ESC para contraer
+            inputElement.addEventListener('keydown', function(e) {
+              if (e.key === 'Escape') {
+                e.preventDefault();
+                e.stopPropagation();
+                // Desactivar el modo input
+                state.active = false;
+                // Actualizar el toggle en los controles
+                const activeToggle = document.getElementById(`search-button-active-toggle-${componentId}`);
+                const activeStatus = document.getElementById(`search-button-active-status-${componentId}`);
+                if (activeToggle && activeStatus) {
+                  activeToggle.checked = false;
+                  activeStatus.textContent = 'Botón';
+                }
+                // Re-renderizar
+                updateSearchButtonPreview(componentId);
+              }
+            });
+            
+            // Blur para contraer cuando se hace click fuera (si el input está vacío)
+            inputElement.addEventListener('blur', function(e) {
+              // Solo contraer si el input está vacío
+              if (!inputElement.value.trim()) {
+                // Usar setTimeout para permitir que otros clicks se procesen primero
+                setTimeout(() => {
+                  // Verificar que el elemento aún existe y no tiene focus
+                  if (document.activeElement !== inputElement && !inputElement.value.trim()) {
+                    state.active = false;
+                    // Actualizar el toggle en los controles
+                    const activeToggle = document.getElementById(`search-button-active-toggle-${componentId}`);
+                    const activeStatus = document.getElementById(`search-button-active-status-${componentId}`);
+                    if (activeToggle && activeStatus) {
+                      activeToggle.checked = false;
+                      activeStatus.textContent = 'Botón';
+                    }
+                    // Re-renderizar
+                    updateSearchButtonPreview(componentId);
+                  }
+                }, 200);
+              }
+            });
+          }
+        }
       };
       
       // Función unificada para controles del Search Button
