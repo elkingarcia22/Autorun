@@ -246,6 +246,10 @@ export const Default: Story = {
       const currentArgs = JSON.stringify(args);
       if (currentArgs !== lastArgs) {
         lastArgs = currentArgs;
+        // Sincronizar el estado interno con los args
+        if (args.active !== undefined) {
+          isActive = args.active;
+        }
         renderSearchComponent();
       }
     }, 100);
