@@ -5,6 +5,7 @@ const BRAND_TOKENS = [
   '--ubits-accent-brand-inverted',
   '--ubits-accent-brand-static',
   '--ubits-accent-brand-static-inverted',
+  '--ubits-accent-success',
   '--ubits-logo',
   '--ubits-logo-inverted',
   '--ubits-logo-static',
