@@ -8151,6 +8151,20 @@ Reglas Importantes:
           document.head.appendChild(link);
         }
         
+        // Aplicar efecto Focus si el estado es 'focus'
+        const chipElement = preview.querySelector('.ubits-chip');
+        if (chipElement && state.state === 'focus') {
+          // Aplicar estilos inline para mostrar el efecto Focus
+          chipElement.style.border = '2px solid var(--ubits-accent-brand, #5297F4)';
+          chipElement.style.boxShadow = '0px 0px 0px 4px rgba(82, 151, 244, 0.3)';
+          chipElement.style.outline = 'none';
+        } else if (chipElement) {
+          // Resetear estilos si no es estado focus
+          chipElement.style.border = '';
+          chipElement.style.boxShadow = '';
+          chipElement.style.outline = '';
+        }
+        
         // Agregar event listener para el botón de cerrar
         const closeButton = preview.querySelector('.ubits-chip__right-icon');
         if (closeButton) {
@@ -8163,7 +8177,6 @@ Reglas Importantes:
         
         // Agregar event listener para chip clickeable
         if (state.clickable && state.state !== 'disabled') {
-          const chipElement = preview.querySelector('.ubits-chip');
           if (chipElement) {
             chipElement.addEventListener('click', function(e) {
               e.preventDefault();
