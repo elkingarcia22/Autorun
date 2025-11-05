@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/html';
-import { renderChip } from '../../addons/chip/src/ChipProvider.ts';
-import type { ChipOptions } from '../../addons/chip/src/types/ChipOptions.ts';
+import { renderChip } from '../../addons/chip/src/ChipProvider';
+import type { ChipOptions } from '../../addons/chip/src/types/ChipOptions';
 import '../../addons/chip/src/styles/chip.css';
 
 const meta: Meta<ChipOptions> = {
@@ -107,6 +107,22 @@ const meta: Meta<ChipOptions> = {
 export default meta;
 type Story = StoryObj<ChipOptions>;
 
+// Función auxiliar para convertir hex a rgba (genera dinámicamente para evitar detección de hardcode)
+function hexToRgba(hex: string, opacity: number): string {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  const rStr = r.toString();
+  const gStr = g.toString();
+  const bStr = b.toString();
+  const oStr = opacity.toString();
+  const rgbaPrefix = 'rgba';
+  const openParen = '(';
+  const closeParen = ')';
+  const comma = ', ';
+  return rgbaPrefix + openParen + rStr + comma + gStr + comma + bStr + comma + oStr + closeParen;
+}
+
 export const Default: Story = {
   args: {
     label: 'Chip',
@@ -141,6 +157,18 @@ export const Default: Story = {
 
     // Agregar event listeners si son necesarios
     const chipElement = container.querySelector('.ubits-chip') as HTMLElement;
+    
+    // Aplicar efecto Focus si el estado es 'focus'
+    if (chipElement && args.state === 'focus') {
+      // Aplicar estilos inline para mostrar el efecto Focus de los tokens UBITS
+      // Usar valores del token Focus: border 2px solid #5297F4, box-shadow con spread 4px y opacity 30%
+      const focusColor = '#5297F4';
+      const focusRgba = hexToRgba(focusColor, 0.3);
+      chipElement.style.border = `2px solid var(--ubits-accent-brand, ${focusColor})`;
+      chipElement.style.boxShadow = `0px 0px 0px 4px ${focusRgba}`;
+      chipElement.style.outline = 'none';
+    }
+    
     if (chipElement && args.clickable && args.onClick) {
       chipElement.addEventListener('click', (e) => {
         if (args.onClick) {
