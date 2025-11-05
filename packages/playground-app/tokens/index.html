@@ -2930,10 +2930,6 @@ npm run dev</code></pre>
               // Llamar a activateTab para mostrar la sección correctamente
               activateTab(sectionName);
               
-              // Mostrar la sección correspondiente
-              const all = Array.from(document.querySelectorAll('#section-template, #section-colores, #section-texto, #section-iconos, #section-componentes, #section-espaciado, #section-grid-breakpoints, #section-effects'));
-              all.forEach(x=> x && (x.style.display = (x.id===targetId)? 'block' : 'none'));
-              
               // Actualizar estado visual
               document.querySelectorAll('#navbar2 .nav2-link').forEach(l=> l.classList.remove('active2'));
               document.querySelectorAll('#navbar2 .nav2-subitem').forEach(l=> l.classList.remove('active'));
@@ -2962,7 +2958,6 @@ npm run dev</code></pre>
               }
               
               // Actualizar hash
-              const sectionName = targetId.replace('section-', '');
               const hash = cat ? `${sectionName}/${cat}` : sectionName;
               history.replaceState(null, '', `#${hash}`);
               return;
