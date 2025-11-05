@@ -57,9 +57,12 @@ const config: StorybookConfig = {
     // También permitir acceso a directorios padre por si acaso
     config.server.fs.allow.push(resolve(rootDir, '..'));
     
-    // Deshabilitar overlay de errores para evitar problemas intermitentes con rutas con espacios
+    // Deshabilitar overlay de errores completamente para evitar problemas intermitentes
     config.server.hmr = config.server.hmr || {};
     config.server.hmr.overlay = false;
+    
+    // También deshabilitar errores en la consola del servidor
+    config.logLevel = 'warn';
     
     // Configurar optimización para mejorar la resolución de módulos
     config.optimizeDeps = config.optimizeDeps || {};
