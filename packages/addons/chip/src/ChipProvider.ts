@@ -1,5 +1,4 @@
 import type { ChipOptions } from './types/ChipOptions';
-import './styles/chip.css';
 
 /**
  * Renderiza el HTML de un Chip
