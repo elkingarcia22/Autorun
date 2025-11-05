@@ -153,6 +153,32 @@
       "states": ["default", "hover", "active", "pressed", "focus", "disabled"],
       "features": ["4 tamaños (xs: 20px, sm: 24px, md: 28px, lg: 36px)", "6 estados (default, hover, active, pressed, focus, disabled)", "Icono izquierdo opcional", "Icono derecho opcional (botón cerrar)", "Clickeable opcional", "Botón de cerrar (closable)", "Usa tokens UBITS exclusivamente"]
     },
+    "radio-button": {
+      "name": "Radio Button",
+      "package": "@ubits/radio-button",
+      "path": "packages/addons/radio-button",
+      "provider": "createRadioButton",
+      "globalFunction": "window.createRadioButton",
+      "cssFile": "packages/addons/radio-button/src/styles/radio-button.css",
+      "storybookStory": "RadioButton.stories.ts",
+      "variants": [],
+      "sizes": ["sm", "md"],
+      "states": ["default", "hover", "active", "checked", "disabled"],
+      "features": [
+        "2 tamaños (sm: 16px, md: 20px)",
+        "5 estados (default, hover, active, checked, disabled)",
+        "Estado hover: borde azul brand, fondo blanco",
+        "Estado active: círculo azul brand con punto blanco interno",
+        "Estado checked: borde gris, fondo blanco, punto azul brand más grande (10px sm, 12px md)",
+        "Estado disabled: borde gris claro, fondo blanco, punto gris oscuro",
+        "Texto complementario opcional debajo del label",
+        "Agrupación por name para selección única en grupos",
+        "Check/uncheck state independiente",
+        "Event onChange para manejar cambios",
+        "Dot animado con scale y opacity transitions",
+        "Usa tokens UBITS exclusivamente (--ubits-accent-brand, --ubits-border-1, --ubits-bg-1, --ubits-border-disabled-button, --ubits-fg-on-disabled-button)"
+      ]
+    },
     "avatar": {
       "name": "Avatar",
       "package": "@ubits/avatar",
