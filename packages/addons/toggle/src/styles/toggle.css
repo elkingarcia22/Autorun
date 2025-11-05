@@ -134,14 +134,14 @@
     background-color: var(--ubits-bg-3, #e7e8ea);
 }
 
-/* Active State - track azul brand (solo cuando NO está checked) */
+/* Active State - track verde success (solo cuando NO está checked) */
 .ubits-toggle--active:not(.ubits-toggle--checked) .ubits-toggle__track {
-    background-color: var(--ubits-accent-brand, #0c5bef);
+    background-color: var(--ubits-accent-success, #13BD74);
 }
 
-/* Checked State - track azul brand */
+/* Checked State - track verde success */
 .ubits-toggle--checked .ubits-toggle__track {
-    background-color: var(--ubits-accent-brand, #0c5bef);
+    background-color: var(--ubits-accent-success, #13BD74);
 }
 
 /* Focus State */
@@ -160,12 +160,11 @@
 }
 
 .ubits-toggle--disabled .ubits-toggle__track {
-    background-color: var(--ubits-bg-3, #e7e8ea);
-    opacity: 0.6;
+    background-color: var(--ubits-bg-disabled, #edeeef);
 }
 
 .ubits-toggle--disabled .ubits-toggle__thumb {
-    background-color: var(--ubits-bg-1, #ffffff);
+    background-color: var(--ubits-fg-on-disabled-button, #8d9199);
 }
 
 .ubits-toggle--disabled .ubits-toggle__label {
@@ -178,7 +177,6 @@
 
 /* Disabled checked state */
 .ubits-toggle--disabled.ubits-toggle--checked .ubits-toggle__track {
-    background-color: var(--ubits-bg-3, #e7e8ea);
-    opacity: 0.6;
+    background-color: var(--ubits-bg-disabled, #edeeef);
 }
 

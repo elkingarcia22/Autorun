@@ -218,16 +218,17 @@
         "2 tamaños (sm: 33x16px track con thumb 16px, md: 36x20px track con thumb 20px)",
         "5 estados (default, hover, active, checked, disabled)",
         "Estado hover: track gris (bg-3) con thumb blanco",
-        "Estado active: track azul brand con thumb blanco (solo cuando NO está checked)",
-        "Estado checked: track azul brand con thumb blanco movido a la derecha",
-        "Estado disabled: track gris con opacidad 0.6, thumb blanco",
+        "Estado active: track verde success (#13BD74) con thumb blanco (solo cuando NO está checked)",
+        "Estado checked: track verde success (#13BD74) con thumb blanco movido a la derecha",
+        "Estado disabled: track --ubits-bg-disabled (#edeeef), thumb --ubits-fg-on-disabled-button (#8d9199)",
         "Texto complementario opcional debajo del label",
         "Thumb animado con transición suave de posición (left)",
         "Track con border-radius full y padding interno",
         "Thumb con sombra (box-shadow) para elevación",
         "Wrapper dinámico: label si hay texto, div si no hay texto",
+        "Layout: label y texto complementario a la izquierda, toggle a la derecha",
         "Event onChange para manejar cambios",
-        "Usa tokens UBITS exclusivamente (--ubits-accent-brand, --ubits-bg-1, --ubits-bg-3, --ubits-border-radius-full)"
+        "Usa tokens UBITS exclusivamente (--ubits-accent-success: #13BD74, --ubits-bg-1, --ubits-bg-3, --ubits-bg-disabled, --ubits-fg-on-disabled-button, --ubits-border-radius-full)"
       ]
     },
     "avatar": {

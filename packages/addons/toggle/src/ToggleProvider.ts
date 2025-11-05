@@ -70,11 +70,12 @@ export function renderToggle(options: ToggleOptions): string {
   const wrapperTag = label || complementaryText ? 'label' : 'div';
   const wrapperClass = label || complementaryText ? classes : `${classes} ubits-toggle--no-label`;
 
+  // Si hay texto, ponerlo primero (a la izquierda), luego el toggle
   return `
     <${wrapperTag} class="${wrapperClass}">
       ${toggleInput}
-      ${toggleTrack}
       ${textContentHTML}
+      ${toggleTrack}
     </${wrapperTag}>
   `.trim();
 }

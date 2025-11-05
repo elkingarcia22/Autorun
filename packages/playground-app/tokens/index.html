@@ -2493,6 +2493,7 @@ npm run dev</code></pre>
         '--ubits-accent-brand-inverted',
         '--ubits-accent-brand-static',
         '--ubits-accent-brand-static-inverted',
+        '--ubits-accent-success',
         '--ubits-logo',
         '--ubits-logo-inverted',
         '--ubits-logo-static',
@@ -8827,11 +8828,12 @@ Reglas Importantes:
         const wrapperTag = label || complementaryText ? 'label' : 'div';
         const wrapperClass = label || complementaryText ? classes : `${classes} ubits-toggle--no-label`;
 
+        // Si hay texto, ponerlo primero (a la izquierda), luego el toggle
         return `
           <${wrapperTag} class="${wrapperClass}">
             ${toggleInput}
-            ${toggleTrack}
             ${textContentHTML}
+            ${toggleTrack}
           </${wrapperTag}>
         `.trim();
       }
