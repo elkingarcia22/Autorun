@@ -2516,7 +2516,18 @@ npm run dev</code></pre>
         if(section) {
           section.classList.add('active');
           section.style.display = 'block';
-          console.log('[tabs] activateTab ->', tab, 'section found:', section.id);
+          console.log('[tabs] activateTab ->', tab, 'section found:', section.id, 'display:', section.style.display, 'parent:', section.parentElement?.id || section.parentElement?.tagName);
+          // Verificar visibilidad
+          const rect = section.getBoundingClientRect();
+          const computedStyle = window.getComputedStyle(section);
+          console.log('[tabs] section visibility check:', {
+            display: computedStyle.display,
+            visibility: computedStyle.visibility,
+            opacity: computedStyle.opacity,
+            width: rect.width,
+            height: rect.height,
+            innerHTML: section.innerHTML.length > 0 ? 'has content' : 'empty'
+          });
         } else {
           console.warn('[tabs] activateTab -> section not found for tab:', tab);
         }
