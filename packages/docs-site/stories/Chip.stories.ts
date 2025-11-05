@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/html';
-import { renderChip } from '../../addons/chip/src/ChipProvider';
-import type { ChipOptions } from '../../addons/chip/src/types/ChipOptions';
+import { renderChip } from '../../addons/chip/src/ChipProvider.ts';
+import type { ChipOptions } from '../../addons/chip/src/types/ChipOptions.ts';
 import '../../addons/chip/src/styles/chip.css';
 
 const meta: Meta<ChipOptions> = {
