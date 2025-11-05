@@ -231,6 +231,33 @@
         "Usa tokens UBITS exclusivamente (--ubits-accent-success: #13BD74, --ubits-bg-1, --ubits-bg-3, --ubits-bg-disabled, --ubits-fg-on-disabled-button, --ubits-border-radius-full)"
       ]
     },
+    "search-button": {
+      "name": "Search Button",
+      "package": "@ubits/search-button",
+      "path": "packages/addons/search-button",
+      "provider": "createSearchButton",
+      "globalFunction": "window.createSearchButton",
+      "cssFile": "packages/addons/search-button/src/styles/search-button.css",
+      "storybookStory": "SearchButton.stories.ts",
+      "variants": [],
+      "sizes": ["sm", "md"],
+      "states": ["default", "hover", "active", "disabled"],
+      "features": [
+        "2 tamaños (sm: 32px, md: 40px)",
+        "2 modos: botón (icon-only) e input (con campo de búsqueda)",
+        "4 estados (default, hover, active, disabled)",
+        "Modo botón: estilo secondary con icono de lupa",
+        "Modo input: campo de texto con icono de lupa a la izquierda, borde azul brand cuando está activo",
+        "Ancho configurable del input (por defecto 248px)",
+        "Placeholder y valor del input configurables",
+        "Icono de lupa siempre visible (FontAwesome fa-magnifying-glass)",
+        "Transiciones suaves entre estados",
+        "Focus ring para accesibilidad",
+        "Estado disabled aplica a ambos modos",
+        "Event handlers: onChange, onClick, onFocus, onBlur",
+        "Usa tokens UBITS exclusivamente (--ubits-btn-secondary-bg-default, --ubits-btn-secondary-border, --ubits-accent-brand, --ubits-bg-1, --ubits-fg-1-high, --ubits-border-radius-md, --ubits-border-radius-sm)"
+      ]
+    },
     "avatar": {
       "name": "Avatar",
       "package": "@ubits/avatar",

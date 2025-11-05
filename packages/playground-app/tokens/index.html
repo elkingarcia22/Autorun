@@ -4620,6 +4620,21 @@ Reglas Importantes:
               hasPreview: true
             },
             {
+              name: 'Search Button',
+              description: 'Componente Search Button con modo botón e input. Cuando está activo, muestra un campo de búsqueda con icono. Cuando no está activo, muestra solo un botón con icono de lupa.',
+              files: {
+                css: 'addons/search-button/src/styles/search-button.css',
+                ts: 'addons/search-button/src/SearchButtonProvider.ts'
+              },
+              variants: [],
+              sizes: ['sm', 'md'],
+              states: ['default', 'hover', 'active', 'disabled'],
+              features: ['2 tamaños (sm: 32px, md: 40px)', '2 modos (botón e input)', '4 estados (default, hover, active, disabled)', 'Icono de lupa', 'Ancho configurable del input', 'Usa tokens UBITS exclusivamente'],
+              class: 'ubits-search-button ubits-search-button--{size} ubits-search-button--{state}',
+              example: 'renderSearchButton({\n  active: false,\n  size: \'md\',\n  state: \'default\',\n  placeholder: \'Buscar...\'\n})',
+              hasPreview: true
+            },
+            {
               name: 'Avatar',
               description: 'Componente de avatar con soporte para imagen, iniciales e icono. Múltiples tamaños y badge opcional. Usa tokens UBITS exclusivamente.',
               files: {
@@ -4833,6 +4848,8 @@ Reglas Importantes:
                     window.updateCheckboxPreview('checkbox');
                   } else if (componentId === 'toggle' && typeof window.updateTogglePreview === 'function') {
                     window.updateTogglePreview('toggle');
+                  } else if (componentId === 'search-button' && typeof window.updateSearchButtonPreview === 'function') {
+                    window.updateSearchButtonPreview('search-button');
                   } else if (componentId === 'avatar' && typeof window.updateAvatarPreview === 'function') {
                     window.updateAvatarPreview('avatar');
                   } else if (componentId === 'drawer-navigation' && typeof window.updateDrawerPreview === 'function') {
@@ -5602,6 +5619,76 @@ Reglas Importantes:
                           <!-- PREVIEW EN EL MEDIO -->
                           <div style="background: var(--ubits-bg-1); padding: 48px; border-radius: 8px; border: none; margin-bottom: 24px; display: flex; align-items: center; justify-content: center; min-height: 120px;">
                             <div id="toggle-preview-${componentId}">
+                              <!-- Se generará dinámicamente -->
+                            </div>
+                          </div>
+                        </div>
+                      ` : ''}
+                      
+                      ${hasPreview && component.name === 'Search Button' ? `
+                        <!-- Preview Section for Search Button -->
+                        <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: none; margin-bottom: 24px;">
+                          <!-- CONTROLES ARRIBA -->
+                          <div style="margin-bottom: 24px;">
+                            <h4 style="margin: 0 0 20px 0; color: var(--ubits-fg-1-high); font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand);"></i>
+                              Controles
+                            </h4>
+                            
+                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
+                              <!-- Active Mode -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Modo</label>
+                                <label class="switch" style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                                  <input type="checkbox" id="search-button-active-toggle-${componentId}" onchange="setSearchButtonControl('active', this.checked, '${componentId}')">
+                                  <span class="slider"></span>
+                                  <span id="search-button-active-status-${componentId}" style="font-size: 14px; color: var(--ubits-fg-1-high);">Botón</span>
+                                </label>
+                              </div>
+                              
+                              <!-- Tamaño -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Tamaño</label>
+                                <select id="search-button-size-select-${componentId}" onchange="setSearchButtonControl('size', this.value, '${componentId}')" style="width: 100%; padding: 10px 32px 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: var(--font-body-sm-size, 13px); font-family: var(--font-sans); cursor: pointer; box-sizing: border-box; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23666%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226,9 12,15 18,9%22></polyline></svg>'); background-repeat: no-repeat; background-position: right 10px center; background-size: 16px;">
+                                  <option value="sm">SM (32px)</option>
+                                  <option value="md" selected>MD (40px)</option>
+                                </select>
+                              </div>
+                              
+                              <!-- Estado -->
+                              <div style="flex: 0 0 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Estado</label>
+                                <select id="search-button-state-select-${componentId}" onchange="setSearchButtonControl('state', this.value, '${componentId}')" style="width: 100%; padding: 10px 32px 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: var(--font-body-sm-size, 13px); font-family: var(--font-sans); cursor: pointer; box-sizing: border-box; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23666%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226,9 12,15 18,9%22></polyline></svg>'); background-repeat: no-repeat; background-position: right 10px center; background-size: 16px;">
+                                  <option value="default" selected>Default</option>
+                                  <option value="hover">Hover</option>
+                                  <option value="active">Active</option>
+                                  <option value="disabled">Disabled</option>
+                                </select>
+                              </div>
+                              
+                              <!-- Placeholder (solo cuando active) -->
+                              <div style="flex: 1 1 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Placeholder</label>
+                                <input type="text" id="search-button-placeholder-input-${componentId}" value="" onchange="setSearchButtonControl('placeholder', this.value, '${componentId}')" placeholder="Buscar..." style="width: 100%; max-width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: var(--font-body-sm-size, 13px); font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                              
+                              <!-- Value (solo cuando active) -->
+                              <div style="flex: 1 1 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Valor</label>
+                                <input type="text" id="search-button-value-input-${componentId}" value="" onchange="setSearchButtonControl('value', this.value, '${componentId}')" placeholder="Valor del input" style="width: 100%; max-width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: var(--font-body-sm-size, 13px); font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                              
+                              <!-- Width (solo cuando active) -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Ancho (px)</label>
+                                <input type="number" id="search-button-width-input-${componentId}" value="248" onchange="setSearchButtonControl('width', parseInt(this.value) || 248, '${componentId}')" min="100" max="500" style="width: 100%; max-width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: var(--font-body-sm-size, 13px); font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <!-- PREVIEW EN EL MEDIO -->
+                          <div style="background: var(--ubits-bg-1); padding: 48px; border-radius: 8px; border: none; margin-bottom: 24px; display: flex; align-items: center; justify-content: center; min-height: 120px;">
+                            <div id="search-button-preview-${componentId}">
                               <!-- Se generará dinámicamente -->
                             </div>
                           </div>
@@ -8886,6 +8973,138 @@ Reglas Importantes:
         }
         
         updateTogglePreview(componentId);
+      };
+      
+      // ========================================
+      // SEARCH BUTTON PREVIEW FUNCTIONS
+      // ========================================
+      
+      // Estado del preview del Search Button
+      const searchButtonPreviewState = {};
+      
+      // Inicializar estado del Search Button
+      function initSearchButtonPreviewState(componentId) {
+        if (!searchButtonPreviewState[componentId]) {
+          searchButtonPreviewState[componentId] = {
+            active: false,
+            size: 'md',
+            state: 'default',
+            placeholder: '',
+            value: '',
+            width: 248
+          };
+        }
+        return searchButtonPreviewState[componentId];
+      }
+      
+      // Función para generar HTML del Search Button
+      function generateSearchButtonHTML(state, componentId) {
+        const { active, size, state: searchState, placeholder, value, width } = state;
+        
+        const isDisabled = searchState === 'disabled';
+        
+        // Construir clases
+        const classes = [
+          'ubits-search-button',
+          `ubits-search-button--${size}`,
+          searchState !== 'default' ? `ubits-search-button--${searchState}` : '',
+          active ? 'ubits-search-button--active' : '',
+          isDisabled ? 'ubits-search-button--disabled' : ''
+        ].filter(Boolean).join(' ');
+        
+        const iconHTML = '<i class="far fa-magnifying-glass ubits-search-button__icon" aria-hidden="true"></i>';
+        
+        // Si está activo, mostrar input
+        if (active) {
+          return `
+            <div class="${classes}" style="width: ${width}px;">
+              <div class="ubits-search-button__input-wrapper">
+                ${iconHTML}
+                <input
+                  type="text"
+                  class="ubits-search-button__input"
+                  placeholder="${placeholder}"
+                  value="${value}"
+                  ${isDisabled ? 'disabled' : ''}
+                  aria-label="Buscar"
+                />
+              </div>
+            </div>
+          `.trim();
+        }
+        
+        // Si no está activo, mostrar solo el botón con icono
+        return `
+          <button
+            type="button"
+            class="${classes}"
+            ${isDisabled ? 'disabled' : ''}
+            aria-label="Buscar"
+          >
+            ${iconHTML}
+          </button>
+        `.trim();
+      }
+      
+      // Función para actualizar el preview del Search Button
+      window.updateSearchButtonPreview = function(componentId) {
+        const state = initSearchButtonPreviewState(componentId);
+        const preview = document.getElementById(`search-button-preview-${componentId}`);
+        
+        if (!preview) {
+          console.error('❌ Preview de Search Button no encontrado:', `search-button-preview-${componentId}`);
+          return;
+        }
+        
+        const searchButtonHTML = generateSearchButtonHTML(state, componentId);
+        preview.innerHTML = searchButtonHTML;
+        
+        // Cargar CSS si no está cargado
+        const existingLink = document.querySelector('link[href*="search-button.css"]');
+        if (!existingLink) {
+          const link = document.createElement('link');
+          link.rel = 'stylesheet';
+          link.href = '../../addons/search-button/src/styles/search-button.css';
+          document.head.appendChild(link);
+        }
+        
+        // Cargar FontAwesome si no está cargado
+        const existingFA = document.querySelector('link[href*="fontawesome"]');
+        if (!existingFA) {
+          const faLink = document.createElement('link');
+          faLink.rel = 'stylesheet';
+          faLink.href = '../../icons/dist/fontawesome.css';
+          document.head.appendChild(faLink);
+        }
+      };
+      
+      // Función unificada para controles del Search Button
+      window.setSearchButtonControl = function(option, value, componentId) {
+        const state = initSearchButtonPreviewState(componentId);
+        
+        // Actualizar estado según la opción
+        if (option === 'active') {
+          state.active = value;
+          // Actualizar toggle
+          const activeToggle = document.getElementById(`search-button-active-toggle-${componentId}`);
+          const activeStatus = document.getElementById(`search-button-active-status-${componentId}`);
+          if (activeToggle && activeStatus) {
+            activeToggle.checked = value;
+            activeStatus.textContent = value ? 'Input' : 'Botón';
+          }
+        } else if (option === 'size') {
+          state.size = value;
+        } else if (option === 'state') {
+          state.state = value;
+        } else if (option === 'placeholder') {
+          state.placeholder = value;
+        } else if (option === 'value') {
+          state.value = value;
+        } else if (option === 'width') {
+          state.width = value;
+        }
+        
+        updateSearchButtonPreview(componentId);
       };
       
       // ========================================

@@ -1,0 +1,204 @@
+/* ========================================
+   UBITS SEARCH BUTTON COMPONENT
+   Componente de búsqueda con modo botón e input
+   Usando tokens UBITS exclusivamente
+   ======================================== */
+
+/* ========================================
+   BASE SEARCH BUTTON STYLES
+   ======================================== */
+
+.ubits-search-button {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    transition: all 0.2s ease;
+}
+
+/* ========================================
+   MODE: BUTTON (when not active)
+   ======================================== */
+
+.ubits-search-button button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--ubits-spacing-sm, 12px);
+    border: 1px solid var(--ubits-btn-secondary-border, #d0d2d5);
+    border-radius: var(--ubits-border-radius-md, 8px);
+    background-color: var(--ubits-btn-secondary-bg-default, #ffffff);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: var(--font-sans, 'Noto Sans', sans-serif);
+}
+
+.ubits-search-button__icon {
+    font-size: 16px;
+    color: var(--ubits-fg-1-high, #303a47);
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Button Hover State */
+.ubits-search-button button:hover:not(:disabled) {
+    background-color: var(--ubits-btn-secondary-bg-hover, #f5f5f6);
+    border-color: var(--ubits-btn-secondary-border, #d0d2d5);
+}
+
+/* Button Active/Pressed State */
+.ubits-search-button button:active:not(:disabled) {
+    background-color: var(--ubits-btn-secondary-bg-pressed, #e7e8ea);
+    border-color: var(--ubits-btn-secondary-border, #d0d2d5);
+    transform: translateY(1px);
+}
+
+/* Button Focus State */
+.ubits-search-button button:focus-visible {
+    outline: none;
+    box-shadow: 0px 0px 0px 4px var(--ubits-button-focus-ring, rgba(12, 91, 239, 0.2));
+}
+
+/* Button Disabled State */
+.ubits-search-button button:disabled,
+.ubits-search-button--disabled button {
+    background-color: var(--ubits-bg-disabled, #edeeef);
+    border-color: var(--ubits-border-disabled-button, #d0d2d5);
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.ubits-search-button button:disabled .ubits-search-button__icon,
+.ubits-search-button--disabled button .ubits-search-button__icon {
+    color: var(--ubits-fg-on-disabled-button, #8d9199);
+}
+
+/* ========================================
+   MODE: INPUT (when active)
+   ======================================== */
+
+.ubits-search-button--active {
+    display: inline-flex;
+}
+
+.ubits-search-button__input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: var(--ubits-spacing-sm, 8px);
+    padding: var(--ubits-spacing-sm, 12px);
+    border: 1px solid var(--ubits-accent-brand, #0c5bef);
+    border-radius: var(--ubits-border-radius-sm, 4px);
+    background-color: var(--ubits-bg-1, #ffffff);
+    max-height: 40px;
+    box-sizing: border-box;
+    transition: all 0.2s ease;
+}
+
+.ubits-search-button__input-wrapper:focus-within {
+    outline: none;
+    box-shadow: 0px 0px 0px 4px var(--ubits-button-focus-ring, rgba(12, 91, 239, 0.2));
+}
+
+.ubits-search-button__input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: var(--font-sans, 'Noto Sans', sans-serif);
+    font-size: var(--ubits-font-size-md, 16px);
+    font-weight: var(--weight-regular, 400);
+    line-height: var(--ubits-line-height-md, 24px);
+    color: var(--ubits-fg-1-high, #303a47);
+    min-width: 0;
+    padding: 0;
+}
+
+.ubits-search-button__input::placeholder {
+    color: var(--ubits-fg-1-medium, #5c646f);
+}
+
+.ubits-search-button__input:disabled {
+    cursor: not-allowed;
+    color: var(--ubits-fg-on-disabled-button, #8d9199);
+}
+
+/* Active Mode - Disabled State */
+.ubits-search-button--active.ubits-search-button--disabled .ubits-search-button__input-wrapper {
+    background-color: var(--ubits-bg-disabled, #edeeef);
+    border-color: var(--ubits-border-disabled-button, #d0d2d5);
+}
+
+.ubits-search-button--active.ubits-search-button--disabled .ubits-search-button__icon {
+    color: var(--ubits-fg-on-disabled-button, #8d9199);
+}
+
+/* ========================================
+   SEARCH BUTTON SIZES
+   ======================================== */
+
+/* Small Size */
+.ubits-search-button--sm button {
+    padding: var(--ubits-spacing-xs, 8px);
+    min-height: 32px;
+}
+
+.ubits-search-button--sm .ubits-search-button__icon {
+    font-size: 14px;
+}
+
+.ubits-search-button--sm.ubits-search-button--active .ubits-search-button__input-wrapper {
+    padding: var(--ubits-spacing-xs, 8px);
+    max-height: 32px;
+}
+
+.ubits-search-button--sm .ubits-search-button__input {
+    font-size: var(--ubits-font-size-sm, 13px);
+    line-height: var(--ubits-line-height-sm, 19.5px);
+}
+
+/* Medium Size (default) */
+.ubits-search-button--md button {
+    padding: var(--ubits-spacing-sm, 12px);
+    min-height: 40px;
+}
+
+.ubits-search-button--md .ubits-search-button__icon {
+    font-size: 16px;
+}
+
+.ubits-search-button--md.ubits-search-button--active .ubits-search-button__input-wrapper {
+    padding: var(--ubits-spacing-sm, 12px);
+    max-height: 40px;
+}
+
+.ubits-search-button--md .ubits-search-button__input {
+    font-size: var(--ubits-font-size-md, 16px);
+    line-height: var(--ubits-line-height-md, 24px);
+}
+
+/* ========================================
+   SEARCH BUTTON STATES
+   ======================================== */
+
+/* Hover State (for button mode) */
+.ubits-search-button--hover button:not(:disabled) {
+    background-color: var(--ubits-btn-secondary-bg-hover, #f5f5f6);
+}
+
+/* Active State (for button mode) */
+.ubits-search-button--active-state button:not(:disabled) {
+    background-color: var(--ubits-btn-secondary-bg-pressed, #e7e8ea);
+}
+
+/* Disabled State */
+.ubits-search-button--disabled {
+    opacity: 1;
+}
+
+.ubits-search-button--disabled button,
+.ubits-search-button--disabled .ubits-search-button__input-wrapper {
+    cursor: not-allowed;
+    pointer-events: none;
+}
+

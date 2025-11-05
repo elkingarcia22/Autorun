@@ -1,0 +1,27 @@
+{
+  "name": "@ubits/search-button",
+  "version": "1.0.0",
+  "description": "UBITS Search Button Component Add-on",
+  "main": "dist/search-button.js",
+  "module": "dist/search-button.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "vite build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "ubits",
+    "component",
+    "search",
+    "button",
+    "input",
+    "addon"
+  ],
+  "author": "UBITS",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^5.0.2",
+    "vite": "^4.4.5"
+  }
+}
+
