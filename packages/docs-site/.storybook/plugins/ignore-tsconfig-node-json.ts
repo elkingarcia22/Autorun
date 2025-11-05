@@ -1,36 +1,49 @@
 /**
  * Plugin de Vite para evitar errores con tsconfig.node.json y rutas con espacios
- * Intercepta las llamadas a buscar tsconfig.node.json y las ignora silenciosamente
+ * Intercepta errores de esbuild relacionados con tsconfig.node.json y los suprime
  */
 import type { Plugin } from 'vite';
-import { existsSync } from 'fs';
-import { resolve, dirname } from 'path';
 
 export function ignoreTsconfigNodeJsonPlugin(): Plugin {
   return {
     name: 'ignore-tsconfig-node-json',
     enforce: 'pre',
-    configResolved(config) {
-      // Interceptar el proceso de búsqueda de tsconfig.node.json
-      const originalResolveId = config.resolve?.alias;
+    buildStart() {
+      // Interceptar errores de esbuild antes de que se muestren
+      const originalError = console.error;
+      console.error = (...args: any[]) => {
+        const message = args.join(' ');
+        // Filtrar mensajes relacionados con tsconfig.node.json
+        if (message.includes('tsconfig.node.json') && message.includes('ENOENT')) {
+          return; // Suprimir el error
+        }
+        originalError.apply(console, args);
+      };
     },
-    resolveId(id, importer) {
-      // Si alguien intenta resolver tsconfig.node.json, devolver un módulo vacío
-      if (id.includes('tsconfig.node.json') || id.endsWith('tsconfig.node.json')) {
-        return {
-          id: 'virtual:tsconfig-node-json',
-          moduleSideEffects: false,
+    configureServer(server) {
+      // Interceptar errores en el servidor de desarrollo
+      const originalError = server.config.logger.error;
+      if (originalError) {
+        server.config.logger.error = (msg: string, options?: any) => {
+          if (msg.includes('tsconfig.node.json') && msg.includes('ENOENT')) {
+            return; // Suprimir el error
+          }
+          originalError.call(server.config.logger, msg, options);
         };
       }
-      return null;
     },
-    load(id) {
-      // Devolver un objeto vacío cuando se carga el módulo virtual
-      if (id === 'virtual:tsconfig-node-json') {
-        return 'export default {};';
-      }
-      return null;
+    handleHotUpdate(ctx) {
+      // Interceptar errores durante HMR
+      const originalError = console.error;
+      console.error = (...args: any[]) => {
+        const message = args.join(' ');
+        if (message.includes('tsconfig.node.json') && message.includes('ENOENT')) {
+          return; // Suprimir el error
+        }
+        originalError.apply(console, args);
+      };
     },
   };
 }
+
 
