@@ -9003,10 +9003,15 @@ Reglas Importantes:
         
         const isDisabled = searchState === 'disabled';
         
-        const iconHTML = '<i class="far fa-magnifying-glass ubits-search-button__icon" aria-hidden="true"></i>';
+        // Si state es 'active', el buscador está desplegado
+        const isSearchActive = active || searchState === 'active';
         
-        // Si está activo, mostrar input
-        if (active) {
+        const iconHTML = '<i class="far fa-magnifying-glass ubits-search-button__icon" aria-hidden="true"></i>';
+        const showClearButton = value && value.trim().length > 0;
+        const clearButtonHTML = showClearButton ? '<button type="button" class="ubits-search-button__clear" aria-label="Limpiar búsqueda" tabindex="0"><i class="far fa-times ubits-search-button__clear-icon" aria-hidden="true"></i></button>' : '';
+        
+        // Si está activo (desplegado), mostrar input
+        if (isSearchActive) {
           // Construir clases para el wrapper del input
           const inputWrapperClasses = [
             'ubits-search-button',
@@ -9027,20 +9032,21 @@ Reglas Importantes:
                   ${isDisabled ? 'disabled' : ''}
                   aria-label="Buscar"
                 />
+                ${clearButtonHTML}
               </div>
             </div>
           `.trim();
         }
         
         // Si no está activo, usar el botón UBITS estándar (secondary, icon-only)
-        // Agregar clases para simular estados hover y active cuando se seleccionan desde el control
+        // Agregar clases para simular estados hover cuando se seleccionan desde el control
+        // Nota: 'active' ahora controla el despliegue, no el estado pressed del botón
         const buttonClasses = [
           'ubits-button',
           'ubits-button--secondary',
           'ubits-button--icon-only',
           `ubits-button--${size}`,
-          searchState === 'hover' ? 'ubits-search-button--force-hover' : '',
-          searchState === 'active' ? 'ubits-search-button--force-active' : ''
+          searchState === 'hover' ? 'ubits-search-button--force-hover' : ''
         ].filter(Boolean).join(' ');
         
         return `
@@ -9095,21 +9101,29 @@ Reglas Importantes:
           document.head.appendChild(faLink);
         }
         
+        // Determinar si el buscador está desplegado
+        const isSearchActive = state.active || state.state === 'active';
+        
         // Agregar interactividad: click en botón para desplegar input
-        if (!state.active) {
+        if (!isSearchActive) {
           const buttonElement = preview.querySelector('button');
           if (buttonElement) {
             buttonElement.addEventListener('click', function(e) {
               e.preventDefault();
               e.stopPropagation();
-              // Activar el modo input
+              // Activar el modo input (usar state='active')
+              state.state = 'active';
               state.active = true;
               // Actualizar el toggle en los controles
               const activeToggle = document.getElementById(`search-button-active-toggle-${componentId}`);
               const activeStatus = document.getElementById(`search-button-active-status-${componentId}`);
+              const stateSelect = document.getElementById(`search-button-state-select-${componentId}`);
               if (activeToggle && activeStatus) {
                 activeToggle.checked = true;
                 activeStatus.textContent = 'Input';
+              }
+              if (stateSelect) {
+                stateSelect.value = 'active';
               }
               // Re-renderizar
               updateSearchButtonPreview(componentId);
@@ -9123,24 +9137,36 @@ Reglas Importantes:
             });
           }
         } else {
-          // Si está activo, agregar listeners para contraer
+          // Si está activo, agregar listeners para contraer y limpiar
           const inputElement = preview.querySelector('.ubits-search-button__input');
-          const inputWrapper = preview.querySelector('.ubits-search-button__input-wrapper');
+          const clearButton = preview.querySelector('.ubits-search-button__clear');
           
           if (inputElement) {
+            // Listener para mostrar/ocultar botón de limpiar cuando se escribe
+            inputElement.addEventListener('input', function(e) {
+              state.value = inputElement.value;
+              // Re-renderizar para mostrar/ocultar el botón X
+              updateSearchButtonPreview(componentId);
+            });
+            
             // ESC para contraer
             inputElement.addEventListener('keydown', function(e) {
               if (e.key === 'Escape') {
                 e.preventDefault();
                 e.stopPropagation();
                 // Desactivar el modo input
+                state.state = 'default';
                 state.active = false;
                 // Actualizar el toggle en los controles
                 const activeToggle = document.getElementById(`search-button-active-toggle-${componentId}`);
                 const activeStatus = document.getElementById(`search-button-active-status-${componentId}`);
+                const stateSelect = document.getElementById(`search-button-state-select-${componentId}`);
                 if (activeToggle && activeStatus) {
                   activeToggle.checked = false;
                   activeStatus.textContent = 'Botón';
+                }
+                if (stateSelect) {
+                  stateSelect.value = 'default';
                 }
                 // Re-renderizar
                 updateSearchButtonPreview(componentId);
@@ -9155,19 +9181,42 @@ Reglas Importantes:
                 setTimeout(() => {
                   // Verificar que el elemento aún existe y no tiene focus
                   if (document.activeElement !== inputElement && !inputElement.value.trim()) {
+                    state.state = 'default';
                     state.active = false;
                     // Actualizar el toggle en los controles
                     const activeToggle = document.getElementById(`search-button-active-toggle-${componentId}`);
                     const activeStatus = document.getElementById(`search-button-active-status-${componentId}`);
+                    const stateSelect = document.getElementById(`search-button-state-select-${componentId}`);
                     if (activeToggle && activeStatus) {
                       activeToggle.checked = false;
                       activeStatus.textContent = 'Botón';
+                    }
+                    if (stateSelect) {
+                      stateSelect.value = 'default';
                     }
                     // Re-renderizar
                     updateSearchButtonPreview(componentId);
                   }
                 }, 200);
               }
+            });
+          }
+          
+          // Botón de limpiar (X)
+          if (clearButton) {
+            clearButton.addEventListener('click', function(e) {
+              e.preventDefault();
+              e.stopPropagation();
+              // Limpiar el valor
+              state.value = '';
+              // Actualizar el input
+              const inputElement = preview.querySelector('.ubits-search-button__input');
+              if (inputElement) {
+                inputElement.value = '';
+                inputElement.focus();
+              }
+              // Re-renderizar para ocultar el botón X
+              updateSearchButtonPreview(componentId);
             });
           }
         }
@@ -9180,6 +9229,23 @@ Reglas Importantes:
         // Actualizar estado según la opción
         if (option === 'active') {
           state.active = value;
+          // Si se activa, cambiar el estado a 'active'
+          if (value) {
+            state.state = 'active';
+            const stateSelect = document.getElementById(`search-button-state-select-${componentId}`);
+            if (stateSelect) {
+              stateSelect.value = 'active';
+            }
+          } else {
+            // Si se desactiva y no hay valor, cambiar a 'default'
+            if (!state.value || !state.value.trim()) {
+              state.state = 'default';
+              const stateSelect = document.getElementById(`search-button-state-select-${componentId}`);
+              if (stateSelect) {
+                stateSelect.value = 'default';
+              }
+            }
+          }
           // Actualizar toggle
           const activeToggle = document.getElementById(`search-button-active-toggle-${componentId}`);
           const activeStatus = document.getElementById(`search-button-active-status-${componentId}`);
@@ -9191,6 +9257,29 @@ Reglas Importantes:
           state.size = value;
         } else if (option === 'state') {
           state.state = value;
+          // Si se selecciona 'active', desplegar el buscador
+          if (value === 'active') {
+            state.active = true;
+            // Actualizar el toggle en los controles
+            const activeToggle = document.getElementById(`search-button-active-toggle-${componentId}`);
+            const activeStatus = document.getElementById(`search-button-active-status-${componentId}`);
+            if (activeToggle && activeStatus) {
+              activeToggle.checked = true;
+              activeStatus.textContent = 'Input';
+            }
+          } else if (value !== 'active' && state.active) {
+            // Si se cambia de 'active' a otro estado, colapsar si no hay valor
+            if (!state.value || !state.value.trim()) {
+              state.active = false;
+              // Actualizar el toggle en los controles
+              const activeToggle = document.getElementById(`search-button-active-toggle-${componentId}`);
+              const activeStatus = document.getElementById(`search-button-active-status-${componentId}`);
+              if (activeToggle && activeStatus) {
+                activeToggle.checked = false;
+                activeStatus.textContent = 'Botón';
+              }
+            }
+          }
         } else if (option === 'placeholder') {
           state.placeholder = value;
         } else if (option === 'value') {

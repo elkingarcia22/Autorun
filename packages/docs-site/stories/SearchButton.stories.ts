@@ -145,15 +145,20 @@ export const Default: Story = {
 
       // Estado interno para manejar el toggle
       let isActive = args.active !== undefined ? args.active : false;
+      let currentValue = args.value || '';
+      let currentState = args.state || 'default';
 
       const renderSearchComponent = () => {
+      // Si state es 'active', el buscador está desplegado
+      const isSearchActive = isActive || currentState === 'active';
+      
       const searchHTML = renderSearchButton({
-        active: isActive,
+        active: isSearchActive,
         size: args.size || 'md',
-        state: args.state || 'default',
+        state: currentState,
         disabled: args.disabled !== undefined ? args.disabled : false,
         placeholder: args.placeholder || '',
-        value: args.value || '',
+        value: currentValue,
         width: args.width || 248,
         className: args.className || '',
       });
@@ -161,13 +166,14 @@ export const Default: Story = {
       container.innerHTML = searchHTML;
 
       // Agregar interactividad: click en botón para desplegar input
-      if (!isActive) {
+      if (!isSearchActive) {
         const buttonElement = container.querySelector('button') as HTMLButtonElement;
         if (buttonElement) {
           buttonElement.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
             isActive = true;
+            currentState = 'active';
             if (args.onClick) {
               args.onClick(e);
             }
@@ -182,16 +188,34 @@ export const Default: Story = {
           });
         }
       } else {
-        // Si está activo, agregar listeners para contraer
+        // Si está activo, agregar listeners para contraer y limpiar
         const inputElement = container.querySelector('.ubits-search-button__input') as HTMLInputElement;
+        const clearButton = container.querySelector('.ubits-search-button__clear') as HTMLButtonElement;
         
         if (inputElement) {
+          // Listener para mostrar/ocultar botón de limpiar cuando se escribe
+          inputElement.addEventListener('input', (e) => {
+            currentValue = inputElement.value;
+            if (args.onChange) {
+              args.onChange(e);
+            }
+            // Re-renderizar para mostrar/ocultar el botón X
+            renderSearchComponent();
+          });
+          
+          inputElement.addEventListener('change', (e) => {
+            if (args.onChange) {
+              args.onChange(e);
+            }
+          });
+          
           // ESC para contraer
           inputElement.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
               e.preventDefault();
               e.stopPropagation();
               isActive = false;
+              currentState = 'default';
               renderSearchComponent();
             }
           });
@@ -206,25 +230,12 @@ export const Default: Story = {
               setTimeout(() => {
                 if (document.activeElement !== inputElement && !inputElement.value.trim()) {
                   isActive = false;
+                  currentState = 'default';
                   renderSearchComponent();
                 }
               }, 200);
             }
           });
-          
-          // Event listeners para onChange y onFocus
-          if (args.onChange) {
-            inputElement.addEventListener('input', (e) => {
-              if (args.onChange) {
-                args.onChange(e);
-              }
-            });
-            inputElement.addEventListener('change', (e) => {
-              if (args.onChange) {
-                args.onChange(e);
-              }
-            });
-          }
           
           if (args.onFocus) {
             inputElement.addEventListener('focus', (e) => {
@@ -233,6 +244,25 @@ export const Default: Story = {
               }
             });
           }
+        }
+        
+        // Botón de limpiar (X)
+        if (clearButton) {
+          clearButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            currentValue = '';
+            if (inputElement) {
+              inputElement.value = '';
+              inputElement.focus();
+              if (args.onChange) {
+                const event = new Event('input', { bubbles: true });
+                inputElement.dispatchEvent(event);
+              }
+            }
+            // Re-renderizar para ocultar el botón X
+            renderSearchComponent();
+          });
         }
       }
     };
@@ -249,6 +279,12 @@ export const Default: Story = {
         // Sincronizar el estado interno con los args
         if (args.active !== undefined) {
           isActive = args.active;
+        }
+        if (args.state !== undefined) {
+          currentState = args.state;
+        }
+        if (args.value !== undefined) {
+          currentValue = args.value;
         }
         renderSearchComponent();
       }

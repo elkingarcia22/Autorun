@@ -10,6 +10,22 @@ function renderSearchIcon(): string {
 }
 
 /**
+ * Renderiza el botón de limpiar (X)
+ */
+function renderClearButton(): string {
+  return `
+    <button
+      type="button"
+      class="ubits-search-button__clear"
+      aria-label="Limpiar búsqueda"
+      tabindex="0"
+    >
+      <i class="far fa-times ubits-search-button__clear-icon" aria-hidden="true"></i>
+    </button>
+  `;
+}
+
+/**
  * Renderiza el HTML de un Search Button
  */
 export function renderSearchButton(options: SearchButtonOptions): string {
@@ -25,11 +41,16 @@ export function renderSearchButton(options: SearchButtonOptions): string {
   } = options;
 
   const isDisabled = disabled || state === 'disabled';
+  
+  // Si state es 'active', el buscador está desplegado
+  const isSearchActive = active || state === 'active';
 
   const iconHTML = renderSearchIcon();
+  const showClearButton = value && value.trim().length > 0;
+  const clearButtonHTML = showClearButton ? renderClearButton() : '';
 
-  // Si está activo, mostrar input
-  if (active) {
+  // Si está activo (desplegado), mostrar input
+  if (isSearchActive) {
     // Construir clases para el wrapper del input
     const inputWrapperClasses = [
       'ubits-search-button',
@@ -51,20 +72,22 @@ export function renderSearchButton(options: SearchButtonOptions): string {
             ${isDisabled ? 'disabled' : ''}
             aria-label="Buscar"
           />
+          ${clearButtonHTML}
         </div>
       </div>
     `.trim();
   }
 
   // Si no está activo, usar el botón UBITS estándar (secondary, icon-only)
-  // Agregar clases para simular estados hover y active cuando se seleccionan desde el control
+  // Agregar clases para simular estados hover y pressed cuando se seleccionan desde el control
+  // Nota: 'active' ahora controla el despliegue, no el estado pressed del botón
   const buttonClasses = [
     'ubits-button',
     'ubits-button--secondary',
     'ubits-button--icon-only',
     `ubits-button--${size}`,
     state === 'hover' ? 'ubits-search-button--force-hover' : '',
-    state === 'active' ? 'ubits-search-button--force-active' : '',
+    // 'active' ya no se usa para el estado pressed, se usa para desplegar
     className
   ].filter(Boolean).join(' ');
 
@@ -108,8 +131,12 @@ export function createSearchButton(options: SearchButtonOptions): {
   container.appendChild(element);
 
   // Agregar event listeners
-  if (options.active) {
+  const isSearchActive = options.active || options.state === 'active';
+  
+  if (isSearchActive) {
     const inputElement = element.querySelector('.ubits-search-button__input') as HTMLInputElement;
+    const clearButton = element.querySelector('.ubits-search-button__clear') as HTMLButtonElement;
+    
     if (inputElement) {
       if (options.onChange) {
         inputElement.addEventListener('input', options.onChange);
@@ -121,6 +148,23 @@ export function createSearchButton(options: SearchButtonOptions): {
       if (options.onBlur) {
         inputElement.addEventListener('blur', options.onBlur);
       }
+    }
+    
+    // Botón de limpiar
+    if (clearButton) {
+      clearButton.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (inputElement) {
+          inputElement.value = '';
+          inputElement.focus();
+          // Trigger onChange si existe
+          if (options.onChange) {
+            const event = new Event('input', { bubbles: true });
+            inputElement.dispatchEvent(event);
+          }
+        }
+      });
     }
   } else {
     const buttonElement = element as HTMLButtonElement;
@@ -146,8 +190,12 @@ export function createSearchButton(options: SearchButtonOptions): {
       element.parentNode.replaceChild(newElement, element);
       
       // Actualizar referencias y event listeners
-      if (updatedOptions.active) {
+      const isSearchActive = updatedOptions.active || updatedOptions.state === 'active';
+      
+      if (isSearchActive) {
         const inputElement = newElement.querySelector('.ubits-search-button__input') as HTMLInputElement;
+        const clearButton = newElement.querySelector('.ubits-search-button__clear') as HTMLButtonElement;
+        
         if (inputElement) {
           if (updatedOptions.onChange) {
             inputElement.addEventListener('input', updatedOptions.onChange);
@@ -159,6 +207,23 @@ export function createSearchButton(options: SearchButtonOptions): {
           if (updatedOptions.onBlur) {
             inputElement.addEventListener('blur', updatedOptions.onBlur);
           }
+        }
+        
+        // Botón de limpiar
+        if (clearButton) {
+          clearButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (inputElement) {
+              inputElement.value = '';
+              inputElement.focus();
+              // Trigger onChange si existe
+              if (updatedOptions.onChange) {
+                const event = new Event('input', { bubbles: true });
+                inputElement.dispatchEvent(event);
+              }
+            }
+          });
         }
       } else {
         const buttonElement = newElement as HTMLButtonElement;
