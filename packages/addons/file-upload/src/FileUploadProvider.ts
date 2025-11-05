@@ -18,6 +18,48 @@ function formatFileSize(bytes: number): string {
 }
 
 /**
+ * Renderiza el HTML de un Status Tag inline (sin importar el componente completo)
+ */
+function renderStatusTagInline(label: string, status: 'pending' | 'completed' | 'error' | 'uploading' = 'pending'): string {
+  const STATUS_COLORS: Record<string, { bg: string; text: string; border: string }> = {
+    pending: {
+      bg: 'var(--ubits-feedback-accent-warning, #ec9907)',
+      text: '#ffffff',
+      border: 'var(--ubits-feedback-accent-warning, #ec9907)'
+    },
+    completed: {
+      bg: 'var(--ubits-feedback-success-bg, #e8f8e4)',
+      text: 'var(--ubits-feedback-success-text, #223b16)',
+      border: 'var(--ubits-feedback-success-border, #41c433)'
+    },
+    error: {
+      bg: 'var(--ubits-feedback-error-bg, #fff0ee)',
+      text: 'var(--ubits-feedback-error-text, #65181e)',
+      border: 'var(--ubits-feedback-error-border, #fd8a82)'
+    },
+    uploading: {
+      bg: 'rgba(12, 91, 239, 0.15)',
+      text: 'var(--ubits-feedback-info-text, #212f70)',
+      border: 'var(--ubits-accent-brand, #0c5bef)'
+    }
+  };
+
+  const colors = STATUS_COLORS[status] || STATUS_COLORS.pending;
+  const statusLabels: Record<string, string> = {
+    pending: 'Pendiente',
+    completed: 'Completado',
+    error: 'Error',
+    uploading: 'Subiendo'
+  };
+
+  return `
+    <span class="ubits-file-upload__status-tag" style="background-color: ${colors.bg}; color: ${colors.text}; border-color: ${colors.border};">
+      ${statusLabels[status] || label}
+    </span>
+  `.trim();
+}
+
+/**
  * Renderiza un File Upload UBITS como HTML string
  */
 export function renderFileUpload(options: FileUploadOptions = {}): string {
@@ -29,6 +71,7 @@ export function renderFileUpload(options: FileUploadOptions = {}): string {
     showFileSize = true,
     showActions = true,
     uploadText = 'Haz clic para subir archivo',
+    fileStatus = 'pending',
     className = ''
   } = options;
 
@@ -54,11 +97,23 @@ export function renderFileUpload(options: FileUploadOptions = {}): string {
     borderColor = 'var(--ubits-border-disabled, #e1e2e5)';
     textColor = 'var(--ubits-fg-on-disabled, #8d9199)';
     iconColor = 'var(--ubits-fg-on-disabled, #8d9199)';
+  } else if (state === 'filled') {
+    borderColor = 'var(--ubits-border-1, #d0d2d5)';
+    backgroundColor = 'var(--ubits-bg-2, #f3f3f4)';
+    textColor = 'var(--ubits-fg-1-high, #303a47)';
+    iconColor = 'var(--ubits-fg-1-high, #303a47)';
   }
 
   // Determinar qué icono mostrar según el estado
   let iconHtml = '';
-  if (state === 'dragging') {
+  if (state === 'filled') {
+    // Estado filled: icono de archivo con check verde
+    iconHtml = `
+      <div class="ubits-file-upload__icon-filled">
+        <i class="far fa-file-check"></i>
+      </div>
+    `;
+  } else if (state === 'dragging') {
     // Icono grande de upload
     iconHtml = `
       <div class="ubits-file-upload__icon-large">
@@ -83,7 +138,15 @@ export function renderFileUpload(options: FileUploadOptions = {}): string {
 
   // Construir texto del archivo
   let fileNameHtml = '';
-  if (fileName || fileExtension) {
+  if (state === 'filled') {
+    // Estado filled: mostrar nombre completo del archivo con extensión
+    const fullFileName = fileExtension ? `${fileName || 'archivo'}.${fileExtension}` : (fileName || 'archivo');
+    fileNameHtml = `
+      <div class="ubits-file-upload__file-name">
+        ${fullFileName}
+      </div>
+    `;
+  } else if (fileName || fileExtension) {
     // Si hay archivo, mostrar "Haz clic para subir archivo" + "." + extensión
     const parts: string[] = [];
     parts.push(uploadText || 'Haz clic para subir archivo');
@@ -116,7 +179,19 @@ export function renderFileUpload(options: FileUploadOptions = {}): string {
 
   // Construir botones de acción si están habilitados
   let actionsHtml = '';
-  if (showActions && (fileName || state === 'error')) {
+  if (showActions) {
+    // Mostrar botones en default siempre, en filled solo eliminar, en error ambos
+    if (state === 'filled') {
+      // Estado filled: solo botón de eliminar (X roja)
+      actionsHtml = `
+        <div class="ubits-file-upload__actions">
+          <button class="ubits-file-upload__action ubits-file-upload__action--remove" aria-label="Eliminar archivo">
+            <i class="far fa-xmark"></i>
+          </button>
+        </div>
+      `;
+    } else if (state === 'default' || state === 'error') {
+      // Default y error: ambos botones
     actionsHtml = `
       <div class="ubits-file-upload__actions">
         <button class="ubits-file-upload__action ubits-file-upload__action--reupload" aria-label="Re-subir archivo">
@@ -127,13 +202,14 @@ export function renderFileUpload(options: FileUploadOptions = {}): string {
         </button>
       </div>
     `;
+    }
   }
 
-  return `
+  const finalHtml = `
     <div class="${classes}" 
          style="background-color: ${backgroundColor}; border-color: ${borderColor}; color: ${textColor};"
-         tabindex="${state === 'disabled' ? '-1' : '0'}"
-         role="button"
+         tabindex="${state === 'disabled' || state === 'filled' ? '-1' : '0'}"
+         role="${state === 'filled' ? 'region' : 'button'}"
          aria-disabled="${state === 'disabled' ? 'true' : 'false'}">
       <div class="ubits-file-upload__container">
         ${iconHtml}
@@ -145,6 +221,8 @@ export function renderFileUpload(options: FileUploadOptions = {}): string {
       ${actionsHtml}
     </div>
   `.trim();
+
+  return finalHtml;
 }
 
 /**
@@ -184,7 +262,7 @@ export function createFileUpload(options: FileUploadOptions = {}): {
   container.appendChild(fileUploadElement);
 
   // Agregar event listeners
-  if (onClick && options.state !== 'disabled') {
+  if (onClick && options.state !== 'disabled' && options.state !== 'filled') {
     fileUploadElement.addEventListener('click', (e) => {
       const target = e.target as HTMLElement;
       // No ejecutar si se hizo clic en los botones de acción
@@ -195,7 +273,7 @@ export function createFileUpload(options: FileUploadOptions = {}): {
   }
 
   // Drag & drop handlers
-  if (options.state !== 'disabled') {
+  if (options.state !== 'disabled' && options.state !== 'filled') {
     fileUploadElement.addEventListener('dragover', (e) => {
       e.preventDefault();
       e.stopPropagation();
@@ -255,7 +333,7 @@ export function createFileUpload(options: FileUploadOptions = {}): {
       fileUploadElement.parentNode.replaceChild(newElement, fileUploadElement);
       
       // Recrear event listeners en el nuevo elemento
-      if (updatedOptions.onClick && updatedOptions.state !== 'disabled') {
+      if (updatedOptions.onClick && updatedOptions.state !== 'disabled' && updatedOptions.state !== 'filled') {
         newElement.addEventListener('click', (e) => {
           const target = e.target as HTMLElement;
           if (!target.closest('.ubits-file-upload__actions')) {
@@ -265,7 +343,7 @@ export function createFileUpload(options: FileUploadOptions = {}): {
       }
 
       // Actualizar drag & drop handlers
-      if (updatedOptions.state !== 'disabled') {
+      if (updatedOptions.state !== 'disabled' && updatedOptions.state !== 'filled') {
         newElement.addEventListener('dragover', (e) => {
           e.preventDefault();
           e.stopPropagation();

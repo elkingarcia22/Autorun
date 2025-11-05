@@ -118,8 +118,8 @@ function getProviderLogo(provider: string): string {
     return PROVIDERS['UBITS']; // Fallback a UBITS
   }
   // En Storybook, las imágenes están en staticDirs (mapeadas a /images)
-  // Las rutas en PROVIDERS ya incluyen 'images/', así que solo necesitamos agregar '/'
-  return `/${logoPath}`;
+  // Las rutas en PROVIDERS ahora usan 'assets/images/', así que necesitamos ajustar
+  return logoPath.replace('assets/images/', '/images/');
 }
 
 // Función helper para construir CardData completo desde args

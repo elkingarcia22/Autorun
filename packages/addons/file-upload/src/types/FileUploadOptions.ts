@@ -1,7 +1,7 @@
 /**
  * Estados del componente File Upload
  */
-export type FileUploadState = 'default' | 'dragging' | 'error' | 'disabled';
+export type FileUploadState = 'default' | 'dragging' | 'error' | 'disabled' | 'filled';
 
 /**
  * Opciones del componente File Upload
@@ -80,5 +80,11 @@ export interface FileUploadOptions {
    * Clases CSS adicionales
    */
   className?: string;
+
+  /**
+   * Estado del archivo subido (para estado filled)
+   * @default 'pending'
+   */
+  fileStatus?: 'pending' | 'completed' | 'error' | 'uploading';
 }
 

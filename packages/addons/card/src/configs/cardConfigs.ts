@@ -95,24 +95,24 @@ export const STATUSES: Record<'default' | 'progress' | 'completed', StatusConfig
 
 // ALIADOS OFICIALES (18 proveedores)
 export const PROVIDERS: Record<string, string> = {
-  'UBITS': 'images/Favicons/UBITS.jpg',
-  'Microsoft': 'images/Favicons/Microsoft.jpg',
-  'Hubspot': 'images/Favicons/Hubspot.jpg',
-  'Harvard Business Publishing': 'images/Favicons/Harvard-Business-Publishing.jpg',
-  'TED': 'images/Favicons/TED.jpg',
-  'AWS': 'images/Favicons/AWS.jpg',
-  'Universidad de Los Andes': 'images/Favicons/Universidad-de-Los Andes.jpg',
-  'Advanced English': 'images/Favicons/Advanced-English.jpg',
-  'IE University': 'images/Favicons/IE-University-Publishing.jpg',
-  'Código Facilito': 'images/Favicons/Código-Facilito.jpg',
-  'Hackers del Talento': 'images/Favicons/Hackers-del-Talento.jpg',
-  'All Ears English': 'images/Favicons/All Ears English.jpg',
-  'American & British Academy': 'images/Favicons/American & British Academy.jpg',
-  'Bureau Veritas': 'images/Favicons/Bureau-Veritas.jpg',
-  'Welu': 'images/Favicons/Welu.jpg',
-  'Figsha Smart Consulting': 'images/Favicons/Figsha Smart Consulting.jpg',
-  'Instafit': 'images/Favicons/Instafit.jpg',
-  'WOBI': 'images/Favicons/WOBI.jpg'
+  'UBITS': 'assets/images/Favicons/UBITS.jpg',
+  'Microsoft': 'assets/images/Favicons/Microsoft.jpg',
+  'Hubspot': 'assets/images/Favicons/Hubspot.jpg',
+  'Harvard Business Publishing': 'assets/images/Favicons/Harvard-Business-Publishing.jpg',
+  'TED': 'assets/images/Favicons/TED.jpg',
+  'AWS': 'assets/images/Favicons/AWS.jpg',
+  'Universidad de Los Andes': 'assets/images/Favicons/Universidad-de-Los Andes.jpg',
+  'Advanced English': 'assets/images/Favicons/Advanced-English.jpg',
+  'IE University': 'assets/images/Favicons/IE-University-Publishing.jpg',
+  'Código Facilito': 'assets/images/Favicons/Código-Facilito.jpg',
+  'Hackers del Talento': 'assets/images/Favicons/Hackers-del-Talento.jpg',
+  'All Ears English': 'assets/images/Favicons/All Ears English.jpg',
+  'American & British Academy': 'assets/images/Favicons/American & British Academy.jpg',
+  'Bureau Veritas': 'assets/images/Favicons/Bureau-Veritas.jpg',
+  'Welu': 'assets/images/Favicons/Welu.jpg',
+  'Figsha Smart Consulting': 'assets/images/Favicons/Figsha Smart Consulting.jpg',
+  'Instafit': 'assets/images/Favicons/Instafit.jpg',
+  'WOBI': 'assets/images/Favicons/WOBI.jpg'
 };
 
 /**

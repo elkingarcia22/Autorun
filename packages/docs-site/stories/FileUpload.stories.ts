@@ -17,7 +17,7 @@ const meta: Meta<FileUploadOptions> = {
   argTypes: {
     state: {
       control: { type: 'select' },
-      options: ['default', 'dragging', 'error', 'disabled'],
+      options: ['default', 'dragging', 'error', 'disabled', 'filled'],
       description: 'Estado del componente.',
       table: {
         type: { summary: 'string' },
@@ -76,6 +76,16 @@ const meta: Meta<FileUploadOptions> = {
       table: {
         type: { summary: 'string' },
         defaultValue: { summary: 'Haz clic para subir archivo' },
+        category: 'Contenido',
+      },
+    },
+    fileStatus: {
+      control: { type: 'select' },
+      options: ['pending', 'completed', 'error', 'uploading'],
+      description: 'Estado del archivo subido (para estado filled).',
+      table: {
+        type: { summary: 'string' },
+        defaultValue: { summary: 'pending' },
         category: 'Contenido',
       },
     },
@@ -172,6 +182,167 @@ export const Default: Story = {
         showFileSize: args.showFileSize !== undefined ? args.showFileSize : true,
         showActions: args.showActions !== undefined ? args.showActions : true,
         uploadText: args.uploadText || 'Haz clic para subir archivo',
+        containerId: fileUploadContainer.id,
+      };
+
+      // Crear file upload directamente en el contenedor usando renderFileUpload
+      try {
+        const html = renderFileUpload(options);
+        fileUploadContainer.innerHTML = html;
+        
+        // Crear instancia simulada para mantener compatibilidad
+        const fileUploadElement = fileUploadContainer.querySelector('.ubits-file-upload') as HTMLElement;
+        if (fileUploadElement) {
+          fileUploadInstance = {
+            element: fileUploadElement,
+            destroy: () => {
+              fileUploadContainer.innerHTML = '';
+            },
+            update: () => {}
+          };
+        }
+      } catch (error) {
+        // Error al crear file upload
+      }
+    };
+
+    // Crear contenido inicial
+    createFileUploadContent();
+
+    // Observar cambios en args usando un intervalo más eficiente
+    let lastArgs = JSON.stringify(args);
+    let checkInterval: ReturnType<typeof setInterval> | null = null;
+    
+    const startWatching = () => {
+      if (checkInterval) return;
+      
+      checkInterval = setInterval(() => {
+        const currentArgs = JSON.stringify(args);
+        if (currentArgs !== lastArgs) {
+          lastArgs = currentArgs;
+          createFileUploadContent();
+        }
+      }, 100);
+    };
+    
+    startWatching();
+
+    // Limpiar al desmontar
+    const cleanup = () => {
+      if (checkInterval) {
+        clearInterval(checkInterval);
+        checkInterval = null;
+      }
+      fileUploadContainer.innerHTML = '';
+      if (fileUploadInstance) {
+        try {
+          fileUploadInstance.destroy();
+        } catch (e) {
+          // Ignorar errores
+        }
+      }
+    };
+    
+    container.addEventListener('DOMNodeRemoved', cleanup);
+
+    wrapper.appendChild(title);
+    wrapper.appendChild(description);
+    wrapper.appendChild(fileUploadContainer);
+    container.appendChild(wrapper);
+
+    return container;
+  },
+};
+
+export const Filled: Story = {
+  args: {
+    state: 'filled',
+    fileName: 'Screenshot 2025-11-04 at 2.41.10 PM',
+    fileExtension: 'png',
+    fileSize: 116549,
+    showFileSize: true,
+    showActions: true,
+    uploadText: 'Haz clic para subir archivo',
+    fileStatus: 'pending',
+  },
+  render: (args) => {
+    // Crear contenedor fullscreen
+    const container = document.createElement('div');
+    container.style.cssText = `
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+      background: var(--ubits-bg-2, #f3f3f4);
+    `;
+
+    // Contenedor principal
+    const wrapper = document.createElement('div');
+    wrapper.style.cssText = `
+      width: 100%;
+      max-width: 800px;
+      background: var(--ubits-bg-1, #ffffff);
+      padding: 32px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    `;
+
+    // Título
+    const title = document.createElement('h2');
+    title.textContent = 'File Upload - Estado Filled';
+    title.style.cssText = `
+      margin: 0 0 16px 0;
+      color: var(--ubits-fg-1-high, #303a47);
+      font-size: var(--font-heading-h2-size, 24px);
+      font-weight: var(--weight-bold, 700);
+    `;
+
+    // Descripción
+    const description = document.createElement('p');
+    description.textContent = 'Estado filled muestra el archivo ya subido con un icono de check y opción para eliminarlo.';
+    description.style.cssText = `
+      margin: 0 0 24px 0;
+      color: var(--ubits-fg-1-medium, #5c646f);
+      font-size: var(--font-body-md-size, 16px);
+      line-height: var(--font-body-md-line, 24px);
+    `;
+
+    // Contenedor para el file upload
+    const fileUploadContainer = document.createElement('div');
+    fileUploadContainer.id = `file-upload-container-filled-${Date.now()}`;
+    fileUploadContainer.style.cssText = `
+      width: 100%;
+      margin: 0 auto;
+    `;
+
+    let fileUploadInstance: any = null;
+
+    const createFileUploadContent = () => {
+      // Limpiar completamente el contenedor primero
+      fileUploadContainer.innerHTML = '';
+      
+      // Limpiar instancia anterior
+      if (fileUploadInstance) {
+        try {
+          fileUploadInstance.destroy();
+        } catch (e) {
+          // Ignorar errores de destrucción
+        }
+        fileUploadInstance = null;
+      }
+
+      // Preparar opciones
+      const options: FileUploadOptions = {
+        state: args.state || 'filled',
+        fileName: args.fileName,
+        fileExtension: args.fileExtension,
+        fileSize: args.fileSize !== undefined ? args.fileSize : 0,
+        showFileSize: args.showFileSize !== undefined ? args.showFileSize : true,
+        showActions: args.showActions !== undefined ? args.showActions : true,
+        uploadText: args.uploadText || 'Haz clic para subir archivo',
+        fileStatus: args.fileStatus || 'pending',
         containerId: fileUploadContainer.id,
       };
 

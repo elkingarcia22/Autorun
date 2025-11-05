@@ -1,194 +1,346 @@
 # 🚀 UBITS Playground Template
 
-Sistema completo de inicialización y gestión de proyectos UBITS con validación automática, auto-commit y despliegue.
+Template completo para crear aplicaciones UBITS con sistema de diseño, componentes modulares, validación automática y despliegue.
 
-## 📋 **Inicio Rápido**
+## 📋 Índice
 
-### **1. Inicializar Nuevo Proyecto**
+- [Inicio Rápido](#-inicio-rápido)
+- [Características](#-características)
+- [Modos de Operación](#-modos-de-operación)
+- [Estructura del Proyecto](#-estructura-del-proyecto)
+- [Sistema de Diseño](#-sistema-de-diseño)
+- [Scripts Disponibles](#-scripts-disponibles)
+- [Validación Automática](#-validación-automática)
+- [Documentación](#-documentación)
+
+---
+
+## 🚀 Inicio Rápido
+
+### 1. Clonar el Repositorio
+
+```bash
+git clone https://github.com/elkingarcia22/prototipo-template.git
+cd prototipo-template
+```
+
+### 2. Instalar Dependencias
+
+```bash
+npm install
+```
+
+### 3. Inicializar Proyecto
 
 ```bash
 npm run init
 ```
 
 Este comando interactivo te guiará paso a paso:
+- ✅ Solicita URL del repositorio GitHub
+- ✅ Permite seleccionar perfil (Colaborador/Administrador)
+- ✅ Configura el template automáticamente
+- ✅ Inicializa Git y configura remoto
+- ✅ Instala dependencias
+- ✅ Configura auto-commit y validación
 
-1. ✅ Solicita URL del repositorio GitHub
-2. ✅ Permite seleccionar perfil (Colaborador/Administrador)
-3. ✅ Configura el template automáticamente
-4. ✅ Inicializa Git y configura remoto
-5. ✅ Instala dependencias
-6. ✅ Configura auto-commit y validación
-
-### **2. Activar Auto-Commit y Validación**
+### 4. Iniciar Desarrollo
 
 ```bash
+# Terminal 1: Auto-commit y validación
 npm run watch
-```
 
-Esto activa:
-- ✅ Validación automática de código UBITS
-- ✅ Auto-fix de errores comunes
-- ✅ Commits automáticos al detectar cambios
-- ✅ Prevención de commits con errores
-
-### **3. Iniciar Desarrollo**
-
-```bash
+# Terminal 2: Servidor de desarrollo
 npm run dev
 ```
 
-Abre `packages/playground-app/template-qa.html` en tu navegador.
+Abre `packages/playground-app/template-colaborador.html` o `template-admin.html` según el perfil.
 
-## 🔧 **Scripts Disponibles**
+---
 
-### **Inicialización**
-- `npm run init` - Inicializar nuevo proyecto (interactivo)
+## ✨ Características
 
-### **Validación**
-- `npm run validate` - Validar código (solo archivos en staging)
-- `npm run validate:fix` - Validar y corregir automáticamente
-- `npm run validate:all` - Validar todos los archivos
-- `npm run validate:all:fix` - Validar y corregir todos los archivos
+### 🎨 Sistema de Diseño Completo
+- ✅ Tokens de color, tipografía y espaciado
+- ✅ Componentes modulares reutilizables
+- ✅ Tipografía UBITS integrada
+- ✅ Iconos Font Awesome Pro
 
-### **Desarrollo**
-- `npm run watch` - Activar auto-commit y validación automática
-- `npm run dev` - Iniciar servidor de desarrollo
+### 👥 Dos Modos de Operación
+- ✅ **Modo Colaborador**: Para usuarios normales
+- ✅ **Modo Administrador**: Para administradores con funciones avanzadas
 
-### **Integración**
-- `npm run integrate:addons` - Integrar add-ons (Clarity, Onboarding, Feedback)
+### 📱 Diseño Responsive
+- ✅ Desktop (≥1024px): Sidebar visible
+- ✅ Móvil (<1024px): TabBar visible
+- ✅ Contenido adaptativo
 
-### **Despliegue**
-- `npm run deploy` - Guía interactiva para desplegar en Vercel o Render
+### 🛡️ Validación Automática
+- ✅ Detección de colores hardcodeados
+- ✅ Validación de clases de tipografía
+- ✅ Verificación de componentes custom
+- ✅ Auto-corrección de errores comunes
 
-## 📚 **Flujo Completo del Proyecto**
+### 🔄 Auto-Commit
+- ✅ Commits automáticos durante desarrollo
+- ✅ Validación antes de cada commit
+- ✅ Prevención de commits con errores
 
-### **Fase 1: Inicialización**
-```bash
-npm run init
+### 📦 Add-ons Disponibles
+- ✅ Microsoft Clarity (Analytics)
+- ✅ Onboarding (Guía interactiva)
+- ✅ Feedback Automation (Sistema de feedback)
+
+### 🚀 Despliegue Automatizado
+- ✅ Vercel (Recomendado)
+- ✅ Render
+- ✅ Configuración guiada paso a paso
+
+---
+
+## 👥 Modos de Operación
+
+### 👤 Modo Colaborador
+
+**Template**: `template-colaborador.html`
+
+**Módulos disponibles**:
+- 📚 **Aprendizaje**: Cursos y rutas de aprendizaje
+- 📊 **Desempeño**: Evaluaciones y métricas personales
+- 🔍 **Diagnóstico**: Herramientas de diagnóstico (sin SubNav)
+
+### 👨‍💼 Modo Administrador
+
+**Template**: `template-admin.html`
+
+**Módulos disponibles**:
+- 🏠 **Inicio**: Panel de administración (sin SubNav)
+- 🏢 **Empresa** → Gestión de usuarios
+- 📚 **Aprendizaje** → LMS completo
+- 📊 **Desempeño** → Evaluaciones 360°
+- 🔍 **Diagnóstico**: Análisis organizacional (sin SubNav)
+- 🔌 **API**: Documentación de API
+- ❓ **Centro de ayuda**: Soporte y ayuda
+
+---
+
+## 📁 Estructura del Proyecto
+
 ```
-- Seleccionar repositorio
-- Elegir perfil (Colaborador/Administrador)
-- Template configurado automáticamente
-
-### **Fase 2: Desarrollo**
-```bash
-npm run watch  # En una terminal
-npm run dev    # En otra terminal
+prototipo-template/
+├── packages/
+│   ├── addons/              # Componentes modulares
+│   │   ├── sidebar/         # Sidebar con modos
+│   │   ├── tabbar/          # TabBar responsive
+│   │   ├── subnav/          # SubNav dinámico
+│   │   ├── card/            # Card Content
+│   │   ├── button/          # Botones UBITS
+│   │   ├── input/           # Inputs UBITS
+│   │   ├── alert/           # Alertas
+│   │   ├── toast/           # Notificaciones
+│   │   └── badge/          # Badges
+│   ├── playground-app/      # Aplicación principal
+│   │   ├── template-colaborador.html
+│   │   ├── template-admin.html
+│   │   ├── components-loader.js
+│   │   ├── config/
+│   │   │   ├── products.js
+│   │   │   ├── responsive-manager.js
+│   │   │   └── theme-manager.js
+│   │   └── engine/
+│   │       ├── content-manager.js
+│   │       └── template-loader.js
+│   ├── tokens/              # Tokens de diseño
+│   └── typography/          # Tipografía UBITS
+├── scripts/
+│   ├── init-project.cjs
+│   ├── integrate-addons.cjs
+│   ├── deploy.cjs
+│   └── validate-ubits.cjs
+├── .ubits/                  # Configuración UBITS
+└── .husky/                  # Git hooks
 ```
-- Trabajas normalmente
-- Sistema valida y hace commit automáticamente
-- Solo necesitas corregir errores no auto-corregibles
 
-### **Fase 3: Integración de Add-ons**
-```bash
-npm run integrate:addons
+---
+
+## 🎨 Sistema de Diseño
+
+### Tokens de Color
+
+```css
+/* Backgrounds */
+--ubits-bg-1          /* Fondo principal */
+--ubits-bg-2          /* Fondo secundario */
+--ubits-bg-active     /* Fondo activo */
+
+/* Foregrounds */
+--ubits-fg-1-high     /* Texto principal */
+--ubits-fg-1-medium   /* Texto secundario */
+--ubits-fg-1-low      /* Texto terciario */
+
+/* Accents */
+--ubits-accent-brand  /* Color de marca */
+--ubits-accent-blue   /* Azul */
+--ubits-accent-green  /* Verde */
+--ubits-accent-red    /* Rojo */
+
+/* Borders */
+--ubits-border-1      /* Borde principal */
+--ubits-border-2      /* Borde secundario */
 ```
-- Integra Clarity (analytics)
-- Integra Onboarding (guía de usuario)
-- Integra Feedback Automation (sistema de feedback)
 
-### **Fase 4: Despliegue**
-```bash
-npm run deploy
+### Tokens de Tipografía
+
+```css
+/* Headings */
+.ubits-heading-h1     /* Título principal */
+.ubits-heading-h2     /* Título secundario */
+.ubits-heading-h3     /* Título terciario */
+
+/* Body */
+.ubits-body-lg        /* Texto grande */
+.ubits-body-md        /* Texto mediano */
+.ubits-body-sm        /* Texto pequeño */
 ```
-- Selecciona plataforma (Vercel/Render)
-- Configura despliegue automáticamente
-- Instrucciones para completar
 
-## 🛡️ **Sistema de Validación Automática**
+### Componentes Disponibles
 
-### **Qué Valida**
+- **Sidebar**: Navegación lateral con modos colaborador/admin
+- **TabBar**: Navegación inferior para móviles
+- **SubNav**: Navegación por pestañas dentro de módulos
+- **Card Content**: Tarjetas de contenido
+- **Button**: Botones con variantes
+- **Input**: Campos de entrada
+- **Alert**: Alertas informativas
+- **Toast**: Notificaciones temporales
+- **Badge**: Etiquetas
+
+---
+
+## 🔧 Scripts Disponibles
+
+### Inicialización
+```bash
+npm run init              # Inicializar proyecto nuevo
+```
+
+### Validación
+```bash
+npm run validate          # Validar código (solo staging)
+npm run validate:fix      # Validar y corregir automáticamente
+npm run validate:all      # Validar todos los archivos
+npm run validate:all:fix  # Validar y corregir todos
+```
+
+### Desarrollo
+```bash
+npm run watch             # Auto-commit y validación
+npm run dev               # Servidor de desarrollo
+```
+
+### Integración
+```bash
+npm run integrate:addons  # Integrar add-ons
+```
+
+### Despliegue
+```bash
+npm run deploy            # Guía de despliegue
+```
+
+### Build
+```bash
+npm run build:tokens      # Generar tokens CSS/JS
+```
+
+---
+
+## 🛡️ Validación Automática
+
+### Qué Valida
+
 - ✅ Colores hardcodeados → Sugiere tokens UBITS
-- ✅ Clases de tipografía prohibidas → Sugiere clases oficiales
-- ✅ Componentes custom → Sugiere usar componentes oficiales
+- ✅ Clases de tipografía incorrectas → Sugiere clases oficiales
+- ✅ Componentes custom → Sugiere componentes oficiales
 - ✅ CSS faltante → Sugiere imports necesarios
 
-### **Qué Corrige Automáticamente**
-- ✅ `white` → `var(--ubits-bg-1)`
-- ✅ `black` → `var(--ubits-fg-1-high)`
-- ✅ `ubits-h1` → `ubits-heading-h1`
-- ✅ `ubits-body-lg-bold` → `ubits-heading-h1`
-- Y más...
+### Qué Corrige Automáticamente
 
-## 📦 **Add-ons Disponibles**
+- `white` → `var(--ubits-bg-1)`
+- `black` → `var(--ubits-fg-1-high)`
+- `ubits-h1` → `ubits-heading-h1`
+- `ubits-body-lg-bold` → `ubits-heading-h1`
 
-### **Microsoft Clarity**
-Analytics y grabaciones de sesión para análisis de usuario.
+### Ejecución Automática
 
-### **Onboarding**
-Sistema de guía interactiva para nuevos usuarios.
+La validación se ejecuta automáticamente:
+- ✅ En cada commit (pre-commit hook)
+- ✅ Cuando ejecutas `npm run watch`
+- ✅ Manualmente con `npm run validate`
 
-### **Feedback Automation**
-Sistema automatizado de recolección y gestión de feedback.
+---
 
-## 🚀 **Despliegue**
+## 📚 Documentación
 
-### **Vercel (Recomendado)**
-```bash
-npm run deploy
-# Selecciona opción 1
-vercel --prod
-```
+- **[Guía Completa](GUIA-COMPLETA.md)**: Documentación detallada del template
+- **[Reglas Cursor](.cursorrules)**: Reglas para trabajar con Cursor AI
+- **[Validación](.ubits/AUTO-VALIDATION.md)**: Sistema de validación automática
+- **[Componentes](.ubits/component-inventory.json)**: Inventario de componentes
+- **[Arquitectura](docs/ARQUITECTURA-TEMPLATE.md)**: Arquitectura del template
 
-### **Render**
-```bash
-npm run deploy
-# Selecciona opción 2
-# Sigue instrucciones en render.com
-```
+---
 
-## 📁 **Estructura del Proyecto**
+## 💡 Flujo de Trabajo Recomendado
 
-```
-proyecto/
-├── packages/
-│   ├── addons/          # Componentes como add-ons
-│   ├── playground-app/  # Aplicación principal
-│   └── ...
-├── scripts/
-│   ├── init-project.cjs     # Inicialización
-│   ├── integrate-addons.cjs # Integración de add-ons
-│   ├── deploy.cjs           # Despliegue
-│   └── validate-ubits.cjs   # Validación
-├── .ubits/
-│   ├── component-inventory.json  # Inventario de componentes
-│   ├── project-config.json       # Configuración del proyecto
-│   └── ...
-└── .husky/
-    └── pre-commit      # Hook de validación automática
-```
+1. **Inicializar**: `npm run init`
+2. **Activar watch**: `npm run watch` (dejar corriendo)
+3. **Desarrollar**: Trabajas normalmente, el sistema valida y commitea
+4. **Integrar add-ons**: `npm run integrate:addons` (cuando estés listo)
+5. **Desplegar**: `npm run deploy` (al finalizar)
 
-## 🔍 **Configuración del Proyecto**
+---
 
-Ver `.ubits/project-config.json` para:
-- Perfil seleccionado
-- Repositorio configurado
-- Add-ons integrados
-- Configuración de despliegue
-
-## 📚 **Documentación**
-
-- **Validación:** `.ubits/AUTO-VALIDATION.md`
-- **Componentes:** `.ubits/component-inventory.json`
-- **Reglas:** `.ubits/validation-rules.md`
-- **Cómo Funciona:** `.ubits/COMO-FUNCIONA.md`
-
-## 💡 **Workflow Recomendado**
-
-1. **Inicializar:** `npm run init`
-2. **Activar watch:** `npm run watch` (dejar corriendo)
-3. **Desarrollar:** Trabajas normalmente, el sistema valida y commitea
-4. **Integrar add-ons:** `npm run integrate:addons` (cuando estés listo)
-5. **Desplegar:** `npm run deploy` (al finalizar)
-
-## ✅ **Ventajas**
+## ✅ Ventajas
 
 - ✅ **Sin intervención manual** - Todo es automático
 - ✅ **Calidad garantizada** - Validación en cada commit
 - ✅ **Corrección automática** - Menos trabajo para ti
 - ✅ **Flujo completo** - De inicio a despliegue
 - ✅ **Configuración simple** - Todo guiado interactivamente
+- ✅ **Diseño consistente** - Tokens y componentes UBITS
+- ✅ **Responsive** - Funciona en todos los dispositivos
+- ✅ **Documentado** - Storybook con ejemplos
+
+---
+
+## 🆘 Solución de Problemas
+
+### El proyecto no se inicializa
+```bash
+node --version  # Verifica Node.js
+rm -rf node_modules package-lock.json
+npm install
+```
+
+### Los componentes no se cargan
+```bash
+# Verifica que los archivos estén en su lugar
+ls packages/playground-app/components-loader.js
+# Revisa la consola del navegador (F12)
+```
+
+### La validación falla
+```bash
+npm run validate:all      # Revisa errores
+npm run validate:all:fix  # Corrige automáticamente
+```
 
 ---
 
 **¿Listo para empezar?** Ejecuta `npm run init` 🚀
+
+---
+
+## 📄 Licencia
+
+ISC

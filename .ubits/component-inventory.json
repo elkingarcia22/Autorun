@@ -203,6 +203,33 @@
         "Usa tokens UBITS exclusivamente (--ubits-accent-brand, --ubits-border-1, --ubits-bg-1, --ubits-border-disabled-button, --ubits-fg-on-disabled-button)"
       ]
     },
+    "toggle": {
+      "name": "Toggle",
+      "package": "@ubits/toggle",
+      "path": "packages/addons/toggle",
+      "provider": "createToggle",
+      "globalFunction": "window.createToggle",
+      "cssFile": "packages/addons/toggle/src/styles/toggle.css",
+      "storybookStory": "Toggle.stories.ts",
+      "variants": [],
+      "sizes": ["sm", "md"],
+      "states": ["default", "hover", "active", "checked", "disabled"],
+      "features": [
+        "2 tamaños (sm: 33x16px track con thumb 16px, md: 36x20px track con thumb 20px)",
+        "5 estados (default, hover, active, checked, disabled)",
+        "Estado hover: track gris (bg-3) con thumb blanco",
+        "Estado active: track azul brand con thumb blanco (solo cuando NO está checked)",
+        "Estado checked: track azul brand con thumb blanco movido a la derecha",
+        "Estado disabled: track gris con opacidad 0.6, thumb blanco",
+        "Texto complementario opcional debajo del label",
+        "Thumb animado con transición suave de posición (left)",
+        "Track con border-radius full y padding interno",
+        "Thumb con sombra (box-shadow) para elevación",
+        "Wrapper dinámico: label si hay texto, div si no hay texto",
+        "Event onChange para manejar cambios",
+        "Usa tokens UBITS exclusivamente (--ubits-accent-brand, --ubits-bg-1, --ubits-bg-3, --ubits-border-radius-full)"
+      ]
+    },
     "avatar": {
       "name": "Avatar",
       "package": "@ubits/avatar",

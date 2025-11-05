@@ -68,6 +68,146 @@
     background-color: var(--ubits-bg-disabled, #edeeef);
 }
 
+/* Estado Filled */
+.ubits-file-upload--filled {
+    border-color: var(--ubits-border-1, #d0d2d5);
+    background-color: var(--ubits-bg-2, #f3f3f4);
+    border-style: solid;
+    cursor: default;
+}
+
+.ubits-file-upload--filled:hover {
+    border-color: var(--ubits-border-1, #d0d2d5);
+    background-color: var(--ubits-bg-2, #f3f3f4);
+}
+
+/* Estado Filled - Diseño compacto tipo lista */
+.ubits-file-upload--filled-list {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--ubits-spacing-md, 12px) var(--ubits-spacing-lg, 16px);
+    border: 1px solid var(--ubits-border-1, #d0d2d5);
+    border-radius: var(--ubits-border-radius-sm, 8px);
+    background-color: var(--ubits-bg-1, #ffffff);
+    min-height: auto;
+    gap: var(--ubits-spacing-lg, 16px);
+    width: 100%;
+}
+
+.ubits-file-upload--filled-list:hover {
+    border-color: var(--ubits-border-1, #d0d2d5);
+    background-color: var(--ubits-bg-1, #ffffff);
+}
+
+.ubits-file-upload__filled-content {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--ubits-spacing-md, 12px);
+    flex: 1;
+    min-width: 0;
+}
+
+.ubits-file-upload__file-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    background-color: transparent;
+}
+
+.ubits-file-upload__file-icon i {
+    font-size: 24px;
+    color: var(--ubits-fg-1-medium, #5c646f);
+}
+
+.ubits-file-upload__file-info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ubits-spacing-xs, 4px);
+    flex: 1;
+    min-width: 0;
+}
+
+.ubits-file-upload__file-header {
+    display: flex;
+    align-items: center;
+    gap: var(--ubits-spacing-sm, 8px);
+    flex-wrap: wrap;
+}
+
+.ubits-file-upload--filled-list .ubits-file-upload__file-name {
+    font-size: var(--font-body-md-size, 16px);
+    line-height: var(--font-body-md-line, 24px);
+    font-weight: var(--weight-medium, 500);
+    color: var(--ubits-fg-1-high, #303a47);
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ubits-file-upload--filled-list .ubits-file-upload__file-size {
+    font-size: var(--font-body-sm-size, 14px);
+    line-height: var(--font-body-sm-line, 20px);
+    font-weight: var(--weight-regular, 400);
+    color: var(--ubits-fg-1-medium, #5c646f);
+    text-align: left;
+}
+
+.ubits-file-upload__status-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--ubits-spacing-xs, 4px) var(--ubits-spacing-sm, 8px);
+    border-radius: var(--ubits-border-radius-sm, 4px);
+    border: none;
+    font-family: var(--font-sans);
+    font-size: var(--font-body-xs-size, 11px);
+    font-weight: var(--weight-semibold, 600);
+    line-height: var(--font-body-xs-line, 16px);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.ubits-file-upload--filled-list .ubits-file-upload__actions {
+    position: static;
+    top: auto;
+    right: auto;
+    flex-shrink: 0;
+    display: flex;
+    gap: 0;
+}
+
+.ubits-file-upload--filled-list .ubits-file-upload__action {
+    width: 32px;
+    height: 32px;
+    padding: 8px;
+    border: none;
+    background-color: transparent;
+}
+
+.ubits-file-upload--filled-list .ubits-file-upload__action:hover {
+    background-color: var(--ubits-bg-2, #f3f3f4);
+    border: none;
+}
+
+.ubits-file-upload--filled-list .ubits-file-upload__action--remove {
+    border: none;
+}
+
+.ubits-file-upload--filled-list .ubits-file-upload__action--remove:hover {
+    background-color: var(--ubits-feedback-bg-error-subtle, #fff0ee);
+    border: none;
+}
+
+.ubits-file-upload--filled-list .ubits-file-upload__action i {
+    font-size: 16px;
+}
+
 /* ========================================
    FILE UPLOAD CONTAINER
    ======================================== */
@@ -121,6 +261,31 @@
     color: var(--ubits-fg-on-disabled, #8d9199);
 }
 
+/* Icono filled (archivo con check) */
+.ubits-file-upload__icon-filled {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    background-color: var(--ubits-bg-1, #ffffff);
+    border: 2px solid var(--ubits-feedback-accent-success, #41c433);
+    border-radius: var(--ubits-border-radius-sm, 8px);
+    padding: var(--ubits-spacing-md, 12px);
+    box-sizing: border-box;
+}
+
+.ubits-file-upload__icon-filled i {
+    font-size: 24px;
+    color: var(--ubits-feedback-accent-success, #41c433);
+    display: inline-block;
+}
+
+.ubits-file-upload--filled .ubits-file-upload__file-name {
+    font-weight: var(--weight-semibold, 600);
+    color: var(--ubits-fg-1-high, #303a47);
+}
+
 /* ========================================
    FILE UPLOAD CONTENT
    ======================================== */
@@ -140,6 +305,11 @@
     color: var(--ubits-fg-1-medium, #5c646f);
     text-align: center;
     white-space: nowrap;
+}
+
+.ubits-file-upload--filled .ubits-file-upload__file-name {
+    font-weight: var(--weight-semibold, 600);
+    color: var(--ubits-fg-1-high, #303a47);
 }
 
 .ubits-file-upload--disabled .ubits-file-upload__file-name {

@@ -319,13 +319,13 @@ const defaultItems: TabBarItem[] = [
 export const Default: Story = {
   args: {
     containerId: 'tabbar-story-container',
-    variant: 'colaborador',
+    variant: 'colaborador' as 'colaborador' | 'admin',
     items: defaultItems,
     activeTabId: 'modulos',
     darkModeEnabled: true,
     visible: true,
-    floatingMenuSections: colaboradorFloatingMenuSections,
-    profileMenuItems: colaboradorProfileMenuItems,
+    // No incluir floatingMenuSections y profileMenuItems en args iniciales
+    // para que se calculen dinámicamente según el variant
     onTabChange: (tabId, item, element) => {
       console.log('Tab changed:', tabId, item);
     },
@@ -369,11 +369,12 @@ export const Default: Story = {
       existingContainer.innerHTML = '';
     }
 
-    // Obtener configuraciones según la variante
+    // Obtener configuraciones según la variante - SIEMPRE usar las configuraciones del variant, ignorar args si variant está presente
     const variant = args.variant || 'colaborador';
     const config = getTabBarConfig(variant);
-    const floatingMenuSections = args.floatingMenuSections || config.floatingMenuSections;
-    const profileMenuItems = args.profileMenuItems || config.profileMenuItems;
+    // SIEMPRE usar las configuraciones del variant actual, ignorar cualquier valor en args
+    const floatingMenuSections = config.floatingMenuSections;
+    const profileMenuItems = config.profileMenuItems;
 
     // Wrapper principal - tamaño móvil adecuado para preview
     const wrapper = document.createElement('div');
@@ -481,8 +482,9 @@ export const Default: Story = {
               container: container,
               visible: args.visible !== false,
               darkModeEnabled: args.darkModeEnabled !== false,
-              floatingMenuSections: floatingMenuSections,
-              profileMenuItems: profileMenuItems,
+              // SIEMPRE usar las configuraciones del variant actual, ignorar cualquier valor en args
+              floatingMenuSections: config.floatingMenuSections,
+              profileMenuItems: config.profileMenuItems,
               onTabChange: (tabId, item, element) => {
                 // Actualizar panel de información sin usar querySelector que pueda causar problemas
                 try {
