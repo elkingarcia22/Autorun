@@ -1,6 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/html';
 import { renderSearchButton } from '../../addons/search-button/src/SearchButtonProvider';
 import type { SearchButtonOptions } from '../../addons/search-button/src/types/SearchButtonOptions';
+// Importar CSS del botón UBITS (necesario para el modo botón)
+import '../../addons/button/src/styles/button.css';
+// Importar CSS del Search Button (necesario para el modo input)
 import '../../addons/search-button/src/styles/search-button.css';
 
 const meta: Meta<SearchButtonOptions> = {

@@ -1,6 +1,8 @@
 /* ========================================
    UBITS SEARCH BUTTON COMPONENT
    Componente de búsqueda con modo botón e input
+   Cuando no está activo, usa el botón UBITS estándar (secondary, icon-only)
+   Cuando está activo, muestra un input con icono de lupa
    Usando tokens UBITS exclusivamente
    ======================================== */
 
@@ -19,18 +21,9 @@
    MODE: BUTTON (when not active)
    ======================================== */
 
-.ubits-search-button button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: var(--ubits-spacing-sm, 12px);
-    border: 1px solid var(--ubits-btn-secondary-border, #d0d2d5);
-    border-radius: var(--ubits-border-radius-md, 8px);
-    background-color: var(--ubits-btn-secondary-bg-default, #ffffff);
-    cursor: pointer;
-    transition: all 0.2s ease;
-    font-family: var(--font-sans, 'Noto Sans', sans-serif);
-}
+/* Cuando no está activo, el botón usa las clases del sistema UBITS:
+   .ubits-button .ubits-button--secondary .ubits-button--icon-only
+   Los estilos del botón se manejan en button.css, no necesitamos sobrescribirlos aquí */
 
 .ubits-search-button__icon {
     font-size: 16px;
@@ -41,37 +34,13 @@
     justify-content: center;
 }
 
-/* Button Hover State */
-.ubits-search-button button:hover:not(:disabled) {
-    background-color: var(--ubits-btn-secondary-bg-hover, #f5f5f6);
-    border-color: var(--ubits-btn-secondary-border, #d0d2d5);
+/* Ajustar tamaño del icono según el tamaño del botón */
+.ubits-button--sm .ubits-search-button__icon {
+    font-size: 14px;
 }
 
-/* Button Active/Pressed State */
-.ubits-search-button button:active:not(:disabled) {
-    background-color: var(--ubits-btn-secondary-bg-pressed, #e7e8ea);
-    border-color: var(--ubits-btn-secondary-border, #d0d2d5);
-    transform: translateY(1px);
-}
-
-/* Button Focus State */
-.ubits-search-button button:focus-visible {
-    outline: none;
-    box-shadow: 0px 0px 0px 4px var(--ubits-button-focus-ring, rgba(12, 91, 239, 0.2));
-}
-
-/* Button Disabled State */
-.ubits-search-button button:disabled,
-.ubits-search-button--disabled button {
-    background-color: var(--ubits-bg-disabled, #edeeef);
-    border-color: var(--ubits-border-disabled-button, #d0d2d5);
-    cursor: not-allowed;
-    pointer-events: none;
-}
-
-.ubits-search-button button:disabled .ubits-search-button__icon,
-.ubits-search-button--disabled button .ubits-search-button__icon {
-    color: var(--ubits-fg-on-disabled-button, #8d9199);
+.ubits-button--md .ubits-search-button__icon {
+    font-size: 16px;
 }
 
 /* ========================================
@@ -134,19 +103,10 @@
 }
 
 /* ========================================
-   SEARCH BUTTON SIZES
+   SEARCH BUTTON SIZES (para modo input)
    ======================================== */
 
-/* Small Size */
-.ubits-search-button--sm button {
-    padding: var(--ubits-spacing-xs, 8px);
-    min-height: 32px;
-}
-
-.ubits-search-button--sm .ubits-search-button__icon {
-    font-size: 14px;
-}
-
+/* Small Size - Input Mode */
 .ubits-search-button--sm.ubits-search-button--active .ubits-search-button__input-wrapper {
     padding: var(--ubits-spacing-xs, 8px);
     max-height: 32px;
@@ -157,16 +117,7 @@
     line-height: var(--ubits-line-height-sm, 19.5px);
 }
 
-/* Medium Size (default) */
-.ubits-search-button--md button {
-    padding: var(--ubits-spacing-sm, 12px);
-    min-height: 40px;
-}
-
-.ubits-search-button--md .ubits-search-button__icon {
-    font-size: 16px;
-}
-
+/* Medium Size - Input Mode (default) */
 .ubits-search-button--md.ubits-search-button--active .ubits-search-button__input-wrapper {
     padding: var(--ubits-spacing-sm, 12px);
     max-height: 40px;
@@ -178,25 +129,9 @@
 }
 
 /* ========================================
-   SEARCH BUTTON STATES
+   DISABLED STATE (para modo input)
    ======================================== */
 
-/* Hover State (for button mode) */
-.ubits-search-button--hover button:not(:disabled) {
-    background-color: var(--ubits-btn-secondary-bg-hover, #f5f5f6);
-}
-
-/* Active State (for button mode) */
-.ubits-search-button--active-state button:not(:disabled) {
-    background-color: var(--ubits-btn-secondary-bg-pressed, #e7e8ea);
-}
-
-/* Disabled State */
-.ubits-search-button--disabled {
-    opacity: 1;
-}
-
-.ubits-search-button--disabled button,
 .ubits-search-button--disabled .ubits-search-button__input-wrapper {
     cursor: not-allowed;
     pointer-events: none;

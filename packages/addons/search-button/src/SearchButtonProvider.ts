@@ -26,22 +26,21 @@ export function renderSearchButton(options: SearchButtonOptions): string {
 
   const isDisabled = disabled || state === 'disabled';
 
-  // Construir clases
-  const classes = [
-    'ubits-search-button',
-    `ubits-search-button--${size}`,
-    state !== 'default' ? `ubits-search-button--${state}` : '',
-    active ? 'ubits-search-button--active' : '',
-    isDisabled ? 'ubits-search-button--disabled' : '',
-    className
-  ].filter(Boolean).join(' ');
-
   const iconHTML = renderSearchIcon();
 
   // Si está activo, mostrar input
   if (active) {
+    // Construir clases para el wrapper del input
+    const inputWrapperClasses = [
+      'ubits-search-button',
+      'ubits-search-button--active',
+      `ubits-search-button--${size}`,
+      isDisabled ? 'ubits-search-button--disabled' : '',
+      className
+    ].filter(Boolean).join(' ');
+
     return `
-      <div class="${classes}" style="width: ${width}px;">
+      <div class="${inputWrapperClasses}" style="width: ${width}px;">
         <div class="ubits-search-button__input-wrapper">
           ${iconHTML}
           <input
@@ -57,11 +56,19 @@ export function renderSearchButton(options: SearchButtonOptions): string {
     `.trim();
   }
 
-  // Si no está activo, mostrar solo el botón con icono
+  // Si no está activo, usar el botón UBITS estándar (secondary, icon-only)
+  const buttonClasses = [
+    'ubits-button',
+    'ubits-button--secondary',
+    'ubits-button--icon-only',
+    `ubits-button--${size}`,
+    className
+  ].filter(Boolean).join(' ');
+
   return `
     <button
       type="button"
-      class="${classes}"
+      class="${buttonClasses}"
       ${isDisabled ? 'disabled' : ''}
       aria-label="Buscar"
     >

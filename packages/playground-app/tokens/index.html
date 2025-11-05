@@ -9003,21 +9003,20 @@ Reglas Importantes:
         
         const isDisabled = searchState === 'disabled';
         
-        // Construir clases
-        const classes = [
-          'ubits-search-button',
-          `ubits-search-button--${size}`,
-          searchState !== 'default' ? `ubits-search-button--${searchState}` : '',
-          active ? 'ubits-search-button--active' : '',
-          isDisabled ? 'ubits-search-button--disabled' : ''
-        ].filter(Boolean).join(' ');
-        
         const iconHTML = '<i class="far fa-magnifying-glass ubits-search-button__icon" aria-hidden="true"></i>';
         
         // Si está activo, mostrar input
         if (active) {
+          // Construir clases para el wrapper del input
+          const inputWrapperClasses = [
+            'ubits-search-button',
+            'ubits-search-button--active',
+            `ubits-search-button--${size}`,
+            isDisabled ? 'ubits-search-button--disabled' : ''
+          ].filter(Boolean).join(' ');
+          
           return `
-            <div class="${classes}" style="width: ${width}px;">
+            <div class="${inputWrapperClasses}" style="width: ${width}px;">
               <div class="ubits-search-button__input-wrapper">
                 ${iconHTML}
                 <input
@@ -9033,11 +9032,18 @@ Reglas Importantes:
           `.trim();
         }
         
-        // Si no está activo, mostrar solo el botón con icono
+        // Si no está activo, usar el botón UBITS estándar (secondary, icon-only)
+        const buttonClasses = [
+          'ubits-button',
+          'ubits-button--secondary',
+          'ubits-button--icon-only',
+          `ubits-button--${size}`
+        ].filter(Boolean).join(' ');
+        
         return `
           <button
             type="button"
-            class="${classes}"
+            class="${buttonClasses}"
             ${isDisabled ? 'disabled' : ''}
             aria-label="Buscar"
           >
@@ -9059,7 +9065,16 @@ Reglas Importantes:
         const searchButtonHTML = generateSearchButtonHTML(state, componentId);
         preview.innerHTML = searchButtonHTML;
         
-        // Cargar CSS si no está cargado
+        // Cargar CSS del botón UBITS si no está cargado (necesario para el modo botón)
+        const existingButtonLink = document.querySelector('link[href*="button.css"]');
+        if (!existingButtonLink) {
+          const buttonLink = document.createElement('link');
+          buttonLink.rel = 'stylesheet';
+          buttonLink.href = '../../addons/button/src/styles/button.css';
+          document.head.appendChild(buttonLink);
+        }
+        
+        // Cargar CSS del Search Button si no está cargado
         const existingLink = document.querySelector('link[href*="search-button.css"]');
         if (!existingLink) {
           const link = document.createElement('link');
