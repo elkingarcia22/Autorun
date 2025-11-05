@@ -64,6 +64,16 @@ const config: StorybookConfig = {
     // También deshabilitar errores en la consola del servidor
     config.logLevel = 'warn';
     
+    // Configurar esbuild para evitar buscar tsconfig.node.json
+    config.esbuild = config.esbuild || {};
+    config.esbuild.tsconfigRaw = {
+      compilerOptions: {
+        skipLibCheck: true,
+        module: 'ESNext',
+        moduleResolution: 'bundler',
+      },
+    };
+    
     // Configurar optimización para mejorar la resolución de módulos
     config.optimizeDeps = config.optimizeDeps || {};
     config.optimizeDeps.include = config.optimizeDeps.include || [];
