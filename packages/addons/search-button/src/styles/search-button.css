@@ -44,6 +44,25 @@
 }
 
 /* ========================================
+   FORCE STATES (para simular hover/active desde controles)
+   ======================================== */
+
+/* Simular estado hover cuando se selecciona desde el control */
+.ubits-button.ubits-search-button--force-hover:not(:disabled) {
+    background: var(--ubits-btn-secondary-bg-hover) !important;
+    color: var(--ubits-btn-secondary-fg-default) !important;
+    border-color: var(--ubits-btn-secondary-border) !important;
+}
+
+/* Simular estado active/pressed cuando se selecciona desde el control */
+.ubits-button.ubits-search-button--force-active:not(:disabled) {
+    background: var(--ubits-btn-secondary-bg-pressed) !important;
+    color: var(--ubits-btn-secondary-fg-default) !important;
+    border-color: var(--ubits-btn-secondary-border) !important;
+    transform: translateY(1px);
+}
+
+/* ========================================
    MODE: INPUT (when active)
    ======================================== */
 

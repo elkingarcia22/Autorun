@@ -57,11 +57,14 @@ export function renderSearchButton(options: SearchButtonOptions): string {
   }
 
   // Si no está activo, usar el botón UBITS estándar (secondary, icon-only)
+  // Agregar clases para simular estados hover y active cuando se seleccionan desde el control
   const buttonClasses = [
     'ubits-button',
     'ubits-button--secondary',
     'ubits-button--icon-only',
     `ubits-button--${size}`,
+    state === 'hover' ? 'ubits-search-button--force-hover' : '',
+    state === 'active' ? 'ubits-search-button--force-active' : '',
     className
   ].filter(Boolean).join(' ');
 
