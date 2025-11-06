@@ -9754,18 +9754,12 @@ Reglas Importantes:
             if (newType !== 'nombre' && newType !== 'nombre-avatar' && newType !== 'estado') {
               column.editable = undefined;
             }
-            // Si cambia a un tipo que no es 'radio', eliminar radioLabel y radioSize
+            // Si cambia a un tipo que no es 'radio', eliminar radioLabel
             if (newType !== 'radio') {
               column.radioLabel = undefined;
-              column.radioSize = undefined;
-            } else if (newType === 'radio') {
-              // Si cambia a 'radio', inicializar valores por defecto si no existen
-              if (column.radioLabel === undefined) {
-                column.radioLabel = false;
-              }
-              if (!column.radioSize) {
-                column.radioSize = 'md';
-              }
+            } else if (newType === 'radio' && column.radioLabel === undefined) {
+              // Si cambia a 'radio' y no tiene radioLabel, establecer por defecto false (sin label)
+              column.radioLabel = false;
             }
             // Actualizar el título del header según el tipo seleccionado
             const columnTypeLabels = {
@@ -9832,16 +9826,6 @@ Reglas Importantes:
             // Actualizar el preview
             window.updateDataTable3Preview(componentId);
           }
-        } else if (option === 'radioSize' && Array.isArray(value) && value.length === 2) {
-          // value = [columnId, radioSize]
-          const [columnId, radioSize] = value;
-          const column = state.columns.find(col => col.id === columnId);
-          if (column && column.type === 'radio') {
-            column.radioSize = radioSize || 'md';
-            // Actualizar el preview
-            window.updateDataTable3Preview(componentId);
-          }
-        }
         
         // Actualizar el preview
         window.updateDataTable3Preview(componentId);
@@ -9908,7 +9892,6 @@ Reglas Importantes:
           const hasAvatarVariant = isNombreAvatar || isNombreAvatarTexto;
           // Determinar el estado del radioLabel: si es string es true, si es boolean usa ese valor, si es undefined es false
           const currentRadioLabel = col.radioLabel !== undefined ? (typeof col.radioLabel === 'string' ? true : col.radioLabel) : false;
-          const currentRadioSize = col.radioSize || 'md';
           
           return `
             <div style="flex: 0 0 auto; min-width: 200px;">
@@ -9942,16 +9925,7 @@ Reglas Importantes:
                 </label>
               ` : ''}
               ${isRadio ? `
-                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-top: 12px; margin-bottom: 8px;">Tamaño</label>
-                <select 
-                  id="data-table-3-radio-size-${componentId}-${col.id}"
-                  onchange="setDataTable3Control('radioSize', ['${col.id}', this.value], '${componentId}')"
-                  style="width: 100%; padding: 10px 12px; border: 1px solid var(--ubits-border-1, #d0d2d5); border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box; cursor: pointer; margin-bottom: 12px;"
-                >
-                  <option value="sm" ${currentRadioSize === 'sm' ? 'selected' : ''}>Pequeño (sm)</option>
-                  <option value="md" ${currentRadioSize === 'md' ? 'selected' : ''}>Mediano (md)</option>
-                </select>
-                <label class="switch" style="display: flex; align-items: center; gap: 12px; cursor: pointer; margin-top: 0;">
+                <label class="switch" style="display: flex; align-items: center; gap: 12px; cursor: pointer; margin-top: 12px;">
                   <input type="checkbox" id="data-table-3-radio-label-${componentId}-${col.id}" ${currentRadioLabel !== false ? 'checked' : ''} onchange="setDataTable3Control('radioLabel', ['${col.id}', this.checked], '${componentId}')">
                   <span class="slider"></span>
                   <span style="font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium);">Mostrar Label</span>
@@ -10103,10 +10077,6 @@ Reglas Importantes:
                 // Si tiene radioLabel, copiarlo también
                 if (col.radioLabel !== undefined) {
                   columnCopy.radioLabel = col.radioLabel;
-                }
-                // Si tiene radioSize, copiarlo también
-                if (col.radioSize !== undefined) {
-                  columnCopy.radioSize = col.radioSize;
                 }
                 // Si tiene renderCell, copiarlo también
                 if (col.renderCell) {

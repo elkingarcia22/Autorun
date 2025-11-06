@@ -339,15 +339,12 @@ function renderCellByType(column: TableColumn3, row: TableRow3, columnType: Colu
       const showLabel = column.radioLabel !== false && column.radioLabel !== undefined;
       const labelText = typeof column.radioLabel === 'string' ? column.radioLabel : (showLabel ? String(row.data[column.id] || row.id) : '');
       
-      // Obtener el tamaño del radio desde la columna o usar por defecto 'md'
-      const radioSize = column.radioSize || 'md';
-      
       const radioHTML = renderRadioButton({
         label: labelText,
         name: `radio-${column.id}`,
         value: String(row.id),
         checked,
-        size: radioSize
+        size: 'md'
       });
       
       // Agregar atributos para identificar el radio button
