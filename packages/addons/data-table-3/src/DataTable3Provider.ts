@@ -770,7 +770,7 @@ export function renderDataTable3(
 
   // Agregar espacio en blanco en el header para alinear con la columna de controles de las filas
   const controlsHeader = hasControls ? `
-          <th class="ubits-data-table-3__controls-column-header" style="display: none;"></th>
+          <th class="ubits-data-table-3__controls-column-header"></th>
   ` : '';
   
   // Estructura sin contenedor adicional: la tabla directamente
