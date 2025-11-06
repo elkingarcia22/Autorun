@@ -38,11 +38,15 @@
     text-align: center;
     background-color: var(--ubits-bg-1, #ffffff);
     width: auto;
-    min-width: auto;
+    min-width: 70px;
     vertical-align: middle;
     display: flex;
     align-items: center;
     justify-content: center;
+    position: sticky;
+    left: 0;
+    z-index: 15;
+    box-shadow: 2px 0 4px rgba(0, 0, 0, 0.05);
 }
 
 /* Columna de controles - Celdas */
@@ -51,8 +55,15 @@
     text-align: center;
     background-color: var(--ubits-bg-1, #ffffff);
     width: auto;
-    min-width: auto;
+    min-width: 70px;
     vertical-align: middle;
+    position: sticky;
+    left: 0;
+    z-index: 10;
+}
+
+.ubits-data-table-3__row:hover .ubits-data-table-3__controls-column {
+    background-color: var(--ubits-bg-2, #f3f3f4);
 }
 
 .ubits-data-table-3__controls-wrapper {
@@ -279,6 +290,11 @@
     text-align: center;
     padding: var(--ubits-spacing-sm, 12px) var(--ubits-spacing-xs, 4px) var(--ubits-spacing-sm, 12px) var(--ubits-spacing-xs, 4px);
     padding-right: var(--ubits-spacing-xs, 4px);
+    position: sticky;
+    left: 70px;
+    z-index: 10;
+    background-color: var(--ubits-bg-1, #ffffff);
+    box-shadow: 2px 0 4px rgba(0, 0, 0, 0.05);
 }
 
 .ubits-data-table-3__column-header--checkbox .ubits-checkbox {
@@ -291,6 +307,14 @@
     text-align: center;
     padding: var(--ubits-spacing-sm, 12px) var(--ubits-spacing-xs, 4px);
     padding-right: var(--ubits-spacing-xs, 4px);
+    position: sticky;
+    left: 70px;
+    z-index: 5;
+    background-color: var(--ubits-bg-1, #ffffff);
+}
+
+.ubits-data-table-3__row:hover .ubits-data-table-3__cell--checkbox {
+    background-color: var(--ubits-bg-2, #f3f3f4);
 }
 
 .ubits-data-table-3__cell--checkbox .ubits-checkbox {
