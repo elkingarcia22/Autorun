@@ -4635,18 +4635,18 @@ Reglas Importantes:
               hasPreview: true
             },
             {
-              name: 'Data Table 3',
-              description: 'Componente Data Table 3 - Tabla básica con estructura de columnas separadas: drag handle, expand icon, checkbox (con columna propia y header), y columnas de datos.',
+              name: 'Data Table',
+              description: 'Componente Data Table - Tabla básica con estructura de columnas separadas: drag handle, expand icon, checkbox (con columna propia y header), y columnas de datos.',
               files: {
-                css: 'addons/data-table-3/src/styles/data-table-3.css',
-                ts: 'addons/data-table-3/src/DataTable3Provider.ts'
+                css: 'addons/data-table/src/styles/data-table.css',
+                ts: 'addons/data-table/src/DataTableProvider.ts'
               },
               variants: [],
               sizes: [],
               states: [],
               features: ['Columna 1: Drag handle para reordenar filas', 'Columna 2: Expand icon (chevron) para expandir/colapsar', 'Columna 3: Checkbox con header propio (select all)', 'Columnas de datos configurables', 'Drag & drop de columnas y filas', 'Filas expandibles', 'Selección múltiple', 'Usa tokens UBITS exclusivamente'],
-              class: 'ubits-data-table-3',
-              example: 'createDataTable3({\n  columns: [...],\n  rows: [...],\n  columnReorderable: true,\n  rowReorderable: true,\n  onRowSelect: (rowId, selected) => {},\n  onSelectAll: (selected) => {},\n  onRowExpand: (rowId, expanded) => {}\n})',
+              class: 'ubits-data-table',
+              example: 'createDataTable({\n  columns: [...],\n  rows: [...],\n  columnReorderable: true,\n  rowReorderable: true,\n  onRowSelect: (rowId, selected) => {},\n  onSelectAll: (selected) => {},\n  onRowExpand: (rowId, expanded) => {}\n})',
               hasPreview: true
             },
             {
@@ -4865,8 +4865,8 @@ Reglas Importantes:
                     window.updateTogglePreview('toggle');
                   } else if (componentId === 'search-button' && typeof window.updateSearchButtonPreview === 'function') {
                     window.updateSearchButtonPreview('search-button');
-                  } else if (componentId === 'data-table-3' && typeof window.updateDataTable3Preview === 'function') {
-                    window.updateDataTable3Preview('data-table-3');
+                  } else if (componentId === 'data-table' && typeof window.updateDataTablePreview === 'function') {
+                    window.updateDataTablePreview('data-table');
                   } else if (componentId === 'avatar' && typeof window.updateAvatarPreview === 'function') {
                     window.updateAvatarPreview('avatar');
                   } else if (componentId === 'drawer-navigation' && typeof window.updateDrawerPreview === 'function') {
@@ -5715,31 +5715,6 @@ Reglas Importantes:
                       ${hasPreview && component.name === 'Data Table' ? `
                         <!-- Preview Section for Data Table -->
                         <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: none; margin-bottom: 24px;">
-                          <!-- BOTÓN PARA ABRIR MODAL -->
-                          <div style="margin-bottom: 16px;">
-                            <button 
-                              onclick="openDataTableModal('${componentId}')"
-                              class="ubits-button ubits-button--primary ubits-button--md"
-                              style="width: 100%;"
-                            >
-                              <i class="far fa-table" aria-hidden="true"></i>
-                              <span>Ver Data Table</span>
-                            </button>
-                          </div>
-                          
-                          <!-- PREVIEW EN EL MEDIO (mini preview) -->
-                          <div style="background: var(--ubits-bg-1); padding: 24px; border-radius: 8px; border: none; min-height: 200px; display: flex; align-items: center; justify-content: center;">
-                            <div style="text-align: center; color: var(--ubits-fg-1-medium);">
-                              <i class="far fa-table" style="font-size: 48px; margin-bottom: 16px; display: block;"></i>
-                              <p style="margin: 0;">Click en "Ver Data Table" para abrir la tabla completa</p>
-                            </div>
-                          </div>
-                        </div>
-                      ` : ''}
-                      
-                      ${hasPreview && component.name === 'Data Table 3' ? `
-                        <!-- Preview Section for Data Table 3 -->
-                        <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: none; margin-bottom: 24px;">
                           <!-- CONTROLES ARRIBA -->
                           <div style="margin-bottom: 24px;">
                             <h4 style="margin: 0 0 20px 0; color: var(--ubits-fg-1-high); font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
@@ -5752,9 +5727,9 @@ Reglas Importantes:
                               <div style="flex: 0 0 auto; min-width: 200px;">
                                 <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Arrastrar Columnas</label>
                                 <label class="switch" style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
-                                  <input type="checkbox" id="data-table-3-column-reorderable-${componentId}" checked onchange="setDataTable3Control('columnReorderable', this.checked, '${componentId}')">
+                                  <input type="checkbox" id="data-table-column-reorderable-${componentId}" checked onchange="setDataTableControl('columnReorderable', this.checked, '${componentId}')">
                                   <span class="slider"></span>
-                                  <span id="data-table-3-column-reorderable-status-${componentId}" style="font-size: 14px; color: var(--ubits-fg-1-high);">Activado</span>
+                                  <span id="data-table-column-reorderable-status-${componentId}" style="font-size: 14px; color: var(--ubits-fg-1-high);">Activado</span>
                                 </label>
                               </div>
                               
@@ -5762,9 +5737,9 @@ Reglas Importantes:
                               <div style="flex: 0 0 auto; min-width: 200px;">
                                 <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Arrastrar Filas</label>
                                 <label class="switch" style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
-                                  <input type="checkbox" id="data-table-3-row-reorderable-${componentId}" checked onchange="setDataTable3Control('rowReorderable', this.checked, '${componentId}')">
+                                  <input type="checkbox" id="data-table-row-reorderable-${componentId}" checked onchange="setDataTableControl('rowReorderable', this.checked, '${componentId}')">
                                   <span class="slider"></span>
-                                  <span id="data-table-3-row-reorderable-status-${componentId}" style="font-size: 14px; color: var(--ubits-fg-1-high);">Activado</span>
+                                  <span id="data-table-row-reorderable-status-${componentId}" style="font-size: 14px; color: var(--ubits-fg-1-high);">Activado</span>
                                 </label>
                               </div>
                               
@@ -5772,25 +5747,25 @@ Reglas Importantes:
                               <div style="flex: 0 0 auto; min-width: 200px;">
                                 <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Columna Checkbox</label>
                                 <label class="switch" style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
-                                  <input type="checkbox" id="data-table-3-show-checkbox-${componentId}" checked onchange="setDataTable3Control('showCheckbox', this.checked, '${componentId}')">
+                                  <input type="checkbox" id="data-table-show-checkbox-${componentId}" checked onchange="setDataTableControl('showCheckbox', this.checked, '${componentId}')">
                                   <span class="slider"></span>
-                                  <span id="data-table-3-show-checkbox-status-${componentId}" style="font-size: 14px; color: var(--ubits-fg-1-high);">Visible</span>
+                                  <span id="data-table-show-checkbox-status-${componentId}" style="font-size: 14px; color: var(--ubits-fg-1-high);">Visible</span>
                                 </label>
                               </div>
                               
                               <!-- Número de Columnas -->
                               <div style="flex: 0 0 auto; min-width: 200px;">
                                 <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Número de Columnas</label>
-                                <input type="number" id="data-table-3-columns-count-${componentId}" value="3" min="1" max="10" onchange="setDataTable3Control('columnsCount', parseInt(this.value) || 3, '${componentId}')" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                                <input type="number" id="data-table-columns-count-${componentId}" value="3" min="1" max="10" onchange="setDataTableControl('columnsCount', parseInt(this.value) || 3, '${componentId}')" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
                               </div>
                               
                               <!-- Expandir Filas (Dropdown) -->
                               <div style="flex: 0 0 auto; min-width: 200px;">
                                 <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Expandir Filas</label>
                                 <label class="switch" style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
-                                  <input type="checkbox" id="data-table-3-row-expandable-${componentId}" checked onchange="setDataTable3Control('rowExpandable', this.checked, '${componentId}')">
+                                  <input type="checkbox" id="data-table-row-expandable-${componentId}" checked onchange="setDataTableControl('rowExpandable', this.checked, '${componentId}')">
                                   <span class="slider"></span>
-                                  <span id="data-table-3-row-expandable-status-${componentId}" style="font-size: 14px; color: var(--ubits-fg-1-high);">Habilitado</span>
+                                  <span id="data-table-row-expandable-status-${componentId}" style="font-size: 14px; color: var(--ubits-fg-1-high);">Habilitado</span>
                                 </label>
                               </div>
                               
@@ -5798,9 +5773,9 @@ Reglas Importantes:
                               <div style="flex: 0 0 auto; min-width: 200px;">
                                 <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Ordenamiento Columnas</label>
                                 <label class="switch" style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
-                                  <input type="checkbox" id="data-table-3-column-sortable-${componentId}" checked onchange="setDataTable3Control('columnSortable', this.checked, '${componentId}')">
+                                  <input type="checkbox" id="data-table-column-sortable-${componentId}" checked onchange="setDataTableControl('columnSortable', this.checked, '${componentId}')">
                                   <span class="slider"></span>
-                                  <span id="data-table-3-column-sortable-status-${componentId}" style="font-size: 14px; color: var(--ubits-fg-1-high);">Habilitado</span>
+                                  <span id="data-table-column-sortable-status-${componentId}" style="font-size: 14px; color: var(--ubits-fg-1-high);">Habilitado</span>
                                 </label>
                               </div>
                             </div>
@@ -5808,7 +5783,7 @@ Reglas Importantes:
                             <!-- Selectores de Tipo de Columna (dinámicos) -->
                             <div style="margin-top: 24px;">
                               <h5 style="margin: 0 0 16px 0; color: var(--ubits-fg-1-high); font-size: 14px; font-weight: 600;">Tipos de Columna</h5>
-                              <div id="data-table-3-column-types-${componentId}" style="display: flex; flex-wrap: wrap; gap: 16px;">
+                              <div id="data-table-column-types-${componentId}" style="display: flex; flex-wrap: wrap; gap: 16px;">
                                 <!-- Se generará dinámicamente -->
                               </div>
                             </div>
@@ -5816,7 +5791,7 @@ Reglas Importantes:
                           
                           <!-- PREVIEW -->
                           <div style="background: var(--ubits-bg-1); padding: 24px; border-radius: 8px; border: none; min-height: 400px;">
-                            <div id="data-table-3-preview-${componentId}">
+                            <div id="data-table-preview-${componentId}">
                               <!-- Se generará dinámicamente -->
                             </div>
                           </div>
@@ -9423,162 +9398,12 @@ Reglas Importantes:
       // DATA TABLE PREVIEW FUNCTIONS
       // ========================================
       
-      // Estado del preview del Data Table
-      const dataTablePreviewState = {};
-      let dataTableInstances = {};
-      
       // Inicializar estado del Data Table
+      const dataTablePreviewState = {};
+      window.dataTableInstances = window.dataTableInstances || {};
       function initDataTablePreviewState(componentId) {
         if (!dataTablePreviewState[componentId]) {
           dataTablePreviewState[componentId] = {
-            title: 'Lista de elementos',
-            count: { shown: 3, total: 10 },
-            columns: [
-              {
-                id: 'select',
-                title: '',
-                hasSelectAll: true,
-                visible: true,
-                width: 120,
-              },
-              {
-                id: 'name',
-                title: 'Nombre',
-                visible: true,
-                sortable: true,
-                width: 200,
-              },
-              {
-                id: 'email',
-                title: 'Email',
-                visible: true,
-                sortable: true,
-                width: 250,
-              },
-              {
-                id: 'status',
-                title: 'Estado',
-                visible: true,
-                sortable: false,
-                width: 150,
-              },
-              {
-                id: 'progress',
-                title: 'Progreso',
-                visible: true,
-                sortable: false,
-                width: 200,
-              },
-              {
-                id: 'fecha',
-                title: 'Fecha',
-                visible: true,
-                sortable: true,
-                width: 150,
-                editable: true,
-                editorType: 'date',
-              },
-              {
-                id: 'acciones',
-                title: 'Acciones',
-                visible: true,
-                sortable: false,
-                width: 200,
-              },
-            ],
-            rows: [
-              {
-                id: 1,
-                data: { 
-                  name: 'Juan Pérez', 
-                  email: 'juan@example.com', 
-                  status: 'Activo',
-                  avatar: { initials: 'Juan Pérez', badgeColor: 'green' },
-                  progress: 75,
-                  fecha: '2024-01-15',
-                  acciones: 'view,edit',
-                  telefono: '+57 300 123 4567',
-                  direccion: 'Calle 123 #45-67, Bogotá',
-                  departamento: 'Ventas',
-                  fechaIngreso: '2020-03-15',
-                  ultimoAcceso: '2024-01-20 14:30'
-                },
-                selected: false,
-                expanded: false,
-              },
-              {
-                id: 2,
-                data: { 
-                  name: 'María García', 
-                  email: 'maria@example.com', 
-                  status: 'Activo',
-                  avatar: { initials: 'María García', badgeColor: 'blue' },
-                  progress: 45,
-                  fecha: '2024-02-20',
-                  acciones: 'view,edit',
-                  telefono: '+57 310 987 6543',
-                  direccion: 'Avenida 78 #12-34, Medellín',
-                  departamento: 'Marketing',
-                  fechaIngreso: '2021-06-10',
-                  ultimoAcceso: '2024-01-19 09:15'
-                },
-                selected: false,
-                expanded: false,
-              },
-              {
-                id: 3,
-                data: { 
-                  name: 'Carlos López', 
-                  email: 'carlos@example.com', 
-                  status: 'Inactivo',
-                  avatar: { initials: 'Carlos López', badgeColor: 'gray' },
-                  progress: 90,
-                  fecha: '2024-03-10',
-                  acciones: 'view,edit,delete',
-                  telefono: '+57 320 555 1234',
-                  direccion: 'Carrera 15 #89-12, Cali',
-                  departamento: 'IT',
-                  fechaIngreso: '2019-11-05',
-                  ultimoAcceso: '2024-01-18 16:45'
-                },
-                selected: false,
-                expanded: false,
-              },
-            ],
-            headerButtons: [
-              { type: 'search', visible: true, size: 'md' },
-              { type: 'filters', visible: true, size: 'md' },
-              { type: 'columns', visible: true, size: 'md' },
-              { type: 'primary', visible: true, size: 'md', icon: 'fa-plus', label: 'Agregar' },
-            ],
-            individualActions: [
-              { icon: 'fa-eye', label: 'Ver', onClick: () => {}, enabled: true },
-              { icon: 'fa-pencil', label: 'Editar', onClick: () => {}, enabled: true },
-              { icon: 'fa-trash', label: 'Eliminar', onClick: () => {}, enabled: true },
-            ],
-            bulkActions: [
-              { icon: 'fa-trash', label: 'Eliminar', onClick: () => {}, enabled: true },
-              { icon: 'fa-download', label: 'Descargar', onClick: () => {}, enabled: true },
-            ],
-            pagination: {
-              type: 'pagination',
-              currentPage: 1,
-              totalPages: 3,
-              itemsPerPage: 20,
-              itemsPerPageOptions: [10, 20, 50, 100],
-            },
-            columnReorderable: true,
-            rowReorderable: true,
-          };
-        }
-        return dataTablePreviewState[componentId];
-      }
-      
-      // Inicializar estado del Data Table 3
-      const dataTable3PreviewState = {};
-      function initDataTable3PreviewState(componentId) {
-        if (!dataTable3PreviewState[componentId]) {
-          dataTable3PreviewState[componentId] = {
             columnReorderable: true,
             rowReorderable: true,
             showCheckbox: true,
@@ -9664,28 +9489,28 @@ Reglas Importantes:
             ],
           };
         }
-        return dataTable3PreviewState[componentId];
+        return dataTablePreviewState[componentId];
       }
       
-      // Función para establecer controles del Data Table 3
-      window.setDataTable3Control = function(option, value, componentId) {
-        const state = initDataTable3PreviewState(componentId);
+      // Función para establecer controles del Data Table
+      window.setDataTableControl = function(option, value, componentId) {
+        const state = initDataTablePreviewState(componentId);
         
         if (option === 'columnReorderable') {
           state.columnReorderable = value;
-          const statusEl = document.getElementById(`data-table-3-column-reorderable-status-${componentId}`);
+          const statusEl = document.getElementById(`data-table-column-reorderable-status-${componentId}`);
           if (statusEl) statusEl.textContent = value ? 'Activado' : 'Desactivado';
         } else if (option === 'rowReorderable') {
           state.rowReorderable = value;
-          const statusEl = document.getElementById(`data-table-3-row-reorderable-status-${componentId}`);
+          const statusEl = document.getElementById(`data-table-row-reorderable-status-${componentId}`);
           if (statusEl) statusEl.textContent = value ? 'Activado' : 'Desactivado';
         } else if (option === 'showCheckbox') {
           state.showCheckbox = value;
-          const statusEl = document.getElementById(`data-table-3-show-checkbox-status-${componentId}`);
+          const statusEl = document.getElementById(`data-table-show-checkbox-status-${componentId}`);
           if (statusEl) statusEl.textContent = value ? 'Visible' : 'Oculta';
         } else if (option === 'columnsCount') {
           state.columnsCount = Math.max(1, Math.min(10, parseInt(value) || 3));
-          const inputEl = document.getElementById(`data-table-3-columns-count-${componentId}`);
+          const inputEl = document.getElementById(`data-table-columns-count-${componentId}`);
           if (inputEl) inputEl.value = state.columnsCount;
           
           // Asegurar que tenemos suficientes columnas en el estado (excluyendo checkbox)
@@ -9728,14 +9553,14 @@ Reglas Importantes:
           }
           
           // Actualizar el preview
-          window.updateDataTable3Preview(componentId);
+          window.updateDataTablePreview(componentId);
         } else if (option === 'rowExpandable') {
           state.rowExpandable = value;
-          const statusEl = document.getElementById(`data-table-3-row-expandable-status-${componentId}`);
+          const statusEl = document.getElementById(`data-table-row-expandable-status-${componentId}`);
           if (statusEl) statusEl.textContent = value ? 'Habilitado' : 'Deshabilitado';
         } else if (option === 'columnSortable') {
           state.columnSortable = value;
-          const statusEl = document.getElementById(`data-table-3-column-sortable-status-${componentId}`);
+          const statusEl = document.getElementById(`data-table-column-sortable-status-${componentId}`);
           if (statusEl) statusEl.textContent = value ? 'Habilitado' : 'Deshabilitado';
         } else if (option === 'columnType' && Array.isArray(value) && value.length === 2) {
           // value = [columnId, newType]
@@ -9803,7 +9628,7 @@ Reglas Importantes:
             }
             
             // Actualizar el preview
-            window.updateDataTable3Preview(componentId);
+            window.updateDataTablePreview(componentId);
           }
         } else if (option === 'avatarVariant' && Array.isArray(value) && value.length === 2) {
           // value = [columnId, avatarVariant]
@@ -9812,7 +9637,7 @@ Reglas Importantes:
           if (column && (column.type === 'nombre-avatar' || column.type === 'nombre-avatar-texto')) {
             column.avatarVariant = avatarVariant || 'initials';
             // Actualizar el preview
-            window.updateDataTable3Preview(componentId);
+            window.updateDataTablePreview(componentId);
           }
         } else if (option === 'editable' && Array.isArray(value) && value.length === 2) {
           // value = [columnId, editable]
@@ -9825,7 +9650,7 @@ Reglas Importantes:
               window.generateColumnTypeSelectors(componentId);
             }
             // Actualizar el preview
-            window.updateDataTable3Preview(componentId);
+            window.updateDataTablePreview(componentId);
           }
         } else if (option === 'radioLabel' && Array.isArray(value) && value.length === 2) {
           // value = [columnId, showLabel]
@@ -9838,7 +9663,7 @@ Reglas Importantes:
               window.generateColumnTypeSelectors(componentId);
             }
             // Actualizar el preview
-            window.updateDataTable3Preview(componentId);
+            window.updateDataTablePreview(componentId);
           }
         } else if (option === 'toggleLabel' && Array.isArray(value) && value.length === 2) {
           // value = [columnId, showLabel]
@@ -9851,7 +9676,7 @@ Reglas Importantes:
               window.generateColumnTypeSelectors(componentId);
             }
             // Actualizar el preview
-            window.updateDataTable3Preview(componentId);
+            window.updateDataTablePreview(componentId);
           }
         } else if (option === 'checkboxLabel' && Array.isArray(value) && value.length === 2) {
           // value = [columnId, showLabel]
@@ -9864,12 +9689,12 @@ Reglas Importantes:
               window.generateColumnTypeSelectors(componentId);
             }
             // Actualizar el preview
-            window.updateDataTable3Preview(componentId);
+            window.updateDataTablePreview(componentId);
           }
         }
         
         // Actualizar el preview
-        window.updateDataTable3Preview(componentId);
+        window.updateDataTablePreview(componentId);
       };
       
       // Mapeo de tipos a títulos/labels
@@ -9891,8 +9716,8 @@ Reglas Importantes:
       
       // Función para generar selectores de tipo de columna
       window.generateColumnTypeSelectors = function(componentId) {
-        const state = initDataTable3PreviewState(componentId);
-        const container = document.getElementById(`data-table-3-column-types-${componentId}`);
+        const state = initDataTablePreviewState(componentId);
+        const container = document.getElementById(`data-table-column-types-${componentId}`);
         if (!container) return;
         
         // Obtener columnas visibles (excluyendo checkbox fijo)
@@ -9944,9 +9769,9 @@ Reglas Importantes:
             <div style="flex: 0 0 auto; min-width: 200px;">
               <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 8px;">Columna ${columnNumber}</label>
               <select 
-                id="data-table-3-column-type-${componentId}-${col.id}"
-                onchange="setDataTable3Control('columnType', ['${col.id}', this.value || undefined], '${componentId}')"
-                style="width: 100%; padding: 10px 12px; border: 1px solid var(--ubits-border-1, #d0d2d5); border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box; cursor: pointer; margin-bottom: ${hasAvatarVariant || isEditableType ? '12px' : '0'};"
+                id="data-table-column-type-${componentId}-${col.id}"
+                onchange="setDataTableControl('columnType', ['${col.id}', this.value || undefined], '${componentId}')"
+                style="width: 100%; padding: 10px 32px 10px 12px; border: 1px solid var(--ubits-border-1, #d0d2d5); border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box; cursor: pointer; margin-bottom: ${hasAvatarVariant || isEditableType ? '12px' : '0'}; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23666%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226,9 12,15 18,9%22></polyline></svg>'); background-repeat: no-repeat; background-position: right 10px center; background-size: 16px;"
               >
                 ${columnTypes.map(type => `
                   <option value="${type.value}" ${currentType === type.value ? 'selected' : ''}>${type.label}</option>
@@ -9955,9 +9780,9 @@ Reglas Importantes:
               ${hasAvatarVariant ? `
                 <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-top: 12px; margin-bottom: 8px;">Variante Avatar</label>
                 <select 
-                  id="data-table-3-avatar-variant-${componentId}-${col.id}"
-                  onchange="setDataTable3Control('avatarVariant', ['${col.id}', this.value], '${componentId}')"
-                  style="width: 100%; padding: 10px 12px; border: 1px solid var(--ubits-border-1, #d0d2d5); border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box; cursor: pointer; margin-bottom: ${isEditableType ? '12px' : '0'};"
+                  id="data-table-avatar-variant-${componentId}-${col.id}"
+                  onchange="setDataTableControl('avatarVariant', ['${col.id}', this.value], '${componentId}')"
+                  style="width: 100%; padding: 10px 32px 10px 12px; border: 1px solid var(--ubits-border-1, #d0d2d5); border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box; cursor: pointer; margin-bottom: ${isEditableType ? '12px' : '0'}; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23666%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226,9 12,15 18,9%22></polyline></svg>'); background-repeat: no-repeat; background-position: right 10px center; background-size: 16px;"
                 >
                   <option value="photo" ${currentAvatarVariant === 'photo' ? 'selected' : ''}>Foto</option>
                   <option value="initials" ${currentAvatarVariant === 'initials' ? 'selected' : ''}>Iniciales</option>
@@ -9966,28 +9791,28 @@ Reglas Importantes:
               ` : ''}
               ${isEditableType ? `
                 <label class="switch" style="display: flex; align-items: center; gap: 12px; cursor: pointer; margin-top: ${hasAvatarVariant ? '0' : '12px'};">
-                  <input type="checkbox" id="data-table-3-editable-${componentId}-${col.id}" ${currentEditable ? 'checked' : ''} onchange="setDataTable3Control('editable', ['${col.id}', this.checked], '${componentId}')">
+                  <input type="checkbox" id="data-table-editable-${componentId}-${col.id}" ${currentEditable ? 'checked' : ''} onchange="setDataTableControl('editable', ['${col.id}', this.checked], '${componentId}')">
                   <span class="slider"></span>
                   <span style="font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium);">Editable</span>
                 </label>
               ` : ''}
               ${isRadio ? `
                 <label class="switch" style="display: flex; align-items: center; gap: 12px; cursor: pointer; margin-top: 12px;">
-                  <input type="checkbox" id="data-table-3-radio-label-${componentId}-${col.id}" ${currentRadioLabel !== false ? 'checked' : ''} onchange="setDataTable3Control('radioLabel', ['${col.id}', this.checked], '${componentId}')">
+                  <input type="checkbox" id="data-table-radio-label-${componentId}-${col.id}" ${currentRadioLabel !== false ? 'checked' : ''} onchange="setDataTableControl('radioLabel', ['${col.id}', this.checked], '${componentId}')">
                   <span class="slider"></span>
                   <span style="font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium);">Mostrar Label</span>
                 </label>
               ` : ''}
               ${isToggle ? `
                 <label class="switch" style="display: flex; align-items: center; gap: 12px; cursor: pointer; margin-top: 12px;">
-                  <input type="checkbox" id="data-table-3-toggle-label-${componentId}-${col.id}" ${currentToggleLabel !== false ? 'checked' : ''} onchange="setDataTable3Control('toggleLabel', ['${col.id}', this.checked], '${componentId}')">
+                  <input type="checkbox" id="data-table-toggle-label-${componentId}-${col.id}" ${currentToggleLabel !== false ? 'checked' : ''} onchange="setDataTableControl('toggleLabel', ['${col.id}', this.checked], '${componentId}')">
                   <span class="slider"></span>
                   <span style="font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium);">Mostrar Label</span>
                 </label>
               ` : ''}
               ${isCheckbox ? `
                 <label class="switch" style="display: flex; align-items: center; gap: 12px; cursor: pointer; margin-top: 12px;">
-                  <input type="checkbox" id="data-table-3-checkbox-label-${componentId}-${col.id}" ${currentCheckboxLabel !== false ? 'checked' : ''} onchange="setDataTable3Control('checkboxLabel', ['${col.id}', this.checked], '${componentId}')">
+                  <input type="checkbox" id="data-table-checkbox-label-${componentId}-${col.id}" ${currentCheckboxLabel !== false ? 'checked' : ''} onchange="setDataTableControl('checkboxLabel', ['${col.id}', this.checked], '${componentId}')">
                   <span class="slider"></span>
                   <span style="font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium);">Mostrar Label</span>
                 </label>
@@ -9997,16 +9822,16 @@ Reglas Importantes:
         }).join('');
       };
       
-      // Almacenar instancias de Data Table 3
-      window.dataTable3Instances = window.dataTable3Instances || {};
+      // Almacenar instancias de Data Table
+      window.dataTableInstances = window.dataTableInstances || {};
       
-      // Función para actualizar el preview del Data Table 3
-      window.updateDataTable3Preview = function(componentId) {
-        const state = initDataTable3PreviewState(componentId);
-        const preview = document.getElementById(`data-table-3-preview-${componentId}`);
+      // Función para actualizar el preview del Data Table
+      window.updateDataTablePreview = function(componentId) {
+        const state = initDataTablePreviewState(componentId);
+        const preview = document.getElementById(`data-table-preview-${componentId}`);
         
         if (!preview) {
-          console.error('❌ Preview de Data Table 3 no encontrado:', `data-table-3-preview-${componentId}`);
+          console.error('❌ Preview de Data Table no encontrado:', `data-table-preview-${componentId}`);
           return;
         }
         
@@ -10016,20 +9841,20 @@ Reglas Importantes:
         }
         
         // Destruir instancia anterior si existe
-        if (window.dataTable3Instances[componentId]) {
+        if (window.dataTableInstances[componentId]) {
           try {
-            window.dataTable3Instances[componentId].destroy();
+            window.dataTableInstances[componentId].destroy();
           } catch (e) {
             console.warn('Error destruyendo instancia anterior:', e);
           }
-          delete window.dataTable3Instances[componentId];
+          delete window.dataTableInstances[componentId];
         }
         
         // Cargar CSS necesario
-        if (!document.querySelector('link[href*="data-table-3.css"]')) {
+        if (!document.querySelector('link[href*="data-table.css"]')) {
           const link = document.createElement('link');
           link.rel = 'stylesheet';
-          link.href = '../../addons/data-table-3/src/styles/data-table-3.css';
+          link.href = '../../addons/data-table/src/styles/data-table.css';
           document.head.appendChild(link);
         }
         
@@ -10091,10 +9916,10 @@ Reglas Importantes:
         // Limpiar preview anterior
         preview.innerHTML = '';
         
-        // Función auxiliar para crear la instancia de Data Table 3
-        const createDataTable3Instance = () => {
+        // Función auxiliar para crear la instancia de Data Table
+        const createDataTableInstance = () => {
           // Crear la tabla
-          const containerId = `data-table-3-container-${componentId}`;
+          const containerId = `data-table-container-${componentId}`;
           const container = document.createElement('div');
           container.id = containerId;
           preview.appendChild(container);
@@ -10236,7 +10061,7 @@ Reglas Importantes:
               return row;
             });
             
-            const table = window.createDataTable3({
+            const table = window.createDataTable({
               containerId: containerId,
               columns: columns,
               rows: rowsWithExpand,
@@ -10260,42 +10085,42 @@ Reglas Importantes:
             });
             
             // Guardar instancia para poder destruirla después
-            window.dataTable3Instances[componentId] = table;
+            window.dataTableInstances[componentId] = table;
             
-            console.log('✅ Data Table 3 creada exitosamente');
+            console.log('✅ Data Table creada exitosamente');
           } catch (error) {
-            console.error('❌ Error creando Data Table 3:', error);
+            console.error('❌ Error creando Data Table:', error);
             preview.innerHTML = `<p style="color: var(--ubits-fg-1-medium); padding: 16px;">Error: ${error.message}</p>`;
           }
         };
         
         // Si el módulo ya está cargado, crear la tabla directamente
-        if (typeof window.createDataTable3 !== 'undefined') {
-          createDataTable3Instance();
+        if (typeof window.createDataTable !== 'undefined') {
+          createDataTableInstance();
         } else {
           // Cargar el módulo UMD
           const script = document.createElement('script');
-          script.src = '../../addons/data-table-3/dist/data-table-3.umd.js';
+          script.src = '../../addons/data-table/dist/data-table.umd.js';
           script.onload = () => {
-            console.log('✅ Data Table 3 UMD cargado');
+            console.log('✅ Data Table UMD cargado');
             // Esperar a que el módulo esté disponible
             let attempts = 0;
             const maxAttempts = 20;
             const checkModule = setInterval(() => {
               attempts++;
-              if (typeof window.createDataTable3 !== 'undefined') {
+              if (typeof window.createDataTable !== 'undefined') {
                 clearInterval(checkModule);
-                console.log('✅ createDataTable3 disponible');
-                createDataTable3Instance();
+                console.log('✅ createDataTable disponible');
+                createDataTableInstance();
               } else if (attempts >= maxAttempts) {
                 clearInterval(checkModule);
-                console.error('❌ createDataTable3 no disponible después de', maxAttempts, 'intentos');
-                preview.innerHTML = '<p style="color: var(--ubits-fg-1-medium); padding: 16px;">Error: No se pudo cargar el componente Data Table 3.</p>';
+                console.error('❌ createDataTable no disponible después de', maxAttempts, 'intentos');
+                preview.innerHTML = '<p style="color: var(--ubits-fg-1-medium); padding: 16px;">Error: No se pudo cargar el componente Data Table.</p>';
               }
             }, 50);
           };
           script.onerror = () => {
-            console.error('❌ Error cargando data-table-3.umd.js');
+            console.error('❌ Error cargando data-table.umd.js');
             preview.innerHTML = '<p style="color: var(--ubits-fg-1-medium); padding: 16px;">Error: No se pudo cargar el archivo JavaScript del componente.</p>';
           };
           document.head.appendChild(script);
@@ -10410,546 +10235,7 @@ Reglas Importantes:
         return rowData[columnId] || '';
       }
       
-      // Función para abrir modal con Data Table
-      window.openDataTableModal = function(componentId) {
-        console.log('🔵 Abriendo modal para:', componentId);
-        const state = initDataTablePreviewState(componentId);
-        
-        // TEMPORAL: Probar sin header para evitar saltos
-        // Comentar estas líneas para probar sin header
-        state.title = '';
-        state.headerButtons = [];
-        
-        // Cargar CSS del Modal
-        if (!document.querySelector('link[href*="modal.css"]')) {
-          const link = document.createElement('link');
-          link.rel = 'stylesheet';
-          link.href = '../../addons/modal/src/styles/modal.css';
-          document.head.appendChild(link);
-        }
-        
-        // Cargar Status Tag CSS
-        if (!document.querySelector('link[href*="status-tag.css"]')) {
-          const link = document.createElement('link');
-          link.rel = 'stylesheet';
-          link.href = '../../addons/status-tag/src/styles/status-tag.css';
-          document.head.appendChild(link);
-        }
-        
-        // Cargar Avatar CSS
-        if (!document.querySelector('link[href*="avatar.css"]')) {
-          const link = document.createElement('link');
-          link.rel = 'stylesheet';
-          link.href = '../../addons/avatar/src/styles/avatar.css';
-          document.head.appendChild(link);
-        }
-        
-        // Cargar Progress Bar CSS
-        if (!document.querySelector('link[href*="progress.css"]')) {
-          const link = document.createElement('link');
-          link.rel = 'stylesheet';
-          link.href = '../../addons/progress/src/styles/progress.css';
-          document.head.appendChild(link);
-        }
-        
-        // Cargar Scrollbar CSS
-        if (!document.querySelector('link[href*="scroll.css"]')) {
-          const link = document.createElement('link');
-          link.rel = 'stylesheet';
-          link.href = '../../addons/scroll/src/styles/scroll.css';
-          document.head.appendChild(link);
-        }
-        
-        // Cargar List CSS (para el dropdown de columnas)
-        if (!document.querySelector('link[href*="list.css"]')) {
-          const link = document.createElement('link');
-          link.rel = 'stylesheet';
-          link.href = '../../addons/list/src/styles/list.css';
-          document.head.appendChild(link);
-        }
-        
-        // Cargar Data Table CSS
-        if (!document.querySelector('link[href*="data-table.css"]')) {
-          const link = document.createElement('link');
-          link.rel = 'stylesheet';
-          link.href = '../../addons/data-table/src/styles/data-table.css';
-          document.head.appendChild(link);
-        }
-        
-        // Cargar Button CSS
-        if (!document.querySelector('link[href*="button.css"]')) {
-          const link = document.createElement('link');
-          link.rel = 'stylesheet';
-          link.href = '../../addons/button/src/styles/button.css';
-          document.head.appendChild(link);
-        }
-        
-        // Cargar Checkbox CSS
-        if (!document.querySelector('link[href*="checkbox.css"]')) {
-          const link = document.createElement('link');
-          link.rel = 'stylesheet';
-          link.href = '../../addons/checkbox/src/styles/checkbox.css';
-          document.head.appendChild(link);
-        }
-        
-        // Cargar Search Button CSS
-        if (!document.querySelector('link[href*="search-button.css"]')) {
-          const link = document.createElement('link');
-          link.rel = 'stylesheet';
-          link.href = '../../addons/search-button/src/styles/search-button.css';
-          document.head.appendChild(link);
-        }
-        
-        // Preparar columnas con renderCell que usa Status Tag
-        const columns = state.columns.map(col => ({
-          ...col,
-          renderCell: col.id !== 'select' ? (rowData) => renderDataTableCell(col.id, rowData) : undefined
-        }));
-        
-        // Preparar filas con contenido expandible de ejemplo
-        const rows = state.rows.map(row => ({
-          ...row,
-          renderExpandedContent: (rowData) => {
-            return `
-              <div style="padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
-                <h4 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600;">Detalles adicionales</h4>
-                <p style="margin: 0; font-size: 13px; color: var(--ubits-fg-1-medium);">
-                  Información adicional para ${rowData.name || 'este elemento'}
-                </p>
-              </div>
-            `;
-          }
-        }));
-        
-        // Preparar opciones del Data Table
-        // Agregar funciones renderExpandedContent a las filas
-        const rowsWithExpandContent = rows.map(row => {
-          if (row.data && (row.data.telefono || row.data.direccion || row.data.departamento)) {
-            return {
-              ...row,
-              renderExpandedContent: (rowData) => {
-                // Calcular padding-left para alinear con la columna "Nombre"
-                // Checkbox cell (32px) + Row controls (90px) + padding de celda (16px) = 138px
-                const leftPadding = 'calc(32px + 90px + var(--ubits-spacing-md, 16px))';
-                return `
-                  <div style="padding-top: var(--ubits-spacing-md, 16px); padding-right: var(--ubits-spacing-md, 16px); padding-bottom: var(--ubits-spacing-md, 16px); padding-left: ${leftPadding}; background: var(--ubits-bg-1, #ffffff);">
-                    <div style="display: grid; grid-template-columns: 200px 300px 250px 200px 200px; gap: var(--ubits-spacing-md, 16px); align-items: start;">
-                      <div style="display: flex; flex-direction: column; gap: var(--ubits-spacing-xs, 4px);">
-                        <span style="font-size: var(--ubits-font-size-sm, 14px); font-weight: var(--weight-semibold, 600); color: var(--ubits-fg-1-medium, #5c646f);">Teléfono</span>
-                        <span style="font-size: var(--ubits-font-size-md, 16px); color: var(--ubits-fg-1-high, #303a47);">${rowData.telefono || 'N/A'}</span>
-                      </div>
-                      <div style="display: flex; flex-direction: column; gap: var(--ubits-spacing-xs, 4px);">
-                        <span style="font-size: var(--ubits-font-size-sm, 14px); font-weight: var(--weight-semibold, 600); color: var(--ubits-fg-1-medium, #5c646f);">Dirección</span>
-                        <span style="font-size: var(--ubits-font-size-md, 16px); color: var(--ubits-fg-1-high, #303a47);">${rowData.direccion || 'N/A'}</span>
-                      </div>
-                      <div style="display: flex; flex-direction: column; gap: var(--ubits-spacing-xs, 4px);">
-                        <span style="font-size: var(--ubits-font-size-sm, 14px); font-weight: var(--weight-semibold, 600); color: var(--ubits-fg-1-medium, #5c646f);">Departamento</span>
-                        <span style="font-size: var(--ubits-font-size-md, 16px); color: var(--ubits-fg-1-high, #303a47);">${rowData.departamento || 'N/A'}</span>
-                      </div>
-                      <div style="display: flex; flex-direction: column; gap: var(--ubits-spacing-xs, 4px);">
-                        <span style="font-size: var(--ubits-font-size-sm, 14px); font-weight: var(--weight-semibold, 600); color: var(--ubits-fg-1-medium, #5c646f);">Fecha de Ingreso</span>
-                        <span style="font-size: var(--ubits-font-size-md, 16px); color: var(--ubits-fg-1-high, #303a47);">${rowData.fechaIngreso || 'N/A'}</span>
-                      </div>
-                      <div style="display: flex; flex-direction: column; gap: var(--ubits-spacing-xs, 4px);">
-                        <span style="font-size: var(--ubits-font-size-sm, 14px); font-weight: var(--weight-semibold, 600); color: var(--ubits-fg-1-medium, #5c646f);">Último Acceso</span>
-                        <span style="font-size: var(--ubits-font-size-md, 16px); color: var(--ubits-fg-1-high, #303a47);">${rowData.ultimoAcceso || 'N/A'}</span>
-                      </div>
-                    </div>
-                  </div>
-                `;
-              }
-            };
-          }
-          return row;
-        });
-        
-        // Crear modal - cargar usando UMD builds para evitar problemas de CORS
-        const containerId = 'data-table-modal-content-${componentId}';
-        let tableInstance = null; // Definir tableInstance antes de crear tableOptions
-        
-        const tableOptions = {
-          title: state.title,
-          count: state.count,
-          columns: columns,
-          rows: rowsWithExpandContent,
-          headerButtons: state.headerButtons,
-          individualActions: state.individualActions,
-          bulkActions: state.bulkActions,
-          pagination: state.pagination,
-          columnReorderable: state.columnReorderable,
-          rowReorderable: state.rowReorderable,
-          onRowSelect: (rowId, selected) => {
-            const row = rowsWithExpandContent.find(r => r.id.toString() === rowId.toString());
-            if (row) {
-              row.selected = selected;
-              if (tableInstance) {
-                tableInstance.update({ rows: rowsWithExpandContent });
-              }
-            }
-          },
-          onSelectAll: (selected) => {
-            rowsWithExpandContent.forEach(row => {
-              row.selected = selected;
-            });
-            if (tableInstance) {
-              tableInstance.update({ rows: rowsWithExpandContent });
-            }
-          },
-          onColumnSort: (columnId, direction) => {
-            console.log('Ordenar columna', columnId, direction);
-          },
-          onRowExpand: (rowId, expanded) => {
-            const row = rowsWithExpandContent.find(r => r.id.toString() === rowId.toString());
-            if (row) {
-              row.expanded = expanded;
-              if (tableInstance) {
-                tableInstance.update({ rows: rowsWithExpandContent });
-              }
-            }
-          },
-          onColumnReorder: (columnIds) => {
-            console.log('Reordenar columnas', columnIds);
-            state.columns = columnIds.map(id => state.columns.find(col => col.id === id)).filter(Boolean);
-            if (tableInstance) {
-              tableInstance.update({ columns: state.columns });
-            }
-          },
-          onRowReorder: (rowIds) => {
-            console.log('Reordenar filas', rowIds);
-            state.rows = rowIds.map(id => state.rows.find(r => r.id.toString() === id.toString())).filter(Boolean);
-            if (tableInstance) {
-              tableInstance.update({ rows: state.rows });
-            }
-          }
-        };
-        
-        // Función para crear el modal después de cargar los scripts
-        const createModalWithTable = () => {
-          if (typeof window.createModal === 'undefined' || typeof window.createDataTable === 'undefined') {
-            console.error('❌ createModal o createDataTable no están disponibles');
-            return;
-          }
-          
-          try {
-            // Crear el modal
-            const modal = window.createModal({
-              title: 'Data Table - Vista Completa',
-              bodyContent: () => {
-                const container = document.createElement('div');
-                container.id = containerId;
-                container.style.width = '100%';
-                container.style.minHeight = '400px';
-                return container.outerHTML;
-              },
-              size: 'full',
-              fullScreen: true,
-              footerButtons: {
-                secondary: {
-                  label: 'Cerrar',
-                  onClick: (e) => {
-                    if (window.dataTableModalInstance) {
-                      window.dataTableModalInstance.destroy();
-                      window.dataTableModalInstance = null;
-                    }
-                    modal.close();
-                  }
-                }
-              },
-              closeOnOverlayClick: true,
-              open: true
-            });
-            
-            // Esperar a que el modal se monte y luego crear la tabla
-            setTimeout(() => {
-              const container = document.getElementById(containerId);
-              if (container) {
-                try {
-                  // Usar tableOptions directamente (ya tiene las funciones renderExpandedContent)
-                  tableInstance = window.createDataTable(tableOptions);
-                  container.appendChild(tableInstance.element);
-                  window.dataTableModalInstance = tableInstance;
-                  console.log('✅ Data Table creada exitosamente');
-                } catch (error) {
-                  console.error('❌ Error creando Data Table:', error);
-                  container.innerHTML = '<p style="color: var(--ubits-fg-1-medium); padding: 16px;">Error al cargar la tabla. Por favor, recarga la página.</p>';
-                }
-              } else {
-                console.error('❌ No se encontró el contenedor:', containerId);
-              }
-            }, 200);
-          } catch (error) {
-            console.error('❌ Error creando modal:', error);
-          }
-        };
-        
-        // Cargar Modal UMD primero
-        if (typeof window.createModal === 'undefined') {
-          const modalScript = document.createElement('script');
-          modalScript.src = '../../addons/modal/dist/modal.umd.js';
-          modalScript.onload = () => {
-            console.log('✅ Modal UMD cargado');
-            // Esperar un momento para que se registre en window
-            setTimeout(() => {
-              // Verificar diferentes formas de acceso
-              if (typeof window.createModal !== 'undefined') {
-                console.log('✅ createModal disponible directamente');
-              } else if (typeof window.UBITSModal !== 'undefined' && window.UBITSModal.createModal) {
-                window.createModal = window.UBITSModal.createModal;
-                console.log('✅ createModal disponible en UBITSModal');
-              } else {
-                console.error('❌ createModal no está disponible');
-                alert('Error: No se pudo cargar el componente Modal. Por favor, recarga la página.');
-                return;
-              }
-              
-              // Cargar Data Table UMD
-              if (typeof window.createDataTable === 'undefined') {
-                const dataTableScript = document.createElement('script');
-                dataTableScript.src = '../../addons/data-table/dist/data-table.umd.js';
-                dataTableScript.onload = () => {
-                  console.log('✅ Data Table UMD cargado');
-                  // Esperar un momento para que se registre
-                  setTimeout(() => {
-                    // Verificar diferentes formas de acceso
-                    if (typeof window.createDataTable !== 'undefined') {
-                      console.log('✅ createDataTable disponible directamente');
-                    } else if (typeof window.UBITSDataTable !== 'undefined' && window.UBITSDataTable.createDataTable) {
-                      window.createDataTable = window.UBITSDataTable.createDataTable;
-                      console.log('✅ createDataTable disponible en UBITSDataTable');
-                    } else {
-                      console.error('❌ createDataTable no está disponible');
-                      alert('Error: No se pudo cargar el componente Data Table. Por favor, recarga la página.');
-                      return;
-                    }
-                    
-                    // Crear modal después de cargar ambos
-                    createModalWithTable();
-                  }, 100);
-                };
-                dataTableScript.onerror = () => {
-                  console.error('❌ Error cargando Data Table UMD');
-                  alert('Error al cargar el componente Data Table. Por favor, verifica que los archivos estén compilados.');
-                };
-                document.head.appendChild(dataTableScript);
-              } else {
-                createModalWithTable();
-              }
-            }, 100);
-          };
-          modalScript.onerror = () => {
-            console.error('❌ Error cargando Modal UMD');
-            alert('Error al cargar el componente Modal. Por favor, verifica que los archivos estén compilados.');
-          };
-          document.head.appendChild(modalScript);
-        } else {
-          // Modal ya está cargado, verificar Data Table
-          if (typeof window.createDataTable === 'undefined') {
-            const dataTableScript = document.createElement('script');
-            dataTableScript.src = '../../addons/data-table/dist/data-table.umd.js';
-            dataTableScript.onload = () => {
-              console.log('✅ Data Table UMD cargado');
-              if (typeof window.UBITSDataTable !== 'undefined') {
-                window.createDataTable = window.UBITSDataTable.createDataTable;
-              }
-              createModalWithTable();
-            };
-            document.head.appendChild(dataTableScript);
-          } else {
-            createModalWithTable();
-          }
-        }
-      };
-      
-      // Función para actualizar el preview del Data Table
-      window.updateDataTablePreview = function(componentId) {
-        const state = initDataTablePreviewState(componentId);
-        const preview = document.getElementById(`data-table-preview-${componentId}`);
-        
-        if (!preview) {
-          console.error('❌ Preview de Data Table no encontrado:', `data-table-preview-${componentId}`);
-          return;
-        }
-        
-        // Limpiar instancia anterior si existe
-        if (dataTableInstances[componentId]) {
-          dataTableInstances[componentId].destroy();
-          delete dataTableInstances[componentId];
-        }
-        
-        // Preparar columnas con renderCell
-        const columns = state.columns.map(col => ({
-          ...col,
-          renderCell: col.id !== 'select' ? (rowData) => renderDataTableCell(col.id, rowData) : undefined
-        }));
-        
-        // Preparar opciones del Data Table
-        const tableOptions = {
-          title: state.title,
-          count: state.count,
-          columns: columns,
-          rows: (() => {
-            // Agregar funciones renderExpandedContent a las filas
-            return state.rows.map(row => {
-              if (row.data && (row.data.telefono || row.data.direccion || row.data.departamento)) {
-                return {
-                  ...row,
-                  renderExpandedContent: (rowData) => {
-                    // Calcular padding-left para alinear con la columna "Nombre"
-                    // Checkbox cell (32px) + Row controls (90px) + padding de celda (16px) = 138px
-                    const leftPadding = 'calc(32px + 90px + var(--ubits-spacing-md, 16px))';
-                    return `
-                      <div style="padding-top: var(--ubits-spacing-md, 16px); padding-right: var(--ubits-spacing-md, 16px); padding-bottom: var(--ubits-spacing-md, 16px); padding-left: ${leftPadding}; background: var(--ubits-bg-1, #ffffff);">
-                        <div style="display: grid; grid-template-columns: 200px 300px 250px 200px 200px; gap: var(--ubits-spacing-md, 16px); align-items: start;">
-                          <div style="display: flex; flex-direction: column; gap: var(--ubits-spacing-xs, 4px);">
-                            <span style="font-size: var(--ubits-font-size-sm, 14px); font-weight: var(--weight-semibold, 600); color: var(--ubits-fg-1-medium, #5c646f);">Teléfono</span>
-                            <span style="font-size: var(--ubits-font-size-md, 16px); color: var(--ubits-fg-1-high, #303a47);">${rowData.telefono || 'N/A'}</span>
-                          </div>
-                          <div style="display: flex; flex-direction: column; gap: var(--ubits-spacing-xs, 4px);">
-                            <span style="font-size: var(--ubits-font-size-sm, 14px); font-weight: var(--weight-semibold, 600); color: var(--ubits-fg-1-medium, #5c646f);">Dirección</span>
-                            <span style="font-size: var(--ubits-font-size-md, 16px); color: var(--ubits-fg-1-high, #303a47);">${rowData.direccion || 'N/A'}</span>
-                          </div>
-                          <div style="display: flex; flex-direction: column; gap: var(--ubits-spacing-xs, 4px);">
-                            <span style="font-size: var(--ubits-font-size-sm, 14px); font-weight: var(--weight-semibold, 600); color: var(--ubits-fg-1-medium, #5c646f);">Departamento</span>
-                            <span style="font-size: var(--ubits-font-size-md, 16px); color: var(--ubits-fg-1-high, #303a47);">${rowData.departamento || 'N/A'}</span>
-                          </div>
-                          <div style="display: flex; flex-direction: column; gap: var(--ubits-spacing-xs, 4px);">
-                            <span style="font-size: var(--ubits-font-size-sm, 14px); font-weight: var(--weight-semibold, 600); color: var(--ubits-fg-1-medium, #5c646f);">Fecha de Ingreso</span>
-                            <span style="font-size: var(--ubits-font-size-md, 16px); color: var(--ubits-fg-1-high, #303a47);">${rowData.fechaIngreso || 'N/A'}</span>
-                          </div>
-                          <div style="display: flex; flex-direction: column; gap: var(--ubits-spacing-xs, 4px);">
-                            <span style="font-size: var(--ubits-font-size-sm, 14px); font-weight: var(--weight-semibold, 600); color: var(--ubits-fg-1-medium, #5c646f);">Último Acceso</span>
-                            <span style="font-size: var(--ubits-font-size-md, 16px); color: var(--ubits-fg-1-high, #303a47);">${rowData.ultimoAcceso || 'N/A'}</span>
-                          </div>
-                        </div>
-                      </div>
-                    `;
-                  }
-                };
-              }
-              return row;
-            });
-          })(),
-          headerButtons: state.headerButtons,
-          individualActions: state.individualActions,
-          bulkActions: state.bulkActions,
-          pagination: state.pagination,
-          columnReorderable: state.columnReorderable,
-          rowReorderable: state.rowReorderable,
-          onRowSelect: (rowId, selected) => {
-            const row = state.rows.find(r => r.id.toString() === rowId.toString());
-            if (row) {
-              row.selected = selected;
-            }
-          },
-          onSelectAll: (selected) => {
-            state.rows.forEach(row => {
-              row.selected = selected;
-            });
-          },
-          onColumnSort: (columnId, direction) => {
-            console.log('Ordenar columna', columnId, direction);
-          },
-          onRowExpand: (rowId, expanded) => {
-            const row = state.rows.find(r => r.id.toString() === rowId.toString());
-            if (row) {
-              row.expanded = expanded;
-            }
-          },
-        };
-        
-        // Cargar CSS necesarios
-        const cssFiles = [
-          '../../addons/data-table/src/styles/data-table.css',
-          '../../addons/button/src/styles/button.css',
-          '../../addons/checkbox/src/styles/checkbox.css',
-          '../../addons/search-button/src/styles/search-button.css',
-          '../../addons/status-tag/src/styles/status-tag.css',
-        ];
-        
-        cssFiles.forEach(cssFile => {
-          const existingLink = document.querySelector(`link[href*="${cssFile.split('/').pop()}"]`);
-          if (!existingLink) {
-            const link = document.createElement('link');
-            link.rel = 'stylesheet';
-            link.href = cssFile;
-            document.head.appendChild(link);
-          }
-        });
-        
-        // Cargar FontAwesome si no está cargado
-        const existingFA = document.querySelector('link[href*="fontawesome"]');
-        if (!existingFA) {
-          const faLink = document.createElement('link');
-          faLink.rel = 'stylesheet';
-          faLink.href = '../../icons/dist/fontawesome.css';
-          document.head.appendChild(faLink);
-        }
-        
-        // Intentar cargar el módulo DataTableProvider dinámicamente
-        if (typeof window.createDataTable === 'undefined') {
-          // Cargar desde el dist build
-          const script = document.createElement('script');
-          script.src = '../../addons/data-table/dist/data-table.umd.js';
-          script.onload = () => {
-            // Intentar diferentes formas de acceder a la función
-            if (typeof window.UBITSDataTable !== 'undefined' && window.UBITSDataTable.createDataTable) {
-              window.createDataTable = window.UBITSDataTable.createDataTable;
-              window.renderDataTable = window.UBITSDataTable.renderDataTable;
-              createTableInstance();
-            } else if (typeof window.createDataTable !== 'undefined') {
-              createTableInstance();
-            } else {
-              // Fallback: usar renderDataTable directamente importando desde el source
-              loadTableFromSource();
-            }
-          };
-          script.onerror = () => {
-            console.warn('No se pudo cargar data-table.umd.js, usando renderDataTable directamente');
-            loadTableFromSource();
-          };
-          document.head.appendChild(script);
-        } else {
-          createTableInstance();
-        }
-        
-        function createTableInstance() {
-          try {
-            const instance = window.createDataTable(tableOptions);
-            preview.innerHTML = '';
-            preview.appendChild(instance.element);
-            dataTableInstances[componentId] = instance;
-          } catch (error) {
-            console.error('Error creando Data Table:', error);
-            loadTableFromSource();
-          }
-        }
-        
-        function loadTableFromSource() {
-          // Cargar como módulo ES6
-          const script = document.createElement('script');
-          script.type = 'module';
-          script.textContent = `
-            import { createDataTable, renderDataTable } from '../../addons/data-table/src/DataTableProvider.js';
-            window.createDataTable = createDataTable;
-            window.renderDataTable = renderDataTable;
-            
-            // Renderizar tabla
-            const tableOptions = ${JSON.stringify(tableOptions)};
-            const preview = document.getElementById('data-table-preview-${componentId}');
-            if (preview) {
-              try {
-                const instance = createDataTable(tableOptions);
-                preview.innerHTML = '';
-                preview.appendChild(instance.element);
-              } catch (error) {
-                console.error('Error:', error);
-                preview.innerHTML = renderDataTable(tableOptions);
-              }
-            }
-          `;
-          document.head.appendChild(script);
-        }
-      };
+      // Función para abrir modal con Data Table - ELIMINADA (versión anterior)
       
       // ========================================
       // AVATAR PREVIEW FUNCTIONS
@@ -13636,10 +12922,10 @@ Reglas Importantes:
         
         // Padding con iconos (icono 12px desde el borde + 8px espacio + 12px icono = 32px+)
         const paddingWithIconMap = {
-          xs: { left: '32px', right: '32px' },
-          sm: { left: '36px', right: '36px' },
-          md: { left: '40px', right: '40px' },
-          lg: { left: '44px', right: '44px' }
+          xs: { left: '32px', right: '36px' },
+          sm: { left: '36px', right: '40px' },
+          md: { left: '40px', right: '44px' },
+          lg: { left: '44px', right: '48px' }
         };
         
         let paddingLeft = hasLeftIcon ? paddingWithIconMap[size].left : paddingBaseMap[size].left;
@@ -13690,7 +12976,7 @@ Reglas Importantes:
           const selectPaddingRight = paddingWithIconMap[size].right;
           inputHTML += `<input type="text" class="${inputClasses.join(' ')}" data-input-type="select" style="width: 100%; height: ${heightMap[size]} !important; min-height: ${heightMap[size]} !important; font-size: ${fontSizeMap[size]}; padding-left: ${paddingLeft} !important; padding-right: ${selectPaddingRight} !important; cursor: pointer;" value="" readonly placeholder="${placeholder}">`;
           // Forzar rightIcon a chevron
-          const iconRightPos = size === 'xs' ? '10px' : size === 'sm' ? '11px' : size === 'md' ? '12px' : '13px';
+          const iconRightPos = size === 'xs' ? '14px' : size === 'sm' ? '16px' : size === 'md' ? '18px' : '20px';
           inputHTML += `<i class="far fa-chevron-down" style="position: absolute; right: ${iconRightPos}; top: 50%; transform: translateY(-50%); color: var(--ubits-fg-1-medium); pointer-events: none; z-index: 1;"></i>`;
         } else if (type === 'password') {
           const passwordPaddingRight = hasRightIcon ? paddingRight : paddingWithIconMap[size].right;
