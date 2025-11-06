@@ -70,10 +70,86 @@ export class UBITSTokensAddon implements TokensAddon {
   private tokensCSSPath: string = '../../tokens/dist/tokens.css';
 
   /**
+   * Ruta de fallback para tokens (si la principal falla)
+   */
+  private fallbackTokensCSSPath: string = '../../tokens/dist/tokens.css';
+
+  /**
    * Configurar ruta de tokens CSS (opcional)
    */
   setTokensCSSPath(path: string): void {
     this.tokensCSSPath = path;
+  }
+
+  /**
+   * Configurar ruta de fallback (opcional)
+   */
+  setFallbackTokensCSSPath(path: string): void {
+    this.fallbackTokensCSSPath = path;
+  }
+
+  /**
+   * Verifica si hay tokens estáticos ya cargados en el DOM
+   */
+  private hasStaticTokensLoaded(): boolean {
+    if (typeof document === 'undefined') {
+      return false;
+    }
+
+    // Buscar link a tokens.css
+    const tokensLink = document.querySelector('link[href*="tokens.css"]') as HTMLLinkElement;
+    if (tokensLink) {
+      return true;
+    }
+
+    // Buscar style con tokens
+    const styles = document.querySelectorAll('style');
+    for (const style of styles) {
+      if (style.textContent && style.textContent.includes('--ubits-')) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /**
+   * Carga tokens estáticos como fallback
+   */
+  private async loadFallbackTokens(): Promise<void> {
+    if (typeof document === 'undefined') {
+      throw new Error('Document no disponible para fallback');
+    }
+
+    console.warn('⚠️ Usando fallback: cargando tokens estáticos');
+
+    // Intentar cargar desde ruta de fallback
+    const fallbackLink = document.createElement('link');
+    fallbackLink.rel = 'stylesheet';
+    fallbackLink.href = this.fallbackTokensCSSPath;
+    fallbackLink.id = 'ubits-tokens-fallback';
+
+    return new Promise<void>((resolve, reject) => {
+      fallbackLink.onload = () => {
+        this.linkElement = fallbackLink;
+        console.log('✅ Tokens de fallback cargados correctamente');
+        resolve();
+      };
+
+      fallbackLink.onerror = () => {
+        console.error('❌ Error cargando tokens de fallback');
+        reject(new Error('No se pudieron cargar tokens ni siquiera como fallback'));
+      };
+
+      document.head.appendChild(fallbackLink);
+
+      // Timeout de seguridad
+      setTimeout(() => {
+        if (!fallbackLink.sheet) {
+          reject(new Error('Timeout cargando tokens de fallback'));
+        }
+      }, 5000);
+    });
   }
 
   async initialize(context: AppContext): Promise<void> {
@@ -83,33 +159,65 @@ export class UBITSTokensAddon implements TokensAddon {
     }
 
     try {
-      // Verificar si los tokens ya están cargados (compatibilidad hacia atrás)
-      const existingTokens = document.querySelector('link[href*="tokens.css"]') as HTMLLinkElement;
-      
-      if (existingTokens) {
-        // Tokens ya están cargados estáticamente, solo verificar
-        console.log('✅ Tokens UBITS ya cargados (modo compatibilidad)');
+      // PASO 1: Verificar si los tokens ya están cargados (compatibilidad hacia atrás)
+      if (this.hasStaticTokensLoaded()) {
+        console.log('✅ Tokens UBITS ya cargados estáticamente (modo compatibilidad)');
         this.isInitialized = true;
         
         // Intentar extraer tokens del DOM para validación
         await this.extractTokensFromDOM();
+        
+        // Validar que los tokens estáticos tengan todo lo necesario
+        const validation = this.validateDetailed();
+        if (validation.isValid) {
+          console.log('✅ Tokens estáticos validados correctamente');
+        } else {
+          console.warn('⚠️ Tokens estáticos incompletos, pero usando como fallback');
+        }
         return;
       }
 
-      // Si no hay tokens cargados, cargar desde el add-on
-      await this.loadTokensCSS();
-      this.isInitialized = true;
-      
-      // Validar después de cargar
-      const validation = this.validateDetailed();
-      if (!validation.isValid) {
-        console.warn('⚠️ Algunos tokens requeridos no están disponibles:', validation.missingTokens);
-      } else {
-        console.log('✅ TokensAddon UBITS inicializado y cargado - Todos los tokens válidos');
+      // PASO 2: Intentar cargar desde el add-on
+      try {
+        await this.loadTokensCSS();
+        this.isInitialized = true;
+        
+        // Validar después de cargar
+        const validation = this.validateDetailed();
+        if (!validation.isValid) {
+          console.warn('⚠️ Algunos tokens requeridos no están disponibles:', validation.missingTokens);
+          // No lanzar error, los tokens parciales son mejor que nada
+        } else {
+          console.log('✅ TokensAddon UBITS inicializado y cargado - Todos los tokens válidos');
+        }
+      } catch (loadError) {
+        // PASO 3: Si falla, usar fallback
+        console.error('❌ Error cargando tokens desde add-on:', loadError);
+        console.log('🔄 Intentando fallback...');
+        
+        try {
+          await this.loadFallbackTokens();
+          this.isInitialized = true;
+          console.log('✅ Tokens cargados mediante fallback');
+        } catch (fallbackError) {
+          // Último recurso: verificar si hay tokens en el DOM de alguna forma
+          console.error('❌ Error en fallback también:', fallbackError);
+          
+          // Verificar si hay tokens disponibles de alguna forma
+          const validation = this.validateDetailed();
+          if (validation.presentTokens.length > 0) {
+            console.warn(`⚠️ Solo ${validation.presentTokens.length}/${validation.totalRequired} tokens disponibles`);
+            this.isInitialized = true;
+          } else {
+            throw new Error('No se pudieron cargar tokens de ninguna forma');
+          }
+        }
       }
     } catch (error) {
-      console.error('❌ Error inicializando TokensAddon:', error);
-      throw error;
+      console.error('❌ Error crítico inicializando TokensAddon:', error);
+      // No lanzar error final, dejar que el sistema intente funcionar
+      // con lo que tenga disponible
+      this.isInitialized = false;
     }
   }
 
