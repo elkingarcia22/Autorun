@@ -3,6 +3,7 @@
  */
 export type ColumnType3 = 
   | 'nombre'
+  | 'nombre-avatar'
   | 'progreso'
   | 'estado'
   | 'radio'

@@ -401,6 +401,26 @@
     display: inline-flex;
 }
 
+/* Celda de nombre */
+.ubits-data-table-3__cell--nombre {
+    padding: var(--ubits-spacing-sm, 12px) var(--ubits-spacing-md, 16px);
+    padding-left: 10px;
+    vertical-align: middle;
+}
+
+/* Celda de nombre + avatar */
+.ubits-data-table-3__cell--nombre-avatar {
+    padding: var(--ubits-spacing-sm, 12px) var(--ubits-spacing-md, 16px);
+    padding-left: 10px;
+    vertical-align: middle;
+}
+
+.ubits-data-table-3__cell--nombre-avatar > div {
+    display: flex;
+    align-items: center;
+    gap: var(--ubits-spacing-sm, 12px);
+}
+
 /* Celda de progreso */
 .ubits-data-table-3__cell--progreso {
     padding: var(--ubits-spacing-sm, 12px) var(--ubits-spacing-md, 16px);

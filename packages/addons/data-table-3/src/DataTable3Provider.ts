@@ -41,7 +41,7 @@ function renderCellByType(column: TableColumn3, row: TableRow3, columnType: Colu
     
     case 'progreso': {
       // Obtener el valor de progreso (puede estar en cellValue, cellData.progress o cellData.progreso)
-      let progressValue = 0;
+      let progressValue: number | null = null;
       
       // Primero intentar desde cellValue (valor directo de la celda)
       if (cellValue !== undefined && cellValue !== null) {
@@ -50,12 +50,14 @@ function renderCellByType(column: TableColumn3, row: TableRow3, columnType: Colu
         } else if (typeof cellValue === 'string') {
           // Intentar parsear el string (puede ser "75", "75%", etc.)
           const parsed = parseFloat(cellValue.replace('%', '').trim());
-          progressValue = isNaN(parsed) ? 0 : parsed;
+          if (!isNaN(parsed)) {
+            progressValue = parsed;
+          }
         }
       }
       
       // Si no hay valor válido, buscar en las propiedades de datos
-      if (progressValue === 0 && cellData) {
+      if (progressValue === null && cellData) {
         // Buscar en 'progress' (inglés) o 'progreso' (español)
         const progressProp = cellData.progress !== undefined ? cellData.progress : cellData.progreso;
         if (progressProp !== undefined && progressProp !== null) {
@@ -63,9 +65,16 @@ function renderCellByType(column: TableColumn3, row: TableRow3, columnType: Colu
             progressValue = progressProp;
           } else if (typeof progressProp === 'string') {
             const parsed = parseFloat(progressProp.replace('%', '').trim());
-            progressValue = isNaN(parsed) ? 0 : parsed;
+            if (!isNaN(parsed)) {
+              progressValue = parsed;
+            }
           }
         }
+      }
+      
+      // Si no hay valor, usar 50% por defecto
+      if (progressValue === null) {
+        progressValue = 50;
       }
       
       // Asegurar que el valor esté entre 0 y 100
@@ -80,6 +89,62 @@ function renderCellByType(column: TableColumn3, row: TableRow3, columnType: Colu
       });
       
       return progressBarHTML;
+    }
+    
+    case 'nombre-avatar': {
+      // Siempre mostrar nombre + avatar (obligatorio)
+      const nombre = cellValue || cellData.nombre || cellData.name || '';
+      const avatar = cellData.avatar || cellData.avatarUrl || null;
+      
+      // Si hay avatar como objeto (con initials, badgeColor, etc.), renderizarlo directamente
+      let avatarHTML = '';
+      if (avatar) {
+        if (typeof avatar === 'object' && avatar.initials) {
+          // Avatar con iniciales
+          avatarHTML = renderAvatar({
+            initials: avatar.initials,
+            badgeColor: avatar.badgeColor,
+            size: 'sm'
+          });
+        } else if (typeof avatar === 'string') {
+          // Avatar con URL de imagen
+          avatarHTML = renderAvatar({
+            imageUrl: avatar,
+            size: 'sm'
+          });
+        } else {
+          // Si no hay avatar definido, crear uno con iniciales del nombre
+          const initials = nombre
+            .split(' ')
+            .map(n => n[0])
+            .join('')
+            .toUpperCase()
+            .slice(0, 2);
+          avatarHTML = renderAvatar({
+            initials: initials || 'U',
+            size: 'sm'
+          });
+        }
+      } else {
+        // Si no hay avatar, crear uno con iniciales del nombre
+        const initials = nombre
+          .split(' ')
+          .map(n => n[0])
+          .join('')
+          .toUpperCase()
+          .slice(0, 2);
+        avatarHTML = renderAvatar({
+          initials: initials || 'U',
+          size: 'sm'
+        });
+      }
+      
+      return `
+        <div style="display: flex; align-items: center; gap: var(--ubits-spacing-sm, 12px);">
+          ${avatarHTML}
+          <span class="ubits-body-md-regular">${nombre}</span>
+        </div>
+      `;
     }
     
     case 'estado': {
