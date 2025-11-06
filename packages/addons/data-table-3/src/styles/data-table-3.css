@@ -417,14 +417,20 @@
     height: 20px !important;
 }
 
-/* Permitir el label pero controlar su espacio */
+/* Permitir el label pero controlar su espacio solo cuando no hay label visible */
 .ubits-data-table-3__cell--checkbox .ubits-checkbox .ubits-checkbox__text-content {
     display: flex;
     flex-direction: column;
     gap: 0;
-    min-width: 0;
-    max-width: 0;
-    overflow: hidden;
+}
+
+/* Ocultar label si está vacío para evitar espacio */
+.ubits-data-table-3__cell--checkbox .ubits-checkbox .ubits-checkbox__text-content:has(.ubits-checkbox__label:empty) {
+    display: none;
+}
+
+.ubits-data-table-3__cell--checkbox .ubits-checkbox .ubits-checkbox__label:empty {
+    display: none;
 }
 
 /* Asegurar que la celda editable no cambie el layout del checkbox */
