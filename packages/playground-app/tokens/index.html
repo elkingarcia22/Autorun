@@ -9754,6 +9754,10 @@ Reglas Importantes:
             if (newType !== 'nombre' && newType !== 'nombre-avatar' && newType !== 'estado') {
               column.editable = undefined;
             }
+            // Si cambia a un tipo que no es 'radio', eliminar radioLabel
+            if (newType !== 'radio') {
+              column.radioLabel = undefined;
+            }
             // Actualizar el título del header según el tipo seleccionado
             const columnTypeLabels = {
               'nombre': 'Nombre',
@@ -9799,6 +9803,19 @@ Reglas Importantes:
           const column = state.columns.find(col => col.id === columnId);
           if (column && (column.type === 'nombre' || column.type === 'nombre-avatar' || column.type === 'estado')) {
             column.editable = editable;
+            // Regenerar selectores para actualizar el checkbox
+            if (typeof window.generateColumnTypeSelectors === 'function') {
+              window.generateColumnTypeSelectors(componentId);
+            }
+            // Actualizar el preview
+            window.updateDataTable3Preview(componentId);
+          }
+        } else if (option === 'radioLabel' && Array.isArray(value) && value.length === 2) {
+          // value = [columnId, showLabel]
+          const [columnId, showLabel] = value;
+          const column = state.columns.find(col => col.id === columnId);
+          if (column && column.type === 'radio') {
+            column.radioLabel = showLabel ? true : false;
             // Regenerar selectores para actualizar el checkbox
             if (typeof window.generateColumnTypeSelectors === 'function') {
               window.generateColumnTypeSelectors(componentId);
@@ -9868,8 +9885,10 @@ Reglas Importantes:
           const isNombreAvatarTexto = currentType === 'nombre-avatar-texto';
           const isNombre = currentType === 'nombre';
           const isEstado = currentType === 'estado';
+          const isRadio = currentType === 'radio';
           const isEditableType = isNombre || isNombreAvatar || isEstado;
           const hasAvatarVariant = isNombreAvatar || isNombreAvatarTexto;
+          const currentRadioLabel = col.radioLabel !== undefined ? (typeof col.radioLabel === 'string' ? col.radioLabel : (col.radioLabel === false ? false : true)) : false;
           
           return `
             <div style="flex: 0 0 auto; min-width: 200px;">
@@ -9900,6 +9919,13 @@ Reglas Importantes:
                   <input type="checkbox" id="data-table-3-editable-${componentId}-${col.id}" ${currentEditable ? 'checked' : ''} onchange="setDataTable3Control('editable', ['${col.id}', this.checked], '${componentId}')">
                   <span class="slider"></span>
                   <span style="font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium);">Editable</span>
+                </label>
+              ` : ''}
+              ${isRadio ? `
+                <label class="switch" style="display: flex; align-items: center; gap: 12px; cursor: pointer; margin-top: 12px;">
+                  <input type="checkbox" id="data-table-3-radio-label-${componentId}-${col.id}" ${currentRadioLabel !== false ? 'checked' : ''} onchange="setDataTable3Control('radioLabel', ['${col.id}', this.checked], '${componentId}')">
+                  <span class="slider"></span>
+                  <span style="font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium);">Mostrar Label</span>
                 </label>
               ` : ''}
             </div>

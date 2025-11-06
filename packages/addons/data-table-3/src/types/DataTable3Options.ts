@@ -64,6 +64,13 @@ export interface TableColumn3 {
    * Si la columna es editable (solo para tipos 'nombre', 'nombre-avatar' y 'estado')
    */
   editable?: boolean;
+  
+  /**
+   * Label para radio buttons (solo para tipo 'radio')
+   * Si es string, se muestra ese texto como label
+   * Si es false o undefined, no se muestra label
+   */
+  radioLabel?: string | boolean;
 }
 
 /**

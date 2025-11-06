@@ -334,14 +334,24 @@ function renderCellByType(column: TableColumn3, row: TableRow3, columnType: Colu
     }
     
     case 'radio': {
-      const checked = cellValue === true || cellValue === 'true' || cellValue === 1;
-      return renderRadioButton({
-        label: '',
+      const checked = cellValue === true || cellValue === 'true' || cellValue === 1 || cellValue === row.id || cellValue === String(row.id);
+      // Determinar si mostrar label y qué texto usar
+      const showLabel = column.radioLabel !== false && column.radioLabel !== undefined;
+      const labelText = typeof column.radioLabel === 'string' ? column.radioLabel : (showLabel ? String(row.data[column.id] || row.id) : '');
+      
+      const radioHTML = renderRadioButton({
+        label: labelText,
         name: `radio-${column.id}`,
         value: String(row.id),
         checked,
         size: 'md'
       });
+      
+      // Agregar atributos para identificar el radio button
+      return radioHTML.replace(
+        '<input',
+        `<input data-row-id="${row.id}" data-column-id="${column.id}" data-radio-button="true"`
+      );
     }
     
     case 'toggle': {
@@ -1371,6 +1381,49 @@ export function createDataTable3(options: DataTable3Options): {
       
       // Agregar event listener al status tag
       statusTag.addEventListener('click', openDropdown);
+    });
+    
+    // Radio buttons - manejar selección
+    const radioButtons = element.querySelectorAll('input[data-radio-button="true"]');
+    radioButtons.forEach(radio => {
+      const input = radio as HTMLInputElement;
+      const rowIdStr = input.getAttribute('data-row-id');
+      const columnId = input.getAttribute('data-column-id');
+      
+      if (!rowIdStr || !columnId) return;
+      
+      const rowId = isNaN(Number(rowIdStr)) ? rowIdStr : Number(rowIdStr);
+      
+      input.addEventListener('change', (e) => {
+        e.stopPropagation();
+        
+        // Si este radio está siendo seleccionado, deseleccionar los otros del mismo grupo
+        if (input.checked) {
+          // Encontrar todos los radios del mismo grupo (misma columna)
+          const allRadiosInGroup = element.querySelectorAll(`input[data-radio-button="true"][data-column-id="${columnId}"]`);
+          allRadiosInGroup.forEach((otherRadio: any) => {
+            const otherRowIdStr = otherRadio.getAttribute('data-row-id');
+            if (otherRowIdStr && otherRowIdStr !== String(rowId)) {
+              otherRadio.checked = false;
+              // Actualizar el estado en los datos de la fila
+              const otherRow = currentOptions.rows.find(r => String(r.id) === otherRowIdStr);
+              if (otherRow) {
+                otherRow.data[columnId] = false;
+              }
+            }
+          });
+          
+          // Actualizar el estado en los datos de la fila seleccionada
+          const row = currentOptions.rows.find(r => String(r.id) === String(rowId));
+          if (row) {
+            row.data[columnId] = true;
+            row.data[`${columnId}_value`] = rowId;
+          }
+        }
+        
+        // Re-renderizar para reflejar los cambios visuales
+        render();
+      });
     });
   };
 
