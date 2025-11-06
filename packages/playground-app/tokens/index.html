@@ -5807,16 +5807,6 @@ Reglas Importantes:
                                 <input type="number" id="data-table-columns-count-${componentId}" value="3" min="1" max="10" onchange="setDataTableControl('columnsCount', parseInt(this.value) || 3, '${componentId}')" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
                               </div>
                               
-                              <!-- Expandir Filas (Dropdown) -->
-                              <div style="flex: 0 0 auto; min-width: 200px;">
-                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Expandir Filas</label>
-                                <label class="switch" style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
-                                  <input type="checkbox" id="data-table-row-expandable-${componentId}" checked onchange="setDataTableControl('rowExpandable', this.checked, '${componentId}')">
-                                  <span class="slider"></span>
-                                  <span id="data-table-row-expandable-status-${componentId}" style="font-size: 14px; color: var(--ubits-fg-1-high);">Habilitado</span>
-                                </label>
-                              </div>
-                              
                               <!-- Ordenamiento de Columnas -->
                               <div style="flex: 0 0 auto; min-width: 200px;">
                                 <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Ordenamiento Columnas</label>
@@ -9455,6 +9445,7 @@ Reglas Importantes:
             columnReorderable: true,
             rowReorderable: true,
             showCheckbox: true,
+            emailClickable: true,
             rowExpandable: true,
             columnsCount: 3,
             columns: [
@@ -9478,6 +9469,7 @@ Reglas Importantes:
                 visible: true,
                 width: 250,
                 type: 'correo',
+                emailClickable: true,
               },
               {
                 id: 'estado',
@@ -9493,7 +9485,7 @@ Reglas Importantes:
                 data: {
                   nombre: 'Juan Pérez',
                   'checkbox-2': false,
-                  email: 'juan@example.com',
+                  email: 'juan.perez@empresa.com',
                   estado: 'Activo',
                   area: 'Desarrollo',
                   avatar: { initials: 'JP', badgeColor: 'green', imageUrl: '../assets/images/Profile-image.jpg' },
@@ -9515,7 +9507,7 @@ Reglas Importantes:
                 data: {
                   nombre: 'María García',
                   'checkbox-2': true,
-                  email: 'maria@example.com',
+                  email: 'maria.garcia@empresa.com',
                   estado: 'Inactivo',
                   area: 'Diseño',
                   avatar: { initials: 'MG', badgeColor: 'blue', imageUrl: '../assets/images/Profile-image.jpg' },
@@ -9527,7 +9519,7 @@ Reglas Importantes:
                 data: {
                   nombre: 'Carlos López',
                   'checkbox-2': false,
-                  email: 'carlos@example.com',
+                  email: 'carlos.lopez@empresa.com',
                   estado: 'Activo',
                   area: 'Marketing',
                   avatar: { initials: 'CL', badgeColor: 'orange', imageUrl: '../assets/images/Profile-image.jpg' },
@@ -9562,6 +9554,15 @@ Reglas Importantes:
           console.log('🔧 [CONTROL] Estado actualizado. showCheckbox:', state.showCheckbox);
           const statusEl = document.getElementById(`data-table-show-checkbox-status-${componentId}`);
           if (statusEl) statusEl.textContent = value ? 'Visible' : 'Oculta';
+          // Actualizar el preview para reflejar el cambio
+          console.log('🔧 [CONTROL] Llamando a updateDataTablePreview...');
+          window.updateDataTablePreview(componentId);
+        } else if (option === 'emailClickable') {
+          console.log('🔧 [CONTROL] Cambiando emailClickable:', value, 'componentId:', componentId);
+          state.emailClickable = value;
+          console.log('🔧 [CONTROL] Estado actualizado. emailClickable:', state.emailClickable);
+          const statusEl = document.getElementById(`data-table-email-clickable-status-${componentId}`);
+          if (statusEl) statusEl.textContent = value ? 'Clicable' : 'Solo texto';
           // Actualizar el preview para reflejar el cambio
           console.log('🔧 [CONTROL] Llamando a updateDataTablePreview...');
           window.updateDataTablePreview(componentId);
@@ -9661,6 +9662,13 @@ Reglas Importantes:
               // Si cambia a 'checkbox' y no tiene checkboxLabel, establecer por defecto false (sin label)
               column.checkboxLabel = false;
             }
+            // Si cambia a un tipo que no es 'correo', eliminar emailClickable
+            if (newType !== 'correo') {
+              column.emailClickable = undefined;
+            } else if (newType === 'correo' && column.emailClickable === undefined) {
+              // Si cambia a 'correo' y no tiene emailClickable, usar el del estado global o true por defecto
+              column.emailClickable = state.emailClickable !== false;
+            }
             // Actualizar el título del header según el tipo seleccionado
             const columnTypeLabels = {
               'nombre': 'Nombre',
@@ -9681,6 +9689,22 @@ Reglas Importantes:
             };
             if (newType && columnTypeLabels[newType]) {
               column.title = columnTypeLabels[newType];
+            }
+            
+            // Si cambia a tipo 'correo', generar datos de email para las filas si no existen
+            if (newType === 'correo') {
+              const emails = ['juan.perez@empresa.com', 'maria.garcia@empresa.com', 'carlos.lopez@empresa.com'];
+              state.rows.forEach((row, index) => {
+                if (!row.data[columnId]) {
+                  // Si la columna no tiene datos, usar un email basado en el nombre o índice
+                  const nombre = row.data.nombre || '';
+                  const emailBase = nombre.toLowerCase().replace(/\s+/g, '.').replace(/[áéíóúñ]/g, (m) => {
+                    const map = {'á': 'a', 'é': 'e', 'í': 'i', 'ó': 'o', 'ú': 'u', 'ñ': 'n'};
+                    return map[m] || m;
+                  });
+                  row.data[columnId] = emailBase ? emailBase + '@empresa.com' : (emails[index] || 'usuario' + (index + 1) + '@empresa.com');
+                }
+              });
             }
             
             // Regenerar selectores para mostrar/ocultar el controlador de variante
@@ -9745,6 +9769,19 @@ Reglas Importantes:
           const column = state.columns.find(col => col.id === columnId);
           if (column && column.type === 'checkbox') {
             column.checkboxLabel = showLabel ? true : false;
+            // Regenerar selectores para actualizar el checkbox
+            if (typeof window.generateColumnTypeSelectors === 'function') {
+              window.generateColumnTypeSelectors(componentId);
+            }
+            // Actualizar el preview
+            window.updateDataTablePreview(componentId);
+          }
+        } else if (option === 'emailClickableCol' && Array.isArray(value) && value.length === 2) {
+          // value = [columnId, isClickable]
+          const [columnId, isClickable] = value;
+          const column = state.columns.find(col => col.id === columnId);
+          if (column && column.type === 'correo') {
+            column.emailClickable = isClickable;
             // Regenerar selectores para actualizar el checkbox
             if (typeof window.generateColumnTypeSelectors === 'function') {
               window.generateColumnTypeSelectors(componentId);
@@ -9817,8 +9854,11 @@ Reglas Importantes:
           const isRadio = currentType === 'radio';
           const isToggle = currentType === 'toggle';
           const isCheckbox = currentType === 'checkbox';
+          const isCorreo = currentType === 'correo';
           const isEditableType = isNombre || isNombreAvatar || isEstado || isCheckbox || isRadio;
           const hasAvatarVariant = isNombreAvatar || isNombreAvatarTexto;
+          // Determinar el estado del emailClickable: usar el del estado global o el de la columna
+          const currentEmailClickable = col.emailClickable !== undefined ? col.emailClickable : (state.emailClickable !== false);
           // Determinar el estado del radioLabel: si es string es true, si es boolean usa ese valor, si es undefined es false
           const currentRadioLabel = col.radioLabel !== undefined ? (typeof col.radioLabel === 'string' ? true : col.radioLabel) : false;
           // Determinar el estado del toggleLabel: si es string es true, si es boolean usa ese valor, si es undefined es false
@@ -9832,7 +9872,7 @@ Reglas Importantes:
               <select 
                 id="data-table-column-type-${componentId}-${col.id}"
                 onchange="setDataTableControl('columnType', ['${col.id}', this.value || undefined], '${componentId}')"
-                style="width: 100%; padding: 10px 32px 10px 12px; border: 1px solid var(--ubits-border-1, #d0d2d5); border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box; cursor: pointer; margin-bottom: ${hasAvatarVariant || isEditableType ? '12px' : '0'}; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23666%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226,9 12,15 18,9%22></polyline></svg>'); background-repeat: no-repeat; background-position: right 10px center; background-size: 16px;"
+                style="width: 100%; padding: 10px 32px 10px 12px; border: 1px solid var(--ubits-border-1, #d0d2d5); border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box; cursor: pointer; margin-bottom: ${hasAvatarVariant || isEditableType || isCorreo ? '12px' : '0'}; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23666%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226,9 12,15 18,9%22></polyline></svg>'); background-repeat: no-repeat; background-position: right 10px center; background-size: 16px;"
               >
                 ${columnTypes.map(type => `
                   <option value="${type.value}" ${currentType === type.value ? 'selected' : ''}>${type.label}</option>
@@ -9876,6 +9916,13 @@ Reglas Importantes:
                   <input type="checkbox" id="data-table-checkbox-label-${componentId}-${col.id}" ${currentCheckboxLabel !== false ? 'checked' : ''} onchange="setDataTableControl('checkboxLabel', ['${col.id}', this.checked], '${componentId}')">
                   <span class="slider"></span>
                   <span style="font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium);">Mostrar Label</span>
+                </label>
+              ` : ''}
+              ${isCorreo ? `
+                <label class="switch" style="display: flex; align-items: center; gap: 12px; cursor: pointer; margin-top: 12px;">
+                  <input type="checkbox" id="data-table-email-clickable-col-${componentId}-${col.id}" ${currentEmailClickable ? 'checked' : ''} onchange="setDataTableControl('emailClickableCol', ['${col.id}', this.checked], '${componentId}')">
+                  <span class="slider"></span>
+                  <span style="font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium);">Email Clicable</span>
                 </label>
               ` : ''}
             </div>
@@ -10035,6 +10082,14 @@ Reglas Importantes:
                 if (col.checkboxLabel !== undefined) {
                   columnCopy.checkboxLabel = col.checkboxLabel;
                 }
+                // Si es columna de email, aplicar emailClickable de la columna o del estado
+                if (col.type === 'correo' || col.id === 'email') {
+                  // Usar el valor de la columna si existe, sino usar el del estado global
+                  columnCopy.emailClickable = col.emailClickable !== undefined ? col.emailClickable : (state.emailClickable !== false);
+                } else if (col.emailClickable !== undefined) {
+                  // Si la columna tiene emailClickable definido, usarlo
+                  columnCopy.emailClickable = col.emailClickable;
+                }
                 // Si tiene renderCell, copiarlo también
                 if (col.renderCell) {
                   columnCopy.renderCell = col.renderCell;
@@ -10070,7 +10125,7 @@ Reglas Importantes:
               const baseColumns = [
                 { id: 'checkbox-2', title: 'Checkbox', visible: state.showCheckbox !== false, width: 150, type: undefined },
                 { id: 'nombre', title: 'Nombre', visible: true, width: 200, type: 'nombre' },
-                { id: 'email', title: 'Email', visible: true, width: 250, type: 'correo' },
+                { id: 'email', title: 'Email', visible: true, width: 250, type: 'correo', emailClickable: state.emailClickable !== false },
                 { id: 'estado', title: 'Estado', visible: true, width: 150, type: 'estado' }
               ];
               

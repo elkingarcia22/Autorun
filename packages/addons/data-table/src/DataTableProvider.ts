@@ -409,7 +409,13 @@ function renderCellByType(column: TableColumn, row: TableRow, columnType: Column
     
     case 'correo': {
       const email = cellValue || '';
-      return `<a href="mailto:${email}" class="ubits-body-md-regular" style="color: var(--ubits-accent-brand, #0c5bef); text-decoration: none;">${email}</a>`;
+      const isClickable = column.emailClickable !== false; // Por defecto es true
+      
+      if (isClickable) {
+        return `<a href="mailto:${email}" class="ubits-body-md-regular" style="color: var(--ubits-accent-brand, #0c5bef); text-decoration: none;">${email}</a>`;
+      } else {
+        return `<span class="ubits-body-md-regular">${email}</span>`;
+      }
     }
     
     case 'acciones': {

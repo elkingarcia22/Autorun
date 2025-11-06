@@ -87,6 +87,14 @@ export interface TableColumn {
    * Para tipos 'checkbox' y 'radio': permite activar/desactivar el checkbox o radio button
    */
   editable?: boolean;
+  
+  /**
+   * Si el email es clicable (solo para tipo 'correo')
+   * Si es true, el email se renderiza como link azul clicable
+   * Si es false, el email se renderiza como texto normal
+   * Por defecto: true
+   */
+  emailClickable?: boolean;
 }
 
 /**
