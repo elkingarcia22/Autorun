@@ -1,6 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/html';
-import { createDataTable3 } from '../../packages/addons/data-table-3/src/DataTable3Provider';
-import type { DataTable3Options } from '../../packages/addons/data-table-3/src/types/DataTable3Options';
+// TODO: DataTable3Provider no existe aún, comentado temporalmente
+// import { createDataTable3 } from '../../packages/addons/data-table-3/src/DataTable3Provider';
+// import type { DataTable3Options } from '../../packages/addons/data-table-3/src/types/DataTable3Options';
+
+// Tipo temporal para que compile
+type DataTable3Options = {
+  columnReorderable?: boolean;
+  rowReorderable?: boolean;
+};
 
 const meta: Meta<DataTable3Options> = {
   title: 'Components/Data Table 3',
@@ -85,9 +92,12 @@ export const Default: Story = {
       }
     };
 
-    setTimeout(() => {
-      createDataTable3(options);
-    }, 100);
+    // TODO: Implementar cuando DataTable3Provider esté disponible
+    // setTimeout(() => {
+    //   createDataTable3(options);
+    // }, 100);
+    
+    container.innerHTML = '<p style="padding: 24px; color: var(--ubits-fg-1-medium);">DataTable3 está en desarrollo. El componente estará disponible pronto.</p>';
 
     return container;
   },
