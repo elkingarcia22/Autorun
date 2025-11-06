@@ -391,7 +391,7 @@
     gap: 0;
 }
 
-/* Celdas de checkbox - SOLO para la columna fija */
+/* Celdas de checkbox */
 .ubits-data-table-3__cell--checkbox {
     text-align: left;
     padding: 8px 4px;
@@ -407,29 +407,19 @@
     box-sizing: border-box;
 }
 
-/* Celdas de tipo checkbox (no fijas) - no deben tener los estilos de la columna fija */
-.ubits-data-table-3__cell--checkbox:not([style*="left: 70px"]) {
-    position: static;
-    left: auto;
-    width: auto;
-    min-width: auto;
-    max-width: none;
-    padding: var(--ubits-spacing-sm, 12px) var(--ubits-spacing-md, 16px);
-    padding-left: 10px;
-    z-index: auto;
-}
-
 .ubits-data-table-3__row:hover .ubits-data-table-3__cell--checkbox {
     background-color: var(--ubits-bg-2, #f3f3f4);
 }
 
-/* Estilos base para checkbox - se sobrescriben según el tipo */
 .ubits-data-table-3__cell--checkbox .ubits-checkbox {
     margin: 0;
     margin-left: 0;
     display: flex;
     justify-content: flex-start;
     align-items: center;
+    width: 20px;
+    max-width: 20px;
+    gap: 0;
 }
 
 /* Asegurar que el checkbox se mantenga alineado a la izquierda */
@@ -439,22 +429,14 @@
     height: 20px !important;
 }
 
-/* Mostrar label solo en celdas de tipo checkbox (no en la columna fija) */
-/* La columna fija puede tener 'left' en atributo style, así que usamos :not([style*="left"]) */
-.ubits-data-table-3__cell--checkbox:not([style*="left"]) .ubits-checkbox .ubits-checkbox__text-content {
-    display: flex !important;
+/* Permitir el label con el espacio normal */
+.ubits-data-table-3__cell--checkbox .ubits-checkbox .ubits-checkbox__text-content {
+    display: none;
     flex-direction: column;
-    gap: var(--ubits-spacing-sm, 8px);
-    flex: 1;
+    gap: var(--ubits-spacing-none, 0px);
+    flex: 0;
     min-width: 0;
-    width: auto;
-}
-
-/* Ajustar checkbox para permitir label en celdas de tipo checkbox (no en la columna fija) */
-.ubits-data-table-3__cell--checkbox:not([style*="left"]) .ubits-checkbox {
-    width: auto !important;
-    max-width: none !important;
-    gap: var(--ubits-spacing-sm, 8px) !important;
+    width: 0;
 }
 
 /* Ocultar label si está vacío para evitar espacio */
@@ -466,33 +448,15 @@
     display: none;
 }
 
-/* Estilos para celdas de tipo checkbox (no fijas) cuando son editables - evitar position relative que causa desajustes */
-.ubits-data-table-3__cell--checkbox.ubits-data-table-3__cell--editable:not([style*="left: 70px"]) {
-    position: static !important;
-    overflow: visible;
-    width: auto;
-    min-width: auto;
-    max-width: none;
-    padding: var(--ubits-spacing-sm, 12px) var(--ubits-spacing-md, 16px);
-    padding-left: 10px;
-}
-
-/* Asegurar que la columna fija de checkbox mantenga su layout cuando es editable */
-.ubits-data-table-3__cell--checkbox.ubits-data-table-3__cell--editable[style*="left: 70px"] {
-    width: 28px !important;
-    min-width: 28px !important;
-    max-width: 28px !important;
-    padding: 8px 4px !important;
-    padding-left: 4px !important;
-    padding-right: 4px !important;
-    position: sticky !important;
-}
-
-/* Asegurar que el checkbox dentro de celdas editables de tipo checkbox no se desajuste */
-.ubits-data-table-3__cell--checkbox.ubits-data-table-3__cell--editable:not([style*="left: 70px"]) .ubits-checkbox {
-    width: auto;
-    max-width: none;
-    display: inline-flex;
+/* Asegurar que la celda editable no cambie el layout del checkbox */
+.ubits-data-table-3__cell--checkbox.ubits-data-table-3__cell--editable {
+    width: 28px;
+    min-width: 28px;
+    max-width: 28px;
+    padding: 8px 4px;
+    padding-left: 4px;
+    padding-right: 4px;
+    text-align: left;
 }
 
 /* Celda de nombre */
@@ -545,35 +509,6 @@
 .ubits-data-table-3__cell--editable {
     cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="%23000" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>') 10 10, text;
     position: relative;
-}
-
-/* Excepción: celdas de tipo checkbox editables (no fijas) no deben tener position relative para evitar desajustes */
-/* Aplicar position static a todas las celdas checkbox editables para evitar desajustes */
-.ubits-data-table-3__cell--checkbox.ubits-data-table-3__cell--editable {
-    position: static !important;
-    overflow: visible;
-    left: auto !important;
-    z-index: auto;
-    width: auto;
-    min-width: auto;
-    max-width: none;
-    padding: var(--ubits-spacing-sm, 12px) var(--ubits-spacing-md, 16px);
-    padding-left: 10px;
-}
-
-/* Restaurar sticky solo para la columna fija cuando es editable */
-/* La columna fija tiene left: 70px en CSS base, así que usamos mayor especificidad para restaurar sus estilos */
-.ubits-data-table-3__cell.ubits-data-table-3__cell--checkbox.ubits-data-table-3__cell--editable[style*="left"] {
-    /* Si tiene left en style, es la columna fija - restaurar sticky */
-    position: sticky !important;
-    width: 28px !important;
-    min-width: 28px !important;
-    max-width: 28px !important;
-    padding: 8px 4px !important;
-    padding-left: 4px !important;
-    padding-right: 4px !important;
-    left: 70px !important;
-    z-index: 5 !important;
 }
 
 .ubits-data-table-3__cell--editable:hover {
