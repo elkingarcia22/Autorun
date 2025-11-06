@@ -1267,18 +1267,50 @@ export function createDataTable3(options: DataTable3Options): {
     
     // Status tags editables - mostrar dropdown con lista de estados
     const statusEditables = element.querySelectorAll('.ubits-data-table-3__status-editable');
-    statusEditables.forEach(container => {
+    console.log('🔍 [STATUS DROPDOWN] Buscando contenedores de status editables', {
+      statusEditablesCount: statusEditables.length,
+      element: element
+    });
+    
+    statusEditables.forEach((container, index) => {
       const rowIdStr = container.getAttribute('data-row-id');
       const columnId = container.getAttribute('data-column-id');
       const currentStatus = container.getAttribute('data-current-status');
       
-      if (!rowIdStr || !columnId) return;
+      console.log(`🔍 [STATUS DROPDOWN] Procesando contenedor ${index}`, {
+        container: container,
+        rowIdStr,
+        columnId,
+        currentStatus,
+        hasRowId: !!rowIdStr,
+        hasColumnId: !!columnId
+      });
+      
+      if (!rowIdStr || !columnId) {
+        console.warn(`⚠️ [STATUS DROPDOWN] Contenedor ${index} no tiene rowId o columnId`);
+        return;
+      }
       
       const rowId = isNaN(Number(rowIdStr)) ? rowIdStr : Number(rowIdStr);
       const statusTag = container.querySelector('.ubits-status-tag');
       const dropdown = container.querySelector('.ubits-data-table-3__status-dropdown') as HTMLElement;
       
-      if (!statusTag || !dropdown) return;
+      console.log(`🔍 [STATUS DROPDOWN] Elementos encontrados para contenedor ${index}`, {
+        statusTag: statusTag,
+        statusTagExists: !!statusTag,
+        dropdown: dropdown,
+        dropdownExists: !!dropdown,
+        rowId,
+        columnId,
+        currentStatus
+      });
+      
+      if (!statusTag || !dropdown) {
+        console.warn(`⚠️ [STATUS DROPDOWN] Contenedor ${index} no tiene statusTag o dropdown`);
+        return;
+      }
+      
+      console.log(`✅ [STATUS DROPDOWN] Configurando dropdown para contenedor ${index}`);
       
       // Lista de estados disponibles con sus labels en español
       const statusOptions = [
@@ -1644,8 +1676,8 @@ export function createDataTable3(options: DataTable3Options): {
       
       // Agregar event listener al status tag
       console.log(`✅ [STATUS DROPDOWN] Agregando event listener click al status tag ${index}`);
-      statusTagElement.addEventListener('click', openDropdown);
-      console.log(`✅ [STATUS DROPDOWN] Event listener agregado exitosamente para status tag ${index}`);
+      statusTag.addEventListener('click', openDropdown);
+      console.log(`✅ [STATUS DROPDOWN] Event listener agregado exitosamente para contenedor ${index}`);
     });
     
     // Radio buttons - manejar selección (solo si son editables)
