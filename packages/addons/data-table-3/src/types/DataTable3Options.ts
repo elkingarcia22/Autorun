@@ -50,6 +50,14 @@ export interface TableColumn3 {
    * Función personalizada para renderizar el contenido de la celda
    */
   renderCell?: (rowData: any) => string;
+  
+  /**
+   * Variante del avatar para columnas de tipo 'nombre-avatar'
+   * 'photo' - Muestra imagen
+   * 'initials' - Muestra iniciales
+   * 'icon' - Muestra icono
+   */
+  avatarVariant?: 'photo' | 'initials' | 'icon';
 }
 
 /**

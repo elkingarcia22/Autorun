@@ -96,45 +96,69 @@ function renderCellByType(column: TableColumn3, row: TableRow3, columnType: Colu
       const nombre = cellValue || cellData.nombre || cellData.name || '';
       const avatar = cellData.avatar || cellData.avatarUrl || null;
       
-      // Si hay avatar como objeto (con initials, badgeColor, etc.), renderizarlo directamente
-      let avatarHTML = '';
-      if (avatar) {
-        if (typeof avatar === 'object' && avatar.initials) {
-          // Avatar con iniciales
-          avatarHTML = renderAvatar({
-            initials: avatar.initials,
-            badgeColor: avatar.badgeColor,
-            size: 'sm'
-          });
-        } else if (typeof avatar === 'string') {
-          // Avatar con URL de imagen
-          avatarHTML = renderAvatar({
-            imageUrl: avatar,
-            size: 'sm'
-          });
-        } else {
-          // Si no hay avatar definido, crear uno con iniciales del nombre
-          const initials = nombre
-            .split(' ')
-            .map(n => n[0])
-            .join('')
-            .toUpperCase()
-            .slice(0, 2);
-          avatarHTML = renderAvatar({
-            initials: initials || 'U',
-            size: 'sm'
-          });
-        }
-      } else {
-        // Si no hay avatar, crear uno con iniciales del nombre
-        const initials = nombre
+      // Obtener la variante del avatar desde la columna o usar por defecto
+      const avatarVariant = column.avatarVariant || 'initials';
+      
+      // Generar iniciales del nombre si es necesario
+      const generateInitials = (name: string): string => {
+        return name
           .split(' ')
           .map(n => n[0])
           .join('')
           .toUpperCase()
-          .slice(0, 2);
+          .slice(0, 2) || 'U';
+      };
+      
+      let avatarHTML = '';
+      
+      // Renderizar según la variante especificada
+      if (avatarVariant === 'photo') {
+        // Variante Photo: usar imageUrl si está disponible, sino usar iniciales
+        if (avatar && typeof avatar === 'string') {
+          avatarHTML = renderAvatar({
+            imageUrl: avatar,
+            size: 'sm'
+          });
+        } else if (avatar && typeof avatar === 'object' && avatar.imageUrl) {
+          avatarHTML = renderAvatar({
+            imageUrl: avatar.imageUrl,
+            badgeColor: avatar.badgeColor,
+            badgeContent: avatar.badgeContent,
+            size: 'sm'
+          });
+        } else {
+          // Si no hay imagen, generar iniciales como fallback
+          const initials = generateInitials(nombre);
+          avatarHTML = renderAvatar({
+            initials: initials,
+            size: 'sm'
+          });
+        }
+      } else if (avatarVariant === 'initials') {
+        // Variante Initials: usar initials si están disponibles, sino generarlas del nombre
+        if (avatar && typeof avatar === 'object' && avatar.initials) {
+          avatarHTML = renderAvatar({
+            initials: avatar.initials,
+            badgeColor: avatar.badgeColor,
+            badgeContent: avatar.badgeContent,
+            size: 'sm'
+          });
+        } else {
+          const initials = generateInitials(nombre);
+          avatarHTML = renderAvatar({
+            initials: initials,
+            size: 'sm'
+          });
+        }
+      } else {
+        // Variante Icon: usar icon si está disponible, sino usar 'user' por defecto
+        const iconName = avatar && typeof avatar === 'object' && avatar.icon 
+          ? avatar.icon 
+          : 'user';
         avatarHTML = renderAvatar({
-          initials: initials || 'U',
+          icon: iconName,
+          badgeColor: avatar && typeof avatar === 'object' ? avatar.badgeColor : undefined,
+          badgeContent: avatar && typeof avatar === 'object' ? avatar.badgeContent : undefined,
           size: 'sm'
         });
       }
