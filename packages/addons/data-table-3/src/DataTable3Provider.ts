@@ -675,13 +675,23 @@ export function renderDataTable3(
   // Filtrar columnas visibles
   let visibleColumns = columns.filter(col => col.visible !== false);
   
-  // Si hay un orden de columnas especificado, reordenar según ese orden
+  // Separar checkbox de otras columnas para asegurar que siempre esté primero
+  const checkboxColumns = visibleColumns.filter(col => col.id === 'checkbox' || col.id.startsWith('checkbox-'));
+  const otherColumns = visibleColumns.filter(col => col.id !== 'checkbox' && !col.id.startsWith('checkbox-'));
+  
+  // Si hay un orden de columnas especificado, reordenar según ese orden (solo para otras columnas)
   if (columnOrder.length > 0) {
-    const columnMap = new Map(visibleColumns.map(col => [col.id, col]));
-    visibleColumns = columnOrder
+    const columnMap = new Map(otherColumns.map(col => [col.id, col]));
+    const reorderedOtherColumns = columnOrder
       .map(id => columnMap.get(id))
       .filter((col): col is TableColumn3 => col !== undefined)
-      .concat(visibleColumns.filter(col => !columnOrder.includes(col.id)));
+      .concat(otherColumns.filter(col => !columnOrder.includes(col.id)));
+    
+    // Reconstruir visibleColumns: checkbox primero, luego otras columnas ordenadas
+    visibleColumns = [...checkboxColumns, ...reorderedOtherColumns];
+  } else {
+    // Si no hay orden especificado, checkbox primero, luego otras columnas
+    visibleColumns = [...checkboxColumns, ...otherColumns];
   }
   
   // Estado de ordenamiento
@@ -736,39 +746,39 @@ export function renderDataTable3(
   const hasCheckboxColumn = visibleColumns.some(col => col.id === 'checkbox' || col.id.startsWith('checkbox-'));
   const checkboxColumn = hasCheckboxColumn ? visibleColumns.find(col => col.id === 'checkbox' || col.id.startsWith('checkbox-')) : null;
   
-  // Renderizar headers de columnas, pero reemplazar el checkbox con su header personalizado
-  const columnHeadersHTML = visibleColumns
-    .map(col => {
-      // Si es checkbox, renderizar header personalizado con checkbox para seleccionar/deseleccionar todos
-      if (col.id === 'checkbox' || col.id.startsWith('checkbox-')) {
-        // Verificar si todos los checkboxes están seleccionados
-        const allChecked = orderedRows.length > 0 && orderedRows.every(row => {
-          const checkboxValue = row.data[col.id];
-          return checkboxValue === true || checkboxValue === 'true' || checkboxValue === 1;
-        });
-        
-        // Renderizar checkbox en el header
-        const headerCheckboxHTML = renderCheckbox({
-          label: '',
-          checked: allChecked,
-          size: 'md',
-          className: 'ubits-data-table-3__header-checkbox'
-        });
-        
-        const headerCheckbox = headerCheckboxHTML.replace(
-          '<input',
-          `<input data-column-id="${col.id}" data-header-checkbox="true" aria-label="Seleccionar todos"`
-        );
-        
-        return `
+  // Renderizar header de checkbox con checkbox para seleccionar/deseleccionar todos
+  let checkboxHeader = '';
+  if (hasCheckboxColumn && checkboxColumn) {
+    // Verificar si todos los checkboxes están seleccionados
+    const allChecked = orderedRows.length > 0 && orderedRows.every(row => {
+      const checkboxValue = row.data[checkboxColumn.id];
+      return checkboxValue === true || checkboxValue === 'true' || checkboxValue === 1;
+    });
+    
+    // Renderizar checkbox en el header
+    const headerCheckboxHTML = renderCheckbox({
+      label: '',
+      checked: allChecked,
+      size: 'md',
+      className: 'ubits-data-table-3__header-checkbox'
+    });
+    
+    const headerCheckbox = headerCheckboxHTML.replace(
+      '<input',
+      `<input data-column-id="${checkboxColumn.id}" data-header-checkbox="true" aria-label="Seleccionar todos"`
+    );
+    
+    checkboxHeader = `
           <th class="ubits-data-table-3__column-header--checkbox">
             ${headerCheckbox}
           </th>
-        `;
-      }
-      // Para otras columnas, usar renderColumnHeader normal
-      return renderColumnHeader(col, columnReorderable, columnSortable, orderedRows, sortColumnId, sortDirection);
-    })
+    `;
+  }
+  
+  // Renderizar headers de columnas (excluir checkbox porque ya se renderizó en checkboxHeader)
+  const columnsWithoutCheckbox = visibleColumns.filter(col => col.id !== 'checkbox' && !col.id.startsWith('checkbox-'));
+  const columnHeadersHTML = columnsWithoutCheckbox
+    .map(col => renderColumnHeader(col, columnReorderable, columnSortable, orderedRows, sortColumnId, sortDirection))
     .join('');
 
   // Renderizar filas
@@ -782,11 +792,14 @@ export function renderDataTable3(
   ].filter(Boolean).join(' ');
   
   // Estructura sin contenedor adicional: la tabla directamente
+  // IMPORTANTE: El orden debe ser controlsHeader, checkboxHeader, columnHeadersHTML
+  // para que coincida con controlsCell, checkbox (en cellsHTML), otras columnas (en cellsHTML)
   const html = `
     <table class="${classes} ubits-data-table-3__table">
       <thead class="ubits-data-table-3__thead">
         <tr class="ubits-data-table-3__header-row">
           ${controlsHeader}
+          ${checkboxHeader}
           ${columnHeadersHTML}
         </tr>
       </thead>
