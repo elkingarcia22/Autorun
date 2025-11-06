@@ -6,6 +6,7 @@ import { renderAvatar } from '../../avatar/src/AvatarProvider';
 import { renderToggle } from '../../toggle/src/ToggleProvider';
 import { renderRadioButton } from '../../radio-button/src/RadioButtonProvider';
 import { renderButton } from '../../button/src/ButtonProvider';
+import { renderList } from '../../list/src/ListProvider';
 
 /**
  * Renderiza una celda según el tipo de columna
@@ -256,20 +257,80 @@ function renderCellByType(column: TableColumn3, row: TableRow3, columnType: Colu
     }
     
     case 'estado': {
-      const estado = cellValue || 'pending';
-      const statusMap: Record<string, any> = {
-        'activo': 'success',
-        'inactivo': 'pending',
+      // Mapeo de estados en español a estados del sistema UBITS
+      const statusMap: Record<string, string> = {
+        'activo': 'active',
+        'inactivo': 'disabled',
         'pendiente': 'pending',
         'completado': 'completed',
-        'error': 'error',
-        'cancelado': 'cancelled'
+        'publicado': 'published',
+        'cumplido': 'fulfilled',
+        'creado': 'created',
+        'error': 'not-fulfilled',
+        'denegado': 'denied',
+        'borrador': 'draft',
+        'en-progreso': 'in-progress',
+        'sincronizando': 'syncing',
+        'pendiente-aprobacion': 'pending-approval',
+        'no-iniciado': 'not-started',
+        'finalizado': 'finished',
+        'archivado': 'archived',
+        'deshabilitado': 'disabled',
+        'pausado': 'paused',
+        'oculto': 'hidden',
+        'cancelado': 'denied'
       };
-      return renderStatusTag({
-        label: String(cellValue || ''),
-        status: statusMap[String(estado).toLowerCase()] || 'pending',
-        size: 'sm'
+      
+      // Obtener el estado actual (puede venir en diferentes formatos)
+      const currentEstado = cellValue || cellData.estado || cellData.status || 'pendiente';
+      const estadoKey = String(currentEstado).toLowerCase().trim();
+      const ubitsStatus = statusMap[estadoKey] || statusMap['pendiente'] || 'pending';
+      
+      // Mapeo inverso para mostrar el label en español
+      const statusLabels: Record<string, string> = {
+        'active': 'Activo',
+        'completed': 'Completado',
+        'published': 'Publicado',
+        'fulfilled': 'Cumplido',
+        'created': 'Creado',
+        'not-fulfilled': 'No cumplido',
+        'denied': 'Denegado',
+        'draft': 'Borrador',
+        'in-progress': 'En progreso',
+        'syncing': 'Sincronizando',
+        'pending': 'Pendiente',
+        'pending-approval': 'Pendiente aprobación',
+        'not-started': 'No iniciado',
+        'finished': 'Finalizado',
+        'archived': 'Archivado',
+        'disabled': 'Deshabilitado',
+        'paused': 'Pausado',
+        'hidden': 'Oculto'
+      };
+      
+      const label = statusLabels[ubitsStatus] || String(currentEstado);
+      const isEditable = column.editable;
+      
+      // Si es editable, mostrar icono a la derecha
+      const statusTagHTML = renderStatusTag({
+        label: label,
+        status: ubitsStatus as any,
+        size: 'sm',
+        rightIcon: isEditable ? 'chevron-down' : null,
+        clickable: isEditable
       });
+      
+      if (isEditable) {
+        // Agregar contenedor con atributos para el dropdown
+        return `
+          <div class="ubits-data-table-3__status-editable" data-row-id="${row.id}" data-column-id="${column.id}" data-editable="true" data-current-status="${ubitsStatus}">
+            ${statusTagHTML}
+            <div class="ubits-data-table-3__status-dropdown" id="status-dropdown-${row.id}-${column.id}" style="display: none;"></div>
+          </div>
+        `;
+      }
+      
+      return statusTagHTML;
     }
     
     case 'radio': {
@@ -364,7 +425,7 @@ function renderCell(column: TableColumn3, row: TableRow3): string {
   // Si la columna tiene un tipo definido, usar renderCellByType
   if (column.type) {
     const content = renderCellByType(column, row, column.type);
-    const isEditable = column.editable && (column.type === 'nombre' || column.type === 'nombre-avatar');
+    const isEditable = column.editable && (column.type === 'nombre' || column.type === 'nombre-avatar' || column.type === 'estado');
     const editableClass = isEditable ? 'ubits-data-table-3__cell--editable' : '';
     const dataAttrs = isEditable ? `data-row-id="${row.id}" data-column-id="${column.id}" data-editable="true"` : '';
     
@@ -1138,6 +1199,11 @@ export function createDataTable3(options: DataTable3Options): {
             if (row.data[columnId] !== undefined) {
               row.data[columnId] = newValue.trim();
             }
+          } else if (col && col.type === 'estado') {
+            // Para estado, actualizar el valor del estado
+            row.data[columnId] = newValue.trim();
+            row.data.estado = newValue.trim();
+            row.data.status = newValue.trim();
           } else {
             // Para otros tipos, usar el columnId
             row.data[columnId] = newValue.trim();
@@ -1154,6 +1220,183 @@ export function createDataTable3(options: DataTable3Options): {
       field.addEventListener('click', (e) => {
         e.stopPropagation();
       });
+    });
+    
+    // Status tags editables - mostrar dropdown con lista de estados
+    const statusEditables = element.querySelectorAll('.ubits-data-table-3__status-editable');
+    statusEditables.forEach(container => {
+      const rowIdStr = container.getAttribute('data-row-id');
+      const columnId = container.getAttribute('data-column-id');
+      const currentStatus = container.getAttribute('data-current-status');
+      
+      if (!rowIdStr || !columnId) return;
+      
+      const rowId = isNaN(Number(rowIdStr)) ? rowIdStr : Number(rowIdStr);
+      const statusTag = container.querySelector('.ubits-status-tag');
+      const dropdown = container.querySelector('.ubits-data-table-3__status-dropdown') as HTMLElement;
+      
+      if (!statusTag || !dropdown) return;
+      
+      // Lista de estados disponibles con sus labels en español
+      const statusOptions = [
+        { value: 'active', label: 'Activo', status: 'active' },
+        { value: 'completed', label: 'Completado', status: 'completed' },
+        { value: 'published', label: 'Publicado', status: 'published' },
+        { value: 'fulfilled', label: 'Cumplido', status: 'fulfilled' },
+        { value: 'created', label: 'Creado', status: 'created' },
+        { value: 'not-fulfilled', label: 'No cumplido', status: 'not-fulfilled' },
+        { value: 'denied', label: 'Denegado', status: 'denied' },
+        { value: 'draft', label: 'Borrador', status: 'draft' },
+        { value: 'in-progress', label: 'En progreso', status: 'in-progress' },
+        { value: 'syncing', label: 'Sincronizando', status: 'syncing' },
+        { value: 'pending', label: 'Pendiente', status: 'pending' },
+        { value: 'pending-approval', label: 'Pendiente aprobación', status: 'pending-approval' },
+        { value: 'not-started', label: 'No iniciado', status: 'not-started' },
+        { value: 'finished', label: 'Finalizado', status: 'finished' },
+        { value: 'archived', label: 'Archivado', status: 'archived' },
+        { value: 'disabled', label: 'Deshabilitado', status: 'disabled' },
+        { value: 'paused', label: 'Pausado', status: 'paused' },
+        { value: 'hidden', label: 'Oculto', status: 'hidden' }
+      ];
+      
+      // Función para cerrar el dropdown
+      const closeDropdown = () => {
+        dropdown.style.display = 'none';
+        document.removeEventListener('click', closeDropdown);
+      };
+      
+      // Función para abrir el dropdown
+      const openDropdown = (e: MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        // Cerrar otros dropdowns abiertos
+        element.querySelectorAll('.ubits-data-table-3__status-dropdown').forEach((dd: any) => {
+          if (dd !== dropdown) {
+            dd.style.display = 'none';
+          }
+        });
+        
+        // Renderizar lista de estados
+        const listItems = statusOptions.map(option => ({
+          label: option.label,
+          value: option.value,
+          state: option.status === currentStatus ? 'active' : 'default' as const,
+          onClick: () => {
+            // Actualizar el estado en los datos
+            const row = currentOptions.rows.find(r => r.id === rowId);
+            if (row) {
+              const col = currentOptions.columns.find(c => c.id === columnId);
+              if (col) {
+                // Mapeo de estados UBITS a labels en español para guardar
+                const statusToLabel: Record<string, string> = {
+                  'active': 'Activo',
+                  'completed': 'Completado',
+                  'published': 'Publicado',
+                  'fulfilled': 'Cumplido',
+                  'created': 'Creado',
+                  'not-fulfilled': 'No cumplido',
+                  'denied': 'Denegado',
+                  'draft': 'Borrador',
+                  'in-progress': 'En progreso',
+                  'syncing': 'Sincronizando',
+                  'pending': 'Pendiente',
+                  'pending-approval': 'Pendiente aprobación',
+                  'not-started': 'No iniciado',
+                  'finished': 'Finalizado',
+                  'archived': 'Archivado',
+                  'disabled': 'Deshabilitado',
+                  'paused': 'Pausado',
+                  'hidden': 'Oculto'
+                };
+                
+                const labelToSave = statusToLabel[option.status] || option.label;
+                row.data[columnId] = labelToSave;
+                row.data.estado = labelToSave;
+                row.data.status = labelToSave;
+                
+                render();
+              }
+            }
+            closeDropdown();
+          }
+        }));
+        
+        dropdown.innerHTML = renderList({
+          containerId: `status-list-${rowId}-${columnId}`,
+          items: listItems,
+          size: 'sm',
+          maxHeight: '300px'
+        });
+        
+        // Posicionar el dropdown debajo del status tag
+        const rect = statusTag.getBoundingClientRect();
+        dropdown.style.position = 'absolute';
+        dropdown.style.top = `${rect.bottom + 4}px`;
+        dropdown.style.left = `${rect.left}px`;
+        dropdown.style.zIndex = '1000';
+        dropdown.style.backgroundColor = 'var(--ubits-bg-1, #ffffff)';
+        dropdown.style.border = '1px solid var(--ubits-border-1, #d0d2d5)';
+        dropdown.style.borderRadius = '8px';
+        dropdown.style.boxShadow = '0 4px 12px var(--ubits-shadow-md, rgba(0, 0, 0, 0.15))';
+        dropdown.style.display = 'block';
+        
+        // Inicializar la lista interactiva
+        const listContainer = dropdown.querySelector('.ubits-list');
+        if (listContainer) {
+          // Agregar event listeners a los items de la lista
+          const listItemsElements = listContainer.querySelectorAll('.ubits-list-item');
+          listItemsElements.forEach((itemEl, index) => {
+            itemEl.addEventListener('click', () => {
+              const option = statusOptions[index];
+              if (option) {
+                const row = currentOptions.rows.find(r => r.id === rowId);
+                if (row) {
+                  const col = currentOptions.columns.find(c => c.id === columnId);
+                  if (col) {
+                    const statusToLabel: Record<string, string> = {
+                      'active': 'Activo',
+                      'completed': 'Completado',
+                      'published': 'Publicado',
+                      'fulfilled': 'Cumplido',
+                      'created': 'Creado',
+                      'not-fulfilled': 'No cumplido',
+                      'denied': 'Denegado',
+                      'draft': 'Borrador',
+                      'in-progress': 'En progreso',
+                      'syncing': 'Sincronizando',
+                      'pending': 'Pendiente',
+                      'pending-approval': 'Pendiente aprobación',
+                      'not-started': 'No iniciado',
+                      'finished': 'Finalizado',
+                      'archived': 'Archivado',
+                      'disabled': 'Deshabilitado',
+                      'paused': 'Pausado',
+                      'hidden': 'Oculto'
+                    };
+                    
+                    const labelToSave = statusToLabel[option.status] || option.label;
+                    row.data[columnId] = labelToSave;
+                    row.data.estado = labelToSave;
+                    row.data.status = labelToSave;
+                    
+                    render();
+                  }
+                }
+                closeDropdown();
+              }
+            });
+          });
+        }
+        
+        // Cerrar al hacer click fuera
+        setTimeout(() => {
+          document.addEventListener('click', closeDropdown);
+        }, 0);
+      };
+      
+      // Agregar event listener al status tag
+      statusTag.addEventListener('click', openDropdown);
     });
   };
 

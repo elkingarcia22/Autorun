@@ -9750,8 +9750,8 @@ Reglas Importantes:
               // Si cambia a 'nombre-avatar' o 'nombre-avatar-texto' y no tiene avatarVariant, establecer por defecto
               column.avatarVariant = 'initials';
             }
-            // Si cambia a un tipo que no es 'nombre' o 'nombre-avatar', eliminar editable
-            if (newType !== 'nombre' && newType !== 'nombre-avatar') {
+            // Si cambia a un tipo que no es 'nombre', 'nombre-avatar' o 'estado', eliminar editable
+            if (newType !== 'nombre' && newType !== 'nombre-avatar' && newType !== 'estado') {
               column.editable = undefined;
             }
             // Actualizar el título del header según el tipo seleccionado
@@ -9797,7 +9797,7 @@ Reglas Importantes:
           // value = [columnId, editable]
           const [columnId, editable] = value;
           const column = state.columns.find(col => col.id === columnId);
-          if (column && (column.type === 'nombre' || column.type === 'nombre-avatar')) {
+          if (column && (column.type === 'nombre' || column.type === 'nombre-avatar' || column.type === 'estado')) {
             column.editable = editable;
             // Regenerar selectores para actualizar el checkbox
             if (typeof window.generateColumnTypeSelectors === 'function') {
@@ -9867,7 +9867,8 @@ Reglas Importantes:
           const isNombreAvatar = currentType === 'nombre-avatar';
           const isNombreAvatarTexto = currentType === 'nombre-avatar-texto';
           const isNombre = currentType === 'nombre';
-          const isEditableType = isNombre || isNombreAvatar;
+          const isEstado = currentType === 'estado';
+          const isEditableType = isNombre || isNombreAvatar || isEstado;
           const hasAvatarVariant = isNombreAvatar || isNombreAvatarTexto;
           
           return `
