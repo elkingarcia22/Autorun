@@ -178,7 +178,7 @@
 .ubits-data-table-3__column-header-content {
     display: flex;
     align-items: center;
-    gap: var(--ubits-spacing-xs, 4px);
+    gap: 0;
     padding-left: 0;
     position: relative;
     width: 100%;
@@ -190,7 +190,7 @@
     font-weight: 600;
     color: var(--ubits-body-md-regular-1, #1f2937);
     margin-left: 0;
-    padding-left: 10px;
+    padding-left: 0;
     flex: 1;
 }
 
