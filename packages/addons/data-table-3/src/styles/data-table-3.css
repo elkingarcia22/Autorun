@@ -368,7 +368,7 @@
 .ubits-data-table-3__column-header--checkbox {
     text-align: left;
     padding: 8px 4px;
-    padding-left: 4px;
+    padding-left: 11px; /* Ajustado para alinear con los checkboxes de las filas */
     padding-right: 4px;
     position: sticky;
     left: 70px;
@@ -539,6 +539,17 @@
     min-width: 200px;
     max-width: 300px;
     overflow: hidden;
+}
+
+/* Tags de estado con ancho uniforme en la columna de estado */
+.ubits-data-table-3__cell--estado .ubits-status-tag {
+    width: 120px; /* Ancho fijo para todos los tags de estado */
+    min-width: 120px;
+    max-width: 120px;
+    display: inline-flex;
+    justify-content: center;
+    text-align: center;
+    box-sizing: border-box;
 }
 
 /* Celda editable */
