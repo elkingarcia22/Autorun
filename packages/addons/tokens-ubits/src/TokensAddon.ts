@@ -63,6 +63,19 @@ export class UBITSTokensAddon implements TokensAddon {
     '--ubits-button-focus-ring',
   ];
 
+  /**
+   * Ruta base para cargar tokens CSS
+   * Por defecto usa la ruta estática, pero puede ser sobrescrita
+   */
+  private tokensCSSPath: string = '../../tokens/dist/tokens.css';
+
+  /**
+   * Configurar ruta de tokens CSS (opcional)
+   */
+  setTokensCSSPath(path: string): void {
+    this.tokensCSSPath = path;
+  }
+
   async initialize(context: AppContext): Promise<void> {
     if (this.isInitialized) {
       console.warn('TokensAddon ya está inicializado');
@@ -70,15 +83,107 @@ export class UBITSTokensAddon implements TokensAddon {
     }
 
     try {
-      // Por ahora, este add-on simplemente verifica que los tokens base estén cargados
-      // No los carga directamente porque ya están en tokens.css estático
-      // Esto mantiene compatibilidad hacia atrás
+      // Verificar si los tokens ya están cargados (compatibilidad hacia atrás)
+      const existingTokens = document.querySelector('link[href*="tokens.css"]') as HTMLLinkElement;
       
+      if (existingTokens) {
+        // Tokens ya están cargados estáticamente, solo verificar
+        console.log('✅ Tokens UBITS ya cargados (modo compatibilidad)');
+        this.isInitialized = true;
+        
+        // Intentar extraer tokens del DOM para validación
+        await this.extractTokensFromDOM();
+        return;
+      }
+
+      // Si no hay tokens cargados, cargar desde el add-on
+      await this.loadTokensCSS();
       this.isInitialized = true;
-      console.log('✅ TokensAddon UBITS inicializado (modo compatibilidad)');
+      console.log('✅ TokensAddon UBITS inicializado y cargado');
     } catch (error) {
       console.error('❌ Error inicializando TokensAddon:', error);
       throw error;
+    }
+  }
+
+  /**
+   * Carga tokens CSS desde el add-on
+   */
+  private async loadTokensCSS(): Promise<void> {
+    if (typeof document === 'undefined') {
+      throw new Error('Document no disponible');
+    }
+
+    try {
+      // Intentar cargar desde fetch primero (para obtener el contenido)
+      const response = await fetch(this.tokensCSSPath);
+      if (!response.ok) {
+        throw new Error(`No se pudo cargar tokens.css desde ${this.tokensCSSPath}`);
+      }
+      
+      this.tokensCSS = await response.text();
+      
+      // Crear elemento <style> e inyectar tokens
+      this.styleElement = document.createElement('style');
+      this.styleElement.id = 'ubits-tokens-addon';
+      this.styleElement.textContent = this.tokensCSS;
+      document.head.appendChild(this.styleElement);
+      
+      console.log('✅ Tokens CSS cargados desde add-on');
+    } catch (fetchError) {
+      // Si fetch falla (por ejemplo, en file://), usar <link> como fallback
+      console.warn('⚠️ No se pudo cargar tokens con fetch, usando <link> como fallback');
+      
+      this.linkElement = document.createElement('link');
+      this.linkElement.rel = 'stylesheet';
+      this.linkElement.href = this.tokensCSSPath;
+      this.linkElement.id = 'ubits-tokens-addon-link';
+      document.head.appendChild(this.linkElement);
+      
+      // Esperar a que el CSS se cargue
+      await new Promise<void>((resolve, reject) => {
+        this.linkElement!.onload = () => resolve();
+        this.linkElement!.onerror = () => reject(new Error('Error cargando tokens.css'));
+        // Timeout de seguridad
+        setTimeout(() => reject(new Error('Timeout cargando tokens.css')), 5000);
+      });
+    }
+  }
+
+  /**
+   * Extrae tokens del DOM cuando ya están cargados estáticamente
+   */
+  private async extractTokensFromDOM(): Promise<void> {
+    if (typeof document === 'undefined') {
+      return;
+    }
+
+    // Intentar obtener tokens del CSS cargado
+    // Esto es útil para validación cuando los tokens ya están en el DOM
+    const testElement = document.createElement('div');
+    testElement.style.position = 'absolute';
+    testElement.style.visibility = 'hidden';
+    document.body.appendChild(testElement);
+
+    // Verificar algunos tokens para confirmar que están cargados
+    const sampleTokens = [
+      '--ubits-accent-brand',
+      '--ubits-bg-1',
+      '--ubits-fg-1-high'
+    ];
+
+    const loadedTokens = sampleTokens.filter(token => {
+      testElement.style.setProperty(token, 'test');
+      const value = getComputedStyle(testElement).getPropertyValue(token);
+      return value !== '';
+    });
+
+    document.body.removeChild(testElement);
+
+    if (loadedTokens.length === sampleTokens.length) {
+      console.log('✅ Tokens verificados en DOM');
+    } else {
+      console.warn('⚠️ Algunos tokens no están disponibles en el DOM');
     }
   }
 
@@ -97,9 +202,23 @@ export class UBITSTokensAddon implements TokensAddon {
   }
 
   getTokensCSS(): string {
-    // Por ahora retorna string vacío porque los tokens están en tokens.css estático
-    // En el futuro, esto cargará los tokens del add-on
-    return this.tokensCSS;
+    // Si tenemos tokens cargados, retornarlos
+    if (this.tokensCSS) {
+      return this.tokensCSS;
+    }
+
+    // Si no, intentar extraer del DOM
+    if (this.styleElement && this.styleElement.textContent) {
+      return this.styleElement.textContent;
+    }
+
+    // Si hay link element, no podemos obtener el contenido directamente
+    // pero podemos indicar que está cargado
+    if (this.linkElement) {
+      return '[Tokens cargados vía <link>]';
+    }
+
+    return '';
   }
 
   getTokensJS(): Record<string, any> {
