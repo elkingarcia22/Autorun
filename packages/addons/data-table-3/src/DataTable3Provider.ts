@@ -113,24 +113,33 @@ function renderCellByType(column: TableColumn3, row: TableRow3, columnType: Colu
       
       // Renderizar según la variante especificada
       if (avatarVariant === 'photo') {
-        // Variante Photo: usar imageUrl si está disponible, sino usar iniciales
+        // Variante Photo: usar imageUrl si está disponible
+        let imageUrl = null;
+        
+        // Buscar imageUrl en diferentes lugares
         if (avatar && typeof avatar === 'string') {
+          imageUrl = avatar;
+        } else if (avatar && typeof avatar === 'object') {
+          imageUrl = avatar.imageUrl || avatar.url || null;
+        }
+        
+        // También buscar en cellData por si está en otro lugar
+        if (!imageUrl && cellData) {
+          imageUrl = cellData.imageUrl || cellData.avatarUrl || cellData.avatarImage || null;
+        }
+        
+        // Si hay imageUrl, usar foto
+        if (imageUrl) {
           avatarHTML = renderAvatar({
-            imageUrl: avatar,
-            size: 'sm'
-          });
-        } else if (avatar && typeof avatar === 'object' && avatar.imageUrl) {
-          avatarHTML = renderAvatar({
-            imageUrl: avatar.imageUrl,
-            badgeColor: avatar.badgeColor,
-            badgeContent: avatar.badgeContent,
+            imageUrl: imageUrl,
+            badgeColor: avatar && typeof avatar === 'object' ? avatar.badgeColor : undefined,
+            badgeContent: avatar && typeof avatar === 'object' ? avatar.badgeContent : undefined,
             size: 'sm'
           });
         } else {
-          // Si no hay imagen, generar iniciales como fallback
-          const initials = generateInitials(nombre);
+          // Si no hay imagen, usar imagen por defecto
           avatarHTML = renderAvatar({
-            initials: initials,
+            imageUrl: '../assets/images/Profile-image.jpg',
             size: 'sm'
           });
         }
