@@ -1313,10 +1313,11 @@ export function createDataTable3(options: DataTable3Options): {
         dropdown.id = listContainerId;
         
         // Posicionar el dropdown debajo del status tag
+        // Con position: fixed, las coordenadas son relativas al viewport (no al documento)
         const rect = statusTag.getBoundingClientRect();
         dropdown.style.position = 'fixed';
-        dropdown.style.top = `${rect.bottom + window.scrollY + 4}px`;
-        dropdown.style.left = `${rect.left + window.scrollX}px`;
+        dropdown.style.top = `${rect.bottom + 4}px`;
+        dropdown.style.left = `${rect.left}px`;
         dropdown.style.zIndex = '1000';
         dropdown.style.backgroundColor = 'var(--ubits-bg-1, #ffffff)';
         dropdown.style.border = '1px solid var(--ubits-border-1, #d0d2d5)';
