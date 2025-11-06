@@ -399,6 +399,18 @@
 .ubits-data-table-3__cell--checkbox .ubits-checkbox {
     margin: 0;
     display: inline-flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Asegurar que el checkbox se mantenga centrado incluso con label */
+.ubits-data-table-3__cell--checkbox .ubits-checkbox__square {
+    flex-shrink: 0;
+}
+
+/* Cuando el checkbox tiene label, mantener el square alineado */
+.ubits-data-table-3__cell--checkbox .ubits-checkbox .ubits-checkbox__text-content {
+    margin-left: var(--ubits-spacing-xs, 4px);
 }
 
 /* Celda de nombre */
