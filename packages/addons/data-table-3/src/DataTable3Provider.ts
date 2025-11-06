@@ -42,7 +42,14 @@ function renderCell(column: TableColumn3, row: TableRow3): string {
 /**
  * Renderiza el header de una columna
  */
-function renderColumnHeader(column: TableColumn3, columnReorderable: boolean = false, rows: TableRow3[] = []): string {
+function renderColumnHeader(
+  column: TableColumn3, 
+  columnReorderable: boolean = false,
+  columnSortable: boolean = true,
+  rows: TableRow3[] = [],
+  sortColumnId: string | null = null,
+  sortDirection: 'asc' | 'desc' | null = null
+): string {
   // Si es una columna de checkbox, renderizar solo el checkbox (sin título ni drag handle)
   if (column.id === 'checkbox' || column.id.startsWith('checkbox-')) {
     // Opcional: calcular si todos están seleccionados para el checkbox del header
@@ -83,10 +90,48 @@ function renderColumnHeader(column: TableColumn3, columnReorderable: boolean = f
     </div>
   ` : '';
 
+  // Botón de ordenamiento (solo para columnas que no sean checkbox y si columnSortable está habilitado)
+  const sortButton = !isCheckboxColumn && columnSortable ? (() => {
+    const isSorted = sortColumnId === column.id;
+    const showAscIcon = isSorted && sortDirection === 'asc';
+    const showDescIcon = isSorted && sortDirection === 'desc';
+    
+    let sortIconHTML = '';
+    if (showAscIcon) {
+      sortIconHTML = `
+        <wa-icon name="arrow-up-a-z"></wa-icon>
+        <i class="fas fa-sort-up ubits-data-table-3__sort-icon-fallback" aria-hidden="true"></i>
+      `;
+    } else if (showDescIcon) {
+      sortIconHTML = `
+        <wa-icon name="arrow-down-z-a"></wa-icon>
+        <i class="fas fa-sort-down ubits-data-table-3__sort-icon-fallback" aria-hidden="true"></i>
+      `;
+    } else {
+      sortIconHTML = `
+        <wa-icon name="arrow-up-a-z" style="opacity: 0.3;"></wa-icon>
+        <i class="far fa-sort ubits-data-table-3__sort-icon-fallback" aria-hidden="true"></i>
+      `;
+    }
+    
+    return `
+      <button
+        type="button"
+        class="ubits-data-table-3__column-sort ${isSorted ? 'ubits-data-table-3__column-sort--active' : ''}"
+        aria-label="Ordenar ${column.title}"
+        data-column-id="${column.id}"
+        data-sort-button="true"
+      >
+        ${sortIconHTML}
+      </button>
+    `;
+  })() : '';
+
   const headerContent = `
     <div class="ubits-data-table-3__column-header-content">
       ${dragHandle}
       <span class="ubits-data-table-3__column-title">${column.title}</span>
+      ${sortButton}
     </div>
   `;
 
@@ -177,7 +222,7 @@ export function renderDataTable3(
   columnOrder: string[] = [],
   rowOrder: (string | number)[] = []
 ): string {
-  const { columns, rows, className = '', columnReorderable = false, rowReorderable = false, rowExpandable = true } = options;
+  const { columns, rows, className = '', columnReorderable = false, columnSortable = true, rowReorderable = false, rowExpandable = true } = options;
 
   // Filtrar columnas visibles
   let visibleColumns = columns.filter(col => col.visible !== false);
@@ -191,6 +236,10 @@ export function renderDataTable3(
       .concat(visibleColumns.filter(col => !columnOrder.includes(col.id)));
   }
   
+  // Estado de ordenamiento
+  const sortColumnId = (options as any).sortColumnId || null;
+  const sortDirection = (options as any).sortDirection || null;
+  
   // Si hay un orden de filas especificado, reordenar según ese orden
   let orderedRows = [...rows];
   if (rowOrder.length > 0) {
@@ -200,10 +249,36 @@ export function renderDataTable3(
       .filter((row): row is TableRow3 => row !== undefined)
       .concat(rows.filter(row => !rowOrder.includes(row.id)));
   }
+  
+  // Aplicar ordenamiento si hay una columna ordenada
+  if (sortColumnId && sortDirection) {
+    orderedRows = [...orderedRows].sort((a, b) => {
+      const aValue = a.data[sortColumnId];
+      const bValue = b.data[sortColumnId];
+      
+      // Manejar valores nulos/undefined
+      if (aValue == null && bValue == null) return 0;
+      if (aValue == null) return 1;
+      if (bValue == null) return -1;
+      
+      // Convertir a string para comparación
+      const aStr = String(aValue).toLowerCase();
+      const bStr = String(bValue).toLowerCase();
+      
+      let comparison = 0;
+      if (aStr < bStr) {
+        comparison = -1;
+      } else if (aStr > bStr) {
+        comparison = 1;
+      }
+      
+      return sortDirection === 'asc' ? comparison : -comparison;
+    });
+  }
 
   // Renderizar headers de columnas
   const columnHeadersHTML = visibleColumns
-    .map(col => renderColumnHeader(col, columnReorderable, orderedRows))
+    .map(col => renderColumnHeader(col, columnReorderable, columnSortable, orderedRows, sortColumnId, sortDirection))
     .join('');
 
   // Renderizar filas
@@ -276,6 +351,10 @@ export function createDataTable3(options: DataTable3Options): {
   // Variables para drag & drop
   let draggedColumnId: string | null = null;
   let draggedRowId: string | number | null = null;
+  
+  // Estado de ordenamiento
+  let sortColumnId: string | null = null;
+  let sortDirection: 'asc' | 'desc' | null = null;
 
   // Función para inicializar fallback de iconos
   const initializeIconFallbacks = () => {
@@ -296,7 +375,11 @@ export function createDataTable3(options: DataTable3Options): {
 
   // Función para renderizar
   const render = () => {
-    const newHTML = renderDataTable3(currentOptions, columnOrder, rowOrder);
+    const newHTML = renderDataTable3(
+      { ...currentOptions, sortColumnId, sortDirection } as any, 
+      columnOrder, 
+      rowOrder
+    );
     element.innerHTML = newHTML.trim();
     attachEventListeners();
     initializeIconFallbacks();
@@ -343,19 +426,24 @@ export function createDataTable3(options: DataTable3Options): {
           if (header && draggedColumnId) {
             const columnId = header.getAttribute('data-column-id');
             if (columnId && columnId !== draggedColumnId) {
-              // Verificar si la columna de destino es checkbox (no permitir drop antes de checkbox)
+              // Verificar si la columna de destino es checkbox (no permitir drop sobre checkbox)
               const isTargetCheckbox = columnId === 'checkbox' || columnId.startsWith('checkbox-');
               const isDraggedCheckbox = draggedColumnId === 'checkbox' || draggedColumnId.startsWith('checkbox-');
               
+              // No permitir hacer drop sobre la columna de checkbox
+              if (isTargetCheckbox) {
+                return; // No permitir el drop sobre checkbox
+              }
+              
               // No permitir arrastrar columnas antes de la columna de checkbox
-              if (!isDraggedCheckbox && !isTargetCheckbox) {
+              if (!isDraggedCheckbox) {
                 // Encontrar el índice de la columna de checkbox
                 const checkboxColumnIndex = columnOrder.findIndex(id => id === 'checkbox' || id.startsWith('checkbox-'));
                 if (checkboxColumnIndex !== -1) {
                   const targetIndex = columnOrder.indexOf(columnId);
                   // No permitir drop si la posición objetivo está antes de la columna de checkbox
                   if (targetIndex < checkboxColumnIndex) {
-                    return; // No permitir el drop
+                    return; // No permitir el drop antes de checkbox
                   }
                 }
               }
@@ -391,6 +479,13 @@ export function createDataTable3(options: DataTable3Options): {
             
             // No permitir arrastrar la columna de checkbox
             if (isDraggedCheckbox) {
+              console.log('🚫 No se puede arrastrar la columna de checkbox');
+              return;
+            }
+            
+            // No permitir hacer drop sobre la columna de checkbox
+            if (isTargetCheckbox) {
+              console.log('🚫 No se puede hacer drop sobre la columna de checkbox');
               return;
             }
             
@@ -398,24 +493,60 @@ export function createDataTable3(options: DataTable3Options): {
               const currentIndex = columnOrder.indexOf(draggedColumnId);
               const targetIndex = columnOrder.indexOf(columnId);
               
-              // Encontrar el índice de la columna de checkbox
+              // Encontrar el índice de la columna de checkbox en el orden actual
               const checkboxColumnIndex = columnOrder.findIndex(id => id === 'checkbox' || id.startsWith('checkbox-'));
               
+              console.log('📊 Reordenamiento:', {
+                dragged: draggedColumnId,
+                target: columnId,
+                currentIndex,
+                targetIndex,
+                checkboxIndex: checkboxColumnIndex,
+                columnOrder: [...columnOrder]
+              });
+              
+              // Si no hay columna de checkbox, permitir el movimiento
+              if (checkboxColumnIndex === -1) {
+                if (currentIndex !== -1 && targetIndex !== -1) {
+                  columnOrder.splice(currentIndex, 1);
+                  columnOrder.splice(targetIndex, 0, draggedColumnId);
+                  
+                  if (currentOptions.onColumnReorder) {
+                    currentOptions.onColumnReorder([...columnOrder]);
+                  }
+                  
+                  render();
+                }
+                return;
+              }
+              
               // No permitir mover columnas antes de la columna de checkbox
-              if (checkboxColumnIndex !== -1) {
-                // Si la posición objetivo está antes de la columna de checkbox, no permitir
-                if (targetIndex < checkboxColumnIndex) {
-                  return;
-                }
-                // Si estamos moviendo desde después de checkbox a antes de checkbox, no permitir
-                if (currentIndex > checkboxColumnIndex && targetIndex < checkboxColumnIndex) {
-                  return;
-                }
+              // La validación debe ser: targetIndex NO puede ser menor que checkboxColumnIndex
+              if (targetIndex < checkboxColumnIndex) {
+                console.log('🚫 No se puede mover columna antes de la columna de checkbox');
+                return;
+              }
+              
+              // Validar: si estamos moviendo desde después de checkbox, no permitir mover antes de checkbox
+              if (currentIndex > checkboxColumnIndex && targetIndex < checkboxColumnIndex) {
+                console.log('🚫 No se puede mover columna desde después de checkbox hacia antes de checkbox');
+                return;
               }
               
               if (currentIndex !== -1 && targetIndex !== -1) {
-                columnOrder.splice(currentIndex, 1);
-                columnOrder.splice(targetIndex, 0, draggedColumnId);
+                // Calcular el nuevo orden SIN incluir la checkbox en el reordenamiento
+                const newOrder = [...columnOrder];
+                newOrder.splice(currentIndex, 1);
+                newOrder.splice(targetIndex, 0, draggedColumnId);
+                
+                // Verificar que la checkbox sigue en su posición correcta o después
+                const newCheckboxIndex = newOrder.findIndex(id => id === 'checkbox' || id.startsWith('checkbox-'));
+                if (newCheckboxIndex !== -1 && newCheckboxIndex < checkboxColumnIndex) {
+                  console.log('🚫 El reordenamiento movería la checkbox a una posición incorrecta');
+                  return;
+                }
+                
+                columnOrder = newOrder;
                 
                 if (currentOptions.onColumnReorder) {
                   currentOptions.onColumnReorder([...columnOrder]);
@@ -578,6 +709,31 @@ export function createDataTable3(options: DataTable3Options): {
           
           render();
         }
+      });
+    });
+    
+    // Botones de ordenamiento
+    const sortButtons = element.querySelectorAll('[data-sort-button="true"]');
+    sortButtons.forEach(button => {
+      button.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const columnId = button.getAttribute('data-column-id')!;
+        
+        // Si ya está ordenando esta columna, cambiar dirección
+        if (sortColumnId === columnId) {
+          sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+          // Nueva columna, empezar con asc
+          sortColumnId = columnId;
+          sortDirection = 'asc';
+        }
+        
+        if (currentOptions.onSort) {
+          currentOptions.onSort(columnId, sortDirection!);
+        }
+        
+        render();
       });
     });
   };

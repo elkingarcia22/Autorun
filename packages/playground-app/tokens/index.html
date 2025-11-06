@@ -5793,6 +5793,16 @@ Reglas Importantes:
                                   <span id="data-table-3-row-expandable-status-${componentId}" style="font-size: 14px; color: var(--ubits-fg-1-high);">Habilitado</span>
                                 </label>
                               </div>
+                              
+                              <!-- Ordenamiento de Columnas -->
+                              <div style="flex: 0 0 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Ordenamiento Columnas</label>
+                                <label class="switch" style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                                  <input type="checkbox" id="data-table-3-column-sortable-${componentId}" checked onchange="setDataTable3Control('columnSortable', this.checked, '${componentId}')">
+                                  <span class="slider"></span>
+                                  <span id="data-table-3-column-sortable-status-${componentId}" style="font-size: 14px; color: var(--ubits-fg-1-high);">Habilitado</span>
+                                </label>
+                              </div>
                             </div>
                           </div>
                           
@@ -9663,6 +9673,10 @@ Reglas Importantes:
           state.rowExpandable = value;
           const statusEl = document.getElementById(`data-table-3-row-expandable-status-${componentId}`);
           if (statusEl) statusEl.textContent = value ? 'Habilitado' : 'Deshabilitado';
+        } else if (option === 'columnSortable') {
+          state.columnSortable = value;
+          const statusEl = document.getElementById(`data-table-3-column-sortable-status-${componentId}`);
+          if (statusEl) statusEl.textContent = value ? 'Habilitado' : 'Deshabilitado';
         }
         
         // Actualizar el preview
@@ -9779,6 +9793,7 @@ Reglas Importantes:
               columnReorderable: state.columnReorderable !== false,
               rowReorderable: state.rowReorderable !== false,
               rowExpandable: state.rowExpandable !== false,
+              columnSortable: state.columnSortable !== false,
               onRowExpand: (rowId, expanded) => {
                 console.log('Fila expandida:', rowId, expanded);
                 const row = state.rows.find(r => r.id === rowId);

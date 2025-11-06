@@ -103,6 +103,16 @@ export interface DataTable3Options {
   rowExpandable?: boolean;
   
   /**
+   * Si las columnas son ordenables (muestra botones de ordenamiento)
+   */
+  columnSortable?: boolean;
+  
+  /**
+   * Callback cuando se ordena una columna
+   */
+  onSort?: (columnId: string, direction: 'asc' | 'desc') => void;
+  
+  /**
    * Clases CSS adicionales
    */
   className?: string;
