@@ -71,6 +71,13 @@ export interface TableColumn3 {
    * Si es false o undefined, no se muestra label
    */
   radioLabel?: string | boolean;
+  
+  /**
+   * Tamaño del radio button (solo para tipo 'radio')
+   * 'sm' - Pequeño (16px)
+   * 'md' - Mediano (20px)
+   */
+  radioSize?: 'sm' | 'md';
 }
 
 /**
