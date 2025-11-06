@@ -1430,16 +1430,11 @@ export function createDataTable3(options: DataTable3Options): {
         dropdown.id = listContainerId;
         
         // Posicionar el dropdown debajo del status tag
-        // Usar position: absolute para que se mueva con el scroll de la tabla
-        // El contenedor padre (.ubits-data-table-3__status-editable) debe tener position: relative
-        const container = statusTag.closest('.ubits-data-table-3__status-editable') as HTMLElement;
-        if (container) {
-          container.style.position = 'relative';
-        }
-        dropdown.style.position = 'absolute';
-        dropdown.style.top = '100%';
-        dropdown.style.left = '0';
-        dropdown.style.marginTop = '4px';
+        // Con position: fixed, las coordenadas son relativas al viewport (no al documento)
+        const rect = statusTag.getBoundingClientRect();
+        dropdown.style.position = 'fixed';
+        dropdown.style.top = `${rect.bottom + 4}px`;
+        dropdown.style.left = `${rect.left}px`;
         dropdown.style.zIndex = '1000';
         dropdown.style.backgroundColor = 'var(--ubits-bg-1, #ffffff)';
         dropdown.style.border = '1px solid var(--ubits-border-1, #d0d2d5)';
