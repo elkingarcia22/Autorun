@@ -390,19 +390,7 @@ function renderCellByType(column: TableColumn3, row: TableRow3, columnType: Colu
       const isEditable = column.editable === true;
       const disabled = !isEditable;
       
-      // 🔍 LOGS DETALLADOS
-      console.log('🔍 [CHECKBOX RENDER]', {
-        columnId: column.id,
-        rowId: row.id,
-        checked,
-        checkboxLabel: column.checkboxLabel,
-        showLabel,
-        labelText,
-        editable: column.editable,
-        isEditable,
-        disabled,
-        columnType: column.type
-      });
+      // 🔍 LOGS DETALLADOS - Removidos para limpieza
       
       const checkboxHTML = renderCheckbox({
         label: labelText,
@@ -411,15 +399,7 @@ function renderCellByType(column: TableColumn3, row: TableRow3, columnType: Colu
         disabled: disabled
       });
       
-      console.log('📦 [CHECKBOX HTML]', {
-        columnId: column.id,
-        rowId: row.id,
-        htmlLength: checkboxHTML.length,
-        hasLabel: checkboxHTML.includes('ubits-checkbox__label'),
-        hasDisabled: checkboxHTML.includes('disabled'),
-        hasEditable: isEditable,
-        htmlPreview: checkboxHTML.substring(0, 200)
-      });
+      // Log removido para limpieza
       
       // Agregar atributos para identificar el checkbox
       const finalHTML = checkboxHTML.replace(
@@ -427,13 +407,7 @@ function renderCellByType(column: TableColumn3, row: TableRow3, columnType: Colu
         `<input data-row-id="${row.id}" data-column-id="${column.id}" data-checkbox-button="true" ${isEditable ? 'data-editable="true"' : ''}`
       );
       
-      console.log('✅ [CHECKBOX FINAL]', {
-        columnId: column.id,
-        rowId: row.id,
-        finalHTMLLength: finalHTML.length,
-        hasDataEditable: finalHTML.includes('data-editable="true"'),
-        finalHTMLPreview: finalHTML.substring(0, 250)
-      });
+      // Log removido para limpieza
       
       return finalHTML;
     }
@@ -773,12 +747,19 @@ export function renderDataTable3(
           <th class="ubits-data-table-3__controls-column-header"></th>
   ` : '';
   
+  // Verificar si hay una columna de checkbox visible para agregar su header vacío
+  const hasCheckboxColumn = visibleColumns.some(col => col.id === 'checkbox' || col.id.startsWith('checkbox-'));
+  const checkboxHeader = hasCheckboxColumn ? `
+          <th class="ubits-data-table-3__column-header--checkbox ubits-data-table-3__column-header--checkbox-empty"></th>
+  ` : '';
+  
   // Estructura sin contenedor adicional: la tabla directamente
   const html = `
     <table class="${classes} ubits-data-table-3__table">
       <thead class="ubits-data-table-3__thead">
         <tr class="ubits-data-table-3__header-row">
           ${controlsHeader}
+          ${checkboxHeader}
           ${columnHeadersHTML}
         </tr>
       </thead>
@@ -856,16 +837,7 @@ export function createDataTable3(options: DataTable3Options): {
 
   // Función para renderizar
   const render = () => {
-    console.log('🔄 [RENDER START]', {
-      timestamp: new Date().toISOString(),
-      columnsCount: currentOptions.columns.length,
-      rowsCount: currentOptions.rows.length,
-      checkboxColumns: currentOptions.columns.filter(c => c.type === 'checkbox').map(c => ({
-        id: c.id,
-        editable: c.editable,
-        checkboxLabel: c.checkboxLabel
-      }))
-    });
+    // Log removido para limpieza
     
     const newHTML = renderDataTable3(
       { ...currentOptions, sortColumnId, sortDirection } as any, 
@@ -875,23 +847,7 @@ export function createDataTable3(options: DataTable3Options): {
     
     // 🔍 LOGS: Verificar posiciones de checkboxes antes de actualizar
     const checkboxCellsBefore = element.querySelectorAll('.ubits-data-table-3__cell--checkbox');
-    console.log('📍 [BEFORE RENDER] Checkbox cells:', {
-      count: checkboxCellsBefore.length,
-      positions: Array.from(checkboxCellsBefore).map((cell, idx) => {
-        const rect = cell.getBoundingClientRect();
-        const checkbox = cell.querySelector('.ubits-checkbox');
-        const checkboxRect = checkbox?.getBoundingClientRect();
-        return {
-          index: idx,
-          cellLeft: rect.left,
-          cellWidth: rect.width,
-          checkboxLeft: checkboxRect?.left,
-          checkboxWidth: checkboxRect?.width,
-          hasEditableClass: cell.classList.contains('ubits-data-table-3__cell--editable'),
-          isDisabled: checkbox?.querySelector('input[disabled]') !== null
-        };
-      })
-    });
+    // Log removido para limpieza
     
     element.innerHTML = newHTML.trim();
     
@@ -909,35 +865,15 @@ export function createDataTable3(options: DataTable3Options): {
         const beforeCell = checkboxCellsBefore[idx];
         const beforeRect = beforeCell?.getBoundingClientRect();
         
-        console.log(`📍 [CELL ${idx}] Detalles:`, {
-          cellLeft: `${rect.left.toFixed(2)}px`,
-          cellWidth: `${rect.width.toFixed(2)}px`,
-          cellRight: `${rect.right.toFixed(2)}px`,
-          cellMinWidth: computedStyle.minWidth,
-          cellMaxWidth: computedStyle.maxWidth,
-          cellWidthActual: computedStyle.width,
-          cellPadding: computedStyle.padding,
-          cellTextAlign: computedStyle.textAlign,
-          checkboxLeft: checkboxRect ? `${checkboxRect.left.toFixed(2)}px` : 'N/A',
-          checkboxWidth: checkboxRect ? `${checkboxRect.width.toFixed(2)}px` : 'N/A',
-          checkboxMargin: checkboxComputed?.margin,
-          checkboxGap: checkboxComputed?.gap,
-          hasEditableClass: cell.classList.contains('ubits-data-table-3__cell--editable'),
-          isDisabled: checkbox?.querySelector('input[disabled]') !== null,
-          beforeLeft: beforeRect ? `${beforeRect.left.toFixed(2)}px` : 'N/A',
-          beforeWidth: beforeRect ? `${beforeRect.width.toFixed(2)}px` : 'N/A',
-          leftDiff: beforeRect ? `${(rect.left - beforeRect.left).toFixed(2)}px` : 'N/A',
-          widthDiff: beforeRect ? `${(rect.width - beforeRect.width).toFixed(2)}px` : 'N/A',
-          hasMoved: beforeRect && Math.abs(rect.left - beforeRect.left) > 1,
-          hasResized: beforeRect && Math.abs(rect.width - beforeRect.width) > 1
-        });
+        // Log removido para limpieza
       });
     }, 100);
     
     attachEventListeners();
     initializeIconFallbacks();
     
-    console.log('✅ [RENDER COMPLETE]');
+    // Log removido para limpieza
+    // console.log('✅ [RENDER COMPLETE]');
   };
   
   // Función para adjuntar event listeners
@@ -1034,13 +970,14 @@ export function createDataTable3(options: DataTable3Options): {
             
             // No permitir arrastrar la columna de checkbox
             if (isDraggedCheckbox) {
-              console.log('🚫 No se puede arrastrar la columna de checkbox');
+              // Log removido para limpieza
               return;
             }
             
             // No permitir hacer drop sobre la columna de checkbox
             if (isTargetCheckbox) {
-              console.log('🚫 No se puede hacer drop sobre la columna de checkbox');
+              // Log removido para limpieza
+              // console.log('🚫 No se puede hacer drop sobre la columna de checkbox');
               return;
             }
             
@@ -1051,14 +988,7 @@ export function createDataTable3(options: DataTable3Options): {
               // Encontrar el índice de la columna de checkbox en el orden actual
               const checkboxColumnIndex = columnOrder.findIndex(id => id === 'checkbox' || id.startsWith('checkbox-'));
               
-              console.log('📊 Reordenamiento:', {
-                dragged: draggedColumnId,
-                target: columnId,
-                currentIndex,
-                targetIndex,
-                checkboxIndex: checkboxColumnIndex,
-                columnOrder: [...columnOrder]
-              });
+              // Log removido para limpieza
               
               // Si no hay columna de checkbox, permitir el movimiento
               if (checkboxColumnIndex === -1) {
@@ -1078,13 +1008,15 @@ export function createDataTable3(options: DataTable3Options): {
               // No permitir mover columnas antes de la columna de checkbox
               // La validación debe ser: targetIndex NO puede ser menor que checkboxColumnIndex
               if (targetIndex < checkboxColumnIndex) {
-                console.log('🚫 No se puede mover columna antes de la columna de checkbox');
+                // Log removido para limpieza
+                // console.log('🚫 No se puede mover columna antes de la columna de checkbox');
                 return;
               }
               
               // Validar: si estamos moviendo desde después de checkbox, no permitir mover antes de checkbox
               if (currentIndex > checkboxColumnIndex && targetIndex < checkboxColumnIndex) {
-                console.log('🚫 No se puede mover columna desde después de checkbox hacia antes de checkbox');
+                // Log removido para limpieza
+                // console.log('🚫 No se puede mover columna desde después de checkbox hacia antes de checkbox');
                 return;
               }
               
@@ -1097,7 +1029,8 @@ export function createDataTable3(options: DataTable3Options): {
                 // Verificar que la checkbox sigue en su posición correcta o después
                 const newCheckboxIndex = newOrder.findIndex(id => id === 'checkbox' || id.startsWith('checkbox-'));
                 if (newCheckboxIndex !== -1 && newCheckboxIndex < checkboxColumnIndex) {
-                  console.log('🚫 El reordenamiento movería la checkbox a una posición incorrecta');
+                  // Log removido para limpieza
+                  // console.log('🚫 El reordenamiento movería la checkbox a una posición incorrecta');
                   return;
                 }
                 
@@ -1341,18 +1274,50 @@ export function createDataTable3(options: DataTable3Options): {
     
     // Status tags editables - mostrar dropdown con lista de estados
     const statusEditables = element.querySelectorAll('.ubits-data-table-3__status-editable');
-    statusEditables.forEach(container => {
+    console.log('🔍 [STATUS DROPDOWN] Buscando contenedores de status editables', {
+      statusEditablesCount: statusEditables.length,
+      element: element
+    });
+    
+    statusEditables.forEach((container, index) => {
       const rowIdStr = container.getAttribute('data-row-id');
       const columnId = container.getAttribute('data-column-id');
       const currentStatus = container.getAttribute('data-current-status');
       
-      if (!rowIdStr || !columnId) return;
+      console.log(`🔍 [STATUS DROPDOWN] Procesando contenedor ${index}`, {
+        container: container,
+        rowIdStr,
+        columnId,
+        currentStatus,
+        hasRowId: !!rowIdStr,
+        hasColumnId: !!columnId
+      });
+      
+      if (!rowIdStr || !columnId) {
+        console.warn(`⚠️ [STATUS DROPDOWN] Contenedor ${index} no tiene rowId o columnId`);
+        return;
+      }
       
       const rowId = isNaN(Number(rowIdStr)) ? rowIdStr : Number(rowIdStr);
       const statusTag = container.querySelector('.ubits-status-tag');
       const dropdown = container.querySelector('.ubits-data-table-3__status-dropdown') as HTMLElement;
       
-      if (!statusTag || !dropdown) return;
+      console.log(`🔍 [STATUS DROPDOWN] Elementos encontrados para contenedor ${index}`, {
+        statusTag: statusTag,
+        statusTagExists: !!statusTag,
+        dropdown: dropdown,
+        dropdownExists: !!dropdown,
+        rowId,
+        columnId,
+        currentStatus
+      });
+      
+      if (!statusTag || !dropdown) {
+        console.warn(`⚠️ [STATUS DROPDOWN] Contenedor ${index} no tiene statusTag o dropdown`);
+        return;
+      }
+      
+      console.log(`✅ [STATUS DROPDOWN] Configurando dropdown para contenedor ${index}`);
       
       // Lista de estados disponibles con sus labels en español
       const statusOptions = [
@@ -1386,6 +1351,15 @@ export function createDataTable3(options: DataTable3Options): {
       const openDropdown = (e: MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
+        
+        console.log('🔵 [STATUS DROPDOWN] Abriendo dropdown', {
+          rowId,
+          columnId,
+          statusTag: statusTag,
+          dropdown: dropdown,
+          dropdownExists: !!dropdown,
+          dropdownDisplay: dropdown?.style.display
+        });
         
         // Cerrar otros dropdowns abiertos
         element.querySelectorAll('.ubits-data-table-3__status-dropdown').forEach((dd: any) => {
@@ -1430,12 +1404,75 @@ export function createDataTable3(options: DataTable3Options): {
         dropdown.id = listContainerId;
         
         // Posicionar el dropdown debajo del status tag
-        // Con position: fixed, las coordenadas son relativas al viewport (no al documento)
-        const rect = statusTag.getBoundingClientRect();
-        dropdown.style.position = 'fixed';
-        dropdown.style.top = `${rect.bottom + 4}px`;
-        dropdown.style.left = `${rect.left}px`;
+        // Usar position: absolute para que se mueva con el scroll de la tabla
+        // El contenedor padre (.ubits-data-table-3__status-editable) debe tener position: relative
+        const container = statusTag.closest('.ubits-data-table-3__status-editable') as HTMLElement;
+        const statusTagRect = statusTag.getBoundingClientRect();
+        const containerRect = container?.getBoundingClientRect();
+        const containerComputedStyle = container ? window.getComputedStyle(container) : null;
+        
+        console.log('📍 [STATUS DROPDOWN] Posicionamiento detallado', {
+          container: container,
+          containerExists: !!container,
+          containerPosition: container?.style.position,
+          containerComputedPosition: containerComputedStyle?.position,
+          containerPadding: containerComputedStyle ? {
+            top: containerComputedStyle.paddingTop,
+            bottom: containerComputedStyle.paddingBottom,
+            left: containerComputedStyle.paddingLeft,
+            right: containerComputedStyle.paddingRight
+          } : null,
+          containerMargin: containerComputedStyle ? {
+            top: containerComputedStyle.marginTop,
+            bottom: containerComputedStyle.marginBottom
+          } : null,
+          statusTagRect: {
+            top: statusTagRect.top,
+            bottom: statusTagRect.bottom,
+            height: statusTagRect.height,
+            left: statusTagRect.left,
+            width: statusTagRect.width
+          },
+          containerRect: containerRect ? {
+            top: containerRect.top,
+            bottom: containerRect.bottom,
+            height: containerRect.height
+          } : null,
+          dropdownBefore: {
+            position: dropdown.style.position,
+            top: dropdown.style.top,
+            left: dropdown.style.left,
+            marginTop: dropdown.style.marginTop
+          }
+        });
+        
+        if (container) {
+          container.style.position = 'relative';
+          // Asegurar que no haya padding o margin que cause espacio
+          const containerPaddingBottom = containerComputedStyle?.paddingBottom || '0px';
+          const containerMarginBottom = containerComputedStyle?.marginBottom || '0px';
+          console.log('✅ [STATUS DROPDOWN] Container position set to relative', {
+            paddingBottom: containerPaddingBottom,
+            marginBottom: containerMarginBottom
+          });
+        } else {
+          console.warn('⚠️ [STATUS DROPDOWN] Container no encontrado');
+        }
+        
+        dropdown.style.position = 'absolute';
+        dropdown.style.top = '100%';
+        dropdown.style.left = '0';
+        dropdown.style.marginTop = '-4px'; // Aumentar superposición para eliminar espacio visual
         dropdown.style.zIndex = '1000';
+        
+        console.log('📍 [STATUS DROPDOWN] Posicionamiento aplicado', {
+          position: dropdown.style.position,
+          top: dropdown.style.top,
+          left: dropdown.style.left,
+          marginTop: dropdown.style.marginTop,
+          zIndex: dropdown.style.zIndex,
+          expectedTop: `100% del container - 4px`
+        });
         dropdown.style.backgroundColor = 'var(--ubits-bg-1, #ffffff)';
         dropdown.style.border = '1px solid var(--ubits-border-1, #d0d2d5)';
         dropdown.style.borderRadius = '8px';
@@ -1443,14 +1480,230 @@ export function createDataTable3(options: DataTable3Options): {
         dropdown.style.display = 'block';
         dropdown.style.minWidth = '200px';
         dropdown.style.maxWidth = '300px';
-        dropdown.style.padding = '4px';
+        dropdown.style.padding = '0';
         dropdown.style.boxSizing = 'border-box';
+        
+        // Crear wrapper para el scrollbar personalizado (similar al popover)
+        dropdown.innerHTML = '<div class="ubits-data-table-3__status-dropdown-body"><div class="ubits-data-table-3__status-dropdown-content"></div><div class="ubits-data-table-3__status-dropdown-scrollbar"><div class="ubits-data-table-3__status-dropdown-scrollbar-bar"></div></div></div>';
+        const dropdownBody = dropdown.querySelector('.ubits-data-table-3__status-dropdown-body') as HTMLElement;
+        const dropdownContent = dropdown.querySelector('.ubits-data-table-3__status-dropdown-content') as HTMLElement;
+        
+        console.log('🏗️ [STATUS DROPDOWN] Estructura creada', {
+          dropdownBody: dropdownBody,
+          dropdownBodyExists: !!dropdownBody,
+          dropdownContent: dropdownContent,
+          dropdownContentExists: !!dropdownContent,
+          dropdownHTML: dropdown.innerHTML.substring(0, 200)
+        });
+        
+        if (!dropdownBody || !dropdownContent) {
+          console.error('❌ [STATUS DROPDOWN] Error creating dropdown structure', {
+            dropdownBody: dropdownBody,
+            dropdownContent: dropdownContent
+          });
+          return;
+        }
+        
+        // Crear contenedor para la lista dentro del content
+        const listWrapper = document.createElement('div');
+        listWrapper.id = listContainerId;
+        dropdownContent.appendChild(listWrapper);
+        
+        console.log('📦 [STATUS DROPDOWN] Contenedor de lista creado', {
+          listWrapper: listWrapper,
+          listWrapperId: listWrapper.id,
+          listWrapperExists: !!listWrapper,
+          dropdownContent: dropdownContent,
+          dropdownContentChildren: dropdownContent.children.length
+        });
+        
+        // Definir setupScrollbar antes del try para que esté disponible en los setTimeout
+        function setupScrollbar(listElementParam: HTMLElement) {
+            if (!listElementParam) {
+              console.error('❌ [STATUS DROPDOWN] setupScrollbar llamado sin listElement');
+              return;
+            }
+            
+            const listElement = listElementParam;
+            
+            console.log('📋 [STATUS DROPDOWN] Configurando scrollbar para lista', {
+              listElement: listElement,
+              listElementExists: !!listElement,
+              listElementClasses: listElement?.className,
+              listElementStyles: listElement ? {
+                scrollbarWidth: listElement.style.scrollbarWidth,
+                overflowY: listElement.style.overflowY,
+                height: listElement.style.height,
+                computedScrollbarWidth: window.getComputedStyle(listElement).scrollbarWidth
+              } : null
+            });
+            
+            if (listElement) {
+              console.log('🎨 [STATUS DROPDOWN] Ocultando scrollbar nativo', {
+                before: {
+                  scrollbarWidth: window.getComputedStyle(listElement).scrollbarWidth,
+                  webkitScrollbarWidth: window.getComputedStyle(listElement, '::-webkit-scrollbar').width
+                }
+              });
+              
+              // Forzar ocultar scrollbar nativo con estilos inline
+              listElement.style.scrollbarWidth = 'none';
+              listElement.style.setProperty('-ms-overflow-style', 'none', 'important');
+              listElement.style.setProperty('scrollbar-width', 'none', 'important');
+              
+              // Ocultar scrollbar en WebKit
+              const style = document.createElement('style');
+              style.id = `scrollbar-hide-${listContainerId}`;
+              style.textContent = `
+                #${listContainerId} .ubits-list::-webkit-scrollbar {
+                  width: 0px !important;
+                  height: 0px !important;
+                  display: none !important;
+                }
+                #${listContainerId} .ubits-list::-webkit-scrollbar-thumb {
+                  display: none !important;
+                }
+                #${listContainerId} .ubits-list::-webkit-scrollbar-track {
+                  display: none !important;
+                }
+              `;
+              document.head.appendChild(style);
+              
+              console.log('✅ [STATUS DROPDOWN] Estilos de ocultación aplicados', {
+                styleElement: style,
+                styleId: style.id,
+                after: {
+                  scrollbarWidth: listElement.style.scrollbarWidth,
+                  computedScrollbarWidth: window.getComputedStyle(listElement).scrollbarWidth
+                }
+              });
+            // Sincronizar scrollbar personalizado con el scroll de la lista
+            const scrollbarBar = dropdown.querySelector('.ubits-data-table-3__status-dropdown-scrollbar-bar') as HTMLElement;
+            const scrollbarContainer = dropdown.querySelector('.ubits-data-table-3__status-dropdown-scrollbar') as HTMLElement;
+            
+            console.log('🎚️ [STATUS DROPDOWN] Elementos del scrollbar', {
+              scrollbarBar: scrollbarBar,
+              scrollbarBarExists: !!scrollbarBar,
+              scrollbarContainer: scrollbarContainer,
+              scrollbarContainerExists: !!scrollbarContainer,
+              scrollbarContainerHeight: scrollbarContainer?.clientHeight
+            });
+            
+            if (scrollbarBar && scrollbarContainer) {
+              console.log('✅ [STATUS DROPDOWN] Scrollbar personalizado encontrado, configurando...');
+              
+              const updateScrollbar = () => {
+                const scrollTop = listElement.scrollTop;
+                const scrollHeight = listElement.scrollHeight;
+                const clientHeight = listElement.clientHeight;
+                const scrollableHeight = scrollHeight - clientHeight;
+                
+                console.log('🔄 [STATUS DROPDOWN] Actualizando scrollbar', {
+                  scrollTop,
+                  scrollHeight,
+                  clientHeight,
+                  scrollableHeight,
+                  scrollbarContainerHeight: scrollbarContainer.clientHeight
+                });
+                
+                if (scrollableHeight > 0 && scrollbarContainer.clientHeight > 0) {
+                  const scrollbarHeight = scrollbarContainer.clientHeight - 16; // 8px padding top + 8px padding bottom
+                  const thumbHeight = Math.max(20, (clientHeight / scrollHeight) * scrollbarHeight);
+                  const maxThumbTop = scrollbarHeight - thumbHeight;
+                  const thumbTop = Math.max(0, Math.min(maxThumbTop, (scrollTop / scrollableHeight) * maxThumbTop));
+                  
+                  scrollbarBar.style.height = `${thumbHeight}px`;
+                  scrollbarBar.style.transform = `translateY(${thumbTop}px)`;
+                  scrollbarBar.style.opacity = '1';
+                  
+                  console.log('📊 [STATUS DROPDOWN] Scrollbar actualizado', {
+                    scrollbarHeight,
+                    thumbHeight,
+                    thumbTop,
+                    opacity: scrollbarBar.style.opacity
+                  });
+                } else {
+                  scrollbarBar.style.opacity = '0';
+                  console.log('👻 [STATUS DROPDOWN] Scrollbar oculto (no hay scroll)', {
+                    scrollableHeight,
+                    scrollbarContainerHeight: scrollbarContainer.clientHeight
+                  });
+                }
+              };
+              
+              // Funcionalidad de arrastre del scrollbar
+              let isDragging = false;
+              let startY = 0;
+              let startScrollTop = 0;
+              
+              const handleMouseDown = (e: MouseEvent) => {
+                isDragging = true;
+                startY = e.clientY;
+                startScrollTop = listElement.scrollTop;
+                e.preventDefault();
+                
+                const handleMouseMove = (e: MouseEvent) => {
+                  if (!isDragging) return;
+                  
+                  const deltaY = e.clientY - startY;
+                  const scrollbarHeight = scrollbarContainer.clientHeight - 16;
+                  const scrollHeight = listElement.scrollHeight;
+                  const clientHeight = listElement.clientHeight;
+                  const scrollableHeight = scrollHeight - clientHeight;
+                  
+                  if (scrollableHeight > 0) {
+                    const scrollRatio = scrollableHeight / (scrollbarHeight - scrollbarBar.clientHeight);
+                    const newScrollTop = startScrollTop + (deltaY * scrollRatio);
+                    listElement.scrollTop = Math.max(0, Math.min(scrollableHeight, newScrollTop));
+                  }
+                };
+                
+                const handleMouseUp = () => {
+                  isDragging = false;
+                  document.removeEventListener('mousemove', handleMouseMove);
+                  document.removeEventListener('mouseup', handleMouseUp);
+                };
+                
+                document.addEventListener('mousemove', handleMouseMove);
+                document.addEventListener('mouseup', handleMouseUp);
+              };
+              
+              scrollbarBar.addEventListener('mousedown', handleMouseDown);
+              
+              // Actualizar scrollbar cuando se hace scroll
+              listElement.addEventListener('scroll', updateScrollbar);
+              
+              // Actualizar scrollbar cuando cambia el tamaño
+              const resizeObserver = new ResizeObserver(() => {
+                updateScrollbar();
+              });
+              resizeObserver.observe(listElement);
+              resizeObserver.observe(scrollbarContainer);
+              
+              // Actualizar inicialmente
+              setTimeout(updateScrollbar, 0);
+            } else {
+              console.error('❌ [STATUS DROPDOWN] Scrollbar personalizado no encontrado', {
+                scrollbarBar: scrollbarBar,
+                scrollbarContainer: scrollbarContainer
+              });
+            }
+          }
+        }
         
         // Crear la lista interactiva usando createList
         // createList modifica el innerHTML del contenedor con el ID especificado
         // y retorna el elemento .ubits-list dentro del contenedor
+        let listElement: HTMLElement | null = null;
         try {
-          createList({
+          console.log('🔄 [STATUS DROPDOWN] Llamando a createList', {
+            containerId: listContainerId,
+            itemsCount: listItems.length,
+            size: 'sm',
+            maxHeight: '300px'
+          });
+          
+          listElement = createList({
             containerId: listContainerId,
             items: listItems,
             size: 'sm',
@@ -1476,8 +1729,237 @@ export function createDataTable3(options: DataTable3Options): {
               }
             }
           });
+          
+          console.log('✅ [STATUS DROPDOWN] createList retornó', {
+            listElement: listElement,
+            listElementExists: !!listElement,
+            listElementClasses: listElement?.className,
+            listElementHTML: listElement ? listElement.outerHTML.substring(0, 200) : null,
+            listWrapperInnerHTML: listWrapper.innerHTML.substring(0, 200)
+          });
+          
+          // Obtener el elemento .ubits-list y sincronizar el scrollbar personalizado
+          // Usar el elemento retornado directamente o buscarlo si no se retornó
+          if (!listElement) {
+            console.warn('⚠️ [STATUS DROPDOWN] createList no retornó elemento, buscando...');
+            listElement = listWrapper.querySelector('.ubits-list') as HTMLElement;
+          }
+          
+          // Si aún no existe, esperar un momento
+          if (!listElement) {
+            console.warn('⚠️ [STATUS DROPDOWN] Lista no encontrada inmediatamente, esperando...');
+            setTimeout(() => {
+              const foundListElement = listWrapper.querySelector('.ubits-list') as HTMLElement;
+              console.log('📋 [STATUS DROPDOWN] Buscando lista después de timeout', {
+                foundListElement: foundListElement,
+                foundListElementExists: !!foundListElement,
+                listWrapperInnerHTML: listWrapper.innerHTML.substring(0, 300)
+              });
+              
+              if (foundListElement) {
+                setupScrollbar(foundListElement);
+              } else {
+                console.error('❌ [STATUS DROPDOWN] Lista no encontrada después de timeout');
+              }
+            }, 50);
+          } else {
+            setupScrollbar(listElement);
+          }
+          
+          // Si la lista no se encontró, intentar de nuevo después de más tiempo
+          if (!listElement) {
+            console.warn('⚠️ [STATUS DROPDOWN] Lista no encontrada, intentando de nuevo después de 100ms...');
+            setTimeout(() => {
+              const retryListElement = listWrapper.querySelector('.ubits-list') as HTMLElement;
+              console.log('🔄 [STATUS DROPDOWN] Reintento de búsqueda de lista', {
+                retryListElement: retryListElement,
+                retryListElementExists: !!retryListElement,
+                listWrapperInnerHTML: listWrapper.innerHTML.substring(0, 500)
+              });
+              
+              if (retryListElement) {
+                setupScrollbar(retryListElement);
+              } else {
+                console.error('❌ [STATUS DROPDOWN] Lista no encontrada después de reintento');
+              }
+            }, 100);
+          }
         } catch (error) {
-          console.error('Error creating list:', error);
+          console.error('❌ [STATUS DROPDOWN] Error creating list:', error);
+        }
+        
+        // Definir setupScrollbar fuera del try para que esté disponible en los setTimeout
+        function setupScrollbar(listElementParam: HTMLElement) {
+            if (!listElementParam) {
+              console.error('❌ [STATUS DROPDOWN] setupScrollbar llamado sin listElement');
+              return;
+            }
+            
+            const listElement = listElementParam;
+            
+            console.log('📋 [STATUS DROPDOWN] Configurando scrollbar para lista', {
+              listElement: listElement,
+              listElementExists: !!listElement,
+              listElementClasses: listElement?.className,
+              listElementStyles: listElement ? {
+                scrollbarWidth: listElement.style.scrollbarWidth,
+                overflowY: listElement.style.overflowY,
+                height: listElement.style.height,
+                computedScrollbarWidth: window.getComputedStyle(listElement).scrollbarWidth
+              } : null
+            });
+            
+            if (listElement) {
+              console.log('🎨 [STATUS DROPDOWN] Ocultando scrollbar nativo', {
+                before: {
+                  scrollbarWidth: window.getComputedStyle(listElement).scrollbarWidth,
+                  webkitScrollbarWidth: window.getComputedStyle(listElement, '::-webkit-scrollbar').width
+                }
+              });
+              
+              // Forzar ocultar scrollbar nativo con estilos inline
+              listElement.style.scrollbarWidth = 'none';
+              listElement.style.setProperty('-ms-overflow-style', 'none', 'important');
+              listElement.style.setProperty('scrollbar-width', 'none', 'important');
+              
+              // Ocultar scrollbar en WebKit
+              const style = document.createElement('style');
+              style.id = `scrollbar-hide-${listContainerId}`;
+              style.textContent = `
+                #${listContainerId} .ubits-list::-webkit-scrollbar {
+                  width: 0px !important;
+                  height: 0px !important;
+                  display: none !important;
+                }
+                #${listContainerId} .ubits-list::-webkit-scrollbar-thumb {
+                  display: none !important;
+                }
+                #${listContainerId} .ubits-list::-webkit-scrollbar-track {
+                  display: none !important;
+                }
+              `;
+              document.head.appendChild(style);
+              
+              console.log('✅ [STATUS DROPDOWN] Estilos de ocultación aplicados', {
+                styleElement: style,
+                styleId: style.id,
+                after: {
+                  scrollbarWidth: listElement.style.scrollbarWidth,
+                  computedScrollbarWidth: window.getComputedStyle(listElement).scrollbarWidth
+                }
+              });
+            // Sincronizar scrollbar personalizado con el scroll de la lista
+            const scrollbarBar = dropdown.querySelector('.ubits-data-table-3__status-dropdown-scrollbar-bar') as HTMLElement;
+            const scrollbarContainer = dropdown.querySelector('.ubits-data-table-3__status-dropdown-scrollbar') as HTMLElement;
+            
+            console.log('🎚️ [STATUS DROPDOWN] Elementos del scrollbar', {
+              scrollbarBar: scrollbarBar,
+              scrollbarBarExists: !!scrollbarBar,
+              scrollbarContainer: scrollbarContainer,
+              scrollbarContainerExists: !!scrollbarContainer,
+              scrollbarContainerHeight: scrollbarContainer?.clientHeight
+            });
+            
+            if (scrollbarBar && scrollbarContainer) {
+              console.log('✅ [STATUS DROPDOWN] Scrollbar personalizado encontrado, configurando...');
+              
+              const updateScrollbar = () => {
+                const scrollTop = listElement.scrollTop;
+                const scrollHeight = listElement.scrollHeight;
+                const clientHeight = listElement.clientHeight;
+                const scrollableHeight = scrollHeight - clientHeight;
+                
+                console.log('🔄 [STATUS DROPDOWN] Actualizando scrollbar', {
+                  scrollTop,
+                  scrollHeight,
+                  clientHeight,
+                  scrollableHeight,
+                  scrollbarContainerHeight: scrollbarContainer.clientHeight
+                });
+                
+                if (scrollableHeight > 0 && scrollbarContainer.clientHeight > 0) {
+                  const scrollbarHeight = scrollbarContainer.clientHeight - 16; // 8px padding top + 8px padding bottom
+                  const thumbHeight = Math.max(20, (clientHeight / scrollHeight) * scrollbarHeight);
+                  const maxThumbTop = scrollbarHeight - thumbHeight;
+                  const thumbTop = Math.max(0, Math.min(maxThumbTop, (scrollTop / scrollableHeight) * maxThumbTop));
+                  
+                  scrollbarBar.style.height = `${thumbHeight}px`;
+                  scrollbarBar.style.transform = `translateY(${thumbTop}px)`;
+                  scrollbarBar.style.opacity = '1';
+                  
+                  console.log('📊 [STATUS DROPDOWN] Scrollbar actualizado', {
+                    scrollbarHeight,
+                    thumbHeight,
+                    thumbTop,
+                    opacity: scrollbarBar.style.opacity
+                  });
+                } else {
+                  scrollbarBar.style.opacity = '0';
+                  console.log('👻 [STATUS DROPDOWN] Scrollbar oculto (no hay scroll)', {
+                    scrollableHeight,
+                    scrollbarContainerHeight: scrollbarContainer.clientHeight
+                  });
+                }
+              };
+              
+              // Funcionalidad de arrastre del scrollbar
+              let isDragging = false;
+              let startY = 0;
+              let startScrollTop = 0;
+              
+              const handleMouseDown = (e: MouseEvent) => {
+                isDragging = true;
+                startY = e.clientY;
+                startScrollTop = listElement.scrollTop;
+                e.preventDefault();
+                
+                const handleMouseMove = (e: MouseEvent) => {
+                  if (!isDragging) return;
+                  
+                  const deltaY = e.clientY - startY;
+                  const scrollbarHeight = scrollbarContainer.clientHeight - 16;
+                  const scrollHeight = listElement.scrollHeight;
+                  const clientHeight = listElement.clientHeight;
+                  const scrollableHeight = scrollHeight - clientHeight;
+                  
+                  if (scrollableHeight > 0) {
+                    const scrollRatio = scrollableHeight / (scrollbarHeight - scrollbarBar.clientHeight);
+                    const newScrollTop = startScrollTop + (deltaY * scrollRatio);
+                    listElement.scrollTop = Math.max(0, Math.min(scrollableHeight, newScrollTop));
+                  }
+                };
+                
+                const handleMouseUp = () => {
+                  isDragging = false;
+                  document.removeEventListener('mousemove', handleMouseMove);
+                  document.removeEventListener('mouseup', handleMouseUp);
+                };
+                
+                document.addEventListener('mousemove', handleMouseMove);
+                document.addEventListener('mouseup', handleMouseUp);
+              };
+              
+              scrollbarBar.addEventListener('mousedown', handleMouseDown);
+              
+              // Actualizar scrollbar cuando se hace scroll
+              listElement.addEventListener('scroll', updateScrollbar);
+              
+              // Actualizar scrollbar cuando cambia el tamaño
+              const resizeObserver = new ResizeObserver(() => {
+                updateScrollbar();
+              });
+              resizeObserver.observe(listElement);
+              resizeObserver.observe(scrollbarContainer);
+              
+              // Actualizar inicialmente
+              setTimeout(updateScrollbar, 0);
+            } else {
+              console.error('❌ [STATUS DROPDOWN] Scrollbar personalizado no encontrado', {
+                scrollbarBar: scrollbarBar,
+                scrollbarContainer: scrollbarContainer
+              });
+            }
+          }
         }
         
         // Cerrar al hacer click fuera
@@ -1487,7 +1969,9 @@ export function createDataTable3(options: DataTable3Options): {
       };
       
       // Agregar event listener al status tag
+      console.log(`✅ [STATUS DROPDOWN] Agregando event listener click al status tag ${index}`);
       statusTag.addEventListener('click', openDropdown);
+      console.log(`✅ [STATUS DROPDOWN] Event listener agregado exitosamente para contenedor ${index}`);
     });
     
     // Radio buttons - manejar selección (solo si son editables)
