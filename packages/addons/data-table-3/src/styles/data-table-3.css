@@ -417,12 +417,14 @@
     height: 20px !important;
 }
 
-/* Ocultar el label en las celdas de checkbox para evitar desplazamiento */
+/* Permitir el label pero controlar su espacio */
 .ubits-data-table-3__cell--checkbox .ubits-checkbox .ubits-checkbox__text-content {
-    display: none !important;
-    width: 0 !important;
-    margin: 0 !important;
-    padding: 0 !important;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    min-width: 0;
+    max-width: 0;
+    overflow: hidden;
 }
 
 /* Asegurar que la celda editable no cambie el layout del checkbox */

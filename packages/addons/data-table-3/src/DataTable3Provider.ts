@@ -390,6 +390,20 @@ function renderCellByType(column: TableColumn3, row: TableRow3, columnType: Colu
       const isEditable = column.editable === true;
       const disabled = !isEditable;
       
+      // 🔍 LOGS DETALLADOS
+      console.log('🔍 [CHECKBOX RENDER]', {
+        columnId: column.id,
+        rowId: row.id,
+        checked,
+        checkboxLabel: column.checkboxLabel,
+        showLabel,
+        labelText,
+        editable: column.editable,
+        isEditable,
+        disabled,
+        columnType: column.type
+      });
+      
       const checkboxHTML = renderCheckbox({
         label: labelText,
         checked,
@@ -397,11 +411,31 @@ function renderCellByType(column: TableColumn3, row: TableRow3, columnType: Colu
         disabled: disabled
       });
       
+      console.log('📦 [CHECKBOX HTML]', {
+        columnId: column.id,
+        rowId: row.id,
+        htmlLength: checkboxHTML.length,
+        hasLabel: checkboxHTML.includes('ubits-checkbox__label'),
+        hasDisabled: checkboxHTML.includes('disabled'),
+        hasEditable: isEditable,
+        htmlPreview: checkboxHTML.substring(0, 200)
+      });
+      
       // Agregar atributos para identificar el checkbox
-      return checkboxHTML.replace(
+      const finalHTML = checkboxHTML.replace(
         '<input',
         `<input data-row-id="${row.id}" data-column-id="${column.id}" data-checkbox-button="true" ${isEditable ? 'data-editable="true"' : ''}`
       );
+      
+      console.log('✅ [CHECKBOX FINAL]', {
+        columnId: column.id,
+        rowId: row.id,
+        finalHTMLLength: finalHTML.length,
+        hasDataEditable: finalHTML.includes('data-editable="true"'),
+        finalHTMLPreview: finalHTML.substring(0, 250)
+      });
+      
+      return finalHTML;
     }
     
     case 'correo': {
@@ -848,14 +882,89 @@ export function createDataTable3(options: DataTable3Options): {
 
   // Función para renderizar
   const render = () => {
+    console.log('🔄 [RENDER START]', {
+      timestamp: new Date().toISOString(),
+      columnsCount: currentOptions.columns.length,
+      rowsCount: currentOptions.rows.length,
+      checkboxColumns: currentOptions.columns.filter(c => c.type === 'checkbox').map(c => ({
+        id: c.id,
+        editable: c.editable,
+        checkboxLabel: c.checkboxLabel
+      }))
+    });
+    
     const newHTML = renderDataTable3(
       { ...currentOptions, sortColumnId, sortDirection } as any, 
       columnOrder, 
       rowOrder
     );
+    
+    // 🔍 LOGS: Verificar posiciones de checkboxes antes de actualizar
+    const checkboxCellsBefore = element.querySelectorAll('.ubits-data-table-3__cell--checkbox');
+    console.log('📍 [BEFORE RENDER] Checkbox cells:', {
+      count: checkboxCellsBefore.length,
+      positions: Array.from(checkboxCellsBefore).map((cell, idx) => {
+        const rect = cell.getBoundingClientRect();
+        const checkbox = cell.querySelector('.ubits-checkbox');
+        const checkboxRect = checkbox?.getBoundingClientRect();
+        return {
+          index: idx,
+          cellLeft: rect.left,
+          cellWidth: rect.width,
+          checkboxLeft: checkboxRect?.left,
+          checkboxWidth: checkboxRect?.width,
+          hasEditableClass: cell.classList.contains('ubits-data-table-3__cell--editable'),
+          isDisabled: checkbox?.querySelector('input[disabled]') !== null
+        };
+      })
+    });
+    
     element.innerHTML = newHTML.trim();
+    
+    // 🔍 LOGS: Verificar posiciones de checkboxes después de actualizar
+    setTimeout(() => {
+      const checkboxCellsAfter = element.querySelectorAll('.ubits-data-table-3__cell--checkbox');
+      console.log('📍 [AFTER RENDER] Checkbox cells:', {
+        count: checkboxCellsAfter.length,
+        positions: Array.from(checkboxCellsAfter).map((cell, idx) => {
+          const rect = cell.getBoundingClientRect();
+          const checkbox = cell.querySelector('.ubits-checkbox');
+          const checkboxRect = checkbox?.getBoundingClientRect();
+          const computedStyle = window.getComputedStyle(cell);
+          return {
+            index: idx,
+            cellLeft: rect.left,
+            cellWidth: rect.width,
+            cellMinWidth: computedStyle.minWidth,
+            cellMaxWidth: computedStyle.maxWidth,
+            checkboxLeft: checkboxRect?.left,
+            checkboxWidth: checkboxRect?.width,
+            hasEditableClass: cell.classList.contains('ubits-data-table-3__cell--editable'),
+            isDisabled: checkbox?.querySelector('input[disabled]') !== null,
+            cellPadding: computedStyle.padding,
+            checkboxMargin: window.getComputedStyle(checkbox || document.createElement('div')).margin,
+            checkboxGap: window.getComputedStyle(checkbox || document.createElement('div')).gap
+          };
+        }),
+        differences: Array.from(checkboxCellsAfter).map((cell, idx) => {
+          const beforeCell = checkboxCellsBefore[idx];
+          if (!beforeCell) return { index: idx, note: 'No before cell' };
+          const beforeRect = beforeCell.getBoundingClientRect();
+          const afterRect = cell.getBoundingClientRect();
+          return {
+            index: idx,
+            leftDiff: afterRect.left - beforeRect.left,
+            widthDiff: afterRect.width - beforeRect.width,
+            hasChanged: Math.abs(afterRect.left - beforeRect.left) > 1 || Math.abs(afterRect.width - beforeRect.width) > 1
+          };
+        })
+      });
+    }, 100);
+    
     attachEventListeners();
     initializeIconFallbacks();
+    
+    console.log('✅ [RENDER COMPLETE]');
   };
   
   // Función para adjuntar event listeners
