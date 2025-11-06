@@ -459,8 +459,11 @@ function renderCell(column: TableColumn3, row: TableRow3): string {
       `<input data-row-id="${row.id}" data-column-id="${column.id}" aria-label="Checkbox ${column.title}"`
     );
     
+    // Determinar el padding-left según el column-id
+    const paddingLeft = column.id === 'checkbox-2' ? '20px' : 'var(--ubits-spacing-md, 16px)';
+    
     return `
-      <td class="ubits-data-table-3__cell ubits-data-table-3__cell--checkbox">
+      <td class="ubits-data-table-3__cell ubits-data-table-3__cell--checkbox" data-column-id="${column.id}" style="text-align: center; vertical-align: middle; padding-left: ${paddingLeft} !important;">
         ${checkbox}
       </td>
     `;
@@ -553,42 +556,56 @@ function renderColumnHeader(
     </div>
   ` : '';
 
-  // Botón de ordenamiento (solo para columnas que no sean checkbox y si columnSortable está habilitado)
+  // Botón de ordenamiento usando componente UBITS - desde cero
   const sortButton = !isCheckboxColumn && columnSortable ? (() => {
     const isSorted = sortColumnId === column.id;
     const showAscIcon = isSorted && sortDirection === 'asc';
     const showDescIcon = isSorted && sortDirection === 'desc';
     
-    let sortIconHTML = '';
+    // Determinar qué icono usar
+    let iconName = 'sort-alpha-asc'; // Por defecto
     if (showAscIcon) {
-      sortIconHTML = `
-        <wa-icon name="arrow-up-a-z"></wa-icon>
-        <i class="fas fa-sort-up ubits-data-table-3__sort-icon-fallback" aria-hidden="true"></i>
-      `;
+      iconName = 'sort-alpha-asc';
     } else if (showDescIcon) {
-      sortIconHTML = `
-        <wa-icon name="arrow-down-z-a"></wa-icon>
-        <i class="fas fa-sort-down ubits-data-table-3__sort-icon-fallback" aria-hidden="true"></i>
-      `;
-    } else {
-      sortIconHTML = `
-        <wa-icon name="arrow-up-a-z" style="opacity: 0.4;"></wa-icon>
-        <i class="far fa-sort ubits-data-table-3__sort-icon-fallback" aria-hidden="true"></i>
-      `;
+      iconName = 'sort-alpha-desc';
     }
     
-    return `
-      <button
-        type="button"
-        class="ubits-data-table-3__column-sort ${isSorted ? 'ubits-data-table-3__column-sort--active' : ''}"
-        aria-label="Ordenar ${column.title}"
-        data-column-id="${column.id}"
-        data-sort-button="true"
-      >
-        ${sortIconHTML}
-      </button>
-    `;
+    // Renderizar botón UBITS: tamaño xs, variant tertiary, iconOnly
+    const buttonHTML = renderButton({
+      variant: 'tertiary',
+      size: 'xs',
+      icon: iconName,
+      iconStyle: 'solid',
+      iconOnly: true,
+      active: isSorted,
+      className: 'ubits-data-table-3__column-sort-button',
+      attributes: {
+        'aria-label': `Ordenar ${column.title}`,
+        'data-column-id': column.id,
+        'data-sort-button': 'true'
+      }
+    });
+    
+    // Si no está ordenado, agregar opacity al icono
+    if (!isSorted) {
+      const iconWithOpacity = buttonHTML.replace(
+        /<i class="([^"]*)"([^>]*)>/,
+        '<i class="$1" style="opacity: 0.4;"$2>'
+      );
+      return iconWithOpacity;
+    }
+    
+    return buttonHTML;
   })() : '';
+  
+  if (!sortButton && !isCheckboxColumn) {
+    console.log('⚠️ [SORT BUTTON] No se creó botón para:', {
+      columnId: column.id,
+      columnTitle: column.title,
+      isCheckboxColumn,
+      columnSortable
+    });
+  }
 
   const headerContent = `
     <div class="ubits-data-table-3__column-header-content">
@@ -658,6 +675,21 @@ function renderRow(row: TableRow3, columns: TableColumn3[], rowIndex: number, ro
         </div>
       </td>
   ` : '';
+
+  // Logs para debugging de alineación
+  if (rowIndex === 0) {
+    console.log('🔍 [ROW ALIGNMENT] ========== PRIMERA FILA ==========');
+    console.log('📊 row.id:', row.id);
+    console.log('📊 hasControls:', hasControls);
+    console.log('📊 controlsCell:', controlsCell ? 'RENDERIZADO' : 'NO RENDERIZADO');
+    console.log('📊 visibleColumns count:', visibleColumns.length);
+    console.log('📊 visibleColumns IDs:', visibleColumns.map(col => col.id));
+    console.log('📊 cellsHTML count (th tags):', (cellsHTML.match(/<td/g) || []).length);
+    console.log('📊 Total cells count:', (controlsCell ? 1 : 0) + (cellsHTML.match(/<td/g) || []).length);
+    console.log('📊 - controlsCell:', controlsCell ? 1 : 0);
+    console.log('📊 - dataCells:', (cellsHTML.match(/<td/g) || []).length);
+    console.log('🔍 [ROW ALIGNMENT] ========== FIN ==========');
+  }
   
   let rowHTML = `
     <tr class="${rowClasses}" data-row-id="${row.id}">
@@ -696,13 +728,39 @@ export function renderDataTable3(
   // Filtrar columnas visibles
   let visibleColumns = columns.filter(col => col.visible !== false);
   
+  // Eliminar la columna de checkbox vieja (id === 'checkbox')
+  visibleColumns = visibleColumns.filter(col => col.id !== 'checkbox');
+  console.log('🔍 [CHECKBOX] Columna checkbox eliminada. Columnas restantes:', visibleColumns.map(col => col.id));
+  
   // Si hay un orden de columnas especificado, reordenar según ese orden
   if (columnOrder.length > 0) {
+    // También eliminar 'checkbox' del columnOrder si existe
+    const filteredColumnOrder = columnOrder.filter(id => id !== 'checkbox');
     const columnMap = new Map(visibleColumns.map(col => [col.id, col]));
-    visibleColumns = columnOrder
+    visibleColumns = filteredColumnOrder
       .map(id => columnMap.get(id))
       .filter((col): col is TableColumn3 => col !== undefined)
-      .concat(visibleColumns.filter(col => !columnOrder.includes(col.id)));
+      .concat(visibleColumns.filter(col => !filteredColumnOrder.includes(col.id)));
+  }
+  
+  // Si no existe checkbox-2, crearla automáticamente al inicio
+  const checkbox2Exists = visibleColumns.some(col => col.id === 'checkbox-2');
+  if (!checkbox2Exists) {
+    console.log('🔍 [CHECKBOX-2] Creando nueva columna checkbox-2 al inicio');
+    // Crear una nueva columna de checkbox con id "checkbox-2"
+    const newCheckboxColumn: TableColumn3 = {
+      id: 'checkbox-2',
+      title: '',
+      type: undefined,
+      visible: true,
+      width: 60
+    };
+    
+    // Insertar la nueva columna al inicio
+    visibleColumns.unshift(newCheckboxColumn);
+    console.log('🔍 [CHECKBOX-2] Columna agregada al inicio. IDs de columnas visibles:', visibleColumns.map(col => col.id));
+  } else {
+    console.log('🔍 [CHECKBOX-2] La columna checkbox-2 ya existe');
   }
   
   // Estado de ordenamiento
@@ -747,28 +805,50 @@ export function renderDataTable3(
 
   // Determinar si hay controles en las filas
   const hasControls = rowReorderable || rowExpandable;
+  
+  console.log('🔍 [HEADER ALIGNMENT] ========== INICIO ==========');
+  console.log('📊 hasControls:', hasControls);
+  console.log('📊 rowReorderable:', rowReorderable);
+  console.log('📊 rowExpandable:', rowExpandable);
+  console.log('📊 visibleColumns count:', visibleColumns.length);
+  console.log('📊 visibleColumns IDs:', visibleColumns.map(col => col.id));
 
   // Renderizar headers de columnas
   const columnHeadersHTML = visibleColumns
     .map(col => renderColumnHeader(col, columnReorderable, columnSortable, orderedRows, sortColumnId, sortDirection))
     .join('');
 
+  console.log('📊 columnHeadersHTML length:', columnHeadersHTML.length);
+  console.log('📊 columnHeadersHTML preview:', columnHeadersHTML.substring(0, 200));
+
   // Renderizar filas
   const rowsHTML = orderedRows
     .map((row, index) => renderRow(row, visibleColumns, index, rowReorderable, rowExpandable, hasControls))
     .join('');
+
+  console.log('📊 rowsHTML count:', orderedRows.length);
+  console.log('📊 rowsHTML preview:', rowsHTML.substring(0, 300));
 
   const classes = [
     'ubits-data-table-3',
     className
   ].filter(Boolean).join(' ');
 
-  // Solo renderizar la columna de controles en el header si hay controles en las filas
+  // Agregar header vacío para la columna de controles si existe, para mantener alineación
+  // Este header vacío se coloca ANTES de los headers de columnas para alinearlos con las filas
   const controlsHeader = hasControls ? `
-          <th class="ubits-data-table-3__controls-column-header">
-          </th>
+    <th class="ubits-data-table-3__controls-column-header"></th>
   ` : '';
-  
+
+  console.log('📊 controlsHeader:', controlsHeader ? 'RENDERIZADO' : 'NO RENDERIZADO');
+  console.log('📊 controlsHeader content:', controlsHeader);
+
+  // Contar headers totales
+  const headerCount = (controlsHeader ? 1 : 0) + visibleColumns.length;
+  console.log('📊 Total headers count:', headerCount);
+  console.log('📊 - controlsHeader:', controlsHeader ? 1 : 0);
+  console.log('📊 - columnHeaders:', visibleColumns.length);
+
   // Estructura sin contenedor adicional: la tabla directamente
   const html = `
     <table class="${classes} ubits-data-table-3__table">
@@ -783,6 +863,9 @@ export function renderDataTable3(
       </tbody>
     </table>
   `.trim();
+
+  console.log('📊 HTML final preview:', html.substring(0, 500));
+  console.log('🔍 [HEADER ALIGNMENT] ========== FIN ==========');
 
   return html;
 }
@@ -836,15 +919,41 @@ export function createDataTable3(options: DataTable3Options): {
   // Función para inicializar fallback de iconos
   const initializeIconFallbacks = () => {
     const waIcons = element.querySelectorAll('wa-icon');
-    waIcons.forEach(waIcon => {
+    console.log('🔍 [ICONS] Inicializando fallbacks de iconos:', {
+      totalIcons: waIcons.length,
+      waIconDefined: !!customElements.get('wa-icon')
+    });
+    
+    waIcons.forEach((waIcon, index) => {
       const faIcon = waIcon.nextElementSibling as HTMLElement;
+      const iconName = waIcon.getAttribute('name');
+      
+      console.log(`🔍 [ICONS] Icono ${index + 1}:`, {
+        name: iconName,
+        hasNextSibling: !!faIcon,
+        nextSiblingTag: faIcon?.tagName,
+        waIconDisplay: window.getComputedStyle(waIcon as HTMLElement).display,
+        waIconWidth: window.getComputedStyle(waIcon as HTMLElement).width,
+        waIconHeight: window.getComputedStyle(waIcon as HTMLElement).height,
+        waIconOpacity: window.getComputedStyle(waIcon as HTMLElement).opacity
+      });
+      
       if (faIcon && faIcon.tagName === 'I') {
         if (customElements.get('wa-icon')) {
-          waIcon.style.display = '';
+          (waIcon as HTMLElement).style.display = 'inline-block';
+          (waIcon as HTMLElement).style.width = '12px';
+          (waIcon as HTMLElement).style.height = '12px';
+          (waIcon as HTMLElement).style.opacity = '1';
           faIcon.style.display = 'none';
+          console.log(`✅ [ICONS] Icono ${index + 1} (${iconName}): usando wa-icon`);
         } else {
-          waIcon.style.display = 'none';
-          faIcon.style.display = '';
+          // Si wa-icon no está definido, ocultar wa-icon y mostrar fallback
+          (waIcon as HTMLElement).style.display = 'none';
+          faIcon.style.display = 'inline-block';
+          faIcon.style.fontSize = '12px';
+          faIcon.style.width = '12px';
+          faIcon.style.height = '12px';
+          console.log(`⚠️ [ICONS] Icono ${index + 1} (${iconName}): usando fallback`);
         }
       }
     });
@@ -862,6 +971,139 @@ export function createDataTable3(options: DataTable3Options): {
     
     attachEventListeners();
     initializeIconFallbacks();
+    
+    // Logs para verificar estilos de padding después del renderizado
+    console.log('🔍 [PADDING CHECK] ========== INICIANDO VERIFICACIÓN ==========');
+    console.log('📊 Element disponible:', !!element);
+    console.log('📊 Element tagName:', element.tagName);
+    console.log('📊 Element innerHTML length:', element.innerHTML.length);
+    
+    // Ejecutar inmediatamente y también después de un delay
+    const checkPadding = () => {
+      try {
+      
+        console.log('🔍 [PADDING CHECK] ========== DESPUÉS DEL RENDERIZADO ==========');
+        
+        // Verificar columna de controles
+        const controlsColumns = element.querySelectorAll('.ubits-data-table-3__controls-column');
+        const controlsHeaders = element.querySelectorAll('.ubits-data-table-3__controls-column-header');
+        
+        console.log('📊 [CONTROLS] Elementos encontrados:', {
+          columns: controlsColumns.length,
+          headers: controlsHeaders.length
+        });
+        
+        if (controlsColumns.length > 0) {
+          const controlsCol = controlsColumns[0] as HTMLElement;
+          const computed = window.getComputedStyle(controlsCol);
+          console.log('📊 [CONTROLS COLUMN] Estilos computados:');
+          console.log('  - padding:', computed.padding);
+          console.log('  - paddingTop:', computed.paddingTop);
+          console.log('  - paddingRight:', computed.paddingRight);
+          console.log('  - paddingBottom:', computed.paddingBottom);
+          console.log('  - paddingLeft:', computed.paddingLeft);
+          console.log('  - width:', computed.width);
+          console.log('  - minWidth:', computed.minWidth);
+          console.log('  - maxWidth:', computed.maxWidth);
+          console.log('  - boxSizing:', computed.boxSizing);
+          console.log('  - marginLeft:', computed.marginLeft);
+          console.log('  - marginRight:', computed.marginRight);
+        } else {
+          console.log('⚠️ [CONTROLS COLUMN] No se encontró ninguna columna de controles');
+        }
+        
+        if (controlsHeaders.length > 0) {
+          const controlsHeader = controlsHeaders[0] as HTMLElement;
+          const computed = window.getComputedStyle(controlsHeader);
+          console.log('📊 [CONTROLS HEADER] Estilos computados:');
+          console.log('  - padding:', computed.padding);
+          console.log('  - paddingTop:', computed.paddingTop);
+          console.log('  - paddingRight:', computed.paddingRight);
+          console.log('  - paddingBottom:', computed.paddingBottom);
+          console.log('  - paddingLeft:', computed.paddingLeft);
+          console.log('  - width:', computed.width);
+          console.log('  - minWidth:', computed.minWidth);
+          console.log('  - maxWidth:', computed.maxWidth);
+          console.log('  - boxSizing:', computed.boxSizing);
+          console.log('  - marginLeft:', computed.marginLeft);
+          console.log('  - marginRight:', computed.marginRight);
+        } else {
+          console.log('⚠️ [CONTROLS HEADER] No se encontró ningún header de controles');
+        }
+        
+        // Verificar columna de checkbox
+        const checkboxCells = element.querySelectorAll('.ubits-data-table-3__cell--checkbox[data-column-id="checkbox"]');
+        const checkboxHeaders = element.querySelectorAll('.ubits-data-table-3__column-header--checkbox');
+        
+        console.log('📊 [CHECKBOX] Elementos encontrados:', {
+          cells: checkboxCells.length,
+          headers: checkboxHeaders.length
+        });
+        
+        if (checkboxCells.length > 0) {
+          const checkboxCell = checkboxCells[0] as HTMLElement;
+          const computed = window.getComputedStyle(checkboxCell);
+          console.log('📊 [CHECKBOX CELL] Estilos computados:');
+          console.log('  - padding:', computed.padding);
+          console.log('  - paddingTop:', computed.paddingTop);
+          console.log('  - paddingRight:', computed.paddingRight);
+          console.log('  - paddingBottom:', computed.paddingBottom);
+          console.log('  - paddingLeft:', computed.paddingLeft);
+          console.log('  - width:', computed.width);
+          console.log('  - minWidth:', computed.minWidth);
+          console.log('  - maxWidth:', computed.maxWidth);
+          console.log('  - boxSizing:', computed.boxSizing);
+          console.log('  - marginLeft:', computed.marginLeft);
+          console.log('  - marginRight:', computed.marginRight);
+        } else {
+          console.log('⚠️ [CHECKBOX CELL] No se encontró ninguna celda de checkbox');
+        }
+        
+        if (checkboxHeaders.length > 0) {
+          const checkboxHeader = checkboxHeaders[0] as HTMLElement;
+          const computed = window.getComputedStyle(checkboxHeader);
+          console.log('📊 [CHECKBOX HEADER] Estilos computados:');
+          console.log('  - padding:', computed.padding);
+          console.log('  - paddingTop:', computed.paddingTop);
+          console.log('  - paddingRight:', computed.paddingRight);
+          console.log('  - paddingBottom:', computed.paddingBottom);
+          console.log('  - paddingLeft:', computed.paddingLeft);
+          console.log('  - width:', computed.width);
+          console.log('  - minWidth:', computed.minWidth);
+          console.log('  - maxWidth:', computed.maxWidth);
+          console.log('  - boxSizing:', computed.boxSizing);
+          console.log('  - marginLeft:', computed.marginLeft);
+          console.log('  - marginRight:', computed.marginRight);
+        } else {
+          console.log('⚠️ [CHECKBOX HEADER] No se encontró ningún header de checkbox');
+        }
+        
+        // Verificar distancia visual entre checkbox y controles
+        if (checkboxCells.length > 0 && controlsColumns.length > 0) {
+          const checkboxCell = checkboxCells[0] as HTMLElement;
+          const controlsCol = controlsColumns[0] as HTMLElement;
+          const checkboxRect = checkboxCell.getBoundingClientRect();
+          const controlsRect = controlsCol.getBoundingClientRect();
+          const distance = controlsRect.left - checkboxRect.right;
+          console.log('📊 [DISTANCE] Distancia entre checkbox y controles:', distance, 'px');
+          console.log('  - checkbox right:', checkboxRect.right);
+          console.log('  - controls left:', controlsRect.left);
+          console.log('  - checkbox width:', checkboxRect.width);
+          console.log('  - controls width:', controlsRect.width);
+        }
+        
+        console.log('🔍 [PADDING CHECK] ========== FIN ==========');
+      } catch (error) {
+        console.error('❌ [PADDING CHECK] Error:', error);
+      }
+    };
+    
+    // Ejecutar inmediatamente
+    checkPadding();
+    
+    // También ejecutar después de un delay para asegurar que el CSS esté aplicado
+    setTimeout(checkPadding, 100);
+    setTimeout(checkPadding, 500);
   };
   
   // Función para adjuntar event listeners
@@ -1178,13 +1420,206 @@ export function createDataTable3(options: DataTable3Options): {
       });
     });
     
-    // Botones de ordenamiento
+    // Comparar estilos del drag handle y botón de ordenamiento
+    const dragHandles = element.querySelectorAll('.ubits-data-table-3__column-drag-handle');
     const sortButtons = element.querySelectorAll('[data-sort-button="true"]');
+    
+    if (dragHandles.length > 0 && sortButtons.length > 0) {
+      const dh = dragHandles[0] as HTMLElement;
+      const sb = sortButtons[0] as HTMLElement;
+      const dhComputed = window.getComputedStyle(dh);
+      const sbComputed = window.getComputedStyle(sb);
+      
+      const dhIcon = dh.querySelector('wa-icon') || dh.querySelector('i');
+      const sbIcon = sb.querySelector('wa-icon') || sb.querySelector('i');
+      const dhIconComputed = dhIcon ? window.getComputedStyle(dhIcon as HTMLElement) : null;
+      const sbIconComputed = sbIcon ? window.getComputedStyle(sbIcon as HTMLElement) : null;
+      
+      console.log('🔍 [STYLES COMPARISON] ========== DRAG HANDLE ==========');
+      console.log('Container - display:', dhComputed.display);
+      console.log('Container - width:', dhComputed.width);
+      console.log('Container - height:', dhComputed.height);
+      console.log('Container - padding:', dhComputed.padding);
+      console.log('Container - margin:', dhComputed.margin);
+      console.log('Container - color:', dhComputed.color);
+      console.log('Container - backgroundColor:', dhComputed.backgroundColor);
+      console.log('Container - border:', dhComputed.border);
+      console.log('Container - borderRadius:', dhComputed.borderRadius);
+      console.log('Container - cursor:', dhComputed.cursor);
+      console.log('Container - fontSize:', dhComputed.fontSize);
+      console.log('Container - lineHeight:', dhComputed.lineHeight);
+      
+      if (dhIconComputed) {
+        console.log('Icon - display:', dhIconComputed.display);
+        console.log('Icon - width:', dhIconComputed.width);
+        console.log('Icon - height:', dhIconComputed.height);
+        console.log('Icon - fontSize:', dhIconComputed.fontSize);
+        console.log('Icon - color:', dhIconComputed.color);
+        console.log('Icon - margin:', dhIconComputed.margin);
+        console.log('Icon - padding:', dhIconComputed.padding);
+        console.log('Icon - lineHeight:', dhIconComputed.lineHeight);
+        console.log('Icon - verticalAlign:', dhIconComputed.verticalAlign);
+      } else {
+        console.log('Icon: NO ICON FOUND');
+      }
+      
+      if (dhIcon) {
+        console.log('Icon Element - tagName:', dhIcon.tagName);
+        console.log('Icon Element - className:', dhIcon.className);
+        console.log('Icon Element - innerHTML:', dhIcon.innerHTML.substring(0, 100));
+      } else {
+        console.log('Icon Element: NO ICON ELEMENT');
+      }
+      
+      console.log('🔍 [STYLES COMPARISON] ========== SORT BUTTON ==========');
+      console.log('Container - display:', sbComputed.display);
+      console.log('Container - width:', sbComputed.width);
+      console.log('Container - height:', sbComputed.height);
+      console.log('Container - padding:', sbComputed.padding);
+      console.log('Container - margin:', sbComputed.margin);
+      console.log('Container - color:', sbComputed.color);
+      console.log('Container - backgroundColor:', sbComputed.backgroundColor);
+      console.log('Container - border:', sbComputed.border);
+      console.log('Container - borderRadius:', sbComputed.borderRadius);
+      console.log('Container - cursor:', sbComputed.cursor);
+      console.log('Container - fontSize:', sbComputed.fontSize);
+      console.log('Container - lineHeight:', sbComputed.lineHeight);
+      
+      if (sbIconComputed) {
+        console.log('Icon - display:', sbIconComputed.display);
+        console.log('Icon - width:', sbIconComputed.width);
+        console.log('Icon - height:', sbIconComputed.height);
+        console.log('Icon - fontSize:', sbIconComputed.fontSize);
+        console.log('Icon - color:', sbIconComputed.color);
+        console.log('Icon - margin:', sbIconComputed.margin);
+        console.log('Icon - padding:', sbIconComputed.padding);
+        console.log('Icon - lineHeight:', sbIconComputed.lineHeight);
+        console.log('Icon - verticalAlign:', sbIconComputed.verticalAlign);
+      } else {
+        console.log('Icon: NO ICON FOUND');
+      }
+      
+      if (sbIcon) {
+        console.log('Icon Element - tagName:', sbIcon.tagName);
+        console.log('Icon Element - className:', sbIcon.className);
+        console.log('Icon Element - innerHTML:', sbIcon.innerHTML.substring(0, 100));
+      } else {
+        console.log('Icon Element: NO ICON ELEMENT');
+      }
+      
+      console.log('🔍 [STYLES COMPARISON] ========== DIFFERENCES ==========');
+      const differences: string[] = [];
+      if (dhComputed.width !== sbComputed.width) differences.push(`width: ${dhComputed.width} vs ${sbComputed.width}`);
+      if (dhComputed.height !== sbComputed.height) differences.push(`height: ${dhComputed.height} vs ${sbComputed.height}`);
+      if (dhComputed.padding !== sbComputed.padding) differences.push(`padding: ${dhComputed.padding} vs ${sbComputed.padding}`);
+      if (dhComputed.margin !== sbComputed.margin) differences.push(`margin: ${dhComputed.margin} vs ${sbComputed.margin}`);
+      if (dhComputed.color !== sbComputed.color) differences.push(`color: ${dhComputed.color} vs ${sbComputed.color}`);
+      if (dhComputed.backgroundColor !== sbComputed.backgroundColor) differences.push(`backgroundColor: ${dhComputed.backgroundColor} vs ${sbComputed.backgroundColor}`);
+      if (dhComputed.border !== sbComputed.border) differences.push(`border: ${dhComputed.border} vs ${sbComputed.border}`);
+      if (dhComputed.borderRadius !== sbComputed.borderRadius) differences.push(`borderRadius: ${dhComputed.borderRadius} vs ${sbComputed.borderRadius}`);
+      if (dhIconComputed && sbIconComputed) {
+        if (dhIconComputed.color !== sbIconComputed.color) differences.push(`icon.color: ${dhIconComputed.color} vs ${sbIconComputed.color}`);
+        if (dhIconComputed.fontSize !== sbIconComputed.fontSize) differences.push(`icon.fontSize: ${dhIconComputed.fontSize} vs ${sbIconComputed.fontSize}`);
+        if (dhIconComputed.width !== sbIconComputed.width) differences.push(`icon.width: ${dhIconComputed.width} vs ${sbIconComputed.width}`);
+        if (dhIconComputed.height !== sbIconComputed.height) differences.push(`icon.height: ${dhIconComputed.height} vs ${sbIconComputed.height}`);
+      }
+      
+      if (differences.length > 0) {
+        console.log('❌ DIFERENCIAS ENCONTRADAS:');
+        differences.forEach((diff, index) => {
+          console.log(`  ${index + 1}. ${diff}`);
+        });
+      } else {
+        console.log('✅ NO DIFFERENCES FOUND');
+      }
+    }
+    
+    console.log('🔍 [SORT BUTTON] Botones encontrados:', {
+      count: sortButtons.length,
+      buttons: Array.from(sortButtons).map(btn => ({
+        columnId: btn.getAttribute('data-column-id'),
+        classes: btn.className,
+        innerHTML: btn.innerHTML.substring(0, 100),
+        waIcons: btn.querySelectorAll('wa-icon').length,
+        computedStyle: {
+          display: window.getComputedStyle(btn as HTMLElement).display,
+          width: window.getComputedStyle(btn as HTMLElement).width,
+          height: window.getComputedStyle(btn as HTMLElement).height,
+          visibility: window.getComputedStyle(btn as HTMLElement).visibility,
+          opacity: window.getComputedStyle(btn as HTMLElement).opacity,
+          color: window.getComputedStyle(btn as HTMLElement).color,
+          backgroundColor: window.getComputedStyle(btn as HTMLElement).backgroundColor,
+          padding: window.getComputedStyle(btn as HTMLElement).padding,
+          margin: window.getComputedStyle(btn as HTMLElement).margin
+        }
+      }))
+    });
+    
     sortButtons.forEach(button => {
+      const btn = button as HTMLElement;
+      const waIcons = btn.querySelectorAll('wa-icon');
+      const isActive = btn.classList.contains('ubits-data-table-3__column-sort--active');
+      
+      console.log('🔍 [SORT BUTTON] Verificando botón:', {
+        columnId: btn.getAttribute('data-column-id'),
+        isActive,
+        waIconsCount: waIcons.length,
+        innerHTML: btn.innerHTML.substring(0, 150),
+        waIcons: Array.from(waIcons).map(icon => {
+          const computed = window.getComputedStyle(icon);
+          return {
+            name: icon.getAttribute('name'),
+            display: computed.display,
+            width: computed.width,
+            height: computed.height,
+            opacity: computed.opacity,
+            visibility: computed.visibility,
+            color: computed.color,
+            fontSize: computed.fontSize,
+            isConnected: icon.isConnected,
+            parentElement: icon.parentElement?.tagName,
+            nextSibling: icon.nextSibling?.nodeName
+          };
+        }),
+        buttonComputedStyle: {
+          display: window.getComputedStyle(btn).display,
+          width: window.getComputedStyle(btn).width,
+          height: window.getComputedStyle(btn).height,
+          opacity: window.getComputedStyle(btn).opacity,
+          visibility: window.getComputedStyle(btn).visibility
+        }
+      });
+      
+      // Verificar específicamente el icono arrow-down-z-a
+      const arrowDownIcon = Array.from(waIcons).find(icon => icon.getAttribute('name') === 'arrow-down-z-a');
+      if (arrowDownIcon) {
+        console.log('🔍 [SORT BUTTON] Icono arrow-down-z-a encontrado:', {
+          element: arrowDownIcon,
+          name: arrowDownIcon.getAttribute('name'),
+          computedStyle: {
+            display: window.getComputedStyle(arrowDownIcon as HTMLElement).display,
+            width: window.getComputedStyle(arrowDownIcon as HTMLElement).width,
+            height: window.getComputedStyle(arrowDownIcon as HTMLElement).height,
+            opacity: window.getComputedStyle(arrowDownIcon as HTMLElement).opacity,
+            visibility: window.getComputedStyle(arrowDownIcon as HTMLElement).visibility,
+            color: window.getComputedStyle(arrowDownIcon as HTMLElement).color
+          },
+          inlineStyle: (arrowDownIcon as HTMLElement).style.cssText,
+          classes: arrowDownIcon.className,
+          parentClasses: arrowDownIcon.parentElement?.className
+        });
+      }
+      
       button.addEventListener('click', (e) => {
         e.preventDefault();
         e.stopPropagation();
         const columnId = button.getAttribute('data-column-id')!;
+        
+        console.log('🔍 [SORT BUTTON] Click en botón:', {
+          columnId,
+          currentSortColumnId: sortColumnId,
+          currentSortDirection: sortDirection
+        });
         
         // Si ya está ordenando esta columna, cambiar dirección
         if (sortColumnId === columnId) {
@@ -1194,6 +1629,11 @@ export function createDataTable3(options: DataTable3Options): {
           sortColumnId = columnId;
           sortDirection = 'asc';
         }
+        
+        console.log('✅ [SORT BUTTON] Nuevo estado:', {
+          sortColumnId,
+          sortDirection
+        });
         
         if (currentOptions.onSort) {
           currentOptions.onSort(columnId, sortDirection!);

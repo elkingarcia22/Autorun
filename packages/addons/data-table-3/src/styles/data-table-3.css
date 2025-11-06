@@ -34,38 +34,46 @@
 
 /* Columna de controles - Header */
 .ubits-data-table-3__controls-column-header {
-    padding: var(--ubits-spacing-sm, 12px) var(--ubits-spacing-xs, 4px) var(--ubits-spacing-sm, 12px) var(--ubits-spacing-md, 16px);
+    padding: var(--ubits-spacing-sm, 12px) var(--ubits-spacing-md, 16px) var(--ubits-spacing-sm, 12px) var(--ubits-spacing-md, 16px);
+    padding-left: var(--ubits-spacing-md, 16px);
     text-align: center;
     background-color: var(--ubits-bg-1, #ffffff);
     width: auto;
-    min-width: 0;
+    min-width: 60px;
+    max-width: 60px;
     vertical-align: middle;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: table-cell;
     position: sticky;
-    left: 0;
-    z-index: 15;
+    left: 60px;
+    z-index: 21;
     box-shadow: 2px 0 4px rgba(0, 0, 0, 0.05);
+    box-sizing: border-box;
 }
 
 /* Columna de controles - Celdas */
 .ubits-data-table-3__controls-column {
-    padding: var(--ubits-spacing-sm, 12px) var(--ubits-spacing-xs, 4px) var(--ubits-spacing-sm, 12px) var(--ubits-spacing-md, 16px);
+    padding: var(--ubits-spacing-sm, 12px) var(--ubits-spacing-md, 16px) var(--ubits-spacing-sm, 12px) var(--ubits-spacing-md, 16px);
+    padding-left: var(--ubits-spacing-md, 16px);
     text-align: center;
     background-color: var(--ubits-bg-1, #ffffff);
     width: auto;
-    min-width: 0;
+    min-width: 60px;
+    max-width: 60px;
     vertical-align: middle;
     position: sticky;
-    left: 0;
-    z-index: 10;
+    left: 60px;
+    z-index: 16;
+    box-sizing: border-box;
 }
 
-/* Colapsar la columna cuando no hay contenido */
-.ubits-data-table-3__controls-column:empty,
-.ubits-data-table-3__controls-column-header:empty {
+/* Colapsar la columna cuando no hay contenido - NO aplicar al header vacío que se usa para alineación */
+.ubits-data-table-3__controls-column:empty {
     display: none;
+}
+
+/* El header vacío debe mostrarse para mantener alineación */
+.ubits-data-table-3__controls-column-header:empty {
+    display: table-cell !important;
 }
 
 .ubits-data-table-3__controls-wrapper:empty {
@@ -141,27 +149,40 @@
 
 /* Botón de expandir */
 .ubits-data-table-3__row-expand {
-    background: none;
-    border: none;
-    padding: var(--ubits-spacing-xs, 4px);
-    cursor: pointer;
-    color: var(--ubits-body-md-regular-3, #6b7280);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 24px;
-    height: 24px;
-    border-radius: var(--ubits-border-radius-sm, 4px);
-    transition: background-color 0.2s ease, color 0.2s ease;
+    background: none !important;
+    border: none !important;
+    padding: var(--ubits-spacing-xs, 4px) !important;
+    cursor: pointer !important;
+    color: var(--ubits-body-md-regular-3, #6b7280) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 24px !important;
+    height: 24px !important;
+    min-width: 24px !important;
+    min-height: 24px !important;
+    border-radius: var(--ubits-border-radius-sm, 4px) !important;
+    transition: background-color 0.2s ease, color 0.2s ease !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+.ubits-data-table-3__row-expand i {
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    font-size: 14px !important;
+    width: 14px !important;
+    height: 14px !important;
 }
 
 .ubits-data-table-3__row-expand:hover {
-    background-color: var(--ubits-bg-2, #f3f3f4);
-    color: var(--ubits-body-md-regular-1, #1f2937);
+    background-color: var(--ubits-bg-2, #f3f3f4) !important;
+    color: var(--ubits-body-md-regular-1, #1f2937) !important;
 }
 
 .ubits-data-table-3__row-expand:active {
-    background-color: var(--ubits-bg-3, #e5e7eb);
+    background-color: var(--ubits-bg-3, #e5e7eb) !important;
 }
 
 /* Headers de columnas de datos */
@@ -194,86 +215,171 @@
     flex: 1;
 }
 
-/* Botón de ordenamiento - mismo tamaño que drag handle */
-.ubits-data-table-3__column-sort {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 20px;
-    height: 20px;
-    cursor: pointer;
-    color: var(--ubits-body-md-regular-3, #6b7280);
-    padding: var(--ubits-spacing-xs, 4px);
-    margin-left: 0;
-    margin-right: 0;
-    border: none;
-    background: none;
-    border-radius: var(--ubits-border-radius-sm, 4px);
-    transition: background-color 0.2s ease, color 0.2s ease;
-    user-select: none;
-    flex-shrink: 0;
+/* Botón de ordenamiento - EXACTAMENTE igual que botón terciario xs icon-only de UBITS */
+.ubits-data-table-3__column-sort-button.ubits-button--xs.ubits-button--icon-only {
+    /* Tamaño exacto del botón xs icon-only de UBITS */
+    padding: 8px !important;
+    width: 28px !important;
+    min-width: 28px !important;
+    height: 28px !important;
+    min-height: 28px !important;
+    max-width: 28px !important;
+    max-height: 28px !important;
+    margin: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-shrink: 0 !important;
+    box-sizing: border-box !important;
 }
 
-.ubits-data-table-3__column-sort:hover {
-    background-color: var(--ubits-bg-2, #f3f3f4);
-    color: var(--ubits-body-md-regular-1, #1f2937);
+/* Color del botón terciario - igual que UBITS */
+.ubits-data-table-3__column-sort-button.ubits-button--tertiary {
+    background: transparent !important;
+    color: var(--ubits-btn-tertiary-fg, var(--ubits-fg-1-high, #303a47)) !important;
+    border: 1px solid transparent !important;
 }
 
-.ubits-data-table-3__column-sort:active {
-    background-color: var(--ubits-bg-3, #e5e7eb);
+/* Hover del botón terciario - igual que UBITS */
+.ubits-data-table-3__column-sort-button.ubits-button--tertiary:hover:not(:disabled):not(.ubits-button--loading) {
+    background: var(--ubits-btn-tertiary-bg-hover, var(--ubits-bg-2, #f3f3f4)) !important;
+    color: var(--ubits-btn-tertiary-fg, var(--ubits-fg-1-high, #303a47)) !important;
+    border: 1px solid transparent !important;
 }
 
-.ubits-data-table-3__column-sort--active {
+/* Active del botón terciario - igual que UBITS */
+.ubits-data-table-3__column-sort-button.ubits-button--tertiary:active:not(:disabled):not(.ubits-button--loading) {
+    background: var(--ubits-btn-tertiary-bg-pressed, var(--ubits-bg-3, #e5e7eb)) !important;
+    color: var(--ubits-btn-tertiary-fg, var(--ubits-fg-1-high, #303a47)) !important;
+    border: 1px solid transparent !important;
+    transform: translateY(1px) !important;
+}
+
+/* Icono - tamaño exacto del botón xs de UBITS */
+.ubits-data-table-3__column-sort-button.ubits-button--xs i {
+    font-size: 12px !important;
+    line-height: 1 !important;
+    color: inherit !important;
+}
+
+/* Estado active del botón terciario - igual que UBITS */
+.ubits-data-table-3__column-sort-button.ubits-button--tertiary.ubits-button--active {
+    background: var(--ubits-button-active-bg, rgba(12, 91, 239, 0.15)) !important;
+    color: var(--ubits-accent-brand, #0c5bef) !important;
+    border: 1px solid transparent !important;
+}
+
+.ubits-data-table-3__column-sort-button.ubits-button--tertiary.ubits-button--active:hover:not(:disabled):not(.ubits-button--loading) {
+    background: var(--ubits-button-active-bg, rgba(12, 91, 239, 0.15)) !important;
+    color: var(--ubits-accent-brand, #0c5bef) !important;
+    border: 1px solid transparent !important;
+}
+
+.ubits-data-table-3__column-sort-button.ubits-button--tertiary.ubits-button--active i {
+    color: var(--ubits-accent-brand, #0c5bef) !important;
+}
+
+.ubits-data-table-3__column-sort-button.ubits-button--tertiary:hover {
+    color: var(--ubits-fg-1-high, #303a47) !important;
+    background: var(--ubits-bg-2, #f3f3f4) !important;
+}
+
+.ubits-data-table-3__column-sort-button.ubits-button--tertiary:hover i {
+    color: var(--ubits-fg-1-high, #303a47) !important;
+}
+
+.ubits-data-table-3__column-sort-button.ubits-button--tertiary.ubits-button--active {
+    color: var(--ubits-accent-brand, #0c5bef) !important;
+    background: var(--ubits-bg-active, rgba(12, 91, 239, 0.15)) !important;
+}
+
+.ubits-data-table-3__column-sort-button.ubits-button--tertiary.ubits-button--active i {
+    color: var(--ubits-accent-brand, #0c5bef) !important;
+}
+
+/* Iconos wa-icon en botón de ordenamiento - EXACTAMENTE igual que drag handle */
+.ubits-data-table-3__column-sort wa-icon,
+.ubits-data-table-3__column-sort i {
+    font-size: 14px;
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    color: inherit;
+    margin: 0;
+    padding: 0;
+    line-height: 1;
+    vertical-align: middle;
+}
+
+.ubits-data-table-3__column-sort:active wa-icon,
+.ubits-data-table-3__column-sort:active i {
+    color: inherit;
+}
+
+.ubits-data-table-3__column-sort:hover wa-icon,
+.ubits-data-table-3__column-sort:hover i {
+    color: inherit;
+}
+
+.ubits-data-table-3__column-sort--active wa-icon,
+.ubits-data-table-3__column-sort--active i {
     color: var(--ubits-accent-brand, #0c5bef);
 }
 
-.ubits-data-table-3__column-sort wa-icon {
-    display: inline-block !important;
-    width: 12px !important;
-    height: 12px !important;
-    font-size: 14px;
-    color: inherit;
-    opacity: 1;
-}
-
-.ubits-data-table-3__column-sort--active wa-icon {
-    color: var(--ubits-accent-brand, #0c5bef) !important;
-    opacity: 1 !important;
-}
-
+/* Fallback icons - mostrar solo cuando wa-icon no está disponible - EXACTAMENTE igual que drag handle */
 .ubits-data-table-3__sort-icon-fallback {
     display: none;
-    font-size: 12px;
+    font-size: 14px;
+    width: 12px;
+    height: 12px;
 }
 
 .ubits-data-table-3__column-sort i.ubits-data-table-3__sort-icon-fallback {
     display: none;
+    color: var(--ubits-body-md-regular-3, #6b7280);
+    margin: 0;
+    padding: 0;
+    vertical-align: middle;
 }
 
-.ubits-data-table-3__column-sort:not(:has(wa-icon:defined)) wa-icon {
-    display: none;
-}
-
+/* Mostrar fallback cuando wa-icon no está definido - EXACTAMENTE igual que drag handle */
 .ubits-data-table-3__column-sort:not(:has(wa-icon:defined)) i.ubits-data-table-3__sort-icon-fallback {
-    display: inline-block;
+    display: inline-block !important;
+    font-size: 14px;
+    width: 12px;
+    height: 12px;
+    line-height: 1;
+    text-align: center;
+    color: var(--ubits-body-md-regular-3, #6b7280) !important;
 }
 
-/* Drag handle para columnas */
+.ubits-data-table-3__column-sort:hover:not(:has(wa-icon:defined)) i.ubits-data-table-3__sort-icon-fallback {
+    color: var(--ubits-body-md-regular-1, #1f2937) !important;
+}
+
+.ubits-data-table-3__column-sort--active:not(:has(wa-icon:defined)) i.ubits-data-table-3__sort-icon-fallback {
+    color: var(--ubits-accent-brand, #0c5bef) !important;
+}
+
+/* Drag handle para columnas - igual tamaño que botón xs icon-only (28px) */
 .ubits-data-table-3__column-drag-handle {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 20px;
-    height: 20px;
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
+    min-height: 28px;
     cursor: grab;
-    color: var(--ubits-body-md-regular-3, #6b7280);
-    padding: var(--ubits-spacing-xs, 4px);
+    color: var(--ubits-fg-1-high, #303a47);
+    padding: 8px;
     margin-right: 0;
     margin-left: 0;
     border-radius: var(--ubits-border-radius-sm, 4px);
     transition: background-color 0.2s ease, color 0.2s ease;
     user-select: none;
     flex-shrink: 0;
+    box-sizing: border-box;
 }
 
 .ubits-data-table-3__column-drag-handle wa-icon,
@@ -282,20 +388,21 @@
     display: inline-block;
     width: 12px;
     height: 12px;
+    color: inherit;
+    margin: 0;
+    padding: 0;
+    line-height: 1;
+    vertical-align: middle;
 }
 
 .ubits-data-table-3__column-drag-handle:active {
     cursor: grabbing;
+    background-color: var(--ubits-bg-3, #e5e7eb);
 }
 
 .ubits-data-table-3__column-drag-handle:hover {
     background-color: var(--ubits-bg-2, #f3f3f4);
-    color: var(--ubits-body-md-regular-1, #1f2937);
-}
-
-.ubits-data-table-3__column-drag-handle wa-icon,
-.ubits-data-table-3__column-drag-handle i {
-    font-size: 14px;
+    color: var(--ubits-fg-1-high, #303a47);
 }
 
 /* Estados de drag */
@@ -367,39 +474,147 @@
     font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
 }
 
-/* Headers de columnas de checkbox */
-.ubits-data-table-3__column-header--checkbox {
-    text-align: left;
-    padding: 8px 4px;
-    padding-left: 4px;
-    padding-right: 4px;
-    width: 28px;
-    min-width: 28px;
-    max-width: 28px;
+/* Headers de columnas de checkbox - primera columna (checkbox) */
+.ubits-data-table-3__column-header--checkbox[data-column-id="checkbox"] {
+    text-align: center;
+    padding: 8px var(--ubits-spacing-md, 16px);
+    width: 60px;
+    min-width: 60px;
+    max-width: 60px;
+    position: sticky;
+    left: 0;
+    z-index: 20;
+    background-color: var(--ubits-bg-1, #ffffff);
+    box-sizing: border-box;
+    vertical-align: middle !important;
+}
+
+/* Wrapper interno para centrar con flex en header */
+.ubits-data-table-3__column-header--checkbox[data-column-id="checkbox"] > * {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 100% !important;
+    margin: 0 auto !important;
+}
+
+/* Headers de columnas de checkbox - checkbox-2 (única columna de checkbox fija) */
+.ubits-data-table-3__column-header--checkbox[data-column-id="checkbox-2"] {
+    text-align: center;
+    padding: 8px var(--ubits-spacing-md, 16px);
+    padding-left: 20px !important;
+    width: 60px;
+    min-width: 60px;
+    max-width: 60px;
+    position: sticky;
+    left: 0;
+    z-index: 19;
+    background-color: var(--ubits-bg-1, #ffffff);
+    box-sizing: border-box;
+    vertical-align: middle !important;
+}
+
+/* Wrapper interno para centrar con flex en header */
+.ubits-data-table-3__column-header--checkbox[data-column-id="checkbox-2"] > * {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 100% !important;
+    margin: 0 auto !important;
+}
+
+/* Headers de columnas de checkbox - otras columnas */
+.ubits-data-table-3__column-header--checkbox:not([data-column-id="checkbox"]):not([data-column-id="checkbox-2"]) {
+    text-align: center;
+    padding: 8px var(--ubits-spacing-md, 16px);
+    width: 60px;
+    min-width: 60px;
+    max-width: 60px;
+    position: sticky;
+    left: 0;
+    z-index: 20;
+    background-color: var(--ubits-bg-1, #ffffff);
+    box-sizing: border-box;
 }
 
 .ubits-data-table-3__column-header--checkbox .ubits-checkbox {
-    margin: 0;
-    margin-left: 0;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    width: 20px;
-    max-width: 20px;
-    gap: 0;
+    margin: 0 auto !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 20px !important;
+    max-width: 20px !important;
+    gap: 0 !important;
+}
+
+/* Sobrescribir TODOS los estilos del componente checkbox base en headers */
+.ubits-data-table-3__column-header--checkbox .ubits-checkbox {
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+/* Asegurar que el header también esté centrado verticalmente */
+.ubits-data-table-3__column-header--checkbox {
+    vertical-align: middle !important;
 }
 
 /* Celdas de checkbox - columna especial (id === 'checkbox') */
-.ubits-data-table-3__cell--checkbox[data-column-id="checkbox"],
-.ubits-data-table-3__cell--checkbox[data-column-id^="checkbox-"] {
-    text-align: left;
-    padding: 8px 4px;
-    padding-left: 4px;
-    padding-right: 4px;
-    width: 28px;
-    min-width: 28px;
-    max-width: 28px;
+.ubits-data-table-3__cell--checkbox[data-column-id="checkbox"] {
+    text-align: center;
+    padding: 8px var(--ubits-spacing-md, 16px) !important;
+    padding-left: var(--ubits-spacing-md, 16px) !important;
+    padding-right: var(--ubits-spacing-md, 16px) !important;
+    width: 60px !important;
+    min-width: 60px !important;
+    max-width: 60px !important;
     box-sizing: border-box;
+    position: sticky;
+    left: 0;
+    z-index: 15;
+    background-color: var(--ubits-bg-1, #ffffff);
+}
+
+/* Columna de checkbox (checkbox-2) - única columna de checkbox fija */
+.ubits-data-table-3__cell--checkbox[data-column-id="checkbox-2"] {
+    text-align: center !important;
+    padding: 8px var(--ubits-spacing-md, 16px) !important;
+    padding-left: 20px !important;
+    padding-right: var(--ubits-spacing-md, 16px) !important;
+    width: 60px !important;
+    min-width: 60px !important;
+    max-width: 60px !important;
+    box-sizing: border-box;
+    position: sticky;
+    left: 0;
+    z-index: 14;
+    background-color: var(--ubits-bg-1, #ffffff);
+    vertical-align: middle !important;
+    display: table-cell !important;
+}
+
+/* Wrapper interno para centrar con flex */
+.ubits-data-table-3__cell--checkbox[data-column-id="checkbox-2"] > * {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 100% !important;
+    margin: 0 auto !important;
+}
+
+/* Otras columnas de checkbox que empiezan con checkbox- (excepto checkbox-2) */
+.ubits-data-table-3__cell--checkbox[data-column-id^="checkbox-"]:not([data-column-id="checkbox-2"]) {
+    text-align: center;
+    padding: 8px var(--ubits-spacing-md, 16px) !important;
+    padding-left: var(--ubits-spacing-md, 16px) !important;
+    padding-right: var(--ubits-spacing-md, 16px) !important;
+    width: 60px !important;
+    min-width: 60px !important;
+    max-width: 60px !important;
+    box-sizing: border-box;
+    position: sticky;
+    left: 0;
+    z-index: 15;
+    background-color: var(--ubits-bg-1, #ffffff);
 }
 
 /* Celdas de checkbox - tipo 'checkbox' (pueden tener label) */
@@ -414,17 +629,25 @@
     background-color: var(--ubits-bg-2, #f3f3f4);
 }
 
-/* Checkbox en columna especial - sin label */
+/* Checkbox en columna especial - sin label - FORZAR CENTRADO */
 .ubits-data-table-3__cell--checkbox[data-column-id="checkbox"] .ubits-checkbox,
+.ubits-data-table-3__cell--checkbox[data-column-id="checkbox-2"] .ubits-checkbox,
 .ubits-data-table-3__cell--checkbox[data-column-id^="checkbox-"] .ubits-checkbox {
-    margin: 0;
-    margin-left: 0;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    width: 20px;
-    max-width: 20px;
-    gap: 0;
+    margin: 0 auto !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 20px !important;
+    max-width: 20px !important;
+    gap: 0 !important;
+}
+
+/* Sobrescribir TODOS los estilos del componente checkbox base */
+.ubits-data-table-3__cell--checkbox[data-column-id="checkbox"] .ubits-checkbox,
+.ubits-data-table-3__cell--checkbox[data-column-id="checkbox-2"] .ubits-checkbox,
+.ubits-data-table-3__cell--checkbox[data-column-id^="checkbox-"] .ubits-checkbox {
+    align-items: center !important;
+    justify-content: center !important;
 }
 
 /* Checkbox en columnas de tipo 'checkbox' - pueden tener label */
@@ -475,13 +698,11 @@
 
 /* Asegurar que la celda editable no cambie el layout del checkbox */
 .ubits-data-table-3__cell--checkbox.ubits-data-table-3__cell--editable {
-    width: 28px;
-    min-width: 28px;
-    max-width: 28px;
-    padding: 8px 4px;
-    padding-left: 4px;
-    padding-right: 4px;
-    text-align: left;
+    width: 60px;
+    min-width: 60px;
+    max-width: 60px;
+    padding: 8px var(--ubits-spacing-md, 16px);
+    text-align: center;
 }
 
 /* Celda de nombre */
