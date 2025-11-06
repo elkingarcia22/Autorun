@@ -228,16 +228,17 @@
 }
 
 .ubits-data-table-3__column-sort wa-icon {
-    display: inline-block;
-    width: 12px;
-    height: 12px;
+    display: inline-block !important;
+    width: 12px !important;
+    height: 12px !important;
     font-size: 14px;
     color: inherit;
+    opacity: 1;
 }
 
 .ubits-data-table-3__column-sort--active wa-icon {
-    color: var(--ubits-accent-brand, #0c5bef);
-    opacity: 1;
+    color: var(--ubits-accent-brand, #0c5bef) !important;
+    opacity: 1 !important;
 }
 
 .ubits-data-table-3__sort-icon-fallback {

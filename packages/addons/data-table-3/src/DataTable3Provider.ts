@@ -572,7 +572,7 @@ function renderColumnHeader(
       `;
     } else {
       sortIconHTML = `
-        <wa-icon name="arrow-up-a-z"></wa-icon>
+        <wa-icon name="arrow-up-a-z" style="opacity: 0.4;"></wa-icon>
         <i class="far fa-sort ubits-data-table-3__sort-icon-fallback" aria-hidden="true"></i>
       `;
     }
