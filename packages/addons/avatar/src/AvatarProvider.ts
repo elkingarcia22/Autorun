@@ -44,8 +44,8 @@ function renderBadgeForAvatar(options: {
 const AVATAR_SIZES: Record<string, number> = {
   xs: 20,
   sm: 28,
-  md: 36,
-  lg: 40
+  md: 36,      // 36px  
+  lg: 40      // 40px             
 };
 
 /**

@@ -265,6 +265,32 @@
         "Usa tokens UBITS exclusivamente (--ubits-btn-secondary-bg-default, --ubits-btn-secondary-border, --ubits-accent-brand, --ubits-bg-1, --ubits-fg-1-high, --ubits-border-radius-md, --ubits-border-radius-sm)"
       ]
     },
+    "data-table-3": {
+      "name": "Data Table 3",
+      "package": "@ubits/addon-data-table-3",
+      "path": "packages/addons/data-table-3",
+      "provider": "createDataTable3",
+      "globalFunction": "window.createDataTable3",
+      "cssFile": "packages/addons/data-table-3/src/styles/data-table-3.css",
+      "storybookStory": "DataTable3.stories.ts",
+      "variants": [],
+      "sizes": [],
+      "states": [],
+      "features": [
+        "Tabla básica con estructura de columnas separadas",
+        "Columna 1: Drag handle para reordenar filas",
+        "Columna 2: Expand icon (chevron) para expandir/colapsar filas",
+        "Columna 3: Checkbox con header propio (select all)",
+        "Columnas de datos configurables",
+        "Drag & drop de columnas (reordenamiento)",
+        "Drag & drop de filas (reordenamiento)",
+        "Checkbox 'Seleccionar todos' en el header de la columna de checkbox",
+        "Checkbox individual por fila en su propia columna",
+        "Filas expandibles/colapsables",
+        "Callbacks para eventos (onRowSelect, onSelectAll, onRowExpand, onColumnReorder, onRowReorder)",
+        "Usa tokens UBITS exclusivamente"
+      ]
+    },
     "avatar": {
       "name": "Avatar",
       "package": "@ubits/avatar",

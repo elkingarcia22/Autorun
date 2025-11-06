@@ -4635,6 +4635,21 @@ Reglas Importantes:
               hasPreview: true
             },
             {
+              name: 'Data Table 3',
+              description: 'Componente Data Table 3 - Tabla básica con estructura de columnas separadas: drag handle, expand icon, checkbox (con columna propia y header), y columnas de datos.',
+              files: {
+                css: 'addons/data-table-3/src/styles/data-table-3.css',
+                ts: 'addons/data-table-3/src/DataTable3Provider.ts'
+              },
+              variants: [],
+              sizes: [],
+              states: [],
+              features: ['Columna 1: Drag handle para reordenar filas', 'Columna 2: Expand icon (chevron) para expandir/colapsar', 'Columna 3: Checkbox con header propio (select all)', 'Columnas de datos configurables', 'Drag & drop de columnas y filas', 'Filas expandibles', 'Selección múltiple', 'Usa tokens UBITS exclusivamente'],
+              class: 'ubits-data-table-3',
+              example: 'createDataTable3({\n  columns: [...],\n  rows: [...],\n  columnReorderable: true,\n  rowReorderable: true,\n  onRowSelect: (rowId, selected) => {},\n  onSelectAll: (selected) => {},\n  onRowExpand: (rowId, expanded) => {}\n})',
+              hasPreview: true
+            },
+            {
               name: 'Avatar',
               description: 'Componente de avatar con soporte para imagen, iniciales e icono. Múltiples tamaños y badge opcional. Usa tokens UBITS exclusivamente.',
               files: {
@@ -4850,6 +4865,8 @@ Reglas Importantes:
                     window.updateTogglePreview('toggle');
                   } else if (componentId === 'search-button' && typeof window.updateSearchButtonPreview === 'function') {
                     window.updateSearchButtonPreview('search-button');
+                  } else if (componentId === 'data-table-3' && typeof window.updateDataTable3Preview === 'function') {
+                    window.updateDataTable3Preview('data-table-3');
                   } else if (componentId === 'avatar' && typeof window.updateAvatarPreview === 'function') {
                     window.updateAvatarPreview('avatar');
                   } else if (componentId === 'drawer-navigation' && typeof window.updateDrawerPreview === 'function') {
@@ -5689,6 +5706,99 @@ Reglas Importantes:
                           <!-- PREVIEW EN EL MEDIO -->
                           <div style="background: var(--ubits-bg-1); padding: 48px; border-radius: 8px; border: none; margin-bottom: 24px; display: flex; align-items: center; justify-content: center; min-height: 120px;">
                             <div id="search-button-preview-${componentId}">
+                              <!-- Se generará dinámicamente -->
+                            </div>
+                          </div>
+                        </div>
+                      ` : ''}
+                      
+                      ${hasPreview && component.name === 'Data Table' ? `
+                        <!-- Preview Section for Data Table -->
+                        <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: none; margin-bottom: 24px;">
+                          <!-- BOTÓN PARA ABRIR MODAL -->
+                          <div style="margin-bottom: 16px;">
+                            <button 
+                              onclick="openDataTableModal('${componentId}')"
+                              class="ubits-button ubits-button--primary ubits-button--md"
+                              style="width: 100%;"
+                            >
+                              <i class="far fa-table" aria-hidden="true"></i>
+                              <span>Ver Data Table</span>
+                            </button>
+                          </div>
+                          
+                          <!-- PREVIEW EN EL MEDIO (mini preview) -->
+                          <div style="background: var(--ubits-bg-1); padding: 24px; border-radius: 8px; border: none; min-height: 200px; display: flex; align-items: center; justify-content: center;">
+                            <div style="text-align: center; color: var(--ubits-fg-1-medium);">
+                              <i class="far fa-table" style="font-size: 48px; margin-bottom: 16px; display: block;"></i>
+                              <p style="margin: 0;">Click en "Ver Data Table" para abrir la tabla completa</p>
+                            </div>
+                          </div>
+                        </div>
+                      ` : ''}
+                      
+                      ${hasPreview && component.name === 'Data Table 3' ? `
+                        <!-- Preview Section for Data Table 3 -->
+                        <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: none; margin-bottom: 24px;">
+                          <!-- CONTROLES ARRIBA -->
+                          <div style="margin-bottom: 24px;">
+                            <h4 style="margin: 0 0 20px 0; color: var(--ubits-fg-1-high); font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand);"></i>
+                              Controles
+                            </h4>
+                            
+                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
+                              <!-- Arrastrar Columnas -->
+                              <div style="flex: 0 0 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Arrastrar Columnas</label>
+                                <label class="switch" style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                                  <input type="checkbox" id="data-table-3-column-reorderable-${componentId}" checked onchange="setDataTable3Control('columnReorderable', this.checked, '${componentId}')">
+                                  <span class="slider"></span>
+                                  <span id="data-table-3-column-reorderable-status-${componentId}" style="font-size: 14px; color: var(--ubits-fg-1-high);">Activado</span>
+                                </label>
+                              </div>
+                              
+                              <!-- Arrastrar Filas -->
+                              <div style="flex: 0 0 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Arrastrar Filas</label>
+                                <label class="switch" style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                                  <input type="checkbox" id="data-table-3-row-reorderable-${componentId}" checked onchange="setDataTable3Control('rowReorderable', this.checked, '${componentId}')">
+                                  <span class="slider"></span>
+                                  <span id="data-table-3-row-reorderable-status-${componentId}" style="font-size: 14px; color: var(--ubits-fg-1-high);">Activado</span>
+                                </label>
+                              </div>
+                              
+                              <!-- Mostrar Checkbox -->
+                              <div style="flex: 0 0 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Columna Checkbox</label>
+                                <label class="switch" style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                                  <input type="checkbox" id="data-table-3-show-checkbox-${componentId}" checked onchange="setDataTable3Control('showCheckbox', this.checked, '${componentId}')">
+                                  <span class="slider"></span>
+                                  <span id="data-table-3-show-checkbox-status-${componentId}" style="font-size: 14px; color: var(--ubits-fg-1-high);">Visible</span>
+                                </label>
+                              </div>
+                              
+                              <!-- Número de Columnas -->
+                              <div style="flex: 0 0 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Número de Columnas</label>
+                                <input type="number" id="data-table-3-columns-count-${componentId}" value="4" min="1" max="10" onchange="setDataTable3Control('columnsCount', parseInt(this.value) || 4, '${componentId}')" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                              
+                              <!-- Expandir Filas (Dropdown) -->
+                              <div style="flex: 0 0 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Expandir Filas</label>
+                                <label class="switch" style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                                  <input type="checkbox" id="data-table-3-row-expandable-${componentId}" checked onchange="setDataTable3Control('rowExpandable', this.checked, '${componentId}')">
+                                  <span class="slider"></span>
+                                  <span id="data-table-3-row-expandable-status-${componentId}" style="font-size: 14px; color: var(--ubits-fg-1-high);">Habilitado</span>
+                                </label>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <!-- PREVIEW -->
+                          <div style="background: var(--ubits-bg-1); padding: 24px; border-radius: 8px; border: none; min-height: 400px;">
+                            <div id="data-table-3-preview-${componentId}">
                               <!-- Se generará dinámicamente -->
                             </div>
                           </div>
@@ -9289,6 +9399,1091 @@ Reglas Importantes:
         }
         
         updateSearchButtonPreview(componentId);
+      };
+      
+      // ========================================
+      // DATA TABLE PREVIEW FUNCTIONS
+      // ========================================
+      
+      // Estado del preview del Data Table
+      const dataTablePreviewState = {};
+      let dataTableInstances = {};
+      
+      // Inicializar estado del Data Table
+      function initDataTablePreviewState(componentId) {
+        if (!dataTablePreviewState[componentId]) {
+          dataTablePreviewState[componentId] = {
+            title: 'Lista de elementos',
+            count: { shown: 3, total: 10 },
+            columns: [
+              {
+                id: 'select',
+                title: '',
+                hasSelectAll: true,
+                visible: true,
+                width: 120,
+              },
+              {
+                id: 'name',
+                title: 'Nombre',
+                visible: true,
+                sortable: true,
+                width: 200,
+              },
+              {
+                id: 'email',
+                title: 'Email',
+                visible: true,
+                sortable: true,
+                width: 250,
+              },
+              {
+                id: 'status',
+                title: 'Estado',
+                visible: true,
+                sortable: false,
+                width: 150,
+              },
+              {
+                id: 'progress',
+                title: 'Progreso',
+                visible: true,
+                sortable: false,
+                width: 200,
+              },
+              {
+                id: 'fecha',
+                title: 'Fecha',
+                visible: true,
+                sortable: true,
+                width: 150,
+                editable: true,
+                editorType: 'date',
+              },
+              {
+                id: 'acciones',
+                title: 'Acciones',
+                visible: true,
+                sortable: false,
+                width: 200,
+              },
+            ],
+            rows: [
+              {
+                id: 1,
+                data: { 
+                  name: 'Juan Pérez', 
+                  email: 'juan@example.com', 
+                  status: 'Activo',
+                  avatar: { initials: 'Juan Pérez', badgeColor: 'green' },
+                  progress: 75,
+                  fecha: '2024-01-15',
+                  acciones: 'view,edit',
+                  telefono: '+57 300 123 4567',
+                  direccion: 'Calle 123 #45-67, Bogotá',
+                  departamento: 'Ventas',
+                  fechaIngreso: '2020-03-15',
+                  ultimoAcceso: '2024-01-20 14:30'
+                },
+                selected: false,
+                expanded: false,
+              },
+              {
+                id: 2,
+                data: { 
+                  name: 'María García', 
+                  email: 'maria@example.com', 
+                  status: 'Activo',
+                  avatar: { initials: 'María García', badgeColor: 'blue' },
+                  progress: 45,
+                  fecha: '2024-02-20',
+                  acciones: 'view,edit',
+                  telefono: '+57 310 987 6543',
+                  direccion: 'Avenida 78 #12-34, Medellín',
+                  departamento: 'Marketing',
+                  fechaIngreso: '2021-06-10',
+                  ultimoAcceso: '2024-01-19 09:15'
+                },
+                selected: false,
+                expanded: false,
+              },
+              {
+                id: 3,
+                data: { 
+                  name: 'Carlos López', 
+                  email: 'carlos@example.com', 
+                  status: 'Inactivo',
+                  avatar: { initials: 'Carlos López', badgeColor: 'gray' },
+                  progress: 90,
+                  fecha: '2024-03-10',
+                  acciones: 'view,edit,delete',
+                  telefono: '+57 320 555 1234',
+                  direccion: 'Carrera 15 #89-12, Cali',
+                  departamento: 'IT',
+                  fechaIngreso: '2019-11-05',
+                  ultimoAcceso: '2024-01-18 16:45'
+                },
+                selected: false,
+                expanded: false,
+              },
+            ],
+            headerButtons: [
+              { type: 'search', visible: true, size: 'md' },
+              { type: 'filters', visible: true, size: 'md' },
+              { type: 'columns', visible: true, size: 'md' },
+              { type: 'primary', visible: true, size: 'md', icon: 'fa-plus', label: 'Agregar' },
+            ],
+            individualActions: [
+              { icon: 'fa-eye', label: 'Ver', onClick: () => {}, enabled: true },
+              { icon: 'fa-pencil', label: 'Editar', onClick: () => {}, enabled: true },
+              { icon: 'fa-trash', label: 'Eliminar', onClick: () => {}, enabled: true },
+            ],
+            bulkActions: [
+              { icon: 'fa-trash', label: 'Eliminar', onClick: () => {}, enabled: true },
+              { icon: 'fa-download', label: 'Descargar', onClick: () => {}, enabled: true },
+            ],
+            pagination: {
+              type: 'pagination',
+              currentPage: 1,
+              totalPages: 3,
+              itemsPerPage: 20,
+              itemsPerPageOptions: [10, 20, 50, 100],
+            },
+            columnReorderable: true,
+            rowReorderable: true,
+          };
+        }
+        return dataTablePreviewState[componentId];
+      }
+      
+      // Inicializar estado del Data Table 3
+      const dataTable3PreviewState = {};
+      function initDataTable3PreviewState(componentId) {
+        if (!dataTable3PreviewState[componentId]) {
+          dataTable3PreviewState[componentId] = {
+            columnReorderable: true,
+            rowReorderable: true,
+            showCheckbox: true,
+            rowExpandable: true,
+            columnsCount: 4,
+            columns: [
+              {
+                id: 'checkbox',
+                title: 'Checkbox',
+                visible: true,
+                width: 150,
+              },
+              {
+                id: 'nombre',
+                title: 'Nombre',
+                visible: true,
+                width: 200,
+              },
+              {
+                id: 'email',
+                title: 'Email',
+                visible: true,
+                width: 250,
+              },
+              {
+                id: 'estado',
+                title: 'Estado',
+                visible: true,
+                width: 150,
+              },
+            ],
+            rows: [
+              {
+                id: 1,
+                data: {
+                  nombre: 'Juan Pérez',
+                  checkbox: false,
+                  email: 'juan@example.com',
+                  estado: 'Activo',
+                },
+                expanded: false,
+                renderExpandedContent: (rowData) => {
+                  return `
+                    <div style="padding: 16px;">
+                      <h4 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600;">Información adicional</h4>
+                      <p style="margin: 0; font-size: 13px; color: var(--ubits-text-2, #6b7280);">
+                        Detalles adicionales para ${rowData.nombre}
+                      </p>
+                    </div>
+                  `;
+                },
+              },
+              {
+                id: 2,
+                data: {
+                  nombre: 'María García',
+                  checkbox: true,
+                  email: 'maria@example.com',
+                  estado: 'Inactivo',
+                },
+                expanded: false,
+              },
+              {
+                id: 3,
+                data: {
+                  nombre: 'Carlos López',
+                  checkbox: false,
+                  email: 'carlos@example.com',
+                  estado: 'Activo',
+                },
+                expanded: false,
+              },
+            ],
+          };
+        }
+        return dataTable3PreviewState[componentId];
+      }
+      
+      // Función para establecer controles del Data Table 3
+      window.setDataTable3Control = function(option, value, componentId) {
+        const state = initDataTable3PreviewState(componentId);
+        
+        if (option === 'columnReorderable') {
+          state.columnReorderable = value;
+          const statusEl = document.getElementById(`data-table-3-column-reorderable-status-${componentId}`);
+          if (statusEl) statusEl.textContent = value ? 'Activado' : 'Desactivado';
+        } else if (option === 'rowReorderable') {
+          state.rowReorderable = value;
+          const statusEl = document.getElementById(`data-table-3-row-reorderable-status-${componentId}`);
+          if (statusEl) statusEl.textContent = value ? 'Activado' : 'Desactivado';
+        } else if (option === 'showCheckbox') {
+          state.showCheckbox = value;
+          const statusEl = document.getElementById(`data-table-3-show-checkbox-status-${componentId}`);
+          if (statusEl) statusEl.textContent = value ? 'Visible' : 'Oculta';
+        } else if (option === 'columnsCount') {
+          state.columnsCount = Math.max(1, Math.min(10, parseInt(value) || 4));
+          const inputEl = document.getElementById(`data-table-3-columns-count-${componentId}`);
+          if (inputEl) inputEl.value = state.columnsCount;
+        } else if (option === 'rowExpandable') {
+          state.rowExpandable = value;
+          const statusEl = document.getElementById(`data-table-3-row-expandable-status-${componentId}`);
+          if (statusEl) statusEl.textContent = value ? 'Habilitado' : 'Deshabilitado';
+        }
+        
+        // Actualizar el preview
+        window.updateDataTable3Preview(componentId);
+      };
+      
+      // Almacenar instancias de Data Table 3
+      window.dataTable3Instances = window.dataTable3Instances || {};
+      
+      // Función para actualizar el preview del Data Table 3
+      window.updateDataTable3Preview = function(componentId) {
+        const state = initDataTable3PreviewState(componentId);
+        const preview = document.getElementById(`data-table-3-preview-${componentId}`);
+        
+        if (!preview) {
+          console.error('❌ Preview de Data Table 3 no encontrado:', `data-table-3-preview-${componentId}`);
+          return;
+        }
+        
+        // Destruir instancia anterior si existe
+        if (window.dataTable3Instances[componentId]) {
+          try {
+            window.dataTable3Instances[componentId].destroy();
+          } catch (e) {
+            console.warn('Error destruyendo instancia anterior:', e);
+          }
+          delete window.dataTable3Instances[componentId];
+        }
+        
+        // Cargar CSS necesario
+        if (!document.querySelector('link[href*="data-table-3.css"]')) {
+          const link = document.createElement('link');
+          link.rel = 'stylesheet';
+          link.href = '../../addons/data-table-3/src/styles/data-table-3.css';
+          document.head.appendChild(link);
+        }
+        
+        if (!document.querySelector('link[href*="checkbox.css"]')) {
+          const link = document.createElement('link');
+          link.rel = 'stylesheet';
+          link.href = '../../addons/checkbox/src/styles/checkbox.css';
+          document.head.appendChild(link);
+        }
+        
+        // Limpiar preview anterior
+        preview.innerHTML = '';
+        
+        // Función auxiliar para crear la instancia de Data Table 3
+        const createDataTable3Instance = () => {
+          // Crear la tabla
+          const containerId = `data-table-3-container-${componentId}`;
+          const container = document.createElement('div');
+          container.id = containerId;
+          preview.appendChild(container);
+          
+          try {
+            // Construir columnas dinámicamente según controles
+            const baseColumns = [
+              { id: 'checkbox', title: 'Checkbox', visible: state.showCheckbox !== false, width: 150 },
+              { id: 'nombre', title: 'Nombre', visible: true, width: 200 },
+              { id: 'email', title: 'Email', visible: true, width: 250 },
+              { id: 'estado', title: 'Estado', visible: true, width: 150 }
+            ];
+            
+            // Agregar columnas adicionales según el número especificado
+            const columnsCount = state.columnsCount || 4;
+            const additionalColumns = [];
+            const columnNames = ['Teléfono', 'Ciudad', 'País', 'Fecha', 'Categoría', 'Prioridad'];
+            
+            for (let i = 4; i < columnsCount && i < 10; i++) {
+              const columnName = columnNames[i - 4] || `Columna ${i + 1}`;
+              additionalColumns.push({
+                id: `col${i}`,
+                title: columnName,
+                visible: true,
+                width: 150
+              });
+            }
+            
+            const allColumns = [...baseColumns, ...additionalColumns];
+            
+            // Filtrar columnas según opciones
+            const columns = allColumns.filter(col => {
+              if (col.id === 'checkbox') {
+                return state.showCheckbox !== false;
+              }
+              return col.visible;
+            });
+            
+            // Preparar filas con renderExpandedContent solo si rowExpandable está activado
+            const rowsWithExpand = state.rows.map(row => {
+              if (state.rowExpandable !== false) {
+                return {
+                  ...row,
+                  renderExpandedContent: (rowData) => {
+                    return `
+                      <div style="padding: 16px;">
+                        <h4 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600;">Información adicional</h4>
+                        <p style="margin: 0; font-size: 13px; color: var(--ubits-text-2, #6b7280);">
+                          Detalles adicionales para ${rowData.nombre || 'usuario'}
+                        </p>
+                      </div>
+                    `;
+                  }
+                };
+              }
+              return row;
+            });
+            
+            const table = window.createDataTable3({
+              containerId: containerId,
+              columns: columns,
+              rows: rowsWithExpand,
+              columnReorderable: state.columnReorderable !== false,
+              rowReorderable: state.rowReorderable !== false,
+              rowExpandable: state.rowExpandable !== false,
+              onRowExpand: (rowId, expanded) => {
+                console.log('Fila expandida:', rowId, expanded);
+                const row = state.rows.find(r => r.id === rowId);
+                if (row) {
+                  row.expanded = expanded;
+                }
+              },
+              onColumnReorder: (columnIds) => {
+                console.log('Columnas reordenadas:', columnIds);
+              },
+              onRowReorder: (rowIds) => {
+                console.log('Filas reordenadas:', rowIds);
+              }
+            });
+            
+            // Guardar instancia para poder destruirla después
+            window.dataTable3Instances[componentId] = table;
+            
+            console.log('✅ Data Table 3 creada exitosamente');
+          } catch (error) {
+            console.error('❌ Error creando Data Table 3:', error);
+            preview.innerHTML = `<p style="color: var(--ubits-fg-1-medium); padding: 16px;">Error: ${error.message}</p>`;
+          }
+        };
+        
+        // Si el módulo ya está cargado, crear la tabla directamente
+        if (typeof window.createDataTable3 !== 'undefined') {
+          createDataTable3Instance();
+        } else {
+          // Cargar el módulo UMD
+          const script = document.createElement('script');
+          script.src = '../../addons/data-table-3/dist/data-table-3.umd.js';
+          script.onload = () => {
+            console.log('✅ Data Table 3 UMD cargado');
+            // Esperar a que el módulo esté disponible
+            let attempts = 0;
+            const maxAttempts = 20;
+            const checkModule = setInterval(() => {
+              attempts++;
+              if (typeof window.createDataTable3 !== 'undefined') {
+                clearInterval(checkModule);
+                console.log('✅ createDataTable3 disponible');
+                createDataTable3Instance();
+              } else if (attempts >= maxAttempts) {
+                clearInterval(checkModule);
+                console.error('❌ createDataTable3 no disponible después de', maxAttempts, 'intentos');
+                preview.innerHTML = '<p style="color: var(--ubits-fg-1-medium); padding: 16px;">Error: No se pudo cargar el componente Data Table 3.</p>';
+              }
+            }, 50);
+          };
+          script.onerror = () => {
+            console.error('❌ Error cargando data-table-3.umd.js');
+            preview.innerHTML = '<p style="color: var(--ubits-fg-1-medium); padding: 16px;">Error: No se pudo cargar el archivo JavaScript del componente.</p>';
+          };
+          document.head.appendChild(script);
+        }
+      };
+      
+      // Función para renderizar contenido de celdas usando Status Tag de UBITS
+      function renderDataTableCell(columnId, rowData) {
+        if (columnId === 'select') {
+          return '';
+        }
+        if (columnId === 'name') {
+          return rowData.name || '';
+        }
+        if (columnId === 'avatar') {
+          // Columna de avatar eliminada
+          return '';
+        }
+        if (false && columnId === 'avatar-old') {
+          // Renderizar Avatar con iniciales y badge (código antiguo)
+          const avatarData = rowData.avatar || { initials: rowData.name || 'U', badgeColor: 'gray' };
+          if (typeof window.renderAvatar !== 'undefined') {
+            try {
+              return window.renderAvatar({
+                initials: avatarData.initials || rowData.name || 'U',
+                size: 'md',
+                badgeColor: avatarData.badgeColor || 'gray',
+                className: 'ubits-data-table__cell-avatar'
+              });
+            } catch (e) {
+              return `<div class="ubits-avatar ubits-avatar--md">${avatarData.initials || 'U'}</div>`;
+            }
+          }
+          return `<div class="ubits-avatar ubits-avatar--md">${avatarData.initials || 'U'}</div>`;
+        }
+        if (columnId === 'email') {
+          return rowData.email || '';
+        }
+        if (columnId === 'status') {
+          // Usar el componente Status Tag de UBITS
+          const statusValue = rowData.status || 'Activo';
+          const statusType = statusValue.toLowerCase() === 'activo' ? 'active' : 'not-started';
+          // Cargar el módulo Status Tag si no está disponible
+          if (typeof window.renderStatusTag === 'undefined') {
+            // Fallback HTML simple que se actualizará después
+            return `<span class="ubits-status-tag" data-status="${statusType}">${statusValue}</span>`;
+          }
+          // Usar renderStatusTag si está disponible
+          try {
+            return window.renderStatusTag({
+              label: statusValue,
+              status: statusType,
+              size: 'md'
+            });
+          } catch (e) {
+            return `<span class="ubits-status-tag" data-status="${statusType}">${statusValue}</span>`;
+          }
+        }
+        if (columnId === 'progress') {
+          // Renderizar Progress Bar
+          const progressValue = rowData.progress || 0;
+          if (typeof window.renderProgressBar !== 'undefined') {
+            try {
+              return window.renderProgressBar({
+                size: 'md',
+                value: progressValue,
+                variant: 'default',
+                indicator: `${progressValue}%`
+              });
+            } catch (e) {
+              return `<div class="ubits-progress-bar" style="height: 16px;"><div style="width: ${progressValue}%; background: var(--ubits-accent-brand); height: 100%; border-radius: 1000px;"></div></div>`;
+            }
+          }
+          return `<div class="ubits-progress-bar" style="height: 16px;"><div style="width: ${progressValue}%; background: var(--ubits-accent-brand); height: 100%; border-radius: 1000px;"></div></div>`;
+        }
+        if (columnId === 'fecha') {
+          // Renderizar fecha (formato simple)
+          const fecha = rowData.fecha || '';
+          return fecha ? new Date(fecha).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }) : '';
+        }
+        if (columnId === 'acciones') {
+          // Renderizar botones de acción
+          const acciones = (rowData.acciones || '').split(',');
+          const buttonsHTML = acciones.map(action => {
+            const iconMap = {
+              'view': 'eye',
+              'edit': 'pencil',
+              'delete': 'trash',
+              'download': 'download'
+            };
+            const icon = iconMap[action.trim()] || 'ellipsis';
+            if (typeof window.renderButton !== 'undefined') {
+              try {
+                return window.renderButton({
+                  variant: 'secondary',
+                  size: 'sm',
+                  icon: icon,
+                  iconOnly: true,
+                  attributes: {
+                    'aria-label': action.trim(),
+                    'data-action': action.trim()
+                  }
+                });
+              } catch (e) {
+                return `<button class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only" aria-label="${action.trim()}"><i class="far fa-${icon}"></i></button>`;
+              }
+            }
+            return `<button class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only" aria-label="${action.trim()}"><i class="far fa-${icon}"></i></button>`;
+          }).join('');
+          return `<div style="display: flex; gap: 8px; align-items: center;">${buttonsHTML}</div>`;
+        }
+        return rowData[columnId] || '';
+      }
+      
+      // Función para abrir modal con Data Table
+      window.openDataTableModal = function(componentId) {
+        console.log('🔵 Abriendo modal para:', componentId);
+        const state = initDataTablePreviewState(componentId);
+        
+        // TEMPORAL: Probar sin header para evitar saltos
+        // Comentar estas líneas para probar sin header
+        state.title = '';
+        state.headerButtons = [];
+        
+        // Cargar CSS del Modal
+        if (!document.querySelector('link[href*="modal.css"]')) {
+          const link = document.createElement('link');
+          link.rel = 'stylesheet';
+          link.href = '../../addons/modal/src/styles/modal.css';
+          document.head.appendChild(link);
+        }
+        
+        // Cargar Status Tag CSS
+        if (!document.querySelector('link[href*="status-tag.css"]')) {
+          const link = document.createElement('link');
+          link.rel = 'stylesheet';
+          link.href = '../../addons/status-tag/src/styles/status-tag.css';
+          document.head.appendChild(link);
+        }
+        
+        // Cargar Avatar CSS
+        if (!document.querySelector('link[href*="avatar.css"]')) {
+          const link = document.createElement('link');
+          link.rel = 'stylesheet';
+          link.href = '../../addons/avatar/src/styles/avatar.css';
+          document.head.appendChild(link);
+        }
+        
+        // Cargar Progress Bar CSS
+        if (!document.querySelector('link[href*="progress.css"]')) {
+          const link = document.createElement('link');
+          link.rel = 'stylesheet';
+          link.href = '../../addons/progress/src/styles/progress.css';
+          document.head.appendChild(link);
+        }
+        
+        // Cargar Scrollbar CSS
+        if (!document.querySelector('link[href*="scroll.css"]')) {
+          const link = document.createElement('link');
+          link.rel = 'stylesheet';
+          link.href = '../../addons/scroll/src/styles/scroll.css';
+          document.head.appendChild(link);
+        }
+        
+        // Cargar List CSS (para el dropdown de columnas)
+        if (!document.querySelector('link[href*="list.css"]')) {
+          const link = document.createElement('link');
+          link.rel = 'stylesheet';
+          link.href = '../../addons/list/src/styles/list.css';
+          document.head.appendChild(link);
+        }
+        
+        // Cargar Data Table CSS
+        if (!document.querySelector('link[href*="data-table.css"]')) {
+          const link = document.createElement('link');
+          link.rel = 'stylesheet';
+          link.href = '../../addons/data-table/src/styles/data-table.css';
+          document.head.appendChild(link);
+        }
+        
+        // Cargar Button CSS
+        if (!document.querySelector('link[href*="button.css"]')) {
+          const link = document.createElement('link');
+          link.rel = 'stylesheet';
+          link.href = '../../addons/button/src/styles/button.css';
+          document.head.appendChild(link);
+        }
+        
+        // Cargar Checkbox CSS
+        if (!document.querySelector('link[href*="checkbox.css"]')) {
+          const link = document.createElement('link');
+          link.rel = 'stylesheet';
+          link.href = '../../addons/checkbox/src/styles/checkbox.css';
+          document.head.appendChild(link);
+        }
+        
+        // Cargar Search Button CSS
+        if (!document.querySelector('link[href*="search-button.css"]')) {
+          const link = document.createElement('link');
+          link.rel = 'stylesheet';
+          link.href = '../../addons/search-button/src/styles/search-button.css';
+          document.head.appendChild(link);
+        }
+        
+        // Preparar columnas con renderCell que usa Status Tag
+        const columns = state.columns.map(col => ({
+          ...col,
+          renderCell: col.id !== 'select' ? (rowData) => renderDataTableCell(col.id, rowData) : undefined
+        }));
+        
+        // Preparar filas con contenido expandible de ejemplo
+        const rows = state.rows.map(row => ({
+          ...row,
+          renderExpandedContent: (rowData) => {
+            return `
+              <div style="padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                <h4 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600;">Detalles adicionales</h4>
+                <p style="margin: 0; font-size: 13px; color: var(--ubits-fg-1-medium);">
+                  Información adicional para ${rowData.name || 'este elemento'}
+                </p>
+              </div>
+            `;
+          }
+        }));
+        
+        // Preparar opciones del Data Table
+        // Agregar funciones renderExpandedContent a las filas
+        const rowsWithExpandContent = rows.map(row => {
+          if (row.data && (row.data.telefono || row.data.direccion || row.data.departamento)) {
+            return {
+              ...row,
+              renderExpandedContent: (rowData) => {
+                // Calcular padding-left para alinear con la columna "Nombre"
+                // Checkbox cell (32px) + Row controls (90px) + padding de celda (16px) = 138px
+                const leftPadding = 'calc(32px + 90px + var(--ubits-spacing-md, 16px))';
+                return `
+                  <div style="padding-top: var(--ubits-spacing-md, 16px); padding-right: var(--ubits-spacing-md, 16px); padding-bottom: var(--ubits-spacing-md, 16px); padding-left: ${leftPadding}; background: var(--ubits-bg-1, #ffffff);">
+                    <div style="display: grid; grid-template-columns: 200px 300px 250px 200px 200px; gap: var(--ubits-spacing-md, 16px); align-items: start;">
+                      <div style="display: flex; flex-direction: column; gap: var(--ubits-spacing-xs, 4px);">
+                        <span style="font-size: var(--ubits-font-size-sm, 14px); font-weight: var(--weight-semibold, 600); color: var(--ubits-fg-1-medium, #5c646f);">Teléfono</span>
+                        <span style="font-size: var(--ubits-font-size-md, 16px); color: var(--ubits-fg-1-high, #303a47);">${rowData.telefono || 'N/A'}</span>
+                      </div>
+                      <div style="display: flex; flex-direction: column; gap: var(--ubits-spacing-xs, 4px);">
+                        <span style="font-size: var(--ubits-font-size-sm, 14px); font-weight: var(--weight-semibold, 600); color: var(--ubits-fg-1-medium, #5c646f);">Dirección</span>
+                        <span style="font-size: var(--ubits-font-size-md, 16px); color: var(--ubits-fg-1-high, #303a47);">${rowData.direccion || 'N/A'}</span>
+                      </div>
+                      <div style="display: flex; flex-direction: column; gap: var(--ubits-spacing-xs, 4px);">
+                        <span style="font-size: var(--ubits-font-size-sm, 14px); font-weight: var(--weight-semibold, 600); color: var(--ubits-fg-1-medium, #5c646f);">Departamento</span>
+                        <span style="font-size: var(--ubits-font-size-md, 16px); color: var(--ubits-fg-1-high, #303a47);">${rowData.departamento || 'N/A'}</span>
+                      </div>
+                      <div style="display: flex; flex-direction: column; gap: var(--ubits-spacing-xs, 4px);">
+                        <span style="font-size: var(--ubits-font-size-sm, 14px); font-weight: var(--weight-semibold, 600); color: var(--ubits-fg-1-medium, #5c646f);">Fecha de Ingreso</span>
+                        <span style="font-size: var(--ubits-font-size-md, 16px); color: var(--ubits-fg-1-high, #303a47);">${rowData.fechaIngreso || 'N/A'}</span>
+                      </div>
+                      <div style="display: flex; flex-direction: column; gap: var(--ubits-spacing-xs, 4px);">
+                        <span style="font-size: var(--ubits-font-size-sm, 14px); font-weight: var(--weight-semibold, 600); color: var(--ubits-fg-1-medium, #5c646f);">Último Acceso</span>
+                        <span style="font-size: var(--ubits-font-size-md, 16px); color: var(--ubits-fg-1-high, #303a47);">${rowData.ultimoAcceso || 'N/A'}</span>
+                      </div>
+                    </div>
+                  </div>
+                `;
+              }
+            };
+          }
+          return row;
+        });
+        
+        // Crear modal - cargar usando UMD builds para evitar problemas de CORS
+        const containerId = 'data-table-modal-content-${componentId}';
+        let tableInstance = null; // Definir tableInstance antes de crear tableOptions
+        
+        const tableOptions = {
+          title: state.title,
+          count: state.count,
+          columns: columns,
+          rows: rowsWithExpandContent,
+          headerButtons: state.headerButtons,
+          individualActions: state.individualActions,
+          bulkActions: state.bulkActions,
+          pagination: state.pagination,
+          columnReorderable: state.columnReorderable,
+          rowReorderable: state.rowReorderable,
+          onRowSelect: (rowId, selected) => {
+            const row = rowsWithExpandContent.find(r => r.id.toString() === rowId.toString());
+            if (row) {
+              row.selected = selected;
+              if (tableInstance) {
+                tableInstance.update({ rows: rowsWithExpandContent });
+              }
+            }
+          },
+          onSelectAll: (selected) => {
+            rowsWithExpandContent.forEach(row => {
+              row.selected = selected;
+            });
+            if (tableInstance) {
+              tableInstance.update({ rows: rowsWithExpandContent });
+            }
+          },
+          onColumnSort: (columnId, direction) => {
+            console.log('Ordenar columna', columnId, direction);
+          },
+          onRowExpand: (rowId, expanded) => {
+            const row = rowsWithExpandContent.find(r => r.id.toString() === rowId.toString());
+            if (row) {
+              row.expanded = expanded;
+              if (tableInstance) {
+                tableInstance.update({ rows: rowsWithExpandContent });
+              }
+            }
+          },
+          onColumnReorder: (columnIds) => {
+            console.log('Reordenar columnas', columnIds);
+            state.columns = columnIds.map(id => state.columns.find(col => col.id === id)).filter(Boolean);
+            if (tableInstance) {
+              tableInstance.update({ columns: state.columns });
+            }
+          },
+          onRowReorder: (rowIds) => {
+            console.log('Reordenar filas', rowIds);
+            state.rows = rowIds.map(id => state.rows.find(r => r.id.toString() === id.toString())).filter(Boolean);
+            if (tableInstance) {
+              tableInstance.update({ rows: state.rows });
+            }
+          }
+        };
+        
+        // Función para crear el modal después de cargar los scripts
+        const createModalWithTable = () => {
+          if (typeof window.createModal === 'undefined' || typeof window.createDataTable === 'undefined') {
+            console.error('❌ createModal o createDataTable no están disponibles');
+            return;
+          }
+          
+          try {
+            // Crear el modal
+            const modal = window.createModal({
+              title: 'Data Table - Vista Completa',
+              bodyContent: () => {
+                const container = document.createElement('div');
+                container.id = containerId;
+                container.style.width = '100%';
+                container.style.minHeight = '400px';
+                return container.outerHTML;
+              },
+              size: 'full',
+              fullScreen: true,
+              footerButtons: {
+                secondary: {
+                  label: 'Cerrar',
+                  onClick: (e) => {
+                    if (window.dataTableModalInstance) {
+                      window.dataTableModalInstance.destroy();
+                      window.dataTableModalInstance = null;
+                    }
+                    modal.close();
+                  }
+                }
+              },
+              closeOnOverlayClick: true,
+              open: true
+            });
+            
+            // Esperar a que el modal se monte y luego crear la tabla
+            setTimeout(() => {
+              const container = document.getElementById(containerId);
+              if (container) {
+                try {
+                  // Usar tableOptions directamente (ya tiene las funciones renderExpandedContent)
+                  tableInstance = window.createDataTable(tableOptions);
+                  container.appendChild(tableInstance.element);
+                  window.dataTableModalInstance = tableInstance;
+                  console.log('✅ Data Table creada exitosamente');
+                } catch (error) {
+                  console.error('❌ Error creando Data Table:', error);
+                  container.innerHTML = '<p style="color: var(--ubits-fg-1-medium); padding: 16px;">Error al cargar la tabla. Por favor, recarga la página.</p>';
+                }
+              } else {
+                console.error('❌ No se encontró el contenedor:', containerId);
+              }
+            }, 200);
+          } catch (error) {
+            console.error('❌ Error creando modal:', error);
+          }
+        };
+        
+        // Cargar Modal UMD primero
+        if (typeof window.createModal === 'undefined') {
+          const modalScript = document.createElement('script');
+          modalScript.src = '../../addons/modal/dist/modal.umd.js';
+          modalScript.onload = () => {
+            console.log('✅ Modal UMD cargado');
+            // Esperar un momento para que se registre en window
+            setTimeout(() => {
+              // Verificar diferentes formas de acceso
+              if (typeof window.createModal !== 'undefined') {
+                console.log('✅ createModal disponible directamente');
+              } else if (typeof window.UBITSModal !== 'undefined' && window.UBITSModal.createModal) {
+                window.createModal = window.UBITSModal.createModal;
+                console.log('✅ createModal disponible en UBITSModal');
+              } else {
+                console.error('❌ createModal no está disponible');
+                alert('Error: No se pudo cargar el componente Modal. Por favor, recarga la página.');
+                return;
+              }
+              
+              // Cargar Data Table UMD
+              if (typeof window.createDataTable === 'undefined') {
+                const dataTableScript = document.createElement('script');
+                dataTableScript.src = '../../addons/data-table/dist/data-table.umd.js';
+                dataTableScript.onload = () => {
+                  console.log('✅ Data Table UMD cargado');
+                  // Esperar un momento para que se registre
+                  setTimeout(() => {
+                    // Verificar diferentes formas de acceso
+                    if (typeof window.createDataTable !== 'undefined') {
+                      console.log('✅ createDataTable disponible directamente');
+                    } else if (typeof window.UBITSDataTable !== 'undefined' && window.UBITSDataTable.createDataTable) {
+                      window.createDataTable = window.UBITSDataTable.createDataTable;
+                      console.log('✅ createDataTable disponible en UBITSDataTable');
+                    } else {
+                      console.error('❌ createDataTable no está disponible');
+                      alert('Error: No se pudo cargar el componente Data Table. Por favor, recarga la página.');
+                      return;
+                    }
+                    
+                    // Crear modal después de cargar ambos
+                    createModalWithTable();
+                  }, 100);
+                };
+                dataTableScript.onerror = () => {
+                  console.error('❌ Error cargando Data Table UMD');
+                  alert('Error al cargar el componente Data Table. Por favor, verifica que los archivos estén compilados.');
+                };
+                document.head.appendChild(dataTableScript);
+              } else {
+                createModalWithTable();
+              }
+            }, 100);
+          };
+          modalScript.onerror = () => {
+            console.error('❌ Error cargando Modal UMD');
+            alert('Error al cargar el componente Modal. Por favor, verifica que los archivos estén compilados.');
+          };
+          document.head.appendChild(modalScript);
+        } else {
+          // Modal ya está cargado, verificar Data Table
+          if (typeof window.createDataTable === 'undefined') {
+            const dataTableScript = document.createElement('script');
+            dataTableScript.src = '../../addons/data-table/dist/data-table.umd.js';
+            dataTableScript.onload = () => {
+              console.log('✅ Data Table UMD cargado');
+              if (typeof window.UBITSDataTable !== 'undefined') {
+                window.createDataTable = window.UBITSDataTable.createDataTable;
+              }
+              createModalWithTable();
+            };
+            document.head.appendChild(dataTableScript);
+          } else {
+            createModalWithTable();
+          }
+        }
+      };
+      
+      // Función para actualizar el preview del Data Table
+      window.updateDataTablePreview = function(componentId) {
+        const state = initDataTablePreviewState(componentId);
+        const preview = document.getElementById(`data-table-preview-${componentId}`);
+        
+        if (!preview) {
+          console.error('❌ Preview de Data Table no encontrado:', `data-table-preview-${componentId}`);
+          return;
+        }
+        
+        // Limpiar instancia anterior si existe
+        if (dataTableInstances[componentId]) {
+          dataTableInstances[componentId].destroy();
+          delete dataTableInstances[componentId];
+        }
+        
+        // Preparar columnas con renderCell
+        const columns = state.columns.map(col => ({
+          ...col,
+          renderCell: col.id !== 'select' ? (rowData) => renderDataTableCell(col.id, rowData) : undefined
+        }));
+        
+        // Preparar opciones del Data Table
+        const tableOptions = {
+          title: state.title,
+          count: state.count,
+          columns: columns,
+          rows: (() => {
+            // Agregar funciones renderExpandedContent a las filas
+            return state.rows.map(row => {
+              if (row.data && (row.data.telefono || row.data.direccion || row.data.departamento)) {
+                return {
+                  ...row,
+                  renderExpandedContent: (rowData) => {
+                    // Calcular padding-left para alinear con la columna "Nombre"
+                    // Checkbox cell (32px) + Row controls (90px) + padding de celda (16px) = 138px
+                    const leftPadding = 'calc(32px + 90px + var(--ubits-spacing-md, 16px))';
+                    return `
+                      <div style="padding-top: var(--ubits-spacing-md, 16px); padding-right: var(--ubits-spacing-md, 16px); padding-bottom: var(--ubits-spacing-md, 16px); padding-left: ${leftPadding}; background: var(--ubits-bg-1, #ffffff);">
+                        <div style="display: grid; grid-template-columns: 200px 300px 250px 200px 200px; gap: var(--ubits-spacing-md, 16px); align-items: start;">
+                          <div style="display: flex; flex-direction: column; gap: var(--ubits-spacing-xs, 4px);">
+                            <span style="font-size: var(--ubits-font-size-sm, 14px); font-weight: var(--weight-semibold, 600); color: var(--ubits-fg-1-medium, #5c646f);">Teléfono</span>
+                            <span style="font-size: var(--ubits-font-size-md, 16px); color: var(--ubits-fg-1-high, #303a47);">${rowData.telefono || 'N/A'}</span>
+                          </div>
+                          <div style="display: flex; flex-direction: column; gap: var(--ubits-spacing-xs, 4px);">
+                            <span style="font-size: var(--ubits-font-size-sm, 14px); font-weight: var(--weight-semibold, 600); color: var(--ubits-fg-1-medium, #5c646f);">Dirección</span>
+                            <span style="font-size: var(--ubits-font-size-md, 16px); color: var(--ubits-fg-1-high, #303a47);">${rowData.direccion || 'N/A'}</span>
+                          </div>
+                          <div style="display: flex; flex-direction: column; gap: var(--ubits-spacing-xs, 4px);">
+                            <span style="font-size: var(--ubits-font-size-sm, 14px); font-weight: var(--weight-semibold, 600); color: var(--ubits-fg-1-medium, #5c646f);">Departamento</span>
+                            <span style="font-size: var(--ubits-font-size-md, 16px); color: var(--ubits-fg-1-high, #303a47);">${rowData.departamento || 'N/A'}</span>
+                          </div>
+                          <div style="display: flex; flex-direction: column; gap: var(--ubits-spacing-xs, 4px);">
+                            <span style="font-size: var(--ubits-font-size-sm, 14px); font-weight: var(--weight-semibold, 600); color: var(--ubits-fg-1-medium, #5c646f);">Fecha de Ingreso</span>
+                            <span style="font-size: var(--ubits-font-size-md, 16px); color: var(--ubits-fg-1-high, #303a47);">${rowData.fechaIngreso || 'N/A'}</span>
+                          </div>
+                          <div style="display: flex; flex-direction: column; gap: var(--ubits-spacing-xs, 4px);">
+                            <span style="font-size: var(--ubits-font-size-sm, 14px); font-weight: var(--weight-semibold, 600); color: var(--ubits-fg-1-medium, #5c646f);">Último Acceso</span>
+                            <span style="font-size: var(--ubits-font-size-md, 16px); color: var(--ubits-fg-1-high, #303a47);">${rowData.ultimoAcceso || 'N/A'}</span>
+                          </div>
+                        </div>
+                      </div>
+                    `;
+                  }
+                };
+              }
+              return row;
+            });
+          })(),
+          headerButtons: state.headerButtons,
+          individualActions: state.individualActions,
+          bulkActions: state.bulkActions,
+          pagination: state.pagination,
+          columnReorderable: state.columnReorderable,
+          rowReorderable: state.rowReorderable,
+          onRowSelect: (rowId, selected) => {
+            const row = state.rows.find(r => r.id.toString() === rowId.toString());
+            if (row) {
+              row.selected = selected;
+            }
+          },
+          onSelectAll: (selected) => {
+            state.rows.forEach(row => {
+              row.selected = selected;
+            });
+          },
+          onColumnSort: (columnId, direction) => {
+            console.log('Ordenar columna', columnId, direction);
+          },
+          onRowExpand: (rowId, expanded) => {
+            const row = state.rows.find(r => r.id.toString() === rowId.toString());
+            if (row) {
+              row.expanded = expanded;
+            }
+          },
+        };
+        
+        // Cargar CSS necesarios
+        const cssFiles = [
+          '../../addons/data-table/src/styles/data-table.css',
+          '../../addons/button/src/styles/button.css',
+          '../../addons/checkbox/src/styles/checkbox.css',
+          '../../addons/search-button/src/styles/search-button.css',
+          '../../addons/status-tag/src/styles/status-tag.css',
+        ];
+        
+        cssFiles.forEach(cssFile => {
+          const existingLink = document.querySelector(`link[href*="${cssFile.split('/').pop()}"]`);
+          if (!existingLink) {
+            const link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = cssFile;
+            document.head.appendChild(link);
+          }
+        });
+        
+        // Cargar FontAwesome si no está cargado
+        const existingFA = document.querySelector('link[href*="fontawesome"]');
+        if (!existingFA) {
+          const faLink = document.createElement('link');
+          faLink.rel = 'stylesheet';
+          faLink.href = '../../icons/dist/fontawesome.css';
+          document.head.appendChild(faLink);
+        }
+        
+        // Intentar cargar el módulo DataTableProvider dinámicamente
+        if (typeof window.createDataTable === 'undefined') {
+          // Cargar desde el dist build
+          const script = document.createElement('script');
+          script.src = '../../addons/data-table/dist/data-table.umd.js';
+          script.onload = () => {
+            // Intentar diferentes formas de acceder a la función
+            if (typeof window.UBITSDataTable !== 'undefined' && window.UBITSDataTable.createDataTable) {
+              window.createDataTable = window.UBITSDataTable.createDataTable;
+              window.renderDataTable = window.UBITSDataTable.renderDataTable;
+              createTableInstance();
+            } else if (typeof window.createDataTable !== 'undefined') {
+              createTableInstance();
+            } else {
+              // Fallback: usar renderDataTable directamente importando desde el source
+              loadTableFromSource();
+            }
+          };
+          script.onerror = () => {
+            console.warn('No se pudo cargar data-table.umd.js, usando renderDataTable directamente');
+            loadTableFromSource();
+          };
+          document.head.appendChild(script);
+        } else {
+          createTableInstance();
+        }
+        
+        function createTableInstance() {
+          try {
+            const instance = window.createDataTable(tableOptions);
+            preview.innerHTML = '';
+            preview.appendChild(instance.element);
+            dataTableInstances[componentId] = instance;
+          } catch (error) {
+            console.error('Error creando Data Table:', error);
+            loadTableFromSource();
+          }
+        }
+        
+        function loadTableFromSource() {
+          // Cargar como módulo ES6
+          const script = document.createElement('script');
+          script.type = 'module';
+          script.textContent = `
+            import { createDataTable, renderDataTable } from '../../addons/data-table/src/DataTableProvider.js';
+            window.createDataTable = createDataTable;
+            window.renderDataTable = renderDataTable;
+            
+            // Renderizar tabla
+            const tableOptions = ${JSON.stringify(tableOptions)};
+            const preview = document.getElementById('data-table-preview-${componentId}');
+            if (preview) {
+              try {
+                const instance = createDataTable(tableOptions);
+                preview.innerHTML = '';
+                preview.appendChild(instance.element);
+              } catch (error) {
+                console.error('Error:', error);
+                preview.innerHTML = renderDataTable(tableOptions);
+              }
+            }
+          `;
+          document.head.appendChild(script);
+        }
       };
       
       // ========================================

@@ -78,6 +78,8 @@
     border: 1px solid var(--ubits-accent-brand, #0c5bef);
     border-radius: var(--ubits-border-radius-sm, 4px);
     background-color: var(--ubits-bg-1, #ffffff);
+    height: 40px;
+    min-height: 40px;
     max-height: 40px;
     box-sizing: border-box;
     transition: all 0.2s ease;

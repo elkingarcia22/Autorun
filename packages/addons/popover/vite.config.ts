@@ -4,9 +4,9 @@ export default defineConfig({
   build: {
     lib: {
       entry: './src/index.ts',
-      name: 'UbitsPopover',
-      fileName: 'popover',
-      formats: ['es', 'cjs']
+      name: 'UBITSPopover',
+      fileName: (format) => `popover.${format === 'es' ? 'mjs' : format}.js`,
+      formats: ['es', 'umd']
     },
     rollupOptions: {
       external: [],

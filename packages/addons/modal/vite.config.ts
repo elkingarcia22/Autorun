@@ -6,8 +6,8 @@ export default defineConfig({
     lib: {
       entry: resolve(__dirname, 'src/index.ts'),
       name: 'UBITSModal',
-      fileName: 'modal',
-      formats: ['es']
+      fileName: (format) => `modal.${format === 'es' ? 'mjs' : format}.js`,
+      formats: ['es', 'umd']
     },
     rollupOptions: {
       external: ['@ubits/icons', '@ubits/tokens'],

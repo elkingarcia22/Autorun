@@ -1,0 +1,328 @@
+/* ========================================
+   DATA TABLE 3
+   ======================================== */
+
+/* Tabla principal - sin contenedor adicional */
+.ubits-data-table-3 {
+    position: relative;
+    width: 100%;
+    background-color: var(--ubits-bg-1, #ffffff);
+    box-sizing: border-box;
+    padding: var(--ubits-spacing-md, 16px);
+    overflow: auto;
+    max-height: 600px;
+    border-collapse: collapse;
+    border: none;
+    font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+}
+
+.ubits-data-table-3__table {
+    width: 100%;
+    border-collapse: collapse;
+    border: none;
+    font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+}
+
+/* Header */
+.ubits-data-table-3__thead {
+    background-color: var(--ubits-bg-1, #ffffff);
+}
+
+.ubits-data-table-3__header-row {
+    border-bottom: 1px solid var(--ubits-border-1, #d0d2d5);
+}
+
+/* Columna de controles - Header */
+.ubits-data-table-3__controls-column-header {
+    padding: var(--ubits-spacing-sm, 12px) var(--ubits-spacing-xs, 4px) var(--ubits-spacing-sm, 12px) var(--ubits-spacing-md, 16px);
+    text-align: center;
+    background-color: var(--ubits-bg-1, #ffffff);
+    width: auto;
+    min-width: auto;
+    vertical-align: middle;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Columna de controles - Celdas */
+.ubits-data-table-3__controls-column {
+    padding: var(--ubits-spacing-sm, 12px) var(--ubits-spacing-xs, 4px) var(--ubits-spacing-sm, 12px) var(--ubits-spacing-md, 16px);
+    text-align: center;
+    background-color: var(--ubits-bg-1, #ffffff);
+    width: auto;
+    min-width: auto;
+    vertical-align: middle;
+}
+
+.ubits-data-table-3__controls-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: var(--ubits-spacing-xs, 4px);
+    width: 100%;
+}
+
+.ubits-data-table-3__controls-wrapper .ubits-data-table-3__row-drag-handle {
+    margin: 0;
+    flex-shrink: 0;
+}
+
+.ubits-data-table-3__controls-wrapper .ubits-data-table-3__row-expand {
+    margin: 0;
+    flex-shrink: 0;
+}
+
+/* Drag handle para filas */
+.ubits-data-table-3__row-drag-handle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    cursor: grab;
+    color: var(--ubits-text-3, #6b7280);
+    padding: var(--ubits-spacing-xs, 4px);
+    border-radius: var(--ubits-border-radius-sm, 4px);
+    transition: background-color 0.2s ease, color 0.2s ease;
+    user-select: none;
+    flex-shrink: 0;
+}
+
+.ubits-data-table-3__row-drag-handle wa-icon,
+.ubits-data-table-3__row-drag-handle i {
+    font-size: 14px;
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+}
+
+/* Si el icono es vertical, rotarlo 90 grados para hacerlo horizontal */
+.ubits-data-table-3__row-drag-handle i.fa-grip-vertical {
+    transform: rotate(90deg);
+}
+
+.ubits-data-table-3__row-drag-handle i.fa-grip-dots-vertical {
+    transform: rotate(90deg);
+}
+
+.ubits-data-table-3__row-drag-handle:active {
+    cursor: grabbing;
+}
+
+.ubits-data-table-3__row-drag-handle:hover {
+    background-color: var(--ubits-bg-2, #f3f3f4);
+    color: var(--ubits-text-1, #1f2937);
+}
+
+.ubits-data-table-3__row-drag-handle wa-icon,
+.ubits-data-table-3__row-drag-handle i {
+    font-size: 14px;
+}
+
+/* Botón de expandir */
+.ubits-data-table-3__row-expand {
+    background: none;
+    border: none;
+    padding: var(--ubits-spacing-xs, 4px);
+    cursor: pointer;
+    color: var(--ubits-text-3, #6b7280);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: var(--ubits-border-radius-sm, 4px);
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.ubits-data-table-3__row-expand:hover {
+    background-color: var(--ubits-bg-2, #f3f3f4);
+    color: var(--ubits-text-1, #1f2937);
+}
+
+.ubits-data-table-3__row-expand:active {
+    background-color: var(--ubits-bg-3, #e5e7eb);
+}
+
+/* Headers de columnas de datos */
+.ubits-data-table-3__column-header {
+    padding: var(--ubits-spacing-sm, 12px) var(--ubits-spacing-md, 16px);
+    padding-left: 0;
+    text-align: left;
+    background-color: var(--ubits-bg-1, #ffffff);
+    font-weight: 600;
+    font-size: var(--ubits-font-size-sm, 14px);
+    color: var(--ubits-text-1, #1f2937);
+}
+
+.ubits-data-table-3__column-header-content {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding-left: 0;
+    position: relative;
+}
+
+.ubits-data-table-3__column-title {
+    font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+    font-size: var(--ubits-font-size-sm, 14px);
+    font-weight: 600;
+    color: var(--ubits-text-1, #1f2937);
+    margin-left: 0;
+    padding-left: 10px;
+}
+
+/* Drag handle para columnas */
+.ubits-data-table-3__column-drag-handle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    cursor: grab;
+    color: var(--ubits-text-3, #6b7280);
+    padding: var(--ubits-spacing-xs, 4px);
+    margin-right: 0;
+    margin-left: 0;
+    border-radius: var(--ubits-border-radius-sm, 4px);
+    transition: background-color 0.2s ease, color 0.2s ease;
+    user-select: none;
+    flex-shrink: 0;
+}
+
+.ubits-data-table-3__column-drag-handle wa-icon,
+.ubits-data-table-3__column-drag-handle i {
+    font-size: 14px;
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+}
+
+/* Si el icono es vertical, rotarlo 90 grados para hacerlo horizontal */
+.ubits-data-table-3__column-drag-handle i.fa-grip-vertical {
+    transform: rotate(90deg);
+}
+
+.ubits-data-table-3__column-drag-handle i.fa-grip-dots-vertical {
+    transform: rotate(90deg);
+}
+
+.ubits-data-table-3__column-drag-handle:active {
+    cursor: grabbing;
+}
+
+.ubits-data-table-3__column-drag-handle:hover {
+    background-color: var(--ubits-bg-2, #f3f3f4);
+    color: var(--ubits-text-1, #1f2937);
+}
+
+.ubits-data-table-3__column-drag-handle wa-icon,
+.ubits-data-table-3__column-drag-handle i {
+    font-size: 14px;
+}
+
+/* Estados de drag */
+.ubits-data-table-3__column-header--dragging {
+    opacity: 0.5;
+}
+
+.ubits-data-table-3__column-header--drag-over {
+    background-color: var(--ubits-bg-active, rgba(12, 91, 239, 0.1)) !important;
+    border-left: 2px solid var(--ubits-accent-brand, #0c5bef);
+}
+
+.ubits-data-table-3__row--dragging {
+    opacity: 0.5;
+}
+
+.ubits-data-table-3__row--drag-over {
+    background-color: var(--ubits-bg-active, rgba(12, 91, 239, 0.1)) !important;
+    border-top: 2px solid var(--ubits-accent-brand, #0c5bef);
+}
+
+/* Fallback para iconos */
+.ubits-data-table-3__column-drag-handle wa-icon,
+.ubits-data-table-3__row-drag-handle wa-icon {
+    display: inline-block;
+}
+
+.ubits-data-table-3__column-drag-handle i,
+.ubits-data-table-3__row-drag-handle i {
+    display: none;
+}
+
+.ubits-data-table-3__column-drag-handle:not(:has(wa-icon:defined)) wa-icon,
+.ubits-data-table-3__row-drag-handle:not(:has(wa-icon:defined)) wa-icon {
+    display: none;
+}
+
+.ubits-data-table-3__column-drag-handle:not(:has(wa-icon:defined)) i,
+.ubits-data-table-3__row-drag-handle:not(:has(wa-icon:defined)) i {
+    display: inline-block;
+}
+
+/* Body */
+.ubits-data-table-3__tbody {
+    background-color: var(--ubits-bg-1, #ffffff);
+}
+
+.ubits-data-table-3__row {
+    border-bottom: 1px solid var(--ubits-border-1, #d0d2d5);
+    transition: background-color 0.2s ease;
+    background-color: var(--ubits-bg-1, #ffffff);
+}
+
+.ubits-data-table-3__row:last-child {
+    border-bottom: none;
+}
+
+.ubits-data-table-3__row:hover {
+    background-color: var(--ubits-bg-2, #f3f3f4);
+}
+
+/* Celdas */
+.ubits-data-table-3__cell {
+    padding: var(--ubits-spacing-sm, 12px) var(--ubits-spacing-md, 16px);
+    padding-left: 10px;
+    text-align: left;
+    font-size: var(--ubits-font-size-sm, 14px);
+    color: var(--ubits-text-1, #1f2937);
+    font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+}
+
+/* Headers de columnas de checkbox */
+.ubits-data-table-3__column-header--checkbox {
+    text-align: center;
+    padding: var(--ubits-spacing-sm, 12px) var(--ubits-spacing-xs, 4px) var(--ubits-spacing-sm, 12px) var(--ubits-spacing-xs, 4px);
+    padding-right: var(--ubits-spacing-xs, 4px);
+}
+
+.ubits-data-table-3__column-header--checkbox .ubits-checkbox {
+    margin: 0;
+    display: inline-flex;
+}
+
+/* Celdas de checkbox */
+.ubits-data-table-3__cell--checkbox {
+    text-align: center;
+    padding: var(--ubits-spacing-sm, 12px) var(--ubits-spacing-xs, 4px);
+    padding-right: var(--ubits-spacing-xs, 4px);
+}
+
+.ubits-data-table-3__cell--checkbox .ubits-checkbox {
+    margin: 0;
+    display: inline-flex;
+}
+
+/* Contenido expandido */
+.ubits-data-table-3__row-expanded-row {
+    background-color: var(--ubits-bg-1, #ffffff);
+}
+
+.ubits-data-table-3__row-expanded-content {
+    padding: var(--ubits-spacing-md, 16px);
+    border-bottom: 1px solid var(--ubits-border-1, #d0d2d5);
+}
+
