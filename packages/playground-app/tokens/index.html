@@ -5804,6 +5804,14 @@ Reglas Importantes:
                                 </label>
                               </div>
                             </div>
+                            
+                            <!-- Selectores de Tipo de Columna (dinámicos) -->
+                            <div style="margin-top: 24px;">
+                              <h5 style="margin: 0 0 16px 0; color: var(--ubits-fg-1-high); font-size: 14px; font-weight: 600;">Tipos de Columna</h5>
+                              <div id="data-table-3-column-types-${componentId}" style="display: flex; flex-wrap: wrap; gap: 16px;">
+                                <!-- Se generará dinámicamente -->
+                              </div>
+                            </div>
                           </div>
                           
                           <!-- PREVIEW -->
@@ -9582,24 +9590,28 @@ Reglas Importantes:
                 title: 'Checkbox',
                 visible: true,
                 width: 150,
+                type: undefined,
               },
               {
                 id: 'nombre',
                 title: 'Nombre',
                 visible: true,
                 width: 200,
+                type: 'nombre',
               },
               {
                 id: 'email',
                 title: 'Email',
                 visible: true,
                 width: 250,
+                type: 'correo',
               },
               {
                 id: 'estado',
                 title: 'Estado',
                 visible: true,
                 width: 150,
+                type: 'estado',
               },
             ],
             rows: [
@@ -9677,10 +9689,101 @@ Reglas Importantes:
           state.columnSortable = value;
           const statusEl = document.getElementById(`data-table-3-column-sortable-status-${componentId}`);
           if (statusEl) statusEl.textContent = value ? 'Habilitado' : 'Deshabilitado';
+        } else if (option === 'columnType' && Array.isArray(value) && value.length === 2) {
+          // value = [columnId, newType]
+          const [columnId, newType] = value;
+          const column = state.columns.find(col => col.id === columnId);
+          if (column) {
+            column.type = newType || undefined;
+            // Actualizar el título del header según el tipo seleccionado
+            const columnTypeLabels = {
+              'nombre': 'Nombre',
+              'progreso': 'Progreso',
+              'estado': 'Estado',
+              'radio': 'Radio',
+              'toggle': 'Toggle',
+              'checkbox': 'Checkbox',
+              'correo': 'Correo',
+              'acciones': 'Acciones',
+              'fecha': 'Fecha',
+              'area': 'Área',
+              'lider': 'Líder',
+              'pais': 'País',
+              'ciudad': 'Ciudad'
+            };
+            if (newType && columnTypeLabels[newType]) {
+              column.title = columnTypeLabels[newType];
+            }
+          }
         }
         
         // Actualizar el preview
         window.updateDataTable3Preview(componentId);
+      };
+      
+      // Mapeo de tipos a títulos/labels
+      const columnTypeLabels = {
+        'nombre': 'Nombre',
+        'progreso': 'Progreso',
+        'estado': 'Estado',
+        'radio': 'Radio',
+        'toggle': 'Toggle',
+        'checkbox': 'Checkbox',
+        'correo': 'Correo',
+        'acciones': 'Acciones',
+        'fecha': 'Fecha',
+        'area': 'Área',
+        'lider': 'Líder',
+        'pais': 'País',
+        'ciudad': 'Ciudad'
+      };
+      
+      // Función para generar selectores de tipo de columna
+      window.generateColumnTypeSelectors = function(componentId) {
+        const state = initDataTable3PreviewState(componentId);
+        const container = document.getElementById(`data-table-3-column-types-${componentId}`);
+        if (!container) return;
+        
+        // Obtener columnas visibles (excluyendo checkbox fijo)
+        const visibleColumns = state.columns.filter(col => {
+          if (col.id === 'checkbox') return false;
+          return col.visible !== false;
+        }).slice(0, state.columnsCount || 4);
+        
+        const columnTypes = [
+          { value: 'nombre', label: 'Nombre' },
+          { value: 'progreso', label: 'Progreso' },
+          { value: 'estado', label: 'Estado' },
+          { value: 'radio', label: 'Radio' },
+          { value: 'toggle', label: 'Toggle' },
+          { value: 'checkbox', label: 'Checkbox' },
+          { value: 'correo', label: 'Correo' },
+          { value: 'acciones', label: 'Acciones' },
+          { value: 'fecha', label: 'Fecha' },
+          { value: 'area', label: 'Área' },
+          { value: 'lider', label: 'Líder' },
+          { value: 'pais', label: 'País' },
+          { value: 'ciudad', label: 'Ciudad' }
+        ];
+        
+        container.innerHTML = visibleColumns.map((col, index) => {
+          const currentType = col.type || 'nombre';
+          const columnNumber = index + 1;
+          return `
+            <div style="flex: 0 0 auto; min-width: 200px;">
+              <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 8px;">Columna ${columnNumber}</label>
+              <select 
+                id="data-table-3-column-type-${componentId}-${col.id}"
+                onchange="setDataTable3Control('columnType', ['${col.id}', this.value || undefined], '${componentId}')"
+                style="width: 100%; padding: 10px 12px; border: 1px solid var(--ubits-border-1, #d0d2d5); border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box; cursor: pointer;"
+              >
+                ${columnTypes.map(type => `
+                  <option value="${type.value}" ${currentType === type.value ? 'selected' : ''}>${type.label}</option>
+                `).join('')}
+              </select>
+            </div>
+          `;
+        }).join('');
       };
       
       // Almacenar instancias de Data Table 3
@@ -9694,6 +9797,11 @@ Reglas Importantes:
         if (!preview) {
           console.error('❌ Preview de Data Table 3 no encontrado:', `data-table-3-preview-${componentId}`);
           return;
+        }
+        
+        // Generar selectores de tipo de columna
+        if (typeof window.generateColumnTypeSelectors === 'function') {
+          window.generateColumnTypeSelectors(componentId);
         }
         
         // Destruir instancia anterior si existe
@@ -9721,6 +9829,54 @@ Reglas Importantes:
           document.head.appendChild(link);
         }
         
+        // Cargar CSS de Progress Bar
+        if (!document.querySelector('link[href*="progress.css"]')) {
+          const link = document.createElement('link');
+          link.rel = 'stylesheet';
+          link.href = '../../addons/progress/src/styles/progress.css';
+          document.head.appendChild(link);
+        }
+        
+        // Cargar CSS de Status Tag
+        if (!document.querySelector('link[href*="status-tag.css"]')) {
+          const link = document.createElement('link');
+          link.rel = 'stylesheet';
+          link.href = '../../addons/status-tag/src/styles/status-tag.css';
+          document.head.appendChild(link);
+        }
+        
+        // Cargar CSS de Avatar
+        if (!document.querySelector('link[href*="avatar.css"]')) {
+          const link = document.createElement('link');
+          link.rel = 'stylesheet';
+          link.href = '../../addons/avatar/src/styles/avatar.css';
+          document.head.appendChild(link);
+        }
+        
+        // Cargar CSS de Toggle
+        if (!document.querySelector('link[href*="toggle.css"]')) {
+          const link = document.createElement('link');
+          link.rel = 'stylesheet';
+          link.href = '../../addons/toggle/src/styles/toggle.css';
+          document.head.appendChild(link);
+        }
+        
+        // Cargar CSS de Radio Button
+        if (!document.querySelector('link[href*="radio-button.css"]')) {
+          const link = document.createElement('link');
+          link.rel = 'stylesheet';
+          link.href = '../../addons/radio-button/src/styles/radio-button.css';
+          document.head.appendChild(link);
+        }
+        
+        // Cargar CSS de Button
+        if (!document.querySelector('link[href*="button.css"]')) {
+          const link = document.createElement('link');
+          link.rel = 'stylesheet';
+          link.href = '../../addons/button/src/styles/button.css';
+          document.head.appendChild(link);
+        }
+        
         // Limpiar preview anterior
         preview.innerHTML = '';
         
@@ -9734,36 +9890,63 @@ Reglas Importantes:
           
           try {
             // Construir columnas dinámicamente según controles
-            const baseColumns = [
-              { id: 'checkbox', title: 'Checkbox', visible: state.showCheckbox !== false, width: 150 },
-              { id: 'nombre', title: 'Nombre', visible: true, width: 200 },
-              { id: 'email', title: 'Email', visible: true, width: 250 },
-              { id: 'estado', title: 'Estado', visible: true, width: 150 }
-            ];
-            
-            // Agregar columnas adicionales según el número especificado
+            // Construir columnas desde el estado (mantener tipos y propiedades)
             const columnsCount = state.columnsCount || 4;
-            const additionalColumns = [];
-            const columnNames = ['Teléfono', 'Ciudad', 'País', 'Fecha', 'Categoría', 'Prioridad'];
+            const allColumns = [];
             
-            for (let i = 4; i < columnsCount && i < 10; i++) {
-              const columnName = columnNames[i - 4] || `Columna ${i + 1}`;
-              additionalColumns.push({
-                id: `col${i}`,
-                title: columnName,
-                visible: true,
-                width: 150
-              });
+            // Usar columnas del estado si existen, sino crear por defecto
+            if (state.columns && state.columns.length > 0) {
+              // Asegurar que tenemos suficientes columnas según columnsCount
+              for (let i = 0; i < columnsCount && i < state.columns.length; i++) {
+                allColumns.push({ ...state.columns[i] });
+              }
+              
+              // Si necesitamos más columnas, agregar las adicionales
+              if (columnsCount > state.columns.length) {
+                const columnNames = ['Teléfono', 'Ciudad', 'País', 'Fecha', 'Categoría', 'Prioridad'];
+                for (let i = state.columns.length; i < columnsCount && i < 10; i++) {
+                  const columnName = columnNames[i - state.columns.length] || `Columna ${i + 1}`;
+                  allColumns.push({
+                    id: `col${i}`,
+                    title: columnName,
+                    visible: true,
+                    width: 150,
+                    type: undefined
+                  });
+                }
+              }
+            } else {
+              // Fallback: crear columnas por defecto
+              const baseColumns = [
+                { id: 'checkbox', title: 'Checkbox', visible: state.showCheckbox !== false, width: 150, type: undefined },
+                { id: 'nombre', title: 'Nombre', visible: true, width: 200, type: 'nombre' },
+                { id: 'email', title: 'Email', visible: true, width: 250, type: 'correo' },
+                { id: 'estado', title: 'Estado', visible: true, width: 150, type: 'estado' }
+              ];
+              
+              const additionalColumns = [];
+              const columnNames = ['Teléfono', 'Ciudad', 'País', 'Fecha', 'Categoría', 'Prioridad'];
+              
+              for (let i = 4; i < columnsCount && i < 10; i++) {
+                const columnName = columnNames[i - 4] || `Columna ${i + 1}`;
+                additionalColumns.push({
+                  id: `col${i}`,
+                  title: columnName,
+                  visible: true,
+                  width: 150,
+                  type: undefined
+                });
+              }
+              
+              allColumns.push(...baseColumns, ...additionalColumns);
             }
-            
-            const allColumns = [...baseColumns, ...additionalColumns];
             
             // Filtrar columnas según opciones
             const columns = allColumns.filter(col => {
               if (col.id === 'checkbox') {
                 return state.showCheckbox !== false;
               }
-              return col.visible;
+              return col.visible !== false;
             });
             
             // Preparar filas con renderExpandedContent solo si rowExpandable está activado

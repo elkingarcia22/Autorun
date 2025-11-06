@@ -1,4 +1,22 @@
 /**
+ * Tipos de columna disponibles
+ */
+export type ColumnType3 = 
+  | 'nombre'
+  | 'progreso'
+  | 'estado'
+  | 'radio'
+  | 'toggle'
+  | 'checkbox'
+  | 'correo'
+  | 'acciones'
+  | 'fecha'
+  | 'area'
+  | 'lider'
+  | 'pais'
+  | 'ciudad';
+
+/**
  * Columna de la tabla
  */
 export interface TableColumn3 {
@@ -11,6 +29,11 @@ export interface TableColumn3 {
    * Título de la columna
    */
   title: string;
+  
+  /**
+   * Tipo de columna (determina cómo se renderiza)
+   */
+  type?: ColumnType3;
   
   /**
    * Ancho de la columna (opcional)

@@ -38,7 +38,7 @@
     text-align: center;
     background-color: var(--ubits-bg-1, #ffffff);
     width: auto;
-    min-width: 70px;
+    min-width: 0;
     vertical-align: middle;
     display: flex;
     align-items: center;
@@ -55,11 +55,21 @@
     text-align: center;
     background-color: var(--ubits-bg-1, #ffffff);
     width: auto;
-    min-width: 70px;
+    min-width: 0;
     vertical-align: middle;
     position: sticky;
     left: 0;
     z-index: 10;
+}
+
+/* Colapsar la columna cuando no hay contenido */
+.ubits-data-table-3__controls-column:empty,
+.ubits-data-table-3__controls-column-header:empty {
+    display: none;
+}
+
+.ubits-data-table-3__controls-wrapper:empty {
+    display: none;
 }
 
 .ubits-data-table-3__row:hover .ubits-data-table-3__controls-column {
@@ -73,6 +83,12 @@
     justify-content: center;
     gap: var(--ubits-spacing-xs, 4px);
     width: 100%;
+    min-width: 70px;
+}
+
+/* Si el wrapper está vacío o solo tiene espacios, colapsar */
+.ubits-data-table-3__controls-wrapper:empty {
+    display: none;
 }
 
 .ubits-data-table-3__controls-wrapper .ubits-data-table-3__row-drag-handle {
@@ -383,6 +399,19 @@
 .ubits-data-table-3__cell--checkbox .ubits-checkbox {
     margin: 0;
     display: inline-flex;
+}
+
+/* Celda de progreso */
+.ubits-data-table-3__cell--progreso {
+    padding: var(--ubits-spacing-sm, 12px) var(--ubits-spacing-md, 16px);
+    padding-left: 10px;
+    vertical-align: middle;
+}
+
+.ubits-data-table-3__cell--progreso .ubits-progress-bar {
+    width: 100%;
+    min-width: 150px;
+    max-width: 300px;
 }
 
 /* Contenido expandido */

@@ -1,11 +1,172 @@
-import type { DataTable3Options, TableColumn3, TableRow3 } from './types/DataTable3Options';
+import type { DataTable3Options, TableColumn3, TableRow3, ColumnType3 } from './types/DataTable3Options';
 import { renderCheckbox } from '../../checkbox/src/CheckboxProvider';
+import { renderProgressBar } from '../../progress/src/ProgressProvider';
+import { renderStatusTag } from '../../status-tag/src/StatusTagProvider';
+import { renderAvatar } from '../../avatar/src/AvatarProvider';
+import { renderToggle } from '../../toggle/src/ToggleProvider';
+import { renderRadioButton } from '../../radio-button/src/RadioButtonProvider';
+import { renderButton } from '../../button/src/ButtonProvider';
+
+/**
+ * Renderiza una celda según el tipo de columna
+ */
+function renderCellByType(column: TableColumn3, row: TableRow3, columnType: ColumnType3): string {
+  const cellValue = row.data[column.id];
+  const cellData = row.data;
+  
+  switch (columnType) {
+    case 'nombre': {
+      // Puede ser: solo texto, texto+avatar, texto+avatar+texto complementario
+      const nombre = cellValue || cellData.nombre || '';
+      const avatar = cellData.avatar || cellData.avatarUrl || null;
+      const complementario = cellData.nombreComplementario || cellData.complementario || '';
+      
+      if (avatar) {
+        const avatarHTML = renderAvatar({
+          imageUrl: avatar,
+          size: 'sm'
+        });
+        return `
+          <div style="display: flex; align-items: center; gap: var(--ubits-spacing-sm, 12px);">
+            ${avatarHTML}
+            <div>
+              <div class="ubits-body-md-regular">${nombre}</div>
+              ${complementario ? `<div class="ubits-body-sm-regular" style="color: var(--ubits-body-md-regular-3, #6b7280);">${complementario}</div>` : ''}
+            </div>
+          </div>
+        `;
+      }
+      return `<span class="ubits-body-md-regular">${nombre}</span>`;
+    }
+    
+    case 'progreso': {
+      // Obtener el valor de progreso (puede estar en cellValue, cellData.progress o cellData.progreso)
+      let progressValue = 0;
+      
+      // Primero intentar desde cellValue (valor directo de la celda)
+      if (cellValue !== undefined && cellValue !== null) {
+        if (typeof cellValue === 'number') {
+          progressValue = cellValue;
+        } else if (typeof cellValue === 'string') {
+          // Intentar parsear el string (puede ser "75", "75%", etc.)
+          const parsed = parseFloat(cellValue.replace('%', '').trim());
+          progressValue = isNaN(parsed) ? 0 : parsed;
+        }
+      }
+      
+      // Si no hay valor válido, buscar en las propiedades de datos
+      if (progressValue === 0 && cellData) {
+        // Buscar en 'progress' (inglés) o 'progreso' (español)
+        const progressProp = cellData.progress !== undefined ? cellData.progress : cellData.progreso;
+        if (progressProp !== undefined && progressProp !== null) {
+          if (typeof progressProp === 'number') {
+            progressValue = progressProp;
+          } else if (typeof progressProp === 'string') {
+            const parsed = parseFloat(progressProp.replace('%', '').trim());
+            progressValue = isNaN(parsed) ? 0 : parsed;
+          }
+        }
+      }
+      
+      // Asegurar que el valor esté entre 0 y 100
+      progressValue = Math.max(0, Math.min(100, progressValue));
+      
+      // Renderizar el componente ProgressBar completo
+      const progressBarHTML = renderProgressBar({
+        value: progressValue,
+        size: 'sm',
+        variant: 'default',
+        indicator: `${Math.round(progressValue)}%`
+      });
+      
+      return progressBarHTML;
+    }
+    
+    case 'estado': {
+      const estado = cellValue || 'pending';
+      const statusMap: Record<string, any> = {
+        'activo': 'success',
+        'inactivo': 'pending',
+        'pendiente': 'pending',
+        'completado': 'completed',
+        'error': 'error',
+        'cancelado': 'cancelled'
+      };
+      return renderStatusTag({
+        label: String(cellValue || ''),
+        status: statusMap[String(estado).toLowerCase()] || 'pending',
+        size: 'sm'
+      });
+    }
+    
+    case 'radio': {
+      const checked = cellValue === true || cellValue === 'true' || cellValue === 1;
+      return renderRadioButton({
+        label: '',
+        name: `radio-${column.id}`,
+        value: String(row.id),
+        checked,
+        size: 'md'
+      });
+    }
+    
+    case 'toggle': {
+      const checked = cellValue === true || cellValue === 'true' || cellValue === 1;
+      return renderToggle({
+        label: '',
+        checked,
+        size: 'md'
+      });
+    }
+    
+    case 'checkbox': {
+      // Checkbox diferente al fijo (con label en header)
+      const checked = cellValue === true || cellValue === 'true' || cellValue === 1;
+      return renderCheckbox({
+        label: '',
+        checked,
+        size: 'md'
+      });
+    }
+    
+    case 'correo': {
+      const email = cellValue || '';
+      return `<a href="mailto:${email}" class="ubits-body-md-regular" style="color: var(--ubits-accent-brand, #0c5bef); text-decoration: none;">${email}</a>`;
+    }
+    
+    case 'acciones': {
+      const actionText = cellValue || 'Acción';
+      return renderButton({
+        text: actionText,
+        variant: 'tertiary',
+        size: 'sm',
+        className: 'ubits-data-table-3__action-button'
+      });
+    }
+    
+    case 'fecha': {
+      const fecha = cellValue || '';
+      // Formatear fecha si es necesario
+      return `<span class="ubits-body-md-regular">${fecha}</span>`;
+    }
+    
+    case 'area':
+    case 'lider':
+    case 'pais':
+    case 'ciudad': {
+      return `<span class="ubits-body-md-regular">${cellValue || ''}</span>`;
+    }
+    
+    default:
+      return `<span class="ubits-body-md-regular">${cellValue || ''}</span>`;
+  }
+}
 
 /**
  * Renderiza una celda de la tabla
  */
 function renderCell(column: TableColumn3, row: TableRow3): string {
-  // Si la columna es de tipo checkbox, renderizar checkbox
+  // Si la columna es de tipo checkbox fijo (columna especial), renderizar checkbox
   if (column.id === 'checkbox' || column.id.startsWith('checkbox-')) {
     const checkboxValue = row.data[column.id] || false;
     const checkboxHTML = renderCheckbox({
@@ -27,7 +188,17 @@ function renderCell(column: TableColumn3, row: TableRow3): string {
     `;
   }
   
-  // Renderizado normal para otras columnas
+  // Si la columna tiene un tipo definido, usar renderCellByType
+  if (column.type) {
+    const content = renderCellByType(column, row, column.type);
+    return `
+      <td class="ubits-data-table-3__cell ubits-data-table-3__cell--${column.type}">
+        ${content}
+      </td>
+    `;
+  }
+  
+  // Renderizado normal para otras columnas (usar renderCell personalizado si existe)
   const content = column.renderCell 
     ? column.renderCell(row.data)
     : row.data[column.id] || '';
@@ -149,7 +320,7 @@ function renderColumnHeader(
 /**
  * Renderiza una fila de la tabla
  */
-function renderRow(row: TableRow3, columns: TableColumn3[], rowIndex: number, rowReorderable: boolean = false, rowExpandable: boolean = true): string {
+function renderRow(row: TableRow3, columns: TableColumn3[], rowIndex: number, rowReorderable: boolean = false, rowExpandable: boolean = true, hasControls: boolean = false): string {
   const isExpanded = row.expanded || false;
 
   // Drag handle para filas
@@ -186,14 +357,19 @@ function renderRow(row: TableRow3, columns: TableColumn3[], rowIndex: number, ro
   ].filter(Boolean).join(' ');
 
   // Estructura: Una sola columna de controles con drag handle y expand icon (sin checkbox)
-  let rowHTML = `
-    <tr class="${rowClasses}" data-row-id="${row.id}">
+  // Solo renderizar la columna de controles si hay al menos un control visible
+  const controlsCell = hasControls ? `
       <td class="ubits-data-table-3__controls-column">
         <div class="ubits-data-table-3__controls-wrapper">
           ${dragHandle}
           ${expandIcon}
         </div>
       </td>
+  ` : '';
+  
+  let rowHTML = `
+    <tr class="${rowClasses}" data-row-id="${row.id}">
+      ${controlsCell}
       ${cellsHTML}
     </tr>
   `;
@@ -201,9 +377,10 @@ function renderRow(row: TableRow3, columns: TableColumn3[], rowIndex: number, ro
   // Si la fila está expandida, agregar la fila de contenido expandido
   if (isExpanded && row.renderExpandedContent) {
     const expandedContent = row.renderExpandedContent(row.data);
+    const colspan = visibleColumns.length + (hasControls ? 1 : 0);
     rowHTML += `
       <tr class="ubits-data-table-3__row-expanded-row">
-        <td class="ubits-data-table-3__row-expanded-content" colspan="${visibleColumns.length + 1}">
+        <td class="ubits-data-table-3__row-expanded-content" colspan="${colspan}">
           ${expandedContent}
         </td>
       </tr>
@@ -276,6 +453,9 @@ export function renderDataTable3(
     });
   }
 
+  // Determinar si hay controles en las filas
+  const hasControls = rowReorderable || rowExpandable;
+
   // Renderizar headers de columnas
   const columnHeadersHTML = visibleColumns
     .map(col => renderColumnHeader(col, columnReorderable, columnSortable, orderedRows, sortColumnId, sortDirection))
@@ -283,7 +463,7 @@ export function renderDataTable3(
 
   // Renderizar filas
   const rowsHTML = orderedRows
-    .map((row, index) => renderRow(row, visibleColumns, index, rowReorderable, rowExpandable))
+    .map((row, index) => renderRow(row, visibleColumns, index, rowReorderable, rowExpandable, hasControls))
     .join('');
 
   const classes = [
@@ -291,13 +471,18 @@ export function renderDataTable3(
     className
   ].filter(Boolean).join(' ');
 
+  // Solo renderizar la columna de controles en el header si hay controles en las filas
+  const controlsHeader = hasControls ? `
+          <th class="ubits-data-table-3__controls-column-header">
+          </th>
+  ` : '';
+  
   // Estructura sin contenedor adicional: la tabla directamente
   const html = `
     <table class="${classes} ubits-data-table-3__table">
       <thead class="ubits-data-table-3__thead">
         <tr class="ubits-data-table-3__header-row">
-          <th class="ubits-data-table-3__controls-column-header">
-          </th>
+          ${controlsHeader}
           ${columnHeadersHTML}
         </tr>
       </thead>
