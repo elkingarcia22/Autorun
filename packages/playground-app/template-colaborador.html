@@ -425,6 +425,17 @@
     <script src="engine/template-loader.js"></script>
     <script src="engine/content-manager.js"></script>
     
+    <!-- UBITS Add-ons System (Tokens & Components from Storybook) -->
+    <script type="module">
+        // Cargar sistema de tokens y componentes
+        import('../addons/tokens-ubits/src/index.js').then(() => {
+            console.log('✅ Sistema de tokens y componentes UBITS cargado');
+        }).catch(err => {
+            console.warn('⚠️ No se pudo cargar sistema de add-ons:', err);
+        });
+    </script>
+    <script src="utils/storybook-loader.js"></script>
+    
     <script>
         // ========================================
         // INITIALIZATION
