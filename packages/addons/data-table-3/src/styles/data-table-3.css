@@ -383,16 +383,16 @@
 
 /* Celdas de checkbox */
 .ubits-data-table-3__cell--checkbox {
-    text-align: center;
+    text-align: left;
     padding: var(--ubits-spacing-sm, 12px) var(--ubits-spacing-xs, 4px);
     padding-right: var(--ubits-spacing-xs, 4px);
     position: sticky;
     left: 70px;
     z-index: 5;
     background-color: var(--ubits-bg-1, #ffffff);
-    width: 50px;
-    min-width: 50px;
-    max-width: 50px;
+    width: auto;
+    min-width: 150px;
+    max-width: 200px;
     box-sizing: border-box;
 }
 
@@ -403,11 +403,11 @@
 .ubits-data-table-3__cell--checkbox .ubits-checkbox {
     margin: 0;
     display: inline-flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     width: auto;
     max-width: 100%;
-    gap: 0 !important;
+    gap: var(--ubits-spacing-sm, 8px);
 }
 
 /* Asegurar que el checkbox se mantenga centrado incluso con label */
@@ -417,11 +417,13 @@
     height: 20px !important;
 }
 
-/* Permitir el label pero controlar su espacio solo cuando no hay label visible */
+/* Permitir el label con el espacio normal */
 .ubits-data-table-3__cell--checkbox .ubits-checkbox .ubits-checkbox__text-content {
     display: flex;
     flex-direction: column;
-    gap: 0;
+    gap: var(--ubits-spacing-none, 0px);
+    flex: 1;
+    min-width: 0;
 }
 
 /* Ocultar label si está vacío para evitar espacio */
@@ -435,11 +437,12 @@
 
 /* Asegurar que la celda editable no cambie el layout del checkbox */
 .ubits-data-table-3__cell--checkbox.ubits-data-table-3__cell--editable {
-    width: 50px;
-    min-width: 50px;
-    max-width: 50px;
+    width: auto;
+    min-width: 150px;
+    max-width: 200px;
     padding: var(--ubits-spacing-sm, 12px) var(--ubits-spacing-xs, 4px);
     padding-right: var(--ubits-spacing-xs, 4px);
+    text-align: left;
 }
 
 /* Celda de nombre */
