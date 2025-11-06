@@ -61,7 +61,7 @@ export interface TableColumn3 {
   avatarVariant?: 'photo' | 'initials' | 'icon';
   
   /**
-   * Si la columna es editable (solo para tipos 'nombre', 'nombre-avatar' y 'nombre-avatar-texto')
+   * Si la columna es editable (solo para tipos 'nombre' y 'nombre-avatar')
    */
   editable?: boolean;
 }

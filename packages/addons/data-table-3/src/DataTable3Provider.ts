@@ -241,10 +241,8 @@ function renderCellByType(column: TableColumn3, row: TableRow3, columnType: Colu
         });
       }
       
-      const isEditable = column.editable;
-      const nombreElement = isEditable 
-        ? `<span class="ubits-body-md-regular" contenteditable="true" data-editable-text="true">${nombre}</span>`
-        : `<span class="ubits-body-md-regular">${nombre}</span>`;
+      // Este tipo NO es editable
+      const nombreElement = `<span class="ubits-body-md-regular">${nombre}</span>`;
       
       return `
         <div style="display: flex; align-items: flex-start; gap: var(--ubits-spacing-sm, 12px);">
@@ -366,7 +364,7 @@ function renderCell(column: TableColumn3, row: TableRow3): string {
   // Si la columna tiene un tipo definido, usar renderCellByType
   if (column.type) {
     const content = renderCellByType(column, row, column.type);
-    const isEditable = column.editable && (column.type === 'nombre' || column.type === 'nombre-avatar' || column.type === 'nombre-avatar-texto');
+    const isEditable = column.editable && (column.type === 'nombre' || column.type === 'nombre-avatar');
     const editableClass = isEditable ? 'ubits-data-table-3__cell--editable' : '';
     const dataAttrs = isEditable ? `data-row-id="${row.id}" data-column-id="${column.id}" data-editable="true"` : '';
     
@@ -1133,7 +1131,7 @@ export function createDataTable3(options: DataTable3Options): {
           const col = currentOptions.columns.find(c => c.id === columnId);
           
           // Actualizar el valor según el tipo de columna
-          if (col && (col.type === 'nombre' || col.type === 'nombre-avatar' || col.type === 'nombre-avatar-texto')) {
+          if (col && (col.type === 'nombre' || col.type === 'nombre-avatar')) {
             // Siempre actualizar 'nombre' en los datos
             row.data.nombre = newValue.trim();
             // También actualizar en el ID de la columna si existe
