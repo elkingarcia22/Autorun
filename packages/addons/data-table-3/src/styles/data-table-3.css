@@ -370,11 +370,6 @@
     padding: 8px 4px;
     padding-left: 4px;
     padding-right: 4px;
-    position: sticky;
-    left: 70px;
-    z-index: 10;
-    background-color: var(--ubits-bg-1, #ffffff);
-    box-shadow: 2px 0 4px rgba(0, 0, 0, 0.05);
     width: 28px;
     min-width: 28px;
     max-width: 28px;
@@ -397,10 +392,6 @@
     padding: 8px 4px;
     padding-left: 4px;
     padding-right: 4px;
-    position: sticky;
-    left: 70px;
-    z-index: 5;
-    background-color: var(--ubits-bg-1, #ffffff);
     width: 28px;
     min-width: 28px;
     max-width: 28px;
