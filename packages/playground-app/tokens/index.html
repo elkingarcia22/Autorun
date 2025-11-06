@@ -827,17 +827,25 @@ npm run dev</code></pre>
         <h3 class="ubits-heading-h3" style="color: var(--ubits-fg-1-high); margin: 0 0 16px 0; font-size: var(--font-h2-size); font-weight: var(--weight-semibold);">📁 Estructura del Proyecto</h3>
         <pre style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; border: none; overflow-x: auto; font-size: var(--font-body-xs-size); color: var(--ubits-fg-2-high); margin: 0; line-height: var(--font-body-sm-line); font-family: 'Monaco', 'Menlo', monospace;"><code>prototipo-template/
 ├── packages/
-│   ├── addons/              # Componentes modulares
-│   │   ├── sidebar/         # Sidebar con modos
+│   ├── addons/              # Componentes modulares (add-ons intercambiables)
+│   │   ├── sidebar/         # Sidebar con modos colaborador/admin
 │   │   ├── tabbar/          # TabBar responsive
 │   │   ├── subnav/          # SubNav dinámico
-│   │   └── ...
+│   │   ├── button/          # Botones UBITS
+│   │   ├── input/           # Inputs UBITS
+│   │   ├── alert/           # Alertas UBITS
+│   │   ├── toast/           # Notificaciones toast
+│   │   ├── badge/           # Badges UBITS
+│   │   ├── tokens-ubits/    # Tokens como add-on (intercambiables)
+│   │   └── ...              # Más componentes
 │   ├── playground-app/      # Aplicación principal
 │   │   ├── template-colaborador.html
 │   │   ├── template-admin.html
 │   │   ├── components-loader.js
+│   │   ├── utils/
+│   │   │   └── storybook-loader.js  # Cargador desde Storybook
 │   │   └── config/
-│   ├── tokens/              # Tokens de diseño
+│   ├── tokens/              # Tokens de diseño (estáticos)
 │   └── typography/          # Tipografía UBITS
 ├── scripts/
 │   ├── init-project.cjs
@@ -882,6 +890,41 @@ npm run dev</code></pre>
             <code style="background: var(--ubits-bg-2); padding: 6px 12px; border-radius: 6px; font-size: var(--font-body-xs-size); color: var(--ubits-fg-2-high);">ubits-alert</code>
             <code style="background: var(--ubits-bg-2); padding: 6px 12px; border-radius: 6px; font-size: var(--font-body-xs-size); color: var(--ubits-fg-2-high);">ubits-toast</code>
             <code style="background: var(--ubits-bg-2); padding: 6px 12px; border-radius: 6px; font-size: var(--font-body-xs-size); color: var(--ubits-fg-2-high);">ubits-badge</code>
+            <code style="background: var(--ubits-bg-2); padding: 6px 12px; border-radius: 6px; font-size: var(--font-body-xs-size); color: var(--ubits-fg-2-high);">ubits-avatar</code>
+            <code style="background: var(--ubits-bg-2); padding: 6px 12px; border-radius: 6px; font-size: var(--font-body-xs-size); color: var(--ubits-fg-2-high);">ubits-modal</code>
+            <code style="background: var(--ubits-bg-2); padding: 6px 12px; border-radius: 6px; font-size: var(--font-body-xs-size); color: var(--ubits-fg-2-high);">ubits-drawer</code>
+            <code style="background: var(--ubits-bg-2); padding: 6px 12px; border-radius: 6px; font-size: var(--font-body-xs-size); color: var(--ubits-fg-2-high);">ubits-data-table</code>
+            <code style="background: var(--ubits-bg-2); padding: 6px 12px; border-radius: 6px; font-size: var(--font-body-xs-size); color: var(--ubits-fg-2-high);">ubits-checkbox</code>
+            <code style="background: var(--ubits-bg-2); padding: 6px 12px; border-radius: 6px; font-size: var(--font-body-xs-size); color: var(--ubits-fg-2-high);">ubits-radio-button</code>
+            <code style="background: var(--ubits-bg-2); padding: 6px 12px; border-radius: 6px; font-size: var(--font-body-xs-size); color: var(--ubits-fg-2-high);">ubits-toggle</code>
+            <code style="background: var(--ubits-bg-2); padding: 6px 12px; border-radius: 6px; font-size: var(--font-body-xs-size); color: var(--ubits-fg-2-high);">ubits-status-tag</code>
+            <code style="background: var(--ubits-bg-2); padding: 6px 12px; border-radius: 6px; font-size: var(--font-body-xs-size); color: var(--ubits-fg-2-high);">ubits-list</code>
+            <code style="background: var(--ubits-bg-2); padding: 6px 12px; border-radius: 6px; font-size: var(--font-body-xs-size); color: var(--ubits-fg-2-high);">ubits-chip</code>
+            <code style="background: var(--ubits-bg-2); padding: 6px 12px; border-radius: 6px; font-size: var(--font-body-xs-size); color: var(--ubits-fg-2-high);">ubits-progress</code>
+            <code style="background: var(--ubits-bg-2); padding: 6px 12px; border-radius: 6px; font-size: var(--font-body-xs-size); color: var(--ubits-fg-2-high);">ubits-file-upload</code>
+            <code style="background: var(--ubits-bg-2); padding: 6px 12px; border-radius: 6px; font-size: var(--font-body-xs-size); color: var(--ubits-fg-2-high);">ubits-popover</code>
+          </div>
+        </div>
+        <div style="margin-top: 16px; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px; border: none;">
+          <h4 style="color: var(--ubits-fg-1-high); font-size: var(--font-body-md-size); font-weight: var(--weight-semibold); margin: 0 0 12px 0;">✨ Nuevas Funcionalidades</h4>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div>
+              <h5 style="color: var(--ubits-fg-2-high); font-size: var(--font-body-sm-size); font-weight: var(--weight-semibold); margin: 0 0 8px 0;">🎨 Tokens como Add-ons</h5>
+              <p style="color: var(--ubits-fg-2-medium); font-size: var(--font-body-xs-size); margin: 0; line-height: var(--font-body-sm-line);">
+                Los tokens ahora son add-ons intercambiables. Puedes cargar tokens desde Storybook y aplicarlos automáticamente a todos los componentes.
+              </p>
+            </div>
+            <div>
+              <h5 style="color: var(--ubits-fg-2-high); font-size: var(--font-body-sm-size); font-weight: var(--weight-semibold); margin: 0 0 8px 0;">📦 Componentes desde Storybook</h5>
+              <p style="color: var(--ubits-fg-2-medium); font-size: var(--font-body-xs-size); margin: 0; line-height: var(--font-body-sm-line);">
+                Carga y reemplaza componentes completos desde Storybook sin modificar código. Sistema híbrido con compatibilidad total.
+              </p>
+            </div>
+          </div>
+          <div style="margin-top: 12px; padding: 12px; background: var(--ubits-bg-1); border-radius: 6px; border: none;">
+            <p style="color: var(--ubits-fg-1-medium); font-size: var(--font-body-xs-size); margin: 0; line-height: var(--font-body-sm-line);">
+              <strong style="color: var(--ubits-fg-1-high);">💡 Uso:</strong> En los templates, usa el botón 🎨 (esquina inferior derecha) para abrir el panel de control de Storybook y cargar tokens/componentes dinámicamente.
+            </p>
           </div>
         </div>
       </div>
