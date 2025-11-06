@@ -32,21 +32,9 @@
     border-bottom: 1px solid var(--ubits-border-1, #d0d2d5);
 }
 
-/* Columna de controles - Header */
+/* Columna de controles - Header (eliminado) */
 .ubits-data-table-3__controls-column-header {
-    padding: var(--ubits-spacing-sm, 12px) var(--ubits-spacing-xs, 4px) var(--ubits-spacing-sm, 12px) var(--ubits-spacing-md, 16px);
-    text-align: center;
-    background-color: var(--ubits-bg-1, #ffffff);
-    width: auto;
-    min-width: 0;
-    vertical-align: middle;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: sticky;
-    left: 0;
-    z-index: 15;
-    box-shadow: 2px 0 4px rgba(0, 0, 0, 0.05);
+    display: none !important; /* Ocultar completamente el header de controles */
 }
 
 /* Columna de controles - Celdas */
