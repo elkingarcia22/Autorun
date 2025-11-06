@@ -10075,6 +10075,10 @@ Reglas Importantes:
                 if (col.editable !== undefined) {
                   columnCopy.editable = col.editable;
                 }
+                // Si tiene radioLabel, copiarlo también
+                if (col.radioLabel !== undefined) {
+                  columnCopy.radioLabel = col.radioLabel;
+                }
                 // Si tiene renderCell, copiarlo también
                 if (col.renderCell) {
                   columnCopy.renderCell = col.renderCell;
