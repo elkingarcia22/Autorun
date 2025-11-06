@@ -339,18 +339,22 @@ function renderCellByType(column: TableColumn3, row: TableRow3, columnType: Colu
       const showLabel = column.radioLabel !== false && column.radioLabel !== undefined;
       const labelText = typeof column.radioLabel === 'string' ? column.radioLabel : (showLabel ? String(row.data[column.id] || row.id) : '');
       
+      const isEditable = column.editable === true;
+      const disabled = !isEditable;
+      
       const radioHTML = renderRadioButton({
         label: labelText,
         name: `radio-${column.id}`,
         value: String(row.id),
         checked,
-        size: 'md'
+        size: 'md',
+        disabled: disabled
       });
       
       // Agregar atributos para identificar el radio button
       return radioHTML.replace(
         '<input',
-        `<input data-row-id="${row.id}" data-column-id="${column.id}" data-radio-button="true"`
+        `<input data-row-id="${row.id}" data-column-id="${column.id}" data-radio-button="true" ${isEditable ? 'data-editable="true"' : ''}`
       );
     }
     
@@ -378,11 +382,26 @@ function renderCellByType(column: TableColumn3, row: TableRow3, columnType: Colu
     case 'checkbox': {
       // Checkbox diferente al fijo (con label en header)
       const checked = cellValue === true || cellValue === 'true' || cellValue === 1;
-      return renderCheckbox({
-        label: '',
+      
+      // Determinar si mostrar label y qué texto usar
+      const showLabel = column.checkboxLabel !== false && column.checkboxLabel !== undefined;
+      const labelText = typeof column.checkboxLabel === 'string' ? column.checkboxLabel : (showLabel ? String(row.data[column.id] || row.id) : '');
+      
+      const isEditable = column.editable === true;
+      const disabled = !isEditable;
+      
+      const checkboxHTML = renderCheckbox({
+        label: labelText,
         checked,
-        size: 'md'
+        size: 'md',
+        disabled: disabled
       });
+      
+      // Agregar atributos para identificar el checkbox
+      return checkboxHTML.replace(
+        '<input',
+        `<input data-row-id="${row.id}" data-column-id="${column.id}" data-checkbox-button="true" ${isEditable ? 'data-editable="true"' : ''}`
+      );
     }
     
     case 'correo': {
@@ -447,9 +466,18 @@ function renderCell(column: TableColumn3, row: TableRow3): string {
   // Si la columna tiene un tipo definido, usar renderCellByType
   if (column.type) {
     const content = renderCellByType(column, row, column.type);
-    const isEditable = column.editable && (column.type === 'nombre' || column.type === 'nombre-avatar' || column.type === 'estado');
+    // Editable para: nombre, nombre-avatar, estado (contenido editable), checkbox y radio (interactivos)
+    const isEditable = column.editable && (
+      column.type === 'nombre' || 
+      column.type === 'nombre-avatar' || 
+      column.type === 'estado' ||
+      column.type === 'checkbox' ||
+      column.type === 'radio'
+    );
     const editableClass = isEditable ? 'ubits-data-table-3__cell--editable' : '';
-    const dataAttrs = isEditable ? `data-row-id="${row.id}" data-column-id="${column.id}" data-editable="true"` : '';
+    const dataAttrs = isEditable && (column.type === 'nombre' || column.type === 'nombre-avatar' || column.type === 'estado') 
+      ? `data-row-id="${row.id}" data-column-id="${column.id}" data-editable="true"` 
+      : '';
     
     return `
       <td class="ubits-data-table-3__cell ubits-data-table-3__cell--${column.type} ${editableClass}" ${dataAttrs}>
@@ -1395,8 +1423,8 @@ export function createDataTable3(options: DataTable3Options): {
       statusTag.addEventListener('click', openDropdown);
     });
     
-    // Radio buttons - manejar selección
-    const radioButtons = element.querySelectorAll('input[data-radio-button="true"]');
+    // Radio buttons - manejar selección (solo si son editables)
+    const radioButtons = element.querySelectorAll('input[data-radio-button="true"][data-editable="true"]');
     radioButtons.forEach(radio => {
       const input = radio as HTMLInputElement;
       const rowIdStr = input.getAttribute('data-row-id');
@@ -1406,11 +1434,15 @@ export function createDataTable3(options: DataTable3Options): {
       
       const rowId = isNaN(Number(rowIdStr)) ? rowIdStr : Number(rowIdStr);
       
-      input.addEventListener('change', (e) => {
+      // Remover listeners anteriores si existen
+      const newInput = input.cloneNode(true) as HTMLInputElement;
+      input.parentNode?.replaceChild(newInput, input);
+      
+      newInput.addEventListener('change', (e) => {
         e.stopPropagation();
         
         // Si este radio está siendo seleccionado, deseleccionar los otros del mismo grupo
-        if (input.checked) {
+        if (newInput.checked) {
           // Encontrar todos los radios del mismo grupo (misma columna)
           const allRadiosInGroup = element.querySelectorAll(`input[data-radio-button="true"][data-column-id="${columnId}"]`);
           allRadiosInGroup.forEach((otherRadio: any) => {
@@ -1435,6 +1467,34 @@ export function createDataTable3(options: DataTable3Options): {
         
         // Re-renderizar para reflejar los cambios visuales
         render();
+      });
+    });
+    
+    // Checkbox buttons (tipo 'checkbox') - manejar activación/desactivación (solo si son editables)
+    const checkboxButtons = element.querySelectorAll('input[data-checkbox-button="true"][data-editable="true"]');
+    checkboxButtons.forEach(checkbox => {
+      const input = checkbox as HTMLInputElement;
+      const rowIdStr = input.getAttribute('data-row-id');
+      const columnId = input.getAttribute('data-column-id');
+      
+      if (!rowIdStr || !columnId) return;
+      
+      const rowId = isNaN(Number(rowIdStr)) ? rowIdStr : Number(rowIdStr);
+      
+      // Remover listeners anteriores si existen
+      const newInput = input.cloneNode(true) as HTMLInputElement;
+      input.parentNode?.replaceChild(newInput, input);
+      
+      newInput.addEventListener('change', (e) => {
+        e.stopPropagation();
+        
+        // Actualizar el estado en los datos de la fila
+        const row = currentOptions.rows.find(r => String(r.id) === String(rowId));
+        if (row) {
+          row.data[columnId] = newInput.checked;
+          // Re-renderizar para reflejar los cambios visuales
+          render();
+        }
       });
     });
     

@@ -9750,8 +9750,8 @@ Reglas Importantes:
               // Si cambia a 'nombre-avatar' o 'nombre-avatar-texto' y no tiene avatarVariant, establecer por defecto
               column.avatarVariant = 'initials';
             }
-            // Si cambia a un tipo que no es 'nombre', 'nombre-avatar' o 'estado', eliminar editable
-            if (newType !== 'nombre' && newType !== 'nombre-avatar' && newType !== 'estado') {
+            // Si cambia a un tipo que no es 'nombre', 'nombre-avatar', 'estado', 'checkbox' o 'radio', eliminar editable
+            if (newType !== 'nombre' && newType !== 'nombre-avatar' && newType !== 'estado' && newType !== 'checkbox' && newType !== 'radio') {
               column.editable = undefined;
             }
             // Si cambia a un tipo que no es 'radio', eliminar radioLabel
@@ -9767,6 +9767,13 @@ Reglas Importantes:
             } else if (newType === 'toggle' && column.toggleLabel === undefined) {
               // Si cambia a 'toggle' y no tiene toggleLabel, establecer por defecto false (sin label)
               column.toggleLabel = false;
+            }
+            // Si cambia a un tipo que no es 'checkbox', eliminar checkboxLabel
+            if (newType !== 'checkbox') {
+              column.checkboxLabel = undefined;
+            } else if (newType === 'checkbox' && column.checkboxLabel === undefined) {
+              // Si cambia a 'checkbox' y no tiene checkboxLabel, establecer por defecto false (sin label)
+              column.checkboxLabel = false;
             }
             // Actualizar el título del header según el tipo seleccionado
             const columnTypeLabels = {
@@ -9811,7 +9818,7 @@ Reglas Importantes:
           // value = [columnId, editable]
           const [columnId, editable] = value;
           const column = state.columns.find(col => col.id === columnId);
-          if (column && (column.type === 'nombre' || column.type === 'nombre-avatar' || column.type === 'estado')) {
+          if (column && (column.type === 'nombre' || column.type === 'nombre-avatar' || column.type === 'estado' || column.type === 'checkbox' || column.type === 'radio')) {
             column.editable = editable;
             // Regenerar selectores para actualizar el checkbox
             if (typeof window.generateColumnTypeSelectors === 'function') {
@@ -9839,6 +9846,19 @@ Reglas Importantes:
           const column = state.columns.find(col => col.id === columnId);
           if (column && column.type === 'toggle') {
             column.toggleLabel = showLabel ? true : false;
+            // Regenerar selectores para actualizar el checkbox
+            if (typeof window.generateColumnTypeSelectors === 'function') {
+              window.generateColumnTypeSelectors(componentId);
+            }
+            // Actualizar el preview
+            window.updateDataTable3Preview(componentId);
+          }
+        } else if (option === 'checkboxLabel' && Array.isArray(value) && value.length === 2) {
+          // value = [columnId, showLabel]
+          const [columnId, showLabel] = value;
+          const column = state.columns.find(col => col.id === columnId);
+          if (column && column.type === 'checkbox') {
+            column.checkboxLabel = showLabel ? true : false;
             // Regenerar selectores para actualizar el checkbox
             if (typeof window.generateColumnTypeSelectors === 'function') {
               window.generateColumnTypeSelectors(componentId);
@@ -9910,12 +9930,15 @@ Reglas Importantes:
           const isEstado = currentType === 'estado';
           const isRadio = currentType === 'radio';
           const isToggle = currentType === 'toggle';
-          const isEditableType = isNombre || isNombreAvatar || isEstado;
+          const isCheckbox = currentType === 'checkbox';
+          const isEditableType = isNombre || isNombreAvatar || isEstado || isCheckbox || isRadio;
           const hasAvatarVariant = isNombreAvatar || isNombreAvatarTexto;
           // Determinar el estado del radioLabel: si es string es true, si es boolean usa ese valor, si es undefined es false
           const currentRadioLabel = col.radioLabel !== undefined ? (typeof col.radioLabel === 'string' ? true : col.radioLabel) : false;
           // Determinar el estado del toggleLabel: si es string es true, si es boolean usa ese valor, si es undefined es false
           const currentToggleLabel = col.toggleLabel !== undefined ? (typeof col.toggleLabel === 'string' ? true : col.toggleLabel) : false;
+          // Determinar el estado del checkboxLabel: si es string es true, si es boolean usa ese valor, si es undefined es false
+          const currentCheckboxLabel = col.checkboxLabel !== undefined ? (typeof col.checkboxLabel === 'string' ? true : col.checkboxLabel) : false;
           
           return `
             <div style="flex: 0 0 auto; min-width: 200px;">
@@ -9958,6 +9981,13 @@ Reglas Importantes:
               ${isToggle ? `
                 <label class="switch" style="display: flex; align-items: center; gap: 12px; cursor: pointer; margin-top: 12px;">
                   <input type="checkbox" id="data-table-3-toggle-label-${componentId}-${col.id}" ${currentToggleLabel !== false ? 'checked' : ''} onchange="setDataTable3Control('toggleLabel', ['${col.id}', this.checked], '${componentId}')">
+                  <span class="slider"></span>
+                  <span style="font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium);">Mostrar Label</span>
+                </label>
+              ` : ''}
+              ${isCheckbox ? `
+                <label class="switch" style="display: flex; align-items: center; gap: 12px; cursor: pointer; margin-top: 12px;">
+                  <input type="checkbox" id="data-table-3-checkbox-label-${componentId}-${col.id}" ${currentCheckboxLabel !== false ? 'checked' : ''} onchange="setDataTable3Control('checkboxLabel', ['${col.id}', this.checked], '${componentId}')">
                   <span class="slider"></span>
                   <span style="font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium);">Mostrar Label</span>
                 </label>
@@ -10112,6 +10142,10 @@ Reglas Importantes:
                 // Si tiene toggleLabel, copiarlo también
                 if (col.toggleLabel !== undefined) {
                   columnCopy.toggleLabel = col.toggleLabel;
+                }
+                // Si tiene checkboxLabel, copiarlo también
+                if (col.checkboxLabel !== undefined) {
+                  columnCopy.checkboxLabel = col.checkboxLabel;
                 }
                 // Si tiene renderCell, copiarlo también
                 if (col.renderCell) {

@@ -61,11 +61,6 @@ export interface TableColumn3 {
   avatarVariant?: 'photo' | 'initials' | 'icon';
   
   /**
-   * Si la columna es editable (solo para tipos 'nombre', 'nombre-avatar' y 'estado')
-   */
-  editable?: boolean;
-  
-  /**
    * Label para radio buttons (solo para tipo 'radio')
    * Si es string, se muestra ese texto como label
    * Si es false o undefined, no se muestra label
@@ -78,6 +73,20 @@ export interface TableColumn3 {
    * Si es false o undefined, no se muestra label
    */
   toggleLabel?: string | boolean;
+  
+  /**
+   * Label para checkbox buttons (solo para tipo 'checkbox')
+   * Si es string, se muestra ese texto como label
+   * Si es false o undefined, no se muestra label
+   */
+  checkboxLabel?: string | boolean;
+  
+  /**
+   * Si la columna es editable
+   * Para tipos 'nombre', 'nombre-avatar' y 'estado': permite editar el contenido
+   * Para tipos 'checkbox' y 'radio': permite activar/desactivar el checkbox o radio button
+   */
+  editable?: boolean;
 }
 
 /**
