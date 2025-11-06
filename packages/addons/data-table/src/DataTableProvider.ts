@@ -723,7 +723,10 @@ export function renderDataTable(
   columnOrder: string[] = [],
   rowOrder: (string | number)[] = []
 ): string {
-  const { columns, rows, className = '', columnReorderable = false, columnSortable = true, rowReorderable = false, rowExpandable = true } = options;
+  const { columns, rows, className = '', columnReorderable = false, columnSortable = true, rowReorderable = false, rowExpandable = true, showCheckbox = true } = options;
+
+  console.log('🎨 [RENDER] renderDataTable llamado con showCheckbox:', showCheckbox);
+  console.log('🎨 [RENDER] Columnas recibidas:', columns.map(c => ({ id: c.id, visible: c.visible })));
 
   // Filtrar columnas visibles
   let visibleColumns = columns.filter(col => col.visible !== false);
@@ -743,25 +746,39 @@ export function renderDataTable(
       .concat(visibleColumns.filter(col => !filteredColumnOrder.includes(col.id)));
   }
   
-  // Si no existe checkbox-2, crearla automáticamente al inicio
-  const checkbox2Exists = visibleColumns.some(col => col.id === 'checkbox-2');
-  if (!checkbox2Exists) {
-    console.log('🔍 [CHECKBOX-2] Creando nueva columna checkbox-2 al inicio');
-    // Crear una nueva columna de checkbox con id "checkbox-2"
-    const newCheckboxColumn: TableColumn = {
-      id: 'checkbox-2',
-      title: '',
-      type: undefined,
-      visible: true,
-      width: 60
-    };
-    
-    // Insertar la nueva columna al inicio
-    visibleColumns.unshift(newCheckboxColumn);
-    console.log('🔍 [CHECKBOX-2] Columna agregada al inicio. IDs de columnas visibles:', visibleColumns.map(col => col.id));
+  // Controlar la columna checkbox-2 según showCheckbox
+  console.log('🎯 [CHECKBOX-2] Evaluando showCheckbox:', showCheckbox, '(showCheckbox !== false:', showCheckbox !== false, ')');
+  if (showCheckbox !== false) {
+    // Si no existe checkbox-2, crearla automáticamente al inicio
+    const checkbox2Exists = visibleColumns.some(col => col.id === 'checkbox-2');
+    console.log('🎯 [CHECKBOX-2] checkbox2Exists:', checkbox2Exists);
+    if (!checkbox2Exists) {
+      console.log('🔍 [CHECKBOX-2] Creando nueva columna checkbox-2 al inicio');
+      // Crear una nueva columna de checkbox con id "checkbox-2"
+      const newCheckboxColumn: TableColumn = {
+        id: 'checkbox-2',
+        title: '',
+        type: undefined,
+        visible: true,
+        width: 60
+      };
+      
+      // Insertar la nueva columna al inicio
+      visibleColumns.unshift(newCheckboxColumn);
+      console.log('🔍 [CHECKBOX-2] Columna agregada al inicio. IDs de columnas visibles:', visibleColumns.map(col => col.id));
+    } else {
+      console.log('🔍 [CHECKBOX-2] La columna checkbox-2 ya existe');
+    }
   } else {
-    console.log('🔍 [CHECKBOX-2] La columna checkbox-2 ya existe');
+    // Si showCheckbox es false, eliminar checkbox-2 si existe
+    const beforeFilter = visibleColumns.map(col => col.id);
+    visibleColumns = visibleColumns.filter(col => col.id !== 'checkbox-2');
+    const afterFilter = visibleColumns.map(col => col.id);
+    console.log('🔍 [CHECKBOX-2] Columna checkbox-2 eliminada porque showCheckbox es false');
+    console.log('🔍 [CHECKBOX-2] Antes del filtro:', beforeFilter);
+    console.log('🔍 [CHECKBOX-2] Después del filtro:', afterFilter);
   }
+  console.log('🎯 [CHECKBOX-2] Columnas finales antes de renderizar:', visibleColumns.map(col => col.id));
   
   // Estado de ordenamiento
   const sortColumnId = (options as any).sortColumnId || null;
@@ -1008,6 +1025,30 @@ export function createDataTable(options: DataTableOptions): {
           console.log('  - boxSizing:', computed.boxSizing);
           console.log('  - marginLeft:', computed.marginLeft);
           console.log('  - marginRight:', computed.marginRight);
+          
+          // Verificar la primera celda de datos después de controles
+          const firstDataCell = controlsCol.nextElementSibling as HTMLElement;
+          if (firstDataCell) {
+            const firstDataComputed = window.getComputedStyle(firstDataCell);
+            console.log('📊 [FIRST DATA CELL] Primera celda después de controles:');
+            console.log('  - tagName:', firstDataCell.tagName);
+            console.log('  - className:', firstDataCell.className);
+            console.log('  - padding:', firstDataComputed.padding);
+            console.log('  - paddingLeft:', firstDataComputed.paddingLeft);
+            console.log('  - marginLeft:', firstDataComputed.marginLeft);
+            console.log('  - width:', firstDataComputed.width);
+            
+            // Calcular distancia entre controles y primera celda
+            const controlsRect = controlsCol.getBoundingClientRect();
+            const firstDataRect = firstDataCell.getBoundingClientRect();
+            const gap = firstDataRect.left - controlsRect.right;
+            console.log('📊 [GAP CALCULATION] Espacio entre controles y primera celda:');
+            console.log('  - controlsRect.right:', controlsRect.right);
+            console.log('  - firstDataRect.left:', firstDataRect.left);
+            console.log('  - GAP calculado:', gap, 'px');
+          } else {
+            console.log('⚠️ [FIRST DATA CELL] No se encontró celda de datos después de controles');
+          }
         } else {
           console.log('⚠️ [CONTROLS COLUMN] No se encontró ninguna columna de controles');
         }

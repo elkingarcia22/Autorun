@@ -36,6 +36,7 @@
 .ubits-data-table__controls-column-header {
     padding: var(--ubits-spacing-sm, 12px) var(--ubits-spacing-md, 16px) var(--ubits-spacing-sm, 12px) var(--ubits-spacing-md, 16px);
     padding-left: var(--ubits-spacing-md, 16px);
+    padding-right: 48px !important;
     text-align: center;
     background-color: var(--ubits-bg-1, #ffffff);
     width: auto;
@@ -54,6 +55,7 @@
 .ubits-data-table__controls-column {
     padding: var(--ubits-spacing-sm, 12px) var(--ubits-spacing-md, 16px) var(--ubits-spacing-sm, 12px) var(--ubits-spacing-md, 16px);
     padding-left: var(--ubits-spacing-md, 16px);
+    padding-right: 48px !important;
     text-align: center;
     background-color: var(--ubits-bg-1, #ffffff);
     width: auto;
@@ -474,6 +476,33 @@
     font-size: var(--ubits-font-size-sm, 14px);
     color: var(--ubits-body-md-regular-1, #1f2937);
     font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+}
+
+/* Primera celda de datos después de controles (cuando no hay checkbox) - aumentar padding-left */
+.ubits-data-table__controls-column + .ubits-data-table__cell {
+    padding-left: 32px !important;
+}
+
+/* Header de la primera columna después de controles (cuando no hay checkbox) - alinear con las celdas */
+.ubits-data-table__controls-column-header + .ubits-data-table__column-header {
+    padding-left: 24px !important; /* Ajustado para alinear mejor con las celdas (24px + drag handle 28px = 52px total) */
+}
+
+/* Contenido interno del header de la primera columna - alinear con las celdas */
+.ubits-data-table__controls-column-header + .ubits-data-table__column-header .ubits-data-table__column-header-content {
+    padding-left: 0 !important;
+}
+
+/* Título del header de la primera columna - alinear con el texto de las celdas */
+.ubits-data-table__controls-column-header + .ubits-data-table__column-header .ubits-data-table__column-title {
+    padding-left: 0 !important;
+    margin-left: 0 !important;
+}
+
+/* Asegurar que el drag handle del header no afecte la alineación del texto */
+.ubits-data-table__controls-column-header + .ubits-data-table__column-header .ubits-data-table__column-drag-handle {
+    margin-right: 0 !important;
+    margin-left: 0 !important;
 }
 
 /* Headers de columnas de checkbox - primera columna (checkbox) */

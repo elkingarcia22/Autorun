@@ -9459,7 +9459,7 @@ Reglas Importantes:
             columnsCount: 3,
             columns: [
               {
-                id: 'checkbox',
+                id: 'checkbox-2',
                 title: 'Checkbox',
                 visible: true,
                 width: 150,
@@ -9492,7 +9492,7 @@ Reglas Importantes:
                 id: 1,
                 data: {
                   nombre: 'Juan Pérez',
-                  checkbox: false,
+                  'checkbox-2': false,
                   email: 'juan@example.com',
                   estado: 'Activo',
                   area: 'Desarrollo',
@@ -9514,7 +9514,7 @@ Reglas Importantes:
                 id: 2,
                 data: {
                   nombre: 'María García',
-                  checkbox: true,
+                  'checkbox-2': true,
                   email: 'maria@example.com',
                   estado: 'Inactivo',
                   area: 'Diseño',
@@ -9526,7 +9526,7 @@ Reglas Importantes:
                 id: 3,
                 data: {
                   nombre: 'Carlos López',
-                  checkbox: false,
+                  'checkbox-2': false,
                   email: 'carlos@example.com',
                   estado: 'Activo',
                   area: 'Marketing',
@@ -9548,21 +9548,30 @@ Reglas Importantes:
           state.columnReorderable = value;
           const statusEl = document.getElementById(`data-table-column-reorderable-status-${componentId}`);
           if (statusEl) statusEl.textContent = value ? 'Activado' : 'Desactivado';
+          // Actualizar el preview para reflejar el cambio
+          window.updateDataTablePreview(componentId);
         } else if (option === 'rowReorderable') {
           state.rowReorderable = value;
           const statusEl = document.getElementById(`data-table-row-reorderable-status-${componentId}`);
           if (statusEl) statusEl.textContent = value ? 'Activado' : 'Desactivado';
+          // Actualizar el preview para reflejar el cambio
+          window.updateDataTablePreview(componentId);
         } else if (option === 'showCheckbox') {
+          console.log('🔧 [CONTROL] Cambiando showCheckbox:', value, 'componentId:', componentId);
           state.showCheckbox = value;
+          console.log('🔧 [CONTROL] Estado actualizado. showCheckbox:', state.showCheckbox);
           const statusEl = document.getElementById(`data-table-show-checkbox-status-${componentId}`);
           if (statusEl) statusEl.textContent = value ? 'Visible' : 'Oculta';
+          // Actualizar el preview para reflejar el cambio
+          console.log('🔧 [CONTROL] Llamando a updateDataTablePreview...');
+          window.updateDataTablePreview(componentId);
         } else if (option === 'columnsCount') {
           state.columnsCount = Math.max(1, Math.min(10, parseInt(value) || 3));
           const inputEl = document.getElementById(`data-table-columns-count-${componentId}`);
           if (inputEl) inputEl.value = state.columnsCount;
           
           // Asegurar que tenemos suficientes columnas en el estado (excluyendo checkbox)
-          const dataColumns = state.columns.filter(col => col.id !== 'checkbox');
+          const dataColumns = state.columns.filter(col => col.id !== 'checkbox-2');
           const currentDataColumnsCount = dataColumns.length;
           const columnsCount = state.columnsCount;
           
@@ -9579,7 +9588,7 @@ Reglas Importantes:
                 type: undefined
               };
               // Agregar después de las columnas de datos (pero antes del checkbox si existe)
-              const checkboxIndex = state.columns.findIndex(col => col.id === 'checkbox');
+              const checkboxIndex = state.columns.findIndex(col => col.id === 'checkbox-2');
               if (checkboxIndex >= 0) {
                 // Insertar antes del checkbox
                 state.columns.splice(checkboxIndex + dataColumns.length, 0, newColumn);
@@ -9590,7 +9599,7 @@ Reglas Importantes:
             }
           } else if (columnsCount < currentDataColumnsCount) {
             // Si necesitamos menos columnas, remover las sobrantes (pero mantener las primeras)
-            const checkboxCol = state.columns.find(col => col.id === 'checkbox');
+            const checkboxCol = state.columns.find(col => col.id === 'checkbox-2');
             const dataColumnsToKeep = dataColumns.slice(0, columnsCount);
             state.columns = checkboxCol ? [checkboxCol, ...dataColumnsToKeep] : dataColumnsToKeep;
           }
@@ -9606,10 +9615,14 @@ Reglas Importantes:
           state.rowExpandable = value;
           const statusEl = document.getElementById(`data-table-row-expandable-status-${componentId}`);
           if (statusEl) statusEl.textContent = value ? 'Habilitado' : 'Deshabilitado';
+          // Actualizar el preview para reflejar el cambio
+          window.updateDataTablePreview(componentId);
         } else if (option === 'columnSortable') {
           state.columnSortable = value;
           const statusEl = document.getElementById(`data-table-column-sortable-status-${componentId}`);
           if (statusEl) statusEl.textContent = value ? 'Habilitado' : 'Deshabilitado';
+          // Actualizar el preview para reflejar el cambio
+          window.updateDataTablePreview(componentId);
         } else if (option === 'columnType' && Array.isArray(value) && value.length === 2) {
           // value = [columnId, newType]
           const [columnId, newType] = value;
@@ -9770,7 +9783,7 @@ Reglas Importantes:
         
         // Obtener columnas visibles (excluyendo checkbox fijo)
         const visibleColumns = state.columns.filter(col => {
-          if (col.id === 'checkbox') return false;
+          if (col.id === 'checkbox-2') return false;
           return col.visible !== false;
         }).slice(0, state.columnsCount || 3);
         
@@ -9875,7 +9888,9 @@ Reglas Importantes:
       
       // Función para actualizar el preview del Data Table
       window.updateDataTablePreview = function(componentId) {
+        console.log('🔄 [UPDATE] updateDataTablePreview llamado para componentId:', componentId);
         const state = initDataTablePreviewState(componentId);
+        console.log('🔄 [UPDATE] Estado obtenido. showCheckbox:', state.showCheckbox);
         const preview = document.getElementById(`data-table-preview-${componentId}`);
         
         if (!preview) {
@@ -9979,8 +9994,8 @@ Reglas Importantes:
             const allColumns = [];
             
             // Separar checkbox de columnas de datos
-            const checkboxColumn = state.columns.find(col => col.id === 'checkbox');
-            const dataColumns = state.columns.filter(col => col.id !== 'checkbox');
+            const checkboxColumn = state.columns.find(col => col.id === 'checkbox-2');
+            const dataColumns = state.columns.filter(col => col.id !== 'checkbox-2');
             
             // Usar columnas del estado si existen, sino crear por defecto
             if (state.columns && state.columns.length > 0) {
@@ -10053,7 +10068,7 @@ Reglas Importantes:
             } else {
               // Fallback: crear columnas por defecto
               const baseColumns = [
-                { id: 'checkbox', title: 'Checkbox', visible: state.showCheckbox !== false, width: 150, type: undefined },
+                { id: 'checkbox-2', title: 'Checkbox', visible: state.showCheckbox !== false, width: 150, type: undefined },
                 { id: 'nombre', title: 'Nombre', visible: true, width: 200, type: 'nombre' },
                 { id: 'email', title: 'Email', visible: true, width: 250, type: 'correo' },
                 { id: 'estado', title: 'Estado', visible: true, width: 150, type: 'estado' }
@@ -10082,12 +10097,17 @@ Reglas Importantes:
             }
             
             // Filtrar columnas según opciones
+            console.log('📊 [FILTER] Antes de filtrar. allColumns:', allColumns.map(c => ({ id: c.id, visible: c.visible })));
+            console.log('📊 [FILTER] state.showCheckbox:', state.showCheckbox);
             const columns = allColumns.filter(col => {
-              if (col.id === 'checkbox') {
-                return state.showCheckbox !== false;
+              if (col.id === 'checkbox-2') {
+                const shouldShow = state.showCheckbox !== false;
+                console.log('📊 [FILTER] Columna checkbox-2 encontrada. Debe mostrarse?', shouldShow);
+                return shouldShow;
               }
               return col.visible !== false;
             });
+            console.log('📊 [FILTER] Después de filtrar. columns:', columns.map(c => ({ id: c.id, visible: c.visible })));
             
             // Preparar filas con renderExpandedContent solo si rowExpandable está activado
             const rowsWithExpand = state.rows.map(row => {
@@ -10109,6 +10129,9 @@ Reglas Importantes:
               return row;
             });
             
+            const showCheckboxValue = state.showCheckbox !== false;
+            console.log('🎯 [CREATE] Creando tabla con showCheckbox:', showCheckboxValue, '(state.showCheckbox:', state.showCheckbox, ')');
+            console.log('🎯 [CREATE] Columnas que se pasan:', columns.map(c => c.id));
             const table = window.createDataTable({
               containerId: containerId,
               columns: columns,
@@ -10117,6 +10140,7 @@ Reglas Importantes:
               rowReorderable: state.rowReorderable !== false,
               rowExpandable: state.rowExpandable !== false,
               columnSortable: state.columnSortable !== false,
+              showCheckbox: showCheckboxValue,
               onRowExpand: (rowId, expanded) => {
                 console.log('Fila expandida:', rowId, expanded);
                 const row = state.rows.find(r => r.id === rowId);

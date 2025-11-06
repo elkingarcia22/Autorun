@@ -174,6 +174,11 @@ export interface DataTableOptions {
   onSort?: (columnId: string, direction: 'asc' | 'desc') => void;
   
   /**
+   * Si se muestra la columna de checkbox (por defecto: true)
+   */
+  showCheckbox?: boolean;
+  
+  /**
    * Clases CSS adicionales
    */
   className?: string;
