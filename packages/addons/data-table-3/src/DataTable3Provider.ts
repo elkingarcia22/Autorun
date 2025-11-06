@@ -968,6 +968,9 @@ export function createDataTable3(options: DataTable3Options): {
   
   // Función para adjuntar event listeners
   const attachEventListeners = () => {
+    console.log('🔧 [ATTACH EVENT LISTENERS] Iniciando...');
+    
+    try {
     // Drag & Drop de columnas
     if (currentOptions.columnReorderable) {
       if (!element.hasAttribute('data-column-drag-listener')) {
@@ -1382,18 +1385,39 @@ export function createDataTable3(options: DataTable3Options): {
     
     // Status tags editables - mostrar dropdown con lista de estados
     const statusEditables = element.querySelectorAll('.ubits-data-table-3__status-editable');
-    statusEditables.forEach(container => {
+    console.log(`🔍 [STATUS DROPDOWN] Encontrados ${statusEditables.length} status tags editables`);
+    
+    statusEditables.forEach((container, index) => {
       const rowIdStr = container.getAttribute('data-row-id');
       const columnId = container.getAttribute('data-column-id');
       const currentStatus = container.getAttribute('data-current-status');
       
-      if (!rowIdStr || !columnId) return;
+      console.log(`🔍 [STATUS DROPDOWN] Procesando status tag ${index + 1}/${statusEditables.length}:`, {
+        rowIdStr,
+        columnId,
+        currentStatus,
+        container
+      });
+      
+      if (!rowIdStr || !columnId) {
+        console.warn(`⚠️ [STATUS DROPDOWN] Faltan datos en status tag ${index + 1}`);
+        return;
+      }
       
       const rowId = isNaN(Number(rowIdStr)) ? rowIdStr : Number(rowIdStr);
       const statusTag = container.querySelector('.ubits-status-tag');
       const dropdown = container.querySelector('.ubits-data-table-3__status-dropdown') as HTMLElement;
       
-      if (!statusTag || !dropdown) return;
+      if (!statusTag || !dropdown) {
+        console.warn(`⚠️ [STATUS DROPDOWN] No se encontró statusTag o dropdown en contenedor ${index + 1}:`, {
+          statusTag: !!statusTag,
+          dropdown: !!dropdown,
+          container
+        });
+        return;
+      }
+      
+      console.log(`✅ [STATUS DROPDOWN] Status tag ${index + 1} inicializado correctamente`);
       
       // Lista de estados disponibles con sus labels en español
       const statusOptions = [
@@ -1417,21 +1441,193 @@ export function createDataTable3(options: DataTable3Options): {
         { value: 'hidden', label: 'Oculto', status: 'hidden' }
       ];
       
+      // Referencias a los listeners para poder eliminarlos
+      let handleOutsideClickRef: ((e: MouseEvent) => void) | null = null;
+      let updateDropdownPositionRef: (() => void) | null = null;
+      let animationFrameId: number | null = null;
+      let isUpdating = false;
+      let updateCount = 0;
+      const scrollContainers: HTMLElement[] = [];
+      
+      // Función para encontrar todos los contenedores con scroll
+      const findScrollContainers = (el: HTMLElement | null): HTMLElement[] => {
+        const containers: HTMLElement[] = [];
+        let current: HTMLElement | null = el;
+        
+        while (current && current !== document.body && current !== document.documentElement) {
+          const style = window.getComputedStyle(current);
+          const overflow = style.overflow + style.overflowX + style.overflowY;
+          
+          // Verificar si tiene scroll (overflow auto/scroll) o si tiene scrollHeight/scrollWidth mayor que clientHeight/clientWidth
+          const hasOverflow = overflow.includes('auto') || overflow.includes('scroll');
+          const hasScrollContent = current.scrollHeight > current.clientHeight || current.scrollWidth > current.clientWidth;
+          
+          if (hasOverflow || hasScrollContent) {
+            containers.push(current);
+            console.log('📍 [STATUS DROPDOWN] Contenedor con scroll encontrado:', {
+              element: current,
+              className: current.className,
+              id: current.id,
+              overflow: overflow,
+              scrollTop: current.scrollTop,
+              scrollLeft: current.scrollLeft,
+              scrollHeight: current.scrollHeight,
+              clientHeight: current.clientHeight,
+              scrollWidth: current.scrollWidth,
+              clientWidth: current.clientWidth
+            });
+          }
+          
+          current = current.parentElement;
+        }
+        
+        return containers;
+      };
+      
+      // Función para actualizar la posición del dropdown usando requestAnimationFrame
+      const updateDropdownPosition = () => {
+        try {
+          if (!dropdown || dropdown.style.display === 'none' || !document.body.contains(dropdown)) {
+            stopUpdating();
+            return;
+          }
+          
+          if (!statusTag || !statusTag.isConnected) {
+            console.warn('⚠️ [STATUS DROPDOWN] statusTag no está conectado al DOM');
+            stopUpdating();
+            return;
+          }
+          
+          const rect = statusTag.getBoundingClientRect();
+          // Con position: fixed, las coordenadas son relativas al viewport
+          const top = rect.bottom + 4;
+          const left = rect.left;
+          
+          const currentTop = dropdown.style.top;
+          const currentLeft = dropdown.style.left;
+          const newTop = `${top}px`;
+          const newLeft = `${left}px`;
+          
+          // Solo actualizar si la posición cambió (para evitar reflows innecesarios)
+          if (currentTop !== newTop || currentLeft !== newLeft) {
+            dropdown.style.top = newTop;
+            dropdown.style.left = newLeft;
+            
+            updateCount++;
+            if (updateCount % 60 === 0) { // Log cada 60 frames (aproximadamente cada segundo a 60fps)
+              console.log(`🔄 [STATUS DROPDOWN] Actualización #${updateCount}:`, {
+                top: newTop,
+                left: newLeft,
+                statusTagRect: {
+                  top: rect.top,
+                  left: rect.left,
+                  bottom: rect.bottom,
+                  right: rect.right
+                }
+              });
+            }
+          }
+        } catch (error) {
+          console.error('❌ [STATUS DROPDOWN] Error actualizando posición:', error);
+          stopUpdating();
+        }
+      };
+      
+      // Función para iniciar el loop de actualización continua
+      const startUpdating = () => {
+        if (isUpdating) return;
+        isUpdating = true;
+        
+        const update = () => {
+          if (dropdown.style.display === 'none' || !document.body.contains(dropdown)) {
+            stopUpdating();
+            return;
+          }
+          
+          updateDropdownPosition();
+          
+          // Continuar actualizando mientras el dropdown esté visible
+          animationFrameId = requestAnimationFrame(update);
+        };
+        
+        update();
+      };
+      
+      // Función para detener la actualización continua
+      const stopUpdating = () => {
+        if (animationFrameId) {
+          cancelAnimationFrame(animationFrameId);
+          animationFrameId = null;
+        }
+        if (isUpdating) {
+          console.log(`🛑 [STATUS DROPDOWN] Deteniendo actualización continua. Total actualizaciones: ${updateCount}`);
+        }
+        isUpdating = false;
+        updateCount = 0;
+      };
+      
+      updateDropdownPositionRef = updateDropdownPosition;
+      
       // Función para cerrar el dropdown
       const closeDropdown = () => {
+        console.log('❌ [STATUS DROPDOWN] Cerrando dropdown');
+        stopUpdating();
         dropdown.style.display = 'none';
-        document.removeEventListener('click', closeDropdown);
+        // Devolver el dropdown al contenedor original si está en el body
+        if (dropdown.parentElement === document.body) {
+          container.appendChild(dropdown);
+          console.log('↩️ [STATUS DROPDOWN] Dropdown devuelto al contenedor original');
+        }
+        // Eliminar listeners
+        if (handleOutsideClickRef) {
+          document.removeEventListener('click', handleOutsideClickRef);
+          handleOutsideClickRef = null;
+        }
+        if (updateDropdownPositionRef) {
+          window.removeEventListener('scroll', updateDropdownPositionRef, true);
+          element.removeEventListener('scroll', updateDropdownPositionRef, true);
+          // Eliminar listeners de todos los contenedores con scroll
+          scrollContainers.forEach(container => {
+            container.removeEventListener('scroll', updateDropdownPositionRef!, true);
+          });
+          scrollContainers.length = 0;
+          updateDropdownPositionRef = null;
+        }
       };
       
       // Función para abrir el dropdown
       const openDropdown = (e: MouseEvent) => {
-        e.preventDefault();
-        e.stopPropagation();
+        try {
+          e.preventDefault();
+          e.stopPropagation();
+          
+          console.log('🔓 [STATUS DROPDOWN] Abriendo dropdown', {
+            rowId,
+            columnId,
+            currentStatus,
+            statusTag: statusTag,
+            container: container,
+            dropdown: dropdown,
+            statusTagConnected: statusTag?.isConnected,
+            dropdownConnected: dropdown?.isConnected
+          });
+          
+          if (!statusTag || !dropdown) {
+            console.error('❌ [STATUS DROPDOWN] statusTag o dropdown no encontrado');
+            return;
+          }
         
         // Cerrar otros dropdowns abiertos
         element.querySelectorAll('.ubits-data-table-3__status-dropdown').forEach((dd: any) => {
           if (dd !== dropdown) {
             dd.style.display = 'none';
+            // Devolver otros dropdowns a sus contenedores si están en el body
+            if (dd.parentElement === document.body) {
+              const originalContainer = element.querySelector(`[data-row-id="${dd.getAttribute('data-row-id')}"][data-column-id="${dd.getAttribute('data-column-id')}"]`);
+              if (originalContainer) {
+                originalContainer.appendChild(dd);
+              }
+            }
           }
         });
         
@@ -1470,9 +1666,30 @@ export function createDataTable3(options: DataTable3Options): {
         const listContainerId = `status-list-${rowId}-${columnId}`;
         dropdown.id = listContainerId;
         
-        // Posicionar el dropdown debajo del status tag
-        // Con position: fixed, las coordenadas son relativas al viewport (no al documento)
+        // Mover el dropdown al body para evitar problemas con overflow
+        if (dropdown.parentElement !== document.body) {
+          document.body.appendChild(dropdown);
+          console.log('📦 [STATUS DROPDOWN] Dropdown movido al body');
+        }
+        
+        // Posicionar el dropdown debajo del status tag usando position: fixed
+        // Calcular posición basándose en getBoundingClientRect para que se mantenga alineado
         const rect = statusTag.getBoundingClientRect();
+        console.log('📐 [STATUS DROPDOWN] Posición inicial del status tag:', {
+          rect: {
+            top: rect.top,
+            left: rect.left,
+            bottom: rect.bottom,
+            right: rect.right,
+            width: rect.width,
+            height: rect.height
+          },
+          windowScroll: {
+            scrollY: window.scrollY,
+            scrollX: window.scrollX
+          }
+        });
+        
         dropdown.style.position = 'fixed';
         dropdown.style.top = `${rect.bottom + 4}px`;
         dropdown.style.left = `${rect.left}px`;
@@ -1486,6 +1703,43 @@ export function createDataTable3(options: DataTable3Options): {
         dropdown.style.maxWidth = '300px';
         dropdown.style.padding = '4px';
         dropdown.style.boxSizing = 'border-box';
+        
+        console.log('✅ [STATUS DROPDOWN] Dropdown posicionado:', {
+          position: dropdown.style.position,
+          top: dropdown.style.top,
+          left: dropdown.style.left,
+          zIndex: dropdown.style.zIndex
+        });
+        
+        // Encontrar todos los contenedores con scroll
+        const containers = findScrollContainers(statusTag);
+        scrollContainers.push(...containers);
+        
+        // Posicionar inicialmente
+        updateDropdownPosition();
+        
+        // Iniciar actualización continua con requestAnimationFrame
+        startUpdating();
+        
+        // Agregar listeners para actualizar posición en scroll (como respaldo)
+        window.addEventListener('scroll', updateDropdownPosition, true);
+        element.addEventListener('scroll', updateDropdownPosition, true);
+        // Agregar listeners a todos los contenedores con scroll encontrados
+        containers.forEach(container => {
+          container.addEventListener('scroll', updateDropdownPosition, true);
+          console.log('👂 [STATUS DROPDOWN] Listener de scroll agregado a contenedor:', {
+            className: container.className,
+            id: container.id,
+            element: container
+          });
+        });
+        
+        console.log('🎯 [STATUS DROPDOWN] Listeners de scroll configurados:', {
+          requestAnimationFrame: true,
+          window: true,
+          element: true,
+          containers: containers.length
+        });
         
         // Crear la lista interactiva usando createList
         // createList modifica el innerHTML del contenedor con el ID especificado
@@ -1521,14 +1775,31 @@ export function createDataTable3(options: DataTable3Options): {
           console.error('Error creating list:', error);
         }
         
-        // Cerrar al hacer click fuera
+        // Cerrar al hacer click fuera (pero no dentro del dropdown)
+        const handleOutsideClick = (e: MouseEvent) => {
+          if (!dropdown.contains(e.target as Node) && !statusTag.contains(e.target as Node)) {
+            closeDropdown();
+          }
+        };
+        handleOutsideClickRef = handleOutsideClick;
+        
         setTimeout(() => {
-          document.addEventListener('click', closeDropdown);
+          document.addEventListener('click', handleOutsideClick);
         }, 0);
+        
+        } catch (error) {
+          console.error('❌ [STATUS DROPDOWN] Error abriendo dropdown:', error);
+          stopUpdating();
+        }
       };
       
       // Agregar event listener al status tag
       statusTag.addEventListener('click', openDropdown);
+      console.log('✅ [STATUS DROPDOWN] Event listener agregado al status tag', {
+        rowId,
+        columnId,
+        statusTag: statusTag
+      });
     });
     
     // Radio buttons - manejar selección (solo si son editables)
@@ -1647,6 +1918,11 @@ export function createDataTable3(options: DataTable3Options): {
         });
       }
     });
+    
+    console.log('✅ [ATTACH EVENT LISTENERS] Completado');
+    } catch (error) {
+      console.error('❌ [ATTACH EVENT LISTENERS] Error:', error);
+    }
   };
 
   // Llamar render inicial
