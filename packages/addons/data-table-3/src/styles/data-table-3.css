@@ -386,8 +386,9 @@
     gap: 0;
 }
 
-/* Celdas de checkbox */
-.ubits-data-table-3__cell--checkbox {
+/* Celdas de checkbox - columna especial (id === 'checkbox') */
+.ubits-data-table-3__cell--checkbox[data-column-id="checkbox"],
+.ubits-data-table-3__cell--checkbox[data-column-id^="checkbox-"] {
     text-align: left;
     padding: 8px 4px;
     padding-left: 4px;
@@ -398,11 +399,21 @@
     box-sizing: border-box;
 }
 
+/* Celdas de checkbox - tipo 'checkbox' (pueden tener label) */
+.ubits-data-table-3__cell--checkbox:not([data-column-id="checkbox"]):not([data-column-id^="checkbox-"]) {
+    text-align: left;
+    padding: var(--ubits-spacing-sm, 12px) var(--ubits-spacing-md, 16px);
+    padding-left: 10px;
+    box-sizing: border-box;
+}
+
 .ubits-data-table-3__row:hover .ubits-data-table-3__cell--checkbox {
     background-color: var(--ubits-bg-2, #f3f3f4);
 }
 
-.ubits-data-table-3__cell--checkbox .ubits-checkbox {
+/* Checkbox en columna especial - sin label */
+.ubits-data-table-3__cell--checkbox[data-column-id="checkbox"] .ubits-checkbox,
+.ubits-data-table-3__cell--checkbox[data-column-id^="checkbox-"] .ubits-checkbox {
     margin: 0;
     margin-left: 0;
     display: flex;
@@ -413,6 +424,16 @@
     gap: 0;
 }
 
+/* Checkbox en columnas de tipo 'checkbox' - pueden tener label */
+.ubits-data-table-3__cell--checkbox:not([data-column-id="checkbox"]):not([data-column-id^="checkbox-"]) .ubits-checkbox {
+    margin: 0;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: auto;
+    gap: var(--ubits-spacing-xs, 4px);
+}
+
 /* Asegurar que el checkbox se mantenga alineado a la izquierda */
 .ubits-data-table-3__cell--checkbox .ubits-checkbox__square {
     flex-shrink: 0;
@@ -420,8 +441,9 @@
     height: 20px !important;
 }
 
-/* Permitir el label con el espacio normal */
-.ubits-data-table-3__cell--checkbox .ubits-checkbox .ubits-checkbox__text-content {
+/* Para la columna especial de checkbox (id === 'checkbox'), ocultar el label siempre */
+.ubits-data-table-3__cell--checkbox[data-column-id="checkbox"] .ubits-checkbox .ubits-checkbox__text-content,
+.ubits-data-table-3__cell--checkbox[data-column-id^="checkbox-"] .ubits-checkbox .ubits-checkbox__text-content {
     display: none;
     flex-direction: column;
     gap: var(--ubits-spacing-none, 0px);
@@ -430,7 +452,16 @@
     width: 0;
 }
 
-/* Ocultar label si está vacío para evitar espacio */
+/* Para columnas de tipo 'checkbox' (no la columna especial), permitir mostrar el label */
+.ubits-data-table-3__cell--checkbox:not([data-column-id="checkbox"]):not([data-column-id^="checkbox-"]) .ubits-checkbox .ubits-checkbox__text-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ubits-spacing-xs, 4px);
+    flex: 1;
+    min-width: 0;
+}
+
+/* Ocultar label solo si está vacío */
 .ubits-data-table-3__cell--checkbox .ubits-checkbox .ubits-checkbox__text-content:has(.ubits-checkbox__label:empty) {
     display: none;
 }

@@ -478,9 +478,10 @@ function renderCell(column: TableColumn3, row: TableRow3): string {
       column.type === 'radio'
     );
     const editableClass = isEditable ? 'ubits-data-table-3__cell--editable' : '';
+    // Agregar data-column-id siempre para poder diferenciar en CSS
     const dataAttrs = isEditable && (column.type === 'nombre' || column.type === 'nombre-avatar' || column.type === 'estado') 
       ? `data-row-id="${row.id}" data-column-id="${column.id}" data-editable="true"` 
-      : '';
+      : `data-column-id="${column.id}"`;
     
     return `
       <td class="ubits-data-table-3__cell ubits-data-table-3__cell--${column.type} ${editableClass}" ${dataAttrs}>
