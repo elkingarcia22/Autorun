@@ -7,6 +7,7 @@ import { renderToggle } from '../../toggle/src/ToggleProvider';
 import { renderRadioButton } from '../../radio-button/src/RadioButtonProvider';
 import { renderButton } from '../../button/src/ButtonProvider';
 import { createList } from '../../list/src/ListProvider';
+import { createScrollbar } from '../../scroll/src/ScrollProvider';
 
 /**
  * Renderiza una celda según el tipo de columna
@@ -390,20 +391,6 @@ function renderCellByType(column: TableColumn3, row: TableRow3, columnType: Colu
       const isEditable = column.editable === true;
       const disabled = !isEditable;
       
-      // 🔍 LOGS DETALLADOS
-      console.log('🔍 [CHECKBOX RENDER]', {
-        columnId: column.id,
-        rowId: row.id,
-        checked,
-        checkboxLabel: column.checkboxLabel,
-        showLabel,
-        labelText,
-        editable: column.editable,
-        isEditable,
-        disabled,
-        columnType: column.type
-      });
-      
       const checkboxHTML = renderCheckbox({
         label: labelText,
         checked,
@@ -411,29 +398,11 @@ function renderCellByType(column: TableColumn3, row: TableRow3, columnType: Colu
         disabled: disabled
       });
       
-      console.log('📦 [CHECKBOX HTML]', {
-        columnId: column.id,
-        rowId: row.id,
-        htmlLength: checkboxHTML.length,
-        hasLabel: checkboxHTML.includes('ubits-checkbox__label'),
-        hasDisabled: checkboxHTML.includes('disabled'),
-        hasEditable: isEditable,
-        htmlPreview: checkboxHTML.substring(0, 200)
-      });
-      
       // Agregar atributos para identificar el checkbox
       const finalHTML = checkboxHTML.replace(
         '<input',
         `<input data-row-id="${row.id}" data-column-id="${column.id}" data-checkbox-button="true" ${isEditable ? 'data-editable="true"' : ''}`
       );
-      
-      console.log('✅ [CHECKBOX FINAL]', {
-        columnId: column.id,
-        rowId: row.id,
-        finalHTMLLength: finalHTML.length,
-        hasDataEditable: finalHTML.includes('data-editable="true"'),
-        finalHTMLPreview: finalHTML.substring(0, 250)
-      });
       
       return finalHTML;
     }
@@ -882,94 +851,20 @@ export function createDataTable3(options: DataTable3Options): {
 
   // Función para renderizar
   const render = () => {
-    console.log('🔄 [RENDER START]', {
-      timestamp: new Date().toISOString(),
-      columnsCount: currentOptions.columns.length,
-      rowsCount: currentOptions.rows.length,
-      checkboxColumns: currentOptions.columns.filter(c => c.type === 'checkbox').map(c => ({
-        id: c.id,
-        editable: c.editable,
-        checkboxLabel: c.checkboxLabel
-      }))
-    });
-    
     const newHTML = renderDataTable3(
       { ...currentOptions, sortColumnId, sortDirection } as any, 
       columnOrder, 
       rowOrder
     );
     
-    // 🔍 LOGS: Verificar posiciones de checkboxes antes de actualizar
-    const checkboxCellsBefore = element.querySelectorAll('.ubits-data-table-3__cell--checkbox');
-    console.log('📍 [BEFORE RENDER] Checkbox cells:', {
-      count: checkboxCellsBefore.length,
-      positions: Array.from(checkboxCellsBefore).map((cell, idx) => {
-        const rect = cell.getBoundingClientRect();
-        const checkbox = cell.querySelector('.ubits-checkbox');
-        const checkboxRect = checkbox?.getBoundingClientRect();
-        return {
-          index: idx,
-          cellLeft: rect.left,
-          cellWidth: rect.width,
-          checkboxLeft: checkboxRect?.left,
-          checkboxWidth: checkboxRect?.width,
-          hasEditableClass: cell.classList.contains('ubits-data-table-3__cell--editable'),
-          isDisabled: checkbox?.querySelector('input[disabled]') !== null
-        };
-      })
-    });
-    
     element.innerHTML = newHTML.trim();
-    
-    // 🔍 LOGS: Verificar posiciones de checkboxes después de actualizar
-    setTimeout(() => {
-      const checkboxCellsAfter = element.querySelectorAll('.ubits-data-table-3__cell--checkbox');
-      
-      // Log detallado por celda
-      Array.from(checkboxCellsAfter).forEach((cell, idx) => {
-        const rect = cell.getBoundingClientRect();
-        const checkbox = cell.querySelector('.ubits-checkbox');
-        const checkboxRect = checkbox?.getBoundingClientRect();
-        const computedStyle = window.getComputedStyle(cell);
-        const checkboxComputed = checkbox ? window.getComputedStyle(checkbox) : null;
-        const beforeCell = checkboxCellsBefore[idx];
-        const beforeRect = beforeCell?.getBoundingClientRect();
-        
-        console.log(`📍 [CELL ${idx}] Detalles:`, {
-          cellLeft: `${rect.left.toFixed(2)}px`,
-          cellWidth: `${rect.width.toFixed(2)}px`,
-          cellRight: `${rect.right.toFixed(2)}px`,
-          cellMinWidth: computedStyle.minWidth,
-          cellMaxWidth: computedStyle.maxWidth,
-          cellWidthActual: computedStyle.width,
-          cellPadding: computedStyle.padding,
-          cellTextAlign: computedStyle.textAlign,
-          checkboxLeft: checkboxRect ? `${checkboxRect.left.toFixed(2)}px` : 'N/A',
-          checkboxWidth: checkboxRect ? `${checkboxRect.width.toFixed(2)}px` : 'N/A',
-          checkboxMargin: checkboxComputed?.margin,
-          checkboxGap: checkboxComputed?.gap,
-          hasEditableClass: cell.classList.contains('ubits-data-table-3__cell--editable'),
-          isDisabled: checkbox?.querySelector('input[disabled]') !== null,
-          beforeLeft: beforeRect ? `${beforeRect.left.toFixed(2)}px` : 'N/A',
-          beforeWidth: beforeRect ? `${beforeRect.width.toFixed(2)}px` : 'N/A',
-          leftDiff: beforeRect ? `${(rect.left - beforeRect.left).toFixed(2)}px` : 'N/A',
-          widthDiff: beforeRect ? `${(rect.width - beforeRect.width).toFixed(2)}px` : 'N/A',
-          hasMoved: beforeRect && Math.abs(rect.left - beforeRect.left) > 1,
-          hasResized: beforeRect && Math.abs(rect.width - beforeRect.width) > 1
-        });
-      });
-    }, 100);
     
     attachEventListeners();
     initializeIconFallbacks();
-    
-    console.log('✅ [RENDER COMPLETE]');
   };
   
   // Función para adjuntar event listeners
   const attachEventListeners = () => {
-    console.log('🔧 [ATTACH EVENT LISTENERS] Iniciando...');
-    
     try {
     // Drag & Drop de columnas
     if (currentOptions.columnReorderable) {
@@ -1063,13 +958,11 @@ export function createDataTable3(options: DataTable3Options): {
             
             // No permitir arrastrar la columna de checkbox
             if (isDraggedCheckbox) {
-              console.log('🚫 No se puede arrastrar la columna de checkbox');
               return;
             }
             
             // No permitir hacer drop sobre la columna de checkbox
             if (isTargetCheckbox) {
-              console.log('🚫 No se puede hacer drop sobre la columna de checkbox');
               return;
             }
             
@@ -1079,15 +972,6 @@ export function createDataTable3(options: DataTable3Options): {
               
               // Encontrar el índice de la columna de checkbox en el orden actual
               const checkboxColumnIndex = columnOrder.findIndex(id => id === 'checkbox' || id.startsWith('checkbox-'));
-              
-              console.log('📊 Reordenamiento:', {
-                dragged: draggedColumnId,
-                target: columnId,
-                currentIndex,
-                targetIndex,
-                checkboxIndex: checkboxColumnIndex,
-                columnOrder: [...columnOrder]
-              });
               
               // Si no hay columna de checkbox, permitir el movimiento
               if (checkboxColumnIndex === -1) {
@@ -1107,13 +991,11 @@ export function createDataTable3(options: DataTable3Options): {
               // No permitir mover columnas antes de la columna de checkbox
               // La validación debe ser: targetIndex NO puede ser menor que checkboxColumnIndex
               if (targetIndex < checkboxColumnIndex) {
-                console.log('🚫 No se puede mover columna antes de la columna de checkbox');
                 return;
               }
               
               // Validar: si estamos moviendo desde después de checkbox, no permitir mover antes de checkbox
               if (currentIndex > checkboxColumnIndex && targetIndex < checkboxColumnIndex) {
-                console.log('🚫 No se puede mover columna desde después de checkbox hacia antes de checkbox');
                 return;
               }
               
@@ -1126,7 +1008,6 @@ export function createDataTable3(options: DataTable3Options): {
                 // Verificar que la checkbox sigue en su posición correcta o después
                 const newCheckboxIndex = newOrder.findIndex(id => id === 'checkbox' || id.startsWith('checkbox-'));
                 if (newCheckboxIndex !== -1 && newCheckboxIndex < checkboxColumnIndex) {
-                  console.log('🚫 El reordenamiento movería la checkbox a una posición incorrecta');
                   return;
                 }
                 
@@ -1385,39 +1266,19 @@ export function createDataTable3(options: DataTable3Options): {
     
     // Status tags editables - mostrar dropdown con lista de estados
     const statusEditables = element.querySelectorAll('.ubits-data-table-3__status-editable');
-    console.log(`🔍 [STATUS DROPDOWN] Encontrados ${statusEditables.length} status tags editables`);
     
-    statusEditables.forEach((container, index) => {
+    statusEditables.forEach((container) => {
       const rowIdStr = container.getAttribute('data-row-id');
       const columnId = container.getAttribute('data-column-id');
       const currentStatus = container.getAttribute('data-current-status');
       
-      console.log(`🔍 [STATUS DROPDOWN] Procesando status tag ${index + 1}/${statusEditables.length}:`, {
-        rowIdStr,
-        columnId,
-        currentStatus,
-        container
-      });
-      
-      if (!rowIdStr || !columnId) {
-        console.warn(`⚠️ [STATUS DROPDOWN] Faltan datos en status tag ${index + 1}`);
-        return;
-      }
+      if (!rowIdStr || !columnId) return;
       
       const rowId = isNaN(Number(rowIdStr)) ? rowIdStr : Number(rowIdStr);
       const statusTag = container.querySelector('.ubits-status-tag');
       const dropdown = container.querySelector('.ubits-data-table-3__status-dropdown') as HTMLElement;
       
-      if (!statusTag || !dropdown) {
-        console.warn(`⚠️ [STATUS DROPDOWN] No se encontró statusTag o dropdown en contenedor ${index + 1}:`, {
-          statusTag: !!statusTag,
-          dropdown: !!dropdown,
-          container
-        });
-        return;
-      }
-      
-      console.log(`✅ [STATUS DROPDOWN] Status tag ${index + 1} inicializado correctamente`);
+      if (!statusTag || !dropdown) return;
       
       // Lista de estados disponibles con sus labels en español
       const statusOptions = [
@@ -1464,18 +1325,6 @@ export function createDataTable3(options: DataTable3Options): {
           
           if (hasOverflow || hasScrollContent) {
             containers.push(current);
-            console.log('📍 [STATUS DROPDOWN] Contenedor con scroll encontrado:', {
-              element: current,
-              className: current.className,
-              id: current.id,
-              overflow: overflow,
-              scrollTop: current.scrollTop,
-              scrollLeft: current.scrollLeft,
-              scrollHeight: current.scrollHeight,
-              clientHeight: current.clientHeight,
-              scrollWidth: current.scrollWidth,
-              clientWidth: current.clientWidth
-            });
           }
           
           current = current.parentElement;
@@ -1493,7 +1342,6 @@ export function createDataTable3(options: DataTable3Options): {
           }
           
           if (!statusTag || !statusTag.isConnected) {
-            console.warn('⚠️ [STATUS DROPDOWN] statusTag no está conectado al DOM');
             stopUpdating();
             return;
           }
@@ -1512,23 +1360,9 @@ export function createDataTable3(options: DataTable3Options): {
           if (currentTop !== newTop || currentLeft !== newLeft) {
             dropdown.style.top = newTop;
             dropdown.style.left = newLeft;
-            
             updateCount++;
-            if (updateCount % 60 === 0) { // Log cada 60 frames (aproximadamente cada segundo a 60fps)
-              console.log(`🔄 [STATUS DROPDOWN] Actualización #${updateCount}:`, {
-                top: newTop,
-                left: newLeft,
-                statusTagRect: {
-                  top: rect.top,
-                  left: rect.left,
-                  bottom: rect.bottom,
-                  right: rect.right
-                }
-              });
-            }
           }
         } catch (error) {
-          console.error('❌ [STATUS DROPDOWN] Error actualizando posición:', error);
           stopUpdating();
         }
       };
@@ -1559,9 +1393,6 @@ export function createDataTable3(options: DataTable3Options): {
           cancelAnimationFrame(animationFrameId);
           animationFrameId = null;
         }
-        if (isUpdating) {
-          console.log(`🛑 [STATUS DROPDOWN] Deteniendo actualización continua. Total actualizaciones: ${updateCount}`);
-        }
         isUpdating = false;
         updateCount = 0;
       };
@@ -1570,13 +1401,23 @@ export function createDataTable3(options: DataTable3Options): {
       
       // Función para cerrar el dropdown
       const closeDropdown = () => {
-        console.log('❌ [STATUS DROPDOWN] Cerrando dropdown');
         stopUpdating();
         dropdown.style.display = 'none';
+        
+        // Destruir scrollbar si existe
+        const scrollbarInstance = (dropdown as any).__scrollbarInstance;
+        if (scrollbarInstance && scrollbarInstance.destroy) {
+          try {
+            scrollbarInstance.destroy();
+          } catch (e) {
+            // Ignorar errores al destruir scrollbar
+          }
+          (dropdown as any).__scrollbarInstance = null;
+        }
+        
         // Devolver el dropdown al contenedor original si está en el body
         if (dropdown.parentElement === document.body) {
           container.appendChild(dropdown);
-          console.log('↩️ [STATUS DROPDOWN] Dropdown devuelto al contenedor original');
         }
         // Eliminar listeners
         if (handleOutsideClickRef) {
@@ -1601,21 +1442,7 @@ export function createDataTable3(options: DataTable3Options): {
           e.preventDefault();
           e.stopPropagation();
           
-          console.log('🔓 [STATUS DROPDOWN] Abriendo dropdown', {
-            rowId,
-            columnId,
-            currentStatus,
-            statusTag: statusTag,
-            container: container,
-            dropdown: dropdown,
-            statusTagConnected: statusTag?.isConnected,
-            dropdownConnected: dropdown?.isConnected
-          });
-          
-          if (!statusTag || !dropdown) {
-            console.error('❌ [STATUS DROPDOWN] statusTag o dropdown no encontrado');
-            return;
-          }
+          if (!statusTag || !dropdown) return;
         
         // Cerrar otros dropdowns abiertos
         element.querySelectorAll('.ubits-data-table-3__status-dropdown').forEach((dd: any) => {
@@ -1664,31 +1491,37 @@ export function createDataTable3(options: DataTable3Options): {
         // Limpiar dropdown anterior si existe
         dropdown.innerHTML = '';
         const listContainerId = `status-list-${rowId}-${columnId}`;
-        dropdown.id = listContainerId;
+        const scrollbarContainerId = `status-scrollbar-${rowId}-${columnId}`;
+        dropdown.id = `status-dropdown-${rowId}-${columnId}`;
+        
+        // Crear estructura con scrollbar: wrapper > lista + scrollbar
+        dropdown.innerHTML = `
+          <div style="display: flex; align-items: stretch; gap: 8px; height: 300px;">
+            <div id="${listContainerId}" style="flex: 1; overflow-y: auto; overflow-x: hidden; -ms-overflow-style: none; scrollbar-width: none; height: 100%;"></div>
+            <div id="${scrollbarContainerId}" style="flex-shrink: 0; height: 100%;"></div>
+          </div>
+        `;
+        
+        // Ocultar scrollbar nativo de la lista
+        const listContainer = document.getElementById(listContainerId);
+        if (listContainer) {
+          const style = document.createElement('style');
+          style.textContent = `
+            #${listContainerId}::-webkit-scrollbar {
+              display: none;
+            }
+          `;
+          document.head.appendChild(style);
+        }
         
         // Mover el dropdown al body para evitar problemas con overflow
         if (dropdown.parentElement !== document.body) {
           document.body.appendChild(dropdown);
-          console.log('📦 [STATUS DROPDOWN] Dropdown movido al body');
         }
         
         // Posicionar el dropdown debajo del status tag usando position: fixed
         // Calcular posición basándose en getBoundingClientRect para que se mantenga alineado
         const rect = statusTag.getBoundingClientRect();
-        console.log('📐 [STATUS DROPDOWN] Posición inicial del status tag:', {
-          rect: {
-            top: rect.top,
-            left: rect.left,
-            bottom: rect.bottom,
-            right: rect.right,
-            width: rect.width,
-            height: rect.height
-          },
-          windowScroll: {
-            scrollY: window.scrollY,
-            scrollX: window.scrollX
-          }
-        });
         
         dropdown.style.position = 'fixed';
         dropdown.style.top = `${rect.bottom + 4}px`;
@@ -1703,13 +1536,7 @@ export function createDataTable3(options: DataTable3Options): {
         dropdown.style.maxWidth = '300px';
         dropdown.style.padding = '4px';
         dropdown.style.boxSizing = 'border-box';
-        
-        console.log('✅ [STATUS DROPDOWN] Dropdown posicionado:', {
-          position: dropdown.style.position,
-          top: dropdown.style.top,
-          left: dropdown.style.left,
-          zIndex: dropdown.style.zIndex
-        });
+        dropdown.style.maxHeight = '308px';
         
         // Encontrar todos los contenedores con scroll
         const containers = findScrollContainers(statusTag);
@@ -1727,29 +1554,18 @@ export function createDataTable3(options: DataTable3Options): {
         // Agregar listeners a todos los contenedores con scroll encontrados
         containers.forEach(container => {
           container.addEventListener('scroll', updateDropdownPosition, true);
-          console.log('👂 [STATUS DROPDOWN] Listener de scroll agregado a contenedor:', {
-            className: container.className,
-            id: container.id,
-            element: container
-          });
-        });
-        
-        console.log('🎯 [STATUS DROPDOWN] Listeners de scroll configurados:', {
-          requestAnimationFrame: true,
-          window: true,
-          element: true,
-          containers: containers.length
         });
         
         // Crear la lista interactiva usando createList
         // createList modifica el innerHTML del contenedor con el ID especificado
         // y retorna el elemento .ubits-list dentro del contenedor
+        let scrollbarInstance: { destroy: () => void } | null = null;
         try {
-          createList({
+          const listElement = createList({
             containerId: listContainerId,
             items: listItems,
             size: 'sm',
-            maxHeight: '300px',
+            maxHeight: 'none',
             onSelectionChange: (selectedItem, index) => {
               if (selectedItem && index !== null) {
                 const option = statusOptions[index];
@@ -1771,9 +1587,42 @@ export function createDataTable3(options: DataTable3Options): {
               }
             }
           });
+          
+          // Ajustar estilos de la lista para que funcione con el scrollbar
+          // La lista no debe tener overflow, el contenedor es el que tiene scroll
+          if (listElement) {
+            listElement.style.maxHeight = 'none';
+            listElement.style.height = 'auto';
+            listElement.style.overflow = 'visible';
+            listElement.style.overflowY = 'visible';
+            listElement.style.overflowX = 'visible';
+          }
+          
+          // Crear scrollbar de UBITS para la lista después de que se renderice
+          // Usar requestAnimationFrame para asegurar que el DOM esté completamente actualizado
+          requestAnimationFrame(() => {
+            if (typeof createScrollbar !== 'undefined') {
+              try {
+                const targetElement = document.getElementById(listContainerId);
+                if (targetElement && targetElement.scrollHeight > targetElement.clientHeight) {
+                  scrollbarInstance = createScrollbar({
+                    containerId: scrollbarContainerId,
+                    targetId: listContainerId,
+                    orientation: 'vertical',
+                    state: 'default'
+                  });
+                }
+              } catch (scrollbarError) {
+                // Si falla el scrollbar, continuar sin él
+              }
+            }
+          });
         } catch (error) {
-          console.error('Error creating list:', error);
+          // Error creando lista
         }
+        
+        // Guardar referencia al scrollbar para limpiarlo al cerrar
+        (dropdown as any).__scrollbarInstance = scrollbarInstance;
         
         // Cerrar al hacer click fuera (pero no dentro del dropdown)
         const handleOutsideClick = (e: MouseEvent) => {
@@ -1788,18 +1637,12 @@ export function createDataTable3(options: DataTable3Options): {
         }, 0);
         
         } catch (error) {
-          console.error('❌ [STATUS DROPDOWN] Error abriendo dropdown:', error);
           stopUpdating();
         }
       };
       
       // Agregar event listener al status tag
       statusTag.addEventListener('click', openDropdown);
-      console.log('✅ [STATUS DROPDOWN] Event listener agregado al status tag', {
-        rowId,
-        columnId,
-        statusTag: statusTag
-      });
     });
     
     // Radio buttons - manejar selección (solo si son editables)
@@ -1919,9 +1762,8 @@ export function createDataTable3(options: DataTable3Options): {
       }
     });
     
-    console.log('✅ [ATTACH EVENT LISTENERS] Completado');
     } catch (error) {
-      console.error('❌ [ATTACH EVENT LISTENERS] Error:', error);
+      // Error en attachEventListeners
     }
   };
 
