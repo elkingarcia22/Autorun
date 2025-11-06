@@ -1493,8 +1493,31 @@ export function createDataTable3(options: DataTable3Options): {
           });
           
           // Obtener el elemento .ubits-list y sincronizar el scrollbar personalizado
-          const listElement = listWrapper.querySelector('.ubits-list') as HTMLElement;
-          if (listElement) {
+          // Esperar un momento para que la lista se renderice completamente
+          setTimeout(() => {
+            const listElement = listWrapper.querySelector('.ubits-list') as HTMLElement;
+            if (listElement) {
+              // Forzar ocultar scrollbar nativo con estilos inline
+              listElement.style.scrollbarWidth = 'none';
+              listElement.style.setProperty('-ms-overflow-style', 'none', 'important');
+              listElement.style.setProperty('scrollbar-width', 'none', 'important');
+              
+              // Ocultar scrollbar en WebKit
+              const style = document.createElement('style');
+              style.textContent = `
+                #${listContainerId} .ubits-list::-webkit-scrollbar {
+                  width: 0px !important;
+                  height: 0px !important;
+                  display: none !important;
+                }
+                #${listContainerId} .ubits-list::-webkit-scrollbar-thumb {
+                  display: none !important;
+                }
+                #${listContainerId} .ubits-list::-webkit-scrollbar-track {
+                  display: none !important;
+                }
+              `;
+              document.head.appendChild(style);
             // Sincronizar scrollbar personalizado con el scroll de la lista
             const scrollbarBar = dropdown.querySelector('.ubits-data-table-3__status-dropdown-scrollbar-bar') as HTMLElement;
             const scrollbarContainer = dropdown.querySelector('.ubits-data-table-3__status-dropdown-scrollbar') as HTMLElement;
@@ -1572,6 +1595,7 @@ export function createDataTable3(options: DataTable3Options): {
               setTimeout(updateScrollbar, 0);
             }
           }
+          }, 10);
         } catch (error) {
           console.error('Error creating list:', error);
         }
