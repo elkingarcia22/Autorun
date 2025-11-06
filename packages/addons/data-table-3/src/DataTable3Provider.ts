@@ -768,11 +768,8 @@ export function renderDataTable3(
     className
   ].filter(Boolean).join(' ');
 
-  // Solo renderizar la columna de controles en el header si hay controles en las filas
-  const controlsHeader = hasControls ? `
-          <th class="ubits-data-table-3__controls-column-header">
-          </th>
-  ` : '';
+  // Columna de controles en el header eliminada
+  const controlsHeader = '';
   
   // Estructura sin contenedor adicional: la tabla directamente
   const html = `
