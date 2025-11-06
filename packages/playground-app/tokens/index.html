@@ -9757,6 +9757,9 @@ Reglas Importantes:
             // Si cambia a un tipo que no es 'radio', eliminar radioLabel
             if (newType !== 'radio') {
               column.radioLabel = undefined;
+            } else if (newType === 'radio' && column.radioLabel === undefined) {
+              // Si cambia a 'radio' y no tiene radioLabel, establecer por defecto false (sin label)
+              column.radioLabel = false;
             }
             // Actualizar el título del header según el tipo seleccionado
             const columnTypeLabels = {
@@ -9888,7 +9891,8 @@ Reglas Importantes:
           const isRadio = currentType === 'radio';
           const isEditableType = isNombre || isNombreAvatar || isEstado;
           const hasAvatarVariant = isNombreAvatar || isNombreAvatarTexto;
-          const currentRadioLabel = col.radioLabel !== undefined ? (typeof col.radioLabel === 'string' ? col.radioLabel : (col.radioLabel === false ? false : true)) : false;
+          // Determinar el estado del radioLabel: si es string es true, si es boolean usa ese valor, si es undefined es false
+          const currentRadioLabel = col.radioLabel !== undefined ? (typeof col.radioLabel === 'string' ? true : col.radioLabel) : false;
           
           return `
             <div style="flex: 0 0 auto; min-width: 200px;">
