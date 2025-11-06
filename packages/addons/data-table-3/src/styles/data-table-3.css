@@ -549,35 +549,54 @@
     overflow: hidden;
     min-height: 0;
     max-height: 300px;
+    height: 300px;
 }
 
 .ubits-data-table-3__status-dropdown-content {
     flex: 1;
     overflow: hidden;
     min-height: 0;
+    display: flex;
+    flex-direction: column;
 }
 
 /* Ocultar scrollbar nativo del .ubits-list dentro del dropdown */
+.ubits-data-table-3__status-dropdown .ubits-data-table-3__status-dropdown-content .ubits-list,
 .ubits-data-table-3__status-dropdown-content .ubits-list {
     scrollbar-width: none !important; /* Firefox */
     -ms-overflow-style: none !important; /* IE y Edge */
-    height: 100%;
-    max-height: 100%;
-    box-shadow: none;
-    border-radius: 0;
+    height: 100% !important;
+    max-height: 100% !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    flex: 1;
+    min-height: 0;
 }
 
+.ubits-data-table-3__status-dropdown .ubits-data-table-3__status-dropdown-content .ubits-list::-webkit-scrollbar,
 .ubits-data-table-3__status-dropdown-content .ubits-list::-webkit-scrollbar {
-    width: 0 !important;
+    width: 0px !important;
+    height: 0px !important;
     background: transparent !important;
+    display: none !important;
 }
 
+.ubits-data-table-3__status-dropdown .ubits-data-table-3__status-dropdown-content .ubits-list::-webkit-scrollbar-thumb,
 .ubits-data-table-3__status-dropdown-content .ubits-list::-webkit-scrollbar-thumb {
     background: transparent !important;
+    display: none !important;
+    width: 0px !important;
+    height: 0px !important;
 }
 
+.ubits-data-table-3__status-dropdown .ubits-data-table-3__status-dropdown-content .ubits-list::-webkit-scrollbar-track,
 .ubits-data-table-3__status-dropdown-content .ubits-list::-webkit-scrollbar-track {
     background: transparent !important;
+    display: none !important;
+    width: 0px !important;
+    height: 0px !important;
 }
 
 /* Scrollbar personalizado de UBITS para el dropdown del status */
@@ -604,7 +623,7 @@
     background-color: var(--ubits-scroll-bar-color-bg-default, #979ba3);
     border-radius: var(--ubits-border-radius-full, 1000px);
     opacity: 0;
-    transition: opacity 0.2s ease;
+    transition: opacity 0.2s ease, transform 0.1s ease;
     cursor: grab;
     pointer-events: auto;
 }

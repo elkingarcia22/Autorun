@@ -1505,10 +1505,11 @@ export function createDataTable3(options: DataTable3Options): {
                 const clientHeight = listElement.clientHeight;
                 const scrollableHeight = scrollHeight - clientHeight;
                 
-                if (scrollableHeight > 0) {
+                if (scrollableHeight > 0 && scrollbarContainer.clientHeight > 0) {
                   const scrollbarHeight = scrollbarContainer.clientHeight - 16; // 8px padding top + 8px padding bottom
                   const thumbHeight = Math.max(20, (clientHeight / scrollHeight) * scrollbarHeight);
-                  const thumbTop = (scrollTop / scrollableHeight) * (scrollbarHeight - thumbHeight);
+                  const maxThumbTop = scrollbarHeight - thumbHeight;
+                  const thumbTop = Math.max(0, Math.min(maxThumbTop, (scrollTop / scrollableHeight) * maxThumbTop));
                   
                   scrollbarBar.style.height = `${thumbHeight}px`;
                   scrollbarBar.style.transform = `translateY(${thumbTop}px)`;
