@@ -540,31 +540,31 @@
     overflow: hidden;
 }
 
-/* Aplicar scroll personalizado al dropdown del status */
+/* Aplicar scroll personalizado al dropdown del status - asegurar que se apliquen los estilos */
 .ubits-data-table-3__status-dropdown .ubits-list {
-    /* Los estilos de scroll ya están en list.css, pero aseguramos que se apliquen */
-    scrollbar-width: thin;
-    scrollbar-color: var(--ubits-fg-2-medium-static, #979ba3) var(--ubits-bg-3, #e5e7eb);
+    /* Scrollbar styling - mismo que list.css pero con mayor especificidad */
+    scrollbar-width: thin !important;
+    scrollbar-color: var(--ubits-fg-2-medium-static) var(--ubits-bg-3) !important;
 }
 
 /* WebKit scrollbar (Chrome, Safari, Edge) para el dropdown del status */
 .ubits-data-table-3__status-dropdown .ubits-list::-webkit-scrollbar {
-    width: 8px;
+    width: 8px !important;
 }
 
 .ubits-data-table-3__status-dropdown .ubits-list::-webkit-scrollbar-track {
-    background: var(--ubits-bg-3, #e5e7eb);
-    border-radius: 6px;
+    background: var(--ubits-bg-3) !important;
+    border-radius: 6px !important;
 }
 
 .ubits-data-table-3__status-dropdown .ubits-list::-webkit-scrollbar-thumb {
-    background: var(--ubits-fg-2-medium-static, #979ba3);
-    border-radius: 6px;
-    transition: background 0.2s ease;
+    background: var(--ubits-fg-2-medium-static) !important;
+    border-radius: 6px !important;
+    transition: background 0.2s ease !important;
 }
 
 .ubits-data-table-3__status-dropdown .ubits-list::-webkit-scrollbar-thumb:hover {
-    background: var(--ubits-fg-2-high-static, #6b7280);
+    background: var(--ubits-fg-2-high-static) !important;
 }
 
 /* Tags de estado con ancho uniforme en la columna de estado */
