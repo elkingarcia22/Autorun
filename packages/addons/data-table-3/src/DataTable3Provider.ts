@@ -356,11 +356,17 @@ function renderCellByType(column: TableColumn3, row: TableRow3, columnType: Colu
     
     case 'toggle': {
       const checked = cellValue === true || cellValue === 'true' || cellValue === 1;
-      return renderToggle({
+      const toggleHTML = renderToggle({
         label: '',
         checked,
         size: 'md'
       });
+      
+      // Agregar atributos para identificar el toggle
+      return toggleHTML.replace(
+        '<input',
+        `<input data-row-id="${row.id}" data-column-id="${column.id}" data-toggle-button="true"`
+      );
     }
     
     case 'checkbox': {
@@ -1423,6 +1429,30 @@ export function createDataTable3(options: DataTable3Options): {
         
         // Re-renderizar para reflejar los cambios visuales
         render();
+      });
+    });
+    
+    // Toggle buttons - manejar activación/desactivación
+    const toggleButtons = element.querySelectorAll('input[data-toggle-button="true"]');
+    toggleButtons.forEach(toggle => {
+      const input = toggle as HTMLInputElement;
+      const rowIdStr = input.getAttribute('data-row-id');
+      const columnId = input.getAttribute('data-column-id');
+      
+      if (!rowIdStr || !columnId) return;
+      
+      const rowId = isNaN(Number(rowIdStr)) ? rowIdStr : Number(rowIdStr);
+      
+      input.addEventListener('change', (e) => {
+        e.stopPropagation();
+        
+        // Actualizar el estado en los datos de la fila
+        const row = currentOptions.rows.find(r => String(r.id) === String(rowId));
+        if (row) {
+          row.data[columnId] = input.checked;
+          // Re-renderizar para reflejar los cambios visuales
+          render();
+        }
       });
     });
   };
