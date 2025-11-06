@@ -1,4 +1,4 @@
-import type { DataTable3Options, TableColumn3, TableRow3, ColumnType3 } from './types/DataTable3Options';
+import type { DataTableOptions, TableColumn, TableRow, ColumnType } from './types/DataTableOptions';
 import { renderCheckbox } from '../../checkbox/src/CheckboxProvider';
 import { renderProgressBar } from '../../progress/src/ProgressProvider';
 import { renderStatusTag } from '../../status-tag/src/StatusTagProvider';
@@ -12,7 +12,7 @@ import { createScrollbar } from '../../scroll/src/ScrollProvider';
 /**
  * Renderiza una celda según el tipo de columna
  */
-function renderCellByType(column: TableColumn3, row: TableRow3, columnType: ColumnType3): string {
+function renderCellByType(column: TableColumn, row: TableRow, columnType: ColumnType): string {
   const cellValue = row.data[column.id];
   const cellData = row.data;
   
@@ -324,9 +324,9 @@ function renderCellByType(column: TableColumn3, row: TableRow3, columnType: Colu
       if (isEditable) {
         // Agregar contenedor con atributos para el dropdown
         return `
-          <div class="ubits-data-table-3__status-editable" data-row-id="${row.id}" data-column-id="${column.id}" data-editable="true" data-current-status="${ubitsStatus}">
+          <div class="ubits-data-table__status-editable" data-row-id="${row.id}" data-column-id="${column.id}" data-editable="true" data-current-status="${ubitsStatus}">
             ${statusTagHTML}
-            <div class="ubits-data-table-3__status-dropdown" id="status-dropdown-${row.id}-${column.id}" style="display: none;"></div>
+            <div class="ubits-data-table__status-dropdown" id="status-dropdown-${row.id}-${column.id}" style="display: none;"></div>
           </div>
         `;
       }
@@ -418,7 +418,7 @@ function renderCellByType(column: TableColumn3, row: TableRow3, columnType: Colu
         text: actionText,
         variant: 'tertiary',
         size: 'sm',
-        className: 'ubits-data-table-3__action-button'
+        className: 'ubits-data-table__action-button'
       });
     }
     
@@ -443,7 +443,7 @@ function renderCellByType(column: TableColumn3, row: TableRow3, columnType: Colu
 /**
  * Renderiza una celda de la tabla
  */
-function renderCell(column: TableColumn3, row: TableRow3): string {
+function renderCell(column: TableColumn, row: TableRow): string {
   // Si la columna es de tipo checkbox fijo (columna especial), renderizar checkbox
   if (column.id === 'checkbox' || column.id.startsWith('checkbox-')) {
     const checkboxValue = row.data[column.id] || false;
@@ -451,7 +451,7 @@ function renderCell(column: TableColumn3, row: TableRow3): string {
       label: '',
       checked: checkboxValue,
       size: 'md',
-      className: 'ubits-data-table-3__cell-checkbox'
+      className: 'ubits-data-table__cell-checkbox'
     });
     
     const checkbox = checkboxHTML.replace(
@@ -463,7 +463,7 @@ function renderCell(column: TableColumn3, row: TableRow3): string {
     const paddingLeft = column.id === 'checkbox-2' ? '20px' : 'var(--ubits-spacing-md, 16px)';
     
     return `
-      <td class="ubits-data-table-3__cell ubits-data-table-3__cell--checkbox" data-column-id="${column.id}" style="text-align: center; vertical-align: middle; padding-left: ${paddingLeft} !important;">
+      <td class="ubits-data-table__cell ubits-data-table__cell--checkbox" data-column-id="${column.id}" style="text-align: center; vertical-align: middle; padding-left: ${paddingLeft} !important;">
         ${checkbox}
       </td>
     `;
@@ -480,14 +480,14 @@ function renderCell(column: TableColumn3, row: TableRow3): string {
       column.type === 'checkbox' ||
       column.type === 'radio'
     );
-    const editableClass = isEditable ? 'ubits-data-table-3__cell--editable' : '';
+    const editableClass = isEditable ? 'ubits-data-table__cell--editable' : '';
     // Agregar data-column-id siempre para poder diferenciar en CSS
     const dataAttrs = isEditable && (column.type === 'nombre' || column.type === 'nombre-avatar' || column.type === 'estado') 
       ? `data-row-id="${row.id}" data-column-id="${column.id}" data-editable="true"` 
       : `data-column-id="${column.id}"`;
     
     return `
-      <td class="ubits-data-table-3__cell ubits-data-table-3__cell--${column.type} ${editableClass}" ${dataAttrs}>
+      <td class="ubits-data-table__cell ubits-data-table__cell--${column.type} ${editableClass}" ${dataAttrs}>
         ${content}
       </td>
     `;
@@ -499,7 +499,7 @@ function renderCell(column: TableColumn3, row: TableRow3): string {
     : row.data[column.id] || '';
   
   return `
-    <td class="ubits-data-table-3__cell">
+    <td class="ubits-data-table__cell">
       ${content}
     </td>
   `;
@@ -509,10 +509,10 @@ function renderCell(column: TableColumn3, row: TableRow3): string {
  * Renderiza el header de una columna
  */
 function renderColumnHeader(
-  column: TableColumn3, 
+  column: TableColumn, 
   columnReorderable: boolean = false,
   columnSortable: boolean = true,
-  rows: TableRow3[] = [],
+  rows: TableRow[] = [],
   sortColumnId: string | null = null,
   sortDirection: 'asc' | 'desc' | null = null
 ): string {
@@ -527,7 +527,7 @@ function renderColumnHeader(
       checked: allChecked,
       indeterminate: someChecked && !allChecked,
       size: 'md',
-      className: 'ubits-data-table-3__column-checkbox-header'
+      className: 'ubits-data-table__column-checkbox-header'
     });
     
     const checkbox = checkboxHTML.replace(
@@ -537,7 +537,7 @@ function renderColumnHeader(
     
     return `
       <th 
-        class="ubits-data-table-3__column-header ubits-data-table-3__column-header--checkbox" 
+        class="ubits-data-table__column-header ubits-data-table__column-header--checkbox" 
         style="${column.width ? `width: ${column.width}px;` : ''}" 
         data-column-id="${column.id}"
       >
@@ -550,7 +550,7 @@ function renderColumnHeader(
   // NO permitir drag & drop si la columna es de tipo checkbox
   const isCheckboxColumn = column.id === 'checkbox' || column.id.startsWith('checkbox-');
   const dragHandle = columnReorderable && !isCheckboxColumn ? `
-    <div class="ubits-data-table-3__column-drag-handle" draggable="true" data-column-id="${column.id}">
+    <div class="ubits-data-table__column-drag-handle" draggable="true" data-column-id="${column.id}">
       <wa-icon name="grip-dots-vertical"></wa-icon>
       <i class="fas fa-grip-vertical" aria-hidden="true"></i>
     </div>
@@ -578,7 +578,7 @@ function renderColumnHeader(
       iconStyle: 'solid',
       iconOnly: true,
       active: isSorted,
-      className: 'ubits-data-table-3__column-sort-button',
+      className: 'ubits-data-table__column-sort-button',
       attributes: {
         'aria-label': `Ordenar ${column.title}`,
         'data-column-id': column.id,
@@ -608,16 +608,16 @@ function renderColumnHeader(
   }
 
   const headerContent = `
-    <div class="ubits-data-table-3__column-header-content">
+    <div class="ubits-data-table__column-header-content">
       ${dragHandle}
-      <span class="ubits-data-table-3__column-title">${column.title}</span>
+      <span class="ubits-data-table__column-title">${column.title}</span>
       ${sortButton}
     </div>
   `;
 
   return `
     <th 
-      class="ubits-data-table-3__column-header" 
+      class="ubits-data-table__column-header" 
       style="${column.width ? `width: ${column.width}px;` : ''}" 
       data-column-id="${column.id}"
     >
@@ -629,12 +629,12 @@ function renderColumnHeader(
 /**
  * Renderiza una fila de la tabla
  */
-function renderRow(row: TableRow3, columns: TableColumn3[], rowIndex: number, rowReorderable: boolean = false, rowExpandable: boolean = true, hasControls: boolean = false): string {
+function renderRow(row: TableRow, columns: TableColumn[], rowIndex: number, rowReorderable: boolean = false, rowExpandable: boolean = true, hasControls: boolean = false): string {
   const isExpanded = row.expanded || false;
 
   // Drag handle para filas
   const dragHandle = rowReorderable ? `
-    <div class="ubits-data-table-3__row-drag-handle" draggable="true" data-row-id="${row.id}">
+    <div class="ubits-data-table__row-drag-handle" draggable="true" data-row-id="${row.id}">
       <wa-icon name="grip-dots-vertical"></wa-icon>
       <i class="fas fa-grip-vertical" aria-hidden="true"></i>
     </div>
@@ -644,7 +644,7 @@ function renderRow(row: TableRow3, columns: TableColumn3[], rowIndex: number, ro
   const expandIcon = rowExpandable ? `
     <button
       type="button"
-      class="ubits-data-table-3__row-expand"
+      class="ubits-data-table__row-expand"
       aria-label="${isExpanded ? 'Colapsar' : 'Expandir'} fila"
       data-row-id="${row.id}"
       data-expand-button="true"
@@ -661,15 +661,15 @@ function renderRow(row: TableRow3, columns: TableColumn3[], rowIndex: number, ro
     .join('');
 
   const rowClasses = [
-    'ubits-data-table-3__row',
-    isExpanded ? 'ubits-data-table-3__row--expanded' : ''
+    'ubits-data-table__row',
+    isExpanded ? 'ubits-data-table__row--expanded' : ''
   ].filter(Boolean).join(' ');
 
   // Estructura: Una sola columna de controles con drag handle y expand icon (sin checkbox)
   // Solo renderizar la columna de controles si hay al menos un control visible
   const controlsCell = hasControls ? `
-      <td class="ubits-data-table-3__controls-column">
-        <div class="ubits-data-table-3__controls-wrapper">
+      <td class="ubits-data-table__controls-column">
+        <div class="ubits-data-table__controls-wrapper">
           ${dragHandle}
           ${expandIcon}
         </div>
@@ -703,8 +703,8 @@ function renderRow(row: TableRow3, columns: TableColumn3[], rowIndex: number, ro
     const expandedContent = row.renderExpandedContent(row.data);
     const colspan = visibleColumns.length + (hasControls ? 1 : 0);
     rowHTML += `
-      <tr class="ubits-data-table-3__row-expanded-row">
-        <td class="ubits-data-table-3__row-expanded-content" colspan="${colspan}">
+      <tr class="ubits-data-table__row-expanded-row">
+        <td class="ubits-data-table__row-expanded-content" colspan="${colspan}">
           ${expandedContent}
         </td>
       </tr>
@@ -718,8 +718,8 @@ function renderRow(row: TableRow3, columns: TableColumn3[], rowIndex: number, ro
 /**
  * Renderiza el HTML de un Data Table 3
  */
-export function renderDataTable3(
-  options: DataTable3Options,
+export function renderDataTable(
+  options: DataTableOptions,
   columnOrder: string[] = [],
   rowOrder: (string | number)[] = []
 ): string {
@@ -739,7 +739,7 @@ export function renderDataTable3(
     const columnMap = new Map(visibleColumns.map(col => [col.id, col]));
     visibleColumns = filteredColumnOrder
       .map(id => columnMap.get(id))
-      .filter((col): col is TableColumn3 => col !== undefined)
+      .filter((col): col is TableColumn => col !== undefined)
       .concat(visibleColumns.filter(col => !filteredColumnOrder.includes(col.id)));
   }
   
@@ -748,7 +748,7 @@ export function renderDataTable3(
   if (!checkbox2Exists) {
     console.log('🔍 [CHECKBOX-2] Creando nueva columna checkbox-2 al inicio');
     // Crear una nueva columna de checkbox con id "checkbox-2"
-    const newCheckboxColumn: TableColumn3 = {
+    const newCheckboxColumn: TableColumn = {
       id: 'checkbox-2',
       title: '',
       type: undefined,
@@ -773,7 +773,7 @@ export function renderDataTable3(
     const rowMap = new Map(rows.map(row => [row.id, row]));
     orderedRows = rowOrder
       .map(id => rowMap.get(id))
-      .filter((row): row is TableRow3 => row !== undefined)
+      .filter((row): row is TableRow => row !== undefined)
       .concat(rows.filter(row => !rowOrder.includes(row.id)));
   }
   
@@ -830,14 +830,14 @@ export function renderDataTable3(
   console.log('📊 rowsHTML preview:', rowsHTML.substring(0, 300));
 
   const classes = [
-    'ubits-data-table-3',
+    'ubits-data-table',
     className
   ].filter(Boolean).join(' ');
 
   // Agregar header vacío para la columna de controles si existe, para mantener alineación
   // Este header vacío se coloca ANTES de los headers de columnas para alinearlos con las filas
   const controlsHeader = hasControls ? `
-    <th class="ubits-data-table-3__controls-column-header"></th>
+    <th class="ubits-data-table__controls-column-header"></th>
   ` : '';
 
   console.log('📊 controlsHeader:', controlsHeader ? 'RENDERIZADO' : 'NO RENDERIZADO');
@@ -851,14 +851,14 @@ export function renderDataTable3(
 
   // Estructura sin contenedor adicional: la tabla directamente
   const html = `
-    <table class="${classes} ubits-data-table-3__table">
-      <thead class="ubits-data-table-3__thead">
-        <tr class="ubits-data-table-3__header-row">
+    <table class="${classes} ubits-data-table__table">
+      <thead class="ubits-data-table__thead">
+        <tr class="ubits-data-table__header-row">
           ${controlsHeader}
           ${columnHeadersHTML}
         </tr>
       </thead>
-      <tbody class="ubits-data-table-3__tbody">
+      <tbody class="ubits-data-table__tbody">
         ${rowsHTML}
       </tbody>
     </table>
@@ -873,10 +873,10 @@ export function renderDataTable3(
 /**
  * Crea un elemento Data Table 3 programáticamente
  */
-export function createDataTable3(options: DataTable3Options): {
+export function createDataTable(options: DataTableOptions): {
   element: HTMLElement;
   destroy: () => void;
-  update: (newOptions: Partial<DataTable3Options>) => void;
+  update: (newOptions: Partial<DataTableOptions>) => void;
 } {
   const container = options.containerId 
     ? document.getElementById(options.containerId)
@@ -886,7 +886,7 @@ export function createDataTable3(options: DataTable3Options): {
     throw new Error(`Container with id "${options.containerId}" not found`);
   }
 
-  const tableHTML = renderDataTable3(options);
+  const tableHTML = renderDataTable(options);
   const tempDiv = document.createElement('div');
   tempDiv.innerHTML = tableHTML.trim();
   const element = tempDiv.firstElementChild as HTMLElement;
@@ -961,7 +961,7 @@ export function createDataTable3(options: DataTable3Options): {
 
   // Función para renderizar
   const render = () => {
-    const newHTML = renderDataTable3(
+    const newHTML = renderDataTable(
       { ...currentOptions, sortColumnId, sortDirection } as any, 
       columnOrder, 
       rowOrder
@@ -985,8 +985,8 @@ export function createDataTable3(options: DataTable3Options): {
         console.log('🔍 [PADDING CHECK] ========== DESPUÉS DEL RENDERIZADO ==========');
         
         // Verificar columna de controles
-        const controlsColumns = element.querySelectorAll('.ubits-data-table-3__controls-column');
-        const controlsHeaders = element.querySelectorAll('.ubits-data-table-3__controls-column-header');
+        const controlsColumns = element.querySelectorAll('.ubits-data-table__controls-column');
+        const controlsHeaders = element.querySelectorAll('.ubits-data-table__controls-column-header');
         
         console.log('📊 [CONTROLS] Elementos encontrados:', {
           columns: controlsColumns.length,
@@ -1032,8 +1032,8 @@ export function createDataTable3(options: DataTable3Options): {
         }
         
         // Verificar columna de checkbox
-        const checkboxCells = element.querySelectorAll('.ubits-data-table-3__cell--checkbox[data-column-id="checkbox"]');
-        const checkboxHeaders = element.querySelectorAll('.ubits-data-table-3__column-header--checkbox');
+        const checkboxCells = element.querySelectorAll('.ubits-data-table__cell--checkbox[data-column-id="checkbox"]');
+        const checkboxHeaders = element.querySelectorAll('.ubits-data-table__column-header--checkbox');
         
         console.log('📊 [CHECKBOX] Elementos encontrados:', {
           cells: checkboxCells.length,
@@ -1116,15 +1116,15 @@ export function createDataTable3(options: DataTable3Options): {
         
         element.addEventListener('dragstart', (e) => {
           const target = e.target as HTMLElement;
-          const dragHandle = target.closest('.ubits-data-table-3__column-drag-handle');
+          const dragHandle = target.closest('.ubits-data-table__column-drag-handle');
           if (dragHandle) {
             draggedColumnId = dragHandle.getAttribute('data-column-id');
             if (draggedColumnId) {
               e.dataTransfer!.effectAllowed = 'move';
               e.dataTransfer!.setData('text/plain', draggedColumnId);
-              const header = dragHandle.closest('.ubits-data-table-3__column-header');
+              const header = dragHandle.closest('.ubits-data-table__column-header');
               if (header) {
-                header.classList.add('ubits-data-table-3__column-header--dragging');
+                header.classList.add('ubits-data-table__column-header--dragging');
               }
             }
           }
@@ -1132,11 +1132,11 @@ export function createDataTable3(options: DataTable3Options): {
         
         element.addEventListener('dragend', (e) => {
           const target = e.target as HTMLElement;
-          const dragHandle = target.closest('.ubits-data-table-3__column-drag-handle');
+          const dragHandle = target.closest('.ubits-data-table__column-drag-handle');
           if (dragHandle) {
-            const header = dragHandle.closest('.ubits-data-table-3__column-header');
+            const header = dragHandle.closest('.ubits-data-table__column-header');
             if (header) {
-              header.classList.remove('ubits-data-table-3__column-header--dragging');
+              header.classList.remove('ubits-data-table__column-header--dragging');
             }
           }
           draggedColumnId = null;
@@ -1144,7 +1144,7 @@ export function createDataTable3(options: DataTable3Options): {
         
         element.addEventListener('dragover', (e) => {
           const target = e.target as HTMLElement;
-          const header = target.closest('.ubits-data-table-3__column-header');
+          const header = target.closest('.ubits-data-table__column-header');
           if (header && draggedColumnId) {
             const columnId = header.getAttribute('data-column-id');
             if (columnId && columnId !== draggedColumnId) {
@@ -1172,25 +1172,25 @@ export function createDataTable3(options: DataTable3Options): {
               
               e.preventDefault();
               e.dataTransfer!.dropEffect = 'move';
-              header.classList.add('ubits-data-table-3__column-header--drag-over');
+              header.classList.add('ubits-data-table__column-header--drag-over');
             }
           }
         }, true);
         
         element.addEventListener('dragleave', (e) => {
           const target = e.target as HTMLElement;
-          const header = target.closest('.ubits-data-table-3__column-header');
+          const header = target.closest('.ubits-data-table__column-header');
           if (header) {
-            header.classList.remove('ubits-data-table-3__column-header--drag-over');
+            header.classList.remove('ubits-data-table__column-header--drag-over');
           }
         }, true);
         
         element.addEventListener('drop', (e) => {
           const target = e.target as HTMLElement;
-          const header = target.closest('.ubits-data-table-3__column-header');
+          const header = target.closest('.ubits-data-table__column-header');
           if (header) {
             e.preventDefault();
-            header.classList.remove('ubits-data-table-3__column-header--drag-over');
+            header.classList.remove('ubits-data-table__column-header--drag-over');
             
             const columnId = header.getAttribute('data-column-id');
             if (!columnId || !draggedColumnId) return;
@@ -1275,7 +1275,7 @@ export function createDataTable3(options: DataTable3Options): {
         
         element.addEventListener('dragstart', (e) => {
           const target = e.target as HTMLElement;
-          const dragHandle = target.closest('.ubits-data-table-3__row-drag-handle');
+          const dragHandle = target.closest('.ubits-data-table__row-drag-handle');
           if (!dragHandle) return;
           
           const rowIdStr = dragHandle.getAttribute('data-row-id');
@@ -1284,20 +1284,20 @@ export function createDataTable3(options: DataTable3Options): {
             draggedRowId = rowId;
             e.dataTransfer!.effectAllowed = 'move';
             e.dataTransfer!.setData('text/plain', String(rowId));
-            const row = dragHandle.closest('.ubits-data-table-3__row');
+            const row = dragHandle.closest('.ubits-data-table__row');
             if (row) {
-              row.classList.add('ubits-data-table-3__row--dragging');
+              row.classList.add('ubits-data-table__row--dragging');
             }
           }
         }, true);
         
         element.addEventListener('dragend', (e) => {
           const target = e.target as HTMLElement;
-          const dragHandle = target.closest('.ubits-data-table-3__row-drag-handle');
+          const dragHandle = target.closest('.ubits-data-table__row-drag-handle');
           if (dragHandle) {
-            const row = dragHandle.closest('.ubits-data-table-3__row');
+            const row = dragHandle.closest('.ubits-data-table__row');
             if (row) {
-              row.classList.remove('ubits-data-table-3__row--dragging');
+              row.classList.remove('ubits-data-table__row--dragging');
             }
           }
           draggedRowId = null;
@@ -1305,7 +1305,7 @@ export function createDataTable3(options: DataTable3Options): {
         
         element.addEventListener('dragover', (e) => {
           const target = e.target as HTMLElement;
-          const row = target.closest('.ubits-data-table-3__row');
+          const row = target.closest('.ubits-data-table__row');
           if (row && draggedRowId !== null) {
             const rowIdStr = row.getAttribute('data-row-id');
             if (rowIdStr) {
@@ -1313,7 +1313,7 @@ export function createDataTable3(options: DataTable3Options): {
               if (rowId !== draggedRowId) {
                 e.preventDefault();
                 e.dataTransfer!.dropEffect = 'move';
-                row.classList.add('ubits-data-table-3__row--drag-over');
+                row.classList.add('ubits-data-table__row--drag-over');
               }
             }
           }
@@ -1321,18 +1321,18 @@ export function createDataTable3(options: DataTable3Options): {
         
         element.addEventListener('dragleave', (e) => {
           const target = e.target as HTMLElement;
-          const row = target.closest('.ubits-data-table-3__row');
+          const row = target.closest('.ubits-data-table__row');
           if (row) {
-            row.classList.remove('ubits-data-table-3__row--drag-over');
+            row.classList.remove('ubits-data-table__row--drag-over');
           }
         }, true);
         
         element.addEventListener('drop', (e) => {
           const target = e.target as HTMLElement;
-          const row = target.closest('.ubits-data-table-3__row');
+          const row = target.closest('.ubits-data-table__row');
           if (row) {
             e.preventDefault();
-            row.classList.remove('ubits-data-table-3__row--drag-over');
+            row.classList.remove('ubits-data-table__row--drag-over');
             
             const rowIdStr = row.getAttribute('data-row-id');
             if (!rowIdStr || !draggedRowId) return;
@@ -1421,7 +1421,7 @@ export function createDataTable3(options: DataTable3Options): {
     });
     
     // Comparar estilos del drag handle y botón de ordenamiento
-    const dragHandles = element.querySelectorAll('.ubits-data-table-3__column-drag-handle');
+    const dragHandles = element.querySelectorAll('.ubits-data-table__column-drag-handle');
     const sortButtons = element.querySelectorAll('[data-sort-button="true"]');
     
     if (dragHandles.length > 0 && sortButtons.length > 0) {
@@ -1558,7 +1558,7 @@ export function createDataTable3(options: DataTable3Options): {
     sortButtons.forEach(button => {
       const btn = button as HTMLElement;
       const waIcons = btn.querySelectorAll('wa-icon');
-      const isActive = btn.classList.contains('ubits-data-table-3__column-sort--active');
+      const isActive = btn.classList.contains('ubits-data-table__column-sort--active');
       
       console.log('🔍 [SORT BUTTON] Verificando botón:', {
         columnId: btn.getAttribute('data-column-id'),
@@ -1706,7 +1706,7 @@ export function createDataTable3(options: DataTable3Options): {
     });
     
     // Status tags editables - mostrar dropdown con lista de estados
-    const statusEditables = element.querySelectorAll('.ubits-data-table-3__status-editable');
+    const statusEditables = element.querySelectorAll('.ubits-data-table__status-editable');
     
     statusEditables.forEach((container) => {
       const rowIdStr = container.getAttribute('data-row-id');
@@ -1717,7 +1717,7 @@ export function createDataTable3(options: DataTable3Options): {
       
       const rowId = isNaN(Number(rowIdStr)) ? rowIdStr : Number(rowIdStr);
       const statusTag = container.querySelector('.ubits-status-tag');
-      const dropdown = container.querySelector('.ubits-data-table-3__status-dropdown') as HTMLElement;
+      const dropdown = container.querySelector('.ubits-data-table__status-dropdown') as HTMLElement;
       
       if (!statusTag || !dropdown) return;
       
@@ -1886,7 +1886,7 @@ export function createDataTable3(options: DataTable3Options): {
           if (!statusTag || !dropdown) return;
         
         // Cerrar otros dropdowns abiertos
-        element.querySelectorAll('.ubits-data-table-3__status-dropdown').forEach((dd: any) => {
+        element.querySelectorAll('.ubits-data-table__status-dropdown').forEach((dd: any) => {
           if (dd !== dropdown) {
             dd.style.display = 'none';
             // Devolver otros dropdowns a sus contenedores si están en el body
@@ -2226,7 +2226,7 @@ export function createDataTable3(options: DataTable3Options): {
   render();
 
   // Función de actualización
-  const update = (newOptions: Partial<DataTable3Options>) => {
+  const update = (newOptions: Partial<DataTableOptions>) => {
     currentOptions = { ...currentOptions, ...newOptions };
     if (newOptions.columns) {
       columnOrder = newOptions.columns

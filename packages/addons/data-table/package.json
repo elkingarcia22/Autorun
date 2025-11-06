@@ -1,9 +1,9 @@
 {
-  "name": "@ubits/addon-data-table-3",
+  "name": "@ubits/addon-data-table",
   "version": "1.0.0",
-  "description": "UBITS Data Table 3 Component",
-  "main": "dist/data-table-3.es.js",
-  "module": "dist/data-table-3.es.js",
+  "description": "UBITS Data Table Component",
+  "main": "dist/data-table.es.js",
+  "module": "dist/data-table.es.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "vite build"

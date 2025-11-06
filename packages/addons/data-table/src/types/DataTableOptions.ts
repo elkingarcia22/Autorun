@@ -1,7 +1,7 @@
 /**
  * Tipos de columna disponibles
  */
-export type ColumnType3 = 
+export type ColumnType = 
   | 'nombre'
   | 'nombre-avatar'
   | 'nombre-avatar-texto'
@@ -21,7 +21,7 @@ export type ColumnType3 =
 /**
  * Columna de la tabla
  */
-export interface TableColumn3 {
+export interface TableColumn {
   /**
    * ID único de la columna
    */
@@ -35,7 +35,7 @@ export interface TableColumn3 {
   /**
    * Tipo de columna (determina cómo se renderiza)
    */
-  type?: ColumnType3;
+  type?: ColumnType;
   
   /**
    * Ancho de la columna (opcional)
@@ -92,7 +92,7 @@ export interface TableColumn3 {
 /**
  * Fila de la tabla
  */
-export interface TableRow3 {
+export interface TableRow {
   /**
    * ID único de la fila
    */
@@ -117,7 +117,7 @@ export interface TableRow3 {
 /**
  * Opciones del Data Table 3
  */
-export interface DataTable3Options {
+export interface DataTableOptions {
   /**
    * ID del contenedor donde se renderizará la tabla
    */
@@ -126,12 +126,12 @@ export interface DataTable3Options {
   /**
    * Columnas de la tabla
    */
-  columns: TableColumn3[];
+  columns: TableColumn[];
   
   /**
    * Filas de la tabla
    */
-  rows: TableRow3[];
+  rows: TableRow[];
   
   /**
    * Callback cuando se expande/colapsa una fila

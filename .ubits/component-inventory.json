@@ -265,14 +265,14 @@
         "Usa tokens UBITS exclusivamente (--ubits-btn-secondary-bg-default, --ubits-btn-secondary-border, --ubits-accent-brand, --ubits-bg-1, --ubits-fg-1-high, --ubits-border-radius-md, --ubits-border-radius-sm)"
       ]
     },
-    "data-table-3": {
-      "name": "Data Table 3",
-      "package": "@ubits/addon-data-table-3",
-      "path": "packages/addons/data-table-3",
-      "provider": "createDataTable3",
-      "globalFunction": "window.createDataTable3",
-      "cssFile": "packages/addons/data-table-3/src/styles/data-table-3.css",
-      "storybookStory": "DataTable3.stories.ts",
+    "data-table": {
+      "name": "Data Table",
+      "package": "@ubits/addon-data-table",
+      "path": "packages/addons/data-table",
+      "provider": "createDataTable",
+      "globalFunction": "window.createDataTable",
+      "cssFile": "packages/addons/data-table/src/styles/data-table.css",
+      "storybookStory": "DataTable.stories.ts",
       "variants": [],
       "sizes": [],
       "states": [],

@@ -5,13 +5,13 @@ export default defineConfig({
   build: {
     lib: {
       entry: resolve(__dirname, 'src/index.ts'),
-      name: 'UBITSDataTable3',
+      name: 'UBITSDataTable',
       formats: ['es', 'umd'],
       fileName: (format) => {
         if (format === 'es') {
-          return 'data-table-3.es.js';
+          return 'data-table.es.js';
         }
-        return 'data-table-3.umd.js';
+        return 'data-table.umd.js';
       }
     },
     rollupOptions: {
