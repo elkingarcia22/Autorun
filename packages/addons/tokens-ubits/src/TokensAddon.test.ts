@@ -57,3 +57,108 @@ describe('TokensAddon - Estructura', () => {
   });
 });
 
+describe('TokensAddon - Carga y Validación', () => {
+  let addon: UBITSTokensAddon;
+
+  beforeEach(() => {
+    // Limpiar DOM antes de cada test
+    document.head.innerHTML = '';
+    document.body.innerHTML = '';
+    addon = new UBITSTokensAddon();
+  });
+
+  afterEach(() => {
+    addon.destroy();
+  });
+
+  test('debe detectar tokens estáticos ya cargados', async () => {
+    // Simular tokens estáticos cargados
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = '../../tokens/dist/tokens.css';
+    document.head.appendChild(link);
+
+    await addon.initialize({});
+    
+    // Debe detectar que ya están cargados
+    expect(addon.getTokensCSS()).toBeTruthy();
+  });
+
+  test('debe validar tokens después de inicializar', async () => {
+    // Inyectar algunos tokens de prueba en el DOM
+    const style = document.createElement('style');
+    style.textContent = `
+      :root {
+        --ubits-button-primary-bg-default: var(--ubits-accent-brand);
+        --ubits-bg-1: var(--ubits-bg-1);
+        --ubits-fg-1-high: var(--ubits-fg-1-high);
+      }
+    `;
+    document.head.appendChild(style);
+
+    await addon.initialize({});
+    
+    // La validación debe ejecutarse (aunque algunos tokens falten)
+    const validation = (addon as any).validateDetailed();
+    expect(validation).toBeDefined();
+    expect(validation.totalRequired).toBeGreaterThan(0);
+  });
+
+  test('validateDetailed debe retornar estructura correcta', () => {
+    // Inyectar algunos tokens
+    const style = document.createElement('style');
+    style.textContent = `
+      :root {
+        --ubits-button-primary-bg-default: var(--ubits-accent-brand);
+        --ubits-bg-1: var(--ubits-bg-1);
+      }
+    `;
+    document.head.appendChild(style);
+
+    const validation = (addon as any).validateDetailed();
+    
+    expect(validation).toHaveProperty('isValid');
+    expect(validation).toHaveProperty('missingTokens');
+    expect(validation).toHaveProperty('presentTokens');
+    expect(validation).toHaveProperty('totalRequired');
+    expect(Array.isArray(validation.missingTokens)).toBe(true);
+    expect(Array.isArray(validation.presentTokens)).toBe(true);
+    expect(typeof validation.isValid).toBe('boolean');
+    expect(typeof validation.totalRequired).toBe('number');
+  });
+
+  test('debe poder verificar tokens individuales', () => {
+    // Inyectar un token específico
+    const style = document.createElement('style');
+    style.textContent = `
+      :root {
+        --ubits-accent-brand: var(--ubits-accent-brand);
+      }
+    `;
+    document.head.appendChild(style);
+
+    expect(addon.hasToken('--ubits-accent-brand')).toBe(true);
+    expect(addon.hasToken('--ubits-token-inexistente')).toBe(false);
+  });
+
+  test('getTokenList debe incluir tokens requeridos', () => {
+    const list = addon.getTokenList();
+    
+    // Debe incluir al menos los tokens requeridos
+    expect(list.length).toBeGreaterThan(0);
+    expect(list).toContain('--ubits-button-primary-bg-default');
+    expect(list).toContain('--ubits-bg-1');
+  });
+
+  test('debe limpiar recursos al destruir', () => {
+    const style = document.createElement('style');
+    style.id = 'ubits-tokens-addon';
+    document.head.appendChild(style);
+
+    addon.destroy();
+    
+    // El elemento debe ser removido
+    expect(document.getElementById('ubits-tokens-addon')).toBeNull();
+  });
+});
+
