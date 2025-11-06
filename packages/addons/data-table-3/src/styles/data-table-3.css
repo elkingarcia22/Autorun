@@ -374,11 +374,17 @@
     z-index: 10;
     background-color: var(--ubits-bg-1, #ffffff);
     box-shadow: 2px 0 4px rgba(0, 0, 0, 0.05);
+    width: 50px;
+    min-width: 50px;
+    max-width: 50px;
+    box-sizing: border-box;
 }
 
 .ubits-data-table-3__column-header--checkbox .ubits-checkbox {
-    margin: 0;
+    margin: 0 auto;
     display: inline-flex;
+    justify-content: center;
+    align-items: center;
 }
 
 /* Celdas de checkbox */
