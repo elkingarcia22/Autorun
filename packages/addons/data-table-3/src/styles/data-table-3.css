@@ -390,6 +390,9 @@
     left: 70px;
     z-index: 5;
     background-color: var(--ubits-bg-1, #ffffff);
+    width: 50px;
+    min-width: 50px;
+    max-width: 50px;
 }
 
 .ubits-data-table-3__row:hover .ubits-data-table-3__cell--checkbox {
@@ -397,10 +400,12 @@
 }
 
 .ubits-data-table-3__cell--checkbox .ubits-checkbox {
-    margin: 0;
+    margin: 0 auto;
     display: inline-flex;
     justify-content: center;
     align-items: center;
+    width: 100%;
+    max-width: 100%;
 }
 
 /* Asegurar que el checkbox se mantenga centrado incluso con label */
@@ -408,9 +413,9 @@
     flex-shrink: 0;
 }
 
-/* Cuando el checkbox tiene label, mantener el square alineado */
+/* Ocultar el label en las celdas de checkbox para evitar desplazamiento */
 .ubits-data-table-3__cell--checkbox .ubits-checkbox .ubits-checkbox__text-content {
-    margin-left: var(--ubits-spacing-xs, 4px);
+    display: none !important;
 }
 
 /* Celda de nombre */
