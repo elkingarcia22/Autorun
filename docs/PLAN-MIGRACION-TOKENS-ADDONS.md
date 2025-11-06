@@ -15,12 +15,12 @@ Mantener tokens estáticos funcionando + agregar add-ons como opcional.
 
 ## 📝 Fases de Migración
 
-### **FASE 1: Preparación y Estructura** (Sin cambios funcionales)
-- [x] Paso 1.1: Guardar estado actual en GitHub
-- [ ] Paso 1.2: Crear estructura base del add-on de tokens
-- [ ] Paso 1.3: Crear interfaz `TokensAddon`
-- [ ] Paso 1.4: Crear `TokensAddon` base (sin usar todavía)
-- [ ] Paso 1.5: Tests básicos de estructura
+### **FASE 1: Preparación y Estructura** (Sin cambios funcionales) ✅ COMPLETADA
+- [x] Paso 1.1: Guardar estado actual en GitHub (commit: a7fb34d)
+- [x] Paso 1.2: Crear estructura base del add-on de tokens (commit: cc5e58f)
+- [x] Paso 1.3: Crear interfaz `TokensAddon` (commit: cc5e58f)
+- [x] Paso 1.4: Crear `TokensAddon` base (sin usar todavía) (commit: cc5e58f)
+- [x] Paso 1.5: Tests básicos de estructura (commit: 943f8a5)
 
 ### **FASE 2: Implementación del Add-on** (Sin afectar producción)
 - [ ] Paso 2.1: Implementar carga de tokens CSS
