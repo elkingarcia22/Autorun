@@ -924,40 +924,39 @@ export function createDataTable3(options: DataTable3Options): {
     // 🔍 LOGS: Verificar posiciones de checkboxes después de actualizar
     setTimeout(() => {
       const checkboxCellsAfter = element.querySelectorAll('.ubits-data-table-3__cell--checkbox');
-      console.log('📍 [AFTER RENDER] Checkbox cells:', {
-        count: checkboxCellsAfter.length,
-        positions: Array.from(checkboxCellsAfter).map((cell, idx) => {
-          const rect = cell.getBoundingClientRect();
-          const checkbox = cell.querySelector('.ubits-checkbox');
-          const checkboxRect = checkbox?.getBoundingClientRect();
-          const computedStyle = window.getComputedStyle(cell);
-          return {
-            index: idx,
-            cellLeft: rect.left,
-            cellWidth: rect.width,
-            cellMinWidth: computedStyle.minWidth,
-            cellMaxWidth: computedStyle.maxWidth,
-            checkboxLeft: checkboxRect?.left,
-            checkboxWidth: checkboxRect?.width,
-            hasEditableClass: cell.classList.contains('ubits-data-table-3__cell--editable'),
-            isDisabled: checkbox?.querySelector('input[disabled]') !== null,
-            cellPadding: computedStyle.padding,
-            checkboxMargin: window.getComputedStyle(checkbox || document.createElement('div')).margin,
-            checkboxGap: window.getComputedStyle(checkbox || document.createElement('div')).gap
-          };
-        }),
-        differences: Array.from(checkboxCellsAfter).map((cell, idx) => {
-          const beforeCell = checkboxCellsBefore[idx];
-          if (!beforeCell) return { index: idx, note: 'No before cell' };
-          const beforeRect = beforeCell.getBoundingClientRect();
-          const afterRect = cell.getBoundingClientRect();
-          return {
-            index: idx,
-            leftDiff: afterRect.left - beforeRect.left,
-            widthDiff: afterRect.width - beforeRect.width,
-            hasChanged: Math.abs(afterRect.left - beforeRect.left) > 1 || Math.abs(afterRect.width - beforeRect.width) > 1
-          };
-        })
+      
+      // Log detallado por celda
+      Array.from(checkboxCellsAfter).forEach((cell, idx) => {
+        const rect = cell.getBoundingClientRect();
+        const checkbox = cell.querySelector('.ubits-checkbox');
+        const checkboxRect = checkbox?.getBoundingClientRect();
+        const computedStyle = window.getComputedStyle(cell);
+        const checkboxComputed = checkbox ? window.getComputedStyle(checkbox) : null;
+        const beforeCell = checkboxCellsBefore[idx];
+        const beforeRect = beforeCell?.getBoundingClientRect();
+        
+        console.log(`📍 [CELL ${idx}] Detalles:`, {
+          cellLeft: `${rect.left.toFixed(2)}px`,
+          cellWidth: `${rect.width.toFixed(2)}px`,
+          cellRight: `${rect.right.toFixed(2)}px`,
+          cellMinWidth: computedStyle.minWidth,
+          cellMaxWidth: computedStyle.maxWidth,
+          cellWidthActual: computedStyle.width,
+          cellPadding: computedStyle.padding,
+          cellTextAlign: computedStyle.textAlign,
+          checkboxLeft: checkboxRect ? `${checkboxRect.left.toFixed(2)}px` : 'N/A',
+          checkboxWidth: checkboxRect ? `${checkboxRect.width.toFixed(2)}px` : 'N/A',
+          checkboxMargin: checkboxComputed?.margin,
+          checkboxGap: checkboxComputed?.gap,
+          hasEditableClass: cell.classList.contains('ubits-data-table-3__cell--editable'),
+          isDisabled: checkbox?.querySelector('input[disabled]') !== null,
+          beforeLeft: beforeRect ? `${beforeRect.left.toFixed(2)}px` : 'N/A',
+          beforeWidth: beforeRect ? `${beforeRect.width.toFixed(2)}px` : 'N/A',
+          leftDiff: beforeRect ? `${(rect.left - beforeRect.left).toFixed(2)}px` : 'N/A',
+          widthDiff: beforeRect ? `${(rect.width - beforeRect.width).toFixed(2)}px` : 'N/A',
+          hasMoved: beforeRect && Math.abs(rect.left - beforeRect.left) > 1,
+          hasResized: beforeRect && Math.abs(rect.width - beforeRect.width) > 1
+        });
       });
     }, 100);
     
