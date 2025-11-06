@@ -74,7 +74,9 @@ function renderColumnHeader(column: TableColumn3, columnReorderable: boolean = f
   }
 
   // Para columnas normales, mostrar drag handle y título
-  const dragHandle = columnReorderable ? `
+  // NO permitir drag & drop si la columna es de tipo checkbox
+  const isCheckboxColumn = column.id === 'checkbox' || column.id.startsWith('checkbox-');
+  const dragHandle = columnReorderable && !isCheckboxColumn ? `
     <div class="ubits-data-table-3__column-drag-handle" draggable="true" data-column-id="${column.id}">
       <wa-icon name="grip-dots-vertical"></wa-icon>
       <i class="fas fa-grip-vertical" aria-hidden="true"></i>
@@ -341,6 +343,23 @@ export function createDataTable3(options: DataTable3Options): {
           if (header && draggedColumnId) {
             const columnId = header.getAttribute('data-column-id');
             if (columnId && columnId !== draggedColumnId) {
+              // Verificar si la columna de destino es checkbox (no permitir drop antes de checkbox)
+              const isTargetCheckbox = columnId === 'checkbox' || columnId.startsWith('checkbox-');
+              const isDraggedCheckbox = draggedColumnId === 'checkbox' || draggedColumnId.startsWith('checkbox-');
+              
+              // No permitir arrastrar columnas antes de la columna de checkbox
+              if (!isDraggedCheckbox && !isTargetCheckbox) {
+                // Encontrar el índice de la columna de checkbox
+                const checkboxColumnIndex = columnOrder.findIndex(id => id === 'checkbox' || id.startsWith('checkbox-'));
+                if (checkboxColumnIndex !== -1) {
+                  const targetIndex = columnOrder.indexOf(columnId);
+                  // No permitir drop si la posición objetivo está antes de la columna de checkbox
+                  if (targetIndex < checkboxColumnIndex) {
+                    return; // No permitir el drop
+                  }
+                }
+              }
+              
               e.preventDefault();
               e.dataTransfer!.dropEffect = 'move';
               header.classList.add('ubits-data-table-3__column-header--drag-over');
@@ -366,9 +385,33 @@ export function createDataTable3(options: DataTable3Options): {
             const columnId = header.getAttribute('data-column-id');
             if (!columnId || !draggedColumnId) return;
             
+            // Verificar si alguna de las columnas es checkbox
+            const isDraggedCheckbox = draggedColumnId === 'checkbox' || draggedColumnId.startsWith('checkbox-');
+            const isTargetCheckbox = columnId === 'checkbox' || columnId.startsWith('checkbox-');
+            
+            // No permitir arrastrar la columna de checkbox
+            if (isDraggedCheckbox) {
+              return;
+            }
+            
             if (draggedColumnId !== columnId) {
               const currentIndex = columnOrder.indexOf(draggedColumnId);
               const targetIndex = columnOrder.indexOf(columnId);
+              
+              // Encontrar el índice de la columna de checkbox
+              const checkboxColumnIndex = columnOrder.findIndex(id => id === 'checkbox' || id.startsWith('checkbox-'));
+              
+              // No permitir mover columnas antes de la columna de checkbox
+              if (checkboxColumnIndex !== -1) {
+                // Si la posición objetivo está antes de la columna de checkbox, no permitir
+                if (targetIndex < checkboxColumnIndex) {
+                  return;
+                }
+                // Si estamos moviendo desde después de checkbox a antes de checkbox, no permitir
+                if (currentIndex > checkboxColumnIndex && targetIndex < checkboxColumnIndex) {
+                  return;
+                }
+              }
               
               if (currentIndex !== -1 && targetIndex !== -1) {
                 columnOrder.splice(currentIndex, 1);
