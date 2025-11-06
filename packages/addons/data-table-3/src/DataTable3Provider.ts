@@ -747,11 +747,38 @@ export function renderDataTable3(
           <th class="ubits-data-table-3__controls-column-header"></th>
   ` : '';
   
-  // Verificar si hay una columna de checkbox visible para agregar su header vacío
+  // Verificar si hay una columna de checkbox visible para agregar su header con checkbox
   const hasCheckboxColumn = visibleColumns.some(col => col.id === 'checkbox' || col.id.startsWith('checkbox-'));
-  const checkboxHeader = hasCheckboxColumn ? `
-          <th class="ubits-data-table-3__column-header--checkbox ubits-data-table-3__column-header--checkbox-empty"></th>
-  ` : '';
+  const checkboxColumn = hasCheckboxColumn ? visibleColumns.find(col => col.id === 'checkbox' || col.id.startsWith('checkbox-')) : null;
+  
+  // Renderizar header de checkbox con checkbox para seleccionar/deseleccionar todos
+  let checkboxHeader = '';
+  if (hasCheckboxColumn && checkboxColumn) {
+    // Verificar si todos los checkboxes están seleccionados
+    const allChecked = orderedRows.length > 0 && orderedRows.every(row => {
+      const checkboxValue = row.data[checkboxColumn.id];
+      return checkboxValue === true || checkboxValue === 'true' || checkboxValue === 1;
+    });
+    
+    // Renderizar checkbox en el header
+    const headerCheckboxHTML = renderCheckbox({
+      label: '',
+      checked: allChecked,
+      size: 'md',
+      className: 'ubits-data-table-3__header-checkbox'
+    });
+    
+    const headerCheckbox = headerCheckboxHTML.replace(
+      '<input',
+      `<input data-column-id="${checkboxColumn.id}" data-header-checkbox="true" aria-label="Seleccionar todos"`
+    );
+    
+    checkboxHeader = `
+          <th class="ubits-data-table-3__column-header--checkbox">
+            ${headerCheckbox}
+          </th>
+    `;
+  }
   
   // Estructura sin contenedor adicional: la tabla directamente
   const html = `
@@ -2017,6 +2044,33 @@ export function createDataTable3(options: DataTable3Options): {
         }
         
         // Re-renderizar para reflejar los cambios visuales
+        render();
+      });
+    });
+    
+    // Checkbox del header - seleccionar/deseleccionar todos
+    const headerCheckboxes = element.querySelectorAll('input[data-header-checkbox="true"]');
+    headerCheckboxes.forEach(headerCheckbox => {
+      const input = headerCheckbox as HTMLInputElement;
+      const columnId = input.getAttribute('data-column-id');
+      
+      if (!columnId) return;
+      
+      // Remover listeners anteriores si existen
+      const newInput = input.cloneNode(true) as HTMLInputElement;
+      input.parentNode?.replaceChild(newInput, input);
+      
+      newInput.addEventListener('change', (e) => {
+        e.stopPropagation();
+        
+        const isChecked = newInput.checked;
+        
+        // Actualizar todos los checkboxes de la columna
+        currentOptions.rows.forEach(row => {
+          row.data[columnId] = isChecked;
+        });
+        
+        // Re-renderizar para reflejar los cambios
         render();
       });
     });

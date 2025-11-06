@@ -379,13 +379,7 @@
     max-width: 28px;
 }
 
-/* Header de checkbox vacío (para mantener alineación cuando no se renderiza contenido) */
-.ubits-data-table-3__column-header--checkbox-empty {
-    visibility: hidden; /* Ocultar visualmente pero mantener el espacio para alineación */
-    border: none;
-    box-shadow: none;
-}
-
+/* Header de checkbox - asegurar que el checkbox esté visible y alineado */
 .ubits-data-table-3__column-header--checkbox .ubits-checkbox {
     margin: 0;
     margin-left: 0;
