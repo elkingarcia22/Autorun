@@ -1488,6 +1488,14 @@ export function createDataTable3(options: DataTable3Options): {
           selected: option.status === currentStatus
         }));
         
+        // Cargar CSS del scrollbar si no está cargado
+        if (!document.querySelector('link[href*="scroll.css"]')) {
+          const link = document.createElement('link');
+          link.rel = 'stylesheet';
+          link.href = '../../addons/scroll/src/styles/scroll.css';
+          document.head.appendChild(link);
+        }
+        
         // Limpiar dropdown anterior si existe
         dropdown.innerHTML = '';
         const listContainerId = `status-list-${rowId}-${columnId}`;
@@ -1496,9 +1504,9 @@ export function createDataTable3(options: DataTable3Options): {
         
         // Crear estructura con scrollbar: wrapper > lista + scrollbar
         dropdown.innerHTML = `
-          <div style="display: flex; align-items: stretch; gap: 8px; height: 300px;">
-            <div id="${listContainerId}" style="flex: 1; overflow-y: auto; overflow-x: hidden; -ms-overflow-style: none; scrollbar-width: none; height: 100%;"></div>
-            <div id="${scrollbarContainerId}" style="flex-shrink: 0; height: 100%;"></div>
+          <div style="display: flex; align-items: stretch; gap: 0; height: 300px; width: 100%;">
+            <div id="${listContainerId}" style="flex: 1; overflow-y: auto; overflow-x: hidden; -ms-overflow-style: none; scrollbar-width: none; height: 100%; position: relative;"></div>
+            <div id="${scrollbarContainerId}" style="flex-shrink: 0; width: 8px; height: 100%; position: relative;"></div>
           </div>
         `;
         
@@ -1559,7 +1567,7 @@ export function createDataTable3(options: DataTable3Options): {
         // Crear la lista interactiva usando createList
         // createList modifica el innerHTML del contenedor con el ID especificado
         // y retorna el elemento .ubits-list dentro del contenedor
-        let scrollbarInstance: { destroy: () => void } | null = null;
+        let scrollbarInstance: { element: HTMLElement; update: () => void; destroy: () => void } | null = null;
         try {
           const listElement = createList({
             containerId: listContainerId,
@@ -1604,6 +1612,7 @@ export function createDataTable3(options: DataTable3Options): {
             if (typeof createScrollbar !== 'undefined') {
               try {
                 const targetElement = document.getElementById(listContainerId);
+                
                 if (targetElement && targetElement.scrollHeight > targetElement.clientHeight) {
                   scrollbarInstance = createScrollbar({
                     containerId: scrollbarContainerId,
@@ -1611,9 +1620,14 @@ export function createDataTable3(options: DataTable3Options): {
                     orientation: 'vertical',
                     state: 'default'
                   });
+                  
+                  // Forzar actualización del scrollbar
+                  if (scrollbarInstance?.update) {
+                    scrollbarInstance.update();
+                  }
                 }
               } catch (scrollbarError) {
-                // Si falla el scrollbar, continuar sin él
+                // Error creando scrollbar, continuar sin él
               }
             }
           });

@@ -529,9 +529,32 @@
 }
 
 /* Scrollbar en dropdown de status tags */
-.ubits-data-table-3__status-dropdown:hover .ubits-scrollbar__bar {
+.ubits-data-table-3__status-dropdown:hover .ubits-scrollbar__bar,
+.ubits-data-table-3__status-dropdown:hover .ubits-scrollbar--vertical .ubits-scrollbar__bar {
     opacity: 1 !important;
     pointer-events: auto !important;
+}
+
+/* Mostrar scrollbar cuando se hace hover en el contenedor de la lista */
+.ubits-data-table-3__status-dropdown [id*="status-list"]:hover ~ [id*="status-scrollbar"] .ubits-scrollbar__bar,
+.ubits-data-table-3__status-dropdown [id*="status-list"]:hover ~ [id*="status-scrollbar"] .ubits-scrollbar--vertical .ubits-scrollbar__bar {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+}
+
+/* Asegurar que el scrollbar sea visible cuando hay scroll */
+.ubits-data-table-3__status-dropdown .ubits-scrollbar--vertical {
+    width: 8px;
+    min-width: 8px;
+}
+
+.ubits-data-table-3__status-dropdown .ubits-scrollbar__bar {
+    opacity: 0.6 !important;
+    pointer-events: auto !important;
+}
+
+.ubits-data-table-3__status-dropdown:hover .ubits-scrollbar__bar {
+    opacity: 1 !important;
 }
 
 /* Celda editable */
