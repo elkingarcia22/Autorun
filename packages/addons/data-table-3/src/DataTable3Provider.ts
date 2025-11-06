@@ -1329,37 +1329,37 @@ export function createDataTable3(options: DataTable3Options): {
         dropdown.style.boxSizing = 'border-box';
         
         // Crear la lista interactiva usando createList
-        // createList espera que el contenedor exista, así que lo creamos primero
-        const listElement = createList({
-          containerId: listContainerId,
-          items: listItems,
-          size: 'sm',
-          maxHeight: '300px',
-          onSelectionChange: (selectedItem, index) => {
-            if (selectedItem && index !== null) {
-              const option = statusOptions[index];
-              if (option) {
-                const row = currentOptions.rows.find(r => r.id === rowId);
-                if (row) {
-                  const col = currentOptions.columns.find(c => c.id === columnId);
-                  if (col) {
-                    const labelToSave = statusToLabel[option.status] || option.label;
-                    row.data[columnId] = labelToSave;
-                    row.data.estado = labelToSave;
-                    row.data.status = labelToSave;
-                    
-                    render();
+        // createList modifica el innerHTML del contenedor con el ID especificado
+        // y retorna el elemento .ubits-list dentro del contenedor
+        try {
+          createList({
+            containerId: listContainerId,
+            items: listItems,
+            size: 'sm',
+            maxHeight: '300px',
+            onSelectionChange: (selectedItem, index) => {
+              if (selectedItem && index !== null) {
+                const option = statusOptions[index];
+                if (option) {
+                  const row = currentOptions.rows.find(r => r.id === rowId);
+                  if (row) {
+                    const col = currentOptions.columns.find(c => c.id === columnId);
+                    if (col) {
+                      const labelToSave = statusToLabel[option.status] || option.label;
+                      row.data[columnId] = labelToSave;
+                      row.data.estado = labelToSave;
+                      row.data.status = labelToSave;
+                      
+                      render();
+                    }
                   }
+                  closeDropdown();
                 }
-                closeDropdown();
               }
             }
-          }
-        });
-        
-        // createList retorna el elemento, así que lo agregamos al dropdown
-        if (listElement) {
-          dropdown.appendChild(listElement);
+          });
+        } catch (error) {
+          console.error('Error creating list:', error);
         }
         
         // Cerrar al hacer click fuera
