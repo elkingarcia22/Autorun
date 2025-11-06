@@ -4,6 +4,7 @@
 export type ColumnType3 = 
   | 'nombre'
   | 'nombre-avatar'
+  | 'nombre-avatar-texto'
   | 'progreso'
   | 'estado'
   | 'radio'
@@ -52,7 +53,7 @@ export interface TableColumn3 {
   renderCell?: (rowData: any) => string;
   
   /**
-   * Variante del avatar para columnas de tipo 'nombre-avatar'
+   * Variante del avatar para columnas de tipo 'nombre-avatar' y 'nombre-avatar-texto'
    * 'photo' - Muestra imagen
    * 'initials' - Muestra iniciales
    * 'icon' - Muestra icono
@@ -60,7 +61,7 @@ export interface TableColumn3 {
   avatarVariant?: 'photo' | 'initials' | 'icon';
   
   /**
-   * Si la columna es editable (solo para tipos 'nombre' y 'nombre-avatar')
+   * Si la columna es editable (solo para tipos 'nombre', 'nombre-avatar' y 'nombre-avatar-texto')
    */
   editable?: boolean;
 }

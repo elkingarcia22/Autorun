@@ -9622,6 +9622,7 @@ Reglas Importantes:
                   checkbox: false,
                   email: 'juan@example.com',
                   estado: 'Activo',
+                  area: 'Desarrollo',
                   avatar: { initials: 'JP', badgeColor: 'green', imageUrl: '../assets/images/Profile-image.jpg' },
                 },
                 expanded: false,
@@ -9643,6 +9644,7 @@ Reglas Importantes:
                   checkbox: true,
                   email: 'maria@example.com',
                   estado: 'Inactivo',
+                  area: 'Diseño',
                   avatar: { initials: 'MG', badgeColor: 'blue', imageUrl: '../assets/images/Profile-image.jpg' },
                 },
                 expanded: false,
@@ -9654,6 +9656,7 @@ Reglas Importantes:
                   checkbox: false,
                   email: 'carlos@example.com',
                   estado: 'Activo',
+                  area: 'Marketing',
                   avatar: { initials: 'CL', badgeColor: 'orange', imageUrl: '../assets/images/Profile-image.jpg' },
                 },
                 expanded: false,
@@ -9740,21 +9743,22 @@ Reglas Importantes:
           const column = state.columns.find(col => col.id === columnId);
           if (column) {
             column.type = newType || undefined;
-            // Si cambia a un tipo diferente de 'nombre-avatar', eliminar avatarVariant
-            if (newType !== 'nombre-avatar') {
+            // Si cambia a un tipo diferente de 'nombre-avatar' o 'nombre-avatar-texto', eliminar avatarVariant
+            if (newType !== 'nombre-avatar' && newType !== 'nombre-avatar-texto') {
               column.avatarVariant = undefined;
             } else if (!column.avatarVariant) {
-              // Si cambia a 'nombre-avatar' y no tiene avatarVariant, establecer por defecto
+              // Si cambia a 'nombre-avatar' o 'nombre-avatar-texto' y no tiene avatarVariant, establecer por defecto
               column.avatarVariant = 'initials';
             }
-            // Si cambia a un tipo que no es 'nombre' o 'nombre-avatar', eliminar editable
-            if (newType !== 'nombre' && newType !== 'nombre-avatar') {
+            // Si cambia a un tipo que no es 'nombre', 'nombre-avatar' o 'nombre-avatar-texto', eliminar editable
+            if (newType !== 'nombre' && newType !== 'nombre-avatar' && newType !== 'nombre-avatar-texto') {
               column.editable = undefined;
             }
             // Actualizar el título del header según el tipo seleccionado
             const columnTypeLabels = {
               'nombre': 'Nombre',
               'nombre-avatar': 'Nombre',
+              'nombre-avatar-texto': 'Nombre',
               'progreso': 'Progreso',
               'estado': 'Estado',
               'radio': 'Radio',
@@ -9784,7 +9788,7 @@ Reglas Importantes:
           // value = [columnId, avatarVariant]
           const [columnId, avatarVariant] = value;
           const column = state.columns.find(col => col.id === columnId);
-          if (column && column.type === 'nombre-avatar') {
+          if (column && (column.type === 'nombre-avatar' || column.type === 'nombre-avatar-texto')) {
             column.avatarVariant = avatarVariant || 'initials';
             // Actualizar el preview
             window.updateDataTable3Preview(componentId);
@@ -9793,7 +9797,7 @@ Reglas Importantes:
           // value = [columnId, editable]
           const [columnId, editable] = value;
           const column = state.columns.find(col => col.id === columnId);
-          if (column && (column.type === 'nombre' || column.type === 'nombre-avatar')) {
+          if (column && (column.type === 'nombre' || column.type === 'nombre-avatar' || column.type === 'nombre-avatar-texto')) {
             column.editable = editable;
             // Regenerar selectores para actualizar el checkbox
             if (typeof window.generateColumnTypeSelectors === 'function') {
@@ -9840,6 +9844,7 @@ Reglas Importantes:
         const columnTypes = [
           { value: 'nombre', label: 'Nombre' },
           { value: 'nombre-avatar', label: 'Nombre + Avatar' },
+          { value: 'nombre-avatar-texto', label: 'Nombre + Avatar + Texto' },
           { value: 'progreso', label: 'Progreso' },
           { value: 'estado', label: 'Estado' },
           { value: 'radio', label: 'Radio' },
@@ -9860,8 +9865,10 @@ Reglas Importantes:
           const currentEditable = col.editable || false;
           const columnNumber = index + 1;
           const isNombreAvatar = currentType === 'nombre-avatar';
+          const isNombreAvatarTexto = currentType === 'nombre-avatar-texto';
           const isNombre = currentType === 'nombre';
-          const isEditableType = isNombre || isNombreAvatar;
+          const isEditableType = isNombre || isNombreAvatar || isNombreAvatarTexto;
+          const hasAvatarVariant = isNombreAvatar || isNombreAvatarTexto;
           
           return `
             <div style="flex: 0 0 auto; min-width: 200px;">
@@ -9869,18 +9876,18 @@ Reglas Importantes:
               <select 
                 id="data-table-3-column-type-${componentId}-${col.id}"
                 onchange="setDataTable3Control('columnType', ['${col.id}', this.value || undefined], '${componentId}')"
-                style="width: 100%; padding: 10px 12px; border: 1px solid var(--ubits-border-1, #d0d2d5); border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box; cursor: pointer; margin-bottom: ${isNombreAvatar || isEditableType ? '12px' : '0'};"
+                style="width: 100%; padding: 10px 12px; border: 1px solid var(--ubits-border-1, #d0d2d5); border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box; cursor: pointer; margin-bottom: ${hasAvatarVariant || isEditableType ? '12px' : '0'};"
               >
                 ${columnTypes.map(type => `
                   <option value="${type.value}" ${currentType === type.value ? 'selected' : ''}>${type.label}</option>
                 `).join('')}
               </select>
-              ${isNombreAvatar ? `
+              ${hasAvatarVariant ? `
                 <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-top: 12px; margin-bottom: 8px;">Variante Avatar</label>
                 <select 
                   id="data-table-3-avatar-variant-${componentId}-${col.id}"
                   onchange="setDataTable3Control('avatarVariant', ['${col.id}', this.value], '${componentId}')"
-                  style="width: 100%; padding: 10px 12px; border: 1px solid var(--ubits-border-1, #d0d2d5); border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box; cursor: pointer; margin-bottom: 12px;"
+                  style="width: 100%; padding: 10px 12px; border: 1px solid var(--ubits-border-1, #d0d2d5); border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box; cursor: pointer; margin-bottom: ${isEditableType ? '12px' : '0'};"
                 >
                   <option value="photo" ${currentAvatarVariant === 'photo' ? 'selected' : ''}>Foto</option>
                   <option value="initials" ${currentAvatarVariant === 'initials' ? 'selected' : ''}>Iniciales</option>
@@ -9888,7 +9895,7 @@ Reglas Importantes:
                 </select>
               ` : ''}
               ${isEditableType ? `
-                <label class="switch" style="display: flex; align-items: center; gap: 12px; cursor: pointer; margin-top: ${isNombreAvatar ? '0' : '12px'};">
+                <label class="switch" style="display: flex; align-items: center; gap: 12px; cursor: pointer; margin-top: ${hasAvatarVariant ? '0' : '12px'};">
                   <input type="checkbox" id="data-table-3-editable-${componentId}-${col.id}" ${currentEditable ? 'checked' : ''} onchange="setDataTable3Control('editable', ['${col.id}', this.checked], '${componentId}')">
                   <span class="slider"></span>
                   <span style="font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium);">Editable</span>

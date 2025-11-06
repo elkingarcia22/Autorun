@@ -421,6 +421,19 @@
     gap: var(--ubits-spacing-sm, 12px);
 }
 
+/* Celda de nombre + avatar + texto */
+.ubits-data-table-3__cell--nombre-avatar-texto {
+    padding: var(--ubits-spacing-sm, 12px) var(--ubits-spacing-md, 16px);
+    padding-left: 10px;
+    vertical-align: middle;
+}
+
+.ubits-data-table-3__cell--nombre-avatar-texto > div {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--ubits-spacing-sm, 12px);
+}
+
 /* Celda editable */
 .ubits-data-table-3__cell--editable {
     cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="%23000" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>') 10 10, text;
@@ -455,6 +468,26 @@
 }
 
 .ubits-data-table-3__cell--nombre-avatar.ubits-data-table-3__cell--editable:has([contenteditable="true"]:focus) {
+    background-color: rgba(12, 91, 239, 0.1);
+}
+
+/* Para celdas nombre-avatar-texto editables */
+.ubits-data-table-3__cell--nombre-avatar-texto.ubits-data-table-3__cell--editable > div > div > span {
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="%23000" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>') 10 10, text;
+    min-width: 50px;
+    display: inline-block;
+    outline: none;
+}
+
+.ubits-data-table-3__cell--nombre-avatar-texto.ubits-data-table-3__cell--editable:hover > div > div > span {
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="%23000" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>') 10 10, text;
+}
+
+.ubits-data-table-3__cell--nombre-avatar-texto.ubits-data-table-3__cell--editable > div > div > span[contenteditable="true"]:focus {
+    outline: none;
+}
+
+.ubits-data-table-3__cell--nombre-avatar-texto.ubits-data-table-3__cell--editable:has([contenteditable="true"]:focus) {
     background-color: rgba(12, 91, 239, 0.1);
 }
 

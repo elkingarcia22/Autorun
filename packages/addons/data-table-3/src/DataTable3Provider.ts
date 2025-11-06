@@ -165,6 +165,98 @@ function renderCellByType(column: TableColumn3, row: TableRow3, columnType: Colu
       `;
     }
     
+    case 'nombre-avatar-texto': {
+      // Mostrar nombre + avatar + texto complementario (abajo del nombre)
+      const nombre = cellValue || cellData.nombre || cellData.name || '';
+      const avatar = cellData.avatar || cellData.avatarUrl || null;
+      const textoComplementario = cellData.area || cellData.areaNombre || cellData.textoComplementario || cellData.complementario || '';
+      
+      // Obtener la variante del avatar desde la columna o usar por defecto
+      const avatarVariant = column.avatarVariant || 'initials';
+      
+      // Generar iniciales del nombre si es necesario
+      const generateInitials = (name: string): string => {
+        return name
+          .split(' ')
+          .map(n => n[0])
+          .join('')
+          .toUpperCase()
+          .slice(0, 2) || 'U';
+      };
+      
+      let avatarHTML = '';
+      
+      // Renderizar según la variante especificada (sin badge)
+      if (avatarVariant === 'photo') {
+        // Variante Photo: usar imageUrl si está disponible
+        let imageUrl = null;
+        
+        // Buscar imageUrl en diferentes lugares
+        if (avatar && typeof avatar === 'string') {
+          imageUrl = avatar;
+        } else if (avatar && typeof avatar === 'object') {
+          imageUrl = avatar.imageUrl || avatar.url || null;
+        }
+        
+        // También buscar en cellData por si está en otro lugar
+        if (!imageUrl && cellData) {
+          imageUrl = cellData.imageUrl || cellData.avatarUrl || cellData.avatarImage || null;
+        }
+        
+        // Si hay imageUrl, usar foto (sin badge)
+        if (imageUrl) {
+          avatarHTML = renderAvatar({
+            imageUrl: imageUrl,
+            size: 'sm'
+          });
+        } else {
+          // Si no hay imagen, usar imagen por defecto
+          avatarHTML = renderAvatar({
+            imageUrl: '../assets/images/Profile-image.jpg',
+            size: 'sm'
+          });
+        }
+      } else if (avatarVariant === 'initials') {
+        // Variante Initials: usar initials si están disponibles, sino generarlas del nombre (sin badge)
+        if (avatar && typeof avatar === 'object' && avatar.initials) {
+          avatarHTML = renderAvatar({
+            initials: avatar.initials,
+            size: 'sm'
+          });
+        } else {
+          const initials = generateInitials(nombre);
+          avatarHTML = renderAvatar({
+            initials: initials,
+            size: 'sm'
+          });
+        }
+      } else {
+        // Variante Icon: usar icon si está disponible, sino usar 'user' por defecto (sin badge)
+        const iconName = avatar && typeof avatar === 'object' && avatar.icon 
+          ? avatar.icon 
+          : 'user';
+        avatarHTML = renderAvatar({
+          icon: iconName,
+          size: 'sm'
+        });
+      }
+      
+      const isEditable = column.editable;
+      const nombreElement = isEditable 
+        ? `<span class="ubits-body-md-regular" contenteditable="true" data-editable-text="true">${nombre}</span>`
+        : `<span class="ubits-body-md-regular">${nombre}</span>`;
+      
+      return `
+        <div style="display: flex; align-items: flex-start; gap: var(--ubits-spacing-sm, 12px);">
+          ${avatarHTML}
+          <div style="display: flex; flex-direction: column; gap: 4px;">
+            ${nombreElement}
+            ${textoComplementario ? `<span class="ubits-body-sm-regular" style="color: var(--ubits-body-md-regular-3, #6b7280);">${textoComplementario}</span>` : ''}
+          </div>
+        </div>
+      `;
+    }
+    
     case 'estado': {
       const estado = cellValue || 'pending';
       const statusMap: Record<string, any> = {
@@ -274,7 +366,7 @@ function renderCell(column: TableColumn3, row: TableRow3): string {
   // Si la columna tiene un tipo definido, usar renderCellByType
   if (column.type) {
     const content = renderCellByType(column, row, column.type);
-    const isEditable = column.editable && (column.type === 'nombre' || column.type === 'nombre-avatar');
+    const isEditable = column.editable && (column.type === 'nombre' || column.type === 'nombre-avatar' || column.type === 'nombre-avatar-texto');
     const editableClass = isEditable ? 'ubits-data-table-3__cell--editable' : '';
     const dataAttrs = isEditable ? `data-row-id="${row.id}" data-column-id="${column.id}" data-editable="true"` : '';
     
@@ -1041,7 +1133,7 @@ export function createDataTable3(options: DataTable3Options): {
           const col = currentOptions.columns.find(c => c.id === columnId);
           
           // Actualizar el valor según el tipo de columna
-          if (col && (col.type === 'nombre' || col.type === 'nombre-avatar')) {
+          if (col && (col.type === 'nombre' || col.type === 'nombre-avatar' || col.type === 'nombre-avatar-texto')) {
             // Siempre actualizar 'nombre' en los datos
             row.data.nombre = newValue.trim();
             // También actualizar en el ID de la columna si existe
