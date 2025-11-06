@@ -9747,6 +9747,10 @@ Reglas Importantes:
               // Si cambia a 'nombre-avatar' y no tiene avatarVariant, establecer por defecto
               column.avatarVariant = 'initials';
             }
+            // Si cambia a un tipo que no es 'nombre' o 'nombre-avatar', eliminar editable
+            if (newType !== 'nombre' && newType !== 'nombre-avatar') {
+              column.editable = undefined;
+            }
             // Actualizar el título del header según el tipo seleccionado
             const columnTypeLabels = {
               'nombre': 'Nombre',
@@ -9782,6 +9786,19 @@ Reglas Importantes:
           const column = state.columns.find(col => col.id === columnId);
           if (column && column.type === 'nombre-avatar') {
             column.avatarVariant = avatarVariant || 'initials';
+            // Actualizar el preview
+            window.updateDataTable3Preview(componentId);
+          }
+        } else if (option === 'editable' && Array.isArray(value) && value.length === 2) {
+          // value = [columnId, editable]
+          const [columnId, editable] = value;
+          const column = state.columns.find(col => col.id === columnId);
+          if (column && (column.type === 'nombre' || column.type === 'nombre-avatar')) {
+            column.editable = editable;
+            // Regenerar selectores para actualizar el checkbox
+            if (typeof window.generateColumnTypeSelectors === 'function') {
+              window.generateColumnTypeSelectors(componentId);
+            }
             // Actualizar el preview
             window.updateDataTable3Preview(componentId);
           }
@@ -9840,8 +9857,11 @@ Reglas Importantes:
         container.innerHTML = visibleColumns.map((col, index) => {
           const currentType = col.type || 'nombre';
           const currentAvatarVariant = col.avatarVariant || 'initials';
+          const currentEditable = col.editable || false;
           const columnNumber = index + 1;
           const isNombreAvatar = currentType === 'nombre-avatar';
+          const isNombre = currentType === 'nombre';
+          const isEditableType = isNombre || isNombreAvatar;
           
           return `
             <div style="flex: 0 0 auto; min-width: 200px;">
@@ -9849,7 +9869,7 @@ Reglas Importantes:
               <select 
                 id="data-table-3-column-type-${componentId}-${col.id}"
                 onchange="setDataTable3Control('columnType', ['${col.id}', this.value || undefined], '${componentId}')"
-                style="width: 100%; padding: 10px 12px; border: 1px solid var(--ubits-border-1, #d0d2d5); border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box; cursor: pointer; margin-bottom: ${isNombreAvatar ? '12px' : '0'};"
+                style="width: 100%; padding: 10px 12px; border: 1px solid var(--ubits-border-1, #d0d2d5); border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box; cursor: pointer; margin-bottom: ${isNombreAvatar || isEditableType ? '12px' : '0'};"
               >
                 ${columnTypes.map(type => `
                   <option value="${type.value}" ${currentType === type.value ? 'selected' : ''}>${type.label}</option>
@@ -9860,12 +9880,19 @@ Reglas Importantes:
                 <select 
                   id="data-table-3-avatar-variant-${componentId}-${col.id}"
                   onchange="setDataTable3Control('avatarVariant', ['${col.id}', this.value], '${componentId}')"
-                  style="width: 100%; padding: 10px 12px; border: 1px solid var(--ubits-border-1, #d0d2d5); border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box; cursor: pointer;"
+                  style="width: 100%; padding: 10px 12px; border: 1px solid var(--ubits-border-1, #d0d2d5); border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box; cursor: pointer; margin-bottom: 12px;"
                 >
                   <option value="photo" ${currentAvatarVariant === 'photo' ? 'selected' : ''}>Foto</option>
                   <option value="initials" ${currentAvatarVariant === 'initials' ? 'selected' : ''}>Iniciales</option>
                   <option value="icon" ${currentAvatarVariant === 'icon' ? 'selected' : ''}>Icono</option>
                 </select>
+              ` : ''}
+              ${isEditableType ? `
+                <label class="switch" style="display: flex; align-items: center; gap: 12px; cursor: pointer; margin-top: ${isNombreAvatar ? '0' : '12px'};">
+                  <input type="checkbox" id="data-table-3-editable-${componentId}-${col.id}" ${currentEditable ? 'checked' : ''} onchange="setDataTable3Control('editable', ['${col.id}', this.checked], '${componentId}')">
+                  <span class="slider"></span>
+                  <span style="font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium);">Editable</span>
+                </label>
               ` : ''}
             </div>
           `;
@@ -10005,6 +10032,10 @@ Reglas Importantes:
                 // Si tiene avatarVariant, copiarlo también
                 if (col.avatarVariant !== undefined) {
                   columnCopy.avatarVariant = col.avatarVariant;
+                }
+                // Si tiene editable, copiarlo también
+                if (col.editable !== undefined) {
+                  columnCopy.editable = col.editable;
                 }
                 // Si tiene renderCell, copiarlo también
                 if (col.renderCell) {

@@ -421,6 +421,36 @@
     gap: var(--ubits-spacing-sm, 12px);
 }
 
+/* Celda editable */
+.ubits-data-table-3__cell--editable {
+    cursor: text;
+    position: relative;
+}
+
+.ubits-data-table-3__cell--editable:hover {
+    cursor: text;
+    background-color: var(--ubits-bg-2, #f3f3f4);
+    outline: 1px solid var(--ubits-border-1, #d0d2d5);
+    outline-offset: -1px;
+}
+
+.ubits-data-table-3__cell--editable[contenteditable="true"]:focus {
+    outline: 2px solid var(--ubits-accent-brand, #0c5bef);
+    outline-offset: -2px;
+    background-color: var(--ubits-bg-1, #ffffff);
+}
+
+/* Para celdas con avatar, solo hacer editable el texto del nombre */
+.ubits-data-table-3__cell--nombre-avatar.ubits-data-table-3__cell--editable > div > span {
+    cursor: text;
+    min-width: 50px;
+    display: inline-block;
+}
+
+.ubits-data-table-3__cell--nombre-avatar.ubits-data-table-3__cell--editable:hover > div > span {
+    cursor: text;
+}
+
 /* Celda de progreso */
 .ubits-data-table-3__cell--progreso {
     padding: var(--ubits-spacing-sm, 12px) var(--ubits-spacing-md, 16px);

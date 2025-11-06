@@ -172,10 +172,15 @@ function renderCellByType(column: TableColumn3, row: TableRow3, columnType: Colu
         });
       }
       
+      const isEditable = column.editable;
+      const nombreElement = isEditable 
+        ? `<span class="ubits-body-md-regular" contenteditable="true" data-editable-text="true">${nombre}</span>`
+        : `<span class="ubits-body-md-regular">${nombre}</span>`;
+      
       return `
         <div style="display: flex; align-items: center; gap: var(--ubits-spacing-sm, 12px);">
           ${avatarHTML}
-          <span class="ubits-body-md-regular">${nombre}</span>
+          ${nombreElement}
         </div>
       `;
     }
@@ -289,8 +294,12 @@ function renderCell(column: TableColumn3, row: TableRow3): string {
   // Si la columna tiene un tipo definido, usar renderCellByType
   if (column.type) {
     const content = renderCellByType(column, row, column.type);
+    const isEditable = column.editable && (column.type === 'nombre' || column.type === 'nombre-avatar');
+    const editableClass = isEditable ? 'ubits-data-table-3__cell--editable' : '';
+    const dataAttrs = isEditable ? `data-row-id="${row.id}" data-column-id="${column.id}" data-editable="true"` : '';
+    
     return `
-      <td class="ubits-data-table-3__cell ubits-data-table-3__cell--${column.type}">
+      <td class="ubits-data-table-3__cell ubits-data-table-3__cell--${column.type} ${editableClass}" ${dataAttrs}>
         ${content}
       </td>
     `;
@@ -1017,6 +1026,49 @@ export function createDataTable3(options: DataTable3Options): {
         }
         
         render();
+      });
+    });
+    
+    // Campos editables
+    const editableFields = element.querySelectorAll('[data-editable-text="true"]');
+    editableFields.forEach(field => {
+      const cell = field.closest('[data-editable="true"]');
+      if (!cell) return;
+      
+      const rowIdStr = cell.getAttribute('data-row-id');
+      const columnId = cell.getAttribute('data-column-id');
+      
+      if (!rowIdStr || !columnId) return;
+      
+      const rowId = isNaN(Number(rowIdStr)) ? rowIdStr : Number(rowIdStr);
+      
+      // Prevenir que el Enter cree una nueva línea
+      field.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          (field as HTMLElement).blur();
+        }
+      });
+      
+      // Guardar cambios cuando pierde el foco
+      field.addEventListener('blur', () => {
+        const newValue = (field as HTMLElement).textContent || '';
+        const row = currentOptions.rows.find(r => r.id === rowId);
+        
+        if (row) {
+          // Actualizar el valor según el tipo de columna
+          if (columnId === 'nombre' || row.data[columnId] !== undefined) {
+            row.data[columnId] = newValue.trim();
+          } else {
+            // Si es tipo 'nombre-avatar', actualizar 'nombre'
+            row.data.nombre = newValue.trim();
+          }
+        }
+      });
+      
+      // Prevenir que se borre el contenido al hacer click
+      field.addEventListener('click', (e) => {
+        e.stopPropagation();
       });
     });
   };
