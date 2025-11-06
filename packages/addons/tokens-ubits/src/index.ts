@@ -14,3 +14,16 @@ export {
 } from './TokensManager';
 export type { TokensManagerOptions } from './TokensManager';
 
+// Integración con sistema global
+export { 
+  initializeTokensIntegration 
+} from './TokensAddonIntegration';
+export type { UBITSTokensAPI } from './TokensAddonIntegration';
+
+// Auto-inicializar integración si estamos en navegador
+if (typeof window !== 'undefined') {
+  import('./TokensAddonIntegration').then(module => {
+    module.initializeTokensIntegration();
+  });
+}
+
