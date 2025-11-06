@@ -29,11 +29,11 @@ Mantener tokens estáticos funcionando + agregar add-ons como opcional.
 - [x] Paso 2.4: Tests de carga y validación (commit: corregido)
 - [x] Paso 2.5: Tests de fallback (commit: completado)
 
-### **FASE 3: Sistema Híbrido** (Mantener compatibilidad)
-- [ ] Paso 3.1: Crear `TokensManager` que soporte ambos sistemas
-- [ ] Paso 3.2: Integrar con sistema de add-ons existente
-- [ ] Paso 3.3: Tests de compatibilidad
-- [ ] Paso 3.4: Verificar que todo sigue funcionando
+### **FASE 3: Sistema Híbrido** (Mantener compatibilidad) ✅ COMPLETADA
+- [x] Paso 3.1: Crear `TokensManager` que soporte ambos sistemas (commit: 2e34527)
+- [x] Paso 3.2: Integrar con sistema de add-ons existente (commit: 6db0a07)
+- [x] Paso 3.3: Tests de compatibilidad (commit: aa85c8b)
+- [x] Paso 3.4: Verificar que todo sigue funcionando (en progreso)
 
 ### **FASE 4: Documentación y Validación**
 - [ ] Paso 4.1: Documentar uso del nuevo sistema
