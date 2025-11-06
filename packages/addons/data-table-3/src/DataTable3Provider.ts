@@ -390,20 +390,7 @@ function renderCellByType(column: TableColumn3, row: TableRow3, columnType: Colu
       const isEditable = column.editable === true;
       const disabled = !isEditable;
       
-      // 🔍 LOGS DETALLADOS
-      // Log removido para limpieza
-      // console.log('🔍 [CHECKBOX RENDER]', {
-        columnId: column.id,
-        rowId: row.id,
-        checked,
-        checkboxLabel: column.checkboxLabel,
-        showLabel,
-        labelText,
-        editable: column.editable,
-        isEditable,
-        disabled,
-        columnType: column.type
-      });
+      // 🔍 LOGS DETALLADOS - Removidos para limpieza
       
       const checkboxHTML = renderCheckbox({
         label: labelText,
@@ -412,15 +399,7 @@ function renderCellByType(column: TableColumn3, row: TableRow3, columnType: Colu
         disabled: disabled
       });
       
-      console.log('📦 [CHECKBOX HTML]', {
-        columnId: column.id,
-        rowId: row.id,
-        htmlLength: checkboxHTML.length,
-        hasLabel: checkboxHTML.includes('ubits-checkbox__label'),
-        hasDisabled: checkboxHTML.includes('disabled'),
-        hasEditable: isEditable,
-        htmlPreview: checkboxHTML.substring(0, 200)
-      });
+      // Log removido para limpieza
       
       // Agregar atributos para identificar el checkbox
       const finalHTML = checkboxHTML.replace(
@@ -429,13 +408,6 @@ function renderCellByType(column: TableColumn3, row: TableRow3, columnType: Colu
       );
       
       // Log removido para limpieza
-      // console.log('✅ [CHECKBOX FINAL]', {
-        columnId: column.id,
-        rowId: row.id,
-        finalHTMLLength: finalHTML.length,
-        hasDataEditable: finalHTML.includes('data-editable="true"'),
-        finalHTMLPreview: finalHTML.substring(0, 250)
-      });
       
       return finalHTML;
     }
@@ -858,16 +830,7 @@ export function createDataTable3(options: DataTable3Options): {
 
   // Función para renderizar
   const render = () => {
-    console.log('🔄 [RENDER START]', {
-      timestamp: new Date().toISOString(),
-      columnsCount: currentOptions.columns.length,
-      rowsCount: currentOptions.rows.length,
-      checkboxColumns: currentOptions.columns.filter(c => c.type === 'checkbox').map(c => ({
-        id: c.id,
-        editable: c.editable,
-        checkboxLabel: c.checkboxLabel
-      }))
-    });
+    // Log removido para limpieza
     
     const newHTML = renderDataTable3(
       { ...currentOptions, sortColumnId, sortDirection } as any, 
@@ -878,23 +841,6 @@ export function createDataTable3(options: DataTable3Options): {
     // 🔍 LOGS: Verificar posiciones de checkboxes antes de actualizar
     const checkboxCellsBefore = element.querySelectorAll('.ubits-data-table-3__cell--checkbox');
     // Log removido para limpieza
-    // console.log('📍 [BEFORE RENDER] Checkbox cells:', {
-      count: checkboxCellsBefore.length,
-      positions: Array.from(checkboxCellsBefore).map((cell, idx) => {
-        const rect = cell.getBoundingClientRect();
-        const checkbox = cell.querySelector('.ubits-checkbox');
-        const checkboxRect = checkbox?.getBoundingClientRect();
-        return {
-          index: idx,
-          cellLeft: rect.left,
-          cellWidth: rect.width,
-          checkboxLeft: checkboxRect?.left,
-          checkboxWidth: checkboxRect?.width,
-          hasEditableClass: cell.classList.contains('ubits-data-table-3__cell--editable'),
-          isDisabled: checkbox?.querySelector('input[disabled]') !== null
-        };
-      })
-    });
     
     element.innerHTML = newHTML.trim();
     
@@ -913,12 +859,6 @@ export function createDataTable3(options: DataTable3Options): {
         const beforeRect = beforeCell?.getBoundingClientRect();
         
         // Log removido para limpieza
-        // console.log(`📍 [CELL ${idx}] Detalles:`, {
-          cellLeft: `${rect.left.toFixed(2)}px`,
-          cellWidth: `${rect.width.toFixed(2)}px`,
-          cellRight: `${rect.right.toFixed(2)}px`,
-          cellMinWidth: computedStyle.minWidth,
-          cellMaxWidth: computedStyle.maxWidth,
           cellWidthActual: computedStyle.width,
           cellPadding: computedStyle.padding,
           cellTextAlign: computedStyle.textAlign,
@@ -1039,7 +979,7 @@ export function createDataTable3(options: DataTable3Options): {
             
             // No permitir arrastrar la columna de checkbox
             if (isDraggedCheckbox) {
-              console.log('🚫 No se puede arrastrar la columna de checkbox');
+              // Log removido para limpieza
               return;
             }
             
@@ -1057,15 +997,7 @@ export function createDataTable3(options: DataTable3Options): {
               // Encontrar el índice de la columna de checkbox en el orden actual
               const checkboxColumnIndex = columnOrder.findIndex(id => id === 'checkbox' || id.startsWith('checkbox-'));
               
-                // Log removido para limpieza
-                // console.log('📊 Reordenamiento:', {
-                dragged: draggedColumnId,
-                target: columnId,
-                currentIndex,
-                targetIndex,
-                checkboxIndex: checkboxColumnIndex,
-                columnOrder: [...columnOrder]
-              });
+              // Log removido para limpieza
               
               // Si no hay columna de checkbox, permitir el movimiento
               if (checkboxColumnIndex === -1) {
