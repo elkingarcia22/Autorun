@@ -5781,7 +5781,7 @@ Reglas Importantes:
                               <!-- Número de Columnas -->
                               <div style="flex: 0 0 auto; min-width: 200px;">
                                 <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Número de Columnas</label>
-                                <input type="number" id="data-table-3-columns-count-${componentId}" value="4" min="1" max="10" onchange="setDataTable3Control('columnsCount', parseInt(this.value) || 4, '${componentId}')" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                                <input type="number" id="data-table-3-columns-count-${componentId}" value="3" min="1" max="10" onchange="setDataTable3Control('columnsCount', parseInt(this.value) || 3, '${componentId}')" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
                               </div>
                               
                               <!-- Expandir Filas (Dropdown) -->
@@ -9583,7 +9583,7 @@ Reglas Importantes:
             rowReorderable: true,
             showCheckbox: true,
             rowExpandable: true,
-            columnsCount: 4,
+            columnsCount: 3,
             columns: [
               {
                 id: 'checkbox',
@@ -9678,9 +9678,51 @@ Reglas Importantes:
           const statusEl = document.getElementById(`data-table-3-show-checkbox-status-${componentId}`);
           if (statusEl) statusEl.textContent = value ? 'Visible' : 'Oculta';
         } else if (option === 'columnsCount') {
-          state.columnsCount = Math.max(1, Math.min(10, parseInt(value) || 4));
+          state.columnsCount = Math.max(1, Math.min(10, parseInt(value) || 3));
           const inputEl = document.getElementById(`data-table-3-columns-count-${componentId}`);
           if (inputEl) inputEl.value = state.columnsCount;
+          
+          // Asegurar que tenemos suficientes columnas en el estado (excluyendo checkbox)
+          const dataColumns = state.columns.filter(col => col.id !== 'checkbox');
+          const currentDataColumnsCount = dataColumns.length;
+          const columnsCount = state.columnsCount;
+          
+          // Si necesitamos más columnas, agregarlas al estado
+          if (columnsCount > currentDataColumnsCount) {
+            const columnNames = ['Teléfono', 'Ciudad', 'País', 'Fecha', 'Categoría', 'Prioridad', 'Área', 'Líder'];
+            for (let i = currentDataColumnsCount; i < columnsCount && i < 10; i++) {
+              const columnName = columnNames[i - currentDataColumnsCount] || `Columna ${i + 1}`;
+              const newColumn = {
+                id: `col${i}`,
+                title: columnName,
+                visible: true,
+                width: 150,
+                type: undefined
+              };
+              // Agregar después de las columnas de datos (pero antes del checkbox si existe)
+              const checkboxIndex = state.columns.findIndex(col => col.id === 'checkbox');
+              if (checkboxIndex >= 0) {
+                // Insertar antes del checkbox
+                state.columns.splice(checkboxIndex + dataColumns.length, 0, newColumn);
+              } else {
+                // Agregar al final
+                state.columns.push(newColumn);
+              }
+            }
+          } else if (columnsCount < currentDataColumnsCount) {
+            // Si necesitamos menos columnas, remover las sobrantes (pero mantener las primeras)
+            const checkboxCol = state.columns.find(col => col.id === 'checkbox');
+            const dataColumnsToKeep = dataColumns.slice(0, columnsCount);
+            state.columns = checkboxCol ? [checkboxCol, ...dataColumnsToKeep] : dataColumnsToKeep;
+          }
+          
+          // Regenerar selectores de tipo de columna
+          if (typeof window.generateColumnTypeSelectors === 'function') {
+            window.generateColumnTypeSelectors(componentId);
+          }
+          
+          // Actualizar el preview
+          window.updateDataTable3Preview(componentId);
         } else if (option === 'rowExpandable') {
           state.rowExpandable = value;
           const statusEl = document.getElementById(`data-table-3-row-expandable-status-${componentId}`);
@@ -9748,7 +9790,7 @@ Reglas Importantes:
         const visibleColumns = state.columns.filter(col => {
           if (col.id === 'checkbox') return false;
           return col.visible !== false;
-        }).slice(0, state.columnsCount || 4);
+        }).slice(0, state.columnsCount || 3);
         
         const columnTypes = [
           { value: 'nombre', label: 'Nombre' },
@@ -9891,28 +9933,47 @@ Reglas Importantes:
           try {
             // Construir columnas dinámicamente según controles
             // Construir columnas desde el estado (mantener tipos y propiedades)
-            const columnsCount = state.columnsCount || 4;
+            const columnsCount = state.columnsCount || 3;
             const allColumns = [];
+            
+            // Separar checkbox de columnas de datos
+            const checkboxColumn = state.columns.find(col => col.id === 'checkbox');
+            const dataColumns = state.columns.filter(col => col.id !== 'checkbox');
             
             // Usar columnas del estado si existen, sino crear por defecto
             if (state.columns && state.columns.length > 0) {
-              // Asegurar que tenemos suficientes columnas según columnsCount
-              for (let i = 0; i < columnsCount && i < state.columns.length; i++) {
-                allColumns.push({ ...state.columns[i] });
+              // Agregar checkbox primero si existe
+              if (checkboxColumn && state.showCheckbox !== false) {
+                allColumns.push({ ...checkboxColumn });
               }
               
-              // Si necesitamos más columnas, agregar las adicionales
-              if (columnsCount > state.columns.length) {
-                const columnNames = ['Teléfono', 'Ciudad', 'País', 'Fecha', 'Categoría', 'Prioridad'];
-                for (let i = state.columns.length; i < columnsCount && i < 10; i++) {
-                  const columnName = columnNames[i - state.columns.length] || `Columna ${i + 1}`;
-                  allColumns.push({
+              // Asegurar que tenemos suficientes columnas de datos según columnsCount
+              const dataColumnsToUse = dataColumns.slice(0, columnsCount);
+              dataColumnsToUse.forEach(col => {
+                allColumns.push({ ...col });
+              });
+              
+              // Si necesitamos más columnas de datos, agregar las adicionales
+              if (columnsCount > dataColumns.length) {
+                const columnNames = ['Teléfono', 'Ciudad', 'País', 'Fecha', 'Categoría', 'Prioridad', 'Área', 'Líder'];
+                for (let i = dataColumns.length; i < columnsCount && i < 10; i++) {
+                  const columnName = columnNames[i - dataColumns.length] || `Columna ${i + 1}`;
+                  const newColumn = {
                     id: `col${i}`,
                     title: columnName,
                     visible: true,
                     width: 150,
                     type: undefined
-                  });
+                  };
+                  allColumns.push(newColumn);
+                  // También agregar al estado para que aparezca en los selectores
+                  if (!state.columns.find(col => col.id === newColumn.id)) {
+                    state.columns.push(newColumn);
+                  }
+                }
+                // Regenerar selectores después de agregar nuevas columnas
+                if (typeof window.generateColumnTypeSelectors === 'function') {
+                  setTimeout(() => window.generateColumnTypeSelectors(componentId), 100);
                 }
               }
             } else {
@@ -9927,15 +9988,20 @@ Reglas Importantes:
               const additionalColumns = [];
               const columnNames = ['Teléfono', 'Ciudad', 'País', 'Fecha', 'Categoría', 'Prioridad'];
               
-              for (let i = 4; i < columnsCount && i < 10; i++) {
-                const columnName = columnNames[i - 4] || `Columna ${i + 1}`;
-                additionalColumns.push({
+              for (let i = 3; i < columnsCount && i < 10; i++) {
+                const columnName = columnNames[i - 3] || `Columna ${i + 1}`;
+                const newColumn = {
                   id: `col${i}`,
                   title: columnName,
                   visible: true,
                   width: 150,
                   type: undefined
-                });
+                };
+                additionalColumns.push(newColumn);
+                // También agregar al estado
+                if (!state.columns.find(col => col.id === newColumn.id)) {
+                  state.columns.push(newColumn);
+                }
               }
               
               allColumns.push(...baseColumns, ...additionalColumns);
