@@ -1643,7 +1643,9 @@ export function createDataTable3(options: DataTable3Options): {
       };
       
       // Agregar event listener al status tag
-      statusTag.addEventListener('click', openDropdown);
+      console.log(`✅ [STATUS DROPDOWN] Agregando event listener click al status tag ${index}`);
+      statusTagElement.addEventListener('click', openDropdown);
+      console.log(`✅ [STATUS DROPDOWN] Event listener agregado exitosamente para status tag ${index}`);
     });
     
     // Radio buttons - manejar selección (solo si son editables)
