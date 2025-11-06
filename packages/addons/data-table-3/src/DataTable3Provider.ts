@@ -747,12 +747,19 @@ export function renderDataTable3(
           <th class="ubits-data-table-3__controls-column-header"></th>
   ` : '';
   
+  // Verificar si hay una columna de checkbox visible para agregar su header vacío
+  const hasCheckboxColumn = visibleColumns.some(col => col.id === 'checkbox' || col.id.startsWith('checkbox-'));
+  const checkboxHeader = hasCheckboxColumn ? `
+          <th class="ubits-data-table-3__column-header--checkbox ubits-data-table-3__column-header--checkbox-empty"></th>
+  ` : '';
+  
   // Estructura sin contenedor adicional: la tabla directamente
   const html = `
     <table class="${classes} ubits-data-table-3__table">
       <thead class="ubits-data-table-3__thead">
         <tr class="ubits-data-table-3__header-row">
           ${controlsHeader}
+          ${checkboxHeader}
           ${columnHeadersHTML}
         </tr>
       </thead>
