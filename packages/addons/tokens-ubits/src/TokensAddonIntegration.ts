@@ -34,6 +34,16 @@ export interface UBITSTokensAPI {
   loadAddon(manifestPath: string): Promise<TokensAddon>;
 
   /**
+   * Aplica tokens desde una fuente externa (Storybook, URL, JSON, etc.)
+   */
+  applyFromSource(source: {
+    css?: string;
+    cssUrl?: string;
+    json?: Record<string, any>;
+    jsonUrl?: string;
+  }): Promise<void>;
+
+  /**
    * Valida que los tokens estén disponibles
    */
   validate(): Promise<boolean>;
@@ -75,6 +85,19 @@ export function initializeTokensIntegration(): void {
       await manager.switchTokensAddon(manifestPath);
       const info = manager.getTokensInfo();
       return info.tokensAddon!;
+    },
+
+    async applyFromSource(source: {
+      css?: string;
+      cssUrl?: string;
+      json?: Record<string, any>;
+      jsonUrl?: string;
+    }): Promise<void> {
+      const { applyTokensFromStorybook } = await import('./utils/createTokensAddon');
+      await applyTokensFromStorybook(source, {
+        validate: true,
+        replaceExisting: true
+      });
     },
 
     async validate(): Promise<boolean> {

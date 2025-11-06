@@ -20,6 +20,17 @@ export {
 } from './TokensAddonIntegration';
 export type { UBITSTokensAPI } from './TokensAddonIntegration';
 
+// Utilidades para crear add-ons desde fuentes externas
+export {
+  createTokensAddonFromSource,
+  applyTokensFromStorybook,
+  convertTokensJSONToCSS
+} from './utils/createTokensAddon';
+export type { TokensSource } from './utils/createTokensAddon';
+
+// Exportar función helper global
+export { cambiarTokensDesdeStorybook } from './utils/createTokensAddon.example';
+
 // Auto-inicializar integración si estamos en navegador
 if (typeof window !== 'undefined') {
   import('./TokensAddonIntegration').then(module => {
