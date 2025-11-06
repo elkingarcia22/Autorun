@@ -356,13 +356,19 @@ function renderCellByType(column: TableColumn3, row: TableRow3, columnType: Colu
     
     case 'toggle': {
       const checked = cellValue === true || cellValue === 'true' || cellValue === 1;
+      
+      // Determinar si mostrar label y qué texto usar
+      const showLabel = column.toggleLabel !== false && column.toggleLabel !== undefined;
+      const labelText = typeof column.toggleLabel === 'string' ? column.toggleLabel : (showLabel ? String(row.data[column.id] || row.id) : '');
+      
       const toggleHTML = renderToggle({
-        label: '',
+        label: labelText,
         checked,
         size: 'md'
       });
       
       // Agregar atributos para identificar el toggle
+      // El toggle puede estar dentro de un label o div, así que buscamos el input
       return toggleHTML.replace(
         '<input',
         `<input data-row-id="${row.id}" data-column-id="${column.id}" data-toggle-button="true"`
@@ -1443,17 +1449,35 @@ export function createDataTable3(options: DataTable3Options): {
       
       const rowId = isNaN(Number(rowIdStr)) ? rowIdStr : Number(rowIdStr);
       
-      input.addEventListener('change', (e) => {
+      // Remover listeners anteriores si existen
+      const newInput = input.cloneNode(true) as HTMLInputElement;
+      input.parentNode?.replaceChild(newInput, input);
+      
+      newInput.addEventListener('change', (e) => {
         e.stopPropagation();
         
         // Actualizar el estado en los datos de la fila
         const row = currentOptions.rows.find(r => String(r.id) === String(rowId));
         if (row) {
-          row.data[columnId] = input.checked;
+          row.data[columnId] = newInput.checked;
           // Re-renderizar para reflejar los cambios visuales
           render();
         }
       });
+      
+      // También agregar listener de click al wrapper (label o div) para asegurar que funcione
+      const wrapper = newInput.closest('.ubits-toggle');
+      if (wrapper) {
+        wrapper.addEventListener('click', (e) => {
+          // Si el click no es directamente en el input, activar el toggle
+          if (e.target !== newInput && !newInput.contains(e.target as Node)) {
+            e.preventDefault();
+            e.stopPropagation();
+            newInput.checked = !newInput.checked;
+            newInput.dispatchEvent(new Event('change', { bubbles: true }));
+          }
+        });
+      }
     });
   };
 

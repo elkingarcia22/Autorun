@@ -9761,6 +9761,13 @@ Reglas Importantes:
               // Si cambia a 'radio' y no tiene radioLabel, establecer por defecto false (sin label)
               column.radioLabel = false;
             }
+            // Si cambia a un tipo que no es 'toggle', eliminar toggleLabel
+            if (newType !== 'toggle') {
+              column.toggleLabel = undefined;
+            } else if (newType === 'toggle' && column.toggleLabel === undefined) {
+              // Si cambia a 'toggle' y no tiene toggleLabel, establecer por defecto false (sin label)
+              column.toggleLabel = false;
+            }
             // Actualizar el título del header según el tipo seleccionado
             const columnTypeLabels = {
               'nombre': 'Nombre',
@@ -9819,6 +9826,19 @@ Reglas Importantes:
           const column = state.columns.find(col => col.id === columnId);
           if (column && column.type === 'radio') {
             column.radioLabel = showLabel ? true : false;
+            // Regenerar selectores para actualizar el checkbox
+            if (typeof window.generateColumnTypeSelectors === 'function') {
+              window.generateColumnTypeSelectors(componentId);
+            }
+            // Actualizar el preview
+            window.updateDataTable3Preview(componentId);
+          }
+        } else if (option === 'toggleLabel' && Array.isArray(value) && value.length === 2) {
+          // value = [columnId, showLabel]
+          const [columnId, showLabel] = value;
+          const column = state.columns.find(col => col.id === columnId);
+          if (column && column.type === 'toggle') {
+            column.toggleLabel = showLabel ? true : false;
             // Regenerar selectores para actualizar el checkbox
             if (typeof window.generateColumnTypeSelectors === 'function') {
               window.generateColumnTypeSelectors(componentId);
@@ -9889,10 +9909,13 @@ Reglas Importantes:
           const isNombre = currentType === 'nombre';
           const isEstado = currentType === 'estado';
           const isRadio = currentType === 'radio';
+          const isToggle = currentType === 'toggle';
           const isEditableType = isNombre || isNombreAvatar || isEstado;
           const hasAvatarVariant = isNombreAvatar || isNombreAvatarTexto;
           // Determinar el estado del radioLabel: si es string es true, si es boolean usa ese valor, si es undefined es false
           const currentRadioLabel = col.radioLabel !== undefined ? (typeof col.radioLabel === 'string' ? true : col.radioLabel) : false;
+          // Determinar el estado del toggleLabel: si es string es true, si es boolean usa ese valor, si es undefined es false
+          const currentToggleLabel = col.toggleLabel !== undefined ? (typeof col.toggleLabel === 'string' ? true : col.toggleLabel) : false;
           
           return `
             <div style="flex: 0 0 auto; min-width: 200px;">
@@ -9928,6 +9951,13 @@ Reglas Importantes:
               ${isRadio ? `
                 <label class="switch" style="display: flex; align-items: center; gap: 12px; cursor: pointer; margin-top: 12px;">
                   <input type="checkbox" id="data-table-3-radio-label-${componentId}-${col.id}" ${currentRadioLabel !== false ? 'checked' : ''} onchange="setDataTable3Control('radioLabel', ['${col.id}', this.checked], '${componentId}')">
+                  <span class="slider"></span>
+                  <span style="font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium);">Mostrar Label</span>
+                </label>
+              ` : ''}
+              ${isToggle ? `
+                <label class="switch" style="display: flex; align-items: center; gap: 12px; cursor: pointer; margin-top: 12px;">
+                  <input type="checkbox" id="data-table-3-toggle-label-${componentId}-${col.id}" ${currentToggleLabel !== false ? 'checked' : ''} onchange="setDataTable3Control('toggleLabel', ['${col.id}', this.checked], '${componentId}')">
                   <span class="slider"></span>
                   <span style="font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium);">Mostrar Label</span>
                 </label>
@@ -10078,6 +10108,10 @@ Reglas Importantes:
                 // Si tiene radioLabel, copiarlo también
                 if (col.radioLabel !== undefined) {
                   columnCopy.radioLabel = col.radioLabel;
+                }
+                // Si tiene toggleLabel, copiarlo también
+                if (col.toggleLabel !== undefined) {
+                  columnCopy.toggleLabel = col.toggleLabel;
                 }
                 // Si tiene renderCell, copiarlo también
                 if (col.renderCell) {

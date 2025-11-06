@@ -71,6 +71,13 @@ export interface TableColumn3 {
    * Si es false o undefined, no se muestra label
    */
   radioLabel?: string | boolean;
+  
+  /**
+   * Label para toggle buttons (solo para tipo 'toggle')
+   * Si es string, se muestra ese texto como label
+   * Si es false o undefined, no se muestra label
+   */
+  toggleLabel?: string | boolean;
 }
 
 /**
