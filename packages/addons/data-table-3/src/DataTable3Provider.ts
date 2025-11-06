@@ -768,13 +768,17 @@ export function renderDataTable3(
     className
   ].filter(Boolean).join(' ');
 
-  // Columna de controles en el header eliminada - no se renderiza
+  // Agregar espacio en blanco en el header para alinear con la columna de controles de las filas
+  const controlsHeader = hasControls ? `
+          <th class="ubits-data-table-3__controls-column-header" style="display: none;"></th>
+  ` : '';
   
   // Estructura sin contenedor adicional: la tabla directamente
   const html = `
     <table class="${classes} ubits-data-table-3__table">
       <thead class="ubits-data-table-3__thead">
         <tr class="ubits-data-table-3__header-row">
+          ${controlsHeader}
           ${columnHeadersHTML}
         </tr>
       </thead>
