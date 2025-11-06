@@ -445,10 +445,31 @@
     cursor: text;
     min-width: 50px;
     display: inline-block;
+    outline: none;
 }
 
 .ubits-data-table-3__cell--nombre-avatar.ubits-data-table-3__cell--editable:hover > div > span {
     cursor: text;
+}
+
+.ubits-data-table-3__cell--nombre-avatar.ubits-data-table-3__cell--editable > div > span[contenteditable="true"]:focus {
+    outline: 2px solid var(--ubits-accent-brand, #0c5bef);
+    outline-offset: 2px;
+    border-radius: 2px;
+}
+
+/* Para celdas de nombre solo, también aplicar estilos */
+.ubits-data-table-3__cell--nombre.ubits-data-table-3__cell--editable > span[contenteditable="true"] {
+    outline: none;
+    cursor: text;
+    display: inline-block;
+    min-width: 50px;
+}
+
+.ubits-data-table-3__cell--nombre.ubits-data-table-3__cell--editable > span[contenteditable="true"]:focus {
+    outline: 2px solid var(--ubits-accent-brand, #0c5bef);
+    outline-offset: 2px;
+    border-radius: 2px;
 }
 
 /* Celda de progreso */

@@ -16,27 +16,13 @@ function renderCellByType(column: TableColumn3, row: TableRow3, columnType: Colu
   
   switch (columnType) {
     case 'nombre': {
-      // Puede ser: solo texto, texto+avatar, texto+avatar+texto complementario
-      const nombre = cellValue || cellData.nombre || '';
-      const avatar = cellData.avatar || cellData.avatarUrl || null;
-      const complementario = cellData.nombreComplementario || cellData.complementario || '';
-      
-      if (avatar) {
-        const avatarHTML = renderAvatar({
-          imageUrl: avatar,
-          size: 'sm'
-        });
-        return `
-          <div style="display: flex; align-items: center; gap: var(--ubits-spacing-sm, 12px);">
-            ${avatarHTML}
-            <div>
-              <div class="ubits-body-md-regular">${nombre}</div>
-              ${complementario ? `<div class="ubits-body-sm-regular" style="color: var(--ubits-body-md-regular-3, #6b7280);">${complementario}</div>` : ''}
-            </div>
-          </div>
-        `;
-      }
-      return `<span class="ubits-body-md-regular">${nombre}</span>`;
+      // Solo texto del nombre (sin avatar)
+      const nombre = cellValue || cellData.nombre || cellData.name || '';
+      const isEditable = column.editable;
+      const nombreElement = isEditable 
+        ? `<span class="ubits-body-md-regular" contenteditable="true" data-editable-text="true">${nombre}</span>`
+        : `<span class="ubits-body-md-regular">${nombre}</span>`;
+      return nombreElement;
     }
     
     case 'progreso': {
@@ -128,12 +114,10 @@ function renderCellByType(column: TableColumn3, row: TableRow3, columnType: Colu
           imageUrl = cellData.imageUrl || cellData.avatarUrl || cellData.avatarImage || null;
         }
         
-        // Si hay imageUrl, usar foto
+        // Si hay imageUrl, usar foto (sin badge)
         if (imageUrl) {
           avatarHTML = renderAvatar({
             imageUrl: imageUrl,
-            badgeColor: avatar && typeof avatar === 'object' ? avatar.badgeColor : undefined,
-            badgeContent: avatar && typeof avatar === 'object' ? avatar.badgeContent : undefined,
             size: 'sm'
           });
         } else {
@@ -144,12 +128,10 @@ function renderCellByType(column: TableColumn3, row: TableRow3, columnType: Colu
           });
         }
       } else if (avatarVariant === 'initials') {
-        // Variante Initials: usar initials si están disponibles, sino generarlas del nombre
+        // Variante Initials: usar initials si están disponibles, sino generarlas del nombre (sin badge)
         if (avatar && typeof avatar === 'object' && avatar.initials) {
           avatarHTML = renderAvatar({
             initials: avatar.initials,
-            badgeColor: avatar.badgeColor,
-            badgeContent: avatar.badgeContent,
             size: 'sm'
           });
         } else {
@@ -160,14 +142,12 @@ function renderCellByType(column: TableColumn3, row: TableRow3, columnType: Colu
           });
         }
       } else {
-        // Variante Icon: usar icon si está disponible, sino usar 'user' por defecto
+        // Variante Icon: usar icon si está disponible, sino usar 'user' por defecto (sin badge)
         const iconName = avatar && typeof avatar === 'object' && avatar.icon 
           ? avatar.icon 
           : 'user';
         avatarHTML = renderAvatar({
           icon: iconName,
-          badgeColor: avatar && typeof avatar === 'object' ? avatar.badgeColor : undefined,
-          badgeContent: avatar && typeof avatar === 'object' ? avatar.badgeContent : undefined,
           size: 'sm'
         });
       }
@@ -1051,19 +1031,33 @@ export function createDataTable3(options: DataTable3Options): {
       });
       
       // Guardar cambios cuando pierde el foco
-      field.addEventListener('blur', () => {
+      field.addEventListener('blur', (e) => {
+        e.stopPropagation();
         const newValue = (field as HTMLElement).textContent || '';
         const row = currentOptions.rows.find(r => r.id === rowId);
         
         if (row) {
+          // Obtener la columna para verificar el tipo
+          const col = currentOptions.columns.find(c => c.id === columnId);
+          
           // Actualizar el valor según el tipo de columna
-          if (columnId === 'nombre' || row.data[columnId] !== undefined) {
-            row.data[columnId] = newValue.trim();
-          } else {
-            // Si es tipo 'nombre-avatar', actualizar 'nombre'
+          if (col && (col.type === 'nombre' || col.type === 'nombre-avatar')) {
+            // Siempre actualizar 'nombre' en los datos
             row.data.nombre = newValue.trim();
+            // También actualizar en el ID de la columna si existe
+            if (row.data[columnId] !== undefined) {
+              row.data[columnId] = newValue.trim();
+            }
+          } else {
+            // Para otros tipos, usar el columnId
+            row.data[columnId] = newValue.trim();
           }
         }
+      });
+      
+      // Prevenir que se edite el contenido al hacer doble click
+      field.addEventListener('dblclick', (e) => {
+        e.stopPropagation();
       });
       
       // Prevenir que se borre el contenido al hacer click
