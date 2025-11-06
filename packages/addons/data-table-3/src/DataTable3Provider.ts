@@ -390,7 +390,8 @@ function renderCellByType(column: TableColumn3, row: TableRow3, columnType: Colu
       const isEditable = column.editable === true;
       const disabled = !isEditable;
       
-      // 🔍 LOGS DETALLADOS - Removidos para limpieza
+      // 🔍 LOGS DETALLADOS
+      // Log removido para limpieza
       
       const checkboxHTML = renderCheckbox({
         label: labelText,
@@ -399,7 +400,15 @@ function renderCellByType(column: TableColumn3, row: TableRow3, columnType: Colu
         disabled: disabled
       });
       
-      // Log removido para limpieza
+      console.log('📦 [CHECKBOX HTML]', {
+        columnId: column.id,
+        rowId: row.id,
+        htmlLength: checkboxHTML.length,
+        hasLabel: checkboxHTML.includes('ubits-checkbox__label'),
+        hasDisabled: checkboxHTML.includes('disabled'),
+        hasEditable: isEditable,
+        htmlPreview: checkboxHTML.substring(0, 200)
+      });
       
       // Agregar atributos para identificar el checkbox
       const finalHTML = checkboxHTML.replace(
@@ -830,7 +839,16 @@ export function createDataTable3(options: DataTable3Options): {
 
   // Función para renderizar
   const render = () => {
-    // Log removido para limpieza
+    console.log('🔄 [RENDER START]', {
+      timestamp: new Date().toISOString(),
+      columnsCount: currentOptions.columns.length,
+      rowsCount: currentOptions.rows.length,
+      checkboxColumns: currentOptions.columns.filter(c => c.type === 'checkbox').map(c => ({
+        id: c.id,
+        editable: c.editable,
+        checkboxLabel: c.checkboxLabel
+      }))
+    });
     
     const newHTML = renderDataTable3(
       { ...currentOptions, sortColumnId, sortDirection } as any, 
@@ -963,7 +981,7 @@ export function createDataTable3(options: DataTable3Options): {
             
             // No permitir arrastrar la columna de checkbox
             if (isDraggedCheckbox) {
-              // Log removido para limpieza
+              console.log('🚫 No se puede arrastrar la columna de checkbox');
               return;
             }
             
@@ -981,7 +999,8 @@ export function createDataTable3(options: DataTable3Options): {
               // Encontrar el índice de la columna de checkbox en el orden actual
               const checkboxColumnIndex = columnOrder.findIndex(id => id === 'checkbox' || id.startsWith('checkbox-'));
               
-              // Log removido para limpieza
+                // Log removido para limpieza
+                // console.log('📊 Reordenamiento:', { ... });
               
               // Si no hay columna de checkbox, permitir el movimiento
               if (checkboxColumnIndex === -1) {
