@@ -543,9 +543,34 @@ function renderColumnHeader(
   sortColumnId: string | null = null,
   sortDirection: 'asc' | 'desc' | null = null
 ): string {
-  // Si es una columna de checkbox fija, no renderizar header (eliminado)
+  // Si es una columna de checkbox, renderizar solo el checkbox (sin título ni drag handle)
   if (column.id === 'checkbox' || column.id.startsWith('checkbox-')) {
-    return ''; // No renderizar header para columna de checkbox fija
+    // Opcional: calcular si todos están seleccionados para el checkbox del header
+    const allChecked = rows.length > 0 && rows.every(row => row.data[column.id] === true);
+    const someChecked = rows.some(row => row.data[column.id] === true);
+    
+    const checkboxHTML = renderCheckbox({
+      label: '',
+      checked: allChecked,
+      indeterminate: someChecked && !allChecked,
+      size: 'md',
+      className: 'ubits-data-table-3__column-checkbox-header'
+    });
+    
+    const checkbox = checkboxHTML.replace(
+      '<input',
+      `<input data-column-checkbox-header="${column.id}" aria-label="Seleccionar todos ${column.title}"`
+    );
+    
+    return `
+      <th 
+        class="ubits-data-table-3__column-header ubits-data-table-3__column-header--checkbox" 
+        style="${column.width ? `width: ${column.width}px;` : ''}" 
+        data-column-id="${column.id}"
+      >
+        ${checkbox}
+      </th>
+    `;
   }
 
   // Para columnas normales, mostrar drag handle y título
@@ -768,9 +793,10 @@ export function renderDataTable3(
     className
   ].filter(Boolean).join(' ');
 
-  // Agregar espacio en blanco en el header para alinear con la columna de controles de las filas
+  // Solo renderizar la columna de controles en el header si hay controles en las filas
   const controlsHeader = hasControls ? `
-          <th class="ubits-data-table-3__controls-column-header"></th>
+          <th class="ubits-data-table-3__controls-column-header">
+          </th>
   ` : '';
   
   // Estructura sin contenedor adicional: la tabla directamente
@@ -1227,7 +1253,22 @@ export function createDataTable3(options: DataTable3Options): {
       });
     });
 
-    // Checkboxes de header de columnas de checkbox (eliminado - el header ya no se renderiza)
+    // Checkboxes de header de columnas de checkbox (para seleccionar todos en esa columna)
+    const columnCheckboxHeaders = element.querySelectorAll('input[data-column-checkbox-header]');
+    columnCheckboxHeaders.forEach(checkbox => {
+      checkbox.addEventListener('change', (e) => {
+        const input = e.target as HTMLInputElement;
+        const columnId = input.getAttribute('data-column-checkbox-header')!;
+        const isChecked = input.checked;
+        
+        // Actualizar todos los checkboxes de esa columna en todas las filas
+        currentOptions.rows.forEach(row => {
+          row.data[columnId] = isChecked;
+        });
+        
+        render();
+      });
+    });
 
     // Botones de expandir
     const expandButtons = element.querySelectorAll('[data-expand-button="true"]');

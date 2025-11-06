@@ -32,7 +32,7 @@
     border-bottom: 1px solid var(--ubits-border-1, #d0d2d5);
 }
 
-/* Columna de controles - Header (oculto pero ocupa espacio para alineación) */
+/* Columna de controles - Header */
 .ubits-data-table-3__controls-column-header {
     padding: var(--ubits-spacing-sm, 12px) var(--ubits-spacing-xs, 4px) var(--ubits-spacing-sm, 12px) var(--ubits-spacing-md, 16px);
     text-align: center;
@@ -40,12 +40,13 @@
     width: auto;
     min-width: 0;
     vertical-align: middle;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     position: sticky;
     left: 0;
     z-index: 15;
-    visibility: hidden; /* Ocultar visualmente pero mantener el espacio para alineación */
-    border: none;
-    box-shadow: none;
+    box-shadow: 2px 0 4px rgba(0, 0, 0, 0.05);
 }
 
 /* Columna de controles - Celdas */
@@ -177,7 +178,7 @@
 .ubits-data-table-3__column-header-content {
     display: flex;
     align-items: center;
-    gap: 0; /* Eliminado el espacio entre drag handle y título */
+    gap: var(--ubits-spacing-xs, 4px);
     padding-left: 0;
     position: relative;
     width: 100%;
@@ -189,7 +190,7 @@
     font-weight: 600;
     color: var(--ubits-body-md-regular-1, #1f2937);
     margin-left: 0;
-    padding-left: 0; /* Eliminado el padding para que quede junto al drag handle */
+    padding-left: 10px;
     flex: 1;
 }
 
@@ -367,7 +368,7 @@
 .ubits-data-table-3__column-header--checkbox {
     text-align: left;
     padding: 8px 4px;
-    padding-left: 11px; /* Ajustado para alinear con los checkboxes de las filas */
+    padding-left: 4px;
     padding-right: 4px;
     position: sticky;
     left: 70px;
@@ -538,17 +539,6 @@
     min-width: 200px;
     max-width: 300px;
     overflow: hidden;
-}
-
-/* Tags de estado con ancho uniforme en la columna de estado */
-.ubits-data-table-3__cell--estado .ubits-status-tag {
-    width: 120px; /* Ancho fijo para todos los tags de estado */
-    min-width: 120px;
-    max-width: 120px;
-    display: inline-flex;
-    justify-content: center;
-    text-align: center;
-    box-sizing: border-box;
 }
 
 /* Celda editable */
