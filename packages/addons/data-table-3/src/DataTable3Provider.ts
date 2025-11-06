@@ -1400,21 +1400,54 @@ export function createDataTable3(options: DataTable3Options): {
         // Usar position: absolute para que se mueva con el scroll de la tabla
         // El contenedor padre (.ubits-data-table-3__status-editable) debe tener position: relative
         const container = statusTag.closest('.ubits-data-table-3__status-editable') as HTMLElement;
-        console.log('📍 [STATUS DROPDOWN] Posicionamiento', {
+        const statusTagRect = statusTag.getBoundingClientRect();
+        const containerRect = container?.getBoundingClientRect();
+        const containerComputedStyle = container ? window.getComputedStyle(container) : null;
+        
+        console.log('📍 [STATUS DROPDOWN] Posicionamiento detallado', {
           container: container,
           containerExists: !!container,
           containerPosition: container?.style.position,
-          statusTagRect: statusTag.getBoundingClientRect(),
+          containerComputedPosition: containerComputedStyle?.position,
+          containerPadding: containerComputedStyle ? {
+            top: containerComputedStyle.paddingTop,
+            bottom: containerComputedStyle.paddingBottom,
+            left: containerComputedStyle.paddingLeft,
+            right: containerComputedStyle.paddingRight
+          } : null,
+          containerMargin: containerComputedStyle ? {
+            top: containerComputedStyle.marginTop,
+            bottom: containerComputedStyle.marginBottom
+          } : null,
+          statusTagRect: {
+            top: statusTagRect.top,
+            bottom: statusTagRect.bottom,
+            height: statusTagRect.height,
+            left: statusTagRect.left,
+            width: statusTagRect.width
+          },
+          containerRect: containerRect ? {
+            top: containerRect.top,
+            bottom: containerRect.bottom,
+            height: containerRect.height
+          } : null,
           dropdownBefore: {
             position: dropdown.style.position,
             top: dropdown.style.top,
-            left: dropdown.style.left
+            left: dropdown.style.left,
+            marginTop: dropdown.style.marginTop
           }
         });
         
         if (container) {
           container.style.position = 'relative';
-          console.log('✅ [STATUS DROPDOWN] Container position set to relative');
+          // Asegurar que no haya padding o margin que cause espacio
+          const containerPaddingBottom = containerComputedStyle?.paddingBottom || '0px';
+          const containerMarginBottom = containerComputedStyle?.marginBottom || '0px';
+          console.log('✅ [STATUS DROPDOWN] Container position set to relative', {
+            paddingBottom: containerPaddingBottom,
+            marginBottom: containerMarginBottom
+          });
         } else {
           console.warn('⚠️ [STATUS DROPDOWN] Container no encontrado');
         }
@@ -1422,7 +1455,7 @@ export function createDataTable3(options: DataTable3Options): {
         dropdown.style.position = 'absolute';
         dropdown.style.top = '100%';
         dropdown.style.left = '0';
-        dropdown.style.marginTop = '-2px';
+        dropdown.style.marginTop = '-4px'; // Aumentar superposición para eliminar espacio visual
         dropdown.style.zIndex = '1000';
         
         console.log('📍 [STATUS DROPDOWN] Posicionamiento aplicado', {
@@ -1430,7 +1463,8 @@ export function createDataTable3(options: DataTable3Options): {
           top: dropdown.style.top,
           left: dropdown.style.left,
           marginTop: dropdown.style.marginTop,
-          zIndex: dropdown.style.zIndex
+          zIndex: dropdown.style.zIndex,
+          expectedTop: `100% del container - 4px`
         });
         dropdown.style.backgroundColor = 'var(--ubits-bg-1, #ffffff)';
         dropdown.style.border = '1px solid var(--ubits-border-1, #d0d2d5)';
@@ -1468,52 +1502,32 @@ export function createDataTable3(options: DataTable3Options): {
         listWrapper.id = listContainerId;
         dropdownContent.appendChild(listWrapper);
         
-        // Crear la lista interactiva usando createList
-        // createList modifica el innerHTML del contenedor con el ID especificado
-        // y retorna el elemento .ubits-list dentro del contenedor
-        try {
-          createList({
-            containerId: listContainerId,
-            items: listItems,
-            size: 'sm',
-            maxHeight: '300px',
-            onSelectionChange: (selectedItem, index) => {
-              if (selectedItem && index !== null) {
-                const option = statusOptions[index];
-                if (option) {
-                  const row = currentOptions.rows.find(r => r.id === rowId);
-                  if (row) {
-                    const col = currentOptions.columns.find(c => c.id === columnId);
-                    if (col) {
-                      const labelToSave = statusToLabel[option.status] || option.label;
-                      row.data[columnId] = labelToSave;
-                      row.data.estado = labelToSave;
-                      row.data.status = labelToSave;
-                      
-                      render();
-                    }
-                  }
-                  closeDropdown();
-                }
-              }
+        console.log('📦 [STATUS DROPDOWN] Contenedor de lista creado', {
+          listWrapper: listWrapper,
+          listWrapperId: listWrapper.id,
+          listWrapperExists: !!listWrapper,
+          dropdownContent: dropdownContent,
+          dropdownContentChildren: dropdownContent.children.length
+        });
+        
+        // Definir setupScrollbar antes del try para que esté disponible en los setTimeout
+        function setupScrollbar(listElementParam: HTMLElement) {
+            if (!listElementParam) {
+              console.error('❌ [STATUS DROPDOWN] setupScrollbar llamado sin listElement');
+              return;
             }
-          });
-          
-          // Obtener el elemento .ubits-list y sincronizar el scrollbar personalizado
-          // Esperar un momento para que la lista se renderice completamente
-          setTimeout(() => {
-            const listElement = listWrapper.querySelector('.ubits-list') as HTMLElement;
             
-            console.log('📋 [STATUS DROPDOWN] Buscando lista', {
-              listWrapper: listWrapper,
-              listWrapperId: listWrapper.id,
+            const listElement = listElementParam;
+            
+            console.log('📋 [STATUS DROPDOWN] Configurando scrollbar para lista', {
               listElement: listElement,
               listElementExists: !!listElement,
               listElementClasses: listElement?.className,
               listElementStyles: listElement ? {
                 scrollbarWidth: listElement.style.scrollbarWidth,
                 overflowY: listElement.style.overflowY,
-                height: listElement.style.height
+                height: listElement.style.height,
+                computedScrollbarWidth: window.getComputedStyle(listElement).scrollbarWidth
               } : null
             });
             
@@ -1661,11 +1675,284 @@ export function createDataTable3(options: DataTable3Options): {
               
               // Actualizar inicialmente
               setTimeout(updateScrollbar, 0);
+            } else {
+              console.error('❌ [STATUS DROPDOWN] Scrollbar personalizado no encontrado', {
+                scrollbarBar: scrollbarBar,
+                scrollbarContainer: scrollbarContainer
+              });
             }
           }
-          }, 10);
+        }
+        
+        // Crear la lista interactiva usando createList
+        // createList modifica el innerHTML del contenedor con el ID especificado
+        // y retorna el elemento .ubits-list dentro del contenedor
+        let listElement: HTMLElement | null = null;
+        try {
+          console.log('🔄 [STATUS DROPDOWN] Llamando a createList', {
+            containerId: listContainerId,
+            itemsCount: listItems.length,
+            size: 'sm',
+            maxHeight: '300px'
+          });
+          
+          listElement = createList({
+            containerId: listContainerId,
+            items: listItems,
+            size: 'sm',
+            maxHeight: '300px',
+            onSelectionChange: (selectedItem, index) => {
+              if (selectedItem && index !== null) {
+                const option = statusOptions[index];
+                if (option) {
+                  const row = currentOptions.rows.find(r => r.id === rowId);
+                  if (row) {
+                    const col = currentOptions.columns.find(c => c.id === columnId);
+                    if (col) {
+                      const labelToSave = statusToLabel[option.status] || option.label;
+                      row.data[columnId] = labelToSave;
+                      row.data.estado = labelToSave;
+                      row.data.status = labelToSave;
+                      
+                      render();
+                    }
+                  }
+                  closeDropdown();
+                }
+              }
+            }
+          });
+          
+          console.log('✅ [STATUS DROPDOWN] createList retornó', {
+            listElement: listElement,
+            listElementExists: !!listElement,
+            listElementClasses: listElement?.className,
+            listElementHTML: listElement ? listElement.outerHTML.substring(0, 200) : null,
+            listWrapperInnerHTML: listWrapper.innerHTML.substring(0, 200)
+          });
+          
+          // Obtener el elemento .ubits-list y sincronizar el scrollbar personalizado
+          // Usar el elemento retornado directamente o buscarlo si no se retornó
+          if (!listElement) {
+            console.warn('⚠️ [STATUS DROPDOWN] createList no retornó elemento, buscando...');
+            listElement = listWrapper.querySelector('.ubits-list') as HTMLElement;
+          }
+          
+          // Si aún no existe, esperar un momento
+          if (!listElement) {
+            console.warn('⚠️ [STATUS DROPDOWN] Lista no encontrada inmediatamente, esperando...');
+            setTimeout(() => {
+              const foundListElement = listWrapper.querySelector('.ubits-list') as HTMLElement;
+              console.log('📋 [STATUS DROPDOWN] Buscando lista después de timeout', {
+                foundListElement: foundListElement,
+                foundListElementExists: !!foundListElement,
+                listWrapperInnerHTML: listWrapper.innerHTML.substring(0, 300)
+              });
+              
+              if (foundListElement) {
+                setupScrollbar(foundListElement);
+              } else {
+                console.error('❌ [STATUS DROPDOWN] Lista no encontrada después de timeout');
+              }
+            }, 50);
+          } else {
+            setupScrollbar(listElement);
+          }
+          
+          // Si la lista no se encontró, intentar de nuevo después de más tiempo
+          if (!listElement) {
+            console.warn('⚠️ [STATUS DROPDOWN] Lista no encontrada, intentando de nuevo después de 100ms...');
+            setTimeout(() => {
+              const retryListElement = listWrapper.querySelector('.ubits-list') as HTMLElement;
+              console.log('🔄 [STATUS DROPDOWN] Reintento de búsqueda de lista', {
+                retryListElement: retryListElement,
+                retryListElementExists: !!retryListElement,
+                listWrapperInnerHTML: listWrapper.innerHTML.substring(0, 500)
+              });
+              
+              if (retryListElement) {
+                setupScrollbar(retryListElement);
+              } else {
+                console.error('❌ [STATUS DROPDOWN] Lista no encontrada después de reintento');
+              }
+            }, 100);
+          }
         } catch (error) {
-          console.error('Error creating list:', error);
+          console.error('❌ [STATUS DROPDOWN] Error creating list:', error);
+        }
+        
+        // Definir setupScrollbar fuera del try para que esté disponible en los setTimeout
+        function setupScrollbar(listElementParam: HTMLElement) {
+            if (!listElementParam) {
+              console.error('❌ [STATUS DROPDOWN] setupScrollbar llamado sin listElement');
+              return;
+            }
+            
+            const listElement = listElementParam;
+            
+            console.log('📋 [STATUS DROPDOWN] Configurando scrollbar para lista', {
+              listElement: listElement,
+              listElementExists: !!listElement,
+              listElementClasses: listElement?.className,
+              listElementStyles: listElement ? {
+                scrollbarWidth: listElement.style.scrollbarWidth,
+                overflowY: listElement.style.overflowY,
+                height: listElement.style.height,
+                computedScrollbarWidth: window.getComputedStyle(listElement).scrollbarWidth
+              } : null
+            });
+            
+            if (listElement) {
+              console.log('🎨 [STATUS DROPDOWN] Ocultando scrollbar nativo', {
+                before: {
+                  scrollbarWidth: window.getComputedStyle(listElement).scrollbarWidth,
+                  webkitScrollbarWidth: window.getComputedStyle(listElement, '::-webkit-scrollbar').width
+                }
+              });
+              
+              // Forzar ocultar scrollbar nativo con estilos inline
+              listElement.style.scrollbarWidth = 'none';
+              listElement.style.setProperty('-ms-overflow-style', 'none', 'important');
+              listElement.style.setProperty('scrollbar-width', 'none', 'important');
+              
+              // Ocultar scrollbar en WebKit
+              const style = document.createElement('style');
+              style.id = `scrollbar-hide-${listContainerId}`;
+              style.textContent = `
+                #${listContainerId} .ubits-list::-webkit-scrollbar {
+                  width: 0px !important;
+                  height: 0px !important;
+                  display: none !important;
+                }
+                #${listContainerId} .ubits-list::-webkit-scrollbar-thumb {
+                  display: none !important;
+                }
+                #${listContainerId} .ubits-list::-webkit-scrollbar-track {
+                  display: none !important;
+                }
+              `;
+              document.head.appendChild(style);
+              
+              console.log('✅ [STATUS DROPDOWN] Estilos de ocultación aplicados', {
+                styleElement: style,
+                styleId: style.id,
+                after: {
+                  scrollbarWidth: listElement.style.scrollbarWidth,
+                  computedScrollbarWidth: window.getComputedStyle(listElement).scrollbarWidth
+                }
+              });
+            // Sincronizar scrollbar personalizado con el scroll de la lista
+            const scrollbarBar = dropdown.querySelector('.ubits-data-table-3__status-dropdown-scrollbar-bar') as HTMLElement;
+            const scrollbarContainer = dropdown.querySelector('.ubits-data-table-3__status-dropdown-scrollbar') as HTMLElement;
+            
+            console.log('🎚️ [STATUS DROPDOWN] Elementos del scrollbar', {
+              scrollbarBar: scrollbarBar,
+              scrollbarBarExists: !!scrollbarBar,
+              scrollbarContainer: scrollbarContainer,
+              scrollbarContainerExists: !!scrollbarContainer,
+              scrollbarContainerHeight: scrollbarContainer?.clientHeight
+            });
+            
+            if (scrollbarBar && scrollbarContainer) {
+              console.log('✅ [STATUS DROPDOWN] Scrollbar personalizado encontrado, configurando...');
+              
+              const updateScrollbar = () => {
+                const scrollTop = listElement.scrollTop;
+                const scrollHeight = listElement.scrollHeight;
+                const clientHeight = listElement.clientHeight;
+                const scrollableHeight = scrollHeight - clientHeight;
+                
+                console.log('🔄 [STATUS DROPDOWN] Actualizando scrollbar', {
+                  scrollTop,
+                  scrollHeight,
+                  clientHeight,
+                  scrollableHeight,
+                  scrollbarContainerHeight: scrollbarContainer.clientHeight
+                });
+                
+                if (scrollableHeight > 0 && scrollbarContainer.clientHeight > 0) {
+                  const scrollbarHeight = scrollbarContainer.clientHeight - 16; // 8px padding top + 8px padding bottom
+                  const thumbHeight = Math.max(20, (clientHeight / scrollHeight) * scrollbarHeight);
+                  const maxThumbTop = scrollbarHeight - thumbHeight;
+                  const thumbTop = Math.max(0, Math.min(maxThumbTop, (scrollTop / scrollableHeight) * maxThumbTop));
+                  
+                  scrollbarBar.style.height = `${thumbHeight}px`;
+                  scrollbarBar.style.transform = `translateY(${thumbTop}px)`;
+                  scrollbarBar.style.opacity = '1';
+                  
+                  console.log('📊 [STATUS DROPDOWN] Scrollbar actualizado', {
+                    scrollbarHeight,
+                    thumbHeight,
+                    thumbTop,
+                    opacity: scrollbarBar.style.opacity
+                  });
+                } else {
+                  scrollbarBar.style.opacity = '0';
+                  console.log('👻 [STATUS DROPDOWN] Scrollbar oculto (no hay scroll)', {
+                    scrollableHeight,
+                    scrollbarContainerHeight: scrollbarContainer.clientHeight
+                  });
+                }
+              };
+              
+              // Funcionalidad de arrastre del scrollbar
+              let isDragging = false;
+              let startY = 0;
+              let startScrollTop = 0;
+              
+              const handleMouseDown = (e: MouseEvent) => {
+                isDragging = true;
+                startY = e.clientY;
+                startScrollTop = listElement.scrollTop;
+                e.preventDefault();
+                
+                const handleMouseMove = (e: MouseEvent) => {
+                  if (!isDragging) return;
+                  
+                  const deltaY = e.clientY - startY;
+                  const scrollbarHeight = scrollbarContainer.clientHeight - 16;
+                  const scrollHeight = listElement.scrollHeight;
+                  const clientHeight = listElement.clientHeight;
+                  const scrollableHeight = scrollHeight - clientHeight;
+                  
+                  if (scrollableHeight > 0) {
+                    const scrollRatio = scrollableHeight / (scrollbarHeight - scrollbarBar.clientHeight);
+                    const newScrollTop = startScrollTop + (deltaY * scrollRatio);
+                    listElement.scrollTop = Math.max(0, Math.min(scrollableHeight, newScrollTop));
+                  }
+                };
+                
+                const handleMouseUp = () => {
+                  isDragging = false;
+                  document.removeEventListener('mousemove', handleMouseMove);
+                  document.removeEventListener('mouseup', handleMouseUp);
+                };
+                
+                document.addEventListener('mousemove', handleMouseMove);
+                document.addEventListener('mouseup', handleMouseUp);
+              };
+              
+              scrollbarBar.addEventListener('mousedown', handleMouseDown);
+              
+              // Actualizar scrollbar cuando se hace scroll
+              listElement.addEventListener('scroll', updateScrollbar);
+              
+              // Actualizar scrollbar cuando cambia el tamaño
+              const resizeObserver = new ResizeObserver(() => {
+                updateScrollbar();
+              });
+              resizeObserver.observe(listElement);
+              resizeObserver.observe(scrollbarContainer);
+              
+              // Actualizar inicialmente
+              setTimeout(updateScrollbar, 0);
+            } else {
+              console.error('❌ [STATUS DROPDOWN] Scrollbar personalizado no encontrado', {
+                scrollbarBar: scrollbarBar,
+                scrollbarContainer: scrollbarContainer
+              });
+            }
+          }
         }
         
         // Cerrar al hacer click fuera
