@@ -859,17 +859,6 @@ export function createDataTable3(options: DataTable3Options): {
         const beforeRect = beforeCell?.getBoundingClientRect();
         
         // Log removido para limpieza
-          checkboxMargin: checkboxComputed?.margin,
-          checkboxGap: checkboxComputed?.gap,
-          hasEditableClass: cell.classList.contains('ubits-data-table-3__cell--editable'),
-          isDisabled: checkbox?.querySelector('input[disabled]') !== null,
-          beforeLeft: beforeRect ? `${beforeRect.left.toFixed(2)}px` : 'N/A',
-          beforeWidth: beforeRect ? `${beforeRect.width.toFixed(2)}px` : 'N/A',
-          leftDiff: beforeRect ? `${(rect.left - beforeRect.left).toFixed(2)}px` : 'N/A',
-          widthDiff: beforeRect ? `${(rect.width - beforeRect.width).toFixed(2)}px` : 'N/A',
-          hasMoved: beforeRect && Math.abs(rect.left - beforeRect.left) > 1,
-          hasResized: beforeRect && Math.abs(rect.width - beforeRect.width) > 1
-        });
       });
     }, 100);
     
