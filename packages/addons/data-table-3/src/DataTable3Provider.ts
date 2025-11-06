@@ -1422,7 +1422,7 @@ export function createDataTable3(options: DataTable3Options): {
         dropdown.style.position = 'absolute';
         dropdown.style.top = '100%';
         dropdown.style.left = '0';
-        dropdown.style.marginTop = '0px';
+        dropdown.style.marginTop = '1px';
         dropdown.style.zIndex = '1000';
         
         console.log('📍 [STATUS DROPDOWN] Posicionamiento aplicado', {
