@@ -727,9 +727,48 @@ export function renderDataTable3(
   // Determinar si hay controles en las filas
   const hasControls = rowReorderable || rowExpandable;
 
-  // Renderizar headers de columnas
+  // Agregar espacio en blanco en el header para alinear con la columna de controles de las filas
+  const controlsHeader = hasControls ? `
+          <th class="ubits-data-table-3__controls-column-header"></th>
+  ` : '';
+  
+  // Verificar si hay una columna de checkbox visible para agregar su header con checkbox
+  const hasCheckboxColumn = visibleColumns.some(col => col.id === 'checkbox' || col.id.startsWith('checkbox-'));
+  const checkboxColumn = hasCheckboxColumn ? visibleColumns.find(col => col.id === 'checkbox' || col.id.startsWith('checkbox-')) : null;
+  
+  // Renderizar headers de columnas, pero reemplazar el checkbox con su header personalizado
   const columnHeadersHTML = visibleColumns
-    .map(col => renderColumnHeader(col, columnReorderable, columnSortable, orderedRows, sortColumnId, sortDirection))
+    .map(col => {
+      // Si es checkbox, renderizar header personalizado con checkbox para seleccionar/deseleccionar todos
+      if (col.id === 'checkbox' || col.id.startsWith('checkbox-')) {
+        // Verificar si todos los checkboxes están seleccionados
+        const allChecked = orderedRows.length > 0 && orderedRows.every(row => {
+          const checkboxValue = row.data[col.id];
+          return checkboxValue === true || checkboxValue === 'true' || checkboxValue === 1;
+        });
+        
+        // Renderizar checkbox en el header
+        const headerCheckboxHTML = renderCheckbox({
+          label: '',
+          checked: allChecked,
+          size: 'md',
+          className: 'ubits-data-table-3__header-checkbox'
+        });
+        
+        const headerCheckbox = headerCheckboxHTML.replace(
+          '<input',
+          `<input data-column-id="${col.id}" data-header-checkbox="true" aria-label="Seleccionar todos"`
+        );
+        
+        return `
+          <th class="ubits-data-table-3__column-header--checkbox">
+            ${headerCheckbox}
+          </th>
+        `;
+      }
+      // Para otras columnas, usar renderColumnHeader normal
+      return renderColumnHeader(col, columnReorderable, columnSortable, orderedRows, sortColumnId, sortDirection);
+    })
     .join('');
 
   // Renderizar filas
@@ -741,44 +780,6 @@ export function renderDataTable3(
     'ubits-data-table-3',
     className
   ].filter(Boolean).join(' ');
-
-  // Agregar espacio en blanco en el header para alinear con la columna de controles de las filas
-  const controlsHeader = hasControls ? `
-          <th class="ubits-data-table-3__controls-column-header"></th>
-  ` : '';
-  
-  // Verificar si hay una columna de checkbox visible para agregar su header con checkbox
-  const hasCheckboxColumn = visibleColumns.some(col => col.id === 'checkbox' || col.id.startsWith('checkbox-'));
-  const checkboxColumn = hasCheckboxColumn ? visibleColumns.find(col => col.id === 'checkbox' || col.id.startsWith('checkbox-')) : null;
-  
-  // Renderizar header de checkbox con checkbox para seleccionar/deseleccionar todos
-  let checkboxHeader = '';
-  if (hasCheckboxColumn && checkboxColumn) {
-    // Verificar si todos los checkboxes están seleccionados
-    const allChecked = orderedRows.length > 0 && orderedRows.every(row => {
-      const checkboxValue = row.data[checkboxColumn.id];
-      return checkboxValue === true || checkboxValue === 'true' || checkboxValue === 1;
-    });
-    
-    // Renderizar checkbox en el header
-    const headerCheckboxHTML = renderCheckbox({
-      label: '',
-      checked: allChecked,
-      size: 'md',
-      className: 'ubits-data-table-3__header-checkbox'
-    });
-    
-    const headerCheckbox = headerCheckboxHTML.replace(
-      '<input',
-      `<input data-column-id="${checkboxColumn.id}" data-header-checkbox="true" aria-label="Seleccionar todos"`
-    );
-    
-    checkboxHeader = `
-          <th class="ubits-data-table-3__column-header--checkbox">
-            ${headerCheckbox}
-          </th>
-    `;
-  }
   
   // Estructura sin contenedor adicional: la tabla directamente
   const html = `
@@ -786,7 +787,6 @@ export function renderDataTable3(
       <thead class="ubits-data-table-3__thead">
         <tr class="ubits-data-table-3__header-row">
           ${controlsHeader}
-          ${checkboxHeader}
           ${columnHeadersHTML}
         </tr>
       </thead>
