@@ -379,13 +379,6 @@
     max-width: 28px;
 }
 
-/* Header de checkbox vacío (para mantener alineación cuando no se renderiza contenido) */
-.ubits-data-table-3__column-header--checkbox-empty {
-    visibility: hidden; /* Ocultar visualmente pero mantener el espacio para alineación */
-    border: none;
-    box-shadow: none;
-}
-
 .ubits-data-table-3__column-header--checkbox .ubits-checkbox {
     margin: 0;
     margin-left: 0;
@@ -536,121 +529,15 @@
 
 /* Status editable */
 .ubits-data-table-3__status-editable {
-    position: relative !important;
+    position: relative;
     display: inline-block;
 }
 
 .ubits-data-table-3__status-dropdown {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    margin-top: -4px;
+    position: fixed;
     min-width: 200px;
     max-width: 300px;
     overflow: hidden;
-}
-
-/* Asegurar que el contenedor no tenga padding o margin que cause espacio */
-.ubits-data-table-3__status-editable {
-    padding-bottom: 0 !important;
-    margin-bottom: 0 !important;
-}
-
-/* Estructura del dropdown del status con scrollbar personalizado */
-.ubits-data-table-3__status-dropdown-body {
-    display: flex;
-    flex-direction: row;
-    gap: var(--ubits-spacing-xs, 4px);
-    flex: 1;
-    overflow: hidden;
-    min-height: 0;
-    max-height: 300px;
-    height: 300px;
-}
-
-.ubits-data-table-3__status-dropdown-content {
-    flex: 1;
-    overflow: hidden;
-    min-height: 0;
-    display: flex;
-    flex-direction: column;
-}
-
-/* Ocultar scrollbar nativo del .ubits-list dentro del dropdown */
-.ubits-data-table-3__status-dropdown .ubits-data-table-3__status-dropdown-content .ubits-list,
-.ubits-data-table-3__status-dropdown-content .ubits-list {
-    scrollbar-width: none !important; /* Firefox */
-    -ms-overflow-style: none !important; /* IE y Edge */
-    height: 100% !important;
-    max-height: 100% !important;
-    box-shadow: none !important;
-    border-radius: 0 !important;
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
-    flex: 1;
-    min-height: 0;
-}
-
-.ubits-data-table-3__status-dropdown .ubits-data-table-3__status-dropdown-content .ubits-list::-webkit-scrollbar,
-.ubits-data-table-3__status-dropdown-content .ubits-list::-webkit-scrollbar {
-    width: 0px !important;
-    height: 0px !important;
-    background: transparent !important;
-    display: none !important;
-}
-
-.ubits-data-table-3__status-dropdown .ubits-data-table-3__status-dropdown-content .ubits-list::-webkit-scrollbar-thumb,
-.ubits-data-table-3__status-dropdown-content .ubits-list::-webkit-scrollbar-thumb {
-    background: transparent !important;
-    display: none !important;
-    width: 0px !important;
-    height: 0px !important;
-}
-
-.ubits-data-table-3__status-dropdown .ubits-data-table-3__status-dropdown-content .ubits-list::-webkit-scrollbar-track,
-.ubits-data-table-3__status-dropdown-content .ubits-list::-webkit-scrollbar-track {
-    background: transparent !important;
-    display: none !important;
-    width: 0px !important;
-    height: 0px !important;
-}
-
-/* Scrollbar personalizado de UBITS para el dropdown del status */
-.ubits-data-table-3__status-dropdown-scrollbar {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    padding: var(--ubits-spacing-sm, 8px) var(--ubits-scroll-bar-padding, 4px);
-    padding-bottom: 31px;
-    overflow: hidden;
-    flex-shrink: 0;
-    width: 8px;
-    position: relative;
-}
-
-.ubits-data-table-3__status-dropdown-scrollbar-bar {
-    position: absolute;
-    top: var(--ubits-spacing-sm, 8px);
-    left: var(--ubits-scroll-bar-padding, 4px);
-    right: var(--ubits-scroll-bar-padding, 4px);
-    min-height: 20px;
-    width: 8px;
-    background-color: var(--ubits-scroll-bar-color-bg-default, #979ba3);
-    border-radius: var(--ubits-border-radius-full, 1000px);
-    opacity: 0;
-    transition: opacity 0.2s ease, transform 0.1s ease;
-    cursor: grab;
-    pointer-events: auto;
-}
-
-.ubits-data-table-3__status-dropdown-scrollbar-bar:active {
-    cursor: grabbing;
-}
-
-.ubits-data-table-3__status-dropdown-body:hover .ubits-data-table-3__status-dropdown-scrollbar-bar,
-.ubits-data-table-3__status-dropdown-scrollbar:hover .ubits-data-table-3__status-dropdown-scrollbar-bar {
-    opacity: 1;
 }
 
 /* Tags de estado con ancho uniforme en la columna de estado */
