@@ -31,6 +31,24 @@ export type { TokensSource } from './utils/createTokensAddon';
 // Exportar función helper global
 export { cambiarTokensDesdeStorybook } from './utils/createTokensAddon.example';
 
+// Sistema de componentes desde Storybook
+export {
+  ComponentManager,
+  getComponentManager
+} from './utils/ComponentManager';
+export type { ComponentAddon, ComponentSource } from './utils/ComponentManager';
+
+export {
+  loadComponentFromStorybook,
+  cambiarComponenteDesdeStorybook,
+  loadComponentsFromStorybook
+} from './utils/loadComponentFromStorybook';
+
+export {
+  initializeComponentsIntegration
+} from './ComponentsIntegration';
+export type { UBITSComponentsAPI } from './ComponentsIntegration';
+
 // Auto-inicializar integración si estamos en navegador
 if (typeof window !== 'undefined') {
   import('./TokensAddonIntegration').then(module => {
