@@ -99,7 +99,14 @@ export class UBITSTokensAddon implements TokensAddon {
       // Si no hay tokens cargados, cargar desde el add-on
       await this.loadTokensCSS();
       this.isInitialized = true;
-      console.log('✅ TokensAddon UBITS inicializado y cargado');
+      
+      // Validar después de cargar
+      const validation = this.validateDetailed();
+      if (!validation.isValid) {
+        console.warn('⚠️ Algunos tokens requeridos no están disponibles:', validation.missingTokens);
+      } else {
+        console.log('✅ TokensAddon UBITS inicializado y cargado - Todos los tokens válidos');
+      }
     } catch (error) {
       console.error('❌ Error inicializando TokensAddon:', error);
       throw error;
@@ -225,23 +232,93 @@ export class UBITSTokensAddon implements TokensAddon {
     return this.tokensJS;
   }
 
+  /**
+   * Resultado de validación detallado
+   */
+  private validationResult: {
+    isValid: boolean;
+    missingTokens: string[];
+    presentTokens: string[];
+    totalRequired: number;
+  } | null = null;
+
+  /**
+   * Valida que los tokens requeridos existan en el DOM
+   * @returns true si todos los tokens requeridos están presentes
+   */
   validate(): boolean {
-    // Validar que los tokens requeridos existan en el DOM
+    return this.validateDetailed().isValid;
+  }
+
+  /**
+   * Valida tokens y retorna resultado detallado
+   */
+  validateDetailed(): {
+    isValid: boolean;
+    missingTokens: string[];
+    presentTokens: string[];
+    totalRequired: number;
+  } {
+    // Si ya validamos y no ha cambiado nada, retornar resultado cacheado
+    if (this.validationResult && this.isInitialized) {
+      return this.validationResult;
+    }
+
     if (typeof document === 'undefined') {
-      return false;
+      this.validationResult = {
+        isValid: false,
+        missingTokens: [...this.requiredTokens],
+        presentTokens: [],
+        totalRequired: this.requiredTokens.length
+      };
+      return this.validationResult;
     }
 
     const testElement = document.createElement('div');
+    testElement.style.position = 'absolute';
+    testElement.style.visibility = 'hidden';
+    testElement.style.top = '-9999px';
     document.body.appendChild(testElement);
 
-    const allPresent = this.requiredTokens.every(token => {
-      testElement.style.setProperty(token, 'test');
-      const value = getComputedStyle(testElement).getPropertyValue(token);
-      return value !== '';
+    const missingTokens: string[] = [];
+    const presentTokens: string[] = [];
+
+    this.requiredTokens.forEach(token => {
+      // Intentar usar el token
+      testElement.style.setProperty(token, 'test-value');
+      const computedValue = getComputedStyle(testElement).getPropertyValue(token);
+      
+      if (computedValue && computedValue !== '') {
+        presentTokens.push(token);
+      } else {
+        missingTokens.push(token);
+      }
     });
 
     document.body.removeChild(testElement);
-    return allPresent;
+
+    this.validationResult = {
+      isValid: missingTokens.length === 0,
+      missingTokens,
+      presentTokens,
+      totalRequired: this.requiredTokens.length
+    };
+
+    return this.validationResult;
+  }
+
+  /**
+   * Obtiene el resultado de la última validación
+   */
+  getValidationResult() {
+    return this.validationResult;
+  }
+
+  /**
+   * Limpia el cache de validación (útil después de cambios)
+   */
+  clearValidationCache(): void {
+    this.validationResult = null;
   }
 
   getTokenList(): string[] {
