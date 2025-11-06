@@ -1443,23 +1443,8 @@ export function createDataTable3(options: DataTable3Options): {
         dropdown.style.display = 'block';
         dropdown.style.minWidth = '200px';
         dropdown.style.maxWidth = '300px';
-        dropdown.style.padding = '0';
+        dropdown.style.padding = '4px';
         dropdown.style.boxSizing = 'border-box';
-        
-        // Crear wrapper para el scrollbar personalizado (similar al popover)
-        dropdown.innerHTML = '<div class="ubits-data-table-3__status-dropdown-body"><div class="ubits-data-table-3__status-dropdown-content"></div><div class="ubits-data-table-3__status-dropdown-scrollbar"><div class="ubits-data-table-3__status-dropdown-scrollbar-bar"></div></div></div>';
-        const dropdownBody = dropdown.querySelector('.ubits-data-table-3__status-dropdown-body') as HTMLElement;
-        const dropdownContent = dropdown.querySelector('.ubits-data-table-3__status-dropdown-content') as HTMLElement;
-        
-        if (!dropdownBody || !dropdownContent) {
-          console.error('Error creating dropdown structure');
-          return;
-        }
-        
-        // Crear contenedor para la lista dentro del content
-        const listWrapper = document.createElement('div');
-        listWrapper.id = listContainerId;
-        dropdownContent.appendChild(listWrapper);
         
         // Crear la lista interactiva usando createList
         // createList modifica el innerHTML del contenedor con el ID especificado
@@ -1491,111 +1476,6 @@ export function createDataTable3(options: DataTable3Options): {
               }
             }
           });
-          
-          // Obtener el elemento .ubits-list y sincronizar el scrollbar personalizado
-          // Esperar un momento para que la lista se renderice completamente
-          setTimeout(() => {
-            const listElement = listWrapper.querySelector('.ubits-list') as HTMLElement;
-            if (listElement) {
-              // Forzar ocultar scrollbar nativo con estilos inline
-              listElement.style.scrollbarWidth = 'none';
-              listElement.style.setProperty('-ms-overflow-style', 'none', 'important');
-              listElement.style.setProperty('scrollbar-width', 'none', 'important');
-              
-              // Ocultar scrollbar en WebKit
-              const style = document.createElement('style');
-              style.textContent = `
-                #${listContainerId} .ubits-list::-webkit-scrollbar {
-                  width: 0px !important;
-                  height: 0px !important;
-                  display: none !important;
-                }
-                #${listContainerId} .ubits-list::-webkit-scrollbar-thumb {
-                  display: none !important;
-                }
-                #${listContainerId} .ubits-list::-webkit-scrollbar-track {
-                  display: none !important;
-                }
-              `;
-              document.head.appendChild(style);
-            // Sincronizar scrollbar personalizado con el scroll de la lista
-            const scrollbarBar = dropdown.querySelector('.ubits-data-table-3__status-dropdown-scrollbar-bar') as HTMLElement;
-            const scrollbarContainer = dropdown.querySelector('.ubits-data-table-3__status-dropdown-scrollbar') as HTMLElement;
-            if (scrollbarBar && scrollbarContainer) {
-              const updateScrollbar = () => {
-                const scrollTop = listElement.scrollTop;
-                const scrollHeight = listElement.scrollHeight;
-                const clientHeight = listElement.clientHeight;
-                const scrollableHeight = scrollHeight - clientHeight;
-                
-                if (scrollableHeight > 0 && scrollbarContainer.clientHeight > 0) {
-                  const scrollbarHeight = scrollbarContainer.clientHeight - 16; // 8px padding top + 8px padding bottom
-                  const thumbHeight = Math.max(20, (clientHeight / scrollHeight) * scrollbarHeight);
-                  const maxThumbTop = scrollbarHeight - thumbHeight;
-                  const thumbTop = Math.max(0, Math.min(maxThumbTop, (scrollTop / scrollableHeight) * maxThumbTop));
-                  
-                  scrollbarBar.style.height = `${thumbHeight}px`;
-                  scrollbarBar.style.transform = `translateY(${thumbTop}px)`;
-                  scrollbarBar.style.opacity = '1';
-                } else {
-                  scrollbarBar.style.opacity = '0';
-                }
-              };
-              
-              // Funcionalidad de arrastre del scrollbar
-              let isDragging = false;
-              let startY = 0;
-              let startScrollTop = 0;
-              
-              const handleMouseDown = (e: MouseEvent) => {
-                isDragging = true;
-                startY = e.clientY;
-                startScrollTop = listElement.scrollTop;
-                e.preventDefault();
-                
-                const handleMouseMove = (e: MouseEvent) => {
-                  if (!isDragging) return;
-                  
-                  const deltaY = e.clientY - startY;
-                  const scrollbarHeight = scrollbarContainer.clientHeight - 16;
-                  const scrollHeight = listElement.scrollHeight;
-                  const clientHeight = listElement.clientHeight;
-                  const scrollableHeight = scrollHeight - clientHeight;
-                  
-                  if (scrollableHeight > 0) {
-                    const scrollRatio = scrollableHeight / (scrollbarHeight - scrollbarBar.clientHeight);
-                    const newScrollTop = startScrollTop + (deltaY * scrollRatio);
-                    listElement.scrollTop = Math.max(0, Math.min(scrollableHeight, newScrollTop));
-                  }
-                };
-                
-                const handleMouseUp = () => {
-                  isDragging = false;
-                  document.removeEventListener('mousemove', handleMouseMove);
-                  document.removeEventListener('mouseup', handleMouseUp);
-                };
-                
-                document.addEventListener('mousemove', handleMouseMove);
-                document.addEventListener('mouseup', handleMouseUp);
-              };
-              
-              scrollbarBar.addEventListener('mousedown', handleMouseDown);
-              
-              // Actualizar scrollbar cuando se hace scroll
-              listElement.addEventListener('scroll', updateScrollbar);
-              
-              // Actualizar scrollbar cuando cambia el tamaño
-              const resizeObserver = new ResizeObserver(() => {
-                updateScrollbar();
-              });
-              resizeObserver.observe(listElement);
-              resizeObserver.observe(scrollbarContainer);
-              
-              // Actualizar inicialmente
-              setTimeout(updateScrollbar, 0);
-            }
-          }
-          }, 10);
         } catch (error) {
           console.error('Error creating list:', error);
         }
