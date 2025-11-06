@@ -82,7 +82,7 @@
     width: 20px;
     height: 20px;
     cursor: grab;
-    color: var(--ubits-text-3, #6b7280);
+    color: var(--ubits-body-md-regular-3, #6b7280);
     padding: var(--ubits-spacing-xs, 4px);
     border-radius: var(--ubits-border-radius-sm, 4px);
     transition: background-color 0.2s ease, color 0.2s ease;
@@ -98,22 +98,13 @@
     height: 12px;
 }
 
-/* Si el icono es vertical, rotarlo 90 grados para hacerlo horizontal */
-.ubits-data-table-3__row-drag-handle i.fa-grip-vertical {
-    transform: rotate(90deg);
-}
-
-.ubits-data-table-3__row-drag-handle i.fa-grip-dots-vertical {
-    transform: rotate(90deg);
-}
-
 .ubits-data-table-3__row-drag-handle:active {
     cursor: grabbing;
 }
 
 .ubits-data-table-3__row-drag-handle:hover {
     background-color: var(--ubits-bg-2, #f3f3f4);
-    color: var(--ubits-text-1, #1f2937);
+    color: var(--ubits-body-md-regular-1, #1f2937);
 }
 
 .ubits-data-table-3__row-drag-handle wa-icon,
@@ -127,7 +118,7 @@
     border: none;
     padding: var(--ubits-spacing-xs, 4px);
     cursor: pointer;
-    color: var(--ubits-text-3, #6b7280);
+    color: var(--ubits-body-md-regular-3, #6b7280);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -139,7 +130,7 @@
 
 .ubits-data-table-3__row-expand:hover {
     background-color: var(--ubits-bg-2, #f3f3f4);
-    color: var(--ubits-text-1, #1f2937);
+    color: var(--ubits-body-md-regular-1, #1f2937);
 }
 
 .ubits-data-table-3__row-expand:active {
@@ -154,7 +145,7 @@
     background-color: var(--ubits-bg-1, #ffffff);
     font-weight: 600;
     font-size: var(--ubits-font-size-sm, 14px);
-    color: var(--ubits-text-1, #1f2937);
+    color: var(--ubits-body-md-regular-1, #1f2937);
 }
 
 .ubits-data-table-3__column-header-content {
@@ -169,7 +160,7 @@
     font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
     font-size: var(--ubits-font-size-sm, 14px);
     font-weight: 600;
-    color: var(--ubits-text-1, #1f2937);
+    color: var(--ubits-body-md-regular-1, #1f2937);
     margin-left: 0;
     padding-left: 10px;
 }
@@ -182,7 +173,7 @@
     width: 20px;
     height: 20px;
     cursor: grab;
-    color: var(--ubits-text-3, #6b7280);
+    color: var(--ubits-body-md-regular-3, #6b7280);
     padding: var(--ubits-spacing-xs, 4px);
     margin-right: 0;
     margin-left: 0;
@@ -200,22 +191,13 @@
     height: 12px;
 }
 
-/* Si el icono es vertical, rotarlo 90 grados para hacerlo horizontal */
-.ubits-data-table-3__column-drag-handle i.fa-grip-vertical {
-    transform: rotate(90deg);
-}
-
-.ubits-data-table-3__column-drag-handle i.fa-grip-dots-vertical {
-    transform: rotate(90deg);
-}
-
 .ubits-data-table-3__column-drag-handle:active {
     cursor: grabbing;
 }
 
 .ubits-data-table-3__column-drag-handle:hover {
     background-color: var(--ubits-bg-2, #f3f3f4);
-    color: var(--ubits-text-1, #1f2937);
+    color: var(--ubits-body-md-regular-1, #1f2937);
 }
 
 .ubits-data-table-3__column-drag-handle wa-icon,
@@ -288,7 +270,7 @@
     padding-left: 10px;
     text-align: left;
     font-size: var(--ubits-font-size-sm, 14px);
-    color: var(--ubits-text-1, #1f2937);
+    color: var(--ubits-body-md-regular-1, #1f2937);
     font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
 }
 
