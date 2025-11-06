@@ -859,11 +859,6 @@ export function createDataTable3(options: DataTable3Options): {
         const beforeRect = beforeCell?.getBoundingClientRect();
         
         // Log removido para limpieza
-          cellWidthActual: computedStyle.width,
-          cellPadding: computedStyle.padding,
-          cellTextAlign: computedStyle.textAlign,
-          checkboxLeft: checkboxRect ? `${checkboxRect.left.toFixed(2)}px` : 'N/A',
-          checkboxWidth: checkboxRect ? `${checkboxRect.width.toFixed(2)}px` : 'N/A',
           checkboxMargin: checkboxComputed?.margin,
           checkboxGap: checkboxComputed?.gap,
           hasEditableClass: cell.classList.contains('ubits-data-table-3__cell--editable'),
