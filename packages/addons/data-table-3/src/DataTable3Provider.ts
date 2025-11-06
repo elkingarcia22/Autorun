@@ -6,7 +6,7 @@ import { renderAvatar } from '../../avatar/src/AvatarProvider';
 import { renderToggle } from '../../toggle/src/ToggleProvider';
 import { renderRadioButton } from '../../radio-button/src/RadioButtonProvider';
 import { renderButton } from '../../button/src/ButtonProvider';
-import { renderList } from '../../list/src/ListProvider';
+import { createList } from '../../list/src/ListProvider';
 
 /**
  * Renderiza una celda según el tipo de columna
@@ -1277,104 +1277,72 @@ export function createDataTable3(options: DataTable3Options): {
           }
         });
         
-        // Renderizar lista de estados
+        // Mapeo de estados UBITS a labels en español para guardar
+        const statusToLabel: Record<string, string> = {
+          'active': 'Activo',
+          'completed': 'Completado',
+          'published': 'Publicado',
+          'fulfilled': 'Cumplido',
+          'created': 'Creado',
+          'not-fulfilled': 'No cumplido',
+          'denied': 'Denegado',
+          'draft': 'Borrador',
+          'in-progress': 'En progreso',
+          'syncing': 'Sincronizando',
+          'pending': 'Pendiente',
+          'pending-approval': 'Pendiente aprobación',
+          'not-started': 'No iniciado',
+          'finished': 'Finalizado',
+          'archived': 'Archivado',
+          'disabled': 'Deshabilitado',
+          'paused': 'Pausado',
+          'hidden': 'Oculto'
+        };
+        
+        // Preparar items de la lista
         const listItems = statusOptions.map(option => ({
           label: option.label,
           value: option.value,
-          state: option.status === currentStatus ? 'active' : 'default' as const,
-          onClick: () => {
-            // Actualizar el estado en los datos
-            const row = currentOptions.rows.find(r => r.id === rowId);
-            if (row) {
-              const col = currentOptions.columns.find(c => c.id === columnId);
-              if (col) {
-                // Mapeo de estados UBITS a labels en español para guardar
-                const statusToLabel: Record<string, string> = {
-                  'active': 'Activo',
-                  'completed': 'Completado',
-                  'published': 'Publicado',
-                  'fulfilled': 'Cumplido',
-                  'created': 'Creado',
-                  'not-fulfilled': 'No cumplido',
-                  'denied': 'Denegado',
-                  'draft': 'Borrador',
-                  'in-progress': 'En progreso',
-                  'syncing': 'Sincronizando',
-                  'pending': 'Pendiente',
-                  'pending-approval': 'Pendiente aprobación',
-                  'not-started': 'No iniciado',
-                  'finished': 'Finalizado',
-                  'archived': 'Archivado',
-                  'disabled': 'Deshabilitado',
-                  'paused': 'Pausado',
-                  'hidden': 'Oculto'
-                };
-                
-                const labelToSave = statusToLabel[option.status] || option.label;
-                row.data[columnId] = labelToSave;
-                row.data.estado = labelToSave;
-                row.data.status = labelToSave;
-                
-                render();
-              }
-            }
-            closeDropdown();
-          }
+          state: (option.status === currentStatus ? 'active' : 'default') as const,
+          selected: option.status === currentStatus
         }));
         
-        dropdown.innerHTML = renderList({
-          containerId: `status-list-${rowId}-${columnId}`,
-          items: listItems,
-          size: 'sm',
-          maxHeight: '300px'
-        });
+        // Limpiar dropdown anterior si existe
+        dropdown.innerHTML = '';
+        const listContainerId = `status-list-${rowId}-${columnId}`;
+        dropdown.id = listContainerId;
         
         // Posicionar el dropdown debajo del status tag
         const rect = statusTag.getBoundingClientRect();
-        dropdown.style.position = 'absolute';
-        dropdown.style.top = `${rect.bottom + 4}px`;
-        dropdown.style.left = `${rect.left}px`;
+        dropdown.style.position = 'fixed';
+        dropdown.style.top = `${rect.bottom + window.scrollY + 4}px`;
+        dropdown.style.left = `${rect.left + window.scrollX}px`;
         dropdown.style.zIndex = '1000';
         dropdown.style.backgroundColor = 'var(--ubits-bg-1, #ffffff)';
         dropdown.style.border = '1px solid var(--ubits-border-1, #d0d2d5)';
         dropdown.style.borderRadius = '8px';
         dropdown.style.boxShadow = '0 4px 12px var(--ubits-shadow-md, rgba(0, 0, 0, 0.15))';
         dropdown.style.display = 'block';
+        dropdown.style.minWidth = '200px';
+        dropdown.style.maxWidth = '300px';
+        dropdown.style.padding = '4px';
+        dropdown.style.boxSizing = 'border-box';
         
-        // Inicializar la lista interactiva
-        const listContainer = dropdown.querySelector('.ubits-list');
-        if (listContainer) {
-          // Agregar event listeners a los items de la lista
-          const listItemsElements = listContainer.querySelectorAll('.ubits-list-item');
-          listItemsElements.forEach((itemEl, index) => {
-            itemEl.addEventListener('click', () => {
+        // Crear la lista interactiva usando createList
+        // createList espera que el contenedor exista, así que lo creamos primero
+        const listElement = createList({
+          containerId: listContainerId,
+          items: listItems,
+          size: 'sm',
+          maxHeight: '300px',
+          onSelectionChange: (selectedItem, index) => {
+            if (selectedItem && index !== null) {
               const option = statusOptions[index];
               if (option) {
                 const row = currentOptions.rows.find(r => r.id === rowId);
                 if (row) {
                   const col = currentOptions.columns.find(c => c.id === columnId);
                   if (col) {
-                    const statusToLabel: Record<string, string> = {
-                      'active': 'Activo',
-                      'completed': 'Completado',
-                      'published': 'Publicado',
-                      'fulfilled': 'Cumplido',
-                      'created': 'Creado',
-                      'not-fulfilled': 'No cumplido',
-                      'denied': 'Denegado',
-                      'draft': 'Borrador',
-                      'in-progress': 'En progreso',
-                      'syncing': 'Sincronizando',
-                      'pending': 'Pendiente',
-                      'pending-approval': 'Pendiente aprobación',
-                      'not-started': 'No iniciado',
-                      'finished': 'Finalizado',
-                      'archived': 'Archivado',
-                      'disabled': 'Deshabilitado',
-                      'paused': 'Pausado',
-                      'hidden': 'Oculto'
-                    };
-                    
                     const labelToSave = statusToLabel[option.status] || option.label;
                     row.data[columnId] = labelToSave;
                     row.data.estado = labelToSave;
@@ -1385,8 +1353,13 @@ export function createDataTable3(options: DataTable3Options): {
                 }
                 closeDropdown();
               }
-            });
-          });
+            }
+          }
+        });
+        
+        // createList retorna el elemento, así que lo agregamos al dropdown
+        if (listElement) {
+          dropdown.appendChild(listElement);
         }
         
         // Cerrar al hacer click fuera

@@ -441,9 +441,10 @@
 }
 
 .ubits-data-table-3__status-dropdown {
-    position: absolute;
+    position: fixed;
     min-width: 200px;
     max-width: 300px;
+    overflow: hidden;
 }
 
 /* Celda editable */
