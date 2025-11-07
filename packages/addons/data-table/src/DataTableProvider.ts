@@ -6,8 +6,10 @@ import { renderAvatar } from '../../avatar/src/AvatarProvider';
 import { renderToggle } from '../../toggle/src/ToggleProvider';
 import { renderRadioButton } from '../../radio-button/src/RadioButtonProvider';
 import { renderButton } from '../../button/src/ButtonProvider';
-import { createList } from '../../list/src/ListProvider';
+import { createList, renderList } from '../../list/src/ListProvider';
 import { createScrollbar } from '../../scroll/src/ScrollProvider';
+// Importar estilos del List para que se carguen
+import '../../list/src/styles/list.css';
 
 /**
  * Renderiza una celda según el tipo de columna
@@ -517,8 +519,11 @@ function renderCell(column: TableColumn, row: TableRow): string {
     // Determinar el padding-left según el column-id
     const paddingLeft = column.id === 'checkbox-2' ? '20px' : 'var(--ubits-spacing-md, 16px)';
     
+    // Agregar clase si la columna está fijada
+    const pinnedClass = column.pinned ? ' ubits-data-table__cell--pinned' : '';
+    
     const cellHTML = `
-      <td class="ubits-data-table__cell ubits-data-table__cell--checkbox" data-column-id="${column.id}" style="text-align: center; vertical-align: middle; padding-left: ${paddingLeft} !important;">
+      <td class="ubits-data-table__cell ubits-data-table__cell--checkbox${pinnedClass}" data-column-id="${column.id}" ${column.pinned ? 'data-pinned="true"' : ''} style="text-align: center; vertical-align: middle; padding-left: ${paddingLeft} !important;">
         ${checkbox}
       </td>
     `;
@@ -540,13 +545,14 @@ function renderCell(column: TableColumn, row: TableRow): string {
       column.type === 'radio'
     );
     const editableClass = isEditable ? 'ubits-data-table__cell--editable' : '';
+    const pinnedClass = column.pinned ? ' ubits-data-table__cell--pinned' : '';
     // Agregar data-column-id siempre para poder diferenciar en CSS
     const dataAttrs = isEditable && (column.type === 'nombre' || column.type === 'nombre-avatar' || column.type === 'estado' || column.type === 'fecha') 
-      ? `data-row-id="${row.id}" data-column-id="${column.id}" data-editable="true"` 
-      : `data-column-id="${column.id}"`;
+      ? `data-row-id="${row.id}" data-column-id="${column.id}" data-editable="true"${column.pinned ? ' data-pinned="true"' : ''}` 
+      : `data-column-id="${column.id}"${column.pinned ? ' data-pinned="true"' : ''}`;
     
     return `
-      <td class="ubits-data-table__cell ubits-data-table__cell--${column.type} ${editableClass}" ${dataAttrs}>
+      <td class="ubits-data-table__cell ubits-data-table__cell--${column.type} ${editableClass}${pinnedClass}" ${dataAttrs}>
         ${content}
       </td>
     `;
@@ -557,8 +563,11 @@ function renderCell(column: TableColumn, row: TableRow): string {
     ? column.renderCell(row.data)
     : row.data[column.id] || '';
   
+  // Agregar clase si la columna está fijada
+  const pinnedClass = column.pinned ? ' ubits-data-table__cell--pinned' : '';
+  
   return `
-    <td class="ubits-data-table__cell">
+    <td class="ubits-data-table__cell${pinnedClass}" data-column-id="${column.id}"${column.pinned ? ' data-pinned="true"' : ''}>
       ${content}
     </td>
   `;
@@ -573,7 +582,8 @@ function renderColumnHeader(
   columnSortable: boolean = true,
   rows: TableRow[] = [],
   sortColumnId: string | null = null,
-  sortDirection: 'asc' | 'desc' | null = null
+  sortDirection: 'asc' | 'desc' | null = null,
+  showColumnMenu: boolean = true
 ): string {
   // Si es una columna de checkbox, renderizar solo el checkbox (sin título ni drag handle)
   if (column.id === 'checkbox' || column.id.startsWith('checkbox-')) {
@@ -671,19 +681,56 @@ function renderColumnHeader(
     });
   }
 
+  // Botón de menú de 3 puntos con opción de fijar columna
+  const menuButton = !isCheckboxColumn && showColumnMenu ? (() => {
+    // Renderizar botón UBITS sin dropdown: tamaño xs, variant tertiary, iconOnly
+    // El onClick se manejará en attachEventListeners usando el data-column-id
+    const buttonHTML = renderButton({
+      variant: 'tertiary',
+      size: 'xs',
+      icon: 'ellipsis',
+      iconStyle: 'solid',
+      iconOnly: true,
+      className: 'ubits-data-table__column-menu-button',
+      attributes: {
+        'aria-label': `Menú de opciones de ${column.title}`,
+        'data-column-id': column.id,
+        'data-menu-button': 'true'
+      }
+    });
+    
+    return buttonHTML;
+  })() : '';
+
   const headerContent = `
     <div class="ubits-data-table__column-header-content">
       ${dragHandle}
       <span class="ubits-data-table__column-title">${column.title}</span>
-      ${sortButton}
+      <div class="ubits-data-table__column-actions">
+        ${sortButton}
+        ${menuButton}
+      </div>
     </div>
   `;
 
+  // Agregar clase si la columna está fijada
+  const pinnedClass = column.pinned ? ' ubits-data-table__column-header--pinned' : '';
+  
+  if (column.pinned) {
+    console.log('📌 [PINNED] Columna fijada detectada en renderColumnHeader:', {
+      columnId: column.id,
+      columnTitle: column.title,
+      pinned: column.pinned,
+      pinnedClass
+    });
+  }
+  
   return `
     <th 
-      class="ubits-data-table__column-header" 
+      class="ubits-data-table__column-header${pinnedClass}" 
       style="${column.width ? `width: ${column.width}px;` : ''}" 
       data-column-id="${column.id}"
+      ${column.pinned ? 'data-pinned="true"' : ''}
     >
       ${headerContent}
     </th>
@@ -787,14 +834,16 @@ export function renderDataTable(
   columnOrder: string[] = [],
   rowOrder: (string | number)[] = []
 ): string {
-  const { columns, rows, className = '', columnReorderable = false, columnSortable = true, rowReorderable = false, rowExpandable = true, showCheckbox = true, showVerticalScrollbar = false, showHorizontalScrollbar = false } = options;
+  const { columns, rows, className = '', columnReorderable = false, columnSortable = true, rowReorderable = false, rowExpandable = true, showCheckbox = true, showVerticalScrollbar = false, showHorizontalScrollbar = false, showColumnMenu = true } = options;
 
   console.log('🎨 [RENDER] ========== INICIO RENDER ==========');
   console.log('🎨 [RENDER] renderDataTable llamado con showCheckbox:', showCheckbox);
   console.log('🎨 [RENDER] renderDataTable llamado con showVerticalScrollbar:', showVerticalScrollbar);
   console.log('🎨 [RENDER] renderDataTable llamado con showHorizontalScrollbar:', showHorizontalScrollbar);
-  console.log('🎨 [RENDER] Columnas recibidas:', columns.map(c => ({ id: c.id, visible: c.visible })));
+  console.log('🎨 [RENDER] renderDataTable llamado con showColumnMenu:', showColumnMenu);
+  console.log('🎨 [RENDER] Columnas recibidas:', columns.map(c => ({ id: c.id, visible: c.visible, pinned: c.pinned })));
   console.log('🎨 [RENDER] Número de filas:', rows.length);
+  console.log('🎨 [RENDER] Estado pinned de columnas:', columns.map(c => ({ id: c.id, pinned: c.pinned, pinnedType: typeof c.pinned })));
 
   // Filtrar columnas visibles
   let visibleColumns = columns.filter(col => col.visible !== false);
@@ -900,7 +949,7 @@ export function renderDataTable(
 
   // Renderizar headers de columnas
   const columnHeadersHTML = visibleColumns
-    .map(col => renderColumnHeader(col, columnReorderable, columnSortable, orderedRows, sortColumnId, sortDirection))
+    .map(col => renderColumnHeader(col, columnReorderable, columnSortable, orderedRows, sortColumnId, sortDirection, showColumnMenu))
     .join('');
 
   console.log('📊 columnHeadersHTML length:', columnHeadersHTML.length);
@@ -1988,6 +2037,215 @@ export function createDataTable(options: DataTableOptions): {
         
         render();
       });
+    });
+    
+    // Botones de menú (3 puntos) - manejar click para mostrar dropdown
+    const menuButtons = element.querySelectorAll('[data-menu-button="true"]');
+    
+    menuButtons.forEach((button) => {
+      const btn = button as HTMLElement;
+      const columnId = btn.getAttribute('data-column-id');
+      
+      if (!columnId) {
+        return;
+      }
+      
+      // Verificar que la columna existe
+      const column = currentOptions.columns.find(col => col.id === columnId);
+      if (!column) {
+        return;
+      }
+      
+      // Crear contenedor para el dropdown del menú de columna
+      const headerCell = btn.closest('th');
+      if (!headerCell) {
+        console.warn('⚠️ [MENU BUTTON] No se encontró el header cell');
+        return;
+      }
+      
+      // Crear dropdown si no existe
+      let dropdown = headerCell.querySelector('.ubits-data-table__column-menu-dropdown') as HTMLElement;
+      if (!dropdown) {
+        dropdown = document.createElement('div');
+        dropdown.className = 'ubits-data-table__column-menu-dropdown';
+        dropdown.setAttribute('data-column-id', columnId);
+        dropdown.style.cssText = `
+          position: absolute;
+          top: 100%;
+          right: 0;
+          z-index: 1000;
+          margin-top: 4px;
+          display: none;
+          min-width: 160px;
+          background-color: var(--ubits-bg-1, #ffffff);
+          border: 1px solid var(--ubits-border-1, #d0d2d5);
+          border-radius: 8px;
+          box-shadow: 0 4px 12px var(--ubits-shadow-md, rgba(0, 0, 0, 0.15));
+          padding: 4px;
+          box-sizing: border-box;
+        `;
+        headerCell.style.position = 'relative';
+        headerCell.appendChild(dropdown);
+      }
+      
+      let isOpen = false;
+      
+      // Función para cerrar el dropdown
+      const closeDropdown = () => {
+        if (dropdown) {
+          dropdown.style.display = 'none';
+        }
+        isOpen = false;
+        if (handleOutsideClickRef) {
+          document.removeEventListener('click', handleOutsideClickRef);
+          handleOutsideClickRef = null;
+        }
+      };
+      
+      let handleOutsideClickRef: ((e: MouseEvent) => void) | null = null;
+      
+      // Agregar listener para abrir/cerrar el dropdown
+      btn.addEventListener('click', (e) => {
+        console.log('🔍 [COLUMN MENU] Click en botón de menú, columna:', columnId);
+        
+        e.preventDefault();
+        e.stopPropagation();
+        
+        // Re-obtener la columna para asegurar que está actualizada
+        const currentColumn = currentOptions.columns.find(col => col.id === columnId);
+        if (!currentColumn) {
+          console.error('❌ [COLUMN MENU] Columna no encontrada:', columnId);
+          return;
+        }
+        
+        const isPinned = currentColumn.pinned || false;
+        console.log('🔍 [COLUMN MENU] Estado de columna - pinned:', isPinned);
+        
+        // Si ya está abierto, cerrarlo
+        if (isOpen) {
+          console.log('🔍 [COLUMN MENU] Dropdown ya abierto, cerrando...');
+          closeDropdown();
+          return;
+        }
+        
+        // Cerrar otros dropdowns abiertos
+        element.querySelectorAll('.ubits-data-table__column-menu-dropdown').forEach((dd: any) => {
+          if (dd !== dropdown) {
+            dd.style.display = 'none';
+          }
+        });
+        
+        // Preparar items de la lista
+        const listItems = [
+          {
+            label: isPinned ? 'Desfijar columna' : 'Fijar columna',
+            value: 'pin',
+            state: 'default' as const
+          }
+        ];
+        
+        // Limpiar dropdown anterior
+        dropdown.innerHTML = '';
+        
+        // Crear la lista usando createList
+        const listId = `column-menu-list-${columnId}-${Math.random().toString(36).substr(2, 9)}`;
+        dropdown.id = listId;
+        
+        try {
+          console.log('🔍 [COLUMN MENU] Creando lista UBITS con createList, containerId:', listId);
+          const listElement = createList({
+            containerId: listId,
+            items: listItems,
+            size: 'sm',
+            maxHeight: '200px',
+            onSelectionChange: (selectedItem, index) => {
+              console.log('🔍 [COLUMN MENU] Item seleccionado del dropdown:', selectedItem?.label, 'value:', selectedItem?.value);
+              if (selectedItem && selectedItem.value === 'pin') {
+                // Toggle pinned
+                const column = currentOptions.columns.find(col => col.id === columnId);
+                if (column) {
+                  const oldPinned = column.pinned || false;
+                  column.pinned = !oldPinned;
+                  console.log('✅ [COLUMN MENU] Columna', columnId, oldPinned ? 'desfijada' : 'fijada', '- nuevo estado pinned:', column.pinned);
+                  
+                  // Llamar callback si existe
+                  if (currentOptions.onColumnPin) {
+                    currentOptions.onColumnPin(columnId, column.pinned);
+                  }
+                  
+                  // Re-renderizar
+                  render();
+                } else {
+                  console.error('❌ [COLUMN MENU] Columna no encontrada al intentar fijar:', columnId);
+                }
+              }
+              closeDropdown();
+            }
+          });
+          console.log('✅ [COLUMN MENU] Lista UBITS creada exitosamente, elemento:', listElement);
+        } catch (error) {
+          console.error('❌ [COLUMN MENU] Error al crear lista con createList:', error);
+          // Fallback: usar renderList
+          console.log('🔍 [COLUMN MENU] Usando fallback renderList...');
+          const listHTML = renderList({
+            items: listItems,
+            size: 'sm',
+            maxHeight: '200px'
+          });
+          dropdown.innerHTML = listHTML;
+          console.log('✅ [COLUMN MENU] HTML de lista renderizado, length:', listHTML.length);
+          
+          // Agregar event listeners manualmente
+          const listItemsElements = dropdown.querySelectorAll('.ubits-list-item');
+          console.log('🔍 [COLUMN MENU] Items encontrados en fallback:', listItemsElements.length);
+          listItemsElements.forEach((itemEl) => {
+            itemEl.addEventListener('click', () => {
+              console.log('🔍 [COLUMN MENU] Click en item del dropdown (fallback)');
+              const column = currentOptions.columns.find(col => col.id === columnId);
+              if (column) {
+                const oldPinned = column.pinned || false;
+                column.pinned = !oldPinned;
+                console.log('✅ [COLUMN MENU] Columna', columnId, oldPinned ? 'desfijada' : 'fijada', '- nuevo estado pinned:', column.pinned);
+                
+                // Llamar callback si existe
+                if (currentOptions.onColumnPin) {
+                  currentOptions.onColumnPin(columnId, column.pinned);
+                }
+                
+                // Re-renderizar
+                render();
+              }
+              closeDropdown();
+            });
+          });
+        }
+        
+        // Posicionar el dropdown
+        const rect = btn.getBoundingClientRect();
+        dropdown.style.position = 'fixed';
+        dropdown.style.top = `${rect.bottom + 4}px`;
+        dropdown.style.left = `${rect.left}px`;
+        dropdown.style.display = 'block';
+        isOpen = true;
+        console.log('✅ [COLUMN MENU] Dropdown mostrado y posicionado:', {
+          top: dropdown.style.top,
+          left: dropdown.style.left,
+          width: dropdown.offsetWidth,
+          height: dropdown.offsetHeight,
+          innerHTML: dropdown.innerHTML.substring(0, 200)
+        });
+        
+        // Cerrar al hacer click fuera
+        handleOutsideClickRef = (e: MouseEvent) => {
+          if (!dropdown.contains(e.target as Node) && !btn.contains(e.target as Node)) {
+            closeDropdown();
+          }
+        };
+        setTimeout(() => {
+          document.addEventListener('click', handleOutsideClickRef!);
+        }, 0);
+      });
+      
     });
     
     // Campos editables

@@ -95,6 +95,12 @@ export interface TableColumn {
    * Por defecto: true
    */
   emailClickable?: boolean;
+
+  /**
+   * Si la columna está fijada (pinned) - se mantiene visible al hacer scroll horizontal
+   * Por defecto: false
+   */
+  pinned?: boolean;
 }
 
 /**
@@ -182,6 +188,11 @@ export interface DataTableOptions {
   onSort?: (columnId: string, direction: 'asc' | 'desc') => void;
   
   /**
+   * Callback cuando se fija/desfija una columna
+   */
+  onColumnPin?: (columnId: string, pinned: boolean) => void;
+  
+  /**
    * Si se muestra la columna de checkbox (por defecto: true)
    */
   showCheckbox?: boolean;
@@ -195,6 +206,11 @@ export interface DataTableOptions {
    * Si se muestra el scrollbar horizontal (por defecto: false)
    */
   showHorizontalScrollbar?: boolean;
+
+  /**
+   * Si se muestra el botón de menú en los headers de las columnas (por defecto: true)
+   */
+  showColumnMenu?: boolean;
 
   /**
    * Clases CSS adicionales
