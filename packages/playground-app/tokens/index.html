@@ -4068,6 +4068,57 @@ Reglas Importantes:
         }
       })();
 
+      // Calcular total de tokens de espaciado y actualizar contador
+      (function updateSpacingCount() {
+        const spacingSection = document.getElementById('section-espaciado');
+        if (spacingSection) {
+          const spacingTokens = spacingSection.querySelectorAll('[data-token*="spacing"]');
+          const totalSpacing = spacingTokens.length;
+          
+          const spacingCategoryTitle = document.getElementById('spacing-category-title');
+          if (spacingCategoryTitle) {
+            const countSpan = spacingCategoryTitle.querySelector('span:last-child');
+            if (countSpan) {
+              countSpan.textContent = `${totalSpacing} ${totalSpacing === 1 ? 'elemento' : 'elementos'}`;
+            }
+          }
+        }
+      })();
+
+      // Calcular total de elementos de effects y actualizar contador
+      (function updateEffectsCount() {
+        const effectsSection = document.getElementById('section-effects');
+        if (effectsSection) {
+          // Effects tiene 2 categorías: Focus y Elevation (con 4 variantes: default, hover, overlay, floating)
+          const totalEffects = 2; // Focus + Elevation
+          
+          const effectsCategoryTitle = document.getElementById('effects-category-title');
+          if (effectsCategoryTitle) {
+            const countSpan = effectsCategoryTitle.querySelector('span:last-child');
+            if (countSpan) {
+              countSpan.textContent = `${totalEffects} ${totalEffects === 1 ? 'elemento' : 'elementos'}`;
+            }
+          }
+        }
+      })();
+
+      // Calcular total de elementos de grid y actualizar contador
+      (function updateGridCount() {
+        const gridSection = document.getElementById('section-grid-breakpoints');
+        if (gridSection) {
+          // Grid tiene 2 categorías: Breakpoints (4 breakpoints) y Sistema de Grid (documentación)
+          const totalGrid = 2; // Breakpoints + Sistema de Grid
+          
+          const gridCategoryTitle = document.getElementById('grid-category-title');
+          if (gridCategoryTitle) {
+            const countSpan = gridCategoryTitle.querySelector('span:last-child');
+            if (countSpan) {
+              countSpan.textContent = `${totalGrid} ${totalGrid === 1 ? 'elemento' : 'elementos'}`;
+            }
+          }
+        }
+      })();
+
       // restaurar estado por defecto de cálculo si fuese necesario
       html.setAttribute('data-theme','dark');
       // Mostrar Template por defecto si no hay hash, o respetar el hash si existe
