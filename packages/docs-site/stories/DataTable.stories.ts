@@ -76,6 +76,38 @@ const meta: Meta<DataTableOptions & { columnsCount?: number }> = {
         defaultValue: { summary: '4' },
       },
     },
+    columnType1: {
+      control: { type: 'select' },
+      options: ['nombre', 'nombre-avatar', 'nombre-avatar-texto', 'progreso', 'estado', 'radio', 'toggle', 'checkbox', 'correo', 'fecha', 'pais', 'ciudad'],
+      description: 'Tipo de columna 1 (Nombre)',
+      table: {
+        defaultValue: { summary: 'nombre' },
+      },
+    },
+    columnType2: {
+      control: { type: 'select' },
+      options: ['nombre', 'nombre-avatar', 'nombre-avatar-texto', 'progreso', 'estado', 'radio', 'toggle', 'checkbox', 'correo', 'fecha', 'pais', 'ciudad'],
+      description: 'Tipo de columna 2 (Email)',
+      table: {
+        defaultValue: { summary: 'correo' },
+      },
+    },
+    columnType3: {
+      control: { type: 'select' },
+      options: ['nombre', 'nombre-avatar', 'nombre-avatar-texto', 'progreso', 'estado', 'radio', 'toggle', 'checkbox', 'correo', 'fecha', 'pais', 'ciudad'],
+      description: 'Tipo de columna 3 (Estado)',
+      table: {
+        defaultValue: { summary: 'estado' },
+      },
+    },
+    columnType4: {
+      control: { type: 'select' },
+      options: ['nombre', 'nombre-avatar', 'nombre-avatar-texto', 'progreso', 'estado', 'radio', 'toggle', 'checkbox', 'correo', 'fecha', 'pais', 'ciudad'],
+      description: 'Tipo de columna 4 (Progreso)',
+      table: {
+        defaultValue: { summary: 'progreso' },
+      },
+    },
   },
 };
 
@@ -100,17 +132,30 @@ export const Default: Story = {
     
     // Generar columnas dinámicamente según columnsCount
     const columnsCount = args.columnsCount ?? 4;
+    
+    // Tipos de columna disponibles (pueden ser controlados desde Storybook)
+    const columnType1 = (args as any).columnType1 || 'nombre';
+    const columnType2 = (args as any).columnType2 || 'correo';
+    const columnType3 = (args as any).columnType3 || 'estado';
+    const columnType4 = (args as any).columnType4 || 'progreso';
+    const columnType5 = (args as any).columnType5 || 'nombre';
+    const columnType6 = (args as any).columnType6 || 'nombre';
+    const columnType7 = (args as any).columnType7 || 'pais';
+    const columnType8 = (args as any).columnType8 || 'fecha';
+    const columnType9 = (args as any).columnType9 || 'nombre';
+    const columnType10 = (args as any).columnType10 || 'estado';
+    
     const allColumns: TableColumn[] = [
-      { id: 'nombre', title: 'Nombre', type: 'nombre', visible: true, width: 200 },
-      { id: 'email', title: 'Email', type: 'correo', visible: true, width: 250 },
-      { id: 'estado', title: 'Estado', type: 'estado', visible: true, width: 150 },
-      { id: 'progreso', title: 'Progreso', type: 'progreso', visible: true, width: 180 },
-      { id: 'telefono', title: 'Teléfono', type: 'nombre', visible: true, width: 150 },
-      { id: 'ciudad', title: 'Ciudad', type: 'nombre', visible: true, width: 150 },
-      { id: 'pais', title: 'País', type: 'pais', visible: true, width: 150 },
-      { id: 'fecha', title: 'Fecha', type: 'fecha', visible: true, width: 150 },
-      { id: 'categoria', title: 'Categoría', type: 'nombre', visible: true, width: 150 },
-      { id: 'prioridad', title: 'Prioridad', type: 'estado', visible: true, width: 150 },
+      { id: 'nombre', title: 'Nombre', type: columnType1 as any, visible: true, width: 200 },
+      { id: 'email', title: 'Email', type: columnType2 as any, visible: true, width: 250 },
+      { id: 'estado', title: 'Estado', type: columnType3 as any, visible: true, width: 150 },
+      { id: 'progreso', title: 'Progreso', type: columnType4 as any, visible: true, width: 180 },
+      { id: 'telefono', title: 'Teléfono', type: columnType5 as any, visible: true, width: 150 },
+      { id: 'ciudad', title: 'Ciudad', type: columnType6 as any, visible: true, width: 150 },
+      { id: 'pais', title: 'País', type: columnType7 as any, visible: true, width: 150 },
+      { id: 'fecha', title: 'Fecha', type: columnType8 as any, visible: true, width: 150 },
+      { id: 'categoria', title: 'Categoría', type: columnType9 as any, visible: true, width: 150 },
+      { id: 'prioridad', title: 'Prioridad', type: columnType10 as any, visible: true, width: 150 },
     ];
     
     // Seleccionar solo las columnas necesarias según columnsCount
@@ -135,10 +180,10 @@ export const Default: Story = {
         expanded: false,
         renderExpandedContent: (data) => `
           <div style="padding: 16px;">
-            <p><strong>Información adicional:</strong></p>
-            <p>Email: ${data.email}</p>
-            <p>Estado: ${data.estado}</p>
-            <p>Progreso: ${data.progreso}%</p>
+            <h4 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600; color: var(--ubits-fg-1-high, #303a47);">Información adicional</h4>
+            <p style="margin: 0 0 4px 0; font-size: 13px; color: var(--ubits-fg-1-medium, #5c646f);">Email: ${data.email}</p>
+            <p style="margin: 0 0 4px 0; font-size: 13px; color: var(--ubits-fg-1-medium, #5c646f);">Estado: ${data.estado}</p>
+            <p style="margin: 0; font-size: 13px; color: var(--ubits-fg-1-medium, #5c646f);">Progreso: ${data.progreso}%</p>
           </div>
         `,
       },
@@ -177,10 +222,10 @@ export const Default: Story = {
         expanded: false,
         renderExpandedContent: (data) => `
           <div style="padding: 16px;">
-            <p><strong>Detalles del usuario:</strong></p>
-            <p>Email: ${data.email}</p>
-            <p>Estado: ${data.estado}</p>
-            <p>Progreso: ${data.progreso}%</p>
+            <h4 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600; color: var(--ubits-fg-1-high, #303a47);">Detalles del usuario</h4>
+            <p style="margin: 0 0 4px 0; font-size: 13px; color: var(--ubits-fg-1-medium, #5c646f);">Email: ${data.email}</p>
+            <p style="margin: 0 0 4px 0; font-size: 13px; color: var(--ubits-fg-1-medium, #5c646f);">Estado: ${data.estado}</p>
+            <p style="margin: 0; font-size: 13px; color: var(--ubits-fg-1-medium, #5c646f);">Progreso: ${data.progreso}%</p>
           </div>
         `,
       },
@@ -221,8 +266,8 @@ export const Default: Story = {
       {
         id: 6,
         data: {
-          nombre: 'Laura Rodríguez',
-          email: 'laura.rodriguez@empresa.com',
+          nombre: 'Patricia Rodríguez',
+          email: 'patricia.rodriguez@empresa.com',
           estado: 'Activo',
           progreso: 60,
           telefono: '+57 305 678 9012',
@@ -289,8 +334,8 @@ export const Default: Story = {
       {
         id: 10,
         data: {
-          nombre: 'Sofia Herrera',
-          email: 'sofia.herrera@empresa.com',
+          nombre: 'Daniela Herrera',
+          email: 'daniela.herrera@empresa.com',
           estado: 'Activo',
           progreso: 95,
           telefono: '+57 309 012 3456',
