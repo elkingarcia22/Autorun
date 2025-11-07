@@ -4813,82 +4813,6 @@ Reglas Importantes:
               class: 'ubits-list ubits-list-item ubits-list-item--{state}',
               example: '<div class="ubits-list" role="list">\n  <div class="ubits-list-item" role="listitem">Label</div>\n  <div class="ubits-list-item ubits-list-item--active" role="listitem">Label</div>\n  <div class="ubits-list-item ubits-list-item--disabled" role="listitem">Label</div>\n</div>',
               hasPreview: true
-            }
-          ],
-          'Feedback': [
-            {
-              name: 'Alert',
-              description: 'Componente de alert para mostrar notificaciones del sistema con diferentes variantes (success, info, warning, error).',
-              files: {
-                css: 'addons/alert/src/styles/alert.css',
-                ts: 'addons/alert/src/AlertComponent.ts'
-              },
-              variants: ['success', 'info', 'warning', 'error'],
-              sizes: [],
-              states: ['default', 'closing'],
-              features: ['4 variantes', 'Botón cerrar opcional', 'Cierre automático', 'Animaciones', 'Responsive'],
-              class: 'ubits-alert ubits-alert--{type}',
-              example: '<div class="ubits-alert ubits-alert--success">\n  <div class="ubits-alert__icon">\n    <i class="far fa-check-circle"></i>\n  </div>\n  <div class="ubits-alert__content">\n    <div class="ubits-alert__text">Mensaje del alert</div>\n  </div>\n  <button class="ubits-alert__close">\n    <i class="far fa-times"></i>\n  </button>\n</div>',
-              hasPreview: true
-            },
-            {
-              name: 'Toast',
-              description: 'Notificaciones flotantes que aparecen arriba al centro. Auto-cierre con duraciones por tipo, pausa en hover, apilado inteligente.',
-              files: {
-                css: 'addons/toast/src/styles/toast.css',
-                ts: 'addons/toast/src/ToastProvider.ts'
-              },
-              variants: ['success', 'info', 'warning', 'error'],
-              sizes: [],
-              states: ['default', 'enter', 'exit'],
-              features: ['4 variantes', 'Auto-cierre por tipo (3.5s-6.5s)', 'Pausa en hover/focus', 'Apilado (max 3)', 'Botón acción opcional', 'Timer inteligente'],
-              class: 'ubits-toast ubits-toast--{type}',
-              example: 'showToast(\'success\', \'¡Operación exitosa!\');',
-              hasPreview: true
-            },
-            {
-              name: 'Badge',
-              description: 'Componente de badge para mostrar notificaciones, contadores o indicadores. Puede usarse standalone o dentro de botones.',
-              files: {
-                css: 'addons/badge/src/styles/badge.css',
-                ts: 'addons/badge/src/index.ts'
-              },
-              variants: ['primary', 'secondary', 'success', 'warning', 'error', 'info'],
-              sizes: ['xs', 'sm', 'md', 'lg'],
-              features: ['Badge standalone', 'Badge en botones', 'Badge con contenido', 'Solo bolita (dot)', 'Con números', 'Posición absoluta'],
-              class: 'ubits-badge ubits-badge--{size} ubits-badge--{variant}',
-              example: '<!-- Standalone con número -->\n<span class="ubits-badge ubits-badge--md">5</span>\n\n<!-- Solo bolita -->\n<span class="ubits-badge ubits-badge--dot"></span>\n\n<!-- En botón -->\n<button class="ubits-button ubits-button--primary">\n  <span>Notificaciones</span>\n  <span class="ubits-button__badge"></span>\n</button>',
-              hasPreview: true
-            },
-            {
-              name: 'Status Tag',
-              description: 'Componente de tag de estado con icono izquierdo (punto de color), texto y icono derecho opcional. Múltiples estados con colores diferenciados usando tokens UBITS.',
-              files: {
-                css: 'addons/status-tag/src/styles/status-tag.css',
-                ts: 'addons/status-tag/src/StatusTagProvider.ts'
-              },
-              variants: [],
-              sizes: ['xs', 'sm', 'md'],
-              states: ['completed', 'published', 'fulfilled', 'created', 'active', 'not-fulfilled', 'denied', 'draft', 'in-progress', 'syncing', 'pending', 'pending-approval', 'not-started', 'finished', 'archived', 'disabled', 'paused', 'hidden'],
-              features: ['3 tamaños (xs, sm, md)', '19 estados predefinidos', 'Icono izquierdo (punto de color)', 'Icono derecho opcional', 'Colores según estado (verde, rojo, azul, naranja, gris)', 'Clickeable opcional', 'Usa tokens UBITS exclusivamente'],
-              class: 'ubits-status-tag ubits-status-tag--{size}',
-              example: 'renderStatusTag({\n  label: \'Completado\',\n  size: \'md\',\n  status: \'completed\',\n  rightIcon: \'chevron-down\',\n  clickable: true\n})',
-              hasPreview: true
-            },
-            {
-              name: 'Chip',
-              description: 'Componente chip para mostrar etiquetas o tags interactivas. Múltiples tamaños, estados y soporte para iconos izquierdo y derecho (botón de cerrar). Usa tokens UBITS exclusivamente.',
-              files: {
-                css: 'addons/chip/src/styles/chip.css',
-                ts: 'addons/chip/src/ChipProvider.ts'
-              },
-              variants: [],
-              sizes: ['xs', 'sm', 'md', 'lg'],
-              states: ['default', 'hover', 'active', 'pressed', 'focus', 'disabled'],
-              features: ['4 tamaños (xs: 20px, sm: 24px, md: 28px, lg: 36px)', '6 estados (default, hover, active, pressed, focus, disabled)', 'Icono izquierdo opcional', 'Icono derecho opcional (botón cerrar)', 'Clickeable opcional', 'Botón de cerrar (closable)', 'Usa tokens UBITS exclusivamente'],
-              class: 'ubits-chip ubits-chip--{size} ubits-chip--{state}',
-              example: 'renderChip({\n  label: \'Chip\',\n  size: \'md\',\n  state: \'default\',\n  leftIcon: \'tag\',\n  closable: true,\n  clickable: true\n})',
-              hasPreview: true
             },
             {
               name: 'Radio Button',
@@ -4951,51 +4875,6 @@ Reglas Importantes:
               hasPreview: true
             },
             {
-              name: 'Data Table',
-              description: 'Componente Data Table - Tabla básica con estructura de columnas separadas: drag handle, expand icon, checkbox (con columna propia y header), y columnas de datos.',
-              files: {
-                css: 'addons/data-table/src/styles/data-table.css',
-                ts: 'addons/data-table/src/DataTableProvider.ts'
-              },
-              variants: [],
-              sizes: [],
-              states: [],
-              features: ['Columna 1: Drag handle para reordenar filas', 'Columna 2: Expand icon (chevron) para expandir/colapsar', 'Columna 3: Checkbox con header propio (select all)', 'Columnas de datos configurables', 'Drag & drop de columnas y filas', 'Filas expandibles', 'Selección múltiple', 'Usa tokens UBITS exclusivamente'],
-              class: 'ubits-data-table',
-              example: 'createDataTable({\n  columns: [...],\n  rows: [...],\n  columnReorderable: true,\n  rowReorderable: true,\n  onRowSelect: (rowId, selected) => {},\n  onSelectAll: (selected) => {},\n  onRowExpand: (rowId, expanded) => {}\n})',
-              hasPreview: true
-            },
-            {
-              name: 'Avatar',
-              description: 'Componente de avatar con soporte para imagen, iniciales e icono. Múltiples tamaños y badge opcional. Usa tokens UBITS exclusivamente.',
-              files: {
-                css: 'addons/avatar/src/styles/avatar.css',
-                ts: 'addons/avatar/src/AvatarProvider.ts'
-              },
-              variants: ['photo', 'initials', 'icon'],
-              sizes: ['xs', 'sm', 'md', 'lg'],
-              states: [],
-              features: ['4 tamaños (xs: 20px, sm: 28px, md: 36px, lg: 40px)', '3 variantes (Photo, Initials, Icon)', 'Badge opcional con colores', 'Clickeable opcional', 'Usa tokens UBITS exclusivamente'],
-              class: 'ubits-avatar ubits-avatar--{size} ubits-avatar--{variant}',
-              example: 'renderAvatar({\n  imageUrl: \'https://example.com/photo.jpg\',\n  size: \'md\',\n  badgeColor: \'green\'\n})',
-              hasPreview: true
-            },
-            {
-              name: 'Progress Bar',
-              description: 'Componente de barra de progreso con 4 tamaños y variante multi-color. Permite mostrar progreso simple o múltiples segmentos con diferentes colores (yellow, green, gray, info, error). Incluye indicador opcional de texto/porcentaje.',
-              files: {
-                css: 'addons/progress/src/styles/progress.css',
-                ts: 'addons/progress/src/ProgressProvider.ts'
-              },
-              variants: ['default', 'multi-color'],
-              sizes: ['xs', 'sm', 'md', 'lg'],
-              states: [],
-              features: ['4 tamaños (xs: 4px, sm: 8px, md: 16px, lg: 20px)', '2 variantes (default, multi-color)', 'Progreso simple con valor 0-100', 'Múltiples segmentos con colores (yellow, green, gray, info, error)', 'Indicador opcional (texto o porcentaje)', 'Usa tokens UBITS exclusivamente'],
-              class: 'ubits-progress-bar ubits-progress-bar--{size} ubits-progress-bar--{variant}',
-              example: 'createProgressBar({\n  size: \'md\',\n  value: 75,\n  variant: \'default\',\n  indicator: true\n})',
-              hasPreview: true
-            },
-            {
               name: 'File Upload',
               description: 'Componente para subir archivos con drag & drop. Soporta múltiples estados (default, dragging, error, disabled) y muestra información del archivo (nombre, extensión, tamaño). Incluye botones de acción opcionales (re-subir y eliminar).',
               files: {
@@ -5008,6 +4887,38 @@ Reglas Importantes:
               features: ['4 estados (default, dragging, error, disabled)', 'Drag & drop', 'Mostrar nombre y extensión de archivo', 'Tamaño de archivo formateado (KB, MB, GB)', 'Botones de acción opcionales (re-subir, eliminar)', 'Iconos diferentes según estado', 'Usa tokens UBITS exclusivamente'],
               class: 'ubits-file-upload ubits-file-upload--{state}',
               example: 'createFileUpload({\n  state: \'default\',\n  uploadText: \'Haz clic para subir archivo\',\n  showFileSize: true,\n  showActions: true\n})',
+              hasPreview: true
+            }
+          ],
+          'Feedback': [
+            {
+              name: 'Alert',
+              description: 'Componente de alert para mostrar notificaciones del sistema con diferentes variantes (success, info, warning, error).',
+              files: {
+                css: 'addons/alert/src/styles/alert.css',
+                ts: 'addons/alert/src/AlertComponent.ts'
+              },
+              variants: ['success', 'info', 'warning', 'error'],
+              sizes: [],
+              states: ['default', 'closing'],
+              features: ['4 variantes', 'Botón cerrar opcional', 'Cierre automático', 'Animaciones', 'Responsive'],
+              class: 'ubits-alert ubits-alert--{type}',
+              example: '<div class="ubits-alert ubits-alert--success">\n  <div class="ubits-alert__icon">\n    <i class="far fa-check-circle"></i>\n  </div>\n  <div class="ubits-alert__content">\n    <div class="ubits-alert__text">Mensaje del alert</div>\n  </div>\n  <button class="ubits-alert__close">\n    <i class="far fa-times"></i>\n  </button>\n</div>',
+              hasPreview: true
+            },
+            {
+              name: 'Toast',
+              description: 'Notificaciones flotantes que aparecen arriba al centro. Auto-cierre con duraciones por tipo, pausa en hover, apilado inteligente.',
+              files: {
+                css: 'addons/toast/src/styles/toast.css',
+                ts: 'addons/toast/src/ToastProvider.ts'
+              },
+              variants: ['success', 'info', 'warning', 'error'],
+              sizes: [],
+              states: ['default', 'enter', 'exit'],
+              features: ['4 variantes', 'Auto-cierre por tipo (3.5s-6.5s)', 'Pausa en hover/focus', 'Apilado (max 3)', 'Botón acción opcional', 'Timer inteligente'],
+              class: 'ubits-toast ubits-toast--{type}',
+              example: 'showToast(\'success\', \'¡Operación exitosa!\');',
               hasPreview: true
             }
           ],
@@ -5041,6 +4952,97 @@ Reglas Importantes:
               features: ['Fondo bg-1', 'Border-radius de 8px', 'Padding interno de 12px', 'Usa tokens UBITS', 'Responsive'],
               class: 'ubits-container',
               example: '<div class="ubits-container">\n  Contenido del contenedor\n</div>',
+              hasPreview: true
+            },
+            {
+              name: 'Badge',
+              description: 'Componente de badge para mostrar notificaciones, contadores o indicadores. Puede usarse standalone o dentro de botones.',
+              files: {
+                css: 'addons/badge/src/styles/badge.css',
+                ts: 'addons/badge/src/index.ts'
+              },
+              variants: ['primary', 'secondary', 'success', 'warning', 'error', 'info'],
+              sizes: ['xs', 'sm', 'md', 'lg'],
+              features: ['Badge standalone', 'Badge en botones', 'Badge con contenido', 'Solo bolita (dot)', 'Con números', 'Posición absoluta'],
+              class: 'ubits-badge ubits-badge--{size} ubits-badge--{variant}',
+              example: '<!-- Standalone con número -->\n<span class="ubits-badge ubits-badge--md">5</span>\n\n<!-- Solo bolita -->\n<span class="ubits-badge ubits-badge--dot"></span>\n\n<!-- En botón -->\n<button class="ubits-button ubits-button--primary">\n  <span>Notificaciones</span>\n  <span class="ubits-button__badge"></span>\n</button>',
+              hasPreview: true
+            },
+            {
+              name: 'Status Tag',
+              description: 'Componente de tag de estado con icono izquierdo (punto de color), texto y icono derecho opcional. Múltiples estados con colores diferenciados usando tokens UBITS.',
+              files: {
+                css: 'addons/status-tag/src/styles/status-tag.css',
+                ts: 'addons/status-tag/src/StatusTagProvider.ts'
+              },
+              variants: [],
+              sizes: ['xs', 'sm', 'md'],
+              states: ['completed', 'published', 'fulfilled', 'created', 'active', 'not-fulfilled', 'denied', 'draft', 'in-progress', 'syncing', 'pending', 'pending-approval', 'not-started', 'finished', 'archived', 'disabled', 'paused', 'hidden'],
+              features: ['3 tamaños (xs, sm, md)', '19 estados predefinidos', 'Icono izquierdo (punto de color)', 'Icono derecho opcional', 'Colores según estado (verde, rojo, azul, naranja, gris)', 'Clickeable opcional', 'Usa tokens UBITS exclusivamente'],
+              class: 'ubits-status-tag ubits-status-tag--{size}',
+              example: 'renderStatusTag({\n  label: \'Completado\',\n  size: \'md\',\n  status: \'completed\',\n  rightIcon: \'chevron-down\',\n  clickable: true\n})',
+              hasPreview: true
+            },
+            {
+              name: 'Chip',
+              description: 'Componente chip para mostrar etiquetas o tags interactivas. Múltiples tamaños, estados y soporte para iconos izquierdo y derecho (botón de cerrar). Usa tokens UBITS exclusivamente.',
+              files: {
+                css: 'addons/chip/src/styles/chip.css',
+                ts: 'addons/chip/src/ChipProvider.ts'
+              },
+              variants: [],
+              sizes: ['xs', 'sm', 'md', 'lg'],
+              states: ['default', 'hover', 'active', 'pressed', 'focus', 'disabled'],
+              features: ['4 tamaños (xs: 20px, sm: 24px, md: 28px, lg: 36px)', '6 estados (default, hover, active, pressed, focus, disabled)', 'Icono izquierdo opcional', 'Icono derecho opcional (botón cerrar)', 'Clickeable opcional', 'Botón de cerrar (closable)', 'Usa tokens UBITS exclusivamente'],
+              class: 'ubits-chip ubits-chip--{size} ubits-chip--{state}',
+              example: 'renderChip({\n  label: \'Chip\',\n  size: \'md\',\n  state: \'default\',\n  leftIcon: \'tag\',\n  closable: true,\n  clickable: true\n})',
+              hasPreview: true
+            },
+            {
+              name: 'Avatar',
+              description: 'Componente de avatar con soporte para imagen, iniciales e icono. Múltiples tamaños y badge opcional. Usa tokens UBITS exclusivamente.',
+              files: {
+                css: 'addons/avatar/src/styles/avatar.css',
+                ts: 'addons/avatar/src/AvatarProvider.ts'
+              },
+              variants: ['photo', 'initials', 'icon'],
+              sizes: ['xs', 'sm', 'md', 'lg'],
+              states: [],
+              features: ['4 tamaños (xs: 20px, sm: 28px, md: 36px, lg: 40px)', '3 variantes (Photo, Initials, Icon)', 'Badge opcional con colores', 'Clickeable opcional', 'Usa tokens UBITS exclusivamente'],
+              class: 'ubits-avatar ubits-avatar--{size} ubits-avatar--{variant}',
+              example: 'renderAvatar({\n  imageUrl: \'https://example.com/photo.jpg\',\n  size: \'md\',\n  badgeColor: \'green\'\n})',
+              hasPreview: true
+            },
+            {
+              name: 'Progress Bar',
+              description: 'Componente de barra de progreso con 4 tamaños y variante multi-color. Permite mostrar progreso simple o múltiples segmentos con diferentes colores (yellow, green, gray, info, error). Incluye indicador opcional de texto/porcentaje.',
+              files: {
+                css: 'addons/progress/src/styles/progress.css',
+                ts: 'addons/progress/src/ProgressProvider.ts'
+              },
+              variants: ['default', 'multi-color'],
+              sizes: ['xs', 'sm', 'md', 'lg'],
+              states: [],
+              features: ['4 tamaños (xs: 4px, sm: 8px, md: 16px, lg: 20px)', '2 variantes (default, multi-color)', 'Progreso simple con valor 0-100', 'Múltiples segmentos con colores (yellow, green, gray, info, error)', 'Indicador opcional (texto o porcentaje)', 'Usa tokens UBITS exclusivamente'],
+              class: 'ubits-progress-bar ubits-progress-bar--{size} ubits-progress-bar--{variant}',
+              example: 'createProgressBar({\n  size: \'md\',\n  value: 75,\n  variant: \'default\',\n  indicator: true\n})',
+              hasPreview: true
+            }
+          ],
+          'Tablas y Datos': [
+            {
+              name: 'Data Table',
+              description: 'Componente Data Table - Tabla básica con estructura de columnas separadas: drag handle, expand icon, checkbox (con columna propia y header), y columnas de datos.',
+              files: {
+                css: 'addons/data-table/src/styles/data-table.css',
+                ts: 'addons/data-table/src/DataTableProvider.ts'
+              },
+              variants: [],
+              sizes: [],
+              states: [],
+              features: ['Columna 1: Drag handle para reordenar filas', 'Columna 2: Expand icon (chevron) para expandir/colapsar', 'Columna 3: Checkbox con header propio (select all)', 'Columnas de datos configurables', 'Drag & drop de columnas y filas', 'Filas expandibles', 'Selección múltiple', 'Usa tokens UBITS exclusivamente'],
+              class: 'ubits-data-table',
+              example: 'createDataTable({\n  columns: [...],\n  rows: [...],\n  columnReorderable: true,\n  rowReorderable: true,\n  onRowSelect: (rowId, selected) => {},\n  onSelectAll: (selected) => {},\n  onRowExpand: (rowId, expanded) => {}\n})',
               hasPreview: true
             }
           ],
