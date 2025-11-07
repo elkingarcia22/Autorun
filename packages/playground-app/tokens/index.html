@@ -5170,6 +5170,33 @@ Reglas Importantes:
           return firstComponentId;
         }
         
+        // Función para toggle de categorías (colapsar/expandir)
+        function toggleCategory(categoryId) {
+          const categoryContent = document.querySelector(`.category-content[data-category="${categoryId}"]`);
+          const categoryTitle = document.querySelector(`.category-toggle[data-category="${categoryId}"]`);
+          
+          if (!categoryContent || !categoryTitle) return;
+          
+          const isExpanded = categoryContent.style.display !== 'none';
+          const chevron = categoryTitle.querySelector('i');
+          
+          if (isExpanded) {
+            categoryContent.style.display = 'none';
+            if (chevron) {
+              chevron.classList.remove('fa-chevron-down');
+              chevron.classList.add('fa-chevron-right');
+            }
+            localStorage.setItem(`category-${categoryId}-expanded`, 'false');
+          } else {
+            categoryContent.style.display = 'block';
+            if (chevron) {
+              chevron.classList.remove('fa-chevron-right');
+              chevron.classList.add('fa-chevron-down');
+            }
+            localStorage.setItem(`category-${categoryId}-expanded`, 'true');
+          }
+        }
+        
         // Función global para manejar clicks en navegación (más robusta)
         // Función para cargar dinámicamente un componente (como los colores)
         function loadComponent(componentId) {
