@@ -3892,13 +3892,25 @@ npm run dev</code></pre>
             if(!a) return;
             e.preventDefault();
             const targetId = a.getAttribute('data-target');
-            const all = Array.from(document.querySelectorAll('#section-template, #section-colores, #section-texto, #section-iconos, #section-componentes, #section-espaciado, #section-grid-breakpoints, #section-effects'));
+            const all = Array.from(document.querySelectorAll('#section-hub, #section-addons, #section-template, #section-colores, #section-texto, #section-iconos, #section-componentes, #section-espaciado, #section-grid-breakpoints, #section-effects'));
             all.forEach(x=> x && (x.style.display = (x.id===targetId)? 'block' : 'none'));
             // estado visual activo (sin scroll automático para evitar saltos)
             document.querySelectorAll('#navbar2 .nav2-link').forEach(l=> l.classList.remove('active2'));
             document.querySelectorAll('#navbar2 .nav2-subitem').forEach(l=> l.classList.remove('active'));
             const link = document.querySelector(`#navbar2 .nav2-link[data-target="${targetId}"]`);
             if (link) link.classList.add('active2');
+            
+            // Inicializar sección de Add-ons si se está mostrando
+            if (targetId === 'section-addons') {
+              setTimeout(() => {
+                console.log('🔄 Sección Add-ons activada desde navegación, inicializando...');
+                if (typeof initializeAddonsSection === 'function') {
+                  initializeAddonsSection();
+                } else {
+                  console.error('❌ initializeAddonsSection no está definida');
+                }
+              }, 150);
+            }
             
             // Si es section-grid-breakpoints, activar la primera categoría por defecto
             if (targetId === 'section-grid-breakpoints') {
