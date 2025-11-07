@@ -3511,6 +3511,18 @@ Reglas Importantes:
         const value = getComputedStyle(root).getPropertyValue(name).trim();
         const wrap = document.createElement('div');
         wrap.className = 'copyable';
+        
+        // Si el valor está vacío, mostrar un mensaje indicando que el token no está definido
+        if (!value || value === '') {
+          wrap.title = `Token no definido: ${name}`;
+          wrap.innerHTML = `<div class="swatch" style="background:repeating-conic-gradient(#eee 0% 25%, #fff 0% 50%) 50%/12px 12px; border:1px solid #9ca3af; opacity: 0.5;"></div><code style="color: var(--ubits-fg-1-medium);">No definido</code>`;
+          wrap.addEventListener('click', async () => {
+            await copyToClipboard(`${name}: (no definido)`);
+            showToast('info', 'Token no definido', { title: 'Info' });
+          });
+          return wrap;
+        }
+        
         wrap.title = `Click para copiar: ${name} = ${value}`;
         const vLower = value.toLowerCase();
         const isWhite = vLower === '#fff' || vLower === '#ffffff' || vLower === 'rgb(255, 255, 255)';
