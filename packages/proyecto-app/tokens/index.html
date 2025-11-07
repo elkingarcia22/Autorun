@@ -2840,16 +2840,7 @@ npm run dev</code></pre>
         'Diseño': [
           { id: 'tokens', name: 'Tokens Autoframe', icon: 'fa-palette', description: 'Tokens de diseño genéricos' },
           { id: 'typography', name: 'Tipografía', icon: 'fa-font', description: 'Sistema de tipografía' },
-          { id: 'templates-admin', name: 'Template Admin', icon: 'fa-user-shield', description: 'Template para administradores' },
-          { id: 'templates-colaborador', name: 'Template Colaborador', icon: 'fa-users', description: 'Template para colaboradores' },
           { id: 'fontawesome', name: 'Font Awesome', icon: 'fa-icons', description: 'Biblioteca de iconos' }
-        ],
-        'Componentes': [
-          { id: 'button', name: 'Button', icon: 'fa-mouse-pointer', description: 'Botones interactivos' },
-          { id: 'sidebar', name: 'Sidebar', icon: 'fa-bars', description: 'Barra lateral de navegación' },
-          { id: 'input', name: 'Input', icon: 'fa-keyboard', description: 'Campos de entrada' },
-          { id: 'alert', name: 'Alert', icon: 'fa-exclamation-triangle', description: 'Alertas y notificaciones' },
-          { id: 'toast', name: 'Toast', icon: 'fa-bell', description: 'Notificaciones toast' }
         ]
       };
 
@@ -3039,28 +3030,6 @@ npm run dev</code></pre>
             { type: 'config', label: 'Configuración de fuentes (opcional)', required: false, example: 'Fuentes personalizadas, tamaños, etc.' }
           ]
         },
-        'templates-admin': {
-          name: 'Template Admin',
-          category: 'Diseño',
-          icon: 'fa-user-shield',
-          description: 'Template HTML para aplicaciones de administración',
-          whatIs: 'Template Admin es un add-on de diseño que proporciona un template HTML completo para aplicaciones de administración, con sidebar, navegación, y estructura predefinida.',
-          whatFor: 'Este add-on acelera el desarrollo de aplicaciones administrativas proporcionando una estructura base lista para usar. Incluye componentes comunes como sidebar, navegación, y layouts. Ideal para dashboards y paneles de administración.',
-          requirements: [
-            { type: 'config', label: 'Personalización (opcional)', required: false, example: 'Colores, logo, menú personalizado' }
-          ]
-        },
-        'templates-colaborador': {
-          name: 'Template Colaborador',
-          category: 'Diseño',
-          icon: 'fa-users',
-          description: 'Template HTML para aplicaciones de colaboradores',
-          whatIs: 'Template Colaborador es un add-on de diseño que proporciona un template HTML completo para aplicaciones orientadas a colaboradores, con navegación simplificada y estructura optimizada.',
-          whatFor: 'Este add-on proporciona una base para aplicaciones donde los usuarios son colaboradores. Incluye navegación simplificada, áreas de contenido, y layouts optimizados para productividad. Ideal para aplicaciones internas y herramientas de trabajo.',
-          requirements: [
-            { type: 'config', label: 'Personalización (opcional)', required: false, example: 'Colores, menú, contenido personalizado' }
-          ]
-        },
         'fontawesome': {
           name: 'Font Awesome',
           category: 'Diseño',
@@ -3075,55 +3044,55 @@ npm run dev</code></pre>
         },
         'button': {
           name: 'Button',
-          category: 'Componentes',
+          category: 'Diseño',
           icon: 'fa-mouse-pointer',
-          description: 'Componente de botón con múltiples variantes',
-          whatIs: 'Button es un add-on de componentes que proporciona un componente de botón completo con múltiples variantes (primary, secondary, tertiary), tamaños, estados, y opciones de iconos.',
-          whatFor: 'Este add-on proporciona botones consistentes y accesibles para toda la aplicación. Incluye estados hover, active, disabled, loading, y soporte para iconos. Ideal para mantener consistencia en la interacción del usuario.',
+          description: 'Componente base de botón con múltiples variantes',
+          whatIs: 'Button es un componente base de Autoframe que proporciona un componente de botón completo con múltiples variantes (primary, secondary, tertiary), tamaños, estados, y opciones de iconos. Es parte de los componentes base del sistema de diseño Autoframe.',
+          whatFor: 'Este componente proporciona botones consistentes y accesibles como base para toda la aplicación. Incluye estados hover, active, disabled, loading, y soporte para iconos. Ideal para mantener consistencia en la interacción del usuario y como punto de partida para personalización.',
           requirements: [
             { type: 'config', label: 'Personalización (opcional)', required: false, example: 'Colores, tamaños, estilos personalizados' }
           ]
         },
         'sidebar': {
           name: 'Sidebar',
-          category: 'Componentes',
+          category: 'Diseño',
           icon: 'fa-bars',
-          description: 'Componente de barra lateral de navegación',
-          whatIs: 'Sidebar es un add-on de componentes que proporciona un componente de barra lateral navegable, con soporte para menús, submenús, iconos, y estados activos.',
-          whatFor: 'Este add-on proporciona navegación lateral consistente y accesible. Incluye soporte para múltiples niveles de navegación, estados activos, y responsive. Ideal para aplicaciones con navegación compleja.',
+          description: 'Componente base de barra lateral de navegación',
+          whatIs: 'Sidebar es un componente base de Autoframe que proporciona un componente de barra lateral navegable, con soporte para menús, submenús, iconos, y estados activos. Es parte de los componentes base del sistema de diseño Autoframe.',
+          whatFor: 'Este componente proporciona navegación lateral consistente y accesible como base. Incluye soporte para múltiples niveles de navegación, estados activos, y responsive. Ideal para aplicaciones con navegación compleja y como punto de partida para personalización.',
           requirements: [
             { type: 'config', label: 'Configuración de menú', required: false, example: 'Items de menú, estructura, iconos' }
           ]
         },
         'input': {
           name: 'Input',
-          category: 'Componentes',
+          category: 'Diseño',
           icon: 'fa-keyboard',
-          description: 'Componente de campo de entrada',
-          whatIs: 'Input es un add-on de componentes que proporciona componentes de entrada de texto con validación, estados de error, labels, y placeholders.',
-          whatFor: 'Este add-on proporciona campos de entrada consistentes y accesibles. Incluye validación visual, mensajes de error, y estados disabled. Ideal para formularios y entrada de datos.',
+          description: 'Componente base de campo de entrada',
+          whatIs: 'Input es un componente base de Autoframe que proporciona componentes de entrada de texto con validación, estados de error, labels, y placeholders. Es parte de los componentes base del sistema de diseño Autoframe.',
+          whatFor: 'Este componente proporciona campos de entrada consistentes y accesibles como base. Incluye validación visual, mensajes de error, y estados disabled. Ideal para formularios y entrada de datos, y como punto de partida para personalización.',
           requirements: [
             { type: 'config', label: 'Configuración de validación (opcional)', required: false, example: 'Reglas de validación, mensajes de error' }
           ]
         },
         'alert': {
           name: 'Alert',
-          category: 'Componentes',
+          category: 'Diseño',
           icon: 'fa-exclamation-triangle',
-          description: 'Componente de alertas y notificaciones',
-          whatIs: 'Alert es un add-on de componentes que proporciona componentes de alerta con múltiples variantes (success, error, warning, info) y opciones de cierre.',
-          whatFor: 'Este add-on proporciona un sistema consistente de alertas para comunicar información importante al usuario. Incluye variantes visuales, iconos, y opciones de cierre. Ideal para feedback y notificaciones.',
+          description: 'Componente base de alertas y notificaciones',
+          whatIs: 'Alert es un componente base de Autoframe que proporciona componentes de alerta con múltiples variantes (success, error, warning, info) y opciones de cierre. Es parte de los componentes base del sistema de diseño Autoframe.',
+          whatFor: 'Este componente proporciona un sistema consistente de alertas como base para comunicar información importante al usuario. Incluye variantes visuales, iconos, y opciones de cierre. Ideal para feedback y notificaciones, y como punto de partida para personalización.',
           requirements: [
             { type: 'config', label: 'Configuración de variantes (opcional)', required: false, example: 'Colores, iconos, tiempo de auto-cierre' }
           ]
         },
         'toast': {
           name: 'Toast',
-          category: 'Componentes',
+          category: 'Diseño',
           icon: 'fa-bell',
-          description: 'Componente de notificaciones toast',
-          whatIs: 'Toast es un add-on de componentes que proporciona notificaciones toast no intrusivas que aparecen temporalmente en la pantalla.',
-          whatFor: 'Este add-on proporciona un sistema de notificaciones toast para feedback inmediato sin interrumpir el flujo del usuario. Incluye posicionamiento, auto-cierre, y múltiples variantes. Ideal para confirmaciones y notificaciones temporales.',
+          description: 'Componente base de notificaciones toast',
+          whatIs: 'Toast es un componente base de Autoframe que proporciona notificaciones toast no intrusivas que aparecen temporalmente en la pantalla. Es parte de los componentes base del sistema de diseño Autoframe.',
+          whatFor: 'Este componente proporciona un sistema de notificaciones toast como base para feedback inmediato sin interrumpir el flujo del usuario. Incluye posicionamiento, auto-cierre, y múltiples variantes. Ideal para confirmaciones y notificaciones temporales, y como punto de partida para personalización.',
           requirements: [
             { type: 'config', label: 'Configuración de posición y duración (opcional)', required: false, example: 'Posición, duración, animaciones' }
           ]
