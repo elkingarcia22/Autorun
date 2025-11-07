@@ -602,7 +602,8 @@ function renderCell(column: TableColumn, row: TableRow, pinnedLeft: number = 0):
   // Agregar clase si la columna está fijada
   const pinnedClass = column.pinned ? ' ubits-data-table__cell--pinned' : '';
   // Aplicar left siempre que la columna esté fijada, incluso si es 0 (necesario para que sticky funcione)
-  const pinnedStyle = column.pinned ? ` style="left: ${pinnedLeft}px;"` : '';
+  // IMPORTANTE: Incluir position: sticky explícitamente en el estilo inline
+  const pinnedStyle = column.pinned ? ` style="position: sticky; left: ${pinnedLeft}px;"` : '';
   
   // Logs detallados para debugging
   if (column.pinned) {
@@ -614,7 +615,8 @@ function renderCell(column: TableColumn, row: TableRow, pinnedLeft: number = 0):
       pinnedClass: pinnedClass,
       pinnedStyle: pinnedStyle,
       hasPinnedClass: pinnedClass.includes('pinned'),
-      hasPinnedStyle: pinnedStyle.includes('left')
+      hasPinnedStyle: pinnedStyle.includes('left'),
+      hasPositionStyle: pinnedStyle.includes('sticky')
     });
   }
   
