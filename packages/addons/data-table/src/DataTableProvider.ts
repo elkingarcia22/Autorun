@@ -521,7 +521,8 @@ function renderCell(column: TableColumn, row: TableRow, pinnedLeft: number = 0):
     
     // Agregar clase si la columna está fijada
     const pinnedClass = column.pinned ? ' ubits-data-table__cell--pinned' : '';
-    const pinnedStyle = column.pinned && pinnedLeft > 0 ? `left: ${pinnedLeft}px;` : '';
+    // Aplicar left siempre que la columna esté fijada, incluso si es 0 (necesario para que sticky funcione)
+    const pinnedStyle = column.pinned ? `left: ${pinnedLeft}px;` : '';
     const cellStyle = `text-align: center; vertical-align: middle; padding-left: ${paddingLeft} !important;${pinnedStyle ? ' ' + pinnedStyle : ''}`;
     
     const cellHTML = `
@@ -548,7 +549,8 @@ function renderCell(column: TableColumn, row: TableRow, pinnedLeft: number = 0):
     );
     const editableClass = isEditable ? 'ubits-data-table__cell--editable' : '';
     const pinnedClass = column.pinned ? ' ubits-data-table__cell--pinned' : '';
-    const pinnedStyle = column.pinned && pinnedLeft > 0 ? ` style="left: ${pinnedLeft}px;"` : '';
+    // Aplicar left siempre que la columna esté fijada, incluso si es 0 (necesario para que sticky funcione)
+    const pinnedStyle = column.pinned ? ` style="left: ${pinnedLeft}px;"` : '';
     // Agregar data-column-id siempre para poder diferenciar en CSS
     const dataAttrs = isEditable && (column.type === 'nombre' || column.type === 'nombre-avatar' || column.type === 'estado' || column.type === 'fecha') 
       ? `data-row-id="${row.id}" data-column-id="${column.id}" data-editable="true"${column.pinned ? ' data-pinned="true"' : ''}` 
@@ -568,7 +570,8 @@ function renderCell(column: TableColumn, row: TableRow, pinnedLeft: number = 0):
   
   // Agregar clase si la columna está fijada
   const pinnedClass = column.pinned ? ' ubits-data-table__cell--pinned' : '';
-  const pinnedStyle = column.pinned && pinnedLeft > 0 ? ` style="left: ${pinnedLeft}px;"` : '';
+  // Aplicar left siempre que la columna esté fijada, incluso si es 0 (necesario para que sticky funcione)
+  const pinnedStyle = column.pinned ? ` style="left: ${pinnedLeft}px;"` : '';
   
   return `
     <td class="ubits-data-table__cell${pinnedClass}" data-column-id="${column.id}"${column.pinned ? ' data-pinned="true"' : ''}${pinnedStyle}>
@@ -730,8 +733,8 @@ function renderColumnHeader(
     });
   }
   
-  // Agregar estilo inline para left si está fijada
-  const pinnedStyle = column.pinned && pinnedLeft > 0 ? `left: ${pinnedLeft}px;` : '';
+  // Agregar estilo inline para left si está fijada (siempre aplicar cuando está fijada, incluso si es 0)
+  const pinnedStyle = column.pinned ? `left: ${pinnedLeft}px;` : '';
   const widthStyle = column.width ? `width: ${column.width}px;` : '';
   const combinedStyle = [widthStyle, pinnedStyle].filter(Boolean).join(' ');
   
