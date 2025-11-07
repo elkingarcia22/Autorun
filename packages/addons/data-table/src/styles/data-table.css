@@ -1055,16 +1055,18 @@
 
 /* Ajustar posicionamiento sticky dentro del contenedor scrollable */
 /* Los controles deben estar en left: 0 dentro del scrollable */
+/* CRÍTICO: Los controladores (checkbox, dropdown, mover filas) NO deben ser sticky */
+/* Se removió position: sticky de los controladores para que no se fijen durante el scroll */
 .ubits-data-table__scrollable-container .ubits-data-table__controls-column-header,
 .ubits-data-table__scrollable-container .ubits-data-table__controls-column {
-    position: sticky !important;
-    left: 0 !important; /* Sin espacio en blanco a la izquierda */
-    z-index: 21 !important;
+    /* position: sticky removido - los controladores NO deben fijarse */
+    /* left: 0 removido - no necesario sin sticky */
+    z-index: 1 !important; /* z-index reducido ya que no son sticky */
     background-color: var(--ubits-bg-1) !important;
 }
 
 .ubits-data-table__scrollable-container .ubits-data-table__controls-column {
-    z-index: 16 !important;
+    z-index: 1 !important; /* z-index reducido ya que no son sticky */
 }
 
 /* El checkbox debe estar justo después de los controles (ancho de controles = 80px) */
