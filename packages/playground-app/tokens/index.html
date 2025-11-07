@@ -515,7 +515,7 @@
       .sidebox{position:sticky; top:56px; border:none; border-radius:12px; padding:8px; background:var(--ubits-bg-1)}
       .side-title{font-size: var(--font-body-sm-size); color:var(--ubits-fg-1-medium); padding:8px 10px; font-weight: var(--weight-semibold); text-transform:uppercase; letter-spacing:0.5px}
       .category-toggle:hover{background-color: var(--ubits-bg-2);}
-      .category-content{transition: opacity 0.2s ease;}
+      .category-content{display: flex; flex-direction: column; gap: 6px; transition: opacity 0.2s ease;}
       .side{display:flex; flex-direction:column; gap:6px; max-height:calc(100vh - 140px); overflow-y:auto; padding-right:4px; scrollbar-width: thin; scrollbar-color: var(--ubits-fg-2-medium-static-inverted) transparent}
       /* Scrollbar personalizado UBITS para menús laterales - Webkit (Chrome, Safari, Edge) */
       .side::-webkit-scrollbar{width:8px}
@@ -5114,7 +5114,7 @@ Reglas Importantes:
             </div>`;
             
             // Contenedor de links de componentes (colapsable)
-            navHTML += `<div class="category-content" data-category="${categoryId}" style="display: ${isExpanded ? 'block' : 'none'}; margin-bottom: 8px;">`;
+            navHTML += `<div class="category-content" data-category="${categoryId}" style="display: ${isExpanded ? 'flex' : 'none'}; flex-direction: column; gap: 6px; margin-bottom: 8px;">`;
             
             // Generar los links para cada componente
             components.forEach((component, compIndex) => {
