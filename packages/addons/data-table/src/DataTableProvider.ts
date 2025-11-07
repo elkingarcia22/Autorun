@@ -1199,12 +1199,6 @@ export function renderDataTable(
       }
     }
     
-    if (column.pinned) {
-      debugInfo.steps.push({ step: 'prevPinnedColumns', added: prevPinnedColumns.reduce((sum, p) => sum + p.added, 0), total: left, columns: prevPinnedColumns });
-    } else {
-      debugInfo.steps.push({ step: 'prevPinnedColumns', added: 0, total: left, reason: 'No hay columnas fijadas anteriores' });
-    }
-    
     debugInfo.finalLeft = left;
     
     if (column.pinned) {
