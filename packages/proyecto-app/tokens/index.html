@@ -6834,13 +6834,33 @@ Reglas Importantes:
                                 </label>
                               </div>
                               
-                              <!-- Controladores Sticky -->
+                              <!-- Checkbox Sticky -->
                               <div style="flex: 0 0 auto; min-width: 200px;">
-                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Controladores Sticky</label>
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Checkbox Sticky</label>
                                 <label class="switch" style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
-                                  <input type="checkbox" id="data-table-show-controls-sticky-${componentId}" onchange="setDataTableControl('showControlsSticky', this.checked, '${componentId}')">
+                                  <input type="checkbox" id="data-table-checkbox-sticky-${componentId}" onchange="setDataTableControl('checkboxSticky', this.checked, '${componentId}')">
                                   <span class="slider"></span>
-                                  <span id="data-table-show-controls-sticky-status-${componentId}" style="font-size: 14px; color: var(--ubits-fg-1-high);">Deshabilitado</span>
+                                  <span id="data-table-checkbox-sticky-status-${componentId}" style="font-size: 14px; color: var(--ubits-fg-1-high);">Deshabilitado</span>
+                                </label>
+                              </div>
+                              
+                              <!-- Drag Handle Sticky -->
+                              <div style="flex: 0 0 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Mover Filas Sticky</label>
+                                <label class="switch" style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                                  <input type="checkbox" id="data-table-drag-handle-sticky-${componentId}" onchange="setDataTableControl('dragHandleSticky', this.checked, '${componentId}')">
+                                  <span class="slider"></span>
+                                  <span id="data-table-drag-handle-sticky-status-${componentId}" style="font-size: 14px; color: var(--ubits-fg-1-high);">Deshabilitado</span>
+                                </label>
+                              </div>
+                              
+                              <!-- Expand Sticky -->
+                              <div style="flex: 0 0 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Desplegar Filas Sticky</label>
+                                <label class="switch" style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                                  <input type="checkbox" id="data-table-expand-sticky-${componentId}" onchange="setDataTableControl('expandSticky', this.checked, '${componentId}')">
+                                  <span class="slider"></span>
+                                  <span id="data-table-expand-sticky-status-${componentId}" style="font-size: 14px; color: var(--ubits-fg-1-high);">Deshabilitado</span>
                                 </label>
                               </div>
                             </div>
@@ -10547,7 +10567,9 @@ Reglas Importantes:
             showVerticalScrollbar: false,
             showHorizontalScrollbar: false,
             showColumnMenu: true,
-            showControlsSticky: false,
+            checkboxSticky: false,
+            dragHandleSticky: false,
+            expandSticky: false,
             columnsCount: 3,
             columns: [
               {
@@ -10821,9 +10843,21 @@ Reglas Importantes:
           if (statusEl) statusEl.textContent = value ? 'Visible' : 'Oculta';
           // Actualizar el preview para reflejar el cambio
           window.updateDataTablePreview(componentId);
-        } else if (option === 'showControlsSticky') {
-          state.showControlsSticky = value;
-          const statusEl = document.getElementById(`data-table-show-controls-sticky-status-${componentId}`);
+        } else if (option === 'checkboxSticky') {
+          state.checkboxSticky = value;
+          const statusEl = document.getElementById(`data-table-checkbox-sticky-status-${componentId}`);
+          if (statusEl) statusEl.textContent = value ? 'Habilitado' : 'Deshabilitado';
+          // Actualizar el preview para reflejar el cambio
+          window.updateDataTablePreview(componentId);
+        } else if (option === 'dragHandleSticky') {
+          state.dragHandleSticky = value;
+          const statusEl = document.getElementById(`data-table-drag-handle-sticky-status-${componentId}`);
+          if (statusEl) statusEl.textContent = value ? 'Habilitado' : 'Deshabilitado';
+          // Actualizar el preview para reflejar el cambio
+          window.updateDataTablePreview(componentId);
+        } else if (option === 'expandSticky') {
+          state.expandSticky = value;
+          const statusEl = document.getElementById(`data-table-expand-sticky-status-${componentId}`);
           if (statusEl) statusEl.textContent = value ? 'Habilitado' : 'Deshabilitado';
           // Actualizar el preview para reflejar el cambio
           window.updateDataTablePreview(componentId);
@@ -11458,19 +11492,35 @@ Reglas Importantes:
             const showVerticalScrollbarValue = state.showVerticalScrollbar === true;
             const showHorizontalScrollbarValue = state.showHorizontalScrollbar === true;
             const showColumnMenuValue = state.showColumnMenu !== false;
-            const showControlsStickyValue = state.showControlsSticky === true;
+            
+            // Aplicar sticky a las columnas de controladores según los controles
+            const columnsWithSticky = columns.map(col => {
+              const colCopy = { ...col };
+              if (col.id === 'checkbox-2' && state.checkboxSticky === true) {
+                colCopy.pinned = true;
+              } else if (col.type === 'drag-handle' && state.dragHandleSticky === true) {
+                colCopy.pinned = true;
+              } else if (col.type === 'expand' && state.expandSticky === true) {
+                colCopy.pinned = true;
+              } else if (col.id === 'checkbox-2' || col.type === 'drag-handle' || col.type === 'expand') {
+                // Si el sticky está deshabilitado, asegurar que pinned sea false
+                colCopy.pinned = false;
+              }
+              return colCopy;
+            });
+            
             console.log('🎯 [CREATE] ========== CREANDO TABLA ==========');
             console.log('🎯 [CREATE] showCheckboxValue:', showCheckboxValue, '(state.showCheckbox:', state.showCheckbox, ')');
             console.log('🎯 [CREATE] showVerticalScrollbarValue:', showVerticalScrollbarValue, '(state.showVerticalScrollbar:', state.showVerticalScrollbar, ')');
             console.log('🎯 [CREATE] showHorizontalScrollbarValue:', showHorizontalScrollbarValue, '(state.showHorizontalScrollbar:', state.showHorizontalScrollbar, ')');
             console.log('🎯 [CREATE] showColumnMenuValue:', showColumnMenuValue, '(state.showColumnMenu:', state.showColumnMenu, ')');
-            console.log('🎯 [CREATE] showControlsStickyValue:', showControlsStickyValue, '(state.showControlsSticky:', state.showControlsSticky, ')');
-            console.log('🎯 [CREATE] Columnas que se pasan:', columns.map(c => ({ id: c.id, visible: c.visible, type: c.type })));
-            console.log('🎯 [CREATE] ¿Hay checkbox-2 en columns?', columns.some(c => c.id === 'checkbox-2'));
+            console.log('🎯 [CREATE] checkboxSticky:', state.checkboxSticky, 'dragHandleSticky:', state.dragHandleSticky, 'expandSticky:', state.expandSticky);
+            console.log('🎯 [CREATE] Columnas que se pasan:', columnsWithSticky.map(c => ({ id: c.id, visible: c.visible, type: c.type, pinned: c.pinned })));
+            console.log('🎯 [CREATE] ¿Hay checkbox-2 en columns?', columnsWithSticky.some(c => c.id === 'checkbox-2'));
             console.log('🎯 [CREATE] Número de filas:', rowsWithExpand.length);
             const table = window.createDataTable({
               containerId: containerId,
-              columns: columns,
+              columns: columnsWithSticky,
               rows: rowsWithExpand,
               columnReorderable: state.columnReorderable !== false,
               rowReorderable: state.rowReorderable !== false,
@@ -11480,7 +11530,6 @@ Reglas Importantes:
               showVerticalScrollbar: showVerticalScrollbarValue,
               showHorizontalScrollbar: showHorizontalScrollbarValue,
               showColumnMenu: showColumnMenuValue,
-              showControlsSticky: showControlsStickyValue,
               onRowExpand: (rowId, expanded) => {
                 console.log('Fila expandida:', rowId, expanded);
                 const row = state.rows.find(r => r.id === rowId);

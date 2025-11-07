@@ -490,6 +490,32 @@ function renderCellByType(column: TableColumn, row: TableRow, columnType: Column
       return `<span class="ubits-body-md-regular">${ciudadText}</span>`;
     }
     
+    case 'drag-handle': {
+      // Drag handle para mover filas
+      return `
+        <div class="ubits-data-table__row-drag-handle" draggable="true" data-row-id="${row.id}">
+          <wa-icon name="grip-dots-vertical"></wa-icon>
+          <i class="fas fa-grip-vertical" aria-hidden="true"></i>
+        </div>
+      `;
+    }
+    
+    case 'expand': {
+      // Botón de expandir/colapsar fila
+      const isExpanded = row.expanded || false;
+      return `
+        <button
+          type="button"
+          class="ubits-data-table__row-expand"
+          aria-label="${isExpanded ? 'Colapsar' : 'Expandir'} fila"
+          data-row-id="${row.id}"
+          data-expand-button="true"
+        >
+          <i class="far fa-chevron-${isExpanded ? 'down' : 'right'}" aria-hidden="true"></i>
+        </button>
+      `;
+    }
+    
     default:
       return `<span class="ubits-body-md-regular">${cellValue || ''}</span>`;
   }
@@ -556,6 +582,7 @@ function renderCell(column: TableColumn, row: TableRow, pinnedLeft: number = 0):
   if (column.type) {
     const content = renderCellByType(column, row, column.type);
     // Editable para: nombre, nombre-avatar, estado, fecha (contenido editable), checkbox y radio (interactivos)
+    // NO editable para: drag-handle, expand (son controladores)
     const isEditable = column.editable && (
       column.type === 'nombre' || 
       column.type === 'nombre-avatar' || 
@@ -563,12 +590,28 @@ function renderCell(column: TableColumn, row: TableRow, pinnedLeft: number = 0):
       column.type === 'fecha' ||
       column.type === 'checkbox' ||
       column.type === 'radio'
-    );
+    ) && column.type !== 'drag-handle' && column.type !== 'expand';
+    
+    // Clases CSS según tipo
+    const typeClass = column.type === 'drag-handle' 
+      ? 'ubits-data-table__cell--drag-handle' 
+      : column.type === 'expand' 
+        ? 'ubits-data-table__cell--expand' 
+        : `ubits-data-table__cell--${column.type}`;
+    
     const editableClass = isEditable ? 'ubits-data-table__cell--editable' : '';
     const pinnedClass = column.pinned ? ' ubits-data-table__cell--pinned' : '';
+    
+    // Estilos para controladores (centrado)
+    const controlStyles = (column.type === 'drag-handle' || column.type === 'expand') 
+      ? 'text-align: center; vertical-align: middle;' 
+      : '';
+    
     // Aplicar left siempre que la columna esté fijada, incluso si es 0 (necesario para que sticky funcione)
     // IMPORTANTE: Incluir position: sticky explícitamente en el estilo inline
-    const pinnedStyle = column.pinned ? ` style="position: sticky; left: ${pinnedLeft}px;"` : '';
+    const pinnedStyle = column.pinned ? `position: sticky; left: ${pinnedLeft}px;` : '';
+    const cellStyle = `${controlStyles}${pinnedStyle ? ' ' + pinnedStyle : ''}`;
+    const styleAttr = cellStyle ? ` style="${cellStyle}"` : '';
     
     // Logs detallados para debugging
     if (column.pinned) {
@@ -592,7 +635,7 @@ function renderCell(column: TableColumn, row: TableRow, pinnedLeft: number = 0):
       : `data-column-id="${column.id}"${column.pinned ? ' data-pinned="true"' : ''}`;
     
     return `
-      <td class="ubits-data-table__cell ubits-data-table__cell--${column.type} ${editableClass}${pinnedClass}" ${dataAttrs}${pinnedStyle}>
+      <td class="ubits-data-table__cell ${typeClass} ${editableClass}${pinnedClass}" ${dataAttrs}${styleAttr}>
         ${content}
       </td>
     `;
@@ -644,6 +687,25 @@ function renderColumnHeader(
   showColumnMenu: boolean = true,
   pinnedLeft: number = 0
 ): string {
+  // Si es una columna de tipo drag-handle o expand, renderizar header vacío
+  if (column.type === 'drag-handle' || column.type === 'expand') {
+    const pinnedClass = column.pinned ? ' ubits-data-table__column-header--pinned' : '';
+    const pinnedStyle = column.pinned ? `position: sticky !important; left: ${pinnedLeft}px !important; z-index: 10 !important;` : '';
+    const widthStyle = column.width ? `width: ${column.width}px;` : '';
+    const combinedStyle = [pinnedStyle, widthStyle].filter(Boolean).join(' ');
+    const styleAttribute = combinedStyle ? `style="${combinedStyle}"` : '';
+    
+    return `
+      <th 
+        class="ubits-data-table__column-header ubits-data-table__column-header--${column.type}${pinnedClass}" 
+        ${styleAttribute}
+        data-column-id="${column.id}"
+        ${column.pinned ? 'data-pinned="true"' : ''}
+      >
+      </th>
+    `;
+  }
+
   // Si es una columna de checkbox, renderizar solo el checkbox (sin título ni drag handle)
   if (column.id === 'checkbox' || column.id.startsWith('checkbox-')) {
     console.log('📋 [HEADER] Renderizando header de checkbox, column.id:', column.id);
@@ -680,9 +742,10 @@ function renderColumnHeader(
   }
 
   // Para columnas normales, mostrar drag handle y título
-  // NO permitir drag & drop si la columna es de tipo checkbox
+  // NO permitir drag & drop si la columna es de tipo checkbox, drag-handle o expand
   const isCheckboxColumn = column.id === 'checkbox' || column.id.startsWith('checkbox-');
-  const dragHandle = columnReorderable && !isCheckboxColumn ? `
+  const isControlColumn = column.type === 'drag-handle' || column.type === 'expand';
+  const dragHandle = columnReorderable && !isCheckboxColumn && !isControlColumn ? `
     <div class="ubits-data-table__column-drag-handle" draggable="true" data-column-id="${column.id}">
       <wa-icon name="grip-dots-vertical"></wa-icon>
       <i class="fas fa-grip-vertical" aria-hidden="true"></i>
@@ -690,7 +753,7 @@ function renderColumnHeader(
   ` : '';
 
   // Botón de ordenamiento usando componente UBITS - desde cero
-  const sortButton = !isCheckboxColumn && columnSortable ? (() => {
+  const sortButton = !isCheckboxColumn && !isControlColumn && columnSortable ? (() => {
     const isSorted = sortColumnId === column.id;
     const showAscIcon = isSorted && sortDirection === 'asc';
     const showDescIcon = isSorted && sortDirection === 'desc';
@@ -741,7 +804,7 @@ function renderColumnHeader(
   }
 
   // Botón de menú de 3 puntos con opción de fijar columna
-  const menuButton = !isCheckboxColumn && showColumnMenu ? (() => {
+  const menuButton = !isCheckboxColumn && !isControlColumn && showColumnMenu ? (() => {
     // Renderizar botón UBITS sin dropdown: tamaño xs, variant tertiary, iconOnly
     // El onClick se manejará en attachEventListeners usando el data-column-id
     const buttonHTML = renderButton({
@@ -854,34 +917,15 @@ function renderColumnHeader(
 
 /**
  * Renderiza una fila de la tabla
+ * NOTA: Los controladores (drag-handle, expand) ahora son columnas independientes
  */
-function renderRow(row: TableRow, columns: TableColumn[], rowIndex: number, rowReorderable: boolean = false, rowExpandable: boolean = true, hasControls: boolean = false, pinnedLefts: number[] = []): string {
+function renderRow(row: TableRow, columns: TableColumn[], rowIndex: number, pinnedLefts: number[] = []): string {
   const isExpanded = row.expanded || false;
-
-  // Drag handle para filas
-  const dragHandle = rowReorderable ? `
-    <div class="ubits-data-table__row-drag-handle" draggable="true" data-row-id="${row.id}">
-      <wa-icon name="grip-dots-vertical"></wa-icon>
-      <i class="fas fa-grip-vertical" aria-hidden="true"></i>
-    </div>
-  ` : '';
-
-  // Botón de expandir (solo si rowExpandable es true)
-  const expandIcon = rowExpandable ? `
-    <button
-      type="button"
-      class="ubits-data-table__row-expand"
-      aria-label="${isExpanded ? 'Colapsar' : 'Expandir'} fila"
-      data-row-id="${row.id}"
-      data-expand-button="true"
-    >
-      <i class="far fa-chevron-${isExpanded ? 'down' : 'right'}" aria-hidden="true"></i>
-    </button>
-  ` : '';
 
   // Filtrar columnas visibles
   const visibleColumns = columns.filter(col => col.visible !== false);
   
+  // Renderizar todas las celdas (incluyendo controladores como columnas)
   const cellsHTML = visibleColumns
     .map((col, index) => {
       const pinnedLeft = pinnedLefts[index] || 0;
@@ -894,35 +938,19 @@ function renderRow(row: TableRow, columns: TableColumn[], rowIndex: number, rowR
     isExpanded ? 'ubits-data-table__row--expanded' : ''
   ].filter(Boolean).join(' ');
 
-  // Estructura: Una sola columna de controles con drag handle y expand icon (sin checkbox)
-  // Solo renderizar la columna de controles si hay al menos un control visible
-  const controlsCell = hasControls ? `
-      <td class="ubits-data-table__controls-column">
-        <div class="ubits-data-table__controls-wrapper">
-          ${dragHandle}
-          ${expandIcon}
-        </div>
-      </td>
-  ` : '';
-
   // Logs para debugging de alineación
   if (rowIndex === 0) {
     console.log('🔍 [ROW ALIGNMENT] ========== PRIMERA FILA ==========');
     console.log('📊 row.id:', row.id);
-    console.log('📊 hasControls:', hasControls);
-    console.log('📊 controlsCell:', controlsCell ? 'RENDERIZADO' : 'NO RENDERIZADO');
     console.log('📊 visibleColumns count:', visibleColumns.length);
     console.log('📊 visibleColumns IDs:', visibleColumns.map(col => col.id));
-    console.log('📊 cellsHTML count (th tags):', (cellsHTML.match(/<td/g) || []).length);
-    console.log('📊 Total cells count:', (controlsCell ? 1 : 0) + (cellsHTML.match(/<td/g) || []).length);
-    console.log('📊 - controlsCell:', controlsCell ? 1 : 0);
-    console.log('📊 - dataCells:', (cellsHTML.match(/<td/g) || []).length);
+    console.log('📊 cellsHTML count (td tags):', (cellsHTML.match(/<td/g) || []).length);
+    console.log('📊 Total cells count:', (cellsHTML.match(/<td/g) || []).length);
     console.log('🔍 [ROW ALIGNMENT] ========== FIN ==========');
   }
   
   let rowHTML = `
     <tr class="${rowClasses}" data-row-id="${row.id}">
-      ${controlsCell}
       ${cellsHTML}
     </tr>
   `;
@@ -930,7 +958,7 @@ function renderRow(row: TableRow, columns: TableColumn[], rowIndex: number, rowR
   // Si la fila está expandida, agregar la fila de contenido expandido
   if (isExpanded && row.renderExpandedContent) {
     const expandedContent = row.renderExpandedContent(row.data);
-    const colspan = visibleColumns.length + (hasControls ? 1 : 0);
+    const colspan = visibleColumns.length;
     rowHTML += `
       <tr class="ubits-data-table__row-expanded-row">
         <td class="ubits-data-table__row-expanded-content" colspan="${colspan}">
@@ -1015,6 +1043,49 @@ export function renderDataTable(
   }
   console.log('🎯 [CHECKBOX-2] Columnas finales antes de renderizar:', visibleColumns.map(col => col.id));
   
+  // Crear columnas de controladores automáticamente si están habilitados
+  // Columna drag-handle (mover filas) - al inicio, antes del checkbox
+  if (rowReorderable) {
+    const dragHandleExists = visibleColumns.some(col => col.type === 'drag-handle');
+    if (!dragHandleExists) {
+      const dragHandleColumn: TableColumn = {
+        id: 'drag-handle',
+        title: '',
+        type: 'drag-handle',
+        visible: true,
+        width: 40
+      };
+      visibleColumns.unshift(dragHandleColumn);
+      console.log('🔧 [CONTROLS] Columna drag-handle agregada');
+    }
+  } else {
+    visibleColumns = visibleColumns.filter(col => col.type !== 'drag-handle');
+  }
+  
+  // Columna expand (desplegar filas) - después del drag-handle, antes del checkbox
+  if (rowExpandable) {
+    const expandExists = visibleColumns.some(col => col.type === 'expand');
+    if (!expandExists) {
+      const expandColumn: TableColumn = {
+        id: 'expand',
+        title: '',
+        type: 'expand',
+        visible: true,
+        width: 40
+      };
+      // Insertar después del drag-handle si existe, sino al inicio
+      const dragHandleIndex = visibleColumns.findIndex(col => col.type === 'drag-handle');
+      if (dragHandleIndex >= 0) {
+        visibleColumns.splice(dragHandleIndex + 1, 0, expandColumn);
+      } else {
+        visibleColumns.unshift(expandColumn);
+      }
+      console.log('🔧 [CONTROLS] Columna expand agregada');
+    }
+  } else {
+    visibleColumns = visibleColumns.filter(col => col.type !== 'expand');
+  }
+  
   // Estado de ordenamiento
   const sortColumnId = (options as any).sortColumnId || null;
   const sortDirection = (options as any).sortDirection || null;
@@ -1055,61 +1126,60 @@ export function renderDataTable(
     });
   }
 
-  // Determinar si hay controles en las filas
-  const hasControls = rowReorderable || rowExpandable;
+  // Ya no usamos hasControls - los controladores son columnas independientes
+  // Las columnas drag-handle y expand ya están en visibleColumns
   
   console.log('🔍 [HEADER ALIGNMENT] ========== INICIO ==========');
-  console.log('📊 hasControls:', hasControls);
   console.log('📊 rowReorderable:', rowReorderable);
   console.log('📊 rowExpandable:', rowExpandable);
   console.log('📊 visibleColumns count:', visibleColumns.length);
   console.log('📊 visibleColumns IDs:', visibleColumns.map(col => col.id));
 
   // Función auxiliar para calcular el left de una columna fijada
-  const calculatePinnedLeft = (column: TableColumn, columnIndex: number, allColumns: TableColumn[], hasControls: boolean, showCheckbox: boolean): number => {
+  const calculatePinnedLeft = (column: TableColumn, columnIndex: number, allColumns: TableColumn[]): number => {
     let left = 0;
     const debugInfo: any = {
       columnId: column.id,
       columnIndex: columnIndex,
-      hasControls: hasControls,
-      showCheckbox: showCheckbox,
       steps: []
     };
     
-    // Si hay controles, agregar su ancho (80px)
-    if (hasControls) {
-      left += 80;
-      debugInfo.steps.push({ step: 'hasControls', added: 80, total: left });
-    } else {
-      debugInfo.steps.push({ step: 'hasControls', added: 0, total: left, reason: 'No hay controles' });
-    }
-    
-    // Si hay checkbox y está antes de esta columna, agregar su ancho (60px)
-    if (showCheckbox) {
-      const checkboxIndex = allColumns.findIndex(c => c.id === 'checkbox-2');
-      debugInfo.checkboxIndex = checkboxIndex;
-      if (checkboxIndex >= 0 && checkboxIndex < columnIndex) {
-        left += 60;
-        debugInfo.steps.push({ step: 'showCheckbox', added: 60, total: left, reason: 'Checkbox antes de esta columna' });
-      } else {
-        debugInfo.steps.push({ step: 'showCheckbox', added: 0, total: left, reason: checkboxIndex < 0 ? 'Checkbox no existe' : 'Checkbox después de esta columna' });
-      }
-    } else {
-      debugInfo.steps.push({ step: 'showCheckbox', added: 0, total: left, reason: 'showCheckbox es false' });
-    }
-    
-    // Agregar ancho de todas las columnas fijadas anteriores
-    const prevPinnedColumns: any[] = [];
+    // Sumar ancho de todas las columnas fijadas anteriores (incluyendo controladores)
     for (let i = 0; i < columnIndex; i++) {
       const prevCol = allColumns[i];
-      if (prevCol.pinned && prevCol.id !== 'checkbox-2') {
-        const prevWidth = prevCol.width || 150;
+      if (prevCol && prevCol.pinned) {
+        // Calcular ancho según tipo de columna
+        let prevWidth = prevCol.width;
+        if (!prevWidth) {
+          if (prevCol.type === 'drag-handle') {
+            prevWidth = 40;
+          } else if (prevCol.type === 'expand') {
+            prevWidth = 40;
+          } else if (prevCol.id === 'checkbox-2') {
+            prevWidth = 60;
+          } else {
+            prevWidth = 150;
+          }
+        }
         left += prevWidth;
-        prevPinnedColumns.push({ id: prevCol.id, width: prevWidth, added: prevWidth });
+        debugInfo.steps.push({ 
+          step: `columna-${prevCol.id}`, 
+          added: prevWidth, 
+          total: left, 
+          reason: `Columna fijada anterior: ${prevCol.id} (tipo: ${prevCol.type || 'normal'})` 
+        });
+      } else if (prevCol && !prevCol.pinned) {
+        // Si la columna anterior no está fijada, no sumar su ancho
+        debugInfo.steps.push({ 
+          step: `columna-${prevCol.id}`, 
+          added: 0, 
+          total: left, 
+          reason: `Columna anterior no fijada: ${prevCol.id}` 
+        });
       }
     }
-    debugInfo.prevPinnedColumns = prevPinnedColumns;
-    if (prevPinnedColumns.length > 0) {
+    
+    if (column.pinned) {
       debugInfo.steps.push({ step: 'prevPinnedColumns', added: prevPinnedColumns.reduce((sum, p) => sum + p.added, 0), total: left, columns: prevPinnedColumns });
     } else {
       debugInfo.steps.push({ step: 'prevPinnedColumns', added: 0, total: left, reason: 'No hay columnas fijadas anteriores' });
@@ -1131,7 +1201,7 @@ export function renderDataTable(
   
   const columnHeadersHTML = visibleColumns
     .map((col, index) => {
-      const pinnedLeft = col.pinned ? calculatePinnedLeft(col, index, visibleColumns, hasControls, showCheckbox !== false) : 0;
+      const pinnedLeft = col.pinned ? calculatePinnedLeft(col, index, visibleColumns) : 0;
       if (col.pinned) {
         console.log('🔍 [RENDER HEADERS] Columna fijada:', col.id, 'index:', index, 'pinnedLeft calculado:', pinnedLeft);
       }
@@ -1144,7 +1214,6 @@ export function renderDataTable(
 
   // Renderizar filas
   console.log('🔍 [RENDER ROWS] Iniciando renderizado de filas...');
-  console.log('🔍 [RENDER ROWS] hasControls:', hasControls, 'showCheckbox:', showCheckbox);
   console.log('🔍 [RENDER ROWS] Número de filas:', orderedRows.length);
   
   const rowsHTML = orderedRows
@@ -1152,7 +1221,7 @@ export function renderDataTable(
       // Calcular left para cada columna fijada en esta fila
       const pinnedLefts = visibleColumns.map((col, colIndex) => {
         if (col.pinned) {
-          const left = calculatePinnedLeft(col, colIndex, visibleColumns, hasControls, showCheckbox !== false);
+          const left = calculatePinnedLeft(col, colIndex, visibleColumns);
           if (index === 0) { // Solo log para la primera fila para no saturar
             console.log('🔍 [RENDER ROWS] Fila 0, columna fijada:', col.id, 'colIndex:', colIndex, 'pinnedLeft:', left);
           }
@@ -1160,7 +1229,7 @@ export function renderDataTable(
         }
         return 0;
       });
-      return renderRow(row, visibleColumns, index, rowReorderable, rowExpandable, hasControls, pinnedLefts);
+      return renderRow(row, visibleColumns, index, pinnedLefts);
     })
     .join('');
 
@@ -1172,19 +1241,12 @@ export function renderDataTable(
     className
   ].filter(Boolean).join(' ');
 
-  // Agregar header vacío para la columna de controles si existe, para mantener alineación
-  // Este header vacío se coloca ANTES de los headers de columnas para alinearlos con las filas
-  const controlsHeader = hasControls ? `
-    <th class="ubits-data-table__controls-column-header"></th>
-  ` : '';
-
-  console.log('📊 controlsHeader:', controlsHeader ? 'RENDERIZADO' : 'NO RENDERIZADO');
-  console.log('📊 controlsHeader content:', controlsHeader);
+  // Ya no hay controlsHeader - los controladores son columnas independientes
+  // Los headers de controladores ya están en columnHeadersHTML
 
   // Contar headers totales
-  const headerCount = (controlsHeader ? 1 : 0) + visibleColumns.length;
+  const headerCount = visibleColumns.length;
   console.log('📊 Total headers count:', headerCount);
-  console.log('📊 - controlsHeader:', controlsHeader ? 1 : 0);
   console.log('📊 - columnHeaders:', visibleColumns.length);
 
   // Estructura: tabla directamente o envuelta en contenedor scrollable
@@ -1192,7 +1254,6 @@ export function renderDataTable(
     <table class="${classes} ubits-data-table__table">
       <thead class="ubits-data-table__thead">
         <tr class="ubits-data-table__header-row">
-          ${controlsHeader}
           ${columnHeadersHTML}
         </tr>
       </thead>
@@ -1243,16 +1304,11 @@ export function renderDataTable(
       scrollClasses.push('ubits-data-table__scrollable-container--horizontal');
     }
     
-    // Agregar clase para controladores sticky si está habilitado
-    const showControlsSticky = options.showControlsSticky === true;
-    if (showControlsSticky) {
-      scrollClasses.push('ubits-data-table__scrollable-container--controls-sticky');
-    }
+    // Ya no usamos showControlsSticky - cada controlador tiene su propio pinned
     
     console.log('📊 [SCROLL] ✅ Envolviendo tabla en contenedor scrollable');
     console.log('📊 [SCROLL] Clases de scroll:', scrollClasses.join(' '));
     console.log('📊 [SCROLL] showHorizontalScrollbar activo:', showHorizontalScrollbar);
-    console.log('📊 [SCROLL] showControlsSticky activo:', showControlsSticky);
     console.log('📊 [SCROLL] Ancho total esperado de columnas:', totalColumnsWidth, 'px');
     
     html = `<div class="ubits-data-table__scrollable-container ${scrollClasses.join(' ')}">${tableHTML}</div>`;
