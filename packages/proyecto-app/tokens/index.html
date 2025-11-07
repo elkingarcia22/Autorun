@@ -993,7 +993,7 @@ cd Autoframe</code></pre>
               </button>
             </div>
             <p style="color: var(--ubits-fg-1-medium); font-size: var(--font-body-sm-size); margin: 8px 0 0 0; line-height: var(--font-body-sm-line);">
-              Este comando interactivo te guiará paso a paso: pregunta si quieres trabajar con un template (ej: UBITS) o construir desde cero, permite seleccionar qué add-ons quieres usar, y configura el Hub automáticamente con el validador activo.
+              Este comando interactivo te guiará paso a paso: solicita URL del repositorio GitHub, permite seleccionar y configurar qué add-ons quieres usar (diseño, componentes, funcionales), luego pregunta si quieres trabajar con un template (ej: UBITS) o construir desde cero, y configura el Hub automáticamente con el validador activo.
             </p>
           </div>
           <div>
@@ -1023,9 +1023,11 @@ npm run dev</code></pre>
             Cuando ejecutas <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px; font-size: var(--font-body-sm-size); color: var(--ubits-fg-2-high);">node scripts/autoframe-init.cjs</code>, el script te guía interactivamente:
           </p>
           <ol style="color: var(--ubits-fg-1-medium); font-size: var(--font-body-sm-size); margin: 0; padding-left: 20px; line-height: var(--font-body-sm-line);">
-            <li><strong>Selección de Template o Construcción desde Cero:</strong> Te pregunta si quieres trabajar con un template existente (ej: UBITS) o construir tu proyecto desde cero</li>
-            <li><strong>Selección de Add-ons:</strong> Elige qué add-ons quieres usar (diseño, componentes, funcionales) según el template o tus necesidades</li>
             <li><strong>Solicita URL del repositorio GitHub:</strong> Para conectar el proyecto con tu repositorio remoto</li>
+            <li><strong>Permite seleccionar add-ons:</strong> Elige qué add-ons quieres usar (diseño, componentes, funcionales)</li>
+            <li><strong>Configura cada add-on:</strong> Para cada add-on seleccionado, te pregunta por la configuración necesaria (API keys, URLs, etc.)</li>
+            <li><strong>Genera el archivo de configuración:</strong> Crea o actualiza el archivo de configuración con todas las configuraciones</li>
+            <li><strong>Selección de Template o Construcción desde Cero:</strong> Te pregunta si quieres trabajar con un template existente (ej: UBITS) o construir tu proyecto desde cero</li>
             <li><strong>Inicializa Git:</strong> Si no existe, inicializa el repositorio Git y configura el remoto</li>
             <li><strong>Instala dependencias:</strong> Ejecuta <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px; font-size: var(--font-body-xs-size); color: var(--ubits-fg-2-high);">npm install</code> para instalar todas las dependencias necesarias</li>
             <li><strong>Activa el Validador Automático:</strong> Configura el sistema de validación que revisará tokens, tipografías y componentes durante el desarrollo</li>
