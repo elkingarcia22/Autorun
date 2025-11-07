@@ -4179,13 +4179,17 @@ Reglas Importantes:
 
         // Cargar catálogo de iconos
         async function loadIconsCatalog() {
-          if (!iconsContainer || !iconsCount) {
+          if (!iconsContainer || !iconsCategoryTitle) {
             console.error('Elementos del DOM no encontrados');
             return;
           }
 
           try {
-            iconsCount.textContent = 'Cargando iconos...';
+            // Actualizar contador en el título
+            const countSpan = iconsCategoryTitle?.querySelector('span:last-child');
+            if (countSpan) {
+              countSpan.textContent = 'Cargando...';
+            }
             const response = await fetch('icons-catalog.json');
             
             if (!response.ok) {
@@ -4285,8 +4289,12 @@ Reglas Importantes:
 
           console.log(`✅ Cargados ${allIcons.length} iconos del autoframe anterior`);
 
-          if (iconsCount) {
-            iconsCount.textContent = `${allIcons.length} iconos (del autoframe anterior - usa servidor HTTP para catálogo completo)`;
+          // Actualizar contador en el título
+          if (iconsCategoryTitle) {
+            const countSpan = iconsCategoryTitle.querySelector('span:last-child');
+            if (countSpan) {
+              countSpan.textContent = `${allIcons.length} ${allIcons.length === 1 ? 'icono' : 'iconos'} (del autoframe anterior - usa servidor HTTP para catálogo completo)`;
+            }
           }
 
           renderIcons();
