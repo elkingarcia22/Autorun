@@ -14639,6 +14639,11 @@ Reglas Importantes:
         
         console.log('🔄 Actualizando preview de Sidebar:', state);
         
+        // Asegurar que el contenedor tenga fondo
+        if (preview.parentElement) {
+          preview.parentElement.style.background = 'var(--ubits-bg-2)';
+        }
+        
         // Limpiar preview anterior
         preview.innerHTML = '';
         
@@ -15447,6 +15452,12 @@ Reglas Importantes:
           console.error('❌ Preview de TabBar no encontrado:', `tabbar-preview-${componentId}`);
           return;
         }
+        
+        // Asegurar que el contenedor tenga fondo
+        if (preview.parentElement) {
+          preview.parentElement.style.background = 'var(--ubits-bg-2)';
+        }
+        preview.style.background = 'var(--ubits-bg-2)';
         
         console.log('🔄 [updateTabBarPreview] INICIO - componentId:', componentId);
         console.log('🔄 Actualizando preview de TabBar:', JSON.stringify(state, null, 2));
