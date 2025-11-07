@@ -419,26 +419,73 @@ function renderCellByType(column: TableColumn, row: TableRow, columnType: Column
     }
     
     case 'acciones': {
-      const actionText = cellValue || 'Acción';
+      // Por defecto, mostrar botón terciario con icono de eliminar
       return renderButton({
-        text: actionText,
+        text: 'Eliminar',
         variant: 'tertiary',
         size: 'sm',
+        icon: 'trash',
+        iconStyle: 'regular',
         className: 'ubits-data-table__action-button'
       });
     }
     
     case 'fecha': {
       const fecha = cellValue || '';
-      // Formatear fecha si es necesario
+      const isEditable = column.editable;
+      
+      // Si es editable, mostrar un contenedor con el span y atributos para el calendario
+      if (isEditable) {
+        // Convertir fecha a formato YYYY-MM-DD para el input date
+        let dateValue = '';
+        if (fecha) {
+          try {
+            const date = new Date(fecha);
+            if (!isNaN(date.getTime())) {
+              dateValue = date.toISOString().split('T')[0];
+            }
+          } catch (e) {
+            // Si no se puede parsear, usar la fecha actual
+            dateValue = new Date().toISOString().split('T')[0];
+          }
+        } else {
+          dateValue = new Date().toISOString().split('T')[0];
+        }
+        
+        return `
+          <div class="ubits-data-table__date-editable" data-row-id="${row.id}" data-column-id="${column.id}" data-editable="true">
+            <span class="ubits-body-md-regular ubits-data-table__date-display">${fecha || 'Seleccionar fecha'}</span>
+            <input type="date" class="ubits-data-table__date-input" value="${dateValue}" style="display: none;" data-row-id="${row.id}" data-column-id="${column.id}">
+          </div>
+        `;
+      }
+      
+      // Si no es editable, mostrar solo el texto
       return `<span class="ubits-body-md-regular">${fecha}</span>`;
     }
     
-    case 'area':
-    case 'lider':
-    case 'pais':
+    case 'area': {
+      // Texto hardcoded para área
+      const areaText = cellValue || 'Desarrollo';
+      return `<span class="ubits-body-md-regular">${areaText}</span>`;
+    }
+    
+    case 'lider': {
+      // Texto hardcoded para líder
+      const liderText = cellValue || 'Juan Pérez';
+      return `<span class="ubits-body-md-regular">${liderText}</span>`;
+    }
+    
+    case 'pais': {
+      // Texto hardcoded para país
+      const paisText = cellValue || 'Colombia';
+      return `<span class="ubits-body-md-regular">${paisText}</span>`;
+    }
+    
     case 'ciudad': {
-      return `<span class="ubits-body-md-regular">${cellValue || ''}</span>`;
+      // Texto hardcoded para ciudad
+      const ciudadText = cellValue || 'Bogotá';
+      return `<span class="ubits-body-md-regular">${ciudadText}</span>`;
     }
     
     default:
@@ -478,17 +525,18 @@ function renderCell(column: TableColumn, row: TableRow): string {
   // Si la columna tiene un tipo definido, usar renderCellByType
   if (column.type) {
     const content = renderCellByType(column, row, column.type);
-    // Editable para: nombre, nombre-avatar, estado (contenido editable), checkbox y radio (interactivos)
+    // Editable para: nombre, nombre-avatar, estado, fecha (contenido editable), checkbox y radio (interactivos)
     const isEditable = column.editable && (
       column.type === 'nombre' || 
       column.type === 'nombre-avatar' || 
       column.type === 'estado' ||
+      column.type === 'fecha' ||
       column.type === 'checkbox' ||
       column.type === 'radio'
     );
     const editableClass = isEditable ? 'ubits-data-table__cell--editable' : '';
     // Agregar data-column-id siempre para poder diferenciar en CSS
-    const dataAttrs = isEditable && (column.type === 'nombre' || column.type === 'nombre-avatar' || column.type === 'estado') 
+    const dataAttrs = isEditable && (column.type === 'nombre' || column.type === 'nombre-avatar' || column.type === 'estado' || column.type === 'fecha') 
       ? `data-row-id="${row.id}" data-column-id="${column.id}" data-editable="true"` 
       : `data-column-id="${column.id}"`;
     
@@ -2219,6 +2267,80 @@ export function createDataTable(options: DataTableOptions): {
           // Re-renderizar para reflejar los cambios visuales
           render();
         }
+      });
+    });
+    
+    // Date editables - mostrar calendario al hacer click
+    const dateEditables = element.querySelectorAll('.ubits-data-table__date-editable');
+    dateEditables.forEach((container) => {
+      const rowIdStr = container.getAttribute('data-row-id');
+      const columnId = container.getAttribute('data-column-id');
+      
+      if (!rowIdStr || !columnId) return;
+      
+      const rowId = isNaN(Number(rowIdStr)) ? rowIdStr : Number(rowIdStr);
+      const dateDisplay = container.querySelector('.ubits-data-table__date-display') as HTMLElement;
+      const dateInput = container.querySelector('.ubits-data-table__date-input') as HTMLInputElement;
+      
+      if (!dateDisplay || !dateInput) return;
+      
+      // Al hacer click en el display, mostrar el input date
+      dateDisplay.addEventListener('click', (e) => {
+        e.stopPropagation();
+        // Mostrar el input y hacer click en él para abrir el calendario
+        dateInput.style.display = 'block';
+        dateInput.style.position = 'absolute';
+        dateInput.style.opacity = '0';
+        dateInput.style.width = '100%';
+        dateInput.style.height = '100%';
+        dateInput.style.top = '0';
+        dateInput.style.left = '0';
+        dateInput.style.cursor = 'pointer';
+        dateInput.focus();
+        dateInput.showPicker?.();
+        
+        // Si showPicker no está disponible, hacer click programático
+        setTimeout(() => {
+          dateInput.click();
+        }, 0);
+      });
+      
+      // Cuando cambia la fecha, actualizar el display y los datos
+      dateInput.addEventListener('change', (e) => {
+        e.stopPropagation();
+        const newDateValue = dateInput.value;
+        
+        if (newDateValue) {
+          // Convertir de YYYY-MM-DD a formato legible
+          const date = new Date(newDateValue);
+          const formattedDate = date.toLocaleDateString('es-ES', { 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+          });
+          
+          // Actualizar el display
+          dateDisplay.textContent = formattedDate;
+          
+          // Ocultar el input
+          dateInput.style.display = 'none';
+          
+          // Actualizar los datos de la fila
+          const row = currentOptions.rows.find(r => r.id === rowId);
+          if (row) {
+            row.data[columnId] = formattedDate;
+            // También guardar en formato ISO para referencia
+            row.data[`${columnId}_iso`] = newDateValue;
+          }
+          
+          // Re-renderizar para reflejar los cambios
+          render();
+        }
+      });
+      
+      // Cuando el input pierde el foco, ocultarlo
+      dateInput.addEventListener('blur', () => {
+        dateInput.style.display = 'none';
       });
     });
     

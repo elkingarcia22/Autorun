@@ -5816,6 +5816,16 @@ Reglas Importantes:
                                   <span id="data-table-column-sortable-status-${componentId}" style="font-size: 14px; color: var(--ubits-fg-1-high);">Habilitado</span>
                                 </label>
                               </div>
+                              
+                              <!-- Expandir Filas -->
+                              <div style="flex: 0 0 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Expandir Filas</label>
+                                <label class="switch" style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                                  <input type="checkbox" id="data-table-row-expandable-${componentId}" checked onchange="setDataTableControl('rowExpandable', this.checked, '${componentId}')">
+                                  <span class="slider"></span>
+                                  <span id="data-table-row-expandable-status-${componentId}" style="font-size: 14px; color: var(--ubits-fg-1-high);">Habilitado</span>
+                                </label>
+                              </div>
                             </div>
                             
                             <!-- Selectores de Tipo de Columna (dinámicos) -->
@@ -9526,6 +9536,90 @@ Reglas Importantes:
                 },
                 expanded: false,
               },
+              {
+                id: 4,
+                data: {
+                  nombre: 'Ana Martínez',
+                  'checkbox-2': true,
+                  email: 'ana.martinez@empresa.com',
+                  estado: 'Activo',
+                  area: 'Recursos Humanos',
+                  avatar: { initials: 'AM', badgeColor: 'purple', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 5,
+                data: {
+                  nombre: 'Pedro Rodríguez',
+                  'checkbox-2': false,
+                  email: 'pedro.rodriguez@empresa.com',
+                  estado: 'Pendiente',
+                  area: 'Ventas',
+                  avatar: { initials: 'PR', badgeColor: 'blue', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 6,
+                data: {
+                  nombre: 'Laura Sánchez',
+                  'checkbox-2': true,
+                  email: 'laura.sanchez@empresa.com',
+                  estado: 'Activo',
+                  area: 'Desarrollo',
+                  avatar: { initials: 'LS', badgeColor: 'green', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 7,
+                data: {
+                  nombre: 'Roberto Fernández',
+                  'checkbox-2': false,
+                  email: 'roberto.fernandez@empresa.com',
+                  estado: 'Inactivo',
+                  area: 'Marketing',
+                  avatar: { initials: 'RF', badgeColor: 'orange', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 8,
+                data: {
+                  nombre: 'Carmen Torres',
+                  'checkbox-2': true,
+                  email: 'carmen.torres@empresa.com',
+                  estado: 'Activo',
+                  area: 'Diseño',
+                  avatar: { initials: 'CT', badgeColor: 'pink', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 9,
+                data: {
+                  nombre: 'Diego Morales',
+                  'checkbox-2': false,
+                  email: 'diego.morales@empresa.com',
+                  estado: 'Pendiente',
+                  area: 'Ventas',
+                  avatar: { initials: 'DM', badgeColor: 'blue', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 10,
+                data: {
+                  nombre: 'Sofía Ramírez',
+                  'checkbox-2': true,
+                  email: 'sofia.ramirez@empresa.com',
+                  estado: 'Activo',
+                  area: 'Recursos Humanos',
+                  avatar: { initials: 'SR', badgeColor: 'purple', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
             ],
           };
         }
@@ -9629,6 +9723,8 @@ Reglas Importantes:
           const [columnId, newType] = value;
           const column = state.columns.find(col => col.id === columnId);
           if (column) {
+            // Guardar el tipo anterior antes de actualizar
+            const oldType = column.type;
             column.type = newType || undefined;
             // Si cambia a un tipo diferente de 'nombre-avatar' o 'nombre-avatar-texto', eliminar avatarVariant
             if (newType !== 'nombre-avatar' && newType !== 'nombre-avatar-texto') {
@@ -9637,8 +9733,8 @@ Reglas Importantes:
               // Si cambia a 'nombre-avatar' o 'nombre-avatar-texto' y no tiene avatarVariant, establecer por defecto
               column.avatarVariant = 'initials';
             }
-            // Si cambia a un tipo que no es 'nombre', 'nombre-avatar', 'estado', 'checkbox' o 'radio', eliminar editable
-            if (newType !== 'nombre' && newType !== 'nombre-avatar' && newType !== 'estado' && newType !== 'checkbox' && newType !== 'radio') {
+            // Si cambia a un tipo que no es 'nombre', 'nombre-avatar', 'estado', 'fecha', 'checkbox' o 'radio', eliminar editable
+            if (newType !== 'nombre' && newType !== 'nombre-avatar' && newType !== 'estado' && newType !== 'fecha' && newType !== 'checkbox' && newType !== 'radio') {
               column.editable = undefined;
             }
             // Si cambia a un tipo que no es 'radio', eliminar radioLabel
@@ -9669,7 +9765,7 @@ Reglas Importantes:
               // Si cambia a 'correo' y no tiene emailClickable, usar el del estado global o true por defecto
               column.emailClickable = state.emailClickable !== false;
             }
-            // Actualizar el título del header según el tipo seleccionado
+            // Actualizar el título del header según el tipo seleccionado (siempre actualizar)
             const columnTypeLabels = {
               'nombre': 'Nombre',
               'nombre-avatar': 'Nombre',
@@ -9687,24 +9783,72 @@ Reglas Importantes:
               'pais': 'País',
               'ciudad': 'Ciudad'
             };
+            // Actualizar título siempre: si hay newType y está en el mapa, usar ese; si no, mantener el actual o usar un default
             if (newType && columnTypeLabels[newType]) {
               column.title = columnTypeLabels[newType];
+            } else if (!newType) {
+              // Si se elimina el tipo, mantener el título actual o usar un default
+              // No cambiar el título si no hay tipo
             }
             
-            // Si cambia a tipo 'correo', generar datos de email para las filas si no existen
+            // Limpiar y actualizar datos de las filas cuando cambia el tipo
+            // Tipos que requieren datos específicos hardcoded
+            const typesWithSpecificData = ['correo', 'fecha', 'area', 'lider', 'pais', 'ciudad'];
+            
+            // Si cambia a tipo 'correo', generar datos de email para las filas (forzar actualización siempre)
             if (newType === 'correo') {
               const emails = ['juan.perez@empresa.com', 'maria.garcia@empresa.com', 'carlos.lopez@empresa.com'];
               state.rows.forEach((row, index) => {
-                if (!row.data[columnId]) {
-                  // Si la columna no tiene datos, usar un email basado en el nombre o índice
-                  const nombre = row.data.nombre || '';
-                  const emailBase = nombre.toLowerCase().replace(/\s+/g, '.').replace(/[áéíóúñ]/g, (m) => {
-                    const map = {'á': 'a', 'é': 'e', 'í': 'i', 'ó': 'o', 'ú': 'u', 'ñ': 'n'};
-                    return map[m] || m;
-                  });
-                  row.data[columnId] = emailBase ? emailBase + '@empresa.com' : (emails[index] || 'usuario' + (index + 1) + '@empresa.com');
-                }
+                // Forzar actualización: siempre regenerar los datos cuando cambia a correo
+                const nombre = row.data.nombre || '';
+                const emailBase = nombre.toLowerCase().replace(/\s+/g, '.').replace(/[áéíóúñ]/g, (m) => {
+                  const map = {'á': 'a', 'é': 'e', 'í': 'i', 'ó': 'o', 'ú': 'u', 'ñ': 'n'};
+                  return map[m] || m;
+                });
+                row.data[columnId] = emailBase ? emailBase + '@empresa.com' : (emails[index] || 'usuario' + (index + 1) + '@empresa.com');
               });
+            }
+            // Si cambia a tipo 'fecha', generar datos de fecha para las filas (forzar actualización siempre)
+            else if (newType === 'fecha') {
+              // Generar fechas diferentes para cada fila (días diferentes del mes actual)
+              const today = new Date();
+              state.rows.forEach((row, index) => {
+                // Crear una fecha diferente para cada fila (días 1, 15, 28 del mes actual)
+                const date = new Date(today.getFullYear(), today.getMonth(), (index * 14 + 1) % 28 + 1);
+                const formattedDate = date.toLocaleDateString('es-ES', { 
+                  year: 'numeric', 
+                  month: 'long', 
+                  day: 'numeric' 
+                });
+                row.data[columnId] = formattedDate;
+              });
+            }
+            // Si cambia a tipo 'area', 'lider', 'pais' o 'ciudad', generar datos hardcoded (forzar actualización siempre)
+            else if (newType === 'area' || newType === 'lider' || newType === 'pais' || newType === 'ciudad') {
+              const defaultValues = {
+                'area': ['Desarrollo', 'Diseño', 'Marketing'],
+                'lider': ['Juan Pérez', 'María García', 'Carlos López'],
+                'pais': ['Colombia', 'México', 'Argentina'],
+                'ciudad': ['Bogotá', 'Ciudad de México', 'Buenos Aires']
+              };
+              
+              state.rows.forEach((row, index) => {
+                // Forzar actualización: siempre regenerar los datos cuando cambia el tipo (incluso si ya tenía datos)
+                const values = defaultValues[newType] || [];
+                row.data[columnId] = values[index] || values[0] || '';
+              });
+            }
+            // Si cambia a otro tipo o se elimina el tipo, limpiar los datos de esta columna si el tipo anterior requería datos específicos
+            else {
+              // Limpiar datos cuando cambia de un tipo que requería datos específicos a uno que no
+              if (oldType && typesWithSpecificData.includes(oldType) && (!newType || !typesWithSpecificData.includes(newType))) {
+                // Limpiar datos cuando se cambia de un tipo con datos específicos a uno sin datos específicos
+                state.rows.forEach((row) => {
+                  if (row.data[columnId] !== undefined) {
+                    delete row.data[columnId];
+                  }
+                });
+              }
             }
             
             // Regenerar selectores para mostrar/ocultar el controlador de variante
@@ -9728,7 +9872,7 @@ Reglas Importantes:
           // value = [columnId, editable]
           const [columnId, editable] = value;
           const column = state.columns.find(col => col.id === columnId);
-          if (column && (column.type === 'nombre' || column.type === 'nombre-avatar' || column.type === 'estado' || column.type === 'checkbox' || column.type === 'radio')) {
+          if (column && (column.type === 'nombre' || column.type === 'nombre-avatar' || column.type === 'estado' || column.type === 'fecha' || column.type === 'checkbox' || column.type === 'radio')) {
             column.editable = editable;
             // Regenerar selectores para actualizar el checkbox
             if (typeof window.generateColumnTypeSelectors === 'function') {
@@ -9855,7 +9999,8 @@ Reglas Importantes:
           const isToggle = currentType === 'toggle';
           const isCheckbox = currentType === 'checkbox';
           const isCorreo = currentType === 'correo';
-          const isEditableType = isNombre || isNombreAvatar || isEstado || isCheckbox || isRadio;
+          const isFecha = currentType === 'fecha';
+          const isEditableType = isNombre || isNombreAvatar || isEstado || isFecha || isCheckbox || isRadio;
           const hasAvatarVariant = isNombreAvatar || isNombreAvatarTexto;
           // Determinar el estado del emailClickable: usar el del estado global o el de la columna
           const currentEmailClickable = col.emailClickable !== undefined ? col.emailClickable : (state.emailClickable !== false);

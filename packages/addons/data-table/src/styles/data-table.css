@@ -888,6 +888,39 @@
     background-color: rgba(12, 91, 239, 0.1);
 }
 
+/* Fecha editable */
+.ubits-data-table__date-editable {
+    position: relative;
+    cursor: pointer;
+    display: inline-block;
+    width: 100%;
+}
+
+.ubits-data-table__date-editable:hover {
+    background-color: var(--ubits-bg-2, #f3f3f4);
+}
+
+.ubits-data-table__date-display {
+    display: inline-block;
+    width: 100%;
+    min-height: 20px;
+}
+
+.ubits-data-table__date-input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+}
+
+.ubits-data-table__cell--fecha.ubits-data-table__cell--editable:has(.ubits-data-table__date-input:focus) {
+    background-color: rgba(12, 91, 239, 0.1);
+}
+
 /* Celda de progreso */
 .ubits-data-table__cell--progreso {
     padding: var(--ubits-spacing-sm, 12px) var(--ubits-spacing-md, 16px);
