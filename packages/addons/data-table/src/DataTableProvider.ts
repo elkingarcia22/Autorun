@@ -1196,7 +1196,7 @@ export function renderDataTable(
 
   // Renderizar headers de columnas
   console.log('🔍 [RENDER HEADERS] Iniciando renderizado de headers...');
-  console.log('🔍 [RENDER HEADERS] hasControls:', hasControls, 'showCheckbox:', showCheckbox);
+  console.log('🔍 [RENDER HEADERS] showCheckbox:', showCheckbox);
   console.log('🔍 [RENDER HEADERS] Columnas con pinned:', visibleColumns.filter(c => c.pinned).map(c => ({ id: c.id, pinned: c.pinned })));
   
   const columnHeadersHTML = visibleColumns
