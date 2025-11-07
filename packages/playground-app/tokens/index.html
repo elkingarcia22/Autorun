@@ -11139,6 +11139,15 @@ Reglas Importantes:
           document.head.appendChild(link);
         }
         
+        // Cargar CSS del alert si no está cargado (para la notificación inline)
+        const existingAlertLink = document.querySelector('link[href*="alert.css"]');
+        if (!existingAlertLink) {
+          const link = document.createElement('link');
+          link.rel = 'stylesheet';
+          link.href = '../../addons/alert/src/styles/alert.css';
+          document.head.appendChild(link);
+        }
+        
         // Generar HTML del drawer manualmente
         const drawerHTML = generateDrawerHTML(state, componentId);
         
