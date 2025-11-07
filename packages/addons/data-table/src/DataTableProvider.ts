@@ -1243,9 +1243,16 @@ export function renderDataTable(
       scrollClasses.push('ubits-data-table__scrollable-container--horizontal');
     }
     
+    // Agregar clase para controladores sticky si está habilitado
+    const showControlsSticky = options.showControlsSticky === true;
+    if (showControlsSticky) {
+      scrollClasses.push('ubits-data-table__scrollable-container--controls-sticky');
+    }
+    
     console.log('📊 [SCROLL] ✅ Envolviendo tabla en contenedor scrollable');
     console.log('📊 [SCROLL] Clases de scroll:', scrollClasses.join(' '));
     console.log('📊 [SCROLL] showHorizontalScrollbar activo:', showHorizontalScrollbar);
+    console.log('📊 [SCROLL] showControlsSticky activo:', showControlsSticky);
     console.log('📊 [SCROLL] Ancho total esperado de columnas:', totalColumnsWidth, 'px');
     
     html = `<div class="ubits-data-table__scrollable-container ${scrollClasses.join(' ')}">${tableHTML}</div>`;
