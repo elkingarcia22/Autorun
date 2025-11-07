@@ -5097,11 +5097,14 @@ Reglas Importantes:
 
           categories.forEach((category, catIndex) => {
             const components = componentsInventory[category];
-            const componentCount = components.length;
             const categoryId = category.toLowerCase().replace(/\s+/g, '-');
-            const isExpanded = localStorage.getItem(`category-${categoryId}-expanded`) !== 'false'; // Por defecto expandido
+            // Solo la primera categoría (índice 0) está expandida por defecto
+            const isFirstCategory = catIndex === 0;
+            const isExpanded = isFirstCategory 
+              ? (localStorage.getItem(`category-${categoryId}-expanded`) !== 'false') // Por defecto true para la primera
+              : (localStorage.getItem(`category-${categoryId}-expanded`) === 'true'); // Por defecto false para las demás
             
-            // Agregar título de categoría clickeable con contador y chevron
+            // Agregar título de categoría clickeable con chevron (sin contador individual)
             navHTML += `<div class="side-title category-toggle" 
               data-category="${categoryId}" 
               style="margin-top: ${catIndex > 0 ? '16px' : '0'}; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none; padding: 8px 10px; border-radius: 4px; transition: background-color 0.2s ease;">
@@ -5109,7 +5112,6 @@ Reglas Importantes:
                 <i class="fas fa-chevron-${isExpanded ? 'down' : 'right'}" style="font-size: 10px; transition: transform 0.2s ease; color: var(--ubits-fg-1-medium);"></i>
                 <span>${category}</span>
               </div>
-              <span style="font-size: var(--font-body-xs-size); color: var(--ubits-fg-1-medium); font-weight: var(--weight-regular); margin-left: 8px;">${componentCount} ${componentCount === 1 ? 'componente' : 'componentes'}</span>
             </div>`;
             
             // Contenedor de links de componentes (colapsable)
