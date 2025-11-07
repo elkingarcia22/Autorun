@@ -5188,7 +5188,9 @@ Reglas Importantes:
             }
             localStorage.setItem(`category-${categoryId}-expanded`, 'false');
           } else {
-            categoryContent.style.display = 'block';
+            categoryContent.style.display = 'flex';
+            categoryContent.style.flexDirection = 'column';
+            categoryContent.style.gap = '6px';
             if (chevron) {
               chevron.classList.remove('fa-chevron-right');
               chevron.classList.add('fa-chevron-down');
