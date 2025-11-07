@@ -776,10 +776,11 @@ function renderColumnHeader(
   const pinnedClass = column.pinned ? ' ubits-data-table__column-header--pinned' : '';
   
   // Agregar estilo inline para left si está fijada (siempre aplicar cuando está fijada, incluso si es 0)
-  const pinnedStyle = column.pinned ? `left: ${pinnedLeft}px;` : '';
-  const widthStyle = column.width ? `width: ${column.width}px;` : '';
   // IMPORTANTE: Siempre incluir position: sticky cuando está fijada, y asegurar que left esté presente
-  const positionStyle = column.pinned ? 'position: sticky;' : '';
+  // Usar !important para evitar que CSS sobrescriba el estilo inline
+  const pinnedStyle = column.pinned ? `left: ${pinnedLeft}px !important;` : '';
+  const widthStyle = column.width ? `width: ${column.width}px;` : '';
+  const positionStyle = column.pinned ? 'position: sticky !important;' : '';
   const combinedStyle = [positionStyle, pinnedStyle, widthStyle].filter(Boolean).join(' ');
   
   // Logs detallados para debugging
