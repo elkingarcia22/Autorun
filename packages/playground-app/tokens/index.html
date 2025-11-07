@@ -5020,6 +5020,16 @@ Reglas Importantes:
           nav.innerHTML = navHTML;
           const linkCount = nav.querySelectorAll('.side-link').length;
           console.log(`✅ Navegación generada: ${linkCount} links creados`);
+          
+          // Actualizar contador del título principal "Categorías"
+          const componentsCategoryTitle = document.getElementById('components-category-title');
+          if (componentsCategoryTitle) {
+            const total = Object.values(componentsInventory).flat().length;
+            const countSpan = componentsCategoryTitle.querySelector('span:last-child');
+            if (countSpan) {
+              countSpan.textContent = `${total} ${total === 1 ? 'componente' : 'componentes'}`;
+            }
+          }
 
           // Agregar event listeners con delegación de eventos (más robusto)
           nav.addEventListener('click', function(e) {
