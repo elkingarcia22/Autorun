@@ -7115,6 +7115,27 @@ Reglas Importantes:
                       ${hasPreview && component.name === 'Contenedor' ? `
                         <!-- Preview Section for Contenedor -->
                         <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: none; margin-bottom: 24px;">
+                          <!-- CONTROLES ARRIBA -->
+                          <div style="margin-bottom: 24px;">
+                            <h4 style="margin: 0 0 20px 0; color: var(--ubits-fg-1-high); font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand);"></i>
+                              Controles
+                            </h4>
+                            
+                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
+                              <!-- Variante de Fondo -->
+                              <div style="flex: 0 0 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Variante de Fondo</label>
+                                <select id="contenedor-background-variant-select-${componentId}" onchange="setContenedorControl('backgroundVariant', this.value, '${componentId}')" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: var(--font-body-sm-size, 13px); font-family: var(--font-sans); cursor: pointer; box-sizing: border-box;">
+                                  <option value="bg1" selected>BG-1</option>
+                                  <option value="bg2">BG-2</option>
+                                  <option value="bg3">BG-3</option>
+                                  <option value="bg4">BG-4</option>
+                                </select>
+                              </div>
+                            </div>
+                          </div>
+                          
                           <!-- PREVIEW EN EL MEDIO -->
                           <div style="background: var(--ubits-bg-1); padding: 48px; border-radius: 8px; border: none; margin-bottom: 24px; display: flex; align-items: center; justify-content: center; min-height: 120px;">
                             <div id="contenedor-preview-${componentId}" style="width: 100%; max-width: 600px;">
@@ -16009,8 +16030,22 @@ Reglas Importantes:
         `.trim();
       }
       
+      // Estado del preview del Contenedor
+      const contenedorPreviewState = {};
+      
+      // Función para inicializar el estado del preview del Contenedor
+      function initContenedorPreviewState(componentId) {
+        if (!contenedorPreviewState[componentId]) {
+          contenedorPreviewState[componentId] = {
+            backgroundVariant: 'bg1'
+          };
+        }
+        return contenedorPreviewState[componentId];
+      }
+      
       // Función para actualizar el preview del Contenedor
       window.updateContenedorPreview = function(componentId) {
+        const state = initContenedorPreviewState(componentId);
         const preview = document.getElementById(`contenedor-preview-${componentId}`);
         
         if (!preview) {
@@ -16018,10 +16053,14 @@ Reglas Importantes:
           return;
         }
         
+        // Obtener la variante de fondo del estado
+        const bgVariant = state.backgroundVariant || 'bg1';
+        const bgToken = `var(--ubits-bg-${bgVariant.replace('bg', '')})`;
+        
         // Crear el HTML del contenedor usando tokens UBITS
         const containerHTML = `
           <div class="ubits-container" style="
-            background: var(--ubits-bg-1);
+            background: ${bgToken};
             border-radius: var(--ubits-border-radius-md);
             padding: var(--ubits-spacing-md);
             color: var(--ubits-fg-1-high);
@@ -16030,7 +16069,7 @@ Reglas Importantes:
             line-height: var(--font-body-md-line);
           ">
             <p style="margin: 0; color: var(--ubits-fg-1-medium);">
-              Este es un contenedor básico con fondo <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px; font-size: 12px;">bg-1</code>, 
+              Este es un contenedor básico con fondo <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px; font-size: 12px;">${bgVariant}</code>, 
               border-radius de <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px; font-size: 12px;">8px</code> 
               y padding interno de <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px; font-size: 12px;">12px</code>.
             </p>
@@ -16042,7 +16081,22 @@ Reglas Importantes:
         
         preview.innerHTML = containerHTML;
         
-        console.log('✅ Preview de Contenedor actualizado');
+        console.log('✅ Preview de Contenedor actualizado:', state);
+      };
+      
+      // Función unificada para controles del Contenedor
+      window.setContenedorControl = function(option, value, componentId) {
+        const state = initContenedorPreviewState(componentId);
+        
+        // Actualizar estado según la opción
+        if (option === 'backgroundVariant') {
+          state.backgroundVariant = value;
+        }
+        
+        // Actualizar el preview
+        window.updateContenedorPreview(componentId);
+        
+        console.log('✅ Control de Contenedor actualizado:', option, value);
       };
       
       // Función para actualizar el preview del Card Content
