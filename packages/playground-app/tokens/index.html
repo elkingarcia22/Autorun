@@ -5104,8 +5104,7 @@ Reglas Importantes:
             // Agregar título de categoría clickeable con contador y chevron
             navHTML += `<div class="side-title category-toggle" 
               data-category="${categoryId}" 
-              style="margin-top: ${catIndex > 0 ? '16px' : '0'}; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none; padding: 8px 10px; border-radius: 4px; transition: background-color 0.2s ease;"
-              onclick="toggleCategory('${categoryId}')">
+              style="margin-top: ${catIndex > 0 ? '16px' : '0'}; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none; padding: 8px 10px; border-radius: 4px; transition: background-color 0.2s ease;">
               <div style="display: flex; align-items: center; gap: 8px; flex: 1;">
                 <i class="fas fa-chevron-${isExpanded ? 'down' : 'right'}" style="font-size: 10px; transition: transform 0.2s ease; color: var(--ubits-fg-1-medium);"></i>
                 <span>${category}</span>
@@ -5155,6 +5154,11 @@ Reglas Importantes:
 
           // Agregar event listeners con delegación de eventos (más robusto)
           nav.addEventListener('click', function(e) {
+            // Si el click es en un toggle de categoría, no hacer nada (ya tiene su propio handler)
+            if (e.target.closest('.category-toggle')) {
+              return;
+            }
+            
             const link = e.target.closest('.side-link');
             if (link) {
               e.preventDefault();
@@ -5166,12 +5170,25 @@ Reglas Importantes:
               }
             }
           });
+          
+          // Agregar event listener para los toggles de categoría usando delegación
+          nav.addEventListener('click', function(e) {
+            const categoryToggle = e.target.closest('.category-toggle');
+            if (categoryToggle) {
+              e.preventDefault();
+              e.stopPropagation();
+              const categoryId = categoryToggle.getAttribute('data-category');
+              if (categoryId) {
+                toggleCategory(categoryId);
+              }
+            }
+          });
 
           return firstComponentId;
         }
         
-        // Función para toggle de categorías (colapsar/expandir)
-        function toggleCategory(categoryId) {
+        // Función para toggle de categorías (colapsar/expandir) - debe ser global
+        window.toggleCategory = function(categoryId) {
           const categoryContent = document.querySelector(`.category-content[data-category="${categoryId}"]`);
           const categoryTitle = document.querySelector(`.category-toggle[data-category="${categoryId}"]`);
           
