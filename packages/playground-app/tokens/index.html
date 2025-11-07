@@ -1103,7 +1103,10 @@ npm run dev</code></pre>
       <div class="layout-colors">
         <aside class="sidebar">
           <div class="sidebox">
-            <div class="side-title">Categorías</div>
+            <div class="side-title" id="colors-category-title" style="display: flex; align-items: center; justify-content: space-between;">
+              <span>Categorías</span>
+              <span style="font-size: var(--font-body-xs-size); color: var(--ubits-fg-1-medium); font-weight: var(--weight-regular); margin-left: 8px;">0 colores</span>
+            </div>
             <nav class="side" role="tablist" aria-label="Categorías de colores">
               <a class="side-link active" href="#colores/brand" data-cat="brand" role="tab">Brand</a>
               <a class="side-link" href="#colores/button" data-cat="button" role="tab">Button</a>
@@ -1731,14 +1734,16 @@ npm run dev</code></pre>
             <i class="far fa-times"></i>
           </button>
         </div>
-        <div id="icons-count" style="margin-left: 16px; color: var(--ubits-fg-1-medium); font-size: 14px; align-self: center;">Cargando...</div>
       </div>
 
       <div style="display: flex; gap: 20px; align-items: flex-start;">
         <!-- Sidebar de navegación por categorías -->
         <aside class="sidebar" style="width: 280px; flex-shrink: 0;">
           <div class="sidebox">
-            <div class="side-title">Categorías</div>
+            <div class="side-title" id="icons-category-title" style="display: flex; align-items: center; justify-content: space-between;">
+              <span>Categorías</span>
+              <span style="font-size: var(--font-body-xs-size); color: var(--ubits-fg-1-medium); font-weight: var(--weight-regular); margin-left: 8px;">0 iconos</span>
+            </div>
             <nav class="side" id="icons-category-nav" role="tablist" aria-label="Navegación por categorías de iconos">
               <!-- Se generará dinámicamente -->
             </nav>
@@ -1789,14 +1794,16 @@ npm run dev</code></pre>
             <i class="far fa-times"></i>
           </button>
         </div>
-        <div id="components-count" style="margin-left: 16px; color: var(--ubits-fg-1-medium); font-size: var(--font-body-sm-size); align-self: center;">Cargando...</div>
       </div>
 
       <div style="display: flex; gap: 20px; align-items: flex-start; margin-top: 24px;">
         <!-- Sidebar de navegación de componentes -->
         <aside class="sidebar" style="width: 280px; flex-shrink: 0;">
           <div class="sidebox">
-            <div class="side-title">Categorías</div>
+            <div class="side-title" id="components-category-title" style="display: flex; align-items: center; justify-content: space-between;">
+              <span>Categorías</span>
+              <span style="font-size: var(--font-body-xs-size); color: var(--ubits-fg-1-medium); font-weight: var(--weight-regular); margin-left: 8px;">0 componentes</span>
+            </div>
             <nav class="side" id="components-nav" role="navigation" aria-label="Navegación de componentes">
               <!-- Se generará dinámicamente -->
             </nav>
@@ -1832,7 +1839,10 @@ npm run dev</code></pre>
         <!-- Sidebar de navegación -->
         <aside class="sidebar" style="width: 280px; flex-shrink: 0;">
           <div class="sidebox">
-            <div class="side-title">Categorías</div>
+            <div class="side-title" style="display: flex; align-items: center; justify-content: space-between;">
+              <span>Categorías</span>
+              <span style="font-size: var(--font-body-xs-size); color: var(--ubits-fg-1-medium); font-weight: var(--weight-regular); margin-left: 8px;">-</span>
+            </div>
             <nav class="side" role="navigation" aria-label="Navegación de espaciado">
               <a href="#" class="side-link active" data-cat="espaciado-basico" onclick="activateSpacingCat('espaciado-basico'); return false;">
                 Espaciado Básico
@@ -2119,7 +2129,10 @@ npm run dev</code></pre>
         <!-- Sidebar de navegación -->
         <aside class="sidebar" style="width: 280px; flex-shrink: 0;">
           <div class="sidebox">
-            <div class="side-title">Categorías</div>
+            <div class="side-title" style="display: flex; align-items: center; justify-content: space-between;">
+              <span>Categorías</span>
+              <span style="font-size: var(--font-body-xs-size); color: var(--ubits-fg-1-medium); font-weight: var(--weight-regular); margin-left: 8px;">-</span>
+            </div>
             <nav class="side" role="navigation" aria-label="Navegación de effects">
               <a href="#" class="side-link active" data-cat="focus" onclick="activateEffectsCat('focus'); return false;">
                 Focus
@@ -2376,7 +2389,10 @@ npm run dev</code></pre>
         <!-- Sidebar de navegación -->
         <aside class="sidebar" style="width: 280px; flex-shrink: 0;">
           <div class="sidebox">
-            <div class="side-title">Categorías</div>
+            <div class="side-title" style="display: flex; align-items: center; justify-content: space-between;">
+              <span>Categorías</span>
+              <span style="font-size: var(--font-body-xs-size); color: var(--ubits-fg-1-medium); font-weight: var(--weight-regular); margin-left: 8px;">-</span>
+            </div>
             <nav class="side" role="navigation" aria-label="Navegación de grid y breakpoints">
               <a href="#" class="side-link active" data-cat="breakpoints" onclick="activateGridBreakpointsCat('breakpoints'); return false;">
                 Breakpoints
@@ -4059,12 +4075,12 @@ Reglas Importantes:
         const iconsContainer = document.getElementById('icons-container');
         const iconsSearchInput = document.getElementById('icons-search-input');
         const iconsClearSearch = document.getElementById('icons-clear-search');
-        const iconsCount = document.getElementById('icons-count');
+        const iconsCategoryTitle = document.getElementById('icons-category-title');
         const iconsEmptyState = document.getElementById('icons-empty-state');
         const iconsCategoryNav = document.getElementById('icons-category-nav');
 
         // Validar que los elementos existan
-        if (!iconsContainer || !iconsCount || !iconsCategoryNav) {
+        if (!iconsContainer || !iconsCategoryTitle || !iconsCategoryNav) {
           console.error('❌ Elementos DOM faltantes para sistema de iconos');
           return;
         }
@@ -4444,14 +4460,19 @@ Reglas Importantes:
           updateCount();
         }
 
-        // Actualizar contador
+        // Actualizar contador en el título del menú lateral
         function updateCount() {
           const total = allIcons.length;
           const showing = filteredIcons.length;
-          if (showing === total) {
-            iconsCount.textContent = `${total} iconos`;
-          } else {
-            iconsCount.textContent = `${showing} de ${total} iconos`;
+          if (iconsCategoryTitle) {
+            const countSpan = iconsCategoryTitle.querySelector('span:last-child');
+            if (countSpan) {
+              if (showing === total) {
+                countSpan.textContent = `${total} ${total === 1 ? 'icono' : 'iconos'}`;
+              } else {
+                countSpan.textContent = `${showing} de ${total} ${total === 1 ? 'icono' : 'iconos'}`;
+              }
+            }
           }
         }
 
@@ -7708,7 +7729,7 @@ Reglas Importantes:
           const allComponents = document.querySelectorAll('[id^="component-"]');
           const emptyState = document.getElementById('components-empty-state');
           const container = document.getElementById('components-container');
-          const countEl = document.getElementById('components-count');
+          const componentsCategoryTitle = document.getElementById('components-category-title');
           const clearBtn = document.getElementById('components-clear-search');
           
           let visibleCount = 0;
@@ -7758,10 +7779,13 @@ Reglas Importantes:
             if (emptyState) emptyState.style.display = 'none';
             if (container) container.style.display = '';
             
-            // Actualizar contador
+            // Actualizar contador en el título del menú lateral
             const total = Object.values(componentsInventory).flat().length;
-            if (countEl) {
-              countEl.textContent = `${total} componentes`;
+            if (componentsCategoryTitle) {
+              const countSpan = componentsCategoryTitle.querySelector('span:last-child');
+              if (countSpan) {
+                countSpan.textContent = `${total} ${total === 1 ? 'componente' : 'componentes'}`;
+              }
             }
             
             // Ocultar botón limpiar
@@ -7847,13 +7871,16 @@ Reglas Importantes:
             if (container) container.style.display = '';
           }
           
-          // Actualizar contador
+          // Actualizar contador en el título del menú lateral
           const total = Object.values(componentsInventory).flat().length;
-          if (countEl) {
-            if (searchLower) {
-              countEl.textContent = `${visibleCount} de ${total} componentes`;
-            } else {
-              countEl.textContent = `${total} componentes`;
+          if (componentsCategoryTitle) {
+            const countSpan = componentsCategoryTitle.querySelector('span:last-child');
+            if (countSpan) {
+              if (searchLower) {
+                countSpan.textContent = `${visibleCount} de ${total} ${total === 1 ? 'componente' : 'componentes'}`;
+              } else {
+                countSpan.textContent = `${total} ${total === 1 ? 'componente' : 'componentes'}`;
+              }
             }
           }
           
