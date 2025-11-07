@@ -8,11 +8,11 @@
  * diseño, testing, etc.)
  */
 
-// Exportar clases principales (cuando estén implementadas)
-// export { AutoframeHub } from './AutoframeHub';
-// export { AddonRegistry } from './AddonRegistry';
-// export { AddonLoader } from './AddonLoader';
-// export { ConfigManager } from './ConfigManager';
+// Exportar clases principales
+export { AutoframeHub } from './AutoframeHub';
+export { AddonRegistry } from './AddonRegistry';
+export { AddonLoader } from './AddonLoader';
+export { ConfigManager } from './ConfigManager';
 
 // Exportar interfaces
 export * from './interfaces';
