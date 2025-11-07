@@ -11051,9 +11051,13 @@ Reglas Importantes:
               </div>
               ` : ''}
             </div>
-            <button class="ubits-drawer__close" aria-label="Cerrar drawer" type="button">
-              <i class="far fa-times"></i>
-            </button>
+            ${typeof window.renderButton !== 'undefined' ? window.renderButton({
+              variant: 'tertiary',
+              size: 'md',
+              icon: 'fa-times',
+              iconOnly: true,
+              className: 'ubits-drawer__close'
+            }) : '<button class="ubits-drawer__close ubits-button ubits-button--tertiary ubits-button--md ubits-button--icon-only" aria-label="Cerrar drawer" type="button"><i class="far fa-times"></i></button>'}
           </div>
         `;
         
