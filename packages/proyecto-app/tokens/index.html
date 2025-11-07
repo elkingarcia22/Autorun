@@ -2841,11 +2841,7 @@ npm run dev</code></pre>
           { id: 'tokens', name: 'Tokens Autoframe', icon: 'fa-palette', description: 'Tokens de diseño genéricos' },
           { id: 'typography', name: 'Tipografía', icon: 'fa-font', description: 'Sistema de tipografía' },
           { id: 'fontawesome', name: 'Font Awesome', icon: 'fa-icons', description: 'Biblioteca de iconos' },
-          { id: 'button', name: 'Button', icon: 'fa-mouse-pointer', description: 'Botones interactivos base' },
-          { id: 'sidebar', name: 'Sidebar', icon: 'fa-bars', description: 'Barra lateral de navegación base' },
-          { id: 'input', name: 'Input', icon: 'fa-keyboard', description: 'Campos de entrada base' },
-          { id: 'alert', name: 'Alert', icon: 'fa-exclamation-triangle', description: 'Alertas y notificaciones base' },
-          { id: 'toast', name: 'Toast', icon: 'fa-bell', description: 'Notificaciones toast base' }
+          { id: 'componentes', name: 'Componentes Autoframe', icon: 'fa-cubes', description: 'Componentes base del sistema' }
         ]
       };
 
@@ -3047,59 +3043,15 @@ npm run dev</code></pre>
             { type: 'api-key', label: 'Font Awesome Kit ID (si usas Pro)', required: false, example: 'abc123xyz' }
           ]
         },
-        'button': {
-          name: 'Button',
+        'componentes': {
+          name: 'Componentes Autoframe',
           category: 'Diseño',
-          icon: 'fa-mouse-pointer',
-          description: 'Componente base de botón con múltiples variantes',
-          whatIs: 'Button es un componente base de Autoframe que proporciona un componente de botón completo con múltiples variantes (primary, secondary, tertiary), tamaños, estados, y opciones de iconos. Es parte de los componentes base del sistema de diseño Autoframe.',
-          whatFor: 'Este componente proporciona botones consistentes y accesibles como base para toda la aplicación. Incluye estados hover, active, disabled, loading, y soporte para iconos. Ideal para mantener consistencia en la interacción del usuario y como punto de partida para personalización.',
+          icon: 'fa-cubes',
+          description: 'Componentes base del sistema de diseño Autoframe',
+          whatIs: 'Componentes Autoframe es un add-on de diseño que proporciona un conjunto completo de componentes UI base para construir aplicaciones. Incluye componentes como Button, Sidebar, Input, Alert, Toast y más, todos diseñados con tokens y tipografía consistentes del sistema Autoframe.',
+          whatFor: 'Este add-on proporciona una base sólida de componentes UI consistentes y accesibles que puedes usar directamente o personalizar según las necesidades de tu proyecto. Todos los componentes están diseñados para trabajar juntos y mantener consistencia visual y funcional. Ideal para proyectos que necesitan componentes base bien estructurados desde el inicio.',
           requirements: [
-            { type: 'config', label: 'Personalización (opcional)', required: false, example: 'Colores, tamaños, estilos personalizados' }
-          ]
-        },
-        'sidebar': {
-          name: 'Sidebar',
-          category: 'Diseño',
-          icon: 'fa-bars',
-          description: 'Componente base de barra lateral de navegación',
-          whatIs: 'Sidebar es un componente base de Autoframe que proporciona un componente de barra lateral navegable, con soporte para menús, submenús, iconos, y estados activos. Es parte de los componentes base del sistema de diseño Autoframe.',
-          whatFor: 'Este componente proporciona navegación lateral consistente y accesible como base. Incluye soporte para múltiples niveles de navegación, estados activos, y responsive. Ideal para aplicaciones con navegación compleja y como punto de partida para personalización.',
-          requirements: [
-            { type: 'config', label: 'Configuración de menú', required: false, example: 'Items de menú, estructura, iconos' }
-          ]
-        },
-        'input': {
-          name: 'Input',
-          category: 'Diseño',
-          icon: 'fa-keyboard',
-          description: 'Componente base de campo de entrada',
-          whatIs: 'Input es un componente base de Autoframe que proporciona componentes de entrada de texto con validación, estados de error, labels, y placeholders. Es parte de los componentes base del sistema de diseño Autoframe.',
-          whatFor: 'Este componente proporciona campos de entrada consistentes y accesibles como base. Incluye validación visual, mensajes de error, y estados disabled. Ideal para formularios y entrada de datos, y como punto de partida para personalización.',
-          requirements: [
-            { type: 'config', label: 'Configuración de validación (opcional)', required: false, example: 'Reglas de validación, mensajes de error' }
-          ]
-        },
-        'alert': {
-          name: 'Alert',
-          category: 'Diseño',
-          icon: 'fa-exclamation-triangle',
-          description: 'Componente base de alertas y notificaciones',
-          whatIs: 'Alert es un componente base de Autoframe que proporciona componentes de alerta con múltiples variantes (success, error, warning, info) y opciones de cierre. Es parte de los componentes base del sistema de diseño Autoframe.',
-          whatFor: 'Este componente proporciona un sistema consistente de alertas como base para comunicar información importante al usuario. Incluye variantes visuales, iconos, y opciones de cierre. Ideal para feedback y notificaciones, y como punto de partida para personalización.',
-          requirements: [
-            { type: 'config', label: 'Configuración de variantes (opcional)', required: false, example: 'Colores, iconos, tiempo de auto-cierre' }
-          ]
-        },
-        'toast': {
-          name: 'Toast',
-          category: 'Diseño',
-          icon: 'fa-bell',
-          description: 'Componente base de notificaciones toast',
-          whatIs: 'Toast es un componente base de Autoframe que proporciona notificaciones toast no intrusivas que aparecen temporalmente en la pantalla. Es parte de los componentes base del sistema de diseño Autoframe.',
-          whatFor: 'Este componente proporciona un sistema de notificaciones toast como base para feedback inmediato sin interrumpir el flujo del usuario. Incluye posicionamiento, auto-cierre, y múltiples variantes. Ideal para confirmaciones y notificaciones temporales, y como punto de partida para personalización.',
-          requirements: [
-            { type: 'config', label: 'Configuración de posición y duración (opcional)', required: false, example: 'Posición, duración, animaciones' }
+            { type: 'config', label: 'Configuración de componentes (opcional)', required: false, example: 'Personalizar estilos, variantes, comportamientos' }
           ]
         }
       };
