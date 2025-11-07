@@ -565,7 +565,8 @@ function renderCell(column: TableColumn, row: TableRow, pinnedLeft: number = 0):
     const editableClass = isEditable ? 'ubits-data-table__cell--editable' : '';
     const pinnedClass = column.pinned ? ' ubits-data-table__cell--pinned' : '';
     // Aplicar left siempre que la columna esté fijada, incluso si es 0 (necesario para que sticky funcione)
-    const pinnedStyle = column.pinned ? ` style="left: ${pinnedLeft}px;"` : '';
+    // IMPORTANTE: Incluir position: sticky explícitamente en el estilo inline
+    const pinnedStyle = column.pinned ? ` style="position: sticky; left: ${pinnedLeft}px;"` : '';
     
     // Logs detallados para debugging
     if (column.pinned) {
