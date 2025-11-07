@@ -1,7 +1,7 @@
-/* Autoframe Typography tokens (escala basada en typography.css del playground) */
+/* Autoframe Typography tokens (escala basada en typography.css del proyecto) */
 :root{
   --font-sans: 'Noto Sans', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, 'Apple Color Emoji', 'Segoe UI Emoji';
-  /* sizes from playground viejo */
+  /* sizes from proyecto original */
   --font-d1-size: 48px; --font-d1-line: 57.6px; /* 48 * 1.2 */
   --font-d2-size: 40px; --font-d2-line: 48px;
   --font-d3-size: 32px; --font-d3-line: 48px;

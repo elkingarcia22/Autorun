@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Autoframe Playground - Template Colaborador</title>
+    <title>Autoframe Proyecto - Template Colaborador</title>
     
     <!-- Autoframe Base Styles -->
     <link rel="stylesheet" href="../tokens/dist/tokens.css" />
@@ -117,8 +117,8 @@
             box-sizing: border-box;
         }
 
-        /* Centrado para pantallas grandes - EXACTAMENTE igual que el playground antiguo */
-        /* El playground antiguo usa margin: auto sin cambiar flex */
+        /* Centrado para pantallas grandes - EXACTAMENTE igual que el proyecto UBITS original */
+        /* El proyecto UBITS original usa margin: auto sin cambiar flex */
         @media (min-width: 1440px) {
             .main-content {
                 margin: 16px auto 0 auto; /* ⚠️ margin auto centra el elemento */
@@ -127,14 +127,14 @@
                 width: 1607px;
                 max-width: 1607px;
                 box-sizing: border-box;
-                /* ⚠️ IMPORTANTE: Mantener flex: 1, igual que el playground antiguo */
+                /* ⚠️ IMPORTANTE: Mantener flex: 1, igual que el proyecto UBITS original */
                 /* NO cambiar a flex: none, el margin: auto funciona con flex: 1 */
             }
         }
 
-        /* Ajustar gap en móvil cuando no hay subnav - igual que el playground antiguo */
+        /* Ajustar gap en móvil cuando no hay subnav - igual que el proyecto UBITS original */
         @media (max-width: 1023px) {
-            /* ⚠️ CRÍTICO: Ocultar sidebar container, igual que el playground antiguo */
+            /* ⚠️ CRÍTICO: Ocultar sidebar container, igual que el proyecto UBITS original */
             #sidebar-container {
                 display: none !important;
             }
@@ -146,11 +146,11 @@
                 padding-left: 0;
                 padding-right: 0;
                 max-width: 100%;
-                padding-bottom: 60px; /* Espacio para el TabBar, igual que el playground antiguo */
+                padding-bottom: 60px; /* Espacio para el TabBar, igual que el proyecto UBITS original */
             }
             
             .content-area {
-                padding-bottom: 60px; /* Espacio para el TabBar, igual que el playground antiguo */
+                padding-bottom: 60px; /* Espacio para el TabBar, igual que el proyecto UBITS original */
             }
             
             .main-content > *:first-child {
@@ -200,7 +200,7 @@
             min-height: 0;
             display: flex;
             align-items: flex-start;
-            justify-content: center; /* Centrar el content-sections, igual que el playground antiguo */
+            justify-content: center; /* Centrar el content-sections, igual que el proyecto UBITS original */
             overflow: visible;
             box-sizing: border-box;
             max-height: none;
@@ -251,7 +251,7 @@
            SECTION TYPES
            ======================================== */
         
-        /* Secciones de widgets - igual que el playground antiguo */
+        /* Secciones de widgets - igual que el proyecto UBITS original */
         .section-single {
             display: flex;
             width: 100%;
@@ -283,7 +283,7 @@
            WIDGETS
            ======================================== */
         
-        /* Widgets en secciones - igual que el playground antiguo */
+        /* Widgets en secciones - igual que el proyecto UBITS original */
         .section-single > div,
         .section-dual > div,
         .section-triple > div,
@@ -299,7 +299,7 @@
             min-width: 0; /* Permitir que se reduzca si es necesario */
         }
 
-        /* Distribución de anchos - igual que el playground antiguo */
+        /* Distribución de anchos - igual que el proyecto UBITS original */
         .section-single > div {
             flex: 1;
         }

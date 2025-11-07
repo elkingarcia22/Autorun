@@ -84,7 +84,7 @@ Para cada add-on, documentar:
 ## 📁 Estructura de Archivos a Crear/Modificar
 
 ```
-packages/playground-app/
+packages/proyecto-app/
 ├── hub/                          # Nueva sección (antes "template")
 │   ├── index.html               # Página principal del Hub
 │   ├── estructura.html           # Estructura del proyecto

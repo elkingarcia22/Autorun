@@ -37,7 +37,7 @@ Si necesitas actualizar Font Awesome, ejecuta:
 1. `npm update @fortawesome/fontawesome-pro`
 2. Copia los nuevos archivos:
    ```bash
-   cp node_modules/@fortawesome/fontawesome-pro/css/all.min.css packages/playground-app/assets/fontawesome/css/
-   cp -r node_modules/@fortawesome/fontawesome-pro/webfonts/* packages/playground-app/assets/fontawesome/webfonts/
+   cp node_modules/@fortawesome/fontawesome-pro/css/all.min.css packages/proyecto-app/assets/fontawesome/css/
+   cp -r node_modules/@fortawesome/fontawesome-pro/webfonts/* packages/proyecto-app/assets/fontawesome/webfonts/
    ```
 
