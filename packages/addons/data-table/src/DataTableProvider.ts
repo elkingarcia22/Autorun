@@ -787,11 +787,12 @@ export function renderDataTable(
   columnOrder: string[] = [],
   rowOrder: (string | number)[] = []
 ): string {
-  const { columns, rows, className = '', columnReorderable = false, columnSortable = true, rowReorderable = false, rowExpandable = true, showCheckbox = true, showVerticalScrollbar = false } = options;
+  const { columns, rows, className = '', columnReorderable = false, columnSortable = true, rowReorderable = false, rowExpandable = true, showCheckbox = true, showVerticalScrollbar = false, showHorizontalScrollbar = false } = options;
 
   console.log('🎨 [RENDER] ========== INICIO RENDER ==========');
   console.log('🎨 [RENDER] renderDataTable llamado con showCheckbox:', showCheckbox);
   console.log('🎨 [RENDER] renderDataTable llamado con showVerticalScrollbar:', showVerticalScrollbar);
+  console.log('🎨 [RENDER] renderDataTable llamado con showHorizontalScrollbar:', showHorizontalScrollbar);
   console.log('🎨 [RENDER] Columnas recibidas:', columns.map(c => ({ id: c.id, visible: c.visible })));
   console.log('🎨 [RENDER] Número de filas:', rows.length);
 
@@ -949,18 +950,42 @@ export function renderDataTable(
   `.trim();
 
   console.log('📊 [SCROLL] showVerticalScrollbar:', showVerticalScrollbar);
+  console.log('📊 [SCROLL] showHorizontalScrollbar:', showHorizontalScrollbar);
   console.log('📊 [SCROLL] tableHTML length:', tableHTML.length);
   console.log('📊 [SCROLL] ¿Hay checkbox-2 en columnHeadersHTML?', columnHeadersHTML.includes('checkbox-2'));
   console.log('📊 [SCROLL] ¿Hay checkbox-2 en rowsHTML?', rowsHTML.includes('checkbox-2'));
   
-  // Si showVerticalScrollbar está habilitado, envolver en contenedor scrollable
+  // Calcular ancho total de columnas para debug
+  const totalColumnsWidth = visibleColumns.reduce((sum, col) => {
+    const colWidth = col.width || 150;
+    return sum + colWidth;
+  });
+  console.log('📊 [SCROLL] Ancho total de columnas calculado:', totalColumnsWidth, 'px');
+  console.log('📊 [SCROLL] Número de columnas visibles:', visibleColumns.length);
+  console.log('📊 [SCROLL] Anchos de columnas:', visibleColumns.map(c => ({ id: c.id, width: c.width || 150 })));
+  
+  // Determinar qué contenedor usar según los scrolls habilitados
   // NO afecta la lógica del checkbox ni de las columnas
   let html: string;
-  if (showVerticalScrollbar) {
+  if (showVerticalScrollbar || showHorizontalScrollbar) {
+    // Construir clases CSS según los scrolls habilitados
+    const scrollClasses = [];
+    if (showVerticalScrollbar) {
+      scrollClasses.push('ubits-data-table__scrollable-container--vertical');
+    }
+    if (showHorizontalScrollbar) {
+      scrollClasses.push('ubits-data-table__scrollable-container--horizontal');
+    }
+    
     console.log('📊 [SCROLL] ✅ Envolviendo tabla en contenedor scrollable');
-    html = `<div class="ubits-data-table__scrollable-container">${tableHTML}</div>`;
+    console.log('📊 [SCROLL] Clases de scroll:', scrollClasses.join(' '));
+    console.log('📊 [SCROLL] showHorizontalScrollbar activo:', showHorizontalScrollbar);
+    console.log('📊 [SCROLL] Ancho total esperado de columnas:', totalColumnsWidth, 'px');
+    
+    html = `<div class="ubits-data-table__scrollable-container ${scrollClasses.join(' ')}">${tableHTML}</div>`;
     console.log('📊 [SCROLL] HTML con contenedor scrollable generado, length:', html.length);
     console.log('📊 [SCROLL] ¿HTML contiene scrollable-container?', html.includes('scrollable-container'));
+    console.log('📊 [SCROLL] ¿HTML contiene scrollable-container--horizontal?', html.includes('scrollable-container--horizontal'));
     console.log('📊 [SCROLL] ¿HTML contiene checkbox-2?', html.includes('checkbox-2'));
   } else {
     console.log('📊 [SCROLL] ❌ NO envolviendo, usando tabla directamente');
@@ -971,6 +996,7 @@ export function renderDataTable(
   console.log('📊 [SCROLL] HTML final preview (primeros 800 chars):', html.substring(0, 800));
   console.log('📊 [SCROLL] ¿HTML final contiene checkbox-2?', html.includes('checkbox-2'));
   console.log('📊 [SCROLL] ¿HTML final contiene scrollable-container?', html.includes('scrollable-container'));
+  console.log('📊 [SCROLL] ¿HTML final contiene scrollable-container--horizontal?', html.includes('scrollable-container--horizontal'));
   console.log('🔍 [HEADER ALIGNMENT] ========== FIN RENDER ==========');
 
   return html;
@@ -1299,6 +1325,119 @@ export function createDataTable(options: DataTableOptions): {
           console.log('  - controls width:', controlsRect.width);
         }
         
+        // ========== VERIFICACIÓN DE SCROLL HORIZONTAL ==========
+        console.log('🔍 [HORIZONTAL SCROLL] ========== VERIFICACIÓN SCROLL HORIZONTAL ==========');
+        
+        // Buscar contenedor scrollable
+        const horizontalScrollContainer = element.classList.contains('ubits-data-table__scrollable-container--horizontal')
+          ? element
+          : element.querySelector('.ubits-data-table__scrollable-container--horizontal') as HTMLElement;
+        
+        if (horizontalScrollContainer) {
+          console.log('✅ [HORIZONTAL SCROLL] Contenedor scrollable horizontal encontrado');
+          const containerComputed = window.getComputedStyle(horizontalScrollContainer);
+          const containerRect = horizontalScrollContainer.getBoundingClientRect();
+          
+          console.log('📊 [HORIZONTAL SCROLL] Estilos del contenedor:');
+          console.log('  - className:', horizontalScrollContainer.className);
+          console.log('  - overflow-x:', containerComputed.overflowX);
+          console.log('  - overflow-y:', containerComputed.overflowY);
+          console.log('  - width:', containerComputed.width);
+          console.log('  - max-width:', containerComputed.maxWidth);
+          console.log('  - min-width:', containerComputed.minWidth);
+          console.log('  - box-sizing:', containerComputed.boxSizing);
+          console.log('  - position:', containerComputed.position);
+          console.log('  - display:', containerComputed.display);
+          
+          console.log('📊 [HORIZONTAL SCROLL] Dimensiones del contenedor:');
+          console.log('  - clientWidth:', horizontalScrollContainer.clientWidth);
+          console.log('  - scrollWidth:', horizontalScrollContainer.scrollWidth);
+          console.log('  - offsetWidth:', horizontalScrollContainer.offsetWidth);
+          console.log('  - getBoundingClientRect().width:', containerRect.width);
+          
+          // Verificar si hay scroll disponible
+          const hasHorizontalScroll = horizontalScrollContainer.scrollWidth > horizontalScrollContainer.clientWidth;
+          console.log('📊 [HORIZONTAL SCROLL] ¿Hay scroll disponible?', hasHorizontalScroll);
+          console.log('  - scrollWidth:', horizontalScrollContainer.scrollWidth);
+          console.log('  - clientWidth:', horizontalScrollContainer.clientWidth);
+          console.log('  - Diferencia:', horizontalScrollContainer.scrollWidth - horizontalScrollContainer.clientWidth, 'px');
+          
+          // Buscar la tabla dentro del contenedor
+          const tableInContainer = horizontalScrollContainer.querySelector('.ubits-data-table__table') as HTMLElement;
+          if (tableInContainer) {
+            const tableComputed = window.getComputedStyle(tableInContainer);
+            const tableRect = tableInContainer.getBoundingClientRect();
+            
+            console.log('📊 [HORIZONTAL SCROLL] Estilos de la tabla:');
+            console.log('  - width:', tableComputed.width);
+            console.log('  - min-width:', tableComputed.minWidth);
+            console.log('  - max-width:', tableComputed.maxWidth);
+            console.log('  - getBoundingClientRect().width:', tableRect.width);
+            
+            // Calcular ancho total de las columnas
+            const allColumns = tableInContainer.querySelectorAll('th[data-column-id], td[data-column-id]');
+            let totalColumnWidth = 0;
+            const columnWidths: { [key: string]: number } = {};
+            
+            // Agrupar por column-id
+            const columnIds = new Set<string>();
+            allColumns.forEach(col => {
+              const colId = (col as HTMLElement).getAttribute('data-column-id');
+              if (colId) columnIds.add(colId);
+            });
+            
+            columnIds.forEach(colId => {
+              const firstCol = tableInContainer.querySelector(`[data-column-id="${colId}"]`) as HTMLElement;
+              if (firstCol) {
+                const colWidth = firstCol.getBoundingClientRect().width;
+                columnWidths[colId] = colWidth;
+                totalColumnWidth += colWidth;
+              }
+            });
+            
+            console.log('📊 [HORIZONTAL SCROLL] Anchos de columnas:');
+            console.log('  - Total columnas encontradas:', columnIds.size);
+            console.log('  - Ancho total calculado:', totalColumnWidth, 'px');
+            console.log('  - Ancho del contenedor:', horizontalScrollContainer.clientWidth, 'px');
+            console.log('  - Ancho de la tabla:', tableRect.width, 'px');
+            console.log('  - Anchos por columna:', columnWidths);
+            
+            // Verificar si la tabla es más ancha que el contenedor
+            const tableWiderThanContainer = tableRect.width > horizontalScrollContainer.clientWidth;
+            console.log('📊 [HORIZONTAL SCROLL] ¿La tabla es más ancha que el contenedor?', tableWiderThanContainer);
+            console.log('  - Tabla width:', tableRect.width, 'px');
+            console.log('  - Contenedor clientWidth:', horizontalScrollContainer.clientWidth, 'px');
+            console.log('  - Diferencia:', tableRect.width - horizontalScrollContainer.clientWidth, 'px');
+          } else {
+            console.log('⚠️ [HORIZONTAL SCROLL] No se encontró la tabla dentro del contenedor');
+          }
+          
+          // Verificar el contenedor padre
+          const parentContainer = horizontalScrollContainer.parentElement;
+          if (parentContainer) {
+            const parentComputed = window.getComputedStyle(parentContainer);
+            const parentRect = parentContainer.getBoundingClientRect();
+            console.log('📊 [HORIZONTAL SCROLL] Contenedor padre:');
+            console.log('  - tagName:', parentContainer.tagName);
+            console.log('  - className:', parentContainer.className);
+            console.log('  - width:', parentComputed.width);
+            console.log('  - max-width:', parentComputed.maxWidth);
+            console.log('  - getBoundingClientRect().width:', parentRect.width);
+          }
+        } else {
+          console.log('❌ [HORIZONTAL SCROLL] No se encontró contenedor scrollable horizontal');
+          console.log('📊 [HORIZONTAL SCROLL] Element classes:', element.className);
+          console.log('📊 [HORIZONTAL SCROLL] Element innerHTML preview:', element.innerHTML.substring(0, 500));
+          
+          // Buscar cualquier contenedor scrollable
+          const anyScrollContainer = element.querySelector('.ubits-data-table__scrollable-container');
+          if (anyScrollContainer) {
+            console.log('📊 [HORIZONTAL SCROLL] Se encontró un contenedor scrollable pero sin clase horizontal:');
+            console.log('  - className:', (anyScrollContainer as HTMLElement).className);
+          }
+        }
+        
+        console.log('🔍 [HORIZONTAL SCROLL] ========== FIN VERIFICACIÓN ==========');
         console.log('🔍 [PADDING CHECK] ========== FIN ==========');
       } catch (error) {
         console.error('❌ [PADDING CHECK] Error:', error);
@@ -1311,6 +1450,7 @@ export function createDataTable(options: DataTableOptions): {
     // También ejecutar después de un delay para asegurar que el CSS esté aplicado
     setTimeout(checkPadding, 100);
     setTimeout(checkPadding, 500);
+    setTimeout(checkPadding, 1000);
   };
   
   // Función para adjuntar event listeners

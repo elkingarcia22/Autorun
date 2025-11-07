@@ -23,6 +23,13 @@
     font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
 }
 
+/* Cuando hay scroll horizontal, la tabla debe usar max-content en lugar de 100% */
+.ubits-data-table__scrollable-container--horizontal .ubits-data-table__table,
+.ubits-data-table__scrollable-container--vertical.ubits-data-table__scrollable-container--horizontal .ubits-data-table__table {
+    width: max-content !important;
+    min-width: max-content !important;
+}
+
 /* Header */
 .ubits-data-table__thead {
     background-color: var(--ubits-bg-1, #ffffff);
@@ -944,12 +951,34 @@
     border-bottom: 1px solid var(--ubits-border-1, #d0d2d5);
 }
 
-/* Contenedor scrollable para scroll vertical */
+/* Contenedor scrollable base */
 .ubits-data-table__scrollable-container {
+    position: relative;
+}
+
+/* Scroll vertical solamente */
+.ubits-data-table__scrollable-container--vertical {
     max-height: 400px;
     overflow-y: auto;
     overflow-x: visible; /* Cambiar a visible para que sticky funcione */
-    position: relative;
+}
+
+/* Scroll horizontal solamente */
+.ubits-data-table__scrollable-container--horizontal {
+    overflow-x: auto;
+    overflow-y: visible; /* Mantener visible para que sticky funcione */
+    max-width: 800px; /* Ancho máximo fijo para forzar el scroll horizontal */
+    width: 100%; /* Ocupar todo el ancho disponible hasta el máximo */
+    box-sizing: border-box;
+}
+
+/* Ambos scrolls (vertical y horizontal) */
+.ubits-data-table__scrollable-container--vertical.ubits-data-table__scrollable-container--horizontal {
+    max-height: 400px;
+    max-width: 800px; /* Ancho máximo fijo para forzar el scroll horizontal */
+    width: 100%; /* Ocupar todo el ancho disponible hasta el máximo */
+    overflow-y: auto;
+    overflow-x: auto;
 }
 
 /* Ajustar posicionamiento sticky dentro del contenedor scrollable */
@@ -983,22 +1012,61 @@
     background-color: var(--ubits-bg-1, #ffffff) !important;
 }
 
-/* Estilos del scrollbar nativo */
-.ubits-data-table__scrollable-container::-webkit-scrollbar {
+/* Estilos del scrollbar nativo - Vertical */
+.ubits-data-table__scrollable-container--vertical::-webkit-scrollbar {
     width: 8px;
 }
 
-.ubits-data-table__scrollable-container::-webkit-scrollbar-track {
+.ubits-data-table__scrollable-container--vertical::-webkit-scrollbar-track {
     background: var(--ubits-bg-2, #f9fafb);
     border-radius: 4px;
 }
 
-.ubits-data-table__scrollable-container::-webkit-scrollbar-thumb {
+.ubits-data-table__scrollable-container--vertical::-webkit-scrollbar-thumb {
     background: var(--ubits-border-2, #e5e7eb);
     border-radius: 4px;
 }
 
-.ubits-data-table__scrollable-container::-webkit-scrollbar-thumb:hover {
+.ubits-data-table__scrollable-container--vertical::-webkit-scrollbar-thumb:hover {
+    background: var(--ubits-border-1, #d0d2d5);
+}
+
+/* Estilos del scrollbar nativo - Horizontal */
+.ubits-data-table__scrollable-container--horizontal::-webkit-scrollbar {
+    height: 8px;
+}
+
+.ubits-data-table__scrollable-container--horizontal::-webkit-scrollbar-track {
+    background: var(--ubits-bg-2, #f9fafb);
+    border-radius: 4px;
+}
+
+.ubits-data-table__scrollable-container--horizontal::-webkit-scrollbar-thumb {
+    background: var(--ubits-border-2, #e5e7eb);
+    border-radius: 4px;
+}
+
+.ubits-data-table__scrollable-container--horizontal::-webkit-scrollbar-thumb:hover {
+    background: var(--ubits-border-1, #d0d2d5);
+}
+
+/* Estilos del scrollbar nativo - Ambos */
+.ubits-data-table__scrollable-container--vertical.ubits-data-table__scrollable-container--horizontal::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.ubits-data-table__scrollable-container--vertical.ubits-data-table__scrollable-container--horizontal::-webkit-scrollbar-track {
+    background: var(--ubits-bg-2, #f9fafb);
+    border-radius: 4px;
+}
+
+.ubits-data-table__scrollable-container--vertical.ubits-data-table__scrollable-container--horizontal::-webkit-scrollbar-thumb {
+    background: var(--ubits-border-2, #e5e7eb);
+    border-radius: 4px;
+}
+
+.ubits-data-table__scrollable-container--vertical.ubits-data-table__scrollable-container--horizontal::-webkit-scrollbar-thumb:hover {
     background: var(--ubits-border-1, #d0d2d5);
 }
 

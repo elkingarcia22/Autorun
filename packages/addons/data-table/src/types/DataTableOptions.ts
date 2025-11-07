@@ -190,7 +190,12 @@ export interface DataTableOptions {
    * Si se muestra el scrollbar vertical (por defecto: false)
    */
   showVerticalScrollbar?: boolean;
-  
+
+  /**
+   * Si se muestra el scrollbar horizontal (por defecto: false)
+   */
+  showHorizontalScrollbar?: boolean;
+
   /**
    * Clases CSS adicionales
    */
