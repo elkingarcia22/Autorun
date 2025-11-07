@@ -59,6 +59,14 @@ const meta: Meta<CheckboxOptions> = {
         category: 'Estado',
       },
     },
+    indeterminate: {
+      control: { type: 'boolean' },
+      description: 'Si el checkbox está en estado indeterminado (muestra línea horizontal en vez de check)',
+      table: {
+        defaultValue: { summary: 'false' },
+        category: 'Estado',
+      },
+    },
     size: {
       control: { type: 'select' },
       options: ['sm', 'md'],
@@ -71,11 +79,11 @@ const meta: Meta<CheckboxOptions> = {
     },
     state: {
       control: { type: 'select' },
-      options: ['default', 'hover', 'active', 'disabled'],
+      options: ['default', 'hover', 'active', 'disabled', 'indeterminate'],
       description: 'Estado del checkbox',
       table: {
         defaultValue: { summary: 'default' },
-        type: { summary: 'default | hover | active | disabled' },
+        type: { summary: 'default | hover | active | disabled | indeterminate' },
         category: 'Estado',
       },
     },
@@ -116,6 +124,7 @@ export const Default: Story = {
     value: '',
     name: '',
     checked: false,
+    indeterminate: false,
     size: 'md',
     state: 'default',
     disabled: false,
@@ -136,6 +145,7 @@ export const Default: Story = {
         value: args.value,
         name: args.name,
         checked: args.checked !== undefined ? args.checked : false,
+        indeterminate: args.indeterminate !== undefined ? args.indeterminate : false,
         size: args.size || 'md',
         state: args.state || 'default',
         disabled: args.disabled !== undefined ? args.disabled : false,
@@ -147,12 +157,18 @@ export const Default: Story = {
       // Agregar event listener para cambio
       const inputElement = container.querySelector('.ubits-checkbox__input') as HTMLInputElement;
       
-      if (inputElement && args.onChange) {
-        inputElement.addEventListener('change', (e) => {
-          if (args.onChange) {
-            args.onChange(e);
-          }
-        });
+      if (inputElement) {
+        // Aplicar estado indeterminado al input nativo si es necesario
+        if (args.indeterminate) {
+          inputElement.indeterminate = true;
+        }
+        if (args.onChange) {
+          inputElement.addEventListener('change', (e) => {
+            if (args.onChange) {
+              args.onChange(e);
+            }
+          });
+        }
       }
     };
 

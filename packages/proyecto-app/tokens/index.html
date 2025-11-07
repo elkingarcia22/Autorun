@@ -5471,10 +5471,10 @@ Reglas Importantes:
               },
               variants: [],
               sizes: ['sm', 'md'],
-              states: ['default', 'hover', 'active', 'disabled'],
-              features: ['2 tamaños (sm: 16px, md: 20px)', '4 estados (default, hover, active, disabled)', 'Texto complementario opcional', 'Checkmark animado', 'Usa tokens UBITS exclusivamente'],
+              states: ['default', 'hover', 'active', 'disabled', 'indeterminate'],
+              features: ['2 tamaños (sm: 16px, md: 20px)', '5 estados (default, hover, active, disabled, indeterminate)', 'Estado indeterminado con línea horizontal', 'Texto complementario opcional', 'Checkmark animado', 'Usa tokens UBITS exclusivamente'],
               class: 'ubits-checkbox ubits-checkbox--{size} ubits-checkbox--{state}',
-              example: 'renderCheckbox({\n  label: \'Label\',\n  size: \'md\',\n  state: \'default\',\n  checked: false\n})',
+              example: 'renderCheckbox({\n  label: \'Label\',\n  size: \'md\',\n  state: \'default\',\n  checked: false,\n  indeterminate: false\n})',
               hasPreview: true
             },
             {
@@ -6568,6 +6568,7 @@ Reglas Importantes:
                                   <option value="hover">Hover</option>
                                   <option value="active">Active</option>
                                   <option value="disabled">Disabled</option>
+                                  <option value="indeterminate">Indeterminado</option>
                                 </select>
                               </div>
                               
@@ -6590,6 +6591,16 @@ Reglas Importantes:
                                   <input type="checkbox" id="checkbox-checked-toggle-${componentId}" onchange="setCheckboxControl('checked', this.checked, '${componentId}')">
                                   <span class="slider"></span>
                                   <span id="checkbox-checked-status-${componentId}" style="font-size: 14px; color: var(--ubits-fg-1-high);">Desactivado</span>
+                                </label>
+                              </div>
+                              
+                              <!-- Indeterminate -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Indeterminado</label>
+                                <label class="switch" style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                                  <input type="checkbox" id="checkbox-indeterminate-toggle-${componentId}" onchange="setCheckboxControl('indeterminate', this.checked, '${componentId}')">
+                                  <span class="slider"></span>
+                                  <span id="checkbox-indeterminate-status-${componentId}" style="font-size: 14px; color: var(--ubits-fg-1-high);">Desactivado</span>
                                 </label>
                               </div>
                             </div>
@@ -9974,6 +9985,7 @@ Reglas Importantes:
             label: 'Label',
             complementaryText: '',
             checked: false,
+            indeterminate: false,
             name: 'checkbox-group-' + componentId,
             value: 'option1'
           };
@@ -9981,22 +9993,36 @@ Reglas Importantes:
         return checkboxPreviewState[componentId];
       }
       
-      // Función para generar HTML del Checkbox
+      // Función para generar HTML del Checkbox usando renderCheckbox
       function generateCheckboxHTML(state, componentId) {
-        const { size, state: checkboxState, label, complementaryText, checked, name, value } = state;
+        const { size, state: checkboxState, label, complementaryText, checked, indeterminate, name, value } = state;
         
+        // Usar renderCheckbox directamente para mantener consistencia
+        if (typeof window.renderCheckbox === 'function') {
+          return window.renderCheckbox({
+            label: label,
+            complementaryText: complementaryText || undefined,
+            value: value,
+            name: name,
+            checked: checked,
+            indeterminate: indeterminate,
+            size: size,
+            state: checkboxState,
+            disabled: checkboxState === 'disabled'
+          });
+        }
+        
+        // Fallback si renderCheckbox no está disponible
         const isDisabled = checkboxState === 'disabled';
-        
-        // Construir clases
         const classes = [
           'ubits-checkbox',
           `ubits-checkbox--${size}`,
           checkboxState !== 'default' ? `ubits-checkbox--${checkboxState}` : '',
           checked ? 'ubits-checkbox--checked' : '',
+          indeterminate ? 'ubits-checkbox--indeterminate' : '',
           isDisabled ? 'ubits-checkbox--disabled' : ''
         ].filter(Boolean).join(' ');
         
-        // Checkbox input
         const checkboxInput = `
           <input
             type="checkbox"
@@ -10004,29 +10030,24 @@ Reglas Importantes:
             ${name ? `name="${name}"` : ''}
             ${value ? `value="${value}"` : ''}
             ${checked ? 'checked' : ''}
+            ${indeterminate ? 'data-indeterminate="true"' : ''}
             ${isDisabled ? 'disabled' : ''}
             class="ubits-checkbox__input"
           />
         `;
         
-        // Checkbox square (visual)
         const checkboxSquare = `
           <span class="ubits-checkbox__square" aria-hidden="true">
-            ${checked || (checkboxState === 'active' && !checked) ? '<span class="ubits-checkbox__checkmark"></span>' : ''}
+            ${indeterminate ? '<span class="ubits-checkbox__indeterminate"></span>' : ''}
+            ${checked && !indeterminate ? '<span class="ubits-checkbox__checkmark"></span>' : ''}
+            ${!checked && !indeterminate && checkboxState === 'active' ? '<span class="ubits-checkbox__checkmark"></span>' : ''}
           </span>
         `;
         
-        // Label text
-        const labelHTML = `
-          <span class="ubits-checkbox__label">${label}</span>
-        `;
-        
-        // Complementary text
+        const labelHTML = `<span class="ubits-checkbox__label">${label}</span>`;
         const complementaryTextHTML = complementaryText
           ? `<span class="ubits-checkbox__complementary-text">${complementaryText}</span>`
           : '';
-        
-        // Text content wrapper
         const textContentHTML = `
           <div class="ubits-checkbox__text-content">
             ${labelHTML}
@@ -10075,18 +10096,90 @@ Reglas Importantes:
           state.size = value;
         } else if (option === 'state') {
           state.state = value;
+          // Si el estado es 'indeterminate', activar indeterminate automáticamente
+          if (value === 'indeterminate') {
+            state.indeterminate = true;
+            state.checked = false;
+            const indeterminateToggle = document.getElementById(`checkbox-indeterminate-toggle-${componentId}`);
+            const indeterminateStatus = document.getElementById(`checkbox-indeterminate-status-${componentId}`);
+            if (indeterminateToggle && indeterminateStatus) {
+              indeterminateToggle.checked = true;
+              indeterminateStatus.textContent = 'Activado';
+            }
+            const checkedToggle = document.getElementById(`checkbox-checked-toggle-${componentId}`);
+            const checkedStatus = document.getElementById(`checkbox-checked-status-${componentId}`);
+            if (checkedToggle && checkedStatus) {
+              checkedToggle.checked = false;
+              checkedStatus.textContent = 'Desactivado';
+            }
+          } else if (value !== 'indeterminate' && state.indeterminate) {
+            // Si cambia a otro estado y estaba en indeterminate, desactivar indeterminate
+            state.indeterminate = false;
+            const indeterminateToggle = document.getElementById(`checkbox-indeterminate-toggle-${componentId}`);
+            const indeterminateStatus = document.getElementById(`checkbox-indeterminate-status-${componentId}`);
+            if (indeterminateToggle && indeterminateStatus) {
+              indeterminateToggle.checked = false;
+              indeterminateStatus.textContent = 'Desactivado';
+            }
+          }
         } else if (option === 'label') {
           state.label = value;
         } else if (option === 'complementaryText') {
           state.complementaryText = value;
         } else if (option === 'checked') {
           state.checked = value;
+          // Si se activa checked, desactivar indeterminate
+          if (value) {
+            state.indeterminate = false;
+            const indeterminateToggle = document.getElementById(`checkbox-indeterminate-toggle-${componentId}`);
+            const indeterminateStatus = document.getElementById(`checkbox-indeterminate-status-${componentId}`);
+            if (indeterminateToggle && indeterminateStatus) {
+              indeterminateToggle.checked = false;
+              indeterminateStatus.textContent = 'Desactivado';
+            }
+          }
           // Actualizar toggle
           const checkedToggle = document.getElementById(`checkbox-checked-toggle-${componentId}`);
           const checkedStatus = document.getElementById(`checkbox-checked-status-${componentId}`);
           if (checkedToggle && checkedStatus) {
             checkedToggle.checked = value;
             checkedStatus.textContent = value ? 'Activado' : 'Desactivado';
+          }
+        } else if (option === 'indeterminate') {
+          state.indeterminate = value;
+          // Si se activa indeterminate, desactivar checked
+          if (value) {
+            state.checked = false;
+            const checkedToggle = document.getElementById(`checkbox-checked-toggle-${componentId}`);
+            const checkedStatus = document.getElementById(`checkbox-checked-status-${componentId}`);
+            if (checkedToggle && checkedStatus) {
+              checkedToggle.checked = false;
+              checkedStatus.textContent = 'Desactivado';
+            }
+            // Cambiar estado a 'indeterminate' si no está en disabled
+            if (state.state !== 'disabled') {
+              state.state = 'indeterminate';
+              const stateSelect = document.getElementById(`checkbox-state-select-${componentId}`);
+              if (stateSelect) {
+                stateSelect.value = 'indeterminate';
+              }
+            }
+          } else {
+            // Si se desactiva indeterminate y el estado era 'indeterminate', volver a 'default'
+            if (state.state === 'indeterminate') {
+              state.state = 'default';
+              const stateSelect = document.getElementById(`checkbox-state-select-${componentId}`);
+              if (stateSelect) {
+                stateSelect.value = 'default';
+              }
+            }
+          }
+          // Actualizar toggle
+          const indeterminateToggle = document.getElementById(`checkbox-indeterminate-toggle-${componentId}`);
+          const indeterminateStatus = document.getElementById(`checkbox-indeterminate-status-${componentId}`);
+          if (indeterminateToggle && indeterminateStatus) {
+            indeterminateToggle.checked = value;
+            indeterminateStatus.textContent = value ? 'Activado' : 'Desactivado';
           }
         }
         
