@@ -1069,19 +1069,20 @@
     z-index: 1 !important; /* z-index reducido ya que no son sticky */
 }
 
-/* El checkbox debe estar justo después de los controles (ancho de controles = 80px) */
+/* CRÍTICO: El checkbox NO debe ser sticky */
+/* Se removió position: sticky del checkbox para que no se fije durante el scroll */
 .ubits-data-table__scrollable-container .ubits-data-table__cell--checkbox[data-column-id="checkbox-2"],
 .ubits-data-table__scrollable-container .ubits-data-table__column-header--checkbox[data-column-id="checkbox-2"] {
-    position: sticky !important;
-    left: 80px !important; /* Ancho de controles = 80px */
-    z-index: 14 !important;
+    /* position: sticky removido - el checkbox NO debe fijarse */
+    /* left: 80px removido - no necesario sin sticky */
+    z-index: 1 !important; /* z-index reducido ya que no es sticky */
     background-color: var(--ubits-bg-1) !important;
 }
 
-/* Asegurar que el header del checkbox también sea sticky */
+/* CRÍTICO: El header del checkbox NO debe ser sticky */
 .ubits-data-table__scrollable-container .ubits-data-table__column-header[data-column-id="checkbox-2"] {
-    position: sticky !important;
-    left: 80px !important; /* Ancho de controles = 80px */
+    /* position: sticky removido - el checkbox NO debe fijarse */
+    /* left: 80px removido - no necesario sin sticky */
     z-index: 15 !important;
     background-color: var(--ubits-bg-1) !important;
 }
