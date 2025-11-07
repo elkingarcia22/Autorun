@@ -142,6 +142,37 @@
     border-radius: 8px 8px 0 0;
 }
 
+/* ========================================
+   DARK MODE
+   ======================================== */
+
+/* Asegurar que el tabbar mantenga sus colores en dark mode */
+body[data-theme="dark"] .ubits-tabbar,
+html[data-theme="dark"] .ubits-tabbar {
+    background: var(--ubits-sidebar-bg) !important;
+    border-top-color: var(--ubits-sidebar-button-fg-default) !important;
+}
+
+body[data-theme="dark"] .ubits-tabbar-icon,
+html[data-theme="dark"] .ubits-tabbar-icon {
+    color: var(--ubits-sidebar-button-fg-default) !important;
+}
+
+body[data-theme="dark"] .ubits-tabbar-text,
+html[data-theme="dark"] .ubits-tabbar-text {
+    color: var(--ubits-sidebar-button-fg-default) !important;
+}
+
+body[data-theme="dark"] .ubits-tabbar-item.ubits-tabbar-item--active .ubits-tabbar-icon,
+html[data-theme="dark"] .ubits-tabbar-item.ubits-tabbar-item--active .ubits-tabbar-icon {
+    color: var(--ubits-sidebar-button-bg-active) !important;
+}
+
+body[data-theme="dark"] .ubits-tabbar-item.ubits-tabbar-item--active .ubits-tabbar-text,
+html[data-theme="dark"] .ubits-tabbar-item.ubits-tabbar-item--active .ubits-tabbar-text {
+    color: var(--ubits-sidebar-button-bg-active) !important;
+}
+
 /* Responsive - Mostrar tab-bar solo en resoluciones menores a 1024px */
 @media (min-width: 1024px) {
     .ubits-tabbar:not(.ubits-tabbar--preview) {
