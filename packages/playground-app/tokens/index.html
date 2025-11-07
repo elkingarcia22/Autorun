@@ -4029,6 +4029,45 @@ Reglas Importantes:
       }
       YELLOW_FG.forEach(addRowYellow);
 
+      // Calcular total de tokens de colores y actualizar contador
+      (function updateColorsCount() {
+        const totalColors = 
+          TOKENS.length +
+          BTN.length +
+          FG.length +
+          BLUE_FG.length +
+          GRAY_FG.length +
+          GREEN_FG.length +
+          TEAL_FG.length +
+          PURPLE_FG.length +
+          PINK_FG.length +
+          ROSE_FG.length +
+          BG.length +
+          BORDERS_MAIN.length +
+          BORDERS_COLORED.length +
+          BORDERS_INVERTED.length +
+          BORDERS_STATIC.length +
+          BORDERS_STATIC_INV.length +
+          SIDEBAR.length +
+          FEEDBACK_SUCCESS.length +
+          FEEDBACK_INFO.length +
+          FEEDBACK_WARNING.length +
+          FEEDBACK_ERROR.length +
+          FEEDBACK_BORDERS.length +
+          CHART.length +
+          TOAST.length +
+          BOTTOM_NAV.length +
+          YELLOW_FG.length;
+        
+        const colorsCategoryTitle = document.getElementById('colors-category-title');
+        if (colorsCategoryTitle) {
+          const countSpan = colorsCategoryTitle.querySelector('span:last-child');
+          if (countSpan) {
+            countSpan.textContent = `${totalColors} ${totalColors === 1 ? 'color' : 'colores'}`;
+          }
+        }
+      })();
+
       // restaurar estado por defecto de cálculo si fuese necesario
       html.setAttribute('data-theme','dark');
       // Mostrar Template por defecto si no hay hash, o respetar el hash si existe
