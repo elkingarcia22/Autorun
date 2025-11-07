@@ -213,6 +213,13 @@ export interface DataTableOptions {
   showColumnMenu?: boolean;
 
   /**
+   * Si los controladores (checkbox, dropdown, mover filas) deben ser sticky (por defecto: false)
+   * Cuando es false, los controladores se desplazan normalmente con el scroll
+   * Cuando es true, los controladores se mantienen fijos durante el scroll horizontal
+   */
+  showControlsSticky?: boolean;
+
+  /**
    * Clases CSS adicionales
    */
   className?: string;

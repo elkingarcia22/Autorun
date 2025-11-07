@@ -777,11 +777,14 @@ function renderColumnHeader(
   
   // Agregar estilo inline para left si está fijada (siempre aplicar cuando está fijada, incluso si es 0)
   // IMPORTANTE: Siempre incluir position: sticky cuando está fijada, y asegurar que left esté presente
+  // CRÍTICO: left: 0px es válido y necesario para la primera columna fijada
   // Usar !important para evitar que CSS sobrescriba el estilo inline
   const pinnedStyle = column.pinned ? `left: ${pinnedLeft}px !important;` : '';
   const widthStyle = column.width ? `width: ${column.width}px;` : '';
   const positionStyle = column.pinned ? 'position: sticky !important;' : '';
-  const combinedStyle = [positionStyle, pinnedStyle, widthStyle].filter(Boolean).join(' ');
+  // CRÍTICO: Incluir z-index para asegurar que quede por encima
+  const zIndexStyle = column.pinned ? 'z-index: 10 !important;' : '';
+  const combinedStyle = [positionStyle, pinnedStyle, zIndexStyle, widthStyle].filter(Boolean).join(' ');
   
   // Logs detallados para debugging
   if (column.pinned) {
