@@ -584,7 +584,7 @@
     margin: 0 auto !important;
 }
 
-/* Headers de columnas de checkbox - checkbox-2 (única columna de checkbox fija) */
+/* Headers de columnas de checkbox - checkbox-2 (solo sticky si está pinned) */
 .ubits-data-table__column-header--checkbox[data-column-id="checkbox-2"] {
     text-align: center;
     padding: 8px var(--ubits-spacing-md, 16px);
@@ -592,12 +592,19 @@
     width: 60px;
     min-width: 60px;
     max-width: 60px;
-    position: sticky;
-    left: 0;
-    z-index: 19;
+    /* NO aplicar position: sticky aquí - solo cuando está pinned */
     background-color: var(--ubits-bg-1);
     box-sizing: border-box;
     vertical-align: middle !important;
+}
+
+/* Checkbox-2 sticky solo cuando está pinned */
+.ubits-data-table__column-header--checkbox[data-column-id="checkbox-2"][data-pinned="true"],
+.ubits-data-table__column-header--checkbox[data-column-id="checkbox-2"].ubits-data-table__column-header--pinned {
+    position: sticky !important;
+    /* left se establece inline desde el código */
+    z-index: 10 !important; /* Mismo z-index que otras columnas pinned */
+    background-color: var(--ubits-bg-1) !important;
 }
 
 /* Wrapper interno para centrar con flex en header */
