@@ -3338,8 +3338,17 @@ npm run dev</code></pre>
       function initializeAddonsSection() {
         console.log('🔄 initializeAddonsSection llamado');
         const nav = document.getElementById('addons-nav');
-        if (nav && !nav.innerHTML.trim()) {
+        if (!nav) {
+          console.error('❌ addons-nav no encontrado en DOM');
+          return;
+        }
+        
+        // Siempre regenerar la navegación si está vacía o si no se ha inicializado
+        if (!nav.innerHTML.trim() || nav.querySelectorAll('.side-link').length === 0) {
+          console.log('📦 Generando navegación de add-ons...');
           generateAddonsNav();
+        } else {
+          console.log('✅ Navegación de add-ons ya existe');
         }
       }
 
@@ -8944,33 +8953,41 @@ Reglas Importantes:
       (function() {
         const addonsSection = document.getElementById('section-addons');
         if (addonsSection) {
+          console.log('✅ Sección Add-ons encontrada, configurando observer...');
+          
           const observer = new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
               if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
                 const isVisible = addonsSection.style.display !== 'none';
+                console.log('🔄 Cambio detectado en section-addons, visible:', isVisible);
                 if (isVisible) {
                   console.log('🔄 Sección Add-ons visible, inicializando...');
-                  setTimeout(() => initializeAddonsSection(), 50);
+                  setTimeout(() => {
+                    initializeAddonsSection();
+                  }, 100);
                 }
               }
             });
           });
           observer.observe(addonsSection, { attributes: true, attributeFilter: ['style'] });
 
-          // Inicializar si ya está visible
+          // Inicializar si ya está visible al cargar
           if (addonsSection.style.display !== 'none') {
-            setTimeout(() => initializeAddonsSection(), 50);
+            console.log('✅ Sección Add-ons ya visible al cargar, inicializando...');
+            setTimeout(() => initializeAddonsSection(), 100);
           }
+        } else {
+          console.error('❌ section-addons no encontrado en DOM');
         }
 
         // También cargar cuando se hace click en el menú
         document.addEventListener('click', (e) => {
           const link = e.target.closest('a[data-target="section-addons"]');
           if (link) {
+            console.log('🔄 Click en add-ons detectado, inicializando...');
             setTimeout(() => {
-              console.log('🔄 Click en add-ons detectado, inicializando...');
               initializeAddonsSection();
-            }, 150);
+            }, 200);
           }
         });
       })();
