@@ -383,7 +383,7 @@ export const Default: Story = {
       max-width: 375px;
       margin: 0 auto;
       padding: 16px;
-      background: var(--ubits-bg-1);
+      background: var(--ubits-bg-2);
       border-radius: 8px;
       border: 1px solid var(--ubits-border-1);
       position: relative;
@@ -434,6 +434,8 @@ export const Default: Story = {
       overflow: visible;
       box-sizing: border-box;
       isolation: isolate;
+      background: var(--ubits-bg-2);
+      border-radius: 8px;
     `;
 
     wrapper.appendChild(container);

@@ -89,10 +89,24 @@ export const Default: Story = {
         gap: 32px;
         max-width: 100%;
         width: 100%;
+        background: var(--ubits-bg-2);
+        padding: 24px;
+        border-radius: 8px;
       `;
       document.body.appendChild(wrapper);
     } else {
       wrapper.innerHTML = '';
+      wrapper.style.cssText = `
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        gap: 32px;
+        max-width: 100%;
+        width: 100%;
+        background: var(--ubits-bg-2);
+        padding: 24px;
+        border-radius: 8px;
+      `;
     }
     
     // Contenedor solo para el sidebar
@@ -103,6 +117,9 @@ export const Default: Story = {
       width: 96px;
       height: 650px;
       flex-shrink: 0;
+      background: var(--ubits-bg-2);
+      border-radius: 8px;
+      padding: 16px;
     `;
 
     // Agregar el contenedor al wrapper ANTES de crear el sidebar
