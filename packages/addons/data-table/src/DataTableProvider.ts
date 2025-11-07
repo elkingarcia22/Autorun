@@ -772,7 +772,9 @@ function renderColumnHeader(
   // Agregar estilo inline para left si está fijada (siempre aplicar cuando está fijada, incluso si es 0)
   const pinnedStyle = column.pinned ? `left: ${pinnedLeft}px;` : '';
   const widthStyle = column.width ? `width: ${column.width}px;` : '';
-  const combinedStyle = [widthStyle, pinnedStyle].filter(Boolean).join(' ');
+  // IMPORTANTE: Siempre incluir position: sticky cuando está fijada, y asegurar que left esté presente
+  const positionStyle = column.pinned ? 'position: sticky;' : '';
+  const combinedStyle = [positionStyle, pinnedStyle, widthStyle].filter(Boolean).join(' ');
   
   // Logs detallados para debugging
   if (column.pinned) {
@@ -783,10 +785,12 @@ function renderColumnHeader(
       pinnedLeft: pinnedLeft,
       pinnedClass: pinnedClass,
       pinnedStyle: pinnedStyle,
+      positionStyle: positionStyle,
       widthStyle: widthStyle,
       combinedStyle: combinedStyle,
       hasPinnedClass: pinnedClass.includes('pinned'),
       hasPinnedStyle: pinnedStyle.includes('left'),
+      hasPositionStyle: positionStyle.includes('sticky'),
       willApplyStyle: !!combinedStyle
     });
   }

@@ -23,6 +23,13 @@
     font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
 }
 
+/* Cuando hay columnas fijadas, cambiar border-collapse a separate para que sticky funcione */
+.ubits-data-table__table:has(.ubits-data-table__column-header--pinned),
+.ubits-data-table__table:has(.ubits-data-table__cell--pinned) {
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
+}
+
 /* Cuando hay scroll horizontal, la tabla debe usar max-content en lugar de 100% */
 .ubits-data-table__scrollable-container--horizontal .ubits-data-table__table,
 .ubits-data-table__scrollable-container--vertical.ubits-data-table__scrollable-container--horizontal .ubits-data-table__table {
