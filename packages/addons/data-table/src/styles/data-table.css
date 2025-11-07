@@ -584,14 +584,14 @@
     margin: 0 auto !important;
 }
 
-/* Headers de columnas de checkbox - checkbox-2 (solo sticky si está pinned) */
+/* Headers de columnas de checkbox - checkbox-2 (solo sticky si está pinned) - optimizado para espacio */
 .ubits-data-table__column-header--checkbox[data-column-id="checkbox-2"] {
     text-align: center;
-    padding: 8px var(--ubits-spacing-md, 16px);
-    padding-left: 20px !important;
-    width: 60px;
-    min-width: 60px;
-    max-width: 60px;
+    padding: 8px 4px;
+    padding-left: 12px !important;
+    width: 48px;
+    min-width: 48px;
+    max-width: 48px;
     /* NO aplicar position: sticky aquí - solo cuando está pinned */
     background-color: var(--ubits-bg-1);
     box-sizing: border-box;
@@ -667,15 +667,15 @@
     background-color: var(--ubits-bg-1);
 }
 
-/* Columna de checkbox (checkbox-2) - única columna de checkbox fija */
+/* Columna de checkbox (checkbox-2) - única columna de checkbox fija - optimizado para espacio */
 .ubits-data-table__cell--checkbox[data-column-id="checkbox-2"] {
     text-align: center !important;
-    padding: 8px var(--ubits-spacing-md, 16px) !important;
-    padding-left: 20px !important;
-    padding-right: var(--ubits-spacing-md, 16px) !important;
-    width: 60px !important;
-    min-width: 60px !important;
-    max-width: 60px !important;
+    padding: 8px 4px !important;
+    padding-left: 12px !important;
+    padding-right: 4px !important;
+    width: 48px !important;
+    min-width: 48px !important;
+    max-width: 48px !important;
     box-sizing: border-box;
     /* NO aplicar position: sticky aquí - solo cuando está pinned */
     background-color: var(--ubits-bg-1);
@@ -1068,25 +1068,25 @@
 }
 
 /* Ajustar posicionamiento sticky dentro del contenedor scrollable */
-/* Estilos para columnas de controladores (drag-handle, expand) */
+/* Estilos para columnas de controladores (drag-handle, expand) - optimizado para espacio */
 .ubits-data-table__cell--drag-handle,
 .ubits-data-table__cell--expand {
     text-align: center !important;
     vertical-align: middle !important;
-    padding: var(--ubits-spacing-sm, 12px) !important;
-    width: 40px !important;
-    min-width: 40px !important;
-    max-width: 40px !important;
+    padding: 8px 4px !important;
+    width: 32px !important;
+    min-width: 32px !important;
+    max-width: 32px !important;
 }
 
 .ubits-data-table__column-header--drag-handle,
 .ubits-data-table__column-header--expand {
     text-align: center !important;
     vertical-align: middle !important;
-    padding: var(--ubits-spacing-sm, 12px) !important;
-    width: 40px !important;
-    min-width: 40px !important;
-    max-width: 40px !important;
+    padding: 8px 4px !important;
+    width: 32px !important;
+    min-width: 32px !important;
+    max-width: 32px !important;
 }
 
 /* Por defecto, los controladores NO son sticky (se aplicará sticky solo si la columna tiene pinned: true) */

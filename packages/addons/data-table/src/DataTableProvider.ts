@@ -542,15 +542,16 @@ function renderCell(column: TableColumn, row: TableRow, pinnedLeft: number = 0):
       `<input data-row-id="${row.id}" data-column-id="${column.id}" aria-label="Checkbox ${column.title}"`
     );
     
-    // Determinar el padding-left según el column-id
-    const paddingLeft = column.id === 'checkbox-2' ? '20px' : 'var(--ubits-spacing-md, 16px)';
+    // Determinar el padding-left según el column-id (optimizado para espacio)
+    const paddingLeft = column.id === 'checkbox-2' ? '12px' : 'var(--ubits-spacing-md, 16px)';
     
     // Agregar clase si la columna está fijada
     const pinnedClass = column.pinned ? ' ubits-data-table__cell--pinned' : '';
     // Aplicar left siempre que la columna esté fijada, incluso si es 0 (necesario para que sticky funcione)
-    // IMPORTANTE: Incluir position: sticky explícitamente en el estilo inline
-    const pinnedStyle = column.pinned ? `position: sticky; left: ${pinnedLeft}px;` : '';
-    const cellStyle = `text-align: center; vertical-align: middle; padding-left: ${paddingLeft} !important;${pinnedStyle ? ' ' + pinnedStyle : ''}`;
+    // IMPORTANTE: Incluir position: sticky explícitamente en el estilo inline SOLO cuando está pinned
+    const pinnedStyle = column.pinned ? `position: sticky !important; left: ${pinnedLeft}px !important; z-index: 12 !important;` : '';
+    const baseStyle = `text-align: center; vertical-align: middle; padding-left: ${paddingLeft} !important;`;
+    const cellStyle = `${baseStyle}${pinnedStyle ? ' ' + pinnedStyle : ''}`;
     
     // Logs detallados para debugging
     if (column.pinned) {
@@ -727,11 +728,19 @@ function renderColumnHeader(
       `<input data-column-checkbox-header="${column.id}" aria-label="Seleccionar todos ${column.title}"`
     );
     
+    // Agregar clase pinned y atributo data-pinned si está pinned
+    const pinnedClass = column.pinned ? ' ubits-data-table__column-header--pinned' : '';
+    const pinnedStyle = column.pinned ? `position: sticky !important; left: ${pinnedLeft}px !important; z-index: 10 !important;` : '';
+    const widthStyle = column.width ? `width: ${column.width}px;` : '';
+    const combinedStyle = [pinnedStyle, widthStyle].filter(Boolean).join(' ');
+    const styleAttribute = combinedStyle ? `style="${combinedStyle}"` : '';
+    
     const headerHTML = `
       <th 
-        class="ubits-data-table__column-header ubits-data-table__column-header--checkbox" 
-        style="${column.width ? `width: ${column.width}px;` : ''}" 
+        class="ubits-data-table__column-header ubits-data-table__column-header--checkbox${pinnedClass}" 
+        ${styleAttribute}
         data-column-id="${column.id}"
+        ${column.pinned ? 'data-pinned="true"' : ''}
       >
         ${checkbox}
       </th>
@@ -1023,7 +1032,7 @@ export function renderDataTable(
         title: '',
         type: undefined,
         visible: true,
-        width: 60
+        width: 48
       };
       
       // Insertar la nueva columna al inicio
@@ -1053,7 +1062,7 @@ export function renderDataTable(
         title: '',
         type: 'drag-handle',
         visible: true,
-        width: 40
+        width: 32
       };
       visibleColumns.unshift(dragHandleColumn);
       console.log('🔧 [CONTROLS] Columna drag-handle agregada');
@@ -1071,7 +1080,7 @@ export function renderDataTable(
         title: '',
         type: 'expand',
         visible: true,
-        width: 40
+        width: 32
       };
       // Insertar después del drag-handle si existe, sino al inicio
       const dragHandleIndex = visibleColumns.findIndex(col => col.type === 'drag-handle');
@@ -1172,11 +1181,11 @@ export function renderDataTable(
         let prevWidth = prevCol.width;
         if (!prevWidth) {
           if (prevCol.type === 'drag-handle') {
-            prevWidth = 40;
+            prevWidth = 32;
           } else if (prevCol.type === 'expand') {
-            prevWidth = 40;
+            prevWidth = 32;
           } else if (prevCol.id === 'checkbox-2') {
-            prevWidth = 60;
+            prevWidth = 48;
           } else {
             prevWidth = 150;
           }
