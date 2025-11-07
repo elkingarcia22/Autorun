@@ -795,6 +795,9 @@ function renderColumnHeader(
       positionStyle: positionStyle,
       widthStyle: widthStyle,
       combinedStyle: combinedStyle,
+      combinedStyleLength: combinedStyle.length,
+      combinedStyleIncludesSticky: combinedStyle.includes('sticky'),
+      combinedStyleIncludesLeft: combinedStyle.includes('left'),
       hasPinnedClass: pinnedClass.includes('pinned'),
       hasPinnedStyle: pinnedStyle.includes('left'),
       hasPositionStyle: positionStyle.includes('sticky'),
@@ -802,7 +805,8 @@ function renderColumnHeader(
     });
   }
   
-  return `
+  // Construir el HTML del header
+  const headerHTML = `
     <th 
       class="ubits-data-table__column-header${pinnedClass}" 
       ${combinedStyle ? `style="${combinedStyle}"` : ''} 
@@ -812,6 +816,20 @@ function renderColumnHeader(
       ${headerContent}
     </th>
   `;
+  
+  // Log del HTML generado para verificar que el estilo se incluyó
+  if (column.pinned) {
+    console.log('📌 [HEADER HTML] HTML generado para columna fijada:', {
+      columnId: column.id,
+      htmlLength: headerHTML.length,
+      htmlIncludesSticky: headerHTML.includes('sticky'),
+      htmlIncludesLeft: headerHTML.includes('left'),
+      htmlIncludesPosition: headerHTML.includes('position'),
+      htmlPreview: headerHTML.substring(0, 300)
+    });
+  }
+  
+  return headerHTML;
 }
 
 /**
@@ -2260,7 +2278,14 @@ export function createDataTable(options: DataTableOptions): {
           max-width: 160px;
           box-sizing: border-box;
         `;
-        headerCell.style.position = 'relative';
+        // CRÍTICO: NO establecer position: relative si la columna está fijada (tiene position: sticky)
+        // Verificar si la columna está fijada antes de establecer position: relative
+        const isPinned = headerCell.hasAttribute('data-pinned') && headerCell.getAttribute('data-pinned') === 'true';
+        if (!isPinned) {
+          headerCell.style.position = 'relative';
+        } else {
+          console.log('⚠️ [COLUMN MENU] Columna fijada detectada, NO estableciendo position: relative para preservar position: sticky');
+        }
         headerCell.appendChild(dropdown);
       }
       
