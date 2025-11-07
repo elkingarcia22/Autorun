@@ -732,8 +732,8 @@
             <i class="fas fa-cubes"></i>
             <span>Componentes</span>
           </a>
-          <button class="dark-mode-toggle" id="navbar-darkmode-toggle" data-theme="light" title="Modo oscuro">
-            <i class="far fa-moon"></i>
+          <button class="dark-mode-toggle" id="navbar-darkmode-toggle" data-theme="dark" title="Modo oscuro">
+            <i class="fa-solid fa-sun-bright"></i>
           </button>
         </div>
       </div>
@@ -3061,7 +3061,7 @@ npm run dev</code></pre>
             };
             
             // Verificar tema inicial desde localStorage o atributo del body
-            const initialTheme = document.body.getAttribute('data-theme') || localStorage.getItem('ubits-theme') || 'light';
+            const initialTheme = document.body.getAttribute('data-theme') || localStorage.getItem('ubits-theme') || 'dark';
             if (initialTheme === 'dark') {
               darkModeToggle.setAttribute('data-theme', 'dark');
               updateIcon('dark');
@@ -4011,7 +4011,7 @@ Reglas Importantes:
       YELLOW_FG.forEach(addRowYellow);
 
       // restaurar estado por defecto de cálculo si fuese necesario
-      html.setAttribute('data-theme','light');
+      html.setAttribute('data-theme','dark');
       // Mostrar Template por defecto si no hay hash, o respetar el hash si existe
       (function ensureDefaultSection(){
         const hash = location.hash ? location.hash.replace('#', '') : '';
@@ -6126,19 +6126,19 @@ Reglas Importantes:
                               <!-- Título -->
                               <div style="flex: 1 1 auto; min-width: 250px;">
                                 <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Título</label>
-                                <input type="text" id="drawer-title-input-${componentId}" value="Crear dato demográfico" onchange="setDrawerControl('title', this.value, '${componentId}')" placeholder="Título del drawer" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: var(--font-body-sm-size, 13px); font-family: var(--font-sans); box-sizing: border-box;">
+                                <input type="text" id="drawer-title-input-${componentId}" value="Crear dato demográfico" onchange="setDrawerControl('title', this.value, '${componentId}')" placeholder="Título del drawer" style="width: 100%; padding: var(--ubits-spacing-sm) var(--ubits-spacing-md); border: 1px solid var(--ubits-border-1); border-radius: var(--ubits-border-radius-md); background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: var(--font-body-sm-size); font-family: var(--font-sans); box-sizing: border-box;">
                               </div>
                               
                               <!-- Texto Complementario -->
                               <div style="flex: 1 1 auto; min-width: 250px;">
                                 <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Texto Complementario</label>
-                                <input type="text" id="drawer-complementary-input-${componentId}" value="" onchange="setDrawerControl('complementaryText', this.value, '${componentId}')" placeholder="Texto opcional debajo del título" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: var(--font-body-sm-size, 13px); font-family: var(--font-sans); box-sizing: border-box;">
+                                <input type="text" id="drawer-complementary-input-${componentId}" value="" onchange="setDrawerControl('complementaryText', this.value, '${componentId}')" placeholder="Texto opcional debajo del título" style="width: 100%; padding: var(--ubits-spacing-sm) var(--ubits-spacing-md); border: 1px solid var(--ubits-border-1); border-radius: var(--ubits-border-radius-md); background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: var(--font-body-sm-size); font-family: var(--font-sans); box-sizing: border-box;">
                               </div>
                               
                               <!-- Ancho -->
                               <div style="flex: 0 0 auto; min-width: 200px;">
                                 <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Ancho</label>
-                                <select id="drawer-width-select-${componentId}" onchange="setDrawerControl('width', parseInt(this.value), '${componentId}')" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: var(--font-body-sm-size, 13px); font-family: var(--font-sans); cursor: pointer; box-sizing: border-box;">
+                                <select id="drawer-width-select-${componentId}" onchange="setDrawerControl('width', parseInt(this.value), '${componentId}')" style="width: 100%; padding: var(--ubits-spacing-sm) var(--ubits-spacing-md); border: 1px solid var(--ubits-border-1); border-radius: var(--ubits-border-radius-md); background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: var(--font-body-sm-size); font-family: var(--font-sans); cursor: pointer; box-sizing: border-box;">
                                   <option value="100">100%</option>
                                   <option value="80">80%</option>
                                   <option value="60">60%</option>
@@ -6164,7 +6164,7 @@ Reglas Importantes:
                                 <div style="flex: 0 0 auto; min-width: 200px;">
                                   <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Tertiary (Izquierda)</label>
                                   <div style="display: flex; gap: 8px;">
-                                    <input type="text" id="drawer-tertiary-label-input-${componentId}" value="Cancelar" onchange="setDrawerControl('tertiaryLabel', this.value, '${componentId}')" placeholder="Label" style="flex: 1; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: var(--font-body-sm-size, 13px); font-family: var(--font-sans); box-sizing: border-box;">
+                                    <input type="text" id="drawer-tertiary-label-input-${componentId}" value="Cancelar" onchange="setDrawerControl('tertiaryLabel', this.value, '${componentId}')" placeholder="Label" style="flex: 1; padding: var(--ubits-spacing-sm) var(--ubits-spacing-md); border: 1px solid var(--ubits-border-1); border-radius: var(--ubits-border-radius-md); background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: var(--font-body-sm-size); font-family: var(--font-sans); box-sizing: border-box;">
                                     <label class="switch" style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
                                       <input type="checkbox" id="drawer-tertiary-toggle-${componentId}" checked onchange="setDrawerControl('tertiaryEnabled', this.checked, '${componentId}')">
                                       <span class="slider"></span>
@@ -6176,7 +6176,7 @@ Reglas Importantes:
                                 <div style="flex: 0 0 auto; min-width: 200px;">
                                   <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Secondary (Derecha)</label>
                                   <div style="display: flex; gap: 8px;">
-                                    <input type="text" id="drawer-secondary-label-input-${componentId}" value="Guardar" onchange="setDrawerControl('secondaryLabel', this.value, '${componentId}')" placeholder="Label" style="flex: 1; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: var(--font-body-sm-size, 13px); font-family: var(--font-sans); box-sizing: border-box;">
+                                    <input type="text" id="drawer-secondary-label-input-${componentId}" value="Guardar" onchange="setDrawerControl('secondaryLabel', this.value, '${componentId}')" placeholder="Label" style="flex: 1; padding: var(--ubits-spacing-sm) var(--ubits-spacing-md); border: 1px solid var(--ubits-border-1); border-radius: var(--ubits-border-radius-md); background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: var(--font-body-sm-size); font-family: var(--font-sans); box-sizing: border-box;">
                                     <label class="switch" style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
                                       <input type="checkbox" id="drawer-secondary-toggle-${componentId}" checked onchange="setDrawerControl('secondaryEnabled', this.checked, '${componentId}')">
                                       <span class="slider"></span>
@@ -6188,7 +6188,7 @@ Reglas Importantes:
                                 <div style="flex: 0 0 auto; min-width: 200px;">
                                   <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Primary (Derecha)</label>
                                   <div style="display: flex; gap: 8px;">
-                                    <input type="text" id="drawer-primary-label-input-${componentId}" value="Crear" onchange="setDrawerControl('primaryLabel', this.value, '${componentId}')" placeholder="Label" style="flex: 1; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: var(--font-body-sm-size, 13px); font-family: var(--font-sans); box-sizing: border-box;">
+                                    <input type="text" id="drawer-primary-label-input-${componentId}" value="Crear" onchange="setDrawerControl('primaryLabel', this.value, '${componentId}')" placeholder="Label" style="flex: 1; padding: var(--ubits-spacing-sm) var(--ubits-spacing-md); border: 1px solid var(--ubits-border-1); border-radius: var(--ubits-border-radius-md); background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: var(--font-body-sm-size); font-family: var(--font-sans); box-sizing: border-box;">
                                     <label class="switch" style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
                                       <input type="checkbox" id="drawer-primary-toggle-${componentId}" checked onchange="setDrawerControl('primaryEnabled', this.checked, '${componentId}')">
                                       <span class="slider"></span>
@@ -10990,7 +10990,7 @@ Reglas Importantes:
               <div style="padding: 16px;">
                 <div style="margin-bottom: 16px;">
                   <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 8px;">Pregunta</label>
-                  <textarea placeholder="Escribe tu pregunta aquí..." style="width: 100%; min-height: 100px; padding: 12px; border: 1px solid var(--ubits-border-1); border-radius: 8px; font-family: var(--font-sans); font-size: var(--font-body-sm-size, 13px); resize: vertical; box-sizing: border-box;"></textarea>
+                  <textarea placeholder="Escribe tu pregunta aquí..." style="width: 100%; min-height: 100px; padding: var(--ubits-spacing-md); border: 1px solid var(--ubits-border-1); border-radius: var(--ubits-border-radius-md); background-color: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-family: var(--font-sans); font-size: var(--font-body-sm-size); line-height: var(--font-body-sm-line); resize: vertical; box-sizing: border-box;"></textarea>
                 </div>
                 <div style="margin-bottom: 16px; padding: 12px; background: var(--ubits-feedback-bg-info-subtle); border-radius: 8px; display: flex; align-items: flex-start; gap: 8px;">
                   <i class="far fa-info-circle" style="color: var(--ubits-feedback-fg-info-subtle); font-size: 16px; margin-top: 2px;"></i>
@@ -10999,14 +10999,14 @@ Reglas Importantes:
                 <div style="display: flex; flex-direction: column; gap: 12px;">
                   <div style="display: flex; gap: 8px; align-items: center;">
                     <span style="font-size: var(--font-body-sm-size, 13px); color: var(--ubits-fg-1-medium); min-width: 20px;">1</span>
-                    <input type="text" placeholder="Label" style="flex: 1; padding: 10px 12px; border: 1px solid var(--ubits-border-1); border-radius: 8px; font-family: var(--font-sans); font-size: var(--font-body-sm-size, 13px); box-sizing: border-box;">
+                    <input type="text" placeholder="Label" style="flex: 1; padding: var(--ubits-spacing-sm) var(--ubits-spacing-md); border: 1px solid var(--ubits-border-1); border-radius: var(--ubits-border-radius-md); background-color: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-family: var(--font-sans); font-size: var(--font-body-sm-size); line-height: var(--font-body-sm-line); box-sizing: border-box;">
                     <button style="padding: 8px; border: none; background: transparent; color: var(--ubits-fg-1-medium); cursor: pointer; border-radius: 4px;">
                       <i class="far fa-trash"></i>
                     </button>
                   </div>
                   <div style="display: flex; gap: 8px; align-items: center;">
                     <span style="font-size: var(--font-body-sm-size, 13px); color: var(--ubits-fg-1-medium); min-width: 20px;">2</span>
-                    <input type="text" placeholder="Label" style="flex: 1; padding: 10px 12px; border: 1px solid var(--ubits-border-1); border-radius: 8px; font-family: var(--font-sans); font-size: var(--font-body-sm-size, 13px); box-sizing: border-box;">
+                    <input type="text" placeholder="Label" style="flex: 1; padding: var(--ubits-spacing-sm) var(--ubits-spacing-md); border: 1px solid var(--ubits-border-1); border-radius: var(--ubits-border-radius-md); background-color: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-family: var(--font-sans); font-size: var(--font-body-sm-size); line-height: var(--font-body-sm-line); box-sizing: border-box;">
                     <button style="padding: 8px; border: none; background: transparent; color: var(--ubits-fg-1-medium); cursor: pointer; border-radius: 4px;">
                       <i class="far fa-trash"></i>
                     </button>

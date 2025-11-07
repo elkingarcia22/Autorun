@@ -270,4 +270,77 @@
     margin: 0;
 }
 
+/* ========================================
+   INPUTS DENTRO DEL DRAWER
+   ======================================== */
+
+.ubits-drawer__body-content input[type="text"],
+.ubits-drawer__body-content input[type="email"],
+.ubits-drawer__body-content input[type="number"],
+.ubits-drawer__body-content input[type="tel"],
+.ubits-drawer__body-content input[type="url"],
+.ubits-drawer__body-content input[type="password"],
+.ubits-drawer__body-content textarea,
+.ubits-drawer__body-content select {
+    width: 100%;
+    padding: var(--ubits-spacing-sm) var(--ubits-spacing-md);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--ubits-border-radius-md);
+    background-color: var(--ubits-bg-1);
+    color: var(--ubits-fg-1-high);
+    font-family: var(--font-sans);
+    font-size: var(--font-body-sm-size);
+    line-height: var(--font-body-sm-line);
+    box-sizing: border-box;
+    transition: all 0.2s ease;
+}
+
+.ubits-drawer__body-content input[type="text"]:focus,
+.ubits-drawer__body-content input[type="email"]:focus,
+.ubits-drawer__body-content input[type="number"]:focus,
+.ubits-drawer__body-content input[type="tel"]:focus,
+.ubits-drawer__body-content input[type="url"]:focus,
+.ubits-drawer__body-content input[type="password"]:focus,
+.ubits-drawer__body-content textarea:focus,
+.ubits-drawer__body-content select:focus {
+    outline: none;
+    border-color: var(--ubits-accent-brand-static-inverted);
+    box-shadow: 0 0 0 3px var(--ubits-button-focus-ring);
+}
+
+.ubits-drawer__body-content input[type="text"]:hover,
+.ubits-drawer__body-content input[type="email"]:hover,
+.ubits-drawer__body-content input[type="number"]:hover,
+.ubits-drawer__body-content input[type="tel"]:hover,
+.ubits-drawer__body-content input[type="url"]:hover,
+.ubits-drawer__body-content input[type="password"]:hover,
+.ubits-drawer__body-content textarea:hover,
+.ubits-drawer__body-content select:hover {
+    border-color: var(--ubits-border-2);
+}
+
+.ubits-drawer__body-content input[type="text"]::placeholder,
+.ubits-drawer__body-content input[type="email"]::placeholder,
+.ubits-drawer__body-content input[type="number"]::placeholder,
+.ubits-drawer__body-content input[type="tel"]::placeholder,
+.ubits-drawer__body-content input[type="url"]::placeholder,
+.ubits-drawer__body-content input[type="password"]::placeholder,
+.ubits-drawer__body-content textarea::placeholder {
+    color: var(--ubits-fg-1-medium);
+}
+
+.ubits-drawer__body-content select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%235c646f' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right var(--ubits-spacing-md) center;
+    padding-right: var(--ubits-spacing-2xl);
+}
+
+.ubits-drawer__body-content select option {
+    background-color: var(--ubits-bg-1);
+    color: var(--ubits-fg-1-high);
+}
+
 
