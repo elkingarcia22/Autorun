@@ -81,7 +81,7 @@ const meta: Meta<DataTableOptions & { columnsCount?: number }> = {
       options: ['nombre', 'nombre-avatar', 'nombre-avatar-texto', 'progreso', 'estado', 'radio', 'toggle', 'checkbox', 'correo', 'fecha', 'pais', 'ciudad'],
       description: 'Tipo de columna 1 (Nombre)',
       table: {
-        defaultValue: { summary: 'nombre' },
+        defaultValue: { summary: 'nombre-avatar' },
       },
     },
     columnType2: {
@@ -152,7 +152,7 @@ export const Default: Story = {
     const columnType10 = (args as any).columnType10 || 'estado';
     
     const allColumns: TableColumn[] = [
-      { id: 'nombre', title: 'Nombre', type: columnType1 as any, visible: true, width: 200 },
+      { id: 'nombre', title: 'Nombre', type: (columnType1 as any) || 'nombre-avatar', visible: true, width: 200, avatarVariant: 'initials' },
       { id: 'email', title: 'Email', type: columnType2 as any, visible: true, width: 250 },
       { id: 'estado', title: 'Estado', type: columnType3 as any, visible: true, width: 150 },
       { id: 'progreso', title: 'Progreso', type: columnType4 as any, visible: true, width: 180 },
@@ -182,14 +182,15 @@ export const Default: Story = {
           categoria: 'Desarrollo',
           prioridad: 'Alta',
           'checkbox-2': false,
+          avatar: { initials: 'JP', badgeColor: 'green', imageUrl: '../assets/images/Profile-image.jpg' },
         },
         expanded: false,
         renderExpandedContent: (data) => `
           <div style="padding: 16px;">
-            <h4 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600; color: var(--ubits-fg-1-high, #303a47);">Información adicional</h4>
-            <p style="margin: 0 0 4px 0; font-size: 13px; color: var(--ubits-fg-1-medium, #5c646f);">Email: ${data.email}</p>
-            <p style="margin: 0 0 4px 0; font-size: 13px; color: var(--ubits-fg-1-medium, #5c646f);">Estado: ${data.estado}</p>
-            <p style="margin: 0; font-size: 13px; color: var(--ubits-fg-1-medium, #5c646f);">Progreso: ${data.progreso}%</p>
+            <h4 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600;">Información adicional</h4>
+            <p style="margin: 0; font-size: 13px; color: var(--ubits-text-2, #6b7280);">
+              Detalles adicionales para ${data.nombre}
+            </p>
           </div>
         `,
       },
@@ -207,6 +208,7 @@ export const Default: Story = {
           categoria: 'Diseño',
           prioridad: 'Media',
           'checkbox-2': true,
+          avatar: { initials: 'MG', badgeColor: 'blue', imageUrl: '../assets/images/Profile-image.jpg' },
         },
         expanded: false,
       },
@@ -224,14 +226,15 @@ export const Default: Story = {
           categoria: 'Marketing',
           prioridad: 'Baja',
           'checkbox-2': false,
+          avatar: { initials: 'CL', badgeColor: 'orange', imageUrl: '../assets/images/Profile-image.jpg' },
         },
         expanded: false,
         renderExpandedContent: (data) => `
           <div style="padding: 16px;">
-            <h4 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600; color: var(--ubits-fg-1-high, #303a47);">Detalles del usuario</h4>
-            <p style="margin: 0 0 4px 0; font-size: 13px; color: var(--ubits-fg-1-medium, #5c646f);">Email: ${data.email}</p>
-            <p style="margin: 0 0 4px 0; font-size: 13px; color: var(--ubits-fg-1-medium, #5c646f);">Estado: ${data.estado}</p>
-            <p style="margin: 0; font-size: 13px; color: var(--ubits-fg-1-medium, #5c646f);">Progreso: ${data.progreso}%</p>
+            <h4 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600;">Información adicional</h4>
+            <p style="margin: 0; font-size: 13px; color: var(--ubits-text-2, #6b7280);">
+              Detalles adicionales para ${data.nombre}
+            </p>
           </div>
         `,
       },
@@ -249,6 +252,7 @@ export const Default: Story = {
           categoria: 'Ventas',
           prioridad: 'Alta',
           'checkbox-2': true,
+          avatar: { initials: 'AM', badgeColor: 'purple', imageUrl: '../assets/images/Profile-image.jpg' },
         },
         expanded: false,
       },
@@ -266,6 +270,7 @@ export const Default: Story = {
           categoria: 'Soporte',
           prioridad: 'Media',
           'checkbox-2': false,
+          avatar: { initials: 'PS', badgeColor: 'blue', imageUrl: '../assets/images/Profile-image.jpg' },
         },
         expanded: false,
       },
@@ -283,6 +288,7 @@ export const Default: Story = {
           categoria: 'Recursos Humanos',
           prioridad: 'Baja',
           'checkbox-2': true,
+          avatar: { initials: 'PR', badgeColor: 'blue', imageUrl: '../assets/images/Profile-image.jpg' },
         },
         expanded: false,
       },
@@ -300,6 +306,7 @@ export const Default: Story = {
           categoria: 'Finanzas',
           prioridad: 'Alta',
           'checkbox-2': false,
+          avatar: { initials: 'RS', badgeColor: 'orange', imageUrl: '../assets/images/Profile-image.jpg' },
         },
         expanded: false,
       },
@@ -317,6 +324,7 @@ export const Default: Story = {
           categoria: 'Operaciones',
           prioridad: 'Media',
           'checkbox-2': true,
+          avatar: { initials: 'CV', badgeColor: 'pink', imageUrl: '../assets/images/Profile-image.jpg' },
         },
         expanded: false,
       },
@@ -334,6 +342,7 @@ export const Default: Story = {
           categoria: 'Tecnología',
           prioridad: 'Baja',
           'checkbox-2': false,
+          avatar: { initials: 'DM', badgeColor: 'blue', imageUrl: '../assets/images/Profile-image.jpg' },
         },
         expanded: false,
       },
@@ -351,6 +360,7 @@ export const Default: Story = {
           categoria: 'Innovación',
           prioridad: 'Alta',
           'checkbox-2': true,
+          avatar: { initials: 'DH', badgeColor: 'purple', imageUrl: '../assets/images/Profile-image.jpg' },
         },
         expanded: false,
       },
@@ -368,6 +378,7 @@ export const Default: Story = {
           categoria: 'Logística',
           prioridad: 'Media',
           'checkbox-2': false,
+          avatar: { initials: 'AC', badgeColor: 'green', imageUrl: '../assets/images/Profile-image.jpg' },
         },
         expanded: false,
       },
@@ -385,6 +396,7 @@ export const Default: Story = {
           categoria: 'Calidad',
           prioridad: 'Baja',
           'checkbox-2': true,
+          avatar: { initials: 'VR', badgeColor: 'orange', imageUrl: '../assets/images/Profile-image.jpg' },
         },
         expanded: false,
       },
@@ -402,6 +414,7 @@ export const Default: Story = {
           categoria: 'Investigación',
           prioridad: 'Alta',
           'checkbox-2': false,
+          avatar: { initials: 'FG', badgeColor: 'green', imageUrl: '../assets/images/Profile-image.jpg' },
         },
         expanded: false,
       },
@@ -419,6 +432,7 @@ export const Default: Story = {
           categoria: 'Comunicaciones',
           prioridad: 'Media',
           'checkbox-2': true,
+          avatar: { initials: 'IR', badgeColor: 'purple', imageUrl: '../assets/images/Profile-image.jpg' },
         },
         expanded: false,
       },
@@ -436,6 +450,7 @@ export const Default: Story = {
           categoria: 'Estrategia',
           prioridad: 'Baja',
           'checkbox-2': false,
+          avatar: { initials: 'ST', badgeColor: 'blue', imageUrl: '../assets/images/Profile-image.jpg' },
         },
         expanded: false,
       },
@@ -494,7 +509,7 @@ export const Default: Story = {
     showHorizontalScrollbar: false,
     showColumnMenu: true,
     columnsCount: 4,
-    columnType1: 'nombre',
+    columnType1: 'nombre-avatar',
     columnType2: 'correo',
     columnType3: 'estado',
     columnType4: 'progreso',
