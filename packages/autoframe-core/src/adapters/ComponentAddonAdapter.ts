@@ -40,6 +40,7 @@ export class ComponentAddonAdapter implements IComponentAddon {
   private addonPath: string;
   private active = false;
   private initialized = false;
+  private packageInfoLoaded = false;
 
   /**
    * Crea un adaptador para un componente existente
@@ -57,8 +58,8 @@ export class ComponentAddonAdapter implements IComponentAddon {
     // Generar ID desde el nombre (ej: '@ubits/button' -> 'button')
     this.id = this.extractIdFromName(legacyAddon.name);
     
-    // Cargar información adicional del package.json
-    this.loadPackageInfo();
+    // Inicializar description por defecto (se cargará del package.json después)
+    this.description = `${this.name} component`;
   }
 
   /**
@@ -78,20 +79,25 @@ export class ComponentAddonAdapter implements IComponentAddon {
   /**
    * Carga información adicional del package.json
    */
-  private loadPackageInfo(): void {
-    // Inicializar description por defecto
-    // Se puede cargar de forma asíncrona si es necesario
-    this.description = `${this.name} component`;
-    
-    // Intentar cargar package.json de forma síncrona (para simplificar)
-    // En producción, esto podría ser asíncrono
+  private async loadPackageInfo(): Promise<void> {
+    if (this.packageInfoLoaded) {
+      return;
+    }
+
     try {
       const packageJsonPath = path.join(this.addonPath, 'package.json');
-      // Nota: fs.readFileSync no está disponible en ES modules
-      // Por ahora usamos el valor por defecto
-      // Se puede mejorar en el futuro con carga asíncrona
+      const packageContent = await fs.readFile(packageJsonPath, 'utf-8');
+      const packageJson = JSON.parse(packageContent);
+      
+      // Usar description del package.json si está disponible
+      if (packageJson.description) {
+        this.description = packageJson.description;
+      }
+      
+      this.packageInfoLoaded = true;
     } catch (error) {
-      // Usar valor por defecto
+      // Si no se puede leer package.json, usar valor por defecto
+      this.packageInfoLoaded = true;
     }
   }
 
@@ -102,6 +108,9 @@ export class ComponentAddonAdapter implements IComponentAddon {
     if (this.initialized) {
       return;
     }
+
+    // Cargar información del package.json si no se ha cargado
+    await this.loadPackageInfo();
 
     // Llamar al método initialize del componente existente
     await this.legacyAddon.initialize(context);
