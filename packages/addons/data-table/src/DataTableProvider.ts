@@ -806,10 +806,25 @@ function renderColumnHeader(
   }
   
   // Construir el HTML del header
+  // CRÍTICO: Siempre incluir el estilo si combinedStyle tiene contenido, incluso si es solo width
+  const styleAttribute = combinedStyle ? `style="${combinedStyle}"` : '';
+  
+  // Log detallado antes de construir el HTML
+  if (column.pinned) {
+    console.log('📌 [HEADER PRE-HTML] Antes de construir HTML:', {
+      columnId: column.id,
+      pinned: column.pinned,
+      combinedStyle: combinedStyle,
+      combinedStyleLength: combinedStyle.length,
+      styleAttribute: styleAttribute,
+      willIncludeStyle: !!styleAttribute
+    });
+  }
+  
   const headerHTML = `
     <th 
       class="ubits-data-table__column-header${pinnedClass}" 
-      ${combinedStyle ? `style="${combinedStyle}"` : ''} 
+      ${styleAttribute} 
       data-column-id="${column.id}"
       ${column.pinned ? 'data-pinned="true"' : ''}
     >
@@ -825,7 +840,9 @@ function renderColumnHeader(
       htmlIncludesSticky: headerHTML.includes('sticky'),
       htmlIncludesLeft: headerHTML.includes('left'),
       htmlIncludesPosition: headerHTML.includes('position'),
-      htmlPreview: headerHTML.substring(0, 300)
+      htmlIncludesWidth: headerHTML.includes('width'),
+      styleAttributeInHTML: headerHTML.includes('style='),
+      htmlPreview: headerHTML.substring(0, 400)
     });
   }
   
@@ -2281,10 +2298,23 @@ export function createDataTable(options: DataTableOptions): {
         // CRÍTICO: NO establecer position: relative si la columna está fijada (tiene position: sticky)
         // Verificar si la columna está fijada antes de establecer position: relative
         const isPinned = headerCell.hasAttribute('data-pinned') && headerCell.getAttribute('data-pinned') === 'true';
-        if (!isPinned) {
+        const hasStickyClass = headerCell.classList.contains('ubits-data-table__column-header--pinned');
+        
+        if (!isPinned && !hasStickyClass) {
           headerCell.style.position = 'relative';
         } else {
-          console.log('⚠️ [COLUMN MENU] Columna fijada detectada, NO estableciendo position: relative para preservar position: sticky');
+          console.log('⚠️ [COLUMN MENU] Columna fijada detectada, NO estableciendo position: relative para preservar position: sticky', {
+            columnId: columnId,
+            isPinned: isPinned,
+            hasStickyClass: hasStickyClass,
+            currentPosition: headerCell.style.position,
+            computedPosition: window.getComputedStyle(headerCell).position
+          });
+          // Forzar que sticky tenga prioridad si ya está aplicado
+          if (window.getComputedStyle(headerCell).position === 'sticky' || headerCell.style.position === 'sticky') {
+            headerCell.style.position = 'sticky';
+            console.log('✅ [COLUMN MENU] position: sticky preservado para columna fijada');
+          }
         }
         headerCell.appendChild(dropdown);
       }
