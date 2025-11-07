@@ -1021,6 +1021,12 @@
     position: relative !important; /* Necesario para sticky */
 }
 
+/* Asegurar que el contenedor permita que la tabla se expanda más allá de su ancho */
+.ubits-data-table__scrollable-container--horizontal .ubits-data-table__table {
+    min-width: max-content !important;
+    width: max-content !important;
+}
+
 /* Ambos scrolls (vertical y horizontal) */
 .ubits-data-table__scrollable-container--vertical.ubits-data-table__scrollable-container--horizontal {
     max-height: 400px;
