@@ -23,11 +23,11 @@
 }
 
 .ubits-input:hover {
-    border-color: var(--ubits-accent-brand);
+    border-color: var(--ubits-accent-brand-static-inverted);
 }
 
 .ubits-input:focus {
-    border-color: var(--ubits-accent-brand);
+    border-color: var(--ubits-accent-brand-static-inverted);
     box-shadow: 0 0 0 2px rgba(12, 91, 239, 0.1);
 }
 
@@ -84,16 +84,16 @@
    ======================================== */
 
 .ubits-input--hover {
-    border-color: var(--ubits-accent-brand);
+    border-color: var(--ubits-accent-brand-static-inverted);
 }
 
 .ubits-input--focus {
-    border-color: var(--ubits-accent-brand);
+    border-color: var(--ubits-accent-brand-static-inverted);
     box-shadow: 0 0 0 2px rgba(12, 91, 239, 0.1);
 }
 
 .ubits-input--active {
-    border-color: var(--ubits-accent-brand);
+    border-color: var(--ubits-accent-brand-static-inverted);
     background: var(--ubits-bg-2);
 }
 
@@ -305,7 +305,7 @@
 
 .ubits-autocomplete-option strong {
     font-weight: var(--weight-semibold);
-    color: var(--ubits-accent-brand);
+    color: var(--ubits-accent-brand-static-inverted);
 }
 
 /* ========================================
@@ -356,7 +356,7 @@
 .ubits-calendar-month-select:focus,
 .ubits-calendar-year-select:focus {
     outline: none;
-    border-color: var(--ubits-accent-brand);
+    border-color: var(--ubits-accent-brand-static-inverted);
     box-shadow: 0 0 0 2px rgba(12, 91, 239, 0.1);
 }
 
@@ -438,13 +438,13 @@
 }
 
 .ubits-calendar-day--selected {
-    background: var(--ubits-accent-brand);
+    background: var(--ubits-accent-brand-static-inverted);
     color: var(--ubits-button-fg-primary);
     font-weight: var(--weight-semibold);
 }
 
 .ubits-calendar-day--selected:hover {
-    background: var(--ubits-accent-brand);
+    background: var(--ubits-accent-brand-static-inverted);
     color: var(--ubits-button-fg-primary);
 }
 
@@ -509,7 +509,7 @@
 }
 
 .ubits-select-loading i {
-    color: var(--ubits-accent-brand);
+    color: var(--ubits-accent-brand-static-inverted);
     font-size: 16px;
 }
 

@@ -123,14 +123,14 @@
 
 /* Hover State - cuando la clase hover está presente */
 .ubits-checkbox--hover:not(.ubits-checkbox--disabled):not(.ubits-checkbox--checked) .ubits-checkbox__square {
-    border-color: var(--ubits-accent-brand, #0c5bef);
+    border-color: var(--ubits-accent-brand-static-inverted, #0c5bef);
     background-color: var(--ubits-bg-1, #ffffff);
 }
 
 /* Hover State - cuando se hace hover con el mouse */
 .ubits-checkbox--hover:not(.ubits-checkbox--disabled):not(.ubits-checkbox--checked):hover .ubits-checkbox__square,
 .ubits-checkbox:not(.ubits-checkbox--disabled):not(.ubits-checkbox--checked):hover .ubits-checkbox__square {
-    border-color: var(--ubits-accent-brand, #0c5bef);
+    border-color: var(--ubits-accent-brand-static-inverted, #0c5bef);
     background-color: var(--ubits-bg-1, #ffffff);
 }
 
@@ -142,8 +142,8 @@
 
 /* Active State - cuadrado azul brand con checkmark blanco (solo cuando NO está checked) */
 .ubits-checkbox--active:not(.ubits-checkbox--checked) .ubits-checkbox__square {
-    border-color: var(--ubits-accent-brand, #0c5bef);
-    background-color: var(--ubits-accent-brand, #0c5bef);
+    border-color: var(--ubits-accent-brand-static-inverted, #0c5bef);
+    background-color: var(--ubits-accent-brand-static-inverted, #0c5bef);
 }
 
 .ubits-checkbox--active:not(.ubits-checkbox--checked) .ubits-checkbox__checkmark {
@@ -158,7 +158,7 @@
 /* Checked State - el borde debe ser gris, fondo azul brand con checkmark blanco */
 .ubits-checkbox--checked .ubits-checkbox__square {
     border-color: var(--ubits-border-1, #d0d2d5);
-    background-color: var(--ubits-accent-brand, #0c5bef);
+    background-color: var(--ubits-accent-brand-static-inverted, #0c5bef);
 }
 
 .ubits-checkbox--checked .ubits-checkbox__checkmark {
@@ -173,7 +173,7 @@
 /* Focus State */
 .ubits-checkbox__input:focus-visible + .ubits-checkbox__square {
     /* Efecto Focus de los tokens UBITS */
-    border: 2px solid var(--ubits-accent-brand, #5297F4);
+    border: 2px solid var(--ubits-accent-brand-static-inverted, #5297F4);
     box-shadow: 0px 0px 0px 4px rgba(82, 151, 244, 0.3);
     outline: none;
 }

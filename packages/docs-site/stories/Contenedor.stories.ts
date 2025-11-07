@@ -160,7 +160,7 @@ export const WithContent: Story = {
     
     const button = document.createElement('button');
     button.style.padding = '8px 16px';
-    button.style.background = 'var(--ubits-accent-brand)';
+    button.style.background = 'var(--ubits-accent-brand-static-inverted)';
     button.style.color = 'white';
     button.style.border = 'none';
     button.style.borderRadius = 'var(--ubits-border-radius-md, 8px)';

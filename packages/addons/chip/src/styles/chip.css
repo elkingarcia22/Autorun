@@ -127,7 +127,7 @@
 .ubits-chip__right-icon:focus-visible {
     /* Efecto Focus de los tokens UBITS */
     outline: none;
-    border: 2px solid var(--ubits-accent-brand, #5297F4);
+    border: 2px solid var(--ubits-accent-brand-static-inverted, #5297F4);
     box-shadow: 0px 0px 0px 4px rgba(82, 151, 244, 0.3);
     border-radius: var(--ubits-border-radius-xs, 4px);
 }
@@ -177,7 +177,7 @@
 .ubits-chip:focus-visible {
     /* Efecto Focus de los tokens UBITS */
     /* Border: 2px solid del color de focus */
-    border: 2px solid var(--ubits-accent-brand, #5297F4);
+    border: 2px solid var(--ubits-accent-brand-static-inverted, #5297F4);
     /* Box-shadow: 0px 0px 0px 4px con spread de 4px y opacidad 30% */
     box-shadow: 0px 0px 0px 4px rgba(82, 151, 244, 0.3);
     outline: none;

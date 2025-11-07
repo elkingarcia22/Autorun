@@ -177,20 +177,20 @@
 /* Active/Outline Variant */
 .ubits-button--active {
     background: var(--ubits-button-active-bg);
-    color: var(--ubits-accent-brand);
-    border: 1px solid var(--ubits-accent-brand);
+    color: var(--ubits-accent-brand-static-inverted);
+    border: 1px solid var(--ubits-accent-brand-static-inverted);
 }
 
 .ubits-button--active:hover:not(:disabled):not(.ubits-button--loading) {
     background: var(--ubits-button-active-bg);
-    color: var(--ubits-accent-brand);
-    border-color: var(--ubits-accent-brand);
+    color: var(--ubits-accent-brand-static-inverted);
+    border-color: var(--ubits-accent-brand-static-inverted);
 }
 
 .ubits-button--active:active:not(:disabled):not(.ubits-button--loading) {
     background: var(--ubits-button-active-bg);
-    color: var(--ubits-accent-brand);
-    border-color: var(--ubits-accent-brand);
+    color: var(--ubits-accent-brand-static-inverted);
+    border-color: var(--ubits-accent-brand-static-inverted);
 }
 
 /* ========================================
@@ -222,19 +222,19 @@
 /* Secondary Button Active State */
 .ubits-button--secondary.ubits-button--active {
     background: var(--ubits-button-active-bg);
-    color: var(--ubits-accent-brand);
+    color: var(--ubits-accent-brand-static-inverted);
     border: none;
 }
 
 .ubits-button--secondary.ubits-button--active:hover:not(:disabled):not(.ubits-button--loading) {
     background: var(--ubits-button-active-bg);
-    color: var(--ubits-accent-brand);
+    color: var(--ubits-accent-brand-static-inverted);
     border: none;
 }
 
 .ubits-button--secondary.ubits-button--active:active:not(:disabled):not(.ubits-button--loading) {
     background: var(--ubits-button-active-bg);
-    color: var(--ubits-accent-brand);
+    color: var(--ubits-accent-brand-static-inverted);
     border: none;
 }
 
@@ -267,19 +267,19 @@
 /* Tertiary Button Active State */
 .ubits-button--tertiary.ubits-button--active {
     background: var(--ubits-button-active-bg);
-    color: var(--ubits-accent-brand);
+    color: var(--ubits-accent-brand-static-inverted);
     border: 1px solid transparent;
 }
 
 .ubits-button--tertiary.ubits-button--active:hover:not(:disabled):not(.ubits-button--loading) {
     background: var(--ubits-button-active-bg);
-    color: var(--ubits-accent-brand);
+    color: var(--ubits-accent-brand-static-inverted);
     border: 1px solid transparent;
 }
 
 .ubits-button--tertiary.ubits-button--active:active:not(:disabled):not(.ubits-button--loading) {
     background: var(--ubits-button-active-bg);
-    color: var(--ubits-accent-brand);
+    color: var(--ubits-accent-brand-static-inverted);
     border: 1px solid transparent;
 }
 

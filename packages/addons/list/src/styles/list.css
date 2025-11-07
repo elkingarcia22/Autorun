@@ -115,14 +115,14 @@
 
 /* Hover state */
 .ubits-list-item:hover:not(.ubits-list-item--disabled) {
-    color: var(--ubits-accent-brand);
+    color: var(--ubits-accent-brand-static-inverted);
     background: rgba(12, 91, 239, 0.08); /* Azul claro #E0F0FF equivalente */
 }
 
 /* Active/Selected state */
 .ubits-list-item--active,
 .ubits-list-item[aria-selected="true"] {
-    color: var(--ubits-accent-brand);
+    color: var(--ubits-accent-brand-static-inverted);
     background: rgba(12, 91, 239, 0.08); /* Azul claro #E0F0FF equivalente */
 }
 
@@ -137,7 +137,7 @@
 
 /* Focus state (keyboard navigation) */
 .ubits-list-item:focus-visible {
-    outline: 2px solid var(--ubits-accent-brand);
+    outline: 2px solid var(--ubits-accent-brand-static-inverted);
     outline-offset: -2px;
     border-radius: 4px;
 }

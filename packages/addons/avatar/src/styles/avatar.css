@@ -132,7 +132,7 @@
 }
 
 .ubits-avatar[role="button"]:focus {
-    outline: 2px solid var(--ubits-accent-brand, #0c5bef);
+    outline: 2px solid var(--ubits-accent-brand-static-inverted, #0c5bef);
     outline-offset: 2px;
 }
 

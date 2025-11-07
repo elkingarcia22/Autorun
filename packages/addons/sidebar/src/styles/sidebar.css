@@ -368,7 +368,7 @@
 
 /* Avatar active state */
 .ubits-sidebar-user-avatar.active img {
-    border: 2px solid var(--ubits-accent-brand) !important;
+    border: 2px solid var(--ubits-accent-brand-static-inverted) !important;
 }
 
 /* ========================================

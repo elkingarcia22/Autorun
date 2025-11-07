@@ -414,7 +414,7 @@ function renderCellByType(column: TableColumn, row: TableRow, columnType: Column
       const isClickable = column.emailClickable !== false; // Por defecto es true
       
       if (isClickable) {
-        return `<a href="mailto:${email}" class="ubits-body-md-regular" style="color: var(--ubits-accent-brand, #0c5bef); text-decoration: none;">${email}</a>`;
+        return `<a href="mailto:${email}" class="ubits-body-md-regular" style="color: var(--ubits-accent-brand-static-inverted, #0c5bef); text-decoration: none;">${email}</a>`;
       } else {
         return `<span class="ubits-body-md-regular">${email}</span>`;
       }

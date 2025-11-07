@@ -179,18 +179,18 @@
       }
       .ubits-button--active {
         background: var(--ubits-button-active-bg);
-        color: var(--ubits-accent-brand);
-        border: 1px solid var(--ubits-accent-brand);
+        color: var(--ubits-accent-brand-static-inverted);
+        border: 1px solid var(--ubits-accent-brand-static-inverted);
       }
       .ubits-button--active:hover:not(:disabled):not(.ubits-button--loading) {
         background: var(--ubits-button-active-bg);
-        color: var(--ubits-accent-brand);
-        border-color: var(--ubits-accent-brand);
+        color: var(--ubits-accent-brand-static-inverted);
+        border-color: var(--ubits-accent-brand-static-inverted);
       }
       .ubits-button--active:active:not(:disabled):not(.ubits-button--loading) {
         background: var(--ubits-button-active-bg);
-        color: var(--ubits-accent-brand);
-        border-color: var(--ubits-accent-brand);
+        color: var(--ubits-accent-brand-static-inverted);
+        border-color: var(--ubits-accent-brand-static-inverted);
       }
       .ubits-button--secondary {
         background: var(--ubits-btn-secondary-bg-default);
@@ -218,13 +218,13 @@
       }
       .ubits-button--secondary.ubits-button--active {
         background: var(--ubits-button-active-bg);
-        color: var(--ubits-accent-brand);
+        color: var(--ubits-accent-brand-static-inverted);
         border: none;
       }
       .ubits-button--secondary.ubits-button--active:hover:not(:disabled):not(.ubits-button--loading),
       .ubits-button--secondary.ubits-button--active:active:not(:disabled):not(.ubits-button--loading) {
         background: var(--ubits-button-active-bg);
-        color: var(--ubits-accent-brand);
+        color: var(--ubits-accent-brand-static-inverted);
         border: none;
       }
       .ubits-button--tertiary {
@@ -253,13 +253,13 @@
       }
       .ubits-button--tertiary.ubits-button--active {
         background: var(--ubits-button-active-bg);
-        color: var(--ubits-accent-brand);
+        color: var(--ubits-accent-brand-static-inverted);
         border: 1px solid transparent;
       }
       .ubits-button--tertiary.ubits-button--active:hover:not(:disabled):not(.ubits-button--loading),
       .ubits-button--tertiary.ubits-button--active:active:not(:disabled):not(.ubits-button--loading) {
         background: var(--ubits-button-active-bg);
-        color: var(--ubits-accent-brand);
+        color: var(--ubits-accent-brand-static-inverted);
         border: 1px solid transparent;
       }
       .ubits-button--tertiary:focus-visible {
@@ -421,9 +421,9 @@
 
       /* PREVIEW CONTROL BUTTONS */
       .preview-control-btn.active {
-        background: var(--ubits-accent-brand) !important;
+        background: var(--ubits-accent-brand-static-inverted) !important;
         color: white !important;
-        border-color: var(--ubits-accent-brand) !important;
+        border-color: var(--ubits-accent-brand-static-inverted) !important;
       }
       .preview-control-btn.active span {
         color: white !important;
@@ -484,7 +484,7 @@
       .copyable{cursor:pointer}
       .copied{outline:2px solid var(--ubits-accent-green); outline-offset:2px}
       .icon-card.copyable:hover{
-        border-color: var(--ubits-accent-brand) !important;
+        border-color: var(--ubits-accent-brand-static-inverted) !important;
         background: var(--ubits-bg-active) !important;
         transform: translateY(-2px);
         box-shadow: 0 4px 12px rgba(0,0,0,0.1);
@@ -505,7 +505,7 @@
       .navbar{display:flex; gap:20px; align-items:center; padding:10px 0; border-bottom:none; position:sticky; top:0; background: var(--ubits-bg-2); z-index:20}
       .nav-link{display:inline-flex; align-items:center; gap:8px; padding:8px 2px; color: var(--ubits-fg-2-medium); text-decoration:none; font-weight: var(--weight-semibold); line-height:1; border-bottom:2px solid transparent}
       .nav-link:hover{color: var(--ubits-fg-2-high)}
-      .nav-link.active{color: var(--ubits-accent-brand); border-bottom-color: var(--ubits-accent-brand)}
+      .nav-link.active{color: var(--ubits-accent-brand-static-inverted); border-bottom-color: var(--ubits-accent-brand-static-inverted)}
       .tabs-wrap{position:sticky; top:0; z-index:20; margin-bottom:12px; background: var(--ubits-bg-2)}
       .layout-colors{display:flex; gap:16px; align-items:flex-start}
       .sidebar{width:320px}
@@ -514,7 +514,7 @@
       .side{display:flex; flex-direction:column; gap:6px; max-height:calc(100vh - 140px); overflow-y:auto; padding-right:4px}
       .side-link{padding:8px 10px; border-radius:8px; color:var(--ubits-fg-1-medium); text-decoration:none; font-weight: var(--weight-medium); white-space:nowrap; transition:background 0.2s ease, color 0.2s ease}
       .side-link:hover{background:var(--ubits-bg-2); color:var(--ubits-fg-2-high)}
-      .side-link.active{background:var(--ubits-bg-2); color:var(--ubits-accent-brand); font-weight: var(--weight-semibold)}
+      .side-link.active{background:var(--ubits-bg-2); color:var(--ubits-accent-brand-static-inverted); font-weight: var(--weight-semibold)}
       .content{flex:1; display:block; width:100%; margin:0; padding:0}
       #section-colores .columns{width:100%}
       #section-colores .cat-section{margin:0; padding:0}
@@ -532,13 +532,13 @@
       .copyable-code-block pre{ position: relative; padding-right: 40px; cursor: pointer; transition: background 0.2s; }
       .copyable-code-block pre:hover{ background: var(--ubits-bg-active) !important; }
       .copyable-code-block .copy-btn{ position: absolute; top: 8px; right: 8px; background: var(--ubits-bg-1); border: none; border-radius: 6px; padding: 6px 10px; cursor: pointer; font-size: var(--font-body-sm-size); color: var(--ubits-fg-1-medium); transition: all 0.2s; display: flex; align-items: center; gap: 6px; }
-      .copyable-code-block .copy-btn:hover{ background: var(--ubits-accent-brand); color: var(--ubits-bg-1); border-color: var(--ubits-accent-brand); }
+      .copyable-code-block .copy-btn:hover{ background: var(--ubits-accent-brand-static-inverted); color: var(--ubits-bg-1); border-color: var(--ubits-accent-brand-static-inverted); }
       .copyable-code-block .copy-btn.copied{ background: var(--ubits-accent-green); color: var(--ubits-bg-1); border-color: var(--ubits-accent-green); }
       .copyable-code-block .copy-btn i{ font-size: var(--font-body-sm-size); }
       
       .copyable-prompt{ position: relative; }
       .copyable-prompt .copy-btn{ position: absolute; top: 12px; right: 12px; background: var(--ubits-bg-1); border: none; border-radius: 6px; padding: 8px 12px; cursor: pointer; font-size: var(--font-body-sm-size); color: var(--ubits-fg-1-medium); transition: all 0.2s; display: flex; align-items: center; gap: 6px; }
-      .copyable-prompt .copy-btn:hover{ background: var(--ubits-accent-brand); color: var(--ubits-bg-1); border-color: var(--ubits-accent-brand); }
+      .copyable-prompt .copy-btn:hover{ background: var(--ubits-accent-brand-static-inverted); color: var(--ubits-bg-1); border-color: var(--ubits-accent-brand-static-inverted); }
       .copyable-prompt .copy-btn.copied{ background: var(--ubits-accent-green); color: var(--ubits-bg-1); border-color: var(--ubits-accent-green); }
       .copyable-prompt .copy-btn i{ font-size: var(--font-body-sm-size); }
       
@@ -549,11 +549,11 @@
       #navbar2 .ubits-logo svg{ width: 40px; height: 40px; transition: filter 0.2s ease; }
       #navbar2 .ubits-logo:hover svg{ filter: brightness(1.1); }
       #navbar2 .ubits-logo-text{ font-size: var(--font-body-lg-size); font-weight: var(--weight-bold); color: var(--ubits-fg-1-high); transition: color 0.2s ease; }
-      #navbar2 .ubits-logo:hover .ubits-logo-text{ color: var(--ubits-accent-brand); }
+      #navbar2 .ubits-logo:hover .ubits-logo-text{ color: var(--ubits-accent-brand-static-inverted); }
       #navbar2 .nav2-link{ color: var(--ubits-fg-1-medium); text-decoration:none; padding:10px 12px; border-bottom:2px solid transparent; transition:all .15s ease; display: flex; align-items: center; gap: 8px; font-size: var(--font-body-md-size); font-weight: var(--weight-medium); position: relative; }
       #navbar2 .nav2-link i{ font-size: var(--font-body-md-size); }
       #navbar2 .nav2-link:hover{ color: var(--ubits-fg-1-high); background: var(--ubits-bg-2); border-radius: 8px; }
-      #navbar2 .nav2-link.active2{ color: var(--ubits-accent-brand); border-bottom-color: var(--ubits-accent-brand); }
+      #navbar2 .nav2-link.active2{ color: var(--ubits-accent-brand-static-inverted); border-bottom-color: var(--ubits-accent-brand-static-inverted); }
       #navbar2 .nav2-link.has-submenu{ cursor: pointer; }
       #navbar2 .nav2-link.has-submenu .fa-chevron-down{ transition: transform 0.2s ease; }
       #navbar2 .nav2-link.has-submenu.submenu-open .fa-chevron-down{ transform: rotate(180deg); }
@@ -561,7 +561,7 @@
       #navbar2 .nav2-link.submenu-open .nav2-submenu{ display: block; }
       #navbar2 .nav2-submenu .nav2-subitem{ display: flex; align-items: center; gap: 8px; padding: 8px 16px; color: var(--ubits-fg-1-medium); text-decoration: none; font-size: var(--font-body-sm-size); transition: all 0.15s ease; }
       #navbar2 .nav2-submenu .nav2-subitem:hover{ background: var(--ubits-bg-2); color: var(--ubits-fg-1-high); }
-      #navbar2 .nav2-submenu .nav2-subitem.active{ color: var(--ubits-accent-brand); font-weight: var(--weight-semibold); }
+      #navbar2 .nav2-submenu .nav2-subitem.active{ color: var(--ubits-accent-brand-static-inverted); font-weight: var(--weight-semibold); }
       #navbar2 .nav2-submenu .nav2-subitem i{ font-size: var(--font-body-sm-size); }
       
       /* Dark Mode Toggle Button */
@@ -681,11 +681,11 @@
           <a href="#" class="ubits-logo" style="transition: transform 0.2s ease;">
             <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
               <!-- Fondo de la U -->
-              <path d="M8 8C8 6.89543 8.89543 6 10 6H18C19.1046 6 20 6.89543 20 8V12C20 13.1046 19.1046 14 18 14H14V26C14 27.1046 14.8954 28 16 28H24C25.1046 28 26 27.1046 26 26V22C26 20.8954 26.8954 20 28 20H30C31.1046 20 32 20.8954 32 22V30C32 31.1046 31.1046 32 30 32H10C8.89543 32 8 31.1046 8 30V8Z" fill="var(--ubits-accent-brand)"/>
+              <path d="M8 8C8 6.89543 8.89543 6 10 6H18C19.1046 6 20 6.89543 20 8V12C20 13.1046 19.1046 14 18 14H14V26C14 27.1046 14.8954 28 16 28H24C25.1046 28 26 27.1046 26 26V22C26 20.8954 26.8954 20 28 20H30C31.1046 20 32 20.8954 32 22V30C32 31.1046 31.1046 32 30 32H10C8.89543 32 8 31.1046 8 30V8Z" fill="var(--ubits-accent-brand-static-inverted)"/>
               <!-- Rayo tipo flash atravesando la U -->
               <path d="M16 8L24 16L20 16L26 28L18 20L22 20L16 8Z" fill="var(--ubits-bg-1)"/>
               <!-- Rayo secundario para efecto flash más sutil -->
-              <path d="M18 10L24 16L21 16L25 26L19 20L22 20L18 10Z" fill="var(--ubits-accent-brand)" opacity="0.4"/>
+              <path d="M18 10L24 16L21 16L25 26L19 20L22 20L18 10Z" fill="var(--ubits-accent-brand-static-inverted)" opacity="0.4"/>
             </svg>
             <span class="ubits-logo-text">UBITS</span>
           </a>
@@ -948,7 +948,7 @@ npm run dev</code></pre>
             <ul style="color: var(--ubits-fg-2-medium); font-size: var(--font-body-sm-size); margin: 0; padding-left: 20px; line-height: var(--font-body-sm-line);">
               <li><code style="background: var(--ubits-bg-1); padding: 2px 6px; border-radius: 4px; font-size: var(--font-body-xs-size); color: var(--ubits-fg-1-high);">--ubits-bg-1</code> - Fondo principal</li>
               <li><code style="background: var(--ubits-bg-1); padding: 2px 6px; border-radius: 4px; font-size: var(--font-body-xs-size); color: var(--ubits-fg-1-high);">--ubits-fg-1-high</code> - Texto principal</li>
-              <li><code style="background: var(--ubits-bg-1); padding: 2px 6px; border-radius: 4px; font-size: var(--font-body-xs-size); color: var(--ubits-fg-1-high);">--ubits-accent-brand</code> - Color de marca</li>
+              <li><code style="background: var(--ubits-bg-1); padding: 2px 6px; border-radius: 4px; font-size: var(--font-body-xs-size); color: var(--ubits-fg-1-high);">--ubits-accent-brand-static-inverted</code> - Color de marca</li>
               <li><code style="background: var(--ubits-bg-1); padding: 2px 6px; border-radius: 4px; font-size: var(--font-body-xs-size); color: var(--ubits-fg-1-high);">--ubits-border-1</code> - Borde principal</li>
             </ul>
             <div style="margin-top: 12px; padding: 8px; background: var(--ubits-bg-1); border-radius: 4px; border: none;">
@@ -1023,27 +1023,27 @@ npm run dev</code></pre>
         <h3 class="ubits-heading-h3" style="color: var(--ubits-fg-1-high); margin: 0 0 16px 0; font-size: 18px; font-weight: 600;">🔧 Scripts Disponibles</h3>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
           <div style="background: var(--ubits-bg-2); padding: 12px; border-radius: 8px; border: none;">
-            <code style="color: var(--ubits-accent-brand); font-size: 13px; font-weight: 600;">npm run init</code>
+            <code style="color: var(--ubits-accent-brand-static-inverted); font-size: 13px; font-weight: 600;">npm run init</code>
             <p style="color: var(--ubits-fg-1-medium); font-size: 12px; margin: 4px 0 0 0;">Inicializar proyecto nuevo</p>
           </div>
           <div style="background: var(--ubits-bg-2); padding: 12px; border-radius: 8px; border: none;">
-            <code style="color: var(--ubits-accent-brand); font-size: 13px; font-weight: 600;">npm run validate</code>
+            <code style="color: var(--ubits-accent-brand-static-inverted); font-size: 13px; font-weight: 600;">npm run validate</code>
             <p style="color: var(--ubits-fg-1-medium); font-size: 12px; margin: 4px 0 0 0;">Validar código</p>
           </div>
           <div style="background: var(--ubits-bg-2); padding: 12px; border-radius: 8px; border: none;">
-            <code style="color: var(--ubits-accent-brand); font-size: 13px; font-weight: 600;">npm run watch</code>
+            <code style="color: var(--ubits-accent-brand-static-inverted); font-size: 13px; font-weight: 600;">npm run watch</code>
             <p style="color: var(--ubits-fg-1-medium); font-size: 12px; margin: 4px 0 0 0;">Auto-commit y validación</p>
           </div>
           <div style="background: var(--ubits-bg-2); padding: 12px; border-radius: 8px; border: none;">
-            <code style="color: var(--ubits-accent-brand); font-size: 13px; font-weight: 600;">npm run dev</code>
+            <code style="color: var(--ubits-accent-brand-static-inverted); font-size: 13px; font-weight: 600;">npm run dev</code>
             <p style="color: var(--ubits-fg-1-medium); font-size: 12px; margin: 4px 0 0 0;">Servidor de desarrollo</p>
           </div>
           <div style="background: var(--ubits-bg-2); padding: 12px; border-radius: 8px; border: none;">
-            <code style="color: var(--ubits-accent-brand); font-size: 13px; font-weight: 600;">npm run integrate:addons</code>
+            <code style="color: var(--ubits-accent-brand-static-inverted); font-size: 13px; font-weight: 600;">npm run integrate:addons</code>
             <p style="color: var(--ubits-fg-1-medium); font-size: 12px; margin: 4px 0 0 0;">Integrar add-ons</p>
           </div>
           <div style="background: var(--ubits-bg-2); padding: 12px; border-radius: 8px; border: none;">
-            <code style="color: var(--ubits-accent-brand); font-size: 13px; font-weight: 600;">npm run deploy</code>
+            <code style="color: var(--ubits-accent-brand-static-inverted); font-size: 13px; font-weight: 600;">npm run deploy</code>
             <p style="color: var(--ubits-fg-1-medium); font-size: 12px; margin: 4px 0 0 0;">Desplegar proyecto</p>
           </div>
         </div>
@@ -1078,16 +1078,16 @@ npm run dev</code></pre>
       <div class="kcard" style="background: var(--ubits-bg-1); border: none; border-radius: 12px; padding: 24px;">
         <h3 class="ubits-heading-h3" style="color: var(--ubits-fg-1-high); margin: 0 0 16px 0; font-size: 18px; font-weight: 600;">📚 Documentación</h3>
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px;">
-          <a href="#" style="background: var(--ubits-bg-2); padding: 12px; border-radius: 8px; border: none; text-decoration: none; color: var(--ubits-accent-brand); font-size: 13px; font-weight: 600; transition: background 0.2s;" onmouseover="this.style.background='var(--ubits-bg-active)'" onmouseout="this.style.background='var(--ubits-bg-2)'">
+          <a href="#" style="background: var(--ubits-bg-2); padding: 12px; border-radius: 8px; border: none; text-decoration: none; color: var(--ubits-accent-brand-static-inverted); font-size: 13px; font-weight: 600; transition: background 0.2s;" onmouseover="this.style.background='var(--ubits-bg-active)'" onmouseout="this.style.background='var(--ubits-bg-2)'">
             📖 Guía Completa (GUIA-COMPLETA.md)
           </a>
-          <a href="#" style="background: var(--ubits-bg-2); padding: 12px; border-radius: 8px; border: none; text-decoration: none; color: var(--ubits-accent-brand); font-size: 13px; font-weight: 600; transition: background 0.2s;" onmouseover="this.style.background='var(--ubits-bg-active)'" onmouseout="this.style.background='var(--ubits-bg-2)'">
+          <a href="#" style="background: var(--ubits-bg-2); padding: 12px; border-radius: 8px; border: none; text-decoration: none; color: var(--ubits-accent-brand-static-inverted); font-size: 13px; font-weight: 600; transition: background 0.2s;" onmouseover="this.style.background='var(--ubits-bg-active)'" onmouseout="this.style.background='var(--ubits-bg-2)'">
             🎯 Prompt Inicial (PROMPT-INICIAL.md)
           </a>
-          <a href="#" style="background: var(--ubits-bg-2); padding: 12px; border-radius: 8px; border: none; text-decoration: none; color: var(--ubits-accent-brand); font-size: 13px; font-weight: 600; transition: background 0.2s;" onmouseover="this.style.background='var(--ubits-bg-active)'" onmouseout="this.style.background='var(--ubits-bg-2)'">
+          <a href="#" style="background: var(--ubits-bg-2); padding: 12px; border-radius: 8px; border: none; text-decoration: none; color: var(--ubits-accent-brand-static-inverted); font-size: 13px; font-weight: 600; transition: background 0.2s;" onmouseover="this.style.background='var(--ubits-bg-active)'" onmouseout="this.style.background='var(--ubits-bg-2)'">
             🛡️ Validación (.ubits/AUTO-VALIDATION.md)
           </a>
-          <a href="#" style="background: var(--ubits-bg-2); padding: 12px; border-radius: 8px; border: none; text-decoration: none; color: var(--ubits-accent-brand); font-size: 13px; font-weight: 600; transition: background 0.2s;" onmouseover="this.style.background='var(--ubits-bg-active)'" onmouseout="this.style.background='var(--ubits-bg-2)'">
+          <a href="#" style="background: var(--ubits-bg-2); padding: 12px; border-radius: 8px; border: none; text-decoration: none; color: var(--ubits-accent-brand-static-inverted); font-size: 13px; font-weight: 600; transition: background 0.2s;" onmouseover="this.style.background='var(--ubits-bg-active)'" onmouseout="this.style.background='var(--ubits-bg-2)'">
             🏗️ Arquitectura (docs/ARQUITECTURA-TEMPLATE.md)
           </a>
         </div>
@@ -1860,49 +1860,49 @@ npm run dev</code></pre>
                 <div class="row">
                   <div class="token-name copyable" data-token="--ubits-spacing-none" onclick="copyToken(this)">--ubits-spacing-none</div>
                   <div class="swatch" style="background: var(--ubits-bg-2); display: flex; align-items: center; justify-content: flex-start; padding-left: 8px; position: relative;">
-                    <div style="width: 0px; height: 20px; background: var(--ubits-accent-brand); border-radius: 2px;"></div>
+                    <div style="width: 0px; height: 20px; background: var(--ubits-accent-brand-static-inverted); border-radius: 2px;"></div>
                     <span style="color: var(--ubits-fg-2-medium); font-size: var(--font-body-xs-size); margin-left: 8px;">0</span>
                   </div>
                 </div>
                 <div class="row">
                   <div class="token-name copyable" data-token="--ubits-spacing-xs" onclick="copyToken(this)">--ubits-spacing-xs</div>
                   <div class="swatch" style="background: var(--ubits-bg-2); display: flex; align-items: center; justify-content: flex-start; padding-left: 8px; position: relative;">
-                    <div style="width: 4px; height: 20px; background: var(--ubits-accent-brand); border-radius: 2px;"></div>
+                    <div style="width: 4px; height: 20px; background: var(--ubits-accent-brand-static-inverted); border-radius: 2px;"></div>
                     <span style="color: var(--ubits-fg-2-medium); font-size: var(--font-body-xs-size); margin-left: 8px;">4px</span>
                   </div>
                 </div>
                 <div class="row">
                   <div class="token-name copyable" data-token="--ubits-spacing-sm" onclick="copyToken(this)">--ubits-spacing-sm</div>
                   <div class="swatch" style="background: var(--ubits-bg-2); display: flex; align-items: center; justify-content: flex-start; padding-left: 8px; position: relative;">
-                    <div style="width: 8px; height: 20px; background: var(--ubits-accent-brand); border-radius: 2px;"></div>
+                    <div style="width: 8px; height: 20px; background: var(--ubits-accent-brand-static-inverted); border-radius: 2px;"></div>
                     <span style="color: var(--ubits-fg-2-medium); font-size: var(--font-body-xs-size); margin-left: 8px;">8px</span>
                   </div>
                 </div>
                 <div class="row">
                   <div class="token-name copyable" data-token="--ubits-spacing-md" onclick="copyToken(this)">--ubits-spacing-md</div>
                   <div class="swatch" style="background: var(--ubits-bg-2); display: flex; align-items: center; justify-content: flex-start; padding-left: 8px; position: relative;">
-                    <div style="width: 12px; height: 20px; background: var(--ubits-accent-brand); border-radius: 2px;"></div>
+                    <div style="width: 12px; height: 20px; background: var(--ubits-accent-brand-static-inverted); border-radius: 2px;"></div>
                     <span style="color: var(--ubits-fg-2-medium); font-size: var(--font-body-xs-size); margin-left: 8px;">12px</span>
                   </div>
                 </div>
                 <div class="row">
                   <div class="token-name copyable" data-token="--ubits-spacing-lg" onclick="copyToken(this)">--ubits-spacing-lg</div>
                   <div class="swatch" style="background: var(--ubits-bg-2); display: flex; align-items: center; justify-content: flex-start; padding-left: 8px; position: relative;">
-                    <div style="width: 16px; height: 20px; background: var(--ubits-accent-brand); border-radius: 2px;"></div>
+                    <div style="width: 16px; height: 20px; background: var(--ubits-accent-brand-static-inverted); border-radius: 2px;"></div>
                     <span style="color: var(--ubits-fg-2-medium); font-size: var(--font-body-xs-size); margin-left: 8px;">16px</span>
                   </div>
                 </div>
                 <div class="row">
                   <div class="token-name copyable" data-token="--ubits-spacing-xl" onclick="copyToken(this)">--ubits-spacing-xl</div>
                   <div class="swatch" style="background: var(--ubits-bg-2); display: flex; align-items: center; justify-content: flex-start; padding-left: 8px; position: relative;">
-                    <div style="width: 20px; height: 20px; background: var(--ubits-accent-brand); border-radius: 2px;"></div>
+                    <div style="width: 20px; height: 20px; background: var(--ubits-accent-brand-static-inverted); border-radius: 2px;"></div>
                     <span style="color: var(--ubits-fg-2-medium); font-size: var(--font-body-xs-size); margin-left: 8px;">20px</span>
                   </div>
                 </div>
                 <div class="row">
                   <div class="token-name copyable" data-token="--ubits-spacing-2xl" onclick="copyToken(this)">--ubits-spacing-2xl</div>
                   <div class="swatch" style="background: var(--ubits-bg-2); display: flex; align-items: center; justify-content: flex-start; padding-left: 8px; position: relative;">
-                    <div style="width: 24px; height: 20px; background: var(--ubits-accent-brand); border-radius: 2px;"></div>
+                    <div style="width: 24px; height: 20px; background: var(--ubits-accent-brand-static-inverted); border-radius: 2px;"></div>
                     <span style="color: var(--ubits-fg-2-medium); font-size: var(--font-body-xs-size); margin-left: 8px;">24px</span>
                   </div>
                 </div>
@@ -1918,28 +1918,28 @@ npm run dev</code></pre>
                 <div class="row">
                   <div class="token-name copyable" data-token="--ubits-spacing-3xl" onclick="copyToken(this)">--ubits-spacing-3xl</div>
                   <div class="swatch" style="background: var(--ubits-bg-2); display: flex; align-items: center; justify-content: flex-start; padding-left: 8px; position: relative;">
-                    <div style="width: calc(28px * 0.8); height: 20px; background: var(--ubits-accent-brand); border-radius: 2px; max-width: 60px;"></div>
+                    <div style="width: calc(28px * 0.8); height: 20px; background: var(--ubits-accent-brand-static-inverted); border-radius: 2px; max-width: 60px;"></div>
                     <span style="color: var(--ubits-fg-2-medium); font-size: var(--font-body-xs-size); margin-left: 8px;">28px</span>
                   </div>
                 </div>
                 <div class="row">
                   <div class="token-name copyable" data-token="--ubits-spacing-4xl" onclick="copyToken(this)">--ubits-spacing-4xl</div>
                   <div class="swatch" style="background: var(--ubits-bg-2); display: flex; align-items: center; justify-content: flex-start; padding-left: 8px; position: relative;">
-                    <div style="width: calc(32px * 0.8); height: 20px; background: var(--ubits-accent-brand); border-radius: 2px; max-width: 60px;"></div>
+                    <div style="width: calc(32px * 0.8); height: 20px; background: var(--ubits-accent-brand-static-inverted); border-radius: 2px; max-width: 60px;"></div>
                     <span style="color: var(--ubits-fg-2-medium); font-size: var(--font-body-xs-size); margin-left: 8px;">32px</span>
                   </div>
                 </div>
                 <div class="row">
                   <div class="token-name copyable" data-token="--ubits-spacing-5xl" onclick="copyToken(this)">--ubits-spacing-5xl</div>
                   <div class="swatch" style="background: var(--ubits-bg-2); display: flex; align-items: center; justify-content: flex-start; padding-left: 8px; position: relative;">
-                    <div style="width: calc(36px * 0.8); height: 20px; background: var(--ubits-accent-brand); border-radius: 2px; max-width: 60px;"></div>
+                    <div style="width: calc(36px * 0.8); height: 20px; background: var(--ubits-accent-brand-static-inverted); border-radius: 2px; max-width: 60px;"></div>
                     <span style="color: var(--ubits-fg-2-medium); font-size: var(--font-body-xs-size); margin-left: 8px;">36px</span>
                   </div>
                 </div>
                 <div class="row">
                   <div class="token-name copyable" data-token="--ubits-spacing-6xl" onclick="copyToken(this)">--ubits-spacing-6xl</div>
                   <div class="swatch" style="background: var(--ubits-bg-2); display: flex; align-items: center; justify-content: flex-start; padding-left: 8px; position: relative;">
-                    <div style="width: calc(40px * 0.8); height: 20px; background: var(--ubits-accent-brand); border-radius: 2px; max-width: 60px;"></div>
+                    <div style="width: calc(40px * 0.8); height: 20px; background: var(--ubits-accent-brand-static-inverted); border-radius: 2px; max-width: 60px;"></div>
                     <span style="color: var(--ubits-fg-2-medium); font-size: var(--font-body-xs-size); margin-left: 8px;">40px</span>
                   </div>
                 </div>
@@ -1955,91 +1955,91 @@ npm run dev</code></pre>
                 <div class="row">
                   <div class="token-name copyable" data-token="--ubits-spacing-7" onclick="copyToken(this)">--ubits-spacing-7</div>
                   <div class="swatch" style="background: var(--ubits-bg-2); display: flex; align-items: center; justify-content: flex-start; padding-left: 8px; position: relative;">
-                    <div style="width: calc(28px * 0.5); height: 20px; background: var(--ubits-accent-brand); border-radius: 2px; max-width: 80px;"></div>
+                    <div style="width: calc(28px * 0.5); height: 20px; background: var(--ubits-accent-brand-static-inverted); border-radius: 2px; max-width: 80px;"></div>
                     <span style="color: var(--ubits-fg-2-medium); font-size: var(--font-body-xs-size); margin-left: 8px;">28px</span>
                   </div>
                 </div>
                 <div class="row">
                   <div class="token-name copyable" data-token="--ubits-spacing-8" onclick="copyToken(this)">--ubits-spacing-8</div>
                   <div class="swatch" style="background: var(--ubits-bg-2); display: flex; align-items: center; justify-content: flex-start; padding-left: 8px; position: relative;">
-                    <div style="width: calc(32px * 0.5); height: 20px; background: var(--ubits-accent-brand); border-radius: 2px; max-width: 80px;"></div>
+                    <div style="width: calc(32px * 0.5); height: 20px; background: var(--ubits-accent-brand-static-inverted); border-radius: 2px; max-width: 80px;"></div>
                     <span style="color: var(--ubits-fg-2-medium); font-size: var(--font-body-xs-size); margin-left: 8px;">32px</span>
                   </div>
                 </div>
                 <div class="row">
                   <div class="token-name copyable" data-token="--ubits-spacing-10" onclick="copyToken(this)">--ubits-spacing-10</div>
                   <div class="swatch" style="background: var(--ubits-bg-2); display: flex; align-items: center; justify-content: flex-start; padding-left: 8px; position: relative;">
-                    <div style="width: calc(40px * 0.5); height: 20px; background: var(--ubits-accent-brand); border-radius: 2px; max-width: 80px;"></div>
+                    <div style="width: calc(40px * 0.5); height: 20px; background: var(--ubits-accent-brand-static-inverted); border-radius: 2px; max-width: 80px;"></div>
                     <span style="color: var(--ubits-fg-2-medium); font-size: var(--font-body-xs-size); margin-left: 8px;">40px</span>
                   </div>
                 </div>
                 <div class="row">
                   <div class="token-name copyable" data-token="--ubits-spacing-12" onclick="copyToken(this)">--ubits-spacing-12</div>
                   <div class="swatch" style="background: var(--ubits-bg-2); display: flex; align-items: center; justify-content: flex-start; padding-left: 8px; position: relative;">
-                    <div style="width: calc(48px * 0.5); height: 20px; background: var(--ubits-accent-brand); border-radius: 2px; max-width: 80px;"></div>
+                    <div style="width: calc(48px * 0.5); height: 20px; background: var(--ubits-accent-brand-static-inverted); border-radius: 2px; max-width: 80px;"></div>
                     <span style="color: var(--ubits-fg-2-medium); font-size: var(--font-body-xs-size); margin-left: 8px;">48px</span>
                   </div>
                 </div>
                 <div class="row">
                   <div class="token-name copyable" data-token="--ubits-spacing-16" onclick="copyToken(this)">--ubits-spacing-16</div>
                   <div class="swatch" style="background: var(--ubits-bg-2); display: flex; align-items: center; justify-content: flex-start; padding-left: 8px; position: relative;">
-                    <div style="width: calc(64px * 0.5); height: 20px; background: var(--ubits-accent-brand); border-radius: 2px; max-width: 80px;"></div>
+                    <div style="width: calc(64px * 0.5); height: 20px; background: var(--ubits-accent-brand-static-inverted); border-radius: 2px; max-width: 80px;"></div>
                     <span style="color: var(--ubits-fg-2-medium); font-size: var(--font-body-xs-size); margin-left: 8px;">64px</span>
                   </div>
                 </div>
                 <div class="row">
                   <div class="token-name copyable" data-token="--ubits-spacing-20" onclick="copyToken(this)">--ubits-spacing-20</div>
                   <div class="swatch" style="background: var(--ubits-bg-2); display: flex; align-items: center; justify-content: flex-start; padding-left: 8px; position: relative;">
-                    <div style="width: calc(80px * 0.5); height: 20px; background: var(--ubits-accent-brand); border-radius: 2px; max-width: 80px;"></div>
+                    <div style="width: calc(80px * 0.5); height: 20px; background: var(--ubits-accent-brand-static-inverted); border-radius: 2px; max-width: 80px;"></div>
                     <span style="color: var(--ubits-fg-2-medium); font-size: var(--font-body-xs-size); margin-left: 8px;">80px</span>
                   </div>
                 </div>
                 <div class="row">
                   <div class="token-name copyable" data-token="--ubits-spacing-24" onclick="copyToken(this)">--ubits-spacing-24</div>
                   <div class="swatch" style="background: var(--ubits-bg-2); display: flex; align-items: center; justify-content: flex-start; padding-left: 8px; position: relative;">
-                    <div style="width: calc(96px * 0.5); height: 20px; background: var(--ubits-accent-brand); border-radius: 2px; max-width: 80px;"></div>
+                    <div style="width: calc(96px * 0.5); height: 20px; background: var(--ubits-accent-brand-static-inverted); border-radius: 2px; max-width: 80px;"></div>
                     <span style="color: var(--ubits-fg-2-medium); font-size: var(--font-body-xs-size); margin-left: 8px;">96px</span>
                   </div>
                 </div>
                 <div class="row">
                   <div class="token-name copyable" data-token="--ubits-spacing-32" onclick="copyToken(this)">--ubits-spacing-32</div>
                   <div class="swatch" style="background: var(--ubits-bg-2); display: flex; align-items: center; justify-content: flex-start; padding-left: 8px; position: relative;">
-                    <div style="width: calc(128px * 0.5); height: 20px; background: var(--ubits-accent-brand); border-radius: 2px; max-width: 80px;"></div>
+                    <div style="width: calc(128px * 0.5); height: 20px; background: var(--ubits-accent-brand-static-inverted); border-radius: 2px; max-width: 80px;"></div>
                     <span style="color: var(--ubits-fg-2-medium); font-size: var(--font-body-xs-size); margin-left: 8px;">128px</span>
                   </div>
                 </div>
                 <div class="row">
                   <div class="token-name copyable" data-token="--ubits-spacing-40" onclick="copyToken(this)">--ubits-spacing-40</div>
                   <div class="swatch" style="background: var(--ubits-bg-2); display: flex; align-items: center; justify-content: flex-start; padding-left: 8px; position: relative;">
-                    <div style="width: calc(160px * 0.5); height: 20px; background: var(--ubits-accent-brand); border-radius: 2px; max-width: 80px;"></div>
+                    <div style="width: calc(160px * 0.5); height: 20px; background: var(--ubits-accent-brand-static-inverted); border-radius: 2px; max-width: 80px;"></div>
                     <span style="color: var(--ubits-fg-2-medium); font-size: var(--font-body-xs-size); margin-left: 8px;">160px</span>
                   </div>
                 </div>
                 <div class="row">
                   <div class="token-name copyable" data-token="--ubits-spacing-48" onclick="copyToken(this)">--ubits-spacing-48</div>
                   <div class="swatch" style="background: var(--ubits-bg-2); display: flex; align-items: center; justify-content: flex-start; padding-left: 8px; position: relative;">
-                    <div style="width: calc(192px * 0.5); height: 20px; background: var(--ubits-accent-brand); border-radius: 2px; max-width: 80px;"></div>
+                    <div style="width: calc(192px * 0.5); height: 20px; background: var(--ubits-accent-brand-static-inverted); border-radius: 2px; max-width: 80px;"></div>
                     <span style="color: var(--ubits-fg-2-medium); font-size: var(--font-body-xs-size); margin-left: 8px;">192px</span>
                   </div>
                 </div>
                 <div class="row">
                   <div class="token-name copyable" data-token="--ubits-spacing-64" onclick="copyToken(this)">--ubits-spacing-64</div>
                   <div class="swatch" style="background: var(--ubits-bg-2); display: flex; align-items: center; justify-content: flex-start; padding-left: 8px; position: relative;">
-                    <div style="width: calc(256px * 0.5); height: 20px; background: var(--ubits-accent-brand); border-radius: 2px; max-width: 80px;"></div>
+                    <div style="width: calc(256px * 0.5); height: 20px; background: var(--ubits-accent-brand-static-inverted); border-radius: 2px; max-width: 80px;"></div>
                     <span style="color: var(--ubits-fg-2-medium); font-size: var(--font-body-xs-size); margin-left: 8px;">256px</span>
                   </div>
                 </div>
                 <div class="row">
                   <div class="token-name copyable" data-token="--ubits-spacing-80" onclick="copyToken(this)">--ubits-spacing-80</div>
                   <div class="swatch" style="background: var(--ubits-bg-2); display: flex; align-items: center; justify-content: flex-start; padding-left: 8px; position: relative;">
-                    <div style="width: calc(320px * 0.5); height: 20px; background: var(--ubits-accent-brand); border-radius: 2px; max-width: 80px;"></div>
+                    <div style="width: calc(320px * 0.5); height: 20px; background: var(--ubits-accent-brand-static-inverted); border-radius: 2px; max-width: 80px;"></div>
                     <span style="color: var(--ubits-fg-2-medium); font-size: var(--font-body-xs-size); margin-left: 8px;">320px</span>
                   </div>
                 </div>
                 <div class="row">
                   <div class="token-name copyable" data-token="--ubits-spacing-96" onclick="copyToken(this)">--ubits-spacing-96</div>
                   <div class="swatch" style="background: var(--ubits-bg-2); display: flex; align-items: center; justify-content: flex-start; padding-left: 8px; position: relative;">
-                    <div style="width: calc(384px * 0.5); height: 20px; background: var(--ubits-accent-brand); border-radius: 2px; max-width: 80px;"></div>
+                    <div style="width: calc(384px * 0.5); height: 20px; background: var(--ubits-accent-brand-static-inverted); border-radius: 2px; max-width: 80px;"></div>
                     <span style="color: var(--ubits-fg-2-medium); font-size: var(--font-body-xs-size); margin-left: 8px;">384px</span>
                   </div>
                 </div>
@@ -2055,49 +2055,49 @@ npm run dev</code></pre>
                 <div class="row">
                   <div class="token-name copyable" data-token="--ubits-border-radius-none" onclick="copyToken(this)">--ubits-border-radius-none</div>
                   <div class="swatch" style="background: var(--ubits-bg-2); display: flex; align-items: center; justify-content: center; padding: 8px;">
-                    <div style="width: 40px; height: 40px; background: var(--ubits-accent-brand); border-radius: 0;"></div>
+                    <div style="width: 40px; height: 40px; background: var(--ubits-accent-brand-static-inverted); border-radius: 0;"></div>
                     <span style="color: var(--ubits-fg-2-medium); font-size: var(--font-body-xs-size); margin-left: 8px;">0</span>
                   </div>
                 </div>
                 <div class="row">
                   <div class="token-name copyable" data-token="--ubits-border-radius-xs" onclick="copyToken(this)">--ubits-border-radius-xs</div>
                   <div class="swatch" style="background: var(--ubits-bg-2); display: flex; align-items: center; justify-content: center; padding: 8px;">
-                    <div style="width: 40px; height: 40px; background: var(--ubits-accent-brand); border-radius: 4px;"></div>
+                    <div style="width: 40px; height: 40px; background: var(--ubits-accent-brand-static-inverted); border-radius: 4px;"></div>
                     <span style="color: var(--ubits-fg-2-medium); font-size: var(--font-body-xs-size); margin-left: 8px;">4px</span>
                   </div>
                 </div>
                 <div class="row">
                   <div class="token-name copyable" data-token="--ubits-border-radius-sm" onclick="copyToken(this)">--ubits-border-radius-sm</div>
                   <div class="swatch" style="background: var(--ubits-bg-2); display: flex; align-items: center; justify-content: center; padding: 8px;">
-                    <div style="width: 40px; height: 40px; background: var(--ubits-accent-brand); border-radius: 8px;"></div>
+                    <div style="width: 40px; height: 40px; background: var(--ubits-accent-brand-static-inverted); border-radius: 8px;"></div>
                     <span style="color: var(--ubits-fg-2-medium); font-size: var(--font-body-xs-size); margin-left: 8px;">8px</span>
                   </div>
                 </div>
                 <div class="row">
                   <div class="token-name copyable" data-token="--ubits-border-radius-md" onclick="copyToken(this)">--ubits-border-radius-md</div>
                   <div class="swatch" style="background: var(--ubits-bg-2); display: flex; align-items: center; justify-content: center; padding: 8px;">
-                    <div style="width: 40px; height: 40px; background: var(--ubits-accent-brand); border-radius: 12px;"></div>
+                    <div style="width: 40px; height: 40px; background: var(--ubits-accent-brand-static-inverted); border-radius: 12px;"></div>
                     <span style="color: var(--ubits-fg-2-medium); font-size: var(--font-body-xs-size); margin-left: 8px;">12px</span>
                   </div>
                 </div>
                 <div class="row">
                   <div class="token-name copyable" data-token="--ubits-border-radius-lg" onclick="copyToken(this)">--ubits-border-radius-lg</div>
                   <div class="swatch" style="background: var(--ubits-bg-2); display: flex; align-items: center; justify-content: center; padding: 8px;">
-                    <div style="width: 40px; height: 40px; background: var(--ubits-accent-brand); border-radius: 16px;"></div>
+                    <div style="width: 40px; height: 40px; background: var(--ubits-accent-brand-static-inverted); border-radius: 16px;"></div>
                     <span style="color: var(--ubits-fg-2-medium); font-size: var(--font-body-xs-size); margin-left: 8px;">16px</span>
                   </div>
                 </div>
                 <div class="row">
                   <div class="token-name copyable" data-token="--ubits-border-radius-xl" onclick="copyToken(this)">--ubits-border-radius-xl</div>
                   <div class="swatch" style="background: var(--ubits-bg-2); display: flex; align-items: center; justify-content: center; padding: 8px;">
-                    <div style="width: 40px; height: 40px; background: var(--ubits-accent-brand); border-radius: 20px;"></div>
+                    <div style="width: 40px; height: 40px; background: var(--ubits-accent-brand-static-inverted); border-radius: 20px;"></div>
                     <span style="color: var(--ubits-fg-2-medium); font-size: var(--font-body-xs-size); margin-left: 8px;">20px</span>
                   </div>
                 </div>
                 <div class="row">
                   <div class="token-name copyable" data-token="--ubits-border-radius-full" onclick="copyToken(this)">--ubits-border-radius-full</div>
                   <div class="swatch" style="background: var(--ubits-bg-2); display: flex; align-items: center; justify-content: center; padding: 8px;">
-                    <div style="width: 40px; height: 40px; background: var(--ubits-accent-brand); border-radius: 1000px;"></div>
+                    <div style="width: 40px; height: 40px; background: var(--ubits-accent-brand-static-inverted); border-radius: 1000px;"></div>
                     <span style="color: var(--ubits-fg-2-medium); font-size: var(--font-body-xs-size); margin-left: 8px;">1000px</span>
                   </div>
                 </div>
@@ -2403,7 +2403,7 @@ npm run dev</code></pre>
               <div style="display: grid; gap: 12px;">
                 <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; border: none;">
                   <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
-                    <div style="width: 4px; height: 32px; background: var(--ubits-accent-brand); border-radius: 2px;"></div>
+                    <div style="width: 4px; height: 32px; background: var(--ubits-accent-brand-static-inverted); border-radius: 2px;"></div>
                     <div style="flex: 1;">
                       <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
                         <strong style="color: var(--ubits-fg-2-high); font-size: var(--font-body-md-size); font-weight: var(--weight-semibold);">Mobile</strong>
@@ -2418,7 +2418,7 @@ npm run dev</code></pre>
 
                 <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; border: none;">
                   <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
-                    <div style="width: 8px; height: 32px; background: var(--ubits-accent-brand); border-radius: 2px;"></div>
+                    <div style="width: 8px; height: 32px; background: var(--ubits-accent-brand-static-inverted); border-radius: 2px;"></div>
                     <div style="flex: 1;">
                       <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
                         <strong style="color: var(--ubits-fg-2-high); font-size: var(--font-body-md-size); font-weight: var(--weight-semibold);">Tablet</strong>
@@ -2433,7 +2433,7 @@ npm run dev</code></pre>
 
                 <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; border: none;">
                   <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
-                    <div style="width: 12px; height: 32px; background: var(--ubits-accent-brand); border-radius: 2px;"></div>
+                    <div style="width: 12px; height: 32px; background: var(--ubits-accent-brand-static-inverted); border-radius: 2px;"></div>
                     <div style="flex: 1;">
                       <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
                         <strong style="color: var(--ubits-fg-2-high); font-size: var(--font-body-md-size); font-weight: var(--weight-semibold);">Desktop</strong>
@@ -2448,7 +2448,7 @@ npm run dev</code></pre>
 
                 <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; border: none;">
                   <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
-                    <div style="width: 16px; height: 32px; background: var(--ubits-accent-brand); border-radius: 2px;"></div>
+                    <div style="width: 16px; height: 32px; background: var(--ubits-accent-brand-static-inverted); border-radius: 2px;"></div>
                     <div style="flex: 1;">
                       <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
                         <strong style="color: var(--ubits-fg-2-high); font-size: var(--font-body-md-size); font-weight: var(--weight-semibold);">Wide</strong>
@@ -2621,10 +2621,10 @@ npm run dev</code></pre>
       const html = document.documentElement;
 
       const TOKENS = [
-        '--ubits-accent-brand',
-        '--ubits-accent-brand-inverted',
-        '--ubits-accent-brand-static',
         '--ubits-accent-brand-static-inverted',
+        '--ubits-accent-brand-static-inverted-inverted',
+        '--ubits-accent-brand-static-inverted-static',
+        '--ubits-accent-brand-static-inverted-static-inverted',
         '--ubits-accent-success',
         '--ubits-logo',
         '--ubits-logo-inverted',
@@ -4405,7 +4405,7 @@ Reglas Importantes:
                     const code = `${style} ${icon.className}`;
                     return `
                       <div class="icon-card copyable" data-icon="${icon.name}" data-code="${code}" style="border: none; border-radius: 8px; padding: 16px; text-align: center; cursor: pointer; transition: all 0.2s ease; background: var(--ubits-bg-1);">
-                        <div style="font-size: 24px; margin-bottom: 8px; color: var(--ubits-accent-brand);">
+                        <div style="font-size: 24px; margin-bottom: 8px; color: var(--ubits-accent-brand-static-inverted);">
                           <i class="${code}"></i>
                         </div>
                         <div style="font-weight: 500; font-size: 12px; color: var(--ubits-fg-1-high); word-break: break-word; line-height: 1.3;">
@@ -5287,7 +5287,7 @@ Reglas Importantes:
                           <!-- CONTROLES ARRIBA -->
                           <div style="margin-bottom: 24px;">
                             <h4 style="margin: 0 0 20px 0; color: var(--ubits-fg-1-high); font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
-                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand);"></i>
+                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand-static-inverted);"></i>
                               Controles
                             </h4>
                             
@@ -5400,7 +5400,7 @@ Reglas Importantes:
                           <!-- CONTROLES ARRIBA -->
                           <div style="margin-bottom: 24px;">
                             <h4 style="margin: 0 0 20px 0; color: var(--ubits-fg-1-high); font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
-                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand);"></i>
+                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand-static-inverted);"></i>
                               Controles
                             </h4>
                             
@@ -5474,7 +5474,7 @@ Reglas Importantes:
                           <!-- CONTROLES ARRIBA -->
                           <div style="margin-bottom: 24px;">
                             <h4 style="margin: 0 0 20px 0; color: var(--ubits-fg-1-high); font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
-                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand);"></i>
+                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand-static-inverted);"></i>
                               Controles
                             </h4>
                             
@@ -5567,7 +5567,7 @@ Reglas Importantes:
                           <!-- CONTROLES ARRIBA -->
                           <div style="margin-bottom: 24px;">
                             <h4 style="margin: 0 0 20px 0; color: var(--ubits-fg-1-high); font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
-                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand);"></i>
+                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand-static-inverted);"></i>
                               Controles
                             </h4>
                             
@@ -5650,7 +5650,7 @@ Reglas Importantes:
                           <!-- CONTROLES ARRIBA -->
                           <div style="margin-bottom: 24px;">
                             <h4 style="margin: 0 0 20px 0; color: var(--ubits-fg-1-high); font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
-                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand);"></i>
+                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand-static-inverted);"></i>
                               Controles
                             </h4>
                             
@@ -5714,7 +5714,7 @@ Reglas Importantes:
                           <!-- CONTROLES ARRIBA -->
                           <div style="margin-bottom: 24px;">
                             <h4 style="margin: 0 0 20px 0; color: var(--ubits-fg-1-high); font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
-                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand);"></i>
+                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand-static-inverted);"></i>
                               Controles
                             </h4>
                             
@@ -5778,7 +5778,7 @@ Reglas Importantes:
                           <!-- CONTROLES ARRIBA -->
                           <div style="margin-bottom: 24px;">
                             <h4 style="margin: 0 0 20px 0; color: var(--ubits-fg-1-high); font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
-                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand);"></i>
+                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand-static-inverted);"></i>
                               Controles
                             </h4>
                             
@@ -5842,7 +5842,7 @@ Reglas Importantes:
                           <!-- CONTROLES ARRIBA -->
                           <div style="margin-bottom: 24px;">
                             <h4 style="margin: 0 0 20px 0; color: var(--ubits-fg-1-high); font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
-                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand);"></i>
+                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand-static-inverted);"></i>
                               Controles
                             </h4>
                             
@@ -5912,7 +5912,7 @@ Reglas Importantes:
                           <!-- CONTROLES ARRIBA -->
                           <div style="margin-bottom: 24px;">
                             <h4 style="margin: 0 0 20px 0; color: var(--ubits-fg-1-high); font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
-                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand);"></i>
+                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand-static-inverted);"></i>
                               Controles
                             </h4>
                             
@@ -6027,7 +6027,7 @@ Reglas Importantes:
                           <!-- CONTROLES ARRIBA -->
                           <div style="margin-bottom: 24px;">
                             <h4 style="margin: 0 0 20px 0; color: var(--ubits-fg-1-high); font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
-                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand);"></i>
+                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand-static-inverted);"></i>
                               Controles
                             </h4>
                             
@@ -6118,7 +6118,7 @@ Reglas Importantes:
                           <!-- CONTROLES ARRIBA -->
                           <div style="margin-bottom: 24px;">
                             <h4 style="margin: 0 0 20px 0; color: var(--ubits-fg-1-high); font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
-                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand);"></i>
+                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand-static-inverted);"></i>
                               Controles
                             </h4>
                             
@@ -6214,7 +6214,7 @@ Reglas Importantes:
                           <!-- CONTROLES ARRIBA -->
                           <div style="margin-bottom: 24px;">
                             <h4 style="margin: 0 0 20px 0; color: var(--ubits-fg-1-high); font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
-                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand);"></i>
+                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand-static-inverted);"></i>
                               Controles
                             </h4>
                             
@@ -6312,7 +6312,7 @@ Reglas Importantes:
                           <!-- CONTROLES ARRIBA -->
                           <div style="margin-bottom: 24px;">
                             <h4 style="margin: 0 0 20px 0; color: var(--ubits-fg-1-high); font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
-                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand);"></i>
+                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand-static-inverted);"></i>
                               Controles
                             </h4>
                             
@@ -6411,7 +6411,7 @@ Reglas Importantes:
                           <!-- CONTROLES ARRIBA -->
                           <div style="margin-bottom: 24px;">
                             <h4 style="margin: 0 0 20px 0; color: var(--ubits-fg-1-high); font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
-                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand);"></i>
+                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand-static-inverted);"></i>
                               Controles
                             </h4>
                             
@@ -6482,7 +6482,7 @@ Reglas Importantes:
                           <!-- CONTROLES ARRIBA -->
                           <div style="margin-bottom: 24px;">
                             <h4 style="margin: 0 0 20px 0; color: var(--ubits-fg-1-high); font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
-                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand);"></i>
+                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand-static-inverted);"></i>
                               Controles
                             </h4>
                             
@@ -6670,7 +6670,7 @@ Reglas Importantes:
                           <!-- CONTROLES ARRIBA -->
                           <div style="margin-bottom: 24px;">
                             <h4 style="margin: 0 0 20px 0; color: var(--ubits-fg-1-high); font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
-                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand);"></i>
+                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand-static-inverted);"></i>
                               Controles
                             </h4>
                             
@@ -6727,7 +6727,7 @@ Reglas Importantes:
                           <!-- CONTROLES ARRIBA -->
                           <div style="margin-bottom: 24px;">
                             <h4 style="margin: 0 0 20px 0; color: var(--ubits-fg-1-high); font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
-                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand);"></i>
+                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand-static-inverted);"></i>
                               Controles
                             </h4>
                             
@@ -6809,7 +6809,7 @@ Reglas Importantes:
                           <!-- CONTROLES ARRIBA -->
                           <div style="margin-bottom: 24px;">
                             <h4 style="margin: 0 0 20px 0; color: var(--ubits-fg-1-high); font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
-                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand);"></i>
+                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand-static-inverted);"></i>
                               Controles
                             </h4>
                             
@@ -6866,7 +6866,7 @@ Reglas Importantes:
                           <!-- CONTROLES ARRIBA -->
                           <div style="margin-bottom: 24px;">
                             <h4 style="margin: 0 0 20px 0; color: var(--ubits-fg-1-high); font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
-                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand);"></i>
+                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand-static-inverted);"></i>
                               Controles
                             </h4>
                             
@@ -7016,7 +7016,7 @@ Reglas Importantes:
                           <!-- CONTROLES ARRIBA -->
                           <div style="margin-bottom: 24px;">
                             <h4 style="margin: 0 0 20px 0; color: var(--ubits-fg-1-high); font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
-                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand);"></i>
+                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand-static-inverted);"></i>
                               Controles
                             </h4>
                             
@@ -7099,7 +7099,7 @@ Reglas Importantes:
                           <!-- CONTROLES ARRIBA -->
                           <div style="margin-bottom: 24px;">
                             <h4 style="margin: 0 0 20px 0; color: var(--ubits-fg-1-high); font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
-                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand);"></i>
+                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand-static-inverted);"></i>
                               Controles
                             </h4>
                             
@@ -7164,7 +7164,7 @@ Reglas Importantes:
                           <!-- CONTROLES ARRIBA -->
                           <div style="margin-bottom: 24px;">
                             <h4 style="margin: 0 0 20px 0; color: var(--ubits-fg-1-high); font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
-                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand);"></i>
+                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand-static-inverted);"></i>
                               Controles
                             </h4>
                             
@@ -7209,7 +7209,7 @@ Reglas Importantes:
                           <!-- CONTROLES ARRIBA -->
                           <div style="margin-bottom: 24px;">
                             <h4 style="margin: 0 0 20px 0; color: var(--ubits-fg-1-high); font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
-                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand);"></i>
+                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand-static-inverted);"></i>
                               Controles
                             </h4>
                             
@@ -7264,7 +7264,7 @@ Reglas Importantes:
                           <!-- CONTROLES ARRIBA -->
                           <div style="margin-bottom: 24px;">
                             <h4 style="margin: 0 0 20px 0; color: var(--ubits-fg-1-high); font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
-                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand);"></i>
+                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand-static-inverted);"></i>
                               Controles
                             </h4>
                             
@@ -7297,7 +7297,7 @@ Reglas Importantes:
                           <!-- CONTROLES ARRIBA -->
                           <div style="margin-bottom: 24px;">
                             <h4 style="margin: 0 0 20px 0; color: var(--ubits-fg-1-high); font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
-                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand);"></i>
+                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand-static-inverted);"></i>
                               Controles
                             </h4>
                             
@@ -7444,7 +7444,7 @@ Reglas Importantes:
                       <!-- INFORMACIÓN DEL COMPONENTE -->
                       <div style="margin-top: 32px; padding-top: 32px; border-top: 2px solid var(--ubits-border-1);">
                         <h4 style="margin: 0 0 24px 0; color: var(--ubits-fg-1-high); font-size: 18px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
-                          <i class="far fa-info-circle" style="color: var(--ubits-accent-brand);"></i>
+                          <i class="far fa-info-circle" style="color: var(--ubits-accent-brand-static-inverted);"></i>
                           Información del Componente
                         </h4>
                         
@@ -7458,7 +7458,7 @@ Reglas Importantes:
                               <div style="display: flex; flex-direction: column; gap: 8px;">
                                 ${Object.entries(component.files).map(([type, path]) => `
                                   <div style="display: flex; align-items: start; gap: 8px; padding: 10px; background: var(--ubits-bg-1); border-radius: 8px; border: none;">
-                                    <span style="font-size: 11px; font-weight: 600; color: var(--ubits-accent-brand); text-transform: uppercase; min-width: 50px;">${type}</span>
+                                    <span style="font-size: 11px; font-weight: 600; color: var(--ubits-accent-brand-static-inverted); text-transform: uppercase; min-width: 50px;">${type}</span>
                                     <code style="font-size: 13px; color: var(--ubits-fg-1-high); font-family: 'Monaco', 'Menlo', monospace; flex: 1; word-break: break-all;">${path}</code>
                                   </div>
                                 `).join('')}
@@ -7487,7 +7487,7 @@ Reglas Importantes:
                               <div style="display: flex; flex-direction: column; gap: 6px;">
                                 ${component.features.map(feature => `
                                   <div style="display: flex; align-items: start; gap: 8px; padding: 8px; background: var(--ubits-bg-1); border-radius: 6px; border: none;">
-                                    <i class="far fa-check-circle" style="font-size: 12px; color: var(--ubits-accent-brand); margin-top: 2px; flex-shrink: 0;"></i>
+                                    <i class="far fa-check-circle" style="font-size: 12px; color: var(--ubits-accent-brand-static-inverted); margin-top: 2px; flex-shrink: 0;"></i>
                                     <span style="font-size: 13px; color: var(--ubits-fg-1-high); line-height: 1.4;">${feature}</span>
                                   </div>
                                 `).join('')}
@@ -7791,7 +7791,7 @@ Reglas Importantes:
                 const originalText = componentEl.dataset.originalName || componentNameText;
                 if (originalText) {
                   const regex = new RegExp(`(${searchLower.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
-                  componentName.innerHTML = originalText.replace(regex, '<mark style="background: var(--ubits-accent-brand); color: white; padding: 2px 4px; border-radius: 4px;">$1</mark>');
+                  componentName.innerHTML = originalText.replace(regex, '<mark style="background: var(--ubits-accent-brand-static-inverted); color: white; padding: 2px 4px; border-radius: 4px;">$1</mark>');
                 }
               }
             } else {
@@ -8614,9 +8614,9 @@ Reglas Importantes:
           'active': { bg: 'var(--ubits-feedback-success-bg, #e8f8e4)', text: 'var(--ubits-feedback-success-text, #223b16)', border: 'var(--ubits-feedback-success-border, #41c433)' },
           'not-fulfilled': { bg: 'var(--ubits-feedback-error-bg, #fff0ee)', text: 'var(--ubits-feedback-error-text, #65181e)', border: 'var(--ubits-feedback-error-border, #fd8a82)' },
           'denied': { bg: 'var(--ubits-feedback-error-bg, #fff0ee)', text: 'var(--ubits-feedback-error-text, #65181e)', border: 'var(--ubits-feedback-error-border, #fd8a82)' },
-          'draft': { bg: 'rgba(12, 91, 239, 0.15)', text: 'var(--ubits-feedback-info-text, #212f70)', border: 'var(--ubits-accent-brand, #0c5bef)' },
-          'in-progress': { bg: 'rgba(12, 91, 239, 0.15)', text: 'var(--ubits-feedback-info-text, #212f70)', border: 'var(--ubits-accent-brand, #0c5bef)' },
-          'syncing': { bg: 'rgba(12, 91, 239, 0.15)', text: 'var(--ubits-feedback-info-text, #212f70)', border: 'var(--ubits-accent-brand, #0c5bef)' },
+          'draft': { bg: 'rgba(12, 91, 239, 0.15)', text: 'var(--ubits-feedback-info-text, #212f70)', border: 'var(--ubits-accent-brand-static-inverted, #0c5bef)' },
+          'in-progress': { bg: 'rgba(12, 91, 239, 0.15)', text: 'var(--ubits-feedback-info-text, #212f70)', border: 'var(--ubits-accent-brand-static-inverted, #0c5bef)' },
+          'syncing': { bg: 'rgba(12, 91, 239, 0.15)', text: 'var(--ubits-feedback-info-text, #212f70)', border: 'var(--ubits-accent-brand-static-inverted, #0c5bef)' },
           'pending': { bg: 'var(--ubits-feedback-warning-bg, #fff1e0)', text: 'var(--ubits-feedback-warning-text, #4c2e15)', border: 'var(--ubits-feedback-warning-border, #ec9907)' },
           'pending-approval': { bg: 'var(--ubits-feedback-warning-bg, #fff1e0)', text: 'var(--ubits-feedback-warning-text, #4c2e15)', border: 'var(--ubits-feedback-warning-border, #ec9907)' },
           'not-started': { bg: 'var(--ubits-bg-2, #f3f3f4)', text: 'var(--ubits-fg-1-medium, #2b3543)', border: 'var(--ubits-border-1, #a8abb2)' },
@@ -8833,7 +8833,7 @@ Reglas Importantes:
         const chipElement = preview.querySelector('.ubits-chip');
         if (chipElement && state.state === 'focus') {
           // Aplicar estilos inline para mostrar el efecto Focus
-          chipElement.style.border = '2px solid var(--ubits-accent-brand, #5297F4)';
+          chipElement.style.border = '2px solid var(--ubits-accent-brand-static-inverted, #5297F4)';
           chipElement.style.boxShadow = '0px 0px 0px 4px rgba(82, 151, 244, 0.3)';
           chipElement.style.outline = 'none';
         } else if (chipElement) {
@@ -10702,10 +10702,10 @@ Reglas Importantes:
                 indicator: `${progressValue}%`
               });
             } catch (e) {
-              return `<div class="ubits-progress-bar" style="height: 16px;"><div style="width: ${progressValue}%; background: var(--ubits-accent-brand); height: 100%; border-radius: 1000px;"></div></div>`;
+              return `<div class="ubits-progress-bar" style="height: 16px;"><div style="width: ${progressValue}%; background: var(--ubits-accent-brand-static-inverted); height: 100%; border-radius: 1000px;"></div></div>`;
             }
           }
-          return `<div class="ubits-progress-bar" style="height: 16px;"><div style="width: ${progressValue}%; background: var(--ubits-accent-brand); height: 100%; border-radius: 1000px;"></div></div>`;
+          return `<div class="ubits-progress-bar" style="height: 16px;"><div style="width: ${progressValue}%; background: var(--ubits-accent-brand-static-inverted); height: 100%; border-radius: 1000px;"></div></div>`;
         }
         if (columnId === 'fecha') {
           // Renderizar fecha (formato simple)
@@ -10856,7 +10856,7 @@ Reglas Importantes:
         const colors = {
           green: 'var(--ubits-accent-green, #1e8d58)',
           red: 'var(--ubits-accent-red, #e63946)',
-          blue: 'var(--ubits-accent-brand, #0c5bef)',
+          blue: 'var(--ubits-accent-brand-static-inverted, #0c5bef)',
           orange: 'var(--ubits-feedback-warning-border, #ec9907)',
           gray: 'var(--ubits-fg-1-medium, #6b7280)'
         };
@@ -12683,7 +12683,7 @@ Reglas Importantes:
         let textColor = 'var(--ubits-fg-1-medium, #5c646f)';
         
         if (state === 'dragging') {
-          borderColor = 'var(--ubits-accent-brand, #0c5bef)';
+          borderColor = 'var(--ubits-accent-brand-static-inverted, #0c5bef)';
         } else if (state === 'error') {
           borderColor = 'var(--ubits-feedback-accent-error, #e9343c)';
         } else if (state === 'disabled') {
@@ -14441,15 +14441,15 @@ Reglas Importantes:
       const style = document.createElement('style');
       style.textContent = `
         .preview-control-btn.active {
-          background: var(--ubits-accent-brand) !important;
+          background: var(--ubits-accent-brand-static-inverted) !important;
           color: white !important;
-          border-color: var(--ubits-accent-brand) !important;
+          border-color: var(--ubits-accent-brand-static-inverted) !important;
         }
         .preview-control-btn.active span {
           color: white !important;
         }
         .switch input:checked + .slider {
-          background-color: var(--ubits-accent-brand) !important;
+          background-color: var(--ubits-accent-brand-static-inverted) !important;
         }
         .switch input:checked + .slider span {
           transform: translateX(20px) !important;
@@ -16123,7 +16123,7 @@ Reglas Importantes:
           <div class="course-card" data-progress="${state.progress}" data-status="${state.status}">
             <div class="course-thumbnail-wrapper">
               <div class="course-thumbnail">
-                <img src="${imagePath}" alt="${state.title}" class="course-image" onerror="this.onerror=null; this.style.display='none'; this.parentElement.style.background='linear-gradient(135deg, var(--ubits-accent-brand), var(--ubits-accent-brand-static))'; this.parentElement.innerHTML='<i class=\\'far fa-image\\' style=\\'font-size: 48px; color: var(--ubits-btn-primary-fg);\\'></i>';">
+                <img src="${imagePath}" alt="${state.title}" class="course-image" onerror="this.onerror=null; this.style.display='none'; this.parentElement.style.background='linear-gradient(135deg, var(--ubits-accent-brand-static-inverted), var(--ubits-accent-brand-static-inverted-static))'; this.parentElement.innerHTML='<i class=\\'far fa-image\\' style=\\'font-size: 48px; color: var(--ubits-btn-primary-fg);\\'></i>';">
               </div>
               <div class="course-progress-overlay">
                 <div class="progress-bar">

@@ -39,9 +39,9 @@ export async function ejemploDesdeCSS() {
   // Nota: En uso real, estos valores vendrían directamente de Storybook
   const tokensCSS = `
     :root {
-      --ubits-accent-brand: var(--ubits-accent-brand);
-      --ubits-button-primary-bg-default: var(--ubits-accent-brand);
-      --ubits-button-primary-hover: var(--ubits-accent-brand);
+      --ubits-accent-brand-static-inverted: var(--ubits-accent-brand-static-inverted);
+      --ubits-button-primary-bg-default: var(--ubits-accent-brand-static-inverted);
+      --ubits-button-primary-hover: var(--ubits-accent-brand-static-inverted);
       --ubits-bg-1: var(--ubits-bg-1);
       --ubits-fg-1-high: var(--ubits-fg-1-high);
     }
@@ -62,12 +62,12 @@ export async function ejemploDesdeJSON() {
   const tokensJSON = {
     light: {
       brand: {
-        'ubits-accent-brand': 'var(--ubits-accent-brand)',
+        'ubits-accent-brand': 'var(--ubits-accent-brand-static-inverted)',
         'ubits-accent-success': 'var(--ubits-accent-success)'
       },
       button: {
-        'ubits-button-primary-bg-default': 'var(--ubits-accent-brand)',
-        'ubits-button-primary-hover': 'var(--ubits-accent-brand)'
+        'ubits-button-primary-bg-default': 'var(--ubits-accent-brand-static-inverted)',
+        'ubits-button-primary-hover': 'var(--ubits-accent-brand-static-inverted)'
       },
       background: {
         'ubits-bg-1': 'var(--ubits-bg-1)',

@@ -38,7 +38,7 @@ function breakpointItem(breakpoint: typeof BREAKPOINTS[number]) {
                    breakpoint.name === 'Desktop' ? 12 : 16;
   bar.style.width = `${barWidth}px`;
   bar.style.height = '32px';
-  bar.style.background = 'var(--ubits-accent-brand, #2563eb)';
+  bar.style.background = 'var(--ubits-accent-brand-static-inverted, #2563eb)';
   bar.style.borderRadius = '2px';
   bar.style.flexShrink = '0';
   

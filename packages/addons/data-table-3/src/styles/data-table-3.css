@@ -267,18 +267,18 @@
 /* Estado active del botón terciario - igual que UBITS */
 .ubits-data-table-3__column-sort-button.ubits-button--tertiary.ubits-button--active {
     background: var(--ubits-button-active-bg, rgba(12, 91, 239, 0.15)) !important;
-    color: var(--ubits-accent-brand, #0c5bef) !important;
+    color: var(--ubits-accent-brand-static-inverted, #0c5bef) !important;
     border: 1px solid transparent !important;
 }
 
 .ubits-data-table-3__column-sort-button.ubits-button--tertiary.ubits-button--active:hover:not(:disabled):not(.ubits-button--loading) {
     background: var(--ubits-button-active-bg, rgba(12, 91, 239, 0.15)) !important;
-    color: var(--ubits-accent-brand, #0c5bef) !important;
+    color: var(--ubits-accent-brand-static-inverted, #0c5bef) !important;
     border: 1px solid transparent !important;
 }
 
 .ubits-data-table-3__column-sort-button.ubits-button--tertiary.ubits-button--active i {
-    color: var(--ubits-accent-brand, #0c5bef) !important;
+    color: var(--ubits-accent-brand-static-inverted, #0c5bef) !important;
 }
 
 .ubits-data-table-3__column-sort-button.ubits-button--tertiary:hover {
@@ -291,12 +291,12 @@
 }
 
 .ubits-data-table-3__column-sort-button.ubits-button--tertiary.ubits-button--active {
-    color: var(--ubits-accent-brand, #0c5bef) !important;
+    color: var(--ubits-accent-brand-static-inverted, #0c5bef) !important;
     background: var(--ubits-bg-active, rgba(12, 91, 239, 0.15)) !important;
 }
 
 .ubits-data-table-3__column-sort-button.ubits-button--tertiary.ubits-button--active i {
-    color: var(--ubits-accent-brand, #0c5bef) !important;
+    color: var(--ubits-accent-brand-static-inverted, #0c5bef) !important;
 }
 
 /* Iconos wa-icon en botón de ordenamiento - EXACTAMENTE igual que drag handle */
@@ -325,7 +325,7 @@
 
 .ubits-data-table-3__column-sort--active wa-icon,
 .ubits-data-table-3__column-sort--active i {
-    color: var(--ubits-accent-brand, #0c5bef);
+    color: var(--ubits-accent-brand-static-inverted, #0c5bef);
 }
 
 /* Fallback icons - mostrar solo cuando wa-icon no está disponible - EXACTAMENTE igual que drag handle */
@@ -360,7 +360,7 @@
 }
 
 .ubits-data-table-3__column-sort--active:not(:has(wa-icon:defined)) i.ubits-data-table-3__sort-icon-fallback {
-    color: var(--ubits-accent-brand, #0c5bef) !important;
+    color: var(--ubits-accent-brand-static-inverted, #0c5bef) !important;
 }
 
 /* Drag handle para columnas - igual tamaño que botón xs icon-only (28px) */
@@ -414,7 +414,7 @@
 
 .ubits-data-table-3__column-header--drag-over {
     background-color: var(--ubits-bg-active, rgba(12, 91, 239, 0.1)) !important;
-    border-left: 2px solid var(--ubits-accent-brand, #0c5bef);
+    border-left: 2px solid var(--ubits-accent-brand-static-inverted, #0c5bef);
 }
 
 .ubits-data-table-3__row--dragging {
@@ -423,7 +423,7 @@
 
 .ubits-data-table-3__row--drag-over {
     background-color: var(--ubits-bg-active, rgba(12, 91, 239, 0.1)) !important;
-    border-top: 2px solid var(--ubits-accent-brand, #0c5bef);
+    border-top: 2px solid var(--ubits-accent-brand-static-inverted, #0c5bef);
 }
 
 /* Fallback para iconos */

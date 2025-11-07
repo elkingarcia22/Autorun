@@ -50,7 +50,7 @@ export class UBITSTokensAddon implements TokensAddon {
     '--ubits-border-disabled-button',
     
     // Accent tokens
-    '--ubits-accent-brand',
+    '--ubits-accent-brand-static-inverted',
     '--ubits-accent-success',
     '--ubits-accent-error',
     
@@ -282,7 +282,7 @@ export class UBITSTokensAddon implements TokensAddon {
 
     // Verificar algunos tokens para confirmar que están cargados
     const sampleTokens = [
-      '--ubits-accent-brand',
+      '--ubits-accent-brand-static-inverted',
       '--ubits-bg-1',
       '--ubits-fg-1-high'
     ];

@@ -42,7 +42,7 @@
     width: 8px;
     height: 8px;
     border-radius: var(--ubits-border-radius-full, 1000px);
-    background-color: var(--ubits-accent-brand, #0c5bef);
+    background-color: var(--ubits-accent-brand-static-inverted, #0c5bef);
     opacity: 0;
     transform: scale(0);
     transition: all 0.2s ease;
@@ -112,14 +112,14 @@
 
 /* Hover State - cuando la clase hover está presente */
 .ubits-radio-button--hover:not(.ubits-radio-button--disabled):not(.ubits-radio-button--checked) .ubits-radio-button__circle {
-    border-color: var(--ubits-accent-brand, #0c5bef);
+    border-color: var(--ubits-accent-brand-static-inverted, #0c5bef);
     background-color: var(--ubits-bg-1, #ffffff);
 }
 
 /* Hover State - cuando se hace hover con el mouse */
 .ubits-radio-button--hover:not(.ubits-radio-button--disabled):not(.ubits-radio-button--checked):hover .ubits-radio-button__circle,
 .ubits-radio-button:not(.ubits-radio-button--disabled):not(.ubits-radio-button--checked):hover .ubits-radio-button__circle {
-    border-color: var(--ubits-accent-brand, #0c5bef);
+    border-color: var(--ubits-accent-brand-static-inverted, #0c5bef);
     background-color: var(--ubits-bg-1, #ffffff);
 }
 
@@ -131,8 +131,8 @@
 
 /* Active State - círculo azul brand con dot blanco (solo cuando NO está checked) */
 .ubits-radio-button--active:not(.ubits-radio-button--checked) .ubits-radio-button__circle {
-    border-color: var(--ubits-accent-brand, #0c5bef);
-    background-color: var(--ubits-accent-brand, #0c5bef);
+    border-color: var(--ubits-accent-brand-static-inverted, #0c5bef);
+    background-color: var(--ubits-accent-brand-static-inverted, #0c5bef);
 }
 
 .ubits-radio-button--active:not(.ubits-radio-button--checked) .ubits-radio-button__dot {
@@ -150,7 +150,7 @@
 .ubits-radio-button--checked .ubits-radio-button__dot {
     opacity: 1;
     transform: scale(1);
-    background-color: var(--ubits-accent-brand, #0c5bef);
+    background-color: var(--ubits-accent-brand-static-inverted, #0c5bef);
 }
 
 /* Tamaños del dot cuando está checked - más grande para llenar más el círculo */
@@ -167,7 +167,7 @@
 /* Focus State */
 .ubits-radio-button__input:focus-visible + .ubits-radio-button__circle {
     /* Efecto Focus de los tokens UBITS */
-    border: 2px solid var(--ubits-accent-brand, #5297F4);
+    border: 2px solid var(--ubits-accent-brand-static-inverted, #5297F4);
     box-shadow: 0px 0px 0px 4px rgba(82, 151, 244, 0.3);
     outline: none;
 }

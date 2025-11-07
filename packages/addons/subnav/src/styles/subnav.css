@@ -118,7 +118,7 @@
     left: 0;
     right: 0;
     height: 3px;
-    background-color: var(--ubits-accent-brand);
+    background-color: var(--ubits-accent-brand-static-inverted);
     border-radius: 2px;
 }
 

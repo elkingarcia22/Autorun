@@ -199,7 +199,7 @@ function createStorybookPanel() {
     
     .storybook-input-group input:focus {
       outline: none;
-      border-color: var(--ubits-accent-brand);
+      border-color: var(--ubits-accent-brand-static-inverted);
       box-shadow: 0 0 0 3px var(--ubits-button-focus-ring);
     }
     

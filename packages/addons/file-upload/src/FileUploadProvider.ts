@@ -40,7 +40,7 @@ function renderStatusTagInline(label: string, status: 'pending' | 'completed' | 
     uploading: {
       bg: 'rgba(12, 91, 239, 0.15)',
       text: 'var(--ubits-feedback-info-text, #212f70)',
-      border: 'var(--ubits-accent-brand, #0c5bef)'
+      border: 'var(--ubits-accent-brand-static-inverted, #0c5bef)'
     }
   };
 
@@ -89,7 +89,7 @@ export function renderFileUpload(options: FileUploadOptions = {}): string {
   let iconColor = 'var(--ubits-fg-1-medium, #5c646f)';
 
   if (state === 'dragging') {
-    borderColor = 'var(--ubits-accent-brand, #0c5bef)';
+    borderColor = 'var(--ubits-accent-brand-static-inverted, #0c5bef)';
   } else if (state === 'error') {
     borderColor = 'var(--ubits-feedback-accent-error, #e9343c)';
   } else if (state === 'disabled') {

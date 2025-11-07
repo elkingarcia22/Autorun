@@ -165,7 +165,7 @@
     background: linear-gradient(90deg, rgba(12, 91, 239, 0.15) 0%, rgba(12, 91, 239, 0.15) 100%), linear-gradient(90deg, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 1) 100%);
     background-color: var(--ubits-feedback-info-bg, rgba(12, 91, 239, 0.15));
     color: var(--ubits-feedback-info-text, #212f70);
-    border-color: var(--ubits-accent-brand, #0c5bef);
+    border-color: var(--ubits-accent-brand-static-inverted, #0c5bef);
 }
 
 /* Estados naranjas/amarillos (warning) - Valores exactos de Figma */

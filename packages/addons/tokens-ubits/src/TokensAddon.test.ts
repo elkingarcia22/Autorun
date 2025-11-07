@@ -89,7 +89,7 @@ describe('TokensAddon - Carga y Validación', () => {
     const style = document.createElement('style');
     style.textContent = `
       :root {
-        --ubits-button-primary-bg-default: var(--ubits-accent-brand);
+        --ubits-button-primary-bg-default: var(--ubits-accent-brand-static-inverted);
         --ubits-bg-1: var(--ubits-bg-1);
         --ubits-fg-1-high: var(--ubits-fg-1-high);
       }
@@ -109,7 +109,7 @@ describe('TokensAddon - Carga y Validación', () => {
     const style = document.createElement('style');
     style.textContent = `
       :root {
-        --ubits-button-primary-bg-default: var(--ubits-accent-brand);
+        --ubits-button-primary-bg-default: var(--ubits-accent-brand-static-inverted);
         --ubits-bg-1: var(--ubits-bg-1);
       }
     `;
@@ -132,12 +132,12 @@ describe('TokensAddon - Carga y Validación', () => {
     const style = document.createElement('style');
     style.textContent = `
       :root {
-        --ubits-accent-brand: var(--ubits-accent-brand);
+        --ubits-accent-brand-static-inverted: var(--ubits-accent-brand-static-inverted);
       }
     `;
     document.head.appendChild(style);
 
-    expect(addon.hasToken('--ubits-accent-brand')).toBe(true);
+    expect(addon.hasToken('--ubits-accent-brand-static-inverted')).toBe(true);
     expect(addon.hasToken('--ubits-token-inexistente')).toBe(false);
   });
 

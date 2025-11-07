@@ -164,7 +164,7 @@ export const Default: Story = {
       // Usar valores del token Focus: border 2px solid #5297F4, box-shadow con spread 4px y opacity 30%
       const focusColor = '#5297F4';
       const focusRgba = hexToRgba(focusColor, 0.3);
-      chipElement.style.border = `2px solid var(--ubits-accent-brand, ${focusColor})`;
+      chipElement.style.border = `2px solid var(--ubits-accent-brand-static-inverted, ${focusColor})`;
       chipElement.style.boxShadow = `0px 0px 0px 4px ${focusRgba}`;
       chipElement.style.outline = 'none';
     }

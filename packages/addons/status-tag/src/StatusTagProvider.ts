@@ -49,17 +49,17 @@ const STATUS_COLORS: Record<string, {
   draft: {
     bg: 'rgba(12, 91, 239, 0.15)',
     text: 'var(--ubits-feedback-info-text, #212f70)',
-    border: 'var(--ubits-accent-brand, #0c5bef)'
+    border: 'var(--ubits-accent-brand-static-inverted, #0c5bef)'
   },
   'in-progress': {
     bg: 'rgba(12, 91, 239, 0.15)',
     text: 'var(--ubits-feedback-info-text, #212f70)',
-    border: 'var(--ubits-accent-brand, #0c5bef)'
+    border: 'var(--ubits-accent-brand-static-inverted, #0c5bef)'
   },
   syncing: {
     bg: 'rgba(12, 91, 239, 0.15)',
     text: 'var(--ubits-feedback-info-text, #212f70)',
-    border: 'var(--ubits-accent-brand, #0c5bef)'
+    border: 'var(--ubits-accent-brand-static-inverted, #0c5bef)'
   },
   // Estados naranjas/amarillos (warning) - Valores exactos de Figma
   pending: {

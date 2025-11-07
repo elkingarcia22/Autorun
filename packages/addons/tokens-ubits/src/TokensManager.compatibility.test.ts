@@ -23,10 +23,10 @@ describe('TokensManager - Compatibilidad', () => {
     const style = document.createElement('style');
     style.textContent = `
       :root {
-        --ubits-button-primary-bg-default: var(--ubits-accent-brand);
+        --ubits-button-primary-bg-default: var(--ubits-accent-brand-static-inverted);
         --ubits-bg-1: var(--ubits-bg-1);
         --ubits-fg-1-high: var(--ubits-fg-1-high);
-        --ubits-accent-brand: var(--ubits-accent-brand);
+        --ubits-accent-brand-static-inverted: var(--ubits-accent-brand-static-inverted);
       }
     `;
     document.head.appendChild(style);
@@ -47,7 +47,7 @@ describe('TokensManager - Compatibilidad', () => {
     const style = document.createElement('style');
     style.textContent = `
       :root {
-        --ubits-button-primary-bg-default: var(--ubits-accent-brand);
+        --ubits-button-primary-bg-default: var(--ubits-accent-brand-static-inverted);
         --ubits-bg-1: var(--ubits-bg-1);
       }
     `;
@@ -138,7 +138,7 @@ describe('TokensManager - Integración con Componentes', () => {
     const style = document.createElement('style');
     style.textContent = `
       :root {
-        --ubits-button-primary-bg-default: var(--ubits-accent-brand);
+        --ubits-button-primary-bg-default: var(--ubits-accent-brand-static-inverted);
         --ubits-btn-primary-fg: var(--ubits-fg-1-high);
         --ubits-bg-1: var(--ubits-bg-1);
       }
@@ -165,15 +165,15 @@ describe('TokensManager - Integración con Componentes', () => {
     const style = document.createElement('style');
     style.textContent = `
       :root {
-        --ubits-button-primary-bg-default: var(--ubits-accent-brand);
-        --ubits-button-primary-hover: var(--ubits-accent-brand);
+        --ubits-button-primary-bg-default: var(--ubits-accent-brand-static-inverted);
+        --ubits-button-primary-hover: var(--ubits-accent-brand-static-inverted);
         --ubits-btn-primary-fg: var(--ubits-fg-1-high);
         --ubits-bg-1: var(--ubits-bg-1);
         --ubits-bg-2: var(--ubits-bg-2);
         --ubits-fg-1-high: var(--ubits-fg-1-high);
         --ubits-fg-1-medium: var(--ubits-fg-1-medium);
         --ubits-border-1: var(--ubits-border-1);
-        --ubits-accent-brand: var(--ubits-accent-brand);
+        --ubits-accent-brand-static-inverted: var(--ubits-accent-brand-static-inverted);
         --ubits-spacing-2: var(--ubits-spacing-2);
         --ubits-spacing-3: var(--ubits-spacing-3);
       }

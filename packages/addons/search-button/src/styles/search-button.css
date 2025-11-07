@@ -75,7 +75,7 @@
     align-items: center;
     gap: var(--ubits-spacing-sm, 8px);
     padding: var(--ubits-spacing-sm, 12px);
-    border: 1px solid var(--ubits-accent-brand, #0c5bef);
+    border: 1px solid var(--ubits-accent-brand-static-inverted, #0c5bef);
     border-radius: var(--ubits-border-radius-sm, 4px);
     background-color: var(--ubits-bg-1, #ffffff);
     height: 40px;

@@ -17,7 +17,7 @@ export default meta;
 type Story = StoryObj;
 
 // Valores por defecto para el efecto Focus (configurables por el usuario)
-const DEFAULT_FOCUS_COLOR = 'var(--ubits-accent-brand, #5297F4)';
+const DEFAULT_FOCUS_COLOR = 'var(--ubits-accent-brand-static-inverted, #5297F4)';
 const DEFAULT_FOCUS_COLOR_VALUE = '#5297F4'; // Valor por defecto para el color picker (configurable)
 
 // Función auxiliar para convertir hex a rgba (genera dinámicamente para evitar detección de hardcode)

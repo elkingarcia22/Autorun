@@ -47,7 +47,7 @@ function borderRadiusItem(token: string) {
   square.style.width = '48px';
   square.style.height = '48px';
   square.style.borderRadius = value;
-  square.style.background = 'var(--ubits-accent-brand, #2563eb)';
+  square.style.background = 'var(--ubits-accent-brand-static-inverted, #2563eb)';
   square.style.flexShrink = '0';
   
   const val = document.createElement('code');

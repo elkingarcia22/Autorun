@@ -147,7 +147,7 @@
 /* Focus State */
 .ubits-toggle__input:focus-visible + .ubits-toggle__track {
     /* Efecto Focus de los tokens UBITS */
-    outline: 2px solid var(--ubits-accent-brand, #5297F4);
+    outline: 2px solid var(--ubits-accent-brand-static-inverted, #5297F4);
     outline-offset: 2px;
     box-shadow: 0px 0px 0px 4px rgba(82, 151, 244, 0.3);
 }

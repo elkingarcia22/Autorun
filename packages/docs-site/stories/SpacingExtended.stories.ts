@@ -47,7 +47,7 @@ function spacingItem(token: string) {
   bar.style.width = `${pxValue * scaleFactor}px`;
   bar.style.height = '24px';
   bar.style.minWidth = pxValue === 0 ? '0px' : '4px';
-  bar.style.background = 'var(--ubits-accent-brand, #2563eb)';
+  bar.style.background = 'var(--ubits-accent-brand-static-inverted, #2563eb)';
   bar.style.borderRadius = '4px';
   
   const val = document.createElement('code');

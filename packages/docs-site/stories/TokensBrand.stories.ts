@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/html';
 
 const BRAND_TOKENS = [
-  '--ubits-accent-brand',
-  '--ubits-accent-brand-inverted',
-  '--ubits-accent-brand-static',
   '--ubits-accent-brand-static-inverted',
+  '--ubits-accent-brand-static-inverted-inverted',
+  '--ubits-accent-brand-static-inverted-static',
+  '--ubits-accent-brand-static-inverted-static-inverted',
   '--ubits-accent-success',
   '--ubits-logo',
   '--ubits-logo-inverted',
