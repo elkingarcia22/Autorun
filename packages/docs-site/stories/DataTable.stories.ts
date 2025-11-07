@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/html';
 import { createDataTable } from '../../addons/data-table/src/DataTableProvider';
 import type { DataTableOptions, TableColumn, TableRow } from '../../addons/data-table/src/types/DataTableOptions';
 
-const meta: Meta<DataTableOptions> = {
+const meta: Meta<DataTableOptions & { columnsCount?: number }> = {
   title: 'Components/Data Table',
   tags: ['autodocs'],
   parameters: {
@@ -69,11 +69,18 @@ const meta: Meta<DataTableOptions> = {
         defaultValue: { summary: 'true' },
       },
     },
+    columnsCount: {
+      control: { type: 'number', min: 1, max: 10, step: 1 },
+      description: 'Número de columnas de datos a mostrar (excluyendo checkbox)',
+      table: {
+        defaultValue: { summary: '4' },
+      },
+    },
   },
 };
 
 export default meta;
-type Story = StoryObj<DataTableOptions>;
+type Story = StoryObj<DataTableOptions & { columnsCount?: number }>;
 
 export const Default: Story = {
   render: (args) => {
@@ -91,13 +98,23 @@ export const Default: Story = {
     tableContainer.style.width = '100%';
     tableContainer.style.overflow = 'auto';
     
-    // Datos de ejemplo
-    const columns: TableColumn[] = [
+    // Generar columnas dinámicamente según columnsCount
+    const columnsCount = args.columnsCount ?? 4;
+    const allColumns: TableColumn[] = [
       { id: 'nombre', title: 'Nombre', type: 'nombre', visible: true, width: 200 },
       { id: 'email', title: 'Email', type: 'correo', visible: true, width: 250 },
       { id: 'estado', title: 'Estado', type: 'estado', visible: true, width: 150 },
       { id: 'progreso', title: 'Progreso', type: 'progreso', visible: true, width: 180 },
+      { id: 'telefono', title: 'Teléfono', type: 'nombre', visible: true, width: 150 },
+      { id: 'ciudad', title: 'Ciudad', type: 'nombre', visible: true, width: 150 },
+      { id: 'pais', title: 'País', type: 'pais', visible: true, width: 150 },
+      { id: 'fecha', title: 'Fecha', type: 'fecha', visible: true, width: 150 },
+      { id: 'categoria', title: 'Categoría', type: 'nombre', visible: true, width: 150 },
+      { id: 'prioridad', title: 'Prioridad', type: 'estado', visible: true, width: 150 },
     ];
+    
+    // Seleccionar solo las columnas necesarias según columnsCount
+    const columns: TableColumn[] = allColumns.slice(0, columnsCount);
     
     const rows: TableRow[] = [
       {
@@ -107,6 +124,12 @@ export const Default: Story = {
           email: 'juan.perez@empresa.com',
           estado: 'Activo',
           progreso: 75,
+          telefono: '+57 300 123 4567',
+          ciudad: 'Bogotá',
+          pais: 'Colombia',
+          fecha: '2024-01-15',
+          categoria: 'Desarrollo',
+          prioridad: 'Alta',
           'checkbox-2': false,
         },
         expanded: false,
@@ -126,6 +149,12 @@ export const Default: Story = {
           email: 'maria.garcia@empresa.com',
           estado: 'Inactivo',
           progreso: 45,
+          telefono: '+57 301 234 5678',
+          ciudad: 'Medellín',
+          pais: 'Colombia',
+          fecha: '2024-02-20',
+          categoria: 'Diseño',
+          prioridad: 'Media',
           'checkbox-2': true,
         },
         expanded: false,
@@ -137,6 +166,12 @@ export const Default: Story = {
           email: 'carlos.lopez@empresa.com',
           estado: 'Activo',
           progreso: 90,
+          telefono: '+57 302 345 6789',
+          ciudad: 'Cali',
+          pais: 'Colombia',
+          fecha: '2024-03-10',
+          categoria: 'Marketing',
+          prioridad: 'Baja',
           'checkbox-2': false,
         },
         expanded: false,
@@ -156,6 +191,12 @@ export const Default: Story = {
           email: 'ana.martinez@empresa.com',
           estado: 'Pendiente',
           progreso: 30,
+          telefono: '+57 303 456 7890',
+          ciudad: 'Barranquilla',
+          pais: 'Colombia',
+          fecha: '2024-04-05',
+          categoria: 'Ventas',
+          prioridad: 'Alta',
           'checkbox-2': true,
         },
         expanded: false,
@@ -167,6 +208,12 @@ export const Default: Story = {
           email: 'pedro.sanchez@empresa.com',
           estado: 'Activo',
           progreso: 100,
+          telefono: '+57 304 567 8901',
+          ciudad: 'Cartagena',
+          pais: 'Colombia',
+          fecha: '2024-05-12',
+          categoria: 'Soporte',
+          prioridad: 'Media',
           'checkbox-2': false,
         },
         expanded: false,
@@ -225,6 +272,7 @@ export const Default: Story = {
     showVerticalScrollbar: false,
     showHorizontalScrollbar: false,
     showColumnMenu: true,
+    columnsCount: 4,
   },
 };
 
