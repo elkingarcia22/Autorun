@@ -140,6 +140,27 @@ const meta: Meta<DataTableOptions & { columnsCount?: number }> = {
         defaultValue: { summary: 'false' },
       },
     },
+    column3RadioLabel: {
+      control: 'boolean',
+      description: 'Mostrar label en columna 3 (solo si es radio)',
+      table: {
+        defaultValue: { summary: 'false' },
+      },
+    },
+    column3ToggleLabel: {
+      control: 'boolean',
+      description: 'Mostrar label en columna 3 (solo si es toggle)',
+      table: {
+        defaultValue: { summary: 'false' },
+      },
+    },
+    column3CheckboxLabel: {
+      control: 'boolean',
+      description: 'Mostrar label en columna 3 (solo si es checkbox)',
+      table: {
+        defaultValue: { summary: 'false' },
+      },
+    },
     // Controles para columna 4 (Progreso) - no tiene controles adicionales
   },
 };
@@ -155,6 +176,9 @@ type Story = StoryObj<DataTableOptions & {
   column1Editable?: boolean;
   column2EmailClickable?: boolean;
   column3Editable?: boolean;
+  column3RadioLabel?: boolean;
+  column3ToggleLabel?: boolean;
+  column3CheckboxLabel?: boolean;
 }>;
 
 export const Default: Story = {
@@ -193,6 +217,9 @@ export const Default: Story = {
     const column1Editable = (args as any).column1Editable || false;
     const column2EmailClickable = (args as any).column2EmailClickable !== undefined ? (args as any).column2EmailClickable : true;
     const column3Editable = (args as any).column3Editable || false;
+    const column3RadioLabel = (args as any).column3RadioLabel || false;
+    const column3ToggleLabel = (args as any).column3ToggleLabel || false;
+    const column3CheckboxLabel = (args as any).column3CheckboxLabel || false;
     
     // Construir columnas con sus controles
     const col1: TableColumn = {
@@ -239,6 +266,15 @@ export const Default: Story = {
     const editableTypes3 = ['nombre', 'nombre-avatar', 'nombre-avatar-texto', 'estado', 'fecha', 'checkbox', 'radio'];
     if (editableTypes3.includes(columnType3)) {
       col3.editable = column3Editable;
+    }
+    
+    // Agregar labels según el tipo
+    if (columnType3 === 'radio') {
+      col3.radioLabel = column3RadioLabel ? true : false;
+    } else if (columnType3 === 'toggle') {
+      col3.toggleLabel = column3ToggleLabel ? true : false;
+    } else if (columnType3 === 'checkbox') {
+      col3.checkboxLabel = column3CheckboxLabel ? true : false;
     }
     
     const allColumns: TableColumn[] = [
@@ -607,6 +643,9 @@ export const Default: Story = {
     column1Editable: false,
     column2EmailClickable: true,
     column3Editable: false,
+    column3RadioLabel: false,
+    column3ToggleLabel: false,
+    column3CheckboxLabel: false,
   },
 };
 
