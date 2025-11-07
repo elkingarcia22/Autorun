@@ -1120,6 +1120,7 @@
 
 /* Columnas fijadas (pinned) - siempre que estén marcadas como pinned */
 /* El left se calcula dinámicamente en el código, pero estos estilos aseguran que sea sticky */
+/* IMPORTANTE: Para que sticky funcione, el contenedor padre debe tener overflow-x: auto o scroll */
 .ubits-data-table__column-header--pinned {
     position: sticky !important;
     /* left se establece inline desde el código */
@@ -1132,6 +1133,19 @@
     /* left se establece inline desde el código */
     z-index: 12 !important;
     background-color: var(--ubits-bg-1) !important;
+}
+
+/* Asegurar que la tabla tenga overflow-x cuando hay columnas fijadas, incluso sin scroll horizontal activo */
+/* Esto es necesario para que position: sticky funcione correctamente */
+.ubits-data-table:has(.ubits-data-table__column-header--pinned),
+.ubits-data-table:has(.ubits-data-table__cell--pinned) {
+    overflow-x: auto !important;
+}
+
+/* También aplicar al contenedor scrollable si existe */
+.ubits-data-table__scrollable-container:has(.ubits-data-table__column-header--pinned),
+.ubits-data-table__scrollable-container:has(.ubits-data-table__cell--pinned) {
+    overflow-x: auto !important;
 }
 
 /* Cuando hay scroll horizontal, aplicar estilos adicionales si es necesario */
