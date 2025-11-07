@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>autoframe</title>
     <link rel="icon" type="image/svg+xml" href="../assets/images/favicon.svg" />
+    <link rel="icon" type="image/png" href="../assets/images/favicon.png" />
+    <link rel="icon" type="image/x-icon" href="../assets/images/favicon.ico" />
     <link rel="stylesheet" href="../../tokens/dist/tokens.css" />
     <link rel="stylesheet" href="../../typography/fonts.css" />
     <link rel="stylesheet" href="../../typography/tokens-typography.css" />
@@ -556,9 +558,13 @@
       #navbar2 .ubits-logo:hover img{ filter: brightness(1.1); }
       /* Mostrar logo según el tema */
       [data-theme="dark"] #navbar2 .autoframe-logo-dark{ display: block !important; }
+      [data-theme="dark"] #navbar2 .autoframe-logo-dark-png{ display: block !important; }
       [data-theme="dark"] #navbar2 .autoframe-logo-light{ display: none !important; }
+      [data-theme="dark"] #navbar2 .autoframe-logo-light-png{ display: none !important; }
       [data-theme="light"] #navbar2 .autoframe-logo-dark{ display: none !important; }
+      [data-theme="light"] #navbar2 .autoframe-logo-dark-png{ display: none !important; }
       [data-theme="light"] #navbar2 .autoframe-logo-light{ display: block !important; }
+      [data-theme="light"] #navbar2 .autoframe-logo-light-png{ display: block !important; }
       #navbar2 .ubits-logo-text{ font-size: var(--font-body-lg-size); font-weight: var(--weight-bold); color: var(--ubits-fg-1-high); transition: color 0.2s ease; }
       #navbar2 .ubits-logo:hover .ubits-logo-text{ color: var(--ubits-accent-brand-static-inverted); }
       #navbar2 .nav2-link{ color: var(--ubits-fg-1-medium); text-decoration:none; padding:10px 12px; border-bottom:2px solid transparent; transition:all .15s ease; display: flex; align-items: center; gap: 8px; font-size: var(--font-body-md-size); font-weight: var(--weight-medium); position: relative; }
@@ -690,8 +696,10 @@
       <div class="container">
         <div class="navbar2-container">
           <a href="#" class="ubits-logo" style="transition: transform 0.2s ease;">
-            <img src="../assets/images/autoframe-logo-dark.svg" alt="autoframe Logo" class="autoframe-logo-dark" style="width: 40px; height: 40px; display: block;" />
-            <img src="../assets/images/autoframe-logo-light.svg" alt="autoframe Logo" class="autoframe-logo-light" style="width: 40px; height: 40px; display: none;" />
+            <img src="../assets/images/autoframe-logo-dark.svg" alt="autoframe Logo" class="autoframe-logo-dark" style="width: 40px; height: 40px; display: block;" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
+            <img src="../assets/images/autoframe-logo-dark.png" alt="autoframe Logo" class="autoframe-logo-dark-png" style="width: 40px; height: 40px; display: none;" />
+            <img src="../assets/images/autoframe-logo-light.svg" alt="autoframe Logo" class="autoframe-logo-light" style="width: 40px; height: 40px; display: none;" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
+            <img src="../assets/images/autoframe-logo-light.png" alt="autoframe Logo" class="autoframe-logo-light-png" style="width: 40px; height: 40px; display: none;" />
             <span class="ubits-logo-text">autoframe</span>
           </a>
           <a href="#" class="nav2-link" data-target="section-template">
