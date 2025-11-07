@@ -543,7 +543,7 @@
       .copyable-prompt .copy-btn i{ font-size: var(--font-body-sm-size); }
       
       #navbar2{ background: var(--ubits-bg-1); border-bottom:none; margin-bottom: 24px; padding: 12px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-      #navbar2 .navbar2-container{ display: flex; gap: 32px; align-items: center; }
+      #navbar2 .navbar2-container{ display: flex; gap: 32px; align-items: center; border-radius: 8px; }
       #navbar2 .ubits-logo{ display: flex; align-items: center; gap: 8px; margin-right: 16px; text-decoration: none; transition: transform 0.2s ease; }
       #navbar2 .ubits-logo:hover{ transform: scale(1.05); }
       #navbar2 .ubits-logo svg{ width: 40px; height: 40px; transition: filter 0.2s ease; }
@@ -563,6 +563,87 @@
       #navbar2 .nav2-submenu .nav2-subitem:hover{ background: var(--ubits-bg-2); color: var(--ubits-fg-1-high); }
       #navbar2 .nav2-submenu .nav2-subitem.active{ color: var(--ubits-accent-brand); font-weight: var(--weight-semibold); }
       #navbar2 .nav2-submenu .nav2-subitem i{ font-size: var(--font-body-sm-size); }
+      
+      /* Dark Mode Toggle Button */
+      #navbar2 .dark-mode-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        padding: 0;
+        border: none;
+        background: transparent;
+        color: var(--ubits-fg-1-medium);
+        cursor: pointer;
+        border-radius: 8px;
+        transition: all 0.15s ease;
+        margin-left: auto;
+      }
+      
+      #navbar2 .dark-mode-toggle:hover {
+        background: var(--ubits-bg-2);
+        color: var(--ubits-fg-1-high);
+      }
+      
+      #navbar2 .dark-mode-toggle:active {
+        background: var(--ubits-bg-3);
+      }
+      
+      #navbar2 .dark-mode-toggle i {
+        font-size: var(--font-body-md-size);
+        color: var(--ubits-fg-1-medium);
+        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+        margin: 0 auto;
+      }
+      
+      #navbar2 .dark-mode-toggle i::before {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        width: 100%;
+        height: 100%;
+      }
+      
+      /* Animación de transición de icono - una sola vuelta */
+      #navbar2 .dark-mode-toggle i.ubits-icon-transition {
+        animation: iconSpinFade 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      
+      @keyframes iconSpinFade {
+        0% {
+          transform: rotate(0deg) scale(1);
+          opacity: 1;
+        }
+        50% {
+          transform: rotate(180deg) scale(1.2);
+          opacity: 0.6;
+        }
+        100% {
+          transform: rotate(360deg) scale(1);
+          opacity: 1;
+        }
+      }
+      
+      #navbar2 .dark-mode-toggle:hover i {
+        color: var(--ubits-fg-1-high);
+      }
+      
+      /* Cambio de icono en modo oscuro */
+      #navbar2 .dark-mode-toggle[data-theme="dark"] i {
+        color: var(--ubits-fg-yellow-subtle);
+      }
+      
+      #navbar2 .dark-mode-toggle[data-theme="light"] i {
+        color: var(--ubits-fg-1-medium);
+      }
+      
       /* Espaciado entre navbar y títulos de secciones */
       .section{ padding-top: 32px; }
       .section > h1{ margin-top: 0 !important; margin-bottom: 8px; }
@@ -651,6 +732,9 @@
             <i class="fas fa-cubes"></i>
             <span>Componentes</span>
           </a>
+          <button class="dark-mode-toggle" id="navbar-darkmode-toggle" data-theme="light" title="Modo oscuro">
+            <i class="far fa-moon"></i>
+          </button>
         </div>
       </div>
     </nav>
@@ -2947,6 +3031,68 @@ npm run dev</code></pre>
         // Nuevo menú controlador simple
         const nav2 = document.getElementById('navbar2');
         if (nav2) {
+          // Inicializar dark mode toggle
+          const darkModeToggle = document.getElementById('navbar-darkmode-toggle');
+          if (darkModeToggle) {
+            // Función para actualizar el icono según el tema con animación
+            const updateIcon = (theme) => {
+              const iconElement = darkModeToggle.querySelector('i');
+              if (iconElement) {
+                // Remover todas las clases de iconos anteriores
+                iconElement.classList.remove('fa-moon', 'fa-sun', 'fa-sun-bright', 'far', 'fas', 'fa-solid', 'fa-regular');
+                
+                // Agregar clase de animación
+                iconElement.classList.add('ubits-icon-transition');
+                
+                // Agregar la clase del icono correspondiente después de un pequeño delay para asegurar que se aplique la animación
+                requestAnimationFrame(() => {
+                  if (theme === 'dark') {
+                    iconElement.classList.add('fa-solid', 'fa-sun-bright');
+                  } else {
+                    iconElement.classList.add('far', 'fa-moon');
+                  }
+                });
+                
+                // Remover clase de animación después de la transición (ajustado a 400ms para coincidir con la duración de la animación)
+                setTimeout(() => {
+                  iconElement.classList.remove('ubits-icon-transition');
+                }, 400);
+              }
+            };
+            
+            // Verificar tema inicial desde localStorage o atributo del body
+            const initialTheme = document.body.getAttribute('data-theme') || localStorage.getItem('ubits-theme') || 'light';
+            if (initialTheme === 'dark') {
+              darkModeToggle.setAttribute('data-theme', 'dark');
+              updateIcon('dark');
+            }
+            
+            darkModeToggle.addEventListener('click', (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              
+              const currentTheme = darkModeToggle.getAttribute('data-theme') || 'light';
+              const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+              
+              // Actualizar atributo del botón
+              darkModeToggle.setAttribute('data-theme', newTheme);
+              
+              // Actualizar el icono
+              updateIcon(newTheme);
+              
+              // Actualizar atributo en el body completo para que todos los componentes se actualicen
+              document.body.setAttribute('data-theme', newTheme);
+              
+              // Guardar en localStorage
+              localStorage.setItem('ubits-theme', newTheme);
+              
+              // Notificar Theme Manager si está disponible
+              if (window.UBITS_ThemeManager) {
+                window.UBITS_ThemeManager.setTheme(newTheme);
+              }
+            });
+          }
+          
           // Manejar menú desplegable de Tokens
           const tokensMenu = document.getElementById('nav-tokens');
           if (tokensMenu) {
