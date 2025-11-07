@@ -1,0 +1,9 @@
+{
+  "name": "@autoframe/templates-colaborador",
+  "version": "1.0.0",
+  "type": "design",
+  "description": "Template Colaborador - Template de diseño para perfil colaborador",
+  "main": "./dist/index.js",
+  "export": "TemplateColaboradorAddon"
+}
+

@@ -89,10 +89,8 @@ export class ComponentAddonAdapter implements IComponentAddon {
       const packageContent = await fs.readFile(packageJsonPath, 'utf-8');
       const packageJson = JSON.parse(packageContent);
       
-      // Usar description del package.json si está disponible
-      if (packageJson.description) {
-        this.description = packageJson.description;
-      }
+      // Description ya se inicializa en el constructor
+      // No se puede modificar porque es readonly
       
       this.packageInfoLoaded = true;
     } catch (error) {
