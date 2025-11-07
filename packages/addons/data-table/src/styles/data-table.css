@@ -6,7 +6,7 @@
 .ubits-data-table {
     position: relative;
     width: 100%;
-    background-color: var(--ubits-bg-1, #ffffff);
+    background-color: var(--ubits-bg-1);
     box-sizing: border-box;
     padding: var(--ubits-spacing-md, 16px);
     overflow: auto;
@@ -48,11 +48,11 @@
 
 /* Header */
 .ubits-data-table__thead {
-    background-color: var(--ubits-bg-1, #ffffff);
+    background-color: var(--ubits-bg-1);
 }
 
 .ubits-data-table__header-row {
-    border-bottom: 1px solid var(--ubits-border-1, #d0d2d5);
+    border-bottom: 1px solid var(--ubits-border-1);
 }
 
 /* Columna de controles - Header */
@@ -61,7 +61,7 @@
     padding-left: var(--ubits-spacing-md, 16px);
     padding-right: 48px !important;
     text-align: center;
-    background-color: var(--ubits-bg-1, #ffffff);
+    background-color: var(--ubits-bg-1);
     width: auto;
     min-width: 80px;
     max-width: 80px;
@@ -79,7 +79,7 @@
     padding-left: var(--ubits-spacing-md, 16px);
     padding-right: 48px !important;
     text-align: center;
-    background-color: var(--ubits-bg-1, #ffffff);
+    background-color: var(--ubits-bg-1);
     width: auto;
     min-width: 80px;
     max-width: 80px;
@@ -105,7 +105,7 @@
 }
 
 .ubits-data-table__row:hover .ubits-data-table__controls-column {
-    background-color: var(--ubits-bg-2, #f3f3f4);
+    background-color: var(--ubits-bg-2);
 }
 
 .ubits-data-table__controls-wrapper {
@@ -141,7 +141,7 @@
     width: 28px;
     height: 28px;
     cursor: grab;
-    color: var(--ubits-body-md-regular-3, #6b7280);
+    color: var(--ubits-fg-1-medium);
     padding: 8px;
     border-radius: var(--ubits-border-radius-sm, 4px);
     transition: background-color 0.2s ease, color 0.2s ease;
@@ -163,8 +163,8 @@
 }
 
 .ubits-data-table__row-drag-handle:hover {
-    background-color: var(--ubits-bg-2, #f3f3f4);
-    color: var(--ubits-body-md-regular-1, #1f2937);
+    background-color: var(--ubits-bg-2);
+    color: var(--ubits-fg-1-high);
 }
 
 .ubits-data-table__row-drag-handle wa-icon,
@@ -178,7 +178,7 @@
     border: none !important;
     padding: 8px !important;
     cursor: pointer !important;
-    color: var(--ubits-body-md-regular-3, #6b7280) !important;
+    color: var(--ubits-fg-1-medium) !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
@@ -203,12 +203,12 @@
 }
 
 .ubits-data-table__row-expand:hover {
-    background-color: var(--ubits-bg-2, #f3f3f4) !important;
-    color: var(--ubits-body-md-regular-1, #1f2937) !important;
+    background-color: var(--ubits-bg-2) !important;
+    color: var(--ubits-fg-1-high) !important;
 }
 
 .ubits-data-table__row-expand:active {
-    background-color: var(--ubits-bg-3, #e5e7eb) !important;
+    background-color: var(--ubits-bg-3) !important;
 }
 
 /* Headers de columnas de datos */
@@ -216,10 +216,10 @@
     padding: var(--ubits-spacing-sm, 12px) var(--ubits-spacing-md, 16px);
     padding-left: 0;
     text-align: left;
-    background-color: var(--ubits-bg-1, #ffffff);
+    background-color: var(--ubits-bg-1);
     font-weight: 600;
     font-size: var(--ubits-font-size-sm, 14px);
-    color: var(--ubits-body-md-regular-1, #1f2937);
+    color: var(--ubits-fg-1-high);
 }
 
 .ubits-data-table__column-header-content {
@@ -235,7 +235,7 @@
     font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
     font-size: var(--ubits-font-size-sm, 14px);
     font-weight: 600;
-    color: var(--ubits-body-md-regular-1, #1f2937);
+    color: var(--ubits-fg-1-high);
     margin-left: 0;
     padding-left: 0;
     flex: 1;
@@ -287,21 +287,21 @@
 /* Color del botón terciario - igual que UBITS */
 .ubits-data-table__column-sort-button.ubits-button--tertiary {
     background: transparent !important;
-    color: var(--ubits-btn-tertiary-fg, var(--ubits-fg-1-high, #303a47)) !important;
+    color: var(--ubits-btn-tertiary-fg) !important;
     border: 1px solid transparent !important;
 }
 
 /* Hover del botón terciario - igual que UBITS */
 .ubits-data-table__column-sort-button.ubits-button--tertiary:hover:not(:disabled):not(.ubits-button--loading) {
-    background: var(--ubits-btn-tertiary-bg-hover, var(--ubits-bg-2, #f3f3f4)) !important;
-    color: var(--ubits-btn-tertiary-fg, var(--ubits-fg-1-high, #303a47)) !important;
+    background: var(--ubits-btn-tertiary-bg-hover) !important;
+    color: var(--ubits-btn-tertiary-fg) !important;
     border: 1px solid transparent !important;
 }
 
 /* Active del botón terciario - igual que UBITS */
 .ubits-data-table__column-sort-button.ubits-button--tertiary:active:not(:disabled):not(.ubits-button--loading) {
-    background: var(--ubits-btn-tertiary-bg-pressed, var(--ubits-bg-3, #e5e7eb)) !important;
-    color: var(--ubits-btn-tertiary-fg, var(--ubits-fg-1-high, #303a47)) !important;
+    background: var(--ubits-btn-tertiary-bg-pressed) !important;
+    color: var(--ubits-btn-tertiary-fg) !important;
     border: 1px solid transparent !important;
     transform: translateY(1px) !important;
 }
@@ -315,37 +315,37 @@
 
 /* Estado active del botón terciario - igual que UBITS */
 .ubits-data-table__column-sort-button.ubits-button--tertiary.ubits-button--active {
-    background: var(--ubits-button-active-bg, rgba(12, 91, 239, 0.15)) !important;
-    color: var(--ubits-accent-brand-static-inverted, #0c5bef) !important;
+    background: var(--ubits-button-active-bg) !important;
+    color: var(--ubits-accent-brand-static-inverted) !important;
     border: 1px solid transparent !important;
 }
 
 .ubits-data-table__column-sort-button.ubits-button--tertiary.ubits-button--active:hover:not(:disabled):not(.ubits-button--loading) {
-    background: var(--ubits-button-active-bg, rgba(12, 91, 239, 0.15)) !important;
-    color: var(--ubits-accent-brand-static-inverted, #0c5bef) !important;
+    background: var(--ubits-button-active-bg) !important;
+    color: var(--ubits-accent-brand-static-inverted) !important;
     border: 1px solid transparent !important;
 }
 
 .ubits-data-table__column-sort-button.ubits-button--tertiary.ubits-button--active i {
-    color: var(--ubits-accent-brand-static-inverted, #0c5bef) !important;
+    color: var(--ubits-accent-brand-static-inverted) !important;
 }
 
 .ubits-data-table__column-sort-button.ubits-button--tertiary:hover {
-    color: var(--ubits-fg-1-high, #303a47) !important;
-    background: var(--ubits-bg-2, #f3f3f4) !important;
+    color: var(--ubits-fg-1-high) !important;
+    background: var(--ubits-bg-2) !important;
 }
 
 .ubits-data-table__column-sort-button.ubits-button--tertiary:hover i {
-    color: var(--ubits-fg-1-high, #303a47) !important;
+    color: var(--ubits-fg-1-high) !important;
 }
 
 .ubits-data-table__column-sort-button.ubits-button--tertiary.ubits-button--active {
-    color: var(--ubits-accent-brand-static-inverted, #0c5bef) !important;
-    background: var(--ubits-bg-active, rgba(12, 91, 239, 0.15)) !important;
+    color: var(--ubits-accent-brand-static-inverted) !important;
+    background: var(--ubits-button-active-bg) !important;
 }
 
 .ubits-data-table__column-sort-button.ubits-button--tertiary.ubits-button--active i {
-    color: var(--ubits-accent-brand-static-inverted, #0c5bef) !important;
+    color: var(--ubits-accent-brand-static-inverted) !important;
 }
 
 /* Iconos wa-icon en botón de ordenamiento - EXACTAMENTE igual que drag handle */
@@ -374,7 +374,7 @@
 
 .ubits-data-table__column-sort--active wa-icon,
 .ubits-data-table__column-sort--active i {
-    color: var(--ubits-accent-brand-static-inverted, #0c5bef);
+    color: var(--ubits-accent-brand-static-inverted);
 }
 
 /* Fallback icons - mostrar solo cuando wa-icon no está disponible - EXACTAMENTE igual que drag handle */
@@ -387,7 +387,7 @@
 
 .ubits-data-table__column-sort i.ubits-data-table__sort-icon-fallback {
     display: none;
-    color: var(--ubits-body-md-regular-3, #6b7280);
+    color: var(--ubits-fg-1-medium);
     margin: 0;
     padding: 0;
     vertical-align: middle;
@@ -401,15 +401,15 @@
     height: 12px;
     line-height: 1;
     text-align: center;
-    color: var(--ubits-body-md-regular-3, #6b7280) !important;
+    color: var(--ubits-fg-1-medium) !important;
 }
 
 .ubits-data-table__column-sort:hover:not(:has(wa-icon:defined)) i.ubits-data-table__sort-icon-fallback {
-    color: var(--ubits-body-md-regular-1, #1f2937) !important;
+    color: var(--ubits-fg-1-high) !important;
 }
 
 .ubits-data-table__column-sort--active:not(:has(wa-icon:defined)) i.ubits-data-table__sort-icon-fallback {
-    color: var(--ubits-accent-brand-static-inverted, #0c5bef) !important;
+    color: var(--ubits-accent-brand-static-inverted) !important;
 }
 
 /* Drag handle para columnas - igual tamaño que botón xs icon-only (28px) */
@@ -422,7 +422,7 @@
     min-width: 28px;
     min-height: 28px;
     cursor: grab;
-    color: var(--ubits-fg-1-high, #303a47);
+    color: var(--ubits-fg-1-high);
     padding: 8px;
     margin-right: 0;
     margin-left: 0;
@@ -448,12 +448,12 @@
 
 .ubits-data-table__column-drag-handle:active {
     cursor: grabbing;
-    background-color: var(--ubits-bg-3, #e5e7eb);
+    background-color: var(--ubits-bg-3);
 }
 
 .ubits-data-table__column-drag-handle:hover {
-    background-color: var(--ubits-bg-2, #f3f3f4);
-    color: var(--ubits-fg-1-high, #303a47);
+    background-color: var(--ubits-bg-2);
+    color: var(--ubits-fg-1-high);
 }
 
 /* Estados de drag */
@@ -462,8 +462,8 @@
 }
 
 .ubits-data-table__column-header--drag-over {
-    background-color: var(--ubits-bg-active, rgba(12, 91, 239, 0.1)) !important;
-    border-left: 2px solid var(--ubits-accent-brand-static-inverted, #0c5bef);
+    background-color: var(--ubits-bg-active) !important;
+    border-left: 2px solid var(--ubits-accent-brand-static-inverted);
 }
 
 .ubits-data-table__row--dragging {
@@ -471,8 +471,8 @@
 }
 
 .ubits-data-table__row--drag-over {
-    background-color: var(--ubits-bg-active, rgba(12, 91, 239, 0.1)) !important;
-    border-top: 2px solid var(--ubits-accent-brand-static-inverted, #0c5bef);
+    background-color: var(--ubits-bg-active) !important;
+    border-top: 2px solid var(--ubits-accent-brand-static-inverted);
 }
 
 /* Fallback para iconos */
@@ -498,13 +498,13 @@
 
 /* Body */
 .ubits-data-table__tbody {
-    background-color: var(--ubits-bg-1, #ffffff);
+    background-color: var(--ubits-bg-1);
 }
 
 .ubits-data-table__row {
-    border-bottom: 1px solid var(--ubits-border-1, #d0d2d5);
+    border-bottom: 1px solid var(--ubits-border-1);
     transition: background-color 0.2s ease;
-    background-color: var(--ubits-bg-1, #ffffff);
+    background-color: var(--ubits-bg-1);
 }
 
 .ubits-data-table__row:last-child {
@@ -512,7 +512,7 @@
 }
 
 .ubits-data-table__row:hover {
-    background-color: var(--ubits-bg-2, #f3f3f4);
+    background-color: var(--ubits-bg-2);
 }
 
 /* Celdas */
@@ -521,7 +521,7 @@
     padding-left: 10px;
     text-align: left;
     font-size: var(--ubits-font-size-sm, 14px);
-    color: var(--ubits-body-md-regular-1, #1f2937);
+    color: var(--ubits-fg-1-high);
     font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
 }
 
@@ -562,7 +562,7 @@
     position: sticky;
     left: 0;
     z-index: 20;
-    background-color: var(--ubits-bg-1, #ffffff);
+    background-color: var(--ubits-bg-1);
     box-sizing: border-box;
     vertical-align: middle !important;
 }
@@ -587,7 +587,7 @@
     position: sticky;
     left: 0;
     z-index: 19;
-    background-color: var(--ubits-bg-1, #ffffff);
+    background-color: var(--ubits-bg-1);
     box-sizing: border-box;
     vertical-align: middle !important;
 }
@@ -611,7 +611,7 @@
     position: sticky;
     left: 0;
     z-index: 20;
-    background-color: var(--ubits-bg-1, #ffffff);
+    background-color: var(--ubits-bg-1);
     box-sizing: border-box;
 }
 
@@ -649,7 +649,7 @@
     position: sticky;
     left: 0;
     z-index: 15;
-    background-color: var(--ubits-bg-1, #ffffff);
+    background-color: var(--ubits-bg-1);
 }
 
 /* Columna de checkbox (checkbox-2) - única columna de checkbox fija */
@@ -665,7 +665,7 @@
     position: sticky;
     left: 0;
     z-index: 14;
-    background-color: var(--ubits-bg-1, #ffffff);
+    background-color: var(--ubits-bg-1);
     vertical-align: middle !important;
     display: table-cell !important;
 }
@@ -692,7 +692,7 @@
     position: sticky;
     left: 0;
     z-index: 15;
-    background-color: var(--ubits-bg-1, #ffffff);
+    background-color: var(--ubits-bg-1);
 }
 
 /* Celdas de checkbox - tipo 'checkbox' (pueden tener label) */
@@ -704,7 +704,7 @@
 }
 
 .ubits-data-table__row:hover .ubits-data-table__cell--checkbox {
-    background-color: var(--ubits-bg-2, #f3f3f4);
+    background-color: var(--ubits-bg-2);
 }
 
 /* Checkbox en columna especial - sin label - FORZAR CENTRADO */
@@ -889,12 +889,12 @@
 
 .ubits-data-table__cell--editable:hover {
     cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="%23000" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>') 10 10, text;
-    background-color: var(--ubits-bg-2, #f3f3f4);
+    background-color: var(--ubits-bg-2);
 }
 
 .ubits-data-table__cell--editable[contenteditable="true"]:focus,
 .ubits-data-table__cell--editable:has([contenteditable="true"]:focus) {
-    background-color: rgba(12, 91, 239, 0.1);
+    background-color: var(--ubits-bg-active);
     outline: none;
 }
 
@@ -915,7 +915,7 @@
 }
 
 .ubits-data-table__cell--nombre-avatar.ubits-data-table__cell--editable:has([contenteditable="true"]:focus) {
-    background-color: rgba(12, 91, 239, 0.1);
+    background-color: var(--ubits-bg-active);
 }
 
 
@@ -932,7 +932,7 @@
 }
 
 .ubits-data-table__cell--nombre.ubits-data-table__cell--editable:has([contenteditable="true"]:focus) {
-    background-color: rgba(12, 91, 239, 0.1);
+    background-color: var(--ubits-bg-active);
 }
 
 /* Fecha editable */
@@ -944,7 +944,7 @@
 }
 
 .ubits-data-table__date-editable:hover {
-    background-color: var(--ubits-bg-2, #f3f3f4);
+    background-color: var(--ubits-bg-2);
 }
 
 .ubits-data-table__date-display {
@@ -965,7 +965,7 @@
 }
 
 .ubits-data-table__cell--fecha.ubits-data-table__cell--editable:has(.ubits-data-table__date-input:focus) {
-    background-color: rgba(12, 91, 239, 0.1);
+    background-color: var(--ubits-bg-active);
 }
 
 /* Celda de progreso */
@@ -983,12 +983,12 @@
 
 /* Contenido expandido */
 .ubits-data-table__row-expanded-row {
-    background-color: var(--ubits-bg-1, #ffffff);
+    background-color: var(--ubits-bg-1);
 }
 
 .ubits-data-table__row-expanded-content {
     padding: var(--ubits-spacing-md, 16px);
-    border-bottom: 1px solid var(--ubits-border-1, #d0d2d5);
+    border-bottom: 1px solid var(--ubits-border-1);
 }
 
 /* Contenedor scrollable base */
@@ -1030,7 +1030,7 @@
     position: sticky !important;
     left: 0 !important; /* Sin espacio en blanco a la izquierda */
     z-index: 21 !important;
-    background-color: var(--ubits-bg-1, #ffffff) !important;
+    background-color: var(--ubits-bg-1) !important;
 }
 
 .ubits-data-table__scrollable-container .ubits-data-table__controls-column {
@@ -1043,7 +1043,7 @@
     position: sticky !important;
     left: 80px !important; /* Ancho de controles = 80px */
     z-index: 14 !important;
-    background-color: var(--ubits-bg-1, #ffffff) !important;
+    background-color: var(--ubits-bg-1) !important;
 }
 
 /* Asegurar que el header del checkbox también sea sticky */
@@ -1051,7 +1051,7 @@
     position: sticky !important;
     left: 80px !important; /* Ancho de controles = 80px */
     z-index: 15 !important;
-    background-color: var(--ubits-bg-1, #ffffff) !important;
+    background-color: var(--ubits-bg-1) !important;
 }
 
 /* Estilos del scrollbar nativo - Vertical */
@@ -1060,17 +1060,17 @@
 }
 
 .ubits-data-table__scrollable-container--vertical::-webkit-scrollbar-track {
-    background: var(--ubits-bg-2, #f9fafb);
+    background: var(--ubits-bg-2);
     border-radius: 4px;
 }
 
 .ubits-data-table__scrollable-container--vertical::-webkit-scrollbar-thumb {
-    background: var(--ubits-border-2, #e5e7eb);
+    background: var(--ubits-border-2);
     border-radius: 4px;
 }
 
 .ubits-data-table__scrollable-container--vertical::-webkit-scrollbar-thumb:hover {
-    background: var(--ubits-border-1, #d0d2d5);
+    background: var(--ubits-border-1);
 }
 
 /* Estilos del scrollbar nativo - Horizontal */
@@ -1079,17 +1079,17 @@
 }
 
 .ubits-data-table__scrollable-container--horizontal::-webkit-scrollbar-track {
-    background: var(--ubits-bg-2, #f9fafb);
+    background: var(--ubits-bg-2);
     border-radius: 4px;
 }
 
 .ubits-data-table__scrollable-container--horizontal::-webkit-scrollbar-thumb {
-    background: var(--ubits-border-2, #e5e7eb);
+    background: var(--ubits-border-2);
     border-radius: 4px;
 }
 
 .ubits-data-table__scrollable-container--horizontal::-webkit-scrollbar-thumb:hover {
-    background: var(--ubits-border-1, #d0d2d5);
+    background: var(--ubits-border-1);
 }
 
 /* Estilos del scrollbar nativo - Ambos */
@@ -1099,23 +1099,23 @@
 }
 
 .ubits-data-table__scrollable-container--vertical.ubits-data-table__scrollable-container--horizontal::-webkit-scrollbar-track {
-    background: var(--ubits-bg-2, #f9fafb);
+    background: var(--ubits-bg-2);
     border-radius: 4px;
 }
 
 .ubits-data-table__scrollable-container--vertical.ubits-data-table__scrollable-container--horizontal::-webkit-scrollbar-thumb {
-    background: var(--ubits-border-2, #e5e7eb);
+    background: var(--ubits-border-2);
     border-radius: 4px;
 }
 
 .ubits-data-table__scrollable-container--vertical.ubits-data-table__scrollable-container--horizontal::-webkit-scrollbar-thumb:hover {
-    background: var(--ubits-border-1, #d0d2d5);
+    background: var(--ubits-border-1);
 }
 
 /* Firefox */
 .ubits-data-table__scrollable-container {
     scrollbar-width: thin;
-    scrollbar-color: var(--ubits-border-2, #e5e7eb) var(--ubits-bg-2, #f9fafb);
+    scrollbar-color: var(--ubits-border-2) var(--ubits-bg-2);
 }
 
 /* Columnas fijadas (pinned) - siempre que estén marcadas como pinned */
@@ -1124,14 +1124,14 @@
     position: sticky !important;
     /* left se establece inline desde el código */
     z-index: 13 !important;
-    background-color: var(--ubits-bg-1, #ffffff) !important;
+    background-color: var(--ubits-bg-1) !important;
 }
 
 .ubits-data-table__cell--pinned {
     position: sticky !important;
     /* left se establece inline desde el código */
     z-index: 12 !important;
-    background-color: var(--ubits-bg-1, #ffffff) !important;
+    background-color: var(--ubits-bg-1) !important;
 }
 
 /* Cuando hay scroll horizontal, aplicar estilos adicionales si es necesario */

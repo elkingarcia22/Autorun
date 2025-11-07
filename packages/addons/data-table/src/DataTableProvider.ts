@@ -253,7 +253,7 @@ function renderCellByType(column: TableColumn, row: TableRow, columnType: Column
           ${avatarHTML}
           <div style="display: flex; flex-direction: column; gap: 4px;">
             ${nombreElement}
-            ${textoComplementario ? `<span class="ubits-body-sm-regular" style="color: var(--ubits-body-md-regular-3, #6b7280);">${textoComplementario}</span>` : ''}
+            ${textoComplementario ? `<span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">${textoComplementario}</span>` : ''}
           </div>
         </div>
       `;
@@ -414,7 +414,7 @@ function renderCellByType(column: TableColumn, row: TableRow, columnType: Column
       const isClickable = column.emailClickable !== false; // Por defecto es true
       
       if (isClickable) {
-        return `<a href="mailto:${email}" class="ubits-body-md-regular" style="color: var(--ubits-accent-brand-static-inverted, #0c5bef); text-decoration: none;">${email}</a>`;
+        return `<a href="mailto:${email}" class="ubits-body-md-regular" style="color: var(--ubits-accent-brand-static-inverted); text-decoration: none;">${email}</a>`;
       } else {
         return `<span class="ubits-body-md-regular">${email}</span>`;
       }
@@ -2637,10 +2637,11 @@ export function createDataTable(options: DataTableOptions): {
         dropdown.style.top = `${rect.bottom + 4}px`;
         dropdown.style.left = `${rect.left}px`;
         dropdown.style.zIndex = '1000';
-        dropdown.style.backgroundColor = 'var(--ubits-bg-1, #ffffff)';
-        dropdown.style.border = '1px solid var(--ubits-border-1, #d0d2d5)';
+        dropdown.style.backgroundColor = 'var(--ubits-bg-1)';
+        dropdown.style.border = '1px solid var(--ubits-border-1)';
         dropdown.style.borderRadius = '8px';
-        dropdown.style.boxShadow = '0 4px 12px var(--ubits-shadow-md, rgba(0, 0, 0, 0.15))';
+        // Shadow no tiene token UBITS, usando valor estándar
+        dropdown.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
         dropdown.style.display = 'block';
         dropdown.style.minWidth = '200px';
         dropdown.style.maxWidth = '300px';
