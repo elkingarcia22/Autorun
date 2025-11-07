@@ -1083,7 +1083,7 @@
 .ubits-data-table__scrollable-container .ubits-data-table__column-header[data-column-id="checkbox-2"] {
     /* position: sticky removido - el checkbox NO debe fijarse */
     /* left: 80px removido - no necesario sin sticky */
-    z-index: 15 !important;
+    z-index: 1 !important; /* z-index reducido ya que no es sticky */
     background-color: var(--ubits-bg-1) !important;
 }
 
