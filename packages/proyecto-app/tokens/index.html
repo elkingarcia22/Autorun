@@ -1197,92 +1197,39 @@ npm run dev</code></pre>
       <p class="subtitle" style="color: var(--ubits-fg-2-medium); margin-bottom: 32px; font-size: var(--font-body-md-size); line-height: var(--font-body-md-line);">
         Documentación completa de todos los add-ons disponibles en Autoframe Hub, organizados por categorías.
       </p>
-      
-      <!-- Tabs para categorías de Add-ons -->
-      <div style="display: flex; gap: 8px; margin-bottom: 24px; border-bottom: 1px solid var(--ubits-border-1);">
-        <button class="addons-tab-btn active" data-tab="funcionales" onclick="switchAddonsTab('funcionales')" style="background: none; border: none; padding: 12px 16px; cursor: pointer; color: var(--ubits-fg-2-high); font-size: var(--font-body-md-size); font-weight: var(--weight-semibold); border-bottom: 2px solid var(--ubits-button-primary-bg-default);">
-          ⚙️ Funcionales
-        </button>
-        <button class="addons-tab-btn" data-tab="diseño" onclick="switchAddonsTab('diseño')" style="background: none; border: none; padding: 12px 16px; cursor: pointer; color: var(--ubits-fg-2-medium); font-size: var(--font-body-md-size); font-weight: var(--weight-semibold); border-bottom: 2px solid transparent;">
-          🎨 Diseño
-        </button>
-        <button class="addons-tab-btn" data-tab="componentes" onclick="switchAddonsTab('componentes')" style="background: none; border: none; padding: 12px 16px; cursor: pointer; color: var(--ubits-fg-2-medium); font-size: var(--font-body-md-size); font-weight: var(--weight-semibold); border-bottom: 2px solid transparent;">
-          🧩 Componentes
-        </button>
-      </div>
-      
-      <!-- Contenido: Add-ons Funcionales -->
-      <div id="addons-content-funcionales" class="addons-content" style="display: block;">
-        <div class="kcard" style="background: var(--ubits-bg-1); border: none; border-radius: 12px; padding: 24px; margin-bottom: 24px;">
-          <h3 class="ubits-heading-h3" style="color: var(--ubits-fg-1-high); margin: 0 0 16px 0; font-size: var(--font-h2-size); font-weight: var(--weight-semibold);">⚙️ Add-ons Funcionales</h3>
-          <p style="color: var(--ubits-fg-1-medium); font-size: var(--font-body-md-size); line-height: var(--font-body-md-line); margin: 0 0 16px 0;">
-            Los add-ons funcionales proporcionan servicios y herramientas que extienden las capacidades del Hub.
-          </p>
-          <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; border: none; margin-top: 16px;">
-            <p style="color: var(--ubits-fg-2-medium); font-size: var(--font-body-sm-size); margin: 0; line-height: var(--font-body-sm-line);">
-              <strong style="color: var(--ubits-fg-2-high);">📋 Lista de Add-ons Funcionales:</strong>
-            </p>
-            <ul style="color: var(--ubits-fg-2-medium); font-size: var(--font-body-sm-size); margin: 12px 0 0 0; padding-left: 20px; line-height: var(--font-body-sm-line);">
-              <li>GitHub (Auto-commit y gestión)</li>
-              <li>Microsoft Clarity (Analytics)</li>
-              <li>Vercel (Deployment)</li>
-              <li>Storybook (Desarrollo de componentes)</li>
-              <li>Supabase (Base de datos y auth)</li>
-              <li>AI Assistant (Ollama/Gemini)</li>
-              <li>JEST (Testing unitario)</li>
-              <li>ESLint (Linting automático)</li>
-              <li>Prettier (Formateo automático)</li>
-              <li>Lighthouse (Auditoría de performance)</li>
-              <li>Docusaurus (Documentación)</li>
-              <li>i18n (Internacionalización)</li>
-              <li>Figma Sync (Sincronización con Figma)</li>
-            </ul>
-            <p style="color: var(--ubits-fg-2-medium); font-size: var(--font-body-sm-size); margin: 16px 0 0 0; line-height: var(--font-body-sm-line);">
-              <strong style="color: var(--ubits-fg-2-high);">💡 Nota:</strong> Cada add-on tiene su propia página de documentación con detalles sobre cómo funciona, qué se necesita para usarlo (repositorio, link, API key, etc.), y ejemplos de uso.
-            </p>
+
+      <div style="display: flex; gap: 20px; align-items: flex-start; margin-top: 24px;">
+        <!-- Sidebar de navegación de add-ons -->
+        <aside class="sidebar" style="width: 280px; flex-shrink: 0;">
+          <div class="sidebox">
+            <div class="side-title" id="addons-category-title" style="display: flex; align-items: center; justify-content: space-between;">
+              <span>Categorías</span>
+              <span style="font-size: var(--font-body-xs-size); color: var(--ubits-fg-1-medium); font-weight: var(--weight-regular); margin-left: 8px;">0 add-ons</span>
+            </div>
+            <nav class="side" id="addons-nav" role="navigation" aria-label="Navegación de add-ons">
+              <!-- Se generará dinámicamente -->
+            </nav>
           </div>
-        </div>
-      </div>
-      
-      <!-- Contenido: Add-ons de Diseño -->
-      <div id="addons-content-diseño" class="addons-content" style="display: none;">
-        <div class="kcard" style="background: var(--ubits-bg-1); border: none; border-radius: 12px; padding: 24px; margin-bottom: 24px;">
-          <h3 class="ubits-heading-h3" style="color: var(--ubits-fg-1-high); margin: 0 0 16px 0; font-size: var(--font-h2-size); font-weight: var(--weight-semibold);">🎨 Add-ons de Diseño</h3>
-          <p style="color: var(--ubits-fg-1-medium); font-size: var(--font-body-md-size); line-height: var(--font-body-md-line); margin: 0 0 16px 0;">
-            Los add-ons de diseño proporcionan tokens, tipografía y templates que definen la apariencia visual del proyecto.
-          </p>
-          <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; border: none; margin-top: 16px;">
-            <p style="color: var(--ubits-fg-2-medium); font-size: var(--font-body-sm-size); margin: 0; line-height: var(--font-body-sm-line);">
-              <strong style="color: var(--ubits-fg-2-high);">📋 Lista de Add-ons de Diseño:</strong>
-            </p>
-            <ul style="color: var(--ubits-fg-2-medium); font-size: var(--font-body-sm-size); margin: 12px 0 0 0; padding-left: 20px; line-height: var(--font-body-sm-line);">
-              <li>Tokens Autoframe (Tokens genéricos)</li>
-              <li>Tipografía (Sistema de tipografía)</li>
-              <li>Templates (Templates de aplicación)</li>
-              <li>Font Awesome (Iconos)</li>
-            </ul>
+        </aside>
+
+        <!-- Contenedor principal de add-ons -->
+        <div style="flex: 1; min-width: 0;">
+          <div id="addons-empty-state" style="display: none; text-align: center; padding: 60px 20px;">
+            <div style="font-size: 48px; margin-bottom: 16px; opacity: 0.3;">
+              <i class="far fa-plug"></i>
+            </div>
+            <h3 style="color: var(--ubits-fg-1-high); margin-bottom: 8px;">Sin resultados</h3>
+            <p style="color: var(--ubits-fg-1-medium);">Intenta con otro término de búsqueda.</p>
           </div>
-        </div>
-      </div>
-      
-      <!-- Contenido: Add-ons de Componentes -->
-      <div id="addons-content-componentes" class="addons-content" style="display: none;">
-        <div class="kcard" style="background: var(--ubits-bg-1); border: none; border-radius: 12px; padding: 24px; margin-bottom: 24px;">
-          <h3 class="ubits-heading-h3" style="color: var(--ubits-fg-1-high); margin: 0 0 16px 0; font-size: var(--font-h2-size); font-weight: var(--weight-semibold);">🧩 Add-ons de Componentes</h3>
-          <p style="color: var(--ubits-fg-1-medium); font-size: var(--font-body-md-size); line-height: var(--font-body-md-line); margin: 0 0 16px 0;">
-            Los add-ons de componentes proporcionan elementos UI reutilizables que puedes usar en tus aplicaciones.
-          </p>
-          <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; border: none; margin-top: 16px;">
-            <p style="color: var(--ubits-fg-2-medium); font-size: var(--font-body-sm-size); margin: 0; line-height: var(--font-body-sm-line);">
-              <strong style="color: var(--ubits-fg-2-high);">📋 Lista de Add-ons de Componentes:</strong>
-            </p>
-            <ul style="color: var(--ubits-fg-2-medium); font-size: var(--font-body-sm-size); margin: 12px 0 0 0; padding-left: 20px; line-height: var(--font-body-sm-line);">
-              <li>Button (Botones)</li>
-              <li>Sidebar (Barra lateral de navegación)</li>
-              <li>Input (Campos de entrada)</li>
-              <li>Alert (Alertas)</li>
-              <li>Toast (Notificaciones)</li>
-            </ul>
+          <div id="addons-container" class="kstack">
+            <!-- Los add-ons se cargarán aquí dinámicamente -->
+            <div id="addons-default-message" style="text-align: center; padding: 60px 20px;">
+              <div style="font-size: 48px; margin-bottom: 16px; opacity: 0.3;">
+                <i class="far fa-plug"></i>
+              </div>
+              <h3 style="color: var(--ubits-fg-1-high); margin-bottom: 8px;">Selecciona un add-on</h3>
+              <p style="color: var(--ubits-fg-1-medium);">Elige un add-on del menú lateral para ver su documentación completa.</p>
+            </div>
           </div>
         </div>
       </div>
@@ -2873,24 +2820,527 @@ npm run dev</code></pre>
       }
 
       // Función para cambiar tabs en la sección Add-ons
-      function switchAddonsTab(tabId) {
-        // Ocultar todos los contenidos
-        document.querySelectorAll('.addons-content').forEach(content => {
-          content.style.display = 'none';
-        });
+      // Inventario de Add-ons organizados por categoría
+      const addonsInventory = {
+        'Funcionales': [
+          { id: 'github', name: 'GitHub', icon: 'fa-code-branch', description: 'Auto-commit y gestión de repositorios' },
+          { id: 'clarity', name: 'Microsoft Clarity', icon: 'fa-chart-line', description: 'Analytics y seguimiento de usuarios' },
+          { id: 'vercel', name: 'Vercel', icon: 'fa-rocket', description: 'Despliegue automático de aplicaciones' },
+          { id: 'storybook', name: 'Storybook', icon: 'fa-book', description: 'Desarrollo y documentación de componentes' },
+          { id: 'supabase', name: 'Supabase', icon: 'fa-database', description: 'Base de datos, autenticación y almacenamiento' },
+          { id: 'ai', name: 'AI Assistant', icon: 'fa-robot', description: 'Asistente de IA con Ollama/Gemini' },
+          { id: 'jest', name: 'JEST', icon: 'fa-vial', description: 'Testing unitario automatizado' },
+          { id: 'eslint', name: 'ESLint', icon: 'fa-code', description: 'Linting automático de código' },
+          { id: 'prettier', name: 'Prettier', icon: 'fa-magic', description: 'Formateo automático de código' },
+          { id: 'lighthouse', name: 'Lighthouse', icon: 'fa-tachometer-alt', description: 'Auditoría de performance y calidad' },
+          { id: 'docusaurus', name: 'Docusaurus', icon: 'fa-book-open', description: 'Generación de documentación' },
+          { id: 'i18n', name: 'i18n', icon: 'fa-globe', description: 'Internacionalización y traducción' },
+          { id: 'figma-sync', name: 'Figma Sync', icon: 'fa-sync', description: 'Sincronización con Figma' }
+        ],
+        'Diseño': [
+          { id: 'tokens', name: 'Tokens Autoframe', icon: 'fa-palette', description: 'Tokens de diseño genéricos' },
+          { id: 'typography', name: 'Tipografía', icon: 'fa-font', description: 'Sistema de tipografía' },
+          { id: 'templates-admin', name: 'Template Admin', icon: 'fa-user-shield', description: 'Template para administradores' },
+          { id: 'templates-colaborador', name: 'Template Colaborador', icon: 'fa-users', description: 'Template para colaboradores' },
+          { id: 'fontawesome', name: 'Font Awesome', icon: 'fa-icons', description: 'Biblioteca de iconos' }
+        ],
+        'Componentes': [
+          { id: 'button', name: 'Button', icon: 'fa-mouse-pointer', description: 'Botones interactivos' },
+          { id: 'sidebar', name: 'Sidebar', icon: 'fa-bars', description: 'Barra lateral de navegación' },
+          { id: 'input', name: 'Input', icon: 'fa-keyboard', description: 'Campos de entrada' },
+          { id: 'alert', name: 'Alert', icon: 'fa-exclamation-triangle', description: 'Alertas y notificaciones' },
+          { id: 'toast', name: 'Toast', icon: 'fa-bell', description: 'Notificaciones toast' }
+        ]
+      };
+
+      // Información detallada de cada add-on
+      const addonsDetails = {
+        'github': {
+          name: 'GitHub',
+          category: 'Funcionales',
+          icon: 'fa-code-branch',
+          description: 'Add-on para gestión automática de repositorios Git y GitHub',
+          whatIs: 'GitHub es un add-on funcional que permite gestionar automáticamente tu repositorio Git. Proporciona funcionalidades de auto-commit, gestión de ramas, reversión a estados anteriores, y sincronización con repositorios remotos.',
+          whatFor: 'Este add-on es útil para automatizar el flujo de trabajo con Git, permitiendo commits automáticos cuando detecta cambios, gestión de ramas, y sincronización automática con GitHub. Ideal para proyectos que requieren un control de versiones robusto y automatizado.',
+          requirements: [
+            { type: 'repositorio', label: 'URL del repositorio GitHub', required: true, example: 'https://github.com/usuario/repositorio.git' },
+            { type: 'config', label: 'Configuración de auto-commit', required: false, example: 'Activar/desactivar commits automáticos' },
+            { type: 'token', label: 'GitHub Personal Access Token (opcional)', required: false, example: 'ghp_xxxxxxxxxxxx' }
+          ]
+        },
+        'clarity': {
+          name: 'Microsoft Clarity',
+          category: 'Funcionales',
+          icon: 'fa-chart-line',
+          description: 'Analytics y seguimiento de comportamiento de usuarios',
+          whatIs: 'Microsoft Clarity es un add-on funcional que integra Microsoft Clarity Analytics en tu aplicación. Permite rastrear el comportamiento de los usuarios, generar mapas de calor, grabar sesiones, y analizar métricas de rendimiento.',
+          whatFor: 'Este add-on es esencial para entender cómo los usuarios interactúan con tu aplicación. Proporciona insights valiosos sobre navegación, clicks, scrolls, y problemas de usabilidad. Ideal para optimizar la experiencia del usuario y mejorar la conversión.',
+          requirements: [
+            { type: 'api-key', label: 'Clarity Project ID', required: true, example: 'abc123xyz' },
+            { type: 'link', label: 'URL de tu aplicación', required: true, example: 'https://tu-app.com' }
+          ]
+        },
+        'vercel': {
+          name: 'Vercel',
+          category: 'Funcionales',
+          icon: 'fa-rocket',
+          description: 'Despliegue automático de aplicaciones en Vercel',
+          whatIs: 'Vercel es un add-on funcional que permite desplegar automáticamente tu aplicación en la plataforma Vercel. Proporciona despliegues instantáneos, preview deployments, y optimizaciones automáticas.',
+          whatFor: 'Este add-on simplifica el proceso de despliegue, permitiendo que cada push a tu repositorio genere un nuevo deployment automáticamente. Ideal para proyectos que requieren despliegues frecuentes y previews de cambios antes de producción.',
+          requirements: [
+            { type: 'token', label: 'Vercel Access Token', required: true, example: 'vercel_xxxxxxxxxxxx' },
+            { type: 'repositorio', label: 'Repositorio conectado (opcional)', required: false, example: 'GitHub/GitLab/Bitbucket' },
+            { type: 'config', label: 'Configuración de proyecto', required: false, example: 'Build settings, environment variables' }
+          ]
+        },
+        'storybook': {
+          name: 'Storybook',
+          category: 'Funcionales',
+          icon: 'fa-book',
+          description: 'Desarrollo y documentación de componentes UI',
+          whatIs: 'Storybook es un add-on funcional que proporciona un entorno aislado para desarrollar, probar y documentar componentes UI. Permite crear "stories" para cada componente, visualizar diferentes variantes, y generar documentación interactiva.',
+          whatFor: 'Este add-on es fundamental para el desarrollo de sistemas de diseño. Permite desarrollar componentes de forma aislada, probar diferentes estados y variantes, y crear documentación viva que se actualiza automáticamente. Ideal para equipos que trabajan con sistemas de diseño.',
+          requirements: [
+            { type: 'config', label: 'Configuración de Storybook', required: false, example: 'Framework, addons, configuración de build' },
+            { type: 'path', label: 'Ruta de componentes (opcional)', required: false, example: './src/components' }
+          ]
+        },
+        'supabase': {
+          name: 'Supabase',
+          category: 'Funcionales',
+          icon: 'fa-database',
+          description: 'Base de datos, autenticación y almacenamiento',
+          whatIs: 'Supabase es un add-on funcional que integra Supabase (alternativa open-source a Firebase) en tu aplicación. Proporciona base de datos PostgreSQL, autenticación, almacenamiento de archivos, y APIs en tiempo real.',
+          whatFor: 'Este add-on es ideal para aplicaciones que necesitan backend completo sin configurar servidores. Proporciona autenticación lista para usar, base de datos relacional, almacenamiento de archivos, y APIs REST automáticas. Perfecto para MVPs y aplicaciones full-stack.',
+          requirements: [
+            { type: 'api-key', label: 'Supabase Project URL', required: true, example: 'https://xxxxx.supabase.co' },
+            { type: 'api-key', label: 'Supabase Anon Key', required: true, example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...' },
+            { type: 'config', label: 'Configuración de servicios', required: false, example: 'Auth, Database, Storage' }
+          ]
+        },
+        'ai': {
+          name: 'AI Assistant',
+          category: 'Funcionales',
+          icon: 'fa-robot',
+          description: 'Asistente de IA con Ollama (local) y Google Gemini (API)',
+          whatIs: 'AI Assistant es un add-on funcional que proporciona capacidades de inteligencia artificial en tu aplicación. Soporta Ollama para ejecución local y gratuita, y Google Gemini para uso basado en API.',
+          whatFor: 'Este add-on permite integrar capacidades de IA en tu aplicación, como generación de texto, respuestas inteligentes, análisis de contenido, y más. Ollama es perfecto para desarrollo local sin costos, mientras que Gemini ofrece capacidades más avanzadas con API.',
+          requirements: [
+            { type: 'config', label: 'Proveedor de IA (Ollama/Gemini)', required: true, example: 'Ollama (local) o Gemini (API)' },
+            { type: 'api-key', label: 'Google Gemini API Key (si usas Gemini)', required: false, example: 'AIzaSyxxxxxxxxxxxx' },
+            { type: 'config', label: 'Configuración de modelo', required: false, example: 'Modelo, temperatura, max tokens' }
+          ]
+        },
+        'jest': {
+          name: 'JEST',
+          category: 'Funcionales',
+          icon: 'fa-vial',
+          description: 'Testing unitario automatizado',
+          whatIs: 'JEST es un add-on funcional que integra Jest, el framework de testing de JavaScript. Permite escribir y ejecutar tests unitarios, de integración, y de snapshot de forma automatizada.',
+          whatFor: 'Este add-on es esencial para mantener la calidad del código. Permite escribir tests que se ejecutan automáticamente, generar reportes de cobertura, y detectar regresiones. Ideal para proyectos que requieren alta confiabilidad y mantenibilidad.',
+          requirements: [
+            { type: 'config', label: 'Configuración de Jest', required: false, example: 'Test environment, coverage, mocks' },
+            { type: 'path', label: 'Ruta de tests (opcional)', required: false, example: './src/**/*.test.js' }
+          ]
+        },
+        'eslint': {
+          name: 'ESLint',
+          category: 'Funcionales',
+          icon: 'fa-code',
+          description: 'Linting automático de código',
+          whatIs: 'ESLint es un add-on funcional que integra ESLint, el linter más popular de JavaScript. Analiza tu código en busca de errores, problemas de estilo, y violaciones de mejores prácticas.',
+          whatFor: 'Este add-on ayuda a mantener la consistencia y calidad del código. Detecta errores antes de que lleguen a producción, aplica reglas de estilo consistentes, y sugiere mejoras. Ideal para equipos que trabajan en proyectos grandes y requieren código uniforme.',
+          requirements: [
+            { type: 'config', label: 'Configuración de ESLint', required: false, example: 'Rules, plugins, parser options' },
+            { type: 'config', label: 'Auto-fix (opcional)', required: false, example: 'Activar corrección automática' }
+          ]
+        },
+        'prettier': {
+          name: 'Prettier',
+          category: 'Funcionales',
+          icon: 'fa-magic',
+          description: 'Formateo automático de código',
+          whatIs: 'Prettier es un add-on funcional que integra Prettier, el formateador de código más popular. Formatea automáticamente tu código según reglas predefinidas, eliminando debates sobre estilo.',
+          whatFor: 'Este add-on asegura que todo el código tenga un formato consistente, independientemente del desarrollador. Se integra con el editor y puede formatear al guardar o antes de commits. Ideal para mantener código limpio y legible.',
+          requirements: [
+            { type: 'config', label: 'Configuración de Prettier', required: false, example: 'Print width, tab width, semicolons' },
+            { type: 'config', label: 'Formateo al guardar (opcional)', required: false, example: 'Activar formateo automático' }
+          ]
+        },
+        'lighthouse': {
+          name: 'Lighthouse',
+          category: 'Funcionales',
+          icon: 'fa-tachometer-alt',
+          description: 'Auditoría de performance y calidad web',
+          whatIs: 'Lighthouse es un add-on funcional que integra Google Lighthouse, una herramienta de auditoría automatizada. Analiza el rendimiento, accesibilidad, SEO, y mejores prácticas de tu aplicación web.',
+          whatFor: 'Este add-on es esencial para optimizar el rendimiento y calidad de tu aplicación. Proporciona métricas detalladas, sugerencias de mejora, y reportes visuales. Ideal para asegurar que tu aplicación cumpla con estándares web modernos.',
+          requirements: [
+            { type: 'link', label: 'URL para auditar', required: true, example: 'https://tu-app.com' },
+            { type: 'config', label: 'Categorías a auditar', required: false, example: 'Performance, Accessibility, SEO, Best Practices' }
+          ]
+        },
+        'docusaurus': {
+          name: 'Docusaurus',
+          category: 'Funcionales',
+          icon: 'fa-book-open',
+          description: 'Generación de documentación estática',
+          whatIs: 'Docusaurus es un add-on funcional que integra Docusaurus, un generador de sitios de documentación estática. Permite crear documentación moderna, navegable, y con búsqueda integrada.',
+          whatFor: 'Este add-on simplifica la creación y mantenimiento de documentación. Genera sitios estáticos rápidos, con navegación automática, búsqueda, y soporte para Markdown. Ideal para documentar APIs, guías de usuario, y sistemas de diseño.',
+          requirements: [
+            { type: 'path', label: 'Ruta de documentación', required: false, example: './docs' },
+            { type: 'config', label: 'Configuración de sitio', required: false, example: 'Título, URL, tema' }
+          ]
+        },
+        'i18n': {
+          name: 'i18n',
+          category: 'Funcionales',
+          icon: 'fa-globe',
+          description: 'Internacionalización y traducción',
+          whatIs: 'i18n es un add-on funcional que proporciona capacidades de internacionalización (i18n) para tu aplicación. Permite traducir contenido a múltiples idiomas y gestionar locales.',
+          whatFor: 'Este add-on es esencial para aplicaciones que necesitan soportar múltiples idiomas. Permite gestionar traducciones, cambiar idiomas dinámicamente, y mantener consistencia en formatos de fecha, moneda, y números. Ideal para aplicaciones globales.',
+          requirements: [
+            { type: 'config', label: 'Idiomas soportados', required: true, example: 'es, en, fr, de' },
+            { type: 'config', label: 'Idioma por defecto', required: false, example: 'es' },
+            { type: 'path', label: 'Ruta de traducciones (opcional)', required: false, example: './locales' }
+          ]
+        },
+        'figma-sync': {
+          name: 'Figma Sync',
+          category: 'Funcionales',
+          icon: 'fa-sync',
+          description: 'Sincronización de diseño con Figma',
+          whatIs: 'Figma Sync es un add-on funcional que sincroniza tokens de diseño y componentes desde Figma a tu proyecto. Permite mantener los tokens y componentes actualizados automáticamente.',
+          whatFor: 'Este add-on conecta el diseño con el código, asegurando que los tokens y componentes en tu aplicación estén siempre sincronizados con el diseño en Figma. Ideal para equipos que trabajan con sistemas de diseño y requieren consistencia entre diseño y código.',
+          requirements: [
+            { type: 'api-key', label: 'Figma API Key', required: true, example: 'figd_xxxxxxxxxxxx' },
+            { type: 'api-key', label: 'Figma File Key', required: true, example: 'abc123xyz' },
+            { type: 'config', label: 'Sincronización automática (opcional)', required: false, example: 'Activar sync periódico' }
+          ]
+        },
+        'tokens': {
+          name: 'Tokens Autoframe',
+          category: 'Diseño',
+          icon: 'fa-palette',
+          description: 'Tokens de diseño genéricos de Autoframe',
+          whatIs: 'Tokens Autoframe es un add-on de diseño que proporciona tokens de diseño genéricos (colores, espaciado, tipografía, etc.) que pueden ser utilizados como base para cualquier proyecto.',
+          whatFor: 'Este add-on proporciona una base sólida de tokens de diseño que puedes personalizar según las necesidades de tu proyecto. Ideal para proyectos que necesitan tokens consistentes y bien estructurados desde el inicio.',
+          requirements: [
+            { type: 'config', label: 'Configuración de tokens (opcional)', required: false, example: 'Personalizar colores, espaciado, etc.' }
+          ]
+        },
+        'typography': {
+          name: 'Tipografía',
+          category: 'Diseño',
+          icon: 'fa-font',
+          description: 'Sistema de tipografía completo',
+          whatIs: 'Tipografía es un add-on de diseño que proporciona un sistema completo de tipografía, incluyendo fuentes, tamaños, pesos, y estilos predefinidos.',
+          whatFor: 'Este add-on asegura consistencia tipográfica en toda la aplicación. Proporciona escalas tipográficas bien definidas y clases CSS reutilizables. Ideal para mantener jerarquía visual y legibilidad.',
+          requirements: [
+            { type: 'config', label: 'Configuración de fuentes (opcional)', required: false, example: 'Fuentes personalizadas, tamaños, etc.' }
+          ]
+        },
+        'templates-admin': {
+          name: 'Template Admin',
+          category: 'Diseño',
+          icon: 'fa-user-shield',
+          description: 'Template HTML para aplicaciones de administración',
+          whatIs: 'Template Admin es un add-on de diseño que proporciona un template HTML completo para aplicaciones de administración, con sidebar, navegación, y estructura predefinida.',
+          whatFor: 'Este add-on acelera el desarrollo de aplicaciones administrativas proporcionando una estructura base lista para usar. Incluye componentes comunes como sidebar, navegación, y layouts. Ideal para dashboards y paneles de administración.',
+          requirements: [
+            { type: 'config', label: 'Personalización (opcional)', required: false, example: 'Colores, logo, menú personalizado' }
+          ]
+        },
+        'templates-colaborador': {
+          name: 'Template Colaborador',
+          category: 'Diseño',
+          icon: 'fa-users',
+          description: 'Template HTML para aplicaciones de colaboradores',
+          whatIs: 'Template Colaborador es un add-on de diseño que proporciona un template HTML completo para aplicaciones orientadas a colaboradores, con navegación simplificada y estructura optimizada.',
+          whatFor: 'Este add-on proporciona una base para aplicaciones donde los usuarios son colaboradores. Incluye navegación simplificada, áreas de contenido, y layouts optimizados para productividad. Ideal para aplicaciones internas y herramientas de trabajo.',
+          requirements: [
+            { type: 'config', label: 'Personalización (opcional)', required: false, example: 'Colores, menú, contenido personalizado' }
+          ]
+        },
+        'fontawesome': {
+          name: 'Font Awesome',
+          category: 'Diseño',
+          icon: 'fa-icons',
+          description: 'Biblioteca de iconos Font Awesome',
+          whatIs: 'Font Awesome es un add-on de diseño que integra la biblioteca de iconos Font Awesome, proporcionando miles de iconos vectoriales listos para usar.',
+          whatFor: 'Este add-on proporciona una amplia colección de iconos profesionales que puedes usar en tu aplicación. Soporta versiones gratuitas y Pro, y se integra fácilmente con CSS. Ideal para mejorar la interfaz visual con iconos consistentes.',
+          requirements: [
+            { type: 'config', label: 'Versión (Free/Pro)', required: false, example: 'Free (CDN) o Pro (Kit ID)' },
+            { type: 'api-key', label: 'Font Awesome Kit ID (si usas Pro)', required: false, example: 'abc123xyz' }
+          ]
+        },
+        'button': {
+          name: 'Button',
+          category: 'Componentes',
+          icon: 'fa-mouse-pointer',
+          description: 'Componente de botón con múltiples variantes',
+          whatIs: 'Button es un add-on de componentes que proporciona un componente de botón completo con múltiples variantes (primary, secondary, tertiary), tamaños, estados, y opciones de iconos.',
+          whatFor: 'Este add-on proporciona botones consistentes y accesibles para toda la aplicación. Incluye estados hover, active, disabled, loading, y soporte para iconos. Ideal para mantener consistencia en la interacción del usuario.',
+          requirements: [
+            { type: 'config', label: 'Personalización (opcional)', required: false, example: 'Colores, tamaños, estilos personalizados' }
+          ]
+        },
+        'sidebar': {
+          name: 'Sidebar',
+          category: 'Componentes',
+          icon: 'fa-bars',
+          description: 'Componente de barra lateral de navegación',
+          whatIs: 'Sidebar es un add-on de componentes que proporciona un componente de barra lateral navegable, con soporte para menús, submenús, iconos, y estados activos.',
+          whatFor: 'Este add-on proporciona navegación lateral consistente y accesible. Incluye soporte para múltiples niveles de navegación, estados activos, y responsive. Ideal para aplicaciones con navegación compleja.',
+          requirements: [
+            { type: 'config', label: 'Configuración de menú', required: false, example: 'Items de menú, estructura, iconos' }
+          ]
+        },
+        'input': {
+          name: 'Input',
+          category: 'Componentes',
+          icon: 'fa-keyboard',
+          description: 'Componente de campo de entrada',
+          whatIs: 'Input es un add-on de componentes que proporciona componentes de entrada de texto con validación, estados de error, labels, y placeholders.',
+          whatFor: 'Este add-on proporciona campos de entrada consistentes y accesibles. Incluye validación visual, mensajes de error, y estados disabled. Ideal para formularios y entrada de datos.',
+          requirements: [
+            { type: 'config', label: 'Configuración de validación (opcional)', required: false, example: 'Reglas de validación, mensajes de error' }
+          ]
+        },
+        'alert': {
+          name: 'Alert',
+          category: 'Componentes',
+          icon: 'fa-exclamation-triangle',
+          description: 'Componente de alertas y notificaciones',
+          whatIs: 'Alert es un add-on de componentes que proporciona componentes de alerta con múltiples variantes (success, error, warning, info) y opciones de cierre.',
+          whatFor: 'Este add-on proporciona un sistema consistente de alertas para comunicar información importante al usuario. Incluye variantes visuales, iconos, y opciones de cierre. Ideal para feedback y notificaciones.',
+          requirements: [
+            { type: 'config', label: 'Configuración de variantes (opcional)', required: false, example: 'Colores, iconos, tiempo de auto-cierre' }
+          ]
+        },
+        'toast': {
+          name: 'Toast',
+          category: 'Componentes',
+          icon: 'fa-bell',
+          description: 'Componente de notificaciones toast',
+          whatIs: 'Toast es un add-on de componentes que proporciona notificaciones toast no intrusivas que aparecen temporalmente en la pantalla.',
+          whatFor: 'Este add-on proporciona un sistema de notificaciones toast para feedback inmediato sin interrumpir el flujo del usuario. Incluye posicionamiento, auto-cierre, y múltiples variantes. Ideal para confirmaciones y notificaciones temporales.',
+          requirements: [
+            { type: 'config', label: 'Configuración de posición y duración (opcional)', required: false, example: 'Posición, duración, animaciones' }
+          ]
+        }
+      };
+
+      // Generar navegación lateral de add-ons
+      function generateAddonsNav() {
+        console.log('🔄 generateAddonsNav llamado');
         
-        // Mostrar el contenido seleccionado
-        const selectedContent = document.getElementById(`addons-content-${tabId}`);
-        if (selectedContent) {
-          selectedContent.style.display = 'block';
+        const nav = document.getElementById('addons-nav');
+        if (!nav) {
+          console.error('❌ addons-nav NO encontrado en DOM');
+          return false;
+        }
+
+        console.log('✅ addons-nav encontrado, generando navegación...');
+
+        const categories = Object.keys(addonsInventory);
+        let navHTML = '';
+        let firstAddonId = null;
+
+        categories.forEach((category, catIndex) => {
+          const addons = addonsInventory[category];
+          const categoryId = category.toLowerCase().replace(/\s+/g, '-');
+          const isFirstCategory = catIndex === 0;
+          const isExpanded = isFirstCategory 
+            ? (localStorage.getItem(`addon-category-${categoryId}-expanded`) !== 'false')
+            : (localStorage.getItem(`addon-category-${categoryId}-expanded`) === 'true');
+          
+          navHTML += `<div class="side-title category-toggle" 
+            data-category="${categoryId}" 
+            style="margin-top: ${catIndex > 0 ? '16px' : '0'}; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none; padding: 8px 10px; border-radius: 4px; transition: background-color 0.2s ease;">
+            <div style="display: flex; align-items: center; gap: 8px; flex: 1;">
+              <i class="fas fa-chevron-${isExpanded ? 'down' : 'right'}" style="font-size: 10px; transition: transform 0.2s ease; color: var(--ubits-fg-1-medium);"></i>
+              <span>${category}</span>
+            </div>
+          </div>`;
+          
+          navHTML += `<div class="category-content" data-category="${categoryId}" style="display: ${isExpanded ? 'flex' : 'none'}; flex-direction: column; gap: 6px; margin-bottom: 8px;">`;
+          
+          addons.forEach((addon, addonIndex) => {
+            const addonId = addon.id;
+            
+            const isFirst = catIndex === 0 && addonIndex === 0;
+            if (isFirst && !firstAddonId) {
+              firstAddonId = addonId;
+            }
+            
+            navHTML += `
+              <a href="#addon-${addonId}" 
+                 class="side-link ${isFirst ? 'active' : ''}" 
+                 data-addon="${addonId}"
+                 onclick="handleAddonNavClick(event, '${addonId}'); return false;">
+                <i class="fas ${addon.icon}" style="margin-right: 8px; width: 16px; text-align: center;"></i>
+                ${addon.name}
+              </a>
+            `;
+          });
+          
+          navHTML += `</div>`;
+        });
+
+        nav.innerHTML = navHTML;
+        const linkCount = nav.querySelectorAll('.side-link').length;
+        console.log(`✅ Navegación generada: ${linkCount} links creados`);
+        
+        const addonsCategoryTitle = document.getElementById('addons-category-title');
+        if (addonsCategoryTitle) {
+          const total = Object.values(addonsInventory).flat().length;
+          const countSpan = addonsCategoryTitle.querySelector('span:last-child');
+          if (countSpan) {
+            countSpan.textContent = `${total} add-ons`;
+          }
+        }
+
+        // Event listeners para toggles de categoría
+        nav.addEventListener('click', function(e) {
+          const categoryToggle = e.target.closest('.category-toggle');
+          if (categoryToggle) {
+            e.preventDefault();
+            e.stopPropagation();
+            const categoryId = categoryToggle.getAttribute('data-category');
+            const content = nav.querySelector(`.category-content[data-category="${categoryId}"]`);
+            const chevron = categoryToggle.querySelector('i');
+            
+            if (content) {
+              const isExpanded = content.style.display !== 'none';
+              content.style.display = isExpanded ? 'none' : 'flex';
+              chevron.className = isExpanded ? 'fas fa-chevron-right' : 'fas fa-chevron-down';
+              localStorage.setItem(`addon-category-${categoryId}-expanded`, !isExpanded);
+            }
+          }
+        });
+
+        // Cargar el primer add-on por defecto
+        if (firstAddonId) {
+          setTimeout(() => {
+            loadAddon(firstAddonId);
+          }, 100);
+        }
+
+        return true;
+      }
+
+      // Función para cargar el contenido de un add-on
+      function loadAddon(addonId) {
+        console.log('📦 loadAddon llamado para:', addonId);
+        
+        const addon = addonsDetails[addonId];
+        if (!addon) {
+          console.error('❌ Add-on no encontrado:', addonId);
+          return;
+        }
+
+        const container = document.getElementById('addons-container');
+        if (!container) {
+          console.error('❌ addons-container no encontrado');
+          return;
+        }
+
+        // Ocultar mensaje por defecto
+        const defaultMessage = document.getElementById('addons-default-message');
+        if (defaultMessage) {
+          defaultMessage.style.display = 'none';
+        }
+
+        // Generar HTML del add-on
+        let requirementsHTML = '';
+        if (addon.requirements && addon.requirements.length > 0) {
+          requirementsHTML = '<div style="margin-top: 24px;"><h4 style="color: var(--ubits-fg-1-high); font-size: var(--font-body-md-size); font-weight: var(--weight-semibold); margin: 0 0 16px 0;">📋 Requisitos para usar este add-on:</h4><div style="display: grid; gap: 12px;">';
+          addon.requirements.forEach((req, index) => {
+            requirementsHTML += `
+              <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                  <span style="color: ${req.required ? 'var(--ubits-error)' : 'var(--ubits-fg-1-medium)'}; font-size: var(--font-body-xs-size); font-weight: var(--weight-semibold);">
+                    ${req.required ? '🔴 Requerido' : '🟡 Opcional'}
+                  </span>
+                  <strong style="color: var(--ubits-fg-1-high); font-size: var(--font-body-sm-size);">${req.label}</strong>
+                </div>
+                ${req.example ? `<p style="color: var(--ubits-fg-1-medium); font-size: var(--font-body-xs-size); margin: 8px 0 0 0; font-family: monospace; background: var(--ubits-bg-1); padding: 8px; border-radius: 4px;">Ejemplo: ${req.example}</p>` : ''}
+              </div>
+            `;
+          });
+          requirementsHTML += '</div></div>';
+        }
+
+        const addonHTML = `
+          <div id="addon-${addonId}" class="addon-detail" style="background: var(--ubits-bg-1); border: none; border-radius: 12px; padding: 24px;">
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+              <div style="font-size: 32px; color: var(--ubits-button-primary-bg-default);">
+                <i class="fas ${addon.icon}"></i>
+              </div>
+              <div>
+                <h2 class="ubits-heading-h2" style="color: var(--ubits-fg-1-high); margin: 0 0 4px 0;">${addon.name}</h2>
+                <p style="color: var(--ubits-fg-1-medium); font-size: var(--font-body-sm-size); margin: 0;">
+                  ${addon.category} • ${addon.description}
+                </p>
+              </div>
+            </div>
+
+            <div style="margin-top: 24px;">
+              <h3 class="ubits-heading-h3" style="color: var(--ubits-fg-1-high); margin: 0 0 12px 0; font-size: var(--font-h3-size);">¿Qué es?</h3>
+              <p style="color: var(--ubits-fg-1-medium); font-size: var(--font-body-md-size); line-height: var(--font-body-md-line); margin: 0;">
+                ${addon.whatIs}
+              </p>
+            </div>
+
+            <div style="margin-top: 24px;">
+              <h3 class="ubits-heading-h3" style="color: var(--ubits-fg-1-high); margin: 0 0 12px 0; font-size: var(--font-h3-size);">¿Para qué sirve?</h3>
+              <p style="color: var(--ubits-fg-1-medium); font-size: var(--font-body-md-size); line-height: var(--font-body-md-line); margin: 0;">
+                ${addon.whatFor}
+              </p>
+            </div>
+
+            ${requirementsHTML}
+          </div>
+        `;
+
+        container.innerHTML = addonHTML;
+
+        // Actualizar estado activo en navegación
+        document.querySelectorAll('#addons-nav .side-link').forEach(link => {
+          link.classList.remove('active');
+        });
+        const activeLink = document.querySelector(`#addons-nav .side-link[data-addon="${addonId}"]`);
+        if (activeLink) {
+          activeLink.classList.add('active');
+        }
+
+        console.log('✅ Add-on cargado:', addonId);
+      }
+
+      // Función para manejar clicks en navegación de add-ons
+      window.handleAddonNavClick = function(event, addonId) {
+        console.log('🎯 handleAddonNavClick llamado con:', addonId);
+        
+        if (!addonId) {
+          console.error('❌ addonId no proporcionado');
+          return;
         }
         
-        // Actualizar estilos de los botones
-        document.querySelectorAll('.addons-tab-btn').forEach(btn => {
-          const isActive = btn.getAttribute('data-tab') === tabId;
-          btn.style.color = isActive ? 'var(--ubits-fg-2-high)' : 'var(--ubits-fg-2-medium)';
-          btn.style.borderBottomColor = isActive ? 'var(--ubits-button-primary-bg-default)' : 'transparent';
-        });
+        if (event) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+        
+        loadAddon(addonId);
+      };
+
+      // Inicializar navegación de add-ons cuando se muestra la sección
+      function initializeAddonsSection() {
+        console.log('🔄 initializeAddonsSection llamado');
+        const nav = document.getElementById('addons-nav');
+        if (nav && !nav.innerHTML.trim()) {
+          generateAddonsNav();
+        }
       }
 
       // Tabs por hash (#hub, #addons, #colores)
@@ -8485,6 +8935,41 @@ Reglas Importantes:
             setTimeout(() => {
               console.log('🔄 Click en componentes detectado, inicializando...');
               initializeComponentsSection();
+            }, 150);
+          }
+        });
+      })();
+
+      // Inicializar sección de Add-ons cuando se muestra
+      (function() {
+        const addonsSection = document.getElementById('section-addons');
+        if (addonsSection) {
+          const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+              if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
+                const isVisible = addonsSection.style.display !== 'none';
+                if (isVisible) {
+                  console.log('🔄 Sección Add-ons visible, inicializando...');
+                  setTimeout(() => initializeAddonsSection(), 50);
+                }
+              }
+            });
+          });
+          observer.observe(addonsSection, { attributes: true, attributeFilter: ['style'] });
+
+          // Inicializar si ya está visible
+          if (addonsSection.style.display !== 'none') {
+            setTimeout(() => initializeAddonsSection(), 50);
+          }
+        }
+
+        // También cargar cuando se hace click en el menú
+        document.addEventListener('click', (e) => {
+          const link = e.target.closest('a[data-target="section-addons"]');
+          if (link) {
+            setTimeout(() => {
+              console.log('🔄 Click en add-ons detectado, inicializando...');
+              initializeAddonsSection();
             }, 150);
           }
         });
