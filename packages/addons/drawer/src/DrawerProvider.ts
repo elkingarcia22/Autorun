@@ -1,4 +1,5 @@
 import type { DrawerOptions } from './types/DrawerOptions';
+import { renderButton } from '../../button/src/ButtonProvider';
 
 /**
  * Drawer Navigation Provider
@@ -53,9 +54,13 @@ export function renderDrawer(options: DrawerOptions): string {
         </div>
         ` : ''}
       </div>
-      <button class="ubits-drawer__close" aria-label="Cerrar drawer" type="button">
-        <i class="far fa-times"></i>
-      </button>
+      ${renderButton({
+        variant: 'tertiary',
+        size: 'md',
+        icon: 'fa-times',
+        iconOnly: true,
+        className: 'ubits-drawer__close'
+      })}
     </div>
   `;
 
