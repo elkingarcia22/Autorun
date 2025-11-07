@@ -308,7 +308,7 @@ export const Default: Story = {
           categoria: 'Desarrollo',
           prioridad: 'Alta',
           'checkbox-2': false,
-          avatar: { initials: 'JP', badgeColor: 'green', imageUrl: '../assets/images/Profile-image.jpg' },
+          avatar: { initials: 'JP', badgeColor: 'green', imageUrl: '/images/Profile-image.jpg' },
         },
         expanded: false,
         renderExpandedContent: (data) => `
