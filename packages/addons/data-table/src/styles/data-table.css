@@ -70,7 +70,6 @@
     position: sticky;
     left: 60px;
     z-index: 21;
-    box-shadow: 2px 0 4px rgba(0, 0, 0, 0.05);
     box-sizing: border-box;
 }
 
@@ -1126,7 +1125,6 @@
     /* left se establece inline desde el código */
     z-index: 13 !important;
     background-color: var(--ubits-bg-1, #ffffff) !important;
-    box-shadow: 2px 0 4px rgba(0, 0, 0, 0.05) !important;
 }
 
 .ubits-data-table__cell--pinned {
@@ -1157,18 +1155,18 @@
     display: none;
     width: 160px;
     max-width: 160px;
-    background-color: var(--ubits-bg-1, #ffffff);
-    border: 1px solid var(--ubits-border-1, #d0d2d5);
-    border-radius: 8px;
-    box-shadow: 0 4px 12px var(--ubits-shadow-md, rgba(0, 0, 0, 0.15));
-    padding: 4px;
     box-sizing: border-box;
+    /* No agregar estilos aquí, dejar que el componente List los maneje */
 }
 
+/* El contenedor del dropdown no debe tener fondo ni sombra, el List lo maneja */
 .ubits-data-table__column-menu-dropdown .ubits-list {
     width: 100%;
     max-width: 100%;
     min-width: 0;
+    /* El List ya tiene sus propios estilos: background, border-radius, box-shadow */
+    margin: 0;
+    padding: 0;
 }
 
 .ubits-data-table__column-header {

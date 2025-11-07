@@ -2128,6 +2128,7 @@ export function createDataTable(options: DataTableOptions): {
         dropdown = document.createElement('div');
         dropdown.className = 'ubits-data-table__column-menu-dropdown';
         dropdown.setAttribute('data-column-id', columnId);
+        // Solo establecer posición y display, el List maneja sus propios estilos
         dropdown.style.cssText = `
           position: absolute;
           top: 100%;
@@ -2135,12 +2136,8 @@ export function createDataTable(options: DataTableOptions): {
           z-index: 1000;
           margin-top: 4px;
           display: none;
-          min-width: 160px;
-          background-color: var(--ubits-bg-1, #ffffff);
-          border: 1px solid var(--ubits-border-1, #d0d2d5);
-          border-radius: 8px;
-          box-shadow: 0 4px 12px var(--ubits-shadow-md, rgba(0, 0, 0, 0.15));
-          padding: 4px;
+          width: 160px;
+          max-width: 160px;
           box-sizing: border-box;
         `;
         headerCell.style.position = 'relative';
