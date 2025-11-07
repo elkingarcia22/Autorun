@@ -15,7 +15,7 @@
 // export { ConfigManager } from './ConfigManager';
 
 // Exportar interfaces
-// export * from './interfaces';
+export * from './interfaces';
 
 // Placeholder - estructura base creada
 export const VERSION = '1.0.0';
