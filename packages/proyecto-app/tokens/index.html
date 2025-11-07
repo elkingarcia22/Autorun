@@ -993,7 +993,7 @@ cd Autoframe</code></pre>
               </button>
             </div>
             <p style="color: var(--ubits-fg-1-medium); font-size: var(--font-body-sm-size); margin: 8px 0 0 0; line-height: var(--font-body-sm-line);">
-              Este comando interactivo te guiará paso a paso: solicita URL del repositorio GitHub, permite seleccionar qué add-ons quieres usar (diseño, componentes, funcionales), y configura el Hub automáticamente.
+              Este comando interactivo te guiará paso a paso: pregunta si quieres trabajar con un template (ej: UBITS) o construir desde cero, permite seleccionar qué add-ons quieres usar, y configura el Hub automáticamente con el validador activo.
             </p>
           </div>
           <div>
@@ -1023,12 +1023,12 @@ npm run dev</code></pre>
             Cuando ejecutas <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px; font-size: var(--font-body-sm-size); color: var(--ubits-fg-2-high);">node scripts/autoframe-init.cjs</code>, el script te guía interactivamente:
           </p>
           <ol style="color: var(--ubits-fg-1-medium); font-size: var(--font-body-sm-size); margin: 0; padding-left: 20px; line-height: var(--font-body-sm-line);">
+            <li><strong>Selección de Template o Construcción desde Cero:</strong> Te pregunta si quieres trabajar con un template existente (ej: UBITS) o construir tu proyecto desde cero</li>
+            <li><strong>Selección de Add-ons:</strong> Elige qué add-ons quieres usar (diseño, componentes, funcionales) según el template o tus necesidades</li>
             <li><strong>Solicita URL del repositorio GitHub:</strong> Para conectar el proyecto con tu repositorio remoto</li>
-            <li><strong>Permite seleccionar add-ons:</strong> Elige qué add-ons quieres usar (diseño, componentes, funcionales)</li>
-            <li><strong>Configura cada add-on:</strong> Para cada add-on seleccionado, te pregunta por la configuración necesaria (API keys, URLs, etc.)</li>
-            <li><strong>Genera el archivo de configuración:</strong> Crea o actualiza <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px; font-size: var(--font-body-xs-size); color: var(--ubits-fg-2-high);">.ubits/project-config.json</code> con todas las configuraciones</li>
             <li><strong>Inicializa Git:</strong> Si no existe, inicializa el repositorio Git y configura el remoto</li>
             <li><strong>Instala dependencias:</strong> Ejecuta <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px; font-size: var(--font-body-xs-size); color: var(--ubits-fg-2-high);">npm install</code> para instalar todas las dependencias necesarias</li>
+            <li><strong>Activa el Validador Automático:</strong> Configura el sistema de validación que revisará tokens, tipografías y componentes durante el desarrollo</li>
           </ol>
         </div>
 
@@ -1061,141 +1061,111 @@ npm run dev</code></pre>
           </div>
         </div>
 
-        <!-- Configuración de Add-ons -->
-        <div class="kcard" style="background: var(--ubits-bg-1); border: none; border-radius: 12px; padding: 24px; margin-bottom: 24px;">
-          <h3 class="ubits-heading-h3" style="color: var(--ubits-fg-1-high); margin: 0 0 16px 0; font-size: var(--font-h2-size); font-weight: var(--weight-semibold);">⚙️ Configuración de Add-ons</h3>
-          <p style="color: var(--ubits-fg-1-medium); font-size: var(--font-body-md-size); line-height: var(--font-body-md-line); margin: 0 0 16px 0;">
-            Cada add-on puede requerir diferentes tipos de configuración:
-          </p>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-            <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; border: none;">
-              <h4 style="color: var(--ubits-fg-2-high); font-size: var(--font-body-md-size); font-weight: var(--weight-semibold); margin: 0 0 8px 0;">🔑 API Keys</h4>
-              <ul style="color: var(--ubits-fg-2-medium); font-size: var(--font-body-sm-size); margin: 0; padding-left: 20px; line-height: var(--font-body-sm-line);">
-                <li>Clarity (Project ID)</li>
-                <li>Supabase (URL y Key)</li>
-                <li>Figma (API Key)</li>
-                <li>Google Gemini (API Key)</li>
-              </ul>
-            </div>
-            <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; border: none;">
-              <h4 style="color: var(--ubits-fg-2-high); font-size: var(--font-body-md-size); font-weight: var(--weight-semibold); margin: 0 0 8px 0;">🔗 URLs y Repositorios</h4>
-              <ul style="color: var(--ubits-fg-2-medium); font-size: var(--font-body-sm-size); margin: 0; padding-left: 20px; line-height: var(--font-body-sm-line);">
-                <li>GitHub (Repository URL)</li>
-                <li>Vercel (Project URL)</li>
-                <li>Supabase (Project URL)</li>
-              </ul>
-            </div>
-            <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; border: none;">
-              <h4 style="color: var(--ubits-fg-2-high); font-size: var(--font-body-md-size); font-weight: var(--weight-semibold); margin: 0 0 8px 0;">⚙️ Opciones</h4>
-              <ul style="color: var(--ubits-fg-2-medium); font-size: var(--font-body-sm-size); margin: 0; padding-left: 20px; line-height: var(--font-body-sm-line);">
-                <li>Auto-commit (GitHub)</li>
-                <li>Auto-fix (ESLint)</li>
-                <li>Format on save (Prettier)</li>
-                <li>Coverage (JEST)</li>
-              </ul>
-            </div>
-            <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; border: none;">
-              <h4 style="color: var(--ubits-fg-2-high); font-size: var(--font-body-md-size); font-weight: var(--weight-semibold); margin: 0 0 8px 0;">📁 Rutas</h4>
-              <ul style="color: var(--ubits-fg-2-medium); font-size: var(--font-body-sm-size); margin: 0; padding-left: 20px; line-height: var(--font-body-sm-line);">
-                <li>Docs path (Docusaurus)</li>
-                <li>Translations path (i18n)</li>
-                <li>Tokens path (Figma Sync)</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
         <!-- Flujo de Trabajo -->
         <div class="kcard" style="background: var(--ubits-bg-1); border: none; border-radius: 12px; padding: 24px; margin-bottom: 24px;">
           <h3 class="ubits-heading-h3" style="color: var(--ubits-fg-1-high); margin: 0 0 16px 0; font-size: var(--font-h2-size); font-weight: var(--weight-semibold);">🔄 Flujo de Trabajo</h3>
           <div style="display: grid; gap: 12px;">
             <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; border: none;">
-              <h4 style="color: var(--ubits-fg-2-high); font-size: var(--font-body-md-size); font-weight: var(--weight-semibold); margin: 0 0 8px 0;">1. Iniciar el Hub</h4>
-              <div class="copyable-code-block">
-                <pre data-code="node scripts/autoframe-start.cjs" style="background: var(--ubits-bg-1); padding: 12px; border-radius: 8px; border: none; overflow-x: auto; font-size: var(--font-body-sm-size); color: var(--ubits-fg-1-high); margin: 0; font-family: 'Monaco', 'Menlo', monospace;"><code>node scripts/autoframe-start.cjs</code></pre>
-                <button class="copy-btn" onclick="copyCodeBlock(this)" title="Copiar código">
-                  <i class="far fa-copy"></i> <span>Copiar</span>
-                </button>
-              </div>
+              <h4 style="color: var(--ubits-fg-2-high); font-size: var(--font-body-md-size); font-weight: var(--weight-semibold); margin: 0 0 8px 0;">1. Selección de Template o Construcción desde Cero</h4>
+              <p style="color: var(--ubits-fg-2-medium); font-size: var(--font-body-sm-size); margin: 0 0 8px 0; line-height: var(--font-body-sm-line);">
+                Al iniciar, Autoframe te pregunta:
+              </p>
+              <ul style="color: var(--ubits-fg-2-medium); font-size: var(--font-body-sm-size); margin: 0; padding-left: 20px; line-height: var(--font-body-sm-line);">
+                <li><strong>¿Trabajar con un template existente?</strong> (ej: Template UBITS)</li>
+                <li><strong>¿Construir desde cero?</strong> Crear tu propio proyecto</li>
+              </ul>
               <p style="color: var(--ubits-fg-2-medium); font-size: var(--font-body-sm-size); margin: 8px 0 0 0; line-height: var(--font-body-sm-line);">
-                Este comando carga el Hub y activa todos los add-ons configurados en <code style="background: var(--ubits-bg-1); padding: 2px 6px; border-radius: 4px; font-size: var(--font-body-xs-size); color: var(--ubits-fg-1-high);">.ubits/project-config.json</code>
+                Según tu elección, se configuran automáticamente los add-ons correspondientes (tokens, tipografías, componentes).
               </p>
             </div>
             <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; border: none;">
-              <h4 style="color: var(--ubits-fg-2-high); font-size: var(--font-body-md-size); font-weight: var(--weight-semibold); margin: 0 0 8px 0;">2. Usar los Add-ons</h4>
-              <p style="color: var(--ubits-fg-2-medium); font-size: var(--font-body-sm-size); margin: 0; line-height: var(--font-body-sm-line);">
-                Una vez activados, puedes acceder a los servicios de los add-ons a través del Hub. Por ejemplo:
+              <h4 style="color: var(--ubits-fg-2-high); font-size: var(--font-body-md-size); font-weight: var(--weight-semibold); margin: 0 0 8px 0;">2. Desarrollo con Validador Automático</h4>
+              <p style="color: var(--ubits-fg-2-medium); font-size: var(--font-body-sm-size); margin: 0 0 8px 0; line-height: var(--font-body-sm-line);">
+                Mientras trabajas, el <strong>Validador Automático</strong> está activo y revisa en tiempo real:
               </p>
-              <ul style="color: var(--ubits-fg-2-medium); font-size: var(--font-body-sm-size); margin: 8px 0 0 0; padding-left: 20px; line-height: var(--font-body-sm-line);">
-                <li><strong>GitHub:</strong> Auto-commit de cambios, gestión de ramas</li>
-                <li><strong>Clarity:</strong> Tracking de analytics automático</li>
-                <li><strong>Vercel:</strong> Deploy automático en cada push</li>
-                <li><strong>Storybook:</strong> Desarrollo y documentación de componentes</li>
+              <ul style="color: var(--ubits-fg-2-medium); font-size: var(--font-body-sm-size); margin: 0; padding-left: 20px; line-height: var(--font-body-sm-line);">
+                <li><strong>Tokens:</strong> Verifica que uses tokens del add-on seleccionado (ej: si usas UBITS, valida tokens <code style="background: var(--ubits-bg-1); padding: 2px 6px; border-radius: 4px; font-size: var(--font-body-xs-size); color: var(--ubits-fg-1-high);">--ubits-*</code>)</li>
+                <li><strong>Tipografías:</strong> Valida que las clases de tipografía sean del add-on correcto</li>
+                <li><strong>Componentes:</strong> Verifica que los componentes usados pertenezcan al add-on activo</li>
+                <li><strong>Consistencia:</strong> Asegura que todo sea coherente con el add-on seleccionado</li>
               </ul>
             </div>
             <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; border: none;">
-              <h4 style="color: var(--ubits-fg-2-high); font-size: var(--font-body-md-size); font-weight: var(--weight-semibold); margin: 0 0 8px 0;">3. Agregar Nuevos Add-ons</h4>
+              <h4 style="color: var(--ubits-fg-2-high); font-size: var(--font-body-md-size); font-weight: var(--weight-semibold); margin: 0 0 8px 0;">3. Reporte de Implementación</h4>
               <p style="color: var(--ubits-fg-2-medium); font-size: var(--font-body-sm-size); margin: 0 0 8px 0; line-height: var(--font-body-sm-line);">
-                Para agregar un nuevo add-on después de la inicialización:
+                Después de construir, el sistema genera un reporte automático:
               </p>
-              <ol style="color: var(--ubits-fg-2-medium); font-size: var(--font-body-sm-size); margin: 0; padding-left: 20px; line-height: var(--font-body-sm-line);">
-                <li>Edita <code style="background: var(--ubits-bg-1); padding: 2px 6px; border-radius: 4px; font-size: var(--font-body-xs-size); color: var(--ubits-fg-1-high);">.ubits/project-config.json</code> y agrega la configuración del nuevo add-on</li>
-                <li>O ejecuta nuevamente <code style="background: var(--ubits-bg-1); padding: 2px 6px; border-radius: 4px; font-size: var(--font-body-xs-size); color: var(--ubits-fg-1-high);">node scripts/autoframe-init.cjs</code> y selecciona el nuevo add-on</li>
-                <li>Reinicia el Hub para que cargue el nuevo add-on</li>
-              </ol>
+              <div style="background: var(--ubits-bg-1); padding: 12px; border-radius: 6px; border: none; margin-top: 8px;">
+                <pre style="background: var(--ubits-bg-2); padding: 12px; border-radius: 6px; border: none; overflow-x: auto; font-size: var(--font-body-xs-size); color: var(--ubits-fg-2-high); margin: 0; line-height: var(--font-body-sm-line); font-family: 'Monaco', 'Menlo', monospace;"><code>✅ Implementado:
+  - 15 tokens del add-on UBITS
+  - 8 componentes del add-on UBITS
+  - 3 tipografías del add-on UBITS
+
+⚠️ Componentes nuevos detectados:
+  - custom-card (no existe en add-ons)
+  - custom-modal (no existe en add-ons)
+
+💡 El sistema creará estos componentes automáticamente
+   usando los tokens y tipografías del add-on UBITS.</code></pre>
+              </div>
+            </div>
+            <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; border: none;">
+              <h4 style="color: var(--ubits-fg-2-high); font-size: var(--font-body-md-size); font-weight: var(--weight-semibold); margin: 0 0 8px 0;">4. Creación Automática de Componentes</h4>
+              <p style="color: var(--ubits-fg-2-medium); font-size: var(--font-body-sm-size); margin: 0 0 8px 0; line-height: var(--font-body-sm-line);">
+                Si creas un componente que no existe en los add-ons disponibles:
+              </p>
+              <ul style="color: var(--ubits-fg-2-medium); font-size: var(--font-body-sm-size); margin: 0; padding-left: 20px; line-height: var(--font-body-sm-line);">
+                <li><strong>El sistema lo detecta</strong> y te informa que es necesario crearlo</li>
+                <li><strong>Se crea automáticamente</strong> usando los tokens y tipografías del add-on activo</li>
+                <li><strong>Se integra</strong> con el sistema de add-ons para futuros usos</li>
+                <li><strong>Mantiene consistencia</strong> con el resto del proyecto</li>
+              </ul>
+              <p style="color: var(--ubits-fg-2-medium); font-size: var(--font-body-sm-size); margin: 8px 0 0 0; line-height: var(--font-body-sm-line);">
+                <strong>Ejemplo:</strong> Si usas el add-on UBITS y creas un componente nuevo, se generará con tokens <code style="background: var(--ubits-bg-1); padding: 2px 6px; border-radius: 4px; font-size: var(--font-body-xs-size); color: var(--ubits-fg-1-high);">--ubits-*</code> y tipografías <code style="background: var(--ubits-bg-1); padding: 2px 6px; border-radius: 4px; font-size: var(--font-body-xs-size); color: var(--ubits-fg-1-high);">.ubits-*</code> automáticamente.
+              </p>
             </div>
           </div>
         </div>
 
-        <!-- Ejemplo de Configuración -->
+        <!-- Validador Automático -->
         <div class="kcard" style="background: var(--ubits-bg-1); border: none; border-radius: 12px; padding: 24px;">
-          <h3 class="ubits-heading-h3" style="color: var(--ubits-fg-1-high); margin: 0 0 16px 0; font-size: var(--font-h2-size); font-weight: var(--weight-semibold);">📝 Ejemplo de Configuración</h3>
+          <h3 class="ubits-heading-h3" style="color: var(--ubits-fg-1-high); margin: 0 0 16px 0; font-size: var(--font-h2-size); font-weight: var(--weight-semibold);">🛡️ Validador Automático</h3>
           <p style="color: var(--ubits-fg-1-medium); font-size: var(--font-body-md-size); line-height: var(--font-body-md-line); margin: 0 0 16px 0;">
-            El archivo <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px; font-size: var(--font-body-sm-size); color: var(--ubits-fg-2-high);">.ubits/project-config.json</code> contiene toda la configuración:
+            El validador automático es un sistema interno que garantiza la consistencia y calidad de tu código durante todo el desarrollo.
           </p>
-          <div class="copyable-code-block">
-            <pre data-code='{
-  "autoframe": {
-    "version": "1.0.0",
-    "addons": {
-      "config": {
-        "github": {
-          "source": "packages/addons/functional/github",
-          "enabled": true,
-          "repository": "https://github.com/tu-usuario/tu-repo.git",
-          "autoCommit": true
-        },
-        "clarity": {
-          "source": "packages/addons/functional/clarity",
-          "enabled": true,
-          "projectId": "TU_PROJECT_ID"
-        }
-      }
-    }
-  }
-}' style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; border: none; overflow-x: auto; font-size: var(--font-body-xs-size); color: var(--ubits-fg-2-high); margin: 0; line-height: var(--font-body-sm-line); font-family: 'Monaco', 'Menlo', monospace;"><code>{
-  "autoframe": {
-    "version": "1.0.0",
-    "addons": {
-      "config": {
-        "github": {
-          "source": "packages/addons/functional/github",
-          "enabled": true,
-          "repository": "https://github.com/tu-usuario/tu-repo.git",
-          "autoCommit": true
-        },
-        "clarity": {
-          "source": "packages/addons/functional/clarity",
-          "enabled": true,
-          "projectId": "TU_PROJECT_ID"
-        }
-      }
-    }
-  }
-}</code></pre>
-            <button class="copy-btn" onclick="copyCodeBlock(this)" title="Copiar código">
-              <i class="far fa-copy"></i> <span>Copiar</span>
-            </button>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+            <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; border: none;">
+              <h4 style="color: var(--ubits-fg-2-high); font-size: var(--font-body-md-size); font-weight: var(--weight-semibold); margin: 0 0 12px 0;">✅ Qué Valida</h4>
+              <ul style="color: var(--ubits-fg-2-medium); font-size: var(--font-body-sm-size); margin: 0; padding-left: 20px; line-height: var(--font-body-sm-line);">
+                <li>Tokens usados pertenecen al add-on activo</li>
+                <li>Tipografías corresponden al add-on seleccionado</li>
+                <li>Componentes son del add-on correcto</li>
+                <li>No hay mezcla de add-ons diferentes</li>
+                <li>Componentes nuevos se crean correctamente</li>
+              </ul>
+            </div>
+            <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; border: none;">
+              <h4 style="color: var(--ubits-fg-2-high); font-size: var(--font-body-md-size); font-weight: var(--weight-semibold); margin: 0 0 12px 0;">📊 Reportes</h4>
+              <ul style="color: var(--ubits-fg-2-medium); font-size: var(--font-body-sm-size); margin: 0; padding-left: 20px; line-height: var(--font-body-sm-line);">
+                <li>Conteo de tokens implementados</li>
+                <li>Conteo de componentes usados</li>
+                <li>Detección de componentes nuevos</li>
+                <li>Alertas de inconsistencias</li>
+                <li>Recomendaciones de mejora</li>
+              </ul>
+            </div>
+          </div>
+          <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; border: none; margin-top: 16px;">
+            <h4 style="color: var(--ubits-fg-2-high); font-size: var(--font-body-md-size); font-weight: var(--weight-semibold); margin: 0 0 12px 0;">💡 Ejemplo de Validación</h4>
+            <p style="color: var(--ubits-fg-2-medium); font-size: var(--font-body-sm-size); margin: 0 0 8px 0; line-height: var(--font-body-sm-line);">
+              Si seleccionas el add-on <strong>UBITS</strong> y usas un token <code style="background: var(--ubits-bg-1); padding: 2px 6px; border-radius: 4px; font-size: var(--font-body-xs-size); color: var(--ubits-fg-1-high);">--autoframe-bg-1</code>:
+            </p>
+            <div style="background: var(--ubits-bg-1); padding: 12px; border-radius: 6px; border: none; margin-top: 8px;">
+              <p style="color: var(--ubits-fg-1-medium); font-size: var(--font-body-sm-size); margin: 0; line-height: var(--font-body-sm-line);">
+                ⚠️ <strong>Alerta:</strong> Token <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px; font-size: var(--font-body-xs-size); color: var(--ubits-fg-2-high);">--autoframe-bg-1</code> no pertenece al add-on UBITS activo.<br>
+                💡 <strong>Sugerencia:</strong> Usa <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px; font-size: var(--font-body-xs-size); color: var(--ubits-fg-2-high);">--ubits-bg-1</code> en su lugar.
+              </p>
+            </div>
           </div>
         </div>
       </div>
