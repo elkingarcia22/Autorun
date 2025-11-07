@@ -5826,6 +5826,16 @@ Reglas Importantes:
                                   <span id="data-table-row-expandable-status-${componentId}" style="font-size: 14px; color: var(--ubits-fg-1-high);">Habilitado</span>
                                 </label>
                               </div>
+                              
+                              <!-- Scrollbar Vertical -->
+                              <div style="flex: 0 0 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Scrollbar Vertical</label>
+                                <label class="switch" style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                                  <input type="checkbox" id="data-table-vertical-scrollbar-${componentId}" onchange="setDataTableControl('showVerticalScrollbar', this.checked, '${componentId}')">
+                                  <span class="slider"></span>
+                                  <span id="data-table-vertical-scrollbar-status-${componentId}" style="font-size: 14px; color: var(--ubits-fg-1-high);">Deshabilitado</span>
+                                </label>
+                              </div>
                             </div>
                             
                             <!-- Selectores de Tipo de Columna (dinámicos) -->
@@ -9457,6 +9467,7 @@ Reglas Importantes:
             showCheckbox: true,
             emailClickable: true,
             rowExpandable: true,
+            showVerticalScrollbar: false,
             columnsCount: 3,
             columns: [
               {
@@ -9709,6 +9720,12 @@ Reglas Importantes:
         } else if (option === 'rowExpandable') {
           state.rowExpandable = value;
           const statusEl = document.getElementById(`data-table-row-expandable-status-${componentId}`);
+          if (statusEl) statusEl.textContent = value ? 'Habilitado' : 'Deshabilitado';
+          // Actualizar el preview para reflejar el cambio
+          window.updateDataTablePreview(componentId);
+        } else if (option === 'showVerticalScrollbar') {
+          state.showVerticalScrollbar = value;
+          const statusEl = document.getElementById(`data-table-vertical-scrollbar-status-${componentId}`);
           if (statusEl) statusEl.textContent = value ? 'Habilitado' : 'Deshabilitado';
           // Actualizar el preview para reflejar el cambio
           window.updateDataTablePreview(componentId);
@@ -10330,8 +10347,13 @@ Reglas Importantes:
             });
             
             const showCheckboxValue = state.showCheckbox !== false;
-            console.log('🎯 [CREATE] Creando tabla con showCheckbox:', showCheckboxValue, '(state.showCheckbox:', state.showCheckbox, ')');
-            console.log('🎯 [CREATE] Columnas que se pasan:', columns.map(c => c.id));
+            const showVerticalScrollbarValue = state.showVerticalScrollbar === true;
+            console.log('🎯 [CREATE] ========== CREANDO TABLA ==========');
+            console.log('🎯 [CREATE] showCheckboxValue:', showCheckboxValue, '(state.showCheckbox:', state.showCheckbox, ')');
+            console.log('🎯 [CREATE] showVerticalScrollbarValue:', showVerticalScrollbarValue, '(state.showVerticalScrollbar:', state.showVerticalScrollbar, ')');
+            console.log('🎯 [CREATE] Columnas que se pasan:', columns.map(c => ({ id: c.id, visible: c.visible, type: c.type })));
+            console.log('🎯 [CREATE] ¿Hay checkbox-2 en columns?', columns.some(c => c.id === 'checkbox-2'));
+            console.log('🎯 [CREATE] Número de filas:', rowsWithExpand.length);
             const table = window.createDataTable({
               containerId: containerId,
               columns: columns,
@@ -10341,6 +10363,7 @@ Reglas Importantes:
               rowExpandable: state.rowExpandable !== false,
               columnSortable: state.columnSortable !== false,
               showCheckbox: showCheckboxValue,
+              showVerticalScrollbar: showVerticalScrollbarValue,
               onRowExpand: (rowId, expanded) => {
                 console.log('Fila expandida:', rowId, expanded);
                 const row = state.rows.find(r => r.id === rowId);

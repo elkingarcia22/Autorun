@@ -234,12 +234,12 @@ function createStorybookPanel() {
     
     .storybook-status.success {
       background: var(--ubits-accent-success);
-      color: white;
+      color: var(--ubits-bg-1);
     }
     
     .storybook-status.error {
       background: var(--ubits-accent-error);
-      color: white;
+      color: var(--ubits-bg-1);
     }
     
     .storybook-info {

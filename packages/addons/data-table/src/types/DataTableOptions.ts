@@ -187,6 +187,11 @@ export interface DataTableOptions {
   showCheckbox?: boolean;
   
   /**
+   * Si se muestra el scrollbar vertical (por defecto: false)
+   */
+  showVerticalScrollbar?: boolean;
+  
+  /**
    * Clases CSS adicionales
    */
   className?: string;

@@ -500,6 +500,8 @@ function renderCell(column: TableColumn, row: TableRow): string {
   // Si la columna es de tipo checkbox fijo (columna especial), renderizar checkbox
   if (column.id === 'checkbox' || column.id.startsWith('checkbox-')) {
     const checkboxValue = row.data[column.id] || false;
+    console.log('📦 [CELL] Renderizando celda checkbox, column.id:', column.id, 'row.id:', row.id, 'checkboxValue:', checkboxValue);
+    
     const checkboxHTML = renderCheckbox({
       label: '',
       checked: checkboxValue,
@@ -515,11 +517,14 @@ function renderCell(column: TableColumn, row: TableRow): string {
     // Determinar el padding-left según el column-id
     const paddingLeft = column.id === 'checkbox-2' ? '20px' : 'var(--ubits-spacing-md, 16px)';
     
-    return `
+    const cellHTML = `
       <td class="ubits-data-table__cell ubits-data-table__cell--checkbox" data-column-id="${column.id}" style="text-align: center; vertical-align: middle; padding-left: ${paddingLeft} !important;">
         ${checkbox}
       </td>
     `;
+    console.log('📦 [CELL] Celda HTML generada para', column.id, 'row', row.id, 'length:', cellHTML.length);
+    console.log('📦 [CELL] ¿Celda contiene checkbox-2?', cellHTML.includes('checkbox-2'));
+    return cellHTML;
   }
   
   // Si la columna tiene un tipo definido, usar renderCellByType
@@ -572,9 +577,11 @@ function renderColumnHeader(
 ): string {
   // Si es una columna de checkbox, renderizar solo el checkbox (sin título ni drag handle)
   if (column.id === 'checkbox' || column.id.startsWith('checkbox-')) {
+    console.log('📋 [HEADER] Renderizando header de checkbox, column.id:', column.id);
     // Opcional: calcular si todos están seleccionados para el checkbox del header
     const allChecked = rows.length > 0 && rows.every(row => row.data[column.id] === true);
     const someChecked = rows.some(row => row.data[column.id] === true);
+    console.log('📋 [HEADER] allChecked:', allChecked, 'someChecked:', someChecked, 'rows.length:', rows.length);
     
     const checkboxHTML = renderCheckbox({
       label: '',
@@ -589,7 +596,7 @@ function renderColumnHeader(
       `<input data-column-checkbox-header="${column.id}" aria-label="Seleccionar todos ${column.title}"`
     );
     
-    return `
+    const headerHTML = `
       <th 
         class="ubits-data-table__column-header ubits-data-table__column-header--checkbox" 
         style="${column.width ? `width: ${column.width}px;` : ''}" 
@@ -598,6 +605,9 @@ function renderColumnHeader(
         ${checkbox}
       </th>
     `;
+    console.log('📋 [HEADER] Header HTML generado para', column.id, 'length:', headerHTML.length);
+    console.log('📋 [HEADER] ¿Header contiene checkbox-2?', headerHTML.includes('checkbox-2'));
+    return headerHTML;
   }
 
   // Para columnas normales, mostrar drag handle y título
@@ -777,10 +787,13 @@ export function renderDataTable(
   columnOrder: string[] = [],
   rowOrder: (string | number)[] = []
 ): string {
-  const { columns, rows, className = '', columnReorderable = false, columnSortable = true, rowReorderable = false, rowExpandable = true, showCheckbox = true } = options;
+  const { columns, rows, className = '', columnReorderable = false, columnSortable = true, rowReorderable = false, rowExpandable = true, showCheckbox = true, showVerticalScrollbar = false } = options;
 
+  console.log('🎨 [RENDER] ========== INICIO RENDER ==========');
   console.log('🎨 [RENDER] renderDataTable llamado con showCheckbox:', showCheckbox);
+  console.log('🎨 [RENDER] renderDataTable llamado con showVerticalScrollbar:', showVerticalScrollbar);
   console.log('🎨 [RENDER] Columnas recibidas:', columns.map(c => ({ id: c.id, visible: c.visible })));
+  console.log('🎨 [RENDER] Número de filas:', rows.length);
 
   // Filtrar columnas visibles
   let visibleColumns = columns.filter(col => col.visible !== false);
@@ -920,8 +933,8 @@ export function renderDataTable(
   console.log('📊 - controlsHeader:', controlsHeader ? 1 : 0);
   console.log('📊 - columnHeaders:', visibleColumns.length);
 
-  // Estructura sin contenedor adicional: la tabla directamente
-  const html = `
+  // Estructura: tabla directamente o envuelta en contenedor scrollable
+  const tableHTML = `
     <table class="${classes} ubits-data-table__table">
       <thead class="ubits-data-table__thead">
         <tr class="ubits-data-table__header-row">
@@ -935,8 +948,30 @@ export function renderDataTable(
     </table>
   `.trim();
 
-  console.log('📊 HTML final preview:', html.substring(0, 500));
-  console.log('🔍 [HEADER ALIGNMENT] ========== FIN ==========');
+  console.log('📊 [SCROLL] showVerticalScrollbar:', showVerticalScrollbar);
+  console.log('📊 [SCROLL] tableHTML length:', tableHTML.length);
+  console.log('📊 [SCROLL] ¿Hay checkbox-2 en columnHeadersHTML?', columnHeadersHTML.includes('checkbox-2'));
+  console.log('📊 [SCROLL] ¿Hay checkbox-2 en rowsHTML?', rowsHTML.includes('checkbox-2'));
+  
+  // Si showVerticalScrollbar está habilitado, envolver en contenedor scrollable
+  // NO afecta la lógica del checkbox ni de las columnas
+  let html: string;
+  if (showVerticalScrollbar) {
+    console.log('📊 [SCROLL] ✅ Envolviendo tabla en contenedor scrollable');
+    html = `<div class="ubits-data-table__scrollable-container">${tableHTML}</div>`;
+    console.log('📊 [SCROLL] HTML con contenedor scrollable generado, length:', html.length);
+    console.log('📊 [SCROLL] ¿HTML contiene scrollable-container?', html.includes('scrollable-container'));
+    console.log('📊 [SCROLL] ¿HTML contiene checkbox-2?', html.includes('checkbox-2'));
+  } else {
+    console.log('📊 [SCROLL] ❌ NO envolviendo, usando tabla directamente');
+    html = tableHTML;
+  }
+
+  console.log('📊 [SCROLL] HTML final length:', html.length);
+  console.log('📊 [SCROLL] HTML final preview (primeros 800 chars):', html.substring(0, 800));
+  console.log('📊 [SCROLL] ¿HTML final contiene checkbox-2?', html.includes('checkbox-2'));
+  console.log('📊 [SCROLL] ¿HTML final contiene scrollable-container?', html.includes('scrollable-container'));
+  console.log('🔍 [HEADER ALIGNMENT] ========== FIN RENDER ==========');
 
   return html;
 }
@@ -1047,17 +1082,34 @@ export function createDataTable(options: DataTableOptions): {
     console.log('🔍 [PADDING CHECK] ========== INICIANDO VERIFICACIÓN ==========');
     console.log('📊 Element disponible:', !!element);
     console.log('📊 Element tagName:', element.tagName);
+    console.log('📊 Element className:', element.className);
     console.log('📊 Element innerHTML length:', element.innerHTML.length);
+    console.log('📊 Element innerHTML preview (primeros 500 chars):', element.innerHTML.substring(0, 500));
     
     // Ejecutar inmediatamente y también después de un delay
     const checkPadding = () => {
       try {
       
         console.log('🔍 [PADDING CHECK] ========== DESPUÉS DEL RENDERIZADO ==========');
+        console.log('📊 element.tagName:', element.tagName);
+        console.log('📊 element.className:', element.className);
         
-        // Verificar columna de controles
-        const controlsColumns = element.querySelectorAll('.ubits-data-table__controls-column');
-        const controlsHeaders = element.querySelectorAll('.ubits-data-table__controls-column-header');
+        // Determinar si hay contenedor scrollable - calcular dentro de la función para que esté actualizado
+        const scrollableContainer = element.classList.contains('ubits-data-table__scrollable-container') 
+          ? element 
+          : element.querySelector('.ubits-data-table__scrollable-container') as HTMLElement;
+        const actualTable = scrollableContainer 
+          ? scrollableContainer.querySelector('.ubits-data-table__table') as HTMLElement
+          : element.querySelector('.ubits-data-table__table') as HTMLElement || element;
+        
+        console.log('📊 scrollableContainer encontrado:', !!scrollableContainer);
+        console.log('📊 actualTable encontrado:', !!actualTable);
+        console.log('📊 actualTable tagName:', actualTable?.tagName);
+        
+        // Verificar columna de controles - buscar en la tabla real, no en el contenedor scrollable
+        const searchRoot = actualTable || element;
+        const controlsColumns = searchRoot.querySelectorAll('.ubits-data-table__controls-column');
+        const controlsHeaders = searchRoot.querySelectorAll('.ubits-data-table__controls-column-header');
         
         console.log('📊 [CONTROLS] Elementos encontrados:', {
           columns: controlsColumns.length,
@@ -1127,13 +1179,49 @@ export function createDataTable(options: DataTableOptions): {
         }
         
         // Verificar columna de checkbox
-        const checkboxCells = element.querySelectorAll('.ubits-data-table__cell--checkbox[data-column-id="checkbox"]');
-        const checkboxHeaders = element.querySelectorAll('.ubits-data-table__column-header--checkbox');
+        // Buscar checkbox-2 o cualquier checkbox que empiece con checkbox-
+        // Buscar en la tabla real, no en el contenedor scrollable
+        const checkboxCells = searchRoot.querySelectorAll('.ubits-data-table__cell--checkbox[data-column-id="checkbox-2"], .ubits-data-table__cell--checkbox[data-column-id^="checkbox-"]');
+        const checkboxHeaders = searchRoot.querySelectorAll('.ubits-data-table__column-header--checkbox[data-column-id="checkbox-2"], .ubits-data-table__column-header--checkbox[data-column-id^="checkbox-"]');
         
+        console.log('📊 [CHECKBOX] Buscando checkbox cells con selector:', '.ubits-data-table__cell--checkbox[data-column-id="checkbox-2"], .ubits-data-table__cell--checkbox[data-column-id^="checkbox-"]');
         console.log('📊 [CHECKBOX] Elementos encontrados:', {
           cells: checkboxCells.length,
           headers: checkboxHeaders.length
         });
+        
+        // También buscar dentro del contenedor scrollable si existe (ya calculado arriba)
+        if (scrollableContainer) {
+          console.log('📊 [CHECKBOX] ✅ Contenedor scrollable encontrado, buscando checkbox dentro de él');
+          const checkboxCellsInScrollable = scrollableContainer.querySelectorAll('.ubits-data-table__cell--checkbox[data-column-id="checkbox-2"], .ubits-data-table__cell--checkbox[data-column-id^="checkbox-"]');
+          const checkboxHeadersInScrollable = scrollableContainer.querySelectorAll('.ubits-data-table__column-header--checkbox[data-column-id="checkbox-2"], .ubits-data-table__column-header--checkbox[data-column-id^="checkbox-"]');
+          console.log('📊 [CHECKBOX] Elementos encontrados dentro del scrollable:', {
+            cells: checkboxCellsInScrollable.length,
+            headers: checkboxHeadersInScrollable.length
+          });
+          
+          if (checkboxCellsInScrollable.length > 0) {
+            const checkboxCell = checkboxCellsInScrollable[0] as HTMLElement;
+            const computed = window.getComputedStyle(checkboxCell);
+            console.log('📊 [CHECKBOX CELL] Estilos computados (dentro scrollable):');
+            console.log('  - padding:', computed.padding);
+            console.log('  - paddingTop:', computed.paddingTop);
+            console.log('  - paddingRight:', computed.paddingRight);
+            console.log('  - paddingBottom:', computed.paddingBottom);
+            console.log('  - paddingLeft:', computed.paddingLeft);
+            console.log('  - width:', computed.width);
+            console.log('  - minWidth:', computed.minWidth);
+            console.log('  - maxWidth:', computed.maxWidth);
+            console.log('  - boxSizing:', computed.boxSizing);
+            console.log('  - marginLeft:', computed.marginLeft);
+            console.log('  - marginRight:', computed.marginRight);
+            console.log('  - position:', computed.position);
+            console.log('  - left:', computed.left);
+            console.log('  - zIndex:', computed.zIndex);
+          }
+        } else {
+          console.log('📊 [CHECKBOX] ❌ No hay contenedor scrollable, buscando directamente en element');
+        }
         
         if (checkboxCells.length > 0) {
           const checkboxCell = checkboxCells[0] as HTMLElement;
@@ -1150,8 +1238,20 @@ export function createDataTable(options: DataTableOptions): {
           console.log('  - boxSizing:', computed.boxSizing);
           console.log('  - marginLeft:', computed.marginLeft);
           console.log('  - marginRight:', computed.marginRight);
+          console.log('  - position:', computed.position);
+          console.log('  - left:', computed.left);
+          console.log('  - zIndex:', computed.zIndex);
         } else {
           console.log('⚠️ [CHECKBOX CELL] No se encontró ninguna celda de checkbox');
+          // Intentar buscar de otra manera
+          const allCells = element.querySelectorAll('td[data-column-id]');
+          console.log('📊 [CHECKBOX] Total celdas con data-column-id:', allCells.length);
+          allCells.forEach((cell, idx) => {
+            const colId = (cell as HTMLElement).getAttribute('data-column-id');
+            if (colId && colId.includes('checkbox')) {
+              console.log(`📊 [CHECKBOX] Celda ${idx} tiene data-column-id="${colId}"`);
+            }
+          });
         }
         
         if (checkboxHeaders.length > 0) {
@@ -1169,8 +1269,20 @@ export function createDataTable(options: DataTableOptions): {
           console.log('  - boxSizing:', computed.boxSizing);
           console.log('  - marginLeft:', computed.marginLeft);
           console.log('  - marginRight:', computed.marginRight);
+          console.log('  - position:', computed.position);
+          console.log('  - left:', computed.left);
+          console.log('  - zIndex:', computed.zIndex);
         } else {
           console.log('⚠️ [CHECKBOX HEADER] No se encontró ningún header de checkbox');
+          // Intentar buscar de otra manera
+          const allHeaders = element.querySelectorAll('th[data-column-id]');
+          console.log('📊 [CHECKBOX] Total headers con data-column-id:', allHeaders.length);
+          allHeaders.forEach((header, idx) => {
+            const colId = (header as HTMLElement).getAttribute('data-column-id');
+            if (colId && colId.includes('checkbox')) {
+              console.log(`📊 [CHECKBOX] Header ${idx} tiene data-column-id="${colId}"`);
+            }
+          });
         }
         
         // Verificar distancia visual entre checkbox y controles

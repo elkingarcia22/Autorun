@@ -40,8 +40,8 @@
     text-align: center;
     background-color: var(--ubits-bg-1, #ffffff);
     width: auto;
-    min-width: 60px;
-    max-width: 60px;
+    min-width: 80px;
+    max-width: 80px;
     vertical-align: middle;
     display: table-cell;
     position: sticky;
@@ -59,8 +59,8 @@
     text-align: center;
     background-color: var(--ubits-bg-1, #ffffff);
     width: auto;
-    min-width: 60px;
-    max-width: 60px;
+    min-width: 80px;
+    max-width: 80px;
     vertical-align: middle;
     position: sticky;
     left: 60px;
@@ -942,5 +942,69 @@
 .ubits-data-table__row-expanded-content {
     padding: var(--ubits-spacing-md, 16px);
     border-bottom: 1px solid var(--ubits-border-1, #d0d2d5);
+}
+
+/* Contenedor scrollable para scroll vertical */
+.ubits-data-table__scrollable-container {
+    max-height: 400px;
+    overflow-y: auto;
+    overflow-x: visible; /* Cambiar a visible para que sticky funcione */
+    position: relative;
+}
+
+/* Ajustar posicionamiento sticky dentro del contenedor scrollable */
+/* Los controles deben estar en left: 0 dentro del scrollable */
+.ubits-data-table__scrollable-container .ubits-data-table__controls-column-header,
+.ubits-data-table__scrollable-container .ubits-data-table__controls-column {
+    position: sticky !important;
+    left: 0 !important; /* Sin espacio en blanco a la izquierda */
+    z-index: 21 !important;
+    background-color: var(--ubits-bg-1, #ffffff) !important;
+}
+
+.ubits-data-table__scrollable-container .ubits-data-table__controls-column {
+    z-index: 16 !important;
+}
+
+/* El checkbox debe estar justo después de los controles (ancho de controles = 80px) */
+.ubits-data-table__scrollable-container .ubits-data-table__cell--checkbox[data-column-id="checkbox-2"],
+.ubits-data-table__scrollable-container .ubits-data-table__column-header--checkbox[data-column-id="checkbox-2"] {
+    position: sticky !important;
+    left: 80px !important; /* Ancho de controles = 80px */
+    z-index: 14 !important;
+    background-color: var(--ubits-bg-1, #ffffff) !important;
+}
+
+/* Asegurar que el header del checkbox también sea sticky */
+.ubits-data-table__scrollable-container .ubits-data-table__column-header[data-column-id="checkbox-2"] {
+    position: sticky !important;
+    left: 80px !important; /* Ancho de controles = 80px */
+    z-index: 15 !important;
+    background-color: var(--ubits-bg-1, #ffffff) !important;
+}
+
+/* Estilos del scrollbar nativo */
+.ubits-data-table__scrollable-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.ubits-data-table__scrollable-container::-webkit-scrollbar-track {
+    background: var(--ubits-bg-2, #f9fafb);
+    border-radius: 4px;
+}
+
+.ubits-data-table__scrollable-container::-webkit-scrollbar-thumb {
+    background: var(--ubits-border-2, #e5e7eb);
+    border-radius: 4px;
+}
+
+.ubits-data-table__scrollable-container::-webkit-scrollbar-thumb:hover {
+    background: var(--ubits-border-1, #d0d2d5);
+}
+
+/* Firefox */
+.ubits-data-table__scrollable-container {
+    scrollbar-width: thin;
+    scrollbar-color: var(--ubits-border-2, #e5e7eb) var(--ubits-bg-2, #f9fafb);
 }
 
