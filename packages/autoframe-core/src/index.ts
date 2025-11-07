@@ -17,6 +17,9 @@ export { ConfigManager } from './ConfigManager';
 // Exportar interfaces
 export * from './interfaces';
 
+// Exportar adaptadores
+export * from './adapters';
+
 // Placeholder - estructura base creada
 export const VERSION = '1.0.0';
 
