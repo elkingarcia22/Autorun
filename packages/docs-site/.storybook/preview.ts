@@ -19,6 +19,10 @@ import '../../addons/sidebar/src/styles/sidebar.css'
 import '../../addons/subnav/src/styles/subnav.css'
 import '../../addons/tabbar/src/styles/tabbar.css'
 import '../../addons/card/src/styles/card.css'
+import '../../addons/data-table/src/styles/data-table.css'
+import '../../addons/checkbox/src/styles/checkbox.css'
+import '../../addons/toggle/src/styles/toggle.css'
+import '../../addons/radio-button/src/styles/radio-button.css'
 import './fontawesome-icons.css'
 
 const preview: Preview = {

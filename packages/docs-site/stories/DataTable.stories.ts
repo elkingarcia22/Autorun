@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/html';
 import { createDataTable } from '../../addons/data-table/src/DataTableProvider';
 import type { DataTableOptions, TableColumn, TableRow } from '../../addons/data-table/src/types/DataTableOptions';
-import '../../addons/data-table/src/styles/data-table.css';
 
 const meta: Meta<DataTableOptions> = {
   title: 'Components/Data Table',
@@ -78,8 +77,19 @@ type Story = StoryObj<DataTableOptions>;
 
 export const Default: Story = {
   render: (args) => {
+    // Contenedor principal con estilos UBITS
     const container = document.createElement('div');
-    container.id = 'data-table-story-container';
+    container.style.padding = '20px';
+    container.style.background = 'var(--ubits-bg-1, #ffffff)';
+    container.style.borderRadius = '8px';
+    container.style.width = '100%';
+    container.style.maxWidth = '100%';
+    
+    // Contenedor para la tabla
+    const tableContainer = document.createElement('div');
+    tableContainer.id = 'data-table-story-container';
+    tableContainer.style.width = '100%';
+    tableContainer.style.overflow = 'auto';
     
     // Datos de ejemplo
     const columns: TableColumn[] = [
@@ -192,8 +202,16 @@ export const Default: Story = {
       },
     };
 
+    // Agregar el contenedor de la tabla al contenedor principal
+    container.appendChild(tableContainer);
+
+    // Inicializar la tabla después de que se monte en el DOM
     setTimeout(() => {
-      createDataTable(options);
+      try {
+        createDataTable(options);
+      } catch (error) {
+        console.error('Error creating data table:', error);
+      }
     }, 100);
 
     return container;
