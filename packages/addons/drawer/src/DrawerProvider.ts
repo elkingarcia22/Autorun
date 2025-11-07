@@ -55,7 +55,7 @@ export function renderDrawer(options: DrawerOptions): string {
         ` : ''}
       </div>
       ${renderButton({
-        variant: 'tertiary',
+        variant: 'secondary',
         size: 'md',
         icon: 'fa-times',
         iconOnly: true,

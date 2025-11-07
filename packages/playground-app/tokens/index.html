@@ -16,7 +16,7 @@
       /* ========================================
          UBITS BUTTON COMPONENT
          Componente de botón con todas las variantes
-         Usando tokens UBITS del nuevo playground
+         Usando tokens UBITS del nuevo autoframe
          ======================================== */
 
       /* BASE BUTTON STYLES */
@@ -922,7 +922,7 @@ npm run dev</code></pre>
 │   │   ├── badge/           # Badges UBITS
 │   │   ├── tokens-ubits/    # Tokens como add-on (intercambiables)
 │   │   └── ...              # Más componentes
-│   ├── playground-app/      # Aplicación principal
+│   ├── autoframe-app/      # Aplicación principal
 │   │   ├── template-colaborador.html
 │   │   ├── template-admin.html
 │   │   ├── components-loader.js
@@ -1580,7 +1580,7 @@ npm run dev</code></pre>
 
     <div id="section-tipografia" class="section" style="display:none">
       <h1>Tipografía UBITS</h1>
-      <p class="subtitle">Escala alineada al playground anterior. Haz clic para copiar variables o CSS.</p>
+      <p class="subtitle">Escala alineada al autoframe anterior. Haz clic para copiar variables o CSS.</p>
       <div class="kstack">
         <div class="kcard">
           <h3>Display</h3>
@@ -1650,7 +1650,7 @@ npm run dev</code></pre>
 
     <div id="section-texto" class="section" style="display:block">
       <h1>Tipografía UBITS</h1>
-      <p class="subtitle">Escala alineada al playground anterior. Haz clic para copiar variables o CSS.</p>
+      <p class="subtitle">Escala alineada al autoframe anterior. Haz clic para copiar variables o CSS.</p>
       <div class="kstack">
         <div class="kcard">
           <h3>Display</h3>
@@ -3090,6 +3090,9 @@ npm run dev</code></pre>
               if (window.UBITS_ThemeManager) {
                 window.UBITS_ThemeManager.setTheme(newTheme);
               }
+              
+              // También actualizar el atributo en el html
+              document.documentElement.setAttribute('data-theme', newTheme);
             });
           }
           
@@ -4216,9 +4219,9 @@ Reglas Importantes:
           }
         }
 
-        // Fallback: Cargar TODOS los 237 iconos del playground anterior
+        // Fallback: Cargar TODOS los 237 iconos del autoframe anterior
         function loadSampleIcons() {
-          // Lista completa de los 237 iconos del playground anterior
+          // Lista completa de los 237 iconos del autoframe anterior
           const sampleIcons = [
             'award', 'album-collection', 'badge-check', 'arrow-down', 'arrow-down-arrow-up', 'arrow-down-to-line',
             'arrow-left', 'arrow-left-to-line', 'arrow-right', 'arrow-right-to-line', 'arrow-trend-down', 'arrow-trend-up',
@@ -4264,10 +4267,10 @@ Reglas Importantes:
           allIcons.sort((a, b) => a.name.localeCompare(b.name));
           filteredIcons.sort((a, b) => a.name.localeCompare(b.name));
 
-          console.log(`✅ Cargados ${allIcons.length} iconos del playground anterior`);
+          console.log(`✅ Cargados ${allIcons.length} iconos del autoframe anterior`);
 
           if (iconsCount) {
-            iconsCount.textContent = `${allIcons.length} iconos (del playground anterior - usa servidor HTTP para catálogo completo)`;
+            iconsCount.textContent = `${allIcons.length} iconos (del autoframe anterior - usa servidor HTTP para catálogo completo)`;
           }
 
           renderIcons();
@@ -11052,12 +11055,12 @@ Reglas Importantes:
               ` : ''}
             </div>
             ${typeof window.renderButton !== 'undefined' ? window.renderButton({
-              variant: 'tertiary',
+              variant: 'secondary',
               size: 'md',
               icon: 'fa-times',
               iconOnly: true,
               className: 'ubits-drawer__close'
-            }) : '<button class="ubits-drawer__close ubits-button ubits-button--tertiary ubits-button--md ubits-button--icon-only" aria-label="Cerrar drawer" type="button"><i class="far fa-times"></i></button>'}
+            }) : '<button class="ubits-drawer__close ubits-button ubits-button--secondary ubits-button--md ubits-button--icon-only" aria-label="Cerrar drawer" type="button"><i class="far fa-times"></i></button>'}
           </div>
         `;
         
@@ -13146,7 +13149,7 @@ Reglas Importantes:
         return container;
       }
       
-      // Función simple para renderizar toast (para preview en playground)
+      // Función simple para renderizar toast (para preview en autoframe)
       function renderToastSimple(type, message, options = {}) {
         const container = ensureToastContainer();
         const noClose = options.noClose || false;
@@ -13417,7 +13420,7 @@ Reglas Importantes:
         return inputPreviewState[componentId];
       }
       
-      // Función para renderizar Input (versión simplificada para playground)
+      // Función para renderizar Input (versión simplificada para autoframe)
       function renderInputSimple(state, componentId) {
         const {
           label,
@@ -14154,7 +14157,7 @@ Reglas Importantes:
         return listPreviewState[componentId];
       }
       
-      // Función para renderizar List (versión simplificada para playground)
+      // Función para renderizar List (versión simplificada para autoframe)
       function renderListSimple(state, componentId) {
         const { size, item1State, item2State, item3State, item4State, maxHeight } = state;
         
@@ -14655,7 +14658,7 @@ Reglas Importantes:
           });
         }
         
-        // Renderizar directamente HTML estático (siempre usar este método en playground)
+        // Renderizar directamente HTML estático (siempre usar este método en autoframe)
         renderSidebarStatic(preview, state, bodyButtons, footerButtons, profileMenuItems);
         
         console.log('✅ Preview de Sidebar actualizado:', state);
@@ -16067,7 +16070,7 @@ Reglas Importantes:
       // Estado del preview del Card Content
       const cardPreviewState = {};
       
-      // Proveedores con sus logos (mapeo) - Usando rutas relativas desde playground
+      // Proveedores con sus logos (mapeo) - Usando rutas relativas desde autoframe
       const PROVIDER_LOGOS = {
         'UBITS': '../assets/images/Favicons/UBITS.jpg',
         'Microsoft': '../assets/images/Favicons/Microsoft.jpg',
