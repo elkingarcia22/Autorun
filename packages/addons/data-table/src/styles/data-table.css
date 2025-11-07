@@ -677,12 +677,19 @@
     min-width: 60px !important;
     max-width: 60px !important;
     box-sizing: border-box;
-    position: sticky;
-    left: 0;
-    z-index: 14;
+    /* NO aplicar position: sticky aquí - solo cuando está pinned */
     background-color: var(--ubits-bg-1);
     vertical-align: middle !important;
     display: table-cell !important;
+}
+
+/* Checkbox-2 sticky solo cuando está pinned */
+.ubits-data-table__cell--checkbox[data-column-id="checkbox-2"][data-pinned="true"],
+.ubits-data-table__cell--checkbox[data-column-id="checkbox-2"].ubits-data-table__cell--pinned {
+    position: sticky !important;
+    /* left se establece inline desde el código */
+    z-index: 12 !important; /* Mismo z-index que otras celdas pinned */
+    background-color: var(--ubits-bg-1) !important;
 }
 
 /* Wrapper interno para centrar con flex */
