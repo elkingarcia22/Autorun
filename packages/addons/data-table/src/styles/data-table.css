@@ -1120,9 +1120,10 @@
 }
 
 /* Columnas fijadas (pinned) - siempre que estén marcadas como pinned */
+/* El left se calcula dinámicamente en el código, pero estos estilos aseguran que sea sticky */
 .ubits-data-table__column-header--pinned {
     position: sticky !important;
-    left: 0 !important;
+    /* left se establece inline desde el código */
     z-index: 13 !important;
     background-color: var(--ubits-bg-1, #ffffff) !important;
     box-shadow: 2px 0 4px rgba(0, 0, 0, 0.05) !important;
@@ -1130,7 +1131,7 @@
 
 .ubits-data-table__cell--pinned {
     position: sticky !important;
-    left: 0 !important;
+    /* left se establece inline desde el código */
     z-index: 12 !important;
     background-color: var(--ubits-bg-1, #ffffff) !important;
 }
@@ -1154,13 +1155,20 @@
     z-index: 1000;
     margin-top: 4px;
     display: none;
-    min-width: 160px;
+    width: 160px;
+    max-width: 160px;
     background-color: var(--ubits-bg-1, #ffffff);
     border: 1px solid var(--ubits-border-1, #d0d2d5);
     border-radius: 8px;
     box-shadow: 0 4px 12px var(--ubits-shadow-md, rgba(0, 0, 0, 0.15));
     padding: 4px;
     box-sizing: border-box;
+}
+
+.ubits-data-table__column-menu-dropdown .ubits-list {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
 }
 
 .ubits-data-table__column-header {

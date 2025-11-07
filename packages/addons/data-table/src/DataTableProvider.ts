@@ -498,7 +498,7 @@ function renderCellByType(column: TableColumn, row: TableRow, columnType: Column
 /**
  * Renderiza una celda de la tabla
  */
-function renderCell(column: TableColumn, row: TableRow): string {
+function renderCell(column: TableColumn, row: TableRow, pinnedLeft: number = 0): string {
   // Si la columna es de tipo checkbox fijo (columna especial), renderizar checkbox
   if (column.id === 'checkbox' || column.id.startsWith('checkbox-')) {
     const checkboxValue = row.data[column.id] || false;
@@ -521,9 +521,11 @@ function renderCell(column: TableColumn, row: TableRow): string {
     
     // Agregar clase si la columna está fijada
     const pinnedClass = column.pinned ? ' ubits-data-table__cell--pinned' : '';
+    const pinnedStyle = column.pinned && pinnedLeft > 0 ? `left: ${pinnedLeft}px;` : '';
+    const cellStyle = `text-align: center; vertical-align: middle; padding-left: ${paddingLeft} !important;${pinnedStyle ? ' ' + pinnedStyle : ''}`;
     
     const cellHTML = `
-      <td class="ubits-data-table__cell ubits-data-table__cell--checkbox${pinnedClass}" data-column-id="${column.id}" ${column.pinned ? 'data-pinned="true"' : ''} style="text-align: center; vertical-align: middle; padding-left: ${paddingLeft} !important;">
+      <td class="ubits-data-table__cell ubits-data-table__cell--checkbox${pinnedClass}" data-column-id="${column.id}" ${column.pinned ? 'data-pinned="true"' : ''} style="${cellStyle}">
         ${checkbox}
       </td>
     `;
@@ -546,13 +548,14 @@ function renderCell(column: TableColumn, row: TableRow): string {
     );
     const editableClass = isEditable ? 'ubits-data-table__cell--editable' : '';
     const pinnedClass = column.pinned ? ' ubits-data-table__cell--pinned' : '';
+    const pinnedStyle = column.pinned && pinnedLeft > 0 ? ` style="left: ${pinnedLeft}px;"` : '';
     // Agregar data-column-id siempre para poder diferenciar en CSS
     const dataAttrs = isEditable && (column.type === 'nombre' || column.type === 'nombre-avatar' || column.type === 'estado' || column.type === 'fecha') 
       ? `data-row-id="${row.id}" data-column-id="${column.id}" data-editable="true"${column.pinned ? ' data-pinned="true"' : ''}` 
       : `data-column-id="${column.id}"${column.pinned ? ' data-pinned="true"' : ''}`;
     
     return `
-      <td class="ubits-data-table__cell ubits-data-table__cell--${column.type} ${editableClass}${pinnedClass}" ${dataAttrs}>
+      <td class="ubits-data-table__cell ubits-data-table__cell--${column.type} ${editableClass}${pinnedClass}" ${dataAttrs}${pinnedStyle}>
         ${content}
       </td>
     `;
@@ -565,9 +568,10 @@ function renderCell(column: TableColumn, row: TableRow): string {
   
   // Agregar clase si la columna está fijada
   const pinnedClass = column.pinned ? ' ubits-data-table__cell--pinned' : '';
+  const pinnedStyle = column.pinned && pinnedLeft > 0 ? ` style="left: ${pinnedLeft}px;"` : '';
   
   return `
-    <td class="ubits-data-table__cell${pinnedClass}" data-column-id="${column.id}"${column.pinned ? ' data-pinned="true"' : ''}>
+    <td class="ubits-data-table__cell${pinnedClass}" data-column-id="${column.id}"${column.pinned ? ' data-pinned="true"' : ''}${pinnedStyle}>
       ${content}
     </td>
   `;
@@ -583,7 +587,8 @@ function renderColumnHeader(
   rows: TableRow[] = [],
   sortColumnId: string | null = null,
   sortDirection: 'asc' | 'desc' | null = null,
-  showColumnMenu: boolean = true
+  showColumnMenu: boolean = true,
+  pinnedLeft: number = 0
 ): string {
   // Si es una columna de checkbox, renderizar solo el checkbox (sin título ni drag handle)
   if (column.id === 'checkbox' || column.id.startsWith('checkbox-')) {
@@ -725,10 +730,15 @@ function renderColumnHeader(
     });
   }
   
+  // Agregar estilo inline para left si está fijada
+  const pinnedStyle = column.pinned && pinnedLeft > 0 ? `left: ${pinnedLeft}px;` : '';
+  const widthStyle = column.width ? `width: ${column.width}px;` : '';
+  const combinedStyle = [widthStyle, pinnedStyle].filter(Boolean).join(' ');
+  
   return `
     <th 
       class="ubits-data-table__column-header${pinnedClass}" 
-      style="${column.width ? `width: ${column.width}px;` : ''}" 
+      ${combinedStyle ? `style="${combinedStyle}"` : ''} 
       data-column-id="${column.id}"
       ${column.pinned ? 'data-pinned="true"' : ''}
     >
@@ -740,7 +750,7 @@ function renderColumnHeader(
 /**
  * Renderiza una fila de la tabla
  */
-function renderRow(row: TableRow, columns: TableColumn[], rowIndex: number, rowReorderable: boolean = false, rowExpandable: boolean = true, hasControls: boolean = false): string {
+function renderRow(row: TableRow, columns: TableColumn[], rowIndex: number, rowReorderable: boolean = false, rowExpandable: boolean = true, hasControls: boolean = false, pinnedLefts: number[] = []): string {
   const isExpanded = row.expanded || false;
 
   // Drag handle para filas
@@ -768,7 +778,10 @@ function renderRow(row: TableRow, columns: TableColumn[], rowIndex: number, rowR
   const visibleColumns = columns.filter(col => col.visible !== false);
   
   const cellsHTML = visibleColumns
-    .map(col => renderCell(col, row))
+    .map((col, index) => {
+      const pinnedLeft = pinnedLefts[index] || 0;
+      return renderCell(col, row, pinnedLeft);
+    })
     .join('');
 
   const rowClasses = [
@@ -947,9 +960,40 @@ export function renderDataTable(
   console.log('📊 visibleColumns count:', visibleColumns.length);
   console.log('📊 visibleColumns IDs:', visibleColumns.map(col => col.id));
 
+  // Función auxiliar para calcular el left de una columna fijada
+  const calculatePinnedLeft = (column: TableColumn, columnIndex: number, allColumns: TableColumn[], hasControls: boolean, showCheckbox: boolean): number => {
+    let left = 0;
+    
+    // Si hay controles, agregar su ancho (80px)
+    if (hasControls) {
+      left += 80;
+    }
+    
+    // Si hay checkbox y está antes de esta columna, agregar su ancho (60px)
+    if (showCheckbox) {
+      const checkboxIndex = allColumns.findIndex(c => c.id === 'checkbox-2');
+      if (checkboxIndex >= 0 && checkboxIndex < columnIndex) {
+        left += 60;
+      }
+    }
+    
+    // Agregar ancho de todas las columnas fijadas anteriores
+    for (let i = 0; i < columnIndex; i++) {
+      const prevCol = allColumns[i];
+      if (prevCol.pinned && prevCol.id !== 'checkbox-2') {
+        left += prevCol.width || 150; // Usar width de la columna o 150px por defecto
+      }
+    }
+    
+    return left;
+  };
+
   // Renderizar headers de columnas
   const columnHeadersHTML = visibleColumns
-    .map(col => renderColumnHeader(col, columnReorderable, columnSortable, orderedRows, sortColumnId, sortDirection, showColumnMenu))
+    .map((col, index) => {
+      const pinnedLeft = col.pinned ? calculatePinnedLeft(col, index, visibleColumns, hasControls, showCheckbox !== false) : 0;
+      return renderColumnHeader(col, columnReorderable, columnSortable, orderedRows, sortColumnId, sortDirection, showColumnMenu, pinnedLeft);
+    })
     .join('');
 
   console.log('📊 columnHeadersHTML length:', columnHeadersHTML.length);
@@ -957,7 +1001,13 @@ export function renderDataTable(
 
   // Renderizar filas
   const rowsHTML = orderedRows
-    .map((row, index) => renderRow(row, visibleColumns, index, rowReorderable, rowExpandable, hasControls))
+    .map((row, index) => {
+      // Calcular left para cada columna fijada en esta fila
+      const pinnedLefts = visibleColumns.map((col, colIndex) => 
+        col.pinned ? calculatePinnedLeft(col, colIndex, visibleColumns, hasControls, showCheckbox !== false) : 0
+      );
+      return renderRow(row, visibleColumns, index, rowReorderable, rowExpandable, hasControls, pinnedLefts);
+    })
     .join('');
 
   console.log('📊 rowsHTML count:', orderedRows.length);
