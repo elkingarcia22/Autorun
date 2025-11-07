@@ -11611,6 +11611,54 @@ Reglas Importantes:
               checkboxSticky: state.checkboxSticky === true,
               dragHandleSticky: state.dragHandleSticky === true,
               expandSticky: state.expandSticky === true,
+              onRowSelect: (rowId, selected) => {
+                console.log('Fila seleccionada:', rowId, selected);
+                // Actualizar el estado de la fila
+                const row = state.rows.find(r => r.id === rowId);
+                if (row) {
+                  // Buscar la columna checkbox-2
+                  const checkboxColumn = columns.find(col => col.id === 'checkbox-2');
+                  if (checkboxColumn) {
+                    if (!row.data) row.data = {};
+                    row.data[checkboxColumn.id] = selected;
+                  }
+                }
+                // Re-renderizar la tabla para actualizar el header con estado indeterminado
+                setTimeout(() => {
+                  if (window.dataTableInstances[componentId]) {
+                    try {
+                      window.dataTableInstances[componentId].destroy();
+                    } catch (e) {
+                      console.warn('Error destruyendo instancia:', e);
+                    }
+                    delete window.dataTableInstances[componentId];
+                    createDataTableInstance();
+                  }
+                }, 50);
+              },
+              onSelectAll: (selected) => {
+                console.log('Seleccionar todos:', selected);
+                // Actualizar todas las filas
+                const checkboxColumn = columns.find(col => col.id === 'checkbox-2');
+                if (checkboxColumn) {
+                  state.rows.forEach(row => {
+                    if (!row.data) row.data = {};
+                    row.data[checkboxColumn.id] = selected;
+                  });
+                }
+                // Re-renderizar la tabla
+                setTimeout(() => {
+                  if (window.dataTableInstances[componentId]) {
+                    try {
+                      window.dataTableInstances[componentId].destroy();
+                    } catch (e) {
+                      console.warn('Error destruyendo instancia:', e);
+                    }
+                    delete window.dataTableInstances[componentId];
+                    createDataTableInstance();
+                  }
+                }, 50);
+              },
               onRowExpand: (rowId, expanded) => {
                 console.log('Fila expandida:', rowId, expanded);
                 const row = state.rows.find(r => r.id === rowId);
