@@ -69,6 +69,27 @@ const meta: Meta<DataTableOptions & { columnsCount?: number }> = {
         defaultValue: { summary: 'true' },
       },
     },
+    checkboxSticky: {
+      control: 'boolean',
+      description: 'Hace que la columna de checkbox sea sticky (fija) al hacer scroll horizontal',
+      table: {
+        defaultValue: { summary: 'false' },
+      },
+    },
+    dragHandleSticky: {
+      control: 'boolean',
+      description: 'Hace que la columna de drag handle (mover filas) sea sticky (fija) al hacer scroll horizontal',
+      table: {
+        defaultValue: { summary: 'false' },
+      },
+    },
+    expandSticky: {
+      control: 'boolean',
+      description: 'Hace que la columna de expand (desplegar filas) sea sticky (fija) al hacer scroll horizontal',
+      table: {
+        defaultValue: { summary: 'false' },
+      },
+    },
     columnsCount: {
       control: { type: 'number', min: 1, max: 10, step: 1 },
       description: 'Número de columnas de datos a mostrar (excluyendo checkbox)',
@@ -179,6 +200,9 @@ type Story = StoryObj<DataTableOptions & {
   column3RadioLabel?: boolean;
   column3ToggleLabel?: boolean;
   column3CheckboxLabel?: boolean;
+  checkboxSticky?: boolean;
+  dragHandleSticky?: boolean;
+  expandSticky?: boolean;
 }>;
 
 export const Default: Story = {
@@ -594,6 +618,9 @@ export const Default: Story = {
       showVerticalScrollbar: args.showVerticalScrollbar ?? false,
       showHorizontalScrollbar: args.showHorizontalScrollbar ?? false,
       showColumnMenu: args.showColumnMenu ?? true,
+      checkboxSticky: (args as any).checkboxSticky ?? false,
+      dragHandleSticky: (args as any).dragHandleSticky ?? false,
+      expandSticky: (args as any).expandSticky ?? false,
       onRowExpand: (rowId, expanded) => {
         console.log('Row expanded:', rowId, expanded);
       },
@@ -608,6 +635,12 @@ export const Default: Story = {
       },
       onColumnPin: (columnId, pinned) => {
         console.log('Column pinned:', columnId, pinned);
+      },
+      onRowSelect: (rowId, selected) => {
+        console.log('Row selected:', rowId, selected);
+      },
+      onSelectAll: (selected) => {
+        console.log('Select all:', selected);
       },
     };
 
@@ -634,6 +667,9 @@ export const Default: Story = {
     showVerticalScrollbar: false,
     showHorizontalScrollbar: false,
     showColumnMenu: true,
+    checkboxSticky: false,
+    dragHandleSticky: false,
+    expandSticky: false,
     columnsCount: 4,
     columnType1: 'nombre-avatar',
     columnType2: 'correo',
