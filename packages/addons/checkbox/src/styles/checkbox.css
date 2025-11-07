@@ -59,6 +59,26 @@
     margin-top: -2px;
 }
 
+/* Estado indeterminado - línea horizontal */
+.ubits-checkbox__indeterminate {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transform: scale(0);
+    transition: all 0.2s ease;
+}
+
+.ubits-checkbox__indeterminate::after {
+    content: '';
+    width: 10px;
+    height: 2px;
+    background-color: var(--ubits-bg-1, #ffffff);
+    border-radius: 1px;
+}
+
 .ubits-checkbox__text-content {
     display: flex;
     flex-direction: column;
@@ -99,6 +119,11 @@
     border-width: 0 1.5px 1.5px 0;
 }
 
+.ubits-checkbox--sm .ubits-checkbox__indeterminate::after {
+    width: 8px;
+    height: 1.5px;
+}
+
 /* Medium (md) - 20px square - Default */
 .ubits-checkbox--md .ubits-checkbox__square {
     width: 20px;
@@ -109,6 +134,11 @@
     width: 4px;
     height: 8px;
     border-width: 0 2px 2px 0;
+}
+
+.ubits-checkbox--md .ubits-checkbox__indeterminate::after {
+    width: 10px;
+    height: 2px;
 }
 
 /* ========================================
@@ -170,6 +200,21 @@
     border-color: var(--ubits-bg-1, #ffffff);
 }
 
+/* Indeterminate State - borde gris, fondo azul brand con línea horizontal blanca */
+.ubits-checkbox--indeterminate .ubits-checkbox__square {
+    border-color: var(--ubits-border-1, #d0d2d5);
+    background-color: var(--ubits-accent-brand-static-inverted, #0c5bef);
+}
+
+.ubits-checkbox--indeterminate .ubits-checkbox__indeterminate {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.ubits-checkbox--indeterminate .ubits-checkbox__indeterminate::after {
+    background-color: var(--ubits-bg-1, #ffffff);
+}
+
 /* Focus State */
 .ubits-checkbox__input:focus-visible + .ubits-checkbox__square {
     /* Efecto Focus de los tokens UBITS */
@@ -210,5 +255,15 @@
 
 .ubits-checkbox--disabled.ubits-checkbox--checked .ubits-checkbox__checkmark::after {
     border-color: var(--ubits-fg-on-disabled-button, #8d9199);
+}
+
+/* Disabled indeterminate state */
+.ubits-checkbox--disabled.ubits-checkbox--indeterminate .ubits-checkbox__square {
+    border-color: var(--ubits-border-disabled-button, #e1e2e5);
+    background-color: var(--ubits-bg-1, #ffffff);
+}
+
+.ubits-checkbox--disabled.ubits-checkbox--indeterminate .ubits-checkbox__indeterminate::after {
+    background-color: var(--ubits-fg-on-disabled-button, #8d9199);
 }
 

@@ -10,6 +10,7 @@ export function renderCheckbox(options: CheckboxOptions): string {
     value = '',
     name = '',
     checked = false,
+    indeterminate = false,
     size = 'md',
     state = 'default',
     disabled = false,
@@ -24,6 +25,7 @@ export function renderCheckbox(options: CheckboxOptions): string {
     `ubits-checkbox--${size}`,
     state !== 'default' ? `ubits-checkbox--${state}` : '',
     checked ? 'ubits-checkbox--checked' : '',
+    indeterminate ? 'ubits-checkbox--indeterminate' : '',
     isDisabled ? 'ubits-checkbox--disabled' : '',
     className
   ].filter(Boolean).join(' ');
@@ -36,15 +38,19 @@ export function renderCheckbox(options: CheckboxOptions): string {
       ${name ? `name="${name}"` : ''}
       ${value ? `value="${value}"` : ''}
       ${checked ? 'checked' : ''}
+      ${indeterminate ? 'data-indeterminate="true"' : ''}
       ${isDisabled ? 'disabled' : ''}
       class="ubits-checkbox__input"
     />
   `;
 
   // Checkbox square (visual)
+  // Mostrar checkmark si está checked, línea horizontal si está indeterminate
   const checkboxSquare = `
     <span class="ubits-checkbox__square" aria-hidden="true">
-      ${checked || (state === 'active' && !checked) ? '<span class="ubits-checkbox__checkmark"></span>' : ''}
+      ${indeterminate ? '<span class="ubits-checkbox__indeterminate"></span>' : ''}
+      ${checked && !indeterminate ? '<span class="ubits-checkbox__checkmark"></span>' : ''}
+      ${!checked && !indeterminate && state === 'active' ? '<span class="ubits-checkbox__checkmark"></span>' : ''}
     </span>
   `;
 
@@ -104,8 +110,14 @@ export function createCheckbox(options: CheckboxOptions): {
 
   // Agregar event listener para cambio
   const inputElement = element.querySelector('.ubits-checkbox__input') as HTMLInputElement;
-  if (inputElement && options.onChange) {
-    inputElement.addEventListener('change', options.onChange);
+  if (inputElement) {
+    // Aplicar estado indeterminado al input nativo si es necesario
+    if (options.indeterminate) {
+      inputElement.indeterminate = true;
+    }
+    if (options.onChange) {
+      inputElement.addEventListener('change', options.onChange);
+    }
   }
 
   const destroy = () => {
@@ -125,8 +137,14 @@ export function createCheckbox(options: CheckboxOptions): {
       element.parentNode.replaceChild(newElement, element);
       // Actualizar referencias
       const newInputElement = newElement.querySelector('.ubits-checkbox__input') as HTMLInputElement;
-      if (newInputElement && updatedOptions.onChange) {
-        newInputElement.addEventListener('change', updatedOptions.onChange);
+      if (newInputElement) {
+        // Aplicar estado indeterminado al input nativo si es necesario
+        if (updatedOptions.indeterminate) {
+          newInputElement.indeterminate = true;
+        }
+        if (updatedOptions.onChange) {
+          newInputElement.addEventListener('change', updatedOptions.onChange);
+        }
       }
     }
   };

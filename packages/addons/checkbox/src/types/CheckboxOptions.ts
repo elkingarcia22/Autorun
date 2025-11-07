@@ -28,6 +28,11 @@ export interface CheckboxOptions {
   checked?: boolean;
   
   /**
+   * Si el checkbox está en estado indeterminado (muestra línea horizontal en vez de check)
+   */
+  indeterminate?: boolean;
+  
+  /**
    * Tamaño del checkbox
    */
   size?: 'sm' | 'md';
