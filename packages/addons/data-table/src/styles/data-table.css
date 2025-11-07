@@ -1020,20 +1020,28 @@
     box-sizing: border-box !important;
     display: block !important; /* Asegurar que es un bloque */
     position: relative !important; /* Necesario para sticky */
-}
-
-/* Asegurar que el contenedor permita que la tabla se expanda más allá de su ancho */
-.ubits-data-table__scrollable-container--horizontal {
-    /* Asegurar que el contenedor pueda expandirse para contener la tabla completa */
+    /* CRÍTICO: Permitir que el contenedor se expanda más allá de su ancho para que scrollWidth funcione */
     min-width: 0 !important;
+    /* Forzar que el contenedor pueda calcular scrollWidth correctamente */
+    contain: none !important;
 }
 
+/* Asegurar que la tabla se expanda más allá del ancho del contenedor */
 .ubits-data-table__scrollable-container--horizontal .ubits-data-table__table {
     min-width: max-content !important;
     width: max-content !important;
     /* Forzar que la tabla tenga su ancho real para que el contenedor pueda calcular scrollWidth correctamente */
     table-layout: auto !important;
     display: table !important;
+}
+
+/* CRÍTICO: Cuando hay columnas fijadas, forzar que la tabla sea más ancha que el contenedor */
+/* Esto asegura que scrollWidth > clientWidth y permite que sticky funcione */
+.ubits-data-table__scrollable-container--horizontal:has(.ubits-data-table__column-header--pinned) .ubits-data-table__table,
+.ubits-data-table__scrollable-container--horizontal:has(.ubits-data-table__cell--pinned) .ubits-data-table__table {
+    /* Forzar que la tabla tenga al menos 1px más que el contenedor para activar scroll */
+    min-width: calc(100% + 1px) !important;
+    width: max-content !important;
 }
 
 /* Ambos scrolls (vertical y horizontal) */
@@ -1148,6 +1156,8 @@
     /* left se establece inline desde el código */
     z-index: 13 !important;
     background-color: var(--ubits-bg-1) !important;
+    /* CRÍTICO: Asegurar que left: 0 esté presente incluso si es la primera columna */
+    /* El left específico se aplicará inline, pero necesitamos un valor base */
 }
 
 .ubits-data-table__cell--pinned {
@@ -1205,8 +1215,14 @@
     padding: 0;
 }
 
-/* Removido position: relative - se aplicará inline cuando sea necesario (sticky para columnas fijadas) */
-/* .ubits-data-table__column-header {
-    position: relative;
-} */
+/* CRÍTICO: NO aplicar position: relative aquí - se aplicará inline cuando sea necesario (sticky para columnas fijadas) */
+/* Si se aplica position: relative aquí, sobrescribirá el position: sticky inline */
+.ubits-data-table__column-header--pinned {
+    /* Forzar que sticky tenga prioridad sobre cualquier position: relative */
+    position: sticky !important;
+    /* CRÍTICO: left debe estar presente incluso si es 0 para que sticky funcione */
+    /* El left específico se aplicará inline, pero necesitamos un valor base */
+    /* z-index para asegurar que quede por encima del contenido */
+    z-index: 10 !important;
+}
 
