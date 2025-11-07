@@ -1153,11 +1153,24 @@ export function renderDataTable(
     </table>
   `.trim();
 
+  // Verificar si hay columnas fijadas
+  const hasPinnedColumns = visibleColumns.some(col => col.pinned);
+  
   console.log('📊 [SCROLL] showVerticalScrollbar:', showVerticalScrollbar);
   console.log('📊 [SCROLL] showHorizontalScrollbar:', showHorizontalScrollbar);
+  console.log('📊 [SCROLL] hasPinnedColumns:', hasPinnedColumns);
+  console.log('📊 [SCROLL] Columnas fijadas:', visibleColumns.filter(c => c.pinned).map(c => c.id));
   console.log('📊 [SCROLL] tableHTML length:', tableHTML.length);
   console.log('📊 [SCROLL] ¿Hay checkbox-2 en columnHeadersHTML?', columnHeadersHTML.includes('checkbox-2'));
   console.log('📊 [SCROLL] ¿Hay checkbox-2 en rowsHTML?', rowsHTML.includes('checkbox-2'));
+  
+  // IMPORTANTE: Si hay columnas fijadas, necesitamos overflow-x para que sticky funcione
+  // Si no hay scroll horizontal activo pero hay columnas fijadas, forzar scroll horizontal
+  if (hasPinnedColumns && !showHorizontalScrollbar) {
+    console.log('⚠️ [SCROLL] ⚠️ ADVERTENCIA: Hay columnas fijadas pero no hay scroll horizontal activo');
+    console.log('⚠️ [SCROLL] ⚠️ Para que sticky funcione, se necesita overflow-x en el contenedor');
+    console.log('⚠️ [SCROLL] ⚠️ El CSS debería agregar overflow-x: auto automáticamente con :has()');
+  }
   
   // Calcular ancho total de columnas para debug
   const totalColumnsWidth = visibleColumns.reduce((sum, col) => {
