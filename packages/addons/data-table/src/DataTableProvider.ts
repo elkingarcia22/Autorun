@@ -1457,6 +1457,23 @@ export function createDataTable(options: DataTableOptions): {
     attachEventListeners();
     initializeIconFallbacks();
     
+    // Aplicar atributo indeterminate a los inputs del header checkbox después de renderizar
+    const checkboxHeaders = element.querySelectorAll('input[data-column-checkbox-header]');
+    checkboxHeaders.forEach((input) => {
+      const headerInput = input as HTMLInputElement;
+      const columnId = headerInput.getAttribute('data-column-checkbox-header');
+      if (columnId) {
+        // Calcular estado indeterminado
+        const allChecked = currentOptions.rows.length > 0 && currentOptions.rows.every(row => row.data[columnId] === true);
+        const someChecked = currentOptions.rows.some(row => row.data[columnId] === true);
+        const isIndeterminate = someChecked && !allChecked;
+        
+        // Aplicar indeterminate al input nativo
+        headerInput.indeterminate = isIndeterminate;
+        console.log('📋 [INDETERMINATE] Header checkbox', columnId, '- indeterminate:', isIndeterminate, '(allChecked:', allChecked, 'someChecked:', someChecked, ')');
+      }
+    });
+    
     // Logs para verificar estilos de padding después del renderizado
     console.log('🔍 [PADDING CHECK] ========== INICIANDO VERIFICACIÓN ==========');
     console.log('📊 Element disponible:', !!element);
@@ -3074,8 +3091,9 @@ export function createDataTable(options: DataTableOptions): {
       });
     });
     
-    // Checkbox buttons (tipo 'checkbox') - manejar activación/desactivación (solo si son editables)
-    const checkboxButtons = element.querySelectorAll('input[data-checkbox-button="true"][data-editable="true"]');
+    // Checkbox buttons (tipo 'checkbox') - manejar activación/desactivación
+    // Manejar tanto los editables como los no editables (checkbox-2)
+    const checkboxButtons = element.querySelectorAll('input[data-checkbox-button="true"]');
     checkboxButtons.forEach(checkbox => {
       const input = checkbox as HTMLInputElement;
       const rowIdStr = input.getAttribute('data-row-id');
@@ -3096,9 +3114,48 @@ export function createDataTable(options: DataTableOptions): {
         const row = currentOptions.rows.find(r => String(r.id) === String(rowId));
         if (row) {
           row.data[columnId] = newInput.checked;
-          // Re-renderizar para reflejar los cambios visuales
+          
+          // Llamar callback onRowSelect si existe
+          if (currentOptions.onRowSelect) {
+            currentOptions.onRowSelect(rowId, newInput.checked);
+          }
+          
+          // Re-renderizar para reflejar los cambios visuales (incluyendo header indeterminado)
           render();
         }
+      });
+    });
+    
+    // Checkbox del header (select all) - manejar selección/deselección de todas las filas
+    const headerCheckboxes = element.querySelectorAll('input[data-column-checkbox-header]');
+    headerCheckboxes.forEach(checkbox => {
+      const input = checkbox as HTMLInputElement;
+      const columnId = input.getAttribute('data-column-checkbox-header');
+      
+      if (!columnId) return;
+      
+      // Remover listeners anteriores si existen
+      const newInput = input.cloneNode(true) as HTMLInputElement;
+      input.parentNode?.replaceChild(newInput, input);
+      
+      newInput.addEventListener('change', (e) => {
+        e.stopPropagation();
+        
+        const selected = newInput.checked;
+        
+        // Actualizar todas las filas
+        currentOptions.rows.forEach(row => {
+          if (!row.data) row.data = {};
+          row.data[columnId] = selected;
+        });
+        
+        // Llamar callback onSelectAll si existe
+        if (currentOptions.onSelectAll) {
+          currentOptions.onSelectAll(selected);
+        }
+        
+        // Re-renderizar para reflejar los cambios visuales
+        render();
       });
     });
     

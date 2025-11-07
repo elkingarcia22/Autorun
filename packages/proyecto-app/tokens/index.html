@@ -10722,7 +10722,7 @@ Reglas Importantes:
                 id: 2,
                 data: {
                   nombre: 'María García',
-                  'checkbox-2': true,
+                  'checkbox-2': false,
                   email: 'maria.garcia@empresa.com',
                   estado: 'Inactivo',
                   area: 'Diseño',
@@ -10746,7 +10746,7 @@ Reglas Importantes:
                 id: 4,
                 data: {
                   nombre: 'Ana Martínez',
-                  'checkbox-2': true,
+                  'checkbox-2': false,
                   email: 'ana.martinez@empresa.com',
                   estado: 'Activo',
                   area: 'Recursos Humanos',
@@ -10770,7 +10770,7 @@ Reglas Importantes:
                 id: 6,
                 data: {
                   nombre: 'Valentina Torres',
-                  'checkbox-2': true,
+                  'checkbox-2': false,
                   email: 'valentina.torres@empresa.com',
                   estado: 'Activo',
                   area: 'Desarrollo',
@@ -10794,7 +10794,7 @@ Reglas Importantes:
                 id: 8,
                 data: {
                   nombre: 'Carmen Torres',
-                  'checkbox-2': true,
+                  'checkbox-2': false,
                   email: 'carmen.torres@empresa.com',
                   estado: 'Activo',
                   area: 'Diseño',
@@ -10818,7 +10818,7 @@ Reglas Importantes:
                 id: 10,
                 data: {
                   nombre: 'Isabel Moreno',
-                  'checkbox-2': true,
+                  'checkbox-2': false,
                   email: 'isabel.moreno@empresa.com',
                   estado: 'Activo',
                   area: 'Recursos Humanos',
@@ -11621,6 +11621,7 @@ Reglas Importantes:
                   if (checkboxColumn) {
                     if (!row.data) row.data = {};
                     row.data[checkboxColumn.id] = selected;
+                    console.log('✅ Estado actualizado. Fila:', rowId, 'checkbox-2:', row.data[checkboxColumn.id]);
                   }
                 }
                 // Re-renderizar la tabla para actualizar el header con estado indeterminado
@@ -11632,9 +11633,10 @@ Reglas Importantes:
                       console.warn('Error destruyendo instancia:', e);
                     }
                     delete window.dataTableInstances[componentId];
+                    // Recrear con el estado actualizado
                     createDataTableInstance();
                   }
-                }, 50);
+                }, 100);
               },
               onSelectAll: (selected) => {
                 console.log('Seleccionar todos:', selected);
@@ -11645,6 +11647,7 @@ Reglas Importantes:
                     if (!row.data) row.data = {};
                     row.data[checkboxColumn.id] = selected;
                   });
+                  console.log('✅ Todas las filas actualizadas. checkbox-2:', selected);
                 }
                 // Re-renderizar la tabla
                 setTimeout(() => {
@@ -11655,9 +11658,10 @@ Reglas Importantes:
                       console.warn('Error destruyendo instancia:', e);
                     }
                     delete window.dataTableInstances[componentId];
+                    // Recrear con el estado actualizado
                     createDataTableInstance();
                   }
-                }, 50);
+                }, 100);
               },
               onRowExpand: (rowId, expanded) => {
                 console.log('Fila expandida:', rowId, expanded);
