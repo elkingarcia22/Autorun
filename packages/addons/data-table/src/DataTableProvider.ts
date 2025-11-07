@@ -985,6 +985,15 @@ export function renderDataTable(
       }
     }
     
+    if (column.pinned) {
+      console.log('📌 [PINNED LEFT] Columna', column.id, 'calculada left:', left, 'px', {
+        hasControls,
+        showCheckbox,
+        columnIndex,
+        prevPinnedCount: allColumns.slice(0, columnIndex).filter(c => c.pinned && c.id !== 'checkbox-2').length
+      });
+    }
+    
     return left;
   };
 
