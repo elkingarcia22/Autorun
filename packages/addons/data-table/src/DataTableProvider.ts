@@ -1086,6 +1086,26 @@ export function renderDataTable(
     visibleColumns = visibleColumns.filter(col => col.type !== 'expand');
   }
   
+  // Aplicar sticky a las columnas de controladores según las opciones
+  const { checkboxSticky = false, dragHandleSticky = false, expandSticky = false } = options;
+  visibleColumns = visibleColumns.map(col => {
+    const colCopy = { ...col };
+    if (col.id === 'checkbox-2' && checkboxSticky === true) {
+      colCopy.pinned = true;
+      console.log('🔧 [STICKY] Checkbox marcado como pinned');
+    } else if (col.type === 'drag-handle' && dragHandleSticky === true) {
+      colCopy.pinned = true;
+      console.log('🔧 [STICKY] Drag-handle marcado como pinned');
+    } else if (col.type === 'expand' && expandSticky === true) {
+      colCopy.pinned = true;
+      console.log('🔧 [STICKY] Expand marcado como pinned');
+    } else if (col.id === 'checkbox-2' || col.type === 'drag-handle' || col.type === 'expand') {
+      // Si el sticky está deshabilitado, asegurar que pinned sea false
+      colCopy.pinned = false;
+    }
+    return colCopy;
+  });
+  
   // Estado de ordenamiento
   const sortColumnId = (options as any).sortColumnId || null;
   const sortDirection = (options as any).sortDirection || null;
@@ -1269,17 +1289,18 @@ export function renderDataTable(
   console.log('📊 [SCROLL] showVerticalScrollbar:', showVerticalScrollbar);
   console.log('📊 [SCROLL] showHorizontalScrollbar:', showHorizontalScrollbar);
   console.log('📊 [SCROLL] hasPinnedColumns:', hasPinnedColumns);
-  console.log('📊 [SCROLL] Columnas fijadas:', visibleColumns.filter(c => c.pinned).map(c => c.id));
+  console.log('📊 [SCROLL] Columnas fijadas:', visibleColumns.filter(c => c.pinned).map(c => ({ id: c.id, type: c.type })));
   console.log('📊 [SCROLL] tableHTML length:', tableHTML.length);
   console.log('📊 [SCROLL] ¿Hay checkbox-2 en columnHeadersHTML?', columnHeadersHTML.includes('checkbox-2'));
   console.log('📊 [SCROLL] ¿Hay checkbox-2 en rowsHTML?', rowsHTML.includes('checkbox-2'));
   
   // IMPORTANTE: Si hay columnas fijadas, necesitamos overflow-x para que sticky funcione
-  // Si no hay scroll horizontal activo pero hay columnas fijadas, forzar scroll horizontal
+  // Si no hay scroll horizontal activo pero hay columnas fijadas, activar scroll horizontal automáticamente
+  let finalShowHorizontalScrollbar = showHorizontalScrollbar;
   if (hasPinnedColumns && !showHorizontalScrollbar) {
-    console.log('⚠️ [SCROLL] ⚠️ ADVERTENCIA: Hay columnas fijadas pero no hay scroll horizontal activo');
-    console.log('⚠️ [SCROLL] ⚠️ Para que sticky funcione, se necesita overflow-x en el contenedor');
-    console.log('⚠️ [SCROLL] ⚠️ El CSS debería agregar overflow-x: auto automáticamente con :has()');
+    console.log('⚠️ [SCROLL] ⚠️ Hay columnas fijadas pero no hay scroll horizontal activo');
+    console.log('⚠️ [SCROLL] ⚠️ Activando scroll horizontal automáticamente para que sticky funcione');
+    finalShowHorizontalScrollbar = true;
   }
   
   // Calcular ancho total de columnas para debug
@@ -1294,13 +1315,13 @@ export function renderDataTable(
   // Determinar qué contenedor usar según los scrolls habilitados
   // NO afecta la lógica del checkbox ni de las columnas
   let html: string;
-  if (showVerticalScrollbar || showHorizontalScrollbar) {
+  if (showVerticalScrollbar || finalShowHorizontalScrollbar) {
     // Construir clases CSS según los scrolls habilitados
     const scrollClasses = [];
     if (showVerticalScrollbar) {
       scrollClasses.push('ubits-data-table__scrollable-container--vertical');
     }
-    if (showHorizontalScrollbar) {
+    if (finalShowHorizontalScrollbar) {
       scrollClasses.push('ubits-data-table__scrollable-container--horizontal');
     }
     

@@ -11493,34 +11493,19 @@ Reglas Importantes:
             const showHorizontalScrollbarValue = state.showHorizontalScrollbar === true;
             const showColumnMenuValue = state.showColumnMenu !== false;
             
-            // Aplicar sticky a las columnas de controladores según los controles
-            const columnsWithSticky = columns.map(col => {
-              const colCopy = { ...col };
-              if (col.id === 'checkbox-2' && state.checkboxSticky === true) {
-                colCopy.pinned = true;
-              } else if (col.type === 'drag-handle' && state.dragHandleSticky === true) {
-                colCopy.pinned = true;
-              } else if (col.type === 'expand' && state.expandSticky === true) {
-                colCopy.pinned = true;
-              } else if (col.id === 'checkbox-2' || col.type === 'drag-handle' || col.type === 'expand') {
-                // Si el sticky está deshabilitado, asegurar que pinned sea false
-                colCopy.pinned = false;
-              }
-              return colCopy;
-            });
-            
+            // Ya no aplicamos sticky aquí - se aplica dentro de renderDataTable después de crear las columnas
             console.log('🎯 [CREATE] ========== CREANDO TABLA ==========');
             console.log('🎯 [CREATE] showCheckboxValue:', showCheckboxValue, '(state.showCheckbox:', state.showCheckbox, ')');
             console.log('🎯 [CREATE] showVerticalScrollbarValue:', showVerticalScrollbarValue, '(state.showVerticalScrollbar:', state.showVerticalScrollbar, ')');
             console.log('🎯 [CREATE] showHorizontalScrollbarValue:', showHorizontalScrollbarValue, '(state.showHorizontalScrollbar:', state.showHorizontalScrollbar, ')');
             console.log('🎯 [CREATE] showColumnMenuValue:', showColumnMenuValue, '(state.showColumnMenu:', state.showColumnMenu, ')');
             console.log('🎯 [CREATE] checkboxSticky:', state.checkboxSticky, 'dragHandleSticky:', state.dragHandleSticky, 'expandSticky:', state.expandSticky);
-            console.log('🎯 [CREATE] Columnas que se pasan:', columnsWithSticky.map(c => ({ id: c.id, visible: c.visible, type: c.type, pinned: c.pinned })));
-            console.log('🎯 [CREATE] ¿Hay checkbox-2 en columns?', columnsWithSticky.some(c => c.id === 'checkbox-2'));
+            console.log('🎯 [CREATE] Columnas que se pasan:', columns.map(c => ({ id: c.id, visible: c.visible, type: c.type })));
+            console.log('🎯 [CREATE] ¿Hay checkbox-2 en columns?', columns.some(c => c.id === 'checkbox-2'));
             console.log('🎯 [CREATE] Número de filas:', rowsWithExpand.length);
             const table = window.createDataTable({
               containerId: containerId,
-              columns: columnsWithSticky,
+              columns: columns,
               rows: rowsWithExpand,
               columnReorderable: state.columnReorderable !== false,
               rowReorderable: state.rowReorderable !== false,
@@ -11530,6 +11515,9 @@ Reglas Importantes:
               showVerticalScrollbar: showVerticalScrollbarValue,
               showHorizontalScrollbar: showHorizontalScrollbarValue,
               showColumnMenu: showColumnMenuValue,
+              checkboxSticky: state.checkboxSticky === true,
+              dragHandleSticky: state.dragHandleSticky === true,
+              expandSticky: state.expandSticky === true,
               onRowExpand: (rowId, expanded) => {
                 console.log('Fila expandida:', rowId, expanded);
                 const row = state.rows.find(r => r.id === rowId);

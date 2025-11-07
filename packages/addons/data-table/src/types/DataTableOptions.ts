@@ -214,6 +214,20 @@ export interface DataTableOptions {
    */
   showColumnMenu?: boolean;
 
+  /**
+   * Si el checkbox debe ser sticky (por defecto: false)
+   */
+  checkboxSticky?: boolean;
+
+  /**
+   * Si el drag-handle (mover filas) debe ser sticky (por defecto: false)
+   */
+  dragHandleSticky?: boolean;
+
+  /**
+   * Si el expand (desplegar filas) debe ser sticky (por defecto: false)
+   */
+  expandSticky?: boolean;
 
   /**
    * Clases CSS adicionales
