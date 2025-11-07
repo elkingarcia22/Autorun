@@ -525,6 +525,21 @@ function renderCell(column: TableColumn, row: TableRow, pinnedLeft: number = 0):
     const pinnedStyle = column.pinned ? `left: ${pinnedLeft}px;` : '';
     const cellStyle = `text-align: center; vertical-align: middle; padding-left: ${paddingLeft} !important;${pinnedStyle ? ' ' + pinnedStyle : ''}`;
     
+    // Logs detallados para debugging
+    if (column.pinned) {
+      console.log('📌 [CELL CHECKBOX] Columna fijada detectada:', {
+        columnId: column.id,
+        rowId: row.id,
+        pinned: column.pinned,
+        pinnedLeft: pinnedLeft,
+        pinnedClass: pinnedClass,
+        pinnedStyle: pinnedStyle,
+        cellStyle: cellStyle,
+        hasPinnedClass: pinnedClass.includes('pinned'),
+        hasPinnedStyle: pinnedStyle.includes('left')
+      });
+    }
+    
     const cellHTML = `
       <td class="ubits-data-table__cell ubits-data-table__cell--checkbox${pinnedClass}" data-column-id="${column.id}" ${column.pinned ? 'data-pinned="true"' : ''} style="${cellStyle}">
         ${checkbox}
@@ -551,6 +566,22 @@ function renderCell(column: TableColumn, row: TableRow, pinnedLeft: number = 0):
     const pinnedClass = column.pinned ? ' ubits-data-table__cell--pinned' : '';
     // Aplicar left siempre que la columna esté fijada, incluso si es 0 (necesario para que sticky funcione)
     const pinnedStyle = column.pinned ? ` style="left: ${pinnedLeft}px;"` : '';
+    
+    // Logs detallados para debugging
+    if (column.pinned) {
+      console.log('📌 [CELL TIPO] Columna fijada detectada:', {
+        columnId: column.id,
+        columnType: column.type,
+        rowId: row.id,
+        pinned: column.pinned,
+        pinnedLeft: pinnedLeft,
+        pinnedClass: pinnedClass,
+        pinnedStyle: pinnedStyle,
+        hasPinnedClass: pinnedClass.includes('pinned'),
+        hasPinnedStyle: pinnedStyle.includes('left')
+      });
+    }
+    
     // Agregar data-column-id siempre para poder diferenciar en CSS
     const dataAttrs = isEditable && (column.type === 'nombre' || column.type === 'nombre-avatar' || column.type === 'estado' || column.type === 'fecha') 
       ? `data-row-id="${row.id}" data-column-id="${column.id}" data-editable="true"${column.pinned ? ' data-pinned="true"' : ''}` 
@@ -572,6 +603,20 @@ function renderCell(column: TableColumn, row: TableRow, pinnedLeft: number = 0):
   const pinnedClass = column.pinned ? ' ubits-data-table__cell--pinned' : '';
   // Aplicar left siempre que la columna esté fijada, incluso si es 0 (necesario para que sticky funcione)
   const pinnedStyle = column.pinned ? ` style="left: ${pinnedLeft}px;"` : '';
+  
+  // Logs detallados para debugging
+  if (column.pinned) {
+    console.log('📌 [CELL NORMAL] Columna fijada detectada:', {
+      columnId: column.id,
+      rowId: row.id,
+      pinned: column.pinned,
+      pinnedLeft: pinnedLeft,
+      pinnedClass: pinnedClass,
+      pinnedStyle: pinnedStyle,
+      hasPinnedClass: pinnedClass.includes('pinned'),
+      hasPinnedStyle: pinnedStyle.includes('left')
+    });
+  }
   
   return `
     <td class="ubits-data-table__cell${pinnedClass}" data-column-id="${column.id}"${column.pinned ? ' data-pinned="true"' : ''}${pinnedStyle}>
@@ -724,19 +769,27 @@ function renderColumnHeader(
   // Agregar clase si la columna está fijada
   const pinnedClass = column.pinned ? ' ubits-data-table__column-header--pinned' : '';
   
-  if (column.pinned) {
-    console.log('📌 [PINNED] Columna fijada detectada en renderColumnHeader:', {
-      columnId: column.id,
-      columnTitle: column.title,
-      pinned: column.pinned,
-      pinnedClass
-    });
-  }
-  
   // Agregar estilo inline para left si está fijada (siempre aplicar cuando está fijada, incluso si es 0)
   const pinnedStyle = column.pinned ? `left: ${pinnedLeft}px;` : '';
   const widthStyle = column.width ? `width: ${column.width}px;` : '';
   const combinedStyle = [widthStyle, pinnedStyle].filter(Boolean).join(' ');
+  
+  // Logs detallados para debugging
+  if (column.pinned) {
+    console.log('📌 [HEADER] Columna fijada detectada en renderColumnHeader:', {
+      columnId: column.id,
+      columnTitle: column.title,
+      pinned: column.pinned,
+      pinnedLeft: pinnedLeft,
+      pinnedClass: pinnedClass,
+      pinnedStyle: pinnedStyle,
+      widthStyle: widthStyle,
+      combinedStyle: combinedStyle,
+      hasPinnedClass: pinnedClass.includes('pinned'),
+      hasPinnedStyle: pinnedStyle.includes('left'),
+      willApplyStyle: !!combinedStyle
+    });
+  }
   
   return `
     <th 
@@ -966,44 +1019,73 @@ export function renderDataTable(
   // Función auxiliar para calcular el left de una columna fijada
   const calculatePinnedLeft = (column: TableColumn, columnIndex: number, allColumns: TableColumn[], hasControls: boolean, showCheckbox: boolean): number => {
     let left = 0;
+    const debugInfo: any = {
+      columnId: column.id,
+      columnIndex: columnIndex,
+      hasControls: hasControls,
+      showCheckbox: showCheckbox,
+      steps: []
+    };
     
     // Si hay controles, agregar su ancho (80px)
     if (hasControls) {
       left += 80;
+      debugInfo.steps.push({ step: 'hasControls', added: 80, total: left });
+    } else {
+      debugInfo.steps.push({ step: 'hasControls', added: 0, total: left, reason: 'No hay controles' });
     }
     
     // Si hay checkbox y está antes de esta columna, agregar su ancho (60px)
     if (showCheckbox) {
       const checkboxIndex = allColumns.findIndex(c => c.id === 'checkbox-2');
+      debugInfo.checkboxIndex = checkboxIndex;
       if (checkboxIndex >= 0 && checkboxIndex < columnIndex) {
         left += 60;
+        debugInfo.steps.push({ step: 'showCheckbox', added: 60, total: left, reason: 'Checkbox antes de esta columna' });
+      } else {
+        debugInfo.steps.push({ step: 'showCheckbox', added: 0, total: left, reason: checkboxIndex < 0 ? 'Checkbox no existe' : 'Checkbox después de esta columna' });
       }
+    } else {
+      debugInfo.steps.push({ step: 'showCheckbox', added: 0, total: left, reason: 'showCheckbox es false' });
     }
     
     // Agregar ancho de todas las columnas fijadas anteriores
+    const prevPinnedColumns: any[] = [];
     for (let i = 0; i < columnIndex; i++) {
       const prevCol = allColumns[i];
       if (prevCol.pinned && prevCol.id !== 'checkbox-2') {
-        left += prevCol.width || 150; // Usar width de la columna o 150px por defecto
+        const prevWidth = prevCol.width || 150;
+        left += prevWidth;
+        prevPinnedColumns.push({ id: prevCol.id, width: prevWidth, added: prevWidth });
       }
     }
+    debugInfo.prevPinnedColumns = prevPinnedColumns;
+    if (prevPinnedColumns.length > 0) {
+      debugInfo.steps.push({ step: 'prevPinnedColumns', added: prevPinnedColumns.reduce((sum, p) => sum + p.added, 0), total: left, columns: prevPinnedColumns });
+    } else {
+      debugInfo.steps.push({ step: 'prevPinnedColumns', added: 0, total: left, reason: 'No hay columnas fijadas anteriores' });
+    }
+    
+    debugInfo.finalLeft = left;
     
     if (column.pinned) {
-      console.log('📌 [PINNED LEFT] Columna', column.id, 'calculada left:', left, 'px', {
-        hasControls,
-        showCheckbox,
-        columnIndex,
-        prevPinnedCount: allColumns.slice(0, columnIndex).filter(c => c.pinned && c.id !== 'checkbox-2').length
-      });
+      console.log('📌 [PINNED LEFT] Cálculo detallado para columna', column.id, ':', debugInfo);
     }
     
     return left;
   };
 
   // Renderizar headers de columnas
+  console.log('🔍 [RENDER HEADERS] Iniciando renderizado de headers...');
+  console.log('🔍 [RENDER HEADERS] hasControls:', hasControls, 'showCheckbox:', showCheckbox);
+  console.log('🔍 [RENDER HEADERS] Columnas con pinned:', visibleColumns.filter(c => c.pinned).map(c => ({ id: c.id, pinned: c.pinned })));
+  
   const columnHeadersHTML = visibleColumns
     .map((col, index) => {
       const pinnedLeft = col.pinned ? calculatePinnedLeft(col, index, visibleColumns, hasControls, showCheckbox !== false) : 0;
+      if (col.pinned) {
+        console.log('🔍 [RENDER HEADERS] Columna fijada:', col.id, 'index:', index, 'pinnedLeft calculado:', pinnedLeft);
+      }
       return renderColumnHeader(col, columnReorderable, columnSortable, orderedRows, sortColumnId, sortDirection, showColumnMenu, pinnedLeft);
     })
     .join('');
@@ -1012,12 +1094,23 @@ export function renderDataTable(
   console.log('📊 columnHeadersHTML preview:', columnHeadersHTML.substring(0, 200));
 
   // Renderizar filas
+  console.log('🔍 [RENDER ROWS] Iniciando renderizado de filas...');
+  console.log('🔍 [RENDER ROWS] hasControls:', hasControls, 'showCheckbox:', showCheckbox);
+  console.log('🔍 [RENDER ROWS] Número de filas:', orderedRows.length);
+  
   const rowsHTML = orderedRows
     .map((row, index) => {
       // Calcular left para cada columna fijada en esta fila
-      const pinnedLefts = visibleColumns.map((col, colIndex) => 
-        col.pinned ? calculatePinnedLeft(col, colIndex, visibleColumns, hasControls, showCheckbox !== false) : 0
-      );
+      const pinnedLefts = visibleColumns.map((col, colIndex) => {
+        if (col.pinned) {
+          const left = calculatePinnedLeft(col, colIndex, visibleColumns, hasControls, showCheckbox !== false);
+          if (index === 0) { // Solo log para la primera fila para no saturar
+            console.log('🔍 [RENDER ROWS] Fila 0, columna fijada:', col.id, 'colIndex:', colIndex, 'pinnedLeft:', left);
+          }
+          return left;
+        }
+        return 0;
+      });
       return renderRow(row, visibleColumns, index, rowReorderable, rowExpandable, hasControls, pinnedLefts);
     })
     .join('');
