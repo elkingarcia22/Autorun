@@ -112,7 +112,13 @@ const meta: Meta<DataTableOptions & { columnsCount?: number }> = {
 };
 
 export default meta;
-type Story = StoryObj<DataTableOptions & { columnsCount?: number }>;
+type Story = StoryObj<DataTableOptions & { 
+  columnsCount?: number;
+  columnType1?: string;
+  columnType2?: string;
+  columnType3?: string;
+  columnType4?: string;
+}>;
 
 export const Default: Story = {
   render: (args) => {
@@ -488,6 +494,10 @@ export const Default: Story = {
     showHorizontalScrollbar: false,
     showColumnMenu: true,
     columnsCount: 4,
+    columnType1: 'nombre',
+    columnType2: 'correo',
+    columnType3: 'estado',
+    columnType4: 'progreso',
   },
 };
 
