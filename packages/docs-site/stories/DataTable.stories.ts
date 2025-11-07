@@ -108,6 +108,39 @@ const meta: Meta<DataTableOptions & { columnsCount?: number }> = {
         defaultValue: { summary: 'progreso' },
       },
     },
+    // Controles para columna 1 (Nombre)
+    column1AvatarVariant: {
+      control: { type: 'select' },
+      options: ['photo', 'initials', 'icon'],
+      description: 'Variante de avatar para columna 1 (solo si es nombre-avatar o nombre-avatar-texto)',
+      table: {
+        defaultValue: { summary: 'initials' },
+      },
+    },
+    column1Editable: {
+      control: 'boolean',
+      description: 'Hacer editable la columna 1 (solo si es nombre, nombre-avatar, estado, fecha, checkbox o radio)',
+      table: {
+        defaultValue: { summary: 'false' },
+      },
+    },
+    // Controles para columna 2 (Email)
+    column2EmailClickable: {
+      control: 'boolean',
+      description: 'Hacer el email clicable en columna 2 (solo si es correo)',
+      table: {
+        defaultValue: { summary: 'true' },
+      },
+    },
+    // Controles para columna 3 (Estado)
+    column3Editable: {
+      control: 'boolean',
+      description: 'Hacer editable la columna 3 (solo si es nombre, nombre-avatar, estado, fecha, checkbox o radio)',
+      table: {
+        defaultValue: { summary: 'false' },
+      },
+    },
+    // Controles para columna 4 (Progreso) - no tiene controles adicionales
   },
 };
 
@@ -118,6 +151,10 @@ type Story = StoryObj<DataTableOptions & {
   columnType2?: string;
   columnType3?: string;
   columnType4?: string;
+  column1AvatarVariant?: 'photo' | 'initials' | 'icon';
+  column1Editable?: boolean;
+  column2EmailClickable?: boolean;
+  column3Editable?: boolean;
 }>;
 
 export const Default: Story = {
@@ -140,7 +177,7 @@ export const Default: Story = {
     const columnsCount = args.columnsCount ?? 4;
     
     // Tipos de columna disponibles (pueden ser controlados desde Storybook)
-    const columnType1 = (args as any).columnType1 || 'nombre';
+    const columnType1 = (args as any).columnType1 || 'nombre-avatar';
     const columnType2 = (args as any).columnType2 || 'correo';
     const columnType3 = (args as any).columnType3 || 'estado';
     const columnType4 = (args as any).columnType4 || 'progreso';
@@ -151,10 +188,63 @@ export const Default: Story = {
     const columnType9 = (args as any).columnType9 || 'nombre';
     const columnType10 = (args as any).columnType10 || 'estado';
     
+    // Controles adicionales para columnas
+    const column1AvatarVariant = (args as any).column1AvatarVariant || 'initials';
+    const column1Editable = (args as any).column1Editable || false;
+    const column2EmailClickable = (args as any).column2EmailClickable !== undefined ? (args as any).column2EmailClickable : true;
+    const column3Editable = (args as any).column3Editable || false;
+    
+    // Construir columnas con sus controles
+    const col1: TableColumn = {
+      id: 'nombre',
+      title: 'Nombre',
+      type: columnType1 as any,
+      visible: true,
+      width: 200,
+    };
+    
+    // Agregar avatarVariant solo si el tipo es nombre-avatar o nombre-avatar-texto
+    if (columnType1 === 'nombre-avatar' || columnType1 === 'nombre-avatar-texto') {
+      col1.avatarVariant = column1AvatarVariant as 'photo' | 'initials' | 'icon';
+    }
+    
+    // Agregar editable solo si el tipo lo permite
+    const editableTypes1 = ['nombre', 'nombre-avatar', 'nombre-avatar-texto', 'estado', 'fecha', 'checkbox', 'radio'];
+    if (editableTypes1.includes(columnType1)) {
+      col1.editable = column1Editable;
+    }
+    
+    const col2: TableColumn = {
+      id: 'email',
+      title: 'Email',
+      type: columnType2 as any,
+      visible: true,
+      width: 250,
+    };
+    
+    // Agregar emailClickable solo si el tipo es correo
+    if (columnType2 === 'correo') {
+      col2.emailClickable = column2EmailClickable;
+    }
+    
+    const col3: TableColumn = {
+      id: 'estado',
+      title: 'Estado',
+      type: columnType3 as any,
+      visible: true,
+      width: 150,
+    };
+    
+    // Agregar editable solo si el tipo lo permite
+    const editableTypes3 = ['nombre', 'nombre-avatar', 'nombre-avatar-texto', 'estado', 'fecha', 'checkbox', 'radio'];
+    if (editableTypes3.includes(columnType3)) {
+      col3.editable = column3Editable;
+    }
+    
     const allColumns: TableColumn[] = [
-      { id: 'nombre', title: 'Nombre', type: (columnType1 as any) || 'nombre-avatar', visible: true, width: 200, avatarVariant: 'initials' },
-      { id: 'email', title: 'Email', type: columnType2 as any, visible: true, width: 250 },
-      { id: 'estado', title: 'Estado', type: columnType3 as any, visible: true, width: 150 },
+      col1,
+      col2,
+      col3,
       { id: 'progreso', title: 'Progreso', type: columnType4 as any, visible: true, width: 180 },
       { id: 'telefono', title: 'Teléfono', type: columnType5 as any, visible: true, width: 150 },
       { id: 'ciudad', title: 'Ciudad', type: columnType6 as any, visible: true, width: 150 },
@@ -188,7 +278,7 @@ export const Default: Story = {
         renderExpandedContent: (data) => `
           <div style="padding: 16px;">
             <h4 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600;">Información adicional</h4>
-            <p style="margin: 0; font-size: 13px; color: var(--ubits-text-2, #6b7280);">
+            <p style="margin: 0; font-size: 13px; color: var(--ubits-body-md-regular-2, #6b7280);">
               Detalles adicionales para ${data.nombre}
             </p>
           </div>
@@ -232,7 +322,7 @@ export const Default: Story = {
         renderExpandedContent: (data) => `
           <div style="padding: 16px;">
             <h4 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600;">Información adicional</h4>
-            <p style="margin: 0; font-size: 13px; color: var(--ubits-text-2, #6b7280);">
+            <p style="margin: 0; font-size: 13px; color: var(--ubits-body-md-regular-2, #6b7280);">
               Detalles adicionales para ${data.nombre}
             </p>
           </div>
@@ -513,6 +603,10 @@ export const Default: Story = {
     columnType2: 'correo',
     columnType3: 'estado',
     columnType4: 'progreso',
+    column1AvatarVariant: 'initials',
+    column1Editable: false,
+    column2EmailClickable: true,
+    column3Editable: false,
   },
 };
 
