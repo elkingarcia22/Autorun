@@ -53,6 +53,9 @@ const preview: Preview = {
     (story, ctx) => {
       const theme = ctx.globals.theme || 'light'
       document.body.setAttribute('data-theme', theme)
+      document.documentElement.setAttribute('data-theme', theme)
+      // Asegurar que el fondo del body sea diferente al sidebar
+      document.body.style.backgroundColor = 'var(--ubits-bg-2)'
       return story()
     },
   ],
