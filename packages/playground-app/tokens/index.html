@@ -4967,9 +4967,13 @@ Reglas Importantes:
 
           categories.forEach((category, catIndex) => {
             const components = componentsInventory[category];
+            const componentCount = components.length;
             
-            // Agregar título de categoría (siempre al inicio de cada categoría)
-            navHTML += `<div class="side-title" style="margin-top: ${catIndex > 0 ? '16px' : '0'}; margin-bottom: 8px;">${category}</div>`;
+            // Agregar título de categoría con contador (siempre al inicio de cada categoría)
+            navHTML += `<div class="side-title" style="margin-top: ${catIndex > 0 ? '16px' : '0'}; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;">
+              <span>${category}</span>
+              <span style="font-size: var(--font-body-xs-size); color: var(--ubits-fg-1-medium); font-weight: var(--weight-regular); margin-left: 8px;">${componentCount} ${componentCount === 1 ? 'componente' : 'componentes'}</span>
+            </div>`;
             
             // Generar los links para cada componente
             components.forEach((component, compIndex) => {
