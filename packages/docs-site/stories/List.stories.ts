@@ -243,10 +243,23 @@ export const Default: Story = {
       style.textContent = `#${listId}::-webkit-scrollbar { display: none; }`;
       document.head.appendChild(style);
       
+      // Asegurar que el elemento .ubits-list tenga el ID correcto
+      const listElementTemp = listInner.querySelector('.ubits-list') as HTMLElement;
+      if (listElementTemp && !listElementTemp.id) {
+        listElementTemp.id = listId;
+      }
+      
       // Crear scrollbar UBITS después de que el DOM esté listo (como en index.html)
       setTimeout(() => {
         console.log('📋 [List Storybook] ========== CREANDO SCROLLBAR ==========');
-        const listElement = document.getElementById(listId) as HTMLElement;
+        // Buscar por ID primero, si no existe buscar por clase
+        let listElement = document.getElementById(listId) as HTMLElement;
+        if (!listElement) {
+          listElement = listInner.querySelector('.ubits-list') as HTMLElement;
+          if (listElement) {
+            listElement.id = listId;
+          }
+        }
         console.log('📋 [List Storybook] listElement encontrado:', !!listElement, listId);
         console.log('📋 [List Storybook] scrollbarContainer:', scrollbarContainer.id);
         
