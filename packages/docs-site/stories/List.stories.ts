@@ -266,7 +266,7 @@ export const Default: Story = {
             
             // Usar listInner.clientHeight en lugar de listElement.clientHeight
             if (listElement.scrollHeight > listInner.clientHeight) {
-            try {
+              try {
               console.log('📋 [List Storybook] ✅ Scroll necesario, creando scrollbar UBITS...');
               
               // Intentar importar ScrollProvider
