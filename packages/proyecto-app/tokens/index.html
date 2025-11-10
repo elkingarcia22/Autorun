@@ -8500,6 +8500,15 @@ Reglas Importantes:
                                 <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); text-transform: uppercase; letter-spacing: 0.5px;">Altura Máxima</label>
                                 <input type="text" id="list-maxheight-input-${componentId}" value="400px" onchange="setListControl('maxHeight', this.value, '${componentId}')" placeholder="400px" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
                               </div>
+                              
+                              <!-- Show Scrollbar -->
+                              <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); text-transform: uppercase; letter-spacing: 0.5px;">Mostrar Scrollbar UBITS</label>
+                                <div style="display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 8px; background: var(--ubits-bg-1);">
+                                  <input type="checkbox" id="list-scrollbar-toggle-${componentId}" onchange="setListControl('showScrollbar', this.checked, '${componentId}')" style="width: 18px; height: 18px; cursor: pointer; accent-color: var(--ubits-accent-brand);">
+                                  <span id="list-scrollbar-status-${componentId}" style="font-size: 14px; color: var(--ubits-fg-1-high);">Desactivado</span>
+                                </div>
+                              </div>
                             </div>
                           </div>
                           
@@ -19408,7 +19417,8 @@ Reglas Importantes:
             item2State: 'active',
             item3State: 'disabled',
             item4State: 'default',
-            maxHeight: '400px'
+            maxHeight: '400px',
+            showScrollbar: false
           };
         }
         return listPreviewState[componentId];
@@ -19416,44 +19426,117 @@ Reglas Importantes:
       
       // Función para renderizar List (versión simplificada para autoframe)
       function renderListSimple(state, componentId) {
-        const { size, item1State, item2State, item3State, item4State, maxHeight } = state;
+        const { size, item1State, item2State, item3State, item4State, maxHeight, showScrollbar } = state;
         
+        // Crear más items para que tenga scroll (10 items)
         const items = [
-          { label: 'Label', state: item1State },
-          { label: 'Label', state: item2State },
-          { label: 'Label', state: item3State },
-          { label: 'Label', state: item4State }
+          { label: 'Item 1', state: item1State },
+          { label: 'Item 2', state: item2State },
+          { label: 'Item 3', state: item3State },
+          { label: 'Item 4', state: item4State },
+          { label: 'Item 5', state: 'default' },
+          { label: 'Item 6', state: 'default' },
+          { label: 'Item 7', state: 'default' },
+          { label: 'Item 8', state: 'default' },
+          { label: 'Item 9', state: 'default' },
+          { label: 'Item 10', state: 'default' }
         ];
         
-        let listHTML = `<div class="ubits-list" role="list" style="max-height: ${maxHeight};">`;
+        const listContainerId = `list-container-${componentId}-${Date.now()}`;
+        const listId = `list-${componentId}-${Date.now()}`;
+        const scrollbarContainerId = `list-scrollbar-${componentId}-${Date.now()}`;
         
-        items.forEach((item, index) => {
-          const itemState = item.state || 'default';
-          const itemClasses = [
-            'ubits-list-item',
-            `ubits-list-item--${size}`,
-            itemState !== 'default' ? `ubits-list-item--${itemState}` : ''
-          ].filter(Boolean).join(' ');
+        // Si showScrollbar está activado, usar estructura con scrollbar UBITS
+        if (showScrollbar) {
+          let listHTML = `
+            <div id="${listContainerId}" style="position: relative; width: 100%;">
+              <div id="${listId}" class="ubits-list" role="list" style="max-height: ${maxHeight}; overflow-y: auto; overflow-x: hidden; -ms-overflow-style: none; scrollbar-width: none; padding-right: 8px;">
+          `;
           
-          const itemAttrs = [];
-          if (itemState === 'active') {
-            itemAttrs.push('aria-selected="true"');
-          }
-          if (itemState === 'disabled') {
-            itemAttrs.push('aria-disabled="true"');
-          } else {
-            itemAttrs.push('tabindex="0"');
-          }
+          items.forEach((item, index) => {
+            const itemState = item.state || 'default';
+            const itemClasses = [
+              'ubits-list-item',
+              `ubits-list-item--${size}`,
+              itemState !== 'default' ? `ubits-list-item--${itemState}` : ''
+            ].filter(Boolean).join(' ');
+            
+            const itemAttrs = [];
+            if (itemState === 'active') {
+              itemAttrs.push('aria-selected="true"');
+            }
+            if (itemState === 'disabled') {
+              itemAttrs.push('aria-disabled="true"');
+            } else {
+              itemAttrs.push('tabindex="0"');
+            }
+            
+            listHTML += `
+              <div class="${itemClasses}" role="listitem" ${itemAttrs.join(' ')}>
+                ${item.label}
+              </div>
+            `;
+          });
           
           listHTML += `
-            <div class="${itemClasses}" role="listitem" ${itemAttrs.join(' ')}>
-              ${item.label}
+              </div>
+              <div id="${scrollbarContainerId}" style="position: absolute; top: 0; right: 0; width: 8px; height: 100%; pointer-events: none;"></div>
             </div>
+            <style>
+              #${listId}::-webkit-scrollbar { display: none; }
+            </style>
           `;
-        });
-        
-        listHTML += '</div>';
-        return listHTML;
+          
+          // Crear scrollbar UBITS después de que el DOM esté listo
+          setTimeout(() => {
+            const listElement = document.getElementById(listId);
+            const scrollbarContainer = document.getElementById(scrollbarContainerId);
+            
+            if (listElement && scrollbarContainer && typeof window.createScrollbarLocal === 'function') {
+              if (listElement.scrollHeight > listElement.clientHeight) {
+                const scrollbarInstance = window.createScrollbarLocal(listElement, scrollbarContainer, 'vertical');
+                if (scrollbarInstance) {
+                  scrollbarContainer.style.pointerEvents = 'auto';
+                  // Guardar referencia
+                  listElement._scrollbarInstance = scrollbarInstance;
+                }
+              }
+            }
+          }, 100);
+          
+          return listHTML;
+        } else {
+          // Sin scrollbar UBITS, solo scroll nativo
+          let listHTML = `<div class="ubits-list" role="list" style="max-height: ${maxHeight}; overflow-y: auto;">`;
+          
+          items.forEach((item, index) => {
+            const itemState = item.state || 'default';
+            const itemClasses = [
+              'ubits-list-item',
+              `ubits-list-item--${size}`,
+              itemState !== 'default' ? `ubits-list-item--${itemState}` : ''
+            ].filter(Boolean).join(' ');
+            
+            const itemAttrs = [];
+            if (itemState === 'active') {
+              itemAttrs.push('aria-selected="true"');
+            }
+            if (itemState === 'disabled') {
+              itemAttrs.push('aria-disabled="true"');
+            } else {
+              itemAttrs.push('tabindex="0"');
+            }
+            
+            listHTML += `
+              <div class="${itemClasses}" role="listitem" ${itemAttrs.join(' ')}>
+                ${item.label}
+              </div>
+            `;
+          });
+          
+          listHTML += '</div>';
+          return listHTML;
+        }
       }
       
       // Función para actualizar el preview del List
@@ -19466,8 +19549,32 @@ Reglas Importantes:
           return;
         }
         
+        // Destruir scrollbar anterior si existe
+        const previousList = preview.querySelector('.ubits-list');
+        if (previousList && previousList._scrollbarInstance) {
+          try {
+            if (typeof previousList._scrollbarInstance.destroy === 'function') {
+              previousList._scrollbarInstance.destroy();
+            }
+          } catch (e) {
+            console.warn('⚠️ Error al destruir scrollbar anterior:', e);
+          }
+        }
+        
         const listHTML = renderListSimple(state, componentId);
         preview.innerHTML = listHTML;
+        
+        // Cargar CSS del scrollbar si showScrollbar está activado
+        if (state.showScrollbar) {
+          const scrollbarCSSId = 'ubits-scrollbar-css';
+          if (!document.getElementById(scrollbarCSSId)) {
+            const link = document.createElement('link');
+            link.id = scrollbarCSSId;
+            link.rel = 'stylesheet';
+            link.href = '../../addons/scroll/src/styles/scroll.css';
+            document.head.appendChild(link);
+          }
+        }
         
         console.log('✅ Preview de List actualizado:', state);
       };
@@ -19501,6 +19608,14 @@ Reglas Importantes:
           state.maxHeight = value;
           const input = document.getElementById(`list-maxheight-input-${componentId}`);
           if (input) input.value = value;
+        } else if (option === 'showScrollbar') {
+          state.showScrollbar = value;
+          const toggle = document.getElementById(`list-scrollbar-toggle-${componentId}`);
+          const statusSpan = document.getElementById(`list-scrollbar-status-${componentId}`);
+          if (toggle) toggle.checked = value;
+          if (statusSpan) {
+            statusSpan.textContent = value ? 'Activado' : 'Desactivado';
+          }
         }
         
         // Actualizar preview
