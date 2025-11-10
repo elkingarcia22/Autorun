@@ -290,19 +290,18 @@ export const Default: Story = {
                       visibility: computed.visibility
                     });
                     
-                    // Forzar que el scrollbar sea visible
-                    (scrollbarEl as HTMLElement).style.display = 'flex';
-                    (scrollbarEl as HTMLElement).style.opacity = '1';
-                    (scrollbarEl as HTMLElement).style.visibility = 'visible';
-                    (scrollbarEl as HTMLElement).style.width = '8px';
-                    (scrollbarEl as HTMLElement).style.height = '100%';
-                    (barEl as HTMLElement).style.opacity = '0.6';
-                    (barEl as HTMLElement).style.pointerEvents = 'auto';
-                    (barEl as HTMLElement).style.visibility = 'visible';
+                    // Forzar que el scrollbar sea visible con !important
+                    (scrollbarEl as HTMLElement).style.cssText += 'display: flex !important; opacity: 1 !important; visibility: visible !important; width: 8px !important; height: 100% !important;';
+                    (barEl as HTMLElement).style.cssText += 'opacity: 0.6 !important; pointer-events: auto !important; visibility: visible !important;';
                     
                     // Asegurar que el scrollbar container también sea visible
-                    scrollbarContainer.style.opacity = '1';
-                    scrollbarContainer.style.visibility = 'visible';
+                    scrollbarContainer.style.cssText += 'opacity: 1 !important; visibility: visible !important;';
+                    
+                    // Llamar a updateScrollbar manualmente para asegurar que se actualice
+                    if (scrollbarInstance && typeof scrollbarInstance.update === 'function') {
+                      scrollbarInstance.update();
+                      console.log('📋 [List Storybook] updateScrollbar llamado');
+                    }
                     
                     console.log('📋 [List Storybook] ✅ Estilos inline aplicados al scrollbar');
                     
