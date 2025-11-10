@@ -255,7 +255,7 @@ export const Default: Story = {
       }
       
       // Crear scrollbar UBITS después de que el DOM esté listo (como en index.html)
-      setTimeout(() => {
+      setTimeout(async () => {
         console.log('📋 [List Storybook] ========== CREANDO SCROLLBAR ==========');
         // Buscar por ID primero, si no existe buscar por clase
         let listElement = document.getElementById(listId) as HTMLElement;
