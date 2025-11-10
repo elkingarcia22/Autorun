@@ -318,7 +318,7 @@ function renderCellByType(column: TableColumn, row: TableRow, columnType: Column
       const statusTagHTML = renderStatusTag({
         label: label,
         status: ubitsStatus as any,
-        size: 'sm',
+        size: 'xs',
         rightIcon: isEditable ? 'chevron-down' : null,
         clickable: isEditable
       });
@@ -436,28 +436,12 @@ function renderCellByType(column: TableColumn, row: TableRow, columnType: Column
       const fecha = cellValue || '';
       const isEditable = column.editable;
       
-      // Si es editable, mostrar un contenedor con el span y atributos para el calendario
+      // Si es editable, mostrar un contenedor con el span y contenedor para el calendario UBITS
       if (isEditable) {
-        // Convertir fecha a formato YYYY-MM-DD para el input date
-        let dateValue = '';
-        if (fecha) {
-          try {
-            const date = new Date(fecha);
-            if (!isNaN(date.getTime())) {
-              dateValue = date.toISOString().split('T')[0];
-            }
-          } catch (e) {
-            // Si no se puede parsear, usar la fecha actual
-            dateValue = new Date().toISOString().split('T')[0];
-          }
-        } else {
-          dateValue = new Date().toISOString().split('T')[0];
-        }
-        
         return `
           <div class="ubits-data-table__date-editable" data-row-id="${row.id}" data-column-id="${column.id}" data-editable="true">
             <span class="ubits-body-md-regular ubits-data-table__date-display">${fecha || 'Seleccionar fecha'}</span>
-            <input type="date" class="ubits-data-table__date-input" value="${dateValue}" style="display: none;" data-row-id="${row.id}" data-column-id="${column.id}">
+            <div class="ubits-data-table__calendar-container" style="position: absolute; top: 100%; left: 0; z-index: 99999; margin-top: 4px; display: none;"></div>
           </div>
         `;
       }
@@ -761,46 +745,48 @@ function renderColumnHeader(
     </div>
   ` : '';
 
-  // Botón de ordenamiento usando componente UBITS - desde cero
+  // Botón de ordenamiento - cambia el icono según la dirección de ordenamiento
   const sortButton = !isCheckboxColumn && !isControlColumn && columnSortable ? (() => {
     const isSorted = sortColumnId === column.id;
-    const showAscIcon = isSorted && sortDirection === 'asc';
-    const showDescIcon = isSorted && sortDirection === 'desc';
+    const activeClass = isSorted ? ' ubits-data-table__column-sort--active' : '';
     
-    // Determinar qué icono usar
-    let iconName = 'sort-alpha-asc'; // Por defecto
-    if (showAscIcon) {
-      iconName = 'sort-alpha-asc';
-    } else if (showDescIcon) {
-      iconName = 'sort-alpha-desc';
+    // Determinar qué icono mostrar según el estado de ordenamiento
+    // Por defecto mostrar arrow-up-a-z (indica que se puede ordenar)
+    let iconName = 'arrow-up-a-z';
+    let fallbackIcon = 'fas fa-sort-alpha-up';
+    
+    if (isSorted && sortDirection) {
+      if (sortDirection === 'asc') {
+        iconName = 'arrow-up-a-z';
+        fallbackIcon = 'fas fa-sort-alpha-up';
+      } else {
+        iconName = 'arrow-down-a-z';
+        fallbackIcon = 'fas fa-sort-alpha-down';
+      }
     }
     
-    // Renderizar botón UBITS: tamaño xs, variant tertiary, iconOnly
-    const buttonHTML = renderButton({
-      variant: 'tertiary',
-      size: 'xs',
-      icon: iconName,
-      iconStyle: 'solid',
-      iconOnly: true,
-      active: isSorted,
-      className: 'ubits-data-table__column-sort-button',
-      attributes: {
-        'aria-label': `Ordenar ${column.title}`,
-        'data-column-id': column.id,
-        'data-sort-button': 'true'
-      }
+    const sortButtonHTML = `
+      <div class="ubits-data-table__column-drag-handle ubits-data-table__column-sort${activeClass}" 
+           data-column-id="${column.id}" 
+           data-sort-button="true"
+           aria-label="Ordenar ${column.title}"
+           role="button"
+           tabindex="0">
+        <wa-icon name="${iconName}"></wa-icon>
+        <i class="${fallbackIcon}" aria-hidden="true"></i>
+      </div>
+    `;
+    
+    console.log('✅ [SORT BUTTON] Botón creado para:', {
+      columnId: column.id,
+      columnTitle: column.title,
+      isSorted,
+      sortDirection,
+      iconName,
+      htmlLength: sortButtonHTML.length
     });
     
-    // Si no está ordenado, agregar opacity al icono
-    if (!isSorted) {
-      const iconWithOpacity = buttonHTML.replace(
-        /<i class="([^"]*)"([^>]*)>/,
-        '<i class="$1" style="opacity: 0.4;"$2>'
-      );
-      return iconWithOpacity;
-    }
-    
-    return buttonHTML;
+    return sortButtonHTML;
   })() : '';
   
   if (!sortButton && !isCheckboxColumn) {
@@ -808,6 +794,7 @@ function renderColumnHeader(
       columnId: column.id,
       columnTitle: column.title,
       isCheckboxColumn,
+      isControlColumn,
       columnSortable
     });
   }
@@ -2275,6 +2262,7 @@ export function createDataTable(options: DataTableOptions): {
     sortButtons.forEach(button => {
       const btn = button as HTMLElement;
       const waIcons = btn.querySelectorAll('wa-icon');
+      // Verificar si tiene la clase activa (ahora usa column-sort--active)
       const isActive = btn.classList.contains('ubits-data-table__column-sort--active');
       
       console.log('🔍 [SORT BUTTON] Verificando botón:', {
@@ -2922,8 +2910,8 @@ export function createDataTable(options: DataTableOptions): {
         dropdown.style.backgroundColor = 'var(--ubits-bg-1)';
         dropdown.style.border = '1px solid var(--ubits-border-1)';
         dropdown.style.borderRadius = '8px';
-        // Shadow no tiene token UBITS, usando valor estándar
-        dropdown.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
+        // El componente List ya tiene su propio box-shadow, no aplicar aquí
+        // El List maneja: box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1)
         dropdown.style.display = 'block';
         dropdown.style.minWidth = '200px';
         dropdown.style.maxWidth = '300px';
@@ -3159,7 +3147,7 @@ export function createDataTable(options: DataTableOptions): {
       });
     });
     
-    // Date editables - mostrar calendario al hacer click
+    // Date editables - mostrar calendario UBITS al hacer click
     const dateEditables = element.querySelectorAll('.ubits-data-table__date-editable');
     dateEditables.forEach((container) => {
       const rowIdStr = container.getAttribute('data-row-id');
@@ -3169,67 +3157,126 @@ export function createDataTable(options: DataTableOptions): {
       
       const rowId = isNaN(Number(rowIdStr)) ? rowIdStr : Number(rowIdStr);
       const dateDisplay = container.querySelector('.ubits-data-table__date-display') as HTMLElement;
-      const dateInput = container.querySelector('.ubits-data-table__date-input') as HTMLInputElement;
+      const calendarContainer = container.querySelector('.ubits-data-table__calendar-container') as HTMLElement;
       
-      if (!dateDisplay || !dateInput) return;
+      if (!dateDisplay || !calendarContainer) return;
       
-      // Al hacer click en el display, mostrar el input date
-      dateDisplay.addEventListener('click', (e) => {
-        e.stopPropagation();
-        // Mostrar el input y hacer click en él para abrir el calendario
-        dateInput.style.display = 'block';
-        dateInput.style.position = 'absolute';
-        dateInput.style.opacity = '0';
-        dateInput.style.width = '100%';
-        dateInput.style.height = '100%';
-        dateInput.style.top = '0';
-        dateInput.style.left = '0';
-        dateInput.style.cursor = 'pointer';
-        dateInput.focus();
-        dateInput.showPicker?.();
+      // Función para formatear fecha
+      const formatDate = (date: Date): string => {
+        return date.toLocaleDateString('es-ES', { 
+          year: 'numeric', 
+          month: 'long', 
+          day: 'numeric' 
+        });
+      };
+      
+      // Función para parsear fecha
+      const parseDate = (dateStr: string): Date | null => {
+        if (!dateStr) return null;
+        try {
+          const date = new Date(dateStr);
+          if (!isNaN(date.getTime())) {
+            return date;
+          }
+        } catch (e) {
+          // Intentar parsear formato español
+          const parts = dateStr.split(' ');
+          if (parts.length >= 3) {
+            const day = parseInt(parts[0]);
+            const monthNames = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+            const month = monthNames.indexOf(parts[1].toLowerCase());
+            const year = parseInt(parts[2]);
+            if (month >= 0 && day && year) {
+              return new Date(year, month, day);
+            }
+          }
+        }
+        return null;
+      };
+      
+      // Función para mostrar el calendario UBITS
+      const showCalendar = async () => {
+        // Si el calendario ya está visible, ocultarlo
+        if (calendarContainer.style.display !== 'none') {
+          calendarContainer.style.display = 'none';
+          return;
+        }
         
-        // Si showPicker no está disponible, hacer click programático
-        setTimeout(() => {
-          dateInput.click();
-        }, 0);
-      });
-      
-      // Cuando cambia la fecha, actualizar el display y los datos
-      dateInput.addEventListener('change', (e) => {
-        e.stopPropagation();
-        const newDateValue = dateInput.value;
+        // Obtener fecha actual del display
+        const currentValue = dateDisplay.textContent || '';
+        const selectedDate = parseDate(currentValue);
         
-        if (newDateValue) {
-          // Convertir de YYYY-MM-DD a formato legible
-          const date = new Date(newDateValue);
-          const formattedDate = date.toLocaleDateString('es-ES', { 
-            year: 'numeric', 
-            month: 'long', 
-            day: 'numeric' 
+        try {
+          // Importar el módulo de calendar dinámicamente
+          const calendarModule = await import('../../calendar/src/CalendarProvider');
+          const { createCalendar } = calendarModule;
+          
+          // Crear instancia del calendario UBITS
+          const calendarInstance = createCalendar({
+            mode: 'single',
+            selectedDate: selectedDate || undefined,
+            initialDate: selectedDate || new Date(),
+            onDateSelect: (date: Date) => {
+              const formattedDate = formatDate(date);
+              dateDisplay.textContent = formattedDate;
+              calendarContainer.style.display = 'none';
+              
+              // Actualizar los datos de la fila
+              const row = currentOptions.rows.find(r => r.id === rowId);
+              if (row) {
+                row.data[columnId] = formattedDate;
+                // También guardar en formato ISO para referencia
+                row.data[`${columnId}_iso`] = date.toISOString().split('T')[0];
+              }
+              
+              // Re-renderizar para reflejar los cambios
+              render();
+              
+              // Limpiar el calendario del DOM
+              calendarContainer.innerHTML = '';
+            }
           });
           
-          // Actualizar el display
-          dateDisplay.textContent = formattedDate;
+          // Agregar el calendario al contenedor
+          calendarContainer.innerHTML = '';
+          calendarContainer.appendChild(calendarInstance.element);
+          calendarContainer.style.display = 'block';
           
-          // Ocultar el input
-          dateInput.style.display = 'none';
+          // Cerrar calendario al hacer clic fuera
+          const clickOutsideHandler = (e: MouseEvent) => {
+            const target = e.target as Node;
+            if (calendarContainer && !container.contains(target) && !calendarContainer.contains(target)) {
+              calendarContainer.style.display = 'none';
+              document.removeEventListener('click', clickOutsideHandler, true);
+            }
+          };
           
-          // Actualizar los datos de la fila
-          const row = currentOptions.rows.find(r => r.id === rowId);
-          if (row) {
-            row.data[columnId] = formattedDate;
-            // También guardar en formato ISO para referencia
-            row.data[`${columnId}_iso`] = newDateValue;
-          }
+          // Agregar listener después de un pequeño delay para evitar que se cierre inmediatamente
+          setTimeout(() => {
+            document.addEventListener('click', clickOutsideHandler, true);
+          }, 100);
           
-          // Re-renderizar para reflejar los cambios
-          render();
+          // Cerrar calendario al presionar ESC
+          const escapeHandler = (e: KeyboardEvent) => {
+            if (e.key === 'Escape' && calendarContainer.style.display !== 'none') {
+              calendarContainer.style.display = 'none';
+              document.removeEventListener('keydown', escapeHandler);
+            }
+          };
+          document.addEventListener('keydown', escapeHandler);
+          
+        } catch (error) {
+          console.error('❌ [Data Table] Error cargando Calendar UBITS:', error);
+          // Fallback: mostrar mensaje de error
+          calendarContainer.innerHTML = '<div style="padding: 16px; background: var(--ubits-bg-1); border: 1px solid var(--ubits-border-1); border-radius: 8px; color: var(--ubits-fg-1-high);">Error al cargar el calendario</div>';
+          calendarContainer.style.display = 'block';
         }
-      });
+      };
       
-      // Cuando el input pierde el foco, ocultarlo
-      dateInput.addEventListener('blur', () => {
-        dateInput.style.display = 'none';
+      // Al hacer click en el display, mostrar el calendario UBITS
+      dateDisplay.addEventListener('click', (e) => {
+        e.stopPropagation();
+        showCalendar();
       });
     });
     

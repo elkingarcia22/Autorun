@@ -5434,21 +5434,6 @@ Reglas Importantes:
               hasPreview: true
             },
             {
-              name: 'Tooltip',
-              description: 'Componente tooltip con tail (flecha) para mostrar información contextual. Similar al Popover pero más simple, con título, descripción y botones de acción (primario, secundario y terciario). Tiene diferentes tamaños (sm: 240px, md: 320px, lg: 400px) y posiciones de tail (top, bottom, left, right). Incluye controles para mostrar/ocultar cada botón y opción de iconos en los botones.',
-              files: {
-                css: 'addons/tooltip/src/styles/tooltip.css',
-                ts: 'addons/tooltip/src/TooltipProvider.ts'
-              },
-              variants: [],
-              sizes: ['sm', 'md', 'lg'],
-              states: ['closed', 'open'],
-              features: ['3 tamaños (sm: 240px, md: 320px, lg: 400px)', 'Tail (flecha) posicionable (top, bottom, left, right)', 'Título opcional (body-md semibold)', 'Descripción opcional (body-md regular)', 'Botones opcionales (primario, secundario, terciario) con controladores booleanos', 'Iconos opcionales en cada botón', 'Posicionamiento absoluto o relativo a elemento de referencia', 'Cierre con clic fuera', 'Animaciones suaves de apertura/cierre', 'Responsive (100% en móvil)', 'Métodos open/close/updatePosition/destroy', 'Usa tokens UBITS exclusivamente', 'Usa componente Button existente para footer'],
-              class: 'ubits-tooltip ubits-tooltip--open',
-              example: 'createTooltip({\n  title: \'Título del tooltip\',\n  description: \'Descripción del tooltip\',\n  width: \'md\',\n  tailPosition: \'top\',\n  primaryButtonLabel: \'Aceptar\',\n  showPrimaryButton: true,\n  secondaryButtonLabel: \'Cancelar\',\n  showSecondaryButton: true,\n  tertiaryButtonLabel: \'Más info\',\n  showTertiaryButton: false,\n  position: { top: 100, left: 100 },\n  onClose: () => {}\n})',
-              hasPreview: true
-            },
-            {
               name: 'Scrollbar',
               description: 'Componente scrollbar personalizado UBITS. Se usa para crear scrollbars personalizados en elementos scrollable. Soporta orientación vertical y horizontal. Se sincroniza automáticamente con el elemento scrollable asociado. Aparece en hover y se adapta al tamaño del contenido.',
               files: {
@@ -5461,21 +5446,6 @@ Reglas Importantes:
               features: ['Orientación vertical y horizontal', 'Sincronización automática con elemento scrollable', 'Aparece en hover', 'Se adapta al tamaño del contenido', 'Responsive (2px en móvil)', 'Métodos update/destroy', 'Usa tokens UBITS exclusivamente'],
               class: 'ubits-scrollbar ubits-scrollbar--vertical ubits-scrollbar--horizontal',
               example: 'createScrollbar({\n  orientation: \'vertical\',\n  targetId: \'scrollable-container\',\n  containerId: \'scrollbar-container\'\n})',
-              hasPreview: true
-            },
-            {
-              name: 'Calendar',
-              description: 'Componente Calendar UBITS con selección única de fecha y selección por rango. Incluye navegación por mes/año, selector de mes y año, y soporte para fechas mínimas y máximas. Usa tokens UBITS exclusivamente para colores, tipografía y espaciado.',
-              files: {
-                css: 'addons/calendar/src/styles/calendar.css',
-                ts: 'addons/calendar/src/CalendarProvider.ts'
-              },
-              variants: ['single', 'range'],
-              sizes: [],
-              states: ['default', 'selected'],
-              features: ['Selección única de fecha (modo single)', 'Selección por rango de fechas (modo range)', 'Navegación por mes/año', 'Selector de mes y año', 'Soporte para fechas mínimas y máximas', 'Resalta el día actual', 'Métodos update/destroy', 'Usa tokens UBITS exclusivamente', 'Usa tipografía UBITS'],
-              class: 'ubits-calendar ubits-calendar--single',
-              example: 'createCalendar({\n  mode: \'single\',\n  selectedDate: new Date(),\n  onDateSelect: (date) => {}\n})',
               hasPreview: true
             }
           ],
@@ -5585,6 +5555,21 @@ Reglas Importantes:
               class: 'ubits-file-upload ubits-file-upload--{state}',
               example: 'createFileUpload({\n  state: \'default\',\n  uploadText: \'Haz clic para subir archivo\',\n  showFileSize: true,\n  showActions: true\n})',
               hasPreview: true
+            },
+            {
+              name: 'Calendar',
+              description: 'Componente Calendar UBITS con selección única de fecha y selección por rango. Incluye navegación por mes/año, selector de mes y año, y soporte para fechas mínimas y máximas. Usa tokens UBITS exclusivamente para colores, tipografía y espaciado.',
+              files: {
+                css: 'addons/calendar/src/styles/calendar.css',
+                ts: 'addons/calendar/src/CalendarProvider.ts'
+              },
+              variants: ['single', 'range'],
+              sizes: [],
+              states: ['default', 'selected'],
+              features: ['Selección única de fecha (modo single)', 'Selección por rango de fechas (modo range)', 'Navegación por mes/año', 'Selector de mes y año', 'Soporte para fechas mínimas y máximas', 'Resalta el día actual', 'Métodos update/destroy', 'Usa tokens UBITS exclusivamente', 'Usa tipografía UBITS'],
+              class: 'ubits-calendar ubits-calendar--single',
+              example: 'createCalendar({\n  mode: \'single\',\n  selectedDate: new Date(),\n  onDateSelect: (date) => {}\n})',
+              hasPreview: true
             }
           ],
           'Feedback': [
@@ -5661,6 +5646,21 @@ Reglas Importantes:
               features: ['4 variantes (text, circle, rectangle, custom)', '5 tamaños (xs, sm, md, lg, xl)', 'Múltiples líneas de texto', 'Ancho y alto personalizables', 'Animación opcional', 'Usa tokens UBITS exclusivamente'],
               class: 'ubits-skeleton ubits-skeleton--{variant} ubits-skeleton--{size}',
               example: 'renderSkeleton({\n  variant: \'text\',\n  size: \'md\',\n  lines: 3,\n  animated: true,\n  width: \'full\'\n})',
+              hasPreview: true
+            },
+            {
+              name: 'Tooltip',
+              description: 'Componente tooltip con tail (flecha) para mostrar información contextual. Similar al Popover pero más simple, con título, descripción y botones de acción (primario, secundario y terciario). Tiene diferentes tamaños (sm: 240px, md: 320px, lg: 400px) y posiciones de tail (top, bottom, left, right). Incluye controles para mostrar/ocultar cada botón y opción de iconos en los botones.',
+              files: {
+                css: 'addons/tooltip/src/styles/tooltip.css',
+                ts: 'addons/tooltip/src/TooltipProvider.ts'
+              },
+              variants: [],
+              sizes: ['sm', 'md', 'lg'],
+              states: ['closed', 'open'],
+              features: ['3 tamaños (sm: 240px, md: 320px, lg: 400px)', 'Tail (flecha) posicionable (top, bottom, left, right)', 'Título opcional (body-md semibold)', 'Descripción opcional (body-md regular)', 'Botones opcionales (primario, secundario, terciario) con controladores booleanos', 'Iconos opcionales en cada botón', 'Posicionamiento absoluto o relativo a elemento de referencia', 'Cierre con clic fuera', 'Animaciones suaves de apertura/cierre', 'Responsive (100% en móvil)', 'Métodos open/close/updatePosition/destroy', 'Usa tokens UBITS exclusivamente', 'Usa componente Button existente para footer'],
+              class: 'ubits-tooltip ubits-tooltip--open',
+              example: 'createTooltip({\n  title: \'Título del tooltip\',\n  description: \'Descripción del tooltip\',\n  width: \'md\',\n  tailPosition: \'top\',\n  primaryButtonLabel: \'Aceptar\',\n  showPrimaryButton: true,\n  secondaryButtonLabel: \'Cancelar\',\n  showSecondaryButton: true,\n  tertiaryButtonLabel: \'Más info\',\n  showTertiaryButton: false,\n  position: { top: 100, left: 100 },\n  onClose: () => {}\n})',
               hasPreview: true
             }
           ],
@@ -10777,7 +10777,7 @@ Reglas Importantes:
           
           // Forzar actualización del preview para aplicar el tooltip
           console.log('🎛️ [setButtonControl] Llamando updateButtonPreview...');
-          updateButtonPreview(componentId);
+        updateButtonPreview(componentId);
         } else if (option === 'tooltipText') {
           console.log('🎛️ [setButtonControl] Cambiando tooltipText:', {
             option,
@@ -11293,15 +11293,15 @@ Reglas Importantes:
         
         const secondaryButton = (showSecondaryButton && secondaryActionLabel)
           ? `<button class="ubits-button ubits-button--secondary ubits-button--md" type="button">${secondaryButtonContent}</button>`
-          : '';
+            : '';
 
-        if (primaryButton || secondaryButton) {
-          actionsHTML = `
-            <div class="ubits-empty-state__actions">
-              ${secondaryButton}
+          if (primaryButton || secondaryButton) {
+            actionsHTML = `
+              <div class="ubits-empty-state__actions">
+                ${secondaryButton}
               ${primaryButton}
-            </div>
-          `;
+              </div>
+            `;
         }
         
         return `
@@ -12619,7 +12619,7 @@ Reglas Importantes:
                   return `
                     <div style="padding: 16px;">
                       <h4 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600;">Información adicional</h4>
-                      <p style="margin: 0; font-size: 13px; color: var(--ubits-text-2, #6b7280);">
+                      <p style="margin: 0; font-size: 13px; color: var(--ubits-body-md-regular-2, #6b7280);">
                         Detalles adicionales para ${rowData.nombre}
                       </p>
                     </div>
@@ -13480,7 +13480,7 @@ Reglas Importantes:
                     return `
                       <div style="padding: 16px;">
                         <h4 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600;">Información adicional</h4>
-                        <p style="margin: 0; font-size: 13px; color: var(--ubits-text-2, #6b7280);">
+                        <p style="margin: 0; font-size: 13px; color: var(--ubits-body-md-regular-2, #6b7280);">
                           Detalles adicionales para ${rowData.nombre || 'usuario'}
                         </p>
                       </div>
@@ -15616,45 +15616,9 @@ Reglas Importantes:
         return scrollbarPreviewState[componentId];
       }
       
-      // Función para actualizar el preview del Scrollbar
-      window.updateScrollbarPreview = function(componentId) {
-        const state = initScrollbarPreviewState(componentId);
-        
-        // Limpiar instancias anteriores
-        if (scrollbarInstances[componentId]) {
-          if (scrollbarInstances[componentId].vertical) {
-            scrollbarInstances[componentId].vertical.destroy();
-          }
-          if (scrollbarInstances[componentId].horizontal) {
-            scrollbarInstances[componentId].horizontal.destroy();
-          }
-        }
-        scrollbarInstances[componentId] = {};
-        
-        // Ocultar todos los contenedores
-        const verticalWrapper = document.getElementById(`scrollbar-wrapper-vertical-${componentId}`);
-        const horizontalWrapper = document.getElementById(`scrollbar-wrapper-horizontal-${componentId}`);
-        const verticalContainer = document.getElementById(`scrollbar-scrollable-vertical-${componentId}`);
-        const horizontalContainer = document.getElementById(`scrollbar-scrollable-horizontal-${componentId}`);
-        const verticalScrollbar = document.getElementById(`scrollbar-vertical-${componentId}`);
-        const horizontalScrollbar = document.getElementById(`scrollbar-horizontal-${componentId}`);
-        
-        if (!verticalContainer || !horizontalContainer || !verticalScrollbar || !horizontalScrollbar || !verticalWrapper || !horizontalWrapper) {
-          return;
-        }
-        
-        // Cargar CSS si no está cargado
-        const cssLinkId = 'scrollbar-css';
-        if (!document.getElementById(cssLinkId)) {
-          const link = document.createElement('link');
-          link.id = cssLinkId;
-          link.rel = 'stylesheet';
-          link.href = '../../addons/scroll/src/styles/scroll.css';
-          document.head.appendChild(link);
-        }
-        
-        // Función para crear scrollbar directamente (sin módulo externo)
-        function createScrollbarLocal(targetElement, scrollbarContainer, orientation) {
+      // Función global para crear scrollbar directamente (sin módulo externo)
+      // Esta función debe estar disponible globalmente para el calendario
+      window.createScrollbarLocal = function(targetElement, scrollbarContainer, orientation) {
           // Crear elemento del scrollbar
           const scrollbarElement = document.createElement('div');
           scrollbarElement.className = `ubits-scrollbar ubits-scrollbar--${orientation} ubits-scrollbar--default`;
@@ -15823,6 +15787,43 @@ Reglas Importantes:
               scrollbarElement.remove();
             }
           };
+      };
+      
+      // Función para actualizar el preview del Scrollbar
+      window.updateScrollbarPreview = function(componentId) {
+        const state = initScrollbarPreviewState(componentId);
+        
+        // Limpiar instancias anteriores
+        if (scrollbarInstances[componentId]) {
+          if (scrollbarInstances[componentId].vertical) {
+            scrollbarInstances[componentId].vertical.destroy();
+          }
+          if (scrollbarInstances[componentId].horizontal) {
+            scrollbarInstances[componentId].horizontal.destroy();
+          }
+        }
+        scrollbarInstances[componentId] = {};
+        
+        // Ocultar todos los contenedores
+        const verticalWrapper = document.getElementById(`scrollbar-wrapper-vertical-${componentId}`);
+        const horizontalWrapper = document.getElementById(`scrollbar-wrapper-horizontal-${componentId}`);
+        const verticalContainer = document.getElementById(`scrollbar-scrollable-vertical-${componentId}`);
+        const horizontalContainer = document.getElementById(`scrollbar-scrollable-horizontal-${componentId}`);
+        const verticalScrollbar = document.getElementById(`scrollbar-vertical-${componentId}`);
+        const horizontalScrollbar = document.getElementById(`scrollbar-horizontal-${componentId}`);
+        
+        if (!verticalContainer || !horizontalContainer || !verticalScrollbar || !horizontalScrollbar || !verticalWrapper || !horizontalWrapper) {
+          return;
+        }
+        
+        // Cargar CSS si no está cargado
+        const cssLinkId = 'scrollbar-css';
+        if (!document.getElementById(cssLinkId)) {
+          const link = document.createElement('link');
+          link.id = cssLinkId;
+          link.rel = 'stylesheet';
+          link.href = '../../addons/scroll/src/styles/scroll.css';
+          document.head.appendChild(link);
         }
         
         if (state.orientation === 'vertical') {
@@ -15850,7 +15851,7 @@ Reglas Importantes:
           // Crear scrollbar vertical
           setTimeout(() => {
             try {
-              const instance = createScrollbarLocal(
+              const instance = window.createScrollbarLocal(
                 verticalContainer,
                 verticalScrollbar,
                 'vertical'
@@ -15885,7 +15886,7 @@ Reglas Importantes:
           // Crear scrollbar horizontal
           setTimeout(() => {
             try {
-              const instance = createScrollbarLocal(
+              const instance = window.createScrollbarLocal(
                 horizontalContainer,
                 horizontalScrollbar,
                 'horizontal'
@@ -16002,13 +16003,13 @@ Reglas Importantes:
               <i class="far fa-chevron-left"></i>
             </button>
             <div class="ubits-calendar__month-year">
-              <div class="ubits-input-container" style="position: relative; min-width: 120px;">
-                <input type="text" class="ubits-input ubits-input--sm ubits-calendar__month-input" value="${selectedMonthName}" readonly style="cursor: pointer; padding-right: 32px;">
+              <div class="ubits-input-container" style="position: relative; flex: 1; min-width: 100px;">
+                <input type="text" class="ubits-input ubits-input--sm ubits-calendar__month-input" value="${selectedMonthName}" readonly style="cursor: pointer;">
                 <i class="far fa-chevron-down ubits-input-icon-right" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--ubits-fg-1-medium); pointer-events: none; z-index: 1;"></i>
                 <div class="ubits-calendar__month-dropdown" style="display: none; position: absolute; top: 100%; left: 0; right: 0; z-index: 1000; margin-top: 4px;"></div>
               </div>
-              <div class="ubits-input-container" style="position: relative; min-width: 100px; margin-left: 8px;">
-                <input type="text" class="ubits-input ubits-input--sm ubits-calendar__year-input" value="${year}" readonly style="cursor: pointer; padding-right: 32px;">
+              <div class="ubits-input-container" style="position: relative; flex: 1; min-width: 80px; margin-left: 8px;">
+                <input type="text" class="ubits-input ubits-input--sm ubits-calendar__year-input" value="${year}" readonly style="cursor: pointer;">
                 <i class="far fa-chevron-down ubits-input-icon-right" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--ubits-fg-1-medium); pointer-events: none; z-index: 1;"></i>
                 <div class="ubits-calendar__year-dropdown" style="display: none; position: absolute; top: 100%; left: 0; right: 0; z-index: 1000; margin-top: 4px;"></div>
               </div>
@@ -16048,13 +16049,21 @@ Reglas Importantes:
           }
           
           // Check if in range (range mode)
-          if (mode === 'range' && state.selectedDate && state.endDate) {
-            if (isSameDay(date, state.selectedDate)) {
-              dayClasses.push('ubits-calendar__day--range-start');
-            } else if (isSameDay(date, state.endDate)) {
-              dayClasses.push('ubits-calendar__day--range-end');
-            } else if (isDateInRange(date, state.selectedDate, state.endDate)) {
-              dayClasses.push('ubits-calendar__day--in-range');
+          if (mode === 'range' && state.selectedDate) {
+            if (state.endDate) {
+              // Rango completo
+              if (isSameDay(date, state.selectedDate)) {
+                dayClasses.push('ubits-calendar__day--range-start');
+              } else if (isSameDay(date, state.endDate)) {
+                dayClasses.push('ubits-calendar__day--range-end');
+              } else if (isDateInRange(date, state.selectedDate, state.endDate)) {
+                dayClasses.push('ubits-calendar__day--in-range');
+              }
+            } else {
+              // Solo fecha inicial seleccionada (mientras se selecciona el rango)
+              if (isSameDay(date, state.selectedDate)) {
+                dayClasses.push('ubits-calendar__day--range-start');
+              }
             }
           }
           
@@ -16143,6 +16152,125 @@ Reglas Importantes:
           const monthDropdown = calendar.querySelector('.ubits-calendar__month-dropdown');
           const yearDropdown = calendar.querySelector('.ubits-calendar__year-dropdown');
           
+          console.log('🔍 [Calendar] setupEventListeners - Elementos encontrados:', {
+            prevBtn: !!prevBtn,
+            nextBtn: !!nextBtn,
+            monthInput: !!monthInput,
+            yearInput: !!yearInput,
+            monthDropdown: !!monthDropdown,
+            yearDropdown: !!yearDropdown,
+            monthInputElement: monthInput,
+            yearInputElement: yearInput,
+            monthDropdownElement: monthDropdown,
+            yearDropdownElement: yearDropdown
+          });
+          
+          // Logs detallados para diagnosticar espaciado
+          setTimeout(() => {
+            const header = calendar.querySelector('.ubits-calendar__header');
+            const prevBtnEl = calendar.querySelector('.ubits-calendar__nav-button--prev');
+            const nextBtnEl = calendar.querySelector('.ubits-calendar__nav-button--next');
+            const monthYearContainer = calendar.querySelector('.ubits-calendar__month-year');
+            
+            if (header && prevBtnEl && nextBtnEl && monthYearContainer) {
+              console.log('🔍 [Calendar Header - Web Preview] ========== DIAGNÓSTICO ESPACIADO ==========');
+              
+              // Estilos computados del header
+              const headerStyles = window.getComputedStyle(header);
+              console.log('📐 Header - Estilos computados:');
+              console.log('  display:', headerStyles.display);
+              console.log('  flexDirection:', headerStyles.flexDirection);
+              console.log('  justifyContent:', headerStyles.justifyContent);
+              console.log('  alignItems:', headerStyles.alignItems);
+              console.log('  gap:', headerStyles.gap);
+              console.log('  padding:', headerStyles.padding);
+              console.log('  paddingLeft:', headerStyles.paddingLeft);
+              console.log('  paddingRight:', headerStyles.paddingRight);
+              console.log('  paddingTop:', headerStyles.paddingTop);
+              console.log('  paddingBottom:', headerStyles.paddingBottom);
+              console.log('  width:', headerStyles.width);
+              console.log('  margin:', headerStyles.margin);
+              console.log('  marginLeft:', headerStyles.marginLeft);
+              console.log('  marginRight:', headerStyles.marginRight);
+              
+              // Bounding rects
+              const headerRect = header.getBoundingClientRect();
+              const prevBtnRect = prevBtnEl.getBoundingClientRect();
+              const nextBtnRect = nextBtnEl.getBoundingClientRect();
+              const monthYearRect = monthYearContainer.getBoundingClientRect();
+              
+              console.log('📏 Header - Dimensiones:');
+              console.log('  width:', headerRect.width, 'px');
+              console.log('  height:', headerRect.height, 'px');
+              console.log('  left:', headerRect.left, 'px');
+              console.log('  right:', headerRect.right, 'px');
+              
+              console.log('📏 Botón Prev - Dimensiones:');
+              console.log('  width:', prevBtnRect.width, 'px');
+              console.log('  height:', prevBtnRect.height, 'px');
+              console.log('  left:', prevBtnRect.left, 'px');
+              console.log('  right:', prevBtnRect.right, 'px');
+              
+              console.log('📏 Contenedor Mes/Año - Dimensiones:');
+              console.log('  width:', monthYearRect.width, 'px');
+              console.log('  height:', monthYearRect.height, 'px');
+              console.log('  left:', monthYearRect.left, 'px');
+              console.log('  right:', monthYearRect.right, 'px');
+              
+              console.log('📏 Botón Next - Dimensiones:');
+              console.log('  width:', nextBtnRect.width, 'px');
+              console.log('  height:', nextBtnRect.height, 'px');
+              console.log('  left:', nextBtnRect.left, 'px');
+              console.log('  right:', nextBtnRect.right, 'px');
+              
+              // Distancias calculadas
+              const distancePrevToInput = monthYearRect.left - prevBtnRect.right;
+              const distanceInputToNext = nextBtnRect.left - monthYearRect.right;
+              
+              console.log('📏 Distancias:');
+              console.log('  Botón Prev → Inputs:', distancePrevToInput.toFixed(2), 'px');
+              console.log('  Inputs → Botón Next:', distanceInputToNext.toFixed(2), 'px');
+              
+              // Estilos computados de los botones
+              const prevBtnStyles = window.getComputedStyle(prevBtnEl);
+              const nextBtnStyles = window.getComputedStyle(nextBtnEl);
+              console.log('🔘 Botón Prev - Estilos:');
+              console.log('  margin:', prevBtnStyles.margin);
+              console.log('  marginLeft:', prevBtnStyles.marginLeft);
+              console.log('  marginRight:', prevBtnStyles.marginRight);
+              console.log('  width:', prevBtnStyles.width);
+              console.log('  flexShrink:', prevBtnStyles.flexShrink);
+              console.log('  flexGrow:', prevBtnStyles.flexGrow);
+              console.log('🔘 Botón Next - Estilos:');
+              console.log('  margin:', nextBtnStyles.margin);
+              console.log('  marginLeft:', nextBtnStyles.marginLeft);
+              console.log('  marginRight:', nextBtnStyles.marginRight);
+              console.log('  width:', nextBtnStyles.width);
+              console.log('  flexShrink:', nextBtnStyles.flexShrink);
+              console.log('  flexGrow:', nextBtnStyles.flexGrow);
+              
+              // Estilos del contenedor mes/año
+              const monthYearStyles = window.getComputedStyle(monthYearContainer);
+              console.log('📦 Contenedor Mes/Año - Estilos:');
+              console.log('  margin:', monthYearStyles.margin);
+              console.log('  marginLeft:', monthYearStyles.marginLeft);
+              console.log('  marginRight:', monthYearStyles.marginRight);
+              console.log('  width:', monthYearStyles.width);
+              console.log('  flex:', monthYearStyles.flex);
+              console.log('  flexShrink:', monthYearStyles.flexShrink);
+              console.log('  flexGrow:', monthYearStyles.flexGrow);
+              
+              console.log('🔍 [Calendar Header - Web Preview] ========== FIN DIAGNÓSTICO ==========');
+            } else {
+              console.error('❌ [Calendar Header - Web Preview] Elementos no encontrados:', {
+                header: !!header,
+                prevBtn: !!prevBtnEl,
+                nextBtn: !!nextBtnEl,
+                monthYearContainer: !!monthYearContainer
+              });
+            }
+          }, 100);
+          
           prevBtn?.addEventListener('click', () => {
             state.currentDate.setMonth(state.currentDate.getMonth() - 1);
             window.updateCalendarPreview(componentId);
@@ -16153,49 +16281,206 @@ Reglas Importantes:
             window.updateCalendarPreview(componentId);
           });
           
-          // Cargar CSS de List si no está cargado
+          // Cargar CSS de List y Scrollbar si no están cargados
           const existingListLink = document.querySelector('link[href*="list.css"]');
           if (!existingListLink) {
             const link = document.createElement('link');
             link.rel = 'stylesheet';
             link.href = '../../addons/list/src/styles/list.css';
             document.head.appendChild(link);
+            console.log('📦 [Calendar] CSS de List cargado');
+          }
+          
+          const existingScrollLink = document.querySelector('link[href*="scroll.css"]');
+          if (!existingScrollLink) {
+            const link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = '../../addons/scroll/src/styles/scroll.css';
+            document.head.appendChild(link);
+            console.log('📦 [Calendar] CSS de Scrollbar cargado');
           }
           
           // Crear dropdown de meses usando List UBITS
           if (monthInput && monthDropdown) {
+            const currentMonth = state.currentDate.getMonth();
+            console.log('📅 [Calendar] Configurando dropdown de mes, mes actual:', currentMonth);
+            
             const monthItems = CALENDAR_MONTH_NAMES.map((name, index) => ({
               label: name,
               value: String(index),
-              selected: index === month,
-              state: index === month ? 'active' : 'default'
+              selected: index === currentMonth,
+              state: index === currentMonth ? 'active' : 'default'
             }));
             
-            monthInput.addEventListener('click', () => {
+            monthInput.addEventListener('click', (e) => {
+              e.stopPropagation();
+              console.log('📅 [Calendar] CLICK en input de MES');
+              console.log('📅 [Calendar] monthDropdown existe?', !!monthDropdown);
+              console.log('📅 [Calendar] monthDropdown.style.display:', monthDropdown.style.display);
+              
               const isVisible = monthDropdown.style.display === 'block';
+              console.log('📅 [Calendar] isVisible:', isVisible);
+              
               if (!isVisible) {
-                // Renderizar List UBITS
+                // Cerrar dropdown de año si está abierto
+                if (yearDropdown) {
+                  yearDropdown.style.display = 'none';
+                }
+                
+                console.log('📅 [Calendar] Generando HTML del dropdown de mes...');
+                // IDs únicos para el dropdown de mes
+                const monthListId = `calendar-month-list-${componentId}`;
+                const monthScrollbarId = `calendar-month-scrollbar-${componentId}`;
+                
+                // Renderizar List UBITS con contenedor para scrollbar
                 const listHTML = `
-                  <div class="ubits-list" role="list" style="max-height: 200px; background: var(--ubits-bg-1); border: 1px solid var(--ubits-border-1); border-radius: 6px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);">
-                    ${monthItems.map((item, idx) => `
-                      <div class="ubits-list-item ubits-list-item--sm ${item.state === 'active' ? 'ubits-list-item--active' : ''}" 
-                           role="listitem" 
-                           data-value="${item.value}" 
-                           data-index="${idx}"
-                           tabindex="0"
-                           style="cursor: pointer;">
-                        ${item.label}
-                      </div>
-                    `).join('')}
+                  <div style="position: relative; max-height: 200px;">
+                    <div id="${monthListId}" class="ubits-list" role="list" style="max-height: 200px; background: var(--ubits-bg-1); border: 1px solid var(--ubits-border-1); border-radius: 6px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); overflow-y: auto; overflow-x: hidden; -ms-overflow-style: none; scrollbar-width: none;">
+                      <style>
+                        #${monthListId}::-webkit-scrollbar { display: none; }
+                      </style>
+                      ${monthItems.map((item, idx) => `
+                        <div class="ubits-list-item ubits-list-item--sm ${item.state === 'active' ? 'ubits-list-item--active' : ''}" 
+                             role="listitem" 
+                             data-value="${item.value}" 
+                             data-index="${idx}"
+                             tabindex="0"
+                             style="cursor: pointer;">
+                          ${item.label}
+                        </div>
+                      `).join('')}
+                    </div>
+                    <div id="${monthScrollbarId}" style="position: absolute; top: 0; right: 0; width: 8px; height: 100%; pointer-events: none;"></div>
                   </div>
                 `;
+                console.log('📅 [Calendar] HTML generado, longitud:', listHTML.length);
                 monthDropdown.innerHTML = listHTML;
                 monthDropdown.style.display = 'block';
+                console.log('📅 [Calendar] ✅ Dropdown de MES ABIERTO');
+                
+                // Crear scrollbar UBITS después de renderizar
+                requestAnimationFrame(() => {
+                  try {
+                    const listElement = document.getElementById(monthListId);
+                    const scrollbarContainer = document.getElementById(monthScrollbarId);
+                    
+                    console.log('📅 [Calendar] ========== DIAGNÓSTICO SCROLLBAR MES ==========');
+                    console.log('📅 [Calendar] Elementos encontrados:', {
+                      listElement: !!listElement,
+                      scrollbarContainer: !!scrollbarContainer,
+                      listElementId: listElement?.id,
+                      scrollbarContainerId: scrollbarContainer?.id
+                    });
+                    
+                    if (listElement) {
+                      console.log('📅 [Calendar] Dimensiones de la lista:', {
+                        scrollHeight: listElement.scrollHeight,
+                        clientHeight: listElement.clientHeight,
+                        offsetHeight: listElement.offsetHeight,
+                        needsScroll: listElement.scrollHeight > listElement.clientHeight,
+                        difference: listElement.scrollHeight - listElement.clientHeight
+                      });
+                    }
+                    
+                    if (scrollbarContainer) {
+                      console.log('📅 [Calendar] Estado del contenedor del scrollbar:', {
+                        offsetHeight: scrollbarContainer.offsetHeight,
+                        offsetWidth: scrollbarContainer.offsetWidth,
+                        styleHeight: scrollbarContainer.style.height,
+                        styleWidth: scrollbarContainer.style.width,
+                        innerHTML: scrollbarContainer.innerHTML.substring(0, 200),
+                        children: scrollbarContainer.children.length
+                      });
+                    }
+                    
+                    if (listElement && scrollbarContainer) {
+                      // Asegurar que el contenedor tenga la misma altura que la lista
+                      const listHeight = listElement.clientHeight;
+                      scrollbarContainer.style.height = `${listHeight}px`;
+                      scrollbarContainer.style.pointerEvents = 'auto'; // Permitir interacción con el scrollbar
+                      console.log('📅 [Calendar] Altura del contenedor ajustada a:', listHeight);
+                      
+                      if (listElement.scrollHeight > listElement.clientHeight) {
+                        console.log('📅 [Calendar] ✅ Se necesita scrollbar, creando...');
+                        // Usar función local createScrollbarLocal
+                        if (typeof window.createScrollbarLocal === 'function') {
+                          console.log('📅 [Calendar] createScrollbarLocal está disponible');
+                          monthDropdown._scrollbarInstance = window.createScrollbarLocal(listElement, scrollbarContainer, 'vertical');
+                          console.log('📅 [Calendar] Scrollbar creado, instancia:', monthDropdown._scrollbarInstance);
+                          
+                          // Verificar que el scrollbar se creó
+                          setTimeout(() => {
+                            const scrollbarElement = scrollbarContainer.querySelector('.ubits-scrollbar');
+                            const barElement = scrollbarContainer.querySelector('.ubits-scrollbar__bar');
+                            console.log('📅 [Calendar] Verificación del scrollbar creado:', {
+                              scrollbarElement: !!scrollbarElement,
+                              barElement: !!barElement,
+                              scrollbarClasses: scrollbarElement?.className,
+                              barClasses: barElement?.className,
+                              scrollbarStyle: scrollbarElement?.style.cssText,
+                              barStyle: barElement?.style.cssText,
+                              scrollbarComputed: scrollbarElement ? {
+                                display: window.getComputedStyle(scrollbarElement).display,
+                                opacity: window.getComputedStyle(scrollbarElement).opacity,
+                                width: window.getComputedStyle(scrollbarElement).width,
+                                height: window.getComputedStyle(scrollbarElement).height
+                              } : null,
+                              barComputed: barElement ? {
+                                display: window.getComputedStyle(barElement).display,
+                                opacity: window.getComputedStyle(barElement).opacity,
+                                width: window.getComputedStyle(barElement).width,
+                                height: window.getComputedStyle(barElement).height,
+                                transform: window.getComputedStyle(barElement).transform
+                              } : null
+                            });
+                            
+                            // Verificar CSS cargado
+                            const scrollbarStyles = window.getComputedStyle(barElement || document.body);
+                            console.log('📅 [Calendar] CSS del scrollbar verificado');
+                          }, 100);
+                        } else {
+                          console.error('❌ [Calendar] createScrollbarLocal NO está disponible');
+                        }
+                      } else {
+                        console.log('📅 [Calendar] ⚠️ No se necesita scrollbar para mes (contenido cabe)');
+                      }
+                    } else {
+                      console.error('❌ [Calendar] Faltan elementos:', {
+                        listElement: !!listElement,
+                        scrollbarContainer: !!scrollbarContainer
+                      });
+                    }
+                    console.log('📅 [Calendar] ========== FIN DIAGNÓSTICO ==========');
+                  } catch (err) {
+                    console.error('❌ [Calendar] Error creando scrollbar:', err);
+                    console.error('❌ [Calendar] Stack:', err.stack);
+                  }
+                });
                 
                 // Event listeners para items de mes
-                monthDropdown.querySelectorAll('.ubits-list-item').forEach(itemEl => {
-                  itemEl.addEventListener('click', () => {
+                const listItems = monthDropdown.querySelectorAll('.ubits-list-item');
+                console.log('📅 [Calendar] Items encontrados en dropdown:', listItems.length);
+                listItems.forEach((itemEl, idx) => {
+                  itemEl.addEventListener('click', (e) => {
+                    e.stopPropagation();
                     const monthIndex = parseInt(itemEl.getAttribute('data-value') || '0');
+                    console.log('📅 [Calendar] Mes seleccionado:', monthIndex, CALENDAR_MONTH_NAMES[monthIndex]);
+                    // Limpiar scrollbar antes de cerrar
+                    if (monthDropdown._scrollbarInstance) {
+                      try {
+                        if (monthDropdown._scrollbarInstance.destroy) {
+                          monthDropdown._scrollbarInstance.destroy();
+                        }
+                        // También limpiar el elemento del scrollbar del DOM
+                        const scrollbarEl = monthDropdown.querySelector('.ubits-scrollbar');
+                        if (scrollbarEl && scrollbarEl.parentElement) {
+                          scrollbarEl.parentElement.removeChild(scrollbarEl);
+                        }
+                      } catch (e) {
+                        console.warn('📅 [Calendar] Error limpiando scrollbar:', e);
+                      }
+                      delete monthDropdown._scrollbarInstance;
+                    }
                     state.currentDate.setMonth(monthIndex);
                     monthDropdown.style.display = 'none';
                     window.updateCalendarPreview(componentId);
@@ -16203,7 +16488,15 @@ Reglas Importantes:
                 });
               } else {
                 monthDropdown.style.display = 'none';
+                console.log('📅 [Calendar] Dropdown de MES CERRADO');
               }
+            });
+            
+            console.log('📅 [Calendar] Event listener de mes agregado');
+          } else {
+            console.error('❌ [Calendar] monthInput o monthDropdown NO encontrados:', {
+              monthInput: !!monthInput,
+              monthDropdown: !!monthDropdown
             });
           }
           
@@ -16222,9 +16515,12 @@ Reglas Importantes:
             
             yearInput.addEventListener('click', (e) => {
               e.stopPropagation();
-              console.log('📅 [Calendar] Click en input de año');
+              console.log('📅 [Calendar] CLICK en input de AÑO');
+              console.log('📅 [Calendar] yearDropdown existe?', !!yearDropdown);
+              console.log('📅 [Calendar] yearDropdown.style.display:', yearDropdown.style.display);
+              
               const isVisible = yearDropdown.style.display === 'block';
-              console.log('📅 [Calendar] Dropdown visible?', isVisible);
+              console.log('📅 [Calendar] isVisible:', isVisible);
               
               if (!isVisible) {
                 // Cerrar dropdown de mes si está abierto
@@ -16232,31 +16528,156 @@ Reglas Importantes:
                   monthDropdown.style.display = 'none';
                 }
                 
-                // Renderizar List UBITS
+                console.log('📅 [Calendar] Generando HTML del dropdown de año...');
+                // IDs únicos para el dropdown de año
+                const yearListId = `calendar-year-list-${componentId}`;
+                const yearScrollbarId = `calendar-year-scrollbar-${componentId}`;
+                
+                // Renderizar List UBITS con contenedor para scrollbar
                 const listHTML = `
-                  <div class="ubits-list" role="list" style="max-height: 200px; background: var(--ubits-bg-1); border: 1px solid var(--ubits-border-1); border-radius: 6px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); overflow-y: auto;">
-                    ${yearItems.map((item, idx) => `
-                      <div class="ubits-list-item ubits-list-item--sm ${item.state === 'active' ? 'ubits-list-item--active' : ''}" 
-                           role="listitem" 
-                           data-value="${item.value}" 
-                           data-index="${idx}"
-                           tabindex="0"
-                           style="cursor: pointer;">
-                        ${item.label}
-                      </div>
-                    `).join('')}
+                  <div style="position: relative; max-height: 200px;">
+                    <div id="${yearListId}" class="ubits-list" role="list" style="max-height: 200px; background: var(--ubits-bg-1); border: 1px solid var(--ubits-border-1); border-radius: 6px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); overflow-y: auto; overflow-x: hidden; -ms-overflow-style: none; scrollbar-width: none;">
+                      <style>
+                        #${yearListId}::-webkit-scrollbar { display: none; }
+                      </style>
+                      ${yearItems.map((item, idx) => `
+                        <div class="ubits-list-item ubits-list-item--sm ${item.state === 'active' ? 'ubits-list-item--active' : ''}" 
+                             role="listitem" 
+                             data-value="${item.value}" 
+                             data-index="${idx}"
+                             tabindex="0"
+                             style="cursor: pointer;">
+                          ${item.label}
+                        </div>
+                      `).join('')}
+                    </div>
+                    <div id="${yearScrollbarId}" style="position: absolute; top: 0; right: 0; width: 8px; height: 100%; pointer-events: none;"></div>
                   </div>
                 `;
+                console.log('📅 [Calendar] HTML generado, longitud:', listHTML.length);
                 yearDropdown.innerHTML = listHTML;
                 yearDropdown.style.display = 'block';
-                console.log('📅 [Calendar] Dropdown de año abierto');
+                console.log('📅 [Calendar] ✅ Dropdown de AÑO ABIERTO');
+                
+                // Crear scrollbar UBITS después de renderizar
+                requestAnimationFrame(() => {
+                  try {
+                    const listElement = document.getElementById(yearListId);
+                    const scrollbarContainer = document.getElementById(yearScrollbarId);
+                    
+                    console.log('📅 [Calendar] ========== DIAGNÓSTICO SCROLLBAR AÑO ==========');
+                    console.log('📅 [Calendar] Elementos encontrados:', {
+                      listElement: !!listElement,
+                      scrollbarContainer: !!scrollbarContainer,
+                      listElementId: listElement?.id,
+                      scrollbarContainerId: scrollbarContainer?.id
+                    });
+                    
+                    if (listElement) {
+                      console.log('📅 [Calendar] Dimensiones de la lista:', {
+                        scrollHeight: listElement.scrollHeight,
+                        clientHeight: listElement.clientHeight,
+                        offsetHeight: listElement.offsetHeight,
+                        needsScroll: listElement.scrollHeight > listElement.clientHeight,
+                        difference: listElement.scrollHeight - listElement.clientHeight
+                      });
+                    }
+                    
+                    if (scrollbarContainer) {
+                      console.log('📅 [Calendar] Estado del contenedor del scrollbar:', {
+                        offsetHeight: scrollbarContainer.offsetHeight,
+                        offsetWidth: scrollbarContainer.offsetWidth,
+                        styleHeight: scrollbarContainer.style.height,
+                        styleWidth: scrollbarContainer.style.width,
+                        innerHTML: scrollbarContainer.innerHTML.substring(0, 200),
+                        children: scrollbarContainer.children.length
+                      });
+                    }
+                    
+                    if (listElement && scrollbarContainer) {
+                      // Asegurar que el contenedor tenga la misma altura que la lista
+                      const listHeight = listElement.clientHeight;
+                      scrollbarContainer.style.height = `${listHeight}px`;
+                      scrollbarContainer.style.pointerEvents = 'auto'; // Permitir interacción con el scrollbar
+                      console.log('📅 [Calendar] Altura del contenedor ajustada a:', listHeight);
+                      
+                      if (listElement.scrollHeight > listElement.clientHeight) {
+                        console.log('📅 [Calendar] ✅ Se necesita scrollbar, creando...');
+                        // Usar función local createScrollbarLocal
+                        if (typeof window.createScrollbarLocal === 'function') {
+                          console.log('📅 [Calendar] createScrollbarLocal está disponible');
+                          yearDropdown._scrollbarInstance = window.createScrollbarLocal(listElement, scrollbarContainer, 'vertical');
+                          console.log('📅 [Calendar] Scrollbar creado, instancia:', yearDropdown._scrollbarInstance);
+                          
+                          // Verificar que el scrollbar se creó
+                          setTimeout(() => {
+                            const scrollbarElement = scrollbarContainer.querySelector('.ubits-scrollbar');
+                            const barElement = scrollbarContainer.querySelector('.ubits-scrollbar__bar');
+                            console.log('📅 [Calendar] Verificación del scrollbar creado:', {
+                              scrollbarElement: !!scrollbarElement,
+                              barElement: !!barElement,
+                              scrollbarClasses: scrollbarElement?.className,
+                              barClasses: barElement?.className,
+                              scrollbarStyle: scrollbarElement?.style.cssText,
+                              barStyle: barElement?.style.cssText,
+                              scrollbarComputed: scrollbarElement ? {
+                                display: window.getComputedStyle(scrollbarElement).display,
+                                opacity: window.getComputedStyle(scrollbarElement).opacity,
+                                width: window.getComputedStyle(scrollbarElement).width,
+                                height: window.getComputedStyle(scrollbarElement).height
+                              } : null,
+                              barComputed: barElement ? {
+                                display: window.getComputedStyle(barElement).display,
+                                opacity: window.getComputedStyle(barElement).opacity,
+                                width: window.getComputedStyle(barElement).width,
+                                height: window.getComputedStyle(barElement).height,
+                                transform: window.getComputedStyle(barElement).transform
+                              } : null
+                            });
+                          }, 100);
+                        } else {
+                          console.error('❌ [Calendar] createScrollbarLocal NO está disponible');
+                        }
+                      } else {
+                        console.log('📅 [Calendar] ⚠️ No se necesita scrollbar para año (contenido cabe)');
+                      }
+                    } else {
+                      console.error('❌ [Calendar] Faltan elementos:', {
+                        listElement: !!listElement,
+                        scrollbarContainer: !!scrollbarContainer
+                      });
+                    }
+                    console.log('📅 [Calendar] ========== FIN DIAGNÓSTICO ==========');
+                  } catch (err) {
+                    console.error('❌ [Calendar] Error creando scrollbar:', err);
+                    console.error('❌ [Calendar] Stack:', err.stack);
+                  }
+                });
                 
                 // Event listeners para items de año
-                yearDropdown.querySelectorAll('.ubits-list-item').forEach(itemEl => {
+                const listItems = yearDropdown.querySelectorAll('.ubits-list-item');
+                console.log('📅 [Calendar] Items encontrados en dropdown:', listItems.length);
+                listItems.forEach((itemEl, idx) => {
                   itemEl.addEventListener('click', (e) => {
                     e.stopPropagation();
                     const yearValue = parseInt(itemEl.getAttribute('data-value') || String(currentYear));
                     console.log('📅 [Calendar] Año seleccionado:', yearValue);
+                    // Limpiar scrollbar antes de cerrar
+                    if (yearDropdown._scrollbarInstance) {
+                      try {
+                        if (yearDropdown._scrollbarInstance.destroy) {
+                          yearDropdown._scrollbarInstance.destroy();
+                        }
+                        // También limpiar el elemento del scrollbar del DOM
+                        const scrollbarEl = yearDropdown.querySelector('.ubits-scrollbar');
+                        if (scrollbarEl && scrollbarEl.parentElement) {
+                          scrollbarEl.parentElement.removeChild(scrollbarEl);
+                        }
+                      } catch (e) {
+                        console.warn('📅 [Calendar] Error limpiando scrollbar:', e);
+                      }
+                      delete yearDropdown._scrollbarInstance;
+                    }
                     state.currentDate.setFullYear(yearValue);
                     yearDropdown.style.display = 'none';
                     window.updateCalendarPreview(componentId);
@@ -16264,11 +16685,16 @@ Reglas Importantes:
                 });
               } else {
                 yearDropdown.style.display = 'none';
-                console.log('📅 [Calendar] Dropdown de año cerrado');
+                console.log('📅 [Calendar] Dropdown de AÑO CERRADO');
               }
             });
+            
+            console.log('📅 [Calendar] Event listener de año agregado');
           } else {
-            console.error('❌ [Calendar] No se encontraron yearInput o yearDropdown');
+            console.error('❌ [Calendar] yearInput o yearDropdown NO encontrados:', {
+              yearInput: !!yearInput,
+              yearDropdown: !!yearDropdown
+            });
           }
           
           // Cerrar dropdowns al hacer click fuera
@@ -16293,27 +16719,32 @@ Reglas Importantes:
               
               if (state.mode === 'single') {
                 state.selectedDate = clickedDate;
+                state.endDate = null;
+                state.isSelectingRange = false;
                 window.updateCalendarPreview(componentId);
                 console.log('📅 Fecha seleccionada:', clickedDate);
               } else if (state.mode === 'range') {
-                if (!state.selectedDate || state.isSelectingRange) {
-                  // Start range
+                const compareDates = (d1, d2) => {
+                  const date1 = new Date(d1.getFullYear(), d1.getMonth(), d1.getDate());
+                  const date2 = new Date(d2.getFullYear(), d2.getMonth(), d2.getDate());
+                  return date1.getTime() - date2.getTime();
+                };
+                
+                if (!state.selectedDate || (state.selectedDate && state.endDate)) {
+                  // Iniciar nuevo rango (no hay fecha inicial o ya hay un rango completo)
                   state.selectedDate = clickedDate;
                   state.endDate = null;
                   state.isSelectingRange = true;
                   window.updateCalendarPreview(componentId);
-                } else {
-                  // Complete range
-                  const compareDates = (d1, d2) => {
-                    const date1 = new Date(d1.getFullYear(), d1.getMonth(), d1.getDate());
-                    const date2 = new Date(d2.getFullYear(), d2.getMonth(), d2.getDate());
-                    return date1.getTime() - date2.getTime();
-                  };
-                  
+                  console.log('📅 Iniciando rango:', clickedDate);
+                } else if (state.selectedDate && !state.endDate) {
+                  // Completar rango (ya hay fecha inicial, falta la final)
                   if (compareDates(clickedDate, state.selectedDate) < 0) {
+                    // La fecha clickeada es anterior a la inicial, intercambiar
                     state.endDate = state.selectedDate;
                     state.selectedDate = clickedDate;
                   } else {
+                    // La fecha clickeada es posterior a la inicial, establecer como final
                     state.endDate = clickedDate;
                   }
                   state.isSelectingRange = false;
@@ -17920,6 +18351,751 @@ Reglas Importantes:
           inputElement.addEventListener('blur', () => {
             setTimeout(() => listContainer.style.display = 'none', 150);
           });
+        }
+        
+        // Calendar picker - usando componente Calendar UBITS (sin imports dinámicos)
+        if (inputType === 'calendar' && inputElement instanceof HTMLInputElement) {
+          console.log('📅 [Input Preview] Inicializando calendar picker...');
+          
+          // PREVENIR CALENDARIO NATIVO: Asegurar que el input nunca tenga type="date"
+          // y tenga todos los atributos necesarios para prevenir el calendario nativo
+          inputElement.type = 'text';
+          inputElement.setAttribute('readonly', 'readonly');
+          inputElement.setAttribute('autocomplete', 'off');
+          // Asegurar que no tenga atributos que puedan causar el calendario nativo
+          inputElement.removeAttribute('data-type');
+          
+          console.log('📅 [Input Preview] Input configurado para prevenir calendario nativo:', {
+            type: inputElement.type,
+            readonly: inputElement.hasAttribute('readonly'),
+            autocomplete: inputElement.getAttribute('autocomplete'),
+            originalType: inputElement.getAttribute('type')
+          });
+          
+          // Crear contenedor para el calendario con z-index muy alto para estar sobre cualquier calendario nativo
+          let calendarContainer = wrapper.querySelector('.ubits-calendar-picker-container');
+          if (!calendarContainer) {
+            calendarContainer = document.createElement('div');
+            calendarContainer.className = 'ubits-calendar-picker-container';
+            calendarContainer.style.cssText = 'position: absolute; top: 100%; left: 0; right: 0; z-index: 99999 !important; margin-top: 4px; display: none;';
+            wrapper.appendChild(calendarContainer);
+          }
+          
+          // Estado del calendario para el input
+          const calendarState = {
+            mode: 'single',
+            selectedDate: null,
+            endDate: null,
+            minDate: null,
+            maxDate: null,
+            currentDate: new Date(),
+            isSelectingRange: false
+          };
+          
+          const formatDate = (date) => {
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
+            return `${day}/${month}/${year}`;
+          };
+          
+          const parseDate = (dateStr) => {
+            if (!dateStr) return null;
+            const [day, month, year] = dateStr.split('/');
+            if (!day || !month || !year) return null;
+            return new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+          };
+          
+          // Función para renderizar el calendario usando generateCalendarHTML
+          const renderCalendar = () => {
+            // Cargar CSS si no está cargado
+            const existingCalendarLink = document.querySelector('link[href*="calendar.css"]');
+            if (!existingCalendarLink) {
+              const link = document.createElement('link');
+              link.rel = 'stylesheet';
+              link.href = '../../addons/calendar/src/styles/calendar.css';
+              document.head.appendChild(link);
+            }
+            
+            // Cargar CSS de scroll si no está cargado (para el scrollbar de las listas)
+            const existingScrollLink = document.querySelector('link[href*="scroll.css"]');
+            if (!existingScrollLink) {
+              console.log('📅 [Input Preview] Cargando CSS del scrollbar...');
+              const link = document.createElement('link');
+              link.rel = 'stylesheet';
+              link.href = '../../addons/scroll/src/styles/scroll.css';
+              document.head.appendChild(link);
+              console.log('✅ [Input Preview] CSS del scrollbar cargado');
+            }
+            
+            // Generar HTML del calendario usando la función existente
+            const calendarHTML = generateCalendarHTML(calendarState);
+            
+            // Crear wrapper temporal para parsear el HTML
+            const tempWrapper = document.createElement('div');
+            tempWrapper.innerHTML = calendarHTML;
+            const calendar = tempWrapper.firstElementChild;
+            
+            if (!calendar) {
+              console.error('❌ [Input Preview] No se pudo crear el calendario');
+              return null;
+            }
+            
+            // Configurar event listeners básicos (similar a setupEventListeners en updateCalendarPreview)
+            const prevBtn = calendar.querySelector('.ubits-calendar__nav-button--prev');
+            const nextBtn = calendar.querySelector('.ubits-calendar__nav-button--next');
+            const monthInput = calendar.querySelector('.ubits-calendar__month-input');
+            const yearInput = calendar.querySelector('.ubits-calendar__year-input');
+            const monthDropdown = calendar.querySelector('.ubits-calendar__month-dropdown');
+            const yearDropdown = calendar.querySelector('.ubits-calendar__year-dropdown');
+            const dayButtons = calendar.querySelectorAll('.ubits-calendar__day[data-date]');
+            
+            prevBtn?.addEventListener('click', (e) => {
+              e.stopPropagation();
+              calendarState.currentDate.setMonth(calendarState.currentDate.getMonth() - 1);
+              calendarContainer.innerHTML = '';
+              const newCalendar = renderCalendar();
+              if (newCalendar) {
+                calendarContainer.appendChild(newCalendar);
+              }
+            });
+            
+            nextBtn?.addEventListener('click', (e) => {
+              e.stopPropagation();
+              calendarState.currentDate.setMonth(calendarState.currentDate.getMonth() + 1);
+              calendarContainer.innerHTML = '';
+              const newCalendar = renderCalendar();
+              if (newCalendar) {
+                calendarContainer.appendChild(newCalendar);
+              }
+            });
+            
+            // Event listeners para dropdowns de mes y año
+            if (monthInput && monthDropdown) {
+              const currentMonth = calendarState.currentDate.getMonth();
+              const monthItems = CALENDAR_MONTH_NAMES.map((name, index) => ({
+                label: name,
+                value: String(index),
+                selected: index === currentMonth,
+                state: index === currentMonth ? 'active' : 'default'
+              }));
+              
+              monthInput.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const isVisible = monthDropdown.style.display === 'block';
+                
+                if (!isVisible) {
+                  if (yearDropdown) {
+                    yearDropdown.style.display = 'none';
+                    // Limpiar scrollbar del dropdown de año si existe
+                    if (yearDropdown._scrollbarInstance) {
+                      try {
+                        if (yearDropdown._scrollbarInstance.destroy) {
+                          yearDropdown._scrollbarInstance.destroy();
+                        }
+                        const scrollbarEl = yearDropdown.querySelector('.ubits-scrollbar');
+                        if (scrollbarEl && scrollbarEl.parentElement) {
+                          scrollbarEl.parentElement.removeChild(scrollbarEl);
+                        }
+                      } catch (err) {
+                        console.warn('📅 [Input Preview] Error limpiando scrollbar de año:', err);
+                      }
+                      delete yearDropdown._scrollbarInstance;
+                    }
+                  }
+                  
+                  // IDs únicos para el dropdown de mes
+                  const monthListId = `input-calendar-month-list-${Date.now()}`;
+                  const monthScrollbarId = `input-calendar-month-scrollbar-${Date.now()}`;
+                  
+                  // Renderizar List UBITS con contenedor para scrollbar (igual que en updateCalendarPreview)
+                  const listHTML = `
+                    <div style="position: relative; max-height: 200px;">
+                      <div id="${monthListId}" class="ubits-list" role="list" style="max-height: 200px; background: var(--ubits-bg-1); border: 1px solid var(--ubits-border-1); border-radius: 6px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); overflow-y: auto; overflow-x: hidden; -ms-overflow-style: none; scrollbar-width: none;">
+                        <style>
+                          #${monthListId}::-webkit-scrollbar { display: none; }
+                        </style>
+                        ${monthItems.map((item, idx) => `
+                          <div class="ubits-list-item ubits-list-item--sm ${item.state === 'active' ? 'ubits-list-item--active' : ''}" 
+                               role="listitem" 
+                               data-value="${item.value}" 
+                               data-index="${idx}"
+                               tabindex="0"
+                               style="cursor: pointer;">
+                            ${item.label}
+                          </div>
+                        `).join('')}
+                      </div>
+                      <div id="${monthScrollbarId}" style="position: absolute; top: 0; right: 0; width: 8px; height: 100%; pointer-events: none;"></div>
+                    </div>
+                  `;
+                  monthDropdown.innerHTML = listHTML;
+                  monthDropdown.style.display = 'block';
+                  
+                  // Crear scrollbar UBITS después de renderizar
+                  requestAnimationFrame(() => {
+                    try {
+                      const listElement = document.getElementById(monthListId);
+                      const scrollbarContainer = document.getElementById(monthScrollbarId);
+                      
+                      console.log('📅 [Input Preview] ========== DIAGNÓSTICO SCROLLBAR MES ==========');
+                      console.log('📅 [Input Preview] Elementos encontrados:', {
+                        listElement: !!listElement,
+                        scrollbarContainer: !!scrollbarContainer,
+                        listElementId: listElement?.id,
+                        scrollbarContainerId: scrollbarContainer?.id
+                      });
+                      
+                      if (listElement) {
+                        console.log('📅 [Input Preview] Dimensiones de la lista:', {
+                          scrollHeight: listElement.scrollHeight,
+                          clientHeight: listElement.clientHeight,
+                          offsetHeight: listElement.offsetHeight,
+                          needsScroll: listElement.scrollHeight > listElement.clientHeight,
+                          difference: listElement.scrollHeight - listElement.clientHeight
+                        });
+                      }
+                      
+                      if (listElement && scrollbarContainer) {
+                        // Asegurar que el contenedor tenga la misma altura que la lista
+                        const listHeight = listElement.clientHeight;
+                        scrollbarContainer.style.height = `${listHeight}px`;
+                        scrollbarContainer.style.pointerEvents = 'auto';
+                        console.log('📅 [Input Preview] Altura del contenedor ajustada a:', listHeight);
+                        
+                        if (listElement.scrollHeight > listElement.clientHeight) {
+                          console.log('📅 [Input Preview] ✅ Se necesita scrollbar, creando...');
+                          // Usar función local createScrollbarLocal
+                          if (typeof window.createScrollbarLocal === 'function') {
+                            console.log('📅 [Input Preview] createScrollbarLocal está disponible');
+                            monthDropdown._scrollbarInstance = window.createScrollbarLocal(listElement, scrollbarContainer, 'vertical');
+                            console.log('📅 [Input Preview] Scrollbar creado, instancia:', monthDropdown._scrollbarInstance);
+                            
+                            // Verificar que el scrollbar se creó
+                            setTimeout(() => {
+                              const scrollbarElement = scrollbarContainer.querySelector('.ubits-scrollbar');
+                              const barElement = scrollbarContainer.querySelector('.ubits-scrollbar__bar');
+                              console.log('📅 [Input Preview] Verificación del scrollbar creado:', {
+                                scrollbarElement: !!scrollbarElement,
+                                barElement: !!barElement,
+                                scrollbarClasses: scrollbarElement?.className,
+                                barClasses: barElement?.className,
+                                scrollbarStyle: scrollbarElement?.style.cssText,
+                                barStyle: barElement?.style.cssText,
+                                scrollbarComputed: scrollbarElement ? {
+                                  display: window.getComputedStyle(scrollbarElement).display,
+                                  opacity: window.getComputedStyle(scrollbarElement).opacity,
+                                  width: window.getComputedStyle(scrollbarElement).width,
+                                  height: window.getComputedStyle(scrollbarElement).height
+                                } : null,
+                                barComputed: barElement ? {
+                                  display: window.getComputedStyle(barElement).display,
+                                  opacity: window.getComputedStyle(barElement).opacity,
+                                  width: window.getComputedStyle(barElement).width,
+                                  height: window.getComputedStyle(barElement).height,
+                                  transform: window.getComputedStyle(barElement).transform
+                                } : null
+                              });
+                            }, 100);
+                          } else {
+                            console.error('❌ [Input Preview] createScrollbarLocal NO está disponible');
+                          }
+                        } else {
+                          console.log('📅 [Input Preview] ⚠️ No se necesita scrollbar para mes (contenido cabe)');
+                        }
+                      } else {
+                        console.error('❌ [Input Preview] Faltan elementos:', {
+                          listElement: !!listElement,
+                          scrollbarContainer: !!scrollbarContainer
+                        });
+                      }
+                      console.log('📅 [Input Preview] ========== FIN DIAGNÓSTICO ==========');
+                    } catch (err) {
+                      console.error('❌ [Input Preview] Error creando scrollbar para mes:', err);
+                      console.error('❌ [Input Preview] Stack:', err.stack);
+                    }
+                  });
+                  
+                  // Event listeners para items de mes
+                  monthDropdown.querySelectorAll('.ubits-list-item').forEach(item => {
+                    item.addEventListener('click', (e) => {
+                      e.stopPropagation();
+                      const monthIndex = parseInt(item.getAttribute('data-value'));
+                      calendarState.currentDate.setMonth(monthIndex);
+                      
+                      // Limpiar scrollbar antes de cerrar
+                      if (monthDropdown._scrollbarInstance) {
+                        try {
+                          if (monthDropdown._scrollbarInstance.destroy) {
+                            monthDropdown._scrollbarInstance.destroy();
+                          }
+                          const scrollbarEl = monthDropdown.querySelector('.ubits-scrollbar');
+                          if (scrollbarEl && scrollbarEl.parentElement) {
+                            scrollbarEl.parentElement.removeChild(scrollbarEl);
+                          }
+                        } catch (err) {
+                          console.warn('📅 [Input Preview] Error limpiando scrollbar de mes:', err);
+                        }
+                        delete monthDropdown._scrollbarInstance;
+                      }
+                      
+                      monthDropdown.style.display = 'none';
+                      calendarContainer.innerHTML = '';
+                      const newCalendar = renderCalendar();
+                      if (newCalendar) {
+                        calendarContainer.appendChild(newCalendar);
+                      }
+                    });
+                  });
+                } else {
+                  monthDropdown.style.display = 'none';
+                  // Limpiar scrollbar al cerrar
+                  if (monthDropdown._scrollbarInstance) {
+                    try {
+                      if (monthDropdown._scrollbarInstance.destroy) {
+                        monthDropdown._scrollbarInstance.destroy();
+                      }
+                      const scrollbarEl = monthDropdown.querySelector('.ubits-scrollbar');
+                      if (scrollbarEl && scrollbarEl.parentElement) {
+                        scrollbarEl.parentElement.removeChild(scrollbarEl);
+                      }
+                    } catch (err) {
+                      console.warn('📅 [Input Preview] Error limpiando scrollbar de mes:', err);
+                    }
+                    delete monthDropdown._scrollbarInstance;
+                  }
+                }
+              });
+            }
+            
+            if (yearInput && yearDropdown) {
+              const currentYear = calendarState.currentDate.getFullYear();
+              const startYear = currentYear - 10;
+              const endYear = currentYear + 10;
+              const yearItems = [];
+              for (let y = startYear; y <= endYear; y++) {
+                yearItems.push({
+                  label: String(y),
+                  value: String(y),
+                  selected: y === currentYear,
+                  state: y === currentYear ? 'active' : 'default'
+                });
+              }
+              
+              yearInput.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const isVisible = yearDropdown.style.display === 'block';
+                
+                if (!isVisible) {
+                  if (monthDropdown) {
+                    monthDropdown.style.display = 'none';
+                    // Limpiar scrollbar del dropdown de mes si existe
+                    if (monthDropdown._scrollbarInstance) {
+                      try {
+                        if (monthDropdown._scrollbarInstance.destroy) {
+                          monthDropdown._scrollbarInstance.destroy();
+                        }
+                        const scrollbarEl = monthDropdown.querySelector('.ubits-scrollbar');
+                        if (scrollbarEl && scrollbarEl.parentElement) {
+                          scrollbarEl.parentElement.removeChild(scrollbarEl);
+                        }
+                      } catch (err) {
+                        console.warn('📅 [Input Preview] Error limpiando scrollbar de mes:', err);
+                      }
+                      delete monthDropdown._scrollbarInstance;
+                    }
+                  }
+                  
+                  // IDs únicos para el dropdown de año
+                  const yearListId = `input-calendar-year-list-${Date.now()}`;
+                  const yearScrollbarId = `input-calendar-year-scrollbar-${Date.now()}`;
+                  
+                  // Renderizar List UBITS con contenedor para scrollbar (igual que en updateCalendarPreview)
+                  const listHTML = `
+                    <div style="position: relative; max-height: 200px;">
+                      <div id="${yearListId}" class="ubits-list" role="list" style="max-height: 200px; background: var(--ubits-bg-1); border: 1px solid var(--ubits-border-1); border-radius: 6px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); overflow-y: auto; overflow-x: hidden; -ms-overflow-style: none; scrollbar-width: none;">
+                        <style>
+                          #${yearListId}::-webkit-scrollbar { display: none; }
+                        </style>
+                        ${yearItems.map((item, idx) => `
+                          <div class="ubits-list-item ubits-list-item--sm ${item.state === 'active' ? 'ubits-list-item--active' : ''}" 
+                               role="listitem" 
+                               data-value="${item.value}" 
+                               data-index="${idx}"
+                               tabindex="0"
+                               style="cursor: pointer;">
+                            ${item.label}
+                          </div>
+                        `).join('')}
+                      </div>
+                      <div id="${yearScrollbarId}" style="position: absolute; top: 0; right: 0; width: 8px; height: 100%; pointer-events: none;"></div>
+                    </div>
+                  `;
+                  yearDropdown.innerHTML = listHTML;
+                  yearDropdown.style.display = 'block';
+                  
+                  // Crear scrollbar UBITS después de renderizar
+                  requestAnimationFrame(() => {
+                    try {
+                      const listElement = document.getElementById(yearListId);
+                      const scrollbarContainer = document.getElementById(yearScrollbarId);
+                      
+                      console.log('📅 [Input Preview] ========== DIAGNÓSTICO SCROLLBAR AÑO ==========');
+                      console.log('📅 [Input Preview] Elementos encontrados:', {
+                        listElement: !!listElement,
+                        scrollbarContainer: !!scrollbarContainer,
+                        listElementId: listElement?.id,
+                        scrollbarContainerId: scrollbarContainer?.id
+                      });
+                      
+                      if (listElement) {
+                        console.log('📅 [Input Preview] Dimensiones de la lista:', {
+                          scrollHeight: listElement.scrollHeight,
+                          clientHeight: listElement.clientHeight,
+                          offsetHeight: listElement.offsetHeight,
+                          needsScroll: listElement.scrollHeight > listElement.clientHeight,
+                          difference: listElement.scrollHeight - listElement.clientHeight
+                        });
+                      }
+                      
+                      if (listElement && scrollbarContainer) {
+                        // Asegurar que el contenedor tenga la misma altura que la lista
+                        const listHeight = listElement.clientHeight;
+                        scrollbarContainer.style.height = `${listHeight}px`;
+                        scrollbarContainer.style.pointerEvents = 'auto';
+                        console.log('📅 [Input Preview] Altura del contenedor ajustada a:', listHeight);
+                        
+                        if (listElement.scrollHeight > listElement.clientHeight) {
+                          console.log('📅 [Input Preview] ✅ Se necesita scrollbar, creando...');
+                          // Usar función local createScrollbarLocal
+                          if (typeof window.createScrollbarLocal === 'function') {
+                            console.log('📅 [Input Preview] createScrollbarLocal está disponible');
+                            yearDropdown._scrollbarInstance = window.createScrollbarLocal(listElement, scrollbarContainer, 'vertical');
+                            console.log('📅 [Input Preview] Scrollbar creado, instancia:', yearDropdown._scrollbarInstance);
+                            
+                            // Verificar que el scrollbar se creó
+                            setTimeout(() => {
+                              const scrollbarElement = scrollbarContainer.querySelector('.ubits-scrollbar');
+                              const barElement = scrollbarContainer.querySelector('.ubits-scrollbar__bar');
+                              console.log('📅 [Input Preview] Verificación del scrollbar creado:', {
+                                scrollbarElement: !!scrollbarElement,
+                                barElement: !!barElement,
+                                scrollbarClasses: scrollbarElement?.className,
+                                barClasses: barElement?.className,
+                                scrollbarStyle: scrollbarElement?.style.cssText,
+                                barStyle: barElement?.style.cssText,
+                                scrollbarComputed: scrollbarElement ? {
+                                  display: window.getComputedStyle(scrollbarElement).display,
+                                  opacity: window.getComputedStyle(scrollbarElement).opacity,
+                                  width: window.getComputedStyle(scrollbarElement).width,
+                                  height: window.getComputedStyle(scrollbarElement).height
+                                } : null,
+                                barComputed: barElement ? {
+                                  display: window.getComputedStyle(barElement).display,
+                                  opacity: window.getComputedStyle(barElement).opacity,
+                                  width: window.getComputedStyle(barElement).width,
+                                  height: window.getComputedStyle(barElement).height,
+                                  transform: window.getComputedStyle(barElement).transform
+                                } : null
+                              });
+                            }, 100);
+                          } else {
+                            console.error('❌ [Input Preview] createScrollbarLocal NO está disponible');
+                          }
+                        } else {
+                          console.log('📅 [Input Preview] ⚠️ No se necesita scrollbar para año (contenido cabe)');
+                        }
+                      } else {
+                        console.error('❌ [Input Preview] Faltan elementos:', {
+                          listElement: !!listElement,
+                          scrollbarContainer: !!scrollbarContainer
+                        });
+                      }
+                      console.log('📅 [Input Preview] ========== FIN DIAGNÓSTICO ==========');
+                    } catch (err) {
+                      console.error('❌ [Input Preview] Error creando scrollbar para año:', err);
+                      console.error('❌ [Input Preview] Stack:', err.stack);
+                    }
+                  });
+                  
+                  // Event listeners para items de año
+                  yearDropdown.querySelectorAll('.ubits-list-item').forEach(item => {
+                    item.addEventListener('click', (e) => {
+                      e.stopPropagation();
+                      const year = parseInt(item.getAttribute('data-value'));
+                      calendarState.currentDate.setFullYear(year);
+                      
+                      // Limpiar scrollbar antes de cerrar
+                      if (yearDropdown._scrollbarInstance) {
+                        try {
+                          if (yearDropdown._scrollbarInstance.destroy) {
+                            yearDropdown._scrollbarInstance.destroy();
+                          }
+                          const scrollbarEl = yearDropdown.querySelector('.ubits-scrollbar');
+                          if (scrollbarEl && scrollbarEl.parentElement) {
+                            scrollbarEl.parentElement.removeChild(scrollbarEl);
+                          }
+                        } catch (err) {
+                          console.warn('📅 [Input Preview] Error limpiando scrollbar de año:', err);
+                        }
+                        delete yearDropdown._scrollbarInstance;
+                      }
+                      
+                      yearDropdown.style.display = 'none';
+                      calendarContainer.innerHTML = '';
+                      const newCalendar = renderCalendar();
+                      if (newCalendar) {
+                        calendarContainer.appendChild(newCalendar);
+                      }
+                    });
+                  });
+                } else {
+                  yearDropdown.style.display = 'none';
+                  // Limpiar scrollbar al cerrar
+                  if (yearDropdown._scrollbarInstance) {
+                    try {
+                      if (yearDropdown._scrollbarInstance.destroy) {
+                        yearDropdown._scrollbarInstance.destroy();
+                      }
+                      const scrollbarEl = yearDropdown.querySelector('.ubits-scrollbar');
+                      if (scrollbarEl && scrollbarEl.parentElement) {
+                        scrollbarEl.parentElement.removeChild(scrollbarEl);
+                      }
+                    } catch (err) {
+                      console.warn('📅 [Input Preview] Error limpiando scrollbar de año:', err);
+                    }
+                    delete yearDropdown._scrollbarInstance;
+                  }
+                }
+              });
+            }
+            
+            // Event listeners para selección de fecha
+            dayButtons.forEach(dayBtn => {
+              dayBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const dateStr = dayBtn.getAttribute('data-date');
+                if (dateStr) {
+                  const selectedDate = parseDate(dateStr);
+                  if (selectedDate) {
+                    calendarState.selectedDate = selectedDate;
+                    inputElement.value = formatDate(selectedDate);
+                    calendarContainer.style.display = 'none';
+                    console.log('📅 [Input Preview] Fecha seleccionada:', selectedDate);
+                  }
+                }
+              });
+            });
+            
+            return calendar;
+          };
+          
+          let isShowingCalendar = false;
+          
+          const showCalendar = () => {
+            // Prevenir múltiples llamadas simultáneas
+            if (isShowingCalendar) {
+              console.log('📅 [Input Preview] showCalendar ya en ejecución, ignorando...');
+              return;
+            }
+            
+            console.log('📅 [Input Preview] Mostrando calendario UBITS...');
+            console.log('📅 [Input Preview] Estado del input:', {
+              type: inputElement.type,
+              readonly: inputElement.hasAttribute('readonly'),
+              value: inputElement.value
+            });
+            
+            // Marcar que estamos abriendo el calendario
+            isOpening = true;
+            isShowingCalendar = true;
+            
+            // Si el calendario ya está visible, ocultarlo
+            if (calendarContainer && calendarContainer.style.display !== 'none') {
+              console.log('📅 [Input Preview] Ocultando calendario...');
+              calendarContainer.style.display = 'none';
+              isOpening = false;
+              isShowingCalendar = false;
+              return;
+            }
+            
+            // Asegurar nuevamente que el input no tenga type="date"
+            if (inputElement.type === 'date' || inputElement.getAttribute('type') === 'date') {
+              console.warn('⚠️ [Input Preview] Input tiene type="date" en showCalendar, corrigiendo...');
+              inputElement.type = 'text';
+              inputElement.setAttribute('readonly', 'readonly');
+            }
+            
+            // Obtener fecha inicial del input si existe
+            const currentValue = inputElement.value;
+            if (currentValue) {
+              const parsedDate = parseDate(currentValue);
+              if (parsedDate) {
+                calendarState.selectedDate = parsedDate;
+                calendarState.currentDate = new Date(parsedDate);
+              }
+            }
+            
+            // Renderizar el calendario inmediatamente
+            calendarContainer.innerHTML = '';
+            const calendar = renderCalendar();
+            if (calendar) {
+              calendarContainer.appendChild(calendar);
+              // Mostrar inmediatamente con display block y asegurar z-index
+              calendarContainer.style.display = 'block';
+              calendarContainer.style.zIndex = '99999';
+              console.log('✅ [Input Preview] Calendario UBITS mostrado correctamente');
+              console.log('📅 [Input Preview] Estado del contenedor:', {
+                display: calendarContainer.style.display,
+                zIndex: calendarContainer.style.zIndex,
+                hasCalendar: calendarContainer.querySelector('.ubits-calendar') !== null
+              });
+              
+              // Resetear flag después de un pequeño delay
+              setTimeout(() => {
+                isShowingCalendar = false;
+              }, 100);
+              
+              // Configurar el listener de click fuera después de mostrar el calendario
+              // Usar un delay más largo para asegurar que el click que abrió el calendario no lo cierre
+              setTimeout(() => {
+                setupClickOutside();
+              }, 500);
+            } else {
+              console.error('❌ [Input Preview] Error al renderizar el calendario');
+              isShowingCalendar = false;
+              isOpening = false;
+            }
+          };
+          
+          // Event listeners para mostrar/ocultar el calendario
+          // Usar capture phase para interceptar antes de que el navegador muestre el calendario nativo
+          let lastClickTime = 0;
+          
+          inputElement.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            
+            // Prevenir doble click (debounce)
+            const now = Date.now();
+            if (now - lastClickTime < 300) {
+              console.log('📅 [Input Preview] Click ignorado (muy rápido después del anterior)');
+              return false;
+            }
+            lastClickTime = now;
+            
+            console.log('📅 [Input Preview] Click interceptado, mostrando calendario UBITS');
+            // Llamar directamente sin setTimeout para evitar que otros listeners interfieran
+            showCalendar();
+            return false;
+          }, true);
+          
+          inputElement.addEventListener('focus', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            console.log('📅 [Input Preview] Focus interceptado, mostrando calendario UBITS');
+            // Solo mostrar si no hay un click reciente (para evitar doble apertura)
+            const now = Date.now();
+            if (now - lastClickTime > 100) {
+              showCalendar();
+            }
+            return false;
+          }, true);
+          
+          // Prevenir cualquier otro evento que pueda mostrar el calendario nativo
+          inputElement.addEventListener('mousedown', (e) => {
+            if (e.target === inputElement) {
+              e.preventDefault();
+              e.stopPropagation();
+              e.stopImmediatePropagation();
+              // No llamar showCalendar aquí para evitar doble apertura con click
+              return false;
+            }
+          }, true);
+          
+          // También escuchar clicks en el icono del calendario
+          const calendarIcon = wrapper.querySelector('.ubits-input-icon-right, i[class*="fa-calendar"]');
+          if (calendarIcon) {
+            calendarIcon.addEventListener('click', (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              showCalendar();
+            });
+          }
+          
+          // Cerrar calendario al hacer clic fuera (usar setTimeout para evitar que se cierre inmediatamente)
+          let clickOutsideHandler = null;
+          let isOpening = false;
+          let openingTimeout = null;
+          let clickOutsideSetupTimeout = null;
+          
+          const setupClickOutside = () => {
+            // Remover handler anterior si existe
+            if (clickOutsideHandler) {
+              document.removeEventListener('click', clickOutsideHandler);
+            }
+            
+            // Limpiar timeout anterior si existe
+            if (clickOutsideSetupTimeout) {
+              clearTimeout(clickOutsideSetupTimeout);
+            }
+            
+            // Agregar nuevo handler después de un delay largo para evitar que se cierre inmediatamente
+            clickOutsideSetupTimeout = setTimeout(() => {
+              isOpening = false;
+              clickOutsideHandler = (e) => {
+                // No cerrar si estamos abriendo el calendario o mostrándolo
+                if (isOpening || isShowingCalendar) {
+                  console.log('📅 [Input Preview] Ignorando click fuera (calendario abriéndose/mostrándose)');
+                  return;
+                }
+                
+                // No cerrar si el click es en el input, icono o contenedor del calendario
+                const target = e.target;
+                const isInWrapper = wrapper.contains(target);
+                const isInCalendar = calendarContainer && calendarContainer.contains(target);
+                const isInput = target === inputElement;
+                const isIcon = target === calendarIcon || (calendarIcon && calendarIcon.contains(target));
+                
+                // Verificar también si el click es en los dropdowns de mes/año
+                const monthDropdown = calendarContainer?.querySelector('.ubits-calendar__month-dropdown');
+                const yearDropdown = calendarContainer?.querySelector('.ubits-calendar__year-dropdown');
+                const isInMonthDropdown = monthDropdown && monthDropdown.contains(target);
+                const isInYearDropdown = yearDropdown && yearDropdown.contains(target);
+                
+                if (calendarContainer && calendarContainer.style.display !== 'none') {
+                  if (!isInWrapper && !isInCalendar && !isInput && !isIcon && !isInMonthDropdown && !isInYearDropdown) {
+                    console.log('📅 [Input Preview] Click fuera detectado, cerrando calendario');
+                    calendarContainer.style.display = 'none';
+                    // Cerrar también los dropdowns si están abiertos
+                    if (monthDropdown) monthDropdown.style.display = 'none';
+                    if (yearDropdown) yearDropdown.style.display = 'none';
+                    // Remover el handler para evitar múltiples cierres
+                    if (clickOutsideHandler) {
+                      document.removeEventListener('click', clickOutsideHandler);
+                      clickOutsideHandler = null;
+                    }
+                  } else {
+                    console.log('📅 [Input Preview] Click dentro del calendario, no cerrando');
+                  }
+                }
+              };
+              // NO usar capture phase para evitar interferir con la apertura
+              document.addEventListener('click', clickOutsideHandler);
+              console.log('📅 [Input Preview] Listener de click fuera configurado');
+            }, 500);
+          };
+          
+          // Cerrar calendario al presionar ESC
+          document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && calendarContainer) {
+              calendarContainer.style.display = 'none';
+            }
+          });
+          
+          console.log('✅ [Input Preview] Calendar picker inicializado');
         }
         
         // Select dropdown - usando componente List
@@ -20438,6 +21614,143 @@ Reglas Importantes:
         // Actualizar preview
         window.updateCardPreview(componentId);
       };
+      
+      // ========================================
+      // CALENDAR PREVIEW FUNCTIONS (usando CalendarProvider)
+      // ========================================
+      
+      // Sobrescribir updateCalendarPreview para usar CalendarProvider
+      if (typeof window.updateCalendarPreview === 'undefined') {
+        window.updateCalendarPreview = async function(componentId) {
+          console.log('📅 [updateCalendarPreview] Iniciando actualización del preview del calendario...');
+          const state = initCalendarPreviewState(componentId);
+          const preview = document.getElementById(`calendar-preview-container-${componentId}`);
+          
+          if (!preview) {
+            console.error('❌ [updateCalendarPreview] Preview container no encontrado:', `calendar-preview-container-${componentId}`);
+            return;
+          }
+          
+          console.log('📅 [updateCalendarPreview] Estado del calendario:', state);
+          
+          // Cargar CSS si no está cargado
+          const existingCalendarLink = document.querySelector('link[href*="calendar.css"]');
+          if (!existingCalendarLink) {
+            console.log('📅 [updateCalendarPreview] Cargando CSS del calendario...');
+            const link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = '../../addons/calendar/src/styles/calendar.css';
+            document.head.appendChild(link);
+          }
+          
+          // Cargar CSS de scroll si no está cargado (para el scrollbar de las listas)
+          const existingScrollLink = document.querySelector('link[href*="scroll.css"]');
+          if (!existingScrollLink) {
+            console.log('📅 [updateCalendarPreview] Cargando CSS del scrollbar...');
+            const link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = '../../addons/scroll/src/styles/scroll.css';
+            document.head.appendChild(link);
+          }
+          
+          // Cargar CSS de button, input y list si no están cargados
+          const existingButtonLink = document.querySelector('link[href*="button.css"]');
+          if (!existingButtonLink) {
+            const link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = '../../addons/button/src/styles/button.css';
+            document.head.appendChild(link);
+          }
+          
+          const existingInputLink = document.querySelector('link[href*="input.css"]');
+          if (!existingInputLink) {
+            const link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = '../../addons/input/src/styles/input.css';
+            document.head.appendChild(link);
+          }
+          
+          const existingListLink = document.querySelector('link[href*="list.css"]');
+          if (!existingListLink) {
+            const link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = '../../addons/list/src/styles/list.css';
+            document.head.appendChild(link);
+          }
+          
+          // Limpiar preview anterior
+          preview.innerHTML = '';
+          
+          // Importar y crear el calendario dinámicamente
+          try {
+            console.log('📅 [updateCalendarPreview] Importando CalendarProvider...');
+            // Intentar importar desde dist primero, luego desde src
+            let calendarModule;
+            try {
+              calendarModule = await import('../../addons/calendar/dist/index.js');
+            } catch (e) {
+              console.log('📅 [updateCalendarPreview] Intentando importar desde src...');
+              calendarModule = await import('../../addons/calendar/src/CalendarProvider.js');
+            }
+            const { createCalendar } = calendarModule;
+            console.log('✅ [updateCalendarPreview] CalendarProvider importado correctamente');
+            
+            // Crear instancia del calendario
+            console.log('📅 [updateCalendarPreview] Creando instancia del calendario con modo:', state.mode);
+            const calendarInstance = createCalendar({
+              mode: state.mode,
+              selectedDate: state.selectedDate,
+              endDate: state.endDate,
+              onDateSelect: (date) => {
+                console.log('📅 [updateCalendarPreview] Fecha seleccionada:', date);
+                state.selectedDate = date;
+              },
+              onRangeSelect: (startDate, endDate) => {
+                console.log('📅 [updateCalendarPreview] Rango seleccionado:', startDate, 'a', endDate);
+                state.selectedDate = startDate;
+                state.endDate = endDate;
+              }
+            });
+            
+            console.log('✅ [updateCalendarPreview] Calendario creado:', calendarInstance);
+            
+            // Agregar el calendario al preview
+            preview.appendChild(calendarInstance.element);
+            
+            console.log('✅ [updateCalendarPreview] Preview del calendario actualizado correctamente');
+          } catch (error) {
+            console.error('❌ [updateCalendarPreview] Error al crear el calendario:', error);
+            preview.innerHTML = `
+              <div style="padding: 24px; background: var(--ubits-bg-1); border: 1px solid var(--ubits-border-1); border-radius: 8px; color: var(--ubits-fg-1-high);">
+                <p style="margin: 0 0 8px 0; font-weight: var(--weight-semibold);">Error al cargar el calendario</p>
+                <p style="margin: 0; font-size: var(--font-body-sm-size); color: var(--ubits-fg-1-medium);">${error.message}</p>
+              </div>
+            `;
+          }
+        };
+      }
+      
+      // Función para establecer controles del Calendar (sobrescribir si no existe)
+      if (typeof window.setCalendarControl === 'undefined') {
+        window.setCalendarControl = function(option, value, componentId) {
+          console.log('📅 [setCalendarControl] Actualizando control:', option, '=', value);
+          const state = initCalendarPreviewState(componentId);
+          
+          if (option === 'mode') {
+            state.mode = value;
+            state.endDate = null; // Reset endDate cuando cambia el modo
+          } else if (option === 'selectedDate') {
+            state.selectedDate = value ? new Date(value) : null;
+          } else if (option === 'endDate') {
+            state.endDate = value ? new Date(value) : null;
+          }
+          
+          // Actualizar el preview
+          window.updateCalendarPreview(componentId);
+          
+          console.log('✅ [setCalendarControl] Control actualizado:', option, value);
+        };
+      }
     </script>
   </body>
 </html>

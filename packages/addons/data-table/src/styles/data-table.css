@@ -141,6 +141,7 @@
 }
 
 /* Drag handle para filas */
+/* Usa el mismo color que el botón terciario para mantener consistencia */
 .ubits-data-table__row-drag-handle {
     display: flex;
     align-items: center;
@@ -148,7 +149,7 @@
     width: 28px;
     height: 28px;
     cursor: grab;
-    color: var(--ubits-fg-1-medium);
+    color: var(--ubits-btn-tertiary-fg);
     padding: 8px;
     border-radius: var(--ubits-border-radius-sm, 4px);
     transition: background-color 0.2s ease, color 0.2s ease;
@@ -167,11 +168,13 @@
 
 .ubits-data-table__row-drag-handle:active {
     cursor: grabbing;
+    background-color: var(--ubits-btn-tertiary-bg-pressed);
+    color: var(--ubits-btn-tertiary-fg);
 }
 
 .ubits-data-table__row-drag-handle:hover {
-    background-color: var(--ubits-bg-2);
-    color: var(--ubits-fg-1-high);
+    background-color: var(--ubits-btn-tertiary-bg-hover);
+    color: var(--ubits-btn-tertiary-fg);
 }
 
 .ubits-data-table__row-drag-handle wa-icon,
@@ -180,12 +183,13 @@
 }
 
 /* Botón de expandir */
+/* Usa el mismo color que el botón terciario para mantener consistencia */
 .ubits-data-table__row-expand {
     background: none !important;
     border: none !important;
     padding: 8px !important;
     cursor: pointer !important;
-    color: var(--ubits-fg-1-medium) !important;
+    color: var(--ubits-btn-tertiary-fg) !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
@@ -210,12 +214,13 @@
 }
 
 .ubits-data-table__row-expand:hover {
-    background-color: var(--ubits-bg-2) !important;
-    color: var(--ubits-fg-1-high) !important;
+    background-color: var(--ubits-btn-tertiary-bg-hover) !important;
+    color: var(--ubits-btn-tertiary-fg) !important;
 }
 
 .ubits-data-table__row-expand:active {
-    background-color: var(--ubits-bg-3) !important;
+    background-color: var(--ubits-btn-tertiary-bg-pressed) !important;
+    color: var(--ubits-btn-tertiary-fg) !important;
 }
 
 /* Headers de columnas de datos */
@@ -274,153 +279,10 @@
     box-sizing: border-box !important;
 }
 
-/* Botón de ordenamiento - EXACTAMENTE igual que botón terciario xs icon-only de UBITS */
-.ubits-data-table__column-sort-button.ubits-button--xs.ubits-button--icon-only {
-    /* Tamaño exacto del botón xs icon-only de UBITS */
-    padding: 8px !important;
-    width: 28px !important;
-    min-width: 28px !important;
-    height: 28px !important;
-    min-height: 28px !important;
-    max-width: 28px !important;
-    max-height: 28px !important;
-    margin: 0 !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    flex-shrink: 0 !important;
-    box-sizing: border-box !important;
-}
-
-/* Color del botón terciario - igual que UBITS */
-.ubits-data-table__column-sort-button.ubits-button--tertiary {
-    background: transparent !important;
-    color: var(--ubits-btn-tertiary-fg) !important;
-    border: 1px solid transparent !important;
-}
-
-/* Hover del botón terciario - igual que UBITS */
-.ubits-data-table__column-sort-button.ubits-button--tertiary:hover:not(:disabled):not(.ubits-button--loading) {
-    background: var(--ubits-btn-tertiary-bg-hover) !important;
-    color: var(--ubits-btn-tertiary-fg) !important;
-    border: 1px solid transparent !important;
-}
-
-/* Active del botón terciario - igual que UBITS */
-.ubits-data-table__column-sort-button.ubits-button--tertiary:active:not(:disabled):not(.ubits-button--loading) {
-    background: var(--ubits-btn-tertiary-bg-pressed) !important;
-    color: var(--ubits-btn-tertiary-fg) !important;
-    border: 1px solid transparent !important;
-    transform: translateY(1px) !important;
-}
-
-/* Icono - tamaño exacto del botón xs de UBITS */
-.ubits-data-table__column-sort-button.ubits-button--xs i {
-    font-size: 12px !important;
-    line-height: 1 !important;
-    color: inherit !important;
-}
-
-/* Estado active del botón terciario - igual que UBITS */
-.ubits-data-table__column-sort-button.ubits-button--tertiary.ubits-button--active {
-    background: var(--ubits-button-active-bg) !important;
-    color: var(--ubits-accent-brand-static-inverted) !important;
-    border: 1px solid transparent !important;
-}
-
-.ubits-data-table__column-sort-button.ubits-button--tertiary.ubits-button--active:hover:not(:disabled):not(.ubits-button--loading) {
-    background: var(--ubits-button-active-bg) !important;
-    color: var(--ubits-accent-brand-static-inverted) !important;
-    border: 1px solid transparent !important;
-}
-
-.ubits-data-table__column-sort-button.ubits-button--tertiary.ubits-button--active i {
-    color: var(--ubits-accent-brand-static-inverted) !important;
-}
-
-.ubits-data-table__column-sort-button.ubits-button--tertiary:hover {
-    color: var(--ubits-fg-1-high) !important;
-    background: var(--ubits-bg-2) !important;
-}
-
-.ubits-data-table__column-sort-button.ubits-button--tertiary:hover i {
-    color: var(--ubits-fg-1-high) !important;
-}
-
-.ubits-data-table__column-sort-button.ubits-button--tertiary.ubits-button--active {
-    color: var(--ubits-accent-brand-static-inverted) !important;
-    background: var(--ubits-button-active-bg) !important;
-}
-
-.ubits-data-table__column-sort-button.ubits-button--tertiary.ubits-button--active i {
-    color: var(--ubits-accent-brand-static-inverted) !important;
-}
-
-/* Iconos wa-icon en botón de ordenamiento - EXACTAMENTE igual que drag handle */
-.ubits-data-table__column-sort wa-icon,
-.ubits-data-table__column-sort i {
-    font-size: 14px;
-    display: inline-block;
-    width: 12px;
-    height: 12px;
-    color: inherit;
-    margin: 0;
-    padding: 0;
-    line-height: 1;
-    vertical-align: middle;
-}
-
-.ubits-data-table__column-sort:active wa-icon,
-.ubits-data-table__column-sort:active i {
-    color: inherit;
-}
-
-.ubits-data-table__column-sort:hover wa-icon,
-.ubits-data-table__column-sort:hover i {
-    color: inherit;
-}
-
-.ubits-data-table__column-sort--active wa-icon,
-.ubits-data-table__column-sort--active i {
-    color: var(--ubits-accent-brand-static-inverted);
-}
-
-/* Fallback icons - mostrar solo cuando wa-icon no está disponible - EXACTAMENTE igual que drag handle */
-.ubits-data-table__sort-icon-fallback {
-    display: none;
-    font-size: 14px;
-    width: 12px;
-    height: 12px;
-}
-
-.ubits-data-table__column-sort i.ubits-data-table__sort-icon-fallback {
-    display: none;
-    color: var(--ubits-fg-1-medium);
-    margin: 0;
-    padding: 0;
-    vertical-align: middle;
-}
-
-/* Mostrar fallback cuando wa-icon no está definido - EXACTAMENTE igual que drag handle */
-.ubits-data-table__column-sort:not(:has(wa-icon:defined)) i.ubits-data-table__sort-icon-fallback {
-    display: inline-block !important;
-    font-size: 14px;
-    width: 12px;
-    height: 12px;
-    line-height: 1;
-    text-align: center;
-    color: var(--ubits-fg-1-medium) !important;
-}
-
-.ubits-data-table__column-sort:hover:not(:has(wa-icon:defined)) i.ubits-data-table__sort-icon-fallback {
-    color: var(--ubits-fg-1-high) !important;
-}
-
-.ubits-data-table__column-sort--active:not(:has(wa-icon:defined)) i.ubits-data-table__sort-icon-fallback {
-    color: var(--ubits-accent-brand-static-inverted) !important;
-}
+/* Estilos antiguos del botón de ordenar eliminados - ahora usa la misma estructura que drag handle */
 
 /* Drag handle para columnas - igual tamaño que botón xs icon-only (28px) */
+/* Usa el mismo color que el botón terciario para mantener consistencia */
 .ubits-data-table__column-drag-handle {
     display: flex;
     align-items: center;
@@ -430,7 +292,7 @@
     min-width: 28px;
     min-height: 28px;
     cursor: grab;
-    color: var(--ubits-fg-1-high);
+    color: var(--ubits-btn-tertiary-fg);
     padding: 8px;
     margin-right: 0;
     margin-left: 0;
@@ -439,6 +301,15 @@
     user-select: none;
     flex-shrink: 0;
     box-sizing: border-box;
+}
+
+/* Botón de ordenar - usa los mismos estilos del drag handle, solo cambia el cursor */
+/* Al tener ambas clases (column-drag-handle y column-sort), hereda todos los estilos del drag handle */
+.ubits-data-table__column-drag-handle.ubits-data-table__column-sort {
+    cursor: pointer !important; /* Cambiar cursor a pointer en lugar de grab */
+    display: flex !important; /* Asegurar que sea visible */
+    visibility: visible !important;
+    opacity: 1 !important;
 }
 
 .ubits-data-table__column-drag-handle wa-icon,
@@ -456,12 +327,30 @@
 
 .ubits-data-table__column-drag-handle:active {
     cursor: grabbing;
-    background-color: var(--ubits-bg-3);
+    background-color: var(--ubits-btn-tertiary-bg-pressed);
+    color: var(--ubits-btn-tertiary-fg);
 }
 
 .ubits-data-table__column-drag-handle:hover {
-    background-color: var(--ubits-bg-2);
-    color: var(--ubits-fg-1-high);
+    background-color: var(--ubits-btn-tertiary-bg-hover);
+    color: var(--ubits-btn-tertiary-fg);
+}
+
+/* Estado activo del botón de ordenar (cuando está ordenado) */
+/* Solo cambia el fondo, el color del icono se mantiene igual */
+.ubits-data-table__column-drag-handle.ubits-data-table__column-sort--active {
+    background-color: var(--ubits-button-active-bg);
+    color: var(--ubits-btn-tertiary-fg); /* Mantener el mismo color del icono */
+}
+
+.ubits-data-table__column-drag-handle.ubits-data-table__column-sort--active:hover {
+    background-color: var(--ubits-button-active-bg);
+    color: var(--ubits-btn-tertiary-fg); /* Mantener el mismo color del icono */
+}
+
+.ubits-data-table__column-drag-handle.ubits-data-table__column-sort--active wa-icon,
+.ubits-data-table__column-drag-handle.ubits-data-table__column-sort--active i {
+    color: inherit; /* Heredar el color del contenedor, que es var(--ubits-btn-tertiary-fg) */
 }
 
 /* Estados de drag */
@@ -484,6 +373,7 @@
 }
 
 /* Fallback para iconos */
+/* El botón de ordenar ahora tiene ambas clases (column-drag-handle y column-sort), así que hereda los estilos del drag handle */
 .ubits-data-table__column-drag-handle wa-icon,
 .ubits-data-table__row-drag-handle wa-icon {
     display: inline-block;
@@ -855,7 +745,7 @@
     z-index: 1000;
 }
 
-/* Status tags en la data table - todos del mismo tamaño */
+/* Status tags en la data table - todos del mismo tamaño XS */
 .ubits-data-table__cell .ubits-status-tag {
     min-width: 160px;
     width: 160px;
@@ -863,6 +753,10 @@
     justify-content: center;
     text-align: center;
     box-sizing: border-box;
+    /* Forzar tamaño XS usando tokens UBITS */
+    padding: var(--ubits-spacing-xs, 4px) var(--ubits-spacing-sm, 8px) !important;
+    font-size: var(--font-body-xs-size, 11px) !important;
+    line-height: var(--font-body-xs-line, 16px) !important;
 }
 
 .ubits-data-table__status-editable .ubits-status-tag {
@@ -872,6 +766,21 @@
     justify-content: center;
     text-align: center;
     box-sizing: border-box;
+    /* Forzar tamaño XS usando tokens UBITS */
+    padding: var(--ubits-spacing-xs, 4px) var(--ubits-spacing-sm, 8px) !important;
+    font-size: var(--font-body-xs-size, 11px) !important;
+    line-height: var(--font-body-xs-line, 16px) !important;
+}
+
+/* Asegurar que los iconos también usen el tamaño XS */
+.ubits-data-table__cell .ubits-status-tag--xs .ubits-status-tag-left-icon,
+.ubits-data-table__cell .ubits-status-tag--xs .ubits-status-tag-right-icon {
+    font-size: var(--font-body-xs-size, 11px) !important;
+}
+
+.ubits-data-table__status-editable .ubits-status-tag--xs .ubits-status-tag-left-icon,
+.ubits-data-table__status-editable .ubits-status-tag--xs .ubits-status-tag-right-icon {
+    font-size: var(--font-body-xs-size, 11px) !important;
 }
 
 /* Scrollbar en dropdown de status tags */
@@ -973,6 +882,14 @@
     display: inline-block;
     width: 100%;
     min-height: 20px;
+}
+
+.ubits-data-table__calendar-container {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 99999;
+    margin-top: 4px;
 }
 
 .ubits-data-table__date-input {
