@@ -184,13 +184,6 @@ export const Default: Story = {
       listInner.style.msOverflowStyle = 'none';
       listInner.style.scrollbarWidth = 'none';
       listInner.style.paddingRight = '8px';
-      listInner.style.height = args.maxHeight || '400px'; // Forzar altura fija
-      
-      // Agregar estilo para ocultar scrollbar nativo
-      const style = document.createElement('style');
-      style.id = `scrollbar-hide-${listInner.id}`;
-      style.textContent = `#${listInner.id}::-webkit-scrollbar { display: none; }`;
-      document.head.appendChild(style);
       
       // Contenedor para scrollbar UBITS
       const scrollbarContainer = document.createElement('div');
