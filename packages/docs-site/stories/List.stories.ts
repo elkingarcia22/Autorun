@@ -120,7 +120,7 @@ export const Default: Story = {
     size: 'md',
     maxHeight: '400px',
     multiple: false,
-    showScrollbar: true,
+    showScrollbar: false,
     item1State: 'default',
     item2State: 'default',
     item3State: 'default',
@@ -184,6 +184,7 @@ export const Default: Story = {
       listInner.style.msOverflowStyle = 'none';
       listInner.style.scrollbarWidth = 'none';
       listInner.style.paddingRight = '8px';
+      listInner.style.height = args.maxHeight || '400px'; // Forzar altura fija
       
       // Agregar estilo para ocultar scrollbar nativo
       const style = document.createElement('style');
@@ -198,7 +199,7 @@ export const Default: Story = {
       scrollbarContainer.style.top = '0';
       scrollbarContainer.style.right = '0';
       scrollbarContainer.style.width = '8px';
-      scrollbarContainer.style.height = '100%';
+      scrollbarContainer.style.height = args.maxHeight || '400px'; // Misma altura que listInner
       scrollbarContainer.style.pointerEvents = 'none';
       
       listWrapper.appendChild(listInner);
@@ -213,20 +214,22 @@ export const Default: Story = {
         args.item4State || 'default'
       );
       
-      // Crear lista dentro del contenedor interno
-      try {
-        const listOptions: ListOptions = {
-          containerId: listInner.id,
-          items,
-          size: args.size || 'md',
-          maxHeight: 'none', // El scroll lo maneja el contenedor padre
-          multiple: args.multiple || false,
-          onSelectionChange: (selectedItem, index) => {
-            console.log('List item selected:', { selectedItem, index });
-          },
-        };
-        
-        createList(listOptions);
+      // Esperar a que el elemento esté en el DOM antes de crear la lista
+      setTimeout(() => {
+        // Crear lista dentro del contenedor interno
+        try {
+          const listOptions: ListOptions = {
+            containerId: listInner.id,
+            items,
+            size: args.size || 'md',
+            maxHeight: 'none', // El scroll lo maneja el contenedor padre
+            multiple: args.multiple || false,
+            onSelectionChange: (selectedItem, index) => {
+              console.log('List item selected:', { selectedItem, index });
+            },
+          };
+          
+          createList(listOptions);
         
         // Crear scrollbar UBITS después de que la lista esté renderizada
         setTimeout(async () => {
@@ -247,11 +250,22 @@ export const Default: Story = {
           }
           console.log('📋 [List Storybook] listElement.id:', listElement.id);
           
-          console.log('📋 [List Storybook] scrollHeight:', listElement.scrollHeight);
-          console.log('📋 [List Storybook] clientHeight:', listElement.clientHeight);
-          console.log('📋 [List Storybook] Necesita scroll?', listElement.scrollHeight > listElement.clientHeight);
+          // Asegurar que listInner tenga altura fija
+          const maxHeightValue = parseInt(args.maxHeight || '400px');
+          listInner.style.height = `${maxHeightValue}px`;
+          listInner.style.maxHeight = `${maxHeightValue}px`;
           
-          if (listElement.scrollHeight > listElement.clientHeight) {
+          // Esperar un frame para que el layout se actualice
+          await new Promise(resolve => requestAnimationFrame(resolve));
+          
+          console.log('📋 [List Storybook] listInner height:', listInner.style.height);
+          console.log('📋 [List Storybook] listElement scrollHeight:', listElement.scrollHeight);
+          console.log('📋 [List Storybook] listElement clientHeight:', listElement.clientHeight);
+          console.log('📋 [List Storybook] listInner clientHeight:', listInner.clientHeight);
+          console.log('📋 [List Storybook] Necesita scroll?', listElement.scrollHeight > listInner.clientHeight);
+          
+          // Usar listInner.clientHeight en lugar de listElement.clientHeight
+          if (listElement.scrollHeight > listInner.clientHeight) {
             try {
               console.log('📋 [List Storybook] ✅ Scroll necesario, creando scrollbar UBITS...');
               
@@ -269,9 +283,10 @@ export const Default: Story = {
               
               if (scrollbarInstance) {
                 scrollbarContainer.style.pointerEvents = 'auto';
-                // Ajustar altura del scrollbar container
-                scrollbarContainer.style.height = `${listElement.clientHeight}px`;
-                console.log('📋 [List Storybook] Altura del scrollbar container:', listElement.clientHeight);
+                // Ajustar altura del scrollbar container usando listInner
+                const containerHeight = listInner.clientHeight || maxHeightValue;
+                scrollbarContainer.style.height = `${containerHeight}px`;
+                console.log('📋 [List Storybook] Altura del scrollbar container:', containerHeight);
                 
                 // Verificar que el scrollbar se creó en el DOM
                 setTimeout(() => {
@@ -333,7 +348,8 @@ export const Default: Story = {
             });
           }
           console.log('📋 [List Storybook] ========== FIN CREACIÓN SCROLLBAR ==========');
-        }, 200);
+        }, 400);
+        }, 50); // Esperar 50ms antes de crear la lista para que el DOM esté listo
       } catch (error) {
         console.warn('Using renderList fallback:', error);
         const listHTML = renderList({
@@ -343,6 +359,48 @@ export const Default: Story = {
           maxHeight: 'none',
         });
         listInner.innerHTML = listHTML;
+        
+        // Crear scrollbar después del fallback también
+        setTimeout(async () => {
+          const listElement = listInner.querySelector('.ubits-list') as HTMLElement;
+          const maxHeightValue = parseInt(args.maxHeight || '400px');
+          listInner.style.height = `${maxHeightValue}px`;
+          listInner.style.maxHeight = `${maxHeightValue}px`;
+          
+          await new Promise(resolve => requestAnimationFrame(resolve));
+          
+          if (listElement && listElement.scrollHeight > listInner.clientHeight) {
+            try {
+              if (!listElement.id) {
+                listElement.id = `${listContainer.id}-list-${Date.now()}`;
+              }
+              const { createScrollbar } = await import('../../addons/scroll/src/ScrollProvider');
+              const scrollbarInstance = createScrollbar({
+                orientation: 'vertical',
+                targetId: listElement.id,
+                containerId: scrollbarContainer.id
+              });
+              if (scrollbarInstance) {
+                scrollbarContainer.style.pointerEvents = 'auto';
+                scrollbarContainer.style.height = `${listInner.clientHeight || maxHeightValue}px`;
+                setTimeout(() => {
+                  const scrollbarEl = scrollbarContainer.querySelector('.ubits-scrollbar');
+                  const barEl = scrollbarContainer.querySelector('.ubits-scrollbar__bar');
+                  if (scrollbarEl && barEl) {
+                    (scrollbarEl as HTMLElement).style.cssText += 'display: flex !important; opacity: 1 !important; visibility: visible !important; width: 8px !important; height: 100% !important;';
+                    (barEl as HTMLElement).style.cssText += 'opacity: 0.6 !important; pointer-events: auto !important; visibility: visible !important;';
+                    scrollbarContainer.style.cssText += 'opacity: 1 !important; visibility: visible !important;';
+                    if (scrollbarInstance && typeof scrollbarInstance.update === 'function') {
+                      scrollbarInstance.update();
+                    }
+                  }
+                }, 100);
+              }
+            } catch (error) {
+              console.warn('Could not create UBITS scrollbar in fallback:', error);
+            }
+          }
+        }, 200);
       }
     } else {
       // Sin scrollbar UBITS, solo scroll nativo (oculto)
