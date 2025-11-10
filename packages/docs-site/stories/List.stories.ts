@@ -361,45 +361,45 @@ export const Default: Story = {
           
           // Crear scrollbar después del fallback también
           setTimeout(async () => {
-          const listElement = listInner.querySelector('.ubits-list') as HTMLElement;
-          const maxHeightValue = parseInt(args.maxHeight || '400px');
-          listInner.style.height = `${maxHeightValue}px`;
-          listInner.style.maxHeight = `${maxHeightValue}px`;
-          
-          await new Promise(resolve => requestAnimationFrame(resolve));
-          
-          if (listElement && listElement.scrollHeight > listInner.clientHeight) {
-            try {
-              if (!listElement.id) {
-                listElement.id = `${listContainer.id}-list-${Date.now()}`;
-              }
-              const { createScrollbar } = await import('../../addons/scroll/src/ScrollProvider');
-              const scrollbarInstance = createScrollbar({
-                orientation: 'vertical',
-                targetId: listElement.id,
-                containerId: scrollbarContainer.id
-              });
-              if (scrollbarInstance) {
-                scrollbarContainer.style.pointerEvents = 'auto';
-                scrollbarContainer.style.height = `${listInner.clientHeight || maxHeightValue}px`;
-                setTimeout(() => {
-                  const scrollbarEl = scrollbarContainer.querySelector('.ubits-scrollbar');
-                  const barEl = scrollbarContainer.querySelector('.ubits-scrollbar__bar');
-                  if (scrollbarEl && barEl) {
-                    (scrollbarEl as HTMLElement).style.cssText += 'display: flex !important; opacity: 1 !important; visibility: visible !important; width: 8px !important; height: 100% !important;';
-                    (barEl as HTMLElement).style.cssText += 'opacity: 0.6 !important; pointer-events: auto !important; visibility: visible !important;';
-                    scrollbarContainer.style.cssText += 'opacity: 1 !important; visibility: visible !important;';
-                    if (scrollbarInstance && typeof scrollbarInstance.update === 'function') {
-                      scrollbarInstance.update();
+            const listElement = listInner.querySelector('.ubits-list') as HTMLElement;
+            const maxHeightValue = parseInt(args.maxHeight || '400px');
+            listInner.style.height = `${maxHeightValue}px`;
+            listInner.style.maxHeight = `${maxHeightValue}px`;
+            
+            await new Promise(resolve => requestAnimationFrame(resolve));
+            
+            if (listElement && listElement.scrollHeight > listInner.clientHeight) {
+              try {
+                if (!listElement.id) {
+                  listElement.id = `${listContainer.id}-list-${Date.now()}`;
+                }
+                const { createScrollbar } = await import('../../addons/scroll/src/ScrollProvider');
+                const scrollbarInstance = createScrollbar({
+                  orientation: 'vertical',
+                  targetId: listElement.id,
+                  containerId: scrollbarContainer.id
+                });
+                if (scrollbarInstance) {
+                  scrollbarContainer.style.pointerEvents = 'auto';
+                  scrollbarContainer.style.height = `${listInner.clientHeight || maxHeightValue}px`;
+                  setTimeout(() => {
+                    const scrollbarEl = scrollbarContainer.querySelector('.ubits-scrollbar');
+                    const barEl = scrollbarContainer.querySelector('.ubits-scrollbar__bar');
+                    if (scrollbarEl && barEl) {
+                      (scrollbarEl as HTMLElement).style.cssText += 'display: flex !important; opacity: 1 !important; visibility: visible !important; width: 8px !important; height: 100% !important;';
+                      (barEl as HTMLElement).style.cssText += 'opacity: 0.6 !important; pointer-events: auto !important; visibility: visible !important;';
+                      scrollbarContainer.style.cssText += 'opacity: 1 !important; visibility: visible !important;';
+                      if (scrollbarInstance && typeof scrollbarInstance.update === 'function') {
+                        scrollbarInstance.update();
+                      }
                     }
-                  }
-                }, 100);
+                  }, 100);
+                }
+              } catch (error) {
+                console.warn('Could not create UBITS scrollbar in fallback:', error);
               }
-            } catch (error) {
-              console.warn('Could not create UBITS scrollbar in fallback:', error);
             }
-          }
-        }, 200);
+          }, 200);
       }
       }, 50); // Esperar 50ms antes de crear la lista para que el DOM esté listo
     } else {
