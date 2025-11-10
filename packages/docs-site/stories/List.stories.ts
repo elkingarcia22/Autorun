@@ -335,6 +335,12 @@ export const Default: Story = {
           listInner.style.scrollbarWidth = 'none';
           listInner.style.paddingRight = '8px';
           
+          // Agregar estilo para ocultar scrollbar nativo
+          const hideStyle = document.createElement('style');
+          hideStyle.id = `scrollbar-hide-${listInner.id}`;
+          hideStyle.textContent = `#${listInner.id}::-webkit-scrollbar { display: none; }`;
+          document.head.appendChild(hideStyle);
+          
           const scrollbarContainer = document.createElement('div');
           scrollbarContainer.id = `${listContainer.id}-scrollbar`;
           scrollbarContainer.style.position = 'absolute';
