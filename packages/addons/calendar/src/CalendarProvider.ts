@@ -91,26 +91,26 @@ export function renderCalendar(options: CalendarOptions): string {
   // Construir estilos
   const combinedStyle = style ? ` style="${style}"` : '';
 
-  // Header con navegación
+  // Header con navegación - usando componentes UBITS
+  const selectedMonthName = MONTH_NAMES[month];
   const headerHTML = `
     <div class="ubits-calendar__header">
-      <button type="button" class="ubits-calendar__nav-button ubits-calendar__nav-button--prev" aria-label="Mes anterior">
+      <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-calendar__nav-button ubits-calendar__nav-button--prev" aria-label="Mes anterior">
         <i class="far fa-chevron-left"></i>
       </button>
       <div class="ubits-calendar__month-year">
-        <select class="ubits-calendar__month-select">
-          ${MONTH_NAMES.map((name, index) => 
-            `<option value="${index}" ${index === month ? 'selected' : ''}>${name}</option>`
-          ).join('')}
-        </select>
-        <select class="ubits-calendar__year-select">
-          ${Array.from({ length: 100 }, (_, i) => {
-            const yearOption = year - 50 + i;
-            return `<option value="${yearOption}" ${yearOption === year ? 'selected' : ''}>${yearOption}</option>`;
-          }).join('')}
-        </select>
+        <div class="ubits-input-container" style="position: relative; flex: 1; min-width: 120px;">
+          <input type="text" class="ubits-input ubits-input--sm ubits-calendar__month-input" value="${selectedMonthName}" readonly style="cursor: pointer;">
+          <i class="far fa-chevron-down ubits-input-icon-right" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--ubits-fg-1-medium); pointer-events: none; z-index: 1;"></i>
+          <div class="ubits-calendar__month-dropdown" style="display: none; position: absolute; top: 100%; left: 0; right: 0; z-index: 1000; margin-top: 4px;"></div>
+        </div>
+        <div class="ubits-input-container" style="position: relative; flex: 1; min-width: 90px;">
+          <input type="text" class="ubits-input ubits-input--sm ubits-calendar__year-input" value="${year}" readonly style="cursor: pointer;">
+          <i class="far fa-chevron-down ubits-input-icon-right" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--ubits-fg-1-medium); pointer-events: none; z-index: 1;"></i>
+          <div class="ubits-calendar__year-dropdown" style="display: none; position: absolute; top: 100%; left: 0; right: 0; z-index: 1000; margin-top: 4px;"></div>
+        </div>
       </div>
-      <button type="button" class="ubits-calendar__nav-button ubits-calendar__nav-button--next" aria-label="Mes siguiente">
+      <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-calendar__nav-button ubits-calendar__nav-button--next" aria-label="Mes siguiente">
         <i class="far fa-chevron-right"></i>
       </button>
     </div>
@@ -145,13 +145,21 @@ export function renderCalendar(options: CalendarOptions): string {
     }
     
     // Verificar si está en rango (modo range)
-    if (mode === 'range' && selectedDate && endDate) {
-      if (isSameDay(date, selectedDate)) {
-        dayClasses.push('ubits-calendar__day--range-start');
-      } else if (isSameDay(date, endDate)) {
-        dayClasses.push('ubits-calendar__day--range-end');
-      } else if (isDateInRange(date, selectedDate, endDate)) {
-        dayClasses.push('ubits-calendar__day--in-range');
+    if (mode === 'range' && selectedDate) {
+      if (endDate) {
+        // Rango completo
+        if (isSameDay(date, selectedDate)) {
+          dayClasses.push('ubits-calendar__day--range-start');
+        } else if (isSameDay(date, endDate)) {
+          dayClasses.push('ubits-calendar__day--range-end');
+        } else if (isDateInRange(date, selectedDate, endDate)) {
+          dayClasses.push('ubits-calendar__day--in-range');
+        }
+      } else {
+        // Solo fecha inicial seleccionada (mientras se selecciona el rango)
+        if (isSameDay(date, selectedDate)) {
+          dayClasses.push('ubits-calendar__day--range-start');
+        }
       }
     }
     
@@ -243,11 +251,119 @@ export function createCalendar(options: CalendarOptions): {
    * Configura los event listeners
    */
   const setupEventListeners = () => {
+    // Logs detallados para diagnosticar espaciado
+    setTimeout(() => {
+      const header = calendar.querySelector('.ubits-calendar__header') as HTMLElement;
+      const prevBtn = calendar.querySelector('.ubits-calendar__nav-button--prev') as HTMLElement;
+      const nextBtn = calendar.querySelector('.ubits-calendar__nav-button--next') as HTMLElement;
+      const monthYearContainer = calendar.querySelector('.ubits-calendar__month-year') as HTMLElement;
+      
+      if (header && prevBtn && nextBtn && monthYearContainer) {
+        console.log('🔍 [Calendar Header] ========== DIAGNÓSTICO ESPACIADO ==========');
+        
+        // Estilos computados del header
+        const headerStyles = window.getComputedStyle(header);
+        console.log('📐 Header - Estilos computados:');
+        console.log('  display:', headerStyles.display);
+        console.log('  flexDirection:', headerStyles.flexDirection);
+        console.log('  justifyContent:', headerStyles.justifyContent);
+        console.log('  alignItems:', headerStyles.alignItems);
+        console.log('  gap:', headerStyles.gap);
+        console.log('  padding:', headerStyles.padding);
+        console.log('  paddingLeft:', headerStyles.paddingLeft);
+        console.log('  paddingRight:', headerStyles.paddingRight);
+        console.log('  paddingTop:', headerStyles.paddingTop);
+        console.log('  paddingBottom:', headerStyles.paddingBottom);
+        console.log('  width:', headerStyles.width);
+        console.log('  margin:', headerStyles.margin);
+        console.log('  marginLeft:', headerStyles.marginLeft);
+        console.log('  marginRight:', headerStyles.marginRight);
+        
+        // Bounding rects
+        const headerRect = header.getBoundingClientRect();
+        const prevBtnRect = prevBtn.getBoundingClientRect();
+        const nextBtnRect = nextBtn.getBoundingClientRect();
+        const monthYearRect = monthYearContainer.getBoundingClientRect();
+        
+        console.log('📏 Header - Dimensiones:');
+        console.log('  width:', headerRect.width, 'px');
+        console.log('  height:', headerRect.height, 'px');
+        console.log('  left:', headerRect.left, 'px');
+        console.log('  right:', headerRect.right, 'px');
+        
+        console.log('📏 Botón Prev - Dimensiones:');
+        console.log('  width:', prevBtnRect.width, 'px');
+        console.log('  height:', prevBtnRect.height, 'px');
+        console.log('  left:', prevBtnRect.left, 'px');
+        console.log('  right:', prevBtnRect.right, 'px');
+        
+        console.log('📏 Contenedor Mes/Año - Dimensiones:');
+        console.log('  width:', monthYearRect.width, 'px');
+        console.log('  height:', monthYearRect.height, 'px');
+        console.log('  left:', monthYearRect.left, 'px');
+        console.log('  right:', monthYearRect.right, 'px');
+        
+        console.log('📏 Botón Next - Dimensiones:');
+        console.log('  width:', nextBtnRect.width, 'px');
+        console.log('  height:', nextBtnRect.height, 'px');
+        console.log('  left:', nextBtnRect.left, 'px');
+        console.log('  right:', nextBtnRect.right, 'px');
+        
+        // Distancias calculadas
+        const distancePrevToInput = monthYearRect.left - prevBtnRect.right;
+        const distanceInputToNext = nextBtnRect.left - monthYearRect.right;
+        
+        console.log('📏 Distancias:');
+        console.log('  Botón Prev → Inputs:', distancePrevToInput.toFixed(2), 'px');
+        console.log('  Inputs → Botón Next:', distanceInputToNext.toFixed(2), 'px');
+        
+        // Estilos computados de los botones
+        const prevBtnStyles = window.getComputedStyle(prevBtn);
+        const nextBtnStyles = window.getComputedStyle(nextBtn);
+        console.log('🔘 Botón Prev - Estilos:');
+        console.log('  margin:', prevBtnStyles.margin);
+        console.log('  marginLeft:', prevBtnStyles.marginLeft);
+        console.log('  marginRight:', prevBtnStyles.marginRight);
+        console.log('  width:', prevBtnStyles.width);
+        console.log('  flexShrink:', prevBtnStyles.flexShrink);
+        console.log('  flexGrow:', prevBtnStyles.flexGrow);
+        console.log('🔘 Botón Next - Estilos:');
+        console.log('  margin:', nextBtnStyles.margin);
+        console.log('  marginLeft:', nextBtnStyles.marginLeft);
+        console.log('  marginRight:', nextBtnStyles.marginRight);
+        console.log('  width:', nextBtnStyles.width);
+        console.log('  flexShrink:', nextBtnStyles.flexShrink);
+        console.log('  flexGrow:', nextBtnStyles.flexGrow);
+        
+        // Estilos del contenedor mes/año
+        const monthYearStyles = window.getComputedStyle(monthYearContainer);
+        console.log('📦 Contenedor Mes/Año - Estilos:');
+        console.log('  margin:', monthYearStyles.margin);
+        console.log('  marginLeft:', monthYearStyles.marginLeft);
+        console.log('  marginRight:', monthYearStyles.marginRight);
+        console.log('  width:', monthYearStyles.width);
+        console.log('  flex:', monthYearStyles.flex);
+        console.log('  flexShrink:', monthYearStyles.flexShrink);
+        console.log('  flexGrow:', monthYearStyles.flexGrow);
+        
+        console.log('🔍 [Calendar Header] ========== FIN DIAGNÓSTICO ==========');
+      } else {
+        console.error('❌ [Calendar Header] Elementos no encontrados:', {
+          header: !!header,
+          prevBtn: !!prevBtn,
+          nextBtn: !!nextBtn,
+          monthYearContainer: !!monthYearContainer
+        });
+      }
+    }, 100);
+    
     // Navegación anterior/siguiente
     const prevBtn = calendar.querySelector('.ubits-calendar__nav-button--prev');
     const nextBtn = calendar.querySelector('.ubits-calendar__nav-button--next');
-    const monthSelect = calendar.querySelector('.ubits-calendar__month-select') as HTMLSelectElement;
-    const yearSelect = calendar.querySelector('.ubits-calendar__year-select') as HTMLSelectElement;
+    const monthInput = calendar.querySelector('.ubits-calendar__month-input') as HTMLInputElement;
+    const yearInput = calendar.querySelector('.ubits-calendar__year-input') as HTMLInputElement;
+    const monthDropdown = calendar.querySelector('.ubits-calendar__month-dropdown');
+    const yearDropdown = calendar.querySelector('.ubits-calendar__year-dropdown');
 
     prevBtn?.addEventListener('click', () => {
       currentDate.setMonth(currentDate.getMonth() - 1);
@@ -259,14 +375,274 @@ export function createCalendar(options: CalendarOptions): {
       render();
     });
 
-    monthSelect?.addEventListener('change', (e) => {
-      currentDate.setMonth(parseInt((e.target as HTMLSelectElement).value));
-      render();
+    // Toggle dropdown de mes
+    monthInput?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (monthDropdown) {
+        const monthDropdownEl = monthDropdown as HTMLElement;
+        const isVisible = monthDropdownEl.style.display === 'block';
+        if (!isVisible) {
+          // Cerrar dropdown de año si está abierto
+          if (yearDropdown) {
+            (yearDropdown as HTMLElement).style.display = 'none';
+          }
+          // Crear lista de meses
+          const monthItems = MONTH_NAMES.map((name, index) => ({
+            label: name,
+            value: index,
+            selected: index === currentDate.getMonth()
+          }));
+          // Crear contenedor para la lista y el scrollbar
+          const listContainerId = `month-list-${Date.now()}`;
+          const scrollbarContainerId = `month-scrollbar-${Date.now()}`;
+          const listHTML = `
+            <div style="position: relative; width: 100%;">
+              <div id="${listContainerId}" class="ubits-list" role="list" style="max-height: 200px; background: var(--ubits-bg-1); border: 1px solid var(--ubits-border-1); border-radius: 6px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); overflow-y: auto; overflow-x: hidden; -ms-overflow-style: none; scrollbar-width: none;">
+                ${monthItems.map((item, idx) => `
+                  <div class="ubits-list-item ubits-list-item--sm ${item.selected ? 'ubits-list-item--active' : ''}" 
+                       role="listitem" 
+                       data-value="${item.value}" 
+                       style="cursor: pointer;">
+                    ${item.label}
+                  </div>
+                `).join('')}
+              </div>
+              <div id="${scrollbarContainerId}" style="position: absolute; top: 0; right: 0; width: 8px; height: 100%; pointer-events: none;"></div>
+            </div>
+            <style>
+              #${listContainerId}::-webkit-scrollbar { display: none; }
+            </style>
+          `;
+          monthDropdownEl.innerHTML = listHTML;
+          monthDropdownEl.style.display = 'block';
+          
+          // Crear scrollbar UBITS después de que el DOM esté listo
+          requestAnimationFrame(async () => {
+            console.log('📅 [Calendar] Creando scrollbar para lista de meses...');
+            const listElement = document.getElementById(listContainerId);
+            const scrollbarContainer = document.getElementById(scrollbarContainerId);
+            console.log('📅 [Calendar] List element:', listElement);
+            console.log('📅 [Calendar] Scrollbar container:', scrollbarContainer);
+            if (listElement && scrollbarContainer) {
+              console.log('📅 [Calendar] List scrollHeight:', listElement.scrollHeight);
+              console.log('📅 [Calendar] List clientHeight:', listElement.clientHeight);
+              if (listElement.scrollHeight > listElement.clientHeight) {
+                console.log('📅 [Calendar] Scroll necesario, creando scrollbar UBITS...');
+                try {
+                  // Intentar usar función global si existe (para index.html)
+                  let createScrollbarFn: any = null;
+                  if (typeof (window as any).createScrollbarLocal === 'function') {
+                    console.log('📅 [Calendar] Usando createScrollbarLocal global');
+                    createScrollbarFn = (window as any).createScrollbarLocal;
+                  } else {
+                    // Intentar importar dinámicamente usando string dinámico para evitar análisis de TypeScript
+                    console.log('📅 [Calendar] Intentando importar ScrollProvider...');
+                    const scrollPath = '../../scroll/src/ScrollProvider.js';
+                    // @ts-ignore - Import dinámico fuera de rootDir
+                    const scrollModule = await import(scrollPath);
+                    createScrollbarFn = scrollModule.createScrollbar;
+                  }
+                  
+                  if (createScrollbarFn) {
+                    // Asegurar que el contenedor tenga la misma altura que la lista
+                    const listHeight = listElement.clientHeight;
+                    scrollbarContainer.style.height = `${listHeight}px`;
+                    
+                    // Usar la firma correcta según el tipo de función
+                    let scrollbarInstance: any = null;
+                    if (typeof (window as any).createScrollbarLocal === 'function') {
+                      // createScrollbarLocal espera (element, container, orientation)
+                      scrollbarInstance = createScrollbarFn(listElement, scrollbarContainer, 'vertical');
+                    } else {
+                      // createScrollbar espera un objeto con opciones
+                      scrollbarInstance = createScrollbarFn({
+                        orientation: 'vertical',
+                        targetId: listContainerId,
+                        containerId: scrollbarContainerId
+                      });
+                    }
+                    console.log('📅 [Calendar] Scrollbar instance creada:', scrollbarInstance);
+                    if (scrollbarInstance && scrollbarContainer) {
+                      scrollbarContainer.style.pointerEvents = 'auto';
+                      // Guardar referencia para destruir cuando se cierre
+                      (monthDropdownEl as any)._scrollbarInstance = scrollbarInstance;
+                      console.log('✅ [Calendar] Scrollbar UBITS creado correctamente para meses');
+                    }
+                  } else {
+                    console.warn('⚠️ [Calendar] No se encontró función createScrollbar');
+                  }
+                } catch (error) {
+                  console.error('❌ [Calendar] Error creando scrollbar para lista de meses:', error);
+                }
+              } else {
+                console.log('📅 [Calendar] No se necesita scroll (contenido cabe en el contenedor)');
+              }
+            } else {
+              console.warn('⚠️ [Calendar] No se encontraron elementos para crear scrollbar de meses');
+            }
+          });
+          
+          // Event listeners para items de mes
+          monthDropdownEl.querySelectorAll('.ubits-list-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+              e.stopPropagation();
+              const value = parseInt((e.currentTarget as HTMLElement).dataset.value || '0');
+              currentDate.setMonth(value);
+              // Destruir scrollbar antes de cerrar
+              if ((monthDropdownEl as any)._scrollbarInstance) {
+                try {
+                  (monthDropdownEl as any)._scrollbarInstance.destroy();
+                } catch (e) {}
+                delete (monthDropdownEl as any)._scrollbarInstance;
+              }
+              monthDropdownEl.style.display = 'none';
+              render();
+            });
+          });
+        } else {
+          monthDropdownEl.style.display = 'none';
+        }
+      }
     });
 
-    yearSelect?.addEventListener('change', (e) => {
-      currentDate.setFullYear(parseInt((e.target as HTMLSelectElement).value));
-      render();
+    // Toggle dropdown de año
+    yearInput?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (yearDropdown) {
+        const yearDropdownEl = yearDropdown as HTMLElement;
+        const isVisible = yearDropdownEl.style.display === 'block';
+        if (!isVisible) {
+          // Cerrar dropdown de mes si está abierto
+          if (monthDropdown) {
+            (monthDropdown as HTMLElement).style.display = 'none';
+          }
+          // Crear lista de años
+          const currentYear = currentDate.getFullYear();
+          const yearItems = Array.from({ length: 100 }, (_, i) => {
+            const yearOption = currentYear - 50 + i;
+            return {
+              label: String(yearOption),
+              value: yearOption,
+              selected: yearOption === currentYear
+            };
+          });
+          // Crear contenedor para la lista y el scrollbar
+          const yearListContainerId = `year-list-${Date.now()}`;
+          const yearScrollbarContainerId = `year-scrollbar-${Date.now()}`;
+          const listHTML = `
+            <div style="position: relative; width: 100%;">
+              <div id="${yearListContainerId}" class="ubits-list" role="list" style="max-height: 200px; background: var(--ubits-bg-1); border: 1px solid var(--ubits-border-1); border-radius: 6px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); overflow-y: auto; overflow-x: hidden; -ms-overflow-style: none; scrollbar-width: none;">
+                ${yearItems.map((item) => `
+                  <div class="ubits-list-item ubits-list-item--sm ${item.selected ? 'ubits-list-item--active' : ''}" 
+                       role="listitem" 
+                       data-value="${item.value}" 
+                       style="cursor: pointer;">
+                    ${item.label}
+                  </div>
+                `).join('')}
+              </div>
+              <div id="${yearScrollbarContainerId}" style="position: absolute; top: 0; right: 0; width: 8px; height: 100%; pointer-events: none;"></div>
+            </div>
+            <style>
+              #${yearListContainerId}::-webkit-scrollbar { display: none; }
+            </style>
+          `;
+          yearDropdownEl.innerHTML = listHTML;
+          yearDropdownEl.style.display = 'block';
+          
+          // Crear scrollbar UBITS después de que el DOM esté listo
+          requestAnimationFrame(async () => {
+            console.log('📅 [Calendar] Creando scrollbar para lista de años...');
+            const listElement = document.getElementById(yearListContainerId);
+            const scrollbarContainer = document.getElementById(yearScrollbarContainerId);
+            console.log('📅 [Calendar] Year list element:', listElement);
+            console.log('📅 [Calendar] Year scrollbar container:', scrollbarContainer);
+            if (listElement && scrollbarContainer) {
+              console.log('📅 [Calendar] Year list scrollHeight:', listElement.scrollHeight);
+              console.log('📅 [Calendar] Year list clientHeight:', listElement.clientHeight);
+              if (listElement.scrollHeight > listElement.clientHeight) {
+                console.log('📅 [Calendar] Scroll necesario, creando scrollbar UBITS...');
+                try {
+                  // Intentar usar función global si existe (para index.html)
+                  let createScrollbarFn: any = null;
+                  if (typeof (window as any).createScrollbarLocal === 'function') {
+                    console.log('📅 [Calendar] Usando createScrollbarLocal global');
+                    createScrollbarFn = (window as any).createScrollbarLocal;
+                  } else {
+                    // Intentar importar dinámicamente usando string dinámico para evitar análisis de TypeScript
+                    console.log('📅 [Calendar] Intentando importar ScrollProvider...');
+                    const scrollPath = '../../scroll/src/ScrollProvider.js';
+                    // @ts-ignore - Import dinámico fuera de rootDir
+                    const scrollModule = await import(scrollPath);
+                    createScrollbarFn = scrollModule.createScrollbar;
+                  }
+                  
+                  if (createScrollbarFn) {
+                    // Asegurar que el contenedor tenga la misma altura que la lista
+                    const listHeight = listElement.clientHeight;
+                    scrollbarContainer.style.height = `${listHeight}px`;
+                    
+                    // Usar la firma correcta según el tipo de función
+                    let scrollbarInstance: any = null;
+                    if (typeof (window as any).createScrollbarLocal === 'function') {
+                      // createScrollbarLocal espera (element, container, orientation)
+                      scrollbarInstance = createScrollbarFn(listElement, scrollbarContainer, 'vertical');
+                    } else {
+                      // createScrollbar espera un objeto con opciones
+                      scrollbarInstance = createScrollbarFn({
+                        orientation: 'vertical',
+                        targetId: yearListContainerId,
+                        containerId: yearScrollbarContainerId
+                      });
+                    }
+                    console.log('📅 [Calendar] Year scrollbar instance creada:', scrollbarInstance);
+                    if (scrollbarInstance && scrollbarContainer) {
+                      scrollbarContainer.style.pointerEvents = 'auto';
+                      // Guardar referencia para destruir cuando se cierre
+                      (yearDropdownEl as any)._scrollbarInstance = scrollbarInstance;
+                      console.log('✅ [Calendar] Scrollbar UBITS creado correctamente para años');
+                    }
+                  } else {
+                    console.warn('⚠️ [Calendar] No se encontró función createScrollbar');
+                  }
+                } catch (error) {
+                  console.error('❌ [Calendar] Error creando scrollbar para lista de años:', error);
+                }
+              } else {
+                console.log('📅 [Calendar] No se necesita scroll para años (contenido cabe en el contenedor)');
+              }
+            } else {
+              console.warn('⚠️ [Calendar] No se encontraron elementos para crear scrollbar de años');
+            }
+          });
+          
+          // Event listeners para items de año
+          yearDropdownEl.querySelectorAll('.ubits-list-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+              e.stopPropagation();
+              const value = parseInt(String((e.currentTarget as HTMLElement).dataset.value || currentYear));
+              currentDate.setFullYear(value);
+              // Destruir scrollbar antes de cerrar
+              if ((yearDropdownEl as any)._scrollbarInstance) {
+                try {
+                  (yearDropdownEl as any)._scrollbarInstance.destroy();
+                } catch (e) {}
+                delete (yearDropdownEl as any)._scrollbarInstance;
+              }
+              yearDropdownEl.style.display = 'none';
+              render();
+            });
+          });
+        } else {
+          yearDropdownEl.style.display = 'none';
+        }
+      }
+    });
+
+    // Cerrar dropdowns al hacer click fuera
+    document.addEventListener('click', () => {
+      if (monthDropdown) (monthDropdown as HTMLElement).style.display = 'none';
+      if (yearDropdown) (yearDropdown as HTMLElement).style.display = 'none';
     });
 
     // Selección de días
@@ -285,19 +661,20 @@ export function createCalendar(options: CalendarOptions): {
             onDateSelect(clickedDate);
           }
         } else if (mode === 'range') {
-          if (!currentSelectedDate || isSelectingRange) {
-            // Iniciar rango
+          if (!currentSelectedDate || (currentSelectedDate && currentEndDate)) {
+            // Iniciar nuevo rango (no hay fecha inicial o ya hay un rango completo)
             currentSelectedDate = clickedDate;
             currentEndDate = null;
             isSelectingRange = true;
             render();
-          } else {
-            // Completar rango
+          } else if (currentSelectedDate && !currentEndDate) {
+            // Completar rango (ya hay fecha inicial, falta la final)
             if (compareDates(clickedDate, currentSelectedDate) < 0) {
-              // Si la fecha clickeada es anterior, intercambiar
+              // La fecha clickeada es anterior a la inicial, intercambiar
               currentEndDate = currentSelectedDate;
               currentSelectedDate = clickedDate;
             } else {
+              // La fecha clickeada es posterior a la inicial, establecer como final
               currentEndDate = clickedDate;
             }
             isSelectingRange = false;
