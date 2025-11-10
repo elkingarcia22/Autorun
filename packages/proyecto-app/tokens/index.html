@@ -135,21 +135,47 @@
       }
 
       /* Ocultar iconos normales cuando hay spinner */
-      .ubits-button--loading > i:not(.loading-spinner):not(.fa-spinner),
-      .ubits-button[data-loading="true"] > i:not(.loading-spinner):not(.fa-spinner) {
+      .ubits-button--loading > i:not(.ubits-button__spinner *),
+      .ubits-button[data-loading="true"] > i:not(.ubits-button__spinner *) {
         opacity: 0;
         transition: opacity 0.2s ease;
       }
 
-      /* Spinner de loading - visible y animado */
-      .ubits-button--loading .loading-spinner,
-      .ubits-button--loading .fa-spinner,
-      .ubits-button[data-loading="true"] .loading-spinner,
-      .ubits-button[data-loading="true"] .fa-spinner {
-        animation: spin 1s linear infinite;
-        opacity: 1 !important;
-        display: inline-block;
-        font-size: inherit;
+      /* Spinner de UBITS dentro del botón */
+      .ubits-button__spinner {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        margin: 0;
+        padding: 0;
+        line-height: 1;
+      }
+
+      /* Asegurar que el spinner tenga el color correcto según la variante del botón */
+      .ubits-button--primary .ubits-button__spinner,
+      .ubits-button--primary .ubits-button__spinner .ubits-spinner__segment {
+        color: var(--ubits-btn-primary-fg, #ffffff) !important;
+      }
+
+      .ubits-button--secondary .ubits-button__spinner,
+      .ubits-button--secondary .ubits-button__spinner .ubits-spinner__segment {
+        color: var(--ubits-btn-secondary-fg-default, #303a47) !important;
+      }
+
+      .ubits-button--tertiary .ubits-button__spinner,
+      .ubits-button--tertiary .ubits-button__spinner .ubits-spinner__segment {
+        color: var(--ubits-btn-tertiary-fg, #5c646f) !important;
+      }
+
+      /* Ocultar label del spinner si existe dentro del botón */
+      .ubits-button__spinner .ubits-spinner__label {
+        display: none;
+      }
+
+      /* Ajustar tamaño del spinner dentro del botón */
+      .ubits-button__spinner .ubits-spinner__circle {
+        margin: 0;
       }
 
       @keyframes spin {
@@ -434,6 +460,14 @@
     </style>
     <!-- Badge Component CSS -->
     <link rel="stylesheet" href="../../addons/badge/src/styles/badge.css" />
+    <!-- Spinner Component CSS -->
+    <link rel="stylesheet" href="../../addons/spinner/src/styles/spinner.css" />
+    <!-- Empty State Component CSS -->
+    <link rel="stylesheet" href="../../addons/empty-state/src/styles/empty-state.css" />
+    <!-- Tooltip Component CSS -->
+    <link rel="stylesheet" href="../../addons/tooltip/src/styles/tooltip.css" />
+    <!-- Skeleton Component CSS -->
+    <link rel="stylesheet" href="../../addons/skeleton/src/styles/skeleton.css" />
     <link rel="stylesheet" href="../../addons/alert/src/styles/alert.css" />
     <link rel="stylesheet" href="../../addons/toast/src/styles/toast.css" />
     <link rel="stylesheet" href="../../addons/input/src/styles/input.css" />
@@ -5400,6 +5434,21 @@ Reglas Importantes:
               hasPreview: true
             },
             {
+              name: 'Tooltip',
+              description: 'Componente tooltip con tail (flecha) para mostrar información contextual. Similar al Popover pero más simple, con título, descripción y botones de acción (primario, secundario y terciario). Tiene diferentes tamaños (sm: 240px, md: 320px, lg: 400px) y posiciones de tail (top, bottom, left, right). Incluye controles para mostrar/ocultar cada botón y opción de iconos en los botones.',
+              files: {
+                css: 'addons/tooltip/src/styles/tooltip.css',
+                ts: 'addons/tooltip/src/TooltipProvider.ts'
+              },
+              variants: [],
+              sizes: ['sm', 'md', 'lg'],
+              states: ['closed', 'open'],
+              features: ['3 tamaños (sm: 240px, md: 320px, lg: 400px)', 'Tail (flecha) posicionable (top, bottom, left, right)', 'Título opcional (body-md semibold)', 'Descripción opcional (body-md regular)', 'Botones opcionales (primario, secundario, terciario) con controladores booleanos', 'Iconos opcionales en cada botón', 'Posicionamiento absoluto o relativo a elemento de referencia', 'Cierre con clic fuera', 'Animaciones suaves de apertura/cierre', 'Responsive (100% en móvil)', 'Métodos open/close/updatePosition/destroy', 'Usa tokens UBITS exclusivamente', 'Usa componente Button existente para footer'],
+              class: 'ubits-tooltip ubits-tooltip--open',
+              example: 'createTooltip({\n  title: \'Título del tooltip\',\n  description: \'Descripción del tooltip\',\n  width: \'md\',\n  tailPosition: \'top\',\n  primaryButtonLabel: \'Aceptar\',\n  showPrimaryButton: true,\n  secondaryButtonLabel: \'Cancelar\',\n  showSecondaryButton: true,\n  tertiaryButtonLabel: \'Más info\',\n  showTertiaryButton: false,\n  position: { top: 100, left: 100 },\n  onClose: () => {}\n})',
+              hasPreview: true
+            },
+            {
               name: 'Scrollbar',
               description: 'Componente scrollbar personalizado UBITS. Se usa para crear scrollbars personalizados en elementos scrollable. Soporta orientación vertical y horizontal. Se sincroniza automáticamente con el elemento scrollable asociado. Aparece en hover y se adapta al tamaño del contenido.',
               files: {
@@ -5412,6 +5461,21 @@ Reglas Importantes:
               features: ['Orientación vertical y horizontal', 'Sincronización automática con elemento scrollable', 'Aparece en hover', 'Se adapta al tamaño del contenido', 'Responsive (2px en móvil)', 'Métodos update/destroy', 'Usa tokens UBITS exclusivamente'],
               class: 'ubits-scrollbar ubits-scrollbar--vertical ubits-scrollbar--horizontal',
               example: 'createScrollbar({\n  orientation: \'vertical\',\n  targetId: \'scrollable-container\',\n  containerId: \'scrollbar-container\'\n})',
+              hasPreview: true
+            },
+            {
+              name: 'Calendar',
+              description: 'Componente Calendar UBITS con selección única de fecha y selección por rango. Incluye navegación por mes/año, selector de mes y año, y soporte para fechas mínimas y máximas. Usa tokens UBITS exclusivamente para colores, tipografía y espaciado.',
+              files: {
+                css: 'addons/calendar/src/styles/calendar.css',
+                ts: 'addons/calendar/src/CalendarProvider.ts'
+              },
+              variants: ['single', 'range'],
+              sizes: [],
+              states: ['default', 'selected'],
+              features: ['Selección única de fecha (modo single)', 'Selección por rango de fechas (modo range)', 'Navegación por mes/año', 'Selector de mes y año', 'Soporte para fechas mínimas y máximas', 'Resalta el día actual', 'Métodos update/destroy', 'Usa tokens UBITS exclusivamente', 'Usa tipografía UBITS'],
+              class: 'ubits-calendar ubits-calendar--single',
+              example: 'createCalendar({\n  mode: \'single\',\n  selectedDate: new Date(),\n  onDateSelect: (date) => {}\n})',
               hasPreview: true
             }
           ],
@@ -5552,6 +5616,51 @@ Reglas Importantes:
               features: ['4 variantes', 'Auto-cierre por tipo (3.5s-6.5s)', 'Pausa en hover/focus', 'Apilado (max 3)', 'Botón acción opcional', 'Timer inteligente'],
               class: 'ubits-toast ubits-toast--{type}',
               example: 'showToast(\'success\', \'¡Operación exitosa!\');',
+              hasPreview: true
+            },
+            {
+              name: 'Spinner',
+              description: 'Componente spinner/loader para mostrar estados de carga. Soporta múltiples tamaños, variantes de color y puede mostrarse con o sin etiqueta.',
+              files: {
+                css: 'addons/spinner/src/styles/spinner.css',
+                ts: 'addons/spinner/src/SpinnerProvider.ts'
+              },
+              variants: ['primary', 'secondary', 'success', 'warning', 'error', 'info'],
+              sizes: ['xs', 'sm', 'md', 'lg', 'xl'],
+              states: ['default', 'animated', 'static'],
+              features: ['5 tamaños (xs, sm, md, lg, xl)', '6 variantes de color', 'Animación opcional', 'Label opcional', 'Modo fullscreen', 'Usa tokens UBITS exclusivamente'],
+              class: 'ubits-spinner ubits-spinner--{size} ubits-spinner--{variant}',
+              example: 'renderSpinner({\n  size: \'md\',\n  variant: \'primary\',\n  animated: true,\n  label: \'Cargando...\'\n})',
+              hasPreview: true
+            },
+            {
+              name: 'Empty State',
+              description: 'Componente empty state para mostrar estados vacíos en la interfaz. Soporta imagen o icono, título, descripción y botones de acción con controladores booleanos.',
+              files: {
+                css: 'addons/empty-state/src/styles/empty-state.css',
+                ts: 'addons/empty-state/src/EmptyStateProvider.ts'
+              },
+              variants: ['default'],
+              sizes: [],
+              states: ['default'],
+              features: ['Variante default', 'Soporte para imagen o icono (icono 25px con fondo 41px bg-2)', 'Título body-md semibold y descripción body-md regular', 'Botones de acción con controladores booleanos (showPrimaryButton, showSecondaryButton)', 'Responsive', 'Usa tokens UBITS exclusivamente'],
+              class: 'ubits-empty-state ubits-empty-state--default',
+              example: 'renderEmptyState({\n  title: \'No hay resultados\',\n  description: \'Intenta ajustar tus filtros de búsqueda\',\n  icon: \'inbox\',\n  actionLabel: \'Buscar\',\n  showPrimaryButton: true,\n  secondaryActionLabel: \'Cancelar\',\n  showSecondaryButton: false,\n  onAction: () => {}\n})',
+              hasPreview: true
+            },
+            {
+              name: 'Skeleton',
+              description: 'Componente skeleton loader para mostrar placeholders de carga. Soporta múltiples variantes (text, circle, rectangle, custom), tamaños y animación opcional.',
+              files: {
+                css: 'addons/skeleton/src/styles/skeleton.css',
+                ts: 'addons/skeleton/src/SkeletonProvider.ts'
+              },
+              variants: ['text', 'circle', 'rectangle', 'custom'],
+              sizes: ['xs', 'sm', 'md', 'lg', 'xl'],
+              states: ['default', 'animated', 'static'],
+              features: ['4 variantes (text, circle, rectangle, custom)', '5 tamaños (xs, sm, md, lg, xl)', 'Múltiples líneas de texto', 'Ancho y alto personalizables', 'Animación opcional', 'Usa tokens UBITS exclusivamente'],
+              class: 'ubits-skeleton ubits-skeleton--{variant} ubits-skeleton--{size}',
+              example: 'renderSkeleton({\n  variant: \'text\',\n  size: \'md\',\n  lines: 3,\n  animated: true,\n  width: \'full\'\n})',
               hasPreview: true
             }
           ],
@@ -5901,8 +6010,12 @@ Reglas Importantes:
                     window.updateModalPreview('modal');
                   } else if (componentId === 'popover' && typeof window.updatePopoverPreview === 'function') {
                     window.updatePopoverPreview('popover');
+                  } else if (componentId === 'tooltip' && typeof window.updateTooltipPreview === 'function') {
+                    window.updateTooltipPreview('tooltip');
                   } else if (componentId === 'scrollbar' && typeof window.updateScrollbarPreview === 'function') {
                     window.updateScrollbarPreview('scrollbar');
+                  } else if (componentId === 'calendar' && typeof window.updateCalendarPreview === 'function') {
+                    window.updateCalendarPreview('calendar');
                   } else if (componentId === 'progress-bar' && typeof window.updateProgressBarPreview === 'function') {
                     window.updateProgressBarPreview('progress-bar');
                   } else if (componentId === 'file-upload' && typeof window.updateFileUploadPreview === 'function') {
@@ -5910,6 +6023,12 @@ Reglas Importantes:
                   } else if (componentId === 'alert' && typeof window.updateAlertPreview === 'function') {
                     window.updateAlertPreview('alert');
                     initializeAlertPreview('alert');
+                  } else if (componentId === 'spinner' && typeof window.updateSpinnerPreview === 'function') {
+                    window.updateSpinnerPreview('spinner');
+                  } else if (componentId === 'empty-state' && typeof window.updateEmptyStatePreview === 'function') {
+                    window.updateEmptyStatePreview('empty-state');
+                  } else if (componentId === 'skeleton' && typeof window.updateSkeletonPreview === 'function') {
+                    window.updateSkeletonPreview('skeleton');
                   } else if (componentId === 'toast') {
                     // Toast se inicializa automáticamente cuando se hace clic en los botones
                     ensureToastContainer();
@@ -6212,6 +6331,23 @@ Reglas Importantes:
                                     </span>
                                   </label>
                                   <span id="dropdown-status-${componentId}" style="font-size: 13px; color: var(--ubits-fg-1-medium);">Desactivado</span>
+                                </div>
+                              </div>
+                              
+                              <!-- Tooltip (solo visible cuando iconPosition === 'only') -->
+                              <div id="tooltip-control-${componentId}" style="flex: 1 1 auto; min-width: 280px; display: none;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Tooltip (Solo Icono)</label>
+                                <div style="display: flex; flex-direction: column; gap: 12px;">
+                                  <div style="display: flex; align-items: center; gap: 12px;">
+                                    <label class="switch" style="position: relative; display: inline-block; width: 48px; height: 26px;">
+                                      <input type="checkbox" id="tooltip-toggle-${componentId}" onchange="setButtonControl('tooltip', this.checked ? 'yes' : 'no', '${componentId}')" style="opacity: 0; width: 0; height: 0;">
+                                      <span class="slider" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--ubits-border-1); transition: .4s; border-radius: 26px;">
+                                        <span style="position: absolute; content: ''; height: 20px; width: 20px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.1);"></span>
+                                      </span>
+                                    </label>
+                                    <span id="tooltip-status-${componentId}" style="font-size: 13px; color: var(--ubits-fg-1-medium);">Desactivado</span>
+                                  </div>
+                                  <input type="text" id="tooltip-text-input-${componentId}" value="Tooltip del botón" onchange="setButtonControl('tooltipText', this.value, '${componentId}')" placeholder="Texto del tooltip" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
                                 </div>
                               </div>
                             </div>
@@ -7278,6 +7414,176 @@ Reglas Importantes:
                         </div>
                       ` : ''}
                       
+                      ${hasPreview && component.name === 'Tooltip' ? `
+                        <!-- Preview Section for Tooltip -->
+                        <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: none; margin-bottom: 24px;">
+                          <!-- CONTROLES ARRIBA -->
+                          <div style="margin-bottom: 24px;">
+                            <h4 style="margin: 0 0 20px 0; color: var(--ubits-fg-1-high); font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand-static-inverted);"></i>
+                              Controles
+                            </h4>
+                            
+                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-end;">
+                              <!-- Título -->
+                              <div style="flex: 1 1 auto; min-width: 250px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Título</label>
+                                <input type="text" id="tooltip-title-input-${componentId}" value="Título del tooltip" onchange="setTooltipControl('title', this.value, '${componentId}')" placeholder="Título del tooltip" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: var(--font-body-sm-size, 13px); font-family: var(--font-sans); box-sizing: border-box; margin-bottom: 10px;">
+                                <label class="switch" style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                                  <input type="checkbox" id="tooltip-show-title-toggle-${componentId}" checked onchange="setTooltipControl('showTitle', this.checked, '${componentId}')">
+                                  <span class="slider"></span>
+                                  <span style="font-size: 14px; color: var(--ubits-fg-1-high);">Mostrar título</span>
+                                </label>
+                              </div>
+                              
+                              <!-- Descripción -->
+                              <div style="flex: 1 1 auto; min-width: 250px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Descripción</label>
+                                <input type="text" id="tooltip-description-input-${componentId}" value="Descripción del tooltip que proporciona información adicional al usuario." onchange="setTooltipControl('description', this.value, '${componentId}')" placeholder="Descripción del tooltip" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: var(--font-body-sm-size, 13px); font-family: var(--font-sans); box-sizing: border-box; margin-bottom: 10px;">
+                                <label class="switch" style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                                  <input type="checkbox" id="tooltip-show-description-toggle-${componentId}" checked onchange="setTooltipControl('showDescription', this.checked, '${componentId}')">
+                                  <span class="slider"></span>
+                                  <span style="font-size: 14px; color: var(--ubits-fg-1-high);">Mostrar descripción</span>
+                                </label>
+                              </div>
+                              
+                              <!-- Tamaño -->
+                              <div style="flex: 0 0 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Tamaño</label>
+                                <select id="tooltip-width-select-${componentId}" onchange="setTooltipControl('width', this.value, '${componentId}')" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: var(--font-body-sm-size, 13px); font-family: var(--font-sans); cursor: pointer; box-sizing: border-box;">
+                                  <option value="sm">SM (240px)</option>
+                                  <option value="md" selected>MD (320px)</option>
+                                  <option value="lg">LG (400px)</option>
+                                </select>
+                              </div>
+                              
+                              <!-- Posición del Tail -->
+                              <div style="flex: 0 0 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Posición Tail</label>
+                                <select id="tooltip-tail-position-select-${componentId}" onchange="setTooltipControl('tailPosition', this.value, '${componentId}')" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: var(--font-body-sm-size, 13px); font-family: var(--font-sans); cursor: pointer; box-sizing: border-box;">
+                                  <option value="top" selected>Top</option>
+                                  <option value="bottom">Bottom</option>
+                                  <option value="left">Left</option>
+                                  <option value="right">Right</option>
+                                </select>
+                              </div>
+                              
+                              <!-- Botón Abrir/Cerrar -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <button class="ubits-button ubits-button--primary ubits-button--md" onclick="toggleTooltipComponent('${componentId}')" style="width: 100%;">
+                                  <span id="tooltip-toggle-button-text-${componentId}">Abrir Tooltip</span>
+                                </button>
+                              </div>
+                            </div>
+                            
+                            <!-- Botones del Footer -->
+                            <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--ubits-border-1);">
+                              <h5 style="margin: 0 0 16px 0; color: var(--ubits-fg-1-high); font-size: 14px; font-weight: 600;">Botones del Footer</h5>
+                              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: flex-start;">
+                                <!-- Botón Primario -->
+                                <div>
+                                  <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Botón Primario (opcional)</label>
+                                  <input type="text" id="tooltip-primary-label-input-${componentId}" value="Aceptar" onchange="setTooltipControl('primaryButtonLabel', this.value, '${componentId}')" placeholder="Aceptar" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: var(--font-body-sm-size, 13px); font-family: var(--font-sans); box-sizing: border-box; margin-bottom: 10px;">
+                                  <input type="text" id="tooltip-primary-icon-input-${componentId}" value="check" onchange="setTooltipControl('primaryButtonIcon', this.value, '${componentId}')" placeholder="check" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: var(--font-body-sm-size, 13px); font-family: var(--font-sans); box-sizing: border-box; margin-bottom: 10px;">
+                                  <label class="switch" style="display: flex; align-items: center; gap: 12px; cursor: pointer; margin-top: 10px; margin-bottom: 10px;">
+                                    <input type="checkbox" id="tooltip-show-primary-toggle-${componentId}" onchange="setTooltipControl('showPrimaryButton', this.checked, '${componentId}')">
+                                    <span class="slider"></span>
+                                    <span style="font-size: 14px; color: var(--ubits-fg-1-high);">Mostrar botón primario</span>
+                                  </label>
+                                  <label class="switch" style="display: flex; align-items: center; gap: 12px; cursor: pointer; margin-top: 10px;">
+                                    <input type="checkbox" id="tooltip-show-primary-icon-toggle-${componentId}" onchange="setTooltipControl('showPrimaryButtonIcon', this.checked, '${componentId}')">
+                                    <span class="slider"></span>
+                                    <span style="font-size: 14px; color: var(--ubits-fg-1-high);">Mostrar icono en botón primario</span>
+                                  </label>
+                                </div>
+                                
+                                <!-- Botón Secundario -->
+                                <div>
+                                  <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Botón Secundario (opcional)</label>
+                                  <input type="text" id="tooltip-secondary-label-input-${componentId}" value="Cancelar" onchange="setTooltipControl('secondaryButtonLabel', this.value, '${componentId}')" placeholder="Cancelar" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: var(--font-body-sm-size, 13px); font-family: var(--font-sans); box-sizing: border-box; margin-bottom: 10px;">
+                                  <input type="text" id="tooltip-secondary-icon-input-${componentId}" value="times" onchange="setTooltipControl('secondaryButtonIcon', this.value, '${componentId}')" placeholder="times" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: var(--font-body-sm-size, 13px); font-family: var(--font-sans); box-sizing: border-box; margin-bottom: 10px;">
+                                  <label class="switch" style="display: flex; align-items: center; gap: 12px; cursor: pointer; margin-top: 10px; margin-bottom: 10px;">
+                                    <input type="checkbox" id="tooltip-show-secondary-toggle-${componentId}" onchange="setTooltipControl('showSecondaryButton', this.checked, '${componentId}')">
+                                    <span class="slider"></span>
+                                    <span style="font-size: 14px; color: var(--ubits-fg-1-high);">Mostrar botón secundario</span>
+                                  </label>
+                                  <label class="switch" style="display: flex; align-items: center; gap: 12px; cursor: pointer; margin-top: 10px;">
+                                    <input type="checkbox" id="tooltip-show-secondary-icon-toggle-${componentId}" onchange="setTooltipControl('showSecondaryButtonIcon', this.checked, '${componentId}')">
+                                    <span class="slider"></span>
+                                    <span style="font-size: 14px; color: var(--ubits-fg-1-high);">Mostrar icono en botón secundario</span>
+                                  </label>
+                                </div>
+                                
+                                <!-- Botón Terciario -->
+                                <div style="grid-column: 1 / -1;">
+                                  <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Botón Terciario (opcional)</label>
+                                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                                    <div>
+                                      <input type="text" id="tooltip-tertiary-label-input-${componentId}" value="Más info" onchange="setTooltipControl('tertiaryButtonLabel', this.value, '${componentId}')" placeholder="Más info" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: var(--font-body-sm-size, 13px); font-family: var(--font-sans); box-sizing: border-box; margin-bottom: 10px;">
+                                    </div>
+                                    <div>
+                                      <input type="text" id="tooltip-tertiary-icon-input-${componentId}" value="info-circle" onchange="setTooltipControl('tertiaryButtonIcon', this.value, '${componentId}')" placeholder="info-circle" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: var(--font-body-sm-size, 13px); font-family: var(--font-sans); box-sizing: border-box; margin-bottom: 10px;">
+                                    </div>
+                                  </div>
+                                  <label class="switch" style="display: flex; align-items: center; gap: 12px; cursor: pointer; margin-top: 10px; margin-bottom: 10px;">
+                                    <input type="checkbox" id="tooltip-show-tertiary-toggle-${componentId}" onchange="setTooltipControl('showTertiaryButton', this.checked, '${componentId}')">
+                                    <span class="slider"></span>
+                                    <span style="font-size: 14px; color: var(--ubits-fg-1-high);">Mostrar botón terciario</span>
+                                  </label>
+                                  <label class="switch" style="display: flex; align-items: center; gap: 12px; cursor: pointer; margin-top: 10px;">
+                                    <input type="checkbox" id="tooltip-show-tertiary-icon-toggle-${componentId}" onchange="setTooltipControl('showTertiaryButtonIcon', this.checked, '${componentId}')">
+                                    <span class="slider"></span>
+                                    <span style="font-size: 14px; color: var(--ubits-fg-1-high);">Mostrar icono en botón terciario</span>
+                                  </label>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <!-- PREVIEW EN EL MEDIO -->
+                          <div style="background: var(--ubits-bg-2); padding: 48px; border-radius: 8px; border: none; margin-bottom: 24px; display: flex; align-items: center; justify-content: center; min-height: 600px; position: relative; overflow: visible;">
+                            <div id="tooltip-preview-container-${componentId}" style="position: relative; width: 100%; height: 100%; min-height: 500px; overflow: visible; padding: 40px;">
+                              <!-- El tooltip se renderizará aquí -->
+                            </div>
+                          </div>
+                        </div>
+                      ` : ''}
+                      
+                      ${hasPreview && component.name === 'Calendar' ? `
+                        <!-- Preview Section for Calendar -->
+                        <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: none; margin-bottom: 24px;">
+                          <!-- CONTROLES ARRIBA -->
+                          <div style="margin-bottom: 24px;">
+                            <h4 style="margin: 0 0 20px 0; color: var(--ubits-fg-1-high); font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand-static-inverted);"></i>
+                              Controles
+                            </h4>
+                            
+                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
+                              <!-- Modo -->
+                              <div style="flex: 0 0 auto; min-width: 250px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Modo</label>
+                                <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                                  <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" data-component="${componentId}" data-option="mode" data-value="single" onclick="setCalendarControl('mode', 'single', '${componentId}')">
+                                    <span>Selección única</span>
+                                  </button>
+                                  <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-component="${componentId}" data-option="mode" data-value="range" onclick="setCalendarControl('mode', 'range', '${componentId}')">
+                                    <span>Rango</span>
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <!-- PREVIEW EN EL MEDIO -->
+                          <div style="background: var(--ubits-bg-1); padding: 48px; border-radius: 8px; border: none; margin-bottom: 24px; display: flex; align-items: center; justify-content: center; min-height: 400px; position: relative;">
+                            <div id="calendar-preview-container-${componentId}" style="position: relative; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
+                              <!-- El calendario se renderizará aquí -->
+                            </div>
+                          </div>
+                        </div>
+                      ` : ''}
+                      
                       ${hasPreview && component.name === 'Scrollbar' ? `
                         <!-- Preview Section for Scrollbar -->
                         <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: none; margin-bottom: 24px;">
@@ -7588,6 +7894,246 @@ Reglas Importantes:
                           <!-- PREVIEW EN EL MEDIO -->
                           <div style="background: var(--ubits-bg-1); padding: 48px; border-radius: 8px; border: none; margin-bottom: 24px; min-height: 120px;">
                             <div id="alert-preview-${componentId}">
+                              <!-- Se generará dinámicamente -->
+                            </div>
+                          </div>
+                        </div>
+                      ` : ''}
+                      
+                      ${hasPreview && component.name === 'Spinner' ? `
+                        <!-- Preview Section for Spinner -->
+                        <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: none; margin-bottom: 24px;">
+                          <!-- CONTROLES ARRIBA -->
+                          <div style="margin-bottom: 24px;">
+                            <h4 style="margin: 0 0 20px 0; color: var(--ubits-fg-1-high); font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand-static-inverted);"></i>
+                              Controles
+                            </h4>
+                            
+                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
+                              <!-- Tamaño -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Tamaño</label>
+                                <select id="spinner-size-select-${componentId}" onchange="setSpinnerControl('size', this.value, '${componentId}')" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: var(--font-body-sm-size, 13px); font-family: var(--font-sans); cursor: pointer; box-sizing: border-box;">
+                                  <option value="xs">XS</option>
+                                  <option value="sm">SM</option>
+                                  <option value="md" selected>MD</option>
+                                  <option value="lg">LG</option>
+                                  <option value="xl">XL</option>
+                                </select>
+                              </div>
+                              
+                              <!-- Variante -->
+                              <div style="flex: 0 0 auto; min-width: 300px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Variante</label>
+                                <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                                  <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" data-component="${componentId}" data-option="variant" data-value="primary" onclick="setSpinnerControl('variant', 'primary', '${componentId}')">
+                                    <span>Primario</span>
+                                  </button>
+                                  <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-component="${componentId}" data-option="variant" data-value="secondary" onclick="setSpinnerControl('variant', 'secondary', '${componentId}')">
+                                    <span>Secundario</span>
+                                  </button>
+                                  <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-component="${componentId}" data-option="variant" data-value="success" onclick="setSpinnerControl('variant', 'success', '${componentId}')">
+                                    <span>Éxito</span>
+                                  </button>
+                                  <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-component="${componentId}" data-option="variant" data-value="warning" onclick="setSpinnerControl('variant', 'warning', '${componentId}')">
+                                    <span>Advertencia</span>
+                                  </button>
+                                  <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-component="${componentId}" data-option="variant" data-value="error" onclick="setSpinnerControl('variant', 'error', '${componentId}')">
+                                    <span>Error</span>
+                                  </button>
+                                  <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-component="${componentId}" data-option="variant" data-value="info" onclick="setSpinnerControl('variant', 'info', '${componentId}')">
+                                    <span>Info</span>
+                                  </button>
+                                </div>
+                              </div>
+                              
+                              <!-- Animado -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Animado</label>
+                                <label class="switch" style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                                  <input type="checkbox" id="spinner-animated-toggle-${componentId}" checked onchange="setSpinnerControl('animated', this.checked, '${componentId}')">
+                                  <span class="slider"></span>
+                                  <span id="spinner-animated-status-${componentId}" style="font-size: 14px; color: var(--ubits-fg-1-high);">Activado</span>
+                                </label>
+                              </div>
+                              
+                              <!-- Label -->
+                              <div style="flex: 1 1 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Label (opcional)</label>
+                                <input type="text" id="spinner-label-input-${componentId}" value="" onchange="setSpinnerControl('label', this.value, '${componentId}')" placeholder="Cargando..." style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                              
+                              <!-- Fullscreen -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Fullscreen</label>
+                                <label class="switch" style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                                  <input type="checkbox" id="spinner-fullscreen-toggle-${componentId}" onchange="setSpinnerControl('fullScreen', this.checked, '${componentId}')">
+                                  <span class="slider"></span>
+                                  <span id="spinner-fullscreen-status-${componentId}" style="font-size: 14px; color: var(--ubits-fg-1-high);">Desactivado</span>
+                                </label>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <!-- PREVIEW EN EL MEDIO -->
+                          <div style="background: var(--ubits-bg-1); padding: 48px; border-radius: 8px; border: none; margin-bottom: 24px; display: flex; align-items: center; justify-content: center; min-height: 200px;">
+                            <div id="spinner-preview-${componentId}">
+                              <!-- Se generará dinámicamente -->
+                            </div>
+                          </div>
+                        </div>
+                      ` : ''}
+                      
+                      ${hasPreview && component.name === 'Empty State' ? `
+                        <!-- Preview Section for Empty State -->
+                        <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: none; margin-bottom: 24px;">
+                          <!-- CONTROLES ARRIBA -->
+                          <div style="margin-bottom: 24px;">
+                            <h4 style="margin: 0 0 20px 0; color: var(--ubits-fg-1-high); font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand-static-inverted);"></i>
+                              Controles
+                            </h4>
+                            
+                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
+                              <!-- Título -->
+                              <div style="flex: 1 1 auto; min-width: 250px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Título</label>
+                                <input type="text" id="empty-state-title-input-${componentId}" value="No hay resultados" onchange="setEmptyStateControl('title', this.value, '${componentId}')" placeholder="Título" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                              
+                              <!-- Descripción -->
+                              <div style="flex: 1 1 auto; min-width: 250px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Descripción</label>
+                                <input type="text" id="empty-state-description-input-${componentId}" value="Intenta ajustar tus filtros de búsqueda" onchange="setEmptyStateControl('description', this.value, '${componentId}')" placeholder="Descripción (opcional)" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                              
+                              <!-- Icono -->
+                              <div style="flex: 1 1 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Icono (opcional)</label>
+                                <input type="text" id="empty-state-icon-input-${componentId}" value="inbox" onchange="setEmptyStateControl('icon', this.value, '${componentId}')" placeholder="inbox" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                              
+                              <!-- Botón Primario -->
+                              <div style="flex: 1 1 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Botón Primario (opcional)</label>
+                                <input type="text" id="empty-state-action-label-input-${componentId}" value="Buscar" onchange="setEmptyStateControl('actionLabel', this.value, '${componentId}')" placeholder="Buscar" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box; margin-bottom: 10px;">
+                                <input type="text" id="empty-state-primary-button-icon-input-${componentId}" value="search" onchange="setEmptyStateControl('primaryButtonIcon', this.value, '${componentId}')" placeholder="search" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box; margin-bottom: 10px;">
+                                <label class="switch" style="display: flex; align-items: center; gap: 12px; cursor: pointer; margin-top: 10px; margin-bottom: 10px;">
+                                  <input type="checkbox" id="empty-state-show-primary-toggle-${componentId}" onchange="setEmptyStateControl('showPrimaryButton', this.checked, '${componentId}')">
+                                  <span class="slider"></span>
+                                  <span style="font-size: 14px; color: var(--ubits-fg-1-high);">Mostrar botón primario</span>
+                                </label>
+                                <label class="switch" style="display: flex; align-items: center; gap: 12px; cursor: pointer; margin-top: 10px;">
+                                  <input type="checkbox" id="empty-state-show-primary-icon-toggle-${componentId}" onchange="setEmptyStateControl('showPrimaryButtonIcon', this.checked, '${componentId}')">
+                                  <span class="slider"></span>
+                                  <span style="font-size: 14px; color: var(--ubits-fg-1-high);">Mostrar icono en botón primario</span>
+                                </label>
+                              </div>
+                              
+                              <!-- Botón Secundario -->
+                              <div style="flex: 1 1 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Botón Secundario (opcional)</label>
+                                <input type="text" id="empty-state-secondary-action-label-input-${componentId}" value="Cancelar" onchange="setEmptyStateControl('secondaryActionLabel', this.value, '${componentId}')" placeholder="Cancelar" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box; margin-bottom: 10px;">
+                                <input type="text" id="empty-state-secondary-button-icon-input-${componentId}" value="times" onchange="setEmptyStateControl('secondaryButtonIcon', this.value, '${componentId}')" placeholder="times" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box; margin-bottom: 10px;">
+                                <label class="switch" style="display: flex; align-items: center; gap: 12px; cursor: pointer; margin-top: 10px; margin-bottom: 10px;">
+                                  <input type="checkbox" id="empty-state-show-secondary-toggle-${componentId}" onchange="setEmptyStateControl('showSecondaryButton', this.checked, '${componentId}')">
+                                  <span class="slider"></span>
+                                  <span style="font-size: 14px; color: var(--ubits-fg-1-high);">Mostrar botón secundario</span>
+                                </label>
+                                <label class="switch" style="display: flex; align-items: center; gap: 12px; cursor: pointer; margin-top: 10px;">
+                                  <input type="checkbox" id="empty-state-show-secondary-icon-toggle-${componentId}" onchange="setEmptyStateControl('showSecondaryButtonIcon', this.checked, '${componentId}')">
+                                  <span class="slider"></span>
+                                  <span style="font-size: 14px; color: var(--ubits-fg-1-high);">Mostrar icono en botón secundario</span>
+                                </label>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <!-- PREVIEW EN EL MEDIO -->
+                          <div style="background: var(--ubits-bg-1); padding: 48px; border-radius: 8px; border: none; margin-bottom: 24px; min-height: 300px;">
+                            <div id="empty-state-preview-${componentId}">
+                              <!-- Se generará dinámicamente -->
+                            </div>
+                          </div>
+                        </div>
+                      ` : ''}
+                      
+                      ${hasPreview && component.name === 'Skeleton' ? `
+                        <!-- Preview Section for Skeleton -->
+                        <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: none; margin-bottom: 24px;">
+                          <!-- CONTROLES ARRIBA -->
+                          <div style="margin-bottom: 24px;">
+                            <h4 style="margin: 0 0 20px 0; color: var(--ubits-fg-1-high); font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand-static-inverted);"></i>
+                              Controles
+                            </h4>
+                            
+                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
+                              <!-- Variante -->
+                              <div style="flex: 0 0 auto; min-width: 300px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Variante</label>
+                                <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                                  <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" data-component="${componentId}" data-option="variant" data-value="text" onclick="setSkeletonControl('variant', 'text', '${componentId}')">
+                                    <span>Text</span>
+                                  </button>
+                                  <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-component="${componentId}" data-option="variant" data-value="circle" onclick="setSkeletonControl('variant', 'circle', '${componentId}')">
+                                    <span>Circle</span>
+                                  </button>
+                                  <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-component="${componentId}" data-option="variant" data-value="rectangle" onclick="setSkeletonControl('variant', 'rectangle', '${componentId}')">
+                                    <span>Rectangle</span>
+                                  </button>
+                                  <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-component="${componentId}" data-option="variant" data-value="custom" onclick="setSkeletonControl('variant', 'custom', '${componentId}')">
+                                    <span>Custom</span>
+                                  </button>
+                                </div>
+                              </div>
+                              
+                              <!-- Tamaño -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Tamaño</label>
+                                <select id="skeleton-size-select-${componentId}" onchange="setSkeletonControl('size', this.value, '${componentId}')" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: var(--font-body-sm-size, 13px); font-family: var(--font-sans); cursor: pointer; box-sizing: border-box;">
+                                  <option value="xs">XS</option>
+                                  <option value="sm">SM</option>
+                                  <option value="md" selected>MD</option>
+                                  <option value="lg">LG</option>
+                                  <option value="xl">XL</option>
+                                </select>
+                              </div>
+                              
+                              <!-- Líneas (solo para text) -->
+                              <div style="flex: 0 0 auto; min-width: 150px;" id="skeleton-lines-container-${componentId}">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Líneas</label>
+                                <input type="number" id="skeleton-lines-input-${componentId}" value="1" min="1" max="10" onchange="setSkeletonControl('lines', parseInt(this.value) || 1, '${componentId}')" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                              
+                              <!-- Ancho -->
+                              <div style="flex: 1 1 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Ancho</label>
+                                <input type="text" id="skeleton-width-input-${componentId}" value="full" onchange="setSkeletonControl('width', this.value, '${componentId}')" placeholder="full, 100px, 50%" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                              
+                              <!-- Alto (solo para rectangle y custom) -->
+                              <div style="flex: 1 1 auto; min-width: 200px; display: none;" id="skeleton-height-container-${componentId}">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Alto</label>
+                                <input type="text" id="skeleton-height-input-${componentId}" value="" onchange="setSkeletonControl('height', this.value, '${componentId}')" placeholder="100px, 50%" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                              
+                              <!-- Animado -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Animado</label>
+                                <label class="switch" style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                                  <input type="checkbox" id="skeleton-animated-toggle-${componentId}" checked onchange="setSkeletonControl('animated', this.checked, '${componentId}')">
+                                  <span class="slider"></span>
+                                  <span id="skeleton-animated-status-${componentId}" style="font-size: 14px; color: var(--ubits-fg-1-high);">Activado</span>
+                                </label>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <!-- PREVIEW EN EL MEDIO -->
+                          <div style="background: var(--ubits-bg-1); padding: 48px; border-radius: 8px; border: none; margin-bottom: 24px; min-height: 200px; display: flex; align-items: center; justify-content: center;">
+                            <div id="skeleton-preview-${componentId}" style="width: 100%;">
                               <!-- Se generará dinámicamente -->
                             </div>
                           </div>
@@ -8989,6 +9535,8 @@ Reglas Importantes:
             isLoading: false,
             text: 'Botón de ejemplo',
             dropdown: false,
+            showTooltip: false,
+            tooltipText: 'Tooltip del botón',
             dropdownOptions: [
               { label: 'Opción 1', value: 'opt1' },
               { label: 'Opción 2', value: 'opt2' },
@@ -9001,11 +9549,44 @@ Reglas Importantes:
       
       // Función auxiliar para generar HTML de botón (UN SOLO BOTÓN)
       function generateButtonHTML(state, componentId) {
-        const { variant, size, iconPosition, showBadge, isLoading, text, dropdown } = state;
+        const { variant, size, iconPosition, showBadge, isLoading, text, dropdown, showTooltip, tooltipText } = state;
+        
+        console.log('🔍 [generateButtonHTML] Estado recibido:', {
+          iconPosition,
+          showTooltip,
+          tooltipText,
+          variant,
+          size,
+          text
+        });
         
         const badgeHTML = showBadge ? `<span class="ubits-button__badge"></span>` : '';
         let iconHTML = `<i class="far fa-check"></i>`;
-        let spinnerHTML = `<i class="far fa-spinner loading-spinner"></i>`;
+        
+        // Generar spinner de UBITS en lugar de FontAwesome
+        // Mapear tamaño del botón al tamaño del spinner
+        const spinnerSizeMap = { xs: 'xs', sm: 'sm', md: 'sm', lg: 'md', xl: 'lg' };
+        const spinnerSize = spinnerSizeMap[size] || 'sm';
+        
+        // Mapear variante del botón a variante del spinner
+        const spinnerVariantMap = { primary: 'primary', secondary: 'secondary', tertiary: 'secondary', active: 'primary' };
+        const spinnerVariant = spinnerVariantMap[variant] || 'primary';
+        
+        // Generar HTML del spinner de UBITS
+        let spinnerHTML = '';
+        if (isLoading) {
+          spinnerHTML = `
+            <div class="ubits-spinner ubits-spinner--${spinnerSize} ubits-spinner--${spinnerVariant} ubits-spinner--animated ubits-button__spinner">
+              <div class="ubits-spinner__circle">
+                <div class="ubits-spinner__segment"></div>
+                <div class="ubits-spinner__segment"></div>
+                <div class="ubits-spinner__segment"></div>
+                <div class="ubits-spinner__segment"></div>
+              </div>
+            </div>
+          `.trim();
+        }
+        
         const chevronHTML = `<i class="far fa-chevron-down"></i>`;
         
         // Determinar contenido según posición del icono
@@ -9064,21 +9645,42 @@ Reglas Importantes:
           }
         }
         
-        return `<button class="${classes}" ${isLoading ? 'disabled' : ''}>
+        // NO agregar atributo title - usamos tooltip UBITS en su lugar
+        // El tooltip UBITS se aplicará después en applyTooltipToButton
+        
+        console.log('🔍 [generateButtonHTML] Evaluación del tooltip:', {
+          iconPosition,
+          isIconOnly: iconPosition === 'only',
+          showTooltip,
+          tooltipText,
+          willUseUBITSTooltip: iconPosition === 'only' && showTooltip && tooltipText
+        });
+        
+        const disabledAttr = isLoading ? 'disabled' : '';
+        
+        const buttonHTML = `<button class="${classes}" ${disabledAttr}>
           ${content}
           ${badgeHTML}
-        </button>`;
+        </button>`.trim();
+        
+        console.log('🔍 [generateButtonHTML] HTML generado:', buttonHTML.substring(0, 200));
+        
+        return buttonHTML;
       }
       
       // Función para actualizar el preview del botón (UN SOLO BOTÓN)
       window.updateButtonPreview = function(componentId) {
+        console.log('🚀 [updateButtonPreview] Iniciando actualización para:', componentId);
         const state = initButtonPreviewState(componentId);
+        console.log('📊 [updateButtonPreview] Estado completo:', JSON.stringify(state, null, 2));
         const preview = document.getElementById(`button-preview-${componentId}`);
         
         if (!preview) {
-          console.error('❌ Preview no encontrado:', `button-preview-${componentId}`);
+          console.error('❌ [updateButtonPreview] Preview no encontrado:', `button-preview-${componentId}`);
           return;
         }
+        
+        console.log('✅ [updateButtonPreview] Preview encontrado:', preview);
         
         // Si dropdown está activo, usar createButton para inicializar funcionalidad
         if (state.dropdown && state.dropdownOptions && state.dropdownOptions.length > 0) {
@@ -9102,6 +9704,8 @@ Reglas Importantes:
             loading: state.isLoading,
             badge: state.showBadge,
             dropdown: state.dropdown,
+            showTooltip: state.showTooltip,
+            tooltipText: state.tooltipText,
             dropdownOptions: state.dropdownOptions.map(opt => ({
               label: opt.label,
               value: opt.value || opt.label,
@@ -9117,52 +9721,901 @@ Reglas Importantes:
               try {
                 // Intentar usar createButton si está disponible
                 if (typeof window.createButtonHelper === 'function') {
-                  window.createButtonHelper(buttonOptions, wrapper);
+                  window.createButtonHelper(buttonOptions, wrapper, state);
                 } else {
                   // Fallback: usar generateButtonHTML
                   const buttonHTML = generateButtonHTML(state, componentId);
                   wrapper.innerHTML = buttonHTML;
+                  // Aplicar tooltip después de insertar HTML
+                  applyTooltipToButton(wrapper, state, componentId);
                 }
               } catch (error) {
                 console.warn('Error creating button with dropdown, using fallback:', error);
                 const buttonHTML = generateButtonHTML(state, componentId);
                 wrapper.innerHTML = buttonHTML;
+                // Aplicar tooltip después de insertar HTML
+                applyTooltipToButton(wrapper, state, componentId);
               }
             });
           });
         } else {
           // Sin dropdown, generar HTML normalmente
+          console.log('📝 [updateButtonPreview] Generando HTML sin dropdown');
           const buttonHTML = generateButtonHTML(state, componentId);
+          console.log('📝 [updateButtonPreview] HTML generado, insertando en preview');
           preview.innerHTML = buttonHTML;
+          console.log('📝 [updateButtonPreview] HTML insertado, aplicando tooltip');
+          // Aplicar tooltip después de insertar HTML
+          applyTooltipToButton(preview, state, componentId);
         }
         
+        // Mostrar/ocultar controlador de tooltip según iconPosition
+        const tooltipControl = document.getElementById(`tooltip-control-${componentId}`);
+        if (tooltipControl) {
+          tooltipControl.style.display = state.iconPosition === 'only' ? 'block' : 'none';
+        }
+        
+        // Función auxiliar para aplicar tooltip al botón usando componente Tooltip de UBITS
+        function applyTooltipToButton(container, state, componentId) {
+          console.log('🔧 [applyTooltipToButton] Iniciando aplicación de tooltip');
+          console.log('🔧 [applyTooltipToButton] Container:', container);
+          console.log('🔧 [applyTooltipToButton] Estado:', {
+            iconPosition: state.iconPosition,
+            showTooltip: state.showTooltip,
+            tooltipText: state.tooltipText
+          });
+          
+          // Esperar un momento para que el DOM se actualice
+          setTimeout(() => {
+            console.log('🔧 [applyTooltipToButton] Buscando botón en container...');
+            const buttonElement = container.querySelector('.ubits-button');
+            console.log('🔧 [applyTooltipToButton] Botón encontrado:', buttonElement);
+            
+            if (buttonElement) {
+              // Limpiar tooltip anterior si existe (buscar por ID y por data attribute)
+              const existingTooltipId = buttonElement.dataset.tooltipInstance;
+              if (existingTooltipId) {
+                const existingTooltip = document.getElementById(existingTooltipId);
+                if (existingTooltip) {
+                  console.log('🧹 [applyTooltipToButton] Limpiando tooltip anterior:', existingTooltipId);
+                  existingTooltip.remove();
+                }
+                delete buttonElement.dataset.tooltipInstance;
+              }
+              
+              // También buscar por el ID estándar
+              const standardTooltipId = `button-tooltip-${componentId}`;
+              const standardTooltip = document.getElementById(standardTooltipId);
+              if (standardTooltip) {
+                console.log('🧹 [applyTooltipToButton] Limpiando tooltip estándar:', standardTooltipId);
+                standardTooltip.remove();
+              }
+              
+              // Remover listeners anteriores
+              const oldMouseEnter = buttonElement._tooltipMouseEnter;
+              const oldMouseLeave = buttonElement._tooltipMouseLeave;
+              if (oldMouseEnter) {
+                console.log('🧹 [applyTooltipToButton] Removiendo listener mouseenter anterior');
+                buttonElement.removeEventListener('mouseenter', oldMouseEnter);
+                delete buttonElement._tooltipMouseEnter;
+              }
+              if (oldMouseLeave) {
+                console.log('🧹 [applyTooltipToButton] Removiendo listener mouseleave anterior');
+                buttonElement.removeEventListener('mouseleave', oldMouseLeave);
+                delete buttonElement._tooltipMouseLeave;
+              }
+              
+              console.log('🔧 [applyTooltipToButton] Botón existe, verificando condiciones...');
+              console.log('🔧 [applyTooltipToButton] Condiciones:', {
+                isIconOnly: state.iconPosition === 'only',
+                showTooltip: state.showTooltip,
+                hasTooltipText: !!state.tooltipText,
+                allConditionsMet: state.iconPosition === 'only' && state.showTooltip && state.tooltipText
+              });
+              
+              if (state.iconPosition === 'only' && state.showTooltip && state.tooltipText) {
+                console.log('✅ [applyTooltipToButton] Aplicando tooltip UBITS...');
+                
+                // Remover atributo title nativo si existe (para evitar tooltip del navegador)
+                if (buttonElement.hasAttribute('title')) {
+                  console.log('🧹 [applyTooltipToButton] Removiendo atributo title nativo');
+                  buttonElement.removeAttribute('title');
+                }
+                
+                // Asegurar que el CSS del tooltip esté cargado
+                const existingTooltipLink = document.querySelector('link[href*="tooltip.css"]');
+                if (!existingTooltipLink) {
+                  console.log('📦 [applyTooltipToButton] Cargando CSS del tooltip...');
+                  const link = document.createElement('link');
+                  link.rel = 'stylesheet';
+                  link.href = '../../addons/tooltip/src/styles/tooltip.css';
+                  link.onload = () => {
+                    console.log('✅ [applyTooltipToButton] CSS del tooltip cargado');
+                  };
+                  link.onerror = () => {
+                    console.error('❌ [applyTooltipToButton] Error al cargar CSS del tooltip');
+                  };
+                  document.head.appendChild(link);
+                } else {
+                  console.log('✅ [applyTooltipToButton] CSS del tooltip ya está cargado');
+                }
+                
+                // Crear tooltip HTML (solo descripción, sin botones)
+                // Escapar HTML para prevenir XSS
+                const escapedText = state.tooltipText
+                  .replace(/&/g, '&amp;')
+                  .replace(/</g, '&lt;')
+                  .replace(/>/g, '&gt;')
+                  .replace(/"/g, '&quot;')
+                  .replace(/'/g, '&#39;');
+                
+                const tooltipHTML = `
+                  <div class="ubits-tooltip ubits-tooltip--tail-bottom" id="button-tooltip-${componentId}" style="position: fixed; z-index: 10000; opacity: 0; visibility: hidden; display: none; width: auto; min-width: fit-content; max-width: 240px;">
+                    <div class="ubits-tooltip__tail">
+                      <div class="ubits-tooltip__tail-inner"></div>
+                    </div>
+                    <div class="ubits-tooltip__content" style="width: auto; min-width: fit-content;">
+                      <div class="ubits-tooltip__body" style="white-space: nowrap;">
+                        <div class="ubits-tooltip__body-content">
+                          <p class="ubits-body-md" style="margin: 0; white-space: nowrap;">${escapedText}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                `;
+                
+                // Crear wrapper para parsear HTML
+                const wrapper = document.createElement('div');
+                wrapper.innerHTML = tooltipHTML;
+                const tooltipElement = wrapper.firstElementChild;
+                
+                if (tooltipElement) {
+                  // Obtener referencia al tail
+                  const tailElement = tooltipElement.querySelector('.ubits-tooltip__tail');
+                  
+                  console.log('🔧 [Tooltip Init] Tooltip creado:', {
+                    tooltipId: tooltipElement.id,
+                    tooltipClasses: tooltipElement.className,
+                    tooltipStyles: tooltipElement.style.cssText,
+                    hasTail: !!tailElement,
+                    tailElement: tailElement ? {
+                      classes: tailElement.className,
+                      styles: tailElement.style.cssText,
+                      computedLeft: window.getComputedStyle(tailElement).left,
+                      computedTransform: window.getComputedStyle(tailElement).transform,
+                      computedPosition: window.getComputedStyle(tailElement).position
+                    } : null
+                  });
+                  
+                  // Agregar al body
+                  document.body.appendChild(tooltipElement);
+                  
+                  // Función para centrar el tail
+                  const centerTail = () => {
+                    if (!tailElement) return;
+                    
+                    // Remover cualquier estilo inline que pueda interferir
+                    tailElement.style.removeProperty('left');
+                    tailElement.style.removeProperty('right');
+                    tailElement.style.removeProperty('top');
+                    tailElement.style.removeProperty('bottom');
+                    tailElement.style.removeProperty('transform');
+                    tailElement.style.removeProperty('margin-left');
+                    tailElement.style.removeProperty('margin-right');
+                    
+                    // Aplicar estilos para centrar
+                    tailElement.style.left = '50%';
+                    tailElement.style.right = 'auto';
+                    tailElement.style.transform = 'translateX(-50%) rotate(180deg)';
+                    
+                    // Forzar reflow
+                    void tailElement.offsetHeight;
+                  };
+                  
+                  // Observar cambios en el tamaño del tooltip para recalcular el tail
+                  if (typeof ResizeObserver !== 'undefined' && tailElement) {
+                    try {
+                      const resizeObserver = new ResizeObserver(() => {
+                        console.log('📏 [Tooltip ResizeObserver] Tooltip cambió de tamaño, recalculando tail...');
+                        centerTail();
+                      });
+                      resizeObserver.observe(tooltipElement);
+                      
+                      // Guardar referencia para poder desconectarlo después
+                      tooltipElement._tailResizeObserver = resizeObserver;
+                    } catch (error) {
+                      console.warn('⚠️ [Tooltip Init] Error al crear ResizeObserver:', error);
+                    }
+                  }
+                  
+                  // Función para mostrar tooltip
+                  const showTooltip = () => {
+                    console.log('🖱️ [showTooltip] Mouse enter detectado, mostrando tooltip...');
+                    const buttonRect = buttonElement.getBoundingClientRect();
+                    
+                    // Calcular posición: tooltip arriba del botón (tail apunta hacia abajo)
+                    // Hacer el tooltip temporalmente visible pero fuera del viewport para calcular su tamaño
+                    tooltipElement.style.top = '-9999px';
+                    tooltipElement.style.left = '0';
+                    tooltipElement.style.transform = 'none';
+                    tooltipElement.style.visibility = 'visible';
+                    tooltipElement.style.opacity = '0';
+                    tooltipElement.style.display = 'block';
+                    tooltipElement.classList.add('ubits-tooltip--open');
+                    
+                    // Forzar reflow para que el navegador calcule las dimensiones
+                    void tooltipElement.offsetHeight;
+                    
+                    const tooltipRect = tooltipElement.getBoundingClientRect();
+                    const tooltipHeight = tooltipRect.height;
+                    const tooltipWidth = tooltipRect.width;
+                    
+                    // Verificar estado del tail ANTES de posicionar
+                    if (tailElement) {
+                      const tailRect = tailElement.getBoundingClientRect();
+                      const tailComputed = window.getComputedStyle(tailElement);
+                      console.log('🔺 [showTooltip] Estado del tail ANTES de posicionar:', {
+                        tailRect: { left: tailRect.left, top: tailRect.top, width: tailRect.width, height: tailRect.height },
+                        tailComputed: {
+                          left: tailComputed.left,
+                          top: tailComputed.top,
+                          bottom: tailComputed.bottom,
+                          transform: tailComputed.transform,
+                          position: tailComputed.position,
+                          width: tailComputed.width,
+                          height: tailComputed.height
+                        },
+                        tailStyles: tailElement.style.cssText,
+                        tooltipWidth: tooltipWidth,
+                        tooltipCenter: tooltipWidth / 2
+                      });
+                    }
+                    
+                    console.log('📐 [showTooltip] Dimensiones calculadas:', {
+                      buttonRect: { top: buttonRect.top, left: buttonRect.left, width: buttonRect.width, height: buttonRect.height },
+                      tooltipRect: { height: tooltipHeight, width: tooltipWidth }
+                    });
+                    
+                    // Restaurar estilos y calcular posición final
+                    const top = buttonRect.top - tooltipHeight - 9; // 9px es la altura del tail
+                    const buttonCenterX = buttonRect.left + (buttonRect.width / 2);
+                    const left = buttonCenterX - (tooltipWidth / 2); // Centrar el tooltip sobre el botón
+                    
+                    tooltipElement.style.top = `${top}px`;
+                    tooltipElement.style.left = `${left}px`;
+                    tooltipElement.style.transform = 'none'; // No usar translateX ya que calculamos left directamente
+                    tooltipElement.style.display = 'block';
+                    tooltipElement.style.visibility = 'visible';
+                    tooltipElement.style.opacity = '1';
+                    tooltipElement.style.transition = 'none'; // Sin transición para aparición inmediata
+                    // La clase ubits-tooltip--open ya está aplicada
+                    
+                    // Forzar otro reflow después de posicionar
+                    void tooltipElement.offsetHeight;
+                    
+                    // Asegurar que el tail esté centrado después de posicionar
+                    if (tailElement) {
+                      centerTail();
+                    }
+                    
+                    // Verificar estado del tail DESPUÉS de posicionar
+                    if (tailElement) {
+                      const tailRectAfter = tailElement.getBoundingClientRect();
+                      const tailComputedAfter = window.getComputedStyle(tailElement);
+                      const tooltipRectAfter = tooltipElement.getBoundingClientRect();
+                      const tooltipComputed = window.getComputedStyle(tooltipElement);
+                      const expectedTailLeft = tooltipRectAfter.left + (tooltipRectAfter.width / 2) - (tailRectAfter.width / 2);
+                      
+                      // Calcular posición relativa del tail dentro del tooltip
+                      const tailRelativeLeft = tailRectAfter.left - tooltipRectAfter.left;
+                      const tooltipCenterRelative = tooltipRectAfter.width / 2;
+                      const tailCenterRelative = tailRelativeLeft + (tailRectAfter.width / 2);
+                      
+                      console.log('🔺 [showTooltip] Estado del tail DESPUÉS de posicionar:', {
+                        tailRect: { left: tailRectAfter.left, top: tailRectAfter.top, width: tailRectAfter.width, height: tailRectAfter.height },
+                        tailComputed: {
+                          left: tailComputedAfter.left,
+                          top: tailComputedAfter.top,
+                          bottom: tailComputedAfter.bottom,
+                          right: tailComputedAfter.right,
+                          transform: tailComputedAfter.transform,
+                          position: tailComputedAfter.position,
+                          width: tailComputedAfter.width,
+                          height: tailComputedAfter.height,
+                          marginLeft: tailComputedAfter.marginLeft,
+                          marginRight: tailComputedAfter.marginRight
+                        },
+                        tooltipRect: { left: tooltipRectAfter.left, top: tooltipRectAfter.top, width: tooltipRectAfter.width, height: tooltipRectAfter.height },
+                        tooltipComputed: {
+                          position: tooltipComputed.position,
+                          left: tooltipComputed.left,
+                          top: tooltipComputed.top,
+                          width: tooltipComputed.width,
+                          transform: tooltipComputed.transform
+                        },
+                        tooltipCenter: tooltipRectAfter.left + (tooltipRectAfter.width / 2),
+                        expectedTailLeft: expectedTailLeft,
+                        actualTailLeft: tailRectAfter.left,
+                        difference: tailRectAfter.left - expectedTailLeft,
+                        buttonCenterX: buttonCenterX,
+                        tailShouldBeAt: buttonCenterX - (tailRectAfter.width / 2),
+                        // Posición relativa
+                        tailRelativeLeft: tailRelativeLeft,
+                        tooltipCenterRelative: tooltipCenterRelative,
+                        tailCenterRelative: tailCenterRelative,
+                        differenceRelative: tailCenterRelative - tooltipCenterRelative,
+                        // Verificar si el tail está centrado dentro del tooltip
+                        isCentered: Math.abs(tailCenterRelative - tooltipCenterRelative) < 2
+                      });
+                      
+                      // Si el tail no está centrado, intentar corregirlo
+                      if (Math.abs(tailCenterRelative - tooltipCenterRelative) >= 2) {
+                        console.warn('⚠️ [showTooltip] Tail NO está centrado, diferencia:', Math.abs(tailCenterRelative - tooltipCenterRelative), 'px');
+                        console.warn('⚠️ [showTooltip] Intentando corregir posicionamiento del tail...');
+                        
+                        // Remover cualquier estilo inline que pueda interferir
+                        tailElement.style.removeProperty('left');
+                        tailElement.style.removeProperty('right');
+                        tailElement.style.removeProperty('top');
+                        tailElement.style.removeProperty('bottom');
+                        tailElement.style.removeProperty('transform');
+                        tailElement.style.removeProperty('margin-left');
+                        tailElement.style.removeProperty('margin-right');
+                        
+                        // Forzar recalculo del tail usando solo CSS
+                        tailElement.style.left = '50%';
+                        tailElement.style.right = 'auto';
+                        tailElement.style.transform = 'translateX(-50%) rotate(180deg)';
+                        
+                        // Forzar reflow múltiples veces para asegurar que se recalcule
+                        void tooltipElement.offsetHeight;
+                        void tailElement.offsetHeight;
+                        void tooltipElement.offsetWidth;
+                        void tailElement.offsetWidth;
+                        
+                        // Verificar después de un breve delay
+                        setTimeout(() => {
+                          const tailRectCorrected = tailElement.getBoundingClientRect();
+                          const tooltipRectCorrected = tooltipElement.getBoundingClientRect();
+                          const tailRelativeLeftCorrected = tailRectCorrected.left - tooltipRectCorrected.left;
+                          const tailCenterRelativeCorrected = tailRelativeLeftCorrected + (tailRectCorrected.width / 2);
+                          const tooltipCenterRelativeCorrected = tooltipRectCorrected.width / 2;
+                          
+                          console.log('🔧 [showTooltip] Tail después de corrección:', {
+                            tailRelativeLeft: tailRelativeLeftCorrected,
+                            tailCenterRelative: tailCenterRelativeCorrected,
+                            tooltipCenterRelative: tooltipCenterRelativeCorrected,
+                            difference: tailCenterRelativeCorrected - tooltipCenterRelativeCorrected,
+                            isCentered: Math.abs(tailCenterRelativeCorrected - tooltipCenterRelativeCorrected) < 2,
+                            tailComputed: {
+                              left: window.getComputedStyle(tailElement).left,
+                              transform: window.getComputedStyle(tailElement).transform,
+                              position: window.getComputedStyle(tailElement).position
+                            }
+                          });
+                        }, 10);
+                      } else {
+                        console.log('✅ [showTooltip] Tail está correctamente centrado');
+                      }
+                    }
+                    
+                    // Restaurar transición después de un breve momento para la animación de salida
+                    setTimeout(() => {
+                      tooltipElement.style.transition = '';
+                    }, 50);
+                    
+                    console.log('✅ [showTooltip] Tooltip posicionado:', {
+                      top: `${top}px`,
+                      left: `${left}px`,
+                      tooltipWidth: tooltipWidth,
+                      tooltipHeight: tooltipHeight,
+                      hasOpenClass: tooltipElement.classList.contains('ubits-tooltip--open'),
+                      computedOpacity: window.getComputedStyle(tooltipElement).opacity,
+                      computedVisibility: window.getComputedStyle(tooltipElement).visibility,
+                      computedDisplay: window.getComputedStyle(tooltipElement).display
+                    });
+                  };
+                  
+                  // Función para ocultar tooltip
+                  const hideTooltip = () => {
+                    console.log('🖱️ [hideTooltip] Mouse leave detectado, ocultando tooltip...');
+                    tooltipElement.classList.remove('ubits-tooltip--open');
+                    // Restaurar estilos para ocultar completamente
+                    tooltipElement.style.opacity = '0';
+                    tooltipElement.style.visibility = 'hidden';
+                    tooltipElement.style.display = 'none';
+                    console.log('✅ [hideTooltip] Tooltip ocultado, clase removida y estilos restaurados');
+                  };
+                  
+                  // Agregar eventos
+                  const mouseEnterHandler = (e) => {
+                    console.log('🖱️ [mouseEnterHandler] Evento mouseenter disparado', e);
+                    e.stopPropagation();
+                    showTooltip();
+                  };
+                  
+                  const mouseLeaveHandler = (e) => {
+                    console.log('🖱️ [mouseLeaveHandler] Evento mouseleave disparado', e);
+                    e.stopPropagation();
+                    hideTooltip();
+                  };
+                  
+                  console.log('📌 [applyTooltipToButton] Agregando event listeners al botón');
+                  buttonElement.addEventListener('mouseenter', mouseEnterHandler, false);
+                  buttonElement.addEventListener('mouseleave', mouseLeaveHandler, false);
+                  console.log('✅ [applyTooltipToButton] Event listeners agregados');
+                  
+                  // Guardar referencias para poder limpiarlas después
+                  buttonElement._tooltipMouseEnter = mouseEnterHandler;
+                  buttonElement._tooltipMouseLeave = mouseLeaveHandler;
+                  buttonElement.dataset.tooltipInstance = `button-tooltip-${componentId}`;
+                  
+                  console.log('✅ [applyTooltipToButton] Tooltip UBITS aplicado:', {
+                    iconPosition: state.iconPosition,
+                    showTooltip: state.showTooltip,
+                    tooltipText: state.tooltipText,
+                    tooltipId: `button-tooltip-${componentId}`,
+                    tooltipElement: tooltipElement,
+                    tooltipInDOM: document.body.contains(tooltipElement),
+                    tooltipStyles: {
+                      position: tooltipElement.style.position,
+                      top: tooltipElement.style.top,
+                      left: tooltipElement.style.left,
+                      opacity: window.getComputedStyle(tooltipElement).opacity,
+                      visibility: window.getComputedStyle(tooltipElement).visibility,
+                      zIndex: window.getComputedStyle(tooltipElement).zIndex
+                    }
+                  });
+                }
+              } else {
+                console.log('❌ [applyTooltipToButton] Removiendo tooltip (condiciones no cumplidas)');
+                // Limpiar tooltip si existe
+                const existingTooltipId = buttonElement.dataset.tooltipInstance;
+                if (existingTooltipId) {
+                  const tooltipElement = document.getElementById(existingTooltipId);
+                  if (tooltipElement) {
+                    tooltipElement.remove();
+                  }
+                  delete buttonElement.dataset.tooltipInstance;
+                }
+                // Remover listeners
+                const oldMouseEnter = buttonElement._tooltipMouseEnter;
+                const oldMouseLeave = buttonElement._tooltipMouseLeave;
+                if (oldMouseEnter) {
+                  buttonElement.removeEventListener('mouseenter', oldMouseEnter);
+                  delete buttonElement._tooltipMouseEnter;
+                }
+                if (oldMouseLeave) {
+                  buttonElement.removeEventListener('mouseleave', oldMouseLeave);
+                  delete buttonElement._tooltipMouseLeave;
+                }
+                console.log('❌ [applyTooltipToButton] Tooltip removido:', {
+                  iconPosition: state.iconPosition,
+                  showTooltip: state.showTooltip,
+                  tooltipText: state.tooltipText
+                });
+              }
+            } else {
+              console.warn('⚠️ [applyTooltipToButton] Botón no encontrado en container');
+              console.warn('⚠️ [applyTooltipToButton] Container HTML:', container.innerHTML.substring(0, 500));
+            }
+          }, 10);
+        }
+        
+        // Aplicar tooltip también después de un pequeño delay para asegurar que el DOM esté listo
+        setTimeout(() => {
+          console.log('⏰ [updateButtonPreview] Timeout ejecutado, verificando tooltip nuevamente');
+          // Re-aplicar tooltip en caso de que no se haya aplicado correctamente
+          applyTooltipToButton(preview, state, componentId);
+        }, 50);
+        
         // Log para debug
+        const finalButtonElement = preview.querySelector('.ubits-button');
+        const tooltipInstanceId = finalButtonElement ? finalButtonElement.dataset.tooltipInstance : null;
+        const tooltipElement = tooltipInstanceId ? document.getElementById(tooltipInstanceId) : null;
         console.log('✅ Preview actualizado:', {
           size: state.size,
           variant: state.variant,
           dropdown: state.dropdown,
-          classes: preview.querySelector('.ubits-button')?.className
+          iconPosition: state.iconPosition,
+          showTooltip: state.showTooltip,
+          tooltipText: state.tooltipText,
+          hasTooltipInstance: !!tooltipInstanceId,
+          tooltipElementExists: !!tooltipElement,
+          classes: finalButtonElement?.className
         });
       };
       
       // Helper para crear botón con dropdown usando createButton
-      window.createButtonHelper = function(options, container) {
+      window.createButtonHelper = function(options, container, state) {
         // Importar createButton dinámicamente o usar la implementación inline
         // Por ahora, implementamos la funcionalidad inline
-        const buttonHTML = generateButtonHTML({
+        const buttonState = state || {
           variant: options.variant,
           size: options.size,
           text: options.text,
           iconPosition: options.iconOnly ? 'only' : (options.iconPosition || 'left'),
           showBadge: options.badge,
           isLoading: options.loading,
-          dropdown: options.dropdown
-        }, 'button');
+          dropdown: options.dropdown,
+          showTooltip: options.showTooltip || false,
+          tooltipText: options.tooltipText || ''
+        };
+        
+        const buttonHTML = generateButtonHTML(buttonState, 'button');
         
         container.innerHTML = buttonHTML;
         const button = container.querySelector('button');
         
         if (!button) return;
+        
+        // Aplicar tooltip UBITS si está habilitado
+        if (buttonState.iconPosition === 'only' && buttonState.showTooltip && buttonState.tooltipText) {
+          // Usar la misma función applyTooltipToButton pero adaptada para este contexto
+          const tooltipId = `button-tooltip-dropdown-${Math.random().toString(36).substr(2, 9)}`;
+          
+          // Asegurar que el CSS del tooltip esté cargado
+          const existingTooltipLink = document.querySelector('link[href*="tooltip.css"]');
+          if (!existingTooltipLink) {
+            console.log('📦 [applyTooltipToButton] Cargando CSS del tooltip...');
+            const link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = '../../addons/tooltip/src/styles/tooltip.css';
+            link.onload = () => {
+              console.log('✅ [applyTooltipToButton] CSS del tooltip cargado');
+            };
+            link.onerror = () => {
+              console.error('❌ [applyTooltipToButton] Error al cargar CSS del tooltip');
+            };
+            document.head.appendChild(link);
+          } else {
+            console.log('✅ [applyTooltipToButton] CSS del tooltip ya está cargado');
+          }
+          
+          // Crear tooltip HTML (solo descripción, sin botones)
+          // Escapar HTML para prevenir XSS
+          const escapedText = buttonState.tooltipText
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+          
+          const tooltipHTML = `
+            <div class="ubits-tooltip ubits-tooltip--tail-bottom" id="${tooltipId}" style="position: fixed; z-index: 10000; opacity: 0; visibility: hidden; display: none; width: auto; min-width: fit-content; max-width: 240px;">
+              <div class="ubits-tooltip__tail">
+                <div class="ubits-tooltip__tail-inner"></div>
+              </div>
+              <div class="ubits-tooltip__content" style="width: auto; min-width: fit-content;">
+                <div class="ubits-tooltip__body" style="white-space: nowrap;">
+                  <div class="ubits-tooltip__body-content">
+                    <p class="ubits-body-md" style="margin: 0; white-space: nowrap;">${escapedText}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+          
+          // Crear wrapper para parsear HTML
+          const wrapper = document.createElement('div');
+          wrapper.innerHTML = tooltipHTML;
+          const tooltipElement = wrapper.firstElementChild;
+          
+          if (tooltipElement) {
+            // Obtener referencia al tail
+            const tailElement = tooltipElement.querySelector('.ubits-tooltip__tail');
+            
+            console.log('🔧 [Tooltip Init createButtonHelper] Tooltip creado:', {
+              tooltipId: tooltipElement.id,
+              tooltipClasses: tooltipElement.className,
+              tooltipStyles: tooltipElement.style.cssText,
+              hasTail: !!tailElement,
+              tailElement: tailElement ? {
+                classes: tailElement.className,
+                styles: tailElement.style.cssText,
+                computedLeft: window.getComputedStyle(tailElement).left,
+                computedTransform: window.getComputedStyle(tailElement).transform,
+                computedPosition: window.getComputedStyle(tailElement).position
+              } : null
+            });
+            
+            // Agregar al body
+            document.body.appendChild(tooltipElement);
+            
+            // Función para centrar el tail
+            const centerTail = () => {
+              if (!tailElement) return;
+              
+              // Remover cualquier estilo inline que pueda interferir
+              tailElement.style.removeProperty('left');
+              tailElement.style.removeProperty('right');
+              tailElement.style.removeProperty('top');
+              tailElement.style.removeProperty('bottom');
+              tailElement.style.removeProperty('transform');
+              tailElement.style.removeProperty('margin-left');
+              tailElement.style.removeProperty('margin-right');
+              
+              // Aplicar estilos para centrar
+              tailElement.style.left = '50%';
+              tailElement.style.right = 'auto';
+              tailElement.style.transform = 'translateX(-50%) rotate(180deg)';
+              
+              // Forzar reflow
+              void tailElement.offsetHeight;
+            };
+            
+            // Observar cambios en el tamaño del tooltip para recalcular el tail
+            if (typeof ResizeObserver !== 'undefined' && tailElement) {
+              try {
+                const resizeObserver = new ResizeObserver(() => {
+                  console.log('📏 [Tooltip ResizeObserver createButtonHelper] Tooltip cambió de tamaño, recalculando tail...');
+                  centerTail();
+                });
+                resizeObserver.observe(tooltipElement);
+                
+                // Guardar referencia para poder desconectarlo después
+                tooltipElement._tailResizeObserver = resizeObserver;
+              } catch (error) {
+                console.warn('⚠️ [Tooltip Init createButtonHelper] Error al crear ResizeObserver:', error);
+              }
+            }
+            
+            // Función para mostrar tooltip
+            const showTooltip = () => {
+              console.log('🖱️ [showTooltip] Mouse enter detectado (createButtonHelper), mostrando tooltip...');
+              const buttonRect = button.getBoundingClientRect();
+              
+              // Remover atributo title nativo si existe
+              if (button.hasAttribute('title')) {
+                console.log('🧹 [showTooltip] Removiendo atributo title nativo (createButtonHelper)');
+                button.removeAttribute('title');
+              }
+              
+              // Calcular posición: tooltip arriba del botón (tail apunta hacia abajo)
+              // Hacer el tooltip temporalmente visible pero fuera del viewport para calcular su tamaño
+              tooltipElement.style.top = '-9999px';
+              tooltipElement.style.left = '0';
+              tooltipElement.style.transform = 'none';
+              tooltipElement.style.visibility = 'visible';
+              tooltipElement.style.opacity = '0';
+              tooltipElement.style.display = 'block';
+              tooltipElement.classList.add('ubits-tooltip--open');
+              
+              // Forzar reflow para que el navegador calcule las dimensiones
+              void tooltipElement.offsetHeight;
+              
+              const tooltipRect = tooltipElement.getBoundingClientRect();
+              const tooltipHeight = tooltipRect.height;
+              const tooltipWidth = tooltipRect.width;
+              
+              // Verificar estado del tail ANTES de posicionar
+              if (tailElement) {
+                const tailRect = tailElement.getBoundingClientRect();
+                const tailComputed = window.getComputedStyle(tailElement);
+                console.log('🔺 [showTooltip createButtonHelper] Estado del tail ANTES de posicionar:', {
+                  tailRect: { left: tailRect.left, top: tailRect.top, width: tailRect.width, height: tailRect.height },
+                  tailComputed: {
+                    left: tailComputed.left,
+                    top: tailComputed.top,
+                    bottom: tailComputed.bottom,
+                    transform: tailComputed.transform,
+                    position: tailComputed.position,
+                    width: tailComputed.width,
+                    height: tailComputed.height
+                  },
+                  tailStyles: tailElement.style.cssText,
+                  tooltipWidth: tooltipWidth,
+                  tooltipCenter: tooltipWidth / 2
+                });
+              }
+              
+              console.log('📐 [showTooltip] Dimensiones calculadas (createButtonHelper):', {
+                buttonRect: { top: buttonRect.top, left: buttonRect.left, width: buttonRect.width, height: buttonRect.height },
+                tooltipRect: { height: tooltipHeight, width: tooltipWidth }
+              });
+              
+              // Restaurar estilos y calcular posición final
+              const top = buttonRect.top - tooltipHeight - 9; // 9px es la altura del tail
+              const buttonCenterX = buttonRect.left + (buttonRect.width / 2);
+              const left = buttonCenterX - (tooltipWidth / 2); // Centrar el tooltip sobre el botón
+              
+              tooltipElement.style.top = `${top}px`;
+              tooltipElement.style.left = `${left}px`;
+              tooltipElement.style.transform = 'none'; // No usar translateX ya que calculamos left directamente
+              tooltipElement.style.display = 'block';
+              tooltipElement.style.visibility = 'visible';
+              tooltipElement.style.opacity = '1';
+              tooltipElement.style.transition = 'none'; // Sin transición para aparición inmediata
+              // La clase ubits-tooltip--open ya está aplicada
+              
+              // Forzar otro reflow después de posicionar
+              void tooltipElement.offsetHeight;
+              
+              // Asegurar que el tail esté centrado después de posicionar
+              if (tailElement) {
+                centerTail();
+              }
+              
+              // Verificar estado del tail DESPUÉS de posicionar
+              if (tailElement) {
+                const tailRectAfter = tailElement.getBoundingClientRect();
+                const tailComputedAfter = window.getComputedStyle(tailElement);
+                const tooltipRectAfter = tooltipElement.getBoundingClientRect();
+                const tooltipComputed = window.getComputedStyle(tooltipElement);
+                const expectedTailLeft = tooltipRectAfter.left + (tooltipRectAfter.width / 2) - (tailRectAfter.width / 2);
+                
+                // Calcular posición relativa del tail dentro del tooltip
+                const tailRelativeLeft = tailRectAfter.left - tooltipRectAfter.left;
+                const tooltipCenterRelative = tooltipRectAfter.width / 2;
+                const tailCenterRelative = tailRelativeLeft + (tailRectAfter.width / 2);
+                
+                console.log('🔺 [showTooltip createButtonHelper] Estado del tail DESPUÉS de posicionar:', {
+                  tailRect: { left: tailRectAfter.left, top: tailRectAfter.top, width: tailRectAfter.width, height: tailRectAfter.height },
+                  tailComputed: {
+                    left: tailComputedAfter.left,
+                    top: tailComputedAfter.top,
+                    bottom: tailComputedAfter.bottom,
+                    right: tailComputedAfter.right,
+                    transform: tailComputedAfter.transform,
+                    position: tailComputedAfter.position,
+                    width: tailComputedAfter.width,
+                    height: tailComputedAfter.height,
+                    marginLeft: tailComputedAfter.marginLeft,
+                    marginRight: tailComputedAfter.marginRight
+                  },
+                  tooltipRect: { left: tooltipRectAfter.left, top: tooltipRectAfter.top, width: tooltipRectAfter.width, height: tooltipRectAfter.height },
+                  tooltipComputed: {
+                    position: tooltipComputed.position,
+                    left: tooltipComputed.left,
+                    top: tooltipComputed.top,
+                    width: tooltipComputed.width,
+                    transform: tooltipComputed.transform
+                  },
+                  tooltipCenter: tooltipRectAfter.left + (tooltipRectAfter.width / 2),
+                  expectedTailLeft: expectedTailLeft,
+                  actualTailLeft: tailRectAfter.left,
+                  difference: tailRectAfter.left - expectedTailLeft,
+                  buttonCenterX: buttonCenterX,
+                  tailShouldBeAt: buttonCenterX - (tailRectAfter.width / 2),
+                  // Posición relativa
+                  tailRelativeLeft: tailRelativeLeft,
+                  tooltipCenterRelative: tooltipCenterRelative,
+                  tailCenterRelative: tailCenterRelative,
+                  differenceRelative: tailCenterRelative - tooltipCenterRelative,
+                  // Verificar si el tail está centrado dentro del tooltip
+                  isCentered: Math.abs(tailCenterRelative - tooltipCenterRelative) < 2
+                });
+                
+                // Si el tail no está centrado, intentar corregirlo
+                if (Math.abs(tailCenterRelative - tooltipCenterRelative) >= 2) {
+                  console.warn('⚠️ [showTooltip createButtonHelper] Tail NO está centrado, diferencia:', Math.abs(tailCenterRelative - tooltipCenterRelative), 'px');
+                  console.warn('⚠️ [showTooltip createButtonHelper] Intentando corregir posicionamiento del tail...');
+                  
+                  // Remover cualquier estilo inline que pueda interferir
+                  tailElement.style.removeProperty('left');
+                  tailElement.style.removeProperty('right');
+                  tailElement.style.removeProperty('top');
+                  tailElement.style.removeProperty('bottom');
+                  tailElement.style.removeProperty('transform');
+                  tailElement.style.removeProperty('margin-left');
+                  tailElement.style.removeProperty('margin-right');
+                  
+                  // Forzar recalculo del tail usando solo CSS
+                  tailElement.style.left = '50%';
+                  tailElement.style.right = 'auto';
+                  tailElement.style.transform = 'translateX(-50%) rotate(180deg)';
+                  
+                  // Forzar reflow múltiples veces para asegurar que se recalcule
+                  void tooltipElement.offsetHeight;
+                  void tailElement.offsetHeight;
+                  void tooltipElement.offsetWidth;
+                  void tailElement.offsetWidth;
+                  
+                  // Verificar después de un breve delay
+                  setTimeout(() => {
+                    const tailRectCorrected = tailElement.getBoundingClientRect();
+                    const tooltipRectCorrected = tooltipElement.getBoundingClientRect();
+                    const tailRelativeLeftCorrected = tailRectCorrected.left - tooltipRectCorrected.left;
+                    const tailCenterRelativeCorrected = tailRelativeLeftCorrected + (tailRectCorrected.width / 2);
+                    const tooltipCenterRelativeCorrected = tooltipRectCorrected.width / 2;
+                    
+                    console.log('🔧 [showTooltip createButtonHelper] Tail después de corrección:', {
+                      tailRelativeLeft: tailRelativeLeftCorrected,
+                      tailCenterRelative: tailCenterRelativeCorrected,
+                      tooltipCenterRelative: tooltipCenterRelativeCorrected,
+                      difference: tailCenterRelativeCorrected - tooltipCenterRelativeCorrected,
+                      isCentered: Math.abs(tailCenterRelativeCorrected - tooltipCenterRelativeCorrected) < 2,
+                      tailComputed: {
+                        left: window.getComputedStyle(tailElement).left,
+                        transform: window.getComputedStyle(tailElement).transform,
+                        position: window.getComputedStyle(tailElement).position
+                      }
+                    });
+                  }, 10);
+                } else {
+                  console.log('✅ [showTooltip createButtonHelper] Tail está correctamente centrado');
+                }
+              }
+              
+              // Restaurar transición después de un breve momento para la animación de salida
+              setTimeout(() => {
+                tooltipElement.style.transition = '';
+              }, 50);
+              
+              console.log('✅ [showTooltip] Tooltip posicionado (createButtonHelper):', {
+                top: `${top}px`,
+                left: `${left}px`,
+                transform: 'translateX(-50%)',
+                hasOpenClass: tooltipElement.classList.contains('ubits-tooltip--open'),
+                computedOpacity: window.getComputedStyle(tooltipElement).opacity,
+                computedVisibility: window.getComputedStyle(tooltipElement).visibility,
+                computedDisplay: window.getComputedStyle(tooltipElement).display
+              });
+            };
+            
+            // Función para ocultar tooltip
+            const hideTooltip = () => {
+              console.log('🖱️ [hideTooltip] Mouse leave detectado (createButtonHelper), ocultando tooltip...');
+              tooltipElement.classList.remove('ubits-tooltip--open');
+              // Restaurar estilos para ocultar completamente
+              tooltipElement.style.opacity = '0';
+              tooltipElement.style.visibility = 'hidden';
+              tooltipElement.style.display = 'none';
+              console.log('✅ [hideTooltip] Tooltip ocultado (createButtonHelper), clase removida y estilos restaurados');
+            };
+            
+            // Agregar eventos
+            const mouseEnterHandler = (e) => {
+              console.log('🖱️ [mouseEnterHandler] Evento mouseenter disparado (createButtonHelper)', e);
+              e.stopPropagation();
+              showTooltip();
+            };
+            
+            const mouseLeaveHandler = (e) => {
+              console.log('🖱️ [mouseLeaveHandler] Evento mouseleave disparado (createButtonHelper)', e);
+              e.stopPropagation();
+              hideTooltip();
+            };
+            
+            console.log('📌 [createButtonHelper] Agregando event listeners al botón');
+            button.addEventListener('mouseenter', mouseEnterHandler, false);
+            button.addEventListener('mouseleave', mouseLeaveHandler, false);
+            console.log('✅ [createButtonHelper] Event listeners agregados');
+            
+            // Guardar referencias para poder limpiarlas después
+            button._tooltipMouseEnter = mouseEnterHandler;
+            button._tooltipMouseLeave = mouseLeaveHandler;
+            button.dataset.tooltipInstance = tooltipId;
+            
+            console.log('✅ Tooltip UBITS aplicado en createButtonHelper:', {
+              iconPosition: buttonState.iconPosition,
+              showTooltip: buttonState.showTooltip,
+              tooltipText: buttonState.tooltipText,
+              tooltipId: tooltipId
+            });
+          }
+        } else {
+          // Limpiar tooltip si existe
+          const existingTooltipId = button.dataset.tooltipInstance;
+          if (existingTooltipId) {
+            const tooltipElement = document.getElementById(existingTooltipId);
+            if (tooltipElement) {
+              tooltipElement.remove();
+            }
+            delete button.dataset.tooltipInstance;
+          }
+          // Remover listeners
+          const oldMouseEnter = button._tooltipMouseEnter;
+          const oldMouseLeave = button._tooltipMouseLeave;
+          if (oldMouseEnter) {
+            button.removeEventListener('mouseenter', oldMouseEnter);
+            delete button._tooltipMouseEnter;
+          }
+          if (oldMouseLeave) {
+            button.removeEventListener('mouseleave', oldMouseLeave);
+            delete button._tooltipMouseLeave;
+          }
+        }
         
         // Si dropdown está activo, crear el dropdown
         if (options.dropdown && options.dropdownOptions && options.dropdownOptions.length > 0) {
@@ -9268,12 +10721,6 @@ Reglas Importantes:
           state.size = value;
           const select = document.getElementById(`size-select-${componentId}`);
           if (select) select.value = value;
-        } else if (option === 'icon') {
-          state.iconPosition = value;
-          // Actualizar botones activos de icono
-          document.querySelectorAll(`[data-component="${componentId}"][data-option="icon"]`).forEach(btn => {
-            btn.classList.toggle('active', btn.getAttribute('data-value') === value);
-          });
         } else if (option === 'badge') {
           state.showBadge = value === 'yes';
           const toggle = document.getElementById(`badge-toggle-${componentId}`);
@@ -9304,10 +10751,85 @@ Reglas Importantes:
           if (dropdownStatus) {
             dropdownStatus.textContent = state.dropdown ? 'Activado' : 'Desactivado';
           }
+        } else if (option === 'tooltip') {
+          console.log('🎛️ [setButtonControl] Cambiando tooltip:', {
+            option,
+            value,
+            componentId,
+            currentState: JSON.stringify(state, null, 2)
+          });
+          state.showTooltip = value === 'yes';
+          console.log('🎛️ [setButtonControl] Nuevo showTooltip:', state.showTooltip);
+          const toggle = document.getElementById(`tooltip-toggle-${componentId}`);
+          if (toggle) {
+            toggle.checked = state.showTooltip;
+            console.log('🎛️ [setButtonControl] Toggle actualizado:', toggle.checked);
+          } else {
+            console.warn('⚠️ [setButtonControl] Toggle no encontrado');
+          }
+          
+          // Actualizar texto del estado del tooltip
+          const tooltipStatus = document.getElementById(`tooltip-status-${componentId}`);
+          if (tooltipStatus) {
+            tooltipStatus.textContent = state.showTooltip ? 'Activado' : 'Desactivado';
+            console.log('🎛️ [setButtonControl] Estado actualizado:', tooltipStatus.textContent);
+          }
+          
+          // Forzar actualización del preview para aplicar el tooltip
+          console.log('🎛️ [setButtonControl] Llamando updateButtonPreview...');
+          updateButtonPreview(componentId);
+        } else if (option === 'tooltipText') {
+          console.log('🎛️ [setButtonControl] Cambiando tooltipText:', {
+            option,
+            value,
+            componentId,
+            currentState: JSON.stringify(state, null, 2)
+          });
+          state.tooltipText = value || 'Tooltip del botón';
+          console.log('🎛️ [setButtonControl] Nuevo tooltipText:', state.tooltipText);
+          const input = document.getElementById(`tooltip-text-input-${componentId}`);
+          if (input && input.value !== value) {
+            input.value = value;
+            console.log('🎛️ [setButtonControl] Input actualizado');
+          }
+          
+          // Forzar actualización del preview si el tooltip está activo
+          if (state.showTooltip && state.iconPosition === 'only') {
+            console.log('🎛️ [setButtonControl] Llamando updateButtonPreview (tooltip activo)...');
+            updateButtonPreview(componentId);
+          } else {
+            console.log('🎛️ [setButtonControl] No se actualiza preview (tooltip no activo o no es icon-only)');
+          }
+        } else if (option === 'icon') {
+          state.iconPosition = value;
+          console.log('🎛️ [setButtonControl] Cambiando iconPosition:', {
+            option,
+            value,
+            componentId,
+            currentState: JSON.stringify(state, null, 2)
+          });
+          
+          // Actualizar botones activos de icono
+          document.querySelectorAll(`[data-component="${componentId}"][data-option="icon"]`).forEach(btn => {
+            btn.classList.toggle('active', btn.getAttribute('data-value') === value);
+          });
+          
+          // Mostrar/ocultar controlador de tooltip según iconPosition
+          const tooltipControl = document.getElementById(`tooltip-control-${componentId}`);
+          if (tooltipControl) {
+            tooltipControl.style.display = value === 'only' ? 'block' : 'none';
+            console.log('🎛️ [setButtonControl] Tooltip control visibility:', tooltipControl.style.display);
+          }
+          
+          // Forzar actualización del preview para aplicar cambios
+          console.log('🎛️ [setButtonControl] Llamando updateButtonPreview después de cambiar iconPosition...');
+          updateButtonPreview(componentId);
         }
         
-        // Actualizar preview
-        updateButtonPreview(componentId);
+        // Actualizar preview (solo si no se actualizó ya en el bloque de 'icon')
+        if (option !== 'icon' && option !== 'tooltip' && option !== 'tooltipText') {
+          updateButtonPreview(componentId);
+        }
       };
       
       // Función para cambiar el preview del botón
@@ -9477,6 +10999,392 @@ Reglas Importantes:
         } else {
           console.warn('⚠️ No se encontró botón activo para el componente:', componentId);
         }
+      };
+      
+      // ========================================
+      // SPINNER PREVIEW FUNCTIONS
+      // ========================================
+      
+      // Estado del preview del Spinner
+      const spinnerPreviewState = {};
+      
+      // Inicializar estado del Spinner
+      function initSpinnerPreviewState(componentId) {
+        if (!spinnerPreviewState[componentId]) {
+          spinnerPreviewState[componentId] = {
+            size: 'md',
+            variant: 'primary',
+            animated: true,
+            label: '',
+            fullScreen: false
+          };
+        }
+        return spinnerPreviewState[componentId];
+      }
+      
+      // Función para generar HTML del Spinner
+      function generateSpinnerHTML(state, componentId) {
+        const { size, variant, animated, label, fullScreen } = state;
+        
+        const classes = [
+          'ubits-spinner',
+          `ubits-spinner--${size}`,
+          `ubits-spinner--${variant}`,
+          animated ? 'ubits-spinner--animated' : '',
+          fullScreen ? 'ubits-spinner--fullscreen' : ''
+        ].filter(Boolean).join(' ');
+        
+        return `
+          <div class="${classes}">
+            <div class="ubits-spinner__circle">
+              <div class="ubits-spinner__segment"></div>
+              <div class="ubits-spinner__segment"></div>
+              <div class="ubits-spinner__segment"></div>
+              <div class="ubits-spinner__segment"></div>
+            </div>
+            ${label ? `<span class="ubits-spinner__label">${label}</span>` : ''}
+          </div>
+        `;
+      }
+      
+      // Función para actualizar el preview del Spinner
+      window.updateSpinnerPreview = function(componentId) {
+        const state = initSpinnerPreviewState(componentId);
+        const preview = document.getElementById(`spinner-preview-${componentId}`);
+        
+        if (!preview) {
+          console.error('❌ Preview de Spinner no encontrado:', `spinner-preview-${componentId}`);
+          return;
+        }
+        
+        const spinnerHTML = generateSpinnerHTML(state, componentId);
+        preview.innerHTML = spinnerHTML;
+        
+        console.log('✅ Spinner preview actualizado:', state);
+      };
+      
+      // Función unificada para controles del Spinner
+      window.setSpinnerControl = function(option, value, componentId) {
+        const state = initSpinnerPreviewState(componentId);
+        
+        if (option === 'size') {
+          state.size = value;
+          const select = document.getElementById(`spinner-size-select-${componentId}`);
+          if (select) select.value = value;
+        } else if (option === 'variant') {
+          state.variant = value;
+          // Actualizar botones activos de variante
+          document.querySelectorAll(`[data-component="${componentId}"][data-option="variant"]`).forEach(btn => {
+            btn.classList.toggle('active', btn.getAttribute('data-value') === value);
+          });
+        } else if (option === 'animated') {
+          state.animated = value;
+          const status = document.getElementById(`spinner-animated-status-${componentId}`);
+          if (status) status.textContent = value ? 'Activado' : 'Desactivado';
+        } else if (option === 'label') {
+          state.label = value || '';
+          const input = document.getElementById(`spinner-label-input-${componentId}`);
+          if (input && input.value !== value) input.value = value;
+        } else if (option === 'fullScreen') {
+          state.fullScreen = value;
+          const status = document.getElementById(`spinner-fullscreen-status-${componentId}`);
+          if (status) status.textContent = value ? 'Activado' : 'Desactivado';
+        }
+        
+        // Actualizar preview
+        window.updateSpinnerPreview(componentId);
+      };
+      
+      // ========================================
+      // SKELETON PREVIEW FUNCTIONS
+      // ========================================
+      
+      // Estado del preview del Skeleton
+      const skeletonPreviewState = {};
+      
+      // Inicializar estado del Skeleton
+      function initSkeletonPreviewState(componentId) {
+        if (!skeletonPreviewState[componentId]) {
+          skeletonPreviewState[componentId] = {
+            variant: 'text',
+            size: 'md',
+            width: 'full',
+            height: '',
+            lines: 1,
+            animated: true
+          };
+        }
+        return skeletonPreviewState[componentId];
+      }
+      
+      // Función para generar HTML del Skeleton
+      function generateSkeletonHTML(state, componentId) {
+        const { variant, size, width, height, lines, animated } = state;
+        
+        const classes = [
+          'ubits-skeleton',
+          `ubits-skeleton--${variant}`,
+          size !== 'md' ? `ubits-skeleton--${size}` : '',
+          animated ? 'ubits-skeleton--animated' : ''
+        ].filter(Boolean).join(' ');
+        
+        // Calcular estilos de tamaño
+        const sizeStyles = [];
+        if (width) {
+          if (width === 'full') {
+            sizeStyles.push('width: 100%');
+          } else if (typeof width === 'number') {
+            sizeStyles.push(`width: ${width}px`);
+          } else {
+            sizeStyles.push(`width: ${width}`);
+          }
+        }
+        if (height) {
+          if (typeof height === 'number') {
+            sizeStyles.push(`height: ${height}px`);
+          } else {
+            sizeStyles.push(`height: ${height}`);
+          }
+        }
+        const styleAttr = sizeStyles.length > 0 ? ` style="${sizeStyles.join('; ')}"` : '';
+        
+        // Renderizar según la variante
+        if (variant === 'text') {
+          const lineElements = Array.from({ length: lines }, (_, index) => {
+            const isLastLine = index === lines - 1;
+            const lineWidth = isLastLine && lines > 1 ? '60%' : '100%';
+            return `<span class="ubits-skeleton__line" style="width: ${lineWidth}"></span>`;
+          }).join('');
+          return `<div class="${classes}"${styleAttr}>${lineElements}</div>`;
+        }
+        
+        return `<div class="${classes}"${styleAttr}></div>`;
+      }
+      
+      // Función para actualizar el preview del Skeleton
+      window.updateSkeletonPreview = function(componentId) {
+        const state = initSkeletonPreviewState(componentId);
+        const preview = document.getElementById(`skeleton-preview-${componentId}`);
+        
+        if (!preview) {
+          console.error('❌ Preview de Skeleton no encontrado:', `skeleton-preview-${componentId}`);
+          return;
+        }
+        
+        const skeletonHTML = generateSkeletonHTML(state, componentId);
+        preview.innerHTML = skeletonHTML;
+        
+        console.log('✅ Skeleton preview actualizado:', state);
+      };
+      
+      // Función unificada para controles del Skeleton
+      window.setSkeletonControl = function(option, value, componentId) {
+        const state = initSkeletonPreviewState(componentId);
+        
+        if (option === 'variant') {
+          state.variant = value;
+          // Actualizar botones activos de variante
+          document.querySelectorAll(`[data-component="${componentId}"][data-option="variant"]`).forEach(btn => {
+            btn.classList.toggle('active', btn.getAttribute('data-value') === value);
+          });
+          // Mostrar/ocultar controles según variante
+          const linesContainer = document.getElementById(`skeleton-lines-container-${componentId}`);
+          const heightContainer = document.getElementById(`skeleton-height-container-${componentId}`);
+          if (linesContainer) {
+            linesContainer.style.display = value === 'text' ? 'block' : 'none';
+          }
+          if (heightContainer) {
+            heightContainer.style.display = (value === 'rectangle' || value === 'custom') ? 'block' : 'none';
+          }
+        } else if (option === 'size') {
+          state.size = value;
+          const select = document.getElementById(`skeleton-size-select-${componentId}`);
+          if (select) select.value = value;
+        } else if (option === 'width') {
+          state.width = value || 'full';
+          const input = document.getElementById(`skeleton-width-input-${componentId}`);
+          if (input && input.value !== value) input.value = value;
+        } else if (option === 'height') {
+          state.height = value || '';
+          const input = document.getElementById(`skeleton-height-input-${componentId}`);
+          if (input && input.value !== value) input.value = value;
+        } else if (option === 'lines') {
+          state.lines = Math.max(1, Math.min(10, parseInt(value) || 1));
+          const input = document.getElementById(`skeleton-lines-input-${componentId}`);
+          if (input && input.value !== state.lines) input.value = state.lines;
+        } else if (option === 'animated') {
+          state.animated = value;
+          const status = document.getElementById(`skeleton-animated-status-${componentId}`);
+          if (status) status.textContent = value ? 'Activado' : 'Desactivado';
+        }
+        
+        // Actualizar preview
+        window.updateSkeletonPreview(componentId);
+      };
+      
+      // ========================================
+      // EMPTY STATE PREVIEW FUNCTIONS
+      // ========================================
+      
+      // Estado del preview del Empty State
+      const emptyStatePreviewState = {};
+      
+      // Inicializar estado del Empty State
+      function initEmptyStatePreviewState(componentId) {
+        if (!emptyStatePreviewState[componentId]) {
+          emptyStatePreviewState[componentId] = {
+            title: 'No hay resultados',
+            description: 'Intenta ajustar tus filtros de búsqueda',
+            imageUrl: '',
+            icon: 'inbox',
+            actionLabel: 'Buscar',
+            showPrimaryButton: false,
+            primaryButtonIcon: 'search',
+            showPrimaryButtonIcon: false,
+            secondaryActionLabel: 'Cancelar',
+            showSecondaryButton: false,
+            secondaryButtonIcon: 'times',
+            showSecondaryButtonIcon: false
+          };
+        }
+        return emptyStatePreviewState[componentId];
+      }
+      
+      // Función para generar HTML del Empty State
+      function generateEmptyStateHTML(state, componentId) {
+        const { title, description, imageUrl, icon, actionLabel, showPrimaryButton, primaryButtonIcon, showPrimaryButtonIcon, secondaryActionLabel, showSecondaryButton, secondaryButtonIcon, showSecondaryButtonIcon } = state;
+        
+        const classes = [
+          'ubits-empty-state',
+          'ubits-empty-state--default'
+        ].filter(Boolean).join(' ');
+        
+        // Renderizar imagen o icono
+        let visualElement = '';
+        if (imageUrl) {
+          visualElement = `
+            <div class="ubits-empty-state__image">
+              <img src="${imageUrl}" alt="${title}" />
+            </div>
+          `;
+        } else if (icon) {
+          visualElement = `
+            <div class="ubits-empty-state__icon">
+              <i class="far fa-${icon}"></i>
+            </div>
+          `;
+        }
+        
+        // Renderizar botones de acción
+        let actionsHTML = '';
+        let primaryButtonContent = actionLabel || '';
+        if (showPrimaryButtonIcon && primaryButtonIcon) {
+          primaryButtonContent = `<i class="far fa-${primaryButtonIcon}"></i> ${primaryButtonContent}`;
+        }
+        
+        let secondaryButtonContent = secondaryActionLabel || '';
+        if (showSecondaryButtonIcon && secondaryButtonIcon) {
+          secondaryButtonContent = `<i class="far fa-${secondaryButtonIcon}"></i> ${secondaryButtonContent}`;
+        }
+        
+        const primaryButton = (showPrimaryButton && actionLabel) 
+          ? `<button class="ubits-button ubits-button--primary ubits-button--md" type="button">${primaryButtonContent}</button>`
+          : '';
+        
+        const secondaryButton = (showSecondaryButton && secondaryActionLabel)
+          ? `<button class="ubits-button ubits-button--secondary ubits-button--md" type="button">${secondaryButtonContent}</button>`
+          : '';
+
+        if (primaryButton || secondaryButton) {
+          actionsHTML = `
+            <div class="ubits-empty-state__actions">
+              ${secondaryButton}
+              ${primaryButton}
+            </div>
+          `;
+        }
+        
+        return `
+          <div class="${classes}">
+            ${visualElement}
+            <div class="ubits-empty-state__content">
+              <h3 class="ubits-empty-state__title">${title}</h3>
+              ${description ? `<p class="ubits-empty-state__description">${description}</p>` : ''}
+            </div>
+            ${actionsHTML}
+          </div>
+        `;
+      }
+      
+      // Función para actualizar el preview del Empty State
+      window.updateEmptyStatePreview = function(componentId) {
+        const state = initEmptyStatePreviewState(componentId);
+        const preview = document.getElementById(`empty-state-preview-${componentId}`);
+        
+        if (!preview) {
+          console.error('❌ Preview de Empty State no encontrado:', `empty-state-preview-${componentId}`);
+          return;
+        }
+        
+        const emptyStateHTML = generateEmptyStateHTML(state, componentId);
+        preview.innerHTML = emptyStateHTML;
+        
+        console.log('✅ Empty State preview actualizado:', state);
+      };
+      
+      // Función unificada para controles del Empty State
+      window.setEmptyStateControl = function(option, value, componentId) {
+        const state = initEmptyStatePreviewState(componentId);
+        
+        if (option === 'title') {
+          state.title = value || 'No hay resultados';
+          const input = document.getElementById(`empty-state-title-input-${componentId}`);
+          if (input && input.value !== value) input.value = value;
+        } else if (option === 'description') {
+          state.description = value || '';
+          const input = document.getElementById(`empty-state-description-input-${componentId}`);
+          if (input && input.value !== value) input.value = value;
+        } else if (option === 'icon') {
+          state.icon = value || '';
+          state.imageUrl = ''; // Limpiar imagen si se usa icono
+          const input = document.getElementById(`empty-state-icon-input-${componentId}`);
+          if (input && input.value !== value) input.value = value;
+        } else if (option === 'actionLabel') {
+          state.actionLabel = value || '';
+          const input = document.getElementById(`empty-state-action-label-input-${componentId}`);
+          if (input && input.value !== value) input.value = value;
+        } else if (option === 'showPrimaryButton') {
+          state.showPrimaryButton = value || false;
+          const toggle = document.getElementById(`empty-state-show-primary-toggle-${componentId}`);
+          if (toggle && toggle.checked !== value) toggle.checked = value;
+        } else if (option === 'primaryButtonIcon') {
+          state.primaryButtonIcon = value || '';
+          const input = document.getElementById(`empty-state-primary-button-icon-input-${componentId}`);
+          if (input && input.value !== value) input.value = value;
+        } else if (option === 'showPrimaryButtonIcon') {
+          state.showPrimaryButtonIcon = value || false;
+          const toggle = document.getElementById(`empty-state-show-primary-icon-toggle-${componentId}`);
+          if (toggle && toggle.checked !== value) toggle.checked = value;
+        } else if (option === 'secondaryActionLabel') {
+          state.secondaryActionLabel = value || '';
+          const input = document.getElementById(`empty-state-secondary-action-label-input-${componentId}`);
+          if (input && input.value !== value) input.value = value;
+        } else if (option === 'showSecondaryButton') {
+          state.showSecondaryButton = value || false;
+          const toggle = document.getElementById(`empty-state-show-secondary-toggle-${componentId}`);
+          if (toggle && toggle.checked !== value) toggle.checked = value;
+        } else if (option === 'secondaryButtonIcon') {
+          state.secondaryButtonIcon = value || '';
+          const input = document.getElementById(`empty-state-secondary-button-icon-input-${componentId}`);
+          if (input && input.value !== value) input.value = value;
+        } else if (option === 'showSecondaryButtonIcon') {
+          state.showSecondaryButtonIcon = value || false;
+          const toggle = document.getElementById(`empty-state-show-secondary-icon-toggle-${componentId}`);
+          if (toggle && toggle.checked !== value) toggle.checked = value;
+        }
+        
+        // Actualizar preview
+        window.updateEmptyStatePreview(componentId);
       };
       
       // ========================================
@@ -11347,13 +13255,15 @@ Reglas Importantes:
           delete window.dataTableInstances[componentId];
         }
         
-        // Cargar CSS necesario
-        if (!document.querySelector('link[href*="data-table.css"]')) {
+        // Cargar CSS necesario (con timestamp para evitar caché)
+        const existingCssLink = document.querySelector('link[href*="data-table.css"]');
+        if (existingCssLink) {
+          existingCssLink.remove(); // Remover el link existente para forzar recarga
+        }
           const link = document.createElement('link');
           link.rel = 'stylesheet';
-          link.href = '../../addons/data-table/src/styles/data-table.css';
+        link.href = '../../addons/data-table/src/styles/data-table.css?v=' + Date.now();
           document.head.appendChild(link);
-        }
         
         if (!document.querySelector('link[href*="checkbox.css"]')) {
           const link = document.createElement('link');
@@ -11688,13 +13598,17 @@ Reglas Importantes:
           }
         };
         
-        // Si el módulo ya está cargado, crear la tabla directamente
+        // Forzar recarga del módulo UMD (con timestamp para evitar caché)
+        // Limpiar el módulo anterior si existe
         if (typeof window.createDataTable !== 'undefined') {
-          createDataTableInstance();
-        } else {
-          // Cargar el módulo UMD
+          // El módulo ya está cargado, pero forzamos recarga para obtener la última versión
+          delete window.createDataTable;
+          delete window.renderDataTable;
+        }
+        
+        // Cargar el módulo UMD (con timestamp para evitar caché)
           const script = document.createElement('script');
-          script.src = '../../addons/data-table/dist/data-table.umd.js';
+        script.src = '../../addons/data-table/dist/data-table.umd.js?v=' + Date.now();
           script.onload = () => {
             console.log('✅ Data Table UMD cargado');
             // Esperar a que el módulo esté disponible
@@ -11718,7 +13632,6 @@ Reglas Importantes:
             preview.innerHTML = '<p style="color: var(--ubits-fg-1-medium); padding: 16px;">Error: No se pudo cargar el archivo JavaScript del componente.</p>';
           };
           document.head.appendChild(script);
-        }
       };
       
       // Función para renderizar contenido de celdas usando Status Tag de UBITS
@@ -13042,6 +14955,650 @@ Reglas Importantes:
       };
       
       // ========================================
+      // TOOLTIP PREVIEW FUNCTIONS
+      // ========================================
+      
+      // Estado del preview del Tooltip
+      const tooltipPreviewState = {};
+      const tooltipInstances = {};
+      
+      // Inicializar estado del Tooltip
+      function initTooltipPreviewState(componentId) {
+        if (!tooltipPreviewState[componentId]) {
+          tooltipPreviewState[componentId] = {
+            title: 'Título del tooltip',
+            showTitle: true,
+            description: 'Descripción del tooltip que proporciona información adicional al usuario.',
+            showDescription: true,
+            width: 'md',
+            tailPosition: 'top',
+            tailOffset: 0,
+            primaryButtonLabel: 'Aceptar',
+            showPrimaryButton: false,
+            primaryButtonIcon: 'check',
+            showPrimaryButtonIcon: false,
+            secondaryButtonLabel: 'Cancelar',
+            showSecondaryButton: false,
+            secondaryButtonIcon: 'times',
+            showSecondaryButtonIcon: false,
+            tertiaryButtonLabel: 'Más info',
+            showTertiaryButton: false,
+            tertiaryButtonIcon: 'info-circle',
+            showTertiaryButtonIcon: false,
+            isOpen: false
+          };
+        }
+        return tooltipPreviewState[componentId];
+      }
+      
+      // Función para generar HTML del Tooltip manualmente
+      function generateTooltipHTML(state, componentId) {
+        // Mapear tamaño del tooltip al tamaño de los botones
+        const buttonSizeMap = {
+          sm: 'xs',
+          md: 'sm',
+          lg: 'md'
+        };
+        const buttonSize = buttonSizeMap[state.width] || 'sm';
+        
+        // Calcular cantidad de botones visibles
+        const buttonCount = (state.showPrimaryButton ? 1 : 0) + 
+                           (state.showSecondaryButton ? 1 : 0) + 
+                           (state.showTertiaryButton ? 1 : 0);
+        
+        // Calcular min-width y max-width según tamaño y cantidad de botones
+        const baseMinWidths = { sm: 120, md: 160, lg: 200 };
+        const baseMaxWidths = { sm: 240, md: 320, lg: 400 };
+        let minWidth = baseMinWidths[state.width] || baseMinWidths.md;
+        let maxWidth = baseMaxWidths[state.width] || baseMaxWidths.md;
+        
+        // Si hay botones, aumentar el max-width para que no se corte
+        if (buttonCount === 3) {
+          maxWidth = Math.max(maxWidth, 420);
+        } else if (buttonCount === 2) {
+          maxWidth = Math.max(maxWidth, 360);
+        }
+        
+        // Usar min-width y max-width en lugar de width fijo para que se adapte al contenido
+        const tooltipWidthStyle = `min-width: ${minWidth}px; max-width: ${maxWidth}px; width: auto;`;
+        const tailPositionClass = `ubits-tooltip--tail-${state.tailPosition}`;
+        
+        // Tail HTML - usar transform para el offset en lugar de left/top para que se adapte al contenedor
+        let tailStyle = '';
+        if (state.tailOffset) {
+          if (state.tailPosition === 'top' || state.tailPosition === 'bottom') {
+            tailStyle = `transform: translateX(calc(-50% + ${state.tailOffset}px));`;
+          } else {
+            tailStyle = `transform: translateY(calc(-50% + ${state.tailOffset}px));`;
+          }
+        }
+        const tailHTML = `
+          <div class="ubits-tooltip__tail"${tailStyle ? ` style="${tailStyle}"` : ''}>
+            <div class="ubits-tooltip__tail-inner"></div>
+          </div>
+        `;
+        
+        const headerHTML = (state.showTitle && state.title) ? `
+          <div class="ubits-tooltip__header">
+            <div class="ubits-tooltip__header-title">
+              <p class="ubits-body-md-semibold">${state.title}</p>
+            </div>
+          </div>
+        ` : '';
+        
+        const bodyHTML = (state.showDescription && state.description) ? `
+          <div class="ubits-tooltip__body">
+            <div class="ubits-tooltip__body-content">
+              <p class="ubits-body-md">${state.description}</p>
+            </div>
+          </div>
+        ` : '';
+        
+        // Footer HTML
+        let footerHTML = '';
+        const hasButtons = state.showPrimaryButton || state.showSecondaryButton || state.showTertiaryButton;
+        
+        if (hasButtons) {
+          // Botón primario
+          let primaryButtonContent = state.primaryButtonLabel || '';
+          if (state.showPrimaryButtonIcon && state.primaryButtonIcon) {
+            primaryButtonContent = `<i class="far fa-${state.primaryButtonIcon}"></i> ${primaryButtonContent}`;
+          }
+          const primaryButton = (state.showPrimaryButton && state.primaryButtonLabel) 
+            ? `<button class="ubits-button ubits-button--primary ubits-button--${buttonSize} ubits-tooltip__footer-button" data-action="primary" type="button">${primaryButtonContent}</button>`
+            : '';
+
+          // Botón secundario
+          let secondaryButtonContent = state.secondaryButtonLabel || '';
+          if (state.showSecondaryButtonIcon && state.secondaryButtonIcon) {
+            secondaryButtonContent = `<i class="far fa-${state.secondaryButtonIcon}"></i> ${secondaryButtonContent}`;
+          }
+          const secondaryButton = (state.showSecondaryButton && state.secondaryButtonLabel)
+            ? `<button class="ubits-button ubits-button--secondary ubits-button--${buttonSize} ubits-tooltip__footer-button" data-action="secondary" type="button">${secondaryButtonContent}</button>`
+            : '';
+
+          // Botón terciario
+          let tertiaryButtonContent = state.tertiaryButtonLabel || '';
+          if (state.showTertiaryButtonIcon && state.tertiaryButtonIcon) {
+            tertiaryButtonContent = `<i class="far fa-${state.tertiaryButtonIcon}"></i> ${tertiaryButtonContent}`;
+          }
+          const tertiaryButton = (state.showTertiaryButton && state.tertiaryButtonLabel)
+            ? `<button class="ubits-button ubits-button--tertiary ubits-button--${buttonSize} ubits-tooltip__footer-button" data-action="tertiary" type="button">${tertiaryButtonContent}</button>`
+            : '';
+
+          footerHTML = `
+            <div class="ubits-tooltip__footer">
+              <div class="ubits-tooltip__footer-actions${!state.showTertiaryButton ? ' ubits-tooltip__footer-actions--no-tertiary' : ''}">
+                ${tertiaryButton ? `
+                <div class="ubits-tooltip__footer-left">
+                  ${tertiaryButton}
+                </div>
+                ` : ''}
+                <div class="ubits-tooltip__footer-right">
+                  ${secondaryButton}
+                  ${primaryButton}
+                </div>
+              </div>
+            </div>
+          `;
+        }
+        
+        // El tooltip se posiciona con transform para centrarlo
+        // Usar min-width y max-width para que se adapte al contenido
+        // El tail se posicionará relativo al tooltip usando left: 50% y transform: translateX(-50%)
+        const tooltipHTML = `
+          <div class="ubits-tooltip ${tailPositionClass}" style="${tooltipWidthStyle} position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1000;">
+            ${tailHTML}
+            <div class="ubits-tooltip__content">
+              ${headerHTML}
+              ${bodyHTML}
+              ${footerHTML}
+            </div>
+          </div>
+        `.trim();
+        
+        console.log('📝 [generateTooltipHTML] HTML generado:', {
+          tooltipWidthStyle: tooltipWidthStyle,
+          minWidth: minWidth,
+          maxWidth: maxWidth,
+          tailPositionClass: tailPositionClass,
+          tailHTML: tailHTML,
+          fullHTML: tooltipHTML.substring(0, 1000),
+          state: {
+            tailPosition: state.tailPosition,
+            tailOffset: state.tailOffset,
+            width: state.width
+          }
+        });
+        
+        return tooltipHTML;
+      }
+      
+      // Función para actualizar el preview del Tooltip
+      window.updateTooltipPreview = function(componentId) {
+        const state = initTooltipPreviewState(componentId);
+        const container = document.getElementById(`tooltip-preview-container-${componentId}`);
+        
+        if (!container) {
+          console.error('❌ Preview container de Tooltip no encontrado:', `tooltip-preview-container-${componentId}`);
+          return;
+        }
+        
+        // Limpiar tooltip anterior si existe
+        if (tooltipInstances[componentId] && tooltipInstances[componentId].element) {
+          tooltipInstances[componentId].element.remove();
+          tooltipInstances[componentId] = null;
+        }
+        
+        // Cargar CSS si no está cargado
+        const existingTooltipLink = document.querySelector('link[href*="tooltip.css"]');
+        if (!existingTooltipLink) {
+          const link = document.createElement('link');
+          link.rel = 'stylesheet';
+          link.href = '../../addons/tooltip/src/styles/tooltip.css';
+          document.head.appendChild(link);
+        }
+        
+        // Cargar CSS del button si no está cargado (para los botones del footer)
+        const existingButtonLink = document.querySelector('link[href*="button.css"]');
+        if (!existingButtonLink) {
+          const link = document.createElement('link');
+          link.rel = 'stylesheet';
+          link.href = '../../addons/button/src/styles/button.css';
+          document.head.appendChild(link);
+        }
+        
+        // Generar HTML del tooltip manualmente
+        console.log('🚀 [updateTooltipPreview] Generando HTML del tooltip...');
+        console.log('📊 [updateTooltipPreview] Estado completo:', JSON.stringify(state, null, 2));
+        
+        const tooltipHTML = generateTooltipHTML(state, componentId);
+        
+        console.log('✅ [updateTooltipPreview] HTML generado, parseando...');
+        
+        // Crear wrapper temporal para parsear el HTML
+        const wrapper = document.createElement('div');
+        wrapper.innerHTML = tooltipHTML;
+        const tooltip = wrapper.firstElementChild;
+        
+        if (!tooltip) {
+          console.error('❌ [updateTooltipPreview] No se pudo crear el tooltip');
+          console.error('❌ [updateTooltipPreview] HTML generado:', tooltipHTML);
+          console.error('❌ [updateTooltipPreview] Wrapper HTML:', wrapper.innerHTML);
+          return;
+        }
+        
+        console.log('✅ [updateTooltipPreview] Tooltip creado:', {
+          tooltip: tooltip,
+          tooltipClasses: tooltip.className,
+          tooltipStyles: tooltip.style.cssText,
+          tooltipHTML: tooltip.outerHTML.substring(0, 500),
+          hasTail: !!tooltip.querySelector('.ubits-tooltip__tail')
+        });
+        
+        // Añadir el tooltip al contenedor del preview
+        container.appendChild(tooltip);
+        
+        console.log('✅ [updateTooltipPreview] Tooltip añadido al contenedor');
+        
+        // Función para centrar el tail del tooltip principal
+        const centerTooltipTail = () => {
+          console.log('🔧 [Tooltip Main] ========== INICIANDO CENTRADO DE TAIL ==========');
+          
+          // Logs de estructura completa
+          console.log('📋 [Tooltip Main] Estructura del tooltip:', {
+            tooltipElement: tooltip,
+            tooltipId: tooltip.id,
+            tooltipClasses: tooltip.className,
+            tooltipStyles: tooltip.style.cssText,
+            tooltipHTML: tooltip.outerHTML.substring(0, 500),
+            tooltipRect: tooltip.getBoundingClientRect(),
+            tooltipComputed: {
+              position: window.getComputedStyle(tooltip).position,
+              width: window.getComputedStyle(tooltip).width,
+              height: window.getComputedStyle(tooltip).height,
+              left: window.getComputedStyle(tooltip).left,
+              top: window.getComputedStyle(tooltip).top,
+              transform: window.getComputedStyle(tooltip).transform
+            }
+          });
+          
+          const tailElement = tooltip.querySelector('.ubits-tooltip__tail');
+          
+          if (!tailElement) {
+            console.error('❌ [Tooltip Main] Tail element NO encontrado en tooltip!');
+            console.error('❌ [Tooltip Main] Tooltip HTML completo:', tooltip.outerHTML);
+            console.error('❌ [Tooltip Main] QuerySelector result:', tooltip.querySelectorAll('*'));
+            return;
+          }
+          
+          console.log('✅ [Tooltip Main] Tail element encontrado:', {
+            tailElement: tailElement,
+            tailClasses: tailElement.className,
+            tailStyles: tailElement.style.cssText,
+            tailHTML: tailElement.outerHTML,
+            tailRect: tailElement.getBoundingClientRect(),
+            tailComputed: {
+              position: window.getComputedStyle(tailElement).position,
+              left: window.getComputedStyle(tailElement).left,
+              right: window.getComputedStyle(tailElement).right,
+              top: window.getComputedStyle(tailElement).top,
+              bottom: window.getComputedStyle(tailElement).bottom,
+              transform: window.getComputedStyle(tailElement).transform,
+              transformOrigin: window.getComputedStyle(tailElement).transformOrigin,
+              width: window.getComputedStyle(tailElement).width,
+              height: window.getComputedStyle(tailElement).height,
+              marginLeft: window.getComputedStyle(tailElement).marginLeft,
+              marginRight: window.getComputedStyle(tailElement).marginRight
+            }
+          });
+          
+          // Verificar clases del tooltip
+          const hasTailTop = tooltip.classList.contains('ubits-tooltip--tail-top');
+          const hasTailBottom = tooltip.classList.contains('ubits-tooltip--tail-bottom');
+          const hasTailLeft = tooltip.classList.contains('ubits-tooltip--tail-left');
+          const hasTailRight = tooltip.classList.contains('ubits-tooltip--tail-right');
+          
+          console.log('🏷️ [Tooltip Main] Clases del tooltip relacionadas con tail:', {
+            hasTailTop: hasTailTop,
+            hasTailBottom: hasTailBottom,
+            hasTailLeft: hasTailLeft,
+            hasTailRight: hasTailRight,
+            tailPosition: state.tailPosition,
+            allClasses: tooltip.className.split(' ')
+          });
+          
+          // Remover cualquier estilo inline que pueda interferir (excepto el offset si existe)
+          const currentStyle = tailElement.style.cssText;
+          const hasOffset = state.tailOffset && state.tailOffset !== 0;
+          
+          console.log('🎯 [Tooltip Main] Estado antes de centrar:', {
+            currentStyle: currentStyle,
+            hasOffset: hasOffset,
+            tailOffset: state.tailOffset,
+            tailPosition: state.tailPosition
+          });
+          
+          // Si no hay offset, remover todos los estilos inline y dejar que CSS maneje el centrado
+          if (!hasOffset) {
+            console.log('🧹 [Tooltip Main] Removiendo estilos inline (sin offset)...');
+            tailElement.style.removeProperty('left');
+            tailElement.style.removeProperty('right');
+            tailElement.style.removeProperty('top');
+            tailElement.style.removeProperty('bottom');
+            tailElement.style.removeProperty('transform');
+            tailElement.style.removeProperty('margin-left');
+            tailElement.style.removeProperty('margin-right');
+            
+            console.log('✅ [Tooltip Main] Estilos inline removidos. Estilos después:', {
+              inlineStyles: tailElement.style.cssText,
+              computedLeft: window.getComputedStyle(tailElement).left,
+              computedTransform: window.getComputedStyle(tailElement).transform
+            });
+          } else {
+            console.log('🎯 [Tooltip Main] Aplicando estilos con offset...');
+            // Si hay offset, mantener solo el transform con el offset
+            if (state.tailPosition === 'top' || state.tailPosition === 'bottom') {
+              tailElement.style.left = '50%';
+              tailElement.style.right = 'auto';
+              tailElement.style.transform = `translateX(calc(-50% + ${state.tailOffset}px))`;
+              if (state.tailPosition === 'bottom') {
+                tailElement.style.transform += ' rotate(180deg)';
+              }
+            } else {
+              tailElement.style.top = '50%';
+              tailElement.style.bottom = 'auto';
+              tailElement.style.transform = `translateY(calc(-50% + ${state.tailOffset}px))`;
+            }
+            
+            console.log('✅ [Tooltip Main] Estilos con offset aplicados:', {
+              inlineStyles: tailElement.style.cssText,
+              computedLeft: window.getComputedStyle(tailElement).left,
+              computedTransform: window.getComputedStyle(tailElement).transform
+            });
+          }
+          
+          // Forzar reflow
+          void tailElement.offsetHeight;
+          
+          // Verificar que el tail esté centrado
+          setTimeout(() => {
+            const tailRect = tailElement.getBoundingClientRect();
+            const tooltipRect = tooltip.getBoundingClientRect();
+            const tailRelativeLeft = tailRect.left - tooltipRect.left;
+            const tooltipCenterRelative = tooltipRect.width / 2;
+            const tailCenterRelative = tailRelativeLeft + (tailRect.width / 2);
+            const difference = Math.abs(tailCenterRelative - tooltipCenterRelative);
+            
+            console.log('🔺 [Tooltip Main] ========== VERIFICACIÓN FINAL DEL TAIL ==========');
+            
+            // Logs individuales para ver valores reales
+            console.log('📐 [Tooltip Main] Tail Rect:', 
+              'left:', tailRect.left.toFixed(2),
+              'top:', tailRect.top.toFixed(2),
+              'width:', tailRect.width.toFixed(2),
+              'height:', tailRect.height.toFixed(2)
+            );
+            console.log('📐 [Tooltip Main] Tooltip Rect:', 
+              'left:', tooltipRect.left.toFixed(2),
+              'top:', tooltipRect.top.toFixed(2),
+              'width:', tooltipRect.width.toFixed(2),
+              'height:', tooltipRect.height.toFixed(2)
+            );
+            console.log('📐 [Tooltip Main] Cálculos:', 
+              'tailRelativeLeft:', tailRelativeLeft.toFixed(2),
+              'tooltipCenterRelative:', tooltipCenterRelative.toFixed(2),
+              'tailCenterRelative:', tailCenterRelative.toFixed(2),
+              'difference:', difference.toFixed(2),
+              'isCentered:', difference < 2
+            );
+            
+            const tailComputedLeft = window.getComputedStyle(tailElement).left;
+            const tailComputedTransform = window.getComputedStyle(tailElement).transform;
+            const tailComputedPosition = window.getComputedStyle(tailElement).position;
+            
+            console.log('🎨 [Tooltip Main] Tail Computed Styles:', 
+              'left:', tailComputedLeft,
+              'transform:', tailComputedTransform,
+              'position:', tailComputedPosition
+            );
+            
+            const tooltipComputedWidth = window.getComputedStyle(tooltip).width;
+            const tooltipComputedLeft = window.getComputedStyle(tooltip).left;
+            const tooltipComputedTransform = window.getComputedStyle(tooltip).transform;
+            
+            console.log('🎨 [Tooltip Main] Tooltip Computed Styles:', 
+              'width:', tooltipComputedWidth,
+              'left:', tooltipComputedLeft,
+              'transform:', tooltipComputedTransform
+            );
+            
+            console.log('🔺 [Tooltip Main] Estado del tail después de centrar:', {
+              tailRect: {
+                left: tailRect.left,
+                top: tailRect.top,
+                width: tailRect.width,
+                height: tailRect.height,
+                right: tailRect.right,
+                bottom: tailRect.bottom
+              },
+              tooltipRect: {
+                left: tooltipRect.left,
+                top: tooltipRect.top,
+                width: tooltipRect.width,
+                height: tooltipRect.height,
+                right: tooltipRect.right,
+                bottom: tooltipRect.bottom
+              },
+              tailRelativeLeft: tailRelativeLeft,
+              tooltipCenterRelative: tooltipCenterRelative,
+              tailCenterRelative: tailCenterRelative,
+              difference: difference,
+              isCentered: difference < 2,
+              tailComputed: {
+                left: tailComputedLeft,
+                right: window.getComputedStyle(tailElement).right,
+                top: window.getComputedStyle(tailElement).top,
+                bottom: window.getComputedStyle(tailElement).bottom,
+                transform: tailComputedTransform,
+                position: tailComputedPosition,
+                width: window.getComputedStyle(tailElement).width,
+                height: window.getComputedStyle(tailElement).height
+              },
+              tooltipComputed: {
+                position: window.getComputedStyle(tooltip).position,
+                width: tooltipComputedWidth,
+                left: tooltipComputedLeft,
+                transform: tooltipComputedTransform
+              }
+            });
+            
+            if (difference >= 2) {
+              console.warn('⚠️ [Tooltip Main] Tail NO está centrado, diferencia:', difference, 'px');
+              console.warn('⚠️ [Tooltip Main] Intentando corrección...');
+              
+              // Intentar corregir forzando los estilos
+              if (state.tailPosition === 'top' || state.tailPosition === 'bottom') {
+                tailElement.style.setProperty('left', '50%', 'important');
+                tailElement.style.setProperty('right', 'auto', 'important');
+                if (!hasOffset) {
+                  tailElement.style.removeProperty('transform');
+                }
+              }
+              
+              setTimeout(() => {
+                const tailRectAfter = tailElement.getBoundingClientRect();
+                const tooltipRectAfter = tooltip.getBoundingClientRect();
+                const tailRelativeLeftAfter = tailRectAfter.left - tooltipRectAfter.left;
+                const tailCenterRelativeAfter = tailRelativeLeftAfter + (tailRectAfter.width / 2);
+                const tooltipCenterRelativeAfter = tooltipRectAfter.width / 2;
+                const differenceAfter = Math.abs(tailCenterRelativeAfter - tooltipCenterRelativeAfter);
+                
+                console.log('🔧 [Tooltip Main] Después de corrección:', {
+                  differenceAfter: differenceAfter,
+                  isCentered: differenceAfter < 2,
+                  tailComputedAfter: {
+                    left: window.getComputedStyle(tailElement).left,
+                    transform: window.getComputedStyle(tailElement).transform
+                  }
+                });
+              }, 10);
+            } else {
+              console.log('✅ [Tooltip Main] Tail está correctamente centrado');
+            }
+            
+            console.log('🔺 [Tooltip Main] ========== FIN VERIFICACIÓN ==========');
+          }, 10);
+        };
+        
+        // Observar cambios en el tamaño del tooltip para recalcular el tail
+        if (typeof ResizeObserver !== 'undefined') {
+          try {
+            const resizeObserver = new ResizeObserver(() => {
+              console.log('📏 [Tooltip Main ResizeObserver] Tooltip cambió de tamaño, recalculando tail...');
+              centerTooltipTail();
+            });
+            resizeObserver.observe(tooltip);
+            
+            // Guardar referencia para poder desconectarlo después
+            tooltip._tailResizeObserver = resizeObserver;
+            
+            // Centrar el tail inicialmente
+            setTimeout(() => {
+              centerTooltipTail();
+            }, 50);
+          } catch (error) {
+            console.warn('⚠️ [Tooltip Main] Error al crear ResizeObserver:', error);
+            // Centrar el tail de todas formas
+            setTimeout(() => {
+              centerTooltipTail();
+            }, 50);
+          }
+        } else {
+          // Si ResizeObserver no está disponible, centrar después de un delay
+          setTimeout(() => {
+            centerTooltipTail();
+          }, 100);
+        }
+        
+        // Funciones de control
+        const openTooltip = () => {
+          if (!tooltip || !tooltip.classList) {
+            console.error('❌ Tooltip element no válido');
+            return;
+          }
+          tooltip.classList.add('ubits-tooltip--open');
+          state.isOpen = true;
+          const toggleButton = document.getElementById(`tooltip-toggle-button-text-${componentId}`);
+          if (toggleButton) {
+            toggleButton.textContent = 'Cerrar Tooltip';
+          }
+        };
+        
+        const closeTooltip = () => {
+          if (!tooltip || !tooltip.classList) {
+            console.error('❌ Tooltip element no válido');
+            return;
+          }
+          tooltip.classList.remove('ubits-tooltip--open');
+          state.isOpen = false;
+          const toggleButton = document.getElementById(`tooltip-toggle-button-text-${componentId}`);
+          if (toggleButton) {
+            toggleButton.textContent = 'Abrir Tooltip';
+          }
+        };
+        
+        // Guardar instancia
+        tooltipInstances[componentId] = {
+          element: tooltip,
+          open: openTooltip,
+          close: closeTooltip
+        };
+      };
+      
+      // Función para toggle del Tooltip
+      window.toggleTooltipComponent = function(componentId) {
+        const state = initTooltipPreviewState(componentId);
+        let instance = tooltipInstances[componentId];
+        
+        if (!instance || !instance.element || !instance.element.parentElement) {
+          // Si no existe o fue removido, crear primero
+          window.updateTooltipPreview(componentId);
+          // Esperar a que se cree y luego abrir
+          setTimeout(() => {
+            instance = tooltipInstances[componentId];
+            if (instance && instance.open) {
+              instance.open();
+            }
+          }, 100);
+          return;
+        }
+        
+        if (state.isOpen) {
+          instance.close();
+        } else {
+          instance.open();
+        }
+      };
+      
+      // Función unificada para controles del Tooltip
+      window.setTooltipControl = function(option, value, componentId) {
+        const state = initTooltipPreviewState(componentId);
+        
+        // Actualizar estado según la opción
+        if (option === 'title') {
+          state.title = value;
+        } else if (option === 'showTitle') {
+          state.showTitle = value;
+        } else if (option === 'description') {
+          state.description = value;
+        } else if (option === 'showDescription') {
+          state.showDescription = value;
+        } else if (option === 'width') {
+          state.width = value;
+        } else if (option === 'tailPosition') {
+          state.tailPosition = value;
+        } else if (option === 'primaryButtonLabel') {
+          state.primaryButtonLabel = value;
+        } else if (option === 'showPrimaryButton') {
+          state.showPrimaryButton = value;
+        } else if (option === 'primaryButtonIcon') {
+          state.primaryButtonIcon = value;
+        } else if (option === 'showPrimaryButtonIcon') {
+          state.showPrimaryButtonIcon = value;
+        } else if (option === 'secondaryButtonLabel') {
+          state.secondaryButtonLabel = value;
+        } else if (option === 'showSecondaryButton') {
+          state.showSecondaryButton = value;
+        } else if (option === 'secondaryButtonIcon') {
+          state.secondaryButtonIcon = value;
+        } else if (option === 'showSecondaryButtonIcon') {
+          state.showSecondaryButtonIcon = value;
+        } else if (option === 'tertiaryButtonLabel') {
+          state.tertiaryButtonLabel = value;
+        } else if (option === 'showTertiaryButton') {
+          state.showTertiaryButton = value;
+        } else if (option === 'tertiaryButtonIcon') {
+          state.tertiaryButtonIcon = value;
+        } else if (option === 'showTertiaryButtonIcon') {
+          state.showTertiaryButtonIcon = value;
+        }
+        
+        // Actualizar preview
+        window.updateTooltipPreview(componentId);
+        
+        // Si estaba abierto, mantenerlo abierto
+        if (state.isOpen && tooltipInstances[componentId]) {
+          setTimeout(() => {
+            const instance = tooltipInstances[componentId];
+            if (instance && instance.open) {
+              instance.open();
+            }
+          }, 50);
+        }
+      };
+      
+      // ========================================
       // SCROLLBAR PREVIEW FUNCTIONS
       // ========================================
       
@@ -13361,6 +15918,450 @@ Reglas Importantes:
         
         // Actualizar preview
         window.updateScrollbarPreview(componentId);
+      };
+      
+      // ========================================
+      // CALENDAR PREVIEW FUNCTIONS
+      // ========================================
+      
+      // Estado del preview del Calendar
+      const calendarPreviewState = {};
+      const calendarInstances = {};
+      
+      // Constantes del Calendar (disponibles globalmente)
+      const CALENDAR_MONTH_NAMES = [
+        'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+        'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+      ];
+      const CALENDAR_DAY_NAMES = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+      
+      // Inicializar estado del Calendar
+      function initCalendarPreviewState(componentId) {
+        if (!calendarPreviewState[componentId]) {
+          calendarPreviewState[componentId] = {
+            mode: 'single',
+            selectedDate: null,
+            endDate: null,
+            minDate: null,
+            maxDate: null,
+            currentDate: new Date(),
+            isSelectingRange: false
+          };
+        }
+        return calendarPreviewState[componentId];
+      }
+      
+      // Función para generar HTML del Calendar
+      function generateCalendarHTML(state) {
+        const MONTH_NAMES = CALENDAR_MONTH_NAMES;
+        const DAY_NAMES = CALENDAR_DAY_NAMES;
+        
+        const formatDate = (date) => {
+          const day = String(date.getDate()).padStart(2, '0');
+          const month = String(date.getMonth() + 1).padStart(2, '0');
+          const year = date.getFullYear();
+          return `${day}/${month}/${year}`;
+        };
+        
+        const compareDates = (date1, date2) => {
+          const d1 = new Date(date1.getFullYear(), date1.getMonth(), date1.getDate());
+          const d2 = new Date(date2.getFullYear(), date2.getMonth(), date2.getDate());
+          return d1.getTime() - d2.getTime();
+        };
+        
+        const isSameDay = (date1, date2) => {
+          return compareDates(date1, date2) === 0;
+        };
+        
+        const isDateInRange = (date, startDate, endDate) => {
+          const dateTime = compareDates(date, startDate);
+          const endTime = compareDates(endDate, date);
+          return dateTime >= 0 && endTime >= 0;
+        };
+        
+        const currentDate = state.currentDate || new Date();
+        const year = currentDate.getFullYear();
+        const month = currentDate.getMonth();
+        
+        const firstDay = new Date(year, month, 1);
+        const lastDay = new Date(year, month + 1, 0);
+        const daysInMonth = lastDay.getDate();
+        const startingDay = firstDay.getDay();
+        
+        const today = new Date();
+        const todayString = today.toDateString();
+        
+        const mode = state.mode || 'single';
+        const classes = `ubits-calendar ubits-calendar--${mode}`;
+        
+        // Header - usando componentes UBITS correctamente
+        const selectedMonthName = MONTH_NAMES[month];
+        const headerHTML = `
+          <div class="ubits-calendar__header">
+            <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-calendar__nav-button ubits-calendar__nav-button--prev" aria-label="Mes anterior">
+              <i class="far fa-chevron-left"></i>
+            </button>
+            <div class="ubits-calendar__month-year">
+              <div class="ubits-input-container" style="position: relative; min-width: 120px;">
+                <input type="text" class="ubits-input ubits-input--sm ubits-calendar__month-input" value="${selectedMonthName}" readonly style="cursor: pointer; padding-right: 32px;">
+                <i class="far fa-chevron-down ubits-input-icon-right" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--ubits-fg-1-medium); pointer-events: none; z-index: 1;"></i>
+                <div class="ubits-calendar__month-dropdown" style="display: none; position: absolute; top: 100%; left: 0; right: 0; z-index: 1000; margin-top: 4px;"></div>
+              </div>
+              <div class="ubits-input-container" style="position: relative; min-width: 100px; margin-left: 8px;">
+                <input type="text" class="ubits-input ubits-input--sm ubits-calendar__year-input" value="${year}" readonly style="cursor: pointer; padding-right: 32px;">
+                <i class="far fa-chevron-down ubits-input-icon-right" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--ubits-fg-1-medium); pointer-events: none; z-index: 1;"></i>
+                <div class="ubits-calendar__year-dropdown" style="display: none; position: absolute; top: 100%; left: 0; right: 0; z-index: 1000; margin-top: 4px;"></div>
+              </div>
+            </div>
+            <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-calendar__nav-button ubits-calendar__nav-button--next" aria-label="Mes siguiente">
+              <i class="far fa-chevron-right"></i>
+            </button>
+          </div>
+        `;
+        
+        // Weekdays
+        const weekdaysHTML = `
+          <div class="ubits-calendar__weekdays">
+            ${DAY_NAMES.map(day => `<div class="ubits-calendar__weekday">${day}</div>`).join('')}
+          </div>
+        `;
+        
+        // Days
+        let daysHTML = '<div class="ubits-calendar__days">';
+        
+        // Empty days at start
+        for (let i = 0; i < startingDay; i++) {
+          daysHTML += '<div class="ubits-calendar__day ubits-calendar__day--empty"></div>';
+        }
+        
+        // Days of month
+        for (let day = 1; day <= daysInMonth; day++) {
+          const date = new Date(year, month, day);
+          const dateString = date.toDateString();
+          const isToday = dateString === todayString;
+          
+          let dayClasses = ['ubits-calendar__day'];
+          
+          // Check if selected (single mode)
+          if (mode === 'single' && state.selectedDate && isSameDay(date, state.selectedDate)) {
+            dayClasses.push('ubits-calendar__day--selected');
+          }
+          
+          // Check if in range (range mode)
+          if (mode === 'range' && state.selectedDate && state.endDate) {
+            if (isSameDay(date, state.selectedDate)) {
+              dayClasses.push('ubits-calendar__day--range-start');
+            } else if (isSameDay(date, state.endDate)) {
+              dayClasses.push('ubits-calendar__day--range-end');
+            } else if (isDateInRange(date, state.selectedDate, state.endDate)) {
+              dayClasses.push('ubits-calendar__day--in-range');
+            }
+          }
+          
+          // Check if today
+          if (isToday) {
+            dayClasses.push('ubits-calendar__day--today');
+          }
+          
+          // Check if disabled
+          let isDisabled = false;
+          if (state.minDate && compareDates(date, state.minDate) < 0) {
+            isDisabled = true;
+            dayClasses.push('ubits-calendar__day--disabled');
+          }
+          if (state.maxDate && compareDates(date, state.maxDate) > 0) {
+            isDisabled = true;
+            dayClasses.push('ubits-calendar__day--disabled');
+          }
+          
+          const disabledAttr = isDisabled ? ' disabled' : '';
+          const dataDate = formatDate(date);
+          
+          daysHTML += `<button type="button" class="${dayClasses.join(' ')}" data-date="${dataDate}"${disabledAttr}>${day}</button>`;
+        }
+        
+        daysHTML += '</div>';
+        
+        return `
+          <div class="${classes}">
+            ${headerHTML}
+            ${weekdaysHTML}
+            ${daysHTML}
+          </div>
+        `.trim();
+      }
+      
+      // Función para actualizar el preview del Calendar
+      window.updateCalendarPreview = function(componentId) {
+        const state = initCalendarPreviewState(componentId);
+        const container = document.getElementById(`calendar-preview-container-${componentId}`);
+        
+        if (!container) {
+          console.error('❌ Preview container de Calendar no encontrado:', `calendar-preview-container-${componentId}`);
+          return;
+        }
+        
+        // Limpiar calendario anterior si existe
+        if (calendarInstances[componentId] && calendarInstances[componentId].element) {
+          calendarInstances[componentId].element.remove();
+          calendarInstances[componentId] = null;
+        }
+        
+        // Cargar CSS si no está cargado
+        const existingCalendarLink = document.querySelector('link[href*="calendar.css"]');
+        if (!existingCalendarLink) {
+          const link = document.createElement('link');
+          link.rel = 'stylesheet';
+          link.href = '../../addons/calendar/src/styles/calendar.css';
+          document.head.appendChild(link);
+        }
+        
+        // Inicializar currentDate si no existe
+        if (!state.currentDate) {
+          state.currentDate = new Date();
+        }
+        
+        // Generar HTML del calendario
+        const calendarHTML = generateCalendarHTML(state);
+        
+        // Crear wrapper temporal para parsear el HTML
+        const wrapper = document.createElement('div');
+        wrapper.innerHTML = calendarHTML;
+        const calendar = wrapper.firstElementChild;
+        
+        if (!calendar) {
+          console.error('❌ No se pudo crear el calendario');
+          return;
+        }
+        
+        // Configurar event listeners
+        const setupEventListeners = () => {
+          const prevBtn = calendar.querySelector('.ubits-calendar__nav-button--prev');
+          const nextBtn = calendar.querySelector('.ubits-calendar__nav-button--next');
+          const monthInput = calendar.querySelector('.ubits-calendar__month-input');
+          const yearInput = calendar.querySelector('.ubits-calendar__year-input');
+          const monthDropdown = calendar.querySelector('.ubits-calendar__month-dropdown');
+          const yearDropdown = calendar.querySelector('.ubits-calendar__year-dropdown');
+          
+          prevBtn?.addEventListener('click', () => {
+            state.currentDate.setMonth(state.currentDate.getMonth() - 1);
+            window.updateCalendarPreview(componentId);
+          });
+          
+          nextBtn?.addEventListener('click', () => {
+            state.currentDate.setMonth(state.currentDate.getMonth() + 1);
+            window.updateCalendarPreview(componentId);
+          });
+          
+          // Cargar CSS de List si no está cargado
+          const existingListLink = document.querySelector('link[href*="list.css"]');
+          if (!existingListLink) {
+            const link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = '../../addons/list/src/styles/list.css';
+            document.head.appendChild(link);
+          }
+          
+          // Crear dropdown de meses usando List UBITS
+          if (monthInput && monthDropdown) {
+            const monthItems = CALENDAR_MONTH_NAMES.map((name, index) => ({
+              label: name,
+              value: String(index),
+              selected: index === month,
+              state: index === month ? 'active' : 'default'
+            }));
+            
+            monthInput.addEventListener('click', () => {
+              const isVisible = monthDropdown.style.display === 'block';
+              if (!isVisible) {
+                // Renderizar List UBITS
+                const listHTML = `
+                  <div class="ubits-list" role="list" style="max-height: 200px; background: var(--ubits-bg-1); border: 1px solid var(--ubits-border-1); border-radius: 6px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);">
+                    ${monthItems.map((item, idx) => `
+                      <div class="ubits-list-item ubits-list-item--sm ${item.state === 'active' ? 'ubits-list-item--active' : ''}" 
+                           role="listitem" 
+                           data-value="${item.value}" 
+                           data-index="${idx}"
+                           tabindex="0"
+                           style="cursor: pointer;">
+                        ${item.label}
+                      </div>
+                    `).join('')}
+                  </div>
+                `;
+                monthDropdown.innerHTML = listHTML;
+                monthDropdown.style.display = 'block';
+                
+                // Event listeners para items de mes
+                monthDropdown.querySelectorAll('.ubits-list-item').forEach(itemEl => {
+                  itemEl.addEventListener('click', () => {
+                    const monthIndex = parseInt(itemEl.getAttribute('data-value') || '0');
+                    state.currentDate.setMonth(monthIndex);
+                    monthDropdown.style.display = 'none';
+                    window.updateCalendarPreview(componentId);
+                  });
+                });
+              } else {
+                monthDropdown.style.display = 'none';
+              }
+            });
+          }
+          
+          // Crear dropdown de años usando List UBITS
+          if (yearInput && yearDropdown) {
+            const currentYear = state.currentDate.getFullYear();
+            const yearItems = Array.from({ length: 100 }, (_, i) => {
+              const yearOption = currentYear - 50 + i;
+              return {
+                label: String(yearOption),
+                value: String(yearOption),
+                selected: yearOption === currentYear,
+                state: yearOption === currentYear ? 'active' : 'default'
+              };
+            });
+            
+            yearInput.addEventListener('click', (e) => {
+              e.stopPropagation();
+              console.log('📅 [Calendar] Click en input de año');
+              const isVisible = yearDropdown.style.display === 'block';
+              console.log('📅 [Calendar] Dropdown visible?', isVisible);
+              
+              if (!isVisible) {
+                // Cerrar dropdown de mes si está abierto
+                if (monthDropdown) {
+                  monthDropdown.style.display = 'none';
+                }
+                
+                // Renderizar List UBITS
+                const listHTML = `
+                  <div class="ubits-list" role="list" style="max-height: 200px; background: var(--ubits-bg-1); border: 1px solid var(--ubits-border-1); border-radius: 6px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); overflow-y: auto;">
+                    ${yearItems.map((item, idx) => `
+                      <div class="ubits-list-item ubits-list-item--sm ${item.state === 'active' ? 'ubits-list-item--active' : ''}" 
+                           role="listitem" 
+                           data-value="${item.value}" 
+                           data-index="${idx}"
+                           tabindex="0"
+                           style="cursor: pointer;">
+                        ${item.label}
+                      </div>
+                    `).join('')}
+                  </div>
+                `;
+                yearDropdown.innerHTML = listHTML;
+                yearDropdown.style.display = 'block';
+                console.log('📅 [Calendar] Dropdown de año abierto');
+                
+                // Event listeners para items de año
+                yearDropdown.querySelectorAll('.ubits-list-item').forEach(itemEl => {
+                  itemEl.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const yearValue = parseInt(itemEl.getAttribute('data-value') || String(currentYear));
+                    console.log('📅 [Calendar] Año seleccionado:', yearValue);
+                    state.currentDate.setFullYear(yearValue);
+                    yearDropdown.style.display = 'none';
+                    window.updateCalendarPreview(componentId);
+                  });
+                });
+              } else {
+                yearDropdown.style.display = 'none';
+                console.log('📅 [Calendar] Dropdown de año cerrado');
+              }
+            });
+          } else {
+            console.error('❌ [Calendar] No se encontraron yearInput o yearDropdown');
+          }
+          
+          // Cerrar dropdowns al hacer click fuera
+          document.addEventListener('click', (e) => {
+            const target = e.target;
+            if (monthDropdown && monthInput && !monthInput.contains(target) && !monthDropdown.contains(target)) {
+              monthDropdown.style.display = 'none';
+            }
+            if (yearDropdown && yearInput && !yearInput.contains(target) && !yearDropdown.contains(target)) {
+              yearDropdown.style.display = 'none';
+            }
+          });
+          
+          // Day selection
+          const dayButtons = calendar.querySelectorAll('.ubits-calendar__day:not(.ubits-calendar__day--empty):not(.ubits-calendar__day--disabled)');
+          
+          dayButtons.forEach(dayBtn => {
+            dayBtn.addEventListener('click', () => {
+              const dateStr = dayBtn.dataset.date || '';
+              const [day, month, year] = dateStr.split('/');
+              const clickedDate = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+              
+              if (state.mode === 'single') {
+                state.selectedDate = clickedDate;
+                window.updateCalendarPreview(componentId);
+                console.log('📅 Fecha seleccionada:', clickedDate);
+              } else if (state.mode === 'range') {
+                if (!state.selectedDate || state.isSelectingRange) {
+                  // Start range
+                  state.selectedDate = clickedDate;
+                  state.endDate = null;
+                  state.isSelectingRange = true;
+                  window.updateCalendarPreview(componentId);
+                } else {
+                  // Complete range
+                  const compareDates = (d1, d2) => {
+                    const date1 = new Date(d1.getFullYear(), d1.getMonth(), d1.getDate());
+                    const date2 = new Date(d2.getFullYear(), d2.getMonth(), d2.getDate());
+                    return date1.getTime() - date2.getTime();
+                  };
+                  
+                  if (compareDates(clickedDate, state.selectedDate) < 0) {
+                    state.endDate = state.selectedDate;
+                    state.selectedDate = clickedDate;
+                  } else {
+                    state.endDate = clickedDate;
+                  }
+                  state.isSelectingRange = false;
+                  window.updateCalendarPreview(componentId);
+                  console.log('📅 Rango seleccionado:', state.selectedDate, 'a', state.endDate);
+                }
+              }
+            });
+          });
+        };
+        
+        // Añadir el calendario al contenedor
+        container.innerHTML = '';
+        container.appendChild(calendar);
+        
+        // Configurar event listeners
+        setupEventListeners();
+        
+        // Guardar instancia
+        calendarInstances[componentId] = {
+          element: calendar,
+          destroy: () => {
+            if (calendar.parentElement) {
+              calendar.parentElement.removeChild(calendar);
+            }
+          }
+        };
+      };
+      
+      // Función unificada para controles del Calendar
+      window.setCalendarControl = function(option, value, componentId) {
+        const state = initCalendarPreviewState(componentId);
+        
+        // Actualizar estado según la opción
+        if (option === 'mode') {
+          state.mode = value;
+          // Limpiar selecciones al cambiar de modo
+          state.selectedDate = null;
+          state.endDate = null;
+          
+          // Actualizar botones activos
+          document.querySelectorAll(`[data-component="${componentId}"][data-option="mode"]`).forEach(btn => {
+            btn.classList.toggle('active', btn.getAttribute('data-value') === value);
+          });
+        }
+        
+        // Actualizar preview
+        window.updateCalendarPreview(componentId);
       };
       
       // ========================================

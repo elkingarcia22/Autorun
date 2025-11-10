@@ -1,0 +1,182 @@
+/* ========================================
+   UBITS CALENDAR COMPONENT
+   Componente Calendar con selección única y por rango
+   Usando tokens UBITS exclusivamente
+   ======================================== */
+
+/* ========================================
+   CALENDAR CONTAINER
+   ======================================== */
+
+.ubits-calendar {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 320px;
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--ubits-border-radius-sm, 8px);
+    box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.14), 0px 0px 2px 0px rgba(0, 0, 0, 0.12);
+    padding: 16px;
+    font-family: var(--font-sans);
+}
+
+/* ========================================
+   CALENDAR HEADER
+   ======================================== */
+
+.ubits-calendar__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    gap: 12px;
+    padding: 0 4px;
+}
+
+.ubits-calendar__nav-button {
+    /* Los botones usan las clases UBITS Button icon-only, no necesitamos ajustes adicionales */
+    flex-shrink: 0;
+}
+
+.ubits-calendar__nav-button i {
+    font-size: 14px;
+}
+
+.ubits-calendar__month-year {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    justify-content: center;
+}
+
+.ubits-calendar__month-input,
+.ubits-calendar__year-input {
+    /* Los inputs usan las clases UBITS Input, solo ajustamos tamaño */
+    font-size: var(--font-body-md-size);
+    font-weight: var(--weight-semibold);
+    min-width: 120px;
+    cursor: pointer;
+}
+
+/* ========================================
+   WEEKDAYS
+   ======================================== */
+
+.ubits-calendar__weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    margin-bottom: 8px;
+}
+
+.ubits-calendar__weekday {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 32px;
+    font-family: var(--font-sans);
+    font-size: var(--font-body-sm-size);
+    font-weight: var(--weight-semibold);
+    color: var(--ubits-fg-1-medium);
+    text-align: center;
+}
+
+/* ========================================
+   DAYS
+   ======================================== */
+
+.ubits-calendar__days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+}
+
+.ubits-calendar__day {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 36px;
+    padding: 0;
+    border: none;
+    border-radius: var(--ubits-border-radius-sm, 8px);
+    background: transparent;
+    color: var(--ubits-fg-1-high);
+    font-family: var(--font-sans);
+    font-size: var(--font-body-md-size);
+    font-weight: var(--weight-regular);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.ubits-calendar__day:hover:not(.ubits-calendar__day--disabled):not(.ubits-calendar__day--selected) {
+    background: var(--ubits-bg-2);
+    color: var(--ubits-accent-brand-static-inverted);
+}
+
+.ubits-calendar__day--empty {
+    cursor: default;
+    pointer-events: none;
+}
+
+.ubits-calendar__day--today {
+    font-weight: var(--weight-semibold);
+}
+
+.ubits-calendar__day--today:not(.ubits-calendar__day--selected):not(.ubits-calendar__day--in-range) {
+    border: 1px solid var(--ubits-accent-brand-static-inverted);
+}
+
+/* ========================================
+   SELECTED DAY (SINGLE MODE)
+   ======================================== */
+
+.ubits-calendar__day--selected {
+    background: var(--ubits-accent-brand-static-inverted);
+    color: var(--ubits-fg-1-high-static-inverted);
+    font-weight: var(--weight-semibold);
+}
+
+.ubits-calendar__day--selected:hover {
+    background: var(--ubits-accent-brand-static-inverted);
+    opacity: 0.9;
+}
+
+/* ========================================
+   RANGE MODE
+   ======================================== */
+
+.ubits-calendar--range .ubits-calendar__day--range-start,
+.ubits-calendar--range .ubits-calendar__day--range-end {
+    background: var(--ubits-accent-brand-static-inverted);
+    color: var(--ubits-fg-1-high-static-inverted);
+    font-weight: var(--weight-semibold);
+}
+
+.ubits-calendar--range .ubits-calendar__day--in-range {
+    background: rgba(12, 91, 239, 0.1);
+    color: var(--ubits-accent-brand-static-inverted);
+}
+
+.ubits-calendar--range .ubits-calendar__day--in-range:hover {
+    background: rgba(12, 91, 239, 0.15);
+}
+
+/* ========================================
+   DISABLED DAYS
+   ======================================== */
+
+.ubits-calendar__day--disabled {
+    color: var(--ubits-fg-1-low);
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.ubits-calendar__day--disabled:hover {
+    background: transparent;
+    color: var(--ubits-fg-1-low);
+}
+
