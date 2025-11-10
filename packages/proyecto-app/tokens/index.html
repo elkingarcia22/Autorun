@@ -19499,6 +19499,17 @@ Reglas Importantes:
                   scrollbarContainer.style.pointerEvents = 'auto';
                   // Guardar referencia
                   listElement._scrollbarInstance = scrollbarInstance;
+                  
+                  // Forzar que el scrollbar sea visible
+                  setTimeout(() => {
+                    const scrollbarElement = scrollbarContainer.querySelector('.ubits-scrollbar');
+                    const barElement = scrollbarContainer.querySelector('.ubits-scrollbar__bar');
+                    if (scrollbarElement && barElement) {
+                      scrollbarElement.style.display = 'flex';
+                      barElement.style.opacity = '0.6';
+                      barElement.style.pointerEvents = 'auto';
+                    }
+                  }, 50);
                 }
               }
             }
@@ -19506,8 +19517,8 @@ Reglas Importantes:
           
           return listHTML;
         } else {
-          // Sin scrollbar UBITS, solo scroll nativo
-          let listHTML = `<div class="ubits-list" role="list" style="max-height: ${maxHeight}; overflow-y: auto;">`;
+          // Sin scrollbar UBITS, ocultar scrollbar nativo también
+          let listHTML = `<div class="ubits-list" role="list" style="max-height: ${maxHeight}; overflow-y: auto; -ms-overflow-style: none; scrollbar-width: none;">`;
           
           items.forEach((item, index) => {
             const itemState = item.state || 'default';
@@ -19535,6 +19546,9 @@ Reglas Importantes:
           });
           
           listHTML += '</div>';
+          listHTML += `<style>
+            .ubits-list::-webkit-scrollbar { display: none; }
+          </style>`;
           return listHTML;
         }
       }
@@ -19564,16 +19578,14 @@ Reglas Importantes:
         const listHTML = renderListSimple(state, componentId);
         preview.innerHTML = listHTML;
         
-        // Cargar CSS del scrollbar si showScrollbar está activado
-        if (state.showScrollbar) {
-          const scrollbarCSSId = 'ubits-scrollbar-css';
-          if (!document.getElementById(scrollbarCSSId)) {
-            const link = document.createElement('link');
-            link.id = scrollbarCSSId;
-            link.rel = 'stylesheet';
-            link.href = '../../addons/scroll/src/styles/scroll.css';
-            document.head.appendChild(link);
-          }
+        // Cargar CSS del scrollbar siempre (para que esté disponible cuando se active)
+        const scrollbarCSSId = 'ubits-scrollbar-css';
+        if (!document.getElementById(scrollbarCSSId)) {
+          const link = document.createElement('link');
+          link.id = scrollbarCSSId;
+          link.rel = 'stylesheet';
+          link.href = '../../addons/scroll/src/styles/scroll.css';
+          document.head.appendChild(link);
         }
         
         console.log('✅ Preview de List actualizado:', state);
