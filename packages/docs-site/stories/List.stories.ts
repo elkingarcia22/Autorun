@@ -120,7 +120,7 @@ export const Default: Story = {
     size: 'md',
     maxHeight: '400px',
     multiple: false,
-    showScrollbar: false,
+    showScrollbar: true,
     item1State: 'default',
     item2State: 'default',
     item3State: 'default',
@@ -230,48 +230,110 @@ export const Default: Story = {
         
         // Crear scrollbar UBITS después de que la lista esté renderizada
         setTimeout(async () => {
+          console.log('📋 [List Storybook] ========== CREANDO SCROLLBAR ==========');
           const listElement = listInner.querySelector('.ubits-list') as HTMLElement;
-          if (listElement && listElement.scrollHeight > listElement.clientHeight) {
+          console.log('📋 [List Storybook] listElement encontrado:', !!listElement);
+          console.log('📋 [List Storybook] listInner:', listInner.id);
+          console.log('📋 [List Storybook] scrollbarContainer:', scrollbarContainer.id);
+          
+          if (!listElement) {
+            console.error('❌ [List Storybook] No se encontró el elemento .ubits-list');
+            return;
+          }
+          
+          // Asignar un ID único al elemento de la lista si no lo tiene
+          if (!listElement.id) {
+            listElement.id = `${listContainer.id}-list-${Date.now()}`;
+          }
+          console.log('📋 [List Storybook] listElement.id:', listElement.id);
+          
+          console.log('📋 [List Storybook] scrollHeight:', listElement.scrollHeight);
+          console.log('📋 [List Storybook] clientHeight:', listElement.clientHeight);
+          console.log('📋 [List Storybook] Necesita scroll?', listElement.scrollHeight > listElement.clientHeight);
+          
+          if (listElement.scrollHeight > listElement.clientHeight) {
             try {
-              // Asignar un ID único al elemento de la lista si no lo tiene
-              if (!listElement.id) {
-                listElement.id = `${listContainer.id}-list-${Date.now()}`;
-              }
+              console.log('📋 [List Storybook] ✅ Scroll necesario, creando scrollbar UBITS...');
               
               // Intentar importar ScrollProvider
               const { createScrollbar } = await import('../../addons/scroll/src/ScrollProvider');
+              console.log('📋 [List Storybook] ScrollProvider importado:', !!createScrollbar);
+              
               const scrollbarInstance = createScrollbar({
                 orientation: 'vertical',
                 targetId: listElement.id, // Usar el ID del elemento .ubits-list
                 containerId: scrollbarContainer.id
               });
               
+              console.log('📋 [List Storybook] scrollbarInstance creada:', !!scrollbarInstance);
+              
               if (scrollbarInstance) {
                 scrollbarContainer.style.pointerEvents = 'auto';
                 // Ajustar altura del scrollbar container
                 scrollbarContainer.style.height = `${listElement.clientHeight}px`;
+                console.log('📋 [List Storybook] Altura del scrollbar container:', listElement.clientHeight);
                 
-                // Forzar que el scrollbar sea visible
+                // Verificar que el scrollbar se creó en el DOM
                 setTimeout(() => {
                   const scrollbarEl = scrollbarContainer.querySelector('.ubits-scrollbar');
                   const barEl = scrollbarContainer.querySelector('.ubits-scrollbar__bar');
+                  console.log('📋 [List Storybook] scrollbarEl encontrado:', !!scrollbarEl);
+                  console.log('📋 [List Storybook] barEl encontrado:', !!barEl);
+                  
                   if (scrollbarEl && barEl) {
+                    const computed = window.getComputedStyle(scrollbarEl);
+                    console.log('📋 [List Storybook] scrollbarEl computed styles:', {
+                      display: computed.display,
+                      opacity: computed.opacity,
+                      width: computed.width,
+                      height: computed.height,
+                      visibility: computed.visibility
+                    });
+                    
+                    // Forzar que el scrollbar sea visible
                     (scrollbarEl as HTMLElement).style.display = 'flex';
+                    (scrollbarEl as HTMLElement).style.opacity = '1';
+                    (scrollbarEl as HTMLElement).style.visibility = 'visible';
+                    (scrollbarEl as HTMLElement).style.width = '8px';
+                    (scrollbarEl as HTMLElement).style.height = '100%';
                     (barEl as HTMLElement).style.opacity = '0.6';
                     (barEl as HTMLElement).style.pointerEvents = 'auto';
+                    (barEl as HTMLElement).style.visibility = 'visible';
+                    
+                    // Asegurar que el scrollbar container también sea visible
+                    scrollbarContainer.style.opacity = '1';
+                    scrollbarContainer.style.visibility = 'visible';
+                    
+                    console.log('📋 [List Storybook] ✅ Estilos inline aplicados al scrollbar');
+                    
+                    // Verificar después de aplicar estilos
+                    setTimeout(() => {
+                      const computedAfter = window.getComputedStyle(scrollbarEl);
+                      console.log('📋 [List Storybook] scrollbarEl computed styles después:', {
+                        display: computedAfter.display,
+                        opacity: computedAfter.opacity,
+                        width: computedAfter.width,
+                        height: computedAfter.height
+                      });
+                    }, 50);
+                  } else {
+                    console.error('❌ [List Storybook] No se encontraron elementos del scrollbar en el DOM');
                   }
                 }, 100);
+              } else {
+                console.error('❌ [List Storybook] scrollbarInstance no se creó');
               }
             } catch (error) {
-              console.warn('Could not create UBITS scrollbar:', error);
-              console.error('Error details:', error);
+              console.error('❌ [List Storybook] Error creando scrollbar:', error);
+              console.error('❌ [List Storybook] Stack:', (error as Error).stack);
             }
           } else {
-            console.log('No scroll needed:', {
-              scrollHeight: listElement?.scrollHeight,
-              clientHeight: listElement?.clientHeight
+            console.log('📋 [List Storybook] ⚠️ No se necesita scroll:', {
+              scrollHeight: listElement.scrollHeight,
+              clientHeight: listElement.clientHeight
             });
           }
+          console.log('📋 [List Storybook] ========== FIN CREACIÓN SCROLLBAR ==========');
         }, 200);
       } catch (error) {
         console.warn('Using renderList fallback:', error);
@@ -398,46 +460,86 @@ export const Default: Story = {
           
           // Crear scrollbar UBITS
           setTimeout(async () => {
+            console.log('📋 [List Storybook Update] ========== CREANDO SCROLLBAR ==========');
             const listElement = listInner.querySelector('.ubits-list') as HTMLElement;
-            if (listElement && listElement.scrollHeight > listElement.clientHeight) {
+            console.log('📋 [List Storybook Update] listElement encontrado:', !!listElement);
+            
+            if (!listElement) {
+              console.error('❌ [List Storybook Update] No se encontró el elemento .ubits-list');
+              return;
+            }
+            
+            // Asignar un ID único al elemento de la lista si no lo tiene
+            if (!listElement.id) {
+              listElement.id = `${listContainer.id}-list-${Date.now()}`;
+            }
+            console.log('📋 [List Storybook Update] listElement.id:', listElement.id);
+            console.log('📋 [List Storybook Update] scrollHeight:', listElement.scrollHeight);
+            console.log('📋 [List Storybook Update] clientHeight:', listElement.clientHeight);
+            
+            if (listElement.scrollHeight > listElement.clientHeight) {
               try {
-                // Asignar un ID único al elemento de la lista si no lo tiene
-                if (!listElement.id) {
-                  listElement.id = `${listContainer.id}-list-${Date.now()}`;
-                }
+                console.log('📋 [List Storybook Update] ✅ Scroll necesario, creando scrollbar UBITS...');
                 
                 const { createScrollbar } = await import('../../addons/scroll/src/ScrollProvider');
+                console.log('📋 [List Storybook Update] ScrollProvider importado:', !!createScrollbar);
+                
                 const scrollbarInstance = createScrollbar({
                   orientation: 'vertical',
-                  targetId: listElement.id, // Usar el ID del elemento .ubits-list
+                  targetId: listElement.id,
                   containerId: scrollbarContainer.id
                 });
+                
+                console.log('📋 [List Storybook Update] scrollbarInstance creada:', !!scrollbarInstance);
                 
                 if (scrollbarInstance) {
                   scrollbarContainer.style.pointerEvents = 'auto';
                   scrollbarContainer.style.height = `${listElement.clientHeight}px`;
+                  console.log('📋 [List Storybook Update] Altura del scrollbar container:', listElement.clientHeight);
                   
                   // Forzar que el scrollbar sea visible
                   setTimeout(() => {
                     const scrollbarEl = scrollbarContainer.querySelector('.ubits-scrollbar');
                     const barEl = scrollbarContainer.querySelector('.ubits-scrollbar__bar');
+                    console.log('📋 [List Storybook Update] scrollbarEl encontrado:', !!scrollbarEl);
+                    console.log('📋 [List Storybook Update] barEl encontrado:', !!barEl);
+                    
                     if (scrollbarEl && barEl) {
-                      (scrollbarEl as HTMLElement).style.display = 'flex';
-                      (barEl as HTMLElement).style.opacity = '0.6';
-                      (barEl as HTMLElement).style.pointerEvents = 'auto';
+                      const computed = window.getComputedStyle(scrollbarEl);
+                      console.log('📋 [List Storybook Update] scrollbarEl computed styles:', {
+                        display: computed.display,
+                        opacity: computed.opacity,
+                        width: computed.width,
+                        height: computed.height
+                      });
+                      
+                      // Forzar que el scrollbar sea visible con !important
+                      (scrollbarEl as HTMLElement).style.cssText += 'display: flex !important; opacity: 1 !important; visibility: visible !important; width: 8px !important; height: 100% !important;';
+                      (barEl as HTMLElement).style.cssText += 'opacity: 0.6 !important; pointer-events: auto !important; visibility: visible !important;';
+                      
+                      // Asegurar que el scrollbar container también sea visible
+                      scrollbarContainer.style.cssText += 'opacity: 1 !important; visibility: visible !important;';
+                      
+                      // Llamar a updateScrollbar manualmente para asegurar que se actualice
+                      if (scrollbarInstance && typeof scrollbarInstance.update === 'function') {
+                        scrollbarInstance.update();
+                        console.log('📋 [List Storybook Update] updateScrollbar llamado');
+                      }
+                      
+                      console.log('📋 [List Storybook Update] ✅ Estilos inline aplicados');
+                    } else {
+                      console.error('❌ [List Storybook Update] No se encontraron elementos del scrollbar');
                     }
                   }, 100);
                 }
               } catch (error) {
-                console.warn('Could not create UBITS scrollbar:', error);
-                console.error('Error details:', error);
+                console.error('❌ [List Storybook Update] Error:', error);
+                console.error('❌ [List Storybook Update] Stack:', (error as Error).stack);
               }
             } else {
-              console.log('No scroll needed:', {
-                scrollHeight: listElement?.scrollHeight,
-                clientHeight: listElement?.clientHeight
-              });
+              console.log('📋 [List Storybook Update] ⚠️ No se necesita scroll');
             }
+            console.log('📋 [List Storybook Update] ========== FIN ==========');
           }, 200);
         } else {
           existingList.style.maxHeight = args.maxHeight || '400px';
