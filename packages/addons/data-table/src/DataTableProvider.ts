@@ -3202,6 +3202,22 @@ export function createDataTable(options: DataTableOptions): {
           return;
         }
         
+        // Cargar CSS del calendario si no está cargado
+        if (!document.querySelector('link[href*="calendar.css"]')) {
+          const link = document.createElement('link');
+          link.rel = 'stylesheet';
+          link.href = '../../addons/calendar/src/styles/calendar.css';
+          document.head.appendChild(link);
+        }
+        
+        // Cargar CSS del scrollbar si no está cargado (para las listas de mes/año)
+        if (!document.querySelector('link[href*="scroll.css"]')) {
+          const link = document.createElement('link');
+          link.rel = 'stylesheet';
+          link.href = '../../addons/scroll/src/styles/scroll.css';
+          document.head.appendChild(link);
+        }
+        
         // Obtener fecha actual del display
         const currentValue = dateDisplay.textContent || '';
         const selectedDate = parseDate(currentValue);
