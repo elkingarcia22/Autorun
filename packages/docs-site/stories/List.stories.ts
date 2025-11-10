@@ -232,10 +232,15 @@ export const Default: Story = {
         items: allItems,
         size: args.size || 'md',
         maxHeight: 'none',
+        attributes: { id: listId } // Asegurar que el elemento tenga el ID
       });
       
       // Insertar el HTML directamente
       listInner.innerHTML = listHTML;
+      
+      // Asegurar que listInner tenga altura fija para que el scroll funcione
+      const maxHeightValue = parseInt(args.maxHeight || '400px');
+      listInner.style.height = `${maxHeightValue}px`;
       
       // Agregar estilo para ocultar scrollbar nativo
       const style = document.createElement('style');
@@ -243,10 +248,17 @@ export const Default: Story = {
       style.textContent = `#${listId}::-webkit-scrollbar { display: none; }`;
       document.head.appendChild(style);
       
-      // Asegurar que el elemento .ubits-list tenga el ID correcto
+      // Asegurar que el elemento .ubits-list tenga el ID correcto y estilos
       const listElementTemp = listInner.querySelector('.ubits-list') as HTMLElement;
-      if (listElementTemp && !listElementTemp.id) {
-        listElementTemp.id = listId;
+      if (listElementTemp) {
+        if (!listElementTemp.id) {
+          listElementTemp.id = listId;
+        }
+        // Asegurar estilos de scroll
+        listElementTemp.style.maxHeight = `${maxHeightValue}px`;
+        listElementTemp.style.overflowY = 'auto';
+        listElementTemp.style.overflowX = 'hidden';
+        listElementTemp.style.paddingRight = '8px';
       }
       
       // Crear scrollbar UBITS después de que el DOM esté listo (como en index.html)
@@ -268,13 +280,9 @@ export const Default: Story = {
           return;
         }
         
-        // Asegurar que listInner tenga altura fija
-        const maxHeightValue = parseInt(args.maxHeight || '400px');
-        listInner.style.height = `${maxHeightValue}px`;
-        listInner.style.maxHeight = `${maxHeightValue}px`;
-        
         console.log('📋 [List Storybook] listElement scrollHeight:', listElement.scrollHeight);
         console.log('📋 [List Storybook] listElement clientHeight:', listElement.clientHeight);
+        console.log('📋 [List Storybook] listInner clientHeight:', listInner.clientHeight);
         console.log('📋 [List Storybook] Necesita scroll?', listElement.scrollHeight > listElement.clientHeight);
         
         // Comparar directamente como en index.html
