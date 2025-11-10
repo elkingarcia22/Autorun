@@ -233,11 +233,16 @@ export const Default: Story = {
           const listElement = listInner.querySelector('.ubits-list') as HTMLElement;
           if (listElement && listElement.scrollHeight > listElement.clientHeight) {
             try {
+              // Asignar un ID único al elemento de la lista si no lo tiene
+              if (!listElement.id) {
+                listElement.id = `${listContainer.id}-list-${Date.now()}`;
+              }
+              
               // Intentar importar ScrollProvider
               const { createScrollbar } = await import('../../addons/scroll/src/ScrollProvider');
               const scrollbarInstance = createScrollbar({
                 orientation: 'vertical',
-                targetId: listInner.id,
+                targetId: listElement.id, // Usar el ID del elemento .ubits-list
                 containerId: scrollbarContainer.id
               });
               
@@ -245,10 +250,27 @@ export const Default: Story = {
                 scrollbarContainer.style.pointerEvents = 'auto';
                 // Ajustar altura del scrollbar container
                 scrollbarContainer.style.height = `${listElement.clientHeight}px`;
+                
+                // Forzar que el scrollbar sea visible
+                setTimeout(() => {
+                  const scrollbarEl = scrollbarContainer.querySelector('.ubits-scrollbar');
+                  const barEl = scrollbarContainer.querySelector('.ubits-scrollbar__bar');
+                  if (scrollbarEl && barEl) {
+                    (scrollbarEl as HTMLElement).style.display = 'flex';
+                    (barEl as HTMLElement).style.opacity = '0.6';
+                    (barEl as HTMLElement).style.pointerEvents = 'auto';
+                  }
+                }, 100);
               }
             } catch (error) {
               console.warn('Could not create UBITS scrollbar:', error);
+              console.error('Error details:', error);
             }
+          } else {
+            console.log('No scroll needed:', {
+              scrollHeight: listElement?.scrollHeight,
+              clientHeight: listElement?.clientHeight
+            });
           }
         }, 200);
       } catch (error) {
@@ -379,20 +401,42 @@ export const Default: Story = {
             const listElement = listInner.querySelector('.ubits-list') as HTMLElement;
             if (listElement && listElement.scrollHeight > listElement.clientHeight) {
               try {
+                // Asignar un ID único al elemento de la lista si no lo tiene
+                if (!listElement.id) {
+                  listElement.id = `${listContainer.id}-list-${Date.now()}`;
+                }
+                
                 const { createScrollbar } = await import('../../addons/scroll/src/ScrollProvider');
                 const scrollbarInstance = createScrollbar({
                   orientation: 'vertical',
-                  targetId: listInner.id,
+                  targetId: listElement.id, // Usar el ID del elemento .ubits-list
                   containerId: scrollbarContainer.id
                 });
                 
                 if (scrollbarInstance) {
                   scrollbarContainer.style.pointerEvents = 'auto';
                   scrollbarContainer.style.height = `${listElement.clientHeight}px`;
+                  
+                  // Forzar que el scrollbar sea visible
+                  setTimeout(() => {
+                    const scrollbarEl = scrollbarContainer.querySelector('.ubits-scrollbar');
+                    const barEl = scrollbarContainer.querySelector('.ubits-scrollbar__bar');
+                    if (scrollbarEl && barEl) {
+                      (scrollbarEl as HTMLElement).style.display = 'flex';
+                      (barEl as HTMLElement).style.opacity = '0.6';
+                      (barEl as HTMLElement).style.pointerEvents = 'auto';
+                    }
+                  }, 100);
                 }
               } catch (error) {
                 console.warn('Could not create UBITS scrollbar:', error);
+                console.error('Error details:', error);
               }
+            } else {
+              console.log('No scroll needed:', {
+                scrollHeight: listElement?.scrollHeight,
+                clientHeight: listElement?.clientHeight
+              });
             }
           }, 200);
         } else {
