@@ -424,122 +424,114 @@ export function createCalendar(options: CalendarOptions): {
             console.log('📅 [Calendar] List element encontrado:', !!listElement, listElement?.id);
             console.log('📅 [Calendar] Scrollbar container encontrado:', !!scrollbarContainer, scrollbarContainer?.id);
             
-            if (listElement && scrollbarContainer) {
-              console.log('📅 [Calendar] List scrollHeight:', listElement.scrollHeight);
-              console.log('📅 [Calendar] List clientHeight:', listElement.clientHeight);
-              console.log('📅 [Calendar] Necesita scroll?', listElement.scrollHeight > listElement.clientHeight);
-              
-              if (listElement.scrollHeight > listElement.clientHeight) {
-                console.log('📅 [Calendar] ✅ Scroll necesario, creando scrollbar UBITS...');
-                try {
-                  // Verificar si createScrollbarLocal está disponible
-                  const hasCreateScrollbarLocal = typeof (window as any).createScrollbarLocal === 'function';
-                  console.log('📅 [Calendar] createScrollbarLocal disponible?', hasCreateScrollbarLocal);
-                  
-                  let createScrollbarFn: any = null;
-                  if (hasCreateScrollbarLocal) {
-                    console.log('📅 [Calendar] Usando createScrollbarLocal global');
-                    createScrollbarFn = (window as any).createScrollbarLocal;
-                  } else {
-                    // Intentar importar dinámicamente
-                    console.log('📅 [Calendar] Intentando importar ScrollProvider...');
-                    try {
-                      const scrollPath = '../../scroll/src/ScrollProvider.js';
-                      // @ts-ignore - Import dinámico fuera de rootDir
-                      const scrollModule = await import(scrollPath);
-                      createScrollbarFn = scrollModule.createScrollbar;
-                      console.log('📅 [Calendar] ScrollProvider importado:', !!createScrollbarFn);
-                    } catch (importError) {
-                      console.error('❌ [Calendar] Error importando ScrollProvider:', importError);
-                    }
+            if (!listElement) {
+              console.error('❌ [Calendar] listElement no encontrado con id:', listContainerId);
+              return;
+            }
+            
+            if (!scrollbarContainer) {
+              console.error('❌ [Calendar] scrollbarContainer no encontrado con id:', scrollbarContainerId);
+              return;
+            }
+            
+            console.log('📅 [Calendar] List scrollHeight:', listElement.scrollHeight);
+            console.log('📅 [Calendar] List clientHeight:', listElement.clientHeight);
+            console.log('📅 [Calendar] Necesita scroll?', listElement.scrollHeight > listElement.clientHeight);
+            
+            if (listElement.scrollHeight > listElement.clientHeight) {
+              console.log('📅 [Calendar] ✅ Scroll necesario, creando scrollbar UBITS...');
+              try {
+                // Verificar si createScrollbarLocal está disponible
+                const hasCreateScrollbarLocal = typeof (window as any).createScrollbarLocal === 'function';
+                console.log('📅 [Calendar] createScrollbarLocal disponible?', hasCreateScrollbarLocal);
+                
+                let createScrollbarFn: any = null;
+                if (hasCreateScrollbarLocal) {
+                  console.log('📅 [Calendar] Usando createScrollbarLocal global');
+                  createScrollbarFn = (window as any).createScrollbarLocal;
+                } else {
+                  // Intentar importar dinámicamente
+                  console.log('📅 [Calendar] Intentando importar ScrollProvider...');
+                  try {
+                    const scrollPath = '../../scroll/src/ScrollProvider.js';
+                    // @ts-ignore - Import dinámico fuera de rootDir
+                    const scrollModule = await import(scrollPath);
+                    createScrollbarFn = scrollModule.createScrollbar;
+                    console.log('📅 [Calendar] ScrollProvider importado:', !!createScrollbarFn);
+                  } catch (importError) {
+                    console.error('❌ [Calendar] Error importando ScrollProvider:', importError);
                   }
+                }
+                
+                if (!createScrollbarFn) {
+                  console.error('❌ [Calendar] No se encontró función createScrollbar');
+                  return;
+                }
+                
+                // Asegurar que el contenedor tenga la misma altura que la lista
+                const listHeight = listElement.clientHeight;
+                scrollbarContainer.style.height = `${listHeight}px`;
+                console.log('📅 [Calendar] Altura del contenedor ajustada a:', listHeight);
+                
+                // Verificar nuevamente que scrollbarContainer existe
+                if (!scrollbarContainer || !listElement) {
+                  console.error('❌ [Calendar] Elementos perdidos antes de crear scrollbar');
+                  return;
+                }
+                
+                // Usar la firma correcta según el tipo de función
+                let scrollbarInstance: any = null;
+                if (hasCreateScrollbarLocal) {
+                  // createScrollbarLocal espera (element, container, orientation)
+                  console.log('📅 [Calendar] Llamando createScrollbarLocal con firma:', 'createScrollbarLocal(element, container, "vertical")');
+                  console.log('📅 [Calendar] listElement:', !!listElement, listElement?.id);
+                  console.log('📅 [Calendar] scrollbarContainer:', !!scrollbarContainer, scrollbarContainer?.id);
                   
-                  if (createScrollbarFn) {
-                    // Asegurar que el contenedor tenga la misma altura que la lista
-                    const listHeight = listElement.clientHeight;
-                    scrollbarContainer.style.height = `${listHeight}px`;
-                    console.log('📅 [Calendar] Altura del contenedor ajustada a:', listHeight);
-                    
-                    // Usar la firma correcta según el tipo de función
-                    let scrollbarInstance: any = null;
-                    if (hasCreateScrollbarLocal) {
-                      // createScrollbarLocal espera (element, container, orientation)
-                      console.log('📅 [Calendar] Llamando createScrollbarLocal con firma:', 'createScrollbarLocal(element, container, "vertical")');
-                      scrollbarInstance = createScrollbarFn(listElement, scrollbarContainer, 'vertical');
-                      
-                      // Forzar que el scrollbar sea visible inicialmente
-                      setTimeout(() => {
-                        const scrollbarElement = scrollbarContainer.querySelector('.ubits-scrollbar');
-                        const barElement = scrollbarContainer.querySelector('.ubits-scrollbar__bar');
-                        if (scrollbarElement && barElement) {
-                          // Aplicar estilos inline para asegurar visibilidad
-                          (scrollbarElement as HTMLElement).style.display = 'flex';
-                          (barElement as HTMLElement).style.opacity = '0.6';
-                          (barElement as HTMLElement).style.pointerEvents = 'auto';
-                          console.log('📅 [Calendar] Estilos inline aplicados al scrollbar de meses');
-                        }
-                      }, 50);
-                    } else {
-                      // createScrollbar espera un objeto con opciones
-                      console.log('📅 [Calendar] Llamando createScrollbar con opciones');
-                      scrollbarInstance = createScrollbarFn({
-                        orientation: 'vertical',
-                        targetId: listContainerId,
-                        containerId: scrollbarContainerId
-                      });
-                    }
+                  try {
+                    scrollbarInstance = createScrollbarFn(listElement, scrollbarContainer, 'vertical');
                     console.log('📅 [Calendar] Scrollbar instance creada:', !!scrollbarInstance, scrollbarInstance);
                     
-                    // Verificar que el scrollbar se creó en el DOM
+                    // Forzar que el scrollbar sea visible inicialmente
                     setTimeout(() => {
                       const scrollbarElement = scrollbarContainer.querySelector('.ubits-scrollbar');
                       const barElement = scrollbarContainer.querySelector('.ubits-scrollbar__bar');
-                      console.log('📅 [Calendar] Verificación DOM - scrollbar element:', !!scrollbarElement);
-                      console.log('📅 [Calendar] Verificación DOM - bar element:', !!barElement);
-                      if (scrollbarElement) {
-                        const computed = window.getComputedStyle(scrollbarElement);
-                        console.log('📅 [Calendar] Scrollbar computed styles:', {
-                          display: computed.display,
-                          opacity: computed.opacity,
-                          width: computed.width,
-                          height: computed.height,
-                          visibility: computed.visibility
-                        });
+                      if (scrollbarElement && barElement) {
+                        // Aplicar estilos inline para asegurar visibilidad
+                        (scrollbarElement as HTMLElement).style.display = 'flex';
+                        (barElement as HTMLElement).style.opacity = '0.6';
+                        (barElement as HTMLElement).style.pointerEvents = 'auto';
+                        console.log('📅 [Calendar] Estilos inline aplicados al scrollbar de meses');
                       }
-                      if (barElement) {
-                        const computed = window.getComputedStyle(barElement);
-                        console.log('📅 [Calendar] Bar computed styles:', {
-                          display: computed.display,
-                          opacity: computed.opacity,
-                          width: computed.width,
-                          height: computed.height
-                        });
-                      }
-                    }, 100);
-                    
-                    if (scrollbarInstance && scrollbarContainer) {
-                      scrollbarContainer.style.pointerEvents = 'auto';
-                      // Guardar referencia para destruir cuando se cierre
-                      (monthDropdownEl as any)._scrollbarInstance = scrollbarInstance;
-                      console.log('✅ [Calendar] Scrollbar UBITS creado correctamente para meses');
-                    } else {
-                      console.warn('⚠️ [Calendar] Scrollbar instance no se creó correctamente');
-                    }
-                  } else {
-                    console.error('❌ [Calendar] No se encontró función createScrollbar');
-                    console.error('❌ [Calendar] createScrollbarLocal disponible?', typeof (window as any).createScrollbarLocal);
+                    }, 50);
+                  } catch (callError) {
+                    console.error('❌ [Calendar] Error al llamar createScrollbarLocal:', callError);
+                    throw callError;
                   }
-                } catch (error) {
-                  console.error('❌ [Calendar] Error creando scrollbar para lista de meses:', error);
-                  console.error('❌ [Calendar] Stack:', (error as Error).stack);
+                } else {
+                  // createScrollbar espera un objeto con opciones
+                  console.log('📅 [Calendar] Llamando createScrollbar con opciones');
+                  scrollbarInstance = createScrollbarFn({
+                    orientation: 'vertical',
+                    targetId: listContainerId,
+                    containerId: scrollbarContainerId
+                  });
+                  console.log('📅 [Calendar] Scrollbar instance creada:', !!scrollbarInstance, scrollbarInstance);
                 }
-              } else {
-                console.log('📅 [Calendar] ⚠️ No se necesita scroll (contenido cabe en el contenedor)');
+                
+                if (scrollbarInstance && scrollbarContainer) {
+                  scrollbarContainer.style.pointerEvents = 'auto';
+                  // Guardar referencia para destruir cuando se cierre
+                  (monthDropdownEl as any)._scrollbarInstance = scrollbarInstance;
+                  console.log('✅ [Calendar] Scrollbar UBITS creado correctamente para meses');
+                } else {
+                  console.warn('⚠️ [Calendar] Scrollbar instance no se creó correctamente');
+                }
+              } catch (error) {
+                console.error('❌ [Calendar] Error creando scrollbar para lista de meses:', error);
+                console.error('❌ [Calendar] Stack:', (error as Error).stack);
               }
             } else {
-              console.error('❌ [Calendar] No se encontraron elementos para crear scrollbar de meses');
-              console.error('❌ [Calendar] listElement:', !!listElement);
-              console.error('❌ [Calendar] scrollbarContainer:', !!scrollbarContainer);
+              console.log('📅 [Calendar] ⚠️ No se necesita scroll (contenido cabe en el contenedor)');
             }
             console.log('📅 [Calendar] ========== FIN CREACIÓN SCROLLBAR MESES ==========');
           });
@@ -620,122 +612,114 @@ export function createCalendar(options: CalendarOptions): {
             console.log('📅 [Calendar] Year list element encontrado:', !!listElement, listElement?.id);
             console.log('📅 [Calendar] Year scrollbar container encontrado:', !!scrollbarContainer, scrollbarContainer?.id);
             
-            if (listElement && scrollbarContainer) {
-              console.log('📅 [Calendar] Year list scrollHeight:', listElement.scrollHeight);
-              console.log('📅 [Calendar] Year list clientHeight:', listElement.clientHeight);
-              console.log('📅 [Calendar] Necesita scroll?', listElement.scrollHeight > listElement.clientHeight);
-              
-              if (listElement.scrollHeight > listElement.clientHeight) {
-                console.log('📅 [Calendar] ✅ Scroll necesario, creando scrollbar UBITS...');
-                try {
-                  // Verificar si createScrollbarLocal está disponible
-                  const hasCreateScrollbarLocal = typeof (window as any).createScrollbarLocal === 'function';
-                  console.log('📅 [Calendar] createScrollbarLocal disponible?', hasCreateScrollbarLocal);
-                  
-                  let createScrollbarFn: any = null;
-                  if (hasCreateScrollbarLocal) {
-                    console.log('📅 [Calendar] Usando createScrollbarLocal global');
-                    createScrollbarFn = (window as any).createScrollbarLocal;
-                  } else {
-                    // Intentar importar dinámicamente
-                    console.log('📅 [Calendar] Intentando importar ScrollProvider...');
-                    try {
-                      const scrollPath = '../../scroll/src/ScrollProvider.js';
-                      // @ts-ignore - Import dinámico fuera de rootDir
-                      const scrollModule = await import(scrollPath);
-                      createScrollbarFn = scrollModule.createScrollbar;
-                      console.log('📅 [Calendar] ScrollProvider importado:', !!createScrollbarFn);
-                    } catch (importError) {
-                      console.error('❌ [Calendar] Error importando ScrollProvider:', importError);
-                    }
+            if (!listElement) {
+              console.error('❌ [Calendar] listElement no encontrado con id:', yearListContainerId);
+              return;
+            }
+            
+            if (!scrollbarContainer) {
+              console.error('❌ [Calendar] scrollbarContainer no encontrado con id:', yearScrollbarContainerId);
+              return;
+            }
+            
+            console.log('📅 [Calendar] Year list scrollHeight:', listElement.scrollHeight);
+            console.log('📅 [Calendar] Year list clientHeight:', listElement.clientHeight);
+            console.log('📅 [Calendar] Necesita scroll?', listElement.scrollHeight > listElement.clientHeight);
+            
+            if (listElement.scrollHeight > listElement.clientHeight) {
+              console.log('📅 [Calendar] ✅ Scroll necesario, creando scrollbar UBITS...');
+              try {
+                // Verificar si createScrollbarLocal está disponible
+                const hasCreateScrollbarLocal = typeof (window as any).createScrollbarLocal === 'function';
+                console.log('📅 [Calendar] createScrollbarLocal disponible?', hasCreateScrollbarLocal);
+                
+                let createScrollbarFn: any = null;
+                if (hasCreateScrollbarLocal) {
+                  console.log('📅 [Calendar] Usando createScrollbarLocal global');
+                  createScrollbarFn = (window as any).createScrollbarLocal;
+                } else {
+                  // Intentar importar dinámicamente
+                  console.log('📅 [Calendar] Intentando importar ScrollProvider...');
+                  try {
+                    const scrollPath = '../../scroll/src/ScrollProvider.js';
+                    // @ts-ignore - Import dinámico fuera de rootDir
+                    const scrollModule = await import(scrollPath);
+                    createScrollbarFn = scrollModule.createScrollbar;
+                    console.log('📅 [Calendar] ScrollProvider importado:', !!createScrollbarFn);
+                  } catch (importError) {
+                    console.error('❌ [Calendar] Error importando ScrollProvider:', importError);
                   }
+                }
+                
+                if (!createScrollbarFn) {
+                  console.error('❌ [Calendar] No se encontró función createScrollbar');
+                  return;
+                }
+                
+                // Asegurar que el contenedor tenga la misma altura que la lista
+                const listHeight = listElement.clientHeight;
+                scrollbarContainer.style.height = `${listHeight}px`;
+                console.log('📅 [Calendar] Altura del contenedor ajustada a:', listHeight);
+                
+                // Verificar nuevamente que scrollbarContainer existe
+                if (!scrollbarContainer || !listElement) {
+                  console.error('❌ [Calendar] Elementos perdidos antes de crear scrollbar');
+                  return;
+                }
+                
+                // Usar la firma correcta según el tipo de función
+                let scrollbarInstance: any = null;
+                if (hasCreateScrollbarLocal) {
+                  // createScrollbarLocal espera (element, container, orientation)
+                  console.log('📅 [Calendar] Llamando createScrollbarLocal con firma:', 'createScrollbarLocal(element, container, "vertical")');
+                  console.log('📅 [Calendar] listElement:', !!listElement, listElement?.id);
+                  console.log('📅 [Calendar] scrollbarContainer:', !!scrollbarContainer, scrollbarContainer?.id);
                   
-                  if (createScrollbarFn) {
-                    // Asegurar que el contenedor tenga la misma altura que la lista
-                    const listHeight = listElement.clientHeight;
-                    scrollbarContainer.style.height = `${listHeight}px`;
-                    console.log('📅 [Calendar] Altura del contenedor ajustada a:', listHeight);
-                    
-                    // Usar la firma correcta según el tipo de función
-                    let scrollbarInstance: any = null;
-                    if (hasCreateScrollbarLocal) {
-                      // createScrollbarLocal espera (element, container, orientation)
-                      console.log('📅 [Calendar] Llamando createScrollbarLocal con firma:', 'createScrollbarLocal(element, container, "vertical")');
-                      scrollbarInstance = createScrollbarFn(listElement, scrollbarContainer, 'vertical');
-                      
-                      // Forzar que el scrollbar sea visible inicialmente
-                      setTimeout(() => {
-                        const scrollbarElement = scrollbarContainer.querySelector('.ubits-scrollbar');
-                        const barElement = scrollbarContainer.querySelector('.ubits-scrollbar__bar');
-                        if (scrollbarElement && barElement) {
-                          // Aplicar estilos inline para asegurar visibilidad
-                          (scrollbarElement as HTMLElement).style.display = 'flex';
-                          (barElement as HTMLElement).style.opacity = '0.6';
-                          (barElement as HTMLElement).style.pointerEvents = 'auto';
-                          console.log('📅 [Calendar] Estilos inline aplicados al scrollbar de años');
-                        }
-                      }, 50);
-                    } else {
-                      // createScrollbar espera un objeto con opciones
-                      console.log('📅 [Calendar] Llamando createScrollbar con opciones');
-                      scrollbarInstance = createScrollbarFn({
-                        orientation: 'vertical',
-                        targetId: yearListContainerId,
-                        containerId: yearScrollbarContainerId
-                      });
-                    }
+                  try {
+                    scrollbarInstance = createScrollbarFn(listElement, scrollbarContainer, 'vertical');
                     console.log('📅 [Calendar] Year scrollbar instance creada:', !!scrollbarInstance, scrollbarInstance);
                     
-                    // Verificar que el scrollbar se creó en el DOM
+                    // Forzar que el scrollbar sea visible inicialmente
                     setTimeout(() => {
                       const scrollbarElement = scrollbarContainer.querySelector('.ubits-scrollbar');
                       const barElement = scrollbarContainer.querySelector('.ubits-scrollbar__bar');
-                      console.log('📅 [Calendar] Verificación DOM - scrollbar element:', !!scrollbarElement);
-                      console.log('📅 [Calendar] Verificación DOM - bar element:', !!barElement);
-                      if (scrollbarElement) {
-                        const computed = window.getComputedStyle(scrollbarElement);
-                        console.log('📅 [Calendar] Scrollbar computed styles:', {
-                          display: computed.display,
-                          opacity: computed.opacity,
-                          width: computed.width,
-                          height: computed.height,
-                          visibility: computed.visibility
-                        });
+                      if (scrollbarElement && barElement) {
+                        // Aplicar estilos inline para asegurar visibilidad
+                        (scrollbarElement as HTMLElement).style.display = 'flex';
+                        (barElement as HTMLElement).style.opacity = '0.6';
+                        (barElement as HTMLElement).style.pointerEvents = 'auto';
+                        console.log('📅 [Calendar] Estilos inline aplicados al scrollbar de años');
                       }
-                      if (barElement) {
-                        const computed = window.getComputedStyle(barElement);
-                        console.log('📅 [Calendar] Bar computed styles:', {
-                          display: computed.display,
-                          opacity: computed.opacity,
-                          width: computed.width,
-                          height: computed.height
-                        });
-                      }
-                    }, 100);
-                    
-                    if (scrollbarInstance && scrollbarContainer) {
-                      scrollbarContainer.style.pointerEvents = 'auto';
-                      // Guardar referencia para destruir cuando se cierre
-                      (yearDropdownEl as any)._scrollbarInstance = scrollbarInstance;
-                      console.log('✅ [Calendar] Scrollbar UBITS creado correctamente para años');
-                    } else {
-                      console.warn('⚠️ [Calendar] Scrollbar instance no se creó correctamente');
-                    }
-                  } else {
-                    console.error('❌ [Calendar] No se encontró función createScrollbar');
-                    console.error('❌ [Calendar] createScrollbarLocal disponible?', typeof (window as any).createScrollbarLocal);
+                    }, 50);
+                  } catch (callError) {
+                    console.error('❌ [Calendar] Error al llamar createScrollbarLocal:', callError);
+                    throw callError;
                   }
-                } catch (error) {
-                  console.error('❌ [Calendar] Error creando scrollbar para lista de años:', error);
-                  console.error('❌ [Calendar] Stack:', (error as Error).stack);
+                } else {
+                  // createScrollbar espera un objeto con opciones
+                  console.log('📅 [Calendar] Llamando createScrollbar con opciones');
+                  scrollbarInstance = createScrollbarFn({
+                    orientation: 'vertical',
+                    targetId: yearListContainerId,
+                    containerId: yearScrollbarContainerId
+                  });
+                  console.log('📅 [Calendar] Year scrollbar instance creada:', !!scrollbarInstance, scrollbarInstance);
                 }
-              } else {
-                console.log('📅 [Calendar] ⚠️ No se necesita scroll para años (contenido cabe en el contenedor)');
+                
+                if (scrollbarInstance && scrollbarContainer) {
+                  scrollbarContainer.style.pointerEvents = 'auto';
+                  // Guardar referencia para destruir cuando se cierre
+                  (yearDropdownEl as any)._scrollbarInstance = scrollbarInstance;
+                  console.log('✅ [Calendar] Scrollbar UBITS creado correctamente para años');
+                } else {
+                  console.warn('⚠️ [Calendar] Scrollbar instance no se creó correctamente');
+                }
+              } catch (error) {
+                console.error('❌ [Calendar] Error creando scrollbar para lista de años:', error);
+                console.error('❌ [Calendar] Stack:', (error as Error).stack);
               }
             } else {
-              console.error('❌ [Calendar] No se encontraron elementos para crear scrollbar de años');
-              console.error('❌ [Calendar] listElement:', !!listElement);
-              console.error('❌ [Calendar] scrollbarContainer:', !!scrollbarContainer);
+              console.log('📅 [Calendar] ⚠️ No se necesita scroll para años (contenido cabe en el contenedor)');
             }
             console.log('📅 [Calendar] ========== FIN CREACIÓN SCROLLBAR AÑOS ==========');
           });
