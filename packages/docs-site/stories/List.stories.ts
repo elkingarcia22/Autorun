@@ -230,9 +230,9 @@ export const Default: Story = {
           };
           
           createList(listOptions);
-        
-        // Crear scrollbar UBITS después de que la lista esté renderizada
-        setTimeout(async () => {
+          
+          // Crear scrollbar UBITS después de que la lista esté renderizada
+          setTimeout(async () => {
           console.log('📋 [List Storybook] ========== CREANDO SCROLLBAR ==========');
           const listElement = listInner.querySelector('.ubits-list') as HTMLElement;
           console.log('📋 [List Storybook] listElement encontrado:', !!listElement);
@@ -348,9 +348,8 @@ export const Default: Story = {
             });
           }
           console.log('📋 [List Storybook] ========== FIN CREACIÓN SCROLLBAR ==========');
-        }, 400);
-        }, 50); // Esperar 50ms antes de crear la lista para que el DOM esté listo
-      } catch (error) {
+          }, 400);
+        } catch (error) {
         console.warn('Using renderList fallback:', error);
         const listHTML = renderList({
           containerId: listInner.id,
