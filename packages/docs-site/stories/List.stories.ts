@@ -401,6 +401,7 @@ export const Default: Story = {
           }
         }, 200);
       }
+      }, 50); // Esperar 50ms antes de crear la lista para que el DOM esté listo
     } else {
       // Sin scrollbar UBITS, solo scroll nativo (oculto)
       listContainer.style.maxHeight = args.maxHeight || '400px';
