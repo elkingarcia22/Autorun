@@ -14959,7 +14959,6 @@ Reglas Importantes:
               clearInterval(checkExisting);
               console.log(`🔄 [UPDATE] ✅ Script existente cargado, creando instancia`);
               createDataTableInstance();
-              console.log(`🔄 [UPDATE] ========== FIN updateDataTablePreview [${callId}] ==========`);
             }
           }, 50);
           return;
@@ -14981,19 +14980,16 @@ Reglas Importantes:
               clearInterval(checkModule);
               console.log('✅ createDataTable disponible');
               createDataTableInstance();
-              console.log(`🔄 [UPDATE] ========== FIN updateDataTablePreview [${callId}] ==========`);
             } else if (attempts >= maxAttempts) {
               clearInterval(checkModule);
               console.error('❌ createDataTable no disponible después de', maxAttempts, 'intentos');
               preview.innerHTML = '<p style="color: var(--ubits-fg-1-medium); padding: 16px;">Error: No se pudo cargar el componente Data Table.</p>';
-              console.log(`🔄 [UPDATE] ========== FIN updateDataTablePreview [${callId}] ==========`);
             }
           }, 50);
         };
         script.onerror = () => {
           console.error('❌ Error cargando data-table.umd.js');
           preview.innerHTML = '<p style="color: var(--ubits-fg-1-medium); padding: 16px;">Error: No se pudo cargar el archivo JavaScript del componente.</p>';
-          console.log(`🔄 [UPDATE] ========== FIN updateDataTablePreview [${callId}] ==========`);
         };
         document.head.appendChild(script);
       };
