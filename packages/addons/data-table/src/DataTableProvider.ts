@@ -86,6 +86,17 @@ function renderCellByType(column: TableColumn, row: TableRow, columnType: Column
       const nombre = cellValue || cellData.nombre || cellData.name || '';
       const avatar = cellData.avatar || cellData.avatarUrl || null;
       
+      // Log para debugging
+      console.log('🖼️ [AVATAR] Renderizando nombre-avatar:', {
+        columnId: column.id,
+        rowId: row.id,
+        nombre: nombre,
+        avatar: avatar,
+        cellData: cellData,
+        hasAvatar: !!avatar,
+        avatarType: typeof avatar
+      });
+      
       // Obtener la variante del avatar desde la columna o usar por defecto
       const avatarVariant = column.avatarVariant || 'initials';
       
@@ -134,26 +145,31 @@ function renderCellByType(column: TableColumn, row: TableRow, columnType: Column
       } else if (avatarVariant === 'initials') {
         // Variante Initials: usar initials si están disponibles, sino generarlas del nombre (sin badge)
         if (avatar && typeof avatar === 'object' && avatar.initials) {
+          console.log('🖼️ [AVATAR] Usando initials del objeto avatar:', avatar.initials);
           avatarHTML = renderAvatar({
             initials: avatar.initials,
             size: 'sm'
           });
         } else {
           const initials = generateInitials(nombre);
+          console.log('🖼️ [AVATAR] Generando initials del nombre:', nombre, '->', initials);
           avatarHTML = renderAvatar({
             initials: initials,
             size: 'sm'
           });
         }
+        console.log('🖼️ [AVATAR] HTML generado (initials):', avatarHTML ? avatarHTML.substring(0, 100) : 'VACÍO');
       } else {
         // Variante Icon: usar icon si está disponible, sino usar 'user' por defecto (sin badge)
         const iconName = avatar && typeof avatar === 'object' && avatar.icon 
           ? avatar.icon 
           : 'user';
+        console.log('🖼️ [AVATAR] Usando icon:', iconName);
         avatarHTML = renderAvatar({
           icon: iconName,
           size: 'sm'
         });
+        console.log('🖼️ [AVATAR] HTML generado (icon):', avatarHTML ? avatarHTML.substring(0, 100) : 'VACÍO');
       }
       
       const isEditable = column.editable;
@@ -161,12 +177,16 @@ function renderCellByType(column: TableColumn, row: TableRow, columnType: Column
         ? `<span class="ubits-body-md-regular" contenteditable="true" data-editable-text="true">${nombre}</span>`
         : `<span class="ubits-body-md-regular">${nombre}</span>`;
       
-      return `
+      const finalHTML = `
         <div style="display: flex; align-items: center; gap: var(--ubits-spacing-sm, 12px);">
           ${avatarHTML}
           ${nombreElement}
         </div>
       `;
+      
+      console.log('🖼️ [AVATAR] HTML final:', finalHTML.substring(0, 200));
+      
+      return finalHTML;
     }
     
     case 'nombre-avatar-texto': {
@@ -432,23 +452,22 @@ function renderCellByType(column: TableColumn, row: TableRow, columnType: Column
       });
     }
     
-    case 'fecha': {
-      const fecha = cellValue || '';
-      const isEditable = column.editable;
-      
-      // Si es editable, mostrar un contenedor con el span y contenedor para el calendario UBITS
-      if (isEditable) {
-        return `
-          <div class="ubits-data-table__date-editable" data-row-id="${row.id}" data-column-id="${column.id}" data-editable="true">
-            <span class="ubits-body-md-regular ubits-data-table__date-display">${fecha || 'Seleccionar fecha'}</span>
-            <div class="ubits-data-table__calendar-container" style="position: absolute; top: 100%; left: 0; z-index: 99999; margin-top: 4px; display: none;"></div>
-          </div>
-        `;
+      case 'fecha': {
+        const fecha = cellValue || '';
+        const isEditable = column.editable === true;
+        
+        // Si es editable, mostrar un contenedor con el span y contenedor para el calendario UBITS
+        if (isEditable) {
+          return `
+            <div class="ubits-data-table__date-editable" data-row-id="${row.id}" data-column-id="${column.id}">
+              <span class="ubits-body-md-regular ubits-data-table__date-display">${fecha || 'Seleccionar fecha'}</span>
+            </div>
+          `;
+        }
+        
+        // Si no es editable, mostrar solo el texto
+        return `<span class="ubits-body-md-regular">${fecha}</span>`;
       }
-      
-      // Si no es editable, mostrar solo el texto
-      return `<span class="ubits-body-md-regular">${fecha}</span>`;
-    }
     
     case 'area': {
       // Texto hardcoded para área
@@ -510,9 +529,13 @@ function renderCellByType(column: TableColumn, row: TableRow, columnType: Column
  */
 function renderCell(column: TableColumn, row: TableRow, pinnedLeft: number = 0): string {
   // Si la columna es de tipo checkbox fijo (columna especial), renderizar checkbox
-  if (column.id === 'checkbox' || column.id.startsWith('checkbox-')) {
+  // IMPORTANTE: Solo las columnas con ID específico (checkbox, checkbox-2) y SIN type='checkbox' son columnas fijas
+  // Las columnas con type='checkbox' (como checkbox-col) deben renderizarse con renderCellByType
+  const isFixedCheckboxColumn = column.type !== 'checkbox' && 
+    (column.id === 'checkbox' || column.id.startsWith('checkbox-'));
+  
+  if (isFixedCheckboxColumn) {
     const checkboxValue = row.data[column.id] || false;
-    console.log('📦 [CELL] Renderizando celda checkbox, column.id:', column.id, 'row.id:', row.id, 'checkboxValue:', checkboxValue);
     
     const checkboxHTML = renderCheckbox({
       label: '',
@@ -537,36 +560,18 @@ function renderCell(column: TableColumn, row: TableRow, pinnedLeft: number = 0):
     const baseStyle = `text-align: center; vertical-align: middle; padding-left: ${paddingLeft} !important;`;
     const cellStyle = `${baseStyle}${pinnedStyle ? ' ' + pinnedStyle : ''}`;
     
-    // Logs detallados para debugging
-    if (column.pinned) {
-      console.log('📌 [CELL CHECKBOX] Columna fijada detectada:', {
-        columnId: column.id,
-        rowId: row.id,
-        pinned: column.pinned,
-        pinnedLeft: pinnedLeft,
-        pinnedClass: pinnedClass,
-        pinnedStyle: pinnedStyle,
-        cellStyle: cellStyle,
-        hasPinnedClass: pinnedClass.includes('pinned'),
-        hasPinnedStyle: pinnedStyle.includes('left'),
-        hasPositionStyle: pinnedStyle.includes('sticky')
-      });
-    }
-    
     const cellHTML = `
       <td class="ubits-data-table__cell ubits-data-table__cell--checkbox${pinnedClass}" data-column-id="${column.id}" ${column.pinned ? 'data-pinned="true"' : ''} style="${cellStyle}">
         ${checkbox}
       </td>
     `;
-    console.log('📦 [CELL] Celda HTML generada para', column.id, 'row', row.id, 'length:', cellHTML.length);
-    console.log('📦 [CELL] ¿Celda contiene checkbox-2?', cellHTML.includes('checkbox-2'));
     return cellHTML;
   }
   
   // Si la columna tiene un tipo definido, usar renderCellByType
   if (column.type) {
     const content = renderCellByType(column, row, column.type);
-    // Editable para: nombre, nombre-avatar, estado, fecha (contenido editable), checkbox y radio (interactivos)
+    // Editable para: nombre, nombre-avatar, estado, fecha, checkbox y radio (interactivos)
     // NO editable para: drag-handle, expand (son controladores)
     const isEditable = column.editable && (
       column.type === 'nombre' || 
@@ -593,8 +598,9 @@ function renderCell(column: TableColumn, row: TableRow, pinnedLeft: number = 0):
       : '';
     
     // Aplicar left siempre que la columna esté fijada, incluso si es 0 (necesario para que sticky funcione)
-    // IMPORTANTE: Incluir position: sticky explícitamente en el estilo inline
-    const pinnedStyle = column.pinned ? `position: sticky; left: ${pinnedLeft}px;` : '';
+    // IMPORTANTE: Incluir position: sticky explícitamente en el estilo inline con !important
+    // CRÍTICO: left: 0px es válido y necesario para la primera columna fijada
+    const pinnedStyle = column.pinned ? `position: sticky !important; left: ${pinnedLeft}px !important; z-index: 12 !important;` : '';
     const cellStyle = `${controlStyles}${pinnedStyle ? ' ' + pinnedStyle : ''}`;
     const styleAttr = cellStyle ? ` style="${cellStyle}"` : '';
     
@@ -634,8 +640,9 @@ function renderCell(column: TableColumn, row: TableRow, pinnedLeft: number = 0):
   // Agregar clase si la columna está fijada
   const pinnedClass = column.pinned ? ' ubits-data-table__cell--pinned' : '';
   // Aplicar left siempre que la columna esté fijada, incluso si es 0 (necesario para que sticky funcione)
-  // IMPORTANTE: Incluir position: sticky explícitamente en el estilo inline
-  const pinnedStyle = column.pinned ? ` style="position: sticky; left: ${pinnedLeft}px;"` : '';
+  // IMPORTANTE: Incluir position: sticky explícitamente en el estilo inline con !important
+  // CRÍTICO: left: 0px es válido y necesario para la primera columna fijada
+  const pinnedStyle = column.pinned ? ` style="position: sticky !important; left: ${pinnedLeft}px !important; z-index: 12 !important;"` : '';
   
   // Logs detallados para debugging
   if (column.pinned) {
@@ -691,13 +698,18 @@ function renderColumnHeader(
     `;
   }
 
-  // Si es una columna de checkbox, renderizar solo el checkbox (sin título ni drag handle)
-  if (column.id === 'checkbox' || column.id.startsWith('checkbox-')) {
-    console.log('📋 [HEADER] Renderizando header de checkbox, column.id:', column.id);
+  // Si es una columna de checkbox FIJO (checkbox-2 o checkbox), renderizar solo el checkbox (sin título ni drag handle)
+  // IMPORTANTE: Las columnas de tipo "checkbox" (type === 'checkbox') NO son columnas fijas
+  // Solo las columnas con ID específico (checkbox, checkbox-2) y SIN type='checkbox' son columnas fijas
+  // Las columnas con type='checkbox' (como checkbox-col) deben tener header normal con título
+  const isFixedCheckboxColumn = column.type !== 'checkbox' && 
+    (column.id === 'checkbox' || column.id.startsWith('checkbox-'));
+  const isCheckboxTypeColumn = column.type === 'checkbox';
+  
+  if (isFixedCheckboxColumn) {
     // Opcional: calcular si todos están seleccionados para el checkbox del header
     const allChecked = rows.length > 0 && rows.every(row => row.data[column.id] === true);
     const someChecked = rows.some(row => row.data[column.id] === true);
-    console.log('📋 [HEADER] allChecked:', allChecked, 'someChecked:', someChecked, 'rows.length:', rows.length);
     
     const checkboxHTML = renderCheckbox({
       label: '',
@@ -729,16 +741,15 @@ function renderColumnHeader(
         ${checkbox}
       </th>
     `;
-    console.log('📋 [HEADER] Header HTML generado para', column.id, 'length:', headerHTML.length);
-    console.log('📋 [HEADER] ¿Header contiene checkbox-2?', headerHTML.includes('checkbox-2'));
     return headerHTML;
   }
 
   // Para columnas normales, mostrar drag handle y título
-  // NO permitir drag & drop si la columna es de tipo checkbox, drag-handle o expand
-  const isCheckboxColumn = column.id === 'checkbox' || column.id.startsWith('checkbox-');
+  // NO permitir drag & drop si la columna es de tipo checkbox fijo, drag-handle o expand
+  // IMPORTANTE: Las columnas de tipo "checkbox" (type === 'checkbox') pero con ID diferente
+  // SÍ pueden tener drag handle y título normal
   const isControlColumn = column.type === 'drag-handle' || column.type === 'expand';
-  const dragHandle = columnReorderable && !isCheckboxColumn && !isControlColumn ? `
+  const dragHandle = columnReorderable && !isFixedCheckboxColumn && !isControlColumn ? `
     <div class="ubits-data-table__column-drag-handle" draggable="true" data-column-id="${column.id}">
       <wa-icon name="grip-dots-vertical"></wa-icon>
       <i class="fas fa-grip-vertical" aria-hidden="true"></i>
@@ -746,7 +757,9 @@ function renderColumnHeader(
   ` : '';
 
   // Botón de ordenamiento - cambia el icono según la dirección de ordenamiento
-  const sortButton = !isCheckboxColumn && !isControlColumn && columnSortable ? (() => {
+  // IMPORTANTE: Las columnas de tipo "checkbox" (type === 'checkbox') pero con ID diferente
+  // SÍ pueden tener botón de ordenamiento
+  const sortButton = !isFixedCheckboxColumn && !isControlColumn && columnSortable ? (() => {
     const isSorted = sortColumnId === column.id;
     const activeClass = isSorted ? ' ubits-data-table__column-sort--active' : '';
     
@@ -789,18 +802,18 @@ function renderColumnHeader(
     return sortButtonHTML;
   })() : '';
   
-  if (!sortButton && !isCheckboxColumn) {
+  if (!sortButton && !isFixedCheckboxColumn) {
     console.log('⚠️ [SORT BUTTON] No se creó botón para:', {
       columnId: column.id,
       columnTitle: column.title,
-      isCheckboxColumn,
+      isFixedCheckboxColumn,
       isControlColumn,
       columnSortable
     });
   }
 
   // Botón de menú de 3 puntos con opción de fijar columna
-  const menuButton = !isCheckboxColumn && !isControlColumn && showColumnMenu ? (() => {
+  const menuButton = !isFixedCheckboxColumn && !isControlColumn && showColumnMenu ? (() => {
     // Renderizar botón UBITS sin dropdown: tamaño xs, variant tertiary, iconOnly
     // El onClick se manejará en attachEventListeners usando el data-column-id
     const buttonHTML = renderButton({
@@ -845,27 +858,10 @@ function renderColumnHeader(
   const zIndexStyle = column.pinned ? 'z-index: 10 !important;' : '';
   const combinedStyle = [positionStyle, pinnedStyle, zIndexStyle, widthStyle].filter(Boolean).join(' ');
   
-  // Logs detallados para debugging
-  if (column.pinned) {
-    console.log('📌 [HEADER] Columna fijada detectada en renderColumnHeader:', {
-      columnId: column.id,
-      columnTitle: column.title,
-      pinned: column.pinned,
-      pinnedLeft: pinnedLeft,
-      pinnedClass: pinnedClass,
-      pinnedStyle: pinnedStyle,
-      positionStyle: positionStyle,
-      widthStyle: widthStyle,
-      combinedStyle: combinedStyle,
-      combinedStyleLength: combinedStyle.length,
-      combinedStyleIncludesSticky: combinedStyle.includes('sticky'),
-      combinedStyleIncludesLeft: combinedStyle.includes('left'),
-      hasPinnedClass: pinnedClass.includes('pinned'),
-      hasPinnedStyle: pinnedStyle.includes('left'),
-      hasPositionStyle: positionStyle.includes('sticky'),
-      willApplyStyle: !!combinedStyle
-    });
-  }
+  // Logs detallados para debugging (solo si es necesario)
+  // if (column.pinned) {
+  //   console.log('📌 [HEADER] Columna fijada:', column.id, 'pinnedLeft:', pinnedLeft);
+  // }
   
   // Construir el HTML del header
   // CRÍTICO: Siempre incluir el estilo si combinedStyle tiene contenido, incluso si es solo width
@@ -978,41 +974,68 @@ export function renderDataTable(
 ): string {
   const { columns, rows, className = '', columnReorderable = false, columnSortable = true, rowReorderable = false, rowExpandable = true, showCheckbox = true, showVerticalScrollbar = false, showHorizontalScrollbar = false, showColumnMenu = true } = options;
 
-  console.log('🎨 [RENDER] ========== INICIO RENDER ==========');
-  console.log('🎨 [RENDER] renderDataTable llamado con showCheckbox:', showCheckbox);
-  console.log('🎨 [RENDER] renderDataTable llamado con showVerticalScrollbar:', showVerticalScrollbar);
-  console.log('🎨 [RENDER] renderDataTable llamado con showHorizontalScrollbar:', showHorizontalScrollbar);
-  console.log('🎨 [RENDER] renderDataTable llamado con showColumnMenu:', showColumnMenu);
-  console.log('🎨 [RENDER] Columnas recibidas:', columns.map(c => ({ id: c.id, visible: c.visible, pinned: c.pinned })));
-  console.log('🎨 [RENDER] Número de filas:', rows.length);
-  console.log('🎨 [RENDER] Estado pinned de columnas:', columns.map(c => ({ id: c.id, pinned: c.pinned, pinnedType: typeof c.pinned })));
+  console.log('🎨 [RENDER] renderDataTable llamado - Columnas:', columns.length, 'Filas:', rows.length);
+  console.log('🎨 [RENDER] Estado pinned de columnas recibidas:', columns.map(col => ({ id: col.id, pinned: col.pinned || false })));
 
   // Filtrar columnas visibles
   let visibleColumns = columns.filter(col => col.visible !== false);
   
   // Eliminar la columna de checkbox vieja (id === 'checkbox')
   visibleColumns = visibleColumns.filter(col => col.id !== 'checkbox');
-  console.log('🔍 [CHECKBOX] Columna checkbox eliminada. Columnas restantes:', visibleColumns.map(col => col.id));
   
   // Si hay un orden de columnas especificado, reordenar según ese orden
+  // IMPORTANTE: Crear copias de las columnas al reordenar para preservar el estado pinned
+  console.log('🔍 [REORDER] Columnas ANTES del reordenamiento:', visibleColumns.map(col => ({ id: col.id, pinned: col.pinned || false })));
   if (columnOrder.length > 0) {
     // También eliminar 'checkbox' del columnOrder si existe
     const filteredColumnOrder = columnOrder.filter(id => id !== 'checkbox');
-    const columnMap = new Map(visibleColumns.map(col => [col.id, col]));
+    const columnMap = new Map(visibleColumns.map(col => {
+      const copy = { ...col };
+      // IMPORTANTE: Preservar explícitamente pinned
+      if (col.pinned !== undefined) {
+        copy.pinned = col.pinned;
+      }
+      return [col.id, copy];
+    })); // Crear copias
     visibleColumns = filteredColumnOrder
-      .map(id => columnMap.get(id))
+      .map(id => {
+        const col = columnMap.get(id);
+        if (col) {
+          // Asegurar que pinned se preserve
+          const original = visibleColumns.find(c => c.id === id);
+          if (original && original.pinned !== undefined) {
+            col.pinned = original.pinned;
+          }
+        }
+        return col;
+      })
       .filter((col): col is TableColumn => col !== undefined)
-      .concat(visibleColumns.filter(col => !filteredColumnOrder.includes(col.id)));
+      .concat(visibleColumns.filter(col => !filteredColumnOrder.includes(col.id)).map(col => {
+        const copy = { ...col };
+        // IMPORTANTE: Preservar explícitamente pinned
+        if (col.pinned !== undefined) {
+          copy.pinned = col.pinned;
+        }
+        return copy;
+      })); // Crear copias también
+  } else {
+    // Si no hay reordenamiento, crear copias de todas las columnas para preservar el estado
+    visibleColumns = visibleColumns.map(col => {
+      const copy = { ...col };
+      // IMPORTANTE: Preservar explícitamente pinned
+      if (col.pinned !== undefined) {
+        copy.pinned = col.pinned;
+      }
+      return copy;
+    });
   }
+  console.log('🔍 [REORDER] Columnas DESPUÉS del reordenamiento:', visibleColumns.map(col => ({ id: col.id, pinned: col.pinned || false })));
   
   // Controlar la columna checkbox-2 según showCheckbox
-  console.log('🎯 [CHECKBOX-2] Evaluando showCheckbox:', showCheckbox, '(showCheckbox !== false:', showCheckbox !== false, ')');
   if (showCheckbox !== false) {
     // Si no existe checkbox-2, crearla automáticamente al inicio
     const checkbox2Exists = visibleColumns.some(col => col.id === 'checkbox-2');
-    console.log('🎯 [CHECKBOX-2] checkbox2Exists:', checkbox2Exists);
     if (!checkbox2Exists) {
-      console.log('🔍 [CHECKBOX-2] Creando nueva columna checkbox-2 al inicio');
       // Crear una nueva columna de checkbox con id "checkbox-2"
       const newCheckboxColumn: TableColumn = {
         id: 'checkbox-2',
@@ -1083,24 +1106,57 @@ export function renderDataTable(
   }
   
   // Aplicar sticky a las columnas de controladores según las opciones
+  // IMPORTANTE: Preservar el estado pinned de las columnas normales que fueron fijadas manualmente
   const { checkboxSticky = false, dragHandleSticky = false, expandSticky = false } = options;
   visibleColumns = visibleColumns.map(col => {
     const colCopy = { ...col };
-    if (col.id === 'checkbox-2' && checkboxSticky === true) {
-      colCopy.pinned = true;
-      console.log('🔧 [STICKY] Checkbox marcado como pinned');
-    } else if (col.type === 'drag-handle' && dragHandleSticky === true) {
-      colCopy.pinned = true;
-      console.log('🔧 [STICKY] Drag-handle marcado como pinned');
-    } else if (col.type === 'expand' && expandSticky === true) {
-      colCopy.pinned = true;
-      console.log('🔧 [STICKY] Expand marcado como pinned');
-    } else if (col.id === 'checkbox-2' || col.type === 'drag-handle' || col.type === 'expand') {
-      // Si el sticky está deshabilitado, asegurar que pinned sea false
-      colCopy.pinned = false;
+    // Solo modificar pinned para controladores, preservar el estado de columnas normales
+    if (col.id === 'checkbox-2') {
+      // Para checkbox, usar checkboxSticky si está habilitado, sino preservar el estado actual
+      if (checkboxSticky === true) {
+        colCopy.pinned = true;
+        console.log('🔧 [STICKY] Checkbox marcado como pinned');
+      } else {
+        // Si sticky está deshabilitado, solo establecer false si no fue fijado manualmente
+        // Pero si fue fijado manualmente (pinned = true), preservarlo
+        // En realidad, para checkbox sin sticky, siempre debe ser false
+        colCopy.pinned = false;
+      }
+    } else if (col.type === 'drag-handle') {
+      // Para drag-handle, usar dragHandleSticky si está habilitado
+      if (dragHandleSticky === true) {
+        colCopy.pinned = true;
+        console.log('🔧 [STICKY] Drag-handle marcado como pinned');
+      } else {
+        colCopy.pinned = false;
+      }
+    } else if (col.type === 'expand') {
+      // Para expand, usar expandSticky si está habilitado
+      if (expandSticky === true) {
+        colCopy.pinned = true;
+        console.log('🔧 [STICKY] Expand marcado como pinned');
+      } else {
+        colCopy.pinned = false;
+      }
     }
+    // Para columnas normales, preservar el estado pinned (puede ser true si fue fijada manualmente)
+    // No hacer nada, colCopy ya tiene el estado correcto de la copia
+    
+    if (colCopy.pinned && !col.id.startsWith('checkbox') && col.type !== 'drag-handle' && col.type !== 'expand') {
+      console.log('🔧 [STICKY] Preservando estado pinned de columna normal:', col.id, 'pinned:', colCopy.pinned);
+    }
+    
+    // Log detallado para debugging
+    if (col.id === 'nombre' || col.id === 'email' || col.id === 'estado') {
+      console.log('🔍 [STICKY DEBUG] Columna:', col.id, 'pinned original:', col.pinned, 'pinned copia:', colCopy.pinned);
+    }
+    
     return colCopy;
   });
+  
+  // Log de todas las columnas fijadas después del map
+  const pinnedAfterMap = visibleColumns.filter(col => col.pinned);
+  console.log('🔍 [STICKY] Columnas fijadas DESPUÉS del map:', pinnedAfterMap.map(col => ({ id: col.id, pinned: col.pinned })));
   
   // Estado de ordenamiento
   const sortColumnId = (options as any).sortColumnId || null;
@@ -1276,31 +1332,12 @@ export function renderDataTable(
   // Verificar si hay columnas fijadas
   const hasPinnedColumns = visibleColumns.some(col => col.pinned);
   
-  console.log('📊 [SCROLL] showVerticalScrollbar:', showVerticalScrollbar);
-  console.log('📊 [SCROLL] showHorizontalScrollbar:', showHorizontalScrollbar);
-  console.log('📊 [SCROLL] hasPinnedColumns:', hasPinnedColumns);
-  console.log('📊 [SCROLL] Columnas fijadas:', visibleColumns.filter(c => c.pinned).map(c => ({ id: c.id, type: c.type })));
-  console.log('📊 [SCROLL] tableHTML length:', tableHTML.length);
-  console.log('📊 [SCROLL] ¿Hay checkbox-2 en columnHeadersHTML?', columnHeadersHTML.includes('checkbox-2'));
-  console.log('📊 [SCROLL] ¿Hay checkbox-2 en rowsHTML?', rowsHTML.includes('checkbox-2'));
-  
   // IMPORTANTE: Si hay columnas fijadas, necesitamos overflow-x para que sticky funcione
   // Si no hay scroll horizontal activo pero hay columnas fijadas, activar scroll horizontal automáticamente
   let finalShowHorizontalScrollbar = showHorizontalScrollbar;
   if (hasPinnedColumns && !showHorizontalScrollbar) {
-    console.log('⚠️ [SCROLL] ⚠️ Hay columnas fijadas pero no hay scroll horizontal activo');
-    console.log('⚠️ [SCROLL] ⚠️ Activando scroll horizontal automáticamente para que sticky funcione');
     finalShowHorizontalScrollbar = true;
   }
-  
-  // Calcular ancho total de columnas para debug
-  const totalColumnsWidth = visibleColumns.reduce((sum, col) => {
-    const colWidth = col.width || 150;
-    return sum + colWidth;
-  });
-  console.log('📊 [SCROLL] Ancho total de columnas calculado:', totalColumnsWidth, 'px');
-  console.log('📊 [SCROLL] Número de columnas visibles:', visibleColumns.length);
-  console.log('📊 [SCROLL] Anchos de columnas:', visibleColumns.map(c => ({ id: c.id, width: c.width || 150 })));
   
   // Determinar qué contenedor usar según los scrolls habilitados
   // NO afecta la lógica del checkbox ni de las columnas
@@ -1315,29 +1352,10 @@ export function renderDataTable(
       scrollClasses.push('ubits-data-table__scrollable-container--horizontal');
     }
     
-    // Ya no usamos showControlsSticky - cada controlador tiene su propio pinned
-    
-    console.log('📊 [SCROLL] ✅ Envolviendo tabla en contenedor scrollable');
-    console.log('📊 [SCROLL] Clases de scroll:', scrollClasses.join(' '));
-    console.log('📊 [SCROLL] showHorizontalScrollbar activo:', showHorizontalScrollbar);
-    console.log('📊 [SCROLL] Ancho total esperado de columnas:', totalColumnsWidth, 'px');
-    
     html = `<div class="ubits-data-table__scrollable-container ${scrollClasses.join(' ')}">${tableHTML}</div>`;
-    console.log('📊 [SCROLL] HTML con contenedor scrollable generado, length:', html.length);
-    console.log('📊 [SCROLL] ¿HTML contiene scrollable-container?', html.includes('scrollable-container'));
-    console.log('📊 [SCROLL] ¿HTML contiene scrollable-container--horizontal?', html.includes('scrollable-container--horizontal'));
-    console.log('📊 [SCROLL] ¿HTML contiene checkbox-2?', html.includes('checkbox-2'));
   } else {
-    console.log('📊 [SCROLL] ❌ NO envolviendo, usando tabla directamente');
     html = tableHTML;
   }
-
-  console.log('📊 [SCROLL] HTML final length:', html.length);
-  console.log('📊 [SCROLL] HTML final preview (primeros 800 chars):', html.substring(0, 800));
-  console.log('📊 [SCROLL] ¿HTML final contiene checkbox-2?', html.includes('checkbox-2'));
-  console.log('📊 [SCROLL] ¿HTML final contiene scrollable-container?', html.includes('scrollable-container'));
-  console.log('📊 [SCROLL] ¿HTML final contiene scrollable-container--horizontal?', html.includes('scrollable-container--horizontal'));
-  console.log('🔍 [HEADER ALIGNMENT] ========== FIN RENDER ==========');
 
   return html;
 }
@@ -1358,6 +1376,45 @@ export function createDataTable(options: DataTableOptions): {
     throw new Error(`Container with id "${options.containerId}" not found`);
   }
 
+  // Limpiar cualquier tabla existente en el contenedor antes de crear una nueva
+  // Esto previene renderizados duplicados cuando se cambian los tipos de columna
+  const existingTable = container.querySelector('.ubits-data-table');
+  const existingScrollableContainer = container.querySelector('.ubits-data-table__scrollable-container');
+  
+  // Limpiar contenedor scrollable si existe (contiene la tabla)
+  if (existingScrollableContainer) {
+    const scrollableElement = existingScrollableContainer as HTMLElement;
+    const tableInside = scrollableElement.querySelector('.ubits-data-table');
+    if (tableInside) {
+      const tableElement = tableInside as HTMLElement;
+      // Si hay una instancia previa, destruirla primero
+      if ((tableElement as any)._dataTableInstance) {
+        try {
+          const instance = (tableElement as any)._dataTableInstance;
+          if (instance && typeof instance.destroy === 'function') {
+            instance.destroy();
+          }
+        } catch (e) {
+          console.warn('Error destroying previous table instance:', e);
+        }
+      }
+    }
+    existingScrollableContainer.remove();
+  } else if (existingTable) {
+    const tableElement = existingTable as HTMLElement;
+    if ((tableElement as any)._dataTableInstance) {
+      try {
+        const instance = (tableElement as any)._dataTableInstance;
+        if (instance && typeof instance.destroy === 'function') {
+          instance.destroy();
+        }
+      } catch (e) {
+        console.warn('Error destroying previous table instance:', e);
+      }
+    }
+    existingTable.remove();
+  }
+
   const tableHTML = renderDataTable(options);
   const tempDiv = document.createElement('div');
   tempDiv.innerHTML = tableHTML.trim();
@@ -1370,7 +1427,10 @@ export function createDataTable(options: DataTableOptions): {
   container.appendChild(element);
 
   // Estado interno
-  let currentOptions = { ...options };
+  let currentOptions = {
+    ...options,
+    columns: options.columns.map(col => ({ ...col }))
+  };
   
   // Orden de columnas
   let columnOrder: string[] = currentOptions.columns
@@ -1391,24 +1451,9 @@ export function createDataTable(options: DataTableOptions): {
   // Función para inicializar fallback de iconos
   const initializeIconFallbacks = () => {
     const waIcons = element.querySelectorAll('wa-icon');
-    console.log('🔍 [ICONS] Inicializando fallbacks de iconos:', {
-      totalIcons: waIcons.length,
-      waIconDefined: !!customElements.get('wa-icon')
-    });
     
-    waIcons.forEach((waIcon, index) => {
+    waIcons.forEach((waIcon) => {
       const faIcon = waIcon.nextElementSibling as HTMLElement;
-      const iconName = waIcon.getAttribute('name');
-      
-      console.log(`🔍 [ICONS] Icono ${index + 1}:`, {
-        name: iconName,
-        hasNextSibling: !!faIcon,
-        nextSiblingTag: faIcon?.tagName,
-        waIconDisplay: window.getComputedStyle(waIcon as HTMLElement).display,
-        waIconWidth: window.getComputedStyle(waIcon as HTMLElement).width,
-        waIconHeight: window.getComputedStyle(waIcon as HTMLElement).height,
-        waIconOpacity: window.getComputedStyle(waIcon as HTMLElement).opacity
-      });
       
       if (faIcon && faIcon.tagName === 'I') {
         if (customElements.get('wa-icon')) {
@@ -1417,7 +1462,6 @@ export function createDataTable(options: DataTableOptions): {
           (waIcon as HTMLElement).style.height = '12px';
           (waIcon as HTMLElement).style.opacity = '1';
           faIcon.style.display = 'none';
-          console.log(`✅ [ICONS] Icono ${index + 1} (${iconName}): usando wa-icon`);
         } else {
           // Si wa-icon no está definido, ocultar wa-icon y mostrar fallback
           (waIcon as HTMLElement).style.display = 'none';
@@ -1425,7 +1469,6 @@ export function createDataTable(options: DataTableOptions): {
           faIcon.style.fontSize = '12px';
           faIcon.style.width = '12px';
           faIcon.style.height = '12px';
-          console.log(`⚠️ [ICONS] Icono ${index + 1} (${iconName}): usando fallback`);
         }
       }
     });
@@ -1433,8 +1476,35 @@ export function createDataTable(options: DataTableOptions): {
 
   // Función para renderizar
   const render = () => {
+    // Log del estado de las columnas antes de renderizar
+    const pinnedBeforeRender = currentOptions.columns.filter(col => col.pinned);
+    console.log('🔄 [RENDER] Columnas fijadas antes de renderizar:', pinnedBeforeRender.map(col => ({ id: col.id, pinned: col.pinned })));
+    console.log('🔄 [RENDER] Estado completo de currentOptions.columns:', currentOptions.columns.map(col => ({ 
+      id: col.id, 
+      pinned: col.pinned || false,
+      visible: col.visible !== false
+    })));
+    
+    // Crear una copia de las opciones con las columnas actualizadas
+    const renderOptions = {
+      ...currentOptions,
+      columns: currentOptions.columns.map(col => {
+        const copy = { ...col };
+        // Asegurar que pinned se preserve explícitamente
+        if (col.pinned !== undefined) {
+          copy.pinned = col.pinned;
+        }
+        return copy;
+      }),
+      sortColumnId,
+      sortDirection
+    };
+    
+    console.log('🔄 [RENDER] Opciones pasadas a renderDataTable - columnas fijadas:', 
+      renderOptions.columns.filter(col => col.pinned).map(col => ({ id: col.id, pinned: col.pinned })));
+    
     const newHTML = renderDataTable(
-      { ...currentOptions, sortColumnId, sortDirection } as any, 
+      renderOptions as any, 
       columnOrder, 
       rowOrder
     );
@@ -1567,106 +1637,13 @@ export function createDataTable(options: DataTableOptions): {
         const checkboxCells = searchRoot.querySelectorAll('.ubits-data-table__cell--checkbox[data-column-id="checkbox-2"], .ubits-data-table__cell--checkbox[data-column-id^="checkbox-"]');
         const checkboxHeaders = searchRoot.querySelectorAll('.ubits-data-table__column-header--checkbox[data-column-id="checkbox-2"], .ubits-data-table__column-header--checkbox[data-column-id^="checkbox-"]');
         
-        console.log('📊 [CHECKBOX] Buscando checkbox cells con selector:', '.ubits-data-table__cell--checkbox[data-column-id="checkbox-2"], .ubits-data-table__cell--checkbox[data-column-id^="checkbox-"]');
-        console.log('📊 [CHECKBOX] Elementos encontrados:', {
-          cells: checkboxCells.length,
-          headers: checkboxHeaders.length
-        });
-        
         // También buscar dentro del contenedor scrollable si existe (ya calculado arriba)
         if (scrollableContainer) {
-          console.log('📊 [CHECKBOX] ✅ Contenedor scrollable encontrado, buscando checkbox dentro de él');
           const checkboxCellsInScrollable = scrollableContainer.querySelectorAll('.ubits-data-table__cell--checkbox[data-column-id="checkbox-2"], .ubits-data-table__cell--checkbox[data-column-id^="checkbox-"]');
           const checkboxHeadersInScrollable = scrollableContainer.querySelectorAll('.ubits-data-table__column-header--checkbox[data-column-id="checkbox-2"], .ubits-data-table__column-header--checkbox[data-column-id^="checkbox-"]');
-          console.log('📊 [CHECKBOX] Elementos encontrados dentro del scrollable:', {
-            cells: checkboxCellsInScrollable.length,
-            headers: checkboxHeadersInScrollable.length
-          });
-          
-          if (checkboxCellsInScrollable.length > 0) {
-            const checkboxCell = checkboxCellsInScrollable[0] as HTMLElement;
-            const computed = window.getComputedStyle(checkboxCell);
-            console.log('📊 [CHECKBOX CELL] Estilos computados (dentro scrollable):');
-            console.log('  - padding:', computed.padding);
-            console.log('  - paddingTop:', computed.paddingTop);
-            console.log('  - paddingRight:', computed.paddingRight);
-            console.log('  - paddingBottom:', computed.paddingBottom);
-            console.log('  - paddingLeft:', computed.paddingLeft);
-            console.log('  - width:', computed.width);
-            console.log('  - minWidth:', computed.minWidth);
-            console.log('  - maxWidth:', computed.maxWidth);
-            console.log('  - boxSizing:', computed.boxSizing);
-            console.log('  - marginLeft:', computed.marginLeft);
-            console.log('  - marginRight:', computed.marginRight);
-            console.log('  - position:', computed.position);
-            console.log('  - left:', computed.left);
-            console.log('  - zIndex:', computed.zIndex);
-          }
-        } else {
-          console.log('📊 [CHECKBOX] ❌ No hay contenedor scrollable, buscando directamente en element');
         }
         
-        if (checkboxCells.length > 0) {
-          const checkboxCell = checkboxCells[0] as HTMLElement;
-          const computed = window.getComputedStyle(checkboxCell);
-          console.log('📊 [CHECKBOX CELL] Estilos computados:');
-          console.log('  - padding:', computed.padding);
-          console.log('  - paddingTop:', computed.paddingTop);
-          console.log('  - paddingRight:', computed.paddingRight);
-          console.log('  - paddingBottom:', computed.paddingBottom);
-          console.log('  - paddingLeft:', computed.paddingLeft);
-          console.log('  - width:', computed.width);
-          console.log('  - minWidth:', computed.minWidth);
-          console.log('  - maxWidth:', computed.maxWidth);
-          console.log('  - boxSizing:', computed.boxSizing);
-          console.log('  - marginLeft:', computed.marginLeft);
-          console.log('  - marginRight:', computed.marginRight);
-          console.log('  - position:', computed.position);
-          console.log('  - left:', computed.left);
-          console.log('  - zIndex:', computed.zIndex);
-        } else {
-          console.log('⚠️ [CHECKBOX CELL] No se encontró ninguna celda de checkbox');
-          // Intentar buscar de otra manera
-          const allCells = element.querySelectorAll('td[data-column-id]');
-          console.log('📊 [CHECKBOX] Total celdas con data-column-id:', allCells.length);
-          allCells.forEach((cell, idx) => {
-            const colId = (cell as HTMLElement).getAttribute('data-column-id');
-            if (colId && colId.includes('checkbox')) {
-              console.log(`📊 [CHECKBOX] Celda ${idx} tiene data-column-id="${colId}"`);
-            }
-          });
-        }
-        
-        if (checkboxHeaders.length > 0) {
-          const checkboxHeader = checkboxHeaders[0] as HTMLElement;
-          const computed = window.getComputedStyle(checkboxHeader);
-          console.log('📊 [CHECKBOX HEADER] Estilos computados:');
-          console.log('  - padding:', computed.padding);
-          console.log('  - paddingTop:', computed.paddingTop);
-          console.log('  - paddingRight:', computed.paddingRight);
-          console.log('  - paddingBottom:', computed.paddingBottom);
-          console.log('  - paddingLeft:', computed.paddingLeft);
-          console.log('  - width:', computed.width);
-          console.log('  - minWidth:', computed.minWidth);
-          console.log('  - maxWidth:', computed.maxWidth);
-          console.log('  - boxSizing:', computed.boxSizing);
-          console.log('  - marginLeft:', computed.marginLeft);
-          console.log('  - marginRight:', computed.marginRight);
-          console.log('  - position:', computed.position);
-          console.log('  - left:', computed.left);
-          console.log('  - zIndex:', computed.zIndex);
-        } else {
-          console.log('⚠️ [CHECKBOX HEADER] No se encontró ningún header de checkbox');
-          // Intentar buscar de otra manera
-          const allHeaders = element.querySelectorAll('th[data-column-id]');
-          console.log('📊 [CHECKBOX] Total headers con data-column-id:', allHeaders.length);
-          allHeaders.forEach((header, idx) => {
-            const colId = (header as HTMLElement).getAttribute('data-column-id');
-            if (colId && colId.includes('checkbox')) {
-              console.log(`📊 [CHECKBOX] Header ${idx} tiene data-column-id="${colId}"`);
-            }
-          });
-        }
+        // Checkbox headers encontrados: checkboxHeaders.length
         
         // Verificar distancia visual entre checkbox y controles
         if (checkboxCells.length > 0 && controlsColumns.length > 0) {
@@ -1812,6 +1789,19 @@ export function createDataTable(options: DataTableOptions): {
   
   // Función para adjuntar event listeners
   const attachEventListeners = () => {
+    // Detectar si estamos en la web (no en Storybook)
+    const isWeb = typeof window !== 'undefined' && window.location && !window.location.href.includes('storybook');
+    
+    if (isWeb) {
+      console.log('🌐🌐🌐 [WEB ATTACH] ========== INICIO attachEventListeners ==========');
+      console.log('🌐🌐🌐 [WEB ATTACH] window.location:', window.location?.href);
+      console.log('🌐🌐🌐 [WEB ATTACH] element:', {
+        tagName: element.tagName,
+        id: element.id,
+        className: element.className
+      });
+    }
+    
     try {
     // Drag & Drop de columnas
     if (currentOptions.columnReorderable) {
@@ -2372,47 +2362,101 @@ export function createDataTable(options: DataTableOptions): {
         return;
       }
       
-      // Crear dropdown si no existe
-      let dropdown = headerCell.querySelector('.ubits-data-table__column-menu-dropdown') as HTMLElement;
-      if (!dropdown) {
-        dropdown = document.createElement('div');
-        dropdown.className = 'ubits-data-table__column-menu-dropdown';
-        dropdown.setAttribute('data-column-id', columnId);
-        // Solo establecer posición y display, el List maneja sus propios estilos
-        dropdown.style.cssText = `
-          position: absolute;
-          top: 100%;
-          right: 0;
-          z-index: 1000;
-          margin-top: 4px;
-          display: none;
-          width: 160px;
-          max-width: 160px;
-          box-sizing: border-box;
-        `;
-        // CRÍTICO: NO establecer position: relative si la columna está fijada (tiene position: sticky)
-        // Verificar si la columna está fijada antes de establecer position: relative
-        const isPinned = headerCell.hasAttribute('data-pinned') && headerCell.getAttribute('data-pinned') === 'true';
-        const hasStickyClass = headerCell.classList.contains('ubits-data-table__column-header--pinned');
+      // CRÍTICO: Verificar si la columna está fijada ANTES de crear el dropdown
+      // Esto es necesario para establecer el z-index correcto
+      const isPinned = headerCell.hasAttribute('data-pinned') && headerCell.getAttribute('data-pinned') === 'true';
+      const hasStickyClass = headerCell.classList.contains('ubits-data-table__column-header--pinned');
+      
+      // Detectar si estamos en la web (no en Storybook)
+      const isWeb = typeof window !== 'undefined' && !window.location?.href?.includes('storybook');
+      
+      console.log('🌐 [WEB DEBUG] ========== INICIO CREACIÓN DROPDOWN ==========');
+      console.log('🌐 [WEB DEBUG] isWeb:', isWeb);
+      console.log('🌐 [WEB DEBUG] columnId:', columnId);
+      console.log('🌐 [WEB DEBUG] isPinned:', isPinned);
+      console.log('🌐 [WEB DEBUG] hasStickyClass:', hasStickyClass);
+      console.log('🌐 [WEB DEBUG] headerCell:', {
+        tagName: headerCell.tagName,
+        id: headerCell.id,
+        className: headerCell.className,
+        dataPinned: headerCell.getAttribute('data-pinned'),
+        computedPosition: window.getComputedStyle(headerCell).position,
+        computedZIndex: window.getComputedStyle(headerCell).zIndex
+      });
+      
+      // CRÍTICO: Para columnas fijadas, el dropdown debe estar fuera del header cell
+      // para evitar problemas de contexto de apilamiento con position: sticky
+      let dropdown: HTMLElement;
+      let dropdownContainer: HTMLElement | null = null;
+      
+      if (isPinned || hasStickyClass) {
+        console.log('🌐 [WEB DEBUG] Columna fijada detectada, creando dropdown fuera del header cell');
+        // Para columnas fijadas, crear un contenedor en el body o en el elemento raíz de la tabla
+        const tableElement = element.querySelector('.ubits-data-table') as HTMLElement;
+        const rootContainer = tableElement?.closest('.ubits-data-table__scrollable-container') || element;
         
-        if (!isPinned && !hasStickyClass) {
-          headerCell.style.position = 'relative';
-        } else {
-          console.log('⚠️ [COLUMN MENU] Columna fijada detectada, NO estableciendo position: relative para preservar position: sticky', {
-            columnId: columnId,
-            isPinned: isPinned,
-            hasStickyClass: hasStickyClass,
-            currentPosition: headerCell.style.position,
-            computedPosition: window.getComputedStyle(headerCell).position
+        console.log('🌐 [WEB DEBUG] rootContainer:', {
+          tagName: rootContainer.tagName,
+          id: rootContainer.id,
+          className: rootContainer.className,
+          isElement: rootContainer === element
+        });
+        
+        // Buscar dropdown existente por data-column-id
+        dropdown = rootContainer.querySelector(`.ubits-data-table__column-menu-dropdown[data-column-id="${columnId}"]`) as HTMLElement;
+        
+        if (!dropdown) {
+          console.log('🌐 [WEB DEBUG] Creando nuevo dropdown fuera del header cell');
+          dropdown = document.createElement('div');
+          dropdown.className = 'ubits-data-table__column-menu-dropdown';
+          dropdown.setAttribute('data-column-id', columnId);
+          dropdown.style.cssText = `
+            position: fixed;
+            z-index: 10000 !important;
+            display: none;
+            width: 160px;
+            max-width: 160px;
+            box-sizing: border-box;
+          `;
+          rootContainer.appendChild(dropdown);
+          console.log('🌐 [WEB DEBUG] ✅ Dropdown creado fuera del header cell para columna fijada');
+          console.log('🌐 [WEB DEBUG] Dropdown parent:', {
+            tagName: dropdown.parentElement?.tagName,
+            id: dropdown.parentElement?.id,
+            className: dropdown.parentElement?.className
           });
-          // Forzar que sticky tenga prioridad si ya está aplicado
-          if (window.getComputedStyle(headerCell).position === 'sticky' || headerCell.style.position === 'sticky') {
-            headerCell.style.position = 'sticky';
-            console.log('✅ [COLUMN MENU] position: sticky preservado para columna fijada');
-          }
+        } else {
+          console.log('🌐 [WEB DEBUG] Dropdown existente encontrado fuera del header cell');
         }
-        headerCell.appendChild(dropdown);
+      } else {
+        console.log('🌐 [WEB DEBUG] Columna normal, creando dropdown dentro del header cell');
+        // Para columnas normales, crear dropdown dentro del header cell
+        dropdown = headerCell.querySelector('.ubits-data-table__column-menu-dropdown') as HTMLElement;
+        
+        if (!dropdown) {
+          dropdown = document.createElement('div');
+          dropdown.className = 'ubits-data-table__column-menu-dropdown';
+          dropdown.setAttribute('data-column-id', columnId);
+          dropdown.style.cssText = `
+            position: absolute;
+            top: 100%;
+            right: 0;
+            z-index: 1000 !important;
+            margin-top: 4px;
+            display: none;
+            width: 160px;
+            max-width: 160px;
+            box-sizing: border-box;
+          `;
+          headerCell.style.position = 'relative';
+          headerCell.appendChild(dropdown);
+          console.log('🌐 [WEB DEBUG] ✅ Dropdown creado dentro del header cell para columna normal');
+        } else {
+          console.log('🌐 [WEB DEBUG] Dropdown existente encontrado dentro del header cell');
+        }
       }
+      
+      console.log('🌐 [WEB DEBUG] ========== FIN CREACIÓN DROPDOWN ==========');
       
       let isOpen = false;
       
@@ -2426,12 +2470,23 @@ export function createDataTable(options: DataTableOptions): {
           document.removeEventListener('click', handleOutsideClickRef);
           handleOutsideClickRef = null;
         }
+        // Si el dropdown está fuera del header cell (columna fijada), removerlo del DOM
+        if ((isPinned || hasStickyClass) && dropdown.parentElement && dropdown.parentElement !== headerCell) {
+          dropdown.remove();
+          console.log('✅ [COLUMN MENU] Dropdown removido del DOM (columna fijada)');
+        }
       };
       
       let handleOutsideClickRef: ((e: MouseEvent) => void) | null = null;
       
       // Agregar listener para abrir/cerrar el dropdown
       btn.addEventListener('click', (e) => {
+        // Detectar si estamos en la web (no en Storybook)
+        const isWeb = typeof window !== 'undefined' && window.location && !window.location.href.includes('storybook');
+        
+        console.log('🌐🌐🌐 [WEB DEBUG CLICK] ========== CLICK EN BOTÓN MENÚ ==========');
+        console.log('🌐🌐🌐 [WEB DEBUG CLICK] isWeb:', isWeb);
+        console.log('🌐🌐🌐 [WEB DEBUG CLICK] window.location:', window.location?.href);
         console.log('🔍 [COLUMN MENU] Click en botón de menú, columna:', columnId);
         
         e.preventDefault();
@@ -2445,7 +2500,10 @@ export function createDataTable(options: DataTableOptions): {
         }
         
         const isPinned = currentColumn.pinned || false;
+        console.log('🌐🌐🌐 [WEB DEBUG CLICK] Columna pinned:', isPinned);
         console.log('🔍 [COLUMN MENU] Estado de columna - pinned:', isPinned);
+        console.log('🔍 [COLUMN MENU] Estado de TODAS las columnas antes del cambio:', 
+          currentOptions.columns.map(col => ({ id: col.id, pinned: col.pinned || false })));
         
         // Si ya está abierto, cerrarlo
         if (isOpen) {
@@ -2494,15 +2552,31 @@ export function createDataTable(options: DataTableOptions): {
                   column.pinned = !oldPinned;
                   console.log('✅ [COLUMN MENU] Columna', columnId, oldPinned ? 'desfijada' : 'fijada', '- nuevo estado pinned:', column.pinned);
                   
+                  // Log del estado de todas las columnas fijadas después del cambio
+                  const pinnedColumns = currentOptions.columns.filter(col => col.pinned);
+                  console.log('📌 [COLUMN MENU] Columnas fijadas después del cambio:', pinnedColumns.map(col => ({ id: col.id, pinned: col.pinned })));
+                  
                   // Llamar callback si existe
                   if (currentOptions.onColumnPin) {
                     currentOptions.onColumnPin(columnId, column.pinned);
                   }
                   
+                  // Log del estado ANTES de re-renderizar
+                  console.log('🔄 [COLUMN MENU] ========== ANTES DE RE-RENDERIZAR ==========');
+                  console.log('🔄 [COLUMN MENU] Estado de currentOptions.columns:', 
+                    currentOptions.columns.map(col => ({ id: col.id, pinned: col.pinned || false })));
+                  console.log('🔄 [COLUMN MENU] Columna modificada:', columnId, 'pinned:', column.pinned);
+                  
                   // Re-renderizar
                   render();
+                  
+                  // Log del estado DESPUÉS de re-renderizar
+                  console.log('🔄 [COLUMN MENU] ========== DESPUÉS DE RE-RENDERIZAR ==========');
+                  console.log('🔄 [COLUMN MENU] Estado de currentOptions.columns después:', 
+                    currentOptions.columns.map(col => ({ id: col.id, pinned: col.pinned || false })));
                 } else {
                   console.error('❌ [COLUMN MENU] Columna no encontrada al intentar fijar:', columnId);
+                  console.error('❌ [COLUMN MENU] Columnas disponibles:', currentOptions.columns.map(col => col.id));
                 }
               }
               closeDropdown();
@@ -2547,19 +2621,220 @@ export function createDataTable(options: DataTableOptions): {
         }
         
         // Posicionar el dropdown
-        const rect = btn.getBoundingClientRect();
-        dropdown.style.position = 'fixed';
-        dropdown.style.top = `${rect.bottom + 4}px`;
-        dropdown.style.left = `${rect.left}px`;
+        // Verificar si la columna está fijada para establecer z-index correcto
+        const isCurrentlyPinned = headerCell.hasAttribute('data-pinned') && headerCell.getAttribute('data-pinned') === 'true';
+        const hasStickyClassNow = headerCell.classList.contains('ubits-data-table__column-header--pinned');
+        const dropdownZIndex = isCurrentlyPinned || hasStickyClassNow ? 10000 : 1000;
+        
+        console.log('🌐🌐🌐 [WEB DEBUG POSITION] ========== INICIO POSICIONAMIENTO ==========');
+        console.log('🌐🌐🌐 [WEB DEBUG POSITION] isWeb:', isWeb);
+        console.log('🌐🌐🌐 [WEB DEBUG POSITION] window.location:', window.location?.href);
+        console.log('🔍 [COLUMN MENU DROPDOWN] ========== INICIO POSICIONAMIENTO ==========');
+        console.log('🌐🌐🌐 [WEB DEBUG POSITION] Estado de la columna:', {
+          columnId: columnId,
+          isCurrentlyPinned: isCurrentlyPinned,
+          hasStickyClassNow: hasStickyClassNow,
+          headerCellDataPinned: headerCell.getAttribute('data-pinned'),
+          headerCellClasses: headerCell.className,
+          headerCellComputedPosition: window.getComputedStyle(headerCell).position,
+          headerCellInlinePosition: headerCell.style.position,
+          headerCellZIndex: window.getComputedStyle(headerCell).zIndex
+        });
+        console.log('🔍 [COLUMN MENU DROPDOWN] Estado de la columna:', {
+          columnId: columnId,
+          isCurrentlyPinned: isCurrentlyPinned,
+          hasStickyClassNow: hasStickyClassNow,
+          headerCellDataPinned: headerCell.getAttribute('data-pinned'),
+          headerCellClasses: headerCell.className,
+          headerCellComputedPosition: window.getComputedStyle(headerCell).position,
+          headerCellInlinePosition: headerCell.style.position,
+          headerCellZIndex: window.getComputedStyle(headerCell).zIndex
+        });
+        
+        // Obtener información del botón
+        const btnRect = btn.getBoundingClientRect();
+        const headerCellRect = headerCell.getBoundingClientRect();
+        
+        console.log('🌐🌐🌐 [WEB DEBUG POSITION] Coordenadas del botón:', {
+          btnTop: btnRect.top,
+          btnBottom: btnRect.bottom,
+          btnLeft: btnRect.left,
+          btnRight: btnRect.right,
+          btnWidth: btnRect.width,
+          btnHeight: btnRect.height
+        });
+        console.log('🔍 [COLUMN MENU DROPDOWN] Coordenadas del botón:', {
+          btnTop: btnRect.top,
+          btnBottom: btnRect.bottom,
+          btnLeft: btnRect.left,
+          btnRight: btnRect.right,
+          btnWidth: btnRect.width,
+          btnHeight: btnRect.height
+        });
+        
+        console.log('🌐🌐🌐 [WEB DEBUG POSITION] Coordenadas del header cell:', {
+          headerTop: headerCellRect.top,
+          headerBottom: headerCellRect.bottom,
+          headerLeft: headerCellRect.left,
+          headerRight: headerCellRect.right,
+          headerWidth: headerCellRect.width,
+          headerHeight: headerCellRect.height
+        });
+        console.log('🔍 [COLUMN MENU DROPDOWN] Coordenadas del header cell:', {
+          headerTop: headerCellRect.top,
+          headerBottom: headerCellRect.bottom,
+          headerLeft: headerCellRect.left,
+          headerRight: headerCellRect.right,
+          headerWidth: headerCellRect.width,
+          headerHeight: headerCellRect.height
+        });
+        
+        // Si la columna está fijada, usar position: fixed con coordenadas calculadas
+        // Si no está fijada, usar position: absolute relativo al header cell
+        if (isCurrentlyPinned || hasStickyClassNow) {
+          console.log('🌐🌐🌐 [WEB DEBUG POSITION] ========== POSICIONANDO DROPDOWN (COLUMNA FIJADA) ==========');
+          console.log('🌐🌐🌐 [WEB DEBUG POSITION] isWeb:', isWeb);
+          console.log('🌐🌐🌐 [WEB DEBUG POSITION] isCurrentlyPinned:', isCurrentlyPinned);
+          console.log('🌐🌐🌐 [WEB DEBUG POSITION] hasStickyClassNow:', hasStickyClassNow);
+          console.log('🔍 [COLUMN MENU DROPDOWN] Usando position: fixed (columna fijada)');
+          
+          // Verificar dónde está el dropdown antes de posicionarlo
+          console.log('🌐🌐🌐 [WEB DEBUG POSITION] Dropdown antes de posicionar:', {
+            parentElement: dropdown.parentElement ? {
+              tagName: dropdown.parentElement.tagName,
+              id: dropdown.parentElement.id,
+              className: dropdown.parentElement.className,
+              isHeaderCell: dropdown.parentElement === headerCell
+            } : 'NO TIENE PARENT',
+            isInHeaderCell: dropdown.parentElement === headerCell,
+            isInRootContainer: dropdown.parentElement !== headerCell && dropdown.parentElement !== null
+          });
+          
+          // Para columnas fijadas, usar fixed positioning para que quede por encima
+          // CRÍTICO: Asegurar que el dropdown esté fuera del contexto de apilamiento del sticky
+          // Usar setProperty con !important para forzar los estilos
+          dropdown.style.setProperty('position', 'fixed', 'important');
+          dropdown.style.setProperty('top', `${btnRect.bottom + 4}px`, 'important');
+          // Alinear a la derecha del botón (el dropdown tiene width: 160px)
+          // Calcular left para que el dropdown quede alineado a la derecha del botón
+          const calculatedLeft = btnRect.right - 160;
+          dropdown.style.setProperty('left', `${calculatedLeft}px`, 'important');
+          dropdown.style.setProperty('right', 'auto', 'important');
+          dropdown.style.setProperty('z-index', `${dropdownZIndex}`, 'important');
+          dropdown.style.setProperty('display', 'block', 'important');
+          
+          console.log('🌐🌐🌐 [WEB DEBUG POSITION] Estilos aplicados con setProperty:', {
+            position: 'fixed',
+            top: `${btnRect.bottom + 4}px`,
+            left: `${calculatedLeft}px`,
+            zIndex: `${dropdownZIndex}`,
+            display: 'block',
+            btnRect: {
+              top: btnRect.top,
+              bottom: btnRect.bottom,
+              left: btnRect.left,
+              right: btnRect.right
+            }
+          });
+          
+          // Verificar estilos después de aplicar
+          setTimeout(() => {
+            const computedStyle = window.getComputedStyle(dropdown);
+            const dropdownRect = dropdown.getBoundingClientRect();
+            console.log('🌐🌐🌐 [WEB DEBUG POSITION] Estilos computados DESPUÉS de aplicar:', {
+              position: computedStyle.position,
+              top: computedStyle.top,
+              left: computedStyle.left,
+              zIndex: computedStyle.zIndex,
+              display: computedStyle.display,
+              dropdownRect: {
+                top: dropdownRect.top,
+                bottom: dropdownRect.bottom,
+                left: dropdownRect.left,
+                right: dropdownRect.right,
+                width: dropdownRect.width,
+                height: dropdownRect.height
+              },
+              parentElement: {
+                tagName: dropdown.parentElement?.tagName,
+                id: dropdown.parentElement?.id,
+                className: dropdown.parentElement?.className,
+                computedPosition: dropdown.parentElement ? window.getComputedStyle(dropdown.parentElement).position : 'N/A',
+                computedZIndex: dropdown.parentElement ? window.getComputedStyle(dropdown.parentElement).zIndex : 'N/A'
+              },
+              headerCellZIndex: window.getComputedStyle(headerCell).zIndex,
+              headerCellPosition: window.getComputedStyle(headerCell).position
+            });
+            console.log('🌐🌐🌐 [WEB DEBUG POSITION] ========== FIN POSICIONAMIENTO ==========');
+          }, 10);
+          
+          console.log('🔍 [COLUMN MENU DROPDOWN] Estilos aplicados (fixed):', {
+            position: dropdown.style.position,
+            top: dropdown.style.top,
+            left: dropdown.style.left,
+            right: dropdown.style.right,
+            zIndex: dropdown.style.zIndex,
+            calculatedLeft: calculatedLeft,
+            btnRight: btnRect.right,
+            btnLeft: btnRect.left,
+            dropdownWidth: 160,
+            btnRect: {
+              top: btnRect.top,
+              bottom: btnRect.bottom,
+              left: btnRect.left,
+              right: btnRect.right,
+              width: btnRect.width,
+              height: btnRect.height
+            }
+          });
+        } else {
+          console.log('🔍 [COLUMN MENU DROPDOWN] Usando position: absolute (columna normal)');
+          // Para columnas normales, usar absolute positioning relativo al header cell
+          dropdown.style.position = 'absolute';
+          dropdown.style.top = '100%';
+          dropdown.style.right = '0';
+          dropdown.style.left = 'auto';
+          dropdown.style.zIndex = `${dropdownZIndex}`;
+          dropdown.style.setProperty('z-index', `${dropdownZIndex}`, 'important');
+          
+          console.log('🔍 [COLUMN MENU DROPDOWN] Estilos aplicados (absolute):', {
+            position: dropdown.style.position,
+            top: dropdown.style.top,
+            right: dropdown.style.right,
+            left: dropdown.style.left,
+            zIndex: dropdown.style.zIndex
+          });
+        }
+        
         dropdown.style.display = 'block';
         isOpen = true;
-        console.log('✅ [COLUMN MENU] Dropdown mostrado y posicionado:', {
-          top: dropdown.style.top,
-          left: dropdown.style.left,
-          width: dropdown.offsetWidth,
-          height: dropdown.offsetHeight,
-          innerHTML: dropdown.innerHTML.substring(0, 200)
+        
+        // Obtener información después de mostrar el dropdown
+        const dropdownRect = dropdown.getBoundingClientRect();
+        const computedStyle = window.getComputedStyle(dropdown);
+        
+        console.log('🔍 [COLUMN MENU DROPDOWN] Estado después de mostrar:', {
+          display: dropdown.style.display,
+          computedDisplay: computedStyle.display,
+          position: computedStyle.position,
+          top: computedStyle.top,
+          left: computedStyle.left,
+          right: computedStyle.right,
+          zIndex: computedStyle.zIndex,
+          dropdownRect: {
+            top: dropdownRect.top,
+            bottom: dropdownRect.bottom,
+            left: dropdownRect.left,
+            right: dropdownRect.right,
+            width: dropdownRect.width,
+            height: dropdownRect.height
+          },
+          offsetWidth: dropdown.offsetWidth,
+          offsetHeight: dropdown.offsetHeight,
+          isVisible: dropdownRect.width > 0 && dropdownRect.height > 0
         });
+        
+        console.log('🔍 [COLUMN MENU DROPDOWN] ========== FIN POSICIONAMIENTO ==========');
         
         // Cerrar al hacer click fuera
         handleOutsideClickRef = (e: MouseEvent) => {
@@ -3148,149 +3423,330 @@ export function createDataTable(options: DataTableOptions): {
     });
     
     // Date editables - mostrar calendario UBITS al hacer click
+    // Implementación igual a InputProvider que funciona correctamente en Storybook
+    // Detectar si estamos en la web (no en Storybook)
+    const isWeb = typeof window !== 'undefined' && window.location && !window.location.href.includes('storybook');
+    
+    if (isWeb) {
+      console.log('🌐🌐🌐 [WEB DATE EDITABLE] ========== INICIO CONFIGURACIÓN DATE EDITABLE ==========');
+      console.log('🌐🌐🌐 [WEB DATE EDITABLE] window.location:', window.location?.href);
+      console.log('🌐🌐🌐 [WEB DATE EDITABLE] element:', {
+        tagName: element.tagName,
+        id: element.id,
+        className: element.className,
+        innerHTMLLength: element.innerHTML.length,
+        innerHTMLPreview: element.innerHTML.substring(0, 500)
+      });
+    }
+    
+    // Date editable cells - inicializar calendarios para celdas de fecha editables
     const dateEditables = element.querySelectorAll('.ubits-data-table__date-editable');
-    dateEditables.forEach((container) => {
-      const rowIdStr = container.getAttribute('data-row-id');
-      const columnId = container.getAttribute('data-column-id');
+    
+    dateEditables.forEach((dateEditableContainer, index) => {
+      const rowIdStr = dateEditableContainer.getAttribute('data-row-id');
+      const columnId = dateEditableContainer.getAttribute('data-column-id');
       
-      if (!rowIdStr || !columnId) return;
+      if (!rowIdStr || !columnId) {
+        return;
+      }
       
       const rowId = isNaN(Number(rowIdStr)) ? rowIdStr : Number(rowIdStr);
-      const dateDisplay = container.querySelector('.ubits-data-table__date-display') as HTMLElement;
-      const calendarContainer = container.querySelector('.ubits-data-table__calendar-container') as HTMLElement;
+      const dateDisplay = dateEditableContainer.querySelector('.ubits-data-table__date-display') as HTMLElement;
       
-      if (!dateDisplay || !calendarContainer) return;
+      if (!dateDisplay) {
+        return;
+      }
+      
+      // Variables para mantener la instancia del calendario
+      let calendarInstance: ReturnType<typeof import('../../calendar/src/CalendarProvider').createCalendar> | null = null;
+      let externalCalendarContainer: HTMLElement | null = null;
+      
+      // Referencias a los handlers para poder removerlos después
+      let handleOutsideClickRef: ((e: MouseEvent) => void) | null = null;
+      let handleEscapeKeyRef: ((e: KeyboardEvent) => void) | null = null;
+      let handleScrollRef: (() => void) | null = null;
+      let scrollableContainer: HTMLElement | null = null;
       
       // Función para formatear fecha
       const formatDate = (date: Date): string => {
-        return date.toLocaleDateString('es-ES', { 
-          year: 'numeric', 
-          month: 'long', 
-          day: 'numeric' 
-        });
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+        return `${day}/${month}/${year}`;
       };
       
       // Función para parsear fecha
       const parseDate = (dateStr: string): Date | null => {
         if (!dateStr) return null;
+        const [day, month, year] = dateStr.split('/');
+        if (day && month && year) {
+          return new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+        }
         try {
           const date = new Date(dateStr);
           if (!isNaN(date.getTime())) {
             return date;
           }
         } catch (e) {
-          // Intentar parsear formato español
-          const parts = dateStr.split(' ');
-          if (parts.length >= 3) {
-            const day = parseInt(parts[0]);
-            const monthNames = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
-            const month = monthNames.indexOf(parts[1].toLowerCase());
-            const year = parseInt(parts[2]);
-            if (month >= 0 && day && year) {
-              return new Date(year, month, day);
-            }
-          }
+          // Ignorar error
         }
         return null;
       };
       
-      // Función para mostrar el calendario UBITS
-      const showCalendar = async () => {
-        // Si el calendario ya está visible, ocultarlo
-        if (calendarContainer.style.display !== 'none') {
-          calendarContainer.style.display = 'none';
-          return;
+      // Función para cerrar el calendario y limpiar listeners
+      const closeCalendar = () => {
+        if (externalCalendarContainer) {
+          externalCalendarContainer.style.display = 'none';
+          if (externalCalendarContainer.parentElement) {
+            externalCalendarContainer.remove();
+          }
+          externalCalendarContainer = null;
         }
         
-        // Cargar CSS del calendario si no está cargado
-        if (!document.querySelector('link[href*="calendar.css"]')) {
-          const link = document.createElement('link');
-          link.rel = 'stylesheet';
-          link.href = '../../addons/calendar/src/styles/calendar.css';
-          document.head.appendChild(link);
+        // Limpiar listeners
+        if (handleOutsideClickRef) {
+          document.removeEventListener('click', handleOutsideClickRef);
+          handleOutsideClickRef = null;
         }
-        
-        // Cargar CSS del scrollbar si no está cargado (para las listas de mes/año)
-        if (!document.querySelector('link[href*="scroll.css"]')) {
-          const link = document.createElement('link');
-          link.rel = 'stylesheet';
-          link.href = '../../addons/scroll/src/styles/scroll.css';
-          document.head.appendChild(link);
+        if (handleEscapeKeyRef) {
+          document.removeEventListener('keydown', handleEscapeKeyRef);
+          handleEscapeKeyRef = null;
         }
-        
-        // Obtener fecha actual del display
-        const currentValue = dateDisplay.textContent || '';
-        const selectedDate = parseDate(currentValue);
-        
-        try {
-          // Importar el módulo de calendar dinámicamente
-          const calendarModule = await import('../../calendar/src/CalendarProvider');
-          const { createCalendar } = calendarModule;
-          
-          // Crear instancia del calendario UBITS
-          const calendarInstance = createCalendar({
-            mode: 'single',
-            selectedDate: selectedDate || undefined,
-            initialDate: selectedDate || new Date(),
-            onDateSelect: (date: Date) => {
-              const formattedDate = formatDate(date);
-              dateDisplay.textContent = formattedDate;
-              calendarContainer.style.display = 'none';
-              
-              // Actualizar los datos de la fila
-              const row = currentOptions.rows.find(r => r.id === rowId);
-              if (row) {
-                row.data[columnId] = formattedDate;
-                // También guardar en formato ISO para referencia
-                row.data[`${columnId}_iso`] = date.toISOString().split('T')[0];
-              }
-              
-              // Re-renderizar para reflejar los cambios
-              render();
-              
-              // Limpiar el calendario del DOM
-              calendarContainer.innerHTML = '';
-            }
-          });
-          
-          // Agregar el calendario al contenedor
-          calendarContainer.innerHTML = '';
-          calendarContainer.appendChild(calendarInstance.element);
-          calendarContainer.style.display = 'block';
-          
-          // Cerrar calendario al hacer clic fuera
-          const clickOutsideHandler = (e: MouseEvent) => {
-            const target = e.target as Node;
-            if (calendarContainer && !container.contains(target) && !calendarContainer.contains(target)) {
-              calendarContainer.style.display = 'none';
-              document.removeEventListener('click', clickOutsideHandler, true);
-            }
-          };
-          
-          // Agregar listener después de un pequeño delay para evitar que se cierre inmediatamente
-          setTimeout(() => {
-            document.addEventListener('click', clickOutsideHandler, true);
-          }, 100);
-          
-          // Cerrar calendario al presionar ESC
-          const escapeHandler = (e: KeyboardEvent) => {
-            if (e.key === 'Escape' && calendarContainer.style.display !== 'none') {
-              calendarContainer.style.display = 'none';
-              document.removeEventListener('keydown', escapeHandler);
-            }
-          };
-          document.addEventListener('keydown', escapeHandler);
-          
-        } catch (error) {
-          console.error('❌ [Data Table] Error cargando Calendar UBITS:', error);
-          // Fallback: mostrar mensaje de error
-          calendarContainer.innerHTML = '<div style="padding: 16px; background: var(--ubits-bg-1); border: 1px solid var(--ubits-border-1); border-radius: 8px; color: var(--ubits-fg-1-high);">Error al cargar el calendario</div>';
-          calendarContainer.style.display = 'block';
+        if (handleScrollRef) {
+          window.removeEventListener('scroll', handleScrollRef, true);
+          if (scrollableContainer) {
+            scrollableContainer.removeEventListener('scroll', handleScrollRef, true);
+          }
+          handleScrollRef = null;
         }
       };
       
-      // Al hacer click en el display, mostrar el calendario UBITS
+      // Función para agregar listeners (solo cuando se abre el calendario)
+      const addCalendarListeners = () => {
+        // Cerrar calendario al hacer clic fuera
+        handleOutsideClickRef = (e: MouseEvent) => {
+          if (externalCalendarContainer && 
+              !dateEditableContainer.contains(e.target as Node) && 
+              !externalCalendarContainer.contains(e.target as Node)) {
+            closeCalendar();
+          }
+        };
+        
+        // Cerrar calendario al presionar ESC
+        handleEscapeKeyRef = (e: KeyboardEvent) => {
+          if (e.key === 'Escape' && externalCalendarContainer) {
+            closeCalendar();
+          }
+        };
+        
+        // Cerrar calendario al hacer scroll (para evitar que quede desalineado)
+        // PERO NO cerrar si el scroll es dentro del calendario o sus dropdowns
+        handleScrollRef = (e?: Event) => {
+          if (!externalCalendarContainer) {
+            return;
+          }
+          
+          // Verificar si el scroll está ocurriendo dentro del calendario
+          // Buscar elementos que están haciendo scroll dentro del calendario
+          const calendarElement = externalCalendarContainer.querySelector('.ubits-calendar');
+          if (calendarElement) {
+            // Verificar si hay algún dropdown abierto
+            const monthDropdown = calendarElement.querySelector('.ubits-calendar__month-dropdown[style*="display: block"]');
+            const yearDropdown = calendarElement.querySelector('.ubits-calendar__year-dropdown[style*="display: block"]');
+            
+            if (monthDropdown || yearDropdown) {
+              // Hay un dropdown abierto, verificar si el elemento activo está dentro
+              const activeElement = document.activeElement as HTMLElement;
+              if (activeElement) {
+                // Verificar si el elemento activo está dentro del calendario o sus dropdowns
+                if (externalCalendarContainer.contains(activeElement) ||
+                    activeElement.closest('.ubits-calendar') ||
+                    activeElement.closest('.ubits-calendar__month-dropdown') ||
+                    activeElement.closest('.ubits-calendar__year-dropdown') ||
+                    activeElement.closest('.ubits-list') ||
+                    activeElement.closest('[id*="calendar-list"]') ||
+                    activeElement.closest('[id*="calendar-scrollbar"]')) {
+                  // El elemento activo está dentro del calendario, no cerrar
+                  return;
+                }
+              }
+              
+              // Si hay un evento, verificar el target
+              if (e && e.target) {
+                const target = e.target as HTMLElement;
+                if (externalCalendarContainer.contains(target) ||
+                    target.closest('.ubits-calendar') ||
+                    target.closest('.ubits-calendar__month-dropdown') ||
+                    target.closest('.ubits-calendar__year-dropdown') ||
+                    target.closest('.ubits-list') ||
+                    target.closest('[id*="calendar-list"]') ||
+                    target.closest('[id*="calendar-scrollbar"]')) {
+                  // El scroll es dentro del calendario, no cerrar
+                  return;
+                }
+              }
+              
+              // Si hay un dropdown abierto, no cerrar por scroll (permitir scroll en el dropdown)
+              return;
+            }
+          }
+          
+          // El scroll es fuera del calendario, cerrar
+          closeCalendar();
+        };
+        
+        document.addEventListener('click', handleOutsideClickRef);
+        document.addEventListener('keydown', handleEscapeKeyRef);
+        
+        // Agregar listeners de scroll en window y en el contenedor scrollable si existe
+        scrollableContainer = element.querySelector('.ubits-data-table__scrollable-container') as HTMLElement;
+        if (scrollableContainer) {
+          scrollableContainer.addEventListener('scroll', handleScrollRef, true);
+        }
+        window.addEventListener('scroll', handleScrollRef, true);
+      };
+      
+      // Función para cargar estilos CSS del calendario si no están cargados
+      const loadCalendarStyles = async (): Promise<void> => {
+        // Rutas relativas desde index.html (packages/proyecto-app/tokens/index.html)
+        // hacia los archivos CSS en packages/addons/
+        const stylesToLoad = [
+          { 
+            id: 'ubits-calendar-styles', 
+            fileName: 'calendar.css', 
+            href: '../../addons/calendar/src/styles/calendar.css'
+          },
+          { 
+            id: 'ubits-button-styles', 
+            fileName: 'button.css', 
+            href: '../../addons/button/src/styles/button.css'
+          },
+          { 
+            id: 'ubits-input-styles', 
+            fileName: 'input.css', 
+            href: '../../addons/input/src/styles/input.css'
+          },
+          { 
+            id: 'ubits-list-styles', 
+            fileName: 'list.css', 
+            href: '../../addons/list/src/styles/list.css'
+          }
+        ];
+        
+        for (const style of stylesToLoad) {
+          // Verificar si el estilo ya está cargado por ID
+          const existingStyle = document.getElementById(style.id);
+          
+          // Verificar si ya existe un <link> con este href o que contenga el nombre del archivo
+          const existingLink = Array.from(document.head.querySelectorAll('link[rel="stylesheet"]'))
+            .find(link => {
+              const href = (link as HTMLLinkElement).href || '';
+              return href.includes(style.fileName) || link.id === style.id;
+            });
+          
+          if (existingStyle || existingLink) {
+            continue;
+          }
+          
+          // Cargar usando <link> tag (funciona tanto con file:// como con http://)
+          const linkElement = document.createElement('link');
+          linkElement.rel = 'stylesheet';
+          linkElement.href = style.href;
+          linkElement.id = style.id;
+          
+          // Agregar al DOM inmediatamente (no esperar onload para file://)
+          document.head.appendChild(linkElement);
+        }
+      };
+      
+      // Función para mostrar el calendario UBITS
+      const showCalendar = async () => {
+        // Si el calendario ya está visible, cerrarlo
+        if (externalCalendarContainer && externalCalendarContainer.style.display !== 'none') {
+          closeCalendar();
+          return;
+        }
+        
+        // Si el calendario ya existe, solo actualizar posición y mostrarlo
+        if (calendarInstance && externalCalendarContainer) {
+          const dateDisplayRect = dateDisplay.getBoundingClientRect();
+          externalCalendarContainer.style.top = `${dateDisplayRect.bottom + 4}px`;
+          externalCalendarContainer.style.left = `${dateDisplayRect.left}px`;
+          externalCalendarContainer.style.display = 'block';
+          addCalendarListeners();
+          return;
+        }
+        
+        try {
+          // Cargar estilos CSS del calendario antes de crear la instancia
+          await loadCalendarStyles();
+          
+          // Importar y usar directamente el componente UBITS Calendar
+          const { createCalendar } = await import('../../calendar/src/index');
+          
+          // Obtener fecha actual del display
+          const currentValue = dateDisplay.textContent || '';
+          const parsedDate = parseDate(currentValue);
+          const initialDate = parsedDate || new Date();
+          
+          calendarInstance = createCalendar({
+            mode: 'single',
+            selectedDate: parsedDate,
+            initialDate: initialDate,
+            onDateSelect: (date: Date) => {
+              const formattedDate = formatDate(date);
+              dateDisplay.textContent = formattedDate;
+              
+              // Actualizar datos de la fila
+              const row = currentOptions.rows.find(r => r.id === rowId);
+              if (row) {
+                row.data[columnId] = formattedDate;
+                row.data[`${columnId}_iso`] = date.toISOString().split('T')[0];
+              }
+              
+              // Cerrar calendario y re-renderizar
+              closeCalendar();
+              render();
+            }
+          });
+          
+          // Crear contenedor para el calendario
+          externalCalendarContainer = document.createElement('div');
+          externalCalendarContainer.className = 'ubits-data-table__calendar-container';
+          externalCalendarContainer.setAttribute('data-row-id', String(rowId));
+          externalCalendarContainer.setAttribute('data-column-id', columnId);
+          
+          // Calcular posición usando getBoundingClientRect
+          const dateDisplayRect = dateDisplay.getBoundingClientRect();
+          const topPosition = dateDisplayRect.bottom + 4;
+          const leftPosition = dateDisplayRect.left;
+          
+          // Aplicar estilos con position fixed
+          externalCalendarContainer.style.cssText = `
+            position: fixed;
+            top: ${topPosition}px;
+            left: ${leftPosition}px;
+            z-index: 99999;
+            display: block;
+            margin: 0;
+          `;
+          
+          // Agregar al body
+          document.body.appendChild(externalCalendarContainer);
+          
+          // Agregar el elemento del calendario UBITS al contenedor
+          externalCalendarContainer.appendChild(calendarInstance.element);
+          
+          // Agregar listeners
+          addCalendarListeners();
+        } catch (error) {
+          console.error('❌ [CALENDAR] Error cargando Calendar UBITS:', error);
+        }
+      };
+      
+      // Event listener para mostrar el calendario al hacer clic
       dateDisplay.addEventListener('click', (e) => {
+        e.preventDefault();
         e.stopPropagation();
         showCalendar();
       });

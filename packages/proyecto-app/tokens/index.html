@@ -12896,6 +12896,8 @@ Reglas Importantes:
             if (newType !== 'nombre' && newType !== 'nombre-avatar' && newType !== 'estado' && newType !== 'fecha' && newType !== 'checkbox' && newType !== 'radio') {
               column.editable = undefined;
             }
+            // Igual que en Storybook: no forzar editable = false para 'fecha'
+            // Si cambia a tipo 'fecha' y no tiene editable definido, no establecerlo (se establecerá false por defecto en buildColumn)
             // Si cambia a un tipo que no es 'radio', eliminar radioLabel
             if (newType !== 'radio') {
               column.radioLabel = undefined;
@@ -13032,6 +13034,7 @@ Reglas Importantes:
           const [columnId, editable] = value;
           const column = state.columns.find(col => col.id === columnId);
           if (column && (column.type === 'nombre' || column.type === 'nombre-avatar' || column.type === 'estado' || column.type === 'fecha' || column.type === 'checkbox' || column.type === 'radio')) {
+            // Igual que en Storybook: permitir editable para todos los tipos editables, incluyendo 'fecha'
             column.editable = editable;
             // Regenerar selectores para actualizar el checkbox
             if (typeof window.generateColumnTypeSelectors === 'function') {
@@ -13159,6 +13162,7 @@ Reglas Importantes:
           const isCheckbox = currentType === 'checkbox';
           const isCorreo = currentType === 'correo';
           const isFecha = currentType === 'fecha';
+          // Igual que en Storybook: incluir 'fecha' en los tipos editables
           const isEditableType = isNombre || isNombreAvatar || isEstado || isFecha || isCheckbox || isRadio;
           const hasAvatarVariant = isNombreAvatar || isNombreAvatarTexto;
           // Determinar el estado del emailClickable: usar el del estado global o el de la columna
@@ -13239,7 +13243,10 @@ Reglas Importantes:
       
       // Función para actualizar el preview del Data Table
       window.updateDataTablePreview = function(componentId) {
-        console.log('🔄 [UPDATE] updateDataTablePreview llamado para componentId:', componentId);
+        const callId = `update-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+        console.log(`🔄 [UPDATE] ========== INICIO updateDataTablePreview [${callId}] ==========`);
+        console.log(`🔄 [UPDATE] Stack trace:`, new Error().stack?.split('\n').slice(1, 4).join('\n'));
+        
         const state = initDataTablePreviewState(componentId);
         console.log('🔄 [UPDATE] Estado obtenido. showCheckbox:', state.showCheckbox);
         const preview = document.getElementById(`data-table-preview-${componentId}`);
@@ -13248,6 +13255,11 @@ Reglas Importantes:
           console.error('❌ Preview de Data Table no encontrado:', `data-table-preview-${componentId}`);
           return;
         }
+        
+        // Limpiar completamente el preview antes de crear una nueva tabla
+        console.log(`🔄 [UPDATE] 🧹 Limpiando preview. Elementos hijos antes:`, preview.children.length);
+        preview.innerHTML = '';
+        console.log(`🔄 [UPDATE] ✅ Preview limpiado. Elementos hijos después:`, preview.children.length);
         
         // Generar selectores de tipo de columna
         if (typeof window.generateColumnTypeSelectors === 'function') {
@@ -13329,16 +13341,34 @@ Reglas Importantes:
           document.head.appendChild(link);
         }
         
-        // Limpiar preview anterior
-        preview.innerHTML = '';
-        
         // Función auxiliar para crear la instancia de Data Table
         const createDataTableInstance = () => {
+          const instanceId = `instance-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+          console.log(`🎯 [INSTANCE] ========== INICIO createDataTableInstance [${instanceId}] ==========`);
+          
+          // Verificar si ya existe un contenedor y limpiarlo
+          const existingContainer = document.getElementById(`data-table-container-${componentId}`);
+          if (existingContainer) {
+            console.log(`🎯 [INSTANCE] 🧹 Limpiando contenedor existente`);
+            // Destruir instancia anterior si existe
+            if (window.dataTableInstances[componentId]) {
+              try {
+                window.dataTableInstances[componentId].destroy();
+              } catch (e) {
+                console.warn('Error destruyendo instancia anterior:', e);
+              }
+              delete window.dataTableInstances[componentId];
+            }
+            existingContainer.remove();
+          }
+          
           // Crear la tabla
           const containerId = `data-table-container-${componentId}`;
           const container = document.createElement('div');
           container.id = containerId;
+          console.log(`🎯 [INSTANCE] Creando contenedor:`, containerId);
           preview.appendChild(container);
+          console.log(`🎯 [INSTANCE] Contenedor agregado. Elementos hijos en preview:`, preview.children.length);
           
           try {
             // Construir columnas dinámicamente según controles
@@ -13357,8 +13387,14 @@ Reglas Importantes:
             // Usar columnas del estado si existen, sino crear por defecto
             if (state.columns && state.columns.length > 0) {
               // Agregar checkbox primero si existe
+              // IMPORTANTE: Preservar la propiedad pinned si existe
               if (checkboxColumn && state.showCheckbox !== false) {
-                allColumns.push({ ...checkboxColumn });
+                const checkboxCopy = { ...checkboxColumn };
+                // Asegurar que pinned se preserve si existe
+                if (checkboxColumn.pinned !== undefined) {
+                  checkboxCopy.pinned = checkboxColumn.pinned;
+                }
+                allColumns.push(checkboxCopy);
               }
               
               // Asegurar que tenemos suficientes columnas de datos según columnsCount
@@ -13366,7 +13402,7 @@ Reglas Importantes:
               // Si showHorizontalScrollbar está activo, usar ancho mínimo de 180px para todas las columnas
               const minColumnWidth = state.showHorizontalScrollbar === true ? 180 : undefined;
               dataColumnsToUse.forEach(col => {
-                // Copiar todas las propiedades de la columna incluyendo avatarVariant
+                // Copiar todas las propiedades de la columna incluyendo avatarVariant y pinned
                 const columnCopy = {
                   id: col.id,
                   title: col.title,
@@ -13374,13 +13410,20 @@ Reglas Importantes:
                   width: minColumnWidth ? Math.max(col.width || 150, minColumnWidth) : col.width,
                   visible: col.visible !== false
                 };
+                // IMPORTANTE: Copiar la propiedad pinned si existe (para preservar columnas fijadas)
+                if (col.pinned !== undefined) {
+                  columnCopy.pinned = col.pinned;
+                }
                 // Si tiene avatarVariant, copiarlo también
                 if (col.avatarVariant !== undefined) {
                   columnCopy.avatarVariant = col.avatarVariant;
                 }
-                // Si tiene editable, copiarlo también
+                // Si tiene editable, copiarlo también (incluyendo false explícito)
+                // IMPORTANTE: Igual que en Storybook - copiar editable si está definido (incluso si es false)
+                // Esto incluye columnas de tipo 'fecha' que pueden ser editables
                 if (col.editable !== undefined) {
                   columnCopy.editable = col.editable;
+                  console.log(`🎯 [INSTANCE] Copiando editable para columna ${col.id}:`, col.editable);
                 }
                 // Si tiene radioLabel, copiarlo también
                 if (col.radioLabel !== undefined) {
@@ -13486,10 +13529,13 @@ Reglas Importantes:
                 return {
                   ...row,
                   renderExpandedContent: (rowData) => {
+                    // Usar tokens CSS para que funcione correctamente en modo dark
                     return `
-                      <div style="padding: 16px;">
-                        <h4 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600;">Información adicional</h4>
-                        <p style="margin: 0; font-size: 13px; color: var(--ubits-body-md-regular-2, #6b7280);">
+                      <div style="padding: var(--ubits-spacing-md, 16px);">
+                        <h4 style="margin: 0 0 var(--ubits-spacing-sm, 8px) 0; font-size: var(--ubits-font-size-sm, 14px); font-weight: 600; color: var(--ubits-fg-1-high, #1f2937);">
+                          Información adicional
+                        </h4>
+                        <p style="margin: 0; font-size: var(--ubits-font-size-sm, 13px); color: var(--ubits-fg-1-medium, #6b7280);">
                           Detalles adicionales para ${rowData.nombre || 'usuario'}
                         </p>
                       </div>
@@ -13600,47 +13646,69 @@ Reglas Importantes:
             // Guardar instancia para poder destruirla después
             window.dataTableInstances[componentId] = table;
             
-            console.log('✅ Data Table creada exitosamente');
+            console.log(`🎯 [INSTANCE] ✅ Data Table creada exitosamente`);
+            console.log(`🎯 [INSTANCE] ========== FIN createDataTableInstance [${instanceId}] ==========`);
           } catch (error) {
             console.error('❌ Error creando Data Table:', error);
             preview.innerHTML = `<p style="color: var(--ubits-fg-1-medium); padding: 16px;">Error: ${error.message}</p>`;
           }
         };
         
-        // Forzar recarga del módulo UMD (con timestamp para evitar caché)
-        // Limpiar el módulo anterior si existe
+        // Verificar si el módulo ya está cargado
         if (typeof window.createDataTable !== 'undefined') {
-          // El módulo ya está cargado, pero forzamos recarga para obtener la última versión
-          delete window.createDataTable;
-          delete window.renderDataTable;
+          console.log(`🔄 [UPDATE] ✅ Módulo ya cargado, creando instancia directamente`);
+          createDataTableInstance();
+          console.log(`🔄 [UPDATE] ========== FIN updateDataTablePreview [${callId}] ==========`);
+          return;
+        }
+        
+        // Verificar si ya hay un script cargándose para evitar cargas múltiples
+        const existingScript = document.querySelector('script[src*="data-table.umd.js"]');
+        if (existingScript && !existingScript.hasAttribute('data-loaded')) {
+          console.log(`🔄 [UPDATE] ⏳ Script ya se está cargando, esperando...`);
+          // Esperar a que el script existente se cargue
+          const checkExisting = setInterval(() => {
+            if (typeof window.createDataTable !== 'undefined') {
+              clearInterval(checkExisting);
+              console.log(`🔄 [UPDATE] ✅ Script existente cargado, creando instancia`);
+              createDataTableInstance();
+              console.log(`🔄 [UPDATE] ========== FIN updateDataTablePreview [${callId}] ==========`);
+            }
+          }, 50);
+          return;
         }
         
         // Cargar el módulo UMD (con timestamp para evitar caché)
-          const script = document.createElement('script');
+        console.log(`🔄 [UPDATE] 📦 Cargando módulo UMD...`);
+        const script = document.createElement('script');
         script.src = '../../addons/data-table/dist/data-table.umd.js?v=' + Date.now();
-          script.onload = () => {
-            console.log('✅ Data Table UMD cargado');
-            // Esperar a que el módulo esté disponible
-            let attempts = 0;
-            const maxAttempts = 20;
-            const checkModule = setInterval(() => {
-              attempts++;
-              if (typeof window.createDataTable !== 'undefined') {
-                clearInterval(checkModule);
-                console.log('✅ createDataTable disponible');
-                createDataTableInstance();
-              } else if (attempts >= maxAttempts) {
-                clearInterval(checkModule);
-                console.error('❌ createDataTable no disponible después de', maxAttempts, 'intentos');
-                preview.innerHTML = '<p style="color: var(--ubits-fg-1-medium); padding: 16px;">Error: No se pudo cargar el componente Data Table.</p>';
-              }
-            }, 50);
-          };
-          script.onerror = () => {
-            console.error('❌ Error cargando data-table.umd.js');
-            preview.innerHTML = '<p style="color: var(--ubits-fg-1-medium); padding: 16px;">Error: No se pudo cargar el archivo JavaScript del componente.</p>';
-          };
-          document.head.appendChild(script);
+        script.onload = () => {
+          script.setAttribute('data-loaded', 'true');
+          console.log('✅ Data Table UMD cargado');
+          // Esperar a que el módulo esté disponible
+          let attempts = 0;
+          const maxAttempts = 20;
+          const checkModule = setInterval(() => {
+            attempts++;
+            if (typeof window.createDataTable !== 'undefined') {
+              clearInterval(checkModule);
+              console.log('✅ createDataTable disponible');
+              createDataTableInstance();
+              console.log(`🔄 [UPDATE] ========== FIN updateDataTablePreview [${callId}] ==========`);
+            } else if (attempts >= maxAttempts) {
+              clearInterval(checkModule);
+              console.error('❌ createDataTable no disponible después de', maxAttempts, 'intentos');
+              preview.innerHTML = '<p style="color: var(--ubits-fg-1-medium); padding: 16px;">Error: No se pudo cargar el componente Data Table.</p>';
+              console.log(`🔄 [UPDATE] ========== FIN updateDataTablePreview [${callId}] ==========`);
+            }
+          }, 50);
+        };
+        script.onerror = () => {
+          console.error('❌ Error cargando data-table.umd.js');
+          preview.innerHTML = '<p style="color: var(--ubits-fg-1-medium); padding: 16px;">Error: No se pudo cargar el archivo JavaScript del componente.</p>';
+          console.log(`🔄 [UPDATE] ========== FIN updateDataTablePreview [${callId}] ==========`);
+        };
+        document.head.appendChild(script);
       };
       
       // Función para renderizar contenido de celdas usando Status Tag de UBITS
@@ -16406,6 +16474,8 @@ Reglas Importantes:
                       // Asegurar que el contenedor tenga la misma altura que la lista
                       const listHeight = listElement.clientHeight;
                       scrollbarContainer.style.height = `${listHeight}px`;
+                      scrollbarContainer.style.maxHeight = '200px'; // Limitar altura máxima
+                      scrollbarContainer.style.overflow = 'hidden'; // Evitar que el scrollbar se salga
                       scrollbarContainer.style.pointerEvents = 'auto'; // Permitir interacción con el scrollbar
                       console.log('📅 [Calendar] Altura del contenedor ajustada a:', listHeight);
                       
@@ -16607,6 +16677,8 @@ Reglas Importantes:
                       // Asegurar que el contenedor tenga la misma altura que la lista
                       const listHeight = listElement.clientHeight;
                       scrollbarContainer.style.height = `${listHeight}px`;
+                      scrollbarContainer.style.maxHeight = '200px'; // Limitar altura máxima
+                      scrollbarContainer.style.overflow = 'hidden'; // Evitar que el scrollbar se salga
                       scrollbarContainer.style.pointerEvents = 'auto'; // Permitir interacción con el scrollbar
                       console.log('📅 [Calendar] Altura del contenedor ajustada a:', listHeight);
                       
@@ -18569,6 +18641,8 @@ Reglas Importantes:
                         // Asegurar que el contenedor tenga la misma altura que la lista
                         const listHeight = listElement.clientHeight;
                         scrollbarContainer.style.height = `${listHeight}px`;
+                        scrollbarContainer.style.maxHeight = '200px'; // Limitar altura máxima
+                        scrollbarContainer.style.overflow = 'hidden'; // Evitar que el scrollbar se salga
                         scrollbarContainer.style.pointerEvents = 'auto';
                         console.log('📅 [Input Preview] Altura del contenedor ajustada a:', listHeight);
                         
@@ -18771,6 +18845,8 @@ Reglas Importantes:
                         // Asegurar que el contenedor tenga la misma altura que la lista
                         const listHeight = listElement.clientHeight;
                         scrollbarContainer.style.height = `${listHeight}px`;
+                        scrollbarContainer.style.maxHeight = '200px'; // Limitar altura máxima
+                        scrollbarContainer.style.overflow = 'hidden'; // Evitar que el scrollbar se salga
                         scrollbarContainer.style.pointerEvents = 'auto';
                         console.log('📅 [Input Preview] Altura del contenedor ajustada a:', listHeight);
                         

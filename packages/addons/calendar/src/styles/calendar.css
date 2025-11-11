@@ -277,6 +277,22 @@
     width: 8px;
     min-width: 8px;
     height: 100%;
+    max-height: 200px; /* Limitar altura al max-height de la lista */
+    overflow: hidden; /* Evitar que el scrollbar se salga */
+}
+
+/* Contenedor del scrollbar - debe tener la misma altura que la lista visible */
+.ubits-calendar__month-dropdown > div > div[id*="calendar-scrollbar"],
+.ubits-calendar__year-dropdown > div > div[id*="calendar-scrollbar"] {
+    max-height: 200px; /* Mismo max-height que la lista */
+    height: 100%;
+    overflow: hidden;
+    pointer-events: none; /* Permitir que el scrollbar maneje los eventos */
+}
+
+.ubits-calendar__month-dropdown > div > div[id*="calendar-scrollbar"] .ubits-scrollbar--vertical,
+.ubits-calendar__year-dropdown > div > div[id*="calendar-scrollbar"] .ubits-scrollbar--vertical {
+    pointer-events: auto; /* El scrollbar sí debe recibir eventos */
 }
 
 /* Mostrar scrollbar con opacidad base cuando el dropdown está abierto y hay scroll */
@@ -291,24 +307,5 @@
 .ubits-calendar__month-dropdown[style*="display: block"] [id*="calendar-month-list"]:hover ~ [id*="calendar-month-scrollbar"] .ubits-scrollbar__bar,
 .ubits-calendar__year-dropdown[style*="display: block"] [id*="calendar-year-list"]:hover ~ [id*="calendar-year-scrollbar"] .ubits-scrollbar__bar {
     opacity: 1 !important;
-}
-
-/* Asegurar que el scrollbar sea visible cuando el dropdown está abierto (usando selector más específico) */
-.ubits-calendar__month-dropdown:not([style*="display: none"]) .ubits-scrollbar__bar,
-.ubits-calendar__year-dropdown:not([style*="display: none"]) .ubits-scrollbar__bar {
-    opacity: 0.6 !important;
-    pointer-events: auto !important;
-}
-
-.ubits-calendar__month-dropdown:not([style*="display: none"]):hover .ubits-scrollbar__bar,
-.ubits-calendar__year-dropdown:not([style*="display: none"]):hover .ubits-scrollbar__bar {
-    opacity: 1 !important;
-}
-
-/* Mostrar scrollbar cuando se hace hover en la lista dentro del dropdown abierto */
-.ubits-calendar__month-dropdown:not([style*="display: none"]) .ubits-list:hover ~ div .ubits-scrollbar__bar,
-.ubits-calendar__year-dropdown:not([style*="display: none"]) .ubits-list:hover ~ div .ubits-scrollbar__bar {
-    opacity: 1 !important;
-    pointer-events: auto !important;
 }
 
