@@ -131,6 +131,7 @@
     left: 60px;
     z-index: 16;
     box-sizing: border-box;
+    transition: background-color 0.2s ease;
 }
 
 /* Colapsar la columna cuando no hay contenido - NO aplicar al header vacío que se usa para alineación */
@@ -147,9 +148,7 @@
     display: none;
 }
 
-.ubits-data-table__row:hover .ubits-data-table__controls-column {
-    background-color: var(--ubits-bg-2);
-}
+/* Removido - ahora se maneja en la regla general del hover de la fila */
 
 .ubits-data-table__controls-wrapper {
     display: flex;
@@ -449,6 +448,16 @@
     background-color: var(--ubits-bg-2);
 }
 
+/* Asegurar que todas las celdas cambien de color simultáneamente al hacer hover en la fila */
+.ubits-data-table__row:hover .ubits-data-table__cell,
+.ubits-data-table__row:hover .ubits-data-table__cell--checkbox,
+.ubits-data-table__row:hover .ubits-data-table__cell--drag-handle,
+.ubits-data-table__row:hover .ubits-data-table__cell--expand,
+.ubits-data-table__row:hover .ubits-data-table__controls-column {
+    background-color: var(--ubits-bg-2) !important;
+    transition: background-color 0.2s ease;
+}
+
 /* Celdas */
 .ubits-data-table__cell {
     padding: var(--ubits-spacing-sm, 12px) var(--ubits-spacing-md, 16px);
@@ -457,6 +466,7 @@
     font-size: var(--ubits-font-size-sm, 14px);
     color: var(--ubits-fg-1-high);
     font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+    transition: background-color 0.2s ease;
 }
 
 /* Primera celda de datos después de controles (cuando no hay checkbox) - aumentar padding-left */
@@ -654,9 +664,7 @@
     box-sizing: border-box;
 }
 
-.ubits-data-table__row:hover .ubits-data-table__cell--checkbox {
-    background-color: var(--ubits-bg-2);
-}
+/* Removido - ahora se maneja en la regla general del hover de la fila */
 
 /* Checkbox en columna especial - sin label - FORZAR CENTRADO */
 /* IMPORTANTE: Solo aplicar a columnas fijas (checkbox, checkbox-2), NO a checkbox-col */
@@ -1043,6 +1051,7 @@
     width: 32px !important;
     min-width: 32px !important;
     max-width: 32px !important;
+    transition: background-color 0.2s ease;
 }
 
 .ubits-data-table__column-header--drag-handle,
@@ -1063,6 +1072,20 @@
     /* Por defecto: NO sticky (se aplicará inline si pinned: true) */
     z-index: 1 !important;
     background-color: var(--ubits-bg-1) !important;
+}
+
+/* CRÍTICO: Sobrescribir el background-color en hover con mayor especificidad y !important */
+.ubits-data-table__scrollable-container .ubits-data-table__row:hover .ubits-data-table__cell--drag-handle,
+.ubits-data-table__scrollable-container .ubits-data-table__row:hover .ubits-data-table__cell--expand,
+.ubits-data-table__scrollable-container .ubits-data-table__row:hover .ubits-data-table__cell--checkbox {
+    background-color: var(--ubits-bg-2) !important;
+}
+
+/* CRÍTICO: Sobrescribir el hover del checkbox incluso cuando está pinned */
+.ubits-data-table__row:hover .ubits-data-table__cell--checkbox[data-column-id="checkbox-2"],
+.ubits-data-table__row:hover .ubits-data-table__cell--checkbox[data-column-id="checkbox-2"][data-pinned="true"],
+.ubits-data-table__row:hover .ubits-data-table__cell--checkbox[data-column-id="checkbox-2"].ubits-data-table__cell--pinned {
+    background-color: var(--ubits-bg-2) !important;
 }
 
 /* Por defecto, el checkbox NO es sticky (se aplicará sticky solo si la columna tiene pinned: true) */

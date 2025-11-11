@@ -1681,6 +1681,56 @@ export function createDataTable(options: DataTableOptions): {
       setupLazyLoad();
     }
     
+    // Logs para debugging del hover
+    console.log('🎨 [HOVER DEBUG] ========== VERIFICANDO HOVER DE FILAS ==========');
+    const rows = element.querySelectorAll('.ubits-data-table__row');
+    console.log('🎨 [HOVER DEBUG] Filas encontradas:', rows.length);
+    
+    rows.forEach((row, index) => {
+      if (index === 0) { // Solo log de la primera fila para no saturar
+        const cells = row.querySelectorAll('td');
+        console.log('🎨 [HOVER DEBUG] Celdas en la primera fila:', cells.length);
+        cells.forEach((cell, cellIndex) => {
+          const cellElement = cell as HTMLElement;
+          const classes = Array.from(cellElement.classList);
+          const computedBg = window.getComputedStyle(cellElement).backgroundColor;
+          console.log(`🎨 [HOVER DEBUG] Celda ${cellIndex}:`, {
+            classes: classes,
+            computedBackground: computedBg,
+            hasDragHandle: classes.includes('ubits-data-table__cell--drag-handle'),
+            hasExpand: classes.includes('ubits-data-table__cell--expand'),
+            hasCheckbox: classes.includes('ubits-data-table__cell--checkbox'),
+            hasControlsColumn: classes.includes('ubits-data-table__controls-column'),
+            hasCell: classes.includes('ubits-data-table__cell')
+          });
+        });
+      }
+    });
+    
+    // Agregar listener de hover a la primera fila para debugging
+    if (rows.length > 0) {
+      const firstRow = rows[0] as HTMLElement;
+      firstRow.addEventListener('mouseenter', () => {
+        console.log('🎨 [HOVER DEBUG] ========== HOVER ENTRÓ EN FILA ==========');
+        const cells = firstRow.querySelectorAll('td');
+        cells.forEach((cell, index) => {
+          const cellElement = cell as HTMLElement;
+          const classes = Array.from(cellElement.classList);
+          const computedBg = window.getComputedStyle(cellElement).backgroundColor;
+          console.log(`🎨 [HOVER DEBUG] Celda ${index} en hover:`, {
+            classes: classes,
+            computedBackground: computedBg,
+            hasDragHandle: classes.includes('ubits-data-table__cell--drag-handle'),
+            hasExpand: classes.includes('ubits-data-table__cell--expand')
+          });
+        });
+      });
+      
+      firstRow.addEventListener('mouseleave', () => {
+        console.log('🎨 [HOVER DEBUG] ========== HOVER SALIÓ DE FILA ==========');
+      });
+    }
+    
     // Aplicar atributo indeterminate a los inputs del header checkbox después de renderizar
     const checkboxHeaders = element.querySelectorAll('input[data-column-checkbox-header]');
     checkboxHeaders.forEach((input) => {
