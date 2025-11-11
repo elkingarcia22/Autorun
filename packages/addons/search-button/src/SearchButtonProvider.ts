@@ -60,8 +60,11 @@ export function renderSearchButton(options: SearchButtonOptions): string {
       className
     ].filter(Boolean).join(' ');
 
+    // Si se especifica width, usarlo; si no, usar auto para que se ajuste al contenido
+    const widthStyle = width ? `width: ${width}px;` : '';
+
     return `
-      <div class="${inputWrapperClasses}" style="width: ${width}px;">
+      <div class="${inputWrapperClasses}" style="${widthStyle}">
         <div class="ubits-search-button__input-wrapper">
           ${iconHTML}
           <input

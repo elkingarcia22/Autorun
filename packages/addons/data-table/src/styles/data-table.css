@@ -12,6 +12,162 @@
   gap: 0;
 }
 
+/* ========================================
+   DATA TABLE HEADER (título, contador, botones)
+   ======================================== */
+.ubits-data-table__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--ubits-spacing-md, 16px);
+  padding-bottom: var(--ubits-spacing-md, 16px);
+  background-color: var(--ubits-bg-1);
+  gap: var(--ubits-spacing-md, 16px);
+  flex-wrap: wrap;
+}
+
+.ubits-data-table__header-title {
+  display: flex;
+  align-items: center;
+  gap: var(--ubits-spacing-sm, 12px);
+  flex: 1;
+  min-width: 0;
+}
+
+.ubits-data-table__header-title-text {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--font-body-md-size, 16px);
+  font-weight: var(--weight-bold, 700);
+  line-height: var(--font-body-md-line, 24px);
+  color: var(--ubits-fg-1-high);
+}
+
+.ubits-data-table__header-counter {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--font-body-sm-size, 13px);
+  font-weight: var(--weight-regular, 400);
+  line-height: var(--font-body-sm-line, 19.5px);
+  color: var(--ubits-fg-1-medium);
+}
+
+.ubits-data-table__header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--ubits-spacing-xs, 8px);
+  flex-shrink: 0;
+  position: relative;
+  /* Permitir que el SearchButton se expanda hacia la izquierda */
+  flex-wrap: nowrap;
+}
+
+.ubits-data-table__header-primary-button,
+.ubits-data-table__header-secondary-button {
+  flex-shrink: 0;
+}
+
+.ubits-data-table__header-search-button {
+  flex-shrink: 0;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+}
+
+/* Cuando el SearchButton está activo, mantener posición relativa y expandir hacia la izquierda */
+.ubits-data-table__header-search-button.ubits-search-button--active {
+  position: relative;
+  /* El input se expandirá hacia la izquierda desde su posición original */
+  /* NO aplicar width fijo, dejar que el componente SearchButton maneje su propio ancho */
+  /* Usar margin-left negativo para compensar el ancho extra y mantener solo 8px de gap */
+  /* El cálculo debe basarse en el ancho real del componente cuando está activo */
+  margin-left: calc((248px - 32px - var(--ubits-spacing-xs, 8px)) * -1);
+  margin-right: 0;
+  /* Asegurar que el wrapper mantenga su posición relativa */
+  z-index: 1;
+}
+
+/* Remover el width inline que viene del componente SearchButton */
+.ubits-data-table__header-search-button.ubits-search-button--active {
+  width: auto !important;
+}
+
+/* El input-wrapper debe tener el ancho deseado */
+.ubits-data-table__header-search-button.ubits-search-button--active .ubits-search-button__input-wrapper {
+  width: 248px;
+  min-width: 248px;
+  max-width: 248px;
+}
+
+.ubits-data-table__header-filter-button,
+.ubits-data-table__header-column-selector-button {
+  flex-shrink: 0;
+  position: relative;
+}
+
+/* Dropdown de selección de columnas */
+.ubits-data-table__column-selector-dropdown {
+  position: fixed;
+  z-index: 1000;
+  background-color: var(--ubits-bg-1);
+  border: 1px solid var(--ubits-border-1);
+  border-radius: var(--ubits-border-radius-md);
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+  min-width: 200px;
+  max-height: 400px;
+  overflow-y: auto;
+  padding: var(--ubits-spacing-sm, 12px);
+}
+
+/* Estilos para la lista dentro del dropdown de selección de columnas */
+.ubits-data-table__column-selector-list {
+  box-shadow: none;
+  border-radius: 0;
+}
+
+.ubits-data-table__column-selector-list .ubits-list-item {
+  padding: var(--ubits-spacing-xs, 8px) var(--ubits-spacing-sm, 12px);
+}
+
+.ubits-data-table__column-selector-checkbox {
+  width: 100%;
+}
+
+/* Asegurar que los checkboxes dentro de los items de lista se vean bien */
+.ubits-data-table__column-selector-list .ubits-list-item .ubits-checkbox {
+  width: 100%;
+}
+
+/* Estilos para el contenedor de filtros en el drawer */
+.ubits-data-table__filters-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ubits-spacing-lg, 24px);
+  padding: var(--ubits-spacing-lg, 24px);
+}
+
+.ubits-data-table__filter-item {
+  width: 100%;
+}
+
+/* Responsive: en pantallas pequeñas, el header se apila verticalmente */
+@media (max-width: 768px) {
+  .ubits-data-table__header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .ubits-data-table__header-title {
+    width: 100%;
+  }
+  
+  .ubits-data-table__header-actions {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+}
+
 /* Espaciado entre la tabla y el paginador */
 /* NO aplicamos margin-bottom a la tabla para no afectar su padding interno */
 

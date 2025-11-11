@@ -284,5 +284,165 @@ export interface DataTableOptions {
    * Clases CSS adicionales
    */
   className?: string;
+
+  /**
+   * Configuración del header de la tabla
+   */
+  header?: {
+    /**
+     * Título del header (opcional)
+     */
+    title?: string;
+    
+    /**
+     * Si se muestra el título (por defecto: true si title está definido)
+     */
+    showTitle?: boolean;
+    
+    /**
+     * Contador de items (opcional)
+     * Si es string, se muestra ese texto
+     * Si es true, se muestra automáticamente "X/Y resultados" basado en rows.length
+     * Si es 'total-only', se muestra solo "Y resultados" (solo el total)
+     * Si es false o undefined, no se muestra
+     */
+    counter?: string | boolean | 'total-only';
+    
+    /**
+     * Items mostrados actualmente (para el contador X/Y cuando counter es true)
+     * Si no se proporciona, se usa rows.length
+     */
+    displayedItems?: number;
+    
+    /**
+     * Total de items para el contador (solo si counter es true o 'total-only')
+     * Si no se proporciona, se usa rows.length
+     */
+    totalItems?: number;
+    
+    /**
+     * Si se muestra el contador (por defecto: true si counter está definido)
+     */
+    showCounter?: boolean;
+    
+    /**
+     * Botón primario
+     */
+    primaryButton?: {
+      text: string;
+      icon?: string;
+      iconStyle?: 'regular' | 'solid';
+      onClick?: (event: MouseEvent) => void;
+      disabled?: boolean;
+      loading?: boolean;
+    };
+    
+    /**
+     * Si se muestra el botón primario (por defecto: true si primaryButton está definido)
+     */
+    showPrimaryButton?: boolean;
+    
+    /**
+     * Botones secundarios (máximo 2)
+     */
+    secondaryButtons?: Array<{
+      text: string;
+      icon?: string;
+      iconStyle?: 'regular' | 'solid';
+      onClick?: (event: MouseEvent) => void;
+      disabled?: boolean;
+      loading?: boolean;
+    }>;
+    
+    /**
+     * Si se muestran los botones secundarios (por defecto: true si secondaryButtons está definido)
+     */
+    showSecondaryButtons?: boolean;
+    
+    /**
+     * Botón de búsqueda
+     */
+    searchButton?: {
+      placeholder?: string;
+      value?: string;
+      onChange?: (value: string) => void;
+      onClick?: (event: MouseEvent) => void;
+      onSearch?: (searchTerm: string, filteredRows: TableRow[]) => void;
+      disabled?: boolean;
+    };
+    
+    /**
+     * Si se muestra el botón de búsqueda (por defecto: true si searchButton está definido)
+     */
+    showSearchButton?: boolean;
+    
+    /**
+     * Botón de filtros
+     */
+    filterButton?: {
+      onClick?: (event: MouseEvent) => void;
+      disabled?: boolean;
+      active?: boolean;
+      /**
+       * Configuración de filtros disponibles
+       */
+      filters?: Array<{
+        /**
+         * ID único del filtro
+         */
+        id: string;
+        /**
+         * Label del filtro
+         */
+        label: string;
+        /**
+         * ID de la columna a filtrar
+         */
+        columnId: string;
+        /**
+         * Tipo de filtro: 'text', 'select', 'date', 'number'
+         */
+        type: 'text' | 'select' | 'date' | 'number';
+        /**
+         * Opciones para filtros de tipo 'select'
+         */
+        options?: Array<{
+          value: string;
+          label: string;
+        }>;
+        /**
+         * Valor inicial del filtro
+         */
+        value?: string;
+      }>;
+      /**
+       * Callback cuando se aplican los filtros
+       */
+      onApplyFilters?: (filters: Record<string, string>) => void;
+      /**
+       * Callback cuando se limpian los filtros
+       */
+      onClearFilters?: () => void;
+    };
+    
+    /**
+     * Si se muestra el botón de filtros (por defecto: true si filterButton está definido)
+     */
+    showFilterButton?: boolean;
+    
+    /**
+     * Botón de seleccionar columnas
+     */
+    columnSelectorButton?: {
+      onClick?: (event: MouseEvent) => void;
+      disabled?: boolean;
+      active?: boolean;
+    };
+    
+    /**
+     * Si se muestra el botón de seleccionar columnas (por defecto: true si columnSelectorButton está definido)
+     */
+    showColumnSelectorButton?: boolean;
+  };
 }
 

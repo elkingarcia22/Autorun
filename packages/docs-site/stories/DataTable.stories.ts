@@ -220,6 +220,85 @@ const meta: Meta<DataTableOptions & { columnsCount?: number }> = {
         defaultValue: { summary: 'md' },
       },
     },
+    // Controles del header
+    headerTitle: {
+      control: { type: 'text' },
+      description: 'Título del header',
+      table: {
+        defaultValue: { summary: 'Lista de elementos' },
+      },
+    },
+    showHeaderTitle: {
+      control: 'boolean',
+      description: 'Mostrar título del header',
+      table: {
+        defaultValue: { summary: 'true' },
+      },
+    },
+    headerCounter: {
+      control: { type: 'select' },
+      options: [true, false, 'total-only'],
+      description: 'Modo del contador: true = "X/Y resultados", "total-only" = solo "Y resultados", false = oculto',
+      table: {
+        defaultValue: { summary: 'true' },
+      },
+    },
+    headerDisplayedItems: {
+      control: { type: 'number', min: 1, step: 1 },
+      description: 'Items mostrados actualmente (para el contador X/Y)',
+      table: {
+        defaultValue: { summary: '32' },
+      },
+    },
+    headerTotalItems: {
+      control: { type: 'number', min: 1, step: 1 },
+      description: 'Total de items para el contador',
+      table: {
+        defaultValue: { summary: '206' },
+      },
+    },
+    showHeaderPrimaryButton: {
+      control: 'boolean',
+      description: 'Mostrar botón primario',
+      table: {
+        defaultValue: { summary: 'true' },
+      },
+    },
+    headerPrimaryButtonText: {
+      control: { type: 'text' },
+      description: 'Texto del botón primario',
+      table: {
+        defaultValue: { summary: 'Nuevo' },
+      },
+    },
+    showHeaderSecondaryButtons: {
+      control: 'boolean',
+      description: 'Mostrar botones secundarios',
+      table: {
+        defaultValue: { summary: 'true' },
+      },
+    },
+    showHeaderSearchButton: {
+      control: 'boolean',
+      description: 'Mostrar botón de búsqueda',
+      table: {
+        defaultValue: { summary: 'true' },
+      },
+    },
+    showHeaderFilterButton: {
+      control: 'boolean',
+      description: 'Mostrar botón de filtros',
+      table: {
+        defaultValue: { summary: 'true' },
+      },
+    },
+    showHeaderColumnSelectorButton: {
+      control: 'boolean',
+      description: 'Mostrar botón de seleccionar columnas',
+      table: {
+        defaultValue: { summary: 'true' },
+      },
+    },
   },
 };
 
@@ -657,6 +736,19 @@ export const Default: Story = {
     })));
     console.log('📖 [STORY] ========== FIN ESTADO INICIAL ==========');
     
+    // Configuración del header
+    const headerTitle = (args as any).headerTitle ?? 'Lista de elementos';
+    const showHeaderTitle = (args as any).showHeaderTitle !== undefined ? (args as any).showHeaderTitle : true;
+    const headerCounter = (args as any).headerCounter !== undefined ? (args as any).headerCounter : true;
+    const headerDisplayedItems = (args as any).headerDisplayedItems ?? 32;
+    const headerTotalItems = (args as any).headerTotalItems ?? 206;
+    const showHeaderPrimaryButton = (args as any).showHeaderPrimaryButton !== undefined ? (args as any).showHeaderPrimaryButton : true;
+    const headerPrimaryButtonText = (args as any).headerPrimaryButtonText ?? 'Nuevo';
+    const showHeaderSecondaryButtons = (args as any).showHeaderSecondaryButtons !== undefined ? (args as any).showHeaderSecondaryButtons : true;
+    const showHeaderSearchButton = (args as any).showHeaderSearchButton !== undefined ? (args as any).showHeaderSearchButton : true;
+    const showHeaderFilterButton = (args as any).showHeaderFilterButton !== undefined ? (args as any).showHeaderFilterButton : true;
+    const showHeaderColumnSelectorButton = (args as any).showHeaderColumnSelectorButton !== undefined ? (args as any).showHeaderColumnSelectorButton : true;
+    
     const options: DataTableOptions = {
       containerId: tableContainer.id,
       columns,
@@ -679,6 +771,90 @@ export const Default: Story = {
       itemsPerPage: args.itemsPerPage ?? 10,
       paginationVariant: args.paginationVariant ?? 'default',
       paginationSize: args.paginationSize ?? 'md',
+      // Configuración del header
+      header: {
+        title: showHeaderTitle ? headerTitle : undefined,
+        showTitle: showHeaderTitle,
+        counter: headerCounter === 'total-only' ? 'total-only' : headerCounter ? true : false,
+        displayedItems: headerDisplayedItems,
+        totalItems: headerTotalItems,
+        showCounter: headerCounter,
+        primaryButton: showHeaderPrimaryButton ? {
+          text: headerPrimaryButtonText,
+          icon: 'plus',
+          iconStyle: 'regular',
+          onClick: (e) => {
+            console.log('Botón primario clickeado');
+            alert('Botón primario: ' + headerPrimaryButtonText);
+          }
+        } : undefined,
+        showPrimaryButton: showHeaderPrimaryButton,
+        secondaryButtons: showHeaderSecondaryButtons ? [
+          {
+            text: 'Exportar',
+            icon: 'download',
+            iconStyle: 'regular',
+            onClick: (e) => {
+              console.log('Botón secundario 1 clickeado');
+              alert('Exportar');
+            }
+          },
+          {
+            text: 'Importar',
+            icon: 'upload',
+            iconStyle: 'regular',
+            onClick: (e) => {
+              console.log('Botón secundario 2 clickeado');
+              alert('Importar');
+            }
+          }
+        ] : undefined,
+        showSecondaryButtons: showHeaderSecondaryButtons,
+        searchButton: showHeaderSearchButton ? {
+          placeholder: 'Buscar...',
+          value: '',
+          onChange: (value) => {
+            console.log('Búsqueda:', value);
+          },
+          onClick: (e) => {
+            console.log('Botón de búsqueda clickeado');
+          },
+          onSearch: (searchTerm, filteredRows) => {
+            console.log('Búsqueda realizada:', searchTerm, 'Filas encontradas:', filteredRows.length);
+          }
+        } : undefined,
+        showSearchButton: showHeaderSearchButton,
+        filterButton: showHeaderFilterButton ? {
+          onClick: (e) => {
+            console.log('Botón de filtros clickeado');
+            // Este onClick solo se ejecuta si no hay filtros configurados
+          },
+          // Los filtros se generan automáticamente basados en las columnas de la tabla
+          // Si quieres filtros personalizados, puedes descomentar y configurar:
+          // filters: [
+          //   {
+          //     id: 'nombre',
+          //     label: 'Nombre',
+          //     columnId: 'nombre',
+          //     type: 'text'
+          //   }
+          // ],
+          onApplyFilters: (filters) => {
+            console.log('Filtros aplicados:', filters);
+          },
+          onClearFilters: () => {
+            console.log('Filtros limpiados');
+          }
+        } : undefined,
+        showFilterButton: showHeaderFilterButton,
+        columnSelectorButton: showHeaderColumnSelectorButton ? {
+          onClick: (e) => {
+            console.log('Botón de seleccionar columnas clickeado');
+            // El dropdown se maneja automáticamente, este onClick es opcional
+          }
+        } : undefined,
+        showColumnSelectorButton: showHeaderColumnSelectorButton
+      },
       onPageChange: (page) => {
         console.log('Page changed to:', page);
         // En Storybook, actualizar el args para que se refleje en los controles
@@ -818,6 +994,18 @@ export const Default: Story = {
     itemsPerPage: 10,
     paginationVariant: 'default',
     paginationSize: 'md',
+    // Controles del header
+    headerTitle: 'Lista de elementos',
+    showHeaderTitle: true,
+    headerCounter: true,
+    headerDisplayedItems: 32,
+    headerTotalItems: 206,
+    showHeaderPrimaryButton: true,
+    headerPrimaryButtonText: 'Nuevo',
+    showHeaderSecondaryButtons: true,
+    showHeaderSearchButton: true,
+    showHeaderFilterButton: true,
+    showHeaderColumnSelectorButton: true,
   },
 };
 

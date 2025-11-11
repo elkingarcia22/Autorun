@@ -14,7 +14,8 @@
     position: relative;
     display: inline-flex;
     align-items: center;
-    transition: all 0.2s ease;
+    transition: width 0.2s ease, opacity 0.2s ease;
+    vertical-align: middle;
 }
 
 /* ========================================
@@ -68,6 +69,10 @@
 
 .ubits-search-button--active {
     display: inline-flex;
+    position: relative;
+    /* Mantener alineación vertical consistente */
+    vertical-align: middle;
+    align-items: center;
 }
 
 .ubits-search-button__input-wrapper {
@@ -75,6 +80,8 @@
     align-items: center;
     gap: var(--ubits-spacing-sm, 8px);
     padding: var(--ubits-spacing-sm, 12px);
+    padding-left: var(--ubits-spacing-md, 16px);
+    padding-right: var(--ubits-spacing-md, 16px);
     border: 1px solid var(--ubits-accent-brand-static-inverted, #0c5bef);
     border-radius: var(--ubits-border-radius-sm, 4px);
     background-color: var(--ubits-bg-1, #ffffff);
@@ -179,6 +186,10 @@
 /* Small Size - Input Mode */
 .ubits-search-button--sm.ubits-search-button--active .ubits-search-button__input-wrapper {
     padding: var(--ubits-spacing-xs, 8px);
+    padding-left: var(--ubits-spacing-sm, 12px);
+    padding-right: var(--ubits-spacing-sm, 12px);
+    height: 32px;
+    min-height: 32px;
     max-height: 32px;
 }
 
