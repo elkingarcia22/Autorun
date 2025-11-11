@@ -1,0 +1,259 @@
+/* ========================================
+   UBITS PAGINATION COMPONENT
+   Componente de paginación
+   Usando tokens UBITS
+   ======================================== */
+
+/* ========================================
+   BASE PAGINATION STYLES
+   ======================================== */
+
+.ubits-pagination {
+  /* Base styles usando tokens UBITS */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ubits-spacing-sm);
+  font-family: var(--font-sans);
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+/* ========================================
+   VARIANTS
+   ======================================== */
+
+.ubits-pagination--default {
+  /* Variante por defecto con todos los controles */
+}
+
+.ubits-pagination--compact {
+  /* Variante compacta: solo página actual y total */
+  gap: var(--ubits-spacing-xs);
+}
+
+.ubits-pagination--minimal {
+  /* Variante minimal: solo anterior/siguiente */
+  gap: var(--ubits-spacing-xs);
+}
+
+/* ========================================
+   SIZES
+   ======================================== */
+
+.ubits-pagination--sm {
+  gap: var(--ubits-spacing-xs);
+}
+
+.ubits-pagination--md {
+  gap: var(--ubits-spacing-sm);
+}
+
+.ubits-pagination--lg {
+  gap: var(--ubits-spacing-md);
+}
+
+/* ========================================
+   CONTROLS
+   ======================================== */
+
+.ubits-pagination__controls {
+  display: flex;
+  align-items: center;
+  gap: var(--ubits-spacing-xs);
+  flex-wrap: wrap;
+}
+
+.ubits-pagination__page-button {
+  min-width: 40px;
+}
+
+.ubits-pagination--sm .ubits-pagination__page-button {
+  min-width: 32px;
+}
+
+.ubits-pagination--lg .ubits-pagination__page-button {
+  min-width: 48px;
+}
+
+/* Mejorar contraste del texto en botón activo (secondary) usando tokens UBITS */
+.ubits-pagination__page-button.ubits-button--secondary.ubits-button--active {
+  background: var(--ubits-button-active-bg);
+  color: var(--ubits-accent-brand);
+  border-color: var(--ubits-accent-brand);
+}
+
+.ubits-pagination__page-button.ubits-button--secondary.ubits-button--active span {
+  color: var(--ubits-accent-brand);
+  font-weight: var(--weight-semibold);
+}
+
+.ubits-pagination__page-button.ubits-button--secondary.ubits-button--active:hover:not(:disabled) {
+  background: var(--ubits-button-active-bg);
+  color: var(--ubits-accent-brand);
+  border-color: var(--ubits-accent-brand);
+}
+
+.ubits-pagination__page-button.ubits-button--secondary.ubits-button--active:hover:not(:disabled) span {
+  color: var(--ubits-accent-brand);
+}
+
+.ubits-pagination__nav-button {
+  /* Los botones de navegación ya tienen estilos del componente Button */
+}
+
+/* Asegurar que los botones de navegación deshabilitados mantengan estilo tertiary */
+.ubits-pagination__nav-button.ubits-button--tertiary:disabled {
+  background: transparent !important;
+  color: var(--ubits-btn-tertiary-fg) !important;
+  border-color: transparent !important;
+  opacity: 0.5;
+}
+
+/* ========================================
+   ELLIPSIS
+   ======================================== */
+
+.ubits-pagination__ellipsis {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 var(--ubits-spacing-xs);
+  color: var(--ubits-fg-2-medium);
+  font-family: var(--font-sans);
+  font-size: var(--font-body-md-size);
+  font-weight: var(--weight-medium);
+  user-select: none;
+  min-width: 32px;
+  height: 40px;
+}
+
+.ubits-pagination--sm .ubits-pagination__ellipsis {
+  min-width: 24px;
+  height: 32px;
+  font-size: var(--font-body-sm-size);
+}
+
+.ubits-pagination--lg .ubits-pagination__ellipsis {
+  min-width: 40px;
+  height: 48px;
+  font-size: var(--font-body-lg-size);
+}
+
+/* ========================================
+   PAGE INFO
+   ======================================== */
+
+.ubits-pagination__page-info {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 var(--ubits-spacing-sm);
+  color: var(--ubits-fg-1-high);
+  font-family: var(--font-sans);
+  white-space: nowrap;
+}
+
+/* ========================================
+   INFO SECTION
+   ======================================== */
+
+.ubits-pagination__info {
+  display: flex;
+  align-items: center;
+  margin-right: var(--ubits-spacing-md);
+  color: var(--ubits-fg-2-medium);
+}
+
+/* ========================================
+   ITEMS PER PAGE
+   ======================================== */
+
+.ubits-pagination__items-per-page {
+  display: flex;
+  align-items: center;
+  gap: var(--ubits-spacing-xs);
+  margin-right: var(--ubits-spacing-md);
+}
+
+.ubits-pagination__items-per-page label {
+  color: var(--ubits-fg-2-medium);
+  font-family: var(--font-sans);
+  white-space: nowrap;
+}
+
+.ubits-pagination__select {
+  padding: var(--ubits-spacing-xs) var(--ubits-spacing-sm);
+  border: 1px solid var(--ubits-border-1);
+  border-radius: var(--ubits-radius-sm);
+  background: var(--ubits-bg-1);
+  color: var(--ubits-fg-1-high);
+  font-family: var(--font-sans);
+  font-size: var(--font-body-sm-size);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.ubits-pagination__select:hover {
+  border-color: var(--ubits-border-2);
+  background: var(--ubits-bg-2);
+}
+
+.ubits-pagination__select:focus {
+  border-color: var(--ubits-accent-brand);
+  box-shadow: 0 0 0 2px var(--ubits-focus-ring);
+}
+
+.ubits-pagination__select:active {
+  background: var(--ubits-bg-3);
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+@media (max-width: 768px) {
+  .ubits-pagination {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .ubits-pagination__info,
+  .ubits-pagination__items-per-page {
+    margin-right: 0;
+    margin-bottom: var(--ubits-spacing-sm);
+    justify-content: center;
+  }
+  
+  .ubits-pagination__controls {
+    justify-content: center;
+  }
+  
+  /* Ocultar algunos botones en móvil para variante default */
+  .ubits-pagination--default .ubits-pagination__page-button:not(.ubits-button--active) {
+    display: none;
+  }
+  
+  /* Mostrar solo página actual y adyacentes */
+  .ubits-pagination--default .ubits-pagination__page-button.ubits-button--active,
+  .ubits-pagination--default .ubits-pagination__page-button.ubits-button--active + .ubits-pagination__page-button,
+  .ubits-pagination--default .ubits-pagination__page-button:has(+ .ubits-pagination__page-button.ubits-button--active) {
+    display: inline-flex;
+  }
+}
+
+/* ========================================
+   ACCESSIBILITY
+   ======================================== */
+
+.ubits-pagination [aria-disabled="true"],
+.ubits-pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.ubits-pagination [aria-label] {
+  /* Mejorar accesibilidad */
+}
+

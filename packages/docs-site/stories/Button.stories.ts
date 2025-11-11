@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/html';
 import { renderButton, createButton } from '../../addons/button/src/ButtonProvider';
 import type { ButtonOptions } from '../../addons/button/src/types/ButtonOptions';
+import '../../addons/tooltip/src/styles/tooltip.css';
 
 const meta: Meta<ButtonOptions> = {
   title: 'Components/Button',
@@ -54,11 +55,11 @@ const meta: Meta<ButtonOptions> = {
     },
     iconPosition: {
       control: { type: 'select' },
-      options: ['left', 'right'],
+      options: ['left', 'right', 'only'],
       description: 'Posición del icono',
       table: {
         defaultValue: { summary: 'left' },
-        type: { summary: 'left | right' },
+        type: { summary: 'left | right | only' },
       },
     },
     iconOnly: {
@@ -117,6 +118,22 @@ const meta: Meta<ButtonOptions> = {
         defaultValue: { summary: 'false' },
       },
     },
+    showTooltip: {
+      control: { type: 'boolean' },
+      description: 'Mostrar tooltip al hacer hover (solo para botones icon-only)',
+      table: {
+        defaultValue: { summary: 'false' },
+        category: 'Tooltip',
+      },
+    },
+    tooltipText: {
+      control: { type: 'text' },
+      description: 'Texto del tooltip (solo para botones icon-only)',
+      table: {
+        type: { summary: 'string' },
+        category: 'Tooltip',
+      },
+    },
   },
 };
 
@@ -145,6 +162,8 @@ export const Default: Story = {
       { label: 'Opción 2', value: 'opt2' },
       { label: 'Opción 3', value: 'opt3' },
     ],
+    showTooltip: false,
+    tooltipText: 'Tooltip del botón',
   },
   render: (args) => {
     const container = document.createElement('div');
@@ -163,25 +182,45 @@ export const Default: Story = {
     preview.style.marginBottom = '20px';
     preview.style.position = 'relative';
     
+    // Convertir iconPosition 'only' a iconOnly para compatibilidad
+    const buttonArgs = {
+      ...args,
+      iconOnly: args.iconPosition === 'only' || args.iconOnly,
+      iconPosition: args.iconPosition === 'only' ? 'left' : args.iconPosition
+    };
+    
     // Si dropdown está activo, usar createButton para inicializar la funcionalidad
-    if (args.dropdown && args.dropdownOptions && args.dropdownOptions.length > 0) {
+    if (buttonArgs.dropdown && buttonArgs.dropdownOptions && buttonArgs.dropdownOptions.length > 0) {
       const buttonWrapper = document.createElement('div');
       buttonWrapper.style.position = 'relative';
       buttonWrapper.style.display = 'inline-block';
       
       requestAnimationFrame(() => {
         try {
-          const button = createButton(args);
+          const button = createButton(buttonArgs);
           // createButton con dropdown retorna el botón dentro de un div wrapper
           const parent = button.parentElement;
           if (parent) {
             buttonWrapper.appendChild(parent);
+            // Aplicar tooltip UBITS si es necesario
+            if (buttonArgs.iconOnly && buttonArgs.showTooltip && buttonArgs.tooltipText) {
+              applyUBITSTooltip(button, buttonArgs.tooltipText);
+            }
           } else {
             buttonWrapper.appendChild(button);
+            // Aplicar tooltip UBITS si es necesario
+            if (buttonArgs.iconOnly && buttonArgs.showTooltip && buttonArgs.tooltipText) {
+              applyUBITSTooltip(button, buttonArgs.tooltipText);
+            }
           }
         } catch (error) {
           console.warn('Could not use createButton, falling back to renderButton:', error);
-          buttonWrapper.innerHTML = renderButton(args);
+          buttonWrapper.innerHTML = renderButton(buttonArgs);
+          // Aplicar tooltip UBITS si es necesario
+          const button = buttonWrapper.querySelector('button');
+          if (button && buttonArgs.iconOnly && buttonArgs.showTooltip && buttonArgs.tooltipText) {
+            applyUBITSTooltip(button, buttonArgs.tooltipText);
+          }
         }
       });
       
@@ -189,12 +228,150 @@ export const Default: Story = {
     } else {
       // Sin dropdown, usar renderButton normalmente
       const buttonContainer = document.createElement('div');
-      buttonContainer.innerHTML = renderButton(args);
+      buttonContainer.innerHTML = renderButton(buttonArgs);
       preview.appendChild(buttonContainer);
+      
+      // Aplicar tooltip UBITS si es necesario
+      requestAnimationFrame(() => {
+        const button = buttonContainer.querySelector('button');
+        if (button && buttonArgs.iconOnly && buttonArgs.showTooltip && buttonArgs.tooltipText) {
+          applyUBITSTooltip(button, buttonArgs.tooltipText);
+        }
+      });
     }
     
     container.appendChild(preview);
     
     return container;
   },
+};
+
+// Función helper para aplicar tooltip UBITS a botones icon-only
+function applyUBITSTooltip(button: HTMLButtonElement, tooltipText: string): void {
+  // Remover tooltip anterior si existe
+  const existingTooltipId = button.dataset.tooltipInstance;
+  if (existingTooltipId) {
+    const existingTooltip = document.getElementById(existingTooltipId);
+    if (existingTooltip) {
+      existingTooltip.remove();
+    }
+    delete button.dataset.tooltipInstance;
+  }
+  
+  // Remover listeners anteriores
+  const oldMouseEnter = (button as any)._tooltipMouseEnter;
+  const oldMouseLeave = (button as any)._tooltipMouseLeave;
+  if (oldMouseEnter) {
+    button.removeEventListener('mouseenter', oldMouseEnter);
+    delete (button as any)._tooltipMouseEnter;
+  }
+  if (oldMouseLeave) {
+    button.removeEventListener('mouseleave', oldMouseLeave);
+    delete (button as any)._tooltipMouseLeave;
+  }
+  
+  // Remover atributo title nativo si existe
+  if (button.hasAttribute('title')) {
+    button.removeAttribute('title');
+  }
+  
+  // Crear tooltip HTML
+  const tooltipId = `button-tooltip-${Math.random().toString(36).substr(2, 9)}`;
+  const escapedText = tooltipText
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+  
+  const tooltipHTML = `
+    <div class="ubits-tooltip ubits-tooltip--tail-bottom" id="${tooltipId}" style="position: fixed; z-index: 10000; opacity: 0; visibility: hidden; display: none; width: auto; min-width: fit-content; max-width: 240px;">
+      <div class="ubits-tooltip__tail" style="left: 50%;">
+        <div class="ubits-tooltip__tail-inner"></div>
+      </div>
+      <div class="ubits-tooltip__content" style="width: auto; min-width: fit-content;">
+        <div class="ubits-tooltip__body" style="white-space: nowrap;">
+          <div class="ubits-tooltip__body-content">
+            <p class="ubits-body-md" style="margin: 0; white-space: nowrap;">${escapedText}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  // Crear wrapper para parsear HTML
+  const wrapper = document.createElement('div');
+  wrapper.innerHTML = tooltipHTML;
+  const tooltipElement = wrapper.firstElementChild as HTMLElement;
+  
+  if (tooltipElement) {
+    // Agregar al body
+    document.body.appendChild(tooltipElement);
+    
+    // Función para mostrar tooltip
+    const showTooltip = () => {
+      const buttonRect = button.getBoundingClientRect();
+      
+      // Calcular posición: tooltip arriba del botón (tail apunta hacia abajo)
+      tooltipElement.style.top = '-9999px';
+      tooltipElement.style.left = '0';
+      tooltipElement.style.transform = 'none';
+      tooltipElement.style.visibility = 'visible';
+      tooltipElement.style.opacity = '0';
+      tooltipElement.style.display = 'block';
+      tooltipElement.classList.add('ubits-tooltip--open');
+      
+      // Forzar reflow para calcular dimensiones
+      void tooltipElement.offsetHeight;
+      
+      const tooltipRect = tooltipElement.getBoundingClientRect();
+      const tooltipHeight = tooltipRect.height;
+      
+      // Calcular posición final
+      const top = buttonRect.top - tooltipHeight - 9; // 9px es la altura del tail
+      const buttonCenterX = buttonRect.left + (buttonRect.width / 2);
+      const tooltipWidth = tooltipRect.width;
+      const left = buttonCenterX - (tooltipWidth / 2); // Centrar el tooltip sobre el botón
+      
+      tooltipElement.style.top = `${top}px`;
+      tooltipElement.style.left = `${left}px`;
+      tooltipElement.style.transform = 'none'; // No usar translateX ya que calculamos left directamente
+      tooltipElement.style.display = 'block';
+      tooltipElement.style.visibility = 'visible';
+      tooltipElement.style.opacity = '1';
+      tooltipElement.style.transition = 'none'; // Sin transición para aparición inmediata
+      
+      // Restaurar transición después de un breve momento
+      setTimeout(() => {
+        tooltipElement.style.transition = '';
+      }, 50);
+    };
+    
+    // Función para ocultar tooltip
+    const hideTooltip = () => {
+      tooltipElement.classList.remove('ubits-tooltip--open');
+      tooltipElement.style.opacity = '0';
+      tooltipElement.style.visibility = 'hidden';
+      tooltipElement.style.display = 'none';
+    };
+    
+    // Agregar eventos
+    const mouseEnterHandler = (e: Event) => {
+      e.stopPropagation();
+      showTooltip();
+    };
+    
+    const mouseLeaveHandler = (e: Event) => {
+      e.stopPropagation();
+      hideTooltip();
+    };
+    
+    button.addEventListener('mouseenter', mouseEnterHandler, false);
+    button.addEventListener('mouseleave', mouseLeaveHandler, false);
+    
+    // Guardar referencias para poder limpiarlas después
+    (button as any)._tooltipMouseEnter = mouseEnterHandler;
+    (button as any)._tooltipMouseLeave = mouseLeaveHandler;
+    button.dataset.tooltipInstance = tooltipId;
+  }
 };

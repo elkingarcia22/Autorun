@@ -79,11 +79,20 @@
 
 /* Disabled State for all variants */
 .ubits-button--primary:disabled,
-.ubits-button--secondary:disabled,
-.ubits-button--tertiary:disabled {
+.ubits-button--secondary:disabled {
     background: var(--ubits-bg-disabled-button) !important;
     color: var(--ubits-fg-on-disabled-button) !important;
     border-color: var(--ubits-border-disabled-button) !important;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* Tertiary disabled mantiene su estilo pero con opacidad reducida */
+.ubits-button--tertiary:disabled {
+    background: transparent !important;
+    color: var(--ubits-btn-tertiary-fg) !important;
+    border-color: transparent !important;
+    opacity: 0.5;
     cursor: not-allowed;
     pointer-events: none;
 }
@@ -101,6 +110,13 @@
     pointer-events: none;
 }
 
+/* Tertiary disabled no debe tener el pseudo-elemento ::before */
+.ubits-button--tertiary:disabled::before,
+.ubits-button--tertiary[aria-disabled="true"]::before {
+    content: none;
+    border: none;
+}
+
 /* Loading State */
 .ubits-button--loading,
 .ubits-button[data-loading="true"] {
@@ -111,31 +127,53 @@
 }
 
 /* Ocultar contenido original durante loading */
-.ubits-button--loading > span:not(.loading-text),
-.ubits-button[data-loading="true"] > span:not(.loading-text) {
+.ubits-button--loading > span:not(.button-text),
+.ubits-button[data-loading="true"] > span:not(.button-text) {
     opacity: 0;
     transition: opacity 0.2s ease;
 }
 
-.ubits-button--loading > i:not(.fa-spinner):not(.fa-circle-notch),
-.ubits-button[data-loading="true"] > i:not(.fa-spinner):not(.fa-circle-notch) {
+.ubits-button--loading > i:not(.ubits-button__spinner *),
+.ubits-button[data-loading="true"] > i:not(.ubits-button__spinner *) {
     opacity: 0;
     transition: opacity 0.2s ease;
 }
 
-/* Spinner de loading - usar FontAwesome fa-spin */
-.ubits-button--loading .fa-spinner,
-.ubits-button--loading .fa-circle-notch,
-.ubits-button--loading .loading-spinner,
-.ubits-button[data-loading="true"] .fa-spinner,
-.ubits-button[data-loading="true"] .fa-circle-notch,
-.ubits-button[data-loading="true"] .loading-spinner {
-    animation: spin 1s linear infinite;
+/* Spinner de UBITS dentro del botón */
+.ubits-button__spinner {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin: 0;
+    padding: 0;
+    line-height: 1;
 }
 
-@keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+/* Asegurar que el spinner tenga el color correcto según la variante del botón */
+.ubits-button--primary .ubits-button__spinner,
+.ubits-button--primary .ubits-button__spinner .ubits-spinner__segment {
+    color: var(--ubits-btn-primary-fg, #ffffff) !important;
+}
+
+.ubits-button--secondary .ubits-button__spinner,
+.ubits-button--secondary .ubits-button__spinner .ubits-spinner__segment {
+    color: var(--ubits-btn-secondary-fg-default, #303a47) !important;
+}
+
+.ubits-button--tertiary .ubits-button__spinner,
+.ubits-button--tertiary .ubits-button__spinner .ubits-spinner__segment {
+    color: var(--ubits-btn-tertiary-fg, #5c646f) !important;
+}
+
+/* Ocultar label del spinner si existe dentro del botón */
+.ubits-button__spinner .ubits-spinner__label {
+    display: none;
+}
+
+/* Ajustar tamaño del spinner dentro del botón para que se vea bien */
+.ubits-button__spinner .ubits-spinner__circle {
+    margin: 0;
 }
 
 /* Loading overlay (opcional) */

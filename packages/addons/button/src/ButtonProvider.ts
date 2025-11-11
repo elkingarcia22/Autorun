@@ -7,6 +7,7 @@
 import { ButtonOptions } from './types/ButtonOptions';
 import { renderList, createList } from '../../list/src/ListProvider';
 import type { ListItem, ListSize } from '../../list/src/types/ListOptions';
+import { renderSpinner } from '../../spinner/src/SpinnerProvider';
 
 // Helper para renderizar iconos - intenta usar @ubits/icons pero fallback a FontAwesome directo
 function renderIconHelper(iconName: string, iconStyle: 'regular' | 'solid' = 'regular'): string {
@@ -47,7 +48,9 @@ export function renderButton(options: ButtonOptions): string {
     iconPosition = 'left',
     className = '',
     attributes = {},
-    dropdown = false
+    dropdown = false,
+    showTooltip = false,
+    tooltipText = ''
   } = options;
 
   // Construir clases CSS
@@ -95,9 +98,33 @@ export function renderButton(options: ButtonOptions): string {
     finalIconHTML = icon ? `${iconHTML}${renderIconHelper('chevron-down', iconStyle)}` : renderIconHelper('chevron-down', iconStyle);
   }
 
-  // Spinner para loading
+  // Spinner para loading - usar spinner de UBITS
+  // Mapear tamaño del botón al tamaño del spinner
+  const spinnerSizeMap: Record<string, 'xs' | 'sm' | 'md' | 'lg' | 'xl'> = {
+    xs: 'xs',
+    sm: 'sm',
+    md: 'sm',
+    lg: 'md',
+    xl: 'lg'
+  };
+  const spinnerSize = spinnerSizeMap[size] || 'sm';
+  
+  // Mapear variante del botón a variante del spinner
+  const spinnerVariantMap: Record<string, 'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'info'> = {
+    primary: 'primary',
+    secondary: 'secondary',
+    tertiary: 'secondary',
+    active: 'primary'
+  };
+  const spinnerVariant = spinnerVariantMap[variant] || 'primary';
+  
   const spinnerHTML = loading 
-    ? `<i class="far fa-spinner loading-spinner"></i>`
+    ? renderSpinner({
+        size: spinnerSize,
+        variant: spinnerVariant,
+        animated: true,
+        className: 'ubits-button__spinner'
+      })
     : '';
 
   // Contenido del botón
@@ -140,9 +167,14 @@ export function renderButton(options: ButtonOptions): string {
   // Badge
   const badgeHTML = badge ? '<span class="ubits-button__badge"></span>' : '';
 
+  // Agregar atributo title para tooltip si está habilitado y es icon-only
+  const titleAttr = (iconOnly && showTooltip && tooltipText) 
+    ? `title="${tooltipText}"` 
+    : '';
+
   // Renderizar HTML completo
   return `
-    <button class="${classes}" ${attrs}>
+    <button class="${classes}" ${attrs} ${titleAttr}>
       ${content}
       ${badgeHTML}
     </button>

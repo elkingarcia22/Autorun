@@ -41,6 +41,7 @@ const config: StorybookConfig = {
     config.resolve.alias = {
       ...config.resolve.alias,
       '@ubits/icons': resolve(rootDir, 'icons/src/index.ts'),
+      '@ubits/calendar': resolve(rootDir, 'addons/calendar/src/index.ts'),
     };
     
     // Agregar plugin personalizado para ignorar tsconfig.node.json

@@ -791,26 +791,11 @@ function renderColumnHeader(
       </div>
     `;
     
-    console.log('✅ [SORT BUTTON] Botón creado para:', {
-      columnId: column.id,
-      columnTitle: column.title,
-      isSorted,
-      sortDirection,
-      iconName,
-      htmlLength: sortButtonHTML.length
-    });
-    
     return sortButtonHTML;
   })() : '';
   
   if (!sortButton && !isFixedCheckboxColumn) {
-    console.log('⚠️ [SORT BUTTON] No se creó botón para:', {
-      columnId: column.id,
-      columnTitle: column.title,
-      isFixedCheckboxColumn,
-      isControlColumn,
-      columnSortable
-    });
+    // Sin botón de ordenamiento
   }
 
   // Botón de menú de 3 puntos con opción de fijar columna
@@ -931,16 +916,6 @@ function renderRow(row: TableRow, columns: TableColumn[], rowIndex: number, pinn
     isExpanded ? 'ubits-data-table__row--expanded' : ''
   ].filter(Boolean).join(' ');
 
-  // Logs para debugging de alineación
-  if (rowIndex === 0) {
-    console.log('🔍 [ROW ALIGNMENT] ========== PRIMERA FILA ==========');
-    console.log('📊 row.id:', row.id);
-    console.log('📊 visibleColumns count:', visibleColumns.length);
-    console.log('📊 visibleColumns IDs:', visibleColumns.map(col => col.id));
-    console.log('📊 cellsHTML count (td tags):', (cellsHTML.match(/<td/g) || []).length);
-    console.log('📊 Total cells count:', (cellsHTML.match(/<td/g) || []).length);
-    console.log('🔍 [ROW ALIGNMENT] ========== FIN ==========');
-  }
   
   let rowHTML = `
     <tr class="${rowClasses}" data-row-id="${row.id}">
@@ -989,14 +964,15 @@ export function renderDataTable(
     currentPage = 1,
     itemsPerPage = 10,
     paginationVariant = 'default',
-    paginationSize = 'md'
+    paginationSize = 'md',
+    lazyLoad,
+    lazyLoadItemsPerBatch = 10
   } = options;
+  
+  // Si showPagination está activo, desactivar lazy load automáticamente
+  const isLazyLoadEnabled = showPagination ? false : (lazyLoad !== false); // Por defecto true si no hay paginación
 
-  // Logs de paginación
-  console.log('📄 [PAGINATION DEBUG] ========== INICIO renderDataTable ==========');
-  console.log('📄 [PAGINATION DEBUG] showPagination recibido:', showPagination);
-  console.log('📄 [PAGINATION DEBUG] currentPage recibido:', currentPage);
-  console.log('📄 [PAGINATION DEBUG] itemsPerPage recibido:', itemsPerPage);
+  // Logs de paginación - limpiados
 
   // Filtrar columnas visibles
   let visibleColumns = columns.filter(col => col.visible !== false);
@@ -1283,18 +1259,16 @@ export function renderDataTable(
     .join('');
 
   // Renderizar filas
-  // Aplicar paginación si está habilitada
+  // Aplicar paginación o lazy load
   let paginatedRows = orderedRows;
   let totalPages = 1;
   let paginationHTML = '';
   
-  console.log('📄 [PAGINATION DEBUG] Verificando paginación...');
-  console.log('📄 [PAGINATION DEBUG] showPagination:', showPagination, '(tipo:', typeof showPagination, ')');
-  console.log('📄 [PAGINATION DEBUG] currentPage:', currentPage, 'itemsPerPage:', itemsPerPage);
-  console.log('📄 [PAGINATION DEBUG] Total filas ordenadas:', orderedRows.length);
+  // Obtener el número de items cargados actualmente (se pasa desde createDataTable)
+  const currentLoadedItems = (options as any).__lazyLoadCurrentItems || lazyLoadItemsPerBatch;
   
   if (showPagination) {
-    console.log('📄 [PAGINATION DEBUG] ✅ showPagination es TRUE - Entrando en bloque de paginación');
+    // Modo paginación tradicional
     const totalRows = orderedRows.length;
     totalPages = Math.max(1, Math.ceil(totalRows / itemsPerPage));
     const validCurrentPage = Math.max(1, Math.min(currentPage, totalPages));
@@ -1302,14 +1276,7 @@ export function renderDataTable(
     const endIndex = startIndex + itemsPerPage;
     paginatedRows = orderedRows.slice(startIndex, endIndex);
     
-    console.log('📄 [PAGINATION DEBUG] Cálculos:');
-    console.log('📄 [PAGINATION DEBUG]   - Total filas:', totalRows);
-    console.log('📄 [PAGINATION DEBUG]   - Total páginas:', totalPages);
-    console.log('📄 [PAGINATION DEBUG]   - Página actual válida:', validCurrentPage);
-    console.log('📄 [PAGINATION DEBUG]   - Filas a mostrar:', startIndex, 'a', endIndex - 1, '(total:', paginatedRows.length, ')');
-    
     // Renderizar el paginador con configuración limpia (solo Anterior/Siguiente)
-    console.log('📄 [PAGINATION DEBUG] Llamando a renderPagination...');
     try {
       paginationHTML = renderPagination({
         currentPage: validCurrentPage,
@@ -1327,15 +1294,14 @@ export function renderDataTable(
         itemsPerPageOptions: [10, 20, 50, 100],
         className: 'ubits-data-table__pagination'
       });
-      console.log('📄 [PAGINATION DEBUG] ✅ renderPagination completado');
-      console.log('📄 [PAGINATION DEBUG] paginationHTML length:', paginationHTML.length);
-      console.log('📄 [PAGINATION DEBUG] paginationHTML preview (primeros 200 chars):', paginationHTML.substring(0, 200));
     } catch (error) {
-      console.error('📄 [PAGINATION DEBUG] ❌ ERROR en renderPagination:', error);
+      console.error('❌ [PAGINATION] ERROR:', error);
       paginationHTML = '';
     }
-  } else {
-    console.log('📄 [PAGINATION DEBUG] ❌ showPagination es FALSE - NO se aplicará paginación');
+  } else if (isLazyLoadEnabled) {
+    // Modo lazy load: mostrar solo los items cargados hasta ahora
+    paginatedRows = orderedRows.slice(0, currentLoadedItems);
+    console.log('📦 [LAZY LOAD] Mostrando', paginatedRows.length, 'de', orderedRows.length, 'filas');
   }
   
   const rowsHTML = paginatedRows
@@ -1408,11 +1374,6 @@ export function renderDataTable(
   }
   
   // Agregar el paginador FUERA del contenedor de la tabla, siempre debajo
-  console.log('📄 [PAGINATION DEBUG] ========== FINALIZANDO renderDataTable ==========');
-  console.log('📄 [PAGINATION DEBUG] showPagination:', showPagination);
-  console.log('📄 [PAGINATION DEBUG] paginationHTML existe:', !!paginationHTML);
-  console.log('📄 [PAGINATION DEBUG] paginationHTML length:', paginationHTML ? paginationHTML.length : 0);
-  
   let html: string;
   if (showPagination && paginationHTML) {
     // El paginador siempre va FUERA del contenedor de la tabla, en un wrapper separado
@@ -1420,17 +1381,9 @@ export function renderDataTable(
       ${tableContainerHTML}
       <div class="ubits-data-table__pagination-wrapper">${paginationHTML}</div>
     </div>`;
-    console.log('📄 [PAGINATION DEBUG] ✅ Paginador AGREGADO debajo de la tabla');
-    console.log('📄 [PAGINATION DEBUG] HTML final length:', html.length);
   } else {
     html = tableContainerHTML;
-    console.log('📄 [PAGINATION DEBUG] ❌ Paginador NO agregado');
-    console.log('📄 [PAGINATION DEBUG]   - showPagination:', showPagination);
-    console.log('📄 [PAGINATION DEBUG]   - paginationHTML existe:', !!paginationHTML);
-    if (!showPagination) console.log('📄 [PAGINATION DEBUG]   - Razón: showPagination es false');
-    if (!paginationHTML) console.log('📄 [PAGINATION DEBUG]   - Razón: paginationHTML está vacío');
   }
-  console.log('📄 [PAGINATION DEBUG] ========== FIN renderDataTable ==========');
 
   return html;
 }
@@ -1490,7 +1443,16 @@ export function createDataTable(options: DataTableOptions): {
     existingTable.remove();
   }
 
-  const tableHTML = renderDataTable(options);
+  // Pasar el estado inicial de lazy load en la primera renderización
+  const initialLazyLoadItems = (options.lazyLoad !== false && !options.showPagination) 
+    ? (options.lazyLoadItemsPerBatch || 10) 
+    : undefined;
+  const initialOptions = {
+    ...options,
+    __lazyLoadCurrentItems: initialLazyLoadItems
+  };
+  
+  const tableHTML = renderDataTable(initialOptions);
   const tempDiv = document.createElement('div');
   tempDiv.innerHTML = tableHTML.trim();
   const element = tempDiv.firstElementChild as HTMLElement;
@@ -1522,6 +1484,80 @@ export function createDataTable(options: DataTableOptions): {
   // Estado de ordenamiento
   let sortColumnId: string | null = null;
   let sortDirection: 'asc' | 'desc' | null = null;
+  
+  // Estado de lazy load
+  const isLazyLoadEnabled = currentOptions.showPagination ? false : (currentOptions.lazyLoad !== false);
+  const lazyLoadItemsPerBatch = currentOptions.lazyLoadItemsPerBatch || 10;
+  let lazyLoadCurrentItems = lazyLoadItemsPerBatch; // Empezar con el batch inicial
+  let lazyLoadScrollListener: (() => void) | null = null;
+
+  // Función para configurar lazy load (infinite scroll)
+  const setupLazyLoad = () => {
+    // Remover listener anterior si existe
+    if (lazyLoadScrollListener) {
+      const scrollableContainer = element.querySelector('.ubits-data-table__scrollable-container') as HTMLElement || 
+                                  element.querySelector('.ubits-data-table') as HTMLElement ||
+                                  element;
+      if (scrollableContainer) {
+        scrollableContainer.removeEventListener('scroll', lazyLoadScrollListener);
+      }
+      window.removeEventListener('scroll', lazyLoadScrollListener, true);
+      lazyLoadScrollListener = null;
+    }
+    
+    // Buscar el contenedor scrollable o la tabla
+    const scrollableContainer = element.querySelector('.ubits-data-table__scrollable-container') as HTMLElement || 
+                                element.querySelector('.ubits-data-table') as HTMLElement ||
+                                element;
+    
+    if (!scrollableContainer) return;
+    
+    // Función para verificar si está cerca del final
+    const checkScroll = () => {
+      const totalRows = currentOptions.rows.length;
+      
+      // Si ya se cargaron todos los items, no hacer nada
+      if (lazyLoadCurrentItems >= totalRows) {
+        return;
+      }
+      
+      // Obtener el scroll position
+      const scrollTop = scrollableContainer.scrollTop || window.scrollY;
+      const scrollHeight = scrollableContainer.scrollHeight || document.documentElement.scrollHeight;
+      const clientHeight = scrollableContainer.clientHeight || window.innerHeight;
+      
+      // Calcular si está cerca del final (80% del scroll)
+      const scrollPercentage = (scrollTop + clientHeight) / scrollHeight;
+      
+      if (scrollPercentage >= 0.8) {
+        // Cargar más items
+        const newLoadedItems = Math.min(
+          lazyLoadCurrentItems + lazyLoadItemsPerBatch,
+          totalRows
+        );
+        
+        if (newLoadedItems > lazyLoadCurrentItems) {
+          lazyLoadCurrentItems = newLoadedItems;
+          console.log('📦 [LAZY LOAD] Cargando más items:', lazyLoadCurrentItems, 'de', totalRows);
+          
+          // Llamar callback si existe
+          if (currentOptions.onLazyLoad) {
+            currentOptions.onLazyLoad(lazyLoadCurrentItems, totalRows);
+          }
+          
+          // Re-renderizar con más items
+          render();
+        }
+      }
+    };
+    
+    // Agregar listener de scroll
+    lazyLoadScrollListener = checkScroll;
+    scrollableContainer.addEventListener('scroll', checkScroll, { passive: true });
+    
+    // También escuchar scroll en window por si la tabla no tiene scroll propio
+    window.addEventListener('scroll', checkScroll, { passive: true, capture: true });
+  };
 
   // Función para inicializar fallback de iconos
   const initializeIconFallbacks = () => {
@@ -1572,7 +1608,9 @@ export function createDataTable(options: DataTableOptions): {
         return copy;
       }),
       sortColumnId,
-      sortDirection
+      sortDirection,
+      // Pasar el estado de lazy load
+      __lazyLoadCurrentItems: lazyLoadCurrentItems
     };
     
     console.log('🔄 [RENDER] Opciones pasadas a renderDataTable - columnas fijadas:', 
@@ -1588,6 +1626,18 @@ export function createDataTable(options: DataTableOptions): {
     
     attachEventListeners();
     initializeIconFallbacks();
+    
+    // Verificar espaciado del paginador después del renderizado
+    if (currentOptions.showPagination) {
+      setTimeout(() => {
+        checkPaginationSpacing();
+      }, 100);
+    }
+    
+    // Configurar lazy load si está habilitado
+    if (isLazyLoadEnabled && !currentOptions.showPagination) {
+      setupLazyLoad();
+    }
     
     // Aplicar atributo indeterminate a los inputs del header checkbox después de renderizar
     const checkboxHeaders = element.querySelectorAll('input[data-column-checkbox-header]');
@@ -1606,13 +1656,89 @@ export function createDataTable(options: DataTableOptions): {
       }
     });
     
-    // Logs para verificar estilos de padding después del renderizado
-    console.log('🔍 [PADDING CHECK] ========== INICIANDO VERIFICACIÓN ==========');
-    console.log('📊 Element disponible:', !!element);
-    console.log('📊 Element tagName:', element.tagName);
-    console.log('📊 Element className:', element.className);
-    console.log('📊 Element innerHTML length:', element.innerHTML.length);
-    console.log('📊 Element innerHTML preview (primeros 500 chars):', element.innerHTML.substring(0, 500));
+    // Logs para verificar espaciado del paginador
+    const checkPaginationSpacing = () => {
+      try {
+        console.log('📄 [SPACING] ========== VERIFICANDO ESPACIADO DEL PAGINADOR ==========');
+        
+        // Buscar el contenedor principal
+        const container = element.closest('.ubits-data-table__container') || element.querySelector('.ubits-data-table__container') as HTMLElement;
+        console.log('📄 [SPACING] Container encontrado:', !!container);
+        
+        if (container) {
+          const containerComputed = window.getComputedStyle(container);
+          console.log('📄 [SPACING] Container estilos:');
+          console.log('  - display:', containerComputed.display);
+          console.log('  - flexDirection:', containerComputed.flexDirection);
+          console.log('  - gap:', containerComputed.gap);
+          
+          // Buscar el contenedor de la tabla (scrollable o tabla directa)
+          const tableContainer = container.querySelector('.ubits-data-table__scrollable-container') as HTMLElement || 
+                                container.querySelector('.ubits-data-table') as HTMLElement;
+          console.log('📄 [SPACING] Table container encontrado:', !!tableContainer);
+          
+          // Buscar la tabla real dentro del contenedor
+          const actualTable = tableContainer?.querySelector('.ubits-data-table__table') as HTMLElement || tableContainer;
+          
+          // Buscar la última fila
+          const lastRow = actualTable?.querySelector('.ubits-data-table__row:last-child') as HTMLElement;
+          console.log('📄 [SPACING] Última fila encontrada:', !!lastRow);
+          
+          if (tableContainer) {
+            const tableComputed = window.getComputedStyle(tableContainer);
+            console.log('📄 [SPACING] Table container estilos:');
+            console.log('  - marginBottom:', tableComputed.marginBottom);
+            console.log('  - paddingBottom:', tableComputed.paddingBottom);
+            console.log('  - borderBottom:', tableComputed.borderBottom);
+            
+            if (lastRow) {
+              const lastRowRect = lastRow.getBoundingClientRect();
+              console.log('📄 [SPACING] Última fila posición:');
+              console.log('  - bottom:', lastRowRect.bottom);
+            }
+          }
+          
+          // Buscar el paginador
+          const paginationWrapper = container.querySelector('.ubits-data-table__pagination-wrapper') as HTMLElement;
+          console.log('📄 [SPACING] Pagination wrapper encontrado:', !!paginationWrapper);
+          
+          if (paginationWrapper) {
+            const paginationComputed = window.getComputedStyle(paginationWrapper);
+            console.log('📄 [SPACING] Pagination wrapper estilos:');
+            console.log('  - marginTop:', paginationComputed.marginTop);
+            console.log('  - marginBottom:', paginationComputed.marginBottom);
+            console.log('  - paddingTop:', paginationComputed.paddingTop);
+            console.log('  - paddingBottom:', paginationComputed.paddingBottom);
+            console.log('  - borderTop:', paginationComputed.borderTop);
+            
+            const paginationRect = paginationWrapper.getBoundingClientRect();
+            console.log('📄 [SPACING] Pagination wrapper posición:');
+            console.log('  - top:', paginationRect.top);
+            
+            // Calcular distancia entre última fila y paginador
+            if (lastRow) {
+              const lastRowRect = lastRow.getBoundingClientRect();
+              const distance = paginationRect.top - lastRowRect.bottom;
+              console.log('📄 [SPACING] DISTANCIA CALCULADA:');
+              console.log('  - Última fila bottom:', lastRowRect.bottom);
+              console.log('  - Paginador top:', paginationRect.top);
+              console.log('  - DISTANCIA:', distance, 'px');
+              console.log('  - Esperado: 16px');
+            } else {
+              console.log('📄 [SPACING] ⚠️ No se pudo calcular distancia: última fila no encontrada');
+            }
+          } else {
+            console.log('📄 [SPACING] ⚠️ Pagination wrapper NO encontrado');
+          }
+        } else {
+          console.log('📄 [SPACING] ⚠️ Container NO encontrado');
+        }
+        
+        console.log('📄 [SPACING] ========== FIN VERIFICACIÓN ==========');
+      } catch (error) {
+        console.error('📄 [SPACING] ❌ Error verificando espaciado:', error);
+      }
+    };
     
     // Ejecutar inmediatamente y también después de un delay
     const checkPadding = () => {
@@ -2189,207 +2315,14 @@ export function createDataTable(options: DataTableOptions): {
       });
     });
     
-    // Comparar estilos del drag handle y botón de ordenamiento
-    const dragHandles = element.querySelectorAll('.ubits-data-table__column-drag-handle');
+    // Botones de ordenamiento
     const sortButtons = element.querySelectorAll('[data-sort-button="true"]');
     
-    if (dragHandles.length > 0 && sortButtons.length > 0) {
-      const dh = dragHandles[0] as HTMLElement;
-      const sb = sortButtons[0] as HTMLElement;
-      const dhComputed = window.getComputedStyle(dh);
-      const sbComputed = window.getComputedStyle(sb);
-      
-      const dhIcon = dh.querySelector('wa-icon') || dh.querySelector('i');
-      const sbIcon = sb.querySelector('wa-icon') || sb.querySelector('i');
-      const dhIconComputed = dhIcon ? window.getComputedStyle(dhIcon as HTMLElement) : null;
-      const sbIconComputed = sbIcon ? window.getComputedStyle(sbIcon as HTMLElement) : null;
-      
-      console.log('🔍 [STYLES COMPARISON] ========== DRAG HANDLE ==========');
-      console.log('Container - display:', dhComputed.display);
-      console.log('Container - width:', dhComputed.width);
-      console.log('Container - height:', dhComputed.height);
-      console.log('Container - padding:', dhComputed.padding);
-      console.log('Container - margin:', dhComputed.margin);
-      console.log('Container - color:', dhComputed.color);
-      console.log('Container - backgroundColor:', dhComputed.backgroundColor);
-      console.log('Container - border:', dhComputed.border);
-      console.log('Container - borderRadius:', dhComputed.borderRadius);
-      console.log('Container - cursor:', dhComputed.cursor);
-      console.log('Container - fontSize:', dhComputed.fontSize);
-      console.log('Container - lineHeight:', dhComputed.lineHeight);
-      
-      if (dhIconComputed) {
-        console.log('Icon - display:', dhIconComputed.display);
-        console.log('Icon - width:', dhIconComputed.width);
-        console.log('Icon - height:', dhIconComputed.height);
-        console.log('Icon - fontSize:', dhIconComputed.fontSize);
-        console.log('Icon - color:', dhIconComputed.color);
-        console.log('Icon - margin:', dhIconComputed.margin);
-        console.log('Icon - padding:', dhIconComputed.padding);
-        console.log('Icon - lineHeight:', dhIconComputed.lineHeight);
-        console.log('Icon - verticalAlign:', dhIconComputed.verticalAlign);
-      } else {
-        console.log('Icon: NO ICON FOUND');
-      }
-      
-      if (dhIcon) {
-        console.log('Icon Element - tagName:', dhIcon.tagName);
-        console.log('Icon Element - className:', dhIcon.className);
-        console.log('Icon Element - innerHTML:', dhIcon.innerHTML.substring(0, 100));
-      } else {
-        console.log('Icon Element: NO ICON ELEMENT');
-      }
-      
-      console.log('🔍 [STYLES COMPARISON] ========== SORT BUTTON ==========');
-      console.log('Container - display:', sbComputed.display);
-      console.log('Container - width:', sbComputed.width);
-      console.log('Container - height:', sbComputed.height);
-      console.log('Container - padding:', sbComputed.padding);
-      console.log('Container - margin:', sbComputed.margin);
-      console.log('Container - color:', sbComputed.color);
-      console.log('Container - backgroundColor:', sbComputed.backgroundColor);
-      console.log('Container - border:', sbComputed.border);
-      console.log('Container - borderRadius:', sbComputed.borderRadius);
-      console.log('Container - cursor:', sbComputed.cursor);
-      console.log('Container - fontSize:', sbComputed.fontSize);
-      console.log('Container - lineHeight:', sbComputed.lineHeight);
-      
-      if (sbIconComputed) {
-        console.log('Icon - display:', sbIconComputed.display);
-        console.log('Icon - width:', sbIconComputed.width);
-        console.log('Icon - height:', sbIconComputed.height);
-        console.log('Icon - fontSize:', sbIconComputed.fontSize);
-        console.log('Icon - color:', sbIconComputed.color);
-        console.log('Icon - margin:', sbIconComputed.margin);
-        console.log('Icon - padding:', sbIconComputed.padding);
-        console.log('Icon - lineHeight:', sbIconComputed.lineHeight);
-        console.log('Icon - verticalAlign:', sbIconComputed.verticalAlign);
-      } else {
-        console.log('Icon: NO ICON FOUND');
-      }
-      
-      if (sbIcon) {
-        console.log('Icon Element - tagName:', sbIcon.tagName);
-        console.log('Icon Element - className:', sbIcon.className);
-        console.log('Icon Element - innerHTML:', sbIcon.innerHTML.substring(0, 100));
-      } else {
-        console.log('Icon Element: NO ICON ELEMENT');
-      }
-      
-      console.log('🔍 [STYLES COMPARISON] ========== DIFFERENCES ==========');
-      const differences: string[] = [];
-      if (dhComputed.width !== sbComputed.width) differences.push(`width: ${dhComputed.width} vs ${sbComputed.width}`);
-      if (dhComputed.height !== sbComputed.height) differences.push(`height: ${dhComputed.height} vs ${sbComputed.height}`);
-      if (dhComputed.padding !== sbComputed.padding) differences.push(`padding: ${dhComputed.padding} vs ${sbComputed.padding}`);
-      if (dhComputed.margin !== sbComputed.margin) differences.push(`margin: ${dhComputed.margin} vs ${sbComputed.margin}`);
-      if (dhComputed.color !== sbComputed.color) differences.push(`color: ${dhComputed.color} vs ${sbComputed.color}`);
-      if (dhComputed.backgroundColor !== sbComputed.backgroundColor) differences.push(`backgroundColor: ${dhComputed.backgroundColor} vs ${sbComputed.backgroundColor}`);
-      if (dhComputed.border !== sbComputed.border) differences.push(`border: ${dhComputed.border} vs ${sbComputed.border}`);
-      if (dhComputed.borderRadius !== sbComputed.borderRadius) differences.push(`borderRadius: ${dhComputed.borderRadius} vs ${sbComputed.borderRadius}`);
-      if (dhIconComputed && sbIconComputed) {
-        if (dhIconComputed.color !== sbIconComputed.color) differences.push(`icon.color: ${dhIconComputed.color} vs ${sbIconComputed.color}`);
-        if (dhIconComputed.fontSize !== sbIconComputed.fontSize) differences.push(`icon.fontSize: ${dhIconComputed.fontSize} vs ${sbIconComputed.fontSize}`);
-        if (dhIconComputed.width !== sbIconComputed.width) differences.push(`icon.width: ${dhIconComputed.width} vs ${sbIconComputed.width}`);
-        if (dhIconComputed.height !== sbIconComputed.height) differences.push(`icon.height: ${dhIconComputed.height} vs ${sbIconComputed.height}`);
-      }
-      
-      if (differences.length > 0) {
-        console.log('❌ DIFERENCIAS ENCONTRADAS:');
-        differences.forEach((diff, index) => {
-          console.log(`  ${index + 1}. ${diff}`);
-        });
-      } else {
-        console.log('✅ NO DIFFERENCES FOUND');
-      }
-    }
-    
-    console.log('🔍 [SORT BUTTON] Botones encontrados:', {
-      count: sortButtons.length,
-      buttons: Array.from(sortButtons).map(btn => ({
-        columnId: btn.getAttribute('data-column-id'),
-        classes: btn.className,
-        innerHTML: btn.innerHTML.substring(0, 100),
-        waIcons: btn.querySelectorAll('wa-icon').length,
-        computedStyle: {
-          display: window.getComputedStyle(btn as HTMLElement).display,
-          width: window.getComputedStyle(btn as HTMLElement).width,
-          height: window.getComputedStyle(btn as HTMLElement).height,
-          visibility: window.getComputedStyle(btn as HTMLElement).visibility,
-          opacity: window.getComputedStyle(btn as HTMLElement).opacity,
-          color: window.getComputedStyle(btn as HTMLElement).color,
-          backgroundColor: window.getComputedStyle(btn as HTMLElement).backgroundColor,
-          padding: window.getComputedStyle(btn as HTMLElement).padding,
-          margin: window.getComputedStyle(btn as HTMLElement).margin
-        }
-      }))
-    });
-    
     sortButtons.forEach(button => {
-      const btn = button as HTMLElement;
-      const waIcons = btn.querySelectorAll('wa-icon');
-      // Verificar si tiene la clase activa (ahora usa column-sort--active)
-      const isActive = btn.classList.contains('ubits-data-table__column-sort--active');
-      
-      console.log('🔍 [SORT BUTTON] Verificando botón:', {
-        columnId: btn.getAttribute('data-column-id'),
-        isActive,
-        waIconsCount: waIcons.length,
-        innerHTML: btn.innerHTML.substring(0, 150),
-        waIcons: Array.from(waIcons).map(icon => {
-          const computed = window.getComputedStyle(icon);
-          return {
-            name: icon.getAttribute('name'),
-            display: computed.display,
-            width: computed.width,
-            height: computed.height,
-            opacity: computed.opacity,
-            visibility: computed.visibility,
-            color: computed.color,
-            fontSize: computed.fontSize,
-            isConnected: icon.isConnected,
-            parentElement: icon.parentElement?.tagName,
-            nextSibling: icon.nextSibling?.nodeName
-          };
-        }),
-        buttonComputedStyle: {
-          display: window.getComputedStyle(btn).display,
-          width: window.getComputedStyle(btn).width,
-          height: window.getComputedStyle(btn).height,
-          opacity: window.getComputedStyle(btn).opacity,
-          visibility: window.getComputedStyle(btn).visibility
-        }
-      });
-      
-      // Verificar específicamente el icono arrow-down-z-a
-      const arrowDownIcon = Array.from(waIcons).find(icon => icon.getAttribute('name') === 'arrow-down-z-a');
-      if (arrowDownIcon) {
-        console.log('🔍 [SORT BUTTON] Icono arrow-down-z-a encontrado:', {
-          element: arrowDownIcon,
-          name: arrowDownIcon.getAttribute('name'),
-          computedStyle: {
-            display: window.getComputedStyle(arrowDownIcon as HTMLElement).display,
-            width: window.getComputedStyle(arrowDownIcon as HTMLElement).width,
-            height: window.getComputedStyle(arrowDownIcon as HTMLElement).height,
-            opacity: window.getComputedStyle(arrowDownIcon as HTMLElement).opacity,
-            visibility: window.getComputedStyle(arrowDownIcon as HTMLElement).visibility,
-            color: window.getComputedStyle(arrowDownIcon as HTMLElement).color
-          },
-          inlineStyle: (arrowDownIcon as HTMLElement).style.cssText,
-          classes: arrowDownIcon.className,
-          parentClasses: arrowDownIcon.parentElement?.className
-        });
-      }
-      
       button.addEventListener('click', (e) => {
         e.preventDefault();
         e.stopPropagation();
         const columnId = button.getAttribute('data-column-id')!;
-        
-        console.log('🔍 [SORT BUTTON] Click en botón:', {
-          columnId,
-          currentSortColumnId: sortColumnId,
-          currentSortDirection: sortDirection
-        });
         
         // Si ya está ordenando esta columna, cambiar dirección
         if (sortColumnId === columnId) {
@@ -2399,11 +2332,6 @@ export function createDataTable(options: DataTableOptions): {
           sortColumnId = columnId;
           sortDirection = 'asc';
         }
-        
-        console.log('✅ [SORT BUTTON] Nuevo estado:', {
-          sortColumnId,
-          sortDirection
-        });
         
         if (currentOptions.onSort) {
           currentOptions.onSort(columnId, sortDirection!);
@@ -3942,7 +3870,30 @@ export function createDataTable(options: DataTableOptions): {
 
   // Función de actualización
   const update = (newOptions: Partial<DataTableOptions>) => {
+    const previousShowPagination = currentOptions.showPagination;
     currentOptions = { ...currentOptions, ...newOptions };
+    
+    // Si cambió el estado de paginación, resetear lazy load
+    if (newOptions.showPagination !== undefined && newOptions.showPagination !== previousShowPagination) {
+      if (newOptions.showPagination) {
+        // Se activó paginación, desactivar lazy load y remover listeners
+        if (lazyLoadScrollListener) {
+          const scrollableContainer = element.querySelector('.ubits-data-table__scrollable-container') as HTMLElement || 
+                                      element.querySelector('.ubits-data-table') as HTMLElement ||
+                                      element;
+          if (scrollableContainer) {
+            scrollableContainer.removeEventListener('scroll', lazyLoadScrollListener);
+          }
+          window.removeEventListener('scroll', lazyLoadScrollListener, true);
+          lazyLoadScrollListener = null;
+        }
+        lazyLoadCurrentItems = lazyLoadItemsPerBatch; // Resetear contador
+      } else {
+        // Se desactivó paginación, reactivar lazy load
+        lazyLoadCurrentItems = lazyLoadItemsPerBatch; // Resetear contador
+      }
+    }
+    
     if (newOptions.columns) {
       columnOrder = newOptions.columns
         .filter(col => col.visible !== false)
@@ -3950,12 +3901,26 @@ export function createDataTable(options: DataTableOptions): {
     }
     if (newOptions.rows) {
       rowOrder = newOptions.rows.map(row => row.id);
+      // Resetear lazy load cuando cambian las filas
+      lazyLoadCurrentItems = lazyLoadItemsPerBatch;
     }
     render();
   };
 
   // Función de destrucción
   const destroy = () => {
+    // Remover listener de lazy load si existe
+    if (lazyLoadScrollListener) {
+      const scrollableContainer = element.querySelector('.ubits-data-table__scrollable-container') as HTMLElement || 
+                                  element.querySelector('.ubits-data-table') as HTMLElement ||
+                                  element;
+      if (scrollableContainer) {
+        scrollableContainer.removeEventListener('scroll', lazyLoadScrollListener);
+      }
+      window.removeEventListener('scroll', lazyLoadScrollListener, true);
+      lazyLoadScrollListener = null;
+    }
+    
     if (element && element.parentNode) {
       element.parentNode.removeChild(element);
     }

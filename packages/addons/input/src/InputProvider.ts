@@ -703,12 +703,9 @@ function createSelectDropdown(container: HTMLElement, inputElement: HTMLInputEle
 }
 
 function createCalendarPicker(container: HTMLElement, inputElement: HTMLInputElement, onChange?: (value: string) => void): void {
-  const calendar = document.createElement('div');
-  calendar.className = 'ubits-calendar-picker';
-  container.appendChild(calendar);
-
-  let currentDate = new Date();
-  let selectedDate: Date | null = null;
+  // Importar dinámicamente el CalendarProvider usando ruta relativa
+  let calendarInstance: ReturnType<typeof import('../../calendar/src/CalendarProvider').createCalendar> | null = null;
+  let calendarContainer: HTMLElement | null = null;
 
   const formatDate = (date: Date): string => {
     const day = String(date.getDate()).padStart(2, '0');
@@ -717,108 +714,127 @@ function createCalendarPicker(container: HTMLElement, inputElement: HTMLInputEle
     return `${day}/${month}/${year}`;
   };
 
-  const renderCalendar = () => {
-    const year = currentDate.getFullYear();
-    const month = currentDate.getMonth();
-    const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-    const dayNames = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
-
-    const firstDay = new Date(year, month, 1);
-    const lastDay = new Date(year, month + 1, 0);
-    const daysInMonth = lastDay.getDate();
-    const startingDay = firstDay.getDay();
-
-    let calendarHTML = `
-      <div class="ubits-calendar-header">
-        <button class="ubits-calendar-prev" type="button"><i class="far fa-chevron-left"></i></button>
-        <div class="ubits-calendar-selectors">
-          <select class="ubits-calendar-month-select">
-            ${monthNames.map((name, index) => `<option value="${index}" ${index === month ? 'selected' : ''}>${name}</option>`).join('')}
-          </select>
-          <select class="ubits-calendar-year-select">
-            ${Array.from({length: 100}, (_, i) => {
-              const yearOption = currentDate.getFullYear() - 50 + i;
-              return `<option value="${yearOption}" ${yearOption === year ? 'selected' : ''}>${yearOption}</option>`;
-            }).join('')}
-          </select>
-        </div>
-        <button class="ubits-calendar-next" type="button"><i class="far fa-chevron-right"></i></button>
-      </div>
-      <div class="ubits-calendar-weekdays">
-        ${dayNames.map(day => `<div class="ubits-calendar-weekday">${day}</div>`).join('')}
-      </div>
-      <div class="ubits-calendar-days">
-    `;
-
-    for (let i = 0; i < startingDay; i++) {
-      calendarHTML += '<div class="ubits-calendar-day ubits-calendar-day--empty"></div>';
-    }
-
-    for (let day = 1; day <= daysInMonth; day++) {
-      const date = new Date(year, month, day);
-      const isToday = date.toDateString() === new Date().toDateString();
-      const isSelected = selectedDate && date.toDateString() === selectedDate.toDateString();
-
-      let dayClass = 'ubits-calendar-day';
-      if (isToday) dayClass += ' ubits-calendar-day--today';
-      if (isSelected) dayClass += ' ubits-calendar-day--selected';
-
-      calendarHTML += `<div class="${dayClass}" data-date="${formatDate(date)}">${day}</div>`;
-    }
-
-    calendarHTML += '</div>';
-    calendar.innerHTML = calendarHTML;
-
-    // Event listeners
-    const prevBtn = calendar.querySelector('.ubits-calendar-prev');
-    const nextBtn = calendar.querySelector('.ubits-calendar-next');
-    const monthSelect = calendar.querySelector('.ubits-calendar-month-select') as HTMLSelectElement;
-    const yearSelect = calendar.querySelector('.ubits-calendar-year-select') as HTMLSelectElement;
-
-    prevBtn?.addEventListener('click', () => {
-      currentDate.setMonth(currentDate.getMonth() - 1);
-      renderCalendar();
-    });
-
-    nextBtn?.addEventListener('click', () => {
-      currentDate.setMonth(currentDate.getMonth() + 1);
-      renderCalendar();
-    });
-
-    monthSelect?.addEventListener('change', (e) => {
-      currentDate.setMonth(parseInt((e.target as HTMLSelectElement).value));
-      renderCalendar();
-    });
-
-    yearSelect?.addEventListener('change', (e) => {
-      currentDate.setFullYear(parseInt((e.target as HTMLSelectElement).value));
-      renderCalendar();
-    });
-
-    calendar.querySelectorAll('.ubits-calendar-day:not(.ubits-calendar-day--empty)').forEach(dayEl => {
-      dayEl.addEventListener('click', () => {
-        const dateStr = (dayEl as HTMLElement).dataset.date || '';
-        const [day, month, year] = dateStr.split('/');
-        selectedDate = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
-        inputElement.value = dateStr;
-        calendar.style.display = 'none';
-        if (onChange) onChange(dateStr);
-      });
-    });
+  const parseDate = (dateStr: string): Date | null => {
+    if (!dateStr) return null;
+    const [day, month, year] = dateStr.split('/');
+    if (!day || !month || !year) return null;
+    return new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
   };
 
-  inputElement.addEventListener('click', () => {
-    if (calendar.style.display === 'none' || !calendar.style.display) {
-      calendar.style.display = 'block';
-      renderCalendar();
-    } else {
-      calendar.style.display = 'none';
+  const showCalendar = async () => {
+    console.log('📅 [Calendar Picker] Mostrando calendario UBITS...');
+    
+    // Asegurar que el input no tenga type="date" (que mostraría el calendario nativo)
+    if (inputElement.type === 'date') {
+      console.warn('⚠️ [Calendar Picker] Input tiene type="date", cambiando a type="text"');
+      inputElement.type = 'text';
+      inputElement.setAttribute('readonly', 'readonly');
+    }
+
+    // Si el calendario ya está visible, ocultarlo
+    if (calendarContainer && calendarContainer.style.display !== 'none') {
+      console.log('📅 [Calendar Picker] Ocultando calendario...');
+      calendarContainer.style.display = 'none';
+      return;
+    }
+
+    // Crear contenedor para el calendario si no existe
+    if (!calendarContainer) {
+      console.log('📅 [Calendar Picker] Creando contenedor...');
+      calendarContainer = document.createElement('div');
+      calendarContainer.className = 'ubits-calendar-picker-container';
+      calendarContainer.style.cssText = 'position: absolute; top: 100%; left: 0; right: 0; z-index: 1000; margin-top: 4px; display: none;';
+      container.style.position = 'relative';
+      container.appendChild(calendarContainer);
+    }
+
+    // Si el calendario ya existe, solo mostrarlo
+    if (calendarInstance) {
+      console.log('📅 [Calendar Picker] Mostrando calendario existente...');
+      calendarContainer.style.display = 'block';
+      return;
+    }
+
+    // Cargar el módulo de calendar dinámicamente
+    try {
+      console.log('📅 [Calendar Picker] Cargando módulo CalendarProvider...');
+      const calendarModule = await import('../../calendar/src/CalendarProvider');
+      const { createCalendar } = calendarModule;
+      console.log('✅ [Calendar Picker] Módulo cargado correctamente');
+
+      // Obtener fecha inicial del input si existe
+      const currentValue = inputElement.value;
+      const initialDate = parseDate(currentValue) || new Date();
+      console.log('📅 [Calendar Picker] Fecha inicial:', initialDate);
+
+      // Crear instancia del calendario UBITS
+      console.log('📅 [Calendar Picker] Creando instancia del calendario...');
+      calendarInstance = createCalendar({
+        mode: 'single',
+        selectedDate: parseDate(currentValue),
+        initialDate: initialDate,
+        onDateSelect: (date: Date) => {
+          console.log('📅 [Calendar Picker] Fecha seleccionada:', date);
+          const formattedDate = formatDate(date);
+          inputElement.value = formattedDate;
+          if (calendarContainer) {
+            calendarContainer.style.display = 'none';
+          }
+          if (onChange) {
+            onChange(formattedDate);
+          }
+        }
+      });
+
+      // Agregar el calendario al contenedor
+      calendarContainer.appendChild(calendarInstance.element);
+      calendarContainer.style.display = 'block';
+      console.log('✅ [Calendar Picker] Calendario UBITS mostrado correctamente');
+    } catch (error) {
+      console.error('❌ [Calendar Picker] Error cargando Calendar UBITS:', error);
+      // Fallback: mostrar mensaje de error
+      if (calendarContainer) {
+        calendarContainer.innerHTML = '<div style="padding: 16px; background: var(--ubits-bg-1); border: 1px solid var(--ubits-border-1); border-radius: 8px; color: var(--ubits-fg-1-high);">Error al cargar el calendario</div>';
+        calendarContainer.style.display = 'block';
+      }
+    }
+  };
+
+  // Event listeners para mostrar/ocultar el calendario
+  // Usar tanto 'click' como 'focus' para inputs readonly
+  inputElement.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    showCalendar();
+  });
+
+  inputElement.addEventListener('focus', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    showCalendar();
+  });
+
+  // También escuchar clicks en el icono del calendario
+  const calendarIcon = container.querySelector('.ubits-input-icon-right');
+  if (calendarIcon) {
+    calendarIcon.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      showCalendar();
+    });
+  }
+
+  // Cerrar calendario al hacer clic fuera
+  document.addEventListener('click', (e) => {
+    if (calendarContainer && !container.contains(e.target as Node)) {
+      calendarContainer.style.display = 'none';
     }
   });
 
-  document.addEventListener('click', (e) => {
-    if (!container.contains(e.target as Node)) {
-      calendar.style.display = 'none';
+  // Cerrar calendario al presionar ESC
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && calendarContainer) {
+      calendarContainer.style.display = 'none';
     }
   });
 }

@@ -17,14 +17,14 @@ const meta: Meta<DataTableOptions & { columnsCount?: number }> = {
       control: 'boolean',
       description: 'Permite reordenar columnas mediante drag & drop',
       table: {
-        defaultValue: { summary: 'false' },
+        defaultValue: { summary: 'true' },
       },
     },
     rowReorderable: {
       control: 'boolean',
       description: 'Permite reordenar filas mediante drag & drop',
       table: {
-        defaultValue: { summary: 'false' },
+        defaultValue: { summary: 'true' },
       },
     },
     rowExpandable: {
@@ -64,7 +64,7 @@ const meta: Meta<DataTableOptions & { columnsCount?: number }> = {
     },
     showColumnMenu: {
       control: 'boolean',
-      description: 'Muestra el botón de menú en los headers de las columnas',
+      description: 'Muestra el botón de menú (3 puntos) en los headers de las columnas. Usa este menú para fijar/desfijar columnas.',
       table: {
         defaultValue: { summary: 'true' },
       },
@@ -78,14 +78,14 @@ const meta: Meta<DataTableOptions & { columnsCount?: number }> = {
     },
     dragHandleSticky: {
       control: 'boolean',
-      description: 'Hace que la columna de drag handle (mover filas) sea sticky (fija) al hacer scroll horizontal',
+      description: 'Hace que la columna de drag handle (mover filas) sea sticky (fija) al hacer scroll horizontal. Nota: Requiere que rowReorderable esté habilitado.',
       table: {
         defaultValue: { summary: 'false' },
       },
     },
     expandSticky: {
       control: 'boolean',
-      description: 'Hace que la columna de expand (desplegar filas) sea sticky (fija) al hacer scroll horizontal',
+      description: 'Hace que la columna de expand (desplegar filas) sea sticky (fija) al hacer scroll horizontal. Nota: Requiere que rowExpandable esté habilitado.',
       table: {
         defaultValue: { summary: 'false' },
       },
@@ -94,7 +94,7 @@ const meta: Meta<DataTableOptions & { columnsCount?: number }> = {
       control: { type: 'number', min: 1, max: 10, step: 1 },
       description: 'Número de columnas de datos a mostrar (excluyendo checkbox)',
       table: {
-        defaultValue: { summary: '4' },
+        defaultValue: { summary: '3' },
       },
     },
     columnType1: {
@@ -102,7 +102,7 @@ const meta: Meta<DataTableOptions & { columnsCount?: number }> = {
       options: ['nombre', 'nombre-avatar', 'nombre-avatar-texto', 'progreso', 'estado', 'radio', 'toggle', 'checkbox', 'correo', 'fecha', 'pais', 'ciudad'],
       description: 'Tipo de columna 1 (Nombre)',
       table: {
-        defaultValue: { summary: 'nombre-avatar' },
+        defaultValue: { summary: 'nombre' },
       },
     },
     columnType2: {
@@ -124,9 +124,9 @@ const meta: Meta<DataTableOptions & { columnsCount?: number }> = {
     columnType4: {
       control: { type: 'select' },
       options: ['nombre', 'nombre-avatar', 'nombre-avatar-texto', 'progreso', 'estado', 'radio', 'toggle', 'checkbox', 'correo', 'fecha', 'pais', 'ciudad'],
-      description: 'Tipo de columna 4 (Progreso)',
+      description: 'Tipo de columna 4',
       table: {
-        defaultValue: { summary: 'progreso' },
+        defaultValue: { summary: 'nombre' },
       },
     },
     // Controles para columna 1 (Nombre)
@@ -177,12 +177,49 @@ const meta: Meta<DataTableOptions & { columnsCount?: number }> = {
     },
     column3CheckboxLabel: {
       control: 'boolean',
-      description: 'Mostrar label en columna 3 (solo si es checkbox)',
+      description: 'Mostrar label en checkbox de columna 3 (solo si es tipo checkbox). Si es true, muestra el label automáticamente. Este checkbox es diferente al checkbox fijo (checkbox-2) que está en una columna separada.',
+      table: {
+        defaultValue: { summary: 'true' },
+      },
+    },
+    // Controles para columna 4 (Progreso) - no tiene controles adicionales
+    showPagination: {
+      control: 'boolean',
+      description: 'Muestra el paginador debajo de la tabla',
       table: {
         defaultValue: { summary: 'false' },
       },
     },
-    // Controles para columna 4 (Progreso) - no tiene controles adicionales
+    currentPage: {
+      control: { type: 'number', min: 1, step: 1 },
+      description: 'Página actual',
+      table: {
+        defaultValue: { summary: '1' },
+      },
+    },
+    itemsPerPage: {
+      control: { type: 'number', min: 5, max: 100, step: 5 },
+      description: 'Items por página',
+      table: {
+        defaultValue: { summary: '10' },
+      },
+    },
+    paginationVariant: {
+      control: { type: 'select' },
+      options: ['default', 'compact', 'minimal'],
+      description: 'Variante del paginador',
+      table: {
+        defaultValue: { summary: 'default' },
+      },
+    },
+    paginationSize: {
+      control: { type: 'select' },
+      options: ['sm', 'md', 'lg'],
+      description: 'Tamaño del paginador',
+      table: {
+        defaultValue: { summary: 'md' },
+      },
+    },
   },
 };
 
@@ -203,10 +240,19 @@ type Story = StoryObj<DataTableOptions & {
   checkboxSticky?: boolean;
   dragHandleSticky?: boolean;
   expandSticky?: boolean;
+  showPagination?: boolean;
+  currentPage?: number;
+  itemsPerPage?: number;
+  paginationVariant?: 'default' | 'compact' | 'minimal';
+  paginationSize?: 'sm' | 'md' | 'lg';
 }>;
 
 export const Default: Story = {
   render: (args) => {
+    const renderId = `story-render-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    console.log(`📖 [STORY] ========== INICIO RENDER [${renderId}] ==========`);
+    console.log(`📖 [STORY] Stack trace:`, new Error().stack?.split('\n').slice(1, 4).join('\n'));
+    
     // Contenedor principal con estilos UBITS
     const container = document.createElement('div');
     container.style.padding = '20px';
@@ -215,412 +261,438 @@ export const Default: Story = {
     container.style.width = '100%';
     container.style.maxWidth = '100%';
     
-    // Contenedor para la tabla
+    // Contenedor para la tabla - crear uno nuevo cada vez pero con ID único
+    // Usar un ID único basado en timestamp para evitar conflictos entre renders
+    const tableContainerId = `data-table-story-container-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     const tableContainer = document.createElement('div');
-    tableContainer.id = 'data-table-story-container';
+    tableContainer.id = tableContainerId;
     tableContainer.style.width = '100%';
     tableContainer.style.overflow = 'auto';
     
+    // Buscar y limpiar cualquier tabla anterior en el contenedor principal
+    // Esto previene renderizados duplicados cuando se cambian los tipos de columna
+    const existingContainers = container.querySelectorAll('[id^="data-table-story-container-"]');
+    console.log(`📖 [STORY] Contenedores existentes encontrados:`, existingContainers.length);
+    
+    existingContainers.forEach((oldContainer) => {
+      console.log(`📖 [STORY] 🧹 Limpiando contenedor anterior:`, oldContainer.id);
+      // Buscar tabla directa o dentro de contenedor scrollable
+      const oldTable = oldContainer.querySelector('.ubits-data-table');
+      const oldScrollableContainer = oldContainer.querySelector('.ubits-data-table__scrollable-container');
+      
+      if (oldScrollableContainer) {
+        const tableInside = oldScrollableContainer.querySelector('.ubits-data-table');
+        if (tableInside) {
+          const tableElement = tableInside as HTMLElement;
+          if ((tableElement as any)._dataTableInstance) {
+            try {
+              const instance = (tableElement as any)._dataTableInstance;
+              if (instance && typeof instance.destroy === 'function') {
+                console.log(`📖 [STORY] 🧹 Destruyendo instancia de tabla en scrollable container`);
+                instance.destroy();
+              }
+            } catch (e) {
+              console.warn('Error destroying previous table instance:', e);
+            }
+          }
+        }
+      } else if (oldTable) {
+        const tableElement = oldTable as HTMLElement;
+        if ((tableElement as any)._dataTableInstance) {
+          try {
+            const instance = (tableElement as any)._dataTableInstance;
+            if (instance && typeof instance.destroy === 'function') {
+              console.log(`📖 [STORY] 🧹 Destruyendo instancia de tabla directa`);
+              instance.destroy();
+            }
+          } catch (e) {
+            console.warn('Error destroying previous table instance:', e);
+          }
+        }
+      }
+      oldContainer.remove();
+      console.log(`📖 [STORY] ✅ Contenedor anterior removido`);
+    });
+    
     // Generar columnas dinámicamente según columnsCount
-    const columnsCount = args.columnsCount ?? 4;
+    const columnsCount = args.columnsCount ?? 3;
     
     // Tipos de columna disponibles (pueden ser controlados desde Storybook)
-    const columnType1 = (args as any).columnType1 || 'nombre-avatar';
-    const columnType2 = (args as any).columnType2 || 'correo';
-    const columnType3 = (args as any).columnType3 || 'estado';
-    const columnType4 = (args as any).columnType4 || 'progreso';
-    const columnType5 = (args as any).columnType5 || 'nombre';
-    const columnType6 = (args as any).columnType6 || 'nombre';
-    const columnType7 = (args as any).columnType7 || 'pais';
-    const columnType8 = (args as any).columnType8 || 'fecha';
-    const columnType9 = (args as any).columnType9 || 'nombre';
-    const columnType10 = (args as any).columnType10 || 'estado';
+    // Leer directamente de args para asegurar que se actualicen cuando cambien
+    // Valores por defecto coinciden con la web: nombre, correo, estado (sin progreso por defecto)
+    const columnType1 = args.columnType1 ?? 'nombre';
+    const columnType2 = args.columnType2 ?? 'correo';
+    const columnType3 = args.columnType3 ?? 'estado';
+    const columnType4 = args.columnType4 ?? 'nombre';
+    const columnType5 = (args as any).columnType5 ?? 'nombre';
+    const columnType6 = (args as any).columnType6 ?? 'nombre';
+    const columnType7 = (args as any).columnType7 ?? 'pais';
+    const columnType8 = (args as any).columnType8 ?? 'fecha';
+    const columnType9 = (args as any).columnType9 ?? 'nombre';
+    const columnType10 = (args as any).columnType10 ?? 'estado';
     
     // Controles adicionales para columnas
-    const column1AvatarVariant = (args as any).column1AvatarVariant || 'initials';
-    const column1Editable = (args as any).column1Editable || false;
-    const column2EmailClickable = (args as any).column2EmailClickable !== undefined ? (args as any).column2EmailClickable : true;
-    const column3Editable = (args as any).column3Editable || false;
-    const column3RadioLabel = (args as any).column3RadioLabel || false;
-    const column3ToggleLabel = (args as any).column3ToggleLabel || false;
-    const column3CheckboxLabel = (args as any).column3CheckboxLabel || false;
+    const column1AvatarVariant = args.column1AvatarVariant ?? 'initials';
+    const column1Editable = args.column1Editable ?? false;
+    const column2EmailClickable = args.column2EmailClickable ?? true;
+    const column3Editable = args.column3Editable ?? false;
+    const column3RadioLabel = args.column3RadioLabel ?? false;
+    const column3ToggleLabel = args.column3ToggleLabel ?? false;
+    // Para checkbox, por defecto mostrar label (true) para diferenciarlo del checkbox fijo
+    const column3CheckboxLabel = args.column3CheckboxLabel !== undefined ? args.column3CheckboxLabel : true;
     
     // Construir columnas con sus controles
-    const col1: TableColumn = {
-      id: 'nombre',
-      title: 'Nombre',
-      type: columnType1 as any,
-      visible: true,
-      width: 200,
+    // IMPORTANTE: Construir desde cero para evitar propiedades residuales cuando cambia el tipo
+    
+    // Mapeo de tipos a IDs y títulos (usar para todas las columnas)
+    // IMPORTANTE: Los IDs deben coincidir con los campos de datos en las filas
+    // Para tipos interactivos (radio, toggle, checkbox), usamos IDs únicos para evitar conflictos
+    const columnTypeMapping: Record<string, { id: string; title: string }> = {
+      'correo': { id: 'email', title: 'Email' },
+      'fecha': { id: 'fecha', title: 'Fecha' },
+      'nombre': { id: 'nombre', title: 'Nombre' },
+      'nombre-avatar': { id: 'nombre', title: 'Nombre' },
+      'nombre-avatar-texto': { id: 'nombre', title: 'Nombre' },
+      'estado': { id: 'estado', title: 'Estado' },
+      'progreso': { id: 'progreso', title: 'Progreso' },
+      'pais': { id: 'pais', title: 'País' },
+      'ciudad': { id: 'ciudad', title: 'Ciudad' },
+      'radio': { id: 'radio', title: 'Selección' },
+      'toggle': { id: 'toggle', title: 'Activo' },
+      'checkbox': { id: 'checkbox-col', title: 'Marcar' },
+      'telefono': { id: 'telefono', title: 'Teléfono' },
+      'categoria': { id: 'categoria', title: 'Categoría' },
+      'prioridad': { id: 'prioridad', title: 'Prioridad' },
     };
     
-    // Agregar avatarVariant solo si el tipo es nombre-avatar o nombre-avatar-texto
-    if (columnType1 === 'nombre-avatar' || columnType1 === 'nombre-avatar-texto') {
-      col1.avatarVariant = column1AvatarVariant as 'photo' | 'initials' | 'icon';
-    }
-    
-    // Agregar editable solo si el tipo lo permite
-    const editableTypes1 = ['nombre', 'nombre-avatar', 'nombre-avatar-texto', 'estado', 'fecha', 'checkbox', 'radio'];
-    if (editableTypes1.includes(columnType1)) {
-      col1.editable = column1Editable;
-    }
-    
-    const col2: TableColumn = {
-      id: 'email',
-      title: 'Email',
-      type: columnType2 as any,
-      visible: true,
-      width: 250,
+    // Función helper para construir columnas limpiamente según el tipo
+    const buildColumn = (
+      columnType: string,
+      config: { id: string; title: string },
+      width: number,
+      options: {
+        avatarVariant?: 'photo' | 'initials' | 'icon';
+        editable?: boolean;
+        emailClickable?: boolean;
+        radioLabel?: boolean;
+        toggleLabel?: boolean;
+        checkboxLabel?: boolean;
+      } = {}
+    ): TableColumn => {
+      const column: TableColumn = {
+        id: config.id,
+        title: config.title,
+        type: columnType as any,
+        visible: true,
+        width: width,
+      };
+      
+      // Agregar propiedades SOLO según el tipo actual
+      if (columnType === 'nombre-avatar' || columnType === 'nombre-avatar-texto') {
+        column.avatarVariant = options.avatarVariant || 'initials';
+      }
+      
+      const editableTypes = ['nombre', 'nombre-avatar', 'nombre-avatar-texto', 'estado', 'fecha', 'checkbox', 'radio'];
+      if (editableTypes.includes(columnType)) {
+        column.editable = options.editable || false;
+      }
+      
+      if (columnType === 'correo') {
+        column.emailClickable = options.emailClickable !== undefined ? options.emailClickable : true;
+      }
+      
+      if (columnType === 'radio') {
+        column.radioLabel = options.radioLabel !== undefined ? options.radioLabel : false;
+      }
+      
+      if (columnType === 'toggle') {
+        column.toggleLabel = options.toggleLabel !== undefined ? options.toggleLabel : false;
+      }
+      
+      if (columnType === 'checkbox') {
+        // Por defecto, mostrar label para diferenciarlo del checkbox fijo (checkbox-2)
+        // Si checkboxLabel es true, se mostrará el label automáticamente
+        // Si checkboxLabel es un string, se usará ese texto como label
+        // Si checkboxLabel es false, no se mostrará label
+        column.checkboxLabel = options.checkboxLabel !== undefined ? options.checkboxLabel : true;
+      }
+      
+      // IMPORTANTE: NO agregar propiedades de otros tipos - esto previene que aparezcan en tipos incorrectos
+      
+      return column;
     };
     
-    // Agregar emailClickable solo si el tipo es correo
-    if (columnType2 === 'correo') {
-      col2.emailClickable = column2EmailClickable;
-    }
+    // Columna 1 - ID y título dinámicos según el tipo
+    const col1Config = columnTypeMapping[columnType1] || { id: 'nombre', title: 'Nombre' };
+    const col1 = buildColumn(columnType1, col1Config, 200, {
+      avatarVariant: column1AvatarVariant,
+      editable: column1Editable,
+    });
     
-    const col3: TableColumn = {
-      id: 'estado',
-      title: 'Estado',
-      type: columnType3 as any,
-      visible: true,
-      width: 150,
-    };
+    // Columna 2 - ID y título dinámicos según el tipo
+    const col2Config = columnTypeMapping[columnType2] || { id: 'email', title: 'Email' };
+    const col2 = buildColumn(columnType2, col2Config, 250, {
+      emailClickable: column2EmailClickable,
+      editable: column1Editable, // Usar el control de columna 1 para simplicidad
+    });
     
-    // Agregar editable solo si el tipo lo permite
-    const editableTypes3 = ['nombre', 'nombre-avatar', 'nombre-avatar-texto', 'estado', 'fecha', 'checkbox', 'radio'];
-    if (editableTypes3.includes(columnType3)) {
-      col3.editable = column3Editable;
-    }
+    // Columna 3 - ID y título dinámicos según el tipo
+    const col3Config = columnTypeMapping[columnType3] || { id: 'estado', title: 'Estado' };
+    const col3 = buildColumn(columnType3, col3Config, 150, {
+      editable: column3Editable,
+      radioLabel: column3RadioLabel,
+      toggleLabel: column3ToggleLabel,
+      checkboxLabel: column3CheckboxLabel,
+    });
     
-    // Agregar labels según el tipo
-    if (columnType3 === 'radio') {
-      col3.radioLabel = column3RadioLabel ? true : false;
-    } else if (columnType3 === 'toggle') {
-      col3.toggleLabel = column3ToggleLabel ? true : false;
-    } else if (columnType3 === 'checkbox') {
-      col3.checkboxLabel = column3CheckboxLabel ? true : false;
-    }
+    // Columna 4 - ID y título dinámicos según el tipo
+    const col4Config = columnTypeMapping[columnType4] || { id: 'progreso', title: 'Progreso' };
+    const col4 = buildColumn(columnType4, col4Config, 180);
+    
+    // Columnas adicionales (5-10) - también con ID y título dinámicos
+    const col5Config = columnTypeMapping[columnType5] || { id: 'telefono', title: 'Teléfono' };
+    const col6Config = columnTypeMapping[columnType6] || { id: 'ciudad', title: 'Ciudad' };
+    const col7Config = columnTypeMapping[columnType7] || { id: 'pais', title: 'País' };
+    const col8Config = columnTypeMapping[columnType8] || { id: 'fecha', title: 'Fecha' };
+    const col9Config = columnTypeMapping[columnType9] || { id: 'categoria', title: 'Categoría' };
+    const col10Config = columnTypeMapping[columnType10] || { id: 'prioridad', title: 'Prioridad' };
     
     const allColumns: TableColumn[] = [
       col1,
       col2,
       col3,
-      { id: 'progreso', title: 'Progreso', type: columnType4 as any, visible: true, width: 180 },
-      { id: 'telefono', title: 'Teléfono', type: columnType5 as any, visible: true, width: 150 },
-      { id: 'ciudad', title: 'Ciudad', type: columnType6 as any, visible: true, width: 150 },
-      { id: 'pais', title: 'País', type: columnType7 as any, visible: true, width: 150 },
-      { id: 'fecha', title: 'Fecha', type: columnType8 as any, visible: true, width: 150 },
-      { id: 'categoria', title: 'Categoría', type: columnType9 as any, visible: true, width: 150 },
-      { id: 'prioridad', title: 'Prioridad', type: columnType10 as any, visible: true, width: 150 },
+      col4,
+      buildColumn(columnType5, col5Config, 150),
+      buildColumn(columnType6, col6Config, 150),
+      buildColumn(columnType7, col7Config, 150),
+      buildColumn(columnType8, col8Config, 150),
+      buildColumn(columnType9, col9Config, 150),
+      buildColumn(columnType10, col10Config, 150),
     ];
     
     // Seleccionar solo las columnas necesarias según columnsCount
     const columns: TableColumn[] = allColumns.slice(0, columnsCount);
     
-    const rows: TableRow[] = [
-      {
-        id: 1,
-        data: {
-          nombre: 'Juan Pérez',
-          email: 'juan.perez@empresa.com',
-          estado: 'Activo',
-          progreso: 75,
-          telefono: '+57 300 123 4567',
-          ciudad: 'Bogotá',
+    // Función helper para enriquecer los datos de las filas con campos para tipos interactivos
+    // Coincide con la implementación de la web
+    const enrichRowData = (rowData: any, rowId: number) => {
+      return {
+        ...rowData,
+        // Campos para tipos interactivos
+        radio: rowId === 1, // Solo el primer radio está seleccionado por defecto
+        toggle: rowData.estado === 'Activo', // Toggle activo si el estado es 'Activo'
+        'checkbox-col': rowId % 2 === 0, // Checkbox alternado para demostración
+        // Campo para nombre-avatar-texto (texto complementario debajo del nombre)
+        area: rowData.area || '', // Área de trabajo
+        textoComplementario: rowData.area || '', // Texto complementario
+        // Campos adicionales para cuando se usen tipos específicos
+        progreso: rowData.progreso || 0,
+        telefono: rowData.telefono || '',
+        ciudad: rowData.ciudad || '',
+        pais: rowData.pais || '',
+        fecha: rowData.fecha || '',
+        categoria: rowData.categoria || '',
+        prioridad: rowData.prioridad || '',
+      };
+    };
+    
+    // Función helper para generar todas las 100 filas (igual que en la web)
+    const generateAllRows = (): TableRow[] => {
+      const allRowsData = [
+        { id: 1, nombre: 'Juan Pérez', email: 'juan.perez@empresa.com', estado: 'Activo', area: 'Desarrollo', avatar: { initials: 'JP', badgeColor: 'green', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 2, nombre: 'María García', email: 'maria.garcia@empresa.com', estado: 'Inactivo', area: 'Diseño', avatar: { initials: 'MG', badgeColor: 'blue', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 3, nombre: 'Carlos López', email: 'carlos.lopez@empresa.com', estado: 'Activo', area: 'Marketing', avatar: { initials: 'CL', badgeColor: 'orange', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 4, nombre: 'Ana Martínez', email: 'ana.martinez@empresa.com', estado: 'Activo', area: 'Recursos Humanos', avatar: { initials: 'AM', badgeColor: 'purple', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 5, nombre: 'Pedro Rodríguez', email: 'pedro.rodriguez@empresa.com', estado: 'Pendiente', area: 'Ventas', avatar: { initials: 'PR', badgeColor: 'blue', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 6, nombre: 'Valentina Torres', email: 'valentina.torres@empresa.com', estado: 'Activo', area: 'Desarrollo', avatar: { initials: 'VT', badgeColor: 'green', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 7, nombre: 'Roberto Fernández', email: 'roberto.fernandez@empresa.com', estado: 'Inactivo', area: 'Marketing', avatar: { initials: 'RF', badgeColor: 'orange', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 8, nombre: 'Carmen Torres', email: 'carmen.torres@empresa.com', estado: 'Activo', area: 'Diseño', avatar: { initials: 'CT', badgeColor: 'pink', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 9, nombre: 'Diego Morales', email: 'diego.morales@empresa.com', estado: 'Pendiente', area: 'Ventas', avatar: { initials: 'DM', badgeColor: 'blue', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 10, nombre: 'Isabel Moreno', email: 'isabel.moreno@empresa.com', estado: 'Activo', area: 'Recursos Humanos', avatar: { initials: 'IM', badgeColor: 'purple', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 11, nombre: 'Andrés Ramírez', email: 'andres.ramirez@empresa.com', estado: 'Activo', area: 'Desarrollo', avatar: { initials: 'AR', badgeColor: 'green', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 12, nombre: 'Patricia Sánchez', email: 'patricia.sanchez@empresa.com', estado: 'Inactivo', area: 'Diseño', avatar: { initials: 'PS', badgeColor: 'blue', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 13, nombre: 'Fernando Castro', email: 'fernando.castro@empresa.com', estado: 'Activo', area: 'Marketing', avatar: { initials: 'FC', badgeColor: 'orange', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 14, nombre: 'Gabriela Herrera', email: 'gabriela.herrera@empresa.com', estado: 'Pendiente', area: 'Ventas', avatar: { initials: 'GH', badgeColor: 'blue', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 15, nombre: 'Ricardo Mendoza', email: 'ricardo.mendoza@empresa.com', estado: 'Activo', area: 'Desarrollo', avatar: { initials: 'RM', badgeColor: 'green', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 16, nombre: 'Claudia Vargas', email: 'claudia.vargas@empresa.com', estado: 'Activo', area: 'Recursos Humanos', avatar: { initials: 'CV', badgeColor: 'purple', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 17, nombre: 'Javier Ortiz', email: 'javier.ortiz@empresa.com', estado: 'Inactivo', area: 'Marketing', avatar: { initials: 'JO', badgeColor: 'orange', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 18, nombre: 'Daniela Jiménez', email: 'daniela.jimenez@empresa.com', estado: 'Activo', area: 'Diseño', avatar: { initials: 'DJ', badgeColor: 'pink', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 19, nombre: 'Miguel Ángel Ruiz', email: 'miguel.ruiz@empresa.com', estado: 'Pendiente', area: 'Ventas', avatar: { initials: 'MR', badgeColor: 'blue', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 20, nombre: 'Elena Castillo', email: 'elena.castillo@empresa.com', estado: 'Activo', area: 'Desarrollo', avatar: { initials: 'EC', badgeColor: 'green', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 21, nombre: 'Óscar Gutiérrez', email: 'oscar.gutierrez@empresa.com', estado: 'Activo', area: 'Marketing', avatar: { initials: 'OG', badgeColor: 'orange', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 22, nombre: 'Natalia Rojas', email: 'natalia.rojas@empresa.com', estado: 'Inactivo', area: 'Diseño', avatar: { initials: 'NR', badgeColor: 'blue', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 23, nombre: 'Luis Fernando Mejía', email: 'luis.mejia@empresa.com', estado: 'Activo', area: 'Ventas', avatar: { initials: 'LM', badgeColor: 'blue', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 24, nombre: 'Andrea Salazar', email: 'andrea.salazar@empresa.com', estado: 'Pendiente', area: 'Recursos Humanos', avatar: { initials: 'AS', badgeColor: 'purple', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 25, nombre: 'Cristian Peña', email: 'cristian.pena@empresa.com', estado: 'Activo', area: 'Desarrollo', avatar: { initials: 'CP', badgeColor: 'green', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 26, nombre: 'Monica Restrepo', email: 'monica.restrepo@empresa.com', estado: 'Activo', area: 'Marketing', avatar: { initials: 'MR', badgeColor: 'orange', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 27, nombre: 'Esteban Cardona', email: 'esteban.cardona@empresa.com', estado: 'Inactivo', area: 'Diseño', avatar: { initials: 'EC', badgeColor: 'blue', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 28, nombre: 'Paola Agudelo', email: 'paola.agudelo@empresa.com', estado: 'Activo', area: 'Ventas', avatar: { initials: 'PA', badgeColor: 'blue', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 29, nombre: 'Sergio Velásquez', email: 'sergio.velasquez@empresa.com', estado: 'Pendiente', area: 'Desarrollo', avatar: { initials: 'SV', badgeColor: 'green', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 30, nombre: 'Carolina Zapata', email: 'carolina.zapata@empresa.com', estado: 'Activo', area: 'Recursos Humanos', avatar: { initials: 'CZ', badgeColor: 'purple', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 31, nombre: 'Felipe Ospina', email: 'felipe.ospina@empresa.com', estado: 'Activo', area: 'Marketing', avatar: { initials: 'FO', badgeColor: 'orange', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 32, nombre: 'Tatiana Montoya', email: 'tatiana.montoya@empresa.com', estado: 'Inactivo', area: 'Diseño', avatar: { initials: 'TM', badgeColor: 'pink', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 33, nombre: 'Alejandro Betancur', email: 'alejandro.betancur@empresa.com', estado: 'Activo', area: 'Ventas', avatar: { initials: 'AB', badgeColor: 'blue', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 34, nombre: 'Diana Cárdenas', email: 'diana.cardenas@empresa.com', estado: 'Pendiente', area: 'Desarrollo', avatar: { initials: 'DC', badgeColor: 'green', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 35, nombre: 'Jorge Iván Londoño', email: 'jorge.londono@empresa.com', estado: 'Activo', area: 'Marketing', avatar: { initials: 'JL', badgeColor: 'orange', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 36, nombre: 'Mariana Uribe', email: 'mariana.uribe@empresa.com', estado: 'Activo', area: 'Recursos Humanos', avatar: { initials: 'MU', badgeColor: 'purple', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 37, nombre: 'Camilo Arango', email: 'camilo.arango@empresa.com', estado: 'Inactivo', area: 'Diseño', avatar: { initials: 'CA', badgeColor: 'blue', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 38, nombre: 'Liliana Osorio', email: 'liliana.osorio@empresa.com', estado: 'Activo', area: 'Ventas', avatar: { initials: 'LO', badgeColor: 'blue', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 39, nombre: 'Andrés Felipe Quintero', email: 'andres.quintero@empresa.com', estado: 'Pendiente', area: 'Desarrollo', avatar: { initials: 'AQ', badgeColor: 'green', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 40, nombre: 'Sandra Milena Gómez', email: 'sandra.gomez@empresa.com', estado: 'Activo', area: 'Marketing', avatar: { initials: 'SG', badgeColor: 'orange', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 41, nombre: 'Héctor Fabio Muñoz', email: 'hector.munoz@empresa.com', estado: 'Activo', area: 'Diseño', avatar: { initials: 'HM', badgeColor: 'pink', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 42, nombre: 'Yenny Alexandra Parra', email: 'yenny.parra@empresa.com', estado: 'Inactivo', area: 'Ventas', avatar: { initials: 'YP', badgeColor: 'blue', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 43, nombre: 'Jhon Jairo Vélez', email: 'jhon.velez@empresa.com', estado: 'Activo', area: 'Desarrollo', avatar: { initials: 'JV', badgeColor: 'green', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 44, nombre: 'Adriana Marcela Henao', email: 'adriana.henao@empresa.com', estado: 'Pendiente', area: 'Recursos Humanos', avatar: { initials: 'AH', badgeColor: 'purple', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 45, nombre: 'Edwin Mauricio Zapata', email: 'edwin.zapata@empresa.com', estado: 'Activo', area: 'Marketing', avatar: { initials: 'EZ', badgeColor: 'orange', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 46, nombre: 'Mónica Patricia Bedoya', email: 'monica.bedoya@empresa.com', estado: 'Activo', area: 'Diseño', avatar: { initials: 'MB', badgeColor: 'blue', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 47, nombre: 'William Alberto Giraldo', email: 'william.giraldo@empresa.com', estado: 'Inactivo', area: 'Ventas', avatar: { initials: 'WG', badgeColor: 'blue', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 48, nombre: 'Angélica María Cano', email: 'angelica.cano@empresa.com', estado: 'Activo', area: 'Desarrollo', avatar: { initials: 'AC', badgeColor: 'green', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 49, nombre: 'Leonardo Fabio Ríos', email: 'leonardo.rios@empresa.com', estado: 'Pendiente', area: 'Marketing', avatar: { initials: 'LR', badgeColor: 'orange', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 50, nombre: 'Claudia Patricia Arbeláez', email: 'claudia.arbelaez@empresa.com', estado: 'Activo', area: 'Recursos Humanos', avatar: { initials: 'CA', badgeColor: 'purple', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 51, nombre: 'Jairo Alonso Tobón', email: 'jairo.tobon@empresa.com', estado: 'Activo', area: 'Diseño', avatar: { initials: 'JT', badgeColor: 'pink', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 52, nombre: 'Gloria Inés Mejía', email: 'gloria.mejia@empresa.com', estado: 'Inactivo', area: 'Ventas', avatar: { initials: 'GM', badgeColor: 'blue', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 53, nombre: 'Mauricio Esteban Lopera', email: 'mauricio.lopera@empresa.com', estado: 'Activo', area: 'Desarrollo', avatar: { initials: 'ML', badgeColor: 'green', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 54, nombre: 'Beatriz Elena Castrillón', email: 'beatriz.castrillon@empresa.com', estado: 'Pendiente', area: 'Marketing', avatar: { initials: 'BC', badgeColor: 'orange', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 55, nombre: 'César Augusto Restrepo', email: 'cesar.restrepo@empresa.com', estado: 'Activo', area: 'Recursos Humanos', avatar: { initials: 'CR', badgeColor: 'purple', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 56, nombre: 'Dora Luz Aguirre', email: 'dora.aguirre@empresa.com', estado: 'Activo', area: 'Diseño', avatar: { initials: 'DA', badgeColor: 'blue', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 57, nombre: 'Óscar Darío Valencia', email: 'oscar.valencia@empresa.com', estado: 'Inactivo', area: 'Ventas', avatar: { initials: 'OV', badgeColor: 'blue', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 58, nombre: 'Nubia Esperanza Cardona', email: 'nubia.cardona@empresa.com', estado: 'Activo', area: 'Desarrollo', avatar: { initials: 'NC', badgeColor: 'green', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 59, nombre: 'Alberto Mario Zapata', email: 'alberto.zapata@empresa.com', estado: 'Pendiente', area: 'Marketing', avatar: { initials: 'AZ', badgeColor: 'orange', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 60, nombre: 'Esperanza María Ochoa', email: 'esperanza.ochoa@empresa.com', estado: 'Activo', area: 'Recursos Humanos', avatar: { initials: 'EO', badgeColor: 'purple', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 61, nombre: 'Jorge Mario Gallego', email: 'jorge.gallego@empresa.com', estado: 'Activo', area: 'Diseño', avatar: { initials: 'JG', badgeColor: 'pink', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 62, nombre: 'Blanca Nubia Arango', email: 'blanca.arango@empresa.com', estado: 'Inactivo', area: 'Ventas', avatar: { initials: 'BA', badgeColor: 'blue', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 63, nombre: 'Fabio Nelson Uribe', email: 'fabio.uribe@empresa.com', estado: 'Activo', area: 'Desarrollo', avatar: { initials: 'FU', badgeColor: 'green', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 64, nombre: 'Martha Cecilia Londoño', email: 'martha.londono@empresa.com', estado: 'Pendiente', area: 'Marketing', avatar: { initials: 'ML', badgeColor: 'orange', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 65, nombre: 'Hernán Darío Osorio', email: 'hernan.osorio@empresa.com', estado: 'Activo', area: 'Recursos Humanos', avatar: { initials: 'HO', badgeColor: 'purple', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 66, nombre: 'Luz Dary Montoya', email: 'luz.montoya@empresa.com', estado: 'Activo', area: 'Diseño', avatar: { initials: 'LM', badgeColor: 'blue', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 67, nombre: 'Carlos Mario Betancur', email: 'carlos.betancur@empresa.com', estado: 'Inactivo', area: 'Ventas', avatar: { initials: 'CB', badgeColor: 'blue', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 68, nombre: 'Olga Lucía Cárdenas', email: 'olga.cardenas@empresa.com', estado: 'Activo', area: 'Desarrollo', avatar: { initials: 'OC', badgeColor: 'green', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 69, nombre: 'Jairo Hernán Quintero', email: 'jairo.quintero@empresa.com', estado: 'Pendiente', area: 'Marketing', avatar: { initials: 'JQ', badgeColor: 'orange', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 70, nombre: 'Amparo Gómez', email: 'amparo.gomez@empresa.com', estado: 'Activo', area: 'Recursos Humanos', avatar: { initials: 'AG', badgeColor: 'purple', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 71, nombre: 'Gustavo Adolfo Muñoz', email: 'gustavo.munoz@empresa.com', estado: 'Activo', area: 'Diseño', avatar: { initials: 'GM', badgeColor: 'pink', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 72, nombre: 'Rosa Elena Parra', email: 'rosa.parra@empresa.com', estado: 'Inactivo', area: 'Ventas', avatar: { initials: 'RP', badgeColor: 'blue', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 73, nombre: 'Alvaro de Jesús Vélez', email: 'alvaro.velez@empresa.com', estado: 'Activo', area: 'Desarrollo', avatar: { initials: 'AV', badgeColor: 'green', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 74, nombre: 'María Eugenia Henao', email: 'maria.henao@empresa.com', estado: 'Pendiente', area: 'Marketing', avatar: { initials: 'MH', badgeColor: 'orange', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 75, nombre: 'Jhonatan Zapata', email: 'jhonatan.zapata@empresa.com', estado: 'Activo', area: 'Recursos Humanos', avatar: { initials: 'JZ', badgeColor: 'purple', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 76, nombre: 'Yolanda Bedoya', email: 'yolanda.bedoya@empresa.com', estado: 'Activo', area: 'Diseño', avatar: { initials: 'YB', badgeColor: 'blue', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 77, nombre: 'Edison Giraldo', email: 'edison.giraldo@empresa.com', estado: 'Inactivo', area: 'Ventas', avatar: { initials: 'EG', badgeColor: 'blue', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 78, nombre: 'Luz Marina Cano', email: 'luz.cano@empresa.com', estado: 'Activo', area: 'Desarrollo', avatar: { initials: 'LC', badgeColor: 'green', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 79, nombre: 'Jhon Fredy Ríos', email: 'jhon.rios@empresa.com', estado: 'Pendiente', area: 'Marketing', avatar: { initials: 'JR', badgeColor: 'orange', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 80, nombre: 'Nancy Arbeláez', email: 'nancy.arbelaez@empresa.com', estado: 'Activo', area: 'Recursos Humanos', avatar: { initials: 'NA', badgeColor: 'purple', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 81, nombre: 'Jairo Tobón', email: 'jairo.tobon2@empresa.com', estado: 'Activo', area: 'Diseño', avatar: { initials: 'JT', badgeColor: 'pink', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 82, nombre: 'Gloria Mejía', email: 'gloria.mejia2@empresa.com', estado: 'Inactivo', area: 'Ventas', avatar: { initials: 'GM', badgeColor: 'blue', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 83, nombre: 'Mauricio Lopera', email: 'mauricio.lopera2@empresa.com', estado: 'Activo', area: 'Desarrollo', avatar: { initials: 'ML', badgeColor: 'green', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 84, nombre: 'Beatriz Castrillón', email: 'beatriz.castrillon2@empresa.com', estado: 'Pendiente', area: 'Marketing', avatar: { initials: 'BC', badgeColor: 'orange', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 85, nombre: 'César Restrepo', email: 'cesar.restrepo2@empresa.com', estado: 'Activo', area: 'Recursos Humanos', avatar: { initials: 'CR', badgeColor: 'purple', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 86, nombre: 'Dora Aguirre', email: 'dora.aguirre2@empresa.com', estado: 'Activo', area: 'Diseño', avatar: { initials: 'DA', badgeColor: 'blue', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 87, nombre: 'Óscar Valencia', email: 'oscar.valencia2@empresa.com', estado: 'Inactivo', area: 'Ventas', avatar: { initials: 'OV', badgeColor: 'blue', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 88, nombre: 'Nubia Cardona', email: 'nubia.cardona2@empresa.com', estado: 'Activo', area: 'Desarrollo', avatar: { initials: 'NC', badgeColor: 'green', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 89, nombre: 'Alberto Zapata', email: 'alberto.zapata2@empresa.com', estado: 'Pendiente', area: 'Marketing', avatar: { initials: 'AZ', badgeColor: 'orange', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 90, nombre: 'Esperanza Ochoa', email: 'esperanza.ochoa2@empresa.com', estado: 'Activo', area: 'Recursos Humanos', avatar: { initials: 'EO', badgeColor: 'purple', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 91, nombre: 'Jorge Gallego', email: 'jorge.gallego2@empresa.com', estado: 'Activo', area: 'Diseño', avatar: { initials: 'JG', badgeColor: 'pink', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 92, nombre: 'Blanca Arango', email: 'blanca.arango2@empresa.com', estado: 'Inactivo', area: 'Ventas', avatar: { initials: 'BA', badgeColor: 'blue', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 93, nombre: 'Fabio Uribe', email: 'fabio.uribe2@empresa.com', estado: 'Activo', area: 'Desarrollo', avatar: { initials: 'FU', badgeColor: 'green', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 94, nombre: 'Martha Londoño', email: 'martha.londono2@empresa.com', estado: 'Pendiente', area: 'Marketing', avatar: { initials: 'ML', badgeColor: 'orange', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 95, nombre: 'Hernán Osorio', email: 'hernan.osorio2@empresa.com', estado: 'Activo', area: 'Recursos Humanos', avatar: { initials: 'HO', badgeColor: 'purple', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 96, nombre: 'Luz Montoya', email: 'luz.montoya2@empresa.com', estado: 'Activo', area: 'Diseño', avatar: { initials: 'LM', badgeColor: 'blue', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 97, nombre: 'Carlos Betancur', email: 'carlos.betancur2@empresa.com', estado: 'Inactivo', area: 'Ventas', avatar: { initials: 'CB', badgeColor: 'blue', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 98, nombre: 'Olga Cárdenas', email: 'olga.cardenas2@empresa.com', estado: 'Activo', area: 'Desarrollo', avatar: { initials: 'OC', badgeColor: 'green', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 99, nombre: 'Jairo Quintero', email: 'jairo.quintero2@empresa.com', estado: 'Pendiente', area: 'Marketing', avatar: { initials: 'JQ', badgeColor: 'orange', imageUrl: '/images/Profile-image.jpg' } },
+        { id: 100, nombre: 'Amparo Gómez', email: 'amparo.gomez2@empresa.com', estado: 'Activo', area: 'Recursos Humanos', avatar: { initials: 'AG', badgeColor: 'purple', imageUrl: '/images/Profile-image.jpg' } },
+      ];
+
+      return allRowsData.map((rowData) => ({
+        id: rowData.id,
+        data: enrichRowData({
+          nombre: rowData.nombre,
+          email: rowData.email,
+          estado: rowData.estado,
+          area: rowData.area,
+          progreso: Math.floor(Math.random() * 100),
+          telefono: `+57 ${300 + rowData.id} ${Math.floor(Math.random() * 1000)} ${Math.floor(Math.random() * 10000)}`,
+          ciudad: ['Bogotá', 'Medellín', 'Cali', 'Barranquilla', 'Cartagena'][Math.floor(Math.random() * 5)],
           pais: 'Colombia',
-          fecha: '2024-01-15',
-          categoria: 'Desarrollo',
-          prioridad: 'Alta',
+          fecha: `2024-${String(Math.floor(Math.random() * 12) + 1).padStart(2, '0')}-${String(Math.floor(Math.random() * 28) + 1).padStart(2, '0')}`,
+          categoria: rowData.area,
+          prioridad: ['Alta', 'Media', 'Baja'][Math.floor(Math.random() * 3)],
           'checkbox-2': false,
-          avatar: { initials: 'JP', badgeColor: 'green', imageUrl: '/images/Profile-image.jpg' },
-        },
+          avatar: rowData.avatar,
+        }, rowData.id),
         expanded: false,
-        renderExpandedContent: (data) => `
-          <div style="padding: 16px;">
-            <h4 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600;">Información adicional</h4>
-            <p style="margin: 0; font-size: 13px; color: var(--ubits-body-md-regular-2, #6b7280);">
-              Detalles adicionales para ${data.nombre}
-            </p>
-          </div>
-        `,
-      },
-      {
-        id: 2,
-        data: {
-          nombre: 'María García',
-          email: 'maria.garcia@empresa.com',
-          estado: 'Inactivo',
-          progreso: 45,
-          telefono: '+57 301 234 5678',
-          ciudad: 'Medellín',
-          pais: 'Colombia',
-          fecha: '2024-02-20',
-          categoria: 'Diseño',
-          prioridad: 'Media',
-          'checkbox-2': true,
-          avatar: { initials: 'MG', badgeColor: 'blue', imageUrl: '/images/Profile-image.jpg' },
-        },
-        expanded: false,
-      },
-      {
-        id: 3,
-        data: {
-          nombre: 'Carlos López',
-          email: 'carlos.lopez@empresa.com',
-          estado: 'Activo',
-          progreso: 90,
-          telefono: '+57 302 345 6789',
-          ciudad: 'Cali',
-          pais: 'Colombia',
-          fecha: '2024-03-10',
-          categoria: 'Marketing',
-          prioridad: 'Baja',
-          'checkbox-2': false,
-          avatar: { initials: 'CL', badgeColor: 'orange', imageUrl: '/images/Profile-image.jpg' },
-        },
-        expanded: false,
-        renderExpandedContent: (data) => `
-          <div style="padding: 16px;">
-            <h4 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600;">Información adicional</h4>
-            <p style="margin: 0; font-size: 13px; color: var(--ubits-body-md-regular-2, #6b7280);">
-              Detalles adicionales para ${data.nombre}
-            </p>
-          </div>
-        `,
-      },
-      {
-        id: 4,
-        data: {
-          nombre: 'Ana Martínez',
-          email: 'ana.martinez@empresa.com',
-          estado: 'Pendiente',
-          progreso: 30,
-          telefono: '+57 303 456 7890',
-          ciudad: 'Barranquilla',
-          pais: 'Colombia',
-          fecha: '2024-04-05',
-          categoria: 'Ventas',
-          prioridad: 'Alta',
-          'checkbox-2': true,
-          avatar: { initials: 'AM', badgeColor: 'purple', imageUrl: '/images/Profile-image.jpg' },
-        },
-        expanded: false,
-      },
-      {
-        id: 5,
-        data: {
-          nombre: 'Pedro Sánchez',
-          email: 'pedro.sanchez@empresa.com',
-          estado: 'Activo',
-          progreso: 100,
-          telefono: '+57 304 567 8901',
-          ciudad: 'Cartagena',
-          pais: 'Colombia',
-          fecha: '2024-05-12',
-          categoria: 'Soporte',
-          prioridad: 'Media',
-          'checkbox-2': false,
-          avatar: { initials: 'PS', badgeColor: 'blue', imageUrl: '/images/Profile-image.jpg' },
-        },
-        expanded: false,
-      },
-      {
-        id: 6,
-        data: {
-          nombre: 'Patricia Rodríguez',
-          email: 'patricia.rodriguez@empresa.com',
-          estado: 'Activo',
-          progreso: 60,
-          telefono: '+57 305 678 9012',
-          ciudad: 'Bucaramanga',
-          pais: 'Colombia',
-          fecha: '2024-06-18',
-          categoria: 'Recursos Humanos',
-          prioridad: 'Baja',
-          'checkbox-2': true,
-          avatar: { initials: 'PR', badgeColor: 'blue', imageUrl: '/images/Profile-image.jpg' },
-        },
-        expanded: false,
-      },
-      {
-        id: 7,
-        data: {
-          nombre: 'Roberto Silva',
-          email: 'roberto.silva@empresa.com',
-          estado: 'Inactivo',
-          progreso: 25,
-          telefono: '+57 306 789 0123',
-          ciudad: 'Pereira',
-          pais: 'Colombia',
-          fecha: '2024-07-22',
-          categoria: 'Finanzas',
-          prioridad: 'Alta',
-          'checkbox-2': false,
-          avatar: { initials: 'RS', badgeColor: 'orange', imageUrl: '/images/Profile-image.jpg' },
-        },
-        expanded: false,
-      },
-      {
-        id: 8,
-        data: {
-          nombre: 'Carmen Vargas',
-          email: 'carmen.vargas@empresa.com',
-          estado: 'Activo',
-          progreso: 85,
-          telefono: '+57 307 890 1234',
-          ciudad: 'Santa Marta',
-          pais: 'Colombia',
-          fecha: '2024-08-05',
-          categoria: 'Operaciones',
-          prioridad: 'Media',
-          'checkbox-2': true,
-          avatar: { initials: 'CV', badgeColor: 'pink', imageUrl: '/images/Profile-image.jpg' },
-        },
-        expanded: false,
-      },
-      {
-        id: 9,
-        data: {
-          nombre: 'Diego Morales',
-          email: 'diego.morales@empresa.com',
-          estado: 'Pendiente',
-          progreso: 50,
-          telefono: '+57 308 901 2345',
-          ciudad: 'Manizales',
-          pais: 'Colombia',
-          fecha: '2024-09-10',
-          categoria: 'Tecnología',
-          prioridad: 'Baja',
-          'checkbox-2': false,
-          avatar: { initials: 'DM', badgeColor: 'blue', imageUrl: '/images/Profile-image.jpg' },
-        },
-        expanded: false,
-      },
-      {
-        id: 10,
-        data: {
-          nombre: 'Daniela Herrera',
-          email: 'daniela.herrera@empresa.com',
-          estado: 'Activo',
-          progreso: 95,
-          telefono: '+57 309 012 3456',
-          ciudad: 'Armenia',
-          pais: 'Colombia',
-          fecha: '2024-10-15',
-          categoria: 'Innovación',
-          prioridad: 'Alta',
-          'checkbox-2': true,
-          avatar: { initials: 'DH', badgeColor: 'purple', imageUrl: '/images/Profile-image.jpg' },
-        },
-        expanded: false,
-      },
-      {
-        id: 11,
-        data: {
-          nombre: 'Andrés Castro',
-          email: 'andres.castro@empresa.com',
-          estado: 'Activo',
-          progreso: 70,
-          telefono: '+57 310 123 4567',
-          ciudad: 'Villavicencio',
-          pais: 'Colombia',
-          fecha: '2024-11-20',
-          categoria: 'Logística',
-          prioridad: 'Media',
-          'checkbox-2': false,
-          avatar: { initials: 'AC', badgeColor: 'green', imageUrl: '/images/Profile-image.jpg' },
-        },
-        expanded: false,
-      },
-      {
-        id: 12,
-        data: {
-          nombre: 'Valentina Rojas',
-          email: 'valentina.rojas@empresa.com',
-          estado: 'Inactivo',
-          progreso: 40,
-          telefono: '+57 311 234 5678',
-          ciudad: 'Ibagué',
-          pais: 'Colombia',
-          fecha: '2024-12-25',
-          categoria: 'Calidad',
-          prioridad: 'Baja',
-          'checkbox-2': true,
-          avatar: { initials: 'VR', badgeColor: 'orange', imageUrl: '/images/Profile-image.jpg' },
-        },
-        expanded: false,
-      },
-      {
-        id: 13,
-        data: {
-          nombre: 'Fernando Gutiérrez',
-          email: 'fernando.gutierrez@empresa.com',
-          estado: 'Activo',
-          progreso: 80,
-          telefono: '+57 312 345 6789',
-          ciudad: 'Pasto',
-          pais: 'Colombia',
-          fecha: '2025-01-08',
-          categoria: 'Investigación',
-          prioridad: 'Alta',
-          'checkbox-2': false,
-          avatar: { initials: 'FG', badgeColor: 'green', imageUrl: '/images/Profile-image.jpg' },
-        },
-        expanded: false,
-      },
-      {
-        id: 14,
-        data: {
-          nombre: 'Isabella Ramírez',
-          email: 'isabella.ramirez@empresa.com',
-          estado: 'Pendiente',
-          progreso: 55,
-          telefono: '+57 313 456 7890',
-          ciudad: 'Tunja',
-          pais: 'Colombia',
-          fecha: '2025-02-12',
-          categoria: 'Comunicaciones',
-          prioridad: 'Media',
-          'checkbox-2': true,
-          avatar: { initials: 'IR', badgeColor: 'purple', imageUrl: '/images/Profile-image.jpg' },
-        },
-        expanded: false,
-      },
-      {
-        id: 15,
-        data: {
-          nombre: 'Sebastián Torres',
-          email: 'sebastian.torres@empresa.com',
-          estado: 'Activo',
-          progreso: 65,
-          telefono: '+57 314 567 8901',
-          ciudad: 'Neiva',
-          pais: 'Colombia',
-          fecha: '2025-03-18',
-          categoria: 'Estrategia',
-          prioridad: 'Baja',
-          'checkbox-2': false,
-          avatar: { initials: 'ST', badgeColor: 'blue', imageUrl: '/images/Profile-image.jpg' },
-        },
-        expanded: false,
-      },
-    ];
+        renderExpandedContent: rowData.id === 1 ? (data) => {
+          return `
+            <div style="padding: var(--ubits-spacing-md, 16px);">
+              <h4 style="margin: 0 0 var(--ubits-spacing-sm, 8px) 0; font-size: var(--ubits-font-size-sm, 14px); font-weight: 600; color: var(--ubits-fg-1-high, #1f2937);">
+                Información adicional
+              </h4>
+              <p style="margin: 0; font-size: var(--ubits-font-size-sm, 13px); color: var(--ubits-fg-1-medium, #6b7280);">
+                Detalles adicionales para ${data.nombre}
+              </p>
+            </div>
+          `;
+        } : undefined,
+      }));
+    };
+
+    // Filas que coinciden con la implementación de la web (100 filas)
+    // Incluir todos los campos necesarios para que funcionen con cualquier tipo de columna
+    const rows: TableRow[] = generateAllRows();
+    
+    // Si dragHandleSticky está activado, asegurar que rowReorderable también esté activado
+    // porque el drag-handle solo se crea cuando rowReorderable es true
+    const dragHandleStickyValue = (args as any).dragHandleSticky ?? false;
+    const rowReorderableValue = dragHandleStickyValue ? true : (args.rowReorderable ?? true);
+    
+    // Si expandSticky está activado, asegurar que rowExpandable también esté activado
+    const expandStickyValue = (args as any).expandSticky ?? false;
+    const rowExpandableValue = expandStickyValue ? true : (args.rowExpandable ?? true);
+    
+    // Log del estado inicial de las columnas antes de crear la tabla
+    console.log('📖 [STORY] ========== ESTADO INICIAL DE COLUMNAS ==========');
+    console.log('📖 [STORY] Columnas antes de crear tabla:', columns.map(col => ({ 
+      id: col.id, 
+      title: col.title, 
+      pinned: col.pinned || false,
+      type: col.type 
+    })));
+    console.log('📖 [STORY] ========== FIN ESTADO INICIAL ==========');
     
     const options: DataTableOptions = {
-      containerId: 'data-table-story-container',
+      containerId: tableContainer.id,
       columns,
       rows,
-      columnReorderable: args.columnReorderable ?? false,
-      rowReorderable: args.rowReorderable ?? false,
-      rowExpandable: args.rowExpandable ?? true,
+      // Valores por defecto coinciden con la web: columnReorderable y rowReorderable son true
+      columnReorderable: args.columnReorderable ?? true,
+      rowReorderable: rowReorderableValue,
+      rowExpandable: rowExpandableValue,
       columnSortable: args.columnSortable ?? true,
       showCheckbox: args.showCheckbox ?? true,
       showVerticalScrollbar: args.showVerticalScrollbar ?? false,
       showHorizontalScrollbar: args.showHorizontalScrollbar ?? false,
       showColumnMenu: args.showColumnMenu ?? true,
       checkboxSticky: (args as any).checkboxSticky ?? false,
-      dragHandleSticky: (args as any).dragHandleSticky ?? false,
-      expandSticky: (args as any).expandSticky ?? false,
+      dragHandleSticky: dragHandleStickyValue,
+      expandSticky: expandStickyValue,
+      // Opciones de paginación
+      showPagination: args.showPagination ?? false,
+      currentPage: args.currentPage ?? 1,
+      itemsPerPage: args.itemsPerPage ?? 10,
+      paginationVariant: args.paginationVariant ?? 'default',
+      paginationSize: args.paginationSize ?? 'md',
+      onPageChange: (page) => {
+        console.log('Page changed to:', page);
+        // En Storybook, actualizar el args para que se refleje en los controles
+        if ((args as any).onPageChange) {
+          (args as any).onPageChange(page);
+        }
+      },
+      onItemsPerPageChange: (itemsPerPage) => {
+        console.log('Items per page changed to:', itemsPerPage);
+        // En Storybook, actualizar el args para que se refleje en los controles
+        if ((args as any).onItemsPerPageChange) {
+          (args as any).onItemsPerPageChange(itemsPerPage);
+        }
+      },
       onRowExpand: (rowId, expanded) => {
         console.log('Row expanded:', rowId, expanded);
       },
@@ -634,7 +706,13 @@ export const Default: Story = {
         console.log('Column sorted:', columnId, direction);
       },
       onColumnPin: (columnId, pinned) => {
-        console.log('Column pinned:', columnId, pinned);
+        console.log('📌 [STORY] ========== onColumnPin CALLBACK ==========');
+        console.log('📌 [STORY] columnId:', columnId);
+        console.log('📌 [STORY] pinned:', pinned);
+        console.log('📌 [STORY] Stack trace:', new Error().stack?.split('\n').slice(1, 4).join('\n'));
+        // El sistema interno ya actualiza el estado y re-renderiza
+        // Este callback es solo para notificar cambios externos si es necesario
+        console.log('📌 [STORY] ========== FIN onColumnPin CALLBACK ==========');
       },
       onRowSelect: (rowId, selected) => {
         console.log('Row selected:', rowId, selected);
@@ -646,21 +724,74 @@ export const Default: Story = {
 
     // Agregar el contenedor de la tabla al contenedor principal
     container.appendChild(tableContainer);
+    console.log(`📖 [STORY] Contenedor agregado al DOM. ID:`, tableContainerId);
 
     // Inicializar la tabla después de que se monte en el DOM
-    setTimeout(() => {
-      try {
-        createDataTable(options);
-      } catch (error) {
-        console.error('Error creating data table:', error);
+    // Usar requestAnimationFrame para asegurar que el DOM esté listo
+    console.log(`📖 [STORY] Tipos de columna:`, {
+      columnType1,
+      columnType2,
+      columnType3,
+      columnType4,
+      columnsCount: columns.length
+    });
+    console.log(`📖 [STORY] Container ID:`, tableContainerId);
+    
+    // Verificar si ya hay una tabla en el contenedor antes de crear una nueva
+    // Esto previene renderizados duplicados cuando Storybook llama al render múltiples veces
+    const checkAndCreateTable = () => {
+      const containerElement = document.getElementById(tableContainerId);
+      if (!containerElement) {
+        console.warn(`⚠️ [STORY] Contenedor ${tableContainerId} no encontrado en DOM`);
+        return false;
       }
-    }, 100);
+      
+      // Verificar si ya hay una tabla en este contenedor
+      const existingTable = containerElement.querySelector('.ubits-data-table');
+      const existingScrollable = containerElement.querySelector('.ubits-data-table__scrollable-container');
+      
+      if (existingTable || existingScrollable) {
+        console.log(`📖 [STORY] ⚠️ Ya existe una tabla en el contenedor, omitiendo creación`);
+        return false;
+      }
+      
+      console.log(`📖 [STORY] Contenedor encontrado, creando tabla...`);
+      console.log(`📖 [STORY] Opciones pasadas a createDataTable:`, {
+        containerId: options.containerId,
+        columnsCount: options.columns.length,
+        showColumnMenu: options.showColumnMenu,
+        columnsPinned: options.columns.filter(col => col.pinned).map(col => col.id)
+      });
+      const tableInstance = createDataTable(options);
+      console.log(`📖 [STORY] ✅ Tabla creada, instancia:`, tableInstance);
+      
+      // Guardar referencia a la instancia para poder inspeccionarla
+      (window as any).__storybookDataTableInstance = tableInstance;
+      console.log(`📖 [STORY] Instancia guardada en window.__storybookDataTableInstance`);
+      
+      return true;
+    };
+    
+    requestAnimationFrame(() => {
+      try {
+        if (!checkAndCreateTable()) {
+          // Si no se pudo crear, reintentar después de un pequeño delay
+          setTimeout(() => {
+            checkAndCreateTable();
+          }, 50);
+        }
+      } catch (error) {
+        console.error(`❌ [STORY] Error creating data table:`, error);
+      }
+      console.log(`📖 [STORY] ========== FIN RENDER [${renderId}] ==========`);
+    });
 
     return container;
   },
   args: {
-    columnReorderable: false,
-    rowReorderable: false,
+    // Valores por defecto coinciden con la web
+    columnReorderable: true,
+    rowReorderable: true,
     rowExpandable: true,
     columnSortable: true,
     showCheckbox: true,
@@ -670,11 +801,11 @@ export const Default: Story = {
     checkboxSticky: false,
     dragHandleSticky: false,
     expandSticky: false,
-    columnsCount: 4,
-    columnType1: 'nombre-avatar',
+    columnsCount: 3, // Coincide con la web (3 columnas por defecto)
+    columnType1: 'nombre', // Coincide con la web (nombre simple, no nombre-avatar)
     columnType2: 'correo',
     columnType3: 'estado',
-    columnType4: 'progreso',
+    columnType4: 'nombre', // Cambiado de 'progreso' para que coincida mejor
     column1AvatarVariant: 'initials',
     column1Editable: false,
     column2EmailClickable: true,
@@ -682,6 +813,11 @@ export const Default: Story = {
     column3RadioLabel: false,
     column3ToggleLabel: false,
     column3CheckboxLabel: false,
+    showPagination: false,
+    currentPage: 1,
+    itemsPerPage: 10,
+    paginationVariant: 'default',
+    paginationSize: 'md',
   },
 };
 

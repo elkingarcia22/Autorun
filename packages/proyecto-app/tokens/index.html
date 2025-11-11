@@ -14838,6 +14838,9 @@ Reglas Importantes:
               itemsPerPage: state.itemsPerPage || 10,
               paginationVariant: state.paginationVariant || 'default',
               paginationSize: state.paginationSize || 'md',
+              // Lazy load: activo por defecto si no hay paginación
+              lazyLoad: state.showPagination === true ? false : true,
+              lazyLoadItemsPerBatch: 10,
               onPageChange: (page) => {
                 state.currentPage = page;
                 window.updateDataTablePreview(componentId);
@@ -14846,6 +14849,9 @@ Reglas Importantes:
                 state.itemsPerPage = itemsPerPage;
                 state.currentPage = 1;
                 window.updateDataTablePreview(componentId);
+              },
+              onLazyLoad: (loadedItems, totalItems) => {
+                console.log('📦 [LAZY LOAD] Items cargados:', loadedItems, 'de', totalItems);
               },
               onRowSelect: (rowId, selected) => {
                 console.log('Fila seleccionada:', rowId, selected);

@@ -13,7 +13,45 @@
       "variants": ["primary", "secondary", "tertiary"],
       "sizes": ["xs", "sm", "md", "lg", "xl"],
       "states": ["default", "hover", "active", "disabled", "loading"],
-      "features": ["icon-left", "icon-right", "icon-only", "badge", "dropdown"]
+      "features": [
+        "icon-left",
+        "icon-right",
+        "icon-only",
+        "badge",
+        "dropdown",
+        "tooltip-ubits",
+        "spinner-ubits"
+      ],
+      "tooltip": {
+        "enabled": "Solo para botones icon-only (iconPosition: 'only' o iconOnly: true)",
+        "options": {
+          "showTooltip": "boolean - Activar/desactivar tooltip",
+          "tooltipText": "string - Texto del tooltip"
+        },
+        "implementation": "Usa componente Tooltip UBITS (ubits-tooltip) con tail-bottom, posicionado arriba del botón",
+        "behavior": "Aparece inmediatamente al hacer hover, desaparece al quitar el hover",
+        "styling": "Ancho adaptativo al contenido (width: auto, min-width: fit-content, max-width: 240px)",
+        "positioning": "Centrado horizontalmente sobre el botón, tail apunta hacia abajo"
+      },
+      "loading": {
+        "spinner": "Usa componente Spinner UBITS en lugar de FontAwesome",
+        "sizeMapping": {
+          "xs": "xs",
+          "sm": "sm",
+          "md": "sm",
+          "lg": "md",
+          "xl": "lg"
+        },
+        "variantMapping": {
+          "primary": "primary",
+          "secondary": "secondary",
+          "tertiary": "secondary"
+        }
+      },
+      "iconPosition": {
+        "options": ["left", "right", "only"],
+        "note": "Cuando iconPosition es 'only', se aplica automáticamente iconOnly: true"
+      }
     },
     "badge": {
       "name": "Badge",
@@ -364,6 +402,42 @@
         "Botones dentro del popover mantienen sus transforms correctamente"
       ]
     },
+    "tooltip": {
+      "name": "Tooltip",
+      "package": "@ubits/tooltip",
+      "path": "packages/addons/tooltip",
+      "provider": "createTooltip",
+      "globalFunction": "window.createTooltip",
+      "cssFile": "packages/addons/tooltip/src/styles/tooltip.css",
+      "storybookStory": "Tooltip.stories.ts",
+      "variants": [],
+      "sizes": ["sm", "md", "lg"],
+      "states": ["closed", "open"],
+      "features": [
+        "3 tamaños base (sm: 240px, md: 320px, lg: 400px) con ancho adaptativo al contenido",
+        "Ancho adaptativo: width: auto, min-width: fit-content, max-width según tamaño base",
+        "Tail (flecha) posicionable (top, bottom, left, right)",
+        "Header opcional con título (showTitle controla visibilidad)",
+        "Body con descripción (showDescription controla visibilidad)",
+        "Footer con botones opcionales (tertiary, secondary, primary)",
+        "Botones con iconos opcionales (showPrimaryButtonIcon, showSecondaryButtonIcon, showTertiaryButtonIcon)",
+        "Ancho dinámico según cantidad de botones (min 420px para 3 botones, min 360px para 2 botones)",
+        "Tamaño de botones mapeado al tamaño del tooltip (sm->xs, md->sm, lg->md)",
+        "Posicionamiento absoluto o relativo a elemento de referencia",
+        "Animaciones suaves de apertura/cierre con scale y opacity",
+        "Padding-top automático en body cuando no hay header",
+        "Usa tokens UBITS exclusivamente",
+        "Usa componente Button existente para footer",
+        "Integración con botones icon-only para tooltips contextuales"
+      ],
+      "buttonIntegration": {
+        "description": "El componente Tooltip se integra automáticamente con botones icon-only",
+        "trigger": "Cuando button.iconPosition === 'only' && button.showTooltip === true && button.tooltipText existe",
+        "positioning": "Tooltip aparece arriba del botón con tail-bottom (tail apunta hacia abajo)",
+        "styling": "Ancho adaptativo al contenido del texto, sin espacio en blanco extra",
+        "behavior": "Aparece inmediatamente al hacer hover, desaparece al quitar el hover"
+      }
+    },
     "scrollbar": {
       "name": "Scrollbar",
       "package": "@ubits/scroll",
@@ -376,6 +450,31 @@
       "sizes": [],
       "states": ["default"],
       "features": ["Orientación vertical y horizontal", "Sincronización automática con elemento scrollable", "Aparece en hover", "Se adapta al tamaño del contenido", "Navegación por clic en scrollbar", "Responsive (2px en móvil)", "Métodos update/destroy", "Usa tokens UBITS exclusivamente"]
+    },
+    "skeleton": {
+      "name": "Skeleton",
+      "package": "@ubits/skeleton",
+      "path": "packages/addons/skeleton",
+      "provider": "createSkeleton",
+      "globalFunction": "window.createSkeleton",
+      "cssFile": "packages/addons/skeleton/src/styles/skeleton.css",
+      "storybookStory": "Skeleton.stories.ts",
+      "variants": ["text", "circle", "rectangle", "custom"],
+      "sizes": ["xs", "sm", "md", "lg", "xl"],
+      "states": ["default", "animated"],
+      "features": [
+        "4 variantes (text, circle, rectangle, custom)",
+        "5 tamaños (xs, sm, md, lg, xl)",
+        "Ancho configurable (número en px, porcentaje, o 'full' para 100%)",
+        "Alto configurable (número en px o porcentaje)",
+        "Múltiples líneas de texto (lines: número de líneas, última línea 60% de ancho)",
+        "Animación de pulso opcional (animated: true/false)",
+        "Variante text: líneas de texto placeholder",
+        "Variante circle: círculo para avatares",
+        "Variante rectangle: rectángulo para imágenes/cards",
+        "Variante custom: forma personalizada con width/height",
+        "Usa tokens UBITS exclusivamente"
+      ]
     },
     "progress-bar": {
       "name": "Progress Bar",
@@ -402,6 +501,67 @@
       "sizes": [],
       "states": ["default", "dragging", "error", "disabled", "filled"],
       "features": ["5 estados (default, dragging, error, disabled, filled)", "Estado filled muestra archivo subido con icono de check verde", "Drag & drop", "Mostrar nombre y extensión de archivo", "Tamaño de archivo formateado (KB, MB, GB)", "Botones de acción opcionales (re-subir, eliminar)", "Estado filled solo muestra botón eliminar", "Iconos diferentes según estado", "Callback para onClick, onReupload, onRemove, onDragOver, onDrop", "Métodos update/destroy", "Usa tokens UBITS exclusivamente"]
+    },
+    "empty-state": {
+      "name": "Empty State",
+      "package": "@ubits/empty-state",
+      "path": "packages/addons/empty-state",
+      "provider": "createEmptyState",
+      "globalFunction": "window.createEmptyState",
+      "cssFile": "packages/addons/empty-state/src/styles/empty-state.css",
+      "storybookStory": "EmptyState.stories.ts",
+      "variants": ["default"],
+      "sizes": [],
+      "states": ["default"],
+      "features": [
+        "Una sola variante: default",
+        "Icono: 25px font-size, 41px width/height, fondo bg-2, color fg-1-high, padding interno 8px",
+        "Título: body-md semibold, centrado",
+        "Descripción: body-md regular, centrado",
+        "Botón primario opcional (showPrimaryButton controla visibilidad)",
+        "Botón secundario opcional (showSecondaryButton controla visibilidad)",
+        "Botones con iconos opcionales (showPrimaryButtonIcon, showSecondaryButtonIcon)",
+        "Iconos configurables (primaryButtonIcon, secondaryButtonIcon)",
+        "Botón primario a la derecha, secundario a la izquierda",
+        "Contenido centrado horizontal y verticalmente",
+        "Usa tokens UBITS exclusivamente",
+        "Usa componente Button existente para acciones"
+      ]
+    },
+    "spinner": {
+      "name": "Spinner",
+      "package": "@ubits/spinner",
+      "path": "packages/addons/spinner",
+      "provider": "createSpinner",
+      "globalFunction": "window.createSpinner",
+      "cssFile": "packages/addons/spinner/src/styles/spinner.css",
+      "storybookStory": "Spinner.stories.ts",
+      "variants": ["primary", "secondary", "success", "warning", "error", "info"],
+      "sizes": ["xs", "sm", "md", "lg", "xl"],
+      "states": ["default", "animated"],
+      "features": [
+        "5 tamaños (xs, sm, md, lg, xl)",
+        "6 variantes de color (primary, secondary, success, warning, error, info)",
+        "Estado animated para rotación continua",
+        "Integrado en botones para estado loading",
+        "Mapeo automático de tamaño y variante según el botón que lo contiene",
+        "Usa tokens UBITS exclusivamente"
+      ],
+      "buttonIntegration": {
+        "description": "El componente Spinner se integra automáticamente en botones con estado loading",
+        "sizeMapping": {
+          "button-xs": "spinner-xs",
+          "button-sm": "spinner-sm",
+          "button-md": "spinner-sm",
+          "button-lg": "spinner-md",
+          "button-xl": "spinner-lg"
+        },
+        "variantMapping": {
+          "button-primary": "spinner-primary",
+          "button-secondary": "spinner-secondary",
+          "button-tertiary": "spinner-secondary"
+        }
+      }
     }
   },
   "tokens": {

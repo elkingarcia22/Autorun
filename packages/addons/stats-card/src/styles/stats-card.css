@@ -1,0 +1,319 @@
+/* ========================================
+   UBITS STATS CARD COMPONENT
+   Componente de tarjeta de estadísticas
+   Usando tokens UBITS
+   ======================================== */
+
+/* ========================================
+   BASE STATS CARD STYLES
+   ======================================== */
+
+.ubits-stats-card {
+  /* Base styles usando tokens UBITS */
+  display: flex;
+  flex-direction: column;
+  background: var(--ubits-bg-1);
+  border-radius: var(--ubits-radius-md);
+  padding: var(--ubits-spacing-lg);
+  gap: var(--ubits-spacing-md);
+  font-family: var(--font-sans);
+  transition: all 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Variante con borde */
+.ubits-stats-card--bordered {
+  border: 1px solid var(--ubits-border-1);
+}
+
+/* Variante con elevación/sombra */
+.ubits-stats-card--elevated {
+  box-shadow: var(--ubits-shadow-sm);
+}
+
+.ubits-stats-card--elevated:hover {
+  box-shadow: var(--ubits-shadow-md);
+}
+
+/* ========================================
+   VARIANTS
+   ======================================== */
+
+.ubits-stats-card--default {
+  background: var(--ubits-bg-1);
+  color: var(--ubits-fg-1-high);
+}
+
+.ubits-stats-card--highlight {
+  background: var(--ubits-accent-brand);
+  color: var(--ubits-fg-on-brand);
+  border-color: var(--ubits-accent-brand);
+}
+
+.ubits-stats-card--success {
+  background: var(--ubits-feedback-success-bg);
+  color: var(--ubits-feedback-success-fg);
+  border-color: var(--ubits-feedback-success-border);
+}
+
+.ubits-stats-card--warning {
+  background: var(--ubits-feedback-warning-bg);
+  color: var(--ubits-feedback-warning-fg);
+  border-color: var(--ubits-feedback-warning-border);
+}
+
+.ubits-stats-card--error {
+  background: var(--ubits-feedback-error-bg);
+  color: var(--ubits-feedback-error-fg);
+  border-color: var(--ubits-feedback-error-border);
+}
+
+.ubits-stats-card--info {
+  background: var(--ubits-feedback-info-bg);
+  color: var(--ubits-feedback-info-fg);
+  border-color: var(--ubits-feedback-info-border);
+}
+
+/* ========================================
+   SIZES
+   ======================================== */
+
+.ubits-stats-card--sm {
+  padding: var(--ubits-spacing-md);
+  gap: var(--ubits-spacing-sm);
+}
+
+.ubits-stats-card--md {
+  padding: var(--ubits-spacing-lg);
+  gap: var(--ubits-spacing-md);
+}
+
+.ubits-stats-card--lg {
+  padding: var(--ubits-spacing-xl);
+  gap: var(--ubits-spacing-lg);
+}
+
+/* ========================================
+   HEADER
+   ======================================== */
+
+.ubits-stats-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ubits-spacing-sm);
+}
+
+.ubits-stats-card__title {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-weight: var(--weight-semibold);
+  color: var(--ubits-fg-1-high);
+  flex: 1;
+}
+
+.ubits-stats-card__action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: var(--ubits-fg-2-medium);
+  cursor: pointer;
+  padding: var(--ubits-spacing-xs);
+  border-radius: var(--ubits-radius-sm);
+  transition: all 0.2s ease;
+}
+
+.ubits-stats-card__action:hover {
+  background: var(--ubits-bg-2);
+  color: var(--ubits-fg-1-high);
+}
+
+.ubits-stats-card__action:focus {
+  outline: 2px solid var(--ubits-focus-ring);
+  outline-offset: 2px;
+}
+
+/* ========================================
+   BODY
+   ======================================== */
+
+.ubits-stats-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ubits-spacing-md);
+}
+
+/* ========================================
+   GRID LAYOUT
+   ======================================== */
+
+.ubits-stats-card__grid {
+  display: grid;
+  gap: var(--ubits-spacing-md);
+  width: 100%;
+}
+
+.ubits-stats-card__grid--1 {
+  grid-template-columns: 1fr;
+}
+
+.ubits-stats-card__grid--2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.ubits-stats-card__grid--3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.ubits-stats-card__grid--4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+/* Responsive: en móvil, siempre 1 columna */
+@media (max-width: 768px) {
+  .ubits-stats-card__grid--2,
+  .ubits-stats-card__grid--3,
+  .ubits-stats-card__grid--4 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ========================================
+   LIST LAYOUT
+   ======================================== */
+
+.ubits-stats-card__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ubits-spacing-md);
+}
+
+/* ========================================
+   STAT ITEM
+   ======================================== */
+
+.ubits-stats-card__item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--ubits-spacing-sm);
+  padding: var(--ubits-spacing-sm);
+  border-radius: var(--ubits-radius-sm);
+  transition: background 0.2s ease;
+}
+
+.ubits-stats-card__item:hover {
+  background: var(--ubits-bg-2);
+}
+
+.ubits-stats-card__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  color: var(--ubits-fg-2-medium);
+}
+
+.ubits-stats-card__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ubits-spacing-xs);
+  flex: 1;
+  min-width: 0;
+}
+
+.ubits-stats-card__label {
+  color: var(--ubits-fg-2-medium);
+  font-weight: var(--weight-regular);
+  margin: 0;
+}
+
+.ubits-stats-card__value {
+  color: var(--ubits-fg-1-high);
+  font-weight: var(--weight-semibold);
+  margin: 0;
+  line-height: 1.2;
+}
+
+.ubits-stats-card__description {
+  color: var(--ubits-fg-2-low);
+  margin: 0;
+  font-weight: var(--weight-regular);
+}
+
+/* ========================================
+   CHANGE/TREND INDICATOR
+   ======================================== */
+
+.ubits-stats-card__change {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ubits-spacing-xs);
+  padding: 2px 6px;
+  border-radius: var(--ubits-radius-xs);
+  font-weight: var(--weight-medium);
+  margin-top: var(--ubits-spacing-xs);
+}
+
+.ubits-stats-card__change--increase {
+  background: var(--ubits-feedback-success-bg);
+  color: var(--ubits-feedback-success-fg);
+}
+
+.ubits-stats-card__change--decrease {
+  background: var(--ubits-feedback-error-bg);
+  color: var(--ubits-feedback-error-fg);
+}
+
+.ubits-stats-card__change--neutral {
+  background: var(--ubits-bg-2);
+  color: var(--ubits-fg-2-medium);
+}
+
+.ubits-stats-card__change i {
+  font-size: 10px;
+}
+
+/* ========================================
+   CLICKABLE CARD
+   ======================================== */
+
+.ubits-stats-card[data-clickable="true"] {
+  cursor: pointer;
+}
+
+.ubits-stats-card[data-clickable="true"]:hover {
+  background: var(--ubits-bg-2);
+}
+
+.ubits-stats-card[data-clickable="true"]:active {
+  background: var(--ubits-bg-3);
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+@media (max-width: 1024px) {
+  .ubits-stats-card__grid--3,
+  .ubits-stats-card__grid--4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .ubits-stats-card {
+    padding: var(--ubits-spacing-md);
+  }
+  
+  .ubits-stats-card__grid--2,
+  .ubits-stats-card__grid--3,
+  .ubits-stats-card__grid--4 {
+    grid-template-columns: 1fr;
+  }
+}
+

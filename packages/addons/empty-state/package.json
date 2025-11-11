@@ -1,0 +1,16 @@
+{
+  "name": "@ubits/empty-state",
+  "version": "1.0.0",
+  "description": "UBITS Empty State Component - Empty state displays",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite build --watch"
+  },
+  "keywords": ["ubits", "empty-state", "empty", "state", "component", "ui"],
+  "author": "UBITS",
+  "license": "MIT"
+}
+

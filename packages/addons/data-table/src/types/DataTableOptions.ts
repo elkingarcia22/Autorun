@@ -265,6 +265,22 @@ export interface DataTableOptions {
   paginationSize?: 'sm' | 'md' | 'lg';
 
   /**
+   * Si se activa el lazy load (infinite scroll) - por defecto: true si showPagination es false
+   * Si showPagination está activo, el lazy load se desactiva automáticamente
+   */
+  lazyLoad?: boolean;
+
+  /**
+   * Número de items a cargar por batch en lazy load (por defecto: 10)
+   */
+  lazyLoadItemsPerBatch?: number;
+
+  /**
+   * Callback cuando se cargan más items en lazy load
+   */
+  onLazyLoad?: (loadedItems: number, totalItems: number) => void;
+
+  /**
    * Clases CSS adicionales
    */
   className?: string;

@@ -120,5 +120,16 @@ export interface ButtonOptions {
     value?: string;
     onClick?: (event: MouseEvent, item: { label: string; value?: string }) => void;
   }>;
+
+  /**
+   * Mostrar tooltip al hacer hover (solo para botones icon-only)
+   * @default false
+   */
+  showTooltip?: boolean;
+
+  /**
+   * Texto del tooltip (solo para botones icon-only)
+   */
+  tooltipText?: string;
 }
 

@@ -20,9 +20,14 @@ import '../../addons/subnav/src/styles/subnav.css'
 import '../../addons/tabbar/src/styles/tabbar.css'
 import '../../addons/card/src/styles/card.css'
 import '../../addons/data-table/src/styles/data-table.css'
+import '../../addons/pagination/src/styles/pagination.css'
 import '../../addons/checkbox/src/styles/checkbox.css'
 import '../../addons/toggle/src/styles/toggle.css'
 import '../../addons/radio-button/src/styles/radio-button.css'
+import '../../addons/empty-state/src/styles/empty-state.css'
+import '../../addons/tooltip/src/styles/tooltip.css'
+import '../../addons/spinner/src/styles/spinner.css'
+import '../../addons/calendar/src/styles/calendar.css'
 import './fontawesome-icons.css'
 
 const preview: Preview = {
@@ -56,6 +61,23 @@ const preview: Preview = {
       document.documentElement.setAttribute('data-theme', theme)
       // Asegurar que el fondo del body sea diferente al sidebar
       document.body.style.backgroundColor = 'var(--ubits-bg-2)'
+      
+      // Agregar CSS para hacer transparente el contenedor de Storybook
+      const style = document.createElement('style')
+      style.textContent = `
+        .sb-previewBlock {
+          background: transparent !important;
+          border: none !important;
+        }
+        .sb-wrapper {
+          background: transparent !important;
+        }
+        #storybook-root {
+          background: transparent !important;
+        }
+      `
+      document.head.appendChild(style)
+      
       return story()
     },
   ],
