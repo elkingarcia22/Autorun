@@ -2,6 +2,38 @@
    DATA TABLE
    ======================================== */
 
+/* ========================================
+   DATA TABLE CONTAINER (wrapper para tabla + paginador)
+   ======================================== */
+.ubits-data-table__container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* ========================================
+   PAGINATION WRAPPER
+   ======================================== */
+.ubits-data-table__pagination-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: var(--ubits-spacing-md, 16px);
+  margin-top: var(--ubits-spacing-md, 16px);
+  border-top: 1px solid var(--ubits-border-1);
+  width: 100%;
+  box-sizing: border-box;
+  /* Asegurar que esté fuera del contenedor scrollable */
+  flex-shrink: 0;
+}
+
+.ubits-data-table__pagination {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 /* Tabla principal - sin contenedor adicional */
 .ubits-data-table {
     position: relative;
@@ -591,8 +623,9 @@
     margin: 0 auto !important;
 }
 
-/* Otras columnas de checkbox que empiezan con checkbox- (excepto checkbox-2) */
-.ubits-data-table__cell--checkbox[data-column-id^="checkbox-"]:not([data-column-id="checkbox-2"]) {
+/* Otras columnas de checkbox fijas que empiezan con checkbox- (excepto checkbox-2 y checkbox-col) */
+/* IMPORTANTE: Solo aplicar a columnas fijas reales, NO a checkbox-col que es de tipo checkbox */
+.ubits-data-table__cell--checkbox[data-column-id^="checkbox-"]:not([data-column-id="checkbox-2"]):not([data-column-id="checkbox-col"]) {
     text-align: center;
     padding: 8px var(--ubits-spacing-md, 16px) !important;
     padding-left: var(--ubits-spacing-md, 16px) !important;
@@ -608,10 +641,12 @@
 }
 
 /* Celdas de checkbox - tipo 'checkbox' (pueden tener label) */
-.ubits-data-table__cell--checkbox:not([data-column-id="checkbox"]):not([data-column-id^="checkbox-"]) {
-    text-align: left;
-    padding: var(--ubits-spacing-sm, 12px) var(--ubits-spacing-md, 16px);
-    padding-left: 10px;
+/* IMPORTANTE: Solo aplicar a columnas de tipo checkbox que NO sean columnas fijas */
+/* Excluir checkbox, checkbox-2, pero incluir checkbox-col y otros IDs de tipo checkbox */
+.ubits-data-table__cell--checkbox:not([data-column-id="checkbox"]):not([data-column-id="checkbox-2"]) {
+    text-align: left !important;
+    padding: var(--ubits-spacing-sm, 12px) var(--ubits-spacing-md, 16px) !important;
+    padding-left: 10px !important;
     box-sizing: border-box;
 }
 
@@ -620,9 +655,9 @@
 }
 
 /* Checkbox en columna especial - sin label - FORZAR CENTRADO */
+/* IMPORTANTE: Solo aplicar a columnas fijas (checkbox, checkbox-2), NO a checkbox-col */
 .ubits-data-table__cell--checkbox[data-column-id="checkbox"] .ubits-checkbox,
-.ubits-data-table__cell--checkbox[data-column-id="checkbox-2"] .ubits-checkbox,
-.ubits-data-table__cell--checkbox[data-column-id^="checkbox-"] .ubits-checkbox {
+.ubits-data-table__cell--checkbox[data-column-id="checkbox-2"] .ubits-checkbox {
     margin: 0 auto !important;
     display: flex !important;
     justify-content: center !important;
@@ -633,21 +668,28 @@
 }
 
 /* Sobrescribir TODOS los estilos del componente checkbox base */
+/* IMPORTANTE: Solo aplicar a columnas fijas (checkbox, checkbox-2), NO a checkbox-col */
 .ubits-data-table__cell--checkbox[data-column-id="checkbox"] .ubits-checkbox,
-.ubits-data-table__cell--checkbox[data-column-id="checkbox-2"] .ubits-checkbox,
-.ubits-data-table__cell--checkbox[data-column-id^="checkbox-"] .ubits-checkbox {
+.ubits-data-table__cell--checkbox[data-column-id="checkbox-2"] .ubits-checkbox {
     align-items: center !important;
     justify-content: center !important;
 }
 
+/* Asegurar que checkbox-col y otras columnas de tipo checkbox NO se centren */
+.ubits-data-table__cell--checkbox:not([data-column-id="checkbox"]):not([data-column-id="checkbox-2"]) .ubits-checkbox {
+    align-items: center !important;
+    justify-content: flex-start !important;
+}
+
 /* Checkbox en columnas de tipo 'checkbox' - pueden tener label */
-.ubits-data-table__cell--checkbox:not([data-column-id="checkbox"]):not([data-column-id^="checkbox-"]) .ubits-checkbox {
-    margin: 0;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    width: auto;
-    gap: var(--ubits-spacing-xs, 4px);
+/* IMPORTANTE: Aplicar a columnas de tipo checkbox que NO sean columnas fijas (checkbox-col, etc.) */
+.ubits-data-table__cell--checkbox:not([data-column-id="checkbox"]):not([data-column-id="checkbox-2"]) .ubits-checkbox {
+    margin: 0 !important;
+    display: flex !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
+    width: auto !important;
+    gap: var(--ubits-spacing-xs, 4px) !important;
 }
 
 /* Asegurar que el checkbox se mantenga alineado a la izquierda */
@@ -657,9 +699,10 @@
     height: 20px !important;
 }
 
-/* Para la columna especial de checkbox (id === 'checkbox'), ocultar el label siempre */
+/* Para la columna especial de checkbox (id === 'checkbox' o 'checkbox-2'), ocultar el label siempre */
+/* IMPORTANTE: Solo aplicar a columnas fijas, NO a checkbox-col */
 .ubits-data-table__cell--checkbox[data-column-id="checkbox"] .ubits-checkbox .ubits-checkbox__text-content,
-.ubits-data-table__cell--checkbox[data-column-id^="checkbox-"] .ubits-checkbox .ubits-checkbox__text-content {
+.ubits-data-table__cell--checkbox[data-column-id="checkbox-2"] .ubits-checkbox .ubits-checkbox__text-content {
     display: none;
     flex-direction: column;
     gap: var(--ubits-spacing-none, 0px);
@@ -669,12 +712,13 @@
 }
 
 /* Para columnas de tipo 'checkbox' (no la columna especial), permitir mostrar el label */
-.ubits-data-table__cell--checkbox:not([data-column-id="checkbox"]):not([data-column-id^="checkbox-"]) .ubits-checkbox .ubits-checkbox__text-content {
-    display: flex;
-    flex-direction: column;
-    gap: var(--ubits-spacing-xs, 4px);
-    flex: 1;
-    min-width: 0;
+/* IMPORTANTE: Aplicar a columnas de tipo checkbox que NO sean columnas fijas (checkbox-col, etc.) */
+.ubits-data-table__cell--checkbox:not([data-column-id="checkbox"]):not([data-column-id="checkbox-2"]) .ubits-checkbox .ubits-checkbox__text-content {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: var(--ubits-spacing-xs, 4px) !important;
+    flex: 1 !important;
+    min-width: 0 !important;
 }
 
 /* Ocultar label solo si está vacío */
@@ -885,11 +929,12 @@
 }
 
 .ubits-data-table__calendar-container {
-    position: absolute;
-    top: 100%;
-    left: 0;
+    /* Position se establece inline como 'fixed' para evitar problemas con overflow de contenedores padre */
+    /* Los valores de top y left se calculan dinámicamente en JavaScript usando getBoundingClientRect */
     z-index: 99999;
-    margin-top: 4px;
+    margin: 0;
+    /* Asegurar que el contenedor no se corte por overflow de padres */
+    contain: none;
 }
 
 .ubits-data-table__date-input {
@@ -1096,18 +1141,20 @@
 /* IMPORTANTE: Para que sticky funcione, el contenedor padre debe tener overflow-x: auto o scroll */
 .ubits-data-table__column-header--pinned {
     position: sticky !important;
-    /* left se establece inline desde el código */
+    /* left se establece inline desde el código, pero establecer 0 como base para la primera columna */
+    left: 0 !important;
     z-index: 13 !important;
     background-color: var(--ubits-bg-1) !important;
-    /* CRÍTICO: Asegurar que left: 0 esté presente incluso si es la primera columna */
-    /* El left específico se aplicará inline, pero necesitamos un valor base */
+    /* CRÍTICO: El left específico se aplicará inline y sobrescribirá este valor base */
 }
 
 .ubits-data-table__cell--pinned {
     position: sticky !important;
-    /* left se establece inline desde el código */
+    /* left se establece inline desde el código, pero establecer 0 como base para la primera columna */
+    left: 0 !important;
     z-index: 12 !important;
     background-color: var(--ubits-bg-1) !important;
+    /* CRÍTICO: El left específico se aplicará inline y sobrescribirá este valor base */
 }
 
 /* Asegurar que la tabla tenga overflow-x cuando hay columnas fijadas, incluso sin scroll horizontal activo */
@@ -1135,11 +1182,13 @@
 }
 
 /* Dropdown del menú de columnas */
+/* IMPORTANTE: z-index muy alto para que quede por encima de columnas fijadas (z-index: 10-12) */
+/* NOTA: Los estilos inline sobrescribirán estos valores base cuando sea necesario */
 .ubits-data-table__column-menu-dropdown {
     position: absolute;
     top: 100%;
     right: 0;
-    z-index: 1000;
+    z-index: 10000;
     margin-top: 4px;
     display: none;
     width: 160px;
@@ -1149,10 +1198,13 @@
 }
 
 /* El contenedor del dropdown no debe tener fondo ni sombra, el List lo maneja */
+/* IMPORTANTE: Asegurar que el List también tenga z-index alto para quedar por encima de columnas fijadas */
 .ubits-data-table__column-menu-dropdown .ubits-list {
     width: 100%;
     max-width: 100%;
     min-width: 0;
+    position: relative !important;
+    z-index: inherit !important;
     /* El List ya tiene sus propios estilos: background, border-radius, box-shadow */
     margin: 0;
     padding: 0;

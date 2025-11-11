@@ -14,6 +14,8 @@
     <link rel="stylesheet" href="../../addons/sidebar/src/styles/sidebar.css" />
     <link rel="stylesheet" href="../../addons/subnav/src/styles/subnav.css" />
     <link rel="stylesheet" href="../../addons/tabbar/src/styles/tabbar.css" />
+    <link rel="stylesheet" href="../../addons/pagination/src/styles/pagination.css" />
+    <link rel="stylesheet" href="../../addons/data-table/src/styles/data-table.css" />
     <!-- Button Component CSS - COMPLETO INLINE (porque @import falla con file://) -->
     <style id="button-component-css">
       /* ========================================
@@ -76,11 +78,19 @@
         pointer-events: none;
       }
       .ubits-button--primary:disabled:not(.ubits-button--loading),
-      .ubits-button--secondary:disabled:not(.ubits-button--loading),
-      .ubits-button--tertiary:disabled:not(.ubits-button--loading) {
+      .ubits-button--secondary:disabled:not(.ubits-button--loading) {
         background: var(--ubits-bg-disabled-button) !important;
         color: var(--ubits-fg-on-disabled-button) !important;
         border-color: var(--ubits-border-disabled-button) !important;
+        cursor: not-allowed;
+        pointer-events: none;
+      }
+      /* Tertiary disabled mantiene su estilo pero con opacidad reducida */
+      .ubits-button--tertiary:disabled:not(.ubits-button--loading) {
+        background: transparent !important;
+        color: var(--ubits-btn-tertiary-fg) !important;
+        border-color: transparent !important;
+        opacity: 0.5;
         cursor: not-allowed;
         pointer-events: none;
       }
@@ -115,6 +125,12 @@
         border: 1px solid var(--ubits-border-disabled-button);
         border-radius: 8px;
         pointer-events: none;
+      }
+      /* Tertiary disabled no debe tener el pseudo-elemento ::before */
+      .ubits-button--tertiary:disabled:not(.ubits-button--loading)::before,
+      .ubits-button--tertiary[aria-disabled="true"]:not(.ubits-button--loading)::before {
+        content: none;
+        border: none;
       }
 
       /* LOADING STATE - Mantener todos los estilos del botón */
@@ -5786,6 +5802,21 @@ Reglas Importantes:
               class: 'ubits-data-table',
               example: 'createDataTable({\n  columns: [...],\n  rows: [...],\n  columnReorderable: true,\n  rowReorderable: true,\n  onRowSelect: (rowId, selected) => {},\n  onSelectAll: (selected) => {},\n  onRowExpand: (rowId, expanded) => {}\n})',
               hasPreview: true
+            },
+            {
+              name: 'Pagination',
+              description: 'Componente Pagination UBITS para paginación de datos usando tokens UBITS, tipografía UBITS y componentes UBITS. Ideal para tablas y listas de datos.',
+              files: {
+                css: 'addons/pagination/src/styles/pagination.css',
+                ts: 'addons/pagination/src/PaginationProvider.ts'
+              },
+              variants: ['default', 'compact', 'minimal'],
+              sizes: ['sm', 'md', 'lg'],
+              states: [],
+              features: ['Botones de navegación (primera, anterior, siguiente, última)', 'Páginas visibles con elipsis', 'Información de items (1-10 de 100)', 'Selector de items por página', 'Variantes: default, compact, minimal', 'Tamaños: sm, md, lg', 'Usa tokens UBITS exclusivamente'],
+              class: 'ubits-pagination',
+              example: 'createPagination({\n  currentPage: 5,\n  totalPages: 20,\n  totalItems: 200,\n  itemsPerPage: 10,\n  variant: \'default\',\n  size: \'md\',\n  showInfo: true,\n  showItemsPerPage: true,\n  onPageChange: (page) => {},\n  onItemsPerPageChange: (itemsPerPage) => {}\n})',
+              hasPreview: true
             }
           ],
           'Contenido': [
@@ -6002,6 +6033,8 @@ Reglas Importantes:
                     window.updateSearchButtonPreview('search-button');
                   } else if (componentId === 'data-table' && typeof window.updateDataTablePreview === 'function') {
                     window.updateDataTablePreview('data-table');
+                  } else if (componentId === 'pagination' && typeof window.updatePaginationPreview === 'function') {
+                    window.updatePaginationPreview('pagination');
                   } else if (componentId === 'avatar' && typeof window.updateAvatarPreview === 'function') {
                     window.updateAvatarPreview('avatar');
                   } else if (componentId === 'drawer-navigation' && typeof window.updateDrawerPreview === 'function') {
@@ -7010,6 +7043,16 @@ Reglas Importantes:
                                   <span id="data-table-expand-sticky-status-${componentId}" style="font-size: 14px; color: var(--ubits-fg-1-high);">Deshabilitado</span>
                                 </label>
                               </div>
+                              
+                              <!-- Show Pagination -->
+                              <div style="flex: 0 0 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Mostrar Paginador</label>
+                                <label class="switch" style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                                  <input type="checkbox" id="data-table-show-pagination-${componentId}" onchange="setDataTableControl('showPagination', this.checked, '${componentId}')">
+                                  <span class="slider"></span>
+                                  <span id="data-table-show-pagination-status-${componentId}" style="font-size: 14px; color: var(--ubits-fg-1-high);">Deshabilitado</span>
+                                </label>
+                              </div>
                             </div>
                             
                             <!-- Selectores de Tipo de Columna (dinámicos) -->
@@ -7024,6 +7067,128 @@ Reglas Importantes:
                           <!-- PREVIEW -->
                           <div style="background: var(--ubits-bg-1); padding: 24px; border-radius: 8px; border: none; min-height: 400px;">
                             <div id="data-table-preview-${componentId}">
+                              <!-- Se generará dinámicamente -->
+                            </div>
+                          </div>
+                        </div>
+                      ` : ''}
+                      
+                      ${hasPreview && component.name === 'Pagination' ? `
+                        <!-- Preview Section for Pagination -->
+                        <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: none; margin-bottom: 24px;">
+                          <!-- CONTROLES ARRIBA -->
+                          <div style="margin-bottom: 24px;">
+                            <h4 style="margin: 0 0 20px 0; color: var(--ubits-fg-1-high); font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand-static-inverted);"></i>
+                              Controles
+                            </h4>
+                            
+                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
+                              <!-- Página Actual -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Página Actual</label>
+                                <input type="number" id="pagination-current-page-${componentId}" value="5" min="1" max="100" onchange="setPaginationControl('currentPage', parseInt(this.value) || 1, '${componentId}')" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                              
+                              <!-- Total de Páginas -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Total Páginas</label>
+                                <input type="number" id="pagination-total-pages-${componentId}" value="20" min="1" max="100" onchange="setPaginationControl('totalPages', parseInt(this.value) || 10, '${componentId}')" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                              
+                              <!-- Total Items -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Total Items</label>
+                                <input type="number" id="pagination-total-items-${componentId}" value="200" min="0" onchange="setPaginationControl('totalItems', parseInt(this.value) || 0, '${componentId}')" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                              
+                              <!-- Items por Página -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Items/Página</label>
+                                <input type="number" id="pagination-items-per-page-${componentId}" value="10" min="1" onchange="setPaginationControl('itemsPerPage', parseInt(this.value) || 10, '${componentId}')" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                              
+                              <!-- Variante -->
+                              <div style="flex: 0 0 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Variante</label>
+                                <select id="pagination-variant-select-${componentId}" onchange="setPaginationControl('variant', this.value, '${componentId}')" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: var(--font-body-sm-size, 13px); font-family: var(--font-sans); cursor: pointer; box-sizing: border-box;">
+                                  <option value="default" selected>Default</option>
+                                  <option value="compact">Compact</option>
+                                  <option value="minimal">Minimal</option>
+                                </select>
+                              </div>
+                              
+                              <!-- Tamaño -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Tamaño</label>
+                                <select id="pagination-size-select-${componentId}" onchange="setPaginationControl('size', this.value, '${componentId}')" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: var(--font-body-sm-size, 13px); font-family: var(--font-sans); cursor: pointer; box-sizing: border-box;">
+                                  <option value="sm">SM</option>
+                                  <option value="md" selected>MD</option>
+                                  <option value="lg">LG</option>
+                                </select>
+                              </div>
+                              
+                              <!-- Máximo Páginas Visibles -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Máx. Páginas</label>
+                                <input type="number" id="pagination-max-visible-${componentId}" value="7" min="3" max="15" onchange="setPaginationControl('maxVisiblePages', parseInt(this.value) || 7, '${componentId}')" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                              
+                              <!-- Mostrar Primera -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Primera</label>
+                                <label class="switch" style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                                  <input type="checkbox" id="pagination-show-first-${componentId}" checked onchange="setPaginationControl('showFirst', this.checked, '${componentId}')">
+                                  <span class="slider"></span>
+                                  <span id="pagination-show-first-status-${componentId}" style="font-size: 14px; color: var(--ubits-fg-1-high);">Activado</span>
+                                </label>
+                              </div>
+                              
+                              <!-- Mostrar Última -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Última</label>
+                                <label class="switch" style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                                  <input type="checkbox" id="pagination-show-last-${componentId}" checked onchange="setPaginationControl('showLast', this.checked, '${componentId}')">
+                                  <span class="slider"></span>
+                                  <span id="pagination-show-last-status-${componentId}" style="font-size: 14px; color: var(--ubits-fg-1-high);">Activado</span>
+                                </label>
+                              </div>
+                              
+                              <!-- Mostrar Anterior/Siguiente -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Anterior/Siguiente</label>
+                                <label class="switch" style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                                  <input type="checkbox" id="pagination-show-prev-next-${componentId}" checked onchange="setPaginationControl('showPrevNext', this.checked, '${componentId}')">
+                                  <span class="slider"></span>
+                                  <span id="pagination-show-prev-next-status-${componentId}" style="font-size: 14px; color: var(--ubits-fg-1-high);">Activado</span>
+                                </label>
+                              </div>
+                              
+                              <!-- Mostrar Info -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Información</label>
+                                <label class="switch" style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                                  <input type="checkbox" id="pagination-show-info-${componentId}" checked onchange="setPaginationControl('showInfo', this.checked, '${componentId}')">
+                                  <span class="slider"></span>
+                                  <span id="pagination-show-info-status-${componentId}" style="font-size: 14px; color: var(--ubits-fg-1-high);">Activado</span>
+                                </label>
+                              </div>
+                              
+                              <!-- Mostrar Items por Página -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Selector Items</label>
+                                <label class="switch" style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                                  <input type="checkbox" id="pagination-show-items-per-page-${componentId}" checked onchange="setPaginationControl('showItemsPerPage', this.checked, '${componentId}')">
+                                  <span class="slider"></span>
+                                  <span id="pagination-show-items-per-page-status-${componentId}" style="font-size: 14px; color: var(--ubits-fg-1-high);">Activado</span>
+                                </label>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <!-- PREVIEW -->
+                          <div style="background: var(--ubits-bg-1); padding: 48px; border-radius: 8px; border: none; margin-bottom: 24px; display: flex; align-items: center; justify-content: center; min-height: 120px;">
+                            <div id="pagination-preview-${componentId}" style="width: 100%; display: flex; justify-content: center;">
                               <!-- Se generará dinámicamente -->
                             </div>
                           </div>
@@ -12580,6 +12745,11 @@ Reglas Importantes:
             checkboxSticky: false,
             dragHandleSticky: false,
             expandSticky: false,
+            showPagination: false,
+            currentPage: 1,
+            itemsPerPage: 10,
+            paginationVariant: 'default',
+            paginationSize: 'md',
             columnsCount: 3,
             columns: [
               {
@@ -12743,6 +12913,1086 @@ Reglas Importantes:
                 },
                 expanded: false,
               },
+              {
+                id: 11,
+                data: {
+                  nombre: 'Andrés Ramírez',
+                  'checkbox-2': false,
+                  email: 'andres.ramirez@empresa.com',
+                  estado: 'Activo',
+                  area: 'Desarrollo',
+                  avatar: { initials: 'AR', badgeColor: 'green', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 12,
+                data: {
+                  nombre: 'Patricia Sánchez',
+                  'checkbox-2': false,
+                  email: 'patricia.sanchez@empresa.com',
+                  estado: 'Inactivo',
+                  area: 'Diseño',
+                  avatar: { initials: 'PS', badgeColor: 'blue', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 13,
+                data: {
+                  nombre: 'Fernando Castro',
+                  'checkbox-2': false,
+                  email: 'fernando.castro@empresa.com',
+                  estado: 'Activo',
+                  area: 'Marketing',
+                  avatar: { initials: 'FC', badgeColor: 'orange', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 14,
+                data: {
+                  nombre: 'Gabriela Herrera',
+                  'checkbox-2': false,
+                  email: 'gabriela.herrera@empresa.com',
+                  estado: 'Pendiente',
+                  area: 'Ventas',
+                  avatar: { initials: 'GH', badgeColor: 'blue', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 15,
+                data: {
+                  nombre: 'Ricardo Mendoza',
+                  'checkbox-2': false,
+                  email: 'ricardo.mendoza@empresa.com',
+                  estado: 'Activo',
+                  area: 'Desarrollo',
+                  avatar: { initials: 'RM', badgeColor: 'green', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 16,
+                data: {
+                  nombre: 'Claudia Vargas',
+                  'checkbox-2': false,
+                  email: 'claudia.vargas@empresa.com',
+                  estado: 'Activo',
+                  area: 'Recursos Humanos',
+                  avatar: { initials: 'CV', badgeColor: 'purple', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 17,
+                data: {
+                  nombre: 'Javier Ortiz',
+                  'checkbox-2': false,
+                  email: 'javier.ortiz@empresa.com',
+                  estado: 'Inactivo',
+                  area: 'Marketing',
+                  avatar: { initials: 'JO', badgeColor: 'orange', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 18,
+                data: {
+                  nombre: 'Daniela Jiménez',
+                  'checkbox-2': false,
+                  email: 'daniela.jimenez@empresa.com',
+                  estado: 'Activo',
+                  area: 'Diseño',
+                  avatar: { initials: 'DJ', badgeColor: 'pink', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 19,
+                data: {
+                  nombre: 'Miguel Ángel Ruiz',
+                  'checkbox-2': false,
+                  email: 'miguel.ruiz@empresa.com',
+                  estado: 'Pendiente',
+                  area: 'Ventas',
+                  avatar: { initials: 'MR', badgeColor: 'blue', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 20,
+                data: {
+                  nombre: 'Elena Castillo',
+                  'checkbox-2': false,
+                  email: 'elena.castillo@empresa.com',
+                  estado: 'Activo',
+                  area: 'Desarrollo',
+                  avatar: { initials: 'EC', badgeColor: 'green', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 21,
+                data: {
+                  nombre: 'Óscar Gutiérrez',
+                  'checkbox-2': false,
+                  email: 'oscar.gutierrez@empresa.com',
+                  estado: 'Activo',
+                  area: 'Marketing',
+                  avatar: { initials: 'OG', badgeColor: 'orange', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 22,
+                data: {
+                  nombre: 'Natalia Rojas',
+                  'checkbox-2': false,
+                  email: 'natalia.rojas@empresa.com',
+                  estado: 'Inactivo',
+                  area: 'Diseño',
+                  avatar: { initials: 'NR', badgeColor: 'blue', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 23,
+                data: {
+                  nombre: 'Luis Fernando Mejía',
+                  'checkbox-2': false,
+                  email: 'luis.mejia@empresa.com',
+                  estado: 'Activo',
+                  area: 'Ventas',
+                  avatar: { initials: 'LM', badgeColor: 'blue', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 24,
+                data: {
+                  nombre: 'Andrea Salazar',
+                  'checkbox-2': false,
+                  email: 'andrea.salazar@empresa.com',
+                  estado: 'Pendiente',
+                  area: 'Recursos Humanos',
+                  avatar: { initials: 'AS', badgeColor: 'purple', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 25,
+                data: {
+                  nombre: 'Cristian Peña',
+                  'checkbox-2': false,
+                  email: 'cristian.pena@empresa.com',
+                  estado: 'Activo',
+                  area: 'Desarrollo',
+                  avatar: { initials: 'CP', badgeColor: 'green', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 26,
+                data: {
+                  nombre: 'Monica Restrepo',
+                  'checkbox-2': false,
+                  email: 'monica.restrepo@empresa.com',
+                  estado: 'Activo',
+                  area: 'Marketing',
+                  avatar: { initials: 'MR', badgeColor: 'orange', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 27,
+                data: {
+                  nombre: 'Esteban Cardona',
+                  'checkbox-2': false,
+                  email: 'esteban.cardona@empresa.com',
+                  estado: 'Inactivo',
+                  area: 'Diseño',
+                  avatar: { initials: 'EC', badgeColor: 'blue', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 28,
+                data: {
+                  nombre: 'Paola Agudelo',
+                  'checkbox-2': false,
+                  email: 'paola.agudelo@empresa.com',
+                  estado: 'Activo',
+                  area: 'Ventas',
+                  avatar: { initials: 'PA', badgeColor: 'blue', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 29,
+                data: {
+                  nombre: 'Sergio Velásquez',
+                  'checkbox-2': false,
+                  email: 'sergio.velasquez@empresa.com',
+                  estado: 'Pendiente',
+                  area: 'Desarrollo',
+                  avatar: { initials: 'SV', badgeColor: 'green', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 30,
+                data: {
+                  nombre: 'Carolina Zapata',
+                  'checkbox-2': false,
+                  email: 'carolina.zapata@empresa.com',
+                  estado: 'Activo',
+                  area: 'Recursos Humanos',
+                  avatar: { initials: 'CZ', badgeColor: 'purple', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 31,
+                data: {
+                  nombre: 'Felipe Ospina',
+                  'checkbox-2': false,
+                  email: 'felipe.ospina@empresa.com',
+                  estado: 'Activo',
+                  area: 'Marketing',
+                  avatar: { initials: 'FO', badgeColor: 'orange', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 32,
+                data: {
+                  nombre: 'Tatiana Montoya',
+                  'checkbox-2': false,
+                  email: 'tatiana.montoya@empresa.com',
+                  estado: 'Inactivo',
+                  area: 'Diseño',
+                  avatar: { initials: 'TM', badgeColor: 'pink', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 33,
+                data: {
+                  nombre: 'Alejandro Betancur',
+                  'checkbox-2': false,
+                  email: 'alejandro.betancur@empresa.com',
+                  estado: 'Activo',
+                  area: 'Ventas',
+                  avatar: { initials: 'AB', badgeColor: 'blue', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 34,
+                data: {
+                  nombre: 'Diana Cárdenas',
+                  'checkbox-2': false,
+                  email: 'diana.cardenas@empresa.com',
+                  estado: 'Pendiente',
+                  area: 'Desarrollo',
+                  avatar: { initials: 'DC', badgeColor: 'green', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 35,
+                data: {
+                  nombre: 'Jorge Iván Londoño',
+                  'checkbox-2': false,
+                  email: 'jorge.londono@empresa.com',
+                  estado: 'Activo',
+                  area: 'Marketing',
+                  avatar: { initials: 'JL', badgeColor: 'orange', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 36,
+                data: {
+                  nombre: 'Mariana Uribe',
+                  'checkbox-2': false,
+                  email: 'mariana.uribe@empresa.com',
+                  estado: 'Activo',
+                  area: 'Recursos Humanos',
+                  avatar: { initials: 'MU', badgeColor: 'purple', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 37,
+                data: {
+                  nombre: 'Camilo Arango',
+                  'checkbox-2': false,
+                  email: 'camilo.arango@empresa.com',
+                  estado: 'Inactivo',
+                  area: 'Diseño',
+                  avatar: { initials: 'CA', badgeColor: 'blue', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 38,
+                data: {
+                  nombre: 'Liliana Osorio',
+                  'checkbox-2': false,
+                  email: 'liliana.osorio@empresa.com',
+                  estado: 'Activo',
+                  area: 'Ventas',
+                  avatar: { initials: 'LO', badgeColor: 'blue', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 39,
+                data: {
+                  nombre: 'Andrés Felipe Quintero',
+                  'checkbox-2': false,
+                  email: 'andres.quintero@empresa.com',
+                  estado: 'Pendiente',
+                  area: 'Desarrollo',
+                  avatar: { initials: 'AQ', badgeColor: 'green', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 40,
+                data: {
+                  nombre: 'Sandra Milena Gómez',
+                  'checkbox-2': false,
+                  email: 'sandra.gomez@empresa.com',
+                  estado: 'Activo',
+                  area: 'Marketing',
+                  avatar: { initials: 'SG', badgeColor: 'orange', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 41,
+                data: {
+                  nombre: 'Héctor Fabio Muñoz',
+                  'checkbox-2': false,
+                  email: 'hector.munoz@empresa.com',
+                  estado: 'Activo',
+                  area: 'Diseño',
+                  avatar: { initials: 'HM', badgeColor: 'pink', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 42,
+                data: {
+                  nombre: 'Yenny Alexandra Parra',
+                  'checkbox-2': false,
+                  email: 'yenny.parra@empresa.com',
+                  estado: 'Inactivo',
+                  area: 'Ventas',
+                  avatar: { initials: 'YP', badgeColor: 'blue', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 43,
+                data: {
+                  nombre: 'Jhon Jairo Vélez',
+                  'checkbox-2': false,
+                  email: 'jhon.velez@empresa.com',
+                  estado: 'Activo',
+                  area: 'Desarrollo',
+                  avatar: { initials: 'JV', badgeColor: 'green', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 44,
+                data: {
+                  nombre: 'Adriana Marcela Henao',
+                  'checkbox-2': false,
+                  email: 'adriana.henao@empresa.com',
+                  estado: 'Pendiente',
+                  area: 'Recursos Humanos',
+                  avatar: { initials: 'AH', badgeColor: 'purple', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 45,
+                data: {
+                  nombre: 'Edwin Mauricio Zapata',
+                  'checkbox-2': false,
+                  email: 'edwin.zapata@empresa.com',
+                  estado: 'Activo',
+                  area: 'Marketing',
+                  avatar: { initials: 'EZ', badgeColor: 'orange', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 46,
+                data: {
+                  nombre: 'Mónica Patricia Bedoya',
+                  'checkbox-2': false,
+                  email: 'monica.bedoya@empresa.com',
+                  estado: 'Activo',
+                  area: 'Diseño',
+                  avatar: { initials: 'MB', badgeColor: 'blue', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 47,
+                data: {
+                  nombre: 'William Alberto Giraldo',
+                  'checkbox-2': false,
+                  email: 'william.giraldo@empresa.com',
+                  estado: 'Inactivo',
+                  area: 'Ventas',
+                  avatar: { initials: 'WG', badgeColor: 'blue', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 48,
+                data: {
+                  nombre: 'Angélica María Cano',
+                  'checkbox-2': false,
+                  email: 'angelica.cano@empresa.com',
+                  estado: 'Activo',
+                  area: 'Desarrollo',
+                  avatar: { initials: 'AC', badgeColor: 'green', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 49,
+                data: {
+                  nombre: 'Leonardo Fabio Ríos',
+                  'checkbox-2': false,
+                  email: 'leonardo.rios@empresa.com',
+                  estado: 'Pendiente',
+                  area: 'Marketing',
+                  avatar: { initials: 'LR', badgeColor: 'orange', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 50,
+                data: {
+                  nombre: 'Claudia Patricia Arbeláez',
+                  'checkbox-2': false,
+                  email: 'claudia.arbelaez@empresa.com',
+                  estado: 'Activo',
+                  area: 'Recursos Humanos',
+                  avatar: { initials: 'CA', badgeColor: 'purple', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 51,
+                data: {
+                  nombre: 'Jairo Alonso Tobón',
+                  'checkbox-2': false,
+                  email: 'jairo.tobon@empresa.com',
+                  estado: 'Activo',
+                  area: 'Diseño',
+                  avatar: { initials: 'JT', badgeColor: 'pink', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 52,
+                data: {
+                  nombre: 'Gloria Inés Mejía',
+                  'checkbox-2': false,
+                  email: 'gloria.mejia@empresa.com',
+                  estado: 'Inactivo',
+                  area: 'Ventas',
+                  avatar: { initials: 'GM', badgeColor: 'blue', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 53,
+                data: {
+                  nombre: 'Mauricio Esteban Lopera',
+                  'checkbox-2': false,
+                  email: 'mauricio.lopera@empresa.com',
+                  estado: 'Activo',
+                  area: 'Desarrollo',
+                  avatar: { initials: 'ML', badgeColor: 'green', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 54,
+                data: {
+                  nombre: 'Beatriz Elena Castrillón',
+                  'checkbox-2': false,
+                  email: 'beatriz.castrillon@empresa.com',
+                  estado: 'Pendiente',
+                  area: 'Marketing',
+                  avatar: { initials: 'BC', badgeColor: 'orange', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 55,
+                data: {
+                  nombre: 'César Augusto Restrepo',
+                  'checkbox-2': false,
+                  email: 'cesar.restrepo@empresa.com',
+                  estado: 'Activo',
+                  area: 'Recursos Humanos',
+                  avatar: { initials: 'CR', badgeColor: 'purple', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 56,
+                data: {
+                  nombre: 'Dora Luz Aguirre',
+                  'checkbox-2': false,
+                  email: 'dora.aguirre@empresa.com',
+                  estado: 'Activo',
+                  area: 'Diseño',
+                  avatar: { initials: 'DA', badgeColor: 'blue', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 57,
+                data: {
+                  nombre: 'Óscar Darío Valencia',
+                  'checkbox-2': false,
+                  email: 'oscar.valencia@empresa.com',
+                  estado: 'Inactivo',
+                  area: 'Ventas',
+                  avatar: { initials: 'OV', badgeColor: 'blue', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 58,
+                data: {
+                  nombre: 'Nubia Esperanza Cardona',
+                  'checkbox-2': false,
+                  email: 'nubia.cardona@empresa.com',
+                  estado: 'Activo',
+                  area: 'Desarrollo',
+                  avatar: { initials: 'NC', badgeColor: 'green', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 59,
+                data: {
+                  nombre: 'Alberto Mario Zapata',
+                  'checkbox-2': false,
+                  email: 'alberto.zapata@empresa.com',
+                  estado: 'Pendiente',
+                  area: 'Marketing',
+                  avatar: { initials: 'AZ', badgeColor: 'orange', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 60,
+                data: {
+                  nombre: 'Esperanza María Ochoa',
+                  'checkbox-2': false,
+                  email: 'esperanza.ochoa@empresa.com',
+                  estado: 'Activo',
+                  area: 'Recursos Humanos',
+                  avatar: { initials: 'EO', badgeColor: 'purple', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 61,
+                data: {
+                  nombre: 'Jorge Mario Gallego',
+                  'checkbox-2': false,
+                  email: 'jorge.gallego@empresa.com',
+                  estado: 'Activo',
+                  area: 'Diseño',
+                  avatar: { initials: 'JG', badgeColor: 'pink', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 62,
+                data: {
+                  nombre: 'Blanca Nubia Arango',
+                  'checkbox-2': false,
+                  email: 'blanca.arango@empresa.com',
+                  estado: 'Inactivo',
+                  area: 'Ventas',
+                  avatar: { initials: 'BA', badgeColor: 'blue', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 63,
+                data: {
+                  nombre: 'Fabio Nelson Uribe',
+                  'checkbox-2': false,
+                  email: 'fabio.uribe@empresa.com',
+                  estado: 'Activo',
+                  area: 'Desarrollo',
+                  avatar: { initials: 'FU', badgeColor: 'green', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 64,
+                data: {
+                  nombre: 'Martha Cecilia Londoño',
+                  'checkbox-2': false,
+                  email: 'martha.londono@empresa.com',
+                  estado: 'Pendiente',
+                  area: 'Marketing',
+                  avatar: { initials: 'ML', badgeColor: 'orange', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 65,
+                data: {
+                  nombre: 'Hernán Darío Osorio',
+                  'checkbox-2': false,
+                  email: 'hernan.osorio@empresa.com',
+                  estado: 'Activo',
+                  area: 'Recursos Humanos',
+                  avatar: { initials: 'HO', badgeColor: 'purple', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 66,
+                data: {
+                  nombre: 'Luz Dary Montoya',
+                  'checkbox-2': false,
+                  email: 'luz.montoya@empresa.com',
+                  estado: 'Activo',
+                  area: 'Diseño',
+                  avatar: { initials: 'LM', badgeColor: 'blue', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 67,
+                data: {
+                  nombre: 'Carlos Mario Betancur',
+                  'checkbox-2': false,
+                  email: 'carlos.betancur@empresa.com',
+                  estado: 'Inactivo',
+                  area: 'Ventas',
+                  avatar: { initials: 'CB', badgeColor: 'blue', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 68,
+                data: {
+                  nombre: 'Olga Lucía Cárdenas',
+                  'checkbox-2': false,
+                  email: 'olga.cardenas@empresa.com',
+                  estado: 'Activo',
+                  area: 'Desarrollo',
+                  avatar: { initials: 'OC', badgeColor: 'green', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 69,
+                data: {
+                  nombre: 'Jairo Hernán Quintero',
+                  'checkbox-2': false,
+                  email: 'jairo.quintero@empresa.com',
+                  estado: 'Pendiente',
+                  area: 'Marketing',
+                  avatar: { initials: 'JQ', badgeColor: 'orange', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 70,
+                data: {
+                  nombre: 'Amparo Gómez',
+                  'checkbox-2': false,
+                  email: 'amparo.gomez@empresa.com',
+                  estado: 'Activo',
+                  area: 'Recursos Humanos',
+                  avatar: { initials: 'AG', badgeColor: 'purple', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 71,
+                data: {
+                  nombre: 'Gustavo Adolfo Muñoz',
+                  'checkbox-2': false,
+                  email: 'gustavo.munoz@empresa.com',
+                  estado: 'Activo',
+                  area: 'Diseño',
+                  avatar: { initials: 'GM', badgeColor: 'pink', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 72,
+                data: {
+                  nombre: 'Rosa Elena Parra',
+                  'checkbox-2': false,
+                  email: 'rosa.parra@empresa.com',
+                  estado: 'Inactivo',
+                  area: 'Ventas',
+                  avatar: { initials: 'RP', badgeColor: 'blue', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 73,
+                data: {
+                  nombre: 'Alvaro de Jesús Vélez',
+                  'checkbox-2': false,
+                  email: 'alvaro.velez@empresa.com',
+                  estado: 'Activo',
+                  area: 'Desarrollo',
+                  avatar: { initials: 'AV', badgeColor: 'green', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 74,
+                data: {
+                  nombre: 'María Eugenia Henao',
+                  'checkbox-2': false,
+                  email: 'maria.henao@empresa.com',
+                  estado: 'Pendiente',
+                  area: 'Marketing',
+                  avatar: { initials: 'MH', badgeColor: 'orange', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 75,
+                data: {
+                  nombre: 'Jhonatan Zapata',
+                  'checkbox-2': false,
+                  email: 'jhonatan.zapata@empresa.com',
+                  estado: 'Activo',
+                  area: 'Recursos Humanos',
+                  avatar: { initials: 'JZ', badgeColor: 'purple', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 76,
+                data: {
+                  nombre: 'Yolanda Bedoya',
+                  'checkbox-2': false,
+                  email: 'yolanda.bedoya@empresa.com',
+                  estado: 'Activo',
+                  area: 'Diseño',
+                  avatar: { initials: 'YB', badgeColor: 'blue', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 77,
+                data: {
+                  nombre: 'Edison Giraldo',
+                  'checkbox-2': false,
+                  email: 'edison.giraldo@empresa.com',
+                  estado: 'Inactivo',
+                  area: 'Ventas',
+                  avatar: { initials: 'EG', badgeColor: 'blue', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 78,
+                data: {
+                  nombre: 'Luz Marina Cano',
+                  'checkbox-2': false,
+                  email: 'luz.cano@empresa.com',
+                  estado: 'Activo',
+                  area: 'Desarrollo',
+                  avatar: { initials: 'LC', badgeColor: 'green', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 79,
+                data: {
+                  nombre: 'Jhon Fredy Ríos',
+                  'checkbox-2': false,
+                  email: 'jhon.rios@empresa.com',
+                  estado: 'Pendiente',
+                  area: 'Marketing',
+                  avatar: { initials: 'JR', badgeColor: 'orange', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 80,
+                data: {
+                  nombre: 'Nancy Arbeláez',
+                  'checkbox-2': false,
+                  email: 'nancy.arbelaez@empresa.com',
+                  estado: 'Activo',
+                  area: 'Recursos Humanos',
+                  avatar: { initials: 'NA', badgeColor: 'purple', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 81,
+                data: {
+                  nombre: 'Jairo Tobón',
+                  'checkbox-2': false,
+                  email: 'jairo.tobon2@empresa.com',
+                  estado: 'Activo',
+                  area: 'Diseño',
+                  avatar: { initials: 'JT', badgeColor: 'pink', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 82,
+                data: {
+                  nombre: 'Gloria Mejía',
+                  'checkbox-2': false,
+                  email: 'gloria.mejia2@empresa.com',
+                  estado: 'Inactivo',
+                  area: 'Ventas',
+                  avatar: { initials: 'GM', badgeColor: 'blue', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 83,
+                data: {
+                  nombre: 'Mauricio Lopera',
+                  'checkbox-2': false,
+                  email: 'mauricio.lopera2@empresa.com',
+                  estado: 'Activo',
+                  area: 'Desarrollo',
+                  avatar: { initials: 'ML', badgeColor: 'green', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 84,
+                data: {
+                  nombre: 'Beatriz Castrillón',
+                  'checkbox-2': false,
+                  email: 'beatriz.castrillon2@empresa.com',
+                  estado: 'Pendiente',
+                  area: 'Marketing',
+                  avatar: { initials: 'BC', badgeColor: 'orange', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 85,
+                data: {
+                  nombre: 'César Restrepo',
+                  'checkbox-2': false,
+                  email: 'cesar.restrepo2@empresa.com',
+                  estado: 'Activo',
+                  area: 'Recursos Humanos',
+                  avatar: { initials: 'CR', badgeColor: 'purple', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 86,
+                data: {
+                  nombre: 'Dora Aguirre',
+                  'checkbox-2': false,
+                  email: 'dora.aguirre2@empresa.com',
+                  estado: 'Activo',
+                  area: 'Diseño',
+                  avatar: { initials: 'DA', badgeColor: 'blue', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 87,
+                data: {
+                  nombre: 'Óscar Valencia',
+                  'checkbox-2': false,
+                  email: 'oscar.valencia2@empresa.com',
+                  estado: 'Inactivo',
+                  area: 'Ventas',
+                  avatar: { initials: 'OV', badgeColor: 'blue', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 88,
+                data: {
+                  nombre: 'Nubia Cardona',
+                  'checkbox-2': false,
+                  email: 'nubia.cardona2@empresa.com',
+                  estado: 'Activo',
+                  area: 'Desarrollo',
+                  avatar: { initials: 'NC', badgeColor: 'green', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 89,
+                data: {
+                  nombre: 'Alberto Zapata',
+                  'checkbox-2': false,
+                  email: 'alberto.zapata2@empresa.com',
+                  estado: 'Pendiente',
+                  area: 'Marketing',
+                  avatar: { initials: 'AZ', badgeColor: 'orange', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 90,
+                data: {
+                  nombre: 'Esperanza Ochoa',
+                  'checkbox-2': false,
+                  email: 'esperanza.ochoa2@empresa.com',
+                  estado: 'Activo',
+                  area: 'Recursos Humanos',
+                  avatar: { initials: 'EO', badgeColor: 'purple', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 91,
+                data: {
+                  nombre: 'Jorge Gallego',
+                  'checkbox-2': false,
+                  email: 'jorge.gallego2@empresa.com',
+                  estado: 'Activo',
+                  area: 'Diseño',
+                  avatar: { initials: 'JG', badgeColor: 'pink', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 92,
+                data: {
+                  nombre: 'Blanca Arango',
+                  'checkbox-2': false,
+                  email: 'blanca.arango2@empresa.com',
+                  estado: 'Inactivo',
+                  area: 'Ventas',
+                  avatar: { initials: 'BA', badgeColor: 'blue', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 93,
+                data: {
+                  nombre: 'Fabio Uribe',
+                  'checkbox-2': false,
+                  email: 'fabio.uribe2@empresa.com',
+                  estado: 'Activo',
+                  area: 'Desarrollo',
+                  avatar: { initials: 'FU', badgeColor: 'green', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 94,
+                data: {
+                  nombre: 'Martha Londoño',
+                  'checkbox-2': false,
+                  email: 'martha.londono2@empresa.com',
+                  estado: 'Pendiente',
+                  area: 'Marketing',
+                  avatar: { initials: 'ML', badgeColor: 'orange', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 95,
+                data: {
+                  nombre: 'Hernán Osorio',
+                  'checkbox-2': false,
+                  email: 'hernan.osorio2@empresa.com',
+                  estado: 'Activo',
+                  area: 'Recursos Humanos',
+                  avatar: { initials: 'HO', badgeColor: 'purple', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 96,
+                data: {
+                  nombre: 'Luz Montoya',
+                  'checkbox-2': false,
+                  email: 'luz.montoya2@empresa.com',
+                  estado: 'Activo',
+                  area: 'Diseño',
+                  avatar: { initials: 'LM', badgeColor: 'blue', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 97,
+                data: {
+                  nombre: 'Carlos Betancur',
+                  'checkbox-2': false,
+                  email: 'carlos.betancur2@empresa.com',
+                  estado: 'Inactivo',
+                  area: 'Ventas',
+                  avatar: { initials: 'CB', badgeColor: 'blue', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 98,
+                data: {
+                  nombre: 'Olga Cárdenas',
+                  'checkbox-2': false,
+                  email: 'olga.cardenas2@empresa.com',
+                  estado: 'Activo',
+                  area: 'Desarrollo',
+                  avatar: { initials: 'OC', badgeColor: 'green', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 99,
+                data: {
+                  nombre: 'Jairo Quintero',
+                  'checkbox-2': false,
+                  email: 'jairo.quintero2@empresa.com',
+                  estado: 'Pendiente',
+                  area: 'Marketing',
+                  avatar: { initials: 'JQ', badgeColor: 'orange', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
+              {
+                id: 100,
+                data: {
+                  nombre: 'Amparo Gómez',
+                  'checkbox-2': false,
+                  email: 'amparo.gomez2@empresa.com',
+                  estado: 'Activo',
+                  area: 'Recursos Humanos',
+                  avatar: { initials: 'AG', badgeColor: 'purple', imageUrl: '../assets/images/Profile-image.jpg' },
+                },
+                expanded: false,
+              },
             ],
           };
         }
@@ -12869,6 +14119,15 @@ Reglas Importantes:
           state.expandSticky = value;
           const statusEl = document.getElementById(`data-table-expand-sticky-status-${componentId}`);
           if (statusEl) statusEl.textContent = value ? 'Habilitado' : 'Deshabilitado';
+          // Actualizar el preview para reflejar el cambio
+          window.updateDataTablePreview(componentId);
+        } else if (option === 'showPagination') {
+          console.log('📄 [WEB] setDataTableControl - showPagination cambiado a:', value);
+          state.showPagination = value;
+          console.log('📄 [WEB] Estado actualizado. state.showPagination:', state.showPagination);
+          const statusEl = document.getElementById(`data-table-show-pagination-status-${componentId}`);
+          if (statusEl) statusEl.textContent = value ? 'Activado' : 'Desactivado';
+          console.log('📄 [WEB] Llamando a updateDataTablePreview...');
           // Actualizar el preview para reflejar el cambio
           window.updateDataTablePreview(componentId);
         } else if (option === 'columnSortable') {
@@ -13243,12 +14502,9 @@ Reglas Importantes:
       
       // Función para actualizar el preview del Data Table
       window.updateDataTablePreview = function(componentId) {
-        const callId = `update-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-        console.log(`🔄 [UPDATE] ========== INICIO updateDataTablePreview [${callId}] ==========`);
-        console.log(`🔄 [UPDATE] Stack trace:`, new Error().stack?.split('\n').slice(1, 4).join('\n'));
-        
+        console.log('📄 [WEB] ========== updateDataTablePreview INICIO ==========');
         const state = initDataTablePreviewState(componentId);
-        console.log('🔄 [UPDATE] Estado obtenido. showCheckbox:', state.showCheckbox);
+        console.log('📄 [WEB] Estado obtenido. showPagination:', state.showPagination);
         const preview = document.getElementById(`data-table-preview-${componentId}`);
         
         if (!preview) {
@@ -13257,9 +14513,7 @@ Reglas Importantes:
         }
         
         // Limpiar completamente el preview antes de crear una nueva tabla
-        console.log(`🔄 [UPDATE] 🧹 Limpiando preview. Elementos hijos antes:`, preview.children.length);
         preview.innerHTML = '';
-        console.log(`🔄 [UPDATE] ✅ Preview limpiado. Elementos hijos después:`, preview.children.length);
         
         // Generar selectores de tipo de columna
         if (typeof window.generateColumnTypeSelectors === 'function') {
@@ -13558,9 +14812,12 @@ Reglas Importantes:
             console.log('🎯 [CREATE] showHorizontalScrollbarValue:', showHorizontalScrollbarValue, '(state.showHorizontalScrollbar:', state.showHorizontalScrollbar, ')');
             console.log('🎯 [CREATE] showColumnMenuValue:', showColumnMenuValue, '(state.showColumnMenu:', state.showColumnMenu, ')');
             console.log('🎯 [CREATE] checkboxSticky:', state.checkboxSticky, 'dragHandleSticky:', state.dragHandleSticky, 'expandSticky:', state.expandSticky);
-            console.log('🎯 [CREATE] Columnas que se pasan:', columns.map(c => ({ id: c.id, visible: c.visible, type: c.type })));
-            console.log('🎯 [CREATE] ¿Hay checkbox-2 en columns?', columns.some(c => c.id === 'checkbox-2'));
-            console.log('🎯 [CREATE] Número de filas:', rowsWithExpand.length);
+            console.log('📄 [WEB] ========== CREANDO DATA TABLE ==========');
+            console.log('📄 [WEB] showPagination del estado:', state.showPagination);
+            console.log('📄 [WEB] showPagination === true:', state.showPagination === true);
+            console.log('📄 [WEB] currentPage:', state.currentPage || 1);
+            console.log('📄 [WEB] itemsPerPage:', state.itemsPerPage || 10);
+            console.log('📄 [WEB] Número de filas:', rowsWithExpand.length);
             const table = window.createDataTable({
               containerId: containerId,
               columns: columns,
@@ -13576,6 +14833,20 @@ Reglas Importantes:
               checkboxSticky: state.checkboxSticky === true,
               dragHandleSticky: state.dragHandleSticky === true,
               expandSticky: state.expandSticky === true,
+              showPagination: state.showPagination === true,
+              currentPage: state.currentPage || 1,
+              itemsPerPage: state.itemsPerPage || 10,
+              paginationVariant: state.paginationVariant || 'default',
+              paginationSize: state.paginationSize || 'md',
+              onPageChange: (page) => {
+                state.currentPage = page;
+                window.updateDataTablePreview(componentId);
+              },
+              onItemsPerPageChange: (itemsPerPage) => {
+                state.itemsPerPage = itemsPerPage;
+                state.currentPage = 1;
+                window.updateDataTablePreview(componentId);
+              },
               onRowSelect: (rowId, selected) => {
                 console.log('Fila seleccionada:', rowId, selected);
                 // Actualizar el estado de la fila
@@ -13646,8 +14917,18 @@ Reglas Importantes:
             // Guardar instancia para poder destruirla después
             window.dataTableInstances[componentId] = table;
             
-            console.log(`🎯 [INSTANCE] ✅ Data Table creada exitosamente`);
-            console.log(`🎯 [INSTANCE] ========== FIN createDataTableInstance [${instanceId}] ==========`);
+            // Sincronizar checkboxes con el estado actual
+            const paginationCheckbox = document.getElementById(`data-table-show-pagination-${componentId}`);
+            if (paginationCheckbox) {
+              paginationCheckbox.checked = state.showPagination === true;
+            }
+            const paginationStatus = document.getElementById(`data-table-show-pagination-status-${componentId}`);
+            if (paginationStatus) {
+              paginationStatus.textContent = state.showPagination === true ? 'Activado' : 'Desactivado';
+            }
+            
+            console.log('📄 [WEB] ✅ Data Table creada exitosamente');
+            console.log('📄 [WEB] ========== updateDataTablePreview FIN ==========');
           } catch (error) {
             console.error('❌ Error creando Data Table:', error);
             preview.innerHTML = `<p style="color: var(--ubits-fg-1-medium); padding: 16px;">Error: ${error.message}</p>`;
@@ -13656,9 +14937,9 @@ Reglas Importantes:
         
         // Verificar si el módulo ya está cargado
         if (typeof window.createDataTable !== 'undefined') {
-          console.log(`🔄 [UPDATE] ✅ Módulo ya cargado, creando instancia directamente`);
+          console.log('📄 [WEB] Módulo createDataTable disponible, creando instancia...');
           createDataTableInstance();
-          console.log(`🔄 [UPDATE] ========== FIN updateDataTablePreview [${callId}] ==========`);
+          console.log('📄 [WEB] ========== updateDataTablePreview FIN ==========');
           return;
         }
         
@@ -21758,6 +23039,375 @@ Reglas Importantes:
         preview.innerHTML = cardHTML;
         
         console.log('✅ Preview de Card Content actualizado:', state);
+      };
+      
+      // ========================================
+      // PAGINATION PREVIEW FUNCTIONS
+      // ========================================
+      
+      // Inicializar estado del Pagination
+      const paginationPreviewState = {};
+      function initPaginationPreviewState(componentId) {
+        if (!paginationPreviewState[componentId]) {
+          paginationPreviewState[componentId] = {
+            currentPage: 5,
+            totalPages: 20,
+            totalItems: 200,
+            itemsPerPage: 10,
+            variant: 'default',
+            size: 'md',
+            maxVisiblePages: 7,
+            showFirst: true,
+            showLast: true,
+            showPrevNext: true,
+            showInfo: true,
+            showItemsPerPage: true,
+            itemsPerPageOptions: [10, 20, 50, 100]
+          };
+        }
+        return paginationPreviewState[componentId];
+      }
+      
+      // Función para establecer controles del Pagination
+      window.setPaginationControl = function(option, value, componentId) {
+        const state = initPaginationPreviewState(componentId);
+        
+        if (option === 'currentPage') {
+          state.currentPage = Math.max(1, Math.min(value, state.totalPages));
+          const inputEl = document.getElementById(`pagination-current-page-${componentId}`);
+          if (inputEl) inputEl.value = state.currentPage;
+        } else if (option === 'totalPages') {
+          state.totalPages = Math.max(1, value);
+          const inputEl = document.getElementById(`pagination-total-pages-${componentId}`);
+          if (inputEl) inputEl.value = state.totalPages;
+          // Ajustar currentPage si es mayor que totalPages
+          if (state.currentPage > state.totalPages) {
+            state.currentPage = state.totalPages;
+            const currentPageInput = document.getElementById(`pagination-current-page-${componentId}`);
+            if (currentPageInput) currentPageInput.value = state.currentPage;
+          }
+        } else if (option === 'totalItems') {
+          state.totalItems = value;
+          const inputEl = document.getElementById(`pagination-total-items-${componentId}`);
+          if (inputEl) inputEl.value = state.totalItems;
+        } else if (option === 'itemsPerPage') {
+          state.itemsPerPage = value;
+          const inputEl = document.getElementById(`pagination-items-per-page-${componentId}`);
+          if (inputEl) inputEl.value = state.itemsPerPage;
+        } else if (option === 'variant') {
+          state.variant = value;
+          const selectEl = document.getElementById(`pagination-variant-select-${componentId}`);
+          if (selectEl) selectEl.value = value;
+        } else if (option === 'size') {
+          state.size = value;
+          const selectEl = document.getElementById(`pagination-size-select-${componentId}`);
+          if (selectEl) selectEl.value = value;
+        } else if (option === 'maxVisiblePages') {
+          state.maxVisiblePages = Math.max(3, Math.min(15, value));
+          const inputEl = document.getElementById(`pagination-max-visible-${componentId}`);
+          if (inputEl) inputEl.value = state.maxVisiblePages;
+        } else if (option === 'showFirst') {
+          state.showFirst = value;
+          const statusEl = document.getElementById(`pagination-show-first-status-${componentId}`);
+          if (statusEl) statusEl.textContent = value ? 'Activado' : 'Desactivado';
+        } else if (option === 'showLast') {
+          state.showLast = value;
+          const statusEl = document.getElementById(`pagination-show-last-status-${componentId}`);
+          if (statusEl) statusEl.textContent = value ? 'Activado' : 'Desactivado';
+        } else if (option === 'showPrevNext') {
+          state.showPrevNext = value;
+          const statusEl = document.getElementById(`pagination-show-prev-next-status-${componentId}`);
+          if (statusEl) statusEl.textContent = value ? 'Activado' : 'Desactivado';
+        } else if (option === 'showInfo') {
+          state.showInfo = value;
+          const statusEl = document.getElementById(`pagination-show-info-status-${componentId}`);
+          if (statusEl) statusEl.textContent = value ? 'Activado' : 'Desactivado';
+        } else if (option === 'showItemsPerPage') {
+          state.showItemsPerPage = value;
+          const statusEl = document.getElementById(`pagination-show-items-per-page-status-${componentId}`);
+          if (statusEl) statusEl.textContent = value ? 'Activado' : 'Desactivado';
+        }
+        
+        // Actualizar el preview
+        window.updatePaginationPreview(componentId);
+      };
+      
+      // Función para actualizar el preview del Pagination
+      window.updatePaginationPreview = function(componentId) {
+        const state = initPaginationPreviewState(componentId);
+        const preview = document.getElementById(`pagination-preview-${componentId}`);
+        
+        if (!preview) {
+          console.error('❌ Preview de Pagination no encontrado:', `pagination-preview-${componentId}`);
+          return;
+        }
+        
+        // Limpiar preview
+        preview.innerHTML = '';
+        
+        // Cargar CSS si no está cargado
+        if (!document.querySelector('link[href*="pagination.css"]')) {
+          const link = document.createElement('link');
+          link.rel = 'stylesheet';
+          link.href = '../../addons/pagination/src/styles/pagination.css';
+          document.head.appendChild(link);
+        }
+        
+        // Cargar CSS de Button si no está cargado
+        if (!document.querySelector('link[href*="button.css"]')) {
+          const link = document.createElement('link');
+          link.rel = 'stylesheet';
+          link.href = '../../addons/button/src/styles/button.css';
+          document.head.appendChild(link);
+        }
+        
+        // Crear contenedor para el paginador
+        const containerId = `pagination-container-${componentId}`;
+        // Limpiar contenedor anterior si existe
+        const existingContainer = document.getElementById(containerId);
+        if (existingContainer) {
+          existingContainer.remove();
+        }
+        const container = document.createElement('div');
+        container.id = containerId;
+        preview.appendChild(container);
+        
+        // Definir funciones primero
+        function createPaginationInstanceInline() {
+          // Generar HTML directamente usando la lógica de renderPagination
+          const validCurrentPage = Math.max(1, Math.min(state.currentPage, state.totalPages));
+          const buttonSize = state.size === 'sm' ? 'sm' : state.size === 'lg' ? 'lg' : 'md';
+          
+          // Calcular páginas visibles
+          const maxVisible = state.maxVisiblePages || 7;
+          const visiblePages = [];
+          if (state.totalPages <= maxVisible) {
+            for (let i = 1; i <= state.totalPages; i++) {
+              visiblePages.push(i);
+            }
+          } else {
+            const half = Math.floor(maxVisible / 2);
+            let start = Math.max(1, validCurrentPage - half);
+            let end = Math.min(state.totalPages, start + maxVisible - 1);
+            if (end - start < maxVisible - 1) {
+              start = Math.max(1, end - maxVisible + 1);
+            }
+            for (let i = start; i <= end; i++) {
+              visiblePages.push(i);
+            }
+          }
+          
+          // Generar HTML de información
+          let infoHTML = '';
+          if (state.showInfo && state.totalItems !== undefined) {
+            const start = (validCurrentPage - 1) * (state.itemsPerPage || 10) + 1;
+            const end = Math.min(validCurrentPage * (state.itemsPerPage || 10), state.totalItems);
+            infoHTML = `<div class="ubits-pagination__info"><span class="ubits-body-sm">${start}-${end} de ${state.totalItems} items</span></div>`;
+          }
+          
+          // Generar HTML de selector de items por página
+          let itemsPerPageHTML = '';
+          if (state.showItemsPerPage) {
+            const selectId = `ubits-pagination-items-per-page-${componentId}`;
+            itemsPerPageHTML = `
+              <div class="ubits-pagination__items-per-page">
+                <label for="${selectId}" class="ubits-body-sm">Por página:</label>
+                <select id="${selectId}" class="ubits-pagination__select ubits-body-sm">
+                  ${state.itemsPerPageOptions.map(opt => 
+                    `<option value="${opt}" ${opt === state.itemsPerPage ? 'selected' : ''}>${opt}</option>`
+                  ).join('')}
+                </select>
+              </div>
+            `;
+          }
+          
+          // Generar botones usando renderButton si está disponible, sino HTML directo
+          let buttonsHTML = '';
+          
+          // Función helper para renderizar botón
+          const renderButtonHTML = (options) => {
+            const { variant, size, icon, iconOnly, disabled, className, ariaLabel, title, text, active } = options;
+            const classes = [
+              'ubits-button',
+              `ubits-button--${variant}`,
+              `ubits-button--${size}`,
+              active ? 'ubits-button--active' : '',
+              disabled ? 'disabled' : '',
+              className
+            ].filter(Boolean).join(' ');
+            
+            const iconHTML = icon ? `<i class="fas fa-${icon}"></i>` : '';
+            const textHTML = text ? `<span>${text}</span>` : '';
+            const content = iconOnly ? iconHTML : (icon && text ? iconHTML + textHTML : textHTML || iconHTML);
+            
+            return `<button class="${classes}" ${disabled ? 'disabled' : ''} ${ariaLabel ? `aria-label="${ariaLabel}"` : ''} ${title ? `title="${title}"` : ''} ${text ? `data-page="${text}"` : ''}>${content}</button>`;
+          };
+          
+          // Botón Primera
+          if (state.showFirst && state.variant === 'default') {
+            buttonsHTML += renderButtonHTML({
+              variant: 'tertiary',
+              size: buttonSize,
+              icon: 'angle-double-left',
+              iconOnly: true,
+              disabled: validCurrentPage === 1,
+              className: 'ubits-pagination__nav-button',
+              ariaLabel: 'Primera',
+              title: 'Primera'
+            });
+          }
+          
+          // Botón Anterior
+          if (state.showPrevNext) {
+            buttonsHTML += renderButtonHTML({
+              variant: 'tertiary',
+              size: buttonSize,
+              icon: 'chevron-left',
+              iconOnly: true,
+              disabled: validCurrentPage === 1,
+              className: 'ubits-pagination__nav-button',
+              ariaLabel: 'Anterior',
+              title: 'Anterior'
+            });
+          }
+          
+          // Páginas
+          if (state.variant === 'default') {
+            if (visiblePages[0] > 1) {
+              buttonsHTML += `<span class="ubits-pagination__ellipsis">...</span>`;
+            }
+            visiblePages.forEach(page => {
+              const isActive = page === validCurrentPage;
+              buttonsHTML += renderButtonHTML({
+                variant: isActive ? 'secondary' : 'tertiary',
+                size: buttonSize,
+                text: String(page),
+                active: isActive,
+                className: 'ubits-pagination__page-button'
+              });
+            });
+            if (visiblePages[visiblePages.length - 1] < state.totalPages) {
+              buttonsHTML += `<span class="ubits-pagination__ellipsis">...</span>`;
+            }
+          } else if (state.variant === 'compact') {
+            buttonsHTML += `<span class="ubits-pagination__page-info ubits-body-md">Página ${validCurrentPage} de ${state.totalPages}</span>`;
+          }
+          
+          // Botón Siguiente
+          if (state.showPrevNext) {
+            buttonsHTML += renderButtonHTML({
+              variant: 'tertiary',
+              size: buttonSize,
+              icon: 'chevron-right',
+              iconOnly: true,
+              disabled: validCurrentPage === state.totalPages,
+              className: 'ubits-pagination__nav-button',
+              ariaLabel: 'Siguiente',
+              title: 'Siguiente'
+            });
+          }
+          
+          // Botón Última
+          if (state.showLast && state.variant === 'default') {
+            buttonsHTML += renderButtonHTML({
+              variant: 'tertiary',
+              size: buttonSize,
+              icon: 'angle-double-right',
+              iconOnly: true,
+              disabled: validCurrentPage === state.totalPages,
+              className: 'ubits-pagination__nav-button',
+              ariaLabel: 'Última',
+              title: 'Última'
+            });
+          }
+          
+          // HTML completo
+          const html = `
+            <div class="ubits-pagination ubits-pagination--${state.variant} ubits-pagination--${state.size}" data-current-page="${validCurrentPage}" data-total-pages="${state.totalPages}">
+              ${infoHTML}
+              ${itemsPerPageHTML}
+              <div class="ubits-pagination__controls">
+                ${buttonsHTML}
+              </div>
+            </div>
+          `;
+          
+          container.innerHTML = html;
+          attachPaginationListeners(container);
+        }
+        
+        function attachPaginationListeners(container) {
+          const paginationElement = container.querySelector('.ubits-pagination');
+          if (!paginationElement) return;
+          
+          // Event listeners para botones de página
+          const pageButtons = paginationElement.querySelectorAll('.ubits-pagination__page-button');
+          pageButtons.forEach(button => {
+            button.addEventListener('click', () => {
+              const page = parseInt(button.textContent || '1');
+              state.currentPage = page;
+              const inputEl = document.getElementById(`pagination-current-page-${componentId}`);
+              if (inputEl) inputEl.value = page;
+              window.updatePaginationPreview(componentId);
+            });
+          });
+          
+          // Event listeners para botones de navegación
+          const navButtons = paginationElement.querySelectorAll('.ubits-pagination__nav-button');
+          navButtons.forEach(button => {
+            button.addEventListener('click', () => {
+              const currentPage = parseInt(paginationElement.getAttribute('data-current-page') || '1');
+              const totalPages = parseInt(paginationElement.getAttribute('data-total-pages') || '1');
+              const ariaLabel = button.getAttribute('aria-label') || '';
+              
+              let newPage = currentPage;
+              if (ariaLabel.includes('Primera')) newPage = 1;
+              else if (ariaLabel.includes('Última')) newPage = totalPages;
+              else if (ariaLabel.includes('Anterior')) newPage = Math.max(1, currentPage - 1);
+              else if (ariaLabel.includes('Siguiente')) newPage = Math.min(totalPages, currentPage + 1);
+              
+              if (newPage !== currentPage) {
+                state.currentPage = newPage;
+                const inputEl = document.getElementById(`pagination-current-page-${componentId}`);
+                if (inputEl) inputEl.value = newPage;
+                window.updatePaginationPreview(componentId);
+              }
+            });
+          });
+          
+          // Event listener para selector de items por página
+          const itemsPerPageSelect = paginationElement.querySelector('.ubits-pagination__select');
+          if (itemsPerPageSelect) {
+            itemsPerPageSelect.addEventListener('change', (e) => {
+              const itemsPerPage = parseInt(e.target.value || '10');
+              state.itemsPerPage = itemsPerPage;
+              state.currentPage = 1;
+              const inputEl = document.getElementById(`pagination-items-per-page-${componentId}`);
+              if (inputEl) inputEl.value = itemsPerPage;
+              const currentPageInput = document.getElementById(`pagination-current-page-${componentId}`);
+              if (currentPageInput) currentPageInput.value = 1;
+              window.updatePaginationPreview(componentId);
+            });
+          }
+        }
+        
+        // Crear instancia inmediatamente usando fallback inline (siempre funciona)
+        createPaginationInstanceInline();
+        
+        // Intentar cargar el script del componente Pagination en paralelo (opcional, para mejor funcionalidad)
+        const existingPaginationScript = document.querySelector('script[src*="pagination"]');
+        if (!existingPaginationScript && (typeof window.UBITS === 'undefined' || !window.UBITS.Pagination) && typeof window.createPagination === 'undefined') {
+          const script = document.createElement('script');
+          script.type = 'module';
+          script.src = '../../addons/pagination/dist/pagination.js';
+          script.setAttribute('data-loaded', 'false');
+          document.head.appendChild(script);
+          
+          // Si el script se carga exitosamente, podemos mejorar la funcionalidad
+          script.onload = () => {
+            console.log('✅ Pagination script cargado');
+          };
+        }
       };
       
       // Función para establecer controles

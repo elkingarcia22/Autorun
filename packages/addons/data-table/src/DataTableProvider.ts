@@ -8,6 +8,7 @@ import { renderRadioButton } from '../../radio-button/src/RadioButtonProvider';
 import { renderButton } from '../../button/src/ButtonProvider';
 import { createList, renderList } from '../../list/src/ListProvider';
 import { createScrollbar } from '../../scroll/src/ScrollProvider';
+import { renderPagination } from '../../pagination/src/PaginationProvider';
 // Importar estilos del List para que se carguen
 import '../../list/src/styles/list.css';
 
@@ -972,10 +973,30 @@ export function renderDataTable(
   columnOrder: string[] = [],
   rowOrder: (string | number)[] = []
 ): string {
-  const { columns, rows, className = '', columnReorderable = false, columnSortable = true, rowReorderable = false, rowExpandable = true, showCheckbox = true, showVerticalScrollbar = false, showHorizontalScrollbar = false, showColumnMenu = true } = options;
+  const { 
+    columns, 
+    rows, 
+    className = '', 
+    columnReorderable = false, 
+    columnSortable = true, 
+    rowReorderable = false, 
+    rowExpandable = true, 
+    showCheckbox = true, 
+    showVerticalScrollbar = false, 
+    showHorizontalScrollbar = false, 
+    showColumnMenu = true,
+    showPagination = false,
+    currentPage = 1,
+    itemsPerPage = 10,
+    paginationVariant = 'default',
+    paginationSize = 'md'
+  } = options;
 
-  console.log('🎨 [RENDER] renderDataTable llamado - Columnas:', columns.length, 'Filas:', rows.length);
-  console.log('🎨 [RENDER] Estado pinned de columnas recibidas:', columns.map(col => ({ id: col.id, pinned: col.pinned || false })));
+  // Logs de paginación
+  console.log('📄 [PAGINATION DEBUG] ========== INICIO renderDataTable ==========');
+  console.log('📄 [PAGINATION DEBUG] showPagination recibido:', showPagination);
+  console.log('📄 [PAGINATION DEBUG] currentPage recibido:', currentPage);
+  console.log('📄 [PAGINATION DEBUG] itemsPerPage recibido:', itemsPerPage);
 
   // Filtrar columnas visibles
   let visibleColumns = columns.filter(col => col.visible !== false);
@@ -985,7 +1006,7 @@ export function renderDataTable(
   
   // Si hay un orden de columnas especificado, reordenar según ese orden
   // IMPORTANTE: Crear copias de las columnas al reordenar para preservar el estado pinned
-  console.log('🔍 [REORDER] Columnas ANTES del reordenamiento:', visibleColumns.map(col => ({ id: col.id, pinned: col.pinned || false })));
+  // Log removido - no necesario para paginación
   if (columnOrder.length > 0) {
     // También eliminar 'checkbox' del columnOrder si existe
     const filteredColumnOrder = columnOrder.filter(id => id !== 'checkbox');
@@ -1029,7 +1050,7 @@ export function renderDataTable(
       return copy;
     });
   }
-  console.log('🔍 [REORDER] Columnas DESPUÉS del reordenamiento:', visibleColumns.map(col => ({ id: col.id, pinned: col.pinned || false })));
+  // Log removido - no necesario para paginación
   
   // Controlar la columna checkbox-2 según showCheckbox
   if (showCheckbox !== false) {
@@ -1047,20 +1068,17 @@ export function renderDataTable(
       
       // Insertar la nueva columna al inicio
       visibleColumns.unshift(newCheckboxColumn);
-      console.log('🔍 [CHECKBOX-2] Columna agregada al inicio. IDs de columnas visibles:', visibleColumns.map(col => col.id));
+      // Log removido
     } else {
-      console.log('🔍 [CHECKBOX-2] La columna checkbox-2 ya existe');
+      // Log removido
     }
   } else {
     // Si showCheckbox es false, eliminar checkbox-2 si existe
     const beforeFilter = visibleColumns.map(col => col.id);
     visibleColumns = visibleColumns.filter(col => col.id !== 'checkbox-2');
     const afterFilter = visibleColumns.map(col => col.id);
-    console.log('🔍 [CHECKBOX-2] Columna checkbox-2 eliminada porque showCheckbox es false');
-    console.log('🔍 [CHECKBOX-2] Antes del filtro:', beforeFilter);
-    console.log('🔍 [CHECKBOX-2] Después del filtro:', afterFilter);
+    // Log removido
   }
-  console.log('🎯 [CHECKBOX-2] Columnas finales antes de renderizar:', visibleColumns.map(col => col.id));
   
   // Crear columnas de controladores automáticamente si están habilitados
   // Columna drag-handle (mover filas) - al inicio, antes del checkbox
@@ -1075,7 +1093,7 @@ export function renderDataTable(
         width: 32
       };
       visibleColumns.unshift(dragHandleColumn);
-      console.log('🔧 [CONTROLS] Columna drag-handle agregada');
+      // Log removido
     }
   } else {
     visibleColumns = visibleColumns.filter(col => col.type !== 'drag-handle');
@@ -1099,7 +1117,7 @@ export function renderDataTable(
       } else {
         visibleColumns.unshift(expandColumn);
       }
-      console.log('🔧 [CONTROLS] Columna expand agregada');
+      // Log removido
     }
   } else {
     visibleColumns = visibleColumns.filter(col => col.type !== 'expand');
@@ -1115,7 +1133,7 @@ export function renderDataTable(
       // Para checkbox, usar checkboxSticky si está habilitado, sino preservar el estado actual
       if (checkboxSticky === true) {
         colCopy.pinned = true;
-        console.log('🔧 [STICKY] Checkbox marcado como pinned');
+        // Log removido
       } else {
         // Si sticky está deshabilitado, solo establecer false si no fue fijado manualmente
         // Pero si fue fijado manualmente (pinned = true), preservarlo
@@ -1126,7 +1144,7 @@ export function renderDataTable(
       // Para drag-handle, usar dragHandleSticky si está habilitado
       if (dragHandleSticky === true) {
         colCopy.pinned = true;
-        console.log('🔧 [STICKY] Drag-handle marcado como pinned');
+        // Log removido
       } else {
         colCopy.pinned = false;
       }
@@ -1134,7 +1152,7 @@ export function renderDataTable(
       // Para expand, usar expandSticky si está habilitado
       if (expandSticky === true) {
         colCopy.pinned = true;
-        console.log('🔧 [STICKY] Expand marcado como pinned');
+        // Log removido
       } else {
         colCopy.pinned = false;
       }
@@ -1143,12 +1161,7 @@ export function renderDataTable(
     // No hacer nada, colCopy ya tiene el estado correcto de la copia
     
     if (colCopy.pinned && !col.id.startsWith('checkbox') && col.type !== 'drag-handle' && col.type !== 'expand') {
-      console.log('🔧 [STICKY] Preservando estado pinned de columna normal:', col.id, 'pinned:', colCopy.pinned);
-    }
-    
-    // Log detallado para debugging
-    if (col.id === 'nombre' || col.id === 'email' || col.id === 'estado') {
-      console.log('🔍 [STICKY DEBUG] Columna:', col.id, 'pinned original:', col.pinned, 'pinned copia:', colCopy.pinned);
+      // Log removido
     }
     
     return colCopy;
@@ -1156,7 +1169,7 @@ export function renderDataTable(
   
   // Log de todas las columnas fijadas después del map
   const pinnedAfterMap = visibleColumns.filter(col => col.pinned);
-  console.log('🔍 [STICKY] Columnas fijadas DESPUÉS del map:', pinnedAfterMap.map(col => ({ id: col.id, pinned: col.pinned })));
+  // Log removido
   
   // Estado de ordenamiento
   const sortColumnId = (options as any).sortColumnId || null;
@@ -1201,11 +1214,7 @@ export function renderDataTable(
   // Ya no usamos hasControls - los controladores son columnas independientes
   // Las columnas drag-handle y expand ya están en visibleColumns
   
-  console.log('🔍 [HEADER ALIGNMENT] ========== INICIO ==========');
-  console.log('📊 rowReorderable:', rowReorderable);
-  console.log('📊 rowExpandable:', rowExpandable);
-  console.log('📊 visibleColumns count:', visibleColumns.length);
-  console.log('📊 visibleColumns IDs:', visibleColumns.map(col => col.id));
+  // Log removido
 
   // Función auxiliar para calcular el left de una columna fijada
   const calculatePinnedLeft = (column: TableColumn, columnIndex: number, allColumns: TableColumn[]): number => {
@@ -1254,43 +1263,87 @@ export function renderDataTable(
     debugInfo.finalLeft = left;
     
     if (column.pinned) {
-      console.log('📌 [PINNED LEFT] Cálculo detallado para columna', column.id, ':', debugInfo);
+      // Log removido
     }
     
     return left;
   };
 
   // Renderizar headers de columnas
-  console.log('🔍 [RENDER HEADERS] Iniciando renderizado de headers...');
-  console.log('🔍 [RENDER HEADERS] showCheckbox:', showCheckbox);
-  console.log('🔍 [RENDER HEADERS] Columnas con pinned:', visibleColumns.filter(c => c.pinned).map(c => ({ id: c.id, pinned: c.pinned })));
+  // Log removido
   
   const columnHeadersHTML = visibleColumns
     .map((col, index) => {
       const pinnedLeft = col.pinned ? calculatePinnedLeft(col, index, visibleColumns) : 0;
       if (col.pinned) {
-        console.log('🔍 [RENDER HEADERS] Columna fijada:', col.id, 'index:', index, 'pinnedLeft calculado:', pinnedLeft);
+        // Log removido
       }
       return renderColumnHeader(col, columnReorderable, columnSortable, orderedRows, sortColumnId, sortDirection, showColumnMenu, pinnedLeft);
     })
     .join('');
 
-  console.log('📊 columnHeadersHTML length:', columnHeadersHTML.length);
-  console.log('📊 columnHeadersHTML preview:', columnHeadersHTML.substring(0, 200));
-
   // Renderizar filas
-  console.log('🔍 [RENDER ROWS] Iniciando renderizado de filas...');
-  console.log('🔍 [RENDER ROWS] Número de filas:', orderedRows.length);
+  // Aplicar paginación si está habilitada
+  let paginatedRows = orderedRows;
+  let totalPages = 1;
+  let paginationHTML = '';
   
-  const rowsHTML = orderedRows
+  console.log('📄 [PAGINATION DEBUG] Verificando paginación...');
+  console.log('📄 [PAGINATION DEBUG] showPagination:', showPagination, '(tipo:', typeof showPagination, ')');
+  console.log('📄 [PAGINATION DEBUG] currentPage:', currentPage, 'itemsPerPage:', itemsPerPage);
+  console.log('📄 [PAGINATION DEBUG] Total filas ordenadas:', orderedRows.length);
+  
+  if (showPagination) {
+    console.log('📄 [PAGINATION DEBUG] ✅ showPagination es TRUE - Entrando en bloque de paginación');
+    const totalRows = orderedRows.length;
+    totalPages = Math.max(1, Math.ceil(totalRows / itemsPerPage));
+    const validCurrentPage = Math.max(1, Math.min(currentPage, totalPages));
+    const startIndex = (validCurrentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    paginatedRows = orderedRows.slice(startIndex, endIndex);
+    
+    console.log('📄 [PAGINATION DEBUG] Cálculos:');
+    console.log('📄 [PAGINATION DEBUG]   - Total filas:', totalRows);
+    console.log('📄 [PAGINATION DEBUG]   - Total páginas:', totalPages);
+    console.log('📄 [PAGINATION DEBUG]   - Página actual válida:', validCurrentPage);
+    console.log('📄 [PAGINATION DEBUG]   - Filas a mostrar:', startIndex, 'a', endIndex - 1, '(total:', paginatedRows.length, ')');
+    
+    // Renderizar el paginador con configuración limpia (solo Anterior/Siguiente)
+    console.log('📄 [PAGINATION DEBUG] Llamando a renderPagination...');
+    try {
+      paginationHTML = renderPagination({
+        currentPage: validCurrentPage,
+        totalPages: totalPages,
+        totalItems: totalRows,
+        itemsPerPage: itemsPerPage,
+        variant: paginationVariant,
+        size: paginationSize,
+        maxVisiblePages: 7,
+        showFirst: false,  // Sin botón Primera
+        showLast: false,  // Sin botón Última
+        showPrevNext: true,  // Solo Anterior/Siguiente
+        showInfo: false,  // Sin información de items
+        showItemsPerPage: false,  // Sin selector de items por página
+        itemsPerPageOptions: [10, 20, 50, 100],
+        className: 'ubits-data-table__pagination'
+      });
+      console.log('📄 [PAGINATION DEBUG] ✅ renderPagination completado');
+      console.log('📄 [PAGINATION DEBUG] paginationHTML length:', paginationHTML.length);
+      console.log('📄 [PAGINATION DEBUG] paginationHTML preview (primeros 200 chars):', paginationHTML.substring(0, 200));
+    } catch (error) {
+      console.error('📄 [PAGINATION DEBUG] ❌ ERROR en renderPagination:', error);
+      paginationHTML = '';
+    }
+  } else {
+    console.log('📄 [PAGINATION DEBUG] ❌ showPagination es FALSE - NO se aplicará paginación');
+  }
+  
+  const rowsHTML = paginatedRows
     .map((row, index) => {
       // Calcular left para cada columna fijada en esta fila
       const pinnedLefts = visibleColumns.map((col, colIndex) => {
         if (col.pinned) {
           const left = calculatePinnedLeft(col, colIndex, visibleColumns);
-          if (index === 0) { // Solo log para la primera fila para no saturar
-            console.log('🔍 [RENDER ROWS] Fila 0, columna fijada:', col.id, 'colIndex:', colIndex, 'pinnedLeft:', left);
-          }
           return left;
         }
         return 0;
@@ -1299,8 +1352,7 @@ export function renderDataTable(
     })
     .join('');
 
-  console.log('📊 rowsHTML count:', orderedRows.length);
-  console.log('📊 rowsHTML preview:', rowsHTML.substring(0, 300));
+  // Log removido
 
   const classes = [
     'ubits-data-table',
@@ -1312,8 +1364,6 @@ export function renderDataTable(
 
   // Contar headers totales
   const headerCount = visibleColumns.length;
-  console.log('📊 Total headers count:', headerCount);
-  console.log('📊 - columnHeaders:', visibleColumns.length);
 
   // Estructura: tabla directamente o envuelta en contenedor scrollable
   const tableHTML = `
@@ -1341,7 +1391,7 @@ export function renderDataTable(
   
   // Determinar qué contenedor usar según los scrolls habilitados
   // NO afecta la lógica del checkbox ni de las columnas
-  let html: string;
+  let tableContainerHTML: string;
   if (showVerticalScrollbar || finalShowHorizontalScrollbar) {
     // Construir clases CSS según los scrolls habilitados
     const scrollClasses = [];
@@ -1352,10 +1402,35 @@ export function renderDataTable(
       scrollClasses.push('ubits-data-table__scrollable-container--horizontal');
     }
     
-    html = `<div class="ubits-data-table__scrollable-container ${scrollClasses.join(' ')}">${tableHTML}</div>`;
+    tableContainerHTML = `<div class="ubits-data-table__scrollable-container ${scrollClasses.join(' ')}">${tableHTML}</div>`;
   } else {
-    html = tableHTML;
+    tableContainerHTML = tableHTML;
   }
+  
+  // Agregar el paginador FUERA del contenedor de la tabla, siempre debajo
+  console.log('📄 [PAGINATION DEBUG] ========== FINALIZANDO renderDataTable ==========');
+  console.log('📄 [PAGINATION DEBUG] showPagination:', showPagination);
+  console.log('📄 [PAGINATION DEBUG] paginationHTML existe:', !!paginationHTML);
+  console.log('📄 [PAGINATION DEBUG] paginationHTML length:', paginationHTML ? paginationHTML.length : 0);
+  
+  let html: string;
+  if (showPagination && paginationHTML) {
+    // El paginador siempre va FUERA del contenedor de la tabla, en un wrapper separado
+    html = `<div class="ubits-data-table__container">
+      ${tableContainerHTML}
+      <div class="ubits-data-table__pagination-wrapper">${paginationHTML}</div>
+    </div>`;
+    console.log('📄 [PAGINATION DEBUG] ✅ Paginador AGREGADO debajo de la tabla');
+    console.log('📄 [PAGINATION DEBUG] HTML final length:', html.length);
+  } else {
+    html = tableContainerHTML;
+    console.log('📄 [PAGINATION DEBUG] ❌ Paginador NO agregado');
+    console.log('📄 [PAGINATION DEBUG]   - showPagination:', showPagination);
+    console.log('📄 [PAGINATION DEBUG]   - paginationHTML existe:', !!paginationHTML);
+    if (!showPagination) console.log('📄 [PAGINATION DEBUG]   - Razón: showPagination es false');
+    if (!paginationHTML) console.log('📄 [PAGINATION DEBUG]   - Razón: paginationHTML está vacío');
+  }
+  console.log('📄 [PAGINATION DEBUG] ========== FIN renderDataTable ==========');
 
   return html;
 }
@@ -3793,6 +3868,69 @@ export function createDataTable(options: DataTableOptions): {
         });
       }
     });
+    
+    // Event listeners para el paginador si está habilitado
+    if (currentOptions.showPagination) {
+      const paginationElement = element.querySelector('.ubits-data-table__pagination');
+      if (paginationElement) {
+        // Event listeners para botones de página
+        const pageButtons = paginationElement.querySelectorAll('.ubits-pagination__page-button');
+        pageButtons.forEach(button => {
+          button.addEventListener('click', () => {
+            const page = parseInt(button.textContent || '1');
+            if (currentOptions.onPageChange) {
+              currentOptions.onPageChange(page);
+            }
+            currentOptions.currentPage = page;
+            render();
+          });
+        });
+        
+        // Event listeners para botones de navegación
+        const navButtons = paginationElement.querySelectorAll('.ubits-pagination__nav-button');
+        navButtons.forEach(button => {
+          button.addEventListener('click', () => {
+            const currentPage = parseInt(paginationElement.getAttribute('data-current-page') || '1');
+            const totalPages = parseInt(paginationElement.getAttribute('data-total-pages') || '1');
+            const ariaLabel = button.getAttribute('aria-label') || '';
+            
+            let newPage = currentPage;
+            if (ariaLabel.includes('Primera') || ariaLabel.includes('First')) {
+              newPage = 1;
+            } else if (ariaLabel.includes('Última') || ariaLabel.includes('Last')) {
+              newPage = totalPages;
+            } else if (ariaLabel.includes('Anterior') || ariaLabel.includes('Previous')) {
+              newPage = Math.max(1, currentPage - 1);
+            } else if (ariaLabel.includes('Siguiente') || ariaLabel.includes('Next')) {
+              newPage = Math.min(totalPages, currentPage + 1);
+            }
+            
+            if (newPage !== currentPage) {
+              if (currentOptions.onPageChange) {
+                currentOptions.onPageChange(newPage);
+              }
+              currentOptions.currentPage = newPage;
+              render();
+            }
+          });
+        });
+        
+        // Event listener para selector de items por página
+        const itemsPerPageSelect = paginationElement.querySelector('.ubits-pagination__select') as HTMLSelectElement;
+        if (itemsPerPageSelect) {
+          itemsPerPageSelect.addEventListener('change', (e) => {
+            const target = e.target as HTMLSelectElement;
+            const value = parseInt(target.value);
+            if (currentOptions.onItemsPerPageChange) {
+              currentOptions.onItemsPerPageChange(value);
+            }
+            currentOptions.itemsPerPage = value;
+            currentOptions.currentPage = 1; // Reset a página 1 cuando cambia items por página
+            render();
+          });
+        }
+      }
+    }
     
     } catch (error) {
       // Error en attachEventListeners

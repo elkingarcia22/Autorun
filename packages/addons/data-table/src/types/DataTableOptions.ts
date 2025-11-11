@@ -230,6 +230,41 @@ export interface DataTableOptions {
   expandSticky?: boolean;
 
   /**
+   * Si se muestra el paginador (por defecto: false)
+   */
+  showPagination?: boolean;
+
+  /**
+   * Página actual (por defecto: 1)
+   */
+  currentPage?: number;
+
+  /**
+   * Items por página (por defecto: 10)
+   */
+  itemsPerPage?: number;
+
+  /**
+   * Callback cuando cambia la página
+   */
+  onPageChange?: (page: number) => void;
+
+  /**
+   * Callback cuando cambia el número de items por página
+   */
+  onItemsPerPageChange?: (itemsPerPage: number) => void;
+
+  /**
+   * Variante del paginador (por defecto: 'default')
+   */
+  paginationVariant?: 'default' | 'compact' | 'minimal';
+
+  /**
+   * Tamaño del paginador (por defecto: 'md')
+   */
+  paginationSize?: 'sm' | 'md' | 'lg';
+
+  /**
    * Clases CSS adicionales
    */
   className?: string;
