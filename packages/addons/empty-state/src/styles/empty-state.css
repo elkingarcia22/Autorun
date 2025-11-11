@@ -70,7 +70,7 @@
 }
 
 .ubits-empty-state__icon i {
-    font-size: 25px;
+    font-size: 20px;
     line-height: 1;
 }
 
@@ -109,9 +109,9 @@
 
 .ubits-empty-state__description {
     font-family: var(--font-sans);
-    font-size: var(--font-body-md-size, 16px);
+    font-size: var(--font-body-sm-size, 14px);
     font-weight: var(--weight-regular, 400);
-    line-height: var(--font-body-md-line, 24px);
+    line-height: var(--font-body-sm-line, 20px);
     color: var(--ubits-fg-1-medium);
     margin: 0;
     padding: 0;
@@ -148,7 +148,7 @@
     }
     
     .ubits-empty-state__icon i {
-        font-size: 25px;
+        font-size: 20px;
     }
     
     .ubits-empty-state__title {

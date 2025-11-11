@@ -67,12 +67,12 @@ export function renderEmptyState(options: EmptyStateOptions): string {
     secondaryButtonContent = `<i class="far fa-${secondaryButtonIcon}"></i> ${secondaryButtonContent}`;
   }
   
-  const primaryButton = (showPrimaryButton && actionLabel) 
-    ? `<button class="ubits-button ubits-button--primary ubits-button--md" data-action="primary" type="button">${primaryButtonContent}</button>`
+  const primaryButton = (showPrimaryButton && actionLabel)
+    ? `<button class="ubits-button ubits-button--primary ubits-button--sm" data-action="primary" type="button">${primaryButtonContent}</button>`
     : '';
   
   const secondaryButton = (showSecondaryButton && secondaryActionLabel)
-    ? `<button class="ubits-button ubits-button--secondary ubits-button--md" data-action="secondary" type="button">${secondaryButtonContent}</button>`
+    ? `<button class="ubits-button ubits-button--secondary ubits-button--sm" data-action="secondary" type="button">${secondaryButtonContent}</button>`
     : '';
 
   if (primaryButton || secondaryButton) {

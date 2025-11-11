@@ -1559,8 +1559,8 @@ export function createDataTable(options: DataTableOptions): {
               currentOptions.onLazyLoad(lazyLoadCurrentItems, totalRows);
             }
             
-            // Re-renderizar con más items
-            render();
+            // Re-renderizar con más items preservando el scroll
+            render(true);
           }
         }
         return;
@@ -1585,8 +1585,8 @@ export function createDataTable(options: DataTableOptions): {
             currentOptions.onLazyLoad(lazyLoadCurrentItems, totalRows);
           }
           
-          // Re-renderizar con más items
-          render();
+          // Re-renderizar con más items preservando el scroll
+          render(true);
         }
       }
     };
@@ -1640,7 +1640,20 @@ export function createDataTable(options: DataTableOptions): {
   };
 
   // Función para renderizar
-  const render = () => {
+  const render = (preserveScroll: boolean = false) => {
+    // Guardar scroll position si se debe preservar (para lazy load)
+    let savedScrollTop = 0;
+    let savedScrollHeight = 0;
+    let savedClientHeight = 0;
+    if (preserveScroll) {
+      const scrollableContainer = element.querySelector('.ubits-data-table__scrollable-container') as HTMLElement;
+      if (scrollableContainer) {
+        savedScrollTop = scrollableContainer.scrollTop;
+        savedScrollHeight = scrollableContainer.scrollHeight;
+        savedClientHeight = scrollableContainer.clientHeight;
+      }
+    }
+    
     // Crear una copia de las opciones con las columnas actualizadas
     const renderOptions = {
       ...currentOptions,
@@ -1679,6 +1692,28 @@ export function createDataTable(options: DataTableOptions): {
     // Configurar lazy load si está habilitado
     if (isLazyLoadEnabled && !currentOptions.showPagination) {
       setupLazyLoad();
+      
+      // Restaurar scroll position después de que se configure el lazy load
+      if (preserveScroll) {
+        // Usar requestAnimationFrame para asegurar que el DOM esté completamente renderizado
+        requestAnimationFrame(() => {
+          const scrollableContainer = element.querySelector('.ubits-data-table__scrollable-container') as HTMLElement;
+          if (scrollableContainer && savedScrollHeight > 0 && savedClientHeight > 0) {
+            // Calcular la posición relativa del scroll (0-1)
+            const oldMaxScroll = savedScrollHeight - savedClientHeight;
+            const scrollPercentage = oldMaxScroll > 0 ? savedScrollTop / oldMaxScroll : 0;
+            
+            // Aplicar la misma posición relativa al nuevo contenido
+            const newScrollHeight = scrollableContainer.scrollHeight;
+            const newClientHeight = scrollableContainer.clientHeight;
+            const newMaxScroll = newScrollHeight - newClientHeight;
+            
+            if (newMaxScroll > 0) {
+              scrollableContainer.scrollTop = scrollPercentage * newMaxScroll;
+            }
+          }
+        });
+      }
     }
     
     // Logs para debugging del hover
