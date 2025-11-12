@@ -941,13 +941,16 @@ function renderRow(row: TableRow, columns: TableColumn[], rowIndex: number, pinn
   if (isExpanded && row.renderExpandedContent) {
     const expandedContent = row.renderExpandedContent(row.data);
     const colspan = visibleColumns.length;
+    console.log('📋 [ROW RENDER] Fila expandida - rowId:', row.id, 'colspan:', colspan, 'tiene contenido:', !!expandedContent);
     rowHTML += `
-      <tr class="ubits-data-table__row-expanded-row">
+      <tr class="ubits-data-table__row-expanded-row" data-expanded-for="${row.id}">
         <td class="ubits-data-table__row-expanded-content" colspan="${colspan}">
           ${expandedContent}
         </td>
       </tr>
     `;
+  } else if (isExpanded && !row.renderExpandedContent) {
+    console.warn('📋 [ROW RENDER] ⚠️ Fila marcada como expandida pero no tiene renderExpandedContent - rowId:', row.id);
   }
 
   return rowHTML;
@@ -1171,6 +1174,7 @@ export function renderDataTable(
   
   // Si showPagination está activo, desactivar lazy load automáticamente
   const isLazyLoadEnabled = showPagination ? false : (lazyLoad !== false); // Por defecto true si no hay paginación
+  console.log('🔍 [RENDER] isLazyLoadEnabled calculado:', isLazyLoadEnabled, '| showPagination:', showPagination, '| lazyLoad:', lazyLoad);
 
   // Logs de paginación - limpiados
 
@@ -1467,6 +1471,14 @@ export function renderDataTable(
   // Obtener el número de items cargados actualmente (se pasa desde createDataTable)
   const currentLoadedItems = (options as any).__lazyLoadCurrentItems || lazyLoadItemsPerBatch;
   
+  console.log('🔍 [RENDER] ========== FILAS DEBUG ==========');
+  console.log('🔍 [RENDER] orderedRows.length:', orderedRows.length);
+  console.log('🔍 [RENDER] showPagination:', showPagination);
+  console.log('🔍 [RENDER] isLazyLoadEnabled:', isLazyLoadEnabled);
+  console.log('🔍 [RENDER] lazyLoad option:', (options as any).lazyLoad);
+  console.log('🔍 [RENDER] currentLoadedItems:', currentLoadedItems);
+  console.log('🔍 [RENDER] lazyLoadItemsPerBatch:', lazyLoadItemsPerBatch);
+  
   if (showPagination) {
     // Modo paginación tradicional
     const totalRows = orderedRows.length;
@@ -1475,6 +1487,7 @@ export function renderDataTable(
     const startIndex = (validCurrentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     paginatedRows = orderedRows.slice(startIndex, endIndex);
+    console.log('🔍 [RENDER] Modo PAGINACIÓN - totalRows:', totalRows, 'paginatedRows:', paginatedRows.length);
     
     // Renderizar el paginador con configuración limpia (solo Anterior/Siguiente)
     try {
@@ -1501,8 +1514,13 @@ export function renderDataTable(
   } else if (isLazyLoadEnabled) {
     // Modo lazy load: mostrar solo los items cargados hasta ahora
     paginatedRows = orderedRows.slice(0, currentLoadedItems);
-    console.log('📦 [LAZY LOAD] Mostrando', paginatedRows.length, 'de', orderedRows.length, 'filas');
+    console.log('🔍 [RENDER] Modo LAZY LOAD - Mostrando', paginatedRows.length, 'de', orderedRows.length, 'filas');
+  } else {
+    console.log('🔍 [RENDER] Modo SIN PAGINACIÓN NI LAZY LOAD - Mostrando todas las filas:', orderedRows.length);
   }
+  
+  console.log('🔍 [RENDER] paginatedRows.length final:', paginatedRows.length);
+  console.log('🔍 [RENDER] ========== FIN FILAS DEBUG ==========');
   
   const rowsHTML = paginatedRows
     .map((row, index) => {
@@ -1518,7 +1536,8 @@ export function renderDataTable(
     })
     .join('');
 
-  // Log removido
+  console.log('🔍 [RENDER] rowsHTML generado, número de <tr> en HTML:', (rowsHTML.match(/<tr/g) || []).length);
+  console.log('🔍 [RENDER] paginatedRows procesadas:', paginatedRows.length);
 
   const classes = [
     'ubits-data-table',
@@ -1560,6 +1579,19 @@ export function renderDataTable(
   let finalShowVerticalScrollbar = showVerticalScrollbar;
   if (isLazyLoadEnabled && !showPagination) {
     finalShowVerticalScrollbar = true;
+  }
+  
+  // IMPORTANTE: Si no hay paginación ni lazy load, pero el contenido es muy grande,
+  // habilitar scroll vertical automáticamente para que todas las filas sean accesibles
+  // Esto es especialmente importante en Storybook donde el viewport puede ser limitado
+  if (!showPagination && !isLazyLoadEnabled && !finalShowVerticalScrollbar) {
+    // Calcular altura estimada: header (45px) + filas (100 filas * 45px = 4500px) = ~4545px
+    const estimatedHeight = 45 + (orderedRows.length * 45);
+    // Si la altura estimada es mayor a 600px (altura típica de viewport), habilitar scroll
+    if (estimatedHeight > 600) {
+      finalShowVerticalScrollbar = true;
+      console.log('🔍 [RENDER] Habilitando scroll vertical automáticamente - altura estimada:', estimatedHeight, 'px');
+    }
   }
   
   // Determinar qué contenedor usar según los scrolls habilitados
@@ -1966,17 +1998,66 @@ export function createDataTable(options: DataTableOptions): {
 
   // Función para renderizar
   const render = (preserveScroll: boolean = false) => {
-    // Guardar scroll position si se debe preservar (para lazy load)
+    const renderId = `render-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`;
+    const stackTrace = new Error().stack?.split('\n') || [];
+    const callerInfo = stackTrace.slice(1, 5).join('\n');
+    
+    console.log(`🔄 [RENDER] ========== INICIO RENDER [${renderId}] ==========`);
+    console.log(`🔄 [RENDER] Stack trace:`, callerInfo);
+    console.log(`🔄 [RENDER] preserveScroll:`, preserveScroll);
+    
+    // Detectar si se está llamando desde el handler de select all o checkbox
+    const isFromSelectAll = callerInfo.includes('SELECT ALL') || callerInfo.includes('selectAll');
+    const isFromCheckbox = callerInfo.includes('CHECKBOX') || callerInfo.includes('checkbox');
+    const isFromSelectAllHandler = callerInfo.includes('HTMLInputElement') && isFromCheckbox;
+    
+    if (isFromSelectAll || isFromSelectAllHandler) {
+      console.warn(`🔄 [RENDER] ⚠️ RENDER LLAMADO DESDE SELECT ALL O CHECKBOX HANDLER - Esto puede causar el salto!`, {
+        isFromSelectAll,
+        isFromCheckbox,
+        isFromSelectAllHandler,
+        callerInfo: callerInfo.split('\n').slice(0, 3)
+      });
+    }
+    
+    // IMPORTANTE: Siempre guardar scroll position para evitar el "salto" visual
+    // Esto es crítico cuando se seleccionan todos los elementos o se hacen cambios que requieren re-render
     let savedScrollTop = 0;
     let savedScrollHeight = 0;
     let savedClientHeight = 0;
-    if (preserveScroll) {
-      const scrollableContainer = element.querySelector('.ubits-data-table__scrollable-container') as HTMLElement;
-      if (scrollableContainer) {
-        savedScrollTop = scrollableContainer.scrollTop;
-        savedScrollHeight = scrollableContainer.scrollHeight;
-        savedClientHeight = scrollableContainer.clientHeight;
+    let shouldPreserveScroll = preserveScroll;
+    
+    const scrollableContainer = element.querySelector('.ubits-data-table__scrollable-container') as HTMLElement;
+    if (scrollableContainer) {
+      savedScrollTop = scrollableContainer.scrollTop;
+      savedScrollHeight = scrollableContainer.scrollHeight;
+      savedClientHeight = scrollableContainer.clientHeight;
+      
+      // IMPORTANTE: Siempre preservar el scroll si hay un scrollableContainer con contenido más grande que el contenedor
+      // Esto previene el "salto" visual incluso cuando scrollTop = 0 (usuario en la parte superior)
+      const hasScrollableContent = savedScrollHeight > savedClientHeight;
+      if (hasScrollableContent && !preserveScroll) {
+        shouldPreserveScroll = true;
+        console.log(`🔄 [RENDER] 📍 Contenido con scroll detectado (scrollHeight: ${savedScrollHeight}px > clientHeight: ${savedClientHeight}px), preservando automáticamente para evitar salto`);
       }
+      
+      // Si hay scroll activo (scrollTop > 0), también preservarlo
+      if (savedScrollTop > 0 && !preserveScroll && !shouldPreserveScroll) {
+        shouldPreserveScroll = true;
+        console.log(`🔄 [RENDER] 📍 Scroll activo detectado (${savedScrollTop}px), preservando automáticamente para evitar salto`);
+      }
+      
+      console.log(`🔄 [RENDER] 📍 Scroll guardado:`, {
+        scrollTop: savedScrollTop,
+        scrollHeight: savedScrollHeight,
+        clientHeight: savedClientHeight,
+        maxScroll: savedScrollHeight - savedClientHeight,
+        scrollPercentage: savedScrollHeight > savedClientHeight ? (savedScrollTop / (savedScrollHeight - savedClientHeight)) * 100 : 0,
+        shouldPreserve: shouldPreserveScroll,
+        hasScrollableContent: hasScrollableContent
+      });
+    } else {
+      console.log(`🔄 [RENDER] ⚠️ No se encontró scrollableContainer, no se puede preservar scroll`);
     }
     
     // Filtrar filas por filtros y búsqueda
@@ -2037,7 +2118,19 @@ export function createDataTable(options: DataTableOptions): {
       activeFilters
     );
     
+    console.log(`🔄 [RENDER] HTML generado, longitud:`, newHTML.length);
+    console.log(`🔄 [RENDER] Reemplazando innerHTML del elemento (esto causa el brinco)...`);
+    console.log(`🔄 [RENDER] 📍 Estado ANTES de innerHTML:`, {
+      scrollTop: savedScrollTop,
+      scrollHeight: savedScrollHeight,
+      clientHeight: savedClientHeight,
+      shouldPreserve: shouldPreserveScroll
+    });
+    const beforeReplace = performance.now();
     element.innerHTML = newHTML.trim();
+    const afterReplace = performance.now();
+    console.log(`🔄 [RENDER] innerHTML reemplazado en ${(afterReplace - beforeReplace).toFixed(2)}ms`);
+    console.log(`🔄 [RENDER] 📍 innerHTML reemplazado, ahora restaurando scroll...`);
     
     // Reemplazar el SearchButton renderizado con el componente completo si existe
     if (currentOptions.header?.searchButton && currentOptions.header?.showSearchButton !== false) {
@@ -2195,8 +2288,12 @@ export function createDataTable(options: DataTableOptions): {
       }
     }
     
+    console.log(`🔄 [RENDER] Llamando attachEventListeners()...`);
     attachEventListeners();
+    console.log(`🔄 [RENDER] attachEventListeners() completado`);
     initializeIconFallbacks();
+    
+    console.log(`🔄 [RENDER] ========== FIN RENDER [${renderId}] ==========`);
     
     // Verificar espaciado del paginador después del renderizado
     if (currentOptions.showPagination) {
@@ -2208,34 +2305,152 @@ export function createDataTable(options: DataTableOptions): {
     // Configurar lazy load si está habilitado
     if (isLazyLoadEnabled && !currentOptions.showPagination) {
       setupLazyLoad();
-      
-      // Restaurar scroll position después de que se configure el lazy load
-      if (preserveScroll) {
-        // Usar requestAnimationFrame para asegurar que el DOM esté completamente renderizado
-        requestAnimationFrame(() => {
-          const scrollableContainer = element.querySelector('.ubits-data-table__scrollable-container') as HTMLElement;
-          if (scrollableContainer && savedScrollHeight > 0 && savedClientHeight > 0) {
-            // Calcular la posición relativa del scroll (0-1)
-            const oldMaxScroll = savedScrollHeight - savedClientHeight;
-            const scrollPercentage = oldMaxScroll > 0 ? savedScrollTop / oldMaxScroll : 0;
-            
-            // Aplicar la misma posición relativa al nuevo contenido
-            const newScrollHeight = scrollableContainer.scrollHeight;
-            const newClientHeight = scrollableContainer.clientHeight;
-            const newMaxScroll = newScrollHeight - newClientHeight;
-            
-            if (newMaxScroll > 0) {
-              scrollableContainer.scrollTop = scrollPercentage * newMaxScroll;
-            }
-          }
-        });
-      }
     }
     
-    // Logs para debugging del hover
+    // IMPORTANTE: Restaurar scroll position SIEMPRE que se haya guardado, no solo para lazy load
+    // Esto previene el "salto" visual cuando se seleccionan todos los elementos o se hace cualquier cambio
+    // Restaurar si:
+    // 1. Se debe preservar explícitamente (preserveScroll = true), O
+    // 2. Hay un scrollableContainer con contenido más grande que el contenedor (previene salto incluso en scrollTop = 0)
+    const shouldRestoreScroll = shouldPreserveScroll || (savedScrollHeight > 0 && savedClientHeight > 0 && savedScrollHeight > savedClientHeight);
+    
+    if (shouldRestoreScroll) {
+      console.log(`🔄 [RENDER] 📍 Restaurando scroll después del render...`);
+      
+      // Usar requestAnimationFrame para asegurar que el DOM esté completamente renderizado
+      requestAnimationFrame(() => {
+        const newScrollableContainer = element.querySelector('.ubits-data-table__scrollable-container') as HTMLElement;
+        if (newScrollableContainer) {
+          const newScrollHeight = newScrollableContainer.scrollHeight;
+          const newClientHeight = newScrollableContainer.clientHeight;
+          const newMaxScroll = newScrollHeight - newClientHeight;
+          
+          // Calcular la posición relativa del scroll (0-1)
+          const oldMaxScroll = savedScrollHeight - savedClientHeight;
+          const scrollPercentage = oldMaxScroll > 0 ? savedScrollTop / oldMaxScroll : 0;
+          
+          console.log(`🔄 [RENDER] 📍 Cálculo de restauración de scroll:`, {
+            old: {
+              scrollTop: savedScrollTop,
+              scrollHeight: savedScrollHeight,
+              clientHeight: savedClientHeight,
+              maxScroll: oldMaxScroll
+            },
+            new: {
+              scrollHeight: newScrollHeight,
+              clientHeight: newClientHeight,
+              maxScroll: newMaxScroll
+            },
+            scrollPercentage: (scrollPercentage * 100).toFixed(2) + '%',
+            newScrollTop: newMaxScroll > 0 ? scrollPercentage * newMaxScroll : 0
+          });
+          
+          if (newMaxScroll > 0) {
+            const newScrollTop = scrollPercentage * newMaxScroll;
+            newScrollableContainer.scrollTop = newScrollTop;
+            
+            console.log(`🔄 [RENDER] 📍 Scroll restaurado:`, {
+              anterior: savedScrollTop,
+              nuevo: newScrollTop,
+              diferencia: Math.abs(newScrollTop - savedScrollTop),
+              restauradoCorrectamente: Math.abs(newScrollTop - savedScrollTop) < 10 // Tolerancia de 10px
+            });
+          } else {
+            console.log(`🔄 [RENDER] ⚠️ No hay scroll disponible (maxScroll <= 0), no se puede restaurar`);
+          }
+        } else {
+          console.log(`🔄 [RENDER] ⚠️ No se encontró scrollableContainer después del render, no se puede restaurar scroll`);
+        }
+      });
+    } else {
+      console.log(`🔄 [RENDER] 📍 No se restaura scroll:`, {
+        shouldPreserve: shouldPreserveScroll,
+        savedScrollHeight,
+        savedClientHeight,
+        tieneScroll: savedScrollHeight > savedClientHeight,
+        shouldRestore: shouldRestoreScroll
+      });
+    }
+    
+    // Logs para debugging del hover y visibilidad
     console.log('🎨 [HOVER DEBUG] ========== VERIFICANDO HOVER DE FILAS ==========');
     const rows = element.querySelectorAll('.ubits-data-table__row');
     console.log('🎨 [HOVER DEBUG] Filas encontradas:', rows.length);
+    
+    // Verificar alturas y visibilidad
+    const table = element.querySelector('.ubits-data-table__table') as HTMLElement;
+    const tbody = element.querySelector('.ubits-data-table__tbody') as HTMLElement;
+    const scrollableContainerForDebug = element.querySelector('.ubits-data-table__scrollable-container') as HTMLElement;
+    const dataTableContainer = element.querySelector('.ubits-data-table') as HTMLElement;
+    
+    console.log('📏 [HEIGHT DEBUG] ========== VERIFICANDO ALTURAS ==========');
+    if (table) {
+      console.log('📏 [HEIGHT DEBUG] table.scrollHeight:', table.scrollHeight, 'table.clientHeight:', table.clientHeight, 'table.offsetHeight:', table.offsetHeight);
+    }
+    if (tbody) {
+      console.log('📏 [HEIGHT DEBUG] tbody.scrollHeight:', tbody.scrollHeight, 'tbody.clientHeight:', tbody.clientHeight, 'tbody.offsetHeight:', tbody.offsetHeight);
+    }
+    if (scrollableContainerForDebug) {
+      console.log('📏 [HEIGHT DEBUG] scrollableContainer.scrollHeight:', scrollableContainerForDebug.scrollHeight, 'scrollableContainer.clientHeight:', scrollableContainerForDebug.clientHeight, 'scrollableContainer.offsetHeight:', scrollableContainerForDebug.offsetHeight);
+      console.log('📏 [HEIGHT DEBUG] scrollableContainer max-height:', window.getComputedStyle(scrollableContainerForDebug).maxHeight);
+    }
+    if (dataTableContainer) {
+      console.log('📏 [HEIGHT DEBUG] dataTableContainer.scrollHeight:', dataTableContainer.scrollHeight, 'dataTableContainer.clientHeight:', dataTableContainer.clientHeight, 'dataTableContainer.offsetHeight:', dataTableContainer.offsetHeight);
+      console.log('📏 [HEIGHT DEBUG] dataTableContainer max-height:', window.getComputedStyle(dataTableContainer).maxHeight);
+    }
+    if (rows.length > 0) {
+      const firstRow = rows[0] as HTMLElement;
+      const secondRow = rows[1] as HTMLElement;
+      const lastRow = rows[rows.length - 1] as HTMLElement;
+      
+      console.log('📏 [HEIGHT DEBUG] ========== COMPARACIÓN DE FILAS ==========');
+      const firstRect = firstRow.getBoundingClientRect();
+      const secondRect = secondRow ? secondRow.getBoundingClientRect() : null;
+      const lastRect = lastRow.getBoundingClientRect();
+      const viewportHeight = window.innerHeight;
+      const viewportTop = window.scrollY || window.pageYOffset;
+      
+      console.log('📏 [HEIGHT DEBUG] Primera fila (funciona):');
+      console.log('  - offsetTop:', firstRow.offsetTop);
+      console.log('  - offsetHeight:', firstRow.offsetHeight);
+      console.log('  - getBoundingClientRect:', {
+        top: firstRect.top,
+        bottom: firstRect.bottom,
+        left: firstRect.left,
+        right: firstRect.right,
+        width: firstRect.width,
+        height: firstRect.height,
+        visibleInViewport: firstRect.top >= 0 && firstRect.bottom <= viewportHeight
+      });
+      
+      if (secondRow && secondRect) {
+        console.log('📏 [HEIGHT DEBUG] Segunda fila (no funciona):');
+        console.log('  - offsetTop:', secondRow.offsetTop);
+        console.log('  - offsetHeight:', secondRow.offsetHeight);
+        console.log('  - getBoundingClientRect:', {
+          top: secondRect.top,
+          bottom: secondRect.bottom,
+          left: secondRect.left,
+          right: secondRect.right,
+          width: secondRect.width,
+          height: secondRect.height,
+          visibleInViewport: secondRect.top >= 0 && secondRect.bottom <= viewportHeight,
+          belowViewport: secondRect.top > viewportHeight,
+          aboveViewport: secondRect.bottom < 0
+        });
+        console.log('  - viewportHeight:', viewportHeight);
+        console.log('  - Diferencia con primera fila (offsetTop):', secondRow.offsetTop - firstRow.offsetTop);
+        console.log('  - Diferencia con primera fila (getBoundingClientRect.top):', secondRect.top - firstRect.top);
+      }
+      
+      console.log('📏 [HEIGHT DEBUG] Última fila:');
+      console.log('  - offsetTop:', lastRow.offsetTop);
+      console.log('  - offsetHeight:', lastRow.offsetHeight);
+      console.log('  - getBoundingClientRect:', lastRow.getBoundingClientRect());
+      console.log('📏 [HEIGHT DEBUG] Altura total estimada (última fila offsetTop + offsetHeight):', lastRow.offsetTop + lastRow.offsetHeight);
+      console.log('📏 [HEIGHT DEBUG] ========== FIN COMPARACIÓN ==========');
+    }
+    console.log('📏 [HEIGHT DEBUG] ========== FIN ALTURAS ==========');
     
     rows.forEach((row, index) => {
       if (index === 0) { // Solo log de la primera fila para no saturar
@@ -2387,6 +2602,7 @@ export function createDataTable(options: DataTableOptions): {
   
   // Función para adjuntar event listeners
   const attachEventListeners = () => {
+    console.log(`📎 [ATTACH] ========== INICIO attachEventListeners ==========`);
     // Detectar si estamos en la web (no en Storybook)
     const isWeb = typeof window !== 'undefined' && window.location && !window.location.href.includes('storybook');
     
@@ -2644,61 +2860,938 @@ export function createDataTable(options: DataTableOptions): {
       }
     }
     
-    // Checkboxes de columnas de datos (checkboxes normales en las celdas con data-column-id)
-    const cellCheckboxes = element.querySelectorAll('input[data-column-id]');
-    cellCheckboxes.forEach(checkbox => {
-      checkbox.addEventListener('change', (e) => {
-        const input = e.target as HTMLInputElement;
-        const rowIdStr = input.getAttribute('data-row-id')!;
-        const columnId = input.getAttribute('data-column-id')!;
-        const rowId = isNaN(Number(rowIdStr)) ? rowIdStr : Number(rowIdStr);
-        const isChecked = input.checked;
-        
-        const row = currentOptions.rows.find(r => r.id === rowId);
-        if (row) {
-          row.data[columnId] = isChecked;
-        }
-        
-        render();
-      });
-    });
-
+    // IMPORTANTE: Declarar la bandera isSelectAllInProgress en el scope de attachEventListeners
+    // para que ambos handlers (SELECT ALL y checkbox individual) puedan acceder a ella
+    let isSelectAllInProgress = false;
+    
+    // IMPORTANTE: Primero configurar los checkboxes del header (select all) para que tengan prioridad
     // Checkboxes de header de columnas de checkbox (para seleccionar todos en esa columna)
     const columnCheckboxHeaders = element.querySelectorAll('input[data-column-checkbox-header]');
-    columnCheckboxHeaders.forEach(checkbox => {
-      checkbox.addEventListener('change', (e) => {
+    console.log(`☑️ [SELECT ALL] Header checkboxes encontrados: ${columnCheckboxHeaders.length}`);
+    columnCheckboxHeaders.forEach((checkbox, index) => {
+      const originalCheckbox = checkbox as HTMLInputElement;
+      const columnId = originalCheckbox.getAttribute('data-column-checkbox-header');
+      console.log(`☑️ [SELECT ALL] Configurando header checkbox ${index}: columnId=${columnId}`);
+      
+      // Remover listeners anteriores si existen para evitar duplicados
+      const newCheckbox = originalCheckbox.cloneNode(true) as HTMLInputElement;
+      // IMPORTANTE: Preservar el estado checked al clonar
+      newCheckbox.checked = originalCheckbox.checked;
+      // IMPORTANTE: Asegurar que el atributo data-column-checkbox-header esté presente después de clonar
+      // Y también preservar TODOS los atributos del original
+      if (columnId) {
+        newCheckbox.setAttribute('data-column-checkbox-header', columnId);
+      }
+      // Preservar todos los atributos del original
+      Array.from(originalCheckbox.attributes).forEach(attr => {
+        if (attr.name !== 'data-column-checkbox-header' || !newCheckbox.hasAttribute(attr.name)) {
+          newCheckbox.setAttribute(attr.name, attr.value);
+        }
+      });
+      originalCheckbox.parentNode?.replaceChild(newCheckbox, originalCheckbox);
+      
+      console.log(`☑️ [SELECT ALL] Checkbox clonado y reemplazado:`, {
+        columnId: columnId,
+        hasHeaderAttr: newCheckbox.hasAttribute('data-column-checkbox-header'),
+        checked: newCheckbox.checked,
+        allAttributes: Array.from(newCheckbox.attributes).map(attr => `${attr.name}="${attr.value}"`)
+      });
+      
+      console.log(`☑️ [SELECT ALL] Listener adjuntado al header checkbox ${index}`, {
+        columnId: columnId,
+        checkbox: newCheckbox,
+        hasHeaderAttr: newCheckbox.hasAttribute('data-column-checkbox-header'),
+        hasColumnId: newCheckbox.hasAttribute('data-column-id'),
+        hasRowId: newCheckbox.hasAttribute('data-row-id'),
+        allAttributes: Array.from(newCheckbox.attributes).map(attr => `${attr.name}="${attr.value}"`)
+      });
+      
+      // IMPORTANTE: Usar { capture: true } para que este listener se ejecute ANTES que otros listeners
+      // Esto asegura que se ejecute en la fase de captura, antes que los listeners en la fase de burbujeo
+      console.log(`☑️ [SELECT ALL] 🔧 Agregando listener con capture:true al checkbox ${index}`);
+      console.log(`☑️ [SELECT ALL] 🔍 Estado del checkbox ANTES de agregar listener:`, {
+        element: newCheckbox,
+        isConnected: newCheckbox.isConnected,
+        hasHeaderAttr: newCheckbox.hasAttribute('data-column-checkbox-header'),
+        checked: newCheckbox.checked,
+        parentElement: newCheckbox.parentElement?.tagName,
+        allAttrs: Array.from(newCheckbox.attributes).map(a => `${a.name}="${a.value}"`)
+      });
+      
+      const selectAllHandler = (e: Event) => {
+        console.log(`☑️ [SELECT ALL] ========== SELECT ALL CAMBIÓ ==========`);
+        console.log(`☑️ [SELECT ALL] 🎯 HANDLER EJECUTÁNDOSE - timestamp: ${Date.now()}`);
+        console.log(`☑️ [SELECT ALL] 🔍 EVENTO RECIBIDO:`, {
+          eventPhase: e.eventPhase,
+          bubbles: e.bubbles,
+          cancelable: e.cancelable,
+          defaultPrevented: e.defaultPrevented,
+          isTrusted: e.isTrusted,
+          timeStamp: e.timeStamp,
+          target: e.target,
+          currentTarget: e.currentTarget,
+          targetType: (e.target as HTMLElement).tagName,
+          targetId: (e.target as HTMLElement).id,
+          targetClassName: (e.target as HTMLElement).className,
+          targetHasHeaderAttr: (e.target as HTMLElement).hasAttribute('data-column-checkbox-header'),
+          currentTargetHasHeaderAttr: (e.currentTarget as HTMLElement).hasAttribute('data-column-checkbox-header'),
+          targetAllAttrs: Array.from((e.target as HTMLElement).attributes).map(a => `${a.name}="${a.value}"`),
+          currentTargetAllAttrs: Array.from((e.currentTarget as HTMLElement).attributes).map(a => `${a.name}="${a.value}"`)
+        });
+        
+        // IMPORTANTE: Detener la propagación INMEDIATAMENTE para evitar que otros listeners lo procesen
+        // NO usar preventDefault() porque bloquea el cambio visual del checkbox
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        
         const input = e.target as HTMLInputElement;
-        const columnId = input.getAttribute('data-column-checkbox-header')!;
+        
+        // IMPORTANTE: Verificar que el input tiene el atributo antes de continuar
+        if (!input.hasAttribute('data-column-checkbox-header')) {
+          console.log(`☑️ [SELECT ALL] ⚠️ El input NO tiene data-column-checkbox-header, ignorando...`, {
+            input: input,
+            allAttributes: Array.from(input.attributes).map(attr => `${attr.name}="${attr.value}"`)
+          });
+          return;
+        }
+        
+        const currentColumnId = input.getAttribute('data-column-checkbox-header')!;
         const isChecked = input.checked;
+        
+        console.log(`☑️ [SELECT ALL] columnId: ${currentColumnId}, checked: ${isChecked}`, {
+          input: input,
+          hasHeaderAttr: input.hasAttribute('data-column-checkbox-header'),
+          hasColumnId: input.hasAttribute('data-column-id'),
+          hasRowId: input.hasAttribute('data-row-id'),
+          allAttributes: Array.from(input.attributes).map(attr => `${attr.name}="${attr.value}"`),
+          eventPhase: e.eventPhase,
+          bubbles: e.bubbles,
+          cancelable: e.cancelable,
+          defaultPrevented: e.defaultPrevented
+        });
+        
+        console.log(`☑️ [SELECT ALL] ✅ Propagación ya detenida (se detuvo al inicio del handler)`);
+        
+        // IMPORTANTE: Guardar el scroll ANTES de hacer cualquier cambio para poder restaurarlo después
+        const scrollableContainerBefore = element.querySelector('.ubits-data-table__scrollable-container') as HTMLElement;
+        let savedScrollBeforeSelectAll = 0;
+        let savedScrollHeightBeforeSelectAll = 0;
+        let savedClientHeightBeforeSelectAll = 0;
+        if (scrollableContainerBefore) {
+          savedScrollBeforeSelectAll = scrollableContainerBefore.scrollTop;
+          savedScrollHeightBeforeSelectAll = scrollableContainerBefore.scrollHeight;
+          savedClientHeightBeforeSelectAll = scrollableContainerBefore.clientHeight;
+          console.log(`☑️ [SELECT ALL] 📍 Scroll ANTES de actualizar checkboxes:`, {
+            scrollTop: savedScrollBeforeSelectAll,
+            scrollHeight: savedScrollHeightBeforeSelectAll,
+            clientHeight: savedClientHeightBeforeSelectAll,
+            maxScroll: savedScrollHeightBeforeSelectAll - savedClientHeightBeforeSelectAll
+          });
+        } else {
+          console.log(`☑️ [SELECT ALL] ⚠️ No se encontró scrollableContainer antes de actualizar`);
+        }
         
         // Actualizar todos los checkboxes de esa columna en todas las filas
         currentOptions.rows.forEach(row => {
-          row.data[columnId] = isChecked;
+          row.data[currentColumnId] = isChecked;
+        });
+        console.log(`☑️ [SELECT ALL] Estado de todas las filas actualizado (${currentOptions.rows.length} filas)`);
+        
+        // Si es checkbox-2 (checkbox fijo), optimizar: actualizar checkboxes visibles sin re-renderizar toda la tabla
+        if (currentColumnId === 'checkbox-2') {
+          // Actualizar todos los checkboxes visibles en el DOM
+          const visibleCheckboxes = element.querySelectorAll(`input[data-column-id="${currentColumnId}"][data-row-id]`);
+          console.log(`☑️ [SELECT ALL] Checkboxes visibles encontrados: ${visibleCheckboxes.length}`);
+          
+          // IMPORTANTE: Activar bandera ANTES de actualizar para prevenir que handlers individuales se ejecuten
+          isSelectAllInProgress = true;
+          console.log(`☑️ [SELECT ALL] 🚩 Bandera isSelectAllInProgress activada`);
+          
+          // IMPORTANTE: Actualizar los checkboxes de forma SÍNCRONA para que se muestren inmediatamente
+          // No usar requestAnimationFrame aquí porque retrasa el renderizado visual
+          visibleCheckboxes.forEach((cb) => {
+            const checkbox = cb as HTMLInputElement;
+            const rowIdStr = checkbox.getAttribute('data-row-id');
+            if (rowIdStr) {
+              const rowId = isNaN(Number(rowIdStr)) ? rowIdStr : Number(rowIdStr);
+              // Actualizar el estado interno PRIMERO
+              const row = currentOptions.rows.find(r => r.id === rowId);
+              if (row) {
+                row.data[currentColumnId] = isChecked;
+              }
+              
+              // IMPORTANTE: Actualizar el checkbox visual
+              // La bandera isSelectAllInProgress previene que el handler individual se ejecute
+              // incluso si se dispara el evento change
+              checkbox.checked = isChecked;
+              
+              // IMPORTANTE: Actualizar la clase CSS del contenedor del checkbox UBITS
+              const checkboxContainer = checkbox.closest('.ubits-checkbox') as HTMLElement;
+              if (checkboxContainer) {
+                const checkboxSquare = checkboxContainer.querySelector('.ubits-checkbox__square') as HTMLElement;
+                
+                if (isChecked) {
+                  // IMPORTANTE: Asegurar que la clase checked esté presente ANTES de crear el checkmark
+                  checkboxContainer.classList.add('ubits-checkbox--checked');
+                  checkboxContainer.classList.remove('ubits-checkbox--indeterminate');
+                  
+                  // Crear o asegurar que existe el elemento checkmark
+                  if (checkboxSquare) {
+                    // Remover el elemento indeterminate si existe
+                    const indeterminateEl = checkboxSquare.querySelector('.ubits-checkbox__indeterminate');
+                    if (indeterminateEl) {
+                      indeterminateEl.remove();
+                    }
+                    
+                    // IMPORTANTE: Verificar si el checkmark ya existe
+                    let checkmarkEl = checkboxSquare.querySelector('.ubits-checkbox__checkmark') as HTMLElement;
+                    if (!checkmarkEl) {
+                      // Crear el checkmark solo si no existe
+                      checkmarkEl = document.createElement('span');
+                      checkmarkEl.className = 'ubits-checkbox__checkmark';
+                      checkboxSquare.appendChild(checkmarkEl);
+                    }
+                    
+                    // IMPORTANTE: Remover la transición temporalmente para mostrar inmediatamente
+                    const originalTransition = checkmarkEl.style.transition;
+                    checkmarkEl.style.transition = 'none';
+                    
+                    // Aplicar estilos directamente para asegurar que se muestre inmediatamente
+                    checkmarkEl.style.setProperty('opacity', '1', 'important');
+                    checkmarkEl.style.setProperty('transform', 'scale(1)', 'important');
+                    checkmarkEl.style.setProperty('display', 'flex', 'important');
+                    
+                    // IMPORTANTE: Forzar un reflow completo usando getComputedStyle
+                    // Esto asegura que el navegador renderice el checkmark inmediatamente
+                    window.getComputedStyle(checkmarkEl).opacity;
+                    window.getComputedStyle(checkmarkEl).transform;
+                    window.getComputedStyle(checkmarkEl).display;
+                    
+                    // Forzar múltiples reflows adicionales para asegurar que el navegador renderice el checkmark
+                    void checkmarkEl.offsetHeight;
+                    void checkboxSquare.offsetHeight;
+                    void checkboxContainer.offsetHeight;
+                    
+                    // Restaurar la transición después de un pequeño delay para permitir animaciones futuras
+                    setTimeout(() => {
+                      checkmarkEl.style.transition = originalTransition || '';
+                    }, 0);
+                  }
+                } else {
+                  checkboxContainer.classList.remove('ubits-checkbox--checked');
+                  checkboxContainer.classList.remove('ubits-checkbox--indeterminate');
+                  
+                  // Remover el checkmark si existe
+                  if (checkboxSquare) {
+                    const checkmarkEl = checkboxSquare.querySelector('.ubits-checkbox__checkmark');
+                    if (checkmarkEl) {
+                      checkmarkEl.remove();
+                    }
+                    const indeterminateEl = checkboxSquare.querySelector('.ubits-checkbox__indeterminate');
+                    if (indeterminateEl) {
+                      indeterminateEl.remove();
+                    }
+                  }
+                }
+              }
+            }
+          });
+          
+          // IMPORTANTE: Actualizar el header checkbox DESPUÉS de actualizar todos los checkboxes individuales
+          // para asegurar que el estado visual se sincronice correctamente
+          const allChecked = currentOptions.rows.length > 0 && currentOptions.rows.every(r => r.data[currentColumnId] === true);
+          const someChecked = currentOptions.rows.some(r => r.data[currentColumnId] === true);
+          const isIndeterminate = someChecked && !allChecked;
+          const headerCheckbox = input;
+          
+          // Forzar actualización del estado checked e indeterminate
+          headerCheckbox.checked = allChecked;
+          headerCheckbox.indeterminate = isIndeterminate;
+          
+          // Actualizar también la clase CSS del contenedor del header checkbox
+          const headerCheckboxContainer = headerCheckbox.closest('.ubits-checkbox') as HTMLElement;
+          if (headerCheckboxContainer) {
+            const headerCheckboxSquare = headerCheckboxContainer.querySelector('.ubits-checkbox__square') as HTMLElement;
+            
+            if (allChecked) {
+              headerCheckboxContainer.classList.add('ubits-checkbox--checked');
+              headerCheckboxContainer.classList.remove('ubits-checkbox--indeterminate');
+              
+              // IMPORTANTE: Asegurar que el checkmark exista y esté visible
+              if (headerCheckboxSquare) {
+                // Remover el elemento indeterminate si existe
+                const indeterminateEl = headerCheckboxSquare.querySelector('.ubits-checkbox__indeterminate');
+                if (indeterminateEl) {
+                  indeterminateEl.remove();
+                }
+                
+                // IMPORTANTE: Asegurar que la clase checked esté presente PRIMERO
+                // Esto es crítico para que el CSS se aplique correctamente
+                headerCheckboxContainer.classList.add('ubits-checkbox--checked');
+                
+                // Forzar un reflow para que el navegador procese la clase
+                void headerCheckboxContainer.offsetHeight;
+                
+                // IMPORTANTE: Verificar si el checkmark ya existe
+                let checkmarkEl = headerCheckboxSquare.querySelector('.ubits-checkbox__checkmark') as HTMLElement;
+                if (!checkmarkEl) {
+                  // Crear el checkmark solo si no existe
+                  checkmarkEl = document.createElement('span');
+                  checkmarkEl.className = 'ubits-checkbox__checkmark';
+                  headerCheckboxSquare.appendChild(checkmarkEl);
+                }
+                
+                // IMPORTANTE: Remover la transición temporalmente para mostrar inmediatamente
+                const originalTransition = checkmarkEl.style.transition;
+                checkmarkEl.style.transition = 'none';
+                
+                // Aplicar estilos directamente para forzar visualización inmediata
+                checkmarkEl.style.setProperty('opacity', '1', 'important');
+                checkmarkEl.style.setProperty('transform', 'scale(1)', 'important');
+                checkmarkEl.style.setProperty('display', 'flex', 'important');
+                
+                // IMPORTANTE: Forzar un reflow completo usando getComputedStyle
+                // Esto asegura que el navegador renderice el checkmark inmediatamente
+                window.getComputedStyle(checkmarkEl).opacity;
+                window.getComputedStyle(checkmarkEl).transform;
+                window.getComputedStyle(checkmarkEl).display;
+                
+                // Forzar múltiples reflows adicionales para asegurar que el navegador renderice el checkmark
+                void checkmarkEl.offsetHeight;
+                void headerCheckboxSquare.offsetHeight;
+                void headerCheckboxContainer.offsetHeight;
+                
+                // Restaurar la transición después de un pequeño delay para permitir animaciones futuras
+                setTimeout(() => {
+                  checkmarkEl.style.transition = originalTransition || '';
+                }, 0);
+              }
+            } else if (isIndeterminate) {
+              headerCheckboxContainer.classList.remove('ubits-checkbox--checked');
+              headerCheckboxContainer.classList.add('ubits-checkbox--indeterminate');
+              
+              // Crear indeterminate si no existe
+              if (headerCheckboxSquare) {
+                const checkmarkEl = headerCheckboxSquare.querySelector('.ubits-checkbox__checkmark');
+                if (checkmarkEl) {
+                  checkmarkEl.remove();
+                }
+                let indeterminateEl = headerCheckboxSquare.querySelector('.ubits-checkbox__indeterminate') as HTMLElement;
+                if (!indeterminateEl) {
+                  indeterminateEl = document.createElement('span');
+                  indeterminateEl.className = 'ubits-checkbox__indeterminate';
+                  headerCheckboxSquare.appendChild(indeterminateEl);
+                }
+                // Aplicar estilos directamente para forzar visualización
+                indeterminateEl.style.setProperty('opacity', '1', 'important');
+                indeterminateEl.style.setProperty('transform', 'scale(1)', 'important');
+                indeterminateEl.style.setProperty('display', 'flex', 'important');
+              }
+            } else {
+              headerCheckboxContainer.classList.remove('ubits-checkbox--checked');
+              headerCheckboxContainer.classList.remove('ubits-checkbox--indeterminate');
+              
+              // Remover ambos elementos
+              if (headerCheckboxSquare) {
+                const checkmarkEl = headerCheckboxSquare.querySelector('.ubits-checkbox__checkmark');
+                if (checkmarkEl) {
+                  checkmarkEl.remove();
+                }
+                const indeterminateEl = headerCheckboxSquare.querySelector('.ubits-checkbox__indeterminate');
+                if (indeterminateEl) {
+                  indeterminateEl.remove();
+                }
+              }
+            }
+            
+            // Forzar un reflow del contenedor para asegurar que los cambios visuales se apliquen
+            void headerCheckboxContainer.offsetHeight;
+          }
+          
+          // Forzar un solo reflow después de todas las actualizaciones
+          void element.offsetHeight;
+          
+          console.log(`☑️ [SELECT ALL] ✅ Checkboxes visibles actualizados - allChecked: ${allChecked}, indeterminate: ${isIndeterminate}`);
+          
+          // Desactivar bandera DESPUÉS de todas las actualizaciones visuales
+          // Los handlers individuales ya tienen la verificación de isSelectAllInProgress
+          // así que pueden ejecutarse pero se detendrán inmediatamente
+          isSelectAllInProgress = false;
+          console.log(`☑️ [SELECT ALL] 🚩 Bandera isSelectAllInProgress desactivada`);
+          
+          // Llamar a onSelectAll callback DESPUÉS de todas las actualizaciones visuales
+          // para evitar que cause re-renderizados que generen el brinco
+          const optionsWithSelectAll = currentOptions as any;
+          if (optionsWithSelectAll.onSelectAll) {
+            console.log(`☑️ [SELECT ALL] 📞 Llamando onSelectAll callback...`);
+            console.log(`☑️ [SELECT ALL] 📞 Stack trace antes de llamar callback:`, new Error().stack?.split('\n').slice(1, 5).join('\n'));
+            
+            const scrollableContainerBeforeCallback = element.querySelector('.ubits-data-table__scrollable-container') as HTMLElement;
+            const scrollBeforeCallback = scrollableContainerBeforeCallback?.scrollTop || 0;
+            const scrollHeightBeforeCallback = scrollableContainerBeforeCallback?.scrollHeight || 0;
+            const clientHeightBeforeCallback = scrollableContainerBeforeCallback?.clientHeight || 0;
+            
+            console.log(`☑️ [SELECT ALL] 📍 Scroll ANTES de onSelectAll callback:`, {
+              scrollTop: scrollBeforeCallback,
+              scrollHeight: scrollHeightBeforeCallback,
+              clientHeight: clientHeightBeforeCallback,
+              maxScroll: scrollHeightBeforeCallback - clientHeightBeforeCallback
+            });
+            
+            // IMPORTANTE: Verificar si hay un render en progreso o pendiente
+            console.log(`☑️ [SELECT ALL] 🔍 Verificando si hay renders pendientes...`);
+            
+            try {
+              optionsWithSelectAll.onSelectAll(isChecked);
+              console.log(`☑️ [SELECT ALL] ✅ onSelectAll callback completado sin errores`);
+            } catch (error) {
+              console.error(`☑️ [SELECT ALL] ❌ Error en onSelectAll callback:`, error);
+            }
+            
+            // Verificar si el callback causó un render (comparando scroll y DOM)
+            const scrollableContainerAfterCallback = element.querySelector('.ubits-data-table__scrollable-container') as HTMLElement;
+            const scrollAfterCallback = scrollableContainerAfterCallback?.scrollTop || 0;
+            const scrollHeightAfterCallback = scrollableContainerAfterCallback?.scrollHeight || 0;
+            const clientHeightAfterCallback = scrollableContainerAfterCallback?.clientHeight || 0;
+            
+            console.log(`☑️ [SELECT ALL] 📍 Scroll DESPUÉS de onSelectAll callback:`, {
+              scrollTop: scrollAfterCallback,
+              scrollHeight: scrollHeightAfterCallback,
+              clientHeight: clientHeightAfterCallback,
+              maxScroll: scrollHeightAfterCallback - clientHeightAfterCallback
+            });
+            
+            // Detectar si hubo cambios que indiquen un render
+            const scrollChanged = Math.abs(scrollAfterCallback - scrollBeforeCallback) > 1;
+            const dimensionsChanged = Math.abs(scrollHeightAfterCallback - scrollHeightBeforeCallback) > 1 || 
+                                     Math.abs(clientHeightAfterCallback - clientHeightBeforeCallback) > 1;
+            
+            if (scrollChanged || dimensionsChanged) {
+              console.warn(`☑️ [SELECT ALL] ⚠️ El callback onSelectAll parece haber causado cambios:`, {
+                scrollCambió: scrollChanged,
+                scrollAntes: scrollBeforeCallback,
+                scrollDespues: scrollAfterCallback,
+                diferenciaScroll: scrollAfterCallback - scrollBeforeCallback,
+                dimensionesCambiaron: dimensionsChanged,
+                scrollHeightAntes: scrollHeightBeforeCallback,
+                scrollHeightDespues: scrollHeightAfterCallback,
+                clientHeightAntes: clientHeightBeforeCallback,
+                clientHeightDespues: clientHeightAfterCallback
+              });
+              
+              // Si el scroll cambió, intentar restaurarlo
+              if (scrollChanged && savedScrollBeforeSelectAll > 0 && scrollableContainerAfterCallback) {
+                console.log(`☑️ [SELECT ALL] 🔧 Intentando restaurar scroll a posición original: ${savedScrollBeforeSelectAll}px`);
+                scrollableContainerAfterCallback.scrollTop = savedScrollBeforeSelectAll;
+                
+                // Verificar si se restauró correctamente
+                setTimeout(() => {
+                  const finalScroll = scrollableContainerAfterCallback.scrollTop;
+                  console.log(`☑️ [SELECT ALL] 📍 Scroll después de restaurar:`, {
+                    original: savedScrollBeforeSelectAll,
+                    restaurado: finalScroll,
+                    diferencia: Math.abs(finalScroll - savedScrollBeforeSelectAll),
+                    restauradoCorrectamente: Math.abs(finalScroll - savedScrollBeforeSelectAll) < 5
+                  });
+                }, 50);
+              }
+            } else {
+              console.log(`☑️ [SELECT ALL] ✅ El callback onSelectAll NO causó cambios visibles en el scroll`);
+            }
+          }
+          
+          // NO llamar a render() - esto evita el brinco
+          console.log(`☑️ [SELECT ALL] ✅ Optimizado: NO se llama render() - sin brinco`);
+          
+          // Verificar el estado final del scroll
+          const scrollableContainerFinal = element.querySelector('.ubits-data-table__scrollable-container') as HTMLElement;
+          const scrollFinal = scrollableContainerFinal?.scrollTop || 0;
+          const scrollHeightFinal = scrollableContainerFinal?.scrollHeight || 0;
+          const clientHeightFinal = scrollableContainerFinal?.clientHeight || 0;
+          
+          console.log(`☑️ [SELECT ALL] 📍 Scroll FINAL después de todas las actualizaciones:`, {
+            scrollTop: scrollFinal,
+            scrollHeight: scrollHeightFinal,
+            clientHeight: clientHeightFinal,
+            maxScroll: scrollHeightFinal - clientHeightFinal,
+            comparaciónConInicial: {
+              scrollTopInicial: savedScrollBeforeSelectAll,
+              scrollTopFinal: scrollFinal,
+              diferencia: Math.abs(scrollFinal - savedScrollBeforeSelectAll),
+              seMantuvo: Math.abs(scrollFinal - savedScrollBeforeSelectAll) < 5
+            }
+          });
+        } else {
+          // Para otros checkboxes, mantener el comportamiento actual
+          console.log(`☑️ [SELECT ALL] ⚠️ Llamando render() - esto causará el brinco`);
+          render();
+        }
+        console.log(`☑️ [SELECT ALL] ========== FIN ==========`);
+      };
+      newCheckbox.addEventListener('change', selectAllHandler, { capture: true });
+      console.log(`☑️ [SELECT ALL] ✅ Listener 'change' agregado con capture:true - handler function:`, selectAllHandler);
+      
+      // Agregar también un listener de 'click' para debugging
+      const selectAllClickHandler = (e: Event) => {
+        console.log(`☑️ [SELECT ALL] 🖱️ CLICK recibido en header checkbox ${index} - timestamp: ${Date.now()}`);
+        const input = e.target as HTMLInputElement;
+        console.log(`☑️ [SELECT ALL] 🖱️ Click handler - checkbox estado:`, {
+          hasHeaderAttr: input.hasAttribute('data-column-checkbox-header'),
+          checked: input.checked,
+          allAttrs: Array.from(input.attributes).map(a => `${a.name}="${a.value}"`)
+        });
+      };
+      newCheckbox.addEventListener('click', selectAllClickHandler, { capture: true });
+      console.log(`☑️ [SELECT ALL] ✅ Listener 'click' agregado con capture:true para debugging`);
+      
+      // Verificar que el listener se agregó correctamente
+      console.log(`☑️ [SELECT ALL] 🔍 Estado del checkbox DESPUÉS de agregar listeners:`, {
+        element: newCheckbox,
+        isConnected: newCheckbox.isConnected,
+        hasHeaderAttr: newCheckbox.hasAttribute('data-column-checkbox-header'),
+        checked: newCheckbox.checked,
+        parentElement: newCheckbox.parentElement?.tagName
+      });
+    });
+
+    // Checkboxes de columnas de datos (checkboxes normales en las celdas con data-column-id)
+    // Esto incluye checkbox-2 (checkbox fijo) y otros checkboxes de columnas
+    // IMPORTANTE: Excluir los checkboxes del header (select all) que tienen data-column-checkbox-header
+    const cellCheckboxes = element.querySelectorAll('input[data-column-id]:not([data-column-checkbox-header])');
+    cellCheckboxes.forEach(checkbox => {
+      const originalCheckbox = checkbox as HTMLInputElement;
+      const rowIdStr = originalCheckbox.getAttribute('data-row-id')!;
+      const columnId = originalCheckbox.getAttribute('data-column-id')!;
+      
+      // Remover listeners anteriores si existen para evitar duplicados
+      const newCheckbox = originalCheckbox.cloneNode(true) as HTMLInputElement;
+      // IMPORTANTE: Preservar el estado checked al clonar
+      newCheckbox.checked = originalCheckbox.checked;
+      originalCheckbox.parentNode?.replaceChild(newCheckbox, originalCheckbox);
+      
+      // IMPORTANTE: Usar { capture: false } para que este listener se ejecute DESPUÉS del listener del "select all"
+      // El listener del "select all" se ejecuta primero (se adjunta primero) y detiene la propagación
+      console.log(`☑️ [CHECKBOX] 🔧 Agregando listener con capture:false al checkbox rowId=${rowIdStr} columnId=${columnId}`);
+      const checkboxIndividualHandler = (e: Event) => {
+        const input = e.target as HTMLInputElement;
+        
+        // CRÍTICO: Verificar PRIMERO si es un checkbox del header ANTES de cualquier log
+        // Esto debe ser lo primero que se verifica para evitar procesar el header checkbox
+        if (input.hasAttribute('data-column-checkbox-header')) {
+          console.log(`☑️ [CHECKBOX] 🚫 BLOQUEADO: Este es un checkbox del header, NO debería ejecutarse este handler!`, {
+            hasHeaderAttr: input.hasAttribute('data-column-checkbox-header'),
+            hasColumnId: input.hasAttribute('data-column-id'),
+            hasRowId: input.hasAttribute('data-row-id'),
+            allAttributes: Array.from(input.attributes).map(attr => `${attr.name}="${attr.value}"`),
+            eventPhase: e.eventPhase,
+            bubbles: e.bubbles,
+            cancelable: e.cancelable,
+            defaultPrevented: e.defaultPrevented,
+            target: e.target,
+            currentTarget: e.currentTarget,
+            stackTrace: new Error().stack?.split('\n').slice(1, 8).join('\n')
+          });
+          // IMPORTANTE: Detener la propagación aquí también por si acaso
+          // NO usar preventDefault() porque bloquea el cambio visual del checkbox
+          e.stopPropagation();
+          e.stopImmediatePropagation();
+          return;
+        }
+        
+        console.log(`☑️ [CHECKBOX] ========== CHECKBOX INDIVIDUAL EVENTO ==========`);
+        console.log(`☑️ [CHECKBOX] 🎯 HANDLER EJECUTÁNDOSE - timestamp: ${Date.now()}`);
+        console.log(`☑️ [CHECKBOX] 🔍 EVENTO RECIBIDO EN HANDLER INDIVIDUAL:`, {
+          rowId: rowIdStr,
+          columnId: columnId,
+          hasHeaderAttr: input.hasAttribute('data-column-checkbox-header'),
+          hasRowId: input.hasAttribute('data-row-id'),
+          hasColumnId: input.hasAttribute('data-column-id'),
+          eventPhase: e.eventPhase,
+          defaultPrevented: e.defaultPrevented,
+          isTrusted: e.isTrusted,
+          timeStamp: e.timeStamp,
+          isSelectAllInProgress: isSelectAllInProgress,
+          target: e.target,
+          currentTarget: e.currentTarget,
+          targetAllAttrs: Array.from(input.attributes).map(a => `${a.name}="${a.value}"`),
+          stackTrace: new Error().stack?.split('\n').slice(1, 5).join('\n')
         });
         
-        render();
-      });
+        // IMPORTANTE: Si estamos en modo "select all", ignorar este evento
+        // porque el handler de select all ya está manejando la actualización masiva
+        if (isSelectAllInProgress) {
+          console.log(`☑️ [CHECKBOX] ⏭️ Ignorando evento - select all en progreso`);
+          return;
+        }
+        
+        const currentRowIdStr = input.getAttribute('data-row-id');
+        const currentColumnId = input.getAttribute('data-column-id');
+        
+        // Validar que tiene data-row-id (los checkboxes del header no lo tienen)
+        if (!currentRowIdStr || !currentColumnId) {
+          console.log(`☑️ [CHECKBOX] ⚠️ Ignorando checkbox sin data-row-id o data-column-id (probablemente header checkbox)`, {
+            hasRowId: !!currentRowIdStr,
+            hasColumnId: !!currentColumnId,
+            hasHeaderAttr: input.hasAttribute('data-column-checkbox-header'),
+            allAttributes: Array.from(input.attributes).map(attr => `${attr.name}="${attr.value}"`)
+          });
+          return;
+        }
+        
+        console.log(`☑️ [CHECKBOX] ========== CHECKBOX CAMBIÓ ==========`);
+        
+        const rowId = isNaN(Number(currentRowIdStr)) ? currentRowIdStr : Number(currentRowIdStr);
+        const isChecked = input.checked;
+        
+        console.log(`☑️ [CHECKBOX] rowId: ${rowId}, columnId: ${currentColumnId}, checked: ${isChecked}`);
+        console.log(`☑️ [CHECKBOX] Checkbox visual checked: ${input.checked}`);
+        console.log(`☑️ [CHECKBOX] Input element:`, input);
+        console.log(`☑️ [CHECKBOX] Input parent:`, input.parentElement);
+        
+        const row = currentOptions.rows.find(r => r.id === rowId);
+        if (row) {
+          row.data[currentColumnId] = isChecked;
+          console.log(`☑️ [CHECKBOX] Estado de fila actualizado`);
+          
+          // Si es checkbox-2 (checkbox fijo), optimizar: solo actualizar header checkbox sin re-renderizar toda la tabla
+          if (currentColumnId === 'checkbox-2') {
+            // IMPORTANTE: Buscar el checkbox container usando el input que disparó el evento
+            // y validar que el data-row-id coincida
+            let checkboxContainer = input.closest('.ubits-checkbox') as HTMLElement;
+            console.log(`☑️ [CHECKBOX] checkboxContainer encontrado (closest):`, checkboxContainer);
+            
+            // Validar que el checkbox container es el correcto verificando el input dentro
+            if (checkboxContainer) {
+              const containerInput = checkboxContainer.querySelector(`input[data-row-id="${rowId}"][data-column-id="${currentColumnId}"]`) as HTMLInputElement;
+              if (!containerInput || containerInput !== input) {
+                console.log(`☑️ [CHECKBOX] ⚠️ checkboxContainer no coincide, buscando por data-row-id...`);
+                // Buscar el checkbox correcto por data-row-id
+                const correctInput = element.querySelector(`input[data-row-id="${rowId}"][data-column-id="${currentColumnId}"]`) as HTMLInputElement;
+                if (correctInput) {
+                  checkboxContainer = correctInput.closest('.ubits-checkbox') as HTMLElement;
+                  console.log(`☑️ [CHECKBOX] checkboxContainer encontrado (por data-row-id):`, checkboxContainer);
+                }
+              } else {
+                console.log(`☑️ [CHECKBOX] ✅ checkboxContainer validado correctamente`);
+              }
+            }
+            
+            if (checkboxContainer) {
+              const checkboxSquare = checkboxContainer.querySelector('.ubits-checkbox__square') as HTMLElement;
+              console.log(`☑️ [CHECKBOX] checkboxSquare encontrado:`, checkboxSquare);
+              console.log(`☑️ [CHECKBOX] checkboxContainer classes:`, checkboxContainer.className);
+              
+              if (isChecked) {
+                // IMPORTANTE: Primero asegurar que la clase esté presente
+                checkboxContainer.classList.add('ubits-checkbox--checked');
+                checkboxContainer.classList.remove('ubits-checkbox--indeterminate');
+                console.log(`☑️ [CHECKBOX] Clases agregadas: checked`);
+                
+                // Crear o asegurar que existe el elemento checkmark
+                if (checkboxSquare) {
+                  // Remover el elemento indeterminate si existe
+                  const indeterminateEl = checkboxSquare.querySelector('.ubits-checkbox__indeterminate');
+                  if (indeterminateEl) {
+                    indeterminateEl.remove();
+                    console.log(`☑️ [CHECKBOX] Indeterminate removido`);
+                  }
+                  
+                  // IMPORTANTE: Asegurar que la clase checked esté presente PRIMERO
+                  // Esto es crítico para que el CSS se aplique correctamente
+                  checkboxContainer.classList.add('ubits-checkbox--checked');
+                  checkboxContainer.classList.remove('ubits-checkbox--indeterminate');
+                  
+                  // Forzar un reflow para que el navegador procese la clase
+                  void checkboxContainer.offsetHeight;
+                  
+                  // IMPORTANTE: Verificar si el checkmark ya existe
+                  let checkmarkEl = checkboxSquare.querySelector('.ubits-checkbox__checkmark') as HTMLElement;
+                  if (!checkmarkEl) {
+                    // Crear el checkmark solo si no existe
+                    checkmarkEl = document.createElement('span');
+                    checkmarkEl.className = 'ubits-checkbox__checkmark';
+                    checkboxSquare.appendChild(checkmarkEl);
+                    console.log(`☑️ [CHECKBOX] ✅ Checkmark creado y agregado al DOM`);
+                  } else {
+                    console.log(`☑️ [CHECKBOX] ✅ Checkmark ya existe, reutilizando`);
+                  }
+                  
+                  // IMPORTANTE: Remover la transición temporalmente para mostrar inmediatamente
+                  const originalTransition = checkmarkEl.style.transition;
+                  checkmarkEl.style.transition = 'none';
+                  
+                  // Aplicar estilos directamente para asegurar que se muestre inmediatamente
+                  checkmarkEl.style.setProperty('opacity', '1', 'important');
+                  checkmarkEl.style.setProperty('transform', 'scale(1)', 'important');
+                  checkmarkEl.style.setProperty('display', 'flex', 'important');
+                  console.log(`☑️ [CHECKBOX] Estilos forzados directamente con !important`);
+                  
+                  // IMPORTANTE: Forzar un reflow completo usando getComputedStyle
+                  // Esto asegura que el navegador renderice el checkmark inmediatamente
+                  window.getComputedStyle(checkmarkEl).opacity;
+                  window.getComputedStyle(checkmarkEl).transform;
+                  window.getComputedStyle(checkmarkEl).display;
+                  
+                  // Forzar múltiples reflows adicionales para asegurar que el navegador renderice el checkmark
+                  void checkmarkEl.offsetHeight;
+                  void checkboxSquare.offsetHeight;
+                  void checkboxContainer.offsetHeight;
+                  
+                  // Restaurar la transición después de un pequeño delay para permitir animaciones futuras
+                  setTimeout(() => {
+                    checkmarkEl.style.transition = originalTransition || '';
+                  }, 0);
+                  
+                  // Usar requestAnimationFrame para asegurar que el DOM se actualice
+                  requestAnimationFrame(() => {
+                    // Verificar que el checkmark esté en el DOM y tenga los estilos correctos
+                    const verifyCheckmark = checkboxSquare.querySelector('.ubits-checkbox__checkmark') as HTMLElement;
+                    if (verifyCheckmark) {
+                      // Verificar estilos
+                      const computedStyles = window.getComputedStyle(verifyCheckmark);
+                      console.log(`☑️ [CHECKBOX] Verificación checkmark en DOM (después de RAF):`, verifyCheckmark);
+                      console.log(`☑️ [CHECKBOX] Checkmark opacity (computed): ${computedStyles.opacity}, transform (computed): ${computedStyles.transform}`);
+                      console.log(`☑️ [CHECKBOX] Checkmark display: ${computedStyles.display}`);
+                      console.log(`☑️ [CHECKBOX] Checkmark width: ${computedStyles.width}, height: ${computedStyles.height}`);
+                      
+                      // Verificar que el pseudo-elemento ::after esté presente
+                      const afterStyles = window.getComputedStyle(verifyCheckmark, '::after');
+                      console.log(`☑️ [CHECKBOX] Checkmark ::after content: ${afterStyles.content}, display: ${afterStyles.display}`);
+                      
+                      // Si el CSS no se aplicó correctamente, forzar los estilos directamente
+                      if (computedStyles.opacity === '0' || computedStyles.transform.includes('scale(0)')) {
+                        console.log(`☑️ [CHECKBOX] ⚠️ CSS no aplicado correctamente después de forzar, reintentando...`);
+                        verifyCheckmark.style.setProperty('opacity', '1', 'important');
+                        verifyCheckmark.style.setProperty('transform', 'scale(1)', 'important');
+                        verifyCheckmark.style.setProperty('display', 'flex', 'important');
+                        // Forzar otro reflow
+                        void verifyCheckmark.offsetHeight;
+                      }
+                    } else {
+                      console.log(`☑️ [CHECKBOX] ⚠️ Checkmark no encontrado después de crearlo`);
+                    }
+                  });
+                } else {
+                  console.log(`☑️ [CHECKBOX] ⚠️ checkboxSquare no encontrado`);
+                }
+              } else {
+                checkboxContainer.classList.remove('ubits-checkbox--checked');
+                checkboxContainer.classList.remove('ubits-checkbox--indeterminate');
+                console.log(`☑️ [CHECKBOX] Clases removidas: checked`);
+                
+                // Remover el checkmark si existe
+                if (checkboxSquare) {
+                  const checkmarkEl = checkboxSquare.querySelector('.ubits-checkbox__checkmark');
+                  if (checkmarkEl) {
+                    checkmarkEl.remove();
+                    console.log(`☑️ [CHECKBOX] Checkmark removido`);
+                  }
+                  const indeterminateEl = checkboxSquare.querySelector('.ubits-checkbox__indeterminate');
+                  if (indeterminateEl) {
+                    indeterminateEl.remove();
+                  }
+                }
+              }
+              console.log(`☑️ [CHECKBOX] ✅ Clase CSS del contenedor y checkmark actualizados`);
+            } else {
+              console.log(`☑️ [CHECKBOX] ⚠️ checkboxContainer no encontrado usando closest`);
+              
+              // Intentar buscar por data-row-id como fallback
+              const allCheckboxes = element.querySelectorAll(`input[data-row-id="${rowId}"][data-column-id="${columnId}"]`);
+              console.log(`☑️ [CHECKBOX] Checkboxes encontrados por data-row-id:`, allCheckboxes.length);
+              
+              if (allCheckboxes.length > 0) {
+                const correctInput = Array.from(allCheckboxes).find(cb => cb === input) as HTMLInputElement || allCheckboxes[0] as HTMLInputElement;
+                const correctContainer = correctInput?.closest('.ubits-checkbox') as HTMLElement;
+                console.log(`☑️ [CHECKBOX] Checkbox correcto encontrado:`, correctContainer);
+                
+                if (correctContainer) {
+                  const checkboxSquare = correctContainer.querySelector('.ubits-checkbox__square') as HTMLElement;
+                  
+                  if (isChecked) {
+                    correctContainer.classList.add('ubits-checkbox--checked');
+                    correctContainer.classList.remove('ubits-checkbox--indeterminate');
+                    
+                    if (checkboxSquare) {
+                      const indeterminateEl = checkboxSquare.querySelector('.ubits-checkbox__indeterminate');
+                      if (indeterminateEl) {
+                        indeterminateEl.remove();
+                      }
+                      let checkmarkEl = checkboxSquare.querySelector('.ubits-checkbox__checkmark');
+                      if (!checkmarkEl) {
+                        checkmarkEl = document.createElement('span');
+                        checkmarkEl.className = 'ubits-checkbox__checkmark';
+                        checkboxSquare.appendChild(checkmarkEl);
+                        console.log(`☑️ [CHECKBOX] ✅ Checkmark creado (fallback)`);
+                      }
+                    }
+                  } else {
+                    correctContainer.classList.remove('ubits-checkbox--checked');
+                    correctContainer.classList.remove('ubits-checkbox--indeterminate');
+                    
+                    if (checkboxSquare) {
+                      const checkmarkEl = checkboxSquare.querySelector('.ubits-checkbox__checkmark');
+                      if (checkmarkEl) {
+                        checkmarkEl.remove();
+                      }
+                    }
+                  }
+                }
+              }
+            }
+            
+            // Actualizar header checkbox (indeterminado) sin re-renderizar toda la tabla
+            const headerCheckbox = element.querySelector(`input[data-column-checkbox-header="${columnId}"]`) as HTMLInputElement;
+            if (headerCheckbox) {
+              const allChecked = currentOptions.rows.length > 0 && currentOptions.rows.every(r => r.data[columnId] === true);
+              const someChecked = currentOptions.rows.some(r => r.data[columnId] === true);
+              const isIndeterminate = someChecked && !allChecked;
+              
+              headerCheckbox.checked = allChecked;
+              headerCheckbox.indeterminate = isIndeterminate;
+              
+              // Actualizar también la clase CSS del contenedor del header checkbox
+              const headerCheckboxContainer = headerCheckbox.closest('.ubits-checkbox') as HTMLElement;
+              if (headerCheckboxContainer) {
+                const headerCheckboxSquare = headerCheckboxContainer.querySelector('.ubits-checkbox__square') as HTMLElement;
+                
+                if (allChecked) {
+                  headerCheckboxContainer.classList.add('ubits-checkbox--checked');
+                  headerCheckboxContainer.classList.remove('ubits-checkbox--indeterminate');
+                  
+                  // Crear checkmark si no existe
+                  if (headerCheckboxSquare) {
+                    const indeterminateEl = headerCheckboxSquare.querySelector('.ubits-checkbox__indeterminate');
+                    if (indeterminateEl) {
+                      indeterminateEl.remove();
+                    }
+                    let checkmarkEl = headerCheckboxSquare.querySelector('.ubits-checkbox__checkmark');
+                    if (!checkmarkEl) {
+                      checkmarkEl = document.createElement('span');
+                      checkmarkEl.className = 'ubits-checkbox__checkmark';
+                      headerCheckboxSquare.appendChild(checkmarkEl);
+                    }
+                  }
+                } else if (isIndeterminate) {
+                  headerCheckboxContainer.classList.remove('ubits-checkbox--checked');
+                  headerCheckboxContainer.classList.add('ubits-checkbox--indeterminate');
+                  
+                  // Crear indeterminate si no existe
+                  if (headerCheckboxSquare) {
+                    const checkmarkEl = headerCheckboxSquare.querySelector('.ubits-checkbox__checkmark');
+                    if (checkmarkEl) {
+                      checkmarkEl.remove();
+                    }
+                    let indeterminateEl = headerCheckboxSquare.querySelector('.ubits-checkbox__indeterminate');
+                    if (!indeterminateEl) {
+                      indeterminateEl = document.createElement('span');
+                      indeterminateEl.className = 'ubits-checkbox__indeterminate';
+                      headerCheckboxSquare.appendChild(indeterminateEl);
+                    }
+                  }
+                } else {
+                  headerCheckboxContainer.classList.remove('ubits-checkbox--checked');
+                  headerCheckboxContainer.classList.remove('ubits-checkbox--indeterminate');
+                  
+                  // Remover ambos elementos
+                  if (headerCheckboxSquare) {
+                    const checkmarkEl = headerCheckboxSquare.querySelector('.ubits-checkbox__checkmark');
+                    if (checkmarkEl) {
+                      checkmarkEl.remove();
+                    }
+                    const indeterminateEl = headerCheckboxSquare.querySelector('.ubits-checkbox__indeterminate');
+                    if (indeterminateEl) {
+                      indeterminateEl.remove();
+                    }
+                  }
+                }
+              }
+              
+              console.log(`☑️ [CHECKBOX] ✅ Header checkbox actualizado - allChecked: ${allChecked}, indeterminate: ${isIndeterminate}`);
+            }
+            
+            // Llamar a onRowSelect callback
+            if (currentOptions.onRowSelect) {
+              console.log(`☑️ [CHECKBOX] Llamando onRowSelect...`);
+              currentOptions.onRowSelect(rowId, isChecked);
+              console.log(`☑️ [CHECKBOX] onRowSelect completado`);
+            }
+            
+            // NO llamar a render() - esto evita el brinco
+            // El checkbox visual ya está actualizado por el evento nativo y las clases CSS
+            console.log(`☑️ [CHECKBOX] ✅ Optimizado: NO se llama render() - sin brinco`);
+          } else {
+            // Para otros checkboxes, mantener el comportamiento actual
+            console.log(`☑️ [CHECKBOX] ⚠️ Llamando render() - esto causará el brinco`);
+            console.log(`☑️ [CHECKBOX] 🔍 RAZÓN: columnId="${currentColumnId}" NO es checkbox-2, llamando render() desde handler individual`);
+            console.log(`☑️ [CHECKBOX] 🔍 Stack trace antes de render():`, new Error().stack?.split('\n').slice(1, 6).join('\n'));
+            render();
+          }
+        }
+        console.log(`☑️ [CHECKBOX] ========== FIN ==========`);
+      };
+      newCheckbox.addEventListener('change', checkboxIndividualHandler, { capture: false });
+      console.log(`☑️ [CHECKBOX] ✅ Listener agregado con capture:false - handler function:`, checkboxIndividualHandler);
     });
 
     // Botones de expandir
     const expandButtons = element.querySelectorAll('[data-expand-button="true"]');
-    expandButtons.forEach(button => {
-      button.addEventListener('click', (e) => {
+    console.log('🔘 [EXPAND] Botones de expandir encontrados:', expandButtons.length);
+    expandButtons.forEach((button, index) => {
+      // Remover listeners anteriores si existen para evitar duplicados
+      const newButton = button.cloneNode(true) as HTMLElement;
+      button.parentNode?.replaceChild(newButton, button);
+      
+      newButton.addEventListener('click', (e) => {
         e.preventDefault();
         e.stopPropagation();
-        const rowIdStr = button.getAttribute('data-row-id')!;
+        const rowIdStr = newButton.getAttribute('data-row-id')!;
         const rowId = isNaN(Number(rowIdStr)) ? rowIdStr : Number(rowIdStr);
+        console.log('🔘 [EXPAND] Click en botón de expandir - rowId:', rowId);
+        
         const row = currentOptions.rows.find(r => r.id === rowId);
         
         if (row) {
           const wasExpanded = row.expanded || false;
           row.expanded = !wasExpanded;
+          console.log('🔘 [EXPAND] Fila encontrada - wasExpanded:', wasExpanded, '-> expanded:', row.expanded);
+          console.log('🔘 [EXPAND] Fila tiene renderExpandedContent:', !!row.renderExpandedContent);
           
           if (currentOptions.onRowExpand) {
             currentOptions.onRowExpand(rowId, row.expanded);
           }
           
+          console.log('🔘 [EXPAND] Llamando render()...');
           render();
+          console.log('🔘 [EXPAND] Render() completado');
+          
+          // Si la fila se expandió, hacer scroll para mostrar el contenido expandido
+          if (row.expanded) {
+            requestAnimationFrame(() => {
+              const rowElement = element.querySelector(`[data-row-id="${rowId}"]`) as HTMLElement;
+              if (rowElement) {
+                const expandedRow = rowElement.nextElementSibling as HTMLElement;
+                if (expandedRow && expandedRow.classList.contains('ubits-data-table__row-expanded-row')) {
+                  console.log('🔘 [EXPAND] Haciendo scroll para mostrar contenido expandido');
+                  
+                  // Buscar el contenedor scrollable
+                  const scrollableContainer = element.querySelector('.ubits-data-table__scrollable-container--vertical') as HTMLElement;
+                  if (scrollableContainer) {
+                    // Hacer scroll para que la fila expandida sea visible
+                    const rowTop = rowElement.offsetTop;
+                    scrollableContainer.scrollTop = rowTop - 50; // 50px de margen superior
+                    console.log('🔘 [EXPAND] Scroll aplicado - scrollTop:', scrollableContainer.scrollTop);
+                  } else {
+                    // Si no hay contenedor scrollable, hacer scroll en el window
+                    rowElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    console.log('🔘 [EXPAND] ScrollIntoView aplicado (sin contenedor scrollable)');
+                  }
+                }
+              }
+            });
+          }
+        } else {
+          console.warn('🔘 [EXPAND] ⚠️ Fila no encontrada para rowId:', rowId);
         }
       });
     });
@@ -3495,14 +4588,19 @@ export function createDataTable(options: DataTableOptions): {
     });
     
     // Checkbox buttons (tipo 'checkbox') - manejar activación/desactivación
-    // Manejar tanto los editables como los no editables (checkbox-2)
-    const checkboxButtons = element.querySelectorAll('input[data-checkbox-button="true"]');
+    // IMPORTANTE: Excluir checkbox-2 (checkbox fijo) que ya tiene su propio handler optimizado
+    const checkboxButtons = element.querySelectorAll('input[data-checkbox-button="true"]:not([data-column-id="checkbox-2"])');
     checkboxButtons.forEach(checkbox => {
       const input = checkbox as HTMLInputElement;
       const rowIdStr = input.getAttribute('data-row-id');
       const columnId = input.getAttribute('data-column-id');
       
       if (!rowIdStr || !columnId) return;
+      
+      // IMPORTANTE: Excluir checkbox-2 que ya tiene su propio handler optimizado
+      if (columnId === 'checkbox-2') {
+        return;
+      }
       
       const rowId = isNaN(Number(rowIdStr)) ? rowIdStr : Number(rowIdStr);
       
@@ -3529,37 +4627,41 @@ export function createDataTable(options: DataTableOptions): {
       });
     });
     
-    // Checkbox del header (select all) - manejar selección/deselección de todas las filas
-    const headerCheckboxes = element.querySelectorAll('input[data-column-checkbox-header]');
-    headerCheckboxes.forEach(checkbox => {
+    // IMPORTANTE: NO crear un segundo handler para header checkboxes
+    // El handler principal ya está configurado arriba (líneas 2863-3262) con capture:true
+    // y tiene toda la lógica optimizada que NO llama a render()
+    // Este segundo handler estaba causando el "salto" visual porque llamaba a render()
+    console.log(`☑️ [SELECT ALL] ⚠️ Handler alternativo DESHABILITADO - usando solo el handler optimizado`);
+    
+    // Verificar que no haya checkboxes del header sin handler y verificar listeners
+    const headerCheckboxesWithoutHandler = element.querySelectorAll('input[data-column-checkbox-header]');
+    console.log(`☑️ [SELECT ALL] 🔍 Verificando ${headerCheckboxesWithoutHandler.length} header checkboxes después de attachEventListeners...`);
+    headerCheckboxesWithoutHandler.forEach((checkbox, index) => {
       const input = checkbox as HTMLInputElement;
       const columnId = input.getAttribute('data-column-checkbox-header');
       
-      if (!columnId) return;
-      
-      // Remover listeners anteriores si existen
-      const newInput = input.cloneNode(true) as HTMLInputElement;
-      input.parentNode?.replaceChild(newInput, input);
-      
-      newInput.addEventListener('change', (e) => {
-        e.stopPropagation();
-        
-        const selected = newInput.checked;
-        
-        // Actualizar todas las filas
-        currentOptions.rows.forEach(row => {
-          if (!row.data) row.data = {};
-          row.data[columnId] = selected;
-        });
-        
-        // Llamar callback onSelectAll si existe
-        if (currentOptions.onSelectAll) {
-          currentOptions.onSelectAll(selected);
-        }
-        
-        // Re-renderizar para reflejar los cambios visuales
-        render();
+      console.log(`☑️ [SELECT ALL] 🔍 Header checkbox ${index} verificado:`, {
+        columnId: columnId,
+        element: input,
+        checked: input.checked,
+        hasHeaderAttr: input.hasAttribute('data-column-checkbox-header'),
+        allAttrs: Array.from(input.attributes).map(a => `${a.name}="${a.value}"`),
+        parentElement: input.parentElement?.tagName,
+        parentClasses: input.parentElement?.className,
+        isConnected: input.isConnected,
+        ownerDocument: input.ownerDocument === document
       });
+      
+      // Agregar listeners de prueba para verificar que el elemento puede recibir eventos
+      const testClickHandler = () => {
+        console.log(`☑️ [SELECT ALL] 🧪 TEST: Header checkbox ${index} recibió evento click de prueba`);
+      };
+      input.addEventListener('click', testClickHandler, { once: true, capture: true });
+      
+      const testChangeHandler = () => {
+        console.log(`☑️ [SELECT ALL] 🧪 TEST: Header checkbox ${index} recibió evento change de prueba`);
+      };
+      input.addEventListener('change', testChangeHandler, { once: true, capture: true });
     });
     
     // Date editables - mostrar calendario UBITS al hacer click
@@ -4848,7 +5950,9 @@ export function createDataTable(options: DataTableOptions): {
     
     } catch (error) {
       // Error en attachEventListeners
+      console.error(`📎 [ATTACH] ❌ Error en attachEventListeners:`, error);
     }
+    console.log(`📎 [ATTACH] ========== FIN attachEventListeners ==========`);
   };
 
   // Llamar render inicial
