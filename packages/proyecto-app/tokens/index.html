@@ -5946,7 +5946,7 @@ Reglas Importantes:
               class: 'ubits-pagination',
               example: 'createPagination({\n  currentPage: 5,\n  totalPages: 20,\n  totalItems: 200,\n  itemsPerPage: 10,\n  variant: \'default\',\n  size: \'md\',\n  showInfo: true,\n  showItemsPerPage: true,\n  onPageChange: (page) => {},\n  onItemsPerPageChange: (itemsPerPage) => {}\n})',
               hasPreview: true
-            }
+            },
           ],
           'Contenido': [
             {
@@ -7072,14 +7072,29 @@ Reglas Importantes:
                       ${hasPreview && component.name === 'Data Table' ? `
                         <!-- Preview Section for Data Table -->
                         <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: none; margin-bottom: 24px;">
-                          <!-- CONTROLES ARRIBA -->
+                          <!-- CONTROLES CON ACORDEONES -->
                           <div style="margin-bottom: 24px;">
                             <h4 style="margin: 0 0 20px 0; color: var(--ubits-fg-1-high); font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
                               <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand-static-inverted);"></i>
                               Controles
                             </h4>
                             
-                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
+                            <!-- Acordeón: Controles de Tabla -->
+                            <div style="margin-bottom: 12px; border: 1px solid var(--ubits-border-1); border-radius: 8px; overflow: hidden; background: var(--ubits-bg-1);">
+                              <button 
+                                onclick="toggleDataTableAccordion('table-${componentId}')"
+                                style="width: 100%; padding: 16px 20px; background: none; border: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; text-align: left; transition: background 0.2s ease;"
+                                onmouseover="this.style.background='var(--ubits-bg-2)'"
+                                onmouseout="this.style.background='none'"
+                                id="accordion-header-table-${componentId}">
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                  <i class="far fa-table" style="color: var(--ubits-accent-brand-static-inverted); font-size: 16px;"></i>
+                                  <span style="font-size: 14px; font-weight: 600; color: var(--ubits-fg-1-high);">Controles de Tabla</span>
+                                </div>
+                                <i class="far fa-chevron-down" id="accordion-chevron-table-${componentId}" style="color: var(--ubits-fg-1-medium); font-size: 12px; transition: transform 0.2s ease;"></i>
+                              </button>
+                              <div id="accordion-body-table-${componentId}" style="display: none; padding: 20px; border-top: 1px solid var(--ubits-border-1);">
+                                <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
                               <!-- Arrastrar Columnas -->
                               <div style="flex: 0 0 auto; min-width: 200px;">
                                 <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Arrastrar Columnas</label>
@@ -7227,14 +7242,281 @@ Reglas Importantes:
                                   </span>
                                   <span id="data-table-show-pagination-status-${componentId}" style="font-size: 14px; color: var(--ubits-fg-1-high);">Deshabilitado</span>
                                 </label>
+                                </div>
                               </div>
                             </div>
                             
-                            <!-- Selectores de Tipo de Columna (dinámicos) -->
-                            <div style="margin-top: 24px;">
-                              <h5 style="margin: 0 0 16px 0; color: var(--ubits-fg-1-high); font-size: 14px; font-weight: 600;">Tipos de Columna</h5>
-                              <div id="data-table-column-types-${componentId}" style="display: flex; flex-wrap: wrap; gap: 16px;">
-                                <!-- Se generará dinámicamente -->
+                            <!-- Acordeón: Controles del Header -->
+                            <div style="margin-bottom: 12px; border: 1px solid var(--ubits-border-1); border-radius: 8px; overflow: hidden; background: var(--ubits-bg-1);">
+                              <button 
+                                onclick="toggleDataTableAccordion('header-${componentId}')"
+                                style="width: 100%; padding: 16px 20px; background: none; border: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; text-align: left; transition: background 0.2s ease;"
+                                onmouseover="this.style.background='var(--ubits-bg-2)'"
+                                onmouseout="this.style.background='none'"
+                                id="accordion-header-header-${componentId}">
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                  <i class="far fa-heading" style="color: var(--ubits-accent-brand-static-inverted); font-size: 16px;"></i>
+                                  <span style="font-size: 14px; font-weight: 600; color: var(--ubits-fg-1-high);">Controles del Header</span>
+                                </div>
+                                <i class="far fa-chevron-down" id="accordion-chevron-header-${componentId}" style="color: var(--ubits-fg-1-medium); font-size: 12px; transition: transform 0.2s ease;"></i>
+                              </button>
+                              <div id="accordion-body-header-${componentId}" style="display: none; padding: 20px; border-top: 1px solid var(--ubits-border-1);">
+                                <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
+                                  <!-- Título del Header -->
+                              <div style="flex: 0 0 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Mostrar Título</label>
+                                <label class="ubits-toggle ubits-toggle--md" style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                                  <input type="checkbox" class="ubits-toggle__input" id="data-table-show-header-title-${componentId}" checked onchange="setDataTableControl('showHeaderTitle', this.checked, '${componentId}')">
+                                  <span class="ubits-toggle__track">
+                                    <span class="ubits-toggle__thumb"></span>
+                                  </span>
+                                  <span id="data-table-show-header-title-status-${componentId}" style="font-size: 14px; color: var(--ubits-fg-1-high);">Visible</span>
+                                </label>
+                              </div>
+                              
+                              <!-- Contador del Header -->
+                              <div style="flex: 0 0 auto; min-width: 250px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Mostrar Contador</label>
+                                <label class="ubits-toggle ubits-toggle--md" style="display: flex; align-items: center; gap: 12px; cursor: pointer; margin-bottom: 12px;">
+                                  <input type="checkbox" class="ubits-toggle__input" id="data-table-show-header-counter-${componentId}" checked onchange="setDataTableControl('showHeaderCounter', this.checked, '${componentId}')">
+                                  <span class="ubits-toggle__track">
+                                    <span class="ubits-toggle__thumb"></span>
+                                  </span>
+                                  <span id="data-table-show-header-counter-status-${componentId}" style="font-size: 14px; color: var(--ubits-fg-1-high);">Visible</span>
+                                </label>
+                                
+                                <!-- Modo del contador -->
+                                <div style="margin-bottom: 12px;">
+                                  <label style="display: block; font-size: 11px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 8px;">Modo del Contador</label>
+                                  <div style="display: flex; flex-direction: column; gap: 8px;">
+                                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                      <input type="radio" name="data-table-header-counter-mode-${componentId}" value="full" checked onchange="setDataTableControl('headerCounterMode', 'full', '${componentId}')" style="cursor: pointer;">
+                                      <span style="font-size: 13px; color: var(--ubits-fg-1-high);">100/100 resultados</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                      <input type="radio" name="data-table-header-counter-mode-${componentId}" value="total-only" onchange="setDataTableControl('headerCounterMode', 'total-only', '${componentId}')" style="cursor: pointer;">
+                                      <span style="font-size: 13px; color: var(--ubits-fg-1-high);">100 resultados</span>
+                                    </label>
+                                  </div>
+                                </div>
+                                
+                                <!-- Input para cantidad mostrada (X) - visible en modo full -->
+                                <div id="data-table-header-displayed-items-container-${componentId}" style="margin-bottom: 12px;">
+                                  <label style="display: block; font-size: 11px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 8px;">Cantidad Mostrada (X)</label>
+                                  <input type="number" id="data-table-header-displayed-items-${componentId}" value="100" min="0" onchange="setDataTableControl('headerDisplayedItems', parseInt(this.value) || 0, '${componentId}')" style="width: 100%; padding: 8px 12px; border: 1px solid var(--ubits-border-1); border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                                </div>
+                                
+                                <!-- Input para cantidad total (Y) - visible en modo full y total-only -->
+                                <div id="data-table-header-total-items-container-${componentId}" style="margin-bottom: 12px;">
+                                  <label style="display: block; font-size: 11px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 8px;">Cantidad Total (Y)</label>
+                                  <input type="number" id="data-table-header-total-items-${componentId}" value="100" min="0" onchange="setDataTableControl('headerTotalItems', parseInt(this.value) || 0, '${componentId}')" style="width: 100%; padding: 8px 12px; border: 1px solid var(--ubits-border-1); border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                                </div>
+                              </div>
+                              
+                              <!-- Botón de Búsqueda -->
+                              <div style="flex: 0 0 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Botón Búsqueda</label>
+                                <label class="ubits-toggle ubits-toggle--md" style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                                  <input type="checkbox" class="ubits-toggle__input" id="data-table-show-header-search-button-${componentId}" checked onchange="setDataTableControl('showHeaderSearchButton', this.checked, '${componentId}')">
+                                  <span class="ubits-toggle__track">
+                                    <span class="ubits-toggle__thumb"></span>
+                                  </span>
+                                  <span id="data-table-show-header-search-button-status-${componentId}" style="font-size: 14px; color: var(--ubits-fg-1-high);">Visible</span>
+                                </label>
+                              </div>
+                              
+                              <!-- Botón de Filtros -->
+                              <div style="flex: 0 0 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Botón Filtros</label>
+                                <label class="ubits-toggle ubits-toggle--md" style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                                  <input type="checkbox" class="ubits-toggle__input" id="data-table-show-header-filter-button-${componentId}" checked onchange="setDataTableControl('showHeaderFilterButton', this.checked, '${componentId}')">
+                                  <span class="ubits-toggle__track">
+                                    <span class="ubits-toggle__thumb"></span>
+                                  </span>
+                                  <span id="data-table-show-header-filter-button-status-${componentId}" style="font-size: 14px; color: var(--ubits-fg-1-high);">Visible</span>
+                                </label>
+                              </div>
+                              
+                              <!-- Botón Selector de Columnas -->
+                              <div style="flex: 0 0 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Selector Columnas</label>
+                                <label class="ubits-toggle ubits-toggle--md" style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                                  <input type="checkbox" class="ubits-toggle__input" id="data-table-show-header-column-selector-button-${componentId}" checked onchange="setDataTableControl('showHeaderColumnSelectorButton', this.checked, '${componentId}')">
+                                  <span class="ubits-toggle__track">
+                                    <span class="ubits-toggle__thumb"></span>
+                                  </span>
+                                  <span id="data-table-show-header-column-selector-button-status-${componentId}" style="font-size: 14px; color: var(--ubits-fg-1-high);">Visible</span>
+                                </label>
+                              </div>
+                              
+                              <!-- Botones Secundarios -->
+                              <div style="flex: 0 0 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Botones Secundarios</label>
+                                <label class="ubits-toggle ubits-toggle--md" style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                                  <input type="checkbox" class="ubits-toggle__input" id="data-table-show-header-secondary-buttons-${componentId}" checked onchange="setDataTableControl('showHeaderSecondaryButtons', this.checked, '${componentId}')">
+                                  <span class="ubits-toggle__track">
+                                    <span class="ubits-toggle__thumb"></span>
+                                  </span>
+                                  <span id="data-table-show-header-secondary-buttons-status-${componentId}" style="font-size: 14px; color: var(--ubits-fg-1-high);">Visible</span>
+                                </label>
+                              </div>
+                              
+                              <!-- Botón Primario -->
+                              <div style="flex: 0 0 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Botón Primario</label>
+                                <label class="ubits-toggle ubits-toggle--md" style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                                  <input type="checkbox" class="ubits-toggle__input" id="data-table-show-header-primary-button-${componentId}" checked onchange="setDataTableControl('showHeaderPrimaryButton', this.checked, '${componentId}')">
+                                  <span class="ubits-toggle__track">
+                                    <span class="ubits-toggle__thumb"></span>
+                                  </span>
+                                  <span id="data-table-show-header-primary-button-status-${componentId}" style="font-size: 14px; color: var(--ubits-fg-1-high);">Visible</span>
+                                </label>
+                              </div>
+                              
+                              <!-- Título del Header (Input) -->
+                              <div style="flex: 1 1 auto; min-width: 250px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Texto del Título</label>
+                                <input type="text" id="data-table-header-title-${componentId}" value="Tabla de datos" onchange="setDataTableControl('headerTitle', this.value, '${componentId}')" placeholder="Título del header" style="width: 100%; padding: 10px 12px; border: 1px solid var(--ubits-border-1); border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                                </div>
+                              </div>
+                            </div>
+                            
+                            <!-- Acordeón: Controladores de la Columna -->
+                            <div style="margin-bottom: 12px; border: 1px solid var(--ubits-border-1); border-radius: 8px; overflow: hidden; background: var(--ubits-bg-1);">
+                              <button 
+                                onclick="toggleDataTableAccordion('columns-${componentId}')"
+                                style="width: 100%; padding: 16px 20px; background: none; border: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; text-align: left; transition: background 0.2s ease;"
+                                onmouseover="this.style.background='var(--ubits-bg-2)'"
+                                onmouseout="this.style.background='none'"
+                                id="accordion-header-columns-${componentId}">
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                  <i class="far fa-columns" style="color: var(--ubits-accent-brand-static-inverted); font-size: 16px;"></i>
+                                  <span style="font-size: 14px; font-weight: 600; color: var(--ubits-fg-1-high);">Controladores de la Columna</span>
+                                </div>
+                                <i class="far fa-chevron-down" id="accordion-chevron-columns-${componentId}" style="color: var(--ubits-fg-1-medium); font-size: 12px; transition: transform 0.2s ease;"></i>
+                              </button>
+                              <div id="accordion-body-columns-${componentId}" style="display: none; padding: 20px; border-top: 1px solid var(--ubits-border-1);">
+                                <div style="flex: 0 0 100%;">
+                                  <h5 style="margin: 0 0 16px 0; color: var(--ubits-fg-1-high); font-size: 14px; font-weight: 600;">Tipos de Columna</h5>
+                                  <div id="data-table-column-types-${componentId}" style="display: flex; flex-wrap: wrap; gap: 16px;">
+                                    <!-- Se generará dinámicamente -->
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            
+                            <!-- Acordeón: Controladores de las Acciones -->
+                            <div style="margin-bottom: 12px; border: 1px solid var(--ubits-border-1); border-radius: 8px; overflow: hidden; background: var(--ubits-bg-1);">
+                              <button 
+                                onclick="toggleDataTableAccordion('actions-${componentId}')"
+                                style="width: 100%; padding: 16px 20px; background: none; border: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; text-align: left; transition: background 0.2s ease;"
+                                onmouseover="this.style.background='var(--ubits-bg-2)'"
+                                onmouseout="this.style.background='none'"
+                                id="accordion-header-actions-${componentId}">
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                  <i class="far fa-bolt" style="color: var(--ubits-accent-brand-static-inverted); font-size: 16px;"></i>
+                                  <span style="font-size: 14px; font-weight: 600; color: var(--ubits-fg-1-high);">Controladores de las Acciones</span>
+                                </div>
+                                <i class="far fa-chevron-down" id="accordion-chevron-actions-${componentId}" style="color: var(--ubits-fg-1-medium); font-size: 12px; transition: transform 0.2s ease;"></i>
+                              </button>
+                              <div id="accordion-body-actions-${componentId}" style="display: none; padding: 20px; border-top: 1px solid var(--ubits-border-1);">
+                                <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
+                                  <!-- Ver Seleccionados -->
+                                  <div style="flex: 0 0 auto; min-width: 200px;">
+                                    <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Ver Seleccionados</label>
+                                    <label class="ubits-toggle ubits-toggle--md" style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                                      <input type="checkbox" class="ubits-toggle__input" id="data-table-show-view-selected-${componentId}" checked onchange="setDataTableControl('showViewSelected', this.checked, '${componentId}')">
+                                      <span class="ubits-toggle__track">
+                                        <span class="ubits-toggle__thumb"></span>
+                                      </span>
+                                      <span id="data-table-show-view-selected-status-${componentId}" style="font-size: 14px; color: var(--ubits-fg-1-high);">Visible</span>
+                                    </label>
+                                  </div>
+                                  
+                                  <!-- Swap -->
+                                  <div style="flex: 0 0 auto; min-width: 200px;">
+                                    <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Swap</label>
+                                    <label class="ubits-toggle ubits-toggle--md" style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                                      <input type="checkbox" class="ubits-toggle__input" id="data-table-show-swap-${componentId}" checked onchange="setDataTableControl('showSwap', this.checked, '${componentId}')">
+                                      <span class="ubits-toggle__track">
+                                        <span class="ubits-toggle__thumb"></span>
+                                      </span>
+                                      <span id="data-table-show-swap-status-${componentId}" style="font-size: 14px; color: var(--ubits-fg-1-high);">Visible</span>
+                                    </label>
+                                  </div>
+                                  
+                                  <!-- Notificaciones (Campanita) -->
+                                  <div style="flex: 0 0 auto; min-width: 200px;">
+                                    <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Notificaciones</label>
+                                    <label class="ubits-toggle ubits-toggle--md" style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                                      <input type="checkbox" class="ubits-toggle__input" id="data-table-show-notifications-${componentId}" checked onchange="setDataTableControl('showNotifications', this.checked, '${componentId}')">
+                                      <span class="ubits-toggle__track">
+                                        <span class="ubits-toggle__thumb"></span>
+                                      </span>
+                                      <span id="data-table-show-notifications-status-${componentId}" style="font-size: 14px; color: var(--ubits-fg-1-high);">Visible</span>
+                                    </label>
+                                  </div>
+                                  
+                                  <!-- Copiar -->
+                                  <div style="flex: 0 0 auto; min-width: 200px;">
+                                    <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Copiar</label>
+                                    <label class="ubits-toggle ubits-toggle--md" style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                                      <input type="checkbox" class="ubits-toggle__input" id="data-table-show-copy-${componentId}" checked onchange="setDataTableControl('showCopy', this.checked, '${componentId}')">
+                                      <span class="ubits-toggle__track">
+                                        <span class="ubits-toggle__thumb"></span>
+                                      </span>
+                                      <span id="data-table-show-copy-status-${componentId}" style="font-size: 14px; color: var(--ubits-fg-1-high);">Visible</span>
+                                    </label>
+                                  </div>
+                                  
+                                  <!-- Ver/Ojo -->
+                                  <div style="flex: 0 0 auto; min-width: 200px;">
+                                    <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Ver</label>
+                                    <label class="ubits-toggle ubits-toggle--md" style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                                      <input type="checkbox" class="ubits-toggle__input" id="data-table-show-view-${componentId}" checked onchange="setDataTableControl('showView', this.checked, '${componentId}')">
+                                      <span class="ubits-toggle__track">
+                                        <span class="ubits-toggle__thumb"></span>
+                                      </span>
+                                      <span id="data-table-show-view-status-${componentId}" style="font-size: 14px; color: var(--ubits-fg-1-high);">Visible</span>
+                                    </label>
+                                  </div>
+                                  
+                                  <!-- Editar -->
+                                  <div style="flex: 0 0 auto; min-width: 200px;">
+                                    <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Editar</label>
+                                    <label class="ubits-toggle ubits-toggle--md" style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                                      <input type="checkbox" class="ubits-toggle__input" id="data-table-show-edit-${componentId}" checked onchange="setDataTableControl('showEdit', this.checked, '${componentId}')">
+                                      <span class="ubits-toggle__track">
+                                        <span class="ubits-toggle__thumb"></span>
+                                      </span>
+                                      <span id="data-table-show-edit-status-${componentId}" style="font-size: 14px; color: var(--ubits-fg-1-high);">Visible</span>
+                                    </label>
+                                  </div>
+                                  
+                                  <!-- Descargar -->
+                                  <div style="flex: 0 0 auto; min-width: 200px;">
+                                    <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Descargar</label>
+                                    <label class="ubits-toggle ubits-toggle--md" style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                                      <input type="checkbox" class="ubits-toggle__input" id="data-table-show-download-${componentId}" checked onchange="setDataTableControl('showDownload', this.checked, '${componentId}')">
+                                      <span class="ubits-toggle__track">
+                                        <span class="ubits-toggle__thumb"></span>
+                                      </span>
+                                      <span id="data-table-show-download-status-${componentId}" style="font-size: 14px; color: var(--ubits-fg-1-high);">Visible</span>
+                                    </label>
+                                  </div>
+                                  
+                                  <!-- Eliminar -->
+                                  <div style="flex: 0 0 auto; min-width: 200px;">
+                                    <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Eliminar</label>
+                                    <label class="ubits-toggle ubits-toggle--md" style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                                      <input type="checkbox" class="ubits-toggle__input" id="data-table-show-delete-${componentId}" checked onchange="setDataTableControl('showDelete', this.checked, '${componentId}')">
+                                      <span class="ubits-toggle__track">
+                                        <span class="ubits-toggle__thumb"></span>
+                                      </span>
+                                      <span id="data-table-show-delete-status-${componentId}" style="font-size: 14px; color: var(--ubits-fg-1-high);">Visible</span>
+                                    </label>
+                                  </div>
+                                </div>
                               </div>
                             </div>
                           </div>
@@ -13045,6 +13327,35 @@ Reglas Importantes:
             paginationVariant: 'default',
             paginationSize: 'md',
             columnsCount: 3,
+            // Header states
+            headerTitle: 'Tabla de datos',
+            headerCounter: true,
+            headerCounterMode: 'full', // 'full' o 'total-only'
+            headerDisplayedItems: 100, // Cantidad mostrada (X en X/Y)
+            headerTotalItems: 100, // Cantidad total (Y en X/Y o solo Y)
+            showHeaderTitle: true,
+            showHeaderCounter: true,
+            showHeaderSearchButton: true,
+            showHeaderFilterButton: true,
+            showHeaderColumnSelectorButton: true,
+            showHeaderSecondaryButtons: true,
+            showHeaderPrimaryButton: true,
+            headerSecondaryButtons: [
+              { icon: 'download', iconStyle: 'regular', onClick: () => console.log('Descargar') },
+              { icon: 'share', iconStyle: 'regular', onClick: () => console.log('Compartir') }
+            ],
+            headerPrimaryButton: { icon: 'plus', iconStyle: 'regular', onClick: () => console.log('Agregar') },
+            // Action bar states
+            showViewSelected: true,
+            showSwap: true,
+            showNotifications: true,
+            showCopy: true,
+            showView: true,
+            showEdit: true,
+            showDownload: true,
+            showDelete: true,
+            selectedRows: [],
+            viewSelectedActive: false,
             columns: [
               {
                 id: 'checkbox-2',
@@ -14295,7 +14606,21 @@ Reglas Importantes:
       
       // Función para establecer controles del Data Table
       window.setDataTableControl = function(option, value, componentId) {
+        console.log('🎛️ [SET CONTROL] ========== INICIO setDataTableControl ==========');
+        console.log('🎛️ [SET CONTROL] Parámetros recibidos:', { option, value, componentId, valueType: typeof value });
+        
+        // Verificar que componentId existe
+        if (!componentId) {
+          console.error('❌ [SET CONTROL] componentId no proporcionado!');
+          return;
+        }
+        
         const state = initDataTablePreviewState(componentId);
+        console.log('🎛️ [SET CONTROL] Estado obtenido:', { 
+          hasState: !!state,
+          showHeaderSearchButton: state?.showHeaderSearchButton,
+          headerDisplayedItems: state?.headerDisplayedItems
+        });
         
         if (option === 'columnReorderable') {
           state.columnReorderable = value;
@@ -14423,6 +14748,150 @@ Reglas Importantes:
           if (statusEl) statusEl.textContent = value ? 'Activado' : 'Desactivado';
           console.log('📄 [WEB] Llamando a updateDataTablePreview...');
           // Actualizar el preview para reflejar el cambio
+          window.updateDataTablePreview(componentId);
+        } else if (option === 'showHeaderTitle') {
+          console.log('🔧 [HEADER CONTROL] Cambiando showHeaderTitle:', value, 'componentId:', componentId);
+          state.showHeaderTitle = value;
+          const statusEl = document.getElementById(`data-table-show-header-title-status-${componentId}`);
+          if (statusEl) statusEl.textContent = value ? 'Visible' : 'Oculta';
+          console.log('🔧 [HEADER CONTROL] Estado actualizado. showHeaderTitle:', state.showHeaderTitle);
+          window.updateDataTablePreview(componentId);
+        } else if (option === 'showHeaderCounter') {
+          console.log('🔧 [HEADER CONTROL] Cambiando showHeaderCounter:', value, 'componentId:', componentId);
+          state.showHeaderCounter = value;
+          const statusEl = document.getElementById(`data-table-show-header-counter-status-${componentId}`);
+          if (statusEl) statusEl.textContent = value ? 'Visible' : 'Oculta';
+          console.log('🔧 [HEADER CONTROL] Estado actualizado. showHeaderCounter:', state.showHeaderCounter);
+          window.updateDataTablePreview(componentId);
+        } else if (option === 'headerCounterMode') {
+          console.log('🔧 [HEADER CONTROL] Cambiando headerCounterMode:', value, 'componentId:', componentId);
+          state.headerCounterMode = value;
+          // Actualizar visibilidad de los inputs según el modo
+          const displayedContainer = document.getElementById(`data-table-header-displayed-items-container-${componentId}`);
+          const totalContainer = document.getElementById(`data-table-header-total-items-container-${componentId}`);
+          if (displayedContainer) {
+            // En modo 'full' se muestran ambos (X e Y), en modo 'total-only' solo Y
+            displayedContainer.style.display = value === 'full' ? 'block' : 'none';
+          }
+          if (totalContainer) {
+            // El input de Y siempre se muestra (en ambos modos)
+            totalContainer.style.display = 'block';
+          }
+          // Actualizar radio buttons
+          const radioButtons = document.querySelectorAll(`input[name="data-table-header-counter-mode-${componentId}"]`);
+          radioButtons.forEach(radio => {
+            if (radio) {
+              radio.checked = radio.value === value;
+            }
+          });
+          console.log('🔧 [HEADER CONTROL] Estado actualizado. headerCounterMode:', state.headerCounterMode);
+          window.updateDataTablePreview(componentId);
+        } else if (option === 'headerDisplayedItems') {
+          console.log('🔧 [HEADER CONTROL] ========== Cambiando headerDisplayedItems ==========');
+          console.log('🔧 [HEADER CONTROL] Valor recibido:', value, 'Tipo:', typeof value);
+          const numValue = typeof value === 'number' ? value : (parseInt(value) || 0);
+          const oldValue = state.headerDisplayedItems;
+          state.headerDisplayedItems = Math.max(0, numValue);
+          console.log('🔧 [HEADER CONTROL] Estado actualizado:', { oldValue, newValue: state.headerDisplayedItems });
+          
+          // Actualizar el input visualmente si existe
+          const inputEl = document.getElementById(`data-table-header-displayed-items-${componentId}`);
+          if (inputEl) {
+            if (inputEl.value !== String(state.headerDisplayedItems)) {
+              inputEl.value = state.headerDisplayedItems;
+              console.log('🔧 [HEADER CONTROL] Input actualizado:', inputEl.value);
+            }
+          } else {
+            console.warn('🔧 [HEADER CONTROL] Input no encontrado');
+          }
+          
+          console.log('🔧 [HEADER CONTROL] Llamando a updateDataTablePreview...');
+          window.updateDataTablePreview(componentId);
+          console.log('🔧 [HEADER CONTROL] ========== FIN headerDisplayedItems ==========');
+        } else if (option === 'headerTotalItems') {
+          console.log('🔧 [HEADER CONTROL] Cambiando headerTotalItems:', value, 'componentId:', componentId);
+          const numValue = typeof value === 'number' ? value : (parseInt(value) || 0);
+          state.headerTotalItems = Math.max(0, numValue);
+          const inputEl = document.getElementById(`data-table-header-total-items-${componentId}`);
+          if (inputEl && inputEl.value !== String(state.headerTotalItems)) {
+            inputEl.value = state.headerTotalItems;
+          }
+          console.log('🔧 [HEADER CONTROL] Estado actualizado. headerTotalItems:', state.headerTotalItems);
+          window.updateDataTablePreview(componentId);
+        } else if (option === 'showHeaderSearchButton') {
+          console.log('🔧 [HEADER CONTROL] ========== INICIO showHeaderSearchButton ==========');
+          console.log('🔧 [HEADER CONTROL] Parámetros recibidos:', { option, value, componentId, valueType: typeof value });
+          console.log('🔧 [HEADER CONTROL] Estado anterior:', { showHeaderSearchButton: state.showHeaderSearchButton });
+          
+          try {
+            state.showHeaderSearchButton = Boolean(value);
+            console.log('🔧 [HEADER CONTROL] Estado actualizado en memoria:', { showHeaderSearchButton: state.showHeaderSearchButton });
+            
+            // Actualizar status text
+            const statusEl = document.getElementById(`data-table-show-header-search-button-status-${componentId}`);
+            console.log('🔧 [HEADER CONTROL] Buscando statusEl con ID:', `data-table-show-header-search-button-status-${componentId}`);
+            if (statusEl) {
+              const oldText = statusEl.textContent;
+              statusEl.textContent = state.showHeaderSearchButton ? 'Visible' : 'Oculta';
+              console.log('🔧 [HEADER CONTROL] Status text actualizado:', { oldText, newText: statusEl.textContent });
+            } else {
+              console.warn('🔧 [HEADER CONTROL] StatusEl no encontrado');
+            }
+            
+            // Actualizar checkbox
+            const checkboxEl = document.getElementById(`data-table-show-header-search-button-${componentId}`);
+            console.log('🔧 [HEADER CONTROL] Buscando checkboxEl con ID:', `data-table-show-header-search-button-${componentId}`);
+            if (checkboxEl) {
+              console.log('🔧 [HEADER CONTROL] Checkbox encontrado:', { 
+                checked: checkboxEl.checked, 
+                shouldBeChecked: state.showHeaderSearchButton,
+                needsUpdate: checkboxEl.checked !== state.showHeaderSearchButton
+              });
+              if (checkboxEl.checked !== state.showHeaderSearchButton) {
+                checkboxEl.checked = state.showHeaderSearchButton;
+                console.log('🔧 [HEADER CONTROL] Checkbox actualizado a:', checkboxEl.checked);
+              } else {
+                console.log('🔧 [HEADER CONTROL] Checkbox ya está en el estado correcto');
+              }
+            } else {
+              console.warn('🔧 [HEADER CONTROL] CheckboxEl no encontrado');
+            }
+            
+            console.log('🔧 [HEADER CONTROL] Llamando a updateDataTablePreview...');
+            window.updateDataTablePreview(componentId);
+            console.log('🔧 [HEADER CONTROL] ========== FIN showHeaderSearchButton ==========');
+          } catch (error) {
+            console.error('❌ [HEADER CONTROL] Error en showHeaderSearchButton:', error);
+            console.error('❌ [HEADER CONTROL] Stack:', error.stack);
+            throw error;
+          }
+        } else if (option === 'showHeaderFilterButton') {
+          console.log('🔧 [HEADER CONTROL] Cambiando showHeaderFilterButton:', value, 'componentId:', componentId);
+          state.showHeaderFilterButton = value;
+          const statusEl = document.getElementById(`data-table-show-header-filter-button-status-${componentId}`);
+          if (statusEl) statusEl.textContent = value ? 'Visible' : 'Oculta';
+          console.log('🔧 [HEADER CONTROL] Estado actualizado. showHeaderFilterButton:', state.showHeaderFilterButton);
+          window.updateDataTablePreview(componentId);
+        } else if (option === 'showHeaderColumnSelectorButton') {
+          console.log('🔧 [HEADER CONTROL] Cambiando showHeaderColumnSelectorButton:', value, 'componentId:', componentId);
+          state.showHeaderColumnSelectorButton = value;
+          const statusEl = document.getElementById(`data-table-show-header-column-selector-button-status-${componentId}`);
+          if (statusEl) statusEl.textContent = value ? 'Visible' : 'Oculta';
+          console.log('🔧 [HEADER CONTROL] Estado actualizado. showHeaderColumnSelectorButton:', state.showHeaderColumnSelectorButton);
+          window.updateDataTablePreview(componentId);
+        } else if (option === 'showHeaderSecondaryButtons') {
+          console.log('🔧 [HEADER CONTROL] Cambiando showHeaderSecondaryButtons:', value, 'componentId:', componentId);
+          state.showHeaderSecondaryButtons = value;
+          const statusEl = document.getElementById(`data-table-show-header-secondary-buttons-status-${componentId}`);
+          if (statusEl) statusEl.textContent = value ? 'Visible' : 'Oculta';
+          console.log('🔧 [HEADER CONTROL] Estado actualizado. showHeaderSecondaryButtons:', state.showHeaderSecondaryButtons);
+          window.updateDataTablePreview(componentId);
+        } else if (option === 'showHeaderPrimaryButton') {
+          console.log('🔧 [HEADER CONTROL] Cambiando showHeaderPrimaryButton:', value, 'componentId:', componentId);
+          state.showHeaderPrimaryButton = value;
+          const statusEl = document.getElementById(`data-table-show-header-primary-button-status-${componentId}`);
+          if (statusEl) statusEl.textContent = value ? 'Visible' : 'Oculta';
+          console.log('🔧 [HEADER CONTROL] Estado actualizado. showHeaderPrimaryButton:', state.showHeaderPrimaryButton);
           window.updateDataTablePreview(componentId);
         } else if (option === 'columnSortable') {
           state.columnSortable = value;
@@ -14648,6 +15117,46 @@ Reglas Importantes:
             // Actualizar el preview
             window.updateDataTablePreview(componentId);
           }
+        } else if (option === 'showViewSelected') {
+          state.showViewSelected = value;
+          const statusEl = document.getElementById(`data-table-show-view-selected-status-${componentId}`);
+          if (statusEl) statusEl.textContent = value ? 'Visible' : 'Oculta';
+          window.updateDataTablePreview(componentId);
+        } else if (option === 'showSwap') {
+          state.showSwap = value;
+          const statusEl = document.getElementById(`data-table-show-swap-status-${componentId}`);
+          if (statusEl) statusEl.textContent = value ? 'Visible' : 'Oculta';
+          window.updateDataTablePreview(componentId);
+        } else if (option === 'showNotifications') {
+          state.showNotifications = value;
+          const statusEl = document.getElementById(`data-table-show-notifications-status-${componentId}`);
+          if (statusEl) statusEl.textContent = value ? 'Visible' : 'Oculta';
+          window.updateDataTablePreview(componentId);
+        } else if (option === 'showCopy') {
+          state.showCopy = value;
+          const statusEl = document.getElementById(`data-table-show-copy-status-${componentId}`);
+          if (statusEl) statusEl.textContent = value ? 'Visible' : 'Oculta';
+          window.updateDataTablePreview(componentId);
+        } else if (option === 'showView') {
+          state.showView = value;
+          const statusEl = document.getElementById(`data-table-show-view-status-${componentId}`);
+          if (statusEl) statusEl.textContent = value ? 'Visible' : 'Oculta';
+          window.updateDataTablePreview(componentId);
+        } else if (option === 'showEdit') {
+          state.showEdit = value;
+          const statusEl = document.getElementById(`data-table-show-edit-status-${componentId}`);
+          if (statusEl) statusEl.textContent = value ? 'Visible' : 'Oculta';
+          window.updateDataTablePreview(componentId);
+        } else if (option === 'showDownload') {
+          state.showDownload = value;
+          const statusEl = document.getElementById(`data-table-show-download-status-${componentId}`);
+          if (statusEl) statusEl.textContent = value ? 'Visible' : 'Oculta';
+          window.updateDataTablePreview(componentId);
+        } else if (option === 'showDelete') {
+          state.showDelete = value;
+          const statusEl = document.getElementById(`data-table-show-delete-status-${componentId}`);
+          if (statusEl) statusEl.textContent = value ? 'Visible' : 'Oculta';
+          window.updateDataTablePreview(componentId);
         }
         
         // Actualizar el preview
@@ -14807,6 +15316,7 @@ Reglas Importantes:
       // Función para actualizar el preview del Data Table
       window.updateDataTablePreview = function(componentId) {
         console.log('📄 [WEB] ========== updateDataTablePreview INICIO ==========');
+        console.log('📄 [WEB] componentId recibido:', componentId);
         const state = initDataTablePreviewState(componentId);
         console.log('📄 [WEB] Estado obtenido. showPagination:', state.showPagination);
         const preview = document.getElementById(`data-table-preview-${componentId}`);
@@ -14819,10 +15329,14 @@ Reglas Importantes:
         // Limpiar completamente el preview antes de crear una nueva tabla
         preview.innerHTML = '';
         
-        // Generar selectores de tipo de columna
-        if (typeof window.generateColumnTypeSelectors === 'function') {
-          window.generateColumnTypeSelectors(componentId);
-        }
+        // Generar selectores de tipo de columna después de que el DOM esté listo
+        setTimeout(() => {
+          const columnTypesContainer = document.getElementById(`data-table-column-types-${componentId}`);
+          if (columnTypesContainer && window.generateColumnTypeSelectors) {
+            window.generateColumnTypeSelectors(componentId);
+            console.log('✅ Selectores de tipo de columna generados');
+          }
+        }, 150);
         
         // Destruir instancia anterior si existe
         if (window.dataTableInstances[componentId]) {
@@ -14899,10 +15413,61 @@ Reglas Importantes:
           document.head.appendChild(link);
         }
         
+        // Cargar CSS de SearchButton
+        if (!document.querySelector('link[href*="search-button.css"]')) {
+          const link = document.createElement('link');
+          link.rel = 'stylesheet';
+          link.href = '../../addons/search-button/src/styles/search-button.css';
+          document.head.appendChild(link);
+        }
+        
+        // Cargar CSS de Drawer
+        if (!document.querySelector('link[href*="drawer.css"]')) {
+          const link = document.createElement('link');
+          link.rel = 'stylesheet';
+          link.href = '../../addons/drawer/src/styles/drawer.css';
+          document.head.appendChild(link);
+        }
+        
+        // Cargar CSS de Badge
+        if (!document.querySelector('link[href*="badge.css"]')) {
+          const link = document.createElement('link');
+          link.rel = 'stylesheet';
+          link.href = '../../addons/badge/src/styles/badge.css';
+          document.head.appendChild(link);
+        }
+        
+        // Cargar CSS de Input
+        if (!document.querySelector('link[href*="input.css"]')) {
+          const link = document.createElement('link');
+          link.rel = 'stylesheet';
+          link.href = '../../addons/input/src/styles/input.css';
+          document.head.appendChild(link);
+        }
+        
+        // Cargar CSS de List
+        if (!document.querySelector('link[href*="list.css"]')) {
+          const link = document.createElement('link');
+          link.rel = 'stylesheet';
+          link.href = '../../addons/list/src/styles/list.css';
+          document.head.appendChild(link);
+        }
+        
         // Función auxiliar para crear la instancia de Data Table
         const createDataTableInstance = () => {
           const instanceId = `instance-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
           console.log(`🎯 [INSTANCE] ========== INICIO createDataTableInstance [${instanceId}] ==========`);
+          
+          // CRÍTICO: Obtener el estado MÁS RECIENTE directamente desde dataTablePreviewState
+          // Esto asegura que siempre usamos el estado actualizado, incluso si se llama desde onRowSelect
+          const currentState = initDataTablePreviewState(componentId);
+          console.log(`🎯 [INSTANCE] Estado obtenido directamente. Filas:`, currentState.rows.length);
+          console.log(`🎯 [INSTANCE] Verificando selecciones en estado actualizado:`);
+          currentState.rows.forEach((row, idx) => {
+            if (row.data && row.data['checkbox-2'] !== undefined) {
+              console.log(`🎯 [INSTANCE]   Fila ${idx} (id: ${row.id}): checkbox-2 =`, row.data['checkbox-2'], typeof row.data['checkbox-2']);
+            }
+          });
           
           // Verificar si ya existe un contenedor y limpiarlo
           const existingContainer = document.getElementById(`data-table-container-${componentId}`);
@@ -14932,21 +15497,21 @@ Reglas Importantes:
             // Construir columnas dinámicamente según controles
             // Construir columnas desde el estado (mantener tipos y propiedades)
             // Si showHorizontalScrollbar está activo, asegurar mínimo 8 columnas para que se vea el scroll
-            let columnsCount = state.columnsCount || 3;
-            if (state.showHorizontalScrollbar === true && columnsCount < 8) {
+            let columnsCount = currentState.columnsCount || 3;
+            if (currentState.showHorizontalScrollbar === true && columnsCount < 8) {
               columnsCount = 8;
             }
             const allColumns = [];
             
             // Separar checkbox de columnas de datos
-            const checkboxColumn = state.columns.find(col => col.id === 'checkbox-2');
-            const dataColumns = state.columns.filter(col => col.id !== 'checkbox-2');
+            const checkboxColumn = currentState.columns.find(col => col.id === 'checkbox-2');
+            const dataColumns = currentState.columns.filter(col => col.id !== 'checkbox-2');
             
             // Usar columnas del estado si existen, sino crear por defecto
-            if (state.columns && state.columns.length > 0) {
+            if (currentState.columns && currentState.columns.length > 0) {
               // Agregar checkbox primero si existe
               // IMPORTANTE: Preservar la propiedad pinned si existe
-              if (checkboxColumn && state.showCheckbox !== false) {
+              if (checkboxColumn && currentState.showCheckbox !== false) {
                 const checkboxCopy = { ...checkboxColumn };
                 // Asegurar que pinned se preserve si existe
                 if (checkboxColumn.pinned !== undefined) {
@@ -14958,7 +15523,7 @@ Reglas Importantes:
               // Asegurar que tenemos suficientes columnas de datos según columnsCount
               const dataColumnsToUse = dataColumns.slice(0, columnsCount);
               // Si showHorizontalScrollbar está activo, usar ancho mínimo de 180px para todas las columnas
-              const minColumnWidth = state.showHorizontalScrollbar === true ? 180 : undefined;
+              const minColumnWidth = currentState.showHorizontalScrollbar === true ? 180 : undefined;
               dataColumnsToUse.forEach(col => {
                 // Copiar todas las propiedades de la columna incluyendo avatarVariant y pinned
                 const columnCopy = {
@@ -14998,7 +15563,7 @@ Reglas Importantes:
                 // Si es columna de email, aplicar emailClickable de la columna o del estado
                 if (col.type === 'correo' || col.id === 'email') {
                   // Usar el valor de la columna si existe, sino usar el del estado global
-                  columnCopy.emailClickable = col.emailClickable !== undefined ? col.emailClickable : (state.emailClickable !== false);
+                  columnCopy.emailClickable = col.emailClickable !== undefined ? col.emailClickable : (currentState.emailClickable !== false);
                 } else if (col.emailClickable !== undefined) {
                   // Si la columna tiene emailClickable definido, usarlo
                   columnCopy.emailClickable = col.emailClickable;
@@ -15014,7 +15579,7 @@ Reglas Importantes:
               if (columnsCount > dataColumns.length) {
                 const columnNames = ['Teléfono', 'Ciudad', 'País', 'Fecha', 'Categoría', 'Prioridad', 'Área', 'Líder', 'Departamento', 'Proyecto'];
                 // Si showHorizontalScrollbar está activo, usar ancho mínimo de 180px para que se vea el scroll
-                const columnWidth = state.showHorizontalScrollbar === true ? 180 : 150;
+                const columnWidth = currentState.showHorizontalScrollbar === true ? 180 : 150;
                 for (let i = dataColumns.length; i < columnsCount && i < 12; i++) {
                   const columnName = columnNames[i - dataColumns.length] || `Columna ${i + 1}`;
                   const newColumn = {
@@ -15026,8 +15591,8 @@ Reglas Importantes:
                   };
                   allColumns.push(newColumn);
                   // También agregar al estado para que aparezca en los selectores
-                  if (!state.columns.find(col => col.id === newColumn.id)) {
-                    state.columns.push(newColumn);
+                  if (!currentState.columns.find(col => col.id === newColumn.id)) {
+                    currentState.columns.push(newColumn);
                   }
                 }
                 // Regenerar selectores después de agregar nuevas columnas
@@ -15038,16 +15603,16 @@ Reglas Importantes:
             } else {
               // Fallback: crear columnas por defecto
               const baseColumns = [
-                { id: 'checkbox-2', title: 'Checkbox', visible: state.showCheckbox !== false, width: 150, type: undefined },
+                { id: 'checkbox-2', title: 'Checkbox', visible: currentState.showCheckbox !== false, width: 150, type: undefined },
                 { id: 'nombre', title: 'Nombre', visible: true, width: 200, type: 'nombre' },
-                { id: 'email', title: 'Email', visible: true, width: 250, type: 'correo', emailClickable: state.emailClickable !== false },
+                { id: 'email', title: 'Email', visible: true, width: 250, type: 'correo', emailClickable: currentState.emailClickable !== false },
                 { id: 'estado', title: 'Estado', visible: true, width: 150, type: 'estado' }
               ];
               
               const additionalColumns = [];
               const columnNames = ['Teléfono', 'Ciudad', 'País', 'Fecha', 'Categoría', 'Prioridad', 'Área', 'Líder', 'Departamento', 'Proyecto'];
               // Si showHorizontalScrollbar está activo, usar ancho mínimo de 180px para que se vea el scroll
-              const columnWidth = state.showHorizontalScrollbar === true ? 180 : 150;
+              const columnWidth = currentState.showHorizontalScrollbar === true ? 180 : 150;
               
               for (let i = 3; i < columnsCount && i < 12; i++) {
                 const columnName = columnNames[i - 3] || `Columna ${i + 1}`;
@@ -15060,8 +15625,8 @@ Reglas Importantes:
                 };
                 additionalColumns.push(newColumn);
                 // También agregar al estado
-                if (!state.columns.find(col => col.id === newColumn.id)) {
-                  state.columns.push(newColumn);
+                if (!currentState.columns.find(col => col.id === newColumn.id)) {
+                  currentState.columns.push(newColumn);
                 }
               }
               
@@ -15070,10 +15635,10 @@ Reglas Importantes:
             
             // Filtrar columnas según opciones
             console.log('📊 [FILTER] Antes de filtrar. allColumns:', allColumns.map(c => ({ id: c.id, visible: c.visible })));
-            console.log('📊 [FILTER] state.showCheckbox:', state.showCheckbox);
+            console.log('📊 [FILTER] currentState.showCheckbox:', currentState.showCheckbox);
             const columns = allColumns.filter(col => {
               if (col.id === 'checkbox-2') {
-                const shouldShow = state.showCheckbox !== false;
+                const shouldShow = currentState.showCheckbox !== false;
                 console.log('📊 [FILTER] Columna checkbox-2 encontrada. Debe mostrarse?', shouldShow);
                 return shouldShow;
               }
@@ -15081,10 +15646,31 @@ Reglas Importantes:
             });
             console.log('📊 [FILTER] Después de filtrar. columns:', columns.map(c => ({ id: c.id, visible: c.visible })));
             
+            // CRÍTICO: Asegurar que todas las filas tengan row.data inicializado ANTES de crear rowsWithExpand
+            // Esto es especialmente importante para la columna checkbox-2, que debe existir desde el inicio
+            // Reutilizar checkboxColumn que ya fue declarado arriba
+            if (checkboxColumn) {
+              currentState.rows.forEach(row => {
+                if (!row.data) {
+                  row.data = {};
+                }
+                // Asegurar que checkbox-2 existe en row.data (inicializado como false si no existe)
+                if (row.data[checkboxColumn.id] === undefined) {
+                  row.data[checkboxColumn.id] = false;
+                }
+              });
+            }
+            
             // Preparar filas con renderExpandedContent solo si rowExpandable está activado
-            const rowsWithExpand = state.rows.map(row => {
-              if (state.rowExpandable !== false) {
-                return {
+            // CRÍTICO: Usar las MISMAS referencias de objetos de currentState.rows para que las actualizaciones
+            // del componente Data Table (que actualiza currentOptions.rows) se reflejen automáticamente
+            // en currentState.rows porque ambos apuntan a los mismos objetos row.data
+            let rowsWithExpand = currentState.rows.map(row => {
+              // Si rowExpandable está activado, necesitamos agregar renderExpandedContent
+              // pero mantener la misma referencia al objeto row.data
+              if (currentState.rowExpandable !== false) {
+                // Crear un nuevo objeto row pero mantener la misma referencia a row.data
+                const rowWithExpand = {
                   ...row,
                   renderExpandedContent: (rowData) => {
                     // Usar tokens CSS para que funcione correctamente en modo dark
@@ -15100,56 +15686,196 @@ Reglas Importantes:
                     `;
                   }
                 };
+                // CRÍTICO: Asegurar que row.data apunta a la misma referencia del objeto data original
+                // Esto permite que cuando el componente Data Table actualice currentOptions.rows[row].data[columnId],
+                // esa actualización se refleje automáticamente en currentState.rows[row].data[columnId]
+                // porque ambos apuntan al mismo objeto data
+                rowWithExpand.data = row.data;
+                return rowWithExpand;
               }
+              // Si no hay rowExpandable, usar la misma referencia directamente (sin copiar)
+              // Esto asegura que las actualizaciones del componente Data Table se reflejen en currentState.rows
               return row;
             });
             
-            const showCheckboxValue = state.showCheckbox !== false;
-            const showVerticalScrollbarValue = state.showVerticalScrollbar === true;
-            const showHorizontalScrollbarValue = state.showHorizontalScrollbar === true;
-            const showColumnMenuValue = state.showColumnMenu !== false;
+            // Aplicar filtro "Ver seleccionados" si está activo
+            if (currentState.viewSelectedActive) {
+              const checkboxColumn = columns.find(col => col.id === 'checkbox-2');
+              if (checkboxColumn) {
+                rowsWithExpand = rowsWithExpand.filter(row => {
+                  return row.data && row.data[checkboxColumn.id] === true;
+                });
+              }
+            }
+            
+            const showCheckboxValue = currentState.showCheckbox !== false;
+            const showVerticalScrollbarValue = currentState.showVerticalScrollbar === true;
+            const showHorizontalScrollbarValue = currentState.showHorizontalScrollbar === true;
+            const showColumnMenuValue = currentState.showColumnMenu !== false;
             
             // Ya no aplicamos sticky aquí - se aplica dentro de renderDataTable después de crear las columnas
             console.log('🎯 [CREATE] ========== CREANDO TABLA ==========');
-            console.log('🎯 [CREATE] showCheckboxValue:', showCheckboxValue, '(state.showCheckbox:', state.showCheckbox, ')');
-            console.log('🎯 [CREATE] showVerticalScrollbarValue:', showVerticalScrollbarValue, '(state.showVerticalScrollbar:', state.showVerticalScrollbar, ')');
-            console.log('🎯 [CREATE] showHorizontalScrollbarValue:', showHorizontalScrollbarValue, '(state.showHorizontalScrollbar:', state.showHorizontalScrollbar, ')');
-            console.log('🎯 [CREATE] showColumnMenuValue:', showColumnMenuValue, '(state.showColumnMenu:', state.showColumnMenu, ')');
-            console.log('🎯 [CREATE] checkboxSticky:', state.checkboxSticky, 'dragHandleSticky:', state.dragHandleSticky, 'expandSticky:', state.expandSticky);
+            console.log('🎯 [CREATE] showCheckboxValue:', showCheckboxValue, '(currentState.showCheckbox:', currentState.showCheckbox, ')');
+            console.log('🎯 [CREATE] showVerticalScrollbarValue:', showVerticalScrollbarValue, '(currentState.showVerticalScrollbar:', currentState.showVerticalScrollbar, ')');
+            console.log('🎯 [CREATE] showHorizontalScrollbarValue:', showHorizontalScrollbarValue, '(currentState.showHorizontalScrollbar:', currentState.showHorizontalScrollbar, ')');
+            console.log('🎯 [CREATE] showColumnMenuValue:', showColumnMenuValue, '(currentState.showColumnMenu:', currentState.showColumnMenu, ')');
+            console.log('🎯 [CREATE] checkboxSticky:', currentState.checkboxSticky, 'dragHandleSticky:', currentState.dragHandleSticky, 'expandSticky:', currentState.expandSticky);
             console.log('📄 [WEB] ========== CREANDO DATA TABLE ==========');
-            console.log('📄 [WEB] showPagination del estado:', state.showPagination);
-            console.log('📄 [WEB] showPagination === true:', state.showPagination === true);
-            console.log('📄 [WEB] currentPage:', state.currentPage || 1);
-            console.log('📄 [WEB] itemsPerPage:', state.itemsPerPage || 10);
+            console.log('📄 [WEB] showPagination del estado:', currentState.showPagination);
+            console.log('📄 [WEB] showPagination === true:', currentState.showPagination === true);
+            console.log('📄 [WEB] currentPage:', currentState.currentPage || 1);
+            console.log('📄 [WEB] itemsPerPage:', currentState.itemsPerPage || 10);
             console.log('📄 [WEB] Número de filas:', rowsWithExpand.length);
-            const table = window.createDataTable({
+            // Preparar opciones del header
+            const totalRows = rowsWithExpand.length;
+            console.log('📋 [HEADER] Preparando headerOptions:', {
+              headerTitle: currentState.headerTitle,
+              headerCounter: currentState.headerCounter,
+              headerCounterMode: currentState.headerCounterMode,
+              showHeaderTitle: currentState.showHeaderTitle,
+              showHeaderCounter: currentState.showHeaderCounter,
+              showHeaderSearchButton: currentState.showHeaderSearchButton,
+              showHeaderFilterButton: currentState.showHeaderFilterButton,
+              showHeaderColumnSelectorButton: currentState.showHeaderColumnSelectorButton,
+              showHeaderSecondaryButtons: currentState.showHeaderSecondaryButtons,
+              showHeaderPrimaryButton: currentState.showHeaderPrimaryButton,
+              totalRows: totalRows
+            });
+            // Asegurar que el título siempre tenga un valor
+            const headerTitleValue = currentState.headerTitle && currentState.headerTitle.trim() !== '' 
+              ? currentState.headerTitle 
+              : 'Tabla de datos';
+            
+            // Usar directamente los valores del estado para los controladores
+            const headerOptions = {
+              title: headerTitleValue,
+              counter: currentState.headerCounter !== false ? (currentState.headerCounterMode === 'total-only' ? 'total-only' : true) : false,
+              displayedItems: currentState.headerDisplayedItems !== undefined ? currentState.headerDisplayedItems : totalRows,
+              totalItems: currentState.headerTotalItems !== undefined ? currentState.headerTotalItems : totalRows,
+              showTitle: currentState.showHeaderTitle === true,
+              showCounter: currentState.showHeaderCounter === true,
+              // Botón de búsqueda
+              searchButton: currentState.showHeaderSearchButton === true ? {
+                onSearch: (searchTerm, filteredRows) => {
+                  console.log('🔍 [SEARCH] onSearch callback llamado:', { 
+                    searchTerm, 
+                    filteredRowsCount: filteredRows.length,
+                    componentId: componentId,
+                    headerCounter: currentState.headerCounter
+                  });
+                  // Actualizar contador si está activo
+                  if (currentState.headerCounter !== false) {
+                    const oldValue = currentState.headerDisplayedItems;
+                    currentState.headerDisplayedItems = filteredRows.length;
+                    console.log('🔍 [SEARCH] Actualizando headerDisplayedItems:', { 
+                      oldValue, 
+                      newValue: currentState.headerDisplayedItems,
+                      componentId: componentId
+                    });
+                    
+                    // Actualizar el input visualmente
+                    const displayedItemsInput = document.getElementById(`data-table-header-displayed-items-${componentId}`);
+                    console.log('🔍 [SEARCH] Buscando input con ID:', `data-table-header-displayed-items-${componentId}`);
+                    if (displayedItemsInput) {
+                      const oldInputValue = displayedItemsInput.value;
+                      displayedItemsInput.value = currentState.headerDisplayedItems;
+                      console.log('🔍 [SEARCH] Input actualizado:', { 
+                        oldInputValue, 
+                        newInputValue: displayedItemsInput.value,
+                        stateValue: currentState.headerDisplayedItems
+                      });
+                    } else {
+                      console.warn('🔍 [SEARCH] Input no encontrado con ID:', `data-table-header-displayed-items-${componentId}`);
+                      console.warn('🔍 [SEARCH] Intentando buscar todos los inputs de displayed items:', 
+                        document.querySelectorAll('[id*="data-table-header-displayed-items"]').length);
+                    }
+                  } else {
+                    console.log('🔍 [SEARCH] Contador desactivado, no actualizando headerDisplayedItems');
+                  }
+                }
+              } : undefined,
+              showSearchButton: currentState.showHeaderSearchButton === true,
+              // Botón de filtros
+              filterButton: currentState.showHeaderFilterButton === true ? {
+                onApplyFilters: (filters) => {
+                  console.log('🔍 Filtros aplicados:', filters);
+                },
+                onClearFilters: () => {
+                  console.log('🔍 Filtros limpiados');
+                }
+              } : undefined,
+              showFilterButton: currentState.showHeaderFilterButton === true,
+              // Botón de selector de columnas
+              columnSelectorButton: currentState.showHeaderColumnSelectorButton === true ? {
+                onClick: (e) => {
+                  console.log('📋 Selector de columnas clickeado');
+                }
+              } : undefined,
+              showColumnSelectorButton: currentState.showHeaderColumnSelectorButton === true,
+              // Botones secundarios
+              secondaryButtons: currentState.showHeaderSecondaryButtons === true && currentState.headerSecondaryButtons ? currentState.headerSecondaryButtons.map((btn, index) => ({
+                icon: btn.icon || 'ellipsis',
+                iconStyle: btn.iconStyle || 'regular',
+                onClick: (e) => {
+                  console.log(`Botón secundario ${index + 1} clickeado`);
+                  if (btn.onClick) btn.onClick(e);
+                },
+                disabled: btn.disabled || false,
+                active: btn.active || false
+              })) : [],
+              showSecondaryButtons: currentState.showHeaderSecondaryButtons === true,
+              // Botón primario
+              primaryButton: currentState.showHeaderPrimaryButton === true && currentState.headerPrimaryButton ? {
+                icon: currentState.headerPrimaryButton.icon || 'plus',
+                iconStyle: currentState.headerPrimaryButton.iconStyle || 'regular',
+                onClick: (e) => {
+                  console.log('Botón primario clickeado');
+                  if (currentState.headerPrimaryButton.onClick) currentState.headerPrimaryButton.onClick(e);
+                },
+                disabled: currentState.headerPrimaryButton.disabled || false
+              } : undefined,
+              showPrimaryButton: currentState.showHeaderPrimaryButton === true
+            };
+            
+            console.log('📋 [HEADER] headerOptions final - contador:', {
+              displayedItems: headerOptions.displayedItems,
+              totalItems: headerOptions.totalItems,
+              counter: headerOptions.counter,
+              showCounter: headerOptions.showCounter
+            });
+            
+            const tableOptions = {
               containerId: containerId,
               columns: columns,
               rows: rowsWithExpand,
-              columnReorderable: state.columnReorderable !== false,
-              rowReorderable: state.rowReorderable !== false,
-              rowExpandable: state.rowExpandable !== false,
-              columnSortable: state.columnSortable !== false,
+              columnReorderable: currentState.columnReorderable !== false,
+              rowReorderable: currentState.rowReorderable !== false,
+              rowExpandable: currentState.rowExpandable !== false,
+              columnSortable: currentState.columnSortable !== false,
               showCheckbox: showCheckboxValue,
               showVerticalScrollbar: showVerticalScrollbarValue,
               showHorizontalScrollbar: showHorizontalScrollbarValue,
               showColumnMenu: showColumnMenuValue,
-              checkboxSticky: state.checkboxSticky === true,
-              dragHandleSticky: state.dragHandleSticky === true,
-              expandSticky: state.expandSticky === true,
-              showPagination: state.showPagination === true,
-              currentPage: state.currentPage || 1,
-              itemsPerPage: state.itemsPerPage || 10,
-              paginationVariant: state.paginationVariant || 'default',
-              paginationSize: state.paginationSize || 'md',
+              checkboxSticky: currentState.checkboxSticky === true,
+              dragHandleSticky: currentState.dragHandleSticky === true,
+              expandSticky: currentState.expandSticky === true,
+              showPagination: currentState.showPagination === true,
+              currentPage: currentState.currentPage || 1,
+              itemsPerPage: currentState.itemsPerPage || 10,
+              paginationVariant: currentState.paginationVariant || 'default',
+              paginationSize: currentState.paginationSize || 'md',
               // Lazy load: activo por defecto si no hay paginación
-              lazyLoad: state.showPagination === true ? false : true,
+              lazyLoad: currentState.showPagination === true ? false : true,
               lazyLoadItemsPerBatch: 10,
+              // Header
+              header: headerOptions,
               onPageChange: (page) => {
+                const state = initDataTablePreviewState(componentId);
                 state.currentPage = page;
                 window.updateDataTablePreview(componentId);
               },
               onItemsPerPageChange: (itemsPerPage) => {
+                const state = initDataTablePreviewState(componentId);
                 state.itemsPerPage = itemsPerPage;
                 state.currentPage = 1;
                 window.updateDataTablePreview(componentId);
@@ -15158,20 +15884,95 @@ Reglas Importantes:
                 console.log('📦 [LAZY LOAD] Items cargados:', loadedItems, 'de', totalItems);
               },
               onRowSelect: (rowId, selected) => {
-                console.log('Fila seleccionada:', rowId, selected);
-                // Actualizar el estado de la fila
+                console.log('🎯 [ROW SELECT] ========== INICIO ==========');
+                console.log('🎯 [ROW SELECT] Fila seleccionada:', rowId, selected);
+                
+                // CRÍTICO: El componente Data Table YA actualizó currentOptions.rows[row].data[columnId] ANTES de llamar este callback
+                // (ver línea 3519 en DataTableProvider.ts). Como rowsWithExpand usa las mismas referencias de objetos
+                // que currentState.rows (específicamente row.data), la actualización ya se reflejó en currentState.rows.
+                // Solo necesitamos verificar y asegurarnos de que el estado esté sincronizado.
+                
+                // Obtener el estado MÁS RECIENTE directamente desde dataTablePreviewState
+                const state = initDataTablePreviewState(componentId);
+                console.log('🎯 [ROW SELECT] Estado obtenido directamente. Filas:', state.rows.length);
+                
+                // Verificar que la actualización del componente Data Table se reflejó en el estado
                 const row = state.rows.find(r => r.id === rowId);
+                console.log('🎯 [ROW SELECT] Fila encontrada:', !!row);
+                
                 if (row) {
                   // Buscar la columna checkbox-2
                   const checkboxColumn = columns.find(col => col.id === 'checkbox-2');
+                  console.log('🎯 [ROW SELECT] checkboxColumn encontrado:', !!checkboxColumn);
+                  
                   if (checkboxColumn) {
-                    if (!row.data) row.data = {};
-                    row.data[checkboxColumn.id] = selected;
-                    console.log('✅ Estado actualizado. Fila:', rowId, 'checkbox-2:', row.data[checkboxColumn.id]);
+                    if (!row.data) {
+                      row.data = {};
+                      console.log('🎯 [ROW SELECT] row.data creado');
+                    }
+                    
+                    // Verificar el valor actual (debería estar actualizado por el componente Data Table)
+                    const currentValue = row.data[checkboxColumn.id];
+                    console.log('🎯 [ROW SELECT] Valor actual en estado:', currentValue, 'tipo:', typeof currentValue);
+                    console.log('🎯 [ROW SELECT] Valor esperado (selected):', selected);
+                    
+                    // Si el valor no coincide, actualizarlo explícitamente
+                    if (currentValue !== selected) {
+                      console.log('🎯 [ROW SELECT] ⚠️ Valores no coinciden, actualizando explícitamente...');
+                      row.data[checkboxColumn.id] = selected;
+                    } else {
+                      console.log('🎯 [ROW SELECT] ✅ Valores coinciden, estado ya está actualizado');
+                    }
+                    
+                    console.log('🎯 [ROW SELECT] DESPUÉS - row.data[checkboxColumn.id]:', row.data[checkboxColumn.id]);
+                    console.log('✅ [ROW SELECT] Estado actualizado. Fila:', rowId, 'checkbox-2:', row.data[checkboxColumn.id]);
+                    
+                    // Verificar selecciones actuales INMEDIATAMENTE después de actualizar
+                    const selectedRows = state.rows.filter(r => {
+                      if (!r.data) return false;
+                      const checkboxColumn = columns.find(col => col.id === 'checkbox-2');
+                      if (!checkboxColumn) return false;
+                      const value = r.data[checkboxColumn.id];
+                      console.log(`🎯 [ROW SELECT] Verificando fila ${r.id}: checkboxValue =`, value, 'tipo:', typeof value);
+                      return value === true;
+                    });
+                    const selectedCount = selectedRows.length;
+                    console.log('🎯 [ROW SELECT] Total seleccionadas:', selectedCount);
+                    console.log('🎯 [ROW SELECT] Filas seleccionadas:', selectedRows.map(r => r.id));
+                    
+                    // El estado ya está actualizado porque state es una referencia a dataTablePreviewState[componentId]
+                    console.log('🎯 [ROW SELECT] Estado actualizado en dataTablePreviewState');
                   }
                 }
-                // Re-renderizar la tabla para actualizar el header con estado indeterminado
+                
+                // CRÍTICO: El componente Data Table YA actualizó currentOptions.rows[row].data[columnId] ANTES de llamar este callback
+                // (ver línea 3519 en DataTableProvider.ts). Como rowsWithExpand usa las mismas referencias de objetos
+                // que currentState.rows (específicamente row.data), la actualización YA se reflejó en currentState.rows[row].data[columnId].
+                // 
+                // El problema es que cuando recreamos la tabla, estamos creando un nuevo rowsWithExpand, pero el componente
+                // Data Table mantiene su propia referencia interna currentOptions.rows al rowsWithExpand anterior.
+                // 
+                // SOLUCIÓN: No recrear la tabla inmediatamente. En su lugar, esperar a que el componente Data Table
+                // termine de procesar la actualización y luego renderizar la barra de acciones y actualizar el header.
+                
+                // Obtener el contenedor para renderizar la barra de acciones
+                const container = document.getElementById(`data-table-container-${componentId}`);
+                
+                // Renderizar la barra de acciones después de un pequeño delay para asegurar que el componente
+                // Data Table haya terminado de procesar la actualización
                 setTimeout(() => {
+                  console.log('🎯 [ROW SELECT] Renderizando barra de acciones después de 50ms...');
+                  if (container) {
+                    // Obtener el estado más reciente antes de renderizar
+                    const latestState = initDataTablePreviewState(componentId);
+                    renderActionBar(componentId, latestState, container);
+                  }
+                }, 50);
+                
+                // Re-renderizar la tabla para actualizar el header con estado indeterminado
+                // Usar un delay más largo para asegurar que el estado esté completamente sincronizado
+                setTimeout(() => {
+                  console.log('🎯 [ROW SELECT] Re-renderizando tabla después de 150ms para actualizar header...');
                   if (window.dataTableInstances[componentId]) {
                     try {
                       window.dataTableInstances[componentId].destroy();
@@ -15182,10 +15983,13 @@ Reglas Importantes:
                     // Recrear con el estado actualizado
                     createDataTableInstance();
                   }
-                }, 100);
+                }, 150);
+                console.log('🎯 [ROW SELECT] ========== FIN ==========');
               },
               onSelectAll: (selected) => {
                 console.log('Seleccionar todos:', selected);
+                // CRÍTICO: Obtener el estado MÁS RECIENTE directamente desde dataTablePreviewState
+                const state = initDataTablePreviewState(componentId);
                 // Actualizar todas las filas
                 const checkboxColumn = columns.find(col => col.id === 'checkbox-2');
                 if (checkboxColumn) {
@@ -15211,6 +16015,7 @@ Reglas Importantes:
               },
               onRowExpand: (rowId, expanded) => {
                 console.log('Fila expandida:', rowId, expanded);
+                const state = initDataTablePreviewState(componentId);
                 const row = state.rows.find(r => r.id === rowId);
                 if (row) {
                   row.expanded = expanded;
@@ -15222,20 +16027,168 @@ Reglas Importantes:
               onRowReorder: (rowIds) => {
                 console.log('Filas reordenadas:', rowIds);
               }
+            };
+            
+            console.log('📋 [HEADER] Opciones pasadas a createDataTable:', {
+              hasHeader: !!tableOptions.header,
+              headerKeys: tableOptions.header ? Object.keys(tableOptions.header) : [],
+              headerTitle: tableOptions.header?.title,
+              headerShowTitle: tableOptions.header?.showTitle,
+              headerShowCounter: tableOptions.header?.showCounter
             });
+            
+            const table = window.createDataTable(tableOptions);
             
             // Guardar instancia para poder destruirla después
             window.dataTableInstances[componentId] = table;
             
+            // Renderizar barra de acciones después del header si hay selecciones
+            // Usar múltiples timeouts para asegurar que el DOM esté listo y el estado actualizado
+            setTimeout(() => {
+              console.log('🎯 [CREATE] Llamando renderActionBar (100ms)');
+              renderActionBar(componentId, currentState, container);
+            }, 100);
+            setTimeout(() => {
+              console.log('🎯 [CREATE] Llamando renderActionBar (300ms)');
+              renderActionBar(componentId, currentState, container);
+            }, 300);
+            setTimeout(() => {
+              console.log('🎯 [CREATE] Llamando renderActionBar (500ms)');
+              renderActionBar(componentId, currentState, container);
+            }, 500);
+            setTimeout(() => {
+              console.log('🎯 [CREATE] Llamando renderActionBar (800ms)');
+              renderActionBar(componentId, currentState, container);
+            }, 800);
+            
             // Sincronizar checkboxes con el estado actual
             const paginationCheckbox = document.getElementById(`data-table-show-pagination-${componentId}`);
             if (paginationCheckbox) {
-              paginationCheckbox.checked = state.showPagination === true;
+              paginationCheckbox.checked = currentState.showPagination === true;
             }
             const paginationStatus = document.getElementById(`data-table-show-pagination-status-${componentId}`);
             if (paginationStatus) {
-              paginationStatus.textContent = state.showPagination === true ? 'Activado' : 'Desactivado';
+              paginationStatus.textContent = currentState.showPagination === true ? 'Activado' : 'Desactivado';
             }
+            
+            // Sincronizar checkboxes del header con el estado actual
+            const headerTitleCheckbox = document.getElementById(`data-table-show-header-title-${componentId}`);
+            if (headerTitleCheckbox) {
+              headerTitleCheckbox.checked = currentState.showHeaderTitle === true;
+            }
+            const headerTitleStatus = document.getElementById(`data-table-show-header-title-status-${componentId}`);
+            if (headerTitleStatus) {
+              headerTitleStatus.textContent = currentState.showHeaderTitle === true ? 'Visible' : 'Oculta';
+            }
+            
+            const headerCounterCheckbox = document.getElementById(`data-table-show-header-counter-${componentId}`);
+            if (headerCounterCheckbox) {
+              headerCounterCheckbox.checked = currentState.showHeaderCounter === true;
+            }
+            const headerCounterStatus = document.getElementById(`data-table-show-header-counter-status-${componentId}`);
+            if (headerCounterStatus) {
+              headerCounterStatus.textContent = currentState.showHeaderCounter === true ? 'Visible' : 'Oculta';
+            }
+            
+            // Sincronizar modo del contador y sus inputs
+            const counterModeRadios = document.querySelectorAll(`input[name="data-table-header-counter-mode-${componentId}"]`);
+            counterModeRadios.forEach(radio => {
+              if (radio) {
+                radio.checked = radio.value === (currentState.headerCounterMode || 'full');
+              }
+            });
+            
+            // Mostrar/ocultar inputs según el modo
+            const displayedContainer = document.getElementById(`data-table-header-displayed-items-container-${componentId}`);
+            const totalContainer = document.getElementById(`data-table-header-total-items-container-${componentId}`);
+            const currentMode = currentState.headerCounterMode || 'full';
+            if (displayedContainer) {
+              // En modo 'full' se muestran ambos (X e Y), en modo 'total-only' solo Y
+              displayedContainer.style.display = currentMode === 'full' ? 'block' : 'none';
+            }
+            if (totalContainer) {
+              // El input de Y siempre se muestra (en ambos modos)
+              totalContainer.style.display = 'block';
+            }
+            
+            // Sincronizar valores de los inputs
+            const displayedItemsInput = document.getElementById(`data-table-header-displayed-items-${componentId}`);
+            if (displayedItemsInput) {
+              displayedItemsInput.value = currentState.headerDisplayedItems !== undefined ? currentState.headerDisplayedItems : totalRows;
+            }
+            
+            const totalItemsInput = document.getElementById(`data-table-header-total-items-${componentId}`);
+            if (totalItemsInput) {
+              totalItemsInput.value = currentState.headerTotalItems !== undefined ? currentState.headerTotalItems : totalRows;
+            }
+            
+            const headerSearchButtonCheckbox = document.getElementById(`data-table-show-header-search-button-${componentId}`);
+            if (headerSearchButtonCheckbox) {
+              headerSearchButtonCheckbox.checked = currentState.showHeaderSearchButton === true;
+            }
+            const headerSearchButtonStatus = document.getElementById(`data-table-show-header-search-button-status-${componentId}`);
+            if (headerSearchButtonStatus) {
+              headerSearchButtonStatus.textContent = currentState.showHeaderSearchButton === true ? 'Visible' : 'Oculta';
+            }
+            
+            const headerFilterButtonCheckbox = document.getElementById(`data-table-show-header-filter-button-${componentId}`);
+            if (headerFilterButtonCheckbox) {
+              headerFilterButtonCheckbox.checked = currentState.showHeaderFilterButton === true;
+            }
+            const headerFilterButtonStatus = document.getElementById(`data-table-show-header-filter-button-status-${componentId}`);
+            if (headerFilterButtonStatus) {
+              headerFilterButtonStatus.textContent = currentState.showHeaderFilterButton === true ? 'Visible' : 'Oculta';
+            }
+            
+            const headerColumnSelectorCheckbox = document.getElementById(`data-table-show-header-column-selector-button-${componentId}`);
+            if (headerColumnSelectorCheckbox) {
+              headerColumnSelectorCheckbox.checked = currentState.showHeaderColumnSelectorButton === true;
+            }
+            const headerColumnSelectorStatus = document.getElementById(`data-table-show-header-column-selector-button-status-${componentId}`);
+            if (headerColumnSelectorStatus) {
+              headerColumnSelectorStatus.textContent = currentState.showHeaderColumnSelectorButton === true ? 'Visible' : 'Oculta';
+            }
+            
+            const headerSecondaryButtonsCheckbox = document.getElementById(`data-table-show-header-secondary-buttons-${componentId}`);
+            if (headerSecondaryButtonsCheckbox) {
+              headerSecondaryButtonsCheckbox.checked = currentState.showHeaderSecondaryButtons === true;
+            }
+            const headerSecondaryButtonsStatus = document.getElementById(`data-table-show-header-secondary-buttons-status-${componentId}`);
+            if (headerSecondaryButtonsStatus) {
+              headerSecondaryButtonsStatus.textContent = currentState.showHeaderSecondaryButtons === true ? 'Visible' : 'Oculta';
+            }
+            
+            const headerPrimaryButtonCheckbox = document.getElementById(`data-table-show-header-primary-button-${componentId}`);
+            if (headerPrimaryButtonCheckbox) {
+              headerPrimaryButtonCheckbox.checked = currentState.showHeaderPrimaryButton === true;
+            }
+            const headerPrimaryButtonStatus = document.getElementById(`data-table-show-header-primary-button-status-${componentId}`);
+            if (headerPrimaryButtonStatus) {
+              headerPrimaryButtonStatus.textContent = currentState.showHeaderPrimaryButton === true ? 'Visible' : 'Oculta';
+            }
+            
+            // Sincronizar checkboxes de acciones
+            const actionCheckboxes = [
+              { id: 'showViewSelected', statusId: 'show-view-selected-status' },
+              { id: 'showSwap', statusId: 'show-swap-status' },
+              { id: 'showNotifications', statusId: 'show-notifications-status' },
+              { id: 'showCopy', statusId: 'show-copy-status' },
+              { id: 'showView', statusId: 'show-view-status' },
+              { id: 'showEdit', statusId: 'show-edit-status' },
+              { id: 'showDownload', statusId: 'show-download-status' },
+              { id: 'showDelete', statusId: 'show-delete-status' }
+            ];
+            
+            actionCheckboxes.forEach(({ id, statusId }) => {
+              const checkbox = document.getElementById(`data-table-${id}-${componentId}`);
+              const status = document.getElementById(`data-table-${statusId}-${componentId}`);
+              if (checkbox) {
+                checkbox.checked = currentState[id] !== false;
+              }
+              if (status) {
+                status.textContent = currentState[id] !== false ? 'Visible' : 'Oculta';
+              }
+            });
             
             console.log('📄 [WEB] ✅ Data Table creada exitosamente');
             console.log('📄 [WEB] ========== updateDataTablePreview FIN ==========');
@@ -24013,6 +24966,418 @@ Reglas Importantes:
           console.log('✅ [setCalendarControl] Control actualizado:', option, value);
         };
       }
+      
+      // Función para renderizar la barra de acciones
+      function renderActionBar(componentId, state, container) {
+        console.log('🎯 [ACTION BAR] ========== renderActionBar INICIO ==========');
+        console.log('🎯 [ACTION BAR] componentId:', componentId);
+        
+        // OBTENER EL ESTADO MÁS RECIENTE directamente desde dataTablePreviewState
+        const currentState = initDataTablePreviewState(componentId);
+        console.log('🎯 [ACTION BAR] Estado obtenido desde dataTablePreviewState');
+        console.log('🎯 [ACTION BAR] currentState.rows.length:', currentState.rows?.length);
+        console.log('🎯 [ACTION BAR] currentState.columns:', currentState.columns);
+        
+        // Usar el estado más reciente en lugar del parámetro
+        state = currentState;
+        
+        const actionBarId = `data-table-action-bar-${componentId}`;
+        let existingBar = document.getElementById(actionBarId);
+        console.log('🎯 [ACTION BAR] existingBar encontrado:', !!existingBar);
+        
+        // Obtener filas seleccionadas
+        const checkboxColumn = state.columns.find(col => col.id === 'checkbox-2');
+        console.log('🎯 [ACTION BAR] checkboxColumn:', checkboxColumn);
+        console.log('🎯 [ACTION BAR] checkboxColumn.id:', checkboxColumn?.id);
+        
+        if (!checkboxColumn) {
+          console.error('🎯 [ACTION BAR] ❌ No se encontró checkboxColumn con id "checkbox-2"');
+          console.log('🎯 [ACTION BAR] Columnas disponibles:', state.columns.map(c => c.id));
+          return;
+        }
+        
+        console.log('🎯 [ACTION BAR] Analizando filas...');
+        
+        // INTENTAR LEER DIRECTAMENTE DESDE EL DOM COMO FUENTE DE VERDAD
+        // Esto es más confiable que leer desde el estado, ya que el DOM refleja el estado actual del componente
+        const tableElement = container.querySelector('.ubits-data-table');
+        let selectedRowsFromDOM = [];
+        
+        if (tableElement) {
+          console.log('🎯 [ACTION BAR] Leyendo selecciones desde el DOM...');
+          const checkboxes = tableElement.querySelectorAll(`input[data-column-id="${checkboxColumn.id}"][data-row-id]`);
+          console.log('🎯 [ACTION BAR] Checkboxes encontrados en DOM:', checkboxes.length);
+          
+          checkboxes.forEach((checkbox) => {
+            const input = checkbox;
+            const rowIdStr = input.getAttribute('data-row-id');
+            if (rowIdStr && input.checked) {
+              const rowId = isNaN(Number(rowIdStr)) ? rowIdStr : Number(rowIdStr);
+              const row = state.rows.find(r => String(r.id) === String(rowId));
+              if (row) {
+                selectedRowsFromDOM.push(row);
+                console.log(`🎯 [ACTION BAR] ✅ Fila ${rowId} SELECCIONADA (desde DOM)`);
+              }
+            }
+          });
+        }
+        
+        // También leer desde el estado como respaldo
+        const selectedRows = [];
+        state.rows.forEach((row, index) => {
+          console.log(`🎯 [ACTION BAR] === Fila ${index} (id: ${row.id}) ===`);
+          console.log(`🎯 [ACTION BAR]   - row.data existe:`, !!row.data);
+          console.log(`🎯 [ACTION BAR]   - row.data:`, row.data);
+          
+          if (!row.data) {
+            console.log(`🎯 [ACTION BAR]   ❌ Fila ${row.id}: No tiene data`);
+            return;
+          }
+          
+          const checkboxValue = row.data[checkboxColumn.id];
+          console.log(`🎯 [ACTION BAR]   - checkboxValue:`, checkboxValue);
+          console.log(`🎯 [ACTION BAR]   - checkboxValue === true:`, checkboxValue === true);
+          console.log(`🎯 [ACTION BAR]   - typeof checkboxValue:`, typeof checkboxValue);
+          
+          const isSelected = checkboxValue === true;
+          console.log(`🎯 [ACTION BAR]   - isSelected:`, isSelected);
+          
+          if (isSelected) {
+            selectedRows.push(row);
+            console.log(`🎯 [ACTION BAR]   ✅ Fila ${row.id} SELECCIONADA (desde estado)`);
+          } else {
+            console.log(`🎯 [ACTION BAR]   ⚪ Fila ${row.id} NO seleccionada`);
+          }
+        });
+        
+        // USAR LA FUENTE MÁS CONFIABLE: DOM primero, estado como respaldo
+        // Si el DOM tiene selecciones, usarlas; si no, usar el estado
+        const finalSelectedRows = selectedRowsFromDOM.length > 0 ? selectedRowsFromDOM : selectedRows;
+        console.log('🎯 [ACTION BAR] Fuente usada:', selectedRowsFromDOM.length > 0 ? 'DOM' : 'ESTADO');
+        console.log('🎯 [ACTION BAR] Selecciones desde DOM:', selectedRowsFromDOM.length);
+        console.log('🎯 [ACTION BAR] Selecciones desde estado:', selectedRows.length);
+        
+        console.log('🎯 [ACTION BAR] ========== RESUMEN DE SELECCIÓN ==========');
+        console.log('🎯 [ACTION BAR] finalSelectedRows.length:', finalSelectedRows.length);
+        console.log('🎯 [ACTION BAR] finalSelectedRows:', finalSelectedRows.map(r => ({ id: r.id, nombre: r.data?.nombre })));
+        
+        const selectedCount = finalSelectedRows.length;
+        const hasSelection = selectedCount > 0;
+        const isMultipleSelection = selectedCount > 1;
+        
+        console.log('🎯 [ACTION BAR] Resumen final:', { 
+          selectedCount, 
+          hasSelection, 
+          isMultipleSelection,
+          willRender: hasSelection
+        });
+        
+        // Si no hay selección y la barra existe, eliminarla
+        if (!hasSelection && existingBar) {
+          console.log('🎯 [ACTION BAR] ⚠️ Eliminando barra (sin selección)');
+          console.log('🎯 [ACTION BAR] selectedCount:', selectedCount);
+          existingBar.remove();
+          return;
+        }
+        
+        // Si no hay selección, no renderizar nada
+        if (!hasSelection) {
+          console.log('🎯 [ACTION BAR] ⚠️ No hay selección, no renderizar');
+          console.log('🎯 [ACTION BAR] selectedCount:', selectedCount);
+          console.log('🎯 [ACTION BAR] hasSelection:', hasSelection);
+          return;
+        }
+        
+        console.log('🎯 [ACTION BAR] ✅ HAY SELECCIÓN - Procediendo a renderizar barra...');
+        
+        // Buscar el header del Data Table para insertar la barra después
+        const dataTableContainer = document.getElementById(`data-table-container-${componentId}`);
+        console.log('🎯 [ACTION BAR] Buscando dataTableContainer con ID:', `data-table-container-${componentId}`);
+        console.log('🎯 [ACTION BAR] dataTableContainer encontrado:', !!dataTableContainer);
+        if (!dataTableContainer) {
+          console.error('🎯 [ACTION BAR] ❌ dataTableContainer no encontrado');
+          console.log('🎯 [ACTION BAR] Intentando buscar todos los contenedores:', document.querySelectorAll('[id*="data-table-container"]').length);
+          return;
+        }
+        
+        const header = dataTableContainer.querySelector('.ubits-data-table__header');
+        console.log('🎯 [ACTION BAR] Buscando header con selector: .ubits-data-table__header');
+        console.log('🎯 [ACTION BAR] header encontrado:', !!header);
+        if (!header) {
+          console.error('🎯 [ACTION BAR] ❌ header no encontrado');
+          console.log('🎯 [ACTION BAR] Elementos dentro del container:', dataTableContainer.children.length);
+          console.log('🎯 [ACTION BAR] Primer hijo:', dataTableContainer.firstElementChild);
+          return;
+        }
+        
+        console.log('🎯 [ACTION BAR] ✅ Header encontrado, procediendo a crear/actualizar barra');
+        
+        // Crear o actualizar la barra de acciones
+        if (!existingBar) {
+          console.log('🎯 [ACTION BAR] Creando nueva barra de acciones...');
+          existingBar = document.createElement('div');
+          existingBar.id = actionBarId;
+          existingBar.className = 'ubits-data-table__action-bar';
+          existingBar.style.cssText = 'display: flex; align-items: center; justify-content: flex-start; padding: var(--ubits-spacing-md, 16px); gap: var(--ubits-spacing-xs, 8px); flex-wrap: wrap;';
+          header.insertAdjacentElement('afterend', existingBar);
+          console.log('🎯 [ACTION BAR] ✅ Barra creada e insertada después del header');
+        } else {
+          console.log('🎯 [ACTION BAR] Barra ya existe, actualizando contenido...');
+        }
+        
+        // Construir botones según controladores y tipo de selección
+        const buttons = [];
+        
+        // Botón "Ver seleccionados" (siempre visible si está habilitado)
+        if (state.showViewSelected !== false) {
+          const viewSelectedText = state.viewSelectedActive 
+            ? `Dejar de ver seleccionados (${selectedCount})` 
+            : `Ver seleccionados (${selectedCount})`;
+          buttons.push({
+            type: 'button',
+            variant: 'secondary',
+            icon: state.viewSelectedActive ? 'eye-slash' : 'eye',
+            text: viewSelectedText,
+            onClick: () => {
+              state.viewSelectedActive = !state.viewSelectedActive;
+              window.updateDataTablePreview(componentId);
+            },
+            active: state.viewSelectedActive
+          });
+        }
+        
+        // Si hay múltiples selecciones, solo mostrar acciones masivas
+        if (isMultipleSelection) {
+          // Solo acciones masivas: Notificaciones, Descargar, Eliminar
+          if (state.showNotifications !== false) {
+            buttons.push({
+              type: 'button',
+              variant: 'secondary',
+              icon: 'bell',
+              iconOnly: true,
+              onClick: () => console.log('Notificaciones masivas:', finalSelectedRows.map(r => r.id))
+            });
+          }
+          if (state.showDownload !== false) {
+            buttons.push({
+              type: 'button',
+              variant: 'secondary',
+              icon: 'download',
+              iconOnly: true,
+              onClick: () => console.log('Descargar masivo:', finalSelectedRows.map(r => r.id))
+            });
+          }
+          if (state.showDelete !== false) {
+            buttons.push({
+              type: 'button',
+              variant: 'secondary',
+              icon: 'trash',
+              iconOnly: true,
+              onClick: () => console.log('Eliminar masivo:', finalSelectedRows.map(r => r.id)),
+              style: 'background: var(--ubits-error-bg-light, #fef2f2); border-color: var(--ubits-error-border, #fca5a5); color: var(--ubits-error-fg, #dc2626);'
+            });
+          }
+        } else {
+          // Selección única: mostrar todas las acciones habilitadas
+          if (state.showSwap !== false) {
+            buttons.push({
+              type: 'button',
+              variant: 'secondary',
+              icon: 'arrow-right-arrow-left',
+              iconOnly: true,
+              onClick: () => console.log('Swap:', selectedRows[0]?.id)
+            });
+          }
+          if (state.showNotifications !== false) {
+            buttons.push({
+              type: 'button',
+              variant: 'secondary',
+              icon: 'bell',
+              iconOnly: true,
+              onClick: () => console.log('Notificaciones:', selectedRows[0]?.id)
+            });
+          }
+          if (state.showCopy !== false) {
+            buttons.push({
+              type: 'button',
+              variant: 'secondary',
+              icon: 'copy',
+              iconOnly: true,
+              onClick: () => console.log('Copiar:', selectedRows[0]?.id)
+            });
+          }
+          if (state.showView !== false) {
+            buttons.push({
+              type: 'button',
+              variant: 'secondary',
+              icon: 'eye',
+              iconOnly: true,
+              onClick: () => console.log('Ver:', selectedRows[0]?.id)
+            });
+          }
+          if (state.showEdit !== false) {
+            buttons.push({
+              type: 'button',
+              variant: 'secondary',
+              icon: 'pencil',
+              iconOnly: true,
+              onClick: () => console.log('Editar:', selectedRows[0]?.id)
+            });
+          }
+          if (state.showDownload !== false) {
+            buttons.push({
+              type: 'button',
+              variant: 'secondary',
+              icon: 'download',
+              iconOnly: true,
+              onClick: () => console.log('Descargar:', selectedRows[0]?.id)
+            });
+          }
+          if (state.showDelete !== false) {
+            buttons.push({
+              type: 'button',
+              variant: 'secondary',
+              icon: 'trash',
+              iconOnly: true,
+              onClick: () => console.log('Eliminar:', selectedRows[0]?.id),
+              style: 'background: var(--ubits-error-bg-light, #fef2f2); border-color: var(--ubits-error-border, #fca5a5); color: var(--ubits-error-fg, #dc2626);'
+            });
+          }
+        }
+        
+        // Renderizar botones usando componentes UBITS
+        const buttonsHTML = buttons.map((btn, index) => {
+          const buttonClass = `ubits-button ubits-button--${btn.variant || 'secondary'} ubits-button--sm`;
+          const activeClass = btn.active ? ' ubits-button--active' : '';
+          const iconOnlyClass = btn.iconOnly ? ' ubits-button--icon-only' : '';
+          const styleAttr = btn.style ? ` style="${btn.style}"` : '';
+          const buttonId = `action-btn-${componentId}-${index}`;
+          
+          // Crear función wrapper para el onClick
+          const onClickHandler = `(function() { ${btn.onClick.toString()} })()`;
+          
+          return `
+            <button 
+              id="${buttonId}"
+              class="${buttonClass}${activeClass}${iconOnlyClass}" 
+              ${styleAttr}>
+              ${btn.icon ? `<i class="far fa-${btn.icon}"></i>` : ''}
+              ${btn.text ? `<span>${btn.text}</span>` : ''}
+            </button>
+          `;
+        }).join('');
+        
+        console.log('🎯 [ACTION BAR] Botones creados:', buttons.length);
+        console.log('🎯 [ACTION BAR] buttonsHTML length:', buttonsHTML.length);
+        console.log('🎯 [ACTION BAR] Primeros 300 chars de buttonsHTML:', buttonsHTML.substring(0, 300));
+        
+        existingBar.innerHTML = `
+          <div style="display: flex; align-items: center; gap: var(--ubits-spacing-xs, 8px); flex-wrap: wrap;">
+            ${buttonsHTML}
+          </div>
+        `;
+        
+        console.log('🎯 [ACTION BAR] ✅ HTML insertado en existingBar');
+        console.log('🎯 [ACTION BAR] existingBar.innerHTML length:', existingBar.innerHTML.length);
+        console.log('🎯 [ACTION BAR] existingBar.style.display:', existingBar.style.display);
+        console.log('🎯 [ACTION BAR] existingBar.offsetHeight:', existingBar.offsetHeight);
+        console.log('🎯 [ACTION BAR] existingBar.offsetWidth:', existingBar.offsetWidth);
+        
+        // Agregar event listeners a los botones
+        let listenersAdded = 0;
+        buttons.forEach((btn, index) => {
+          const buttonId = `action-btn-${componentId}-${index}`;
+          const buttonEl = document.getElementById(buttonId);
+          if (buttonEl) {
+            buttonEl.addEventListener('click', btn.onClick);
+            listenersAdded++;
+            console.log(`🎯 [ACTION BAR] ✅ Listener agregado al botón ${index} (${buttonId})`);
+          } else {
+            console.warn(`🎯 [ACTION BAR] ⚠️ Botón ${index} no encontrado (${buttonId})`);
+          }
+        });
+        
+        console.log('🎯 [ACTION BAR] ========== RESUMEN FINAL ==========');
+        console.log('🎯 [ACTION BAR] selectedCount:', selectedCount);
+        console.log('🎯 [ACTION BAR] hasSelection:', hasSelection);
+        console.log('🎯 [ACTION BAR] isMultipleSelection:', isMultipleSelection);
+        console.log('🎯 [ACTION BAR] buttons.length:', buttons.length);
+        console.log('🎯 [ACTION BAR] listenersAdded:', listenersAdded);
+        console.log('🎯 [ACTION BAR] existingBar existe:', !!existingBar);
+        console.log('🎯 [ACTION BAR] existingBar visible:', existingBar ? (existingBar.offsetHeight > 0 || existingBar.offsetWidth > 0) : false);
+        console.log('🎯 [ACTION BAR] ✅ Barra de acciones renderizada exitosamente');
+        console.log('🎯 [ACTION BAR] ========== renderActionBar FIN ==========');
+      }
+      
+      // Hacer la función accesible globalmente para debugging
+      window.renderActionBar = renderActionBar;
+      
+      // Función para toggle de acordeones del Data Table
+      window.toggleDataTableAccordion = function(accordionId) {
+        const body = document.getElementById(`accordion-body-${accordionId}`);
+        const chevron = document.getElementById(`accordion-chevron-${accordionId}`);
+        const header = document.getElementById(`accordion-header-${accordionId}`);
+        
+        if (!body || !chevron || !header) return;
+        
+        const isOpen = body.style.display === 'block';
+        
+        // Extraer componentId del accordionId (formato: "table-componentId" o "header-componentId" o "columns-componentId")
+        const parts = accordionId.split('-');
+        const accordionType = parts[0];
+        const componentId = parts.slice(1).join('-');
+        
+        // Cerrar todos los acordeones primero
+        const accordionTypes = ['table', 'header', 'columns', 'actions'];
+        
+        accordionTypes.forEach(type => {
+          const otherBody = document.getElementById(`accordion-body-${type}-${componentId}`);
+          const otherChevron = document.getElementById(`accordion-chevron-${type}-${componentId}`);
+          const otherHeader = document.getElementById(`accordion-header-${type}-${componentId}`);
+          
+          if (otherBody && otherChevron && otherHeader && `${type}-${componentId}` !== accordionId) {
+            otherBody.style.display = 'none';
+            otherChevron.style.transform = 'rotate(0deg)';
+            const span = otherHeader.querySelector('span');
+            if (span) {
+              span.style.color = 'var(--ubits-fg-1-high)';
+              span.style.fontWeight = '600';
+            }
+          }
+        });
+        
+        // Toggle del acordeón actual
+        if (isOpen) {
+          body.style.display = 'none';
+          chevron.style.transform = 'rotate(0deg)';
+          const span = header.querySelector('span');
+          if (span) {
+            span.style.color = 'var(--ubits-fg-1-high)';
+            span.style.fontWeight = '600';
+          }
+        } else {
+          body.style.display = 'block';
+          chevron.style.transform = 'rotate(180deg)';
+          const span = header.querySelector('span');
+          if (span) {
+            span.style.color = 'var(--ubits-accent-brand-static-inverted)';
+            span.style.fontWeight = '700';
+          }
+          
+          // Si es el acordeón de columnas, generar los selectores si no existen
+          if (accordionType === 'columns') {
+            setTimeout(() => {
+              const columnTypesContainer = document.getElementById(`data-table-column-types-${componentId}`);
+              if (columnTypesContainer && (!columnTypesContainer.innerHTML || columnTypesContainer.innerHTML.trim() === '')) {
+                if (window.generateColumnTypeSelectors) {
+                  window.generateColumnTypeSelectors(componentId);
+                }
+              }
+            }, 50);
+          }
+        }
+      };
+      
     </script>
   </body>
 </html>

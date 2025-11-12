@@ -988,13 +988,6 @@ function renderDataTableHeader(options: DataTableOptions, activeFilters: Record<
   const isSearchActive = (header as any).__isSearchActive || false;
   const searchTerm = (header as any).__searchTerm || '';
   
-  console.log('🔍 [DATA TABLE HEADER] Renderizando header:', {
-    isSearchActive,
-    searchTerm,
-    hasSearchButton: !!searchButton,
-    showSearchButton
-  });
-  
   // Calcular contador
   let counterText = '';
   if (showCounter && counter) {
@@ -1012,6 +1005,14 @@ function renderDataTableHeader(options: DataTableOptions, activeFilters: Record<
       const currentDisplayed = displayedItems !== undefined ? displayedItems : rows.length;
       const total = totalItems !== undefined ? totalItems : rows.length;
       counterText = `${currentDisplayed}/${total} resultados`;
+      console.log('🔢 [COUNTER] Calculando contador:', {
+        displayedItems,
+        totalItems,
+        rowsLength: rows.length,
+        currentDisplayed,
+        total,
+        counterText
+      });
     }
   }
   
@@ -1102,7 +1103,7 @@ function renderDataTableHeader(options: DataTableOptions, activeFilters: Record<
   }) : '';
   
   // Obtener el valor del término de búsqueda desde las opciones (si existe)
-  const currentSearchValue = searchTerm || searchButton.value || '';
+  const currentSearchValue = searchTerm || (searchButton && searchButton.value) || '';
   
   // Renderizar botón de búsqueda (icon-only, al final)
   const searchButtonHTML = showSearchButton && searchButton ? renderSearchButton({
@@ -1116,15 +1117,11 @@ function renderDataTableHeader(options: DataTableOptions, activeFilters: Record<
     className: 'ubits-data-table__header-search-button'
   }) : '';
   
-  console.log('🔍 [DATA TABLE HEADER] SearchButton HTML generado:', {
-    isSearchActive,
-    currentSearchValue,
-    hasHTML: !!searchButtonHTML,
-    htmlLength: searchButtonHTML.length
-  });
-  
   // Si no hay ningún elemento, no renderizar el header
-  if (!titleSection && !primaryButtonHTML && !secondaryButtonsHTML && !searchButtonHTML && !filterButtonHTML && !columnSelectorButtonHTML) {
+  const hasAnyElement = !!(titleSection || primaryButtonHTML || secondaryButtonsHTML || searchButtonHTML || filterButtonHTML || columnSelectorButtonHTML);
+  
+  if (!hasAnyElement) {
+    console.warn('⚠️ [DATA TABLE HEADER] No hay elementos para renderizar, retornando vacío');
     return '';
   }
   
@@ -2011,22 +2008,26 @@ export function createDataTable(options: DataTableOptions): {
       sortDirection,
       // Pasar el estado de lazy load
       __lazyLoadCurrentItems: lazyLoadCurrentItems,
-      // Actualizar displayedItems en el header si existe
+      // Actualizar displayedItems en el header solo si no está explícitamente definido
+      // Si ya está definido (por ejemplo, desde el input), mantener ese valor
       header: currentOptions.header ? {
         ...currentOptions.header,
-        displayedItems: filteredRows.length,
+        // Solo actualizar displayedItems si no está definido explícitamente o si hay búsqueda/filtros activos
+        displayedItems: currentOptions.header.displayedItems !== undefined && !searchTerm && Object.keys(activeFilters).length === 0
+          ? currentOptions.header.displayedItems
+          : filteredRows.length,
         // Pasar el estado activo del SearchButton y el término de búsqueda a través de las opciones
         __isSearchActive: isSearchActive,
         __searchTerm: searchTerm
       } : undefined
     };
     
-    console.log('🔍 [DATA TABLE] Renderizando con estado:', {
-      isSearchActive,
-      searchTerm,
-      filteredRowsCount: filteredRows.length,
-      totalRowsCount: currentOptions.rows.length,
-      headerHasSearchButton: !!renderOptions.header?.searchButton
+    console.log('🔍 [DATA TABLE] Renderizando:', {
+      displayedItems: renderOptions.header?.displayedItems,
+      totalItems: renderOptions.header?.totalItems,
+      filteredRows: filteredRows.length,
+      hasSearch: !!searchTerm,
+      hasFilters: Object.keys(activeFilters).length > 0
     });
     
     const newHTML = renderDataTable(
@@ -2051,77 +2052,87 @@ export function createDataTable(options: DataTableOptions): {
           }
         }
         
-        // Crear contenedor temporal para el componente SearchButton
-        const tempContainer = document.createElement('div');
-        tempContainer.style.display = 'none';
-        document.body.appendChild(tempContainer);
-        tempContainer.id = 'temp-search-button-container-' + Date.now();
-        
-        // Crear el componente SearchButton completo
-        searchButtonInstance = createSearchButton({
-          containerId: tempContainer.id,
-          active: isSearchActive,
-          size: 'sm',
-          state: isSearchActive ? 'active' : 'default',
-          disabled: currentOptions.header.searchButton.disabled || false,
-          placeholder: currentOptions.header.searchButton.placeholder || 'Buscar...',
-          value: searchTerm,
-          width: 248,
-          className: 'ubits-data-table__header-search-button',
-          onChange: (e: Event) => {
-            const value = (e.target as HTMLInputElement).value;
-            searchTerm = value;
-            if (currentOptions.header!.searchButton!.onChange) {
-              currentOptions.header!.searchButton!.onChange(value);
-            }
-            render();
-            if (currentOptions.header!.searchButton!.onSearch) {
-              const filteredRows = filterRowsBySearch(currentOptions.rows, value, currentOptions.columns);
-              currentOptions.header!.searchButton!.onSearch(value, filteredRows);
-            }
-          },
-          onClick: (e: MouseEvent) => {
-            e.stopPropagation();
-            e.preventDefault();
-            isSearchActive = true;
-            if (currentOptions.header!.searchButton!.onClick) {
-              currentOptions.header!.searchButton!.onClick(e);
-            }
-            render();
-            setTimeout(() => {
-              const input = searchButtonInstance?.element.querySelector('.ubits-search-button__input') as HTMLInputElement;
-              if (input) {
-                input.focus();
+        // Verificar que searchButton existe antes de crear el componente
+        if (!currentOptions.header?.searchButton) {
+          console.warn('🔍 [DATA TABLE] searchButton no está definido, saltando creación del componente');
+        } else {
+          // Crear contenedor temporal para el componente SearchButton
+          const tempContainer = document.createElement('div');
+          tempContainer.style.display = 'none';
+          document.body.appendChild(tempContainer);
+          tempContainer.id = 'temp-search-button-container-' + Date.now();
+          
+          // Crear el componente SearchButton completo
+          searchButtonInstance = createSearchButton({
+            containerId: tempContainer.id,
+            active: isSearchActive,
+            size: 'sm',
+            state: isSearchActive ? 'active' : 'default',
+            disabled: currentOptions.header.searchButton.disabled || false,
+            placeholder: currentOptions.header.searchButton.placeholder || 'Buscar...',
+            value: searchTerm,
+            width: 248,
+            className: 'ubits-data-table__header-search-button',
+            onChange: (e: Event) => {
+              const value = (e.target as HTMLInputElement).value;
+              searchTerm = value;
+              if (currentOptions.header!.searchButton!.onChange) {
+                currentOptions.header!.searchButton!.onChange(value);
               }
-            }, 150);
-          },
-          onBlur: (e: FocusEvent) => {
-            const input = e.target as HTMLInputElement;
-            setTimeout(() => {
-              if (!input.value.trim() && document.activeElement !== input) {
-                const clearBtn = searchButtonInstance?.element.querySelector('.ubits-search-button__clear');
-                if (document.activeElement !== clearBtn) {
-                  isSearchActive = false;
-                  render();
+              render();
+              if (currentOptions.header!.searchButton!.onSearch) {
+                const filteredRows = filterRowsBySearch(currentOptions.rows, value, currentOptions.columns);
+                console.log('🔍 [SEARCH] onSearch callback ejecutado desde SearchButton onChange:', { 
+                  searchTerm: value, 
+                  filteredRowsCount: filteredRows.length,
+                  componentId: currentOptions.containerId 
+                });
+                currentOptions.header!.searchButton!.onSearch(value, filteredRows);
+              }
+            },
+            onClick: (e: MouseEvent) => {
+              e.stopPropagation();
+              e.preventDefault();
+              isSearchActive = true;
+              if (currentOptions.header!.searchButton!.onClick) {
+                currentOptions.header!.searchButton!.onClick(e);
+              }
+              render();
+              setTimeout(() => {
+                const input = searchButtonInstance?.element.querySelector('.ubits-search-button__input') as HTMLInputElement;
+                if (input) {
+                  input.focus();
                 }
-              }
-            }, 200);
+              }, 150);
+            },
+            onBlur: (e: FocusEvent) => {
+              const input = e.target as HTMLInputElement;
+              setTimeout(() => {
+                if (!input.value.trim() && document.activeElement !== input) {
+                  const clearBtn = searchButtonInstance?.element.querySelector('.ubits-search-button__clear');
+                  if (document.activeElement !== clearBtn) {
+                    isSearchActive = false;
+                    render();
+                  }
+                }
+              }, 200);
+            }
+          });
+          
+          // Mover el elemento del componente al lugar del placeholder
+          const searchButtonElement = searchButtonInstance.element;
+          searchButtonPlaceholder.parentNode?.replaceChild(searchButtonElement, searchButtonPlaceholder);
+          
+          // Remover el width inline que viene del componente SearchButton
+          // Esto permite que el componente se expanda naturalmente sin forzar un ancho fijo
+          if (isSearchActive && (searchButtonElement as HTMLElement).style.width) {
+            console.log('🔍 [DATA TABLE] Removiendo width inline:', (searchButtonElement as HTMLElement).style.width);
+            (searchButtonElement as HTMLElement).style.width = '';
           }
-        });
-        
-        // Mover el elemento del componente al lugar del placeholder
-        const searchButtonElement = searchButtonInstance.element;
-        searchButtonPlaceholder.parentNode?.replaceChild(searchButtonElement, searchButtonPlaceholder);
-        
-        // Remover el width inline que viene del componente SearchButton
-        // Esto permite que el componente se expanda naturalmente sin forzar un ancho fijo
-        if (isSearchActive && (searchButtonElement as HTMLElement).style.width) {
-          console.log('🔍 [DATA TABLE] Removiendo width inline:', (searchButtonElement as HTMLElement).style.width);
-          (searchButtonElement as HTMLElement).style.width = '';
+          
+          // Limpiar contenedor temporal
+          document.body.removeChild(tempContainer);
         }
-        
-        // Limpiar contenedor temporal
-        document.body.removeChild(tempContainer);
         
         // Logs específicos para diagnosticar el posicionamiento
         setTimeout(() => {
