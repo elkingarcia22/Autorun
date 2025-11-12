@@ -87,7 +87,7 @@
     pointer-events: none;
 }
 
-/* Tertiary disabled mantiene su estilo pero con opacidad reducida */
+/* Tertiary disabled mantiene su estilo pero con opacidad menor */
 .ubits-button--tertiary:disabled {
     background: transparent !important;
     color: var(--ubits-btn-tertiary-fg) !important;
@@ -215,20 +215,25 @@
 /* Active/Outline Variant */
 .ubits-button--active {
     background: var(--ubits-button-active-bg);
-    color: var(--ubits-accent-brand-static-inverted);
-    border: 1px solid var(--ubits-accent-brand-static-inverted);
+    color: var(--ubits-accent-brand-static);
+    border: none;
 }
 
 .ubits-button--active:hover:not(:disabled):not(.ubits-button--loading) {
     background: var(--ubits-button-active-bg);
-    color: var(--ubits-accent-brand-static-inverted);
-    border-color: var(--ubits-accent-brand-static-inverted);
+    color: var(--ubits-accent-brand-static);
+    border: none;
 }
 
 .ubits-button--active:active:not(:disabled):not(.ubits-button--loading) {
     background: var(--ubits-button-active-bg);
-    color: var(--ubits-accent-brand-static-inverted);
-    border-color: var(--ubits-accent-brand-static-inverted);
+    color: var(--ubits-accent-brand-static);
+    border: none;
+}
+
+/* Asegurar que los iconos también tengan el color correcto en estado active */
+.ubits-button--active i {
+    color: var(--ubits-accent-brand-static);
 }
 
 /* ========================================
@@ -259,21 +264,29 @@
 
 /* Secondary Button Active State */
 .ubits-button--secondary.ubits-button--active {
-    background: var(--ubits-button-active-bg);
-    color: var(--ubits-accent-brand-static-inverted);
-    border: none;
+    background: var(--ubits-button-active-bg) !important;
+    color: var(--ubits-accent-brand-static) !important;
+    border: none !important;
 }
 
 .ubits-button--secondary.ubits-button--active:hover:not(:disabled):not(.ubits-button--loading) {
-    background: var(--ubits-button-active-bg);
-    color: var(--ubits-accent-brand-static-inverted);
-    border: none;
+    background: var(--ubits-button-active-bg) !important;
+    color: var(--ubits-accent-brand-static) !important;
+    border: none !important;
 }
 
 .ubits-button--secondary.ubits-button--active:active:not(:disabled):not(.ubits-button--loading) {
-    background: var(--ubits-button-active-bg);
-    color: var(--ubits-accent-brand-static-inverted);
-    border: none;
+    background: var(--ubits-button-active-bg) !important;
+    color: var(--ubits-accent-brand-static) !important;
+    border: none !important;
+}
+
+.ubits-button--secondary.ubits-button--active i {
+    color: var(--ubits-accent-brand-static) !important;
+}
+
+.ubits-button--secondary.ubits-button--active span {
+    color: var(--ubits-accent-brand-static) !important;
 }
 
 /* ========================================
@@ -305,20 +318,24 @@
 /* Tertiary Button Active State */
 .ubits-button--tertiary.ubits-button--active {
     background: var(--ubits-button-active-bg);
-    color: var(--ubits-accent-brand-static-inverted);
-    border: 1px solid transparent;
+    color: var(--ubits-accent-brand-static);
+    border: none;
 }
 
 .ubits-button--tertiary.ubits-button--active:hover:not(:disabled):not(.ubits-button--loading) {
     background: var(--ubits-button-active-bg);
-    color: var(--ubits-accent-brand-static-inverted);
-    border: 1px solid transparent;
+    color: var(--ubits-accent-brand-static);
+    border: none;
 }
 
 .ubits-button--tertiary.ubits-button--active:active:not(:disabled):not(.ubits-button--loading) {
     background: var(--ubits-button-active-bg);
-    color: var(--ubits-accent-brand-static-inverted);
-    border: 1px solid transparent;
+    color: var(--ubits-accent-brand-static);
+    border: none;
+}
+
+.ubits-button--tertiary.ubits-button--active i {
+    color: var(--ubits-accent-brand-static);
 }
 
 /* Tertiary Button Focus State */
@@ -525,7 +542,7 @@
 }
 
 /* Gap ajustado para tamaños pequeños */
-/* Gap ya definido arriba con !important, estas reglas son redundantes pero las dejamos para compatibilidad */
+/* Gap ya definido arriba con !important, estas reglas son duplicadas pero las dejamos para compatibilidad */
 .ubits-button--xs {
     gap: 6px !important;
 }

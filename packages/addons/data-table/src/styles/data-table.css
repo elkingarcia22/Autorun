@@ -10,6 +10,20 @@
   flex-direction: column;
   width: 100%;
   gap: 0;
+  padding: 0; /* Sin padding para que el header esté pegado al borde */
+}
+
+/* ========================================
+   DATA TABLE ACTION BAR (barra de acciones debajo del header)
+   ======================================== */
+.ubits-data-table__action-bar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: var(--ubits-spacing-sm) 0; /* 8px arriba y abajo, 0px en los lados */
+  gap: var(--ubits-spacing-xs);
+  flex-wrap: wrap;
+  background-color: var(--ubits-bg-1);
 }
 
 /* ========================================
@@ -19,10 +33,12 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: var(--ubits-spacing-md, 16px);
-  padding-bottom: var(--ubits-spacing-md, 16px);
+  padding-top: var(--ubits-spacing-md);
+  padding-bottom: var(--ubits-spacing-sm);
+  padding-left: 0; /* Alinear con el borde izquierdo del contenedor */
+  padding-right: 0; /* Alinear con el borde derecho del contenedor */
   background-color: var(--ubits-bg-1);
-  gap: var(--ubits-spacing-md, 16px);
+  gap: var(--ubits-spacing-md);
   flex-wrap: wrap;
 }
 
@@ -32,6 +48,7 @@
   gap: var(--ubits-spacing-sm, 12px);
   flex: 1;
   min-width: 0;
+  padding-left: 0; /* Sin padding - pegado al borde izquierdo del contenedor azul */
 }
 
 .ubits-data-table__header-title-text {
@@ -60,6 +77,8 @@
   position: relative;
   /* Permitir que el SearchButton se expanda hacia la izquierda */
   flex-wrap: nowrap;
+  padding-left: 0; /* Sin padding - pegado al borde izquierdo del contenedor azul */
+  padding-right: var(--ubits-spacing-md, 16px); /* Mantener padding derecho para alineación con el borde derecho */
 }
 
 .ubits-data-table__header-primary-button,
@@ -201,8 +220,8 @@
     background-color: var(--ubits-bg-1);
     box-sizing: border-box;
     padding: var(--ubits-spacing-md, 16px);
-    overflow: auto;
-    max-height: 600px;
+    overflow: visible !important; /* Cambiar a visible por defecto, se aplicará auto solo cuando sea necesario */
+    max-height: none !important; /* Remover max-height por defecto - el scrollable-container maneja su propio max-height */
     border-collapse: collapse;
     border: none;
     font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
@@ -1402,5 +1421,27 @@
     /* El left específico se aplicará inline, pero necesitamos un valor base */
     /* z-index para asegurar que quede por encima del contenido */
     z-index: 10 !important;
+}
+
+/* ========================================
+   BUTTON ERROR VARIANT (para botón de eliminar)
+   ======================================== */
+.ubits-button--error {
+  background-color: var(--ubits-feedback-bg-error-subtle) !important;
+  color: var(--ubits-feedback-accent-error-static) !important;
+  border-color: var(--ubits-feedback-border-error-static) !important;
+}
+
+.ubits-button--error:hover {
+  background-color: var(--ubits-feedback-accent-error-static) !important;
+  color: var(--ubits-fg-1-high) !important;
+  border-color: var(--ubits-feedback-border-error-static) !important;
+}
+
+.ubits-button--error:active,
+.ubits-button--error:focus {
+  background-color: var(--ubits-feedback-accent-error-static) !important;
+  color: var(--ubits-fg-1-high) !important;
+  border-color: var(--ubits-feedback-border-error-static) !important;
 }
 

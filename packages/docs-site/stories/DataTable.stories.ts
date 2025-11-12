@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/html';
 import { createDataTable } from '../../addons/data-table/src/DataTableProvider';
 import type { DataTableOptions, TableColumn, TableRow } from '../../addons/data-table/src/types/DataTableOptions';
+import { renderButton } from '../../addons/button/src/ButtonProvider';
 
 const meta: Meta<DataTableOptions & { columnsCount?: number }> = {
   title: 'Components/Data Table',
@@ -329,32 +330,39 @@ type Story = StoryObj<DataTableOptions & {
 export const Default: Story = {
   render: (args) => {
     const renderId = `story-render-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-    console.log(`📖 [STORY] ========== INICIO RENDER [${renderId}] ==========`);
-    console.log(`📖 [STORY] Stack trace:`, new Error().stack?.split('\n').slice(1, 4).join('\n'));
     
     // Contenedor principal con estilos UBITS
     const container = document.createElement('div');
-    container.style.padding = '20px';
-    container.style.background = 'var(--ubits-bg-1, #ffffff)';
-    container.style.borderRadius = '8px';
-    container.style.width = '100%';
-    container.style.maxWidth = '100%';
+    container.style.cssText = `
+      padding: 20px;
+      background: var(--ubits-bg-1, #ffffff);
+      border-radius: 8px;
+      width: 100%;
+      max-width: 100%;
+      min-height: auto;
+      height: auto;
+      overflow: visible !important;
+      max-height: none !important;
+    `;
     
     // Contenedor para la tabla - crear uno nuevo cada vez pero con ID único
     // Usar un ID único basado en timestamp para evitar conflictos entre renders
     const tableContainerId = `data-table-story-container-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     const tableContainer = document.createElement('div');
     tableContainer.id = tableContainerId;
-    tableContainer.style.width = '100%';
-    tableContainer.style.overflow = 'auto';
+    tableContainer.style.cssText = `
+      width: 100%;
+      overflow: visible !important;
+      min-height: auto;
+      height: auto;
+      max-height: none !important;
+    `;
     
     // Buscar y limpiar cualquier tabla anterior en el contenedor principal
     // Esto previene renderizados duplicados cuando se cambian los tipos de columna
     const existingContainers = container.querySelectorAll('[id^="data-table-story-container-"]');
-    console.log(`📖 [STORY] Contenedores existentes encontrados:`, existingContainers.length);
     
     existingContainers.forEach((oldContainer) => {
-      console.log(`📖 [STORY] 🧹 Limpiando contenedor anterior:`, oldContainer.id);
       // Buscar tabla directa o dentro de contenedor scrollable
       const oldTable = oldContainer.querySelector('.ubits-data-table');
       const oldScrollableContainer = oldContainer.querySelector('.ubits-data-table__scrollable-container');
@@ -367,11 +375,10 @@ export const Default: Story = {
             try {
               const instance = (tableElement as any)._dataTableInstance;
               if (instance && typeof instance.destroy === 'function') {
-                console.log(`📖 [STORY] 🧹 Destruyendo instancia de tabla en scrollable container`);
                 instance.destroy();
               }
             } catch (e) {
-              console.warn('Error destroying previous table instance:', e);
+              // Silently ignore
             }
           }
         }
@@ -381,16 +388,14 @@ export const Default: Story = {
           try {
             const instance = (tableElement as any)._dataTableInstance;
             if (instance && typeof instance.destroy === 'function') {
-              console.log(`📖 [STORY] 🧹 Destruyendo instancia de tabla directa`);
               instance.destroy();
             }
           } catch (e) {
-            console.warn('Error destroying previous table instance:', e);
+            // Silently ignore
           }
         }
       }
       oldContainer.remove();
-      console.log(`📖 [STORY] ✅ Contenedor anterior removido`);
     });
     
     // Generar columnas dinámicamente según columnsCount
@@ -698,7 +703,7 @@ export const Default: Story = {
           avatar: rowData.avatar,
         }, rowData.id),
         expanded: false,
-        renderExpandedContent: rowData.id === 1 ? (data) => {
+        renderExpandedContent: (data) => {
           return `
             <div style="padding: var(--ubits-spacing-md, 16px);">
               <h4 style="margin: 0 0 var(--ubits-spacing-sm, 8px) 0; font-size: var(--ubits-font-size-sm, 14px); font-weight: 600; color: var(--ubits-fg-1-high, #1f2937);">
@@ -709,13 +714,213 @@ export const Default: Story = {
               </p>
             </div>
           `;
-        } : undefined,
+        },
       }));
     };
 
     // Filas que coinciden con la implementación de la web (100 filas)
     // Incluir todos los campos necesarios para que funcionen con cualquier tipo de columna
     const rows: TableRow[] = generateAllRows();
+    
+    // ========== BARRA DE ACCIONES - IMPLEMENTACIÓN DESDE CERO ==========
+    // Estado de selecciones (simple y limpio)
+    const selectionState: {
+      selectedRowIds: Set<string | number>;
+      viewSelectedActive: boolean;
+    } = {
+      selectedRowIds: new Set(),
+      viewSelectedActive: false,
+    };
+    
+    // Función para renderizar la barra de acciones
+    const renderActionBar = (container: HTMLElement) => {
+      const header = container.querySelector('.ubits-data-table__header');
+      if (!header) {
+        console.log('🎯 [ACTION BAR] Header no encontrado');
+        return;
+      }
+      
+      // Buscar barra existente
+      let actionBar = container.querySelector('.ubits-data-table__action-bar') as HTMLElement;
+      
+      // Si no existe, crearla
+      if (!actionBar) {
+        actionBar = document.createElement('div');
+        actionBar.className = 'ubits-data-table__action-bar';
+        actionBar.style.cssText = `
+          display: flex;
+          align-items: center;
+          justify-content: flex-start;
+          padding: var(--ubits-spacing-sm) 0;
+          gap: var(--ubits-spacing-xs);
+          flex-wrap: wrap;
+          background-color: var(--ubits-bg-1);
+        `;
+        header.insertAdjacentElement('afterend', actionBar);
+        console.log('🎯 [ACTION BAR] Barra creada');
+      }
+      
+      // Contar selecciones
+      const selectedCount = selectionState.selectedRowIds.size;
+      const selectedIds = Array.from(selectionState.selectedRowIds);
+      console.log('🎯 [ACTION BAR] Renderizando - Selecciones:', {
+        count: selectedCount,
+        ids: selectedIds.slice(0, 10), // Mostrar solo los primeros 10
+        total: selectedIds.length
+      });
+      
+      // IMPORTANTE: Ocultar la barra si no hay selecciones, mostrarla si hay al menos una
+      if (selectedCount === 0) {
+        // Ocultar la barra cuando no hay selecciones
+        actionBar.style.display = 'none';
+        console.log('🎯 [ACTION BAR] Barra ocultada - no hay selecciones');
+        return; // Salir temprano si no hay selecciones
+      }
+      
+      // Mostrar la barra cuando hay selecciones
+      actionBar.style.display = 'flex';
+      console.log('🎯 [ACTION BAR] Barra mostrada - hay', selectedCount, 'selección(es)');
+      
+      const countText = `(${selectedCount})`;
+      const isMultipleSelection = selectedCount > 1;
+      
+      let buttonsHTML = '';
+      
+      // Estado del botón "Ver seleccionados" (compartido entre ambos modos)
+      const isViewSelectedActive = selectionState.viewSelectedActive;
+      const viewSelectedText = isViewSelectedActive
+        ? `Dejar de ver seleccionados ${countText}`
+        : `Ver seleccionados ${countText}`;
+      const viewSelectedIcon = isViewSelectedActive ? 'eye-slash' : 'eye';
+      
+      if (isMultipleSelection) {
+        // Si hay más de 1 selección: mostrar botones de acciones masivas (ver seleccionados, notificaciones y eliminar)
+        console.log('🎯 [ACTION BAR] Modo masivo - mostrando ver seleccionados, notificaciones y eliminar');
+        
+        buttonsHTML = 
+          renderButton({
+            variant: 'secondary',
+            size: 'sm',
+            text: viewSelectedText,
+            icon: viewSelectedIcon,
+            iconStyle: 'regular',
+            active: isViewSelectedActive,
+            attributes: { id: 'action-btn-view-selected' }
+          }) +
+          renderButton({
+            variant: 'secondary',
+            size: 'sm',
+            icon: 'bell',
+            iconStyle: 'regular',
+            iconOnly: true,
+            attributes: { id: 'action-btn-notifications' }
+          }) +
+          renderButton({
+            variant: 'secondary',
+            size: 'sm',
+            icon: 'trash',
+            iconStyle: 'regular',
+            iconOnly: true,
+            className: 'ubits-button--error',
+            attributes: { id: 'action-btn-delete' }
+          });
+      } else {
+        // Si hay 1 selección: mostrar todos los botones (menú individual)
+        console.log('🎯 [ACTION BAR] Modo individual - mostrando todos los botones');
+        
+        buttonsHTML = 
+          renderButton({
+            variant: 'secondary',
+            size: 'sm',
+            text: viewSelectedText,
+            icon: viewSelectedIcon,
+            iconStyle: 'regular',
+            active: isViewSelectedActive,
+            attributes: { id: 'action-btn-view-selected' }
+          }) +
+          renderButton({
+            variant: 'secondary',
+            size: 'sm',
+            icon: 'bell',
+            iconStyle: 'regular',
+            iconOnly: true,
+            attributes: { id: 'action-btn-notifications' }
+          }) +
+          renderButton({
+            variant: 'secondary',
+            size: 'sm',
+            icon: 'copy',
+            iconStyle: 'regular',
+            iconOnly: true,
+            attributes: { id: 'action-btn-copy' }
+          }) +
+          renderButton({
+            variant: 'secondary',
+            size: 'sm',
+            icon: 'eye',
+            iconStyle: 'regular',
+            iconOnly: true,
+            attributes: { id: 'action-btn-view' }
+          }) +
+          renderButton({
+            variant: 'secondary',
+            size: 'sm',
+            icon: 'edit',
+            iconStyle: 'regular',
+            iconOnly: true,
+            attributes: { id: 'action-btn-edit' }
+          }) +
+          renderButton({
+            variant: 'secondary',
+            size: 'sm',
+            icon: 'download',
+            iconStyle: 'regular',
+            iconOnly: true,
+            attributes: { id: 'action-btn-download' }
+          }) +
+          renderButton({
+            variant: 'secondary',
+            size: 'sm',
+            icon: 'trash',
+            iconStyle: 'regular',
+            iconOnly: true,
+            className: 'ubits-button--error',
+            attributes: { id: 'action-btn-delete' }
+          });
+      }
+      
+      actionBar.innerHTML = buttonsHTML;
+      
+      // Agregar listeners
+      const viewSelectedBtn = actionBar.querySelector('#action-btn-view-selected');
+      if (viewSelectedBtn) {
+        viewSelectedBtn.addEventListener('click', () => {
+          selectionState.viewSelectedActive = !selectionState.viewSelectedActive;
+          // Re-renderizar tabla con filtro
+          if (tableInstance) {
+            const filteredRows = selectionState.viewSelectedActive
+              ? rows.filter(row => selectionState.selectedRowIds.has(row.id))
+              : rows;
+            tableInstance.update({ rows: filteredRows });
+          }
+          renderActionBar(container);
+        });
+      }
+      
+      // Otros botones (placeholders)
+      ['notifications', 'copy', 'view', 'edit', 'download', 'delete'].forEach(action => {
+        const btn = actionBar.querySelector(`#action-btn-${action}`);
+        if (btn) {
+          btn.addEventListener('click', () => {
+            console.log(`Action: ${action}`, Array.from(selectionState.selectedRowIds));
+          });
+        }
+      });
+    };
+    
+    // MutationObserver para preservar la barra cuando el Data Table se re-renderiza
+    let actionBarObserver: MutationObserver | null = null;
+    let tableInstance: ReturnType<typeof createDataTable> | null = null;
     
     // Si dragHandleSticky está activado, asegurar que rowReorderable también esté activado
     // porque el drag-handle solo se crea cuando rowReorderable es true
@@ -725,16 +930,6 @@ export const Default: Story = {
     // Si expandSticky está activado, asegurar que rowExpandable también esté activado
     const expandStickyValue = (args as any).expandSticky ?? false;
     const rowExpandableValue = expandStickyValue ? true : (args.rowExpandable ?? true);
-    
-    // Log del estado inicial de las columnas antes de crear la tabla
-    console.log('📖 [STORY] ========== ESTADO INICIAL DE COLUMNAS ==========');
-    console.log('📖 [STORY] Columnas antes de crear tabla:', columns.map(col => ({ 
-      id: col.id, 
-      title: col.title, 
-      pinned: col.pinned || false,
-      type: col.type 
-    })));
-    console.log('📖 [STORY] ========== FIN ESTADO INICIAL ==========');
     
     // Configuración del header
     const headerTitle = (args as any).headerTitle ?? 'Lista de elementos';
@@ -771,6 +966,8 @@ export const Default: Story = {
       itemsPerPage: args.itemsPerPage ?? 10,
       paginationVariant: args.paginationVariant ?? 'default',
       paginationSize: args.paginationSize ?? 'md',
+      // Desactivar lazy load por defecto para mostrar todas las filas en Storybook
+      lazyLoad: false,
       // Configuración del header
       header: {
         title: showHeaderTitle ? headerTitle : undefined,
@@ -855,6 +1052,7 @@ export const Default: Story = {
         } : undefined,
         showColumnSelectorButton: showHeaderColumnSelectorButton
       },
+      lazyLoad: false, // Asegurar que lazyLoad esté desactivado
       onPageChange: (page) => {
         console.log('Page changed to:', page);
         // En Storybook, actualizar el args para que se refleje en los controles
@@ -870,55 +1068,107 @@ export const Default: Story = {
         }
       },
       onRowExpand: (rowId, expanded) => {
-        console.log('Row expanded:', rowId, expanded);
+        // Callback para filas expandidas
       },
       onColumnReorder: (columnIds) => {
-        console.log('Columns reordered:', columnIds);
+        // Callback para reordenamiento de columnas
       },
       onRowReorder: (rowIds) => {
-        console.log('Rows reordered:', rowIds);
+        // Callback para reordenamiento de filas
       },
       onSort: (columnId, direction) => {
-        console.log('Column sorted:', columnId, direction);
+        // Callback para ordenamiento
       },
       onColumnPin: (columnId, pinned) => {
-        console.log('📌 [STORY] ========== onColumnPin CALLBACK ==========');
-        console.log('📌 [STORY] columnId:', columnId);
-        console.log('📌 [STORY] pinned:', pinned);
-        console.log('📌 [STORY] Stack trace:', new Error().stack?.split('\n').slice(1, 4).join('\n'));
         // El sistema interno ya actualiza el estado y re-renderiza
         // Este callback es solo para notificar cambios externos si es necesario
-        console.log('📌 [STORY] ========== FIN onColumnPin CALLBACK ==========');
       },
       onRowSelect: (rowId, selected) => {
-        console.log('Row selected:', rowId, selected);
+        console.log('🎯 [ROW SELECT] ========== INICIO ==========');
+        console.log('🎯 [ROW SELECT] rowId:', rowId, 'selected:', selected);
+        console.log('🎯 [ROW SELECT] Estado ANTES:', {
+          count: selectionState.selectedRowIds.size,
+          ids: Array.from(selectionState.selectedRowIds)
+        });
+        
+        // Actualizar estado de selección
+        if (selected) {
+          selectionState.selectedRowIds.add(rowId);
+          console.log('🎯 [ROW SELECT] ✅ Fila agregada al estado');
+        } else {
+          selectionState.selectedRowIds.delete(rowId);
+          console.log('🎯 [ROW SELECT] ❌ Fila removida del estado');
+        }
+        
+        console.log('🎯 [ROW SELECT] Estado DESPUÉS:', {
+          count: selectionState.selectedRowIds.size,
+          ids: Array.from(selectionState.selectedRowIds)
+        });
+        
+        // Actualizar barra de acciones
+        const container = document.getElementById(tableContainerId);
+        if (container) {
+          console.log('🎯 [ROW SELECT] Actualizando barra de acciones...');
+          renderActionBar(container);
+        } else {
+          console.warn('🎯 [ROW SELECT] ⚠️ Container no encontrado:', tableContainerId);
+        }
+        console.log('🎯 [ROW SELECT] ========== FIN ==========');
       },
       onSelectAll: (selected) => {
-        console.log('Select all:', selected);
+        console.log('🎯 [SELECT ALL] ========== INICIO ==========');
+        console.log('🎯 [SELECT ALL] selected:', selected);
+        console.log('🎯 [SELECT ALL] Estado ANTES:', {
+          count: selectionState.selectedRowIds.size,
+          ids: Array.from(selectionState.selectedRowIds).slice(0, 10)
+        });
+        
+        // Actualizar estado de selección - solo las filas visibles
+        const container = document.getElementById(tableContainerId);
+        if (container) {
+          const table = container.querySelector('.ubits-data-table');
+          if (table) {
+            const checkboxes = table.querySelectorAll('input[type="checkbox"][data-column-id="checkbox-2"][data-row-id]');
+            console.log('🎯 [SELECT ALL] Checkboxes encontrados:', checkboxes.length);
+            
+            checkboxes.forEach((cb) => {
+              const rowIdStr = cb.getAttribute('data-row-id');
+              if (rowIdStr) {
+                const rowId = isNaN(Number(rowIdStr)) ? rowIdStr : Number(rowIdStr);
+                if (selected) {
+                  selectionState.selectedRowIds.add(rowId);
+                } else {
+                  selectionState.selectedRowIds.delete(rowId);
+                }
+              }
+            });
+            
+            console.log('🎯 [SELECT ALL] Estado DESPUÉS:', {
+              count: selectionState.selectedRowIds.size,
+              ids: Array.from(selectionState.selectedRowIds).slice(0, 10)
+            });
+          } else {
+            console.warn('🎯 [SELECT ALL] ⚠️ Tabla no encontrada');
+          }
+          renderActionBar(container);
+        } else {
+          console.warn('🎯 [SELECT ALL] ⚠️ Container no encontrado:', tableContainerId);
+        }
+        console.log('🎯 [SELECT ALL] ========== FIN ==========');
       },
     };
 
     // Agregar el contenedor de la tabla al contenedor principal
     container.appendChild(tableContainer);
-    console.log(`📖 [STORY] Contenedor agregado al DOM. ID:`, tableContainerId);
 
     // Inicializar la tabla después de que se monte en el DOM
     // Usar requestAnimationFrame para asegurar que el DOM esté listo
-    console.log(`📖 [STORY] Tipos de columna:`, {
-      columnType1,
-      columnType2,
-      columnType3,
-      columnType4,
-      columnsCount: columns.length
-    });
-    console.log(`📖 [STORY] Container ID:`, tableContainerId);
     
     // Verificar si ya hay una tabla en el contenedor antes de crear una nueva
     // Esto previene renderizados duplicados cuando Storybook llama al render múltiples veces
     const checkAndCreateTable = () => {
       const containerElement = document.getElementById(tableContainerId);
       if (!containerElement) {
-        console.warn(`⚠️ [STORY] Contenedor ${tableContainerId} no encontrado en DOM`);
         return false;
       }
       
@@ -927,23 +1177,35 @@ export const Default: Story = {
       const existingScrollable = containerElement.querySelector('.ubits-data-table__scrollable-container');
       
       if (existingTable || existingScrollable) {
-        console.log(`📖 [STORY] ⚠️ Ya existe una tabla en el contenedor, omitiendo creación`);
         return false;
       }
       
-      console.log(`📖 [STORY] Contenedor encontrado, creando tabla...`);
-      console.log(`📖 [STORY] Opciones pasadas a createDataTable:`, {
-        containerId: options.containerId,
-        columnsCount: options.columns.length,
-        showColumnMenu: options.showColumnMenu,
-        columnsPinned: options.columns.filter(col => col.pinned).map(col => col.id)
-      });
-      const tableInstance = createDataTable(options);
-      console.log(`📖 [STORY] ✅ Tabla creada, instancia:`, tableInstance);
+      tableInstance = createDataTable(options);
       
       // Guardar referencia a la instancia para poder inspeccionarla
       (window as any).__storybookDataTableInstance = tableInstance;
-      console.log(`📖 [STORY] Instancia guardada en window.__storybookDataTableInstance`);
+      
+      // Renderizar barra de acciones después de crear la tabla
+      setTimeout(() => {
+        const container = document.getElementById(tableContainerId);
+        if (container) {
+          renderActionBar(container);
+          
+          // Configurar MutationObserver para preservar la barra
+          if (!actionBarObserver) {
+            actionBarObserver = new MutationObserver(() => {
+              const bar = container.querySelector('.ubits-data-table__action-bar');
+              if (!bar) {
+                // La barra fue eliminada, reinsertarla
+                setTimeout(() => {
+                  renderActionBar(container);
+                }, 100);
+              }
+            });
+            actionBarObserver.observe(container, { childList: true, subtree: true });
+          }
+        }
+      }, 200);
       
       return true;
     };
@@ -959,7 +1221,6 @@ export const Default: Story = {
       } catch (error) {
         console.error(`❌ [STORY] Error creating data table:`, error);
       }
-      console.log(`📖 [STORY] ========== FIN RENDER [${renderId}] ==========`);
     });
 
     return container;
