@@ -70,6 +70,13 @@ const meta: Meta<DataTableOptions & { columnsCount?: number }> = {
         defaultValue: { summary: 'true' },
       },
     },
+    showContextMenu: {
+      control: 'boolean',
+      description: 'Muestra el menú contextual (click derecho) en las filas con las opciones de acciones.',
+      table: {
+        defaultValue: { summary: 'true' },
+      },
+    },
     checkboxSticky: {
       control: 'boolean',
       description: 'Hace que la columna de checkbox sea sticky (fija) al hacer scroll horizontal',
@@ -296,6 +303,137 @@ const meta: Meta<DataTableOptions & { columnsCount?: number }> = {
     showHeaderColumnSelectorButton: {
       control: 'boolean',
       description: 'Mostrar botón de seleccionar columnas',
+      table: {
+        defaultValue: { summary: 'true' },
+      },
+    },
+    // Controles de la barra de acciones
+    showActionButtonViewSelected: {
+      control: 'boolean',
+      description: 'Mostrar botón "Ver seleccionados" en la barra de acciones',
+      table: {
+        defaultValue: { summary: 'true' },
+      },
+    },
+    showActionButtonNotifications: {
+      control: 'boolean',
+      description: 'Mostrar botón "Notificaciones" en la barra de acciones',
+      table: {
+        defaultValue: { summary: 'true' },
+      },
+    },
+    showActionButtonCopy: {
+      control: 'boolean',
+      description: 'Mostrar botón "Copiar" en la barra de acciones (solo modo individual)',
+      table: {
+        defaultValue: { summary: 'true' },
+      },
+    },
+    showActionButtonView: {
+      control: 'boolean',
+      description: 'Mostrar botón "Ver" en la barra de acciones (solo modo individual)',
+      table: {
+        defaultValue: { summary: 'true' },
+      },
+    },
+    showActionButtonEdit: {
+      control: 'boolean',
+      description: 'Mostrar botón "Editar" en la barra de acciones (solo modo individual)',
+      table: {
+        defaultValue: { summary: 'true' },
+      },
+    },
+    showActionButtonDownload: {
+      control: 'boolean',
+      description: 'Mostrar botón "Descargar" en la barra de acciones (solo modo individual)',
+      table: {
+        defaultValue: { summary: 'true' },
+      },
+    },
+    showActionButtonDelete: {
+      control: 'boolean',
+      description: 'Mostrar botón "Eliminar" en la barra de acciones',
+      table: {
+        defaultValue: { summary: 'true' },
+      },
+    },
+    // Controles de Empty State - No Data
+    emptyStateNoDataTitle: {
+      control: { type: 'text' },
+      description: 'Título del empty state cuando no hay datos',
+      table: {
+        defaultValue: { summary: 'No hay datos' },
+      },
+    },
+    emptyStateNoDataDescription: {
+      control: { type: 'text' },
+      description: 'Descripción del empty state cuando no hay datos',
+    },
+    emptyStateNoDataIcon: {
+      control: { type: 'text' },
+      description: 'Icono FontAwesome del empty state cuando no hay datos (ej: "inbox", "database")',
+    },
+    emptyStateNoDataActionLabel: {
+      control: { type: 'text' },
+      description: 'Texto del botón de acción cuando no hay datos',
+    },
+    emptyStateNoDataShowPrimaryButton: {
+      control: 'boolean',
+      description: 'Mostrar botón primario cuando no hay datos',
+      table: {
+        defaultValue: { summary: 'false' },
+      },
+    },
+    // Controles de Empty State - No Search Results
+    emptyStateNoSearchResultsTitle: {
+      control: { type: 'text' },
+      description: 'Título del empty state cuando no hay resultados de búsqueda',
+      table: {
+        defaultValue: { summary: 'No se encontraron resultados' },
+      },
+    },
+    emptyStateNoSearchResultsDescription: {
+      control: { type: 'text' },
+      description: 'Descripción del empty state cuando no hay resultados de búsqueda',
+    },
+    emptyStateNoSearchResultsIcon: {
+      control: { type: 'text' },
+      description: 'Icono FontAwesome del empty state cuando no hay resultados de búsqueda (ej: "search")',
+    },
+    emptyStateNoSearchResultsActionLabel: {
+      control: { type: 'text' },
+      description: 'Texto del botón de acción cuando no hay resultados de búsqueda',
+    },
+    emptyStateNoSearchResultsShowPrimaryButton: {
+      control: 'boolean',
+      description: 'Mostrar botón primario cuando no hay resultados de búsqueda',
+      table: {
+        defaultValue: { summary: 'false' },
+      },
+    },
+    // Controles de Empty State - No Filter Results
+    emptyStateNoFilterResultsTitle: {
+      control: { type: 'text' },
+      description: 'Título del empty state cuando no hay resultados de filtros',
+      table: {
+        defaultValue: { summary: 'No hay resultados con los filtros aplicados' },
+      },
+    },
+    emptyStateNoFilterResultsDescription: {
+      control: { type: 'text' },
+      description: 'Descripción del empty state cuando no hay resultados de filtros',
+    },
+    emptyStateNoFilterResultsIcon: {
+      control: { type: 'text' },
+      description: 'Icono FontAwesome del empty state cuando no hay resultados de filtros (ej: "filter")',
+    },
+    emptyStateNoFilterResultsActionLabel: {
+      control: { type: 'text' },
+      description: 'Texto del botón de acción cuando no hay resultados de filtros',
+    },
+    emptyStateNoFilterResultsShowPrimaryButton: {
+      control: 'boolean',
+      description: 'Mostrar botón primario cuando no hay resultados de filtros',
       table: {
         defaultValue: { summary: 'true' },
       },
@@ -797,8 +935,10 @@ export const Default: Story = {
         // Si hay más de 1 selección: mostrar botones de acciones masivas (ver seleccionados, notificaciones y eliminar)
         console.log('🎯 [ACTION BAR] Modo masivo - mostrando ver seleccionados, notificaciones y eliminar');
         
-        buttonsHTML = 
-          renderButton({
+        const buttons: string[] = [];
+        
+        if (showActionButtonViewSelected) {
+          buttons.push(renderButton({
             variant: 'secondary',
             size: 'sm',
             text: viewSelectedText,
@@ -806,16 +946,22 @@ export const Default: Story = {
             iconStyle: 'regular',
             active: isViewSelectedActive,
             attributes: { id: 'action-btn-view-selected' }
-          }) +
-          renderButton({
+          }));
+        }
+        
+        if (showActionButtonNotifications) {
+          buttons.push(renderButton({
             variant: 'secondary',
             size: 'sm',
             icon: 'bell',
             iconStyle: 'regular',
             iconOnly: true,
             attributes: { id: 'action-btn-notifications' }
-          }) +
-          renderButton({
+          }));
+        }
+        
+        if (showActionButtonDelete) {
+          buttons.push(renderButton({
             variant: 'secondary',
             size: 'sm',
             icon: 'trash',
@@ -823,13 +969,18 @@ export const Default: Story = {
             iconOnly: true,
             className: 'ubits-button--error',
             attributes: { id: 'action-btn-delete' }
-          });
+          }));
+        }
+        
+        buttonsHTML = buttons.join('');
       } else {
         // Si hay 1 selección: mostrar todos los botones (menú individual)
         console.log('🎯 [ACTION BAR] Modo individual - mostrando todos los botones');
         
-        buttonsHTML = 
-          renderButton({
+        const buttons: string[] = [];
+        
+        if (showActionButtonViewSelected) {
+          buttons.push(renderButton({
             variant: 'secondary',
             size: 'sm',
             text: viewSelectedText,
@@ -837,48 +988,66 @@ export const Default: Story = {
             iconStyle: 'regular',
             active: isViewSelectedActive,
             attributes: { id: 'action-btn-view-selected' }
-          }) +
-          renderButton({
+          }));
+        }
+        
+        if (showActionButtonNotifications) {
+          buttons.push(renderButton({
             variant: 'secondary',
             size: 'sm',
             icon: 'bell',
             iconStyle: 'regular',
             iconOnly: true,
             attributes: { id: 'action-btn-notifications' }
-          }) +
-          renderButton({
+          }));
+        }
+        
+        if (showActionButtonCopy) {
+          buttons.push(renderButton({
             variant: 'secondary',
             size: 'sm',
             icon: 'copy',
             iconStyle: 'regular',
             iconOnly: true,
             attributes: { id: 'action-btn-copy' }
-          }) +
-          renderButton({
+          }));
+        }
+        
+        if (showActionButtonView) {
+          buttons.push(renderButton({
             variant: 'secondary',
             size: 'sm',
             icon: 'eye',
             iconStyle: 'regular',
             iconOnly: true,
             attributes: { id: 'action-btn-view' }
-          }) +
-          renderButton({
+          }));
+        }
+        
+        if (showActionButtonEdit) {
+          buttons.push(renderButton({
             variant: 'secondary',
             size: 'sm',
             icon: 'edit',
             iconStyle: 'regular',
             iconOnly: true,
             attributes: { id: 'action-btn-edit' }
-          }) +
-          renderButton({
+          }));
+        }
+        
+        if (showActionButtonDownload) {
+          buttons.push(renderButton({
             variant: 'secondary',
             size: 'sm',
             icon: 'download',
             iconStyle: 'regular',
             iconOnly: true,
             attributes: { id: 'action-btn-download' }
-          }) +
-          renderButton({
+          }));
+        }
+        
+        if (showActionButtonDelete) {
+          buttons.push(renderButton({
             variant: 'secondary',
             size: 'sm',
             icon: 'trash',
@@ -886,7 +1055,10 @@ export const Default: Story = {
             iconOnly: true,
             className: 'ubits-button--error',
             attributes: { id: 'action-btn-delete' }
-          });
+          }));
+        }
+        
+        buttonsHTML = buttons.join('');
       }
       
       actionBar.innerHTML = buttonsHTML;
@@ -944,6 +1116,15 @@ export const Default: Story = {
     const showHeaderFilterButton = (args as any).showHeaderFilterButton !== undefined ? (args as any).showHeaderFilterButton : true;
     const showHeaderColumnSelectorButton = (args as any).showHeaderColumnSelectorButton !== undefined ? (args as any).showHeaderColumnSelectorButton : true;
     
+    // Controles de la barra de acciones
+    const showActionButtonViewSelected = (args as any).showActionButtonViewSelected !== undefined ? (args as any).showActionButtonViewSelected : true;
+    const showActionButtonNotifications = (args as any).showActionButtonNotifications !== undefined ? (args as any).showActionButtonNotifications : true;
+    const showActionButtonCopy = (args as any).showActionButtonCopy !== undefined ? (args as any).showActionButtonCopy : true;
+    const showActionButtonView = (args as any).showActionButtonView !== undefined ? (args as any).showActionButtonView : true;
+    const showActionButtonEdit = (args as any).showActionButtonEdit !== undefined ? (args as any).showActionButtonEdit : true;
+    const showActionButtonDownload = (args as any).showActionButtonDownload !== undefined ? (args as any).showActionButtonDownload : true;
+    const showActionButtonDelete = (args as any).showActionButtonDelete !== undefined ? (args as any).showActionButtonDelete : true;
+    
     const options: DataTableOptions = {
       containerId: tableContainer.id,
       columns,
@@ -957,6 +1138,7 @@ export const Default: Story = {
       showVerticalScrollbar: args.showVerticalScrollbar ?? false,
       showHorizontalScrollbar: args.showHorizontalScrollbar ?? false,
       showColumnMenu: args.showColumnMenu ?? true,
+      showContextMenu: args.showContextMenu ?? true,
       checkboxSticky: (args as any).checkboxSticky ?? false,
       dragHandleSticky: dragHandleStickyValue,
       expandSticky: expandStickyValue,
@@ -1052,7 +1234,46 @@ export const Default: Story = {
         } : undefined,
         showColumnSelectorButton: showHeaderColumnSelectorButton
       },
-      lazyLoad: false, // Asegurar que lazyLoad esté desactivado
+      // Configuración de Empty State
+      emptyState: {
+        noData: {
+          title: (args as any).emptyStateNoDataTitle || 'No hay datos',
+          description: (args as any).emptyStateNoDataDescription || 'No se han agregado elementos aún. Comienza agregando tu primer elemento.',
+          icon: (args as any).emptyStateNoDataIcon || 'inbox',
+          actionLabel: (args as any).emptyStateNoDataActionLabel,
+          showPrimaryButton: (args as any).emptyStateNoDataShowPrimaryButton || false,
+          onAction: (args as any).emptyStateNoDataActionLabel ? () => {
+            console.log('Empty state - No data: acción ejecutada');
+            alert('Acción ejecutada desde empty state (no hay datos)');
+          } : undefined
+        },
+        noSearchResults: {
+          title: (args as any).emptyStateNoSearchResultsTitle || 'No se encontraron resultados',
+          description: (args as any).emptyStateNoSearchResultsDescription || 'Intenta con otros términos de búsqueda o ajusta los filtros.',
+          icon: (args as any).emptyStateNoSearchResultsIcon || 'search',
+          actionLabel: (args as any).emptyStateNoSearchResultsActionLabel,
+          showPrimaryButton: (args as any).emptyStateNoSearchResultsShowPrimaryButton || false,
+          onAction: (args as any).emptyStateNoSearchResultsActionLabel ? () => {
+            console.log('Empty state - No search results: acción ejecutada');
+            alert('Acción ejecutada desde empty state (no hay resultados de búsqueda)');
+          } : undefined
+        },
+        noFilterResults: {
+          title: (args as any).emptyStateNoFilterResultsTitle || 'No hay resultados con los filtros aplicados',
+          description: (args as any).emptyStateNoFilterResultsDescription || 'Intenta ajustar los filtros para ver más resultados.',
+          icon: (args as any).emptyStateNoFilterResultsIcon || 'filter',
+          actionLabel: (args as any).emptyStateNoFilterResultsActionLabel || 'Limpiar filtros',
+          showPrimaryButton: (args as any).emptyStateNoFilterResultsShowPrimaryButton !== undefined ? (args as any).emptyStateNoFilterResultsShowPrimaryButton : true,
+          onAction: () => {
+            console.log('Empty state - No filter results: limpiando filtros');
+            // Limpiar filtros - esto se manejará automáticamente por el componente
+            if (tableInstance) {
+              // El componente manejará la limpieza de filtros
+              alert('Limpiando filtros...');
+            }
+          }
+        }
+      },
       onPageChange: (page) => {
         console.log('Page changed to:', page);
         // En Storybook, actualizar el args para que se refleje en los controles
@@ -1235,6 +1456,7 @@ export const Default: Story = {
     showVerticalScrollbar: false,
     showHorizontalScrollbar: false,
     showColumnMenu: true,
+    showContextMenu: true,
     checkboxSticky: false,
     dragHandleSticky: false,
     expandSticky: false,

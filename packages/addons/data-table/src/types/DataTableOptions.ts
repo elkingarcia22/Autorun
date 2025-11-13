@@ -220,6 +220,11 @@ export interface DataTableOptions {
   showColumnMenu?: boolean;
 
   /**
+   * Si se muestra el menú contextual (click derecho) en las filas (por defecto: true)
+   */
+  showContextMenu?: boolean;
+
+  /**
    * Si el checkbox debe ser sticky (por defecto: false)
    */
   checkboxSticky?: boolean;

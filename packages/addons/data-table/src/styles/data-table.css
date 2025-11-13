@@ -633,6 +633,29 @@
     transition: background-color 0.2s ease;
 }
 
+/* Forzar limpieza del hover cuando la fila tiene la clase de limpieza */
+/* Usar mayor especificidad para sobrescribir el hover */
+.ubits-data-table__row.ubits-data-table__row--clear-hover,
+.ubits-data-table__row.ubits-data-table__row--clear-hover:hover {
+    background-color: var(--ubits-bg-1) !important;
+}
+
+/* Asegurar que todas las celdas también cambien con mayor especificidad */
+.ubits-data-table__row.ubits-data-table__row--clear-hover .ubits-data-table__cell,
+.ubits-data-table__row.ubits-data-table__row--clear-hover .ubits-data-table__cell--checkbox,
+.ubits-data-table__row.ubits-data-table__row--clear-hover .ubits-data-table__cell--drag-handle,
+.ubits-data-table__row.ubits-data-table__row--clear-hover .ubits-data-table__cell--expand,
+.ubits-data-table__row.ubits-data-table__row--clear-hover .ubits-data-table__controls-column,
+.ubits-data-table__row.ubits-data-table__row--clear-hover:hover .ubits-data-table__cell,
+.ubits-data-table__row.ubits-data-table__row--clear-hover:hover .ubits-data-table__cell--checkbox,
+.ubits-data-table__row.ubits-data-table__row--clear-hover:hover .ubits-data-table__cell--drag-handle,
+.ubits-data-table__row.ubits-data-table__row--clear-hover:hover .ubits-data-table__cell--expand,
+.ubits-data-table__row.ubits-data-table__row--clear-hover:hover .ubits-data-table__controls-column {
+    background-color: var(--ubits-bg-1) !important;
+}
+
+/* Forzar también con inline style como último recurso - se aplicará desde JS */
+
 /* Celdas */
 .ubits-data-table__cell {
     padding: var(--ubits-spacing-sm, 12px) var(--ubits-spacing-md, 16px);

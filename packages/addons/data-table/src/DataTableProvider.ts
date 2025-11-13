@@ -4341,6 +4341,371 @@ export function createDataTable(options: DataTableOptions): {
       });
     });
     
+    // Menú contextual (click derecho) en las filas - solo si está habilitado
+    const showContextMenuValue = currentOptions.showContextMenu !== false;
+    console.log('🖱️ [CONTEXT MENU] ========== INICIO CONFIGURACIÓN MENÚ CONTEXTUAL ==========');
+    console.log('🖱️ [CONTEXT MENU] showContextMenuValue:', showContextMenuValue);
+    console.log('🖱️ [CONTEXT MENU] showContextMenu option:', currentOptions.showContextMenu);
+    console.log('🖱️ [CONTEXT MENU] Element:', element);
+    
+    if (showContextMenuValue) {
+      // Seleccionar solo las filas de datos (excluyendo filas expandidas)
+      const tableRows = element.querySelectorAll('tr.ubits-data-table__row[data-row-id]');
+      console.log('🖱️ [CONTEXT MENU] Filas encontradas con selector "tr.ubits-data-table__row[data-row-id]":', tableRows.length);
+      
+      if (tableRows.length === 0) {
+        console.warn('🖱️ [CONTEXT MENU] ⚠️ No se encontraron filas con selector: tr.ubits-data-table__row[data-row-id]');
+        // Intentar con selector alternativo
+        const altRows = element.querySelectorAll('[data-row-id]');
+        console.log('🖱️ [CONTEXT MENU] Filas encontradas con selector alternativo "[data-row-id]":', altRows.length);
+        
+        if (altRows.length > 0) {
+          console.log('🖱️ [CONTEXT MENU] Usando selector alternativo para agregar listeners');
+          // Usar el selector alternativo
+          altRows.forEach((rowElement, index) => {
+            const row = rowElement as HTMLElement;
+            const rowIdStr = row.getAttribute('data-row-id');
+            
+            if (!rowIdStr) {
+              console.warn('🖱️ [CONTEXT MENU] ⚠️ Fila sin data-row-id en índice:', index);
+              return;
+            }
+            
+            const rowId = isNaN(Number(rowIdStr)) ? rowIdStr : Number(rowIdStr);
+            console.log('🖱️ [CONTEXT MENU] Agregando listener a fila (alternativo):', rowId);
+            
+            // Reutilizar la misma lógica del menú contextual
+            // (El código completo está más abajo, pero necesitamos crear el contenedor primero)
+            const contextMenuContainer = document.getElementById('ubits-data-table-context-menu') || (() => {
+              const container = document.createElement('div');
+              container.id = 'ubits-data-table-context-menu';
+              container.style.cssText = `
+                position: fixed;
+                z-index: 10000;
+                display: none;
+                background-color: var(--ubits-bg-1);
+                border: 1px solid var(--ubits-border-1);
+                border-radius: var(--ubits-border-radius-md, 8px);
+                box-shadow: var(--ubits-elevation-2, 0 4px 6px rgba(0, 0, 0, 0.1));
+                min-width: 200px;
+                max-width: 300px;
+              `;
+              document.body.appendChild(container);
+              return container;
+            })();
+            
+            row.addEventListener('contextmenu', (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              
+              console.log('🖱️ [CONTEXT MENU] ========== Click derecho detectado (alternativo) ==========');
+              console.log('🖱️ [CONTEXT MENU] Fila ID:', rowId);
+              alert(`Click derecho en fila ${rowId} - Menú contextual (implementación completa pendiente)`);
+            });
+          });
+          console.log('🖱️ [CONTEXT MENU] ✅ Listeners agregados usando selector alternativo');
+          return; // Salir temprano si usamos el selector alternativo
+        }
+      } else {
+        console.log('🖱️ [CONTEXT MENU] ✅ Filas encontradas, procediendo a agregar listeners...');
+      }
+      
+      // Crear contenedor para el menú contextual si no existe
+      let contextMenuContainer: HTMLElement | null = document.getElementById('ubits-data-table-context-menu');
+      if (!contextMenuContainer) {
+        contextMenuContainer = document.createElement('div');
+        contextMenuContainer.id = 'ubits-data-table-context-menu';
+        contextMenuContainer.style.cssText = `
+          position: fixed;
+          z-index: 10000;
+          display: none;
+          background-color: var(--ubits-bg-1);
+          border: 1px solid var(--ubits-border-1);
+          border-radius: var(--ubits-border-radius-md, 8px);
+          box-shadow: var(--ubits-elevation-2, 0 4px 6px rgba(0, 0, 0, 0.1));
+          min-width: 200px;
+          max-width: 300px;
+        `;
+        document.body.appendChild(contextMenuContainer);
+      }
+      
+      let currentContextMenuRowId: string | number | null = null;
+      let handleContextMenuOutsideClick: ((e: MouseEvent) => void) | null = null;
+      
+      const closeContextMenu = () => {
+        if (contextMenuContainer) {
+          contextMenuContainer.style.display = 'none';
+          contextMenuContainer.innerHTML = '';
+        }
+        currentContextMenuRowId = null;
+        if (handleContextMenuOutsideClick) {
+          document.removeEventListener('click', handleContextMenuOutsideClick);
+          document.removeEventListener('contextmenu', handleContextMenuOutsideClick);
+          handleContextMenuOutsideClick = null;
+        }
+      };
+      
+      tableRows.forEach((rowElement, index) => {
+        const row = rowElement as HTMLElement;
+        const rowIdStr = row.getAttribute('data-row-id');
+        
+        if (!rowIdStr) {
+          console.warn('🖱️ [CONTEXT MENU] ⚠️ Fila sin data-row-id en índice:', index);
+          return;
+        }
+        
+        const rowId = isNaN(Number(rowIdStr)) ? rowIdStr : Number(rowIdStr);
+        console.log('🖱️ [CONTEXT MENU] Agregando listener a fila:', rowId, 'elemento:', row);
+        
+        row.addEventListener('contextmenu', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          
+          console.log('🖱️ [CONTEXT MENU] ========== Click derecho detectado ==========');
+          console.log('🖱️ [CONTEXT MENU] Fila ID:', rowId);
+          console.log('🖱️ [CONTEXT MENU] Event:', e);
+          console.log('🖱️ [CONTEXT MENU] Coordenadas:', { x: e.clientX, y: e.clientY });
+        
+        const rowData = currentOptions.rows.find(r => r.id === rowId);
+        if (!rowData) {
+          console.warn('🖱️ [CONTEXT MENU] ⚠️ Fila no encontrada en currentOptions.rows:', rowId);
+          console.log('🖱️ [CONTEXT MENU] Total de filas disponibles:', currentOptions.rows.length);
+          return;
+        }
+        
+        console.log('🖱️ [CONTEXT MENU] Datos de fila encontrados:', rowData);
+        currentContextMenuRowId = rowId;
+        
+        // Cerrar menú anterior si existe
+        console.log('🖱️ [CONTEXT MENU] Cerrando menú anterior...');
+        closeContextMenu();
+        
+        // Crear items del menú contextual (mismas opciones que barra de acciones individuales)
+        // Helper para crear label con icono
+        const createLabelWithIcon = (icon: string, text: string) => {
+          return `<div style="display: flex; align-items: center; gap: var(--ubits-spacing-xs, 8px);">
+            <i class="far fa-${icon}" style="font-size: 14px; width: 16px; text-align: center;"></i>
+            <span>${text}</span>
+          </div>`;
+        };
+        
+        const menuItems = [
+          {
+            label: createLabelWithIcon('eye', 'Ver seleccionados'),
+            value: 'view-selected',
+            state: 'default' as const,
+            onClick: () => {
+              console.log('🖱️ [CONTEXT MENU] Ver seleccionados para fila:', rowId);
+              closeContextMenu();
+              // Aquí puedes agregar la lógica para ver seleccionados
+            }
+          },
+          {
+            label: createLabelWithIcon('bell', 'Notificaciones'),
+            value: 'notifications',
+            state: 'default' as const,
+            onClick: () => {
+              console.log('🖱️ [CONTEXT MENU] Notificaciones para fila:', rowId);
+              closeContextMenu();
+              alert(`Notificaciones para fila: ${rowId}`);
+            }
+          },
+          {
+            label: createLabelWithIcon('copy', 'Copiar'),
+            value: 'copy',
+            state: 'default' as const,
+            onClick: () => {
+              console.log('🖱️ [CONTEXT MENU] Copiar para fila:', rowId);
+              closeContextMenu();
+              alert(`Copiar para fila: ${rowId}`);
+            }
+          },
+          {
+            label: createLabelWithIcon('eye', 'Ver'),
+            value: 'view',
+            state: 'default' as const,
+            onClick: () => {
+              console.log('🖱️ [CONTEXT MENU] Ver para fila:', rowId);
+              closeContextMenu();
+              alert(`Ver para fila: ${rowId}`);
+            }
+          },
+          {
+            label: createLabelWithIcon('edit', 'Editar'),
+            value: 'edit',
+            state: 'default' as const,
+            onClick: () => {
+              console.log('🖱️ [CONTEXT MENU] Editar para fila:', rowId);
+              closeContextMenu();
+              alert(`Editar para fila: ${rowId}`);
+            }
+          },
+          {
+            label: createLabelWithIcon('download', 'Descargar'),
+            value: 'download',
+            state: 'default' as const,
+            onClick: () => {
+              console.log('🖱️ [CONTEXT MENU] Descargar para fila:', rowId);
+              closeContextMenu();
+              alert(`Descargar para fila: ${rowId}`);
+            }
+          },
+          {
+            label: createLabelWithIcon('trash', 'Eliminar'),
+            value: 'delete',
+            state: 'default' as const,
+            onClick: () => {
+              console.log('🖱️ [CONTEXT MENU] Eliminar para fila:', rowId);
+              closeContextMenu();
+              alert(`Eliminar para fila: ${rowId}`);
+            }
+          }
+        ];
+        
+        // Crear el menú usando createList
+        const menuId = `context-menu-list-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+        console.log('🖱️ [CONTEXT MENU] Creando menú con ID:', menuId);
+        
+        // Verificar que el contenedor existe
+        if (!contextMenuContainer) {
+          console.error('🖱️ [CONTEXT MENU] ❌ contextMenuContainer es null!');
+          return;
+        }
+        
+        // Crear contenedor interno para la lista
+        const listContainer = document.createElement('div');
+        listContainer.id = menuId;
+        contextMenuContainer.innerHTML = '';
+        contextMenuContainer.appendChild(listContainer);
+        console.log('🖱️ [CONTEXT MENU] Contenedor creado y agregado al DOM');
+        
+        try {
+          console.log('🖱️ [CONTEXT MENU] Intentando crear lista con createList...');
+          console.log('🖱️ [CONTEXT MENU] Items del menú:', menuItems.length);
+          const listElement = createList({
+            containerId: menuId,
+            items: menuItems,
+            size: 'sm',
+            maxHeight: '400px',
+            onSelectionChange: (item, index) => {
+              console.log('🖱️ [CONTEXT MENU] Item seleccionado:', item?.value, 'índice:', index);
+              if (item && item.onClick) {
+                item.onClick();
+              }
+            }
+          });
+          console.log('🖱️ [CONTEXT MENU] ✅ Lista creada exitosamente');
+          
+          // Posicionar el menú donde se hizo click
+          const x = e.clientX;
+          const y = e.clientY;
+          console.log('🖱️ [CONTEXT MENU] Posicionando menú en:', { x, y });
+          
+          contextMenuContainer.style.left = `${x}px`;
+          contextMenuContainer.style.top = `${y}px`;
+          contextMenuContainer.style.display = 'block';
+          console.log('🖱️ [CONTEXT MENU] Menú visible, display:', contextMenuContainer.style.display);
+          
+          // Ajustar posición si el menú se sale de la pantalla
+          requestAnimationFrame(() => {
+            const rect = contextMenuContainer.getBoundingClientRect();
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+            console.log('🖱️ [CONTEXT MENU] Dimensiones del menú:', { 
+              width: rect.width, 
+              height: rect.height,
+              right: rect.right,
+              bottom: rect.bottom,
+              windowWidth,
+              windowHeight
+            });
+            
+            if (rect.right > windowWidth) {
+              contextMenuContainer.style.left = `${windowWidth - rect.width - 10}px`;
+              console.log('🖱️ [CONTEXT MENU] Ajustando posición horizontal');
+            }
+            if (rect.bottom > windowHeight) {
+              contextMenuContainer.style.top = `${windowHeight - rect.height - 10}px`;
+              console.log('🖱️ [CONTEXT MENU] Ajustando posición vertical');
+            }
+          });
+          
+          // Cerrar menú al hacer click fuera o click derecho en otro lugar
+          handleContextMenuOutsideClick = (e: MouseEvent) => {
+            if (!contextMenuContainer!.contains(e.target as Node)) {
+              closeContextMenu();
+            }
+          };
+          
+          setTimeout(() => {
+            document.addEventListener('click', handleContextMenuOutsideClick!);
+            document.addEventListener('contextmenu', handleContextMenuOutsideClick!);
+          }, 0);
+        } catch (error) {
+          console.error('🖱️ [CONTEXT MENU] ❌ Error al crear menú contextual:', error);
+          console.error('🖱️ [CONTEXT MENU] Stack:', error instanceof Error ? error.stack : 'N/A');
+          // Fallback: usar renderList
+          console.log('🖱️ [CONTEXT MENU] Usando fallback con renderList...');
+          const listHTML = renderList({
+            items: menuItems,
+            size: 'sm',
+            maxHeight: '400px'
+          });
+          
+          listContainer.innerHTML = listHTML;
+          
+          // Agregar event listeners manualmente
+          const listItems = listContainer.querySelectorAll('.ubits-list-item');
+          listItems.forEach((itemEl, index) => {
+            const item = menuItems[index];
+            if (item && item.onClick) {
+              itemEl.addEventListener('click', () => {
+                item.onClick();
+              });
+            }
+          });
+          
+          // Posicionar el menú
+          const x = e.clientX;
+          const y = e.clientY;
+          contextMenuContainer!.style.left = `${x}px`;
+          contextMenuContainer!.style.top = `${y}px`;
+          contextMenuContainer!.style.display = 'block';
+          
+          // Ajustar posición si el menú se sale de la pantalla
+          requestAnimationFrame(() => {
+            const rect = contextMenuContainer!.getBoundingClientRect();
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+            
+            if (rect.right > windowWidth) {
+              contextMenuContainer!.style.left = `${windowWidth - rect.width - 10}px`;
+            }
+            if (rect.bottom > windowHeight) {
+              contextMenuContainer!.style.top = `${windowHeight - rect.height - 10}px`;
+            }
+          });
+          
+          // Cerrar menú al hacer click fuera
+          handleContextMenuOutsideClick = (e: MouseEvent) => {
+            if (!contextMenuContainer!.contains(e.target as Node)) {
+              closeContextMenu();
+            }
+          };
+          
+          setTimeout(() => {
+            document.addEventListener('click', handleContextMenuOutsideClick!);
+            document.addEventListener('contextmenu', handleContextMenuOutsideClick!);
+          }, 0);
+        }
+      });
+        });
+      console.log('🖱️ [CONTEXT MENU] ✅ Listeners del menú contextual agregados correctamente');
+    } else {
+      console.log('🖱️ [CONTEXT MENU] Menú contextual deshabilitado (showContextMenu = false)');
+    }
+    console.log('🖱️ [CONTEXT MENU] ========== FIN CONFIGURACIÓN MENÚ CONTEXTUAL ==========');
+    
     // Campos editables
     const editableFields = element.querySelectorAll('[data-editable-text="true"]');
     editableFields.forEach(field => {

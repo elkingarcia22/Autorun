@@ -636,3 +636,26 @@
     min-width: 100%;
 }
 
+/* ========================================
+   BUTTON "VER SELECCIONADOS" - DARK MODE
+   ======================================== */
+
+/* Estilos para el botón "Dejar de ver seleccionados" en modo dark */
+[data-theme="dark"] #action-btn-view-selected.ubits-button--active,
+[data-theme="dark"] #action-btn-view-selected.ubits-button--active:hover:not(:disabled):not(.ubits-button--loading),
+[data-theme="dark"] #action-btn-view-selected.ubits-button--active:active:not(:disabled):not(.ubits-button--loading) {
+    color: #c4c1fc !important;
+}
+
+[data-theme="dark"] #action-btn-view-selected.ubits-button--active i,
+[data-theme="dark"] #action-btn-view-selected.ubits-button--active:hover:not(:disabled):not(.ubits-button--loading) i,
+[data-theme="dark"] #action-btn-view-selected.ubits-button--active:active:not(:disabled):not(.ubits-button--loading) i {
+    color: #c4c1fc !important;
+}
+
+[data-theme="dark"] #action-btn-view-selected.ubits-button--active span,
+[data-theme="dark"] #action-btn-view-selected.ubits-button--active:hover:not(:disabled):not(.ubits-button--loading) span,
+[data-theme="dark"] #action-btn-view-selected.ubits-button--active:active:not(:disabled):not(.ubits-button--loading) span {
+    color: #c4c1fc !important;
+}
+

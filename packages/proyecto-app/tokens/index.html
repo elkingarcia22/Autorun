@@ -7212,6 +7212,18 @@ Reglas Importantes:
                                 </label>
                               </div>
                               
+                              <!-- Menú Contextual (Click Derecho) -->
+                              <div style="flex: 0 0 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Menú Contextual</label>
+                                <label class="ubits-toggle ubits-toggle--md" style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                                  <input type="checkbox" class="ubits-toggle__input" id="data-table-show-context-menu-${componentId}" checked onchange="setDataTableControl('showContextMenu', this.checked, '${componentId}')">
+                                  <span class="ubits-toggle__track">
+                                    <span class="ubits-toggle__thumb"></span>
+                                  </span>
+                                  <span id="data-table-show-context-menu-status-${componentId}" style="font-size: 14px; color: var(--ubits-fg-1-high);">Visible</span>
+                                </label>
+                              </div>
+                              
                               <!-- Checkbox Sticky -->
                               <div style="flex: 0 0 auto; min-width: 200px;">
                                 <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Checkbox Sticky</label>
@@ -13322,6 +13334,7 @@ Reglas Importantes:
             showVerticalScrollbar: false,
             showHorizontalScrollbar: false,
             showColumnMenu: true,
+            showContextMenu: true,
             checkboxSticky: false,
             dragHandleSticky: false,
             expandSticky: false,
@@ -14725,6 +14738,12 @@ Reglas Importantes:
           if (statusEl) statusEl.textContent = value ? 'Visible' : 'Oculta';
           // Actualizar el preview para reflejar el cambio
           window.updateDataTablePreview(componentId);
+        } else if (option === 'showContextMenu') {
+          state.showContextMenu = value;
+          const statusEl = document.getElementById(`data-table-show-context-menu-status-${componentId}`);
+          if (statusEl) statusEl.textContent = value ? 'Visible' : 'Oculta';
+          // Actualizar el preview para reflejar el cambio
+          window.updateDataTablePreview(componentId);
         } else if (option === 'checkboxSticky') {
           state.checkboxSticky = value;
           const statusEl = document.getElementById(`data-table-checkbox-sticky-status-${componentId}`);
@@ -15723,6 +15742,7 @@ Reglas Importantes:
             const showVerticalScrollbarValue = currentState.showVerticalScrollbar === true;
             const showHorizontalScrollbarValue = currentState.showHorizontalScrollbar === true;
             const showColumnMenuValue = currentState.showColumnMenu !== false;
+            const showContextMenuValue = currentState.showContextMenu !== false;
             
             // Preparar opciones del header
             const totalRows = rowsWithExpand.length;
@@ -15841,6 +15861,7 @@ Reglas Importantes:
               showVerticalScrollbar: showVerticalScrollbarValue,
               showHorizontalScrollbar: showHorizontalScrollbarValue,
               showColumnMenu: showColumnMenuValue,
+              showContextMenu: showContextMenuValue,
               checkboxSticky: currentState.checkboxSticky === true,
               dragHandleSticky: currentState.dragHandleSticky === true,
               expandSticky: currentState.expandSticky === true,
@@ -16082,6 +16103,16 @@ Reglas Importantes:
             const headerColumnSelectorStatus = document.getElementById(`data-table-show-header-column-selector-button-status-${componentId}`);
             if (headerColumnSelectorStatus) {
               headerColumnSelectorStatus.textContent = currentState.showHeaderColumnSelectorButton === true ? 'Visible' : 'Oculta';
+            }
+            
+            // Sincronizar checkbox de menú contextual
+            const contextMenuCheckbox = document.getElementById(`data-table-show-context-menu-${componentId}`);
+            if (contextMenuCheckbox) {
+              contextMenuCheckbox.checked = currentState.showContextMenu !== false;
+            }
+            const contextMenuStatus = document.getElementById(`data-table-show-context-menu-status-${componentId}`);
+            if (contextMenuStatus) {
+              contextMenuStatus.textContent = currentState.showContextMenu !== false ? 'Visible' : 'Oculta';
             }
             
             const headerSecondaryButtonsCheckbox = document.getElementById(`data-table-show-header-secondary-buttons-${componentId}`);

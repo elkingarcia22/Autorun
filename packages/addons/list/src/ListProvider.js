@@ -171,4 +171,3 @@ export function createList(options) {
     });
     return listElement;
 }
-//# sourceMappingURL=ListProvider.js.map

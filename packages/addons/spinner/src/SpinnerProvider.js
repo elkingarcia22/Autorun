@@ -40,4 +40,3 @@ export function createSpinner(options = {}) {
     div.innerHTML = renderSpinner(options);
     return div.querySelector('.ubits-spinner');
 }
-//# sourceMappingURL=SpinnerProvider.js.map
