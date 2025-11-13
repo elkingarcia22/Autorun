@@ -273,6 +273,22 @@
         color: var(--ubits-accent-brand-static-inverted);
         border: none;
       }
+      /* Estilos para el botón "Dejar de ver seleccionados" en modo dark */
+      [data-theme="dark"] #action-btn-view-selected.ubits-button--active,
+      [data-theme="dark"] #action-btn-view-selected.ubits-button--active:hover:not(:disabled):not(.ubits-button--loading),
+      [data-theme="dark"] #action-btn-view-selected.ubits-button--active:active:not(:disabled):not(.ubits-button--loading) {
+        color: #c4c1fc !important;
+      }
+      [data-theme="dark"] #action-btn-view-selected.ubits-button--active i,
+      [data-theme="dark"] #action-btn-view-selected.ubits-button--active:hover:not(:disabled):not(.ubits-button--loading) i,
+      [data-theme="dark"] #action-btn-view-selected.ubits-button--active:active:not(:disabled):not(.ubits-button--loading) i {
+        color: #c4c1fc !important;
+      }
+      [data-theme="dark"] #action-btn-view-selected.ubits-button--active span,
+      [data-theme="dark"] #action-btn-view-selected.ubits-button--active:hover:not(:disabled):not(.ubits-button--loading) span,
+      [data-theme="dark"] #action-btn-view-selected.ubits-button--active:active:not(:disabled):not(.ubits-button--loading) span {
+        color: #c4c1fc !important;
+      }
       .ubits-button--tertiary {
         background: transparent;
         color: var(--ubits-btn-tertiary-fg);
@@ -7433,18 +7449,6 @@ Reglas Importantes:
                                     </label>
                                   </div>
                                   
-                                  <!-- Swap -->
-                                  <div style="flex: 0 0 auto; min-width: 200px;">
-                                    <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Swap</label>
-                                    <label class="ubits-toggle ubits-toggle--md" style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
-                                      <input type="checkbox" class="ubits-toggle__input" id="data-table-show-swap-${componentId}" checked onchange="setDataTableControl('showSwap', this.checked, '${componentId}')">
-                                      <span class="ubits-toggle__track">
-                                        <span class="ubits-toggle__thumb"></span>
-                                      </span>
-                                      <span id="data-table-show-swap-status-${componentId}" style="font-size: 14px; color: var(--ubits-fg-1-high);">Visible</span>
-                                    </label>
-                                  </div>
-                                  
                                   <!-- Notificaciones (Campanita) -->
                                   <div style="flex: 0 0 auto; min-width: 200px;">
                                     <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Notificaciones</label>
@@ -13347,7 +13351,6 @@ Reglas Importantes:
             headerPrimaryButton: { icon: 'plus', iconStyle: 'regular', onClick: () => console.log('Agregar') },
             // Action bar states
             showViewSelected: true,
-            showSwap: true,
             showNotifications: true,
             showCopy: true,
             showView: true,
@@ -13355,7 +13358,7 @@ Reglas Importantes:
             showDownload: true,
             showDelete: true,
             selectedRows: [],
-            viewSelectedActive: false,
+            viewSelectedActive: false, // Estado para filtrar solo seleccionados
             columns: [
               {
                 id: 'checkbox-2',
@@ -15122,11 +15125,6 @@ Reglas Importantes:
           const statusEl = document.getElementById(`data-table-show-view-selected-status-${componentId}`);
           if (statusEl) statusEl.textContent = value ? 'Visible' : 'Oculta';
           window.updateDataTablePreview(componentId);
-        } else if (option === 'showSwap') {
-          state.showSwap = value;
-          const statusEl = document.getElementById(`data-table-show-swap-status-${componentId}`);
-          if (statusEl) statusEl.textContent = value ? 'Visible' : 'Oculta';
-          window.updateDataTablePreview(componentId);
         } else if (option === 'showNotifications') {
           state.showNotifications = value;
           const statusEl = document.getElementById(`data-table-show-notifications-status-${componentId}`);
@@ -15315,10 +15313,7 @@ Reglas Importantes:
       
       // Función para actualizar el preview del Data Table
       window.updateDataTablePreview = function(componentId) {
-        console.log('📄 [WEB] ========== updateDataTablePreview INICIO ==========');
-        console.log('📄 [WEB] componentId recibido:', componentId);
         const state = initDataTablePreviewState(componentId);
-        console.log('📄 [WEB] Estado obtenido. showPagination:', state.showPagination);
         const preview = document.getElementById(`data-table-preview-${componentId}`);
         
         if (!preview) {
@@ -15411,6 +15406,22 @@ Reglas Importantes:
           link.rel = 'stylesheet';
           link.href = '../../addons/button/src/styles/button.css';
           document.head.appendChild(link);
+        }
+        
+        // Cargar script de Button si no está disponible renderButton
+        if (typeof window.renderButton === 'undefined') {
+          const existingButtonScript = document.querySelector('script[src*="button.umd.js"]');
+          if (!existingButtonScript) {
+            const buttonScript = document.createElement('script');
+            buttonScript.src = '../../addons/button/dist/button.umd.js?v=' + Date.now();
+            buttonScript.onload = () => {
+              console.log('✅ Button UMD cargado');
+            };
+            buttonScript.onerror = () => {
+              console.error('❌ Error cargando button.umd.js');
+            };
+            document.head.appendChild(buttonScript);
+          }
         }
         
         // Cargar CSS de SearchButton
@@ -15713,34 +15724,8 @@ Reglas Importantes:
             const showHorizontalScrollbarValue = currentState.showHorizontalScrollbar === true;
             const showColumnMenuValue = currentState.showColumnMenu !== false;
             
-            // Ya no aplicamos sticky aquí - se aplica dentro de renderDataTable después de crear las columnas
-            console.log('🎯 [CREATE] ========== CREANDO TABLA ==========');
-            console.log('🎯 [CREATE] showCheckboxValue:', showCheckboxValue, '(currentState.showCheckbox:', currentState.showCheckbox, ')');
-            console.log('🎯 [CREATE] showVerticalScrollbarValue:', showVerticalScrollbarValue, '(currentState.showVerticalScrollbar:', currentState.showVerticalScrollbar, ')');
-            console.log('🎯 [CREATE] showHorizontalScrollbarValue:', showHorizontalScrollbarValue, '(currentState.showHorizontalScrollbar:', currentState.showHorizontalScrollbar, ')');
-            console.log('🎯 [CREATE] showColumnMenuValue:', showColumnMenuValue, '(currentState.showColumnMenu:', currentState.showColumnMenu, ')');
-            console.log('🎯 [CREATE] checkboxSticky:', currentState.checkboxSticky, 'dragHandleSticky:', currentState.dragHandleSticky, 'expandSticky:', currentState.expandSticky);
-            console.log('📄 [WEB] ========== CREANDO DATA TABLE ==========');
-            console.log('📄 [WEB] showPagination del estado:', currentState.showPagination);
-            console.log('📄 [WEB] showPagination === true:', currentState.showPagination === true);
-            console.log('📄 [WEB] currentPage:', currentState.currentPage || 1);
-            console.log('📄 [WEB] itemsPerPage:', currentState.itemsPerPage || 10);
-            console.log('📄 [WEB] Número de filas:', rowsWithExpand.length);
             // Preparar opciones del header
             const totalRows = rowsWithExpand.length;
-            console.log('📋 [HEADER] Preparando headerOptions:', {
-              headerTitle: currentState.headerTitle,
-              headerCounter: currentState.headerCounter,
-              headerCounterMode: currentState.headerCounterMode,
-              showHeaderTitle: currentState.showHeaderTitle,
-              showHeaderCounter: currentState.showHeaderCounter,
-              showHeaderSearchButton: currentState.showHeaderSearchButton,
-              showHeaderFilterButton: currentState.showHeaderFilterButton,
-              showHeaderColumnSelectorButton: currentState.showHeaderColumnSelectorButton,
-              showHeaderSecondaryButtons: currentState.showHeaderSecondaryButtons,
-              showHeaderPrimaryButton: currentState.showHeaderPrimaryButton,
-              totalRows: totalRows
-            });
             // Asegurar que el título siempre tenga un valor
             const headerTitleValue = currentState.headerTitle && currentState.headerTitle.trim() !== '' 
               ? currentState.headerTitle 
@@ -15885,133 +15870,73 @@ Reglas Importantes:
               },
               onRowSelect: (rowId, selected) => {
                 console.log('🎯 [ROW SELECT] ========== INICIO ==========');
-                console.log('🎯 [ROW SELECT] Fila seleccionada:', rowId, selected);
+                console.log('🎯 [ROW SELECT] Fila:', rowId, 'selected:', selected);
                 
-                // CRÍTICO: El componente Data Table YA actualizó currentOptions.rows[row].data[columnId] ANTES de llamar este callback
-                // (ver línea 3519 en DataTableProvider.ts). Como rowsWithExpand usa las mismas referencias de objetos
-                // que currentState.rows (específicamente row.data), la actualización ya se reflejó en currentState.rows.
-                // Solo necesitamos verificar y asegurarnos de que el estado esté sincronizado.
-                
-                // Obtener el estado MÁS RECIENTE directamente desde dataTablePreviewState
+                // Obtener el estado actualizado
                 const state = initDataTablePreviewState(componentId);
-                console.log('🎯 [ROW SELECT] Estado obtenido directamente. Filas:', state.rows.length);
+                const checkboxColumn = columns.find(col => col.id === 'checkbox-2');
                 
-                // Verificar que la actualización del componente Data Table se reflejó en el estado
-                const row = state.rows.find(r => r.id === rowId);
-                console.log('🎯 [ROW SELECT] Fila encontrada:', !!row);
-                
-                if (row) {
-                  // Buscar la columna checkbox-2
-                  const checkboxColumn = columns.find(col => col.id === 'checkbox-2');
-                  console.log('🎯 [ROW SELECT] checkboxColumn encontrado:', !!checkboxColumn);
-                  
-                  if (checkboxColumn) {
-                    if (!row.data) {
-                      row.data = {};
-                      console.log('🎯 [ROW SELECT] row.data creado');
-                    }
-                    
-                    // Verificar el valor actual (debería estar actualizado por el componente Data Table)
-                    const currentValue = row.data[checkboxColumn.id];
-                    console.log('🎯 [ROW SELECT] Valor actual en estado:', currentValue, 'tipo:', typeof currentValue);
-                    console.log('🎯 [ROW SELECT] Valor esperado (selected):', selected);
-                    
-                    // Si el valor no coincide, actualizarlo explícitamente
-                    if (currentValue !== selected) {
-                      console.log('🎯 [ROW SELECT] ⚠️ Valores no coinciden, actualizando explícitamente...');
-                      row.data[checkboxColumn.id] = selected;
-                    } else {
-                      console.log('🎯 [ROW SELECT] ✅ Valores coinciden, estado ya está actualizado');
-                    }
-                    
-                    console.log('🎯 [ROW SELECT] DESPUÉS - row.data[checkboxColumn.id]:', row.data[checkboxColumn.id]);
-                    console.log('✅ [ROW SELECT] Estado actualizado. Fila:', rowId, 'checkbox-2:', row.data[checkboxColumn.id]);
-                    
-                    // Verificar selecciones actuales INMEDIATAMENTE después de actualizar
-                    const selectedRows = state.rows.filter(r => {
-                      if (!r.data) return false;
-                      const checkboxColumn = columns.find(col => col.id === 'checkbox-2');
-                      if (!checkboxColumn) return false;
-                      const value = r.data[checkboxColumn.id];
-                      console.log(`🎯 [ROW SELECT] Verificando fila ${r.id}: checkboxValue =`, value, 'tipo:', typeof value);
-                      return value === true;
-                    });
-                    const selectedCount = selectedRows.length;
-                    console.log('🎯 [ROW SELECT] Total seleccionadas:', selectedCount);
-                    console.log('🎯 [ROW SELECT] Filas seleccionadas:', selectedRows.map(r => r.id));
-                    
-                    // El estado ya está actualizado porque state es una referencia a dataTablePreviewState[componentId]
-                    console.log('🎯 [ROW SELECT] Estado actualizado en dataTablePreviewState');
+                if (checkboxColumn) {
+                  const row = state.rows.find(r => r.id === rowId);
+                  if (row) {
+                    if (!row.data) row.data = {};
+                    row.data[checkboxColumn.id] = selected;
+                    console.log('🎯 [ROW SELECT] Estado actualizado:', rowId, '=', selected);
                   }
                 }
                 
-                // CRÍTICO: El componente Data Table YA actualizó currentOptions.rows[row].data[columnId] ANTES de llamar este callback
-                // (ver línea 3519 en DataTableProvider.ts). Como rowsWithExpand usa las mismas referencias de objetos
-                // que currentState.rows (específicamente row.data), la actualización YA se reflejó en currentState.rows[row].data[columnId].
-                // 
-                // El problema es que cuando recreamos la tabla, estamos creando un nuevo rowsWithExpand, pero el componente
-                // Data Table mantiene su propia referencia interna currentOptions.rows al rowsWithExpand anterior.
-                // 
-                // SOLUCIÓN: No recrear la tabla inmediatamente. En su lugar, esperar a que el componente Data Table
-                // termine de procesar la actualización y luego renderizar la barra de acciones y actualizar el header.
-                
-                // Obtener el contenedor para renderizar la barra de acciones
+                // Renderizar barra de acciones inmediatamente (igual que en Storybook)
                 const container = document.getElementById(`data-table-container-${componentId}`);
-                
-                // Renderizar la barra de acciones después de un pequeño delay para asegurar que el componente
-                // Data Table haya terminado de procesar la actualización
-                setTimeout(() => {
-                  console.log('🎯 [ROW SELECT] Renderizando barra de acciones después de 50ms...');
-                  if (container) {
-                    // Obtener el estado más reciente antes de renderizar
-                    const latestState = initDataTablePreviewState(componentId);
-                    renderActionBar(componentId, latestState, container);
-                  }
-                }, 50);
-                
-                // Re-renderizar la tabla para actualizar el header con estado indeterminado
-                // Usar un delay más largo para asegurar que el estado esté completamente sincronizado
-                setTimeout(() => {
-                  console.log('🎯 [ROW SELECT] Re-renderizando tabla después de 150ms para actualizar header...');
-                  if (window.dataTableInstances[componentId]) {
-                    try {
-                      window.dataTableInstances[componentId].destroy();
-                    } catch (e) {
-                      console.warn('Error destruyendo instancia:', e);
-                    }
-                    delete window.dataTableInstances[componentId];
-                    // Recrear con el estado actualizado
-                    createDataTableInstance();
-                  }
-                }, 150);
+                if (container) {
+                  const latestState = initDataTablePreviewState(componentId);
+                  renderActionBar(componentId, latestState, container);
+                }
                 console.log('🎯 [ROW SELECT] ========== FIN ==========');
               },
               onSelectAll: (selected) => {
-                console.log('Seleccionar todos:', selected);
-                // CRÍTICO: Obtener el estado MÁS RECIENTE directamente desde dataTablePreviewState
+                console.log('🎯 [SELECT ALL] selected:', selected);
                 const state = initDataTablePreviewState(componentId);
-                // Actualizar todas las filas
                 const checkboxColumn = columns.find(col => col.id === 'checkbox-2');
+                
                 if (checkboxColumn) {
-                  state.rows.forEach(row => {
-                    if (!row.data) row.data = {};
-                    row.data[checkboxColumn.id] = selected;
-                  });
-                  console.log('✅ Todas las filas actualizadas. checkbox-2:', selected);
-                }
-                // Re-renderizar la tabla
-                setTimeout(() => {
-                  if (window.dataTableInstances[componentId]) {
-                    try {
-                      window.dataTableInstances[componentId].destroy();
-                    } catch (e) {
-                      console.warn('Error destruyendo instancia:', e);
-                    }
-                    delete window.dataTableInstances[componentId];
-                    // Recrear con el estado actualizado
-                    createDataTableInstance();
+                  // Obtener filas visibles desde el DOM
+                  const tableElement = document.querySelector(`#data-table-container-${componentId} .ubits-data-table`);
+                  const loadedRowIds = new Set();
+                  
+                  if (tableElement) {
+                    const visibleCheckboxes = tableElement.querySelectorAll(`input[type="checkbox"][data-column-id="${checkboxColumn.id}"][data-row-id]`);
+                    visibleCheckboxes.forEach((cb) => {
+                      const rowIdStr = cb.getAttribute('data-row-id');
+                      if (rowIdStr) {
+                        const rowId = isNaN(Number(rowIdStr)) ? rowIdStr : Number(rowIdStr);
+                        loadedRowIds.add(String(rowId));
+                      }
+                    });
                   }
-                }, 100);
+                  
+                  // Actualizar estado
+                  const isLazyLoad = !state.showPagination && (state.lazyLoad !== false);
+                  if (isLazyLoad && loadedRowIds.size > 0) {
+                    state.rows.forEach(row => {
+                      if (!row.data) row.data = {};
+                      if (loadedRowIds.has(String(row.id))) {
+                        row.data[checkboxColumn.id] = selected;
+                      }
+                    });
+                  } else {
+                    state.rows.forEach(row => {
+                      if (!row.data) row.data = {};
+                      row.data[checkboxColumn.id] = selected;
+                    });
+                  }
+                }
+                
+                // Renderizar barra de acciones inmediatamente (igual que en Storybook)
+                const container = document.getElementById(`data-table-container-${componentId}`);
+                if (container) {
+                  const latestState = initDataTablePreviewState(componentId);
+                  renderActionBar(componentId, latestState, container);
+                }
               },
               onRowExpand: (rowId, expanded) => {
                 console.log('Fila expandida:', rowId, expanded);
@@ -16026,40 +15951,50 @@ Reglas Importantes:
               },
               onRowReorder: (rowIds) => {
                 console.log('Filas reordenadas:', rowIds);
+              },
+              // Configuración de Empty State
+              emptyState: {
+                noData: {
+                  title: 'No hay datos',
+                  description: 'No se han agregado elementos aún. Comienza agregando tu primer elemento.',
+                  icon: 'inbox',
+                  showPrimaryButton: false
+                },
+                noSearchResults: {
+                  title: 'No se encontraron resultados',
+                  description: 'Intenta con otros términos de búsqueda o ajusta los filtros.',
+                  icon: 'search',
+                  showPrimaryButton: false
+                },
+                noFilterResults: {
+                  title: 'No hay resultados con los filtros aplicados',
+                  description: 'Intenta ajustar los filtros para ver más resultados.',
+                  icon: 'filter',
+                  actionLabel: 'Limpiar filtros',
+                  showPrimaryButton: true,
+                  onAction: () => {
+                    console.log('Empty state - No filter results: limpiando filtros');
+                    // Limpiar filtros - esto se manejará automáticamente por el componente
+                    alert('Limpiando filtros...');
+                  }
+                }
               }
             };
-            
-            console.log('📋 [HEADER] Opciones pasadas a createDataTable:', {
-              hasHeader: !!tableOptions.header,
-              headerKeys: tableOptions.header ? Object.keys(tableOptions.header) : [],
-              headerTitle: tableOptions.header?.title,
-              headerShowTitle: tableOptions.header?.showTitle,
-              headerShowCounter: tableOptions.header?.showCounter
-            });
             
             const table = window.createDataTable(tableOptions);
             
             // Guardar instancia para poder destruirla después
             window.dataTableInstances[componentId] = table;
             
-            // Renderizar barra de acciones después del header si hay selecciones
-            // Usar múltiples timeouts para asegurar que el DOM esté listo y el estado actualizado
-            setTimeout(() => {
-              console.log('🎯 [CREATE] Llamando renderActionBar (100ms)');
-              renderActionBar(componentId, currentState, container);
-            }, 100);
-            setTimeout(() => {
-              console.log('🎯 [CREATE] Llamando renderActionBar (300ms)');
-              renderActionBar(componentId, currentState, container);
-            }, 300);
-            setTimeout(() => {
-              console.log('🎯 [CREATE] Llamando renderActionBar (500ms)');
-              renderActionBar(componentId, currentState, container);
-            }, 500);
-            setTimeout(() => {
-              console.log('🎯 [CREATE] Llamando renderActionBar (800ms)');
-              renderActionBar(componentId, currentState, container);
-            }, 800);
+            // Renderizar barra de acciones después de crear la tabla
+            const waitForRenderButton = () => {
+              if (typeof window.renderButton !== 'undefined') {
+                renderActionBar(componentId, currentState, container);
+              } else {
+                setTimeout(waitForRenderButton, 50);
+              }
+            };
+            setTimeout(waitForRenderButton, 200);
             
             // Sincronizar checkboxes con el estado actual
             const paginationCheckbox = document.getElementById(`data-table-show-pagination-${componentId}`);
@@ -16170,7 +16105,6 @@ Reglas Importantes:
             // Sincronizar checkboxes de acciones
             const actionCheckboxes = [
               { id: 'showViewSelected', statusId: 'show-view-selected-status' },
-              { id: 'showSwap', statusId: 'show-swap-status' },
               { id: 'showNotifications', statusId: 'show-notifications-status' },
               { id: 'showCopy', statusId: 'show-copy-status' },
               { id: 'showView', statusId: 'show-view-status' },
@@ -16190,8 +16124,6 @@ Reglas Importantes:
               }
             });
             
-            console.log('📄 [WEB] ✅ Data Table creada exitosamente');
-            console.log('📄 [WEB] ========== updateDataTablePreview FIN ==========');
           } catch (error) {
             console.error('❌ Error creando Data Table:', error);
             preview.innerHTML = `<p style="color: var(--ubits-fg-1-medium); padding: 16px;">Error: ${error.message}</p>`;
@@ -16200,9 +16132,7 @@ Reglas Importantes:
         
         // Verificar si el módulo ya está cargado
         if (typeof window.createDataTable !== 'undefined') {
-          console.log('📄 [WEB] Módulo createDataTable disponible, creando instancia...');
           createDataTableInstance();
-          console.log('📄 [WEB] ========== updateDataTablePreview FIN ==========');
           return;
         }
         
@@ -16223,8 +16153,17 @@ Reglas Importantes:
         
         // Cargar el módulo UMD (con timestamp para evitar caché)
         console.log(`🔄 [UPDATE] 📦 Cargando módulo UMD...`);
+        
+        // Remover cualquier script anterior para forzar recarga
+        const oldScripts = document.querySelectorAll('script[src*="data-table.umd.js"]');
+        oldScripts.forEach(oldScript => {
+          console.log('🔄 [UPDATE] 🗑️ Removiendo script anterior:', oldScript.src);
+          oldScript.remove();
+        });
+        
         const script = document.createElement('script');
         script.src = '../../addons/data-table/dist/data-table.umd.js?v=' + Date.now();
+        console.log('🔄 [UPDATE] 📦 Cargando desde:', script.src);
         script.onload = () => {
           script.setAttribute('data-loaded', 'true');
           console.log('✅ Data Table UMD cargado');
@@ -16237,6 +16176,67 @@ Reglas Importantes:
               clearInterval(checkModule);
               console.log('✅ createDataTable disponible');
               createDataTableInstance();
+              
+              // Agregar listener global para clicks fuera de la tabla para limpiar hover
+              const container = document.getElementById(`data-table-container-${componentId}`);
+              if (container) {
+                // Usar un listener único por instancia
+                const clickOutsideHandler = (e) => {
+                  const target = e.target;
+                  const isInsideTable = container.contains(target);
+                  console.log('🖱️ [CLICK OUTSIDE] ========== CLICK DETECTADO ==========');
+                  console.log('🖱️ [CLICK OUTSIDE] Target:', target);
+                  console.log('🖱️ [CLICK OUTSIDE] ¿Dentro de la tabla?', isInsideTable);
+                  
+                  if (!isInsideTable) {
+                    console.log('🖱️ [CLICK OUTSIDE] ✅ Click fuera de la tabla detectado');
+                    const table = container.querySelector('.ubits-data-table');
+                    if (table) {
+                      const rows = table.querySelectorAll('.ubits-data-table__row');
+                      console.log('🖱️ [CLICK OUTSIDE] Filas encontradas:', rows.length);
+                      
+                      rows.forEach((row, index) => {
+                        const computedStyle = window.getComputedStyle(row);
+                        const bgBefore = computedStyle.backgroundColor;
+                        const hasHoverClass = row.classList.contains('ubits-data-table__row--clear-hover');
+                        const hasInlineStyle = row.style.backgroundColor;
+                        
+                        console.log(`🖱️ [CLICK OUTSIDE] Fila ${index}:`, {
+                          bgBefore,
+                          hasHoverClass,
+                          hasInlineStyle,
+                          classes: Array.from(row.classList)
+                        });
+                        
+                        // Limpiar cualquier clase o estilo residual
+                        if (hasHoverClass) {
+                          row.classList.remove('ubits-data-table__row--clear-hover');
+                          console.log(`🖱️ [CLICK OUTSIDE] ✅ Clase removida de fila ${index}`);
+                        }
+                        if (hasInlineStyle) {
+                          row.style.removeProperty('background-color');
+                          const cells = row.querySelectorAll('.ubits-data-table__cell');
+                          cells.forEach((cell) => {
+                            cell.style.removeProperty('background-color');
+                          });
+                          console.log(`🖱️ [CLICK OUTSIDE] ✅ Inline styles removidos de fila ${index}`);
+                        }
+                        
+                        const bgAfter = window.getComputedStyle(row).backgroundColor;
+                        console.log(`🖱️ [CLICK OUTSIDE] Fila ${index} background después:`, bgAfter);
+                      });
+                    }
+                  }
+                  console.log('🖱️ [CLICK OUTSIDE] ========== FIN ==========');
+                };
+                
+                // Agregar listener en fase de captura para que se ejecute antes
+                document.addEventListener('click', clickOutsideHandler, true);
+                console.log('🖱️ [CLICK OUTSIDE] ✅ Listener global agregado para limpiar hover');
+                
+                // Guardar referencia para poder limpiarlo después si es necesario
+                container._clickOutsideHandler = clickOutsideHandler;
+              }
             } else if (attempts >= maxAttempts) {
               clearInterval(checkModule);
               console.error('❌ createDataTable no disponible después de', maxAttempts, 'intentos');
@@ -24969,344 +24969,279 @@ Reglas Importantes:
       
       // Función para renderizar la barra de acciones
       function renderActionBar(componentId, state, container) {
-        console.log('🎯 [ACTION BAR] ========== renderActionBar INICIO ==========');
-        console.log('🎯 [ACTION BAR] componentId:', componentId);
+        console.log('🎯 [ACTION BAR] Iniciando renderizado...');
         
-        // OBTENER EL ESTADO MÁS RECIENTE directamente desde dataTablePreviewState
+        // Obtener estado más reciente
         const currentState = initDataTablePreviewState(componentId);
-        console.log('🎯 [ACTION BAR] Estado obtenido desde dataTablePreviewState');
-        console.log('🎯 [ACTION BAR] currentState.rows.length:', currentState.rows?.length);
-        console.log('🎯 [ACTION BAR] currentState.columns:', currentState.columns);
-        
-        // Usar el estado más reciente en lugar del parámetro
         state = currentState;
         
-        const actionBarId = `data-table-action-bar-${componentId}`;
-        let existingBar = document.getElementById(actionBarId);
-        console.log('🎯 [ACTION BAR] existingBar encontrado:', !!existingBar);
-        
-        // Obtener filas seleccionadas
-        const checkboxColumn = state.columns.find(col => col.id === 'checkbox-2');
-        console.log('🎯 [ACTION BAR] checkboxColumn:', checkboxColumn);
-        console.log('🎯 [ACTION BAR] checkboxColumn.id:', checkboxColumn?.id);
-        
-        if (!checkboxColumn) {
-          console.error('🎯 [ACTION BAR] ❌ No se encontró checkboxColumn con id "checkbox-2"');
-          console.log('🎯 [ACTION BAR] Columnas disponibles:', state.columns.map(c => c.id));
-          return;
-        }
-        
-        console.log('🎯 [ACTION BAR] Analizando filas...');
-        
-        // INTENTAR LEER DIRECTAMENTE DESDE EL DOM COMO FUENTE DE VERDAD
-        // Esto es más confiable que leer desde el estado, ya que el DOM refleja el estado actual del componente
-        const tableElement = container.querySelector('.ubits-data-table');
-        let selectedRowsFromDOM = [];
-        
-        if (tableElement) {
-          console.log('🎯 [ACTION BAR] Leyendo selecciones desde el DOM...');
-          const checkboxes = tableElement.querySelectorAll(`input[data-column-id="${checkboxColumn.id}"][data-row-id]`);
-          console.log('🎯 [ACTION BAR] Checkboxes encontrados en DOM:', checkboxes.length);
-          
-          checkboxes.forEach((checkbox) => {
-            const input = checkbox;
-            const rowIdStr = input.getAttribute('data-row-id');
-            if (rowIdStr && input.checked) {
-              const rowId = isNaN(Number(rowIdStr)) ? rowIdStr : Number(rowIdStr);
-              const row = state.rows.find(r => String(r.id) === String(rowId));
-              if (row) {
-                selectedRowsFromDOM.push(row);
-                console.log(`🎯 [ACTION BAR] ✅ Fila ${rowId} SELECCIONADA (desde DOM)`);
-              }
-            }
-          });
-        }
-        
-        // También leer desde el estado como respaldo
-        const selectedRows = [];
-        state.rows.forEach((row, index) => {
-          console.log(`🎯 [ACTION BAR] === Fila ${index} (id: ${row.id}) ===`);
-          console.log(`🎯 [ACTION BAR]   - row.data existe:`, !!row.data);
-          console.log(`🎯 [ACTION BAR]   - row.data:`, row.data);
-          
-          if (!row.data) {
-            console.log(`🎯 [ACTION BAR]   ❌ Fila ${row.id}: No tiene data`);
-            return;
-          }
-          
-          const checkboxValue = row.data[checkboxColumn.id];
-          console.log(`🎯 [ACTION BAR]   - checkboxValue:`, checkboxValue);
-          console.log(`🎯 [ACTION BAR]   - checkboxValue === true:`, checkboxValue === true);
-          console.log(`🎯 [ACTION BAR]   - typeof checkboxValue:`, typeof checkboxValue);
-          
-          const isSelected = checkboxValue === true;
-          console.log(`🎯 [ACTION BAR]   - isSelected:`, isSelected);
-          
-          if (isSelected) {
-            selectedRows.push(row);
-            console.log(`🎯 [ACTION BAR]   ✅ Fila ${row.id} SELECCIONADA (desde estado)`);
-          } else {
-            console.log(`🎯 [ACTION BAR]   ⚪ Fila ${row.id} NO seleccionada`);
-          }
-        });
-        
-        // USAR LA FUENTE MÁS CONFIABLE: DOM primero, estado como respaldo
-        // Si el DOM tiene selecciones, usarlas; si no, usar el estado
-        const finalSelectedRows = selectedRowsFromDOM.length > 0 ? selectedRowsFromDOM : selectedRows;
-        console.log('🎯 [ACTION BAR] Fuente usada:', selectedRowsFromDOM.length > 0 ? 'DOM' : 'ESTADO');
-        console.log('🎯 [ACTION BAR] Selecciones desde DOM:', selectedRowsFromDOM.length);
-        console.log('🎯 [ACTION BAR] Selecciones desde estado:', selectedRows.length);
-        
-        console.log('🎯 [ACTION BAR] ========== RESUMEN DE SELECCIÓN ==========');
-        console.log('🎯 [ACTION BAR] finalSelectedRows.length:', finalSelectedRows.length);
-        console.log('🎯 [ACTION BAR] finalSelectedRows:', finalSelectedRows.map(r => ({ id: r.id, nombre: r.data?.nombre })));
-        
-        const selectedCount = finalSelectedRows.length;
-        const hasSelection = selectedCount > 0;
-        const isMultipleSelection = selectedCount > 1;
-        
-        console.log('🎯 [ACTION BAR] Resumen final:', { 
-          selectedCount, 
-          hasSelection, 
-          isMultipleSelection,
-          willRender: hasSelection
-        });
-        
-        // Si no hay selección y la barra existe, eliminarla
-        if (!hasSelection && existingBar) {
-          console.log('🎯 [ACTION BAR] ⚠️ Eliminando barra (sin selección)');
-          console.log('🎯 [ACTION BAR] selectedCount:', selectedCount);
-          existingBar.remove();
-          return;
-        }
-        
-        // Si no hay selección, no renderizar nada
-        if (!hasSelection) {
-          console.log('🎯 [ACTION BAR] ⚠️ No hay selección, no renderizar');
-          console.log('🎯 [ACTION BAR] selectedCount:', selectedCount);
-          console.log('🎯 [ACTION BAR] hasSelection:', hasSelection);
-          return;
-        }
-        
-        console.log('🎯 [ACTION BAR] ✅ HAY SELECCIÓN - Procediendo a renderizar barra...');
-        
-        // Buscar el header del Data Table para insertar la barra después
+        // Buscar contenedor y header
         const dataTableContainer = document.getElementById(`data-table-container-${componentId}`);
-        console.log('🎯 [ACTION BAR] Buscando dataTableContainer con ID:', `data-table-container-${componentId}`);
-        console.log('🎯 [ACTION BAR] dataTableContainer encontrado:', !!dataTableContainer);
         if (!dataTableContainer) {
-          console.error('🎯 [ACTION BAR] ❌ dataTableContainer no encontrado');
-          console.log('🎯 [ACTION BAR] Intentando buscar todos los contenedores:', document.querySelectorAll('[id*="data-table-container"]').length);
+          console.error('🎯 [ACTION BAR] ❌ Contenedor no encontrado');
           return;
         }
         
         const header = dataTableContainer.querySelector('.ubits-data-table__header');
-        console.log('🎯 [ACTION BAR] Buscando header con selector: .ubits-data-table__header');
-        console.log('🎯 [ACTION BAR] header encontrado:', !!header);
         if (!header) {
-          console.error('🎯 [ACTION BAR] ❌ header no encontrado');
-          console.log('🎯 [ACTION BAR] Elementos dentro del container:', dataTableContainer.children.length);
-          console.log('🎯 [ACTION BAR] Primer hijo:', dataTableContainer.firstElementChild);
+          console.error('🎯 [ACTION BAR] ❌ Header no encontrado');
           return;
         }
         
-        console.log('🎯 [ACTION BAR] ✅ Header encontrado, procediendo a crear/actualizar barra');
-        
-        // Crear o actualizar la barra de acciones
-        if (!existingBar) {
-          console.log('🎯 [ACTION BAR] Creando nueva barra de acciones...');
-          existingBar = document.createElement('div');
-          existingBar.id = actionBarId;
-          existingBar.className = 'ubits-data-table__action-bar';
-          existingBar.style.cssText = 'display: flex; align-items: center; justify-content: flex-start; padding: var(--ubits-spacing-md, 16px); gap: var(--ubits-spacing-xs, 8px); flex-wrap: wrap;';
-          header.insertAdjacentElement('afterend', existingBar);
-          console.log('🎯 [ACTION BAR] ✅ Barra creada e insertada después del header');
-        } else {
-          console.log('🎯 [ACTION BAR] Barra ya existe, actualizando contenido...');
-        }
-        
-        // Construir botones según controladores y tipo de selección
-        const buttons = [];
-        
-        // Botón "Ver seleccionados" (siempre visible si está habilitado)
-        if (state.showViewSelected !== false) {
-          const viewSelectedText = state.viewSelectedActive 
-            ? `Dejar de ver seleccionados (${selectedCount})` 
-            : `Ver seleccionados (${selectedCount})`;
-          buttons.push({
-            type: 'button',
-            variant: 'secondary',
-            icon: state.viewSelectedActive ? 'eye-slash' : 'eye',
-            text: viewSelectedText,
-            onClick: () => {
-              state.viewSelectedActive = !state.viewSelectedActive;
-              window.updateDataTablePreview(componentId);
-            },
-            active: state.viewSelectedActive
-          });
-        }
-        
-        // Si hay múltiples selecciones, solo mostrar acciones masivas
-        if (isMultipleSelection) {
-          // Solo acciones masivas: Notificaciones, Descargar, Eliminar
-          if (state.showNotifications !== false) {
-            buttons.push({
-              type: 'button',
-              variant: 'secondary',
-              icon: 'bell',
-              iconOnly: true,
-              onClick: () => console.log('Notificaciones masivas:', finalSelectedRows.map(r => r.id))
-            });
-          }
-          if (state.showDownload !== false) {
-            buttons.push({
-              type: 'button',
-              variant: 'secondary',
-              icon: 'download',
-              iconOnly: true,
-              onClick: () => console.log('Descargar masivo:', finalSelectedRows.map(r => r.id))
-            });
-          }
-          if (state.showDelete !== false) {
-            buttons.push({
-              type: 'button',
-              variant: 'secondary',
-              icon: 'trash',
-              iconOnly: true,
-              onClick: () => console.log('Eliminar masivo:', finalSelectedRows.map(r => r.id)),
-              style: 'background: var(--ubits-error-bg-light, #fef2f2); border-color: var(--ubits-error-border, #fca5a5); color: var(--ubits-error-fg, #dc2626);'
-            });
-          }
-        } else {
-          // Selección única: mostrar todas las acciones habilitadas
-          if (state.showSwap !== false) {
-            buttons.push({
-              type: 'button',
-              variant: 'secondary',
-              icon: 'arrow-right-arrow-left',
-              iconOnly: true,
-              onClick: () => console.log('Swap:', selectedRows[0]?.id)
-            });
-          }
-          if (state.showNotifications !== false) {
-            buttons.push({
-              type: 'button',
-              variant: 'secondary',
-              icon: 'bell',
-              iconOnly: true,
-              onClick: () => console.log('Notificaciones:', selectedRows[0]?.id)
-            });
-          }
-          if (state.showCopy !== false) {
-            buttons.push({
-              type: 'button',
-              variant: 'secondary',
-              icon: 'copy',
-              iconOnly: true,
-              onClick: () => console.log('Copiar:', selectedRows[0]?.id)
-            });
-          }
-          if (state.showView !== false) {
-            buttons.push({
-              type: 'button',
-              variant: 'secondary',
-              icon: 'eye',
-              iconOnly: true,
-              onClick: () => console.log('Ver:', selectedRows[0]?.id)
-            });
-          }
-          if (state.showEdit !== false) {
-            buttons.push({
-              type: 'button',
-              variant: 'secondary',
-              icon: 'pencil',
-              iconOnly: true,
-              onClick: () => console.log('Editar:', selectedRows[0]?.id)
-            });
-          }
-          if (state.showDownload !== false) {
-            buttons.push({
-              type: 'button',
-              variant: 'secondary',
-              icon: 'download',
-              iconOnly: true,
-              onClick: () => console.log('Descargar:', selectedRows[0]?.id)
-            });
-          }
-          if (state.showDelete !== false) {
-            buttons.push({
-              type: 'button',
-              variant: 'secondary',
-              icon: 'trash',
-              iconOnly: true,
-              onClick: () => console.log('Eliminar:', selectedRows[0]?.id),
-              style: 'background: var(--ubits-error-bg-light, #fef2f2); border-color: var(--ubits-error-border, #fca5a5); color: var(--ubits-error-fg, #dc2626);'
-            });
-          }
-        }
-        
-        // Renderizar botones usando componentes UBITS
-        const buttonsHTML = buttons.map((btn, index) => {
-          const buttonClass = `ubits-button ubits-button--${btn.variant || 'secondary'} ubits-button--sm`;
-          const activeClass = btn.active ? ' ubits-button--active' : '';
-          const iconOnlyClass = btn.iconOnly ? ' ubits-button--icon-only' : '';
-          const styleAttr = btn.style ? ` style="${btn.style}"` : '';
-          const buttonId = `action-btn-${componentId}-${index}`;
-          
-          // Crear función wrapper para el onClick
-          const onClickHandler = `(function() { ${btn.onClick.toString()} })()`;
-          
-          return `
-            <button 
-              id="${buttonId}"
-              class="${buttonClass}${activeClass}${iconOnlyClass}" 
-              ${styleAttr}>
-              ${btn.icon ? `<i class="far fa-${btn.icon}"></i>` : ''}
-              ${btn.text ? `<span>${btn.text}</span>` : ''}
-            </button>
+        // Buscar o crear barra
+        let actionBar = dataTableContainer.querySelector('.ubits-data-table__action-bar');
+        if (!actionBar) {
+          actionBar = document.createElement('div');
+          actionBar.className = 'ubits-data-table__action-bar';
+          actionBar.style.cssText = `
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            padding: var(--ubits-spacing-sm) 0;
+            gap: var(--ubits-spacing-xs);
+            flex-wrap: wrap;
+            background-color: var(--ubits-bg-1);
           `;
-        }).join('');
+          header.insertAdjacentElement('afterend', actionBar);
+        }
         
-        console.log('🎯 [ACTION BAR] Botones creados:', buttons.length);
-        console.log('🎯 [ACTION BAR] buttonsHTML length:', buttonsHTML.length);
-        console.log('🎯 [ACTION BAR] Primeros 300 chars de buttonsHTML:', buttonsHTML.substring(0, 300));
+        // Buscar columna checkbox
+        const checkboxColumn = state.columns.find(col => col.id === 'checkbox-2');
+        if (!checkboxColumn) {
+          console.error('🎯 [ACTION BAR] ❌ Columna checkbox-2 no encontrada');
+          return;
+        }
         
-        existingBar.innerHTML = `
-          <div style="display: flex; align-items: center; gap: var(--ubits-spacing-xs, 8px); flex-wrap: wrap;">
-            ${buttonsHTML}
-          </div>
-        `;
-        
-        console.log('🎯 [ACTION BAR] ✅ HTML insertado en existingBar');
-        console.log('🎯 [ACTION BAR] existingBar.innerHTML length:', existingBar.innerHTML.length);
-        console.log('🎯 [ACTION BAR] existingBar.style.display:', existingBar.style.display);
-        console.log('🎯 [ACTION BAR] existingBar.offsetHeight:', existingBar.offsetHeight);
-        console.log('🎯 [ACTION BAR] existingBar.offsetWidth:', existingBar.offsetWidth);
-        
-        // Agregar event listeners a los botones
-        let listenersAdded = 0;
-        buttons.forEach((btn, index) => {
-          const buttonId = `action-btn-${componentId}-${index}`;
-          const buttonEl = document.getElementById(buttonId);
-          if (buttonEl) {
-            buttonEl.addEventListener('click', btn.onClick);
-            listenersAdded++;
-            console.log(`🎯 [ACTION BAR] ✅ Listener agregado al botón ${index} (${buttonId})`);
-          } else {
-            console.warn(`🎯 [ACTION BAR] ⚠️ Botón ${index} no encontrado (${buttonId})`);
-          }
+        // Contar selecciones - IMPORTANTE: contar en TODAS las filas originales, no en las filtradas
+        // El estado puede tener las filas filtradas cuando viewSelectedActive está activo,
+        // pero necesitamos contar todas las selecciones, no solo las visibles
+        const selectedRows = state.rows.filter((row) => {
+          return row.data && row.data[checkboxColumn.id] === true;
         });
         
-        console.log('🎯 [ACTION BAR] ========== RESUMEN FINAL ==========');
-        console.log('🎯 [ACTION BAR] selectedCount:', selectedCount);
-        console.log('🎯 [ACTION BAR] hasSelection:', hasSelection);
-        console.log('🎯 [ACTION BAR] isMultipleSelection:', isMultipleSelection);
-        console.log('🎯 [ACTION BAR] buttons.length:', buttons.length);
-        console.log('🎯 [ACTION BAR] listenersAdded:', listenersAdded);
-        console.log('🎯 [ACTION BAR] existingBar existe:', !!existingBar);
-        console.log('🎯 [ACTION BAR] existingBar visible:', existingBar ? (existingBar.offsetHeight > 0 || existingBar.offsetWidth > 0) : false);
-        console.log('🎯 [ACTION BAR] ✅ Barra de acciones renderizada exitosamente');
-        console.log('🎯 [ACTION BAR] ========== renderActionBar FIN ==========');
+        const selectedCount = selectedRows.length;
+        const selectedIds = selectedRows.map(r => r.id);
+        console.log('🎯 [ACTION BAR] Selecciones encontradas:', selectedCount, 'IDs:', selectedIds, 'viewSelectedActive:', state.viewSelectedActive);
+        
+        // IMPORTANTE: La barra debe mostrarse SIEMPRE que haya selecciones,
+        // independientemente de si viewSelectedActive está activo o no
+        // Esto es diferente a ocultar cuando no hay selecciones
+        if (selectedCount === 0) {
+          actionBar.style.display = 'none';
+          console.log('🎯 [ACTION BAR] Barra ocultada - sin selecciones');
+          return;
+        }
+        
+        // Mostrar barra SIEMPRE que haya selecciones (incluso si viewSelectedActive está activo)
+        actionBar.style.display = 'flex';
+        console.log('🎯 [ACTION BAR] Barra mostrada -', selectedCount, 'selección(es)');
+        
+        const countText = `(${selectedCount})`;
+        const isMultipleSelection = selectedCount > 1;
+        
+        // Estado del botón "Ver seleccionados" (compartido entre ambos modos)
+        const isViewSelectedActive = state.viewSelectedActive || false;
+        const viewSelectedText = isViewSelectedActive
+          ? `Dejar de ver seleccionados ${countText}`
+          : `Ver seleccionados ${countText}`;
+        const viewSelectedIcon = isViewSelectedActive ? 'eye-slash' : 'eye';
+        
+        // Función helper para renderizar botones (usa renderButton si está disponible, sino HTML directo)
+        const renderButtonHelper = (options) => {
+          if (typeof window.renderButton !== 'undefined') {
+            return window.renderButton(options);
+          }
+          // Fallback: generar HTML directamente usando la misma estructura que renderButton
+          const { variant = 'secondary', size = 'sm', text = '', icon, iconStyle = 'regular', iconOnly = false, active = false, className = '', attributes = {} } = options;
+          const iconClass = iconStyle === 'solid' ? 'fas' : 'far';
+          const iconName = icon ? (icon.startsWith('fa-') ? icon : `fa-${icon}`) : '';
+          const iconHTML = iconName ? `<i class="${iconClass} ${iconName}"></i>` : '';
+          const textHTML = text ? `<span>${text}</span>` : '';
+          const classes = [
+            'ubits-button',
+            `ubits-button--${variant}`,
+            `ubits-button--${size}`,
+            active && 'ubits-button--active',
+            iconOnly && 'ubits-button--icon-only',
+            className
+          ].filter(Boolean).join(' ');
+          const attrs = Object.entries(attributes).map(([key, value]) => `${key}="${value}"`).join(' ');
+          return `<button class="${classes}" ${attrs} type="button">${iconHTML}${textHTML}</button>`;
+        };
+        
+        // Usar fallback HTML directamente si renderButton no está disponible (sin esperar)
+        const renderButtonsNow = () => {
+          // Verificar rápidamente si renderButton está disponible (solo 1 intento)
+          if (typeof window.renderButton === 'undefined') {
+            // Usar fallback HTML inmediatamente
+          } else {
+            console.log('🎯 [ACTION BAR] renderButton disponible, renderizando botones...');
+          }
+          
+          let buttonsHTML = '';
+          
+          // Construir array de botones según los estados de los controladores
+          const buttons = [];
+          
+          // Ver seleccionados - siempre disponible si está habilitado
+          if (state.showViewSelected !== false) {
+            buttons.push({
+              variant: 'secondary',
+              size: 'sm',
+              text: viewSelectedText,
+              icon: viewSelectedIcon,
+              iconStyle: 'regular',
+              active: isViewSelectedActive,
+              attributes: { id: 'action-btn-view-selected' }
+            });
+          }
+          
+          // Notificaciones - solo si está habilitado
+          if (state.showNotifications !== false) {
+            buttons.push({
+              variant: 'secondary',
+              size: 'sm',
+              icon: 'bell',
+              iconStyle: 'regular',
+              iconOnly: true,
+              attributes: { id: 'action-btn-notifications' }
+            });
+          }
+          
+          // Solo mostrar otros botones si hay 1 selección (modo individual)
+          if (!isMultipleSelection) {
+            // Copiar - solo si está habilitado
+            if (state.showCopy !== false) {
+              buttons.push({
+                variant: 'secondary',
+                size: 'sm',
+                icon: 'copy',
+                iconStyle: 'regular',
+                iconOnly: true,
+                attributes: { id: 'action-btn-copy' }
+              });
+            }
+            
+            // Ver - solo si está habilitado
+            if (state.showView !== false) {
+              buttons.push({
+                variant: 'secondary',
+                size: 'sm',
+                icon: 'eye',
+                iconStyle: 'regular',
+                iconOnly: true,
+                attributes: { id: 'action-btn-view' }
+              });
+            }
+            
+            // Editar - solo si está habilitado
+            if (state.showEdit !== false) {
+              buttons.push({
+                variant: 'secondary',
+                size: 'sm',
+                icon: 'edit',
+                iconStyle: 'regular',
+                iconOnly: true,
+                attributes: { id: 'action-btn-edit' }
+              });
+            }
+            
+            // Descargar - solo si está habilitado
+            if (state.showDownload !== false) {
+              buttons.push({
+                variant: 'secondary',
+                size: 'sm',
+                icon: 'download',
+                iconStyle: 'regular',
+                iconOnly: true,
+                attributes: { id: 'action-btn-download' }
+              });
+            }
+          }
+          
+          // Eliminar - siempre disponible si está habilitado
+          if (state.showDelete !== false) {
+            buttons.push({
+              variant: 'secondary',
+              size: 'sm',
+              icon: 'trash',
+              iconStyle: 'regular',
+              iconOnly: true,
+              className: 'ubits-button--error',
+              attributes: { id: 'action-btn-delete' }
+            });
+          }
+          
+          // Renderizar todos los botones
+          buttonsHTML = buttons.map(btn => renderButtonHelper(btn)).join('');
+        
+          actionBar.innerHTML = buttonsHTML;
+          
+          // CRÍTICO: Agregar listeners DESPUÉS de establecer innerHTML
+          // Usar setTimeout para asegurar que el DOM esté actualizado
+          setTimeout(() => {
+            // Listener para "Ver seleccionados"
+            const viewSelectedBtn = actionBar.querySelector('#action-btn-view-selected');
+            if (viewSelectedBtn) {
+              // Remover listener anterior si existe
+              const newBtn = viewSelectedBtn.cloneNode(true);
+              viewSelectedBtn.parentNode?.replaceChild(newBtn, viewSelectedBtn);
+              
+              newBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('🎯 [ACTION BAR] Click en Ver seleccionados');
+                const newState = initDataTablePreviewState(componentId);
+                newState.viewSelectedActive = !isViewSelectedActive;
+                // Re-renderizar tabla con filtro
+                if (window.dataTableInstances[componentId]) {
+                  try {
+                    window.dataTableInstances[componentId].destroy();
+                  } catch (e) {
+                    console.warn('Error destruyendo instancia:', e);
+                  }
+                  delete window.dataTableInstances[componentId];
+                }
+                // Recrear la tabla
+                setTimeout(() => {
+                  window.updateDataTablePreview(componentId);
+                  // IMPORTANTE: Llamar a renderActionBar después de que la tabla se haya actualizado
+                  setTimeout(() => {
+                    const container = document.getElementById(`data-table-container-${componentId}`);
+                    if (container) {
+                      const latestState = initDataTablePreviewState(componentId);
+                      renderActionBar(componentId, latestState, container);
+                    }
+                  }, 300);
+                }, 50);
+              });
+            }
+            
+            // Otros botones - agregar listeners a todos los botones disponibles
+            ['notifications', 'copy', 'view', 'edit', 'download', 'delete'].forEach(action => {
+              const btn = actionBar.querySelector(`#action-btn-${action}`);
+              if (btn) {
+                // Remover listener anterior si existe
+                const newBtn = btn.cloneNode(true);
+                btn.parentNode?.replaceChild(newBtn, btn);
+                
+                newBtn.addEventListener('click', (e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  console.log(`🎯 [ACTION BAR] Click en ${action}`, selectedIds);
+                  alert(`Acción: ${action} para ${selectedCount} elemento(s)`);
+                });
+              }
+            });
+            
+            console.log('🎯 [ACTION BAR] ✅ Listeners agregados correctamente');
+          }, 0);
+          
+          console.log('🎯 [ACTION BAR] ✅ Renderizado completado');
+        };
+        
+        // Renderizar inmediatamente sin esperar
+        renderButtonsNow();
       }
       
       // Hacer la función accesible globalmente para debugging

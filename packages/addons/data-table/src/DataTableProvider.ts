@@ -15,6 +15,7 @@ import type { SearchButtonOptions } from '../../search-button/src/types/SearchBu
 import { createDrawer } from '../../drawer/src/DrawerProvider';
 import { renderBadge } from '../../badge/src/BadgeProvider';
 import { renderInput, createInput } from '../../input/src/InputProvider';
+import { renderEmptyState } from '../../empty-state/src/EmptyStateProvider';
 // Importar estilos del List para que se carguen
 import '../../list/src/styles/list.css';
 // Importar estilos del SearchButton para que se carguen
@@ -25,6 +26,8 @@ import '../../drawer/src/styles/drawer.css';
 import '../../badge/src/styles/badge.css';
 // Importar estilos del Input para que se carguen
 import '../../input/src/styles/input.css';
+// Importar estilos del EmptyState para que se carguen
+import '../../empty-state/src/styles/empty-state.css';
 
 /**
  * Renderiza una celda según el tipo de columna
@@ -457,14 +460,19 @@ function renderCellByType(column: TableColumn, row: TableRow, columnType: Column
     
     case 'acciones': {
       // Por defecto, mostrar botón terciario con icono de eliminar
-      return renderButton({
+      const buttonHTML = renderButton({
         text: 'Eliminar',
         variant: 'tertiary',
         size: 'sm',
         icon: 'trash',
         iconStyle: 'regular',
-        className: 'ubits-data-table__action-button'
+        className: 'ubits-data-table__action-button',
+        attributes: {
+          'data-row-id': String(row.id),
+          'data-column-id': column.id
+        }
       });
+      return buttonHTML;
     }
     
       case 'fecha': {
@@ -1169,8 +1177,12 @@ export function renderDataTable(
     paginationVariant = 'default',
     paginationSize = 'md',
     lazyLoad,
-    lazyLoadItemsPerBatch = 10
+    lazyLoadItemsPerBatch = 10,
+    emptyState
   } = options;
+  
+  // Extraer searchTerm de las opciones del header si existe
+  const searchTerm = (options.header as any)?.__searchTerm || '';
   
   // Si showPagination está activo, desactivar lazy load automáticamente
   const isLazyLoadEnabled = showPagination ? false : (lazyLoad !== false); // Por defecto true si no hay paginación
@@ -1178,8 +1190,21 @@ export function renderDataTable(
 
   // Logs de paginación - limpiados
 
+  // Eliminar columnas duplicadas por ID primero (mantener solo la primera ocurrencia)
+  const seenIds = new Set<string>();
+  const uniqueColumns = columns.filter(col => {
+    if (seenIds.has(col.id)) {
+      console.log('🔍 [RENDER DATA TABLE] ⚠️ COLUMNA DUPLICADA ELIMINADA:', col.id, col.title);
+      return false;
+    }
+    seenIds.add(col.id);
+    return true;
+  });
+  
+  console.log('🔍 [RENDER DATA TABLE] Columnas únicas:', uniqueColumns.length, 'de', columns.length, 'totales');
+  
   // Filtrar columnas visibles
-  let visibleColumns = columns.filter(col => col.visible !== false);
+  let visibleColumns = uniqueColumns.filter(col => col.visible !== false);
   
   // Eliminar la columna de checkbox vieja (id === 'checkbox')
   visibleColumns = visibleColumns.filter(col => col.id !== 'checkbox');
@@ -1522,6 +1547,47 @@ export function renderDataTable(
   console.log('🔍 [RENDER] paginatedRows.length final:', paginatedRows.length);
   console.log('🔍 [RENDER] ========== FIN FILAS DEBUG ==========');
   
+  // Detectar si debemos mostrar empty state
+  let emptyStateHTML = '';
+  const hasNoData = rows.length === 0;
+  const hasNoResults = paginatedRows.length === 0;
+  const hasActiveFilters = Object.keys(activeFilters).length > 0;
+  const hasSearchTerm = searchTerm && searchTerm.trim() !== '';
+  
+  if (hasNoResults && emptyState) {
+    let emptyStateConfig;
+    
+    if (hasNoData && emptyState.noData) {
+      // No hay datos en absoluto
+      emptyStateConfig = emptyState.noData;
+    } else if (hasSearchTerm && emptyState.noSearchResults) {
+      // No hay resultados de búsqueda
+      emptyStateConfig = emptyState.noSearchResults;
+    } else if (hasActiveFilters && emptyState.noFilterResults) {
+      // No hay resultados de filtros
+      emptyStateConfig = emptyState.noFilterResults;
+    }
+    
+    if (emptyStateConfig) {
+      // Renderizar empty state
+      emptyStateHTML = renderEmptyState({
+        title: emptyStateConfig.title || 'No hay resultados',
+        description: emptyStateConfig.description,
+        icon: emptyStateConfig.icon,
+        imageUrl: emptyStateConfig.imageUrl,
+        actionLabel: emptyStateConfig.actionLabel,
+        showPrimaryButton: emptyStateConfig.showPrimaryButton || false,
+        primaryButtonIcon: emptyStateConfig.primaryButtonIcon,
+        showPrimaryButtonIcon: emptyStateConfig.showPrimaryButtonIcon || false,
+        secondaryActionLabel: emptyStateConfig.secondaryActionLabel,
+        showSecondaryButton: emptyStateConfig.showSecondaryButton || false,
+        secondaryButtonIcon: emptyStateConfig.secondaryButtonIcon,
+        showSecondaryButtonIcon: emptyStateConfig.showSecondaryButtonIcon || false,
+        className: 'ubits-data-table__empty-state'
+      });
+    }
+  }
+  
   const rowsHTML = paginatedRows
     .map((row, index) => {
       // Calcular left para cada columna fijada en esta fila
@@ -1538,6 +1604,9 @@ export function renderDataTable(
 
   console.log('🔍 [RENDER] rowsHTML generado, número de <tr> en HTML:', (rowsHTML.match(/<tr/g) || []).length);
   console.log('🔍 [RENDER] paginatedRows procesadas:', paginatedRows.length);
+  
+  // Si hay empty state, usar ese HTML en lugar de las filas
+  const tbodyContent = emptyStateHTML || rowsHTML;
 
   const classes = [
     'ubits-data-table',
@@ -1551,6 +1620,7 @@ export function renderDataTable(
   const headerCount = visibleColumns.length;
 
   // Estructura: tabla directamente o envuelta en contenedor scrollable
+  // Si hay empty state, mostrar el empty state en el tbody pero mantener el thead
   const tableHTML = `
     <table class="${classes} ubits-data-table__table">
       <thead class="ubits-data-table__thead">
@@ -1559,7 +1629,10 @@ export function renderDataTable(
         </tr>
       </thead>
       <tbody class="ubits-data-table__tbody">
-        ${rowsHTML}
+        ${emptyStateHTML 
+          ? `<tr><td colspan="${headerCount}" style="padding: 0;">${emptyStateHTML}</td></tr>`
+          : tbodyContent
+        }
       </tbody>
     </table>
   `.trim();
@@ -1715,9 +1788,30 @@ export function createDataTable(options: DataTableOptions): {
   container.appendChild(element);
 
   // Estado interno
+  // Función helper para eliminar columnas duplicadas por ID
+  const removeDuplicateColumns = (cols: TableColumn[]): TableColumn[] => {
+    const seenIds = new Set<string>();
+    const unique: TableColumn[] = [];
+    
+    for (const col of cols) {
+      if (!seenIds.has(col.id)) {
+        seenIds.add(col.id);
+        unique.push({ ...col });
+      } else {
+        console.log('🔍 [CREATE DATA TABLE] ⚠️ COLUMNA DUPLICADA ELIMINADA al inicializar:', col.id, col.title);
+      }
+    }
+    
+    if (unique.length !== cols.length) {
+      console.log('🔍 [CREATE DATA TABLE] Columnas duplicadas eliminadas:', cols.length, '->', unique.length);
+    }
+    
+    return unique;
+  };
+  
   let currentOptions = {
     ...options,
-    columns: options.columns.map(col => ({ ...col }))
+    columns: removeDuplicateColumns(options.columns)
   };
   
   // Orden de columnas
@@ -2027,11 +2121,11 @@ export function createDataTable(options: DataTableOptions): {
     let savedClientHeight = 0;
     let shouldPreserveScroll = preserveScroll;
     
-    const scrollableContainer = element.querySelector('.ubits-data-table__scrollable-container') as HTMLElement;
-    if (scrollableContainer) {
-      savedScrollTop = scrollableContainer.scrollTop;
-      savedScrollHeight = scrollableContainer.scrollHeight;
-      savedClientHeight = scrollableContainer.clientHeight;
+      const scrollableContainer = element.querySelector('.ubits-data-table__scrollable-container') as HTMLElement;
+      if (scrollableContainer) {
+        savedScrollTop = scrollableContainer.scrollTop;
+        savedScrollHeight = scrollableContainer.scrollHeight;
+        savedClientHeight = scrollableContainer.clientHeight;
       
       // IMPORTANTE: Siempre preservar el scroll si hay un scrollableContainer con contenido más grande que el contenedor
       // Esto previene el "salto" visual incluso cuando scrollTop = 0 (usuario en la parte superior)
@@ -2103,12 +2197,34 @@ export function createDataTable(options: DataTableOptions): {
       } : undefined
     };
     
+    // Eliminar columnas duplicadas por ID antes de renderizar
+    console.log('🔍 [RENDER] Eliminando columnas duplicadas antes de renderizar...');
+    console.log('🔍 [RENDER] Columnas ANTES de eliminar duplicados:', renderOptions.columns.length);
+    console.log('🔍 [RENDER] IDs de columnas:', renderOptions.columns.map(c => c.id));
+    
+    const seenColumnIds = new Set<string>();
+    const uniqueColumns = renderOptions.columns.filter(col => {
+      if (seenColumnIds.has(col.id)) {
+        console.log('🔍 [RENDER] ⚠️ COLUMNA DUPLICADA ELIMINADA:', col.id, col.title);
+        return false;
+      }
+      seenColumnIds.add(col.id);
+      return true;
+    });
+    
+    console.log('🔍 [RENDER] Columnas DESPUÉS de eliminar duplicados:', uniqueColumns.length);
+    console.log('🔍 [RENDER] IDs únicos:', Array.from(seenColumnIds));
+    
+    // Actualizar renderOptions con columnas únicas
+    renderOptions.columns = uniqueColumns;
+    
     console.log('🔍 [DATA TABLE] Renderizando:', {
       displayedItems: renderOptions.header?.displayedItems,
       totalItems: renderOptions.header?.totalItems,
       filteredRows: filteredRows.length,
       hasSearch: !!searchTerm,
-      hasFilters: Object.keys(activeFilters).length > 0
+      hasFilters: Object.keys(activeFilters).length > 0,
+      uniqueColumnsCount: uniqueColumns.length
     });
     
     const newHTML = renderDataTable(
@@ -2306,7 +2422,7 @@ export function createDataTable(options: DataTableOptions): {
     if (isLazyLoadEnabled && !currentOptions.showPagination) {
       setupLazyLoad();
     }
-    
+      
     // IMPORTANTE: Restaurar scroll position SIEMPRE que se haya guardado, no solo para lazy load
     // Esto previene el "salto" visual cuando se seleccionan todos los elementos o se hace cualquier cambio
     // Restaurar si:
@@ -2317,18 +2433,18 @@ export function createDataTable(options: DataTableOptions): {
     if (shouldRestoreScroll) {
       console.log(`🔄 [RENDER] 📍 Restaurando scroll después del render...`);
       
-      // Usar requestAnimationFrame para asegurar que el DOM esté completamente renderizado
-      requestAnimationFrame(() => {
+        // Usar requestAnimationFrame para asegurar que el DOM esté completamente renderizado
+        requestAnimationFrame(() => {
         const newScrollableContainer = element.querySelector('.ubits-data-table__scrollable-container') as HTMLElement;
         if (newScrollableContainer) {
           const newScrollHeight = newScrollableContainer.scrollHeight;
           const newClientHeight = newScrollableContainer.clientHeight;
           const newMaxScroll = newScrollHeight - newClientHeight;
           
-          // Calcular la posición relativa del scroll (0-1)
-          const oldMaxScroll = savedScrollHeight - savedClientHeight;
-          const scrollPercentage = oldMaxScroll > 0 ? savedScrollTop / oldMaxScroll : 0;
-          
+            // Calcular la posición relativa del scroll (0-1)
+            const oldMaxScroll = savedScrollHeight - savedClientHeight;
+            const scrollPercentage = oldMaxScroll > 0 ? savedScrollTop / oldMaxScroll : 0;
+            
           console.log(`🔄 [RENDER] 📍 Cálculo de restauración de scroll:`, {
             old: {
               scrollTop: savedScrollTop,
@@ -2344,8 +2460,8 @@ export function createDataTable(options: DataTableOptions): {
             scrollPercentage: (scrollPercentage * 100).toFixed(2) + '%',
             newScrollTop: newMaxScroll > 0 ? scrollPercentage * newMaxScroll : 0
           });
-          
-          if (newMaxScroll > 0) {
+            
+            if (newMaxScroll > 0) {
             const newScrollTop = scrollPercentage * newMaxScroll;
             newScrollableContainer.scrollTop = newScrollTop;
             
@@ -2357,11 +2473,11 @@ export function createDataTable(options: DataTableOptions): {
             });
           } else {
             console.log(`🔄 [RENDER] ⚠️ No hay scroll disponible (maxScroll <= 0), no se puede restaurar`);
-          }
+            }
         } else {
           console.log(`🔄 [RENDER] ⚠️ No se encontró scrollableContainer después del render, no se puede restaurar scroll`);
-        }
-      });
+          }
+        });
     } else {
       console.log(`🔄 [RENDER] 📍 No se restaura scroll:`, {
         shouldPreserve: shouldPreserveScroll,
@@ -3009,40 +3125,40 @@ export function createDataTable(options: DataTableOptions): {
           
           // IMPORTANTE: Actualizar los checkboxes de forma SÍNCRONA para que se muestren inmediatamente
           // No usar requestAnimationFrame aquí porque retrasa el renderizado visual
-          visibleCheckboxes.forEach((cb) => {
-            const checkbox = cb as HTMLInputElement;
-            const rowIdStr = checkbox.getAttribute('data-row-id');
-            if (rowIdStr) {
-              const rowId = isNaN(Number(rowIdStr)) ? rowIdStr : Number(rowIdStr);
+            visibleCheckboxes.forEach((cb) => {
+              const checkbox = cb as HTMLInputElement;
+              const rowIdStr = checkbox.getAttribute('data-row-id');
+              if (rowIdStr) {
+                const rowId = isNaN(Number(rowIdStr)) ? rowIdStr : Number(rowIdStr);
               // Actualizar el estado interno PRIMERO
-              const row = currentOptions.rows.find(r => r.id === rowId);
-              if (row) {
-                row.data[currentColumnId] = isChecked;
-              }
+                const row = currentOptions.rows.find(r => r.id === rowId);
+                if (row) {
+                  row.data[currentColumnId] = isChecked;
+                }
               
               // IMPORTANTE: Actualizar el checkbox visual
               // La bandera isSelectAllInProgress previene que el handler individual se ejecute
               // incluso si se dispara el evento change
-              checkbox.checked = isChecked;
-              
-              // IMPORTANTE: Actualizar la clase CSS del contenedor del checkbox UBITS
-              const checkboxContainer = checkbox.closest('.ubits-checkbox') as HTMLElement;
-              if (checkboxContainer) {
-                const checkboxSquare = checkboxContainer.querySelector('.ubits-checkbox__square') as HTMLElement;
+                checkbox.checked = isChecked;
                 
-                if (isChecked) {
-                  // IMPORTANTE: Asegurar que la clase checked esté presente ANTES de crear el checkmark
-                  checkboxContainer.classList.add('ubits-checkbox--checked');
-                  checkboxContainer.classList.remove('ubits-checkbox--indeterminate');
+                // IMPORTANTE: Actualizar la clase CSS del contenedor del checkbox UBITS
+                const checkboxContainer = checkbox.closest('.ubits-checkbox') as HTMLElement;
+                if (checkboxContainer) {
+                  const checkboxSquare = checkboxContainer.querySelector('.ubits-checkbox__square') as HTMLElement;
                   
-                  // Crear o asegurar que existe el elemento checkmark
-                  if (checkboxSquare) {
-                    // Remover el elemento indeterminate si existe
-                    const indeterminateEl = checkboxSquare.querySelector('.ubits-checkbox__indeterminate');
-                    if (indeterminateEl) {
-                      indeterminateEl.remove();
-                    }
+                  if (isChecked) {
+                    // IMPORTANTE: Asegurar que la clase checked esté presente ANTES de crear el checkmark
+                    checkboxContainer.classList.add('ubits-checkbox--checked');
+                    checkboxContainer.classList.remove('ubits-checkbox--indeterminate');
                     
+                    // Crear o asegurar que existe el elemento checkmark
+                    if (checkboxSquare) {
+                      // Remover el elemento indeterminate si existe
+                      const indeterminateEl = checkboxSquare.querySelector('.ubits-checkbox__indeterminate');
+                      if (indeterminateEl) {
+                        indeterminateEl.remove();
+                      }
+                      
                     // IMPORTANTE: Verificar si el checkmark ya existe
                     let checkmarkEl = checkboxSquare.querySelector('.ubits-checkbox__checkmark') as HTMLElement;
                     if (!checkmarkEl) {
@@ -3055,11 +3171,11 @@ export function createDataTable(options: DataTableOptions): {
                     // IMPORTANTE: Remover la transición temporalmente para mostrar inmediatamente
                     const originalTransition = checkmarkEl.style.transition;
                     checkmarkEl.style.transition = 'none';
-                    
-                    // Aplicar estilos directamente para asegurar que se muestre inmediatamente
-                    checkmarkEl.style.setProperty('opacity', '1', 'important');
-                    checkmarkEl.style.setProperty('transform', 'scale(1)', 'important');
-                    checkmarkEl.style.setProperty('display', 'flex', 'important');
+                      
+                      // Aplicar estilos directamente para asegurar que se muestre inmediatamente
+                      checkmarkEl.style.setProperty('opacity', '1', 'important');
+                      checkmarkEl.style.setProperty('transform', 'scale(1)', 'important');
+                      checkmarkEl.style.setProperty('display', 'flex', 'important');
                     
                     // IMPORTANTE: Forzar un reflow completo usando getComputedStyle
                     // Esto asegura que el navegador renderice el checkmark inmediatamente
@@ -3076,54 +3192,54 @@ export function createDataTable(options: DataTableOptions): {
                     setTimeout(() => {
                       checkmarkEl.style.transition = originalTransition || '';
                     }, 0);
-                  }
-                } else {
-                  checkboxContainer.classList.remove('ubits-checkbox--checked');
-                  checkboxContainer.classList.remove('ubits-checkbox--indeterminate');
-                  
-                  // Remover el checkmark si existe
-                  if (checkboxSquare) {
-                    const checkmarkEl = checkboxSquare.querySelector('.ubits-checkbox__checkmark');
-                    if (checkmarkEl) {
-                      checkmarkEl.remove();
                     }
-                    const indeterminateEl = checkboxSquare.querySelector('.ubits-checkbox__indeterminate');
-                    if (indeterminateEl) {
-                      indeterminateEl.remove();
+                  } else {
+                    checkboxContainer.classList.remove('ubits-checkbox--checked');
+                    checkboxContainer.classList.remove('ubits-checkbox--indeterminate');
+                    
+                    // Remover el checkmark si existe
+                    if (checkboxSquare) {
+                      const checkmarkEl = checkboxSquare.querySelector('.ubits-checkbox__checkmark');
+                      if (checkmarkEl) {
+                        checkmarkEl.remove();
+                      }
+                      const indeterminateEl = checkboxSquare.querySelector('.ubits-checkbox__indeterminate');
+                      if (indeterminateEl) {
+                        indeterminateEl.remove();
+                      }
                     }
                   }
                 }
               }
-            }
-          });
-          
+            });
+            
           // IMPORTANTE: Actualizar el header checkbox DESPUÉS de actualizar todos los checkboxes individuales
           // para asegurar que el estado visual se sincronice correctamente
-          const allChecked = currentOptions.rows.length > 0 && currentOptions.rows.every(r => r.data[currentColumnId] === true);
-          const someChecked = currentOptions.rows.some(r => r.data[currentColumnId] === true);
-          const isIndeterminate = someChecked && !allChecked;
-          const headerCheckbox = input;
+            const allChecked = currentOptions.rows.length > 0 && currentOptions.rows.every(r => r.data[currentColumnId] === true);
+            const someChecked = currentOptions.rows.some(r => r.data[currentColumnId] === true);
+            const isIndeterminate = someChecked && !allChecked;
+            const headerCheckbox = input;
           
           // Forzar actualización del estado checked e indeterminate
-          headerCheckbox.checked = allChecked;
-          headerCheckbox.indeterminate = isIndeterminate;
-          
-          // Actualizar también la clase CSS del contenedor del header checkbox
-          const headerCheckboxContainer = headerCheckbox.closest('.ubits-checkbox') as HTMLElement;
-          if (headerCheckboxContainer) {
-            const headerCheckboxSquare = headerCheckboxContainer.querySelector('.ubits-checkbox__square') as HTMLElement;
+            headerCheckbox.checked = allChecked;
+            headerCheckbox.indeterminate = isIndeterminate;
             
-            if (allChecked) {
-              headerCheckboxContainer.classList.add('ubits-checkbox--checked');
-              headerCheckboxContainer.classList.remove('ubits-checkbox--indeterminate');
+            // Actualizar también la clase CSS del contenedor del header checkbox
+            const headerCheckboxContainer = headerCheckbox.closest('.ubits-checkbox') as HTMLElement;
+            if (headerCheckboxContainer) {
+              const headerCheckboxSquare = headerCheckboxContainer.querySelector('.ubits-checkbox__square') as HTMLElement;
               
+              if (allChecked) {
+                headerCheckboxContainer.classList.add('ubits-checkbox--checked');
+                headerCheckboxContainer.classList.remove('ubits-checkbox--indeterminate');
+                
               // IMPORTANTE: Asegurar que el checkmark exista y esté visible
-              if (headerCheckboxSquare) {
+                if (headerCheckboxSquare) {
                 // Remover el elemento indeterminate si existe
-                const indeterminateEl = headerCheckboxSquare.querySelector('.ubits-checkbox__indeterminate');
-                if (indeterminateEl) {
-                  indeterminateEl.remove();
-                }
+                  const indeterminateEl = headerCheckboxSquare.querySelector('.ubits-checkbox__indeterminate');
+                  if (indeterminateEl) {
+                    indeterminateEl.remove();
+                  }
                 
                 // IMPORTANTE: Asegurar que la clase checked esté presente PRIMERO
                 // Esto es crítico para que el CSS se aplique correctamente
@@ -3134,11 +3250,11 @@ export function createDataTable(options: DataTableOptions): {
                 
                 // IMPORTANTE: Verificar si el checkmark ya existe
                 let checkmarkEl = headerCheckboxSquare.querySelector('.ubits-checkbox__checkmark') as HTMLElement;
-                if (!checkmarkEl) {
+                  if (!checkmarkEl) {
                   // Crear el checkmark solo si no existe
-                  checkmarkEl = document.createElement('span');
-                  checkmarkEl.className = 'ubits-checkbox__checkmark';
-                  headerCheckboxSquare.appendChild(checkmarkEl);
+                    checkmarkEl = document.createElement('span');
+                    checkmarkEl.className = 'ubits-checkbox__checkmark';
+                    headerCheckboxSquare.appendChild(checkmarkEl);
                 }
                 
                 // IMPORTANTE: Remover la transición temporalmente para mostrar inmediatamente
@@ -3146,9 +3262,9 @@ export function createDataTable(options: DataTableOptions): {
                 checkmarkEl.style.transition = 'none';
                 
                 // Aplicar estilos directamente para forzar visualización inmediata
-                checkmarkEl.style.setProperty('opacity', '1', 'important');
-                checkmarkEl.style.setProperty('transform', 'scale(1)', 'important');
-                checkmarkEl.style.setProperty('display', 'flex', 'important');
+                    checkmarkEl.style.setProperty('opacity', '1', 'important');
+                    checkmarkEl.style.setProperty('transform', 'scale(1)', 'important');
+                    checkmarkEl.style.setProperty('display', 'flex', 'important');
                 
                 // IMPORTANTE: Forzar un reflow completo usando getComputedStyle
                 // Esto asegura que el navegador renderice el checkmark inmediatamente
@@ -3165,62 +3281,62 @@ export function createDataTable(options: DataTableOptions): {
                 setTimeout(() => {
                   checkmarkEl.style.transition = originalTransition || '';
                 }, 0);
-              }
-            } else if (isIndeterminate) {
-              headerCheckboxContainer.classList.remove('ubits-checkbox--checked');
-              headerCheckboxContainer.classList.add('ubits-checkbox--indeterminate');
-              
-              // Crear indeterminate si no existe
-              if (headerCheckboxSquare) {
-                const checkmarkEl = headerCheckboxSquare.querySelector('.ubits-checkbox__checkmark');
-                if (checkmarkEl) {
-                  checkmarkEl.remove();
                 }
+              } else if (isIndeterminate) {
+                headerCheckboxContainer.classList.remove('ubits-checkbox--checked');
+                headerCheckboxContainer.classList.add('ubits-checkbox--indeterminate');
+                
+                // Crear indeterminate si no existe
+                if (headerCheckboxSquare) {
+                  const checkmarkEl = headerCheckboxSquare.querySelector('.ubits-checkbox__checkmark');
+                  if (checkmarkEl) {
+                    checkmarkEl.remove();
+                  }
                 let indeterminateEl = headerCheckboxSquare.querySelector('.ubits-checkbox__indeterminate') as HTMLElement;
-                if (!indeterminateEl) {
-                  indeterminateEl = document.createElement('span');
-                  indeterminateEl.className = 'ubits-checkbox__indeterminate';
-                  headerCheckboxSquare.appendChild(indeterminateEl);
+                  if (!indeterminateEl) {
+                    indeterminateEl = document.createElement('span');
+                    indeterminateEl.className = 'ubits-checkbox__indeterminate';
+                    headerCheckboxSquare.appendChild(indeterminateEl);
                 }
                 // Aplicar estilos directamente para forzar visualización
-                indeterminateEl.style.setProperty('opacity', '1', 'important');
-                indeterminateEl.style.setProperty('transform', 'scale(1)', 'important');
-                indeterminateEl.style.setProperty('display', 'flex', 'important');
-              }
-            } else {
-              headerCheckboxContainer.classList.remove('ubits-checkbox--checked');
-              headerCheckboxContainer.classList.remove('ubits-checkbox--indeterminate');
-              
-              // Remover ambos elementos
-              if (headerCheckboxSquare) {
-                const checkmarkEl = headerCheckboxSquare.querySelector('.ubits-checkbox__checkmark');
-                if (checkmarkEl) {
-                  checkmarkEl.remove();
+                    indeterminateEl.style.setProperty('opacity', '1', 'important');
+                    indeterminateEl.style.setProperty('transform', 'scale(1)', 'important');
+                    indeterminateEl.style.setProperty('display', 'flex', 'important');
                 }
-                const indeterminateEl = headerCheckboxSquare.querySelector('.ubits-checkbox__indeterminate');
-                if (indeterminateEl) {
-                  indeterminateEl.remove();
+              } else {
+                headerCheckboxContainer.classList.remove('ubits-checkbox--checked');
+                headerCheckboxContainer.classList.remove('ubits-checkbox--indeterminate');
+                
+                // Remover ambos elementos
+                if (headerCheckboxSquare) {
+                  const checkmarkEl = headerCheckboxSquare.querySelector('.ubits-checkbox__checkmark');
+                  if (checkmarkEl) {
+                    checkmarkEl.remove();
+                  }
+                  const indeterminateEl = headerCheckboxSquare.querySelector('.ubits-checkbox__indeterminate');
+                  if (indeterminateEl) {
+                    indeterminateEl.remove();
+                  }
                 }
               }
-            }
             
             // Forzar un reflow del contenedor para asegurar que los cambios visuales se apliquen
             void headerCheckboxContainer.offsetHeight;
-          }
-          
-          // Forzar un solo reflow después de todas las actualizaciones
-          void element.offsetHeight;
-          
-          console.log(`☑️ [SELECT ALL] ✅ Checkboxes visibles actualizados - allChecked: ${allChecked}, indeterminate: ${isIndeterminate}`);
+            }
+            
+            // Forzar un solo reflow después de todas las actualizaciones
+            void element.offsetHeight;
+            
+            console.log(`☑️ [SELECT ALL] ✅ Checkboxes visibles actualizados - allChecked: ${allChecked}, indeterminate: ${isIndeterminate}`);
           
           // Desactivar bandera DESPUÉS de todas las actualizaciones visuales
           // Los handlers individuales ya tienen la verificación de isSelectAllInProgress
           // así que pueden ejecutarse pero se detendrán inmediatamente
           isSelectAllInProgress = false;
           console.log(`☑️ [SELECT ALL] 🚩 Bandera isSelectAllInProgress desactivada`);
-          
-          // Llamar a onSelectAll callback DESPUÉS de todas las actualizaciones visuales
-          // para evitar que cause re-renderizados que generen el brinco
+            
+            // Llamar a onSelectAll callback DESPUÉS de todas las actualizaciones visuales
+            // para evitar que cause re-renderizados que generen el brinco
           const optionsWithSelectAll = currentOptions as any;
           if (optionsWithSelectAll.onSelectAll) {
             console.log(`☑️ [SELECT ALL] 📞 Llamando onSelectAll callback...`);
@@ -3298,10 +3414,10 @@ export function createDataTable(options: DataTableOptions): {
             } else {
               console.log(`☑️ [SELECT ALL] ✅ El callback onSelectAll NO causó cambios visibles en el scroll`);
             }
-          }
-          
-          // NO llamar a render() - esto evita el brinco
-          console.log(`☑️ [SELECT ALL] ✅ Optimizado: NO se llama render() - sin brinco`);
+            }
+            
+            // NO llamar a render() - esto evita el brinco
+            console.log(`☑️ [SELECT ALL] ✅ Optimizado: NO se llama render() - sin brinco`);
           
           // Verificar el estado final del scroll
           const scrollableContainerFinal = element.querySelector('.ubits-data-table__scrollable-container') as HTMLElement;
@@ -3509,9 +3625,9 @@ export function createDataTable(options: DataTableOptions): {
                   if (!checkmarkEl) {
                     // Crear el checkmark solo si no existe
                     checkmarkEl = document.createElement('span');
-                    checkmarkEl.className = 'ubits-checkbox__checkmark';
-                    checkboxSquare.appendChild(checkmarkEl);
-                    console.log(`☑️ [CHECKBOX] ✅ Checkmark creado y agregado al DOM`);
+                  checkmarkEl.className = 'ubits-checkbox__checkmark';
+                  checkboxSquare.appendChild(checkmarkEl);
+                  console.log(`☑️ [CHECKBOX] ✅ Checkmark creado y agregado al DOM`);
                   } else {
                     console.log(`☑️ [CHECKBOX] ✅ Checkmark ya existe, reutilizando`);
                   }
@@ -3710,6 +3826,107 @@ export function createDataTable(options: DataTableOptions): {
               console.log(`☑️ [CHECKBOX] ✅ Header checkbox actualizado - allChecked: ${allChecked}, indeterminate: ${isIndeterminate}`);
             }
             
+            // Forzar limpieza del hover de la fila seleccionada usando clase CSS
+            // Esto evita que la fila se quede en estado hover después de seleccionar
+            console.log(`🎨 [HOVER CLEANUP] ========== INICIO LIMPIEZA HOVER ==========`);
+            console.log(`🎨 [HOVER CLEANUP] Buscando fila para limpiar hover...`);
+            const rowElement = newCheckbox.closest('.ubits-data-table__row') as HTMLElement;
+            console.log(`🎨 [HOVER CLEANUP] rowElement encontrado:`, rowElement);
+            if (rowElement) {
+              console.log(`🎨 [HOVER CLEANUP] ✅ Fila encontrada, verificando estado actual...`);
+              const beforeClasses = Array.from(rowElement.classList);
+              const computedStyleBefore = window.getComputedStyle(rowElement);
+              const bgBefore = computedStyleBefore.backgroundColor;
+              console.log(`🎨 [HOVER CLEANUP] Estado ANTES:`, {
+                classes: beforeClasses,
+                backgroundColor: bgBefore,
+                hasHoverClass: rowElement.classList.contains('ubits-data-table__row--clear-hover')
+              });
+              
+              // Obtener todas las celdas primero
+              const cells = rowElement.querySelectorAll('.ubits-data-table__cell');
+              console.log(`🎨 [HOVER CLEANUP] Celdas encontradas:`, cells.length);
+              
+              // SOLUCIÓN AGRESIVA: Deshabilitar pointer-events temporalmente para forzar limpieza del hover
+              console.log(`🎨 [HOVER CLEANUP] 🔧 Aplicando solución agresiva: pointer-events: none`);
+              const originalPointerEvents = rowElement.style.pointerEvents;
+              rowElement.style.pointerEvents = 'none';
+              console.log(`🎨 [HOVER CLEANUP] ✅ pointer-events deshabilitado temporalmente`);
+              
+              // Forzar reflow para que el navegador procese el cambio
+              void rowElement.offsetHeight;
+              
+              // Ahora aplicar los estilos
+              const bg1Value = getComputedStyle(document.documentElement).getPropertyValue('--ubits-bg-1').trim() || 'rgb(20, 28, 41)';
+              
+              // Agregar clase para forzar limpieza del hover inmediatamente
+              rowElement.classList.add('ubits-data-table__row--clear-hover');
+              console.log(`🎨 [HOVER CLEANUP] ✅ Clase agregada: ubits-data-table__row--clear-hover`);
+              
+              // Aplicar también inline style como respaldo para forzar el cambio
+              rowElement.style.setProperty('background-color', bg1Value, 'important');
+              console.log(`🎨 [HOVER CLEANUP] ✅ Inline style aplicado a fila: background-color = ${bg1Value}`);
+              
+              // Aplicar también a todas las celdas
+              cells.forEach((cell, index) => {
+                (cell as HTMLElement).style.setProperty('background-color', bg1Value, 'important');
+                console.log(`🎨 [HOVER CLEANUP] ✅ Celda ${index} inline style aplicado`);
+              });
+              
+              // Forzar otro reflow después de aplicar estilos
+              void rowElement.offsetHeight;
+              
+              // Restaurar pointer-events inmediatamente
+              rowElement.style.pointerEvents = originalPointerEvents || '';
+              console.log(`🎨 [HOVER CLEANUP] ✅ pointer-events restaurado: ${originalPointerEvents || 'default'}`);
+              
+              // Verificar estado después de todo
+              const computedStyleAfter = window.getComputedStyle(rowElement);
+              const bgAfter = computedStyleAfter.backgroundColor;
+              const afterClasses = Array.from(rowElement.classList);
+              console.log(`🎨 [HOVER CLEANUP] Estado DESPUÉS de aplicar solución agresiva:`, {
+                classes: afterClasses,
+                backgroundColor: bgAfter,
+                bgBefore: bgBefore,
+                bgChanged: bgBefore !== bgAfter,
+                pointerEvents: rowElement.style.pointerEvents || 'default'
+              });
+              
+              // Verificar todas las celdas también
+              cells.forEach((cell, index) => {
+                const cellStyle = window.getComputedStyle(cell as HTMLElement);
+                const cellBg = cellStyle.backgroundColor;
+                console.log(`🎨 [HOVER CLEANUP] Celda ${index} background: ${cellBg} (inline: ${(cell as HTMLElement).style.backgroundColor || 'none'})`);
+              });
+              
+              // Remover la clase después de un pequeño delay para permitir hover normal después
+              requestAnimationFrame(() => {
+                console.log(`🎨 [HOVER CLEANUP] ⏰ requestAnimationFrame ejecutado, programando timeout...`);
+                setTimeout(() => {
+                  console.log(`🎨 [HOVER CLEANUP] ⏰ Timeout ejecutado, removiendo clase e inline styles...`);
+                  const beforeRemove = window.getComputedStyle(rowElement).backgroundColor;
+                  
+                  // Remover clase
+                  rowElement.classList.remove('ubits-data-table__row--clear-hover');
+                  
+                  // Remover inline styles
+                  rowElement.style.removeProperty('background-color');
+                  cells.forEach((cell) => {
+                    (cell as HTMLElement).style.removeProperty('background-color');
+                  });
+                  
+                  const afterRemove = window.getComputedStyle(rowElement).backgroundColor;
+                  console.log(`🎨 [HOVER CLEANUP] ✅ Clase e inline styles removidos. Background antes: ${beforeRemove}, después: ${afterRemove}`);
+                  console.log(`🎨 [HOVER CLEANUP] ========== FIN LIMPIEZA HOVER ==========`);
+                }, 150);
+              });
+            } else {
+              console.log(`🎨 [HOVER CLEANUP] ❌ Fila NO encontrada usando closest('.ubits-data-table__row')`);
+              console.log(`🎨 [HOVER CLEANUP] newCheckbox:`, newCheckbox);
+              console.log(`🎨 [HOVER CLEANUP] newCheckbox.parentElement:`, newCheckbox.parentElement);
+              console.log(`🎨 [HOVER CLEANUP] newCheckbox.closest('tr'):`, newCheckbox.closest('tr'));
+            }
+            
             // Llamar a onRowSelect callback
             if (currentOptions.onRowSelect) {
               console.log(`☑️ [CHECKBOX] Llamando onRowSelect...`);
@@ -3725,7 +3942,7 @@ export function createDataTable(options: DataTableOptions): {
             console.log(`☑️ [CHECKBOX] ⚠️ Llamando render() - esto causará el brinco`);
             console.log(`☑️ [CHECKBOX] 🔍 RAZÓN: columnId="${currentColumnId}" NO es checkbox-2, llamando render() desde handler individual`);
             console.log(`☑️ [CHECKBOX] 🔍 Stack trace antes de render():`, new Error().stack?.split('\n').slice(1, 6).join('\n'));
-            render();
+        render();
           }
         }
         console.log(`☑️ [CHECKBOX] ========== FIN ==========`);
@@ -4080,6 +4297,48 @@ export function createDataTable(options: DataTableOptions): {
         }, 0);
       });
       
+    });
+    
+    // Botones de acciones en las filas (columnas de tipo 'acciones')
+    const actionButtons = element.querySelectorAll('.ubits-data-table__action-button');
+    console.log('🎯 [ACTION BUTTONS] Botones de acciones encontrados:', actionButtons.length);
+    actionButtons.forEach((button) => {
+      const btn = button as HTMLElement;
+      
+      // Obtener rowId y columnId directamente de los atributos del botón
+      const rowIdStr = btn.getAttribute('data-row-id');
+      const columnId = btn.getAttribute('data-column-id');
+      
+      if (!rowIdStr) {
+        console.warn('⚠️ [ACTION BUTTONS] No se encontró el data-row-id en el botón');
+        return;
+      }
+      
+      const rowId = isNaN(Number(rowIdStr)) ? rowIdStr : Number(rowIdStr);
+      
+      // Remover listeners anteriores si existen para evitar duplicados
+      const newButton = btn.cloneNode(true) as HTMLElement;
+      btn.parentNode?.replaceChild(newButton, btn);
+      
+      newButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log('🎯 [ACTION BUTTONS] Click en botón de acción - rowId:', rowId, 'columnId:', columnId);
+        
+        const row = currentOptions.rows.find(r => r.id === rowId);
+        if (row) {
+          // Llamar callback si existe
+          if (currentOptions.onRowAction) {
+            currentOptions.onRowAction(rowId, row);
+          } else {
+            // Fallback: mostrar alerta
+            console.log('🎯 [ACTION BUTTONS] Acción ejecutada para fila:', rowId);
+            alert(`Acción ejecutada para fila: ${rowId}`);
+          }
+        } else {
+          console.warn('⚠️ [ACTION BUTTONS] Fila no encontrada para rowId:', rowId);
+        }
+      });
     });
     
     // Campos editables
@@ -4651,7 +4910,7 @@ export function createDataTable(options: DataTableOptions): {
         isConnected: input.isConnected,
         ownerDocument: input.ownerDocument === document
       });
-      
+        
       // Agregar listeners de prueba para verificar que el elemento puede recibir eventos
       const testClickHandler = () => {
         console.log(`☑️ [SELECT ALL] 🧪 TEST: Header checkbox ${index} recibió evento click de prueba`);
@@ -5707,9 +5966,26 @@ export function createDataTable(options: DataTableOptions): {
               if (!dropdown || !columnSelectorBtn) return;
               
               const rect = columnSelectorBtn.getBoundingClientRect();
+              // Obtener el ancho real del dropdown, o usar un ancho mínimo si aún no se ha renderizado
+              const dropdownWidth = dropdown.offsetWidth || 200;
+              
               dropdown.style.position = 'fixed';
-              dropdown.style.top = `${rect.bottom}px`;
-              dropdown.style.right = `${window.innerWidth - rect.right}px`;
+              dropdown.style.top = `${rect.bottom + 4}px`; // 4px de margen
+              
+              // Alinear el borde derecho del dropdown con el borde derecho del botón
+              // left = rect.right - dropdownWidth (para que el borde derecho del dropdown coincida con el borde derecho del botón)
+              const desiredLeft = rect.right - dropdownWidth;
+              
+              // Verificar si se sale por la izquierda de la pantalla
+              if (desiredLeft < 0) {
+                // Si se sale por la izquierda, ajustar para que el borde izquierdo esté en 0
+                dropdown.style.left = '0px';
+              } else {
+                // Alinear borde derecho del dropdown con borde derecho del botón
+                dropdown.style.left = `${desiredLeft}px`;
+              }
+              
+              dropdown.style.right = 'auto';
             };
             
             let updatePosition: (() => void) | null = null;
@@ -5736,37 +6012,122 @@ export function createDataTable(options: DataTableOptions): {
               e.preventDefault();
               e.stopPropagation();
               
+              console.log('🔍 [COLUMN SELECTOR] ========== CLICK EN BOTÓN ==========');
+              console.log('🔍 [COLUMN SELECTOR] Estado actual - isOpen:', isOpen);
+              
               // Si ya está abierto, cerrarlo
               if (isOpen) {
+                console.log('🔍 [COLUMN SELECTOR] Dropdown ya está abierto, cerrando...');
                 closeDropdown();
                 return;
               }
               
               // Crear dropdown si no existe
               const dropdownElement = createDropdown();
+              console.log('🔍 [COLUMN SELECTOR] Dropdown creado/obtenido:', {
+                exists: !!dropdownElement,
+                hasChildren: dropdownElement.children.length,
+                innerHTMLLength: dropdownElement.innerHTML.length
+              });
               
-              // Crear contenedor para la lista con ID fijo
+              // SIEMPRE limpiar completamente el contenido del dropdown antes de recrearlo
+              // Esto asegura que no queden elementos residuales de aperturas anteriores
+              console.log('🔍 [COLUMN SELECTOR] Limpiando dropdown completamente...');
+              console.log('🔍 [COLUMN SELECTOR] ANTES - children:', dropdownElement.children.length, 'innerHTML:', dropdownElement.innerHTML.length, 'chars');
+              
+              // Remover todos los hijos primero
+              while (dropdownElement.firstChild) {
+                dropdownElement.removeChild(dropdownElement.firstChild);
+              }
+              
+              // Luego limpiar innerHTML para asegurar que no quede nada
+              dropdownElement.innerHTML = '';
+              
+              // Verificar que esté completamente limpio
+              const afterCleanChildren = dropdownElement.children.length;
+              const afterCleanInnerHTML = dropdownElement.innerHTML.length;
+              console.log('🔍 [COLUMN SELECTOR] DESPUÉS - children:', afterCleanChildren, 'innerHTML:', afterCleanInnerHTML, 'chars');
+              
+              if (afterCleanChildren > 0 || afterCleanInnerHTML > 0) {
+                console.error('🔍 [COLUMN SELECTOR] ❌ ERROR: Dropdown no está completamente limpio!');
+                // Forzar limpieza adicional
+                dropdownElement.innerHTML = '';
+                // Esperar un frame para que el DOM se actualice
+                requestAnimationFrame(() => {
+                  if (dropdownElement.children.length > 0 || dropdownElement.innerHTML.length > 0) {
+                    console.error('🔍 [COLUMN SELECTOR] ❌ ERROR: Dropdown sigue sin estar limpio después de limpieza adicional!');
+                  }
+                });
+              }
+              
+              // Crear contenedor para la lista con ID fijo (SIEMPRE nuevo)
               const listContainerId = 'ubits-data-table-column-selector-list';
-              dropdownElement.innerHTML = `<div id="${listContainerId}"></div>`;
-              const listContainer = dropdownElement.querySelector(`#${listContainerId}`) as HTMLElement;
+              
+              // Asegurarse de que no exista un contenedor con ese ID en el DOM
+              const existingContainer = document.getElementById(listContainerId);
+              if (existingContainer) {
+                console.log('🔍 [COLUMN SELECTOR] ⚠️ Contenedor existente encontrado, removiendo...');
+                existingContainer.remove();
+              }
+              
+              const listContainer = document.createElement('div');
+              listContainer.id = listContainerId;
+              dropdownElement.appendChild(listContainer);
+              console.log('🔍 [COLUMN SELECTOR] Contenedor de lista creado:', {
+                id: listContainer.id,
+                parentExists: !!listContainer.parentElement,
+                hasChildren: listContainer.children.length,
+                innerHTML: listContainer.innerHTML.length
+              });
               
               if (listContainer) {
+                console.log('🔍 [COLUMN SELECTOR] ========== PROCESANDO COLUMNAS PARA CREAR LISTA ==========');
+                console.log('🔍 [COLUMN SELECTOR] Total columnas en currentOptions:', currentOptions.columns.length);
+                
+                // PRIMERO: Eliminar duplicados de currentOptions.columns ANTES de filtrar
+                const uniqueCurrentColumns = removeDuplicateColumns(currentOptions.columns);
+                if (uniqueCurrentColumns.length !== currentOptions.columns.length) {
+                  console.log('🔍 [COLUMN SELECTOR] ⚠️ DUPLICADOS ELIMINADOS:', currentOptions.columns.length, '->', uniqueCurrentColumns.length);
+                  currentOptions.columns = uniqueCurrentColumns;
+                }
+                
                 // Filtrar columnas que se pueden ocultar
-                const selectableColumns = currentOptions.columns.filter(col => {
+                const allSelectableColumns = uniqueCurrentColumns.filter(col => {
                   const excludedTypes = ['drag-handle', 'expand'];
                   const excludedIds = ['checkbox', 'checkbox-2'];
                   return !excludedTypes.includes(col.type || '') && 
                          !excludedIds.includes(col.id) &&
                          col.id !== 'checkbox';
                 });
+                
+                // Eliminar duplicados por ID
+                const seenIds = new Set<string>();
+                const selectableColumns = allSelectableColumns.filter(col => {
+                  if (seenIds.has(col.id)) {
+                    console.log('🔍 [COLUMN SELECTOR] ⚠️ DUPLICADO:', col.id);
+                    return false;
+                  }
+                  seenIds.add(col.id);
+                  return true;
+                });
+                
+                console.log('🔍 [COLUMN SELECTOR] Columnas seleccionables finales:', selectableColumns.length);
+                console.log('🔍 [COLUMN SELECTOR] IDs:', selectableColumns.map(c => `${c.id}(${c.visible !== false ? 'visible' : 'oculta'})`).join(', '));
+                
+                // Contar columnas visibles para deshabilitar la última
+                const visibleCount = selectableColumns.filter(col => col.visible !== false).length;
+                console.log('🔍 [COLUMN SELECTOR] Columnas visibles:', visibleCount);
                 
                 // Crear items con checkboxes
                 const listItems: ListItem[] = selectableColumns.map(col => {
                   const isVisible = col.visible !== false;
+                  const isLastVisible = isVisible && visibleCount === 1;
+                  
                   const checkboxHTML = renderCheckbox({
                     label: col.title,
                     checked: isVisible,
                     size: 'sm',
+                    disabled: isLastVisible,
                     className: 'ubits-data-table__column-selector-checkbox'
                   });
                   
@@ -5783,37 +6144,95 @@ export function createDataTable(options: DataTableOptions): {
                   };
                 });
                 
+                // Verificar que listItems no tenga duplicados
+                const seenItemValues = new Set<string>();
+                const uniqueListItems = listItems.filter(item => {
+                  if (seenItemValues.has(item.value)) {
+                    console.log('🔍 [COLUMN SELECTOR] ⚠️ ITEM DUPLICADO:', item.value);
+                    return false;
+                  }
+                  seenItemValues.add(item.value);
+                  return true;
+                });
+                
+                console.log('🔍 [COLUMN SELECTOR] Items únicos para lista:', uniqueListItems.length);
+                console.log('🔍 [COLUMN SELECTOR] Valores:', uniqueListItems.map(item => item.value).join(', '));
+                
                 // Crear la lista usando createList
                 try {
+                  console.log('🔍 [COLUMN SELECTOR] Llamando createList...');
                   createList({
                     containerId: listContainerId,
-                    items: listItems,
+                    items: uniqueListItems,
                     size: 'sm',
                     maxHeight: '400px',
                     className: 'ubits-data-table__column-selector-list'
                   });
+                  console.log('🔍 [COLUMN SELECTOR] ✅ createList completado');
+                  
+                  // Verificar que la lista se creó correctamente
+                  const createdList = document.getElementById(listContainerId);
+                  if (createdList) {
+                    const listElement = createdList.querySelector('.ubits-list');
+                    const listItems = listElement?.querySelectorAll('.ubits-list-item') || [];
+                    console.log('🔍 [COLUMN SELECTOR] Lista creada - items en DOM:', listItems.length);
+                  } else {
+                    console.error('🔍 [COLUMN SELECTOR] ❌ Lista no encontrada después de createList');
+                  }
                 } catch (error) {
-                  console.error('Error creando lista:', error);
+                  console.error('🔍 [COLUMN SELECTOR] ❌ Error en createList:', error);
                   // Fallback: usar renderList
                   listContainer.innerHTML = renderList({
                     containerId: listContainerId,
-                    items: listItems,
+                    items: uniqueListItems,
                     size: 'sm',
                     maxHeight: '400px',
                     className: 'ubits-data-table__column-selector-list'
                   });
+                  console.log('🔍 [COLUMN SELECTOR] ✅ Fallback renderList usado');
                 }
+              } else {
+                console.error('🔍 [COLUMN SELECTOR] ❌ listContainer no existe');
               }
               
               // Función helper para actualizar el contenido del dropdown
               const updateDropdownContent = () => {
-                const listContainerId = 'ubits-data-table-column-selector-list';
-                const listContainer = dropdownElement.querySelector(`#${listContainerId}`) as HTMLElement;
+                console.log('🔍 [COLUMN SELECTOR] ========== UPDATE DROPDOWN CONTENT ==========');
+                console.log('🔍 [COLUMN SELECTOR] Dropdown existe:', !!dropdownElement);
+                console.log('🔍 [COLUMN SELECTOR] Dropdown isOpen:', isOpen);
                 
-                if (!listContainer) return;
+                const listContainerId = 'ubits-data-table-column-selector-list';
+                let listContainer = dropdownElement.querySelector(`#${listContainerId}`) as HTMLElement;
+                
+                console.log('🔍 [COLUMN SELECTOR] Buscando contenedor:', {
+                  found: !!listContainer,
+                  hasChildren: listContainer ? listContainer.children.length : 0,
+                  innerHTMLLength: listContainer ? listContainer.innerHTML.length : 0
+                });
+                
+                // Si no existe el contenedor o el dropdown está cerrado, no hacer nada
+                if (!listContainer || !isOpen) {
+                  console.log('🔍 [COLUMN SELECTOR] ⚠️ Contenedor no encontrado o dropdown cerrado, recreando...');
+                  // Limpiar completamente y recrear
+                  dropdownElement.innerHTML = '';
+                  listContainer = document.createElement('div');
+                  listContainer.id = listContainerId;
+                  dropdownElement.appendChild(listContainer);
+                  console.log('🔍 [COLUMN SELECTOR] Contenedor recreado:', {
+                    id: listContainer.id,
+                    parentExists: !!listContainer.parentElement
+                  });
+                }
+                
+                // PRIMERO: Eliminar duplicados de currentOptions.columns ANTES de filtrar
+                const uniqueCurrentColumns = removeDuplicateColumns(currentOptions.columns);
+                if (uniqueCurrentColumns.length !== currentOptions.columns.length) {
+                  console.log('🔍 [COLUMN SELECTOR UPDATE] ⚠️ DUPLICADOS:', currentOptions.columns.length, '->', uniqueCurrentColumns.length);
+                  currentOptions.columns = uniqueCurrentColumns;
+                }
                 
                 // Filtrar columnas que se pueden ocultar
-                const selectableColumns = currentOptions.columns.filter(col => {
+                const allSelectableColumns = uniqueCurrentColumns.filter(col => {
                   const excludedTypes = ['drag-handle', 'expand'];
                   const excludedIds = ['checkbox', 'checkbox-2'];
                   return !excludedTypes.includes(col.type || '') && 
@@ -5821,13 +6240,31 @@ export function createDataTable(options: DataTableOptions): {
                          col.id !== 'checkbox';
                 });
                 
-                // Crear items con checkboxes usando el estado actual
+                // Eliminar duplicados por ID
+                const seenIds = new Set<string>();
+                const selectableColumns = allSelectableColumns.filter(col => {
+                  if (seenIds.has(col.id)) {
+                    console.log('🔍 [COLUMN SELECTOR UPDATE] ⚠️ DUPLICADO:', col.id);
+                    return false;
+                  }
+                  seenIds.add(col.id);
+                  return true;
+                });
+                
+                const visibleCount = selectableColumns.filter(col => col.visible !== false).length;
+                console.log('🔍 [COLUMN SELECTOR UPDATE] Columnas:', selectableColumns.length, '| Visibles:', visibleCount);
+                console.log('🔍 [COLUMN SELECTOR UPDATE] IDs:', selectableColumns.map(c => `${c.id}(${c.visible !== false ? 'V' : 'O'})`).join(', '));
+                
+                // Crear items con checkboxes
                 const listItems: ListItem[] = selectableColumns.map(col => {
                   const isVisible = col.visible !== false;
+                  const isLastVisible = isVisible && visibleCount === 1;
+                  
                   const checkboxHTML = renderCheckbox({
                     label: col.title,
                     checked: isVisible,
                     size: 'sm',
+                    disabled: isLastVisible,
                     className: 'ubits-data-table__column-selector-checkbox'
                   });
                   
@@ -5844,25 +6281,56 @@ export function createDataTable(options: DataTableOptions): {
                   };
                 });
                 
-                // Limpiar y recrear la lista
+                // Verificar que listItems no tenga duplicados
+                const seenItemValues = new Set<string>();
+                const uniqueListItems = listItems.filter(item => {
+                  if (seenItemValues.has(item.value)) {
+                    console.log('🔍 [COLUMN SELECTOR UPDATE] ⚠️ ITEM DUPLICADO:', item.value);
+                    return false;
+                  }
+                  seenItemValues.add(item.value);
+                  return true;
+                });
+                
+                console.log('🔍 [COLUMN SELECTOR UPDATE] Items únicos:', uniqueListItems.length);
+                console.log('🔍 [COLUMN SELECTOR UPDATE] Valores:', uniqueListItems.map(item => item.value).join(', '));
+                
+                // LIMPIAR COMPLETAMENTE antes de recrear
+                console.log('🔍 [COLUMN SELECTOR UPDATE] Limpiando contenedor...');
+                console.log('🔍 [COLUMN SELECTOR UPDATE] ANTES - children:', listContainer.children.length, 'innerHTML:', listContainer.innerHTML.length);
                 listContainer.innerHTML = '';
+                console.log('🔍 [COLUMN SELECTOR UPDATE] DESPUÉS - children:', listContainer.children.length, 'innerHTML:', listContainer.innerHTML.length);
                 
                 try {
+                  console.log('🔍 [COLUMN SELECTOR UPDATE] Llamando createList...');
                   createList({
                     containerId: listContainerId,
-                    items: listItems,
+                    items: uniqueListItems,
                     size: 'sm',
                     maxHeight: '400px',
                     className: 'ubits-data-table__column-selector-list'
                   });
+                  console.log('🔍 [COLUMN SELECTOR UPDATE] ✅ createList completado');
+                  
+                  // Verificar que la lista se creó
+                  const createdList = document.getElementById(listContainerId);
+                  if (createdList) {
+                    const listElement = createdList.querySelector('.ubits-list');
+                    const items = listElement?.querySelectorAll('.ubits-list-item') || [];
+                    console.log('🔍 [COLUMN SELECTOR UPDATE] Lista creada - items en DOM:', items.length);
+                  } else {
+                    console.error('🔍 [COLUMN SELECTOR UPDATE] ❌ Lista no encontrada');
+                  }
                 } catch (error) {
+                  console.error('🔍 [COLUMN SELECTOR UPDATE] ❌ Error en createList:', error);
                   listContainer.innerHTML = renderList({
                     containerId: listContainerId,
-                    items: listItems,
+                    items: uniqueListItems,
                     size: 'sm',
                     maxHeight: '400px',
                     className: 'ubits-data-table__column-selector-list'
                   });
+                  console.log('🔍 [COLUMN SELECTOR UPDATE] ✅ Fallback renderList usado');
                 }
                 
                 // Agregar listeners a los nuevos checkboxes
@@ -5885,18 +6353,113 @@ export function createDataTable(options: DataTableOptions): {
                   newInput.addEventListener('change', (e) => {
                     e.stopPropagation();
                     e.preventDefault();
+                    
+                    // Si el checkbox está deshabilitado, no procesar el cambio
+                    if (newInput.disabled) {
+                      console.log('🔍 [COLUMN SELECTOR] Checkbox deshabilitado, ignorando cambio');
+                      return;
+                    }
+                    
                     const isChecked = newInput.checked;
                     
                     // Encontrar la columna y actualizar su visibilidad
                     const column = currentOptions.columns.find(col => col.id === columnId);
                     if (column) {
+                      // Validar que no se puedan ocultar todas las columnas
+                      // Contar cuántas columnas visibles quedarían después de este cambio
+                      if (!isChecked) {
+                        // Filtrar columnas seleccionables (excluyendo drag-handle, expand, checkbox)
+                        const allSelectableColumns = currentOptions.columns.filter(col => {
+                          const excludedTypes = ['drag-handle', 'expand'];
+                          const excludedIds = ['checkbox', 'checkbox-2'];
+                          return !excludedTypes.includes(col.type || '') && 
+                                 !excludedIds.includes(col.id) &&
+                                 col.id !== 'checkbox';
+                        });
+                        
+                        // Eliminar duplicados por ID (mantener solo la primera ocurrencia)
+                        const seenIds = new Set<string>();
+                        const selectableColumns = allSelectableColumns.filter(col => {
+                          if (seenIds.has(col.id)) {
+                            return false; // Ya vimos esta columna
+                          }
+                          seenIds.add(col.id);
+                          return true;
+                        });
+                        
+                        // Contar cuántas quedarían visibles después de ocultar esta columna
+                        const wouldBeVisible = selectableColumns.filter(col => {
+                          if (col.id === columnId) {
+                            return false; // Esta columna se ocultaría
+                          }
+                          return col.visible !== false;
+                        });
+                        
+                        console.log('🔍 [COLUMN SELECTOR] Validación de ocultar columna:', {
+                          columnId,
+                          columnTitle: column.title,
+                          selectableColumnsCount: selectableColumns.length,
+                          wouldBeVisibleCount: wouldBeVisible.length,
+                          selectableColumns: selectableColumns.map(c => ({ id: c.id, title: c.title, visible: c.visible })),
+                          wouldBeVisible: wouldBeVisible.map(c => ({ id: c.id, title: c.title }))
+                        });
+                        console.log('🔍 [COLUMN SELECTOR] Detalles completos:', JSON.stringify({
+                          columnId,
+                          columnTitle: column.title,
+                          selectableColumnsCount: selectableColumns.length,
+                          wouldBeVisibleCount: wouldBeVisible.length,
+                          selectableColumns: selectableColumns.map(c => ({ id: c.id, title: c.title, visible: c.visible })),
+                          wouldBeVisible: wouldBeVisible.map(c => ({ id: c.id, title: c.title }))
+                        }, null, 2));
+                        
+                        // Si no quedaría ninguna columna visible, prevenir la acción
+                        if (wouldBeVisible.length === 0) {
+                          // Revertir el checkbox
+                          newInput.checked = true;
+                          console.warn('⚠️ No se pueden ocultar todas las columnas. Debe quedar al menos una columna visible.');
+                          return;
+                        }
+                      }
+                      
+                      console.log('🔍 [COLUMN SELECTOR] ========== ACTUALIZANDO VISIBILIDAD ==========');
+                      console.log('🔍 [COLUMN SELECTOR] Columna encontrada:', {
+                        id: column.id,
+                        title: column.title,
+                        visibleActual: column.visible,
+                        visibleNuevo: isChecked
+                      });
+                      
+                      // Verificar si hay otras columnas con el mismo ID antes de actualizar
+                      const columnsWithSameId = currentOptions.columns.filter(col => col.id === columnId);
+                      console.log('🔍 [COLUMN SELECTOR] Columnas con el mismo ID:', columnsWithSameId.length, columnsWithSameId.map(c => ({ id: c.id, title: c.title, visible: c.visible })));
+                      
                       column.visible = isChecked;
                       
+                      // Actualizar TODAS las columnas con el mismo ID
+                      if (columnsWithSameId.length > 1) {
+                        console.log('🔍 [COLUMN SELECTOR] ⚠️ ACTUALIZANDO COLUMNAS DUPLICADAS:', columnsWithSameId.length);
+                        columnsWithSameId.forEach((col, index) => {
+                          if (col.id === columnId) {
+                            col.visible = isChecked;
+                            console.log('🔍 [COLUMN SELECTOR] Columna duplicada actualizada:', index, col.id, col.title, col.visible);
+                          }
+                        });
+                      }
+                      
+                      console.log('🔍 [COLUMN SELECTOR] Estado después de actualizar:', {
+                        columnId,
+                        visible: column.visible,
+                        totalColumnsWithId: currentOptions.columns.filter(col => col.id === columnId).length
+                      });
+                      
                       // Actualizar el contenido del dropdown para reflejar el cambio
+                      console.log('🔍 [COLUMN SELECTOR] Llamando updateDropdownContent...');
                       updateDropdownContent();
                       
                       // Re-renderizar la tabla
+                      console.log('🔍 [COLUMN SELECTOR] Llamando render() para actualizar tabla...');
                       render();
+                      console.log('🔍 [COLUMN SELECTOR] Render completado');
                     }
                   });
                 });
@@ -5907,9 +6470,19 @@ export function createDataTable(options: DataTableOptions): {
                 attachCheckboxListeners();
               }, 100);
               
-              // Actualizar posición y mostrar dropdown
-              updateDropdownPosition();
+              // Mostrar dropdown primero para que tenga dimensiones
               dropdownElement.style.display = 'block';
+              
+              // Actualizar posición después de que el contenido se haya renderizado
+              // Usar requestAnimationFrame para asegurar que el DOM esté actualizado
+              requestAnimationFrame(() => {
+                updateDropdownPosition();
+                // Actualizar nuevamente después de un pequeño delay para asegurar dimensiones correctas
+                setTimeout(() => {
+                  updateDropdownPosition();
+                }, 10);
+              });
+              
               isOpen = true;
               
               // Actualizar posición en scroll/resize
@@ -5948,6 +6521,54 @@ export function createDataTable(options: DataTableOptions): {
       }
     }
     
+    // Agregar event listeners para los botones del empty state
+    try {
+      const emptyStateElement = element.querySelector('.ubits-data-table__empty-state');
+      if (emptyStateElement && currentOptions.emptyState) {
+        // Detectar qué tipo de empty state es
+        const hasNoData = currentOptions.rows.length === 0;
+        const hasSearchTerm = searchTerm && searchTerm.trim() !== '';
+        const hasActiveFilters = Object.keys(activeFilters).length > 0;
+        
+        let emptyStateConfig;
+        if (hasNoData && currentOptions.emptyState.noData) {
+          emptyStateConfig = currentOptions.emptyState.noData;
+        } else if (hasSearchTerm && currentOptions.emptyState.noSearchResults) {
+          emptyStateConfig = currentOptions.emptyState.noSearchResults;
+        } else if (hasActiveFilters && currentOptions.emptyState.noFilterResults) {
+          emptyStateConfig = currentOptions.emptyState.noFilterResults;
+        }
+        
+        if (emptyStateConfig) {
+          // Botón primario
+          if (emptyStateConfig.onAction) {
+            const primaryButton = emptyStateElement.querySelector('[data-action="primary"]');
+            if (primaryButton) {
+              primaryButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                emptyStateConfig.onAction?.();
+              });
+            }
+          }
+          
+          // Botón secundario
+          if (emptyStateConfig.onSecondaryAction) {
+            const secondaryButton = emptyStateElement.querySelector('[data-action="secondary"]');
+            if (secondaryButton) {
+              secondaryButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                emptyStateConfig.onSecondaryAction?.();
+              });
+            }
+          }
+        }
+      }
+    } catch (error) {
+      console.error(`📎 [ATTACH] ❌ Error agregando listeners de empty state:`, error);
+    }
+    
     } catch (error) {
       // Error en attachEventListeners
       console.error(`📎 [ATTACH] ❌ Error en attachEventListeners:`, error);
@@ -5962,6 +6583,19 @@ export function createDataTable(options: DataTableOptions): {
   const update = (newOptions: Partial<DataTableOptions>) => {
     const previousShowPagination = currentOptions.showPagination;
     currentOptions = { ...currentOptions, ...newOptions };
+    
+    // Si se actualizaron las columnas, eliminar duplicados
+    if (newOptions.columns) {
+      console.log('🔍 [UPDATE] Eliminando duplicados de columnas actualizadas...');
+      currentOptions.columns = removeDuplicateColumns(newOptions.columns);
+    } else if (currentOptions.columns) {
+      // También verificar y limpiar duplicados en las columnas existentes
+      const beforeCount = currentOptions.columns.length;
+      currentOptions.columns = removeDuplicateColumns(currentOptions.columns);
+      if (currentOptions.columns.length !== beforeCount) {
+        console.log('🔍 [UPDATE] Duplicados encontrados y eliminados:', beforeCount, '->', currentOptions.columns.length);
+      }
+    }
     
     // Si cambió el estado de paginación, resetear lazy load
     if (newOptions.showPagination !== undefined && newOptions.showPagination !== previousShowPagination) {

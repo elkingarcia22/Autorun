@@ -155,6 +155,11 @@ export interface DataTableOptions {
   onRowExpand?: (rowId: string | number, expanded: boolean) => void;
   
   /**
+   * Callback cuando se hace click en un botón de acción de una fila (columnas de tipo 'acciones')
+   */
+  onRowAction?: (rowId: string | number, row: TableRow) => void;
+  
+  /**
    * Si las columnas son reordenables (drag & drop)
    */
   columnReorderable?: boolean;
@@ -443,6 +448,71 @@ export interface DataTableOptions {
      * Si se muestra el botón de seleccionar columnas (por defecto: true si columnSelectorButton está definido)
      */
     showColumnSelectorButton?: boolean;
+  };
+  
+  /**
+   * Configuración del empty state (estado vacío)
+   */
+  emptyState?: {
+    /**
+     * Empty state cuando no hay datos
+     */
+    noData?: {
+      title?: string;
+      description?: string;
+      icon?: string;
+      imageUrl?: string;
+      actionLabel?: string;
+      onAction?: () => void;
+      showPrimaryButton?: boolean;
+      primaryButtonIcon?: string;
+      showPrimaryButtonIcon?: boolean;
+      secondaryActionLabel?: string;
+      onSecondaryAction?: () => void;
+      showSecondaryButton?: boolean;
+      secondaryButtonIcon?: string;
+      showSecondaryButtonIcon?: boolean;
+    };
+    
+    /**
+     * Empty state cuando no hay resultados de búsqueda
+     */
+    noSearchResults?: {
+      title?: string;
+      description?: string;
+      icon?: string;
+      imageUrl?: string;
+      actionLabel?: string;
+      onAction?: () => void;
+      showPrimaryButton?: boolean;
+      primaryButtonIcon?: string;
+      showPrimaryButtonIcon?: boolean;
+      secondaryActionLabel?: string;
+      onSecondaryAction?: () => void;
+      showSecondaryButton?: boolean;
+      secondaryButtonIcon?: string;
+      showSecondaryButtonIcon?: boolean;
+    };
+    
+    /**
+     * Empty state cuando no hay resultados de filtros
+     */
+    noFilterResults?: {
+      title?: string;
+      description?: string;
+      icon?: string;
+      imageUrl?: string;
+      actionLabel?: string;
+      onAction?: () => void;
+      showPrimaryButton?: boolean;
+      primaryButtonIcon?: string;
+      showPrimaryButtonIcon?: boolean;
+      secondaryActionLabel?: string;
+      onSecondaryAction?: () => void;
+      showSecondaryButton?: boolean;
+      secondaryButtonIcon?: string;
+      showSecondaryButtonIcon?: boolean;
+    };
   };
 }
 
