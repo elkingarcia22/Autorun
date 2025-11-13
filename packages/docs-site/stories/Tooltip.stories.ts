@@ -282,37 +282,16 @@ export const Default: Story = {
 
       const buttonRect = openButton.getBoundingClientRect();
       
-      // Calcular posición para que el tooltip aparezca correctamente según tailPosition
-      let position: { top: number; left: number } | undefined;
-      
-      if (args.tailPosition === 'top') {
-        // Tooltip debajo del botón, tail arriba apuntando al botón
-        position = {
-          top: buttonRect.bottom + 9, // 9px debajo del botón (altura del tail)
-          left: buttonRect.left + buttonRect.width / 2, // Centrado horizontalmente
-        };
-      } else if (args.tailPosition === 'bottom') {
-        // Tooltip arriba del botón, tail abajo apuntando al botón
-        const estimatedTooltipHeight = 200;
-        position = {
-          top: buttonRect.top - estimatedTooltipHeight - 9,
-          left: buttonRect.left + buttonRect.width / 2,
-        };
-      } else if (args.tailPosition === 'left') {
-        // Tooltip a la derecha del botón, tail izquierda apuntando al botón
-        position = {
-          top: buttonRect.top + buttonRect.height / 2,
-          left: buttonRect.right + 9,
-        };
-      } else if (args.tailPosition === 'right') {
-        // Tooltip a la izquierda del botón, tail derecha apuntando al botón
-        const tooltipWidths: Record<string, number> = { sm: 240, md: 320, lg: 400 };
-        const estimatedTooltipWidth = tooltipWidths[args.width || 'md'] || 320;
-        position = {
-          top: buttonRect.top + buttonRect.height / 2,
-          left: buttonRect.left - estimatedTooltipWidth - 9,
-        };
-      }
+      // SIEMPRE mostrar el tooltip arriba del botón, pero conservar la posición del tail según la configuración
+      // El tooltip se posiciona arriba, pero el triángulo puede apuntar en diferentes direcciones
+      // Calcular posición para que el tooltip aparezca arriba del botón
+      // Necesitamos calcular la altura del tooltip después de crearlo
+      // Usamos un valor estimado más grande para asegurar que esté completamente arriba
+      const estimatedTooltipHeight = 200; // Altura estimada del tooltip
+      const position: { top: number; left: number } = {
+        top: buttonRect.top - estimatedTooltipHeight - 9, // Arriba del botón menos altura del tooltip menos tail
+        left: buttonRect.left + buttonRect.width / 2, // Centrado horizontalmente
+      };
 
       tooltipInstance = createTooltip({
         title: args.title,
@@ -320,7 +299,7 @@ export const Default: Story = {
         description: args.description,
         showDescription: args.showDescription !== undefined ? args.showDescription : true,
         width: args.width,
-        tailPosition: args.tailPosition,
+        tailPosition: args.tailPosition, // Conservar la posición del tail según la configuración del usuario
         tailOffset: args.tailOffset,
         primaryButtonLabel: args.primaryButtonLabel,
         showPrimaryButton: args.showPrimaryButton || false,
@@ -354,23 +333,14 @@ export const Default: Story = {
         position: position,
       });
 
-      // Ajustar posición después de crear el tooltip para bottom y right
-      if (args.tailPosition === 'bottom' && tooltipInstance) {
+      // Ajustar posición después de crear el tooltip (siempre arriba del botón)
+      if (tooltipInstance) {
         setTimeout(() => {
           const tooltipHeight = tooltipInstance.element.offsetHeight;
           const buttonRect = openButton.getBoundingClientRect();
           tooltipInstance.updatePosition({
             top: buttonRect.top - tooltipHeight - 9,
             left: buttonRect.left + buttonRect.width / 2,
-          });
-        }, 0);
-      } else if (args.tailPosition === 'right' && tooltipInstance) {
-        setTimeout(() => {
-          const tooltipWidth = tooltipInstance.element.offsetWidth;
-          const buttonRect = openButton.getBoundingClientRect();
-          tooltipInstance.updatePosition({
-            top: buttonRect.top + buttonRect.height / 2,
-            left: buttonRect.left - tooltipWidth - 9,
           });
         }, 0);
       }

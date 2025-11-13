@@ -1,0 +1,106 @@
+/* ========================================
+   BREADCRUMB COMPONENT
+   ======================================== */
+
+/* Breadcrumb Container */
+.ubits-breadcrumb {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+/* Breadcrumb List */
+.ubits-breadcrumb__list {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-sans);
+}
+
+/* Breadcrumb Item */
+.ubits-breadcrumb__item {
+  display: inline-flex;
+  align-items: center;
+  font-size: var(--font-body-sm-size, 13px);
+  line-height: var(--font-body-sm-line, 19.5px);
+  font-weight: var(--weight-regular, 400);
+  color: var(--ubits-fg-1-medium, #5c646f);
+  text-decoration: none;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+}
+
+/* Breadcrumb Item - Link/Button hover */
+.ubits-breadcrumb__item:not(.ubits-breadcrumb__item--active):not(.ubits-breadcrumb__item--disabled):hover {
+  color: var(--ubits-feedback-accent-info-static-inverted, #4a74ee);
+  text-decoration: underline;
+}
+
+/* Breadcrumb Item - Active State */
+.ubits-breadcrumb__item--active {
+  color: var(--ubits-fg-1-high, #303a47);
+  font-weight: var(--weight-bold, 700);
+  cursor: default;
+  pointer-events: none;
+}
+
+/* Breadcrumb Item - Disabled State */
+.ubits-breadcrumb__item--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+  color: var(--ubits-fg-disabled, #a2a6ad);
+}
+
+/* Breadcrumb Separator */
+.ubits-breadcrumb__separator {
+  display: inline-flex;
+  align-items: center;
+  color: var(--ubits-fg-1-medium, #5c646f);
+  font-size: var(--font-body-sm-size, 13px);
+  line-height: var(--font-body-sm-line, 19.5px);
+  margin: 0 4px;
+  user-select: none;
+}
+
+/* Dark Mode Support */
+[data-theme="dark"] .ubits-breadcrumb__item {
+  color: var(--ubits-fg-1-medium, #8a8f99);
+}
+
+[data-theme="dark"] .ubits-breadcrumb__item:not(.ubits-breadcrumb__item--active):not(.ubits-breadcrumb__item--disabled):hover {
+  color: var(--ubits-feedback-accent-info-static-inverted, #4a74ee);
+}
+
+[data-theme="dark"] .ubits-breadcrumb__item--active {
+  color: var(--ubits-fg-1-high, #ffffff);
+}
+
+[data-theme="dark"] .ubits-breadcrumb__separator {
+  color: var(--ubits-fg-1-medium, #8a8f99);
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+
+@media (max-width: 768px) {
+  .ubits-breadcrumb__item {
+    font-size: var(--font-body-sm-size, 13px);
+    line-height: var(--font-body-sm-line, 19.5px);
+  }
+  
+  .ubits-breadcrumb__separator {
+    font-size: var(--font-body-sm-size, 13px);
+    line-height: var(--font-body-sm-line, 19.5px);
+  }
+}
+

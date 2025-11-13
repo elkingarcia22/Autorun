@@ -1,0 +1,16 @@
+{
+  "name": "@ubits/segment-control",
+  "version": "1.0.0",
+  "description": "UBITS Segment Control Component - Horizontal navigation segments with optional icons",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite build --watch"
+  },
+  "keywords": ["ubits", "segment-control", "component", "ui", "navigation"],
+  "author": "UBITS",
+  "license": "MIT"
+}
+

@@ -7,6 +7,8 @@
 import type { InputOptions, InputType, SelectOption, AutocompleteOption, InputSize } from './types/InputOptions';
 import { renderList, createList } from '../../list/src/ListProvider';
 import type { ListItem, ListSize } from '../../list/src/types/ListOptions';
+import { createModal } from '../../modal/src/ModalProvider';
+import type { ModalOptions } from '../../modal/src/types/ModalOptions';
 
 // Helper para renderizar iconos - compatible con FontAwesome
 function renderIconHelper(iconName: string, iconStyle: 'regular' | 'solid' = 'regular'): string {
@@ -37,7 +39,8 @@ export function renderInput(options: InputOptions): string {
     rightIcon = '',
     value = '',
     className = '',
-    attributes = {}
+    attributes = {},
+    showRichTextToolbar = false
   } = options;
 
   let inputHTML = '';
@@ -91,12 +94,77 @@ export function renderInput(options: InputOptions): string {
       finalHasRightIcon = true;
     }
   } else if (type === 'textarea') {
-    // TEXTAREA - campo multilínea con redimensionamiento
-    let textareaStyle = `width: 100%; min-height: 80px; resize: vertical; ${paddingLeft} ${paddingRight}`;
-    if (state === 'disabled') {
-      textareaStyle += `; background: var(--ubits-bg-3) !important; color: var(--ubits-fg-1-low) !important; border-color: var(--ubits-border-2) !important;`;
+    // TEXTAREA - campo multilínea con redimensionamiento y barra de herramientas opcional
+    if (showRichTextToolbar) {
+      // Contenedor que envuelve la barra y el textarea
+      inputHTML += `<div class="ubits-input-rich-text-wrapper" style="border: 1px solid var(--ubits-border-1); border-radius: 6px; overflow: hidden;">`;
+      
+      // Barra de herramientas de texto enriquecido dentro del contenedor
+      inputHTML += `
+        <div class="ubits-input-rich-text-toolbar" data-container-id="${containerId}">
+          <button type="button" class="ubits-rich-text-btn" data-command="bold" title="Negrita">
+            <i class="fas fa-bold"></i>
+          </button>
+          <button type="button" class="ubits-rich-text-btn" data-command="italic" title="Cursiva">
+            <i class="fas fa-italic"></i>
+          </button>
+          <button type="button" class="ubits-rich-text-btn" data-command="underline" title="Subrayado">
+            <i class="fas fa-underline"></i>
+          </button>
+          <div class="ubits-rich-text-separator"></div>
+          <button type="button" class="ubits-rich-text-btn" data-command="justifyLeft" title="Alinear izquierda">
+            <i class="fas fa-align-left"></i>
+          </button>
+          <button type="button" class="ubits-rich-text-btn" data-command="justifyCenter" title="Alinear centro">
+            <i class="fas fa-align-center"></i>
+          </button>
+          <button type="button" class="ubits-rich-text-btn" data-command="justifyRight" title="Alinear derecha">
+            <i class="fas fa-align-right"></i>
+          </button>
+          <div class="ubits-rich-text-separator"></div>
+          <button type="button" class="ubits-rich-text-btn" data-command="insertUnorderedList" title="Lista con viñetas">
+            <i class="fas fa-list-ul"></i>
+          </button>
+          <button type="button" class="ubits-rich-text-btn" data-command="insertOrderedList" title="Lista numerada">
+            <i class="fas fa-list-ol"></i>
+          </button>
+          <div class="ubits-rich-text-separator"></div>
+          <button type="button" class="ubits-rich-text-btn" data-command="insertImage" title="Insertar imagen">
+            <i class="fas fa-image"></i>
+          </button>
+          <button type="button" class="ubits-rich-text-btn" data-command="insertTable" title="Insertar tabla">
+            <i class="fas fa-table"></i>
+          </button>
+          <button type="button" class="ubits-rich-text-btn" data-command="createLink" title="Insertar enlace">
+            <i class="fas fa-link"></i>
+          </button>
+          <button type="button" class="ubits-rich-text-btn" data-command="code" title="Código">
+            <i class="fas fa-code"></i>
+          </button>
+          <div class="ubits-rich-text-separator"></div>
+          <button type="button" class="ubits-rich-text-btn" data-command="removeFormat" title="Limpiar formato">
+            <i class="fas fa-remove-format"></i>
+          </button>
+        </div>
+      `;
+      
+      let textareaStyle = `width: 100%; min-height: 80px; resize: vertical; ${paddingLeft} ${paddingRight}; border: none; border-radius: 0;`;
+      if (state === 'disabled') {
+        textareaStyle += `; background: var(--ubits-bg-3) !important; color: var(--ubits-fg-1-low) !important;`;
+      }
+      const textareaId = `${containerId}-textarea`;
+      inputHTML += `<textarea id="${textareaId}" class="${inputClasses.join(' ')}" style="${textareaStyle}" placeholder="${placeholder}"${disabledAttr}${maxLengthAttr}>${value}</textarea>`;
+      
+      inputHTML += `</div>`;
+    } else {
+      // Textarea sin barra de herramientas (comportamiento normal)
+      let textareaStyle = `width: 100%; min-height: 80px; resize: vertical; ${paddingLeft} ${paddingRight}`;
+      if (state === 'disabled') {
+        textareaStyle += `; background: var(--ubits-bg-3) !important; color: var(--ubits-fg-1-low) !important; border-color: var(--ubits-border-2) !important;`;
+      }
+      const textareaId = `${containerId}-textarea`;
+      inputHTML += `<textarea id="${textareaId}" class="${inputClasses.join(' ')}" style="${textareaStyle}" placeholder="${placeholder}"${disabledAttr}${maxLengthAttr}>${value}</textarea>`;
     }
-    inputHTML += `<textarea class="${inputClasses.join(' ')}" style="${textareaStyle}" placeholder="${placeholder}"${disabledAttr}${maxLengthAttr}>${value}</textarea>`;
   } else if (type === 'search') {
     // SEARCH - input con icono de búsqueda y botón de limpiar
     let searchPaddingLeft = paddingLeft;
@@ -295,6 +363,11 @@ export function createInput(options: InputOptions): {
 
   if (type === 'password') {
     createPasswordToggle(container, inputElement as HTMLInputElement);
+  }
+
+  // Barra de herramientas de texto enriquecido (solo para textarea)
+  if (type === 'textarea' && options.showRichTextToolbar) {
+    setupRichTextToolbar(container, inputElement as HTMLTextAreaElement, options.onChange);
   }
 
   // Actualizar contador de caracteres
@@ -862,5 +935,435 @@ function updateCounter(counterElement: HTMLElement, currentLength: number, maxLe
   } else {
     counterElement.classList.remove('ubits-input-counter--limit');
   }
+}
+
+/**
+ * Muestra un modal UBITS para insertar una imagen
+ */
+function showInsertImageModal(editableDiv: HTMLElement, syncContent: () => void): void {
+  const modalId = `ubits-rich-text-image-modal-${Date.now()}`;
+  const inputId = `${modalId}-input`;
+  
+  const modalOptions: ModalOptions = {
+    title: 'Insertar imagen',
+    size: 'md',
+    bodyContent: `
+      <div style="padding: var(--ubits-spacing-md, 8px) 0;">
+        <label class="ubits-input-label" style="margin-bottom: var(--ubits-spacing-sm, 8px);">
+          URL de la imagen:
+        </label>
+        <div style="display: flex; gap: var(--ubits-spacing-sm, 8px); align-items: flex-start;">
+          <input 
+            type="text" 
+            id="${inputId}"
+            class="ubits-input ubits-input--md"
+            placeholder="https://ejemplo.com/imagen.jpg"
+            style="flex: 1;"
+          />
+          <button 
+            type="button"
+            id="${modalId}-insert-btn"
+            class="ubits-button ubits-button--primary ubits-button--md"
+          >
+            <span>Insertar imagen</span>
+          </button>
+        </div>
+      </div>
+    `,
+    footerButtons: {
+      secondary: {
+        label: 'Cancelar',
+        onClick: () => {
+          // El modal se cerrará automáticamente con el método close
+        }
+      }
+    },
+    onClose: () => {
+      // Limpiar el modal del DOM después de cerrar
+      const modal = document.getElementById(modalId)?.closest('.ubits-modal-overlay') as HTMLElement;
+      if (modal) {
+        setTimeout(() => modal.remove(), 300); // Esperar a que termine la animación
+      }
+    },
+    closeOnOverlayClick: true,
+    open: true
+  };
+
+  const modal = createModal(modalOptions);
+  const modalElement = modal.element;
+  modalElement.id = modalId;
+
+  // Event listener para el botón de insertar
+  const insertBtn = document.getElementById(`${modalId}-insert-btn`);
+  const urlInput = document.getElementById(inputId) as HTMLInputElement;
+
+  if (insertBtn && urlInput) {
+    const handleInsert = () => {
+      const url = urlInput.value.trim();
+      if (url) {
+        const img = document.createElement('img');
+        img.src = url;
+        img.style.maxWidth = '100%';
+        img.style.height = 'auto';
+        img.style.display = 'block';
+        img.style.margin = `var(--ubits-spacing-sm, 8px) 0`;
+        const selection = window.getSelection();
+        if (selection && selection.rangeCount > 0) {
+          selection.getRangeAt(0).insertNode(img);
+        } else {
+          editableDiv.appendChild(img);
+        }
+        syncContent();
+        modal.close();
+      }
+    };
+
+    insertBtn.addEventListener('click', handleInsert);
+    
+    // Permitir insertar con Enter
+    urlInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        handleInsert();
+      }
+    });
+    
+    // Actualizar el onClick del botón Cancelar para usar modal.close()
+    const cancelBtn = modalElement.querySelector('.ubits-button--secondary') as HTMLButtonElement;
+    if (cancelBtn) {
+      cancelBtn.addEventListener('click', () => {
+        modal.close();
+      });
+    }
+  }
+}
+
+/**
+ * Muestra un modal UBITS para insertar una tabla
+ */
+function showInsertTableModal(editableDiv: HTMLElement, syncContent: () => void): void {
+  const modalId = `ubits-rich-text-table-modal-${Date.now()}`;
+  const rowsInputId = `${modalId}-rows`;
+  const colsInputId = `${modalId}-cols`;
+  
+  const modalOptions: ModalOptions = {
+    title: 'Insertar tabla',
+    size: 'sm',
+    bodyContent: `
+      <div style="padding: var(--ubits-spacing-md, 8px) 0;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--ubits-spacing-lg, 16px);">
+          <div>
+            <label class="ubits-input-label" style="margin-bottom: var(--ubits-spacing-sm, 8px);">
+              Filas:
+            </label>
+            <input 
+              type="number" 
+              id="${rowsInputId}"
+              class="ubits-input ubits-input--md"
+              value="2"
+              min="1"
+              max="20"
+              style="width: 100%;"
+            />
+          </div>
+          <div>
+            <label class="ubits-input-label" style="margin-bottom: var(--ubits-spacing-sm, 8px);">
+              Columnas:
+            </label>
+            <input 
+              type="number" 
+              id="${colsInputId}"
+              class="ubits-input ubits-input--md"
+              value="2"
+              min="1"
+              max="20"
+              style="width: 100%;"
+            />
+          </div>
+        </div>
+      </div>
+    `,
+    footerButtons: {
+      secondary: {
+        label: 'Cancelar',
+        onClick: () => {
+          // El modal se cerrará automáticamente con el método close
+        }
+      },
+      primary: {
+        label: 'Insertar',
+        onClick: () => {
+          // Se manejará después de crear el modal
+        }
+      }
+    },
+    onClose: () => {
+      // Limpiar el modal del DOM después de cerrar
+      const modal = document.getElementById(modalId)?.closest('.ubits-modal-overlay') as HTMLElement;
+      if (modal) {
+        setTimeout(() => modal.remove(), 300); // Esperar a que termine la animación
+      }
+    },
+    closeOnOverlayClick: true,
+    open: true
+  };
+
+  const modal = createModal(modalOptions);
+  const modalElement = modal.element;
+  modalElement.id = modalId;
+
+  // Actualizar el onClick del botón Insertar
+  const insertBtn = modalElement.querySelector('.ubits-button--primary') as HTMLButtonElement;
+  const rowsInput = document.getElementById(rowsInputId) as HTMLInputElement;
+  const colsInput = document.getElementById(colsInputId) as HTMLInputElement;
+
+  if (insertBtn && rowsInput && colsInput) {
+    insertBtn.addEventListener('click', () => {
+      const rows = parseInt(rowsInput.value) || 2;
+      const cols = parseInt(colsInput.value) || 2;
+      
+      if (rows > 0 && cols > 0) {
+        const table = document.createElement('table');
+        table.style.borderCollapse = 'collapse';
+        table.style.width = '100%';
+        table.style.margin = `var(--ubits-spacing-sm, 8px) 0`;
+        table.style.border = `1px solid var(--ubits-border-1)`;
+        
+        for (let i = 0; i < rows; i++) {
+          const tr = document.createElement('tr');
+          for (let j = 0; j < cols; j++) {
+            const td = document.createElement('td');
+            td.style.border = `1px solid var(--ubits-border-1)`;
+            td.style.padding = `var(--ubits-spacing-sm, 8px)`;
+            td.style.minWidth = '50px';
+            td.textContent = ' ';
+            tr.appendChild(td);
+          }
+          table.appendChild(tr);
+        }
+        
+        const selection = window.getSelection();
+        if (selection && selection.rangeCount > 0) {
+          selection.getRangeAt(0).insertNode(table);
+        } else {
+          editableDiv.appendChild(table);
+        }
+        
+        syncContent();
+        modal.close();
+      }
+    });
+  }
+
+  // Actualizar el onClick del botón Cancelar
+  const cancelBtn = modalElement.querySelector('.ubits-button--secondary') as HTMLButtonElement;
+  if (cancelBtn) {
+    cancelBtn.addEventListener('click', () => {
+      modal.close();
+    });
+  }
+}
+
+/**
+ * Muestra un modal UBITS para crear un enlace
+ */
+function showCreateLinkModal(editableDiv: HTMLElement, syncContent: () => void): void {
+  const modalId = `ubits-rich-text-link-modal-${Date.now()}`;
+  const inputId = `${modalId}-input`;
+  
+  const modalOptions: ModalOptions = {
+    title: 'Insertar enlace',
+    size: 'md',
+    bodyContent: `
+      <div style="padding: var(--ubits-spacing-md, 8px) 0;">
+        <label class="ubits-input-label" style="margin-bottom: var(--ubits-spacing-sm, 8px);">
+          URL del enlace:
+        </label>
+        <input 
+          type="text" 
+          id="${inputId}"
+          class="ubits-input ubits-input--md"
+          placeholder="https://ejemplo.com"
+          style="width: 100%; box-sizing: border-box;"
+        />
+      </div>
+    `,
+    footerButtons: {
+      secondary: {
+        label: 'Cancelar',
+        onClick: () => {
+          // El modal se cerrará automáticamente con el método close
+        }
+      },
+      primary: {
+        label: 'Insertar',
+        onClick: () => {
+          // Se manejará después de crear el modal
+        }
+      }
+    },
+    onClose: () => {
+      // Limpiar el modal del DOM después de cerrar
+      const modal = document.getElementById(modalId)?.closest('.ubits-modal-overlay') as HTMLElement;
+      if (modal) {
+        setTimeout(() => modal.remove(), 300); // Esperar a que termine la animación
+      }
+    },
+    closeOnOverlayClick: true,
+    open: true
+  };
+
+  const modal = createModal(modalOptions);
+  const modalElement = modal.element;
+  modalElement.id = modalId;
+
+  // Actualizar el onClick del botón Insertar
+  const insertBtn = modalElement.querySelector('.ubits-button--primary') as HTMLButtonElement;
+  const urlInput = document.getElementById(inputId) as HTMLInputElement;
+
+  if (insertBtn && urlInput) {
+    insertBtn.addEventListener('click', () => {
+      const url = urlInput.value.trim();
+      if (url) {
+        document.execCommand('createLink', false, url);
+        syncContent();
+        modal.close();
+      }
+    });
+  }
+
+  // Actualizar el onClick del botón Cancelar
+  const cancelBtn = modalElement.querySelector('.ubits-button--secondary') as HTMLButtonElement;
+  if (cancelBtn) {
+    cancelBtn.addEventListener('click', () => {
+      modal.close();
+    });
+  }
+
+  // Permitir insertar con Enter
+  if (urlInput) {
+    urlInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        if (insertBtn) {
+          insertBtn.click();
+        }
+      }
+    });
+  }
+}
+
+function setupRichTextToolbar(container: HTMLElement, textareaElement: HTMLTextAreaElement, onChange?: (value: string, event?: Event) => void): void {
+  const toolbar = container.querySelector('.ubits-input-rich-text-toolbar') as HTMLElement;
+  if (!toolbar) return;
+
+  // Buscar el wrapper que contiene la barra y el textarea
+  const richTextWrapper = textareaElement.closest('.ubits-input-rich-text-wrapper') as HTMLElement;
+  if (!richTextWrapper) return;
+
+  const placeholder = textareaElement.placeholder || '';
+
+  // Crear div contentEditable que reemplazará al textarea
+  const editableDiv = document.createElement('div');
+  editableDiv.className = textareaElement.className;
+  
+  // Copiar estilos del textarea pero ajustar para que el contenido esté dentro del borde
+  const computedStyle = window.getComputedStyle(textareaElement);
+  editableDiv.style.cssText = textareaElement.style.cssText;
+  editableDiv.style.position = 'relative';
+  editableDiv.style.padding = computedStyle.padding || '12px 8px';
+  editableDiv.style.margin = '0';
+  editableDiv.style.outline = 'none';
+  editableDiv.style.overflow = 'auto';
+  editableDiv.style.minHeight = computedStyle.minHeight || '80px';
+  editableDiv.style.resize = 'vertical';
+  editableDiv.contentEditable = 'true';
+  editableDiv.setAttribute('data-placeholder', placeholder);
+  
+  // Establecer contenido inicial
+  if (textareaElement.value && textareaElement.value.trim()) {
+    editableDiv.innerHTML = textareaElement.value;
+  } else {
+    editableDiv.classList.add('ubits-rich-text-placeholder');
+  }
+
+  // Reemplazar textarea con div editable dentro del wrapper
+  textareaElement.style.display = 'none';
+  textareaElement.setAttribute('data-rich-text-editor', 'true');
+  richTextWrapper.insertBefore(editableDiv, textareaElement);
+
+  // Función para sincronizar contenido
+  const syncContent = (event?: Event) => {
+    const textContent = editableDiv.innerText || '';
+    textareaElement.value = textContent;
+    
+    // Disparar onChange si existe
+    if (onChange) {
+      onChange(textContent, event);
+    }
+    
+    // Manejar placeholder
+    if (!textContent.trim()) {
+      editableDiv.classList.add('ubits-rich-text-placeholder');
+    } else {
+      editableDiv.classList.remove('ubits-rich-text-placeholder');
+    }
+  };
+
+  // Sincronizar contenido entre div editable y textarea oculto
+  editableDiv.addEventListener('input', syncContent);
+  editableDiv.addEventListener('blur', syncContent);
+
+  // Manejar placeholder al enfocar
+  editableDiv.addEventListener('focus', () => {
+    if (editableDiv.classList.contains('ubits-rich-text-placeholder')) {
+      editableDiv.textContent = '';
+      editableDiv.classList.remove('ubits-rich-text-placeholder');
+    }
+  });
+
+  // Botones de la barra de herramientas
+  const toolbarButtons = toolbar.querySelectorAll('.ubits-rich-text-btn');
+  toolbarButtons.forEach(button => {
+    button.addEventListener('click', (e) => {
+      e.preventDefault();
+      editableDiv.focus();
+      
+      const command = button.getAttribute('data-command');
+      if (!command) return;
+
+      // Comandos especiales que requieren manejo personalizado
+      if (command === 'insertImage') {
+        showInsertImageModal(editableDiv, syncContent);
+      } else if (command === 'insertTable') {
+        showInsertTableModal(editableDiv, syncContent);
+      } else if (command === 'createLink') {
+        showCreateLinkModal(editableDiv, syncContent);
+      } else if (command === 'code') {
+        const selection = window.getSelection();
+        if (selection && selection.rangeCount > 0) {
+          const range = selection.getRangeAt(0);
+          const code = document.createElement('code');
+          code.style.background = 'var(--ubits-bg-2)';
+          code.style.padding = `var(--ubits-spacing-xs, 2px) var(--ubits-spacing-sm, 4px)`;
+          code.style.borderRadius = `var(--ubits-border-radius-sm, 4px)`;
+          code.style.fontFamily = 'var(--font-mono, monospace)';
+          try {
+            range.surroundContents(code);
+          } catch (e) {
+            code.textContent = range.toString();
+            range.deleteContents();
+            range.insertNode(code);
+          }
+        }
+      } else {
+        // Comandos estándar de document.execCommand
+        document.execCommand(command, false, undefined);
+      }
+
+      // Sincronizar contenido
+      syncContent();
+    });
+  });
 }
 

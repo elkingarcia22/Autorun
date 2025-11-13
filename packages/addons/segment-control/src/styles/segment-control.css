@@ -1,0 +1,138 @@
+/* ========================================
+   SEGMENT CONTROL COMPONENT
+   ======================================== */
+
+/* Segment Control Container */
+.ubits-segment-control {
+  display: flex;
+  gap: 0;
+  align-items: center;
+  background-color: var(--ubits-bg-2, #F3F3F4);
+  padding: 4px;
+  border-radius: 8px;
+  width: fit-content;
+}
+
+/* Individual Segment */
+.ubits-segment {
+  background: none;
+  border: none;
+  padding: 0 16px;
+  height: 30px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 6px;
+  font-family: var(--font-sans);
+  font-size: var(--font-body-sm-size, 13px);
+  line-height: var(--font-body-sm-line, 19.5px);
+  color: var(--ubits-fg-1-medium, #5c646f);
+  font-weight: var(--weight-semibold, 600);
+  white-space: nowrap;
+  width: fit-content;
+}
+
+/* Segment Icon - Inactive (regular) */
+.ubits-segment i {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  color: var(--ubits-fg-1-medium, #5c646f);
+}
+
+/* Segment Label - Inactive */
+.ubits-segment__label {
+  color: var(--ubits-fg-1-medium, #5c646f);
+  font-weight: var(--weight-semibold, 600);
+}
+
+/* Hover State (solo para segmentos inactivos) */
+.ubits-segment:not(.ubits-segment--active):not(.ubits-segment--disabled):hover {
+  background-color: var(--ubits-bg-3, #e7e8ea);
+}
+
+.ubits-segment:not(.ubits-segment--active):not(.ubits-segment--disabled):hover i {
+  color: var(--ubits-fg-1-high, #303a47);
+}
+
+.ubits-segment:not(.ubits-segment--active):not(.ubits-segment--disabled):hover .ubits-segment__label {
+  color: var(--ubits-fg-1-high, #303a47);
+}
+
+/* Active State */
+.ubits-segment--active {
+  background-color: var(--ubits-bg-1, #ffffff);
+  color: var(--ubits-fg-1-high, #303a47);
+  font-weight: var(--weight-bold, 700);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* Active Segment Icon - Solid */
+.ubits-segment--active i {
+  color: var(--ubits-fg-1-high, #303a47);
+}
+
+/* Active Segment Label - Bold */
+.ubits-segment--active .ubits-segment__label {
+  color: var(--ubits-fg-1-high, #303a47);
+  font-weight: var(--weight-bold, 700);
+}
+
+/* Disabled State */
+.ubits-segment--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.ubits-segment--disabled i {
+  color: var(--ubits-fg-disabled, #a2a6ad);
+}
+
+.ubits-segment--disabled .ubits-segment__label {
+  color: var(--ubits-fg-disabled, #a2a6ad);
+}
+
+/* Dark Mode Support */
+[data-theme="dark"] .ubits-segment-control {
+  background-color: var(--ubits-bg-2, #2a303f);
+}
+
+[data-theme="dark"] .ubits-segment--active {
+  background-color: var(--ubits-bg-1, #1a1f2e);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .ubits-segment:not(.ubits-segment--active):not(.ubits-segment--disabled):hover {
+  background-color: var(--ubits-bg-3, #3a404f);
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+
+@media (max-width: 768px) {
+  .ubits-segment {
+    padding: 0 12px;
+    height: 28px;
+    font-size: var(--font-body-sm-size, 13px);
+    line-height: var(--font-body-sm-line, 19.5px);
+  }
+  
+  .ubits-segment i {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+  }
+}
+

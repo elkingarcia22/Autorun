@@ -227,46 +227,21 @@ export const Default: Story = {
 
       const buttonRect = openButton.getBoundingClientRect();
       
-      // Calcular posición para que el popover aparezca correctamente según tailPosition
-      let position: { top: number; left: number } | undefined;
-      
-      if (args.tailPosition === 'top') {
-        // Popover debajo del botón, tail arriba apuntando al botón
-        position = {
-          top: buttonRect.bottom + 9, // 9px debajo del botón (altura del tail)
-          left: buttonRect.left + buttonRect.width / 2, // Centrado horizontalmente
-        };
-      } else if (args.tailPosition === 'bottom') {
-        // Popover arriba del botón, tail abajo apuntando al botón
-        // Necesitamos calcular la altura del popover después de crearlo
-        // Usamos un valor estimado más grande para asegurar que esté completamente arriba
-        const estimatedPopoverHeight = 200; // Altura estimada del popover (aumentado de 150)
-        position = {
-          top: buttonRect.top - estimatedPopoverHeight - 9, // Arriba del botón menos altura del popover menos tail
-          left: buttonRect.left + buttonRect.width / 2,
-        };
-      } else if (args.tailPosition === 'left') {
-        // Popover a la derecha del botón, tail izquierda apuntando al botón
-        // IMPORTANTE: No usar buttonRect.bottom, usar buttonRect.top + buttonRect.height / 2 para centrar verticalmente
-        position = {
-          top: buttonRect.top + buttonRect.height / 2, // Centro vertical del botón
-          left: buttonRect.right + 9, // 9px a la derecha del botón (ancho del tail)
-        };
-      } else if (args.tailPosition === 'right') {
-        // Popover a la izquierda del botón, tail derecha apuntando al botón
-        // Necesitamos calcular el ancho del popover
-        const popoverWidths: Record<string, number> = { sm: 240, md: 360, lg: 400, xl: 480 };
-        const estimatedPopoverWidth = popoverWidths[args.width || 'md'] || 360;
-        position = {
-          top: buttonRect.top + buttonRect.height / 2, // Centro vertical del botón
-          left: buttonRect.left - estimatedPopoverWidth - 9, // Izquierda del botón menos ancho del popover menos tail
-        };
-      }
+      // SIEMPRE mostrar el popover arriba del botón, pero conservar la posición del tail según la configuración
+      // El popover se posiciona arriba, pero el triángulo puede apuntar en diferentes direcciones
+      // Calcular posición para que el popover aparezca arriba del botón
+      // Necesitamos calcular la altura del popover después de crearlo
+      // Usamos un valor estimado más grande para asegurar que esté completamente arriba
+      const estimatedPopoverHeight = 200; // Altura estimada del popover
+      const position: { top: number; left: number } = {
+        top: buttonRect.top - estimatedPopoverHeight - 9, // Arriba del botón menos altura del popover menos tail
+        left: buttonRect.left + buttonRect.width / 2, // Centrado horizontalmente
+      };
 
       popoverInstance = createPopover({
         title: args.title,
         width: args.width,
-        tailPosition: args.tailPosition,
+        tailPosition: args.tailPosition, // Conservar la posición del tail según la configuración del usuario
         tailOffset: args.tailOffset,
         bodyContent: args.bodyContent,
         footerButtons: Object.keys(footerButtons).length > 0 ? footerButtons : undefined,
@@ -282,8 +257,8 @@ export const Default: Story = {
         position: position,
       });
 
-      // Ajustar posición después de crear el popover para bottom y right
-      if (args.tailPosition === 'bottom' && popoverInstance) {
+      // Ajustar posición después de crear el popover (siempre arriba del botón)
+      if (popoverInstance) {
         // Esperar un frame para que el DOM se actualice y podamos obtener las dimensiones reales
         setTimeout(() => {
           // Obtener la altura real del popover después de crearlo
@@ -293,18 +268,6 @@ export const Default: Story = {
           popoverInstance.updatePosition({
             top: buttonRect.top - popoverHeight - 9,
             left: buttonRect.left + buttonRect.width / 2,
-          });
-        }, 0);
-      } else if (args.tailPosition === 'right' && popoverInstance) {
-        // Esperar un frame para que el DOM se actualice y podamos obtener las dimensiones reales
-        setTimeout(() => {
-          // Obtener el ancho real del popover después de crearlo
-          const popoverWidth = popoverInstance.element.offsetWidth;
-          const buttonRect = openButton.getBoundingClientRect();
-          // Reposicionar completamente a la izquierda del botón
-          popoverInstance.updatePosition({
-            top: buttonRect.top + buttonRect.height / 2,
-            left: buttonRect.left - popoverWidth - 9,
           });
         }, 0);
       }

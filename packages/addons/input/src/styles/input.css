@@ -531,6 +531,144 @@
 }
 
 /* ========================================
+   RICH TEXT TOOLBAR (para textarea)
+   ======================================== */
+
+/* Contenedor que envuelve la barra y el textarea */
+.ubits-input-rich-text-wrapper {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--ubits-border-1, #d0d2d5);
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--ubits-bg-1, #ffffff);
+}
+
+.ubits-input-rich-text-wrapper:focus-within {
+  border-color: var(--ubits-accent-brand-static-inverted);
+  box-shadow: 0 0 0 2px rgba(12, 91, 239, 0.1);
+}
+
+.ubits-input-rich-text-toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--ubits-spacing-xs, 4px);
+  padding: var(--ubits-spacing-sm, 8px) var(--ubits-spacing-md, 12px);
+  background: var(--ubits-bg-2, #F3F3F4);
+  border-bottom: 1px solid var(--ubits-border-1, #d0d2d5);
+  flex-wrap: wrap;
+  margin: 0;
+}
+
+.ubits-rich-text-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--ubits-fg-1-medium, #5c646f);
+  cursor: pointer;
+  border-radius: var(--ubits-border-radius-sm, 4px);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: var(--font-body-sm-size, 14px);
+  font-family: var(--font-sans);
+}
+
+.ubits-rich-text-btn:hover {
+  background: var(--ubits-bg-3, #e7e8ea);
+  color: var(--ubits-fg-1-high, #303a47);
+}
+
+.ubits-rich-text-btn:active {
+  background: var(--ubits-bg-3, #e7e8ea);
+  transform: scale(0.95);
+}
+
+.ubits-rich-text-btn i {
+  font-size: var(--font-body-sm-size, 14px);
+  width: 14px;
+  height: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ubits-rich-text-separator {
+  width: 1px;
+  height: 20px;
+  background: var(--ubits-border-1, #d0d2d5);
+  margin: 0 var(--ubits-spacing-xs, 4px);
+}
+
+/* Placeholder para contentEditable */
+.ubits-rich-text-placeholder::before {
+  content: attr(data-placeholder);
+  color: var(--ubits-fg-1-low, #a2a6ad);
+  pointer-events: none;
+  position: absolute;
+  left: var(--ubits-spacing-sm, 8px);
+  top: var(--ubits-spacing-md, 12px);
+  font-family: var(--font-sans);
+  font-size: var(--font-body-md-size);
+}
+
+/* Asegurar que el contenido editable tenga el padding correcto */
+.ubits-input-rich-text-wrapper div[contenteditable="true"] {
+  padding: var(--ubits-spacing-md, 12px) var(--ubits-spacing-sm, 8px);
+  min-height: 80px;
+  outline: none;
+  font-family: var(--font-sans);
+  font-size: var(--font-body-md-size);
+  line-height: var(--font-body-md-line);
+  color: var(--ubits-fg-1-high);
+}
+
+.ubits-rich-text-placeholder:focus::before {
+  display: none;
+}
+
+/* Ajustar textarea cuando tiene toolbar - sin borde ya que está dentro del wrapper */
+.ubits-input-rich-text-wrapper textarea,
+.ubits-input-rich-text-wrapper div[contenteditable="true"] {
+  border: none !important;
+  border-radius: 0 !important;
+  margin: 0;
+}
+
+/* Asegurar que el textarea dentro del wrapper tenga el estilo correcto */
+.ubits-input-rich-text-wrapper .ubits-input {
+  border: none;
+  border-radius: 0;
+}
+
+/* Dark Mode Support */
+[data-theme="dark"] .ubits-input-rich-text-wrapper {
+  background: var(--ubits-bg-1, #1a1f2e);
+  border-color: var(--ubits-border-1, #3a404f);
+}
+
+[data-theme="dark"] .ubits-input-rich-text-toolbar {
+  background: var(--ubits-bg-2, #2a303f);
+  border-bottom-color: var(--ubits-border-1, #3a404f);
+}
+
+[data-theme="dark"] .ubits-rich-text-btn:hover {
+  background: var(--ubits-bg-2, #2a303f);
+  color: var(--ubits-fg-1-high, #ffffff);
+}
+
+[data-theme="dark"] .ubits-rich-text-btn:active {
+  background: var(--ubits-bg-3, #3a404f);
+}
+
+[data-theme="dark"] .ubits-rich-text-separator {
+  background: var(--ubits-border-1, #3a404f);
+}
+
+/* ========================================
    RESPONSIVE
    ======================================== */
 
@@ -538,7 +676,24 @@
     .ubits-input-helper {
         flex-direction: column;
         align-items: flex-start;
-        gap: 4px;
+        gap: var(--ubits-spacing-xs, 4px);
+    }
+    
+    .ubits-input-rich-text-toolbar {
+      gap: var(--ubits-spacing-xs, 2px);
+      padding: var(--ubits-spacing-xs, 6px);
+    }
+    
+    .ubits-rich-text-btn {
+      width: 28px;
+      height: 28px;
+      font-size: var(--font-body-xs-size, 12px);
+    }
+    
+    .ubits-rich-text-btn i {
+      font-size: var(--font-body-xs-size, 12px);
+      width: 12px;
+      height: 12px;
     }
 }
 

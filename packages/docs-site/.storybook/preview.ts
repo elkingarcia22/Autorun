@@ -28,6 +28,9 @@ import '../../addons/empty-state/src/styles/empty-state.css'
 import '../../addons/tooltip/src/styles/tooltip.css'
 import '../../addons/spinner/src/styles/spinner.css'
 import '../../addons/calendar/src/styles/calendar.css'
+import '../../addons/tabs/src/styles/tabs.css'
+import '../../addons/segment-control/src/styles/segment-control.css'
+import '../../addons/breadcrumb/src/styles/breadcrumb.css'
 import './fontawesome-icons.css'
 
 const preview: Preview = {

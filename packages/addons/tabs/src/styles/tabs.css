@@ -1,0 +1,140 @@
+/* ========================================
+   TABS COMPONENT
+   ======================================== */
+
+/* Tabs Container */
+.ubits-tabs {
+  display: flex;
+  gap: 0;
+  align-items: center;
+  background-color: var(--ubits-bg-2, #F3F3F4);
+  padding: 0;
+  border-radius: 8px;
+  width: fit-content;
+}
+
+/* Individual Tab */
+.ubits-tab {
+  background: none;
+  border: none;
+  padding: 0 16px;
+  height: 40px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 6px;
+  font-family: var(--font-sans);
+  font-size: var(--font-body-sm-size, 13px);
+  line-height: var(--font-body-sm-line, 19.5px);
+  color: var(--ubits-fg-1-medium, #5c646f);
+  font-weight: var(--weight-semibold, 600);
+  white-space: nowrap;
+  width: fit-content;
+}
+
+/* Tab Icon - Inactive (regular) */
+.ubits-tab i {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  color: var(--ubits-fg-1-medium, #5c646f);
+}
+
+/* Tab Label - Inactive */
+.ubits-tab__label {
+  color: var(--ubits-fg-1-medium, #5c646f);
+  font-weight: var(--weight-semibold, 600);
+}
+
+/* Hover State (solo para tabs inactivos) */
+.ubits-tab:not(.ubits-tab--active):not(.ubits-tab--disabled):hover {
+  background-color: var(--ubits-bg-3, #e7e8ea);
+}
+
+.ubits-tab:not(.ubits-tab--active):not(.ubits-tab--disabled):hover i {
+  color: var(--ubits-fg-1-high, #303a47);
+}
+
+.ubits-tab:not(.ubits-tab--active):not(.ubits-tab--disabled):hover .ubits-tab__label {
+  color: var(--ubits-fg-1-high, #303a47);
+}
+
+/* Active State */
+.ubits-tab--active {
+  background-color: var(--ubits-bg-1, #ffffff);
+  color: var(--ubits-fg-1-high, #303a47);
+  font-weight: var(--weight-bold, 700);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* Active Tab Icon - Solid */
+.ubits-tab--active i {
+  color: var(--ubits-fg-1-high, #303a47);
+}
+
+/* Active Tab Label - Bold */
+.ubits-tab--active .ubits-tab__label {
+  color: var(--ubits-fg-1-high, #303a47);
+  font-weight: var(--weight-bold, 700);
+}
+
+/* Indicador Active removido - ya no se muestra línea vertical */
+
+/* Disabled State */
+.ubits-tab--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.ubits-tab--disabled i {
+  color: var(--ubits-fg-disabled, #a2a6ad);
+}
+
+.ubits-tab--disabled .ubits-tab__label {
+  color: var(--ubits-fg-disabled, #a2a6ad);
+}
+
+/* Dark Mode Support */
+[data-theme="dark"] .ubits-tabs {
+  background-color: var(--ubits-bg-2, #2a303f);
+}
+
+[data-theme="dark"] .ubits-tab--active {
+  background-color: var(--ubits-bg-1, #1a1f2e);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .ubits-tab:not(.ubits-tab--active):not(.ubits-tab--disabled):hover {
+  background-color: var(--ubits-bg-3, #3a404f);
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+
+@media (max-width: 768px) {
+  .ubits-tab {
+    padding: 0 12px;
+    height: 36px;
+    font-size: var(--font-body-sm-size, 13px);
+    line-height: var(--font-body-sm-line, 19.5px);
+  }
+  
+  .ubits-tab i {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+  }
+}
+

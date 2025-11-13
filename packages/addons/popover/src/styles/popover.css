@@ -110,7 +110,7 @@
 }
 
 .ubits-popover--tail-left .ubits-popover__tail {
-    left: -9px;
+    left: -14px;
     top: 50%;
     width: 19px;
     height: 9px;
@@ -118,7 +118,7 @@
 }
 
 .ubits-popover--tail-right .ubits-popover__tail {
-    right: -9px;
+    right: -14px;
     top: 50%;
     width: 19px;
     height: 9px;

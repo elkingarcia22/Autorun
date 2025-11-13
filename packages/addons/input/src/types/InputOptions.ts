@@ -109,6 +109,12 @@ export interface InputOptions {
   maxLength?: number;
 
   /**
+   * Mostrar/ocultar barra de herramientas de texto enriquecido (solo para textarea)
+   * @default false
+   */
+  showRichTextToolbar?: boolean;
+
+  /**
    * Mostrar texto mandatory/optional
    * @default false
    */

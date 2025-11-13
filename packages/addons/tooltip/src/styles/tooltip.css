@@ -154,7 +154,7 @@
 }
 
 .ubits-tooltip--tail-left .ubits-tooltip__tail {
-    left: -9px;
+    left: -14px;
     top: 50%;
     width: 19px;
     height: 9px;
@@ -162,7 +162,7 @@
 }
 
 .ubits-tooltip--tail-right .ubits-tooltip__tail {
-    right: -9px;
+    right: -14px;
     top: 50%;
     width: 19px;
     height: 9px;

@@ -14,6 +14,9 @@
     <link rel="stylesheet" href="../../addons/sidebar/src/styles/sidebar.css" />
     <link rel="stylesheet" href="../../addons/subnav/src/styles/subnav.css" />
     <link rel="stylesheet" href="../../addons/tabbar/src/styles/tabbar.css" />
+    <link rel="stylesheet" href="../../addons/tabs/src/styles/tabs.css" />
+    <link rel="stylesheet" href="../../addons/segment-control/src/styles/segment-control.css" />
+    <link rel="stylesheet" href="../../addons/breadcrumb/src/styles/breadcrumb.css" />
     <link rel="stylesheet" href="../../addons/pagination/src/styles/pagination.css" />
     <link rel="stylesheet" href="../../addons/data-table/src/styles/data-table.css" />
     <link rel="stylesheet" href="../../addons/toggle/src/styles/toggle.css" />
@@ -497,6 +500,8 @@
     <link rel="stylesheet" href="../../addons/spinner/src/styles/spinner.css" />
     <!-- Empty State Component CSS -->
     <link rel="stylesheet" href="../../addons/empty-state/src/styles/empty-state.css" />
+    <!-- Popover Component CSS -->
+    <link rel="stylesheet" href="../../addons/popover/src/styles/popover.css" />
     <!-- Tooltip Component CSS -->
     <link rel="stylesheet" href="../../addons/tooltip/src/styles/tooltip.css" />
     <!-- Skeleton Component CSS -->
@@ -5550,6 +5555,51 @@ Reglas Importantes:
               hasPreview: true
             },
             {
+              name: 'Tabs',
+              description: 'Componente de tabs horizontal con soporte para iconos opcionales. El tab activo muestra fondo blanco, icono oscuro y texto en negrita. Los tabs inactivos muestran icono y texto en gris claro sin fondo.',
+              files: {
+                css: 'addons/tabs/src/styles/tabs.css',
+                ts: 'addons/tabs/src/TabsProvider.ts'
+              },
+              variants: [],
+              sizes: [],
+              states: ['default', 'hover', 'active', 'disabled'],
+              features: ['Iconos opcionales', 'Tabs personalizables', 'Callbacks por tab', 'Estado activo visual', 'Soporte para tabs deshabilitados', 'Dark mode support', 'Responsive design'],
+              class: 'ubits-tabs ubits-tab ubits-tab--active',
+              example: 'createTabs({\n  tabs: [\n    { id: \'tab-1\', label: \'Label\', icon: \'far fa-th\', active: true },\n    { id: \'tab-2\', label: \'Label\', icon: \'far fa-th\' },\n    { id: \'tab-3\', label: \'Label\', icon: \'far fa-th\' }\n  ],\n  activeTabId: \'tab-1\',\n  onTabChange: (tabId, tabElement) => { ... }\n}, \'tabs-container\')',
+              hasPreview: true
+            },
+            {
+              name: 'Segment Control',
+              description: 'Componente de segmentos horizontal similar a Tabs pero con contenedor con padding interno de 4px y altura de 30px. El segmento activo muestra fondo blanco, icono solid oscuro y texto en negrita. Los segmentos inactivos muestran icono regular y texto en gris claro sin fondo.',
+              files: {
+                css: 'addons/segment-control/src/styles/segment-control.css',
+                ts: 'addons/segment-control/src/SegmentControlProvider.ts'
+              },
+              variants: [],
+              sizes: [],
+              states: ['default', 'hover', 'active', 'disabled'],
+              features: ['Iconos opcionales', 'Segmentos personalizables', 'Callbacks por segmento', 'Estado activo visual', 'Soporte para segmentos deshabilitados', 'Dark mode support', 'Responsive design', 'Padding interno 4px', 'Altura 30px'],
+              class: 'ubits-segment-control ubits-segment ubits-segment--active',
+              example: 'createSegmentControl({\n  segments: [\n    { id: \'segment-1\', label: \'Label\', icon: \'far fa-th\', active: true },\n    { id: \'segment-2\', label: \'Label\', icon: \'far fa-th\' },\n    { id: \'segment-3\', label: \'Label\', icon: \'far fa-th\' }\n  ],\n  activeSegmentId: \'segment-1\',\n  onSegmentChange: (segmentId, segmentElement) => { ... }\n}, \'segment-control-container\')',
+              hasPreview: true
+            },
+            {
+              name: 'Breadcrumb',
+              description: 'Componente de breadcrumb para navegación jerárquica. El último item muestra texto en bold (active) con fg-1-high, los demás en regular (default) con fg-1-medium. Usa body-sm con tokens UBITS.',
+              files: {
+                css: 'addons/breadcrumb/src/styles/breadcrumb.css',
+                ts: 'addons/breadcrumb/src/BreadcrumbProvider.ts'
+              },
+              variants: [],
+              sizes: [],
+              states: ['default', 'hover', 'active', 'disabled'],
+              features: ['Separador personalizable', 'Items clickeables', 'Estado activo visual (último item)', 'Soporte para items deshabilitados', 'Dark mode support', 'Responsive design', 'Body-sm regular (default)', 'Body-sm bold (active)'],
+              class: 'ubits-breadcrumb ubits-breadcrumb__item ubits-breadcrumb__item--active',
+              example: 'createBreadcrumb({\n  items: [\n    { id: \'item-1\', label: \'Home\', url: \'#home\' },\n    { id: \'item-2\', label: \'Categoría\', url: \'#categoria\' },\n    { id: \'item-3\', label: \'Página\', active: true }\n  ],\n  separator: \'>\',\n  onItemClick: (itemId, itemElement) => { ... }\n}, \'breadcrumb-container\')',
+              hasPreview: true
+            },
+            {
               name: 'Drawer Navigation',
               description: 'Componente drawer que sale de izquierda a derecha con overlay. Se usa para vistas de elementos, filtros en tablas, etc. Tiene diferentes tamaños horizontalmente (100%, 80%, 60%, 50%, 40%, 30%). Incluye header con título y botón de cerrar, body con contenido scrollable y footer con botones primario, secundario y terciario.',
               files: {
@@ -6232,6 +6282,12 @@ Reglas Importantes:
                         }
                       });
                     }, 150);
+                  } else if (componentId === 'tabs' && typeof window.updateTabsPreview === 'function') {
+                    window.updateTabsPreview('tabs');
+                  } else if (componentId === 'segment-control' && typeof window.updateSegmentControlPreview === 'function') {
+                    window.updateSegmentControlPreview('segment-control');
+                  } else if (componentId === 'breadcrumb' && typeof window.updateBreadcrumbPreview === 'function') {
+                    window.updateBreadcrumbPreview('breadcrumb');
                   } else if (componentId === 'card-content' && typeof window.updateCardPreview === 'function') {
                     window.updateCardPreview('card-content');
                   } else if (componentId === 'contenedor' && typeof window.updateContenedorPreview === 'function') {
@@ -9443,6 +9499,144 @@ Reglas Importantes:
                         </div>
                       ` : ''}
                       
+                      ${hasPreview && component.name === 'Tabs' ? `
+                        <!-- Preview Section for Tabs -->
+                        <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: none; margin-bottom: 24px;">
+                          <!-- CONTROLES ARRIBA -->
+                          <div style="margin-bottom: 24px;">
+                            <h4 style="margin: 0 0 20px 0; color: var(--ubits-fg-1-high); font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand-static-inverted);"></i>
+                              Controles
+                            </h4>
+                            
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px;">
+                              <!-- Tab Activo -->
+                              <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); text-transform: uppercase; letter-spacing: 0.5px;">Tab Activo</label>
+                                <select id="tabs-active-tab-select-${componentId}" onchange="setTabsControl('activeTabId', this.value, '${componentId}')" style="width: 100%; padding: 10px 32px 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); cursor: pointer; box-sizing: border-box; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23666%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226,9 12,15 18,9%22></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px;">
+                                  <option value="tab-1" selected>Label 1</option>
+                                  <option value="tab-2">Label 2</option>
+                                  <option value="tab-3">Label 3</option>
+                                  <option value="tab-4">Label 4</option>
+                                  <option value="tab-5">Label 5</option>
+                                </select>
+                              </div>
+                              
+                              <!-- Mostrar Iconos -->
+                              <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); text-transform: uppercase; letter-spacing: 0.5px;">Mostrar Iconos</label>
+                                <label class="ubits-toggle ubits-toggle--md" style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                                  <input type="checkbox" class="ubits-toggle__input" id="tabs-show-icons-toggle-${componentId}" checked onchange="setTabsControl('showIcons', this.checked, '${componentId}')">
+                                  <span class="ubits-toggle__track">
+                                    <span class="ubits-toggle__thumb"></span>
+                                  </span>
+                                  <span style="font-size: 14px; color: var(--ubits-fg-1-high);">Habilitado</span>
+                                </label>
+                              </div>
+                              
+                              <!-- Número de Tabs -->
+                              <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); text-transform: uppercase; letter-spacing: 0.5px;">Número de Tabs</label>
+                                <input type="number" id="tabs-count-input-${componentId}" min="1" max="10" value="5" onchange="setTabsControl('tabCount', this.value, '${componentId}')" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans);">
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <!-- PREVIEW EN EL MEDIO -->
+                          <div style="background: var(--ubits-bg-1); padding: 24px; border-radius: 8px; border: none; margin-bottom: 24px; min-height: 80px; display: flex; align-items: center; justify-content: center;">
+                            <div id="tabs-preview-${componentId}" style="width: 100%; max-width: 100%;">
+                              <!-- Se generará dinámicamente -->
+                            </div>
+                          </div>
+                        </div>
+                      ` : ''}
+                      
+                      ${hasPreview && component.name === 'Segment Control' ? `
+                        <!-- Preview Section for Segment Control -->
+                        <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: none; margin-bottom: 24px;">
+                          <!-- CONTROLES ARRIBA -->
+                          <div style="margin-bottom: 24px;">
+                            <h4 style="margin: 0 0 20px 0; color: var(--ubits-fg-1-high); font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand-static-inverted);"></i>
+                              Controles
+                            </h4>
+                            
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px;">
+                              <!-- Segmento Activo -->
+                              <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); text-transform: uppercase; letter-spacing: 0.5px;">Segmento Activo</label>
+                                <select id="segment-control-active-segment-select-${componentId}" onchange="setSegmentControlControl('activeSegmentId', this.value, '${componentId}')" style="width: 100%; padding: 10px 32px 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); cursor: pointer; box-sizing: border-box; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23666%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226,9 12,15 18,9%22></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px;">
+                                  <option value="segment-1" selected>Label 1</option>
+                                  <option value="segment-2">Label 2</option>
+                                  <option value="segment-3">Label 3</option>
+                                  <option value="segment-4">Label 4</option>
+                                  <option value="segment-5">Label 5</option>
+                                </select>
+                              </div>
+                              
+                              <!-- Mostrar Iconos -->
+                              <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); text-transform: uppercase; letter-spacing: 0.5px;">Mostrar Iconos</label>
+                                <label class="ubits-toggle ubits-toggle--md" style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                                  <input type="checkbox" class="ubits-toggle__input" id="segment-control-show-icons-toggle-${componentId}" checked onchange="setSegmentControlControl('showIcons', this.checked, '${componentId}')">
+                                  <span class="ubits-toggle__track">
+                                    <span class="ubits-toggle__thumb"></span>
+                                  </span>
+                                  <span style="font-size: 14px; color: var(--ubits-fg-1-high);">Habilitado</span>
+                                </label>
+                              </div>
+                              
+                              <!-- Número de Segmentos -->
+                              <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); text-transform: uppercase; letter-spacing: 0.5px;">Número de Segmentos</label>
+                                <input type="number" id="segment-control-count-input-${componentId}" min="1" max="10" value="5" onchange="setSegmentControlControl('segmentCount', this.value, '${componentId}')" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans);">
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <!-- PREVIEW EN EL MEDIO -->
+                          <div style="background: var(--ubits-bg-1); padding: 24px; border-radius: 8px; border: none; margin-bottom: 24px; min-height: 80px; display: flex; align-items: center; justify-content: center;">
+                            <div id="segment-control-preview-${componentId}" style="width: 100%; max-width: 100%;">
+                              <!-- Se generará dinámicamente -->
+                            </div>
+                          </div>
+                        </div>
+                      ` : ''}
+                      
+                      ${hasPreview && component.name === 'Breadcrumb' ? `
+                        <!-- Preview Section for Breadcrumb -->
+                        <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: none; margin-bottom: 24px;">
+                          <!-- CONTROLES ARRIBA -->
+                          <div style="margin-bottom: 24px;">
+                            <h4 style="margin: 0 0 20px 0; color: var(--ubits-fg-1-high); font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand-static-inverted);"></i>
+                              Controles
+                            </h4>
+                            
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px;">
+                              <!-- Número de Items -->
+                              <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); text-transform: uppercase; letter-spacing: 0.5px;">Número de Items</label>
+                                <input type="number" id="breadcrumb-count-input-${componentId}" min="2" max="8" value="5" onchange="setBreadcrumbControl('itemCount', this.value, '${componentId}')" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans);">
+                              </div>
+                              
+                              <!-- Separador -->
+                              <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); text-transform: uppercase; letter-spacing: 0.5px;">Separador</label>
+                                <input type="text" id="breadcrumb-separator-input-${componentId}" value=">" onchange="setBreadcrumbControl('separator', this.value, '${componentId}')" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans);">
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <!-- PREVIEW EN EL MEDIO -->
+                          <div style="background: var(--ubits-bg-1); padding: 24px; border-radius: 8px; border: none; margin-bottom: 24px; min-height: 80px; display: flex; align-items: center; justify-content: flex-start;">
+                            <div id="breadcrumb-preview-${componentId}" style="width: 100%; max-width: 100%;">
+                              <!-- Se generará dinámicamente -->
+                            </div>
+                          </div>
+                        </div>
+                      ` : ''}
+                      
                       ${hasPreview && component.name === 'Contenedor' ? `
                         <!-- Preview Section for Contenedor -->
                         <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: none; margin-bottom: 24px;">
@@ -11800,8 +11994,20 @@ Reglas Importantes:
           fullScreen ? 'ubits-spinner--fullscreen' : ''
         ].filter(Boolean).join(' ');
         
+        // Estilos inline para asegurar que el fullscreen esté por encima del menú
+        const fullscreenStyle = fullScreen ? `
+          position: fixed !important;
+          top: 0 !important;
+          left: 0 !important;
+          right: 0 !important;
+          bottom: 0 !important;
+          width: 100% !important;
+          height: 100% !important;
+          z-index: 100000 !important;
+        ` : '';
+        
         return `
-          <div class="${classes}">
+          <div class="${classes}" style="${fullscreenStyle}">
             <div class="ubits-spinner__circle">
               <div class="ubits-spinner__segment"></div>
               <div class="ubits-spinner__segment"></div>
@@ -11811,6 +12017,65 @@ Reglas Importantes:
             ${label ? `<span class="ubits-spinner__label">${label}</span>` : ''}
           </div>
         `;
+      }
+      
+      // Función para crear/remover botón de cerrar en fullscreen
+      function manageSpinnerCloseButton(componentId, show) {
+        const buttonId = `spinner-close-btn-${componentId}`;
+        let closeButton = document.getElementById(buttonId);
+        
+        if (show) {
+          // Crear botón si no existe
+          if (!closeButton) {
+            closeButton = document.createElement('button');
+            closeButton.id = buttonId;
+            closeButton.className = 'ubits-spinner__close-btn';
+            closeButton.setAttribute('aria-label', 'Cerrar spinner');
+            closeButton.style.cssText = `
+              position: fixed !important;
+              top: 20px !important;
+              right: 20px !important;
+              width: 40px !important;
+              height: 40px !important;
+              border: none !important;
+              border-radius: 50% !important;
+              background: var(--ubits-bg-1) !important;
+              color: var(--ubits-fg-1-high) !important;
+              cursor: pointer !important;
+              display: flex !important;
+              align-items: center !important;
+              justify-content: center !important;
+              font-size: 20px !important;
+              box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+              transition: all 0.2s ease !important;
+              z-index: 100001 !important;
+              pointer-events: auto !important;
+            `;
+            closeButton.innerHTML = '<i class="far fa-times" style="font-size: 18px;"></i>';
+            closeButton.onclick = function(e) {
+              e.preventDefault();
+              e.stopPropagation();
+              setSpinnerControl('fullScreen', false, componentId);
+            };
+            closeButton.onmouseover = function() {
+              this.style.background = 'var(--ubits-bg-2)';
+              this.style.transform = 'scale(1.1)';
+            };
+            closeButton.onmouseout = function() {
+              this.style.background = 'var(--ubits-bg-1)';
+              this.style.transform = 'scale(1)';
+            };
+            document.body.appendChild(closeButton);
+          }
+          closeButton.style.display = 'flex';
+          closeButton.style.zIndex = '100001';
+          closeButton.style.pointerEvents = 'auto';
+        } else {
+          // Ocultar o remover botón
+          if (closeButton) {
+            closeButton.style.display = 'none';
+          }
+        }
       }
       
       // Función para actualizar el preview del Spinner
@@ -11823,8 +12088,51 @@ Reglas Importantes:
           return;
         }
         
-        const spinnerHTML = generateSpinnerHTML(state, componentId);
-        preview.innerHTML = spinnerHTML;
+        // Si está en modo fullscreen, mover el spinner directamente al body
+        const fullscreenSpinnerId = `spinner-fullscreen-${componentId}`;
+        let fullscreenSpinner = document.getElementById(fullscreenSpinnerId);
+        
+        if (state.fullScreen) {
+          // Remover spinner del preview normal
+          preview.innerHTML = '';
+          
+          // Crear o actualizar spinner fullscreen en el body
+          if (!fullscreenSpinner) {
+            fullscreenSpinner = document.createElement('div');
+            fullscreenSpinner.id = fullscreenSpinnerId;
+            document.body.appendChild(fullscreenSpinner);
+          }
+          
+          const spinnerHTML = generateSpinnerHTML(state, componentId);
+          fullscreenSpinner.innerHTML = spinnerHTML;
+          
+          // Asegurar que el contenedor fullscreen tenga el z-index correcto
+          const spinnerElement = fullscreenSpinner.querySelector('.ubits-spinner--fullscreen');
+          if (spinnerElement) {
+            spinnerElement.style.cssText += `
+              position: fixed !important;
+              top: 0 !important;
+              left: 0 !important;
+              right: 0 !important;
+              bottom: 0 !important;
+              width: 100% !important;
+              height: 100% !important;
+              z-index: 100000 !important;
+            `;
+          }
+        } else {
+          // Remover spinner fullscreen del body si existe
+          if (fullscreenSpinner) {
+            fullscreenSpinner.remove();
+          }
+          
+          // Renderizar spinner normal en el preview
+          const spinnerHTML = generateSpinnerHTML(state, componentId);
+          preview.innerHTML = spinnerHTML;
+        }
+        
+        // Gestionar botón de cerrar en fullscreen
+        manageSpinnerCloseButton(componentId, state.fullScreen);
         
         console.log('✅ Spinner preview actualizado:', state);
       };
@@ -24207,6 +24515,434 @@ Reglas Importantes:
           console.log('🌓 Tema cambiado a:', newTheme);
         });
       }
+      
+      // ========================================
+      // TABS PREVIEW STATE & FUNCTIONS
+      // ========================================
+      
+      const tabsPreviewState = {};
+      
+      // Inicializar estado del preview de Tabs
+      function initTabsPreviewState(componentId) {
+        if (!tabsPreviewState[componentId]) {
+          tabsPreviewState[componentId] = {
+            tabs: [
+              { id: 'tab-1', label: 'Label', icon: 'far fa-th', active: true },
+              { id: 'tab-2', label: 'Label', icon: 'far fa-th' },
+              { id: 'tab-3', label: 'Label', icon: 'far fa-th' },
+              { id: 'tab-4', label: 'Label', icon: 'far fa-th' },
+              { id: 'tab-5', label: 'Label', icon: 'far fa-th' }
+            ],
+            activeTabId: 'tab-1',
+            showIcons: true,
+            tabCount: 5
+          };
+        }
+        return tabsPreviewState[componentId];
+      }
+      
+      // Función para actualizar el preview de Tabs
+      window.updateTabsPreview = function(componentId) {
+        const state = initTabsPreviewState(componentId);
+        const preview = document.getElementById(`tabs-preview-${componentId}`);
+        
+        if (!preview) {
+          console.error('❌ Preview de Tabs no encontrado:', `tabs-preview-${componentId}`);
+          return;
+        }
+        
+        console.log('🔄 Actualizando preview de Tabs:', state);
+        
+        // Generar tabs según el estado
+        const shouldShowIcons = state.showIcons !== false;
+        const icons = ['fa-th', 'fa-chart-line', 'fa-cog', 'fa-star', 'fa-book', 'fa-home', 'fa-user', 'fa-bell', 'fa-envelope', 'fa-calendar'];
+        const labels = ['Label 1', 'Label 2', 'Label 3', 'Label 4', 'Label 5', 'Label 6', 'Label 7', 'Label 8', 'Label 9', 'Label 10'];
+        
+        // Regenerar tabs siempre para asegurar que coincidan con el estado actual
+        state.tabs = Array.from({ length: state.tabCount || 5 }, (_, i) => ({
+          id: `tab-${i + 1}`,
+          label: labels[i] || `Label ${i + 1}`,
+          icon: shouldShowIcons ? `far ${icons[i] || 'fa-th'}` : undefined,
+          active: false
+        }));
+        
+        // Asegurar que el tab activo esté correctamente marcado
+        const activeId = state.activeTabId || state.tabs[0]?.id;
+        // Validar que el activeTabId existe en los tabs actuales
+        const validActiveId = state.tabs.find(t => t.id === activeId) ? activeId : state.tabs[0]?.id;
+        state.activeTabId = validActiveId;
+        
+        state.tabs.forEach(tab => {
+          tab.active = tab.id === validActiveId;
+        });
+        
+        // Actualizar dropdown de Tab Activo
+        const activeTabSelect = document.getElementById(`tabs-active-tab-select-${componentId}`);
+        if (activeTabSelect) {
+          activeTabSelect.innerHTML = state.tabs.map(tab => 
+            `<option value="${tab.id}" ${tab.id === validActiveId ? 'selected' : ''}>${tab.label}</option>`
+          ).join('');
+        }
+        
+        // Limpiar preview anterior
+        preview.innerHTML = '';
+        
+        // Renderizar tabs
+        const tabsHTML = state.tabs.map(tab => {
+          const isActive = tab.id === validActiveId;
+          const activeClass = isActive ? 'ubits-tab--active' : '';
+          
+          // Determinar estilo de icono según estado activo
+          // Active: solid (fas), Inactive: regular (far)
+          let iconHTML = '';
+          if (tab.icon) {
+            // Extraer nombre del icono sin prefijo
+            let iconName = tab.icon.replace(/^(far|fas)\s+/, '').replace(/^fa-/, '');
+            if (!iconName.startsWith('fa-')) {
+              iconName = `fa-${iconName}`;
+            }
+            // Aplicar estilo según estado activo
+            const iconStyle = isActive ? 'fas' : 'far';
+            iconHTML = `<i class="${iconStyle} ${iconName}"></i>`;
+          }
+          
+          return `
+            <button 
+              class="ubits-tab ${activeClass}" 
+              data-tab-id="${tab.id}"
+              onclick="handleTabsClick('${tab.id}', '${componentId}')"
+            >
+              ${iconHTML}
+              <span class="ubits-tab__label">${tab.label}</span>
+            </button>
+          `;
+        }).join('');
+        
+        const containerHTML = `
+          <div class="ubits-tabs">
+            ${tabsHTML}
+          </div>
+        `;
+        
+        preview.innerHTML = containerHTML;
+        
+        console.log('✅ Preview de Tabs actualizado:', state);
+      };
+      
+      // Handler para clicks en tabs
+      window.handleTabsClick = function(tabId, componentId) {
+        const state = initTabsPreviewState(componentId);
+        state.activeTabId = tabId;
+        
+        // Actualizar preview
+        window.updateTabsPreview(componentId);
+      };
+      
+      // Función para establecer controles de Tabs
+      window.setTabsControl = function(option, value, componentId) {
+        const state = initTabsPreviewState(componentId);
+        
+        if (option === 'activeTabId') {
+          state.activeTabId = value;
+        } else if (option === 'showIcons') {
+          state.showIcons = value;
+          // Actualizar toggle visual
+          const toggle = document.getElementById(`tabs-show-icons-toggle-${componentId}`);
+          if (toggle) {
+            toggle.checked = value;
+          }
+        } else if (option === 'tabCount') {
+          state.tabCount = Math.max(1, Math.min(10, parseInt(value) || 5));
+          // Actualizar input visual
+          const input = document.getElementById(`tabs-count-input-${componentId}`);
+          if (input) {
+            input.value = state.tabCount;
+          }
+          // Resetear tab activo al primero cuando cambia el count
+          state.activeTabId = 'tab-1';
+        }
+        
+        // Actualizar preview
+        window.updateTabsPreview(componentId);
+        
+        console.log('✅ Control de Tabs actualizado:', option, value);
+      };
+      
+      // ========================================
+      // SEGMENT CONTROL PREVIEW STATE & FUNCTIONS
+      // ========================================
+      
+      const segmentControlPreviewState = {};
+      
+      // Inicializar estado del preview de Segment Control
+      function initSegmentControlPreviewState(componentId) {
+        if (!segmentControlPreviewState[componentId]) {
+          segmentControlPreviewState[componentId] = {
+            segments: [
+              { id: 'segment-1', label: 'Label', icon: 'far fa-th', active: true },
+              { id: 'segment-2', label: 'Label', icon: 'far fa-th' },
+              { id: 'segment-3', label: 'Label', icon: 'far fa-th' },
+              { id: 'segment-4', label: 'Label', icon: 'far fa-th' },
+              { id: 'segment-5', label: 'Label', icon: 'far fa-th' }
+            ],
+            activeSegmentId: 'segment-1',
+            showIcons: true,
+            segmentCount: 5
+          };
+        }
+        return segmentControlPreviewState[componentId];
+      }
+      
+      // Función para actualizar el preview de Segment Control
+      window.updateSegmentControlPreview = function(componentId) {
+        const state = initSegmentControlPreviewState(componentId);
+        const preview = document.getElementById(`segment-control-preview-${componentId}`);
+        
+        if (!preview) {
+          console.error('❌ Preview de Segment Control no encontrado:', `segment-control-preview-${componentId}`);
+          return;
+        }
+        
+        console.log('🔄 Actualizando preview de Segment Control:', state);
+        
+        // Generar segmentos según el estado
+        const shouldShowIcons = state.showIcons !== false;
+        const icons = ['fa-th', 'fa-chart-line', 'fa-cog', 'fa-star', 'fa-book', 'fa-home', 'fa-user', 'fa-bell', 'fa-envelope', 'fa-calendar'];
+        const labels = ['Label 1', 'Label 2', 'Label 3', 'Label 4', 'Label 5', 'Label 6', 'Label 7', 'Label 8', 'Label 9', 'Label 10'];
+        
+        // Regenerar segmentos siempre para asegurar que coincidan con el estado actual
+        state.segments = Array.from({ length: state.segmentCount || 5 }, (_, i) => ({
+          id: `segment-${i + 1}`,
+          label: labels[i] || `Label ${i + 1}`,
+          icon: shouldShowIcons ? `far ${icons[i] || 'fa-th'}` : undefined,
+          active: false
+        }));
+        
+        // Asegurar que el segmento activo esté correctamente marcado
+        const activeId = state.activeSegmentId || state.segments[0]?.id;
+        // Validar que el activeSegmentId existe en los segmentos actuales
+        const validActiveId = state.segments.find(s => s.id === activeId) ? activeId : state.segments[0]?.id;
+        state.activeSegmentId = validActiveId;
+        
+        state.segments.forEach(segment => {
+          segment.active = segment.id === validActiveId;
+        });
+        
+        // Actualizar dropdown de Segmento Activo
+        const activeSegmentSelect = document.getElementById(`segment-control-active-segment-select-${componentId}`);
+        if (activeSegmentSelect) {
+          activeSegmentSelect.innerHTML = state.segments.map(segment => 
+            `<option value="${segment.id}" ${segment.id === validActiveId ? 'selected' : ''}>${segment.label}</option>`
+          ).join('');
+        }
+        
+        // Limpiar preview anterior
+        preview.innerHTML = '';
+        
+        // Renderizar segmentos
+        const segmentsHTML = state.segments.map(segment => {
+          const isActive = segment.id === validActiveId;
+          const activeClass = isActive ? 'ubits-segment--active' : '';
+          
+          // Determinar estilo de icono según estado activo
+          // Active: solid (fas), Inactive: regular (far)
+          let iconHTML = '';
+          if (segment.icon) {
+            // Extraer nombre del icono sin prefijo
+            let iconName = segment.icon.replace(/^(far|fas)\s+/, '').replace(/^fa-/, '');
+            if (!iconName.startsWith('fa-')) {
+              iconName = `fa-${iconName}`;
+            }
+            // Aplicar estilo según estado activo
+            const iconStyle = isActive ? 'fas' : 'far';
+            iconHTML = `<i class="${iconStyle} ${iconName}"></i>`;
+          }
+          
+          return `
+            <button 
+              class="ubits-segment ${activeClass}" 
+              data-segment-id="${segment.id}"
+              onclick="handleSegmentControlClick('${segment.id}', '${componentId}')"
+            >
+              ${iconHTML}
+              <span class="ubits-segment__label">${segment.label}</span>
+            </button>
+          `;
+        }).join('');
+        
+        const containerHTML = `
+          <div class="ubits-segment-control">
+            ${segmentsHTML}
+          </div>
+        `;
+        
+        preview.innerHTML = containerHTML;
+        
+        console.log('✅ Preview de Segment Control actualizado:', state);
+      };
+      
+      // Handler para clicks en segmentos
+      window.handleSegmentControlClick = function(segmentId, componentId) {
+        const state = initSegmentControlPreviewState(componentId);
+        state.activeSegmentId = segmentId;
+        
+        // Actualizar preview
+        window.updateSegmentControlPreview(componentId);
+      };
+      
+      // Función para establecer controles de Segment Control
+      window.setSegmentControlControl = function(option, value, componentId) {
+        const state = initSegmentControlPreviewState(componentId);
+        
+        if (option === 'activeSegmentId') {
+          state.activeSegmentId = value;
+        } else if (option === 'showIcons') {
+          state.showIcons = value;
+          // Actualizar toggle visual
+          const toggle = document.getElementById(`segment-control-show-icons-toggle-${componentId}`);
+          if (toggle) {
+            toggle.checked = value;
+          }
+        } else if (option === 'segmentCount') {
+          state.segmentCount = Math.max(1, Math.min(10, parseInt(value) || 5));
+          // Actualizar input visual
+          const input = document.getElementById(`segment-control-count-input-${componentId}`);
+          if (input) {
+            input.value = state.segmentCount;
+          }
+          // Resetear segmento activo al primero cuando cambia el count
+          state.activeSegmentId = 'segment-1';
+        }
+        
+        // Actualizar preview
+        window.updateSegmentControlPreview(componentId);
+        
+        console.log('✅ Control de Segment Control actualizado:', option, value);
+      };
+      
+      // ========================================
+      // BREADCRUMB PREVIEW STATE & FUNCTIONS
+      // ========================================
+      
+      const breadcrumbPreviewState = {};
+      
+      // Inicializar estado del preview de Breadcrumb
+      function initBreadcrumbPreviewState(componentId) {
+        if (!breadcrumbPreviewState[componentId]) {
+          breadcrumbPreviewState[componentId] = {
+            items: [
+              { id: 'item-1', label: 'Home', url: '#home' },
+              { id: 'item-2', label: 'Categoría', url: '#categoria' },
+              { id: 'item-3', label: 'Subcategoría', url: '#subcategoria' },
+              { id: 'item-4', label: 'Página', url: '#pagina' },
+              { id: 'item-5', label: 'Detalle', active: true }
+            ],
+            separator: '>',
+            itemCount: 5
+          };
+        }
+        return breadcrumbPreviewState[componentId];
+      }
+      
+      // Función para actualizar el preview de Breadcrumb
+      window.updateBreadcrumbPreview = function(componentId) {
+        const state = initBreadcrumbPreviewState(componentId);
+        const preview = document.getElementById(`breadcrumb-preview-${componentId}`);
+        
+        if (!preview) {
+          console.error('❌ Preview de Breadcrumb no encontrado:', `breadcrumb-preview-${componentId}`);
+          return;
+        }
+        
+        console.log('🔄 Actualizando preview de Breadcrumb:', state);
+        
+        // Generar items según el estado
+        const labels = ['Home', 'Categoría', 'Subcategoría', 'Página', 'Detalle', 'Elemento', 'Vista', 'Final'];
+        
+        // Regenerar items siempre para asegurar que coincidan con el estado actual
+        state.items = Array.from({ length: state.itemCount || 5 }, (_, i) => ({
+          id: `item-${i + 1}`,
+          label: labels[i] || `Item ${i + 1}`,
+          url: i < state.itemCount - 1 ? `#${labels[i]?.toLowerCase() || `item-${i + 1}`}` : undefined,
+          active: i === state.itemCount - 1
+        }));
+        
+        // Actualizar dropdown de Número de Items
+        const itemCountInput = document.getElementById(`breadcrumb-count-input-${componentId}`);
+        if (itemCountInput) {
+          itemCountInput.value = state.itemCount;
+        }
+        
+        // Actualizar input de Separador
+        const separatorInput = document.getElementById(`breadcrumb-separator-input-${componentId}`);
+        if (separatorInput) {
+          separatorInput.value = state.separator;
+        }
+        
+        // Limpiar preview anterior
+        preview.innerHTML = '';
+        
+        // Renderizar breadcrumb
+        const itemsHTML = state.items.map((item, index) => {
+          const isActive = item.active;
+          const isLast = index === state.items.length - 1;
+          const activeClass = isActive ? 'ubits-breadcrumb__item--active' : '';
+          const classes = ['ubits-breadcrumb__item', activeClass].filter(Boolean).join(' ');
+          
+          // Si es el último item, usar span, sino usar link
+          if (isLast || !item.url) {
+            return `
+              <span class="${classes}" data-breadcrumb-id="${item.id}">
+                ${item.label}
+              </span>
+            `;
+          } else {
+            return `
+              <a href="${item.url}" class="${classes}" data-breadcrumb-id="${item.id}">
+                ${item.label}
+              </a>
+            `;
+          }
+        }).join(`<span class="ubits-breadcrumb__separator" aria-hidden="true">${state.separator}</span>`);
+        
+        const containerHTML = `
+          <nav class="ubits-breadcrumb" aria-label="Breadcrumb">
+            <ol class="ubits-breadcrumb__list">
+              ${itemsHTML}
+            </ol>
+          </nav>
+        `;
+        
+        preview.innerHTML = containerHTML;
+        
+        console.log('✅ Preview de Breadcrumb actualizado:', state);
+      };
+      
+      // Función para establecer controles de Breadcrumb
+      window.setBreadcrumbControl = function(option, value, componentId) {
+        const state = initBreadcrumbPreviewState(componentId);
+        
+        if (option === 'itemCount') {
+          state.itemCount = Math.max(2, Math.min(8, parseInt(value) || 5));
+          // Actualizar input visual
+          const input = document.getElementById(`breadcrumb-count-input-${componentId}`);
+          if (input) {
+            input.value = state.itemCount;
+          }
+        } else if (option === 'separator') {
+          state.separator = value || '>';
+          // Actualizar input visual
+          const input = document.getElementById(`breadcrumb-separator-input-${componentId}`);
+          if (input) {
+            input.value = state.separator;
+          }
+        }
+        
+        // Actualizar preview
+        window.updateBreadcrumbPreview(componentId);
+        
+        console.log('✅ Control de Breadcrumb actualizado:', option, value);
+      };
       
       // ========================================
       // CARD CONTENT PREVIEW FUNCTIONS

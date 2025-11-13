@@ -126,6 +126,14 @@ const meta: Meta<InputOptions> = {
         defaultValue: { summary: '' },
       },
     },
+    showRichTextToolbar: {
+      control: { type: 'boolean' },
+      description: 'Mostrar/ocultar barra de herramientas de texto enriquecido (solo para textarea)',
+      table: {
+        defaultValue: { summary: 'false' },
+      },
+      if: { arg: 'type', eq: 'textarea' },
+    },
   },
 };
 
@@ -178,6 +186,7 @@ export const Default: Story = {
     leftIcon: '',
     rightIcon: '',
     value: '',
+    showRichTextToolbar: false,
   },
   render: (args) => {
     // Crear contenedor principal
@@ -244,6 +253,7 @@ export const Default: Story = {
           <div><strong>Counter:</strong> ${args.showCounter ? 'Visible' : 'Oculto'}</div>
           <div><strong>Mandatory:</strong> ${args.mandatory ? args.mandatoryType : 'No'}</div>
           <div><strong>Iconos:</strong> ${args.leftIcon ? `Izq: ${args.leftIcon}` : ''} ${args.rightIcon ? `Der: ${args.rightIcon}` : 'Ninguno'}</div>
+          ${args.type === 'textarea' ? `<div><strong>Barra de herramientas:</strong> ${args.showRichTextToolbar ? 'Visible' : 'Oculta'}</div>` : ''}
         </div>
       `;
       
