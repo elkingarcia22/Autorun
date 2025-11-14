@@ -171,7 +171,7 @@
 .ubits-badge--error.ubits-badge--dot,
 .ubits-badge--error.ubits-badge--number {
     background: var(--ubits-feedback-accent-error) !important;
-    color: var(--ubits-fg-on-accent, #ffffff) !important;
+    color: var(--ubits-fg-bold, #ffffff) !important;
 }
 
 /* Info */

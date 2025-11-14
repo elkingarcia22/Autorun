@@ -32,20 +32,6 @@ export function renderStepper(options: StepperOptions): string {
     // Siempre usar 'default' para que el conector sea transparente
     const connectorState = 'default';
     
-    console.log(`🔵 Step ${index + 1} - Connector Logic:`, JSON.stringify({
-      stepState,
-      connectorState,
-      willBeActive: false,
-      note: 'Las líneas NUNCA deben tener color, siempre transparentes'
-    }, null, 2));
-    
-    console.log(`🔵 Step ${index + 1}:`, JSON.stringify({
-      stepState,
-      connectorState,
-      isLast,
-      willHaveConnector: !isLast
-    }, null, 2));
-    
     return renderStep(step, stepState, isLast, orientation, showTitle, showDescription, connectorState);
   }).join('');
 
@@ -81,12 +67,6 @@ function renderStep(
   // El conector solo tiene color si el paso actual está completado
   const connector = !isLast ? renderConnector(connectorState, orientation) : '';
   
-  console.log(`🔵 renderStep - Step ${step.number}:`, JSON.stringify({
-    state,
-    connectorState,
-    isLast,
-    hasConnector: !isLast
-  }, null, 2));
 
   // Renderizar el contenido (título y descripción)
   const content = renderStepContent(
@@ -162,14 +142,6 @@ function renderConnector(state: StepperStepState, orientation: 'horizontal' | 'v
     `ubits-stepper__connector--${orientation}`
   ].filter(Boolean).join(' ');
 
-  console.log(`🔵 renderConnector - Final Check:`, JSON.stringify({
-    inputState: state,
-    isActive: false,
-    willHaveActiveClass: false,
-    classes: connectorClasses,
-    expectedColor: 'TRANSPARENTE (siempre)',
-    note: '⚠️ Las líneas NUNCA deben tener color, sin importar el estado'
-  }, null, 2));
 
   return `<div class="${connectorClasses}"></div>`;
 }

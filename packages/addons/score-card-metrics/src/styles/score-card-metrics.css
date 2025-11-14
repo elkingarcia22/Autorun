@@ -1,0 +1,215 @@
+/* ========================================
+   UBITS SCORE CARD METRICS COMPONENT
+   Componente de tarjeta de métricas con calificación por estrellas
+   Usando tokens UBITS
+   ======================================== */
+
+/* ========================================
+   BASE SCORE CARD METRICS STYLES
+   ======================================== */
+
+.ubits-score-card-metrics {
+  /* Base styles usando tokens UBITS */
+  display: flex;
+  flex-direction: column;
+  background: var(--ubits-bg-1);
+  border-radius: 8px;
+  padding: 12px;
+  gap: var(--ubits-spacing-md);
+  font-family: var(--font-sans);
+  transition: all 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
+  border: none;
+  box-shadow: none;
+  position: relative;
+}
+
+/* ========================================
+   SIZES
+   ======================================== */
+
+.ubits-score-card-metrics--sm {
+  padding: 12px;
+  gap: var(--ubits-spacing-xl);
+}
+
+.ubits-score-card-metrics--md {
+  padding: 12px;
+  gap: var(--ubits-spacing-md);
+}
+
+.ubits-score-card-metrics--lg {
+  padding: 12px;
+  gap: var(--ubits-spacing-lg);
+}
+
+/* ========================================
+   HEADER
+   ======================================== */
+
+.ubits-score-card-metrics__header {
+  display: flex;
+  align-items: center;
+  gap: var(--ubits-spacing-xl);
+  width: 100%;
+  position: relative;
+}
+
+.ubits-score-card-metrics__title-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  color: var(--ubits-fg-2-medium);
+}
+
+.ubits-score-card-metrics__title-group {
+  display: flex;
+  align-items: center;
+  gap: var(--ubits-spacing-sm);
+  flex: 1;
+}
+
+.ubits-score-card-metrics__title {
+  margin: 0;
+  font-family: var(--font-sans);
+  color: var(--ubits-fg-1-high);
+}
+
+/* Botón terciario de información justo después del título */
+.ubits-score-card-metrics__title-group .ubits-button {
+  flex-shrink: 0;
+}
+
+/* Botón de acción alineado con el título */
+.ubits-score-card-metrics__action-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+}
+
+.ubits-score-card-metrics__action-button .ubits-button {
+  flex-shrink: 0;
+  min-width: auto;
+  min-height: auto;
+}
+
+/* ========================================
+   BODY
+   ======================================== */
+
+.ubits-score-card-metrics__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ubits-spacing-xl);
+}
+
+/* ========================================
+   STATS
+   ======================================== */
+
+.ubits-score-card-metrics__stats {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ubits-spacing-sm);
+}
+
+.ubits-score-card-metrics__responses {
+  color: var(--ubits-fg-2-medium);
+  font-weight: var(--weight-regular);
+  margin: 0;
+}
+
+.ubits-score-card-metrics__average {
+  color: var(--ubits-fg-2-medium);
+  font-weight: var(--weight-regular);
+  margin: 0;
+}
+
+/* ========================================
+   CHART (ESTRELLAS)
+   ======================================== */
+
+.ubits-score-card-metrics__chart {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ubits-spacing-sm);
+  align-items: center;
+}
+
+.ubits-score-card-metrics__stars {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0;
+}
+
+.ubits-score-card-metrics__star-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--ubits-spacing-sm);
+  flex: 1;
+}
+
+.ubits-score-card-metrics__star {
+  font-size: 24px;
+  line-height: 1;
+  transition: all 0.2s ease;
+  flex: 0 0 auto;
+}
+
+.ubits-score-card-metrics__star-number {
+  color: var(--ubits-fg-2-medium);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  line-height: 1;
+  margin: 0;
+}
+
+.ubits-score-card-metrics__star--filled {
+  color: var(--ubits-feedback-fg-warning-subtle-hover);
+}
+
+.ubits-score-card-metrics__star--empty {
+  color: var(--ubits-border-1);
+}
+
+
+
+/* ========================================
+   CLICKABLE CARD
+   ======================================== */
+
+.ubits-score-card-metrics[data-clickable="true"] {
+  cursor: pointer;
+}
+
+.ubits-score-card-metrics[data-clickable="true"]:hover {
+  background: var(--ubits-bg-2);
+  border-color: var(--ubits-border-2);
+}
+
+.ubits-score-card-metrics[data-clickable="true"]:active {
+  background: var(--ubits-bg-3);
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+@media (max-width: 768px) {
+  .ubits-score-card-metrics {
+    padding: var(--ubits-spacing-md);
+  }
+  
+  .ubits-score-card-metrics__star {
+    font-size: 20px;
+  }
+}
+

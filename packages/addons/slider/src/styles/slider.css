@@ -1,0 +1,571 @@
+/* ========================================
+   UBITS SLIDER COMPONENT
+   Componente de slider con todas las variantes
+   Usando tokens UBITS del nuevo autoframe
+   ======================================== */
+
+/* ========================================
+   BASE SLIDER STYLES
+   ======================================== */
+
+.ubits-slider {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ubits-spacing-sm, 8px);
+  width: 100%;
+  position: relative;
+}
+
+.ubits-slider--vertical {
+  flex-direction: column; /* Cambiar a columna para que todo esté vertical */
+  width: 100%;
+  height: 100%;
+  min-height: 200px;
+  align-items: center; /* Centrar todo el contenido */
+}
+
+/* ========================================
+   SLIDER LABEL
+   ======================================== */
+
+.ubits-slider-label {
+  font-family: var(--font-sans);
+  font-size: var(--font-body-sm-size);
+  font-weight: var(--weight-semibold);
+  line-height: var(--font-body-sm-line);
+  color: var(--ubits-fg-1-high);
+  margin-bottom: var(--ubits-spacing-xs, 4px);
+}
+
+.ubits-slider--vertical .ubits-slider-label {
+  /* Título horizontal en slider vertical */
+  writing-mode: horizontal-tb;
+  text-orientation: mixed;
+  margin-bottom: var(--ubits-spacing-xs, 4px);
+  margin-right: 0;
+  width: 100%;
+  text-align: center;
+}
+
+/* ========================================
+   SLIDER MAIN WRAPPER (contiene slider e inputs)
+   ======================================== */
+
+.ubits-slider-main-wrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--ubits-spacing-lg, 16px);
+  width: 100%;
+}
+
+.ubits-slider--vertical .ubits-slider-main-wrapper {
+  flex-direction: column;
+  align-items: center; /* Centrar slider e input */
+  width: 100%;
+}
+
+/* ========================================
+   SLIDER WRAPPER
+   ======================================== */
+
+.ubits-slider-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0; /* Permite que flex funcione correctamente */
+  box-sizing: border-box;
+}
+
+/* Los inputs están directamente en el main-wrapper, no necesitan contenedor adicional */
+
+.ubits-slider--vertical .ubits-slider-wrapper {
+  flex-direction: column;
+  width: auto;
+  height: 100%;
+  min-height: 200px;
+  flex: 1;
+}
+
+.ubits-slider--vertical .ubits-slider-inputs-container {
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ========================================
+   SLIDER TRACK
+   ======================================== */
+
+.ubits-slider-track {
+  position: relative;
+  background: var(--ubits-bg-3);
+  border-radius: var(--ubits-border-radius-full, 9999px);
+  cursor: pointer;
+  flex: 1;
+  min-width: 100px;
+  min-height: 4px;
+}
+
+.ubits-slider--vertical .ubits-slider-track {
+  width: 4px;
+  min-width: 4px;
+  min-height: 100px;
+  height: 100%;
+}
+
+/* Sizes */
+.ubits-slider--xs .ubits-slider-track {
+  min-height: 2px;
+}
+
+.ubits-slider--xs.ubits-slider--vertical .ubits-slider-track {
+  width: 2px;
+  min-width: 2px;
+}
+
+.ubits-slider--sm .ubits-slider-track {
+  min-height: 3px;
+}
+
+.ubits-slider--sm.ubits-slider--vertical .ubits-slider-track {
+  width: 3px;
+  min-width: 3px;
+}
+
+.ubits-slider--md .ubits-slider-track {
+  min-height: 4px;
+}
+
+.ubits-slider--md.ubits-slider--vertical .ubits-slider-track {
+  width: 4px;
+  min-width: 4px;
+}
+
+.ubits-slider--lg .ubits-slider-track {
+  min-height: 6px;
+}
+
+.ubits-slider--lg.ubits-slider--vertical .ubits-slider-track {
+  width: 6px;
+  min-width: 6px;
+}
+
+/* ========================================
+   SLIDER TRACK FILL
+   ======================================== */
+
+.ubits-slider-track-fill {
+  position: absolute;
+  background: var(--ubits-accent-brand-static-inverted);
+  border-radius: var(--ubits-border-radius-full, 9999px);
+  height: 100%;
+  width: 0;
+  transition: all 0.2s ease;
+  pointer-events: none; /* No bloquear eventos del mouse */
+}
+
+.ubits-slider--vertical .ubits-slider-track-fill {
+  width: 100%;
+  height: 0;
+  bottom: 0;
+  /* El fill debe terminar en el centro del thumb, no más allá */
+  /* El thumb tiene transform: translate(-50%, 50%), así que el centro está en la posición top */
+}
+
+.ubits-slider--disabled .ubits-slider-track-fill {
+  background: var(--ubits-border-2);
+}
+
+/* ========================================
+   SLIDER THUMB
+   ======================================== */
+
+.ubits-slider-thumb {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  background: var(--ubits-accent-brand-static-inverted);
+  border: 2px solid var(--ubits-bg-1);
+  border-radius: var(--ubits-border-radius-full, 9999px);
+  cursor: grab;
+  top: 50%;
+  left: 0;
+  transform: translate(-50%, -50%);
+  transition: all 0.2s ease;
+  z-index: 2;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.ubits-slider-thumb:hover:not(:disabled) {
+  transform: translate(-50%, -50%) scale(1.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.ubits-slider-thumb:active:not(:disabled) {
+  cursor: grabbing;
+  transform: translate(-50%, -50%) scale(1.05);
+}
+
+.ubits-slider--vertical .ubits-slider-thumb {
+  top: 100%;
+  left: 50%;
+  transform: translate(-50%, 50%);
+}
+
+.ubits-slider--vertical .ubits-slider-thumb:hover:not(:disabled) {
+  transform: translate(-50%, 50%) scale(1.1);
+}
+
+.ubits-slider--vertical .ubits-slider-thumb:active:not(:disabled) {
+  transform: translate(-50%, 50%) scale(1.05);
+}
+
+.ubits-slider-thumb--disabled {
+  background: var(--ubits-border-2);
+  border-color: var(--ubits-bg-3);
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Sizes */
+.ubits-slider--xs .ubits-slider-thumb {
+  width: 12px;
+  height: 12px;
+}
+
+.ubits-slider--sm .ubits-slider-thumb {
+  width: 14px;
+  height: 14px;
+}
+
+.ubits-slider--md .ubits-slider-thumb {
+  width: 16px;
+  height: 16px;
+}
+
+.ubits-slider--lg .ubits-slider-thumb {
+  width: 20px;
+  height: 20px;
+}
+
+/* ========================================
+   SLIDER RANGE MODE
+   ======================================== */
+
+.ubits-slider-thumb--min {
+  z-index: 2;
+}
+
+.ubits-slider-thumb--max {
+  z-index: 3;
+}
+
+.ubits-slider-track-range {
+  position: absolute;
+  background: var(--ubits-accent-brand-static-inverted);
+  border-radius: var(--ubits-border-radius-full, 9999px);
+  height: 100%;
+  width: 0;
+  transition: all 0.2s ease;
+  pointer-events: none; /* No bloquear eventos del mouse */
+}
+
+.ubits-slider--vertical .ubits-slider-track-range {
+  width: 100%;
+  height: 0;
+  bottom: 0;
+}
+
+.ubits-slider--disabled .ubits-slider-track-range {
+  background: var(--ubits-border-2);
+}
+
+/* ========================================
+   SLIDER INPUTS
+   ======================================== */
+
+.ubits-slider-inputs {
+  display: flex;
+  gap: var(--ubits-spacing-sm, 8px);
+  align-items: center;
+}
+
+.ubits-slider--vertical .ubits-slider-inputs {
+  flex-direction: column;
+}
+
+.ubits-slider-input {
+  width: 100px;
+  min-width: 80px;
+  max-width: 100px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+/* En vertical, centrar el input con el slider */
+.ubits-slider--vertical .ubits-slider-input {
+  width: 100px;
+  margin: 0 auto; /* Centrar el input */
+}
+
+/* Asegurar que los inputs UBITS dentro del slider no se expandan */
+.ubits-slider-input > div {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.ubits-slider-input .ubits-input {
+  width: 100% !important;
+  max-width: 100% !important;
+  text-align: center;
+}
+
+.ubits-slider-input input {
+  width: 100% !important;
+  text-align: center;
+}
+
+/* Separador entre inputs en modo range */
+.ubits-slider-input-separator {
+  font-family: var(--font-sans);
+  font-size: var(--font-body-md-size);
+  color: var(--ubits-fg-1-medium);
+  margin: 0 var(--ubits-spacing-xs, 4px);
+  flex-shrink: 0;
+}
+
+/* Asegurar que el track tenga el mismo tamaño para single y range */
+.ubits-slider-track-container {
+  flex: 1 1 auto;
+  min-width: 0; /* Permite que flex funcione correctamente */
+  position: relative;
+}
+
+/* El track debe tener el mismo tamaño independientemente del modo */
+.ubits-slider-track {
+  width: 100%;
+  min-width: 100px; /* Mínimo para que sea usable */
+}
+
+/* Thumbs del mismo tamaño para single y range */
+.ubits-slider-thumb {
+  width: 16px;
+  height: 16px;
+}
+
+.ubits-slider--xs .ubits-slider-thumb {
+  width: 12px;
+  height: 12px;
+}
+
+.ubits-slider--sm .ubits-slider-thumb {
+  width: 14px;
+  height: 14px;
+}
+
+.ubits-slider--md .ubits-slider-thumb {
+  width: 16px;
+  height: 16px;
+}
+
+.ubits-slider--lg .ubits-slider-thumb {
+  width: 20px;
+  height: 20px;
+}
+
+/* ========================================
+   SLIDER MARKS
+   ======================================== */
+
+.ubits-slider-marks {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.ubits-slider--vertical .ubits-slider-marks {
+  width: 100%;
+  height: 100%;
+}
+
+.ubits-slider-mark {
+  position: absolute;
+  width: 2px;
+  height: 6px;
+  background: var(--ubits-border-1);
+  transform: translateX(-50%) translateY(-50%);
+  top: 50%;
+}
+
+.ubits-slider--vertical .ubits-slider-mark {
+  width: 6px;
+  height: 2px;
+  transform: translateX(-50%) translateY(50%);
+  left: 50%;
+  top: auto;
+}
+
+.ubits-slider-mark-label {
+  position: absolute;
+  font-family: var(--font-sans);
+  font-size: var(--font-body-xs-size);
+  color: var(--ubits-fg-1-medium);
+  transform: translateX(-50%);
+  margin-top: var(--ubits-spacing-xs, 4px);
+  white-space: nowrap;
+}
+
+.ubits-slider--vertical .ubits-slider-mark-label {
+  transform: translateY(50%);
+  margin-top: 0;
+  margin-left: var(--ubits-spacing-xs, 4px);
+}
+
+/* ========================================
+   SLIDER HELPER TEXT
+   ======================================== */
+
+.ubits-slider-helper {
+  font-family: var(--font-sans);
+  font-size: var(--font-body-xs-size);
+  color: var(--ubits-fg-1-medium);
+  margin-top: var(--ubits-spacing-xs, 4px);
+}
+
+.ubits-slider--vertical .ubits-input-helper {
+  margin-top: var(--ubits-spacing-xs, 4px);
+  margin-left: 0;
+  width: 100%;
+  text-align: center; /* Centrar el helper text */
+}
+
+/* ========================================
+   SLIDER RANGE GUIDE
+   ======================================== */
+
+.ubits-slider-range-guide-wrapper {
+  position: relative;
+  margin-top: var(--ubits-spacing-xs, 4px);
+  /* Alinear con el slider-wrapper: usar el mismo ancho y posición */
+  display: flex;
+  align-items: center;
+  /* El ancho se calculará dinámicamente para coincidir con el slider-wrapper */
+}
+
+/* Cuando hay input izquierdo (range mode), compensar el ancho del input izquierdo */
+.ubits-slider-main-wrapper:has(.ubits-slider-input:first-child) ~ .ubits-slider-range-guide-wrapper {
+  margin-left: calc(100px + var(--ubits-spacing-lg, 16px)); /* 100px input + spacing-lg gap */
+  width: calc(100% - 100px - var(--ubits-spacing-lg, 16px)); /* Restar el espacio del input izquierdo */
+}
+
+/* Cuando hay input derecho pero no izquierdo (single mode), el ancho debe ser el del slider-wrapper */
+.ubits-slider-main-wrapper:has(.ubits-slider-input:last-child:not(:first-child)) ~ .ubits-slider-range-guide-wrapper {
+  width: calc(100% - 100px - var(--ubits-spacing-lg, 16px)); /* Restar el espacio del input derecho para que coincida con el slider-wrapper */
+  /* No usar margin-right, solo ajustar el ancho */
+}
+
+/* Cuando hay inputs a ambos lados (range mode con inputs) */
+.ubits-slider-main-wrapper:has(.ubits-slider-input:first-child):has(.ubits-slider-input:last-child) ~ .ubits-slider-range-guide-wrapper {
+  margin-left: calc(100px + var(--ubits-spacing-lg, 16px)); /* 100px input izquierdo + spacing-lg gap */
+  width: calc(100% - 200px - calc(var(--ubits-spacing-lg, 16px) * 2)); /* Restar espacio de ambos inputs */
+}
+
+/* Cuando no hay inputs, usar el ancho completo */
+.ubits-slider-main-wrapper:not(:has(.ubits-slider-input)) ~ .ubits-slider-range-guide-wrapper {
+  width: 100%;
+}
+
+/* Asegurar que la guía tenga el mismo ancho que el slider-wrapper */
+.ubits-slider-range-guide-wrapper .ubits-slider-range-guide {
+  width: 100%;
+  position: relative;
+}
+
+.ubits-slider-range-guide {
+  position: relative;
+  width: 100%;
+  height: 16px;
+  pointer-events: none; /* No bloquear eventos del slider */
+  /* Asegurar que el 100% se alinee con el final del slider-wrapper */
+  box-sizing: border-box;
+}
+
+.ubits-slider-range-guide-value {
+  position: absolute;
+  transform: translateX(-50%);
+  font-family: var(--font-sans);
+  font-size: var(--font-body-xs-size);
+  font-weight: var(--weight-medium);
+  color: var(--ubits-fg-1-medium);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/* Cuando la regla está desactivada, los valores 0 y 100 deben estar en bold */
+.ubits-slider-range-guide-value--bold {
+  font-weight: var(--weight-bold, 700);
+}
+
+.ubits-slider--vertical .ubits-slider-range-guide {
+  display: none; /* No mostrar en orientación vertical */
+}
+
+/* ========================================
+   SLIDER DISABLED STATE
+   ======================================== */
+
+.ubits-slider--disabled .ubits-slider-track {
+  background: var(--ubits-bg-3);
+  cursor: not-allowed;
+}
+
+.ubits-slider--disabled .ubits-slider-thumb {
+  background: var(--ubits-border-2);
+  border-color: var(--ubits-bg-3);
+  cursor: not-allowed;
+}
+
+.ubits-slider--disabled .ubits-slider-input input {
+  background: var(--ubits-bg-3);
+  color: var(--ubits-fg-1-low);
+  cursor: not-allowed;
+}
+
+/* ========================================
+   SLIDER FOCUS STATE
+   ======================================== */
+
+.ubits-slider-thumb:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px var(--ubits-button-focus-ring);
+}
+
+/* ========================================
+   SLIDER VALUE DISPLAY
+   ======================================== */
+
+.ubits-slider-value {
+  font-family: var(--font-sans);
+  font-size: var(--font-body-sm-size);
+  font-weight: var(--weight-semibold);
+  color: var(--ubits-fg-1-high);
+  min-width: 40px;
+  text-align: center;
+}
+
+.ubits-slider--vertical .ubits-slider-value {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+}
+
+/* Valor display en el helper */
+.ubits-slider-value-display {
+  font-family: var(--font-sans);
+  font-size: var(--font-body-sm-size);
+  font-weight: var(--weight-semibold);
+  color: var(--ubits-fg-1-high);
+  margin-left: auto;
+}
+

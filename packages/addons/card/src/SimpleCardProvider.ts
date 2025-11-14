@@ -1,0 +1,154 @@
+/**
+ * SimpleCardProvider
+ * Lógica de renderizado del componente Simple Card
+ * Genera HTML según las opciones proporcionadas usando tokens UBITS
+ */
+
+import type { SimpleCardOptions } from './types/SimpleCardOptions';
+import { renderButton } from '../../button/src/ButtonProvider';
+import type { ButtonOptions } from '../../button/src/types/ButtonOptions';
+
+/**
+ * Renderiza una simple card como HTML string
+ */
+export function renderSimpleCard(options: SimpleCardOptions): string {
+  const {
+    title,
+    subtitle,
+    content = 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore sed consequuntur error repudiandae numquam deserunt quisquam repellat libero asperiores earum nam nobis, culpa ratione quam perferendis esse, cupiditate neque quas!',
+    showHeader = true,
+    headerBackground = 'var(--ubits-bg-4)',
+    headerDecorations = true,
+    backgroundColor = 'var(--ubits-bg-1)',
+    borderColor = 'var(--ubits-border-1)',
+    borderRadius = 'var(--ubits-radius-md)',
+    padding = 'var(--ubits-spacing-lg)',
+    titleTypography = 'ubits-heading-h2',
+    subtitleTypography = 'ubits-body-md',
+    contentTypography = 'ubits-body-md',
+    buttons = [
+      { label: 'Cancel', variant: 'secondary', size: 'md' },
+      { label: 'Save', variant: 'primary', size: 'md' }
+    ],
+    showButtons = true,
+    variant = 'default',
+    size = 'md',
+    maxWidth,
+    className = ''
+  } = options;
+
+  // Clases base
+  const cardClasses = [
+    'ubits-simple-card',
+    `ubits-simple-card--${variant}`,
+    `ubits-simple-card--${size}`,
+    className
+  ].filter(Boolean).join(' ');
+
+  // Estilos inline para tokens personalizables
+  const cardStyles = [
+    `background: ${backgroundColor}`,
+    `border-color: ${borderColor}`,
+    `border-radius: ${borderRadius}`,
+    `padding: ${padding}`,
+    maxWidth ? `max-width: ${maxWidth}` : ''
+  ].filter(Boolean).join('; ');
+
+  // Header con decoraciones
+  // Solo aplicar estilo inline si es diferente al default
+  const headerStyle = headerBackground !== 'var(--ubits-bg-4)' 
+    ? `style="background: ${headerBackground}"` 
+    : '';
+  
+  const headerHTML = showHeader ? `
+    <div class="ubits-simple-card__header" ${headerStyle}>
+      ${headerDecorations ? `
+        <div class="ubits-simple-card__header-decoration ubits-simple-card__header-decoration--left">
+          <div class="ubits-simple-card__bubble">
+            <div class="ubits-simple-card__bubble-content">
+              <div class="ubits-simple-card__logo">A</div>
+            </div>
+          </div>
+        </div>
+        <div class="ubits-simple-card__header-decoration ubits-simple-card__header-decoration--right">
+          <div class="ubits-simple-card__bubble ubits-simple-card__bubble--small">
+            <div class="ubits-simple-card__bubble-content">
+              <div class="ubits-simple-card__logo">A</div>
+            </div>
+          </div>
+        </div>
+      ` : ''}
+    </div>
+  ` : '';
+
+  // Título
+  const titleHTML = title ? `
+    <h2 class="ubits-simple-card__title ${titleTypography}">${title}</h2>
+  ` : '';
+
+  // Subtítulo
+  const subtitleHTML = subtitle ? `
+    <p class="ubits-simple-card__subtitle ${subtitleTypography}">${subtitle}</p>
+  ` : '';
+
+  // Contenido
+  const contentHTML = content ? `
+    <div class="ubits-simple-card__content ${contentTypography}">${content}</div>
+  ` : '';
+
+  // Botones
+  const buttonsHTML = showButtons && buttons.length > 0 ? `
+    <div class="ubits-simple-card__footer">
+      ${buttons.map(button => {
+        const buttonOptions: ButtonOptions = {
+          variant: button.variant || 'secondary',
+          size: button.size || 'md',
+          text: button.label,
+          disabled: button.disabled || false
+        };
+        return `<div class="ubits-simple-card__button">${renderButton(buttonOptions)}</div>`;
+      }).join('')}
+    </div>
+  ` : '';
+
+  // Template completo
+  return `
+    <div class="${cardClasses}" style="${cardStyles}">
+      ${headerHTML}
+      <div class="ubits-simple-card__body">
+        ${titleHTML}
+        ${subtitleHTML}
+        ${contentHTML}
+      </div>
+      ${buttonsHTML}
+    </div>
+  `.trim();
+}
+
+/**
+ * Crea un elemento simple card programáticamente
+ */
+export function createSimpleCard(options: SimpleCardOptions): HTMLElement {
+  const cardHTML = renderSimpleCard(options);
+  const tempDiv = document.createElement('div');
+  tempDiv.innerHTML = cardHTML;
+  const cardElement = tempDiv.firstElementChild as HTMLElement;
+
+  if (!cardElement) {
+    throw new Error('Failed to create simple card element');
+  }
+
+  // Agregar event listeners a los botones si se proporcionan
+  if (options.buttons && options.buttons.length > 0) {
+    const buttonElements = cardElement.querySelectorAll('.ubits-button');
+    buttonElements.forEach((buttonEl, index) => {
+      const buttonConfig = options.buttons![index];
+      if (buttonConfig?.onClick) {
+        buttonEl.addEventListener('click', buttonConfig.onClick);
+      }
+    });
+  }
+
+  return cardElement;
+}
+

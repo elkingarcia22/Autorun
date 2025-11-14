@@ -211,6 +211,12 @@ function validateFile(filePath, autoFix = false) {
             return false;
           }
         }
+        if (match.toLowerCase() === 'gray' || match.toLowerCase() === 'grey') {
+          const context = (before + match + after).toLowerCase();
+          if (context.includes('grayscale') || context.includes('filter:') || context.includes('filter :')) {
+            return false;
+          }
+        }
         if (match.startsWith('rgba(') && (before.includes('box-shadow') || before.includes('text-shadow'))) {
           return false;
         }

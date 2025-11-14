@@ -34,6 +34,8 @@ import '../../addons/segment-control/src/styles/segment-control.css'
 import '../../addons/breadcrumb/src/styles/breadcrumb.css'
 import '../../addons/stepper/src/styles/stepper.css'
 import '../../addons/participants-menu/src/styles/participants-menu.css'
+import '../../addons/metric-card/src/styles/metric-card.css'
+import '../../addons/menubar/src/styles/menubar.css'
 import './fontawesome-icons.css'
 
 const preview: Preview = {

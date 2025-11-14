@@ -76,6 +76,12 @@ export interface ParticipantsMenuOptions {
    * Callback cuando se hace clic en el botón de filtro
    */
   onFilterClick?: () => void;
+
+  /**
+   * Callback cuando cambian los filtros aplicados
+   * Recibe un objeto con los filtros activos: { roles: string[], statuses: ParticipantStatus[] }
+   */
+  onFilterChange?: (filters: { roles: string[]; statuses: ParticipantStatus[] }) => void;
   
   /**
    * Clases CSS adicionales
@@ -86,5 +92,26 @@ export interface ParticipantsMenuOptions {
    * ID del contenedor donde se insertará el menú
    */
   containerId?: string;
+
+  /**
+   * Mostrar avatar de los participantes
+   */
+  showAvatar?: boolean;
+
+  /**
+   * Mostrar rol (texto complementario) de los participantes
+   */
+  showRole?: boolean;
+
+  /**
+   * Mostrar status tag de los participantes
+   */
+  showStatusTag?: boolean;
+
+  /**
+   * Activar scrollbar de UBITS para la lista de participantes
+   * Cuando está activado, se mostrará el scrollbar personalizado de UBITS
+   */
+  enableScrollbar?: boolean;
 }
 

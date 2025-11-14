@@ -1,0 +1,347 @@
+/* ========================================
+   UBITS MENUBAR COMPONENT
+   Componente de menubar horizontal con dropdowns
+   Usando tokens UBITS
+   ======================================== */
+
+/* ========================================
+   BASE MENUBAR STYLES
+   ======================================== */
+
+.ubits-menubar {
+  display: flex;
+  align-items: center;
+  background: var(--ubits-bg-1);
+  border: 1px solid var(--ubits-border-1);
+  border-radius: var(--ubits-border-radius-md, 8px);
+  padding: var(--ubits-spacing-xs, 4px);
+  gap: var(--ubits-spacing-xs, 4px);
+  position: relative;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="dark"] .ubits-menubar {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.ubits-menubar-list {
+  display: flex;
+  align-items: center;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: var(--ubits-spacing-xs, 4px);
+}
+
+/* ========================================
+   MENUBAR ITEM
+   ======================================== */
+
+.ubits-menubar-item {
+  position: relative;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.ubits-menubar-link {
+  display: flex;
+  align-items: center;
+  gap: var(--ubits-spacing-sm, 12px);
+  padding: var(--ubits-spacing-sm, 12px) var(--ubits-spacing-md, 16px);
+  border: none;
+  border-radius: var(--ubits-border-radius-md, 8px);
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  font-family: var(--font-sans);
+  font-size: var(--font-body-md-size);
+  font-weight: var(--weight-regular);
+  line-height: var(--font-body-md-line);
+  color: var(--ubits-fg-1-high);
+  position: relative;
+  white-space: nowrap;
+}
+
+.ubits-menubar-link:hover:not(:disabled) {
+  background: var(--ubits-bg-2);
+}
+
+.ubits-menubar-item--active > .ubits-menubar-link {
+  position: relative;
+  background-color: var(--ubits-bg-1, #ffffff);
+  color: var(--ubits-button-active-fg, var(--ubits-accent-brand-static));
+}
+
+.ubits-menubar-item--active > .ubits-menubar-link::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--ubits-bg-active-button, rgba(12, 91, 239, 0.15));
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.ubits-menubar-item--active > .ubits-menubar-link .ubits-menubar-label {
+  position: relative;
+  z-index: 1;
+  color: var(--ubits-button-active-fg, var(--ubits-accent-brand-static));
+  font-weight: var(--weight-semibold);
+}
+
+.ubits-menubar-item--active > .ubits-menubar-link .ubits-menubar-icon {
+  position: relative;
+  z-index: 1;
+  color: var(--ubits-button-active-fg, var(--ubits-accent-brand-static));
+}
+
+.ubits-menubar-item--disabled > .ubits-menubar-link {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.ubits-menubar-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  color: var(--ubits-fg-1-medium);
+  flex-shrink: 0;
+}
+
+.ubits-menubar-label {
+  flex: 1;
+  color: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+}
+
+.ubits-menubar-chevron {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 12px;
+  height: 12px;
+  color: var(--ubits-fg-1-medium);
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+  margin-left: var(--ubits-spacing-xs, 4px);
+}
+
+.ubits-menubar-item--has-dropdown > .ubits-menubar-link[aria-expanded="true"] .ubits-menubar-chevron {
+  transform: rotate(180deg);
+}
+
+/* ========================================
+   DROPDOWN MENU
+   ======================================== */
+
+.ubits-menubar-dropdown {
+  position: absolute;
+  top: calc(100% + var(--ubits-spacing-xs, 4px));
+  left: 0;
+  min-width: 200px;
+  background: var(--ubits-bg-1);
+  border: 1px solid var(--ubits-border-1);
+  border-radius: var(--ubits-border-radius-md, 8px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  list-style: none;
+  margin: 0;
+  padding: var(--ubits-spacing-xs, 4px);
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px);
+  transition: all 0.2s ease;
+}
+
+[data-theme="dark"] .ubits-menubar-dropdown {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.ubits-menubar-dropdown--open {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+/* ========================================
+   SUBMENU ITEM
+   ======================================== */
+
+.ubits-menubar-submenu-item {
+  position: relative;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.ubits-menubar-submenu-link {
+  display: flex;
+  align-items: center;
+  gap: var(--ubits-spacing-sm, 12px);
+  padding: var(--ubits-spacing-sm, 12px) var(--ubits-spacing-md, 16px);
+  border: none;
+  border-radius: var(--ubits-border-radius-sm, 6px);
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  font-family: var(--font-sans);
+  font-size: var(--font-body-md-size);
+  font-weight: var(--weight-regular);
+  line-height: var(--font-body-md-line);
+  color: var(--ubits-fg-1-high);
+  position: relative;
+  white-space: nowrap;
+  width: 100%;
+}
+
+.ubits-menubar-submenu-link:hover:not(:disabled) {
+  background: var(--ubits-bg-2);
+}
+
+.ubits-menubar-submenu-item--active > .ubits-menubar-submenu-link {
+  position: relative;
+  background-color: var(--ubits-bg-1, #ffffff);
+  color: var(--ubits-button-active-fg, var(--ubits-accent-brand-static));
+}
+
+.ubits-menubar-submenu-item--active > .ubits-menubar-submenu-link::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--ubits-bg-active-button, rgba(12, 91, 239, 0.15));
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.ubits-menubar-submenu-item--active > .ubits-menubar-submenu-link .ubits-menubar-submenu-label {
+  position: relative;
+  z-index: 1;
+  color: var(--ubits-button-active-fg, var(--ubits-accent-brand-static));
+  font-weight: var(--weight-semibold);
+}
+
+.ubits-menubar-submenu-item--active > .ubits-menubar-submenu-link .ubits-menubar-submenu-icon {
+  position: relative;
+  z-index: 1;
+  color: var(--ubits-button-active-fg, var(--ubits-accent-brand-static));
+}
+
+.ubits-menubar-submenu-item--disabled > .ubits-menubar-submenu-link {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.ubits-menubar-submenu-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  color: var(--ubits-fg-1-medium);
+  flex-shrink: 0;
+}
+
+.ubits-menubar-submenu-label {
+  flex: 1;
+  color: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+}
+
+.ubits-menubar-submenu-chevron {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 12px;
+  height: 12px;
+  color: var(--ubits-fg-1-medium);
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+  margin-left: auto;
+}
+
+.ubits-menubar-submenu-item--has-submenu > .ubits-menubar-submenu-link:hover .ubits-menubar-submenu-chevron {
+  transform: translateX(2px);
+}
+
+/* ========================================
+   SUBMENU ANIDADO (Nivel 2+)
+   ======================================== */
+
+.ubits-menubar-submenu {
+  position: absolute;
+  top: 0;
+  left: calc(100% + var(--ubits-spacing-xs, 4px));
+  min-width: 200px;
+  background: var(--ubits-bg-1);
+  border: 1px solid var(--ubits-border-1);
+  border-radius: var(--ubits-border-radius-md, 8px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  list-style: none;
+  margin: 0;
+  padding: var(--ubits-spacing-xs, 4px);
+  z-index: 1001;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(-8px);
+  transition: all 0.2s ease;
+}
+
+[data-theme="dark"] .ubits-menubar-submenu {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.ubits-menubar-submenu--open {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(0);
+}
+
+/* Ajustar posición del submenú anidado si está cerca del borde derecho */
+.ubits-menubar-submenu-item--has-submenu:hover .ubits-menubar-submenu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(0);
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+@media (max-width: 768px) {
+  .ubits-menubar {
+    flex-wrap: wrap;
+    padding: var(--ubits-spacing-xs, 4px);
+  }
+  
+  .ubits-menubar-link {
+    padding: var(--ubits-spacing-xs, 8px) var(--ubits-spacing-sm, 12px);
+    font-size: var(--font-body-sm-size);
+  }
+  
+  .ubits-menubar-dropdown {
+    position: fixed;
+    left: var(--ubits-spacing-md, 16px);
+    right: var(--ubits-spacing-md, 16px);
+    width: auto;
+    max-width: calc(100vw - 32px);
+  }
+}
+

@@ -1,0 +1,401 @@
+/* ========================================
+   UBITS BAR METRIC CARD COMPONENT
+   Componente de tarjeta de métricas con gráfico de barras
+   Usando tokens UBITS
+   ======================================== */
+
+/* ========================================
+   BASE BAR METRIC CARD STYLES
+   ======================================== */
+
+.ubits-bar-metric-card {
+  /* Base styles usando tokens UBITS */
+  display: flex;
+  flex-direction: column;
+  background: var(--ubits-bg-1);
+  border-radius: 8px;
+  padding: 12px;
+  gap: var(--ubits-spacing-md);
+  font-family: var(--font-sans);
+  transition: all 0.2s ease;
+  width: 392px;
+  max-width: 100%;
+  box-sizing: border-box;
+  border: none;
+  box-shadow: none;
+  position: relative;
+}
+
+/* ========================================
+   SIZES
+   ======================================== */
+
+.ubits-bar-metric-card--sm {
+  padding: 12px;
+  gap: var(--ubits-spacing-sm);
+}
+
+.ubits-bar-metric-card--md {
+  padding: 12px;
+  gap: var(--ubits-spacing-md);
+}
+
+.ubits-bar-metric-card--lg {
+  padding: 12px;
+  gap: var(--ubits-spacing-lg);
+}
+
+/* ========================================
+   HEADER
+   ======================================== */
+
+.ubits-bar-metric-card__header {
+  display: flex;
+  align-items: center;
+  gap: var(--ubits-spacing-sm);
+  width: 100%;
+  position: relative;
+}
+
+.ubits-bar-metric-card__title-group {
+  display: flex;
+  align-items: center;
+  gap: var(--ubits-spacing-xs);
+  flex: 1;
+}
+
+/* Título en layout horizontal */
+.ubits-bar-metric-card--horizontal .ubits-bar-metric-card__title-group {
+  justify-content: flex-start;
+}
+
+/* Título en layout vertical - alineado a la izquierda igual que horizontal */
+.ubits-bar-metric-card--vertical .ubits-bar-metric-card__title-group {
+  justify-content: flex-start;
+}
+
+/* ========================================
+   TITLE
+   ======================================== */
+
+.ubits-bar-metric-card__title {
+  margin: 0;
+  font-family: var(--font-sans);
+  color: var(--ubits-fg-1-high);
+  text-align: left;
+}
+
+/* Título en layout horizontal */
+.ubits-bar-metric-card--horizontal .ubits-bar-metric-card__title {
+  text-align: left;
+}
+
+/* Título en layout vertical - alineado a la izquierda igual que horizontal */
+.ubits-bar-metric-card--vertical .ubits-bar-metric-card__title {
+  text-align: left;
+}
+
+/* Botón terciario de información justo después del título */
+.ubits-bar-metric-card__title-group .ubits-button {
+  flex-shrink: 0;
+}
+
+/* Botón de acción alineado con el título */
+.ubits-bar-metric-card__action-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+}
+
+.ubits-bar-metric-card__action-button .ubits-button {
+  flex-shrink: 0;
+  min-width: auto;
+  min-height: auto;
+}
+
+/* ========================================
+   RESPONSE COUNT
+   ======================================== */
+
+.ubits-bar-metric-card__response-count {
+  margin-top: var(--ubits-spacing-xs, 4px);
+  color: var(--ubits-fg-2-medium);
+}
+
+/* ========================================
+   CONTENT
+   ======================================== */
+
+.ubits-bar-metric-card__content {
+  display: flex;
+  width: 100%;
+  gap: var(--ubits-spacing-lg);
+  box-sizing: border-box;
+  overflow: visible; /* Cambiar de hidden a visible para que el gráfico no se corte */
+}
+
+/* Layout vertical (por defecto) */
+.ubits-bar-metric-card--vertical .ubits-bar-metric-card__content {
+  flex-direction: column;
+  align-items: stretch; /* Cambiar de center a stretch para que el gráfico ocupe todo el ancho */
+}
+
+/* Asegurar que el gráfico ocupe todo el ancho en layout vertical */
+.ubits-bar-metric-card--vertical .ubits-bar-metric-card__chart-wrapper {
+  width: 100%;
+  max-width: 100%;
+}
+
+/* Layout horizontal */
+.ubits-bar-metric-card--horizontal .ubits-bar-metric-card__content {
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--ubits-spacing-md);
+  flex-wrap: nowrap;
+}
+
+.ubits-bar-metric-card--horizontal .ubits-bar-metric-card__chart-wrapper {
+  flex-shrink: 0;
+}
+
+/* ========================================
+   BAR CHART
+   ======================================== */
+
+.ubits-bar-metric-card__chart-wrapper {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+  flex-shrink: 0;
+  border-radius: var(--ubits-border-radius-md, 6px);
+  padding: 0;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 158px;
+  max-width: 100%; /* Asegurar que no exceda el ancho del contenedor */
+}
+
+.ubits-bar-metric-card__chart-inner {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+  flex: 1;
+}
+
+.ubits-bar-metric-card__chart-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  min-width: 0;
+  flex: 1;
+}
+
+.ubits-bar-metric-card__bar-group {
+  transition: opacity 0.2s ease;
+}
+
+.ubits-bar-metric-card__bar-group:hover {
+  opacity: 0.8;
+}
+
+.ubits-bar-metric-card__bar {
+  transition: all 0.2s ease;
+}
+
+.ubits-bar-metric-card__bar-group:hover .ubits-bar-metric-card__bar {
+  opacity: 0.9;
+}
+
+.ubits-bar-metric-card__bar-label {
+  font-family: var(--font-sans);
+  fill: var(--ubits-fg-2-medium);
+}
+
+/* Asegurar que los textos del SVG siempre usen body sm regular (13px) independiente del ancho de la card */
+.ubits-bar-metric-card__chart-svg text {
+  font-size: var(--font-body-sm-size, 13px) !important;
+  font-weight: var(--weight-regular, 400) !important;
+  font-family: var(--font-sans) !important;
+}
+
+/* ========================================
+   CATEGORIES
+   ======================================== */
+
+.ubits-bar-metric-card__categories {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ubits-spacing-md);
+  flex: 1;
+}
+
+/* En layout vertical, las categorías están debajo del gráfico */
+.ubits-bar-metric-card--vertical .ubits-bar-metric-card__categories {
+  width: 100%;
+  align-items: stretch;
+}
+
+/* En layout horizontal, las categorías están a la derecha del gráfico */
+.ubits-bar-metric-card--horizontal .ubits-bar-metric-card__categories {
+  width: auto;
+  min-width: 0;
+  flex: 1;
+  align-items: flex-start;
+  justify-content: flex-start;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.ubits-bar-metric-card__category {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ubits-spacing-md);
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.ubits-bar-metric-card--horizontal .ubits-bar-metric-card__category {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.ubits-bar-metric-card--vertical .ubits-bar-metric-card__category {
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ubits-bar-metric-card--horizontal .ubits-bar-metric-card__category {
+  justify-content: space-between;
+}
+
+.ubits-bar-metric-card__category-label {
+  color: var(--ubits-fg-2-medium);
+  font-family: var(--font-sans);
+  margin: 0;
+  flex-shrink: 0;
+}
+
+.ubits-bar-metric-card__category-value {
+  color: var(--ubits-fg-1-high);
+  font-family: var(--font-sans);
+  margin: 0;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.ubits-bar-metric-card__category-percentage {
+  color: var(--ubits-fg-1-high);
+  font-family: var(--font-sans);
+}
+
+/* Aplicar estilos bold cuando tenga la clase ubits-body-sm-bold */
+.ubits-bar-metric-card__category-percentage.ubits-body-sm-bold {
+  font-size: var(--font-body-sm-size, 13px);
+  line-height: var(--font-body-sm-line, 19.5px);
+  font-weight: var(--weight-bold, 700);
+}
+
+.ubits-bar-metric-card__category-percentage.ubits-body-md-bold {
+  font-size: var(--font-body-md-size, 16px);
+  line-height: var(--font-body-md-line, 24px);
+  font-weight: var(--weight-bold, 700);
+}
+
+/* ========================================
+   CATEGORIES WITH PROGRESS BARS (Horizontal Layout)
+   ======================================== */
+
+.ubits-bar-metric-card__category--with-progress {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ubits-spacing-xs, 4px);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.ubits-bar-metric-card__category-header {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.ubits-bar-metric-card__category--with-progress .ubits-bar-metric-card__category-label {
+  margin: 0;
+  flex-shrink: 0;
+}
+
+.ubits-bar-metric-card__category-progress-wrapper {
+  width: 100%;
+  flex: 1;
+}
+
+/* Asegurar que el progress bar ocupe todo el ancho disponible */
+.ubits-bar-metric-card__category-progress-wrapper .ubits-progress-bar {
+  width: 100%;
+}
+
+/* El indicador del progress bar debe ser regular (no semibold) */
+.ubits-bar-metric-card__category-progress-wrapper .ubits-progress-bar__indicator {
+  font-weight: var(--weight-regular, 400) !important;
+}
+
+/* El porcentaje dentro del indicador debe ser bold */
+.ubits-bar-metric-card__category-progress-wrapper .ubits-progress-bar__indicator .ubits-body-sm-bold,
+.ubits-bar-metric-card__category-progress-wrapper .ubits-progress-bar__indicator .ubits-body-md-bold {
+  font-weight: var(--weight-bold, 700) !important;
+}
+
+/* En layout horizontal, las categorías con progress bars ocupan todo el ancho */
+.ubits-bar-metric-card--horizontal .ubits-bar-metric-card__category--with-progress {
+  width: 100%;
+  max-width: 100%;
+}
+
+/* ========================================
+   CLICKABLE CARD
+   ======================================== */
+
+.ubits-bar-metric-card[data-clickable="true"] {
+  cursor: pointer;
+}
+
+.ubits-bar-metric-card[data-clickable="true"]:hover {
+  background: var(--ubits-bg-2);
+  border-color: var(--ubits-border-2);
+}
+
+.ubits-bar-metric-card[data-clickable="true"]:active {
+  background: var(--ubits-bg-3);
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+@media (max-width: 768px) {
+  .ubits-bar-metric-card--horizontal .ubits-bar-metric-card__content {
+    flex-direction: column;
+  }
+  
+  .ubits-bar-metric-card--horizontal .ubits-bar-metric-card__categories {
+    width: 100%;
+    align-items: center;
+  }
+  
+  .ubits-bar-metric-card--horizontal .ubits-bar-metric-card__category {
+    align-items: center;
+    text-align: center;
+  }
+}
+

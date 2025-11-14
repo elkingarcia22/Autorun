@@ -1091,7 +1091,7 @@ function renderDataTableHeader(options: DataTableOptions, activeFilters: Record<
   if (filterButtonHTML && activeFiltersCount > 0) {
     // Crear el badge con el número de filtros activos
     // Usar las clases del badge normal pero mantener la clase del botón para posicionamiento
-    const badgeHTML = `<span class="ubits-badge ubits-badge--sm ubits-badge--number ubits-badge--primary ubits-button__badge">${activeFiltersCount}</span>`;
+    const badgeHTML = `<span class="ubits-badge ubits-badge--sm ubits-badge--number ubits-badge--error ubits-button__badge">${activeFiltersCount}</span>`;
     // Reemplazar el badge genérico del botón con el badge personalizado
     filterButtonHTML = filterButtonHTML.replace(
       '<span class="ubits-button__badge"></span>', 
@@ -3857,7 +3857,8 @@ export function createDataTable(options: DataTableOptions): {
               void rowElement.offsetHeight;
               
               // Ahora aplicar los estilos
-              const bg1Value = getComputedStyle(document.documentElement).getPropertyValue('--ubits-bg-1').trim() || 'rgb(20, 28, 41)';
+              // Obtener valor del token UBITS (sin fallback hardcodeado para cumplir validación)
+              const bg1Value = getComputedStyle(document.documentElement).getPropertyValue('--ubits-bg-1').trim();
               
               // Agregar clase para forzar limpieza del hover inmediatamente
               rowElement.classList.add('ubits-data-table__row--clear-hover');

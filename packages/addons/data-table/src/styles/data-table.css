@@ -125,6 +125,24 @@
   position: relative;
 }
 
+/* Badge number dentro del botón de filtro - sobrescribir estilos del botón */
+.ubits-data-table__header-filter-button .ubits-button__badge.ubits-badge--number {
+  position: absolute !important;
+  top: -2px !important;
+  right: -2px !important;
+  width: auto !important;
+  min-width: 16px !important;
+  height: 16px !important;
+  padding: 2px 4px !important;
+  border-radius: 8px !important;
+  font-size: 10px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 1 !important;
+  color: var(--ubits-fg-bold, #ffffff) !important;
+}
+
 /* Dropdown de selección de columnas */
 .ubits-data-table__column-selector-dropdown {
   position: fixed;

@@ -1,0 +1,280 @@
+/* ========================================
+   UBITS DATA VIEW COMPONENT
+   Componente para mostrar lista de productos
+   Usando tokens UBITS oficiales
+   ======================================== */
+
+/* ========================================
+   BASE CONTAINER
+   ======================================== */
+
+.ubits-data-view {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ubits-spacing-md);
+  width: 100%;
+}
+
+/* Tamaños de gap entre items */
+.ubits-data-view--sm {
+  gap: var(--ubits-spacing-sm);
+}
+
+.ubits-data-view--md {
+  gap: var(--ubits-spacing-md);
+}
+
+.ubits-data-view--lg {
+  gap: var(--ubits-spacing-lg);
+}
+
+/* ========================================
+   PRODUCT ITEM
+   ======================================== */
+
+.ubits-data-view__item {
+  display: flex;
+  gap: var(--ubits-spacing-md);
+  padding: var(--ubits-spacing-md);
+  border-bottom: 1px solid var(--ubits-border-1);
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+}
+
+/* Tamaños de padding y gap */
+.ubits-data-view--sm .ubits-data-view__item {
+  gap: var(--ubits-spacing-sm);
+  padding: var(--ubits-spacing-sm);
+}
+
+.ubits-data-view--md .ubits-data-view__item {
+  gap: var(--ubits-spacing-md);
+  padding: var(--ubits-spacing-md);
+}
+
+.ubits-data-view--lg .ubits-data-view__item {
+  gap: var(--ubits-spacing-lg);
+  padding: var(--ubits-spacing-lg);
+}
+
+.ubits-data-view__item:hover {
+  background-color: var(--ubits-bg-2);
+}
+
+.ubits-data-view__item:last-child {
+  border-bottom: none;
+}
+
+/* ========================================
+   IMAGE WRAPPER
+   ======================================== */
+
+.ubits-data-view__image-wrapper {
+  position: relative;
+  flex-shrink: 0;
+  width: 120px;
+  height: 120px;
+  border-radius: var(--ubits-border-radius-md);
+  overflow: hidden;
+  background-color: var(--ubits-bg-2);
+}
+
+/* Tamaños de imagen */
+.ubits-data-view--sm .ubits-data-view__image-wrapper {
+  width: 80px;
+  height: 80px;
+}
+
+.ubits-data-view--md .ubits-data-view__image-wrapper {
+  width: 120px;
+  height: 120px;
+}
+
+.ubits-data-view--lg .ubits-data-view__image-wrapper {
+  width: 160px;
+  height: 160px;
+}
+
+.ubits-data-view__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ========================================
+   STOCK BADGE
+   ======================================== */
+
+.ubits-data-view__stock-badge {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 4px 8px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--ubits-fg-bold);
+  transform: rotate(-45deg);
+  transform-origin: top left;
+  white-space: nowrap;
+  z-index: 1;
+}
+
+.ubits-data-view__stock-badge--instock {
+  background-color: var(--ubits-feedback-accent-success);
+}
+
+.ubits-data-view__stock-badge--lowstock {
+  background-color: var(--ubits-feedback-accent-warning);
+}
+
+.ubits-data-view__stock-badge--outofstock {
+  background-color: var(--ubits-feedback-accent-error);
+}
+
+/* ========================================
+   CONTENT
+   ======================================== */
+
+.ubits-data-view__content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--ubits-spacing-md);
+  flex: 1;
+  min-width: 0;
+}
+
+.ubits-data-view__main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ubits-spacing-sm);
+  flex: 1;
+  min-width: 0;
+}
+
+.ubits-data-view__right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--ubits-spacing-md);
+  flex-shrink: 0;
+}
+
+.ubits-data-view__category {
+  color: var(--ubits-fg-1-medium);
+  margin-bottom: var(--ubits-spacing-xs);
+}
+
+.ubits-data-view__name {
+  color: var(--ubits-fg-1-high);
+  margin: 0;
+}
+
+.ubits-data-view__price {
+  color: var(--ubits-fg-1-high);
+  margin: 0;
+  font-weight: var(--weight-bold);
+}
+
+/* ========================================
+   RATING
+   ======================================== */
+
+.ubits-data-view__rating {
+  display: flex;
+  align-items: center;
+  gap: var(--ubits-spacing-xs);
+}
+
+.ubits-data-view__star {
+  font-size: 14px;
+  color: var(--ubits-fg-1-medium);
+}
+
+/* Tamaños de estrellas */
+.ubits-data-view--sm .ubits-data-view__star {
+  font-size: 12px;
+}
+
+.ubits-data-view--md .ubits-data-view__star {
+  font-size: 14px;
+}
+
+.ubits-data-view--lg .ubits-data-view__star {
+  font-size: 16px;
+}
+
+.ubits-data-view__star--filled {
+  color: var(--ubits-feedback-fg-warning-subtle-hover);
+}
+
+.ubits-data-view__star--half {
+  color: var(--ubits-feedback-fg-warning-subtle-hover);
+}
+
+.ubits-data-view__star--empty {
+  color: var(--ubits-border-1);
+}
+
+.ubits-data-view__rating-number {
+  color: var(--ubits-fg-1-medium);
+}
+
+/* ========================================
+   ACTIONS
+   ======================================== */
+
+.ubits-data-view__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--ubits-spacing-sm);
+  justify-content: flex-end;
+}
+
+.ubits-data-view__wishlist-button {
+  flex-shrink: 0;
+}
+
+.ubits-data-view__wishlist-button--active {
+  color: var(--ubits-feedback-accent-error) !important;
+}
+
+.ubits-data-view__wishlist-button--active:hover {
+  color: var(--ubits-feedback-accent-error) !important;
+  background-color: var(--ubits-feedback-bg-error-subtle);
+}
+
+.ubits-data-view__buy-button {
+  flex-shrink: 0;
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+@media (max-width: 768px) {
+  .ubits-data-view__item {
+    flex-direction: column;
+  }
+
+  .ubits-data-view__image-wrapper {
+    width: 100%;
+    height: 200px;
+  }
+
+  .ubits-data-view__content {
+    flex-direction: column;
+  }
+
+  .ubits-data-view__right {
+    align-items: flex-start;
+    width: 100%;
+  }
+
+  .ubits-data-view__actions {
+    flex-wrap: wrap;
+    width: 100%;
+  }
+}
+
