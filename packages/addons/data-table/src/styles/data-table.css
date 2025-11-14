@@ -569,7 +569,7 @@
 }
 
 .ubits-data-table__column-header--drag-over {
-    background-color: var(--ubits-bg-active) !important;
+    background: var(--ubits-bg-active, rgba(12, 91, 239, 0.15)), var(--ubits-bg-1, #ffffff) !important;
     border-left: 2px solid var(--ubits-accent-brand-static-inverted);
 }
 
@@ -578,7 +578,7 @@
 }
 
 .ubits-data-table__row--drag-over {
-    background-color: var(--ubits-bg-active) !important;
+    background: var(--ubits-bg-active, rgba(12, 91, 239, 0.15)), var(--ubits-bg-1, #ffffff) !important;
     border-top: 2px solid var(--ubits-accent-brand-static-inverted);
 }
 
@@ -1079,7 +1079,7 @@
 
 .ubits-data-table__cell--editable[contenteditable="true"]:focus,
 .ubits-data-table__cell--editable:has([contenteditable="true"]:focus) {
-    background-color: var(--ubits-bg-active);
+    background: var(--ubits-bg-active, rgba(12, 91, 239, 0.15)), var(--ubits-bg-1, #ffffff);
     outline: none;
 }
 
@@ -1100,7 +1100,7 @@
 }
 
 .ubits-data-table__cell--nombre-avatar.ubits-data-table__cell--editable:has([contenteditable="true"]:focus) {
-    background-color: var(--ubits-bg-active);
+    background: var(--ubits-bg-active, rgba(12, 91, 239, 0.15)), var(--ubits-bg-1, #ffffff);
 }
 
 
@@ -1117,7 +1117,7 @@
 }
 
 .ubits-data-table__cell--nombre.ubits-data-table__cell--editable:has([contenteditable="true"]:focus) {
-    background-color: var(--ubits-bg-active);
+    background: var(--ubits-bg-active, rgba(12, 91, 239, 0.15)), var(--ubits-bg-1, #ffffff);
 }
 
 /* Fecha editable */
@@ -1159,7 +1159,7 @@
 }
 
 .ubits-data-table__cell--fecha.ubits-data-table__cell--editable:has(.ubits-data-table__date-input:focus) {
-    background-color: var(--ubits-bg-active);
+    background: var(--ubits-bg-active, rgba(12, 91, 239, 0.15)), var(--ubits-bg-1, #ffffff);
 }
 
 /* Celda de progreso */

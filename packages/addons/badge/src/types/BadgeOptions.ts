@@ -36,5 +36,22 @@ export interface BadgeOptions {
    * Clases CSS adicionales
    */
   className?: string;
+  
+  /**
+   * Texto del label que aparece junto al badge
+   */
+  label?: string;
+  
+  /**
+   * Mostrar u ocultar el label
+   */
+  showLabel?: boolean;
+  
+  /**
+   * Clase de tipografía UBITS para el label
+   */
+  labelTypography?: 'ubits-body-sm-regular' | 'ubits-body-sm-semibold' | 'ubits-body-sm-bold' | 
+                    'ubits-body-md-regular' | 'ubits-body-md-semibold' | 'ubits-body-md-bold' |
+                    'ubits-heading-h1' | 'ubits-heading-h2';
 }
 

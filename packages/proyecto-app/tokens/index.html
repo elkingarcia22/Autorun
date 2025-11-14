@@ -280,17 +280,17 @@
       [data-theme="dark"] #action-btn-view-selected.ubits-button--active,
       [data-theme="dark"] #action-btn-view-selected.ubits-button--active:hover:not(:disabled):not(.ubits-button--loading),
       [data-theme="dark"] #action-btn-view-selected.ubits-button--active:active:not(:disabled):not(.ubits-button--loading) {
-        color: #c4c1fc !important;
+        color: var(--ubits-accent-brand-static-inverted, var(--ubits-fg-1-high)) !important;
       }
       [data-theme="dark"] #action-btn-view-selected.ubits-button--active i,
       [data-theme="dark"] #action-btn-view-selected.ubits-button--active:hover:not(:disabled):not(.ubits-button--loading) i,
       [data-theme="dark"] #action-btn-view-selected.ubits-button--active:active:not(:disabled):not(.ubits-button--loading) i {
-        color: #c4c1fc !important;
+        color: var(--ubits-accent-brand-static-inverted, var(--ubits-fg-1-high)) !important;
       }
       [data-theme="dark"] #action-btn-view-selected.ubits-button--active span,
       [data-theme="dark"] #action-btn-view-selected.ubits-button--active:hover:not(:disabled):not(.ubits-button--loading) span,
       [data-theme="dark"] #action-btn-view-selected.ubits-button--active:active:not(:disabled):not(.ubits-button--loading) span {
-        color: #c4c1fc !important;
+        color: var(--ubits-accent-brand-static-inverted, var(--ubits-fg-1-high)) !important;
       }
       .ubits-button--tertiary {
         background: transparent;
@@ -487,15 +487,23 @@
       /* PREVIEW CONTROL BUTTONS */
       .preview-control-btn.active {
         background: var(--ubits-accent-brand-static-inverted) !important;
-        color: white !important;
+        color: var(--ubits-fg-bold, #ffffff) !important;
         border-color: var(--ubits-accent-brand-static-inverted) !important;
       }
       .preview-control-btn.active span {
-        color: white !important;
+        color: var(--ubits-fg-bold, #ffffff) !important;
       }
     </style>
     <!-- Badge Component CSS -->
     <link rel="stylesheet" href="../../addons/badge/src/styles/badge.css" />
+    <!-- Accordion Component CSS -->
+    <link rel="stylesheet" href="../../addons/accordion/src/styles/accordion.css" />
+    <!-- Selection Card Component CSS -->
+    <link rel="stylesheet" href="../../addons/selection-card/src/styles/selection-card.css" />
+    <!-- Radio Button Component CSS (requerido por Selection Card) -->
+    <link rel="stylesheet" href="../../addons/radio-button/src/styles/radio-button.css" />
+    <!-- Stepper Component CSS -->
+    <link rel="stylesheet" href="../../addons/stepper/src/styles/stepper.css" />
     <!-- Spinner Component CSS -->
     <link rel="stylesheet" href="../../addons/spinner/src/styles/spinner.css" />
     <!-- Empty State Component CSS -->
@@ -2377,7 +2385,7 @@ npm run dev</code></pre>
                 <!-- Preview -->
                 <div>
                   <h4 style="color: var(--ubits-fg-1-high); font-size: var(--font-body-md-size); font-weight: var(--weight-semibold); margin: 0 0 16px 0;">Preview</h4>
-                  <div id="focus-preview" style="width: 120px; height: 120px; background: var(--ubits-bg-2); border-radius: 8px; display: flex; align-items: center; justify-content: center; border: 2px solid #5297F4; box-shadow: 0px 0px 0px 4px rgba(82, 151, 244, 0.3);">
+                  <div id="focus-preview" style="width: 120px; height: 120px; background: var(--ubits-bg-2); border-radius: 8px; display: flex; align-items: center; justify-content: center; border: 2px solid var(--ubits-accent-brand, #5297F4); box-shadow: 0px 0px 0px 4px var(--ubits-button-focus-ring, rgba(82, 151, 244, 0.3));">
                     <span style="color: var(--ubits-fg-2-medium); font-size: var(--font-body-sm-size);">Focus</span>
                   </div>
                 </div>
@@ -2417,8 +2425,8 @@ npm run dev</code></pre>
                   <div>
                     <label style="color: var(--ubits-fg-1-medium); font-size: var(--font-body-sm-size); font-weight: var(--weight-medium); margin-bottom: 8px; display: block;">Color</label>
                     <div style="display: flex; gap: 8px; align-items: center;">
-                      <input type="color" id="focus-color" value="#5297F4" oninput="updateFocusEffect()" style="width: 50px; height: 40px; padding: 0; border: 1px solid var(--ubits-border-1); border-radius: 6px; cursor: pointer;" />
-                      <input type="text" id="focus-color-hex" value="#5297F4" oninput="updateFocusColorFromHex()" style="flex: 1; padding: 8px; background: var(--ubits-bg-2); border: 1px solid var(--ubits-border-1); border-radius: 6px; color: var(--ubits-fg-1-high); font-size: var(--font-body-sm-size); font-family: monospace;" />
+                      <input type="color" id="focus-color" value="#0c5bef" oninput="updateFocusEffect()" style="width: 50px; height: 40px; padding: 0; border: 1px solid var(--ubits-border-1); border-radius: 6px; cursor: pointer;" />
+                      <input type="text" id="focus-color-hex" value="#0c5bef" oninput="updateFocusColorFromHex()" style="flex: 1; padding: 8px; background: var(--ubits-bg-2); border: 1px solid var(--ubits-border-1); border-radius: 6px; color: var(--ubits-fg-1-high); font-size: var(--font-body-sm-size); font-family: monospace;" />
                       <input type="number" id="focus-color-opacity" value="30" min="0" max="100" oninput="updateFocusEffect()" style="width: 60px; padding: 8px; background: var(--ubits-bg-2); border: 1px solid var(--ubits-border-1); border-radius: 6px; color: var(--ubits-fg-1-high); font-size: var(--font-body-sm-size);" />
                       <span style="color: var(--ubits-fg-2-medium); font-size: var(--font-body-sm-size);">%</span>
                     </div>
@@ -2437,7 +2445,7 @@ npm run dev</code></pre>
               <h4 style="color: var(--ubits-fg-1-high); font-size: var(--font-body-md-size); font-weight: var(--weight-semibold); margin: 0 0 16px 0;">Default</h4>
               <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
                 <div>
-                  <div id="elevation-default-preview" style="width: 120px; height: 120px; background: var(--ubits-bg-2); border-radius: 8px; display: flex; align-items: center; justify-content: center; box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.12);">
+                  <div id="elevation-default-preview" style="width: 120px; height: 120px; background: var(--ubits-bg-2); border-radius: 8px; display: flex; align-items: center; justify-content: center; box-shadow: var(--ubits-effects-elevation-1, 0px 1px 2px 0px rgba(0, 0, 0, 0.12));">
                     <span style="color: var(--ubits-fg-2-medium); font-size: var(--font-body-sm-size);">Default</span>
                   </div>
                 </div>
@@ -2478,7 +2486,7 @@ npm run dev</code></pre>
               <h4 style="color: var(--ubits-fg-1-high); font-size: var(--font-body-md-size); font-weight: var(--weight-semibold); margin: 0 0 16px 0;">Hover</h4>
               <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
                 <div>
-                  <div id="elevation-hover-preview" style="width: 120px; height: 120px; background: var(--ubits-bg-2); border-radius: 8px; display: flex; align-items: center; justify-content: center; box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.14);">
+                  <div id="elevation-hover-preview" style="width: 120px; height: 120px; background: var(--ubits-bg-2); border-radius: 8px; display: flex; align-items: center; justify-content: center; box-shadow: var(--ubits-effects-elevation-2, 0px 1px 2px 0px rgba(0, 0, 0, 0.14));">
                     <span style="color: var(--ubits-fg-2-medium); font-size: var(--font-body-sm-size);">Hover</span>
                   </div>
                 </div>
@@ -2519,7 +2527,7 @@ npm run dev</code></pre>
               <h4 style="color: var(--ubits-fg-1-high); font-size: var(--font-body-md-size); font-weight: var(--weight-semibold); margin: 0 0 16px 0;">Overlay</h4>
               <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
                 <div>
-                  <div id="elevation-overlay-preview" style="width: 120px; height: 120px; background: var(--ubits-bg-2); border-radius: 8px; display: flex; align-items: center; justify-content: center; box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.12);">
+                  <div id="elevation-overlay-preview" style="width: 120px; height: 120px; background: var(--ubits-bg-2); border-radius: 8px; display: flex; align-items: center; justify-content: center; box-shadow: var(--ubits-effects-elevation-3, 0px 4px 8px 0px rgba(0, 0, 0, 0.12));">
                     <span style="color: var(--ubits-fg-2-medium); font-size: var(--font-body-sm-size);">Overlay</span>
                   </div>
                 </div>
@@ -2560,7 +2568,7 @@ npm run dev</code></pre>
               <h4 style="color: var(--ubits-fg-1-high); font-size: var(--font-body-md-size); font-weight: var(--weight-semibold); margin: 0 0 16px 0;">Floating</h4>
               <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
                 <div>
-                  <div id="elevation-floating-preview" style="width: 120px; height: 120px; background: var(--ubits-bg-2); border-radius: 8px; display: flex; align-items: center; justify-content: center; box-shadow: 0px 14px 28.8px 0px rgba(0, 0, 0, 0.24);">
+                  <div id="elevation-floating-preview" style="width: 120px; height: 120px; background: var(--ubits-bg-2); border-radius: 8px; display: flex; align-items: center; justify-content: center; box-shadow: var(--ubits-effects-elevation-4, 0px 14px 28.8px 0px rgba(0, 0, 0, 0.24));">
                     <span style="color: var(--ubits-fg-2-medium); font-size: var(--font-body-sm-size);">Floating</span>
                   </div>
                 </div>
@@ -4346,7 +4354,7 @@ Reglas Importantes:
         wrap.className = 'copyable';
         wrap.title = `Click para copiar: ${name} = ${value}`;
         const vLower = value.toLowerCase();
-        const isWhite = vLower === '#fff' || vLower === '#ffffff' || vLower === 'rgb(255, 255, 255)';
+        const isWhite = vLower === '#fff' || vLower === '#ffffff' || vLower.includes('255, 255, 255');
         const swatchStyle = isWhite
           ? 'background:repeating-conic-gradient(#eee 0% 25%, #fff 0% 50%) 50%/12px 12px; border:1px solid #9ca3af'
           : `background:${value}`;
@@ -5600,6 +5608,21 @@ Reglas Importantes:
               hasPreview: true
             },
             {
+              name: 'Stepper',
+              description: 'Componente Stepper UBITS para mostrar el progreso de un proceso multi-paso. Soporta orientación horizontal y vertical, con estados: default, completado, activo, error y warning. Cada paso puede tener número, título y descripción.',
+              files: {
+                css: 'addons/stepper/src/styles/stepper.css',
+                ts: 'addons/stepper/src/StepperProvider.ts'
+              },
+              variants: [],
+              sizes: ['xs', 'sm', 'md', 'lg'],
+              states: ['default', 'completed', 'active', 'error', 'warning'],
+              features: ['2 orientaciones (horizontal, vertical)', '4 tamaños (xs, sm, md, lg)', '5 estados por paso (default, completed, active, error, warning)', 'Títulos opcionales', 'Descripciones opcionales', '2-5 pasos configurables', 'Usa tokens UBITS exclusivamente'],
+              class: 'ubits-stepper ubits-stepper--{orientation} ubits-stepper--{size}',
+              example: 'renderStepper({\n  orientation: \'horizontal\',\n  size: \'md\',\n  showTitle: true,\n  showDescription: true,\n  steps: [\n    { number: 1, title: \'Step One\', description: \'Desc for step one\', state: \'completed\' },\n    { number: 2, title: \'Step Two\', description: \'Desc for step two\', state: \'active\' },\n    { number: 3, title: \'Step Three\', description: \'Desc for step three\', state: \'default\' }\n  ]\n})',
+              hasPreview: true
+            },
+            {
               name: 'Drawer Navigation',
               description: 'Componente drawer que sale de izquierda a derecha con overlay. Se usa para vistas de elementos, filtros en tablas, etc. Tiene diferentes tamaños horizontalmente (100%, 80%, 60%, 50%, 40%, 30%). Incluye header con título y botón de cerrar, body con contenido scrollable y footer con botones primario, secundario y terciario.',
               files: {
@@ -6013,6 +6036,21 @@ Reglas Importantes:
               example: 'createPagination({\n  currentPage: 5,\n  totalPages: 20,\n  totalItems: 200,\n  itemsPerPage: 10,\n  variant: \'default\',\n  size: \'md\',\n  showInfo: true,\n  showItemsPerPage: true,\n  onPageChange: (page) => {},\n  onItemsPerPageChange: (itemsPerPage) => {}\n})',
               hasPreview: true
             },
+            {
+              name: 'Accordion',
+              description: 'Componente Accordion UBITS con múltiples variantes: lista simple, tipo caja, chevron izquierda/derecha, iconos opcionales y sub-headers.',
+              files: {
+                css: 'addons/accordion/src/styles/accordion.css',
+                ts: 'addons/accordion/src/AccordionProvider.ts'
+              },
+              variants: ['list', 'boxed'],
+              sizes: [],
+              states: [],
+              features: ['2 variantes (list, boxed)', 'Chevron izquierda/derecha', 'Iconos opcionales', 'Sub-headers opcionales', 'Múltiples items abiertos simultáneamente', 'Items abiertos por defecto', 'Usa tokens UBITS exclusivamente'],
+              class: 'ubits-accordion ubits-accordion--{variant}',
+              example: 'createAccordion(container, {\n  items: [\n    { id: \'1\', title: \'Título\', content: \'Contenido\', icon: \'command\', subHeader: \'Sub-header\' }\n  ],\n  variant: \'list\',\n  chevronPosition: \'right\',\n  allowMultiple: false,\n  showIcons: true\n})',
+              hasPreview: true
+            },
           ],
           'Contenido': [
             {
@@ -6029,6 +6067,21 @@ Reglas Importantes:
               features: ['11 tipos de contenido', '35 competencias oficiales', '18 proveedores oficiales', '3 niveles (Básico, Intermedio, Avanzado)', '9 duraciones oficiales', '3 idiomas', '3 estados', 'Barra de progreso animada', 'Imagen con zoom en hover', 'Aspect ratio 16:9', 'Avatar circular del proveedor', 'Iconos FontAwesome para specs'],
               class: 'course-card course-card[data-progress="{progress}"] course-card[data-status="{status}"]',
               example: 'loadCardContent({\n  containerId: \'cards-container\',\n  cards: [{\n    type: \'Cápsula\',\n    title: \'Mi contenido\',\n    provider: \'UBITS\',\n    providerLogo: \'images/Favicons/UBITS.jpg\',\n    duration: \'15 min\',\n    level: \'Básico\',\n    progress: 50,\n    status: \'progress\',\n    image: \'images/cards-learn/imagen.jpg\',\n    competency: \'Product design\',\n    language: \'Español\'\n  }]\n})',
+              hasPreview: true
+            },
+            {
+              name: 'Selection Card',
+              description: 'Componente Selection Card UBITS para mostrar opciones seleccionables. Soporta selección única o múltiple, estados (default, selected, disabled), y tamaños (sm, md, lg). Incluye un radio button visual a la derecha que refleja el estado de selección.',
+              files: {
+                css: 'addons/selection-card/src/styles/selection-card.css',
+                ts: 'addons/selection-card/src/SelectionCardProvider.ts'
+              },
+              variants: [],
+              sizes: ['sm', 'md', 'lg'],
+              states: ['default', 'selected', 'disabled'],
+              features: ['3 tamaños (sm, md, lg)', '3 estados (default, selected, disabled)', 'Icono opcional', 'Descripción opcional', 'Contador de selección', 'Radio button visual', 'Selección única o múltiple', 'Usa tokens UBITS exclusivamente'],
+              class: 'ubits-selection-card ubits-selection-card--{size} ubits-selection-card--{state}',
+              example: 'createSelectionCard({\n  id: \'card-1\',\n  title: \'Asignar toda la empresa\',\n  description: \'Agregaras a todos los colaboradores...\',\n  icon: \'building\',\n  iconStyle: \'regular\',\n  selectionCount: { current: 0, total: 290 },\n  state: \'default\',\n  size: \'md\'\n})',
               hasPreview: true
             }
           ]
@@ -6230,6 +6283,12 @@ Reglas Importantes:
                     window.updateDataTablePreview('data-table');
                   } else if (componentId === 'pagination' && typeof window.updatePaginationPreview === 'function') {
                     window.updatePaginationPreview('pagination');
+                  } else if (componentId === 'accordion' && typeof window.updateAccordionPreview === 'function') {
+                    window.updateAccordionPreview('accordion');
+                  } else if (componentId === 'selection-card' && typeof window.updateSelectionCardPreview === 'function') {
+                    window.updateSelectionCardPreview('selection-card');
+                  } else if (componentId === 'stepper' && typeof window.updateStepperPreview === 'function') {
+                    window.updateStepperPreview('stepper');
                   } else if (componentId === 'avatar' && typeof window.updateAvatarPreview === 'function') {
                     window.updateAvatarPreview('avatar');
                   } else if (componentId === 'drawer-navigation' && typeof window.updateDrawerPreview === 'function') {
@@ -6657,6 +6716,44 @@ Reglas Importantes:
                               <div style="flex: 0 0 auto; min-width: 150px;">
                                 <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Contenido</label>
                                 <input type="text" id="badge-content-input-${componentId}" value="5" onchange="setBadgeControl('content', this.value, '${componentId}')" placeholder="5" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans);">
+                              </div>
+                            </div>
+                            
+                            <!-- Segunda fila de controles: Label -->
+                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; margin-top: 24px;">
+                              <!-- Mostrar Label (Toggle) -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Mostrar Label</label>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                  <label class="ubits-toggle ubits-toggle--md">
+                                    <input type="checkbox" class="ubits-toggle__input" id="badge-show-label-toggle-${componentId}" onchange="setBadgeControl('showLabel', this.checked, '${componentId}')">
+                                    <span class="ubits-toggle__track">
+                                      <span class="ubits-toggle__thumb"></span>
+                                    </span>
+                                  </label>
+                                  <span id="badge-label-status-${componentId}" style="font-size: 13px; color: var(--ubits-fg-1-medium);">Desactivado</span>
+                                </div>
+                              </div>
+                              
+                              <!-- Texto del Label -->
+                              <div style="flex: 0 0 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Texto del Label</label>
+                                <input type="text" id="badge-label-input-${componentId}" value="Notificaciones" onchange="setBadgeControl('label', this.value, '${componentId}')" placeholder="Notificaciones" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                              
+                              <!-- Tipografía del Label -->
+                              <div style="flex: 0 0 auto; min-width: 250px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Tipografía Label</label>
+                                <select id="badge-label-typography-select-${componentId}" onchange="setBadgeControl('labelTypography', this.value, '${componentId}')" style="width: 100%; padding: 10px 32px 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); cursor: pointer; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23666%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226,9 12,15 18,9%22></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px; box-sizing: border-box;">
+                                  <option value="ubits-body-sm-regular">Body SM Regular</option>
+                                  <option value="ubits-body-sm-semibold">Body SM Semibold</option>
+                                  <option value="ubits-body-sm-bold">Body SM Bold</option>
+                                  <option value="ubits-body-md-regular" selected>Body MD Regular</option>
+                                  <option value="ubits-body-md-semibold">Body MD Semibold</option>
+                                  <option value="ubits-body-md-bold">Body MD Bold</option>
+                                  <option value="ubits-heading-h1">Heading H1</option>
+                                  <option value="ubits-heading-h2">Heading H2</option>
+                                </select>
                               </div>
                             </div>
                           </div>
@@ -7728,6 +7825,78 @@ Reglas Importantes:
                           <!-- PREVIEW -->
                           <div style="background: var(--ubits-bg-1); padding: 48px; border-radius: 8px; border: none; margin-bottom: 24px; display: flex; align-items: center; justify-content: center; min-height: 120px;">
                             <div id="pagination-preview-${componentId}" style="width: 100%; display: flex; justify-content: center;">
+                              <!-- Se generará dinámicamente -->
+                            </div>
+                          </div>
+                        </div>
+                      ` : ''}
+                      
+                      ${hasPreview && component.name === 'Accordion' ? `
+                        <!-- Preview Section for Accordion -->
+                        <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: none; margin-bottom: 24px;">
+                          <!-- CONTROLES ARRIBA -->
+                          <div style="margin-bottom: 24px;">
+                            <h4 style="margin: 0 0 20px 0; color: var(--ubits-fg-1-high); font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand-static-inverted);"></i>
+                              Controles
+                            </h4>
+                            
+                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
+                              <!-- Variante -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Variante</label>
+                                <select id="accordion-variant-select-${componentId}" onchange="setAccordionControl('variant', this.value, '${componentId}')" style="width: 100%; padding: 10px 32px 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); cursor: pointer; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23666%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226,9 12,15 18,9%22></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px; box-sizing: border-box;">
+                                  <option value="list" selected>List</option>
+                                  <option value="boxed">Boxed</option>
+                                </select>
+                              </div>
+                              
+                              <!-- Posición Chevron -->
+                              <div style="flex: 0 0 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Posición Chevron</label>
+                                <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                                  <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" data-component="${componentId}" data-option="chevronPosition" data-value="right" onclick="setAccordionControl('chevronPosition', 'right', '${componentId}')">
+                                    <span>Derecha</span>
+                                  </button>
+                                  <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-component="${componentId}" data-option="chevronPosition" data-value="left" onclick="setAccordionControl('chevronPosition', 'left', '${componentId}')">
+                                    <span>Izquierda</span>
+                                  </button>
+                                </div>
+                              </div>
+                              
+                              <!-- Permitir Múltiples -->
+                              <div style="flex: 0 0 auto; min-width: 180px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Múltiples Abiertos</label>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                  <label class="ubits-toggle ubits-toggle--md">
+                                    <input type="checkbox" class="ubits-toggle__input" id="accordion-allow-multiple-toggle-${componentId}" onchange="setAccordionControl('allowMultiple', this.checked, '${componentId}')">
+                                    <span class="ubits-toggle__track">
+                                      <span class="ubits-toggle__thumb"></span>
+                                    </span>
+                                  </label>
+                                  <span id="accordion-allow-multiple-status-${componentId}" style="font-size: 13px; color: var(--ubits-fg-1-medium);">Desactivado</span>
+                                </div>
+                              </div>
+                              
+                              <!-- Mostrar Iconos -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Mostrar Iconos</label>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                  <label class="ubits-toggle ubits-toggle--md">
+                                    <input type="checkbox" class="ubits-toggle__input" id="accordion-show-icons-toggle-${componentId}" checked onchange="setAccordionControl('showIcons', this.checked, '${componentId}')">
+                                    <span class="ubits-toggle__track">
+                                      <span class="ubits-toggle__thumb"></span>
+                                    </span>
+                                  </label>
+                                  <span id="accordion-show-icons-status-${componentId}" style="font-size: 13px; color: var(--ubits-fg-1-medium);">Activado</span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <!-- PREVIEW -->
+                          <div style="background: var(--ubits-bg-1); padding: 48px; border-radius: 8px; border: none; margin-bottom: 24px; display: flex; align-items: flex-start; justify-content: center; min-height: 200px;">
+                            <div id="accordion-preview-${componentId}" style="width: 100%; max-width: 800px;">
                               <!-- Se generará dinámicamente -->
                             </div>
                           </div>
@@ -9224,6 +9393,18 @@ Reglas Importantes:
                                   </label>
                                   <input type="text" id="input-placeholder-input-${componentId}" value="Placeholder text" onchange="setInputControl('placeholder', this.value, '${componentId}')" placeholder="Placeholder text" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
                                 </div>
+                                
+                                <!-- Rich Text Toolbar (solo para textarea) -->
+                                <div id="input-richtext-toolbar-container-${componentId}" style="display: none; flex-direction: column; gap: 8px;">
+                                  <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); text-transform: uppercase; letter-spacing: 0.5px;">Barra de Enriquecimiento</label>
+                                  <label class="ubits-toggle ubits-toggle--md" style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                                    <input type="checkbox" class="ubits-toggle__input" id="input-richtext-toggle-${componentId}" onchange="setInputControl('showRichTextToolbar', this.checked, '${componentId}')">
+                                    <span class="ubits-toggle__track">
+                                      <span class="ubits-toggle__thumb"></span>
+                                    </span>
+                                    <span id="input-richtext-status-${componentId}" style="font-size: 14px; color: var(--ubits-fg-1-high);">Desactivado</span>
+                                  </label>
+                                </div>
                               </div>
                             </div>
                           </div>
@@ -9814,6 +9995,222 @@ Reglas Importantes:
                           <!-- PREVIEW EN EL MEDIO -->
                           <div style="background: var(--ubits-bg-1); padding: 48px; border-radius: 8px; border: none; margin-bottom: 24px; display: flex; align-items: flex-start; justify-content: center; min-height: 400px;">
                             <div id="card-preview-${componentId}" style="max-width: 360px; width: 100%;">
+                              <!-- Se generará dinámicamente -->
+                            </div>
+                          </div>
+                        </div>
+                      ` : ''}
+                      
+                      ${hasPreview && component.name === 'Selection Card' ? `
+                        <!-- Preview Section for Selection Card -->
+                        <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: none; margin-bottom: 24px;">
+                          <!-- CONTROLES ARRIBA -->
+                          <div style="margin-bottom: 24px;">
+                            <h4 style="margin: 0 0 20px 0; color: var(--ubits-fg-1-high); font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand-static-inverted);"></i>
+                              Controles
+                            </h4>
+                            
+                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
+                              <!-- Título -->
+                              <div style="flex: 1 1 auto; min-width: 250px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Título</label>
+                                <input type="text" id="selection-card-title-input-${componentId}" value="Asignar toda la empresa" onchange="setSelectionCardControl('title', this.value, '${componentId}')" placeholder="Asignar toda la empresa" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                              
+                              <!-- Descripción -->
+                              <div style="flex: 1 1 auto; min-width: 300px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Descripción</label>
+                                <input type="text" id="selection-card-description-input-${componentId}" value="Agregaras a todos los colaboradores de la empresa que tengas en la plataforma." onchange="setSelectionCardControl('description', this.value, '${componentId}')" placeholder="Descripción de la card" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                              
+                              <!-- Mostrar Descripción -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Mostrar Descripción</label>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                  <label class="ubits-toggle ubits-toggle--md">
+                                    <input type="checkbox" class="ubits-toggle__input" id="selection-card-show-description-toggle-${componentId}" checked onchange="setSelectionCardControl('showDescription', this.checked, '${componentId}')">
+                                    <span class="ubits-toggle__track">
+                                      <span class="ubits-toggle__thumb"></span>
+                                    </span>
+                                  </label>
+                                  <span id="selection-card-show-description-status-${componentId}" style="font-size: 13px; color: var(--ubits-fg-1-medium);">Activado</span>
+                                </div>
+                              </div>
+                            </div>
+                            
+                            <!-- Segunda fila -->
+                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; margin-top: 24px;">
+                              <!-- Icono -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Icono</label>
+                                <input type="text" id="selection-card-icon-input-${componentId}" value="building" onchange="setSelectionCardControl('icon', this.value, '${componentId}')" placeholder="building" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                              
+                              <!-- Mostrar Icono -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Mostrar Icono</label>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                  <label class="ubits-toggle ubits-toggle--md">
+                                    <input type="checkbox" class="ubits-toggle__input" id="selection-card-show-icon-toggle-${componentId}" checked onchange="setSelectionCardControl('showIcon', this.checked, '${componentId}')">
+                                    <span class="ubits-toggle__track">
+                                      <span class="ubits-toggle__thumb"></span>
+                                    </span>
+                                  </label>
+                                  <span id="selection-card-show-icon-status-${componentId}" style="font-size: 13px; color: var(--ubits-fg-1-medium);">Activado</span>
+                                </div>
+                              </div>
+                              
+                              <!-- Estilo del Icono -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Estilo Icono</label>
+                                <select id="selection-card-icon-style-select-${componentId}" onchange="setSelectionCardControl('iconStyle', this.value, '${componentId}')" style="width: 100%; padding: 10px 32px 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); cursor: pointer; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23666%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226,9 12,15 18,9%22></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px; box-sizing: border-box;">
+                                  <option value="regular" selected>Regular</option>
+                                  <option value="solid">Solid</option>
+                                </select>
+                              </div>
+                              
+                              <!-- Estado -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Estado</label>
+                                <select id="selection-card-state-select-${componentId}" onchange="setSelectionCardControl('state', this.value, '${componentId}')" style="width: 100%; padding: 10px 32px 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); cursor: pointer; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23666%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226,9 12,15 18,9%22></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px; box-sizing: border-box;">
+                                  <option value="default" selected>Default</option>
+                                  <option value="selected">Selected</option>
+                                  <option value="disabled">Disabled</option>
+                                </select>
+                              </div>
+                              
+                              <!-- Tamaño -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Tamaño</label>
+                                <select id="selection-card-size-select-${componentId}" onchange="setSelectionCardControl('size', this.value, '${componentId}')" style="width: 100%; padding: 10px 32px 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); cursor: pointer; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23666%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226,9 12,15 18,9%22></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px; box-sizing: border-box;">
+                                  <option value="sm">SM</option>
+                                  <option value="md" selected>MD</option>
+                                  <option value="lg">LG</option>
+                                </select>
+                              </div>
+                            </div>
+                            
+                            <!-- Tercera fila: Contador de selección -->
+                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; margin-top: 24px;">
+                              <!-- Contador Actual -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Contador Actual</label>
+                                <input type="number" id="selection-card-count-current-input-${componentId}" value="0" min="0" max="1000" onchange="setSelectionCardControl('selectionCountCurrent', parseInt(this.value) || 0, '${componentId}')" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                              
+                              <!-- Contador Total -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Contador Total</label>
+                                <input type="number" id="selection-card-count-total-input-${componentId}" value="290" min="0" max="1000" onchange="setSelectionCardControl('selectionCountTotal', parseInt(this.value) || 0, '${componentId}')" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                              
+                              <!-- Mostrar Contador -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Mostrar Contador</label>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                  <label class="ubits-toggle ubits-toggle--md">
+                                    <input type="checkbox" class="ubits-toggle__input" id="selection-card-show-count-toggle-${componentId}" checked onchange="setSelectionCardControl('showSelectionCount', this.checked, '${componentId}')">
+                                    <span class="ubits-toggle__track">
+                                      <span class="ubits-toggle__thumb"></span>
+                                    </span>
+                                  </label>
+                                  <span id="selection-card-show-count-status-${componentId}" style="font-size: 13px; color: var(--ubits-fg-1-medium);">Activado</span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <!-- PREVIEW -->
+                          <div style="background: var(--ubits-bg-1); padding: 48px; border-radius: 8px; border: none; margin-bottom: 24px; display: flex; align-items: flex-start; justify-content: center; min-height: 200px;">
+                            <div id="selection-card-preview-${componentId}" style="width: 100%; max-width: 500px;">
+                              <!-- Se generará dinámicamente -->
+                            </div>
+                          </div>
+                        </div>
+                      ` : ''}
+                      
+                      ${hasPreview && component.name === 'Stepper' ? `
+                        <!-- Preview Section for Stepper -->
+                        <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: none; margin-bottom: 24px;">
+                          <!-- CONTROLES ARRIBA -->
+                          <div style="margin-bottom: 24px;">
+                            <h4 style="margin: 0 0 20px 0; color: var(--ubits-fg-1-high); font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand-static-inverted);"></i>
+                              Controles
+                            </h4>
+                            
+                            <!-- Primera fila: Configuración general -->
+                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; margin-bottom: 24px;">
+                              <!-- Orientación -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Orientación</label>
+                                <select id="stepper-orientation-select-${componentId}" onchange="setStepperControl('orientation', this.value, '${componentId}')" style="width: 100%; padding: 10px 32px 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); cursor: pointer; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23666%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226,9 12,15 18,9%22></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px; box-sizing: border-box;">
+                                  <option value="horizontal" selected>Horizontal</option>
+                                  <option value="vertical">Vertical</option>
+                                </select>
+                              </div>
+                              
+                              <!-- Tamaño -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Tamaño</label>
+                                <select id="stepper-size-select-${componentId}" onchange="setStepperControl('size', this.value, '${componentId}')" style="width: 100%; padding: 10px 32px 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); cursor: pointer; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23666%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226,9 12,15 18,9%22></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px; box-sizing: border-box;">
+                                  <option value="xs">XS</option>
+                                  <option value="sm">SM</option>
+                                  <option value="md" selected>MD</option>
+                                  <option value="lg">LG</option>
+                                </select>
+                              </div>
+                              
+                              <!-- Número de Pasos -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Número de Pasos</label>
+                                <select id="stepper-num-steps-select-${componentId}" onchange="setStepperControl('numSteps', parseInt(this.value), '${componentId}')" style="width: 100%; padding: 10px 32px 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); cursor: pointer; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23666%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226,9 12,15 18,9%22></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px; box-sizing: border-box;">
+                                  <option value="2">2 Pasos</option>
+                                  <option value="3" selected>3 Pasos</option>
+                                  <option value="4">4 Pasos</option>
+                                  <option value="5">5 Pasos</option>
+                                </select>
+                              </div>
+                              
+                              <!-- Mostrar Títulos -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Mostrar Títulos</label>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                  <label class="ubits-toggle ubits-toggle--md">
+                                    <input type="checkbox" class="ubits-toggle__input" id="stepper-show-title-toggle-${componentId}" checked onchange="setStepperControl('showTitle', this.checked, '${componentId}')">
+                                    <span class="ubits-toggle__track">
+                                      <span class="ubits-toggle__thumb"></span>
+                                    </span>
+                                  </label>
+                                  <span id="stepper-show-title-status-${componentId}" style="font-size: 13px; color: var(--ubits-fg-1-medium);">Activado</span>
+                                </div>
+                              </div>
+                              
+                              <!-- Mostrar Descripciones -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Mostrar Descripciones</label>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                  <label class="ubits-toggle ubits-toggle--md">
+                                    <input type="checkbox" class="ubits-toggle__input" id="stepper-show-description-toggle-${componentId}" checked onchange="setStepperControl('showDescription', this.checked, '${componentId}')">
+                                    <span class="ubits-toggle__track">
+                                      <span class="ubits-toggle__thumb"></span>
+                                    </span>
+                                  </label>
+                                  <span id="stepper-show-description-status-${componentId}" style="font-size: 13px; color: var(--ubits-fg-1-medium);">Activado</span>
+                                </div>
+                              </div>
+                            </div>
+                            
+                            <!-- Controles dinámicos para cada paso (se generarán con JavaScript) -->
+                            <div id="stepper-steps-controls-${componentId}" style="display: flex; flex-direction: column; gap: 24px;">
+                              <!-- Se generarán dinámicamente -->
+                            </div>
+                          </div>
+                          
+                          <!-- PREVIEW -->
+                          <div style="background: var(--ubits-bg-1); padding: 48px; border-radius: 8px; border: none; margin-bottom: 24px; display: flex; align-items: flex-start; justify-content: center; min-height: 200px;">
+                            <div id="stepper-preview-${componentId}" style="width: 100%; max-width: 800px;">
                               <!-- Se generará dinámicamente -->
                             </div>
                           </div>
@@ -11848,7 +12245,10 @@ Reglas Importantes:
             type: 'number',
             variant: 'primary',
             size: 'md',
-            content: '5'
+            content: '5',
+            showLabel: false,
+            label: 'Notificaciones',
+            labelTypography: 'ubits-body-md-regular'
           };
         }
         return badgePreviewState[componentId];
@@ -11856,8 +12256,22 @@ Reglas Importantes:
       
       // Función para generar HTML del badge
       function generateBadgeHTML(state, componentId) {
-        const { type, variant, size, content } = state;
+        const { type, variant, size, content, showLabel, label, labelTypography } = state;
         
+        // Usar renderBadge si está disponible
+        if (typeof window.renderBadge === 'function') {
+          return window.renderBadge({
+            type: type,
+            variant: variant,
+            size: size,
+            content: content,
+            showLabel: showLabel,
+            label: label,
+            labelTypography: labelTypography
+          });
+        }
+        
+        // Fallback si renderBadge no está disponible
         const classes = [
           'ubits-badge',
           `ubits-badge--${size}`,
@@ -11867,7 +12281,17 @@ Reglas Importantes:
         
         const badgeContent = type === 'number' && content ? String(content) : '';
         
-        return `<span class="${classes}">${badgeContent}</span>`;
+        let badgeHTML = `<span class="${classes}">${badgeContent}</span>`;
+        
+        // Si hay label y showLabel está activado, envolver en un contenedor con el label a la derecha
+        if (label && showLabel) {
+          badgeHTML = `<div class="ubits-badge-wrapper">
+            ${badgeHTML}
+            <span class="${labelTypography}">${label}</span>
+          </div>`;
+        }
+        
+        return badgeHTML;
       }
       
       // Función para actualizar el preview del badge
@@ -11883,11 +12307,26 @@ Reglas Importantes:
         const badgeHTML = generateBadgeHTML(state, componentId);
         preview.innerHTML = badgeHTML;
         
+        // Inicializar toggle si existe
+        const toggle = document.getElementById(`badge-show-label-toggle-${componentId}`);
+        if (toggle && typeof window.updateToggleState === 'function') {
+          window.updateToggleState(toggle);
+        }
+        
+        // Inicializar texto de estado del toggle
+        const statusSpan = document.getElementById(`badge-label-status-${componentId}`);
+        if (statusSpan) {
+          statusSpan.textContent = state.showLabel ? 'Activado' : 'Desactivado';
+        }
+        
         console.log('✅ Badge preview actualizado:', {
           type: state.type,
           variant: state.variant,
           size: state.size,
-          content: state.content
+          content: state.content,
+          showLabel: state.showLabel,
+          label: state.label,
+          labelTypography: state.labelTypography
         });
       };
       
@@ -11920,6 +12359,29 @@ Reglas Importantes:
           state.content = value || '5';
           const input = document.getElementById(`badge-content-input-${componentId}`);
           if (input && input.value !== value) input.value = value;
+        } else if (option === 'showLabel') {
+          state.showLabel = value === true || value === 'true';
+          const toggle = document.getElementById(`badge-show-label-toggle-${componentId}`);
+          if (toggle) {
+            toggle.checked = state.showLabel;
+            // Actualizar estado visual del toggle
+            if (typeof window.updateToggleState === 'function') {
+              window.updateToggleState(toggle);
+            }
+          }
+          // Actualizar texto de estado
+          const statusSpan = document.getElementById(`badge-label-status-${componentId}`);
+          if (statusSpan) {
+            statusSpan.textContent = state.showLabel ? 'Activado' : 'Desactivado';
+          }
+        } else if (option === 'label') {
+          state.label = value || 'Notificaciones';
+          const input = document.getElementById(`badge-label-input-${componentId}`);
+          if (input && input.value !== value) input.value = value;
+        } else if (option === 'labelTypography') {
+          state.labelTypography = value || 'ubits-body-md-regular';
+          const select = document.getElementById(`badge-label-typography-select-${componentId}`);
+          if (select) select.value = value;
         }
         
         // Actualizar preview
@@ -20994,7 +21456,8 @@ Reglas Importantes:
             size: 'md',
             state: 'default',
             type: 'text',
-            placeholder: 'Placeholder text'
+            placeholder: 'Placeholder text',
+            showRichTextToolbar: false
           };
         }
         return inputPreviewState[componentId];
@@ -21016,7 +21479,8 @@ Reglas Importantes:
           size,
           state: inputState,
           type,
-          placeholder
+          placeholder,
+          showRichTextToolbar
         } = state;
         
         // Calcular padding según iconos y tamaño
@@ -21077,11 +21541,79 @@ Reglas Importantes:
         const maxLengthAttr = showCounter ? ` maxlength="${maxLength}"` : '';
         
         if (type === 'textarea') {
-          let textareaStyle = `width: 100%; min-height: 80px; resize: vertical; font-family: var(--font-sans); font-size: ${fontSizeMap[size]}; padding-left: ${paddingLeft} !important; padding-right: ${paddingRight} !important;`;
-          if (inputState === 'disabled') {
-            textareaStyle += ` background: var(--ubits-bg-3) !important; color: var(--ubits-fg-1-low) !important; border-color: var(--ubits-border-2) !important;`;
+          // TEXTAREA - campo multilínea con redimensionamiento y barra de herramientas opcional
+          if (showRichTextToolbar) {
+            // Contenedor que envuelve la barra y el textarea
+            inputHTML += `<div class="ubits-input-rich-text-wrapper">`;
+            
+            // Barra de herramientas de texto enriquecido dentro del contenedor
+            inputHTML += `
+              <div class="ubits-input-rich-text-toolbar" data-container-id="${componentId}">
+                <button type="button" class="ubits-rich-text-btn" data-command="bold" title="Negrita">
+                  <i class="fas fa-bold"></i>
+                </button>
+                <button type="button" class="ubits-rich-text-btn" data-command="italic" title="Cursiva">
+                  <i class="fas fa-italic"></i>
+                </button>
+                <button type="button" class="ubits-rich-text-btn" data-command="underline" title="Subrayado">
+                  <i class="fas fa-underline"></i>
+                </button>
+                <div class="ubits-rich-text-separator"></div>
+                <button type="button" class="ubits-rich-text-btn" data-command="justifyLeft" title="Alinear izquierda">
+                  <i class="fas fa-align-left"></i>
+                </button>
+                <button type="button" class="ubits-rich-text-btn" data-command="justifyCenter" title="Alinear centro">
+                  <i class="fas fa-align-center"></i>
+                </button>
+                <button type="button" class="ubits-rich-text-btn" data-command="justifyRight" title="Alinear derecha">
+                  <i class="fas fa-align-right"></i>
+                </button>
+                <div class="ubits-rich-text-separator"></div>
+                <button type="button" class="ubits-rich-text-btn" data-command="insertUnorderedList" title="Lista con viñetas">
+                  <i class="fas fa-list-ul"></i>
+                </button>
+                <button type="button" class="ubits-rich-text-btn" data-command="insertOrderedList" title="Lista numerada">
+                  <i class="fas fa-list-ol"></i>
+                </button>
+                <div class="ubits-rich-text-separator"></div>
+                <button type="button" class="ubits-rich-text-btn" data-command="insertImage" title="Insertar imagen">
+                  <i class="fas fa-image"></i>
+                </button>
+                <button type="button" class="ubits-rich-text-btn" data-command="insertTable" title="Insertar tabla">
+                  <i class="fas fa-table"></i>
+                </button>
+                <button type="button" class="ubits-rich-text-btn" data-command="createLink" title="Insertar enlace">
+                  <i class="fas fa-link"></i>
+                </button>
+                <button type="button" class="ubits-rich-text-btn" data-command="code" title="Código">
+                  <i class="fas fa-code"></i>
+                </button>
+                <div class="ubits-rich-text-separator"></div>
+                <button type="button" class="ubits-rich-text-btn" data-command="removeFormat" title="Limpiar formato">
+                  <i class="fas fa-remove-format"></i>
+                </button>
+              </div>
+            `;
+            
+            let textareaStyle = `width: 100%; min-height: 80px; resize: vertical; `;
+            const computedStyle = window.getComputedStyle(document.body);
+            const paddingTop = '12px';
+            const paddingBottom = '12px';
+            textareaStyle += `padding: ${paddingTop} ${paddingRight} ${paddingBottom} ${paddingLeft} !important; `;
+            textareaStyle += `font-family: var(--font-sans); font-size: ${fontSizeMap[size]}; `;
+            if (inputState === 'disabled') {
+              textareaStyle += ` background: var(--ubits-bg-3) !important; color: var(--ubits-fg-1-low) !important; border-color: var(--ubits-border-2) !important;`;
+            }
+            inputHTML += `<textarea class="${inputClasses.join(' ')}" style="${textareaStyle}" placeholder="${placeholder}"${disabledAttr}${maxLengthAttr}></textarea>`;
+            inputHTML += `</div>`;
+          } else {
+            // Textarea normal sin barra de herramientas
+            let textareaStyle = `width: 100%; min-height: 80px; resize: vertical; font-family: var(--font-sans); font-size: ${fontSizeMap[size]}; padding-left: ${paddingLeft} !important; padding-right: ${paddingRight} !important;`;
+            if (inputState === 'disabled') {
+              textareaStyle += ` background: var(--ubits-bg-3) !important; color: var(--ubits-fg-1-low) !important; border-color: var(--ubits-border-2) !important;`;
+            }
+            inputHTML += `<textarea class="${inputClasses.join(' ')}" style="${textareaStyle}" placeholder="${placeholder}"${disabledAttr}${maxLengthAttr}></textarea>`;
           }
-          inputHTML += `<textarea class="${inputClasses.join(' ')}" style="${textareaStyle}" placeholder="${placeholder}"${disabledAttr}${maxLengthAttr}></textarea>`;
         } else if (type === 'select') {
           // Select siempre tiene icono chevron a la derecha
           const selectPaddingRight = paddingWithIconMap[size].right;
@@ -22463,8 +22995,473 @@ Reglas Importantes:
           updateCounter();
         }
         
+        // Mostrar/ocultar contenedor de Rich Text Toolbar según el tipo
+        const richtextContainer = document.getElementById(`input-richtext-toolbar-container-${componentId}`);
+        if (richtextContainer) {
+          if (inputType === 'textarea') {
+            richtextContainer.style.display = 'flex';
+          } else {
+            richtextContainer.style.display = 'none';
+          }
+        }
+        
+        // Rich Text Toolbar (solo para textarea)
+        if (inputType === 'textarea' && state.showRichTextToolbar && inputElement instanceof HTMLTextAreaElement) {
+          // Cargar CSS de la barra de texto enriquecido
+          const existingRichTextCSS = document.querySelector('link[href*="input.css"]');
+          if (!existingRichTextCSS) {
+            const link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = '../../addons/input/src/styles/input.css';
+            document.head.appendChild(link);
+          }
+          
+          // Cargar CSS del modal si no está cargado
+          const existingModalCSS = document.querySelector('link[href*="modal.css"]');
+          if (!existingModalCSS) {
+            const modalLink = document.createElement('link');
+            modalLink.rel = 'stylesheet';
+            modalLink.href = '../../addons/modal/src/styles/modal.css';
+            document.head.appendChild(modalLink);
+          }
+          
+          // Buscar el contenedor del textarea
+          const container = preview.querySelector('.ubits-input-rich-text-wrapper');
+          if (container) {
+            setupRichTextToolbarForPreview(container, inputElement, componentId);
+          }
+        }
+        
         console.log('✅ Preview de Input actualizado:', state);
       };
+      
+      // ========================================
+      // RICH TEXT TOOLBAR FUNCTIONS
+      // ========================================
+      
+      // Función para inicializar la barra de texto enriquecido en el preview
+      function setupRichTextToolbarForPreview(container, textareaElement, componentId) {
+        const toolbar = container.querySelector('.ubits-input-rich-text-toolbar');
+        if (!toolbar) return;
+        
+        const richTextWrapper = textareaElement.closest('.ubits-input-rich-text-wrapper');
+        if (!richTextWrapper) return;
+        
+        const placeholder = textareaElement.placeholder || '';
+        
+        // Crear div contentEditable que reemplazará al textarea
+        const editableDiv = document.createElement('div');
+        editableDiv.className = textareaElement.className;
+        
+        // Copiar estilos del textarea
+        const computedStyle = window.getComputedStyle(textareaElement);
+        editableDiv.style.cssText = textareaElement.style.cssText;
+        editableDiv.style.position = 'relative';
+        editableDiv.style.padding = computedStyle.padding || '12px 12px';
+        editableDiv.style.margin = '0';
+        editableDiv.style.outline = 'none';
+        editableDiv.style.overflow = 'auto';
+        editableDiv.style.minHeight = computedStyle.minHeight || '80px';
+        editableDiv.style.resize = 'vertical';
+        editableDiv.contentEditable = 'true';
+        editableDiv.setAttribute('data-placeholder', placeholder);
+        
+        // Establecer contenido inicial
+        if (textareaElement.value && textareaElement.value.trim()) {
+          editableDiv.innerHTML = textareaElement.value;
+        } else {
+          editableDiv.classList.add('ubits-rich-text-placeholder');
+        }
+        
+        // Reemplazar textarea con div editable
+        textareaElement.style.display = 'none';
+        textareaElement.setAttribute('data-rich-text-editor', 'true');
+        richTextWrapper.insertBefore(editableDiv, textareaElement);
+        
+        // Función para sincronizar contenido
+        const syncContent = (event) => {
+          const textContent = editableDiv.innerText || '';
+          textareaElement.value = textContent;
+          
+          // Manejar placeholder
+          if (!textContent.trim()) {
+            editableDiv.classList.add('ubits-rich-text-placeholder');
+          } else {
+            editableDiv.classList.remove('ubits-rich-text-placeholder');
+          }
+        };
+        
+        // Sincronizar contenido
+        editableDiv.addEventListener('input', syncContent);
+        editableDiv.addEventListener('blur', syncContent);
+        
+        // Manejar placeholder al enfocar
+        editableDiv.addEventListener('focus', () => {
+          if (editableDiv.classList.contains('ubits-rich-text-placeholder')) {
+            editableDiv.textContent = '';
+            editableDiv.classList.remove('ubits-rich-text-placeholder');
+          }
+        });
+        
+        // Botones de la barra de herramientas
+        const toolbarButtons = toolbar.querySelectorAll('.ubits-rich-text-btn');
+        toolbarButtons.forEach(button => {
+          button.addEventListener('click', (e) => {
+            e.preventDefault();
+            editableDiv.focus();
+            
+            const command = button.getAttribute('data-command');
+            if (!command) return;
+            
+            // Comandos especiales que requieren modales
+            if (command === 'insertImage') {
+              showInsertImageModalForPreview(editableDiv, syncContent);
+            } else if (command === 'insertTable') {
+              showInsertTableModalForPreview(editableDiv, syncContent);
+            } else if (command === 'createLink') {
+              showCreateLinkModalForPreview(editableDiv, syncContent);
+            } else if (command === 'code') {
+              const selection = window.getSelection();
+              if (selection && selection.rangeCount > 0) {
+                const range = selection.getRangeAt(0);
+                const code = document.createElement('code');
+                code.style.background = 'var(--ubits-bg-2)';
+                code.style.padding = 'var(--ubits-spacing-xs, 2px) var(--ubits-spacing-sm, 4px)';
+                code.style.borderRadius = 'var(--ubits-border-radius-sm, 4px)';
+                code.style.fontFamily = 'var(--font-mono, monospace)';
+                try {
+                  range.surroundContents(code);
+                } catch (e) {
+                  code.textContent = range.toString();
+                  range.deleteContents();
+                  range.insertNode(code);
+                }
+              }
+            } else {
+              // Comandos estándar de document.execCommand
+              document.execCommand(command, false, undefined);
+            }
+            
+            // Sincronizar contenido
+            syncContent();
+          });
+        });
+      }
+      
+      // Función para mostrar modal de insertar imagen
+      function showInsertImageModalForPreview(editableDiv, syncContent) {
+        // Cargar script del modal si no está cargado
+        if (!window.createModal) {
+          const script = document.createElement('script');
+          script.src = '../../addons/modal/dist/modal.umd.js';
+          script.onload = () => {
+            showInsertImageModalForPreview(editableDiv, syncContent);
+          };
+          document.head.appendChild(script);
+          return;
+        }
+        
+        const modalId = `ubits-rich-text-image-modal-${Date.now()}`;
+        const inputId = `${modalId}-input`;
+        
+        const modalOptions = {
+          title: 'Insertar imagen',
+          size: 'md',
+          bodyContent: `
+            <div style="padding: var(--ubits-spacing-md, 8px) 0;">
+              <label class="ubits-input-label" style="margin-bottom: var(--ubits-spacing-sm, 8px);">
+                URL de la imagen:
+              </label>
+              <div style="display: flex; gap: var(--ubits-spacing-sm, 8px); align-items: flex-start;">
+                <input 
+                  type="text" 
+                  id="${inputId}"
+                  class="ubits-input ubits-input--md"
+                  placeholder="https://ejemplo.com/imagen.jpg"
+                  style="flex: 1;"
+                />
+                <button 
+                  type="button"
+                  id="${modalId}-insert-btn"
+                  class="ubits-button ubits-button--primary ubits-button--md"
+                >
+                  <span>Insertar imagen</span>
+                </button>
+              </div>
+            </div>
+          `,
+          footerButtons: {
+            secondary: {
+              label: 'Cancelar',
+              onClick: () => {}
+            }
+          },
+          onClose: () => {
+            const modal = document.getElementById(modalId)?.closest('.ubits-modal-overlay');
+            if (modal) {
+              setTimeout(() => modal.remove(), 300);
+            }
+          },
+          closeOnOverlayClick: true,
+          open: true
+        };
+        
+        const modal = window.createModal(modalOptions);
+        const modalElement = modal.element;
+        modalElement.id = modalId;
+        
+        const insertBtn = document.getElementById(`${modalId}-insert-btn`);
+        const urlInput = document.getElementById(inputId);
+        
+        if (insertBtn && urlInput) {
+          const handleInsert = () => {
+            const url = urlInput.value.trim();
+            if (url) {
+              const img = document.createElement('img');
+              img.src = url;
+              img.style.maxWidth = '100%';
+              img.style.height = 'auto';
+              img.style.display = 'block';
+              img.style.margin = 'var(--ubits-spacing-sm, 8px) 0';
+              const selection = window.getSelection();
+              if (selection && selection.rangeCount > 0) {
+                selection.getRangeAt(0).insertNode(img);
+              } else {
+                editableDiv.appendChild(img);
+              }
+              syncContent();
+              modal.close();
+            }
+          };
+          
+          insertBtn.addEventListener('click', handleInsert);
+          urlInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+              e.preventDefault();
+              handleInsert();
+            }
+          });
+          
+          const cancelBtn = modalElement.querySelector('.ubits-button--secondary');
+          if (cancelBtn) {
+            cancelBtn.addEventListener('click', () => modal.close());
+          }
+        }
+      }
+      
+      // Función para mostrar modal de insertar tabla
+      function showInsertTableModalForPreview(editableDiv, syncContent) {
+        // Cargar script del modal si no está cargado
+        if (!window.createModal) {
+          const script = document.createElement('script');
+          script.src = '../../addons/modal/dist/modal.umd.js';
+          script.onload = () => {
+            showInsertTableModalForPreview(editableDiv, syncContent);
+          };
+          document.head.appendChild(script);
+          return;
+        }
+        
+        const modalId = `ubits-rich-text-table-modal-${Date.now()}`;
+        const rowsInputId = `${modalId}-rows`;
+        const colsInputId = `${modalId}-cols`;
+        
+        const modalOptions = {
+          title: 'Insertar tabla',
+          size: 'sm',
+          bodyContent: `
+            <div style="padding: var(--ubits-spacing-md, 8px) 0;">
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--ubits-spacing-lg, 16px);">
+                <div>
+                  <label class="ubits-input-label" style="margin-bottom: var(--ubits-spacing-sm, 8px);">
+                    Filas:
+                  </label>
+                  <input 
+                    type="number" 
+                    id="${rowsInputId}"
+                    class="ubits-input ubits-input--md"
+                    value="2"
+                    min="1"
+                    max="20"
+                    style="width: 100%;"
+                  />
+                </div>
+                <div>
+                  <label class="ubits-input-label" style="margin-bottom: var(--ubits-spacing-sm, 8px);">
+                    Columnas:
+                  </label>
+                  <input 
+                    type="number" 
+                    id="${colsInputId}"
+                    class="ubits-input ubits-input--md"
+                    value="2"
+                    min="1"
+                    max="20"
+                    style="width: 100%;"
+                  />
+                </div>
+              </div>
+            </div>
+          `,
+          footerButtons: {
+            secondary: {
+              label: 'Cancelar',
+              onClick: () => {}
+            },
+            primary: {
+              label: 'Insertar',
+              onClick: () => {}
+            }
+          },
+          onClose: () => {
+            const modal = document.getElementById(modalId)?.closest('.ubits-modal-overlay');
+            if (modal) {
+              setTimeout(() => modal.remove(), 300);
+            }
+          },
+          closeOnOverlayClick: true,
+          open: true
+        };
+        
+        const modal = window.createModal(modalOptions);
+        const modalElement = modal.element;
+        modalElement.id = modalId;
+        
+        const insertBtn = modalElement.querySelector('.ubits-button--primary');
+        const rowsInput = document.getElementById(rowsInputId);
+        const colsInput = document.getElementById(colsInputId);
+        
+        if (insertBtn && rowsInput && colsInput) {
+          insertBtn.addEventListener('click', () => {
+            const rows = parseInt(rowsInput.value) || 2;
+            const cols = parseInt(colsInput.value) || 2;
+            
+            if (rows > 0 && cols > 0) {
+              const table = document.createElement('table');
+              table.style.borderCollapse = 'collapse';
+              table.style.width = '100%';
+              table.style.margin = 'var(--ubits-spacing-sm, 8px) 0';
+              table.style.border = '1px solid var(--ubits-border-1)';
+              
+              for (let i = 0; i < rows; i++) {
+                const tr = document.createElement('tr');
+                for (let j = 0; j < cols; j++) {
+                  const td = document.createElement('td');
+                  td.style.border = '1px solid var(--ubits-border-1)';
+                  td.style.padding = 'var(--ubits-spacing-sm, 8px)';
+                  td.style.minWidth = '50px';
+                  td.textContent = ' ';
+                  tr.appendChild(td);
+                }
+                table.appendChild(tr);
+              }
+              
+              const selection = window.getSelection();
+              if (selection && selection.rangeCount > 0) {
+                selection.getRangeAt(0).insertNode(table);
+              } else {
+                editableDiv.appendChild(table);
+              }
+              
+              syncContent();
+              modal.close();
+            }
+          });
+        }
+        
+        const cancelBtn = modalElement.querySelector('.ubits-button--secondary');
+        if (cancelBtn) {
+          cancelBtn.addEventListener('click', () => modal.close());
+        }
+      }
+      
+      // Función para mostrar modal de crear enlace
+      function showCreateLinkModalForPreview(editableDiv, syncContent) {
+        // Cargar script del modal si no está cargado
+        if (!window.createModal) {
+          const script = document.createElement('script');
+          script.src = '../../addons/modal/dist/modal.umd.js';
+          script.onload = () => {
+            showCreateLinkModalForPreview(editableDiv, syncContent);
+          };
+          document.head.appendChild(script);
+          return;
+        }
+        
+        const modalId = `ubits-rich-text-link-modal-${Date.now()}`;
+        const inputId = `${modalId}-input`;
+        
+        const modalOptions = {
+          title: 'Insertar enlace',
+          size: 'md',
+          bodyContent: `
+            <div style="padding: var(--ubits-spacing-md, 8px) 0;">
+              <label class="ubits-input-label" style="margin-bottom: var(--ubits-spacing-sm, 8px);">
+                URL del enlace:
+              </label>
+              <input 
+                type="text" 
+                id="${inputId}"
+                class="ubits-input ubits-input--md"
+                placeholder="https://ejemplo.com"
+                style="width: 100%; box-sizing: border-box;"
+              />
+            </div>
+          `,
+          footerButtons: {
+            secondary: {
+              label: 'Cancelar',
+              onClick: () => {}
+            },
+            primary: {
+              label: 'Insertar',
+              onClick: () => {}
+            }
+          },
+          onClose: () => {
+            const modal = document.getElementById(modalId)?.closest('.ubits-modal-overlay');
+            if (modal) {
+              setTimeout(() => modal.remove(), 300);
+            }
+          },
+          closeOnOverlayClick: true,
+          open: true
+        };
+        
+        const modal = window.createModal(modalOptions);
+        const modalElement = modal.element;
+        modalElement.id = modalId;
+        
+        const insertBtn = modalElement.querySelector('.ubits-button--primary');
+        const urlInput = document.getElementById(inputId);
+        
+        if (insertBtn && urlInput) {
+          insertBtn.addEventListener('click', () => {
+            const url = urlInput.value.trim();
+            if (url) {
+              document.execCommand('createLink', false, url);
+              syncContent();
+              modal.close();
+            }
+          });
+        }
+        
+        const cancelBtn = modalElement.querySelector('.ubits-button--secondary');
+        if (cancelBtn) {
+          cancelBtn.addEventListener('click', () => modal.close());
+        }
+        
+        if (urlInput) {
+          urlInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+              e.preventDefault();
+              if (insertBtn) {
+                insertBtn.click();
+              }
+            }
+          });
+        }
+      }
       
       // ========================================
       // LIST PREVIEW STATE & FUNCTIONS
@@ -22883,6 +23880,22 @@ Reglas Importantes:
             if (rightIconToggle) rightIconToggle.disabled = false;
           }
           
+          // Mostrar/ocultar contenedor de Rich Text Toolbar según el tipo
+          const richtextContainer = document.getElementById(`input-richtext-toolbar-container-${componentId}`);
+          if (richtextContainer) {
+            if (value === 'textarea') {
+              richtextContainer.style.display = 'flex';
+            } else {
+              richtextContainer.style.display = 'none';
+              // Si no es textarea, desactivar la barra de texto enriquecido
+              state.showRichTextToolbar = false;
+              const richtextToggle = document.getElementById(`input-richtext-toggle-${componentId}`);
+              const richtextStatus = document.getElementById(`input-richtext-status-${componentId}`);
+              if (richtextToggle) richtextToggle.checked = false;
+              if (richtextStatus) richtextStatus.textContent = 'Desactivado';
+            }
+          }
+          
           // Actualizar preview inmediatamente cuando cambia el tipo
           updateInputPreview(componentId);
           return; // Return early ya que updateInputPreview se llama aquí
@@ -22898,6 +23911,14 @@ Reglas Importantes:
           if (statusSpan) {
             statusSpan.textContent = value !== '' ? 'Activado' : 'Desactivado';
           }
+        } else if (option === 'showRichTextToolbar') {
+          state.showRichTextToolbar = value;
+          const toggle = document.getElementById(`input-richtext-toggle-${componentId}`);
+          const statusSpan = document.getElementById(`input-richtext-status-${componentId}`);
+          if (toggle) toggle.checked = value;
+          if (statusSpan) {
+            statusSpan.textContent = value ? 'Activado' : 'Desactivado';
+          }
         }
         
         // Actualizar preview
@@ -22909,11 +23930,11 @@ Reglas Importantes:
       style.textContent = `
         .preview-control-btn.active {
           background: var(--ubits-accent-brand-static-inverted) !important;
-          color: white !important;
+          color: var(--ubits-fg-bold, #ffffff) !important;
           border-color: var(--ubits-accent-brand-static-inverted) !important;
         }
         .preview-control-btn.active span {
-          color: white !important;
+          color: var(--ubits-fg-bold, #ffffff) !important;
         }
         /* Estilos antiguos de .switch eliminados - ahora usamos ubits-toggle */
       `;
@@ -25595,6 +26616,860 @@ Reglas Importantes:
         
         // Actualizar preview
         window.updateCardPreview(componentId);
+      };
+      
+      // ========================================
+      // ACCORDION PREVIEW FUNCTIONS
+      // ========================================
+      
+      // Estado del preview del Accordion
+      const accordionPreviewState = {};
+      
+      // Items de ejemplo para el accordion
+      const sampleAccordionItems = [
+        {
+          id: '1',
+          title: 'What makes coss ui different?',
+          content: 'coss ui focuses on developer experience and performance. Built with TypeScript, it offers excellent type safety, follows accessibility standards, and provides comprehensive documentation with regular updates.',
+          icon: 'command',
+          iconStyle: 'regular'
+        },
+        {
+          id: '2',
+          title: 'How can I customize the components?',
+          content: 'You can customize components using CSS variables, theme tokens, and component props. All components are built with customization in mind.',
+          icon: 'moon',
+          iconStyle: 'regular'
+        },
+        {
+          id: '3',
+          title: 'Is coss ui optimized for performance?',
+          content: 'Yes, coss ui is built with performance in mind. We optimize every component for maximum performance and minimal bundle size.',
+          icon: 'bolt',
+          iconStyle: 'regular'
+        },
+        {
+          id: '4',
+          title: 'How accessible are the components?',
+          content: 'All components follow WCAG 2.1 accessibility standards and include proper ARIA attributes and keyboard navigation support.',
+          icon: 'at',
+          iconStyle: 'regular'
+        }
+      ];
+      
+      const sampleAccordionItemsNoIcons = [
+        {
+          id: '1',
+          title: 'What makes coss ui different?',
+          content: 'coss ui focuses on developer experience and performance. Built with TypeScript, it offers excellent type safety, follows accessibility standards, and provides comprehensive documentation with regular updates.'
+        },
+        {
+          id: '2',
+          title: 'How can I customize the components?',
+          content: 'You can customize components using CSS variables, theme tokens, and component props. All components are built with customization in mind.'
+        },
+        {
+          id: '3',
+          title: 'Is coss ui optimized for performance?',
+          content: 'Yes, coss ui is built with performance in mind. We optimize every component for maximum performance and minimal bundle size.'
+        },
+        {
+          id: '4',
+          title: 'How accessible are the components?',
+          content: 'All components follow WCAG 2.1 accessibility standards and include proper ARIA attributes and keyboard navigation support.'
+        }
+      ];
+      
+      // Inicializar estado del Accordion
+      function initAccordionPreviewState(componentId) {
+        if (!accordionPreviewState[componentId]) {
+          accordionPreviewState[componentId] = {
+            variant: 'list',
+            chevronPosition: 'right',
+            allowMultiple: false,
+            showIcons: true,
+            items: sampleAccordionItems
+          };
+        }
+        return accordionPreviewState[componentId];
+      }
+      
+      // Función para actualizar el preview del Accordion
+      window.updateAccordionPreview = function(componentId) {
+        const state = initAccordionPreviewState(componentId);
+        const preview = document.getElementById(`accordion-preview-${componentId}`);
+        
+        if (!preview) {
+          console.error('❌ Preview de Accordion no encontrado:', `accordion-preview-${componentId}`);
+          return;
+        }
+        
+        // Determinar qué items usar según showIcons
+        const itemsToUse = state.showIcons ? sampleAccordionItems : sampleAccordionItemsNoIcons;
+        
+        // Intentar cargar script del Accordion en segundo plano (no bloquea el renderizado)
+        if (typeof window.createAccordion === 'undefined' && typeof window.renderAccordion === 'undefined') {
+          const existingScript = document.querySelector('script[src*="accordion"]');
+          if (!existingScript) {
+            const script = document.createElement('script');
+            script.type = 'module';
+            script.src = '../../addons/accordion/dist/index.js';
+            script.onload = () => {
+              console.log('✅ Accordion script cargado');
+              // Hacer las funciones disponibles globalmente
+              if (typeof createAccordion !== 'undefined') {
+                window.createAccordion = createAccordion;
+              }
+              if (typeof renderAccordion !== 'undefined') {
+                window.renderAccordion = renderAccordion;
+              }
+              // Re-renderizar con el script cargado (opcional, ya tenemos el fallback)
+            };
+            script.onerror = () => {
+              console.warn('⚠️ No se pudo cargar el script del Accordion, usando fallback inline');
+            };
+            document.head.appendChild(script);
+            // NO retornar aquí, continuar con el renderizado inline
+          }
+        }
+        
+        // Función helper para renderizar iconos
+        function renderIconHelper(iconName, iconStyle = 'regular') {
+          const iconClass = iconStyle === 'solid' ? 'fas' : 'far';
+          const name = iconName.startsWith('fa-') ? iconName : `fa-${iconName}`;
+          return `<i class="${iconClass} ${name}"></i>`;
+        }
+        
+        // Función helper para renderizar un item
+        function renderAccordionItem(item, options, itemId) {
+          const { variant = 'list', chevronPosition = 'right', showIcons = true } = options;
+          const isBoxed = variant === 'boxed';
+          const chevronLeft = chevronPosition === 'left';
+          const chevronRight = chevronPosition === 'right';
+          
+          const itemClasses = [
+            'ubits-accordion-item',
+            isBoxed && 'ubits-accordion-item--boxed'
+          ].filter(Boolean).join(' ');
+          
+          const chevronHTML = chevronLeft || chevronRight
+            ? `<i class="far fa-chevron-down ubits-accordion-chevron" data-chevron-id="${itemId}"></i>`
+            : '';
+          
+          const iconHTML = (showIcons && item.icon)
+            ? `<span class="ubits-accordion-icon">${renderIconHelper(item.icon, item.iconStyle || 'regular')}</span>`
+            : '';
+          
+          const headerContent = chevronLeft
+            ? `${chevronHTML}${iconHTML}<div class="ubits-accordion-header-content"><span class="ubits-accordion-title">${item.title}</span>${item.subHeader ? `<span class="ubits-accordion-subheader">${item.subHeader}</span>` : ''}</div>`
+            : `${iconHTML}<div class="ubits-accordion-header-content"><span class="ubits-accordion-title">${item.title}</span>${item.subHeader ? `<span class="ubits-accordion-subheader">${item.subHeader}</span>` : ''}</div>${chevronHTML}`;
+          
+          const bodyContent = item.content
+            ? `<div class="ubits-accordion-body-content">${item.content}</div>`
+            : '';
+          
+          return `
+            <div class="${itemClasses}" data-accordion-id="${itemId}">
+              <div class="ubits-accordion-header" data-header-id="${itemId}">
+                ${headerContent}
+              </div>
+              <div class="ubits-accordion-body" data-body-id="${itemId}" style="display: none;">
+                ${bodyContent}
+              </div>
+            </div>
+          `;
+        }
+        
+        // Generar HTML del accordion
+        const accordionClasses = [
+          'ubits-accordion',
+          `ubits-accordion--${state.variant}`,
+          `ubits-accordion--chevron-${state.chevronPosition}`
+        ].filter(Boolean).join(' ');
+        
+        const itemsHTML = itemsToUse
+          .map(item => renderAccordionItem(item, state, item.id))
+          .join('');
+        
+        const accordionHTML = `<div class="${accordionClasses}" data-allow-multiple="${state.allowMultiple || false}">
+          ${itemsHTML}
+        </div>`;
+        
+        preview.innerHTML = accordionHTML;
+        
+        // Inicializar funcionalidad de toggle
+        const accordionElement = preview.querySelector('.ubits-accordion');
+        if (accordionElement) {
+          const allowMultiple = state.allowMultiple || false;
+          const headers = accordionElement.querySelectorAll('.ubits-accordion-header');
+          
+          headers.forEach(header => {
+            header.addEventListener('click', (e) => {
+              e.stopPropagation();
+              const headerId = header.getAttribute('data-header-id');
+              if (!headerId) return;
+              
+              const body = accordionElement.querySelector(`[data-body-id="${headerId}"]`);
+              const chevron = accordionElement.querySelector(`[data-chevron-id="${headerId}"]`);
+              if (!body || !chevron) return;
+              
+              const isOpen = body.style.display === 'block';
+              
+              if (!allowMultiple && !isOpen) {
+                // Cerrar todos los demás
+                const allBodies = accordionElement.querySelectorAll('.ubits-accordion-body');
+                const allHeaders = accordionElement.querySelectorAll('.ubits-accordion-header');
+                const allChevrons = accordionElement.querySelectorAll('.ubits-accordion-chevron');
+                
+                allBodies.forEach(b => {
+                  if (b !== body) {
+                    b.style.display = 'none';
+                  }
+                });
+                allHeaders.forEach(h => {
+                  if (h !== header) h.classList.remove('ubits-accordion-header--open');
+                });
+                allChevrons.forEach(c => {
+                  if (c !== chevron) {
+                    c.style.transform = 'rotate(0deg)';
+                  }
+                });
+              }
+              
+              // Toggle del item actual
+              if (isOpen) {
+                body.style.display = 'none';
+                header.classList.remove('ubits-accordion-header--open');
+                chevron.style.transform = 'rotate(0deg)';
+              } else {
+                body.style.display = 'block';
+                header.classList.add('ubits-accordion-header--open');
+                chevron.style.transform = 'rotate(180deg)';
+              }
+            });
+          });
+        }
+        
+        // Inicializar toggles si existen
+        const allowMultipleToggle = document.getElementById(`accordion-allow-multiple-toggle-${componentId}`);
+        if (allowMultipleToggle && typeof window.updateToggleState === 'function') {
+          window.updateToggleState(allowMultipleToggle);
+        }
+        
+        const showIconsToggle = document.getElementById(`accordion-show-icons-toggle-${componentId}`);
+        if (showIconsToggle && typeof window.updateToggleState === 'function') {
+          window.updateToggleState(showIconsToggle);
+        }
+        
+        // Actualizar textos de estado
+        const allowMultipleStatus = document.getElementById(`accordion-allow-multiple-status-${componentId}`);
+        if (allowMultipleStatus) {
+          allowMultipleStatus.textContent = state.allowMultiple ? 'Activado' : 'Desactivado';
+        }
+        
+        const showIconsStatus = document.getElementById(`accordion-show-icons-status-${componentId}`);
+        if (showIconsStatus) {
+          showIconsStatus.textContent = state.showIcons ? 'Activado' : 'Desactivado';
+        }
+        
+        console.log('✅ Accordion preview actualizado:', state);
+      };
+      
+      // Función unificada para controles del Accordion
+      window.setAccordionControl = function(option, value, componentId) {
+        const state = initAccordionPreviewState(componentId);
+        
+        if (option === 'variant') {
+          state.variant = value;
+          const select = document.getElementById(`accordion-variant-select-${componentId}`);
+          if (select) select.value = value;
+        } else if (option === 'chevronPosition') {
+          state.chevronPosition = value;
+          // Actualizar botones activos
+          document.querySelectorAll(`[data-component="${componentId}"][data-option="chevronPosition"]`).forEach(btn => {
+            btn.classList.toggle('active', btn.getAttribute('data-value') === value);
+          });
+        } else if (option === 'allowMultiple') {
+          state.allowMultiple = value === true || value === 'true';
+          const toggle = document.getElementById(`accordion-allow-multiple-toggle-${componentId}`);
+          if (toggle) {
+            toggle.checked = state.allowMultiple;
+            if (typeof window.updateToggleState === 'function') {
+              window.updateToggleState(toggle);
+            }
+          }
+          const statusSpan = document.getElementById(`accordion-allow-multiple-status-${componentId}`);
+          if (statusSpan) {
+            statusSpan.textContent = state.allowMultiple ? 'Activado' : 'Desactivado';
+          }
+        } else if (option === 'showIcons') {
+          state.showIcons = value === true || value === 'true';
+          const toggle = document.getElementById(`accordion-show-icons-toggle-${componentId}`);
+          if (toggle) {
+            toggle.checked = state.showIcons;
+            if (typeof window.updateToggleState === 'function') {
+              window.updateToggleState(toggle);
+            }
+          }
+          const statusSpan = document.getElementById(`accordion-show-icons-status-${componentId}`);
+          if (statusSpan) {
+            statusSpan.textContent = state.showIcons ? 'Activado' : 'Desactivado';
+          }
+          // Actualizar items según showIcons
+          state.items = state.showIcons ? sampleAccordionItems : sampleAccordionItemsNoIcons;
+        }
+        
+        // Actualizar preview
+        window.updateAccordionPreview(componentId);
+      };
+      
+      // ========================================
+      // SELECTION CARD PREVIEW FUNCTIONS
+      // ========================================
+      
+      // Estado del preview del Selection Card
+      const selectionCardPreviewState = {};
+      
+      // Inicializar estado del Selection Card
+      function initSelectionCardPreviewState(componentId) {
+        if (!selectionCardPreviewState[componentId]) {
+          selectionCardPreviewState[componentId] = {
+            id: 'card-1',
+            title: 'Asignar toda la empresa',
+            description: 'Agregaras a todos los colaboradores de la empresa que tengas en la plataforma.',
+            showDescription: true,
+            icon: 'building',
+            showIcon: true,
+            iconStyle: 'regular',
+            selectionCount: { current: 0, total: 290 },
+            showSelectionCount: true,
+            state: 'default',
+            size: 'md',
+            value: ''
+          };
+        }
+        return selectionCardPreviewState[componentId];
+      }
+      
+      // Función helper para renderizar iconos
+      function renderSelectionCardIconHelper(iconName, iconStyle = 'regular') {
+        const iconClass = iconStyle === 'solid' ? 'fas' : 'far';
+        const name = iconName.startsWith('fa-') ? iconName : `fa-${iconName}`;
+        return `<i class="${iconClass} ${name}"></i>`;
+      }
+      
+      // Función helper para renderizar radio button (simplificado)
+      function renderSelectionCardRadioButton(checked, disabled, itemId) {
+        const checkedClass = checked ? 'ubits-radio-button--checked' : '';
+        const disabledClass = disabled ? 'ubits-radio-button--disabled' : '';
+        const dotHTML = checked ? '<span class="ubits-radio-button__dot"></span>' : '';
+        return `
+          <label class="ubits-radio-button ubits-radio-button--md ${checkedClass} ${disabledClass} ubits-selection-card__radio-button">
+            <input type="radio" name="selection-card-group-${itemId}" value="${itemId}" ${checked ? 'checked' : ''} ${disabled ? 'disabled' : ''} style="display: none;">
+            <span class="ubits-radio-button__circle">${dotHTML}</span>
+          </label>
+        `;
+      }
+      
+      // Función para actualizar el preview del Selection Card
+      window.updateSelectionCardPreview = function(componentId) {
+        const state = initSelectionCardPreviewState(componentId);
+        const preview = document.getElementById(`selection-card-preview-${componentId}`);
+        
+        if (!preview) {
+          console.error('❌ Preview de Selection Card no encontrado:', `selection-card-preview-${componentId}`);
+          return;
+        }
+        
+        const isSelected = state.state === 'selected';
+        const isDisabled = state.state === 'disabled';
+        
+        // Construir clases
+        const classes = [
+          'ubits-selection-card',
+          `ubits-selection-card--${state.size}`,
+          state.state !== 'default' ? `ubits-selection-card--${state.state}` : '',
+          isSelected ? 'ubits-selection-card--selected' : ''
+        ].filter(Boolean).join(' ');
+        
+        // Renderizar icono
+        let iconHTML = '';
+        if (state.showIcon && state.icon) {
+          iconHTML = `
+            <div class="ubits-selection-card__icon">
+              ${renderSelectionCardIconHelper(state.icon, state.iconStyle)}
+            </div>
+          `;
+        }
+        
+        // Renderizar contador de selección
+        let selectionCountHTML = '';
+        if (state.showSelectionCount && state.selectionCount) {
+          const { current, total } = state.selectionCount;
+          selectionCountHTML = `
+            <div class="ubits-selection-card__selection-count">
+              <span class="ubits-selection-card__selection-count-number ubits-body-md-bold">${current}/${total}</span>
+              <span class="ubits-selection-card__selection-count-text ubits-body-md-regular">seleccionados</span>
+            </div>
+          `;
+        }
+        
+        // Renderizar radio button
+        const radioButtonHTML = renderSelectionCardRadioButton(isSelected, isDisabled, state.id);
+        
+        // Generar HTML
+        const cardHTML = `
+          <div class="${classes}" data-card-id="${state.id}" ${isDisabled ? 'aria-disabled="true"' : ''} ${!isDisabled ? 'tabindex="0"' : ''}>
+            <div class="ubits-selection-card__content">
+              <h3 class="ubits-selection-card__title ubits-body-md-semibold">
+                ${iconHTML}
+                <span>${state.title}</span>
+              </h3>
+              ${state.showDescription && state.description ? `<p class="ubits-selection-card__description ubits-body-sm">${state.description}</p>` : ''}
+              ${selectionCountHTML}
+            </div>
+            <div class="ubits-selection-card__radio-wrapper">
+              ${radioButtonHTML}
+            </div>
+          </div>
+        `.trim();
+        
+        preview.innerHTML = cardHTML;
+        
+        // Inicializar toggles si existen
+        const showDescriptionToggle = document.getElementById(`selection-card-show-description-toggle-${componentId}`);
+        if (showDescriptionToggle && typeof window.updateToggleState === 'function') {
+          window.updateToggleState(showDescriptionToggle);
+        }
+        
+        const showIconToggle = document.getElementById(`selection-card-show-icon-toggle-${componentId}`);
+        if (showIconToggle && typeof window.updateToggleState === 'function') {
+          window.updateToggleState(showIconToggle);
+        }
+        
+        const showCountToggle = document.getElementById(`selection-card-show-count-toggle-${componentId}`);
+        if (showCountToggle && typeof window.updateToggleState === 'function') {
+          window.updateToggleState(showCountToggle);
+        }
+        
+        // Actualizar textos de estado
+        const showDescriptionStatus = document.getElementById(`selection-card-show-description-status-${componentId}`);
+        if (showDescriptionStatus) {
+          showDescriptionStatus.textContent = state.showDescription ? 'Activado' : 'Desactivado';
+        }
+        
+        const showIconStatus = document.getElementById(`selection-card-show-icon-status-${componentId}`);
+        if (showIconStatus) {
+          showIconStatus.textContent = state.showIcon ? 'Activado' : 'Desactivado';
+        }
+        
+        const showCountStatus = document.getElementById(`selection-card-show-count-status-${componentId}`);
+        if (showCountStatus) {
+          showCountStatus.textContent = state.showSelectionCount ? 'Activado' : 'Desactivado';
+        }
+        
+        console.log('✅ Selection Card preview actualizado:', state);
+      };
+      
+      // Función unificada para controles del Selection Card
+      window.setSelectionCardControl = function(option, value, componentId) {
+        const state = initSelectionCardPreviewState(componentId);
+        
+        if (option === 'title') {
+          state.title = value || 'Asignar toda la empresa';
+          const input = document.getElementById(`selection-card-title-input-${componentId}`);
+          if (input && input.value !== value) input.value = value;
+        } else if (option === 'description') {
+          state.description = value || '';
+          const input = document.getElementById(`selection-card-description-input-${componentId}`);
+          if (input && input.value !== value) input.value = value;
+        } else if (option === 'showDescription') {
+          state.showDescription = value === true || value === 'true';
+          const toggle = document.getElementById(`selection-card-show-description-toggle-${componentId}`);
+          if (toggle) {
+            toggle.checked = state.showDescription;
+            if (typeof window.updateToggleState === 'function') {
+              window.updateToggleState(toggle);
+            }
+          }
+          const statusSpan = document.getElementById(`selection-card-show-description-status-${componentId}`);
+          if (statusSpan) {
+            statusSpan.textContent = state.showDescription ? 'Activado' : 'Desactivado';
+          }
+        } else if (option === 'icon') {
+          state.icon = value || 'building';
+          const input = document.getElementById(`selection-card-icon-input-${componentId}`);
+          if (input && input.value !== value) input.value = value;
+        } else if (option === 'showIcon') {
+          state.showIcon = value === true || value === 'true';
+          const toggle = document.getElementById(`selection-card-show-icon-toggle-${componentId}`);
+          if (toggle) {
+            toggle.checked = state.showIcon;
+            if (typeof window.updateToggleState === 'function') {
+              window.updateToggleState(toggle);
+            }
+          }
+          const statusSpan = document.getElementById(`selection-card-show-icon-status-${componentId}`);
+          if (statusSpan) {
+            statusSpan.textContent = state.showIcon ? 'Activado' : 'Desactivado';
+          }
+        } else if (option === 'iconStyle') {
+          state.iconStyle = value || 'regular';
+          const select = document.getElementById(`selection-card-icon-style-select-${componentId}`);
+          if (select) select.value = value;
+        } else if (option === 'state') {
+          state.state = value || 'default';
+          const select = document.getElementById(`selection-card-state-select-${componentId}`);
+          if (select) select.value = value;
+        } else if (option === 'size') {
+          state.size = value || 'md';
+          const select = document.getElementById(`selection-card-size-select-${componentId}`);
+          if (select) select.value = value;
+        } else if (option === 'selectionCountCurrent') {
+          if (!state.selectionCount) state.selectionCount = { current: 0, total: 290 };
+          state.selectionCount.current = parseInt(value) || 0;
+          const input = document.getElementById(`selection-card-count-current-input-${componentId}`);
+          if (input) input.value = state.selectionCount.current;
+        } else if (option === 'selectionCountTotal') {
+          if (!state.selectionCount) state.selectionCount = { current: 0, total: 290 };
+          state.selectionCount.total = parseInt(value) || 290;
+          const input = document.getElementById(`selection-card-count-total-input-${componentId}`);
+          if (input) input.value = state.selectionCount.total;
+        } else if (option === 'showSelectionCount') {
+          state.showSelectionCount = value === true || value === 'true';
+          const toggle = document.getElementById(`selection-card-show-count-toggle-${componentId}`);
+          if (toggle) {
+            toggle.checked = state.showSelectionCount;
+            if (typeof window.updateToggleState === 'function') {
+              window.updateToggleState(toggle);
+            }
+          }
+          const statusSpan = document.getElementById(`selection-card-show-count-status-${componentId}`);
+          if (statusSpan) {
+            statusSpan.textContent = state.showSelectionCount ? 'Activado' : 'Desactivado';
+          }
+        }
+        
+        // Actualizar preview
+        window.updateSelectionCardPreview(componentId);
+      };
+      
+      // ========================================
+      // STEPPER PREVIEW FUNCTIONS
+      // ========================================
+      
+      // Estado del preview del Stepper
+      const stepperPreviewState = {};
+      
+      // Inicializar estado del Stepper
+      function initStepperPreviewState(componentId) {
+        if (!stepperPreviewState[componentId]) {
+          stepperPreviewState[componentId] = {
+            orientation: 'horizontal',
+            size: 'md',
+            showTitle: true,
+            showDescription: true,
+            numSteps: 3,
+            steps: [
+              { number: 1, title: 'Step One', description: 'Desc for step one', state: 'completed' },
+              { number: 2, title: 'Step Two', description: 'Desc for step two', state: 'active' },
+              { number: 3, title: 'Step Three', description: 'Desc for step three', state: 'default' }
+            ]
+          };
+        }
+        return stepperPreviewState[componentId];
+      }
+      
+      // Función helper para escapar HTML
+      function escapeStepperHtml(text) {
+        if (typeof text !== 'string') return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+      }
+      
+      // Función helper para renderizar indicador del paso
+      function renderStepperIndicator(number, state) {
+        const indicatorClasses = [
+          'ubits-stepper__indicator',
+          `ubits-stepper__indicator--${state}`
+        ].filter(Boolean).join(' ');
+        
+        let content = '';
+        if (state === 'completed') {
+          content = `
+            <svg class="ubits-stepper__checkmark" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M13.3333 4L6 11.3333L2.66667 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          `;
+        } else {
+          content = `<span class="ubits-stepper__number">${number}</span>`;
+        }
+        
+        return `<div class="${indicatorClasses}">${content}</div>`;
+      }
+      
+      // Función helper para renderizar conector
+      function renderStepperConnector(orientation) {
+        return `<div class="ubits-stepper__connector ubits-stepper__connector--${orientation}"></div>`;
+      }
+      
+      // Función helper para renderizar contenido del paso
+      function renderStepperStepContent(title, description, showTitle, showDescription) {
+        const titleHtml = (showTitle && title)
+          ? `<h3 class="ubits-stepper__title ubits-body-md-semibold">${escapeStepperHtml(title)}</h3>`
+          : '';
+        
+        const descriptionHtml = (showDescription && description)
+          ? `<p class="ubits-stepper__description ubits-body-sm-regular">${escapeStepperHtml(description)}</p>`
+          : '';
+        
+        if (!titleHtml && !descriptionHtml) {
+          return '<div class="ubits-stepper__step-content ubits-stepper__step-content--empty"></div>';
+        }
+        
+        return `
+          <div class="ubits-stepper__step-content">
+            <div class="ubits-stepper__content-wrapper">
+              ${titleHtml}
+              ${descriptionHtml}
+            </div>
+          </div>
+        `;
+      }
+      
+      // Función para generar controles dinámicos de pasos
+      function generateStepperStepsControls(componentId, numSteps) {
+        const controlsContainer = document.getElementById(`stepper-steps-controls-${componentId}`);
+        if (!controlsContainer) return;
+        
+        const state = initStepperPreviewState(componentId);
+        let html = '';
+        
+        for (let i = 1; i <= numSteps; i++) {
+          const step = state.steps[i - 1] || {
+            number: i,
+            title: `Step ${i === 1 ? 'One' : i === 2 ? 'Two' : i === 3 ? 'Three' : i === 4 ? 'Four' : 'Five'}`,
+            description: `Desc for step ${i === 1 ? 'one' : i === 2 ? 'two' : i === 3 ? 'three' : i === 4 ? 'four' : 'five'}`,
+            state: i === 1 ? 'completed' : i === 2 ? 'active' : 'default'
+          };
+          
+          html += `
+            <div style="background: var(--ubits-bg-1); padding: 20px; border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+              <h5 style="margin: 0 0 16px 0; color: var(--ubits-fg-1-high); font-size: 14px; font-weight: 600;">Paso ${i}</h5>
+              <div style="display: flex; flex-wrap: wrap; gap: 16px;">
+                <!-- Estado -->
+                <div style="flex: 0 0 auto; min-width: 150px;">
+                  <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">Estado</label>
+                  <select id="stepper-step-${i}-state-select-${componentId}" onchange="setStepperControl('step${i}State', this.value, '${componentId}')" style="width: 100%; padding: 8px 32px 8px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-2); color: var(--ubits-fg-1-high); font-size: 13px; font-family: var(--font-sans); cursor: pointer; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23666%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226,9 12,15 18,9%22></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px; box-sizing: border-box;">
+                    <option value="default" ${step.state === 'default' ? 'selected' : ''}>Default</option>
+                    <option value="completed" ${step.state === 'completed' ? 'selected' : ''}>Completed</option>
+                    <option value="active" ${step.state === 'active' ? 'selected' : ''}>Active</option>
+                    <option value="error" ${step.state === 'error' ? 'selected' : ''}>Error</option>
+                    <option value="warning" ${step.state === 'warning' ? 'selected' : ''}>Warning</option>
+                  </select>
+                </div>
+                
+                <!-- Título -->
+                <div style="flex: 1 1 auto; min-width: 200px;">
+                  <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">Título</label>
+                  <input type="text" id="stepper-step-${i}-title-input-${componentId}" value="${escapeStepperHtml(step.title)}" onchange="setStepperControl('step${i}Title', this.value, '${componentId}')" placeholder="Título del paso" style="width: 100%; padding: 8px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-2); color: var(--ubits-fg-1-high); font-size: 13px; font-family: var(--font-sans); box-sizing: border-box;">
+                </div>
+                
+                <!-- Descripción -->
+                <div style="flex: 1 1 auto; min-width: 250px;">
+                  <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">Descripción</label>
+                  <input type="text" id="stepper-step-${i}-description-input-${componentId}" value="${escapeStepperHtml(step.description || '')}" onchange="setStepperControl('step${i}Description', this.value, '${componentId}')" placeholder="Descripción del paso" style="width: 100%; padding: 8px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-2); color: var(--ubits-fg-1-high); font-size: 13px; font-family: var(--font-sans); box-sizing: border-box;">
+                </div>
+              </div>
+            </div>
+          `;
+        }
+        
+        controlsContainer.innerHTML = html;
+      }
+      
+      // Función para actualizar el preview del Stepper
+      window.updateStepperPreview = function(componentId) {
+        const state = initStepperPreviewState(componentId);
+        const preview = document.getElementById(`stepper-preview-${componentId}`);
+        
+        if (!preview) {
+          console.error('❌ Preview de Stepper no encontrado:', `stepper-preview-${componentId}`);
+          return;
+        }
+        
+        // Generar controles dinámicos de pasos
+        generateStepperStepsControls(componentId, state.numSteps);
+        
+        // Construir clases del stepper
+        const classes = [
+          'ubits-stepper',
+          `ubits-stepper--${state.orientation}`,
+          `ubits-stepper--${state.size}`
+        ].filter(Boolean).join(' ');
+        
+        // Renderizar pasos
+        const stepsHtml = state.steps.slice(0, state.numSteps).map((step, index) => {
+          const isLast = index === state.numSteps - 1;
+          const stepState = step.state || (index === 0 ? 'active' : 'default');
+          
+          const stepClasses = [
+            'ubits-stepper__step',
+            `ubits-stepper__step--${stepState}`,
+            isLast ? 'ubits-stepper__step--last' : ''
+          ].filter(Boolean).join(' ');
+          
+          const indicator = renderStepperIndicator(step.number, stepState);
+          const connector = !isLast ? renderStepperConnector(state.orientation) : '';
+          const content = renderStepperStepContent(
+            step.title,
+            step.description,
+            state.showTitle,
+            state.showDescription
+          );
+          
+          if (state.orientation === 'vertical') {
+            return `
+              <div class="${stepClasses}">
+                <div class="ubits-stepper__step-wrapper">
+                  ${indicator}
+                  <div class="ubits-stepper__step-content">
+                    ${content}
+                  </div>
+                </div>
+                ${connector}
+              </div>
+            `.trim();
+          } else {
+            return `
+              <div class="${stepClasses}">
+                ${indicator}
+                ${content}
+                ${connector}
+              </div>
+            `.trim();
+          }
+        }).join('');
+        
+        const stepperHTML = `<div class="${classes}">${stepsHtml}</div>`;
+        preview.innerHTML = stepperHTML;
+        
+        // Inicializar toggles
+        const showTitleToggle = document.getElementById(`stepper-show-title-toggle-${componentId}`);
+        if (showTitleToggle && typeof window.updateToggleState === 'function') {
+          window.updateToggleState(showTitleToggle);
+        }
+        
+        const showDescriptionToggle = document.getElementById(`stepper-show-description-toggle-${componentId}`);
+        if (showDescriptionToggle && typeof window.updateToggleState === 'function') {
+          window.updateToggleState(showDescriptionToggle);
+        }
+        
+        // Actualizar textos de estado
+        const showTitleStatus = document.getElementById(`stepper-show-title-status-${componentId}`);
+        if (showTitleStatus) {
+          showTitleStatus.textContent = state.showTitle ? 'Activado' : 'Desactivado';
+        }
+        
+        const showDescriptionStatus = document.getElementById(`stepper-show-description-status-${componentId}`);
+        if (showDescriptionStatus) {
+          showDescriptionStatus.textContent = state.showDescription ? 'Activado' : 'Desactivado';
+        }
+        
+        console.log('✅ Stepper preview actualizado:', state);
+      };
+      
+      // Función unificada para controles del Stepper
+      window.setStepperControl = function(option, value, componentId) {
+        const state = initStepperPreviewState(componentId);
+        
+        if (option === 'orientation') {
+          state.orientation = value || 'horizontal';
+          const select = document.getElementById(`stepper-orientation-select-${componentId}`);
+          if (select) select.value = value;
+        } else if (option === 'size') {
+          state.size = value || 'md';
+          const select = document.getElementById(`stepper-size-select-${componentId}`);
+          if (select) select.value = value;
+        } else if (option === 'numSteps') {
+          const newNumSteps = parseInt(value) || 3;
+          state.numSteps = Math.max(2, Math.min(5, newNumSteps));
+          
+          // Ajustar array de pasos
+          while (state.steps.length < state.numSteps) {
+            const stepNum = state.steps.length + 1;
+            state.steps.push({
+              number: stepNum,
+              title: `Step ${stepNum === 1 ? 'One' : stepNum === 2 ? 'Two' : stepNum === 3 ? 'Three' : stepNum === 4 ? 'Four' : 'Five'}`,
+              description: `Desc for step ${stepNum === 1 ? 'one' : stepNum === 2 ? 'two' : stepNum === 3 ? 'three' : stepNum === 4 ? 'four' : 'five'}`,
+              state: stepNum === 1 ? 'completed' : stepNum === 2 ? 'active' : 'default'
+            });
+          }
+          state.steps = state.steps.slice(0, state.numSteps);
+          
+          const select = document.getElementById(`stepper-num-steps-select-${componentId}`);
+          if (select) select.value = state.numSteps;
+        } else if (option === 'showTitle') {
+          state.showTitle = value === true || value === 'true';
+          const toggle = document.getElementById(`stepper-show-title-toggle-${componentId}`);
+          if (toggle) {
+            toggle.checked = state.showTitle;
+            if (typeof window.updateToggleState === 'function') {
+              window.updateToggleState(toggle);
+            }
+          }
+          const statusSpan = document.getElementById(`stepper-show-title-status-${componentId}`);
+          if (statusSpan) {
+            statusSpan.textContent = state.showTitle ? 'Activado' : 'Desactivado';
+          }
+        } else if (option === 'showDescription') {
+          state.showDescription = value === true || value === 'true';
+          const toggle = document.getElementById(`stepper-show-description-toggle-${componentId}`);
+          if (toggle) {
+            toggle.checked = state.showDescription;
+            if (typeof window.updateToggleState === 'function') {
+              window.updateToggleState(toggle);
+            }
+          }
+          const statusSpan = document.getElementById(`stepper-show-description-status-${componentId}`);
+          if (statusSpan) {
+            statusSpan.textContent = state.showDescription ? 'Activado' : 'Desactivado';
+          }
+        } else if (option.match(/^step(\d+)State$/)) {
+          const stepNum = parseInt(option.match(/^step(\d+)State$/)[1]);
+          if (stepNum >= 1 && stepNum <= 5) {
+            if (!state.steps[stepNum - 1]) {
+              state.steps[stepNum - 1] = { number: stepNum, title: '', description: '', state: 'default' };
+            }
+            state.steps[stepNum - 1].state = value || 'default';
+            const select = document.getElementById(`stepper-step-${stepNum}-state-select-${componentId}`);
+            if (select) select.value = value;
+          }
+        } else if (option.match(/^step(\d+)Title$/)) {
+          const stepNum = parseInt(option.match(/^step(\d+)Title$/)[1]);
+          if (stepNum >= 1 && stepNum <= 5) {
+            if (!state.steps[stepNum - 1]) {
+              state.steps[stepNum - 1] = { number: stepNum, title: '', description: '', state: 'default' };
+            }
+            state.steps[stepNum - 1].title = value || '';
+            const input = document.getElementById(`stepper-step-${stepNum}-title-input-${componentId}`);
+            if (input && input.value !== value) input.value = value;
+          }
+        } else if (option.match(/^step(\d+)Description$/)) {
+          const stepNum = parseInt(option.match(/^step(\d+)Description$/)[1]);
+          if (stepNum >= 1 && stepNum <= 5) {
+            if (!state.steps[stepNum - 1]) {
+              state.steps[stepNum - 1] = { number: stepNum, title: '', description: '', state: 'default' };
+            }
+            state.steps[stepNum - 1].description = value || '';
+            const input = document.getElementById(`stepper-step-${stepNum}-description-input-${componentId}`);
+            if (input && input.value !== value) input.value = value;
+          }
+        }
+        
+        // Actualizar preview
+        window.updateStepperPreview(componentId);
       };
       
       // ========================================

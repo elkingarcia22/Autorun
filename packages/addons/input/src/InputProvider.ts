@@ -78,26 +78,32 @@ export function renderInput(options: InputOptions): string {
 
   const disabledAttr = state === 'disabled' ? ' disabled' : '';
   const maxLengthAttr = showCounter ? ` maxlength="${maxLength}"` : '';
-  const paddingLeft = hasLeftIcon ? (size === 'xs' ? 'padding-left: 32px;' : size === 'sm' ? 'padding-left: 36px;' : size === 'md' ? 'padding-left: 40px;' : 'padding-left: 44px;') : '';
-  const paddingRight = hasRightIcon ? (size === 'xs' ? 'padding-right: 32px;' : size === 'sm' ? 'padding-right: 36px;' : size === 'md' ? 'padding-right: 40px;' : 'padding-right: 44px;') : '';
+  const paddingLeft = hasLeftIcon ? 'padding-left: 40px;' : 'padding-left: 12px;';
+  const paddingRight = hasRightIcon ? 'padding-right: 40px;' : 'padding-right: 12px;';
 
   // Renderizar input según el tipo
   if (type === 'select') {
-    // SELECT - usar input normal pero readonly y con rightIcon de chevron
+    // SELECT - usar input normal pero readonly
     const selectOptions = options.selectOptions || [];
     const selectValue = value ? selectOptions.find(opt => opt.value === value)?.text || placeholder : placeholder;
     inputHTML += `<input type="text" class="${inputClasses.join(' ')}" style="width: 100%; ${paddingLeft} ${paddingRight}" value="${selectValue}" readonly>`;
 
-    // Forzar rightIcon a chevron-down si no hay rightIcon personalizado
+    // Agregar rightIcon de chevron-down solo si no hay rightIcon personalizado
     if (!hasRightIcon) {
       finalRightIcon = 'fa-chevron-down';
       finalHasRightIcon = true;
+      // Ajustar padding si no había rightIcon
+      if (!paddingRight || paddingRight === 'padding-right: 12px;') {
+        const newPaddingRight = 'padding-right: 40px;';
+        // Actualizar el input con el nuevo padding
+        inputHTML = inputHTML.replace(`style="width: 100%; ${paddingLeft} ${paddingRight}"`, `style="width: 100%; ${paddingLeft} ${newPaddingRight}"`);
+      }
     }
   } else if (type === 'textarea') {
     // TEXTAREA - campo multilínea con redimensionamiento y barra de herramientas opcional
     if (showRichTextToolbar) {
       // Contenedor que envuelve la barra y el textarea
-      inputHTML += `<div class="ubits-input-rich-text-wrapper" style="border: 1px solid var(--ubits-border-1); border-radius: 6px; overflow: hidden;">`;
+      inputHTML += `<div class="ubits-input-rich-text-wrapper">`;
       
       // Barra de herramientas de texto enriquecido dentro del contenedor
       inputHTML += `
@@ -158,10 +164,10 @@ export function renderInput(options: InputOptions): string {
       inputHTML += `</div>`;
     } else {
       // Textarea sin barra de herramientas (comportamiento normal)
-      let textareaStyle = `width: 100%; min-height: 80px; resize: vertical; ${paddingLeft} ${paddingRight}`;
-      if (state === 'disabled') {
-        textareaStyle += `; background: var(--ubits-bg-3) !important; color: var(--ubits-fg-1-low) !important; border-color: var(--ubits-border-2) !important;`;
-      }
+    let textareaStyle = `width: 100%; min-height: 80px; resize: vertical; ${paddingLeft} ${paddingRight}`;
+    if (state === 'disabled') {
+      textareaStyle += `; background: var(--ubits-bg-3) !important; color: var(--ubits-fg-1-low) !important; border-color: var(--ubits-border-2) !important;`;
+    }
       const textareaId = `${containerId}-textarea`;
       inputHTML += `<textarea id="${textareaId}" class="${inputClasses.join(' ')}" style="${textareaStyle}" placeholder="${placeholder}"${disabledAttr}${maxLengthAttr}>${value}</textarea>`;
     }
@@ -170,17 +176,19 @@ export function renderInput(options: InputOptions): string {
     let searchPaddingLeft = paddingLeft;
     let searchPaddingRight = paddingRight;
 
-    // Forzar leftIcon a search si no hay leftIcon personalizado
+    // Agregar leftIcon de search solo si no hay leftIcon personalizado
     if (!hasLeftIcon) {
       finalLeftIcon = 'fa-search';
       finalHasLeftIcon = true;
       searchPaddingLeft = size === 'xs' ? 'padding-left: 32px;' : size === 'sm' ? 'padding-left: 36px;' : size === 'md' ? 'padding-left: 40px;' : 'padding-left: 44px;';
     }
 
-    // Siempre agregar rightIcon de limpiar para search
+    // Agregar rightIcon de limpiar solo si no hay rightIcon personalizado
+    if (!hasRightIcon) {
     finalRightIcon = 'fa-times';
     finalHasRightIcon = true;
     searchPaddingRight = size === 'xs' ? 'padding-right: 32px;' : size === 'sm' ? 'padding-right: 36px;' : size === 'md' ? 'padding-right: 40px;' : 'padding-right: 44px;';
+    }
 
     let searchStyle = `width: 100%; ${searchPaddingLeft} ${searchPaddingRight}`;
     if (state === 'disabled') {
@@ -192,17 +200,19 @@ export function renderInput(options: InputOptions): string {
     let autocompletePaddingLeft = paddingLeft;
     let autocompletePaddingRight = paddingRight;
 
-    // Forzar leftIcon de búsqueda para autocomplete
+    // Agregar leftIcon de búsqueda solo si no hay leftIcon personalizado
     if (!hasLeftIcon) {
       finalLeftIcon = 'fa-search';
       finalHasLeftIcon = true;
       autocompletePaddingLeft = size === 'xs' ? 'padding-left: 32px;' : size === 'sm' ? 'padding-left: 36px;' : size === 'md' ? 'padding-left: 40px;' : 'padding-left: 44px;';
     }
 
-    // Forzar rightIcon de limpiar para autocomplete
+    // Agregar rightIcon de limpiar solo si no hay rightIcon personalizado
+    if (!hasRightIcon) {
     finalRightIcon = 'fa-times';
     finalHasRightIcon = true;
     autocompletePaddingRight = size === 'xs' ? 'padding-right: 32px;' : size === 'sm' ? 'padding-right: 36px;' : size === 'md' ? 'padding-right: 40px;' : 'padding-right: 44px;';
+    }
 
     let autocompleteStyle = `width: 100%; ${autocompletePaddingLeft} ${autocompletePaddingRight}`;
     if (state === 'disabled') {
@@ -214,10 +224,12 @@ export function renderInput(options: InputOptions): string {
     let calendarPaddingLeft = paddingLeft;
     let calendarPaddingRight = paddingRight;
 
-    // Forzar rightIcon de calendario para calendar
+    // Agregar rightIcon de calendario solo si no hay rightIcon personalizado
+    if (!hasRightIcon) {
     finalRightIcon = 'fa-calendar';
     finalHasRightIcon = true;
     calendarPaddingRight = size === 'xs' ? 'padding-right: 32px;' : size === 'sm' ? 'padding-right: 36px;' : size === 'md' ? 'padding-right: 40px;' : 'padding-right: 44px;';
+    }
 
     let calendarStyle = `width: 100%; ${calendarPaddingLeft} ${calendarPaddingRight}`;
     if (state === 'disabled') {
@@ -229,10 +241,12 @@ export function renderInput(options: InputOptions): string {
     let passwordPaddingLeft = paddingLeft;
     let passwordPaddingRight = paddingRight;
 
-    // Forzar rightIcon de ojo para password
+    // Agregar rightIcon de ojo solo si no hay rightIcon personalizado
+    if (!hasRightIcon) {
     finalRightIcon = 'fa-eye';
     finalHasRightIcon = true;
     passwordPaddingRight = size === 'xs' ? 'padding-right: 32px;' : size === 'sm' ? 'padding-right: 36px;' : size === 'md' ? 'padding-right: 40px;' : 'padding-right: 44px;';
+    }
 
     let passwordStyle = `width: 100%; ${passwordPaddingLeft} ${passwordPaddingRight}`;
     if (state === 'disabled') {
@@ -247,13 +261,13 @@ export function renderInput(options: InputOptions): string {
   // Icono izquierdo con posicionamiento absoluto
   if (finalHasLeftIcon) {
     const leftIconClass = finalLeftIcon.startsWith('fa-') ? `far ${finalLeftIcon}` : `far fa-${finalLeftIcon}`;
-    inputHTML += `<i class="${leftIconClass} ubits-input-icon-left" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--ubits-fg-1-medium); pointer-events: none; z-index: 1;"></i>`;
+    inputHTML += `<i class="${leftIconClass} ubits-input-icon-left" style="position: absolute; left: var(--ubits-spacing-md, 12px); top: 50%; transform: translateY(-50%); color: var(--ubits-fg-1-medium); pointer-events: none; z-index: 1;"></i>`;
   }
 
   // Icono derecho con posicionamiento absoluto
   if (finalHasRightIcon) {
     const rightIconClass = finalRightIcon.startsWith('fa-') ? `far ${finalRightIcon}` : `far fa-${finalRightIcon}`;
-    inputHTML += `<i class="${rightIconClass} ubits-input-icon-right" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--ubits-fg-1-medium); pointer-events: none; z-index: 1;"></i>`;
+    inputHTML += `<i class="${rightIconClass} ubits-input-icon-right" style="position: absolute; right: var(--ubits-spacing-md, 12px); top: 50%; transform: translateY(-50%); color: var(--ubits-fg-1-medium); pointer-events: none; z-index: 1;"></i>`;
   }
 
   inputHTML += '</div>';
@@ -368,6 +382,9 @@ export function createInput(options: InputOptions): {
   // Barra de herramientas de texto enriquecido (solo para textarea)
   if (type === 'textarea' && options.showRichTextToolbar) {
     setupRichTextToolbar(container, inputElement as HTMLTextAreaElement, options.onChange);
+  } else if (type === 'textarea' && !options.showRichTextToolbar) {
+    // Alinear placeholder del textarea normal con el icono izquierdo si existe
+    setupTextareaPlaceholderAlignment(container, inputElement as HTMLTextAreaElement);
   }
 
   // Actualizar contador de caracteres
@@ -429,17 +446,40 @@ export function createInput(options: InputOptions): {
       } else {
         inputElement.disabled = false;
       }
+
+      // Si es textarea con rich text toolbar, verificar y remover línea divisoria
+      if (type === 'textarea' && options.showRichTextToolbar) {
+        const richTextWrapper = inputElement.closest('.ubits-input-rich-text-wrapper') as HTMLElement;
+        const toolbar = richTextWrapper?.querySelector('.ubits-input-rich-text-toolbar') as HTMLElement;
+        
+        if (toolbar) {
+          const toolbarBorderBottom = window.getComputedStyle(toolbar).borderBottom;
+          const toolbarBorderTop = window.getComputedStyle(toolbar).borderTop;
+          
+          // Forzar que no haya borde en el toolbar
+          if (toolbarBorderBottom && toolbarBorderBottom !== 'none' && toolbarBorderBottom !== '0px') {
+            console.warn(`[Rich Text] ⚠️ Línea divisoria detectada en setState("${newState}"), removiendo...`);
+            toolbar.style.borderBottom = 'none';
+            toolbar.style.borderTop = 'none';
+          }
+        }
+      }
     }
   };
 }
 
 // Funciones auxiliares para funcionalidades especiales (se implementarán en el siguiente paso)
 function createPasswordToggle(container: HTMLElement, inputElement: HTMLInputElement): void {
-  const toggleIcon = container.querySelector('i[class*="fa-eye"]') as HTMLElement;
+  // Buscar el icono derecho (puede ser fa-eye por defecto o un icono personalizado)
+  const toggleIcon = container.querySelector('.ubits-input-icon-right') as HTMLElement;
   if (toggleIcon) {
     let isPasswordVisible = false;
     toggleIcon.style.pointerEvents = 'auto';
     toggleIcon.style.cursor = 'pointer';
+
+    // Guardar la clase original del icono si es personalizado
+    const originalIconClass = toggleIcon.className;
+    const isCustomIcon = !originalIconClass.includes('fa-eye');
 
     toggleIcon.addEventListener('click', (e) => {
       e.preventDefault();
@@ -448,17 +488,24 @@ function createPasswordToggle(container: HTMLElement, inputElement: HTMLInputEle
 
       if (isPasswordVisible) {
         inputElement.type = 'text';
+        // Si es un icono personalizado, mantenerlo; si no, cambiar a eye-slash
+        if (!isCustomIcon) {
         toggleIcon.className = 'far fa-eye-slash ubits-input-icon-right';
+        }
       } else {
         inputElement.type = 'password';
+        // Si es un icono personalizado, mantenerlo; si no, cambiar a eye
+        if (!isCustomIcon) {
         toggleIcon.className = 'far fa-eye ubits-input-icon-right';
+        }
       }
     });
   }
 }
 
 function createSearchClear(container: HTMLElement, inputElement: HTMLInputElement, onChange?: (value: string) => void): void {
-  const clearIcon = container.querySelector('i[class*="fa-times"]') as HTMLElement;
+  // Buscar el icono derecho (puede ser fa-times por defecto o un icono personalizado)
+  const clearIcon = container.querySelector('.ubits-input-icon-right') as HTMLElement;
   if (clearIcon) {
     clearIcon.style.display = inputElement.value.length > 0 ? 'block' : 'none';
     clearIcon.style.pointerEvents = 'auto';
@@ -484,8 +531,8 @@ function createAutocompleteDropdown(container: HTMLElement, inputElement: HTMLIn
   // Obtener el tamaño del List basado en el tamaño del Input
   const listSize: ListSize = inputSize === 'xs' ? 'xs' : inputSize === 'sm' ? 'sm' : inputSize === 'md' ? 'md' : 'lg';
 
-  // Similar a search clear
-  const clearIcon = container.querySelector('i[class*="fa-times"]') as HTMLElement;
+  // Similar a search clear - buscar el icono derecho (puede ser fa-times por defecto o personalizado)
+  const clearIcon = container.querySelector('.ubits-input-icon-right') as HTMLElement;
   if (clearIcon) {
     clearIcon.style.display = inputElement.value.length > 0 ? 'block' : 'none';
     clearIcon.style.pointerEvents = 'auto';
@@ -795,25 +842,20 @@ function createCalendarPicker(container: HTMLElement, inputElement: HTMLInputEle
   };
 
   const showCalendar = async () => {
-    console.log('📅 [Calendar Picker] Mostrando calendario UBITS...');
-    
     // Asegurar que el input no tenga type="date" (que mostraría el calendario nativo)
     if (inputElement.type === 'date') {
-      console.warn('⚠️ [Calendar Picker] Input tiene type="date", cambiando a type="text"');
       inputElement.type = 'text';
       inputElement.setAttribute('readonly', 'readonly');
     }
 
     // Si el calendario ya está visible, ocultarlo
     if (calendarContainer && calendarContainer.style.display !== 'none') {
-      console.log('📅 [Calendar Picker] Ocultando calendario...');
       calendarContainer.style.display = 'none';
       return;
     }
 
     // Crear contenedor para el calendario si no existe
     if (!calendarContainer) {
-      console.log('📅 [Calendar Picker] Creando contenedor...');
       calendarContainer = document.createElement('div');
       calendarContainer.className = 'ubits-calendar-picker-container';
       calendarContainer.style.cssText = 'position: absolute; top: 100%; left: 0; right: 0; z-index: 1000; margin-top: 4px; display: none;';
@@ -823,31 +865,25 @@ function createCalendarPicker(container: HTMLElement, inputElement: HTMLInputEle
 
     // Si el calendario ya existe, solo mostrarlo
     if (calendarInstance) {
-      console.log('📅 [Calendar Picker] Mostrando calendario existente...');
       calendarContainer.style.display = 'block';
       return;
     }
 
     // Cargar el módulo de calendar dinámicamente
     try {
-      console.log('📅 [Calendar Picker] Cargando módulo CalendarProvider...');
       const calendarModule = await import('../../calendar/src/CalendarProvider');
       const { createCalendar } = calendarModule;
-      console.log('✅ [Calendar Picker] Módulo cargado correctamente');
 
       // Obtener fecha inicial del input si existe
       const currentValue = inputElement.value;
       const initialDate = parseDate(currentValue) || new Date();
-      console.log('📅 [Calendar Picker] Fecha inicial:', initialDate);
 
       // Crear instancia del calendario UBITS
-      console.log('📅 [Calendar Picker] Creando instancia del calendario...');
       calendarInstance = createCalendar({
         mode: 'single',
         selectedDate: parseDate(currentValue),
         initialDate: initialDate,
         onDateSelect: (date: Date) => {
-          console.log('📅 [Calendar Picker] Fecha seleccionada:', date);
           const formattedDate = formatDate(date);
           inputElement.value = formattedDate;
           if (calendarContainer) {
@@ -862,12 +898,11 @@ function createCalendarPicker(container: HTMLElement, inputElement: HTMLInputEle
       // Agregar el calendario al contenedor
       calendarContainer.appendChild(calendarInstance.element);
       calendarContainer.style.display = 'block';
-      console.log('✅ [Calendar Picker] Calendario UBITS mostrado correctamente');
     } catch (error) {
       console.error('❌ [Calendar Picker] Error cargando Calendar UBITS:', error);
       // Fallback: mostrar mensaje de error
       if (calendarContainer) {
-        calendarContainer.innerHTML = '<div style="padding: 16px; background: var(--ubits-bg-1); border: 1px solid var(--ubits-border-1); border-radius: 8px; color: var(--ubits-fg-1-high);">Error al cargar el calendario</div>';
+        calendarContainer.innerHTML = `<div style="padding: var(--ubits-spacing-lg, 16px); background: var(--ubits-bg-1); border: 1px solid var(--ubits-border-1); border-radius: var(--ubits-border-radius-lg, 8px); color: var(--ubits-fg-1-high);">Error al cargar el calendario</div>`;
         calendarContainer.style.display = 'block';
       }
     }
@@ -1271,7 +1306,7 @@ function setupRichTextToolbar(container: HTMLElement, textareaElement: HTMLTextA
   const computedStyle = window.getComputedStyle(textareaElement);
   editableDiv.style.cssText = textareaElement.style.cssText;
   editableDiv.style.position = 'relative';
-  editableDiv.style.padding = computedStyle.padding || '12px 8px';
+      editableDiv.style.padding = computedStyle.padding || '12px 12px';
   editableDiv.style.margin = '0';
   editableDiv.style.outline = 'none';
   editableDiv.style.overflow = 'auto';
@@ -1279,6 +1314,154 @@ function setupRichTextToolbar(container: HTMLElement, textareaElement: HTMLTextA
   editableDiv.style.resize = 'vertical';
   editableDiv.contentEditable = 'true';
   editableDiv.setAttribute('data-placeholder', placeholder);
+  
+  // Detectar si hay icono izquierdo y ajustar el placeholder
+  // Buscar el wrapper de múltiples formas
+  let inputWrapper = container.closest('.ubits-input-wrapper');
+  if (!inputWrapper) {
+    // Buscar en el parent del container
+    inputWrapper = container.parentElement?.closest('.ubits-input-wrapper') as HTMLElement;
+  }
+  if (!inputWrapper) {
+    // Buscar en el document usando el ID del container
+    const containerParent = document.getElementById(container.id)?.parentElement;
+    inputWrapper = containerParent?.closest('.ubits-input-wrapper') as HTMLElement;
+  }
+  
+  console.log('[Rich Text Placeholder] ===== DEBUG ALINEAMIENTO =====');
+  console.log('[Rich Text Placeholder] inputWrapper:', inputWrapper);
+  console.log('[Rich Text Placeholder] container:', container);
+  console.log('[Rich Text Placeholder] container.parentElement:', container.parentElement);
+  console.log('[Rich Text Placeholder] richTextWrapper:', richTextWrapper);
+  console.log('[Rich Text Placeholder] richTextWrapper.parentElement:', richTextWrapper?.parentElement);
+  
+  // Buscar el icono de múltiples maneras
+  let leftIconElement: HTMLElement | null = null;
+  
+  // 1. Buscar en el wrapper si existe
+  if (inputWrapper) {
+    leftIconElement = inputWrapper.querySelector('.ubits-input-icon-left') as HTMLElement;
+  }
+  
+  // 2. Buscar en el parent del container
+  if (!leftIconElement && container.parentElement) {
+    leftIconElement = container.parentElement.querySelector('.ubits-input-icon-left') as HTMLElement;
+  }
+  
+  // 3. Buscar en el richTextWrapper parent
+  if (!leftIconElement && richTextWrapper?.parentElement) {
+    leftIconElement = richTextWrapper.parentElement.querySelector('.ubits-input-icon-left') as HTMLElement;
+  }
+  
+  // 4. Buscar en todo el document cerca del container
+  if (!leftIconElement) {
+    const allIcons = document.querySelectorAll('.ubits-input-icon-left');
+    // Buscar el icono más cercano al container
+    for (const icon of Array.from(allIcons)) {
+      const iconElement = icon as HTMLElement;
+      const containerRect = container.getBoundingClientRect();
+      const iconRect = iconElement.getBoundingClientRect();
+      // Si el icono está cerca del container (mismo nivel o padre)
+      if (Math.abs(iconRect.top - containerRect.top) < 100) {
+        leftIconElement = iconElement;
+        break;
+      }
+    }
+  }
+  
+  const hasLeftIcon = leftIconElement !== null;
+  
+  console.log('[Rich Text Placeholder] leftIconElement:', leftIconElement);
+  console.log('[Rich Text Placeholder] hasLeftIcon:', hasLeftIcon);
+  
+  if (hasLeftIcon && leftIconElement) {
+    // Obtener posición y dimensiones del icono
+    const iconRect = leftIconElement.getBoundingClientRect();
+    const iconComputedStyle = window.getComputedStyle(leftIconElement);
+    const iconLeft = iconComputedStyle.left;
+    const iconTop = iconComputedStyle.top;
+    const iconTransform = iconComputedStyle.transform;
+    
+    console.log('[Rich Text Placeholder] Icono encontrado:', leftIconElement);
+    console.log('[Rich Text Placeholder] Icono rect:', iconRect);
+    console.log('[Rich Text Placeholder] Icono left (computed):', iconLeft);
+    console.log('[Rich Text Placeholder] Icono top (computed):', iconTop);
+    console.log('[Rich Text Placeholder] Icono transform:', iconTransform);
+    
+    // Obtener padding del textarea
+    const paddingLeft = computedStyle.paddingLeft || '12px';
+    const paddingTop = computedStyle.paddingTop || '12px';
+    const paddingRight = computedStyle.paddingRight || '12px';
+    const paddingBottom = computedStyle.paddingBottom || '12px';
+    
+    console.log('[Rich Text Placeholder] Textarea padding:', {
+      left: paddingLeft,
+      top: paddingTop,
+      right: paddingRight,
+      bottom: paddingBottom
+    });
+    
+    // Obtener posición del editableDiv
+    const editableRect = editableDiv.getBoundingClientRect();
+    console.log('[Rich Text Placeholder] EditableDiv rect:', editableRect);
+    
+    // Calcular posición relativa del icono dentro del editableDiv
+    const relativeIconLeft = iconRect.left - editableRect.left;
+    const relativeIconTop = iconRect.top - editableRect.top;
+    const relativeIconBottom = iconRect.bottom - editableRect.top;
+    
+    console.log('[Rich Text Placeholder] Icono posición relativa:', {
+      left: relativeIconLeft,
+      top: relativeIconTop,
+      bottom: relativeIconBottom
+    });
+    
+    // Obtener line-height del texto
+    const lineHeight = computedStyle.lineHeight || '1.5';
+    const fontSize = computedStyle.fontSize || '14px';
+    
+    console.log('[Rich Text Placeholder] Texto:', {
+      fontSize,
+      lineHeight
+    });
+    
+    editableDiv.setAttribute('data-has-left-icon', 'true');
+    editableDiv.style.setProperty('--placeholder-left', paddingLeft);
+    editableDiv.style.setProperty('--placeholder-top', paddingTop);
+    
+    console.log('[Rich Text Placeholder] Variables CSS establecidas:', {
+      '--placeholder-left': paddingLeft,
+      '--placeholder-top': paddingTop
+    });
+    
+    // Verificar después de que se renderice
+    requestAnimationFrame(() => {
+      const placeholderBefore = editableDiv.querySelector('::before') || 
+        window.getComputedStyle(editableDiv, '::before');
+      const placeholderStyle = window.getComputedStyle(editableDiv, '::before');
+      
+      console.log('[Rich Text Placeholder] Después de render:', {
+        placeholderLeft: placeholderStyle.left,
+        placeholderTop: placeholderStyle.top,
+        placeholderWidth: placeholderStyle.width,
+        placeholderHeight: placeholderStyle.height
+      });
+    });
+  } else {
+    // Si no hay icono, usar los valores por defecto
+    const paddingTop = computedStyle.paddingTop || '12px';
+    const paddingLeft = computedStyle.paddingLeft || '12px';
+    
+    console.log('[Rich Text Placeholder] Sin icono, usando valores por defecto:', {
+      paddingTop,
+      paddingLeft
+    });
+    
+    editableDiv.style.setProperty('--placeholder-top', paddingTop);
+    editableDiv.style.setProperty('--placeholder-left', paddingLeft);
+  }
+  
+  console.log('[Rich Text Placeholder] ===== FIN DEBUG =====');
   
   // Establecer contenido inicial
   if (textareaElement.value && textareaElement.value.trim()) {
@@ -1291,6 +1474,113 @@ function setupRichTextToolbar(container: HTMLElement, textareaElement: HTMLTextA
   textareaElement.style.display = 'none';
   textareaElement.setAttribute('data-rich-text-editor', 'true');
   richTextWrapper.insertBefore(editableDiv, textareaElement);
+  
+  // Después de insertar en el DOM, recalcular posiciones si hay icono
+  if (hasLeftIcon && leftIconElement) {
+    // Usar doble requestAnimationFrame para asegurar que el DOM esté completamente renderizado
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        // Re-buscar el icono después de que el DOM esté actualizado
+        let iconAfterInsert = leftIconElement;
+        if (inputWrapper) {
+          iconAfterInsert = inputWrapper.querySelector('.ubits-input-icon-left') as HTMLElement || leftIconElement;
+        }
+        if (!iconAfterInsert && container.parentElement) {
+          iconAfterInsert = container.parentElement.querySelector('.ubits-input-icon-left') as HTMLElement || leftIconElement;
+        }
+        
+        if (iconAfterInsert) {
+          const iconRect = iconAfterInsert.getBoundingClientRect();
+          const editableRect = editableDiv.getBoundingClientRect();
+          
+          console.log('[Rich Text Placeholder] Después de insertar en DOM:');
+          console.log('[Rich Text Placeholder] Icono rect:', iconRect);
+          console.log('[Rich Text Placeholder] EditableDiv rect:', editableRect);
+          
+          // Solo calcular si el editableDiv tiene dimensiones válidas
+          if (editableRect.width > 0 && editableRect.height > 0) {
+            const relativeIconTop = iconRect.top - editableRect.top;
+            const relativeIconBottom = iconRect.bottom - editableRect.top;
+            const relativeIconLeft = iconRect.left - editableRect.left;
+            
+            console.log('[Rich Text Placeholder] Posiciones relativas:', {
+              iconTop: relativeIconTop,
+              iconBottom: relativeIconBottom,
+              iconLeft: relativeIconLeft,
+              iconCenterY: relativeIconTop + (iconRect.height / 2)
+            });
+            
+            // El icono está centrado verticalmente (top: 50%, transform: translateY(-50%))
+            // Necesitamos alinear el placeholder con la línea base del texto
+            const iconCenterY = relativeIconTop + (iconRect.height / 2);
+            const fontSize = parseFloat(computedStyle.fontSize || '16px');
+            const lineHeightValue = computedStyle.lineHeight;
+            let lineHeight: number;
+            
+            if (lineHeightValue === 'normal') {
+              lineHeight = fontSize * 1.2; // Normal line-height es aproximadamente 1.2
+            } else if (lineHeightValue.includes('px')) {
+              lineHeight = parseFloat(lineHeightValue);
+            } else {
+              lineHeight = fontSize * parseFloat(lineHeightValue);
+            }
+            
+            // El icono está centrado verticalmente en el contenedor del input
+            // El placeholder debe alinearse con la línea base del texto
+            // La línea base del texto está aproximadamente a fontSize * 0.75 desde el top del texto
+            // Pero necesitamos considerar el padding-top del editableDiv
+            const paddingTop = parseFloat(computedStyle.paddingTop || '12px');
+            
+            // Calcular la posición vertical del texto dentro del editableDiv
+            // El texto comienza en paddingTop, y su línea base está a paddingTop + (fontSize * 0.75)
+            const textBaselineY = paddingTop + (fontSize * 0.75);
+            
+            // Ajustar el top del placeholder para que la línea base del texto coincida con el centro del icono
+            // Si el icono está más arriba que la línea base, ajustamos hacia arriba
+            // Si el icono está más abajo, ajustamos hacia abajo
+            const offset = iconCenterY - textBaselineY;
+            const adjustedTop = paddingTop + offset;
+            
+            console.log('[Rich Text Placeholder] Cálculos de alineamiento:', {
+              iconCenterY,
+              fontSize,
+              lineHeight,
+              paddingTop,
+              textBaselineY,
+              offset,
+              adjustedTop
+            });
+            
+            // Usar el valor calculado, asegurándonos de que sea positivo
+            const finalTop = Math.max(0, adjustedTop);
+            
+            // IMPORTANTE: Ajustar también el padding-top del editableDiv para que el texto escrito
+            // esté alineado igual que el placeholder
+            const currentPadding = editableDiv.style.padding || computedStyle.padding || '12px 12px';
+            const paddingParts = currentPadding.split(' ');
+            const paddingRight = paddingParts[1] || paddingParts[0] || '12px';
+            const paddingBottom = paddingParts[2] || paddingParts[0] || '12px';
+            const paddingLeft = paddingParts[3] || paddingParts[1] || paddingParts[0] || '40px';
+            
+            // Actualizar el padding del editableDiv con el top ajustado
+            editableDiv.style.padding = `${finalTop}px ${paddingRight} ${paddingBottom} ${paddingLeft}`;
+            
+            // También actualizar las variables CSS para el placeholder
+            editableDiv.style.setProperty('--placeholder-top', `${finalTop}px`);
+            editableDiv.style.setProperty('--placeholder-left', paddingLeft);
+            
+            console.log('[Rich Text Placeholder] Variables CSS finales:', {
+              '--placeholder-top': `${finalTop}px`,
+              '--placeholder-left': paddingLeft,
+              'editableDiv padding actualizado': `${finalTop}px ${paddingRight} ${paddingBottom} ${paddingLeft}`
+            });
+          } else {
+            console.warn('[Rich Text Placeholder] EditableDiv aún no tiene dimensiones válidas');
+          }
+        }
+      });
+    });
+  }
 
   // Función para sincronizar contenido
   const syncContent = (event?: Event) => {
@@ -1319,6 +1609,33 @@ function setupRichTextToolbar(container: HTMLElement, textareaElement: HTMLTextA
     if (editableDiv.classList.contains('ubits-rich-text-placeholder')) {
       editableDiv.textContent = '';
       editableDiv.classList.remove('ubits-rich-text-placeholder');
+    }
+    
+    // Verificar y remover línea divisoria en el toolbar cuando se activa
+    const toolbar = richTextWrapper.querySelector('.ubits-input-rich-text-toolbar') as HTMLElement;
+    if (toolbar) {
+      const toolbarBorderBottom = window.getComputedStyle(toolbar).borderBottom;
+      const toolbarBorderTop = window.getComputedStyle(toolbar).borderTop;
+      
+      // Forzar que no haya borde
+      if (toolbarBorderBottom && toolbarBorderBottom !== 'none' && toolbarBorderBottom !== '0px') {
+        console.warn(`[Rich Text] ⚠️ Línea divisoria detectada en focus, removiendo...`);
+        toolbar.style.borderBottom = 'none';
+        toolbar.style.borderTop = 'none';
+      }
+    }
+  });
+  
+  // Verificar también cuando se hace hover sobre el wrapper
+  richTextWrapper.addEventListener('mouseenter', () => {
+    const toolbar = richTextWrapper.querySelector('.ubits-input-rich-text-toolbar') as HTMLElement;
+    if (toolbar) {
+      const toolbarBorderBottom = window.getComputedStyle(toolbar).borderBottom;
+      if (toolbarBorderBottom && toolbarBorderBottom !== 'none' && toolbarBorderBottom !== '0px') {
+        console.warn(`[Rich Text] ⚠️ Línea divisoria detectada en hover, removiendo...`);
+        toolbar.style.borderBottom = 'none';
+        toolbar.style.borderTop = 'none';
+      }
     }
   });
 
@@ -1363,6 +1680,94 @@ function setupRichTextToolbar(container: HTMLElement, textareaElement: HTMLTextA
 
       // Sincronizar contenido
       syncContent();
+    });
+  });
+}
+
+/**
+ * Alinea el placeholder del textarea normal (sin rich text toolbar) con el icono izquierdo
+ */
+function setupTextareaPlaceholderAlignment(container: HTMLElement, textareaElement: HTMLTextAreaElement): void {
+  // Buscar el wrapper de múltiples formas
+  let inputWrapper = container.closest('.ubits-input-wrapper');
+  if (!inputWrapper) {
+    inputWrapper = container.parentElement?.closest('.ubits-input-wrapper') as HTMLElement;
+  }
+  if (!inputWrapper) {
+    const containerParent = document.getElementById(container.id)?.parentElement;
+    inputWrapper = containerParent?.closest('.ubits-input-wrapper') as HTMLElement;
+  }
+  
+  // Buscar el icono izquierdo
+  let leftIconElement: HTMLElement | null = null;
+  
+  if (inputWrapper) {
+    leftIconElement = inputWrapper.querySelector('.ubits-input-icon-left') as HTMLElement;
+  }
+  
+  if (!leftIconElement && container.parentElement) {
+    leftIconElement = container.parentElement.querySelector('.ubits-input-icon-left') as HTMLElement;
+  }
+  
+  if (!leftIconElement) {
+    const allIcons = document.querySelectorAll('.ubits-input-icon-left');
+    for (const icon of Array.from(allIcons)) {
+      const iconElement = icon as HTMLElement;
+      const containerRect = container.getBoundingClientRect();
+      const iconRect = iconElement.getBoundingClientRect();
+      if (Math.abs(iconRect.top - containerRect.top) < 100) {
+        leftIconElement = iconElement;
+        break;
+      }
+    }
+  }
+  
+  const hasLeftIcon = leftIconElement !== null;
+  
+  if (!hasLeftIcon || !leftIconElement) {
+    return; // No hay icono, no hay nada que alinear
+  }
+  
+  // Esperar a que el DOM esté completamente renderizado
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      const iconAfterRender = inputWrapper?.querySelector('.ubits-input-icon-left') as HTMLElement || leftIconElement;
+      
+      if (iconAfterRender && textareaElement) {
+        const iconRect = iconAfterRender.getBoundingClientRect();
+        const textareaRect = textareaElement.getBoundingClientRect();
+        
+        // Solo calcular si el textarea tiene dimensiones válidas
+        if (textareaRect.width > 0 && textareaRect.height > 0) {
+          const relativeIconTop = iconRect.top - textareaRect.top;
+          const relativeIconBottom = iconRect.bottom - textareaRect.top;
+          const relativeIconLeft = iconRect.left - textareaRect.left;
+          
+          // El icono está centrado verticalmente (top: 50%, transform: translateY(-50%))
+          const iconCenterY = relativeIconTop + (iconRect.height / 2);
+          const computedStyle = window.getComputedStyle(textareaElement);
+          const fontSize = parseFloat(computedStyle.fontSize || '16px');
+          const paddingTop = parseFloat(computedStyle.paddingTop || '12px');
+          
+          // Calcular la posición vertical del texto dentro del textarea
+          // La línea base del texto está aproximadamente a paddingTop + (fontSize * 0.75)
+          const textBaselineY = paddingTop + (fontSize * 0.75);
+          
+          // Ajustar el padding-top del textarea para que la línea base del texto coincida con el centro del icono
+          const offset = iconCenterY - textBaselineY;
+          const adjustedTop = paddingTop + offset;
+          const finalTop = Math.max(0, adjustedTop);
+          
+          // Actualizar el padding del textarea
+          const currentPadding = computedStyle.padding || '12px 12px';
+          const paddingParts = currentPadding.split(' ');
+          const paddingRight = paddingParts[1] || paddingParts[0] || '12px';
+          const paddingBottom = paddingParts[2] || paddingParts[0] || '12px';
+          const paddingLeft = paddingParts[3] || paddingParts[1] || paddingParts[0] || '40px';
+          
+          textareaElement.style.padding = `${finalTop}px ${paddingRight} ${paddingBottom} ${paddingLeft}`;
+        }
+      }
     });
   });
 }

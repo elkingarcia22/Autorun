@@ -11,7 +11,10 @@ export function renderBadge(options: BadgeOptions = {}): string {
     variant = 'primary',
     absolute = false,
     position = 'top-right',
-    className = ''
+    className = '',
+    label,
+    showLabel = false,
+    labelTypography = 'ubits-body-md-regular'
   } = options;
 
   // Determinar tipo: si type está definido, usarlo; si no, inferir de content
@@ -34,7 +37,17 @@ export function renderBadge(options: BadgeOptions = {}): string {
     ? String(content) 
     : '';
 
-  return `<span class="${classes}">${badgeContent}</span>`;
+  const badgeHtml = `<span class="${classes}">${badgeContent}</span>`;
+
+  // Si hay label y showLabel está activado, envolver en un contenedor con el label a la derecha
+  if (label && showLabel) {
+    return `<div class="ubits-badge-wrapper">
+      ${badgeHtml}
+      <span class="${labelTypography}">${label}</span>
+    </div>`;
+  }
+
+  return badgeHtml;
 }
 
 /**

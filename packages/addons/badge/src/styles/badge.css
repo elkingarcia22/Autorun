@@ -277,3 +277,20 @@
     position: relative;
     display: inline-block;
 }
+
+/* ========================================
+   BADGE WITH LABEL
+   ======================================== */
+
+/* Contenedor del badge con label */
+.ubits-badge-wrapper {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--ubits-spacing-sm, 8px);
+}
+
+/* El label (segundo elemento) usa tokens de tipografía UBITS y color de texto */
+.ubits-badge-wrapper span:last-child:not(.ubits-badge) {
+    color: var(--ubits-fg-1-high, #303a47);
+    white-space: nowrap;
+}

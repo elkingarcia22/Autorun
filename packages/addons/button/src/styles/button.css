@@ -214,26 +214,57 @@
 
 /* Active/Outline Variant */
 .ubits-button--active {
-    background: var(--ubits-button-active-bg);
-    color: var(--ubits-accent-brand-static);
+    position: relative;
+    background-color: var(--ubits-bg-1, #ffffff);
+    color: var(--ubits-button-active-fg, var(--ubits-accent-brand-static));
     border: none;
+}
+
+.ubits-button--active::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--ubits-bg-active-button, rgba(12, 91, 239, 0.15));
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: 0;
 }
 
 .ubits-button--active:hover:not(:disabled):not(.ubits-button--loading) {
-    background: var(--ubits-button-active-bg);
-    color: var(--ubits-accent-brand-static);
+    background-color: var(--ubits-bg-1, #ffffff);
+    color: var(--ubits-button-active-fg, var(--ubits-accent-brand-static));
     border: none;
 }
 
+.ubits-button--active:hover:not(:disabled):not(.ubits-button--loading)::before {
+    background-color: var(--ubits-bg-active-button, rgba(12, 91, 239, 0.15));
+}
+
 .ubits-button--active:active:not(:disabled):not(.ubits-button--loading) {
-    background: var(--ubits-button-active-bg);
-    color: var(--ubits-accent-brand-static);
+    background-color: var(--ubits-bg-1, #ffffff);
+    color: var(--ubits-button-active-fg, var(--ubits-accent-brand-static));
     border: none;
+}
+
+.ubits-button--active:active:not(:disabled):not(.ubits-button--loading)::before {
+    background-color: var(--ubits-bg-active-button, rgba(12, 91, 239, 0.15));
 }
 
 /* Asegurar que los iconos también tengan el color correcto en estado active */
 .ubits-button--active i {
-    color: var(--ubits-accent-brand-static);
+    position: relative;
+    z-index: 1;
+    color: var(--ubits-button-active-fg, var(--ubits-accent-brand-static));
+}
+
+/* Asegurar que el texto (span) también tenga el color correcto en estado active */
+.ubits-button--active span {
+    position: relative;
+    z-index: 1;
+    color: var(--ubits-button-active-fg, var(--ubits-accent-brand-static)) !important;
 }
 
 /* ========================================
@@ -264,29 +295,55 @@
 
 /* Secondary Button Active State */
 .ubits-button--secondary.ubits-button--active {
-    background: var(--ubits-button-active-bg) !important;
-    color: var(--ubits-accent-brand-static) !important;
+    position: relative;
+    background-color: var(--ubits-bg-1, #ffffff) !important;
+    color: var(--ubits-button-active-fg, var(--ubits-accent-brand-static)) !important;
     border: none !important;
+}
+
+.ubits-button--secondary.ubits-button--active::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--ubits-bg-active-button, rgba(12, 91, 239, 0.15));
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: 0;
 }
 
 .ubits-button--secondary.ubits-button--active:hover:not(:disabled):not(.ubits-button--loading) {
-    background: var(--ubits-button-active-bg) !important;
-    color: var(--ubits-accent-brand-static) !important;
+    background-color: var(--ubits-bg-1, #ffffff) !important;
+    color: var(--ubits-button-active-fg, var(--ubits-accent-brand-static)) !important;
     border: none !important;
+}
+
+.ubits-button--secondary.ubits-button--active:hover:not(:disabled):not(.ubits-button--loading)::before {
+    background-color: var(--ubits-bg-active-button, rgba(12, 91, 239, 0.15));
 }
 
 .ubits-button--secondary.ubits-button--active:active:not(:disabled):not(.ubits-button--loading) {
-    background: var(--ubits-button-active-bg) !important;
-    color: var(--ubits-accent-brand-static) !important;
+    background-color: var(--ubits-bg-1, #ffffff) !important;
+    color: var(--ubits-button-active-fg, var(--ubits-accent-brand-static)) !important;
     border: none !important;
 }
 
+.ubits-button--secondary.ubits-button--active:active:not(:disabled):not(.ubits-button--loading)::before {
+    background-color: var(--ubits-bg-active-button, rgba(12, 91, 239, 0.15));
+}
+
 .ubits-button--secondary.ubits-button--active i {
-    color: var(--ubits-accent-brand-static) !important;
+    position: relative;
+    z-index: 1;
+    color: var(--ubits-button-active-fg, var(--ubits-accent-brand-static)) !important;
 }
 
 .ubits-button--secondary.ubits-button--active span {
-    color: var(--ubits-accent-brand-static) !important;
+    position: relative;
+    z-index: 1;
+    color: var(--ubits-button-active-fg, var(--ubits-accent-brand-static)) !important;
 }
 
 /* ========================================
@@ -317,25 +374,55 @@
 
 /* Tertiary Button Active State */
 .ubits-button--tertiary.ubits-button--active {
-    background: var(--ubits-button-active-bg);
-    color: var(--ubits-accent-brand-static);
+    position: relative;
+    background-color: var(--ubits-bg-1, #ffffff);
+    color: var(--ubits-button-active-fg, var(--ubits-accent-brand-static));
     border: none;
+}
+
+.ubits-button--tertiary.ubits-button--active::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--ubits-bg-active-button, rgba(12, 91, 239, 0.15));
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: 0;
 }
 
 .ubits-button--tertiary.ubits-button--active:hover:not(:disabled):not(.ubits-button--loading) {
-    background: var(--ubits-button-active-bg);
-    color: var(--ubits-accent-brand-static);
+    background-color: var(--ubits-bg-1, #ffffff);
+    color: var(--ubits-button-active-fg, var(--ubits-accent-brand-static));
     border: none;
+}
+
+.ubits-button--tertiary.ubits-button--active:hover:not(:disabled):not(.ubits-button--loading)::before {
+    background-color: var(--ubits-bg-active-button, rgba(12, 91, 239, 0.15));
 }
 
 .ubits-button--tertiary.ubits-button--active:active:not(:disabled):not(.ubits-button--loading) {
-    background: var(--ubits-button-active-bg);
-    color: var(--ubits-accent-brand-static);
+    background-color: var(--ubits-bg-1, #ffffff);
+    color: var(--ubits-button-active-fg, var(--ubits-accent-brand-static));
     border: none;
 }
 
+.ubits-button--tertiary.ubits-button--active:active:not(:disabled):not(.ubits-button--loading)::before {
+    background-color: var(--ubits-bg-active-button, rgba(12, 91, 239, 0.15));
+}
+
 .ubits-button--tertiary.ubits-button--active i {
-    color: var(--ubits-accent-brand-static);
+    position: relative;
+    z-index: 1;
+    color: var(--ubits-button-active-fg, var(--ubits-accent-brand-static));
+}
+
+.ubits-button--tertiary.ubits-button--active span {
+    position: relative;
+    z-index: 1;
+    color: var(--ubits-button-active-fg, var(--ubits-accent-brand-static)) !important;
 }
 
 /* Tertiary Button Focus State */
@@ -644,18 +731,18 @@
 [data-theme="dark"] #action-btn-view-selected.ubits-button--active,
 [data-theme="dark"] #action-btn-view-selected.ubits-button--active:hover:not(:disabled):not(.ubits-button--loading),
 [data-theme="dark"] #action-btn-view-selected.ubits-button--active:active:not(:disabled):not(.ubits-button--loading) {
-    color: #c4c1fc !important;
+    color: var(--ubits-accent-brand-static-inverted, var(--ubits-fg-1-high)) !important;
 }
 
 [data-theme="dark"] #action-btn-view-selected.ubits-button--active i,
 [data-theme="dark"] #action-btn-view-selected.ubits-button--active:hover:not(:disabled):not(.ubits-button--loading) i,
 [data-theme="dark"] #action-btn-view-selected.ubits-button--active:active:not(:disabled):not(.ubits-button--loading) i {
-    color: #c4c1fc !important;
+    color: var(--ubits-accent-brand-static-inverted, var(--ubits-fg-1-high)) !important;
 }
 
 [data-theme="dark"] #action-btn-view-selected.ubits-button--active span,
 [data-theme="dark"] #action-btn-view-selected.ubits-button--active:hover:not(:disabled):not(.ubits-button--loading) span,
 [data-theme="dark"] #action-btn-view-selected.ubits-button--active:active:not(:disabled):not(.ubits-button--loading) span {
-    color: #c4c1fc !important;
+    color: var(--ubits-accent-brand-static-inverted, var(--ubits-fg-1-high)) !important;
 }
 

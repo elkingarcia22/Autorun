@@ -1,0 +1,223 @@
+/* ========================================
+   UBITS SELECTION CARD COMPONENT
+   Componente selection card para mostrar opciones seleccionables
+   Sin radio button - selección mediante click en toda la card
+   Usando tokens UBITS exclusivamente
+   ======================================== */
+
+/* ========================================
+   BASE SELECTION CARD STYLES
+   ======================================== */
+
+.ubits-selection-card {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--ubits-spacing-lg);
+  padding: var(--ubits-spacing-sm);
+  border: 1px solid var(--ubits-border-1);
+  border-radius: var(--ubits-border-radius-md);
+  background-color: var(--ubits-bg-1);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.ubits-selection-card:hover:not(.ubits-selection-card--disabled) {
+  border-color: var(--ubits-border-2);
+  box-shadow: var(--ubits-effects-elevation-1);
+}
+
+.ubits-selection-card--selected {
+  border: 1px solid var(--ubits-accent-brand-static-inverted) !important;
+  background-color: var(--ubits-bg-1);
+}
+
+.ubits-selection-card--selected:hover {
+  border: 1px solid var(--ubits-accent-brand-static-inverted) !important;
+  background-color: var(--ubits-bg-1);
+}
+
+.ubits-selection-card--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.ubits-selection-card__icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  height: auto;
+  background: none;
+  color: var(--ubits-fg-1-medium);
+}
+
+.ubits-selection-card__icon i {
+  font-size: 16px;
+  max-width: 16px;
+  max-height: 16px;
+}
+
+.ubits-selection-card__image {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--ubits-border-radius-md);
+  overflow: hidden;
+  background-color: var(--ubits-bg-2);
+}
+
+.ubits-selection-card__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ubits-selection-card__content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ubits-spacing-xs);
+}
+
+.ubits-selection-card__title {
+  color: var(--ubits-fg-1-high);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--ubits-spacing-sm);
+  font-family: var(--font-sans);
+  font-size: var(--font-body-md-size);
+  font-weight: var(--weight-semibold);
+  line-height: var(--font-body-md-line);
+}
+
+.ubits-selection-card__description {
+  color: var(--ubits-fg-1-medium);
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--font-body-sm-size);
+  font-weight: var(--weight-regular);
+  line-height: var(--font-body-sm-line);
+}
+
+.ubits-selection-card__selection-count {
+  display: flex;
+  align-items: baseline;
+  gap: var(--ubits-spacing-xs);
+  margin-top: var(--ubits-spacing-xs);
+}
+
+.ubits-selection-card__selection-count-number {
+  color: var(--ubits-fg-1-high);
+  font-family: var(--font-sans);
+  font-size: var(--font-body-md-size);
+  font-weight: var(--weight-bold);
+  line-height: var(--font-body-md-line);
+}
+
+.ubits-selection-card__selection-count-text {
+  color: var(--ubits-fg-1-medium);
+  font-family: var(--font-sans);
+  font-size: var(--font-body-md-size);
+  font-weight: var(--weight-regular);
+  line-height: var(--font-body-md-line);
+}
+
+.ubits-selection-card__radio-wrapper {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+}
+
+.ubits-selection-card__radio-button {
+  pointer-events: none;
+}
+
+.ubits-selection-card__radio-button .ubits-radio-button__text-content {
+  display: none;
+}
+
+/* ========================================
+   SELECTION CARD SIZES
+   ======================================== */
+
+.ubits-selection-card--sm {
+  padding: var(--ubits-spacing-sm);
+  gap: var(--ubits-spacing-sm);
+}
+
+.ubits-selection-card--sm .ubits-selection-card__icon,
+.ubits-selection-card--sm .ubits-selection-card__image {
+  width: 40px;
+  height: 40px;
+}
+
+.ubits-selection-card--sm .ubits-selection-card__icon i {
+  font-size: 20px;
+}
+
+.ubits-selection-card--lg {
+  padding: var(--ubits-spacing-lg);
+  gap: var(--ubits-spacing-lg);
+}
+
+.ubits-selection-card--lg .ubits-selection-card__icon,
+.ubits-selection-card--lg .ubits-selection-card__image {
+  width: 56px;
+  height: 56px;
+}
+
+.ubits-selection-card--lg .ubits-selection-card__icon i {
+  font-size: 28px;
+}
+
+/* ========================================
+   FOCUS STATES
+   ======================================== */
+
+.ubits-selection-card:focus-visible {
+  outline: 2px solid var(--ubits-accent-brand-static-inverted);
+  outline-offset: 2px;
+}
+
+/* ========================================
+   ANIMATIONS
+   ======================================== */
+
+@keyframes selectionCardFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(var(--ubits-spacing-xs));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.ubits-selection-card {
+  animation: selectionCardFadeIn 0.2s ease;
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+@media (max-width: 768px) {
+  .ubits-selection-card {
+    padding: var(--ubits-spacing-sm);
+  }
+
+  .ubits-selection-card__icon,
+  .ubits-selection-card__image {
+    width: 40px;
+    height: 40px;
+  }
+}
+

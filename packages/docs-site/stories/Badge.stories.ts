@@ -59,6 +59,39 @@ const meta: Meta<BadgeOptions> = {
         defaultValue: { summary: 'top-right' },
       },
     },
+    showLabel: {
+      control: { type: 'boolean' },
+      description: 'Mostrar u ocultar el label',
+      table: {
+        defaultValue: { summary: 'false' },
+        type: { summary: 'boolean' },
+      },
+    },
+    label: {
+      control: { type: 'text' },
+      description: 'Texto del label que aparece a la derecha del badge',
+      table: {
+        type: { summary: 'string' },
+      },
+    },
+    labelTypography: {
+      control: { type: 'select' },
+      options: [
+        'ubits-body-sm-regular',
+        'ubits-body-sm-semibold',
+        'ubits-body-sm-bold',
+        'ubits-body-md-regular',
+        'ubits-body-md-semibold',
+        'ubits-body-md-bold',
+        'ubits-heading-h1',
+        'ubits-heading-h2'
+      ],
+      description: 'Clase de tipografía UBITS para el label',
+      table: {
+        defaultValue: { summary: 'ubits-body-md-regular' },
+        type: { summary: 'ubits-body-sm-regular | ubits-body-sm-semibold | ubits-body-sm-bold | ubits-body-md-regular | ubits-body-md-semibold | ubits-body-md-bold | ubits-heading-h1 | ubits-heading-h2' },
+      },
+    },
   },
 };
 
@@ -74,6 +107,9 @@ export const Default: Story = {
     content: '5',
     absolute: false,
     position: 'top-right',
+    showLabel: false,
+    label: 'Notificaciones',
+    labelTypography: 'ubits-body-md-regular',
   },
   render: (args) => {
     const container = document.createElement('div');

@@ -123,10 +123,10 @@
     background-color: var(--ubits-bg-1, #ffffff);
 }
 
-/* Hover cuando está checked - mantener borde gris */
+/* Hover cuando está checked - mantener círculo azul */
 .ubits-radio-button--checked:not(.ubits-radio-button--disabled):hover .ubits-radio-button__circle {
-    border-color: var(--ubits-border-1, #d0d2d5);
-    background-color: var(--ubits-bg-1, #ffffff);
+    border-color: var(--ubits-accent-brand-static-inverted);
+    background-color: var(--ubits-accent-brand-static-inverted);
 }
 
 /* Active State - círculo azul brand con dot blanco (solo cuando NO está checked) */
@@ -141,16 +141,16 @@
     background-color: var(--ubits-bg-1, #ffffff);
 }
 
-/* Checked State - el borde debe ser gris, círculo azul más grande dentro */
+/* Checked State - círculo exterior azul (brand), dot interior blanco */
 .ubits-radio-button--checked .ubits-radio-button__circle {
-    border-color: var(--ubits-border-1, #d0d2d5);
-    background-color: var(--ubits-bg-1, #ffffff);
+    border-color: var(--ubits-accent-brand-static-inverted);
+    background-color: var(--ubits-accent-brand-static-inverted);
 }
 
 .ubits-radio-button--checked .ubits-radio-button__dot {
     opacity: 1;
     transform: scale(1);
-    background-color: var(--ubits-accent-brand-static-inverted, #0c5bef);
+    background-color: var(--ubits-bg-1);
 }
 
 /* Tamaños del dot cuando está checked - más grande para llenar más el círculo */

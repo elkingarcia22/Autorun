@@ -153,7 +153,7 @@
 
 /* Active State */
 .ubits-chip--active {
-    background-color: var(--ubits-bg-active, rgba(12, 91, 239, 0.2));
+    background: var(--ubits-bg-active, rgba(12, 91, 239, 0.15)), var(--ubits-bg-1, #ffffff);
     color: var(--ubits-fg-1-high, #303a47);
     border-color: var(--ubits-border-1, #d0d2d5);
 }

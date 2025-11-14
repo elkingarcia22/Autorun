@@ -1,0 +1,159 @@
+/* ========================================
+   UBITS PARTICIPANTS MENU COMPONENT
+   Menú lateral para mostrar lista de participantes
+   Usando tokens UBITS exclusivamente
+   ======================================== */
+
+.ubits-participants-menu {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: var(--ubits-bg-1, #ffffff);
+  border-right: 1px solid var(--ubits-border-1, #dbdde0);
+  padding: var(--ubits-spacing-md, 16px);
+  box-sizing: border-box;
+  font-family: var(--font-sans, 'Noto Sans', system-ui, sans-serif);
+}
+
+.ubits-participants-menu__header {
+  flex-shrink: 0;
+}
+
+.ubits-participants-menu__title {
+  margin: 0;
+  font-size: var(--font-heading-h2-size, 24px);
+  font-weight: var(--weight-bold, 700);
+  line-height: var(--font-heading-h2-line, 32px);
+  color: var(--ubits-fg-1-high, #303a47);
+  margin-bottom: var(--ubits-spacing-md, 16px);
+}
+
+.ubits-participants-menu__search-container {
+  display: flex;
+  gap: var(--ubits-spacing-sm, 8px);
+  margin-bottom: var(--ubits-spacing-md, 16px);
+}
+
+.ubits-participants-menu__search-input-wrapper {
+  flex: 1;
+  position: relative;
+}
+
+.ubits-participants-menu__search-input-wrapper .fa-search {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--ubits-fg-1-medium, #5c646f);
+  font-size: 16px;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.ubits-participants-menu__search-input {
+  width: 100%;
+  padding: 12px 12px 12px 40px;
+  border: 1px solid var(--ubits-border-1, #dbdde0);
+  border-radius: var(--ubits-border-radius-md, 6px);
+  background-color: var(--ubits-bg-1, #ffffff);
+  color: var(--ubits-fg-1-high, #303a47);
+  font-size: var(--font-body-md-size, 16px);
+  font-family: var(--font-sans, 'Noto Sans', system-ui, sans-serif);
+  transition: border-color 0.2s ease;
+  box-sizing: border-box;
+}
+
+.ubits-participants-menu__search-input:focus {
+  outline: none;
+  border-color: var(--ubits-accent-brand-static, #0c5bef);
+}
+
+.ubits-participants-menu__search-input::placeholder {
+  color: var(--ubits-fg-1-low, #8b9098);
+}
+
+.ubits-participants-menu__filter-button {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--ubits-border-radius-md, 6px);
+  flex-shrink: 0;
+}
+
+.ubits-participants-menu__list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+}
+
+.ubits-participants-menu__item {
+  display: flex;
+  align-items: center;
+  gap: var(--ubits-spacing-sm, 8px);
+  padding: var(--ubits-spacing-sm, 8px) var(--ubits-spacing-md, 16px);
+  border-radius: var(--ubits-border-radius-md, 6px);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.ubits-participants-menu__item:hover:not(.ubits-participants-menu__item--selected) {
+  background-color: var(--ubits-bg-2, #f5f6f8);
+}
+
+.ubits-participants-menu__item--selected {
+  background-color: var(--ubits-bg-active-button, rgba(12, 91, 239, 0.15));
+}
+
+.ubits-participants-menu__item-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ubits-participants-menu__item-name {
+  font-size: var(--font-body-md-size, 16px);
+  font-weight: var(--weight-semibold, 600);
+  line-height: var(--font-body-md-line, 24px);
+  color: var(--ubits-fg-1-high, #303a47);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ubits-participants-menu__item--selected .ubits-participants-menu__item-name {
+  color: var(--ubits-accent-brand-static, #0c5bef);
+}
+
+.ubits-participants-menu__item-role {
+  font-size: var(--font-body-sm-size, 13px);
+  font-weight: var(--weight-regular, 400);
+  line-height: var(--font-body-sm-line, 19.5px);
+  color: var(--ubits-fg-1-medium, #5c646f);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* El avatar usa el componente Avatar de UBITS, solo ajustamos el contenedor */
+.ubits-participants-menu__avatar {
+  flex-shrink: 0;
+}
+
+.ubits-participants-menu__status-tag {
+  padding: 4px 8px;
+  border-radius: var(--ubits-border-radius-sm, 4px);
+  font-size: var(--font-body-xs-size, 11px);
+  font-weight: var(--weight-medium, 500);
+  line-height: var(--font-body-xs-line, 16.5px);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+

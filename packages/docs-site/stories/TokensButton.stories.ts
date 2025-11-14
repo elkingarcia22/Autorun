@@ -29,14 +29,39 @@ export default meta;
 
 type Story = StoryObj;
 
+function rgbaToHex(rgba: string): string {
+  const match = rgba.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
+  if (!match) return rgba;
+  const r = parseInt(match[1]);
+  const g = parseInt(match[2]);
+  const b = parseInt(match[3]);
+  const a = match[4] ? parseFloat(match[4]) : 1;
+  const hex = `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+  if (a < 1) {
+    const alphaHex = Math.round(a * 255).toString(16).padStart(2, '0');
+    return hex + alphaHex;
+  }
+  return hex;
+}
+
 function swatch(token: string, theme: 'light' | 'dark') {
   const root = document.documentElement;
   document.body.setAttribute('data-theme', theme);
   const value = getComputedStyle(root).getPropertyValue(token).trim();
   const isWhite = /^(#fff(f)?|rgb\(255,\s*255,\s*255\))$/i.test(value);
-  const bg = isWhite
-    ? 'repeating-conic-gradient(#eee 0% 25%, var(--ubits-bg-1) 0% 50%) 50%/12px 12px'
-    : value;
+  const hasOpacity = /rgba?\([^)]+\)/.test(value) && value.includes('0.');
+  const bg1Value = theme === 'light' ? '#ffffff' : '#202837';
+  let bg: string;
+  if (isWhite) {
+    bg = 'repeating-conic-gradient(#eee 0% 25%, var(--ubits-bg-1) 0% 50%) 50%/12px 12px';
+  } else if (hasOpacity) {
+    // Para colores con opacidad, mostrar sobre fondo bg1
+    bg = `${value}, ${bg1Value}`;
+  } else {
+    bg = value;
+  }
+  // Convertir rgba a hex para mostrar
+  const displayValue = /rgba?\([^)]+\)/.test(value) ? rgbaToHex(value) : value;
   const wrap = document.createElement('div');
   wrap.style.display = 'grid';
   wrap.style.gridTemplateColumns = '320px 1fr';
@@ -54,7 +79,7 @@ function swatch(token: string, theme: 'light' | 'dark') {
   box.style.border = '1px solid #9ca3af';
   box.style.background = bg;
   const val = document.createElement('code');
-  val.textContent = value;
+  val.textContent = displayValue;
   const right = document.createElement('div');
   right.style.display = 'flex';
   right.style.gap = '8px';

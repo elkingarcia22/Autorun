@@ -197,9 +197,15 @@ export const Default: Story = {
     const containerId = `input-storybook-${Math.random().toString(36).substr(2, 9)}`;
     
     // Preparar opciones según el tipo
+    // El textarea no debe mostrar iconos
+    const finalLeftIcon = args.type === 'textarea' ? '' : args.leftIcon;
+    const finalRightIcon = args.type === 'textarea' ? '' : args.rightIcon;
+    
     const inputOptions: InputOptions = {
       ...args,
       containerId,
+      leftIcon: finalLeftIcon,
+      rightIcon: finalRightIcon,
       selectOptions: args.type === 'select' ? generateSelectOptions(20) : undefined,
       autocompleteOptions: args.type === 'autocomplete' ? generateAutocompleteOptions() : undefined,
     };
@@ -252,7 +258,7 @@ export const Default: Story = {
           <div><strong>Helper:</strong> ${args.showHelper ? 'Visible' : 'Oculto'}</div>
           <div><strong>Counter:</strong> ${args.showCounter ? 'Visible' : 'Oculto'}</div>
           <div><strong>Mandatory:</strong> ${args.mandatory ? args.mandatoryType : 'No'}</div>
-          <div><strong>Iconos:</strong> ${args.leftIcon ? `Izq: ${args.leftIcon}` : ''} ${args.rightIcon ? `Der: ${args.rightIcon}` : 'Ninguno'}</div>
+          <div><strong>Iconos:</strong> ${finalLeftIcon ? `Izq: ${finalLeftIcon}` : ''} ${finalRightIcon ? `Der: ${finalRightIcon}` : 'Ninguno'}</div>
           ${args.type === 'textarea' ? `<div><strong>Barra de herramientas:</strong> ${args.showRichTextToolbar ? 'Visible' : 'Oculta'}</div>` : ''}
         </div>
       `;
