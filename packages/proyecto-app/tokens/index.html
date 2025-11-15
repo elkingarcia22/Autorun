@@ -570,7 +570,7 @@
         border-color: var(--ubits-accent-brand-static-inverted) !important;
         background: var(--ubits-bg-active) !important;
         transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        box-shadow: var(--ubits-effects-elevation-3);
       }
       .letter-section{
         margin-bottom: 32px;
@@ -582,7 +582,7 @@
       }
       .toast{position:fixed; left:50%; bottom:24px; transform:translateX(-50%);
         background: var(--ubits-bg-2); color: var(--ubits-fg-2-high); padding:10px 14px; border-radius:8px;
-        box-shadow:0 10px 15px rgba(0,0,0,.15); font-size: var(--font-body-sm-size); opacity:0; pointer-events:none;
+        box-shadow: var(--ubits-effects-elevation-4); font-size: var(--font-body-sm-size); opacity:0; pointer-events:none;
         transition:opacity .2s ease, transform .2s ease}
       .toast.show{opacity:1; transform:translateX(-50%) translateY(-4px)}
       .navbar{display:flex; gap:20px; align-items:center; padding:10px 0; border-bottom:none; position:sticky; top:0; background: var(--ubits-bg-2); z-index:20}
@@ -632,7 +632,7 @@
       .copyable-prompt .copy-btn.copied{ background: var(--ubits-accent-green); color: var(--ubits-bg-1); border-color: var(--ubits-accent-green); }
       .copyable-prompt .copy-btn i{ font-size: var(--font-body-sm-size); }
       
-      #navbar2{ background: var(--ubits-bg-1); border-bottom:none; margin-bottom: 24px; padding: 12px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+      #navbar2{ background: var(--ubits-bg-1); border-bottom:none; margin-bottom: 24px; padding: 12px 0; box-shadow: var(--ubits-effects-elevation-1, 0px 1px 2px 0px rgba(0, 0, 0, 0.12)); }
       #navbar2 .navbar2-container{ display: flex; gap: 32px; align-items: center; border-radius: 8px; }
       #navbar2 .ubits-logo{ display: flex; align-items: center; gap: 8px; margin-right: 16px; text-decoration: none; transition: transform 0.2s ease; }
       #navbar2 .ubits-logo:hover{ transform: scale(1.05); }
@@ -652,7 +652,7 @@
       #navbar2 .nav2-link.has-submenu{ cursor: pointer; }
       #navbar2 .nav2-link.has-submenu .fa-chevron-down{ transition: transform 0.2s ease; }
       #navbar2 .nav2-link.has-submenu.submenu-open .fa-chevron-down{ transform: rotate(180deg); }
-      #navbar2 .nav2-submenu{ display: none; position: absolute; top: 100%; left: 0; background: var(--ubits-bg-1); border-radius: 8px; padding: 8px 0; margin-top: 4px; min-width: 200px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 1000; }
+      #navbar2 .nav2-submenu{ display: none; position: absolute; top: 100%; left: 0; background: var(--ubits-bg-1); border-radius: 8px; padding: 8px 0; margin-top: 4px; min-width: 200px; box-shadow: var(--ubits-effects-elevation-3, 0px 4px 8px 0px rgba(0, 0, 0, 0.12)); z-index: 1000; }
       #navbar2 .nav2-link.submenu-open .nav2-submenu{ display: block; }
       #navbar2 .nav2-submenu .nav2-subitem{ display: flex; align-items: center; gap: 8px; padding: 8px 16px; color: var(--ubits-fg-1-medium); text-decoration: none; font-size: var(--font-body-sm-size); transition: all 0.15s ease; }
       #navbar2 .nav2-submenu .nav2-subitem:hover{ background: var(--ubits-bg-2); color: var(--ubits-fg-1-high); }
@@ -2568,7 +2568,7 @@ npm run dev</code></pre>
               <h4 style="color: var(--ubits-fg-1-high); font-size: var(--font-body-md-size); font-weight: var(--weight-semibold); margin: 0 0 16px 0;">Floating</h4>
               <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
                 <div>
-                  <div id="elevation-floating-preview" style="width: 120px; height: 120px; background: var(--ubits-bg-2); border-radius: 8px; display: flex; align-items: center; justify-content: center; box-shadow: var(--ubits-effects-elevation-4, 0px 14px 28.8px 0px rgba(0, 0, 0, 0.24));">
+                  <div id="elevation-floating-preview" style="width: 120px; height: 120px; background: var(--ubits-bg-2); border-radius: 8px; display: flex; align-items: center; justify-content: center; box-shadow: var(--ubits-effects-elevation-4);">
                     <span style="color: var(--ubits-fg-2-medium); font-size: var(--font-body-sm-size);">Floating</span>
                   </div>
                 </div>
@@ -6450,7 +6450,7 @@ Reglas Importantes:
           
           // Resaltar el elemento (opcional, ayuda visual)
           element.style.transition = 'box-shadow 0.3s ease';
-          element.style.boxShadow = '0 0 0 3px rgba(37, 99, 235, 0.3)';
+          element.style.boxShadow = '0 0 0 3px var(--ubits-button-focus-ring, rgba(82, 151, 244, 0.3))';
           setTimeout(() => {
             element.style.boxShadow = '';
           }, 1000);
@@ -6683,10 +6683,7 @@ Reglas Importantes:
                               <div style="flex: 0 0 auto; min-width: 250px;">
                                 <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Variante</label>
                                 <div style="display: flex; gap: 6px; flex-wrap: wrap;">
-                                  <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" data-component="${componentId}" data-option="variant" data-value="primary" onclick="setBadgeControl('variant', 'primary', '${componentId}')">
-                                    <span>Primario</span>
-                                  </button>
-                                  <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-component="${componentId}" data-option="variant" data-value="success" onclick="setBadgeControl('variant', 'success', '${componentId}')">
+                                  <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" data-component="${componentId}" data-option="variant" data-value="success" onclick="setBadgeControl('variant', 'success', '${componentId}')">
                                     <span>Éxito</span>
                                   </button>
                                   <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-component="${componentId}" data-option="variant" data-value="warning" onclick="setBadgeControl('variant', 'warning', '${componentId}')">
@@ -6754,6 +6751,25 @@ Reglas Importantes:
                                   <option value="ubits-heading-h1">Heading H1</option>
                                   <option value="ubits-heading-h2">Heading H2</option>
                                 </select>
+                              </div>
+                            </div>
+                            
+                            <!-- Tercera fila de controles: Variante 2 -->
+                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; margin-top: 24px;">
+                              <!-- Variante 2 -->
+                              <div style="flex: 0 0 auto; min-width: 250px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Variante 2</label>
+                                <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                                  <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" data-component="${componentId}" data-option="variant2" data-value="light" onclick="setBadgeControl('variant2', 'light', '${componentId}')">
+                                    <span>Light</span>
+                                  </button>
+                                  <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-component="${componentId}" data-option="variant2" data-value="neutral" onclick="setBadgeControl('variant2', 'neutral', '${componentId}')">
+                                    <span>Neutral</span>
+                                  </button>
+                                  <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-component="${componentId}" data-option="variant2" data-value="bold" onclick="setBadgeControl('variant2', 'bold', '${componentId}')">
+                                    <span>Bold</span>
+                                  </button>
+                                </div>
                               </div>
                             </div>
                           </div>
@@ -12243,9 +12259,11 @@ Reglas Importantes:
         if (!badgePreviewState[componentId]) {
           badgePreviewState[componentId] = {
             type: 'number',
-            variant: 'primary',
+            variant: 'success', // Cambiar de 'primary' a 'success'
+            variant2: 'light', // Variante 2 por defecto: light
             size: 'md',
             content: '5',
+            style: undefined, // Sin estilo por defecto para que funcione como badge normal
             showLabel: false,
             label: 'Notificaciones',
             labelTypography: 'ubits-body-md-regular'
@@ -12256,19 +12274,103 @@ Reglas Importantes:
       
       // Función para generar HTML del badge
       function generateBadgeHTML(state, componentId) {
-        const { type, variant, size, content, showLabel, label, labelTypography } = state;
+        const { type, variant, variant2, size, content, style, showLabel, label, labelTypography } = state;
+        
+        console.log('🔵 generateBadgeHTML - INICIO:', { state, componentId });
+        
+        // Si hay variant2, usarlo para determinar el style
+        let finalStyle = style;
+        if (variant2) {
+          if (variant2 === 'light') {
+            finalStyle = 'light';
+          } else if (variant2 === 'neutral') {
+            finalStyle = 'neutral'; // Neutral tiene borde (border 1)
+          } else if (variant2 === 'bold') {
+            finalStyle = 'bold'; // Bold tiene fondo de color y texto/dot con buen contraste
+          }
+        }
+        
+        console.log('🔵 generateBadgeHTML - finalStyle:', finalStyle);
+        console.log('🔵 generateBadgeHTML - window.renderBadge existe?', typeof window.renderBadge);
+        
+        // Cargar Badge UMD si no está disponible
+        if (typeof window.renderBadge === 'undefined') {
+          const existingBadgeScript = document.querySelector('script[src*="badge.umd.js"]');
+          if (!existingBadgeScript) {
+            const badgeScript = document.createElement('script');
+            badgeScript.src = '../../addons/badge/dist/badge.umd.js?v=' + Date.now();
+            badgeScript.onload = () => {
+              console.log('✅ Badge UMD cargado');
+              console.log('🔵 window.UBITSBadge:', window.UBITSBadge);
+              // Exponer renderBadge al window
+              if (window.UBITSBadge) {
+                if (window.UBITSBadge.renderBadge) {
+                  window.renderBadge = window.UBITSBadge.renderBadge;
+                } else if (window.UBITSBadge.default && window.UBITSBadge.default.renderBadge) {
+                  window.renderBadge = window.UBITSBadge.default.renderBadge;
+                } else {
+                  // Intentar acceder directamente a las propiedades exportadas
+                  const exports = window.UBITSBadge;
+                  if (exports.renderBadge) {
+                    window.renderBadge = exports.renderBadge;
+                  }
+                }
+                console.log('✅ window.renderBadge expuesto:', typeof window.renderBadge);
+                // Re-renderizar después de cargar
+                if (typeof window.updateBadgePreview === 'function') {
+                  window.updateBadgePreview(componentId);
+                }
+              } else {
+                console.error('❌ window.UBITSBadge no está disponible');
+              }
+            };
+            badgeScript.onerror = () => {
+              console.error('❌ Error cargando badge.umd.js');
+            };
+            document.head.appendChild(badgeScript);
+            // Retornar HTML temporal mientras carga
+            // Calcular badgeContent temporal para el fallback
+            let tempBadgeContent;
+            if (type === 'dot') {
+              tempBadgeContent = undefined;
+            } else if (type === 'number') {
+              tempBadgeContent = (content && content.toString().trim() !== '') ? content : '5';
+            } else {
+              tempBadgeContent = content || undefined;
+            }
+            return `<span class="ubits-badge ubits-badge--${size} ubits-badge--${type} ubits-badge--${variant}${finalStyle ? ` ubits-badge--${finalStyle}` : ''}">${type === 'number' ? (tempBadgeContent || '5') : ''}</span>`;
+          }
+        }
         
         // Usar renderBadge si está disponible
         if (typeof window.renderBadge === 'function') {
-          return window.renderBadge({
-            type: type,
+          // Si el tipo es dot, pasar undefined/null para que no muestre contenido
+          // Si el tipo es number, asegurarse de que haya contenido válido
+          let badgeContent;
+          if (type === 'dot') {
+            badgeContent = undefined; // No pasar contenido para dot
+          } else if (type === 'number') {
+            // Para number, usar el contenido o un valor por defecto
+            badgeContent = (content && content.toString().trim() !== '') ? content : '5';
+          } else {
+            badgeContent = content || undefined;
+          }
+          
+          const badgeOptions = {
+            type: type, // Pasar explícitamente el tipo para que BadgeProvider lo respete
             variant: variant,
             size: size,
-            content: content,
+            content: badgeContent,
+            style: finalStyle, // Usar el style determinado por variant2 o el style original
             showLabel: showLabel,
-            label: label,
+            label: showLabel ? label : undefined, // Solo pasar label si showLabel está activado
             labelTypography: labelTypography
-          });
+          };
+          
+          console.log('🔵 generateBadgeHTML - Badge options:', badgeOptions);
+          console.log('🔵 generateBadgeHTML - State:', state);
+          
+          return window.renderBadge(badgeOptions);
         }
         
         // Fallback si renderBadge no está disponible
@@ -12276,14 +12378,16 @@ Reglas Importantes:
           'ubits-badge',
           `ubits-badge--${size}`,
           `ubits-badge--${type}`,
-          `ubits-badge--${variant}` // Siempre agregar la clase de variante
+          `ubits-badge--${variant}`, // Siempre agregar la clase de variante
+          style ? `ubits-badge--${style}` : 'ubits-badge--light' // Agregar clase de estilo
         ].filter(Boolean).join(' ');
         
+        // Si el tipo es dot, no mostrar contenido; si es number, mostrar el contenido
         const badgeContent = type === 'number' && content ? String(content) : '';
         
         let badgeHTML = `<span class="${classes}">${badgeContent}</span>`;
         
-        // Si hay label y showLabel está activado, envolver en un contenedor con el label a la derecha
+        // Solo mostrar label si showLabel está activado Y hay label definido
         if (label && showLabel) {
           badgeHTML = `<div class="ubits-badge-wrapper">
             ${badgeHTML}
@@ -12296,7 +12400,9 @@ Reglas Importantes:
       
       // Función para actualizar el preview del badge
       window.updateBadgePreview = function(componentId) {
+        console.log('🔵 updateBadgePreview - INICIO:', componentId);
         const state = initBadgePreviewState(componentId);
+        console.log('🔵 updateBadgePreview - State:', state);
         const preview = document.getElementById(`badge-preview-${componentId}`);
         
         if (!preview) {
@@ -12304,7 +12410,9 @@ Reglas Importantes:
           return;
         }
         
+        console.log('🔵 updateBadgePreview - Llamando generateBadgeHTML...');
         const badgeHTML = generateBadgeHTML(state, componentId);
+        console.log('🔵 updateBadgePreview - HTML generado:', badgeHTML);
         preview.innerHTML = badgeHTML;
         
         // Inicializar toggle si existe
@@ -12322,8 +12430,10 @@ Reglas Importantes:
         console.log('✅ Badge preview actualizado:', {
           type: state.type,
           variant: state.variant,
+          variant2: state.variant2,
           size: state.size,
           content: state.content,
+          style: state.style,
           showLabel: state.showLabel,
           label: state.label,
           labelTypography: state.labelTypography
@@ -12336,6 +12446,22 @@ Reglas Importantes:
         
         if (option === 'type') {
           state.type = value;
+          // Si cambia a dot, limpiar el contenido
+          if (value === 'dot') {
+            state.content = '';
+          } else if (value === 'number') {
+            // Si cambia a number, asegurarse de que haya contenido válido
+            if (!state.content || state.content.toString().trim() === '') {
+              state.content = '5';
+            }
+            const contentInput = document.getElementById(`badge-content-input-${componentId}`);
+            if (contentInput) {
+              // Asegurarse de que el input tenga un valor válido
+              if (!contentInput.value || contentInput.value.trim() === '') {
+                contentInput.value = state.content;
+              }
+            }
+          }
           // Actualizar botones activos de tipo
           document.querySelectorAll(`[data-component="${componentId}"][data-option="type"]`).forEach(btn => {
             btn.classList.toggle('active', btn.getAttribute('data-value') === value);
@@ -12347,6 +12473,7 @@ Reglas Importantes:
           }
         } else if (option === 'variant') {
           state.variant = value;
+          console.log('🔵 setBadgeControl - Variant changed:', { option, value, componentId, currentState: state });
           // Actualizar botones activos de variante
           document.querySelectorAll(`[data-component="${componentId}"][data-option="variant"]`).forEach(btn => {
             btn.classList.toggle('active', btn.getAttribute('data-value') === value);
@@ -12382,10 +12509,32 @@ Reglas Importantes:
           state.labelTypography = value || 'ubits-body-md-regular';
           const select = document.getElementById(`badge-label-typography-select-${componentId}`);
           if (select) select.value = value;
+        } else if (option === 'style') {
+          state.style = value || 'light';
+          // Actualizar botones activos de estilo
+          document.querySelectorAll(`[data-component="${componentId}"][data-option="style"]`).forEach(btn => {
+            btn.classList.toggle('active', btn.getAttribute('data-value') === value);
+          });
+        } else if (option === 'variant2') {
+          state.variant2 = value || 'light';
+          // Actualizar botones activos de variante 2
+          document.querySelectorAll(`[data-component="${componentId}"][data-option="variant2"]`).forEach(btn => {
+            btn.classList.toggle('active', btn.getAttribute('data-value') === value);
+          });
+          // Mapear variant2 a style para el BadgeProvider
+          if (value === 'light') {
+            state.style = 'light';
+          } else if (value === 'neutral') {
+            state.style = 'neutral'; // Neutral tiene borde (border 1)
+          } else if (value === 'bold') {
+            state.style = 'bold'; // Bold tiene fondo de color y texto/dot con buen contraste
+          }
         }
         
         // Actualizar preview
-        updateBadgePreview(componentId);
+        if (typeof window.updateBadgePreview === 'function') {
+          window.updateBadgePreview(componentId);
+        }
       };
       
       // Función para toggle de badge
@@ -12508,7 +12657,7 @@ Reglas Importantes:
               align-items: center !important;
               justify-content: center !important;
               font-size: 20px !important;
-              box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+              box-shadow: var(--ubits-effects-elevation-3) !important;
               transition: all 0.2s ease !important;
               z-index: 100001 !important;
               pointer-events: auto !important;
@@ -12980,9 +13129,9 @@ Reglas Importantes:
           'active': { bg: 'var(--ubits-feedback-success-bg, #e8f8e4)', text: 'var(--ubits-feedback-success-text, #223b16)', border: 'var(--ubits-feedback-success-border, #41c433)' },
           'not-fulfilled': { bg: 'var(--ubits-feedback-error-bg, #fff0ee)', text: 'var(--ubits-feedback-error-text, #65181e)', border: 'var(--ubits-feedback-error-border, #fd8a82)' },
           'denied': { bg: 'var(--ubits-feedback-error-bg, #fff0ee)', text: 'var(--ubits-feedback-error-text, #65181e)', border: 'var(--ubits-feedback-error-border, #fd8a82)' },
-          'draft': { bg: 'rgba(12, 91, 239, 0.15)', text: 'var(--ubits-feedback-info-text, #212f70)', border: 'var(--ubits-accent-brand-static-inverted, #0c5bef)' },
-          'in-progress': { bg: 'rgba(12, 91, 239, 0.15)', text: 'var(--ubits-feedback-info-text, #212f70)', border: 'var(--ubits-accent-brand-static-inverted, #0c5bef)' },
-          'syncing': { bg: 'rgba(12, 91, 239, 0.15)', text: 'var(--ubits-feedback-info-text, #212f70)', border: 'var(--ubits-accent-brand-static-inverted, #0c5bef)' },
+          'draft': { bg: 'var(--ubits-bg-active, rgba(12, 91, 239, 0.15))', text: 'var(--ubits-feedback-info-text, #212f70)', border: 'var(--ubits-accent-brand-static-inverted, #0c5bef)' },
+          'in-progress': { bg: 'var(--ubits-bg-active, rgba(12, 91, 239, 0.15))', text: 'var(--ubits-feedback-info-text, #212f70)', border: 'var(--ubits-accent-brand-static-inverted, #0c5bef)' },
+          'syncing': { bg: 'var(--ubits-bg-active, rgba(12, 91, 239, 0.15))', text: 'var(--ubits-feedback-info-text, #212f70)', border: 'var(--ubits-accent-brand-static-inverted, #0c5bef)' },
           'pending': { bg: 'var(--ubits-feedback-warning-bg, #fff1e0)', text: 'var(--ubits-feedback-warning-text, #4c2e15)', border: 'var(--ubits-feedback-warning-border, #ec9907)' },
           'pending-approval': { bg: 'var(--ubits-feedback-warning-bg, #fff1e0)', text: 'var(--ubits-feedback-warning-text, #4c2e15)', border: 'var(--ubits-feedback-warning-border, #ec9907)' },
           'not-started': { bg: 'var(--ubits-bg-2, #f3f3f4)', text: 'var(--ubits-fg-1-medium, #2b3543)', border: 'var(--ubits-border-1, #a8abb2)' },
@@ -13004,7 +13153,7 @@ Reglas Importantes:
         // Para estados azules (draft, in-progress, syncing), usar gradiente
         const isInfoStatus = status === 'draft' || status === 'in-progress' || status === 'syncing';
         const bgStyle = isInfoStatus 
-          ? `background: linear-gradient(90deg, rgba(12, 91, 239, 0.15) 0%, rgba(12, 91, 239, 0.15) 100%), linear-gradient(90deg, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 1) 100%); background-color: ${colors.bg};`
+          ? `background: linear-gradient(90deg, var(--ubits-bg-active, rgba(12, 91, 239, 0.15)) 0%, var(--ubits-bg-active, rgba(12, 91, 239, 0.15)) 100%), linear-gradient(90deg, var(--ubits-bg-1, #ffffff) 0%, var(--ubits-bg-1, #ffffff) 100%); background-color: ${colors.bg};`
           : `background-color: ${colors.bg};`;
         
         const inlineStyles = `
@@ -13200,7 +13349,7 @@ Reglas Importantes:
         if (chipElement && state.state === 'focus') {
           // Aplicar estilos inline para mostrar el efecto Focus
           chipElement.style.border = '2px solid var(--ubits-accent-brand-static-inverted, #5297F4)';
-          chipElement.style.boxShadow = '0px 0px 0px 4px rgba(82, 151, 244, 0.3)';
+          chipElement.style.boxShadow = '0px 0px 0px 4px var(--ubits-button-focus-ring, rgba(82, 151, 244, 0.3))';
           chipElement.style.outline = 'none';
         } else if (chipElement) {
           // Resetear estilos si no es estado focus
@@ -19753,7 +19902,7 @@ Reglas Importantes:
                 // Renderizar List UBITS con contenedor para scrollbar
                 const listHTML = `
                   <div style="position: relative; max-height: 200px;">
-                    <div id="${monthListId}" class="ubits-list" role="list" style="max-height: 200px; background: var(--ubits-bg-1); border: 1px solid var(--ubits-border-1); border-radius: 6px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); overflow-y: auto; overflow-x: hidden; -ms-overflow-style: none; scrollbar-width: none;">
+                    <div id="${monthListId}" class="ubits-list" role="list" style="max-height: 200px; background: var(--ubits-bg-1); border: 1px solid var(--ubits-border-1); border-radius: 6px; box-shadow: var(--ubits-effects-elevation-3, 0px 4px 8px 0px rgba(0, 0, 0, 0.12)); overflow-y: auto; overflow-x: hidden; -ms-overflow-style: none; scrollbar-width: none;">
                       <style>
                         #${monthListId}::-webkit-scrollbar { display: none; }
                       </style>
@@ -19956,7 +20105,7 @@ Reglas Importantes:
                 // Renderizar List UBITS con contenedor para scrollbar
                 const listHTML = `
                   <div style="position: relative; max-height: 200px;">
-                    <div id="${yearListId}" class="ubits-list" role="list" style="max-height: 200px; background: var(--ubits-bg-1); border: 1px solid var(--ubits-border-1); border-radius: 6px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); overflow-y: auto; overflow-x: hidden; -ms-overflow-style: none; scrollbar-width: none;">
+                    <div id="${yearListId}" class="ubits-list" role="list" style="max-height: 200px; background: var(--ubits-bg-1); border: 1px solid var(--ubits-border-1); border-radius: 6px; box-shadow: var(--ubits-effects-elevation-3, 0px 4px 8px 0px rgba(0, 0, 0, 0.12)); overflow-y: auto; overflow-x: hidden; -ms-overflow-style: none; scrollbar-width: none;">
                       <style>
                         #${yearListId}::-webkit-scrollbar { display: none; }
                       </style>
@@ -21260,7 +21409,7 @@ Reglas Importantes:
           background-color: ${colors.bg} !important;
           color: ${colors.color} !important;
           border: 1px solid ${colors.border} !important;
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+          box-shadow: var(--ubits-effects-elevation-3, 0px 4px 8px 0px rgba(0, 0, 0, 0.12)) !important;
         `;
         
         // Header con icono, título y botón cerrar alineados
@@ -21282,7 +21431,7 @@ Reglas Importantes:
         const hasAction = action && typeof action === 'object' && action.label;
         const actionButtonHTML = hasAction ? `
           <div class="ubits-toast__actions" style="display: flex; justify-content: flex-end; align-items: center; width: 100%; margin-top: 4px;">
-            <button class="ubits-toast__action ubits-toast__action--${type}" type="button" data-toast-action style="display: inline-flex; align-items: center; justify-content: center; height: 32px; min-height: 32px; padding: 10px 14px; border: none; border-radius: 6px; font-family: var(--font-sans); font-size: var(--font-body-sm-size); font-weight: var(--weight-semibold); line-height: var(--font-body-sm-line); cursor: pointer; color: white; background-color: ${colors.border}; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);">
+            <button class="ubits-toast__action ubits-toast__action--${type}" type="button" data-toast-action style="display: inline-flex; align-items: center; justify-content: center; height: 32px; min-height: 32px; padding: 10px 14px; border: none; border-radius: 6px; font-family: var(--font-sans); font-size: var(--font-body-sm-size); font-weight: var(--weight-semibold); line-height: var(--font-body-sm-line); cursor: pointer; color: white; background-color: ${colors.border}; box-shadow: var(--ubits-effects-elevation-1, 0px 1px 2px 0px rgba(0, 0, 0, 0.12));">
               <span>${action.label}</span>
             </button>
           </div>
@@ -22111,7 +22260,7 @@ Reglas Importantes:
                   // Renderizar List UBITS con contenedor para scrollbar (igual que en updateCalendarPreview)
                   const listHTML = `
                     <div style="position: relative; max-height: 200px;">
-                      <div id="${monthListId}" class="ubits-list" role="list" style="max-height: 200px; background: var(--ubits-bg-1); border: 1px solid var(--ubits-border-1); border-radius: 6px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); overflow-y: auto; overflow-x: hidden; -ms-overflow-style: none; scrollbar-width: none;">
+                      <div id="${monthListId}" class="ubits-list" role="list" style="max-height: 200px; background: var(--ubits-bg-1); border: 1px solid var(--ubits-border-1); border-radius: 6px; box-shadow: var(--ubits-effects-elevation-3, 0px 4px 8px 0px rgba(0, 0, 0, 0.12)); overflow-y: auto; overflow-x: hidden; -ms-overflow-style: none; scrollbar-width: none;">
                         <style>
                           #${monthListId}::-webkit-scrollbar { display: none; }
                         </style>
@@ -22315,7 +22464,7 @@ Reglas Importantes:
                   // Renderizar List UBITS con contenedor para scrollbar (igual que en updateCalendarPreview)
                   const listHTML = `
                     <div style="position: relative; max-height: 200px;">
-                      <div id="${yearListId}" class="ubits-list" role="list" style="max-height: 200px; background: var(--ubits-bg-1); border: 1px solid var(--ubits-border-1); border-radius: 6px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); overflow-y: auto; overflow-x: hidden; -ms-overflow-style: none; scrollbar-width: none;">
+                      <div id="${yearListId}" class="ubits-list" role="list" style="max-height: 200px; background: var(--ubits-bg-1); border: 1px solid var(--ubits-border-1); border-radius: 6px; box-shadow: var(--ubits-effects-elevation-3, 0px 4px 8px 0px rgba(0, 0, 0, 0.12)); overflow-y: auto; overflow-x: hidden; -ms-overflow-style: none; scrollbar-width: none;">
                         <style>
                           #${yearListId}::-webkit-scrollbar { display: none; }
                         </style>
@@ -27957,4 +28106,4 @@ Reglas Importantes:
       
     </script>
   </body>
-</html>
+</html

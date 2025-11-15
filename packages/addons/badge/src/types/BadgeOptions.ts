@@ -23,6 +23,11 @@ export interface BadgeOptions {
   variant?: 'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'info';
   
   /**
+   * Estilo del badge: 'light' (badge y label sin borde), 'neutral' (con borde gris) o 'bold' (fondo de color y texto blanco)
+   */
+  style?: 'light' | 'neutral' | 'bold';
+  
+  /**
    * Si el badge debe usar posición absoluta
    */
   absolute?: boolean;

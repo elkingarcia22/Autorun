@@ -31,6 +31,15 @@ const meta: Meta<BadgeOptions> = {
         type: { summary: 'primary | secondary | success | warning | error | info' },
       },
     },
+    style: {
+      control: { type: 'select' },
+      options: ['light', 'neutral', 'bold'],
+      description: 'Estilo del badge: light (sin borde), neutral (con borde gris) o bold (fondo de color)',
+      table: {
+        defaultValue: { summary: 'light' },
+        type: { summary: 'light | neutral | bold' },
+      },
+    },
     size: {
       control: { type: 'select' },
       options: ['xs', 'sm', 'md', 'lg'],
@@ -103,6 +112,7 @@ export const Default: Story = {
   args: {
     type: 'number',
     variant: 'primary',
+    style: 'light',
     size: 'md',
     content: '5',
     absolute: false,
@@ -159,4 +169,3 @@ export const Default: Story = {
     return container;
   },
 };
-

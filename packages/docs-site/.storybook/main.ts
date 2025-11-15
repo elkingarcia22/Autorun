@@ -1,7 +1,7 @@
 import type { StorybookConfig } from '@storybook/html-vite';
 import { dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
-import { ignoreTsconfigNodeJsonPlugin } from './plugins/ignore-tsconfig-node-json';
+import { ignoreTsconfigNodeJsonPlugin } from './plugins/ignore-tsconfig-node-json.ts';
 
 /**
 * This function is used to resolve the absolute path of a package.

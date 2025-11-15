@@ -5,13 +5,19 @@ export default defineConfig({
     lib: {
       entry: 'src/index.ts',
       name: 'UBITSBadge',
-      fileName: 'index',
-      formats: ['es']
+      fileName: (format) => {
+        if (format === 'umd') {
+          return 'badge.umd.js';
+        }
+        return 'index';
+      },
+      formats: ['es', 'umd']
     },
     rollupOptions: {
       external: [],
       output: {
-        assetFileNames: 'badge.css'
+        assetFileNames: 'badge.css',
+        globals: {}
       }
     }
   }
