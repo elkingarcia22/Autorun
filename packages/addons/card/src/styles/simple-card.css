@@ -12,8 +12,10 @@
   display: flex;
   flex-direction: column;
   background: var(--ubits-bg-1);
-  border: 1px solid var(--ubits-border-1);
-  border-radius: var(--ubits-radius-md);
+  /* Border constante: 1px solid */
+  border: 1px solid var(--ubits-border-1) !important;
+  /* Border-radius constante: 8px - FORZADO */
+  border-radius: 8px !important;
   padding: var(--ubits-spacing-lg);
   gap: var(--ubits-spacing-md);
   font-family: var(--font-sans);
@@ -21,6 +23,8 @@
   width: 100%;
   box-sizing: border-box;
   overflow: hidden;
+  isolation: isolate;
+  position: relative;
 }
 
 /* ========================================
@@ -29,12 +33,18 @@
 
 .ubits-simple-card--default {
   background: var(--ubits-bg-1);
-  border: 1px solid var(--ubits-border-1);
+  /* Border constante: 1px solid - FORZADO */
+  border: 1px solid var(--ubits-border-1) !important;
+  /* Border-radius constante: 8px - FORZADO */
+  border-radius: 8px !important;
 }
 
 .ubits-simple-card--elevated {
   background: var(--ubits-bg-1);
-  border: 1px solid var(--ubits-border-1);
+  /* Border constante: 1px solid - FORZADO */
+  border: 1px solid var(--ubits-border-1) !important;
+  /* Border-radius constante: 8px - FORZADO */
+  border-radius: 8px !important;
   box-shadow: var(--ubits-shadow-sm);
 }
 
@@ -44,7 +54,10 @@
 
 .ubits-simple-card--bordered {
   background: var(--ubits-bg-1);
-  border: 2px solid var(--ubits-border-1);
+  /* Border constante: 1px solid (aunque se llame "bordered", mantenemos 1px) - FORZADO */
+  border: 1px solid var(--ubits-border-1) !important;
+  /* Border-radius constante: 8px - FORZADO */
+  border-radius: 8px !important;
 }
 
 .ubits-simple-card--flat {
@@ -58,13 +71,14 @@
 
 .ubits-simple-card--sm {
   max-width: 280px;
-  padding: var(--ubits-spacing-md);
   gap: var(--ubits-spacing-sm);
 }
 
 .ubits-simple-card--sm .ubits-simple-card__header {
   height: 100px;
   padding: 0 var(--ubits-spacing-md);
+  margin: calc(var(--ubits-spacing-lg) * -1) calc(var(--ubits-spacing-lg) * -1) 0 calc(var(--ubits-spacing-lg) * -1);
+  width: calc(100% + var(--ubits-spacing-lg) + var(--ubits-spacing-lg));
 }
 
 .ubits-simple-card--sm .ubits-simple-card__bubble {
@@ -172,10 +186,11 @@
 
 .ubits-simple-card__header {
   position: relative;
-  width: 100%;
+  width: calc(100% + var(--ubits-spacing-lg) + var(--ubits-spacing-lg));
   height: 140px;
   background: linear-gradient(135deg, var(--ubits-bg-5) 0%, var(--ubits-bg-4) 100%);
-  border-radius: var(--ubits-radius-md) var(--ubits-radius-md) 0 0;
+  /* Border-radius constante: 8px en esquinas superiores para coincidir con el contenedor */
+  border-radius: 8px 8px 0 0;
   margin: calc(var(--ubits-spacing-lg) * -1) calc(var(--ubits-spacing-lg) * -1) 0 calc(var(--ubits-spacing-lg) * -1);
   overflow: hidden;
   display: flex;
@@ -206,15 +221,16 @@
 .ubits-simple-card__header::after {
   content: '';
   position: absolute;
-  top: -30%;
+  top: -20%;
   left: 50%;
   transform: translateX(-50%);
-  width: 300px;
-  height: 300px;
+  width: 200px;
+  height: 200px;
   background: radial-gradient(circle, color-mix(in srgb, var(--ubits-feedback-error-border) 15%, transparent) 0%, transparent 70%);
   opacity: 0.6;
   filter: blur(40px);
   pointer-events: none;
+  border-radius: 8px 8px 0 0;
 }
 
 /* Decoraciones (burbujas) */
@@ -354,6 +370,7 @@
   .ubits-simple-card__header {
     height: 100px;
     margin: calc(var(--ubits-spacing-md) * -1) calc(var(--ubits-spacing-md) * -1) 0 calc(var(--ubits-spacing-md) * -1);
+    width: calc(100% + var(--ubits-spacing-md) + var(--ubits-spacing-md));
   }
 
   .ubits-simple-card__footer {

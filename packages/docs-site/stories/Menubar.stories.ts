@@ -290,10 +290,10 @@ export const Default: Story = {
           items,
           containerId: 'menubar-story-container',
           onActiveItemChange: (itemId, parentId) => {
-            console.log('Active item changed:', { itemId, parentId });
+            // Handler para cambio de item activo
           },
           onItemClick: (itemId, item) => {
-            console.log('Item clicked:', { itemId, item });
+            // Handler para click en item
           },
         });
 

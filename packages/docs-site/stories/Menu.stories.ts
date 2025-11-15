@@ -518,10 +518,10 @@ export const Default: Story = {
       sections: sections,
       userInfo: userInfo,
       onActiveItemChange: (itemId, sectionId) => {
-        console.log('Active item changed:', { itemId, sectionId });
+        // Handler para cambio de item activo
       },
       onAvatarClick: () => {
-        console.log('Avatar clicked');
+        // Handler para click en avatar
       },
     };
 

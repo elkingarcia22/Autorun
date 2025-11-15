@@ -177,14 +177,6 @@ export const Default: Story = {
     tooltipText: 'Tooltip del botón',
   },
   render: (args) => {
-    console.log('🔵 ===== RENDER INICIO =====');
-    console.log('📋 args recibidos:', {
-      active: args.active,
-      variant: args.variant,
-      text: args.text,
-      state: args.state
-    });
-    
     const container = document.createElement('div');
     container.style.padding = '20px';
     container.style.background = 'var(--ubits-bg-1, #ffffff)';
@@ -208,12 +200,6 @@ export const Default: Story = {
       iconPosition: args.iconPosition === 'only' ? 'left' : args.iconPosition
     };
     
-    console.log('📋 buttonArgs procesados:', {
-      active: buttonArgs.active,
-      variant: buttonArgs.variant,
-      text: buttonArgs.text
-    });
-    
     // Si dropdown está activo, usar createButton para inicializar la funcionalidad
     if (buttonArgs.dropdown && buttonArgs.dropdownOptions && buttonArgs.dropdownOptions.length > 0) {
       const buttonWrapper = document.createElement('div');
@@ -228,43 +214,31 @@ export const Default: Story = {
           
           // Función helper para aplicar estilos active
           const applyActiveStyles = (btn: HTMLButtonElement) => {
-            console.log('🔵 applyActiveStyles - buttonArgs.active:', buttonArgs.active);
             if (buttonArgs.active || args.active) {
-              console.log('🔵 Aplicando estilos active en dropdown...');
               // Aplicar fondo active con múltiples capas
               const root = document.documentElement;
-              const bgActiveButton = getComputedStyle(root).getPropertyValue('--ubits-bg-active-button').trim() || 'rgba(12, 91, 239, 0.15)';
+              const bgActiveButton = getComputedStyle(root).getPropertyValue('--ubits-bg-active-button').trim() || 'var(--ubits-bg-active-button)';
               const bg1 = getComputedStyle(root).getPropertyValue('--ubits-bg-1').trim() || '#ffffff';
               const backgroundValue = `${bgActiveButton}, ${bg1}`;
               btn.style.setProperty('background', backgroundValue, 'important');
               btn.style.setProperty('border', 'none', 'important');
               btn.style.setProperty('color', 'var(--ubits-button-active-fg, var(--ubits-accent-brand-static))', 'important');
-              console.log('🔵 btn.style.color =', btn.style.color);
-              console.log('🔵 btn.style.background =', btn.style.background);
               
               const spans = btn.querySelectorAll('span');
-              console.log('📋 Spans en dropdown:', spans.length);
-              spans.forEach((span, index) => {
-                console.log(`🔵 Aplicando color a span ${index} en dropdown`);
+              spans.forEach((span) => {
                 span.style.color = 'var(--ubits-button-active-fg, var(--ubits-accent-brand-static))';
-                console.log(`🔵 span[${index}].style.color =`, span.style.color);
               });
               
               const icons = btn.querySelectorAll('i');
-              console.log('📋 Iconos en dropdown:', icons.length);
-              icons.forEach((icon, index) => {
-                console.log(`🔵 Aplicando color a icon ${index} en dropdown`);
+              icons.forEach((icon) => {
                 icon.style.color = 'var(--ubits-button-active-fg, var(--ubits-accent-brand-static))';
-                console.log(`🔵 icon[${index}].style.color =`, icon.style.color);
               });
             }
           };
           
           // IMPORTANTE: Si active es true, agregar la clase ubits-button--active
           if (buttonArgs.active || args.active) {
-            console.log('🔵 [DROPDOWN] ACTIVANDO modificador active - agregando clase...');
             button.classList.add('ubits-button--active');
-            console.log('📋 [DROPDOWN] Clases DESPUÉS de agregar active:', button.className);
           }
           
           if (parent) {
@@ -291,7 +265,6 @@ export const Default: Story = {
             }
           }
         } catch (error) {
-          console.warn('Could not use createButton, falling back to renderButton:', error);
           buttonWrapper.innerHTML = renderButton(buttonArgs);
           // Aplicar tooltip UBITS y estado visual si es necesario
           const button = buttonWrapper.querySelector('button') as HTMLButtonElement;
@@ -303,7 +276,7 @@ export const Default: Story = {
             if (buttonArgs.active || args.active) {
               // Aplicar fondo active con múltiples capas
               const root = document.documentElement;
-              const bgActiveButton = getComputedStyle(root).getPropertyValue('--ubits-bg-active-button').trim() || 'rgba(12, 91, 239, 0.15)';
+              const bgActiveButton = getComputedStyle(root).getPropertyValue('--ubits-bg-active-button').trim() || 'var(--ubits-bg-active-button)';
               const bg1 = getComputedStyle(root).getPropertyValue('--ubits-bg-1').trim() || '#ffffff';
               const backgroundValue = `${bgActiveButton}, ${bg1}`;
               button.style.setProperty('background', backgroundValue, 'important');
@@ -332,8 +305,6 @@ export const Default: Story = {
     } else {
       // Sin dropdown, usar renderButton normalmente
       const buttonHTML = renderButton(buttonArgs);
-      console.log('📋 HTML renderizado:', buttonHTML);
-      console.log('📋 ¿Contiene ubits-button--active?', buttonHTML.includes('ubits-button--active'));
       
       const buttonContainer = document.createElement('div');
       buttonContainer.innerHTML = buttonHTML;
@@ -341,39 +312,22 @@ export const Default: Story = {
       
       // Aplicar estado visual si se especifica
       requestAnimationFrame(() => {
-        console.clear();
-        console.log('🔵 ===== INICIO RENDER BUTTON =====');
         const button = buttonContainer.querySelector('button') as HTMLButtonElement;
         if (button) {
-          console.log('✅ Botón encontrado:', button);
-          console.log('📋 buttonArgs.active:', buttonArgs.active);
-          console.log('📋 args.active:', args.active);
-          console.log('📋 Clases del botón ANTES:', button.className);
-          console.log('📋 args.state:', args.state);
-          
           // IMPORTANTE: Si active es true, agregar la clase ubits-button--active
           if (buttonArgs.active || args.active) {
-            console.log('🔵 ACTIVANDO modificador active - agregando clase...');
             button.classList.add('ubits-button--active');
-            console.log('📋 Clases DESPUÉS de agregar active:', button.className);
           }
           
           // Verificar si tiene la clase active
           const hasActiveClass = button.classList.contains('ubits-button--active');
-          console.log('📋 Tiene clase ubits-button--active?', hasActiveClass);
-          
-          // Obtener estilos computados antes
-          const computedBefore = window.getComputedStyle(button);
-          console.log('🎨 Color ANTES:', computedBefore.color);
-          console.log('🎨 Background ANTES:', computedBefore.background);
           
           // Si el botón está en estado active, asegurar color azul desde el inicio
           if (buttonArgs.active || args.active || hasActiveClass) {
-            console.log('🔵 Aplicando estilos active...');
             // Asegurar fondo active con múltiples capas: bg-active-button sobre bg1
             const root = document.documentElement;
-            const bgActiveButton = getComputedStyle(root).getPropertyValue('--ubits-bg-active-button').trim() || 'rgba(12, 91, 239, 0.15)';
-            const bg1 = getComputedStyle(root).getPropertyValue('--ubits-bg-1').trim() || '#ffffff';
+            const bgActiveButton = getComputedStyle(root).getPropertyValue('--ubits-bg-active-button').trim() || 'var(--ubits-bg-active-button)';
+            const bg1 = getComputedStyle(root).getPropertyValue('--ubits-bg-1').trim() || 'var(--ubits-bg-1)';
             const backgroundValue = `${bgActiveButton}, ${bg1}`;
             
             // Usar setProperty con !important para asegurar que se aplique
@@ -381,34 +335,15 @@ export const Default: Story = {
             button.style.setProperty('border', 'none', 'important');
             button.style.setProperty('color', 'var(--ubits-button-active-fg, var(--ubits-accent-brand-static))', 'important');
             
-            console.log('🔵 button.style.color =', button.style.color);
-            console.log('🔵 button.style.background =', button.style.background);
-            console.log('🔵 bg-active-button token:', bgActiveButton);
-            console.log('🔵 bg1 token:', bg1);
-            console.log('🔵 backgroundValue completo:', backgroundValue);
-            
             const spans = button.querySelectorAll('span');
-            console.log('📋 Spans encontrados:', spans.length);
-            spans.forEach((span, index) => {
-              console.log(`🔵 Aplicando color a span ${index}:`, span.textContent);
+            spans.forEach((span) => {
               span.style.color = 'var(--ubits-button-active-fg, var(--ubits-accent-brand-static))';
-              console.log(`🔵 span[${index}].style.color =`, span.style.color);
             });
             
             const icons = button.querySelectorAll('i');
-            console.log('📋 Iconos encontrados:', icons.length);
-            icons.forEach((icon, index) => {
-              console.log(`🔵 Aplicando color a icon ${index}:`, icon.className);
+            icons.forEach((icon) => {
               icon.style.color = 'var(--ubits-button-active-fg, var(--ubits-accent-brand-static))';
-              console.log(`🔵 icon[${index}].style.color =`, icon.style.color);
             });
-            
-            // Verificar token (reutilizar root y bg1 ya declarados arriba)
-            const accentBrand = getComputedStyle(root).getPropertyValue('--ubits-button-active-fg').trim() || getComputedStyle(root).getPropertyValue('--ubits-accent-brand-static').trim();
-            const bgActive = getComputedStyle(root).getPropertyValue('--ubits-bg-active-button').trim();
-            console.log('🎨 Token --ubits-accent-brand-static:', accentBrand);
-            console.log('🎨 Token --ubits-bg-active-button:', bgActive);
-            console.log('🎨 Token --ubits-bg-1:', bg1);
           }
           
           // Aplicar tooltip UBITS si es necesario
@@ -418,18 +353,8 @@ export const Default: Story = {
           
           // Aplicar estado visual
           if (args.state && args.state !== 'default') {
-            console.log('🔵 Aplicando estado visual:', args.state);
             applyButtonState(button, args.state as string);
           }
-          
-          // Verificar estilos después
-          setTimeout(() => {
-            const computedAfter = window.getComputedStyle(button);
-            console.log('🎨 Color DESPUÉS:', computedAfter.color);
-            console.log('🎨 Background DESPUÉS:', computedAfter.background);
-            console.log('📋 Clases finales:', button.className);
-            console.log('🔵 ===== FIN RENDER BUTTON =====');
-          }, 100);
         } else {
           console.error('❌ Botón no encontrado');
         }
@@ -444,8 +369,6 @@ export const Default: Story = {
 
 // Función helper para aplicar estados visuales al botón
 function applyButtonState(button: HTMLButtonElement, state: string): void {
-  console.log('🔵 applyButtonState - Estado:', state);
-  
   // Remover estados anteriores
   button.classList.remove('ubits-button--hover', 'ubits-button--focus', 'ubits-button--pressed');
   button.disabled = false;
@@ -458,29 +381,18 @@ function applyButtonState(button: HTMLButtonElement, state: string): void {
   const isTertiary = button.classList.contains('ubits-button--tertiary');
   const isActive = button.classList.contains('ubits-button--active');
   
-  console.log('📋 Variantes detectadas:', { isPrimary, isSecondary, isTertiary, isActive });
-  console.log('📋 Clases actuales:', button.className);
-  
   // Si el botón está en estado active, asegurar que el color del texto sea azul
   if (isActive) {
-    console.log('🔵 Botón está en estado active, aplicando color azul...');
     button.style.color = 'var(--ubits-button-active-fg, var(--ubits-accent-brand-static))';
-    console.log('🔵 button.style.color aplicado:', button.style.color);
     
     const spans = button.querySelectorAll('span');
-    console.log('📋 Spans en applyButtonState:', spans.length);
-    spans.forEach((span, index) => {
-      console.log(`🔵 Aplicando color a span ${index} en applyButtonState`);
+    spans.forEach((span) => {
       span.style.color = 'var(--ubits-accent-brand-static)';
-      console.log(`🔵 span[${index}].style.color =`, span.style.color);
     });
     
     const icons = button.querySelectorAll('i');
-    console.log('📋 Iconos en applyButtonState:', icons.length);
-    icons.forEach((icon, index) => {
-      console.log(`🔵 Aplicando color a icon ${index} en applyButtonState`);
+    icons.forEach((icon) => {
       icon.style.color = 'var(--ubits-accent-brand-static)';
-      console.log(`🔵 icon[${index}].style.color =`, icon.style.color);
     });
   }
   
@@ -490,7 +402,7 @@ function applyButtonState(button: HTMLButtonElement, state: string): void {
       // Simular hover con estilos inline
       if (isActive) {
         // Si es active, mantener el estilo active
-        button.style.background = 'var(--ubits-bg-active-button, rgba(12, 91, 239, 0.15)), var(--ubits-bg-1, #ffffff)';
+        button.style.background = 'var(--ubits-bg-active-button), var(--ubits-bg-1)';
         button.style.color = 'var(--ubits-button-active-fg, var(--ubits-accent-brand-static))';
         button.style.border = 'none';
       } else if (isPrimary) {
@@ -514,12 +426,11 @@ function applyButtonState(button: HTMLButtonElement, state: string): void {
       
     case 'active':
       // Estado active: usar estilo del modificador active (fondo azul 0C5BEF al 15% + texto azul)
-      console.log('🔵 Aplicando estado ACTIVE (modificador active)');
       button.classList.add('ubits-button--active');
       
       // Obtener valores de tokens
       const rootEl = document.documentElement;
-      const bgActiveButtonValue = getComputedStyle(rootEl).getPropertyValue('--ubits-bg-active-button').trim() || 'rgba(12, 91, 239, 0.15)';
+      const bgActiveButtonValue = getComputedStyle(rootEl).getPropertyValue('--ubits-bg-active-button').trim() || 'var(--ubits-bg-active-button)';
       const bg1Value = getComputedStyle(rootEl).getPropertyValue('--ubits-bg-1').trim() || '#ffffff';
       
       // El CSS tiene la regla pero puede no aplicarse por especificidad
@@ -540,12 +451,6 @@ function applyButtonState(button: HTMLButtonElement, state: string): void {
       button.style.setProperty('color', 'var(--ubits-button-active-fg, var(--ubits-accent-brand-static))', 'important');
       button.style.setProperty('border', 'none', 'important');
       button.style.removeProperty('transform');
-      
-      console.log('🔵 bg-active-button token:', bgActiveButtonValue);
-      console.log('🔵 bg1 token:', bg1Value);
-      console.log('🔵 backgroundValue:', backgroundValue);
-      console.log('🔵 button.style.background después:', button.style.background);
-      console.log('🔵 Clases del botón:', button.className);
       
       // Inyectar estilo CSS directamente para forzar el fondo (el CSS puede no aplicarse por timing)
       const styleId = 'button-active-override';
@@ -593,66 +498,15 @@ function applyButtonState(button: HTMLButtonElement, state: string): void {
         }
       `;
       styleEl.textContent = cssRule;
-      console.log('🔵 Estilo CSS inyectado para:', variantClass);
-      console.log('🔵 backgroundValue:', backgroundValue);
-      console.log('🔵 CSS completo inyectado:', cssRule);
-      console.log('🔵 ¿Estilo en DOM?', document.getElementById(styleId) !== null);
-      
-      // Verificar estilo computado después de un momento
-      setTimeout(() => {
-        const computed = window.getComputedStyle(button);
-        console.log('🔵 Background computado después:', computed.background);
-        console.log('🔵 Background-color computado:', computed.backgroundColor);
-        console.log('🔵 Background-image computado:', computed.backgroundImage);
-        console.log('🔵 ¿Tiene clase active?', button.classList.contains('ubits-button--active'));
-        
-        // Verificar si el estilo inyectado está en el DOM
-        const injectedStyle = document.getElementById(styleId);
-        if (injectedStyle) {
-          console.log('🔵 Estilo inyectado encontrado en DOM');
-          console.log('🔵 Contenido del estilo:', injectedStyle.textContent?.substring(0, 200));
-        } else {
-          console.log('⚠️ Estilo inyectado NO encontrado en DOM');
-        }
-        
-        // Verificar reglas CSS aplicadas
-        const sheets = Array.from(document.styleSheets);
-        let foundRule = false;
-        for (const sheet of sheets) {
-          try {
-            const rules = Array.from(sheet.cssRules || sheet.rules || []);
-            for (const rule of rules) {
-              if (rule instanceof CSSStyleRule) {
-                if (rule.selectorText?.includes(variantClass) && rule.selectorText?.includes('active')) {
-                  console.log('🔵 Regla CSS encontrada:', rule.selectorText);
-                  console.log('🔵 Background de la regla:', rule.style.background);
-                  foundRule = true;
-                }
-              }
-            }
-          } catch (e) {
-            // Ignorar errores de CORS
-          }
-        }
-        if (!foundRule) {
-          console.log('⚠️ No se encontró regla CSS para el botón active');
-        }
-      }, 100);
       
       // Aplicar color a spans e iconos
       const spansActive = button.querySelectorAll('span');
-      console.log('📋 Spans encontrados en active:', spansActive.length);
-      spansActive.forEach((span, index) => {
-        console.log(`🔵 Aplicando color azul a span ${index}`);
+      spansActive.forEach((span) => {
         span.style.color = 'var(--ubits-accent-brand-static)';
-        console.log(`🔵 span[${index}].style.color =`, span.style.color);
       });
       const iconsActive = button.querySelectorAll('i');
-      console.log('📋 Iconos encontrados en active:', iconsActive.length);
-      iconsActive.forEach((icon, index) => {
-        console.log(`🔵 Aplicando color azul a icon ${index}`);
+      iconsActive.forEach((icon) => {
         icon.style.color = 'var(--ubits-accent-brand-static)';
-        console.log(`🔵 icon[${index}].style.color =`, icon.style.color);
       });
       break;
       
@@ -685,7 +539,7 @@ function applyButtonState(button: HTMLButtonElement, state: string): void {
         button.style.color = '';
       } else {
         // Si es active, mantener el estilo active
-        button.style.background = 'var(--ubits-bg-active-button, rgba(12, 91, 239, 0.15)), var(--ubits-bg-1, #ffffff)';
+        button.style.background = 'var(--ubits-bg-active-button), var(--ubits-bg-1)';
         button.style.color = 'var(--ubits-button-active-fg, var(--ubits-accent-brand-static))';
         button.style.border = 'none';
       }
@@ -921,7 +775,7 @@ export const ActiveState: Story = {
       <p style="margin: 0 0 8px 0; color: var(--ubits-fg-1-high, #303a47); font-weight: 600;">Estilo Active:</p>
       <ul style="margin: 0; padding-left: 20px; color: var(--ubits-fg-1-medium, #5c646f);">
         <li>Fondo: <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px;">var(--ubits-bg-active-button)</code> sobre <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px;">var(--ubits-bg-1)</code></li>
-        <li>Texto: <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px;">var(--ubits-button-active-fg)</code> (azul #0c5bef en light, #b6b5fc en dark)</li>
+        <li>Texto: <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px;">var(--ubits-button-active-fg)</code> (usa token accent-brand según tema)</li>
         <li>Sin borde</li>
       </ul>
     `;

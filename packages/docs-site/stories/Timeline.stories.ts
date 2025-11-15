@@ -301,14 +301,6 @@ function renderTimelineItem(
         <div class="ubits-timeline-line"></div>
       ` : '';
   
-  console.log(`[Timeline Item ${index}]`, {
-    isLast,
-    hasLine: !isLast,
-    lineHTML: lineHTML ? 'EXISTS' : 'EMPTY',
-    state: item.state,
-    markerClass
-  });
-  
   return `
     <div class="ubits-timeline-item ${isCentered ? `ubits-timeline-item--${contentSide}` : ''}" data-index="${index}" data-state="${item.state}">
       ${isCentered && contentSide === 'right' ? `
@@ -398,14 +390,6 @@ function renderTimeline(args: {
   const timelineData = generateTimelineData(filledItems);
   const uniqueId = `timeline-${Date.now()}`;
   
-  console.log('[Timeline Render]', {
-    totalItems: timelineData.length,
-    filledItems,
-    alignment,
-    showAvatar,
-    showIcon
-  });
-  
   const alignmentClass = alignment === 'center' ? 'ubits-timeline--center' : 'ubits-timeline--left';
 
   const timelineHTML = `
@@ -481,54 +465,6 @@ export const Default: Story = {
     const timelineHTML = renderTimeline(args);
     timelineContainer.innerHTML = timelineHTML;
     
-    // Logs después de renderizar
-    setTimeout(() => {
-      const items = timelineContainer.querySelectorAll('.ubits-timeline-item');
-      const lines = timelineContainer.querySelectorAll('.ubits-timeline-line');
-      
-      console.log('[Timeline DOM Check]', {
-        totalItems: items.length,
-        totalLines: lines.length,
-        itemsWithLines: Array.from(items).map((item, idx) => {
-          const line = item.querySelector('.ubits-timeline-line');
-          const computedStyle = line ? window.getComputedStyle(line) : null;
-          return {
-            index: idx,
-            hasLine: !!line,
-            isLast: idx === items.length - 1,
-            lineDisplay: computedStyle?.display,
-            lineVisibility: computedStyle?.visibility,
-            lineOpacity: computedStyle?.opacity,
-            lineHeight: computedStyle?.height,
-            lineTop: computedStyle?.top,
-            lineBottom: computedStyle?.bottom,
-            lineLeft: computedStyle?.left,
-            lineWidth: computedStyle?.width,
-            lineBackground: computedStyle?.backgroundColor
-          };
-        })
-      });
-      
-      // Verificar estilos aplicados
-      lines.forEach((line, idx) => {
-        const computed = window.getComputedStyle(line);
-        console.log(`[Line ${idx}]`, {
-          display: computed.display,
-          visibility: computed.visibility,
-          opacity: computed.opacity,
-          position: computed.position,
-          top: computed.top,
-          bottom: computed.bottom,
-          left: computed.left,
-          width: computed.width,
-          height: computed.height,
-          backgroundColor: computed.backgroundColor,
-          zIndex: computed.zIndex,
-          parentElement: line.parentElement?.className,
-          offsetParent: line.offsetParent?.className
-        });
-      });
-    }, 100);
     
     // Agregar estilos CSS para el Timeline
     const styleId = 'ubits-timeline-styles';

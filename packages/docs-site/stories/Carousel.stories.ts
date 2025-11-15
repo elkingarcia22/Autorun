@@ -335,10 +335,10 @@ export const Default: Story = {
     showCardHeader: true,
     showCardButtons: true,
     onItemClick: (item: CarouselItem) => {
-      console.log('Item clicked:', item);
+      // Handler para click en item
     },
     onSlideChange: (currentIndex: number) => {
-      console.log('Slide changed to:', currentIndex);
+      // Handler para cambio de slide
     }
   },
   render: (args) => {
@@ -350,7 +350,6 @@ export const Default: Story = {
       showHeader: args.showCardHeader !== false,
       showButtons: args.showCardButtons !== false,
       onItemClick: (item: CarouselItem) => {
-        console.log('Item clicked:', item);
         if (args.onItemClick) {
           args.onItemClick(item);
         }

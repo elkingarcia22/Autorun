@@ -305,8 +305,6 @@ export const Default: Story = {
     let lastArgs = getRelevantArgs(args);
 
     const createMenuContent = () => {
-      console.log('[Story] createMenuContent()');
-      
       // Preservar el valor y posición del cursor del input antes de limpiar
       const existingMenu = menuContainer.querySelector('.ubits-participants-menu');
       const existingInput = existingMenu 
@@ -320,7 +318,6 @@ export const Default: Story = {
         preservedSearchValue = existingInput.value || '';
         cursorPosition = existingInput.selectionStart || 0;
         shouldRestoreFocus = document.activeElement === existingInput;
-        console.log('[Story] preservando input:', preservedSearchValue);
       }
 
       menuContainer.innerHTML = '';
@@ -353,7 +350,6 @@ export const Default: Story = {
           // El flag skipNextRender evitará que el intervalo cause un re-render
         },
         onSearchChange: (searchText) => {
-          console.log('[Story] onSearchChange →', searchText);
           preservedSearchValue = searchText || '';
           
           if (searchTimeout) {
@@ -361,7 +357,6 @@ export const Default: Story = {
           }
           
           searchTimeout = setTimeout(() => {
-            console.log('[Story] debounce ejecutado, filtrando...');
             isProcessingSearch = true;
             
             let filteredParticipants: Participant[] = [...sampleParticipants];
@@ -373,7 +368,6 @@ export const Default: Story = {
                 const matchesRole = p.role.toLowerCase().includes(searchText.toLowerCase());
                 return matchesName || matchesRole;
               });
-              console.log('[Story] filtrados por búsqueda:', filteredParticipants.length, 'de', sampleParticipants.length);
             }
             
             // Aplicar filtros de roles
@@ -393,7 +387,6 @@ export const Default: Story = {
             args.participants = filteredParticipants;
             
             if (menuInstance?.updateParticipantsList) {
-              console.log('[Story] usando updateList()');
               skipNextRenderFromSearch = true;
               menuInstance.updateParticipantsList(filteredParticipants, args.selectedParticipantId);
               // Actualizar lastArgs inmediatamente para que el setInterval no detecte cambios
@@ -403,7 +396,6 @@ export const Default: Story = {
                 skipNextRenderFromSearch = false;
               }, 100); // Aumentar tiempo para asegurar que el setInterval no detecte cambios
             } else {
-              console.log('[Story] RECREANDO TODO (no hay instancia)');
               skipNextRenderFromSearch = true;
               createMenuContent();
               setTimeout(() => {
@@ -416,10 +408,9 @@ export const Default: Story = {
           }, 300);
         },
         onFilterClick: () => {
-          console.log('[Story] onFilterClick');
+          // Handler para click en filtros
         },
         onFilterChange: (filters) => {
-          console.log('[Story] onFilterChange →', filters);
           activeFilters = filters;
           
           // Aplicar filtros a los participantes
@@ -451,7 +442,6 @@ export const Default: Story = {
           args.participants = filteredParticipants;
           
           if (menuInstance?.updateParticipantsList) {
-            console.log('[Story] aplicando filtros con updateList()');
             skipNextRenderFromSearch = true;
             menuInstance.updateParticipantsList(filteredParticipants, args.selectedParticipantId);
             lastArgs = getRelevantArgs(args);
@@ -459,7 +449,6 @@ export const Default: Story = {
               skipNextRenderFromSearch = false;
             }, 100);
           } else {
-            console.log('[Story] aplicando filtros recreando TODO');
             skipNextRenderFromSearch = true;
             createMenuContent();
             setTimeout(() => {
@@ -478,7 +467,6 @@ export const Default: Story = {
           }
           
           menuInstance = createParticipantsMenu(menuOptions);
-          console.log('[Story] menú creado ✓');
           
           if (shouldRestoreFocus) {
             setTimeout(() => {
@@ -488,7 +476,6 @@ export const Default: Story = {
                 const currentValue = newInput.value || '';
                 const safePosition = Math.min(cursorPosition, currentValue.length);
                 newInput.setSelectionRange(safePosition, safePosition);
-                console.log('[Story] foco restaurado');
               }
             }, 100);
           }
@@ -517,18 +504,15 @@ export const Default: Story = {
         const currentArgs = getRelevantArgs(args);
         if (currentArgs !== lastArgs) {
           if (skipNextRender) {
-            console.log('[Story] skipNextRender → ignorando cambio');
             skipNextRender = false;
             lastArgs = currentArgs;
             return;
           }
           if (skipNextRenderFromSearch) {
-            console.log('[Story] skipNextRenderFromSearch → ignorando cambio');
             skipNextRenderFromSearch = false;
             lastArgs = currentArgs;
             return;
           }
-          console.log('[Story] cambio externo detectado → recreando');
           lastArgs = currentArgs;
           createMenuContent();
         }

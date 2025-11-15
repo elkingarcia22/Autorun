@@ -318,14 +318,12 @@ export const Default: Story = {
         buyButtonIcon,
         wishlistIcon,
         onProductClick: (product, index) => {
-          console.log('Product clicked:', product, index);
+          // Handler para click en producto
         },
         onBuyClick: (product, index) => {
-          console.log('Buy clicked:', product, index);
           alert(`Comprar: ${product.name} - $${product.price}`);
         },
         onWishlistClick: (product, index) => {
-          console.log('Wishlist clicked:', product, index);
           product.inWishlist = !product.inWishlist;
           // Re-renderizar el componente
           const dataViewElement = container.querySelector('.ubits-data-view');

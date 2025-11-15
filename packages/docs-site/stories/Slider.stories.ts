@@ -205,7 +205,6 @@ export const Default: Story = {
           values = [25, 75];
         }
       } catch (e) {
-        console.warn('Error parsing valuesString, using default [25, 75]', e);
         values = [25, 75];
       }
     }
@@ -219,7 +218,6 @@ export const Default: Story = {
           marks = [];
         }
       } catch (e) {
-        console.warn('Error parsing marksString, using empty array', e);
         marks = [];
       }
     }
@@ -246,11 +244,9 @@ export const Default: Story = {
       showRangeGuide: args.showRangeGuide,
       onChange: (value) => {
         // Callback cuando cambia el valor (modo single)
-        console.log('Slider value changed:', value);
       },
       onRangeChange: (values) => {
         // Callback cuando cambian los valores (modo range)
-        console.log('Slider range changed:', values);
       },
     };
 
