@@ -57,14 +57,15 @@
     justify-content: flex-start;
     flex-shrink: 0;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: none;
     padding: 4px;
     border-radius: 6px;
 }
 
+/* Sin efecto hover para el logo */
 .ubits-sidebar-logo:hover {
-    background: rgba(255, 255, 255, 0.1);
-    transform: scale(1.05);
+    background: transparent;
+    transform: none;
 }
 
 .ubits-sidebar-logo img {
