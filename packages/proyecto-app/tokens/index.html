@@ -524,6 +524,7 @@
     <link rel="stylesheet" href="../../addons/bar-metric-card/src/styles/bar-metric-card.css" />
     <link rel="stylesheet" href="../../addons/csat-metric-card/src/styles/csat-metric-card.css" />
     <link rel="stylesheet" href="../../addons/data-view/src/styles/data-view.css" />
+    <link rel="stylesheet" href="../../addons/gallery/src/styles/gallery.css" />
     <link rel="stylesheet" href="../../addons/button/src/styles/button.css" />
     <link rel="stylesheet" href="../../addons/progress/src/styles/progress.css" />
     <style>
@@ -6135,6 +6136,21 @@ Reglas Importantes:
               class: 'ubits-carousel ubits-carousel--arrows-inside ubits-carousel--dots-top',
               example: 'createCarousel({\n  items: [\n    { id: 1, title: \'Card 1\', subtitle: \'Subtitle 1\', content: \'Content 1\', variant: \'default\', size: \'md\' },\n    { id: 2, title: \'Card 2\', subtitle: \'Subtitle 2\', content: \'Content 2\', variant: \'default\', size: \'md\' },\n    { id: 3, title: \'Card 3\', subtitle: \'Subtitle 3\', content: \'Content 3\', variant: \'default\', size: \'md\' }\n  ],\n  itemsPerView: 3,\n  showArrows: true,\n  showDots: true,\n  autoplay: false,\n  loop: false,\n  gap: 16,\n  arrowPosition: \'outside\',\n  dotPosition: \'bottom\'\n})',
               hasPreview: true
+            },
+            {
+              name: 'Gallery',
+              description: 'Componente Gallery UBITS para mostrar imágenes en diferentes layouts (grid, masonry, list) con múltiples tamaños, soporte para lightbox, lazy loading y thumbnails. Usa tokens UBITS para colores, tipografía y espaciado.',
+              files: {
+                css: 'addons/gallery/src/styles/gallery.css',
+                ts: 'addons/gallery/src/GalleryProvider.ts'
+              },
+              variants: [],
+              sizes: ['xs', 'sm', 'md', 'lg', 'xl'],
+              states: ['default'],
+              features: ['3 layouts (grid, masonry, list)', '5 tamaños (xs, sm, md, lg, xl)', 'Lightbox con navegación y thumbnails', 'Lazy loading opcional', 'Thumbnails opcionales', 'Aspect ratio configurable', 'Número de columnas configurable', 'Gap configurable', 'Usa tokens UBITS exclusivamente', 'Usa tipografía UBITS'],
+              class: 'ubits-gallery ubits-gallery--grid ubits-gallery--md',
+              example: 'createGallery({\n  items: [\n    { id: 1, image: \'/path/to/image1.jpg\', thumbnail: \'/path/to/thumb1.jpg\', title: \'Imagen 1\', description: \'Descripción\', alt: \'Alt text\' },\n    { id: 2, image: \'/path/to/image2.jpg\', thumbnail: \'/path/to/thumb2.jpg\', title: \'Imagen 2\', description: \'Descripción\', alt: \'Alt text\' }\n  ],\n  layout: \'grid\',\n  size: \'md\',\n  columns: 3,\n  gap: 16,\n  showThumbnails: false,\n  lazyLoad: false,\n  lightbox: true,\n  aspectRatio: undefined\n})',
+              hasPreview: true
             }
           ],
           'Charts': [
@@ -6443,6 +6459,8 @@ Reglas Importantes:
                     window.updateCSATMetricCardPreview('csat-metric-card');
                   } else if (componentId === 'dataview' && typeof window.updateDataViewPreview === 'function') {
                     window.updateDataViewPreview('dataview');
+                  } else if (componentId === 'gallery' && typeof window.updateGalleryPreview === 'function') {
+                    window.updateGalleryPreview('gallery');
                   } else if (componentId === 'contenedor' && typeof window.updateContenedorPreview === 'function') {
                     window.updateContenedorPreview('contenedor');
                   }
@@ -11095,6 +11113,114 @@ Reglas Importantes:
                           <!-- PREVIEW -->
                           <div style="background: var(--ubits-bg-2); padding: 48px; border-radius: 8px; border: none; margin-bottom: 24px; display: flex; align-items: flex-start; justify-content: center; min-height: 400px;">
                             <div id="data-view-preview-${componentId}" style="width: 100%; max-width: 800px; display: flex; justify-content: center;">
+                              <!-- Se generará dinámicamente -->
+                            </div>
+                          </div>
+                        </div>
+                      ` : ''}
+                      
+                      ${hasPreview && component.name === 'Gallery' ? `
+                        <!-- Preview Section for Gallery -->
+                        <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: none; margin-bottom: 24px;">
+                          <!-- CONTROLES ARRIBA -->
+                          <div style="margin-bottom: 24px;">
+                            <h4 style="margin: 0 0 20px 0; color: var(--ubits-fg-1-high); font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand-static-inverted);"></i>
+                              Controles
+                            </h4>
+                            
+                            <!-- Primera fila: Configuración básica -->
+                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; margin-bottom: 24px;">
+                              <!-- Layout -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Layout</label>
+                                <select id="gallery-layout-select-${componentId}" onchange="setGalleryControl('layout', this.value, '${componentId}')" style="width: 100%; padding: 10px 32px 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); cursor: pointer; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23666%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226,9 12,15 18,9%22></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px; box-sizing: border-box;">
+                                  <option value="grid" selected>Grid</option>
+                                  <option value="masonry">Masonry</option>
+                                  <option value="list">List</option>
+                                </select>
+                              </div>
+                              
+                              <!-- Tamaño -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Tamaño</label>
+                                <select id="gallery-size-select-${componentId}" onchange="setGalleryControl('size', this.value, '${componentId}')" style="width: 100%; padding: 10px 32px 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); cursor: pointer; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23666%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226,9 12,15 18,9%22></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px; box-sizing: border-box;">
+                                  <option value="xs">XS</option>
+                                  <option value="sm">SM</option>
+                                  <option value="md" selected>MD</option>
+                                  <option value="lg">LG</option>
+                                  <option value="xl">XL</option>
+                                </select>
+                              </div>
+                              
+                              <!-- Columnas (solo para grid) -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Columnas</label>
+                                <input type="number" id="gallery-columns-input-${componentId}" value="3" min="1" max="12" step="1" onchange="setGalleryControl('columns', parseInt(this.value) || 3, '${componentId}')" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                              
+                              <!-- Gap -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Gap (px)</label>
+                                <input type="number" id="gallery-gap-input-${componentId}" value="16" min="0" max="48" step="4" onchange="setGalleryControl('gap', parseInt(this.value) || 16, '${componentId}')" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                              
+                              <!-- Aspect Ratio -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Aspect Ratio</label>
+                                <input type="text" id="gallery-aspect-ratio-input-${componentId}" value="" onchange="setGalleryControl('aspectRatio', this.value || undefined, '${componentId}')" placeholder="16/9, 1/1, 4/3" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                            </div>
+                            
+                            <!-- Segunda fila: Toggles -->
+                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; margin-bottom: 24px;">
+                              <!-- Mostrar Thumbnails -->
+                              <div style="flex: 0 0 auto; min-width: 120px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Thumbnails</label>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                  <label class="ubits-toggle ubits-toggle--md">
+                                    <input type="checkbox" class="ubits-toggle__input" id="gallery-show-thumbnails-toggle-${componentId}" onchange="setGalleryControl('showThumbnails', this.checked, '${componentId}')">
+                                    <span class="ubits-toggle__track">
+                                      <span class="ubits-toggle__thumb"></span>
+                                    </span>
+                                  </label>
+                                  <span id="gallery-show-thumbnails-status-${componentId}" style="font-size: 13px; color: var(--ubits-fg-1-medium);">Desactivado</span>
+                                </div>
+                              </div>
+                              
+                              <!-- Lazy Load -->
+                              <div style="flex: 0 0 auto; min-width: 120px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Lazy Load</label>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                  <label class="ubits-toggle ubits-toggle--md">
+                                    <input type="checkbox" class="ubits-toggle__input" id="gallery-lazy-load-toggle-${componentId}" onchange="setGalleryControl('lazyLoad', this.checked, '${componentId}')">
+                                    <span class="ubits-toggle__track">
+                                      <span class="ubits-toggle__thumb"></span>
+                                    </span>
+                                  </label>
+                                  <span id="gallery-lazy-load-status-${componentId}" style="font-size: 13px; color: var(--ubits-fg-1-medium);">Desactivado</span>
+                                </div>
+                              </div>
+                              
+                              <!-- Lightbox -->
+                              <div style="flex: 0 0 auto; min-width: 120px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Lightbox</label>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                  <label class="ubits-toggle ubits-toggle--md">
+                                    <input type="checkbox" class="ubits-toggle__input" id="gallery-lightbox-toggle-${componentId}" checked onchange="setGalleryControl('lightbox', this.checked, '${componentId}')">
+                                    <span class="ubits-toggle__track">
+                                      <span class="ubits-toggle__thumb"></span>
+                                    </span>
+                                  </label>
+                                  <span id="gallery-lightbox-status-${componentId}" style="font-size: 13px; color: var(--ubits-fg-1-medium);">Activado</span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <!-- PREVIEW -->
+                          <div style="background: var(--ubits-bg-2); padding: 48px; border-radius: 8px; border: none; margin-bottom: 24px; display: flex; align-items: flex-start; justify-content: center; min-height: 400px;">
+                            <div id="gallery-preview-${componentId}" style="width: 100%; max-width: 1200px; display: flex; justify-content: center;">
                               <!-- Se generará dinámicamente -->
                             </div>
                           </div>
@@ -30551,6 +30677,346 @@ Reglas Importantes:
             ${itemsHTML}
           </div>
         `;
+      }
+      
+      // ========================================
+      // FUNCIONES DE CONTROL PARA GALLERY
+      // ========================================
+      
+      // Función para controlar Gallery
+      window.setGalleryControl = function(option, value, componentId) {
+        console.log('🎛️ setGalleryControl:', option, value, componentId);
+        
+        // Actualizar estados de toggles
+        const toggleStatusMap = {
+          'showThumbnails': 'gallery-show-thumbnails-status',
+          'lazyLoad': 'gallery-lazy-load-status',
+          'lightbox': 'gallery-lightbox-status'
+        };
+        
+        if (toggleStatusMap[option]) {
+          const statusEl = document.getElementById(`${toggleStatusMap[option]}-${componentId}`);
+          if (statusEl) statusEl.textContent = value ? 'Activado' : 'Desactivado';
+        }
+        
+        // Actualizar preview
+        if (typeof window.updateGalleryPreview === 'function') {
+          window.updateGalleryPreview(componentId);
+        }
+      };
+      
+      // Función para actualizar el preview de Gallery usando tokens UBITS
+      window.updateGalleryPreview = function(componentId) {
+        console.log('🔄 updateGalleryPreview llamado con componentId:', componentId);
+        const previewContainer = document.getElementById(`gallery-preview-${componentId}`);
+        if (!previewContainer) {
+          console.error('❌ Preview container no encontrado:', `gallery-preview-${componentId}`);
+          return;
+        }
+        console.log('✅ Preview container encontrado:', previewContainer);
+        
+        // Obtener valores de los controles
+        const layout = document.getElementById(`gallery-layout-select-${componentId}`)?.value || 'grid';
+        const size = document.getElementById(`gallery-size-select-${componentId}`)?.value || 'md';
+        const columns = parseInt(document.getElementById(`gallery-columns-input-${componentId}`)?.value || '3');
+        const gap = parseInt(document.getElementById(`gallery-gap-input-${componentId}`)?.value || '16');
+        const aspectRatio = document.getElementById(`gallery-aspect-ratio-input-${componentId}`)?.value || undefined;
+        const showThumbnails = document.getElementById(`gallery-show-thumbnails-toggle-${componentId}`)?.checked === true;
+        const lazyLoad = document.getElementById(`gallery-lazy-load-toggle-${componentId}`)?.checked === true;
+        const lightbox = document.getElementById(`gallery-lightbox-toggle-${componentId}`)?.checked === true;
+        
+        // Limpiar contenedor
+        previewContainer.innerHTML = '';
+        
+        // Generar items de ejemplo
+        const items = generateGalleryItems();
+        
+        // Generar HTML usando tokens UBITS
+        const galleryHTML = generateGalleryHTML({
+          items: items,
+          layout: layout,
+          size: size,
+          columns: columns,
+          gap: gap,
+          showThumbnails: showThumbnails,
+          lazyLoad: lazyLoad,
+          lightbox: lightbox,
+          aspectRatio: aspectRatio
+        });
+        previewContainer.innerHTML = galleryHTML;
+        
+        // Inicializar funcionalidad JavaScript del Gallery
+        initializeGalleryPreview(previewContainer, items, lightbox);
+        
+        console.log('✅ Gallery preview actualizado');
+      };
+      
+      // Función helper para generar items de ejemplo
+      function generateGalleryItems() {
+        const availableImages = [
+          '../assets/images/cards-learn/administracion-efectiva-del-tiempo.jpg',
+          '../assets/images/cards-learn/segmenta-la-experiencia-del-cliente.jpg',
+          '../assets/images/cards-learn/introduccion-al-backend-node-js.jpeg',
+          '../assets/images/cards-learn/introduccion-al-desarrollo-web.jpeg',
+          '../assets/images/cards-learn/como-ejercer-el-liderazgo-inclusivo.jpeg',
+          '../assets/images/cards-learn/flexbox-y-grid.jpeg',
+          '../assets/images/cards-learn/react-context-api.jpeg',
+          '../assets/images/cards-learn/agilidad-emocional.jpeg',
+          '../assets/images/cards-learn/primeros-pasos-en-react.jpeg',
+          '../assets/images/cards-learn/neuroliderazgo-configura-tu-mente.jpeg',
+        ];
+        
+        const titles = [
+          'Administración Efectiva del Tiempo',
+          'Segmenta la Experiencia del Cliente',
+          'Introducción al Backend Node.js',
+          'Introducción al Desarrollo Web',
+          'Cómo Ejercer el Liderazgo Inclusivo',
+          'Flexbox y Grid',
+          'React Context API',
+          'Agilidad Emocional',
+          'Primeros Pasos en React',
+          'Neuroliderazgo Configura tu Mente'
+        ];
+        
+        return availableImages.map((image, index) => ({
+          id: index + 1,
+          image: image,
+          thumbnail: image,
+          title: titles[index] || `Imagen ${index + 1}`,
+          description: `Descripción de ${titles[index] || `Imagen ${index + 1}`}`,
+          alt: titles[index] || `Imagen ${index + 1}`
+        }));
+      }
+      
+      // Función helper para generar HTML de Gallery usando tokens UBITS
+      function generateGalleryHTML(options) {
+        const {
+          items = [],
+          layout = 'grid',
+          size = 'md',
+          columns = 3,
+          gap = 16,
+          showThumbnails = false,
+          lazyLoad = false,
+          lightbox = false,
+          aspectRatio
+        } = options;
+        
+        if (items.length === 0) {
+          return '<div class="ubits-gallery ubits-gallery--empty">No hay imágenes para mostrar</div>';
+        }
+        
+        // Construir clases CSS
+        const classes = [
+          'ubits-gallery',
+          `ubits-gallery--${layout}`,
+          `ubits-gallery--${size}`,
+          showThumbnails && 'ubits-gallery--thumbnails',
+          lazyLoad && 'ubits-gallery--lazy',
+          lightbox && 'ubits-gallery--lightbox'
+        ].filter(Boolean).join(' ');
+        
+        // Renderizar items
+        const itemsHTML = items.map((item, index) => {
+          const imageSrc = showThumbnails && item.thumbnail ? item.thumbnail : item.image;
+          const imageAlt = item.alt || item.title || `Imagen ${index + 1}`;
+          const loadingAttr = lazyLoad ? 'loading="lazy"' : '';
+          const lightboxAttr = lightbox ? 'data-lightbox-item="true"' : '';
+          const aspectRatioStyle = aspectRatio ? `style="aspect-ratio: ${aspectRatio};"` : '';
+          
+          return `
+            <div class="ubits-gallery-item" 
+                 data-item-id="${item.id}" 
+                 data-item-index="${index}"
+                 ${lightboxAttr}
+                 ${aspectRatioStyle}>
+              <div class="ubits-gallery-item__image-wrapper">
+                <img src="${imageSrc}" 
+                     alt="${imageAlt}" 
+                     class="ubits-gallery-item__image"
+                     ${loadingAttr}
+                     data-full-image="${item.image}" />
+                ${lightbox ? '<div class="ubits-gallery-item__overlay"><i class="fas fa-expand"></i></div>' : ''}
+              </div>
+            </div>
+          `;
+        }).join('');
+        
+        // Atributos de datos para JavaScript
+        const dataAttrs = [
+          `data-layout="${layout}"`,
+          `data-size="${size}"`,
+          `data-columns="${columns}"`,
+          `data-gap="${gap}"`,
+          lightbox && 'data-lightbox="true"',
+          lazyLoad && 'data-lazy="true"'
+        ].filter(Boolean).join(' ');
+        
+        // Estilos inline para grid columns y gap
+        const style = `--gallery-gap: ${gap}px; --gallery-columns: ${columns};`;
+        
+        return `
+          <div class="${classes}" ${dataAttrs} style="${style}">
+            <div class="ubits-gallery__container">
+              ${itemsHTML}
+            </div>
+          </div>
+        `;
+      }
+      
+      // Función para inicializar la funcionalidad JavaScript del Gallery preview
+      function initializeGalleryPreview(container, items, lightbox) {
+        const galleryElement = container.querySelector('.ubits-gallery');
+        if (!galleryElement) return;
+        
+        const galleryItems = galleryElement.querySelectorAll('.ubits-gallery-item');
+        if (galleryItems.length === 0) return;
+        
+        // Click en items para lightbox
+        if (lightbox) {
+          galleryItems.forEach((item, index) => {
+            const itemElement = item;
+            const itemId = itemElement.getAttribute('data-item-id');
+            const galleryItem = items.find(i => String(i.id) === itemId);
+            
+            if (!galleryItem) return;
+            
+            itemElement.addEventListener('click', (e) => {
+              e.preventDefault();
+              openLightboxPreview(galleryItem, items, index);
+            });
+          });
+        }
+      }
+      
+      // Función para abrir el lightbox en el preview
+      function openLightboxPreview(item, allItems, currentIndex) {
+        // Crear overlay del lightbox
+        const overlay = document.createElement('div');
+        overlay.className = 'ubits-gallery-lightbox';
+        overlay.style.background = 'rgba(0, 0, 0, 0.95)';
+        
+        // Generar thumbnails
+        const thumbnailsHTML = allItems.map((thumbItem, idx) => {
+          const isActive = idx === currentIndex ? 'ubits-gallery-lightbox__thumbnail--active' : '';
+          const thumbSrc = thumbItem.thumbnail || thumbItem.image;
+          return `
+            <div class="ubits-gallery-lightbox__thumbnail ${isActive}" 
+                 data-thumb-index="${idx}"
+                 data-item-id="${thumbItem.id}"
+                 style="display: flex; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.3);">
+              <img src="${thumbSrc}" alt="${thumbItem.alt || thumbItem.title || `Thumbnail ${idx + 1}`}" style="object-fit: cover; object-position: center; width: 100%; height: 100%;" />
+            </div>
+          `;
+        }).join('');
+        
+        overlay.innerHTML = `
+          <div class="ubits-gallery-lightbox__content">
+            <button class="ubits-gallery-lightbox__close" aria-label="Cerrar">
+              <i class="fas fa-times"></i>
+            </button>
+            <div class="ubits-gallery-lightbox__main">
+              <button class="ubits-gallery-lightbox__prev" aria-label="Anterior">
+                <i class="fas fa-chevron-left"></i>
+              </button>
+              <div class="ubits-gallery-lightbox__image-wrapper">
+                <img src="${item.image}" alt="${item.alt || item.title || 'Imagen'}" class="ubits-gallery-lightbox__image" />
+              </div>
+              <button class="ubits-gallery-lightbox__next" aria-label="Siguiente">
+                <i class="fas fa-chevron-right"></i>
+              </button>
+            </div>
+            <div class="ubits-gallery-lightbox__thumbnails">
+              ${thumbnailsHTML}
+            </div>
+          </div>
+        `;
+        
+        document.body.appendChild(overlay);
+        document.body.style.overflow = 'hidden';
+        
+        let currentIdx = currentIndex;
+        
+        // Cerrar lightbox
+        const closeBtn = overlay.querySelector('.ubits-gallery-lightbox__close');
+        const closeLightbox = () => {
+          overlay.remove();
+          document.body.style.overflow = '';
+        };
+        
+        if (closeBtn) {
+          closeBtn.addEventListener('click', closeLightbox);
+        }
+        overlay.addEventListener('click', (e) => {
+          if (e.target === overlay) {
+            closeLightbox();
+          }
+        });
+        
+        // Navegación
+        const prevBtn = overlay.querySelector('.ubits-gallery-lightbox__prev');
+        const nextBtn = overlay.querySelector('.ubits-gallery-lightbox__next');
+        const lightboxImage = overlay.querySelector('.ubits-gallery-lightbox__image');
+        const thumbnails = overlay.querySelectorAll('.ubits-gallery-lightbox__thumbnail');
+        
+        const updateLightbox = () => {
+          const currentItem = allItems[currentIdx];
+          if (currentItem && lightboxImage) {
+            lightboxImage.src = currentItem.image;
+            lightboxImage.alt = currentItem.alt || currentItem.title || 'Imagen';
+            
+            // Actualizar thumbnails activos
+            thumbnails.forEach((thumb, idx) => {
+              if (idx === currentIdx) {
+                thumb.classList.add('ubits-gallery-lightbox__thumbnail--active');
+                thumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+              } else {
+                thumb.classList.remove('ubits-gallery-lightbox__thumbnail--active');
+              }
+            });
+          }
+        };
+        
+        // Click en thumbnails
+        thumbnails.forEach((thumb, idx) => {
+          thumb.addEventListener('click', () => {
+            currentIdx = idx;
+            updateLightbox();
+          });
+        });
+        
+        if (prevBtn) {
+          prevBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            currentIdx = currentIdx > 0 ? currentIdx - 1 : allItems.length - 1;
+            updateLightbox();
+          });
+        }
+        
+        if (nextBtn) {
+          nextBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            currentIdx = currentIdx < allItems.length - 1 ? currentIdx + 1 : 0;
+            updateLightbox();
+          });
+        }
+        
+        // Navegación con teclado
+        const handleKeyDown = (e) => {
+          if (e.key === 'Escape') {
+            closeLightbox();
+            document.removeEventListener('keydown', handleKeyDown);
+          } else if (e.key === 'ArrowLeft') {
+            currentIdx = currentIdx > 0 ? currentIdx - 1 : allItems.length - 1;
+            updateLightbox();
+          } else if (e.key === 'ArrowRight') {
+            currentIdx = currentIdx < allItems.length - 1 ? currentIdx + 1 : 0;
+            updateLightbox();
+          }
+        };
+        
+        document.addEventListener('keydown', handleKeyDown);
       }
       
     </script>
