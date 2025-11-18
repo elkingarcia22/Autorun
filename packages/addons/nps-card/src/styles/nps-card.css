@@ -130,8 +130,15 @@
   /* Reducir espacio superior para que el gráfico ocupe más altura */
   margin-top: calc(var(--ubits-spacing-lg) * -2);
   padding-top: 0;
+  /* Mantener padding inferior cuando no hay categorías */
+  padding-bottom: 12px;
   /* Log para debugging - verificar dimensiones */
   /* background: rgba(0, 255, 0, 0.1); /* Descomentar para ver el área del content */
+}
+
+/* Cuando hay categorías, remover el padding-bottom del content ya que las categorías ya tienen su espacio */
+.ubits-nps-card__content:has(.ubits-nps-card__categories) {
+  padding-bottom: 0;
 }
 
 /* ========================================

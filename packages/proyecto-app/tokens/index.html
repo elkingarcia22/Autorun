@@ -23,6 +23,7 @@
     <link rel="stylesheet" href="../../addons/menu/src/styles/menu.css" />
     <link rel="stylesheet" href="../../addons/menubar/src/styles/menubar.css" />
     <link rel="stylesheet" href="../../addons/metric-card/src/styles/metric-card.css" />
+    <link rel="stylesheet" href="../../addons/nps-card/src/styles/nps-card.css" />
     <link rel="stylesheet" href="../../addons/badge/src/styles/badge.css" />
     <!-- Button Component CSS - COMPLETO INLINE (porque @import falla con file://) -->
     <style id="button-component-css">
@@ -6232,6 +6233,21 @@ Reglas Importantes:
               class: 'ubits-csat-metric-card ubits-csat-metric-card--md',
               example: 'createCSATMetricCard({\n  title: \'Califica el producto\',\n  totalResponses: 7,\n  responsesLabel: \'respuestas\',\n  average: 4.00,\n  averageLabel: \'Promedio:\',\n  score: 3,\n  showInfoIcon: true,\n  showActionButton: true,\n  size: \'md\'\n})',
               hasPreview: true
+            },
+            {
+              name: 'NPS Card',
+              description: 'Componente NPS Card UBITS para mostrar métricas NPS (Net Promoter Score) con gauge semicircular. Incluye segmentos de color (rojo, amarillo, verde), aguja indicadora, categorías con porcentajes y contador de respuestas. Usa tokens UBITS para colores, tipografía y espaciado.',
+              files: {
+                css: 'addons/nps-card/src/styles/nps-card.css',
+                ts: 'addons/nps-card/src/NPSCardProvider.ts'
+              },
+              variants: [],
+              sizes: ['sm', 'md', 'lg'],
+              states: ['default'],
+              features: ['3 tamaños (sm, md, lg)', 'Gauge semicircular con segmentos de color', 'Score de 0-100 con aguja indicadora', 'Categorías con porcentajes', 'Contador de respuestas', 'Icono de información opcional', 'Botón de acción opcional', 'Usa tokens UBITS exclusivamente', 'Usa tipografía UBITS', 'Usa componente Button UBITS'],
+              class: 'ubits-nps-card ubits-nps-card--md',
+              example: 'createNPSCard({\n  title: \'Nivel de confianza\',\n  score: 56,\n  scoreLabel: \'Puntuación\',\n  totalResponses: 290,\n  responsesLabel: \'respuestas\',\n  categories: [\n    { label: \'No tienen confianza\', current: 50, total: 100, color: \'var(--ubits-semantic-error)\' },\n    { label: \'Neutrales\', current: 10, total: 100, color: \'var(--ubits-semantic-warning)\' },\n    { label: \'Tienen confianza\', current: 30, total: 100, color: \'var(--ubits-semantic-success)\' }\n  ],\n  size: \'md\',\n  showTitle: true,\n  showResponsesCount: true,\n  showGauge: true,\n  showCategories: true\n})',
+              hasPreview: true
             }
           ]
         };
@@ -6506,6 +6522,8 @@ Reglas Importantes:
                     window.updateBarMetricCardPreview('bar-metric-card');
                   } else if (componentId === 'text-metric-card' && typeof window.updateTextMetricCardPreview === 'function') {
                     window.updateTextMetricCardPreview('text-metric-card');
+                  } else if (componentId === 'nps-card' && typeof window.updateNPSCardPreview === 'function') {
+                    window.updateNPSCardPreview('nps-card');
                   } else if (componentId === 'csat-metric-card' && typeof window.updateCSATMetricCardPreview === 'function') {
                     window.updateCSATMetricCardPreview('csat-metric-card');
                   } else if (componentId === 'dataview' && typeof window.updateDataViewPreview === 'function') {
@@ -11119,6 +11137,228 @@ Reglas Importantes:
                           <!-- PREVIEW -->
                           <div style="background: var(--ubits-bg-2); padding: 48px; border-radius: 8px; border: none; margin-bottom: 24px; display: flex; align-items: flex-start; justify-content: center; min-height: 400px;">
                             <div id="csat-metric-card-preview-${componentId}" style="width: 100%; max-width: 500px; display: flex; justify-content: center;">
+                              <!-- Se generará dinámicamente -->
+                            </div>
+                          </div>
+                        </div>
+                      ` : ''}
+                      
+                      ${hasPreview && component.name === 'NPS Card' ? `
+                        <!-- Preview Section for NPS Card -->
+                        <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: none; margin-bottom: 24px;">
+                          <!-- CONTROLES ARRIBA -->
+                          <div style="margin-bottom: 24px;">
+                            <h4 style="margin: 0 0 20px 0; color: var(--ubits-fg-1-high); font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand-static-inverted);"></i>
+                              Controles
+                            </h4>
+                            
+                            <!-- Primera fila: Configuración básica -->
+                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; margin-bottom: 24px;">
+                              <!-- Tamaño -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Tamaño</label>
+                                <select id="nps-card-size-select-${componentId}" onchange="setNPSCardControl('size', this.value, '${componentId}')" style="width: 100%; padding: 10px 32px 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); cursor: pointer; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23666%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226,9 12,15 18,9%22></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px; box-sizing: border-box;">
+                                  <option value="sm">SM</option>
+                                  <option value="md" selected>MD</option>
+                                  <option value="lg">LG</option>
+                                </select>
+                              </div>
+                              
+                              <!-- Título -->
+                              <div style="flex: 1 1 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Título</label>
+                                <input type="text" id="nps-card-title-input-${componentId}" value="Nivel de confianza" onchange="setNPSCardControl('title', this.value, '${componentId}')" placeholder="Nivel de confianza" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                              
+                              <!-- Score (0-100) -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Score (0-100)</label>
+                                <input type="number" id="nps-card-score-input-${componentId}" value="56" min="0" max="100" step="1" onchange="setNPSCardControl('score', parseInt(this.value) || 0, '${componentId}')" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                              
+                              <!-- Score Label -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Score Label</label>
+                                <input type="text" id="nps-card-score-label-input-${componentId}" value="Puntuación" onchange="setNPSCardControl('scoreLabel', this.value, '${componentId}')" placeholder="Puntuación" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                            </div>
+                            
+                            <!-- Segunda fila: Respuestas -->
+                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; margin-bottom: 24px;">
+                              <!-- Total Respuestas -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Total Respuestas</label>
+                                <input type="number" id="nps-card-total-responses-input-${componentId}" value="290" min="0" step="1" onchange="setNPSCardControl('totalResponses', parseInt(this.value) || 0, '${componentId}')" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                              
+                              <!-- Responses Label -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Responses Label</label>
+                                <input type="text" id="nps-card-responses-label-input-${componentId}" value="respuestas" onchange="setNPSCardControl('responsesLabel', this.value, '${componentId}')" placeholder="respuestas" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                            </div>
+                            
+                            <!-- Tercera fila: Categorías -->
+                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; margin-bottom: 24px;">
+                              <!-- Categoría 1 -->
+                              <div style="flex: 1 1 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Categoría 1</label>
+                                <div style="display: flex; gap: 8px; flex-direction: column;">
+                                  <input type="text" id="nps-card-category1-label-input-${componentId}" value="No tienen confianza" onchange="setNPSCardControl('category1Label', this.value, '${componentId}')" placeholder="Label" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                                  <div style="display: flex; gap: 8px;">
+                                    <input type="number" id="nps-card-category1-current-input-${componentId}" value="50" min="0" step="1" onchange="setNPSCardControl('category1Current', parseInt(this.value) || 0, '${componentId}')" placeholder="Current" style="flex: 1; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                                    <input type="number" id="nps-card-category1-total-input-${componentId}" value="100" min="1" step="1" onchange="setNPSCardControl('category1Total', parseInt(this.value) || 1, '${componentId}')" placeholder="Total" style="flex: 1; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                                  </div>
+                                  <input type="text" id="nps-card-category1-color-input-${componentId}" value="var(--ubits-semantic-error, #E53E3E)" onchange="setNPSCardControl('category1Color', this.value, '${componentId}')" placeholder="Color" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                                </div>
+                              </div>
+                              
+                              <!-- Categoría 2 -->
+                              <div style="flex: 1 1 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Categoría 2</label>
+                                <div style="display: flex; gap: 8px; flex-direction: column;">
+                                  <input type="text" id="nps-card-category2-label-input-${componentId}" value="Neutrales" onchange="setNPSCardControl('category2Label', this.value, '${componentId}')" placeholder="Label" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                                  <div style="display: flex; gap: 8px;">
+                                    <input type="number" id="nps-card-category2-current-input-${componentId}" value="10" min="0" step="1" onchange="setNPSCardControl('category2Current', parseInt(this.value) || 0, '${componentId}')" placeholder="Current" style="flex: 1; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                                    <input type="number" id="nps-card-category2-total-input-${componentId}" value="100" min="1" step="1" onchange="setNPSCardControl('category2Total', parseInt(this.value) || 1, '${componentId}')" placeholder="Total" style="flex: 1; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                                  </div>
+                                  <input type="text" id="nps-card-category2-color-input-${componentId}" value="var(--ubits-semantic-warning, #F6AD55)" onchange="setNPSCardControl('category2Color', this.value, '${componentId}')" placeholder="Color" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                                </div>
+                              </div>
+                              
+                              <!-- Categoría 3 -->
+                              <div style="flex: 1 1 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Categoría 3</label>
+                                <div style="display: flex; gap: 8px; flex-direction: column;">
+                                  <input type="text" id="nps-card-category3-label-input-${componentId}" value="Tienen confianza" onchange="setNPSCardControl('category3Label', this.value, '${componentId}')" placeholder="Label" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                                  <div style="display: flex; gap: 8px;">
+                                    <input type="number" id="nps-card-category3-current-input-${componentId}" value="30" min="0" step="1" onchange="setNPSCardControl('category3Current', parseInt(this.value) || 0, '${componentId}')" placeholder="Current" style="flex: 1; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                                    <input type="number" id="nps-card-category3-total-input-${componentId}" value="100" min="1" step="1" onchange="setNPSCardControl('category3Total', parseInt(this.value) || 1, '${componentId}')" placeholder="Total" style="flex: 1; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                                  </div>
+                                  <input type="text" id="nps-card-category3-color-input-${componentId}" value="var(--ubits-semantic-success, #38A169)" onchange="setNPSCardControl('category3Color', this.value, '${componentId}')" placeholder="Color" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                                </div>
+                              </div>
+                            </div>
+                            
+                            <!-- Cuarta fila: Toggles -->
+                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; margin-bottom: 24px;">
+                              <!-- Mostrar Título -->
+                              <div style="flex: 0 0 auto; min-width: 120px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Mostrar Título</label>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                  <label class="ubits-toggle ubits-toggle--md">
+                                    <input type="checkbox" class="ubits-toggle__input" id="nps-card-show-title-toggle-${componentId}" checked onchange="setNPSCardControl('showTitle', this.checked, '${componentId}')">
+                                    <span class="ubits-toggle__track">
+                                      <span class="ubits-toggle__thumb"></span>
+                                    </span>
+                                  </label>
+                                  <span id="nps-card-show-title-status-${componentId}" style="font-size: 13px; color: var(--ubits-fg-1-medium);">Activado</span>
+                                </div>
+                              </div>
+                              
+                              <!-- Mostrar Respuestas -->
+                              <div style="flex: 0 0 auto; min-width: 120px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Mostrar Respuestas</label>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                  <label class="ubits-toggle ubits-toggle--md">
+                                    <input type="checkbox" class="ubits-toggle__input" id="nps-card-show-responses-count-toggle-${componentId}" checked onchange="setNPSCardControl('showResponsesCount', this.checked, '${componentId}')">
+                                    <span class="ubits-toggle__track">
+                                      <span class="ubits-toggle__thumb"></span>
+                                    </span>
+                                  </label>
+                                  <span id="nps-card-show-responses-count-status-${componentId}" style="font-size: 13px; color: var(--ubits-fg-1-medium);">Activado</span>
+                                </div>
+                              </div>
+                              
+                              <!-- Mostrar Gauge -->
+                              <div style="flex: 0 0 auto; min-width: 120px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Mostrar Gauge</label>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                  <label class="ubits-toggle ubits-toggle--md">
+                                    <input type="checkbox" class="ubits-toggle__input" id="nps-card-show-gauge-toggle-${componentId}" checked onchange="setNPSCardControl('showGauge', this.checked, '${componentId}')">
+                                    <span class="ubits-toggle__track">
+                                      <span class="ubits-toggle__thumb"></span>
+                                    </span>
+                                  </label>
+                                  <span id="nps-card-show-gauge-status-${componentId}" style="font-size: 13px; color: var(--ubits-fg-1-medium);">Activado</span>
+                                </div>
+                              </div>
+                              
+                              <!-- Mostrar Categorías -->
+                              <div style="flex: 0 0 auto; min-width: 120px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Mostrar Categorías</label>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                  <label class="ubits-toggle ubits-toggle--md">
+                                    <input type="checkbox" class="ubits-toggle__input" id="nps-card-show-categories-toggle-${componentId}" checked onchange="setNPSCardControl('showCategories', this.checked, '${componentId}')">
+                                    <span class="ubits-toggle__track">
+                                      <span class="ubits-toggle__thumb"></span>
+                                    </span>
+                                  </label>
+                                  <span id="nps-card-show-categories-status-${componentId}" style="font-size: 13px; color: var(--ubits-fg-1-medium);">Activado</span>
+                                </div>
+                              </div>
+                              
+                              <!-- Mostrar Icono Info -->
+                              <div style="flex: 0 0 auto; min-width: 120px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Icono Info</label>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                  <label class="ubits-toggle ubits-toggle--md">
+                                    <input type="checkbox" class="ubits-toggle__input" id="nps-card-show-info-icon-toggle-${componentId}" checked onchange="setNPSCardControl('showInfoIcon', this.checked, '${componentId}')">
+                                    <span class="ubits-toggle__track">
+                                      <span class="ubits-toggle__thumb"></span>
+                                    </span>
+                                  </label>
+                                  <span id="nps-card-show-info-icon-status-${componentId}" style="font-size: 13px; color: var(--ubits-fg-1-medium);">Activado</span>
+                                </div>
+                              </div>
+                              
+                              <!-- Mostrar Botón Acción -->
+                              <div style="flex: 0 0 auto; min-width: 120px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Botón Acción</label>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                  <label class="ubits-toggle ubits-toggle--md">
+                                    <input type="checkbox" class="ubits-toggle__input" id="nps-card-show-action-button-toggle-${componentId}" checked onchange="setNPSCardControl('showActionButton', this.checked, '${componentId}')">
+                                    <span class="ubits-toggle__track">
+                                      <span class="ubits-toggle__thumb"></span>
+                                    </span>
+                                  </label>
+                                  <span id="nps-card-show-action-button-status-${componentId}" style="font-size: 13px; color: var(--ubits-fg-1-medium);">Activado</span>
+                                </div>
+                              </div>
+                            </div>
+                            
+                            <!-- Quinta fila: Colores del Gauge -->
+                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; margin-bottom: 24px;">
+                              <!-- Low Color -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Low Color (0-20)</label>
+                                <input type="text" id="nps-card-low-color-input-${componentId}" value="var(--ubits-semantic-error, #E53E3E)" onchange="setNPSCardControl('lowColor', this.value, '${componentId}')" placeholder="var(--ubits-semantic-error)" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                              
+                              <!-- Medium Color -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Medium Color (20-60)</label>
+                                <input type="text" id="nps-card-medium-color-input-${componentId}" value="var(--ubits-semantic-warning, #F6AD55)" onchange="setNPSCardControl('mediumColor', this.value, '${componentId}')" placeholder="var(--ubits-semantic-warning)" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                              
+                              <!-- High Color -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">High Color (60-100)</label>
+                                <input type="text" id="nps-card-high-color-input-${componentId}" value="var(--ubits-semantic-success, #38A169)" onchange="setNPSCardControl('highColor', this.value, '${componentId}')" placeholder="var(--ubits-semantic-success)" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                              
+                              <!-- Gauge Background Color -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Gauge Background</label>
+                                <input type="text" id="nps-card-gauge-background-color-input-${componentId}" value="var(--ubits-bg-3)" onchange="setNPSCardControl('gaugeBackgroundColor', this.value, '${componentId}')" placeholder="var(--ubits-bg-3)" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <!-- PREVIEW -->
+                          <div style="background: var(--ubits-bg-2); padding: 48px; border-radius: 8px; border: none; margin-bottom: 24px; display: flex; align-items: flex-start; justify-content: center; min-height: 500px;">
+                            <div id="nps-card-preview-${componentId}" style="width: 100%; max-width: 500px; display: flex; justify-content: center;">
                               <!-- Se generará dinámicamente -->
                             </div>
                           </div>
@@ -30933,6 +31173,401 @@ Reglas Importantes:
           <button class="${buttonClasses}" type="button" ${ariaLabel ? `aria-label="${ariaLabel}"` : ''}>
             <i class="${iconClass} ${iconName}"></i>
           </button>
+        `;
+      }
+      
+      // ============================================
+      // NPS CARD - Funciones de control
+      // ============================================
+      
+      window.setNPSCardControl = function(option, value, componentId) {
+        console.log('🎛️ setNPSCardControl:', option, value, componentId);
+        
+        // Actualizar estados de toggles
+        const toggleStatusMap = {
+          'showTitle': 'nps-card-show-title-status',
+          'showResponsesCount': 'nps-card-show-responses-count-status',
+          'showGauge': 'nps-card-show-gauge-status',
+          'showCategories': 'nps-card-show-categories-status',
+          'showInfoIcon': 'nps-card-show-info-icon-status',
+          'showActionButton': 'nps-card-show-action-button-status'
+        };
+        
+        if (toggleStatusMap[option]) {
+          const statusEl = document.getElementById(`${toggleStatusMap[option]}-${componentId}`);
+          if (statusEl) statusEl.textContent = value ? 'Activado' : 'Desactivado';
+        }
+        
+        // Actualizar preview
+        if (typeof window.updateNPSCardPreview === 'function') {
+          window.updateNPSCardPreview(componentId);
+        }
+      };
+      
+      window.updateNPSCardPreview = function(componentId) {
+        const previewContainer = document.getElementById(`nps-card-preview-${componentId}`);
+        if (!previewContainer) {
+          console.error('❌ Preview container no encontrado:', `nps-card-preview-${componentId}`);
+          return;
+        }
+        
+        // Obtener valores de los controles
+        const size = document.getElementById(`nps-card-size-select-${componentId}`)?.value || 'md';
+        const title = document.getElementById(`nps-card-title-input-${componentId}`)?.value || 'Nivel de confianza';
+        const score = parseInt(document.getElementById(`nps-card-score-input-${componentId}`)?.value || '56');
+        const scoreLabel = document.getElementById(`nps-card-score-label-input-${componentId}`)?.value || 'Puntuación';
+        const totalResponses = parseInt(document.getElementById(`nps-card-total-responses-input-${componentId}`)?.value || '290');
+        const responsesLabel = document.getElementById(`nps-card-responses-label-input-${componentId}`)?.value || 'respuestas';
+        const category1Label = document.getElementById(`nps-card-category1-label-input-${componentId}`)?.value || 'No tienen confianza';
+        const category1Current = parseInt(document.getElementById(`nps-card-category1-current-input-${componentId}`)?.value || '50');
+        const category1Total = parseInt(document.getElementById(`nps-card-category1-total-input-${componentId}`)?.value || '100');
+        const category1Color = document.getElementById(`nps-card-category1-color-input-${componentId}`)?.value || 'var(--ubits-semantic-error, #E53E3E)';
+        const category2Label = document.getElementById(`nps-card-category2-label-input-${componentId}`)?.value || 'Neutrales';
+        const category2Current = parseInt(document.getElementById(`nps-card-category2-current-input-${componentId}`)?.value || '10');
+        const category2Total = parseInt(document.getElementById(`nps-card-category2-total-input-${componentId}`)?.value || '100');
+        const category2Color = document.getElementById(`nps-card-category2-color-input-${componentId}`)?.value || 'var(--ubits-semantic-warning, #F6AD55)';
+        const category3Label = document.getElementById(`nps-card-category3-label-input-${componentId}`)?.value || 'Tienen confianza';
+        const category3Current = parseInt(document.getElementById(`nps-card-category3-current-input-${componentId}`)?.value || '30');
+        const category3Total = parseInt(document.getElementById(`nps-card-category3-total-input-${componentId}`)?.value || '100');
+        const category3Color = document.getElementById(`nps-card-category3-color-input-${componentId}`)?.value || 'var(--ubits-semantic-success, #38A169)';
+        const showTitle = document.getElementById(`nps-card-show-title-toggle-${componentId}`)?.checked === true;
+        const showResponsesCount = document.getElementById(`nps-card-show-responses-count-toggle-${componentId}`)?.checked === true;
+        const showGauge = document.getElementById(`nps-card-show-gauge-toggle-${componentId}`)?.checked === true;
+        const showCategories = document.getElementById(`nps-card-show-categories-toggle-${componentId}`)?.checked === true;
+        const showInfoIcon = document.getElementById(`nps-card-show-info-icon-toggle-${componentId}`)?.checked === true;
+        const showActionButton = document.getElementById(`nps-card-show-action-button-toggle-${componentId}`)?.checked === true;
+        const lowColor = document.getElementById(`nps-card-low-color-input-${componentId}`)?.value || 'var(--ubits-semantic-error, #E53E3E)';
+        const mediumColor = document.getElementById(`nps-card-medium-color-input-${componentId}`)?.value || 'var(--ubits-semantic-warning, #F6AD55)';
+        const highColor = document.getElementById(`nps-card-high-color-input-${componentId}`)?.value || 'var(--ubits-semantic-success, #38A169)';
+        const gaugeBackgroundColor = document.getElementById(`nps-card-gauge-background-color-input-${componentId}`)?.value || 'var(--ubits-bg-3)';
+        
+        // Construir categorías
+        const categories = [
+          { label: category1Label, current: category1Current, total: category1Total, color: category1Color },
+          { label: category2Label, current: category2Current, total: category2Total, color: category2Color },
+          { label: category3Label, current: category3Current, total: category3Total, color: category3Color }
+        ];
+        
+        // Limpiar contenedor
+        previewContainer.innerHTML = '';
+        
+        // Generar HTML usando tokens UBITS
+        const npsCardHTML = generateNPSCardHTML({
+          title: title,
+          score: score,
+          scoreLabel: scoreLabel,
+          totalResponses: totalResponses,
+          responsesLabel: responsesLabel,
+          categories: categories,
+          size: size,
+          showTitle: showTitle,
+          showResponsesCount: showResponsesCount,
+          showGauge: showGauge,
+          showCategories: showCategories,
+          showInfoIcon: showInfoIcon,
+          showActionButton: showActionButton,
+          lowColor: lowColor,
+          mediumColor: mediumColor,
+          highColor: highColor,
+          gaugeBackgroundColor: gaugeBackgroundColor
+        });
+        previewContainer.innerHTML = npsCardHTML;
+        
+        console.log('✅ NPS Card preview actualizado');
+      };
+      
+      // Función helper para generar HTML de NPS Card usando tokens UBITS
+      function generateNPSCardHTML(options) {
+        const {
+          title = 'Nivel de confianza',
+          score = 0,
+          scoreLabel = 'Puntuación',
+          totalResponses = 0,
+          responsesLabel = 'respuestas',
+          categories = [],
+          size = 'md',
+          showTitle = true,
+          showResponsesCount = true,
+          showGauge = true,
+          showCategories = true,
+          showInfoIcon = false,
+          showActionButton = false,
+          lowColor = 'var(--ubits-semantic-error, #E53E3E)',
+          mediumColor = 'var(--ubits-semantic-warning, #F6AD55)',
+          highColor = 'var(--ubits-semantic-success, #38A169)',
+          gaugeBackgroundColor = 'var(--ubits-bg-3)'
+        } = options;
+        
+        // Construir clases CSS
+        const classes = [
+          'ubits-nps-card',
+          `ubits-nps-card--${size}`
+        ].filter(Boolean).join(' ');
+        
+        // Tamaño del gauge
+        const gaugeSize = 360;
+        const strokeWidth = 24;
+        
+        // Clases de tipografía
+        const titleClass = 'ubits-body-md-bold';
+        const responsesCountClass = 'ubits-body-sm-regular';
+        const scoreClass = 'ubits-display-3-bold';
+        const scoreLabelClass = 'ubits-body-sm-bold';
+        
+        // Helper para renderizar iconos FontAwesome
+        function renderIconHelper(iconName, iconStyle, iconColor) {
+          const iconClass = iconStyle === 'solid' ? 'fas' : 'far';
+          const name = iconName.startsWith('fa-') ? iconName : `fa-${iconName}`;
+          const colorStyle = iconColor ? `style="color: ${iconColor};"` : '';
+          return `<i class="${iconClass} ${name}" ${colorStyle}></i>`;
+        }
+        
+        // Renderizar icono de información como botón terciario si está habilitado
+        const infoIconHTML = showInfoIcon
+          ? generateButtonHTML({
+              variant: 'tertiary',
+              size: 'sm',
+              icon: 'circle-info',
+              iconStyle: 'regular',
+              iconOnly: true,
+              ariaLabel: 'Información'
+            })
+          : '';
+        
+        // Renderizar botón de acción con flecha a la derecha en la esquina superior derecha
+        const actionButtonHTML = showActionButton
+          ? generateButtonHTML({
+              variant: 'tertiary',
+              size: 'sm',
+              icon: 'chevron-right',
+              iconStyle: 'regular',
+              iconOnly: true,
+              ariaLabel: 'Ver más'
+            })
+          : '';
+        
+        // Renderizar título y contador de respuestas
+        const headerHTML = showTitle || showResponsesCount
+          ? `
+            <div class="ubits-nps-card__header" style="margin-bottom: -16px !important; padding-bottom: 0 !important;">
+              <div class="ubits-nps-card__title-group">
+                ${showTitle ? `<h3 class="ubits-nps-card__title ${titleClass}">${title}</h3>` : ''}
+                ${infoIconHTML}
+              </div>
+              ${showResponsesCount ? `<div class="ubits-nps-card__responses-count ${responsesCountClass}">${totalResponses} ${responsesLabel}</div>` : ''}
+              ${actionButtonHTML ? `<div class="ubits-nps-card__action-button">${actionButtonHTML}</div>` : ''}
+            </div>
+          `
+          : '';
+        
+        // Calcular la posición del texto para alinearlo donde empieza la media luna
+        const textPadding = strokeWidth / 2;
+        const textRadius = (gaugeSize - textPadding * 2) / 2;
+        const textCenterY = gaugeSize - textPadding;
+        const textPositionY = textCenterY - (textRadius * 0.75);
+        const textPositionPercent = (textPositionY / gaugeSize) * 100;
+        
+        // Renderizar gauge semicircular
+        const gaugeHTML = showGauge
+          ? `
+            <div class="ubits-nps-card__gauge-wrapper" style="--text-position: ${textPositionPercent}%;">
+              ${renderSemicircularGaugeHTML(
+                score,
+                gaugeSize,
+                strokeWidth,
+                lowColor,
+                mediumColor,
+                highColor,
+                gaugeBackgroundColor
+              )}
+              <div class="ubits-nps-card__gauge-content">
+                <div class="ubits-nps-card__gauge-score ${scoreClass}">
+                  ${score}
+                </div>
+                <div class="ubits-nps-card__gauge-label ${scoreLabelClass}">
+                  ${scoreLabel}
+                </div>
+              </div>
+            </div>
+          `
+          : '';
+        
+        // Renderizar categorías
+        const categoriesHTML = showCategories && categories.length > 0
+          ? `
+            <div class="ubits-nps-card__categories">
+              ${categories.map(cat => renderNPSCategoryHTML(cat, size)).join('')}
+            </div>
+          `
+          : '';
+        
+        // Agregar padding-bottom al content cuando no hay categorías para mantener el espacio de 12px
+        const contentStyle = !showCategories || categories.length === 0
+          ? 'padding-bottom: 12px;'
+          : '';
+        
+        return `
+          <div class="${classes}">
+            ${headerHTML}
+            <div class="ubits-nps-card__content" style="${contentStyle}">
+              ${gaugeHTML}
+              ${categoriesHTML}
+            </div>
+          </div>
+        `;
+      }
+      
+      // Helper para renderizar el gauge semicircular
+      function renderSemicircularGaugeHTML(score, size, strokeWidth, lowColor, mediumColor, highColor, backgroundColor) {
+        const padding = strokeWidth / 2;
+        const radius = (size - padding * 2) / 2;
+        const centerX = size / 2;
+        const centerY = size - padding;
+        
+        const startAngle = 180;
+        const endAngle = 0;
+        
+        // Función helper para convertir grados a coordenadas SVG
+        const angleToCoords = (angleDeg, r) => {
+          const angleRad = (angleDeg * Math.PI) / 180;
+          const x = centerX + r * Math.cos(angleRad);
+          const y = centerY + r * Math.sin(angleRad);
+          return { x, y };
+        };
+        
+        // Crear el arco del fondo
+        const startCoords = angleToCoords(startAngle, radius);
+        const endCoords = angleToCoords(endAngle, radius);
+        const backgroundPath = `M ${startCoords.x} ${startCoords.y} A ${radius} ${radius} 0 1 1 ${endCoords.x} ${endCoords.y}`;
+        
+        // Color del progreso
+        const progressColor = 'var(--ubits-chart-color-bg-neutral-blue-base, #557593)';
+        
+        // Calcular el ángulo del score
+        let scoreAngle;
+        if (score <= 50) {
+          scoreAngle = 180 + (score / 50) * 90;
+        } else {
+          scoreAngle = 270 + ((score - 50) / 50) * 90;
+          if (scoreAngle >= 360) {
+            scoreAngle = scoreAngle - 360;
+          }
+        }
+        
+        // Calcular coordenadas del punto final del progreso
+        const scoreCoords = angleToCoords(scoreAngle, radius);
+        
+        // Determinar largeArcFlag
+        const angleDiff = scoreAngle > startAngle 
+          ? scoreAngle - startAngle 
+          : (360 - startAngle) + scoreAngle;
+        const progressLargeArcFlag = angleDiff > 180 ? 1 : 0;
+        
+        // Path del progreso
+        const progressPath = `M ${startCoords.x} ${startCoords.y} A ${radius} ${radius} 0 ${progressLargeArcFlag} 1 ${scoreCoords.x} ${scoreCoords.y}`;
+        
+        // Calcular el punto más alto del semicírculo
+        const topPoint = angleToCoords(270, radius);
+        
+        // Calcular viewBox
+        const viewBoxPadding = 30;
+        const viewBoxSize = size + (viewBoxPadding * 2);
+        const viewBoxStartY = topPoint.y - 20;
+        const viewBoxHeight = size - viewBoxStartY + viewBoxPadding;
+        const halfMoonCenterY = centerY - (radius / 2);
+        const halfMoonCenterPercent = (halfMoonCenterY / size) * 100;
+        
+        // Números alrededor de la media luna
+        const marks = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+        const markElements = marks.map(mark => {
+          let markAngle;
+          if (mark <= 50) {
+            markAngle = 180 + (mark / 50) * 90;
+          } else {
+            markAngle = 270 + ((mark - 50) / 50) * 90;
+            if (markAngle >= 360) {
+              markAngle = markAngle - 360;
+            }
+          }
+          
+          const textDistance = radius + 20;
+          const textPos = angleToCoords(markAngle, textDistance);
+          
+          return `
+            <text
+              x="${textPos.x}"
+              y="${textPos.y}"
+              font-family="var(--font-sans)"
+              font-size="var(--font-body-sm-size, 13px)"
+              font-weight="var(--weight-regular, 400)"
+              fill="var(--ubits-fg-2-medium)"
+              text-anchor="middle"
+              dominant-baseline="middle"
+              style="font-size: var(--font-body-sm-size, 13px) !important; font-weight: var(--weight-regular, 400) !important; font-family: var(--font-sans) !important;"
+            >${mark}</text>
+          `;
+        }).join('');
+        
+        return `
+          <svg 
+            class="ubits-nps-card__gauge-svg" 
+            width="${size}" 
+            height="${size}" 
+            viewBox="${-viewBoxPadding} ${viewBoxStartY} ${viewBoxSize} ${viewBoxHeight}"
+            data-half-moon-center="${halfMoonCenterPercent}"
+            style="overflow: visible; display: block;"
+          >
+            <path
+              d="${backgroundPath}"
+              fill="none"
+              stroke="${backgroundColor}"
+              stroke-width="${strokeWidth}"
+              stroke-linecap="round"
+            />
+            <path
+              d="${progressPath}"
+              fill="none"
+              stroke="${progressColor}"
+              stroke-width="${strokeWidth}"
+              stroke-linecap="round"
+              class="ubits-nps-card__gauge-progress"
+            />
+            ${markElements}
+          </svg>
+        `;
+      }
+      
+      // Helper para renderizar una categoría de NPS
+      function renderNPSCategoryHTML(category, size) {
+        const percentage = Math.round((category.current / category.total) * 100);
+        
+        const labelClass = size === 'sm' 
+          ? 'ubits-body-sm-regular' 
+          : size === 'lg' 
+          ? 'ubits-body-md-regular' 
+          : 'ubits-body-sm-regular';
+        
+        const valueClass = size === 'sm'
+          ? 'ubits-body-sm-regular'
+          : size === 'lg'
+          ? 'ubits-body-md-regular'
+          : 'ubits-body-sm-regular';
+        
+        const percentageClass = size === 'sm'
+          ? 'ubits-body-sm-bold'
+          : size === 'lg'
+          ? 'ubits-body-md-bold'
+          : 'ubits-body-sm-bold';
+        
+        return `
+          <div class="ubits-nps-card__category">
+            <div class="ubits-nps-card__category-label ${labelClass}">
+              ${category.label}
+            </div>
+            <div class="ubits-nps-card__category-value ${valueClass}">
+              ${category.current}/${category.total} <span class="ubits-nps-card__category-percentage ${percentageClass}">${percentage}%</span>
+            </div>
+          </div>
         `;
       }
       

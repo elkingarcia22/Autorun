@@ -400,6 +400,11 @@ export function renderNPSCard(options: NPSCardOptions): string {
     `
     : '';
 
+  // Agregar padding-bottom al content cuando no hay categorías para mantener el espacio de 12px
+  const contentStyle = !showCategories || categories.length === 0
+    ? 'padding-bottom: 12px;'
+    : '';
+
   // Logs detallados sobre el espacio en blanco entre título y gráfico
   const puntoMasAlto = textCenterY - textRadius;
   
@@ -425,7 +430,7 @@ export function renderNPSCard(options: NPSCardOptions): string {
   return `
     <div class="${classes}" ${attrs}>
       ${headerHTML}
-      <div class="ubits-nps-card__content">
+      <div class="ubits-nps-card__content" style="${contentStyle}">
         ${gaugeHTML}
         ${categoriesHTML}
       </div>
