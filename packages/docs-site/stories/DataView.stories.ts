@@ -300,7 +300,7 @@ export const Default: Story = {
     container.style.maxWidth = '800px';
     container.style.margin = '0 auto';
     container.style.padding = 'var(--ubits-spacing-lg, 24px)';
-    container.style.background = 'var(--ubits-bg-1, #ffffff)';
+    container.style.background = 'var(--ubits-bg-2, #f5f5f5)';
     container.style.borderRadius = 'var(--ubits-border-radius-md, 8px)';
     container.style.border = '1px solid var(--ubits-border-1, #d0d2d5)';
 
@@ -344,33 +344,5 @@ export const Default: Story = {
 
     return container;
   },
-};
-
-// Historias para mostrar los diferentes tamaños
-export const SizeSmall: Story = {
-  args: {
-    ...Default.args,
-    size: 'sm',
-    productCount: 3,
-  },
-  render: Default.render,
-};
-
-export const SizeMedium: Story = {
-  args: {
-    ...Default.args,
-    size: 'md',
-    productCount: 3,
-  },
-  render: Default.render,
-};
-
-export const SizeLarge: Story = {
-  args: {
-    ...Default.args,
-    size: 'lg',
-    productCount: 3,
-  },
-  render: Default.render,
 };
 

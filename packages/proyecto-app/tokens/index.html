@@ -519,6 +519,13 @@
     <link rel="stylesheet" href="../../addons/input/src/styles/input.css" />
     <link rel="stylesheet" href="../../addons/list/src/styles/list.css" />
     <link rel="stylesheet" href="../../addons/card/src/styles/card.css" />
+    <link rel="stylesheet" href="../../addons/card/src/styles/simple-card.css" />
+    <link rel="stylesheet" href="../../addons/carousel/src/styles/carousel.css" />
+    <link rel="stylesheet" href="../../addons/bar-metric-card/src/styles/bar-metric-card.css" />
+    <link rel="stylesheet" href="../../addons/csat-metric-card/src/styles/csat-metric-card.css" />
+    <link rel="stylesheet" href="../../addons/data-view/src/styles/data-view.css" />
+    <link rel="stylesheet" href="../../addons/button/src/styles/button.css" />
+    <link rel="stylesheet" href="../../addons/progress/src/styles/progress.css" />
     <style>
       /* Asegurar que FontAwesome se cargue correctamente */
       /* Si las fuentes no cargan, las clases .fa-*::before mostrarán el contenido unicode */
@@ -6007,6 +6014,21 @@ Reglas Importantes:
           ],
           'Tablas y Datos': [
             {
+              name: 'DataView',
+              description: 'Componente DataView UBITS para mostrar listas de productos con imagen, categoría, nombre, rating, precio, botón de favoritos y botón de compra. Usa tokens UBITS para colores, tipografía y espaciado.',
+              files: {
+                css: 'addons/data-view/src/styles/data-view.css',
+                ts: 'addons/data-view/src/DataViewProvider.ts'
+              },
+              variants: [],
+              sizes: ['sm', 'md', 'lg'],
+              states: ['default'],
+              features: ['3 tamaños (sm: imagen 80px, md: imagen 120px, lg: imagen 160px)', 'Imagen del producto con badge de stock', 'Categoría del producto opcional', 'Rating con estrellas opcional', 'Precio formateado opcional', 'Botón de favoritos (wishlist) opcional', 'Botón de compra opcional', 'Estados de stock (INSTOCK, LOWSTOCK, OUTOFSTOCK)', 'Usa tokens UBITS exclusivamente', 'Usa tipografía UBITS', 'Usa componente Button UBITS'],
+              class: 'ubits-data-view ubits-data-view--md',
+              example: 'createDataView({\n  products: [\n    { id: \'1\', image: \'/path/to/image.jpg\', category: \'Accessories\', name: \'Bamboo Watch\', rating: 5, price: 65, stockStatus: \'INSTOCK\', inWishlist: false },\n    { id: \'2\', image: \'/path/to/image.jpg\', category: \'Fitness\', name: \'Blue Band\', rating: 4, price: 79, stockStatus: \'LOWSTOCK\', inWishlist: false }\n  ],\n  size: \'md\',\n  showCategory: true,\n  showRating: true,\n  showPrice: true,\n  showWishlist: true,\n  showBuyButton: true,\n  buyButtonText: \'Buy Now\',\n  buyButtonIcon: \'shopping-cart\',\n  wishlistIcon: \'heart\'\n})',
+              hasPreview: true
+            },
+            {
               name: 'Data Table',
               description: 'Componente Data Table - Tabla básica con estructura de columnas separadas: drag handle, expand icon, checkbox (con columna propia y header), y columnas de datos.',
               files: {
@@ -6082,6 +6104,68 @@ Reglas Importantes:
               features: ['3 tamaños (sm, md, lg)', '3 estados (default, selected, disabled)', 'Icono opcional', 'Descripción opcional', 'Contador de selección', 'Radio button visual', 'Selección única o múltiple', 'Usa tokens UBITS exclusivamente'],
               class: 'ubits-selection-card ubits-selection-card--{size} ubits-selection-card--{state}',
               example: 'createSelectionCard({\n  id: \'card-1\',\n  title: \'Asignar toda la empresa\',\n  description: \'Agregaras a todos los colaboradores...\',\n  icon: \'building\',\n  iconStyle: \'regular\',\n  selectionCount: { current: 0, total: 290 },\n  state: \'default\',\n  size: \'md\'\n})',
+              hasPreview: true
+            },
+            {
+              name: 'Simple Card',
+              description: 'Componente Simple Card UBITS con header decorativo, contenido y botones de acción. Usa tokens UBITS para colores, tipografía y espaciado. Incluye controladores completos para personalizar todos los aspectos del componente.',
+              files: {
+                css: 'addons/card/src/styles/simple-card.css',
+                ts: 'addons/card/src/SimpleCardProvider.ts'
+              },
+              variants: ['default', 'elevated', 'bordered', 'flat'],
+              sizes: ['sm', 'md', 'lg', 'xl'],
+              states: ['default'],
+              features: ['4 variantes (default, elevated, bordered, flat)', '4 tamaños (sm: 280px, md: 400px, lg: 560px, xl: 720px)', 'Header decorativo opcional con burbujas', 'Título, subtítulo y contenido personalizables', 'Botones de acción configurables (primary, secondary, tertiary)', 'Controladores para tokens de color, tipografía y espaciado', 'Usa tokens UBITS exclusivamente', 'Usa tipografía UBITS', 'Usa componente Button UBITS'],
+              class: 'ubits-simple-card ubits-simple-card--{variant} ubits-simple-card--{size}',
+              example: 'createSimpleCard({\n  title: \'Advanced Card\',\n  subtitle: \'Card subtitle\',\n  content: \'Lorem ipsum...\',\n  showHeader: true,\n  headerDecorations: true,\n  variant: \'default\',\n  size: \'md\',\n  buttons: [\n    { label: \'Cancel\', variant: \'secondary\', size: \'md\' },\n    { label: \'Save\', variant: \'primary\', size: \'md\' }\n  ]\n})',
+              hasPreview: true
+            },
+            {
+              name: 'Carousel',
+              description: 'Componente Carousel UBITS para mostrar múltiples items (Simple Cards) en un carrusel navegable. Incluye flechas de navegación, indicadores de paginación (dots), autoplay, loop infinito y controladores completos. Usa tokens UBITS para colores, tipografía y espaciado.',
+              files: {
+                css: 'addons/carousel/src/styles/carousel.css',
+                ts: 'addons/carousel/src/CarouselProvider.ts'
+              },
+              variants: [],
+              sizes: [],
+              states: ['default'],
+              features: ['Items basados en Simple Card', 'Número de items visibles configurable', 'Flechas de navegación opcionales (inside/outside)', 'Indicadores de paginación opcionales (top/bottom)', 'Autoplay configurable con intervalo', 'Loop infinito opcional', 'Espacio entre items configurable (gap)', 'Pausa en hover', 'Usa tokens UBITS exclusivamente', 'Usa componente Simple Card UBITS'],
+              class: 'ubits-carousel ubits-carousel--arrows-inside ubits-carousel--dots-top',
+              example: 'createCarousel({\n  items: [\n    { id: 1, title: \'Card 1\', subtitle: \'Subtitle 1\', content: \'Content 1\', variant: \'default\', size: \'md\' },\n    { id: 2, title: \'Card 2\', subtitle: \'Subtitle 2\', content: \'Content 2\', variant: \'default\', size: \'md\' },\n    { id: 3, title: \'Card 3\', subtitle: \'Subtitle 3\', content: \'Content 3\', variant: \'default\', size: \'md\' }\n  ],\n  itemsPerView: 3,\n  showArrows: true,\n  showDots: true,\n  autoplay: false,\n  loop: false,\n  gap: 16,\n  arrowPosition: \'outside\',\n  dotPosition: \'bottom\'\n})',
+              hasPreview: true
+            }
+          ],
+          'Charts': [
+            {
+              name: 'Bar Metric Card',
+              description: 'Componente Bar Metric Card UBITS para mostrar métricas con gráfico de barras y categorías. Soporta layout vertical y horizontal, múltiples tamaños, valores positivos y negativos, y controles completos para personalización. Usa tokens UBITS para colores, tipografía y espaciado.',
+              files: {
+                css: 'addons/bar-metric-card/src/styles/bar-metric-card.css',
+                ts: 'addons/bar-metric-card/src/BarMetricCardProvider.ts'
+              },
+              variants: [],
+              sizes: ['sm', 'md', 'lg'],
+              states: ['default'],
+              features: ['Layout vertical y horizontal', '3 tamaños (sm, md, lg)', 'Gráfico de barras con valores positivos y negativos', 'Categorías con barras de progreso', 'Líneas de guía (grid lines) opcionales', 'Icono de información opcional', 'Botón de acción opcional', 'Cantidad de respuestas opcional', 'Usa tokens UBITS exclusivamente', 'Usa tipografía UBITS', 'Usa componente Progress Bar UBITS'],
+              class: 'ubits-bar-metric-card ubits-bar-metric-card--vertical ubits-bar-metric-card--md',
+              example: 'createBarMetricCard({\n  title: \'Métricas\',\n  responseCount: 120,\n  showResponseCount: true,\n  barData: [20, 30, -10, 40, 15],\n  barLabels: [\'Ene\', \'Feb\', \'Mar\', \'Abr\', \'May\'],\n  categories: [\n    { label: \'Área\', current: 3, total: 20 },\n    { label: \'Equipo\', current: 5, total: 20 },\n    { label: \'Propio\', current: 12, total: 20 }\n  ],\n  layout: \'vertical\',\n  size: \'md\',\n  showTitle: true,\n  showBarChart: true,\n  showCategories: true\n})',
+              hasPreview: true
+            },
+            {
+              name: 'CSAT Metric Card',
+              description: 'Componente CSAT Metric Card UBITS para mostrar métricas CSAT (Customer Satisfaction) con caritas. Incluye título, estadísticas (respuestas y promedio), gráfico de 5 caritas con textos. Usa tokens UBITS para colores, tipografía y espaciado.',
+              files: {
+                css: 'addons/csat-metric-card/src/styles/csat-metric-card.css',
+                ts: 'addons/csat-metric-card/src/CSATMetricCardProvider.ts'
+              },
+              variants: [],
+              sizes: ['sm', 'md', 'lg'],
+              states: ['default'],
+              features: ['3 tamaños (sm, md, lg)', 'Gráfico de 5 caritas (Muy malo, Malo, Regular, Bueno, Muy bueno)', 'Score de 0-5 mapeado a caritas', 'Estadísticas de respuestas y promedio', 'Icono de título opcional', 'Icono de información opcional', 'Botón de acción opcional', 'Usa tokens UBITS exclusivamente', 'Usa tipografía UBITS', 'Usa componente Button UBITS'],
+              class: 'ubits-csat-metric-card ubits-csat-metric-card--md',
+              example: 'createCSATMetricCard({\n  title: \'Califica el producto\',\n  totalResponses: 7,\n  responsesLabel: \'respuestas\',\n  average: 4.00,\n  averageLabel: \'Promedio:\',\n  score: 3,\n  showInfoIcon: true,\n  showActionButton: true,\n  size: \'md\'\n})',
               hasPreview: true
             }
           ]
@@ -6349,6 +6433,16 @@ Reglas Importantes:
                     window.updateBreadcrumbPreview('breadcrumb');
                   } else if (componentId === 'card-content' && typeof window.updateCardPreview === 'function') {
                     window.updateCardPreview('card-content');
+                  } else if (componentId === 'simple-card' && typeof window.updateSimpleCardPreview === 'function') {
+                    window.updateSimpleCardPreview('simple-card');
+                  } else if (componentId === 'carousel' && typeof window.updateCarouselPreview === 'function') {
+                    window.updateCarouselPreview('carousel');
+                  } else if (componentId === 'bar-metric-card' && typeof window.updateBarMetricCardPreview === 'function') {
+                    window.updateBarMetricCardPreview('bar-metric-card');
+                  } else if (componentId === 'csat-metric-card' && typeof window.updateCSATMetricCardPreview === 'function') {
+                    window.updateCSATMetricCardPreview('csat-metric-card');
+                  } else if (componentId === 'dataview' && typeof window.updateDataViewPreview === 'function') {
+                    window.updateDataViewPreview('dataview');
                   } else if (componentId === 'contenedor' && typeof window.updateContenedorPreview === 'function') {
                     window.updateContenedorPreview('contenedor');
                   }
@@ -10227,6 +10321,780 @@ Reglas Importantes:
                           <!-- PREVIEW -->
                           <div style="background: var(--ubits-bg-1); padding: 48px; border-radius: 8px; border: none; margin-bottom: 24px; display: flex; align-items: flex-start; justify-content: center; min-height: 200px;">
                             <div id="stepper-preview-${componentId}" style="width: 100%; max-width: 800px;">
+                              <!-- Se generará dinámicamente -->
+                            </div>
+                          </div>
+                        </div>
+                      ` : ''}
+                      
+                      ${hasPreview && component.name === 'Simple Card' ? `
+                        <!-- Preview Section for Simple Card -->
+                        <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: none; margin-bottom: 24px;">
+                          <!-- CONTROLES ARRIBA -->
+                          <div style="margin-bottom: 24px;">
+                            <h4 style="margin: 0 0 20px 0; color: var(--ubits-fg-1-high); font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand-static-inverted);"></i>
+                              Controles
+                            </h4>
+                            
+                            <!-- Primera fila: Variante y Tamaño -->
+                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; margin-bottom: 24px;">
+                              <!-- Variante -->
+                              <div style="flex: 0 0 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Variante</label>
+                                <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                                  <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" data-component="${componentId}" data-option="variant" data-value="default" onclick="setSimpleCardControl('variant', 'default', '${componentId}')">
+                                    <span>Default</span>
+                                  </button>
+                                  <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-component="${componentId}" data-option="variant" data-value="elevated" onclick="setSimpleCardControl('variant', 'elevated', '${componentId}')">
+                                    <span>Elevated</span>
+                                  </button>
+                                  <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-component="${componentId}" data-option="variant" data-value="bordered" onclick="setSimpleCardControl('variant', 'bordered', '${componentId}')">
+                                    <span>Bordered</span>
+                                  </button>
+                                  <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-component="${componentId}" data-option="variant" data-value="flat" onclick="setSimpleCardControl('variant', 'flat', '${componentId}')">
+                                    <span>Flat</span>
+                                  </button>
+                                </div>
+                              </div>
+                              
+                              <!-- Tamaño -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Tamaño</label>
+                                <select id="simple-card-size-select-${componentId}" onchange="setSimpleCardControl('size', this.value, '${componentId}')" style="width: 100%; padding: 10px 32px 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); cursor: pointer; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23666%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226,9 12,15 18,9%22></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px; box-sizing: border-box;">
+                                  <option value="sm">SM (280px)</option>
+                                  <option value="md" selected>MD (400px)</option>
+                                  <option value="lg">LG (560px)</option>
+                                  <option value="xl">XL (720px)</option>
+                                </select>
+                              </div>
+                              
+                              <!-- Mostrar Header -->
+                              <div style="flex: 0 0 auto; min-width: 120px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Mostrar Header</label>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                  <label class="ubits-toggle ubits-toggle--md">
+                                    <input type="checkbox" class="ubits-toggle__input" id="simple-card-show-header-toggle-${componentId}" checked onchange="setSimpleCardControl('showHeader', this.checked, '${componentId}')">
+                                    <span class="ubits-toggle__track">
+                                      <span class="ubits-toggle__thumb"></span>
+                                    </span>
+                                  </label>
+                                  <span id="simple-card-show-header-status-${componentId}" style="font-size: 13px; color: var(--ubits-fg-1-medium);">Activado</span>
+                                </div>
+                              </div>
+                              
+                              <!-- Decoraciones Header -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Decoraciones</label>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                  <label class="ubits-toggle ubits-toggle--md">
+                                    <input type="checkbox" class="ubits-toggle__input" id="simple-card-header-decorations-toggle-${componentId}" checked onchange="setSimpleCardControl('headerDecorations', this.checked, '${componentId}')">
+                                    <span class="ubits-toggle__track">
+                                      <span class="ubits-toggle__thumb"></span>
+                                    </span>
+                                  </label>
+                                  <span id="simple-card-header-decorations-status-${componentId}" style="font-size: 13px; color: var(--ubits-fg-1-medium);">Activado</span>
+                                </div>
+                              </div>
+                              
+                              <!-- Mostrar Botones -->
+                              <div style="flex: 0 0 auto; min-width: 120px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Mostrar Botones</label>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                  <label class="ubits-toggle ubits-toggle--md">
+                                    <input type="checkbox" class="ubits-toggle__input" id="simple-card-show-buttons-toggle-${componentId}" checked onchange="setSimpleCardControl('showButtons', this.checked, '${componentId}')">
+                                    <span class="ubits-toggle__track">
+                                      <span class="ubits-toggle__thumb"></span>
+                                    </span>
+                                  </label>
+                                  <span id="simple-card-show-buttons-status-${componentId}" style="font-size: 13px; color: var(--ubits-fg-1-medium);">Activado</span>
+                                </div>
+                              </div>
+                            </div>
+                            
+                            <!-- Segunda fila: Contenido -->
+                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; margin-bottom: 24px;">
+                              <!-- Título -->
+                              <div style="flex: 1 1 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Título</label>
+                                <input type="text" id="simple-card-title-input-${componentId}" value="Advanced Card" onchange="setSimpleCardControl('title', this.value, '${componentId}')" placeholder="Advanced Card" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                              
+                              <!-- Subtítulo -->
+                              <div style="flex: 1 1 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Subtítulo</label>
+                                <input type="text" id="simple-card-subtitle-input-${componentId}" value="Card subtitle" onchange="setSimpleCardControl('subtitle', this.value, '${componentId}')" placeholder="Card subtitle" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                            </div>
+                            
+                            <!-- Tercera fila: Contenido -->
+                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
+                              <!-- Contenido -->
+                              <div style="flex: 1 1 auto; min-width: 100%;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Contenido</label>
+                                <textarea id="simple-card-content-input-${componentId}" onchange="setSimpleCardControl('content', this.value, '${componentId}')" placeholder="Lorem ipsum dolor sit amet..." rows="3" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box; resize: vertical;">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore sed consequuntur error repudiandae numquam deserunt quisquam repellat libero asperiores earum nam nobis, culpa ratione quam perferendis esse, cupiditate neque quas!</textarea>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <!-- PREVIEW -->
+                          <div style="background: var(--ubits-bg-1); padding: 48px; border-radius: 8px; border: none; margin-bottom: 24px; display: flex; align-items: flex-start; justify-content: center; min-height: 300px;">
+                            <div id="simple-card-preview-${componentId}" style="width: 100%; max-width: 800px; display: flex; justify-content: center;">
+                              <!-- Se generará dinámicamente -->
+                            </div>
+                          </div>
+                        </div>
+                      ` : ''}
+                      
+                      ${hasPreview && component.name === 'Carousel' ? `
+                        <!-- Preview Section for Carousel -->
+                        <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: none; margin-bottom: 24px;">
+                          <!-- CONTROLES ARRIBA -->
+                          <div style="margin-bottom: 24px;">
+                            <h4 style="margin: 0 0 20px 0; color: var(--ubits-fg-1-high); font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand-static-inverted);"></i>
+                              Controles
+                            </h4>
+                            
+                            <!-- Primera fila: Configuración básica -->
+                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; margin-bottom: 24px;">
+                              <!-- Tamaño de Cards -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Tamaño Cards</label>
+                                <select id="carousel-card-size-select-${componentId}" onchange="setCarouselControl('cardSize', this.value, '${componentId}')" style="width: 100%; padding: 10px 32px 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); cursor: pointer; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23666%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226,9 12,15 18,9%22></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px; box-sizing: border-box;">
+                                  <option value="sm">SM (280px)</option>
+                                  <option value="md" selected>MD (400px)</option>
+                                  <option value="lg">LG (560px)</option>
+                                  <option value="xl">XL (720px)</option>
+                                </select>
+                              </div>
+                              
+                              <!-- Items por Vista -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Items por Vista</label>
+                                <select id="carousel-items-per-view-select-${componentId}" onchange="setCarouselControl('itemsPerView', parseInt(this.value), '${componentId}')" style="width: 100%; padding: 10px 32px 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); cursor: pointer; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23666%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226,9 12,15 18,9%22></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px; box-sizing: border-box;">
+                                  <option value="1">1 Item</option>
+                                  <option value="2">2 Items</option>
+                                  <option value="3" selected>3 Items</option>
+                                  <option value="4">4 Items</option>
+                                </select>
+                              </div>
+                              
+                              <!-- Gap (Espacio entre items) -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Gap (px)</label>
+                                <input type="number" id="carousel-gap-input-${componentId}" value="16" min="0" max="48" step="4" onchange="setCarouselControl('gap', parseInt(this.value) || 16, '${componentId}')" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                              
+                              <!-- Posición Flechas -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Posición Flechas</label>
+                                <select id="carousel-arrow-position-select-${componentId}" onchange="setCarouselControl('arrowPosition', this.value, '${componentId}')" style="width: 100%; padding: 10px 32px 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); cursor: pointer; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23666%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226,9 12,15 18,9%22></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px; box-sizing: border-box;">
+                                  <option value="outside" selected>Outside</option>
+                                  <option value="inside">Inside</option>
+                                </select>
+                              </div>
+                              
+                              <!-- Posición Dots -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Posición Dots</label>
+                                <select id="carousel-dot-position-select-${componentId}" onchange="setCarouselControl('dotPosition', this.value, '${componentId}')" style="width: 100%; padding: 10px 32px 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); cursor: pointer; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23666%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226,9 12,15 18,9%22></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px; box-sizing: border-box;">
+                                  <option value="bottom" selected>Bottom</option>
+                                  <option value="top">Top</option>
+                                </select>
+                              </div>
+                            </div>
+                            
+                            <!-- Segunda fila: Toggles -->
+                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; margin-bottom: 24px;">
+                              <!-- Mostrar Flechas -->
+                              <div style="flex: 0 0 auto; min-width: 120px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Mostrar Flechas</label>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                  <label class="ubits-toggle ubits-toggle--md">
+                                    <input type="checkbox" class="ubits-toggle__input" id="carousel-show-arrows-toggle-${componentId}" checked onchange="setCarouselControl('showArrows', this.checked, '${componentId}')">
+                                    <span class="ubits-toggle__track">
+                                      <span class="ubits-toggle__thumb"></span>
+                                    </span>
+                                  </label>
+                                  <span id="carousel-show-arrows-status-${componentId}" style="font-size: 13px; color: var(--ubits-fg-1-medium);">Activado</span>
+                                </div>
+                              </div>
+                              
+                              <!-- Mostrar Dots -->
+                              <div style="flex: 0 0 auto; min-width: 120px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Mostrar Dots</label>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                  <label class="ubits-toggle ubits-toggle--md">
+                                    <input type="checkbox" class="ubits-toggle__input" id="carousel-show-dots-toggle-${componentId}" checked onchange="setCarouselControl('showDots', this.checked, '${componentId}')">
+                                    <span class="ubits-toggle__track">
+                                      <span class="ubits-toggle__thumb"></span>
+                                    </span>
+                                  </label>
+                                  <span id="carousel-show-dots-status-${componentId}" style="font-size: 13px; color: var(--ubits-fg-1-medium);">Activado</span>
+                                </div>
+                              </div>
+                              
+                              <!-- Autoplay -->
+                              <div style="flex: 0 0 auto; min-width: 120px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Autoplay</label>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                  <label class="ubits-toggle ubits-toggle--md">
+                                    <input type="checkbox" class="ubits-toggle__input" id="carousel-autoplay-toggle-${componentId}" onchange="setCarouselControl('autoplay', this.checked, '${componentId}')">
+                                    <span class="ubits-toggle__track">
+                                      <span class="ubits-toggle__thumb"></span>
+                                    </span>
+                                  </label>
+                                  <span id="carousel-autoplay-status-${componentId}" style="font-size: 13px; color: var(--ubits-fg-1-medium);">Desactivado</span>
+                                </div>
+                              </div>
+                              
+                              <!-- Loop -->
+                              <div style="flex: 0 0 auto; min-width: 120px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Loop</label>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                  <label class="ubits-toggle ubits-toggle--md">
+                                    <input type="checkbox" class="ubits-toggle__input" id="carousel-loop-toggle-${componentId}" onchange="setCarouselControl('loop', this.checked, '${componentId}')">
+                                    <span class="ubits-toggle__track">
+                                      <span class="ubits-toggle__thumb"></span>
+                                    </span>
+                                  </label>
+                                  <span id="carousel-loop-status-${componentId}" style="font-size: 13px; color: var(--ubits-fg-1-medium);">Desactivado</span>
+                                </div>
+                              </div>
+                              
+                              <!-- Intervalo Autoplay -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Intervalo (ms)</label>
+                                <input type="number" id="carousel-autoplay-interval-input-${componentId}" value="3000" min="1000" max="10000" step="500" onchange="setCarouselControl('autoplayInterval', parseInt(this.value) || 3000, '${componentId}')" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <!-- PREVIEW -->
+                          <div style="background: var(--ubits-bg-1); padding: 48px; border-radius: 8px; border: none; margin-bottom: 24px; display: flex; align-items: flex-start; justify-content: center; min-height: 400px;">
+                            <div id="carousel-preview-${componentId}" style="width: 100%; max-width: 1200px;">
+                              <!-- Se generará dinámicamente -->
+                            </div>
+                          </div>
+                        </div>
+                      ` : ''}
+                      
+                      ${hasPreview && component.name === 'Bar Metric Card' ? `
+                        <!-- Preview Section for Bar Metric Card -->
+                        <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: none; margin-bottom: 24px;">
+                          <!-- CONTROLES ARRIBA -->
+                          <div style="margin-bottom: 24px;">
+                            <h4 style="margin: 0 0 20px 0; color: var(--ubits-fg-1-high); font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand-static-inverted);"></i>
+                              Controles
+                            </h4>
+                            
+                            <!-- Primera fila: Layout y Tamaño -->
+                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; margin-bottom: 24px;">
+                              <!-- Layout -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Layout</label>
+                                <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                                  <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" data-component="${componentId}" data-option="layout" data-value="vertical" onclick="setBarMetricCardControl('layout', 'vertical', '${componentId}')">
+                                    <span>Vertical</span>
+                                  </button>
+                                  <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-component="${componentId}" data-option="layout" data-value="horizontal" onclick="setBarMetricCardControl('layout', 'horizontal', '${componentId}')">
+                                    <span>Horizontal</span>
+                                  </button>
+                                </div>
+                              </div>
+                              
+                              <!-- Tamaño -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Tamaño</label>
+                                <select id="bar-metric-card-size-select-${componentId}" onchange="setBarMetricCardControl('size', this.value, '${componentId}')" style="width: 100%; padding: 10px 32px 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); cursor: pointer; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23666%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226,9 12,15 18,9%22></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px; box-sizing: border-box;">
+                                  <option value="sm">SM</option>
+                                  <option value="md" selected>MD</option>
+                                  <option value="lg">LG</option>
+                                </select>
+                              </div>
+                              
+                              <!-- Título -->
+                              <div style="flex: 1 1 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Título</label>
+                                <input type="text" id="bar-metric-card-title-input-${componentId}" value="Nombre de la pregunta" onchange="setBarMetricCardControl('title', this.value, '${componentId}')" placeholder="Nombre de la pregunta" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                              
+                              <!-- Response Count -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Respuestas</label>
+                                <input type="number" id="bar-metric-card-response-count-input-${componentId}" value="7" min="0" step="1" onchange="setBarMetricCardControl('responseCount', parseInt(this.value) || 0, '${componentId}')" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                            </div>
+                            
+                            <!-- Segunda fila: Toggles principales -->
+                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; margin-bottom: 24px;">
+                              <!-- Mostrar Título -->
+                              <div style="flex: 0 0 auto; min-width: 120px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Mostrar Título</label>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                  <label class="ubits-toggle ubits-toggle--md">
+                                    <input type="checkbox" class="ubits-toggle__input" id="bar-metric-card-show-title-toggle-${componentId}" checked onchange="setBarMetricCardControl('showTitle', this.checked, '${componentId}')">
+                                    <span class="ubits-toggle__track">
+                                      <span class="ubits-toggle__thumb"></span>
+                                    </span>
+                                  </label>
+                                  <span id="bar-metric-card-show-title-status-${componentId}" style="font-size: 13px; color: var(--ubits-fg-1-medium);">Activado</span>
+                                </div>
+                              </div>
+                              
+                              <!-- Mostrar Respuestas -->
+                              <div style="flex: 0 0 auto; min-width: 120px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Mostrar Respuestas</label>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                  <label class="ubits-toggle ubits-toggle--md">
+                                    <input type="checkbox" class="ubits-toggle__input" id="bar-metric-card-show-response-count-toggle-${componentId}" checked onchange="setBarMetricCardControl('showResponseCount', this.checked, '${componentId}')">
+                                    <span class="ubits-toggle__track">
+                                      <span class="ubits-toggle__thumb"></span>
+                                    </span>
+                                  </label>
+                                  <span id="bar-metric-card-show-response-count-status-${componentId}" style="font-size: 13px; color: var(--ubits-fg-1-medium);">Activado</span>
+                                </div>
+                              </div>
+                              
+                              <!-- Mostrar Gráfico -->
+                              <div style="flex: 0 0 auto; min-width: 120px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Mostrar Gráfico</label>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                  <label class="ubits-toggle ubits-toggle--md">
+                                    <input type="checkbox" class="ubits-toggle__input" id="bar-metric-card-show-bar-chart-toggle-${componentId}" checked onchange="setBarMetricCardControl('showBarChart', this.checked, '${componentId}')">
+                                    <span class="ubits-toggle__track">
+                                      <span class="ubits-toggle__thumb"></span>
+                                    </span>
+                                  </label>
+                                  <span id="bar-metric-card-show-bar-chart-status-${componentId}" style="font-size: 13px; color: var(--ubits-fg-1-medium);">Activado</span>
+                                </div>
+                              </div>
+                              
+                              <!-- Mostrar Categorías -->
+                              <div style="flex: 0 0 auto; min-width: 120px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Mostrar Categorías</label>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                  <label class="ubits-toggle ubits-toggle--md">
+                                    <input type="checkbox" class="ubits-toggle__input" id="bar-metric-card-show-categories-toggle-${componentId}" checked onchange="setBarMetricCardControl('showCategories', this.checked, '${componentId}')">
+                                    <span class="ubits-toggle__track">
+                                      <span class="ubits-toggle__thumb"></span>
+                                    </span>
+                                  </label>
+                                  <span id="bar-metric-card-show-categories-status-${componentId}" style="font-size: 13px; color: var(--ubits-fg-1-medium);">Activado</span>
+                                </div>
+                              </div>
+                              
+                              <!-- Mostrar Icono Info -->
+                              <div style="flex: 0 0 auto; min-width: 120px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Icono Info</label>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                  <label class="ubits-toggle ubits-toggle--md">
+                                    <input type="checkbox" class="ubits-toggle__input" id="bar-metric-card-show-info-icon-toggle-${componentId}" onchange="setBarMetricCardControl('showInfoIcon', this.checked, '${componentId}')">
+                                    <span class="ubits-toggle__track">
+                                      <span class="ubits-toggle__thumb"></span>
+                                    </span>
+                                  </label>
+                                  <span id="bar-metric-card-show-info-icon-status-${componentId}" style="font-size: 13px; color: var(--ubits-fg-1-medium);">Desactivado</span>
+                                </div>
+                              </div>
+                              
+                              <!-- Mostrar Botón Acción -->
+                              <div style="flex: 0 0 auto; min-width: 120px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Botón Acción</label>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                  <label class="ubits-toggle ubits-toggle--md">
+                                    <input type="checkbox" class="ubits-toggle__input" id="bar-metric-card-show-action-button-toggle-${componentId}" onchange="setBarMetricCardControl('showActionButton', this.checked, '${componentId}')">
+                                    <span class="ubits-toggle__track">
+                                      <span class="ubits-toggle__thumb"></span>
+                                    </span>
+                                  </label>
+                                  <span id="bar-metric-card-show-action-button-status-${componentId}" style="font-size: 13px; color: var(--ubits-fg-1-medium);">Desactivado</span>
+                                </div>
+                              </div>
+                              
+                              <!-- Valores Negativos -->
+                              <div style="flex: 0 0 auto; min-width: 120px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Valores Negativos</label>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                  <label class="ubits-toggle ubits-toggle--md">
+                                    <input type="checkbox" class="ubits-toggle__input" id="bar-metric-card-show-negative-values-toggle-${componentId}" checked onchange="setBarMetricCardControl('showNegativeValues', this.checked, '${componentId}')">
+                                    <span class="ubits-toggle__track">
+                                      <span class="ubits-toggle__thumb"></span>
+                                    </span>
+                                  </label>
+                                  <span id="bar-metric-card-show-negative-values-status-${componentId}" style="font-size: 13px; color: var(--ubits-fg-1-medium);">Activado</span>
+                                </div>
+                              </div>
+                              
+                              <!-- Líneas de Guía -->
+                              <div style="flex: 0 0 auto; min-width: 120px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Líneas Guía</label>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                  <label class="ubits-toggle ubits-toggle--md">
+                                    <input type="checkbox" class="ubits-toggle__input" id="bar-metric-card-show-grid-lines-toggle-${componentId}" checked onchange="setBarMetricCardControl('showGridLines', this.checked, '${componentId}')">
+                                    <span class="ubits-toggle__track">
+                                      <span class="ubits-toggle__thumb"></span>
+                                    </span>
+                                  </label>
+                                  <span id="bar-metric-card-show-grid-lines-status-${componentId}" style="font-size: 13px; color: var(--ubits-fg-1-medium);">Activado</span>
+                                </div>
+                              </div>
+                            </div>
+                            
+                            <!-- Tercera fila: Datos del Gráfico -->
+                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; margin-bottom: 24px;">
+                              <!-- Bar Data -->
+                              <div style="flex: 1 1 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Datos Barras (separados por comas)</label>
+                                <input type="text" id="bar-metric-card-bar-data-input-${componentId}" value="-25,-15,15,25,35,45,55,5,25,-15,-30,-50" onchange="setBarMetricCardControl('barData', this.value, '${componentId}')" placeholder="-25,-15,15,25,35" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                              
+                              <!-- Bar Labels -->
+                              <div style="flex: 1 1 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Etiquetas Barras (separadas por comas)</label>
+                                <input type="text" id="bar-metric-card-bar-labels-input-${componentId}" value="Ago,Ago,Ago,Ago,Ago,Ago,Ago,Ago,Ago,Ago,Ago,Ago" onchange="setBarMetricCardControl('barLabels', this.value, '${componentId}')" placeholder="Ene,Feb,Mar,Abr,May" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                              
+                              <!-- Max Value -->
+                              <div style="flex: 0 0 auto; min-width: 120px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Max Value</label>
+                                <input type="number" id="bar-metric-card-max-value-input-${componentId}" value="60" min="-100" max="100" step="10" onchange="setBarMetricCardControl('maxValue', parseInt(this.value) || 60, '${componentId}')" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                              
+                              <!-- Min Value -->
+                              <div style="flex: 0 0 auto; min-width: 120px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Min Value</label>
+                                <input type="number" id="bar-metric-card-min-value-input-${componentId}" value="-60" min="-100" max="100" step="10" onchange="setBarMetricCardControl('minValue', parseInt(this.value) || -60, '${componentId}')" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                            </div>
+                            
+                            <!-- Cuarta fila: Categorías -->
+                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; margin-bottom: 24px;">
+                              <!-- Categoría 1 -->
+                              <div style="flex: 1 1 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Categoría 1</label>
+                                <div style="display: flex; gap: 8px; flex-direction: column;">
+                                  <input type="text" id="bar-metric-card-category1-label-input-${componentId}" value="Área" onchange="setBarMetricCardControl('category1Label', this.value, '${componentId}')" placeholder="Label" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                                  <div style="display: flex; gap: 8px;">
+                                    <input type="number" id="bar-metric-card-category1-current-input-${componentId}" value="3" min="0" step="1" onchange="setBarMetricCardControl('category1Current', parseInt(this.value) || 0, '${componentId}')" placeholder="Current" style="flex: 1; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                                    <input type="number" id="bar-metric-card-category1-total-input-${componentId}" value="20" min="0" step="1" onchange="setBarMetricCardControl('category1Total', parseInt(this.value) || 0, '${componentId}')" placeholder="Total" style="flex: 1; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                                  </div>
+                                </div>
+                              </div>
+                              
+                              <!-- Categoría 2 -->
+                              <div style="flex: 1 1 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Categoría 2</label>
+                                <div style="display: flex; gap: 8px; flex-direction: column;">
+                                  <input type="text" id="bar-metric-card-category2-label-input-${componentId}" value="Equipo" onchange="setBarMetricCardControl('category2Label', this.value, '${componentId}')" placeholder="Label" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                                  <div style="display: flex; gap: 8px;">
+                                    <input type="number" id="bar-metric-card-category2-current-input-${componentId}" value="5" min="0" step="1" onchange="setBarMetricCardControl('category2Current', parseInt(this.value) || 0, '${componentId}')" placeholder="Current" style="flex: 1; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                                    <input type="number" id="bar-metric-card-category2-total-input-${componentId}" value="15" min="0" step="1" onchange="setBarMetricCardControl('category2Total', parseInt(this.value) || 0, '${componentId}')" placeholder="Total" style="flex: 1; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                                  </div>
+                                </div>
+                              </div>
+                              
+                              <!-- Categoría 3 -->
+                              <div style="flex: 1 1 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Categoría 3</label>
+                                <div style="display: flex; gap: 8px; flex-direction: column;">
+                                  <input type="text" id="bar-metric-card-category3-label-input-${componentId}" value="Propio" onchange="setBarMetricCardControl('category3Label', this.value, '${componentId}')" placeholder="Label" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                                  <div style="display: flex; gap: 8px;">
+                                    <input type="number" id="bar-metric-card-category3-current-input-${componentId}" value="2" min="0" step="1" onchange="setBarMetricCardControl('category3Current', parseInt(this.value) || 0, '${componentId}')" placeholder="Current" style="flex: 1; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                                    <input type="number" id="bar-metric-card-category3-total-input-${componentId}" value="10" min="0" step="1" onchange="setBarMetricCardControl('category3Total', parseInt(this.value) || 0, '${componentId}')" placeholder="Total" style="flex: 1; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <!-- PREVIEW -->
+                          <div style="background: var(--ubits-bg-2); padding: 48px; border-radius: 8px; border: none; margin-bottom: 24px; display: flex; align-items: flex-start; justify-content: center; min-height: 400px;">
+                            <div id="bar-metric-card-preview-${componentId}" style="width: 100%; max-width: 1200px; display: flex; justify-content: center;">
+                              <!-- Se generará dinámicamente -->
+                            </div>
+                          </div>
+                        </div>
+                      ` : ''}
+                      
+                      ${hasPreview && component.name === 'CSAT Metric Card' ? `
+                        <!-- Preview Section for CSAT Metric Card -->
+                        <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: none; margin-bottom: 24px;">
+                          <!-- CONTROLES ARRIBA -->
+                          <div style="margin-bottom: 24px;">
+                            <h4 style="margin: 0 0 20px 0; color: var(--ubits-fg-1-high); font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand-static-inverted);"></i>
+                              Controles
+                            </h4>
+                            
+                            <!-- Primera fila: Configuración básica -->
+                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; margin-bottom: 24px;">
+                              <!-- Tamaño -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Tamaño</label>
+                                <select id="csat-metric-card-size-select-${componentId}" onchange="setCSATMetricCardControl('size', this.value, '${componentId}')" style="width: 100%; padding: 10px 32px 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); cursor: pointer; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23666%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226,9 12,15 18,9%22></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px; box-sizing: border-box;">
+                                  <option value="sm">SM</option>
+                                  <option value="md" selected>MD</option>
+                                  <option value="lg">LG</option>
+                                </select>
+                              </div>
+                              
+                              <!-- Título -->
+                              <div style="flex: 1 1 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Título</label>
+                                <input type="text" id="csat-metric-card-title-input-${componentId}" value="Califica el producto" onchange="setCSATMetricCardControl('title', this.value, '${componentId}')" placeholder="Califica el producto" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                              
+                              <!-- Total Respuestas -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Total Respuestas</label>
+                                <input type="number" id="csat-metric-card-total-responses-input-${componentId}" value="7" min="0" step="1" onchange="setCSATMetricCardControl('totalResponses', parseInt(this.value) || 0, '${componentId}')" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                              
+                              <!-- Etiqueta Respuestas -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Etiqueta Respuestas</label>
+                                <input type="text" id="csat-metric-card-responses-label-input-${componentId}" value="respuestas" onchange="setCSATMetricCardControl('responsesLabel', this.value, '${componentId}')" placeholder="respuestas" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                            </div>
+                            
+                            <!-- Segunda fila: Promedio y Score -->
+                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; margin-bottom: 24px;">
+                              <!-- Promedio -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Promedio (0-5)</label>
+                                <input type="number" id="csat-metric-card-average-input-${componentId}" value="4.00" min="0" max="5" step="0.01" onchange="setCSATMetricCardControl('average', parseFloat(this.value) || 0, '${componentId}')" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                              
+                              <!-- Etiqueta Promedio -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Etiqueta Promedio</label>
+                                <input type="text" id="csat-metric-card-average-label-input-${componentId}" value="Promedio:" onchange="setCSATMetricCardControl('averageLabel', this.value, '${componentId}')" placeholder="Promedio:" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                              
+                              <!-- Score (0-5) -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Score (0-5)</label>
+                                <input type="number" id="csat-metric-card-score-input-${componentId}" value="3" min="0" max="5" step="0.5" onchange="setCSATMetricCardControl('score', parseFloat(this.value) || 0, '${componentId}')" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                            </div>
+                            
+                            <!-- Tercera fila: Icono Título -->
+                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; margin-bottom: 24px;">
+                              <!-- Icono Título -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Icono Título</label>
+                                <input type="text" id="csat-metric-card-title-icon-input-${componentId}" value="" onchange="setCSATMetricCardControl('titleIcon', this.value, '${componentId}')" placeholder="star, chart-line, etc." style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                              
+                              <!-- Estilo Icono -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Estilo Icono</label>
+                                <select id="csat-metric-card-title-icon-style-select-${componentId}" onchange="setCSATMetricCardControl('titleIconStyle', this.value, '${componentId}')" style="width: 100%; padding: 10px 32px 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); cursor: pointer; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23666%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226,9 12,15 18,9%22></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px; box-sizing: border-box;">
+                                  <option value="regular" selected>Regular</option>
+                                  <option value="solid">Solid</option>
+                                </select>
+                              </div>
+                              
+                              <!-- Color Icono -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Color Icono</label>
+                                <input type="text" id="csat-metric-card-title-icon-color-input-${componentId}" value="" onchange="setCSATMetricCardControl('titleIconColor', this.value, '${componentId}')" placeholder="var(--ubits-fg-2-medium)" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                            </div>
+                            
+                            <!-- Cuarta fila: Toggles -->
+                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; margin-bottom: 24px;">
+                              <!-- Mostrar Icono Info -->
+                              <div style="flex: 0 0 auto; min-width: 120px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Icono Info</label>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                  <label class="ubits-toggle ubits-toggle--md">
+                                    <input type="checkbox" class="ubits-toggle__input" id="csat-metric-card-show-info-icon-toggle-${componentId}" checked onchange="setCSATMetricCardControl('showInfoIcon', this.checked, '${componentId}')">
+                                    <span class="ubits-toggle__track">
+                                      <span class="ubits-toggle__thumb"></span>
+                                    </span>
+                                  </label>
+                                  <span id="csat-metric-card-show-info-icon-status-${componentId}" style="font-size: 13px; color: var(--ubits-fg-1-medium);">Activado</span>
+                                </div>
+                              </div>
+                              
+                              <!-- Mostrar Botón Acción -->
+                              <div style="flex: 0 0 auto; min-width: 120px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Botón Acción</label>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                  <label class="ubits-toggle ubits-toggle--md">
+                                    <input type="checkbox" class="ubits-toggle__input" id="csat-metric-card-show-action-button-toggle-${componentId}" checked onchange="setCSATMetricCardControl('showActionButton', this.checked, '${componentId}')">
+                                    <span class="ubits-toggle__track">
+                                      <span class="ubits-toggle__thumb"></span>
+                                    </span>
+                                  </label>
+                                  <span id="csat-metric-card-show-action-button-status-${componentId}" style="font-size: 13px; color: var(--ubits-fg-1-medium);">Activado</span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <!-- PREVIEW -->
+                          <div style="background: var(--ubits-bg-2); padding: 48px; border-radius: 8px; border: none; margin-bottom: 24px; display: flex; align-items: flex-start; justify-content: center; min-height: 400px;">
+                            <div id="csat-metric-card-preview-${componentId}" style="width: 100%; max-width: 500px; display: flex; justify-content: center;">
+                              <!-- Se generará dinámicamente -->
+                            </div>
+                          </div>
+                        </div>
+                      ` : ''}
+                      
+                      ${hasPreview && component.name === 'DataView' ? `
+                        <!-- Preview Section for DataView -->
+                        <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: none; margin-bottom: 24px;">
+                          <!-- CONTROLES ARRIBA -->
+                          <div style="margin-bottom: 24px;">
+                            <h4 style="margin: 0 0 20px 0; color: var(--ubits-fg-1-high); font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand-static-inverted);"></i>
+                              Controles
+                            </h4>
+                            
+                            <!-- Primera fila: Configuración básica -->
+                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; margin-bottom: 24px;">
+                              <!-- Tamaño -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Tamaño</label>
+                                <select id="data-view-size-select-${componentId}" onchange="setDataViewControl('size', this.value, '${componentId}')" style="width: 100%; padding: 10px 32px 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); cursor: pointer; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23666%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226,9 12,15 18,9%22></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px; box-sizing: border-box;">
+                                  <option value="sm">SM</option>
+                                  <option value="md" selected>MD</option>
+                                  <option value="lg">LG</option>
+                                </select>
+                              </div>
+                              
+                              <!-- Número de Productos -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Número de Productos</label>
+                                <input type="number" id="data-view-product-count-input-${componentId}" value="5" min="1" max="10" step="1" onchange="setDataViewControl('productCount', parseInt(this.value) || 1, '${componentId}')" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                              
+                              <!-- Estado Stock por Defecto -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Estado Stock</label>
+                                <select id="data-view-stock-status-select-${componentId}" onchange="setDataViewControl('defaultStockStatus', this.value, '${componentId}')" style="width: 100%; padding: 10px 32px 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); cursor: pointer; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23666%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226,9 12,15 18,9%22></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px; box-sizing: border-box;">
+                                  <option value="INSTOCK" selected>INSTOCK</option>
+                                  <option value="LOWSTOCK">LOWSTOCK</option>
+                                  <option value="OUTOFSTOCK">OUTOFSTOCK</option>
+                                </select>
+                              </div>
+                              
+                              <!-- Rating por Defecto -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Rating (0-5)</label>
+                                <input type="number" id="data-view-rating-input-${componentId}" value="4" min="0" max="5" step="0.5" onchange="setDataViewControl('defaultRating', parseFloat(this.value) || 0, '${componentId}')" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                              
+                              <!-- Precio por Defecto -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Precio</label>
+                                <input type="number" id="data-view-price-input-${componentId}" value="50" min="0" step="1" onchange="setDataViewControl('defaultPrice', parseInt(this.value) || 0, '${componentId}')" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                            </div>
+                            
+                            <!-- Segunda fila: Botones -->
+                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; margin-bottom: 24px;">
+                              <!-- Texto Botón Compra -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Texto Botón Compra</label>
+                                <input type="text" id="data-view-buy-button-text-input-${componentId}" value="Buy Now" onchange="setDataViewControl('buyButtonText', this.value, '${componentId}')" placeholder="Buy Now" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                              
+                              <!-- Icono Botón Compra -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Icono Botón Compra</label>
+                                <input type="text" id="data-view-buy-button-icon-input-${componentId}" value="shopping-cart" onchange="setDataViewControl('buyButtonIcon', this.value, '${componentId}')" placeholder="shopping-cart" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                              
+                              <!-- Icono Wishlist -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Icono Wishlist</label>
+                                <input type="text" id="data-view-wishlist-icon-input-${componentId}" value="heart" onchange="setDataViewControl('wishlistIcon', this.value, '${componentId}')" placeholder="heart" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                            </div>
+                            
+                            <!-- Tercera fila: Toggles -->
+                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; margin-bottom: 24px;">
+                              <!-- Mostrar Categoría -->
+                              <div style="flex: 0 0 auto; min-width: 120px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Mostrar Categoría</label>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                  <label class="ubits-toggle ubits-toggle--md">
+                                    <input type="checkbox" class="ubits-toggle__input" id="data-view-show-category-toggle-${componentId}" checked onchange="setDataViewControl('showCategory', this.checked, '${componentId}')">
+                                    <span class="ubits-toggle__track">
+                                      <span class="ubits-toggle__thumb"></span>
+                                    </span>
+                                  </label>
+                                  <span id="data-view-show-category-status-${componentId}" style="font-size: 13px; color: var(--ubits-fg-1-medium);">Activado</span>
+                                </div>
+                              </div>
+                              
+                              <!-- Mostrar Rating -->
+                              <div style="flex: 0 0 auto; min-width: 120px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Mostrar Rating</label>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                  <label class="ubits-toggle ubits-toggle--md">
+                                    <input type="checkbox" class="ubits-toggle__input" id="data-view-show-rating-toggle-${componentId}" checked onchange="setDataViewControl('showRating', this.checked, '${componentId}')">
+                                    <span class="ubits-toggle__track">
+                                      <span class="ubits-toggle__thumb"></span>
+                                    </span>
+                                  </label>
+                                  <span id="data-view-show-rating-status-${componentId}" style="font-size: 13px; color: var(--ubits-fg-1-medium);">Activado</span>
+                                </div>
+                              </div>
+                              
+                              <!-- Mostrar Precio -->
+                              <div style="flex: 0 0 auto; min-width: 120px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Mostrar Precio</label>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                  <label class="ubits-toggle ubits-toggle--md">
+                                    <input type="checkbox" class="ubits-toggle__input" id="data-view-show-price-toggle-${componentId}" checked onchange="setDataViewControl('showPrice', this.checked, '${componentId}')">
+                                    <span class="ubits-toggle__track">
+                                      <span class="ubits-toggle__thumb"></span>
+                                    </span>
+                                  </label>
+                                  <span id="data-view-show-price-status-${componentId}" style="font-size: 13px; color: var(--ubits-fg-1-medium);">Activado</span>
+                                </div>
+                              </div>
+                              
+                              <!-- Mostrar Wishlist -->
+                              <div style="flex: 0 0 auto; min-width: 120px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Mostrar Wishlist</label>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                  <label class="ubits-toggle ubits-toggle--md">
+                                    <input type="checkbox" class="ubits-toggle__input" id="data-view-show-wishlist-toggle-${componentId}" checked onchange="setDataViewControl('showWishlist', this.checked, '${componentId}')">
+                                    <span class="ubits-toggle__track">
+                                      <span class="ubits-toggle__thumb"></span>
+                                    </span>
+                                  </label>
+                                  <span id="data-view-show-wishlist-status-${componentId}" style="font-size: 13px; color: var(--ubits-fg-1-medium);">Activado</span>
+                                </div>
+                              </div>
+                              
+                              <!-- Mostrar Botón Compra -->
+                              <div style="flex: 0 0 auto; min-width: 120px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Mostrar Botón Compra</label>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                  <label class="ubits-toggle ubits-toggle--md">
+                                    <input type="checkbox" class="ubits-toggle__input" id="data-view-show-buy-button-toggle-${componentId}" checked onchange="setDataViewControl('showBuyButton', this.checked, '${componentId}')">
+                                    <span class="ubits-toggle__track">
+                                      <span class="ubits-toggle__thumb"></span>
+                                    </span>
+                                  </label>
+                                  <span id="data-view-show-buy-button-status-${componentId}" style="font-size: 13px; color: var(--ubits-fg-1-medium);">Activado</span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <!-- PREVIEW -->
+                          <div style="background: var(--ubits-bg-2); padding: 48px; border-radius: 8px; border: none; margin-bottom: 24px; display: flex; align-items: flex-start; justify-content: center; min-height: 400px;">
+                            <div id="data-view-preview-${componentId}" style="width: 100%; max-width: 800px; display: flex; justify-content: center;">
                               <!-- Se generará dinámicamente -->
                             </div>
                           </div>
@@ -28104,6 +28972,1587 @@ Reglas Importantes:
         }
       };
       
+      // ========================================
+      // FUNCIONES DE CONTROL PARA SIMPLE CARD
+      // ========================================
+      
+      // Función para controlar SimpleCard
+      window.setSimpleCardControl = function(option, value, componentId) {
+        console.log('🎛️ setSimpleCardControl:', option, value, componentId);
+        
+        // Actualizar estado activo de botones
+        if (option === 'variant') {
+          document.querySelectorAll(`[data-component="${componentId}"][data-option="variant"]`).forEach(btn => {
+            btn.classList.remove('active');
+            if (btn.getAttribute('data-value') === value) {
+              btn.classList.add('active');
+            }
+          });
+        }
+        
+        // Actualizar estados de toggles
+        if (option === 'showHeader') {
+          const statusEl = document.getElementById(`simple-card-show-header-status-${componentId}`);
+          if (statusEl) statusEl.textContent = value ? 'Activado' : 'Desactivado';
+        }
+        if (option === 'headerDecorations') {
+          const statusEl = document.getElementById(`simple-card-header-decorations-status-${componentId}`);
+          if (statusEl) statusEl.textContent = value ? 'Activado' : 'Desactivado';
+        }
+        if (option === 'showButtons') {
+          const statusEl = document.getElementById(`simple-card-show-buttons-status-${componentId}`);
+          if (statusEl) statusEl.textContent = value ? 'Activado' : 'Desactivado';
+        }
+        
+        // Actualizar preview
+        if (typeof window.updateSimpleCardPreview === 'function') {
+          window.updateSimpleCardPreview(componentId);
+        }
+      };
+      
+      // Función para actualizar el preview de SimpleCard usando tokens UBITS
+      window.updateSimpleCardPreview = function(componentId) {
+        const previewContainer = document.getElementById(`simple-card-preview-${componentId}`);
+        if (!previewContainer) {
+          console.error('❌ Preview container no encontrado:', `simple-card-preview-${componentId}`);
+          return;
+        }
+        
+        // Obtener valores de los controles
+        const variant = document.querySelector(`[data-component="${componentId}"][data-option="variant"].active`)?.getAttribute('data-value') || 'default';
+        const size = document.getElementById(`simple-card-size-select-${componentId}`)?.value || 'md';
+        const showHeader = document.getElementById(`simple-card-show-header-toggle-${componentId}`)?.checked !== false;
+        const headerDecorations = document.getElementById(`simple-card-header-decorations-toggle-${componentId}`)?.checked !== false;
+        const showButtons = document.getElementById(`simple-card-show-buttons-toggle-${componentId}`)?.checked !== false;
+        const title = document.getElementById(`simple-card-title-input-${componentId}`)?.value || 'Advanced Card';
+        const subtitle = document.getElementById(`simple-card-subtitle-input-${componentId}`)?.value || 'Card subtitle';
+        const content = document.getElementById(`simple-card-content-input-${componentId}`)?.value || 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore sed consequuntur error repudiandae numquam deserunt quisquam repellat libero asperiores earum nam nobis, culpa ratione quam perferendis esse, cupiditate neque quas!';
+        
+        // Limpiar contenedor
+        previewContainer.innerHTML = '';
+        
+        // Crear opciones para SimpleCard usando tokens UBITS
+        const cardOptions = {
+          title: title,
+          subtitle: subtitle,
+          content: content,
+          showHeader: showHeader,
+          headerDecorations: headerDecorations,
+          headerBackground: 'var(--ubits-bg-4)',
+          backgroundColor: 'var(--ubits-bg-1)',
+          borderColor: 'var(--ubits-border-1)',
+          borderRadius: '8px',
+          padding: 'var(--ubits-spacing-lg)',
+          titleTypography: 'ubits-heading-h2',
+          subtitleTypography: 'ubits-body-md',
+          contentTypography: 'ubits-body-md',
+          buttons: showButtons ? [
+            { label: 'Cancel', variant: 'secondary', size: 'md' },
+            { label: 'Save', variant: 'primary', size: 'md' }
+          ] : [],
+          showButtons: showButtons,
+          variant: variant,
+          size: size
+        };
+        
+        // Generar HTML usando tokens UBITS
+        const cardHTML = generateSimpleCardHTML(cardOptions);
+        previewContainer.innerHTML = cardHTML;
+        
+        console.log('✅ SimpleCard preview actualizado');
+      };
+      
+      // Función helper para generar HTML de SimpleCard usando tokens UBITS
+      function generateSimpleCardHTML(options) {
+        const {
+          title,
+          subtitle,
+          content,
+          showHeader,
+          headerDecorations,
+          headerBackground,
+          backgroundColor,
+          borderColor,
+          borderRadius,
+          padding,
+          titleTypography,
+          subtitleTypography,
+          contentTypography,
+          buttons,
+          showButtons,
+          variant,
+          size
+        } = options;
+        
+        // Clases base usando tokens UBITS
+        const cardClasses = [
+          'ubits-simple-card',
+          `ubits-simple-card--${variant}`,
+          `ubits-simple-card--${size}`
+        ].join(' ');
+        
+        // Estilos inline usando tokens UBITS
+        const cardStyles = [
+          `background: ${backgroundColor}`,
+          `border: 1px solid ${borderColor}`,
+          `border-radius: ${borderRadius}`,
+          `padding: ${padding}`
+        ].join('; ');
+        
+        // Header HTML
+        const headerHTML = showHeader ? `
+          <div class="ubits-simple-card__header" style="background: ${headerBackground};">
+            ${headerDecorations ? `
+              <div class="ubits-simple-card__header-decoration ubits-simple-card__header-decoration--left">
+                <div class="ubits-simple-card__bubble">
+                  <div class="ubits-simple-card__bubble-content">
+                    <div class="ubits-simple-card__logo">A</div>
+                  </div>
+                </div>
+              </div>
+              <div class="ubits-simple-card__header-decoration ubits-simple-card__header-decoration--right">
+                <div class="ubits-simple-card__bubble ubits-simple-card__bubble--small">
+                  <div class="ubits-simple-card__bubble-content">
+                    <div class="ubits-simple-card__logo">A</div>
+                  </div>
+                </div>
+              </div>
+            ` : ''}
+          </div>
+        ` : '';
+        
+        // Botones HTML usando componente Button UBITS
+        const buttonsHTML = showButtons && buttons && buttons.length > 0 ? `
+          <div class="ubits-simple-card__footer">
+            ${buttons.map(button => `
+              <div class="ubits-simple-card__button">
+                <button class="ubits-button ubits-button--${button.variant} ubits-button--${button.size}">
+                  <span>${button.label}</span>
+                </button>
+              </div>
+            `).join('')}
+          </div>
+        ` : '';
+        
+        return `
+          <div class="${cardClasses}" style="${cardStyles}">
+            ${headerHTML}
+            <div class="ubits-simple-card__body">
+              <h2 class="ubits-simple-card__title ${titleTypography}">${title}</h2>
+              <p class="ubits-simple-card__subtitle ${subtitleTypography}">${subtitle}</p>
+              <div class="ubits-simple-card__content ${contentTypography}">${content}</div>
+            </div>
+            ${buttonsHTML}
+          </div>
+        `;
+      }
+      
+      // ========================================
+      // FUNCIONES DE CONTROL PARA CAROUSEL
+      // ========================================
+      
+      // Función para controlar Carousel
+      window.setCarouselControl = function(option, value, componentId) {
+        console.log('🎛️ setCarouselControl:', option, value, componentId);
+        
+        // Actualizar estados de toggles
+        if (option === 'showArrows') {
+          const statusEl = document.getElementById(`carousel-show-arrows-status-${componentId}`);
+          if (statusEl) statusEl.textContent = value ? 'Activado' : 'Desactivado';
+        }
+        if (option === 'showDots') {
+          const statusEl = document.getElementById(`carousel-show-dots-status-${componentId}`);
+          if (statusEl) statusEl.textContent = value ? 'Activado' : 'Desactivado';
+        }
+        if (option === 'autoplay') {
+          const statusEl = document.getElementById(`carousel-autoplay-status-${componentId}`);
+          if (statusEl) statusEl.textContent = value ? 'Activado' : 'Desactivado';
+        }
+        if (option === 'loop') {
+          const statusEl = document.getElementById(`carousel-loop-status-${componentId}`);
+          if (statusEl) statusEl.textContent = value ? 'Activado' : 'Desactivado';
+        }
+        
+        // Actualizar preview
+        if (typeof window.updateCarouselPreview === 'function') {
+          window.updateCarouselPreview(componentId);
+        }
+      };
+      
+      // Función para actualizar el preview de Carousel usando tokens UBITS
+      window.updateCarouselPreview = function(componentId) {
+        const previewContainer = document.getElementById(`carousel-preview-${componentId}`);
+        if (!previewContainer) {
+          console.error('❌ Preview container no encontrado:', `carousel-preview-${componentId}`);
+          return;
+        }
+        
+        // Obtener valores de los controles
+        const cardSize = document.getElementById(`carousel-card-size-select-${componentId}`)?.value || 'md';
+        const itemsPerView = parseInt(document.getElementById(`carousel-items-per-view-select-${componentId}`)?.value || '3');
+        const gap = parseInt(document.getElementById(`carousel-gap-input-${componentId}`)?.value || '16');
+        const arrowPosition = document.getElementById(`carousel-arrow-position-select-${componentId}`)?.value || 'outside';
+        const dotPosition = document.getElementById(`carousel-dot-position-select-${componentId}`)?.value || 'bottom';
+        const showArrows = document.getElementById(`carousel-show-arrows-toggle-${componentId}`)?.checked !== false;
+        const showDots = document.getElementById(`carousel-show-dots-toggle-${componentId}`)?.checked !== false;
+        const autoplay = document.getElementById(`carousel-autoplay-toggle-${componentId}`)?.checked === true;
+        const loop = document.getElementById(`carousel-loop-toggle-${componentId}`)?.checked === true;
+        const autoplayInterval = parseInt(document.getElementById(`carousel-autoplay-interval-input-${componentId}`)?.value || '3000');
+        
+        // Limpiar contenedor
+        previewContainer.innerHTML = '';
+        
+        // Crear items de ejemplo usando Simple Card con tokens UBITS
+        const items = [
+          {
+            id: 1,
+            title: 'Card 1',
+            subtitle: 'Subtitle 1',
+            content: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit.',
+            showHeader: true,
+            headerDecorations: true,
+            variant: 'default',
+            size: cardSize,
+            backgroundColor: 'var(--ubits-bg-1)',
+            borderColor: 'var(--ubits-border-1)',
+            titleTypography: 'ubits-heading-h2',
+            subtitleTypography: 'ubits-body-md',
+            contentTypography: 'ubits-body-md',
+            buttons: [
+              { label: 'Action', variant: 'primary', size: 'md' }
+            ]
+          },
+          {
+            id: 2,
+            title: 'Card 2',
+            subtitle: 'Subtitle 2',
+            content: 'Inventore sed consequuntur error repudiandae numquam deserunt.',
+            showHeader: true,
+            headerDecorations: true,
+            variant: 'default',
+            size: cardSize,
+            backgroundColor: 'var(--ubits-bg-1)',
+            borderColor: 'var(--ubits-border-1)',
+            titleTypography: 'ubits-heading-h2',
+            subtitleTypography: 'ubits-body-md',
+            contentTypography: 'ubits-body-md',
+            buttons: [
+              { label: 'Action', variant: 'primary', size: 'md' }
+            ]
+          },
+          {
+            id: 3,
+            title: 'Card 3',
+            subtitle: 'Subtitle 3',
+            content: 'Quisquam repellat libero asperiores earum nam nobis.',
+            showHeader: true,
+            headerDecorations: true,
+            variant: 'default',
+            size: cardSize,
+            backgroundColor: 'var(--ubits-bg-1)',
+            borderColor: 'var(--ubits-border-1)',
+            titleTypography: 'ubits-heading-h2',
+            subtitleTypography: 'ubits-body-md',
+            contentTypography: 'ubits-body-md',
+            buttons: [
+              { label: 'Action', variant: 'primary', size: 'md' }
+            ]
+          },
+          {
+            id: 4,
+            title: 'Card 4',
+            subtitle: 'Subtitle 4',
+            content: 'Culpa ratione quam perferendis esse, cupiditate neque quas!',
+            showHeader: true,
+            headerDecorations: true,
+            variant: 'default',
+            size: cardSize,
+            backgroundColor: 'var(--ubits-bg-1)',
+            borderColor: 'var(--ubits-border-1)',
+            titleTypography: 'ubits-heading-h2',
+            subtitleTypography: 'ubits-body-md',
+            contentTypography: 'ubits-body-md',
+            buttons: [
+              { label: 'Action', variant: 'primary', size: 'md' }
+            ]
+          },
+          {
+            id: 5,
+            title: 'Card 5',
+            subtitle: 'Subtitle 5',
+            content: 'Sed do eiusmod tempor incididunt ut labore et dolore magna.',
+            showHeader: true,
+            headerDecorations: true,
+            variant: 'default',
+            size: cardSize,
+            backgroundColor: 'var(--ubits-bg-1)',
+            borderColor: 'var(--ubits-border-1)',
+            titleTypography: 'ubits-heading-h2',
+            subtitleTypography: 'ubits-body-md',
+            contentTypography: 'ubits-body-md',
+            buttons: [
+              { label: 'Action', variant: 'primary', size: 'md' }
+            ]
+          }
+        ];
+        
+        // Crear opciones para Carousel usando tokens UBITS
+        const carouselOptions = {
+          items: items,
+          itemsPerView: itemsPerView,
+          showArrows: showArrows,
+          showDots: showDots,
+          autoplay: autoplay,
+          autoplayInterval: autoplayInterval,
+          loop: loop,
+          gap: gap,
+          arrowPosition: arrowPosition,
+          dotPosition: dotPosition
+        };
+        
+        // Generar HTML usando tokens UBITS
+        const carouselHTML = generateCarouselHTML(carouselOptions, cardSize);
+        previewContainer.innerHTML = carouselHTML;
+        
+        // Inicializar funcionalidad JavaScript del carrusel
+        setTimeout(() => {
+          const carouselElement = previewContainer.querySelector('.ubits-carousel');
+          if (carouselElement) {
+            initializeCarouselPreview(carouselElement, carouselOptions);
+          }
+        }, 100);
+        
+        console.log('✅ Carousel preview actualizado');
+      };
+      
+      // Función helper para generar HTML de Carousel usando tokens UBITS
+      function generateCarouselHTML(options, cardSize = 'md') {
+        const {
+          items,
+          itemsPerView,
+          showArrows,
+          showDots,
+          autoplay,
+          autoplayInterval,
+          loop,
+          gap,
+          arrowPosition,
+          dotPosition
+        } = options;
+        
+        if (!items || items.length === 0) {
+          return '<div class="ubits-carousel ubits-carousel--empty">No hay items para mostrar</div>';
+        }
+        
+        // Clases base usando tokens UBITS
+        const classes = [
+          'ubits-carousel',
+          arrowPosition === 'inside' && 'ubits-carousel--arrows-inside',
+          dotPosition === 'top' && 'ubits-carousel--dots-top'
+        ].filter(Boolean).join(' ');
+        
+        // Atributos de datos
+        const dataAttrs = [
+          `data-items-per-view="${itemsPerView}"`,
+          autoplay && `data-autoplay="true"`,
+          autoplay && `data-autoplay-interval="${autoplayInterval}"`,
+          loop && `data-loop="true"`,
+          `data-gap="${gap}"`
+        ].filter(Boolean).join(' ');
+        
+        // Renderizar items usando Simple Card
+        const itemsHTML = items.map((item, index) => {
+          const cardHTML = generateSimpleCardHTML({
+            title: item.title,
+            subtitle: item.subtitle,
+            content: item.content,
+            showHeader: item.showHeader,
+            headerDecorations: item.headerDecorations,
+            headerBackground: 'var(--ubits-bg-4)',
+            backgroundColor: item.backgroundColor || 'var(--ubits-bg-1)',
+            borderColor: item.borderColor || 'var(--ubits-border-1)',
+            borderRadius: '8px',
+            padding: 'var(--ubits-spacing-lg)',
+            titleTypography: item.titleTypography || 'ubits-heading-h2',
+            subtitleTypography: item.subtitleTypography || 'ubits-body-md',
+            contentTypography: item.contentTypography || 'ubits-body-md',
+            buttons: item.buttons || [],
+            showButtons: item.buttons && item.buttons.length > 0,
+            variant: item.variant || 'default',
+            size: item.size || cardSize
+          });
+          
+          return `
+            <div class="ubits-carousel-item" data-item-id="${item.id}" data-item-index="${index}">
+              ${cardHTML}
+            </div>
+          `;
+        }).join('');
+        
+        // Renderizar flechas
+        const prevArrowHTML = showArrows ? `
+          <button class="ubits-carousel__arrow ubits-carousel__arrow--prev" data-action="prev" aria-label="Anterior">
+            <i class="fas fa-chevron-left"></i>
+          </button>
+        ` : '';
+        
+        const nextArrowHTML = showArrows ? `
+          <button class="ubits-carousel__arrow ubits-carousel__arrow--next" data-action="next" aria-label="Siguiente">
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        ` : '';
+        
+        // Renderizar dots
+        const totalPages = Math.ceil(items.length / itemsPerView);
+        const dotsHTML = showDots ? `
+          <div class="ubits-carousel__dots">
+            ${Array.from({ length: totalPages }, (_, index) => `
+              <button class="ubits-carousel__dot ${index === 0 ? 'ubits-carousel__dot--active' : ''}" 
+                      data-dot-index="${index}" 
+                      aria-label="Ir a página ${index + 1}">
+              </button>
+            `).join('')}
+          </div>
+        ` : '';
+        
+        return `
+          <div class="${classes}" ${dataAttrs} style="--carousel-gap: ${gap}px;">
+            <div class="ubits-carousel__content-wrapper">
+              ${prevArrowHTML}
+              <div class="ubits-carousel__container">
+                <div class="ubits-carousel__track">
+                  ${itemsHTML}
+                </div>
+              </div>
+              ${nextArrowHTML}
+            </div>
+            ${dotsHTML}
+          </div>
+        `;
+      }
+      
+      // Función helper para inicializar el carrusel en el preview
+      function initializeCarouselPreview(element, options) {
+        const track = element.querySelector('.ubits-carousel__track');
+        const items = element.querySelectorAll('.ubits-carousel-item');
+        const prevButton = element.querySelector('.ubits-carousel__arrow--prev');
+        const nextButton = element.querySelector('.ubits-carousel__arrow--next');
+        const dots = element.querySelectorAll('.ubits-carousel__dot');
+        
+        if (!track || items.length === 0) return;
+        
+        let currentIndex = 0;
+        let autoplayTimer = null;
+        
+        const itemsPerView = parseInt(element.getAttribute('data-items-per-view') || '3');
+        const gap = parseInt(element.getAttribute('data-gap') || '16');
+        const autoplay = element.getAttribute('data-autoplay') === 'true';
+        const autoplayInterval = parseInt(element.getAttribute('data-autoplay-interval') || '3000');
+        const loop = element.getAttribute('data-loop') === 'true';
+        
+        const getCardWidth = () => {
+          if (items.length === 0) return 0;
+          const firstItem = items[0];
+          const firstCard = firstItem.querySelector('.ubits-simple-card');
+          if (firstCard && firstCard.offsetWidth > 0) {
+            return firstCard.offsetWidth + gap;
+          }
+          const container = element.querySelector('.ubits-carousel__container');
+          if (container && container.offsetWidth > 0) {
+            return container.offsetWidth / itemsPerView;
+          }
+          return 400 + gap;
+        };
+        
+        const updatePosition = () => {
+          const cardWidth = getCardWidth();
+          const translateX = -currentIndex * cardWidth;
+          track.style.transform = `translateX(${translateX}px)`;
+          
+          dots.forEach((dot, index) => {
+            const pageIndex = Math.floor(currentIndex / itemsPerView);
+            if (index === pageIndex) {
+              dot.classList.add('ubits-carousel__dot--active');
+            } else {
+              dot.classList.remove('ubits-carousel__dot--active');
+            }
+          });
+        };
+        
+        if (prevButton) {
+          prevButton.addEventListener('click', () => {
+            if (currentIndex > 0) {
+              currentIndex--;
+            } else if (loop) {
+              currentIndex = Math.max(0, items.length - itemsPerView);
+            }
+            updatePosition();
+            resetAutoplay();
+          });
+        }
+        
+        if (nextButton) {
+          nextButton.addEventListener('click', () => {
+            const maxIndex = Math.max(0, items.length - itemsPerView);
+            if (currentIndex < maxIndex) {
+              currentIndex++;
+            } else if (loop) {
+              currentIndex = 0;
+            }
+            updatePosition();
+            resetAutoplay();
+          });
+        }
+        
+        dots.forEach((dot, index) => {
+          dot.addEventListener('click', () => {
+            currentIndex = index * itemsPerView;
+            updatePosition();
+            resetAutoplay();
+          });
+        });
+        
+        const startAutoplay = () => {
+          if (autoplay) {
+            autoplayTimer = window.setInterval(() => {
+              const maxIndex = Math.max(0, items.length - itemsPerView);
+              if (currentIndex < maxIndex) {
+                currentIndex++;
+              } else if (loop) {
+                currentIndex = 0;
+              } else {
+                currentIndex = 0;
+              }
+              updatePosition();
+            }, autoplayInterval);
+          }
+        };
+        
+        const stopAutoplay = () => {
+          if (autoplayTimer) {
+            clearInterval(autoplayTimer);
+            autoplayTimer = null;
+          }
+        };
+        
+        const resetAutoplay = () => {
+          stopAutoplay();
+          startAutoplay();
+        };
+        
+        element.addEventListener('mouseenter', stopAutoplay);
+        element.addEventListener('mouseleave', startAutoplay);
+        
+        setTimeout(() => {
+          updatePosition();
+          startAutoplay();
+        }, 200);
+      }
+      
+      // ========================================
+      // FUNCIONES DE CONTROL PARA BAR METRIC CARD
+      // ========================================
+      
+      // Función para controlar Bar Metric Card
+      window.setBarMetricCardControl = function(option, value, componentId) {
+        console.log('🎛️ setBarMetricCardControl:', option, value, componentId);
+        
+        // Actualizar estados de toggles
+        const toggleStatusMap = {
+          'showTitle': 'bar-metric-card-show-title-status',
+          'showResponseCount': 'bar-metric-card-show-response-count-status',
+          'showBarChart': 'bar-metric-card-show-bar-chart-status',
+          'showCategories': 'bar-metric-card-show-categories-status',
+          'showInfoIcon': 'bar-metric-card-show-info-icon-status',
+          'showActionButton': 'bar-metric-card-show-action-button-status',
+          'showNegativeValues': 'bar-metric-card-show-negative-values-status',
+          'showGridLines': 'bar-metric-card-show-grid-lines-status'
+        };
+        
+        if (toggleStatusMap[option]) {
+          const statusEl = document.getElementById(`${toggleStatusMap[option]}-${componentId}`);
+          if (statusEl) statusEl.textContent = value ? 'Activado' : 'Desactivado';
+        }
+        
+        // Actualizar botones de layout
+        if (option === 'layout') {
+          const buttons = document.querySelectorAll(`[data-component="${componentId}"][data-option="layout"]`);
+          buttons.forEach(btn => {
+            if (btn.getAttribute('data-value') === value) {
+              btn.classList.add('active');
+            } else {
+              btn.classList.remove('active');
+            }
+          });
+        }
+        
+        // Actualizar preview
+        if (typeof window.updateBarMetricCardPreview === 'function') {
+          window.updateBarMetricCardPreview(componentId);
+        }
+      };
+      
+      // Función para actualizar el preview de Bar Metric Card usando tokens UBITS
+      window.updateBarMetricCardPreview = function(componentId) {
+        const previewContainer = document.getElementById(`bar-metric-card-preview-${componentId}`);
+        if (!previewContainer) {
+          console.error('❌ Preview container no encontrado:', `bar-metric-card-preview-${componentId}`);
+          return;
+        }
+        
+        // Obtener valores de los controles
+        const layout = document.querySelector(`[data-component="${componentId}"][data-option="layout"][data-value].active`)?.getAttribute('data-value') || 'vertical';
+        const size = document.getElementById(`bar-metric-card-size-select-${componentId}`)?.value || 'md';
+        const title = document.getElementById(`bar-metric-card-title-input-${componentId}`)?.value || 'Métricas';
+        const responseCount = parseInt(document.getElementById(`bar-metric-card-response-count-input-${componentId}`)?.value || '7');
+        const showTitle = document.getElementById(`bar-metric-card-show-title-toggle-${componentId}`)?.checked !== false;
+        const showResponseCount = document.getElementById(`bar-metric-card-show-response-count-toggle-${componentId}`)?.checked === true;
+        const showBarChart = document.getElementById(`bar-metric-card-show-bar-chart-toggle-${componentId}`)?.checked !== false;
+        const showCategories = document.getElementById(`bar-metric-card-show-categories-toggle-${componentId}`)?.checked !== false;
+        const showInfoIcon = document.getElementById(`bar-metric-card-show-info-icon-toggle-${componentId}`)?.checked === true;
+        const showActionButton = document.getElementById(`bar-metric-card-show-action-button-toggle-${componentId}`)?.checked === true;
+        const showNegativeValues = document.getElementById(`bar-metric-card-show-negative-values-toggle-${componentId}`)?.checked !== false;
+        const showGridLines = document.getElementById(`bar-metric-card-show-grid-lines-toggle-${componentId}`)?.checked !== false;
+        
+        // Parsear barData y barLabels
+        const barDataStr = document.getElementById(`bar-metric-card-bar-data-input-${componentId}`)?.value || '-25,-15,15,25,35,45,55,5,25,-15,-30,-50';
+        const barData = barDataStr.split(',').map(v => parseFloat(v.trim())).filter(v => !isNaN(v));
+        const barLabelsStr = document.getElementById(`bar-metric-card-bar-labels-input-${componentId}`)?.value || 'Ago,Ago,Ago,Ago,Ago,Ago,Ago,Ago,Ago,Ago,Ago,Ago';
+        const barLabels = barLabelsStr.split(',').map(v => v.trim()).filter(v => v.length > 0);
+        
+        const maxValue = parseInt(document.getElementById(`bar-metric-card-max-value-input-${componentId}`)?.value || '60');
+        const minValue = parseInt(document.getElementById(`bar-metric-card-min-value-input-${componentId}`)?.value || '-60');
+        
+        // Obtener categorías
+        const category1Label = document.getElementById(`bar-metric-card-category1-label-input-${componentId}`)?.value || 'Área';
+        const category1Current = parseInt(document.getElementById(`bar-metric-card-category1-current-input-${componentId}`)?.value || '3');
+        const category1Total = parseInt(document.getElementById(`bar-metric-card-category1-total-input-${componentId}`)?.value || '20');
+        
+        const category2Label = document.getElementById(`bar-metric-card-category2-label-input-${componentId}`)?.value || 'Equipo';
+        const category2Current = parseInt(document.getElementById(`bar-metric-card-category2-current-input-${componentId}`)?.value || '5');
+        const category2Total = parseInt(document.getElementById(`bar-metric-card-category2-total-input-${componentId}`)?.value || '15');
+        
+        const category3Label = document.getElementById(`bar-metric-card-category3-label-input-${componentId}`)?.value || 'Propio';
+        const category3Current = parseInt(document.getElementById(`bar-metric-card-category3-current-input-${componentId}`)?.value || '2');
+        const category3Total = parseInt(document.getElementById(`bar-metric-card-category3-total-input-${componentId}`)?.value || '10');
+        
+        const categories = [
+          { label: category1Label, current: category1Current, total: category1Total },
+          { label: category2Label, current: category2Current, total: category2Total },
+          { label: category3Label, current: category3Current, total: category3Total }
+        ];
+        
+        // Limpiar contenedor
+        previewContainer.innerHTML = '';
+        
+        // Crear opciones para Bar Metric Card usando tokens UBITS
+        const barMetricCardOptions = {
+          title: title,
+          responseCount: responseCount,
+          showResponseCount: showResponseCount,
+          barData: barData,
+          barLabels: barLabels.length > 0 ? barLabels : undefined,
+          maxValue: maxValue,
+          minValue: minValue,
+          categories: categories,
+          layout: layout,
+          size: size,
+          showTitle: showTitle,
+          showBarChart: showBarChart,
+          showCategories: showCategories,
+          showInfoIcon: showInfoIcon,
+          showActionButton: showActionButton,
+          showNegativeValues: showNegativeValues,
+          showGridLines: showGridLines,
+          barColor: 'var(--ubits-chart-color-bg-neutral-blue-base, #557593)',
+          chartBackgroundColor: 'var(--ubits-bg-1)',
+          gridLineColor: 'var(--ubits-border-1)'
+        };
+        
+        // Generar HTML usando tokens UBITS
+        // Nota: Necesitamos usar renderBarMetricCard desde el provider
+        // Por ahora, generaremos el HTML manualmente basándonos en la estructura del componente
+        const barMetricCardHTML = generateBarMetricCardHTML(barMetricCardOptions);
+        previewContainer.innerHTML = barMetricCardHTML;
+        
+        console.log('✅ Bar Metric Card preview actualizado');
+      };
+      
+      // Función helper para generar HTML de Bar Metric Card usando tokens UBITS
+      function generateBarMetricCardHTML(options) {
+        const {
+          title = 'Métricas',
+          responseCount = 0,
+          showResponseCount = false,
+          barData = [],
+          barLabels = [],
+          maxValue,
+          minValue,
+          categories = [],
+          layout = 'vertical',
+          size = 'md',
+          showTitle = true,
+          showBarChart = true,
+          showCategories = true,
+          showInfoIcon = false,
+          showActionButton = false,
+          showNegativeValues = true,
+          showGridLines = true,
+          barColor = 'var(--ubits-chart-color-bg-neutral-blue-base, #557593)',
+          chartBackgroundColor = 'var(--ubits-bg-1)',
+          gridLineColor = 'var(--ubits-border-1)'
+        } = options;
+        
+        // Clases base usando tokens UBITS
+        const classes = [
+          'ubits-bar-metric-card',
+          `ubits-bar-metric-card--${layout}`,
+          `ubits-bar-metric-card--${size}`
+        ].filter(Boolean).join(' ');
+        
+        // Calcular porcentaje de categoría
+        const calculatePercentage = (current, total) => {
+          if (total === 0) return 0;
+          return Math.round((current / total) * 100);
+        };
+        
+        // Clases de tipografía según tamaño
+        const getTypographyClasses = (type) => {
+          if (size === 'sm') {
+            return type === 'label' ? 'ubits-body-sm-regular' : type === 'value' ? 'ubits-body-sm-regular' : 'ubits-body-sm-bold';
+          } else if (size === 'lg') {
+            return type === 'label' ? 'ubits-body-md-regular' : type === 'value' ? 'ubits-body-md-regular' : 'ubits-body-md-bold';
+          } else {
+            // MD: usar body-sm para label y value, body-md-bold para percentage (16px)
+            return type === 'label' ? 'ubits-body-sm-regular' : type === 'value' ? 'ubits-body-sm-regular' : 'ubits-body-md-bold';
+          }
+        };
+        
+        // Renderizar botón helper
+        const renderButtonHTML = (opts) => {
+          const { variant = 'tertiary', size: btnSize = 'sm', icon, iconOnly = true } = opts;
+          const btnClasses = [
+            'ubits-button',
+            `ubits-button--${variant}`,
+            `ubits-button--${btnSize}`
+          ].filter(Boolean).join(' ');
+          const iconHTML = icon ? `<i class="far fa-${icon}"></i>` : '';
+          return `<button class="${btnClasses}" type="button" aria-label="${opts.ariaLabel || ''}">${iconHTML}</button>`;
+        };
+        
+        // Renderizar categoría estándar
+        const renderCategory = (category) => {
+          const percentage = calculatePercentage(category.current, category.total);
+          const labelClass = getTypographyClasses('label');
+          const valueClass = getTypographyClasses('value');
+          const percentageClass = getTypographyClasses('percentage');
+          
+          return `
+            <div class="ubits-bar-metric-card__category">
+              <div class="ubits-bar-metric-card__category-label ${labelClass}">
+                ${category.label}
+              </div>
+              <div class="ubits-bar-metric-card__category-value ${valueClass}">
+                ${category.current}/${category.total} <span class="ubits-bar-metric-card__category-percentage ${percentageClass}">${percentage}%</span>
+              </div>
+            </div>
+          `;
+        };
+        
+        // Renderizar categoría con progress bar (para layout horizontal)
+        const renderCategoryWithProgressBar = (category) => {
+          const percentage = calculatePercentage(category.current, category.total);
+          const labelClass = getTypographyClasses('label');
+          const percentageClass = getTypographyClasses('percentage');
+          const progressBarSize = size === 'sm' ? 'sm' : size === 'lg' ? 'lg' : 'md';
+          
+          // Usar renderProgressBarLocal si está disponible
+          let progressBarHTML = '';
+          if (typeof renderProgressBarLocal !== 'undefined') {
+            const progressBarWithIndicator = renderProgressBarLocal({
+              size: progressBarSize,
+              value: percentage,
+              variant: 'default',
+              indicator: false
+            });
+            const indicatorHTML = `<span class="ubits-progress-bar__indicator">${category.current}/${category.total} <span class="${percentageClass}">${percentage}%</span></span>`;
+            progressBarHTML = progressBarWithIndicator.replace(
+              /(<\/div>\s*)(<\/div>\s*)$/,
+              `$1${indicatorHTML}$2`
+            );
+          } else {
+            // Fallback simple
+            progressBarHTML = `
+              <div class="ubits-progress-bar ubits-progress-bar--${progressBarSize}" style="height: ${progressBarSize === 'sm' ? 8 : progressBarSize === 'lg' ? 20 : 16}px;">
+                <div class="ubits-progress-bar__container">
+                  <div class="ubits-progress-bar__indicator-wrapper" style="width: ${percentage}%;"></div>
+                </div>
+                <span class="ubits-progress-bar__indicator">${category.current}/${category.total} <span class="${percentageClass}">${percentage}%</span></span>
+              </div>
+            `;
+          }
+          
+          return `
+            <div class="ubits-bar-metric-card__category ubits-bar-metric-card__category--with-progress">
+              <div class="ubits-bar-metric-card__category-header">
+                <div class="ubits-bar-metric-card__category-label ${labelClass}">
+                  ${category.label}
+                </div>
+              </div>
+              <div class="ubits-bar-metric-card__category-progress-wrapper">
+                ${progressBarHTML}
+              </div>
+            </div>
+          `;
+        };
+        
+        // Renderizar gráfico de barras simplificado
+        const renderBarChart = () => {
+          if (barData.length === 0) return '';
+          
+          // Mapeo de tamaños a anchos de barras (igual que en el provider original)
+          const BAR_WIDTHS_BY_SIZE = {
+            xs: 4,
+            sm: 8,
+            md: 16,
+            lg: 20
+          };
+          
+          // Calcular rango
+          const dataForRange = showNegativeValues ? barData : barData.filter(v => v >= 0);
+          const calculatedMax = maxValue !== undefined ? maxValue : (dataForRange.length > 0 ? Math.ceil(Math.max(...dataForRange) / 20) * 20 : 100);
+          const calculatedMin = minValue !== undefined ? minValue : (showNegativeValues && dataForRange.length > 0 ? Math.floor(Math.min(...dataForRange) / 20) * 20 : 0);
+          const rangeSize = calculatedMax - calculatedMin;
+          
+          // Ancho base de la card según CSS (392px)
+          const baseCardWidth = 392;
+          const cardPadding = 12;
+          const width = baseCardWidth - (cardPadding * 2); // 368px
+          const height = 158;
+          
+          // Calcular padding de manera proporcional
+          const paddingLeft = Math.max(30, Math.min(35, width * 0.08));
+          const paddingRight = 4;
+          const paddingTop = 8;
+          const paddingBottom = 25;
+          const chartHeight = height - paddingTop - paddingBottom;
+          
+          // Calcular zeroY: si no hay valores negativos, zeroY está en la parte inferior
+          const zeroY = showNegativeValues && calculatedMin < 0 
+            ? paddingTop + (calculatedMax / rangeSize) * chartHeight
+            : height - paddingBottom; // Si no hay negativos, zeroY está abajo
+          
+          // Calcular barras usando el ancho según el tamaño
+          const barCount = barData.length;
+          const barsAreaWidth = width - paddingLeft - paddingRight;
+          
+          // Usar el ancho de barra según el tamaño
+          const baseBarWidth = BAR_WIDTHS_BY_SIZE[size] || BAR_WIDTHS_BY_SIZE.md;
+          
+          // Calcular el espacio disponible y distribuir las barras
+          // Si hay muchas barras, usar un ancho más pequeño pero mantener proporción
+          const totalBarsWidth = barCount * baseBarWidth;
+          const totalGapsWidth = (barCount - 1) * 4; // Gap mínimo de 4px
+          const totalUsedWidth = totalBarsWidth + totalGapsWidth;
+          
+          let barWidth, gapSize;
+          if (totalUsedWidth <= barsAreaWidth) {
+            // Hay espacio suficiente, usar el ancho base y distribuir el espacio extra
+            barWidth = baseBarWidth;
+            const extraSpace = barsAreaWidth - totalUsedWidth;
+            gapSize = 4 + (extraSpace / (barCount - 1 || 1));
+          } else {
+            // No hay espacio suficiente, reducir proporcionalmente
+            const scale = barsAreaWidth / totalUsedWidth;
+            barWidth = baseBarWidth * scale;
+            gapSize = 4 * scale;
+          }
+          
+          // Asegurar que el gap mínimo sea 2px
+          gapSize = Math.max(2, gapSize);
+          
+          // Primero, identificar qué barras se van a renderizar (filtrar las que no se muestran)
+          const barsToRender = barData.map((value, index) => {
+            const isPositive = value >= 0;
+            const displayValue = showNegativeValues ? value : Math.max(0, value);
+            
+            let barHeightValue;
+            
+            if (!showNegativeValues || calculatedMin >= 0) {
+              // Solo valores positivos
+              barHeightValue = (displayValue / calculatedMax) * chartHeight;
+            } else if (displayValue >= 0) {
+              // Valores positivos cuando hay negativos también
+              barHeightValue = (displayValue / calculatedMax) * (zeroY - paddingTop);
+            } else {
+              // Valores negativos
+              const minAbs = Math.abs(calculatedMin);
+              barHeightValue = (Math.abs(displayValue) / minAbs) * (height - paddingBottom - zeroY);
+            }
+            
+            // Determinar si esta barra se renderiza
+            // Las barras con valor 0 se renderizan como línea delgada, las demás si tienen altura suficiente
+            const isZero = Math.abs(displayValue) < 0.01;
+            const shouldRender = isZero || (barHeightValue >= 0.5 && Math.abs(displayValue) >= 0.01);
+            
+            return {
+              index,
+              value: displayValue,
+              label: barLabels[index] || '',
+              isPositive: displayValue >= 0,
+              shouldRender,
+              barHeightValue,
+              isZero: Math.abs(displayValue) < 0.01
+            };
+          });
+          
+          // Filtrar solo las barras que se van a renderizar
+          const renderableBars = barsToRender.filter(bar => bar.shouldRender);
+          
+          // Si no hay barras para renderizar, retornar SVG vacío
+          if (renderableBars.length === 0) {
+            return `
+              <svg class="ubits-bar-metric-card__chart-svg" width="100%" height="100%" viewBox="0 0 ${width} ${height}" preserveAspectRatio="none">
+              </svg>
+            `;
+          }
+          
+          // Recalcular el espacio disponible para las barras que SÍ se renderizan
+          const renderableBarCount = renderableBars.length;
+          const totalBarsWidthRenderable = renderableBarCount * baseBarWidth;
+          const totalGapsWidthRenderable = (renderableBarCount - 1) * 4;
+          const totalUsedWidthRenderable = totalBarsWidthRenderable + totalGapsWidthRenderable;
+          
+          let barWidthFinal, gapSizeFinal;
+          if (totalUsedWidthRenderable <= barsAreaWidth) {
+            barWidthFinal = baseBarWidth;
+            const extraSpace = barsAreaWidth - totalUsedWidthRenderable;
+            gapSizeFinal = 4 + (extraSpace / (renderableBarCount - 1 || 1));
+          } else {
+            const scale = barsAreaWidth / totalUsedWidthRenderable;
+            barWidthFinal = baseBarWidth * scale;
+            gapSizeFinal = 4 * scale;
+          }
+          gapSizeFinal = Math.max(2, gapSizeFinal);
+          
+          // Calcular las barras renderizables con posiciones distribuidas uniformemente
+          // Mantener el índice original para distribuir correctamente en el espacio total
+          const totalBars = barData.length;
+          const bars = renderableBars.map((barInfo, renderIndex) => {
+            // Calcular posición X basada en el índice original para mantener la distribución correcta
+            // Incluir todas las barras (incluso las que no se renderizan) en el cálculo del espacio
+            const x = paddingLeft + barInfo.index * ((barsAreaWidth) / (totalBars - 1 || 1));
+            
+            let barY, barHeight;
+            
+            // Si es valor 0, renderizar como línea delgada en la línea cero
+            if (barInfo.isZero) {
+              barHeight = 1; // Línea de 1px de altura
+              barY = zeroY - 0.5; // Centrada en la línea cero
+            } else if (!showNegativeValues || calculatedMin >= 0) {
+              // Solo valores positivos: barras desde zeroY (abajo) hacia arriba
+              barHeight = barInfo.barHeightValue;
+              barY = zeroY - barHeight;
+            } else if (barInfo.isPositive) {
+              // Valores positivos cuando hay negativos también
+              barHeight = barInfo.barHeightValue;
+              barY = zeroY - barHeight;
+            } else {
+              // Valores negativos
+              barHeight = barInfo.barHeightValue;
+              barY = zeroY;
+            }
+            
+            return { 
+              x, 
+              y: barY, 
+              width: barWidthFinal, 
+              height: barHeight, 
+              value: barInfo.value, 
+              isPositive: barInfo.isPositive, 
+              label: barInfo.label,
+              originalIndex: barInfo.index,
+              isZero: barInfo.isZero
+            };
+          });
+          
+          // Líneas de grilla y números del eje Y (siempre calcular los números, las líneas solo si showGridLines)
+          const gridLines = [];
+          for (let i = 0; i <= 5; i++) {
+            const value = calculatedMin + (rangeSize / 5) * i;
+            // Si no hay valores negativos, calcular Y desde abajo
+            let y;
+            if (!showNegativeValues || calculatedMin >= 0) {
+              // Solo valores positivos: las líneas van de abajo hacia arriba
+              y = height - paddingBottom - ((value / calculatedMax) * chartHeight);
+            } else {
+              // Hay valores negativos: calcular desde arriba
+              y = paddingTop + ((calculatedMax - value) / rangeSize) * chartHeight;
+            }
+            gridLines.push({ y, value: Math.round(value) });
+          }
+          
+          return `
+            <svg class="ubits-bar-metric-card__chart-svg" width="100%" height="100%" viewBox="0 0 ${width} ${height}" preserveAspectRatio="none">
+              <!-- Números del eje Y (siempre visibles) -->
+              ${gridLines.map(line => `
+                <text x="${paddingLeft - 5}" y="${line.y + 4}" font-family="var(--font-sans)" font-size="13px" fill="var(--ubits-fg-2-medium)" text-anchor="end">${line.value}</text>
+              `).join('')}
+              
+              <!-- Líneas de grilla horizontales (solo si showGridLines está activado) -->
+              ${showGridLines ? gridLines.map(line => `
+                <line x1="${paddingLeft}" y1="${line.y}" x2="${width - paddingRight}" y2="${line.y}" stroke="${gridLineColor}" stroke-width="1" stroke-dasharray="2,2" opacity="0.3" />
+              `).join('') : ''}
+              
+              <!-- Línea cero si hay valores negativos y positivos (solo si showGridLines está activado) -->
+              ${showGridLines && showNegativeValues && calculatedMin < 0 && calculatedMax > 0 ? `
+                <line x1="${paddingLeft}" y1="${zeroY}" x2="${width - paddingRight}" y2="${zeroY}" stroke="${gridLineColor}" stroke-width="1.5" opacity="0.6" />
+              ` : ''}
+              
+              <!-- Línea vertical del eje Y (solo si showGridLines está activado) -->
+              ${showGridLines ? `
+                <line x1="${paddingLeft}" y1="${paddingTop}" x2="${paddingLeft}" y2="${height - paddingBottom}" stroke="${gridLineColor}" stroke-width="1" opacity="0.6" />
+              ` : ''}
+              ${bars.map((bar, index) => {
+                // Si es valor 0, renderizar como línea horizontal delgada
+                if (bar.isZero) {
+                  return `
+                    <g>
+                      <line x1="${bar.x}" y1="${bar.y + bar.height / 2}" x2="${bar.x + bar.width}" y2="${bar.y + bar.height / 2}" stroke="${barColor}" stroke-width="1" opacity="0.6" />
+                      ${bar.label ? `<text x="${bar.x + bar.width / 2}" y="${height - paddingBottom + 15}" font-family="var(--font-sans)" font-size="11px" fill="var(--ubits-fg-2-medium)" text-anchor="middle">${bar.label}</text>` : ''}
+                    </g>
+                  `;
+                }
+                
+                const rx = bar.width / 2;
+                let path = '';
+                if (bar.isPositive) {
+                  path = `M ${bar.x} ${bar.y + bar.height} L ${bar.x} ${bar.y + rx} Q ${bar.x} ${bar.y} ${bar.x + rx} ${bar.y} L ${bar.x + bar.width - rx} ${bar.y} Q ${bar.x + bar.width} ${bar.y} ${bar.x + bar.width} ${bar.y + rx} L ${bar.x + bar.width} ${bar.y + bar.height} Z`;
+                } else {
+                  path = `M ${bar.x} ${bar.y} L ${bar.x} ${bar.y + bar.height - rx} Q ${bar.x} ${bar.y + bar.height} ${bar.x + rx} ${bar.y + bar.height} L ${bar.x + bar.width - rx} ${bar.y + bar.height} Q ${bar.x + bar.width} ${bar.y + bar.height} ${bar.x + bar.width} ${bar.y + bar.height - rx} L ${bar.x + bar.width} ${bar.y} Z`;
+                }
+                return `
+                  <g>
+                    <path d="${path}" fill="${barColor}" />
+                    ${bar.label ? `<text x="${bar.x + bar.width / 2}" y="${height - paddingBottom + 15}" font-family="var(--font-sans)" font-size="11px" fill="var(--ubits-fg-2-medium)" text-anchor="middle">${bar.label}</text>` : ''}
+                  </g>
+                `;
+              }).join('')}
+            </svg>
+          `;
+        };
+        
+        // Renderizar título
+        const infoIconHTML = showInfoIcon ? renderButtonHTML({ icon: 'circle-info', ariaLabel: 'Información' }) : '';
+        const actionButtonHTML = showActionButton ? renderButtonHTML({ icon: 'chevron-right', ariaLabel: 'Ver más' }) : '';
+        const responseCountHTML = showResponseCount && responseCount !== undefined
+          ? `<div class="ubits-bar-metric-card__response-count"><span class="ubits-body-xs-regular">${responseCount} ${responseCount === 1 ? 'respuesta' : 'respuestas'}</span></div>`
+          : '';
+        
+        const titleHTML = showTitle ? `
+          <div class="ubits-bar-metric-card__header">
+            <div class="ubits-bar-metric-card__title-group">
+              <h3 class="ubits-bar-metric-card__title ubits-body-md-bold">${title}</h3>
+              ${infoIconHTML}
+            </div>
+            ${actionButtonHTML ? `<div class="ubits-bar-metric-card__action-button">${actionButtonHTML}</div>` : ''}
+          </div>
+          ${responseCountHTML}
+        ` : '';
+        
+        // Renderizar gráfico
+        const barChartHTML = showBarChart && barData.length > 0 && layout !== 'horizontal' ? `
+          <div class="ubits-bar-metric-card__chart-wrapper" style="background-color: ${chartBackgroundColor};">
+            <div class="ubits-bar-metric-card__chart-inner">
+              ${renderBarChart()}
+            </div>
+          </div>
+        ` : '';
+        
+        // Renderizar categorías
+        const categoriesHTML = showCategories && categories.length > 0 ? `
+          <div class="ubits-bar-metric-card__categories">
+            ${categories.map(cat => layout === 'horizontal' ? renderCategoryWithProgressBar(cat) : renderCategory(cat)).join('')}
+          </div>
+        ` : '';
+        
+        return `
+          <div class="${classes}">
+            ${titleHTML}
+            <div class="ubits-bar-metric-card__content">
+              ${barChartHTML}
+              ${categoriesHTML}
+            </div>
+          </div>
+        `;
+      }
+      
+      // ========================================
+      // FUNCIONES DE CONTROL PARA CSAT METRIC CARD
+      // ========================================
+      
+      // Función para controlar CSAT Metric Card
+      window.setCSATMetricCardControl = function(option, value, componentId) {
+        console.log('🎛️ setCSATMetricCardControl:', option, value, componentId);
+        
+        // Actualizar estados de toggles
+        const toggleStatusMap = {
+          'showInfoIcon': 'csat-metric-card-show-info-icon-status',
+          'showActionButton': 'csat-metric-card-show-action-button-status'
+        };
+        
+        if (toggleStatusMap[option]) {
+          const statusEl = document.getElementById(`${toggleStatusMap[option]}-${componentId}`);
+          if (statusEl) statusEl.textContent = value ? 'Activado' : 'Desactivado';
+        }
+        
+        // Actualizar preview
+        if (typeof window.updateCSATMetricCardPreview === 'function') {
+          window.updateCSATMetricCardPreview(componentId);
+        }
+      };
+      
+      // Función para actualizar el preview de CSAT Metric Card usando tokens UBITS
+      window.updateCSATMetricCardPreview = function(componentId) {
+        const previewContainer = document.getElementById(`csat-metric-card-preview-${componentId}`);
+        if (!previewContainer) {
+          console.error('❌ Preview container no encontrado:', `csat-metric-card-preview-${componentId}`);
+          return;
+        }
+        
+        // Obtener valores de los controles
+        const size = document.getElementById(`csat-metric-card-size-select-${componentId}`)?.value || 'md';
+        const title = document.getElementById(`csat-metric-card-title-input-${componentId}`)?.value || 'Califica el producto';
+        const totalResponses = parseInt(document.getElementById(`csat-metric-card-total-responses-input-${componentId}`)?.value || '7');
+        const responsesLabel = document.getElementById(`csat-metric-card-responses-label-input-${componentId}`)?.value || 'respuestas';
+        const average = parseFloat(document.getElementById(`csat-metric-card-average-input-${componentId}`)?.value || '4.00');
+        const averageLabel = document.getElementById(`csat-metric-card-average-label-input-${componentId}`)?.value || 'Promedio:';
+        const score = parseFloat(document.getElementById(`csat-metric-card-score-input-${componentId}`)?.value || '3');
+        const titleIcon = document.getElementById(`csat-metric-card-title-icon-input-${componentId}`)?.value || '';
+        const titleIconStyle = document.getElementById(`csat-metric-card-title-icon-style-select-${componentId}`)?.value || 'regular';
+        const titleIconColor = document.getElementById(`csat-metric-card-title-icon-color-input-${componentId}`)?.value || '';
+        const showInfoIcon = document.getElementById(`csat-metric-card-show-info-icon-toggle-${componentId}`)?.checked === true;
+        const showActionButton = document.getElementById(`csat-metric-card-show-action-button-toggle-${componentId}`)?.checked === true;
+        
+        // Limpiar contenedor
+        previewContainer.innerHTML = '';
+        
+        // Generar HTML usando tokens UBITS
+        const csatMetricCardHTML = generateCSATMetricCardHTML({
+          title: title,
+          totalResponses: totalResponses,
+          responsesLabel: responsesLabel,
+          average: average,
+          averageLabel: averageLabel,
+          score: score,
+          titleIcon: titleIcon || undefined,
+          titleIconStyle: titleIconStyle,
+          titleIconColor: titleIconColor || undefined,
+          showInfoIcon: showInfoIcon,
+          showActionButton: showActionButton,
+          size: size
+        });
+        previewContainer.innerHTML = csatMetricCardHTML;
+        
+        console.log('✅ CSAT Metric Card preview actualizado');
+      };
+      
+      // Función helper para generar HTML de CSAT Metric Card usando tokens UBITS
+      function generateCSATMetricCardHTML(options) {
+        const {
+          title = 'Califica el producto',
+          totalResponses = 0,
+          responsesLabel = 'respuestas',
+          average = 0,
+          averageLabel = 'Promedio:',
+          score = 0,
+          titleIcon,
+          titleIconStyle = 'regular',
+          titleIconColor,
+          showInfoIcon = false,
+          showActionButton = false,
+          size = 'md'
+        } = options;
+        
+        // Clases base usando tokens UBITS
+        const classes = [
+          'ubits-csat-metric-card',
+          `ubits-csat-metric-card--${size}`
+        ].filter(Boolean).join(' ');
+        
+        // Helper para renderizar iconos FontAwesome
+        const renderIconHelper = (iconName, iconStyle, iconColor) => {
+          const iconClass = iconStyle === 'solid' ? 'fas' : 'far';
+          const name = iconName.startsWith('fa-') ? iconName : `fa-${iconName}`;
+          const colorStyle = iconColor ? `style="color: ${iconColor};"` : '';
+          return `<i class="${iconClass} ${name}" ${colorStyle}></i>`;
+        };
+        
+        // Mapeo de caritas según el índice (0-4) con sus colores
+        const FACES = [
+          { icon: 'face-angry', label: 'Muy malo', color: 'var(--ubits-feedback-accent-error)' },
+          { icon: 'face-sad-tear', label: 'Malo', color: 'var(--ubits-feedback-fg-warning-subtle-hover)' },
+          { icon: 'face-meh', label: 'Regular', color: 'var(--ubits-feedback-accent-info)' },
+          { icon: 'face-smile', label: 'Bueno', color: 'var(--ubits-feedback-accent-success)' },
+          { icon: 'face-smile-beam', label: 'Muy bueno', color: 'var(--ubits-feedback-accent-success)' }
+        ];
+        
+        // Renderizar gráfico de caritas
+        const renderFacesRating = (scoreValue) => {
+          const totalFaces = 5;
+          const roundedScore = Math.round(scoreValue);
+          const selectedFaceIndex = Math.min(Math.max(roundedScore - 1, 0), totalFaces - 1); // 0-4
+          
+          let facesHTML = '';
+          
+          for (let i = 0; i < totalFaces; i++) {
+            const face = FACES[i];
+            const isSelected = i === selectedFaceIndex;
+            const faceClass = isSelected 
+              ? 'ubits-csat-metric-card__face ubits-csat-metric-card__face--selected'
+              : 'ubits-csat-metric-card__face ubits-csat-metric-card__face--empty';
+            const faceColor = isSelected ? face.color : 'var(--ubits-border-1)';
+            
+            facesHTML += `
+              <div class="ubits-csat-metric-card__face-wrapper">
+                <i class="far fa-${face.icon} ${faceClass}" style="color: ${faceColor};"></i>
+                <span class="ubits-csat-metric-card__face-label">${face.label}</span>
+              </div>
+            `;
+          }
+          
+          return facesHTML;
+        };
+        
+        // Renderizar botón helper
+        const renderButtonHTML = (opts) => {
+          const { variant = 'tertiary', size: btnSize = 'sm', icon, iconOnly = true } = opts;
+          const btnClasses = [
+            'ubits-button',
+            `ubits-button--${variant}`,
+            `ubits-button--${btnSize}`
+          ].filter(Boolean).join(' ');
+          const iconHTML = icon ? `<i class="far fa-${icon}"></i>` : '';
+          return `<button class="${btnClasses}" type="button" aria-label="${opts.ariaLabel || ''}">${iconHTML}</button>`;
+        };
+        
+        // Renderizar icono del título si existe
+        const titleIconHTML = titleIcon 
+          ? `<div class="ubits-csat-metric-card__title-icon">${renderIconHelper(titleIcon, titleIconStyle, titleIconColor)}</div>`
+          : '';
+        
+        // Renderizar icono de información
+        const infoIconHTML = showInfoIcon
+          ? renderButtonHTML({ icon: 'circle-info', ariaLabel: 'Información' })
+          : '';
+        
+        // Renderizar botón de acción
+        const actionButtonHTML = showActionButton
+          ? renderButtonHTML({ icon: 'chevron-right', ariaLabel: 'Ver más' })
+          : '';
+        
+        // Clases de tipografía según tamaño (usando solo clases válidas UBITS)
+        const titleSizeClass = 'ubits-body-md-bold';
+        const statsClass = 'ubits-body-sm-regular';
+        
+        // Formatear promedio con 2 decimales
+        const formattedAverage = average.toFixed(2);
+        
+        // Renderizar gráfico de caritas
+        const facesHTML = renderFacesRating(score);
+        
+        return `
+          <div class="${classes}">
+            <div class="ubits-csat-metric-card__header">
+              ${titleIconHTML}
+              <div class="ubits-csat-metric-card__title-group">
+                <h3 class="ubits-csat-metric-card__title ${titleSizeClass}">${title}</h3>
+                ${infoIconHTML}
+              </div>
+              ${actionButtonHTML ? `<div class="ubits-csat-metric-card__action-button">${actionButtonHTML}</div>` : ''}
+            </div>
+            <div class="ubits-csat-metric-card__body">
+              <div class="ubits-csat-metric-card__stats">
+                <span class="ubits-csat-metric-card__responses ${statsClass}">${totalResponses} ${responsesLabel}</span>
+                <span class="ubits-csat-metric-card__average ${statsClass}">${averageLabel} (${formattedAverage})</span>
+              </div>
+              <div class="ubits-csat-metric-card__chart">
+                <div class="ubits-csat-metric-card__faces">
+                  ${facesHTML}
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+      
+      // ========================================
+      // FUNCIONES DE CONTROL PARA DATA VIEW
+      // ========================================
+      
+      // Función para controlar DataView
+      window.setDataViewControl = function(option, value, componentId) {
+        console.log('🎛️ setDataViewControl:', option, value, componentId);
+        
+        // Actualizar estados de toggles
+        const toggleStatusMap = {
+          'showCategory': 'data-view-show-category-status',
+          'showRating': 'data-view-show-rating-status',
+          'showPrice': 'data-view-show-price-status',
+          'showWishlist': 'data-view-show-wishlist-status',
+          'showBuyButton': 'data-view-show-buy-button-status'
+        };
+        
+        if (toggleStatusMap[option]) {
+          const statusEl = document.getElementById(`${toggleStatusMap[option]}-${componentId}`);
+          if (statusEl) statusEl.textContent = value ? 'Activado' : 'Desactivado';
+        }
+        
+        // Actualizar preview
+        if (typeof window.updateDataViewPreview === 'function') {
+          window.updateDataViewPreview(componentId);
+        }
+      };
+      
+      // Función para actualizar el preview de DataView usando tokens UBITS
+      window.updateDataViewPreview = function(componentId) {
+        console.log('🔄 updateDataViewPreview llamado con componentId:', componentId);
+        const previewContainer = document.getElementById(`data-view-preview-${componentId}`);
+        if (!previewContainer) {
+          console.error('❌ Preview container no encontrado:', `data-view-preview-${componentId}`);
+          return;
+        }
+        console.log('✅ Preview container encontrado:', previewContainer);
+        
+        // Obtener valores de los controles
+        const size = document.getElementById(`data-view-size-select-${componentId}`)?.value || 'md';
+        const productCount = parseInt(document.getElementById(`data-view-product-count-input-${componentId}`)?.value || '5');
+        const defaultStockStatus = document.getElementById(`data-view-stock-status-select-${componentId}`)?.value || 'INSTOCK';
+        const defaultRating = parseFloat(document.getElementById(`data-view-rating-input-${componentId}`)?.value || '4');
+        const defaultPrice = parseInt(document.getElementById(`data-view-price-input-${componentId}`)?.value || '50');
+        const buyButtonText = document.getElementById(`data-view-buy-button-text-input-${componentId}`)?.value || 'Buy Now';
+        const buyButtonIcon = document.getElementById(`data-view-buy-button-icon-input-${componentId}`)?.value || 'shopping-cart';
+        const wishlistIcon = document.getElementById(`data-view-wishlist-icon-input-${componentId}`)?.value || 'heart';
+        const showCategory = document.getElementById(`data-view-show-category-toggle-${componentId}`)?.checked === true;
+        const showRating = document.getElementById(`data-view-show-rating-toggle-${componentId}`)?.checked === true;
+        const showPrice = document.getElementById(`data-view-show-price-toggle-${componentId}`)?.checked === true;
+        const showWishlist = document.getElementById(`data-view-show-wishlist-toggle-${componentId}`)?.checked === true;
+        const showBuyButton = document.getElementById(`data-view-show-buy-button-toggle-${componentId}`)?.checked === true;
+        
+        // Limpiar contenedor
+        previewContainer.innerHTML = '';
+        
+        // Generar productos
+        const products = generateDataViewProducts(productCount, defaultStockStatus, defaultRating, defaultPrice);
+        
+        // Generar HTML usando tokens UBITS
+        const dataViewHTML = generateDataViewHTML({
+          products: products,
+          size: size,
+          showCategory: showCategory,
+          showRating: showRating,
+          showPrice: showPrice,
+          showWishlist: showWishlist,
+          showBuyButton: showBuyButton,
+          buyButtonText: buyButtonText,
+          buyButtonIcon: buyButtonIcon,
+          wishlistIcon: wishlistIcon
+        });
+        previewContainer.innerHTML = dataViewHTML;
+        
+        console.log('✅ DataView preview actualizado');
+      };
+      
+      // Función helper para generar productos de ejemplo
+      function generateDataViewProducts(count, defaultStockStatus, defaultRating, defaultPrice) {
+        const categories = ['Accessories', 'Fitness', 'Clothing', 'Electronics', 'Home'];
+        const names = [
+          'Bamboo Watch',
+          'Black Watch',
+          'Blue Band',
+          'Blue T-Shirt',
+          'Bracelet',
+          'Wireless Headphones',
+          'Smart Watch',
+          'Running Shoes',
+          'Yoga Mat',
+          'Water Bottle',
+        ];
+        
+        // Lista de imágenes reales disponibles (rutas relativas desde index.html)
+        const availableImages = [
+          '../assets/images/cards-learn/administracion-efectiva-del-tiempo.jpg',
+          '../assets/images/cards-learn/segmenta-la-experiencia-del-cliente.jpg',
+          '../assets/images/cards-learn/introduccion-al-backend-node-js.jpeg',
+          '../assets/images/cards-learn/introduccion-al-desarrollo-web.jpeg',
+          '../assets/images/cards-learn/como-ejercer-el-liderazgo-inclusivo.jpeg',
+          '../assets/images/cards-learn/flexbox-y-grid.jpeg',
+          '../assets/images/cards-learn/react-context-api.jpeg',
+          '../assets/images/cards-learn/agilidad-emocional.jpeg',
+          '../assets/images/cards-learn/primeros-pasos-en-react.jpeg',
+          '../assets/images/cards-learn/neuroliderazgo-configura-tu-mente.jpeg',
+        ];
+        
+        return Array.from({ length: count }, (_, index) => {
+          const categoryIndex = index % categories.length;
+          const nameIndex = index % names.length;
+          
+          const stockStatuses = ['INSTOCK', 'LOWSTOCK', 'OUTOFSTOCK'];
+          const stockIndex = index % stockStatuses.length;
+          
+          const ratings = [3, 3.5, 4, 4.5, 5];
+          const ratingIndex = index % ratings.length;
+          
+          const prices = [15, 29, 50, 65, 72, 79, 100];
+          const priceIndex = index % prices.length;
+          
+          return {
+            id: `product-${index + 1}`,
+            image: availableImages[index % availableImages.length],
+            imageAlt: names[nameIndex],
+            category: categories[categoryIndex],
+            name: names[nameIndex],
+            rating: defaultRating !== 4 ? defaultRating : ratings[ratingIndex],
+            price: defaultPrice !== 50 ? defaultPrice : prices[priceIndex],
+            stockStatus: defaultStockStatus !== 'INSTOCK' ? defaultStockStatus : stockStatuses[stockIndex],
+            inWishlist: index % 3 === 0,
+          };
+        });
+      }
+      
+      // Función helper para generar HTML de DataView usando tokens UBITS
+      function generateDataViewHTML(options) {
+        const {
+          products = [],
+          size = 'md',
+          showCategory = true,
+          showRating = true,
+          showPrice = true,
+          showWishlist = true,
+          showBuyButton = true,
+          buyButtonText = 'Buy Now',
+          buyButtonIcon = 'shopping-cart',
+          wishlistIcon = 'heart'
+        } = options;
+        
+        // Clases base usando tokens UBITS
+        const classes = [
+          'ubits-data-view',
+          `ubits-data-view--${size}`
+        ].filter(Boolean).join(' ');
+        
+        // Helper para renderizar iconos FontAwesome
+        const renderIconHelper = (iconName, iconStyle = 'regular') => {
+          const iconClass = iconStyle === 'solid' ? 'fas' : 'far';
+          const name = iconName.startsWith('fa-') ? iconName : `fa-${iconName}`;
+          return `<i class="${iconClass} ${name}"></i>`;
+        };
+        
+        // Helper para renderizar el badge de stock
+        const renderStockBadge = (status) => {
+          const statusConfig = {
+            INSTOCK: { text: 'INSTOCK', class: 'ubits-data-view__stock-badge--instock' },
+            LOWSTOCK: { text: 'LOWSTOCK', class: 'ubits-data-view__stock-badge--lowstock' },
+            OUTOFSTOCK: { text: 'OUTOFSTOCK', class: 'ubits-data-view__stock-badge--outofstock' }
+          };
+          
+          const config = statusConfig[status] || statusConfig.INSTOCK;
+          return `<span class="ubits-data-view__stock-badge ${config.class}">${config.text}</span>`;
+        };
+        
+        // Helper para renderizar el rating con estrellas
+        const renderRating = (rating) => {
+          const fullStars = Math.floor(rating);
+          const hasHalfStar = rating % 1 >= 0.5;
+          const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+          
+          let starsHTML = '';
+          
+          for (let i = 0; i < fullStars; i++) {
+            starsHTML += `<i class="fas fa-star ubits-data-view__star ubits-data-view__star--filled"></i>`;
+          }
+          
+          if (hasHalfStar) {
+            starsHTML += `<i class="fas fa-star-half-alt ubits-data-view__star ubits-data-view__star--half"></i>`;
+          }
+          
+          for (let i = 0; i < emptyStars; i++) {
+            starsHTML += `<i class="far fa-star ubits-data-view__star ubits-data-view__star--empty"></i>`;
+          }
+          
+          return `
+            <div class="ubits-data-view__rating">
+              ${starsHTML}
+              <span class="ubits-body-sm-regular ubits-data-view__rating-number">${rating}</span>
+            </div>
+          `;
+        };
+        
+        // Helper para formatear precio
+        const formatPrice = (price) => {
+          return new Intl.NumberFormat('es-CO', {
+            style: 'currency',
+            currency: 'USD',
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
+          }).format(price);
+        };
+        
+        // Renderizar productos
+        let itemsHTML = '';
+        products.forEach((product, index) => {
+          const productId = product.id || `product-${index}`;
+          const stockStatus = product.stockStatus || 'INSTOCK';
+          const inWishlist = product.inWishlist || false;
+          
+          itemsHTML += `
+            <div class="ubits-data-view__item" data-product-id="${productId}" data-index="${index}">
+              <div class="ubits-data-view__image-wrapper">
+                <img 
+                  src="${product.image}" 
+                  alt="${product.imageAlt || product.name}" 
+                  class="ubits-data-view__image"
+                />
+                ${renderStockBadge(stockStatus)}
+              </div>
+              <div class="ubits-data-view__content">
+                <div class="ubits-data-view__main">
+                  ${showCategory ? `<div class="ubits-body-sm-regular ubits-data-view__category">${product.category}</div>` : ''}
+                  <h3 class="ubits-body-md-semibold ubits-data-view__name">${product.name}</h3>
+                  ${showRating ? renderRating(product.rating) : ''}
+                </div>
+                <div class="ubits-data-view__right">
+                  ${showPrice ? `<span class="ubits-body-md-bold ubits-data-view__price">${formatPrice(product.price)}</span>` : ''}
+                  <div class="ubits-data-view__actions">
+                    ${showWishlist ? `
+                      <button 
+                        class="ubits-button ubits-button--secondary ubits-button--sm ubits-data-view__wishlist-button ${inWishlist ? 'ubits-data-view__wishlist-button--active' : ''}"
+                        data-action="wishlist"
+                        aria-label="${inWishlist ? 'Remover de favoritos' : 'Agregar a favoritos'}"
+                      >
+                        ${renderIconHelper(wishlistIcon, inWishlist ? 'solid' : 'regular')}
+                      </button>
+                    ` : ''}
+                    ${showBuyButton ? `
+                      <button class="ubits-button ubits-button--primary ubits-button--sm ubits-data-view__buy-button" data-action="buy">
+                        ${renderIconHelper(buyButtonIcon, 'solid')}
+                        <span>${buyButtonText}</span>
+                      </button>
+                    ` : ''}
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+        });
+        
+        return `
+          <div class="${classes}">
+            ${itemsHTML}
+          </div>
+        `;
+      }
+      
     </script>
   </body>
-</html
+</html>

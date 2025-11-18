@@ -256,7 +256,7 @@ function renderBarChart(
     };
   });
   
-  // Generar líneas de grilla
+  // Generar líneas de grilla y números del eje Y (siempre calcular los números, las líneas solo si showGridLines)
   const gridLines = [];
   const gridSteps = 5;
   for (let i = 0; i <= gridSteps; i++) {
@@ -329,7 +329,21 @@ function renderBarChart(
       viewBox="0 0 ${width} ${height}"
       preserveAspectRatio="none"
     >
-      <!-- Líneas de grilla -->
+      <!-- Números del eje Y (siempre visibles) -->
+      ${gridLines.map(line => `
+        <text
+          x="${paddingLeft - 5}"
+          y="${line.y + 4}"
+          font-family="var(--font-sans)"
+          font-size="var(--font-body-sm-size, 13px)"
+          font-weight="var(--weight-regular, 400)"
+          fill="var(--ubits-fg-2-medium)"
+          text-anchor="end"
+          style="font-size: var(--font-body-sm-size, 13px) !important; font-weight: var(--weight-regular, 400) !important;"
+        >${line.value}</text>
+      `).join('')}
+      
+      <!-- Líneas de grilla horizontales (solo si showGridLines está activado) -->
       ${showGridLines ? gridLines.map(line => `
         <line
           x1="${adjustedPaddingLeft}"
@@ -341,16 +355,6 @@ function renderBarChart(
           stroke-dasharray="2,2"
           opacity="0.3"
         />
-        <text
-          x="${paddingLeft - 5}"
-          y="${line.y + 4}"
-          font-family="var(--font-sans)"
-          font-size="var(--font-body-sm-size, 13px)"
-          font-weight="var(--weight-regular, 400)"
-          fill="var(--ubits-fg-2-medium)"
-          text-anchor="end"
-          style="font-size: var(--font-body-sm-size, 13px) !important; font-weight: var(--weight-regular, 400) !important;"
-        >${line.value}</text>
       `).join('') : ''}
       
       <!-- Línea cero si hay valores negativos y positivos -->
