@@ -122,8 +122,8 @@
 /* Active/Selected state */
 .ubits-list-item--active,
 .ubits-list-item[aria-selected="true"] {
-    color: var(--ubits-accent-brand-static-inverted);
-    background: rgba(12, 91, 239, 0.08); /* Azul claro #E0F0FF equivalente */
+    color: var(--ubits-button-active-fg, var(--ubits-accent-brand-static-inverted));
+    background: var(--ubits-bg-active-button, rgba(12, 91, 239, 0.15));
 }
 
 /* Disabled state */
@@ -164,10 +164,14 @@
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
     }
 
-    .ubits-list-item:hover:not(.ubits-list-item--disabled),
+    .ubits-list-item:hover:not(.ubits-list-item--disabled) {
+        background: rgba(12, 91, 239, 0.08);
+    }
+    
     .ubits-list-item--active,
     .ubits-list-item[aria-selected="true"] {
-        background: rgba(12, 91, 239, 0.15); /* Más opaco en dark mode */
+        color: var(--ubits-button-active-fg, var(--ubits-accent-brand-static-inverted));
+        background: var(--ubits-bg-active-button, rgba(12, 91, 239, 0.15));
     }
 }
 

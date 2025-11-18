@@ -7,11 +7,14 @@ export default defineConfig({
     lib: {
       entry: resolve(__dirname, 'src/index.ts'),
       name: 'UbitsParticipantsMenu',
-      fileName: 'index',
-      formats: ['es']
+      fileName: (format) => format === 'umd' ? 'participants-menu.umd' : 'index',
+      formats: ['es', 'umd']
     },
     rollupOptions: {
-      external: []
+      external: [],
+      output: {
+        globals: {}
+      }
     }
   },
   plugins: [dts()]

@@ -167,7 +167,7 @@
 }
 
 .ubits-participants-menu__item--selected .ubits-participants-menu__item-name {
-  color: var(--ubits-accent-brand-static, #0c5bef);
+  color: var(--ubits-button-active-fg, var(--ubits-accent-brand-static, #0c5bef));
 }
 
 .ubits-participants-menu__item-role {

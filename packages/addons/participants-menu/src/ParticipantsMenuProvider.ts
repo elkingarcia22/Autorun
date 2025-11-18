@@ -114,7 +114,7 @@ function renderParticipant(
   ].filter(Boolean).join(' ');
   
   const nameColor = isSelected 
-    ? 'var(--ubits-accent-brand-static, #0c5bef)' 
+    ? 'var(--ubits-button-active-fg, var(--ubits-accent-brand-static, #0c5bef))' 
     : 'var(--ubits-fg-1-high, #303a47)';
   
   const statusTag = (showStatusTag && participant.status) ? renderParticipantStatusTag(participant.status) : '';
@@ -182,7 +182,6 @@ function renderParticipant(
  * Renderiza el HTML del menú de participantes
  */
 export function renderParticipantsMenu(options: ParticipantsMenuOptions): string {
-  console.log('[ParticipantsMenu] render()', options.participants?.length || 0, 'participantes');
   
   const {
     title = 'Participantes',
@@ -227,7 +226,7 @@ export function renderParticipantsMenu(options: ParticipantsMenuOptions): string
   const activeFilters = (options as any).activeFilters || { roles: [], statuses: [] };
   const activeFiltersCount = (activeFilters.roles?.length || 0) + (activeFilters.statuses?.length || 0);
   
-  // Usar componente Button de UBITS para el filtro con badge si hay filtros activos
+  // Usar componente Button de UBITS para el filtro con badge solo si hay filtros activos
   const filterButtonOptions: ButtonOptions = {
     variant: 'secondary',
     size: 'md',
@@ -235,7 +234,7 @@ export function renderParticipantsMenu(options: ParticipantsMenuOptions): string
     iconStyle: 'regular',
     iconOnly: true,
     active: activeFiltersCount > 0,
-    badge: activeFiltersCount > 0,
+    badge: activeFiltersCount > 0, // Solo mostrar badge si hay filtros activos
     className: 'ubits-participants-menu__filter-button'
   };
   let filterButtonHtml = renderButton(filterButtonOptions);
@@ -246,6 +245,12 @@ export function renderParticipantsMenu(options: ParticipantsMenuOptions): string
     filterButtonHtml = filterButtonHtml.replace(
       '<span class="ubits-button__badge"></span>', 
       badgeHTML
+    );
+  } else {
+    // Si no hay filtros activos, eliminar completamente el badge del HTML inicial
+    filterButtonHtml = filterButtonHtml.replace(
+      /<span class="ubits-button__badge"><\/span>/g, 
+      ''
     );
   }
   
@@ -350,7 +355,6 @@ export function createParticipantsMenu(options: ParticipantsMenuOptions): {
   updateParticipantsList: (participants: Participant[], selectedParticipantId?: string) => void;
   destroy: () => void;
 } {
-  console.log('[ParticipantsMenu] create()', options.participants?.length || 0, 'participantes');
   
   const {
     containerId,
@@ -428,7 +432,6 @@ export function createParticipantsMenu(options: ParticipantsMenuOptions): {
     }
 
     container.appendChild(menuElement);
-    console.log('[ParticipantsMenu] insertado en DOM');
 
     // Inicializar componente Input de UBITS para la búsqueda después de insertar el menú
     initializeInput();
@@ -823,16 +826,14 @@ export function createParticipantsMenu(options: ParticipantsMenuOptions): {
           item.classList.add('ubits-participants-menu__item--selected');
           const newName = item.querySelector('.ubits-participants-menu__item-name') as HTMLElement;
           if (newName) {
-            newName.style.color = 'var(--ubits-accent-brand-static, #0c5bef)';
+            newName.style.color = 'var(--ubits-button-active-fg, var(--ubits-accent-brand-static, #0c5bef))';
           } else {
-            console.warn('⚠️ [ParticipantsMenu] No se encontró el elemento del nombre');
           }
           (item as HTMLElement).style.backgroundColor = 'var(--ubits-bg-active-button, rgba(12, 91, 239, 0.15))';
           
           // Verificar que solo un item esté seleccionado
           const allSelected = menuElement.querySelectorAll('.ubits-participants-menu__item--selected');
           if (allSelected.length > 1) {
-            console.warn('⚠️ [ParticipantsMenu] Múltiples items seleccionados! Revisar lógica de selección.');
           }
           
           // Llamar callback
@@ -867,7 +868,6 @@ export function createParticipantsMenu(options: ParticipantsMenuOptions): {
           listWrapper.style.position = 'relative';
           listWrapper.appendChild(scrollbarContainer);
           
-          console.log('[ParticipantsMenu] inicializando scrollbar UBITS');
           createScrollbar({
             containerId: scrollbarContainerId,
             targetId: listElement.id,
@@ -876,7 +876,6 @@ export function createParticipantsMenu(options: ParticipantsMenuOptions): {
         }
       }
     } else {
-      console.log('[ParticipantsMenu] scrollbar desactivado');
       // Asegurar que el atributo data-ubits-scrollbar no esté presente
       const listElement = menuElement.querySelector('[data-scrollable="true"]') as HTMLElement;
       if (listElement) {
@@ -900,14 +899,19 @@ export function createParticipantsMenu(options: ParticipantsMenuOptions): {
     if (activeFiltersCount > 0) {
       // Reemplazar el badge genérico con el badge personalizado que muestra el número
       if (badgeElement) {
-        // Reemplazar el badge genérico con el badge personalizado
-        const newBadgeHTML = `<span class="ubits-badge ubits-badge--sm ubits-badge--number ubits-badge--error ubits-button__badge">${activeFiltersCount}</span>`;
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = newBadgeHTML;
-        const newBadge = tempDiv.firstElementChild as HTMLElement;
-        
-        if (newBadge && badgeElement.parentNode) {
-          badgeElement.parentNode.replaceChild(newBadge, badgeElement);
+        // Si ya es un badge con número, solo actualizar el texto
+        if (badgeElement.classList.contains('ubits-badge--number')) {
+          badgeElement.textContent = `${activeFiltersCount}`;
+        } else {
+          // Reemplazar el badge genérico con el badge personalizado
+          const newBadgeHTML = `<span class="ubits-badge ubits-badge--sm ubits-badge--number ubits-badge--error ubits-button__badge">${activeFiltersCount}</span>`;
+          const tempDiv = document.createElement('div');
+          tempDiv.innerHTML = newBadgeHTML;
+          const newBadge = tempDiv.firstElementChild as HTMLElement;
+          
+          if (newBadge && badgeElement.parentNode) {
+            badgeElement.parentNode.replaceChild(newBadge, badgeElement);
+          }
         }
       } else {
         // Si no existe el badge genérico, crear el badge personalizado
@@ -919,17 +923,10 @@ export function createParticipantsMenu(options: ParticipantsMenuOptions): {
       // Activar el botón
       filterButton.classList.add('ubits-button--active');
     } else {
-      // Remover badge y restaurar el badge genérico vacío
+      // Remover badge completamente cuando no hay filtros activos
       if (badgeElement) {
-        // Si el badge tiene el número, reemplazarlo con el badge genérico vacío
-        if (badgeElement.classList.contains('ubits-badge--number')) {
-          const genericBadge = document.createElement('span');
-          genericBadge.className = 'ubits-button__badge';
-          badgeElement.parentNode?.replaceChild(genericBadge, badgeElement);
-        } else {
-          // Si es el badge genérico, simplemente dejarlo vacío
-          badgeElement.innerHTML = '';
-        }
+        // Eliminar el badge del DOM completamente
+        badgeElement.remove();
       }
       // Desactivar el botón
       filterButton.classList.remove('ubits-button--active');
@@ -955,11 +952,9 @@ export function createParticipantsMenu(options: ParticipantsMenuOptions): {
           value: preservedValue,
           onChange: (value: string, event?: Event) => {
             if (isRestoringValue) {
-              console.log('[ParticipantsMenu] onChange IGNORADO (restaurando)');
               return;
             }
             
-            console.log('[ParticipantsMenu] onChange →', value);
             currentSearchTerm = value || '';
             if (onSearchChange) {
               try {
@@ -968,14 +963,13 @@ export function createParticipantsMenu(options: ParticipantsMenuOptions): {
                 console.error('[ParticipantsMenu] Error en onSearchChange:', error);
               }
             }
-            // Actualizar badge y empty state
+            // Actualizar badge (solo muestra filtros activos, no búsqueda)
             updateFilterBadge();
           }
         };
         
         if (preservedValue) {
           isRestoringValue = true;
-          console.log('[ParticipantsMenu] input init con valor preservado:', preservedValue);
         }
         
         inputInstance = createInput(inputOptions);
@@ -986,7 +980,6 @@ export function createParticipantsMenu(options: ParticipantsMenuOptions): {
           }
           setTimeout(() => {
             isRestoringValue = false;
-            console.log('[ParticipantsMenu] flag restauración desactivado');
           }, 150);
         } else {
           isRestoringValue = false;
@@ -1015,11 +1008,8 @@ export function createParticipantsMenu(options: ParticipantsMenuOptions): {
    * Esto evita reinicializar el input y disparar onChange
    */
   const updateParticipantsList = (newParticipants: Participant[], newSelectedParticipantId?: string) => {
-    console.log('[ParticipantsMenu] updateList()', newParticipants.length, 'participantes');
-    
     const listElement = menuElement.querySelector('.ubits-participants-menu__list') as HTMLElement;
     if (!listElement) {
-      console.warn('[ParticipantsMenu] No se encontró lista');
       return;
     }
     
@@ -1109,7 +1099,7 @@ export function createParticipantsMenu(options: ParticipantsMenuOptions): {
             newItem.classList.add('ubits-participants-menu__item--selected');
             const newName = newItem.querySelector('.ubits-participants-menu__item-name') as HTMLElement;
             if (newName) {
-              newName.style.color = 'var(--ubits-accent-brand-static, #0c5bef)';
+              newName.style.color = 'var(--ubits-button-active-fg, var(--ubits-accent-brand-static, #0c5bef))';
             }
             (newItem as HTMLElement).style.backgroundColor = 'var(--ubits-bg-active-button, rgba(12, 91, 239, 0.15))';
             
@@ -1124,10 +1114,8 @@ export function createParticipantsMenu(options: ParticipantsMenuOptions): {
       });
     }
     
-    // Actualizar badge
+    // Actualizar badge (solo muestra filtros activos, no búsqueda)
     updateFilterBadge();
-    
-    console.log('[ParticipantsMenu] lista actualizada ✓');
   };
 
   /**
@@ -1140,12 +1128,10 @@ export function createParticipantsMenu(options: ParticipantsMenuOptions): {
       );
     
     if (onlyParticipantsChanged && inputInstance) {
-      console.log('[ParticipantsMenu] update() → usando updateList');
       updateParticipantsList(newOptions.participants!, newOptions.selectedParticipantId);
       return;
     }
     
-    console.log('[ParticipantsMenu] update() → RECREANDO TODO');
     
     // Si se está cambiando enableScrollbar, limpiar el scrollbar anterior
     if (newOptions.enableScrollbar !== undefined && newOptions.enableScrollbar !== restOptions.enableScrollbar) {
@@ -1154,7 +1140,6 @@ export function createParticipantsMenu(options: ParticipantsMenuOptions): {
         const existingScrollbar = listWrapper.querySelector('[id^="participants-menu-scrollbar-"]') as HTMLElement;
         if (existingScrollbar) {
           existingScrollbar.remove();
-          console.log('[ParticipantsMenu] scrollbar anterior eliminado');
         }
       }
     }
@@ -1198,7 +1183,6 @@ export function createParticipantsMenu(options: ParticipantsMenuOptions): {
             listWrapper.style.position = 'relative';
             listWrapper.appendChild(scrollbarContainer);
             
-            console.log('[ParticipantsMenu] inicializando scrollbar UBITS (update)');
             createScrollbar({
               containerId: scrollbarContainerId,
               targetId: listElement.id,
