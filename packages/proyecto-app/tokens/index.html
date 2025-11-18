@@ -20,6 +20,10 @@
     <link rel="stylesheet" href="../../addons/pagination/src/styles/pagination.css" />
     <link rel="stylesheet" href="../../addons/data-table/src/styles/data-table.css" />
     <link rel="stylesheet" href="../../addons/toggle/src/styles/toggle.css" />
+    <link rel="stylesheet" href="../../addons/menu/src/styles/menu.css" />
+    <link rel="stylesheet" href="../../addons/menubar/src/styles/menubar.css" />
+    <link rel="stylesheet" href="../../addons/metric-card/src/styles/metric-card.css" />
+    <link rel="stylesheet" href="../../addons/badge/src/styles/badge.css" />
     <!-- Button Component CSS - COMPLETO INLINE (porque @import falla con file://) -->
     <style id="button-component-css">
       /* ========================================
@@ -5616,6 +5620,36 @@ Reglas Importantes:
               hasPreview: true
             },
             {
+              name: 'Menu',
+              description: 'Componente Menu UBITS de navegación lateral con secciones, items, badges e información de usuario. Usa tokens UBITS para colores, tipografía y espaciado.',
+              files: {
+                css: 'addons/menu/src/styles/menu.css',
+                ts: 'addons/menu/src/MenuProvider.ts'
+              },
+              variants: [],
+              sizes: [],
+              states: ['default', 'hover', 'active', 'disabled'],
+              features: ['Secciones con títulos', 'Items con iconos y badges', 'Información de usuario', 'Logo y nombre de app', 'Ancho configurable', 'Items activos y deshabilitados', 'Badges de UBITS', 'Usa tokens UBITS exclusivamente', 'Usa tipografía UBITS'],
+              class: 'ubits-menu ubits-menu-item ubits-menu-item--active',
+              example: 'createMenu({\n  logoImage: \'/images/logo.svg\',\n  appName: \'AUTOFROME\',\n  sections: [\n    { id: \'section1\', title: \'Documents\', items: [...] },\n    { id: \'section2\', title: \'Profile\', items: [...] }\n  ],\n  userInfo: { avatarImage: \'/images/avatar.jpg\', name: \'John Doe\', role: \'Admin\' },\n  width: 280\n})',
+              hasPreview: true
+            },
+            {
+              name: 'Menubar',
+              description: 'Componente Menubar UBITS de navegación horizontal con soporte para dropdowns y submenús anidados. Usa tokens UBITS para colores, tipografía y espaciado.',
+              files: {
+                css: 'addons/menubar/src/styles/menubar.css',
+                ts: 'addons/menubar/src/MenubarProvider.ts'
+              },
+              variants: [],
+              sizes: [],
+              states: ['default', 'hover', 'active', 'disabled'],
+              features: ['Navegación horizontal', 'Dropdowns con submenús', 'Submenús anidados (nivel 3)', 'Iconos opcionales', 'Items activos y deshabilitados', 'Navegación por URL o callbacks', 'Usa tokens UBITS exclusivamente', 'Usa tipografía UBITS'],
+              class: 'ubits-menubar ubits-menubar-item ubits-menubar-item--active',
+              example: 'createMenubar({\n  items: [\n    { id: \'home\', label: \'Home\', icon: \'house\', href: \'#\' },\n    { id: \'projects\', label: \'Projects\', icon: \'magnifying-glass\', submenu: [...] }\n  ],\n  onActiveItemChange: (itemId, parentId) => { ... },\n  onItemClick: (itemId, item) => { ... }\n})',
+              hasPreview: true
+            },
+            {
               name: 'Stepper',
               description: 'Componente Stepper UBITS para mostrar el progreso de un proceso multi-paso. Soporta orientación horizontal y vertical, con estados: default, completado, activo, error y warning. Cada paso puede tener número, título y descripción.',
               files: {
@@ -6155,6 +6189,21 @@ Reglas Importantes:
           ],
           'Charts': [
             {
+              name: 'Text Metric Card',
+              description: 'Componente Text Metric Card UBITS para mostrar métricas numéricas. Usa tokens UBITS para colores, tipografía y espaciado. Soporta iconos, tamaños y es completamente personalizable.',
+              files: {
+                css: 'addons/metric-card/src/styles/metric-card.css',
+                ts: 'addons/metric-card/src/MetricCardProvider.ts'
+              },
+              variants: [],
+              sizes: ['sm', 'md', 'lg'],
+              states: ['default'],
+              features: ['3 tamaños (sm, md, lg)', 'Icono opcional en título', 'Icono de información opcional', 'Botón de acción opcional', 'Valor numérico o texto', 'Label descriptivo', 'Usa tokens UBITS exclusivamente', 'Usa tipografía UBITS'],
+              class: 'ubits-metric-card ubits-metric-card--md',
+              example: 'createMetricCard({\n  title: \'Net confidence score\',\n  value: \'200 / 204\',\n  label: \'Colaboradores\',\n  titleIcon: \'user\',\n  titleIconStyle: \'regular\',\n  showInfoIcon: true,\n  showActionButton: true,\n  size: \'md\'\n})',
+              hasPreview: true
+            },
+            {
               name: 'Bar Metric Card',
               description: 'Componente Bar Metric Card UBITS para mostrar métricas con gráfico de barras y categorías. Soporta layout vertical y horizontal, múltiples tamaños, valores positivos y negativos, y controles completos para personalización. Usa tokens UBITS para colores, tipografía y espaciado.',
               files: {
@@ -6455,12 +6504,18 @@ Reglas Importantes:
                     window.updateCarouselPreview('carousel');
                   } else if (componentId === 'bar-metric-card' && typeof window.updateBarMetricCardPreview === 'function') {
                     window.updateBarMetricCardPreview('bar-metric-card');
+                  } else if (componentId === 'text-metric-card' && typeof window.updateTextMetricCardPreview === 'function') {
+                    window.updateTextMetricCardPreview('text-metric-card');
                   } else if (componentId === 'csat-metric-card' && typeof window.updateCSATMetricCardPreview === 'function') {
                     window.updateCSATMetricCardPreview('csat-metric-card');
                   } else if (componentId === 'dataview' && typeof window.updateDataViewPreview === 'function') {
                     window.updateDataViewPreview('dataview');
                   } else if (componentId === 'gallery' && typeof window.updateGalleryPreview === 'function') {
                     window.updateGalleryPreview('gallery');
+                  } else if (componentId === 'menu' && typeof window.updateMenuPreview === 'function') {
+                    window.updateMenuPreview('menu');
+                  } else if (componentId === 'menubar' && typeof window.updateMenubarPreview === 'function') {
+                    window.updateMenubarPreview('menubar');
                   } else if (componentId === 'contenedor' && typeof window.updateContenedorPreview === 'function') {
                     window.updateContenedorPreview('contenedor');
                   }
@@ -10837,6 +10892,112 @@ Reglas Importantes:
                         </div>
                       ` : ''}
                       
+                      ${hasPreview && component.name === 'Text Metric Card' ? `
+                        <!-- Preview Section for Text Metric Card -->
+                        <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: none; margin-bottom: 24px;">
+                          <!-- CONTROLES ARRIBA -->
+                          <div style="margin-bottom: 24px;">
+                            <h4 style="margin: 0 0 20px 0; color: var(--ubits-fg-1-high); font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand-static-inverted);"></i>
+                              Controles
+                            </h4>
+                            
+                            <!-- Primera fila: Configuración básica -->
+                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; margin-bottom: 24px;">
+                              <!-- Tamaño -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Tamaño</label>
+                                <select id="text-metric-card-size-select-${componentId}" onchange="setTextMetricCardControl('size', this.value, '${componentId}')" style="width: 100%; padding: 10px 32px 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); cursor: pointer; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23666%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226,9 12,15 18,9%22></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px; box-sizing: border-box;">
+                                  <option value="sm">SM</option>
+                                  <option value="md" selected>MD</option>
+                                  <option value="lg">LG</option>
+                                </select>
+                              </div>
+                              
+                              <!-- Título -->
+                              <div style="flex: 1 1 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Título</label>
+                                <input type="text" id="text-metric-card-title-input-${componentId}" value="Net confidence score" onchange="setTextMetricCardControl('title', this.value, '${componentId}')" placeholder="Net confidence score" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                              
+                              <!-- Valor -->
+                              <div style="flex: 1 1 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Valor</label>
+                                <input type="text" id="text-metric-card-value-input-${componentId}" value="200 / 204" onchange="setTextMetricCardControl('value', this.value, '${componentId}')" placeholder="200 / 204" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                              
+                              <!-- Label -->
+                              <div style="flex: 1 1 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Label</label>
+                                <input type="text" id="text-metric-card-label-input-${componentId}" value="Colaboradores" onchange="setTextMetricCardControl('label', this.value, '${componentId}')" placeholder="Colaboradores" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                            </div>
+                            
+                            <!-- Segunda fila: Icono Título -->
+                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; margin-bottom: 24px;">
+                              <!-- Icono Título -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Icono Título</label>
+                                <input type="text" id="text-metric-card-title-icon-input-${componentId}" value="user" onchange="setTextMetricCardControl('titleIcon', this.value, '${componentId}')" placeholder="user, chart-line, etc." style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                              
+                              <!-- Estilo Icono -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Estilo Icono</label>
+                                <select id="text-metric-card-title-icon-style-select-${componentId}" onchange="setTextMetricCardControl('titleIconStyle', this.value, '${componentId}')" style="width: 100%; padding: 10px 32px 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); cursor: pointer; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23666%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226,9 12,15 18,9%22></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px; box-sizing: border-box;">
+                                  <option value="regular" selected>Regular</option>
+                                  <option value="solid">Solid</option>
+                                </select>
+                              </div>
+                              
+                              <!-- Color Icono -->
+                              <div style="flex: 0 0 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Color Icono</label>
+                                <input type="text" id="text-metric-card-title-icon-color-input-${componentId}" value="" onchange="setTextMetricCardControl('titleIconColor', this.value, '${componentId}')" placeholder="var(--ubits-fg-2-medium)" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                            </div>
+                            
+                            <!-- Tercera fila: Toggles -->
+                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; margin-bottom: 24px;">
+                              <!-- Mostrar Icono Info -->
+                              <div style="flex: 0 0 auto; min-width: 120px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Icono Info</label>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                  <label class="ubits-toggle ubits-toggle--md">
+                                    <input type="checkbox" class="ubits-toggle__input" id="text-metric-card-show-info-icon-toggle-${componentId}" checked onchange="setTextMetricCardControl('showInfoIcon', this.checked, '${componentId}')">
+                                    <span class="ubits-toggle__track">
+                                      <span class="ubits-toggle__thumb"></span>
+                                    </span>
+                                  </label>
+                                  <span id="text-metric-card-show-info-icon-status-${componentId}" style="font-size: 13px; color: var(--ubits-fg-1-medium);">Activado</span>
+                                </div>
+                              </div>
+                              
+                              <!-- Mostrar Botón Acción -->
+                              <div style="flex: 0 0 auto; min-width: 120px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Botón Acción</label>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                  <label class="ubits-toggle ubits-toggle--md">
+                                    <input type="checkbox" class="ubits-toggle__input" id="text-metric-card-show-action-button-toggle-${componentId}" checked onchange="setTextMetricCardControl('showActionButton', this.checked, '${componentId}')">
+                                    <span class="ubits-toggle__track">
+                                      <span class="ubits-toggle__thumb"></span>
+                                    </span>
+                                  </label>
+                                  <span id="text-metric-card-show-action-button-status-${componentId}" style="font-size: 13px; color: var(--ubits-fg-1-medium);">Activado</span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <!-- PREVIEW -->
+                          <div style="background: var(--ubits-bg-2); padding: 48px; border-radius: 8px; border: none; margin-bottom: 24px; display: flex; align-items: flex-start; justify-content: center; min-height: 200px;">
+                            <div id="text-metric-card-preview-${componentId}" style="width: 100%; max-width: 500px; display: flex; justify-content: center;">
+                              <!-- Se generará dinámicamente -->
+                            </div>
+                          </div>
+                        </div>
+                      ` : ''}
+                      
                       ${hasPreview && component.name === 'CSAT Metric Card' ? `
                         <!-- Preview Section for CSAT Metric Card -->
                         <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: none; margin-bottom: 24px;">
@@ -11113,6 +11274,381 @@ Reglas Importantes:
                           <!-- PREVIEW -->
                           <div style="background: var(--ubits-bg-2); padding: 48px; border-radius: 8px; border: none; margin-bottom: 24px; display: flex; align-items: flex-start; justify-content: center; min-height: 400px;">
                             <div id="data-view-preview-${componentId}" style="width: 100%; max-width: 800px; display: flex; justify-content: center;">
+                              <!-- Se generará dinámicamente -->
+                            </div>
+                          </div>
+                        </div>
+                      ` : ''}
+                      
+                      ${hasPreview && component.name === 'Menu' ? `
+                        <!-- Preview Section for Menu -->
+                        <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: none; margin-bottom: 24px;">
+                          <!-- CONTROLES ARRIBA -->
+                          <div style="margin-bottom: 24px;">
+                            <h4 style="margin: 0 0 20px 0; color: var(--ubits-fg-1-high); font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand-static-inverted);"></i>
+                              Controles
+                            </h4>
+                            
+                            <!-- Primera fila: Header -->
+                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; margin-bottom: 24px;">
+                              <!-- Logo Image -->
+                              <div style="flex: 0 0 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Logo Image URL</label>
+                                <input type="text" id="menu-logo-image-input-${componentId}" value="../assets/images/autoframe-logo-light.svg" onchange="setMenuControl('logoImage', this.value, '${componentId}')" placeholder="../assets/images/autoframe-logo-light.svg" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                              
+                              <!-- App Name -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">App Name</label>
+                                <input type="text" id="menu-app-name-input-${componentId}" value="AUTOFROME" onchange="setMenuControl('appName', this.value, '${componentId}')" placeholder="AUTOFROME" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                              
+                              <!-- Logo Href -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Logo Href</label>
+                                <input type="text" id="menu-logo-href-input-${componentId}" value="#" onchange="setMenuControl('logoHref', this.value, '${componentId}')" placeholder="#" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                              
+                              <!-- Width -->
+                              <div style="flex: 0 0 auto; min-width: 120px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Width (px)</label>
+                                <input type="number" id="menu-width-input-${componentId}" value="280" min="200" max="400" step="10" onchange="setMenuControl('width', parseInt(this.value) || 280, '${componentId}')" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                            </div>
+                            
+                            <!-- Segunda fila: Sección 1 -->
+                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; margin-bottom: 24px;">
+                              <div style="flex: 1 1 100%; padding: 16px; background: var(--ubits-bg-1); border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                                <h5 style="margin: 0 0 16px 0; color: var(--ubits-fg-1-high); font-size: 14px; font-weight: 600;">Sección 1</h5>
+                                
+                                <!-- Título Sección 1 -->
+                                <div style="margin-bottom: 16px;">
+                                  <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Título</label>
+                                  <input type="text" id="menu-section1-title-input-${componentId}" value="Documents" onchange="setMenuControl('section1Title', this.value, '${componentId}')" placeholder="Documents" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-2); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                                </div>
+                                
+                                <!-- Item 1 Sección 1 -->
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 12px;">
+                                  <div>
+                                    <label style="display: block; font-size: 11px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 6px;">Item 1 Label</label>
+                                    <input type="text" id="menu-section1-item1-label-input-${componentId}" value="New" onchange="setMenuControl('section1Item1Label', this.value, '${componentId}')" style="width: 100%; padding: 8px 10px; border: none; border-radius: 6px; background: var(--ubits-bg-2); color: var(--ubits-fg-1-high); font-size: 13px; font-family: var(--font-sans); box-sizing: border-box;">
+                                  </div>
+                                  <div>
+                                    <label style="display: block; font-size: 11px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 6px;">Icon</label>
+                                    <input type="text" id="menu-section1-item1-icon-input-${componentId}" value="plus" onchange="setMenuControl('section1Item1Icon', this.value, '${componentId}')" placeholder="plus" style="width: 100%; padding: 8px 10px; border: none; border-radius: 6px; background: var(--ubits-bg-2); color: var(--ubits-fg-1-high); font-size: 13px; font-family: var(--font-sans); box-sizing: border-box;">
+                                  </div>
+                                  <div>
+                                    <label style="display: block; font-size: 11px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 6px;">Icon Style</label>
+                                    <select id="menu-section1-item1-icon-style-select-${componentId}" onchange="setMenuControl('section1Item1IconStyle', this.value, '${componentId}')" style="width: 100%; padding: 8px 10px; border: none; border-radius: 6px; background: var(--ubits-bg-2); color: var(--ubits-fg-1-high); font-size: 13px; font-family: var(--font-sans); cursor: pointer; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23666%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226,9 12,15 18,9%22></polyline></svg>'); background-repeat: no-repeat; background-position: right 8px center; background-size: 14px; box-sizing: border-box;">
+                                      <option value="regular" selected>Regular</option>
+                                      <option value="solid">Solid</option>
+                                    </select>
+                                  </div>
+                                  <div style="display: flex; align-items: center; gap: 8px; padding-top: 20px;">
+                                    <label class="ubits-toggle ubits-toggle--sm">
+                                      <input type="checkbox" class="ubits-toggle__input" id="menu-section1-item1-active-toggle-${componentId}" onchange="setMenuControl('section1Item1Active', this.checked, '${componentId}')">
+                                      <span class="ubits-toggle__track">
+                                        <span class="ubits-toggle__thumb"></span>
+                                      </span>
+                                    </label>
+                                    <span style="font-size: 11px; color: var(--ubits-fg-1-medium);">Active</span>
+                                  </div>
+                                  <div style="display: flex; align-items: center; gap: 8px; padding-top: 20px;">
+                                    <label class="ubits-toggle ubits-toggle--sm">
+                                      <input type="checkbox" class="ubits-toggle__input" id="menu-section1-item1-disabled-toggle-${componentId}" onchange="setMenuControl('section1Item1Disabled', this.checked, '${componentId}')">
+                                      <span class="ubits-toggle__track">
+                                        <span class="ubits-toggle__thumb"></span>
+                                      </span>
+                                    </label>
+                                    <span style="font-size: 11px; color: var(--ubits-fg-1-medium);">Disabled</span>
+                                  </div>
+                                </div>
+                                
+                                <!-- Item 2 Sección 1 -->
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px;">
+                                  <div>
+                                    <label style="display: block; font-size: 11px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 6px;">Item 2 Label</label>
+                                    <input type="text" id="menu-section1-item2-label-input-${componentId}" value="Search" onchange="setMenuControl('section1Item2Label', this.value, '${componentId}')" style="width: 100%; padding: 8px 10px; border: none; border-radius: 6px; background: var(--ubits-bg-2); color: var(--ubits-fg-1-high); font-size: 13px; font-family: var(--font-sans); box-sizing: border-box;">
+                                  </div>
+                                  <div>
+                                    <label style="display: block; font-size: 11px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 6px;">Icon</label>
+                                    <input type="text" id="menu-section1-item2-icon-input-${componentId}" value="search" onchange="setMenuControl('section1Item2Icon', this.value, '${componentId}')" placeholder="search" style="width: 100%; padding: 8px 10px; border: none; border-radius: 6px; background: var(--ubits-bg-2); color: var(--ubits-fg-1-high); font-size: 13px; font-family: var(--font-sans); box-sizing: border-box;">
+                                  </div>
+                                  <div>
+                                    <label style="display: block; font-size: 11px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 6px;">Icon Style</label>
+                                    <select id="menu-section1-item2-icon-style-select-${componentId}" onchange="setMenuControl('section1Item2IconStyle', this.value, '${componentId}')" style="width: 100%; padding: 8px 10px; border: none; border-radius: 6px; background: var(--ubits-bg-2); color: var(--ubits-fg-1-high); font-size: 13px; font-family: var(--font-sans); cursor: pointer; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23666%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226,9 12,15 18,9%22></polyline></svg>'); background-repeat: no-repeat; background-position: right 8px center; background-size: 14px; box-sizing: border-box;">
+                                      <option value="regular" selected>Regular</option>
+                                      <option value="solid">Solid</option>
+                                    </select>
+                                  </div>
+                                  <div style="display: flex; align-items: center; gap: 8px; padding-top: 20px;">
+                                    <label class="ubits-toggle ubits-toggle--sm">
+                                      <input type="checkbox" class="ubits-toggle__input" id="menu-section1-item2-active-toggle-${componentId}" onchange="setMenuControl('section1Item2Active', this.checked, '${componentId}')">
+                                      <span class="ubits-toggle__track">
+                                        <span class="ubits-toggle__thumb"></span>
+                                      </span>
+                                    </label>
+                                    <span style="font-size: 11px; color: var(--ubits-fg-1-medium);">Active</span>
+                                  </div>
+                                  <div style="display: flex; align-items: center; gap: 8px; padding-top: 20px;">
+                                    <label class="ubits-toggle ubits-toggle--sm">
+                                      <input type="checkbox" class="ubits-toggle__input" id="menu-section1-item2-disabled-toggle-${componentId}" onchange="setMenuControl('section1Item2Disabled', this.checked, '${componentId}')">
+                                      <span class="ubits-toggle__track">
+                                        <span class="ubits-toggle__thumb"></span>
+                                      </span>
+                                    </label>
+                                    <span style="font-size: 11px; color: var(--ubits-fg-1-medium);">Disabled</span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            
+                            <!-- Tercera fila: Sección 2 -->
+                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; margin-bottom: 24px;">
+                              <div style="flex: 1 1 100%; padding: 16px; background: var(--ubits-bg-1); border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                                <h5 style="margin: 0 0 16px 0; color: var(--ubits-fg-1-high); font-size: 14px; font-weight: 600;">Sección 2</h5>
+                                
+                                <!-- Título Sección 2 -->
+                                <div style="margin-bottom: 16px;">
+                                  <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Título</label>
+                                  <input type="text" id="menu-section2-title-input-${componentId}" value="Profile" onchange="setMenuControl('section2Title', this.value, '${componentId}')" placeholder="Profile" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-2); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                                </div>
+                                
+                                <!-- Item 1 Sección 2 -->
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 12px;">
+                                  <div>
+                                    <label style="display: block; font-size: 11px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 6px;">Item 1 Label</label>
+                                    <input type="text" id="menu-section2-item1-label-input-${componentId}" value="Settings" onchange="setMenuControl('section2Item1Label', this.value, '${componentId}')" style="width: 100%; padding: 8px 10px; border: none; border-radius: 6px; background: var(--ubits-bg-2); color: var(--ubits-fg-1-high); font-size: 13px; font-family: var(--font-sans); box-sizing: border-box;">
+                                  </div>
+                                  <div>
+                                    <label style="display: block; font-size: 11px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 6px;">Icon</label>
+                                    <input type="text" id="menu-section2-item1-icon-input-${componentId}" value="gear" onchange="setMenuControl('section2Item1Icon', this.value, '${componentId}')" placeholder="gear" style="width: 100%; padding: 8px 10px; border: none; border-radius: 6px; background: var(--ubits-bg-2); color: var(--ubits-fg-1-high); font-size: 13px; font-family: var(--font-sans); box-sizing: border-box;">
+                                  </div>
+                                  <div>
+                                    <label style="display: block; font-size: 11px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 6px;">Icon Style</label>
+                                    <select id="menu-section2-item1-icon-style-select-${componentId}" onchange="setMenuControl('section2Item1IconStyle', this.value, '${componentId}')" style="width: 100%; padding: 8px 10px; border: none; border-radius: 6px; background: var(--ubits-bg-2); color: var(--ubits-fg-1-high); font-size: 13px; font-family: var(--font-sans); cursor: pointer; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23666%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226,9 12,15 18,9%22></polyline></svg>'); background-repeat: no-repeat; background-position: right 8px center; background-size: 14px; box-sizing: border-box;">
+                                      <option value="regular" selected>Regular</option>
+                                      <option value="solid">Solid</option>
+                                    </select>
+                                  </div>
+                                  <div style="display: flex; align-items: center; gap: 8px; padding-top: 20px;">
+                                    <label class="ubits-toggle ubits-toggle--sm">
+                                      <input type="checkbox" class="ubits-toggle__input" id="menu-section2-item1-active-toggle-${componentId}" checked onchange="setMenuControl('section2Item1Active', this.checked, '${componentId}')">
+                                      <span class="ubits-toggle__track">
+                                        <span class="ubits-toggle__thumb"></span>
+                                      </span>
+                                    </label>
+                                    <span style="font-size: 11px; color: var(--ubits-fg-1-medium);">Active</span>
+                                  </div>
+                                  <div style="display: flex; align-items: center; gap: 8px; padding-top: 20px;">
+                                    <label class="ubits-toggle ubits-toggle--sm">
+                                      <input type="checkbox" class="ubits-toggle__input" id="menu-section2-item1-disabled-toggle-${componentId}" onchange="setMenuControl('section2Item1Disabled', this.checked, '${componentId}')">
+                                      <span class="ubits-toggle__track">
+                                        <span class="ubits-toggle__thumb"></span>
+                                      </span>
+                                    </label>
+                                    <span style="font-size: 11px; color: var(--ubits-fg-1-medium);">Disabled</span>
+                                  </div>
+                                </div>
+                                
+                                <!-- Item 2 Sección 2 (con badge) -->
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 12px;">
+                                  <div>
+                                    <label style="display: block; font-size: 11px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 6px;">Item 2 Label</label>
+                                    <input type="text" id="menu-section2-item2-label-input-${componentId}" value="Messages" onchange="setMenuControl('section2Item2Label', this.value, '${componentId}')" style="width: 100%; padding: 8px 10px; border: none; border-radius: 6px; background: var(--ubits-bg-2); color: var(--ubits-fg-1-high); font-size: 13px; font-family: var(--font-sans); box-sizing: border-box;">
+                                  </div>
+                                  <div>
+                                    <label style="display: block; font-size: 11px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 6px;">Icon</label>
+                                    <input type="text" id="menu-section2-item2-icon-input-${componentId}" value="envelope" onchange="setMenuControl('section2Item2Icon', this.value, '${componentId}')" placeholder="envelope" style="width: 100%; padding: 8px 10px; border: none; border-radius: 6px; background: var(--ubits-bg-2); color: var(--ubits-fg-1-high); font-size: 13px; font-family: var(--font-sans); box-sizing: border-box;">
+                                  </div>
+                                  <div>
+                                    <label style="display: block; font-size: 11px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 6px;">Icon Style</label>
+                                    <select id="menu-section2-item2-icon-style-select-${componentId}" onchange="setMenuControl('section2Item2IconStyle', this.value, '${componentId}')" style="width: 100%; padding: 8px 10px; border: none; border-radius: 6px; background: var(--ubits-bg-2); color: var(--ubits-fg-1-high); font-size: 13px; font-family: var(--font-sans); cursor: pointer; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23666%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226,9 12,15 18,9%22></polyline></svg>'); background-repeat: no-repeat; background-position: right 8px center; background-size: 14px; box-sizing: border-box;">
+                                      <option value="regular" selected>Regular</option>
+                                      <option value="solid">Solid</option>
+                                    </select>
+                                  </div>
+                                  <div>
+                                    <label style="display: block; font-size: 11px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 6px;">Badge</label>
+                                    <input type="number" id="menu-section2-item2-badge-input-${componentId}" value="2" min="0" max="99" step="1" onchange="setMenuControl('section2Item2Badge', parseInt(this.value) || 0, '${componentId}')" style="width: 100%; padding: 8px 10px; border: none; border-radius: 6px; background: var(--ubits-bg-2); color: var(--ubits-fg-1-high); font-size: 13px; font-family: var(--font-sans); box-sizing: border-box;">
+                                  </div>
+                                  <div>
+                                    <label style="display: block; font-size: 11px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 6px;">Badge Variant</label>
+                                    <select id="menu-section2-item2-badge-variant-select-${componentId}" onchange="setMenuControl('section2Item2BadgeVariant', this.value, '${componentId}')" style="width: 100%; padding: 8px 10px; border: none; border-radius: 6px; background: var(--ubits-bg-2); color: var(--ubits-fg-1-high); font-size: 13px; font-family: var(--font-sans); cursor: pointer; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23666%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226,9 12,15 18,9%22></polyline></svg>'); background-repeat: no-repeat; background-position: right 8px center; background-size: 14px; box-sizing: border-box;">
+                                      <option value="primary" selected>Primary</option>
+                                      <option value="secondary">Secondary</option>
+                                      <option value="success">Success</option>
+                                      <option value="warning">Warning</option>
+                                      <option value="error">Error</option>
+                                      <option value="info">Info</option>
+                                    </select>
+                                  </div>
+                                  <div style="display: flex; align-items: center; gap: 8px; padding-top: 20px;">
+                                    <label class="ubits-toggle ubits-toggle--sm">
+                                      <input type="checkbox" class="ubits-toggle__input" id="menu-section2-item2-active-toggle-${componentId}" onchange="setMenuControl('section2Item2Active', this.checked, '${componentId}')">
+                                      <span class="ubits-toggle__track">
+                                        <span class="ubits-toggle__thumb"></span>
+                                      </span>
+                                    </label>
+                                    <span style="font-size: 11px; color: var(--ubits-fg-1-medium);">Active</span>
+                                  </div>
+                                  <div style="display: flex; align-items: center; gap: 8px; padding-top: 20px;">
+                                    <label class="ubits-toggle ubits-toggle--sm">
+                                      <input type="checkbox" class="ubits-toggle__input" id="menu-section2-item2-disabled-toggle-${componentId}" onchange="setMenuControl('section2Item2Disabled', this.checked, '${componentId}')">
+                                      <span class="ubits-toggle__track">
+                                        <span class="ubits-toggle__thumb"></span>
+                                      </span>
+                                    </label>
+                                    <span style="font-size: 11px; color: var(--ubits-fg-1-medium);">Disabled</span>
+                                  </div>
+                                </div>
+                                
+                                <!-- Item 3 Sección 2 -->
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px;">
+                                  <div>
+                                    <label style="display: block; font-size: 11px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 6px;">Item 3 Label</label>
+                                    <input type="text" id="menu-section2-item3-label-input-${componentId}" value="Logout" onchange="setMenuControl('section2Item3Label', this.value, '${componentId}')" style="width: 100%; padding: 8px 10px; border: none; border-radius: 6px; background: var(--ubits-bg-2); color: var(--ubits-fg-1-high); font-size: 13px; font-family: var(--font-sans); box-sizing: border-box;">
+                                  </div>
+                                  <div>
+                                    <label style="display: block; font-size: 11px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 6px;">Icon</label>
+                                    <input type="text" id="menu-section2-item3-icon-input-${componentId}" value="sign-out" onchange="setMenuControl('section2Item3Icon', this.value, '${componentId}')" placeholder="sign-out" style="width: 100%; padding: 8px 10px; border: none; border-radius: 6px; background: var(--ubits-bg-2); color: var(--ubits-fg-1-high); font-size: 13px; font-family: var(--font-sans); box-sizing: border-box;">
+                                  </div>
+                                  <div>
+                                    <label style="display: block; font-size: 11px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 6px;">Icon Style</label>
+                                    <select id="menu-section2-item3-icon-style-select-${componentId}" onchange="setMenuControl('section2Item3IconStyle', this.value, '${componentId}')" style="width: 100%; padding: 8px 10px; border: none; border-radius: 6px; background: var(--ubits-bg-2); color: var(--ubits-fg-1-high); font-size: 13px; font-family: var(--font-sans); cursor: pointer; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23666%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226,9 12,15 18,9%22></polyline></svg>'); background-repeat: no-repeat; background-position: right 8px center; background-size: 14px; box-sizing: border-box;">
+                                      <option value="regular" selected>Regular</option>
+                                      <option value="solid">Solid</option>
+                                    </select>
+                                  </div>
+                                  <div style="display: flex; align-items: center; gap: 8px; padding-top: 20px;">
+                                    <label class="ubits-toggle ubits-toggle--sm">
+                                      <input type="checkbox" class="ubits-toggle__input" id="menu-section2-item3-active-toggle-${componentId}" onchange="setMenuControl('section2Item3Active', this.checked, '${componentId}')">
+                                      <span class="ubits-toggle__track">
+                                        <span class="ubits-toggle__thumb"></span>
+                                      </span>
+                                    </label>
+                                    <span style="font-size: 11px; color: var(--ubits-fg-1-medium);">Active</span>
+                                  </div>
+                                  <div style="display: flex; align-items: center; gap: 8px; padding-top: 20px;">
+                                    <label class="ubits-toggle ubits-toggle--sm">
+                                      <input type="checkbox" class="ubits-toggle__input" id="menu-section2-item3-disabled-toggle-${componentId}" onchange="setMenuControl('section2Item3Disabled', this.checked, '${componentId}')">
+                                      <span class="ubits-toggle__track">
+                                        <span class="ubits-toggle__thumb"></span>
+                                      </span>
+                                    </label>
+                                    <span style="font-size: 11px; color: var(--ubits-fg-1-medium);">Disabled</span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            
+                            <!-- Cuarta fila: Usuario -->
+                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; margin-bottom: 24px;">
+                              <div style="flex: 1 1 100%; padding: 16px; background: var(--ubits-bg-1); border-radius: 8px; border: 1px solid var(--ubits-border-1);">
+                                <h5 style="margin: 0 0 16px 0; color: var(--ubits-fg-1-high); font-size: 14px; font-weight: 600;">Información de Usuario</h5>
+                                
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                                  <div>
+                                    <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Avatar Image URL</label>
+                                    <input type="text" id="menu-user-avatar-image-input-${componentId}" value="../assets/images/Profile-image.jpg" onchange="setMenuControl('userAvatarImage', this.value, '${componentId}')" placeholder="../assets/images/Profile-image.jpg" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-2); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                                  </div>
+                                  <div>
+                                    <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">User Name</label>
+                                    <input type="text" id="menu-user-name-input-${componentId}" value="Amy Elsner" onchange="setMenuControl('userName', this.value, '${componentId}')" placeholder="Amy Elsner" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-2); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                                  </div>
+                                  <div>
+                                    <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">User Role</label>
+                                    <input type="text" id="menu-user-role-input-${componentId}" value="Admin" onchange="setMenuControl('userRole', this.value, '${componentId}')" placeholder="Admin" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-2); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <!-- PREVIEW -->
+                          <div style="background: var(--ubits-bg-2); padding: 48px; border-radius: 8px; border: none; margin-bottom: 24px; display: flex; align-items: flex-start; justify-content: center; min-height: 600px;">
+                            <div id="menu-preview-${componentId}" style="width: 100%; max-width: 1200px; display: flex; justify-content: center;">
+                              <!-- Se generará dinámicamente -->
+                            </div>
+                          </div>
+                        </div>
+                      ` : ''}
+                      
+                      ${hasPreview && component.name === 'Menubar' ? `
+                        <!-- Preview Section for Menubar -->
+                        <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: none; margin-bottom: 24px;">
+                          <!-- CONTROLES ARRIBA -->
+                          <div style="margin-bottom: 24px;">
+                            <h4 style="margin: 0 0 20px 0; color: var(--ubits-fg-1-high); font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand-static-inverted);"></i>
+                              Controles
+                            </h4>
+                            
+                            <!-- Primera fila: Configuración básica -->
+                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; margin-bottom: 24px;">
+                              <!-- Item Count -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Número de Items</label>
+                                <input type="number" id="menubar-item-count-input-${componentId}" value="4" min="1" max="10" step="1" onchange="setMenubarControl('itemCount', parseInt(this.value) || 4, '${componentId}')" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                              
+                              <!-- Active Item ID -->
+                              <div style="flex: 0 0 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Item Activo ID</label>
+                                <input type="text" id="menubar-active-item-id-input-${componentId}" value="projects" onchange="setMenubarControl('activeItemId', this.value, '${componentId}')" placeholder="projects, home, features, etc." style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                            </div>
+                            
+                            <!-- Segunda fila: Toggles -->
+                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; margin-bottom: 24px;">
+                              <!-- Mostrar Iconos -->
+                              <div style="flex: 0 0 auto; min-width: 120px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Mostrar Iconos</label>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                  <label class="ubits-toggle ubits-toggle--md">
+                                    <input type="checkbox" class="ubits-toggle__input" id="menubar-show-icons-toggle-${componentId}" checked onchange="setMenubarControl('showIcons', this.checked, '${componentId}')">
+                                    <span class="ubits-toggle__track">
+                                      <span class="ubits-toggle__thumb"></span>
+                                    </span>
+                                  </label>
+                                  <span id="menubar-show-icons-status-${componentId}" style="font-size: 13px; color: var(--ubits-fg-1-medium);">Activado</span>
+                                </div>
+                              </div>
+                              
+                              <!-- Tener Dropdowns -->
+                              <div style="flex: 0 0 auto; min-width: 120px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Tener Dropdowns</label>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                  <label class="ubits-toggle ubits-toggle--md">
+                                    <input type="checkbox" class="ubits-toggle__input" id="menubar-has-dropdowns-toggle-${componentId}" checked onchange="setMenubarControl('hasDropdowns', this.checked, '${componentId}')">
+                                    <span class="ubits-toggle__track">
+                                      <span class="ubits-toggle__thumb"></span>
+                                    </span>
+                                  </label>
+                                  <span id="menubar-has-dropdowns-status-${componentId}" style="font-size: 13px; color: var(--ubits-fg-1-medium);">Activado</span>
+                                </div>
+                              </div>
+                              
+                              <!-- Submenús Anidados -->
+                              <div style="flex: 0 0 auto; min-width: 120px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Submenús Anidados</label>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                  <label class="ubits-toggle ubits-toggle--md">
+                                    <input type="checkbox" class="ubits-toggle__input" id="menubar-has-nested-submenus-toggle-${componentId}" onchange="setMenubarControl('hasNestedSubmenus', this.checked, '${componentId}')">
+                                    <span class="ubits-toggle__track">
+                                      <span class="ubits-toggle__thumb"></span>
+                                    </span>
+                                  </label>
+                                  <span id="menubar-has-nested-submenus-status-${componentId}" style="font-size: 13px; color: var(--ubits-fg-1-medium);">Desactivado</span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <!-- PREVIEW -->
+                          <div style="background: var(--ubits-bg-2); padding: 48px; border-radius: 8px; border: none; margin-bottom: 24px; display: flex; align-items: flex-start; justify-content: center; min-height: 200px;">
+                            <div id="menubar-preview-${componentId}" style="width: 100%; max-width: 1200px; display: flex; justify-content: center;">
                               <!-- Se generará dinámicamente -->
                             </div>
                           </div>
@@ -30213,11 +30749,197 @@ Reglas Importantes:
         `;
       }
       
-      // ========================================
-      // FUNCIONES DE CONTROL PARA CSAT METRIC CARD
-      // ========================================
+      // ============================================
+      // TEXT METRIC CARD - Funciones de control
+      // ============================================
       
-      // Función para controlar CSAT Metric Card
+      window.setTextMetricCardControl = function(option, value, componentId) {
+        console.log('🎛️ setTextMetricCardControl:', option, value, componentId);
+        
+        // Actualizar estados de toggles
+        if (option === 'showInfoIcon') {
+          const statusEl = document.getElementById(`text-metric-card-show-info-icon-status-${componentId}`);
+          if (statusEl) {
+            statusEl.textContent = value ? 'Activado' : 'Desactivado';
+          }
+        }
+        if (option === 'showActionButton') {
+          const statusEl = document.getElementById(`text-metric-card-show-action-button-status-${componentId}`);
+          if (statusEl) {
+            statusEl.textContent = value ? 'Activado' : 'Desactivado';
+          }
+        }
+        
+        // Actualizar preview
+        if (typeof window.updateTextMetricCardPreview === 'function') {
+          window.updateTextMetricCardPreview(componentId);
+        }
+      };
+      
+      window.updateTextMetricCardPreview = function(componentId) {
+        const previewContainer = document.getElementById(`text-metric-card-preview-${componentId}`);
+        if (!previewContainer) {
+          console.error('❌ Preview container no encontrado:', `text-metric-card-preview-${componentId}`);
+          return;
+        }
+        
+        // Obtener valores de los controles
+        const size = document.getElementById(`text-metric-card-size-select-${componentId}`)?.value || 'md';
+        const title = document.getElementById(`text-metric-card-title-input-${componentId}`)?.value || 'Net confidence score';
+        const value = document.getElementById(`text-metric-card-value-input-${componentId}`)?.value || '200 / 204';
+        const label = document.getElementById(`text-metric-card-label-input-${componentId}`)?.value || 'Colaboradores';
+        const titleIcon = document.getElementById(`text-metric-card-title-icon-input-${componentId}`)?.value || '';
+        const titleIconStyle = document.getElementById(`text-metric-card-title-icon-style-select-${componentId}`)?.value || 'regular';
+        const titleIconColor = document.getElementById(`text-metric-card-title-icon-color-input-${componentId}`)?.value || '';
+        const showInfoIcon = document.getElementById(`text-metric-card-show-info-icon-toggle-${componentId}`)?.checked || false;
+        const showActionButton = document.getElementById(`text-metric-card-show-action-button-toggle-${componentId}`)?.checked || false;
+        
+        // Limpiar contenedor
+        previewContainer.innerHTML = '';
+        
+        // Crear opciones para Text Metric Card usando tokens UBITS
+        const textMetricCardOptions = {
+          title: title,
+          value: value,
+          label: label,
+          titleIcon: titleIcon || undefined,
+          titleIconStyle: titleIconStyle,
+          titleIconColor: titleIconColor || undefined,
+          showInfoIcon: showInfoIcon,
+          showActionButton: showActionButton,
+          size: size
+        };
+        
+        // Generar HTML usando tokens UBITS
+        const textMetricCardHTML = generateTextMetricCardHTML(textMetricCardOptions);
+        previewContainer.innerHTML = textMetricCardHTML;
+        
+        console.log('✅ Text Metric Card preview actualizado');
+      };
+      
+      // Función helper para generar HTML de Text Metric Card usando tokens UBITS
+      function generateTextMetricCardHTML(options) {
+        const {
+          title = 'Net confidence score',
+          value = '200 / 204',
+          label = 'Colaboradores',
+          titleIcon,
+          titleIconStyle = 'regular',
+          titleIconColor,
+          showInfoIcon = false,
+          showActionButton = false,
+          size = 'md'
+        } = options;
+        
+        // Construir clases CSS
+        const classes = [
+          'ubits-metric-card',
+          `ubits-metric-card--${size}`
+        ].filter(Boolean).join(' ');
+        
+        // Helper para renderizar iconos FontAwesome
+        function renderIconHelper(iconName, iconStyle, iconColor) {
+          const iconClass = iconStyle === 'solid' ? 'fas' : 'far';
+          const name = iconName.startsWith('fa-') ? iconName : `fa-${iconName}`;
+          const colorStyle = iconColor ? `style="color: ${iconColor};"` : '';
+          return `<i class="${iconClass} ${name}" ${colorStyle}></i>`;
+        }
+        
+        // Helper para formatear valores numéricos
+        function formatValue(val) {
+          if (typeof val === 'number') {
+            return val.toLocaleString('es-ES');
+          }
+          return String(val);
+        }
+        
+        // Renderizar icono del título si existe
+        const titleIconHTML = titleIcon 
+          ? `<div class="ubits-metric-card__title-icon">${renderIconHelper(titleIcon, titleIconStyle, titleIconColor)}</div>`
+          : '';
+        
+        // Renderizar icono de información como botón terciario si está habilitado
+        const infoIconHTML = showInfoIcon
+          ? generateButtonHTML({
+              variant: 'tertiary',
+              size: 'sm',
+              icon: 'circle-info',
+              iconStyle: 'regular',
+              iconOnly: true,
+              ariaLabel: 'Información'
+            })
+          : '';
+        
+        // Renderizar botón de acción con flecha a la derecha en la esquina superior derecha
+        const actionButtonHTML = showActionButton
+          ? generateButtonHTML({
+              variant: 'tertiary',
+              size: 'sm',
+              icon: 'chevron-right',
+              iconStyle: 'regular',
+              iconOnly: true,
+              ariaLabel: 'Ver más'
+            })
+          : '';
+        
+        // Clases de tipografía según tamaño (usando solo clases válidas UBITS)
+        const titleSizeClass = 'ubits-body-md-regular';
+        const labelSizeClass = size === 'sm' ? 'ubits-body-sm-regular' : 'ubits-body-md-regular';
+        const valueClass = 'ubits-heading-h2';
+        
+        const formattedValue = formatValue(value);
+        
+        return `
+          <div class="${classes}">
+            <div class="ubits-metric-card__header">
+              ${titleIconHTML}
+              <div class="ubits-metric-card__title-group">
+                <h3 class="ubits-metric-card__title ${titleSizeClass}">${title}</h3>
+                ${infoIconHTML}
+              </div>
+              ${actionButtonHTML ? `<div class="ubits-metric-card__action-button">${actionButtonHTML}</div>` : ''}
+            </div>
+            <div class="ubits-metric-card__body">
+              <div class="ubits-metric-card__value-wrapper">
+                <h2 class="ubits-metric-card__value ${valueClass}">${formattedValue}</h2>
+                <div class="ubits-metric-card__label ${labelSizeClass}">${label}</div>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+      
+      // Helper para generar HTML de botón (simplificado para uso en preview)
+      function generateButtonHTML(options) {
+        const {
+          variant = 'primary',
+          size = 'md',
+          icon,
+          iconStyle = 'regular',
+          iconOnly = false,
+          ariaLabel
+        } = options;
+        
+        const iconClass = iconStyle === 'solid' ? 'fas' : 'far';
+        const iconName = icon.startsWith('fa-') ? icon : `fa-${icon}`;
+        const buttonClasses = [
+          'ubits-button',
+          `ubits-button--${variant}`,
+          `ubits-button--${size}`,
+          iconOnly ? 'ubits-button--icon-only' : ''
+        ].filter(Boolean).join(' ');
+        
+        return `
+          <button class="${buttonClasses}" type="button" ${ariaLabel ? `aria-label="${ariaLabel}"` : ''}>
+            <i class="${iconClass} ${iconName}"></i>
+          </button>
+        `;
+      }
+      
+      // ============================================
+      // CSAT METRIC CARD - Funciones de control
+      // ============================================
+      
       window.setCSATMetricCardControl = function(option, value, componentId) {
         console.log('🎛️ setCSATMetricCardControl:', option, value, componentId);
         
@@ -31017,6 +31739,857 @@ Reglas Importantes:
         };
         
         document.addEventListener('keydown', handleKeyDown);
+      }
+      
+      // ========================================
+      // FUNCIONES DE CONTROL PARA MENU
+      // ========================================
+      
+      // Función para controlar Menu
+      window.setMenuControl = function(option, value, componentId) {
+        console.log('🎛️ setMenuControl:', option, value, componentId);
+        
+        // Actualizar preview
+        if (typeof window.updateMenuPreview === 'function') {
+          window.updateMenuPreview(componentId);
+        }
+      };
+      
+      // Función para actualizar el preview de Menu usando tokens UBITS
+      window.updateMenuPreview = function(componentId) {
+        console.log('🔄 updateMenuPreview llamado con componentId:', componentId);
+        const previewContainer = document.getElementById(`menu-preview-${componentId}`);
+        if (!previewContainer) {
+          console.error('❌ Preview container no encontrado:', `menu-preview-${componentId}`);
+          return;
+        }
+        console.log('✅ Preview container encontrado:', previewContainer);
+        
+        // Obtener valores de los controles
+        const logoImage = document.getElementById(`menu-logo-image-input-${componentId}`)?.value || '';
+        const appName = document.getElementById(`menu-app-name-input-${componentId}`)?.value || '';
+        const logoHref = document.getElementById(`menu-logo-href-input-${componentId}`)?.value || '';
+        const width = parseInt(document.getElementById(`menu-width-input-${componentId}`)?.value || '280');
+        
+        // Sección 1
+        const section1Title = document.getElementById(`menu-section1-title-input-${componentId}`)?.value || '';
+        const section1Item1Label = document.getElementById(`menu-section1-item1-label-input-${componentId}`)?.value || '';
+        const section1Item1Icon = document.getElementById(`menu-section1-item1-icon-input-${componentId}`)?.value || '';
+        const section1Item1IconStyle = document.getElementById(`menu-section1-item1-icon-style-select-${componentId}`)?.value || 'regular';
+        const section1Item1Active = document.getElementById(`menu-section1-item1-active-toggle-${componentId}`)?.checked || false;
+        const section1Item1Disabled = document.getElementById(`menu-section1-item1-disabled-toggle-${componentId}`)?.checked || false;
+        const section1Item2Label = document.getElementById(`menu-section1-item2-label-input-${componentId}`)?.value || '';
+        const section1Item2Icon = document.getElementById(`menu-section1-item2-icon-input-${componentId}`)?.value || '';
+        const section1Item2IconStyle = document.getElementById(`menu-section1-item2-icon-style-select-${componentId}`)?.value || 'regular';
+        const section1Item2Active = document.getElementById(`menu-section1-item2-active-toggle-${componentId}`)?.checked || false;
+        const section1Item2Disabled = document.getElementById(`menu-section1-item2-disabled-toggle-${componentId}`)?.checked || false;
+        
+        // Sección 2
+        const section2Title = document.getElementById(`menu-section2-title-input-${componentId}`)?.value || '';
+        const section2Item1Label = document.getElementById(`menu-section2-item1-label-input-${componentId}`)?.value || '';
+        const section2Item1Icon = document.getElementById(`menu-section2-item1-icon-input-${componentId}`)?.value || '';
+        const section2Item1IconStyle = document.getElementById(`menu-section2-item1-icon-style-select-${componentId}`)?.value || 'regular';
+        const section2Item1Active = document.getElementById(`menu-section2-item1-active-toggle-${componentId}`)?.checked || false;
+        const section2Item1Disabled = document.getElementById(`menu-section2-item1-disabled-toggle-${componentId}`)?.checked || false;
+        const section2Item2Label = document.getElementById(`menu-section2-item2-label-input-${componentId}`)?.value || '';
+        const section2Item2Icon = document.getElementById(`menu-section2-item2-icon-input-${componentId}`)?.value || '';
+        const section2Item2IconStyle = document.getElementById(`menu-section2-item2-icon-style-select-${componentId}`)?.value || 'regular';
+        const section2Item2Badge = parseInt(document.getElementById(`menu-section2-item2-badge-input-${componentId}`)?.value || '0');
+        const section2Item2BadgeVariant = document.getElementById(`menu-section2-item2-badge-variant-select-${componentId}`)?.value || 'primary';
+        const section2Item2Active = document.getElementById(`menu-section2-item2-active-toggle-${componentId}`)?.checked || false;
+        const section2Item2Disabled = document.getElementById(`menu-section2-item2-disabled-toggle-${componentId}`)?.checked || false;
+        const section2Item3Label = document.getElementById(`menu-section2-item3-label-input-${componentId}`)?.value || '';
+        const section2Item3Icon = document.getElementById(`menu-section2-item3-icon-input-${componentId}`)?.value || '';
+        const section2Item3IconStyle = document.getElementById(`menu-section2-item3-icon-style-select-${componentId}`)?.value || 'regular';
+        const section2Item3Active = document.getElementById(`menu-section2-item3-active-toggle-${componentId}`)?.checked || false;
+        const section2Item3Disabled = document.getElementById(`menu-section2-item3-disabled-toggle-${componentId}`)?.checked || false;
+        
+        // Usuario
+        const userAvatarImage = document.getElementById(`menu-user-avatar-image-input-${componentId}`)?.value || '';
+        const userName = document.getElementById(`menu-user-name-input-${componentId}`)?.value || '';
+        const userRole = document.getElementById(`menu-user-role-input-${componentId}`)?.value || '';
+        
+        // Limpiar contenedor
+        previewContainer.innerHTML = '';
+        
+        // Generar HTML usando tokens UBITS
+        const menuHTML = generateMenuHTML({
+          logoImage,
+          appName,
+          logoHref,
+          width,
+          section1Title,
+          section1Item1Label,
+          section1Item1Icon,
+          section1Item1IconStyle,
+          section1Item1Active,
+          section1Item1Disabled,
+          section1Item2Label,
+          section1Item2Icon,
+          section1Item2IconStyle,
+          section1Item2Active,
+          section1Item2Disabled,
+          section2Title,
+          section2Item1Label,
+          section2Item1Icon,
+          section2Item1IconStyle,
+          section2Item1Active,
+          section2Item1Disabled,
+          section2Item2Label,
+          section2Item2Icon,
+          section2Item2IconStyle,
+          section2Item2Badge,
+          section2Item2BadgeVariant,
+          section2Item2Active,
+          section2Item2Disabled,
+          section2Item3Label,
+          section2Item3Icon,
+          section2Item3IconStyle,
+          section2Item3Active,
+          section2Item3Disabled,
+          userAvatarImage,
+          userName,
+          userRole
+        });
+        
+        // Crear contenedor para el menú
+        const menuContainer = document.createElement('div');
+        menuContainer.style.cssText = `
+          position: relative;
+          height: 600px;
+          min-height: 600px;
+          background: var(--ubits-bg-1);
+          display: flex;
+          flex-direction: column;
+          overflow: hidden;
+          border-radius: 8px;
+        `;
+        menuContainer.innerHTML = menuHTML;
+        previewContainer.appendChild(menuContainer);
+        
+        // Inicializar eventos del menú
+        initializeMenuPreview(menuContainer, {
+          logoImage,
+          appName,
+          logoHref,
+          width,
+          section1Title,
+          section1Item1Label,
+          section1Item1Icon,
+          section1Item1IconStyle,
+          section1Item1Active,
+          section1Item1Disabled,
+          section1Item2Label,
+          section1Item2Icon,
+          section1Item2IconStyle,
+          section1Item2Active,
+          section1Item2Disabled,
+          section2Title,
+          section2Item1Label,
+          section2Item1Icon,
+          section2Item1IconStyle,
+          section2Item1Active,
+          section2Item1Disabled,
+          section2Item2Label,
+          section2Item2Icon,
+          section2Item2IconStyle,
+          section2Item2Badge,
+          section2Item2BadgeVariant,
+          section2Item2Active,
+          section2Item2Disabled,
+          section2Item3Label,
+          section2Item3Icon,
+          section2Item3IconStyle,
+          section2Item3Active,
+          section2Item3Disabled,
+          userAvatarImage,
+          userName,
+          userRole
+        });
+        
+        console.log('✅ Menu preview actualizado');
+      };
+      
+      // Función helper para generar HTML de Menu usando tokens UBITS
+      function generateMenuHTML(options) {
+        const {
+          logoImage,
+          appName,
+          logoHref,
+          width = 280,
+          section1Title,
+          section1Item1Label,
+          section1Item1Icon,
+          section1Item1IconStyle = 'regular',
+          section1Item1Active = false,
+          section1Item1Disabled = false,
+          section1Item2Label,
+          section1Item2Icon,
+          section1Item2IconStyle = 'regular',
+          section1Item2Active = false,
+          section1Item2Disabled = false,
+          section2Title,
+          section2Item1Label,
+          section2Item1Icon,
+          section2Item1IconStyle = 'regular',
+          section2Item1Active = false,
+          section2Item1Disabled = false,
+          section2Item2Label,
+          section2Item2Icon,
+          section2Item2IconStyle = 'regular',
+          section2Item2Badge = 0,
+          section2Item2BadgeVariant = 'primary',
+          section2Item2Active = false,
+          section2Item2Disabled = false,
+          section2Item3Label,
+          section2Item3Icon,
+          section2Item3IconStyle = 'regular',
+          section2Item3Active = false,
+          section2Item3Disabled = false,
+          userAvatarImage,
+          userName,
+          userRole
+        } = options;
+        
+        // Helper para renderizar iconos
+        function renderIcon(iconName, iconStyle) {
+          if (!iconName) return '';
+          const iconClass = iconStyle === 'solid' ? 'fas' : 'far';
+          const name = iconName.startsWith('fa-') ? iconName : `fa-${iconName}`;
+          return `<i class="${iconClass} ${name}"></i>`;
+        }
+        
+        // Helper para renderizar badge
+        function renderBadge(content, variant) {
+          if (!content || content === 0) return '';
+          return `<span class="ubits-badge ubits-badge--${variant} ubits-badge--number ubits-badge--sm">${content}</span>`;
+        }
+        
+        // Construir secciones
+        const sections = [];
+        
+        // Sección 1
+        if (section1Title) {
+          const section1Items = [];
+          if (section1Item1Label) {
+            section1Items.push({
+              id: 'section1-item1',
+              label: section1Item1Label,
+              icon: renderIcon(section1Item1Icon, section1Item1IconStyle),
+              active: section1Item1Active,
+              disabled: section1Item1Disabled
+            });
+          }
+          if (section1Item2Label) {
+            section1Items.push({
+              id: 'section1-item2',
+              label: section1Item2Label,
+              icon: renderIcon(section1Item2Icon, section1Item2IconStyle),
+              active: section1Item2Active,
+              disabled: section1Item2Disabled
+            });
+          }
+          if (section1Items.length > 0) {
+            sections.push({ id: 'section1', title: section1Title, items: section1Items });
+          }
+        }
+        
+        // Sección 2
+        if (section2Title) {
+          const section2Items = [];
+          if (section2Item1Label) {
+            section2Items.push({
+              id: 'section2-item1',
+              label: section2Item1Label,
+              icon: renderIcon(section2Item1Icon, section2Item1IconStyle),
+              active: section2Item1Active,
+              disabled: section2Item1Disabled
+            });
+          }
+          if (section2Item2Label) {
+            section2Items.push({
+              id: 'section2-item2',
+              label: section2Item2Label,
+              icon: renderIcon(section2Item2Icon, section2Item2IconStyle),
+              badge: renderBadge(section2Item2Badge, section2Item2BadgeVariant),
+              active: section2Item2Active,
+              disabled: section2Item2Disabled
+            });
+          }
+          if (section2Item3Label) {
+            section2Items.push({
+              id: 'section2-item3',
+              label: section2Item3Label,
+              icon: renderIcon(section2Item3Icon, section2Item3IconStyle),
+              active: section2Item3Active,
+              disabled: section2Item3Disabled
+            });
+          }
+          if (section2Items.length > 0) {
+            sections.push({ id: 'section2', title: section2Title, items: section2Items });
+          }
+        }
+        
+        // Renderizar logo
+        const logoHTML = logoImage ? `
+          <div class="ubits-menu-header">
+            <div class="ubits-menu-logo" ${logoHref ? `data-href="${logoHref}"` : ''}>
+              <img src="${logoImage}" alt="${appName || 'Logo'}" />
+            </div>
+            ${appName ? `<div class="ubits-menu-app-name">${appName}</div>` : ''}
+          </div>
+        ` : '';
+        
+        // Renderizar secciones
+        const sectionsHTML = sections.map(section => `
+          <div class="ubits-menu-section" data-section-id="${section.id}">
+            <h3 class="ubits-menu-section-title">${section.title}</h3>
+            <div class="ubits-menu-section-items">
+              ${section.items.map(item => {
+                const classes = [
+                  'ubits-menu-item',
+                  item.active && 'ubits-menu-item--active',
+                  item.disabled && 'ubits-menu-item--disabled'
+                ].filter(Boolean).join(' ');
+                const disabledAttr = item.disabled ? 'disabled' : '';
+                return `
+                  <button class="${classes}" data-item-id="${item.id}" data-section-id="${section.id}" ${disabledAttr}>
+                    ${item.icon ? `<span class="ubits-menu-item-icon">${item.icon}</span>` : ''}
+                    <span class="ubits-menu-item-label">${item.label}</span>
+                    ${item.badge ? `<span class="ubits-menu-item-right">${item.badge}</span>` : ''}
+                  </button>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        `).join('');
+        
+        // Renderizar información de usuario
+        const userInfoHTML = (userAvatarImage && userName && userRole) ? `
+          <div class="ubits-menu-user-info">
+            <div class="ubits-menu-user-avatar">
+              <img src="${userAvatarImage}" alt="${userName}" />
+            </div>
+            <div class="ubits-menu-user-details">
+              <div class="ubits-menu-user-name">${userName}</div>
+              <div class="ubits-menu-user-role">${userRole}</div>
+            </div>
+          </div>
+        ` : '';
+        
+        return `
+          <aside class="ubits-menu" style="width: ${width}px;">
+            ${logoHTML}
+            <div class="ubits-menu-body">
+              ${sectionsHTML}
+            </div>
+            ${userInfoHTML}
+          </aside>
+        `;
+      }
+      
+      // Función para inicializar eventos del menú
+      function initializeMenuPreview(container, options) {
+        const menuElement = container.querySelector('.ubits-menu');
+        if (!menuElement) return;
+        
+        // Click en logo
+        const logoElement = menuElement.querySelector('.ubits-menu-logo');
+        if (logoElement && options.logoHref) {
+          logoElement.addEventListener('click', () => {
+            if (options.logoHref && options.logoHref !== '#') {
+              window.location.href = options.logoHref;
+            }
+          });
+        }
+        
+        // Click en items del menú
+        const menuItems = menuElement.querySelectorAll('.ubits-menu-item');
+        menuItems.forEach((itemElement) => {
+          itemElement.addEventListener('click', (e) => {
+            e.preventDefault();
+            
+            const itemId = itemElement.getAttribute('data-item-id');
+            const sectionId = itemElement.getAttribute('data-section-id');
+            const isDisabled = itemElement.classList.contains('ubits-menu-item--disabled');
+            
+            if (isDisabled) return;
+            
+            // Remover active de todos los items
+            menuItems.forEach(btn => btn.classList.remove('ubits-menu-item--active'));
+            
+            // Agregar active al item clickeado
+            itemElement.classList.add('ubits-menu-item--active');
+            
+            console.log('Menu item clicked:', itemId, sectionId);
+          });
+        });
+      }
+      
+      // ========================================
+      // FUNCIONES DE CONTROL PARA MENUBAR
+      // ========================================
+      
+      // Función para controlar Menubar
+      window.setMenubarControl = function(option, value, componentId) {
+        console.log('🎛️ setMenubarControl:', option, value, componentId);
+        
+        // Actualizar estados de toggles
+        const toggleStatusMap = {
+          'showIcons': 'menubar-show-icons-status',
+          'hasDropdowns': 'menubar-has-dropdowns-status',
+          'hasNestedSubmenus': 'menubar-has-nested-submenus-status'
+        };
+        
+        if (toggleStatusMap[option]) {
+          const statusEl = document.getElementById(`${toggleStatusMap[option]}-${componentId}`);
+          if (statusEl) statusEl.textContent = value ? 'Activado' : 'Desactivado';
+        }
+        
+        // Actualizar preview
+        if (typeof window.updateMenubarPreview === 'function') {
+          window.updateMenubarPreview(componentId);
+        }
+      };
+      
+      // Función para actualizar el preview de Menubar usando tokens UBITS
+      window.updateMenubarPreview = function(componentId) {
+        console.log('🔄 updateMenubarPreview llamado con componentId:', componentId);
+        const previewContainer = document.getElementById(`menubar-preview-${componentId}`);
+        if (!previewContainer) {
+          console.error('❌ Preview container no encontrado:', `menubar-preview-${componentId}`);
+          return;
+        }
+        console.log('✅ Preview container encontrado:', previewContainer);
+        
+        // Obtener valores de los controles
+        const itemCount = parseInt(document.getElementById(`menubar-item-count-input-${componentId}`)?.value || '4');
+        const showIcons = document.getElementById(`menubar-show-icons-toggle-${componentId}`)?.checked !== false;
+        const hasDropdowns = document.getElementById(`menubar-has-dropdowns-toggle-${componentId}`)?.checked !== false;
+        const hasNestedSubmenus = document.getElementById(`menubar-has-nested-submenus-toggle-${componentId}`)?.checked === true;
+        const activeItemId = document.getElementById(`menubar-active-item-id-input-${componentId}`)?.value || 'projects';
+        
+        // Limpiar contenedor
+        previewContainer.innerHTML = '';
+        
+        // Crear contenedor para el menubar
+        const menubarContainer = document.createElement('div');
+        menubarContainer.id = `menubar-preview-container-${componentId}`;
+        menubarContainer.style.cssText = `
+          position: relative;
+          width: 100%;
+          background: var(--ubits-bg-1);
+          border-radius: var(--ubits-border-radius-md, 8px);
+          padding: var(--ubits-spacing-md, 16px);
+        `;
+        previewContainer.appendChild(menubarContainer);
+        
+        // Generar items
+        const items = createMenubarExampleItems(itemCount, showIcons, hasDropdowns, hasNestedSubmenus, activeItemId);
+        
+        // Generar HTML usando tokens UBITS
+        const menubarHTML = generateMenubarHTML(items);
+        menubarContainer.innerHTML = menubarHTML;
+        
+        // Inicializar eventos del menubar
+        initializeMenubarPreview(menubarContainer, items, activeItemId);
+        
+        console.log('✅ Menubar preview actualizado');
+      };
+      
+      // Función helper para crear items de ejemplo del menubar
+      function createMenubarExampleItems(itemCount, showIcons, hasDropdowns, hasNestedSubmenus, activeItemId) {
+        const items = [];
+        
+        // Item Home (sin dropdown)
+        items.push({
+          id: 'home',
+          label: 'Home',
+          icon: showIcons ? 'house' : undefined,
+          iconStyle: 'regular',
+          href: '#',
+          active: activeItemId === 'home',
+        });
+        
+        // Item Features (sin dropdown)
+        if (itemCount > 1) {
+          items.push({
+            id: 'features',
+            label: 'Features',
+            icon: showIcons ? 'star' : undefined,
+            iconStyle: 'regular',
+            href: '#',
+            active: activeItemId === 'features',
+          });
+        }
+        
+        // Item Projects (con dropdown)
+        if (itemCount > 2 && hasDropdowns) {
+          items.push({
+            id: 'projects',
+            label: 'Projects',
+            icon: showIcons ? 'magnifying-glass' : undefined,
+            iconStyle: 'regular',
+            active: activeItemId === 'projects',
+            submenu: [
+              {
+                id: 'components',
+                label: 'Components',
+                icon: showIcons ? 'bolt' : undefined,
+                iconStyle: 'regular',
+                href: '#',
+                active: activeItemId === 'components',
+                ...(hasNestedSubmenus ? {
+                  submenu: [
+                    {
+                      id: 'button',
+                      label: 'Button',
+                      icon: showIcons ? 'circle' : undefined,
+                      iconStyle: 'regular',
+                      href: '#',
+                    },
+                    {
+                      id: 'input',
+                      label: 'Input',
+                      icon: showIcons ? 'square' : undefined,
+                      iconStyle: 'regular',
+                      href: '#',
+                    },
+                  ],
+                } : {}),
+              },
+              {
+                id: 'blocks',
+                label: 'Blocks',
+                icon: showIcons ? 'grid-2' : undefined,
+                iconStyle: 'regular',
+                href: '#',
+                active: activeItemId === 'blocks',
+              },
+              {
+                id: 'ui-kit',
+                label: 'UI Kit',
+                icon: showIcons ? 'pencil' : undefined,
+                iconStyle: 'regular',
+                href: '#',
+                active: activeItemId === 'ui-kit',
+              },
+              {
+                id: 'templates',
+                label: 'Templates',
+                icon: showIcons ? 'palette' : undefined,
+                iconStyle: 'regular',
+                ...(hasNestedSubmenus ? {
+                  submenu: [
+                    {
+                      id: 'admin',
+                      label: 'Admin',
+                      icon: showIcons ? 'user-shield' : undefined,
+                      iconStyle: 'regular',
+                      href: '#',
+                    },
+                    {
+                      id: 'colaborador',
+                      label: 'Colaborador',
+                      icon: showIcons ? 'user' : undefined,
+                      iconStyle: 'regular',
+                      href: '#',
+                    },
+                  ],
+                } : {
+                  href: '#',
+                }),
+              },
+            ],
+          });
+        } else if (itemCount > 2) {
+          items.push({
+            id: 'projects',
+            label: 'Projects',
+            icon: showIcons ? 'magnifying-glass' : undefined,
+            iconStyle: 'regular',
+            href: '#',
+            active: activeItemId === 'projects',
+          });
+        }
+        
+        // Item Contact (sin dropdown)
+        if (itemCount > 3) {
+          items.push({
+            id: 'contact',
+            label: 'Contact',
+            icon: showIcons ? 'envelope' : undefined,
+            iconStyle: 'regular',
+            href: '#',
+            active: activeItemId === 'contact',
+          });
+        }
+        
+        // Items adicionales si itemCount > 4
+        for (let i = 4; i < itemCount; i++) {
+          items.push({
+            id: `item-${i}`,
+            label: `Item ${i}`,
+            icon: showIcons ? 'circle' : undefined,
+            iconStyle: 'regular',
+            href: '#',
+            active: activeItemId === `item-${i}`,
+          });
+        }
+        
+        return items;
+      }
+      
+      // Función helper para generar HTML de Menubar usando tokens UBITS
+      function generateMenubarHTML(items) {
+        // Helper para renderizar iconos
+        function renderIcon(iconName, iconStyle) {
+          if (!iconName) return '';
+          const iconClass = iconStyle === 'solid' ? 'fas' : 'far';
+          const name = iconName.startsWith('fa-') ? iconName : `fa-${iconName}`;
+          return `<i class="${iconClass} ${name}"></i>`;
+        }
+        
+        // Helper para renderizar submenu item (puede tener submenú anidado)
+        function renderSubmenuItem(item, parentId, level = 1) {
+          const classes = [
+            'ubits-menubar-submenu-item',
+            item.active && 'ubits-menubar-submenu-item--active',
+            item.disabled && 'ubits-menubar-submenu-item--disabled',
+            item.submenu && item.submenu.length > 0 && 'ubits-menubar-submenu-item--has-submenu'
+          ].filter(Boolean).join(' ');
+          
+          const iconHTML = item.icon ? renderIcon(item.icon, item.iconStyle) : '';
+          const hasSubmenu = item.submenu && item.submenu.length > 0;
+          const chevronHTML = hasSubmenu ? '<i class="far fa-chevron-right ubits-menubar-submenu-chevron"></i>' : '';
+          const submenuId = hasSubmenu ? `ubits-menubar-submenu-${parentId}-${item.id}-${level}` : '';
+          
+          const submenuHTML = hasSubmenu ? `
+            <ul class="ubits-menubar-submenu ubits-menubar-submenu--level-${level + 1}" id="${submenuId}">
+              ${item.submenu.map(subItem => renderSubmenuItem(subItem, `${parentId}-${item.id}`, level + 1)).join('')}
+            </ul>
+          ` : '';
+          
+          return `
+            <li class="${classes}" data-item-id="${item.id}" data-parent-id="${parentId}">
+              <a href="${item.href || '#'}" class="ubits-menubar-submenu-link" ${item.disabled ? 'disabled' : ''} ${hasSubmenu ? `data-submenu-id="${submenuId}"` : ''}>
+                ${iconHTML ? `<span class="ubits-menubar-submenu-icon">${iconHTML}</span>` : ''}
+                <span class="ubits-menubar-submenu-label">${item.label}</span>
+                ${chevronHTML}
+              </a>
+              ${submenuHTML}
+            </li>
+          `;
+        }
+        
+        // Renderizar dropdown
+        function renderDropdown(item) {
+          if (!item.submenu || item.submenu.length === 0) return '';
+          const dropdownId = `ubits-menubar-dropdown-${item.id}`;
+          return `
+            <ul class="ubits-menubar-dropdown" id="${dropdownId}">
+              ${item.submenu.map(subItem => renderSubmenuItem(subItem, item.id)).join('')}
+            </ul>
+          `;
+        }
+        
+        // Renderizar items del menubar
+        const itemsHTML = items.map(item => {
+          const classes = [
+            'ubits-menubar-item',
+            item.active && 'ubits-menubar-item--active',
+            item.disabled && 'ubits-menubar-item--disabled',
+            item.submenu && item.submenu.length > 0 && 'ubits-menubar-item--has-dropdown'
+          ].filter(Boolean).join(' ');
+          
+          const iconHTML = item.icon ? renderIcon(item.icon, item.iconStyle) : '';
+          const hasDropdown = item.submenu && item.submenu.length > 0;
+          const chevronHTML = hasDropdown ? '<i class="far fa-chevron-down ubits-menubar-chevron"></i>' : '';
+          const dropdownId = hasDropdown ? `ubits-menubar-dropdown-${item.id}` : '';
+          
+          return `
+            <li class="${classes}" data-item-id="${item.id}">
+              <a href="${item.href || '#'}" class="ubits-menubar-link" ${item.disabled ? 'disabled' : ''} ${hasDropdown ? `data-dropdown-id="${dropdownId}" aria-haspopup="true" aria-expanded="false"` : ''}>
+                ${iconHTML ? `<span class="ubits-menubar-icon">${iconHTML}</span>` : ''}
+                <span class="ubits-menubar-label">${item.label}</span>
+                ${chevronHTML}
+              </a>
+              ${renderDropdown(item)}
+            </li>
+          `;
+        }).join('');
+        
+        return `
+          <nav class="ubits-menubar">
+            <ul class="ubits-menubar-list">
+              ${itemsHTML}
+            </ul>
+          </nav>
+        `;
+      }
+      
+      // Función para inicializar eventos del menubar
+      function initializeMenubarPreview(container, items, activeItemId) {
+        const menubarElement = container.querySelector('.ubits-menubar');
+        if (!menubarElement) return;
+        
+        // Aplicar estado active basado en los items
+        items.forEach(item => {
+          if (item.active) {
+            const itemElement = menubarElement.querySelector(`.ubits-menubar-item[data-item-id="${item.id}"]`);
+            if (itemElement) {
+              itemElement.classList.add('ubits-menubar-item--active');
+            }
+          }
+          // También verificar subitems
+          if (item.submenu) {
+            item.submenu.forEach(subItem => {
+              if (subItem.active) {
+                const subItemElement = menubarElement.querySelector(`[data-item-id="${subItem.id}"][data-parent-id="${item.id}"]`);
+                if (subItemElement) {
+                  subItemElement.classList.add('ubits-menubar-submenu-item--active');
+                }
+              }
+              // Verificar submenús anidados
+              if (subItem.submenu) {
+                subItem.submenu.forEach(nestedItem => {
+                  if (nestedItem.active) {
+                    const nestedElement = menubarElement.querySelector(`[data-item-id="${nestedItem.id}"]`);
+                    if (nestedElement) {
+                      nestedElement.classList.add('ubits-menubar-submenu-item--active');
+                    }
+                  }
+                });
+              }
+            });
+          }
+        });
+        
+        // Click en items principales del menubar para activarlos
+        const menubarItems = menubarElement.querySelectorAll('.ubits-menubar-item');
+        menubarItems.forEach(itemElement => {
+          const link = itemElement.querySelector('.ubits-menubar-link');
+          if (link) {
+            link.addEventListener('click', (e) => {
+              e.preventDefault();
+              
+              const dropdownId = link.getAttribute('data-dropdown-id');
+              const hasDropdown = !!dropdownId;
+              
+              // Si tiene dropdown, primero manejar el dropdown
+              if (hasDropdown) {
+                const dropdown = document.getElementById(dropdownId);
+                if (dropdown) {
+                  const isExpanded = link.getAttribute('aria-expanded') === 'true';
+                  const willBeExpanded = !isExpanded;
+                  
+                  // Toggle del dropdown
+                  link.setAttribute('aria-expanded', willBeExpanded);
+                  if (willBeExpanded) {
+                    dropdown.classList.add('ubits-menubar-dropdown--open');
+                  } else {
+                    dropdown.classList.remove('ubits-menubar-dropdown--open');
+                  }
+                  
+                  // Si se está cerrando el dropdown, no cambiar el estado activo
+                  if (!willBeExpanded) {
+                    return;
+                  }
+                  
+                  // Si se está abriendo, activar el item
+                  // Remover active de todos los items principales
+                  menubarItems.forEach(btn => btn.classList.remove('ubits-menubar-item--active'));
+                  
+                  // Remover active de todos los subitems
+                  const allSubItems = menubarElement.querySelectorAll('.ubits-menubar-submenu-item');
+                  allSubItems.forEach(subItem => subItem.classList.remove('ubits-menubar-submenu-item--active'));
+                  
+                  // Agregar active al item clickeado
+                  itemElement.classList.add('ubits-menubar-item--active');
+                  
+                  return; // Salir temprano si tiene dropdown
+                }
+              }
+              
+              // Si no tiene dropdown, activar el item normalmente
+              // Remover active de todos los items principales
+              menubarItems.forEach(btn => btn.classList.remove('ubits-menubar-item--active'));
+              
+              // Remover active de todos los subitems
+              const allSubItems = menubarElement.querySelectorAll('.ubits-menubar-submenu-item');
+              allSubItems.forEach(subItem => subItem.classList.remove('ubits-menubar-submenu-item--active'));
+              
+              // Agregar active al item clickeado
+              itemElement.classList.add('ubits-menubar-item--active');
+            });
+          }
+        });
+        
+        // Click en subitems del dropdown para activarlos
+        const submenuItems = menubarElement.querySelectorAll('.ubits-menubar-submenu-item');
+        submenuItems.forEach(subItemElement => {
+          const link = subItemElement.querySelector('.ubits-menubar-submenu-link');
+          if (link) {
+            link.addEventListener('click', (e) => {
+              e.preventDefault();
+              
+              // Remover active de todos los items principales
+              menubarItems.forEach(btn => btn.classList.remove('ubits-menubar-item--active'));
+              
+              // Remover active de todos los subitems
+              submenuItems.forEach(item => item.classList.remove('ubits-menubar-submenu-item--active'));
+              
+              // Agregar active al subitem clickeado
+              subItemElement.classList.add('ubits-menubar-submenu-item--active');
+              
+              // También activar el item padre si existe
+              const parentId = subItemElement.getAttribute('data-parent-id');
+              if (parentId) {
+                const parentItem = menubarElement.querySelector(`.ubits-menubar-item[data-item-id="${parentId}"]`);
+                if (parentItem) {
+                  parentItem.classList.add('ubits-menubar-item--active');
+                  // Asegurar que el dropdown esté abierto
+                  const parentLink = parentItem.querySelector('.ubits-menubar-link');
+                  if (parentLink) {
+                    const dropdownId = parentLink.getAttribute('data-dropdown-id');
+                    if (dropdownId) {
+                      const dropdown = document.getElementById(dropdownId);
+                      if (dropdown) {
+                        parentLink.setAttribute('aria-expanded', 'true');
+                        dropdown.classList.add('ubits-menubar-dropdown--open');
+                      }
+                    }
+                  }
+                }
+              }
+              
+              // Si tiene submenú anidado, abrirlo
+              const submenuId = link.getAttribute('data-submenu-id');
+              if (submenuId) {
+                const submenu = document.getElementById(submenuId);
+                if (submenu) {
+                  submenu.classList.toggle('ubits-menubar-submenu--open');
+                }
+              }
+            });
+          }
+        });
+        
+        // Inicializar submenús anidados (solo para items que tienen submenú anidado)
+        const submenuTriggers = menubarElement.querySelectorAll('[data-submenu-id]');
+        submenuTriggers.forEach(trigger => {
+          trigger.addEventListener('click', (e) => {
+            // No prevenir el comportamiento por defecto aquí porque ya se maneja en el listener de subitems
+            // Solo manejar el toggle del submenú
+            const submenuId = trigger.getAttribute('data-submenu-id');
+            if (submenuId) {
+              const submenu = document.getElementById(submenuId);
+              if (submenu) {
+                submenu.classList.toggle('ubits-menubar-submenu--open');
+              }
+            }
+          });
+        });
       }
       
     </script>
