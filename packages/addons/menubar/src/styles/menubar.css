@@ -26,7 +26,7 @@
   background: var(--ubits-bg-1);
   border: 1px solid var(--ubits-border-1);
   border-radius: var(--ubits-border-radius-md, 8px);
-  padding: var(--ubits-spacing-xs, 4px);
+  padding: var(--ubits-spacing-md, 16px);
   gap: var(--ubits-spacing-md, 16px);
   position: relative;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -42,7 +42,7 @@
   list-style: none;
   margin: 0;
   padding: 0;
-  gap: var(--ubits-spacing-xs, 4px);
+  gap: var(--ubits-spacing-md, 16px);
 }
 
 /* ========================================
