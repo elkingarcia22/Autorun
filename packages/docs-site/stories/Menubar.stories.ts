@@ -288,7 +288,7 @@ export const Default: Story = {
       // Crear wrapper para logo, menubar y botón dark mode
       const wrapper = document.createElement('div');
       wrapper.className = 'ubits-menubar-wrapper';
-      wrapper.style.cssText = 'display: flex; gap: var(--ubits-spacing-md, 16px); align-items: center; width: 100%; background: var(--ubits-bg-1); border: 1px solid var(--ubits-border-1); border-radius: var(--ubits-border-radius-md, 8px); padding: var(--ubits-spacing-md, 16px); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);';
+      wrapper.style.cssText = 'display: flex; gap: var(--ubits-spacing-md, 16px); align-items: center; width: 100%; background: transparent; border: none; border-radius: 0; padding: var(--ubits-spacing-md, 16px);';
 
       // Logo
       const logo = document.createElement('a');
@@ -296,8 +296,8 @@ export const Default: Story = {
       logo.className = 'ubits-logo';
       logo.style.cssText = 'display: flex; align-items: center; gap: 8px; margin-right: 16px; text-decoration: none; transition: transform 0.2s ease;';
       logo.innerHTML = `
-        <img src="../../assets/images/autoframe-logo-dark.png" alt="autoframe Logo" class="autoframe-logo-dark" style="width: 28px; height: 28px; display: block;" />
-        <img src="../../assets/images/autoframe-logo-light.png" alt="autoframe Logo" class="autoframe-logo-light" style="width: 28px; height: 28px; display: none;" />
+        <img src="../../../proyecto-app/assets/images/autoframe-logo-dark.png" alt="autoframe Logo" class="autoframe-logo-dark" style="width: 28px; height: 28px; display: block;" />
+        <img src="../../../proyecto-app/assets/images/autoframe-logo-light.png" alt="autoframe Logo" class="autoframe-logo-light" style="width: 28px; height: 28px; display: none;" />
         <span class="ubits-logo-text" style="font-size: var(--font-body-lg-size); font-weight: var(--weight-bold); color: var(--ubits-fg-1-high); transition: color 0.2s ease;">autoframe</span>
       `;
       wrapper.appendChild(logo);
