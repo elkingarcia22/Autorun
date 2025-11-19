@@ -11636,17 +11636,17 @@ Reglas Importantes:
                               Controles
                             </h4>
                             
-                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px;">
+                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
                               <!-- Número de Items -->
-                              <div style="display: flex; flex-direction: column; gap: 8px;">
-                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); text-transform: uppercase; letter-spacing: 0.5px;">Número de Items</label>
-                                <input type="number" id="breadcrumb-count-input-${componentId}" min="2" max="8" value="5" onchange="setBreadcrumbControl('itemCount', this.value, '${componentId}')" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans);">
+                              <div style="flex: 0 0 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Número de Items</label>
+                                <input type="number" id="breadcrumb-count-input-${componentId}" min="2" max="8" value="5" onchange="setBreadcrumbControl('itemCount', this.value, '${componentId}')" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
                               </div>
                               
                               <!-- Separador -->
-                              <div style="display: flex; flex-direction: column; gap: 8px;">
-                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); text-transform: uppercase; letter-spacing: 0.5px;">Separador</label>
-                                <input type="text" id="breadcrumb-separator-input-${componentId}" value=">" onchange="setBreadcrumbControl('separator', this.value, '${componentId}')" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans);">
+                              <div style="flex: 0 0 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Separador</label>
+                                <input type="text" id="breadcrumb-separator-input-${componentId}" value=">" onchange="setBreadcrumbControl('separator', this.value, '${componentId}')" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
                               </div>
                             </div>
                           </div>
