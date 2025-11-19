@@ -288,7 +288,7 @@ export const Default: Story = {
       // Crear wrapper para logo, menubar y botón dark mode
       const wrapper = document.createElement('div');
       wrapper.className = 'ubits-menubar-wrapper';
-      wrapper.style.cssText = 'display: flex; gap: 32px; align-items: center; width: 100%;';
+      wrapper.style.cssText = 'display: flex; gap: 32px; align-items: center; width: 100%; background: var(--ubits-bg-1); border: 1px solid var(--ubits-border-1); border-radius: var(--ubits-border-radius-md, 8px); padding: var(--ubits-spacing-xs, 4px); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);';
 
       // Logo
       const logo = document.createElement('a');

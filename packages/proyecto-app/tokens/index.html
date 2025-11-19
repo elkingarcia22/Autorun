@@ -651,8 +651,20 @@
       
       #navbar2{ background: var(--ubits-bg-1); border-bottom:none; margin-bottom: 24px; padding: 12px 0; box-shadow: var(--ubits-effects-elevation-1, 0px 1px 2px 0px rgba(0, 0, 0, 0.12)); }
       /* Estilos para MenuBar dentro del navbar2 */
-      #navbar2 .ubits-menubar-wrapper{ display: flex; gap: 32px; align-items: center; }
-      #navbar2 .ubits-menubar{ background: transparent; flex: 1; }
+      #navbar2 .ubits-menubar-wrapper{ 
+        display: flex; 
+        gap: 32px; 
+        align-items: center; 
+        background: var(--ubits-bg-1);
+        border: 1px solid var(--ubits-border-1);
+        border-radius: var(--ubits-border-radius-md, 8px);
+        padding: var(--ubits-spacing-xs, 4px);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+      [data-theme="dark"] #navbar2 .ubits-menubar-wrapper {
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+      }
+      #navbar2 .ubits-menubar{ background: transparent; flex: 1; border: none; }
       #navbar2 .ubits-menubar-list{ display: flex; gap: 0; align-items: center; }
       #navbar2 .ubits-logo{ display: flex; align-items: center; gap: 8px; margin-right: 16px; text-decoration: none; transition: transform 0.2s ease; }
       #navbar2 .ubits-logo:hover{ transform: scale(1.05); }
