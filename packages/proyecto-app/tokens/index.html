@@ -650,7 +650,10 @@
       .copyable-prompt .copy-btn i{ font-size: var(--font-body-sm-size); }
       
       #navbar2{ background: var(--ubits-bg-1); border-bottom:none; margin-bottom: 24px; padding: 12px 0; box-shadow: var(--ubits-effects-elevation-1, 0px 1px 2px 0px rgba(0, 0, 0, 0.12)); }
-      #navbar2 .navbar2-container{ display: flex; gap: 32px; align-items: center; border-radius: 8px; }
+      /* Estilos para MenuBar dentro del navbar2 */
+      #navbar2 .ubits-menubar-wrapper{ display: flex; gap: 32px; align-items: center; }
+      #navbar2 .ubits-menubar{ background: transparent; flex: 1; }
+      #navbar2 .ubits-menubar-list{ display: flex; gap: 0; align-items: center; }
       #navbar2 .ubits-logo{ display: flex; align-items: center; gap: 8px; margin-right: 16px; text-decoration: none; transition: transform 0.2s ease; }
       #navbar2 .ubits-logo:hover{ transform: scale(1.05); }
       #navbar2 .ubits-logo img{ width: 28px; height: 28px; transition: filter 0.2s ease; }
@@ -786,66 +789,10 @@
     </style>
   </head>
   <body data-theme="dark">
-    <!-- Nuevo menú interno, independiente del menú anterior -->
+    <!-- Menú principal con MenuBar -->
     <nav id="navbar2" style="display:block; position:sticky; top:0; z-index:30">
       <div class="container">
-        <div class="navbar2-container">
-          <a href="#" class="ubits-logo" style="transition: transform 0.2s ease;">
-            <img src="../assets/images/autoframe-logo-dark.png" alt="autoframe Logo" class="autoframe-logo-dark" style="width: 28px; height: 28px; display: block;" />
-            <img src="../assets/images/autoframe-logo-light.png" alt="autoframe Logo" class="autoframe-logo-light" style="width: 28px; height: 28px; display: none;" />
-            <span class="ubits-logo-text">autoframe</span>
-          </a>
-          <a href="#" class="nav2-link" data-target="section-hub">
-            <i class="fas fa-puzzle-piece"></i>
-            <span>Hub</span>
-          </a>
-          <a href="#" class="nav2-link" data-target="section-addons">
-            <i class="fas fa-plug"></i>
-            <span>Add-ons</span>
-          </a>
-          <div class="nav2-link has-submenu" id="nav-tokens">
-            <i class="fas fa-palette"></i>
-            <span>Tokens</span>
-            <i class="fas fa-chevron-down" style="font-size: 10px; margin-left: 4px;"></i>
-            <div class="nav2-submenu">
-              <a href="#" class="nav2-subitem" data-target="section-colores">
-                <i class="fas fa-palette"></i>
-                <span>Colores</span>
-              </a>
-              <a href="#" class="nav2-subitem" data-target="section-texto">
-                <i class="fas fa-font"></i>
-                <span>Tipografía</span>
-              </a>
-              <a href="#" class="nav2-subitem" data-target="section-espaciado" data-cat="espaciado-basico">
-                <i class="fas fa-arrows-alt"></i>
-                <span>Espaciado</span>
-              </a>
-              <a href="#" class="nav2-subitem" data-target="section-espaciado" data-cat="bordes">
-                <i class="fas fa-square"></i>
-                <span>Border Radius</span>
-              </a>
-              <a href="#" class="nav2-subitem" data-target="section-grid-breakpoints" data-cat="breakpoints">
-                <i class="fas fa-th"></i>
-                <span>Grid y Breakpoints</span>
-              </a>
-              <a href="#" class="nav2-subitem" data-target="section-effects" data-cat="focus">
-                <i class="fas fa-magic"></i>
-                <span>Effects</span>
-              </a>
-            </div>
-          </div>
-          <a href="#" class="nav2-link" data-target="section-iconos">
-            <i class="fas fa-icons"></i>
-            <span>Iconos</span>
-          </a>
-          <a href="#" class="nav2-link" data-target="section-componentes">
-            <i class="fas fa-cubes"></i>
-            <span>Componentes</span>
-          </a>
-          <button class="dark-mode-toggle" id="navbar-darkmode-toggle" data-theme="dark" title="Modo oscuro">
-            <i class="fa-solid fa-sun-bright"></i>
-          </button>
-        </div>
+        <div id="main-menubar-container"></div>
       </div>
     </nav>
     <main id="sections-host" style="position:relative; z-index:1"></main>
@@ -4404,6 +4351,406 @@ npm run dev</code></pre>
             activateEffectsCat(cat);
           });
         }
+        // Función para inicializar el MenuBar principal
+        function initMainMenubar() {
+          const container = document.getElementById('main-menubar-container');
+          if (!container) {
+            console.error('❌ main-menubar-container no encontrado');
+            return;
+          }
+
+          // Función helper para renderizar menubar (versión simplificada del MenubarProvider)
+          function renderMenubarHTML(items) {
+            function renderIconHelper(iconName, iconStyle = 'solid') {
+              const iconClass = iconStyle === 'solid' ? 'fas' : 'far';
+              const name = iconName.startsWith('fa-') ? iconName : `fa-${iconName}`;
+              return `<i class="${iconClass} ${name}"></i>`;
+            }
+
+            function renderSubmenuItem(item, parentId) {
+              const iconHTML = item.icon ? renderIconHelper(item.icon, item.iconStyle) : '';
+              const classes = [
+                'ubits-menubar-submenu-item',
+                item.active && 'ubits-menubar-submenu-item--active',
+                item.disabled && 'ubits-menubar-submenu-item--disabled'
+              ].filter(Boolean).join(' ');
+
+              return `
+                <li class="${classes}" data-item-id="${item.id}" data-parent-id="${parentId}">
+                  <a href="${item.href || '#'}" class="ubits-menubar-submenu-link" data-target="${item.dataTarget || ''}" data-cat="${item.dataCat || ''}">
+                    ${iconHTML ? `<span class="ubits-menubar-submenu-icon">${iconHTML}</span>` : ''}
+                    <span class="ubits-menubar-submenu-label">${item.label}</span>
+                  </a>
+                </li>
+              `;
+            }
+
+            function renderMenubarItem(item) {
+              const iconHTML = item.icon ? renderIconHelper(item.icon, item.iconStyle) : '';
+              const hasDropdown = item.submenu && item.submenu.length > 0;
+              const chevronHTML = hasDropdown ? '<i class="far fa-chevron-down ubits-menubar-chevron"></i>' : '';
+              const dropdownId = hasDropdown ? `ubits-menubar-dropdown-${item.id}` : '';
+              
+              const classes = [
+                'ubits-menubar-item',
+                item.active && 'ubits-menubar-item--active',
+                item.disabled && 'ubits-menubar-item--disabled',
+                hasDropdown && 'ubits-menubar-item--has-dropdown'
+              ].filter(Boolean).join(' ');
+
+              const dropdownHTML = hasDropdown ? `
+                <ul class="ubits-menubar-dropdown" id="${dropdownId}">
+                  ${item.submenu.map(subItem => renderSubmenuItem(subItem, item.id)).join('')}
+                </ul>
+              ` : '';
+
+              return `
+                <li class="${classes}" data-item-id="${item.id}">
+                  <a href="${item.href || '#'}" class="ubits-menubar-link" data-target="${item.dataTarget || ''}" ${hasDropdown ? `data-dropdown-id="${dropdownId}" aria-haspopup="true" aria-expanded="false"` : ''}>
+                    ${iconHTML ? `<span class="ubits-menubar-icon">${iconHTML}</span>` : ''}
+                    <span class="ubits-menubar-label">${item.label}</span>
+                    ${chevronHTML}
+                  </a>
+                  ${dropdownHTML}
+                </li>
+              `;
+            }
+
+            // Logo HTML
+            const logoHTML = `
+              <a href="#" class="ubits-logo" style="transition: transform 0.2s ease; display: flex; align-items: center; gap: 8px; margin-right: 16px; text-decoration: none;">
+                <img src="../assets/images/autoframe-logo-dark.png" alt="autoframe Logo" class="autoframe-logo-dark" style="width: 28px; height: 28px; display: block;" />
+                <img src="../assets/images/autoframe-logo-light.png" alt="autoframe Logo" class="autoframe-logo-light" style="width: 28px; height: 28px; display: none;" />
+                <span class="ubits-logo-text" style="font-size: var(--font-body-lg-size); font-weight: var(--weight-bold); color: var(--ubits-fg-1-high); transition: color 0.2s ease;">autoframe</span>
+              </a>
+            `;
+
+            // Dark mode toggle HTML
+            const darkModeToggleHTML = `
+              <button class="dark-mode-toggle" id="navbar-darkmode-toggle" data-theme="dark" title="Modo oscuro" style="display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; padding: 0; border: none; background: transparent; color: var(--ubits-fg-1-medium); cursor: pointer; border-radius: 8px; transition: all 0.15s ease; margin-left: auto;">
+                <i class="fa-solid fa-sun-bright"></i>
+              </button>
+            `;
+
+            return `
+              <div class="ubits-menubar-wrapper" style="display: flex; gap: 32px; align-items: center;">
+                ${logoHTML}
+                <nav class="ubits-menubar" role="menubar" style="flex: 1;">
+                  <ul class="ubits-menubar-list">
+                    ${items.map(item => renderMenubarItem(item)).join('')}
+                  </ul>
+                </nav>
+                ${darkModeToggleHTML}
+              </div>
+            `;
+          }
+
+          // Definir items del MenuBar
+          const menubarItems = [
+            {
+              id: 'hub',
+              label: 'Hub',
+              icon: 'puzzle-piece',
+              iconStyle: 'solid',
+              dataTarget: 'section-hub',
+              active: false
+            },
+            {
+              id: 'addons',
+              label: 'Add-ons',
+              icon: 'plug',
+              iconStyle: 'solid',
+              dataTarget: 'section-addons',
+              active: false
+            },
+            {
+              id: 'tokens',
+              label: 'Tokens',
+              icon: 'palette',
+              iconStyle: 'solid',
+              active: false,
+              submenu: [
+                {
+                  id: 'colores',
+                  label: 'Colores',
+                  icon: 'palette',
+                  iconStyle: 'solid',
+                  dataTarget: 'section-colores',
+                  active: false
+                },
+                {
+                  id: 'texto',
+                  label: 'Tipografía',
+                  icon: 'font',
+                  iconStyle: 'solid',
+                  dataTarget: 'section-texto',
+                  active: false
+                },
+                {
+                  id: 'espaciado',
+                  label: 'Espaciado',
+                  icon: 'arrows-alt',
+                  iconStyle: 'solid',
+                  dataTarget: 'section-espaciado',
+                  dataCat: 'espaciado-basico',
+                  active: false
+                },
+                {
+                  id: 'bordes',
+                  label: 'Border Radius',
+                  icon: 'square',
+                  iconStyle: 'solid',
+                  dataTarget: 'section-espaciado',
+                  dataCat: 'bordes',
+                  active: false
+                },
+                {
+                  id: 'grid-breakpoints',
+                  label: 'Grid y Breakpoints',
+                  icon: 'th',
+                  iconStyle: 'solid',
+                  dataTarget: 'section-grid-breakpoints',
+                  dataCat: 'breakpoints',
+                  active: false
+                },
+                {
+                  id: 'effects',
+                  label: 'Effects',
+                  icon: 'magic',
+                  iconStyle: 'solid',
+                  dataTarget: 'section-effects',
+                  dataCat: 'focus',
+                  active: false
+                }
+              ]
+            },
+            {
+              id: 'iconos',
+              label: 'Iconos',
+              icon: 'icons',
+              iconStyle: 'solid',
+              dataTarget: 'section-iconos',
+              active: false
+            },
+            {
+              id: 'componentes',
+              label: 'Componentes',
+              icon: 'cubes',
+              iconStyle: 'solid',
+              dataTarget: 'section-componentes',
+              active: false
+            }
+          ];
+
+          // Renderizar MenuBar
+          container.innerHTML = renderMenubarHTML(menubarItems);
+          const menubarElement = container.querySelector('.ubits-menubar');
+          
+          if (!menubarElement) {
+            console.error('❌ No se pudo crear el MenuBar');
+            return;
+          }
+
+          // Inicializar eventos del MenuBar
+          initMainMenubarEvents(menubarElement, menubarItems);
+          
+          // Inicializar eventos del logo
+          const logoLink = container.querySelector('.ubits-logo');
+          if (logoLink) {
+            logoLink.addEventListener('click', (e) => {
+              e.preventDefault();
+              const all = Array.from(document.querySelectorAll('#section-template, #section-colores, #section-texto, #section-iconos, #section-componentes, #section-espaciado, #section-grid-breakpoints, #section-effects'));
+              all.forEach(x => x && (x.style.display = (x.id === 'section-template') ? 'block' : 'none'));
+              updateMainMenubarActive('section-template');
+              history.replaceState(null, '', '#template');
+            });
+          }
+        }
+
+        // Función para inicializar eventos del MenuBar
+        function initMainMenubarEvents(menubarElement, items) {
+          // Click en items principales
+          const menubarLinks = menubarElement.querySelectorAll('.ubits-menubar-link');
+          menubarLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+              e.preventDefault();
+              const targetId = link.getAttribute('data-target');
+              const dropdownId = link.getAttribute('data-dropdown-id');
+              
+              // Si tiene dropdown, toggle
+              if (dropdownId) {
+                const dropdown = document.getElementById(dropdownId);
+                const isExpanded = link.getAttribute('aria-expanded') === 'true';
+                const willBeExpanded = !isExpanded;
+                
+                link.setAttribute('aria-expanded', willBeExpanded);
+                if (dropdown) {
+                  if (willBeExpanded) {
+                    dropdown.classList.add('ubits-menubar-dropdown--open');
+                  } else {
+                    dropdown.classList.remove('ubits-menubar-dropdown--open');
+                  }
+                }
+                
+                // Si se está cerrando, no hacer nada más
+                if (!willBeExpanded) return;
+              }
+              
+              // Si tiene target, navegar
+              if (targetId) {
+                handleMainNavClick(targetId);
+              }
+            });
+          });
+
+          // Click en subitems
+          const submenuLinks = menubarElement.querySelectorAll('.ubits-menubar-submenu-link');
+          submenuLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+              e.preventDefault();
+              const targetId = link.getAttribute('data-target');
+              const cat = link.getAttribute('data-cat');
+              
+              if (targetId) {
+                handleMainNavClick(targetId, cat);
+              }
+            });
+          });
+
+          // Cerrar dropdowns al hacer click fuera
+          document.addEventListener('click', (e) => {
+            if (!menubarElement.contains(e.target)) {
+              menubarElement.querySelectorAll('.ubits-menubar-dropdown').forEach(dropdown => {
+                dropdown.classList.remove('ubits-menubar-dropdown--open');
+              });
+              menubarElement.querySelectorAll('.ubits-menubar-link[aria-expanded="true"]').forEach(link => {
+                link.setAttribute('aria-expanded', 'false');
+              });
+            }
+          });
+        }
+
+        // Función para manejar clicks de navegación del MenuBar
+        function handleMainNavClick(targetId, cat = null) {
+          const all = Array.from(document.querySelectorAll('#section-hub, #section-addons, #section-template, #section-colores, #section-texto, #section-iconos, #section-componentes, #section-espaciado, #section-grid-breakpoints, #section-effects'));
+          all.forEach(x => x && (x.style.display = (x.id === targetId) ? 'block' : 'none'));
+
+          // Inicializar TreeMenus cuando se muestran las secciones
+          if (targetId === 'section-espaciado') {
+            setTimeout(() => {
+              initSpacingTreeMenuIfNeeded();
+            }, 50);
+          } else if (targetId === 'section-grid-breakpoints') {
+            setTimeout(() => {
+              initGridBreakpointsTreeMenuIfNeeded();
+            }, 50);
+          } else if (targetId === 'section-effects') {
+            setTimeout(() => {
+              initEffectsTreeMenuIfNeeded();
+            }, 50);
+          } else if (targetId === 'section-colores') {
+            setTimeout(() => {
+              initColorsTreeMenuIfNeeded();
+            }, 50);
+          }
+
+          // Actualizar estado activo del MenuBar
+          updateMainMenubarActive(targetId, cat);
+
+          // Inicializar sección de Add-ons si se está mostrando
+          if (targetId === 'section-addons') {
+            setTimeout(() => {
+              if (typeof initializeAddonsSection === 'function') {
+                initializeAddonsSection();
+              }
+            }, 150);
+          }
+
+          // Manejar categorías específicas
+          if (cat && targetId === 'section-espaciado') {
+            setTimeout(() => {
+              initSpacingTreeMenuIfNeeded();
+              if (typeof activateSpacingCat === 'function') {
+                activateSpacingCat(cat);
+              }
+            }, 100);
+          }
+          if (cat && targetId === 'section-grid-breakpoints') {
+            setTimeout(() => {
+              initGridBreakpointsTreeMenuIfNeeded();
+              if (typeof activateGridBreakpointsCat === 'function') {
+                activateGridBreakpointsCat(cat);
+              }
+            }, 100);
+          }
+          if (cat && targetId === 'section-effects') {
+            setTimeout(() => {
+              initEffectsTreeMenuIfNeeded();
+              if (typeof activateEffectsCat === 'function') {
+                activateEffectsCat(cat);
+              }
+            }, 100);
+          }
+
+          // Actualizar hash
+          const sectionName = targetId.replace('section-', '');
+          const hash = cat ? `${sectionName}/${cat}` : sectionName;
+          history.replaceState(null, '', `#${hash}`);
+        }
+
+        // Función para actualizar el estado activo del MenuBar
+        function updateMainMenubarActive(targetId, cat = null) {
+          const menubarElement = document.querySelector('#main-menubar-container .ubits-menubar');
+          if (!menubarElement) return;
+
+          // Remover active de todos los items
+          menubarElement.querySelectorAll('.ubits-menubar-item, .ubits-menubar-submenu-item').forEach(item => {
+            item.classList.remove('ubits-menubar-item--active', 'ubits-menubar-submenu-item--active');
+          });
+
+          // Si es un subitem de tokens
+          if (cat || (targetId && ['section-colores', 'section-texto', 'section-espaciado', 'section-grid-breakpoints', 'section-effects'].includes(targetId))) {
+            const tokensItem = menubarElement.querySelector('.ubits-menubar-item[data-item-id="tokens"]');
+            if (tokensItem) {
+              tokensItem.classList.add('ubits-menubar-item--active');
+              const dropdown = tokensItem.querySelector('.ubits-menubar-dropdown');
+              if (dropdown) {
+                dropdown.classList.add('ubits-menubar-dropdown--open');
+                const link = tokensItem.querySelector('.ubits-menubar-link');
+                if (link) link.setAttribute('aria-expanded', 'true');
+              }
+            }
+            
+            // Activar el subitem correspondiente
+            const subitemId = targetId === 'section-colores' ? 'colores' :
+                            targetId === 'section-texto' ? 'texto' :
+                            targetId === 'section-espaciado' && cat === 'espaciado-basico' ? 'espaciado' :
+                            targetId === 'section-espaciado' && cat === 'bordes' ? 'bordes' :
+                            targetId === 'section-grid-breakpoints' ? 'grid-breakpoints' :
+                            targetId === 'section-effects' ? 'effects' : null;
+            
+            if (subitemId) {
+              const subitem = menubarElement.querySelector(`.ubits-menubar-submenu-item[data-item-id="${subitemId}"]`);
+              if (subitem) subitem.classList.add('ubits-menubar-submenu-item--active');
+            }
+          } else {
+            // Activar item principal
+            const itemId = targetId === 'section-hub' ? 'hub' :
+                          targetId === 'section-addons' ? 'addons' :
+                          targetId === 'section-iconos' ? 'iconos' :
+                          targetId === 'section-componentes' ? 'componentes' :
+                          targetId === 'section-template' ? null : null; // Template no tiene item en MenuBar
+            
+            if (itemId) {
+              const item = menubarElement.querySelector(`.ubits-menubar-item[data-item-id="${itemId}"]`);
+              if (item) item.classList.add('ubits-menubar-item--active');
+            }
+          }
+        }
+
+        // Inicializar MenuBar
+        initMainMenubar();
+
         // Nuevo menú controlador simple
         const nav2 = document.getElementById('navbar2');
         if (nav2) {
@@ -4472,23 +4819,10 @@ npm run dev</code></pre>
             });
           }
           
-          // Manejar menú desplegable de Tokens
-          const tokensMenu = document.getElementById('nav-tokens');
-          if (tokensMenu) {
-            tokensMenu.addEventListener('click', (e) => {
-              // Si el click es en el submenu, no cerrar
-              if (e.target.closest('.nav2-submenu')) return;
-              e.preventDefault();
-              e.stopPropagation();
-              tokensMenu.classList.toggle('submenu-open');
-            });
-            // Cerrar menú al hacer click fuera
-            document.addEventListener('click', (e) => {
-              if (!tokensMenu.contains(e.target)) {
-                tokensMenu.classList.remove('submenu-open');
-              }
-            });
-          }
+          // El logo ahora se maneja dentro de initMainMenubar
+          
+          // Código antiguo removido - ahora se maneja con MenuBar
+          /*
           nav2.addEventListener('click', (e)=>{
             // Manejar clic en el logo
             const logoLink = e.target instanceof Element ? e.target.closest('a.ubits-logo') : null;
@@ -4667,25 +5001,23 @@ npm run dev</code></pre>
             const sectionName = targetId.replace('section-', '');
             history.replaceState(null, '', `#${sectionName}`);
           });
+          */
+          
           // Mostrar Template por defecto si no hay hash
           const hash = location.hash ? location.hash.replace('#', '') : '';
           const defaultSection = hash ? `section-${hash.split('/')[0]}` : 'section-template';
           const all = Array.from(document.querySelectorAll('#section-template, #section-colores, #section-texto, #section-iconos, #section-componentes, #section-espaciado, #section-grid-breakpoints, #section-effects'));
-          all.forEach(x=> x && (x.style.display = (x.id===defaultSection)? 'block' : 'none'));
-          // Actualizar estado visual del menú
-          document.querySelectorAll('#navbar2 .nav2-link').forEach(l=> l.classList.remove('active2'));
-          document.querySelectorAll('#navbar2 .nav2-subitem').forEach(l=> l.classList.remove('active'));
-          const activeLink = document.querySelector(`#navbar2 .nav2-link[data-target="${defaultSection}"]`);
-          if (activeLink) {
-            activeLink.classList.add('active2');
+          all.forEach(x => x && (x.style.display = (x.id === defaultSection) ? 'block' : 'none'));
+          
+          // Actualizar estado visual del MenuBar
+          if (hash) {
+            const parts = hash.split('/');
+            const sectionName = parts[0];
+            const cat = parts[1] || null;
+            const targetId = `section-${sectionName}`;
+            updateMainMenubarActive(targetId, cat);
           } else {
-            // Si es una sección de tokens, activar el menú Tokens y el subitem correspondiente
-            const subitem = document.querySelector(`#navbar2 .nav2-subitem[data-target="${defaultSection}"]`);
-            if (subitem) {
-              subitem.classList.add('active');
-              const tokensMenu = document.getElementById('nav-tokens');
-              if (tokensMenu) tokensMenu.classList.add('active2');
-            }
+            updateMainMenubarActive('section-template');
           }
           console.log('[nav2] default ->', defaultSection,
             'states:', all.map(x=> x.id+':'+getComputedStyle(x).display).join(', ')

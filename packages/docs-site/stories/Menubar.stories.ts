@@ -285,10 +285,45 @@ export const Default: Story = {
       // Limpiar contenedor antes de renderizar
       existingContainer.innerHTML = '';
 
+      // Crear wrapper para logo, menubar y botón dark mode
+      const wrapper = document.createElement('div');
+      wrapper.className = 'ubits-menubar-wrapper';
+      wrapper.style.cssText = 'display: flex; gap: 32px; align-items: center; width: 100%;';
+
+      // Logo
+      const logo = document.createElement('a');
+      logo.href = '#';
+      logo.className = 'ubits-logo';
+      logo.style.cssText = 'display: flex; align-items: center; gap: 8px; margin-right: 16px; text-decoration: none; transition: transform 0.2s ease;';
+      logo.innerHTML = `
+        <img src="../../assets/images/autoframe-logo-dark.png" alt="autoframe Logo" class="autoframe-logo-dark" style="width: 28px; height: 28px; display: block;" />
+        <img src="../../assets/images/autoframe-logo-light.png" alt="autoframe Logo" class="autoframe-logo-light" style="width: 28px; height: 28px; display: none;" />
+        <span class="ubits-logo-text" style="font-size: var(--font-body-lg-size); font-weight: var(--weight-bold); color: var(--ubits-fg-1-high); transition: color 0.2s ease;">autoframe</span>
+      `;
+      wrapper.appendChild(logo);
+
+      // Contenedor para el menubar
+      const menubarInnerContainer = document.createElement('div');
+      menubarInnerContainer.id = 'menubar-inner-container';
+      menubarInnerContainer.style.cssText = 'flex: 1;';
+      wrapper.appendChild(menubarInnerContainer);
+
+      // Botón dark mode
+      const darkModeToggle = document.createElement('button');
+      darkModeToggle.className = 'dark-mode-toggle';
+      darkModeToggle.id = 'storybook-darkmode-toggle';
+      darkModeToggle.setAttribute('data-theme', 'dark');
+      darkModeToggle.title = 'Modo oscuro';
+      darkModeToggle.style.cssText = 'display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; padding: 0; border: none; background: transparent; color: var(--ubits-fg-1-medium); cursor: pointer; border-radius: 8px; transition: all 0.15s ease; margin-left: auto;';
+      darkModeToggle.innerHTML = '<i class="fa-solid fa-sun-bright"></i>';
+      wrapper.appendChild(darkModeToggle);
+
+      existingContainer.appendChild(wrapper);
+
       try {
         const menubarElement = createMenubar({
           items,
-          containerId: 'menubar-story-container',
+          containerId: 'menubar-inner-container',
           onActiveItemChange: (itemId, parentId) => {
             // Handler para cambio de item activo
           },
@@ -328,12 +363,70 @@ export const Default: Story = {
             });
           }
         });
+        // Inicializar dark mode toggle
+        if (darkModeToggle) {
+          const updateIcon = (theme: string) => {
+            const iconElement = darkModeToggle.querySelector('i');
+            if (iconElement) {
+              iconElement.classList.remove('fa-moon', 'fa-sun', 'fa-sun-bright', 'far', 'fas', 'fa-solid', 'fa-regular');
+              iconElement.classList.add('ubits-icon-transition');
+              requestAnimationFrame(() => {
+                if (theme === 'dark') {
+                  iconElement.classList.add('fa-solid', 'fa-sun-bright');
+                } else {
+                  iconElement.classList.add('far', 'fa-moon');
+                }
+              });
+              setTimeout(() => {
+                iconElement.classList.remove('ubits-icon-transition');
+              }, 400);
+            }
+          };
+
+          const initialTheme = document.body.getAttribute('data-theme') || 'dark';
+          if (initialTheme === 'dark') {
+            darkModeToggle.setAttribute('data-theme', 'dark');
+            updateIcon('dark');
+          }
+
+          darkModeToggle.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            const currentTheme = darkModeToggle.getAttribute('data-theme') || 'light';
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            darkModeToggle.setAttribute('data-theme', newTheme);
+            updateIcon(newTheme);
+            document.body.setAttribute('data-theme', newTheme);
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('ubits-theme', newTheme);
+          });
+        }
+
+        // Estilos para logo según tema
+        const style = document.createElement('style');
+        style.textContent = `
+          [data-theme="dark"] .autoframe-logo-dark { display: block !important; }
+          [data-theme="dark"] .autoframe-logo-light { display: none !important; }
+          [data-theme="light"] .autoframe-logo-dark { display: none !important; }
+          [data-theme="light"] .autoframe-logo-light { display: block !important; }
+          .ubits-logo:hover { transform: scale(1.05); }
+          .ubits-logo:hover .ubits-logo-text { color: var(--ubits-accent-brand-static-inverted); }
+          @keyframes iconSpinFade {
+            0% { transform: rotate(0deg) scale(1); opacity: 1; }
+            50% { transform: rotate(180deg) scale(1.2); opacity: 0.6; }
+            100% { transform: rotate(360deg) scale(1); opacity: 1; }
+          }
+          .ubits-icon-transition {
+            animation: iconSpinFade 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+          }
+        `;
+        document.head.appendChild(style);
       } catch (error) {
         console.error('Error creating menubar:', error);
         // Fallback: renderizar HTML estático
-        existingContainer.innerHTML = renderMenubar({
+        menubarInnerContainer.innerHTML = renderMenubar({
           items,
-          containerId: 'menubar-story-container',
+          containerId: 'menubar-inner-container',
         });
       }
     });

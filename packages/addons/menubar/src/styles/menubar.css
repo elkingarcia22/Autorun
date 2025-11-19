@@ -149,6 +149,8 @@
   top: calc(100% + var(--ubits-spacing-xs, 4px));
   left: 0;
   min-width: 200px;
+  width: max-content;
+  max-width: 400px;
   background: var(--ubits-bg-1);
   border: 1px solid var(--ubits-border-1);
   border-radius: var(--ubits-border-radius-md, 8px);
@@ -202,7 +204,8 @@
   color: var(--ubits-fg-1-high);
   position: relative;
   white-space: nowrap;
-  width: 100%;
+  min-width: 100%;
+  box-sizing: border-box;
 }
 
 .ubits-menubar-submenu-link:hover:not(:disabled) {
@@ -290,6 +293,8 @@
   top: 0;
   left: calc(100% + var(--ubits-spacing-xs, 4px));
   min-width: 200px;
+  width: max-content;
+  max-width: 400px;
   background: var(--ubits-bg-1);
   border: 1px solid var(--ubits-border-1);
   border-radius: var(--ubits-border-radius-md, 8px);
