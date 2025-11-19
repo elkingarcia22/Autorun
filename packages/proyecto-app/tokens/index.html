@@ -3438,8 +3438,6 @@ npm run dev</code></pre>
               label: addon.name,
               id: addonId,
               dataId: addonId,
-              icon: addon.icon ? addon.icon.replace('fas ', '') : undefined,
-              iconStyle: 'fas',
               defaultExpanded: false
             };
           });
@@ -3448,8 +3446,6 @@ npm run dev</code></pre>
             label: category,
             id: categoryId,
             dataId: categoryId,
-            icon: 'folder',
-            iconStyle: 'far',
             defaultExpanded: isExpanded,
             children: children
           };
@@ -3457,7 +3453,7 @@ npm run dev</code></pre>
 
         // Renderizar TreeMenu
         renderTreeMenuFromData('addons-nav', treeData, {
-          showIcons: true,
+          showIcons: false,
           showChevron: true,
           size: 'md',
           cascade: true,
@@ -7307,8 +7303,6 @@ Reglas Importantes:
               label: category,
               id: categoryId,
               dataId: categoryId,
-              icon: 'folder',
-              iconStyle: 'far',
               defaultExpanded: isExpanded,
               children: children
             };
@@ -7316,7 +7310,7 @@ Reglas Importantes:
 
           // Renderizar TreeMenu
           renderTreeMenuFromData('components-nav', treeData, {
-            showIcons: true,
+            showIcons: false,
             showChevron: true,
             size: 'md',
             cascade: true,
