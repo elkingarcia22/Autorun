@@ -3864,37 +3864,58 @@ npm run dev</code></pre>
         }
       };
       
-      // Inicializar TreeMenu de espaciado cuando se carga la página
+      // Inicializar TreeMenu de espaciado cuando se muestra la sección
+      function initSpacingTreeMenuIfNeeded() {
+        const nav = document.getElementById('spacing-nav');
+        if (!nav) return;
+        
+        // Verificar si ya está inicializado
+        const treeMenu = nav.querySelector('.ubits-tree-menu');
+        if (treeMenu) return; // Ya está inicializado
+        
+        // Inicializar si la sección está visible
+        const section = document.getElementById('section-espaciado');
+        if (section && (section.classList.contains('active') || section.style.display !== 'none')) {
+          initSpacingTreeMenu();
+          // Activar categoría del hash o default
+          const hash = window.location.hash;
+          if (hash && hash.startsWith('#espaciado/')) {
+            const cat = hash.replace('#espaciado/', '');
+            activateSpacingCat(cat);
+          } else {
+            activateSpacingCat('espaciado-basico');
+          }
+        }
+      }
+      
       if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', function() {
           setTimeout(() => {
-            if (document.getElementById('section-espaciado')) {
-              initSpacingTreeMenu();
-              // Activar categoría del hash o default
-              const hash = window.location.hash;
-              if (hash && hash.startsWith('#espaciado/')) {
-                const cat = hash.replace('#espaciado/', '');
-                activateSpacingCat(cat);
-              } else {
-                activateSpacingCat('espaciado-basico');
-              }
-            }
+            initSpacingTreeMenuIfNeeded();
           }, 100);
         });
       } else {
         setTimeout(() => {
-          if (document.getElementById('section-espaciado')) {
-            initSpacingTreeMenu();
-            // Activar categoría del hash o default
-            const hash = window.location.hash;
-            if (hash && hash.startsWith('#espaciado/')) {
-              const cat = hash.replace('#espaciado/', '');
-              activateSpacingCat(cat);
-            } else {
-              activateSpacingCat('espaciado-basico');
-            }
-          }
+          initSpacingTreeMenuIfNeeded();
         }, 100);
+      }
+      
+      // Observar cambios en la visibilidad de la sección de espaciado
+      const spacingSection = document.getElementById('section-espaciado');
+      if (spacingSection) {
+        const observer = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type === 'attributes' && (mutation.attributeName === 'class' || mutation.attributeName === 'style')) {
+              const section = mutation.target;
+              if (section.classList.contains('active') || section.style.display !== 'none') {
+                setTimeout(() => {
+                  initSpacingTreeMenuIfNeeded();
+                }, 50);
+              }
+            }
+          });
+        });
+        observer.observe(spacingSection, { attributes: true, attributeFilter: ['class', 'style'] });
       }
       
       // Manejar hashchange para actualizar TreeMenu cuando cambia el hash
@@ -3950,7 +3971,7 @@ npm run dev</code></pre>
         
         console.log('✅ TreeMenu de grid-breakpoints inicializado');
       }
-      
+
       // Función para activar categorías de grid y breakpoints
       window.activateGridBreakpointsCat = function(cat) {
         // Actualizar TreeMenu
@@ -4051,55 +4072,99 @@ npm run dev</code></pre>
         history.replaceState(null, '', `#${base}/${cat}`);
       };
       
-      // Inicializar TreeMenus de grid-breakpoints y effects cuando se carga la página
+      // Inicializar TreeMenu de grid-breakpoints cuando se muestra la sección
+      function initGridBreakpointsTreeMenuIfNeeded() {
+        const nav = document.getElementById('grid-breakpoints-nav');
+        if (!nav) return;
+        
+        // Verificar si ya está inicializado
+        const treeMenu = nav.querySelector('.ubits-tree-menu');
+        if (treeMenu) return; // Ya está inicializado
+        
+        // Inicializar si la sección está visible
+        const section = document.getElementById('section-grid-breakpoints');
+        if (section && (section.classList.contains('active') || section.style.display !== 'none')) {
+          initGridBreakpointsTreeMenu();
+          const hash = window.location.hash;
+          if (hash && hash.startsWith('#grid-breakpoints/')) {
+            const cat = hash.replace('#grid-breakpoints/', '');
+            activateGridBreakpointsCat(cat);
+          } else {
+            activateGridBreakpointsCat('breakpoints');
+          }
+        }
+      }
+      
+      // Inicializar TreeMenu de effects cuando se muestra la sección
+      function initEffectsTreeMenuIfNeeded() {
+        const nav = document.getElementById('effects-nav');
+        if (!nav) return;
+        
+        // Verificar si ya está inicializado
+        const treeMenu = nav.querySelector('.ubits-tree-menu');
+        if (treeMenu) return; // Ya está inicializado
+        
+        // Inicializar si la sección está visible
+        const section = document.getElementById('section-effects');
+        if (section && (section.classList.contains('active') || section.style.display !== 'none')) {
+          initEffectsTreeMenu();
+          const hash = window.location.hash;
+          if (hash && hash.startsWith('#effects/')) {
+            const cat = hash.replace('#effects/', '');
+            activateEffectsCat(cat);
+          } else {
+            activateEffectsCat('focus');
+          }
+        }
+      }
+      
       if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', function() {
           setTimeout(() => {
-            if (document.getElementById('section-grid-breakpoints')) {
-              initGridBreakpointsTreeMenu();
-              const hash = window.location.hash;
-              if (hash && hash.startsWith('#grid-breakpoints/')) {
-                const cat = hash.replace('#grid-breakpoints/', '');
-                activateGridBreakpointsCat(cat);
-              } else {
-                activateGridBreakpointsCat('breakpoints');
-              }
-            }
-            if (document.getElementById('section-effects')) {
-              initEffectsTreeMenu();
-              const hash = window.location.hash;
-              if (hash && hash.startsWith('#effects/')) {
-                const cat = hash.replace('#effects/', '');
-                activateEffectsCat(cat);
-              } else {
-                activateEffectsCat('focus');
-              }
-            }
+            initGridBreakpointsTreeMenuIfNeeded();
+            initEffectsTreeMenuIfNeeded();
           }, 100);
         });
       } else {
         setTimeout(() => {
-          if (document.getElementById('section-grid-breakpoints')) {
-            initGridBreakpointsTreeMenu();
-            const hash = window.location.hash;
-            if (hash && hash.startsWith('#grid-breakpoints/')) {
-              const cat = hash.replace('#grid-breakpoints/', '');
-              activateGridBreakpointsCat(cat);
-            } else {
-              activateGridBreakpointsCat('breakpoints');
-            }
-          }
-          if (document.getElementById('section-effects')) {
-            initEffectsTreeMenu();
-            const hash = window.location.hash;
-            if (hash && hash.startsWith('#effects/')) {
-              const cat = hash.replace('#effects/', '');
-              activateEffectsCat(cat);
-            } else {
-              activateEffectsCat('focus');
-            }
-          }
+          initGridBreakpointsTreeMenuIfNeeded();
+          initEffectsTreeMenuIfNeeded();
         }, 100);
+      }
+      
+      // Observar cambios en la visibilidad de las secciones
+      const gridSection = document.getElementById('section-grid-breakpoints');
+      if (gridSection) {
+        const observer = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type === 'attributes' && (mutation.attributeName === 'class' || mutation.attributeName === 'style')) {
+              const section = mutation.target;
+              if (section.classList.contains('active') || section.style.display !== 'none') {
+                setTimeout(() => {
+                  initGridBreakpointsTreeMenuIfNeeded();
+                }, 50);
+              }
+            }
+          });
+        });
+        observer.observe(gridSection, { attributes: true, attributeFilter: ['class', 'style'] });
+      }
+      
+      const effectsSection = document.getElementById('section-effects');
+      if (effectsSection) {
+        const observer = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type === 'attributes' && (mutation.attributeName === 'class' || mutation.attributeName === 'style')) {
+              const section = mutation.target;
+              if (section.classList.contains('active') || section.style.display !== 'none') {
+                setTimeout(() => {
+                  initEffectsTreeMenuIfNeeded();
+                }, 50);
+              }
+            }
+          });
+        });
+        observer.observe(effectsSection, { attributes: true, attributeFilter: ['class', 'style'] });
       }
       
       // Manejar hashchange para actualizar TreeMenus cuando cambia el hash
@@ -4465,25 +4530,44 @@ npm run dev</code></pre>
               subitem.classList.add('active');
               if (tokensMenu) tokensMenu.classList.add('active2');
               
-              // Si hay categoría específica (como bordes), activarla
+              // Si hay categoría específica (como bordes), inicializar TreeMenu y activarla
               if (cat && targetId === 'section-espaciado') {
-                if (typeof activateSpacingCat === 'function') {
-                  activateSpacingCat(cat);
-                }
+                setTimeout(() => {
+                  initSpacingTreeMenuIfNeeded();
+                  if (typeof activateSpacingCat === 'function') {
+                    activateSpacingCat(cat);
+                  }
+                }, 100);
               }
               
-              // Si hay categoría específica para grid-breakpoints, activarla
+              // Si hay categoría específica para grid-breakpoints, inicializar TreeMenu y activarla
               if (cat && targetId === 'section-grid-breakpoints') {
-                if (typeof activateGridBreakpointsCat === 'function') {
-                  activateGridBreakpointsCat(cat);
-                }
+                setTimeout(() => {
+                  initGridBreakpointsTreeMenuIfNeeded();
+                  if (typeof activateGridBreakpointsCat === 'function') {
+                    activateGridBreakpointsCat(cat);
+                  }
+                }, 100);
               }
               
-              // Si hay categoría específica para effects, activarla
+              // Si hay categoría específica para effects, inicializar TreeMenu y activarla
               if (cat && targetId === 'section-effects') {
-                if (typeof activateEffectsCat === 'function') {
-                  activateEffectsCat(cat);
-                }
+                setTimeout(() => {
+                  initEffectsTreeMenuIfNeeded();
+                  if (typeof activateEffectsCat === 'function') {
+                    activateEffectsCat(cat);
+                  }
+                }, 100);
+              }
+              
+              // Si hay categoría específica para espaciado, inicializar TreeMenu y activarla
+              if (cat && targetId === 'section-espaciado') {
+                setTimeout(() => {
+                  initSpacingTreeMenuIfNeeded();
+                  if (typeof activateSpacingCat === 'function') {
+                    activateSpacingCat(cat);
+                  }
+                }, 100);
               }
               
               // Actualizar hash
@@ -4498,6 +4582,25 @@ npm run dev</code></pre>
             const targetId = a.getAttribute('data-target');
             const all = Array.from(document.querySelectorAll('#section-hub, #section-addons, #section-template, #section-colores, #section-texto, #section-iconos, #section-componentes, #section-espaciado, #section-grid-breakpoints, #section-effects'));
             all.forEach(x=> x && (x.style.display = (x.id===targetId)? 'block' : 'none'));
+            
+            // Inicializar TreeMenus cuando se muestran las secciones
+            if (targetId === 'section-espaciado') {
+              setTimeout(() => {
+                initSpacingTreeMenuIfNeeded();
+              }, 50);
+            } else if (targetId === 'section-grid-breakpoints') {
+              setTimeout(() => {
+                initGridBreakpointsTreeMenuIfNeeded();
+              }, 50);
+            } else if (targetId === 'section-effects') {
+              setTimeout(() => {
+                initEffectsTreeMenuIfNeeded();
+              }, 50);
+            } else if (targetId === 'section-colores') {
+              setTimeout(() => {
+                initColorsTreeMenuIfNeeded();
+              }, 50);
+            }
             // estado visual activo (sin scroll automático para evitar saltos)
             document.querySelectorAll('#navbar2 .nav2-link').forEach(l=> l.classList.remove('active2'));
             document.querySelectorAll('#navbar2 .nav2-subitem').forEach(l=> l.classList.remove('active'));
@@ -4516,18 +4619,52 @@ npm run dev</code></pre>
               }, 150);
             }
             
-            // Si es section-grid-breakpoints, activar la primera categoría por defecto
+            // Si es section-grid-breakpoints, inicializar TreeMenu y activar categoría
             if (targetId === 'section-grid-breakpoints') {
-              if (typeof activateGridBreakpointsCat === 'function') {
-                activateGridBreakpointsCat('breakpoints');
-              }
+              setTimeout(() => {
+                initGridBreakpointsTreeMenuIfNeeded();
+                if (typeof activateGridBreakpointsCat === 'function') {
+                  const hash = window.location.hash;
+                  if (hash && hash.startsWith('#grid-breakpoints/')) {
+                    const cat = hash.replace('#grid-breakpoints/', '');
+                    activateGridBreakpointsCat(cat);
+                  } else {
+                    activateGridBreakpointsCat('breakpoints');
+                  }
+                }
+              }, 100);
             }
             
-            // Si es section-effects, activar la primera categoría por defecto
+            // Si es section-effects, inicializar TreeMenu y activar categoría
             if (targetId === 'section-effects') {
-              if (typeof activateEffectsCat === 'function') {
-                activateEffectsCat('focus');
-              }
+              setTimeout(() => {
+                initEffectsTreeMenuIfNeeded();
+                if (typeof activateEffectsCat === 'function') {
+                  const hash = window.location.hash;
+                  if (hash && hash.startsWith('#effects/')) {
+                    const cat = hash.replace('#effects/', '');
+                    activateEffectsCat(cat);
+                  } else {
+                    activateEffectsCat('focus');
+                  }
+                }
+              }, 100);
+            }
+            
+            // Si es section-espaciado, inicializar TreeMenu y activar categoría
+            if (targetId === 'section-espaciado') {
+              setTimeout(() => {
+                initSpacingTreeMenuIfNeeded();
+                if (typeof activateSpacingCat === 'function') {
+                  const hash = window.location.hash;
+                  if (hash && hash.startsWith('#espaciado/')) {
+                    const cat = hash.replace('#espaciado/', '');
+                    activateSpacingCat(cat);
+                  } else {
+                    activateSpacingCat('espaciado-basico');
+                  }
+                }
+              }, 100);
             }
             
             // Actualizar hash para mantener la sección al recargar
@@ -4560,21 +4697,44 @@ npm run dev</code></pre>
           // Si hay hash, sincronizar con él; si no, establecer hash por defecto
           if (hash) {
             syncFromHash();
-            // Si es espaciado, activar la categoría del hash o la básica por defecto
+            // Si es espaciado, inicializar TreeMenu y activar la categoría del hash o la básica por defecto
             if (hash.startsWith('espaciado')) {
-              const parts = hash.split('/');
-              const cat = parts[1] || 'espaciado-basico';
-              if (typeof activateSpacingCat === 'function') {
-                activateSpacingCat(cat);
-              }
+              setTimeout(() => {
+                initSpacingTreeMenuIfNeeded();
+                const parts = hash.split('/');
+                const cat = parts[1] || 'espaciado-basico';
+                if (typeof activateSpacingCat === 'function') {
+                  activateSpacingCat(cat);
+                }
+              }, 100);
             }
-            // Si es effects, activar la categoría del hash o focus por defecto
+            // Si es effects, inicializar TreeMenu y activar la categoría del hash o focus por defecto
             if (hash.startsWith('effects')) {
-              const parts = hash.split('/');
-              const cat = parts[1] || 'focus';
-              if (typeof activateEffectsCat === 'function') {
-                activateEffectsCat(cat);
-              }
+              setTimeout(() => {
+                initEffectsTreeMenuIfNeeded();
+                const parts = hash.split('/');
+                const cat = parts[1] || 'focus';
+                if (typeof activateEffectsCat === 'function') {
+                  activateEffectsCat(cat);
+                }
+              }, 100);
+            }
+            // Si es grid-breakpoints, inicializar TreeMenu y activar la categoría del hash o breakpoints por defecto
+            if (hash.startsWith('grid-breakpoints')) {
+              setTimeout(() => {
+                initGridBreakpointsTreeMenuIfNeeded();
+                const parts = hash.split('/');
+                const cat = parts[1] || 'breakpoints';
+                if (typeof activateGridBreakpointsCat === 'function') {
+                  activateGridBreakpointsCat(cat);
+                }
+              }, 100);
+            }
+            // Si es colores, inicializar TreeMenu
+            if (hash.startsWith('colores')) {
+              setTimeout(() => {
+                initColorsTreeMenuIfNeeded();
+              }, 100);
             }
           } else {
             // Establecer hash por defecto para mantener la sección al recargar
@@ -7117,7 +7277,7 @@ Reglas Importantes:
           const categories = Object.keys(componentsInventory);
           let firstComponentId = null;
           let activeComponentId = activeComponent;
-          
+
           // Convertir estructura a TreeMenu
           const treeData = categories.map((category, catIndex) => {
             const components = componentsInventory[category];
