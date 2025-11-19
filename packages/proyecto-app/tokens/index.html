@@ -1351,33 +1351,8 @@ npm run dev</code></pre>
               <span>Categorías</span>
               <span style="font-size: var(--font-body-xs-size); color: var(--ubits-fg-1-medium); font-weight: var(--weight-regular); margin-left: 8px;">0 colores</span>
             </div>
-            <nav class="side" role="tablist" aria-label="Categorías de colores">
-              <a class="side-link active" href="#colores/brand" data-cat="brand" role="tab">Brand</a>
-              <a class="side-link" href="#colores/button" data-cat="button" role="tab">Button</a>
-              <a class="side-link" href="#colores/foreground" data-cat="foreground" role="tab">Foreground</a>
-              <a class="side-link" href="#colores/blue" data-cat="blue" role="tab">Blue Foregrounds</a>
-              <a class="side-link" href="#colores/gray" data-cat="gray" role="tab">Gray Foregrounds</a>
-              <a class="side-link" href="#colores/green" data-cat="green" role="tab">Green Foregrounds</a>
-              <a class="side-link" href="#colores/teal" data-cat="teal" role="tab">Teal Foregrounds</a>
-              <a class="side-link" href="#colores/purple" data-cat="purple" role="tab">Purple Foregrounds</a>
-              <a class="side-link" href="#colores/yellow" data-cat="yellow" role="tab">Yellow Foregrounds</a>
-              <a class="side-link" href="#colores/background" data-cat="background" role="tab">Background Colors</a>
-              <a class="side-link" href="#colores/borders-main" data-cat="borders-main" role="tab">Border Colors - Main</a>
-              <a class="side-link" href="#colores/borders-colored" data-cat="borders-colored" role="tab">Border Colors - Colored</a>
-              <a class="side-link" href="#colores/borders-inverted" data-cat="borders-inverted" role="tab">Border Colors - Inverted</a>
-              <a class="side-link" href="#colores/borders-static" data-cat="borders-static" role="tab">Border Colors - Static</a>
-              <a class="side-link" href="#colores/borders-static-inverted" data-cat="borders-static-inverted" role="tab">Border Colors - Static Inverted</a>
-              <a class="side-link" href="#colores/sidebar" data-cat="sidebar" role="tab">Sidebar Colors</a>
-              <a class="side-link" href="#colores/feedback-success" data-cat="feedback-success" role="tab">Feedback · Success</a>
-              <a class="side-link" href="#colores/feedback-info" data-cat="feedback-info" role="tab">Feedback · Info</a>
-              <a class="side-link" href="#colores/feedback-warning" data-cat="feedback-warning" role="tab">Feedback · Warning</a>
-              <a class="side-link" href="#colores/feedback-error" data-cat="feedback-error" role="tab">Feedback · Error</a>
-              <a class="side-link" href="#colores/feedback-borders" data-cat="feedback-borders" role="tab">Feedback · Borders</a>
-              <a class="side-link" href="#colores/chart" data-cat="chart" role="tab">Chart Colors</a>
-              <a class="side-link" href="#colores/toast" data-cat="toast" role="tab">Toast Colors</a>
-              <a class="side-link" href="#colores/bottom-nav" data-cat="bottom-nav" role="tab">Bottom Nav Colors</a>
-              <a class="side-link" href="#colores/pink" data-cat="pink" role="tab">Pink Foregrounds</a>
-              <a class="side-link" href="#colores/rose" data-cat="rose" role="tab">Rose Foregrounds</a>
+            <nav class="side" id="colors-nav" role="tablist" aria-label="Categorías de colores">
+              <!-- Se generará dinámicamente con TreeMenu -->
             </nav>
           </div>
         </aside>
@@ -2090,19 +2065,8 @@ npm run dev</code></pre>
               <span>Categorías</span>
               <span style="font-size: var(--font-body-xs-size); color: var(--ubits-fg-1-medium); font-weight: var(--weight-regular); margin-left: 8px;">0 elementos</span>
             </div>
-            <nav class="side" role="navigation" aria-label="Navegación de espaciado">
-              <a href="#" class="side-link active" data-cat="espaciado-basico" onclick="activateSpacingCat('espaciado-basico'); return false;">
-                Espaciado Básico
-              </a>
-              <a href="#" class="side-link" data-cat="espaciado-extendido" onclick="activateSpacingCat('espaciado-extendido'); return false;">
-                Espaciado Extendido
-              </a>
-              <a href="#" class="side-link" data-cat="espaciado-grande" onclick="activateSpacingCat('espaciado-grande'); return false;">
-                Espaciado Grande
-              </a>
-              <a href="#" class="side-link" data-cat="bordes" onclick="activateSpacingCat('bordes'); return false;">
-                Bordes
-              </a>
+            <nav class="side" id="spacing-nav" role="navigation" aria-label="Navegación de espaciado">
+              <!-- Se generará dinámicamente con TreeMenu -->
             </nav>
           </div>
         </aside>
@@ -2380,13 +2344,8 @@ npm run dev</code></pre>
               <span>Categorías</span>
               <span style="font-size: var(--font-body-xs-size); color: var(--ubits-fg-1-medium); font-weight: var(--weight-regular); margin-left: 8px;">0 elementos</span>
             </div>
-            <nav class="side" role="navigation" aria-label="Navegación de effects">
-              <a href="#" class="side-link active" data-cat="focus" onclick="activateEffectsCat('focus'); return false;">
-                Focus
-              </a>
-              <a href="#" class="side-link" data-cat="elevation" onclick="activateEffectsCat('elevation'); return false;">
-                Elevation
-              </a>
+            <nav class="side" id="effects-nav" role="navigation" aria-label="Navegación de effects">
+              <!-- Se generará dinámicamente con TreeMenu -->
             </nav>
           </div>
         </aside>
@@ -2640,13 +2599,8 @@ npm run dev</code></pre>
               <span>Categorías</span>
               <span style="font-size: var(--font-body-xs-size); color: var(--ubits-fg-1-medium); font-weight: var(--weight-regular); margin-left: 8px;">0 elementos</span>
             </div>
-            <nav class="side" role="navigation" aria-label="Navegación de grid y breakpoints">
-              <a href="#" class="side-link active" data-cat="breakpoints" onclick="activateGridBreakpointsCat('breakpoints'); return false;">
-                Breakpoints
-              </a>
-              <a href="#" class="side-link" data-cat="grid-system" onclick="activateGridBreakpointsCat('grid-system'); return false;">
-                Sistema de Grid
-              </a>
+            <nav class="side" id="grid-breakpoints-nav" role="navigation" aria-label="Navegación de grid y breakpoints">
+              <!-- Se generará dinámicamente con TreeMenu -->
             </nav>
           </div>
         </aside>
@@ -3162,7 +3116,286 @@ npm run dev</code></pre>
         }
       };
 
-      // Generar navegación lateral de add-ons
+      // ========================================
+      // HELPER: Convertir estructura de menú a TreeMenu
+      // ========================================
+      function renderTreeMenuFromData(containerId, treeData, options = {}) {
+        const {
+          showIcons = true,
+          showChevron = true,
+          size = 'md',
+          cascade = true,
+          onNodeClick = null,
+          activeNodeId = null
+        } = options;
+        
+        const container = document.getElementById(containerId);
+        if (!container) {
+          console.error(`❌ Container ${containerId} no encontrado`);
+          return;
+        }
+        
+        // Cargar CSS del TreeMenu si no está cargado
+        const treeMenuCSSId = 'ubits-tree-menu-sidebar-css';
+        if (!document.getElementById(treeMenuCSSId)) {
+          const style = document.createElement('style');
+          style.id = treeMenuCSSId;
+          style.textContent = `
+            .ubits-tree-menu {
+              width: 100%;
+              user-select: none;
+            }
+            
+            .ubits-tree-node {
+              position: relative;
+            }
+            
+            .ubits-tree-node__content {
+              display: flex;
+              align-items: center;
+              gap: var(--ubits-spacing-sm, 8px);
+              padding: var(--ubits-spacing-xs, 4px) var(--ubits-spacing-sm, 8px);
+              border-radius: 6px;
+              cursor: pointer;
+              transition: all 0.2s ease;
+              color: var(--ubits-fg-1-high, #303a47);
+              background: transparent;
+              position: relative;
+            }
+            
+            .ubits-tree-node__content:hover:not(.ubits-tree-node__content--active) {
+              background: var(--ubits-bg-2, #F3F3F4);
+            }
+            
+            .ubits-tree-node__content:hover:not(.ubits-tree-node__content--active) .ubits-tree-node__chevron {
+              color: var(--ubits-fg-1-high, #303a47);
+            }
+            
+            .ubits-tree-node__content:hover:not(.ubits-tree-node__content--active) .ubits-tree-node__icon {
+              color: var(--ubits-fg-1-high, #303a47);
+            }
+            
+            .ubits-tree-node__content:hover:not(.ubits-tree-node__content--active) .ubits-tree-node__label {
+              color: var(--ubits-fg-1-high, #303a47);
+            }
+            
+            .ubits-tree-node__content--active,
+            .ubits-tree-node__content[aria-selected="true"] {
+              color: var(--ubits-accent-brand-static-inverted, #0c5bef);
+              background: var(--ubits-bg-active-button, rgba(12, 91, 239, 0.15));
+            }
+            
+            .ubits-tree-node__content--active .ubits-tree-node__chevron,
+            .ubits-tree-node__content[aria-selected="true"] .ubits-tree-node__chevron {
+              color: var(--ubits-accent-brand-static-inverted, #0c5bef);
+            }
+            
+            .ubits-tree-node__content--active .ubits-tree-node__icon,
+            .ubits-tree-node__content[aria-selected="true"] .ubits-tree-node__icon {
+              color: var(--ubits-accent-brand-static-inverted, #0c5bef);
+            }
+            
+            .ubits-tree-node__content--active .ubits-tree-node__label,
+            .ubits-tree-node__content[aria-selected="true"] .ubits-tree-node__label {
+              color: var(--ubits-accent-brand-static-inverted, #0c5bef);
+              font-weight: var(--weight-semibold, 600);
+            }
+            
+            .ubits-tree-node__content--expandable:focus-visible {
+              outline: 2px solid var(--ubits-accent-brand-static-inverted, #0c5bef);
+              outline-offset: -2px;
+              border-radius: 6px;
+            }
+            
+            .ubits-tree-node__chevron {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              flex-shrink: 0;
+              color: var(--ubits-fg-1-medium, #5c646f);
+              transition: color 0.2s ease;
+            }
+            
+            .ubits-tree-node__icon {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              flex-shrink: 0;
+              color: var(--ubits-fg-1-medium, #5c646f);
+              width: 20px;
+              transition: color 0.2s ease;
+            }
+            
+            .ubits-tree-node__label {
+              flex: 1;
+              color: var(--ubits-fg-1-high, #303a47);
+              transition: color 0.2s ease, font-weight 0.2s ease;
+            }
+            
+            .ubits-tree-node__children {
+              margin-top: 2px;
+            }
+            
+            .ubits-tree-menu--vertical .ubits-tree-node {
+              padding-left: 0 !important;
+            }
+            
+            .ubits-tree-menu--vertical .ubits-tree-node__children {
+              margin-left: 0;
+              padding-left: 0;
+            }
+            
+            .ubits-tree-menu--cascade .ubits-tree-node__children {
+              margin-left: 0;
+            }
+          `;
+          document.head.appendChild(style);
+        }
+        
+        const uniqueId = `tree-menu-${containerId}-${Date.now()}`;
+        const cascadeClass = cascade ? 'ubits-tree-menu--cascade' : 'ubits-tree-menu--vertical';
+        
+        // Función recursiva para renderizar nodos
+        function renderTreeNode(node, level = 0) {
+          const hasChildren = node.children && node.children.length > 0;
+          const nodeId = `${uniqueId}-node-${level}-${node.id || node.label.toLowerCase().replace(/\s+/g, '-')}`;
+          const isExpanded = node.defaultExpanded !== false && hasChildren;
+          const isActive = activeNodeId && (node.id === activeNodeId || node.dataId === activeNodeId);
+          
+          const typographyClass = size === 'sm' 
+            ? 'ubits-body-sm-regular' 
+            : size === 'lg' 
+            ? 'ubits-body-lg-regular' 
+            : 'ubits-body-md-regular';
+          
+          const paddingLeft = cascade 
+            ? (size === 'sm' 
+              ? `calc(var(--ubits-spacing-md, 16px) * ${level})` 
+              : size === 'lg'
+              ? `calc(var(--ubits-spacing-lg, 24px) * ${level})`
+              : `calc(var(--ubits-spacing-md, 16px) * ${level})`)
+            : '0';
+          
+          const iconSize = size === 'sm' ? '14px' : size === 'lg' ? '18px' : '16px';
+          const chevronSize = size === 'sm' ? '12px' : size === 'lg' ? '16px' : '14px';
+          
+          const iconHTML = showIcons && node.icon 
+            ? `<span class="ubits-tree-node__icon" style="font-size: ${iconSize};"><i class="${node.iconStyle || 'far'} fa-${node.icon}"></i></span>`
+            : '';
+          
+          const chevronHTML = hasChildren && showChevron
+            ? `<span class="ubits-tree-node__chevron" style="width: ${chevronSize}; height: ${chevronSize};"><i class="far fa-chevron-${isExpanded ? 'down' : 'right'}" style="font-size: ${chevronSize};"></i></span>`
+            : hasChildren && !showChevron
+            ? `<span class="ubits-tree-node__chevron" style="width: 0; height: 0; display: none;"></span>`
+            : `<span class="ubits-tree-node__chevron" style="width: 0; height: 0; display: none;"></span>`;
+          
+          const activeClass = isActive ? 'ubits-tree-node__content--active' : '';
+          
+          let html = `
+            <div class="ubits-tree-node ${cascade ? 'ubits-tree-node--cascade' : 'ubits-tree-node--vertical'}" data-level="${level}" style="${cascade ? `padding-left: ${paddingLeft};` : ''}">
+              <div 
+                class="ubits-tree-node__content ${hasChildren ? 'ubits-tree-node__content--expandable' : ''} ${activeClass}" 
+                data-node-id="${nodeId}"
+                data-item-id="${node.id || node.dataId || ''}"
+                ${hasChildren ? `data-expanded="${isExpanded}"` : ''}
+                role="${hasChildren ? 'button' : 'treeitem'}"
+                ${hasChildren ? 'tabindex="0"' : ''}
+                aria-expanded="${hasChildren ? isExpanded : undefined}"
+                aria-label="${node.label}"
+                ${isActive ? 'aria-selected="true"' : ''}
+              >
+                ${chevronHTML}
+                ${iconHTML}
+                <span class="ubits-tree-node__label ${typographyClass}">${node.label}</span>
+              </div>
+              ${hasChildren ? `
+                <div class="ubits-tree-node__children ${cascade ? 'ubits-tree-node__children--cascade' : 'ubits-tree-node__children--vertical'}" data-children-id="${nodeId}" style="display: ${isExpanded ? 'block' : 'none'};">
+                  ${node.children.map(child => renderTreeNode(child, level + 1)).join('')}
+                </div>
+              ` : ''}
+            </div>
+          `;
+          
+          return html;
+        }
+        
+        // Renderizar todos los nodos
+        const nodesHtml = treeData.map(node => renderTreeNode(node, 0)).join('');
+        const treeHTML = `<div class="ubits-tree-menu ${cascadeClass}" id="${uniqueId}" role="tree">${nodesHtml}</div>`;
+        container.innerHTML = treeHTML;
+        
+        // Agregar funcionalidad de expandir/colapsar y selección
+        const treeElement = container.querySelector('.ubits-tree-menu');
+        if (treeElement) {
+          treeElement.addEventListener('click', (e) => {
+            const target = e.target;
+            const content = target.closest('.ubits-tree-node__content');
+            
+            if (!content) return;
+            
+            const itemId = content.getAttribute('data-item-id');
+            
+            // Manejar expandir/colapsar para nodos con hijos
+            if (content.classList.contains('ubits-tree-node__content--expandable')) {
+              const nodeId = content.getAttribute('data-node-id');
+              const children = treeElement.querySelector(`[data-children-id="${nodeId}"]`);
+              const chevron = content.querySelector('.ubits-tree-node__chevron i');
+              const isExpanded = content.getAttribute('data-expanded') === 'true';
+              
+              if (children) {
+                if (isExpanded) {
+                  children.style.display = 'none';
+                  content.setAttribute('data-expanded', 'false');
+                  content.setAttribute('aria-expanded', 'false');
+                  if (chevron && showChevron) {
+                    chevron.className = 'far fa-chevron-right';
+                  }
+                } else {
+                  children.style.display = 'block';
+                  content.setAttribute('data-expanded', 'true');
+                  content.setAttribute('aria-expanded', 'true');
+                  if (chevron && showChevron) {
+                    chevron.className = 'far fa-chevron-down';
+                  }
+                }
+              }
+            }
+            
+            // Manejar selección (active state) para todos los nodos
+            const allContents = treeElement.querySelectorAll('.ubits-tree-node__content');
+            allContents.forEach((node) => {
+              node.classList.remove('ubits-tree-node__content--active');
+              node.removeAttribute('aria-selected');
+            });
+            
+            // Agregar active al nodo clickeado
+            content.classList.add('ubits-tree-node__content--active');
+            content.setAttribute('aria-selected', 'true');
+            
+            // Llamar callback si existe
+            if (onNodeClick && itemId) {
+              onNodeClick(itemId, content);
+            }
+          });
+          
+          // Soporte para teclado
+          treeElement.addEventListener('keydown', (e) => {
+            const target = e.target;
+            const content = target.closest('.ubits-tree-node__content');
+            
+            if (!content) return;
+            
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              content.click();
+            }
+          });
+        }
+        
+        return treeElement;
+      }
+      
+      // Generar navegación lateral de add-ons usando TreeMenu
       function generateAddonsNav() {
         console.log('🔄 generateAddonsNav llamado');
         
@@ -3172,13 +3405,20 @@ npm run dev</code></pre>
           return false;
         }
 
-        console.log('✅ addons-nav encontrado, generando navegación...');
+        console.log('✅ addons-nav encontrado, generando TreeMenu...');
 
         const categories = Object.keys(addonsInventory);
-        let navHTML = '';
         let firstAddonId = null;
+        let activeAddonId = null;
+        
+        // Obtener add-on activo si existe
+        const activeLink = nav.querySelector('.side-link.active');
+        if (activeLink) {
+          activeAddonId = activeLink.getAttribute('data-addon');
+        }
 
-        categories.forEach((category, catIndex) => {
+        // Convertir estructura a TreeMenu
+        const treeData = categories.map((category, catIndex) => {
           const addons = addonsInventory[category];
           const categoryId = category.toLowerCase().replace(/\s+/g, '-');
           const isFirstCategory = catIndex === 0;
@@ -3186,18 +3426,7 @@ npm run dev</code></pre>
             ? (localStorage.getItem(`addon-category-${categoryId}-expanded`) !== 'false')
             : (localStorage.getItem(`addon-category-${categoryId}-expanded`) === 'true');
           
-          navHTML += `<div class="side-title category-toggle" 
-            data-category="${categoryId}" 
-            style="margin-top: ${catIndex > 0 ? '16px' : '0'}; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none; padding: 8px 10px; border-radius: 4px; transition: background-color 0.2s ease;">
-            <div style="display: flex; align-items: center; gap: 8px; flex: 1;">
-              <i class="fas fa-chevron-${isExpanded ? 'down' : 'right'}" style="font-size: 10px; transition: transform 0.2s ease; color: var(--ubits-fg-1-medium);"></i>
-              <span>${category}</span>
-            </div>
-          </div>`;
-          
-          navHTML += `<div class="category-content" data-category="${categoryId}" style="display: ${isExpanded ? 'flex' : 'none'}; flex-direction: column; gap: 6px; margin-bottom: 8px;">`;
-          
-          addons.forEach((addon, addonIndex) => {
+          const children = addons.map((addon, addonIndex) => {
             const addonId = addon.id;
             
             const isFirst = catIndex === 0 && addonIndex === 0;
@@ -3205,23 +3434,54 @@ npm run dev</code></pre>
               firstAddonId = addonId;
             }
             
-            navHTML += `
-              <a href="#addon-${addonId}" 
-                 class="side-link ${isFirst ? 'active' : ''}" 
-                 data-addon="${addonId}"
-                 onclick="handleAddonNavClick(event, '${addonId}'); return false;">
-                <i class="fas ${addon.icon}" style="margin-right: 8px; width: 16px; text-align: center;"></i>
-                ${addon.name}
-              </a>
-            `;
+            return {
+              label: addon.name,
+              id: addonId,
+              dataId: addonId,
+              icon: addon.icon ? addon.icon.replace('fas ', '') : undefined,
+              iconStyle: 'fas',
+              defaultExpanded: false
+            };
           });
           
-          navHTML += `</div>`;
+          return {
+            label: category,
+            id: categoryId,
+            dataId: categoryId,
+            icon: 'folder',
+            iconStyle: 'far',
+            defaultExpanded: isExpanded,
+            children: children
+          };
         });
 
-        nav.innerHTML = navHTML;
-        const linkCount = nav.querySelectorAll('.side-link').length;
-        console.log(`✅ Navegación generada: ${linkCount} links creados`);
+        // Renderizar TreeMenu
+        renderTreeMenuFromData('addons-nav', treeData, {
+          showIcons: true,
+          showChevron: true,
+          size: 'md',
+          cascade: true,
+          activeNodeId: activeAddonId || firstAddonId,
+          onNodeClick: (itemId, content) => {
+            // Verificar si es un add-on (no una categoría)
+            const allAddons = Object.values(addonsInventory).flat();
+            const isAddon = allAddons.some(addon => addon.id === itemId);
+            
+            if (isAddon) {
+              handleAddonNavClick(null, itemId);
+            } else {
+              // Es una categoría, guardar estado de expansión
+              const categoryId = itemId;
+              const nodeId = content.getAttribute('data-node-id');
+              const children = nav.querySelector(`[data-children-id="${nodeId}"]`);
+              const isExpanded = children && children.style.display !== 'none';
+              localStorage.setItem(`addon-category-${categoryId}-expanded`, isExpanded);
+            }
+          }
+        });
+        
+        const linkCount = Object.values(addonsInventory).flat().length;
+        console.log(`✅ TreeMenu generado: ${linkCount} add-ons`);
         
         const addonsCategoryTitle = document.getElementById('addons-category-title');
         if (addonsCategoryTitle) {
@@ -3232,27 +3492,8 @@ npm run dev</code></pre>
           }
         }
 
-        // Event listeners para toggles de categoría
-        nav.addEventListener('click', function(e) {
-          const categoryToggle = e.target.closest('.category-toggle');
-          if (categoryToggle) {
-            e.preventDefault();
-            e.stopPropagation();
-            const categoryId = categoryToggle.getAttribute('data-category');
-            const content = nav.querySelector(`.category-content[data-category="${categoryId}"]`);
-            const chevron = categoryToggle.querySelector('i');
-            
-            if (content) {
-              const isExpanded = content.style.display !== 'none';
-              content.style.display = isExpanded ? 'none' : 'flex';
-              chevron.className = isExpanded ? 'fas fa-chevron-right' : 'fas fa-chevron-down';
-              localStorage.setItem(`addon-category-${categoryId}-expanded`, !isExpanded);
-            }
-          }
-        });
-
         // Cargar el primer add-on por defecto
-        if (firstAddonId) {
+        if (firstAddonId && !activeAddonId) {
           setTimeout(() => {
             loadAddon(firstAddonId);
           }, 100);
@@ -3337,13 +3578,42 @@ npm run dev</code></pre>
 
         container.innerHTML = addonHTML;
 
-        // Actualizar estado activo en navegación
-        document.querySelectorAll('#addons-nav .side-link').forEach(link => {
-          link.classList.remove('active');
-        });
-        const activeLink = document.querySelector(`#addons-nav .side-link[data-addon="${addonId}"]`);
-        if (activeLink) {
-          activeLink.classList.add('active');
+        // Actualizar estado activo en TreeMenu
+        const nav = document.getElementById('addons-nav');
+        if (nav) {
+          const treeMenu = nav.querySelector('.ubits-tree-menu');
+          if (treeMenu) {
+            // Remover active de todos los nodos
+            treeMenu.querySelectorAll('.ubits-tree-node__content').forEach(node => {
+              node.classList.remove('ubits-tree-node__content--active');
+              node.removeAttribute('aria-selected');
+            });
+            
+            // Agregar active al nodo correspondiente
+            const activeNode = treeMenu.querySelector(`[data-item-id="${addonId}"]`);
+            if (activeNode) {
+              activeNode.classList.add('ubits-tree-node__content--active');
+              activeNode.setAttribute('aria-selected', 'true');
+              
+              // Expandir categoría padre si está colapsada
+              const parentChildren = activeNode.closest('.ubits-tree-node__children');
+              if (parentChildren && parentChildren.style.display === 'none') {
+                const childrenId = parentChildren.getAttribute('data-children-id');
+                // Buscar el nodo padre que tiene este childrenId
+                const parentContent = treeMenu.querySelector(`.ubits-tree-node__content[data-node-id="${childrenId}"]`);
+                if (parentContent && parentContent.classList.contains('ubits-tree-node__content--expandable')) {
+                  // Expandir la categoría
+                  parentChildren.style.display = 'block';
+                  parentContent.setAttribute('data-expanded', 'true');
+                  parentContent.setAttribute('aria-expanded', 'true');
+                  const chevron = parentContent.querySelector('.ubits-tree-node__chevron i');
+                  if (chevron) {
+                    chevron.className = 'far fa-chevron-down';
+                  }
+                }
+              }
+            }
+          }
         }
 
         console.log('✅ Add-on cargado:', addonId);
@@ -3516,11 +3786,72 @@ npm run dev</code></pre>
       };
 
       // Función para activar categorías de espaciado
+      // Inicializar TreeMenu para espaciado
+      function initSpacingTreeMenu() {
+        const nav = document.getElementById('spacing-nav');
+        if (!nav) {
+          console.error('❌ spacing-nav no encontrado');
+          return;
+        }
+        
+        const spacingCategories = [
+          { id: 'espaciado-basico', label: 'Espaciado Básico' },
+          { id: 'espaciado-extendido', label: 'Espaciado Extendido' },
+          { id: 'espaciado-grande', label: 'Espaciado Grande' },
+          { id: 'bordes', label: 'Bordes' }
+        ];
+        
+        // Obtener categoría activa del hash o default
+        const hash = window.location.hash;
+        let activeCat = 'espaciado-basico';
+        if (hash && hash.startsWith('#espaciado/')) {
+          activeCat = hash.replace('#espaciado/', '');
+        }
+        
+        // Convertir a estructura TreeMenu (un solo nivel)
+        const treeData = spacingCategories.map(cat => ({
+          label: cat.label,
+          id: cat.id,
+          dataId: cat.id,
+          defaultExpanded: false
+        }));
+
+        // Renderizar TreeMenu
+        renderTreeMenuFromData('spacing-nav', treeData, {
+          showIcons: false, // Sin iconos
+          showChevron: false, // Sin chevron porque es un solo nivel
+          size: 'md',
+          cascade: true,
+          activeNodeId: activeCat,
+          onNodeClick: (itemId, content) => {
+            console.log('🔗 Click en categoría de espaciado:', itemId);
+            if (itemId) {
+              activateSpacingCat(itemId);
+            }
+          }
+        });
+        
+        console.log('✅ TreeMenu de espaciado inicializado');
+      }
+      
       window.activateSpacingCat = function(cat) {
-        const subTabs = document.querySelectorAll('#section-espaciado .side-link');
-        subTabs.forEach(t => t.classList.remove('active'));
-        const activeTab = Array.from(subTabs).find(t => t.getAttribute('data-cat') === cat);
-        if (activeTab) activeTab.classList.add('active');
+        // Actualizar TreeMenu
+        const nav = document.getElementById('spacing-nav');
+        if (nav) {
+          const treeMenu = nav.querySelector('.ubits-tree-menu');
+          if (treeMenu) {
+            treeMenu.querySelectorAll('.ubits-tree-node__content').forEach(node => {
+              node.classList.remove('ubits-tree-node__content--active');
+              node.removeAttribute('aria-selected');
+            });
+            const activeNode = treeMenu.querySelector(`[data-item-id="${cat}"]`);
+            if (activeNode) {
+              activeNode.classList.add('ubits-tree-node__content--active');
+              activeNode.setAttribute('aria-selected', 'true');
+            }
+          }
+        }
+        
         document.querySelectorAll('#section-espaciado .cat-section').forEach(s => s.style.display = 'none');
         const el = document.getElementById(`cat-${cat}`);
         if (el) el.style.display = 'block';
@@ -3532,13 +3863,113 @@ npm run dev</code></pre>
           applySpacingSearchFilter();
         }
       };
+      
+      // Inicializar TreeMenu de espaciado cuando se carga la página
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() {
+          setTimeout(() => {
+            if (document.getElementById('section-espaciado')) {
+              initSpacingTreeMenu();
+              // Activar categoría del hash o default
+              const hash = window.location.hash;
+              if (hash && hash.startsWith('#espaciado/')) {
+                const cat = hash.replace('#espaciado/', '');
+                activateSpacingCat(cat);
+              } else {
+                activateSpacingCat('espaciado-basico');
+              }
+            }
+          }, 100);
+        });
+      } else {
+        setTimeout(() => {
+          if (document.getElementById('section-espaciado')) {
+            initSpacingTreeMenu();
+            // Activar categoría del hash o default
+            const hash = window.location.hash;
+            if (hash && hash.startsWith('#espaciado/')) {
+              const cat = hash.replace('#espaciado/', '');
+              activateSpacingCat(cat);
+            } else {
+              activateSpacingCat('espaciado-basico');
+            }
+          }
+        }, 100);
+      }
+      
+      // Manejar hashchange para actualizar TreeMenu cuando cambia el hash
+      window.addEventListener('hashchange', function() {
+        if (window.location.hash.startsWith('#espaciado/')) {
+          const cat = window.location.hash.replace('#espaciado/', '');
+          activateSpacingCat(cat);
+        }
+      });
 
+      // Inicializar TreeMenu para grid-breakpoints
+      function initGridBreakpointsTreeMenu() {
+        const nav = document.getElementById('grid-breakpoints-nav');
+        if (!nav) {
+          console.error('❌ grid-breakpoints-nav no encontrado');
+          return;
+        }
+        
+        const gridCategories = [
+          { id: 'breakpoints', label: 'Breakpoints' },
+          { id: 'grid-system', label: 'Sistema de Grid' }
+        ];
+        
+        // Obtener categoría activa del hash o default
+        const hash = window.location.hash;
+        let activeCat = 'breakpoints';
+        if (hash && hash.startsWith('#grid-breakpoints/')) {
+          activeCat = hash.replace('#grid-breakpoints/', '');
+        }
+        
+        // Convertir a estructura TreeMenu (un solo nivel)
+        const treeData = gridCategories.map(cat => ({
+          label: cat.label,
+          id: cat.id,
+          dataId: cat.id,
+          defaultExpanded: false
+        }));
+        
+        // Renderizar TreeMenu
+        renderTreeMenuFromData('grid-breakpoints-nav', treeData, {
+          showIcons: false, // Sin iconos
+          showChevron: false, // Sin chevron porque es un solo nivel
+          size: 'md',
+          cascade: true,
+          activeNodeId: activeCat,
+          onNodeClick: (itemId, content) => {
+            console.log('🔗 Click en categoría de grid-breakpoints:', itemId);
+            if (itemId) {
+              activateGridBreakpointsCat(itemId);
+            }
+          }
+        });
+        
+        console.log('✅ TreeMenu de grid-breakpoints inicializado');
+      }
+      
       // Función para activar categorías de grid y breakpoints
       window.activateGridBreakpointsCat = function(cat) {
-        const subTabs = document.querySelectorAll('#section-grid-breakpoints .side-link');
-        subTabs.forEach(t => t.classList.remove('active'));
-        const activeTab = Array.from(subTabs).find(t => t.getAttribute('data-cat') === cat);
-        if (activeTab) activeTab.classList.add('active');
+        // Actualizar TreeMenu
+        const nav = document.getElementById('grid-breakpoints-nav');
+        if (nav) {
+          const treeMenu = nav.querySelector('.ubits-tree-menu');
+          if (treeMenu) {
+            treeMenu.querySelectorAll('.ubits-tree-node__content').forEach(node => {
+              node.classList.remove('ubits-tree-node__content--active');
+              node.removeAttribute('aria-selected');
+            });
+            const activeNode = treeMenu.querySelector(`[data-item-id="${cat}"]`);
+            if (activeNode) {
+              activeNode.classList.add('ubits-tree-node__content--active');
+              activeNode.setAttribute('aria-selected', 'true');
+            }
+          }
+        }
+        
         document.querySelectorAll('#section-grid-breakpoints .cat-section').forEach(s => s.style.display = 'none');
         const el = document.getElementById(`cat-${cat}`);
         if (el) el.style.display = 'block';
@@ -3546,13 +3977,72 @@ npm run dev</code></pre>
         const base = 'grid-breakpoints';
         history.replaceState(null, '', `#${base}/${cat}`);
       };
+      
+      // Inicializar TreeMenu para effects
+      function initEffectsTreeMenu() {
+        const nav = document.getElementById('effects-nav');
+        if (!nav) {
+          console.error('❌ effects-nav no encontrado');
+          return;
+        }
+        
+        const effectsCategories = [
+          { id: 'focus', label: 'Focus' },
+          { id: 'elevation', label: 'Elevation' }
+        ];
+        
+        // Obtener categoría activa del hash o default
+        const hash = window.location.hash;
+        let activeCat = 'focus';
+        if (hash && hash.startsWith('#effects/')) {
+          activeCat = hash.replace('#effects/', '');
+        }
+        
+        // Convertir a estructura TreeMenu (un solo nivel)
+        const treeData = effectsCategories.map(cat => ({
+          label: cat.label,
+          id: cat.id,
+          dataId: cat.id,
+          defaultExpanded: false
+        }));
+        
+        // Renderizar TreeMenu
+        renderTreeMenuFromData('effects-nav', treeData, {
+          showIcons: false, // Sin iconos
+          showChevron: false, // Sin chevron porque es un solo nivel
+          size: 'md',
+          cascade: true,
+          activeNodeId: activeCat,
+          onNodeClick: (itemId, content) => {
+            console.log('🔗 Click en categoría de effects:', itemId);
+            if (itemId) {
+              activateEffectsCat(itemId);
+            }
+          }
+        });
+        
+        console.log('✅ TreeMenu de effects inicializado');
+      }
 
       // Función para activar categorías de effects
       window.activateEffectsCat = function(cat) {
-        const subTabs = document.querySelectorAll('#section-effects .side-link');
-        subTabs.forEach(t => t.classList.remove('active'));
-        const activeTab = Array.from(subTabs).find(t => t.getAttribute('data-cat') === cat);
-        if (activeTab) activeTab.classList.add('active');
+        // Actualizar TreeMenu
+        const nav = document.getElementById('effects-nav');
+        if (nav) {
+          const treeMenu = nav.querySelector('.ubits-tree-menu');
+          if (treeMenu) {
+            treeMenu.querySelectorAll('.ubits-tree-node__content').forEach(node => {
+              node.classList.remove('ubits-tree-node__content--active');
+              node.removeAttribute('aria-selected');
+            });
+            const activeNode = treeMenu.querySelector(`[data-item-id="${cat}"]`);
+            if (activeNode) {
+              activeNode.classList.add('ubits-tree-node__content--active');
+              activeNode.setAttribute('aria-selected', 'true');
+            }
+          }
+        }
+        
         document.querySelectorAll('#section-effects .cat-section').forEach(s => s.style.display = 'none');
         const el = document.getElementById(`cat-${cat}`);
         if (el) el.style.display = 'block';
@@ -3560,6 +4050,69 @@ npm run dev</code></pre>
         const base = 'effects';
         history.replaceState(null, '', `#${base}/${cat}`);
       };
+      
+      // Inicializar TreeMenus de grid-breakpoints y effects cuando se carga la página
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() {
+          setTimeout(() => {
+            if (document.getElementById('section-grid-breakpoints')) {
+              initGridBreakpointsTreeMenu();
+              const hash = window.location.hash;
+              if (hash && hash.startsWith('#grid-breakpoints/')) {
+                const cat = hash.replace('#grid-breakpoints/', '');
+                activateGridBreakpointsCat(cat);
+              } else {
+                activateGridBreakpointsCat('breakpoints');
+              }
+            }
+            if (document.getElementById('section-effects')) {
+              initEffectsTreeMenu();
+              const hash = window.location.hash;
+              if (hash && hash.startsWith('#effects/')) {
+                const cat = hash.replace('#effects/', '');
+                activateEffectsCat(cat);
+              } else {
+                activateEffectsCat('focus');
+              }
+            }
+          }, 100);
+        });
+      } else {
+        setTimeout(() => {
+          if (document.getElementById('section-grid-breakpoints')) {
+            initGridBreakpointsTreeMenu();
+            const hash = window.location.hash;
+            if (hash && hash.startsWith('#grid-breakpoints/')) {
+              const cat = hash.replace('#grid-breakpoints/', '');
+              activateGridBreakpointsCat(cat);
+            } else {
+              activateGridBreakpointsCat('breakpoints');
+            }
+          }
+          if (document.getElementById('section-effects')) {
+            initEffectsTreeMenu();
+            const hash = window.location.hash;
+            if (hash && hash.startsWith('#effects/')) {
+              const cat = hash.replace('#effects/', '');
+              activateEffectsCat(cat);
+            } else {
+              activateEffectsCat('focus');
+            }
+          }
+        }, 100);
+      }
+      
+      // Manejar hashchange para actualizar TreeMenus cuando cambia el hash
+      window.addEventListener('hashchange', function() {
+        if (window.location.hash.startsWith('#grid-breakpoints/')) {
+          const cat = window.location.hash.replace('#grid-breakpoints/', '');
+          activateGridBreakpointsCat(cat);
+        }
+        if (window.location.hash.startsWith('#effects/')) {
+          const cat = window.location.hash.replace('#effects/', '');
+          activateEffectsCat(cat);
+        }
+      });
 
       // Función para actualizar el efecto Focus
       window.updateFocusEffect = function() {
@@ -3699,8 +4252,27 @@ npm run dev</code></pre>
 
       // Subtabs (categorías dentro de Colores)
       function activateSubtab(cat){
-        const subTabs = document.querySelectorAll('.side-link');
+        // Actualizar TreeMenu si existe
+        const nav = document.getElementById('colors-nav');
+        if (nav) {
+          const treeMenu = nav.querySelector('.ubits-tree-menu');
+          if (treeMenu) {
+            treeMenu.querySelectorAll('.ubits-tree-node__content').forEach(node => {
+              node.classList.remove('ubits-tree-node__content--active');
+              node.removeAttribute('aria-selected');
+            });
+            const activeNode = treeMenu.querySelector(`[data-item-id="${cat}"]`);
+            if (activeNode) {
+              activeNode.classList.add('ubits-tree-node__content--active');
+              activeNode.setAttribute('aria-selected', 'true');
+            }
+          }
+        }
+        
+        // Mantener compatibilidad con links antiguos (por si acaso)
+        const subTabs = document.querySelectorAll('#section-colores .side-link');
         subTabs.forEach(t=> t.classList.toggle('active', t.getAttribute('data-cat')===cat));
+        
         document.querySelectorAll('#section-colores .cat-section').forEach(s=> s.style.display='none');
         const el = document.getElementById(`cat-${cat}`);
         if(el) el.style.display = '';
@@ -4050,15 +4622,179 @@ npm run dev</code></pre>
         return visible || all.find(s => !s.hasAttribute('style')) || null;
       }
       function getActiveCatId(){
-        const a = document.querySelector('#section-colores .side a.side-link.active');
-        return a ? a.getAttribute('data-cat') : 'brand';
+        const nav = document.getElementById('colors-nav');
+        if (nav) {
+          const treeMenu = nav.querySelector('.ubits-tree-menu');
+          if (treeMenu) {
+            const activeNode = treeMenu.querySelector('.ubits-tree-node__content--active');
+            if (activeNode) {
+              return activeNode.getAttribute('data-item-id') || 'brand';
+            }
+          }
+        }
+        // Fallback: buscar en hash de URL
+        const hash = window.location.hash;
+        if (hash && hash.startsWith('#colores/')) {
+          return hash.replace('#colores/', '');
+        }
+        return 'brand';
+      }
+      
+      // Inicializar TreeMenu para colores
+      function initColorsTreeMenu() {
+        const nav = document.getElementById('colors-nav');
+        if (!nav) {
+          console.error('❌ colors-nav no encontrado');
+          return;
+        }
+        
+        const colorCategories = [
+          { id: 'brand', label: 'Brand' },
+          { id: 'button', label: 'Button' },
+          { id: 'foreground', label: 'Foreground' },
+          { id: 'blue', label: 'Blue Foregrounds' },
+          { id: 'gray', label: 'Gray Foregrounds' },
+          { id: 'green', label: 'Green Foregrounds' },
+          { id: 'teal', label: 'Teal Foregrounds' },
+          { id: 'purple', label: 'Purple Foregrounds' },
+          { id: 'yellow', label: 'Yellow Foregrounds' },
+          { id: 'background', label: 'Background Colors' },
+          { id: 'borders-main', label: 'Border Colors - Main' },
+          { id: 'borders-colored', label: 'Border Colors - Colored' },
+          { id: 'borders-inverted', label: 'Border Colors - Inverted' },
+          { id: 'borders-static', label: 'Border Colors - Static' },
+          { id: 'borders-static-inverted', label: 'Border Colors - Static Inverted' },
+          { id: 'sidebar', label: 'Sidebar Colors' },
+          { id: 'feedback-success', label: 'Feedback · Success' },
+          { id: 'feedback-info', label: 'Feedback · Info' },
+          { id: 'feedback-warning', label: 'Feedback · Warning' },
+          { id: 'feedback-error', label: 'Feedback · Error' },
+          { id: 'feedback-borders', label: 'Feedback · Borders' },
+          { id: 'chart', label: 'Chart Colors' },
+          { id: 'toast', label: 'Toast Colors' },
+          { id: 'bottom-nav', label: 'Bottom Nav Colors' },
+          { id: 'pink', label: 'Pink Foregrounds' },
+          { id: 'rose', label: 'Rose Foregrounds' }
+        ];
+        
+        // Obtener categoría activa del hash o default
+        const activeCat = getActiveCatId();
+        
+        // Convertir a estructura TreeMenu (un solo nivel)
+        const treeData = colorCategories.map(cat => ({
+          label: cat.label,
+          id: cat.id,
+          dataId: cat.id,
+          defaultExpanded: false
+        }));
+
+        // Renderizar TreeMenu
+        renderTreeMenuFromData('colors-nav', treeData, {
+          showIcons: false, // Sin iconos
+          showChevron: false, // Sin chevron porque es un solo nivel
+          size: 'md',
+          cascade: true,
+          activeNodeId: activeCat,
+          onNodeClick: (itemId, content) => {
+            console.log('🔗 Click en categoría de color:', itemId);
+            if (itemId) {
+              // Cambiar hash
+              window.location.hash = `#colores/${itemId}`;
+              // Mostrar solo la categoría activa
+              showOnlyActive();
+              // Actualizar estado activo
+              const treeMenu = nav.querySelector('.ubits-tree-menu');
+              if (treeMenu) {
+                treeMenu.querySelectorAll('.ubits-tree-node__content').forEach(node => {
+                  node.classList.remove('ubits-tree-node__content--active');
+                  node.removeAttribute('aria-selected');
+                });
+                content.classList.add('ubits-tree-node__content--active');
+                content.setAttribute('aria-selected', 'true');
+              }
+            }
+          }
+        });
+        
+        console.log('✅ TreeMenu de colores inicializado');
       }
       function showOnlyActive(){
         const active = getActiveCatId();
         document.querySelectorAll('#section-colores .cat-section').forEach(sec => {
           sec.style.display = (sec.id === `cat-${active}`) ? '' : 'none';
         });
+        
+        // Actualizar estado activo en TreeMenu
+        const nav = document.getElementById('colors-nav');
+        if (nav) {
+          const treeMenu = nav.querySelector('.ubits-tree-menu');
+          if (treeMenu) {
+            treeMenu.querySelectorAll('.ubits-tree-node__content').forEach(node => {
+              node.classList.remove('ubits-tree-node__content--active');
+              node.removeAttribute('aria-selected');
+            });
+            const activeNode = treeMenu.querySelector(`[data-item-id="${active}"]`);
+            if (activeNode) {
+              activeNode.classList.add('ubits-tree-node__content--active');
+              activeNode.setAttribute('aria-selected', 'true');
+            }
+          }
+        }
       }
+      
+      // Inicializar TreeMenu de colores cuando se carga la página o se muestra la sección
+      function initColorsTreeMenuIfNeeded() {
+        const nav = document.getElementById('colors-nav');
+        if (!nav) return;
+        
+        // Verificar si ya está inicializado
+        const treeMenu = nav.querySelector('.ubits-tree-menu');
+        if (treeMenu) return; // Ya está inicializado
+        
+        // Inicializar si la sección está visible
+        const section = document.getElementById('section-colores');
+        if (section && (section.classList.contains('active') || section.style.display !== 'none')) {
+          initColorsTreeMenu();
+          showOnlyActive();
+        }
+      }
+      
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() {
+          setTimeout(() => {
+            initColorsTreeMenuIfNeeded();
+          }, 100);
+        });
+      } else {
+        setTimeout(() => {
+          initColorsTreeMenuIfNeeded();
+        }, 100);
+      }
+      
+      // Observar cambios en la visibilidad de la sección de colores
+      const colorsSection = document.getElementById('section-colores');
+      if (colorsSection) {
+        const observer = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+              const section = mutation.target;
+              if (section.classList.contains('active') || section.style.display !== 'none') {
+                setTimeout(() => {
+                  initColorsTreeMenuIfNeeded();
+                }, 50);
+              }
+            }
+          });
+        });
+        observer.observe(colorsSection, { attributes: true, attributeFilter: ['class'] });
+      }
+      
+      // Manejar hashchange para actualizar TreeMenu cuando cambia el hash
+      window.addEventListener('hashchange', function() {
+        if (window.location.hash.startsWith('#colores/')) {
+          showOnlyActive();
+        }
+      });
 
       // Reescribir applySearchFilter para usar búsqueda global por todas las categorías
       function applySearchFilter(){
@@ -5275,7 +6011,7 @@ Reglas Importantes:
           return 'Otros';
         }
 
-        // Generar navegación por categorías
+        // Generar navegación por categorías usando TreeMenu (un solo nivel)
         function generateCategoryNav() {
           if (!iconsCategoryNav || allIcons.length === 0) {
             console.warn('No se puede generar navegación: elementos faltantes o sin iconos');
@@ -5306,26 +6042,30 @@ Reglas Importantes:
             return;
           }
 
-          iconsCategoryNav.innerHTML = categoriesWithIcons.map(category => `
-            <a href="#category-${category}" class="side-link" data-category="${category}" style="cursor: pointer; text-decoration: none;">
-              ${iconCategories[category].label} <span style="color: var(--ubits-fg-1-medium); font-size: 12px;">(${iconsByCategory[category].length})</span>
-            </a>
-          `).join('');
+          // Convertir a estructura TreeMenu (un solo nivel, sin hijos)
+          const treeData = categoriesWithIcons.map(category => ({
+            label: `${iconCategories[category].label} (${iconsByCategory[category].length})`,
+            id: category,
+            dataId: category,
+            defaultExpanded: false
+          }));
 
-          console.log(`✅ Navegación por categorías generada: ${categoriesWithIcons.length} categorías`);
-
-          // Agregar event listeners a los links
-          iconsCategoryNav.querySelectorAll('.side-link[data-category]').forEach(link => {
-            link.addEventListener('click', (e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              const category = link.getAttribute('data-category');
-              console.log('🔗 Click en categoría:', category);
-              if (category) {
-                scrollToCategory(category);
+          // Renderizar TreeMenu
+          renderTreeMenuFromData('icons-category-nav', treeData, {
+            showIcons: false, // Sin iconos
+            showChevron: false, // Sin chevron porque es un solo nivel
+            size: 'md',
+            cascade: true,
+            activeNodeId: null,
+            onNodeClick: (itemId, content) => {
+              console.log('🔗 Click en categoría:', itemId);
+              if (itemId) {
+                scrollToCategory(itemId);
               }
-            });
+            }
           });
+
+          console.log(`✅ TreeMenu de categorías generado: ${categoriesWithIcons.length} categorías`);
         }
 
         // Renderizar iconos por categoría
@@ -5448,11 +6188,23 @@ Reglas Importantes:
               behavior: 'smooth'
             });
 
-            // Actualizar estado activo en navegación
+            // Actualizar estado activo en TreeMenu
             if (iconsCategoryNav) {
-              iconsCategoryNav.querySelectorAll('.side-link').forEach(link => {
-                link.classList.toggle('active', link.getAttribute('data-category') === category);
-              });
+              const treeMenu = iconsCategoryNav.querySelector('.ubits-tree-menu');
+              if (treeMenu) {
+                // Remover active de todos los nodos
+                treeMenu.querySelectorAll('.ubits-tree-node__content').forEach(node => {
+                  node.classList.remove('ubits-tree-node__content--active');
+                  node.removeAttribute('aria-selected');
+                });
+                
+                // Agregar active al nodo correspondiente
+                const activeNode = treeMenu.querySelector(`[data-item-id="${category}"]`);
+                if (activeNode) {
+                  activeNode.classList.add('ubits-tree-node__content--active');
+                  activeNode.setAttribute('aria-selected', 'true');
+                }
+              }
             }
           } else {
             console.warn(`No se encontró sección para la categoría: ${category}`);
@@ -6349,7 +7101,7 @@ Reglas Importantes:
         // Componente activo actualmente
         let activeComponent = null;
 
-        // Generar navegación lateral de componentes (REESCRITO COMPLETAMENTE)
+        // Generar navegación lateral de componentes usando TreeMenu
         function generateComponentsNav() {
           console.log('🔄 generateComponentsNav llamado');
           
@@ -6360,60 +7112,75 @@ Reglas Importantes:
             return false;
           }
 
-          console.log('✅ components-nav encontrado, generando navegación...');
+          console.log('✅ components-nav encontrado, generando TreeMenu...');
 
           const categories = Object.keys(componentsInventory);
-          let navHTML = '';
           let firstComponentId = null;
-
-          categories.forEach((category, catIndex) => {
+          let activeComponentId = activeComponent;
+          
+          // Convertir estructura a TreeMenu
+          const treeData = categories.map((category, catIndex) => {
             const components = componentsInventory[category];
             const categoryId = category.toLowerCase().replace(/\s+/g, '-');
-            // Solo la primera categoría (índice 0) está expandida por defecto
             const isFirstCategory = catIndex === 0;
             const isExpanded = isFirstCategory 
-              ? (localStorage.getItem(`category-${categoryId}-expanded`) !== 'false') // Por defecto true para la primera
-              : (localStorage.getItem(`category-${categoryId}-expanded`) === 'true'); // Por defecto false para las demás
+              ? (localStorage.getItem(`category-${categoryId}-expanded`) !== 'false')
+              : (localStorage.getItem(`category-${categoryId}-expanded`) === 'true');
             
-            // Agregar título de categoría clickeable con chevron (sin contador individual)
-            navHTML += `<div class="side-title category-toggle" 
-              data-category="${categoryId}" 
-              style="margin-top: ${catIndex > 0 ? '16px' : '0'}; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none; padding: 8px 10px; border-radius: 4px; transition: background-color 0.2s ease;">
-              <div style="display: flex; align-items: center; gap: 8px; flex: 1;">
-                <i class="fas fa-chevron-${isExpanded ? 'down' : 'right'}" style="font-size: 10px; transition: transform 0.2s ease; color: var(--ubits-fg-1-medium);"></i>
-                <span>${category}</span>
-              </div>
-            </div>`;
-            
-            // Contenedor de links de componentes (colapsable)
-            navHTML += `<div class="category-content" data-category="${categoryId}" style="display: ${isExpanded ? 'flex' : 'none'}; flex-direction: column; gap: 6px; margin-bottom: 8px;">`;
-            
-            // Generar los links para cada componente
-            components.forEach((component, compIndex) => {
+            const children = components.map((component, compIndex) => {
               const componentId = component.name.toLowerCase().replace(/\s+/g, '-');
               
-              // El primer componente será el activo por defecto
               const isFirst = catIndex === 0 && compIndex === 0;
               if (isFirst && !firstComponentId) {
                 firstComponentId = componentId;
               }
               
-              navHTML += `
-                <a href="#component-${componentId}" 
-                   class="side-link ${isFirst ? 'active' : ''}" 
-                   data-component="${componentId}"
-                   onclick="handleComponentNavClick(event, '${componentId}')">
-                  ${component.name}
-                </a>
-              `;
+              return {
+                label: component.name,
+                id: componentId,
+                dataId: componentId,
+                defaultExpanded: false
+              };
             });
             
-            navHTML += `</div>`; // Cerrar contenedor de categoría
+            return {
+              label: category,
+              id: categoryId,
+              dataId: categoryId,
+              icon: 'folder',
+              iconStyle: 'far',
+              defaultExpanded: isExpanded,
+              children: children
+            };
           });
 
-          nav.innerHTML = navHTML;
-          const linkCount = nav.querySelectorAll('.side-link').length;
-          console.log(`✅ Navegación generada: ${linkCount} links creados`);
+          // Renderizar TreeMenu
+          renderTreeMenuFromData('components-nav', treeData, {
+            showIcons: true,
+            showChevron: true,
+            size: 'md',
+            cascade: true,
+            activeNodeId: activeComponentId || firstComponentId,
+            onNodeClick: (itemId, content) => {
+              // Verificar si es un componente (no una categoría)
+              const allComponents = Object.values(componentsInventory).flat();
+              const isComponent = allComponents.some(comp => comp.name.toLowerCase().replace(/\s+/g, '-') === itemId);
+              
+              if (isComponent) {
+                handleComponentNavClick(null, itemId);
+              } else {
+                // Es una categoría, guardar estado de expansión
+                const categoryId = itemId;
+                const nodeId = content.getAttribute('data-node-id');
+                const children = nav.querySelector(`[data-children-id="${nodeId}"]`);
+                const isExpanded = children && children.style.display !== 'none';
+                localStorage.setItem(`category-${categoryId}-expanded`, isExpanded);
+              }
+            }
+          });
+          
+          const linkCount = Object.values(componentsInventory).flat().length;
+          console.log(`✅ TreeMenu generado: ${linkCount} componentes`);
           
           // Actualizar contador del título principal "Categorías"
           const componentsCategoryTitle = document.getElementById('components-category-title');
@@ -6424,38 +7191,6 @@ Reglas Importantes:
               countSpan.textContent = `${total} ${total === 1 ? 'componente' : 'componentes'}`;
             }
           }
-
-          // Agregar event listeners con delegación de eventos (más robusto)
-          nav.addEventListener('click', function(e) {
-            // Si el click es en un toggle de categoría, no hacer nada (ya tiene su propio handler)
-            if (e.target.closest('.category-toggle')) {
-              return;
-            }
-            
-            const link = e.target.closest('.side-link');
-            if (link) {
-              e.preventDefault();
-              e.stopPropagation();
-              const componentId = link.getAttribute('data-component');
-              console.log('🔗 Click detectado en componente:', componentId);
-              if (componentId) {
-                handleComponentNavClick(e, componentId);
-              }
-            }
-          });
-          
-          // Agregar event listener para los toggles de categoría usando delegación
-          nav.addEventListener('click', function(e) {
-            const categoryToggle = e.target.closest('.category-toggle');
-            if (categoryToggle) {
-              e.preventDefault();
-              e.stopPropagation();
-              const categoryId = categoryToggle.getAttribute('data-category');
-              if (categoryId) {
-                toggleCategory(categoryId);
-              }
-            }
-          });
 
           return firstComponentId;
         }
@@ -6657,6 +7392,45 @@ Reglas Importantes:
               }
               
               activeComponent = componentId;
+              
+              // Actualizar estado activo en TreeMenu
+              const nav = document.getElementById('components-nav');
+              if (nav) {
+                const treeMenu = nav.querySelector('.ubits-tree-menu');
+                if (treeMenu) {
+                  // Remover active de todos los nodos
+                  treeMenu.querySelectorAll('.ubits-tree-node__content').forEach(node => {
+                    node.classList.remove('ubits-tree-node__content--active');
+                    node.removeAttribute('aria-selected');
+                  });
+                  
+                  // Agregar active al nodo correspondiente
+                  const activeNode = treeMenu.querySelector(`[data-item-id="${componentId}"]`);
+                  if (activeNode) {
+                    activeNode.classList.add('ubits-tree-node__content--active');
+                    activeNode.setAttribute('aria-selected', 'true');
+                    
+                    // Expandir categoría padre si está colapsada
+                    const parentChildren = activeNode.closest('.ubits-tree-node__children');
+                    if (parentChildren && parentChildren.style.display === 'none') {
+                      const childrenId = parentChildren.getAttribute('data-children-id');
+                      // Buscar el nodo padre que tiene este childrenId
+                      const parentContent = treeMenu.querySelector(`.ubits-tree-node__content[data-node-id="${childrenId}"]`);
+                      if (parentContent && parentContent.classList.contains('ubits-tree-node__content--expandable')) {
+                        // Expandir la categoría
+                        parentChildren.style.display = 'block';
+                        parentContent.setAttribute('data-expanded', 'true');
+                        parentContent.setAttribute('aria-expanded', 'true');
+                        const chevron = parentContent.querySelector('.ubits-tree-node__chevron i');
+                        if (chevron) {
+                          chevron.className = 'far fa-chevron-down';
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+              
               return true;
             } else {
               console.error('❌ Elemento del componente no encontrado:', `component-${componentId}`);
