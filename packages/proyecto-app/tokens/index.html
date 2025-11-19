@@ -11584,10 +11584,10 @@ Reglas Importantes:
                               Controles
                             </h4>
                             
-                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px;">
+                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
                               <!-- Segmento Activo -->
-                              <div style="display: flex; flex-direction: column; gap: 8px;">
-                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); text-transform: uppercase; letter-spacing: 0.5px;">Segmento Activo</label>
+                              <div style="flex: 0 0 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Segmento Activo</label>
                                 <select id="segment-control-active-segment-select-${componentId}" onchange="setSegmentControlControl('activeSegmentId', this.value, '${componentId}')" style="width: 100%; padding: 10px 32px 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); cursor: pointer; box-sizing: border-box; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23666%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226,9 12,15 18,9%22></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px;">
                                   <option value="segment-1" selected>Label 1</option>
                                   <option value="segment-2">Label 2</option>
@@ -11598,8 +11598,8 @@ Reglas Importantes:
                               </div>
                               
                               <!-- Mostrar Iconos -->
-                              <div style="display: flex; flex-direction: column; gap: 8px;">
-                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); text-transform: uppercase; letter-spacing: 0.5px;">Mostrar Iconos</label>
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Mostrar Iconos</label>
                                 <label class="ubits-toggle ubits-toggle--md" style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
                                   <input type="checkbox" class="ubits-toggle__input" id="segment-control-show-icons-toggle-${componentId}" checked onchange="setSegmentControlControl('showIcons', this.checked, '${componentId}')">
                                   <span class="ubits-toggle__track">
@@ -11610,9 +11610,9 @@ Reglas Importantes:
                               </div>
                               
                               <!-- Número de Segmentos -->
-                              <div style="display: flex; flex-direction: column; gap: 8px;">
-                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); text-transform: uppercase; letter-spacing: 0.5px;">Número de Segmentos</label>
-                                <input type="number" id="segment-control-count-input-${componentId}" min="1" max="10" value="5" onchange="setSegmentControlControl('segmentCount', this.value, '${componentId}')" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans);">
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Número de Segmentos</label>
+                                <input type="number" id="segment-control-count-input-${componentId}" min="1" max="10" value="5" onchange="setSegmentControlControl('segmentCount', this.value, '${componentId}')" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
                               </div>
                             </div>
                           </div>
