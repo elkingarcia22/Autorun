@@ -2,8 +2,9 @@
   "name": "@ubits/data-view",
   "version": "1.0.0",
   "description": "Componente DataView UBITS para mostrar listas de productos",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "scripts": {
     "build": "tsc && vite build",
     "dev": "vite build --watch"
@@ -16,6 +17,13 @@
   ],
   "author": "UBITS",
   "license": "MIT",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./styles": "./dist/data-view.css"
+  },
   "dependencies": {},
   "devDependencies": {
     "typescript": "^5.0.0",

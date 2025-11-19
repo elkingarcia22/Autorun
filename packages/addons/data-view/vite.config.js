@@ -6,27 +6,21 @@ export default defineConfig({
     emptyOutDir: false, // No limpiar el directorio para preservar los .d.ts de TypeScript
     lib: {
       entry: resolve(__dirname, 'src/index.ts'),
-      name: 'UbitsSlider',
+      name: 'UBITSDataView',
+      formats: ['es', 'umd'],
       fileName: (format) => {
-        if (format === 'umd') {
-          return 'slider.umd.js';
+        if (format === 'es') {
+          return 'index.js';
         }
-        return 'index.js';
-      },
-      formats: ['es', 'umd']
+        return 'data-view.umd.js';
+      }
     },
     rollupOptions: {
       external: [],
       output: {
-        assetFileNames: (assetInfo) => {
-          if (assetInfo.name === 'style.css') {
-            return 'slider.css';
-          }
-          return assetInfo.name || 'asset';
-        }
+        globals: {}
       }
-    },
-    copyPublicDir: false
+    }
   }
 });
 

@@ -16,7 +16,22 @@ interface AppContext {
   [key: string]: any;
 }
 
-import { UBITSSlider } from './SliderComponent';
+// Declarar tipos globales para window
+declare global {
+  interface Window {
+    UBITS?: {
+      Slider?: {
+        create: (options: any) => any;
+        render: (options: any) => string;
+      };
+      [key: string]: any;
+    };
+    createSlider?: (options: any) => any;
+  }
+}
+
+// NO importar UBITSSlider directamente para evitar errores en Node.js
+// import { UBITSSlider } from './SliderComponent';
 import './styles/slider.css';
 
 export class SliderAddon implements ComponentAddon {
@@ -24,9 +39,14 @@ export class SliderAddon implements ComponentAddon {
   version = '1.0.0';
 
   async initialize(context: AppContext): Promise<void> {
-    // Registrar el Web Component (opcional)
-    if (!customElements.get('ubits-slider')) {
-      customElements.define('ubits-slider', UBITSSlider);
+    // Registrar el Web Component (opcional) - solo en navegador
+    if (typeof window !== 'undefined' && typeof HTMLElement !== 'undefined') {
+      if (!customElements.get('ubits-slider')) {
+        // Lazy import del componente solo cuando se necesite
+        const { UBITSSlider } = await import('./SliderComponent');
+        customElements.define('ubits-slider', UBITSSlider);
+        console.log('✅ [SliderAddon] Web Component ubits-slider registrado');
+      }
     }
 
     // Exponer API global

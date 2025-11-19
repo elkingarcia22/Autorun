@@ -5,7 +5,11 @@
 
 export { SliderAddon } from './SliderAddon';
 export { renderSlider, createSlider } from './SliderProvider';
-export { UBITSSlider } from './SliderComponent';
+
+// NO exportar UBITSSlider directamente desde index para evitar errores en Node.js
+// Los usuarios pueden importarlo directamente desde './SliderComponent' si lo necesitan
+// export { UBITSSlider } from './SliderComponent';
+
 export type {
   SliderOptions,
   SliderOrientation,
@@ -13,10 +17,4 @@ export type {
   SliderState,
   SliderMode
 } from './types/SliderOptions';
-
-if (typeof window !== 'undefined') {
-  import('./SliderComponent').then(() => {
-    console.log('✅ UBITS Slider component registered');
-  });
-}
 

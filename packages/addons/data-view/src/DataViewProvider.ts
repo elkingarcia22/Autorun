@@ -4,10 +4,18 @@
  * Genera HTML según las opciones proporcionadas usando tokens y componentes UBITS
  */
 
+console.log('🔵 [data-view/DataViewProvider.ts] Iniciando carga de DataViewProvider...');
+
 import type { DataViewOptions, ProductData, StockStatus } from './types/DataViewOptions';
+console.log('✅ [data-view/DataViewProvider.ts] Tipos importados correctamente');
+
+// Importar estilos - Vite procesará estas importaciones durante el build
 import './styles/data-view.css';
+console.log('✅ [data-view/DataViewProvider.ts] Estilos data-view.css importados');
+
 // Importar estilos del botón para que funcionen los botones de compra
 import '../../button/src/styles/button.css';
+console.log('✅ [data-view/DataViewProvider.ts] Estilos button.css importados');
 
 // Helper para renderizar iconos FontAwesome
 function renderIconHelper(iconName: string, iconStyle: 'regular' | 'solid' = 'regular'): string {
@@ -133,6 +141,12 @@ function renderProduct(product: ProductData, index: number, options: DataViewOpt
  * Renderiza el componente DataView como HTML string
  */
 export function renderDataView(options: DataViewOptions): string {
+  console.log('🔵 [data-view] renderDataView llamado con opciones:', { 
+    productsCount: options.products?.length || 0,
+    size: options.size,
+    containerId: options.containerId 
+  });
+  
   const {
     products = [],
     containerId,
@@ -164,6 +178,17 @@ export function renderDataView(options: DataViewOptions): string {
  * Crea un elemento DataView programáticamente
  */
 export function createDataView(options: DataViewOptions): HTMLElement {
+  console.log('🔵 [data-view] createDataView llamado con opciones:', { 
+    productsCount: options.products?.length || 0,
+    size: options.size,
+    containerId: options.containerId,
+    hasContainer: !!options.container
+  });
+  
+  if (typeof document === 'undefined') {
+    throw new Error('createDataView requiere un entorno con DOM (navegador)');
+  }
+  
   const {
     container,
     containerId,

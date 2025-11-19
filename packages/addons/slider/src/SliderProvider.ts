@@ -285,12 +285,12 @@ export function createSlider(options: SliderOptions): {
     if (isRange) {
       // Input min (izquierda)
       const inputMinContainerId = `${containerId}-input-min`;
-      let inputMinContainer = sliderElement.querySelector(`#${inputMinContainerId}`) as HTMLElement;
+      let inputMinContainer: HTMLElement | null = sliderElement.querySelector(`#${inputMinContainerId}`) as HTMLElement | null;
       if (!inputMinContainer) {
-        inputMinContainer = container.querySelector(`#${inputMinContainerId}`) as HTMLElement;
+        inputMinContainer = container.querySelector(`#${inputMinContainerId}`) as HTMLElement | null;
       }
       if (!inputMinContainer) {
-        inputMinContainer = document.getElementById(inputMinContainerId);
+        inputMinContainer = document.getElementById(inputMinContainerId) as HTMLElement | null;
       }
       if (inputMinContainer) {
         // Asegurar que el contenedor tenga el tamaño correcto
@@ -335,12 +335,12 @@ export function createSlider(options: SliderOptions): {
       
       // Input max (derecha)
       const inputMaxContainerId = `${containerId}-input-max`;
-      let inputMaxContainer = sliderElement.querySelector(`#${inputMaxContainerId}`) as HTMLElement;
+      let inputMaxContainer: HTMLElement | null = sliderElement.querySelector(`#${inputMaxContainerId}`) as HTMLElement | null;
       if (!inputMaxContainer) {
-        inputMaxContainer = container.querySelector(`#${inputMaxContainerId}`) as HTMLElement;
+        inputMaxContainer = container.querySelector(`#${inputMaxContainerId}`) as HTMLElement | null;
       }
       if (!inputMaxContainer) {
-        inputMaxContainer = document.getElementById(inputMaxContainerId);
+        inputMaxContainer = document.getElementById(inputMaxContainerId) as HTMLElement | null;
       }
       if (inputMaxContainer) {
         // Asegurar que el contenedor tenga el tamaño correcto
@@ -384,12 +384,12 @@ export function createSlider(options: SliderOptions): {
     } else {
       // Input value (derecha, solo para single)
       const inputValueContainerId = `${containerId}-input-value`;
-      let inputValueContainer = sliderElement.querySelector(`#${inputValueContainerId}`) as HTMLElement;
+      let inputValueContainer: HTMLElement | null = sliderElement.querySelector(`#${inputValueContainerId}`) as HTMLElement | null;
       if (!inputValueContainer) {
-        inputValueContainer = container.querySelector(`#${inputValueContainerId}`) as HTMLElement;
+        inputValueContainer = container.querySelector(`#${inputValueContainerId}`) as HTMLElement | null;
       }
       if (!inputValueContainer) {
-        inputValueContainer = document.getElementById(inputValueContainerId);
+        inputValueContainer = document.getElementById(inputValueContainerId) as HTMLElement | null;
       }
       if (inputValueContainer) {
         // Asegurar que el contenedor tenga el tamaño correcto

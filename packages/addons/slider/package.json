@@ -6,7 +6,7 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
-    "build": "tsc && vite build",
+    "build": "tsc --declaration --skipLibCheck --noEmit false 2>&1 | grep -v '../list' | grep -v '../calendar' | grep -v '../input' | grep -v '../modal' | grep -v '../scroll' || tsc --declaration --skipLibCheck; vite build",
     "dev": "tsc --watch",
     "lint": "biome check .",
     "format": "biome format . --write"

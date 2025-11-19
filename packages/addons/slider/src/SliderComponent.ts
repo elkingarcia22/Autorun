@@ -7,7 +7,7 @@ import type { SliderOptions, SliderState } from './types/SliderOptions';
 import { renderSlider, createSlider } from './SliderProvider';
 
 export class UBITSSlider extends HTMLElement {
-  private options: SliderOptions;
+  private options!: SliderOptions;
   private sliderInstance: ReturnType<typeof createSlider> | null = null;
 
   static get observedAttributes() {

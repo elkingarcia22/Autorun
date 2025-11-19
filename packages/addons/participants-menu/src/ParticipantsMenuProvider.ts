@@ -903,14 +903,14 @@ export function createParticipantsMenu(options: ParticipantsMenuOptions): {
         if (badgeElement.classList.contains('ubits-badge--number')) {
           badgeElement.textContent = `${activeFiltersCount}`;
         } else {
-          // Reemplazar el badge genérico con el badge personalizado
-          const newBadgeHTML = `<span class="ubits-badge ubits-badge--sm ubits-badge--number ubits-badge--error ubits-button__badge">${activeFiltersCount}</span>`;
-          const tempDiv = document.createElement('div');
-          tempDiv.innerHTML = newBadgeHTML;
-          const newBadge = tempDiv.firstElementChild as HTMLElement;
-          
-          if (newBadge && badgeElement.parentNode) {
-            badgeElement.parentNode.replaceChild(newBadge, badgeElement);
+        // Reemplazar el badge genérico con el badge personalizado
+        const newBadgeHTML = `<span class="ubits-badge ubits-badge--sm ubits-badge--number ubits-badge--error ubits-button__badge">${activeFiltersCount}</span>`;
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = newBadgeHTML;
+        const newBadge = tempDiv.firstElementChild as HTMLElement;
+        
+        if (newBadge && badgeElement.parentNode) {
+          badgeElement.parentNode.replaceChild(newBadge, badgeElement);
           }
         }
       } else {
