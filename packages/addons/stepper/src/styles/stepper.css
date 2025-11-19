@@ -285,7 +285,7 @@
 }
 
 .ubits-stepper__step--completed .ubits-stepper__title {
-  color: var(--ubits-feedback-success-text, #223b16);
+  color: var(--ubits-fg-1-high, #303a47);
 }
 
 .ubits-stepper__step--completed .ubits-stepper__description {

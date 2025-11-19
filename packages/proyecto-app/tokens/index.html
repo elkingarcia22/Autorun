@@ -6129,6 +6129,21 @@ Reglas Importantes:
               hasPreview: true
             },
             {
+              name: 'Timeline',
+              description: 'Componente Timeline UBITS para mostrar secuencias de eventos o fases. Soporta avatar, fecha, título, descripción, iconos y alineación izquierda o centrada. Usa tokens UBITS.',
+              files: {
+                css: 'addons/timeline/src/styles/timeline.css',
+                ts: 'addons/timeline/src/TimelineProvider.ts'
+              },
+              variants: [],
+              sizes: [],
+              states: ['default', 'filled'],
+              features: ['Avatar opcional en cada item', 'Fecha opcional', 'Título y descripción', 'Iconos opcionales en marcadores', '2 alineaciones (left, center)', 'Estados de marcador (default, filled)', '4 items de ejemplo configurables', 'Usa tokens UBITS exclusivamente', 'Usa componente Avatar UBITS'],
+              class: 'ubits-timeline ubits-timeline--{alignment}',
+              example: 'renderTimeline({\n  showAvatar: false,\n  showDate: true,\n  showDescription: true,\n  showIcon: true,\n  alignment: \'left\',\n  filledItems: 2\n})',
+              hasPreview: true
+            },
+            {
               name: 'Accordion',
               description: 'Componente Accordion UBITS con múltiples variantes: lista simple, tipo caja, chevron izquierda/derecha, iconos opcionales y sub-headers.',
               files: {
@@ -6518,6 +6533,8 @@ Reglas Importantes:
                     window.updateSelectionCardPreview('selection-card');
                   } else if (componentId === 'stepper' && typeof window.updateStepperPreview === 'function') {
                     window.updateStepperPreview('stepper');
+                  } else if (componentId === 'timeline' && typeof window.updateTimelinePreview === 'function') {
+                    window.updateTimelinePreview('timeline');
                   } else if (componentId === 'avatar' && typeof window.updateAvatarPreview === 'function') {
                     window.updateAvatarPreview('avatar');
                   } else if (componentId === 'drawer-navigation' && typeof window.updateDrawerPreview === 'function') {
@@ -6908,6 +6925,31 @@ Reglas Importantes:
                                     <span id="tooltip-status-${componentId}" style="font-size: 13px; color: var(--ubits-fg-1-medium);">Desactivado</span>
                                   </div>
                                   <input type="text" id="tooltip-text-input-${componentId}" value="Tooltip del botón" onchange="setButtonControl('tooltipText', this.value, '${componentId}')" placeholder="Texto del tooltip" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                                </div>
+                              </div>
+                              
+                              <!-- Estado Visual -->
+                              <div style="flex: 0 0 auto; min-width: 300px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Estado Visual</label>
+                                <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                                  <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" data-component="${componentId}" data-option="state" data-value="default" onclick="setButtonControl('state', 'default', '${componentId}')">
+                                    <span>Default</span>
+                                  </button>
+                                  <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-component="${componentId}" data-option="state" data-value="hover" onclick="setButtonControl('state', 'hover', '${componentId}')">
+                                    <span>Hover</span>
+                                  </button>
+                                  <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-component="${componentId}" data-option="state" data-value="active" onclick="setButtonControl('state', 'active', '${componentId}')">
+                                    <span>Active</span>
+                                  </button>
+                                  <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-component="${componentId}" data-option="state" data-value="focus" onclick="setButtonControl('state', 'focus', '${componentId}')">
+                                    <span>Focus</span>
+                                  </button>
+                                  <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-component="${componentId}" data-option="state" data-value="disabled" onclick="setButtonControl('state', 'disabled', '${componentId}')">
+                                    <span>Disabled</span>
+                                  </button>
+                                  <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-component="${componentId}" data-option="state" data-value="loading" onclick="setButtonControl('state', 'loading', '${componentId}')">
+                                    <span>Loading</span>
+                                  </button>
                                 </div>
                               </div>
                             </div>
@@ -10678,6 +10720,106 @@ Reglas Importantes:
                         </div>
                       ` : ''}
                       
+                      ${hasPreview && component.name === 'Timeline' ? `
+                        <!-- Preview Section for Timeline -->
+                        <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: none; margin-bottom: 24px;">
+                          <!-- CONTROLES ARRIBA -->
+                          <div style="margin-bottom: 24px;">
+                            <h4 style="margin: 0 0 20px 0; color: var(--ubits-fg-1-high); font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand-static-inverted);"></i>
+                              Controles
+                            </h4>
+                            
+                            <!-- Primera fila: Configuración general -->
+                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; margin-bottom: 24px;">
+                              <!-- Alineación -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Alineación</label>
+                                <select id="timeline-alignment-select-${componentId}" onchange="setTimelineControl('alignment', this.value, '${componentId}')" style="width: 100%; padding: 10px 32px 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); cursor: pointer; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23666%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226,9 12,15 18,9%22></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px; box-sizing: border-box;">
+                                  <option value="left" selected>Izquierda</option>
+                                  <option value="center">Centrada</option>
+                                </select>
+                              </div>
+                              
+                              <!-- Items Rellenos -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Items Rellenos</label>
+                                <select id="timeline-filled-items-select-${componentId}" onchange="setTimelineControl('filledItems', parseInt(this.value), '${componentId}')" style="width: 100%; padding: 10px 32px 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); cursor: pointer; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23666%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226,9 12,15 18,9%22></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px; box-sizing: border-box;">
+                                  <option value="0">0 Items</option>
+                                  <option value="1">1 Item</option>
+                                  <option value="2" selected>2 Items</option>
+                                  <option value="3">3 Items</option>
+                                  <option value="4">4 Items</option>
+                                </select>
+                              </div>
+                              
+                              <!-- Mostrar Avatar -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Mostrar Avatar</label>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                  <label class="ubits-toggle ubits-toggle--md">
+                                    <input type="checkbox" class="ubits-toggle__input" id="timeline-show-avatar-toggle-${componentId}" onchange="setTimelineControl('showAvatar', this.checked, '${componentId}')">
+                                    <span class="ubits-toggle__track">
+                                      <span class="ubits-toggle__thumb"></span>
+                                    </span>
+                                  </label>
+                                  <span id="timeline-show-avatar-status-${componentId}" style="font-size: 13px; color: var(--ubits-fg-1-medium);">Desactivado</span>
+                                </div>
+                              </div>
+                              
+                              <!-- Mostrar Fecha -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Mostrar Fecha</label>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                  <label class="ubits-toggle ubits-toggle--md">
+                                    <input type="checkbox" class="ubits-toggle__input" id="timeline-show-date-toggle-${componentId}" checked onchange="setTimelineControl('showDate', this.checked, '${componentId}')">
+                                    <span class="ubits-toggle__track">
+                                      <span class="ubits-toggle__thumb"></span>
+                                    </span>
+                                  </label>
+                                  <span id="timeline-show-date-status-${componentId}" style="font-size: 13px; color: var(--ubits-fg-1-medium);">Activado</span>
+                                </div>
+                              </div>
+                              
+                              <!-- Mostrar Descripción -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Mostrar Descripción</label>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                  <label class="ubits-toggle ubits-toggle--md">
+                                    <input type="checkbox" class="ubits-toggle__input" id="timeline-show-description-toggle-${componentId}" checked onchange="setTimelineControl('showDescription', this.checked, '${componentId}')">
+                                    <span class="ubits-toggle__track">
+                                      <span class="ubits-toggle__thumb"></span>
+                                    </span>
+                                  </label>
+                                  <span id="timeline-show-description-status-${componentId}" style="font-size: 13px; color: var(--ubits-fg-1-medium);">Activado</span>
+                                </div>
+                              </div>
+                              
+                              <!-- Mostrar Icono -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Mostrar Icono</label>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                  <label class="ubits-toggle ubits-toggle--md">
+                                    <input type="checkbox" class="ubits-toggle__input" id="timeline-show-icon-toggle-${componentId}" checked onchange="setTimelineControl('showIcon', this.checked, '${componentId}')">
+                                    <span class="ubits-toggle__track">
+                                      <span class="ubits-toggle__thumb"></span>
+                                    </span>
+                                  </label>
+                                  <span id="timeline-show-icon-status-${componentId}" style="font-size: 13px; color: var(--ubits-fg-1-medium);">Activado</span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <!-- PREVIEW -->
+                          <div style="background: var(--ubits-bg-1); padding: 48px; border-radius: 8px; border: none; margin-bottom: 24px; display: flex; align-items: flex-start; justify-content: center; min-height: 200px;">
+                            <div id="timeline-preview-${componentId}" style="width: 100%; max-width: 800px;">
+                              <!-- Se generará dinámicamente -->
+                            </div>
+                          </div>
+                        </div>
+                      ` : ''}
+                      
                       ${hasPreview && component.name === 'Simple Card' ? `
                         <!-- Preview Section for Simple Card -->
                         <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: none; margin-bottom: 24px;">
@@ -13381,6 +13523,7 @@ Reglas Importantes:
             dropdown: false,
             showTooltip: false,
             tooltipText: 'Tooltip del botón',
+            state: 'default',
             dropdownOptions: [
               { label: 'Opción 1', value: 'opt1' },
               { label: 'Opción 2', value: 'opt2' },
@@ -13395,17 +13538,28 @@ Reglas Importantes:
       function generateButtonHTML(state, componentId) {
         const { variant, size, iconPosition, showBadge, isLoading, text, dropdown, showTooltip, tooltipText } = state;
         
-        console.log('🔍 [generateButtonHTML] Estado recibido:', {
-          iconPosition,
-          showTooltip,
-          tooltipText,
+        console.log('🔍 [generateButtonHTML] ===== INICIO =====');
+        console.log('🔍 [generateButtonHTML] Estado completo recibido:', JSON.stringify(state, null, 2));
+        console.log('🔍 [generateButtonHTML] Valores extraídos:', {
           variant,
           size,
-          text
+          iconPosition,
+          showBadge,
+          isLoading,
+          text,
+          dropdown,
+          showTooltip,
+          tooltipText
         });
         
         const badgeHTML = showBadge ? `<span class="ubits-button__badge"></span>` : '';
+        console.log('🔍 [generateButtonHTML] Badge:', {
+          showBadge,
+          badgeHTML
+        });
+        
         let iconHTML = `<i class="far fa-check"></i>`;
+        console.log('🔍 [generateButtonHTML] Icono HTML:', iconHTML);
         
         // Generar spinner de UBITS en lugar de FontAwesome
         // Mapear tamaño del botón al tamaño del spinner
@@ -13447,6 +13601,8 @@ Reglas Importantes:
           classes += ' ubits-button--dropdown';
         }
         
+        console.log('🔍 [generateButtonHTML] Evaluando iconPosition:', iconPosition);
+        
         if (iconPosition === 'only') {
           // En modo icon-only, si está loading, mostrar solo spinner
           content = isLoading ? spinnerHTML : iconHTML;
@@ -13455,6 +13611,7 @@ Reglas Importantes:
             content = `${iconHTML}${chevronHTML}`;
           }
           classes += ' ubits-button--icon-only';
+          console.log('🔍 [generateButtonHTML] Modo icon-only, content:', content);
         } else if (iconPosition === 'none') {
           // Sin icono: mostrar texto normal, y si está loading, agregar spinner después del texto
           if (isLoading) {
@@ -13465,18 +13622,24 @@ Reglas Importantes:
           } else {
             content = `<span>${text}</span>`;
           }
+          console.log('🔍 [generateButtonHTML] Modo sin icono, content:', content);
         } else if (iconPosition === 'right') {
-          // Icono a la derecha: poner el texto primero, luego el icono/spinner
-          // La clase ubits-button--icon-right aplicará flex-direction: row-reverse
+          // Icono a la derecha: la clase ubits-button--icon-right aplicará flex-direction: row-reverse
+          // IMPORTANTE: Con row-reverse, el orden visual es inverso al orden HTML
+          // Queremos ver visualmente: texto | icono | chevron (de izquierda a derecha)
+          // Entonces en HTML debemos poner: chevron | icono | texto
           if (isLoading) {
-            content = `<span class="button-text">${text}</span>${spinnerHTML}`;
+            // Con row-reverse: HTML = spinner | texto, Visual = texto | spinner
+            content = `${spinnerHTML}<span class="button-text">${text}</span>`;
           } else if (dropdown) {
-            // Si dropdown, icono personalizado + texto + chevron
-            content = `<span>${text}</span>${iconHTML}${chevronHTML}`;
+            // Con row-reverse: HTML = chevron | icono | texto, Visual = texto | icono | chevron
+            content = `${chevronHTML}${iconHTML}<span>${text}</span>`;
           } else {
-            content = `<span>${text}</span>${iconHTML}`;
+            // Con row-reverse: HTML = icono | texto, Visual = texto | icono
+            content = `${iconHTML}<span>${text}</span>`;
           }
           classes += ' ubits-button--icon-right';
+          console.log('🔍 [generateButtonHTML] Modo icono derecha, content:', content);
         } else { // left (default)
           // Icono a la izquierda: poner spinner/icono primero, luego el texto
           if (isLoading) {
@@ -13487,6 +13650,7 @@ Reglas Importantes:
           } else {
             content = `${iconHTML}<span>${text}</span>`;
           }
+          console.log('🔍 [generateButtonHTML] Modo icono izquierda (default), content:', content);
         }
         
         // NO agregar atributo title - usamos tooltip UBITS en su lugar
@@ -13507,20 +13671,205 @@ Reglas Importantes:
           ${badgeHTML}
         </button>`.trim();
         
-        console.log('🔍 [generateButtonHTML] HTML generado:', buttonHTML.substring(0, 200));
+        console.log('🔍 [generateButtonHTML] HTML completo generado:', buttonHTML);
+        console.log('🔍 [generateButtonHTML] Clases:', classes);
+        console.log('🔍 [generateButtonHTML] Contenido:', content);
+        console.log('🔍 [generateButtonHTML] Badge HTML:', badgeHTML);
+        console.log('🔍 [generateButtonHTML] ===== FIN =====');
         
         return buttonHTML;
       }
       
+      // Función helper para aplicar estados visuales al botón (similar a Storybook)
+      function applyButtonState(button, state) {
+        if (!button || !state) return;
+        
+        // Remover estados anteriores (solo clases visuales, no tocar contenido)
+        button.classList.remove('ubits-button--hover', 'ubits-button--focus', 'ubits-button--pressed');
+        // Solo remover loading si no es el estado que queremos aplicar
+        if (state !== 'loading') {
+          button.classList.remove('ubits-button--loading');
+          button.removeAttribute('data-loading');
+        }
+        // Solo remover disabled si no es el estado que queremos aplicar
+        if (state !== 'disabled') {
+          button.disabled = false;
+        }
+        
+        // Detectar variante del botón
+        const isPrimary = button.classList.contains('ubits-button--primary') || (!button.classList.contains('ubits-button--secondary') && !button.classList.contains('ubits-button--tertiary'));
+        const isSecondary = button.classList.contains('ubits-button--secondary');
+        const isTertiary = button.classList.contains('ubits-button--tertiary');
+        const isActive = button.classList.contains('ubits-button--active');
+        
+        // Si el botón está en estado active, asegurar que el color del texto sea azul
+        if (isActive) {
+          button.style.color = 'var(--ubits-button-active-fg, var(--ubits-accent-brand-static))';
+          
+          const spans = button.querySelectorAll('span');
+          spans.forEach((span) => {
+            span.style.color = 'var(--ubits-accent-brand-static)';
+          });
+          
+          const icons = button.querySelectorAll('i');
+          icons.forEach((icon) => {
+            icon.style.color = 'var(--ubits-accent-brand-static)';
+          });
+        }
+        
+        switch (state) {
+          case 'hover':
+            button.classList.add('ubits-button--hover');
+            // Simular hover con estilos inline
+            if (isActive) {
+              // Si es active, mantener el estilo active
+              button.style.background = 'var(--ubits-bg-active-button), var(--ubits-bg-1)';
+              button.style.color = 'var(--ubits-button-active-fg, var(--ubits-accent-brand-static))';
+              button.style.border = 'none';
+            } else if (isPrimary) {
+              button.style.background = 'var(--ubits-button-primary-hover)';
+              button.style.borderColor = 'var(--ubits-button-primary-hover)';
+            } else if (isSecondary) {
+              button.style.background = 'var(--ubits-btn-secondary-bg-hover)';
+            } else if (isTertiary) {
+              button.style.background = 'var(--ubits-btn-tertiary-bg-hover)';
+            }
+            break;
+            
+          case 'focus':
+            button.classList.add('ubits-button--focus');
+            button.focus();
+            // El focus ring se aplica automáticamente con CSS
+            if (isActive) {
+              button.style.color = 'var(--ubits-button-active-fg, var(--ubits-accent-brand-static))';
+            }
+            break;
+            
+          case 'active':
+            // Estado active: usar estilo del modificador active (fondo azul 0C5BEF al 15% + texto azul)
+            button.classList.add('ubits-button--active');
+            
+            // Obtener valores de tokens
+            const rootEl = document.documentElement;
+            const bgActiveButtonValue = getComputedStyle(rootEl).getPropertyValue('--ubits-bg-active-button').trim() || 'var(--ubits-bg-active-button)';
+            const bg1Value = getComputedStyle(rootEl).getPropertyValue('--ubits-bg-1').trim() || '#ffffff';
+            
+            // El formato background: color1, color2 NO funciona con colores sólidos
+            // Necesitamos usar background-color para el fondo base y background-image para la capa semitransparente
+            // O mejor aún, usar un pseudo-elemento ::before
+            const styleId = 'button-active-override';
+            let styleEl = document.getElementById(styleId);
+            if (!styleEl) {
+              styleEl = document.createElement('style');
+              styleEl.id = styleId;
+              document.head.appendChild(styleEl);
+            }
+            
+            // Usar selector específico para cada variante
+            const variantClass = isPrimary ? 'ubits-button--primary' : isSecondary ? 'ubits-button--secondary' : 'ubits-button--tertiary';
+            
+            const cssRule = `
+              .${variantClass}.ubits-button--active {
+                position: relative !important;
+                background-color: ${bg1Value} !important;
+                color: var(--ubits-button-active-fg, var(--ubits-accent-brand-static)) !important;
+                border: none !important;
+              }
+              .${variantClass}.ubits-button--active::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: ${bgActiveButtonValue};
+                border-radius: inherit;
+                pointer-events: none;
+                z-index: 0;
+              }
+              .${variantClass}.ubits-button--active span {
+                color: var(--ubits-button-active-fg, var(--ubits-accent-brand-static)) !important;
+                position: relative;
+                z-index: 1;
+              }
+              .${variantClass}.ubits-button--active i {
+                color: var(--ubits-button-active-fg, var(--ubits-accent-brand-static)) !important;
+                position: relative;
+                z-index: 1;
+              }
+            `;
+            styleEl.textContent = cssRule;
+            
+            // Aplicar color a spans e iconos
+            const spansActive = button.querySelectorAll('span');
+            spansActive.forEach((span) => {
+              span.style.color = 'var(--ubits-accent-brand-static)';
+            });
+            const iconsActive = button.querySelectorAll('i');
+            iconsActive.forEach((icon) => {
+              icon.style.color = 'var(--ubits-accent-brand-static)';
+            });
+            break;
+            
+          case 'disabled':
+            button.disabled = true;
+            button.style.background = '';
+            button.style.borderColor = '';
+            button.style.transform = '';
+            button.style.color = '';
+            break;
+            
+          case 'loading':
+            button.classList.add('ubits-button--loading');
+            button.setAttribute('data-loading', 'true');
+            button.style.background = '';
+            button.style.borderColor = '';
+            button.style.transform = '';
+            if (isActive) {
+              button.style.color = 'var(--ubits-button-active-fg, var(--ubits-accent-brand-static))';
+            }
+            break;
+            
+          case 'default':
+          default:
+            // Resetear estilos pero mantener active si está activo
+            if (!isActive) {
+              button.style.background = '';
+              button.style.borderColor = '';
+              button.style.transform = '';
+              button.style.color = '';
+            } else {
+              // Si es active, mantener el estilo active
+              button.style.background = 'var(--ubits-bg-active-button), var(--ubits-bg-1)';
+              button.style.color = 'var(--ubits-button-active-fg, var(--ubits-accent-brand-static))';
+              button.style.border = 'none';
+            }
+            break;
+        }
+      }
+      
       // Función para actualizar el preview del botón (UN SOLO BOTÓN)
       window.updateButtonPreview = function(componentId) {
+        console.log('🚀 [updateButtonPreview] ===== INICIO =====');
         console.log('🚀 [updateButtonPreview] Iniciando actualización para:', componentId);
+        
         const state = initButtonPreviewState(componentId);
-        console.log('📊 [updateButtonPreview] Estado completo:', JSON.stringify(state, null, 2));
+        console.log('📊 [updateButtonPreview] Estado completo obtenido:', JSON.stringify(state, null, 2));
+        console.log('📊 [updateButtonPreview] Valores clave:', {
+          iconPosition: state.iconPosition,
+          showBadge: state.showBadge,
+          isLoading: state.isLoading,
+          variant: state.variant,
+          size: state.size,
+          text: state.text,
+          state: state.state
+        });
+        
         const preview = document.getElementById(`button-preview-${componentId}`);
         
         if (!preview) {
           console.error('❌ [updateButtonPreview] Preview no encontrado:', `button-preview-${componentId}`);
+          console.log('🚀 [updateButtonPreview] ===== FIN (ERROR) =====');
           return;
         }
         
@@ -13566,12 +13915,48 @@ Reglas Importantes:
                 // Intentar usar createButton si está disponible
                 if (typeof window.createButtonHelper === 'function') {
                   window.createButtonHelper(buttonOptions, wrapper, state);
+                  // Aplicar estado después de crear el botón (con delay para asegurar que el DOM esté listo)
+                  setTimeout(() => {
+                    const button = wrapper.querySelector('.ubits-button');
+                    if (button && state.state && state.state !== 'default') {
+                      // Solo aplicar estado si no es 'loading' o si realmente está en loading
+                      // Si el estado visual es 'loading' pero isLoading es false, no aplicar la clase loading
+                      if (state.state === 'loading' && !state.isLoading) {
+                        // No aplicar estado loading si el botón no está realmente en loading
+                        // Aplicar estado default en su lugar (resetear estilos)
+                        applyButtonState(button, 'default');
+                      } else {
+                        applyButtonState(button, state.state);
+                      }
+                    } else if (button && state.state === 'default') {
+                      // Si el estado es 'default', solo resetear estilos sin aplicar nada especial
+                      applyButtonState(button, 'default');
+                    }
+                  }, 50);
                 } else {
                   // Fallback: usar generateButtonHTML
                   const buttonHTML = generateButtonHTML(state, componentId);
                   wrapper.innerHTML = buttonHTML;
                   // Aplicar tooltip después de insertar HTML
                   applyTooltipToButton(wrapper, state, componentId);
+                  // Aplicar estado después de insertar HTML (con delay para asegurar que el DOM esté listo)
+                  setTimeout(() => {
+                    const button = wrapper.querySelector('.ubits-button');
+                    if (button && state.state && state.state !== 'default') {
+                      // Solo aplicar estado si no es 'loading' o si realmente está en loading
+                      // Si el estado visual es 'loading' pero isLoading es false, no aplicar la clase loading
+                      if (state.state === 'loading' && !state.isLoading) {
+                        // No aplicar estado loading si el botón no está realmente en loading
+                        // Aplicar estado default en su lugar (resetear estilos)
+                        applyButtonState(button, 'default');
+                      } else {
+                        applyButtonState(button, state.state);
+                      }
+                    } else if (button && state.state === 'default') {
+                      // Si el estado es 'default', solo resetear estilos sin aplicar nada especial
+                      applyButtonState(button, 'default');
+                    }
+                  }, 50);
                 }
               } catch (error) {
                 console.warn('Error creating button with dropdown, using fallback:', error);
@@ -13579,18 +13964,61 @@ Reglas Importantes:
                 wrapper.innerHTML = buttonHTML;
                 // Aplicar tooltip después de insertar HTML
                 applyTooltipToButton(wrapper, state, componentId);
+                // Aplicar estado después de insertar HTML
+                setTimeout(() => {
+                  const button = wrapper.querySelector('.ubits-button');
+                  if (button && state.state && state.state !== 'default') {
+                    applyButtonState(button, state.state);
+                  }
+                }, 0);
               }
             });
           });
         } else {
           // Sin dropdown, generar HTML normalmente
           console.log('📝 [updateButtonPreview] Generando HTML sin dropdown');
+          console.log('📝 [updateButtonPreview] Estado que se pasa a generateButtonHTML:', JSON.stringify(state, null, 2));
+          
           const buttonHTML = generateButtonHTML(state, componentId);
-          console.log('📝 [updateButtonPreview] HTML generado, insertando en preview');
+          console.log('📝 [updateButtonPreview] HTML generado, longitud:', buttonHTML.length);
+          console.log('📝 [updateButtonPreview] HTML generado (primeros 500 chars):', buttonHTML.substring(0, 500));
+          
+          console.log('📝 [updateButtonPreview] Insertando HTML en preview...');
           preview.innerHTML = buttonHTML;
+          
+          // Verificar que el HTML se insertó correctamente
+          const insertedButton = preview.querySelector('.ubits-button');
+          console.log('📝 [updateButtonPreview] Botón insertado encontrado:', !!insertedButton);
+          if (insertedButton) {
+            console.log('📝 [updateButtonPreview] Contenido del botón insertado:', insertedButton.innerHTML);
+            console.log('📝 [updateButtonPreview] Clases del botón:', insertedButton.className);
+            const iconInButton = insertedButton.querySelector('i');
+            const badgeInButton = insertedButton.querySelector('.ubits-button__badge');
+            console.log('📝 [updateButtonPreview] Icono encontrado en botón:', !!iconInButton);
+            console.log('📝 [updateButtonPreview] Badge encontrado en botón:', !!badgeInButton);
+          }
+          
           console.log('📝 [updateButtonPreview] HTML insertado, aplicando tooltip');
           // Aplicar tooltip después de insertar HTML
           applyTooltipToButton(preview, state, componentId);
+          // Aplicar estado después de insertar HTML (con delay para asegurar que el DOM esté listo)
+          setTimeout(() => {
+            const button = preview.querySelector('.ubits-button');
+            if (button && state.state && state.state !== 'default') {
+              // Solo aplicar estado si no es 'loading' o si realmente está en loading
+              // Si el estado visual es 'loading' pero isLoading es false, no aplicar la clase loading
+              if (state.state === 'loading' && !state.isLoading) {
+                // No aplicar estado loading si el botón no está realmente en loading
+                // Aplicar estado default en su lugar (resetear estilos)
+                applyButtonState(button, 'default');
+              } else {
+                applyButtonState(button, state.state);
+              }
+            } else if (button && state.state === 'default') {
+              // Si el estado es 'default', solo resetear estilos sin aplicar nada especial
+              applyButtonState(button, 'default');
+            }
+          }, 50);
         }
         
         // Mostrar/ocultar controlador de tooltip según iconPosition
@@ -14552,7 +14980,15 @@ Reglas Importantes:
       
       // Nueva función unificada para todos los controles
       window.setButtonControl = function(option, value, componentId) {
+        console.log('🎛️ [setButtonControl] ===== INICIO =====');
+        console.log('🎛️ [setButtonControl] Parámetros recibidos:', {
+          option,
+          value,
+          componentId
+        });
+        
         const state = initButtonPreviewState(componentId);
+        console.log('🎛️ [setButtonControl] Estado inicial:', JSON.stringify(state, null, 2));
         
         // Actualizar estado según la opción
         if (option === 'variant') {
@@ -14566,14 +15002,29 @@ Reglas Importantes:
           const select = document.getElementById(`size-select-${componentId}`);
           if (select) select.value = value;
         } else if (option === 'badge') {
+          console.log('🎛️ [setButtonControl] Cambiando badge:', {
+            option,
+            value,
+            valorAnterior: state.showBadge
+          });
           state.showBadge = value === 'yes';
+          console.log('🎛️ [setButtonControl] Nuevo valor showBadge:', state.showBadge);
+          
           const toggle = document.getElementById(`badge-toggle-${componentId}`);
-          if (toggle) toggle.checked = state.showBadge;
+          if (toggle) {
+            toggle.checked = state.showBadge;
+            console.log('🎛️ [setButtonControl] Toggle actualizado:', toggle.checked);
+          } else {
+            console.warn('⚠️ [setButtonControl] Toggle badge no encontrado');
+          }
           
           // Actualizar texto del estado del badge
           const badgeStatus = document.getElementById(`badge-status-${componentId}`);
           if (badgeStatus) {
             badgeStatus.textContent = state.showBadge ? 'Activado' : 'Desactivado';
+            console.log('🎛️ [setButtonControl] Estado badge actualizado:', badgeStatus.textContent);
+          } else {
+            console.warn('⚠️ [setButtonControl] Badge status no encontrado');
           }
         } else if (option === 'loading') {
           state.isLoading = value === 'yes';
@@ -14645,17 +15096,29 @@ Reglas Importantes:
             console.log('🎛️ [setButtonControl] No se actualiza preview (tooltip no activo o no es icon-only)');
           }
         } else if (option === 'icon') {
-          state.iconPosition = value;
           console.log('🎛️ [setButtonControl] Cambiando iconPosition:', {
             option,
             value,
-            componentId,
-            currentState: JSON.stringify(state, null, 2)
+            valorAnterior: state.iconPosition,
+            componentId
           });
           
+          state.iconPosition = value;
+          console.log('🎛️ [setButtonControl] Nuevo iconPosition:', state.iconPosition);
+          console.log('🎛️ [setButtonControl] Estado completo después del cambio:', JSON.stringify(state, null, 2));
+          
           // Actualizar botones activos de icono
-          document.querySelectorAll(`[data-component="${componentId}"][data-option="icon"]`).forEach(btn => {
-            btn.classList.toggle('active', btn.getAttribute('data-value') === value);
+          const iconButtons = document.querySelectorAll(`[data-component="${componentId}"][data-option="icon"]`);
+          console.log('🎛️ [setButtonControl] Botones de icono encontrados:', iconButtons.length);
+          iconButtons.forEach(btn => {
+            const btnValue = btn.getAttribute('data-value');
+            const isActive = btnValue === value;
+            btn.classList.toggle('active', isActive);
+            console.log('🎛️ [setButtonControl] Botón icono:', {
+              value: btnValue,
+              isActive,
+              tieneClaseActive: btn.classList.contains('active')
+            });
           });
           
           // Mostrar/ocultar controlador de tooltip según iconPosition
@@ -14663,17 +15126,31 @@ Reglas Importantes:
           if (tooltipControl) {
             tooltipControl.style.display = value === 'only' ? 'block' : 'none';
             console.log('🎛️ [setButtonControl] Tooltip control visibility:', tooltipControl.style.display);
+          } else {
+            console.warn('⚠️ [setButtonControl] Tooltip control no encontrado');
           }
           
           // Forzar actualización del preview para aplicar cambios
           console.log('🎛️ [setButtonControl] Llamando updateButtonPreview después de cambiar iconPosition...');
           updateButtonPreview(componentId);
-        }
-        
-        // Actualizar preview (solo si no se actualizó ya en el bloque de 'icon')
-        if (option !== 'icon' && option !== 'tooltip' && option !== 'tooltipText') {
+        } else if (option === 'state') {
+          state.state = value;
+          // Actualizar botones activos de estado
+          document.querySelectorAll(`[data-component="${componentId}"][data-option="state"]`).forEach(btn => {
+            btn.classList.toggle('active', btn.getAttribute('data-value') === value);
+          });
+          // Actualizar preview para aplicar el estado
           updateButtonPreview(componentId);
         }
+        
+        // Actualizar preview (solo si no se actualizó ya en el bloque de 'icon', 'tooltip', 'tooltipText' o 'state')
+        if (option !== 'icon' && option !== 'tooltip' && option !== 'tooltipText' && option !== 'state') {
+          console.log('🎛️ [setButtonControl] Llamando updateButtonPreview (opción no manejada específicamente)');
+          updateButtonPreview(componentId);
+        }
+        
+        console.log('🎛️ [setButtonControl] Estado final:', JSON.stringify(state, null, 2));
+        console.log('🎛️ [setButtonControl] ===== FIN =====');
       };
       
       // Función para cambiar el preview del botón
@@ -30451,6 +30928,642 @@ Reglas Importantes:
       };
       
       // ========================================
+      // TIMELINE PREVIEW FUNCTIONS
+      // ========================================
+      
+      // Estado del preview del Timeline
+      const timelinePreviewState = {};
+      
+      // Inicializar estado del Timeline
+      function initTimelinePreviewState(componentId) {
+        if (!timelinePreviewState[componentId]) {
+          timelinePreviewState[componentId] = {
+            showAvatar: false,
+            showDate: true,
+            showDescription: true,
+            showIcon: true,
+            alignment: 'left',
+            filledItems: 2
+          };
+        }
+        return timelinePreviewState[componentId];
+      }
+      
+      // Función helper para renderizar icono FontAwesome
+      function renderTimelineIcon(iconName, style = 'regular') {
+        const iconClass = style === 'solid' ? 'fas' : 'far';
+        return `<i class="${iconClass} fa-${iconName}"></i>`;
+      }
+      
+      // Función para generar datos de ejemplo del Timeline
+      function generateTimelineData(filledItems = 2) {
+        return [
+          {
+            date: 'Mar 15, 2024',
+            title: 'Project Kickoff',
+            description: 'Initial team meeting and project scope definition. Established key milestones and resource allocation.',
+            state: filledItems > 0 ? 'filled' : 'default',
+            avatar: {
+              imageUrl: '/images/Profile-image.jpg',
+            },
+            icon: 'circle',
+          },
+          {
+            date: 'Mar 22, 2024',
+            title: 'Design Phase',
+            description: 'Completed wireframes and user interface mockups. Stakeholder review and feedback incorporated.',
+            state: filledItems > 1 ? 'filled' : 'default',
+            avatar: {
+              imageUrl: '/images/Profile-image.jpg',
+            },
+            icon: 'paint-brush',
+          },
+          {
+            date: 'Apr 5, 2024',
+            title: 'Development Sprint',
+            description: 'Backend API implementation and frontend component development in progress.',
+            state: filledItems > 2 ? 'filled' : 'default',
+            avatar: {
+              imageUrl: '/images/Profile-image.jpg',
+            },
+            icon: 'code',
+          },
+          {
+            date: 'Apr 19, 2024',
+            title: 'Testing & Deployment',
+            description: 'Quality assurance testing, performance optimization, and production deployment preparation.',
+            state: filledItems > 3 ? 'filled' : 'default',
+            avatar: {
+              imageUrl: '/images/Profile-image.jpg',
+            },
+            icon: 'rocket',
+          },
+        ];
+      }
+      
+      // Función para escapar HTML
+      function escapeTimelineHtml(text) {
+        if (typeof text !== 'string') return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+      }
+      
+      // Función para renderizar un item del timeline
+      function renderTimelineItem(item, index, isLast, args) {
+        const {
+          showAvatar = false,
+          showDate = true,
+          showDescription = true,
+          showIcon = true,
+          alignment = 'left',
+        } = args;
+        
+        // Avatar e icono son mutuamente excluyentes
+        const useAvatar = showAvatar === true && showIcon !== true;
+        const useIcon = showIcon === true && showAvatar !== true;
+        
+        const isFilled = item.state === 'filled';
+        const markerClass = isFilled ? 'ubits-timeline-marker--filled' : 'ubits-timeline-marker--default';
+        const markerColor = isFilled ? 'var(--ubits-fg-1-medium-static)' : 'var(--ubits-border-1)';
+        
+        // Avatar HTML
+        let avatarHTML = '';
+        if (useAvatar && item.avatar) {
+          // Usar renderAvatar si está disponible, sino crear HTML básico
+          if (typeof window.renderAvatar === 'function') {
+            const avatarOptions = {
+              size: 'xs',
+              alt: item.title,
+            };
+            if (item.avatar.imageUrl) avatarOptions.imageUrl = item.avatar.imageUrl;
+            else if (item.avatar.initials) avatarOptions.initials = item.avatar.initials;
+            else avatarOptions.icon = item.avatar.icon || 'user';
+            avatarHTML = window.renderAvatar(avatarOptions);
+          } else {
+            avatarHTML = `<div class="ubits-avatar ubits-avatar--xs" style="width: 24px; height: 24px; border-radius: 50%; background: var(--ubits-bg-2); display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--ubits-fg-1-medium);">${item.avatar.initials || 'U'}</div>`;
+          }
+        }
+        
+        // Icono del marcador
+        let markerIconHTML = '';
+        if (useIcon) {
+          const iconName = item.icon || 'circle';
+          markerIconHTML = `<span class="ubits-timeline-marker__icon">${renderTimelineIcon(iconName, 'solid')}</span>`;
+        }
+        
+        // Contenido del item
+        const isCentered = alignment === 'center';
+        const isEven = index % 2 === 0;
+        const contentSide = isCentered ? (isEven ? 'left' : 'right') : 'left';
+        
+        const lineHTML = !isLast ? `<div class="ubits-timeline-line"></div>` : '';
+        
+        const markerBackground = isFilled ? markerColor : 'var(--ubits-bg-1)';
+        
+        // Si usa avatar
+        if (useAvatar && avatarHTML) {
+          return `
+            <div class="ubits-timeline-item ${isCentered ? `ubits-timeline-item--${contentSide}` : ''}" data-index="${index}" data-state="${item.state}">
+              ${isCentered && contentSide === 'right' ? `
+                <div class="ubits-timeline-item__content">
+                  <div class="ubits-timeline-item__text">
+                    ${showDate && item.date ? `<div class="ubits-timeline-item__date ubits-body-sm-regular">${escapeTimelineHtml(item.date)}</div>` : ''}
+                    <div class="ubits-timeline-item__title ubits-body-md-semibold">${escapeTimelineHtml(item.title)}</div>
+                    ${showDescription && item.description ? `<div class="ubits-timeline-item__description ubits-body-sm-regular">${escapeTimelineHtml(item.description)}</div>` : ''}
+                  </div>
+                </div>
+              ` : ''}
+              <div class="ubits-timeline-item__marker-container">
+                <div class="ubits-timeline-marker ubits-timeline-marker--avatar">
+                  ${avatarHTML}
+                </div>
+              </div>
+              ${lineHTML}
+              ${isCentered && contentSide === 'left' ? `
+                <div class="ubits-timeline-item__content">
+                  <div class="ubits-timeline-item__text">
+                    ${showDate && item.date ? `<div class="ubits-timeline-item__date ubits-body-sm-regular">${escapeTimelineHtml(item.date)}</div>` : ''}
+                    <div class="ubits-timeline-item__title ubits-body-md-semibold">${escapeTimelineHtml(item.title)}</div>
+                    ${showDescription && item.description ? `<div class="ubits-timeline-item__description ubits-body-sm-regular">${escapeTimelineHtml(item.description)}</div>` : ''}
+                  </div>
+                </div>
+              ` : !isCentered ? `
+                <div class="ubits-timeline-item__content">
+                  <div class="ubits-timeline-item__text">
+                    ${showDate && item.date ? `<div class="ubits-timeline-item__date ubits-body-sm-regular">${escapeTimelineHtml(item.date)}</div>` : ''}
+                    <div class="ubits-timeline-item__title ubits-body-md-semibold">${escapeTimelineHtml(item.title)}</div>
+                    ${showDescription && item.description ? `<div class="ubits-timeline-item__description ubits-body-sm-regular">${escapeTimelineHtml(item.description)}</div>` : ''}
+                  </div>
+                </div>
+              ` : ''}
+            </div>
+          `;
+        }
+        
+        // Si usa icono
+        return `
+          <div class="ubits-timeline-item ${isCentered ? `ubits-timeline-item--${contentSide}` : ''}" data-index="${index}" data-state="${item.state}">
+            ${isCentered && contentSide === 'right' ? `
+              <div class="ubits-timeline-item__content">
+                <div class="ubits-timeline-item__text">
+                  ${showDate && item.date ? `<div class="ubits-timeline-item__date ubits-body-sm-regular">${escapeTimelineHtml(item.date)}</div>` : ''}
+                  <div class="ubits-timeline-item__title ubits-body-md-semibold">${escapeTimelineHtml(item.title)}</div>
+                  ${showDescription && item.description ? `<div class="ubits-timeline-item__description ubits-body-sm-regular">${escapeTimelineHtml(item.description)}</div>` : ''}
+                </div>
+              </div>
+            ` : ''}
+            <div class="ubits-timeline-item__marker-container">
+              <div class="ubits-timeline-marker ${markerClass}" style="border-color: ${markerColor}; background-color: ${markerBackground};">
+                ${markerIconHTML}
+              </div>
+            </div>
+            ${lineHTML}
+            ${isCentered && contentSide === 'left' ? `
+              <div class="ubits-timeline-item__content">
+                <div class="ubits-timeline-item__text">
+                  ${showDate && item.date ? `<div class="ubits-timeline-item__date ubits-body-sm-regular">${escapeTimelineHtml(item.date)}</div>` : ''}
+                  <div class="ubits-timeline-item__title ubits-body-md-semibold">${escapeTimelineHtml(item.title)}</div>
+                  ${showDescription && item.description ? `<div class="ubits-timeline-item__description ubits-body-sm-regular">${escapeTimelineHtml(item.description)}</div>` : ''}
+                </div>
+              </div>
+            ` : !isCentered ? `
+              <div class="ubits-timeline-item__content">
+                <div class="ubits-timeline-item__text">
+                  ${showDate && item.date ? `<div class="ubits-timeline-item__date ubits-body-sm-regular">${escapeTimelineHtml(item.date)}</div>` : ''}
+                  <div class="ubits-timeline-item__title ubits-body-md-semibold">${escapeTimelineHtml(item.title)}</div>
+                  ${showDescription && item.description ? `<div class="ubits-timeline-item__description ubits-body-sm-regular">${escapeTimelineHtml(item.description)}</div>` : ''}
+                </div>
+              </div>
+            ` : ''}
+          </div>
+        `;
+      }
+      
+      // Función para actualizar el preview del Timeline
+      window.updateTimelinePreview = function(componentId) {
+        const state = initTimelinePreviewState(componentId);
+        const preview = document.getElementById(`timeline-preview-${componentId}`);
+        
+        if (!preview) {
+          console.error('❌ Preview de Timeline no encontrado:', `timeline-preview-${componentId}`);
+          return;
+        }
+        
+        // Asegurar que avatar e icono sean mutuamente excluyentes
+        if (state.showAvatar === true) {
+          state.showIcon = false;
+        }
+        if (state.showIcon === true) {
+          state.showAvatar = false;
+        }
+        
+        // Cargar CSS del Timeline si no está cargado
+        const timelineCSSId = 'ubits-timeline-css';
+        if (!document.getElementById(timelineCSSId)) {
+          const style = document.createElement('style');
+          style.id = timelineCSSId;
+          style.textContent = `
+            .ubits-timeline {
+              position: relative;
+              display: flex;
+              flex-direction: column;
+              gap: 0;
+              width: 100%;
+            }
+            
+            .ubits-timeline--left {
+              align-items: flex-start;
+            }
+            
+            .ubits-timeline--center {
+              align-items: center;
+              position: relative;
+            }
+            
+            .ubits-timeline--center::before {
+              content: '';
+              position: absolute;
+              left: 50%;
+              top: 0;
+              bottom: 0;
+              width: 2px;
+              transform: translateX(-50%);
+              background-color: var(--ubits-border-1);
+              z-index: 0;
+            }
+            
+            .ubits-timeline-item {
+              position: relative;
+              display: flex;
+              width: 100%;
+              gap: 0;
+              align-items: flex-start;
+              margin-bottom: var(--ubits-spacing-xl);
+            }
+            
+            .ubits-timeline-item:last-child {
+              margin-bottom: 0;
+            }
+            
+            .ubits-timeline--center .ubits-timeline-item {
+              justify-content: flex-start;
+              align-items: flex-start;
+              position: relative;
+            }
+            
+            .ubits-timeline--center .ubits-timeline-item--left {
+              flex-direction: row;
+              justify-content: flex-end;
+            }
+            
+            .ubits-timeline--center .ubits-timeline-item--right {
+              flex-direction: row;
+              justify-content: flex-start;
+            }
+            
+            .ubits-timeline-item__content {
+              display: flex;
+              flex-direction: column;
+              gap: 0;
+              flex: 1;
+              min-width: 0;
+              margin-left: var(--ubits-spacing-md);
+            }
+            
+            .ubits-timeline--center .ubits-timeline-item__content {
+              flex: 0 0 auto;
+              max-width: calc(50% - 40px);
+              align-self: flex-start;
+              padding-top: 0;
+            }
+            
+            .ubits-timeline--center .ubits-timeline-item--right .ubits-timeline-item__content {
+              text-align: right;
+              align-items: flex-end;
+              margin-left: var(--ubits-spacing-md);
+              margin-right: 0;
+              order: 2;
+            }
+            
+            .ubits-timeline--center .ubits-timeline-item--left .ubits-timeline-item__content {
+              text-align: left;
+              align-items: flex-start;
+              margin-right: var(--ubits-spacing-md);
+              margin-left: 0;
+              order: 0;
+            }
+            
+            .ubits-timeline--center .ubits-timeline-item--left .ubits-timeline-item__marker-container {
+              order: 1;
+            }
+            
+            .ubits-timeline--center .ubits-timeline-item--right .ubits-timeline-item__marker-container {
+              order: 1;
+            }
+            
+            .ubits-timeline-item__text {
+              flex: 1;
+              min-width: 0;
+              display: flex;
+              flex-direction: column;
+              gap: 0;
+              align-items: flex-start;
+            }
+            
+            .ubits-timeline-item__date {
+              margin: 0 0 4px 0;
+              font-family: var(--font-sans);
+              font-size: var(--font-body-sm-size);
+              font-weight: var(--weight-regular);
+              line-height: var(--font-body-sm-line);
+              color: var(--ubits-fg-1-medium);
+            }
+            
+            .ubits-timeline-item__title {
+              margin: 0 0 4px 0;
+              font-family: var(--font-sans);
+              font-size: var(--font-body-md-size);
+              font-weight: var(--weight-semibold);
+              line-height: var(--font-body-md-line);
+              color: var(--ubits-fg-1-high);
+            }
+            
+            .ubits-timeline-item__description {
+              margin: 0;
+              font-family: var(--font-sans);
+              font-size: var(--font-body-sm-size);
+              font-weight: var(--weight-regular);
+              line-height: var(--font-body-sm-line);
+              color: var(--ubits-fg-1-medium);
+            }
+            
+            .ubits-timeline-item__marker-container {
+              position: relative;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              flex-shrink: 0;
+              width: 24px;
+              z-index: 1;
+            }
+            
+            .ubits-timeline--center .ubits-timeline-item__marker-container {
+              position: absolute;
+              left: 50%;
+              transform: translateX(-50%);
+              z-index: 2;
+              top: 0;
+            }
+            
+            .ubits-timeline-marker {
+              width: 24px;
+              height: 24px;
+              border-radius: var(--ubits-border-radius-full, 50%);
+              border: 2px solid;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              position: relative;
+              z-index: 1;
+              flex-shrink: 0;
+              transition: all 0.2s ease;
+              box-sizing: border-box;
+            }
+            
+            .ubits-timeline-marker--avatar {
+              width: 24px;
+              height: 24px;
+              border: 2px solid var(--ubits-border-1);
+              padding: 0;
+              background: var(--ubits-bg-1);
+              border-radius: var(--ubits-border-radius-full);
+            }
+            
+            .ubits-timeline-marker--avatar .ubits-avatar {
+              width: 24px;
+              height: 24px;
+            }
+            
+            .ubits-timeline-marker--default {
+              background-color: var(--ubits-bg-1);
+              border-color: var(--ubits-border-1);
+            }
+            
+            .ubits-timeline-marker--filled {
+              background-color: var(--ubits-fg-1-medium-static);
+              border-color: var(--ubits-fg-1-medium-static);
+            }
+            
+            .ubits-timeline-marker__icon {
+              font-size: 12px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            }
+            
+            .ubits-timeline-marker--default .ubits-timeline-marker__icon {
+              color: var(--ubits-fg-1-medium);
+            }
+            
+            .ubits-timeline-marker--filled .ubits-timeline-marker__icon {
+              color: var(--ubits-fg-bold);
+            }
+            
+            .ubits-timeline-line {
+              position: absolute;
+              left: 11px;
+              top: 24px;
+              bottom: -32px;
+              width: 2px;
+              z-index: 0;
+              background-color: var(--ubits-border-1);
+              transition: background-color 0.2s ease;
+            }
+            
+            .ubits-timeline--center .ubits-timeline-line {
+              display: none;
+            }
+            
+            .ubits-timeline-item:last-child .ubits-timeline-line {
+              display: none;
+            }
+            
+            .ubits-timeline-item[data-state="filled"] .ubits-timeline-line {
+              background-color: var(--ubits-fg-1-medium-static);
+            }
+            
+            .ubits-timeline-item[data-state="default"] .ubits-timeline-line {
+              background-color: var(--ubits-border-1);
+            }
+          `;
+          document.head.appendChild(style);
+        }
+        
+        // Cargar CSS del avatar si no está cargado
+        const avatarCSSId = 'ubits-avatar-css';
+        if (!document.getElementById(avatarCSSId)) {
+          const link = document.createElement('link');
+          link.id = avatarCSSId;
+          link.rel = 'stylesheet';
+          link.href = '../../addons/avatar/src/styles/avatar.css';
+          document.head.appendChild(link);
+        }
+        
+        // Generar datos del timeline
+        const timelineData = generateTimelineData(state.filledItems);
+        const alignmentClass = state.alignment === 'center' ? 'ubits-timeline--center' : 'ubits-timeline--left';
+        
+        // Renderizar items
+        const itemsHtml = timelineData.map((item, index) => 
+          renderTimelineItem(item, index, index === timelineData.length - 1, state)
+        ).join('');
+        
+        const timelineHTML = `<div class="ubits-timeline ${alignmentClass}">${itemsHtml}</div>`;
+        preview.innerHTML = timelineHTML;
+        
+        // Actualizar estados de toggles
+        const showAvatarToggle = document.getElementById(`timeline-show-avatar-toggle-${componentId}`);
+        if (showAvatarToggle && typeof window.updateToggleState === 'function') {
+          window.updateToggleState(showAvatarToggle);
+        }
+        
+        const showDateToggle = document.getElementById(`timeline-show-date-toggle-${componentId}`);
+        if (showDateToggle && typeof window.updateToggleState === 'function') {
+          window.updateToggleState(showDateToggle);
+        }
+        
+        const showDescriptionToggle = document.getElementById(`timeline-show-description-toggle-${componentId}`);
+        if (showDescriptionToggle && typeof window.updateToggleState === 'function') {
+          window.updateToggleState(showDescriptionToggle);
+        }
+        
+        const showIconToggle = document.getElementById(`timeline-show-icon-toggle-${componentId}`);
+        if (showIconToggle && typeof window.updateToggleState === 'function') {
+          window.updateToggleState(showIconToggle);
+        }
+        
+        // Actualizar textos de estado
+        const showAvatarStatus = document.getElementById(`timeline-show-avatar-status-${componentId}`);
+        if (showAvatarStatus) {
+          showAvatarStatus.textContent = state.showAvatar ? 'Activado' : 'Desactivado';
+        }
+        
+        const showDateStatus = document.getElementById(`timeline-show-date-status-${componentId}`);
+        if (showDateStatus) {
+          showDateStatus.textContent = state.showDate ? 'Activado' : 'Desactivado';
+        }
+        
+        const showDescriptionStatus = document.getElementById(`timeline-show-description-status-${componentId}`);
+        if (showDescriptionStatus) {
+          showDescriptionStatus.textContent = state.showDescription ? 'Activado' : 'Desactivado';
+        }
+        
+        const showIconStatus = document.getElementById(`timeline-show-icon-status-${componentId}`);
+        if (showIconStatus) {
+          showIconStatus.textContent = state.showIcon ? 'Activado' : 'Desactivado';
+        }
+        
+        console.log('✅ Timeline preview actualizado:', state);
+      };
+      
+      // Función unificada para controles del Timeline
+      window.setTimelineControl = function(option, value, componentId) {
+        const state = initTimelinePreviewState(componentId);
+        
+        if (option === 'alignment') {
+          state.alignment = value || 'left';
+          const select = document.getElementById(`timeline-alignment-select-${componentId}`);
+          if (select) select.value = value;
+        } else if (option === 'filledItems') {
+          state.filledItems = Math.max(0, Math.min(4, parseInt(value) || 0));
+          const select = document.getElementById(`timeline-filled-items-select-${componentId}`);
+          if (select) select.value = state.filledItems;
+        } else if (option === 'showAvatar') {
+          state.showAvatar = value === true || value === 'true';
+          // Si se activa avatar, desactivar icono
+          if (state.showAvatar) {
+            state.showIcon = false;
+            const iconToggle = document.getElementById(`timeline-show-icon-toggle-${componentId}`);
+            if (iconToggle) {
+              iconToggle.checked = false;
+              if (typeof window.updateToggleState === 'function') {
+                window.updateToggleState(iconToggle);
+              }
+            }
+            const iconStatus = document.getElementById(`timeline-show-icon-status-${componentId}`);
+            if (iconStatus) iconStatus.textContent = 'Desactivado';
+          }
+          const toggle = document.getElementById(`timeline-show-avatar-toggle-${componentId}`);
+          if (toggle) {
+            toggle.checked = state.showAvatar;
+            if (typeof window.updateToggleState === 'function') {
+              window.updateToggleState(toggle);
+            }
+          }
+          const statusSpan = document.getElementById(`timeline-show-avatar-status-${componentId}`);
+          if (statusSpan) {
+            statusSpan.textContent = state.showAvatar ? 'Activado' : 'Desactivado';
+          }
+        } else if (option === 'showDate') {
+          state.showDate = value === true || value === 'true';
+          const toggle = document.getElementById(`timeline-show-date-toggle-${componentId}`);
+          if (toggle) {
+            toggle.checked = state.showDate;
+            if (typeof window.updateToggleState === 'function') {
+              window.updateToggleState(toggle);
+            }
+          }
+          const statusSpan = document.getElementById(`timeline-show-date-status-${componentId}`);
+          if (statusSpan) {
+            statusSpan.textContent = state.showDate ? 'Activado' : 'Desactivado';
+          }
+        } else if (option === 'showDescription') {
+          state.showDescription = value === true || value === 'true';
+          const toggle = document.getElementById(`timeline-show-description-toggle-${componentId}`);
+          if (toggle) {
+            toggle.checked = state.showDescription;
+            if (typeof window.updateToggleState === 'function') {
+              window.updateToggleState(toggle);
+            }
+          }
+          const statusSpan = document.getElementById(`timeline-show-description-status-${componentId}`);
+          if (statusSpan) {
+            statusSpan.textContent = state.showDescription ? 'Activado' : 'Desactivado';
+          }
+        } else if (option === 'showIcon') {
+          state.showIcon = value === true || value === 'true';
+          // Si se activa icono, desactivar avatar
+          if (state.showIcon) {
+            state.showAvatar = false;
+            const avatarToggle = document.getElementById(`timeline-show-avatar-toggle-${componentId}`);
+            if (avatarToggle) {
+              avatarToggle.checked = false;
+              if (typeof window.updateToggleState === 'function') {
+                window.updateToggleState(avatarToggle);
+              }
+            }
+            const avatarStatus = document.getElementById(`timeline-show-avatar-status-${componentId}`);
+            if (avatarStatus) avatarStatus.textContent = 'Desactivado';
+          }
+          const toggle = document.getElementById(`timeline-show-icon-toggle-${componentId}`);
+          if (toggle) {
+            toggle.checked = state.showIcon;
+            if (typeof window.updateToggleState === 'function') {
+              window.updateToggleState(toggle);
+            }
+          }
+          const statusSpan = document.getElementById(`timeline-show-icon-status-${componentId}`);
+          if (statusSpan) {
+            statusSpan.textContent = state.showIcon ? 'Activado' : 'Desactivado';
+          }
+        }
+        
+        // Actualizar preview
+        window.updateTimelinePreview(componentId);
+      };
+      
+      // ========================================
       // CALENDAR PREVIEW FUNCTIONS (usando CalendarProvider)
       // ========================================
       
@@ -32159,7 +33272,7 @@ Reglas Importantes:
         
         // Renderizar icono de información como botón terciario si está habilitado
         const infoIconHTML = showInfoIcon
-          ? generateButtonHTML({
+          ? generateSimpleButtonHTML({
               variant: 'tertiary',
               size: 'sm',
               icon: 'circle-info',
@@ -32171,7 +33284,7 @@ Reglas Importantes:
         
         // Renderizar botón de acción con flecha a la derecha en la esquina superior derecha
         const actionButtonHTML = showActionButton
-          ? generateButtonHTML({
+          ? generateSimpleButtonHTML({
               variant: 'tertiary',
               size: 'sm',
               icon: 'chevron-right',
@@ -32209,7 +33322,7 @@ Reglas Importantes:
       }
       
       // Helper para generar HTML de botón (simplificado para uso en preview)
-      function generateButtonHTML(options) {
+      function generateSimpleButtonHTML(options) {
         const {
           variant = 'primary',
           size = 'md',
@@ -32445,7 +33558,7 @@ Reglas Importantes:
         ` : '';
         
         // Renderizar icono de información
-        const infoIconHTML = showInfoIcon ? generateButtonHTML({
+        const infoIconHTML = showInfoIcon ? generateSimpleButtonHTML({
           variant: 'tertiary',
           size: 'sm',
           icon: 'circle-info',
@@ -32455,7 +33568,7 @@ Reglas Importantes:
         }) : '';
         
         // Renderizar botón de acción
-        const actionButtonHTML = showActionButton ? generateButtonHTML({
+        const actionButtonHTML = showActionButton ? generateSimpleButtonHTML({
           variant: 'tertiary',
           size: 'sm',
           icon: 'chevron-right',
@@ -32673,7 +33786,7 @@ Reglas Importantes:
           : '';
         
         // Renderizar icono de información
-        const infoIconHTML = showInfoIcon ? generateButtonHTML({
+        const infoIconHTML = showInfoIcon ? generateSimpleButtonHTML({
           variant: 'tertiary',
           size: 'sm',
           icon: 'circle-info',
@@ -32683,7 +33796,7 @@ Reglas Importantes:
         }) : '';
         
         // Renderizar botón de acción
-        const actionButtonHTML = showActionButton ? generateButtonHTML({
+        const actionButtonHTML = showActionButton ? generateSimpleButtonHTML({
           variant: 'tertiary',
           size: 'sm',
           icon: 'chevron-right',
@@ -32901,7 +34014,7 @@ Reglas Importantes:
         
         // Renderizar icono de información como botón terciario si está habilitado
         const infoIconHTML = showInfoIcon
-          ? generateButtonHTML({
+          ? generateSimpleButtonHTML({
               variant: 'tertiary',
               size: 'sm',
               icon: 'circle-info',
@@ -32913,7 +34026,7 @@ Reglas Importantes:
         
         // Renderizar botón de acción con flecha a la derecha en la esquina superior derecha
         const actionButtonHTML = showActionButton
-          ? generateButtonHTML({
+          ? generateSimpleButtonHTML({
               variant: 'tertiary',
               size: 'sm',
               icon: 'chevron-right',
