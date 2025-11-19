@@ -28,6 +28,7 @@
     <link rel="stylesheet" href="../../addons/score-card-metrics/src/styles/score-card-metrics.css" />
     <link rel="stylesheet" href="../../addons/participants-menu/src/styles/participants-menu.css" />
     <link rel="stylesheet" href="../../addons/badge/src/styles/badge.css" />
+    <link rel="stylesheet" href="../../addons/slider/src/styles/slider.css" />
     <!-- Button Component CSS - COMPLETO INLINE (porque @import falla con file://) -->
     <style id="button-component-css">
       /* ========================================
@@ -5865,6 +5866,21 @@ Reglas Importantes:
               class: 'ubits-calendar ubits-calendar--single',
               example: 'createCalendar({\n  mode: \'single\',\n  selectedDate: new Date(),\n  onDateSelect: (date) => {}\n})',
               hasPreview: true
+            },
+            {
+              name: 'Slider',
+              description: 'Componente Slider UBITS para seleccionar valores numéricos. Soporta modo single (un valor) y range (dos valores), orientación horizontal y vertical, inputs numéricos, marcas/ticks y guía de rango. Usa tokens UBITS exclusivamente.',
+              files: {
+                css: 'addons/slider/src/styles/slider.css',
+                ts: 'addons/slider/src/SliderProvider.ts'
+              },
+              variants: ['single', 'range'],
+              sizes: ['xs', 'sm', 'md', 'lg'],
+              states: ['default', 'disabled'],
+              features: ['2 modos (single, range)', '2 orientaciones (horizontal, vertical)', '4 tamaños (xs, sm, md, lg)', '2 estados (default, disabled)', 'Inputs numéricos opcionales', 'Marcas/ticks opcionales', 'Guía de rango opcional', 'Label y helper text', 'Métodos getValue/setValue/disable/enable', 'Usa tokens UBITS exclusivamente'],
+              class: 'ubits-slider ubits-slider--{size} ubits-slider--{orientation}',
+              example: 'createSlider({\n  containerId: \'slider-container\',\n  label: \'Rango de precio\',\n  mode: \'range\',\n  min: 0,\n  max: 1000,\n  values: [200, 800],\n  showInputs: true,\n  showRangeGuide: true\n})',
+              hasPreview: true
             }
           ],
           'Feedback': [
@@ -6516,6 +6532,12 @@ Reglas Importantes:
                     window.updateScrollbarPreview('scrollbar');
                   } else if (componentId === 'calendar' && typeof window.updateCalendarPreview === 'function') {
                     window.updateCalendarPreview('calendar');
+                  } else if (componentId === 'slider' && typeof window.updateSliderPreview === 'function') {
+                    try {
+                      window.updateSliderPreview('slider');
+                    } catch (e) {
+                      // Silently handle errors
+                    }
                   } else if (componentId === 'progress-bar' && typeof window.updateProgressBarPreview === 'function') {
                     window.updateProgressBarPreview('progress-bar');
                   } else if (componentId === 'file-upload' && typeof window.updateFileUploadPreview === 'function') {
@@ -8751,6 +8773,184 @@ Reglas Importantes:
                           <div style="background: var(--ubits-bg-1); padding: 48px; border-radius: 8px; border: none; margin-bottom: 24px; display: flex; align-items: center; justify-content: center; min-height: 400px; position: relative;">
                             <div id="calendar-preview-container-${componentId}" style="position: relative; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
                               <!-- El calendario se renderizará aquí -->
+                            </div>
+                          </div>
+                        </div>
+                      ` : ''}
+                      
+                      ${hasPreview && component.name === 'Slider' ? `
+                        <!-- Preview Section for Slider -->
+                        <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: none; margin-bottom: 24px;">
+                          <!-- CONTROLES ARRIBA -->
+                          <div style="margin-bottom: 24px;">
+                            <h4 style="margin: 0 0 20px 0; color: var(--ubits-fg-1-high); font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand-static-inverted);"></i>
+                              Controles
+                            </h4>
+                            
+                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; margin-bottom: 24px;">
+                              <!-- Modo -->
+                              <div style="flex: 0 0 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Modo</label>
+                                <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                                  <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" data-component="${componentId}" data-option="mode" data-value="single" onclick="setSliderControl('mode', 'single', '${componentId}')">
+                                    <span>Single</span>
+                                  </button>
+                                  <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-component="${componentId}" data-option="mode" data-value="range" onclick="setSliderControl('mode', 'range', '${componentId}')">
+                                    <span>Range</span>
+                                  </button>
+                                </div>
+                              </div>
+                              
+                              <!-- Orientación -->
+                              <div style="flex: 0 0 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Orientación</label>
+                                <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                                  <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" data-component="${componentId}" data-option="orientation" data-value="horizontal" onclick="setSliderControl('orientation', 'horizontal', '${componentId}')">
+                                    <span>Horizontal</span>
+                                  </button>
+                                  <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-component="${componentId}" data-option="orientation" data-value="vertical" onclick="setSliderControl('orientation', 'vertical', '${componentId}')">
+                                    <span>Vertical</span>
+                                  </button>
+                                </div>
+                              </div>
+                              
+                              <!-- Tamaño -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Tamaño</label>
+                                <select id="slider-size-select-${componentId}" onchange="setSliderControl('size', this.value, '${componentId}')" style="width: 100%; padding: 10px 32px 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); cursor: pointer; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23666%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226,9 12,15 18,9%22></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px; box-sizing: border-box;">
+                                  <option value="xs">XS</option>
+                                  <option value="sm">SM</option>
+                                  <option value="md" selected>MD</option>
+                                  <option value="lg">LG</option>
+                                </select>
+                              </div>
+                              
+                              <!-- Estado -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Estado</label>
+                                <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                                  <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" data-component="${componentId}" data-option="state" data-value="default" onclick="setSliderControl('state', 'default', '${componentId}')">
+                                    <span>Default</span>
+                                  </button>
+                                  <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-component="${componentId}" data-option="state" data-value="disabled" onclick="setSliderControl('state', 'disabled', '${componentId}')">
+                                    <span>Disabled</span>
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                            
+                            <!-- Segunda fila: Configuración de valores -->
+                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; margin-bottom: 24px;">
+                              <!-- Min -->
+                              <div style="flex: 0 0 auto; min-width: 120px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Min</label>
+                                <input type="number" id="slider-min-input-${componentId}" value="0" onchange="setSliderControl('min', parseInt(this.value) || 0, '${componentId}')" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                              
+                              <!-- Max -->
+                              <div style="flex: 0 0 auto; min-width: 120px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Max</label>
+                                <input type="number" id="slider-max-input-${componentId}" value="100" onchange="setSliderControl('max', parseInt(this.value) || 100, '${componentId}')" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                              
+                              <!-- Step -->
+                              <div style="flex: 0 0 auto; min-width: 120px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Step</label>
+                                <input type="number" id="slider-step-input-${componentId}" value="1" min="0.1" step="0.1" onchange="setSliderControl('step', parseFloat(this.value) || 1, '${componentId}')" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                              
+                              <!-- Label -->
+                              <div style="flex: 1 1 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Label</label>
+                                <input type="text" id="slider-label-input-${componentId}" value="Rango de precio" onchange="setSliderControl('label', this.value, '${componentId}')" placeholder="Label del slider" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                              
+                              <!-- Helper Text -->
+                              <div style="flex: 1 1 auto; min-width: 200px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Helper Text</label>
+                                <input type="text" id="slider-helper-input-${componentId}" value="" onchange="setSliderControl('helperText', this.value, '${componentId}')" placeholder="Texto de ayuda (opcional)" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                              </div>
+                            </div>
+                            
+                            <!-- Tercera fila: Toggles -->
+                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
+                              <!-- Mostrar Inputs -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Mostrar Inputs</label>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                  <label class="ubits-toggle ubits-toggle--md">
+                                    <input type="checkbox" class="ubits-toggle__input" id="slider-show-inputs-toggle-${componentId}" onchange="setSliderControl('showInputs', this.checked, '${componentId}')">
+                                    <span class="ubits-toggle__track">
+                                      <span class="ubits-toggle__thumb"></span>
+                                    </span>
+                                  </label>
+                                  <span id="slider-show-inputs-status-${componentId}" style="font-size: 13px; color: var(--ubits-fg-1-medium);">Desactivado</span>
+                                </div>
+                              </div>
+                              
+                              <!-- Mostrar Marcas -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Mostrar Marcas</label>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                  <label class="ubits-toggle ubits-toggle--md">
+                                    <input type="checkbox" class="ubits-toggle__input" id="slider-show-marks-toggle-${componentId}" onchange="setSliderControl('showMarks', this.checked, '${componentId}')">
+                                    <span class="ubits-toggle__track">
+                                      <span class="ubits-toggle__thumb"></span>
+                                    </span>
+                                  </label>
+                                  <span id="slider-show-marks-status-${componentId}" style="font-size: 13px; color: var(--ubits-fg-1-medium);">Desactivado</span>
+                                </div>
+                              </div>
+                              
+                              <!-- Mostrar Guía de Rango -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Guía de Rango</label>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                  <label class="ubits-toggle ubits-toggle--md">
+                                    <input type="checkbox" class="ubits-toggle__input" id="slider-show-range-guide-toggle-${componentId}" onchange="setSliderControl('showRangeGuide', this.checked, '${componentId}')">
+                                    <span class="ubits-toggle__track">
+                                      <span class="ubits-toggle__thumb"></span>
+                                    </span>
+                                  </label>
+                                  <span id="slider-show-range-guide-status-${componentId}" style="font-size: 13px; color: var(--ubits-fg-1-medium);">Desactivado</span>
+                                </div>
+                              </div>
+                              
+                              <!-- Mostrar Label -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Mostrar Label</label>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                  <label class="ubits-toggle ubits-toggle--md">
+                                    <input type="checkbox" class="ubits-toggle__input" id="slider-show-label-toggle-${componentId}" checked onchange="setSliderControl('showLabel', this.checked, '${componentId}')">
+                                    <span class="ubits-toggle__track">
+                                      <span class="ubits-toggle__thumb"></span>
+                                    </span>
+                                  </label>
+                                  <span id="slider-show-label-status-${componentId}" style="font-size: 13px; color: var(--ubits-fg-1-medium);">Activado</span>
+                                </div>
+                              </div>
+                              
+                              <!-- Mostrar Helper -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Mostrar Helper</label>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                  <label class="ubits-toggle ubits-toggle--md">
+                                    <input type="checkbox" class="ubits-toggle__input" id="slider-show-helper-toggle-${componentId}" onchange="setSliderControl('showHelper', this.checked, '${componentId}')">
+                                    <span class="ubits-toggle__track">
+                                      <span class="ubits-toggle__thumb"></span>
+                                    </span>
+                                  </label>
+                                  <span id="slider-show-helper-status-${componentId}" style="font-size: 13px; color: var(--ubits-fg-1-medium);">Desactivado</span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <!-- PREVIEW EN EL MEDIO -->
+                          <div style="background: var(--ubits-bg-1); padding: 48px; border-radius: 8px; border: none; margin-bottom: 24px; display: flex; align-items: center; justify-content: center; min-height: 200px;">
+                            <div id="slider-preview-container-${componentId}" style="width: 100%; max-width: 600px; min-height: 200px;">
+                              <!-- El slider se renderizará aquí -->
                             </div>
                           </div>
                         </div>
@@ -23003,6 +23203,365 @@ Reglas Importantes:
       };
       
       // ========================================
+      // SLIDER PREVIEW FUNCTIONS
+      // ========================================
+      
+      // Estado del preview del Slider
+      const sliderPreviewState = {};
+      
+      // Instancias del Slider
+      const sliderInstances = {};
+      
+      // Inicializar estado del preview del Slider
+      function initSliderPreviewState(componentId) {
+        if (!sliderPreviewState[componentId]) {
+          sliderPreviewState[componentId] = {
+            mode: 'single',
+            orientation: 'horizontal',
+            size: 'md',
+            state: 'default',
+            min: 0,
+            max: 100,
+            step: 1,
+            value: 50,
+            values: [25, 75],
+            label: 'Rango de precio',
+            helperText: '',
+            showInputs: false,
+            showMarks: false,
+            showRangeGuide: false,
+            showLabel: true,
+            showHelper: false
+          };
+        }
+        return sliderPreviewState[componentId];
+      }
+      
+      // Función para actualizar el preview del Slider
+      window.updateSliderPreview = function(componentId) {
+        try {
+          const state = initSliderPreviewState(componentId);
+          const container = document.getElementById(`slider-preview-container-${componentId}`);
+          
+          if (!container) {
+            return;
+          }
+          
+          // Limpiar instancia anterior si existe
+          if (sliderInstances[componentId]) {
+            try {
+              if (sliderInstances[componentId].destroy) {
+                sliderInstances[componentId].destroy();
+              }
+            } catch (e) {
+              // Silently handle destroy errors
+            }
+            sliderInstances[componentId] = null;
+          }
+          
+          // Cargar CSS si no está cargado
+          const existingSliderLink = document.querySelector('link[href*="slider.css"]');
+          if (!existingSliderLink) {
+            const link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = '../../addons/slider/src/styles/slider.css';
+            document.head.appendChild(link);
+          }
+          
+          // Cargar CSS de Input si no está cargado (para los inputs del slider)
+          const existingInputLink = document.querySelector('link[href*="input.css"]');
+          if (!existingInputLink) {
+            const link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = '../../addons/input/src/styles/input.css';
+            document.head.appendChild(link);
+          }
+          
+          // Preparar opciones para el slider
+          const sliderOptions = {
+            containerId: `slider-preview-${componentId}`,
+            label: state.label || '',
+            helperText: state.showHelper ? (state.helperText || '') : '',
+            size: state.size,
+            state: state.state,
+            orientation: state.orientation,
+            mode: state.mode,
+            min: state.min,
+            max: state.max,
+            step: state.step,
+            showInputs: state.showInputs,
+            showLabel: state.showLabel,
+            showHelper: state.showHelper,
+            showMarks: state.showMarks,
+            marks: state.showMarks ? [state.min, (state.min + state.max) / 2, state.max] : [],
+            showRangeGuide: state.showRangeGuide
+          };
+          
+          // Agregar valores según el modo
+          if (state.mode === 'range') {
+            sliderOptions.values = state.values;
+          } else {
+            sliderOptions.value = state.value;
+          }
+          
+          // Limpiar contenedor
+          container.innerHTML = '';
+          
+          // Ajustar altura del contenedor según orientación
+          const parentContainer = container.parentElement;
+          if (state.orientation === 'vertical') {
+            container.style.minHeight = '300px';
+            container.style.height = '300px';
+            container.style.display = 'flex';
+            container.style.alignItems = 'center';
+            container.style.justifyContent = 'center';
+            // Ajustar también el contenedor padre
+            if (parentContainer) {
+              parentContainer.style.minHeight = '400px';
+              parentContainer.style.alignItems = 'center';
+            }
+          } else {
+            container.style.minHeight = '200px';
+            container.style.height = 'auto';
+            container.style.display = 'block';
+            // Restaurar contenedor padre a valores por defecto
+            if (parentContainer) {
+              parentContainer.style.minHeight = '200px';
+              parentContainer.style.alignItems = 'center';
+            }
+          }
+          
+          // Crear contenedor para el slider
+          const sliderContainer = document.createElement('div');
+          sliderContainer.id = `slider-preview-${componentId}`;
+          if (state.orientation === 'vertical') {
+            sliderContainer.style.width = '100%';
+            sliderContainer.style.height = '100%';
+            sliderContainer.style.minHeight = '250px';
+            sliderContainer.style.display = 'flex';
+            sliderContainer.style.alignItems = 'center';
+            sliderContainer.style.justifyContent = 'center';
+          }
+          container.appendChild(sliderContainer);
+          
+          // Cargar el módulo del Slider usando UMD (como Badge)
+          const loadSliderModule = () => {
+            // Verificar si createSlider ya está disponible
+            if (typeof window.createSlider !== 'undefined') {
+              createSliderInstance();
+              return;
+            }
+            
+            // Verificar si el script UMD ya está cargando
+            const existingScript = document.querySelector('script[src*="slider.umd.js"]');
+            if (existingScript) {
+              // Esperar a que el script se cargue
+              const checkLoaded = setInterval(() => {
+                if (typeof window.createSlider !== 'undefined') {
+                  clearInterval(checkLoaded);
+                  createSliderInstance();
+                }
+              }, 100);
+              // Timeout después de 5 segundos
+              setTimeout(() => {
+                clearInterval(checkLoaded);
+                if (typeof window.createSlider === 'undefined') {
+                  showError('Timeout esperando que el script se cargue');
+                }
+              }, 5000);
+              return;
+            }
+            
+            // Cargar el script UMD
+            const script = document.createElement('script');
+            script.src = '../../addons/slider/dist/slider.umd.js?v=' + Date.now();
+            script.onload = () => {
+              // El módulo UMD expone createSlider directamente
+              // Intentar múltiples formas de acceso
+              let createSliderFn = null;
+              
+              // 1. Verificar si ya está en window.createSlider
+              if (typeof window.createSlider === 'function') {
+                createSliderFn = window.createSlider;
+              }
+              // 2. Verificar window.UbitsSlider.createSlider
+              else if (window.UbitsSlider && typeof window.UbitsSlider.createSlider === 'function') {
+                createSliderFn = window.UbitsSlider.createSlider;
+                window.createSlider = createSliderFn;
+              }
+              // 3. Verificar window.UBITS.Slider.create
+              else if (window.UBITS && window.UBITS.Slider && typeof window.UBITS.Slider.create === 'function') {
+                createSliderFn = window.UBITS.Slider.create;
+                window.createSlider = createSliderFn;
+              }
+              // 4. Intentar inicializar el addon si existe
+              else if (window.UbitsSlider && window.UbitsSlider.SliderAddon) {
+                const addon = new window.UbitsSlider.SliderAddon();
+                addon.initialize({}).then(() => {
+                  if (typeof window.createSlider === 'function') {
+                    createSliderInstance();
+                  } else {
+                    showError('createSlider no disponible después de inicializar el addon');
+                  }
+                }).catch(err => {
+                  showError('Error inicializando SliderAddon: ' + err.message);
+                });
+                return;
+              }
+              
+              if (createSliderFn) {
+                window.createSlider = createSliderFn;
+                createSliderInstance();
+              } else {
+                showError('createSlider no está disponible después de cargar el script. Verifica la consola para más detalles.');
+              }
+            };
+            script.onerror = () => {
+              showError('Error cargando el archivo JavaScript del componente');
+            };
+            document.head.appendChild(script);
+          };
+          
+          // Función para crear la instancia del slider
+          const createSliderInstance = () => {
+            try {
+              if (typeof window.createSlider === 'undefined') {
+                showError('createSlider no está disponible');
+                return;
+              }
+              
+              const sliderInstance = window.createSlider(sliderOptions);
+              
+              if (sliderInstance && sliderInstance.element) {
+                sliderInstances[componentId] = sliderInstance;
+                
+                // Agregar el slider al contenedor
+                if (sliderInstance.element && sliderContainer) {
+                  sliderContainer.appendChild(sliderInstance.element);
+                } else if (sliderInstance.element) {
+                  container.appendChild(sliderInstance.element);
+                }
+              } else {
+                showError(`No se pudo crear la instancia del Slider. Instancia: ${sliderInstance ? 'existe pero sin element' : 'null'}`);
+              }
+            } catch (error) {
+              showError(error.message || 'Error desconocido al crear el slider');
+            }
+          };
+          
+          // Función para mostrar errores
+          const showError = (message) => {
+            container.innerHTML = `
+              <div style="padding: 20px; background: var(--ubits-bg-2); border-radius: 8px; color: var(--ubits-fg-1-high);">
+                <p>Error cargando el componente Slider.</p>
+                <p style="font-size: 12px; color: var(--ubits-fg-1-medium); margin-top: 8px;">${message}</p>
+                <p style="font-size: 11px; color: var(--ubits-fg-1-low); margin-top: 4px;">Revisa la consola para más detalles</p>
+              </div>
+            `;
+          };
+          
+          // Cargar el módulo
+          setTimeout(loadSliderModule, 100);
+        } catch (error) {
+          // Silently handle errors
+        }
+      };
+      
+      // Función para actualizar controles del Slider
+      window.setSliderControl = function(option, value, componentId) {
+        try {
+          const state = initSliderPreviewState(componentId);
+          
+          if (option === 'mode') {
+            state.mode = value;
+            // Actualizar botones activos
+            document.querySelectorAll(`[data-component="${componentId}"][data-option="mode"]`).forEach(btn => {
+              btn.classList.toggle('active', btn.getAttribute('data-value') === value);
+            });
+          } else if (option === 'orientation') {
+            state.orientation = value;
+            // Actualizar botones activos
+            document.querySelectorAll(`[data-component="${componentId}"][data-option="orientation"]`).forEach(btn => {
+              btn.classList.toggle('active', btn.getAttribute('data-value') === value);
+            });
+          } else if (option === 'size') {
+            state.size = value;
+          } else if (option === 'state') {
+            state.state = value;
+            // Actualizar botones activos
+            document.querySelectorAll(`[data-component="${componentId}"][data-option="state"]`).forEach(btn => {
+              btn.classList.toggle('active', btn.getAttribute('data-value') === value);
+            });
+          } else if (option === 'min') {
+            state.min = value;
+            // Asegurar que value/values estén dentro del rango
+            if (state.mode === 'range') {
+              state.values[0] = Math.max(state.min, state.values[0]);
+              state.values[1] = Math.max(state.min, state.values[1]);
+            } else {
+              state.value = Math.max(state.min, state.value);
+            }
+          } else if (option === 'max') {
+            state.max = value;
+            // Asegurar que value/values estén dentro del rango
+            if (state.mode === 'range') {
+              state.values[0] = Math.min(state.max, state.values[0]);
+              state.values[1] = Math.min(state.max, state.values[1]);
+            } else {
+              state.value = Math.min(state.max, state.value);
+            }
+          } else if (option === 'step') {
+            state.step = value;
+          } else if (option === 'label') {
+            state.label = value;
+          } else if (option === 'helperText') {
+            state.helperText = value;
+          } else if (option === 'showInputs') {
+            state.showInputs = value;
+            const statusEl = document.getElementById(`slider-show-inputs-status-${componentId}`);
+            if (statusEl) {
+              statusEl.textContent = value ? 'Activado' : 'Desactivado';
+            }
+          } else if (option === 'showMarks') {
+            state.showMarks = value;
+            const statusEl = document.getElementById(`slider-show-marks-status-${componentId}`);
+            if (statusEl) {
+              statusEl.textContent = value ? 'Activado' : 'Desactivado';
+            }
+          } else if (option === 'showRangeGuide') {
+            state.showRangeGuide = value;
+            const statusEl = document.getElementById(`slider-show-range-guide-status-${componentId}`);
+            if (statusEl) {
+              statusEl.textContent = value ? 'Activado' : 'Desactivado';
+            }
+          } else if (option === 'showLabel') {
+            state.showLabel = value;
+            const statusEl = document.getElementById(`slider-show-label-status-${componentId}`);
+            if (statusEl) {
+              statusEl.textContent = value ? 'Activado' : 'Desactivado';
+            }
+          } else if (option === 'showHelper') {
+            state.showHelper = value;
+            const statusEl = document.getElementById(`slider-show-helper-status-${componentId}`);
+            if (statusEl) {
+              statusEl.textContent = value ? 'Activado' : 'Desactivado';
+            }
+          }
+          
+          // Actualizar preview
+          if (typeof window.updateSliderPreview === 'function') {
+            try {
+              window.updateSliderPreview(componentId);
+            } catch (e) {
+              // Silently handle errors
+            }
+          }
+        } catch (error) {
+          // Silently handle errors
+        }
+      };
+      
+      // ========================================
       // FILE UPLOAD PREVIEW FUNCTIONS
       // ========================================
       
@@ -31657,11 +32216,10 @@ Reglas Importantes:
           icon,
           iconStyle = 'regular',
           iconOnly = false,
-          ariaLabel
+          ariaLabel,
+          text = ''
         } = options;
         
-        const iconClass = iconStyle === 'solid' ? 'fas' : 'far';
-        const iconName = icon.startsWith('fa-') ? icon : `fa-${icon}`;
         const buttonClasses = [
           'ubits-button',
           `ubits-button--${variant}`,
@@ -31669,9 +32227,18 @@ Reglas Importantes:
           iconOnly ? 'ubits-button--icon-only' : ''
         ].filter(Boolean).join(' ');
         
+        // Generar HTML del icono solo si existe
+        let iconHTML = '';
+        if (icon) {
+          const iconClass = iconStyle === 'solid' ? 'fas' : 'far';
+          const iconName = icon.startsWith('fa-') ? icon : `fa-${icon}`;
+          iconHTML = `<i class="${iconClass} ${iconName}"></i>`;
+        }
+        
         return `
           <button class="${buttonClasses}" type="button" ${ariaLabel ? `aria-label="${ariaLabel}"` : ''}>
-            <i class="${iconClass} ${iconName}"></i>
+            ${iconHTML}
+            ${text ? `<span>${text}</span>` : ''}
           </button>
         `;
       }
