@@ -5655,6 +5655,21 @@ Reglas Importantes:
               hasPreview: true
             },
             {
+              name: 'TreeMenu',
+              description: 'Componente Tree Menu UBITS para mostrar estructuras jerárquicas con expandir/colapsar. Soporta iconos opcionales, múltiples niveles, chevron opcional y modo cascada o vertical.',
+              files: {
+                css: 'addons/tree-menu/src/styles/tree-menu.css',
+                ts: 'addons/tree-menu/src/TreeMenuProvider.ts'
+              },
+              variants: [],
+              sizes: ['sm', 'md', 'lg'],
+              states: ['default', 'hover', 'active'],
+              features: ['Iconos opcionales en nodos', 'Chevron opcional para expandir/colapsar', 'Múltiples niveles (1-5)', 'Expandir todos los nodos por defecto', '3 tamaños (sm, md, lg)', '2 modos (cascada con indentación, vertical sin indentación)', 'Navegación por teclado', 'Selección de nodos', 'Usa tokens UBITS exclusivamente', 'Usa tipografía UBITS'],
+              class: 'ubits-tree-menu ubits-tree-menu--{cascade|vertical}',
+              example: 'renderTreeMenu({\n  showIcons: true,\n  showChevron: true,\n  maxLevels: 3,\n  defaultExpanded: false,\n  size: \'md\',\n  cascade: true\n})',
+              hasPreview: true
+            },
+            {
               name: 'Menu de Participantes',
               description: 'Componente de menú lateral UBITS para mostrar una lista de participantes. Incluye búsqueda, filtro y lista de participantes con avatar, nombre, rol y estado.',
               files: {
@@ -6631,6 +6646,8 @@ Reglas Importantes:
                     window.updateMenuPreview('menu');
                   } else if (componentId === 'menubar' && typeof window.updateMenubarPreview === 'function') {
                     window.updateMenubarPreview('menubar');
+                  } else if (componentId === 'treemenu' && typeof window.updateTreeMenuPreview === 'function') {
+                    window.updateTreeMenuPreview('treemenu');
                   } else if (componentId === 'menu-de-participantes' && typeof window.updateParticipantsMenuPreview === 'function') {
                     window.updateParticipantsMenuPreview('menu-de-participantes');
                   } else if (componentId === 'contenedor' && typeof window.updateContenedorPreview === 'function') {
@@ -10814,6 +10831,102 @@ Reglas Importantes:
                           <!-- PREVIEW -->
                           <div style="background: var(--ubits-bg-1); padding: 48px; border-radius: 8px; border: none; margin-bottom: 24px; display: flex; align-items: flex-start; justify-content: center; min-height: 200px;">
                             <div id="timeline-preview-${componentId}" style="width: 100%; max-width: 800px;">
+                              <!-- Se generará dinámicamente -->
+                            </div>
+                          </div>
+                        </div>
+                      ` : ''}
+                      
+                      ${hasPreview && component.name === 'TreeMenu' ? `
+                        <!-- Preview Section for TreeMenu -->
+                        <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: none; margin-bottom: 24px;">
+                          <!-- CONTROLES ARRIBA -->
+                          <div style="margin-bottom: 24px;">
+                            <h4 style="margin: 0 0 20px 0; color: var(--ubits-fg-1-high); font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                              <i class="far fa-sliders-h" style="color: var(--ubits-accent-brand-static-inverted);"></i>
+                              Controles
+                            </h4>
+                            
+                            <!-- Primera fila: Configuración general -->
+                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; margin-bottom: 24px;">
+                              <!-- Tamaño -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Tamaño</label>
+                                <select id="tree-menu-size-select-${componentId}" onchange="setTreeMenuControl('size', this.value, '${componentId}')" style="width: 100%; padding: 10px 32px 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); cursor: pointer; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23666%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226,9 12,15 18,9%22></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px; box-sizing: border-box;">
+                                  <option value="sm">SM</option>
+                                  <option value="md" selected>MD</option>
+                                  <option value="lg">LG</option>
+                                </select>
+                              </div>
+                              
+                              <!-- Niveles Máximos -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Niveles Máximos</label>
+                                <select id="tree-menu-max-levels-select-${componentId}" onchange="setTreeMenuControl('maxLevels', parseInt(this.value), '${componentId}')" style="width: 100%; padding: 10px 32px 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); cursor: pointer; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23666%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226,9 12,15 18,9%22></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px; box-sizing: border-box;">
+                                  <option value="1">1 Nivel</option>
+                                  <option value="2">2 Niveles</option>
+                                  <option value="3" selected>3 Niveles</option>
+                                  <option value="4">4 Niveles</option>
+                                  <option value="5">5 Niveles</option>
+                                </select>
+                              </div>
+                              
+                              <!-- Modo -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Modo</label>
+                                <select id="tree-menu-cascade-select-${componentId}" onchange="setTreeMenuControl('cascade', this.value === 'true', '${componentId}')" style="width: 100%; padding: 10px 32px 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); cursor: pointer; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23666%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226,9 12,15 18,9%22></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px; box-sizing: border-box;">
+                                  <option value="true" selected>Cascada</option>
+                                  <option value="false">Vertical</option>
+                                </select>
+                              </div>
+                              
+                              <!-- Mostrar Iconos -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Mostrar Iconos</label>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                  <label class="ubits-toggle ubits-toggle--md">
+                                    <input type="checkbox" class="ubits-toggle__input" id="tree-menu-show-icons-toggle-${componentId}" checked onchange="setTreeMenuControl('showIcons', this.checked, '${componentId}')">
+                                    <span class="ubits-toggle__track">
+                                      <span class="ubits-toggle__thumb"></span>
+                                    </span>
+                                  </label>
+                                  <span id="tree-menu-show-icons-status-${componentId}" style="font-size: 13px; color: var(--ubits-fg-1-medium);">Activado</span>
+                                </div>
+                              </div>
+                              
+                              <!-- Mostrar Chevron -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Mostrar Chevron</label>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                  <label class="ubits-toggle ubits-toggle--md">
+                                    <input type="checkbox" class="ubits-toggle__input" id="tree-menu-show-chevron-toggle-${componentId}" checked onchange="setTreeMenuControl('showChevron', this.checked, '${componentId}')">
+                                    <span class="ubits-toggle__track">
+                                      <span class="ubits-toggle__thumb"></span>
+                                    </span>
+                                  </label>
+                                  <span id="tree-menu-show-chevron-status-${componentId}" style="font-size: 13px; color: var(--ubits-fg-1-medium);">Activado</span>
+                                </div>
+                              </div>
+                              
+                              <!-- Expandir por Defecto -->
+                              <div style="flex: 0 0 auto; min-width: 150px;">
+                                <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Expandir por Defecto</label>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                  <label class="ubits-toggle ubits-toggle--md">
+                                    <input type="checkbox" class="ubits-toggle__input" id="tree-menu-default-expanded-toggle-${componentId}" onchange="setTreeMenuControl('defaultExpanded', this.checked, '${componentId}')">
+                                    <span class="ubits-toggle__track">
+                                      <span class="ubits-toggle__thumb"></span>
+                                    </span>
+                                  </label>
+                                  <span id="tree-menu-default-expanded-status-${componentId}" style="font-size: 13px; color: var(--ubits-fg-1-medium);">Desactivado</span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <!-- PREVIEW -->
+                          <div style="background: var(--ubits-bg-1); padding: 48px; border-radius: 8px; border: none; margin-bottom: 24px; display: flex; align-items: flex-start; justify-content: center; min-height: 200px;">
+                            <div id="tree-menu-preview-${componentId}" style="width: 100%; max-width: 600px;">
                               <!-- Se generará dinámicamente -->
                             </div>
                           </div>
@@ -31561,6 +31674,567 @@ Reglas Importantes:
         
         // Actualizar preview
         window.updateTimelinePreview(componentId);
+      };
+      
+      // ========================================
+      // TREEMENU PREVIEW FUNCTIONS
+      // ========================================
+      
+      // Estado del preview del TreeMenu
+      const treeMenuPreviewState = {};
+      
+      // Inicializar estado del TreeMenu
+      function initTreeMenuPreviewState(componentId) {
+        if (!treeMenuPreviewState[componentId]) {
+          treeMenuPreviewState[componentId] = {
+            showIcons: true,
+            showChevron: true,
+            maxLevels: 3,
+            defaultExpanded: false,
+            size: 'md',
+            cascade: true
+          };
+        }
+        return treeMenuPreviewState[componentId];
+      }
+      
+      // Función helper para renderizar icono FontAwesome
+      function renderTreeMenuIcon(iconName, style = 'regular') {
+        const iconClass = style === 'solid' ? 'fas' : 'far';
+        return `<i class="${iconClass} fa-${iconName}"></i>`;
+      }
+      
+      // Función para generar datos de ejemplo según niveles
+      function generateTreeMenuData(maxLevels, showIcons) {
+        if (maxLevels === 1) {
+          return [
+            { label: 'Engineering', icon: showIcons ? 'code' : undefined },
+            { label: 'Marketing', icon: showIcons ? 'chart-line' : undefined },
+            { label: 'Operations', icon: showIcons ? 'cog' : undefined },
+          ];
+        }
+        
+        if (maxLevels === 2) {
+          return [
+            {
+              label: 'Engineering',
+              icon: showIcons ? 'code' : undefined,
+              children: [
+                { label: 'Frontend', icon: showIcons ? 'paint-brush' : undefined },
+                { label: 'Backend', icon: showIcons ? 'server' : undefined },
+                { label: 'Platform Team', icon: showIcons ? 'cog' : undefined },
+              ],
+            },
+            {
+              label: 'Marketing',
+              icon: showIcons ? 'chart-line' : undefined,
+              children: [
+                { label: 'Content', icon: showIcons ? 'file-alt' : undefined },
+                { label: 'SEO', icon: showIcons ? 'search' : undefined },
+              ],
+            },
+            {
+              label: 'Operations',
+              icon: showIcons ? 'cog' : undefined,
+              children: [
+                { label: 'Support', icon: showIcons ? 'headset' : undefined },
+              ],
+            },
+          ];
+        }
+        
+        if (maxLevels === 3) {
+          return [
+            {
+              label: 'Engineering',
+              icon: showIcons ? 'code' : undefined,
+              children: [
+                {
+                  label: 'Frontend',
+                  icon: showIcons ? 'paint-brush' : undefined,
+                  children: [
+                    {
+                      label: 'Design System',
+                      icon: showIcons ? 'palette' : undefined,
+                      children: [
+                        { label: 'Components', icon: showIcons ? 'cubes' : undefined },
+                        { label: 'Tokens', icon: showIcons ? 'tags' : undefined },
+                        { label: 'Guidelines', icon: showIcons ? 'book' : undefined },
+                      ],
+                    },
+                    { label: 'Web Platform', icon: showIcons ? 'globe' : undefined },
+                  ],
+                },
+                { label: 'Backend', icon: showIcons ? 'server' : undefined },
+                { label: 'Platform Team', icon: showIcons ? 'cog' : undefined },
+              ],
+            },
+            {
+              label: 'Marketing',
+              icon: showIcons ? 'chart-line' : undefined,
+              children: [
+                { label: 'Content', icon: showIcons ? 'file-alt' : undefined },
+              ],
+            },
+            {
+              label: 'Operations',
+              icon: showIcons ? 'cog' : undefined,
+            },
+          ];
+        }
+        
+        if (maxLevels === 4) {
+          return [
+            {
+              label: 'Engineering',
+              icon: showIcons ? 'code' : undefined,
+              children: [
+                {
+                  label: 'Frontend',
+                  icon: showIcons ? 'paint-brush' : undefined,
+                  children: [
+                    {
+                      label: 'Design System',
+                      icon: showIcons ? 'palette' : undefined,
+                      children: [
+                        {
+                          label: 'Components',
+                          icon: showIcons ? 'cubes' : undefined,
+                          children: [
+                            { label: 'Button', icon: showIcons ? 'square' : undefined },
+                            { label: 'Input', icon: showIcons ? 'keyboard' : undefined },
+                          ],
+                        },
+                        { label: 'Tokens', icon: showIcons ? 'tags' : undefined },
+                        { label: 'Guidelines', icon: showIcons ? 'book' : undefined },
+                      ],
+                    },
+                    { label: 'Web Platform', icon: showIcons ? 'globe' : undefined },
+                  ],
+                },
+                { label: 'Backend', icon: showIcons ? 'server' : undefined },
+              ],
+            },
+            {
+              label: 'Marketing',
+              icon: showIcons ? 'chart-line' : undefined,
+            },
+          ];
+        }
+        
+        // maxLevels === 5
+        return [
+          {
+            label: 'Engineering',
+            icon: showIcons ? 'code' : undefined,
+            children: [
+              {
+                label: 'Frontend',
+                icon: showIcons ? 'paint-brush' : undefined,
+                children: [
+                  {
+                    label: 'Design System',
+                    icon: showIcons ? 'palette' : undefined,
+                    children: [
+                      {
+                        label: 'Components',
+                        icon: showIcons ? 'cubes' : undefined,
+                        children: [
+                          {
+                            label: 'Button',
+                            icon: showIcons ? 'square' : undefined,
+                            children: [
+                              { label: 'Primary', icon: showIcons ? 'circle' : undefined },
+                              { label: 'Secondary', icon: showIcons ? 'circle' : undefined },
+                            ],
+                          },
+                          { label: 'Input', icon: showIcons ? 'keyboard' : undefined },
+                        ],
+                      },
+                      { label: 'Tokens', icon: showIcons ? 'tags' : undefined },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ];
+      }
+      
+      // Función para escapar HTML
+      function escapeTreeMenuHtml(text) {
+        if (typeof text !== 'string') return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+      }
+      
+      // Función para renderizar un nodo del árbol
+      function renderTreeMenuTreeNode(node, level, maxLevels, defaultExpanded, showIcons, showChevron, cascade, size, uniqueId) {
+        const hasChildren = node.children && node.children.length > 0;
+        const nodeId = `${uniqueId}-node-${level}-${node.label.toLowerCase().replace(/\s+/g, '-')}`;
+        const isExpanded = defaultExpanded && hasChildren;
+        
+        // Clases de tipografía según tamaño
+        const typographyClass = size === 'sm' 
+          ? 'ubits-body-sm-regular' 
+          : size === 'lg' 
+          ? 'ubits-body-lg-regular' 
+          : 'ubits-body-md-regular';
+        
+        // Espaciado según modo
+        const paddingLeft = cascade 
+          ? (size === 'sm' 
+            ? `calc(var(--ubits-spacing-md, 16px) * ${level})` 
+            : size === 'lg'
+            ? `calc(var(--ubits-spacing-lg, 24px) * ${level})`
+            : `calc(var(--ubits-spacing-md, 16px) * ${level})`)
+          : '0';
+        
+        const iconSize = size === 'sm' ? '14px' : size === 'lg' ? '18px' : '16px';
+        const chevronSize = size === 'sm' ? '12px' : size === 'lg' ? '16px' : '14px';
+        
+        let html = `
+          <div class="ubits-tree-node ${cascade ? 'ubits-tree-node--cascade' : 'ubits-tree-node--vertical'}" data-level="${level}" style="${cascade ? `padding-left: ${paddingLeft};` : ''}">
+            <div 
+              class="ubits-tree-node__content ${hasChildren ? 'ubits-tree-node__content--expandable' : ''}" 
+              data-node-id="${nodeId}"
+              ${hasChildren ? `data-expanded="${isExpanded}"` : ''}
+              role="${hasChildren ? 'button' : 'treeitem'}"
+              ${hasChildren ? 'tabindex="0"' : ''}
+              aria-expanded="${hasChildren ? isExpanded : undefined}"
+              aria-label="${escapeTreeMenuHtml(node.label)}"
+            >
+              ${hasChildren && showChevron ? `
+                <span class="ubits-tree-node__chevron" style="width: ${chevronSize}; height: ${chevronSize};">
+                  <i class="far fa-chevron-${isExpanded ? 'down' : 'right'}" style="font-size: ${chevronSize};"></i>
+                </span>
+              ` : hasChildren && !showChevron ? `
+                <span class="ubits-tree-node__chevron" style="width: 0; height: 0; display: none;"></span>
+              ` : `
+                <span class="ubits-tree-node__chevron" style="width: 0; height: 0; display: none;"></span>
+              `}
+              ${showIcons && node.icon ? `
+                <span class="ubits-tree-node__icon" style="font-size: ${iconSize};">
+                  ${renderTreeMenuIcon(node.icon, 'regular')}
+                </span>
+              ` : ''}
+              <span class="ubits-tree-node__label ${typographyClass}">${escapeTreeMenuHtml(node.label)}</span>
+            </div>
+            ${hasChildren ? `
+              <div class="ubits-tree-node__children ${cascade ? 'ubits-tree-node__children--cascade' : 'ubits-tree-node__children--vertical'}" data-children-id="${nodeId}" style="display: ${isExpanded ? 'block' : 'none'};">
+                ${node.children.map(child => 
+                  renderTreeMenuTreeNode(child, level + 1, maxLevels, defaultExpanded, showIcons, showChevron, cascade, size, uniqueId)
+                ).join('')}
+              </div>
+            ` : ''}
+          </div>
+        `;
+        
+        return html;
+      }
+      
+      // Función para actualizar el preview del TreeMenu
+      window.updateTreeMenuPreview = function(componentId) {
+        const state = initTreeMenuPreviewState(componentId);
+        const preview = document.getElementById(`tree-menu-preview-${componentId}`);
+        
+        if (!preview) {
+          console.error('❌ Preview de TreeMenu no encontrado:', `tree-menu-preview-${componentId}`);
+          return;
+        }
+        
+        // Cargar CSS del TreeMenu si no está cargado
+        const treeMenuCSSId = 'ubits-tree-menu-css';
+        if (!document.getElementById(treeMenuCSSId)) {
+          const style = document.createElement('style');
+          style.id = treeMenuCSSId;
+          style.textContent = `
+            .ubits-tree-menu {
+              width: 100%;
+              user-select: none;
+            }
+            
+            .ubits-tree-node {
+              position: relative;
+            }
+            
+            .ubits-tree-node__content {
+              display: flex;
+              align-items: center;
+              gap: var(--ubits-spacing-sm, 8px);
+              padding: var(--ubits-spacing-xs, 4px) var(--ubits-spacing-sm, 8px);
+              border-radius: 6px;
+              cursor: pointer;
+              transition: all 0.2s ease;
+              color: var(--ubits-fg-1-high, #303a47);
+              background: transparent;
+              position: relative;
+            }
+            
+            .ubits-tree-node__content:hover:not(.ubits-tree-node__content--active) {
+              background: var(--ubits-bg-2, #F3F3F4);
+            }
+            
+            .ubits-tree-node__content:hover:not(.ubits-tree-node__content--active) .ubits-tree-node__chevron {
+              color: var(--ubits-fg-1-high, #303a47);
+            }
+            
+            .ubits-tree-node__content:hover:not(.ubits-tree-node__content--active) .ubits-tree-node__icon {
+              color: var(--ubits-fg-1-high, #303a47);
+            }
+            
+            .ubits-tree-node__content:hover:not(.ubits-tree-node__content--active) .ubits-tree-node__label {
+              color: var(--ubits-fg-1-high, #303a47);
+            }
+            
+            .ubits-tree-node__content--active,
+            .ubits-tree-node__content[aria-selected="true"] {
+              color: var(--ubits-accent-brand-static-inverted, #0c5bef);
+              background: var(--ubits-bg-active-button, rgba(12, 91, 239, 0.15));
+            }
+            
+            .ubits-tree-node__content--active .ubits-tree-node__chevron,
+            .ubits-tree-node__content[aria-selected="true"] .ubits-tree-node__chevron {
+              color: var(--ubits-accent-brand-static-inverted, #0c5bef);
+            }
+            
+            .ubits-tree-node__content--active .ubits-tree-node__icon,
+            .ubits-tree-node__content[aria-selected="true"] .ubits-tree-node__icon {
+              color: var(--ubits-accent-brand-static-inverted, #0c5bef);
+            }
+            
+            .ubits-tree-node__content--active .ubits-tree-node__label,
+            .ubits-tree-node__content[aria-selected="true"] .ubits-tree-node__label {
+              color: var(--ubits-accent-brand-static-inverted, #0c5bef);
+              font-weight: var(--weight-semibold, 600);
+            }
+            
+            .ubits-tree-node__content--expandable:focus-visible {
+              outline: 2px solid var(--ubits-accent-brand-static-inverted, #0c5bef);
+              outline-offset: -2px;
+              border-radius: 6px;
+            }
+            
+            .ubits-tree-node__chevron {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              flex-shrink: 0;
+              color: var(--ubits-fg-1-medium, #5c646f);
+              transition: color 0.2s ease;
+            }
+            
+            .ubits-tree-node__icon {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              flex-shrink: 0;
+              color: var(--ubits-fg-1-medium, #5c646f);
+              width: 20px;
+              transition: color 0.2s ease;
+            }
+            
+            .ubits-tree-node__label {
+              flex: 1;
+              color: var(--ubits-fg-1-high, #303a47);
+              transition: color 0.2s ease, font-weight 0.2s ease;
+            }
+            
+            .ubits-tree-node__children {
+              margin-top: 2px;
+            }
+            
+            .ubits-tree-menu--vertical .ubits-tree-node {
+              padding-left: 0 !important;
+            }
+            
+            .ubits-tree-menu--vertical .ubits-tree-node__children {
+              margin-left: 0;
+              padding-left: 0;
+            }
+            
+            .ubits-tree-menu--cascade .ubits-tree-node__children {
+              margin-left: 0;
+            }
+          `;
+          document.head.appendChild(style);
+        }
+        
+        // Generar datos del árbol
+        const treeData = generateTreeMenuData(state.maxLevels, state.showIcons);
+        const uniqueId = `tree-${Date.now()}-${componentId}`;
+        const cascadeClass = state.cascade ? 'ubits-tree-menu--cascade' : 'ubits-tree-menu--vertical';
+        
+        // Renderizar nodos
+        const nodesHtml = treeData.map(node => 
+          renderTreeMenuTreeNode(node, 0, state.maxLevels, state.defaultExpanded, state.showIcons, state.showChevron, state.cascade, state.size, uniqueId)
+        ).join('');
+        
+        const treeHTML = `<div class="ubits-tree-menu ${cascadeClass}" id="${uniqueId}" role="tree">${nodesHtml}</div>`;
+        preview.innerHTML = treeHTML;
+        
+        // Agregar funcionalidad de expandir/colapsar y selección
+        setTimeout(() => {
+          const treeElement = preview.querySelector('.ubits-tree-menu');
+          if (treeElement) {
+            // Remover listeners anteriores si existen
+            const newTreeElement = treeElement.cloneNode(true);
+            treeElement.parentNode.replaceChild(newTreeElement, treeElement);
+            
+            newTreeElement.addEventListener('click', (e) => {
+              const target = e.target;
+              const content = target.closest('.ubits-tree-node__content');
+              
+              if (!content) return;
+              
+              // Manejar expandir/colapsar para nodos con hijos
+              if (content.classList.contains('ubits-tree-node__content--expandable')) {
+                const nodeId = content.getAttribute('data-node-id');
+                const children = newTreeElement.querySelector(`[data-children-id="${nodeId}"]`);
+                const chevron = content.querySelector('.ubits-tree-node__chevron i');
+                const isExpanded = content.getAttribute('data-expanded') === 'true';
+                
+                if (children) {
+                  if (isExpanded) {
+                    children.style.display = 'none';
+                    content.setAttribute('data-expanded', 'false');
+                    content.setAttribute('aria-expanded', 'false');
+                    if (chevron && state.showChevron) {
+                      chevron.className = 'far fa-chevron-right';
+                    }
+                  } else {
+                    children.style.display = 'block';
+                    content.setAttribute('data-expanded', 'true');
+                    content.setAttribute('aria-expanded', 'true');
+                    if (chevron && state.showChevron) {
+                      chevron.className = 'far fa-chevron-down';
+                    }
+                  }
+                }
+              }
+              
+              // Manejar selección (active state) para todos los nodos
+              const allContents = newTreeElement.querySelectorAll('.ubits-tree-node__content');
+              allContents.forEach((node) => {
+                node.classList.remove('ubits-tree-node__content--active');
+                node.removeAttribute('aria-selected');
+              });
+              
+              // Agregar active al nodo clickeado
+              content.classList.add('ubits-tree-node__content--active');
+              content.setAttribute('aria-selected', 'true');
+            });
+            
+            // Soporte para teclado
+            newTreeElement.addEventListener('keydown', (e) => {
+              const target = e.target;
+              const content = target.closest('.ubits-tree-node__content');
+              
+              if (!content) return;
+              
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                content.click();
+              }
+            });
+          }
+        }, 100);
+        
+        // Actualizar estados de toggles
+        const showIconsToggle = document.getElementById(`tree-menu-show-icons-toggle-${componentId}`);
+        if (showIconsToggle && typeof window.updateToggleState === 'function') {
+          window.updateToggleState(showIconsToggle);
+        }
+        
+        const showChevronToggle = document.getElementById(`tree-menu-show-chevron-toggle-${componentId}`);
+        if (showChevronToggle && typeof window.updateToggleState === 'function') {
+          window.updateToggleState(showChevronToggle);
+        }
+        
+        const defaultExpandedToggle = document.getElementById(`tree-menu-default-expanded-toggle-${componentId}`);
+        if (defaultExpandedToggle && typeof window.updateToggleState === 'function') {
+          window.updateToggleState(defaultExpandedToggle);
+        }
+        
+        // Actualizar textos de estado
+        const showIconsStatus = document.getElementById(`tree-menu-show-icons-status-${componentId}`);
+        if (showIconsStatus) {
+          showIconsStatus.textContent = state.showIcons ? 'Activado' : 'Desactivado';
+        }
+        
+        const showChevronStatus = document.getElementById(`tree-menu-show-chevron-status-${componentId}`);
+        if (showChevronStatus) {
+          showChevronStatus.textContent = state.showChevron ? 'Activado' : 'Desactivado';
+        }
+        
+        const defaultExpandedStatus = document.getElementById(`tree-menu-default-expanded-status-${componentId}`);
+        if (defaultExpandedStatus) {
+          defaultExpandedStatus.textContent = state.defaultExpanded ? 'Activado' : 'Desactivado';
+        }
+        
+        console.log('✅ TreeMenu preview actualizado:', state);
+      };
+      
+      // Función unificada para controles del TreeMenu
+      window.setTreeMenuControl = function(option, value, componentId) {
+        const state = initTreeMenuPreviewState(componentId);
+        
+        if (option === 'size') {
+          state.size = value || 'md';
+          const select = document.getElementById(`tree-menu-size-select-${componentId}`);
+          if (select) select.value = value;
+        } else if (option === 'maxLevels') {
+          state.maxLevels = Math.max(1, Math.min(5, parseInt(value) || 3));
+          const select = document.getElementById(`tree-menu-max-levels-select-${componentId}`);
+          if (select) select.value = state.maxLevels;
+        } else if (option === 'cascade') {
+          state.cascade = value === true || value === 'true';
+          const select = document.getElementById(`tree-menu-cascade-select-${componentId}`);
+          if (select) select.value = state.cascade ? 'true' : 'false';
+        } else if (option === 'showIcons') {
+          state.showIcons = value === true || value === 'true';
+          const toggle = document.getElementById(`tree-menu-show-icons-toggle-${componentId}`);
+          if (toggle) {
+            toggle.checked = state.showIcons;
+            if (typeof window.updateToggleState === 'function') {
+              window.updateToggleState(toggle);
+            }
+          }
+          const statusSpan = document.getElementById(`tree-menu-show-icons-status-${componentId}`);
+          if (statusSpan) {
+            statusSpan.textContent = state.showIcons ? 'Activado' : 'Desactivado';
+          }
+        } else if (option === 'showChevron') {
+          state.showChevron = value === true || value === 'true';
+          const toggle = document.getElementById(`tree-menu-show-chevron-toggle-${componentId}`);
+          if (toggle) {
+            toggle.checked = state.showChevron;
+            if (typeof window.updateToggleState === 'function') {
+              window.updateToggleState(toggle);
+            }
+          }
+          const statusSpan = document.getElementById(`tree-menu-show-chevron-status-${componentId}`);
+          if (statusSpan) {
+            statusSpan.textContent = state.showChevron ? 'Activado' : 'Desactivado';
+          }
+        } else if (option === 'defaultExpanded') {
+          state.defaultExpanded = value === true || value === 'true';
+          const toggle = document.getElementById(`tree-menu-default-expanded-toggle-${componentId}`);
+          if (toggle) {
+            toggle.checked = state.defaultExpanded;
+            if (typeof window.updateToggleState === 'function') {
+              window.updateToggleState(toggle);
+            }
+          }
+          const statusSpan = document.getElementById(`tree-menu-default-expanded-status-${componentId}`);
+          if (statusSpan) {
+            statusSpan.textContent = state.defaultExpanded ? 'Activado' : 'Desactivado';
+          }
+        }
+        
+        // Actualizar preview
+        window.updateTreeMenuPreview(componentId);
       };
       
       // ========================================
