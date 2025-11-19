@@ -821,14 +821,7 @@
       </p>
       
       <!-- Tabs para ¿Qué es? y Cómo funciona -->
-      <div style="display: flex; gap: 8px; margin-bottom: 24px; border-bottom: 1px solid var(--ubits-border-1);">
-        <button class="hub-tab-btn active" data-tab="que-es" onclick="switchHubTab('que-es')" style="background: none; border: none; padding: 12px 16px; cursor: pointer; color: var(--ubits-fg-2-high); font-size: var(--font-body-md-size); font-weight: var(--weight-semibold); border-bottom: 2px solid var(--ubits-button-primary-bg-default);">
-          ¿Qué es?
-        </button>
-        <button class="hub-tab-btn" data-tab="como-funciona" onclick="switchHubTab('como-funciona')" style="background: none; border: none; padding: 12px 16px; cursor: pointer; color: var(--ubits-fg-2-medium); font-size: var(--font-body-md-size); font-weight: var(--weight-semibold); border-bottom: 2px solid transparent;">
-          Cómo funciona
-        </button>
-      </div>
+      <div id="hub-tabs-container" style="margin-bottom: 24px;"></div>
       
       <!-- Contenido: ¿Qué es? -->
       <div id="hub-content-que-es" class="hub-content" style="display: block;">
@@ -2823,13 +2816,43 @@ npm run dev</code></pre>
         if (selectedContent) {
           selectedContent.style.display = 'block';
         }
-        
-        // Actualizar estilos de los botones
-        document.querySelectorAll('.hub-tab-btn').forEach(btn => {
-          const isActive = btn.getAttribute('data-tab') === tabId;
-          btn.style.color = isActive ? 'var(--ubits-fg-2-high)' : 'var(--ubits-fg-2-medium)';
-          btn.style.borderBottomColor = isActive ? 'var(--ubits-button-primary-bg-default)' : 'transparent';
-        });
+      }
+
+      // Función para inicializar los tabs del Hub
+      async function initHubTabs() {
+        const container = document.getElementById('hub-tabs-container');
+        if (!container) return;
+
+        try {
+          // Cargar TabsProvider dinámicamente
+          const tabsModule = await import('../../addons/tabs/src/TabsProvider.js');
+          const { createTabs } = tabsModule;
+
+          // Crear tabs con el componente de UBITS
+          createTabs({
+            tabs: [
+              { id: 'que-es', label: '¿Qué es?', active: true },
+              { id: 'como-funciona', label: 'Cómo funciona' }
+            ],
+            activeTabId: 'que-es',
+            onTabChange: (tabId, tabElement) => {
+              switchHubTab(tabId);
+            }
+          }, 'hub-tabs-container');
+        } catch (error) {
+          console.error('Error al cargar TabsProvider:', error);
+          // Fallback: usar tabs simples si falla la carga
+          container.innerHTML = `
+            <div style="display: flex; gap: 8px; margin-bottom: 24px; border-bottom: 1px solid var(--ubits-border-1);">
+              <button class="hub-tab-btn active" data-tab="que-es" onclick="switchHubTab('que-es')" style="background: none; border: none; padding: 12px 16px; cursor: pointer; color: var(--ubits-fg-2-high); font-size: var(--font-body-md-size); font-weight: var(--weight-semibold); border-bottom: 2px solid var(--ubits-button-primary-bg-default);">
+                ¿Qué es?
+              </button>
+              <button class="hub-tab-btn" data-tab="como-funciona" onclick="switchHubTab('como-funciona')" style="background: none; border: none; padding: 12px 16px; cursor: pointer; color: var(--ubits-fg-2-medium); font-size: var(--font-body-md-size); font-weight: var(--weight-semibold); border-bottom: 2px solid transparent;">
+                Cómo funciona
+              </button>
+            </div>
+          `;
+        }
       }
 
       // Función para cambiar tabs en la sección Add-ons
@@ -3625,6 +3648,13 @@ npm run dev</code></pre>
             height: rect.height,
             innerHTML: section.innerHTML.length > 0 ? 'has content' : 'empty'
           });
+          
+          // Inicializar tabs del Hub si se activa la sección hub
+          if (tab === 'hub') {
+            setTimeout(() => {
+              initHubTabs();
+            }, 50);
+          }
         } else {
           console.warn('[tabs] activateTab -> section not found for tab:', tab);
         }
@@ -4655,6 +4685,10 @@ npm run dev</code></pre>
             setTimeout(() => {
               initColorsTreeMenuIfNeeded();
             }, 50);
+          } else if (targetId === 'section-hub') {
+            setTimeout(() => {
+              initHubTabs();
+            }, 50);
           }
 
           // Actualizar estado activo del MenuBar
@@ -4932,6 +4966,10 @@ npm run dev</code></pre>
             } else if (targetId === 'section-colores') {
               setTimeout(() => {
                 initColorsTreeMenuIfNeeded();
+              }, 50);
+            } else if (targetId === 'section-hub') {
+              setTimeout(() => {
+                initHubTabs();
               }, 50);
             }
             // estado visual activo (sin scroll automático para evitar saltos)
