@@ -7927,6 +7927,9 @@ Reglas Importantes:
                     window.updateGalleryPreview('gallery');
                   } else if (componentId === 'menu' && typeof window.updateMenuPreview === 'function') {
                     window.updateMenuPreview('menu');
+                    setTimeout(() => {
+                      initMenuAccordions('menu');
+                    }, 100);
                   } else if (componentId === 'menubar' && typeof window.updateMenubarPreview === 'function') {
                     window.updateMenubarPreview('menubar');
                   } else if (componentId === 'treemenu' && typeof window.updateTreeMenuPreview === 'function') {
@@ -13702,8 +13705,19 @@ Reglas Importantes:
                               Controles
                             </h4>
                             
-                            <!-- Primera fila: Header -->
-                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; margin-bottom: 24px;">
+                            <!-- Acordeones para organizar controladores -->
+                            <div class="ubits-accordion ubits-accordion--list" id="menu-controls-accordion-${componentId}">
+                              <!-- Acordeón: Header -->
+                              <div class="ubits-accordion-item">
+                                <button class="ubits-accordion-header" type="button" data-accordion-toggle="menu-header-${componentId}">
+                                  <i class="far fa-chevron-down ubits-accordion-chevron"></i>
+                                  <div class="ubits-accordion-header-content">
+                                    <span class="ubits-accordion-title">Header</span>
+                                  </div>
+                                </button>
+                                <div class="ubits-accordion-body" id="menu-header-${componentId}" style="display: none;">
+                                  <div class="ubits-accordion-body-content" style="padding: 16px 0;">
+                                    <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
                               <!-- Logo Image -->
                               <div style="flex: 0 0 auto; min-width: 200px;">
                                 <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Logo Image URL</label>
@@ -13727,21 +13741,29 @@ Reglas Importantes:
                                 <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Width (px)</label>
                                 <input type="number" id="menu-width-input-${componentId}" value="280" min="200" max="400" step="10" onchange="setMenuControl('width', parseInt(this.value) || 280, '${componentId}')" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
                               </div>
-                            </div>
-                            
-                            <!-- Segunda fila: Sección 1 -->
-                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; margin-bottom: 24px;">
-                              <div style="flex: 1 1 100%; padding: 16px; background: var(--ubits-bg-1); border-radius: 8px; border: 1px solid var(--ubits-border-1);">
-                                <h5 style="margin: 0 0 16px 0; color: var(--ubits-fg-1-high); font-size: 14px; font-weight: 600;">Sección 1</h5>
-                                
-                                <!-- Título Sección 1 -->
-                                <div style="margin-bottom: 16px;">
-                                  <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Título</label>
-                                  <input type="text" id="menu-section1-title-input-${componentId}" value="Documents" onchange="setMenuControl('section1Title', this.value, '${componentId}')" placeholder="Documents" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-2); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                                    </div>
+                                  </div>
                                 </div>
-                                
-                                <!-- Item 1 Sección 1 -->
-                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 12px;">
+                              </div>
+                              
+                              <!-- Acordeón: Sección 1 -->
+                              <div class="ubits-accordion-item">
+                                <button class="ubits-accordion-header" type="button" data-accordion-toggle="menu-section1-${componentId}">
+                                  <i class="far fa-chevron-down ubits-accordion-chevron"></i>
+                                  <div class="ubits-accordion-header-content">
+                                    <span class="ubits-accordion-title">Sección 1</span>
+                                  </div>
+                                </button>
+                                <div class="ubits-accordion-body" id="menu-section1-${componentId}" style="display: none;">
+                                  <div class="ubits-accordion-body-content" style="padding: 16px 0;">
+                                    <!-- Título Sección 1 -->
+                                    <div style="margin-bottom: 16px;">
+                                      <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Título</label>
+                                      <input type="text" id="menu-section1-title-input-${componentId}" value="Documents" onchange="setMenuControl('section1Title', this.value, '${componentId}')" placeholder="Documents" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                                    </div>
+                                    
+                                    <!-- Item 1 Sección 1 -->
+                                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 12px;">
                                   <div>
                                     <label style="display: block; font-size: 11px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 6px;">Item 1 Label</label>
                                     <input type="text" id="menu-section1-item1-label-input-${componentId}" value="New" onchange="setMenuControl('section1Item1Label', this.value, '${componentId}')" style="width: 100%; padding: 8px 10px; border: none; border-radius: 6px; background: var(--ubits-bg-2); color: var(--ubits-fg-1-high); font-size: 13px; font-family: var(--font-sans); box-sizing: border-box;">
@@ -13775,10 +13797,10 @@ Reglas Importantes:
                                     </label>
                                     <span style="font-size: 11px; color: var(--ubits-fg-1-medium);">Disabled</span>
                                   </div>
-                                </div>
-                                
-                                <!-- Item 2 Sección 1 -->
-                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px;">
+                                    </div>
+                                    
+                                    <!-- Item 2 Sección 1 -->
+                                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px;">
                                   <div>
                                     <label style="display: block; font-size: 11px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 6px;">Item 2 Label</label>
                                     <input type="text" id="menu-section1-item2-label-input-${componentId}" value="Search" onchange="setMenuControl('section1Item2Label', this.value, '${componentId}')" style="width: 100%; padding: 8px 10px; border: none; border-radius: 6px; background: var(--ubits-bg-2); color: var(--ubits-fg-1-high); font-size: 13px; font-family: var(--font-sans); box-sizing: border-box;">
@@ -13813,22 +13835,28 @@ Reglas Importantes:
                                     <span style="font-size: 11px; color: var(--ubits-fg-1-medium);">Disabled</span>
                                   </div>
                                 </div>
-                              </div>
-                            </div>
-                            
-                            <!-- Tercera fila: Sección 2 -->
-                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; margin-bottom: 24px;">
-                              <div style="flex: 1 1 100%; padding: 16px; background: var(--ubits-bg-1); border-radius: 8px; border: 1px solid var(--ubits-border-1);">
-                                <h5 style="margin: 0 0 16px 0; color: var(--ubits-fg-1-high); font-size: 14px; font-weight: 600;">Sección 2</h5>
-                                
-                                <!-- Título Sección 2 -->
-                                <div style="margin-bottom: 16px;">
-                                  <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Título</label>
-                                  <input type="text" id="menu-section2-title-input-${componentId}" value="Profile" onchange="setMenuControl('section2Title', this.value, '${componentId}')" placeholder="Profile" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-2); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                                  </div>
                                 </div>
-                                
-                                <!-- Item 1 Sección 2 -->
-                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 12px;">
+                              </div>
+                              
+                              <!-- Acordeón: Sección 2 -->
+                              <div class="ubits-accordion-item">
+                                <button class="ubits-accordion-header" type="button" data-accordion-toggle="menu-section2-${componentId}">
+                                  <i class="far fa-chevron-down ubits-accordion-chevron"></i>
+                                  <div class="ubits-accordion-header-content">
+                                    <span class="ubits-accordion-title">Sección 2</span>
+                                  </div>
+                                </button>
+                                <div class="ubits-accordion-body" id="menu-section2-${componentId}" style="display: none;">
+                                  <div class="ubits-accordion-body-content" style="padding: 16px 0;">
+                                    <!-- Título Sección 2 -->
+                                    <div style="margin-bottom: 16px;">
+                                      <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Título</label>
+                                      <input type="text" id="menu-section2-title-input-${componentId}" value="Profile" onchange="setMenuControl('section2Title', this.value, '${componentId}')" placeholder="Profile" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                                    </div>
+                                    
+                                    <!-- Item 1 Sección 2 -->
+                                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 12px;">
                                   <div>
                                     <label style="display: block; font-size: 11px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 6px;">Item 1 Label</label>
                                     <input type="text" id="menu-section2-item1-label-input-${componentId}" value="Settings" onchange="setMenuControl('section2Item1Label', this.value, '${componentId}')" style="width: 100%; padding: 8px 10px; border: none; border-radius: 6px; background: var(--ubits-bg-2); color: var(--ubits-fg-1-high); font-size: 13px; font-family: var(--font-sans); box-sizing: border-box;">
@@ -13862,10 +13890,10 @@ Reglas Importantes:
                                     </label>
                                     <span style="font-size: 11px; color: var(--ubits-fg-1-medium);">Disabled</span>
                                   </div>
-                                </div>
-                                
-                                <!-- Item 2 Sección 2 (con badge) -->
-                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 12px;">
+                                    </div>
+                                    
+                                    <!-- Item 2 Sección 2 (con badge) -->
+                                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 12px;">
                                   <div>
                                     <label style="display: block; font-size: 11px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 6px;">Item 2 Label</label>
                                     <input type="text" id="menu-section2-item2-label-input-${componentId}" value="Messages" onchange="setMenuControl('section2Item2Label', this.value, '${componentId}')" style="width: 100%; padding: 8px 10px; border: none; border-radius: 6px; background: var(--ubits-bg-2); color: var(--ubits-fg-1-high); font-size: 13px; font-family: var(--font-sans); box-sizing: border-box;">
@@ -13914,10 +13942,10 @@ Reglas Importantes:
                                     </label>
                                     <span style="font-size: 11px; color: var(--ubits-fg-1-medium);">Disabled</span>
                                   </div>
-                                </div>
-                                
-                                <!-- Item 3 Sección 2 -->
-                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px;">
+                                    </div>
+                                    
+                                    <!-- Item 3 Sección 2 -->
+                                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px;">
                                   <div>
                                     <label style="display: block; font-size: 11px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 6px;">Item 3 Label</label>
                                     <input type="text" id="menu-section2-item3-label-input-${componentId}" value="Logout" onchange="setMenuControl('section2Item3Label', this.value, '${componentId}')" style="width: 100%; padding: 8px 10px; border: none; border-radius: 6px; background: var(--ubits-bg-2); color: var(--ubits-fg-1-high); font-size: 13px; font-family: var(--font-sans); box-sizing: border-box;">
@@ -13952,30 +13980,39 @@ Reglas Importantes:
                                     <span style="font-size: 11px; color: var(--ubits-fg-1-medium);">Disabled</span>
                                   </div>
                                 </div>
+                                  </div>
+                                </div>
                               </div>
-                            </div>
-                            
-                            <!-- Cuarta fila: Usuario -->
-                            <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; margin-bottom: 24px;">
-                              <div style="flex: 1 1 100%; padding: 16px; background: var(--ubits-bg-1); border-radius: 8px; border: 1px solid var(--ubits-border-1);">
-                                <h5 style="margin: 0 0 16px 0; color: var(--ubits-fg-1-high); font-size: 14px; font-weight: 600;">Información de Usuario</h5>
-                                
-                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
-                                  <div>
+                              
+                              <!-- Acordeón: Información de Usuario -->
+                              <div class="ubits-accordion-item">
+                                <button class="ubits-accordion-header" type="button" data-accordion-toggle="menu-user-${componentId}">
+                                  <i class="far fa-chevron-down ubits-accordion-chevron"></i>
+                                  <div class="ubits-accordion-header-content">
+                                    <span class="ubits-accordion-title">Información de Usuario</span>
+                                  </div>
+                                </button>
+                                <div class="ubits-accordion-body" id="menu-user-${componentId}" style="display: none;">
+                                  <div class="ubits-accordion-body-content" style="padding: 16px 0;">
+                                    <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
+                                  <div style="flex: 0 0 auto; min-width: 200px;">
                                     <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Avatar Image URL</label>
-                                    <input type="text" id="menu-user-avatar-image-input-${componentId}" value="../assets/images/Profile-image.jpg" onchange="setMenuControl('userAvatarImage', this.value, '${componentId}')" placeholder="../assets/images/Profile-image.jpg" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-2); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                                    <input type="text" id="menu-user-avatar-image-input-${componentId}" value="../assets/images/Profile-image.jpg" onchange="setMenuControl('userAvatarImage', this.value, '${componentId}')" placeholder="../assets/images/Profile-image.jpg" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
                                   </div>
-                                  <div>
+                                  <div style="flex: 0 0 auto; min-width: 200px;">
                                     <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">User Name</label>
-                                    <input type="text" id="menu-user-name-input-${componentId}" value="Amy Elsner" onchange="setMenuControl('userName', this.value, '${componentId}')" placeholder="Amy Elsner" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-2); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                                    <input type="text" id="menu-user-name-input-${componentId}" value="Amy Elsner" onchange="setMenuControl('userName', this.value, '${componentId}')" placeholder="Amy Elsner" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
                                   </div>
-                                  <div>
+                                  <div style="flex: 0 0 auto; min-width: 200px;">
                                     <label style="display: block; font-size: 12px; font-weight: 600; color: var(--ubits-fg-1-medium); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">User Role</label>
-                                    <input type="text" id="menu-user-role-input-${componentId}" value="Admin" onchange="setMenuControl('userRole', this.value, '${componentId}')" placeholder="Admin" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-2); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                                    <input type="text" id="menu-user-role-input-${componentId}" value="Admin" onchange="setMenuControl('userRole', this.value, '${componentId}')" placeholder="Admin" style="width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-size: 14px; font-family: var(--font-sans); box-sizing: border-box;">
+                                  </div>
+                                    </div>
                                   </div>
                                 </div>
                               </div>
                             </div>
+                            
                           </div>
                           
                           <!-- PREVIEW -->
@@ -37074,7 +37111,46 @@ Reglas Importantes:
         if (typeof window.updateMenuPreview === 'function') {
           window.updateMenuPreview(componentId);
         }
+        
+        // Inicializar acordeones del Menu
+        if (componentId === 'menu') {
+          setTimeout(() => {
+            initMenuAccordions(componentId);
+          }, 100);
+        }
       };
+      
+      // Función para inicializar acordeones del Menu
+      function initMenuAccordions(componentId) {
+        const accordionId = `menu-controls-accordion-${componentId}`;
+        const accordion = document.getElementById(accordionId);
+        if (!accordion) return;
+        
+        const headers = accordion.querySelectorAll('.ubits-accordion-header');
+        headers.forEach(header => {
+          // Remover listeners anteriores si existen
+          const newHeader = header.cloneNode(true);
+          header.parentNode?.replaceChild(newHeader, header);
+          
+          newHeader.addEventListener('click', function() {
+            const toggleId = this.getAttribute('data-accordion-toggle');
+            const body = document.getElementById(toggleId);
+            const chevron = this.querySelector('.ubits-accordion-chevron');
+            
+            if (!body) return;
+            
+            const isOpen = body.style.display !== 'none';
+            
+            if (isOpen) {
+              body.style.display = 'none';
+              if (chevron) chevron.style.transform = 'rotate(0deg)';
+            } else {
+              body.style.display = 'block';
+              if (chevron) chevron.style.transform = 'rotate(180deg)';
+            }
+          });
+        });
+      }
       
       // Función para actualizar el preview de Menu usando tokens UBITS
       window.updateMenuPreview = function(componentId) {
