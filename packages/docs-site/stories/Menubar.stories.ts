@@ -296,8 +296,8 @@ export const Default: Story = {
       logo.className = 'ubits-logo';
       logo.style.cssText = 'display: flex; align-items: center; gap: 8px; margin-right: 16px; text-decoration: none; transition: transform 0.2s ease;';
       logo.innerHTML = `
-        <img src="../../../proyecto-app/assets/images/autoframe-logo-dark.png" alt="autoframe Logo" class="autoframe-logo-dark" style="width: 28px; height: 28px; display: block;" />
-        <img src="../../../proyecto-app/assets/images/autoframe-logo-light.png" alt="autoframe Logo" class="autoframe-logo-light" style="width: 28px; height: 28px; display: none;" />
+        <img src="/images/autoframe-logo-dark.png" alt="autoframe Logo" class="autoframe-logo-dark" style="width: 28px; height: 28px; display: block;" />
+        <img src="/images/autoframe-logo-light.png" alt="autoframe Logo" class="autoframe-logo-light" style="width: 28px; height: 28px; display: none;" />
         <span class="ubits-logo-text" style="font-size: var(--font-body-lg-size); font-weight: var(--weight-bold); color: var(--ubits-fg-1-high); transition: color 0.2s ease;">autoframe</span>
       `;
       wrapper.appendChild(logo);
