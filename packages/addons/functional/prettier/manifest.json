@@ -1,9 +1,8 @@
 {
-  "name": "@autoframe/prettier",
-  "version": "1.0.0",
-  "type": "functional",
-  "description": "Prettier - Formateo automático de código",
-  "main": "./dist/index.js",
-  "export": "PrettierAddon"
+	"name": "@autorun/prettier",
+	"version": "1.0.0",
+	"type": "functional",
+	"description": "Prettier - Formateo automático de código",
+	"main": "./dist/index.js",
+	"export": "PrettierAddon"
 }
-

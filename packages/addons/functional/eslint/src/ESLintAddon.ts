@@ -1,196 +1,197 @@
 /**
  * ESLintAddon
- * 
+ *
  * Add-on funcional de ESLint que implementa IFunctionalAddon.
  * Proporciona linting automático de código.
  */
 
-import { IFunctionalAddon, AutoframeContext } from '@autoframe/core';
+import { IFunctionalAddon, AutorunContext } from '@autorun/core';
 import { ESLintService, ESLintConfig, ESLintReport } from './ESLintService';
 
 export class ESLintAddon implements IFunctionalAddon {
-  readonly id = 'eslint';
-  readonly name = 'ESLint';
-  readonly version = '1.0.0';
-  readonly type = 'functional';
-  readonly description = 'Linting automático de código con ESLint';
-  
-  private service?: ESLintService;
-  private active = false;
-  private config: ESLintConfig = {
-    extensions: ['.js', '.jsx', '.ts', '.tsx'],
-    fix: false,
-    format: 'stylish',
-    maxWarnings: 0
-  };
-  private context?: AutoframeContext;
+	readonly id = 'eslint';
+	readonly name = 'ESLint';
+	readonly version = '1.0.0';
+	readonly type = 'functional';
+	readonly description = 'Linting automático de código con ESLint';
 
-  async initialize(context: AutoframeContext): Promise<void> {
-    this.context = context;
-    
-    // Obtener configuración
-    const addonConfig = context.config.autoframe?.addons?.config?.eslint || {};
-    this.config = {
-      configFile: addonConfig.configFile,
-      extensions: addonConfig.extensions || ['.js', '.jsx', '.ts', '.tsx'],
-      fix: addonConfig.fix || false,
-      format: addonConfig.format || 'stylish',
-      maxWarnings: addonConfig.maxWarnings || 0,
-      ignorePath: addonConfig.ignorePath,
-      rules: addonConfig.rules
-    };
+	private service?: ESLintService;
+	private active = false;
+	private config: ESLintConfig = {
+		extensions: ['.js', '.jsx', '.ts', '.tsx'],
+		fix: false,
+		format: 'stylish',
+		maxWarnings: 0,
+	};
+	private context?: AutorunContext;
 
-    // Inicializar servicio
-    this.service = new ESLintService(this.config, process.cwd());
-    
-    try {
-      await this.service.initialize();
-      console.log('✅ ESLint Add-on: Inicializado correctamente');
-    } catch (error) {
-      console.error(`❌ ESLint Add-on: Error al inicializar - ${error}`);
-      // No lanzar error, permitir que el add-on funcione sin inicialización completa
-    }
-  }
+	async initialize(context: AutorunContext): Promise<void> {
+		this.context = context;
 
-  async activate(): Promise<void> {
-    if (!this.service) {
-      this.service = new ESLintService(this.config, process.cwd());
-      await this.service.initialize();
-    }
+		// Obtener configuración
+		const addonConfig = context.config.autorun?.addons?.config?.eslint || {};
+		this.config = {
+			configFile: addonConfig.configFile,
+			extensions: addonConfig.extensions || ['.js', '.jsx', '.ts', '.tsx'],
+			fix: addonConfig.fix || false,
+			format: addonConfig.format || 'stylish',
+			maxWarnings: addonConfig.maxWarnings || 0,
+			ignorePath: addonConfig.ignorePath,
+			rules: addonConfig.rules,
+		};
 
-    this.active = true;
-    console.log('✅ ESLint Add-on: Activado');
-  }
+		// Inicializar servicio
+		this.service = new ESLintService(this.config, process.cwd());
 
-  async deactivate(): Promise<void> {
-    this.active = false;
-    console.log('🔌 ESLint Add-on: Desactivado');
-  }
+		try {
+			await this.service.initialize();
+			console.log('✅ ESLint Add-on: Inicializado correctamente');
+		} catch (error) {
+			console.error(`❌ ESLint Add-on: Error al inicializar - ${error}`);
+			// No lanzar error, permitir que el add-on funcione sin inicialización completa
+		}
+	}
 
-  isActive(): boolean {
-    return this.active;
-  }
+	async activate(): Promise<void> {
+		if (!this.service) {
+			this.service = new ESLintService(this.config, process.cwd());
+			await this.service.initialize();
+		}
 
-  getStatus(): 'active' | 'inactive' {
-    return this.active ? 'active' : 'inactive';
-  }
+		this.active = true;
+		console.log('✅ ESLint Add-on: Activado');
+	}
 
-  destroy(): void {
-    this.active = false;
-    this.service = undefined;
-  }
+	async deactivate(): Promise<void> {
+		this.active = false;
+		console.log('🔌 ESLint Add-on: Desactivado');
+	}
 
-  async configure(config: Record<string, any>): Promise<void> {
-    const eslintConfig: Partial<ESLintConfig> = {};
-    
-    if (config.configFile) eslintConfig.configFile = config.configFile;
-    if (config.extensions) eslintConfig.extensions = config.extensions;
-    if (config.fix !== undefined) eslintConfig.fix = config.fix;
-    if (config.format) eslintConfig.format = config.format;
-    if (config.maxWarnings !== undefined) eslintConfig.maxWarnings = config.maxWarnings;
-    if (config.ignorePath) eslintConfig.ignorePath = config.ignorePath;
-    if (config.rules) eslintConfig.rules = config.rules;
+	isActive(): boolean {
+		return this.active;
+	}
 
-    this.config = { ...this.config, ...eslintConfig };
+	getStatus(): 'active' | 'inactive' {
+		return this.active ? 'active' : 'inactive';
+	}
 
-    if (this.service) {
-      this.service.updateConfig(eslintConfig);
-    } else {
-      this.service = new ESLintService(this.config, process.cwd());
-      await this.service.initialize();
-    }
-  }
+	destroy(): void {
+		this.active = false;
+		this.service = undefined;
+	}
 
-  /**
-   * Hook llamado cuando un archivo cambia
-   */
-  async onFileChange(filePath: string, content?: string): Promise<void> {
-    if (!this.active || !this.service) {
-      return;
-    }
+	async configure(config: Record<string, any>): Promise<void> {
+		const eslintConfig: Partial<ESLintConfig> = {};
 
-    // Lintear archivo automáticamente si es un archivo soportado
-    const ext = filePath.substring(filePath.lastIndexOf('.'));
-    if (this.config.extensions?.includes(ext)) {
-      try {
-        const report = await this.service.lint([filePath]);
-        if (report.errorCount > 0) {
-          console.warn(`⚠️  ESLint: ${report.errorCount} errores encontrados en ${filePath}`);
-        }
-      } catch (error) {
-        // Ignorar errores en linting automático
-      }
-    }
-  }
+		if (config.configFile) eslintConfig.configFile = config.configFile;
+		if (config.extensions) eslintConfig.extensions = config.extensions;
+		if (config.fix !== undefined) eslintConfig.fix = config.fix;
+		if (config.format) eslintConfig.format = config.format;
+		if (config.maxWarnings !== undefined) eslintConfig.maxWarnings = config.maxWarnings;
+		if (config.ignorePath) eslintConfig.ignorePath = config.ignorePath;
+		if (config.rules) eslintConfig.rules = config.rules;
 
-  /**
-   * Hook llamado antes de hacer commit
-   */
-  async onBeforeCommit(files: string[]): Promise<void> {
-    if (!this.active || !this.service) {
-      return;
-    }
+		this.config = { ...this.config, ...eslintConfig };
 
-    // Lintear archivos antes de commit
-    try {
-      const report = await this.service.lint(files);
-      if (report.errorCount > 0) {
-        console.warn(`⚠️  ESLint: ${report.errorCount} errores encontrados. Considera ejecutar --fix`);
-      }
-    } catch (error) {
-      // No bloquear commit por errores de linting
-    }
-  }
+		if (this.service) {
+			this.service.updateConfig(eslintConfig);
+		} else {
+			this.service = new ESLintService(this.config, process.cwd());
+			await this.service.initialize();
+		}
+	}
 
-  /**
-   * Obtiene los servicios que este add-on proporciona
-   */
-  getServices() {
-    return {
-      // Lintear archivos
-      lint: async (files: string[], options?: Partial<ESLintConfig>) => {
-        if (!this.service) {
-          throw new Error('ESLint service no está inicializado');
-        }
-        return await this.service.lint(files, options);
-      },
-      
-      // Auto-fix
-      fix: async (files: string[], options?: Partial<ESLintConfig>) => {
-        if (!this.service) {
-          throw new Error('ESLint service no está inicializado');
-        }
-        return await this.service.fix(files, options);
-      },
-      
-      // Obtener estado
-      getStatus: () => {
-        if (!this.service) {
-          return {
-            initialized: false,
-            eslintInstalled: false,
-            hasConfig: false
-          };
-        }
-        return this.service.getStatus();
-      },
-      
-      // Obtener configuración
-      getConfig: () => {
-        if (!this.service) {
-          return this.config;
-        }
-        return this.service.getConfig();
-      },
-      
-      // Actualizar configuración
-      updateConfig: (config: Partial<ESLintConfig>) => {
-        if (!this.service) {
-          throw new Error('ESLint service no está inicializado');
-        }
-        return this.service.updateConfig(config);
-      }
-    };
-  }
+	/**
+	 * Hook llamado cuando un archivo cambia
+	 */
+	async onFileChange(filePath: string, content?: string): Promise<void> {
+		if (!this.active || !this.service) {
+			return;
+		}
+
+		// Lintear archivo automáticamente si es un archivo soportado
+		const ext = filePath.substring(filePath.lastIndexOf('.'));
+		if (this.config.extensions?.includes(ext)) {
+			try {
+				const report = await this.service.lint([filePath]);
+				if (report.errorCount > 0) {
+					console.warn(`⚠️  ESLint: ${report.errorCount} errores encontrados en ${filePath}`);
+				}
+			} catch (error) {
+				// Ignorar errores en linting automático
+			}
+		}
+	}
+
+	/**
+	 * Hook llamado antes de hacer commit
+	 */
+	async onBeforeCommit(files: string[]): Promise<void> {
+		if (!this.active || !this.service) {
+			return;
+		}
+
+		// Lintear archivos antes de commit
+		try {
+			const report = await this.service.lint(files);
+			if (report.errorCount > 0) {
+				console.warn(
+					`⚠️  ESLint: ${report.errorCount} errores encontrados. Considera ejecutar --fix`,
+				);
+			}
+		} catch (error) {
+			// No bloquear commit por errores de linting
+		}
+	}
+
+	/**
+	 * Obtiene los servicios que este add-on proporciona
+	 */
+	getServices() {
+		return {
+			// Lintear archivos
+			lint: async (files: string[], options?: Partial<ESLintConfig>) => {
+				if (!this.service) {
+					throw new Error('ESLint service no está inicializado');
+				}
+				return await this.service.lint(files, options);
+			},
+
+			// Auto-fix
+			fix: async (files: string[], options?: Partial<ESLintConfig>) => {
+				if (!this.service) {
+					throw new Error('ESLint service no está inicializado');
+				}
+				return await this.service.fix(files, options);
+			},
+
+			// Obtener estado
+			getStatus: () => {
+				if (!this.service) {
+					return {
+						initialized: false,
+						eslintInstalled: false,
+						hasConfig: false,
+					};
+				}
+				return this.service.getStatus();
+			},
+
+			// Obtener configuración
+			getConfig: () => {
+				if (!this.service) {
+					return this.config;
+				}
+				return this.service.getConfig();
+			},
+
+			// Actualizar configuración
+			updateConfig: (config: Partial<ESLintConfig>) => {
+				if (!this.service) {
+					throw new Error('ESLint service no está inicializado');
+				}
+				return this.service.updateConfig(config);
+			},
+		};
+	}
 }
-

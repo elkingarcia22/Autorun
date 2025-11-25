@@ -19,11 +19,11 @@ El add-on ya está incluido en Autorun. No requiere dependencias adicionales.
 
 ## ⚙️ Configuración
 
-Agrega la configuración de Figma Sync en tu `.ubits/project-config.json`:
+Agrega la configuración de Figma Sync en tu `autorun.config.json`:
 
 ```json
 {
-  "autoframe": {
+  "autorun": {
     "addons": {
       "config": {
         "figma-sync": {
@@ -33,8 +33,8 @@ Agrega la configuración de Figma Sync en tu `.ubits/project-config.json`:
           "backupBeforeSync": true,
           "syncMode": "selective",
           "tokenMapping": {
-            "figma.light.color.accent.brand": "light.brand.ubits-accent-brand",
-            "figma.dark.color.accent.brand": "dark.brand.ubits-accent-brand"
+            "figma.light.color.accent.brand": "light.brand.accent-brand",
+            "figma.dark.color.accent.brand": "dark.brand.accent-brand"
           }
         }
       }
@@ -47,8 +47,11 @@ Agrega la configuración de Figma Sync en tu `.ubits/project-config.json`:
 
 | Parámetro | Tipo | Descripción | Default |
 |-----------|------|-------------|---------|
-| `figmaTokensPath` | `string` | Ruta a tokens de Figma | `../tokens` |
+| `figmaTokensPath` | `string` | Ruta a tokens de Figma (estructura de directorios) | `../tokens` |
 | `projectTokensPath` | `string` | Ruta a tokens del proyecto | `packages/tokens/tokens.json` |
+| `figmaTokensJsonPath` | `string` | **Ruta al JSON de tokens exportado desde Figma Tokens plugin** (recomendado para MCP) | Auto-detectado |
+| `accessToken` | `string` | Token de acceso de Figma API (para MCP) | `process.env.FIGMA_ACCESS_TOKEN` |
+| `fileKey` | `string` | File key de Figma (para MCP) | - |
 | `autoSync` | `boolean` | Sincronización automática | `false` |
 | `backupBeforeSync` | `boolean` | Crear backup antes de sync | `true` |
 | `syncMode` | `string` | Modo de sync (`full`, `selective`, `manual`) | `selective` |
@@ -59,9 +62,9 @@ Agrega la configuración de Figma Sync en tu `.ubits/project-config.json`:
 ### Activar el Add-on
 
 ```typescript
-import { AutoframeHub } from '@autoframe/core';
+import { AutorunHub } from '@autorun/core';
 
-const hub = new AutoframeHub();
+const hub = new AutorunHub();
 await hub.initialize();
 
 // Activar Figma Sync
@@ -167,9 +170,9 @@ El add-on mapea automáticamente tokens de Figma a tokens del proyecto:
 
 ```typescript
 // Mapeo por defecto
-'figma.light.color.accent.brand' → 'light.brand.ubits-accent-brand'
-'figma.light.color.fg.1.high' → 'light.foreground.ubits-fg-1-high'
-'figma.light.color.bg.1' → 'light.background.ubits-bg-1'
+'figma.light.color.accent.brand' → 'light.brand.accent-brand'
+'figma.light.color.fg.1.high' → 'light.foreground.fg-1-high'
+'figma.light.color.bg.1' → 'light.background.bg-1'
 ```
 
 Puedes personalizar el mapeo en la configuración:
@@ -182,6 +185,101 @@ Puedes personalizar el mapeo en la configuración:
 }
 ```
 
+## 🔌 Integración MCP
+
+Este add-on soporta integración con **MCP (Model Context Protocol)** para mejorar la experiencia y funcionalidad:
+
+### MCPs Soportados
+
+El add-on detecta y puede usar dos MCPs diferentes:
+- **`figma`** - MCP oficial de Figma
+- **`talk-to-figma`** - MCP alternativo para conversación con Figma
+
+### ⚠️ Limitación Importante: Acceso a Variables de Figma
+
+**Ni MCP ni la API de Figma pueden acceder directamente a las Variables de Figma** (Figma Variables). Esto es una limitación de la API de Figma que no expone las variables directamente.
+
+### ✅ Solución: JSON de Tokens de Figma
+
+Para que MCP y la API funcionen correctamente con las variables de Figma, **necesitas descargar el JSON de tokens** usando el plugin de Figma Tokens. Este archivo contiene toda la información de las variables y permite que:
+
+- ✅ MCP pueda leer y procesar las variables
+- ✅ La API pueda trabajar con los tokens
+- ✅ La sincronización sea más precisa y completa
+- ✅ El add-on pueda hacer comparaciones más inteligentes
+
+### 📥 Cómo Descargar el JSON de Tokens
+
+#### Paso 1: Instalar el Plugin de Figma Tokens
+
+1. Abre Figma Desktop o Web
+2. Ve a **Plugins** → **Browse all plugins**
+3. Busca **"Figma Tokens"** o **"Tokens Studio for Figma"**
+4. Instala el plugin
+
+#### Paso 2: Configurar Tokens en Figma
+
+1. Abre tu archivo de Figma
+2. Ve a **Plugins** → **Figma Tokens** → **Launch**
+3. Configura tus tokens (colores, espaciado, tipografía, etc.)
+4. Guarda los tokens en el archivo
+
+#### Paso 3: Exportar el JSON
+
+1. En el plugin de Figma Tokens, ve a la pestaña **"Export"** o **"Sync"**
+2. Selecciona **"Export tokens"** o **"Download JSON"**
+3. Elige el formato **JSON** (no CSS ni otros formatos)
+4. Guarda el archivo como `figma-tokens.json` en la raíz de tu proyecto
+
+#### Paso 4: Ubicación del Archivo
+
+El add-on buscará automáticamente el JSON en estas ubicaciones (en orden):
+
+1. `figma-tokens.json` (raíz del proyecto)
+2. `tokens/figma-tokens.json`
+3. `tokens/figma.json`
+4. `figma/variables.json`
+5. `.figma/tokens.json`
+6. `design-tokens/figma-tokens.json`
+7. `packages/tokens/figma-tokens.json`
+
+**Recomendación**: Coloca el archivo en `figma-tokens.json` en la raíz del proyecto para mejor detección.
+
+#### Paso 5: Verificar que Funciona
+
+Cuando inicialices el add-on, verás en la consola:
+
+```
+✅ Figma Sync: JSON de tokens encontrado en figma-tokens.json
+ℹ️  Este archivo permite que MCP y la API funcionen mejor con las variables de Figma
+```
+
+Si no lo encuentra:
+
+```
+⚠️  Figma Sync: No se encontró JSON de tokens de Figma en el proyecto
+ℹ️  Para mejor funcionamiento con MCP, descarga el JSON usando el plugin de Figma Tokens
+```
+
+### 🎯 Beneficios del JSON de Tokens
+
+Con el JSON de tokens disponible:
+
+- ✅ **MCP puede leer variables**: MCP puede acceder a todas las variables y sus valores
+- ✅ **Sincronización más precisa**: El add-on puede comparar y sincronizar mejor
+- ✅ **Mejor integración**: La API puede trabajar con los tokens sin necesidad de acceso directo a Figma
+- ✅ **Offline support**: Puedes trabajar con los tokens sin conexión a Figma
+
+### 🔄 Actualización del JSON
+
+**Importante**: Cada vez que actualices las variables en Figma, debes:
+
+1. Exportar nuevamente el JSON desde el plugin
+2. Reemplazar el archivo `figma-tokens.json` en tu proyecto
+3. El add-on detectará automáticamente los cambios y los sincronizará
+
+Puedes configurar `autoSync: true` para que el add-on sincronice automáticamente cuando detecte cambios en el JSON.
+
 ## 🔌 Hooks Automáticos
 
 El add-on de Figma Sync se integra automáticamente con el Hub:
@@ -190,7 +288,7 @@ El add-on de Figma Sync se integra automáticamente con el Hub:
 Se llama cuando un archivo cambia:
 ```typescript
 // Si autoSync está habilitado, sincroniza automáticamente
-// cuando cambian tokens de Figma
+// cuando cambian tokens de Figma o el JSON de tokens
 ```
 
 ## 🛠️ Servicios Disponibles
@@ -294,4 +392,5 @@ Figma Sync se integra automáticamente con:
 
 **Versión**: 1.0.0  
 **Última actualización**: Diciembre 2024
+
 

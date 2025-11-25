@@ -1,9 +1,8 @@
 {
-  "name": "@autoframe/vercel",
-  "version": "1.0.0",
-  "type": "functional",
-  "description": "Vercel Deployment - Deploy automático, gestión de proyectos y dominios",
-  "main": "./dist/index.js",
-  "export": "VercelAddon"
+	"name": "@autorun/vercel",
+	"version": "1.0.0",
+	"type": "functional",
+	"description": "Vercel Deployment - Deploy automático, gestión de proyectos y dominios",
+	"main": "./dist/index.js",
+	"export": "VercelAddon"
 }
-

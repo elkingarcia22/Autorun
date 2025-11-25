@@ -31,11 +31,11 @@ ollama pull llama2
 
 ## ⚙️ Configuración
 
-Agrega la configuración de AI en tu `.ubits/project-config.json`:
+Agrega la configuración de AI en tu `autorun.config.json`:
 
 ```json
 {
-  "autoframe": {
+  "autorun": {
     "addons": {
       "config": {
         "ai": {
@@ -84,9 +84,9 @@ export GEMINI_API_KEY="tu-api-key"
 ### Activar el Add-on
 
 ```typescript
-import { AutoframeHub } from '@autoframe/core';
+import { AutorunHub } from '@autorun/core';
 
-const hub = new AutoframeHub();
+const hub = new AutorunHub();
 await hub.initialize();
 
 // Activar AI
@@ -266,7 +266,7 @@ ollama list
 
 1. Obtén una API key de [Google AI Studio](https://makersuite.google.com/app/apikey)
 2. Configura `GEMINI_API_KEY` en variables de entorno
-3. O configúrala en `.ubits/project-config.json`
+3. O configúrala en `autorun.config.json`
 
 ### Respuestas muy lentas
 
@@ -297,4 +297,5 @@ AI Assistant se integra con:
 
 **Versión**: 1.0.0  
 **Última actualización**: Diciembre 2024
+
 

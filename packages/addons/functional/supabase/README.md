@@ -30,11 +30,11 @@ npm install @supabase/supabase-js
 
 ### 2. Configurar en el Proyecto
 
-Agrega la configuración de Supabase en tu `.ubits/project-config.json`:
+Agrega la configuración de Supabase en tu `autorun.config.json`:
 
 ```json
 {
-  "autoframe": {
+  "autorun": {
     "addons": {
       "config": {
         "supabase": {
@@ -79,9 +79,9 @@ export SUPABASE_SERVICE_ROLE_KEY="tu-service-role-key"
 ### Activar el Add-on
 
 ```typescript
-import { AutoframeHub } from '@autoframe/core';
+import { AutorunHub } from '@autorun/core';
 
-const hub = new AutoframeHub();
+const hub = new AutorunHub();
 await hub.initialize();
 
 // Activar Supabase
@@ -305,7 +305,7 @@ subscribe('notifications', (payload) => {
 
 ### Error: "Supabase URL o anonKey no configurados"
 
-1. Verifica que `url` y `anonKey` estén configurados en `.ubits/project-config.json`
+1. Verifica que `url` y `anonKey` estén configurados en `autorun.config.json`
 2. O configura las variables de entorno `SUPABASE_URL` y `SUPABASE_ANON_KEY`
 3. Obtén las credenciales desde el dashboard de Supabase
 
@@ -348,4 +348,5 @@ Supabase se integra con:
 
 **Versión**: 1.0.0  
 **Última actualización**: Diciembre 2024
+
 

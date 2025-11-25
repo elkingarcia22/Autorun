@@ -23,11 +23,11 @@ npm install --save-dev prettier
 
 ## ⚙️ Configuración
 
-Agrega la configuración de Prettier en tu `.ubits/project-config.json`:
+Agrega la configuración de Prettier en tu `autorun.config.json`:
 
 ```json
 {
-  "autoframe": {
+  "autorun": {
     "addons": {
       "config": {
         "prettier": {
@@ -64,9 +64,9 @@ Agrega la configuración de Prettier en tu `.ubits/project-config.json`:
 ### Activar el Add-on
 
 ```typescript
-import { AutoframeHub } from '@autoframe/core';
+import { AutorunHub } from '@autorun/core';
 
-const hub = new AutoframeHub();
+const hub = new AutorunHub();
 await hub.initialize();
 
 // Activar Prettier
@@ -194,4 +194,5 @@ Prettier se integra automáticamente con:
 
 **Versión**: 1.0.0  
 **Última actualización**: Diciembre 2024
+
 

@@ -1,9 +1,0 @@
-{
-  "name": "@autoframe/templates-admin",
-  "version": "1.0.0",
-  "type": "design",
-  "description": "Template Administrador - Template de diseño para perfil administrador",
-  "main": "./dist/index.js",
-  "export": "TemplateAdminAddon"
-}
-

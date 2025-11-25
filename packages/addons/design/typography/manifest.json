@@ -1,9 +1,0 @@
-{
-  "name": "@autoframe/typography",
-  "version": "1.0.0",
-  "type": "design",
-  "description": "Typography Autoframe genéricos - Add-on de diseño",
-  "main": "./dist/index.js",
-  "export": "TypographyDesignAddon"
-}
-

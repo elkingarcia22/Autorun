@@ -1,9 +1,8 @@
 {
-  "name": "@autoframe/github",
-  "version": "1.0.0",
-  "type": "functional",
-  "description": "GitHub Integration - Gestión completa de repositorio, auto-commit, ramas y estados",
-  "main": "./dist/index.js",
-  "export": "GitHubAddon"
+	"name": "@autorun/github",
+	"version": "1.0.0",
+	"type": "functional",
+	"description": "GitHub Integration - Gestión completa de repositorio, auto-commit, ramas y estados",
+	"main": "./dist/index.js",
+	"export": "GitHubAddon"
 }
-

@@ -137,9 +137,9 @@ El **Hub** es el núcleo central que:
 ```
 Autorun/
 ├── packages/
-│   ├── autoframe-core/          # 🎯 NÚCLEO DEL HUB
+│   ├── autorun-core/          # 🎯 NÚCLEO DEL HUB
 │   │   ├── src/
-│   │   │   ├── AutoframeHub.ts  # Hub central
+│   │   │   ├── AutorunHub.ts  # Hub central
 │   │   │   ├── AddonRegistry.ts # Registro de add-ons
 │   │   │   ├── AddonLoader.ts   # Cargador de add-ons
 │   │   │   ├── ConfigManager.ts # Gestor de configuración
@@ -147,11 +147,6 @@ Autorun/
 │   │   └── dist/                # Build compilado
 │   │
 │   ├── addons/                  # 🔌 ADD-ONS DEL SISTEMA
-│   │   ├── design/              # Add-ons de diseño
-│   │   │   ├── tokens/          # Sistema de tokens
-│   │   │   ├── typography/      # Tipografía
-│   │   │   ├── templates-admin/ # Template admin
-│   │   │   └── templates-colaborador/ # Template colaborador
 │   │   └── functional/          # Add-ons funcionales
 │   │       └── github/          # Integración GitHub
 │   │
@@ -185,12 +180,12 @@ Autorun/
 
 ### Componentes Clave
 
-#### 1. AutoframeHub (`packages/autoframe-core/src/AutoframeHub.ts`)
+#### 1. AutorunHub (`packages/autorun-core/src/AutorunHub.ts`)
 
 El **Hub Central** que orquesta todo:
 
 ```typescript
-class AutoframeHub {
+class AutorunHub {
   // Registra add-ons disponibles
   async registerAddon(addonPath: string): Promise<void>
   
@@ -241,10 +236,7 @@ Gestiona la configuración del proyecto:
 - Recursos visuales (fuentes, iconos)
 
 **Ejemplos**:
-- `@autoframe/tokens`: Sistema de tokens de diseño
-- `@autoframe/typography`: Tipografía del sistema
-- `@autoframe/templates-admin`: Template de administrador
-- `@autoframe/templates-colaborador`: Template de colaborador
+- Los add-ons de diseño genéricos (tokens, typography, templates) han sido removidos del proyecto
 
 #### 2. Functional Add-ons (Add-ons Funcionales)
 
@@ -257,9 +249,9 @@ Gestiona la configuración del proyecto:
 - Eventos y callbacks
 
 **Ejemplos**:
-- `@autoframe/github`: Integración con GitHub
-- `@autoframe/analytics`: Analytics y tracking
-- `@autoframe/storage`: Gestión de almacenamiento
+- `@autorun/github`: Integración con GitHub
+- `@autorun/analytics`: Analytics y tracking
+- `@autorun/storage`: Gestión de almacenamiento
 
 #### 3. Component Add-ons (Add-ons de Componentes)
 
@@ -276,7 +268,7 @@ Gestiona la configuración del proyecto:
 ```typescript
 interface IAddon {
   // 1. Inicialización
-  initialize(context: AutoframeContext): Promise<void>
+  initialize(context: AutorunContext): Promise<void>
   
   // 2. Configuración
   configure(config: any): Promise<void>
@@ -309,116 +301,11 @@ El Hub resuelve automáticamente el orden de carga.
 
 ## 📦 Add-ons Disponibles
 
-### Design Add-ons
-
-#### 1. **@autoframe/tokens** - Sistema de Tokens
-
-**Ubicación**: `packages/addons/design/tokens/`
-
-**Descripción**: Sistema completo de tokens de diseño (colores, espaciado, tipografía).
-
-**Características**:
-- ✅ Tokens CSS variables
-- ✅ Tokens JavaScript
-- ✅ Temas claro/oscuro
-- ✅ Validación de tokens requeridos
-- ✅ Integración con componentes
-
-**Uso**:
-```typescript
-// El add-on carga automáticamente los tokens CSS
-await hub.activateAddon('tokens');
-
-// Los tokens están disponibles como CSS variables
-// --autoframe-bg-1, --autoframe-fg-1-high, etc.
-```
-
-**Tokens Principales**:
-```css
-/* Backgrounds */
---autoframe-bg-1: #ffffff;
---autoframe-bg-2: #F3F3F4;
---autoframe-bg-active: rgba(12, 91, 239, 0.2);
-
-/* Foregrounds */
---autoframe-fg-1-high: #303a47;
---autoframe-fg-1-medium: #5c646f;
---autoframe-fg-1-low: #a2a6ad;
-
-/* Accents */
---autoframe-accent-brand: #0c5bef;
---autoframe-accent-success: #13BD74;
---autoframe-accent-error: #e63946;
-
-/* Borders */
---autoframe-border-1: #e7e8ea;
---autoframe-border-2: #ced0d5;
-```
-
-#### 2. **@autoframe/typography** - Tipografía
-
-**Ubicación**: `packages/addons/design/typography/`
-
-**Descripción**: Sistema de tipografía consistente con fuentes y estilos predefinidos.
-
-**Características**:
-- ✅ Fuentes Noto Sans
-- ✅ Escalas tipográficas
-- ✅ Clases CSS predefinidas
-- ✅ Variables CSS para tipografía
-
-**Uso**:
-```typescript
-await hub.activateAddon('typography');
-```
-
-**Clases Disponibles**:
-```css
-.ubits-heading-h1 { /* Título principal */ }
-.ubits-heading-h2 { /* Título secundario */ }
-.ubits-heading-h3 { /* Título terciario */ }
-.ubits-body-lg { /* Texto grande */ }
-.ubits-body-md { /* Texto mediano */ }
-.ubits-body-sm { /* Texto pequeño */ }
-```
-
-#### 3. **@autoframe/templates-admin** - Template Administrador
-
-**Ubicación**: `packages/addons/design/templates-admin/`
-
-**Descripción**: Template completo para interfaces de administración.
-
-**Características**:
-- ✅ Layout completo
-- ✅ Sidebar de navegación
-- ✅ SubNav para módulos
-- ✅ TabBar para móviles
-- ✅ Estilos predefinidos
-
-**Uso**:
-```typescript
-await hub.activateAddon('templates-admin');
-```
-
-#### 4. **@autoframe/templates-colaborador** - Template Colaborador
-
-**Ubicación**: `packages/addons/design/templates-colaborador/`
-
-**Descripción**: Template para interfaces de usuarios colaboradores.
-
-**Características**:
-- ✅ Layout simplificado
-- ✅ Navegación adaptada
-- ✅ Contenido centrado en usuario
-
-**Uso**:
-```typescript
-await hub.activateAddon('templates-colaborador');
-```
-
 ### Functional Add-ons
 
-#### 1. **@autoframe/github** - Integración GitHub
+> **Nota**: Los add-ons de diseño genéricos (tokens, typography, templates-admin, templates-colaborador) han sido removidos del proyecto. Solo se mantienen los add-ons funcionales.
+
+#### 1. **@autorun/github** - Integración GitHub
 
 **Ubicación**: `packages/addons/functional/github/`
 
@@ -463,7 +350,7 @@ if (githubService) {
 
 ### Icon System
 
-#### **@autoframe/icons** - Sistema de Iconos
+#### **@autorun/icons** - Sistema de Iconos
 
 **Ubicación**: `packages/icons/`
 
@@ -477,7 +364,7 @@ if (githubService) {
 
 **Uso**:
 ```typescript
-import { IconProvider } from '@autoframe/icons';
+import { IconProvider } from '@autorun/icons';
 
 const iconProvider = new IconProvider();
 const icon = await iconProvider.getIcon('fa-solid', 'home');
@@ -499,10 +386,10 @@ const icon = await iconProvider.getIcon('fa-solid', 'home');
   
   <!-- Cargar el Hub Core -->
   <script type="module">
-    import { AutoframeHub } from './packages/autoframe-core/dist/index.js';
+    import { AutorunHub } from './packages/autorun-core/dist/index.js';
     
     // Crear instancia del Hub
-    const hub = new AutoframeHub();
+    const hub = new AutorunHub();
     
     // Inicializar el Hub
     await hub.initialize();
@@ -524,10 +411,11 @@ const icon = await iconProvider.getIcon('fa-solid', 'home');
   // Esperar a que el Hub esté inicializado
   await window.hub.initialize();
   
-  // Activar add-ons de diseño en orden
-  await window.hub.activateAddon('tokens');        // Primero: tokens
-  await window.hub.activateAddon('typography');     // Segundo: tipografía
-  await window.hub.activateAddon('templates-admin'); // Tercero: template
+  // Add-ons de diseño genéricos removidos (tokens, typography, templates)
+  // Estos add-ons ya no están disponibles en el proyecto
+  // await window.hub.activateAddon('tokens');
+  // await window.hub.activateAddon('typography');
+  // await window.hub.activateAddon('templates-admin');
 </script>
 ```
 
@@ -537,14 +425,14 @@ const icon = await iconProvider.getIcon('fa-solid', 'home');
 <body>
   <!-- Usar tokens CSS directamente -->
   <div style="background: var(--autoframe-bg-1); color: var(--autoframe-fg-1-high);">
-    <h1 class="ubits-heading-h1">Título Principal</h1>
-    <p class="ubits-body-md">Contenido con tipografía del sistema</p>
+    <h1 class="autoframe-heading-h1">Título Principal</h1>
+    <p class="autoframe-body-md">Contenido con tipografía del sistema</p>
   </div>
   
   <!-- Usar clases de tipografía -->
   <section style="padding: var(--autoframe-spacing-4);">
-    <h2 class="ubits-heading-h2">Sección</h2>
-    <p class="ubits-body-lg">Texto grande</p>
+    <h2 class="autoframe-heading-h2">Sección</h2>
+    <p class="autoframe-body-lg">Texto grande</p>
   </section>
 </body>
 ```
@@ -655,15 +543,16 @@ const icon = await iconProvider.getIcon('fa-solid', 'home');
   
   <!-- Script para inicializar el Hub -->
   <script type="module">
-    import { AutoframeHub } from './packages/autoframe-core/dist/index.js';
+    import { AutorunHub } from './packages/autorun-core/dist/index.js';
     
     // Inicializar Hub
-    const hub = new AutoframeHub();
+    const hub = new AutorunHub();
     await hub.initialize();
     
     // Activar add-ons de diseño
-    await hub.activateAddon('tokens');
-    await hub.activateAddon('typography');
+    // Add-ons de diseño removidos
+    // await hub.activateAddon('tokens');
+    // await hub.activateAddon('typography');
     
     // Hacer disponible globalmente
     window.hub = hub;
@@ -757,7 +646,7 @@ const icon = await iconProvider.getIcon('fa-solid', 'home');
 ```html
 <script type="module">
   // Activar template de administrador
-  await window.hub.activateAddon('templates-admin');
+  // await window.hub.activateAddon('templates-admin'); // Removido
   
   // El template se carga automáticamente con:
   // - Sidebar de navegación
@@ -782,7 +671,7 @@ cd Autorun
 npm install
 
 # 3. Build de los paquetes
-npm run build:tokens
+# Script build:tokens eliminado - tokens genéricos removidos
 ```
 
 ### 2. Desarrollo
@@ -832,10 +721,10 @@ npm run build
   <meta charset="UTF-8">
   <title>Ejemplo Simple</title>
   <script type="module">
-    import { AutoframeHub } from './packages/autoframe-core/dist/index.js';
-    const hub = new AutoframeHub();
+    import { AutorunHub } from './packages/autorun-core/dist/index.js';
+    const hub = new AutorunHub();
     await hub.initialize();
-    await hub.activateAddon('tokens');
+    // await hub.activateAddon('tokens'); // Removido
     window.hub = hub;
   </script>
   <style>
@@ -861,20 +750,21 @@ npm run build
   <meta charset="UTF-8">
   <title>Ejemplo Tipografía</title>
   <script type="module">
-    import { AutoframeHub } from './packages/autoframe-core/dist/index.js';
-    const hub = new AutoframeHub();
+    import { AutorunHub } from './packages/autorun-core/dist/index.js';
+    const hub = new AutorunHub();
     await hub.initialize();
-    await hub.activateAddon('tokens');
-    await hub.activateAddon('typography');
+    // Add-ons de diseño removidos
+    // await hub.activateAddon('tokens');
+    // await hub.activateAddon('typography');
     window.hub = hub;
   </script>
 </head>
 <body>
-  <h1 class="ubits-heading-h1">Título Principal</h1>
-  <h2 class="ubits-heading-h2">Subtítulo</h2>
-  <p class="ubits-body-lg">Texto grande</p>
-  <p class="ubits-body-md">Texto mediano</p>
-  <p class="ubits-body-sm">Texto pequeño</p>
+  <h1 class="autoframe-heading-h1">Título Principal</h1>
+  <h2 class="autoframe-heading-h2">Subtítulo</h2>
+  <p class="autoframe-body-lg">Texto grande</p>
+  <p class="autoframe-body-md">Texto mediano</p>
+  <p class="autoframe-body-sm">Texto pequeño</p>
 </body>
 </html>
 ```
@@ -888,13 +778,14 @@ npm run build
   <meta charset="UTF-8">
   <title>Página Completa</title>
   <script type="module">
-    import { AutoframeHub } from './packages/autoframe-core/dist/index.js';
-    const hub = new AutoframeHub();
+    import { AutorunHub } from './packages/autorun-core/dist/index.js';
+    const hub = new AutorunHub();
     await hub.initialize();
     
     // Activar todos los add-ons de diseño
-    await hub.activateAddon('tokens');
-    await hub.activateAddon('typography');
+    // Add-ons de diseño removidos
+    // await hub.activateAddon('tokens');
+    // await hub.activateAddon('typography');
     
     window.hub = hub;
   </script>
@@ -922,15 +813,15 @@ npm run build
 <body>
   <!-- Hero -->
   <section class="hero">
-    <h1 class="ubits-heading-h1">Bienvenido</h1>
-    <p class="ubits-body-lg">Descripción principal</p>
+    <h1 class="autoframe-heading-h1">Bienvenido</h1>
+    <p class="autoframe-body-lg">Descripción principal</p>
   </section>
   
   <!-- Features -->
   <section class="features">
     <div class="card">
-      <h2 class="ubits-heading-h2">Característica 1</h2>
-      <p class="ubits-body-md">Descripción</p>
+      <h2 class="autoframe-heading-h2">Característica 1</h2>
+      <p class="autoframe-body-md">Descripción</p>
     </div>
   </section>
 </body>

@@ -19,11 +19,11 @@ El add-on ya está incluido en Autorun. No requiere dependencias adicionales.
 
 ## ⚙️ Configuración
 
-Agrega la configuración de i18n en tu `.ubits/project-config.json`:
+Agrega la configuración de i18n en tu `autorun.config.json`:
 
 ```json
 {
-  "autoframe": {
+  "autorun": {
     "addons": {
       "config": {
         "i18n": {
@@ -96,9 +96,9 @@ locales/
 ### Activar el Add-on
 
 ```typescript
-import { AutoframeHub } from '@autoframe/core';
+import { AutorunHub } from '@autorun/core';
 
-const hub = new AutoframeHub();
+const hub = new AutorunHub();
 await hub.initialize();
 
 // Activar i18n
@@ -336,4 +336,5 @@ i18n se integra con:
 
 **Versión**: 1.0.0  
 **Última actualización**: Diciembre 2024
+
 

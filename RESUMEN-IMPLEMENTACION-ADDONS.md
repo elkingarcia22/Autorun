@@ -115,7 +115,7 @@ packages/addons/functional/{addon-id}/
 
 ✅ **Interfaz IFunctionalAddon**: Todos implementan la interfaz estándar  
 ✅ **Servicio separado**: Lógica de negocio en clase Service  
-✅ **Configuración centralizada**: Via `.ubits/project-config.json`  
+✅ **Configuración centralizada**: Via `autorun.config.json`  
 ✅ **Hooks automáticos**: Integración con eventos del Hub  
 ✅ **TypeScript completo**: Tipos y interfaces definidos  
 ✅ **Manejo de errores**: Validaciones y mensajes claros  
@@ -152,10 +152,10 @@ ESLint → AI Assistant → Prettier
 ## 📝 Ejemplo de Uso Completo
 
 ```typescript
-import { AutoframeHub } from '@autoframe/core';
+import { AutorunHub } from '@autorun/core';
 
 // Inicializar Hub
-const hub = new AutoframeHub();
+const hub = new AutorunHub();
 await hub.initialize();
 
 // Activar múltiples add-ons
@@ -225,4 +225,5 @@ trackEvent('deployment_completed', { environment: 'production' });
 **🎊 ¡Implementación Completada con Éxito! 🎊**
 
 Todos los add-ons funcionales están implementados, compilados, documentados y listos para usar en producción.
+
 

@@ -42,9 +42,9 @@ Sistema automático que detecta cuando un add-on puede beneficiarse de MCP (Mode
 ### Escenario: Configurando GitHub Add-on
 
 ```typescript
-import { AutoframeHub } from '@autoframe/core';
+import { AutorunHub } from '@autorun/core';
 
-const hub = new AutoframeHub();
+const hub = new AutorunHub();
 await hub.initialize();
 
 // Activar GitHub add-on
@@ -120,7 +120,7 @@ Para instalar MCP de GitHub manualmente:
 Detecta si hay servidores MCP disponibles y configurados.
 
 ```typescript
-import { MCPDetector } from '@autoframe/core';
+import { MCPDetector } from '@autorun/core';
 
 const info = await MCPDetector.detectMCPServer('github');
 console.log(info);
@@ -136,7 +136,7 @@ console.log(info);
 Instala y configura servidores MCP automáticamente.
 
 ```typescript
-import { MCPInstaller } from '@autoframe/core';
+import { MCPInstaller } from '@autorun/core';
 
 const result = await MCPInstaller.installMCPServer('github', {
   token: 'ghp_...'
@@ -154,7 +154,7 @@ console.log(result);
 Maneja la interacción con el usuario.
 
 ```typescript
-import { MCPPrompt } from '@autoframe/core';
+import { MCPPrompt } from '@autorun/core';
 
 const shouldInstall = await MCPPrompt.promptForMCP({
   serviceName: 'github',
@@ -225,7 +225,7 @@ Si quieres usar MCP siempre que esté disponible:
 ### Verificar si MCP está configurado
 
 ```typescript
-import { MCPDetector } from '@autoframe/core';
+import { MCPDetector } from '@autorun/core';
 
 const capabilities = await MCPDetector.detectAllCapabilities();
 console.log(capabilities);
@@ -280,4 +280,5 @@ allInfo.forEach(info => {
 
 **Versión**: 1.0.0  
 **Última actualización**: Diciembre 2024
+
 

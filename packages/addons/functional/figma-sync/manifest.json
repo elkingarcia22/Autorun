@@ -1,9 +1,8 @@
 {
-  "name": "@autoframe/figma-sync",
-  "version": "1.0.0",
-  "type": "functional",
-  "description": "Figma Sync - Sincronización de tokens y componentes desde Figma",
-  "main": "./dist/index.js",
-  "export": "FigmaSyncAddon"
+	"name": "@autorun/figma-sync",
+	"version": "1.0.0",
+	"type": "functional",
+	"description": "Figma Sync - Sincronización de tokens y componentes desde Figma",
+	"main": "./dist/index.js",
+	"export": "FigmaSyncAddon"
 }
-

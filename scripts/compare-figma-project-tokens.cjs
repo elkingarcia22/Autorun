@@ -17,24 +17,24 @@ const OUTPUT_REPORT = path.resolve(ROOT_DIR, 'REPORTE-TOKENS-ACTUALIZACION.md');
  * Cargar tokens del proyecto
  */
 function loadProjectTokens() {
-  const data = JSON.parse(fs.readFileSync(PROJECT_TOKENS, 'utf8'));
-  const tokens = {};
-  
-  function flatten(obj, prefix = '', mode = '') {
-    for (const [key, value] of Object.entries(obj)) {
-      const fullKey = mode ? `${mode}.${key}` : key;
-      if (value && typeof value === 'object' && !Array.isArray(value)) {
-        flatten(value, fullKey, mode);
-      } else if (typeof value === 'string' && value.startsWith('#')) {
-        tokens[fullKey] = value;
-      }
-    }
-  }
-  
-  flatten(data.light || {}, '', 'light');
-  flatten(data.dark || {}, '', 'dark');
-  
-  return tokens;
+	const data = JSON.parse(fs.readFileSync(PROJECT_TOKENS, 'utf8'));
+	const tokens = {};
+
+	function flatten(obj, prefix = '', mode = '') {
+		for (const [key, value] of Object.entries(obj)) {
+			const fullKey = mode ? `${mode}.${key}` : key;
+			if (value && typeof value === 'object' && !Array.isArray(value)) {
+				flatten(value, fullKey, mode);
+			} else if (typeof value === 'string' && value.startsWith('#')) {
+				tokens[fullKey] = value;
+			}
+		}
+	}
+
+	flatten(data.light || {}, '', 'light');
+	flatten(data.dark || {}, '', 'dark');
+
+	return tokens;
 }
 
 /**
@@ -42,73 +42,73 @@ function loadProjectTokens() {
  * Ejemplo: light.accent.brand -> light.brand.ubits-accent-brand
  */
 function mapFigmaToProject(figmaName) {
-  const parts = figmaName.split('.');
-  if (parts.length < 2) return null;
-  
-  const mode = parts[0]; // light o dark
-  const category = parts[1]; // accent, feedback, fg, bg, border
-  
-  // Mapeos conocidos
-  const mappings = {
-    'light.accent.brand': 'light.brand.ubits-accent-brand',
-    'light.feedback.accent.success': 'light.feedback.ubits-feedback-accent-success',
-    'light.feedback.accent.error': 'light.feedbackError.ubits-feedback-accent-error',
-    'light.feedback.accent.warning': 'light.feedbackBorders.ubits-feedback-border-warning',
-    'light.feedback.border.success': 'light.feedbackBorders.ubits-feedback-border-success',
-    'light.feedback.border.error': 'light.feedbackBorders.ubits-feedback-border-error',
-    'light.fg.1.high': 'light.foreground.ubits-fg-1-high',
-    'light.bg.1': 'light.background.ubits-bg-1',
-    'light.border.1': 'light.borders.ubits-border-1',
-    'dark.bg.5': 'dark.background.ubits-bg-5', // Token faltante
-  };
-  
-  if (mappings[figmaName]) {
-    return mappings[figmaName];
-  }
-  
-  // Intentar mapeo genérico
-  // Por ahora, retornar null para mapeo manual
-  return null;
+	const parts = figmaName.split('.');
+	if (parts.length < 2) return null;
+
+	const mode = parts[0]; // light o dark
+	const category = parts[1]; // accent, feedback, fg, bg, border
+
+	// Mapeos conocidos
+	const mappings = {
+		'light.accent.brand': 'light.brand.ubits-accent-brand',
+		'light.feedback.accent.success': 'light.feedback.ubits-feedback-accent-success',
+		'light.feedback.accent.error': 'light.feedbackError.ubits-feedback-accent-error',
+		'light.feedback.accent.warning': 'light.feedbackBorders.ubits-feedback-border-warning',
+		'light.feedback.border.success': 'light.feedbackBorders.ubits-feedback-border-success',
+		'light.feedback.border.error': 'light.feedbackBorders.ubits-feedback-border-error',
+		'light.fg.1.high': 'light.foreground.ubits-fg-1-high',
+		'light.bg.1': 'light.background.ubits-bg-1',
+		'light.border.1': 'light.borders.ubits-border-1',
+		'dark.bg.5': 'dark.background.ubits-bg-5', // Token faltante
+	};
+
+	if (mappings[figmaName]) {
+		return mappings[figmaName];
+	}
+
+	// Intentar mapeo genérico
+	// Por ahora, retornar null para mapeo manual
+	return null;
 }
 
 /**
  * Función principal
  */
 function main() {
-  console.log('🔍 Comparando tokens de Figma vs Proyecto...\n');
-  
-  // Cargar tokens del proyecto
-  console.log('📦 Cargando tokens del proyecto...');
-  const projectTokens = loadProjectTokens();
-  console.log(`   ✅ Cargados ${Object.keys(projectTokens).length} tokens\n`);
-  
-  // Ejecutar script de Python para obtener tokens de Figma
-  console.log('📦 Ejecutando script de Python para obtener tokens de Figma...');
-  try {
-    execSync('python3 scripts/compare-tokens-by-hex.py', { 
-      cwd: ROOT_DIR,
-      stdio: 'inherit'
-    });
-  } catch (error) {
-    console.error('❌ Error ejecutando script de Python:', error.message);
-    return;
-  }
-  
-  // Leer reporte generado por Python
-  const pythonReport = path.resolve(ROOT_DIR, 'COMPARACION_TOKENS_HEX.md');
-  if (fs.existsSync(pythonReport)) {
-    console.log('✅ Reporte de Python generado\n');
-    
-    // Leer y mostrar resumen
-    const reportContent = fs.readFileSync(pythonReport, 'utf8');
-    console.log('📊 Resumen del reporte:');
-    console.log(reportContent.split('\n').slice(0, 30).join('\n'));
-  }
-  
-  // Generar reporte detallado para actualización
-  console.log('\n📝 Generando reporte detallado para actualización...');
-  
-  const report = `# 📊 Reporte de Tokens para Actualización
+	console.log('🔍 Comparando tokens de Figma vs Proyecto...\n');
+
+	// Cargar tokens del proyecto
+	console.log('📦 Cargando tokens del proyecto...');
+	const projectTokens = loadProjectTokens();
+	console.log(`   ✅ Cargados ${Object.keys(projectTokens).length} tokens\n`);
+
+	// Ejecutar script de Python para obtener tokens de Figma
+	console.log('📦 Ejecutando script de Python para obtener tokens de Figma...');
+	try {
+		execSync('python3 scripts/compare-tokens-by-hex.py', {
+			cwd: ROOT_DIR,
+			stdio: 'inherit',
+		});
+	} catch (error) {
+		console.error('❌ Error ejecutando script de Python:', error.message);
+		return;
+	}
+
+	// Leer reporte generado por Python
+	const pythonReport = path.resolve(ROOT_DIR, 'COMPARACION_TOKENS_HEX.md');
+	if (fs.existsSync(pythonReport)) {
+		console.log('✅ Reporte de Python generado\n');
+
+		// Leer y mostrar resumen
+		const reportContent = fs.readFileSync(pythonReport, 'utf8');
+		console.log('📊 Resumen del reporte:');
+		console.log(reportContent.split('\n').slice(0, 30).join('\n'));
+	}
+
+	// Generar reporte detallado para actualización
+	console.log('\n📝 Generando reporte detallado para actualización...');
+
+	const report = `# 📊 Reporte de Tokens para Actualización
 
 **Fecha:** ${new Date().toLocaleDateString('es-ES')}
 **Fuente:** Tokens de Figma en \`/Users/elkinmac/Desktop/tokens/\`
@@ -166,25 +166,24 @@ Ver \`COMPARACION_TOKENS_FINAL.md\` para lista completa.
 - Comparación por hex: \`COMPARACION_TOKENS_HEX.md\`
 `;
 
-  fs.writeFileSync(OUTPUT_REPORT, report, 'utf8');
-  console.log(`✅ Reporte guardado en: ${OUTPUT_REPORT}\n`);
-  
-  console.log('🎯 Siguiente paso:');
-  console.log('   1. Revisar el reporte generado');
-  console.log('   2. Seguir el plan en PLAN-MAESTRO-ACTUALIZACION-TOKENS.md');
-  console.log('   3. Comenzar con PASO 2.1: Actualizar 5 tokens críticos\n');
+	fs.writeFileSync(OUTPUT_REPORT, report, 'utf8');
+	console.log(`✅ Reporte guardado en: ${OUTPUT_REPORT}\n`);
+
+	console.log('🎯 Siguiente paso:');
+	console.log('   1. Revisar el reporte generado');
+	console.log('   2. Seguir el plan en PLAN-MAESTRO-ACTUALIZACION-TOKENS.md');
+	console.log('   3. Comenzar con PASO 2.1: Actualizar 5 tokens críticos\n');
 }
 
 // Ejecutar
 if (require.main === module) {
-  try {
-    main();
-  } catch (error) {
-    console.error('❌ Error:', error.message);
-    console.error(error.stack);
-    process.exit(1);
-  }
+	try {
+		main();
+	} catch (error) {
+		console.error('❌ Error:', error.message);
+		console.error(error.stack);
+		process.exit(1);
+	}
 }
 
 module.exports = { main, loadProjectTokens, mapFigmaToProject };
-

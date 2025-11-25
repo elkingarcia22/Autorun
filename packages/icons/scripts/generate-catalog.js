@@ -19,107 +19,107 @@ const cssContent = readFileSync(cssPath, 'utf-8');
 
 // Mapeo de sinónimos para búsqueda semántica
 const synonyms = {
-  'user': ['profile', 'account', 'person', 'usuario'],
-  'trash': ['delete', 'remove', 'eliminate', 'eliminar', 'papelera'],
-  'plus': ['add', 'create', 'new', 'crear', 'añadir', 'nuevo'],
-  'check': ['ok', 'done', 'success', 'confirm', 'correcto', 'aceptar'],
-  'times': ['close', 'cancel', 'x', 'remove', 'cerrar', 'cancelar'],
-  'edit': ['modify', 'change', 'update', 'editar', 'modificar', 'actualizar'],
-  'save': ['store', 'keep', 'preserve', 'guardar', 'almacenar'],
-  'search': ['find', 'lookup', 'buscar', 'encontrar'],
-  'download': ['save', 'get', 'descargar', 'obtener'],
-  'upload': ['send', 'post', 'subir', 'enviar'],
-  'home': ['house', 'main', 'inicio', 'principal'],
-  'bell': ['notification', 'alert', 'notificacion', 'alerta'],
-  'settings': ['config', 'preferences', 'configuracion', 'preferencias'],
-  'menu': ['hamburger', 'bars', 'menú', 'navegacion'],
+	user: ['profile', 'account', 'person', 'usuario'],
+	trash: ['delete', 'remove', 'eliminate', 'eliminar', 'papelera'],
+	plus: ['add', 'create', 'new', 'crear', 'añadir', 'nuevo'],
+	check: ['ok', 'done', 'success', 'confirm', 'correcto', 'aceptar'],
+	times: ['close', 'cancel', 'x', 'remove', 'cerrar', 'cancelar'],
+	edit: ['modify', 'change', 'update', 'editar', 'modificar', 'actualizar'],
+	save: ['store', 'keep', 'preserve', 'guardar', 'almacenar'],
+	search: ['find', 'lookup', 'buscar', 'encontrar'],
+	download: ['save', 'get', 'descargar', 'obtener'],
+	upload: ['send', 'post', 'subir', 'enviar'],
+	home: ['house', 'main', 'inicio', 'principal'],
+	bell: ['notification', 'alert', 'notificacion', 'alerta'],
+	settings: ['config', 'preferences', 'configuracion', 'preferencias'],
+	menu: ['hamburger', 'bars', 'menú', 'navegacion'],
 };
 
 /**
  * Extrae keywords de un nombre de icono
  */
 function extractKeywords(name) {
-  const parts = name.split('-');
-  const keywords = [...parts];
+	const parts = name.split('-');
+	const keywords = [...parts];
 
-  // Agregar sinónimos comunes
-  parts.forEach(part => {
-    if (synonyms[part]) {
-      keywords.push(...synonyms[part]);
-    }
-  });
+	// Agregar sinónimos comunes
+	parts.forEach((part) => {
+		if (synonyms[part]) {
+			keywords.push(...synonyms[part]);
+		}
+	});
 
-  return [...new Set(keywords)];
+	return [...new Set(keywords)];
 }
 
 /**
  * Parsea el CSS y extrae todos los iconos
  */
 function parseIconsFromCSS(css) {
-  const iconRegex = /\.fa-([a-z0-9-]+)::before\s*\{/gi;
-  const icons = {
-    regular: [],
-    solid: []
-  };
+	const iconRegex = /\.fa-([a-z0-9-]+)::before\s*\{/gi;
+	const icons = {
+		regular: [],
+		solid: [],
+	};
 
-  let match;
-  while ((match = iconRegex.exec(css)) !== null) {
-    const className = `fa-${match[1]}`;
-    const iconName = match[1];
-    
-    // Intentar determinar el estilo basado en el contexto
-    // Por defecto, muchos iconos tienen versión regular y solid
-    // Por ahora, los agregamos a ambos si no podemos determinar
-    const keywords = extractKeywords(iconName);
+	let match;
+	while ((match = iconRegex.exec(css)) !== null) {
+		const className = `fa-${match[1]}`;
+		const iconName = match[1];
 
-    const iconData = {
-      name: iconName,
-      className: className,
-      keywords: keywords,
-      styles: ['regular', 'solid'] // Por defecto ambos estilos
-    };
+		// Intentar determinar el estilo basado en el contexto
+		// Por defecto, muchos iconos tienen versión regular y solid
+		// Por ahora, los agregamos a ambos si no podemos determinar
+		const keywords = extractKeywords(iconName);
 
-    // Agregar a ambos estilos (podemos refinar esto después)
-    icons.regular.push(iconData);
-    icons.solid.push(iconData);
-  }
+		const iconData = {
+			name: iconName,
+			className: className,
+			keywords: keywords,
+			styles: ['regular', 'solid'], // Por defecto ambos estilos
+		};
 
-  // Eliminar duplicados
-  const uniqueIcons = new Map();
-  [...icons.regular, ...icons.solid].forEach(icon => {
-    if (!uniqueIcons.has(icon.name)) {
-      uniqueIcons.set(icon.name, icon);
-    }
-  });
+		// Agregar a ambos estilos (podemos refinar esto después)
+		icons.regular.push(iconData);
+		icons.solid.push(iconData);
+	}
 
-  return {
-    regular: Array.from(uniqueIcons.values()),
-    solid: Array.from(uniqueIcons.values())
-  };
+	// Eliminar duplicados
+	const uniqueIcons = new Map();
+	[...icons.regular, ...icons.solid].forEach((icon) => {
+		if (!uniqueIcons.has(icon.name)) {
+			uniqueIcons.set(icon.name, icon);
+		}
+	});
+
+	return {
+		regular: Array.from(uniqueIcons.values()),
+		solid: Array.from(uniqueIcons.values()),
+	};
 }
 
 /**
  * Genera índice de búsqueda invertido
  */
 function generateSearchIndex(catalog) {
-  const index = {};
-  
-  [...catalog.regular, ...catalog.solid].forEach(icon => {
-    icon.keywords.forEach(keyword => {
-      if (!index[keyword]) {
-        index[keyword] = [];
-      }
-      if (!index[keyword].some(i => i.name === icon.name)) {
-        index[keyword].push({
-          name: icon.name,
-          className: icon.className,
-          keywords: icon.keywords
-        });
-      }
-    });
-  });
+	const index = {};
 
-  return index;
+	[...catalog.regular, ...catalog.solid].forEach((icon) => {
+		icon.keywords.forEach((keyword) => {
+			if (!index[keyword]) {
+				index[keyword] = [];
+			}
+			if (!index[keyword].some((i) => i.name === icon.name)) {
+				index[keyword].push({
+					name: icon.name,
+					className: icon.className,
+					keywords: icon.keywords,
+				});
+			}
+		});
+	});
+
+	return index;
 }
 
 // Generar catálogo
@@ -141,4 +141,3 @@ writeFileSync(searchIndexPath, JSON.stringify(searchIndex, null, 2));
 console.log(`✅ Catálogo guardado en: ${catalogPath}`);
 console.log(`✅ Índice de búsqueda guardado en: ${searchIndexPath}`);
 console.log('✨ ¡Listo!');
-

@@ -1,27 +1,26 @@
 {
-  "name": "@ubits/icons",
-  "version": "1.0.0",
-  "description": "Sistema de iconos UBITS - Add-on intercambiable",
-  "type": "module",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "scripts": {
-    "build": "tsc && npm run generate-catalog",
-    "generate-catalog": "node scripts/generate-catalog.js",
-    "dev": "tsc --watch"
-  },
-  "dependencies": {},
-  "devDependencies": {
-    "typescript": "^5.3.0"
-  },
-  "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
-    },
-    "./catalog": {
-      "import": "./dist/catalog.json"
-    }
-  }
+	"name": "@ubits/icons",
+	"version": "1.0.0",
+	"description": "Sistema de iconos UBITS - Add-on intercambiable",
+	"type": "module",
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"scripts": {
+		"build": "tsc && npm run generate-catalog",
+		"generate-catalog": "node scripts/generate-catalog.js",
+		"dev": "tsc --watch"
+	},
+	"dependencies": {},
+	"devDependencies": {
+		"typescript": "^5.3.0"
+	},
+	"exports": {
+		".": {
+			"import": "./dist/index.js",
+			"types": "./dist/index.d.ts"
+		},
+		"./catalog": {
+			"import": "./dist/catalog.json"
+		}
+	}
 }
-

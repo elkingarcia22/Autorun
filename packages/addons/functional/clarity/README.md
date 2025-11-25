@@ -18,11 +18,11 @@ El add-on ya está incluido en Autorun. Solo necesitas configurarlo en tu proyec
 
 ## ⚙️ Configuración
 
-Agrega la configuración de Clarity en tu `.ubits/project-config.json`:
+Agrega la configuración de Clarity en tu `autorun.config.json`:
 
 ```json
 {
-  "autoframe": {
+  "autorun": {
     "addons": {
       "config": {
         "clarity": {
@@ -63,9 +63,9 @@ Agrega la configuración de Clarity en tu `.ubits/project-config.json`:
 ### Activar el Add-on
 
 ```typescript
-import { AutoframeHub } from '@autoframe/core';
+import { AutorunHub } from '@autorun/core';
 
-const hub = new AutoframeHub();
+const hub = new AutorunHub();
 await hub.initialize();
 
 // Activar Clarity

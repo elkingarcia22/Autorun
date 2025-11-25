@@ -1,9 +1,8 @@
 {
-  "name": "@autoframe/eslint",
-  "version": "1.0.0",
-  "type": "functional",
-  "description": "ESLint - Linting automático de código",
-  "main": "./dist/index.js",
-  "export": "ESLintAddon"
+	"name": "@autorun/eslint",
+	"version": "1.0.0",
+	"type": "functional",
+	"description": "ESLint - Linting automático de código",
+	"main": "./dist/index.js",
+	"export": "ESLintAddon"
 }
-

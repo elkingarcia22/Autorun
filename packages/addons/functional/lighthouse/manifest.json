@@ -1,9 +1,8 @@
 {
-  "name": "@autoframe/lighthouse",
-  "version": "1.0.0",
-  "type": "functional",
-  "description": "Lighthouse Audit - Auditoría de performance, accesibilidad, SEO y best practices",
-  "main": "./dist/index.js",
-  "export": "LighthouseAddon"
+	"name": "@autorun/lighthouse",
+	"version": "1.0.0",
+	"type": "functional",
+	"description": "Lighthouse Audit - Auditoría de performance, accesibilidad, SEO y best practices",
+	"main": "./dist/index.js",
+	"export": "LighthouseAddon"
 }
-

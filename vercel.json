@@ -1,7 +1,6 @@
 {
-  "buildCommand": "npm run build:tokens && cd packages/docs-site && npm run build-storybook",
-  "outputDirectory": "packages/docs-site/storybook-static",
-  "framework": null,
-  "installCommand": "npm install"
+	"buildCommand": "npm run build:tokens && cd packages/docs-site && npm run build-storybook",
+	"outputDirectory": "packages/docs-site/storybook-static",
+	"framework": null,
+	"installCommand": "npm install"
 }
-

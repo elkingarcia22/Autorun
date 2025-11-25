@@ -2384,57 +2384,136 @@
         margin: 0 auto;
       }
 
-      /* Paso a Paso Vertical */
+      /* Paso a Paso Vertical - Acordeón */
       .conectar-steps {
         display: flex;
         flex-direction: column;
-        gap: 60px;
+        gap: 16px;
         margin-top: 80px;
       }
 
       .conectar-step {
-        display: flex;
-        gap: 40px;
-        align-items: flex-start;
-        position: relative;
+        background: var(--autorun-gray-100);
+        border: 1px solid var(--autorun-gray-300);
+        border-radius: 12px;
+        overflow: hidden;
+        transition: all 0.3s ease;
         opacity: 0;
-        transform: translateX(-30px);
-        transition: all 0.6s ease;
+        transform: translateY(20px);
       }
 
       .conectar-step.animate {
         opacity: 1;
-        transform: translateX(0);
+        transform: translateY(0);
+      }
+
+      .conectar-step.active {
+        border-color: var(--autorun-neon-yellow);
+        box-shadow: 0 4px 20px rgba(255, 255, 0, 0.15);
+      }
+
+      .step-header {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        padding: 24px 28px;
+        cursor: pointer;
+        user-select: none;
+        transition: all 0.3s ease;
+        position: relative;
+      }
+
+      .step-header:hover {
+        background: rgba(255, 255, 0, 0.05);
+      }
+
+      .step-header::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(90deg, 
+          var(--autorun-neon-yellow) 0%, 
+          var(--autorun-neon-blue) 100%);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      .conectar-step.active .step-header::after {
+        opacity: 1;
       }
 
       .step-number-large {
-        width: 60px;
-        height: 60px;
+        width: 50px;
+        height: 50px;
         border-radius: 50%;
         background: var(--autorun-gray-200);
-        border: 3px solid var(--autorun-neon-yellow);
+        border: 2px solid var(--autorun-neon-yellow);
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 28px;
+        font-size: 24px;
         font-weight: 700;
         color: var(--autorun-neon-yellow);
-        box-shadow: 0 0 20px var(--autorun-neon-yellow-glow);
+        box-shadow: 0 0 15px var(--autorun-neon-yellow-glow);
         flex-shrink: 0;
-        position: relative;
-        z-index: 2;
+        transition: all 0.3s ease;
       }
 
-      .step-content {
+      .conectar-step.active .step-number-large {
+        background: var(--autorun-neon-yellow);
+        color: var(--autorun-bg-black);
+        box-shadow: 0 0 25px var(--autorun-neon-yellow-glow);
+        transform: scale(1.05);
+      }
+
+      .step-header-content {
         flex: 1;
-        padding-top: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
       }
 
       .step-title {
-        font-size: 24px;
+        font-size: 20px;
         font-weight: 700;
         color: var(--autorun-neon-white);
-        margin-bottom: 12px;
+        margin: 0;
+        transition: color 0.3s ease;
+      }
+
+      .conectar-step.active .step-title {
+        color: var(--autorun-neon-yellow);
+      }
+
+      .step-toggle-icon {
+        width: 24px;
+        height: 24px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--autorun-neon-yellow);
+        transition: transform 0.3s ease;
+      }
+
+      .conectar-step.active .step-toggle-icon {
+        transform: rotate(180deg);
+      }
+
+      .step-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), padding 0.4s ease;
+        padding: 0 28px;
+      }
+
+      .conectar-step.active .step-content {
+        max-height: none;
+        padding: 0 28px 28px 28px;
       }
 
       .step-description {
@@ -2442,22 +2521,7 @@
         line-height: 1.7;
         color: var(--autorun-gray-600);
         margin-bottom: 20px;
-      }
-
-      /* Línea conectora vertical */
-      .conectar-step:not(:last-child)::after {
-        content: '';
-        position: absolute;
-        top: 60px;
-        left: 30px;
-        width: 2px;
-        height: calc(100% + 60px);
-        background: linear-gradient(180deg, 
-          var(--autorun-neon-yellow) 0%, 
-          var(--autorun-neon-blue) 100%);
-        z-index: 1;
-        opacity: 0.4;
-        box-shadow: 0 0 8px var(--autorun-neon-yellow-glow);
+        padding-top: 20px;
       }
 
       /* Cómo Funciona */
@@ -2817,6 +2881,150 @@
         margin: 0;
       }
 
+      /* Nota Final - Acordeón */
+      .conectar-note-accordion {
+        margin-top: 40px;
+        background: var(--autorun-gray-100);
+        border: 1px solid var(--autorun-gray-300);
+        border-radius: 12px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+      }
+
+      .conectar-note-accordion.active {
+        border-color: var(--autorun-neon-blue);
+        box-shadow: 0 4px 20px rgba(0, 191, 255, 0.15);
+      }
+
+      .note-header {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 24px 28px;
+        cursor: pointer;
+        user-select: none;
+        transition: all 0.3s ease;
+        position: relative;
+      }
+
+      .note-header:hover {
+        background: rgba(0, 191, 255, 0.05);
+      }
+
+      .note-header::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(90deg, 
+          var(--autorun-neon-yellow) 0%, 
+          var(--autorun-neon-blue) 100%);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      .conectar-note-accordion.active .note-header::after {
+        opacity: 1;
+      }
+
+      .note-icon-small {
+        width: 40px;
+        height: 40px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, rgba(0, 191, 255, 0.2) 0%, rgba(255, 255, 0, 0.2) 100%);
+        border-radius: 10px;
+        color: var(--autorun-neon-cyan);
+        border: 1px solid rgba(0, 191, 255, 0.4);
+        box-shadow: 
+          0 0 15px rgba(0, 191, 255, 0.3),
+          inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        transition: all 0.3s ease;
+      }
+
+      .conectar-note-accordion.active .note-icon-small {
+        background: linear-gradient(135deg, rgba(0, 191, 255, 0.3) 0%, rgba(255, 255, 0, 0.3) 100%);
+        box-shadow: 
+          0 0 20px rgba(0, 191, 255, 0.4),
+          inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      }
+
+      .note-icon-small svg {
+        filter: drop-shadow(0 0 6px rgba(0, 191, 255, 0.6));
+      }
+
+      .conectar-note-accordion .note-title {
+        flex: 1;
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--autorun-neon-white);
+        margin: 0;
+        transition: color 0.3s ease;
+        background: none;
+        -webkit-background-clip: unset;
+        -webkit-text-fill-color: var(--autorun-neon-white);
+        background-clip: unset;
+        text-shadow: none;
+        letter-spacing: normal;
+      }
+
+      .conectar-note-accordion.active .note-title {
+        color: var(--autorun-neon-blue);
+      }
+
+      .note-toggle-icon {
+        width: 24px;
+        height: 24px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--autorun-neon-blue);
+        transition: transform 0.3s ease;
+      }
+
+      .conectar-note-accordion.active .note-toggle-icon {
+        transform: rotate(180deg);
+      }
+
+      .note-content-collapsible {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), padding 0.4s ease;
+        padding: 0 28px;
+      }
+
+      .conectar-note-accordion.active .note-content-collapsible {
+        max-height: 1000px;
+        padding: 0 28px 28px 28px;
+      }
+
+      .conectar-note-accordion .note-text {
+        font-size: 15px;
+        color: var(--autorun-gray-600);
+        line-height: 1.8;
+        margin-bottom: 20px;
+        padding-top: 20px;
+      }
+
+      .conectar-note-accordion .code-block {
+        margin-top: 0;
+        background: rgba(0, 0, 0, 0.4);
+        border: 1px solid rgba(0, 191, 255, 0.2);
+        border-radius: 10px;
+        box-shadow: 
+          0 4px 20px rgba(0, 0, 0, 0.3),
+          inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      }
+
+      .conectar-note-accordion .code-block pre {
+        margin: 0;
+      }
+
       /* Responsive */
       @media (max-width: 768px) {
         .conectar-section {
@@ -2824,23 +3032,35 @@
         }
 
         .conectar-steps {
-          gap: 40px;
+          gap: 12px;
         }
 
-        .conectar-step {
-          flex-direction: column;
-          gap: 20px;
-        }
-
-        .conectar-step:not(:last-child)::after {
-          left: 30px;
-          top: 60px;
+        .step-header {
+          padding: 20px;
+          gap: 16px;
         }
 
         .step-number-large {
-          width: 50px;
-          height: 50px;
-          font-size: 24px;
+          width: 44px;
+          height: 44px;
+          font-size: 20px;
+        }
+
+        .step-title {
+          font-size: 18px;
+        }
+
+        .step-content {
+          padding: 0 20px !important;
+        }
+
+        .conectar-step.active .step-content {
+          padding: 0 20px 20px 20px !important;
+        }
+
+        .step-description {
+          font-size: 15px;
+          padding-top: 16px;
         }
 
         .funciona-grid {
@@ -2856,6 +3076,37 @@
         .conectar-note {
           flex-direction: column;
           padding: 24px;
+        }
+
+        .conectar-note-accordion {
+          margin-top: 32px;
+        }
+
+        .note-header {
+          padding: 20px;
+          gap: 12px;
+        }
+
+        .note-icon-small {
+          width: 36px;
+          height: 36px;
+        }
+
+        .conectar-note-accordion .note-title {
+          font-size: 18px;
+        }
+
+        .note-content-collapsible {
+          padding: 0 20px !important;
+        }
+
+        .conectar-note-accordion.active .note-content-collapsible {
+          padding: 0 20px 20px 20px !important;
+        }
+
+        .conectar-note-accordion .note-text {
+          font-size: 14px;
+          padding-top: 16px;
         }
       }
 
@@ -4623,17 +4874,20 @@ const text = t('welcome.message');</code></pre>
                 <h3 class="addon-title">Figma Sync</h3>
               </div>
               <p class="addon-description">
-                Sincronización automática de tokens y componentes desde Figma. Importación de tokens, actualización automática e integración con Figma API.
+                Sincronización automática de tokens y componentes desde Figma. Importación de tokens, actualización automática e integración con Figma API y MCP.
               </p>
 
               <div class="addon-section">
                 <h4 class="addon-section-title">Características</h4>
                 <ul class="addon-features">
-                  <li>Sincronización de tokens</li>
-                  <li>Importación de componentes</li>
+                  <li>Sincronización de tokens desde Figma</li>
+                  <li>Comparación inteligente de tokens</li>
                   <li>Actualización automática</li>
                   <li>Integración con Figma API</li>
-                  <li>Mapeo de tokens</li>
+                  <li>Integración MCP (figma y talk-to-figma)</li>
+                  <li>Soporte para JSON de tokens de Figma</li>
+                  <li>Mapeo personalizado de tokens</li>
+                  <li>Backup automático antes de sincronizar</li>
                 </ul>
               </div>
 
@@ -4648,6 +4902,40 @@ const text = t('welcome.message');</code></pre>
                     <span class="requirement-label">File Key</span>
                     <span class="requirement-value">Key del archivo de Figma a sincronizar</span>
                   </div>
+                  <div class="requirement-item">
+                    <span class="requirement-label">JSON de Tokens (Recomendado)</span>
+                    <span class="requirement-value">JSON exportado desde el plugin de Figma Tokens (ver instrucciones abajo)</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="addon-section">
+                <h4 class="addon-section-title">⚠️ Importante: JSON de Tokens de Figma</h4>
+                <p class="addon-description" style="margin-bottom: 16px;">
+                  <strong>Ni MCP ni la API de Figma pueden acceder directamente a las Variables de Figma.</strong> Esta es una limitación de la API de Figma que no expone las variables directamente.
+                </p>
+                <div class="addon-features" style="margin-bottom: 16px;">
+                  <h5 style="color: var(--autorun-neon-yellow); margin-bottom: 12px; font-size: 14px;">📥 Cómo Descargar el JSON de Tokens:</h5>
+                  <ol style="margin-left: 20px; line-height: 1.8;">
+                    <li><strong>Instalar el Plugin:</strong> Ve a Figma → Plugins → Browse all plugins → Busca "Figma Tokens" o "Tokens Studio for Figma" → Instala</li>
+                    <li><strong>Configurar Tokens:</strong> Abre tu archivo de Figma → Plugins → Figma Tokens → Launch → Configura tus tokens</li>
+                    <li><strong>Exportar JSON:</strong> En el plugin, ve a "Export" → Selecciona "Export tokens" o "Download JSON" → Guarda como <code style="background: rgba(255,255,0,0.1); padding: 2px 6px; border-radius: 3px;">figma-tokens.json</code></li>
+                    <li><strong>Colocar en Proyecto:</strong> Coloca el archivo en la raíz de tu proyecto. El add-on lo detectará automáticamente en estas ubicaciones:
+                      <ul style="margin-top: 8px; margin-left: 20px;">
+                        <li><code>figma-tokens.json</code> (raíz - recomendado)</li>
+                        <li><code>tokens/figma-tokens.json</code></li>
+                        <li><code>figma/variables.json</code></li>
+                        <li><code>.figma/tokens.json</code></li>
+                      </ul>
+                    </li>
+                  </ol>
+                </div>
+                <div class="code-block" style="background: rgba(255, 255, 0, 0.05); border-left: 3px solid var(--autorun-neon-yellow);">
+                  <pre><code>// El add-on buscará automáticamente el JSON de tokens
+// Si lo encuentra, lo usará para mejor funcionamiento con MCP
+
+✅ Figma Sync: JSON de tokens encontrado en figma-tokens.json
+ℹ️  Este archivo permite que MCP y la API funcionen mejor con las variables de Figma</code></pre>
                 </div>
               </div>
 
@@ -4661,14 +4949,24 @@ const text = t('welcome.message');</code></pre>
         "figma-sync": {
           "accessToken": "tu-figma-token",
           "fileKey": "tu-file-key",
+          "figmaTokensJsonPath": "figma-tokens.json",
+          "figmaTokensPath": "../tokens",
+          "projectTokensPath": "packages/tokens/tokens.json",
           "autoSync": false,
-          "syncInterval": 3600000
+          "backupBeforeSync": true,
+          "syncMode": "selective",
+          "tokenMapping": {
+            "figma.light.color.accent.brand": "light.brand.accent-brand"
+          }
         }
       }
     }
   }
 }</code></pre>
                 </div>
+                <p class="step-note" style="margin-top: 12px;">
+                  <strong>Nota:</strong> <code>figmaTokensJsonPath</code> es opcional. Si no lo especificas, el add-on buscará automáticamente el JSON en ubicaciones comunes.
+                </p>
               </div>
 
               <div class="addon-section">
@@ -4677,10 +4975,56 @@ const text = t('welcome.message');</code></pre>
                   <pre><code>// Activar add-on
 await hub.activateAddon('figma-sync');
 
+// Comparar tokens
+const compare = hub.getService('figma-sync', 'compare');
+const comparison = await compare();
+console.log(`Tokens sincronizados: ${comparison.synced.length}`);
+console.log(`Tokens diferentes: ${comparison.different.length}`);
+
 // Sincronizar tokens
-const figmaService = hub.getService('figma-sync', 'sync');
-await figmaService();</code></pre>
+const sync = hub.getService('figma-sync', 'sync');
+const result = await sync({
+  mode: 'selective',
+  updateDifferent: true,
+  addMissing: true
+});
+console.log(`Tokens actualizados: ${result.tokensUpdated}`);</code></pre>
                 </div>
+              </div>
+
+              <div class="addon-section">
+                <h4 class="addon-section-title">🔌 Integración MCP</h4>
+                <p class="addon-description" style="margin-bottom: 16px;">
+                  Este add-on soporta integración con <strong>MCP (Model Context Protocol)</strong> para mejorar la funcionalidad y acceso a Figma. Soporta múltiples servidores MCP.
+                </p>
+                <div class="addon-features" style="margin-bottom: 16px;">
+                  <h5 style="color: var(--autorun-neon-yellow); margin-bottom: 12px; font-size: 14px;">✨ Beneficios de MCP:</h5>
+                  <ul style="margin-left: 20px;">
+                    <li>Detección automática de servidores MCP disponibles (<code>figma</code> y <code>talk-to-figma</code>)</li>
+                    <li>Instalación guiada de MCP si el usuario lo desea</li>
+                    <li>Uso de APIs avanzadas de Figma sin necesidad de tokens locales</li>
+                    <li>Mejor gestión de credenciales y seguridad</li>
+                    <li>Acceso mejorado a variables cuando se usa con JSON de tokens</li>
+                  </ul>
+                </div>
+                <div class="code-block" style="background: rgba(255, 255, 0, 0.05); border-left: 3px solid var(--autorun-neon-yellow);">
+                  <pre><code>// El add-on detectará automáticamente si hay servidores MCP configurados
+// y ofrecerá instalarlos durante la inicialización si están disponibles
+// pero no configurados. Si el usuario acepta, se configurarán automáticamente.
+
+await hub.activateAddon('figma-sync');
+// ✅ Figma Sync: MCP 'figma' detectado y configurado. Usando MCP para mejor experiencia.
+// O
+// ℹ️ ¿Deseas instalar MCP para mejorar la experiencia con Figma?
+//    [Sí] [No]
+
+// Si tienes el JSON de tokens, MCP funcionará mejor:
+// ✅ JSON de tokens encontrado en: figma-tokens.json
+// ✅ Esto mejorará significativamente el funcionamiento de MCP.</code></pre>
+                </div>
+                <p class="step-note" style="margin-top: 12px;">
+                  <strong>⚠️ Importante:</strong> Para que MCP funcione correctamente con las variables de Figma, necesitas el JSON de tokens exportado desde el plugin de Figma Tokens. Sin este archivo, MCP tendrá capacidades limitadas.
+                </p>
               </div>
             </div>
 
@@ -4799,13 +5143,22 @@ const results = searchIcons('crear');
           </p>
         </div>
 
-        <!-- Paso a Paso Vertical -->
+        <!-- Paso a Paso Vertical - Acordeón -->
         <div class="conectar-steps" data-scroll="fade-up">
           <!-- Paso 1 -->
-          <div class="conectar-step">
-            <div class="step-number-large">1</div>
+          <div class="conectar-step active">
+            <div class="step-header">
+              <div class="step-number-large">1</div>
+              <div class="step-header-content">
+                <h3 class="step-title">Clona e Instala</h3>
+                <div class="step-toggle-icon">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
             <div class="step-content">
-              <h3 class="step-title">Clona e Instala</h3>
               <p class="step-description">
                 Clona el repositorio de Autorun y ejecuta la instalación de dependencias.
               </p>
@@ -4825,9 +5178,18 @@ npm install
 
           <!-- Paso 2 -->
           <div class="conectar-step">
-            <div class="step-number-large">2</div>
+            <div class="step-header">
+              <div class="step-number-large">2</div>
+              <div class="step-header-content">
+                <h3 class="step-title">Inicializa tu Proyecto</h3>
+                <div class="step-toggle-icon">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
             <div class="step-content">
-              <h3 class="step-title">Inicializa tu Proyecto</h3>
               <p class="step-description">
                 Ejecuta el comando de inicialización que te guiará paso a paso para configurar tu proyecto.
               </p>
@@ -4843,9 +5205,18 @@ npm run init</code></pre>
 
           <!-- Paso 3 -->
           <div class="conectar-step">
-            <div class="step-number-large">3</div>
+            <div class="step-header">
+              <div class="step-number-large">3</div>
+              <div class="step-header-content">
+                <h3 class="step-title">Elige tus Add-ons</h3>
+                <div class="step-toggle-icon">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
             <div class="step-content">
-              <h3 class="step-title">Elige tus Add-ons</h3>
               <p class="step-description">
                 Selecciona los add-ons que quieres usar en tu proyecto. Puedes elegir entre add-ons de diseño, funcionales y de componentes.
               </p>
@@ -4879,9 +5250,18 @@ npm run init</code></pre>
 
           <!-- Paso 4 -->
           <div class="conectar-step">
-            <div class="step-number-large">4</div>
+            <div class="step-header">
+              <div class="step-number-large">4</div>
+              <div class="step-header-content">
+                <h3 class="step-title">Configura Credenciales y APIs Iniciales</h3>
+                <div class="step-toggle-icon">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
             <div class="step-content">
-              <h3 class="step-title">Configura Credenciales y APIs Iniciales</h3>
               <p class="step-description">
                 Para los add-ons iniciales que hayas seleccionado, configura las credenciales necesarias.
               </p>
@@ -4910,7 +5290,7 @@ npm run init</code></pre>
                     <li><strong>Lighthouse:</strong> Configuración automática</li>
                     <li><strong>Docusaurus:</strong> Configuración automática</li>
                     <li><strong>i18n:</strong> Archivos de traducción</li>
-                    <li><strong>Figma Sync:</strong> Figma Access Token, File Key</li>
+                    <li><strong>Figma Sync:</strong> Figma Access Token, File Key, JSON de Tokens (recomendado)</li>
                     <li><strong>FontAwesome:</strong> Configuración automática</li>
                   </ul>
                 </div>
@@ -4923,9 +5303,18 @@ npm run init</code></pre>
 
           <!-- Paso 5 -->
           <div class="conectar-step">
-            <div class="step-number-large">5</div>
+            <div class="step-header">
+              <div class="step-number-large">5</div>
+              <div class="step-header-content">
+                <h3 class="step-title">Elige tu Template o Crea uno Nuevo</h3>
+                <div class="step-toggle-icon">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
             <div class="step-content">
-              <h3 class="step-title">Elige tu Template o Crea uno Nuevo</h3>
               <p class="step-description">
                 Elige entre usar un template existente del repositorio o crear un documento nuevo desde cero.
               </p>
@@ -4944,9 +5333,18 @@ npm run init</code></pre>
 
           <!-- Paso 6 -->
           <div class="conectar-step">
-            <div class="step-number-large">6</div>
+            <div class="step-header">
+              <div class="step-number-large">6</div>
+              <div class="step-header-content">
+                <h3 class="step-title">Comienza a Desarrollar</h3>
+                <div class="step-toggle-icon">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
             <div class="step-content">
-              <h3 class="step-title">Comienza a Desarrollar</h3>
               <p class="step-description">
                 Inicia el servidor de desarrollo y comienza a trabajar en tu proyecto.
               </p>
@@ -4965,9 +5363,18 @@ npm run dev</code></pre>
 
           <!-- Paso 7 -->
           <div class="conectar-step">
-            <div class="step-number-large">7</div>
+            <div class="step-header">
+              <div class="step-number-large">7</div>
+              <div class="step-header-content">
+                <h3 class="step-title">Despliega a Vercel</h3>
+                <div class="step-toggle-icon">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
             <div class="step-content">
-              <h3 class="step-title">Despliega a Vercel</h3>
               <p class="step-description">
                 Cuando estés listo, despliega tu aplicación a Vercel con un solo comando.
               </p>
@@ -4986,9 +5393,18 @@ vercel --prod</code></pre>
 
           <!-- Paso 8 -->
           <div class="conectar-step">
-            <div class="step-number-large">8</div>
+            <div class="step-header">
+              <div class="step-number-large">8</div>
+              <div class="step-header-content">
+                <h3 class="step-title">Configura Clarity</h3>
+                <div class="step-toggle-icon">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
             <div class="step-content">
-              <h3 class="step-title">Configura Clarity</h3>
               <p class="step-description">
                 Configura Microsoft Clarity para analizar el comportamiento de los usuarios en tu aplicación.
               </p>
@@ -5008,9 +5424,18 @@ npm run addon:activate clarity
 
           <!-- Paso 9 -->
           <div class="conectar-step">
-            <div class="step-number-large">9</div>
+            <div class="step-header">
+              <div class="step-number-large">9</div>
+              <div class="step-header-content">
+                <h3 class="step-title">Activa Feedback Automatizado</h3>
+                <div class="step-toggle-icon">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
             <div class="step-content">
-              <h3 class="step-title">Activa Feedback Automatizado</h3>
               <p class="step-description">
                 Activa el add-on de Feedback Automatizado para recopilar y gestionar feedback de usuarios automáticamente.
               </p>
@@ -5030,16 +5455,23 @@ npm run addon:activate feedback-automatizado
           </div>
         </div>
 
-        <!-- Nota Final -->
-        <div class="conectar-note" data-scroll="fade-up">
-          <div class="note-icon">
-                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="16" cy="16" r="12" stroke="currentColor" stroke-width="2" fill="none"/>
-              <path d="M16 10V16M16 22H16.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                </svg>
-              </div>
-          <div class="note-content">
+        <!-- Nota Final - Acordeón -->
+        <div class="conectar-note-accordion" data-scroll="fade-up">
+          <div class="note-header">
+            <div class="note-icon-small">
+              <svg width="24" height="24" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="16" cy="16" r="12" stroke="currentColor" stroke-width="2" fill="none"/>
+                <path d="M16 10V16M16 22H16.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
             <h4 class="note-title">¿Necesitas un Add-on Adicional?</h4>
+            <div class="note-toggle-icon">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
+          <div class="note-content-collapsible">
             <p class="note-text">
               No te preocupes si olvidaste activar algún add-on. Cuando lo necesites, simplemente ejecuta el comando de activación y el sistema te solicitará las credenciales necesarias en ese momento.
             </p>
@@ -5245,6 +5677,26 @@ npm run addon:activate supabase</code></pre>
             <h3 class="tecnologia-card-name">Modular Architecture</h3>
             <p class="tecnologia-card-version">Add-ons</p>
             <p class="tecnologia-card-desc">Arquitectura basada en plugins</p>
+          </div>
+
+          <!-- MCP (Model Context Protocol) -->
+          <div class="tecnologia-card featured">
+            <div class="tecnologia-card-header">
+              <div class="tecnologia-icon-large">
+                <svg width="48" height="48" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="4" y="4" width="24" height="24" rx="2" stroke="currentColor" stroke-width="2" fill="none"/>
+                  <circle cx="12" cy="12" r="2" fill="currentColor"/>
+                  <circle cx="20" cy="12" r="2" fill="currentColor"/>
+                  <circle cx="12" cy="20" r="2" fill="currentColor"/>
+                  <circle cx="20" cy="20" r="2" fill="currentColor"/>
+                  <path d="M12 12L20 20M20 12L12 20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+                </svg>
+              </div>
+              <div class="tecnologia-badge">Protocol</div>
+            </div>
+            <h3 class="tecnologia-card-name">MCP</h3>
+            <p class="tecnologia-card-version">Model Context Protocol</p>
+            <p class="tecnologia-card-desc">Integración con servicios externos mediante protocolo MCP para mejor seguridad y funcionalidades avanzadas</p>
           </div>
         </div>
       </section>
@@ -5481,6 +5933,36 @@ npm run addon:activate supabase</code></pre>
         updateActiveSection();
       } else {
         console.error('❌ Sticky Header NO encontrado');
+      }
+
+      // Acordeón para pasos de Conectar Hub
+      const conectarSteps = document.querySelectorAll('.conectar-step');
+      conectarSteps.forEach((step, index) => {
+        const header = step.querySelector('.step-header');
+        if (header) {
+          header.addEventListener('click', () => {
+            const isActive = step.classList.contains('active');
+            
+            // Cerrar todos los pasos
+            conectarSteps.forEach(s => s.classList.remove('active'));
+            
+            // Abrir el paso clickeado si estaba cerrado
+            if (!isActive) {
+              step.classList.add('active');
+            }
+          });
+        }
+      });
+
+      // Acordeón para nota final
+      const noteAccordion = document.querySelector('.conectar-note-accordion');
+      if (noteAccordion) {
+        const noteHeader = noteAccordion.querySelector('.note-header');
+        if (noteHeader) {
+          noteHeader.addEventListener('click', () => {
+            noteAccordion.classList.toggle('active');
+          });
+        }
       }
 
       // Smooth scroll para navegación

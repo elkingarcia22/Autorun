@@ -482,7 +482,7 @@ packages/addons/functional/[nombre-addon]/
 ### Ejemplo de Implementación
 
 ```typescript
-import { IFunctionalAddon, AutoframeContext } from '@autoframe/core';
+import { IFunctionalAddon, AutorunContext } from '@autorun/core';
 
 export class MiAddonFuncional implements IFunctionalAddon {
   readonly id = 'mi-addon';
@@ -492,9 +492,9 @@ export class MiAddonFuncional implements IFunctionalAddon {
   readonly description = 'Descripción del add-on';
   
   private active = false;
-  private context?: AutoframeContext;
+  private context?: AutorunContext;
 
-  async initialize(context: AutoframeContext): Promise<void> {
+  async initialize(context: AutorunContext): Promise<void> {
     this.context = context;
     // Inicialización
   }
@@ -578,7 +578,7 @@ Si decides implementar los add-ons referenciados, aquí están las prioridades s
 
 - `ESTADO-GENERAL-AUTOFRAME-HUB.md` - Estado general del proyecto
 - `packages/addons/functional/github/` - Ejemplo de implementación completa
-- `packages/autoframe-core/src/interfaces/IFunctionalAddon.ts` - Interfaz a implementar
+- `packages/autorun-core/src/interfaces/IFunctionalAddon.ts` - Interfaz a implementar
 - `GUIA-COMPLETA-AUTORUN.md` - Guía completa del proyecto
 
 ---

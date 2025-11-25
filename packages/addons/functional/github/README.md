@@ -1,6 +1,6 @@
-# @autoframe/github
+# @autorun/github
 
-Add-on funcional de GitHub para Autoframe Hub
+Add-on funcional de GitHub para Autorun Hub
 
 ## Características
 

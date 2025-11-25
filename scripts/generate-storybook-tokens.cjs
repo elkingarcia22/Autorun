@@ -11,43 +11,43 @@ const FIGMA_TOKENS_JSON = path.resolve(__dirname, '../packages/tokens/figma-toke
 const OUTPUT_FILE = path.resolve(__dirname, '../packages/docs-site/stories/TokensFigma.stories.ts');
 
 function main() {
-  const tokensData = JSON.parse(fs.readFileSync(FIGMA_TOKENS_JSON, 'utf8'));
-  const allTokens = tokensData.tokens || {};
-  
-  console.log(`📦 Generando story con ${Object.keys(allTokens).length} tokens...\n`);
-  
-  // Convertir a array y agrupar por categoría
-  const tokensArray = [];
-  const seen = new Set();
-  
-  for (const [key, token] of Object.entries(allTokens)) {
-    // Evitar duplicados por CSS var
-    if (seen.has(token.$cssVar)) continue;
-    seen.add(token.$cssVar);
-    
-    const pathParts = token.$path.split('.');
-    const category = pathParts[0] || 'other';
-    
-    tokensArray.push({
-      cssVar: token.$cssVar,
-      value: token.$value,
-      path: token.$path,
-      description: token.$description || '',
-      category: category
-    });
-  }
-  
-  // Agrupar por categoría
-  const byCategory = {};
-  tokensArray.forEach(token => {
-    if (!byCategory[token.category]) {
-      byCategory[token.category] = [];
-    }
-    byCategory[token.category].push(token);
-  });
-  
-  // Generar código TypeScript
-  let code = `import type { Meta, StoryObj } from '@storybook/html';
+	const tokensData = JSON.parse(fs.readFileSync(FIGMA_TOKENS_JSON, 'utf8'));
+	const allTokens = tokensData.tokens || {};
+
+	console.log(`📦 Generando story con ${Object.keys(allTokens).length} tokens...\n`);
+
+	// Convertir a array y agrupar por categoría
+	const tokensArray = [];
+	const seen = new Set();
+
+	for (const [key, token] of Object.entries(allTokens)) {
+		// Evitar duplicados por CSS var
+		if (seen.has(token.$cssVar)) continue;
+		seen.add(token.$cssVar);
+
+		const pathParts = token.$path.split('.');
+		const category = pathParts[0] || 'other';
+
+		tokensArray.push({
+			cssVar: token.$cssVar,
+			value: token.$value,
+			path: token.$path,
+			description: token.$description || '',
+			category: category,
+		});
+	}
+
+	// Agrupar por categoría
+	const byCategory = {};
+	tokensArray.forEach((token) => {
+		if (!byCategory[token.category]) {
+			byCategory[token.category] = [];
+		}
+		byCategory[token.category].push(token);
+	});
+
+	// Generar código TypeScript
+	let code = `import type { Meta, StoryObj } from '@storybook/html';
 
 // Todos los tokens de Figma - Generado automáticamente
 // Total: ${tokensArray.length} tokens únicos
@@ -60,15 +60,18 @@ const FIGMA_TOKENS: Array<{
 }> = [
 `;
 
-  Object.entries(byCategory).forEach(([category, tokens]) => {
-    code += `  // ${category.charAt(0).toUpperCase() + category.slice(1)} (${tokens.length} tokens)\n`;
-    tokens.forEach(token => {
-      const desc = (token.description || '').replace(/'/g, "\\'").replace(/\n/g, ' ').substring(0, 200);
-      code += `  { cssVar: '${token.cssVar}', value: '${token.value}', path: '${token.path}', description: '${desc}', category: '${token.category}' },\n`;
-    });
-  });
-  
-  code += `];
+	Object.entries(byCategory).forEach(([category, tokens]) => {
+		code += `  // ${category.charAt(0).toUpperCase() + category.slice(1)} (${tokens.length} tokens)\n`;
+		tokens.forEach((token) => {
+			const desc = (token.description || '')
+				.replace(/'/g, "\\'")
+				.replace(/\n/g, ' ')
+				.substring(0, 200);
+			code += `  { cssVar: '${token.cssVar}', value: '${token.value}', path: '${token.path}', description: '${desc}', category: '${token.category}' },\n`;
+		});
+	});
+
+	code += `];
 
 const meta: Meta = {
   title: 'Tokens/Figma/Colors',
@@ -297,11 +300,10 @@ export const ByCategory: Story = {
 };
 `;
 
-  fs.writeFileSync(OUTPUT_FILE, code, 'utf8');
-  console.log(`✅ Story generado: ${OUTPUT_FILE}`);
-  console.log(`   ${tokensArray.length} tokens incluidos`);
-  console.log(`   ${Object.keys(byCategory).length} categorías\n`);
+	fs.writeFileSync(OUTPUT_FILE, code, 'utf8');
+	console.log(`✅ Story generado: ${OUTPUT_FILE}`);
+	console.log(`   ${tokensArray.length} tokens incluidos`);
+	console.log(`   ${Object.keys(byCategory).length} categorías\n`);
 }
 
 main();
-

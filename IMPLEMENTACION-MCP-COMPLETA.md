@@ -32,7 +32,7 @@ Se ha implementado un sistema completo de **detección e instalación automátic
 
 ## 📦 Componentes Creados
 
-### Core (`packages/autoframe-core/src/`)
+### Core (`packages/autorun-core/src/`)
 
 1. **MCPDetector.ts** ✅
    - Detecta servidores MCP disponibles
@@ -108,7 +108,7 @@ Se ha implementado un sistema completo de **detección e instalación automátic
 
 ```typescript
 // 1. Usuario inicializa Hub
-const hub = new AutoframeHub();
+const hub = new AutorunHub();
 await hub.initialize();
 
 // 2. Usuario activa GitHub add-on
@@ -252,4 +252,5 @@ El sistema busca y crea configuración en:
 **Estado**: ✅ **IMPLEMENTADO Y FUNCIONAL**
 
 El sistema está completamente implementado, compilado y listo para usar. Cuando un usuario configure credenciales para GitHub, Vercel o Clarity, el sistema automáticamente detectará MCP y ofrecerá instalarlo para mejorar la experiencia.
+
 

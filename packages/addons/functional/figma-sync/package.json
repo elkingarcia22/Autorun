@@ -1,27 +1,26 @@
 {
-  "name": "@autoframe/figma-sync",
-  "version": "1.0.0",
-  "description": "Figma Sync Add-on - Sincronización de tokens y componentes desde Figma",
-  "type": "module",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch",
-    "lint": "biome check .",
-    "format": "biome format . --write"
-  },
-  "dependencies": {
-    "@autoframe/core": "workspace:*"
-  },
-  "devDependencies": {
-    "typescript": "^5.3.0"
-  },
-  "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
-    }
-  }
+	"name": "@autorun/figma-sync",
+	"version": "1.0.0",
+	"description": "Figma Sync Add-on - Sincronización de tokens y componentes desde Figma",
+	"type": "module",
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"scripts": {
+		"build": "tsc",
+		"dev": "tsc --watch",
+		"lint": "biome check .",
+		"format": "biome format . --write"
+	},
+	"dependencies": {
+		"@autorun/core": "workspace:*"
+	},
+	"devDependencies": {
+		"typescript": "^5.3.0"
+	},
+	"exports": {
+		".": {
+			"import": "./dist/index.js",
+			"types": "./dist/index.d.ts"
+		}
+	}
 }
-

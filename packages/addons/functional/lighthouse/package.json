@@ -1,27 +1,26 @@
 {
-  "name": "@autoframe/lighthouse",
-  "version": "1.0.0",
-  "description": "Lighthouse Audit Add-on - Auditoría de performance, accesibilidad, SEO y best practices",
-  "type": "module",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch",
-    "lint": "biome check .",
-    "format": "biome format . --write"
-  },
-  "dependencies": {
-    "@autoframe/core": "workspace:*"
-  },
-  "devDependencies": {
-    "typescript": "^5.3.0"
-  },
-  "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
-    }
-  }
+	"name": "@autorun/lighthouse",
+	"version": "1.0.0",
+	"description": "Lighthouse Audit Add-on - Auditoría de performance, accesibilidad, SEO y best practices",
+	"type": "module",
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"scripts": {
+		"build": "tsc",
+		"dev": "tsc --watch",
+		"lint": "biome check .",
+		"format": "biome format . --write"
+	},
+	"dependencies": {
+		"@autorun/core": "workspace:*"
+	},
+	"devDependencies": {
+		"typescript": "^5.3.0"
+	},
+	"exports": {
+		".": {
+			"import": "./dist/index.js",
+			"types": "./dist/index.d.ts"
+		}
+	}
 }
-

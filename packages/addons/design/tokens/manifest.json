@@ -1,9 +1,0 @@
-{
-  "name": "@autoframe/tokens",
-  "version": "1.0.0",
-  "type": "design",
-  "description": "Tokens Autoframe genéricos - Add-on de diseño",
-  "main": "./dist/index.js",
-  "export": "TokensDesignAddon"
-}
-

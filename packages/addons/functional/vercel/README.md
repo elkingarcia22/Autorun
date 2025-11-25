@@ -26,11 +26,11 @@ El add-on ya está incluido en Autorun. Solo necesitas configurarlo en tu proyec
 
 ### 2. Configurar en el Proyecto
 
-Agrega la configuración de Vercel en tu `.ubits/project-config.json`:
+Agrega la configuración de Vercel en tu `autorun.config.json`:
 
 ```json
 {
-  "autoframe": {
+  "autorun": {
     "addons": {
       "config": {
         "vercel": {
@@ -74,9 +74,9 @@ export VERCEL_TEAM_ID="tu-team-id-opcional"
 ### Activar el Add-on
 
 ```typescript
-import { AutoframeHub } from '@autoframe/core';
+import { AutorunHub } from '@autorun/core';
 
-const hub = new AutoframeHub();
+const hub = new AutorunHub();
 await hub.initialize();
 
 // Activar Vercel
@@ -264,7 +264,7 @@ await commit(['archivo.js'], 'Actualización');
 
 ### Error: "Vercel token es requerido"
 
-1. Verifica que `token` esté configurado en `.ubits/project-config.json`
+1. Verifica que `token` esté configurado en `autorun.config.json`
 2. O configura la variable de entorno `VERCEL_TOKEN`
 3. Obtén tu token en [Vercel Account Settings](https://vercel.com/account/tokens)
 

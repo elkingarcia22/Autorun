@@ -8,22 +8,22 @@ Se ha implementado un sistema completo de detección e instalación automática 
 
 ## ✅ Componentes Implementados
 
-### 1. **MCPDetector** (`packages/autoframe-core/src/MCPDetector.ts`)
+### 1. **MCPDetector** (`packages/autorun-core/src/MCPDetector.ts`)
 - ✅ Detecta si hay servidores MCP disponibles
 - ✅ Verifica si están configurados
 - ✅ Obtiene información de todos los servidores
 
-### 2. **MCPInstaller** (`packages/autoframe-core/src/MCPInstaller.ts`)
+### 2. **MCPInstaller** (`packages/autorun-core/src/MCPInstaller.ts`)
 - ✅ Instala servidores MCP automáticamente
 - ✅ Configura credenciales
 - ✅ Genera instrucciones de instalación manual
 
-### 3. **MCPPrompt** (`packages/autoframe-core/src/MCPPrompt.ts`)
+### 3. **MCPPrompt** (`packages/autorun-core/src/MCPPrompt.ts`)
 - ✅ Maneja la interacción con el usuario
 - ✅ Muestra información sobre beneficios de MCP
 - ✅ Instala MCP si el usuario acepta
 
-### 4. **MCPPromptInteractive** (`packages/autoframe-core/src/MCPPromptInteractive.ts`)
+### 4. **MCPPromptInteractive** (`packages/autorun-core/src/MCPPromptInteractive.ts`)
 - ✅ Versión interactiva con readline
 - ✅ Pregunta al usuario en tiempo real
 - ✅ Opciones: Sí, No, Instrucciones
@@ -103,7 +103,7 @@ await hub.activateAddon('github');
 
 ## 📁 Archivos Creados/Modificados
 
-### Core (`packages/autoframe-core/src/`)
+### Core (`packages/autorun-core/src/`)
 - ✅ `MCPDetector.ts` - Detección de MCP
 - ✅ `MCPInstaller.ts` - Instalación automática
 - ✅ `MCPPrompt.ts` - Manejo de prompts
@@ -145,4 +145,5 @@ await hub.activateAddon('github');
 **Estado**: ✅ **IMPLEMENTADO Y FUNCIONAL**
 
 Todos los componentes están implementados, compilados y listos para usar.
+
 

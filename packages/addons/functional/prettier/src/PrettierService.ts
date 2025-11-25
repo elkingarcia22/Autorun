@@ -1,6 +1,6 @@
 /**
  * PrettierService
- * 
+ *
  * Servicio que maneja todas las operaciones de Prettier:
  * - Formateo de archivos
  * - Configuración de reglas
@@ -13,289 +13,291 @@ import { readFileSync, existsSync } from 'fs';
 import * as path from 'path';
 
 export interface PrettierConfig {
-  configFile?: string;
-  ignorePath?: string;
-  semi?: boolean;
-  singleQuote?: boolean;
-  tabWidth?: number;
-  trailingComma?: 'none' | 'es5' | 'all';
-  printWidth?: number;
-  useTabs?: boolean;
-  arrowParens?: 'always' | 'avoid';
-  endOfLine?: 'lf' | 'crlf' | 'cr' | 'auto';
-  plugins?: string[];
+	configFile?: string;
+	ignorePath?: string;
+	semi?: boolean;
+	singleQuote?: boolean;
+	tabWidth?: number;
+	trailingComma?: 'none' | 'es5' | 'all';
+	printWidth?: number;
+	useTabs?: boolean;
+	arrowParens?: 'always' | 'avoid';
+	endOfLine?: 'lf' | 'crlf' | 'cr' | 'auto';
+	plugins?: string[];
 }
 
 export interface PrettierResult {
-  filePath: string;
-  formatted: boolean;
-  originalContent: string;
-  formattedContent: string;
+	filePath: string;
+	formatted: boolean;
+	originalContent: string;
+	formattedContent: string;
 }
 
 export class PrettierService {
-  private config: PrettierConfig;
-  private projectPath: string;
-  private initialized = false;
+	private config: PrettierConfig;
+	private projectPath: string;
+	private initialized = false;
 
-  constructor(config: PrettierConfig, projectPath: string = process.cwd()) {
-    this.config = {
-      semi: true,
-      singleQuote: true,
-      tabWidth: 2,
-      trailingComma: 'es5',
-      printWidth: 80,
-      useTabs: false,
-      arrowParens: 'always',
-      endOfLine: 'lf',
-      ...config
-    };
-    this.projectPath = projectPath;
-  }
+	constructor(config: PrettierConfig, projectPath: string = process.cwd()) {
+		this.config = {
+			semi: true,
+			singleQuote: true,
+			tabWidth: 2,
+			trailingComma: 'es5',
+			printWidth: 80,
+			useTabs: false,
+			arrowParens: 'always',
+			endOfLine: 'lf',
+			...config,
+		};
+		this.projectPath = projectPath;
+	}
 
-  /**
-   * Inicializa el servicio y verifica dependencias
-   */
-  async initialize(): Promise<void> {
-    // Verificar que Prettier esté instalado
-    if (!this.isPrettierInstalled()) {
-      console.warn('⚠️  Prettier no está instalado. Ejecuta: npm install --save-dev prettier');
-      return;
-    }
+	/**
+	 * Inicializa el servicio y verifica dependencias
+	 */
+	async initialize(): Promise<void> {
+		// Verificar que Prettier esté instalado
+		if (!this.isPrettierInstalled()) {
+			console.warn('⚠️  Prettier no está instalado. Ejecuta: npm install --save-dev prettier');
+			return;
+		}
 
-    // Generar configuración si no existe
-    await this.ensurePrettierConfig();
+		// Generar configuración si no existe
+		await this.ensurePrettierConfig();
 
-    this.initialized = true;
-    console.log('✅ Prettier Service: Inicializado correctamente');
-  }
+		this.initialized = true;
+		console.log('✅ Prettier Service: Inicializado correctamente');
+	}
 
-  /**
-   * Verifica si Prettier está instalado
-   */
-  private isPrettierInstalled(): boolean {
-    try {
-      const packageJsonPath = path.join(this.projectPath, 'package.json');
-      if (!existsSync(packageJsonPath)) {
-        return false;
-      }
-      const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'));
-      const allDeps = {
-        ...packageJson.dependencies,
-        ...packageJson.devDependencies
-      };
-      
-      return 'prettier' in allDeps;
-    } catch {
-      return false;
-    }
-  }
+	/**
+	 * Verifica si Prettier está instalado
+	 */
+	private isPrettierInstalled(): boolean {
+		try {
+			const packageJsonPath = path.join(this.projectPath, 'package.json');
+			if (!existsSync(packageJsonPath)) {
+				return false;
+			}
+			const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'));
+			const allDeps = {
+				...packageJson.dependencies,
+				...packageJson.devDependencies,
+			};
 
-  /**
-   * Asegura que existe configuración de Prettier
-   */
-  private async ensurePrettierConfig(): Promise<void> {
-    const prettierConfigPath = path.join(this.projectPath, '.prettierrc.json');
-    const prettierConfigJsPath = path.join(this.projectPath, '.prettierrc.js');
-    const packageJsonPath = path.join(this.projectPath, 'package.json');
+			return 'prettier' in allDeps;
+		} catch {
+			return false;
+		}
+	}
 
-    // Verificar si ya existe configuración
-    if (existsSync(prettierConfigPath) || existsSync(prettierConfigJsPath)) {
-      return;
-    }
+	/**
+	 * Asegura que existe configuración de Prettier
+	 */
+	private async ensurePrettierConfig(): Promise<void> {
+		const prettierConfigPath = path.join(this.projectPath, '.prettierrc.json');
+		const prettierConfigJsPath = path.join(this.projectPath, '.prettierrc.js');
+		const packageJsonPath = path.join(this.projectPath, 'package.json');
 
-    // Verificar si está en package.json
-    try {
-      if (existsSync(packageJsonPath)) {
-        const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'));
-        if (packageJson.prettier) {
-          return;
-        }
-      }
-    } catch {
-      // Ignorar errores
-    }
+		// Verificar si ya existe configuración
+		if (existsSync(prettierConfigPath) || existsSync(prettierConfigJsPath)) {
+			return;
+		}
 
-    // Generar configuración básica
-    const config = {
-      semi: this.config.semi,
-      singleQuote: this.config.singleQuote,
-      tabWidth: this.config.tabWidth,
-      trailingComma: this.config.trailingComma,
-      printWidth: this.config.printWidth,
-      useTabs: this.config.useTabs,
-      arrowParens: this.config.arrowParens,
-      endOfLine: this.config.endOfLine
-    };
+		// Verificar si está en package.json
+		try {
+			if (existsSync(packageJsonPath)) {
+				const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'));
+				if (packageJson.prettier) {
+					return;
+				}
+			}
+		} catch {
+			// Ignorar errores
+		}
 
-    await fs.writeFile(prettierConfigPath, JSON.stringify(config, null, 2), 'utf-8');
-    console.log(`✅ Configuración de Prettier generada en: ${prettierConfigPath}`);
-  }
+		// Generar configuración básica
+		const config = {
+			semi: this.config.semi,
+			singleQuote: this.config.singleQuote,
+			tabWidth: this.config.tabWidth,
+			trailingComma: this.config.trailingComma,
+			printWidth: this.config.printWidth,
+			useTabs: this.config.useTabs,
+			arrowParens: this.config.arrowParens,
+			endOfLine: this.config.endOfLine,
+		};
 
-  /**
-   * Formatea archivos
-   */
-  async format(files: string[], options?: Partial<PrettierConfig>): Promise<PrettierResult[]> {
-    if (!this.initialized) {
-      await this.initialize();
-    }
+		await fs.writeFile(prettierConfigPath, JSON.stringify(config, null, 2), 'utf-8');
+		console.log(`✅ Configuración de Prettier generada en: ${prettierConfigPath}`);
+	}
 
-    const config = { ...this.config, ...options };
-    const results: PrettierResult[] = [];
+	/**
+	 * Formatea archivos
+	 */
+	async format(files: string[], options?: Partial<PrettierConfig>): Promise<PrettierResult[]> {
+		if (!this.initialized) {
+			await this.initialize();
+		}
 
-    for (const file of files) {
-      try {
-        // Leer contenido original
-        const originalContent = await fs.readFile(file, 'utf-8');
+		const config = { ...this.config, ...options };
+		const results: PrettierResult[] = [];
 
-        // Formatear con Prettier
-        const formattedContent = await this.formatContent(originalContent, file, config);
+		for (const file of files) {
+			try {
+				// Leer contenido original
+				const originalContent = await fs.readFile(file, 'utf-8');
 
-        results.push({
-          filePath: file,
-          formatted: originalContent !== formattedContent,
-          originalContent,
-          formattedContent
-        });
+				// Formatear con Prettier
+				const formattedContent = await this.formatContent(originalContent, file, config);
 
-        // Si el contenido cambió, guardarlo
-        if (originalContent !== formattedContent) {
-          await fs.writeFile(file, formattedContent, 'utf-8');
-        }
-      } catch (error: any) {
-        console.error(`Error al formatear ${file}:`, error.message);
-      }
-    }
+				results.push({
+					filePath: file,
+					formatted: originalContent !== formattedContent,
+					originalContent,
+					formattedContent,
+				});
 
-    return results;
-  }
+				// Si el contenido cambió, guardarlo
+				if (originalContent !== formattedContent) {
+					await fs.writeFile(file, formattedContent, 'utf-8');
+				}
+			} catch (error: any) {
+				console.error(`Error al formatear ${file}:`, error.message);
+			}
+		}
 
-  /**
-   * Formatea contenido de texto
-   */
-  private async formatContent(
-    content: string,
-    filePath: string,
-    config: PrettierConfig
-  ): Promise<string> {
-    const args = this.buildPrettierArgs(filePath, config);
+		return results;
+	}
 
-    try {
-      const result = execSync(`npx prettier ${args.join(' ')}`, {
-        cwd: this.projectPath,
-        input: content,
-        encoding: 'utf-8',
-        stdio: 'pipe'
-      });
+	/**
+	 * Formatea contenido de texto
+	 */
+	private async formatContent(
+		content: string,
+		filePath: string,
+		config: PrettierConfig,
+	): Promise<string> {
+		const args = this.buildPrettierArgs(filePath, config);
 
-      return result;
-    } catch (error: any) {
-      // Si hay error, retornar contenido original
-      return content;
-    }
-  }
+		try {
+			const result = execSync(`npx prettier ${args.join(' ')}`, {
+				cwd: this.projectPath,
+				input: content,
+				encoding: 'utf-8',
+				stdio: 'pipe',
+			});
 
-  /**
-   * Verifica si archivos están formateados correctamente
-   */
-  async check(files: string[], options?: Partial<PrettierConfig>): Promise<{
-    formatted: string[];
-    unformatted: string[];
-  }> {
-    const results = await this.format(files, options);
-    
-    const formatted: string[] = [];
-    const unformatted: string[] = [];
+			return result;
+		} catch (error: any) {
+			// Si hay error, retornar contenido original
+			return content;
+		}
+	}
 
-    results.forEach(result => {
-      if (result.formatted) {
-        unformatted.push(result.filePath);
-      } else {
-        formatted.push(result.filePath);
-      }
-    });
+	/**
+	 * Verifica si archivos están formateados correctamente
+	 */
+	async check(
+		files: string[],
+		options?: Partial<PrettierConfig>,
+	): Promise<{
+		formatted: string[];
+		unformatted: string[];
+	}> {
+		const results = await this.format(files, options);
 
-    return { formatted, unformatted };
-  }
+		const formatted: string[] = [];
+		const unformatted: string[] = [];
 
-  /**
-   * Construye argumentos de Prettier
-   */
-  private buildPrettierArgs(filePath: string, config: PrettierConfig): string[] {
-    const args: string[] = [];
+		results.forEach((result) => {
+			if (result.formatted) {
+				unformatted.push(result.filePath);
+			} else {
+				formatted.push(result.filePath);
+			}
+		});
 
-    // Config file
-    if (config.configFile) {
-      args.push(`--config=${config.configFile}`);
-    }
+		return { formatted, unformatted };
+	}
 
-    // Ignore path
-    if (config.ignorePath) {
-      args.push(`--ignore-path=${config.ignorePath}`);
-    }
+	/**
+	 * Construye argumentos de Prettier
+	 */
+	private buildPrettierArgs(filePath: string, config: PrettierConfig): string[] {
+		const args: string[] = [];
 
-    // Opciones
-    if (config.semi !== undefined) {
-      args.push(`--semi=${config.semi}`);
-    }
-    if (config.singleQuote !== undefined) {
-      args.push(`--single-quote=${config.singleQuote}`);
-    }
-    if (config.tabWidth !== undefined) {
-      args.push(`--tab-width=${config.tabWidth}`);
-    }
-    if (config.trailingComma) {
-      args.push(`--trailing-comma=${config.trailingComma}`);
-    }
-    if (config.printWidth !== undefined) {
-      args.push(`--print-width=${config.printWidth}`);
-    }
-    if (config.useTabs !== undefined) {
-      args.push(`--use-tabs=${config.useTabs}`);
-    }
-    if (config.arrowParens) {
-      args.push(`--arrow-parens=${config.arrowParens}`);
-    }
-    if (config.endOfLine) {
-      args.push(`--end-of-line=${config.endOfLine}`);
-    }
+		// Config file
+		if (config.configFile) {
+			args.push(`--config=${config.configFile}`);
+		}
 
-    // STDIN mode
-    args.push('--stdin-filepath', filePath);
+		// Ignore path
+		if (config.ignorePath) {
+			args.push(`--ignore-path=${config.ignorePath}`);
+		}
 
-    return args;
-  }
+		// Opciones
+		if (config.semi !== undefined) {
+			args.push(`--semi=${config.semi}`);
+		}
+		if (config.singleQuote !== undefined) {
+			args.push(`--single-quote=${config.singleQuote}`);
+		}
+		if (config.tabWidth !== undefined) {
+			args.push(`--tab-width=${config.tabWidth}`);
+		}
+		if (config.trailingComma) {
+			args.push(`--trailing-comma=${config.trailingComma}`);
+		}
+		if (config.printWidth !== undefined) {
+			args.push(`--print-width=${config.printWidth}`);
+		}
+		if (config.useTabs !== undefined) {
+			args.push(`--use-tabs=${config.useTabs}`);
+		}
+		if (config.arrowParens) {
+			args.push(`--arrow-parens=${config.arrowParens}`);
+		}
+		if (config.endOfLine) {
+			args.push(`--end-of-line=${config.endOfLine}`);
+		}
 
-  /**
-   * Obtiene el estado del servicio
-   */
-  getStatus(): {
-    initialized: boolean;
-    prettierInstalled: boolean;
-    hasConfig: boolean;
-  } {
-    const configPath = path.join(this.projectPath, '.prettierrc.json');
-    const configJsPath = path.join(this.projectPath, '.prettierrc.js');
-    
-    return {
-      initialized: this.initialized,
-      prettierInstalled: this.isPrettierInstalled(),
-      hasConfig: existsSync(configPath) || existsSync(configJsPath)
-    };
-  }
+		// STDIN mode
+		args.push('--stdin-filepath', filePath);
 
-  /**
-   * Obtiene la configuración actual
-   */
-  getConfig(): PrettierConfig {
-    return { ...this.config };
-  }
+		return args;
+	}
 
-  /**
-   * Actualiza la configuración
-   */
-  updateConfig(config: Partial<PrettierConfig>): void {
-    this.config = { ...this.config, ...config };
-  }
+	/**
+	 * Obtiene el estado del servicio
+	 */
+	getStatus(): {
+		initialized: boolean;
+		prettierInstalled: boolean;
+		hasConfig: boolean;
+	} {
+		const configPath = path.join(this.projectPath, '.prettierrc.json');
+		const configJsPath = path.join(this.projectPath, '.prettierrc.js');
+
+		return {
+			initialized: this.initialized,
+			prettierInstalled: this.isPrettierInstalled(),
+			hasConfig: existsSync(configPath) || existsSync(configJsPath),
+		};
+	}
+
+	/**
+	 * Obtiene la configuración actual
+	 */
+	getConfig(): PrettierConfig {
+		return { ...this.config };
+	}
+
+	/**
+	 * Actualiza la configuración
+	 */
+	updateConfig(config: Partial<PrettierConfig>): void {
+		this.config = { ...this.config, ...config };
+	}
 }
-
