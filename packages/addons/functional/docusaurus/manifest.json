@@ -1,0 +1,9 @@
+{
+  "name": "@autoframe/docusaurus",
+  "version": "1.0.0",
+  "type": "functional",
+  "description": "Docusaurus - Generación y gestión de documentación",
+  "main": "./dist/index.js",
+  "export": "DocusaurusAddon"
+}
+

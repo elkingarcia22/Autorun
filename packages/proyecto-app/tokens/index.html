@@ -132,6 +132,158 @@
       }
       
       /* ========================================
+         STICKY HEADER
+         ======================================== */
+      
+      .sticky-header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 10000;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(10px);
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-100%);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        pointer-events: none;
+        display: block;
+        min-height: 70px;
+      }
+
+      .sticky-header.visible {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+        pointer-events: auto;
+      }
+
+      .sticky-header-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 16px 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 60px;
+      }
+
+      .sticky-nav-left,
+      .sticky-nav-right {
+        display: flex;
+        gap: 24px;
+        align-items: center;
+      }
+
+      .sticky-nav-link {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--autorun-gray-600);
+        text-decoration: none;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        padding: 8px 16px;
+        border-radius: 6px;
+        transition: all 0.3s ease;
+        position: relative;
+      }
+
+      .sticky-nav-link::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 0;
+        height: 2px;
+        background: var(--autorun-neon-yellow);
+        transition: width 0.3s ease;
+      }
+
+      .sticky-nav-link:hover {
+        color: var(--autorun-neon-yellow);
+      }
+
+      .sticky-nav-link:hover::after {
+        width: calc(100% - 32px);
+      }
+
+      .sticky-logo {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .sticky-logo-link {
+        text-decoration: none;
+      }
+
+      .sticky-logo-chip {
+        width: 24px;
+        height: 24px;
+        position: relative;
+        border: 2.5px solid var(--autorun-neon-yellow);
+        border-radius: 4px;
+        background: transparent;
+        box-shadow: 0 0 12px var(--autorun-neon-yellow-glow);
+        animation: pulse-chip 2s ease-in-out infinite;
+        display: inline-block;
+        transition: all 0.3s ease;
+      }
+
+      .sticky-logo-chip::before,
+      .sticky-logo-chip::after {
+        content: '';
+        position: absolute;
+        background: var(--autorun-neon-yellow);
+        box-shadow: 0 0 8px var(--autorun-neon-yellow-glow);
+      }
+
+      /* Líneas del chip (circuito) */
+      .sticky-logo-chip::before {
+        width: 6px;
+        height: 2.5px;
+        top: 4px;
+        left: -5px;
+      }
+
+      .sticky-logo-chip::after {
+        width: 2.5px;
+        height: 6px;
+        bottom: -5px;
+        right: 4px;
+      }
+
+      .sticky-logo-link:hover .sticky-logo-chip {
+        transform: scale(1.15);
+        box-shadow: 0 0 20px var(--autorun-neon-yellow-glow);
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .sticky-header-container {
+          padding: 12px 20px;
+          gap: 20px;
+        }
+
+        .sticky-nav-left,
+        .sticky-nav-right {
+          gap: 16px;
+        }
+
+        .sticky-nav-link {
+          font-size: 12px;
+          padding: 6px 12px;
+        }
+
+        .sticky-logo-chip {
+          font-size: 14px;
+          padding: 6px 16px;
+        }
+      }
+
+      /* ========================================
          LOADING - Velo negro que se desvanece
          ======================================== */
       
@@ -528,6 +680,47 @@
       .hero-subtitle.animate {
         opacity: 1;
         transform: translateY(0);
+      }
+
+      /* Botón CTA Hero */
+      .hero-cta-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        padding: 16px 32px;
+        background: var(--autorun-neon-yellow);
+        color: var(--autorun-bg-black);
+        font-size: 18px;
+        font-weight: 700;
+        text-decoration: none;
+        border-radius: 8px;
+        border: 2px solid var(--autorun-neon-yellow);
+        transition: all 0.3s ease;
+        opacity: 0;
+        transform: translateY(20px);
+        margin-top: 20px;
+        box-shadow: 0 0 20px var(--autorun-neon-yellow-glow);
+      }
+
+      .hero-cta-button:hover {
+        background: transparent;
+        color: var(--autorun-neon-yellow);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 32px var(--autorun-neon-yellow-glow);
+      }
+
+      .hero-cta-button svg {
+        transition: transform 0.3s ease;
+      }
+
+      .hero-cta-button:hover svg {
+        transform: translateX(4px);
+      }
+
+      .hero-content.show .hero-cta-button {
+        opacity: 1;
+        transform: translateY(0);
+        transition-delay: 0.3s;
       }
 
       /* Icono de Scroll Animado */
@@ -1686,8 +1879,24 @@
 
       .features-grid {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
         gap: 32px;
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+
+      /* Ajustes responsive para el grid */
+      @media (min-width: 1200px) {
+        .features-grid {
+          grid-template-columns: repeat(3, 1fr);
+        }
+      }
+
+      @media (max-width: 768px) {
+        .features-grid {
+          grid-template-columns: 1fr;
+          gap: 24px;
+        }
       }
 
       .feature-card {
@@ -1816,12 +2025,1106 @@
         opacity: 0.9;
         font-weight: 300;
       }
+
+      /* ========================================
+         ADDONS SECTION
+         ======================================== */
+      
+      .addons-section {
+        padding: 140px 40px;
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+
+      .addons-container {
+        display: grid;
+        grid-template-columns: 280px 1fr;
+        gap: 40px;
+        margin-top: 60px;
+      }
+
+      /* Menú Lateral */
+      .addons-sidebar {
+        position: sticky;
+        top: 100px;
+        height: fit-content;
+      }
+
+      .addons-menu {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        background: var(--autorun-gray-100);
+        border: 1px solid var(--autorun-gray-300);
+        border-radius: 12px;
+        padding: 12px;
+      }
+
+      .addon-menu-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 16px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        color: var(--autorun-gray-700);
+        font-size: 14px;
+        font-weight: 500;
+      }
+
+      .addon-menu-item:hover {
+        background: var(--autorun-gray-200);
+        color: var(--autorun-neon-white);
+      }
+
+      .addon-menu-item.active {
+        background: var(--autorun-neon-yellow);
+        color: var(--autorun-bg-black);
+        box-shadow: 0 0 12px var(--autorun-neon-yellow-glow);
+      }
+
+      .addon-menu-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+        flex-shrink: 0;
+      }
+
+      /* Contenido Principal */
+      .addons-content {
+        background: var(--autorun-gray-100);
+        border: 1px solid var(--autorun-gray-300);
+        border-radius: 12px;
+        padding: 40px;
+        min-height: 600px;
+      }
+
+      .addon-detail {
+        display: none;
+      }
+
+      .addon-detail.active {
+        display: block;
+        animation: fadeIn 0.3s ease;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .addon-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 24px;
+        padding-bottom: 20px;
+        border-bottom: 2px solid var(--autorun-gray-300);
+      }
+
+      .addon-title {
+        font-size: 28px;
+        font-weight: 700;
+        color: var(--autorun-neon-white);
+        margin: 0;
+      }
+
+      .addon-badge {
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .addon-badge.design {
+        background: var(--autorun-neon-blue);
+        color: var(--autorun-bg-black);
+        box-shadow: 0 0 8px var(--autorun-neon-blue-glow);
+      }
+
+      .addon-badge.functional {
+        background: var(--autorun-neon-yellow);
+        color: var(--autorun-bg-black);
+        box-shadow: 0 0 8px var(--autorun-neon-yellow-glow);
+      }
+
+      .addon-description {
+        font-size: 18px;
+        line-height: 1.7;
+        color: var(--autorun-gray-600);
+        margin-bottom: 32px;
+      }
+
+      .addon-section {
+        margin-bottom: 32px;
+      }
+
+      .addon-section-title {
+        font-size: 20px;
+        font-weight: 600;
+        color: var(--autorun-neon-white);
+        margin-bottom: 16px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid var(--autorun-gray-300);
+      }
+
+      .addon-features {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .addon-features li {
+        padding: 12px 0;
+        padding-left: 24px;
+        position: relative;
+        color: var(--autorun-gray-600);
+        line-height: 1.6;
+      }
+
+      .addon-features li::before {
+        content: '✓';
+        position: absolute;
+        left: 0;
+        color: var(--autorun-neon-yellow);
+        font-weight: 700;
+      }
+
+      .addon-features code {
+        background: var(--autorun-gray-200);
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 13px;
+        color: var(--autorun-neon-yellow);
+        font-family: 'Monaco', 'Courier New', monospace;
+      }
+
+      .requirements-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .requirement-item {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        padding: 16px;
+        background: var(--autorun-gray-200);
+        border-left: 3px solid var(--autorun-neon-yellow);
+        border-radius: 6px;
+      }
+
+      .requirement-label {
+        font-weight: 600;
+        color: var(--autorun-neon-white);
+        font-size: 14px;
+      }
+
+      .requirement-value {
+        color: var(--autorun-gray-600);
+        font-size: 14px;
+        line-height: 1.5;
+      }
+
+      .code-block {
+        background: var(--autorun-bg-black);
+        border: 1px solid var(--autorun-gray-400);
+        border-radius: 8px;
+        padding: 20px;
+        padding-top: 50px; /* Espacio para el botón */
+        overflow-x: auto;
+        position: relative;
+      }
+
+      .code-block::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(90deg, 
+          var(--autorun-neon-yellow) 0%, 
+          var(--autorun-neon-blue) 100%);
+      }
+
+      .code-block pre {
+        margin: 0;
+        font-family: 'Monaco', 'Courier New', monospace;
+        font-size: 13px;
+        line-height: 1.6;
+        color: var(--autorun-neon-white);
+      }
+
+      .code-block code {
+        color: var(--autorun-neon-white);
+      }
+
+      /* Botón de Copiar */
+      .copy-button {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        background: var(--autorun-gray-200);
+        border: 1px solid var(--autorun-gray-400);
+        border-radius: 6px;
+        padding: 8px 12px;
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--autorun-neon-white);
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        z-index: 10;
+      }
+
+      .copy-button:hover {
+        background: var(--autorun-neon-yellow);
+        color: var(--autorun-bg-black);
+        border-color: var(--autorun-neon-yellow);
+        box-shadow: 0 0 12px var(--autorun-neon-yellow-glow);
+      }
+
+      .copy-button:active {
+        transform: scale(0.95);
+      }
+
+      .copy-button.copied {
+        background: var(--autorun-neon-blue);
+        color: var(--autorun-neon-white);
+        border-color: var(--autorun-neon-blue);
+      }
+
+      .copy-button svg {
+        width: 14px;
+        height: 14px;
+        flex-shrink: 0;
+      }
+
+      /* Responsive */
+      @media (max-width: 1024px) {
+        .addons-container {
+          grid-template-columns: 1fr;
+        }
+
+        .addons-sidebar {
+          position: static;
+        }
+
+        .addons-menu {
+          flex-direction: row;
+          overflow-x: auto;
+          padding: 12px;
+        }
+
+        .addon-menu-item {
+          white-space: nowrap;
+          flex-shrink: 0;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .addons-section {
+          padding: 80px 20px;
+        }
+
+        .addons-content {
+          padding: 24px;
+        }
+
+        .addon-title {
+          font-size: 24px;
+        }
+
+        .addon-description {
+          font-size: 16px;
+        }
+      }
+
+      /* ========================================
+         CONECTAR SECTION
+         ======================================== */
+      
+      .conectar-section {
+        padding: 140px 40px;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      /* Paso a Paso Vertical */
+      .conectar-steps {
+        display: flex;
+        flex-direction: column;
+        gap: 60px;
+        margin-top: 80px;
+      }
+
+      .conectar-step {
+        display: flex;
+        gap: 40px;
+        align-items: flex-start;
+        position: relative;
+        opacity: 0;
+        transform: translateX(-30px);
+        transition: all 0.6s ease;
+      }
+
+      .conectar-step.animate {
+        opacity: 1;
+        transform: translateX(0);
+      }
+
+      .step-number-large {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: var(--autorun-gray-200);
+        border: 3px solid var(--autorun-neon-yellow);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        font-weight: 700;
+        color: var(--autorun-neon-yellow);
+        box-shadow: 0 0 20px var(--autorun-neon-yellow-glow);
+        flex-shrink: 0;
+        position: relative;
+        z-index: 2;
+      }
+
+      .step-content {
+        flex: 1;
+        padding-top: 8px;
+      }
+
+      .step-title {
+        font-size: 24px;
+        font-weight: 700;
+        color: var(--autorun-neon-white);
+        margin-bottom: 12px;
+      }
+
+      .step-description {
+        font-size: 16px;
+        line-height: 1.7;
+        color: var(--autorun-gray-600);
+        margin-bottom: 20px;
+      }
+
+      /* Línea conectora vertical */
+      .conectar-step:not(:last-child)::after {
+        content: '';
+        position: absolute;
+        top: 60px;
+        left: 30px;
+        width: 2px;
+        height: calc(100% + 60px);
+        background: linear-gradient(180deg, 
+          var(--autorun-neon-yellow) 0%, 
+          var(--autorun-neon-blue) 100%);
+        z-index: 1;
+        opacity: 0.4;
+        box-shadow: 0 0 8px var(--autorun-neon-yellow-glow);
+      }
+
+      /* Cómo Funciona */
+      .como-funciona {
+        margin-top: 120px;
+        padding-top: 80px;
+        border-top: 2px solid var(--autorun-gray-300);
+      }
+
+      .como-funciona-title {
+        font-size: 32px;
+        font-weight: 700;
+        color: var(--autorun-neon-white);
+        text-align: center;
+        margin-bottom: 60px;
+      }
+
+      .funciona-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 32px;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .funciona-card {
+        padding: 32px;
+        background: var(--autorun-gray-100);
+        border: 1px solid var(--autorun-gray-300);
+        border-radius: 12px;
+        text-align: center;
+        transition: all 0.3s ease;
+      }
+
+      .funciona-card:hover {
+        border-color: var(--autorun-neon-yellow);
+        box-shadow: 0 8px 24px rgba(255, 255, 0, 0.15);
+        transform: translateY(-4px);
+      }
+
+      .funciona-icon {
+        width: 80px;
+        height: 80px;
+        margin: 0 auto 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--autorun-gray-200);
+        border-radius: 12px;
+        color: var(--autorun-neon-yellow);
+      }
+
+      .funciona-card:hover .funciona-icon {
+        background: var(--autorun-neon-yellow);
+        color: var(--autorun-bg-black);
+        box-shadow: 0 0 20px var(--autorun-neon-yellow-glow);
+      }
+
+      .funciona-card-title {
+        font-size: 20px;
+        font-weight: 600;
+        color: var(--autorun-neon-white);
+        margin-bottom: 12px;
+      }
+
+      .funciona-card-description {
+        font-size: 14px;
+        line-height: 1.6;
+        color: var(--autorun-gray-600);
+      }
+
+      /* Notas y Tips */
+      .step-note {
+        margin-top: 16px;
+        padding: 16px;
+        background: var(--autorun-gray-100);
+        border-left: 3px solid var(--autorun-neon-yellow);
+        border-radius: 4px;
+        font-size: 14px;
+        color: var(--autorun-gray-600);
+        line-height: 1.6;
+      }
+
+      /* Selección de Add-ons */
+      .addons-selection-example {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 24px;
+        margin: 24px 0;
+      }
+
+      .addon-category {
+        padding: 20px;
+        background: var(--autorun-gray-100);
+        border-radius: 8px;
+        border: 1px solid var(--autorun-gray-300);
+      }
+
+      .category-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--autorun-neon-white);
+        margin-bottom: 12px;
+      }
+
+      .addon-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .addon-list li {
+        font-size: 14px;
+        color: var(--autorun-gray-600);
+        margin-bottom: 8px;
+        padding-left: 8px;
+      }
+
+      /* Credenciales */
+      .credentials-example {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin: 24px 0;
+      }
+
+      .credential-item {
+        padding: 20px;
+        background: var(--autorun-gray-100);
+        border-radius: 8px;
+        border: 1px solid var(--autorun-gray-300);
+      }
+
+      .credential-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--autorun-neon-yellow);
+        margin-bottom: 12px;
+      }
+
+      .credential-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .credential-list li {
+        font-size: 13px;
+        color: var(--autorun-gray-600);
+        margin-bottom: 8px;
+        line-height: 1.6;
+      }
+
+      .credential-list strong {
+        color: var(--autorun-neon-white);
+      }
+
+      /* Opciones de Template */
+      .template-options {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 24px;
+        margin: 24px 0;
+      }
+
+      .template-option {
+        padding: 24px;
+        background: var(--autorun-gray-100);
+        border-radius: 8px;
+        border: 1px solid var(--autorun-gray-300);
+        transition: all 0.3s ease;
+      }
+
+      .template-option:hover {
+        border-color: var(--autorun-neon-yellow);
+        box-shadow: 0 4px 12px rgba(255, 255, 0, 0.1);
+      }
+
+      .template-option-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--autorun-neon-white);
+        margin-bottom: 8px;
+      }
+
+      .template-option-desc {
+        font-size: 14px;
+        color: var(--autorun-gray-600);
+        margin-bottom: 16px;
+        line-height: 1.6;
+      }
+
+      /* Tips de Desarrollo */
+      .development-tips {
+        margin-top: 24px;
+        padding: 20px;
+        background: var(--autorun-gray-100);
+        border-radius: 8px;
+        border: 1px solid var(--autorun-gray-300);
+      }
+
+      .tips-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--autorun-neon-yellow);
+        margin-bottom: 12px;
+      }
+
+      .tips-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .tips-list li {
+        font-size: 14px;
+        color: var(--autorun-gray-600);
+        margin-bottom: 8px;
+        padding-left: 8px;
+        line-height: 1.6;
+      }
+
+      .tips-list code {
+        background: var(--autorun-gray-200);
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 13px;
+        color: var(--autorun-neon-yellow);
+      }
+
+      /* Info de Despliegue */
+      .deployment-info {
+        margin-top: 24px;
+        padding: 20px;
+        background: linear-gradient(135deg, var(--autorun-gray-100) 0%, var(--autorun-gray-200) 100%);
+        border-radius: 8px;
+        border: 2px solid var(--autorun-neon-yellow);
+      }
+
+      .deployment-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--autorun-neon-yellow);
+        margin-bottom: 8px;
+      }
+
+      .deployment-text {
+        font-size: 14px;
+        color: var(--autorun-gray-600);
+        line-height: 1.6;
+      }
+
+      /* Nota Final */
+      .conectar-note {
+        margin-top: 80px;
+        padding: 32px;
+        background: var(--autorun-gray-100);
+        border-radius: 12px;
+        border: 2px solid var(--autorun-neon-blue);
+        display: flex;
+        gap: 24px;
+        align-items: flex-start;
+      }
+
+      .note-icon {
+        width: 48px;
+        height: 48px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--autorun-gray-200);
+        border-radius: 50%;
+        color: var(--autorun-neon-blue);
+      }
+
+      .note-content {
+        flex: 1;
+      }
+
+      .note-title {
+        font-size: 20px;
+        font-weight: 600;
+        color: var(--autorun-neon-white);
+        margin-bottom: 12px;
+      }
+
+      .note-text {
+        font-size: 15px;
+        color: var(--autorun-gray-600);
+        line-height: 1.7;
+        margin-bottom: 16px;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .conectar-section {
+          padding: 80px 20px;
+        }
+
+        .conectar-steps {
+          gap: 40px;
+        }
+
+        .conectar-step {
+          flex-direction: column;
+          gap: 20px;
+        }
+
+        .conectar-step:not(:last-child)::after {
+          left: 30px;
+          top: 60px;
+        }
+
+        .step-number-large {
+          width: 50px;
+          height: 50px;
+          font-size: 24px;
+        }
+
+        .funciona-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .addons-selection-example,
+        .credentials-example,
+        .template-options {
+          grid-template-columns: 1fr;
+        }
+
+        .conectar-note {
+          flex-direction: column;
+          padding: 24px;
+        }
+      }
+
+      /* ========================================
+         TECNOLOGÍAS SECTION
+         ======================================== */
+      
+      .tecnologias-section {
+        padding: 140px 40px;
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+
+      .tecnologias-main-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 24px;
+        margin-top: 80px;
+      }
+
+      .tecnologia-card {
+        background: var(--autorun-gray-100);
+        border: 1px solid var(--autorun-gray-300);
+        border-radius: 16px;
+        padding: 32px;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: pointer;
+      }
+
+      .tecnologia-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, 
+          var(--autorun-neon-yellow) 0%, 
+          var(--autorun-neon-blue) 100%);
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.4s ease;
+      }
+
+      .tecnologia-card:hover {
+        border-color: var(--autorun-neon-yellow);
+        box-shadow: 0 12px 32px rgba(255, 255, 0, 0.2);
+        transform: translateY(-8px);
+      }
+
+      .tecnologia-card:hover::before {
+        transform: scaleX(1);
+      }
+
+      .tecnologia-card.featured {
+        border-color: var(--autorun-neon-yellow);
+        background: linear-gradient(135deg, var(--autorun-gray-100) 0%, var(--autorun-gray-200) 100%);
+      }
+
+      .tecnologia-card.featured::before {
+        transform: scaleX(1);
+      }
+
+      .tecnologia-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 20px;
+      }
+
+      .tecnologia-icon-large {
+        width: 64px;
+        height: 64px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--autorun-bg-black);
+        border-radius: 12px;
+        color: var(--autorun-neon-yellow);
+        border: 2px solid var(--autorun-gray-400);
+        transition: all 0.3s ease;
+      }
+
+      .tecnologia-card:hover .tecnologia-icon-large {
+        border-color: var(--autorun-neon-yellow);
+        box-shadow: 0 0 20px var(--autorun-neon-yellow-glow);
+        transform: scale(1.1) rotate(5deg);
+      }
+
+      .tecnologia-badge {
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        padding: 6px 12px;
+        background: var(--autorun-gray-200);
+        border: 1px solid var(--autorun-gray-400);
+        border-radius: 6px;
+        color: var(--autorun-neon-white);
+        transition: all 0.3s ease;
+      }
+
+      .tecnologia-card:hover .tecnologia-badge {
+        background: var(--autorun-neon-yellow);
+        color: var(--autorun-bg-black);
+        border-color: var(--autorun-neon-yellow);
+      }
+
+      .tecnologia-card-name {
+        font-size: 24px;
+        font-weight: 700;
+        color: var(--autorun-neon-white);
+        margin-bottom: 8px;
+        transition: color 0.3s ease;
+      }
+
+      .tecnologia-card:hover .tecnologia-card-name {
+        color: var(--autorun-neon-yellow);
+      }
+
+      .tecnologia-card-version {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--autorun-neon-blue);
+        margin-bottom: 12px;
+        font-family: 'Monaco', 'Courier New', monospace;
+        letter-spacing: 0.5px;
+      }
+
+      .tecnologia-card-desc {
+        font-size: 15px;
+        line-height: 1.6;
+        color: var(--autorun-gray-600);
+      }
+
+      /* Responsive */
+      @media (max-width: 1024px) {
+        .tecnologias-main-grid {
+          grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+          gap: 20px;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .tecnologias-section {
+          padding: 80px 20px;
+        }
+
+        .tecnologias-main-grid {
+          grid-template-columns: 1fr;
+          gap: 20px;
+        }
+
+        .tecnologia-card {
+          padding: 24px;
+        }
+      }
+
+      /* ========================================
+         PASO A PASO HORIZONTAL
+         ======================================== */
+      
+      .steps-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 0;
+        margin: 60px auto 80px;
+        max-width: 800px;
+        padding: 0 20px;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.6s ease;
+        position: relative;
+      }
+
+      .steps-container.animate {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .step-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+        flex: 1;
+        position: relative;
+        opacity: 0;
+        transform: scale(0.8);
+        transition: all 0.4s ease;
+      }
+
+      .steps-container.animate .step-item {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      .steps-container.animate .step-item:nth-child(1) {
+        animation: step-appear 0.5s ease 0.1s forwards;
+      }
+
+      .steps-container.animate .step-item:nth-child(2) {
+        animation: step-appear 0.5s ease 0.2s forwards;
+      }
+
+      .steps-container.animate .step-item:nth-child(3) {
+        animation: step-appear 0.5s ease 0.3s forwards;
+      }
+
+      .steps-container.animate .step-item:nth-child(4) {
+        animation: step-appear 0.5s ease 0.4s forwards;
+      }
+
+      @keyframes step-appear {
+        0% {
+          opacity: 0;
+          transform: scale(0.8) translateY(10px);
+        }
+        100% {
+          opacity: 1;
+          transform: scale(1) translateY(0);
+        }
+      }
+
+      .step-number {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--autorun-gray-200);
+        border: 2px solid var(--autorun-neon-yellow);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--autorun-neon-yellow);
+        box-shadow: 0 0 12px var(--autorun-neon-yellow-glow);
+        position: relative;
+        z-index: 2;
+        transition: all 0.3s ease;
+      }
+
+      .step-item:hover .step-number {
+        background: var(--autorun-neon-yellow);
+        color: var(--autorun-bg-black);
+        box-shadow: 0 0 20px var(--autorun-neon-yellow-glow);
+        transform: scale(1.1);
+      }
+
+      .step-text {
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--autorun-neon-white);
+        text-align: center;
+        letter-spacing: 0.5px;
+        line-height: 1.4;
+        opacity: 0.9;
+        transition: opacity 0.3s ease;
+      }
+
+      .step-item:hover .step-text {
+        opacity: 1;
+        color: var(--autorun-neon-yellow);
+      }
+
+      /* Línea conectora entre pasos */
+      .step-item:not(:last-child)::after {
+        content: '';
+        position: absolute;
+        top: 20px;
+        left: calc(50% + 20px);
+        width: 100px;
+        height: 2px;
+        background: linear-gradient(90deg, 
+          var(--autorun-neon-yellow) 0%, 
+          var(--autorun-neon-blue) 100%);
+        z-index: 0;
+        opacity: 0.5;
+        box-shadow: 0 0 8px var(--autorun-neon-yellow-glow);
+        animation: connector-pulse 2s ease-in-out infinite;
+      }
+
+
+      @keyframes connector-pulse {
+        0%, 100% {
+          opacity: 0.4;
+        }
+        50% {
+          opacity: 0.7;
+        }
+      }
+
+      /* Responsive: En móviles, hacer vertical */
+      @media (max-width: 768px) {
+        .steps-container {
+          flex-direction: column;
+          gap: 30px;
+        }
+
+        .step-item:not(:last-child)::after {
+          width: 2px;
+          height: calc(100% + 30px);
+          top: 40px;
+          left: 20px;
+          background: linear-gradient(180deg, 
+            var(--autorun-neon-yellow) 0%, 
+            var(--autorun-neon-blue) 100%);
+        }
+
+        .step-item {
+          width: 100%;
+          flex-direction: row;
+          justify-content: flex-start;
+          padding-left: 50px;
+        }
+
+        .step-text {
+          text-align: left;
+        }
+      }
     </style>
   </head>
   <body>
     <!-- Velo negro que se desvanece -->
     <div class="loading-overlay" id="loading-overlay"></div>
 
+    <!-- Header Sticky -->
+    <header class="sticky-header" id="sticky-header">
+      <div class="sticky-header-container">
+        <!-- Sección Izquierda -->
+        <nav class="sticky-nav-left">
+          <a href="#features" class="sticky-nav-link">Features</a>
+          <a href="#addons" class="sticky-nav-link">Add-ons</a>
+        </nav>
+
+        <!-- Logo Centrado -->
+        <div class="sticky-logo">
+          <a href="#home" class="sticky-logo-link">
+            <span class="sticky-logo-chip"></span>
+          </a>
+        </div>
+
+        <!-- Sección Derecha -->
+        <nav class="sticky-nav-right">
+          <a href="#conectar" class="sticky-nav-link">Conectar</a>
+          <a href="#tecnologias" class="sticky-nav-link">Tecnologías</a>
+        </nav>
+      </div>
+    </header>
 
     <!-- Contenido Principal -->
     <main class="main-content">
@@ -1950,6 +3253,12 @@
             El hub central que une todas tus herramientas en un solo lugar.
             Construye, conecta y potencia tu flujo de trabajo.
           </p>
+          <a href="#conectar" class="hero-cta-button">
+            <span>Conectar Hub</span>
+            <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 8L20 16L12 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
         </div>
 
         <!-- Icono de Scroll Animado - Mouse con línea -->
@@ -1978,6 +3287,27 @@
             Cada herramienta se conecta, cada conexión potencia tu trabajo
           </p>
             </div>
+        
+        <!-- Paso a Paso Horizontal -->
+        <div class="steps-container" data-scroll="fade-up">
+          <div class="step-item">
+            <div class="step-number">1</div>
+            <div class="step-text">Inicializa<br>el Hub</div>
+          </div>
+          <div class="step-item">
+            <div class="step-number">2</div>
+            <div class="step-text">Conecta<br>Add-ons</div>
+          </div>
+          <div class="step-item">
+            <div class="step-number">3</div>
+            <div class="step-text">Potencia<br>tu Trabajo</div>
+          </div>
+          <div class="step-item">
+            <div class="step-number">4</div>
+            <div class="step-text">Crea sin<br>Límites</div>
+          </div>
+        </div>
+
         <div class="features-grid">
           <div class="feature-card" data-scroll="fade-up" data-delay="0.1">
             <div class="feature-icon">
@@ -2028,11 +3358,113 @@
               Un punto central que conecta todo. Simple, poderoso, eficiente.
             </p>
           </div>
+          <div class="feature-card" data-scroll="fade-up" data-delay="0.4">
+            <div class="feature-icon">
+              <div class="icon-chip">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <!-- Puzzle pieces / Modular -->
+                  <rect x="4" y="4" width="10" height="10" rx="1" stroke="currentColor" stroke-width="2" fill="none"/>
+                  <rect x="18" y="4" width="10" height="10" rx="1" stroke="currentColor" stroke-width="2" fill="none"/>
+                  <rect x="4" y="18" width="10" height="10" rx="1" stroke="currentColor" stroke-width="2" fill="none"/>
+                  <rect x="18" y="18" width="10" height="10" rx="1" stroke="currentColor" stroke-width="2" fill="none"/>
+                  <circle cx="9" cy="9" r="2" fill="currentColor"/>
+                  <circle cx="23" cy="9" r="2" fill="currentColor"/>
+                  <circle cx="9" cy="23" r="2" fill="currentColor"/>
+                  <circle cx="23" cy="23" r="2" fill="currentColor"/>
+                </svg>
+              </div>
+            </div>
+            <h3 class="feature-title">Arquitectura Modular</h3>
+            <p class="feature-description">
+              Construye aplicaciones complejas con módulos independientes y reutilizables.
+            </p>
+          </div>
+          <div class="feature-card" data-scroll="fade-up" data-delay="0.5">
+            <div class="feature-icon">
+              <div class="icon-chip">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <!-- Shield / Quality -->
+                  <path d="M16 4L6 9V16C6 22 10 26.5 16 28C22 26.5 26 22 26 16V9L16 4Z" stroke="currentColor" stroke-width="2" fill="none"/>
+                  <path d="M12 16L15 19L20 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </div>
+            <h3 class="feature-title">Calidad Garantizada</h3>
+            <p class="feature-description">
+              Validación automática en cada commit. Menos errores, más confianza.
+            </p>
+          </div>
+          <div class="feature-card" data-scroll="fade-up" data-delay="0.6">
+            <div class="feature-icon">
+              <div class="icon-chip">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <!-- Rocket / Fast -->
+                  <path d="M16 4L20 12L16 10L12 12L16 4Z" fill="currentColor"/>
+                  <rect x="14" y="10" width="4" height="12" rx="2" fill="currentColor"/>
+                  <path d="M10 22L16 26L22 22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  <circle cx="12" cy="20" r="1" fill="currentColor"/>
+                  <circle cx="20" cy="20" r="1" fill="currentColor"/>
+                </svg>
+              </div>
+            </div>
+            <h3 class="feature-title">Desarrollo Rápido</h3>
+            <p class="feature-description">
+              Templates preconfiguradas y herramientas que aceleran tu flujo de trabajo.
+            </p>
+          </div>
+          <div class="feature-card" data-scroll="fade-up" data-delay="0.7">
+            <div class="feature-icon">
+              <div class="icon-chip">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <!-- Code / TypeScript -->
+                  <path d="M12 8L6 16L12 24M20 8L26 16L20 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </div>
+            <h3 class="feature-title">TypeScript Nativo</h3>
+            <p class="feature-description">
+              Tipado estático para menos errores y mejor experiencia de desarrollo.
+            </p>
+          </div>
+          <div class="feature-card" data-scroll="fade-up" data-delay="0.8">
+            <div class="feature-icon">
+              <div class="icon-chip">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <!-- Layers / Monorepo -->
+                  <rect x="4" y="8" width="24" height="4" rx="1" fill="currentColor" opacity="0.8"/>
+                  <rect x="4" y="14" width="24" height="4" rx="1" fill="currentColor" opacity="0.6"/>
+                  <rect x="4" y="20" width="24" height="4" rx="1" fill="currentColor" opacity="0.4"/>
+                </svg>
+              </div>
+            </div>
+            <h3 class="feature-title">Monorepo Escalable</h3>
+            <p class="feature-description">
+              Gestiona múltiples paquetes en un solo repositorio. Dependencias compartidas.
+            </p>
+          </div>
+          <div class="feature-card" data-scroll="fade-up" data-delay="0.9">
+            <div class="feature-icon">
+              <div class="icon-chip">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <!-- Palette / Design System -->
+                  <circle cx="10" cy="12" r="3" fill="currentColor" opacity="0.8"/>
+                  <circle cx="22" cy="12" r="3" fill="currentColor" opacity="0.6"/>
+                  <circle cx="16" cy="20" r="3" fill="currentColor" opacity="0.7"/>
+                  <path d="M10 12L16 20L22 12" stroke="currentColor" stroke-width="1.5" opacity="0.5"/>
+                  <rect x="6" y="6" width="20" height="20" rx="2" stroke="currentColor" stroke-width="1.5" fill="none" opacity="0.3"/>
+                </svg>
+              </div>
+            </div>
+            <h3 class="feature-title">Sistema de Diseño Consistente</h3>
+            <p class="feature-description">
+              Tokens centralizados, tipografía unificada y componentes estándar para un diseño coherente.
+            </p>
+          </div>
           </div>
       </section>
 
       <!-- Addons Section -->
-      <section id="addons" class="features-section">
+      <section id="addons" class="addons-section">
         <div class="section-header" data-scroll="fade-up">
           <div class="section-chip">
             <span>ADDONS</span>
@@ -2042,58 +3474,1607 @@
             Amplía las capacidades de tu hub con complementos poderosos
           </p>
         </div>
-        <div class="features-grid">
-          <div class="feature-card" data-scroll="fade-up" data-delay="0.1">
-            <div class="feature-icon">
-              <div class="icon-chip">
-                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <!-- Puzzle/Addon icon -->
-                  <path d="M8 8H12V12H8V8Z" stroke="currentColor" stroke-width="2" fill="none"/>
-                  <path d="M20 8H24V12H20V8Z" stroke="currentColor" stroke-width="2" fill="none"/>
-                  <path d="M8 20H12V24H8V20Z" stroke="currentColor" stroke-width="2" fill="none"/>
-                  <path d="M20 20H24V24H20V20Z" stroke="currentColor" stroke-width="2" fill="none"/>
-                  <path d="M12 12H20V20H12V12Z" stroke="currentColor" stroke-width="2" fill="none"/>
-                  <circle cx="16" cy="16" r="2" fill="currentColor"/>
+
+        <div class="addons-container">
+          <!-- Menú Lateral -->
+          <aside class="addons-sidebar" data-scroll="fade-up">
+            <div class="addons-menu">
+              <div class="addon-menu-item active" data-addon="github">
+                <div class="addon-menu-icon">
+                  <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M16 4C9.373 4 4 9.373 4 16C4 21.302 7.438 25.8 12.207 27.388C12.806 27.498 13.025 27.112 13.025 26.776C13.025 26.474 13.015 25.514 13.01 24.578C9.672 25.302 8.967 23.16 8.967 23.16C8.438 21.73 7.533 21.33 7.533 21.33C6.342 20.64 7.614 20.656 7.614 20.656C8.92 20.765 9.555 22.008 9.555 22.008C10.725 23.717 12.363 23.232 13.048 22.929C13.155 22.134 13.466 21.604 13.81 21.304C10.048 20.994 6.171 19.814 6.171 14.437C6.171 12.967 6.627 11.729 7.619 10.766C7.49 10.456 7.044 9.443 7.696 8.106C7.696 8.106 8.525 7.84 13.003 9.682C13.816 9.463 14.71 9.354 15.604 9.349C16.498 9.354 17.392 9.463 18.205 9.682C22.68 7.84 23.508 8.106 23.508 8.106C24.163 9.443 23.717 10.456 23.588 10.766C24.583 11.729 25.037 12.967 25.037 14.437C25.037 19.827 21.153 20.994 17.385 21.304C17.811 21.671 18.185 22.337 18.185 23.386C18.185 24.82 18.171 25.979 18.171 26.776C18.171 27.116 18.386 27.505 18.995 27.386C23.758 25.795 27.185 21.295 27.185 16C27.185 9.373 21.812 4 15.185 4H16Z" fill="currentColor"/>
                 </svg>
               </div>
+                <span>GitHub</span>
             </div>
-            <h3 class="feature-title">Addons Disponibles</h3>
-            <p class="feature-description">
-              Descubre una amplia gama de complementos para potenciar tu flujo de trabajo.
-            </p>
+              <div class="addon-menu-item" data-addon="clarity">
+                <div class="addon-menu-icon">
+                  <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="16" cy="16" r="12" stroke="currentColor" stroke-width="2" fill="none"/>
+                    <path d="M10 16L14 20L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+                <span>Clarity</span>
+              </div>
+              <div class="addon-menu-item" data-addon="vercel">
+                <div class="addon-menu-icon">
+                  <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M16 4L28 16L16 28L4 16L16 4Z" stroke="currentColor" stroke-width="2" fill="none"/>
+                    <path d="M12 16L16 20L20 16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  </svg>
+                </div>
+                <span>Vercel</span>
+              </div>
+              <div class="addon-menu-item" data-addon="storybook">
+                <div class="addon-menu-icon">
+                  <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="4" y="6" width="24" height="20" rx="2" stroke="currentColor" stroke-width="2" fill="none"/>
+                    <line x1="4" y1="12" x2="28" y2="12" stroke="currentColor" stroke-width="2"/>
+                    <circle cx="8" cy="9" r="1" fill="currentColor"/>
+                    <circle cx="12" cy="9" r="1" fill="currentColor"/>
+                  </svg>
+                </div>
+                <span>Storybook</span>
+              </div>
+              <div class="addon-menu-item" data-addon="supabase">
+                <div class="addon-menu-icon">
+                  <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="4" y="8" width="24" height="18" rx="2" stroke="currentColor" stroke-width="2" fill="none"/>
+                    <circle cx="12" cy="17" r="2" fill="currentColor"/>
+                    <path d="M20 14L24 17L20 20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  </svg>
+                </div>
+                <span>Supabase</span>
+              </div>
+              <div class="addon-menu-item" data-addon="ai-assistant">
+                <div class="addon-menu-icon">
+                  <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="16" cy="12" r="6" stroke="currentColor" stroke-width="2" fill="none"/>
+                    <path d="M10 22C10 18 12.5 15 16 15C19.5 15 22 18 22 22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M8 8L10 10M24 8L22 10M8 24L10 22M24 24L22 22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                  </svg>
+                </div>
+                <span>AI Assistant</span>
+              </div>
+              <div class="addon-menu-item" data-addon="jest">
+                <div class="addon-menu-icon">
+                  <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M16 4L20 12L16 10L12 12L16 4Z" fill="currentColor"/>
+                    <rect x="14" y="10" width="4" height="12" rx="2" fill="currentColor"/>
+                    <path d="M10 22L16 26L22 22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  </svg>
+                </div>
+                <span>JEST</span>
+              </div>
+              <div class="addon-menu-item" data-addon="eslint">
+                <div class="addon-menu-icon">
+                  <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 8L6 16L12 24M20 8L26 16L20 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+                <span>ESLint</span>
+              </div>
+              <div class="addon-menu-item" data-addon="prettier">
+                <div class="addon-menu-icon">
+                  <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M8 8H24M8 16H24M8 24H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  </svg>
+                </div>
+                <span>Prettier</span>
+              </div>
+              <div class="addon-menu-item" data-addon="lighthouse">
+                <div class="addon-menu-icon">
+                  <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M16 4L6 14L16 18L26 14L16 4Z" fill="currentColor"/>
+                    <path d="M6 14V24L16 28L26 24V14" stroke="currentColor" stroke-width="2" fill="none"/>
+                  </svg>
+                </div>
+                <span>Lighthouse</span>
+              </div>
+              <div class="addon-menu-item" data-addon="docusaurus">
+                <div class="addon-menu-icon">
+                  <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="4" y="6" width="24" height="20" rx="2" stroke="currentColor" stroke-width="2" fill="none"/>
+                    <line x1="4" y1="12" x2="28" y2="12" stroke="currentColor" stroke-width="2"/>
+                    <line x1="4" y1="18" x2="28" y2="18" stroke="currentColor" stroke-width="1.5" opacity="0.5"/>
+                    <line x1="4" y1="24" x2="20" y2="24" stroke="currentColor" stroke-width="1.5" opacity="0.5"/>
+                  </svg>
+                </div>
+                <span>Docusaurus</span>
+              </div>
+              <div class="addon-menu-item" data-addon="i18n">
+                <div class="addon-menu-icon">
+                  <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="16" cy="16" r="12" stroke="currentColor" stroke-width="2" fill="none"/>
+                    <ellipse cx="16" cy="16" rx="12" ry="4" stroke="currentColor" stroke-width="1.5" fill="none" opacity="0.6"/>
+                    <ellipse cx="16" cy="16" rx="4" ry="12" stroke="currentColor" stroke-width="1.5" fill="none" opacity="0.6"/>
+                  </svg>
+                </div>
+                <span>i18n</span>
+              </div>
+              <div class="addon-menu-item" data-addon="figma-sync">
+                <div class="addon-menu-icon">
+                  <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="4" y="8" width="10" height="10" rx="1" stroke="currentColor" stroke-width="2" fill="none"/>
+                    <rect x="18" y="8" width="10" height="10" rx="1" stroke="currentColor" stroke-width="2" fill="none"/>
+                    <rect x="4" y="22" width="10" height="6" rx="1" stroke="currentColor" stroke-width="2" fill="none"/>
+                    <rect x="18" y="22" width="10" height="6" rx="1" stroke="currentColor" stroke-width="2" fill="none"/>
+                    <path d="M14 13L18 13M14 17L18 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  </svg>
+                </div>
+                <span>Figma Sync</span>
+              </div>
+              <div class="addon-menu-item" data-addon="fontawesome">
+                <div class="addon-menu-icon">
+                  <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M16 4C10.477 4 6 8.477 6 14C6 19.523 10.477 24 16 24C21.523 24 26 19.523 26 14C26 8.477 21.523 4 16 4ZM16 22C11.582 22 8 18.418 8 14C8 9.582 11.582 6 16 6C20.418 6 24 9.582 24 14C24 18.418 20.418 22 16 22Z" fill="currentColor"/>
+                    <circle cx="16" cy="14" r="3" fill="currentColor"/>
+                  </svg>
+                </div>
+                <span>FontAwesome</span>
+              </div>
+            </div>
+          </aside>
+
+          <!-- Contenido Principal -->
+          <main class="addons-content" data-scroll="fade-up">
+            <!-- GitHub Add-on -->
+            <div class="addon-detail active" id="addon-github">
+              <div class="addon-header">
+                <h3 class="addon-title">GitHub</h3>
+              </div>
+              <p class="addon-description">
+                Integración completa con GitHub para gestión automática de repositorios. Auto-commit, gestión de ramas, historial de commits y más.
+              </p>
+
+              <div class="addon-section">
+                <h4 class="addon-section-title">Características</h4>
+                <ul class="addon-features">
+                  <li>Auto-commit con cola de cambios</li>
+                  <li>Gestión completa de ramas (crear, cambiar, mergear)</li>
+                  <li>Volver a estados anteriores (checkout commits)</li>
+                  <li>Merge a rama principal</li>
+                  <li>Historial de commits</li>
+                  <li>Estado del repositorio</li>
+                  <li>Push automático (opcional)</li>
+                </ul>
           </div>
+
+              <div class="addon-section">
+                <h4 class="addon-section-title">Requisitos</h4>
+                <div class="requirements-list">
+                  <div class="requirement-item">
+                    <span class="requirement-label">Repositorio Git</span>
+                    <span class="requirement-value">Debe estar en un repositorio Git inicializado</span>
+                  </div>
+                  <div class="requirement-item">
+                    <span class="requirement-label">URL del Repositorio</span>
+                    <span class="requirement-value">URL de GitHub (ej: https://github.com/user/repo)</span>
+                  </div>
+                  <div class="requirement-item">
+                    <span class="requirement-label">Credenciales Git</span>
+                    <span class="requirement-value">Configuradas localmente (SSH o HTTPS)</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="addon-section">
+                <h4 class="addon-section-title">Configuración</h4>
+                <div class="code-block">
+                  <pre><code>{
+  "autoframe": {
+    "addons": {
+      "config": {
+        "github": {
+          "repositoryUrl": "https://github.com/user/repo",
+          "branch": "main",
+          "autoCommit": true,
+          "autoCommitDelay": 5000,
+          "commitMessage": "Auto-commit: {file}",
+          "pushOnCommit": false
+        }
+      }
+    }
+  }
+}</code></pre>
+                </div>
+              </div>
+
+              <div class="addon-section">
+                <h4 class="addon-section-title">Uso</h4>
+                <div class="code-block">
+                  <pre><code>// Activar add-on
+await hub.activateAddon('github');
+
+// Usar servicios
+const commitService = hub.getService('github', 'commit');
+await commitService(['archivo1.js', 'archivo2.js'], 'Mi commit');
+
+const pushService = hub.getService('github', 'push');
+await pushService('main');</code></pre>
+                </div>
+              </div>
+
+              <div class="addon-section">
+                <h4 class="addon-section-title">Servicios Disponibles</h4>
+                <ul class="addon-features">
+                  <li><code>commit(files, message)</code> - Hacer commit manual</li>
+                  <li><code>push(branch?)</code> - Push a rama</li>
+                  <li><code>switchBranch(branchName)</code> - Cambiar rama</li>
+                  <li><code>createBranch(branchName)</code> - Crear rama</li>
+                  <li><code>listBranches()</code> - Listar ramas</li>
+                  <li><code>mergeToMain(branchName)</code> - Merge a main</li>
+                  <li><code>getCommitHistory(limit?)</code> - Historial de commits</li>
+                  <li><code>checkoutCommit(commitHash, createBranch?)</code> - Volver a commit</li>
+                  <li><code>getStatus()</code> - Estado del repositorio</li>
+                  <li><code>getCurrentBranch()</code> - Rama actual</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Clarity Add-on -->
+            <div class="addon-detail" id="addon-clarity">
+              <div class="addon-header">
+                <h3 class="addon-title">Clarity</h3>
+              </div>
+              <p class="addon-description">
+                Integración con Microsoft Clarity para analytics y tracking de usuarios. Proporciona heatmaps, grabaciones de sesiones y análisis de comportamiento.
+              </p>
+
+              <div class="addon-section">
+                <h4 class="addon-section-title">Características</h4>
+                <ul class="addon-features">
+                  <li>Tracking de eventos y comportamiento</li>
+                  <li>Heatmaps interactivos</li>
+                  <li>Session recordings</li>
+                  <li>Analytics dashboard</li>
+                  <li>Integración con el Hub</li>
+                </ul>
+              </div>
+
+              <div class="addon-section">
+                <h4 class="addon-section-title">Requisitos</h4>
+                <div class="requirements-list">
+                  <div class="requirement-item">
+                    <span class="requirement-label">Clarity Project ID</span>
+                    <span class="requirement-value">ID del proyecto de Microsoft Clarity</span>
+                  </div>
+                  <div class="requirement-item">
+                    <span class="requirement-label">Clarity API Key</span>
+                    <span class="requirement-value">Clave API de Microsoft Clarity (opcional para funciones avanzadas)</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="addon-section">
+                <h4 class="addon-section-title">Configuración</h4>
+                <div class="code-block">
+                  <pre><code>{
+  "autoframe": {
+    "addons": {
+      "config": {
+        "clarity": {
+          "projectId": "tu-project-id",
+          "apiKey": "tu-api-key-opcional"
+        }
+      }
+    }
+  }
+}</code></pre>
+                </div>
+              </div>
+
+              <div class="addon-section">
+                <h4 class="addon-section-title">Uso</h4>
+                <div class="code-block">
+                  <pre><code>// Activar add-on
+await hub.activateAddon('clarity');
+
+// El script de Clarity se carga automáticamente
+// y comienza a trackear eventos</code></pre>
+                </div>
+              </div>
+            </div>
+
+            <!-- Vercel Add-on -->
+            <div class="addon-detail" id="addon-vercel">
+              <div class="addon-header">
+                <h3 class="addon-title">Vercel</h3>
+              </div>
+              <p class="addon-description">
+                Integración con Vercel para despliegue automático de aplicaciones. Gestión de proyectos, configuración de dominios y preview deployments.
+              </p>
+
+              <div class="addon-section">
+                <h4 class="addon-section-title">Características</h4>
+                <ul class="addon-features">
+                  <li>Deploy automático</li>
+                  <li>Gestión de proyectos Vercel</li>
+                  <li>Configuración de dominios</li>
+                  <li>Preview deployments</li>
+                  <li>Integración con GitHub</li>
+                </ul>
+              </div>
+
+              <div class="addon-section">
+                <h4 class="addon-section-title">Requisitos</h4>
+                <div class="requirements-list">
+                  <div class="requirement-item">
+                    <span class="requirement-label">Vercel Token</span>
+                    <span class="requirement-value">Token de acceso de Vercel (obtener en vercel.com/account/tokens)</span>
+                  </div>
+                  <div class="requirement-item">
+                    <span class="requirement-label">Team ID (Opcional)</span>
+                    <span class="requirement-value">ID del equipo si trabajas en un equipo</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="addon-section">
+                <h4 class="addon-section-title">Configuración</h4>
+                <div class="code-block">
+                  <pre><code>{
+  "autoframe": {
+    "addons": {
+      "config": {
+        "vercel": {
+          "token": "tu-vercel-token",
+          "teamId": "tu-team-id-opcional",
+          "autoDeploy": true
+        }
+      }
+    }
+  }
+}</code></pre>
+                </div>
+              </div>
+
+              <div class="addon-section">
+                <h4 class="addon-section-title">Uso</h4>
+                <div class="code-block">
+                  <pre><code>// Activar add-on
+await hub.activateAddon('vercel');
+
+// Deploy automático
+const deployService = hub.getService('vercel', 'deploy');
+await deployService();</code></pre>
+                </div>
+              </div>
+            </div>
+
+            <!-- Storybook Add-on -->
+            <div class="addon-detail" id="addon-storybook">
+              <div class="addon-header">
+                <h3 class="addon-title">Storybook</h3>
+              </div>
+              <p class="addon-description">
+                Integración con Storybook para desarrollo y documentación de componentes. Generación automática de stories y testing visual.
+              </p>
+
+              <div class="addon-section">
+                <h4 class="addon-section-title">Características</h4>
+                <ul class="addon-features">
+                  <li>Generación automática de stories</li>
+                  <li>Documentación de componentes</li>
+                  <li>Testing visual</li>
+                  <li>Integración con add-ons de componentes</li>
+                  <li>Hot reload durante desarrollo</li>
+                </ul>
+              </div>
+
+              <div class="addon-section">
+                <h4 class="addon-section-title">Requisitos</h4>
+                <div class="requirements-list">
+                  <div class="requirement-item">
+                    <span class="requirement-label">Node.js</span>
+                    <span class="requirement-value">Node.js 16+ instalado</span>
+                  </div>
+                  <div class="requirement-item">
+                    <span class="requirement-label">Puerto Disponible</span>
+                    <span class="requirement-value">Puerto 6006 (por defecto) disponible</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="addon-section">
+                <h4 class="addon-section-title">Configuración</h4>
+                <div class="code-block">
+                  <pre><code>{
+  "autoframe": {
+    "addons": {
+      "config": {
+        "storybook": {
+          "port": 6006,
+          "autoStart": false
+        }
+      }
+    }
+  }
+}</code></pre>
+                </div>
+              </div>
+
+              <div class="addon-section">
+                <h4 class="addon-section-title">Uso</h4>
+                <div class="code-block">
+                  <pre><code>// Activar add-on
+await hub.activateAddon('storybook');
+
+// Iniciar Storybook
+const storybookService = hub.getService('storybook', 'start');
+await storybookService();</code></pre>
+                </div>
+              </div>
+            </div>
+
+            <!-- Supabase Add-on -->
+            <div class="addon-detail" id="addon-supabase">
+              <div class="addon-header">
+                <h3 class="addon-title">Supabase</h3>
+              </div>
+              <p class="addon-description">
+                Integración con Supabase para base de datos y autenticación. Real-time subscriptions, storage de archivos y edge functions.
+              </p>
+
+              <div class="addon-section">
+                <h4 class="addon-section-title">Características</h4>
+                <ul class="addon-features">
+                  <li>Conexión a base de datos PostgreSQL</li>
+                  <li>Autenticación de usuarios</li>
+                  <li>Real-time subscriptions</li>
+                  <li>Storage de archivos</li>
+                  <li>Edge functions</li>
+                </ul>
+              </div>
+
+              <div class="addon-section">
+                <h4 class="addon-section-title">Requisitos</h4>
+                <div class="requirements-list">
+                  <div class="requirement-item">
+                    <span class="requirement-label">Supabase URL</span>
+                    <span class="requirement-value">URL de tu proyecto Supabase (ej: https://xxx.supabase.co)</span>
+                  </div>
+                  <div class="requirement-item">
+                    <span class="requirement-label">Supabase Anon Key</span>
+                    <span class="requirement-value">Clave pública (anon key) de Supabase</span>
+                  </div>
+                  <div class="requirement-item">
+                    <span class="requirement-label">Service Role Key (Opcional)</span>
+                    <span class="requirement-value">Para operaciones del servidor (mantener secreta)</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="addon-section">
+                <h4 class="addon-section-title">Configuración</h4>
+                <div class="code-block">
+                  <pre><code>{
+  "autoframe": {
+    "addons": {
+      "config": {
+        "supabase": {
+          "url": "https://xxx.supabase.co",
+          "anonKey": "tu-anon-key",
+          "serviceRoleKey": "tu-service-role-key-opcional"
+        }
+      }
+    }
+  }
+}</code></pre>
+                </div>
+              </div>
+
+              <div class="addon-section">
+                <h4 class="addon-section-title">Uso</h4>
+                <div class="code-block">
+                  <pre><code>// Activar add-on
+await hub.activateAddon('supabase');
+
+// Obtener cliente de Supabase
+const supabaseService = hub.getService('supabase', 'getClient');
+const supabase = supabaseService();</code></pre>
+                </div>
+              </div>
+            </div>
+
+            <!-- AI Assistant Add-on -->
+            <div class="addon-detail" id="addon-ai-assistant">
+              <div class="addon-header">
+                <h3 class="addon-title">AI Assistant</h3>
+              </div>
+              <p class="addon-description">
+                Integración con servicios de IA (Ollama, Gemini) para asistencia inteligente. Asistente de código, generación y análisis automático.
+              </p>
+
+              <div class="addon-section">
+                <h4 class="addon-section-title">Características</h4>
+                <ul class="addon-features">
+                  <li>Asistente de código</li>
+                  <li>Generación de código</li>
+                  <li>Análisis de código</li>
+                  <li>Sugerencias inteligentes</li>
+                  <li>Integración con el editor</li>
+                </ul>
+              </div>
+
+              <div class="addon-section">
+                <h4 class="addon-section-title">Requisitos</h4>
+                <div class="requirements-list">
+                  <div class="requirement-item">
+                    <span class="requirement-label">Proveedor de IA</span>
+                    <span class="requirement-value">Ollama (local) o Google Gemini API</span>
+                  </div>
+                  <div class="requirement-item">
+                    <span class="requirement-label">API Key (Gemini)</span>
+                    <span class="requirement-value">Si usas Gemini, necesitas API key de Google AI Studio</span>
+                  </div>
+                  <div class="requirement-item">
+                    <span class="requirement-label">Ollama URL (Ollama)</span>
+                    <span class="requirement-value">Si usas Ollama, URL del servidor (default: http://localhost:11434)</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="addon-section">
+                <h4 class="addon-section-title">Configuración</h4>
+                <div class="code-block">
+                  <pre><code>{
+  "autoframe": {
+    "addons": {
+      "config": {
+        "ai-assistant": {
+          "provider": "gemini", // "gemini" o "ollama"
+          "apiKey": "tu-gemini-api-key",
+          "ollamaUrl": "http://localhost:11434"
+        }
+      }
+    }
+  }
+}</code></pre>
+                </div>
+              </div>
+
+              <div class="addon-section">
+                <h4 class="addon-section-title">Uso</h4>
+                <div class="code-block">
+                  <pre><code>// Activar add-on
+await hub.activateAddon('ai-assistant');
+
+// Usar asistente
+const aiService = hub.getService('ai-assistant', 'ask');
+const response = await aiService('Explica este código');</code></pre>
+                </div>
+              </div>
+            </div>
+
+            <!-- JEST Add-on -->
+            <div class="addon-detail" id="addon-jest">
+              <div class="addon-header">
+                <h3 class="addon-title">JEST</h3>
+              </div>
+              <p class="addon-description">
+                Integración con Jest para testing unitario automático. Ejecución de tests, coverage reports y watch mode.
+              </p>
+
+              <div class="addon-section">
+                <h4 class="addon-section-title">Características</h4>
+                <ul class="addon-features">
+                  <li>Ejecución automática de tests</li>
+                  <li>Coverage reports</li>
+                  <li>Watch mode</li>
+                  <li>Integración con CI/CD</li>
+                  <li>Testing de add-ons</li>
+                </ul>
+              </div>
+
+              <div class="addon-section">
+                <h4 class="addon-section-title">Requisitos</h4>
+                <div class="requirements-list">
+                  <div class="requirement-item">
+                    <span class="requirement-label">Node.js</span>
+                    <span class="requirement-value">Node.js 16+ instalado</span>
+                  </div>
+                  <div class="requirement-item">
+                    <span class="requirement-label">Jest Instalado</span>
+                    <span class="requirement-value">Jest debe estar instalado como dependencia</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="addon-section">
+                <h4 class="addon-section-title">Configuración</h4>
+                <div class="code-block">
+                  <pre><code>{
+  "autoframe": {
+    "addons": {
+      "config": {
+        "jest": {
+          "watchMode": false,
+          "coverage": true,
+          "coverageThreshold": {
+            "lines": 80,
+            "functions": 80
+          }
+        }
+      }
+    }
+  }
+}</code></pre>
+                </div>
+              </div>
+
+              <div class="addon-section">
+                <h4 class="addon-section-title">Uso</h4>
+                <div class="code-block">
+                  <pre><code>// Activar add-on
+await hub.activateAddon('jest');
+
+// Ejecutar tests
+const jestService = hub.getService('jest', 'run');
+await jestService();</code></pre>
+                </div>
+              </div>
+            </div>
+
+            <!-- ESLint Add-on -->
+            <div class="addon-detail" id="addon-eslint">
+              <div class="addon-header">
+                <h3 class="addon-title">ESLint</h3>
+              </div>
+              <p class="addon-description">
+                Integración con ESLint para linting automático de código. Auto-fix de errores y reportes detallados.
+              </p>
+
+              <div class="addon-section">
+                <h4 class="addon-section-title">Características</h4>
+                <ul class="addon-features">
+                  <li>Linting automático</li>
+                  <li>Auto-fix de errores</li>
+                  <li>Integración con pre-commit hooks</li>
+                  <li>Configuración por proyecto</li>
+                  <li>Reportes de errores</li>
+                </ul>
+              </div>
+
+              <div class="addon-section">
+                <h4 class="addon-section-title">Requisitos</h4>
+                <div class="requirements-list">
+                  <div class="requirement-item">
+                    <span class="requirement-label">ESLint Instalado</span>
+                    <span class="requirement-value">ESLint debe estar instalado como dependencia</span>
+                  </div>
+                  <div class="requirement-item">
+                    <span class="requirement-label">Archivo de Configuración</span>
+                    <span class="requirement-value">.eslintrc.js o .eslintrc.json en el proyecto</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="addon-section">
+                <h4 class="addon-section-title">Configuración</h4>
+                <div class="code-block">
+                  <pre><code>{
+  "autoframe": {
+    "addons": {
+      "config": {
+        "eslint": {
+          "autoFix": true,
+          "extensions": [".js", ".ts", ".tsx", ".jsx"]
+        }
+      }
+    }
+  }
+}</code></pre>
+                </div>
+              </div>
+
+              <div class="addon-section">
+                <h4 class="addon-section-title">Uso</h4>
+                <div class="code-block">
+                  <pre><code>// Activar add-on
+await hub.activateAddon('eslint');
+
+// Ejecutar linting
+const eslintService = hub.getService('eslint', 'lint');
+await eslintService(['src/**/*.ts']);</code></pre>
+                </div>
+              </div>
+            </div>
+
+            <!-- Prettier Add-on -->
+            <div class="addon-detail" id="addon-prettier">
+              <div class="addon-header">
+                <h3 class="addon-title">Prettier</h3>
+              </div>
+              <p class="addon-description">
+                Integración con Prettier para formateo automático de código. Soporte para múltiples lenguajes y configuración flexible.
+              </p>
+
+              <div class="addon-section">
+                <h4 class="addon-section-title">Características</h4>
+                <ul class="addon-features">
+                  <li>Formateo automático</li>
+                  <li>Configuración por proyecto</li>
+                  <li>Integración con pre-commit hooks</li>
+                  <li>Formateo de múltiples lenguajes</li>
+                  <li>Format on save</li>
+                </ul>
+              </div>
+
+              <div class="addon-section">
+                <h4 class="addon-section-title">Requisitos</h4>
+                <div class="requirements-list">
+                  <div class="requirement-item">
+                    <span class="requirement-label">Prettier Instalado</span>
+                    <span class="requirement-value">Prettier debe estar instalado como dependencia</span>
+                  </div>
+                  <div class="requirement-item">
+                    <span class="requirement-label">Archivo de Configuración</span>
+                    <span class="requirement-value">.prettierrc o .prettierrc.json en el proyecto</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="addon-section">
+                <h4 class="addon-section-title">Configuración</h4>
+                <div class="code-block">
+                  <pre><code>{
+  "autoframe": {
+    "addons": {
+      "config": {
+        "prettier": {
+          "formatOnSave": true,
+          "extensions": [".js", ".ts", ".tsx", ".jsx", ".json", ".css"]
+        }
+      }
+    }
+  }
+}</code></pre>
+                </div>
+              </div>
+
+              <div class="addon-section">
+                <h4 class="addon-section-title">Uso</h4>
+                <div class="code-block">
+                  <pre><code>// Activar add-on
+await hub.activateAddon('prettier');
+
+// Formatear archivos
+const prettierService = hub.getService('prettier', 'format');
+await prettierService(['src/**/*.ts']);</code></pre>
+                </div>
+              </div>
+            </div>
+
+            <!-- Lighthouse Add-on -->
+            <div class="addon-detail" id="addon-lighthouse">
+              <div class="addon-header">
+                <h3 class="addon-title">Lighthouse</h3>
+              </div>
+              <p class="addon-description">
+                Integración con Lighthouse para auditoría de performance y calidad. Métricas Core Web Vitals, accessibility checks y SEO analysis.
+              </p>
+
+              <div class="addon-section">
+                <h4 class="addon-section-title">Características</h4>
+                <ul class="addon-features">
+                  <li>Auditoría automática</li>
+                  <li>Reportes de performance</li>
+                  <li>Métricas Core Web Vitals</li>
+                  <li>Accessibility checks</li>
+                  <li>Best practices</li>
+                  <li>SEO analysis</li>
+                </ul>
+              </div>
+
+              <div class="addon-section">
+                <h4 class="addon-section-title">Requisitos</h4>
+                <div class="requirements-list">
+                  <div class="requirement-item">
+                    <span class="requirement-label">Lighthouse Instalado</span>
+                    <span class="requirement-value">Lighthouse debe estar instalado como dependencia</span>
+                  </div>
+                  <div class="requirement-item">
+                    <span class="requirement-label">Chrome/Chromium</span>
+                    <span class="requirement-value">Chrome o Chromium instalado para ejecutar auditorías</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="addon-section">
+                <h4 class="addon-section-title">Configuración</h4>
+                <div class="code-block">
+                  <pre><code>{
+  "autoframe": {
+    "addons": {
+      "config": {
+        "lighthouse": {
+          "url": "http://localhost:3000",
+          "categories": ["performance", "accessibility", "best-practices", "seo"]
+        }
+      }
+    }
+  }
+}</code></pre>
+                </div>
+              </div>
+
+              <div class="addon-section">
+                <h4 class="addon-section-title">Uso</h4>
+                <div class="code-block">
+                  <pre><code>// Activar add-on
+await hub.activateAddon('lighthouse');
+
+// Ejecutar auditoría
+const lighthouseService = hub.getService('lighthouse', 'audit');
+const report = await lighthouseService('http://localhost:3000');</code></pre>
+                </div>
+              </div>
+            </div>
+
+            <!-- Docusaurus Add-on -->
+            <div class="addon-detail" id="addon-docusaurus">
+              <div class="addon-header">
+                <h3 class="addon-title">Docusaurus</h3>
+              </div>
+              <p class="addon-description">
+                Integración con Docusaurus para generación automática de documentación. Documentación de add-ons, API documentation y búsqueda integrada.
+              </p>
+
+              <div class="addon-section">
+                <h4 class="addon-section-title">Características</h4>
+                <ul class="addon-features">
+                  <li>Generación automática de docs</li>
+                  <li>Documentación de add-ons</li>
+                  <li>API documentation</li>
+                  <li>Búsqueda integrada</li>
+                  <li>Versiones de documentación</li>
+                </ul>
+              </div>
+
+              <div class="addon-section">
+                <h4 class="addon-section-title">Requisitos</h4>
+                <div class="requirements-list">
+                  <div class="requirement-item">
+                    <span class="requirement-label">Node.js</span>
+                    <span class="requirement-value">Node.js 16+ instalado</span>
+                  </div>
+                  <div class="requirement-item">
+                    <span class="requirement-label">Docusaurus Instalado</span>
+                    <span class="requirement-value">Docusaurus debe estar instalado como dependencia</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="addon-section">
+                <h4 class="addon-section-title">Configuración</h4>
+                <div class="code-block">
+                  <pre><code>{
+  "autoframe": {
+    "addons": {
+      "config": {
+        "docusaurus": {
+          "port": 3000,
+          "autoGenerate": true
+        }
+      }
+    }
+  }
+}</code></pre>
+                </div>
+              </div>
+
+              <div class="addon-section">
+                <h4 class="addon-section-title">Uso</h4>
+                <div class="code-block">
+                  <pre><code>// Activar add-on
+await hub.activateAddon('docusaurus');
+
+// Iniciar servidor de docs
+const docusaurusService = hub.getService('docusaurus', 'start');
+await docusaurusService();</code></pre>
+                </div>
+              </div>
+            </div>
+
+            <!-- i18n Add-on -->
+            <div class="addon-detail" id="addon-i18n">
+              <div class="addon-header">
+                <h3 class="addon-title">i18n</h3>
+              </div>
+              <p class="addon-description">
+                Sistema de internacionalización para múltiples idiomas. Gestión de traducciones, detección de idioma y cambio dinámico.
+              </p>
+
+              <div class="addon-section">
+                <h4 class="addon-section-title">Características</h4>
+                <ul class="addon-features">
+                  <li>Gestión de traducciones</li>
+                  <li>Detección de idioma</li>
+                  <li>Cambio dinámico de idioma</li>
+                  <li>Pluralización</li>
+                  <li>Formateo de fechas/números por locale</li>
+                </ul>
+              </div>
+
+              <div class="addon-section">
+                <h4 class="addon-section-title">Requisitos</h4>
+                <div class="requirements-list">
+                  <div class="requirement-item">
+                    <span class="requirement-label">Archivos de Traducción</span>
+                    <span class="requirement-value">Archivos JSON con traducciones (ej: es.json, en.json)</span>
+                  </div>
+                  <div class="requirement-item">
+                    <span class="requirement-label">Idioma por Defecto</span>
+                    <span class="requirement-value">Idioma por defecto del proyecto</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="addon-section">
+                <h4 class="addon-section-title">Configuración</h4>
+                <div class="code-block">
+                  <pre><code>{
+  "autoframe": {
+    "addons": {
+      "config": {
+        "i18n": {
+          "defaultLocale": "es",
+          "locales": ["es", "en", "fr"],
+          "translationsPath": "./locales"
+        }
+      }
+    }
+  }
+}</code></pre>
+                </div>
+              </div>
+
+              <div class="addon-section">
+                <h4 class="addon-section-title">Uso</h4>
+                <div class="code-block">
+                  <pre><code>// Activar add-on
+await hub.activateAddon('i18n');
+
+// Cambiar idioma
+const i18nService = hub.getService('i18n', 'setLocale');
+await i18nService('en');
+
+// Traducir texto
+const t = hub.getService('i18n', 't');
+const text = t('welcome.message');</code></pre>
+                </div>
+              </div>
+            </div>
+
+            <!-- Figma Sync Add-on -->
+            <div class="addon-detail" id="addon-figma-sync">
+              <div class="addon-header">
+                <h3 class="addon-title">Figma Sync</h3>
+              </div>
+              <p class="addon-description">
+                Sincronización automática de tokens y componentes desde Figma. Importación de tokens, actualización automática e integración con Figma API.
+              </p>
+
+              <div class="addon-section">
+                <h4 class="addon-section-title">Características</h4>
+                <ul class="addon-features">
+                  <li>Sincronización de tokens</li>
+                  <li>Importación de componentes</li>
+                  <li>Actualización automática</li>
+                  <li>Integración con Figma API</li>
+                  <li>Mapeo de tokens</li>
+                </ul>
+              </div>
+
+              <div class="addon-section">
+                <h4 class="addon-section-title">Requisitos</h4>
+                <div class="requirements-list">
+                  <div class="requirement-item">
+                    <span class="requirement-label">Figma Access Token</span>
+                    <span class="requirement-value">Token de acceso de Figma (obtener en figma.com/developers/api)</span>
+                  </div>
+                  <div class="requirement-item">
+                    <span class="requirement-label">File Key</span>
+                    <span class="requirement-value">Key del archivo de Figma a sincronizar</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="addon-section">
+                <h4 class="addon-section-title">Configuración</h4>
+                <div class="code-block">
+                  <pre><code>{
+  "autoframe": {
+    "addons": {
+      "config": {
+        "figma-sync": {
+          "accessToken": "tu-figma-token",
+          "fileKey": "tu-file-key",
+          "autoSync": false,
+          "syncInterval": 3600000
+        }
+      }
+    }
+  }
+}</code></pre>
+                </div>
+              </div>
+
+              <div class="addon-section">
+                <h4 class="addon-section-title">Uso</h4>
+                <div class="code-block">
+                  <pre><code>// Activar add-on
+await hub.activateAddon('figma-sync');
+
+// Sincronizar tokens
+const figmaService = hub.getService('figma-sync', 'sync');
+await figmaService();</code></pre>
+                </div>
+              </div>
+            </div>
+
+            <!-- FontAwesome Add-on -->
+            <div class="addon-detail" id="addon-fontawesome">
+              <div class="addon-header">
+                <h3 class="addon-title">FontAwesome</h3>
+              </div>
+              <p class="addon-description">
+                Sistema de iconos FontAwesome Pro como add-on intercambiable. Proporciona acceso a miles de iconos profesionales con soporte para múltiples estilos (light, regular, solid, thin).
+              </p>
+
+              <div class="addon-section">
+                <h4 class="addon-section-title">Características</h4>
+                <ul class="addon-features">
+                  <li>Add-on intercambiable: Puedes cambiar FontAwesome por otros proveedores</li>
+                  <li>Funciona sin token npm: Usa archivos locales de FontAwesome</li>
+                  <li>Búsqueda semántica: "crear" encuentra automáticamente iconos relacionados</li>
+                  <li>Múltiples estilos: light, regular, solid, thin</li>
+                  <li>TypeScript: Autocompletado y type safety</li>
+                  <li>Catálogo completo: Miles de iconos profesionales</li>
+                </ul>
+              </div>
+
+              <div class="addon-section">
+                <h4 class="addon-section-title">Requisitos</h4>
+                <div class="requirements-list">
+                  <div class="requirement-item">
+                    <span class="requirement-label">FontAwesome Pro</span>
+                    <span class="requirement-value">Licencia de FontAwesome Pro (o usar versión gratuita)</span>
+                  </div>
+                  <div class="requirement-item">
+                    <span class="requirement-label">Archivos CSS</span>
+                    <span class="requirement-value">Archivos CSS y webfonts de FontAwesome (incluidos localmente)</span>
+                  </div>
+                  <div class="requirement-item">
+                    <span class="requirement-label">NPM Token (Opcional)</span>
+                    <span class="requirement-value">Token npm de FontAwesome Pro para usar paquetes oficiales</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="addon-section">
+                <h4 class="addon-section-title">Configuración</h4>
+                <div class="code-block">
+                  <pre><code>{
+  "autoframe": {
+    "addons": {
+      "config": {
+        "fontawesome": {
+          "provider": "fontawesome",
+          "useKit": false,
+          "kitUrl": "",
+          "useCDN": false,
+          "cdnUrl": ""
+        }
+      }
+    }
+  }
+}</code></pre>
+                </div>
+              </div>
+
+              <div class="addon-section">
+                <h4 class="addon-section-title">Uso</h4>
+                <div class="code-block">
+                  <pre><code>// Activar add-on
+await hub.activateAddon('fontawesome');
+
+// Inicializar iconos
+import { initializeIcons, renderIcon } from '@ubits/icons';
+await initializeIcons('fontawesome');
+
+// Renderizar icono
+const html = renderIcon('plus');
+// → '<i class="far fa-plus"></i>'
+
+// Con opciones
+const html = renderIcon('plus', {
+  style: 'solid',
+  size: 'lg',
+  class: 'mi-clase'
+});
+// → '<i class="fas fa-plus fa-lg mi-clase"></i>'
+
+// Búsqueda semántica
+import { searchIcons } from '@ubits/icons';
+const results = searchIcons('crear');
+// → [{ name: 'plus', score: 10, keywords: [...] }, ...]</code></pre>
+                </div>
+              </div>
+
+              <div class="addon-section">
+                <h4 class="addon-section-title">Estilos Disponibles</h4>
+                <ul class="addon-features">
+                  <li><code>light</code> - Iconos ligeros (fal)</li>
+                  <li><code>regular</code> - Iconos regulares (far) - Por defecto</li>
+                  <li><code>solid</code> - Iconos sólidos (fas)</li>
+                  <li><code>thin</code> - Iconos delgados (fat)</li>
+                </ul>
+              </div>
+            </div>
+          </main>
         </div>
       </section>
 
       <!-- Conectar Hub Section -->
-      <section id="conectar" class="features-section">
+      <section id="conectar" class="conectar-section">
         <div class="section-header" data-scroll="fade-up">
           <div class="section-chip">
             <span>CONECTAR</span>
           </div>
           <h2 class="section-title">Conecta tu Hub</h2>
           <p class="section-subtitle">
-            Comienza a conectar tus herramientas ahora mismo
+            Guía paso a paso desde que clonas el repositorio hasta que despliegas tu aplicación
           </p>
         </div>
-        <div class="features-grid">
-          <div class="feature-card" data-scroll="fade-up" data-delay="0.1">
-            <div class="feature-icon">
-              <div class="icon-chip">
+
+        <!-- Paso a Paso Vertical -->
+        <div class="conectar-steps" data-scroll="fade-up">
+          <!-- Paso 1 -->
+          <div class="conectar-step">
+            <div class="step-number-large">1</div>
+            <div class="step-content">
+              <h3 class="step-title">Clona e Instala</h3>
+              <p class="step-description">
+                Clona el repositorio de Autorun y ejecuta la instalación de dependencias.
+              </p>
+              <div class="code-block">
+                <pre><code># Clonar el repositorio
+git clone https://github.com/elkingarcia22/Autorun.git
+cd Autorun
+
+# Instalar dependencias
+npm install
+
+# Build de los tokens y paquetes base
+npm run build:tokens</code></pre>
+              </div>
+            </div>
+          </div>
+
+          <!-- Paso 2 -->
+          <div class="conectar-step">
+            <div class="step-number-large">2</div>
+            <div class="step-content">
+              <h3 class="step-title">Inicializa tu Proyecto</h3>
+              <p class="step-description">
+                Ejecuta el comando de inicialización que te guiará paso a paso para configurar tu proyecto.
+              </p>
+              <div class="code-block">
+                <pre><code># Ejecutar inicialización interactiva
+npm run init</code></pre>
+              </div>
+              <p class="step-note">
+                Este comando te solicitará información básica del proyecto y configurará Git automáticamente.
+              </p>
+            </div>
+          </div>
+
+          <!-- Paso 3 -->
+          <div class="conectar-step">
+            <div class="step-number-large">3</div>
+            <div class="step-content">
+              <h3 class="step-title">Elige tus Add-ons</h3>
+              <p class="step-description">
+                Selecciona los add-ons que quieres usar en tu proyecto. Puedes elegir entre add-ons de diseño, funcionales y de componentes.
+              </p>
+              <div class="addons-selection-example">
+                <div class="addon-category">
+                  <h4 class="category-title">Add-ons Disponibles</h4>
+                  <ul class="addon-list">
+                    <li>✅ GitHub (Auto-commit)</li>
+                    <li>✅ Clarity (Analytics)</li>
+                    <li>✅ Vercel (Deploy automático)</li>
+                    <li>✅ Storybook (Componentes)</li>
+                    <li>✅ Supabase (Base de datos)</li>
+                    <li>✅ AI Assistant (Ollama/Gemini)</li>
+                    <li>✅ JEST (Testing)</li>
+                    <li>✅ ESLint (Linting)</li>
+                    <li>✅ Prettier (Formateo)</li>
+                    <li>✅ Lighthouse (Performance)</li>
+                    <li>✅ Docusaurus (Documentación)</li>
+                    <li>✅ i18n (Internacionalización)</li>
+                    <li>✅ Figma Sync (Sincronización)</li>
+                    <li>✅ FontAwesome (Iconos)</li>
+                    <li>✅ Feedback Automatizado (Recopilación de feedback)</li>
+                  </ul>
+                </div>
+              </div>
+              <p class="step-note">
+                Puedes activar o desactivar add-ons en cualquier momento. Los add-ons adicionales se solicitarán cuando los necesites.
+              </p>
+            </div>
+          </div>
+
+          <!-- Paso 4 -->
+          <div class="conectar-step">
+            <div class="step-number-large">4</div>
+            <div class="step-content">
+              <h3 class="step-title">Configura Credenciales y APIs Iniciales</h3>
+              <p class="step-description">
+                Para los add-ons iniciales que hayas seleccionado, configura las credenciales necesarias.
+              </p>
+              <div class="credentials-example">
+                <div class="credential-item">
+                  <h4 class="credential-title">1. GitHub (Primero)</h4>
+                  <ul class="credential-list">
+                    <li><strong>Repository URL:</strong> https://github.com/tu-usuario/tu-repo</li>
+                    <li><strong>Branch:</strong> main</li>
+                    <li><strong>Auto-commit:</strong> Activado</li>
+                  </ul>
+                </div>
+                <div class="credential-item">
+                  <h4 class="credential-title">2. Storybook</h4>
+                  <ul class="credential-list">
+                    <li><strong>Configuración:</strong> Se configura automáticamente</li>
+                    <li><strong>Puerto:</strong> 6006 (por defecto)</li>
+                  </ul>
+                </div>
+                <div class="credential-item">
+                  <h4 class="credential-title">3. Resto de Add-ons</h4>
+                  <ul class="credential-list">
+                    <li><strong>Supabase:</strong> URL, Anon Key, Service Role Key</li>
+                    <li><strong>AI Assistant:</strong> API Key (Ollama/Gemini)</li>
+                    <li><strong>JEST, ESLint, Prettier:</strong> Configuración automática</li>
+                    <li><strong>Lighthouse:</strong> Configuración automática</li>
+                    <li><strong>Docusaurus:</strong> Configuración automática</li>
+                    <li><strong>i18n:</strong> Archivos de traducción</li>
+                    <li><strong>Figma Sync:</strong> Figma Access Token, File Key</li>
+                    <li><strong>FontAwesome:</strong> Configuración automática</li>
+                  </ul>
+                </div>
+              </div>
+              <p class="step-note">
+                Las credenciales se solicitan en este orden específico. Los add-ons adicionales (Vercel, Clarity, Feedback Automatizado) se configurarán más adelante cuando los necesites. Las credenciales se guardan de forma segura en el archivo de configuración.
+              </p>
+            </div>
+          </div>
+
+          <!-- Paso 5 -->
+          <div class="conectar-step">
+            <div class="step-number-large">5</div>
+            <div class="step-content">
+              <h3 class="step-title">Elige tu Template o Crea uno Nuevo</h3>
+              <p class="step-description">
+                Elige entre usar un template existente del repositorio o crear un documento nuevo desde cero.
+              </p>
+              <div class="template-options">
+                <div class="template-option">
+                  <h4 class="template-option-title">Opción 1: Elegir Template del Repositorio</h4>
+                  <p class="template-option-desc">El Hub buscará automáticamente documentos llamados "template" o "index" en tu repositorio de GitHub y te preguntará si ese es el template que quieres usar. Si no es el correcto, podrás indicarle cuál es el archivo correcto.</p>
+                </div>
+                <div class="template-option">
+                  <h4 class="template-option-title">Opción 2: Crear Documento Nuevo</h4>
+                  <p class="template-option-desc">Crea un nuevo archivo HTML desde cero y estructura tu proyecto como prefieras.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Paso 6 -->
+          <div class="conectar-step">
+            <div class="step-number-large">6</div>
+            <div class="step-content">
+              <h3 class="step-title">Comienza a Desarrollar</h3>
+              <p class="step-description">
+                Inicia el servidor de desarrollo y comienza a trabajar en tu proyecto.
+              </p>
+              <div class="code-block">
+                <pre><code># Terminal 1: Auto-commit y validación (opcional)
+npm run watch
+
+# Terminal 2: Servidor de desarrollo
+npm run dev</code></pre>
+              </div>
+              <p class="step-note">
+                El sistema de validación automática detectará colores hardcodeados, clases incorrectas y sugerirá correcciones. Los cambios se commitean automáticamente si activaste el add-on de GitHub.
+              </p>
+            </div>
+          </div>
+
+          <!-- Paso 7 -->
+          <div class="conectar-step">
+            <div class="step-number-large">7</div>
+            <div class="step-content">
+              <h3 class="step-title">Despliega a Vercel</h3>
+              <p class="step-description">
+                Cuando estés listo, despliega tu aplicación a Vercel con un solo comando.
+              </p>
+              <div class="code-block">
+                <pre><code># Desplegar a Vercel
+npm run deploy
+
+# O si prefieres hacerlo manualmente
+vercel --prod</code></pre>
+              </div>
+              <p class="step-note">
+                Si configuraste el add-on de Vercel, el despliegue será automático en cada push a la rama principal. Tu aplicación estará disponible en una URL de Vercel.
+              </p>
+            </div>
+          </div>
+
+          <!-- Paso 8 -->
+          <div class="conectar-step">
+            <div class="step-number-large">8</div>
+            <div class="step-content">
+              <h3 class="step-title">Configura Clarity</h3>
+              <p class="step-description">
+                Configura Microsoft Clarity para analizar el comportamiento de los usuarios en tu aplicación.
+              </p>
+              <div class="code-block">
+                <pre><code># Configurar Clarity después del despliegue
+npm run addon:activate clarity
+
+# Se te solicitarán:
+# - Project ID de Clarity
+# - API Key (opcional)</code></pre>
+              </div>
+              <p class="step-note">
+                Clarity comenzará a recopilar datos automáticamente una vez configurado. Podrás ver grabaciones de sesiones, mapas de calor y análisis de comportamiento.
+              </p>
+            </div>
+          </div>
+
+          <!-- Paso 9 -->
+          <div class="conectar-step">
+            <div class="step-number-large">9</div>
+            <div class="step-content">
+              <h3 class="step-title">Activa Feedback Automatizado</h3>
+              <p class="step-description">
+                Activa el add-on de Feedback Automatizado para recopilar y gestionar feedback de usuarios automáticamente.
+              </p>
+              <div class="code-block">
+                <pre><code># Activar Feedback Automatizado
+npm run addon:activate feedback-automatizado
+
+# Configuración:
+# - Endpoint para recibir feedback
+# - Integración con servicios externos (opcional)
+# - Reglas de notificación</code></pre>
+              </div>
+              <p class="step-note">
+                El sistema de feedback automatizado recopilará comentarios, sugerencias y reportes de usuarios, organizándolos automáticamente y notificándote según las reglas que configures.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Nota Final -->
+        <div class="conectar-note" data-scroll="fade-up">
+          <div class="note-icon">
                 <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <!-- Rocket/Launch icon -->
+              <circle cx="16" cy="16" r="12" stroke="currentColor" stroke-width="2" fill="none"/>
+              <path d="M16 10V16M16 22H16.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </div>
+          <div class="note-content">
+            <h4 class="note-title">¿Necesitas un Add-on Adicional?</h4>
+            <p class="note-text">
+              No te preocupes si olvidaste activar algún add-on. Cuando lo necesites, simplemente ejecuta el comando de activación y el sistema te solicitará las credenciales necesarias en ese momento.
+            </p>
+            <div class="code-block">
+              <pre><code># Activar un add-on cuando lo necesites
+npm run addon:activate [nombre-del-addon]
+
+# Ejemplo: Activar Supabase más tarde
+npm run addon:activate supabase</code></pre>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tecnologías Section -->
+      <section id="tecnologias" class="tecnologias-section">
+        <div class="section-header" data-scroll="fade-up">
+          <div class="section-chip">
+            <span>TECNOLOGÍAS</span>
+          </div>
+          <h2 class="section-title">Tecnologías que Manejamos</h2>
+          <p class="section-subtitle">
+            Stack tecnológico moderno y herramientas de desarrollo profesional
+          </p>
+        </div>
+
+        <!-- Grid Principal de Tecnologías -->
+        <div class="tecnologias-main-grid" data-scroll="fade-up">
+          <!-- TypeScript -->
+          <div class="tecnologia-card featured">
+            <div class="tecnologia-card-header">
+              <div class="tecnologia-icon-large">
+                <svg width="48" height="48" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="4" y="4" width="24" height="24" rx="2" stroke="currentColor" stroke-width="2" fill="none"/>
+                  <path d="M12 12H20M12 16H20M12 20H16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div class="tecnologia-badge">Core</div>
+            </div>
+            <h3 class="tecnologia-card-name">TypeScript</h3>
+            <p class="tecnologia-card-version">^5.9.3</p>
+            <p class="tecnologia-card-desc">Lenguaje principal con tipado estático para máxima seguridad de tipos</p>
+          </div>
+
+          <!-- Vite -->
+          <div class="tecnologia-card">
+            <div class="tecnologia-card-header">
+              <div class="tecnologia-icon-large">
+                <svg width="48" height="48" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M16 4L28 16L16 28L4 16L16 4Z" stroke="currentColor" stroke-width="2" fill="none"/>
+                  <circle cx="16" cy="16" r="4" fill="currentColor"/>
+                </svg>
+              </div>
+              <div class="tecnologia-badge">Build</div>
+            </div>
+            <h3 class="tecnologia-card-name">Vite</h3>
+            <p class="tecnologia-card-version">^7.1.12</p>
+            <p class="tecnologia-card-desc">Build tool y dev server ultra-rápido</p>
+          </div>
+
+          <!-- Node.js -->
+          <div class="tecnologia-card">
+            <div class="tecnologia-card-header">
+              <div class="tecnologia-icon-large">
+                <svg width="48" height="48" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="16" cy="16" r="12" stroke="currentColor" stroke-width="2" fill="none"/>
+                  <path d="M16 8V16L22 20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div class="tecnologia-badge">Runtime</div>
+            </div>
+            <h3 class="tecnologia-card-name">Node.js</h3>
+            <p class="tecnologia-card-version">ES2022+</p>
+            <p class="tecnologia-card-desc">Runtime de JavaScript moderno</p>
+          </div>
+
+          <!-- Biome -->
+          <div class="tecnologia-card">
+            <div class="tecnologia-card-header">
+              <div class="tecnologia-icon-large">
+                <svg width="48" height="48" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M8 8H24M8 16H24M8 24H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div class="tecnologia-badge">Tool</div>
+            </div>
+            <h3 class="tecnologia-card-name">Biome</h3>
+            <p class="tecnologia-card-version">^2.3.2</p>
+            <p class="tecnologia-card-desc">Linter y formatter (reemplazo de ESLint/Prettier)</p>
+          </div>
+
+          <!-- Husky -->
+          <div class="tecnologia-card">
+            <div class="tecnologia-card-header">
+              <div class="tecnologia-icon-large">
+                <svg width="48" height="48" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M16 4L20 12L16 10L12 12L16 4Z" fill="currentColor"/>
                   <rect x="14" y="10" width="4" height="12" rx="2" fill="currentColor"/>
                   <path d="M10 22L16 26L22 22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                  <circle cx="12" cy="20" r="1" fill="currentColor"/>
-                  <circle cx="20" cy="20" r="1" fill="currentColor"/>
                 </svg>
               </div>
+              <div class="tecnologia-badge">Git</div>
             </div>
-            <h3 class="feature-title">Comenzar Ahora</h3>
-            <p class="feature-description">
-              Conecta tu primer hub y transforma tu forma de trabajar.
-            </p>
+            <h3 class="tecnologia-card-name">Husky</h3>
+            <p class="tecnologia-card-version">^9.1.7</p>
+            <p class="tecnologia-card-desc">Git hooks para automatización</p>
+          </div>
+
+          <!-- Style Dictionary -->
+          <div class="tecnologia-card">
+            <div class="tecnologia-card-header">
+              <div class="tecnologia-icon-large">
+                <svg width="48" height="48" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="4" y="6" width="24" height="20" rx="2" stroke="currentColor" stroke-width="2" fill="none"/>
+                  <line x1="4" y1="12" x2="28" y2="12" stroke="currentColor" stroke-width="2"/>
+                  <line x1="4" y1="18" x2="28" y2="18" stroke="currentColor" stroke-width="1.5" opacity="0.5"/>
+                </svg>
+              </div>
+              <div class="tecnologia-badge">Design</div>
+            </div>
+            <h3 class="tecnologia-card-name">Style Dictionary</h3>
+            <p class="tecnologia-card-version">^4.4.0</p>
+            <p class="tecnologia-card-desc">Generación de tokens CSS/JS desde JSON</p>
+          </div>
+
+          <!-- FontAwesome -->
+          <div class="tecnologia-card">
+            <div class="tecnologia-card-header">
+              <div class="tecnologia-icon-large">
+                <svg width="48" height="48" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M16 4C10.477 4 6 8.477 6 14C6 19.523 10.477 24 16 24C21.523 24 26 19.523 26 14C26 8.477 21.523 4 16 4ZM16 22C11.582 22 8 18.418 8 14C8 9.582 11.582 6 16 6C20.418 6 24 9.582 24 14C24 18.418 20.418 22 16 22Z" fill="currentColor"/>
+                  <circle cx="16" cy="14" r="3" fill="currentColor"/>
+                </svg>
+              </div>
+              <div class="tecnologia-badge">Icons</div>
+            </div>
+            <h3 class="tecnologia-card-name">FontAwesome Pro</h3>
+            <p class="tecnologia-card-version">^7.1.0</p>
+            <p class="tecnologia-card-desc">Iconos profesionales (light, regular, solid, thin)</p>
+          </div>
+
+          <!-- Monorepo -->
+          <div class="tecnologia-card">
+            <div class="tecnologia-card-header">
+              <div class="tecnologia-icon-large">
+                <svg width="48" height="48" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="4" y="4" width="10" height="10" rx="1" stroke="currentColor" stroke-width="2" fill="none"/>
+                  <rect x="18" y="4" width="10" height="10" rx="1" stroke="currentColor" stroke-width="2" fill="none"/>
+                  <rect x="4" y="18" width="10" height="10" rx="1" stroke="currentColor" stroke-width="2" fill="none"/>
+                  <rect x="18" y="18" width="10" height="10" rx="1" stroke="currentColor" stroke-width="2" fill="none"/>
+                </svg>
+              </div>
+              <div class="tecnologia-badge">Arch</div>
+            </div>
+            <h3 class="tecnologia-card-name">Monorepo</h3>
+            <p class="tecnologia-card-version">Workspaces</p>
+            <p class="tecnologia-card-desc">Múltiples paquetes independientes</p>
+          </div>
+
+          <!-- ES Modules -->
+          <div class="tecnologia-card">
+            <div class="tecnologia-card-header">
+              <div class="tecnologia-icon-large">
+                <svg width="48" height="48" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M8 8H24M8 16H24M8 24H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div class="tecnologia-badge">Modern</div>
+            </div>
+            <h3 class="tecnologia-card-name">ES Modules</h3>
+            <p class="tecnologia-card-version">ES2022+</p>
+            <p class="tecnologia-card-desc">Sistema de módulos moderno</p>
+          </div>
+
+          <!-- TypeScript Strict -->
+          <div class="tecnologia-card">
+            <div class="tecnologia-card-header">
+              <div class="tecnologia-icon-large">
+                <svg width="48" height="48" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M16 4L6 14L16 18L26 14L16 4Z" fill="currentColor"/>
+                  <path d="M6 14V24L16 28L26 24V14" stroke="currentColor" stroke-width="2" fill="none"/>
+                </svg>
+              </div>
+              <div class="tecnologia-badge">Type</div>
+            </div>
+            <h3 class="tecnologia-card-name">TypeScript Strict</h3>
+            <p class="tecnologia-card-version">Strict Mode</p>
+            <p class="tecnologia-card-desc">Máxima seguridad de tipos</p>
+          </div>
+
+          <!-- Modular Architecture -->
+          <div class="tecnologia-card">
+            <div class="tecnologia-card-header">
+              <div class="tecnologia-icon-large">
+                <svg width="48" height="48" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="16" cy="16" r="12" stroke="currentColor" stroke-width="2" fill="none"/>
+                  <circle cx="16" cy="16" r="6" fill="currentColor" opacity="0.3"/>
+                  <path d="M10 16L14 20L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div class="tecnologia-badge">Plugin</div>
+            </div>
+            <h3 class="tecnologia-card-name">Modular Architecture</h3>
+            <p class="tecnologia-card-version">Add-ons</p>
+            <p class="tecnologia-card-desc">Arquitectura basada en plugins</p>
           </div>
         </div>
       </section>
@@ -2187,6 +5168,188 @@
         observer.observe(el);
       });
 
+      // Observador específico para pasos de conectar (con delay escalonado)
+      const stepsObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry, index) => {
+          if (entry.isIntersecting) {
+            setTimeout(() => {
+              entry.target.classList.add('animate');
+            }, index * 150); // Delay escalonado de 150ms entre cada paso
+            stepsObserver.unobserve(entry.target);
+          }
+        });
+      }, observerOptions);
+
+      // Observar todos los pasos de conectar
+      document.querySelectorAll('.conectar-step').forEach((step, index) => {
+        stepsObserver.observe(step);
+      });
+
+      // Sticky Header - Aparece al hacer scroll
+      console.log('🔍 ========== INICIALIZANDO STICKY HEADER ==========');
+      const stickyHeader = document.getElementById('sticky-header');
+      console.log('📍 Sticky Header encontrado:', stickyHeader);
+      console.log('📍 Tipo:', typeof stickyHeader);
+      console.log('📍 Es null?:', stickyHeader === null);
+      
+      if (stickyHeader) {
+        console.log('✅ Sticky Header existe, configurando...');
+        
+        // Verificar estado inicial del CSS
+        const computedStyle = window.getComputedStyle(stickyHeader);
+        console.log('📊 Estado inicial CSS:', {
+          opacity: computedStyle.opacity,
+          visibility: computedStyle.visibility,
+          transform: computedStyle.transform,
+          display: computedStyle.display,
+          position: computedStyle.position,
+          zIndex: computedStyle.zIndex,
+          top: computedStyle.top,
+          left: computedStyle.left,
+          right: computedStyle.right
+        });
+        
+        // Verificar clases iniciales
+        console.log('🏷️ Clases iniciales:', stickyHeader.className);
+        console.log('🏷️ Tiene clase visible?:', stickyHeader.classList.contains('visible'));
+        
+        // Verificar posición del elemento
+        const rect = stickyHeader.getBoundingClientRect();
+        console.log('📏 Posición inicial del header:', {
+          top: rect.top,
+          left: rect.left,
+          width: rect.width,
+          height: rect.height,
+          visible: rect.height > 0 && rect.width > 0
+        });
+        
+        // Detectar cuando se entra a la sección Features
+        const featuresSection = document.getElementById('features');
+        console.log('🔍 Buscando sección Features...');
+        console.log('📍 Features encontrada:', featuresSection);
+        
+        if (featuresSection) {
+          const featuresRect = featuresSection.getBoundingClientRect();
+          console.log('📏 Posición inicial de Features:', {
+            top: featuresRect.top,
+            left: featuresRect.left,
+            width: featuresRect.width,
+            height: featuresRect.height
+          });
+          
+          // Usar scroll threshold más simple y confiable
+          const heroSection = document.getElementById('home');
+          const heroHeight = heroSection ? heroSection.offsetHeight : 600;
+          const scrollThreshold = heroHeight - 100; // Mostrar cuando se sale del hero
+          
+          console.log('📏 Hero height:', heroHeight);
+          console.log('📏 Scroll threshold:', scrollThreshold);
+          
+          let lastScrollTop = 0;
+          let lastHeaderState = false;
+          
+          const handleScroll = () => {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const scrollDirection = scrollTop > lastScrollTop ? '⬇️ Bajando' : '⬆️ Subiendo';
+            
+            // Verificar posición de Features
+            const featuresRect = featuresSection.getBoundingClientRect();
+            const isFeaturesVisible = featuresRect.top < window.innerHeight && featuresRect.bottom > 0;
+            
+            // Mostrar header cuando Features está visible o cuando se pasa el threshold
+            const shouldShow = scrollTop > scrollThreshold || isFeaturesVisible;
+            const currentlyVisible = stickyHeader.classList.contains('visible');
+            
+            // Solo loggear cuando hay cambios significativos o cada 200px
+            const shouldLog = Math.abs(scrollTop - lastScrollTop) > 200 || shouldShow !== lastHeaderState || currentlyVisible !== shouldShow;
+            
+            if (shouldLog) {
+              console.log(`📜 Scroll: ${scrollTop}px (${scrollDirection})`);
+              console.log('📏 Features rect:', {
+                top: featuresRect.top,
+                bottom: featuresRect.bottom,
+                isVisible: isFeaturesVisible,
+                windowHeight: window.innerHeight
+              });
+              console.log('🔍 Condiciones:', {
+                scrollTop: scrollTop,
+                scrollThreshold: scrollThreshold,
+                scrollPassedThreshold: scrollTop > scrollThreshold,
+                isFeaturesVisible: isFeaturesVisible,
+                shouldShow: shouldShow,
+                currentlyVisible: currentlyVisible
+              });
+            }
+            
+            if (shouldShow && !currentlyVisible) {
+              console.log('✅ MOSTRANDO header (scroll > threshold o Features visible)');
+              console.log('🏷️ Clases ANTES de agregar visible:', stickyHeader.className);
+              stickyHeader.classList.add('visible');
+              console.log('🏷️ Clases DESPUÉS de agregar visible:', stickyHeader.className);
+              
+              setTimeout(() => {
+                const newStyle = window.getComputedStyle(stickyHeader);
+                console.log('📊 CSS después de agregar visible:', {
+                  opacity: newStyle.opacity,
+                  visibility: newStyle.visibility,
+                  transform: newStyle.transform
+                });
+                
+                // Verificar que realmente se ve
+                const rect = stickyHeader.getBoundingClientRect();
+                console.log('📏 Header rect después de mostrar:', {
+                  top: rect.top,
+                  height: rect.height,
+                  visible: rect.height > 0
+                });
+              }, 100);
+            } else if (!shouldShow && currentlyVisible) {
+              console.log('⬆️ OCULTANDO header (scroll < threshold y Features no visible)');
+              console.log('🏷️ Clases ANTES de quitar visible:', stickyHeader.className);
+              stickyHeader.classList.remove('visible');
+              console.log('🏷️ Clases DESPUÉS de quitar visible:', stickyHeader.className);
+            }
+            
+            lastScrollTop = scrollTop;
+            lastHeaderState = shouldShow;
+          };
+          
+          window.addEventListener('scroll', handleScroll, { passive: true });
+          console.log('✅ Scroll listener registrado correctamente');
+          
+          // Verificar posición inicial
+          const initialScroll = window.pageYOffset || document.documentElement.scrollTop;
+          console.log('📍 Scroll inicial:', initialScroll);
+          if (initialScroll > scrollThreshold) {
+            stickyHeader.classList.add('visible');
+            console.log('✅ Header visible desde inicio');
+          }
+          
+        } else {
+          console.warn('⚠️ Sección Features no encontrada, usando fallback');
+          
+          // Fallback: usar scroll threshold
+          const scrollThreshold = 400;
+          console.log('🔄 Usando fallback con threshold:', scrollThreshold);
+          window.addEventListener('scroll', () => {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            console.log('📜 Scroll (fallback):', scrollTop);
+            if (scrollTop > scrollThreshold) {
+              console.log('✅ Scroll > threshold, mostrando header');
+              stickyHeader.classList.add('visible');
+            } else {
+              console.log('❌ Scroll < threshold, ocultando header');
+              stickyHeader.classList.remove('visible');
+            }
+          }, { passive: true });
+        }
+      } else {
+        console.error('❌ Sticky Header NO encontrado en el DOM');
+        console.error('🔍 Buscando todos los headers:', document.querySelectorAll('header'));
+        console.error('🔍 Buscando por clase:', document.querySelectorAll('.sticky-header'));
+      }
+      
+      console.log('🔍 ========== FIN INICIALIZACIÓN STICKY HEADER ==========');
 
       // Smooth scroll para navegación
       document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -2215,6 +5378,126 @@
           }
         });
       }
+
+      // Botones de Copiar para Code Blocks
+      function initCopyButtons() {
+        const codeBlocks = document.querySelectorAll('.code-block');
+        
+        codeBlocks.forEach(block => {
+          // Verificar si ya tiene botón
+          if (block.querySelector('.copy-button')) {
+            return;
+          }
+
+          const pre = block.querySelector('pre code');
+          if (!pre) return;
+
+          // Crear botón de copiar
+          const copyButton = document.createElement('button');
+          copyButton.className = 'copy-button';
+          copyButton.setAttribute('aria-label', 'Copiar código');
+          copyButton.innerHTML = `
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M16 1H4C2.9 1 2 1.9 2 3V17H4V3H16V1ZM19 5H8C6.9 5 6 5.9 6 7V21C6 22.1 6.9 23 8 23H19C20.1 23 21 22.1 21 21V7C21 5.9 20.1 5 19 5ZM19 21H8V7H19V21Z" fill="currentColor"/>
+            </svg>
+            <span>Copiar</span>
+          `;
+
+          // Agregar evento de click
+          copyButton.addEventListener('click', async () => {
+            const codeText = pre.textContent || pre.innerText;
+            
+            try {
+              await navigator.clipboard.writeText(codeText);
+              
+              // Cambiar texto del botón
+              const span = copyButton.querySelector('span');
+              const originalText = span.textContent;
+              span.textContent = '¡Copiado!';
+              copyButton.classList.add('copied');
+              
+              // Restaurar después de 2 segundos
+              setTimeout(() => {
+                span.textContent = originalText;
+                copyButton.classList.remove('copied');
+              }, 2000);
+            } catch (err) {
+              // Fallback para navegadores antiguos
+              const textArea = document.createElement('textarea');
+              textArea.value = codeText;
+              textArea.style.position = 'fixed';
+              textArea.style.opacity = '0';
+              document.body.appendChild(textArea);
+              textArea.select();
+              
+              try {
+                document.execCommand('copy');
+                const span = copyButton.querySelector('span');
+                const originalText = span.textContent;
+                span.textContent = '¡Copiado!';
+                copyButton.classList.add('copied');
+                
+                setTimeout(() => {
+                  span.textContent = originalText;
+                  copyButton.classList.remove('copied');
+                }, 2000);
+              } catch (err) {
+                console.error('Error al copiar:', err);
+              }
+              
+              document.body.removeChild(textArea);
+            }
+          });
+
+          // Agregar botón al bloque de código
+          block.appendChild(copyButton);
+        });
+      }
+
+      // Inicializar botones de copiar cuando el DOM esté listo
+      initCopyButtons();
+
+      // Navegación de Add-ons
+      const addonMenuItems = document.querySelectorAll('.addon-menu-item');
+      const addonDetails = document.querySelectorAll('.addon-detail');
+
+      addonMenuItems.forEach(item => {
+        item.addEventListener('click', () => {
+          const addonId = item.getAttribute('data-addon');
+          
+          // Reinicializar botones de copiar después de cambiar de add-on
+          setTimeout(initCopyButtons, 100);
+          
+          // Remover active de todos los items del menú
+          addonMenuItems.forEach(menuItem => {
+            menuItem.classList.remove('active');
+          });
+          
+          // Agregar active al item clickeado
+          item.classList.add('active');
+          
+          // Ocultar todos los detalles
+          addonDetails.forEach(detail => {
+            detail.classList.remove('active');
+          });
+          
+          // Mostrar el detalle correspondiente
+          const targetDetail = document.getElementById(`addon-${addonId}`);
+          if (targetDetail) {
+            targetDetail.classList.add('active');
+            
+            // Scroll suave al contenido si está en móvil
+            if (window.innerWidth <= 1024) {
+              setTimeout(() => {
+                targetDetail.scrollIntoView({
+                  behavior: 'smooth',
+                  block: 'start'
+                });
+              }, 100);
+            }
+          }
+        });
+      });
     </script>
   </body>
 </html>

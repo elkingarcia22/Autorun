@@ -1,0 +1,9 @@
+{
+  "name": "@autoframe/supabase",
+  "version": "1.0.0",
+  "type": "functional",
+  "description": "Supabase - Base de datos, autenticación y storage",
+  "main": "./dist/index.js",
+  "export": "SupabaseAddon"
+}
+

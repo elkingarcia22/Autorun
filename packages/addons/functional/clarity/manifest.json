@@ -1,0 +1,9 @@
+{
+  "name": "@autoframe/clarity",
+  "version": "1.0.0",
+  "type": "functional",
+  "description": "Microsoft Clarity Analytics - Analytics, heatmaps y session recordings",
+  "main": "./dist/index.js",
+  "export": "ClarityAddon"
+}
+

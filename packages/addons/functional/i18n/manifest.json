@@ -1,0 +1,9 @@
+{
+  "name": "@autoframe/i18n",
+  "version": "1.0.0",
+  "type": "functional",
+  "description": "Internationalization - Internacionalización y localización para múltiples idiomas",
+  "main": "./dist/index.js",
+  "export": "I18nAddon"
+}
+

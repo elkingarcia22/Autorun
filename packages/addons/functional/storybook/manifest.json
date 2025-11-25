@@ -1,0 +1,9 @@
+{
+  "name": "@autoframe/storybook",
+  "version": "1.0.0",
+  "type": "functional",
+  "description": "Storybook Development - Desarrollo y documentación de componentes",
+  "main": "./dist/index.js",
+  "export": "StorybookAddon"
+}
+

@@ -1,0 +1,9 @@
+{
+  "name": "@autoframe/ai",
+  "version": "1.0.0",
+  "type": "functional",
+  "description": "AI Assistant - Asistente de IA con Ollama o Gemini",
+  "main": "./dist/index.js",
+  "export": "AIAddon"
+}
+

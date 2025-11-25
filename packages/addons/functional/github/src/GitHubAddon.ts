@@ -7,6 +7,7 @@
 
 import { IFunctionalAddon, AutoframeContext } from '@autoframe/core';
 import { GitHubService, GitHubConfig } from './GitHubService';
+import { MCPDetector, MCPPrompt } from '@autoframe/core';
 
 export class GitHubAddon implements IFunctionalAddon {
   readonly id = 'github';
@@ -19,6 +20,7 @@ export class GitHubAddon implements IFunctionalAddon {
   private active = false;
   private config: GitHubConfig = {};
   private context?: AutoframeContext;
+  private useMCP = false;
 
   async initialize(context: AutoframeContext): Promise<void> {
     this.context = context;
@@ -37,6 +39,9 @@ export class GitHubAddon implements IFunctionalAddon {
     // Si hay repositoryUrl, inicializar servicio
     if (this.config.repositoryUrl || this.shouldAutoConnect()) {
       await this.setupService();
+      
+      // Detectar y ofrecer MCP si está disponible
+      await this.offerMCPIntegration();
     }
   }
 
@@ -46,6 +51,47 @@ export class GitHubAddon implements IFunctionalAddon {
   private shouldAutoConnect(): boolean {
     // Si hay repositoryUrl en la configuración del proyecto, conectar automáticamente
     return !!this.context?.config.repositoryUrl;
+  }
+
+  /**
+   * Ofrece integración MCP al usuario
+   */
+  private async offerMCPIntegration(): Promise<void> {
+    try {
+      const mcpInfo = await MCPDetector.detectMCPServer('github');
+      
+      // Si ya está configurado, usar MCP
+      if (mcpInfo.configured) {
+        console.log('✅ GitHub Add-on: MCP detectado y configurado. Usando MCP para mejor experiencia.');
+        this.useMCP = true;
+        return;
+      }
+
+      // Si MCP está disponible pero no configurado, ofrecer instalación
+      if (mcpInfo.available && !mcpInfo.configured) {
+        const shouldInstall = await MCPPrompt.promptForMCP({
+          serviceName: 'github',
+          serviceDisplayName: 'GitHub',
+          credentials: {
+            token: process.env.GITHUB_TOKEN || process.env.GH_TOKEN
+          }
+        });
+
+        if (shouldInstall) {
+          const result = await MCPPrompt.installIfAccepted('github', {
+            token: process.env.GITHUB_TOKEN || process.env.GH_TOKEN
+          });
+          
+          if (result.installed) {
+            this.useMCP = true;
+            console.log('✅ GitHub Add-on: MCP instalado y configurado exitosamente');
+          }
+        }
+      }
+    } catch (error) {
+      // Si hay error, continuar con implementación tradicional
+      console.log('ℹ️  GitHub Add-on: Continuando con implementación tradicional');
+    }
   }
 
   /**

@@ -1,0 +1,9 @@
+{
+  "name": "@autoframe/jest",
+  "version": "1.0.0",
+  "type": "functional",
+  "description": "Jest Testing - Testing unitario con Jest",
+  "main": "./dist/index.js",
+  "export": "JestAddon"
+}
+

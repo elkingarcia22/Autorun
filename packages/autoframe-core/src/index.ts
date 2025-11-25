@@ -23,6 +23,11 @@ export * from './adapters';
 // Exportar helpers
 export * from './helpers/registerLegacyComponent';
 
+// Exportar utilidades MCP
+export { MCPDetector } from './MCPDetector';
+export { MCPInstaller } from './MCPInstaller';
+export { MCPPrompt } from './MCPPrompt';
+
 // Placeholder - estructura base creada
 export const VERSION = '1.0.0';
 
