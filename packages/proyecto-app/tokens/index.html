@@ -153,10 +153,18 @@
       }
 
       .sticky-header.visible {
-        opacity: 1;
-        visibility: visible;
-        transform: translateY(0);
-        pointer-events: auto;
+        opacity: 1 !important;
+        visibility: visible !important;
+        transform: translateY(0) !important;
+        pointer-events: auto !important;
+      }
+      
+      /* Forzar visibilidad con mayor especificidad */
+      header.sticky-header.visible {
+        opacity: 1 !important;
+        visibility: visible !important;
+        transform: translateY(0) !important;
+        pointer-events: auto !important;
       }
 
       .sticky-header-container {
@@ -207,6 +215,16 @@
 
       .sticky-nav-link:hover::after {
         width: calc(100% - 32px);
+      }
+
+      .sticky-nav-link.active {
+        color: var(--autorun-neon-yellow);
+      }
+
+      .sticky-nav-link.active::after {
+        width: calc(100% - 32px);
+        background: var(--autorun-neon-yellow);
+        box-shadow: 0 0 10px var(--autorun-neon-yellow);
       }
 
       .sticky-logo {
@@ -2695,25 +2713,71 @@
       /* Nota Final */
       .conectar-note {
         margin-top: 80px;
-        padding: 32px;
-        background: var(--autorun-gray-100);
-        border-radius: 12px;
-        border: 2px solid var(--autorun-neon-blue);
+        padding: 36px;
+        background: linear-gradient(135deg, rgba(0, 191, 255, 0.08) 0%, rgba(255, 255, 0, 0.08) 100%);
+        border-radius: 16px;
+        border: 1px solid rgba(0, 191, 255, 0.3);
+        box-shadow: 
+          0 0 30px rgba(0, 191, 255, 0.15),
+          inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        position: relative;
+        overflow: hidden;
+        backdrop-filter: blur(10px);
         display: flex;
-        gap: 24px;
+        gap: 28px;
         align-items: flex-start;
       }
 
+      .conectar-note::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, 
+          var(--autorun-neon-yellow) 0%, 
+          var(--autorun-neon-white) 50%, 
+          var(--autorun-neon-blue) 100%);
+        box-shadow: 0 0 20px rgba(0, 191, 255, 0.5);
+      }
+
       .note-icon {
-        width: 48px;
-        height: 48px;
+        width: 56px;
+        height: 56px;
         flex-shrink: 0;
         display: flex;
         align-items: center;
         justify-content: center;
-        background: var(--autorun-gray-200);
-        border-radius: 50%;
-        color: var(--autorun-neon-blue);
+        background: linear-gradient(135deg, rgba(0, 191, 255, 0.2) 0%, rgba(255, 255, 0, 0.2) 100%);
+        border-radius: 14px;
+        color: var(--autorun-neon-cyan);
+        border: 1px solid rgba(0, 191, 255, 0.4);
+        box-shadow: 
+          0 0 20px rgba(0, 191, 255, 0.3),
+          inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        position: relative;
+      }
+
+      .note-icon::after {
+        content: '';
+        position: absolute;
+        inset: -2px;
+        border-radius: 14px;
+        padding: 2px;
+        background: linear-gradient(135deg, var(--autorun-neon-yellow), var(--autorun-neon-blue));
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        mask-composite: exclude;
+        opacity: 0.5;
+        z-index: -1;
+      }
+
+      .note-icon svg {
+        position: relative;
+        z-index: 1;
+        filter: drop-shadow(0 0 8px rgba(0, 191, 255, 0.6));
       }
 
       .note-content {
@@ -2721,17 +2785,36 @@
       }
 
       .note-title {
-        font-size: 20px;
-        font-weight: 600;
-        color: var(--autorun-neon-white);
-        margin-bottom: 12px;
+        font-size: 22px;
+        font-weight: 700;
+        background: linear-gradient(135deg, var(--autorun-neon-yellow) 0%, var(--autorun-neon-cyan) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 14px;
+        letter-spacing: -0.5px;
+        text-shadow: 0 0 30px rgba(0, 191, 255, 0.3);
       }
 
       .note-text {
         font-size: 15px;
-        color: var(--autorun-gray-600);
-        line-height: 1.7;
-        margin-bottom: 16px;
+        color: var(--autorun-gray-500);
+        line-height: 1.8;
+        margin-bottom: 20px;
+      }
+
+      .conectar-note .code-block {
+        margin-top: 0;
+        background: rgba(0, 0, 0, 0.4);
+        border: 1px solid rgba(0, 191, 255, 0.2);
+        border-radius: 10px;
+        box-shadow: 
+          0 4px 20px rgba(0, 0, 0, 0.3),
+          inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      }
+
+      .conectar-note .code-block pre {
+        margin: 0;
       }
 
       /* Responsive */
@@ -3662,7 +3745,7 @@
                 <h4 class="addon-section-title">Configuración</h4>
                 <div class="code-block">
                   <pre><code>{
-  "autoframe": {
+  "autorun": {
     "addons": {
       "config": {
         "github": {
@@ -3710,6 +3793,34 @@ await pushService('main');</code></pre>
                   <li><code>getCurrentBranch()</code> - Rama actual</li>
                 </ul>
               </div>
+
+              <div class="addon-section">
+                <h4 class="addon-section-title">🔌 Integración MCP</h4>
+                <p class="addon-description" style="margin-bottom: 16px;">
+                  Este add-on soporta integración con <strong>MCP (Model Context Protocol)</strong> para mejorar la experiencia y seguridad.
+                </p>
+                <div class="addon-features" style="margin-bottom: 16px;">
+                  <h5 style="color: var(--autorun-neon-yellow); margin-bottom: 12px; font-size: 14px;">✨ Beneficios de MCP:</h5>
+                  <ul style="margin-left: 20px;">
+                    <li>Detección automática de servidor MCP GitHub disponible</li>
+                    <li>Instalación guiada de MCP si el usuario lo desea</li>
+                    <li>Uso de APIs avanzadas de GitHub sin necesidad de tokens locales</li>
+                    <li>Mejor gestión de credenciales y seguridad</li>
+                    <li>Acceso a funciones avanzadas de GitHub</li>
+                  </ul>
+                </div>
+                <div class="code-block" style="background: rgba(255, 255, 0, 0.05); border-left: 3px solid var(--autorun-neon-yellow);">
+                  <pre><code>// El add-on detectará automáticamente si hay un servidor MCP configurado
+// y ofrecerá instalarlo durante la inicialización si está disponible
+// pero no configurado. Si el usuario acepta, se configurará automáticamente.
+
+await hub.activateAddon('github');
+// ✅ MCP detectado y configurado. Usando MCP para mejor experiencia.
+// O
+// ℹ️ ¿Deseas instalar MCP para mejorar la experiencia con GitHub?
+//    [Sí] [No]</code></pre>
+                </div>
+              </div>
             </div>
 
             <!-- Clarity Add-on -->
@@ -3750,7 +3861,7 @@ await pushService('main');</code></pre>
                 <h4 class="addon-section-title">Configuración</h4>
                 <div class="code-block">
                   <pre><code>{
-  "autoframe": {
+  "autorun": {
     "addons": {
       "config": {
         "clarity": {
@@ -3772,6 +3883,36 @@ await hub.activateAddon('clarity');
 
 // El script de Clarity se carga automáticamente
 // y comienza a trackear eventos</code></pre>
+                </div>
+              </div>
+
+              <div class="addon-section">
+                <h4 class="addon-section-title">🔌 Integración MCP</h4>
+                <p class="addon-description" style="margin-bottom: 16px;">
+                  Este add-on soporta integración con <strong>MCP (Model Context Protocol)</strong> para mejorar la experiencia y funcionalidad.
+                </p>
+                <div class="addon-features" style="margin-bottom: 16px;">
+                  <h5 style="color: var(--autorun-neon-yellow); margin-bottom: 12px; font-size: 14px;">✨ Beneficios de MCP:</h5>
+                  <ul style="margin-left: 20px;">
+                    <li>Detección automática de servidor MCP Clarity disponible</li>
+                    <li>Instalación guiada de MCP si el usuario lo desea</li>
+                    <li>Acceso a APIs avanzadas de Clarity sin necesidad de tokens locales</li>
+                    <li>Consultas de analytics mediante lenguaje natural</li>
+                    <li>Acceso a documentación y recursos de Clarity</li>
+                    <li>Mejor gestión de credenciales y seguridad</li>
+                  </ul>
+                </div>
+                <div class="code-block" style="background: rgba(255, 255, 0, 0.05); border-left: 3px solid var(--autorun-neon-yellow);">
+                  <pre><code>// Con MCP habilitado, podrás hacer consultas como:
+// - "Top browsers last 3 days"
+// - "Average session duration for mobile users this week"
+// - "Top pages for desktop in the last month"
+
+await hub.activateAddon('clarity');
+// ✅ MCP detectado y configurado. Usando MCP para mejor experiencia.
+// O
+// ℹ️ ¿Deseas instalar MCP para mejorar la experiencia con Clarity?
+//    [Sí] [No]</code></pre>
                 </div>
               </div>
             </div>
@@ -3814,7 +3955,7 @@ await hub.activateAddon('clarity');
                 <h4 class="addon-section-title">Configuración</h4>
                 <div class="code-block">
                   <pre><code>{
-  "autoframe": {
+  "autorun": {
     "addons": {
       "config": {
         "vercel": {
@@ -3838,6 +3979,35 @@ await hub.activateAddon('vercel');
 // Deploy automático
 const deployService = hub.getService('vercel', 'deploy');
 await deployService();</code></pre>
+                </div>
+              </div>
+
+              <div class="addon-section">
+                <h4 class="addon-section-title">🔌 Integración MCP</h4>
+                <p class="addon-description" style="margin-bottom: 16px;">
+                  Este add-on soporta integración con <strong>MCP (Model Context Protocol)</strong> para mejorar la experiencia y seguridad.
+                </p>
+                <div class="addon-features" style="margin-bottom: 16px;">
+                  <h5 style="color: var(--autorun-neon-yellow); margin-bottom: 12px; font-size: 14px;">✨ Beneficios de MCP:</h5>
+                  <ul style="margin-left: 20px;">
+                    <li>Detección automática de servidor MCP Vercel disponible</li>
+                    <li>Instalación guiada de MCP si el usuario lo desea</li>
+                    <li>Uso de APIs avanzadas de Vercel sin necesidad de tokens locales</li>
+                    <li>Mejor gestión de credenciales y seguridad</li>
+                    <li>Acceso a funciones avanzadas como documentación, analytics y más</li>
+                    <li>Consulta de deployments, proyectos y configuraciones mediante lenguaje natural</li>
+                  </ul>
+                </div>
+                <div class="code-block" style="background: rgba(255, 255, 0, 0.05); border-left: 3px solid var(--autorun-neon-yellow);">
+                  <pre><code>// El add-on detectará automáticamente si hay un servidor MCP configurado
+// y ofrecerá instalarlo durante la inicialización si está disponible
+// pero no configurado. Si el usuario acepta, se configurará automáticamente.
+
+await hub.activateAddon('vercel');
+// ✅ MCP detectado y configurado. Usando MCP para mejor experiencia.
+// O
+// ℹ️ ¿Deseas instalar MCP para mejorar la experiencia con Vercel?
+//    [Sí] [No]</code></pre>
                 </div>
               </div>
             </div>
@@ -3880,7 +4050,7 @@ await deployService();</code></pre>
                 <h4 class="addon-section-title">Configuración</h4>
                 <div class="code-block">
                   <pre><code>{
-  "autoframe": {
+  "autorun": {
     "addons": {
       "config": {
         "storybook": {
@@ -3949,7 +4119,7 @@ await storybookService();</code></pre>
                 <h4 class="addon-section-title">Configuración</h4>
                 <div class="code-block">
                   <pre><code>{
-  "autoframe": {
+  "autorun": {
     "addons": {
       "config": {
         "supabase": {
@@ -4019,7 +4189,7 @@ const supabase = supabaseService();</code></pre>
                 <h4 class="addon-section-title">Configuración</h4>
                 <div class="code-block">
                   <pre><code>{
-  "autoframe": {
+  "autorun": {
     "addons": {
       "config": {
         "ai-assistant": {
@@ -4085,7 +4255,7 @@ const response = await aiService('Explica este código');</code></pre>
                 <h4 class="addon-section-title">Configuración</h4>
                 <div class="code-block">
                   <pre><code>{
-  "autoframe": {
+  "autorun": {
     "addons": {
       "config": {
         "jest": {
@@ -4154,7 +4324,7 @@ await jestService();</code></pre>
                 <h4 class="addon-section-title">Configuración</h4>
                 <div class="code-block">
                   <pre><code>{
-  "autoframe": {
+  "autorun": {
     "addons": {
       "config": {
         "eslint": {
@@ -4219,7 +4389,7 @@ await eslintService(['src/**/*.ts']);</code></pre>
                 <h4 class="addon-section-title">Configuración</h4>
                 <div class="code-block">
                   <pre><code>{
-  "autoframe": {
+  "autorun": {
     "addons": {
       "config": {
         "prettier": {
@@ -4285,7 +4455,7 @@ await prettierService(['src/**/*.ts']);</code></pre>
                 <h4 class="addon-section-title">Configuración</h4>
                 <div class="code-block">
                   <pre><code>{
-  "autoframe": {
+  "autorun": {
     "addons": {
       "config": {
         "lighthouse": {
@@ -4350,7 +4520,7 @@ const report = await lighthouseService('http://localhost:3000');</code></pre>
                 <h4 class="addon-section-title">Configuración</h4>
                 <div class="code-block">
                   <pre><code>{
-  "autoframe": {
+  "autorun": {
     "addons": {
       "config": {
         "docusaurus": {
@@ -4415,7 +4585,7 @@ await docusaurusService();</code></pre>
                 <h4 class="addon-section-title">Configuración</h4>
                 <div class="code-block">
                   <pre><code>{
-  "autoframe": {
+  "autorun": {
     "addons": {
       "config": {
         "i18n": {
@@ -4485,7 +4655,7 @@ const text = t('welcome.message');</code></pre>
                 <h4 class="addon-section-title">Configuración</h4>
                 <div class="code-block">
                   <pre><code>{
-  "autoframe": {
+  "autorun": {
     "addons": {
       "config": {
         "figma-sync": {
@@ -4557,7 +4727,7 @@ await figmaService();</code></pre>
                 <h4 class="addon-section-title">Configuración</h4>
                 <div class="code-block">
                   <pre><code>{
-  "autoframe": {
+  "autorun": {
     "addons": {
       "config": {
         "fontawesome": {
@@ -4581,7 +4751,7 @@ await figmaService();</code></pre>
 await hub.activateAddon('fontawesome');
 
 // Inicializar iconos
-import { initializeIcons, renderIcon } from '@ubits/icons';
+import { initializeIcons, renderIcon } from '@autorun/icons';
 await initializeIcons('fontawesome');
 
 // Renderizar icono
@@ -4597,7 +4767,7 @@ const html = renderIcon('plus', {
 // → '<i class="fas fa-plus fa-lg mi-clase"></i>'
 
 // Búsqueda semántica
-import { searchIcons } from '@ubits/icons';
+import { searchIcons } from '@autorun/icons';
 const results = searchIcons('crear');
 // → [{ name: 'plus', score: 10, keywords: [...] }, ...]</code></pre>
                 </div>
@@ -4648,7 +4818,7 @@ cd Autorun
 npm install
 
 # Build de los tokens y paquetes base
-npm run build:tokens</code></pre>
+# Script build:tokens eliminado - tokens genéricos removidos</code></pre>
               </div>
             </div>
           </div>
@@ -5185,171 +5355,133 @@ npm run addon:activate supabase</code></pre>
         stepsObserver.observe(step);
       });
 
-      // Sticky Header - Aparece al hacer scroll
-      console.log('🔍 ========== INICIALIZANDO STICKY HEADER ==========');
+      // Sticky Header - Aparece al hacer scroll después del Hero
       const stickyHeader = document.getElementById('sticky-header');
-      console.log('📍 Sticky Header encontrado:', stickyHeader);
-      console.log('📍 Tipo:', typeof stickyHeader);
-      console.log('📍 Es null?:', stickyHeader === null);
       
       if (stickyHeader) {
-        console.log('✅ Sticky Header existe, configurando...');
+        const heroSection = document.getElementById('home');
+        const heroHeight = heroSection ? heroSection.offsetHeight : 600;
+        const scrollThreshold = heroHeight - 100; // Mostrar cuando se sale del hero
         
-        // Verificar estado inicial del CSS
-        const computedStyle = window.getComputedStyle(stickyHeader);
-        console.log('📊 Estado inicial CSS:', {
-          opacity: computedStyle.opacity,
-          visibility: computedStyle.visibility,
-          transform: computedStyle.transform,
-          display: computedStyle.display,
-          position: computedStyle.position,
-          zIndex: computedStyle.zIndex,
-          top: computedStyle.top,
-          left: computedStyle.left,
-          right: computedStyle.right
-        });
+        // Asegurar que el header esté oculto inicialmente
+        stickyHeader.classList.remove('visible');
+        stickyHeader.style.opacity = '0';
+        stickyHeader.style.visibility = 'hidden';
+        stickyHeader.style.transform = 'translateY(-100%)';
+        stickyHeader.style.pointerEvents = 'none';
         
-        // Verificar clases iniciales
-        console.log('🏷️ Clases iniciales:', stickyHeader.className);
-        console.log('🏷️ Tiene clase visible?:', stickyHeader.classList.contains('visible'));
+        let scrollCount = 0;
+        let lastScrollTop = 0;
         
-        // Verificar posición del elemento
-        const rect = stickyHeader.getBoundingClientRect();
-        console.log('📏 Posición inicial del header:', {
-          top: rect.top,
-          left: rect.left,
-          width: rect.width,
-          height: rect.height,
-          visible: rect.height > 0 && rect.width > 0
-        });
-        
-        // Detectar cuando se entra a la sección Features
-        const featuresSection = document.getElementById('features');
-        console.log('🔍 Buscando sección Features...');
-        console.log('📍 Features encontrada:', featuresSection);
-        
-        if (featuresSection) {
-          const featuresRect = featuresSection.getBoundingClientRect();
-          console.log('📏 Posición inicial de Features:', {
-            top: featuresRect.top,
-            left: featuresRect.left,
-            width: featuresRect.width,
-            height: featuresRect.height
-          });
+        let handleScroll = () => {
+          const scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+          const shouldShow = scrollTop > scrollThreshold;
           
-          // Usar scroll threshold más simple y confiable
-          const heroSection = document.getElementById('home');
-          const heroHeight = heroSection ? heroSection.offsetHeight : 600;
-          const scrollThreshold = heroHeight - 100; // Mostrar cuando se sale del hero
-          
-          console.log('📏 Hero height:', heroHeight);
-          console.log('📏 Scroll threshold:', scrollThreshold);
-          
-          let lastScrollTop = 0;
-          let lastHeaderState = false;
-          
-          const handleScroll = () => {
-            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-            const scrollDirection = scrollTop > lastScrollTop ? '⬇️ Bajando' : '⬆️ Subiendo';
-            
-            // Verificar posición de Features
-            const featuresRect = featuresSection.getBoundingClientRect();
-            const isFeaturesVisible = featuresRect.top < window.innerHeight && featuresRect.bottom > 0;
-            
-            // Mostrar header cuando Features está visible o cuando se pasa el threshold
-            const shouldShow = scrollTop > scrollThreshold || isFeaturesVisible;
-            const currentlyVisible = stickyHeader.classList.contains('visible');
-            
-            // Solo loggear cuando hay cambios significativos o cada 200px
-            const shouldLog = Math.abs(scrollTop - lastScrollTop) > 200 || shouldShow !== lastHeaderState || currentlyVisible !== shouldShow;
-            
-            if (shouldLog) {
-              console.log(`📜 Scroll: ${scrollTop}px (${scrollDirection})`);
-              console.log('📏 Features rect:', {
-                top: featuresRect.top,
-                bottom: featuresRect.bottom,
-                isVisible: isFeaturesVisible,
-                windowHeight: window.innerHeight
-              });
-              console.log('🔍 Condiciones:', {
-                scrollTop: scrollTop,
-                scrollThreshold: scrollThreshold,
-                scrollPassedThreshold: scrollTop > scrollThreshold,
-                isFeaturesVisible: isFeaturesVisible,
-                shouldShow: shouldShow,
-                currentlyVisible: currentlyVisible
-              });
-            }
-            
-            if (shouldShow && !currentlyVisible) {
-              console.log('✅ MOSTRANDO header (scroll > threshold o Features visible)');
-              console.log('🏷️ Clases ANTES de agregar visible:', stickyHeader.className);
+          // Solo procesar si el scroll cambió significativamente
+          if (Math.abs(scrollTop - lastScrollTop) > 5) {
+            if (shouldShow) {
+              // Mostrar header cuando se pasa el threshold - se mantiene visible en todas las secciones
               stickyHeader.classList.add('visible');
-              console.log('🏷️ Clases DESPUÉS de agregar visible:', stickyHeader.className);
-              
-              setTimeout(() => {
-                const newStyle = window.getComputedStyle(stickyHeader);
-                console.log('📊 CSS después de agregar visible:', {
-                  opacity: newStyle.opacity,
-                  visibility: newStyle.visibility,
-                  transform: newStyle.transform
-                });
-                
-                // Verificar que realmente se ve
-                const rect = stickyHeader.getBoundingClientRect();
-                console.log('📏 Header rect después de mostrar:', {
-                  top: rect.top,
-                  height: rect.height,
-                  visible: rect.height > 0
-                });
-              }, 100);
-            } else if (!shouldShow && currentlyVisible) {
-              console.log('⬆️ OCULTANDO header (scroll < threshold y Features no visible)');
-              console.log('🏷️ Clases ANTES de quitar visible:', stickyHeader.className);
+              stickyHeader.style.opacity = '1';
+              stickyHeader.style.visibility = 'visible';
+              stickyHeader.style.transform = 'translateY(0)';
+              stickyHeader.style.pointerEvents = 'auto';
+            } else {
+              // Ocultar solo cuando estamos en el Hero
               stickyHeader.classList.remove('visible');
-              console.log('🏷️ Clases DESPUÉS de quitar visible:', stickyHeader.className);
+              stickyHeader.style.opacity = '0';
+              stickyHeader.style.visibility = 'hidden';
+              stickyHeader.style.transform = 'translateY(-100%)';
+              stickyHeader.style.pointerEvents = 'none';
             }
             
             lastScrollTop = scrollTop;
-            lastHeaderState = shouldShow;
-          };
-          
-          window.addEventListener('scroll', handleScroll, { passive: true });
-          console.log('✅ Scroll listener registrado correctamente');
-          
-          // Verificar posición inicial
-          const initialScroll = window.pageYOffset || document.documentElement.scrollTop;
-          console.log('📍 Scroll inicial:', initialScroll);
-          if (initialScroll > scrollThreshold) {
-            stickyHeader.classList.add('visible');
-            console.log('✅ Header visible desde inicio');
           }
+        };
+        
+        // Fallback: Verificar scroll periódicamente con requestAnimationFrame
+        let rafId = null;
+        const checkScroll = () => {
+          handleScroll();
+          rafId = requestAnimationFrame(checkScroll);
+        };
+        
+        // Iniciar el check periódico
+        rafId = requestAnimationFrame(checkScroll);
+        
+        // Activar sección activa en el menú según scroll
+        const sections = ['home', 'features', 'addons', 'conectar', 'tecnologias'];
+        const navLinks = stickyHeader.querySelectorAll('a[href^="#"]');
+        
+        let lastActiveSection = null;
+        const updateActiveSection = () => {
+          const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+          const windowHeight = window.innerHeight;
+          const scrollMiddle = scrollTop + windowHeight / 2;
           
-        } else {
-          console.warn('⚠️ Sección Features no encontrada, usando fallback');
+          let activeSection = 'home';
           
-          // Fallback: usar scroll threshold
-          const scrollThreshold = 400;
-          console.log('🔄 Usando fallback con threshold:', scrollThreshold);
-          window.addEventListener('scroll', () => {
-            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-            console.log('📜 Scroll (fallback):', scrollTop);
-            if (scrollTop > scrollThreshold) {
-              console.log('✅ Scroll > threshold, mostrando header');
-              stickyHeader.classList.add('visible');
-            } else {
-              console.log('❌ Scroll < threshold, ocultando header');
-              stickyHeader.classList.remove('visible');
+          // Verificar cada sección para encontrar cuál está en el viewport
+          sections.forEach(sectionId => {
+            const section = document.getElementById(sectionId);
+            if (section) {
+              const rect = section.getBoundingClientRect();
+              const sectionTop = rect.top + scrollTop;
+              const sectionBottom = sectionTop + rect.height;
+              
+              // Si el scroll medio está dentro de esta sección
+              if (scrollMiddle >= sectionTop && scrollMiddle <= sectionBottom) {
+                activeSection = sectionId;
+              }
             }
-          }, { passive: true });
+          });
+          
+          // Actualizar clases activas en los links solo si cambió la sección
+          if (activeSection !== lastActiveSection) {
+            navLinks.forEach(link => {
+              const href = link.getAttribute('href');
+              if (href === `#${activeSection}`) {
+                link.classList.add('active');
+              } else {
+                link.classList.remove('active');
+              }
+            });
+            lastActiveSection = activeSection;
+          }
+        };
+        
+        // Integrar updateActiveSection en handleScroll
+        const originalHandleScroll = handleScroll;
+        handleScroll = () => {
+          originalHandleScroll();
+          updateActiveSection();
+        };
+        
+        // Actualizar sección activa periódicamente también
+        const updateActive = () => {
+          updateActiveSection();
+          requestAnimationFrame(updateActive);
+        };
+        requestAnimationFrame(updateActive);
+        
+        // Registrar listener
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        
+        // Verificar posición inicial
+        const initialScroll = window.pageYOffset || document.documentElement.scrollTop;
+        if (initialScroll > scrollThreshold) {
+          stickyHeader.classList.add('visible');
+          stickyHeader.style.opacity = '1';
+          stickyHeader.style.visibility = 'visible';
+          stickyHeader.style.transform = 'translateY(0)';
+          stickyHeader.style.pointerEvents = 'auto';
         }
+        
+        // Inicializar sección activa
+        updateActiveSection();
       } else {
-        console.error('❌ Sticky Header NO encontrado en el DOM');
-        console.error('🔍 Buscando todos los headers:', document.querySelectorAll('header'));
-        console.error('🔍 Buscando por clase:', document.querySelectorAll('.sticky-header'));
+        console.error('❌ Sticky Header NO encontrado');
       }
-      
-      console.log('🔍 ========== FIN INICIALIZACIÓN STICKY HEADER ==========');
 
       // Smooth scroll para navegación
       document.querySelectorAll('a[href^="#"]').forEach(anchor => {
