@@ -8,16 +8,8 @@
     "build": "vite build",
     "lint": "biome check .",
     "format": "biome format . --write",
-    "build:tokens": "node packages/tokens/build-css.cjs",
-    "validate": "node scripts/validate-ubits.cjs --staged",
-    "validate:fix": "node scripts/validate-ubits.cjs --staged --fix",
-    "validate:all": "node scripts/validate-ubits.cjs",
-    "validate:all:fix": "node scripts/validate-ubits.cjs --fix",
-    "precommit": "npm run validate:fix",
-    "prepare": "husky",
-    "init": "node scripts/init-project.cjs",
-    "integrate:addons": "node scripts/integrate-addons.cjs",
-    "deploy": "node scripts/deploy.cjs"
+    "build:tokens": "node packages/addons/design/tokens/build-css.cjs",
+    "prepare": "husky"
   },
   "keywords": [],
   "author": "",

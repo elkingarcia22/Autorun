@@ -425,11 +425,11 @@
     <script src="engine/template-loader.js"></script>
     <script src="engine/content-manager.js"></script>
     
-    <!-- Autoframe Add-ons System (Tokens & Components from Storybook) -->
+    <!-- Autoframe Add-ons System -->
     <script type="module">
-        // Cargar sistema de tokens y componentes
+        // Cargar sistema de add-ons
         import('../addons/tokens/src/index.js').then(() => {
-            console.log('✅ Sistema de tokens y componentes Autoframe cargado');
+            console.log('✅ Sistema de add-ons Autoframe cargado');
         }).catch(err => {
             console.warn('⚠️ No se pudo cargar sistema de add-ons:', err);
         });
