@@ -3419,6 +3419,132 @@
         padding: 0 20px 20px 20px;
       }
 
+      /* Acordeón solo para Codecov */
+      #addon-codecov .addon-section {
+        margin-bottom: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 8px;
+        overflow: hidden;
+        background: rgba(0, 0, 0, 0.2);
+      }
+
+      #addon-codecov .addon-section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 20px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: transparent;
+        border: none;
+        width: 100%;
+        text-align: left;
+      }
+
+      #addon-codecov .addon-section-header:hover {
+        background: rgba(255, 255, 255, 0.03);
+      }
+
+      #addon-codecov .addon-section-header.active {
+        background: rgba(255, 255, 0, 0.05);
+      }
+
+      #addon-codecov .addon-section-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--autorun-neon-white);
+        margin: 0;
+        padding: 0;
+        border: none;
+      }
+
+      #addon-codecov .addon-section-chevron {
+        width: 18px;
+        height: 18px;
+        transition: transform 0.3s ease;
+        color: var(--autorun-neon-yellow);
+        flex-shrink: 0;
+      }
+
+      #addon-codecov .addon-section.expanded .addon-section-chevron {
+        transform: rotate(180deg);
+      }
+
+      #addon-codecov .addon-section-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.4s ease, padding 0.3s ease;
+        padding: 0 20px;
+      }
+
+      #addon-codecov .addon-section.expanded .addon-section-content {
+        max-height: 5000px;
+        padding: 0 20px 20px 20px;
+      }
+
+      /* Acordeón solo para Snyk */
+      #addon-snyk .addon-section {
+        margin-bottom: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 8px;
+        overflow: hidden;
+        background: rgba(0, 0, 0, 0.2);
+      }
+
+      #addon-snyk .addon-section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 20px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: transparent;
+        border: none;
+        width: 100%;
+        text-align: left;
+      }
+
+      #addon-snyk .addon-section-header:hover {
+        background: rgba(255, 255, 255, 0.03);
+      }
+
+      #addon-snyk .addon-section-header.active {
+        background: rgba(255, 255, 0, 0.05);
+      }
+
+      #addon-snyk .addon-section-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--autorun-neon-white);
+        margin: 0;
+        padding: 0;
+        border: none;
+      }
+
+      #addon-snyk .addon-section-chevron {
+        width: 18px;
+        height: 18px;
+        transition: transform 0.3s ease;
+        color: var(--autorun-neon-yellow);
+        flex-shrink: 0;
+      }
+
+      #addon-snyk .addon-section.expanded .addon-section-chevron {
+        transform: rotate(180deg);
+      }
+
+      #addon-snyk .addon-section-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.4s ease, padding 0.3s ease;
+        padding: 0 20px;
+      }
+
+      #addon-snyk .addon-section.expanded .addon-section-content {
+        max-height: 5000px;
+        padding: 0 20px 20px 20px;
+      }
+
       .addon-features {
         list-style: none;
         padding: 0;
@@ -7376,34 +7502,54 @@ const result = await run();</code></pre>
               <p class="addon-description">
                 Code coverage tracking. Monitorea el coverage de tu código y proporciona reportes visuales y comentarios automáticos en PRs.
               </p>
-              <div class="addon-section">
-                <h4 class="addon-section-title">Características</h4>
-                <ul class="addon-features">
-                  <li>Tracking de coverage</li>
-                  <li>Reportes visuales en dashboard</li>
-                  <li>Coverage por archivo</li>
-                  <li>Integración con PRs</li>
-                  <li>Coverage thresholds configurables</li>
-                </ul>
+              <div class="addon-section expanded">
+                <button class="addon-section-header active">
+                  <h4 class="addon-section-title">Características</h4>
+                  <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <div class="addon-section-content">
+                  <ul class="addon-features">
+                    <li>Tracking de coverage</li>
+                    <li>Reportes visuales en dashboard</li>
+                    <li>Coverage por archivo</li>
+                    <li>Integración con PRs</li>
+                    <li>Coverage thresholds configurables</li>
+                  </ul>
+                </div>
               </div>
               <div class="addon-section">
-                <h4 class="addon-section-title">Requisitos</h4>
-                <div class="requirements-list">
-                  <div class="requirement-item">
-                    <span class="requirement-label">Codecov Plugin</span>
-                    <span class="requirement-value">npm install --save-dev @codecov/vite-plugin</span>
-                  </div>
-                  <div class="requirement-item">
-                    <span class="requirement-label">Token</span>
-                    <span class="requirement-value">Token de Codecov</span>
+                <button class="addon-section-header">
+                  <h4 class="addon-section-title">Requisitos</h4>
+                  <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <div class="addon-section-content">
+                  <div class="requirements-list">
+                    <div class="requirement-item">
+                      <span class="requirement-label">Codecov Plugin</span>
+                      <span class="requirement-value">npm install --save-dev @codecov/vite-plugin</span>
+                    </div>
+                    <div class="requirement-item">
+                      <span class="requirement-label">Token</span>
+                      <span class="requirement-value">Token de Codecov</span>
+                    </div>
                   </div>
                 </div>
               </div>
 
               <div class="addon-section">
-                <h4 class="addon-section-title">Configuración</h4>
-                <div class="code-block">
-                  <pre><code>{
+                <button class="addon-section-header">
+                  <h4 class="addon-section-title">Configuración</h4>
+                  <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <div class="addon-section-content">
+                  <div class="code-block">
+                    <pre><code>{
   "autorun": {
     "addons": {
       "config": {
@@ -7416,18 +7562,26 @@ const result = await run();</code></pre>
     }
   }
 }</code></pre>
+                  </div>
                 </div>
               </div>
 
               <div class="addon-section">
-                <h4 class="addon-section-title">Uso</h4>
-                <div class="code-block">
-                  <pre><code>// Activar add-on
+                <button class="addon-section-header">
+                  <h4 class="addon-section-title">Uso</h4>
+                  <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <div class="addon-section-content">
+                  <div class="code-block">
+                    <pre><code>// Activar add-on
 await hub.activateAddon('codecov');
 
 // Subir coverage
 const uploadCoverage = hub.getService('codecov', 'uploadCoverage');
 await uploadCoverage();</code></pre>
+                  </div>
                 </div>
               </div>
             </div>
@@ -7830,36 +7984,56 @@ captureMessage('Evento importante', 'info');</code></pre>
               <p class="addon-description">
                 Security scanning y detección de vulnerabilidades. Escanea tus dependencias en busca de vulnerabilidades de seguridad y proporciona reportes detallados.
               </p>
-              <div class="addon-section">
-                <h4 class="addon-section-title">Características</h4>
-                <ul class="addon-features">
-                  <li>Escaneo de vulnerabilidades</li>
-                  <li>Monitoreo continuo</li>
-                  <li>Integración con CI/CD</li>
-                  <li>Thresholds configurables</li>
-                  <li>Fail on error opcional</li>
-                  <li>Reportes de seguridad</li>
-                  <li>Integración con Snyk Cloud</li>
-                </ul>
+              <div class="addon-section expanded">
+                <button class="addon-section-header active">
+                  <h4 class="addon-section-title">Características</h4>
+                  <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <div class="addon-section-content">
+                  <ul class="addon-features">
+                    <li>Escaneo de vulnerabilidades</li>
+                    <li>Monitoreo continuo</li>
+                    <li>Integración con CI/CD</li>
+                    <li>Thresholds configurables</li>
+                    <li>Fail on error opcional</li>
+                    <li>Reportes de seguridad</li>
+                    <li>Integración con Snyk Cloud</li>
+                  </ul>
+                </div>
               </div>
               <div class="addon-section">
-                <h4 class="addon-section-title">Requisitos</h4>
-                <div class="requirements-list">
-                  <div class="requirement-item">
-                    <span class="requirement-label">Snyk CLI</span>
-                    <span class="requirement-value">npm install -g snyk</span>
-                  </div>
-                  <div class="requirement-item">
-                    <span class="requirement-label">Autenticación</span>
-                    <span class="requirement-value">snyk auth o token en configuración</span>
+                <button class="addon-section-header">
+                  <h4 class="addon-section-title">Requisitos</h4>
+                  <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <div class="addon-section-content">
+                  <div class="requirements-list">
+                    <div class="requirement-item">
+                      <span class="requirement-label">Snyk CLI</span>
+                      <span class="requirement-value">npm install -g snyk</span>
+                    </div>
+                    <div class="requirement-item">
+                      <span class="requirement-label">Autenticación</span>
+                      <span class="requirement-value">snyk auth o token en configuración</span>
+                    </div>
                   </div>
                 </div>
               </div>
 
               <div class="addon-section">
-                <h4 class="addon-section-title">Configuración</h4>
-                <div class="code-block">
-                  <pre><code>{
+                <button class="addon-section-header">
+                  <h4 class="addon-section-title">Configuración</h4>
+                  <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <div class="addon-section-content">
+                  <div class="code-block">
+                    <pre><code>{
   "autorun": {
     "addons": {
       "config": {
@@ -7873,13 +8047,20 @@ captureMessage('Evento importante', 'info');</code></pre>
     }
   }
 }</code></pre>
+                  </div>
                 </div>
               </div>
 
               <div class="addon-section">
-                <h4 class="addon-section-title">Uso</h4>
-                <div class="code-block">
-                  <pre><code>// Activar add-on
+                <button class="addon-section-header">
+                  <h4 class="addon-section-title">Uso</h4>
+                  <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <div class="addon-section-content">
+                  <div class="code-block">
+                    <pre><code>// Activar add-on
 await hub.activateAddon('snyk');
 
 // Escanear vulnerabilidades
@@ -7891,6 +8072,7 @@ const result = await scan({
 // Monitorear dependencias
 const monitor = hub.getService('snyk', 'monitor');
 await monitor();</code></pre>
+                  </div>
                 </div>
               </div>
             </div>
@@ -9421,6 +9603,40 @@ npm run addon:activate supabase</code></pre>
       if (playwrightAddon) {
         // Manejar clicks en los headers de las secciones
         playwrightAddon.addEventListener('click', (e) => {
+          if (e.target.closest('.addon-section-header')) {
+            const header = e.target.closest('.addon-section-header');
+            const section = header.closest('.addon-section');
+            
+            if (section) {
+              section.classList.toggle('expanded');
+              header.classList.toggle('active');
+            }
+          }
+        });
+      }
+
+      // Acordeón solo para Codecov
+      const codecovAddon = document.getElementById('addon-codecov');
+      if (codecovAddon) {
+        // Manejar clicks en los headers de las secciones
+        codecovAddon.addEventListener('click', (e) => {
+          if (e.target.closest('.addon-section-header')) {
+            const header = e.target.closest('.addon-section-header');
+            const section = header.closest('.addon-section');
+            
+            if (section) {
+              section.classList.toggle('expanded');
+              header.classList.toggle('active');
+            }
+          }
+        });
+      }
+
+      // Acordeón solo para Snyk
+      const snykAddon = document.getElementById('addon-snyk');
+      if (snykAddon) {
+        // Manejar clicks en los headers de las secciones
+        snykAddon.addEventListener('click', (e) => {
           if (e.target.closest('.addon-section-header')) {
             const header = e.target.closest('.addon-section-header');
             const section = header.closest('.addon-section');
