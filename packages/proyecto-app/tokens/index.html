@@ -8926,7 +8926,7 @@ const result = await runTests({ coverage: true });</code></pre>
                 Clona el repositorio, instala las dependencias (con verificación automática) e inicializa tu proyecto con el wizard interactivo.
               </p>
               <div class="code-block">
-                <pre><code># Clonar el repositorio
+                <pre><code># Clonar el repositorio (asegúrate de usar la rama correcta)
 git clone https://github.com/elkingarcia22/Autorun.git
 cd Autorun
 
@@ -8937,9 +8937,15 @@ npm install
 # El script usa tsx para ejecutar TypeScript directamente
 npm run init</code></pre>
               </div>
+              <p class="step-note" style="margin-top: 16px; padding: 12px; background: rgba(0, 255, 255, 0.1); border-left: 3px solid var(--autorun-neon-cyan); border-radius: 4px;">
+                <strong>📚 Documentación disponible:</strong>
+                <br>• <strong><a href="../../GETTING-STARTED.md" target="_blank" style="color: var(--autorun-neon-cyan);">GETTING-STARTED.md</a></strong> - Guía de inicio rápido (5 minutos)
+                <br>• <strong><a href="../../README.md" target="_blank" style="color: var(--autorun-neon-cyan);">README.md</a></strong> - Documentación completa del proyecto
+                <br>• <strong><a href="../../QUICK-START.md" target="_blank" style="color: var(--autorun-neon-cyan);">QUICK-START.md</a></strong> - Solución rápida de problemas
+              </p>
               <p class="step-note" style="margin-top: 16px; padding: 12px; background: rgba(255, 165, 0, 0.1); border-left: 3px solid var(--autorun-neon-yellow); border-radius: 4px;">
                 <strong>⚠️ Si el script <code>init</code> no existe:</strong> Si clonaste el repositorio antes de que se agregara el script, actualiza con:
-                <code style="display: block; margin-top: 8px; padding: 8px; background: rgba(0,0,0,0.2); border-radius: 4px;">git pull origin fase-1-tokens</code>
+                <code style="display: block; margin-top: 8px; padding: 8px; background: rgba(0,0,0,0.2); border-radius: 4px;">git pull origin main</code>
                 O clona de nuevo el repositorio para obtener los últimos cambios.
               </p>
               <p class="step-note" style="margin-top: 16px;">

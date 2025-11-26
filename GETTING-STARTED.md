@@ -8,7 +8,7 @@
 
 ```bash
 # Clonar desde la rama correcta
-git clone -b fase-1-tokens https://github.com/elkingarcia22/Autorun.git
+git clone https://github.com/elkingarcia22/Autorun.git
 cd Autorun
 
 # Instalar (ejecuta verificación automática)

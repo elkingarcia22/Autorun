@@ -10,7 +10,7 @@ Sistema modular para crear prototipos de alta calidad con componentes UBITS, add
 
 ```bash
 # Clonar el repositorio (asegúrate de usar la rama correcta)
-git clone -b fase-1-tokens https://github.com/elkingarcia22/Autorun.git
+git clone https://github.com/elkingarcia22/Autorun.git
 cd Autorun
 
 # Instalar dependencias (ejecuta verificación automática)
@@ -178,10 +178,10 @@ Cada add-on tiene su propio README en:
 git branch --show-current
 
 # Actualizar
-git pull origin fase-1-tokens
+git pull origin main
 
 # O clonar de nuevo
-git clone -b fase-1-tokens https://github.com/elkingarcia22/Autorun.git
+git clone https://github.com/elkingarcia22/Autorun.git
 ```
 
 ### Error al ejecutar `npm run init`
@@ -273,7 +273,7 @@ Después de ejecutar `npm run init`, se crea `autorun.config.json`:
 
 - **Documentación completa:** `packages/proyecto-app/tokens/index.html`
 - **Issues:** [GitHub Issues](https://github.com/elkingarcia22/Autorun/issues)
-- **Rama activa:** `fase-1-tokens`
+- **Rama activa:** `main`
 
 ---
 

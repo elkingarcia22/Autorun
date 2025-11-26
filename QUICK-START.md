@@ -20,7 +20,7 @@ npm run init
 git branch --show-current
 
 # 2. Actualizar desde la rama correcta
-git pull origin fase-1-tokens
+git pull origin main
 
 # 3. Reinstalar dependencias
 npm install
@@ -35,7 +35,7 @@ npm run init
 # Clonar de nuevo desde la rama correcta
 cd ..
 rm -rf Autorun
-git clone -b fase-1-tokens https://github.com/elkingarcia22/Autorun.git
+git clone -b main https://github.com/elkingarcia22/Autorun.git
 cd Autorun
 npm install
 npm run init
@@ -103,7 +103,7 @@ Deberías ver:
 
 ## 📋 Checklist de Setup
 
-- [ ] Repositorio clonado desde `fase-1-tokens`
+- [ ] Repositorio clonado desde `main`
 - [ ] `npm install` ejecutado sin errores
 - [ ] `npm run verify` muestra todo correcto
 - [ ] `npm run init` ejecuta el wizard
@@ -131,7 +131,7 @@ ls -la packages/autorun-core/src/cli/
 
 ## 💡 Tips
 
-1. **Siempre usa la rama `fase-1-tokens`** al clonar
+1. **Siempre usa la rama `main`** al clonar
 2. **Ejecuta `npm run verify`** si algo no funciona
 3. **Revisa `QUICK-START.md`** para problemas comunes
 4. **Consulta el README.md principal** para documentación completa
