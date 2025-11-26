@@ -3104,6 +3104,132 @@
         padding: 0 20px 20px 20px;
       }
 
+      /* Acordeón solo para Jest */
+      #addon-jest .addon-section {
+        margin-bottom: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 8px;
+        overflow: hidden;
+        background: rgba(0, 0, 0, 0.2);
+      }
+
+      #addon-jest .addon-section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 20px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: transparent;
+        border: none;
+        width: 100%;
+        text-align: left;
+      }
+
+      #addon-jest .addon-section-header:hover {
+        background: rgba(255, 255, 255, 0.03);
+      }
+
+      #addon-jest .addon-section-header.active {
+        background: rgba(255, 255, 0, 0.05);
+      }
+
+      #addon-jest .addon-section-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--autorun-neon-white);
+        margin: 0;
+        padding: 0;
+        border: none;
+      }
+
+      #addon-jest .addon-section-chevron {
+        width: 18px;
+        height: 18px;
+        transition: transform 0.3s ease;
+        color: var(--autorun-neon-yellow);
+        flex-shrink: 0;
+      }
+
+      #addon-jest .addon-section.expanded .addon-section-chevron {
+        transform: rotate(180deg);
+      }
+
+      #addon-jest .addon-section-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.4s ease, padding 0.3s ease;
+        padding: 0 20px;
+      }
+
+      #addon-jest .addon-section.expanded .addon-section-content {
+        max-height: 5000px;
+        padding: 0 20px 20px 20px;
+      }
+
+      /* Acordeón solo para Vitest */
+      #addon-vitest .addon-section {
+        margin-bottom: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 8px;
+        overflow: hidden;
+        background: rgba(0, 0, 0, 0.2);
+      }
+
+      #addon-vitest .addon-section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 20px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: transparent;
+        border: none;
+        width: 100%;
+        text-align: left;
+      }
+
+      #addon-vitest .addon-section-header:hover {
+        background: rgba(255, 255, 255, 0.03);
+      }
+
+      #addon-vitest .addon-section-header.active {
+        background: rgba(255, 255, 0, 0.05);
+      }
+
+      #addon-vitest .addon-section-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--autorun-neon-white);
+        margin: 0;
+        padding: 0;
+        border: none;
+      }
+
+      #addon-vitest .addon-section-chevron {
+        width: 18px;
+        height: 18px;
+        transition: transform 0.3s ease;
+        color: var(--autorun-neon-yellow);
+        flex-shrink: 0;
+      }
+
+      #addon-vitest .addon-section.expanded .addon-section-chevron {
+        transform: rotate(180deg);
+      }
+
+      #addon-vitest .addon-section-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.4s ease, padding 0.3s ease;
+        padding: 0 20px;
+      }
+
+      #addon-vitest .addon-section.expanded .addon-section-content {
+        max-height: 5000px;
+        padding: 0 20px 20px 20px;
+      }
+
       .addon-features {
         list-style: none;
         padding: 0;
@@ -5802,35 +5928,55 @@ const response = await aiService('Explica este código');</code></pre>
                 Integración con Jest para testing unitario automático. Ejecución de tests, coverage reports y watch mode.
               </p>
 
-              <div class="addon-section">
-                <h4 class="addon-section-title">Características</h4>
-                <ul class="addon-features">
-                  <li>Ejecución automática de tests</li>
-                  <li>Coverage reports</li>
-                  <li>Watch mode</li>
-                  <li>Integración con CI/CD</li>
-                  <li>Testing de add-ons</li>
-                </ul>
+              <div class="addon-section expanded">
+                <button class="addon-section-header active">
+                  <h4 class="addon-section-title">Características</h4>
+                  <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <div class="addon-section-content">
+                  <ul class="addon-features">
+                    <li>Ejecución automática de tests</li>
+                    <li>Coverage reports</li>
+                    <li>Watch mode</li>
+                    <li>Integración con CI/CD</li>
+                    <li>Testing de add-ons</li>
+                  </ul>
+                </div>
               </div>
 
               <div class="addon-section">
-                <h4 class="addon-section-title">Requisitos</h4>
-                <div class="requirements-list">
-                  <div class="requirement-item">
-                    <span class="requirement-label">Node.js</span>
-                    <span class="requirement-value">Node.js 16+ instalado</span>
-                  </div>
-                  <div class="requirement-item">
-                    <span class="requirement-label">Jest Instalado</span>
-                    <span class="requirement-value">Jest debe estar instalado como dependencia</span>
+                <button class="addon-section-header">
+                  <h4 class="addon-section-title">Requisitos</h4>
+                  <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <div class="addon-section-content">
+                  <div class="requirements-list">
+                    <div class="requirement-item">
+                      <span class="requirement-label">Node.js</span>
+                      <span class="requirement-value">Node.js 16+ instalado</span>
+                    </div>
+                    <div class="requirement-item">
+                      <span class="requirement-label">Jest Instalado</span>
+                      <span class="requirement-value">Jest debe estar instalado como dependencia</span>
+                    </div>
                   </div>
                 </div>
               </div>
 
               <div class="addon-section">
-                <h4 class="addon-section-title">Configuración</h4>
-                <div class="code-block">
-                  <pre><code>{
+                <button class="addon-section-header">
+                  <h4 class="addon-section-title">Configuración</h4>
+                  <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <div class="addon-section-content">
+                  <div class="code-block">
+                    <pre><code>{
   "autorun": {
     "addons": {
       "config": {
@@ -5846,18 +5992,26 @@ const response = await aiService('Explica este código');</code></pre>
     }
   }
 }</code></pre>
+                  </div>
                 </div>
               </div>
 
               <div class="addon-section">
-                <h4 class="addon-section-title">Uso</h4>
-                <div class="code-block">
-                  <pre><code>// Activar add-on
+                <button class="addon-section-header">
+                  <h4 class="addon-section-title">Uso</h4>
+                  <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <div class="addon-section-content">
+                  <div class="code-block">
+                    <pre><code>// Activar add-on
 await hub.activateAddon('jest');
 
 // Ejecutar tests
 const jestService = hub.getService('jest', 'run');
 await jestService();</code></pre>
+                  </div>
                 </div>
               </div>
             </div>
@@ -7603,30 +7757,50 @@ await run('build', { cache: true, parallel: true });</code></pre>
               <p class="addon-description">
                 Testing rápido con Vite. Framework de testing moderno más rápido que JEST con soporte nativo para ESM y TypeScript.
               </p>
-              <div class="addon-section">
-                <h4 class="addon-section-title">Características</h4>
-                <ul class="addon-features">
-                  <li>Testing rápido (más rápido que JEST)</li>
-                  <li>ESM nativo</li>
-                  <li>Watch mode mejorado</li>
-                  <li>TypeScript nativo</li>
-                  <li>Coverage integrado</li>
-                </ul>
+              <div class="addon-section expanded">
+                <button class="addon-section-header active">
+                  <h4 class="addon-section-title">Características</h4>
+                  <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <div class="addon-section-content">
+                  <ul class="addon-features">
+                    <li>Testing rápido (más rápido que JEST)</li>
+                    <li>ESM nativo</li>
+                    <li>Watch mode mejorado</li>
+                    <li>TypeScript nativo</li>
+                    <li>Coverage integrado</li>
+                  </ul>
+                </div>
               </div>
               <div class="addon-section">
-                <h4 class="addon-section-title">Requisitos</h4>
-                <div class="requirements-list">
-                  <div class="requirement-item">
-                    <span class="requirement-label">Vitest</span>
-                    <span class="requirement-value">npm install --save-dev vitest</span>
+                <button class="addon-section-header">
+                  <h4 class="addon-section-title">Requisitos</h4>
+                  <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <div class="addon-section-content">
+                  <div class="requirements-list">
+                    <div class="requirement-item">
+                      <span class="requirement-label">Vitest</span>
+                      <span class="requirement-value">npm install --save-dev vitest</span>
+                    </div>
                   </div>
                 </div>
               </div>
 
               <div class="addon-section">
-                <h4 class="addon-section-title">Configuración</h4>
-                <div class="code-block">
-                  <pre><code>{
+                <button class="addon-section-header">
+                  <h4 class="addon-section-title">Configuración</h4>
+                  <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <div class="addon-section-content">
+                  <div class="code-block">
+                    <pre><code>{
   "autorun": {
     "addons": {
       "config": {
@@ -7640,18 +7814,26 @@ await run('build', { cache: true, parallel: true });</code></pre>
     }
   }
 }</code></pre>
+                  </div>
                 </div>
               </div>
 
               <div class="addon-section">
-                <h4 class="addon-section-title">Uso</h4>
-                <div class="code-block">
-                  <pre><code>// Activar add-on
+                <button class="addon-section-header">
+                  <h4 class="addon-section-title">Uso</h4>
+                  <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <div class="addon-section-content">
+                  <div class="code-block">
+                    <pre><code>// Activar add-on
 await hub.activateAddon('vitest');
 
 // Ejecutar tests
 const runTests = hub.getService('vitest', 'runTests');
 const result = await runTests({ coverage: true });</code></pre>
+                  </div>
                 </div>
               </div>
             </div>
@@ -8881,6 +9063,40 @@ npm run addon:activate supabase</code></pre>
       if (i18nAddon) {
         // Manejar clicks en los headers de las secciones
         i18nAddon.addEventListener('click', (e) => {
+          if (e.target.closest('.addon-section-header')) {
+            const header = e.target.closest('.addon-section-header');
+            const section = header.closest('.addon-section');
+            
+            if (section) {
+              section.classList.toggle('expanded');
+              header.classList.toggle('active');
+            }
+          }
+        });
+      }
+
+      // Acordeón solo para Jest
+      const jestAddon = document.getElementById('addon-jest');
+      if (jestAddon) {
+        // Manejar clicks en los headers de las secciones
+        jestAddon.addEventListener('click', (e) => {
+          if (e.target.closest('.addon-section-header')) {
+            const header = e.target.closest('.addon-section-header');
+            const section = header.closest('.addon-section');
+            
+            if (section) {
+              section.classList.toggle('expanded');
+              header.classList.toggle('active');
+            }
+          }
+        });
+      }
+
+      // Acordeón solo para Vitest
+      const vitestAddon = document.getElementById('addon-vitest');
+      if (vitestAddon) {
+        // Manejar clicks en los headers de las secciones
+        vitestAddon.addEventListener('click', (e) => {
           if (e.target.closest('.addon-section-header')) {
             const header = e.target.closest('.addon-section-header');
             const section = header.closest('.addon-section');
