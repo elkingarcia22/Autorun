@@ -1,343 +1,279 @@
-# 🚀 UBITS Playground Template
+# 🚀 Autorun - Sistema de Prototipado Rápido
 
-Template completo para crear aplicaciones UBITS con sistema de diseño, componentes modulares, validación automática y despliegue.
-
-## 📋 Índice
-
-- [Inicio Rápido](#-inicio-rápido)
-- [Características](#-características)
-- [Modos de Operación](#-modos-de-operación)
-- [Estructura del Proyecto](#-estructura-del-proyecto)
-- [Sistema de Diseño](#-sistema-de-diseño)
-- [Scripts Disponibles](#-scripts-disponibles)
-- [Validación Automática](#-validación-automática)
-- [Documentación](#-documentación)
+Sistema modular para crear prototipos de alta calidad con componentes UBITS, add-ons funcionales y herramientas de desarrollo integradas.
 
 ---
 
-## 🚀 Inicio Rápido
+## ⚡ Inicio Rápido
 
-### 1. Clonar el Repositorio
-
-```bash
-git clone https://github.com/elkingarcia22/prototipo-template.git
-cd prototipo-template
-```
-
-### 2. Instalar Dependencias
+### 1️⃣ Clonar e Instalar
 
 ```bash
+# Clonar el repositorio (asegúrate de usar la rama correcta)
+git clone -b fase-1-tokens https://github.com/elkingarcia22/Autorun.git
+cd Autorun
+
+# Instalar dependencias (ejecuta verificación automática)
 npm install
 ```
 
-### 3. Inicializar Proyecto
+**✅ Verificación automática:** Después de `npm install`, se ejecuta automáticamente una verificación que comprueba:
+- Estructura del proyecto
+- Scripts configurados
+- Dependencias necesarias
+- Archivos del wizard
+
+Si todo está correcto, verás: `✅ ¡Todo está listo! Puedes ejecutar: npm run init`
+
+### 2️⃣ Inicializar Proyecto
 
 ```bash
+# Ejecutar wizard interactivo de inicialización
 npm run init
 ```
 
-Este comando interactivo te guiará paso a paso:
-- ✅ Solicita URL del repositorio GitHub
-- ✅ Permite seleccionar perfil (Colaborador/Administrador)
-- ✅ Configura el template automáticamente
-- ✅ Inicializa Git y configura remoto
-- ✅ Instala dependencias
-- ✅ Configura auto-commit y validación
+El wizard te guiará paso a paso:
+1. **Tipo de proyecto:** UBITS (predefinido) o Independiente (personalizado)
+2. **Template:** Administrador o Colaborador (si eliges UBITS)
+3. **Módulo:** Aprendizaje, Desempeño, Colaboradores, etc.
+4. **Producto:** Producto específico dentro del módulo
 
-### 4. Iniciar Desarrollo
-
-```bash
-# Terminal 1: Auto-commit y validación
-npm run watch
-
-# Terminal 2: Servidor de desarrollo
-npm run dev
-```
-
-Abre `packages/playground-app/template-colaborador.html` o `template-admin.html` según el perfil.
-
----
-
-## ✨ Características
-
-### 🎨 Sistema de Diseño Completo
-- ✅ Tokens de color, tipografía y espaciado
-- ✅ Componentes modulares reutilizables
-- ✅ Tipografía UBITS integrada
-- ✅ Iconos Font Awesome Pro
-
-### 👥 Dos Modos de Operación
-- ✅ **Modo Colaborador**: Para usuarios normales
-- ✅ **Modo Administrador**: Para administradores con funciones avanzadas
-
-### 📱 Diseño Responsive
-- ✅ Desktop (≥1024px): Sidebar visible
-- ✅ Móvil (<1024px): TabBar visible
-- ✅ Contenido adaptativo
-
-### 🛡️ Validación Automática
-- ✅ Detección de colores hardcodeados
-- ✅ Validación de clases de tipografía
-- ✅ Verificación de componentes custom
-- ✅ Auto-corrección de errores comunes
-
-### 🔄 Auto-Commit
-- ✅ Commits automáticos durante desarrollo
-- ✅ Validación antes de cada commit
-- ✅ Prevención de commits con errores
-
-### 📦 Add-ons Disponibles
-- ✅ Microsoft Clarity (Analytics)
-- ✅ Onboarding (Guía interactiva)
-- ✅ Feedback Automation (Sistema de feedback)
-
-### 🚀 Despliegue Automatizado
-- ✅ Vercel (Recomendado)
-- ✅ Render
-- ✅ Configuración guiada paso a paso
-
----
-
-## 👥 Modos de Operación
-
-### 👤 Modo Colaborador
-
-**Template**: `template-colaborador.html`
-
-**Módulos disponibles**:
-- 📚 **Aprendizaje**: Cursos y rutas de aprendizaje
-- 📊 **Desempeño**: Evaluaciones y métricas personales
-- 🔍 **Diagnóstico**: Herramientas de diagnóstico (sin SubNav)
-
-### 👨‍💼 Modo Administrador
-
-**Template**: `template-admin.html`
-
-**Módulos disponibles**:
-- 🏠 **Inicio**: Panel de administración (sin SubNav)
-- 🏢 **Empresa** → Gestión de usuarios
-- 📚 **Aprendizaje** → LMS completo
-- 📊 **Desempeño** → Evaluaciones 360°
-- 🔍 **Diagnóstico**: Análisis organizacional (sin SubNav)
-- 🔌 **API**: Documentación de API
-- ❓ **Centro de ayuda**: Soporte y ayuda
+**Lo que hace automáticamente:**
+- ✅ Activa add-ons predefinidos según tu elección
+- ✅ Carga componentes desde Storybook UBITS
+- ✅ Habilita módulo en sidebar
+- ✅ Configura subnav con productos
+- ✅ Crea lienzo HTML listo para prototipar
+- ✅ Valida contra estándares UBITS
+- ✅ Guarda configuración en `autorun.config.json`
 
 ---
 
 ## 📁 Estructura del Proyecto
 
 ```
-prototipo-template/
-├── packages/
-│   ├── addons/              # Componentes modulares
-│   │   ├── sidebar/         # Sidebar con modos
-│   │   ├── tabbar/          # TabBar responsive
-│   │   ├── subnav/          # SubNav dinámico
-│   │   ├── card/            # Card Content
-│   │   ├── button/          # Botones UBITS
-│   │   ├── input/           # Inputs UBITS
-│   │   ├── alert/           # Alertas
-│   │   ├── toast/           # Notificaciones
-│   │   └── badge/          # Badges
-│   ├── playground-app/      # Aplicación principal
-│   │   ├── template-colaborador.html
-│   │   ├── template-admin.html
-│   │   ├── components-loader.js
-│   │   ├── config/
-│   │   │   ├── products.js
-│   │   │   ├── responsive-manager.js
-│   │   │   └── theme-manager.js
-│   │   └── engine/
-│   │       ├── content-manager.js
-│   │       └── template-loader.js
-│   ├── tokens/              # Tokens de diseño
-│   └── typography/          # Tipografía UBITS
-├── scripts/
-│   ├── init-project.cjs
-│   ├── integrate-addons.cjs
-│   ├── deploy.cjs
-│   └── validate-ubits.cjs
-├── .ubits/                  # Configuración UBITS
-└── .husky/                  # Git hooks
+Autorun/
+├── 📄 README.md                    # Este archivo
+├── 📄 package.json                 # Scripts y dependencias principales
+├── 📄 QUICK-START.md               # Guía rápida de solución de problemas
+│
+├── 📂 scripts/                     # Scripts de utilidad
+│   └── verify-setup.js            # Verificación post-instalación
+│
+├── 📂 packages/
+│   ├── 📂 autorun-core/            # 🧠 Núcleo del sistema
+│   │   ├── src/
+│   │   │   ├── cli/               # Scripts CLI
+│   │   │   │   └── autorun-init.ts # Wizard de inicialización
+│   │   │   ├── wizard/             # Wizard de setup
+│   │   │   ├── AutorunHub.ts      # Hub principal
+│   │   │   └── ...
+│   │   └── package.json
+│   │
+│   ├── 📂 addons/                  # 🔌 Add-ons del sistema
+│   │   ├── functional/            # Add-ons funcionales
+│   │   │   ├── feedback/          # Feedback automatizado
+│   │   │   ├── storybook/         # Storybook
+│   │   │   ├── github/            # GitHub integration
+│   │   │   └── ...
+│   │   └── [component]/           # Add-ons de componentes
+│   │       ├── button/
+│   │       ├── alert/
+│   │       └── ...
+│   │
+│   └── 📂 proyecto-app/            # 📱 Aplicación principal
+│       └── tokens/
+│           └── index.html          # Hub de documentación
+│
+└── 📂 docs/                        # 📚 Documentación adicional
+    ├── GUIA-SETUP-UBITS.md
+    └── ...
 ```
 
 ---
 
-## 🎨 Sistema de Diseño
+## 🛠️ Scripts Disponibles
 
-### Tokens de Color
+### Scripts Principales
 
-```css
-/* Backgrounds */
---ubits-bg-1          /* Fondo principal */
---ubits-bg-2          /* Fondo secundario */
---ubits-bg-active     /* Fondo activo */
+| Script | Descripción |
+|--------|-------------|
+| `npm run init` | 🎯 **Wizard de inicialización interactiva** |
+| `npm run verify` | ✅ Verificación manual del setup |
+| `npm run dev` | 🚀 Servidor de desarrollo |
+| `npm run build` | 📦 Build del proyecto |
+| `npm run lint` | 🔍 Linter (Biome) |
+| `npm run format` | ✨ Formateo de código |
 
-/* Foregrounds */
---ubits-fg-1-high     /* Texto principal */
---ubits-fg-1-medium   /* Texto secundario */
---ubits-fg-1-low      /* Texto terciario */
+### Scripts del Core
 
-/* Accents */
---ubits-accent-brand  /* Color de marca */
---ubits-accent-blue   /* Azul */
---ubits-accent-green  /* Verde */
---ubits-accent-red    /* Rojo */
-
-/* Borders */
---ubits-border-1      /* Borde principal */
---ubits-border-2      /* Borde secundario */
-```
-
-### Tokens de Tipografía
-
-```css
-/* Headings */
-.ubits-heading-h1     /* Título principal */
-.ubits-heading-h2     /* Título secundario */
-.ubits-heading-h3     /* Título terciario */
-
-/* Body */
-.ubits-body-lg        /* Texto grande */
-.ubits-body-md        /* Texto mediano */
-.ubits-body-sm        /* Texto pequeño */
-```
-
-### Componentes Disponibles
-
-- **Sidebar**: Navegación lateral con modos colaborador/admin
-- **TabBar**: Navegación inferior para móviles
-- **SubNav**: Navegación por pestañas dentro de módulos
-- **Card Content**: Tarjetas de contenido
-- **Button**: Botones con variantes
-- **Input**: Campos de entrada
-- **Alert**: Alertas informativas
-- **Toast**: Notificaciones temporales
-- **Badge**: Etiquetas
-
----
-
-## 🔧 Scripts Disponibles
-
-### Inicialización
 ```bash
-npm run init              # Inicializar proyecto nuevo
-```
-
-### Validación
-```bash
-npm run validate          # Validar código (solo staging)
-npm run validate:fix      # Validar y corregir automáticamente
-npm run validate:all      # Validar todos los archivos
-npm run validate:all:fix  # Validar y corregir todos
-```
-
-### Desarrollo
-```bash
-npm run watch             # Auto-commit y validación
-npm run dev               # Servidor de desarrollo
-```
-
-### Integración
-```bash
-npm run integrate:addons  # Integrar add-ons
-```
-
-### Despliegue
-```bash
-npm run deploy            # Guía de despliegue
-```
-
-### Build
-```bash
-npm run build:tokens      # Generar tokens CSS/JS
+cd packages/autorun-core
+npm run build      # Compilar TypeScript
+npm run test       # Ejecutar tests
+npm run test:watch # Tests en modo watch
 ```
 
 ---
 
-## 🛡️ Validación Automática
+## 🎯 Flujo de Trabajo
 
-### Qué Valida
+### Para Proyectos UBITS
 
-- ✅ Colores hardcodeados → Sugiere tokens UBITS
-- ✅ Clases de tipografía incorrectas → Sugiere clases oficiales
-- ✅ Componentes custom → Sugiere componentes oficiales
-- ✅ CSS faltante → Sugiere imports necesarios
+1. **Inicializar:**
+   ```bash
+   npm run init
+   # Selecciona: UBITS → Administrador/Colaborador → Módulo → Producto
+   ```
 
-### Qué Corrige Automáticamente
+2. **Desarrollar:**
+   - Abre el lienzo creado en `prototypes/canvas-*.html`
+   - Usa componentes UBITS desde Storybook
+   - Prototipa con feedback automatizado
 
-- `white` → `var(--ubits-bg-1)`
-- `black` → `var(--ubits-fg-1-high)`
-- `ubits-h1` → `ubits-heading-h1`
-- `ubits-body-lg-bold` → `ubits-heading-h1`
+3. **Desplegar:**
+   - El add-on de Vercel despliega automáticamente
+   - El add-on de GitHub hace commits automáticos
+   - El add-on de Clarity monitorea analytics
 
-### Ejecución Automática
+### Para Proyectos Independientes
 
-La validación se ejecuta automáticamente:
-- ✅ En cada commit (pre-commit hook)
-- ✅ Cuando ejecutas `npm run watch`
-- ✅ Manualmente con `npm run validate`
+1. **Inicializar:**
+   ```bash
+   npm run init
+   # Selecciona: Independiente → Elige add-ons
+   ```
+
+2. **Configurar:**
+   - Edita `autorun.config.json`
+   - Activa add-ons según necesites
 
 ---
 
 ## 📚 Documentación
 
-- **[Guía Completa](GUIA-COMPLETA.md)**: Documentación detallada del template
-- **[Reglas Cursor](.cursorrules)**: Reglas para trabajar con Cursor AI
-- **[Validación](.ubits/AUTO-VALIDATION.md)**: Sistema de validación automática
-- **[Componentes](.ubits/component-inventory.json)**: Inventario de componentes
-- **[Arquitectura](docs/ARQUITECTURA-TEMPLATE.md)**: Arquitectura del template
+### Guías Principales
+
+- **[QUICK-START.md](./QUICK-START.md)** - Solución rápida de problemas
+- **[docs/GUIA-SETUP-UBITS.md](./docs/GUIA-SETUP-UBITS.md)** - Setup completo para UBITS
+- **[packages/proyecto-app/tokens/index.html](./packages/proyecto-app/tokens/index.html)** - Hub de documentación interactiva
+
+### Documentación de Add-ons
+
+Cada add-on tiene su propio README en:
+- `packages/addons/functional/[addon-name]/README.md`
+- `packages/addons/[component-name]/README.md`
 
 ---
 
-## 💡 Flujo de Trabajo Recomendado
+## ❓ Solución de Problemas
 
-1. **Inicializar**: `npm run init`
-2. **Activar watch**: `npm run watch` (dejar corriendo)
-3. **Desarrollar**: Trabajas normalmente, el sistema valida y commitea
-4. **Integrar add-ons**: `npm run integrate:addons` (cuando estés listo)
-5. **Desplegar**: `npm run deploy` (al finalizar)
+### El script `init` no existe
 
----
+**Causa:** Repositorio clonado antes de que se agregara el script.
 
-## ✅ Ventajas
-
-- ✅ **Sin intervención manual** - Todo es automático
-- ✅ **Calidad garantizada** - Validación en cada commit
-- ✅ **Corrección automática** - Menos trabajo para ti
-- ✅ **Flujo completo** - De inicio a despliegue
-- ✅ **Configuración simple** - Todo guiado interactivamente
-- ✅ **Diseño consistente** - Tokens y componentes UBITS
-- ✅ **Responsive** - Funciona en todos los dispositivos
-- ✅ **Documentado** - Storybook con ejemplos
-
----
-
-## 🆘 Solución de Problemas
-
-### El proyecto no se inicializa
+**Solución:**
 ```bash
-node --version  # Verifica Node.js
+# Verificar rama
+git branch --show-current
+
+# Actualizar
+git pull origin fase-1-tokens
+
+# O clonar de nuevo
+git clone -b fase-1-tokens https://github.com/elkingarcia22/Autorun.git
+```
+
+### Error al ejecutar `npm run init`
+
+**Verificar:**
+```bash
+# 1. Verificar que tsx esté instalado
+npm list tsx
+
+# 2. Verificar estructura
+npm run verify
+
+# 3. Reinstalar dependencias
 rm -rf node_modules package-lock.json
 npm install
 ```
 
-### Los componentes no se cargan
-```bash
-# Verifica que los archivos estén en su lugar
-ls packages/playground-app/components-loader.js
-# Revisa la consola del navegador (F12)
-```
+### El wizard no carga componentes
 
-### La validación falla
-```bash
-npm run validate:all      # Revisa errores
-npm run validate:all:fix  # Corrige automáticamente
+**Verificar:**
+- URL de Storybook en `packages/autorun-core/src/wizard/UBITSPreset.ts`
+- Conexión a internet
+- Que los componentes existan en Storybook
+
+---
+
+## 🔧 Configuración
+
+### Archivo de Configuración
+
+Después de ejecutar `npm run init`, se crea `autorun.config.json`:
+
+```json
+{
+  "autorun": {
+    "version": "1.0.0",
+    "projectType": "ubits",
+    "ubits": {
+      "template": "administrador",
+      "module": "desempeno",
+      "product": "objetivos"
+    },
+    "addons": {
+      "active": ["storybook", "feedback", "vercel", ...]
+    }
+  }
+}
 ```
 
 ---
 
-**¿Listo para empezar?** Ejecuta `npm run init` 🚀
+## 🎨 Add-ons Disponibles
+
+### Add-ons Funcionales
+
+- **Storybook** - Desarrollo y documentación de componentes
+- **Feedback** - Feedback automatizado (n8n, Google Sheets, Gemini, Slack)
+- **Vercel** - Deploy automático
+- **GitHub** - Versionado y commits automáticos
+- **Clarity** - Analytics y heatmaps
+- **ESLint/Prettier** - Calidad de código
+- **Vitest/Playwright** - Testing
+- **Snyk** - Security scanning
+- Y más...
+
+### Add-ons de Componentes
+
+- **Button** - Botones UBITS
+- **Alert** - Alertas y notificaciones
+- **Mask** - Overlays y onboarding
+- **Welcome** - Pantallas de bienvenida
+- **ButtonFeedback** - Botón de feedback
+
+---
+
+## 🚀 Próximos Pasos
+
+1. ✅ Clonar e instalar
+2. ✅ Ejecutar `npm run init`
+3. ✅ Seleccionar configuración
+4. ✅ Abrir lienzo creado
+5. ✅ Prototipar con componentes UBITS
+6. ✅ Activar feedback automatizado
+7. ✅ Desplegar con Vercel
+
+---
+
+## 📞 Soporte
+
+- **Documentación completa:** `packages/proyecto-app/tokens/index.html`
+- **Issues:** [GitHub Issues](https://github.com/elkingarcia22/Autorun/issues)
+- **Rama activa:** `fase-1-tokens`
 
 ---
 

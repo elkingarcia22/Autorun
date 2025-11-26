@@ -1,7 +1,7 @@
 {
-	"name": "prototipo-template",
-	"version": "0.0.0",
-	"description": "Base mínima para construir prototipos con mejores prácticas (tokens, tipografía, componentes y páginas en blanco listas para iterar).",
+	"name": "autorun",
+	"version": "1.0.0",
+	"description": "Sistema modular para crear prototipos de alta calidad con componentes UBITS, add-ons funcionales y herramientas de desarrollo integradas.",
 	"main": "index.js",
 	"scripts": {
 		"dev": "vite",
