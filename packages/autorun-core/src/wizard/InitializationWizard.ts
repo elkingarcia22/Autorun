@@ -45,11 +45,12 @@ export class InitializationWizard {
 	/**
 	 * Inicia el wizard de inicialización
 	 */
-	async start(): Promise<WizardResult> {
-		console.log('🚀 Iniciando Autorun Setup Wizard...\n');
+	async start(options?: { autoSelect?: ProjectType }): Promise<WizardResult> {
+		console.log('🚀 ¡Hola! Soy tu asistente de Autorun.\n');
+		console.log('Te voy a guiar paso a paso para configurar tu proyecto.\n');
 
 		// 1. Preguntar tipo de proyecto
-		const projectType = await this.askProjectType();
+		const projectType = options?.autoSelect || await this.askProjectType();
 
 		if (projectType === 'ubits') {
 			return await this.setupUBITS();
@@ -71,6 +72,19 @@ export class InitializationWizard {
 	 * Implementación interactiva (Node.js)
 	 */
 	private async askProjectTypeInteractive(): Promise<ProjectType> {
+		// Verificar si hay respuesta automática en variable de entorno
+		const autoAnswer = process.env.AUTORUN_PROJECT_TYPE || process.env.AUTORUN_AUTO_ANSWER;
+		
+		if (autoAnswer === 'ubits' || autoAnswer === '1') {
+			console.log('✅ Perfecto, veo que quieres trabajar en UBITS.\n');
+			return 'ubits';
+		}
+		
+		if (autoAnswer === 'independent' || autoAnswer === '2') {
+			console.log('✅ Perfecto, veo que quieres trabajar en un Proyecto Independiente.\n');
+			return 'independent';
+		}
+
 		const answer = await this.prompt.select(
 			'📋 ¿En qué tipo de proyecto quieres trabajar?',
 			[
@@ -93,43 +107,56 @@ export class InitializationWizard {
 	 * Configuración para UBITS
 	 */
 	private async setupUBITS(): Promise<UBITSResult> {
-		console.log('🎯 Configurando proyecto UBITS...\n');
+		console.log('🎯 Perfecto, vamos a configurar tu proyecto UBITS.\n');
+		console.log('Te voy a guiar paso a paso:\n');
 
 		// 1. Cargar preset de UBITS
-		console.log('📦 Cargando preset UBITS...');
+		console.log('📦 Paso 1: Cargando preset UBITS con add-ons optimizados...');
 		await this.loadUBITSPreset();
+		console.log('   ✅ Preset cargado correctamente\n');
 
 		// 2. Conectar con Storybook
-		console.log('🔗 Conectando con Storybook UBITS...');
+		console.log('🔗 Paso 2: Conectando con Storybook UBITS...');
 		await this.connectStorybook();
+		console.log('   ✅ Conectado a Storybook\n');
 
 		// 3. Cargar componentes desde Storybook
-		console.log('🧩 Cargando componentes desde Storybook...');
+		console.log('🧩 Paso 3: Cargando componentes desde Storybook...');
 		await this.loadComponentsFromStorybook();
+		console.log('   ✅ Componentes cargados\n');
 
 		// 4. Seleccionar template
+		console.log('📋 Paso 4: Necesito saber qué template quieres usar...');
 		const template = await this.selectTemplate();
+		console.log(`   ✅ Template seleccionado: ${template}\n`);
 
 		// 5. Seleccionar módulo y producto
+		console.log('📦 Paso 5: Ahora vamos a elegir el módulo y producto...');
 		const { module, product } = await this.selectModule(template);
+		console.log(`   ✅ Módulo: ${module}, Producto: ${product}\n`);
 
 		// 6. Habilitar módulo en sidebar y configurar subnav
-		console.log(`✅ Habilitando módulo "${module}" en sidebar y subnav...`);
+		console.log(`⚙️  Paso 6: Configurando sidebar y subnav para "${module}"...`);
 		await this.enableModule(module, template, product);
+		console.log('   ✅ Sidebar y subnav configurados\n');
 
 		// 7. Crear lienzo/template
-		console.log('🎨 Creando lienzo de trabajo...');
+		console.log('🎨 Paso 7: Creando tu lienzo de trabajo...');
 		const canvasPath = await this.createCanvas(template, module, product);
+		console.log(`   ✅ Lienzo creado: ${canvasPath}\n`);
 
 		// 8. Validar lienzo creado
-		console.log('🔍 Validando lienzo contra estándares UBITS...');
+		console.log('🔍 Paso 8: Validando que todo cumpla con los estándares UBITS...');
 		await this.validateCanvas(canvasPath);
+		console.log('   ✅ Validación completada\n');
 
-		console.log('\n✅ Configuración UBITS completada!\n');
-		console.log(`📁 Lienzo creado en: ${canvasPath}`);
-		console.log(`🎯 Template: ${template}`);
-		console.log(`📦 Módulo activo: ${module}`);
-		console.log(`🎨 Producto activo: ${product}\n`);
+		console.log('🎉 ¡Excelente! Tu proyecto UBITS está listo.\n');
+		console.log('📋 Resumen de tu configuración:');
+		console.log(`   📁 Lienzo: ${canvasPath}`);
+		console.log(`   🎯 Template: ${template}`);
+		console.log(`   📦 Módulo: ${module}`);
+		console.log(`   🎨 Producto: ${product}\n`);
+		console.log('🚀 Ya puedes empezar a trabajar. ¡Éxito con tu proyecto!\n');
 
 		return {
 			projectType: 'ubits',
@@ -196,8 +223,15 @@ export class InitializationWizard {
 	 * Selecciona template (Administrador/Colaborador)
 	 */
 	private async selectTemplate(): Promise<'administrador' | 'colaborador'> {
+		// Verificar respuesta automática
+		const autoAnswer = process.env.AUTORUN_TEMPLATE;
+		if (autoAnswer === 'administrador' || autoAnswer === 'colaborador') {
+			console.log(`   ✅ Usaré el template: ${autoAnswer}`);
+			return autoAnswer as 'administrador' | 'colaborador';
+		}
+
 		const answer = await this.prompt.select(
-			'📋 ¿Qué template quieres usar?',
+			'   ¿Qué template quieres usar?',
 			[
 				{
 					value: 'administrador',
@@ -231,11 +265,19 @@ export class InitializationWizard {
 			};
 		});
 
-		const selectedModule = await this.prompt.select(
-			'📋 ¿En qué módulo quieres trabajar?',
-			moduleOptions,
-			'desempeno',
-		);
+		// Verificar respuesta automática
+		const autoModule = process.env.AUTORUN_MODULE;
+		let selectedModule = autoModule || 'desempeno';
+		
+		if (!autoModule) {
+			selectedModule = await this.prompt.select(
+				'   ¿En qué módulo quieres trabajar?',
+				moduleOptions,
+				'desempeno',
+			);
+		} else {
+			console.log(`   ✅ Módulo seleccionado: ${selectedModule}`);
+		}
 
 		// Seleccionar producto dentro del módulo
 		const product = await this.selectProduct(selectedModule);
@@ -264,8 +306,15 @@ export class InitializationWizard {
 			label: product.name,
 		}));
 
+		// Verificar respuesta automática
+		const autoProduct = process.env.AUTORUN_PRODUCT;
+		if (autoProduct) {
+			console.log(`   ✅ Producto seleccionado: ${autoProduct}`);
+			return autoProduct;
+		}
+
 		const selectedProduct = await this.prompt.select(
-			`📦 ¿En qué producto de "${moduleConfig.name}" quieres trabajar?`,
+			`   ¿En qué producto de "${moduleConfig.name}" quieres trabajar?`,
 			productOptions,
 			moduleConfig.products[0]?.id,
 		);
