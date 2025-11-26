@@ -2411,6 +2411,132 @@
         padding: 0 20px 20px 20px;
       }
 
+      /* Acordeón solo para Docker */
+      #addon-docker .addon-section {
+        margin-bottom: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 8px;
+        overflow: hidden;
+        background: rgba(0, 0, 0, 0.2);
+      }
+
+      #addon-docker .addon-section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 20px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: transparent;
+        border: none;
+        width: 100%;
+        text-align: left;
+      }
+
+      #addon-docker .addon-section-header:hover {
+        background: rgba(255, 255, 255, 0.03);
+      }
+
+      #addon-docker .addon-section-header.active {
+        background: rgba(255, 255, 0, 0.05);
+      }
+
+      #addon-docker .addon-section-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--autorun-neon-white);
+        margin: 0;
+        padding: 0;
+        border: none;
+      }
+
+      #addon-docker .addon-section-chevron {
+        width: 18px;
+        height: 18px;
+        transition: transform 0.3s ease;
+        color: var(--autorun-neon-yellow);
+        flex-shrink: 0;
+      }
+
+      #addon-docker .addon-section.expanded .addon-section-chevron {
+        transform: rotate(180deg);
+      }
+
+      #addon-docker .addon-section-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.4s ease, padding 0.3s ease;
+        padding: 0 20px;
+      }
+
+      #addon-docker .addon-section.expanded .addon-section-content {
+        max-height: 5000px;
+        padding: 0 20px 20px 20px;
+      }
+
+      /* Acordeón solo para Renovate */
+      #addon-renovate .addon-section {
+        margin-bottom: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 8px;
+        overflow: hidden;
+        background: rgba(0, 0, 0, 0.2);
+      }
+
+      #addon-renovate .addon-section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 20px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: transparent;
+        border: none;
+        width: 100%;
+        text-align: left;
+      }
+
+      #addon-renovate .addon-section-header:hover {
+        background: rgba(255, 255, 255, 0.03);
+      }
+
+      #addon-renovate .addon-section-header.active {
+        background: rgba(255, 255, 0, 0.05);
+      }
+
+      #addon-renovate .addon-section-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--autorun-neon-white);
+        margin: 0;
+        padding: 0;
+        border: none;
+      }
+
+      #addon-renovate .addon-section-chevron {
+        width: 18px;
+        height: 18px;
+        transition: transform 0.3s ease;
+        color: var(--autorun-neon-yellow);
+        flex-shrink: 0;
+      }
+
+      #addon-renovate .addon-section.expanded .addon-section-chevron {
+        transform: rotate(180deg);
+      }
+
+      #addon-renovate .addon-section-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.4s ease, padding 0.3s ease;
+        padding: 0 20px;
+      }
+
+      #addon-renovate .addon-section.expanded .addon-section-content {
+        max-height: 5000px;
+        padding: 0 20px 20px 20px;
+      }
+
       .addon-features {
         list-style: none;
         padding: 0;
@@ -6089,29 +6215,49 @@ await uploadCoverage();</code></pre>
               <p class="addon-description">
                 Containerización de aplicaciones. Construye imágenes Docker, haz push a registries y despliega containers en CI/CD.
               </p>
-              <div class="addon-section">
-                <h4 class="addon-section-title">Características</h4>
-                <ul class="addon-features">
-                  <li>Build de imágenes Docker</li>
-                  <li>Push a registries (Docker Hub, etc.)</li>
-                  <li>Multi-stage builds optimizados</li>
-                  <li>Integración con CI/CD</li>
-                </ul>
+              <div class="addon-section expanded">
+                <button class="addon-section-header active">
+                  <h4 class="addon-section-title">Características</h4>
+                  <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <div class="addon-section-content">
+                  <ul class="addon-features">
+                    <li>Build de imágenes Docker</li>
+                    <li>Push a registries (Docker Hub, etc.)</li>
+                    <li>Multi-stage builds optimizados</li>
+                    <li>Integración con CI/CD</li>
+                  </ul>
+                </div>
               </div>
               <div class="addon-section">
-                <h4 class="addon-section-title">Requisitos</h4>
-                <div class="requirements-list">
-                  <div class="requirement-item">
-                    <span class="requirement-label">Docker</span>
-                    <span class="requirement-value">Docker debe estar instalado y corriendo</span>
+                <button class="addon-section-header">
+                  <h4 class="addon-section-title">Requisitos</h4>
+                  <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <div class="addon-section-content">
+                  <div class="requirements-list">
+                    <div class="requirement-item">
+                      <span class="requirement-label">Docker</span>
+                      <span class="requirement-value">Docker debe estar instalado y corriendo</span>
+                    </div>
                   </div>
                 </div>
               </div>
 
               <div class="addon-section">
-                <h4 class="addon-section-title">Configuración</h4>
-                <div class="code-block">
-                  <pre><code>{
+                <button class="addon-section-header">
+                  <h4 class="addon-section-title">Configuración</h4>
+                  <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <div class="addon-section-content">
+                  <div class="code-block">
+                    <pre><code>{
   "autorun": {
     "addons": {
       "config": {
@@ -6125,13 +6271,20 @@ await uploadCoverage();</code></pre>
     }
   }
 }</code></pre>
+                  </div>
                 </div>
               </div>
 
               <div class="addon-section">
-                <h4 class="addon-section-title">Uso</h4>
-                <div class="code-block">
-                  <pre><code>// Activar add-on
+                <button class="addon-section-header">
+                  <h4 class="addon-section-title">Uso</h4>
+                  <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <div class="addon-section-content">
+                  <div class="code-block">
+                    <pre><code>// Activar add-on
 await hub.activateAddon('docker');
 
 // Build imagen
@@ -6141,6 +6294,7 @@ await build({ imageName: 'myapp', tag: 'v1.0.0' });
 // Push a registry
 const push = hub.getService('docker', 'push');
 await push({ registry: 'docker.io/username' });</code></pre>
+                  </div>
                 </div>
               </div>
             </div>
@@ -6226,36 +6380,56 @@ const reportPath = await generateReport();</code></pre>
               <p class="addon-description">
                 Actualización automática de dependencias. Detecta actualizaciones disponibles y crea PRs automáticamente para mantener tus dependencias actualizadas.
               </p>
-              <div class="addon-section">
-                <h4 class="addon-section-title">Características</h4>
-                <ul class="addon-features">
-                  <li>Detección automática de actualizaciones</li>
-                  <li>Creación de PRs automáticos</li>
-                  <li>Configuración de Renovate automática</li>
-                  <li>Gestión de dependencias</li>
-                  <li>Integración con GitHub</li>
-                  <li>Verificación periódica</li>
-                  <li>Package rules personalizadas</li>
-                </ul>
+              <div class="addon-section expanded">
+                <button class="addon-section-header active">
+                  <h4 class="addon-section-title">Características</h4>
+                  <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <div class="addon-section-content">
+                  <ul class="addon-features">
+                    <li>Detección automática de actualizaciones</li>
+                    <li>Creación de PRs automáticos</li>
+                    <li>Configuración de Renovate automática</li>
+                    <li>Gestión de dependencias</li>
+                    <li>Integración con GitHub</li>
+                    <li>Verificación periódica</li>
+                    <li>Package rules personalizadas</li>
+                  </ul>
+                </div>
               </div>
               <div class="addon-section">
-                <h4 class="addon-section-title">Requisitos</h4>
-                <div class="requirements-list">
-                  <div class="requirement-item">
-                    <span class="requirement-label">GitHub App (Recomendado)</span>
-                    <span class="requirement-value">Instalar desde renovateapp.com</span>
-                  </div>
-                  <div class="requirement-item">
-                    <span class="requirement-label">O Instalación Local</span>
-                    <span class="requirement-value">npm install -g renovate</span>
+                <button class="addon-section-header">
+                  <h4 class="addon-section-title">Requisitos</h4>
+                  <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <div class="addon-section-content">
+                  <div class="requirements-list">
+                    <div class="requirement-item">
+                      <span class="requirement-label">GitHub App (Recomendado)</span>
+                      <span class="requirement-value">Instalar desde renovateapp.com</span>
+                    </div>
+                    <div class="requirement-item">
+                      <span class="requirement-label">O Instalación Local</span>
+                      <span class="requirement-value">npm install -g renovate</span>
+                    </div>
                   </div>
                 </div>
               </div>
 
               <div class="addon-section">
-                <h4 class="addon-section-title">Configuración</h4>
-                <div class="code-block">
-                  <pre><code>{
+                <button class="addon-section-header">
+                  <h4 class="addon-section-title">Configuración</h4>
+                  <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <div class="addon-section-content">
+                  <div class="code-block">
+                    <pre><code>{
   "autorun": {
     "addons": {
       "config": {
@@ -6269,13 +6443,20 @@ const reportPath = await generateReport();</code></pre>
     }
   }
 }</code></pre>
+                  </div>
                 </div>
               </div>
 
               <div class="addon-section">
-                <h4 class="addon-section-title">Uso</h4>
-                <div class="code-block">
-                  <pre><code>// Activar add-on
+                <button class="addon-section-header">
+                  <h4 class="addon-section-title">Uso</h4>
+                  <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <div class="addon-section-content">
+                  <div class="code-block">
+                    <pre><code>// Activar add-on
 await hub.activateAddon('renovate');
 
 // Verificar actualizaciones
@@ -6285,6 +6466,7 @@ const result = await checkUpdates();
 // Ejecutar Renovate
 const run = hub.getService('renovate', 'run');
 await run();</code></pre>
+                  </div>
                 </div>
               </div>
             </div>
@@ -7658,6 +7840,40 @@ npm run addon:activate supabase</code></pre>
       if (vercelAddon) {
         // Manejar clicks en los headers de las secciones
         vercelAddon.addEventListener('click', (e) => {
+          if (e.target.closest('.addon-section-header')) {
+            const header = e.target.closest('.addon-section-header');
+            const section = header.closest('.addon-section');
+            
+            if (section) {
+              section.classList.toggle('expanded');
+              header.classList.toggle('active');
+            }
+          }
+        });
+      }
+
+      // Acordeón solo para Docker
+      const dockerAddon = document.getElementById('addon-docker');
+      if (dockerAddon) {
+        // Manejar clicks en los headers de las secciones
+        dockerAddon.addEventListener('click', (e) => {
+          if (e.target.closest('.addon-section-header')) {
+            const header = e.target.closest('.addon-section-header');
+            const section = header.closest('.addon-section');
+            
+            if (section) {
+              section.classList.toggle('expanded');
+              header.classList.toggle('active');
+            }
+          }
+        });
+      }
+
+      // Acordeón solo para Renovate
+      const renovateAddon = document.getElementById('addon-renovate');
+      if (renovateAddon) {
+        // Manejar clicks en los headers de las secciones
+        renovateAddon.addEventListener('click', (e) => {
           if (e.target.closest('.addon-section-header')) {
             const header = e.target.closest('.addon-section-header');
             const section = header.closest('.addon-section');
