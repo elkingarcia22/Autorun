@@ -1,0 +1,9 @@
+{
+	"name": "@autorun/renovate",
+	"version": "1.0.0",
+	"type": "functional",
+	"description": "Renovate - Actualización automática de dependencias",
+	"main": "./dist/index.js",
+	"export": "RenovateAddon"
+}
+

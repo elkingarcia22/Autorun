@@ -1,0 +1,9 @@
+{
+	"name": "@autorun/codecov",
+	"version": "1.0.0",
+	"type": "functional",
+	"description": "Codecov - Code coverage tracking",
+	"main": "./dist/index.js",
+	"export": "CodecovAddon"
+}
+

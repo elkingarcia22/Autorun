@@ -1,0 +1,31 @@
+{
+	"name": "@autorun/feedback",
+	"version": "1.0.0",
+	"description": "Feedback Automatizado Add-on - Sistema completo de recopilación de feedback con bienvenida, botón flotante, modal y mask",
+	"type": "module",
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"scripts": {
+		"build": "tsc",
+		"dev": "tsc --watch",
+		"lint": "biome check .",
+		"format": "biome format . --write",
+		"setup-feedback": "tsx scripts/setup-feedback.ts",
+		"auto-setup": "tsx scripts/auto-setup.ts"
+	},
+	"dependencies": {
+		"@autorun/core": "workspace:*",
+		"googleapis": "^128.0.0"
+	},
+	"devDependencies": {
+		"typescript": "^5.3.0",
+		"tsx": "^4.7.0"
+	},
+	"exports": {
+		".": {
+			"import": "./dist/index.js",
+			"types": "./dist/index.d.ts"
+		}
+	}
+}
+

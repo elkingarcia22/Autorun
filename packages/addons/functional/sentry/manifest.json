@@ -1,0 +1,9 @@
+{
+	"name": "@autorun/sentry",
+	"version": "1.0.0",
+	"type": "functional",
+	"description": "Sentry Error Monitoring - Monitoreo de errores y performance",
+	"main": "./dist/index.js",
+	"export": "SentryAddon"
+}
+

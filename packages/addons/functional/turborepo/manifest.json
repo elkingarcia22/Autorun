@@ -1,0 +1,9 @@
+{
+	"name": "@autorun/turborepo",
+	"version": "1.0.0",
+	"type": "functional",
+	"description": "Turborepo - Monorepo management",
+	"main": "./dist/index.js",
+	"export": "TurborepoAddon"
+}
+

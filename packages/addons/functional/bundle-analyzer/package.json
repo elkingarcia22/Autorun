@@ -1,0 +1,39 @@
+{
+	"name": "@autorun/bundle-analyzer",
+	"version": "1.0.0",
+	"description": "Bundle Analyzer Add-on - Análisis visual de bundles y optimización",
+	"type": "module",
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"scripts": {
+		"build": "tsc",
+		"dev": "tsc --watch",
+		"lint": "biome check .",
+		"format": "biome format . --write"
+	},
+	"dependencies": {
+		"@autorun/core": "workspace:*"
+	},
+	"devDependencies": {
+		"typescript": "^5.3.0"
+	},
+	"peerDependencies": {
+		"webpack-bundle-analyzer": "^4.9.0",
+		"rollup-plugin-visualizer": "^5.12.0"
+	},
+	"peerDependenciesMeta": {
+		"webpack-bundle-analyzer": {
+			"optional": true
+		},
+		"rollup-plugin-visualizer": {
+			"optional": true
+		}
+	},
+	"exports": {
+		".": {
+			"import": "./dist/index.js",
+			"types": "./dist/index.d.ts"
+		}
+	}
+}
+

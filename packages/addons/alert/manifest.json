@@ -1,0 +1,9 @@
+{
+	"name": "@autorun/alert",
+	"version": "1.0.0",
+	"type": "component",
+	"description": "Componente Alert AUTORUN como add-on intercambiable",
+	"main": "./dist/index.js",
+	"export": "AlertAddon"
+}
+

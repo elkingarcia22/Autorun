@@ -1,0 +1,35 @@
+{
+	"name": "@autorun/changesets",
+	"version": "1.0.0",
+	"description": "Changesets Add-on - Versionado semántico y changelog automático",
+	"type": "module",
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"scripts": {
+		"build": "tsc",
+		"dev": "tsc --watch",
+		"lint": "biome check .",
+		"format": "biome format . --write"
+	},
+	"dependencies": {
+		"@autorun/core": "workspace:*"
+	},
+	"devDependencies": {
+		"typescript": "^5.3.0"
+	},
+	"peerDependencies": {
+		"@changesets/cli": "^2.27.0"
+	},
+	"peerDependenciesMeta": {
+		"@changesets/cli": {
+			"optional": true
+		}
+	},
+	"exports": {
+		".": {
+			"import": "./dist/index.js",
+			"types": "./dist/index.d.ts"
+		}
+	}
+}
+

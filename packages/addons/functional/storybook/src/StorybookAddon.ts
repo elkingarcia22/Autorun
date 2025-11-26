@@ -156,9 +156,20 @@ export class StorybookAddon implements IFunctionalAddon {
 		}
 
 		// Build de Storybook antes de deploy
+		// Nota: Si Standalone Mode está activo, dejar que maneje la optimización
 		try {
-			console.log('📦 Storybook Add-on: Haciendo build antes de deploy...');
-			await this.service.build();
+			const standaloneActive = this.context?.hub?.isAddonActive?.('standalone');
+			
+			if (!standaloneActive) {
+				// Si Standalone no está activo, hacer build básico
+				console.log('📦 Storybook Add-on: Haciendo build antes de deploy...');
+				await this.service.build();
+			} else {
+				// Si Standalone está activo, solo hacer build básico
+				// Standalone se encargará de la optimización
+				console.log('📦 Storybook Add-on: Build básico (Standalone Mode optimizará)...');
+				await this.service.build();
+			}
 		} catch (error) {
 			console.error('❌ Storybook Add-on: Error al hacer build:', error);
 		}

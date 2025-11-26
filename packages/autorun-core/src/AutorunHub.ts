@@ -10,6 +10,20 @@ import { IFunctionalAddon } from './interfaces/IFunctionalAddon';
 import { AddonRegistry } from './AddonRegistry';
 import { AddonLoader } from './AddonLoader';
 import { ConfigManager } from './ConfigManager';
+import {
+	getConflictDetector,
+	AddonConflictError,
+} from './AddonConflictDetector';
+import {
+	HubNotInitializedError,
+	HubAlreadyInitializedError,
+	AddonNotFoundError,
+	AddonLoadError,
+	MissingDependencyError,
+	AddonInitializationError,
+	AddonActivationError,
+	ServiceNotFoundError,
+} from './errors/AutorunErrors';
 
 export class AutorunHub {
 	private registry: AddonRegistry;
@@ -42,7 +56,7 @@ export class AutorunHub {
 	 */
 	async initialize(): Promise<void> {
 		if (this.initialized) {
-			throw new Error('Hub ya está inicializado');
+			throw new HubAlreadyInitializedError();
 		}
 
 		// Cargar configuración
@@ -66,6 +80,27 @@ export class AutorunHub {
 	 * @private
 	 */
 	private async loadAddons(addonIds: string[]): Promise<void> {
+		// Verificar conflictos entre los add-ons a cargar
+		const conflictDetector = getConflictDetector();
+		const activeAddonIds = Array.from(this.activeAddons.keys());
+		const conflicts = conflictDetector.checkMultipleConflicts(addonIds, activeAddonIds);
+
+		if (conflicts.length > 0) {
+			// Mostrar todos los conflictos encontrados
+			console.error('\n❌ Se detectaron conflictos entre add-ons:\n');
+			for (const conflict of conflicts) {
+				const errorMessage = conflictDetector.generateErrorMessage(
+					conflict.addonId,
+					conflict.conflict,
+					conflict.conflictingAddon,
+				);
+				console.error(errorMessage);
+			}
+			throw new Error(
+				`No se pueden activar add-ons con conflictos. Revisa los mensajes arriba.`,
+			);
+		}
+
 		// Resolver orden de dependencias
 		const orderedIds = this.resolveDependencies(addonIds);
 
@@ -73,8 +108,12 @@ export class AutorunHub {
 			try {
 				await this.activateAddon(addonId);
 			} catch (error) {
+				if (error instanceof AddonConflictError) {
+					// Re-lanzar errores de conflicto sin modificar
+					throw error;
+				}
 				console.error(`❌ Error cargando add-on ${addonId}:`, error);
-				// Continuar con los demás add-ons aunque uno falle
+				// Continuar con los demás add-ons aunque uno falle (excepto conflictos)
 			}
 		}
 	}
@@ -128,12 +167,30 @@ export class AutorunHub {
 	/**
 	 * Activa un add-on
 	 * @param addonId ID del add-on a activar
-	 * @throws Error si el add-on no se encuentra o no se puede activar
+	 * @throws Error si el add-on no se encuentra, hay conflictos o no se puede activar
 	 */
 	async activateAddon(addonId: string): Promise<void> {
 		if (this.activeAddons.has(addonId)) {
 			console.log(`⚠️  Add-on ${addonId} ya está activo`);
 			return;
+		}
+
+		// Verificar conflictos con add-ons ya activos
+		const activeAddonIds = Array.from(this.activeAddons.keys());
+		const conflictDetector = getConflictDetector();
+		const conflict = conflictDetector.checkConflict(addonId, activeAddonIds);
+
+		if (conflict) {
+			const errorMessage = conflictDetector.generateErrorMessage(
+				addonId,
+				conflict.conflict,
+				conflict.conflictingAddon,
+			);
+			throw new AddonConflictError(errorMessage, {
+				addonId,
+				conflictingAddon: conflict.conflictingAddon,
+				conflictGroup: conflict.conflict,
+			});
 		}
 
 		let addon = this.registry.get(addonId);
@@ -142,10 +199,21 @@ export class AutorunHub {
 		if (!addon) {
 			const addonPath = this.getAddonPath(addonId);
 			if (addonPath) {
-				addon = await this.loader.load(addonPath);
-				this.registry.register(addon);
+				try {
+					addon = await this.loader.load(addonPath);
+					this.registry.register(addon);
+				} catch (error: any) {
+					throw new AddonLoadError(
+						addonId,
+						addonPath,
+						error.message || 'Error desconocido al cargar',
+					);
+				}
 			} else {
-				throw new Error(`Add-on ${addonId} no encontrado y no hay ruta configurada`);
+				const availableAddons = this.registry
+					.getAll()
+					.map((a) => a.id);
+				throw new AddonNotFoundError(addonId, availableAddons);
 			}
 		}
 
@@ -153,7 +221,14 @@ export class AutorunHub {
 		await this.checkDependencies(addon);
 
 		// Inicializar
-		await addon.initialize(this.context);
+		try {
+			await addon.initialize(this.context);
+		} catch (error: any) {
+			throw new AddonInitializationError(
+				addonId,
+				error.message || 'Error desconocido al inicializar',
+			);
+		}
 
 		// Configurar si hay configuración específica
 		const addonConfig = this.configManager.getAddonConfig(addonId);
@@ -163,7 +238,14 @@ export class AutorunHub {
 
 		// Activar
 		if (addon.activate) {
-			await addon.activate();
+			try {
+				await addon.activate();
+			} catch (error: any) {
+				throw new AddonActivationError(
+					addonId,
+					error.message || 'Error desconocido al activar',
+				);
+			}
 		}
 
 		this.activeAddons.set(addonId, addon);
@@ -185,11 +267,16 @@ export class AutorunHub {
 			return;
 		}
 
+		const missingDeps: string[] = [];
 		for (const depId of addon.dependencies) {
 			const depAddon = this.activeAddons.get(depId);
 			if (!depAddon || !depAddon.isActive()) {
-				throw new Error(`Add-on ${addon.id} requiere ${depId} pero no está activo`);
+				missingDeps.push(depId);
 			}
+		}
+
+		if (missingDeps.length > 0) {
+			throw new MissingDependencyError(addon.id, missingDeps);
 		}
 	}
 
@@ -284,14 +371,32 @@ export class AutorunHub {
 	 * @returns Función del servicio o null
 	 */
 	getService(addonId: string, serviceName: string): Function | null {
+		if (!this.initialized) {
+			throw new HubNotInitializedError(`getService('${addonId}', '${serviceName}')`);
+		}
+
 		const addon = this.activeAddons.get(addonId);
-		if (!addon || addon.type !== 'functional') {
-			return null;
+		if (!addon) {
+			throw new AddonNotFoundError(addonId);
+		}
+
+		if (addon.type !== 'functional') {
+			throw new ServiceNotFoundError(
+				addonId,
+				serviceName,
+			);
 		}
 
 		const functionalAddon = addon as IFunctionalAddon;
 		const services = functionalAddon.getServices?.() || {};
-		return services[serviceName] || null;
+		const service = services[serviceName];
+
+		if (!service) {
+			const availableServices = Object.keys(services);
+			throw new ServiceNotFoundError(addonId, serviceName);
+		}
+
+		return service;
 	}
 
 	/**

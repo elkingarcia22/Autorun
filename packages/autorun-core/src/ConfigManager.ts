@@ -7,10 +7,13 @@
 
 import * as fs from 'fs/promises';
 import * as path from 'path';
+import { ConfigValidator, ValidationError } from './validation/ConfigValidator';
+import { InvalidConfigError, ConfigFileError } from './errors/AutorunErrors';
 
 export class ConfigManager {
 	private configPath: string;
 	private config: any = null;
+	private validator: ConfigValidator;
 
 	/**
 	 * Crea una instancia de ConfigManager
@@ -18,6 +21,7 @@ export class ConfigManager {
 	 */
 	constructor(configPath: string = '.ubits/project-config.json') {
 		this.configPath = configPath;
+		this.validator = new ConfigValidator();
 	}
 
 	/**
@@ -32,20 +36,55 @@ export class ConfigManager {
 		try {
 			const content = await fs.readFile(this.configPath, 'utf-8');
 			this.config = JSON.parse(content);
+
+			// Validar configuración
+			const validation = this.validator.validate(this.config);
+			if (!validation.valid) {
+				const errorMessage = this.validator.generateErrorMessage(
+					validation.errors,
+				);
+				throw new InvalidConfigError(
+					'La configuración no cumple con el schema',
+					this.configPath,
+					validation.errors.map((e) => e.message),
+				);
+			}
+
 			return this.config;
-		} catch (error) {
-			// Si no existe, crear configuración por defecto
-			this.config = {
-				autorun: {
-					version: '1.0.0',
-					addons: {
-						active: [],
-						config: {},
+		} catch (error: any) {
+			// Si es error de archivo no encontrado, crear configuración por defecto
+			if (error.code === 'ENOENT') {
+				this.config = {
+					autorun: {
+						version: '1.0.0',
+						addons: {
+							active: [],
+							config: {},
+						},
 					},
-				},
-			};
-			await this.save();
-			return this.config;
+				};
+				await this.save();
+				return this.config;
+			}
+
+			// Si es error de validación, re-lanzar
+			if (error instanceof InvalidConfigError) {
+				throw error;
+			}
+
+			// Si es error de JSON, lanzar error de archivo
+			if (error instanceof SyntaxError) {
+				throw new ConfigFileError(
+					this.configPath,
+					`JSON inválido: ${error.message}`,
+				);
+			}
+
+			// Otros errores de archivo
+			throw new ConfigFileError(
+				this.configPath,
+				error.message || 'Error desconocido al leer archivo',
+			);
 		}
 	}
 
@@ -53,9 +92,35 @@ export class ConfigManager {
 	 * Guarda la configuración en el archivo
 	 */
 	async save(): Promise<void> {
-		const dir = path.dirname(this.configPath);
-		await fs.mkdir(dir, { recursive: true });
-		await fs.writeFile(this.configPath, JSON.stringify(this.config, null, 2), 'utf-8');
+		// Validar antes de guardar
+		if (this.config) {
+			const validation = this.validator.validate(this.config);
+			if (!validation.valid) {
+				const errorMessage = this.validator.generateErrorMessage(
+					validation.errors,
+				);
+				throw new InvalidConfigError(
+					'No se puede guardar: la configuración no cumple con el schema',
+					this.configPath,
+					validation.errors.map((e) => e.message),
+				);
+			}
+		}
+
+		try {
+			const dir = path.dirname(this.configPath);
+			await fs.mkdir(dir, { recursive: true });
+			await fs.writeFile(
+				this.configPath,
+				JSON.stringify(this.config, null, 2),
+				'utf-8',
+			);
+		} catch (error: any) {
+			throw new ConfigFileError(
+				this.configPath,
+				error.message || 'Error desconocido al escribir archivo',
+			);
+		}
 	}
 
 	/**

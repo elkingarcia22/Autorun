@@ -1,0 +1,45 @@
+{
+	"name": "@autorun/standalone",
+	"version": "1.0.0",
+	"description": "Standalone Mode Add-on - Builds optimizados y extracción de componentes desde Storybook",
+	"type": "module",
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"scripts": {
+		"build": "tsc",
+		"dev": "tsc --watch",
+		"lint": "biome check .",
+		"format": "biome format . --write"
+	},
+	"dependencies": {
+		"@autorun/core": "workspace:*"
+	},
+	"devDependencies": {
+		"typescript": "^5.3.0",
+		"terser": "^5.26.0",
+		"esbuild": "^0.19.0",
+		"sharp": "^0.33.0"
+	},
+	"peerDependencies": {
+		"terser": "^5.0.0",
+		"esbuild": "^0.19.0"
+	},
+	"peerDependenciesMeta": {
+		"terser": {
+			"optional": true
+		},
+		"esbuild": {
+			"optional": true
+		},
+		"sharp": {
+			"optional": true
+		}
+	},
+	"exports": {
+		".": {
+			"import": "./dist/index.js",
+			"types": "./dist/index.d.ts"
+		}
+	}
+}
+

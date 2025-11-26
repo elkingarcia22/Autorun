@@ -1,0 +1,9 @@
+{
+	"name": "@autorun/button",
+	"version": "1.0.0",
+	"type": "component",
+	"description": "Componente Button AUTORUN como add-on intercambiable",
+	"main": "./dist/index.js",
+	"export": "ButtonAddon"
+}
+

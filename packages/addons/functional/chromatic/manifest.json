@@ -1,0 +1,9 @@
+{
+	"name": "@autorun/chromatic",
+	"version": "1.0.0",
+	"type": "functional",
+	"description": "Chromatic - Visual testing de componentes",
+	"main": "./dist/index.js",
+	"export": "ChromaticAddon"
+}
+

@@ -1,0 +1,9 @@
+{
+	"name": "@autorun/changesets",
+	"version": "1.0.0",
+	"type": "functional",
+	"description": "Changesets - Versionado semántico y changelog automático",
+	"main": "./dist/index.js",
+	"export": "ChangesetsAddon"
+}
+

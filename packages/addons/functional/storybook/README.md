@@ -17,8 +17,9 @@ Add-on funcional de **Storybook** para Autorun que proporciona desarrollo y docu
 El add-on ya está incluido en Autorun. Necesitas instalar Storybook en tu proyecto:
 
 ```bash
-# Para React
-npm install --save-dev @storybook/react-webpack5 @storybook/addon-essentials
+# Para React (incluyendo React 19)
+npm install --save-dev react@^19.0.0 react-dom@^19.0.0
+npm install --save-dev @storybook/react-webpack5@^8.0.0 @storybook/addon-essentials@^8.0.0
 
 # Para Vue
 npm install --save-dev @storybook/vue3 @storybook/addon-essentials
@@ -274,6 +275,47 @@ lsof -i :6006
 - [Storybook API](https://storybook.js.org/docs/api)
 - [Storybook Addons](https://storybook.js.org/addons)
 
+## ⚛️ React 19 Support
+
+Este add-on soporta **React 19** completamente. Puedes usar todas las nuevas características de React 19 en tus componentes y stories:
+
+### Características Disponibles
+
+- ✅ **Server Components** - Componentes del servidor
+- ✅ **Actions** - Nuevo sistema de acciones
+- ✅ **use() Hook** - Hook para promises y contextos
+- ✅ **Mejoras en Suspense** - Mejor manejo de estados asíncronos
+- ✅ **Optimizaciones de Rendering** - Mejor performance
+
+### Ejemplo con React 19
+
+```typescript
+// stories/MyComponent.stories.tsx
+import { use } from 'react';
+import { MyComponent } from './MyComponent';
+
+// Usando use() hook con promises
+function AsyncWrapper() {
+  const data = use(fetchData());
+  return <MyComponent data={data} />;
+}
+
+export default {
+  component: AsyncWrapper,
+  title: 'Components/MyComponent',
+};
+```
+
+### Nota Importante
+
+**El Hub de Autorun permanece agnóstico de React** - Solo Storybook usa React 19. Esto significa:
+- ✅ El Hub no requiere React como dependencia
+- ✅ Puedes usar React 19 en Storybook sin afectar el Hub
+- ✅ Otros proyectos pueden usar Vue, Angular, etc.
+- ✅ Máxima flexibilidad y compatibilidad
+
+Ver `ANALISIS-REACT-19.md` en la raíz del proyecto para más detalles sobre la arquitectura.
+
 ## 🔗 Integración con Otros Add-ons
 
 Storybook se integra automáticamente con:
@@ -284,5 +326,6 @@ Storybook se integra automáticamente con:
 ---
 
 **Versión**: 1.0.0  
-**Última actualización**: Diciembre 2024
+**Última actualización**: Diciembre 2024  
+**React 19**: ✅ Soportado
 
