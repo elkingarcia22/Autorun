@@ -2915,6 +2915,195 @@
         padding: 0 20px 20px 20px;
       }
 
+      /* Acordeón solo para Figma Sync */
+      #addon-figma-sync .addon-section {
+        margin-bottom: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 8px;
+        overflow: hidden;
+        background: rgba(0, 0, 0, 0.2);
+      }
+
+      #addon-figma-sync .addon-section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 20px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: transparent;
+        border: none;
+        width: 100%;
+        text-align: left;
+      }
+
+      #addon-figma-sync .addon-section-header:hover {
+        background: rgba(255, 255, 255, 0.03);
+      }
+
+      #addon-figma-sync .addon-section-header.active {
+        background: rgba(255, 255, 0, 0.05);
+      }
+
+      #addon-figma-sync .addon-section-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--autorun-neon-white);
+        margin: 0;
+        padding: 0;
+        border: none;
+      }
+
+      #addon-figma-sync .addon-section-chevron {
+        width: 18px;
+        height: 18px;
+        transition: transform 0.3s ease;
+        color: var(--autorun-neon-yellow);
+        flex-shrink: 0;
+      }
+
+      #addon-figma-sync .addon-section.expanded .addon-section-chevron {
+        transform: rotate(180deg);
+      }
+
+      #addon-figma-sync .addon-section-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.4s ease, padding 0.3s ease;
+        padding: 0 20px;
+      }
+
+      #addon-figma-sync .addon-section.expanded .addon-section-content {
+        max-height: 5000px;
+        padding: 0 20px 20px 20px;
+      }
+
+      /* Acordeón solo para FontAwesome */
+      #addon-fontawesome .addon-section {
+        margin-bottom: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 8px;
+        overflow: hidden;
+        background: rgba(0, 0, 0, 0.2);
+      }
+
+      #addon-fontawesome .addon-section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 20px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: transparent;
+        border: none;
+        width: 100%;
+        text-align: left;
+      }
+
+      #addon-fontawesome .addon-section-header:hover {
+        background: rgba(255, 255, 255, 0.03);
+      }
+
+      #addon-fontawesome .addon-section-header.active {
+        background: rgba(255, 255, 0, 0.05);
+      }
+
+      #addon-fontawesome .addon-section-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--autorun-neon-white);
+        margin: 0;
+        padding: 0;
+        border: none;
+      }
+
+      #addon-fontawesome .addon-section-chevron {
+        width: 18px;
+        height: 18px;
+        transition: transform 0.3s ease;
+        color: var(--autorun-neon-yellow);
+        flex-shrink: 0;
+      }
+
+      #addon-fontawesome .addon-section.expanded .addon-section-chevron {
+        transform: rotate(180deg);
+      }
+
+      #addon-fontawesome .addon-section-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.4s ease, padding 0.3s ease;
+        padding: 0 20px;
+      }
+
+      #addon-fontawesome .addon-section.expanded .addon-section-content {
+        max-height: 5000px;
+        padding: 0 20px 20px 20px;
+      }
+
+      /* Acordeón solo para i18n */
+      #addon-i18n .addon-section {
+        margin-bottom: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 8px;
+        overflow: hidden;
+        background: rgba(0, 0, 0, 0.2);
+      }
+
+      #addon-i18n .addon-section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 20px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: transparent;
+        border: none;
+        width: 100%;
+        text-align: left;
+      }
+
+      #addon-i18n .addon-section-header:hover {
+        background: rgba(255, 255, 255, 0.03);
+      }
+
+      #addon-i18n .addon-section-header.active {
+        background: rgba(255, 255, 0, 0.05);
+      }
+
+      #addon-i18n .addon-section-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--autorun-neon-white);
+        margin: 0;
+        padding: 0;
+        border: none;
+      }
+
+      #addon-i18n .addon-section-chevron {
+        width: 18px;
+        height: 18px;
+        transition: transform 0.3s ease;
+        color: var(--autorun-neon-yellow);
+        flex-shrink: 0;
+      }
+
+      #addon-i18n .addon-section.expanded .addon-section-chevron {
+        transform: rotate(180deg);
+      }
+
+      #addon-i18n .addon-section-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.4s ease, padding 0.3s ease;
+        padding: 0 20px;
+      }
+
+      #addon-i18n .addon-section.expanded .addon-section-content {
+        max-height: 5000px;
+        padding: 0 20px 20px 20px;
+      }
+
       .addon-features {
         list-style: none;
         padding: 0;
@@ -5971,35 +6160,55 @@ await docusaurusService();</code></pre>
                 Sistema de internacionalización para múltiples idiomas. Gestión de traducciones, detección de idioma y cambio dinámico.
               </p>
 
-              <div class="addon-section">
-                <h4 class="addon-section-title">Características</h4>
-                <ul class="addon-features">
-                  <li>Gestión de traducciones</li>
-                  <li>Detección de idioma</li>
-                  <li>Cambio dinámico de idioma</li>
-                  <li>Pluralización</li>
-                  <li>Formateo de fechas/números por locale</li>
-                </ul>
+              <div class="addon-section expanded">
+                <button class="addon-section-header active">
+                  <h4 class="addon-section-title">Características</h4>
+                  <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <div class="addon-section-content">
+                  <ul class="addon-features">
+                    <li>Gestión de traducciones</li>
+                    <li>Detección de idioma</li>
+                    <li>Cambio dinámico de idioma</li>
+                    <li>Pluralización</li>
+                    <li>Formateo de fechas/números por locale</li>
+                  </ul>
+                </div>
               </div>
 
               <div class="addon-section">
-                <h4 class="addon-section-title">Requisitos</h4>
-                <div class="requirements-list">
-                  <div class="requirement-item">
-                    <span class="requirement-label">Archivos de Traducción</span>
-                    <span class="requirement-value">Archivos JSON con traducciones (ej: es.json, en.json)</span>
-                  </div>
-                  <div class="requirement-item">
-                    <span class="requirement-label">Idioma por Defecto</span>
-                    <span class="requirement-value">Idioma por defecto del proyecto</span>
+                <button class="addon-section-header">
+                  <h4 class="addon-section-title">Requisitos</h4>
+                  <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <div class="addon-section-content">
+                  <div class="requirements-list">
+                    <div class="requirement-item">
+                      <span class="requirement-label">Archivos de Traducción</span>
+                      <span class="requirement-value">Archivos JSON con traducciones (ej: es.json, en.json)</span>
+                    </div>
+                    <div class="requirement-item">
+                      <span class="requirement-label">Idioma por Defecto</span>
+                      <span class="requirement-value">Idioma por defecto del proyecto</span>
+                    </div>
                   </div>
                 </div>
               </div>
 
               <div class="addon-section">
-                <h4 class="addon-section-title">Configuración</h4>
-                <div class="code-block">
-                  <pre><code>{
+                <button class="addon-section-header">
+                  <h4 class="addon-section-title">Configuración</h4>
+                  <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <div class="addon-section-content">
+                  <div class="code-block">
+                    <pre><code>{
   "autorun": {
     "addons": {
       "config": {
@@ -6012,13 +6221,20 @@ await docusaurusService();</code></pre>
     }
   }
 }</code></pre>
+                  </div>
                 </div>
               </div>
 
               <div class="addon-section">
-                <h4 class="addon-section-title">Uso</h4>
-                <div class="code-block">
-                  <pre><code>// Activar add-on
+                <button class="addon-section-header">
+                  <h4 class="addon-section-title">Uso</h4>
+                  <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <div class="addon-section-content">
+                  <div class="code-block">
+                    <pre><code>// Activar add-on
 await hub.activateAddon('i18n');
 
 // Cambiar idioma
@@ -6028,6 +6244,7 @@ await i18nService('en');
 // Traducir texto
 const t = hub.getService('i18n', 't');
 const text = t('welcome.message');</code></pre>
+                  </div>
                 </div>
               </div>
             </div>
@@ -6041,40 +6258,60 @@ const text = t('welcome.message');</code></pre>
                 Sincronización automática de tokens y componentes desde Figma. Importación de tokens, actualización automática e integración con Figma API y MCP.
               </p>
 
-              <div class="addon-section">
-                <h4 class="addon-section-title">Características</h4>
-                <ul class="addon-features">
-                  <li>Sincronización de tokens desde Figma</li>
-                  <li>Comparación inteligente de tokens</li>
-                  <li>Actualización automática</li>
-                  <li>Integración con Figma API</li>
-                  <li>Integración MCP (figma y talk-to-figma)</li>
-                  <li>Soporte para JSON de tokens de Figma</li>
-                  <li>Mapeo personalizado de tokens</li>
-                  <li>Backup automático antes de sincronizar</li>
-                </ul>
+              <div class="addon-section expanded">
+                <button class="addon-section-header active">
+                  <h4 class="addon-section-title">Características</h4>
+                  <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <div class="addon-section-content">
+                  <ul class="addon-features">
+                    <li>Sincronización de tokens desde Figma</li>
+                    <li>Comparación inteligente de tokens</li>
+                    <li>Actualización automática</li>
+                    <li>Integración con Figma API</li>
+                    <li>Integración MCP (figma y talk-to-figma)</li>
+                    <li>Soporte para JSON de tokens de Figma</li>
+                    <li>Mapeo personalizado de tokens</li>
+                    <li>Backup automático antes de sincronizar</li>
+                  </ul>
+                </div>
               </div>
 
               <div class="addon-section">
-                <h4 class="addon-section-title">Requisitos</h4>
-                <div class="requirements-list">
-                  <div class="requirement-item">
-                    <span class="requirement-label">Figma Access Token</span>
-                    <span class="requirement-value">Token de acceso de Figma (obtener en figma.com/developers/api)</span>
-                  </div>
-                  <div class="requirement-item">
-                    <span class="requirement-label">File Key</span>
-                    <span class="requirement-value">Key del archivo de Figma a sincronizar</span>
-                  </div>
-                  <div class="requirement-item">
-                    <span class="requirement-label">JSON de Tokens (Recomendado)</span>
-                    <span class="requirement-value">JSON exportado desde el plugin de Figma Tokens (ver instrucciones abajo)</span>
+                <button class="addon-section-header">
+                  <h4 class="addon-section-title">Requisitos</h4>
+                  <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <div class="addon-section-content">
+                  <div class="requirements-list">
+                    <div class="requirement-item">
+                      <span class="requirement-label">Figma Access Token</span>
+                      <span class="requirement-value">Token de acceso de Figma (obtener en figma.com/developers/api)</span>
+                    </div>
+                    <div class="requirement-item">
+                      <span class="requirement-label">File Key</span>
+                      <span class="requirement-value">Key del archivo de Figma a sincronizar</span>
+                    </div>
+                    <div class="requirement-item">
+                      <span class="requirement-label">JSON de Tokens (Recomendado)</span>
+                      <span class="requirement-value">JSON exportado desde el plugin de Figma Tokens (ver instrucciones abajo)</span>
+                    </div>
                   </div>
                 </div>
               </div>
 
               <div class="addon-section">
-                <h4 class="addon-section-title">⚠️ Importante: JSON de Tokens de Figma</h4>
+                <button class="addon-section-header">
+                  <h4 class="addon-section-title">⚠️ Importante: JSON de Tokens de Figma</h4>
+                  <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <div class="addon-section-content">
                 <p class="addon-description" style="margin-bottom: 16px;">
                   <strong>Ni MCP ni la API de Figma pueden acceder directamente a las Variables de Figma.</strong> Esta es una limitación de la API de Figma que no expone las variables directamente.
                 </p>
@@ -6101,10 +6338,17 @@ const text = t('welcome.message');</code></pre>
 ✅ Figma Sync: JSON de tokens encontrado en figma-tokens.json
 ℹ️  Este archivo permite que MCP y la API funcionen mejor con las variables de Figma</code></pre>
                 </div>
+                </div>
               </div>
 
               <div class="addon-section">
-                <h4 class="addon-section-title">Configuración</h4>
+                <button class="addon-section-header">
+                  <h4 class="addon-section-title">Configuración</h4>
+                  <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <div class="addon-section-content">
                 <div class="code-block">
                   <pre><code>{
   "autorun": {
@@ -6131,10 +6375,17 @@ const text = t('welcome.message');</code></pre>
                 <p class="step-note" style="margin-top: 12px;">
                   <strong>Nota:</strong> <code>figmaTokensJsonPath</code> es opcional. Si no lo especificas, el add-on buscará automáticamente el JSON en ubicaciones comunes.
                 </p>
+                </div>
               </div>
 
               <div class="addon-section">
-                <h4 class="addon-section-title">Uso</h4>
+                <button class="addon-section-header">
+                  <h4 class="addon-section-title">Uso</h4>
+                  <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <div class="addon-section-content">
                 <div class="code-block">
                   <pre><code>// Activar add-on
 await hub.activateAddon('figma-sync');
@@ -6154,10 +6405,17 @@ const result = await sync({
 });
 console.log(`Tokens actualizados: ${result.tokensUpdated}`);</code></pre>
                 </div>
+                </div>
               </div>
 
               <div class="addon-section">
-                <h4 class="addon-section-title">🔌 Integración MCP</h4>
+                <button class="addon-section-header">
+                  <h4 class="addon-section-title">🔌 Integración MCP</h4>
+                  <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <div class="addon-section-content">
                 <p class="addon-description" style="margin-bottom: 16px;">
                   Este add-on soporta integración con <strong>MCP (Model Context Protocol)</strong> para mejorar la funcionalidad y acceso a Figma. Soporta múltiples servidores MCP.
                 </p>
@@ -6189,6 +6447,7 @@ await hub.activateAddon('figma-sync');
                 <p class="step-note" style="margin-top: 12px;">
                   <strong>⚠️ Importante:</strong> Para que MCP funcione correctamente con las variables de Figma, necesitas el JSON de tokens exportado desde el plugin de Figma Tokens. Sin este archivo, MCP tendrá capacidades limitadas.
                 </p>
+                </div>
               </div>
             </div>
 
@@ -6201,40 +6460,60 @@ await hub.activateAddon('figma-sync');
                 Sistema de iconos FontAwesome Pro como add-on intercambiable. Proporciona acceso a miles de iconos profesionales con soporte para múltiples estilos (light, regular, solid, thin).
               </p>
 
-              <div class="addon-section">
-                <h4 class="addon-section-title">Características</h4>
-                <ul class="addon-features">
-                  <li>Add-on intercambiable: Puedes cambiar FontAwesome por otros proveedores</li>
-                  <li>Funciona sin token npm: Usa archivos locales de FontAwesome</li>
-                  <li>Búsqueda semántica: "crear" encuentra automáticamente iconos relacionados</li>
-                  <li>Múltiples estilos: light, regular, solid, thin</li>
-                  <li>TypeScript: Autocompletado y type safety</li>
-                  <li>Catálogo completo: Miles de iconos profesionales</li>
-                </ul>
+              <div class="addon-section expanded">
+                <button class="addon-section-header active">
+                  <h4 class="addon-section-title">Características</h4>
+                  <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <div class="addon-section-content">
+                  <ul class="addon-features">
+                    <li>Add-on intercambiable: Puedes cambiar FontAwesome por otros proveedores</li>
+                    <li>Funciona sin token npm: Usa archivos locales de FontAwesome</li>
+                    <li>Búsqueda semántica: "crear" encuentra automáticamente iconos relacionados</li>
+                    <li>Múltiples estilos: light, regular, solid, thin</li>
+                    <li>TypeScript: Autocompletado y type safety</li>
+                    <li>Catálogo completo: Miles de iconos profesionales</li>
+                  </ul>
+                </div>
               </div>
 
               <div class="addon-section">
-                <h4 class="addon-section-title">Requisitos</h4>
-                <div class="requirements-list">
-                  <div class="requirement-item">
-                    <span class="requirement-label">FontAwesome Pro</span>
-                    <span class="requirement-value">Licencia de FontAwesome Pro (o usar versión gratuita)</span>
-                  </div>
-                  <div class="requirement-item">
-                    <span class="requirement-label">Archivos CSS</span>
-                    <span class="requirement-value">Archivos CSS y webfonts de FontAwesome (incluidos localmente)</span>
-                  </div>
-                  <div class="requirement-item">
-                    <span class="requirement-label">NPM Token (Opcional)</span>
-                    <span class="requirement-value">Token npm de FontAwesome Pro para usar paquetes oficiales</span>
+                <button class="addon-section-header">
+                  <h4 class="addon-section-title">Requisitos</h4>
+                  <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <div class="addon-section-content">
+                  <div class="requirements-list">
+                    <div class="requirement-item">
+                      <span class="requirement-label">FontAwesome Pro</span>
+                      <span class="requirement-value">Licencia de FontAwesome Pro (o usar versión gratuita)</span>
+                    </div>
+                    <div class="requirement-item">
+                      <span class="requirement-label">Archivos CSS</span>
+                      <span class="requirement-value">Archivos CSS y webfonts de FontAwesome (incluidos localmente)</span>
+                    </div>
+                    <div class="requirement-item">
+                      <span class="requirement-label">NPM Token (Opcional)</span>
+                      <span class="requirement-value">Token npm de FontAwesome Pro para usar paquetes oficiales</span>
+                    </div>
                   </div>
                 </div>
               </div>
 
               <div class="addon-section">
-                <h4 class="addon-section-title">Configuración</h4>
-                <div class="code-block">
-                  <pre><code>{
+                <button class="addon-section-header">
+                  <h4 class="addon-section-title">Configuración</h4>
+                  <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <div class="addon-section-content">
+                  <div class="code-block">
+                    <pre><code>{
   "autorun": {
     "addons": {
       "config": {
@@ -6249,13 +6528,20 @@ await hub.activateAddon('figma-sync');
     }
   }
 }</code></pre>
+                  </div>
                 </div>
               </div>
 
               <div class="addon-section">
-                <h4 class="addon-section-title">Uso</h4>
-                <div class="code-block">
-                  <pre><code>// Activar add-on
+                <button class="addon-section-header">
+                  <h4 class="addon-section-title">Uso</h4>
+                  <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <div class="addon-section-content">
+                  <div class="code-block">
+                    <pre><code>// Activar add-on
 await hub.activateAddon('fontawesome');
 
 // Inicializar iconos
@@ -6278,17 +6564,25 @@ const html = renderIcon('plus', {
 import { searchIcons } from '@autorun/icons';
 const results = searchIcons('crear');
 // → [{ name: 'plus', score: 10, keywords: [...] }, ...]</code></pre>
+                  </div>
                 </div>
               </div>
 
               <div class="addon-section">
-                <h4 class="addon-section-title">Estilos Disponibles</h4>
+                <button class="addon-section-header">
+                  <h4 class="addon-section-title">Estilos Disponibles</h4>
+                  <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <div class="addon-section-content">
                 <ul class="addon-features">
                   <li><code>light</code> - Iconos ligeros (fal)</li>
                   <li><code>regular</code> - Iconos regulares (far) - Por defecto</li>
                   <li><code>solid</code> - Iconos sólidos (fas)</li>
                   <li><code>thin</code> - Iconos delgados (fat)</li>
                 </ul>
+                </div>
               </div>
             </div>
 
@@ -8536,6 +8830,57 @@ npm run addon:activate supabase</code></pre>
       if (chromaticAddon) {
         // Manejar clicks en los headers de las secciones
         chromaticAddon.addEventListener('click', (e) => {
+          if (e.target.closest('.addon-section-header')) {
+            const header = e.target.closest('.addon-section-header');
+            const section = header.closest('.addon-section');
+            
+            if (section) {
+              section.classList.toggle('expanded');
+              header.classList.toggle('active');
+            }
+          }
+        });
+      }
+
+      // Acordeón solo para Figma Sync
+      const figmaSyncAddon = document.getElementById('addon-figma-sync');
+      if (figmaSyncAddon) {
+        // Manejar clicks en los headers de las secciones
+        figmaSyncAddon.addEventListener('click', (e) => {
+          if (e.target.closest('.addon-section-header')) {
+            const header = e.target.closest('.addon-section-header');
+            const section = header.closest('.addon-section');
+            
+            if (section) {
+              section.classList.toggle('expanded');
+              header.classList.toggle('active');
+            }
+          }
+        });
+      }
+
+      // Acordeón solo para FontAwesome
+      const fontAwesomeAddon = document.getElementById('addon-fontawesome');
+      if (fontAwesomeAddon) {
+        // Manejar clicks en los headers de las secciones
+        fontAwesomeAddon.addEventListener('click', (e) => {
+          if (e.target.closest('.addon-section-header')) {
+            const header = e.target.closest('.addon-section-header');
+            const section = header.closest('.addon-section');
+            
+            if (section) {
+              section.classList.toggle('expanded');
+              header.classList.toggle('active');
+            }
+          }
+        });
+      }
+
+      // Acordeón solo para i18n
+      const i18nAddon = document.getElementById('addon-i18n');
+      if (i18nAddon) {
+        // Manejar clicks en los headers de las secciones
+        i18nAddon.addEventListener('click', (e) => {
           if (e.target.closest('.addon-section-header')) {
             const header = e.target.closest('.addon-section-header');
             const section = header.closest('.addon-section');
