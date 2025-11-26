@@ -8,7 +8,14 @@
 		"build": "vite build",
 		"lint": "biome check .",
 		"format": "biome format . --write",
-		"prepare": "husky"
+		"prepare": "husky",
+		"verify": "node scripts/verify-setup.js",
+		"init": "cd packages/autorun-core && npm run build && node dist/cli/autorun-init.js",
+		"autorun:init": "npm run init",
+		"postinstall": "npm run verify"
+	},
+	"bin": {
+		"autorun-init": "./packages/autorun-core/dist/cli/autorun-init.js"
 	},
 	"keywords": [],
 	"author": "",
