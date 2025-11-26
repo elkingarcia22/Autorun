@@ -7579,7 +7579,7 @@ const results = searchIcons('crear');
                 <h3 class="addon-title">Feedback Automatizado</h3>
               </div>
               <p class="addon-description">
-                Sistema automatizado para recopilar y gestionar feedback de usuarios. Permite integrar formularios de feedback, encuestas y sistemas de recopilación de opiniones directamente en tu aplicación.
+                Sistema automatizado para recopilar y gestionar feedback de usuarios con integración completa. Incluye botón flotante de feedback, modal interactivo, análisis de sentimientos con Gemini AI, almacenamiento en Google Sheets y notificaciones en Slack. Utiliza componentes AUTORUN (ButtonFeedback, Welcome, Alert, Mask) para una experiencia de usuario consistente.
               </p>
 
               <div class="addon-section expanded">
@@ -7591,13 +7591,19 @@ const results = searchIcons('crear');
                 </button>
                 <div class="addon-section-content">
                   <ul class="addon-features">
-                    <li>Recopilación automática de feedback de usuarios</li>
-                    <li>Integración con formularios y encuestas</li>
-                    <li>Análisis de sentimientos y clasificación de feedback</li>
-                    <li>Notificaciones automáticas de feedback crítico</li>
-                    <li>Dashboard de métricas y estadísticas</li>
-                    <li>Exportación de datos para análisis</li>
-                    <li>Integración con sistemas de gestión de proyectos</li>
+                    <li>Botón flotante de feedback con componente AUTORUN ButtonFeedback</li>
+                    <li>Modal interactivo con formulario de feedback integrado</li>
+                    <li>Overlay de bienvenida con componente AUTORUN Welcome</li>
+                    <li>Sistema de onboarding con componente AUTORUN Mask</li>
+                    <li>Notificaciones con componente AUTORUN Alert</li>
+                    <li>Integración automática con n8n para procesamiento de workflows</li>
+                    <li>Almacenamiento en Google Sheets para persistencia de datos</li>
+                    <li>Análisis de sentimientos con Gemini AI</li>
+                    <li>Notificaciones automáticas en Slack</li>
+                    <li>Detección automática de sección actual</li>
+                    <li>Persistencia local de feedback pendiente</li>
+                    <li>Reintentos automáticos en caso de fallo de conexión</li>
+                    <li>Recopilación de metadata del usuario (navegador, resolución, etc.)</li>
                   </ul>
                 </div>
               </div>
@@ -7612,16 +7618,24 @@ const results = searchIcons('crear');
                 <div class="addon-section-content">
                   <div class="requirements-list">
                     <div class="requirement-item">
-                      <span class="requirement-label">API Key</span>
-                      <span class="requirement-value">Clave de API del servicio de feedback (opcional)</span>
+                      <span class="requirement-label">n8n Webhook URL</span>
+                      <span class="requirement-value">URL del webhook de n8n para recibir feedback (requerido)</span>
                     </div>
                     <div class="requirement-item">
-                      <span class="requirement-label">Base de Datos</span>
-                      <span class="requirement-value">Conexión a base de datos para almacenar feedback</span>
+                      <span class="requirement-label">Google Sheets</span>
+                      <span class="requirement-value">ID de la hoja de cálculo de Google Sheets para almacenar feedback</span>
                     </div>
                     <div class="requirement-item">
-                      <span class="requirement-label">Servicio de Email (Opcional)</span>
-                      <span class="requirement-value">Configuración de email para notificaciones</span>
+                      <span class="requirement-label">Gemini API Key</span>
+                      <span class="requirement-value">Clave de API de Google Gemini para análisis de sentimientos (opcional)</span>
+                    </div>
+                    <div class="requirement-item">
+                      <span class="requirement-label">Slack Channel ID</span>
+                      <span class="requirement-value">ID del canal de Slack para notificaciones (opcional)</span>
+                    </div>
+                    <div class="requirement-item">
+                      <span class="requirement-label">Componentes AUTORUN</span>
+                      <span class="requirement-value">ButtonFeedback, Welcome, Alert, Mask (se cargan automáticamente)</span>
                     </div>
                   </div>
                 </div>
@@ -7642,19 +7656,19 @@ const results = searchIcons('crear');
       "config": {
         "feedback-automatizado": {
           "enabled": true,
-          "apiKey": "",
-          "database": {
-            "type": "local",
-            "path": "./data/feedback.json"
-          },
-          "notifications": {
-            "enabled": true,
-            "email": ""
-          },
-          "analytics": {
-            "sentimentAnalysis": true,
-            "autoCategorize": true
-          }
+          "webhookUrl": "https://tu-n8n-instance.com/webhook/feedback",
+          "showWelcome": true,
+          "showFeedbackButton": true,
+          "showSectionIndicator": true,
+          "enableOnboarding": false,
+          "welcomeTitle": "¡Bienvenido!",
+          "welcomeSubtitle": "Estás a punto de probar esta aplicación.",
+          "feedbackButtonPosition": "bottom-right",
+          "feedbackButtonIcon": "comment-dots",
+          "sectionOptions": ["Home", "Encuestas", "Aprendizaje"],
+          "autoDetectSection": true,
+          "collectMetadata": true,
+          "persistLocally": true
         }
       }
     }
@@ -7676,29 +7690,33 @@ const results = searchIcons('crear');
                     <pre><code>// Activar add-on
 await hub.activateAddon('feedback-automatizado');
 
-// Recopilar feedback
-import { collectFeedback } from '@autorun/feedback';
-await collectFeedback({
-  type: 'bug',
-  message: 'Error al cargar la página',
-  user: 'usuario@ejemplo.com',
-  metadata: {
-    url: '/dashboard',
-    browser: 'Chrome'
-  }
-});
+// El sistema se inicializa automáticamente con:
+// - Botón flotante de feedback (AUTORUN ButtonFeedback)
+// - Overlay de bienvenida (AUTORUN Welcome)
+// - Sistema de notificaciones (AUTORUN Alert)
+// - Sistema de onboarding (AUTORUN Mask)
 
-// Obtener estadísticas
-import { getFeedbackStats } from '@autorun/feedback';
-const stats = await getFeedbackStats();
-// → { total: 150, bugs: 45, features: 30, ... }
+// El feedback se envía automáticamente a n8n cuando el usuario:
+// 1. Hace clic en el botón flotante
+// 2. Selecciona una sección
+// 3. Escribe un comentario
+// 4. Envía el formulario
 
-// Configurar notificaciones
-import { configureNotifications } from '@autorun/feedback';
-await configureNotifications({
-  critical: true,
-  email: 'team@ejemplo.com'
-});</code></pre>
+// n8n procesa el feedback:
+// → Guarda en Google Sheets
+// → Analiza con Gemini AI
+// → Envía notificación a Slack
+
+// Controlar visibilidad del botón
+const feedbackService = hub.getAddon('feedback-automatizado');
+feedbackService.setEnabled(true);  // Mostrar botón
+feedbackService.setEnabled(false); // Ocultar botón
+
+// Abrir modal manualmente
+feedbackService.openFeedbackModal();
+
+// Cerrar modal
+feedbackService.closeFeedbackModal();</code></pre>
                   </div>
                 </div>
               </div>
@@ -7711,13 +7729,47 @@ await configureNotifications({
                   </svg>
                 </button>
                 <div class="addon-section-content">
+                  <p>El sistema de feedback automatizado procesa todos los comentarios de los usuarios y los organiza por sección. El análisis de sentimientos con Gemini AI clasifica automáticamente el feedback como:</p>
                   <ul class="addon-features">
-                    <li><code>bug</code> - Reporte de errores</li>
-                    <li><code>feature</code> - Solicitud de nuevas funcionalidades</li>
-                    <li><code>improvement</code> - Sugerencias de mejora</li>
-                    <li><code>question</code> - Preguntas y consultas</li>
-                    <li><code>compliment</code> - Comentarios positivos</li>
+                    <li><strong>Positivo</strong> - Comentarios favorables y elogios</li>
+                    <li><strong>Neutro</strong> - Preguntas y consultas informativas</li>
+                    <li><strong>Negativo</strong> - Reportes de errores y quejas</li>
+                    <li><strong>Crítico</strong> - Feedback que requiere atención inmediata</li>
                   </ul>
+                  <p class="step-note" style="margin-top: 16px;">
+                    <strong>Flujo completo:</strong> Usuario → ButtonFeedback → n8n → Google Sheets → Gemini AI → Slack
+                  </p>
+                </div>
+              </div>
+
+              <div class="addon-section">
+                <button class="addon-section-header">
+                  <h4 class="addon-section-title">Setup Automatizado</h4>
+                  <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <div class="addon-section-content">
+                  <p>El add-on incluye un script de setup automatizado que facilita la configuración:</p>
+                  <div class="code-block">
+                    <pre><code># Ejecutar setup automatizado
+cd packages/addons/functional/feedback
+npm run auto-setup
+
+# El script te guiará para:
+# 1. Crear Google Sheet automáticamente (si proporcionas credenciales)
+# 2. Generar workflow de n8n con integraciones de Gemini AI y Slack
+# 3. Importar workflow en n8n (si proporcionas API key)
+# 4. Configurar el proyecto con las URLs y credenciales necesarias
+
+# Si no proporcionas credenciales, el script:
+# - Genera el JSON del workflow para importación manual
+# - Proporciona instrucciones paso a paso
+# - Descarga el workflow completo listo para usar</code></pre>
+                  </div>
+                  <p class="step-note" style="margin-top: 16px;">
+                    <strong>Nota:</strong> El workflow de n8n incluye análisis automático con Gemini AI y notificaciones en Slack. Consulta <code>SETUP-COMPLETO.md</code> para más detalles.
+                  </p>
                 </div>
               </div>
             </div>
@@ -8861,7 +8913,7 @@ const result = await runTests({ coverage: true });</code></pre>
             <div class="step-header">
               <div class="step-number-large">1</div>
               <div class="step-header-content">
-                <h3 class="step-title">Clona e Instala</h3>
+                <h3 class="step-title">Clona, Instala e Inicializa</h3>
                 <div class="step-toggle-icon">
                   <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -8871,19 +8923,33 @@ const result = await runTests({ coverage: true });</code></pre>
             </div>
             <div class="step-content">
               <p class="step-description">
-                Clona el repositorio de Autorun y ejecuta la instalación de dependencias.
+                Clona el repositorio, instala las dependencias (con verificación automática) e inicializa tu proyecto con el wizard interactivo.
               </p>
               <div class="code-block">
                 <pre><code># Clonar el repositorio
 git clone https://github.com/elkingarcia22/Autorun.git
 cd Autorun
 
-# Instalar dependencias
+# Instalar dependencias (ejecuta verificación automática)
 npm install
 
-# Build de los tokens y paquetes base
-# Script build:tokens eliminado - tokens genéricos removidos</code></pre>
+# Inicializar proyecto (wizard interactivo)
+npm run init</code></pre>
               </div>
+              <p class="step-note" style="margin-top: 16px; padding: 12px; background: rgba(255, 165, 0, 0.1); border-left: 3px solid var(--autorun-neon-yellow); border-radius: 4px;">
+                <strong>⚠️ Si el script <code>init</code> no existe:</strong> Si clonaste el repositorio antes de que se agregara el script, actualiza con:
+                <code style="display: block; margin-top: 8px; padding: 8px; background: rgba(0,0,0,0.2); border-radius: 4px;">git pull origin fase-1-tokens</code>
+                O clona de nuevo el repositorio para obtener los últimos cambios.
+              </p>
+              <p class="step-note" style="margin-top: 16px;">
+                <strong>✅ Verificación automática:</strong> Después de <code>npm install</code>, se ejecuta automáticamente una verificación que comprueba la estructura del proyecto, scripts, compilación y dependencias.
+              </p>
+              <p class="step-note" style="margin-top: 12px;">
+                <strong>🎯 Wizard de inicialización:</strong> El comando <code>npm run init</code> te guiará paso a paso para configurar tu proyecto (UBITS o independiente), seleccionar template, módulo y producto, y crear tu lienzo de trabajo.
+              </p>
+              <p class="step-note" style="margin-top: 12px;">
+                <strong>💡 Tip:</strong> Puedes ejecutar la verificación manualmente en cualquier momento con: <code>npm run verify</code>
+              </p>
             </div>
           </div>
 
@@ -8891,33 +8957,6 @@ npm install
           <div class="conectar-step">
             <div class="step-header">
               <div class="step-number-large">2</div>
-              <div class="step-header-content">
-                <h3 class="step-title">Inicializa tu Proyecto</h3>
-                <div class="step-toggle-icon">
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                </div>
-              </div>
-            </div>
-            <div class="step-content">
-              <p class="step-description">
-                Ejecuta el comando de inicialización que te guiará paso a paso para configurar tu proyecto.
-              </p>
-              <div class="code-block">
-                <pre><code># Ejecutar inicialización interactiva
-npm run init</code></pre>
-              </div>
-              <p class="step-note">
-                Este comando te solicitará información básica del proyecto y configurará Git automáticamente.
-              </p>
-            </div>
-          </div>
-
-          <!-- Paso 3 -->
-          <div class="conectar-step">
-            <div class="step-header">
-              <div class="step-number-large">3</div>
               <div class="step-header-content">
                 <h3 class="step-title">Elige tus Add-ons</h3>
                 <div class="step-toggle-icon">
@@ -8971,10 +9010,10 @@ npm run init</code></pre>
             </div>
           </div>
 
-          <!-- Paso 4 -->
+          <!-- Paso 3 -->
           <div class="conectar-step">
             <div class="step-header">
-              <div class="step-number-large">4</div>
+              <div class="step-number-large">3</div>
               <div class="step-header-content">
                 <h3 class="step-title">Configura Credenciales y APIs Iniciales</h3>
                 <div class="step-toggle-icon">

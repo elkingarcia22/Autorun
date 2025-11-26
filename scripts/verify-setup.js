@@ -35,6 +35,40 @@ function warn(name, message) {
 
 console.log('\n🔍 Verificando instalación de Autorun...\n');
 
+// Verificar primero si el script init existe (verificación temprana)
+const packageJsonPath = join(rootDir, 'package.json');
+let hasInitScript = false;
+
+if (existsSync(packageJsonPath)) {
+	try {
+		const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'));
+		hasInitScript = packageJson.scripts?.init !== undefined;
+		
+		if (!hasInitScript) {
+			console.log('⚠️  ⚠️  ⚠️  ADVERTENCIA IMPORTANTE ⚠️  ⚠️  ⚠️\n');
+			console.log('❌ El script "init" NO está presente en package.json\n');
+			console.log('📋 Esto significa que:');
+			console.log('   • El repositorio fue clonado ANTES de que se agregara el script');
+			console.log('   • O estás en una rama diferente a "fase-1-tokens"\n');
+			console.log('🔧 SOLUCIÓN INMEDIATA:\n');
+			console.log('   1. Actualizar el repositorio:');
+			console.log('      git pull origin fase-1-tokens\n');
+			console.log('   2. O clonar de nuevo:');
+			console.log('      cd ..');
+			console.log('      rm -rf Autorun');
+			console.log('      git clone https://github.com/elkingarcia22/Autorun.git');
+			console.log('      cd Autorun\n');
+			console.log('   3. Después de actualizar, ejecuta:');
+			console.log('      npm install');
+			console.log('      npm run init\n');
+			console.log('═══════════════════════════════════════════════════════\n');
+			console.log('Continuando con otras verificaciones...\n');
+		}
+	} catch (error) {
+		console.warn('⚠️  No se pudo leer package.json:', error.message);
+	}
+}
+
 // 1. Verificar estructura del proyecto
 console.log('📁 Verificando estructura del proyecto...');
 check(
