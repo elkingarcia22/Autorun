@@ -102,7 +102,7 @@ Autorun/
 
 | Script | Descripción |
 |--------|-------------|
-| `npm run init` | 🎯 **Wizard de inicialización interactiva** |
+| `npm run init` | 🎯 **Wizard de inicialización interactiva** (soporta respuestas automáticas) |
 | `npm run verify` | ✅ Verificación manual del setup |
 | `npm run dev` | 🚀 Servidor de desarrollo |
 | `npm run build` | 📦 Build del proyecto |
