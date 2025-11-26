@@ -2071,18 +2071,87 @@
       .addons-menu {
         display: flex;
         flex-direction: column;
-        gap: 8px;
+        gap: 4px;
         background: var(--autorun-gray-100);
         border: 1px solid var(--autorun-gray-300);
         border-radius: 12px;
         padding: 12px;
       }
 
+      /* Categorías del menú */
+      .addon-category {
+        margin-bottom: 4px;
+      }
+
+      .addon-category-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        color: var(--autorun-gray-600);
+        font-size: 13px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        user-select: none;
+      }
+
+      .addon-category-header:hover {
+        background: var(--autorun-gray-200);
+        color: var(--autorun-neon-white);
+      }
+
+      .category-chevron {
+        transition: transform 0.3s ease;
+        flex-shrink: 0;
+        color: var(--autorun-gray-500);
+      }
+
+      .addon-category.collapsed .category-chevron {
+        transform: rotate(-90deg);
+      }
+
+      .category-title {
+        flex: 1;
+      }
+
+      .category-count {
+        background: var(--autorun-gray-300);
+        color: var(--autorun-gray-700);
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 700;
+      }
+
+      .addon-category-items {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        margin-left: 8px;
+        margin-top: 4px;
+        padding-left: 12px;
+        border-left: 2px solid var(--autorun-gray-300);
+        max-height: 1000px;
+        overflow: hidden;
+        transition: max-height 0.3s ease, opacity 0.3s ease;
+        opacity: 1;
+      }
+
+      .addon-category.collapsed .addon-category-items {
+        max-height: 0;
+        opacity: 0;
+        margin-top: 0;
+      }
+
       .addon-menu-item {
         display: flex;
         align-items: center;
         gap: 12px;
-        padding: 12px 16px;
+        padding: 10px 14px;
         border-radius: 8px;
         cursor: pointer;
         transition: all 0.3s ease;
@@ -2094,12 +2163,14 @@
       .addon-menu-item:hover {
         background: var(--autorun-gray-200);
         color: var(--autorun-neon-white);
+        transform: translateX(4px);
       }
 
       .addon-menu-item.active {
         background: var(--autorun-neon-yellow);
         color: var(--autorun-bg-black);
         box-shadow: 0 0 12px var(--autorun-neon-yellow-glow);
+        transform: translateX(4px);
       }
 
       .addon-menu-icon {
@@ -3862,22 +3933,174 @@
           <!-- Menú Lateral -->
           <aside class="addons-sidebar" data-scroll="fade-up">
             <div class="addons-menu">
-              <div class="addon-menu-item active" data-addon="github">
-                <div class="addon-menu-icon">
-                  <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M16 4C9.373 4 4 9.373 4 16C4 21.302 7.438 25.8 12.207 27.388C12.806 27.498 13.025 27.112 13.025 26.776C13.025 26.474 13.015 25.514 13.01 24.578C9.672 25.302 8.967 23.16 8.967 23.16C8.438 21.73 7.533 21.33 7.533 21.33C6.342 20.64 7.614 20.656 7.614 20.656C8.92 20.765 9.555 22.008 9.555 22.008C10.725 23.717 12.363 23.232 13.048 22.929C13.155 22.134 13.466 21.604 13.81 21.304C10.048 20.994 6.171 19.814 6.171 14.437C6.171 12.967 6.627 11.729 7.619 10.766C7.49 10.456 7.044 9.443 7.696 8.106C7.696 8.106 8.525 7.84 13.003 9.682C13.816 9.463 14.71 9.354 15.604 9.349C16.498 9.354 17.392 9.463 18.205 9.682C22.68 7.84 23.508 8.106 23.508 8.106C24.163 9.443 23.717 10.456 23.588 10.766C24.583 11.729 25.037 12.967 25.037 14.437C25.037 19.827 21.153 20.994 17.385 21.304C17.811 21.671 18.185 22.337 18.185 23.386C18.185 24.82 18.171 25.979 18.171 26.776C18.171 27.116 18.386 27.505 18.995 27.386C23.758 25.795 27.185 21.295 27.185 16C27.185 9.373 21.812 4 15.185 4H16Z" fill="currentColor"/>
-                </svg>
-              </div>
-                <span>GitHub</span>
-            </div>
-              <div class="addon-menu-item" data-addon="clarity">
-                <div class="addon-menu-icon">
-                  <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="16" cy="16" r="12" stroke="currentColor" stroke-width="2" fill="none"/>
-                    <path d="M10 16L14 20L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              
+              <!-- Categoría: DevOps & CI/CD -->
+              <div class="addon-category">
+                <div class="addon-category-header">
+                  <svg class="category-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   </svg>
+                  <span class="category-title">DevOps & CI/CD</span>
+                  <span class="category-count">4</span>
                 </div>
-                <span>Clarity</span>
+                <div class="addon-category-items">
+                  <div class="addon-menu-item active" data-addon="github">
+                    <div class="addon-menu-icon">
+                      <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M16 4C9.373 4 4 9.373 4 16C4 21.302 7.438 25.8 12.207 27.388C12.806 27.498 13.025 27.112 13.025 26.776C13.025 26.474 13.015 25.514 13.01 24.578C9.672 25.302 8.967 23.16 8.967 23.16C8.438 21.73 7.533 21.33 7.533 21.33C6.342 20.64 7.614 20.656 7.614 20.656C8.92 20.765 9.555 22.008 9.555 22.008C10.725 23.717 12.363 23.232 13.048 22.929C13.155 22.134 13.466 21.604 13.81 21.304C10.048 20.994 6.171 19.814 6.171 14.437C6.171 12.967 6.627 11.729 7.619 10.766C7.49 10.456 7.044 9.443 7.696 8.106C7.696 8.106 8.525 7.84 13.003 9.682C13.816 9.463 14.71 9.354 15.604 9.349C16.498 9.354 17.392 9.463 18.205 9.682C22.68 7.84 23.508 8.106 23.508 8.106C24.163 9.443 23.717 10.456 23.588 10.766C24.583 11.729 25.037 12.967 25.037 14.437C25.037 19.827 21.153 20.994 17.385 21.304C17.811 21.671 18.185 22.337 18.185 23.386C18.185 24.82 18.171 25.979 18.171 26.776C18.171 27.116 18.386 27.505 18.995 27.386C23.758 25.795 27.185 21.295 27.185 16C27.185 9.373 21.812 4 15.185 4H16Z" fill="currentColor"/>
+                      </svg>
+                    </div>
+                    <span>GitHub</span>
+                  </div>
+                  <div class="addon-menu-item" data-addon="vercel">
+                    <div class="addon-menu-icon">
+                      <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M16 4L28 16L16 28L4 16L16 4Z" stroke="currentColor" stroke-width="2" fill="none"/>
+                        <path d="M12 16L16 20L20 16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                      </svg>
+                    </div>
+                    <span>Vercel</span>
+                  </div>
+                  <div class="addon-menu-item" data-addon="docker">
+                    <div class="addon-menu-icon">
+                      <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="4" y="8" width="24" height="18" rx="2" stroke="currentColor" stroke-width="2" fill="none"/>
+                        <path d="M10 12H14M18 12H22M10 16H14M18 16H22M10 20H14M18 20H22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        <circle cx="8" cy="6" r="1.5" fill="currentColor"/>
+                        <circle cx="12" cy="6" r="1.5" fill="currentColor"/>
+                        <circle cx="16" cy="6" r="1.5" fill="currentColor"/>
+                      </svg>
+                    </div>
+                    <span>Docker</span>
+                  </div>
+                  <div class="addon-menu-item" data-addon="renovate">
+                    <div class="addon-menu-icon">
+                      <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="16" cy="16" r="12" stroke="currentColor" stroke-width="2" fill="none"/>
+                        <path d="M16 8V16L20 20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M8 8L10 10M24 8L22 10M8 24L10 22M24 24L22 22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                      </svg>
+                    </div>
+                    <span>Renovate</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Categoría: Analytics & Monitoring -->
+              <div class="addon-category">
+                <div class="addon-category-header">
+                  <svg class="category-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <span class="category-title">Analytics & Monitoring</span>
+                  <span class="category-count">4</span>
+                </div>
+                <div class="addon-category-items">
+                  <div class="addon-menu-item" data-addon="clarity">
+                    <div class="addon-menu-icon">
+                      <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="16" cy="16" r="12" stroke="currentColor" stroke-width="2" fill="none"/>
+                        <path d="M10 16L14 20L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </div>
+                    <span>Clarity</span>
+                  </div>
+                  <div class="addon-menu-item" data-addon="lighthouse">
+                    <div class="addon-menu-icon">
+                      <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M16 4L6 14L16 18L26 14L16 4Z" fill="currentColor"/>
+                        <path d="M6 14V24L16 28L26 24V14" stroke="currentColor" stroke-width="2" fill="none"/>
+                      </svg>
+                    </div>
+                    <span>Lighthouse</span>
+                  </div>
+                  <div class="addon-menu-item" data-addon="sentry">
+                    <div class="addon-menu-icon">
+                      <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M16 4L6 14L16 20L26 14L16 4Z" fill="currentColor"/>
+                        <path d="M6 14V24L16 28L26 24V14" stroke="currentColor" stroke-width="2" fill="none"/>
+                        <circle cx="16" cy="18" r="2" fill="currentColor"/>
+                        <path d="M12 22L16 26L20 22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                      </svg>
+                    </div>
+                    <span>Sentry</span>
+                  </div>
+                  <div class="addon-menu-item" data-addon="feedback-automatizado">
+                    <div class="addon-menu-icon">
+                      <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M16 4C9.373 4 4 9.373 4 16C4 18.209 4.791 20.209 6.073 21.791L4 28L10.209 25.927C11.791 27.209 13.791 28 16 28C22.627 28 28 22.627 28 16C28 9.373 22.627 4 16 4Z" stroke="currentColor" stroke-width="2" fill="none"/>
+                        <path d="M12 16L14 18L20 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <circle cx="16" cy="16" r="1" fill="currentColor"/>
+                      </svg>
+                    </div>
+                    <span>Feedback Automatizado</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Categoría: Development & UI -->
+              <div class="addon-category">
+                <div class="addon-category-header">
+                  <svg class="category-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <span class="category-title">Development & UI</span>
+                  <span class="category-count">5</span>
+                </div>
+                <div class="addon-category-items">
+                  <div class="addon-menu-item" data-addon="storybook">
+                    <div class="addon-menu-icon">
+                      <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="4" y="6" width="24" height="20" rx="2" stroke="currentColor" stroke-width="2" fill="none"/>
+                        <line x1="4" y1="12" x2="28" y2="12" stroke="currentColor" stroke-width="2"/>
+                        <circle cx="8" cy="9" r="1" fill="currentColor"/>
+                        <circle cx="12" cy="9" r="1" fill="currentColor"/>
+                      </svg>
+                    </div>
+                    <span>Storybook</span>
+                  </div>
+                  <div class="addon-menu-item" data-addon="chromatic">
+                    <div class="addon-menu-icon">
+                      <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="16" cy="16" r="12" stroke="currentColor" stroke-width="2" fill="none"/>
+                        <path d="M12 16L15 19L20 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M8 8L10 10M24 8L22 10M8 24L10 22M24 24L22 22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                      </svg>
+                    </div>
+                    <span>Chromatic</span>
+                  </div>
+                  <div class="addon-menu-item" data-addon="figma-sync">
+                    <div class="addon-menu-icon">
+                      <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="4" y="8" width="10" height="10" rx="1" stroke="currentColor" stroke-width="2" fill="none"/>
+                        <rect x="18" y="8" width="10" height="10" rx="1" stroke="currentColor" stroke-width="2" fill="none"/>
+                        <rect x="4" y="22" width="10" height="6" rx="1" stroke="currentColor" stroke-width="2" fill="none"/>
+                        <rect x="18" y="22" width="10" height="6" rx="1" stroke="currentColor" stroke-width="2" fill="none"/>
+                        <path d="M14 13L18 13M14 17L18 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                      </svg>
+                    </div>
+                    <span>Figma Sync</span>
+                  </div>
+                  <div class="addon-menu-item" data-addon="fontawesome">
+                    <div class="addon-menu-icon">
+                      <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M16 4C10.477 4 6 8.477 6 14C6 19.523 10.477 24 16 24C21.523 24 26 19.523 26 14C26 8.477 21.523 4 16 4ZM16 22C11.582 22 8 18.418 8 14C8 9.582 11.582 6 16 6C20.418 6 24 9.582 24 14C24 18.418 20.418 22 16 22Z" fill="currentColor"/>
+                        <circle cx="16" cy="14" r="3" fill="currentColor"/>
+                      </svg>
+                    </div>
+                    <span>FontAwesome</span>
+                  </div>
+                  <div class="addon-menu-item" data-addon="i18n">
+                    <div class="addon-menu-icon">
+                      <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="16" cy="16" r="12" stroke="currentColor" stroke-width="2" fill="none"/>
+                        <ellipse cx="16" cy="16" rx="12" ry="4" stroke="currentColor" stroke-width="1.5" fill="none" opacity="0.6"/>
+                        <ellipse cx="16" cy="16" rx="4" ry="12" stroke="currentColor" stroke-width="1.5" fill="none" opacity="0.6"/>
+                      </svg>
+                    </div>
+                    <span>i18n</span>
+                  </div>
+                </div>
               </div>
               <div class="addon-menu-item" data-addon="vercel">
                 <div class="addon-menu-icon">
@@ -3899,242 +4122,200 @@
                 </div>
                 <span>Storybook</span>
               </div>
-              <div class="addon-menu-item" data-addon="supabase">
-                <div class="addon-menu-icon">
-                  <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="4" y="8" width="24" height="18" rx="2" stroke="currentColor" stroke-width="2" fill="none"/>
-                    <circle cx="12" cy="17" r="2" fill="currentColor"/>
-                    <path d="M20 14L24 17L20 20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <!-- Categoría: Testing & Quality -->
+              <div class="addon-category">
+                <div class="addon-category-header">
+                  <svg class="category-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   </svg>
+                  <span class="category-title">Testing & Quality</span>
+                  <span class="category-count">7</span>
                 </div>
-                <span>Supabase</span>
+                <div class="addon-category-items">
+                  <div class="addon-menu-item" data-addon="jest">
+                    <div class="addon-menu-icon">
+                      <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M16 4L20 12L16 10L12 12L16 4Z" fill="currentColor"/>
+                        <rect x="14" y="10" width="4" height="12" rx="2" fill="currentColor"/>
+                        <path d="M10 22L16 26L22 22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                      </svg>
+                    </div>
+                    <span>JEST</span>
+                  </div>
+                  <div class="addon-menu-item" data-addon="vitest">
+                    <div class="addon-menu-icon">
+                      <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M16 4L20 12L16 10L12 12L16 4Z" fill="currentColor"/>
+                        <rect x="14" y="10" width="4" height="12" rx="2" fill="currentColor"/>
+                        <path d="M10 22L16 26L22 22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        <circle cx="16" cy="16" r="1" fill="currentColor"/>
+                        <path d="M8 8L10 10M24 8L22 10M8 24L10 22M24 24L22 22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                      </svg>
+                    </div>
+                    <span>Vitest</span>
+                  </div>
+                  <div class="addon-menu-item" data-addon="playwright">
+                    <div class="addon-menu-icon">
+                      <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="4" y="6" width="24" height="20" rx="2" stroke="currentColor" stroke-width="2" fill="none"/>
+                        <circle cx="10" cy="12" r="2" fill="currentColor"/>
+                        <path d="M18 12L24 12M18 16L24 16M18 20L22 20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M8 24L12 28L24 16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </div>
+                    <span>Playwright</span>
+                  </div>
+                  <div class="addon-menu-item" data-addon="eslint">
+                    <div class="addon-menu-icon">
+                      <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 8L6 16L12 24M20 8L26 16L20 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </div>
+                    <span>ESLint</span>
+                  </div>
+                  <div class="addon-menu-item" data-addon="prettier">
+                    <div class="addon-menu-icon">
+                      <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M8 8H24M8 16H24M8 24H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                      </svg>
+                    </div>
+                    <span>Prettier</span>
+                  </div>
+                  <div class="addon-menu-item" data-addon="codecov">
+                    <div class="addon-menu-icon">
+                      <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M16 4L6 14L16 18L26 14L16 4Z" fill="currentColor"/>
+                        <path d="M6 14V24L16 28L26 24V14" stroke="currentColor" stroke-width="2" fill="none"/>
+                        <path d="M12 20L16 24L20 20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                      </svg>
+                    </div>
+                    <span>Codecov</span>
+                  </div>
+                  <div class="addon-menu-item" data-addon="snyk">
+                    <div class="addon-menu-icon">
+                      <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M16 4L20 12L16 10L12 12L16 4Z" fill="currentColor"/>
+                        <rect x="14" y="10" width="4" height="12" rx="2" fill="currentColor"/>
+                        <path d="M10 22L16 26L22 22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        <circle cx="16" cy="18" r="1" fill="currentColor"/>
+                      </svg>
+                    </div>
+                    <span>Snyk</span>
+                  </div>
+                </div>
               </div>
-              <div class="addon-menu-item" data-addon="ai-assistant">
-                <div class="addon-menu-icon">
-                  <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="16" cy="12" r="6" stroke="currentColor" stroke-width="2" fill="none"/>
-                    <path d="M10 22C10 18 12.5 15 16 15C19.5 15 22 18 22 22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                    <path d="M8 8L10 10M24 8L22 10M8 24L10 22M24 24L22 22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+
+              <!-- Categoría: Database & Backend -->
+              <div class="addon-category">
+                <div class="addon-category-header">
+                  <svg class="category-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   </svg>
+                  <span class="category-title">Database & Backend</span>
+                  <span class="category-count">2</span>
                 </div>
-                <span>AI Assistant</span>
+                <div class="addon-category-items">
+                  <div class="addon-menu-item" data-addon="supabase">
+                    <div class="addon-menu-icon">
+                      <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="4" y="8" width="24" height="18" rx="2" stroke="currentColor" stroke-width="2" fill="none"/>
+                        <circle cx="12" cy="17" r="2" fill="currentColor"/>
+                        <path d="M20 14L24 17L20 20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                      </svg>
+                    </div>
+                    <span>Supabase</span>
+                  </div>
+                  <div class="addon-menu-item" data-addon="ai-assistant">
+                    <div class="addon-menu-icon">
+                      <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="16" cy="12" r="6" stroke="currentColor" stroke-width="2" fill="none"/>
+                        <path d="M10 22C10 18 12.5 15 16 15C19.5 15 22 18 22 22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M8 8L10 10M24 8L22 10M8 24L10 22M24 24L22 22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                      </svg>
+                    </div>
+                    <span>AI Assistant</span>
+                  </div>
+                </div>
               </div>
-              <div class="addon-menu-item" data-addon="jest">
-                <div class="addon-menu-icon">
-                  <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M16 4L20 12L16 10L12 12L16 4Z" fill="currentColor"/>
-                    <rect x="14" y="10" width="4" height="12" rx="2" fill="currentColor"/>
-                    <path d="M10 22L16 26L22 22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+
+              <!-- Categoría: Documentation -->
+              <div class="addon-category">
+                <div class="addon-category-header">
+                  <svg class="category-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   </svg>
+                  <span class="category-title">Documentation</span>
+                  <span class="category-count">1</span>
                 </div>
-                <span>JEST</span>
+                <div class="addon-category-items">
+                  <div class="addon-menu-item" data-addon="docusaurus">
+                    <div class="addon-menu-icon">
+                      <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="4" y="6" width="24" height="20" rx="2" stroke="currentColor" stroke-width="2" fill="none"/>
+                        <line x1="4" y1="12" x2="28" y2="12" stroke="currentColor" stroke-width="2"/>
+                        <line x1="4" y1="18" x2="28" y2="18" stroke="currentColor" stroke-width="1.5" opacity="0.5"/>
+                        <line x1="4" y1="24" x2="20" y2="24" stroke="currentColor" stroke-width="1.5" opacity="0.5"/>
+                      </svg>
+                    </div>
+                    <span>Docusaurus</span>
+                  </div>
+                </div>
               </div>
-              <div class="addon-menu-item" data-addon="eslint">
-                <div class="addon-menu-icon">
-                  <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 8L6 16L12 24M20 8L26 16L20 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+
+              <!-- Categoría: Build & Optimization -->
+              <div class="addon-category">
+                <div class="addon-category-header">
+                  <svg class="category-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   </svg>
+                  <span class="category-title">Build & Optimization</span>
+                  <span class="category-count">4</span>
                 </div>
-                <span>ESLint</span>
-              </div>
-              <div class="addon-menu-item" data-addon="prettier">
-                <div class="addon-menu-icon">
-                  <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M8 8H24M8 16H24M8 24H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                  </svg>
+                <div class="addon-category-items">
+                  <div class="addon-menu-item" data-addon="bundle-analyzer">
+                    <div class="addon-menu-icon">
+                      <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="4" y="8" width="24" height="18" rx="2" stroke="currentColor" stroke-width="2" fill="none"/>
+                        <path d="M8 14L12 18L16 12L20 16L24 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <line x1="8" y1="20" x2="24" y2="20" stroke="currentColor" stroke-width="2"/>
+                      </svg>
+                    </div>
+                    <span>Bundle Analyzer</span>
+                  </div>
+                  <div class="addon-menu-item" data-addon="standalone">
+                    <div class="addon-menu-icon">
+                      <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="4" y="6" width="24" height="20" rx="2" stroke="currentColor" stroke-width="2" fill="none"/>
+                        <path d="M8 10L16 10M8 14L24 14M8 18L20 18M8 22L16 22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        <circle cx="12" cy="26" r="1.5" fill="currentColor"/>
+                        <circle cx="20" cy="26" r="1.5" fill="currentColor"/>
+                      </svg>
+                    </div>
+                    <span>Standalone</span>
+                  </div>
+                  <div class="addon-menu-item" data-addon="turborepo">
+                    <div class="addon-menu-icon">
+                      <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="16" cy="16" r="12" stroke="currentColor" stroke-width="2" fill="none"/>
+                        <path d="M10 16L14 20L18 12L22 16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <circle cx="12" cy="12" r="1.5" fill="currentColor"/>
+                        <circle cx="20" cy="20" r="1.5" fill="currentColor"/>
+                      </svg>
+                    </div>
+                    <span>Turborepo</span>
+                  </div>
+                  <div class="addon-menu-item" data-addon="changesets">
+                    <div class="addon-menu-icon">
+                      <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="4" y="6" width="24" height="20" rx="2" stroke="currentColor" stroke-width="2" fill="none"/>
+                        <path d="M8 12L16 12M8 16L24 16M8 20L20 20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        <circle cx="12" cy="26" r="2" fill="currentColor"/>
+                        <circle cx="20" cy="26" r="2" fill="currentColor"/>
+                      </svg>
+                    </div>
+                    <span>Changesets</span>
+                  </div>
                 </div>
-                <span>Prettier</span>
-              </div>
-              <div class="addon-menu-item" data-addon="lighthouse">
-                <div class="addon-menu-icon">
-                  <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M16 4L6 14L16 18L26 14L16 4Z" fill="currentColor"/>
-                    <path d="M6 14V24L16 28L26 24V14" stroke="currentColor" stroke-width="2" fill="none"/>
-                  </svg>
-                </div>
-                <span>Lighthouse</span>
-              </div>
-              <div class="addon-menu-item" data-addon="docusaurus">
-                <div class="addon-menu-icon">
-                  <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="4" y="6" width="24" height="20" rx="2" stroke="currentColor" stroke-width="2" fill="none"/>
-                    <line x1="4" y1="12" x2="28" y2="12" stroke="currentColor" stroke-width="2"/>
-                    <line x1="4" y1="18" x2="28" y2="18" stroke="currentColor" stroke-width="1.5" opacity="0.5"/>
-                    <line x1="4" y1="24" x2="20" y2="24" stroke="currentColor" stroke-width="1.5" opacity="0.5"/>
-                  </svg>
-                </div>
-                <span>Docusaurus</span>
-              </div>
-              <div class="addon-menu-item" data-addon="i18n">
-                <div class="addon-menu-icon">
-                  <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="16" cy="16" r="12" stroke="currentColor" stroke-width="2" fill="none"/>
-                    <ellipse cx="16" cy="16" rx="12" ry="4" stroke="currentColor" stroke-width="1.5" fill="none" opacity="0.6"/>
-                    <ellipse cx="16" cy="16" rx="4" ry="12" stroke="currentColor" stroke-width="1.5" fill="none" opacity="0.6"/>
-                  </svg>
-                </div>
-                <span>i18n</span>
-              </div>
-              <div class="addon-menu-item" data-addon="figma-sync">
-                <div class="addon-menu-icon">
-                  <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="4" y="8" width="10" height="10" rx="1" stroke="currentColor" stroke-width="2" fill="none"/>
-                    <rect x="18" y="8" width="10" height="10" rx="1" stroke="currentColor" stroke-width="2" fill="none"/>
-                    <rect x="4" y="22" width="10" height="6" rx="1" stroke="currentColor" stroke-width="2" fill="none"/>
-                    <rect x="18" y="22" width="10" height="6" rx="1" stroke="currentColor" stroke-width="2" fill="none"/>
-                    <path d="M14 13L18 13M14 17L18 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                  </svg>
-                </div>
-                <span>Figma Sync</span>
-              </div>
-              <div class="addon-menu-item" data-addon="fontawesome">
-                <div class="addon-menu-icon">
-                  <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M16 4C10.477 4 6 8.477 6 14C6 19.523 10.477 24 16 24C21.523 24 26 19.523 26 14C26 8.477 21.523 4 16 4ZM16 22C11.582 22 8 18.418 8 14C8 9.582 11.582 6 16 6C20.418 6 24 9.582 24 14C24 18.418 20.418 22 16 22Z" fill="currentColor"/>
-                    <circle cx="16" cy="14" r="3" fill="currentColor"/>
-                  </svg>
-                </div>
-                <span>FontAwesome</span>
-              </div>
-              <div class="addon-menu-item" data-addon="feedback-automatizado">
-                <div class="addon-menu-icon">
-                  <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M16 4C9.373 4 4 9.373 4 16C4 18.209 4.791 20.209 6.073 21.791L4 28L10.209 25.927C11.791 27.209 13.791 28 16 28C22.627 28 28 22.627 28 16C28 9.373 22.627 4 16 4Z" stroke="currentColor" stroke-width="2" fill="none"/>
-                    <path d="M12 16L14 18L20 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    <circle cx="16" cy="16" r="1" fill="currentColor"/>
-                  </svg>
-                </div>
-                <span>Feedback Automatizado</span>
-              </div>
-              <div class="addon-menu-item" data-addon="bundle-analyzer">
-                <div class="addon-menu-icon">
-                  <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="4" y="8" width="24" height="18" rx="2" stroke="currentColor" stroke-width="2" fill="none"/>
-                    <path d="M8 14L12 18L16 12L20 16L24 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    <line x1="8" y1="20" x2="24" y2="20" stroke="currentColor" stroke-width="2"/>
-                  </svg>
-                </div>
-                <span>Bundle Analyzer</span>
-              </div>
-              <div class="addon-menu-item" data-addon="changesets">
-                <div class="addon-menu-icon">
-                  <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="4" y="6" width="24" height="20" rx="2" stroke="currentColor" stroke-width="2" fill="none"/>
-                    <path d="M8 12L16 12M8 16L24 16M8 20L20 20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                    <circle cx="12" cy="26" r="2" fill="currentColor"/>
-                    <circle cx="20" cy="26" r="2" fill="currentColor"/>
-                  </svg>
-                </div>
-                <span>Changesets</span>
-              </div>
-              <div class="addon-menu-item" data-addon="chromatic">
-                <div class="addon-menu-icon">
-                  <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="16" cy="16" r="12" stroke="currentColor" stroke-width="2" fill="none"/>
-                    <path d="M12 16L15 19L20 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M8 8L10 10M24 8L22 10M8 24L10 22M24 24L22 22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                  </svg>
-                </div>
-                <span>Chromatic</span>
-              </div>
-              <div class="addon-menu-item" data-addon="codecov">
-                <div class="addon-menu-icon">
-                  <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M16 4L6 14L16 18L26 14L16 4Z" fill="currentColor"/>
-                    <path d="M6 14V24L16 28L26 24V14" stroke="currentColor" stroke-width="2" fill="none"/>
-                    <path d="M12 20L16 24L20 20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                  </svg>
-                </div>
-                <span>Codecov</span>
-              </div>
-              <div class="addon-menu-item" data-addon="docker">
-                <div class="addon-menu-icon">
-                  <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="4" y="8" width="24" height="18" rx="2" stroke="currentColor" stroke-width="2" fill="none"/>
-                    <path d="M10 12H14M18 12H22M10 16H14M18 16H22M10 20H14M18 20H22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                    <circle cx="8" cy="6" r="1.5" fill="currentColor"/>
-                    <circle cx="12" cy="6" r="1.5" fill="currentColor"/>
-                    <circle cx="16" cy="6" r="1.5" fill="currentColor"/>
-                  </svg>
-                </div>
-                <span>Docker</span>
-              </div>
-              <div class="addon-menu-item" data-addon="playwright">
-                <div class="addon-menu-icon">
-                  <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="4" y="6" width="24" height="20" rx="2" stroke="currentColor" stroke-width="2" fill="none"/>
-                    <circle cx="10" cy="12" r="2" fill="currentColor"/>
-                    <path d="M18 12L24 12M18 16L24 16M18 20L22 20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                    <path d="M8 24L12 28L24 16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                </div>
-                <span>Playwright</span>
-              </div>
-              <div class="addon-menu-item" data-addon="renovate">
-                <div class="addon-menu-icon">
-                  <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="16" cy="16" r="12" stroke="currentColor" stroke-width="2" fill="none"/>
-                    <path d="M16 8V16L20 20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                    <path d="M8 8L10 10M24 8L22 10M8 24L10 22M24 24L22 22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                  </svg>
-                </div>
-                <span>Renovate</span>
-              </div>
-              <div class="addon-menu-item" data-addon="sentry">
-                <div class="addon-menu-icon">
-                  <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M16 4L6 14L16 20L26 14L16 4Z" fill="currentColor"/>
-                    <path d="M6 14V24L16 28L26 24V14" stroke="currentColor" stroke-width="2" fill="none"/>
-                    <circle cx="16" cy="18" r="2" fill="currentColor"/>
-                    <path d="M12 22L16 26L20 22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                  </svg>
-                </div>
-                <span>Sentry</span>
-              </div>
-              <div class="addon-menu-item" data-addon="snyk">
-                <div class="addon-menu-icon">
-                  <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M16 4L20 12L16 10L12 12L16 4Z" fill="currentColor"/>
-                    <rect x="14" y="10" width="4" height="12" rx="2" fill="currentColor"/>
-                    <path d="M10 22L16 26L22 22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                    <circle cx="16" cy="18" r="1" fill="currentColor"/>
-                  </svg>
-                </div>
-                <span>Snyk</span>
-              </div>
-              <div class="addon-menu-item" data-addon="standalone">
-                <div class="addon-menu-icon">
-                  <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="4" y="6" width="24" height="20" rx="2" stroke="currentColor" stroke-width="2" fill="none"/>
-                    <path d="M8 10L16 10M8 14L24 14M8 18L20 18M8 22L16 22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                    <circle cx="12" cy="26" r="1.5" fill="currentColor"/>
-                    <circle cx="20" cy="26" r="1.5" fill="currentColor"/>
-                  </svg>
-                </div>
-                <span>Standalone</span>
-              </div>
-              <div class="addon-menu-item" data-addon="turborepo">
-                <div class="addon-menu-icon">
-                  <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="16" cy="16" r="12" stroke="currentColor" stroke-width="2" fill="none"/>
-                    <path d="M10 16L14 20L18 12L22 16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    <circle cx="12" cy="12" r="1.5" fill="currentColor"/>
-                    <circle cx="20" cy="20" r="1.5" fill="currentColor"/>
-                  </svg>
-                </div>
-                <span>Turborepo</span>
-              </div>
-              <div class="addon-menu-item" data-addon="vitest">
-                <div class="addon-menu-icon">
-                  <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M16 4L20 12L16 10L12 12L16 4Z" fill="currentColor"/>
-                    <rect x="14" y="10" width="4" height="12" rx="2" fill="currentColor"/>
-                    <path d="M10 22L16 26L22 22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                    <circle cx="16" cy="16" r="1" fill="currentColor"/>
-                    <path d="M8 8L10 10M24 8L22 10M8 24L10 22M24 24L22 22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                  </svg>
-                </div>
-                <span>Vitest</span>
               </div>
             </div>
           </aside>
@@ -7242,6 +7423,19 @@ npm run addon:activate supabase</code></pre>
 
       // Inicializar botones de copiar cuando el DOM esté listo
       initCopyButtons();
+
+      // Toggle de categorías
+      const categoryHeaders = document.querySelectorAll('.addon-category-header');
+      
+      categoryHeaders.forEach(header => {
+        header.addEventListener('click', (e) => {
+          // Si el click es en un addon dentro de la categoría, no togglear
+          if (e.target.closest('.addon-menu-item')) return;
+          
+          const category = header.parentElement;
+          category.classList.toggle('collapsed');
+        });
+      });
 
       // Navegación de Add-ons
       const addonMenuItems = document.querySelectorAll('.addon-menu-item');
