@@ -21,15 +21,34 @@ npm install
 
 ## 📋 Paso 2: Inicializar
 
+### Opción A: Modo Automático (Recomendado para Cursor)
+
+```bash
+# Configurar respuestas automáticas
+export AUTORUN_PROJECT_TYPE=ubits
+export AUTORUN_TEMPLATE=administrador
+export AUTORUN_MODULE=desempeno
+export AUTORUN_PRODUCT=objetivos
+
+# Ejecutar wizard (usará las respuestas automáticas)
+npm run init
+```
+
+El wizard usará estas respuestas y continuará automáticamente sin esperar input.
+
+### Opción B: Modo Interactivo
+
 ```bash
 npm run init
 ```
 
-El wizard te preguntará:
+El wizard te preguntará interactivamente:
 1. **Tipo:** UBITS o Independiente
 2. **Template:** Administrador o Colaborador (si UBITS)
 3. **Módulo:** Aprendizaje, Desempeño, etc.
 4. **Producto:** Producto específico del módulo
+
+**Nota**: El wizard ahora es más conversacional y usa primera persona para una mejor experiencia.
 
 ---
 
