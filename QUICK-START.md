@@ -129,6 +129,25 @@ ls -la packages/autorun-core/src/cli/
 
 ---
 
+## ⚠️ Vulnerabilidades de Seguridad
+
+Si `npm audit` muestra vulnerabilidades:
+
+```bash
+# Ver vulnerabilidades
+npm audit
+
+# Intentar arreglar automáticamente
+npm audit fix
+
+# Si hay vulnerabilidades críticas, revisar manualmente
+npm audit --json
+```
+
+**Nota**: Las vulnerabilidades moderadas/altas generalmente no bloquean el desarrollo, pero deben revisarse antes de producción. Consulta `SECURITY-AUDIT.md` para más información.
+
+---
+
 ## 💡 Tips
 
 1. **Siempre usa la rama `main`** al clonar
