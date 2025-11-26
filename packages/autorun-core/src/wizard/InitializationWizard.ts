@@ -47,49 +47,54 @@ export class InitializationWizard {
 	 */
 	async start(options?: { autoSelect?: ProjectType }): Promise<WizardResult> {
 		console.log('🚀 ¡Hola! Soy tu asistente de Autorun.\n');
-		console.log('Voy a configurar tu proyecto automáticamente.\n');
+		console.log('Voy a guiarte para configurar tu proyecto.\n');
 
-		// 1. Determinar tipo de proyecto (automático si no se especifica)
-		const projectType = options?.autoSelect || this.getProjectTypeAuto();
+		// 1. Determinar tipo de proyecto
+		const projectType = options?.autoSelect || await this.askProjectType();
 
 		if (projectType === 'ubits') {
-			console.log('✅ He detectado que quieres trabajar en UBITS. Perfecto, voy a configurarlo ahora.\n');
+			console.log('✅ Perfecto, voy a configurar tu proyecto UBITS ahora.\n');
 			return await this.setupUBITS();
 		} else {
-			console.log('✅ Voy a configurar un proyecto independiente.\n');
+			console.log('✅ Perfecto, voy a configurar un proyecto independiente.\n');
 			return await this.setupIndependent();
 		}
-	}
-
-	/**
-	 * Obtiene el tipo de proyecto automáticamente (sin preguntar)
-	 */
-	private getProjectTypeAuto(): ProjectType {
-		// Verificar variable de entorno
-		const envType = process.env.AUTORUN_PROJECT_TYPE;
-		if (envType === 'ubits' || envType === 'independent') {
-			return envType as ProjectType;
-		}
-
-		// Por defecto, usar UBITS (más común)
-		return 'ubits';
 	}
 
 	/**
 	 * Pregunta si quiere trabajar en UBITS o proyecto independiente
 	 */
 	private async askProjectType(): Promise<ProjectType> {
-		// En Node.js, usar readline o inquirer
-		// Por ahora, simulamos con una función que se puede implementar
-		return this.askProjectTypeInteractive();
-	}
+		// Verificar si hay respuesta automática en variable de entorno
+		const autoAnswer = process.env.AUTORUN_PROJECT_TYPE;
+		
+		if (autoAnswer === 'ubits' || autoAnswer === '1') {
+			console.log('✅ Veo que quieres trabajar en UBITS. Perfecto, voy a configurarlo ahora.\n');
+			return 'ubits';
+		}
+		
+		if (autoAnswer === 'independent' || autoAnswer === '2') {
+			console.log('✅ Veo que quieres trabajar en un Proyecto Independiente. Perfecto, voy a configurarlo ahora.\n');
+			return 'independent';
+		}
 
-	/**
-	 * Implementación interactiva (Node.js) - Ya no se usa, todo es automático
-	 */
-	private async askProjectTypeInteractive(): Promise<ProjectType> {
-		// Este método ya no se usa, todo es automático
-		return this.getProjectTypeAuto();
+		// Si no hay respuesta automática, preguntar interactivamente
+		const answer = await this.prompt.select(
+			'📋 ¿En qué tipo de proyecto quieres trabajar?',
+			[
+				{
+					value: 'ubits',
+					label: 'UBITS (Configuración predefinida con add-ons optimizados)',
+				},
+				{
+					value: 'independent',
+					label: 'Proyecto Independiente (Configuración personalizada)',
+				},
+			],
+			'ubits',
+		);
+
+		return answer as ProjectType;
 	}
 
 	/**
@@ -209,7 +214,7 @@ export class InitializationWizard {
 	}
 
 	/**
-	 * Selecciona template (Administrador/Colaborador) - Automático
+	 * Selecciona template (Administrador/Colaborador)
 	 */
 	private async selectTemplate(): Promise<'administrador' | 'colaborador'> {
 		// Verificar respuesta automática
@@ -219,14 +224,27 @@ export class InitializationWizard {
 			return autoAnswer as 'administrador' | 'colaborador';
 		}
 
-		// Por defecto, usar administrador
-		const template = 'administrador';
-		console.log(`   ✅ Usaré el template: ${template} (por defecto)`);
-		return template;
+		// Si no hay respuesta automática, preguntar interactivamente
+		const answer = await this.prompt.select(
+			'   ¿Qué template quieres usar?',
+			[
+				{
+					value: 'administrador',
+					label: 'Administrador (Todos los módulos disponibles)',
+				},
+				{
+					value: 'colaborador',
+					label: 'Colaborador (Módulos limitados)',
+				},
+			],
+			'administrador',
+		);
+
+		return answer as 'administrador' | 'colaborador';
 	}
 
 	/**
-	 * Selecciona módulo para trabajar - Automático
+	 * Selecciona módulo para trabajar
 	 */
 	private async selectModule(
 		template: 'administrador' | 'colaborador',
@@ -234,13 +252,25 @@ export class InitializationWizard {
 		const templateConfig = UBITS_PRESET.templates[template];
 		const modules = templateConfig.modules;
 
+		const moduleOptions = modules.map((moduleId) => {
+			const moduleConfig = UBITS_MODULES_CONFIG[moduleId];
+			return {
+				value: moduleId,
+				label: moduleConfig?.name || moduleId,
+			};
+		});
+
 		// Verificar respuesta automática
 		const autoModule = process.env.AUTORUN_MODULE;
-		let selectedModule = autoModule || 'desempeno';
+		let selectedModule = autoModule;
 		
 		if (!autoModule) {
-			// Por defecto, usar desempeño
-			console.log(`   ✅ Usaré el módulo: desempeño (por defecto)`);
+			// Si no hay respuesta automática, preguntar interactivamente
+			selectedModule = await this.prompt.select(
+				'   ¿En qué módulo quieres trabajar?',
+				moduleOptions,
+				'desempeno',
+			);
 		} else {
 			console.log(`   ✅ Usaré el módulo: ${selectedModule}`);
 		}
@@ -252,7 +282,7 @@ export class InitializationWizard {
 	}
 
 	/**
-	 * Selecciona producto dentro de un módulo - Automático
+	 * Selecciona producto dentro de un módulo
 	 */
 	private async selectProduct(moduleId: string): Promise<string> {
 		const moduleConfig = UBITS_MODULES_CONFIG[moduleId];
@@ -267,6 +297,11 @@ export class InitializationWizard {
 			return '';
 		}
 
+		const productOptions = moduleConfig.products.map((product) => ({
+			value: product.id,
+			label: product.name,
+		}));
+
 		// Verificar respuesta automática
 		const autoProduct = process.env.AUTORUN_PRODUCT;
 		if (autoProduct) {
@@ -274,12 +309,14 @@ export class InitializationWizard {
 			return autoProduct;
 		}
 
-		// Por defecto, usar el primer producto del módulo
-		const defaultProduct = moduleConfig.products[0]?.id || '';
-		if (defaultProduct) {
-			console.log(`   ✅ Usaré el producto: ${defaultProduct} (por defecto)`);
-		}
-		return defaultProduct;
+		// Si no hay respuesta automática, preguntar interactivamente
+		const selectedProduct = await this.prompt.select(
+			`   ¿En qué producto de "${moduleConfig.name}" quieres trabajar?`,
+			productOptions,
+			moduleConfig.products[0]?.id,
+		);
+
+		return selectedProduct;
 	}
 
 	/**
