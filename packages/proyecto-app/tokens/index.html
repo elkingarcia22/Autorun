@@ -2348,6 +2348,69 @@
         padding: 0 20px 20px 20px;
       }
 
+      /* Acordeón solo para Vercel */
+      #addon-vercel .addon-section {
+        margin-bottom: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 8px;
+        overflow: hidden;
+        background: rgba(0, 0, 0, 0.2);
+      }
+
+      #addon-vercel .addon-section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 20px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: transparent;
+        border: none;
+        width: 100%;
+        text-align: left;
+      }
+
+      #addon-vercel .addon-section-header:hover {
+        background: rgba(255, 255, 255, 0.03);
+      }
+
+      #addon-vercel .addon-section-header.active {
+        background: rgba(255, 255, 0, 0.05);
+      }
+
+      #addon-vercel .addon-section-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--autorun-neon-white);
+        margin: 0;
+        padding: 0;
+        border: none;
+      }
+
+      #addon-vercel .addon-section-chevron {
+        width: 18px;
+        height: 18px;
+        transition: transform 0.3s ease;
+        color: var(--autorun-neon-yellow);
+        flex-shrink: 0;
+      }
+
+      #addon-vercel .addon-section.expanded .addon-section-chevron {
+        transform: rotate(180deg);
+      }
+
+      #addon-vercel .addon-section-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.4s ease, padding 0.3s ease;
+        padding: 0 20px;
+      }
+
+      #addon-vercel .addon-section.expanded .addon-section-content {
+        max-height: 5000px;
+        padding: 0 20px 20px 20px;
+      }
+
       .addon-features {
         list-style: none;
         padding: 0;
@@ -4648,35 +4711,55 @@ await hub.activateAddon('clarity');
                 Integración con Vercel para despliegue automático de aplicaciones. Gestión de proyectos, configuración de dominios y preview deployments.
               </p>
 
-              <div class="addon-section">
-                <h4 class="addon-section-title">Características</h4>
-                <ul class="addon-features">
-                  <li>Deploy automático</li>
-                  <li>Gestión de proyectos Vercel</li>
-                  <li>Configuración de dominios</li>
-                  <li>Preview deployments</li>
-                  <li>Integración con GitHub</li>
-                </ul>
+              <div class="addon-section expanded">
+                <button class="addon-section-header active">
+                  <h4 class="addon-section-title">Características</h4>
+                  <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <div class="addon-section-content">
+                  <ul class="addon-features">
+                    <li>Deploy automático</li>
+                    <li>Gestión de proyectos Vercel</li>
+                    <li>Configuración de dominios</li>
+                    <li>Preview deployments</li>
+                    <li>Integración con GitHub</li>
+                  </ul>
+                </div>
               </div>
 
               <div class="addon-section">
-                <h4 class="addon-section-title">Requisitos</h4>
-                <div class="requirements-list">
-                  <div class="requirement-item">
-                    <span class="requirement-label">Vercel Token</span>
-                    <span class="requirement-value">Token de acceso de Vercel (obtener en vercel.com/account/tokens)</span>
-                  </div>
-                  <div class="requirement-item">
-                    <span class="requirement-label">Team ID (Opcional)</span>
-                    <span class="requirement-value">ID del equipo si trabajas en un equipo</span>
+                <button class="addon-section-header">
+                  <h4 class="addon-section-title">Requisitos</h4>
+                  <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <div class="addon-section-content">
+                  <div class="requirements-list">
+                    <div class="requirement-item">
+                      <span class="requirement-label">Vercel Token</span>
+                      <span class="requirement-value">Token de acceso de Vercel (obtener en vercel.com/account/tokens)</span>
+                    </div>
+                    <div class="requirement-item">
+                      <span class="requirement-label">Team ID (Opcional)</span>
+                      <span class="requirement-value">ID del equipo si trabajas en un equipo</span>
+                    </div>
                   </div>
                 </div>
               </div>
 
               <div class="addon-section">
-                <h4 class="addon-section-title">Configuración</h4>
-                <div class="code-block">
-                  <pre><code>{
+                <button class="addon-section-header">
+                  <h4 class="addon-section-title">Configuración</h4>
+                  <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <div class="addon-section-content">
+                  <div class="code-block">
+                    <pre><code>{
   "autorun": {
     "addons": {
       "config": {
@@ -4689,23 +4772,37 @@ await hub.activateAddon('clarity');
     }
   }
 }</code></pre>
+                  </div>
                 </div>
               </div>
 
               <div class="addon-section">
-                <h4 class="addon-section-title">Uso</h4>
-                <div class="code-block">
-                  <pre><code>// Activar add-on
+                <button class="addon-section-header">
+                  <h4 class="addon-section-title">Uso</h4>
+                  <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <div class="addon-section-content">
+                  <div class="code-block">
+                    <pre><code>// Activar add-on
 await hub.activateAddon('vercel');
 
 // Deploy automático
 const deployService = hub.getService('vercel', 'deploy');
 await deployService();</code></pre>
+                  </div>
                 </div>
               </div>
 
               <div class="addon-section">
-                <h4 class="addon-section-title">🔌 Integración MCP</h4>
+                <button class="addon-section-header">
+                  <h4 class="addon-section-title">🔌 Integración MCP</h4>
+                  <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <div class="addon-section-content">
                 <p class="addon-description" style="margin-bottom: 16px;">
                   Este add-on soporta integración con <strong>MCP (Model Context Protocol)</strong> para mejorar la experiencia y seguridad.
                 </p>
@@ -4720,8 +4817,8 @@ await deployService();</code></pre>
                     <li>Consulta de deployments, proyectos y configuraciones mediante lenguaje natural</li>
                   </ul>
                 </div>
-                <div class="code-block" style="background: rgba(255, 255, 0, 0.05); border-left: 3px solid var(--autorun-neon-yellow);">
-                  <pre><code>// El add-on detectará automáticamente si hay un servidor MCP configurado
+                  <div class="code-block" style="background: rgba(255, 255, 0, 0.05); border-left: 3px solid var(--autorun-neon-yellow);">
+                    <pre><code>// El add-on detectará automáticamente si hay un servidor MCP configurado
 // y ofrecerá instalarlo durante la inicialización si está disponible
 // pero no configurado. Si el usuario acepta, se configurará automáticamente.
 
@@ -4730,6 +4827,7 @@ await hub.activateAddon('vercel');
 // O
 // ℹ️ ¿Deseas instalar MCP para mejorar la experiencia con Vercel?
 //    [Sí] [No]</code></pre>
+                  </div>
                 </div>
               </div>
             </div>
@@ -7543,6 +7641,23 @@ npm run addon:activate supabase</code></pre>
       if (githubAddon) {
         // Manejar clicks en los headers de las secciones
         githubAddon.addEventListener('click', (e) => {
+          if (e.target.closest('.addon-section-header')) {
+            const header = e.target.closest('.addon-section-header');
+            const section = header.closest('.addon-section');
+            
+            if (section) {
+              section.classList.toggle('expanded');
+              header.classList.toggle('active');
+            }
+          }
+        });
+      }
+
+      // Acordeón solo para Vercel
+      const vercelAddon = document.getElementById('addon-vercel');
+      if (vercelAddon) {
+        // Manejar clicks en los headers de las secciones
+        vercelAddon.addEventListener('click', (e) => {
           if (e.target.closest('.addon-section-header')) {
             const header = e.target.closest('.addon-section-header');
             const section = header.closest('.addon-section');
