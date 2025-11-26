@@ -8934,6 +8934,7 @@ cd Autorun
 npm install
 
 # Inicializar proyecto (wizard interactivo)
+# El script usa tsx para ejecutar TypeScript directamente
 npm run init</code></pre>
               </div>
               <p class="step-note" style="margin-top: 16px; padding: 12px; background: rgba(255, 165, 0, 0.1); border-left: 3px solid var(--autorun-neon-yellow); border-radius: 4px;">
@@ -8942,10 +8943,10 @@ npm run init</code></pre>
                 O clona de nuevo el repositorio para obtener los últimos cambios.
               </p>
               <p class="step-note" style="margin-top: 16px;">
-                <strong>✅ Verificación automática:</strong> Después de <code>npm install</code>, se ejecuta automáticamente una verificación que comprueba la estructura del proyecto, scripts, compilación y dependencias.
+                <strong>✅ Verificación automática:</strong> Después de <code>npm install</code>, se ejecuta automáticamente una verificación que comprueba la estructura del proyecto, scripts y dependencias.
               </p>
               <p class="step-note" style="margin-top: 12px;">
-                <strong>🎯 Wizard de inicialización:</strong> El comando <code>npm run init</code> te guiará paso a paso para configurar tu proyecto (UBITS o independiente), seleccionar template, módulo y producto, y crear tu lienzo de trabajo.
+                <strong>🎯 Wizard de inicialización:</strong> El comando <code>npm run init</code> usa <code>tsx</code> para ejecutar el wizard directamente desde TypeScript (sin necesidad de compilar primero). Te guiará paso a paso para configurar tu proyecto (UBITS o independiente), seleccionar template, módulo y producto, y crear tu lienzo de trabajo.
               </p>
               <p class="step-note" style="margin-top: 12px;">
                 <strong>💡 Tip:</strong> Puedes ejecutar la verificación manualmente en cualquier momento con: <code>npm run verify</code>
