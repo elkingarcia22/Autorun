@@ -47,16 +47,32 @@ export class InitializationWizard {
 	 */
 	async start(options?: { autoSelect?: ProjectType }): Promise<WizardResult> {
 		console.log('🚀 ¡Hola! Soy tu asistente de Autorun.\n');
-		console.log('Te voy a guiar paso a paso para configurar tu proyecto.\n');
+		console.log('Voy a configurar tu proyecto automáticamente.\n');
 
-		// 1. Preguntar tipo de proyecto
-		const projectType = options?.autoSelect || await this.askProjectType();
+		// 1. Determinar tipo de proyecto (automático si no se especifica)
+		const projectType = options?.autoSelect || this.getProjectTypeAuto();
 
 		if (projectType === 'ubits') {
+			console.log('✅ He detectado que quieres trabajar en UBITS. Perfecto, voy a configurarlo ahora.\n');
 			return await this.setupUBITS();
 		} else {
+			console.log('✅ Voy a configurar un proyecto independiente.\n');
 			return await this.setupIndependent();
 		}
+	}
+
+	/**
+	 * Obtiene el tipo de proyecto automáticamente (sin preguntar)
+	 */
+	private getProjectTypeAuto(): ProjectType {
+		// Verificar variable de entorno
+		const envType = process.env.AUTORUN_PROJECT_TYPE;
+		if (envType === 'ubits' || envType === 'independent') {
+			return envType as ProjectType;
+		}
+
+		// Por defecto, usar UBITS (más común)
+		return 'ubits';
 	}
 
 	/**
@@ -69,38 +85,11 @@ export class InitializationWizard {
 	}
 
 	/**
-	 * Implementación interactiva (Node.js)
+	 * Implementación interactiva (Node.js) - Ya no se usa, todo es automático
 	 */
 	private async askProjectTypeInteractive(): Promise<ProjectType> {
-		// Verificar si hay respuesta automática en variable de entorno
-		const autoAnswer = process.env.AUTORUN_PROJECT_TYPE || process.env.AUTORUN_AUTO_ANSWER;
-		
-		if (autoAnswer === 'ubits' || autoAnswer === '1') {
-			console.log('✅ Perfecto, veo que quieres trabajar en UBITS.\n');
-			return 'ubits';
-		}
-		
-		if (autoAnswer === 'independent' || autoAnswer === '2') {
-			console.log('✅ Perfecto, veo que quieres trabajar en un Proyecto Independiente.\n');
-			return 'independent';
-		}
-
-		const answer = await this.prompt.select(
-			'📋 ¿En qué tipo de proyecto quieres trabajar?',
-			[
-				{
-					value: 'ubits',
-					label: 'UBITS (Configuración predefinida con add-ons optimizados)',
-				},
-				{
-					value: 'independent',
-					label: 'Proyecto Independiente (Configuración personalizada)',
-				},
-			],
-			'ubits',
-		);
-
-		return answer as ProjectType;
+		// Este método ya no se usa, todo es automático
+		return this.getProjectTypeAuto();
 	}
 
 	/**
@@ -126,27 +115,27 @@ export class InitializationWizard {
 		console.log('   ✅ Componentes cargados\n');
 
 		// 4. Seleccionar template
-		console.log('📋 Paso 4: Necesito saber qué template quieres usar...');
+		console.log('📋 Paso 4: Seleccionando template...');
 		const template = await this.selectTemplate();
-		console.log(`   ✅ Template seleccionado: ${template}\n`);
+		console.log(`   ✅ Template: ${template}\n`);
 
 		// 5. Seleccionar módulo y producto
-		console.log('📦 Paso 5: Ahora vamos a elegir el módulo y producto...');
+		console.log('📦 Paso 5: Seleccionando módulo y producto...');
 		const { module, product } = await this.selectModule(template);
 		console.log(`   ✅ Módulo: ${module}, Producto: ${product}\n`);
 
 		// 6. Habilitar módulo en sidebar y configurar subnav
-		console.log(`⚙️  Paso 6: Configurando sidebar y subnav para "${module}"...`);
+		console.log(`⚙️  Paso 6: Estoy configurando sidebar y subnav para "${module}"...`);
 		await this.enableModule(module, template, product);
 		console.log('   ✅ Sidebar y subnav configurados\n');
 
 		// 7. Crear lienzo/template
-		console.log('🎨 Paso 7: Creando tu lienzo de trabajo...');
+		console.log('🎨 Paso 7: Estoy creando tu lienzo de trabajo...');
 		const canvasPath = await this.createCanvas(template, module, product);
 		console.log(`   ✅ Lienzo creado: ${canvasPath}\n`);
 
 		// 8. Validar lienzo creado
-		console.log('🔍 Paso 8: Validando que todo cumpla con los estándares UBITS...');
+		console.log('🔍 Paso 8: Estoy validando que todo cumpla con los estándares UBITS...');
 		await this.validateCanvas(canvasPath);
 		console.log('   ✅ Validación completada\n');
 
@@ -212,15 +201,16 @@ export class InitializationWizard {
 			try {
 				const manifestUrl = `${baseUrl}/components/${component}/manifest.json`;
 				await ComponentsAPI.loadFromStorybook({ manifestUrl });
-				console.log(`   ✅ ${component} cargado`);
+				// No mostrar cada componente individualmente para mantener el flujo fluido
 			} catch (error) {
 				console.warn(`   ⚠️  Error cargando ${component}:`, error);
 			}
 		}
+		console.log(`   ✅ ${UBITS_PRESET.components.length} componentes cargados`);
 	}
 
 	/**
-	 * Selecciona template (Administrador/Colaborador)
+	 * Selecciona template (Administrador/Colaborador) - Automático
 	 */
 	private async selectTemplate(): Promise<'administrador' | 'colaborador'> {
 		// Verificar respuesta automática
@@ -230,26 +220,14 @@ export class InitializationWizard {
 			return autoAnswer as 'administrador' | 'colaborador';
 		}
 
-		const answer = await this.prompt.select(
-			'   ¿Qué template quieres usar?',
-			[
-				{
-					value: 'administrador',
-					label: 'Administrador (Todos los módulos disponibles)',
-				},
-				{
-					value: 'colaborador',
-					label: 'Colaborador (Módulos limitados)',
-				},
-			],
-			'administrador',
-		);
-
-		return answer as 'administrador' | 'colaborador';
+		// Por defecto, usar administrador
+		const template = 'administrador';
+		console.log(`   ✅ Usaré el template: ${template} (por defecto)`);
+		return template;
 	}
 
 	/**
-	 * Selecciona módulo para trabajar
+	 * Selecciona módulo para trabajar - Automático
 	 */
 	private async selectModule(
 		template: 'administrador' | 'colaborador',
@@ -257,26 +235,15 @@ export class InitializationWizard {
 		const templateConfig = UBITS_PRESET.templates[template];
 		const modules = templateConfig.modules;
 
-		const moduleOptions = modules.map((moduleId) => {
-			const moduleConfig = UBITS_MODULES_CONFIG[moduleId];
-			return {
-				value: moduleId,
-				label: moduleConfig?.name || moduleId,
-			};
-		});
-
 		// Verificar respuesta automática
 		const autoModule = process.env.AUTORUN_MODULE;
 		let selectedModule = autoModule || 'desempeno';
 		
 		if (!autoModule) {
-			selectedModule = await this.prompt.select(
-				'   ¿En qué módulo quieres trabajar?',
-				moduleOptions,
-				'desempeno',
-			);
+			// Por defecto, usar desempeño
+			console.log(`   ✅ Usaré el módulo: desempeño (por defecto)`);
 		} else {
-			console.log(`   ✅ Módulo seleccionado: ${selectedModule}`);
+			console.log(`   ✅ Usaré el módulo: ${selectedModule}`);
 		}
 
 		// Seleccionar producto dentro del módulo
@@ -286,7 +253,7 @@ export class InitializationWizard {
 	}
 
 	/**
-	 * Selecciona producto dentro de un módulo
+	 * Selecciona producto dentro de un módulo - Automático
 	 */
 	private async selectProduct(moduleId: string): Promise<string> {
 		const moduleConfig = UBITS_MODULES_CONFIG[moduleId];
@@ -301,25 +268,19 @@ export class InitializationWizard {
 			return '';
 		}
 
-		const productOptions = moduleConfig.products.map((product) => ({
-			value: product.id,
-			label: product.name,
-		}));
-
 		// Verificar respuesta automática
 		const autoProduct = process.env.AUTORUN_PRODUCT;
 		if (autoProduct) {
-			console.log(`   ✅ Producto seleccionado: ${autoProduct}`);
+			console.log(`   ✅ Usaré el producto: ${autoProduct}`);
 			return autoProduct;
 		}
 
-		const selectedProduct = await this.prompt.select(
-			`   ¿En qué producto de "${moduleConfig.name}" quieres trabajar?`,
-			productOptions,
-			moduleConfig.products[0]?.id,
-		);
-
-		return selectedProduct;
+		// Por defecto, usar el primer producto del módulo
+		const defaultProduct = moduleConfig.products[0]?.id || '';
+		if (defaultProduct) {
+			console.log(`   ✅ Usaré el producto: ${defaultProduct} (por defecto)`);
+		}
+		return defaultProduct;
 	}
 
 	/**
