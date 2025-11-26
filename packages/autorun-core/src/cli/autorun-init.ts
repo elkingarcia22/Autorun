@@ -10,7 +10,14 @@ import { InitializationWizard } from '../wizard/InitializationWizard.js';
 import { initComponents } from '../initComponents.js';
 
 async function main() {
-	console.log('🚀 Autorun Initialization Wizard\n');
+	// Verificar si hay respuestas automáticas en argumentos
+	const args = process.argv.slice(2);
+	const autoSelect = args.find(arg => arg.startsWith('--project='))?.split('=')[1] as 'ubits' | 'independent' | undefined;
+	
+	// También verificar variables de entorno
+	if (!autoSelect && process.env.AUTORUN_PROJECT_TYPE) {
+		process.env.AUTORUN_PROJECT_TYPE = process.env.AUTORUN_PROJECT_TYPE;
+	}
 
 	try {
 		// Inicializar sistema de componentes (si estamos en navegador)
@@ -24,8 +31,8 @@ async function main() {
 		// Crear wizard
 		const wizard = new InitializationWizard(hub);
 
-		// Ejecutar wizard
-		const result = await wizard.start();
+		// Ejecutar wizard con opciones automáticas si están disponibles
+		const result = await wizard.start({ autoSelect });
 
 		// Cerrar prompt
 		wizard.close();
