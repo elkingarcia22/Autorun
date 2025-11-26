@@ -2071,43 +2071,55 @@
       .addons-menu {
         display: flex;
         flex-direction: column;
-        gap: 4px;
+        gap: 0;
         background: var(--autorun-gray-100);
         border: 1px solid var(--autorun-gray-300);
         border-radius: 12px;
-        padding: 12px;
+        padding: 8px;
+        overflow: hidden;
       }
 
       /* Categorías del menú */
       .addon-category {
-        margin-bottom: 4px;
+        margin-bottom: 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      .addon-category:last-child {
+        border-bottom: none;
       }
 
       .addon-category-header {
         display: flex;
         align-items: center;
-        gap: 8px;
-        padding: 10px 12px;
-        border-radius: 8px;
+        gap: 10px;
+        padding: 10px 8px;
         cursor: pointer;
-        transition: all 0.3s ease;
-        color: var(--autorun-gray-600);
+        transition: all 0.2s ease;
+        color: #bdbdbd;
         font-size: 13px;
         font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
+        text-transform: none;
+        letter-spacing: 0;
         user-select: none;
+        border: none;
+        background: transparent;
       }
 
       .addon-category-header:hover {
-        background: var(--autorun-gray-200);
+        background: rgba(255, 255, 255, 0.03);
         color: var(--autorun-neon-white);
       }
 
       .category-chevron {
-        transition: transform 0.3s ease;
+        transition: transform 0.2s ease;
         flex-shrink: 0;
-        color: var(--autorun-gray-500);
+        color: var(--autorun-neon-yellow);
+        opacity: 0.7;
+      }
+
+      .addon-category-header:hover .category-chevron {
+        opacity: 1;
       }
 
       .addon-category.collapsed .category-chevron {
@@ -2119,58 +2131,62 @@
       }
 
       .category-count {
-        background: var(--autorun-gray-300);
-        color: var(--autorun-gray-700);
+        background: rgba(255, 255, 0, 0.15);
+        color: var(--autorun-neon-yellow);
         padding: 2px 8px;
-        border-radius: 12px;
-        font-size: 11px;
-        font-weight: 700;
+        border-radius: 10px;
+        font-size: 10px;
+        font-weight: 600;
       }
 
       .addon-category-items {
         display: flex;
         flex-direction: column;
-        gap: 2px;
-        margin-left: 8px;
-        margin-top: 4px;
-        padding-left: 12px;
-        border-left: 2px solid var(--autorun-gray-300);
+        gap: 0;
+        margin: 0;
+        padding: 0;
         max-height: 1000px;
         overflow: hidden;
-        transition: max-height 0.3s ease, opacity 0.3s ease;
+        transition: max-height 0.3s ease, opacity 0.2s ease;
         opacity: 1;
+        background: transparent;
       }
 
       .addon-category.collapsed .addon-category-items {
         max-height: 0;
         opacity: 0;
-        margin-top: 0;
       }
 
       .addon-menu-item {
         display: flex;
         align-items: center;
-        gap: 12px;
-        padding: 10px 14px;
-        border-radius: 8px;
+        gap: 10px;
+        padding: 8px 8px 8px 28px;
         cursor: pointer;
-        transition: all 0.3s ease;
-        color: var(--autorun-gray-700);
-        font-size: 14px;
-        font-weight: 500;
+        transition: all 0.2s ease;
+        color: var(--autorun-gray-600);
+        font-size: 13px;
+        font-weight: 400;
+        border: none;
+        background: transparent;
+        border-radius: 0;
       }
 
       .addon-menu-item:hover {
-        background: var(--autorun-gray-200);
+        background: rgba(255, 255, 255, 0.05);
         color: var(--autorun-neon-white);
-        transform: translateX(4px);
+        padding-left: 32px;
       }
 
       .addon-menu-item.active {
         background: var(--autorun-neon-yellow);
         color: var(--autorun-bg-black);
-        box-shadow: 0 0 12px var(--autorun-neon-yellow-glow);
-        transform: translateX(4px);
+        font-weight: 600;
+        padding-left: 32px;
+      }
+
+      .addon-menu-item.active .addon-menu-icon {
+        color: var(--autorun-bg-black);
       }
 
       .addon-menu-icon {
@@ -2685,16 +2701,16 @@
       }
 
       .addon-category {
-        padding: 20px;
-        background: var(--autorun-gray-100);
-        border-radius: 8px;
-        border: 1px solid var(--autorun-gray-300);
+        padding: 0;
+        background: transparent;
+        border-radius: 0;
+        border: none;
       }
 
       .category-title {
         font-size: 16px;
         font-weight: 600;
-        color: var(--autorun-neon-white);
+        color: #bdbdbd;
         margin-bottom: 12px;
       }
 
@@ -3987,7 +4003,7 @@
               </div>
 
               <!-- Categoría: Analytics & Monitoring -->
-              <div class="addon-category">
+              <div class="addon-category collapsed">
                 <div class="addon-category-header">
                   <svg class="category-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -4039,7 +4055,7 @@
               </div>
 
               <!-- Categoría: Development & UI -->
-              <div class="addon-category">
+              <div class="addon-category collapsed">
                 <div class="addon-category-header">
                   <svg class="category-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -4102,28 +4118,8 @@
                   </div>
                 </div>
               </div>
-              <div class="addon-menu-item" data-addon="vercel">
-                <div class="addon-menu-icon">
-                  <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M16 4L28 16L16 28L4 16L16 4Z" stroke="currentColor" stroke-width="2" fill="none"/>
-                    <path d="M12 16L16 20L20 16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                  </svg>
-                </div>
-                <span>Vercel</span>
-              </div>
-              <div class="addon-menu-item" data-addon="storybook">
-                <div class="addon-menu-icon">
-                  <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="4" y="6" width="24" height="20" rx="2" stroke="currentColor" stroke-width="2" fill="none"/>
-                    <line x1="4" y1="12" x2="28" y2="12" stroke="currentColor" stroke-width="2"/>
-                    <circle cx="8" cy="9" r="1" fill="currentColor"/>
-                    <circle cx="12" cy="9" r="1" fill="currentColor"/>
-                  </svg>
-                </div>
-                <span>Storybook</span>
-              </div>
               <!-- Categoría: Testing & Quality -->
-              <div class="addon-category">
+              <div class="addon-category collapsed">
                 <div class="addon-category-header">
                   <svg class="category-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -4206,7 +4202,7 @@
               </div>
 
               <!-- Categoría: Database & Backend -->
-              <div class="addon-category">
+              <div class="addon-category collapsed">
                 <div class="addon-category-header">
                   <svg class="category-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -4239,7 +4235,7 @@
               </div>
 
               <!-- Categoría: Documentation -->
-              <div class="addon-category">
+              <div class="addon-category collapsed">
                 <div class="addon-category-header">
                   <svg class="category-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -4263,7 +4259,7 @@
               </div>
 
               <!-- Categoría: Build & Optimization -->
-              <div class="addon-category">
+              <div class="addon-category collapsed">
                 <div class="addon-category-header">
                   <svg class="category-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
