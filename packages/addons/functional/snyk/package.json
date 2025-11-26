@@ -1,0 +1,35 @@
+{
+	"name": "@autorun/snyk",
+	"version": "1.0.0",
+	"description": "Snyk Add-on - Security scanning y vulnerabilidades",
+	"type": "module",
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"scripts": {
+		"build": "tsc",
+		"dev": "tsc --watch",
+		"lint": "biome check .",
+		"format": "biome format . --write"
+	},
+	"dependencies": {
+		"@autorun/core": "workspace:*"
+	},
+	"devDependencies": {
+		"typescript": "^5.3.0"
+	},
+	"peerDependencies": {
+		"snyk": "^1.1200.0"
+	},
+	"peerDependenciesMeta": {
+		"snyk": {
+			"optional": true
+		}
+	},
+	"exports": {
+		".": {
+			"import": "./dist/index.js",
+			"types": "./dist/index.d.ts"
+		}
+	}
+}
+

@@ -1,0 +1,9 @@
+{
+	"name": "@autorun/standalone",
+	"version": "1.0.0",
+	"type": "functional",
+	"description": "Standalone Mode - Builds optimizados y extracción de componentes",
+	"main": "./dist/index.js",
+	"export": "StandaloneAddon"
+}
+

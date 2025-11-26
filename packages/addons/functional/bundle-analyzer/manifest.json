@@ -1,0 +1,9 @@
+{
+	"name": "@autorun/bundle-analyzer",
+	"version": "1.0.0",
+	"type": "functional",
+	"description": "Bundle Analyzer - Análisis visual de bundles y optimización",
+	"main": "./dist/index.js",
+	"export": "BundleAnalyzerAddon"
+}
+

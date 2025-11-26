@@ -1,0 +1,9 @@
+{
+	"name": "@autorun/button-feedback",
+	"version": "1.0.0",
+	"type": "component",
+	"description": "Botón flotante para obtener feedback de clientes con modal de formulario",
+	"main": "./dist/index.js",
+	"export": "ButtonFeedbackAddon"
+}
+

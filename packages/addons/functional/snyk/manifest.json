@@ -1,0 +1,9 @@
+{
+	"name": "@autorun/snyk",
+	"version": "1.0.0",
+	"type": "functional",
+	"description": "Snyk - Security scanning y vulnerabilidades",
+	"main": "./dist/index.js",
+	"export": "SnykAddon"
+}
+

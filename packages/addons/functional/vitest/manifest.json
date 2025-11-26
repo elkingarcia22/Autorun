@@ -1,0 +1,9 @@
+{
+	"name": "@autorun/vitest",
+	"version": "1.0.0",
+	"type": "functional",
+	"description": "Vitest - Testing rápido con Vite",
+	"main": "./dist/index.js",
+	"export": "VitestAddon"
+}
+

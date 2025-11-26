@@ -1,0 +1,35 @@
+{
+	"name": "@autorun/vitest",
+	"version": "1.0.0",
+	"description": "Vitest Add-on - Testing rápido con Vite",
+	"type": "module",
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"scripts": {
+		"build": "tsc",
+		"dev": "tsc --watch",
+		"lint": "biome check .",
+		"format": "biome format . --write"
+	},
+	"dependencies": {
+		"@autorun/core": "workspace:*"
+	},
+	"devDependencies": {
+		"typescript": "^5.3.0"
+	},
+	"peerDependencies": {
+		"vitest": "^1.0.0"
+	},
+	"peerDependenciesMeta": {
+		"vitest": {
+			"optional": true
+		}
+	},
+	"exports": {
+		".": {
+			"import": "./dist/index.js",
+			"types": "./dist/index.d.ts"
+		}
+	}
+}
+

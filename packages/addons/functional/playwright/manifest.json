@@ -1,0 +1,9 @@
+{
+	"name": "@autorun/playwright",
+	"version": "1.0.0",
+	"type": "functional",
+	"description": "Playwright - Testing end-to-end (E2E)",
+	"main": "./dist/index.js",
+	"export": "PlaywrightAddon"
+}
+

@@ -158,11 +158,27 @@ check(
 	'TypeScript está en devDependencies',
 );
 
-check(
-	'Vitest instalado',
-	corePackageJson.devDependencies?.vitest !== undefined,
-	'Vitest está en devDependencies',
-);
+// Verificar Vitest (opcional, no crítico para el funcionamiento básico)
+const vitestPath = join(rootDir, 'node_modules', 'vitest');
+if (corePackageJson.devDependencies?.vitest !== undefined) {
+	if (existsSync(vitestPath)) {
+		check(
+			'Vitest instalado',
+			true,
+			'Vitest está instalado y disponible',
+		);
+	} else {
+		warn(
+			'Vitest en package.json pero no instalado',
+			'Vitest está en devDependencies pero no está instalado. Ejecuta npm install para instalarlo.',
+		);
+	}
+} else {
+	warn(
+		'Vitest no configurado',
+		'Vitest no está en devDependencies (opcional para testing)',
+	);
+}
 
 // 5. Verificar archivos clave del wizard
 console.log('\n🧙 Verificando wizard de inicialización...');

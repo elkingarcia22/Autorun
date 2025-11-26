@@ -1,0 +1,9 @@
+{
+	"name": "@autorun/docker",
+	"version": "1.0.0",
+	"type": "functional",
+	"description": "Docker - Containerización",
+	"main": "./dist/index.js",
+	"export": "DockerAddon"
+}
+

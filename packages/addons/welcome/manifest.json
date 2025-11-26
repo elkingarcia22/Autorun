@@ -1,0 +1,9 @@
+{
+	"name": "@autorun/welcome",
+	"version": "1.0.0",
+	"type": "component",
+	"description": "Componente Welcome AUTORUN para páginas de bienvenida",
+	"main": "./dist/index.js",
+	"export": "WelcomeAddon"
+}
+

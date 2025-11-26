@@ -1,0 +1,9 @@
+{
+	"name": "@autorun/mask",
+	"version": "1.0.0",
+	"type": "component",
+	"description": "Mask component for AUTORUN design system - onboarding overlay",
+	"main": "./dist/index.js",
+	"export": "MaskAddon"
+}
+

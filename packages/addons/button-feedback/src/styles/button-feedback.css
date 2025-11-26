@@ -1,0 +1,202 @@
+/* ========================================
+   AUTORUN BUTTON FEEDBACK COMPONENT
+   Botón flotante para obtener feedback de clientes
+   Usa el componente Button de AUTORUN con variante floating
+   ======================================== */
+
+/* ========================================
+   FLOATING BUTTON POSITIONING
+   El botón usa el componente Button de UBITS con floating: true
+   Solo agregamos estilos de posicionamiento y ajustes para texto completo
+   ======================================== */
+
+/* Asegurar que el botón muestre el texto completo sin truncar */
+.autorun-button-feedback--bottom-right,
+.autorun-button-feedback--bottom-left,
+.autorun-button-feedback--top-right,
+.autorun-button-feedback--top-left {
+    min-width: auto;
+    max-width: none;
+}
+
+.autorun-button-feedback--hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+/* ========================================
+   FEEDBACK MODAL HEADER
+   Estilos específicos para el header del modal de feedback
+   ======================================== */
+
+.autorun-button-feedback-modal__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--ubits-spacing-md);
+    padding: var(--ubits-spacing-lg);
+    border-bottom: 1px solid var(--modifiers-normal-color-light-border-1);
+    flex-shrink: 0;
+    margin-left: calc(-1 * var(--ubits-spacing-lg));
+    margin-right: calc(-1 * var(--ubits-spacing-lg));
+    margin-top: calc(-1 * var(--ubits-spacing-lg));
+    margin-bottom: var(--ubits-spacing-lg);
+}
+
+.autorun-button-feedback-modal__header-content {
+    display: flex;
+    align-items: center;
+    gap: var(--ubits-spacing-sm);
+    flex: 1;
+}
+
+[data-theme="dark"] .autorun-button-feedback-modal__header {
+    border-bottom-color: var(--modifiers-normal-color-dark-border-1);
+}
+
+.autorun-button-feedback-modal__header-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    color: var(--modifiers-normal-color-light-fg-1-medium);
+    font-size: var(--ubits-body-md-font-size);
+}
+
+[data-theme="dark"] .autorun-button-feedback-modal__header-icon {
+    color: var(--modifiers-normal-color-dark-fg-1-medium);
+}
+
+.autorun-button-feedback-modal__header-title {
+    margin: 0;
+}
+
+/* El botón de cerrar usa el componente Button de AUTORUN con variant secondary e iconOnly */
+/* No necesitamos estilos adicionales ya que el botón AUTORUN maneja todo */
+
+/* ========================================
+   FEEDBACK FORM
+   ======================================== */
+
+.autorun-button-feedback-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ubits-spacing-lg);
+}
+
+.autorun-button-feedback-form__field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ubits-spacing-sm);
+}
+
+/* ========================================
+   MODAL POSITIONING AND STYLING
+   Ocultar overlay y posicionar modal arriba del botón
+   ======================================== */
+
+/* Ocultar el overlay/velo del modal */
+.autorun-button-feedback-modal + .autorun-modal-overlay,
+.autorun-modal-overlay:has(.autorun-button-feedback-modal) {
+    background-color: transparent !important;
+    pointer-events: none !important;
+}
+
+.autorun-modal-overlay:has(.autorun-button-feedback-modal) .autorun-modal-overlay {
+    background-color: transparent !important;
+}
+
+/* Ocultar completamente el header del modal (usamos nuestro propio header) */
+.autorun-button-feedback-modal .autorun-modal__header {
+    display: none !important;
+}
+
+/* Ocultar scrollbar cuando no es necesario */
+.autorun-button-feedback-modal .autorun-modal__body-content {
+    overflow-y: auto;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+.autorun-button-feedback-modal .autorun-modal__body-content::-webkit-scrollbar {
+    display: none;  /* Chrome, Safari, Opera */
+}
+
+/* Ocultar el scrollbar custom del modal */
+.autorun-button-feedback-modal .autorun-modal__scrollbar {
+    display: none !important;
+}
+
+/* ========================================
+   BUTTON ACTIVE STATE
+   Asegurar que el botón floating + active se vea correctamente
+   ======================================== */
+
+/* Asegurar que el botón floating + active tenga los estilos correctos */
+.autorun-button-feedback--bottom-right.autorun-button--floating.ubits-button--active,
+.autorun-button-feedback--bottom-left.autorun-button--floating.ubits-button--active,
+.autorun-button-feedback--top-right.autorun-button--floating.ubits-button--active,
+.autorun-button-feedback--top-left.autorun-button--floating.ubits-button--active {
+    position: relative;
+    background-color: transparent !important;
+    color: var(--modifiers-normal-color-light-accent-brand) !important;
+    border: none !important;
+}
+
+.autorun-button-feedback--bottom-right.autorun-button--floating.ubits-button--active::before,
+.autorun-button-feedback--bottom-left.autorun-button--floating.ubits-button--active::before,
+.autorun-button-feedback--top-right.autorun-button--floating.ubits-button--active::before,
+.autorun-button-feedback--top-left.autorun-button--floating.ubits-button--active::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--modifiers-normal-color-light-bg-active) !important;
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.autorun-button-feedback--bottom-right.autorun-button--floating.ubits-button--active i,
+.autorun-button-feedback--bottom-left.autorun-button--floating.ubits-button--active i,
+.autorun-button-feedback--top-right.autorun-button--floating.ubits-button--active i,
+.autorun-button-feedback--top-left.autorun-button--floating.ubits-button--active i,
+.autorun-button-feedback--bottom-right.autorun-button--floating.ubits-button--active span,
+.autorun-button-feedback--bottom-left.autorun-button--floating.ubits-button--active span,
+.autorun-button-feedback--top-right.autorun-button--floating.ubits-button--active span,
+.autorun-button-feedback--top-left.autorun-button--floating.ubits-button--active span {
+    position: relative;
+    z-index: 1;
+    color: var(--modifiers-normal-color-light-accent-brand) !important;
+}
+
+/* Dark mode */
+[data-theme="dark"] .autorun-button-feedback--bottom-right.autorun-button--floating.ubits-button--active,
+[data-theme="dark"] .autorun-button-feedback--bottom-left.autorun-button--floating.ubits-button--active,
+[data-theme="dark"] .autorun-button-feedback--top-right.autorun-button--floating.ubits-button--active,
+[data-theme="dark"] .autorun-button-feedback--top-left.autorun-button--floating.ubits-button--active {
+    color: var(--modifiers-normal-color-dark-accent-brand) !important;
+}
+
+[data-theme="dark"] .autorun-button-feedback--bottom-right.autorun-button--floating.ubits-button--active::before,
+[data-theme="dark"] .autorun-button-feedback--bottom-left.autorun-button--floating.ubits-button--active::before,
+[data-theme="dark"] .autorun-button-feedback--top-right.autorun-button--floating.ubits-button--active::before,
+[data-theme="dark"] .autorun-button-feedback--top-left.autorun-button--floating.ubits-button--active::before {
+    background-color: var(--modifiers-normal-color-dark-bg-active) !important;
+}
+
+[data-theme="dark"] .autorun-button-feedback--bottom-right.autorun-button--floating.ubits-button--active i,
+[data-theme="dark"] .autorun-button-feedback--bottom-left.autorun-button--floating.ubits-button--active i,
+[data-theme="dark"] .autorun-button-feedback--top-right.autorun-button--floating.ubits-button--active i,
+[data-theme="dark"] .autorun-button-feedback--top-left.autorun-button--floating.ubits-button--active i,
+[data-theme="dark"] .autorun-button-feedback--bottom-right.autorun-button--floating.ubits-button--active span,
+[data-theme="dark"] .autorun-button-feedback--bottom-left.autorun-button--floating.ubits-button--active span,
+[data-theme="dark"] .autorun-button-feedback--top-right.autorun-button--floating.ubits-button--active span,
+[data-theme="dark"] .autorun-button-feedback--top-left.autorun-button--floating.ubits-button--active span {
+    color: var(--modifiers-normal-color-dark-accent-brand) !important;
+}
+

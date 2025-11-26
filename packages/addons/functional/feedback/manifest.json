@@ -1,0 +1,11 @@
+{
+	"name": "@autorun/feedback",
+	"version": "1.0.0",
+	"type": "functional",
+	"description": "Feedback Automatizado - Sistema completo de recopilación de feedback con bienvenida, botón flotante, modal y mask",
+	"main": "./dist/index.js",
+	"export": "FeedbackAddon"
+}
+
+
+

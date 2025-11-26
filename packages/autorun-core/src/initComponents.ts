@@ -5,7 +5,7 @@
  * en window.AUTORUN.Components
  */
 
-import { ComponentManager } from './ComponentManager';
+import { ComponentManager } from './ComponentManager.js';
 
 /**
  * Inicializa el sistema de componentes globalmente

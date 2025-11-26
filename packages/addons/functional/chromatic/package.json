@@ -1,0 +1,35 @@
+{
+	"name": "@autorun/chromatic",
+	"version": "1.0.0",
+	"description": "Chromatic Add-on - Visual testing de componentes",
+	"type": "module",
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"scripts": {
+		"build": "tsc",
+		"dev": "tsc --watch",
+		"lint": "biome check .",
+		"format": "biome format . --write"
+	},
+	"dependencies": {
+		"@autorun/core": "workspace:*"
+	},
+	"devDependencies": {
+		"typescript": "^5.3.0"
+	},
+	"peerDependencies": {
+		"chromatic": "^11.0.0"
+	},
+	"peerDependenciesMeta": {
+		"chromatic": {
+			"optional": true
+		}
+	},
+	"exports": {
+		".": {
+			"import": "./dist/index.js",
+			"types": "./dist/index.d.ts"
+		}
+	}
+}
+
