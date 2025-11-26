@@ -2537,6 +2537,132 @@
         padding: 0 20px 20px 20px;
       }
 
+      /* Acordeón solo para Clarity */
+      #addon-clarity .addon-section {
+        margin-bottom: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 8px;
+        overflow: hidden;
+        background: rgba(0, 0, 0, 0.2);
+      }
+
+      #addon-clarity .addon-section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 20px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: transparent;
+        border: none;
+        width: 100%;
+        text-align: left;
+      }
+
+      #addon-clarity .addon-section-header:hover {
+        background: rgba(255, 255, 255, 0.03);
+      }
+
+      #addon-clarity .addon-section-header.active {
+        background: rgba(255, 255, 0, 0.05);
+      }
+
+      #addon-clarity .addon-section-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--autorun-neon-white);
+        margin: 0;
+        padding: 0;
+        border: none;
+      }
+
+      #addon-clarity .addon-section-chevron {
+        width: 18px;
+        height: 18px;
+        transition: transform 0.3s ease;
+        color: var(--autorun-neon-yellow);
+        flex-shrink: 0;
+      }
+
+      #addon-clarity .addon-section.expanded .addon-section-chevron {
+        transform: rotate(180deg);
+      }
+
+      #addon-clarity .addon-section-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.4s ease, padding 0.3s ease;
+        padding: 0 20px;
+      }
+
+      #addon-clarity .addon-section.expanded .addon-section-content {
+        max-height: 5000px;
+        padding: 0 20px 20px 20px;
+      }
+
+      /* Acordeón solo para Lighthouse */
+      #addon-lighthouse .addon-section {
+        margin-bottom: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 8px;
+        overflow: hidden;
+        background: rgba(0, 0, 0, 0.2);
+      }
+
+      #addon-lighthouse .addon-section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 20px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: transparent;
+        border: none;
+        width: 100%;
+        text-align: left;
+      }
+
+      #addon-lighthouse .addon-section-header:hover {
+        background: rgba(255, 255, 255, 0.03);
+      }
+
+      #addon-lighthouse .addon-section-header.active {
+        background: rgba(255, 255, 0, 0.05);
+      }
+
+      #addon-lighthouse .addon-section-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--autorun-neon-white);
+        margin: 0;
+        padding: 0;
+        border: none;
+      }
+
+      #addon-lighthouse .addon-section-chevron {
+        width: 18px;
+        height: 18px;
+        transition: transform 0.3s ease;
+        color: var(--autorun-neon-yellow);
+        flex-shrink: 0;
+      }
+
+      #addon-lighthouse .addon-section.expanded .addon-section-chevron {
+        transform: rotate(180deg);
+      }
+
+      #addon-lighthouse .addon-section-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.4s ease, padding 0.3s ease;
+        padding: 0 20px;
+      }
+
+      #addon-lighthouse .addon-section.expanded .addon-section-content {
+        max-height: 5000px;
+        padding: 0 20px 20px 20px;
+      }
+
       .addon-features {
         list-style: none;
         padding: 0;
@@ -4743,35 +4869,55 @@ await hub.activateAddon('github');
                 Integración con Microsoft Clarity para analytics y tracking de usuarios. Proporciona heatmaps, grabaciones de sesiones y análisis de comportamiento.
               </p>
 
-              <div class="addon-section">
-                <h4 class="addon-section-title">Características</h4>
-                <ul class="addon-features">
-                  <li>Tracking de eventos y comportamiento</li>
-                  <li>Heatmaps interactivos</li>
-                  <li>Session recordings</li>
-                  <li>Analytics dashboard</li>
-                  <li>Integración con el Hub</li>
-                </ul>
+              <div class="addon-section expanded">
+                <button class="addon-section-header active">
+                  <h4 class="addon-section-title">Características</h4>
+                  <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <div class="addon-section-content">
+                  <ul class="addon-features">
+                    <li>Tracking de eventos y comportamiento</li>
+                    <li>Heatmaps interactivos</li>
+                    <li>Session recordings</li>
+                    <li>Analytics dashboard</li>
+                    <li>Integración con el Hub</li>
+                  </ul>
+                </div>
               </div>
 
               <div class="addon-section">
-                <h4 class="addon-section-title">Requisitos</h4>
-                <div class="requirements-list">
-                  <div class="requirement-item">
-                    <span class="requirement-label">Clarity Project ID</span>
-                    <span class="requirement-value">ID del proyecto de Microsoft Clarity</span>
-                  </div>
-                  <div class="requirement-item">
-                    <span class="requirement-label">Clarity API Key</span>
-                    <span class="requirement-value">Clave API de Microsoft Clarity (opcional para funciones avanzadas)</span>
+                <button class="addon-section-header">
+                  <h4 class="addon-section-title">Requisitos</h4>
+                  <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <div class="addon-section-content">
+                  <div class="requirements-list">
+                    <div class="requirement-item">
+                      <span class="requirement-label">Clarity Project ID</span>
+                      <span class="requirement-value">ID del proyecto de Microsoft Clarity</span>
+                    </div>
+                    <div class="requirement-item">
+                      <span class="requirement-label">Clarity API Key</span>
+                      <span class="requirement-value">Clave API de Microsoft Clarity (opcional para funciones avanzadas)</span>
+                    </div>
                   </div>
                 </div>
               </div>
 
               <div class="addon-section">
-                <h4 class="addon-section-title">Configuración</h4>
-                <div class="code-block">
-                  <pre><code>{
+                <button class="addon-section-header">
+                  <h4 class="addon-section-title">Configuración</h4>
+                  <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <div class="addon-section-content">
+                  <div class="code-block">
+                    <pre><code>{
   "autorun": {
     "addons": {
       "config": {
@@ -4783,22 +4929,36 @@ await hub.activateAddon('github');
     }
   }
 }</code></pre>
+                  </div>
                 </div>
               </div>
 
               <div class="addon-section">
-                <h4 class="addon-section-title">Uso</h4>
-                <div class="code-block">
-                  <pre><code>// Activar add-on
+                <button class="addon-section-header">
+                  <h4 class="addon-section-title">Uso</h4>
+                  <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <div class="addon-section-content">
+                  <div class="code-block">
+                    <pre><code>// Activar add-on
 await hub.activateAddon('clarity');
 
 // El script de Clarity se carga automáticamente
 // y comienza a trackear eventos</code></pre>
+                  </div>
                 </div>
               </div>
 
               <div class="addon-section">
-                <h4 class="addon-section-title">🔌 Integración MCP</h4>
+                <button class="addon-section-header">
+                  <h4 class="addon-section-title">🔌 Integración MCP</h4>
+                  <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <div class="addon-section-content">
                 <p class="addon-description" style="margin-bottom: 16px;">
                   Este add-on soporta integración con <strong>MCP (Model Context Protocol)</strong> para mejorar la experiencia y funcionalidad.
                 </p>
@@ -4813,8 +4973,8 @@ await hub.activateAddon('clarity');
                     <li>Mejor gestión de credenciales y seguridad</li>
                   </ul>
                 </div>
-                <div class="code-block" style="background: rgba(255, 255, 0, 0.05); border-left: 3px solid var(--autorun-neon-yellow);">
-                  <pre><code>// Con MCP habilitado, podrás hacer consultas como:
+                  <div class="code-block" style="background: rgba(255, 255, 0, 0.05); border-left: 3px solid var(--autorun-neon-yellow);">
+                    <pre><code>// Con MCP habilitado, podrás hacer consultas como:
 // - "Top browsers last 3 days"
 // - "Average session duration for mobile users this week"
 // - "Top pages for desktop in the last month"
@@ -4824,6 +4984,7 @@ await hub.activateAddon('clarity');
 // O
 // ℹ️ ¿Deseas instalar MCP para mejorar la experiencia con Clarity?
 //    [Sí] [No]</code></pre>
+                  </div>
                 </div>
               </div>
             </div>
@@ -5371,36 +5532,56 @@ await prettierService(['src/**/*.ts']);</code></pre>
                 Integración con Lighthouse para auditoría de performance y calidad. Métricas Core Web Vitals, accessibility checks y SEO analysis.
               </p>
 
-              <div class="addon-section">
-                <h4 class="addon-section-title">Características</h4>
-                <ul class="addon-features">
-                  <li>Auditoría automática</li>
-                  <li>Reportes de performance</li>
-                  <li>Métricas Core Web Vitals</li>
-                  <li>Accessibility checks</li>
-                  <li>Best practices</li>
-                  <li>SEO analysis</li>
-                </ul>
+              <div class="addon-section expanded">
+                <button class="addon-section-header active">
+                  <h4 class="addon-section-title">Características</h4>
+                  <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <div class="addon-section-content">
+                  <ul class="addon-features">
+                    <li>Auditoría automática</li>
+                    <li>Reportes de performance</li>
+                    <li>Métricas Core Web Vitals</li>
+                    <li>Accessibility checks</li>
+                    <li>Best practices</li>
+                    <li>SEO analysis</li>
+                  </ul>
+                </div>
               </div>
 
               <div class="addon-section">
-                <h4 class="addon-section-title">Requisitos</h4>
-                <div class="requirements-list">
-                  <div class="requirement-item">
-                    <span class="requirement-label">Lighthouse Instalado</span>
-                    <span class="requirement-value">Lighthouse debe estar instalado como dependencia</span>
-                  </div>
-                  <div class="requirement-item">
-                    <span class="requirement-label">Chrome/Chromium</span>
-                    <span class="requirement-value">Chrome o Chromium instalado para ejecutar auditorías</span>
+                <button class="addon-section-header">
+                  <h4 class="addon-section-title">Requisitos</h4>
+                  <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <div class="addon-section-content">
+                  <div class="requirements-list">
+                    <div class="requirement-item">
+                      <span class="requirement-label">Lighthouse Instalado</span>
+                      <span class="requirement-value">Lighthouse debe estar instalado como dependencia</span>
+                    </div>
+                    <div class="requirement-item">
+                      <span class="requirement-label">Chrome/Chromium</span>
+                      <span class="requirement-value">Chrome o Chromium instalado para ejecutar auditorías</span>
+                    </div>
                   </div>
                 </div>
               </div>
 
               <div class="addon-section">
-                <h4 class="addon-section-title">Configuración</h4>
-                <div class="code-block">
-                  <pre><code>{
+                <button class="addon-section-header">
+                  <h4 class="addon-section-title">Configuración</h4>
+                  <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <div class="addon-section-content">
+                  <div class="code-block">
+                    <pre><code>{
   "autorun": {
     "addons": {
       "config": {
@@ -5412,18 +5593,26 @@ await prettierService(['src/**/*.ts']);</code></pre>
     }
   }
 }</code></pre>
+                  </div>
                 </div>
               </div>
 
               <div class="addon-section">
-                <h4 class="addon-section-title">Uso</h4>
-                <div class="code-block">
-                  <pre><code>// Activar add-on
+                <button class="addon-section-header">
+                  <h4 class="addon-section-title">Uso</h4>
+                  <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <div class="addon-section-content">
+                  <div class="code-block">
+                    <pre><code>// Activar add-on
 await hub.activateAddon('lighthouse');
 
 // Ejecutar auditoría
 const lighthouseService = hub.getService('lighthouse', 'audit');
 const report = await lighthouseService('http://localhost:3000');</code></pre>
+                  </div>
                 </div>
               </div>
             </div>
@@ -7874,6 +8063,40 @@ npm run addon:activate supabase</code></pre>
       if (renovateAddon) {
         // Manejar clicks en los headers de las secciones
         renovateAddon.addEventListener('click', (e) => {
+          if (e.target.closest('.addon-section-header')) {
+            const header = e.target.closest('.addon-section-header');
+            const section = header.closest('.addon-section');
+            
+            if (section) {
+              section.classList.toggle('expanded');
+              header.classList.toggle('active');
+            }
+          }
+        });
+      }
+
+      // Acordeón solo para Clarity
+      const clarityAddon = document.getElementById('addon-clarity');
+      if (clarityAddon) {
+        // Manejar clicks en los headers de las secciones
+        clarityAddon.addEventListener('click', (e) => {
+          if (e.target.closest('.addon-section-header')) {
+            const header = e.target.closest('.addon-section-header');
+            const section = header.closest('.addon-section');
+            
+            if (section) {
+              section.classList.toggle('expanded');
+              header.classList.toggle('active');
+            }
+          }
+        });
+      }
+
+      // Acordeón solo para Lighthouse
+      const lighthouseAddon = document.getElementById('addon-lighthouse');
+      if (lighthouseAddon) {
+        // Manejar clicks en los headers de las secciones
+        lighthouseAddon.addEventListener('click', (e) => {
           if (e.target.closest('.addon-section-header')) {
             const header = e.target.closest('.addon-section-header');
             const section = header.closest('.addon-section');
