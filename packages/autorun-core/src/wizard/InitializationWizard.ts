@@ -96,31 +96,30 @@ export class InitializationWizard {
 	 * Configuración para UBITS
 	 */
 	private async setupUBITS(): Promise<UBITSResult> {
-		console.log('🎯 Perfecto, vamos a configurar tu proyecto UBITS.\n');
-		console.log('Te voy a guiar paso a paso:\n');
+		console.log('🎯 Perfecto, voy a configurar tu proyecto UBITS ahora.\n');
 
 		// 1. Cargar preset de UBITS
-		console.log('📦 Paso 1: Cargando preset UBITS con add-ons optimizados...');
+		console.log('📦 Paso 1: Estoy cargando el preset UBITS con add-ons optimizados...');
 		await this.loadUBITSPreset();
 		console.log('   ✅ Preset cargado correctamente\n');
 
 		// 2. Conectar con Storybook
-		console.log('🔗 Paso 2: Conectando con Storybook UBITS...');
+		console.log('🔗 Paso 2: Estoy conectando con Storybook UBITS...');
 		await this.connectStorybook();
 		console.log('   ✅ Conectado a Storybook\n');
 
 		// 3. Cargar componentes desde Storybook
-		console.log('🧩 Paso 3: Cargando componentes desde Storybook...');
+		console.log('🧩 Paso 3: Estoy cargando componentes desde Storybook...');
 		await this.loadComponentsFromStorybook();
 		console.log('   ✅ Componentes cargados\n');
 
 		// 4. Seleccionar template
-		console.log('📋 Paso 4: Seleccionando template...');
+		console.log('📋 Paso 4: Estoy seleccionando el template...');
 		const template = await this.selectTemplate();
 		console.log(`   ✅ Template: ${template}\n`);
 
 		// 5. Seleccionar módulo y producto
-		console.log('📦 Paso 5: Seleccionando módulo y producto...');
+		console.log('📦 Paso 5: Estoy seleccionando el módulo y producto...');
 		const { module, product } = await this.selectModule(template);
 		console.log(`   ✅ Módulo: ${module}, Producto: ${product}\n`);
 
