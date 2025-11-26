@@ -2663,6 +2663,132 @@
         padding: 0 20px 20px 20px;
       }
 
+      /* Acordeón solo para Feedback Automatizado */
+      #addon-feedback-automatizado .addon-section {
+        margin-bottom: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 8px;
+        overflow: hidden;
+        background: rgba(0, 0, 0, 0.2);
+      }
+
+      #addon-feedback-automatizado .addon-section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 20px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: transparent;
+        border: none;
+        width: 100%;
+        text-align: left;
+      }
+
+      #addon-feedback-automatizado .addon-section-header:hover {
+        background: rgba(255, 255, 255, 0.03);
+      }
+
+      #addon-feedback-automatizado .addon-section-header.active {
+        background: rgba(255, 255, 0, 0.05);
+      }
+
+      #addon-feedback-automatizado .addon-section-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--autorun-neon-white);
+        margin: 0;
+        padding: 0;
+        border: none;
+      }
+
+      #addon-feedback-automatizado .addon-section-chevron {
+        width: 18px;
+        height: 18px;
+        transition: transform 0.3s ease;
+        color: var(--autorun-neon-yellow);
+        flex-shrink: 0;
+      }
+
+      #addon-feedback-automatizado .addon-section.expanded .addon-section-chevron {
+        transform: rotate(180deg);
+      }
+
+      #addon-feedback-automatizado .addon-section-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.4s ease, padding 0.3s ease;
+        padding: 0 20px;
+      }
+
+      #addon-feedback-automatizado .addon-section.expanded .addon-section-content {
+        max-height: 5000px;
+        padding: 0 20px 20px 20px;
+      }
+
+      /* Acordeón solo para Sentry */
+      #addon-sentry .addon-section {
+        margin-bottom: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 8px;
+        overflow: hidden;
+        background: rgba(0, 0, 0, 0.2);
+      }
+
+      #addon-sentry .addon-section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 20px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: transparent;
+        border: none;
+        width: 100%;
+        text-align: left;
+      }
+
+      #addon-sentry .addon-section-header:hover {
+        background: rgba(255, 255, 255, 0.03);
+      }
+
+      #addon-sentry .addon-section-header.active {
+        background: rgba(255, 255, 0, 0.05);
+      }
+
+      #addon-sentry .addon-section-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--autorun-neon-white);
+        margin: 0;
+        padding: 0;
+        border: none;
+      }
+
+      #addon-sentry .addon-section-chevron {
+        width: 18px;
+        height: 18px;
+        transition: transform 0.3s ease;
+        color: var(--autorun-neon-yellow);
+        flex-shrink: 0;
+      }
+
+      #addon-sentry .addon-section.expanded .addon-section-chevron {
+        transform: rotate(180deg);
+      }
+
+      #addon-sentry .addon-section-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.4s ease, padding 0.3s ease;
+        padding: 0 20px;
+      }
+
+      #addon-sentry .addon-section.expanded .addon-section-content {
+        max-height: 5000px;
+        padding: 0 20px 20px 20px;
+      }
+
       .addon-features {
         list-style: none;
         padding: 0;
@@ -4338,14 +4464,14 @@
                   <span class="category-count">4</span>
                 </div>
                 <div class="addon-category-items">
-                  <div class="addon-menu-item active" data-addon="github">
-                    <div class="addon-menu-icon">
-                      <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M16 4C9.373 4 4 9.373 4 16C4 21.302 7.438 25.8 12.207 27.388C12.806 27.498 13.025 27.112 13.025 26.776C13.025 26.474 13.015 25.514 13.01 24.578C9.672 25.302 8.967 23.16 8.967 23.16C8.438 21.73 7.533 21.33 7.533 21.33C6.342 20.64 7.614 20.656 7.614 20.656C8.92 20.765 9.555 22.008 9.555 22.008C10.725 23.717 12.363 23.232 13.048 22.929C13.155 22.134 13.466 21.604 13.81 21.304C10.048 20.994 6.171 19.814 6.171 14.437C6.171 12.967 6.627 11.729 7.619 10.766C7.49 10.456 7.044 9.443 7.696 8.106C7.696 8.106 8.525 7.84 13.003 9.682C13.816 9.463 14.71 9.354 15.604 9.349C16.498 9.354 17.392 9.463 18.205 9.682C22.68 7.84 23.508 8.106 23.508 8.106C24.163 9.443 23.717 10.456 23.588 10.766C24.583 11.729 25.037 12.967 25.037 14.437C25.037 19.827 21.153 20.994 17.385 21.304C17.811 21.671 18.185 22.337 18.185 23.386C18.185 24.82 18.171 25.979 18.171 26.776C18.171 27.116 18.386 27.505 18.995 27.386C23.758 25.795 27.185 21.295 27.185 16C27.185 9.373 21.812 4 15.185 4H16Z" fill="currentColor"/>
-                      </svg>
-                    </div>
-                    <span>GitHub</span>
-                  </div>
+              <div class="addon-menu-item active" data-addon="github">
+                <div class="addon-menu-icon">
+                  <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M16 4C9.373 4 4 9.373 4 16C4 21.302 7.438 25.8 12.207 27.388C12.806 27.498 13.025 27.112 13.025 26.776C13.025 26.474 13.015 25.514 13.01 24.578C9.672 25.302 8.967 23.16 8.967 23.16C8.438 21.73 7.533 21.33 7.533 21.33C6.342 20.64 7.614 20.656 7.614 20.656C8.92 20.765 9.555 22.008 9.555 22.008C10.725 23.717 12.363 23.232 13.048 22.929C13.155 22.134 13.466 21.604 13.81 21.304C10.048 20.994 6.171 19.814 6.171 14.437C6.171 12.967 6.627 11.729 7.619 10.766C7.49 10.456 7.044 9.443 7.696 8.106C7.696 8.106 8.525 7.84 13.003 9.682C13.816 9.463 14.71 9.354 15.604 9.349C16.498 9.354 17.392 9.463 18.205 9.682C22.68 7.84 23.508 8.106 23.508 8.106C24.163 9.443 23.717 10.456 23.588 10.766C24.583 11.729 25.037 12.967 25.037 14.437C25.037 19.827 21.153 20.994 17.385 21.304C17.811 21.671 18.185 22.337 18.185 23.386C18.185 24.82 18.171 25.979 18.171 26.776C18.171 27.116 18.386 27.505 18.995 27.386C23.758 25.795 27.185 21.295 27.185 16C27.185 9.373 21.812 4 15.185 4H16Z" fill="currentColor"/>
+                </svg>
+              </div>
+                <span>GitHub</span>
+            </div>
                   <div class="addon-menu-item" data-addon="vercel">
                     <div class="addon-menu-icon">
                       <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -4390,24 +4516,24 @@
                   <span class="category-count">4</span>
                 </div>
                 <div class="addon-category-items">
-                  <div class="addon-menu-item" data-addon="clarity">
-                    <div class="addon-menu-icon">
-                      <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="16" cy="16" r="12" stroke="currentColor" stroke-width="2" fill="none"/>
-                        <path d="M10 16L14 20L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                      </svg>
-                    </div>
-                    <span>Clarity</span>
-                  </div>
+              <div class="addon-menu-item" data-addon="clarity">
+                <div class="addon-menu-icon">
+                  <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="16" cy="16" r="12" stroke="currentColor" stroke-width="2" fill="none"/>
+                    <path d="M10 16L14 20L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+                <span>Clarity</span>
+              </div>
                   <div class="addon-menu-item" data-addon="lighthouse">
-                    <div class="addon-menu-icon">
-                      <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <div class="addon-menu-icon">
+                  <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M16 4L6 14L16 18L26 14L16 4Z" fill="currentColor"/>
                         <path d="M6 14V24L16 28L26 24V14" stroke="currentColor" stroke-width="2" fill="none"/>
-                      </svg>
-                    </div>
+                  </svg>
+                </div>
                     <span>Lighthouse</span>
-                  </div>
+              </div>
                   <div class="addon-menu-item" data-addon="sentry">
                     <div class="addon-menu-icon">
                       <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -4442,39 +4568,39 @@
                   <span class="category-count">5</span>
                 </div>
                 <div class="addon-category-items">
-                  <div class="addon-menu-item" data-addon="storybook">
-                    <div class="addon-menu-icon">
-                      <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <rect x="4" y="6" width="24" height="20" rx="2" stroke="currentColor" stroke-width="2" fill="none"/>
-                        <line x1="4" y1="12" x2="28" y2="12" stroke="currentColor" stroke-width="2"/>
-                        <circle cx="8" cy="9" r="1" fill="currentColor"/>
-                        <circle cx="12" cy="9" r="1" fill="currentColor"/>
-                      </svg>
-                    </div>
-                    <span>Storybook</span>
-                  </div>
+              <div class="addon-menu-item" data-addon="storybook">
+                <div class="addon-menu-icon">
+                  <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="4" y="6" width="24" height="20" rx="2" stroke="currentColor" stroke-width="2" fill="none"/>
+                    <line x1="4" y1="12" x2="28" y2="12" stroke="currentColor" stroke-width="2"/>
+                    <circle cx="8" cy="9" r="1" fill="currentColor"/>
+                    <circle cx="12" cy="9" r="1" fill="currentColor"/>
+                  </svg>
+                </div>
+                <span>Storybook</span>
+              </div>
                   <div class="addon-menu-item" data-addon="chromatic">
-                    <div class="addon-menu-icon">
-                      <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <div class="addon-menu-icon">
+                  <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <circle cx="16" cy="16" r="12" stroke="currentColor" stroke-width="2" fill="none"/>
                         <path d="M12 16L15 19L20 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                         <path d="M8 8L10 10M24 8L22 10M8 24L10 22M24 24L22 22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                      </svg>
-                    </div>
+                  </svg>
+                </div>
                     <span>Chromatic</span>
-                  </div>
+              </div>
                   <div class="addon-menu-item" data-addon="figma-sync">
-                    <div class="addon-menu-icon">
-                      <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <div class="addon-menu-icon">
+                  <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <rect x="4" y="8" width="10" height="10" rx="1" stroke="currentColor" stroke-width="2" fill="none"/>
                         <rect x="18" y="8" width="10" height="10" rx="1" stroke="currentColor" stroke-width="2" fill="none"/>
                         <rect x="4" y="22" width="10" height="6" rx="1" stroke="currentColor" stroke-width="2" fill="none"/>
                         <rect x="18" y="22" width="10" height="6" rx="1" stroke="currentColor" stroke-width="2" fill="none"/>
                         <path d="M14 13L18 13M14 17L18 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                      </svg>
-                    </div>
+                  </svg>
+                </div>
                     <span>Figma Sync</span>
-                  </div>
+              </div>
                   <div class="addon-menu-item" data-addon="fontawesome">
                     <div class="addon-menu-icon">
                       <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -4506,16 +4632,16 @@
                   <span class="category-count">7</span>
                 </div>
                 <div class="addon-category-items">
-                  <div class="addon-menu-item" data-addon="jest">
-                    <div class="addon-menu-icon">
-                      <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M16 4L20 12L16 10L12 12L16 4Z" fill="currentColor"/>
-                        <rect x="14" y="10" width="4" height="12" rx="2" fill="currentColor"/>
-                        <path d="M10 22L16 26L22 22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                      </svg>
-                    </div>
-                    <span>JEST</span>
-                  </div>
+              <div class="addon-menu-item" data-addon="jest">
+                <div class="addon-menu-icon">
+                  <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M16 4L20 12L16 10L12 12L16 4Z" fill="currentColor"/>
+                    <rect x="14" y="10" width="4" height="12" rx="2" fill="currentColor"/>
+                    <path d="M10 22L16 26L22 22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  </svg>
+                </div>
+                <span>JEST</span>
+              </div>
                   <div class="addon-menu-item" data-addon="vitest">
                     <div class="addon-menu-icon">
                       <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -4539,32 +4665,32 @@
                     </div>
                     <span>Playwright</span>
                   </div>
-                  <div class="addon-menu-item" data-addon="eslint">
-                    <div class="addon-menu-icon">
-                      <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 8L6 16L12 24M20 8L26 16L20 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                      </svg>
-                    </div>
-                    <span>ESLint</span>
-                  </div>
-                  <div class="addon-menu-item" data-addon="prettier">
-                    <div class="addon-menu-icon">
-                      <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M8 8H24M8 16H24M8 24H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                      </svg>
-                    </div>
-                    <span>Prettier</span>
-                  </div>
+              <div class="addon-menu-item" data-addon="eslint">
+                <div class="addon-menu-icon">
+                  <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 8L6 16L12 24M20 8L26 16L20 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+                <span>ESLint</span>
+              </div>
+              <div class="addon-menu-item" data-addon="prettier">
+                <div class="addon-menu-icon">
+                  <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M8 8H24M8 16H24M8 24H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  </svg>
+                </div>
+                <span>Prettier</span>
+              </div>
                   <div class="addon-menu-item" data-addon="codecov">
-                    <div class="addon-menu-icon">
-                      <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M16 4L6 14L16 18L26 14L16 4Z" fill="currentColor"/>
-                        <path d="M6 14V24L16 28L26 24V14" stroke="currentColor" stroke-width="2" fill="none"/>
+                <div class="addon-menu-icon">
+                  <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M16 4L6 14L16 18L26 14L16 4Z" fill="currentColor"/>
+                    <path d="M6 14V24L16 28L26 24V14" stroke="currentColor" stroke-width="2" fill="none"/>
                         <path d="M12 20L16 24L20 20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                      </svg>
-                    </div>
+                  </svg>
+                </div>
                     <span>Codecov</span>
-                  </div>
+              </div>
                   <div class="addon-menu-item" data-addon="snyk">
                     <div class="addon-menu-icon">
                       <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -4622,17 +4748,17 @@
                   <span class="category-count">1</span>
                 </div>
                 <div class="addon-category-items">
-                  <div class="addon-menu-item" data-addon="docusaurus">
-                    <div class="addon-menu-icon">
-                      <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <rect x="4" y="6" width="24" height="20" rx="2" stroke="currentColor" stroke-width="2" fill="none"/>
-                        <line x1="4" y1="12" x2="28" y2="12" stroke="currentColor" stroke-width="2"/>
-                        <line x1="4" y1="18" x2="28" y2="18" stroke="currentColor" stroke-width="1.5" opacity="0.5"/>
-                        <line x1="4" y1="24" x2="20" y2="24" stroke="currentColor" stroke-width="1.5" opacity="0.5"/>
-                      </svg>
-                    </div>
-                    <span>Docusaurus</span>
-                  </div>
+              <div class="addon-menu-item" data-addon="docusaurus">
+                <div class="addon-menu-icon">
+                  <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="4" y="6" width="24" height="20" rx="2" stroke="currentColor" stroke-width="2" fill="none"/>
+                    <line x1="4" y1="12" x2="28" y2="12" stroke="currentColor" stroke-width="2"/>
+                    <line x1="4" y1="18" x2="28" y2="18" stroke="currentColor" stroke-width="1.5" opacity="0.5"/>
+                    <line x1="4" y1="24" x2="20" y2="24" stroke="currentColor" stroke-width="1.5" opacity="0.5"/>
+                  </svg>
+                </div>
+                <span>Docusaurus</span>
+              </div>
                 </div>
               </div>
 
@@ -4647,35 +4773,35 @@
                 </div>
                 <div class="addon-category-items">
                   <div class="addon-menu-item" data-addon="bundle-analyzer">
-                    <div class="addon-menu-icon">
-                      <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <div class="addon-menu-icon">
+                  <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <rect x="4" y="8" width="24" height="18" rx="2" stroke="currentColor" stroke-width="2" fill="none"/>
                         <path d="M8 14L12 18L16 12L20 16L24 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                         <line x1="8" y1="20" x2="24" y2="20" stroke="currentColor" stroke-width="2"/>
-                      </svg>
-                    </div>
+                  </svg>
+                </div>
                     <span>Bundle Analyzer</span>
-                  </div>
+              </div>
                   <div class="addon-menu-item" data-addon="standalone">
-                    <div class="addon-menu-icon">
-                      <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <div class="addon-menu-icon">
+                  <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <rect x="4" y="6" width="24" height="20" rx="2" stroke="currentColor" stroke-width="2" fill="none"/>
                         <path d="M8 10L16 10M8 14L24 14M8 18L20 18M8 22L16 22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                         <circle cx="12" cy="26" r="1.5" fill="currentColor"/>
                         <circle cx="20" cy="26" r="1.5" fill="currentColor"/>
-                      </svg>
-                    </div>
+                  </svg>
+                </div>
                     <span>Standalone</span>
-                  </div>
+              </div>
                   <div class="addon-menu-item" data-addon="turborepo">
-                    <div class="addon-menu-icon">
-                      <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <div class="addon-menu-icon">
+                  <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <circle cx="16" cy="16" r="12" stroke="currentColor" stroke-width="2" fill="none"/>
                         <path d="M10 16L14 20L18 12L22 16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                         <circle cx="12" cy="12" r="1.5" fill="currentColor"/>
                         <circle cx="20" cy="20" r="1.5" fill="currentColor"/>
-                      </svg>
-                    </div>
+                  </svg>
+                </div>
                     <span>Turborepo</span>
                   </div>
                   <div class="addon-menu-item" data-addon="changesets">
@@ -4707,44 +4833,44 @@
 
               <div class="addon-section expanded">
                 <button class="addon-section-header active">
-                  <h4 class="addon-section-title">Características</h4>
+                <h4 class="addon-section-title">Características</h4>
                   <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   </svg>
                 </button>
                 <div class="addon-section-content">
-                  <ul class="addon-features">
-                    <li>Auto-commit con cola de cambios</li>
-                    <li>Gestión completa de ramas (crear, cambiar, mergear)</li>
-                    <li>Volver a estados anteriores (checkout commits)</li>
-                    <li>Merge a rama principal</li>
-                    <li>Historial de commits</li>
-                    <li>Estado del repositorio</li>
-                    <li>Push automático (opcional)</li>
-                  </ul>
+                <ul class="addon-features">
+                  <li>Auto-commit con cola de cambios</li>
+                  <li>Gestión completa de ramas (crear, cambiar, mergear)</li>
+                  <li>Volver a estados anteriores (checkout commits)</li>
+                  <li>Merge a rama principal</li>
+                  <li>Historial de commits</li>
+                  <li>Estado del repositorio</li>
+                  <li>Push automático (opcional)</li>
+                </ul>
                 </div>
-              </div>
+          </div>
 
               <div class="addon-section">
                 <button class="addon-section-header">
-                  <h4 class="addon-section-title">Requisitos</h4>
+                <h4 class="addon-section-title">Requisitos</h4>
                   <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   </svg>
                 </button>
                 <div class="addon-section-content">
-                  <div class="requirements-list">
-                    <div class="requirement-item">
-                      <span class="requirement-label">Repositorio Git</span>
-                      <span class="requirement-value">Debe estar en un repositorio Git inicializado</span>
-                    </div>
-                    <div class="requirement-item">
-                      <span class="requirement-label">URL del Repositorio</span>
-                      <span class="requirement-value">URL de GitHub (ej: https://github.com/user/repo)</span>
-                    </div>
-                    <div class="requirement-item">
-                      <span class="requirement-label">Credenciales Git</span>
-                      <span class="requirement-value">Configuradas localmente (SSH o HTTPS)</span>
+                <div class="requirements-list">
+                  <div class="requirement-item">
+                    <span class="requirement-label">Repositorio Git</span>
+                    <span class="requirement-value">Debe estar en un repositorio Git inicializado</span>
+                  </div>
+                  <div class="requirement-item">
+                    <span class="requirement-label">URL del Repositorio</span>
+                    <span class="requirement-value">URL de GitHub (ej: https://github.com/user/repo)</span>
+                  </div>
+                  <div class="requirement-item">
+                    <span class="requirement-label">Credenciales Git</span>
+                    <span class="requirement-value">Configuradas localmente (SSH o HTTPS)</span>
                     </div>
                   </div>
                 </div>
@@ -4752,14 +4878,14 @@
 
               <div class="addon-section">
                 <button class="addon-section-header">
-                  <h4 class="addon-section-title">Configuración</h4>
+                <h4 class="addon-section-title">Configuración</h4>
                   <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   </svg>
                 </button>
                 <div class="addon-section-content">
-                  <div class="code-block">
-                    <pre><code>{
+                <div class="code-block">
+                  <pre><code>{
   "autorun": {
     "addons": {
       "config": {
@@ -4781,14 +4907,14 @@
 
               <div class="addon-section">
                 <button class="addon-section-header">
-                  <h4 class="addon-section-title">Uso</h4>
+                <h4 class="addon-section-title">Uso</h4>
                   <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   </svg>
                 </button>
                 <div class="addon-section-content">
-                  <div class="code-block">
-                    <pre><code>// Activar add-on
+                <div class="code-block">
+                  <pre><code>// Activar add-on
 await hub.activateAddon('github');
 
 // Usar servicios
@@ -4803,30 +4929,30 @@ await pushService('main');</code></pre>
 
               <div class="addon-section">
                 <button class="addon-section-header">
-                  <h4 class="addon-section-title">Servicios Disponibles</h4>
+                <h4 class="addon-section-title">Servicios Disponibles</h4>
                   <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   </svg>
                 </button>
                 <div class="addon-section-content">
-                  <ul class="addon-features">
-                    <li><code>commit(files, message)</code> - Hacer commit manual</li>
-                    <li><code>push(branch?)</code> - Push a rama</li>
-                    <li><code>switchBranch(branchName)</code> - Cambiar rama</li>
-                    <li><code>createBranch(branchName)</code> - Crear rama</li>
-                    <li><code>listBranches()</code> - Listar ramas</li>
-                    <li><code>mergeToMain(branchName)</code> - Merge a main</li>
-                    <li><code>getCommitHistory(limit?)</code> - Historial de commits</li>
-                    <li><code>checkoutCommit(commitHash, createBranch?)</code> - Volver a commit</li>
-                    <li><code>getStatus()</code> - Estado del repositorio</li>
-                    <li><code>getCurrentBranch()</code> - Rama actual</li>
-                  </ul>
+                <ul class="addon-features">
+                  <li><code>commit(files, message)</code> - Hacer commit manual</li>
+                  <li><code>push(branch?)</code> - Push a rama</li>
+                  <li><code>switchBranch(branchName)</code> - Cambiar rama</li>
+                  <li><code>createBranch(branchName)</code> - Crear rama</li>
+                  <li><code>listBranches()</code> - Listar ramas</li>
+                  <li><code>mergeToMain(branchName)</code> - Merge a main</li>
+                  <li><code>getCommitHistory(limit?)</code> - Historial de commits</li>
+                  <li><code>checkoutCommit(commitHash, createBranch?)</code> - Volver a commit</li>
+                  <li><code>getStatus()</code> - Estado del repositorio</li>
+                  <li><code>getCurrentBranch()</code> - Rama actual</li>
+                </ul>
                 </div>
               </div>
 
               <div class="addon-section">
                 <button class="addon-section-header">
-                  <h4 class="addon-section-title">🔌 Integración MCP</h4>
+                <h4 class="addon-section-title">🔌 Integración MCP</h4>
                   <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   </svg>
@@ -4845,8 +4971,8 @@ await pushService('main');</code></pre>
                     <li>Acceso a funciones avanzadas de GitHub</li>
                   </ul>
                 </div>
-                  <div class="code-block" style="background: rgba(255, 255, 0, 0.05); border-left: 3px solid var(--autorun-neon-yellow);">
-                    <pre><code>// El add-on detectará automáticamente si hay un servidor MCP configurado
+                <div class="code-block" style="background: rgba(255, 255, 0, 0.05); border-left: 3px solid var(--autorun-neon-yellow);">
+                  <pre><code>// El add-on detectará automáticamente si hay un servidor MCP configurado
 // y ofrecerá instalarlo durante la inicialización si está disponible
 // pero no configurado. Si el usuario acepta, se configurará automáticamente.
 
@@ -4871,38 +4997,38 @@ await hub.activateAddon('github');
 
               <div class="addon-section expanded">
                 <button class="addon-section-header active">
-                  <h4 class="addon-section-title">Características</h4>
+                <h4 class="addon-section-title">Características</h4>
                   <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   </svg>
                 </button>
                 <div class="addon-section-content">
-                  <ul class="addon-features">
-                    <li>Tracking de eventos y comportamiento</li>
-                    <li>Heatmaps interactivos</li>
-                    <li>Session recordings</li>
-                    <li>Analytics dashboard</li>
-                    <li>Integración con el Hub</li>
-                  </ul>
+                <ul class="addon-features">
+                  <li>Tracking de eventos y comportamiento</li>
+                  <li>Heatmaps interactivos</li>
+                  <li>Session recordings</li>
+                  <li>Analytics dashboard</li>
+                  <li>Integración con el Hub</li>
+                </ul>
                 </div>
               </div>
 
               <div class="addon-section">
                 <button class="addon-section-header">
-                  <h4 class="addon-section-title">Requisitos</h4>
+                <h4 class="addon-section-title">Requisitos</h4>
                   <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   </svg>
                 </button>
                 <div class="addon-section-content">
-                  <div class="requirements-list">
-                    <div class="requirement-item">
-                      <span class="requirement-label">Clarity Project ID</span>
-                      <span class="requirement-value">ID del proyecto de Microsoft Clarity</span>
-                    </div>
-                    <div class="requirement-item">
-                      <span class="requirement-label">Clarity API Key</span>
-                      <span class="requirement-value">Clave API de Microsoft Clarity (opcional para funciones avanzadas)</span>
+                <div class="requirements-list">
+                  <div class="requirement-item">
+                    <span class="requirement-label">Clarity Project ID</span>
+                    <span class="requirement-value">ID del proyecto de Microsoft Clarity</span>
+                  </div>
+                  <div class="requirement-item">
+                    <span class="requirement-label">Clarity API Key</span>
+                    <span class="requirement-value">Clave API de Microsoft Clarity (opcional para funciones avanzadas)</span>
                     </div>
                   </div>
                 </div>
@@ -4910,14 +5036,14 @@ await hub.activateAddon('github');
 
               <div class="addon-section">
                 <button class="addon-section-header">
-                  <h4 class="addon-section-title">Configuración</h4>
+                <h4 class="addon-section-title">Configuración</h4>
                   <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   </svg>
                 </button>
                 <div class="addon-section-content">
-                  <div class="code-block">
-                    <pre><code>{
+                <div class="code-block">
+                  <pre><code>{
   "autorun": {
     "addons": {
       "config": {
@@ -4935,14 +5061,14 @@ await hub.activateAddon('github');
 
               <div class="addon-section">
                 <button class="addon-section-header">
-                  <h4 class="addon-section-title">Uso</h4>
+                <h4 class="addon-section-title">Uso</h4>
                   <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   </svg>
                 </button>
                 <div class="addon-section-content">
-                  <div class="code-block">
-                    <pre><code>// Activar add-on
+                <div class="code-block">
+                  <pre><code>// Activar add-on
 await hub.activateAddon('clarity');
 
 // El script de Clarity se carga automáticamente
@@ -4953,7 +5079,7 @@ await hub.activateAddon('clarity');
 
               <div class="addon-section">
                 <button class="addon-section-header">
-                  <h4 class="addon-section-title">🔌 Integración MCP</h4>
+                <h4 class="addon-section-title">🔌 Integración MCP</h4>
                   <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   </svg>
@@ -4973,8 +5099,8 @@ await hub.activateAddon('clarity');
                     <li>Mejor gestión de credenciales y seguridad</li>
                   </ul>
                 </div>
-                  <div class="code-block" style="background: rgba(255, 255, 0, 0.05); border-left: 3px solid var(--autorun-neon-yellow);">
-                    <pre><code>// Con MCP habilitado, podrás hacer consultas como:
+                <div class="code-block" style="background: rgba(255, 255, 0, 0.05); border-left: 3px solid var(--autorun-neon-yellow);">
+                  <pre><code>// Con MCP habilitado, podrás hacer consultas como:
 // - "Top browsers last 3 days"
 // - "Average session duration for mobile users this week"
 // - "Top pages for desktop in the last month"
@@ -5000,38 +5126,38 @@ await hub.activateAddon('clarity');
 
               <div class="addon-section expanded">
                 <button class="addon-section-header active">
-                  <h4 class="addon-section-title">Características</h4>
+                <h4 class="addon-section-title">Características</h4>
                   <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   </svg>
                 </button>
                 <div class="addon-section-content">
-                  <ul class="addon-features">
-                    <li>Deploy automático</li>
-                    <li>Gestión de proyectos Vercel</li>
-                    <li>Configuración de dominios</li>
-                    <li>Preview deployments</li>
-                    <li>Integración con GitHub</li>
-                  </ul>
+                <ul class="addon-features">
+                  <li>Deploy automático</li>
+                  <li>Gestión de proyectos Vercel</li>
+                  <li>Configuración de dominios</li>
+                  <li>Preview deployments</li>
+                  <li>Integración con GitHub</li>
+                </ul>
                 </div>
               </div>
 
               <div class="addon-section">
                 <button class="addon-section-header">
-                  <h4 class="addon-section-title">Requisitos</h4>
+                <h4 class="addon-section-title">Requisitos</h4>
                   <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   </svg>
                 </button>
                 <div class="addon-section-content">
-                  <div class="requirements-list">
-                    <div class="requirement-item">
-                      <span class="requirement-label">Vercel Token</span>
-                      <span class="requirement-value">Token de acceso de Vercel (obtener en vercel.com/account/tokens)</span>
-                    </div>
-                    <div class="requirement-item">
-                      <span class="requirement-label">Team ID (Opcional)</span>
-                      <span class="requirement-value">ID del equipo si trabajas en un equipo</span>
+                <div class="requirements-list">
+                  <div class="requirement-item">
+                    <span class="requirement-label">Vercel Token</span>
+                    <span class="requirement-value">Token de acceso de Vercel (obtener en vercel.com/account/tokens)</span>
+                  </div>
+                  <div class="requirement-item">
+                    <span class="requirement-label">Team ID (Opcional)</span>
+                    <span class="requirement-value">ID del equipo si trabajas en un equipo</span>
                     </div>
                   </div>
                 </div>
@@ -5039,14 +5165,14 @@ await hub.activateAddon('clarity');
 
               <div class="addon-section">
                 <button class="addon-section-header">
-                  <h4 class="addon-section-title">Configuración</h4>
+                <h4 class="addon-section-title">Configuración</h4>
                   <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   </svg>
                 </button>
                 <div class="addon-section-content">
-                  <div class="code-block">
-                    <pre><code>{
+                <div class="code-block">
+                  <pre><code>{
   "autorun": {
     "addons": {
       "config": {
@@ -5065,14 +5191,14 @@ await hub.activateAddon('clarity');
 
               <div class="addon-section">
                 <button class="addon-section-header">
-                  <h4 class="addon-section-title">Uso</h4>
+                <h4 class="addon-section-title">Uso</h4>
                   <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   </svg>
                 </button>
                 <div class="addon-section-content">
-                  <div class="code-block">
-                    <pre><code>// Activar add-on
+                <div class="code-block">
+                  <pre><code>// Activar add-on
 await hub.activateAddon('vercel');
 
 // Deploy automático
@@ -5084,7 +5210,7 @@ await deployService();</code></pre>
 
               <div class="addon-section">
                 <button class="addon-section-header">
-                  <h4 class="addon-section-title">🔌 Integración MCP</h4>
+                <h4 class="addon-section-title">🔌 Integración MCP</h4>
                   <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   </svg>
@@ -5104,8 +5230,8 @@ await deployService();</code></pre>
                     <li>Consulta de deployments, proyectos y configuraciones mediante lenguaje natural</li>
                   </ul>
                 </div>
-                  <div class="code-block" style="background: rgba(255, 255, 0, 0.05); border-left: 3px solid var(--autorun-neon-yellow);">
-                    <pre><code>// El add-on detectará automáticamente si hay un servidor MCP configurado
+                <div class="code-block" style="background: rgba(255, 255, 0, 0.05); border-left: 3px solid var(--autorun-neon-yellow);">
+                  <pre><code>// El add-on detectará automáticamente si hay un servidor MCP configurado
 // y ofrecerá instalarlo durante la inicialización si está disponible
 // pero no configurado. Si el usuario acepta, se configurará automáticamente.
 
@@ -5534,39 +5660,39 @@ await prettierService(['src/**/*.ts']);</code></pre>
 
               <div class="addon-section expanded">
                 <button class="addon-section-header active">
-                  <h4 class="addon-section-title">Características</h4>
+                <h4 class="addon-section-title">Características</h4>
                   <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   </svg>
                 </button>
                 <div class="addon-section-content">
-                  <ul class="addon-features">
-                    <li>Auditoría automática</li>
-                    <li>Reportes de performance</li>
-                    <li>Métricas Core Web Vitals</li>
-                    <li>Accessibility checks</li>
-                    <li>Best practices</li>
-                    <li>SEO analysis</li>
-                  </ul>
+                <ul class="addon-features">
+                  <li>Auditoría automática</li>
+                  <li>Reportes de performance</li>
+                  <li>Métricas Core Web Vitals</li>
+                  <li>Accessibility checks</li>
+                  <li>Best practices</li>
+                  <li>SEO analysis</li>
+                </ul>
                 </div>
               </div>
 
               <div class="addon-section">
                 <button class="addon-section-header">
-                  <h4 class="addon-section-title">Requisitos</h4>
+                <h4 class="addon-section-title">Requisitos</h4>
                   <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   </svg>
                 </button>
                 <div class="addon-section-content">
-                  <div class="requirements-list">
-                    <div class="requirement-item">
-                      <span class="requirement-label">Lighthouse Instalado</span>
-                      <span class="requirement-value">Lighthouse debe estar instalado como dependencia</span>
-                    </div>
-                    <div class="requirement-item">
-                      <span class="requirement-label">Chrome/Chromium</span>
-                      <span class="requirement-value">Chrome o Chromium instalado para ejecutar auditorías</span>
+                <div class="requirements-list">
+                  <div class="requirement-item">
+                    <span class="requirement-label">Lighthouse Instalado</span>
+                    <span class="requirement-value">Lighthouse debe estar instalado como dependencia</span>
+                  </div>
+                  <div class="requirement-item">
+                    <span class="requirement-label">Chrome/Chromium</span>
+                    <span class="requirement-value">Chrome o Chromium instalado para ejecutar auditorías</span>
                     </div>
                   </div>
                 </div>
@@ -5574,14 +5700,14 @@ await prettierService(['src/**/*.ts']);</code></pre>
 
               <div class="addon-section">
                 <button class="addon-section-header">
-                  <h4 class="addon-section-title">Configuración</h4>
+                <h4 class="addon-section-title">Configuración</h4>
                   <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   </svg>
                 </button>
                 <div class="addon-section-content">
-                  <div class="code-block">
-                    <pre><code>{
+                <div class="code-block">
+                  <pre><code>{
   "autorun": {
     "addons": {
       "config": {
@@ -5599,14 +5725,14 @@ await prettierService(['src/**/*.ts']);</code></pre>
 
               <div class="addon-section">
                 <button class="addon-section-header">
-                  <h4 class="addon-section-title">Uso</h4>
+                <h4 class="addon-section-title">Uso</h4>
                   <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   </svg>
                 </button>
                 <div class="addon-section-content">
-                  <div class="code-block">
-                    <pre><code>// Activar add-on
+                <div class="code-block">
+                  <pre><code>// Activar add-on
 await hub.activateAddon('lighthouse');
 
 // Ejecutar auditoría
@@ -6021,41 +6147,61 @@ const results = searchIcons('crear');
                 Sistema automatizado para recopilar y gestionar feedback de usuarios. Permite integrar formularios de feedback, encuestas y sistemas de recopilación de opiniones directamente en tu aplicación.
               </p>
 
-              <div class="addon-section">
-                <h4 class="addon-section-title">Características</h4>
-                <ul class="addon-features">
-                  <li>Recopilación automática de feedback de usuarios</li>
-                  <li>Integración con formularios y encuestas</li>
-                  <li>Análisis de sentimientos y clasificación de feedback</li>
-                  <li>Notificaciones automáticas de feedback crítico</li>
-                  <li>Dashboard de métricas y estadísticas</li>
-                  <li>Exportación de datos para análisis</li>
-                  <li>Integración con sistemas de gestión de proyectos</li>
-                </ul>
+              <div class="addon-section expanded">
+                <button class="addon-section-header active">
+                  <h4 class="addon-section-title">Características</h4>
+                  <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <div class="addon-section-content">
+                  <ul class="addon-features">
+                    <li>Recopilación automática de feedback de usuarios</li>
+                    <li>Integración con formularios y encuestas</li>
+                    <li>Análisis de sentimientos y clasificación de feedback</li>
+                    <li>Notificaciones automáticas de feedback crítico</li>
+                    <li>Dashboard de métricas y estadísticas</li>
+                    <li>Exportación de datos para análisis</li>
+                    <li>Integración con sistemas de gestión de proyectos</li>
+                  </ul>
+                </div>
               </div>
 
               <div class="addon-section">
-                <h4 class="addon-section-title">Requisitos</h4>
-                <div class="requirements-list">
-                  <div class="requirement-item">
-                    <span class="requirement-label">API Key</span>
-                    <span class="requirement-value">Clave de API del servicio de feedback (opcional)</span>
-                  </div>
-                  <div class="requirement-item">
-                    <span class="requirement-label">Base de Datos</span>
-                    <span class="requirement-value">Conexión a base de datos para almacenar feedback</span>
-                  </div>
-                  <div class="requirement-item">
-                    <span class="requirement-label">Servicio de Email (Opcional)</span>
-                    <span class="requirement-value">Configuración de email para notificaciones</span>
+                <button class="addon-section-header">
+                  <h4 class="addon-section-title">Requisitos</h4>
+                  <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <div class="addon-section-content">
+                  <div class="requirements-list">
+                    <div class="requirement-item">
+                      <span class="requirement-label">API Key</span>
+                      <span class="requirement-value">Clave de API del servicio de feedback (opcional)</span>
+                    </div>
+                    <div class="requirement-item">
+                      <span class="requirement-label">Base de Datos</span>
+                      <span class="requirement-value">Conexión a base de datos para almacenar feedback</span>
+                    </div>
+                    <div class="requirement-item">
+                      <span class="requirement-label">Servicio de Email (Opcional)</span>
+                      <span class="requirement-value">Configuración de email para notificaciones</span>
+                    </div>
                   </div>
                 </div>
               </div>
 
               <div class="addon-section">
-                <h4 class="addon-section-title">Configuración</h4>
-                <div class="code-block">
-                  <pre><code>{
+                <button class="addon-section-header">
+                  <h4 class="addon-section-title">Configuración</h4>
+                  <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <div class="addon-section-content">
+                  <div class="code-block">
+                    <pre><code>{
   "autorun": {
     "addons": {
       "config": {
@@ -6079,13 +6225,20 @@ const results = searchIcons('crear');
     }
   }
 }</code></pre>
+                  </div>
                 </div>
               </div>
 
               <div class="addon-section">
-                <h4 class="addon-section-title">Uso</h4>
-                <div class="code-block">
-                  <pre><code>// Activar add-on
+                <button class="addon-section-header">
+                  <h4 class="addon-section-title">Uso</h4>
+                  <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <div class="addon-section-content">
+                  <div class="code-block">
+                    <pre><code>// Activar add-on
 await hub.activateAddon('feedback-automatizado');
 
 // Recopilar feedback
@@ -6111,18 +6264,26 @@ await configureNotifications({
   critical: true,
   email: 'team@ejemplo.com'
 });</code></pre>
+                  </div>
                 </div>
               </div>
 
               <div class="addon-section">
-                <h4 class="addon-section-title">Tipos de Feedback</h4>
-                <ul class="addon-features">
-                  <li><code>bug</code> - Reporte de errores</li>
-                  <li><code>feature</code> - Solicitud de nuevas funcionalidades</li>
-                  <li><code>improvement</code> - Sugerencias de mejora</li>
-                  <li><code>question</code> - Preguntas y consultas</li>
-                  <li><code>compliment</code> - Comentarios positivos</li>
-                </ul>
+                <button class="addon-section-header">
+                  <h4 class="addon-section-title">Tipos de Feedback</h4>
+                  <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <div class="addon-section-content">
+                  <ul class="addon-features">
+                    <li><code>bug</code> - Reporte de errores</li>
+                    <li><code>feature</code> - Solicitud de nuevas funcionalidades</li>
+                    <li><code>improvement</code> - Sugerencias de mejora</li>
+                    <li><code>question</code> - Preguntas y consultas</li>
+                    <li><code>compliment</code> - Comentarios positivos</li>
+                  </ul>
+                </div>
               </div>
             </div>
 
@@ -6668,36 +6829,56 @@ await run();</code></pre>
               <p class="addon-description">
                 Monitoreo profesional de errores y performance. Captura errores automáticamente, rastrea performance y proporciona contexto completo para debugging.
               </p>
-              <div class="addon-section">
-                <h4 class="addon-section-title">Características</h4>
-                <ul class="addon-features">
-                  <li>Captura automática de errores</li>
-                  <li>Monitoreo de performance</li>
-                  <li>Breadcrumbs para debugging</li>
-                  <li>Contexto de usuario</li>
-                  <li>Tags y contexto personalizado</li>
-                  <li>Compatibilidad multiplataforma</li>
-                  <li>Soporte React</li>
-                </ul>
+              <div class="addon-section expanded">
+                <button class="addon-section-header active">
+                  <h4 class="addon-section-title">Características</h4>
+                  <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <div class="addon-section-content">
+                  <ul class="addon-features">
+                    <li>Captura automática de errores</li>
+                    <li>Monitoreo de performance</li>
+                    <li>Breadcrumbs para debugging</li>
+                    <li>Contexto de usuario</li>
+                    <li>Tags y contexto personalizado</li>
+                    <li>Compatibilidad multiplataforma</li>
+                    <li>Soporte React</li>
+                  </ul>
+                </div>
               </div>
               <div class="addon-section">
-                <h4 class="addon-section-title">Requisitos</h4>
-                <div class="requirements-list">
-                  <div class="requirement-item">
-                    <span class="requirement-label">Sentry SDK</span>
-                    <span class="requirement-value">@sentry/browser, @sentry/react o @sentry/node</span>
-                  </div>
-                  <div class="requirement-item">
-                    <span class="requirement-label">DSN</span>
-                    <span class="requirement-value">DSN de Sentry desde sentry.io</span>
+                <button class="addon-section-header">
+                  <h4 class="addon-section-title">Requisitos</h4>
+                  <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <div class="addon-section-content">
+                  <div class="requirements-list">
+                    <div class="requirement-item">
+                      <span class="requirement-label">Sentry SDK</span>
+                      <span class="requirement-value">@sentry/browser, @sentry/react o @sentry/node</span>
+                    </div>
+                    <div class="requirement-item">
+                      <span class="requirement-label">DSN</span>
+                      <span class="requirement-value">DSN de Sentry desde sentry.io</span>
+                    </div>
                   </div>
                 </div>
               </div>
 
               <div class="addon-section">
-                <h4 class="addon-section-title">Configuración</h4>
-                <div class="code-block">
-                  <pre><code>{
+                <button class="addon-section-header">
+                  <h4 class="addon-section-title">Configuración</h4>
+                  <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <div class="addon-section-content">
+                  <div class="code-block">
+                    <pre><code>{
   "autorun": {
     "addons": {
       "config": {
@@ -6710,13 +6891,20 @@ await run();</code></pre>
     }
   }
 }</code></pre>
+                  </div>
                 </div>
               </div>
 
               <div class="addon-section">
-                <h4 class="addon-section-title">Uso</h4>
-                <div class="code-block">
-                  <pre><code>// Activar add-on
+                <button class="addon-section-header">
+                  <h4 class="addon-section-title">Uso</h4>
+                  <svg class="addon-section-chevron" width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <div class="addon-section-content">
+                  <div class="code-block">
+                    <pre><code>// Activar add-on
 await hub.activateAddon('sentry');
 
 // Capturar error
@@ -6726,6 +6914,7 @@ captureException(error, { userId: 'user-123' });
 // Capturar mensaje
 const captureMessage = hub.getService('sentry', 'captureMessage');
 captureMessage('Evento importante', 'info');</code></pre>
+                  </div>
                 </div>
               </div>
             </div>
@@ -8097,6 +8286,40 @@ npm run addon:activate supabase</code></pre>
       if (lighthouseAddon) {
         // Manejar clicks en los headers de las secciones
         lighthouseAddon.addEventListener('click', (e) => {
+          if (e.target.closest('.addon-section-header')) {
+            const header = e.target.closest('.addon-section-header');
+            const section = header.closest('.addon-section');
+            
+            if (section) {
+              section.classList.toggle('expanded');
+              header.classList.toggle('active');
+            }
+          }
+        });
+      }
+
+      // Acordeón solo para Feedback Automatizado
+      const feedbackAddon = document.getElementById('addon-feedback-automatizado');
+      if (feedbackAddon) {
+        // Manejar clicks en los headers de las secciones
+        feedbackAddon.addEventListener('click', (e) => {
+          if (e.target.closest('.addon-section-header')) {
+            const header = e.target.closest('.addon-section-header');
+            const section = header.closest('.addon-section');
+            
+            if (section) {
+              section.classList.toggle('expanded');
+              header.classList.toggle('active');
+            }
+          }
+        });
+      }
+
+      // Acordeón solo para Sentry
+      const sentryAddon = document.getElementById('addon-sentry');
+      if (sentryAddon) {
+        // Manejar clicks en los headers de las secciones
+        sentryAddon.addEventListener('click', (e) => {
           if (e.target.closest('.addon-section-header')) {
             const header = e.target.closest('.addon-section-header');
             const section = header.closest('.addon-section');
