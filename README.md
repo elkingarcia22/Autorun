@@ -2,6 +2,10 @@
 
 Sistema modular para crear prototipos de alta calidad con componentes UBITS, add-ons funcionales y herramientas de desarrollo integradas.
 
+> ⚡ **Inicio rápido:** Lee [GETTING-STARTED.md](./GETTING-STARTED.md) para empezar en 5 minutos
+> 
+> ❓ **¿Problemas?** Consulta [QUICK-START.md](./QUICK-START.md) para soluciones rápidas
+
 ---
 
 ## ⚡ Inicio Rápido
