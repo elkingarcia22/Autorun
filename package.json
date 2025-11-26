@@ -10,7 +10,7 @@
 		"format": "biome format . --write",
 		"prepare": "husky",
 		"verify": "node scripts/verify-setup.js",
-		"init": "cd packages/autorun-core && npm run build && node dist/cli/autorun-init.js",
+		"init": "tsx packages/autorun-core/src/cli/autorun-init.ts",
 		"autorun:init": "npm run init",
 		"postinstall": "npm run verify"
 	},
@@ -29,6 +29,7 @@
 		"@biomejs/biome": "^2.3.2",
 		"husky": "^9.1.7",
 		"style-dictionary": "^4.4.0",
+		"tsx": "^4.20.6",
 		"typescript": "^5.9.3",
 		"vite": "^7.1.12"
 	},
