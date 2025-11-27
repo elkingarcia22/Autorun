@@ -198,7 +198,7 @@ export class InitializationWizard {
 
 	/**
 	 * Pregunta por los add-ons a instalar
-	 * Muestra los add-ons por defecto y permite agregar/quitar
+	 * Muestra los add-ons por defecto y permite agregar otros
 	 */
 	private async askAddons(): Promise<string[]> {
 		const defaultAddons = UBITS_PRESET.addons;
@@ -227,7 +227,6 @@ export class InitializationWizard {
 
 		// Obtener todos los add-ons disponibles
 		const allAvailableAddons = await this.discoverAvailableAddons();
-		const allAddonIds = new Set([...defaultAddons, ...allAvailableAddons.map(a => a.id)]);
 
 		// Mostrar resumen de add-ons por defecto
 		console.log('\n🔌 Add-ons que se instalarán por defecto:\n');
@@ -238,43 +237,91 @@ export class InitializationWizard {
 			console.log(`   ${index + 1}. ${description}`);
 		});
 
-		// Preguntar si quiere modificar la lista
-		const wantsToModify = await this.prompt.confirm(
-			'\n   ¿Quieres agregar o quitar algún add-on?',
-			false,
+		// Preguntar qué quiere hacer
+		const action = await this.prompt.select(
+			'\n   ¿Qué quieres hacer?',
+			[
+				{
+					value: 'default',
+					label: 'Instalar solo los add-ons por defecto',
+				},
+				{
+					value: 'add',
+					label: 'Agregar otros add-ons',
+				},
+			],
+			'default',
 		);
 
 		let selectedAddons = [...defaultAddons];
 
-		if (wantsToModify) {
-			// Crear lista completa de opciones
-			const allOptions = Array.from(allAddonIds).map(addonId => {
-				const description = addonDescriptions[addonId] || 
-					allAvailableAddons.find(a => a.id === addonId)?.description || 
-					addonId;
-				const isDefault = defaultAddons.includes(addonId);
-				return {
-					value: addonId,
-					label: `${isDefault ? '⭐ ' : '   '}${description}`,
-					selected: isDefault,
-				};
-			});
+		if (action === 'add') {
+			// Obtener add-ons adicionales (los que NO están en defaultAddons)
+			const additionalAddons = allAvailableAddons.filter(
+				a => !defaultAddons.includes(a.id)
+			);
 
-			console.log('\n   📦 Lista completa de add-ons (⭐ = incluido por defecto):\n');
+			if (additionalAddons.length === 0) {
+				console.log('\n   ℹ️  No hay otros add-ons disponibles para agregar.');
+				return selectedAddons;
+			}
+
+			console.log('\n   📦 Otros add-ons disponibles:\n');
 			
-			// Preguntar por cada add-on si quiere incluirlo
-			selectedAddons = [];
-			for (const option of allOptions) {
-				const isDefault = defaultAddons.includes(option.value);
-				
-				const include = await this.prompt.confirm(
-					`   ${option.label}`,
-					isDefault,
-				);
-				
-				if (include) {
-					selectedAddons.push(option.value);
+			// Permitir seleccionar múltiples add-ons adicionales
+			const additionalSelected: string[] = [];
+			
+			while (true) {
+				// Crear opciones de add-ons que aún no se han seleccionado
+				const remainingOptions = additionalAddons
+					.filter(a => !additionalSelected.includes(a.id))
+					.map((addon, index) => ({
+						value: addon.id,
+						label: `${addon.name} - ${addon.description || 'Sin descripción'}`,
+					}));
+
+				if (remainingOptions.length === 0) {
+					console.log('\n   ℹ️  Ya has seleccionado todos los add-ons adicionales disponibles.');
+					break;
 				}
+
+				// Agregar opción para terminar
+				remainingOptions.push({
+					value: '__done__',
+					label: '✅ Terminar y continuar',
+				});
+
+				const selected = await this.prompt.select(
+					'\n   Selecciona otro add-on para agregar:',
+					remainingOptions,
+				);
+
+				if (selected === '__done__' || !selected) {
+					break;
+				}
+
+				if (!additionalSelected.includes(selected)) {
+					additionalSelected.push(selected);
+					const addon = additionalAddons.find(a => a.id === selected);
+					console.log(`   ✅ Agregado: ${addon?.name || selected}`);
+				}
+
+				// Preguntar si quiere agregar más
+				const addMore = await this.prompt.confirm(
+					'   ¿Quieres agregar otro add-on?',
+					false,
+				);
+
+				if (!addMore) {
+					break;
+				}
+			}
+
+			// Combinar add-ons por defecto con los adicionales seleccionados
+			selectedAddons = [...defaultAddons, ...additionalSelected];
+			
+			if (additionalSelected.length > 0) {
+				console.log(`\n   ✅ Total de add-ons a instalar: ${selectedAddons.length} (${defaultAddons.length} por defecto + ${additionalSelected.length} adicionales)`);
 			}
 		}
 
