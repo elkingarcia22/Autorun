@@ -655,6 +655,34 @@ export class CanvasCreator {
               // handleSectionChange con activeTabId activa el módulo y el producto en una sola llamada
               window.UBITS_ContentManager.handleSectionChange(normalizedModule, '${product}');
               
+              // Mapeo de productos a IDs de tabs del SubNav
+              // Algunos productos tienen IDs diferentes en el SubNav
+              const productToTabIdMap = {
+                // Aprendizaje
+                'inicio': 'home',
+                'catalogo': 'catalog',
+                'corporativa': 'corporate',
+                'zona-estudio': 'study-zone',
+                // Desempeño
+                'evaluations': 'evaluations',
+                'evaluaciones-360': 'evaluations',
+                'objectives': 'objectives',
+                'objetivos': 'objectives',
+                'matriz-talento': 'matriz-talento',
+                // Empresa
+                'gestion-usuarios': 'gestion-usuarios',
+                'organigrama': 'organigrama',
+                'datos-empresa': 'datos-empresa',
+                'personalizacion': 'personalizacion',
+                'roles-permisos': 'roles-permisos',
+                'comunicaciones': 'comunicaciones'
+              };
+              
+              // Obtener el ID del tab correcto
+              const tabId = productToTabIdMap['${product}'] || '${product}';
+              console.log('🔍 [Wizard] [SubNav] Producto original: ${product}');
+              console.log('🔍 [Wizard] [SubNav] Tab ID mapeado:', tabId);
+              
               // Forzar activación del tab en el SubNav después de que se actualice el contenido
               // Esto es necesario porque el SubNav puede ya existir y no recargarse
               // Usar múltiples intentos porque el SubNav puede tardar en renderizarse
@@ -665,6 +693,7 @@ export class CanvasCreator {
                 console.log('🔍 [Wizard] ════════════════════════════════════════');
                 console.log('🔍 [Wizard] [SubNav] Intento', attempts, 'de activar tab en SubNav...');
                 console.log('🔍 [Wizard] [SubNav] Producto objetivo: ${product}');
+                console.log('🔍 [Wizard] [SubNav] Tab ID a buscar:', tabId);
                 
                 // Buscar el SubNav de múltiples formas
                 let subNavElement = document.querySelector('.ubits-sub-nav');
@@ -724,15 +753,27 @@ export class CanvasCreator {
                     });
                     
                     // Activar el tab correspondiente al producto
-                    console.log('🔍 [Wizard] [SubNav] Buscando tab con data-tab="${product}"...');
-                    let targetTab = subNavElement.querySelector('[data-tab="${product}"]');
+                    // Primero intentar con el tabId mapeado
+                    console.log('🔍 [Wizard] [SubNav] Buscando tab con data-tab="' + tabId + '"...');
+                    let targetTab = subNavElement.querySelector('[data-tab="' + tabId + '"]');
                     
-                    // Si no se encuentra, intentar buscar por texto
+                    // Si no se encuentra, intentar con el producto original
+                    if (!targetTab) {
+                      console.log('🔍 [Wizard] [SubNav] Tab no encontrado con tabId mapeado, intentando con producto original...');
+                      targetTab = subNavElement.querySelector('[data-tab="${product}"]');
+                    }
+                    
+                    // Si aún no se encuentra, intentar buscar por texto
                     if (!targetTab) {
                       console.log('🔍 [Wizard] [SubNav] Tab no encontrado por data-tab, buscando por texto...');
+                      const productText = '${product}'.toLowerCase();
                       Array.from(allTabs).forEach(tab => {
                         const text = tab.textContent?.trim().toLowerCase();
-                        if (text.includes('matriz') || text.includes('talento')) {
+                        // Buscar coincidencias parciales
+                        if (text.includes(productText) || productText.includes(text) || 
+                            (productText.includes('inicio') && text.includes('inicio')) ||
+                            (productText.includes('matriz') && text.includes('matriz')) ||
+                            (productText.includes('talento') && text.includes('talento'))) {
                           console.log('🔍 [Wizard] [SubNav] Tab encontrado por texto:', text);
                           targetTab = tab;
                         }
