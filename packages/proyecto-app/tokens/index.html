@@ -8923,33 +8923,18 @@ const result = await runTests({ coverage: true });</code></pre>
             </div>
             <div class="step-content">
               <p class="step-description">
-                Clona el repositorio Autorun, instala las dependencias y ejecuta el wizard de inicialización. El wizard te permitirá seleccionar el template, módulo, producto y add-ons, y automáticamente configurará todo y abrirá el template en tu navegador.
+                Clona el repositorio Autorun, instala las dependencias y ejecuta el wizard de inicialización. El wizard configurará todo automáticamente y abrirá el template en tu navegador.
               </p>
               <div class="code-block">
-                <pre><code># 1. Clonar el repositorio Autorun
+                <pre><code># Clonar el repositorio Autorun
 git clone https://github.com/elkingarcia22/Autorun.git
 cd Autorun
 
-# 2. Instalar dependencias
+# Instalar dependencias
 npm install
 
-# 3. Ejecutar el wizard de inicialización
+# Ejecutar el wizard de inicialización
 npm run init
-
-# El wizard te preguntará:
-# 1. Template (administrador o colaborador)
-# 2. Módulo (desempeño, empresa, aprendizaje, etc.)
-# 3. Producto (matriz-talento, organigrama, inicio, etc.)
-# 4. Add-ons:
-#    - Te mostrará los add-ons por defecto que se instalarán
-#    - Podrás elegir: "Instalar solo los add-ons por defecto" o "Agregar otros add-ons"
-#    - Si eliges agregar otros, podrás seleccionar cuáles instalar
-
-# Después de instalar los add-ons, el wizard:
-# - Configurará el proyecto
-# - Creará el lienzo de trabajo
-# - Abrirá automáticamente el template en tu navegador
-# - Con el módulo y producto seleccionados activos
 
 # O usar configuración automática con variables de entorno:
 export AUTORUN_TEMPLATE=administrador
