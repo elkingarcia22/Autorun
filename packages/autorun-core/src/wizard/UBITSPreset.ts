@@ -100,20 +100,24 @@ export const UBITS_PRESET: UBITSConfig = {
 		administrador: {
 			type: 'administrador',
 			modules: [
+				'inicio',
+				'colaboradores',
 				'aprendizaje',
 				'desempeno',
-				'colaboradores',
-				'reportes',
-				'configuracion',
+				'encuestas',
+				'api',
+				'centro-ayuda',
 			],
 			sidebar: {
 				variant: 'administrador',
 				enabledModules: [
+					'inicio',
+					'colaboradores',
 					'aprendizaje',
 					'desempeno',
-					'colaboradores',
-					'reportes',
-					'configuracion',
+					'encuestas',
+					'api',
+					'centro-ayuda',
 				],
 			},
 			components: [
@@ -156,6 +160,7 @@ export const UBITS_PRESET: UBITSConfig = {
 		},
 	},
 	modules: [
+		'inicio',
 		'aprendizaje',
 		'desempeno',
 		'colaboradores',
@@ -165,6 +170,8 @@ export const UBITS_PRESET: UBITSConfig = {
 		'reclutamiento',
 		'planes',
 		'ubits-ai',
+		'api',
+		'centro-ayuda',
 		'mi-perfil',
 	],
 };
@@ -173,15 +180,23 @@ export const UBITS_PRESET: UBITSConfig = {
  * Configuración de módulos con sus productos (tabs del subnav)
  */
 export const UBITS_MODULES_CONFIG: Record<string, ModuleConfig> = {
+	inicio: {
+		id: 'inicio',
+		name: 'Inicio',
+		subnavVariant: 'template',
+		products: [
+			{ id: 'dashboard', name: 'Dashboard', icon: 'far fa-home' },
+		],
+	},
 	aprendizaje: {
 		id: 'aprendizaje',
 		name: 'Aprendizaje',
 		subnavVariant: 'aprendizaje',
 		products: [
-			{ id: 'inicio', name: 'Inicio', icon: 'far fa-home' },
-			{ id: 'catalogo', name: 'Catálogo', icon: 'far fa-book' },
-			{ id: 'u-corporativa', name: 'U. Corporativa', icon: 'far fa-building' },
-			{ id: 'zona-estudio', name: 'Zona de estudio', icon: 'far fa-graduation-cap' },
+			{ id: 'lms-cursos-propios', name: 'LMS - Cursos propios', icon: 'far fa-book' },
+			{ id: 'plan-formacion', name: 'Plan de formación', icon: 'far fa-calendar-check' },
+			{ id: 'certificados', name: 'Certificados', icon: 'far fa-certificate' },
+			{ id: 'metricas-empresa', name: 'Métricas de empresa', icon: 'far fa-chart-bar' },
 		],
 	},
 	desempeno: {
@@ -191,8 +206,7 @@ export const UBITS_MODULES_CONFIG: Record<string, ModuleConfig> = {
 		products: [
 			{ id: 'evaluaciones-360', name: 'Evaluaciones 360', icon: 'far fa-chart-pie' },
 			{ id: 'objetivos', name: 'Objetivos', icon: 'far fa-bullseye' },
-			{ id: 'metricas', name: 'Métricas', icon: 'far fa-chart-line' },
-			{ id: 'reportes', name: 'Reportes', icon: 'far fa-file-alt' },
+			{ id: 'matriz-talento', name: 'Matriz de Talento', icon: 'far fa-users-cog' },
 		],
 	},
 	colaboradores: {
@@ -200,9 +214,12 @@ export const UBITS_MODULES_CONFIG: Record<string, ModuleConfig> = {
 		name: 'Colaboradores',
 		subnavVariant: 'template',
 		products: [
-			{ id: 'lista', name: 'Lista', icon: 'far fa-users' },
-			{ id: 'equipos', name: 'Equipos', icon: 'far fa-user-friends' },
+			{ id: 'gestion-usuarios', name: 'Gestión de usuarios', icon: 'far fa-users' },
 			{ id: 'organigrama', name: 'Organigrama', icon: 'far fa-sitemap' },
+			{ id: 'datos-empresa', name: 'Datos de empresa', icon: 'far fa-building' },
+			{ id: 'personalizacion', name: 'Personalización', icon: 'far fa-paint-brush' },
+			{ id: 'roles-permisos', name: 'Roles y permisos', icon: 'far fa-user-shield' },
+			{ id: 'comunicaciones', name: 'Comunicaciones', icon: 'far fa-comments' },
 		],
 	},
 	reportes: {
@@ -240,6 +257,25 @@ export const UBITS_MODULES_CONFIG: Record<string, ModuleConfig> = {
 		products: [
 			{ id: 'lista', name: 'Lista', icon: 'far fa-list' },
 			{ id: 'crear', name: 'Crear', icon: 'far fa-plus' },
+			{ id: 'diagnostico', name: 'Diagnóstico', icon: 'far fa-stethoscope' },
+		],
+	},
+	api: {
+		id: 'api',
+		name: 'API',
+		subnavVariant: 'template',
+		products: [
+			{ id: 'documentacion', name: 'Documentación', icon: 'far fa-code' },
+			{ id: 'endpoints', name: 'Endpoints', icon: 'far fa-plug' },
+		],
+	},
+	'centro-ayuda': {
+		id: 'centro-ayuda',
+		name: 'Centro de Ayuda',
+		subnavVariant: 'template',
+		products: [
+			{ id: 'articulos', name: 'Artículos', icon: 'far fa-book-open' },
+			{ id: 'faq', name: 'FAQ', icon: 'far fa-question-circle' },
 		],
 	},
 	reclutamiento: {
