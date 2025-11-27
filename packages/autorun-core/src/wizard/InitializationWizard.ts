@@ -103,43 +103,53 @@ export class InitializationWizard {
 	private async setupUBITS(): Promise<UBITSResult> {
 		console.log('🎯 Perfecto, voy a configurar tu proyecto UBITS ahora.\n');
 
-		// 1. Cargar preset de UBITS
-		console.log('📦 Paso 1: Estoy cargando el preset UBITS con add-ons optimizados...');
-		await this.loadUBITSPreset();
-		console.log('   ✅ Preset cargado correctamente\n');
-
-		// 2. Conectar con Storybook
-		console.log('🔗 Paso 2: Estoy conectando con Storybook UBITS...');
+		// 1. Conectar con Storybook
+		console.log('🔗 Paso 1: Estoy conectando con Storybook UBITS...');
 		await this.connectStorybook();
 		console.log('   ✅ Conectado a Storybook\n');
 
-		// 3. Cargar componentes desde Storybook
-		console.log('🧩 Paso 3: Estoy cargando componentes desde Storybook...');
+		// 2. Cargar componentes desde Storybook
+		console.log('🧩 Paso 2: Estoy cargando componentes desde Storybook...');
 		await this.loadComponentsFromStorybook();
 		console.log('   ✅ Componentes cargados\n');
 
-		// 4. Seleccionar template
-		console.log('📋 Paso 4: Estoy seleccionando el template...');
+		// 3. Seleccionar template (SIEMPRE preguntar)
+		console.log('📋 Paso 3: Selección de template...');
 		const template = await this.selectTemplate();
 		console.log(`   ✅ Template: ${template}\n`);
 
-		// 5. Seleccionar módulo y producto
-		console.log('📦 Paso 5: Estoy seleccionando el módulo y producto...');
+		// 4. Seleccionar módulo y producto (SIEMPRE preguntar)
+		console.log('📦 Paso 4: Selección de módulo y producto...');
 		const { module, product } = await this.selectModule(template);
 		console.log(`   ✅ Módulo: ${module}, Producto: ${product}\n`);
 
-		// 6. Habilitar módulo en sidebar y configurar subnav
-		console.log(`⚙️  Paso 6: Estoy configurando sidebar y subnav para "${module}"...`);
+		// 5. Mostrar e instalar add-ons por defecto
+		console.log('📦 Paso 5: Instalación de add-ons por defecto...');
+		const installedAddons = await this.installDefaultAddons();
+		console.log(`   ✅ ${installedAddons.length} add-on(s) instalado(s)\n`);
+
+		// 6. Preguntar si quiere agregar más add-ons
+		console.log('🔌 Paso 6: ¿Quieres agregar más add-ons?');
+		const additionalAddons = await this.selectAdditionalAddons(installedAddons);
+		if (additionalAddons.length > 0) {
+			await this.installAddons(additionalAddons);
+			console.log(`   ✅ ${additionalAddons.length} add-on(s) adicional(es) instalado(s)\n`);
+		} else {
+			console.log('   ✅ Continuando sin add-ons adicionales\n');
+		}
+
+		// 7. Habilitar módulo en sidebar y configurar subnav
+		console.log(`⚙️  Paso 7: Estoy configurando sidebar y subnav para "${module}"...`);
 		await this.enableModule(module, template, product);
 		console.log('   ✅ Sidebar y subnav configurados\n');
 
-		// 7. Crear lienzo/template
-		console.log('🎨 Paso 7: Estoy creando tu lienzo de trabajo...');
+		// 8. Crear lienzo/template
+		console.log('🎨 Paso 8: Estoy creando tu lienzo de trabajo...');
 		const canvasPath = await this.createCanvas(template, module, product);
-		console.log(`   ✅ Lienzo creado: ${canvasPath}\n`);
+		console.log(`   ✅ Lienzo creado\n`);
 
-		// 8. Validar lienzo creado
-		console.log('🔍 Paso 8: Estoy validando que todo cumpla con los estándares UBITS...');
+		// 9. Validar lienzo creado
+		console.log('🔍 Paso 9: Estoy validando que todo cumpla con los estándares UBITS...');
 		await this.validateCanvas(canvasPath);
 		console.log('   ✅ Validación completada\n');
 
@@ -148,7 +158,8 @@ export class InitializationWizard {
 		console.log(`   📁 Lienzo: ${canvasPath}`);
 		console.log(`   🎯 Template: ${template}`);
 		console.log(`   📦 Módulo: ${module}`);
-		console.log(`   🎨 Producto: ${product}\n`);
+		console.log(`   🎨 Producto: ${product}`);
+		console.log(`   🔌 Add-ons instalados: ${installedAddons.length + additionalAddons.length}\n`);
 		console.log('🚀 Ya puedes empezar a trabajar. ¡Éxito con tu proyecto!\n');
 
 		return {
@@ -161,19 +172,198 @@ export class InitializationWizard {
 	}
 
 	/**
-	 * Carga el preset de UBITS
+	 * Instala los add-ons por defecto del preset UBITS
 	 */
-	private async loadUBITSPreset(): Promise<void> {
-		// Activar add-ons predefinidos
+	private async installDefaultAddons(): Promise<string[]> {
+		console.log('\n   📋 Por defecto, voy a instalar estos add-ons para que tu proyecto funcione muy bien:');
+		console.log('   ──────────────────────────────────────────────────────────────');
+		
+		const addonDescriptions: Record<string, string> = {
+			'storybook': '📚 Desarrollo y documentación de componentes',
+			'figma-sync': '🎨 Sincronización de tokens desde Figma',
+			'eslint': '🔍 Detección de errores de código',
+			'prettier': '✨ Formateo automático de código',
+			'vitest': '🧪 Unit testing (rápido y moderno)',
+			'playwright': '🎭 Testing end-to-end',
+			'chromatic': '🖼️  Visual testing y comparación',
+			'snyk': '🔒 Escaneo de vulnerabilidades',
+			'renovate': '🔄 Actualizaciones automáticas',
+			'lighthouse': '⚡ Análisis de rendimiento',
+			'bundle-analyzer': '📊 Análisis de tamaño de bundle',
+			'standalone': '🚀 Componentes standalone',
+			'sentry': '🐛 Monitoreo de errores',
+			'clarity': '👁️  Análisis de comportamiento de usuarios',
+			'vercel': '☁️  Despliegue en Vercel',
+			'github': '🐙 Integración con GitHub',
+			'codecov': '📈 Cobertura de código',
+			'feedback': '💬 Sistema de feedback automatizado',
+		};
+
+		const installed: string[] = [];
+		const failed: string[] = [];
+
 		for (const addonId of UBITS_PRESET.addons) {
+			const description = addonDescriptions[addonId] || `   ${addonId}`;
+			console.log(`   ${description}`);
+			
 			try {
 				await this.hub.activateAddon(addonId);
-				// La configuración se aplicará automáticamente desde autorun.config.json
-				console.log(`   ✅ ${addonId} activado`);
-			} catch (error) {
-				console.warn(`   ⚠️  Error activando ${addonId}:`, error);
+				installed.push(addonId);
+			} catch (error: any) {
+				// Solo mostrar error si no es "no encontrado" (es esperado si no está compilado)
+				if (error?.code !== 'ADDON_NOT_FOUND') {
+					console.warn(`   ⚠️  Error activando ${addonId}:`, error.message || error);
+				}
+				failed.push(addonId);
 			}
 		}
+
+		console.log('   ──────────────────────────────────────────────────────────────');
+		
+		if (installed.length > 0) {
+			console.log(`\n   ✅ ${installed.length} add-on(s) instalado(s) correctamente`);
+		}
+		
+		if (failed.length > 0) {
+			console.log(`   ⚠️  ${failed.length} add-on(s) no disponible(s) (pueden requerir compilación)`);
+		}
+
+		return installed;
+	}
+
+	/**
+	 * Pregunta al usuario si quiere agregar más add-ons
+	 */
+	private async selectAdditionalAddons(alreadyInstalled: string[]): Promise<string[]> {
+		const wantsMore = await this.prompt.confirm(
+			'   ¿Quieres agregar más add-ons a tu proyecto?',
+			false,
+		);
+
+		if (!wantsMore) {
+			return [];
+		}
+
+		// Descubrir add-ons disponibles
+		const availableAddons = await this.discoverAvailableAddons();
+		const availableIds = availableAddons
+			.map(a => a.id)
+			.filter(id => !alreadyInstalled.includes(id));
+
+		if (availableIds.length === 0) {
+			console.log('   ℹ️  No hay más add-ons disponibles para instalar.');
+			return [];
+		}
+
+		console.log('\n   📦 Add-ons disponibles:');
+		const options = availableAddons
+			.filter(a => !alreadyInstalled.includes(a.id))
+			.map((addon, index) => ({
+				value: addon.id,
+				label: `${addon.name} - ${addon.description || 'Sin descripción'}`,
+			}));
+
+		const selected = await this.prompt.select(
+			'   Selecciona un add-on para agregar (o presiona Enter para continuar sin agregar más):',
+			options,
+		);
+
+		if (!selected) {
+			return [];
+		}
+
+		const additional: string[] = [selected];
+
+		// Preguntar si quiere agregar más
+		while (true) {
+			const addMore = await this.prompt.confirm('   ¿Quieres agregar otro add-on?', false);
+			if (!addMore) {
+				break;
+			}
+
+			const remainingOptions = options.filter(opt => !additional.includes(opt.value));
+			if (remainingOptions.length === 0) {
+				console.log('   ℹ️  Ya has agregado todos los add-ons disponibles.');
+				break;
+			}
+
+			const nextSelected = await this.prompt.select(
+				'   Selecciona otro add-on:',
+				remainingOptions,
+			);
+
+			if (nextSelected) {
+				additional.push(nextSelected);
+			} else {
+				break;
+			}
+		}
+
+		return additional;
+	}
+
+	/**
+	 * Instala una lista de add-ons
+	 */
+	private async installAddons(addonIds: string[]): Promise<void> {
+		for (const addonId of addonIds) {
+			try {
+				await this.hub.activateAddon(addonId);
+				console.log(`   ✅ ${addonId} instalado`);
+			} catch (error: any) {
+				console.warn(`   ⚠️  Error instalando ${addonId}:`, error.message || error);
+			}
+		}
+	}
+
+	/**
+	 * Descubre add-ons disponibles en el sistema
+	 */
+	private async discoverAvailableAddons(): Promise<Array<{ id: string; name: string; description: string }>> {
+		const addons: Array<{ id: string; name: string; description: string }> = [];
+		const addonsPath = 'packages/addons/functional';
+		
+		try {
+			const fs = await import('fs/promises');
+			const path = await import('path');
+			
+			const functionalPath = path.resolve(process.cwd(), addonsPath);
+			
+			try {
+				const entries = await fs.readdir(functionalPath, { withFileTypes: true });
+				
+				for (const entry of entries) {
+					if (entry.isDirectory()) {
+						const addonPath = path.join(functionalPath, entry.name);
+						const manifestPath = path.join(addonPath, 'manifest.json');
+						
+						try {
+							const manifestContent = await fs.readFile(manifestPath, 'utf-8');
+							const manifest = JSON.parse(manifestContent);
+							
+							addons.push({
+								id: manifest.id || entry.name,
+								name: manifest.name || entry.name,
+								description: manifest.description || '',
+							});
+						} catch {
+							// Si no hay manifest, usar el nombre del directorio
+							addons.push({
+								id: entry.name,
+								name: entry.name,
+								description: '',
+							});
+						}
+					}
+				}
+			} catch {
+				// Si no existe el directorio, retornar lista vacía
+			}
+		} catch {
+			// Si no se puede importar fs, retornar lista vacía
+		}
+
+		return addons;
 	}
 
 	/**
@@ -217,14 +407,14 @@ export class InitializationWizard {
 	 * Selecciona template (Administrador/Colaborador)
 	 */
 	private async selectTemplate(): Promise<'administrador' | 'colaborador'> {
-		// Verificar respuesta automática
+		// SIEMPRE preguntar al usuario (no usar automático)
+		// Si hay variable de entorno, usarla como default pero aún así preguntar
 		const autoAnswer = process.env.AUTORUN_TEMPLATE;
-		if (autoAnswer === 'administrador' || autoAnswer === 'colaborador') {
-			console.log(`   ✅ Usaré el template: ${autoAnswer}`);
-			return autoAnswer as 'administrador' | 'colaborador';
-		}
+		const defaultValue = (autoAnswer === 'administrador' || autoAnswer === 'colaborador') 
+			? autoAnswer as 'administrador' | 'colaborador'
+			: 'administrador';
 
-		// Si no hay respuesta automática, preguntar interactivamente
+		// Preguntar interactivamente (siempre)
 		const answer = await this.prompt.select(
 			'   ¿Qué template quieres usar?',
 			[
@@ -237,7 +427,7 @@ export class InitializationWizard {
 					label: 'Colaborador (Módulos limitados)',
 				},
 			],
-			'administrador',
+			defaultValue,
 		);
 
 		return answer as 'administrador' | 'colaborador';
@@ -260,20 +450,17 @@ export class InitializationWizard {
 			};
 		});
 
-		// Verificar respuesta automática
+		// SIEMPRE preguntar al usuario (no usar automático)
+		// Si hay variable de entorno, usarla como default pero aún así preguntar
 		const autoModule = process.env.AUTORUN_MODULE;
-		let selectedModule = autoModule;
+		const defaultModule = autoModule || 'desempeno';
 		
-		if (!autoModule) {
-			// Si no hay respuesta automática, preguntar interactivamente
-			selectedModule = await this.prompt.select(
-				'   ¿En qué módulo quieres trabajar?',
-				moduleOptions,
-				'desempeno',
-			);
-		} else {
-			console.log(`   ✅ Usaré el módulo: ${selectedModule}`);
-		}
+		// Preguntar interactivamente (siempre)
+		const selectedModule = await this.prompt.select(
+			'   ¿En qué módulo quieres trabajar?',
+			moduleOptions,
+			defaultModule,
+		);
 
 		// Seleccionar producto dentro del módulo
 		const product = await this.selectProduct(selectedModule);
@@ -302,18 +489,16 @@ export class InitializationWizard {
 			label: product.name,
 		}));
 
-		// Verificar respuesta automática
+		// SIEMPRE preguntar al usuario (no usar automático)
+		// Si hay variable de entorno, usarla como default pero aún así preguntar
 		const autoProduct = process.env.AUTORUN_PRODUCT;
-		if (autoProduct) {
-			console.log(`   ✅ Usaré el producto: ${autoProduct}`);
-			return autoProduct;
-		}
+		const defaultProduct = autoProduct || moduleConfig.products[0]?.id;
 
-		// Si no hay respuesta automática, preguntar interactivamente
+		// Preguntar interactivamente (siempre)
 		const selectedProduct = await this.prompt.select(
 			`   ¿En qué producto de "${moduleConfig.name}" quieres trabajar?`,
 			productOptions,
-			moduleConfig.products[0]?.id,
+			defaultProduct,
 		);
 
 		return selectedProduct;
