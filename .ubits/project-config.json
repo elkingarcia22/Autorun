@@ -1,0 +1,16 @@
+{
+  "autorun": {
+    "version": "1.0.0",
+    "addons": {
+      "active": [],
+      "config": {}
+    },
+    "projectType": "ubits",
+    "ubits": {
+      "template": "administrador",
+      "module": "inicio",
+      "product": "",
+      "canvasPath": "/Users/elkinmac/Desktop/Autorun/prototypes/canvas-administrador-inicio-2025-11-27.html"
+    }
+  }
+}

@@ -106,9 +106,7 @@ export const UBITS_PRESET: UBITSConfig = {
 				'desempeno',
 				'diagnostico',
 				'encuestas',
-				'api',
-				'centro-ayuda',
-				'mi-perfil',
+				// api y centro-ayuda están en footer, no en módulos principales
 			],
 			sidebar: {
 				variant: 'administrador',
@@ -196,14 +194,30 @@ export const UBITS_MODULES_CONFIG: Record<string, ModuleConfig> = {
 	aprendizaje: {
 		id: 'aprendizaje',
 		name: 'Aprendizaje',
-		subnavVariant: 'template',
-		products: [], // Módulo solo, sin productos
+		subnavVariant: 'aprendizaje',
+		products: [
+			// Para administrador
+			{ id: 'lms-cursos', name: 'LMS - Cursos propios', icon: 'far fa-book' },
+			{ id: 'plan-formacion', name: 'Plan de formación', icon: 'far fa-clipboard-list-check' },
+			{ id: 'certificados', name: 'Certificados', icon: 'far fa-file-certificate' },
+			{ id: 'metricas-empresa', name: 'Métricas de empresa', icon: 'far fa-chart-line' },
+			// Para colaborador
+			{ id: 'inicio', name: 'Inicio', icon: 'far fa-home' },
+			{ id: 'catalogo', name: 'Catálogo', icon: 'far fa-book' },
+			{ id: 'corporativa', name: 'U. Corporativa', icon: 'far fa-building-columns' },
+			{ id: 'zona-estudio', name: 'Zona de estudio', icon: 'far fa-books' },
+		],
 	},
 	desempeno: {
 		id: 'desempeno',
 		name: 'Desempeño',
 		subnavVariant: 'desempeno',
 		products: [
+			// Para administrador
+			{ id: 'evaluations', name: 'Evaluaciones 360', icon: 'far fa-chart-pie' },
+			{ id: 'objectives', name: 'Objetivos', icon: 'far fa-bullseye' },
+			{ id: 'matriz-talento', name: 'Matriz de Talento', icon: 'far fa-sitemap' },
+			// Para colaborador
 			{ id: 'evaluaciones-360', name: 'Evaluaciones 360', icon: 'far fa-chart-pie' },
 			{ id: 'objetivos', name: 'Objetivos', icon: 'far fa-bullseye' },
 			{ id: 'metricas', name: 'Métricas', icon: 'far fa-chart-line' },

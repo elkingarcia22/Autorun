@@ -122,19 +122,52 @@ export class InitializationWizard {
 		const templateConfig = UBITS_PRESET.templates[template];
 		const allProducts: Array<{ value: string; label: string; module: string }> = [];
 
+		// Mapeo de productos por template según products.js
+		const templateProductsMap: Record<string, Record<string, string[]>> = {
+			administrador: {
+				empresa: ['gestion-usuarios', 'organigrama', 'datos-empresa', 'personalizacion', 'roles-permisos', 'comunicaciones'],
+				aprendizaje: ['lms-cursos', 'plan-formacion', 'certificados', 'metricas-empresa'],
+				desempeno: ['evaluations', 'objectives', 'matriz-talento'],
+			},
+			colaborador: {
+				aprendizaje: ['inicio', 'catalogo', 'corporativa', 'zona-estudio'],
+				desempeno: ['evaluaciones-360', 'objetivos', 'metricas', 'reportes'],
+				planes: ['planes', 'tareas'],
+			},
+		};
+
 		// Recopilar todos los productos de todos los módulos
 		for (const moduleId of templateConfig.modules) {
 			const moduleConfig = UBITS_MODULES_CONFIG[moduleId];
-			if (moduleConfig && moduleConfig.products.length > 0) {
-				for (const product of moduleConfig.products) {
+			if (!moduleConfig) continue;
+
+			// Obtener productos específicos del template para este módulo
+			const templateProducts = templateProductsMap[template]?.[moduleId] || [];
+			
+			if (templateProducts.length > 0) {
+				// Filtrar productos que pertenecen a este template
+				const validProducts = moduleConfig.products.filter(p => templateProducts.includes(p.id));
+				
+				// Si encontramos productos válidos, agregarlos
+				if (validProducts.length > 0) {
+					for (const product of validProducts) {
+						allProducts.push({
+							value: `${moduleId}:${product.id}`,
+							label: `${moduleConfig.name} - ${product.name}`,
+							module: moduleId,
+						});
+					}
+				} else {
+					// Si el módulo tiene productos en la config pero ninguno coincide con el template,
+					// significa que es un módulo solo para este template
 					allProducts.push({
-						value: `${moduleId}:${product.id}`,
-						label: `${moduleConfig.name} - ${product.name}`,
+						value: `${moduleId}:`,
+						label: `${moduleConfig.name} (módulo solo)`,
 						module: moduleId,
 					});
 				}
-			} else if (moduleConfig) {
-				// Módulo sin productos (módulo solo)
+			} else {
+				// Módulo sin productos definidos para este template (módulo solo)
 				allProducts.push({
 					value: `${moduleId}:`,
 					label: `${moduleConfig.name} (módulo solo)`,
