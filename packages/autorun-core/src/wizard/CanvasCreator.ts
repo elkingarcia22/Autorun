@@ -16,7 +16,7 @@ export class CanvasCreator {
 	}
 
 	/**
-	 * Crea un lienzo/template nuevo
+	 * Crea un lienzo/template nuevo cargando el template desde Storybook
 	 */
 	async create(
 		template: 'administrador' | 'colaborador',
@@ -30,8 +30,8 @@ export class CanvasCreator {
 		// Crear directorio si no existe
 		await fs.mkdir(path.dirname(filePath), { recursive: true });
 
-		// Generar contenido del lienzo
-		const content = this.generateCanvasContent(template, module, templateConfig, product);
+		// Cargar template desde Storybook
+		const content = await this.loadTemplateFromStorybook(template, module, product);
 
 		// Escribir archivo
 		await fs.writeFile(filePath, content, 'utf-8');
@@ -39,6 +39,390 @@ export class CanvasCreator {
 		console.log(`✅ Lienzo creado: ${filePath}`);
 
 		return filePath;
+	}
+
+	/**
+	 * Carga el template desde Storybook
+	 * El template "Templates UBITS Desktop" está en Storybook en la sección de templates
+	 */
+	private async loadTemplateFromStorybook(
+		template: 'administrador' | 'colaborador',
+		module: string,
+		product?: string,
+	): Promise<string> {
+		const storybookUrl = UBITS_PRESET.storybook.url.replace(/\/$/, '');
+		const templateConfig = UBITS_PRESET.templates[template];
+		
+		// El template en Storybook está en la ruta: /?path=/docs/templates-ubits-desktop--docs
+		// Intentamos diferentes formas de acceder al template:
+		// 1. Como iframe embebido (más confiable para Storybook protegido)
+		// 2. Como HTML renderizado desde la API de Storybook
+		// 3. Fallback a template generado localmente
+		
+		const storybookStoryUrl = `${storybookUrl}/?path=/docs/templates-ubits-desktop--docs`;
+		
+		// Generar HTML que carga el template desde Storybook como iframe o usando la API
+		return this.generateStorybookTemplateHTML(storybookStoryUrl, template, module, product, templateConfig);
+	}
+
+	/**
+	 * Genera HTML que carga el template desde Storybook
+	 */
+	private generateStorybookTemplateHTML(
+		storybookUrl: string,
+		template: 'administrador' | 'colaborador',
+		module: string,
+		product: string | undefined,
+		templateConfig: any,
+	): string {
+		const moduleConfig = UBITS_MODULES_CONFIG[module];
+		const productName = product
+			? moduleConfig?.products.find((p) => p.id === product)?.name || product
+			: '';
+		const moduleName = moduleConfig?.name || this.formatModuleName(module);
+
+		// Generar subnav HTML
+		const subnavHTML = moduleConfig
+			? this.generateSubNavHTML(moduleConfig, product)
+			: '';
+
+		return `<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UBITS - ${moduleName}${productName ? ` - ${productName}` : ''} - ${template}</title>
+  
+  <!-- Cargar template desde Storybook -->
+  <script type="module">
+    // Configuración
+    window.UBITS_CONFIG = {
+      template: '${template}',
+      module: '${module}',
+      product: '${product || ''}',
+      moduleName: '${moduleName}',
+      productName: '${productName || ''}',
+      storybookUrl: '${UBITS_PRESET.storybook.url}',
+      storybookStoryUrl: '${storybookUrl}'
+    };
+    
+    // Cargar componentes desde Storybook
+    const storybookBaseUrl = '${UBITS_PRESET.storybook.url}';
+    const components = ${JSON.stringify(UBITS_PRESET.components)};
+    
+    async function loadComponents() {
+      if (window.AUTORUN?.Components) {
+        for (const component of components) {
+          try {
+            await window.AUTORUN.Components.loadFromStorybook({
+              manifestUrl: \`\${storybookBaseUrl}/components/\${component}/manifest.json\`
+            });
+          } catch (error) {
+            console.warn(\`Error cargando \${component}:\`, error);
+          }
+        }
+      }
+    }
+    
+    // Cargar template desde Storybook
+    async function loadTemplateFromStorybook() {
+      try {
+        // Intentar cargar el template usando la API de Storybook o iframe
+        const templateContainer = document.getElementById('storybook-template');
+        
+        if (templateContainer) {
+          // Opción 1: Cargar como iframe (si Storybook lo permite)
+          const iframe = document.createElement('iframe');
+          iframe.src = '${storybookUrl}';
+          iframe.style.width = '100%';
+          iframe.style.height = '100vh';
+          iframe.style.border = 'none';
+          iframe.setAttribute('sandbox', 'allow-same-origin allow-scripts allow-forms allow-popups');
+          
+          // Opción 2: Intentar cargar el HTML renderizado directamente
+          // Esto requiere que Storybook exponga una API para obtener el HTML
+          try {
+            const response = await fetch('${storybookUrl}', {
+              mode: 'cors',
+              credentials: 'include'
+            });
+            
+            if (response.ok) {
+              const html = await response.text();
+              // Extraer solo el contenido del template (sin el wrapper de Storybook)
+              const parser = new DOMParser();
+              const doc = parser.parseFromString(html, 'text/html');
+              const templateContent = doc.querySelector('[data-testid="storybook-story"]') || 
+                                     doc.querySelector('.sb-story') ||
+                                     doc.body;
+              
+              if (templateContent) {
+                templateContainer.innerHTML = templateContent.innerHTML;
+                return;
+              }
+            }
+          } catch (fetchError) {
+            console.warn('No se pudo cargar template directamente, usando iframe:', fetchError);
+          }
+          
+          // Fallback: usar iframe
+          templateContainer.appendChild(iframe);
+        }
+      } catch (error) {
+        console.error('Error cargando template desde Storybook:', error);
+        // Mostrar mensaje de error
+        const container = document.getElementById('storybook-template');
+        if (container) {
+          container.innerHTML = \`
+            <div style="padding: 24px; text-align: center;">
+              <h2>⚠️ No se pudo cargar el template desde Storybook</h2>
+              <p>Por favor, abre el template manualmente:</p>
+              <a href="${storybookUrl}" target="_blank" style="color: #0066cc; text-decoration: underline;">
+                Abrir template en Storybook
+              </a>
+            </div>
+          \`;
+        }
+      }
+    }
+    
+    // Inicializar cuando el DOM esté listo
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => {
+        loadComponents();
+        loadTemplateFromStorybook();
+      });
+    } else {
+      loadComponents();
+      loadTemplateFromStorybook();
+    }
+  </script>
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f5f5f5;
+    }
+    
+    .app-container {
+      display: flex;
+      height: 100vh;
+    }
+    
+    .sidebar {
+      width: 280px;
+      background: #fff;
+      border-right: 1px solid #e5e5e5;
+      padding: 24px;
+    }
+    
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    
+    .sub-nav-container {
+      background: #fff;
+      border-bottom: 1px solid #e5e5e5;
+      padding: 0 24px;
+    }
+    
+    .sub-nav {
+      display: flex;
+      align-items: center;
+      height: 40px;
+    }
+    
+    .nav-tabs {
+      display: flex;
+      gap: 8px;
+    }
+    
+    .nav-tab {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border: none;
+      background: transparent;
+      color: #666;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+    }
+    
+    .nav-tab:hover {
+      color: #1a1a1a;
+    }
+    
+    .nav-tab.active {
+      color: #0066cc;
+      border-bottom-color: #0066cc;
+    }
+    
+    .nav-tab i {
+      font-size: 14px;
+    }
+    
+    .content-wrapper {
+      flex: 1;
+      padding: 24px;
+      overflow-y: auto;
+    }
+    
+    #storybook-template {
+      width: 100%;
+      height: 100%;
+      min-height: 600px;
+    }
+  </style>
+</head>
+<body data-template="${template}" data-module="${module}" data-product="${product || ''}">
+  <div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar" data-sidebar>
+      <nav class="sidebar-nav">
+        <h2 class="sidebar-title">UBITS</h2>
+        <ul class="sidebar-menu">
+          ${templateConfig.modules
+						.map(
+							(m: string) => `
+            <li class="sidebar-item ${m === module ? 'active' : ''}" data-module="${m}">
+              <a href="#${m}" class="sidebar-link">
+                <span class="sidebar-icon">📦</span>
+                <span class="sidebar-label">${this.formatModuleName(m)}</span>
+              </a>
+            </li>
+          `,
+						)
+						.join('')}
+        </ul>
+      </nav>
+    </aside>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+      ${subnavHTML ? `<div class="sub-nav-container" data-subnav>${subnavHTML}</div>` : ''}
+      <div class="content-wrapper">
+        <div id="storybook-template">
+          <!-- El template de Storybook se cargará aquí -->
+          <div style="padding: 24px; text-align: center;">
+            <p>Cargando template desde Storybook...</p>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+  
+  <script>
+    // Inicializar feedback automatizado
+    if (window.AUTORUN?.Feedback) {
+      window.AUTORUN.Feedback.init({
+        webhookUrl: '', // Configurar después
+        storybookUrl: '${UBITS_PRESET.storybook.url}',
+        useStorybookComponents: true,
+        showFeedbackButton: true
+      });
+    }
+    
+    // Activar el módulo y producto en el sidebar y subnav
+    document.addEventListener('DOMContentLoaded', () => {
+      // Activar módulo en sidebar
+      const moduleElement = document.querySelector(\`[data-module="${module}"]\`);
+      if (moduleElement) {
+        moduleElement.classList.add('active');
+      }
+      
+      // Activar producto en subnav
+      if ('${product}') {
+        const productElement = document.querySelector(\`[data-product="${product}"]\`);
+        if (productElement) {
+          productElement.classList.add('active');
+        }
+      }
+    });
+  </script>
+</body>
+</html>`;
+	}
+
+	/**
+	 * Personaliza el template cargado desde Storybook con el módulo y producto seleccionados
+	 */
+	private customizeTemplate(
+		templateHtml: string,
+		template: 'administrador' | 'colaborador',
+		module: string,
+		product?: string,
+	): string {
+		const moduleConfig = UBITS_MODULES_CONFIG[module];
+		const productName = product
+			? moduleConfig?.products.find((p) => p.id === product)?.name || product
+			: '';
+		const moduleName = moduleConfig?.name || this.formatModuleName(module);
+
+		// Actualizar el título
+		templateHtml = templateHtml.replace(
+			/<title>.*?<\/title>/i,
+			`<title>UBITS - ${moduleName}${productName ? ` - ${productName}` : ''} - ${template}</title>`,
+		);
+
+		// Agregar configuración del módulo y producto como atributos data
+		const bodyMatch = templateHtml.match(/<body[^>]*>/i);
+		if (bodyMatch) {
+			templateHtml = templateHtml.replace(
+				/<body[^>]*>/i,
+				`<body data-template="${template}" data-module="${module}" data-product="${product || ''}">`,
+			);
+		}
+
+		// Agregar script para configurar el módulo y producto activos
+		const scriptTag = `
+  <script>
+    // Configuración del módulo y producto activos
+    window.UBITS_CONFIG = {
+      template: '${template}',
+      module: '${module}',
+      product: '${product || ''}',
+      moduleName: '${moduleName}',
+      productName: '${productName || ''}',
+      storybookUrl: '${UBITS_PRESET.storybook.url}'
+    };
+    
+    // Activar el módulo y producto en el sidebar y subnav
+    document.addEventListener('DOMContentLoaded', () => {
+      // Activar módulo en sidebar
+      const moduleElement = document.querySelector(\`[data-module="${module}"]\`);
+      if (moduleElement) {
+        moduleElement.classList.add('active');
+      }
+      
+      // Activar producto en subnav
+      if ('${product}') {
+        const productElement = document.querySelector(\`[data-product="${product}"]\`);
+        if (productElement) {
+          productElement.classList.add('active');
+        }
+      }
+    });
+  </script>`;
+
+		// Insertar script antes de </body>
+		if (templateHtml.includes('</body>')) {
+			templateHtml = templateHtml.replace('</body>', `${scriptTag}\n</body>`);
+		} else {
+			templateHtml += scriptTag;
+		}
+
+		return templateHtml;
 	}
 
 	/**
@@ -55,7 +439,7 @@ export class CanvasCreator {
 	}
 
 	/**
-	 * Genera contenido del lienzo
+	 * Genera contenido del lienzo (fallback cuando no se puede cargar desde Storybook)
 	 */
 	private generateCanvasContent(
 		template: 'administrador' | 'colaborador',
