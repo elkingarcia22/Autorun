@@ -546,19 +546,53 @@ export class InitializationWizard {
 	}
 
 	/**
-	 * Abre el template en el navegador local
+	 * Abre el template en el navegador usando un servidor HTTP local
+	 * Esto evita problemas de CORS con file:// y permite que las rutas relativas funcionen
 	 */
 	private async openTemplateInBrowser(filePath: string): Promise<void> {
 		try {
-			const { exec } = await import('child_process');
-			const { promisify } = await import('util');
-			const execAsync = promisify(exec);
+			const { spawn } = await import('child_process');
 			const path = await import('path');
+			const http = await import('http');
 
-			// Convertir a URL file://
-			const fileUrl = `file://${path.resolve(filePath)}`;
+			// Obtener el directorio del proyecto (donde está Autorun)
+			const projectDir = process.cwd();
+			const fileName = path.basename(filePath);
 
-			// Detectar el sistema operativo y abrir el navegador
+			// Intentar encontrar un puerto disponible (8000, 8001, 8002, etc.)
+			const findAvailablePort = async (startPort: number): Promise<number> => {
+				for (let port = startPort; port < startPort + 10; port++) {
+					const available = await new Promise<boolean>((resolve) => {
+						const server = http.createServer();
+						server.listen(port, () => {
+							server.close(() => resolve(true));
+						});
+						server.on('error', () => resolve(false));
+					});
+					if (available) {
+						return port;
+					}
+				}
+				return startPort; // Si no encuentra, usar el inicial
+			};
+
+			const port = await findAvailablePort(8000);
+
+			// Iniciar servidor HTTP en el directorio del proyecto
+			// Esto permite que las rutas relativas funcionen correctamente
+			const serverProcess = spawn('python3', ['-m', 'http.server', port.toString()], {
+				cwd: projectDir,
+				detached: true,
+				stdio: 'ignore',
+			});
+
+			serverProcess.unref();
+
+			// Esperar un momento para que el servidor inicie
+			await new Promise((resolve) => setTimeout(resolve, 500));
+
+			// Abrir en el navegador usando la URL del servidor HTTP
+			const fileUrl = `http://localhost:${port}/prototypes/${fileName}`;
 			const platform = process.platform;
 			let command: string;
 
@@ -573,10 +607,20 @@ export class InitializationWizard {
 				command = `xdg-open "${fileUrl}"`;
 			}
 
+			const { exec } = await import('child_process');
+			const { promisify } = await import('util');
+			const execAsync = promisify(exec);
 			await execAsync(command);
+
+			console.log(`   💡 Servidor HTTP iniciado en http://localhost:${port}`);
+			console.log(`   💡 Para detener el servidor, presiona Ctrl+C o cierra esta terminal`);
 		} catch (error: any) {
+			const path = await import('path');
 			console.warn('   ⚠️  No se pudo abrir el navegador automáticamente:', error.message || error);
 			console.warn(`   💡 Abre manualmente: ${filePath}`);
+			console.warn(
+				`   💡 O inicia un servidor HTTP: cd ${path.dirname(filePath)} && python3 -m http.server 8000`,
+			);
 		}
 	}
 
