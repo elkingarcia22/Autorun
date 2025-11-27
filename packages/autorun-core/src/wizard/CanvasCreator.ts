@@ -557,33 +557,52 @@ export class CanvasCreator {
       setTimeout(() => clearInterval(interval), 2000);
     })();
     
-    // Activar el producto DESPUÉS de que el template termine su inicialización
-    // El template ya activa el módulo gracias a initialActiveSection, solo necesitamos activar el producto
+    // Activar el módulo y producto DESPUÉS de que el template termine su inicialización
     document.addEventListener('DOMContentLoaded', () => {
-      const activateProduct = () => {
-        // Verificar que ContentManager esté listo y que el módulo ya esté activo
-        if (window.UBITS_ContentManager && window.UBITS_ContentManager.currentSection === '${module}') {
-          try {
-            // Si hay un producto, activarlo en el subnav
+      const activateModuleAndProduct = () => {
+        if (!window.UBITS_ContentManager) {
+          // Si ContentManager no está listo, reintentar
+          setTimeout(activateModuleAndProduct, 100);
+          return;
+        }
+        
+        try {
+          // Primero activar el módulo si no está activo
+          if (window.UBITS_ContentManager.currentSection !== '${module}') {
+            console.log('🔍 [Wizard] Activando módulo: ${module}');
+            window.UBITS_ContentManager.handleSectionChange('${module}');
+          }
+          
+          // Esperar a que el SubNav se actualice antes de activar el producto
+          setTimeout(() => {
+            // Si hay un producto, activarlo en el subnav usando updateContent
             if ('${product}') {
               console.log('🔍 [Wizard] Activando producto: ${product} en módulo: ${module}');
-              // Llamar handleSectionChange con el módulo y producto para activar el subnav
-              window.UBITS_ContentManager.handleSectionChange('${module}', '${product}');
+              // Usar updateContent para activar el subitem dentro de la sección
+              window.UBITS_ContentManager.updateContent('${module}', '${product}');
+              
+              // También actualizar el SubNav para que muestre el tab activo
+              const subNavElement = document.querySelector('.ubits-sub-nav');
+              if (subNavElement) {
+                const targetTab = subNavElement.querySelector(\`[data-tab="\${product}"]\`);
+                if (targetTab) {
+                  // Remover active de todos los tabs
+                  subNavElement.querySelectorAll('.ubits-sub-nav-tab').forEach(tab => {
+                    tab.classList.remove('ubits-sub-nav-tab--active');
+                  });
+                  // Activar el tab correspondiente
+                  targetTab.classList.add('ubits-sub-nav-tab--active');
+                }
+              }
             }
-          } catch (error) {
-            console.warn('No se pudo activar producto automáticamente:', error);
-          }
-        } else if (window.UBITS_ContentManager) {
-          // Si el módulo aún no está activo, esperar un poco más
-          setTimeout(activateProduct, 100);
-        } else {
-          // Si ContentManager no está listo, reintentar
-          setTimeout(activateProduct, 100);
+          }, 500);
+        } catch (error) {
+          console.warn('⚠️ [Wizard] No se pudo activar módulo/producto automáticamente:', error);
         }
       };
       
       // Esperar a que el template termine su inicialización (el template usa setTimeout de ~1500ms)
-      setTimeout(activateProduct, 2000);
+      setTimeout(activateModuleAndProduct, 2000);
     });
   </script>`;
 
