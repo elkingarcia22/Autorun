@@ -471,22 +471,33 @@ export class InitializationWizard {
 		console.log('   ✅ Lienzo secundario creado\n');
 		
 		// Crear el template principal con referencia al otro
-		const canvasPath = await this.createCanvas(template, module, product, otherCanvasPath);
+		const canvasPath = await this.createCanvas(template, module, product);
 		console.log('   ✅ Lienzo principal creado\n');
 		
-		// Actualizar el otro template con referencia al principal
+		// Actualizar ambos templates con enlaces cruzados
 		const fs = await import('fs/promises');
-		const canvasCreator = new CanvasCreator(this.projectPath);
-		const otherContent = await fs.readFile(otherCanvasPath, 'utf-8');
-		// Usar el método privado a través de un método público o hacerlo público
-		// Por ahora, actualizamos directamente el HTML
 		const path = await import('path');
-		const otherTemplateFileName = path.basename(canvasPath);
+		
+		// Obtener nombres de archivos
+		const mainTemplateFileName = path.basename(canvasPath);
+		const otherTemplateFileName = path.basename(otherCanvasPath);
 		const otherTemplateName = template === 'administrador' ? 'template-colaborador.html' : 'template-admin.html';
-		const updatedOtherContent = otherContent
+		const mainTemplateName = template === 'administrador' ? 'template-admin.html' : 'template-colaborador.html';
+		
+		// Actualizar el template principal con enlace al otro
+		const mainContent = await fs.readFile(canvasPath, 'utf-8');
+		const updatedMainContent = mainContent
 			.replace(new RegExp(`href=["']${otherTemplateName}["']`, 'gi'), `href="${otherTemplateFileName}"`)
 			.replace(new RegExp(`href:\\s*["']${otherTemplateName}["']`, 'gi'), `href: "${otherTemplateFileName}"`)
 			.replace(new RegExp(`["']${otherTemplateName}["']`, 'gi'), `"${otherTemplateFileName}"`);
+		await fs.writeFile(canvasPath, updatedMainContent, 'utf-8');
+		
+		// Actualizar el otro template con enlace al principal
+		const otherContent = await fs.readFile(otherCanvasPath, 'utf-8');
+		const updatedOtherContent = otherContent
+			.replace(new RegExp(`href=["']${mainTemplateName}["']`, 'gi'), `href="${mainTemplateFileName}"`)
+			.replace(new RegExp(`href:\\s*["']${mainTemplateName}["']`, 'gi'), `href: "${mainTemplateFileName}"`)
+			.replace(new RegExp(`["']${mainTemplateName}["']`, 'gi'), `"${mainTemplateFileName}"`);
 		await fs.writeFile(otherCanvasPath, updatedOtherContent, 'utf-8');
 		console.log('   ✅ Enlaces entre templates actualizados\n');
 
