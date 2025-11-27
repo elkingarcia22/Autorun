@@ -42,7 +42,7 @@ export class CanvasCreator {
 	}
 
 	/**
-	 * Carga el template desde el repositorio de UBITS en GitHub
+	 * Carga el template desde el repositorio UBITS clonado localmente o desde GitHub
 	 */
 	private async loadTemplateFromStorybook(
 		template: 'administrador' | 'colaborador',
@@ -50,18 +50,18 @@ export class CanvasCreator {
 		product?: string,
 	): Promise<string> {
 		const templateConfig = UBITS_PRESET.templates[template];
-		
-		// Cargar template desde GitHub
 		const templateFileName = template === 'administrador' ? 'template-admin.html' : 'template-colaborador.html';
-		const templateUrl = `https://raw.githubusercontent.com/elkingarcia22/UBITS/main/packages/templates/${templateFileName}`;
+		
+		// Primero intentar cargar desde el repositorio local UBITS
+		const ubitsLocalPath = path.join(this.projectPath, 'UBITS', 'packages', 'templates', templateFileName);
 		
 		try {
-			const response = await fetch(templateUrl);
-			if (!response.ok) {
-				throw new Error(`Error cargando template: ${response.statusText}`);
-			}
+			// Verificar si existe el archivo local
+			await fs.access(ubitsLocalPath);
 			
-			let templateContent = await response.text();
+			// Cargar desde archivo local
+			console.log(`   📄 Cargando template desde repositorio local: ${ubitsLocalPath}`);
+			let templateContent = await fs.readFile(ubitsLocalPath, 'utf-8');
 			
 			// Actualizar el título con el módulo y producto
 			const moduleConfig = UBITS_MODULES_CONFIG[module];
@@ -77,10 +77,38 @@ export class CanvasCreator {
 			);
 			
 			return templateContent;
-		} catch (error) {
-			console.warn('⚠️  No se pudo cargar template desde GitHub, usando fallback:', error);
-			// Fallback a template generado localmente
-			return this.generateCanvasContent(template, module, templateConfig, product);
+		} catch (localError) {
+			// Si no existe localmente, intentar desde GitHub
+			console.log(`   🌐 Template no encontrado localmente, intentando desde GitHub...`);
+			const templateUrl = `https://raw.githubusercontent.com/elkingarcia22/UBITS/main/packages/templates/${templateFileName}`;
+			
+			try {
+				const response = await fetch(templateUrl);
+				if (!response.ok) {
+					throw new Error(`Error cargando template: ${response.statusText}`);
+				}
+				
+				let templateContent = await response.text();
+				
+				// Actualizar el título con el módulo y producto
+				const moduleConfig = UBITS_MODULES_CONFIG[module];
+				const moduleName = moduleConfig?.name || this.formatModuleName(module);
+				const productName = product
+					? moduleConfig?.products.find((p) => p.id === product)?.name || product
+					: '';
+				
+				// Actualizar el título en el template
+				templateContent = templateContent.replace(
+					/<title>.*?<\/title>/,
+					`<title>UBITS - ${moduleName}${productName ? ` - ${productName}` : ''} - ${template}</title>`
+				);
+				
+				return templateContent;
+			} catch (githubError) {
+				console.warn('⚠️  No se pudo cargar template desde GitHub, usando fallback:', githubError);
+				// Fallback a template generado localmente
+				return this.generateCanvasContent(template, module, templateConfig, product);
+			}
 		}
 	}
 
