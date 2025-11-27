@@ -956,8 +956,15 @@ export class CanvasCreator {
     
     // Función para mantener el tab activo después de que ContentManager actualice el subnav
     const maintainActiveTab = () => {
+      console.log('🔵 [SubNav Fix] ════════════════════════════════════════');
+      console.log('🔵 [SubNav Fix] maintainActiveTab() llamado');
       const product = '${product}';
-      if (!product) return;
+      console.log('🔵 [SubNav Fix] Producto objetivo:', product);
+      
+      if (!product) {
+        console.log('🔵 [SubNav Fix] ⚠️ No hay producto, saliendo');
+        return;
+      }
       
       const productToTabIdMap = {
         'inicio': 'home',
@@ -978,22 +985,72 @@ export class CanvasCreator {
       };
       
       const tabId = productToTabIdMap[product] || product;
+      console.log('🔵 [SubNav Fix] Tab ID mapeado:', tabId);
+      
       const subNavElement = document.querySelector('.ubits-sub-nav') || 
                            document.querySelector('#top-nav-container .ubits-sub-nav');
       
+      console.log('🔵 [SubNav Fix] SubNav encontrado:', !!subNavElement);
+      
       if (subNavElement) {
         const allTabs = subNavElement.querySelectorAll('.ubits-sub-nav-tab');
+        console.log('🔵 [SubNav Fix] Tabs encontrados:', allTabs.length);
+        
+        // Log estado antes de remover
+        console.log('🔵 [SubNav Fix] Estado ANTES de remover active:');
+        allTabs.forEach((tab, idx) => {
+          const isActive = tab.classList.contains('ubits-sub-nav-tab--active');
+          const dataTab = tab.getAttribute('data-tab');
+          console.log('   Tab ' + idx + ': data-tab="' + dataTab + '", active=' + isActive);
+        });
+        
         allTabs.forEach(tab => tab.classList.remove('ubits-sub-nav-tab--active'));
+        console.log('🔵 [SubNav Fix] ✅ Clase active removida de todos los tabs');
         
         let targetTab = subNavElement.querySelector('[data-tab="' + tabId + '"]');
+        console.log('🔵 [SubNav Fix] Buscando tab con data-tab="' + tabId + '":', !!targetTab);
+        
         if (!targetTab) {
+          console.log('🔵 [SubNav Fix] Tab no encontrado con tabId, buscando con producto original...');
           targetTab = subNavElement.querySelector('[data-tab="' + product + '"]');
+          console.log('🔵 [SubNav Fix] Tab encontrado con producto original:', !!targetTab);
         }
         
         if (targetTab) {
+          const dataTab = targetTab.getAttribute('data-tab');
+          const text = targetTab.textContent?.trim();
+          console.log('🔵 [SubNav Fix] ✅ Tab objetivo encontrado:', { dataTab, text });
           targetTab.classList.add('ubits-sub-nav-tab--active');
+          console.log('🔵 [SubNav Fix] ✅ Clase ubits-sub-nav-tab--active agregada');
+          
+          // Verificar que se agregó correctamente
+          const hasActive = targetTab.classList.contains('ubits-sub-nav-tab--active');
+          console.log('🔵 [SubNav Fix] Verificación - tiene clase active:', hasActive);
+          
+          // Verificar el ::after
+          const styles = window.getComputedStyle(targetTab, '::after');
+          console.log('🔵 [SubNav Fix] Estilos del ::after:', {
+            content: styles.content,
+            display: styles.display,
+            visibility: styles.visibility,
+            opacity: styles.opacity,
+            backgroundColor: styles.backgroundColor,
+            height: styles.height,
+            position: styles.position
+          });
+        } else {
+          console.error('🔵 [SubNav Fix] ❌ Tab objetivo NO encontrado');
+          console.log('🔵 [SubNav Fix] Tabs disponibles:');
+          allTabs.forEach((tab, idx) => {
+            const dataTab = tab.getAttribute('data-tab');
+            const text = tab.textContent?.trim();
+            console.log('   Tab ' + idx + ': data-tab="' + dataTab + '", text="' + text + '"');
+          });
         }
+      } else {
+        console.error('🔵 [SubNav Fix] ❌ SubNav no encontrado');
       }
+      console.log('🔵 [SubNav Fix] ════════════════════════════════════════');
     };
     
     // Interceptar llamadas a handleSectionChange y updateSubNav para mantener el tab activo
@@ -1008,16 +1065,26 @@ export class CanvasCreator {
         console.log('🔍 [Wizard] activeTabId:', activeTabId);
         const result = originalHandleSectionChange.call(this, section, activeTabId);
         // Mantener el tab activo después de la actualización
-        setTimeout(maintainActiveTab, 100);
+        console.log('🔵 [SubNav Fix] Programando maintainActiveTab después de handleSectionChange...');
+        setTimeout(() => {
+          console.log('🔵 [SubNav Fix] Ejecutando maintainActiveTab (después de handleSectionChange)');
+          maintainActiveTab();
+        }, 100);
         return result;
       };
     }
     
     if (originalUpdateSubNav) {
       window.UBITS_ContentManager.updateSubNav = function(section, activeTabId) {
+        console.log('🔵 [SubNav Fix] updateSubNav INTERCEPTADO');
+        console.log('🔵 [SubNav Fix] section:', section, 'activeTabId:', activeTabId);
         const result = originalUpdateSubNav.call(this, section, activeTabId);
         // Mantener el tab activo después de la actualización
-        setTimeout(maintainActiveTab, 100);
+        console.log('🔵 [SubNav Fix] Programando maintainActiveTab después de updateSubNav...');
+        setTimeout(() => {
+          console.log('🔵 [SubNav Fix] Ejecutando maintainActiveTab (después de updateSubNav)');
+          maintainActiveTab();
+        }, 100);
         return result;
       };
     }
@@ -1028,6 +1095,13 @@ export class CanvasCreator {
         if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
           const target = mutation.target;
           if (target.classList && target.classList.contains('ubits-sub-nav-tab')) {
+            console.log('🔵 [SubNav Fix] MutationObserver: Cambio detectado en tab');
+            const dataTab = target.getAttribute('data-tab');
+            const text = target.textContent?.trim();
+            const hadActive = mutation.oldValue?.includes('ubits-sub-nav-tab--active');
+            const hasActive = target.classList.contains('ubits-sub-nav-tab--active');
+            console.log('🔵 [SubNav Fix] Tab:', { dataTab, text, hadActive, hasActive });
+            
             // Si se removió la clase active, restaurarla si es el tab correcto
             const product = '${product}';
             if (product) {
@@ -1049,31 +1123,60 @@ export class CanvasCreator {
                 'comunicaciones': 'comunicaciones'
               };
               const tabId = productToTabIdMap[product] || product;
-              const dataTab = target.getAttribute('data-tab');
+              console.log('🔵 [SubNav Fix] Comparando:', { dataTab, tabId, product });
+              
               if (dataTab === tabId || dataTab === product) {
                 if (!target.classList.contains('ubits-sub-nav-tab--active')) {
+                  console.log('🔵 [SubNav Fix] ⚠️ Clase active removida del tab correcto, restaurando...');
                   setTimeout(() => {
                     target.classList.add('ubits-sub-nav-tab--active');
+                    console.log('🔵 [SubNav Fix] ✅ Clase active restaurada');
+                    
+                    // Verificar estilos después de restaurar
+                    const styles = window.getComputedStyle(target, '::after');
+                    console.log('🔵 [SubNav Fix] Estilos ::after después de restaurar:', {
+                      content: styles.content,
+                      display: styles.display,
+                      visibility: styles.visibility,
+                      opacity: styles.opacity,
+                      backgroundColor: styles.backgroundColor
+                    });
                   }, 50);
+                } else {
+                  console.log('🔵 [SubNav Fix] ✅ Tab correcto ya tiene clase active');
                 }
+              } else {
+                console.log('🔵 [SubNav Fix] Tab no es el objetivo, ignorando');
               }
             }
           }
+        } else if (mutation.type === 'childList') {
+          console.log('🔵 [SubNav Fix] MutationObserver: Cambio en childList detectado');
+          mutation.addedNodes.forEach((node) => {
+            if (node.nodeType === 1 && node.classList?.contains('ubits-sub-nav-tab')) {
+              console.log('🔵 [SubNav Fix] Nuevo tab agregado:', node.getAttribute('data-tab'));
+            }
+          });
         }
       });
     });
     
     // Observar el contenedor del subnav
     setTimeout(() => {
+      console.log('🔵 [SubNav Fix] Configurando MutationObserver...');
       const subNavContainer = document.querySelector('#top-nav-container') || 
                              document.querySelector('.ubits-sub-nav');
       if (subNavContainer) {
+        console.log('🔵 [SubNav Fix] ✅ Contenedor encontrado, iniciando observación');
         observer.observe(subNavContainer, {
           attributes: true,
           attributeFilter: ['class'],
           subtree: true,
           childList: true
         });
+        console.log('🔵 [SubNav Fix] ✅ MutationObserver activo');
+      } else {
+        console.error('🔵 [SubNav Fix] ❌ Contenedor del subnav no encontrado');
       }
     }, 1000);
     
