@@ -533,6 +533,7 @@ export class CanvasCreator {
     }
     
     /* Fix: Asegurar que el indicador activo del subnav (flechita azul) sea visible */
+    /* Usar token normal (no static) para que cambie automáticamente con el tema */
     .ubits-sub-nav-tab.ubits-sub-nav-tab--active::after {
       content: '' !important;
       position: absolute !important;
@@ -540,7 +541,8 @@ export class CanvasCreator {
       left: 0 !important;
       right: 0 !important;
       height: 3px !important;
-      background-color: var(--ubits-accent-brand-static, #0c5bef) !important;
+      /* Usar token normal que cambia con el tema, no static */
+      background-color: var(--ubits-accent-brand, var(--modifiers-normal-color-light-accent-brand, #0c5bef)) !important;
       border-radius: 0 !important;
       z-index: 1 !important;
       display: block !important;
@@ -549,8 +551,8 @@ export class CanvasCreator {
       width: auto !important;
     }
     
-    /* Asegurar que el indicador sea visible en dark mode también */
-    /* Usar el token correcto para dark mode: --modifiers-normal-color-dark-accent-blue */
+    /* Asegurar que el indicador use el token normal para dark mode */
+    /* El token normal cambia automáticamente de light a dark */
     body[data-theme="dark"] .ubits-sub-nav-tab.ubits-sub-nav-tab--active::after,
     html[data-theme="dark"] .ubits-sub-nav-tab.ubits-sub-nav-tab--active::after,
     [data-theme="dark"] .ubits-sub-nav-tab.ubits-sub-nav-tab--active::after {
