@@ -124,7 +124,7 @@ export class InitializationWizard {
 		let product = process.env.AUTORUN_PRODUCT;
 
 		// Si no hay producto especificado, obtener el primero del módulo según el template
-		if (projectType === 'ubits' && !product) {
+		if (projectType === 'ubits' && !product && template && module) {
 			const moduleConfig = UBITS_MODULES_CONFIG[module];
 			if (moduleConfig && moduleConfig.products.length > 0) {
 				// Filtrar productos según el template
@@ -144,7 +144,7 @@ export class InitializationWizard {
 				const templateProducts = templateProductsMap[template]?.[module] || [];
 				if (templateProducts.length > 0) {
 					// Obtener el primer producto válido para este template
-					const validProducts = moduleConfig.products.filter(p => templateProducts.includes(p.id));
+					const validProducts = moduleConfig.products.filter((p: { id: string }) => templateProducts.includes(p.id));
 					if (validProducts.length > 0) {
 						product = validProducts[0].id;
 					}
