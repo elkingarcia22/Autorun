@@ -584,7 +584,8 @@ export class InitializationWizard {
 	}
 
 	/**
-	 * Abre el template en el navegador local
+	 * Abre el template en el navegador usando un servidor HTTP local
+	 * Esto evita problemas de CORS con file:// protocol
 	 */
 	private async openTemplateInBrowser(filePath: string): Promise<void> {
 		try {
@@ -592,29 +593,62 @@ export class InitializationWizard {
 			const { promisify } = await import('util');
 			const execAsync = promisify(exec);
 			const path = await import('path');
+			const fs = await import('fs/promises');
 
-			// Convertir a URL file://
-			const fileUrl = `file://${path.resolve(filePath)}`;
+			// Obtener el directorio del archivo
+			const fileDir = path.dirname(filePath);
+			const fileName = path.basename(filePath);
 
-			// Detectar el sistema operativo y abrir el navegador
-			const platform = process.platform;
-			let command: string;
+			// Intentar iniciar un servidor HTTP local en el directorio prototypes
+			const port = 8000;
+			const url = `http://localhost:${port}/${fileName}`;
 
-			if (platform === 'darwin') {
-				// macOS
-				command = `open "${fileUrl}"`;
-			} else if (platform === 'win32') {
-				// Windows
-				command = `start "" "${fileUrl}"`;
-			} else {
-				// Linux y otros
-				command = `xdg-open "${fileUrl}"`;
+			// Verificar si el puerto está disponible
+			try {
+				// Intentar iniciar servidor Python (más común)
+				const serverCommand = `cd "${fileDir}" && python3 -m http.server ${port} > /dev/null 2>&1 &`;
+				await execAsync(serverCommand);
+				
+				// Esperar un momento para que el servidor inicie
+				await new Promise(resolve => setTimeout(resolve, 1000));
+				
+				// Abrir en el navegador
+				const platform = process.platform;
+				let command: string;
+
+				if (platform === 'darwin') {
+					command = `open "${url}"`;
+				} else if (platform === 'win32') {
+					command = `start "" "${url}"`;
+				} else {
+					command = `xdg-open "${url}"`;
+				}
+
+				await execAsync(command);
+				console.log(`   🌐 Servidor local iniciado en http://localhost:${port}`);
+				console.log(`   💡 Para detener el servidor, presiona Ctrl+C o cierra esta terminal`);
+			} catch (serverError) {
+				// Si no se puede iniciar el servidor, usar file:// como fallback
+				console.warn('   ⚠️  No se pudo iniciar servidor local, usando file://');
+				const fileUrl = `file://${path.resolve(filePath)}`;
+				
+				const platform = process.platform;
+				let command: string;
+
+				if (platform === 'darwin') {
+					command = `open "${fileUrl}"`;
+				} else if (platform === 'win32') {
+					command = `start "" "${fileUrl}"`;
+				} else {
+					command = `xdg-open "${fileUrl}"`;
+				}
+
+				await execAsync(command);
 			}
-
-			await execAsync(command);
 		} catch (error: any) {
 			console.warn('   ⚠️  No se pudo abrir el navegador automáticamente:', error.message || error);
 			console.warn(`   💡 Abre manualmente: ${filePath}`);
+			console.warn(`   💡 O inicia un servidor local: cd prototypes && python3 -m http.server 8000`);
 		}
 	}
 
