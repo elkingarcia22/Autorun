@@ -1009,6 +1009,20 @@ export class CanvasCreator {
           console.log('🔵 [SubNav Fix] ✅ Ya hay un tab activo, manteniéndolo:', dataTab);
           // Asegurar que la clase active esté presente (por si acaso)
           activeTab.classList.add('ubits-sub-nav-tab--active');
+          
+          // Logs de diagnóstico del color
+          const styles = window.getComputedStyle(activeTab, '::after');
+          const computedBgColor = styles.backgroundColor;
+          const rootStyles = getComputedStyle(document.documentElement);
+          const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+          
+          console.log('🔵 [SubNav Fix] 🔍 DIAGNÓSTICO DE COLOR (sin producto):');
+          console.log('🔵 [SubNav Fix] Tema actual:', currentTheme);
+          console.log('🔵 [SubNav Fix] backgroundColor (computado):', computedBgColor);
+          console.log('🔵 [SubNav Fix] --modifiers-normal-color-dark-accent-blue:', rootStyles.getPropertyValue('--modifiers-normal-color-dark-accent-blue').trim() || '(no definido)');
+          console.log('🔵 [SubNav Fix] --ubits-accent-brand:', rootStyles.getPropertyValue('--ubits-accent-brand').trim() || '(no definido)');
+          console.log('🔵 [SubNav Fix] --ubits-accent-brand-static:', rootStyles.getPropertyValue('--ubits-accent-brand-static').trim() || '(no definido)');
+          
           return;
         }
         
@@ -1019,6 +1033,21 @@ export class CanvasCreator {
           console.log('🔵 [SubNav Fix] Activando primer tab disponible:', dataTab);
           firstTab.classList.add('ubits-sub-nav-tab--active');
           console.log('🔵 [SubNav Fix] ✅ Clase active agregada al primer tab');
+          
+          // Logs de diagnóstico del color después de activar
+          setTimeout(() => {
+            const styles = window.getComputedStyle(firstTab, '::after');
+            const computedBgColor = styles.backgroundColor;
+            const rootStyles = getComputedStyle(document.documentElement);
+            const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+            
+            console.log('🔵 [SubNav Fix] 🔍 DIAGNÓSTICO DE COLOR (primer tab activado):');
+            console.log('🔵 [SubNav Fix] Tema actual:', currentTheme);
+            console.log('🔵 [SubNav Fix] backgroundColor (computado):', computedBgColor);
+            console.log('🔵 [SubNav Fix] --modifiers-normal-color-dark-accent-blue:', rootStyles.getPropertyValue('--modifiers-normal-color-dark-accent-blue').trim() || '(no definido)');
+            console.log('🔵 [SubNav Fix] --ubits-accent-brand:', rootStyles.getPropertyValue('--ubits-accent-brand').trim() || '(no definido)');
+          }, 100);
+          
           return;
         }
         
