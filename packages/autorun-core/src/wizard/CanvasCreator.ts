@@ -659,56 +659,132 @@ export class CanvasCreator {
               // Esto es necesario porque el SubNav puede ya existir y no recargarse
               // Usar múltiples intentos porque el SubNav puede tardar en renderizarse
               let attempts = 0;
-              const maxAttempts = 10;
+              const maxAttempts = 15;
               const activateTab = () => {
                 attempts++;
                 console.log('🔍 [Wizard] ════════════════════════════════════════');
-                console.log('🔍 [Wizard] Intento', attempts, 'de activar tab en SubNav...');
+                console.log('🔍 [Wizard] [SubNav] Intento', attempts, 'de activar tab en SubNav...');
+                console.log('🔍 [Wizard] [SubNav] Producto objetivo: ${product}');
                 
-                const subNavElement = document.querySelector('.ubits-sub-nav');
+                // Buscar el SubNav de múltiples formas
+                let subNavElement = document.querySelector('.ubits-sub-nav');
+                if (!subNavElement) {
+                  subNavElement = document.querySelector('#top-nav-container .ubits-sub-nav');
+                }
+                if (!subNavElement) {
+                  subNavElement = document.querySelector('[data-subnav] .ubits-sub-nav');
+                }
+                if (!subNavElement) {
+                  const topNavContainer = document.querySelector('#top-nav-container');
+                  if (topNavContainer) {
+                    subNavElement = topNavContainer.querySelector('.ubits-sub-nav');
+                  }
+                }
+                
+                console.log('🔍 [Wizard] [SubNav] SubNav encontrado:', !!subNavElement);
+                
                 if (subNavElement) {
+                  console.log('🔍 [Wizard] [SubNav] SubNav HTML:', subNavElement.outerHTML.substring(0, 500));
+                  
                   // Listar todos los tabs disponibles para debug
                   const allTabs = subNavElement.querySelectorAll('.ubits-sub-nav-tab');
-                  console.log('🔍 [Wizard] Tabs encontrados:', allTabs.length);
-                  console.log('🔍 [Wizard] Tabs disponibles:', Array.from(allTabs).map(t => ({
-                    dataTab: t.getAttribute('data-tab'),
-                    text: t.textContent?.trim(),
-                    isActive: t.classList.contains('ubits-sub-nav-tab--active')
-                  })));
+                  console.log('🔍 [Wizard] [SubNav] Tabs encontrados:', allTabs.length);
                   
-                  // Remover active de todos los tabs
-                  allTabs.forEach(tab => {
-                    tab.classList.remove('ubits-sub-nav-tab--active');
-                  });
-                  
-                  // Activar el tab correspondiente al producto
-                  const targetTab = subNavElement.querySelector('[data-tab="${product}"]');
-                  if (targetTab) {
-                    targetTab.classList.add('ubits-sub-nav-tab--active');
-                    console.log('🔍 [Wizard] ✅ Tab "${product}" activado manualmente');
-                    
-                    // Verificar estado final
-                    const activeTab = document.querySelector('.ubits-sub-nav-tab--active');
-                    console.log('🔍 [Wizard] Tab activo confirmado:', activeTab?.getAttribute('data-tab') || 'ninguno');
-                    return true; // Éxito
+                  if (allTabs.length === 0) {
+                    console.warn('🔍 [Wizard] [SubNav] ⚠️ No se encontraron tabs con selector .ubits-sub-nav-tab');
+                    // Intentar otros selectores
+                    const altTabs = subNavElement.querySelectorAll('[data-tab]');
+                    console.log('🔍 [Wizard] [SubNav] Tabs con [data-tab]:', altTabs.length);
+                    altTabs.forEach((tab, idx) => {
+                      console.log('   Tab', idx + ':', {
+                        dataTab: tab.getAttribute('data-tab'),
+                        classes: tab.className,
+                        text: tab.textContent?.trim()?.substring(0, 50)
+                      });
+                    });
                   } else {
-                    console.warn('🔍 [Wizard] ⚠️ Tab "${product}" no encontrado en SubNav');
-                    if (attempts < maxAttempts) {
-                      // Reintentar después de 200ms
-                      setTimeout(activateTab, 200);
+                    console.log('🔍 [Wizard] [SubNav] Tabs disponibles:');
+                    Array.from(allTabs).forEach((tab, idx) => {
+                      const dataTab = tab.getAttribute('data-tab');
+                      const text = tab.textContent?.trim();
+                      const isActive = tab.classList.contains('ubits-sub-nav-tab--active');
+                      console.log('   Tab', idx + ':', {
+                        dataTab: dataTab,
+                        text: text,
+                        isActive: isActive,
+                        classes: tab.className,
+                        innerHTML: tab.innerHTML.substring(0, 100)
+                      });
+                    });
+                    
+                    // Remover active de todos los tabs
+                    console.log('🔍 [Wizard] [SubNav] Removiendo active de todos los tabs...');
+                    allTabs.forEach(tab => {
+                      tab.classList.remove('ubits-sub-nav-tab--active');
+                    });
+                    
+                    // Activar el tab correspondiente al producto
+                    console.log('🔍 [Wizard] [SubNav] Buscando tab con data-tab="${product}"...');
+                    let targetTab = subNavElement.querySelector('[data-tab="${product}"]');
+                    
+                    // Si no se encuentra, intentar buscar por texto
+                    if (!targetTab) {
+                      console.log('🔍 [Wizard] [SubNav] Tab no encontrado por data-tab, buscando por texto...');
+                      Array.from(allTabs).forEach(tab => {
+                        const text = tab.textContent?.trim().toLowerCase();
+                        if (text.includes('matriz') || text.includes('talento')) {
+                          console.log('🔍 [Wizard] [SubNav] Tab encontrado por texto:', text);
+                          targetTab = tab;
+                        }
+                      });
                     }
-                    return false;
+                    
+                    if (targetTab) {
+                      console.log('🔍 [Wizard] [SubNav] ✅ Tab encontrado:', {
+                        dataTab: targetTab.getAttribute('data-tab'),
+                        text: targetTab.textContent?.trim(),
+                        classes: targetTab.className
+                      });
+                      targetTab.classList.add('ubits-sub-nav-tab--active');
+                      console.log('🔍 [Wizard] [SubNav] ✅ Clase ubits-sub-nav-tab--active agregada');
+                      
+                      // Verificar que se agregó correctamente
+                      const hasActive = targetTab.classList.contains('ubits-sub-nav-tab--active');
+                      console.log('🔍 [Wizard] [SubNav] Verificación - tiene clase active:', hasActive);
+                      
+                      // Verificar estado final
+                      const activeTab = document.querySelector('.ubits-sub-nav-tab--active');
+                      console.log('🔍 [Wizard] [SubNav] Tab activo confirmado:', {
+                        dataTab: activeTab?.getAttribute('data-tab') || 'ninguno',
+                        text: activeTab?.textContent?.trim() || 'ninguno',
+                        element: activeTab ? 'encontrado' : 'no encontrado'
+                      });
+                      return true; // Éxito
+                    } else {
+                      console.warn('🔍 [Wizard] [SubNav] ⚠️ Tab "${product}" no encontrado en SubNav');
+                      console.warn('🔍 [Wizard] [SubNav] Producto buscado:', '${product}');
+                      if (attempts < maxAttempts) {
+                        console.log('🔍 [Wizard] [SubNav] Reintentando en 200ms...');
+                        setTimeout(activateTab, 200);
+                      } else {
+                        console.error('🔍 [Wizard] [SubNav] ❌ Máximo de intentos alcanzado');
+                      }
+                      return false;
+                    }
                   }
                 } else {
-                  console.warn('🔍 [Wizard] ⚠️ SubNav no encontrado, reintentando...');
+                  console.warn('🔍 [Wizard] [SubNav] ⚠️ SubNav no encontrado, reintentando...');
                   if (attempts < maxAttempts) {
                     setTimeout(activateTab, 200);
+                  } else {
+                    console.error('🔍 [Wizard] [SubNav] ❌ Máximo de intentos alcanzado sin encontrar SubNav');
                   }
                   return false;
                 }
               };
               
               // Iniciar después de que updateContent termine
+              console.log('🔍 [Wizard] [SubNav] Programando activación del tab en 300ms...');
               setTimeout(activateTab, 300);
             } else {
               console.log('🔍 [Wizard] No hay producto para activar');
