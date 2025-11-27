@@ -512,8 +512,18 @@ export class CanvasCreator {
         adjustPaths(products);
       };
       
+      // La clave en products.js es 'template-admin' o 'template-colaborador'
+      const templateKey = 'template-${template === 'administrador' ? 'admin' : 'colaborador'}';
+      
+      // Sobrescribir detectCurrentProduct ANTES de que products.js se cargue
+      // detectCurrentProduct() detecta por nombre de archivo y por defecto retorna 'template-colaborador'
+      // Necesitamos sobrescribirlo para que siempre retorne el template correcto
+      window.detectCurrentProduct = function() {
+        // Siempre retornar el template correcto
+        return '${templateKey}';
+      };
+      
       // Interceptar cuando UBITS_PRODUCTS se define ANTES de que el template lo use
-      // Usar Object.defineProperty para interceptar la asignación
       let productsDefined = false;
       const checkProducts = () => {
         if (window.UBITS_PRODUCTS && !productsDefined) {
@@ -522,8 +532,6 @@ export class CanvasCreator {
           adjustImagePaths(window.UBITS_PRODUCTS);
           
           // Sobrescribir initialActiveSection INMEDIATAMENTE
-          // La clave en products.js es 'template-admin' o 'template-colaborador'
-          const templateKey = 'template-${template === 'administrador' ? 'admin' : 'colaborador'}';
           if (window.UBITS_PRODUCTS[templateKey]) {
             const productConfig = window.UBITS_PRODUCTS[templateKey];
             if (productConfig.sidebar) {
