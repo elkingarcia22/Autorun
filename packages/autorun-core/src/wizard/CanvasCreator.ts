@@ -749,14 +749,16 @@ export class CanvasCreator {
           if (window.UBITS_ContentManager.currentSection === normalizedModule) {
             console.log('🔍 [Wizard] ✅ Módulo ya está activo:', normalizedModule);
             
-            // Si hay un producto, activarlo usando handleSectionChange con activeTabId
-            // Esto actualizará el SubNav y el contenido automáticamente
-            if ('${product}') {
-              console.log('🔍 [Wizard] 🚀 Activando producto: ${product}');
-              console.log('🔍 [Wizard] Llamando handleSectionChange("' + normalizedModule + '", "${product}")');
+            // Verificar si hay un producto
+            const product = '${product}';
+            const hasProduct = product && product !== 'undefined' && product !== 'null' && product.trim() !== '';
+            
+            if (hasProduct) {
+              console.log('🔍 [Wizard] 🚀 Activando producto:', product);
+              console.log('🔍 [Wizard] Llamando handleSectionChange("' + normalizedModule + '", "' + product + '")');
               
               // handleSectionChange con activeTabId activa el módulo y el producto en una sola llamada
-              window.UBITS_ContentManager.handleSectionChange(normalizedModule, '${product}');
+              window.UBITS_ContentManager.handleSectionChange(normalizedModule, product);
               
               // Mapeo de productos a IDs de tabs del SubNav
               // Algunos productos tienen IDs diferentes en el SubNav
@@ -782,8 +784,8 @@ export class CanvasCreator {
               };
               
               // Obtener el ID del tab correcto
-              const tabId = productToTabIdMap['${product}'] || '${product}';
-              console.log('🔍 [Wizard] [SubNav] Producto original: ${product}');
+              const tabId = productToTabIdMap[product] || product;
+              console.log('🔍 [Wizard] [SubNav] Producto original:', product);
               console.log('🔍 [Wizard] [SubNav] Tab ID mapeado:', tabId);
               
               // Forzar activación del tab en el SubNav después de que se actualice el contenido
@@ -795,7 +797,7 @@ export class CanvasCreator {
                 attempts++;
                 console.log('🔍 [Wizard] ════════════════════════════════════════');
                 console.log('🔍 [Wizard] [SubNav] Intento', attempts, 'de activar tab en SubNav...');
-                console.log('🔍 [Wizard] [SubNav] Producto objetivo: ${product}');
+                console.log('🔍 [Wizard] [SubNav] Producto objetivo:', product);
                 console.log('🔍 [Wizard] [SubNav] Tab ID a buscar:', tabId);
                 
                 // Buscar el SubNav de múltiples formas
@@ -849,7 +851,27 @@ export class CanvasCreator {
                       });
                     });
                     
-                    // Remover active de todos los tabs
+                    // Si no hay producto o es undefined, mantener el tab que ContentManager ya activó
+                    const product = '${product}';
+                    if (!product || product === 'undefined' || product.trim() === '') {
+                      console.log('🔍 [Wizard] [SubNav] ⚠️ No hay producto específico, manteniendo tab activo actual');
+                      const activeTab = subNavElement.querySelector('.ubits-sub-nav-tab--active');
+                      if (activeTab) {
+                        console.log('🔍 [Wizard] [SubNav] ✅ Tab activo encontrado y mantenido:', activeTab.getAttribute('data-tab'));
+                        return true;
+                      } else {
+                        // Si no hay tab activo, activar el primero disponible
+                        if (allTabs.length > 0) {
+                          const firstTab = allTabs[0];
+                          firstTab.classList.add('ubits-sub-nav-tab--active');
+                          console.log('🔍 [Wizard] [SubNav] ✅ Activado primer tab disponible:', firstTab.getAttribute('data-tab'));
+                          return true;
+                        }
+                      }
+                      return false;
+                    }
+                    
+                    // Remover active de todos los tabs solo si hay un producto específico
                     console.log('🔍 [Wizard] [SubNav] Removiendo active de todos los tabs...');
                     allTabs.forEach(tab => {
                       tab.classList.remove('ubits-sub-nav-tab--active');
@@ -863,13 +885,13 @@ export class CanvasCreator {
                     // Si no se encuentra, intentar con el producto original
                     if (!targetTab) {
                       console.log('🔍 [Wizard] [SubNav] Tab no encontrado con tabId mapeado, intentando con producto original...');
-                      targetTab = subNavElement.querySelector('[data-tab="${product}"]');
+                      targetTab = subNavElement.querySelector('[data-tab="' + product + '"]');
                     }
                     
                     // Si aún no se encuentra, intentar buscar por texto
                     if (!targetTab) {
                       console.log('🔍 [Wizard] [SubNav] Tab no encontrado por data-tab, buscando por texto...');
-                      const productText = '${product}'.toLowerCase();
+                      const productText = product.toLowerCase();
                       Array.from(allTabs).forEach(tab => {
                         const text = tab.textContent?.trim().toLowerCase();
                         // Buscar coincidencias parciales
@@ -931,7 +953,8 @@ export class CanvasCreator {
               console.log('🔍 [Wizard] [SubNav] Programando activación del tab en 300ms...');
               setTimeout(activateTab, 300);
             } else {
-              console.log('🔍 [Wizard] No hay producto para activar');
+              console.log('🔍 [Wizard] ⚠️ No hay producto específico, ContentManager ya activó el tab correcto');
+              // No hacer nada más, ContentManager ya activó el tab correcto
             }
           } else {
             console.log('🔍 [Wizard] ⏳ Módulo aún no está activo, esperando...');
@@ -961,8 +984,39 @@ export class CanvasCreator {
       const product = '${product}';
       console.log('🔵 [SubNav Fix] Producto objetivo:', product);
       
-      if (!product) {
-        console.log('🔵 [SubNav Fix] ⚠️ No hay producto, saliendo');
+      const subNavElement = document.querySelector('.ubits-sub-nav') || 
+                           document.querySelector('#top-nav-container .ubits-sub-nav');
+      
+      if (!subNavElement) {
+        console.log('🔵 [SubNav Fix] ⚠️ SubNav no encontrado, saliendo');
+        return;
+      }
+      
+      const allTabs = subNavElement.querySelectorAll('.ubits-sub-nav-tab');
+      console.log('🔵 [SubNav Fix] Tabs encontrados:', allTabs.length);
+      
+      // Si no hay producto, mantener el tab que ContentManager ya activó o activar el primero
+      if (!product || product === 'undefined' || product.trim() === '') {
+        console.log('🔵 [SubNav Fix] ⚠️ No hay producto específico');
+        
+        // Verificar si ya hay un tab activo
+        const activeTab = subNavElement.querySelector('.ubits-sub-nav-tab--active');
+        if (activeTab) {
+          console.log('🔵 [SubNav Fix] ✅ Ya hay un tab activo, manteniéndolo:', activeTab.getAttribute('data-tab'));
+          return;
+        }
+        
+        // Si no hay tab activo, activar el primero disponible
+        if (allTabs.length > 0) {
+          const firstTab = allTabs[0];
+          const dataTab = firstTab.getAttribute('data-tab');
+          console.log('🔵 [SubNav Fix] Activando primer tab disponible:', dataTab);
+          firstTab.classList.add('ubits-sub-nav-tab--active');
+          console.log('🔵 [SubNav Fix] ✅ Clase active agregada al primer tab');
+          return;
+        }
+        
+        console.log('🔵 [SubNav Fix] ⚠️ No hay tabs disponibles');
         return;
       }
       
