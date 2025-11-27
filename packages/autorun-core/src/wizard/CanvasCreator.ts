@@ -68,12 +68,22 @@ export class CanvasCreator {
 			console.log(`   📄 Cargando template completo desde UBITS local: ${ubitsDesktopPath}`);
 			let templateContent = await fs.readFile(ubitsDesktopPath, 'utf-8');
 			
-			// Usar rutas absolutas file:// para que funcionen cuando se abre el HTML localmente
+			// Calcular ruta relativa desde el archivo generado hacia UBITS
+			// El archivo generado está en: /Users/elkinmac/Desktop/Autorun/prototypes/
+			// UBITS está en: /Users/elkinmac/Desktop/UBITS/packages/
+			// Ruta relativa: ../../UBITS/packages/
 			const ubitsPackagesPath = path.join(os.homedir(), 'Desktop', 'UBITS', 'packages');
 			const absolutePath = `file://${ubitsPackagesPath}`.replace(/\\/g, '/');
 			
-			// Ajustar rutas del template a rutas absolutas file://
-			templateContent = await this.adjustTemplatePaths(templateContent, absolutePath);
+			// Calcular ruta relativa desde prototypes/ hacia UBITS/packages/
+			// Desde: /Users/elkinmac/Desktop/Autorun/prototypes/
+			// Hacia: /Users/elkinmac/Desktop/UBITS/packages/
+			// Relativa: ../../UBITS/packages/
+			const relativePath = '../../UBITS/packages';
+			
+			// Usar rutas relativas para servidor HTTP, file:// absolutas como fallback
+			// Ajustar rutas del template: primero intentar relativas, luego absolutas file://
+			templateContent = await this.adjustTemplatePaths(templateContent, absolutePath, relativePath);
 			
 			// Personalizar el template con el módulo y producto seleccionados
 			// Esto agrega el script que activa el módulo/producto en sidebar y subnav
@@ -92,63 +102,66 @@ export class CanvasCreator {
 	}
 
 	/**
-	 * Ajusta las rutas del template para que funcionen con file:// absolutas
+	 * Ajusta las rutas del template para que funcionen con file:// absolutas o rutas relativas
 	 * Las rutas originales son relativas a packages/templates/ (../tokens/...)
-	 * Las convertimos a rutas absolutas file:// hacia Desktop/UBITS/packages/
+	 * Las convertimos a rutas absolutas file:// hacia Desktop/UBITS/packages/ o relativas
 	 */
-	private async adjustTemplatePaths(content: string, absolutePathToUBITS: string): Promise<string> {
+	private async adjustTemplatePaths(content: string, absolutePathToUBITS: string, relativePathToUBITS?: string): Promise<string> {
 		// Las rutas originales son: ../tokens/dist/tokens.css
 		// Necesitamos: file:///Users/elkinmac/Desktop/UBITS/packages/tokens/dist/tokens.css
 		
-		// Reemplazar rutas relativas ../ por la ruta absoluta
+		// Reemplazar rutas relativas ../ por la ruta (relativa o absoluta)
+		// Preferir rutas relativas para servidor HTTP, usar absolutas file:// como fallback
+		const pathToUse = relativePathToUBITS || absolutePathToUBITS;
+		
 		content = content.replace(
 			/href="\.\.\//g,
-			`href="${absolutePathToUBITS}/`
+			`href="${pathToUse}/`
 		);
 		
 		content = content.replace(
 			/src="\.\.\//g,
-			`src="${absolutePathToUBITS}/`
+			`src="${pathToUse}/`
 		);
 		
 		// También ajustar rutas de assets que son relativas al mismo directorio
-		// assets/fontawesome/... debe convertirse a file:///Users/.../templates/assets/fontawesome/...
+		// assets/fontawesome/... debe convertirse a ruta relativa o absoluta
 		content = content.replace(
 			/href="assets\//g,
-			`href="${absolutePathToUBITS}/templates/assets/`
+			`href="${pathToUse}/templates/assets/`
 		);
 		
 		content = content.replace(
 			/src="assets\//g,
-			`src="${absolutePathToUBITS}/templates/assets/`
+			`src="${pathToUse}/templates/assets/`
 		);
 		
 		// Ajustar rutas de imágenes en JavaScript (products.js)
-		// 'assets/images/Profile-image.jpg' -> 'file:///Users/.../templates/assets/images/Profile-image.jpg'
+		// 'assets/images/Profile-image.jpg' -> ruta relativa o absoluta
 		content = content.replace(
 			/'assets\/images\//g,
-			`'${absolutePathToUBITS}/templates/assets/images/`
+			`'${pathToUse}/templates/assets/images/`
 		);
 		
 		content = content.replace(
 			/"assets\/images\//g,
-			`"${absolutePathToUBITS}/templates/assets/images/`
+			`"${pathToUse}/templates/assets/images/`
 		);
 		
 		// Ajustar rutas de scripts que son relativas al mismo directorio
 		content = content.replace(
 			/src="components-loader\.js/g,
-			`src="${absolutePathToUBITS}/templates/components-loader.js`
+			`src="${pathToUse}/templates/components-loader.js`
 		);
 		
 		content = content.replace(
 			/src="config\//g,
-			`src="${absolutePathToUBITS}/templates/config/`
+			`src="${pathToUse}/templates/config/`
 		);
 		
 		content = content.replace(
 			/src="engine\//g,
-			`src="${absolutePathToUBITS}/templates/engine/`
+			`src="${pathToUse}/templates/engine/`
 		);
 		
 		// NOTA: Los enlaces entre templates (template-admin.html <-> template-colaborador.html)
