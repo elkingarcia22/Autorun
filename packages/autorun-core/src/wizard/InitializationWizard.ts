@@ -63,22 +63,10 @@ export class InitializationWizard {
 
 	/**
 	 * Pregunta si quiere trabajar en UBITS o proyecto independiente
+	 * SIEMPRE pregunta al usuario, no usa variables de entorno automáticamente
 	 */
 	private async askProjectType(): Promise<ProjectType> {
-		// Verificar si hay respuesta automática en variable de entorno
-		const autoAnswer = process.env.AUTORUN_PROJECT_TYPE;
-		
-		if (autoAnswer === 'ubits' || autoAnswer === '1') {
-			console.log('✅ Veo que quieres trabajar en UBITS. Perfecto, voy a configurarlo ahora.\n');
-			return 'ubits';
-		}
-		
-		if (autoAnswer === 'independent' || autoAnswer === '2') {
-			console.log('✅ Veo que quieres trabajar en un Proyecto Independiente. Perfecto, voy a configurarlo ahora.\n');
-			return 'independent';
-		}
-
-		// Si no hay respuesta automática, preguntar interactivamente
+		// SIEMPRE preguntar al usuario (no usar automático)
 		const answer = await this.prompt.select(
 			'📋 ¿En qué tipo de proyecto quieres trabajar?',
 			[
@@ -405,16 +393,10 @@ export class InitializationWizard {
 
 	/**
 	 * Selecciona template (Administrador/Colaborador)
+	 * SIEMPRE pregunta al usuario
 	 */
 	private async selectTemplate(): Promise<'administrador' | 'colaborador'> {
-		// SIEMPRE preguntar al usuario (no usar automático)
-		// Si hay variable de entorno, usarla como default pero aún así preguntar
-		const autoAnswer = process.env.AUTORUN_TEMPLATE;
-		const defaultValue = (autoAnswer === 'administrador' || autoAnswer === 'colaborador') 
-			? autoAnswer as 'administrador' | 'colaborador'
-			: 'administrador';
-
-		// Preguntar interactivamente (siempre)
+		// SIEMPRE preguntar al usuario
 		const answer = await this.prompt.select(
 			'   ¿Qué template quieres usar?',
 			[
@@ -427,7 +409,7 @@ export class InitializationWizard {
 					label: 'Colaborador (Módulos limitados)',
 				},
 			],
-			defaultValue,
+			'administrador',
 		);
 
 		return answer as 'administrador' | 'colaborador';
@@ -450,16 +432,11 @@ export class InitializationWizard {
 			};
 		});
 
-		// SIEMPRE preguntar al usuario (no usar automático)
-		// Si hay variable de entorno, usarla como default pero aún así preguntar
-		const autoModule = process.env.AUTORUN_MODULE;
-		const defaultModule = autoModule || 'desempeno';
-		
-		// Preguntar interactivamente (siempre)
+		// SIEMPRE preguntar al usuario
 		const selectedModule = await this.prompt.select(
 			'   ¿En qué módulo quieres trabajar?',
 			moduleOptions,
-			defaultModule,
+			moduleOptions[0]?.value || 'desempeno',
 		);
 
 		// Seleccionar producto dentro del módulo
@@ -489,16 +466,11 @@ export class InitializationWizard {
 			label: product.name,
 		}));
 
-		// SIEMPRE preguntar al usuario (no usar automático)
-		// Si hay variable de entorno, usarla como default pero aún así preguntar
-		const autoProduct = process.env.AUTORUN_PRODUCT;
-		const defaultProduct = autoProduct || moduleConfig.products[0]?.id;
-
-		// Preguntar interactivamente (siempre)
+		// SIEMPRE preguntar al usuario
 		const selectedProduct = await this.prompt.select(
 			`   ¿En qué producto de "${moduleConfig.name}" quieres trabajar?`,
 			productOptions,
-			defaultProduct,
+			moduleConfig.products[0]?.id,
 		);
 
 		return selectedProduct;
