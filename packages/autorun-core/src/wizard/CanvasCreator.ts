@@ -73,13 +73,12 @@ export class CanvasCreator {
 			console.log(`   📄 Cargando template completo desde UBITS local: ${ubitsDesktopPath}`);
 			let templateContent = await fs.readFile(ubitsDesktopPath, 'utf-8');
 
-			// Usar rutas relativas para que funcionen con servidor HTTP local
-			// Las rutas relativas funcionan desde cualquier ubicación si se usa un servidor HTTP
-			// Desde prototypes/ hasta Desktop/UBITS/packages/ = ../../UBITS/packages/
-			const pathToUse = '../../UBITS/packages';
+			// Usar rutas absolutas file:// para que funcionen cuando se abre el HTML localmente
+			const ubitsPackagesPath = path.join(os.homedir(), 'Desktop', 'UBITS', 'packages');
+			const absolutePath = `file://${ubitsPackagesPath}`.replace(/\\/g, '/');
 
-			// Ajustar rutas del template a rutas relativas
-			templateContent = await this.adjustTemplatePaths(templateContent, pathToUse);
+			// Ajustar rutas del template a rutas absolutas file://
+			templateContent = await this.adjustTemplatePaths(templateContent, absolutePath);
 
 			// Personalizar el template con el módulo y producto seleccionados
 			// Esto agrega el script que activa el módulo/producto en sidebar y subnav
@@ -88,7 +87,7 @@ export class CanvasCreator {
 				template,
 				module,
 				product,
-				pathToUse,
+				absolutePath,
 			);
 
 			return templateContent;
@@ -101,42 +100,46 @@ export class CanvasCreator {
 	}
 
 	/**
-	 * Ajusta las rutas del template para que funcionen con rutas relativas
+	 * Ajusta las rutas del template para que funcionen con file:// absolutas
 	 * Las rutas originales son relativas a packages/templates/ (../tokens/...)
-	 * Las convertimos a rutas relativas desde prototypes/ hacia Desktop/UBITS/packages/
-	 * Esto funciona con un servidor HTTP local (python3 -m http.server)
+	 * Las convertimos a rutas absolutas file:// hacia Desktop/UBITS/packages/
 	 */
-	private async adjustTemplatePaths(content: string, pathToUBITS: string): Promise<string> {
+	private async adjustTemplatePaths(content: string, absolutePathToUBITS: string): Promise<string> {
 		// Las rutas originales son: ../tokens/dist/tokens.css
-		// Necesitamos: ../../UBITS/packages/tokens/dist/tokens.css
-		// Desde prototypes/canvas-*.html hasta Desktop/UBITS/packages/
+		// Necesitamos: file:///Users/elkinmac/Desktop/UBITS/packages/tokens/dist/tokens.css
 
-		// Reemplazar rutas relativas ../ por la ruta relativa desde prototypes/
-		content = content.replace(/href="\.\.\//g, `href="${pathToUBITS}/`);
+		// Reemplazar rutas relativas ../ por la ruta absoluta
+		content = content.replace(/href="\.\.\//g, `href="${absolutePathToUBITS}/`);
 
-		content = content.replace(/src="\.\.\//g, `src="${pathToUBITS}/`);
+		content = content.replace(/src="\.\.\//g, `src="${absolutePathToUBITS}/`);
 
 		// También ajustar rutas de assets que son relativas al mismo directorio
-		// assets/fontawesome/... debe convertirse a ../../UBITS/packages/templates/assets/fontawesome/...
-		content = content.replace(/href="assets\//g, `href="${pathToUBITS}/templates/assets/`);
+		// assets/fontawesome/... debe convertirse a file:///Users/.../templates/assets/fontawesome/...
+		content = content.replace(/href="assets\//g, `href="${absolutePathToUBITS}/templates/assets/`);
 
-		content = content.replace(/src="assets\//g, `src="${pathToUBITS}/templates/assets/`);
+		content = content.replace(/src="assets\//g, `src="${absolutePathToUBITS}/templates/assets/`);
 
 		// Ajustar rutas de imágenes en JavaScript (products.js)
-		// 'assets/images/Profile-image.jpg' -> '../../UBITS/packages/templates/assets/images/Profile-image.jpg'
-		content = content.replace(/'assets\/images\//g, `'${pathToUBITS}/templates/assets/images/`);
+		// 'assets/images/Profile-image.jpg' -> 'file:///Users/.../templates/assets/images/Profile-image.jpg'
+		content = content.replace(
+			/'assets\/images\//g,
+			`'${absolutePathToUBITS}/templates/assets/images/`,
+		);
 
-		content = content.replace(/"assets\/images\//g, `"${pathToUBITS}/templates/assets/images/`);
+		content = content.replace(
+			/"assets\/images\//g,
+			`"${absolutePathToUBITS}/templates/assets/images/`,
+		);
 
 		// Ajustar rutas de scripts que son relativas al mismo directorio
 		content = content.replace(
 			/src="components-loader\.js/g,
-			`src="${pathToUBITS}/templates/components-loader.js`,
+			`src="${absolutePathToUBITS}/templates/components-loader.js`,
 		);
 
-		content = content.replace(/src="config\//g, `src="${pathToUBITS}/templates/config/`);
+		content = content.replace(/src="config\//g, `src="${absolutePathToUBITS}/templates/config/`);
 
-		content = content.replace(/src="engine\//g, `src="${pathToUBITS}/templates/engine/`);
+		content = content.replace(/src="engine\//g, `src="${absolutePathToUBITS}/templates/engine/`);
 
 		return content;
 	}
@@ -436,7 +439,7 @@ export class CanvasCreator {
 		template: 'administrador' | 'colaborador',
 		module: string,
 		product?: string,
-		pathToUBITS?: string,
+		absolutePathToUBITS?: string,
 	): string {
 		const moduleConfig = UBITS_MODULES_CONFIG[module];
 		const productName = product
