@@ -528,16 +528,31 @@ export class CanvasCreator {
       const checkProducts = () => {
         if (window.UBITS_PRODUCTS && !productsDefined) {
           productsDefined = true;
+          console.log('🔍 [Wizard] ════════════════════════════════════════');
+          console.log('🔍 [Wizard] UBITS_PRODUCTS detectado');
+          console.log('🔍 [Wizard] templateKey:', templateKey);
+          console.log('🔍 [Wizard] Módulo objetivo: ${module}');
+          console.log('🔍 [Wizard] Producto objetivo: ${product}');
+          
           // Ajustar rutas de imágenes
           adjustImagePaths(window.UBITS_PRODUCTS);
           
           // Sobrescribir initialActiveSection INMEDIATAMENTE
           if (window.UBITS_PRODUCTS[templateKey]) {
             const productConfig = window.UBITS_PRODUCTS[templateKey];
+            console.log('🔍 [Wizard] ProductConfig encontrado:', productConfig.name);
+            console.log('🔍 [Wizard] initialActiveSection ANTES:', productConfig.sidebar?.initialActiveSection);
+            
             if (productConfig.sidebar) {
               productConfig.sidebar.initialActiveSection = '${module}';
-              console.log('🔍 [Wizard] initialActiveSection sobrescrito a: ${module}');
+              console.log('🔍 [Wizard] ✅ initialActiveSection sobrescrito a: ${module}');
+              console.log('🔍 [Wizard] initialActiveSection DESPUÉS:', productConfig.sidebar.initialActiveSection);
+            } else {
+              console.warn('🔍 [Wizard] ⚠️ productConfig.sidebar no existe');
             }
+          } else {
+            console.warn('🔍 [Wizard] ⚠️ templateKey no encontrado en UBITS_PRODUCTS');
+            console.log('🔍 [Wizard] Claves disponibles:', Object.keys(window.UBITS_PRODUCTS));
           }
         }
       };
@@ -560,11 +575,61 @@ export class CanvasCreator {
     // Activar el producto DESPUÉS de que el template termine su inicialización
     // El template ya activa el módulo usando initialActiveSection, solo necesitamos activar el producto
     document.addEventListener('DOMContentLoaded', () => {
+      console.log('🔍 [Wizard] ════════════════════════════════════════');
+      console.log('🔍 [Wizard] DOMContentLoaded - Iniciando activación de módulo/producto');
+      console.log('🔍 [Wizard] Módulo objetivo: ${module}');
+      console.log('🔍 [Wizard] Producto objetivo: ${product}');
+      
       const activateProduct = () => {
+        console.log('🔍 [Wizard] ════════════════════════════════════════');
+        console.log('🔍 [Wizard] activateProduct ejecutado');
+        
         if (!window.UBITS_ContentManager) {
-          // Si ContentManager no está listo, reintentar
+          console.log('🔍 [Wizard] ⏳ ContentManager no está listo, reintentando...');
           setTimeout(activateProduct, 100);
           return;
+        }
+        
+        console.log('🔍 [Wizard] ✅ ContentManager está listo');
+        console.log('🔍 [Wizard] currentSection actual:', window.UBITS_ContentManager.currentSection);
+        console.log('🔍 [Wizard] Módulo esperado: ${module}');
+        
+        // Verificar estado del sidebar
+        const sidebarElement = document.querySelector('.ubits-sidebar');
+        if (sidebarElement) {
+          const activeButton = sidebarElement.querySelector('.ubits-sidebar-nav-button.active');
+          console.log('🔍 [Wizard] Sidebar encontrado');
+          console.log('🔍 [Wizard] Botón activo en sidebar:', activeButton?.getAttribute('data-section') || 'ninguno');
+          
+          // Listar todos los botones del sidebar
+          const allButtons = sidebarElement.querySelectorAll('.ubits-sidebar-nav-button');
+          console.log('🔍 [Wizard] Botones en sidebar:');
+          allButtons.forEach(btn => {
+            const section = btn.getAttribute('data-section');
+            const isActive = btn.classList.contains('active');
+            console.log('   -', section, isActive ? '(ACTIVO)' : '(inactivo)');
+          });
+        } else {
+          console.warn('🔍 [Wizard] ⚠️ Sidebar no encontrado');
+        }
+        
+        // Verificar estado del subnav
+        const subNavElement = document.querySelector('.ubits-sub-nav');
+        if (subNavElement) {
+          console.log('🔍 [Wizard] SubNav encontrado');
+          const activeTab = subNavElement.querySelector('.ubits-sub-nav-tab--active');
+          console.log('🔍 [Wizard] Tab activo en SubNav:', activeTab?.getAttribute('data-tab') || 'ninguno');
+          
+          // Listar todos los tabs del subnav
+          const allTabs = subNavElement.querySelectorAll('.ubits-sub-nav-tab');
+          console.log('🔍 [Wizard] Tabs en SubNav:');
+          allTabs.forEach(tab => {
+            const tabId = tab.getAttribute('data-tab');
+            const isActive = tab.classList.contains('ubits-sub-nav-tab--active');
+            console.log('   -', tabId, isActive ? '(ACTIVO)' : '(inactivo)');
+          });
+        } else {
+          console.log('🔍 [Wizard] SubNav no encontrado (puede ser normal si el módulo no tiene subnav)');
         }
         
         try {
@@ -572,25 +637,88 @@ export class CanvasCreator {
           // El template usa setTimeout de ~1500ms + requestAnimationFrame
           // Verificar que el módulo ya esté activo (gracias a initialActiveSection)
           if (window.UBITS_ContentManager.currentSection === '${module}') {
+            console.log('🔍 [Wizard] ✅ Módulo ya está activo');
+            
             // Si hay un producto, activarlo usando handleSectionChange con activeTabId
             // Esto actualizará el SubNav y el contenido automáticamente
             if ('${product}') {
-              console.log('🔍 [Wizard] Activando producto: ${product} en módulo: ${module}');
+              console.log('🔍 [Wizard] 🚀 Activando producto: ${product}');
+              console.log('🔍 [Wizard] Llamando handleSectionChange("${module}", "${product}")');
+              
               // handleSectionChange con activeTabId activa el módulo y el producto en una sola llamada
               window.UBITS_ContentManager.handleSectionChange('${module}', '${product}');
+              
+              // Verificar después de un momento
+              setTimeout(() => {
+                console.log('🔍 [Wizard] ════════════════════════════════════════');
+                console.log('🔍 [Wizard] Estado DESPUÉS de handleSectionChange:');
+                console.log('🔍 [Wizard] currentSection:', window.UBITS_ContentManager.currentSection);
+                
+                const activeButton = document.querySelector('.ubits-sidebar-nav-button.active');
+                console.log('🔍 [Wizard] Botón activo en sidebar:', activeButton?.getAttribute('data-section') || 'ninguno');
+                
+                const activeTab = document.querySelector('.ubits-sub-nav-tab--active');
+                console.log('🔍 [Wizard] Tab activo en SubNav:', activeTab?.getAttribute('data-tab') || 'ninguno');
+              }, 500);
+            } else {
+              console.log('🔍 [Wizard] No hay producto para activar');
             }
           } else {
+            console.log('🔍 [Wizard] ⏳ Módulo aún no está activo, esperando...');
+            console.log('🔍 [Wizard] currentSection:', window.UBITS_ContentManager.currentSection);
+            console.log('🔍 [Wizard] Esperado: ${module}');
             // Si el módulo aún no está activo, esperar un poco más
             setTimeout(activateProduct, 200);
           }
         } catch (error) {
-          console.warn('⚠️ [Wizard] No se pudo activar producto automáticamente:', error);
+          console.error('🔍 [Wizard] ❌ Error al activar producto:', error);
+          console.error('🔍 [Wizard] Stack:', error.stack);
         }
       };
       
       // Esperar a que el template termine su inicialización (el template usa setTimeout de ~1500ms)
-      setTimeout(activateProduct, 2500);
+      console.log('🔍 [Wizard] ⏳ Esperando 2500ms para que el template termine su inicialización...');
+      setTimeout(() => {
+        console.log('🔍 [Wizard] ⏰ Timeout completado, ejecutando activateProduct...');
+        activateProduct();
+      }, 2500);
     });
+    
+    // Interceptar llamadas a handleSectionChange para ver qué está pasando
+    const originalHandleSectionChange = window.UBITS_ContentManager?.handleSectionChange;
+    if (originalHandleSectionChange) {
+      window.UBITS_ContentManager.handleSectionChange = function(section, activeTabId) {
+        console.log('🔍 [Wizard] ════════════════════════════════════════');
+        console.log('🔍 [Wizard] 🔄 handleSectionChange INTERCEPTADO');
+        console.log('🔍 [Wizard] section:', section);
+        console.log('🔍 [Wizard] activeTabId:', activeTabId);
+        console.log('🔍 [Wizard] currentSection antes:', this.currentSection);
+        return originalHandleSectionChange.call(this, section, activeTabId);
+      };
+    } else {
+      // Si ContentManager aún no existe, interceptarlo cuando se cree
+      Object.defineProperty(window, 'UBITS_ContentManager', {
+        set: function(value) {
+          console.log('🔍 [Wizard] UBITS_ContentManager definido');
+          if (value && value.handleSectionChange) {
+            const original = value.handleSectionChange;
+            value.handleSectionChange = function(section, activeTabId) {
+              console.log('🔍 [Wizard] ════════════════════════════════════════');
+              console.log('🔍 [Wizard] 🔄 handleSectionChange INTERCEPTADO (desde setter)');
+              console.log('🔍 [Wizard] section:', section);
+              console.log('🔍 [Wizard] activeTabId:', activeTabId);
+              console.log('🔍 [Wizard] currentSection antes:', this.currentSection);
+              return original.call(this, section, activeTabId);
+            };
+          }
+          Object.defineProperty(window, 'UBITS_ContentManager', { value, writable: true, configurable: true });
+        },
+        get: function() {
+          return window._UBITS_ContentManager;
+        },
+        configurable: true
+      });
+    }
   </script>`;
 
 		// Insertar script antes de </body>
