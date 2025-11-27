@@ -55,7 +55,14 @@ export class InitializationWizard {
 
 		if (answers.projectType === 'ubits') {
 			console.log('\n✅ Perfecto, voy a configurar tu proyecto UBITS ahora.\n');
-			return await this.setupUBITSFromAnswers(answers);
+			if (!answers.template || !answers.module) {
+				throw new Error('Template y módulo son requeridos para proyectos UBITS');
+			}
+			return await this.setupUBITSFromAnswers({
+				template: answers.template,
+				module: answers.module,
+				product: answers.product,
+			});
 		} else {
 			console.log('\n✅ Perfecto, voy a configurar un proyecto independiente.\n');
 			return await this.setupIndependent();
@@ -187,6 +194,11 @@ export class InitializationWizard {
 		// Ejecutar todos los pasos automáticos
 		console.log('🚀 Configurando todo automáticamente...\n');
 
+		// 0. Clonar UBITS, instalar y arrancar
+		console.log('📦 Clonando repositorio UBITS...');
+		await this.cloneAndSetupUBITS();
+		console.log('   ✅ Repositorio UBITS listo\n');
+
 		// 1. Conectar con Storybook
 		console.log('🔗 Conectando con Storybook UBITS...');
 		await this.connectStorybook();
@@ -233,7 +245,7 @@ export class InitializationWizard {
 			projectType: 'ubits',
 			template,
 			module,
-			product,
+			product: product || '',
 			canvasPath,
 		};
 	}
@@ -473,6 +485,51 @@ export class InitializationWizard {
 	}
 
 	/**
+	 * Clona el repositorio UBITS, instala dependencias y arranca con template administrador
+	 */
+	private async cloneAndSetupUBITS(): Promise<void> {
+		const { exec } = await import('child_process');
+		const { promisify } = await import('util');
+		const execAsync = promisify(exec);
+		const fs = await import('fs/promises');
+		const path = await import('path');
+
+		const currentDir = process.cwd();
+		const ubitsDir = path.join(currentDir, 'UBITS');
+		const ubitsRepo = 'https://github.com/elkingarcia22/UBITS.git';
+
+		try {
+			// Verificar si UBITS ya existe
+			try {
+				await fs.access(ubitsDir);
+				console.log('   ℹ️  El directorio UBITS ya existe, saltando clonación...');
+			} catch {
+				// No existe, clonar
+				console.log(`   📥 Clonando ${ubitsRepo}...`);
+				await execAsync(`git clone ${ubitsRepo} ${ubitsDir}`, { cwd: currentDir });
+				console.log('   ✅ Repositorio clonado');
+			}
+
+			// Instalar dependencias
+			console.log('   📦 Instalando dependencias...');
+			await execAsync('npm install', { cwd: ubitsDir });
+			console.log('   ✅ Dependencias instaladas');
+
+			// Informar sobre el template de administrador
+			console.log('   🎯 Template de administrador disponible en:');
+			console.log(`      ${path.join(ubitsDir, 'packages/templates/template-admin.html')}`);
+			console.log('   💡 Para arrancar el proyecto, ejecuta:');
+			console.log(`      cd UBITS && npm run dev`);
+
+		} catch (error: any) {
+			console.warn('   ⚠️  Error durante la configuración de UBITS:', error.message || error);
+			console.warn('   ℹ️  Puedes clonar manualmente con:');
+			console.warn(`      git clone ${ubitsRepo}`);
+			console.warn('      cd UBITS && npm install && npm run dev');
+		}
+	}
+
+	/**
 	 * Conecta con Storybook de UBITS
 	 */
 	private async connectStorybook(): Promise<void> {
@@ -538,7 +595,7 @@ export class InitializationWizard {
 	 */
 	private async selectModule(
 		template: 'administrador' | 'colaborador',
-	): Promise<{ module: string; product: string }> {
+	): Promise<{ module: string; product?: string }> {
 		const templateConfig = UBITS_PRESET.templates[template];
 		const modules = templateConfig.modules;
 
@@ -602,9 +659,10 @@ export class InitializationWizard {
 		}
 
 		// Seleccionar producto dentro del módulo (solo si el módulo tiene productos)
-		const product = await this.selectProduct(selectedModule);
+		const finalModule = selectedModule || 'desempeno';
+		const product = await this.selectProduct(finalModule);
 
-		return { module: selectedModule, product: product || undefined };
+		return { module: finalModule, product: product || undefined };
 	}
 
 	/**
