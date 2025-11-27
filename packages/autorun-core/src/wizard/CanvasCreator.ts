@@ -491,7 +491,7 @@ export class CanvasCreator {
       moduleName: '${moduleName}',
       productName: '${productName || ''}',
       storybookUrl: '${UBITS_PRESET.storybook.url}',
-      otherTemplatePath: '${otherTemplatePath || ''}'
+      otherTemplatePath: '${otherTemplateFileName || ''}'
     };
     
     // Ajustar rutas de imágenes y sobrescribir initialActiveSection después de que products.js se cargue
