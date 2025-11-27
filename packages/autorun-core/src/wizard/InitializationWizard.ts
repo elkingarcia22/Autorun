@@ -487,16 +487,26 @@ export class InitializationWizard {
 		// Actualizar el template principal con enlace al otro
 		const mainContent = await fs.readFile(canvasPath, 'utf-8');
 		const updatedMainContent = mainContent
+			// Reemplazar en HTML: href="template-xxx.html"
 			.replace(new RegExp(`href=["']${otherTemplateName}["']`, 'gi'), `href="${otherTemplateFileName}"`)
+			// Reemplazar en JavaScript: href: 'template-xxx.html' o href: "template-xxx.html"
 			.replace(new RegExp(`href:\\s*["']${otherTemplateName}["']`, 'gi'), `href: "${otherTemplateFileName}"`)
+			// Reemplazar en JavaScript: url: 'template-xxx.html' o url: "template-xxx.html"
+			.replace(new RegExp(`url:\\s*["']${otherTemplateName}["']`, 'gi'), `url: "${otherTemplateFileName}"`)
+			// Reemplazar cualquier referencia en strings: 'template-xxx.html' o "template-xxx.html"
 			.replace(new RegExp(`["']${otherTemplateName}["']`, 'gi'), `"${otherTemplateFileName}"`);
 		await fs.writeFile(canvasPath, updatedMainContent, 'utf-8');
 		
 		// Actualizar el otro template con enlace al principal
 		const otherContent = await fs.readFile(otherCanvasPath, 'utf-8');
 		const updatedOtherContent = otherContent
+			// Reemplazar en HTML: href="template-xxx.html"
 			.replace(new RegExp(`href=["']${mainTemplateName}["']`, 'gi'), `href="${mainTemplateFileName}"`)
+			// Reemplazar en JavaScript: href: 'template-xxx.html' o href: "template-xxx.html"
 			.replace(new RegExp(`href:\\s*["']${mainTemplateName}["']`, 'gi'), `href: "${mainTemplateFileName}"`)
+			// Reemplazar en JavaScript: url: 'template-xxx.html' o url: "template-xxx.html"
+			.replace(new RegExp(`url:\\s*["']${mainTemplateName}["']`, 'gi'), `url: "${mainTemplateFileName}"`)
+			// Reemplazar cualquier referencia en strings: 'template-xxx.html' o "template-xxx.html"
 			.replace(new RegExp(`["']${mainTemplateName}["']`, 'gi'), `"${mainTemplateFileName}"`);
 		await fs.writeFile(otherCanvasPath, updatedOtherContent, 'utf-8');
 		console.log('   ✅ Enlaces entre templates actualizados\n');
