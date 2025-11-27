@@ -81,20 +81,9 @@ export class CanvasCreator {
 			// Necesitamos: ../../Desktop/UBITS/packages/tokens/dist/tokens.css (relativas a prototypes/)
 			templateContent = await this.adjustTemplatePaths(templateContent, normalizedPath);
 			
-			// Actualizar el título con el módulo y producto (opcional, mantener el original si no se especifica)
-			if (module && module !== 'inicio') {
-				const moduleConfig = UBITS_MODULES_CONFIG[module];
-				const moduleName = moduleConfig?.name || this.formatModuleName(module);
-				const productName = product
-					? moduleConfig?.products.find((p) => p.id === product)?.name || product
-					: '';
-				
-				// Actualizar el título en el template
-				templateContent = templateContent.replace(
-					/<title>.*?<\/title>/,
-					`<title>UBITS - ${moduleName}${productName ? ` - ${productName}` : ''} - ${template}</title>`
-				);
-			}
+			// Personalizar el template con el módulo y producto seleccionados
+			// Esto agrega el script que activa el módulo/producto en sidebar y subnav
+			templateContent = this.customizeTemplate(templateContent, template, module, product);
 			
 			return templateContent;
 		} catch (localError) {
@@ -137,6 +126,18 @@ export class CanvasCreator {
 		content = content.replace(
 			/src="assets\//g,
 			`src="${relativePathToUBITS}/templates/assets/`
+		);
+		
+		// Ajustar rutas de imágenes en JavaScript (products.js)
+		// 'assets/images/Profile-image.jpg' -> '${relativePathToUBITS}/templates/assets/images/Profile-image.jpg'
+		content = content.replace(
+			/'assets\/images\//g,
+			`'${relativePathToUBITS}/templates/assets/images/`
+		);
+		
+		content = content.replace(
+			/"assets\/images\//g,
+			`"${relativePathToUBITS}/templates/assets/images/`
 		);
 		
 		// Ajustar rutas de scripts que son relativas al mismo directorio
@@ -490,21 +491,53 @@ export class CanvasCreator {
       storybookUrl: '${UBITS_PRESET.storybook.url}'
     };
     
-    // Activar el módulo y producto en el sidebar y subnav
-    document.addEventListener('DOMContentLoaded', () => {
-      // Activar módulo en sidebar
-      const moduleElement = document.querySelector(\`[data-module="${module}"]\`);
-      if (moduleElement) {
-        moduleElement.classList.add('active');
-      }
-      
-      // Activar producto en subnav
-      if ('${product}') {
-        const productElement = document.querySelector(\`[data-product="${product}"]\`);
-        if (productElement) {
-          productElement.classList.add('active');
+    // Sobrescribir initialActiveSection en products.js para activar el módulo/producto seleccionado
+    (function() {
+      if (window.UBITS_PRODUCTS && window.UBITS_PRODUCTS['template-${template}']) {
+        const productConfig = window.UBITS_PRODUCTS['template-${template}'];
+        if (productConfig.sidebar) {
+          // Establecer el módulo seleccionado como sección inicial
+          productConfig.sidebar.initialActiveSection = '${module}';
         }
       }
+    })();
+    
+    // Activar el módulo y producto en el sidebar y subnav después de que todo esté cargado
+    document.addEventListener('DOMContentLoaded', () => {
+      // Esperar a que UBITS_ContentManager y todos los componentes estén listos
+      const activateModule = () => {
+        if (window.UBITS_ContentManager && window.UBITS_ResponsiveManager) {
+          try {
+            // Establecer currentSection primero
+            window.UBITS_ContentManager.currentSection = '${module}';
+            
+            // Para módulos con productos, activar el producto específico
+            if ('${product}') {
+              // Usar requestAnimationFrame para asegurar que el DOM esté listo
+              requestAnimationFrame(() => {
+                setTimeout(() => {
+                  window.UBITS_ContentManager.handleSectionChange('${module}', '${product}');
+                }, 100);
+              });
+            } else {
+              // Para módulos sin productos, solo activar el módulo
+              requestAnimationFrame(() => {
+                setTimeout(() => {
+                  window.UBITS_ContentManager.handleSectionChange('${module}');
+                }, 100);
+              });
+            }
+          } catch (error) {
+            console.warn('No se pudo activar módulo automáticamente:', error);
+          }
+        } else {
+          // Reintentar después de un breve delay
+          setTimeout(activateModule, 100);
+        }
+      };
+      
+      // Esperar un poco más para que todos los scripts se carguen
+      setTimeout(activateModule, 500);
     });
   </script>`;
 
