@@ -596,18 +596,23 @@ export class InitializationWizard {
 			const path = await import('path');
 			const fs = await import('fs/promises');
 
-			// Obtener el directorio del archivo
+			// Obtener el directorio del archivo y el directorio Desktop
 			const fileDir = path.dirname(filePath);
 			const fileName = path.basename(filePath);
+			const os = await import('os');
+			const desktopDir = path.join(os.homedir(), 'Desktop');
 
-			// Intentar iniciar un servidor HTTP local en el directorio prototypes
+			// Intentar iniciar un servidor HTTP local en el directorio Desktop
+			// Esto permite que las rutas relativas ../../UBITS/packages/ funcionen correctamente
 			const port = 8000;
-			const url = `http://localhost:${port}/${fileName}`;
+			// Ruta relativa desde Desktop hacia prototypes/
+			const relativePathFromDesktop = path.relative(desktopDir, filePath);
+			const url = `http://localhost:${port}/${relativePathFromDesktop.replace(/\\/g, '/')}`;
 
 			// Verificar si el puerto está disponible
 			try {
-				// Intentar iniciar servidor Python (más común)
-				const serverCommand = `cd "${fileDir}" && python3 -m http.server ${port} > /dev/null 2>&1 &`;
+				// Intentar iniciar servidor Python (más común) desde Desktop
+				const serverCommand = `cd "${desktopDir}" && python3 -m http.server ${port} > /dev/null 2>&1 &`;
 				await execAsync(serverCommand);
 				
 				// Esperar un momento para que el servidor inicie
@@ -627,6 +632,7 @@ export class InitializationWizard {
 
 				await execAsync(command);
 				console.log(`   🌐 Servidor local iniciado en http://localhost:${port}`);
+				console.log(`   📁 Sirviendo desde: ${desktopDir}`);
 				console.log(`   💡 Para detener el servidor, presiona Ctrl+C o cierra esta terminal`);
 			} catch (serverError) {
 				// Si no se puede iniciar el servidor, usar file:// como fallback
