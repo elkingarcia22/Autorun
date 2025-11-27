@@ -129,6 +129,10 @@ export const UBITS_PRESET: UBITSConfig = {
 			modules: [
 				'aprendizaje',
 				'desempeno',
+				'encuestas',
+				'reclutamiento',
+				'planes',
+				'ubits-ai',
 				'mi-perfil',
 			],
 			sidebar: {
@@ -136,6 +140,10 @@ export const UBITS_PRESET: UBITSConfig = {
 				enabledModules: [
 					'aprendizaje',
 					'desempeno',
+					'encuestas',
+					'reclutamiento',
+					'planes',
+					'ubits-ai',
 					'mi-perfil',
 				],
 			},
@@ -153,6 +161,10 @@ export const UBITS_PRESET: UBITSConfig = {
 		'colaboradores',
 		'reportes',
 		'configuracion',
+		'encuestas',
+		'reclutamiento',
+		'planes',
+		'ubits-ai',
 		'mi-perfil',
 	],
 };
@@ -219,6 +231,42 @@ export const UBITS_MODULES_CONFIG: Record<string, ModuleConfig> = {
 		products: [
 			{ id: 'informacion', name: 'Información', icon: 'far fa-user' },
 			{ id: 'preferencias', name: 'Preferencias', icon: 'far fa-sliders-h' },
+		],
+	},
+	encuestas: {
+		id: 'encuestas',
+		name: 'Encuestas',
+		subnavVariant: 'template',
+		products: [
+			{ id: 'lista', name: 'Lista', icon: 'far fa-list' },
+			{ id: 'crear', name: 'Crear', icon: 'far fa-plus' },
+		],
+	},
+	reclutamiento: {
+		id: 'reclutamiento',
+		name: 'Reclutamiento',
+		subnavVariant: 'template',
+		products: [
+			{ id: 'vacantes', name: 'Vacantes', icon: 'far fa-briefcase' },
+			{ id: 'candidatos', name: 'Candidatos', icon: 'far fa-users' },
+		],
+	},
+	planes: {
+		id: 'planes',
+		name: 'Planes',
+		subnavVariant: 'template',
+		products: [
+			{ id: 'planes', name: 'Planes', icon: 'far fa-calendar' },
+			{ id: 'tareas', name: 'Tareas', icon: 'far fa-tasks' },
+		],
+	},
+	'ubits-ai': {
+		id: 'ubits-ai',
+		name: 'UBITS AI',
+		subnavVariant: 'template',
+		products: [
+			{ id: 'chat', name: 'Chat', icon: 'far fa-comments' },
+			{ id: 'asistente', name: 'Asistente', icon: 'far fa-robot' },
 		],
 	},
 };
