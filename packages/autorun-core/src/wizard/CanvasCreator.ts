@@ -655,10 +655,36 @@ export class CanvasCreator {
               // handleSectionChange con activeTabId activa el módulo y el producto en una sola llamada
               window.UBITS_ContentManager.handleSectionChange(normalizedModule, '${product}');
               
-              // Verificar después de un momento
+              // Forzar activación del tab en el SubNav después de un momento
+              // Esto es necesario porque el SubNav puede ya existir y no recargarse
               setTimeout(() => {
                 console.log('🔍 [Wizard] ════════════════════════════════════════');
-                console.log('🔍 [Wizard] Estado DESPUÉS de handleSectionChange:');
+                console.log('🔍 [Wizard] Forzando activación del tab en SubNav...');
+                
+                const subNavElement = document.querySelector('.ubits-sub-nav');
+                if (subNavElement) {
+                  // Remover active de todos los tabs
+                  subNavElement.querySelectorAll('.ubits-sub-nav-tab').forEach(tab => {
+                    tab.classList.remove('ubits-sub-nav-tab--active');
+                  });
+                  
+                  // Activar el tab correspondiente al producto
+                  const targetTab = subNavElement.querySelector('[data-tab="${product}"]');
+                  if (targetTab) {
+                    targetTab.classList.add('ubits-sub-nav-tab--active');
+                    console.log('🔍 [Wizard] ✅ Tab "${product}" activado manualmente');
+                  } else {
+                    console.warn('🔍 [Wizard] ⚠️ Tab "${product}" no encontrado en SubNav');
+                    // Listar todos los tabs disponibles para debug
+                    const allTabs = subNavElement.querySelectorAll('.ubits-sub-nav-tab');
+                    console.log('🔍 [Wizard] Tabs disponibles:', Array.from(allTabs).map(t => t.getAttribute('data-tab')));
+                  }
+                } else {
+                  console.warn('🔍 [Wizard] ⚠️ SubNav no encontrado');
+                }
+                
+                // Verificar estado final
+                console.log('🔍 [Wizard] Estado DESPUÉS de activación:');
                 console.log('🔍 [Wizard] currentSection:', window.UBITS_ContentManager.currentSection);
                 
                 const activeButton = document.querySelector('.ubits-sidebar-nav-button.active');
@@ -666,7 +692,7 @@ export class CanvasCreator {
                 
                 const activeTab = document.querySelector('.ubits-sub-nav-tab--active');
                 console.log('🔍 [Wizard] Tab activo en SubNav:', activeTab?.getAttribute('data-tab') || 'ninguno');
-              }, 500);
+              }, 600);
             } else {
               console.log('🔍 [Wizard] No hay producto para activar');
             }
