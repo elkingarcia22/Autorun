@@ -53,12 +53,16 @@ export class InitializationWizard {
 		// Preguntar template y producto en un solo paso
 		const answers = await this.askTemplateAndProduct();
 
+		// Preguntar por los add-ons a instalar
+		const selectedAddons = await this.askAddons();
+
 		console.log('\n✅ Perfecto, voy a configurar tu proyecto UBITS ahora.\n');
 		
 		return await this.setupUBITSFromAnswers({
 			template: answers.template,
 			module: answers.module,
 			product: answers.product,
+			addons: selectedAddons,
 		});
 	}
 
@@ -193,6 +197,91 @@ export class InitializationWizard {
 	}
 
 	/**
+	 * Pregunta por los add-ons a instalar
+	 * Muestra los add-ons por defecto y permite agregar/quitar
+	 */
+	private async askAddons(): Promise<string[]> {
+		const defaultAddons = UBITS_PRESET.addons;
+		
+		// Descripciones de los add-ons
+		const addonDescriptions: Record<string, string> = {
+			'storybook': '📚 Desarrollo y documentación de componentes',
+			'figma-sync': '🎨 Sincronización de tokens desde Figma',
+			'eslint': '🔍 Detección de errores de código',
+			'prettier': '✨ Formateo automático de código',
+			'vitest': '🧪 Unit testing (rápido y moderno)',
+			'playwright': '🎭 Testing end-to-end',
+			'chromatic': '🖼️  Visual testing y comparación',
+			'snyk': '🔒 Escaneo de vulnerabilidades',
+			'renovate': '🔄 Actualizaciones automáticas',
+			'lighthouse': '⚡ Análisis de rendimiento',
+			'bundle-analyzer': '📊 Análisis de tamaño de bundle',
+			'standalone': '🚀 Componentes standalone',
+			'sentry': '🐛 Monitoreo de errores',
+			'clarity': '👁️  Análisis de comportamiento de usuarios',
+			'vercel': '☁️  Despliegue en Vercel',
+			'github': '🐙 Integración con GitHub',
+			'codecov': '📈 Cobertura de código',
+			'feedback': '💬 Sistema de feedback automatizado',
+		};
+
+		// Obtener todos los add-ons disponibles
+		const allAvailableAddons = await this.discoverAvailableAddons();
+		const allAddonIds = new Set([...defaultAddons, ...allAvailableAddons.map(a => a.id)]);
+
+		// Mostrar resumen de add-ons por defecto
+		console.log('\n🔌 Add-ons que se instalarán por defecto:\n');
+		defaultAddons.forEach((addonId, index) => {
+			const description = addonDescriptions[addonId] || 
+				allAvailableAddons.find(a => a.id === addonId)?.description || 
+				addonId;
+			console.log(`   ${index + 1}. ${description}`);
+		});
+
+		// Preguntar si quiere modificar la lista
+		const wantsToModify = await this.prompt.confirm(
+			'\n   ¿Quieres agregar o quitar algún add-on?',
+			false,
+		);
+
+		let selectedAddons = [...defaultAddons];
+
+		if (wantsToModify) {
+			// Crear lista completa de opciones
+			const allOptions = Array.from(allAddonIds).map(addonId => {
+				const description = addonDescriptions[addonId] || 
+					allAvailableAddons.find(a => a.id === addonId)?.description || 
+					addonId;
+				const isDefault = defaultAddons.includes(addonId);
+				return {
+					value: addonId,
+					label: `${isDefault ? '⭐ ' : '   '}${description}`,
+					selected: isDefault,
+				};
+			});
+
+			console.log('\n   📦 Lista completa de add-ons (⭐ = incluido por defecto):\n');
+			
+			// Preguntar por cada add-on si quiere incluirlo
+			selectedAddons = [];
+			for (const option of allOptions) {
+				const isDefault = defaultAddons.includes(option.value);
+				
+				const include = await this.prompt.confirm(
+					`   ${option.label}`,
+					isDefault,
+				);
+				
+				if (include) {
+					selectedAddons.push(option.value);
+				}
+			}
+		}
+
+		return selectedAddons;
+	}
+
+	/**
 	 * Pregunta si quiere trabajar en UBITS o proyecto independiente
 	 * SIEMPRE pregunta al usuario, no usa variables de entorno automáticamente
 	 */
@@ -224,8 +313,9 @@ export class InitializationWizard {
 		template: 'administrador' | 'colaborador';
 		module: string;
 		product?: string;
+		addons: string[];
 	}): Promise<UBITSResult> {
-		const { template, module, product } = answers;
+		const { template, module, product, addons } = answers;
 
 		// Ejecutar todos los pasos automáticos
 		console.log('🚀 Configurando todo automáticamente...\n');
@@ -245,9 +335,9 @@ export class InitializationWizard {
 		await this.loadComponentsFromStorybook();
 		console.log('   ✅ Componentes cargados\n');
 
-		// 3. Instalar add-ons por defecto
-		console.log('📦 Instalando add-ons optimizados...');
-		const installedAddons = await this.installAddons(UBITS_PRESET.addons);
+		// 3. Instalar add-ons seleccionados
+		console.log('📦 Instalando add-ons seleccionados...');
+		const installedAddons = await this.installAddons(addons);
 		console.log(`   ✅ ${installedAddons.length} add-on(s) instalado(s)\n`);
 
 		// 4. Habilitar módulo en sidebar y configurar subnav
