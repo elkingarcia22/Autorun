@@ -42,7 +42,8 @@ export class CanvasCreator {
 	}
 
 	/**
-	 * Carga el template desde la carpeta UBITS local en el escritorio
+	 * Carga el template completo desde la carpeta UBITS local en el escritorio
+	 * Copia el template tal cual y solo ajusta las rutas para que funcionen
 	 */
 	private async loadTemplateFromStorybook(
 		template: 'administrador' | 'colaborador',
@@ -61,27 +62,39 @@ export class CanvasCreator {
 			await fs.access(ubitsDesktopPath);
 			
 			// Cargar desde archivo local del escritorio
-			console.log(`   📄 Cargando template desde UBITS local: ${ubitsDesktopPath}`);
+			console.log(`   📄 Cargando template completo desde UBITS local: ${ubitsDesktopPath}`);
 			let templateContent = await fs.readFile(ubitsDesktopPath, 'utf-8');
 			
-			// Actualizar las rutas relativas para que funcionen desde el nuevo directorio
-			// Las rutas en el template son relativas a packages/templates/
-			// Necesitamos ajustarlas para que funcionen desde prototypes/
-			const ubitsBasePath = path.join(os.homedir(), 'Desktop', 'UBITS');
-			templateContent = await this.adjustTemplatePaths(templateContent, ubitsBasePath);
+			// Calcular ruta relativa desde prototypes/ hacia Desktop/UBITS/packages/
+			// prototypes/ está en: projectPath/prototypes/
+			// UBITS/packages/ está en: ~/Desktop/UBITS/packages/
+			const prototypesPath = path.join(this.projectPath, 'prototypes');
+			const ubitsPackagesPath = path.join(os.homedir(), 'Desktop', 'UBITS', 'packages');
 			
-			// Actualizar el título con el módulo y producto
-			const moduleConfig = UBITS_MODULES_CONFIG[module];
-			const moduleName = moduleConfig?.name || this.formatModuleName(module);
-			const productName = product
-				? moduleConfig?.products.find((p) => p.id === product)?.name || product
-				: '';
+			// Calcular ruta relativa
+			const relativePath = path.relative(prototypesPath, ubitsPackagesPath);
+			// Normalizar para usar en HTML (usar / en lugar de \)
+			const normalizedPath = relativePath.split(path.sep).join('/');
 			
-			// Actualizar el título en el template
-			templateContent = templateContent.replace(
-				/<title>.*?<\/title>/,
-				`<title>UBITS - ${moduleName}${productName ? ` - ${productName}` : ''} - ${template}</title>`
-			);
+			// Ajustar rutas relativas del template
+			// Las rutas originales son: ../tokens/dist/tokens.css (relativas a packages/templates/)
+			// Necesitamos: ../../Desktop/UBITS/packages/tokens/dist/tokens.css (relativas a prototypes/)
+			templateContent = await this.adjustTemplatePaths(templateContent, normalizedPath);
+			
+			// Actualizar el título con el módulo y producto (opcional, mantener el original si no se especifica)
+			if (module && module !== 'inicio') {
+				const moduleConfig = UBITS_MODULES_CONFIG[module];
+				const moduleName = moduleConfig?.name || this.formatModuleName(module);
+				const productName = product
+					? moduleConfig?.products.find((p) => p.id === product)?.name || product
+					: '';
+				
+				// Actualizar el título en el template
+				templateContent = templateContent.replace(
+					/<title>.*?<\/title>/,
+					`<title>UBITS - ${moduleName}${productName ? ` - ${productName}` : ''} - ${template}</title>`
+				);
+			}
 			
 			return templateContent;
 		} catch (localError) {
@@ -93,36 +106,53 @@ export class CanvasCreator {
 	}
 
 	/**
-	 * Ajusta las rutas del template para que apunten a UBITS en el escritorio
+	 * Ajusta las rutas del template para que funcionen desde prototypes/
 	 * Las rutas originales son relativas a packages/templates/ (../tokens/...)
-	 * Las convertimos a rutas absolutas hacia Desktop/UBITS/packages/
+	 * Las convertimos a rutas relativas desde prototypes/ hacia Desktop/UBITS/packages/
 	 */
-	private async adjustTemplatePaths(content: string, ubitsBasePath: string): Promise<string> {
-		const os = await import('os');
-		const desktopPath = path.join(os.homedir(), 'Desktop');
-		const ubitsPackagesPath = path.join(desktopPath, 'UBITS', 'packages');
+	private async adjustTemplatePaths(content: string, relativePathToUBITS: string): Promise<string> {
+		// Las rutas originales son: ../tokens/dist/tokens.css
+		// Necesitamos: ../../Desktop/UBITS/packages/tokens/dist/tokens.css
+		// Pero relativePathToUBITS ya incluye el path completo relativo
+		// Entonces: ${relativePathToUBITS}/tokens/dist/tokens.css
 		
-		// Convertir a URL file:// para que funcione en el navegador
-		// En macOS/Linux: file:///Users/username/Desktop/UBITS/packages/
-		// En Windows: file:///C:/Users/username/Desktop/UBITS/packages/
-		let ubitsUrl = `file://${ubitsPackagesPath}`;
-		
-		// Normalizar para Windows (cambiar \ por /)
-		if (process.platform === 'win32') {
-			ubitsUrl = ubitsUrl.replace(/\\/g, '/');
-		}
-		
-		// Reemplazar rutas relativas ../ por la ruta absoluta a UBITS/packages/
-		// Las rutas originales son como: ../tokens/dist/tokens.css
-		// Se convierten a: file:///Users/.../Desktop/UBITS/packages/tokens/dist/tokens.css
+		// Reemplazar rutas relativas ../ por la ruta relativa calculada
 		content = content.replace(
 			/href="\.\.\//g,
-			`href="${ubitsUrl}/`
+			`href="${relativePathToUBITS}/`
 		);
 		
 		content = content.replace(
 			/src="\.\.\//g,
-			`src="${ubitsUrl}/`
+			`src="${relativePathToUBITS}/`
+		);
+		
+		// También ajustar rutas de assets que son relativas al mismo directorio
+		// assets/fontawesome/... debe convertirse a ${relativePathToUBITS}/templates/assets/fontawesome/...
+		content = content.replace(
+			/href="assets\//g,
+			`href="${relativePathToUBITS}/templates/assets/`
+		);
+		
+		content = content.replace(
+			/src="assets\//g,
+			`src="${relativePathToUBITS}/templates/assets/`
+		);
+		
+		// Ajustar rutas de scripts que son relativas al mismo directorio
+		content = content.replace(
+			/src="components-loader\.js/g,
+			`src="${relativePathToUBITS}/templates/components-loader.js`
+		);
+		
+		content = content.replace(
+			/src="config\//g,
+			`src="${relativePathToUBITS}/templates/config/`
+		);
+		
+		content = content.replace(
+			/src="engine\//g,
+			`src="${relativePathToUBITS}/templates/engine/`
 		);
 		
 		return content;

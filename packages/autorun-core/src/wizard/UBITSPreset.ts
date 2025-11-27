@@ -101,7 +101,7 @@ export const UBITS_PRESET: UBITSConfig = {
 			type: 'administrador',
 			modules: [
 				'inicio',
-				'colaboradores',
+				'empresa',
 				'aprendizaje',
 				'desempeno',
 				'diagnostico',
@@ -114,7 +114,7 @@ export const UBITS_PRESET: UBITSConfig = {
 				variant: 'administrador',
 				enabledModules: [
 					'inicio',
-					'colaboradores',
+					'empresa',
 					'aprendizaje',
 					'desempeno',
 					'diagnostico',
@@ -208,6 +208,19 @@ export const UBITS_MODULES_CONFIG: Record<string, ModuleConfig> = {
 			{ id: 'objetivos', name: 'Objetivos', icon: 'far fa-bullseye' },
 			{ id: 'metricas', name: 'Métricas', icon: 'far fa-chart-line' },
 			{ id: 'reportes', name: 'Reportes', icon: 'far fa-file-alt' },
+		],
+	},
+	empresa: {
+		id: 'empresa',
+		name: 'Empresa',
+		subnavVariant: 'template',
+		products: [
+			{ id: 'gestion-usuarios', name: 'Gestión de usuarios', icon: 'far fa-users' },
+			{ id: 'organigrama', name: 'Organigrama', icon: 'far fa-sitemap' },
+			{ id: 'datos-empresa', name: 'Datos de empresa', icon: 'far fa-building' },
+			{ id: 'personalizacion', name: 'Personalización', icon: 'far fa-paint-brush' },
+			{ id: 'roles-permisos', name: 'Roles y permisos', icon: 'far fa-user-shield' },
+			{ id: 'comunicaciones', name: 'Comunicaciones', icon: 'far fa-comments' },
 		],
 	},
 	colaboradores: {
