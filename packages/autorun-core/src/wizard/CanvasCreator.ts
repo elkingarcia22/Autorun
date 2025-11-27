@@ -77,7 +77,10 @@ export class CanvasCreator {
 			
 			// Personalizar el template con el módulo y producto seleccionados
 			// Esto agrega el script que activa el módulo/producto en sidebar y subnav
-			templateContent = this.customizeTemplate(templateContent, template, module, product, absolutePath, otherTemplatePath);
+			// otherTemplatePath será el nombre del archivo del otro template (ej: canvas-colaborador-...html)
+			const pathModule = await import('path');
+			const otherTemplateFileName = otherTemplatePath ? pathModule.basename(otherTemplatePath) : '';
+			templateContent = this.customizeTemplate(templateContent, template, module, product, absolutePath, otherTemplateFileName);
 			
 			return templateContent;
 		} catch (localError) {
@@ -453,7 +456,7 @@ export class CanvasCreator {
 		module: string,
 		product?: string,
 		absolutePathToUBITS?: string,
-		otherTemplatePath?: string,
+		otherTemplateFileName?: string,
 	): string {
 		const moduleConfig = UBITS_MODULES_CONFIG[module];
 		const productName = product
@@ -487,7 +490,8 @@ export class CanvasCreator {
       product: '${product || ''}',
       moduleName: '${moduleName}',
       productName: '${productName || ''}',
-      storybookUrl: '${UBITS_PRESET.storybook.url}'
+      storybookUrl: '${UBITS_PRESET.storybook.url}',
+      otherTemplatePath: '${otherTemplatePath || ''}'
     };
     
     // Ajustar rutas de imágenes y sobrescribir initialActiveSection después de que products.js se cargue
@@ -544,6 +548,37 @@ export class CanvasCreator {
           
           // Ajustar rutas de imágenes
           adjustImagePaths(window.UBITS_PRODUCTS);
+          
+          // Arreglar enlaces entre templates si existe otherTemplateFileName
+          ${otherTemplateFileName ? `
+          const otherTemplateName = '${template === 'administrador' ? 'template-colaborador.html' : 'template-admin.html'}';
+          const otherTemplateFileName = '${otherTemplateFileName}';
+          
+          // Función recursiva para arreglar enlaces en objetos
+          const fixTemplateLinks = (obj) => {
+            if (typeof obj !== 'object' || obj === null) return;
+            
+            for (const key in obj) {
+              if (key === 'href' || key === 'url') {
+                // Reemplazar enlaces a template-admin.html o template-colaborador.html
+                if (typeof obj[key] === 'string' && obj[key].includes(otherTemplateName)) {
+                  console.log('🔗 [Wizard] Arreglando enlace:', obj[key], '->', otherTemplateFileName);
+                  obj[key] = obj[key].replace(otherTemplateName, otherTemplateFileName);
+                }
+              } else if (Array.isArray(obj[key])) {
+                // Recorrer arrays
+                obj[key].forEach(item => fixTemplateLinks(item));
+              } else {
+                // Recorrer objetos anidados
+                fixTemplateLinks(obj[key]);
+              }
+            }
+          };
+          
+          // Arreglar enlaces en todos los productos
+          fixTemplateLinks(window.UBITS_PRODUCTS);
+          console.log('🔗 [Wizard] ✅ Enlaces entre templates arreglados');
+          ` : ''}
           
           // Sobrescribir initialActiveSection INMEDIATAMENTE
           if (window.UBITS_PRODUCTS[templateKey]) {
