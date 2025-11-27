@@ -584,7 +584,7 @@ export class CanvasCreator {
               // También actualizar el SubNav para que muestre el tab activo
               const subNavElement = document.querySelector('.ubits-sub-nav');
               if (subNavElement) {
-                const targetTab = subNavElement.querySelector(\`[data-tab="\${product}"]\`);
+                const targetTab = subNavElement.querySelector('[data-tab="${product}"]');
                 if (targetTab) {
                   // Remover active de todos los tabs
                   subNavElement.querySelectorAll('.ubits-sub-nav-tab').forEach(tab => {
