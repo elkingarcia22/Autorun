@@ -77,6 +77,9 @@ export class CanvasCreator {
 			const ubitsPackagesPath = path.join(os.homedir(), 'Desktop', 'UBITS', 'packages');
 			const absolutePath = `file://${ubitsPackagesPath}`.replace(/\\/g, '/');
 
+			// Validar que los archivos críticos existen
+			await this.validateUBITSFiles(ubitsPackagesPath);
+
 			// Ajustar rutas del template a rutas absolutas file://
 			templateContent = await this.adjustTemplatePaths(templateContent, absolutePath);
 
@@ -100,6 +103,43 @@ export class CanvasCreator {
 	}
 
 	/**
+	 * Valida que los archivos críticos de UBITS existen
+	 */
+	private async validateUBITSFiles(ubitsPackagesPath: string): Promise<void> {
+		const fs = await import('fs/promises');
+		const path = await import('path');
+
+		const criticalFiles = [
+			'tokens/dist/tokens.css',
+			'templates/components-loader.js',
+			'templates/config/products.js',
+			'templates/config/theme-manager.js',
+			'templates/engine/template-loader.js',
+			'components/sidebar/src/styles/sidebar.css',
+			'components/subnav/src/styles/subnav.css',
+		];
+
+		const missingFiles: string[] = [];
+
+		for (const file of criticalFiles) {
+			const filePath = path.join(ubitsPackagesPath, file);
+			try {
+				await fs.access(filePath);
+			} catch {
+				missingFiles.push(file);
+			}
+		}
+
+		if (missingFiles.length > 0) {
+			console.warn('   ⚠️  Archivos críticos de UBITS no encontrados:');
+			missingFiles.forEach((file) => console.warn(`      - ${file}`));
+			console.warn('   💡 Asegúrate de que UBITS está correctamente clonado en Desktop/UBITS/');
+		} else {
+			console.log('   ✅ Todos los archivos críticos de UBITS encontrados');
+		}
+	}
+
+	/**
 	 * Ajusta las rutas del template para que funcionen con file:// absolutas
 	 * Las rutas originales son relativas a packages/templates/ (../tokens/...)
 	 * Las convertimos a rutas absolutas file:// hacia Desktop/UBITS/packages/
@@ -108,38 +148,53 @@ export class CanvasCreator {
 		// Las rutas originales son: ../tokens/dist/tokens.css
 		// Necesitamos: file:///Users/elkinmac/Desktop/UBITS/packages/tokens/dist/tokens.css
 
-		// Reemplazar rutas relativas ../ por la ruta absoluta
-		content = content.replace(/href="\.\.\//g, `href="${absolutePathToUBITS}/`);
+		// ⚠️ IMPORTANTE: Asegurar que la ruta termine con / para evitar problemas
+		const basePath = absolutePathToUBITS.endsWith('/') ? absolutePathToUBITS : `${absolutePathToUBITS}/`;
 
-		content = content.replace(/src="\.\.\//g, `src="${absolutePathToUBITS}/`);
+		// 1. Reemplazar rutas relativas ../ por la ruta absoluta (CSS y JS)
+		content = content.replace(/href="\.\.\//g, `href="${basePath}`);
+		content = content.replace(/src="\.\.\//g, `src="${basePath}`);
 
-		// También ajustar rutas de assets que son relativas al mismo directorio
-		// assets/fontawesome/... debe convertirse a file:///Users/.../templates/assets/fontawesome/...
-		content = content.replace(/href="assets\//g, `href="${absolutePathToUBITS}/templates/assets/`);
+		// 2. Ajustar rutas de assets que son relativas al mismo directorio (templates/assets/)
+		// assets/fontawesome/... -> file:///Users/.../templates/assets/fontawesome/...
+		content = content.replace(/href="assets\//g, `href="${basePath}templates/assets/`);
+		content = content.replace(/src="assets\//g, `src="${basePath}templates/assets/`);
 
-		content = content.replace(/src="assets\//g, `src="${absolutePathToUBITS}/templates/assets/`);
-
-		// Ajustar rutas de imágenes en JavaScript (products.js)
+		// 3. Ajustar rutas de imágenes en JavaScript (products.js)
 		// 'assets/images/Profile-image.jpg' -> 'file:///Users/.../templates/assets/images/Profile-image.jpg'
 		content = content.replace(
 			/'assets\/images\//g,
-			`'${absolutePathToUBITS}/templates/assets/images/`,
+			`'${basePath}templates/assets/images/`,
 		);
-
 		content = content.replace(
 			/"assets\/images\//g,
-			`"${absolutePathToUBITS}/templates/assets/images/`,
+			`"${basePath}templates/assets/images/`,
 		);
 
-		// Ajustar rutas de scripts que son relativas al mismo directorio
+		// 4. Ajustar rutas de scripts que son relativas al mismo directorio
+		// components-loader.js -> file:///Users/.../templates/components-loader.js
 		content = content.replace(
 			/src="components-loader\.js/g,
-			`src="${absolutePathToUBITS}/templates/components-loader.js`,
+			`src="${basePath}templates/components-loader.js`,
 		);
+		content = content.replace(/src="config\//g, `src="${basePath}templates/config/`);
+		content = content.replace(/src="engine\//g, `src="${basePath}templates/engine/`);
 
-		content = content.replace(/src="config\//g, `src="${absolutePathToUBITS}/templates/config/`);
+		// 5. Ajustar rutas en template strings de JavaScript (backticks)
+		// `../tokens/...` -> `file:///Users/.../tokens/...`
+		content = content.replace(/`\.\.\//g, `\`${basePath}`);
 
-		content = content.replace(/src="engine\//g, `src="${absolutePathToUBITS}/templates/engine/`);
+		// 6. Ajustar rutas en strings de JavaScript (comillas simples y dobles)
+		// '../tokens/...' -> 'file:///Users/.../tokens/...'
+		content = content.replace(/'\.\.\//g, `'${basePath}`);
+		content = content.replace(/"\.\.\//g, `"${basePath}`);
+
+		// 7. Remover cualquier intento de cargar desde Storybook en el template generado
+		// Esto asegura que solo se usen componentes locales
+		content = content.replace(
+			/window\.AUTORUN\.Components\.loadFromStorybook/g,
+			'// window.AUTORUN.Components.loadFromStorybook // DESHABILITADO: Usar solo componentes locales',
+		);
 
 		return content;
 	}
