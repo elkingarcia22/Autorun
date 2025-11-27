@@ -74,7 +74,7 @@ export class CanvasCreator {
 			
 			// Personalizar el template con el módulo y producto seleccionados
 			// Esto agrega el script que activa el módulo/producto en sidebar y subnav
-			templateContent = this.customizeTemplate(templateContent, template, module, product);
+			templateContent = this.customizeTemplate(templateContent, template, module, product, absolutePath);
 			
 			return templateContent;
 		} catch (localError) {
@@ -445,6 +445,7 @@ export class CanvasCreator {
 		template: 'administrador' | 'colaborador',
 		module: string,
 		product?: string,
+		absolutePathToUBITS?: string,
 	): string {
 		const moduleConfig = UBITS_MODULES_CONFIG[module];
 		const productName = product
@@ -481,44 +482,69 @@ export class CanvasCreator {
       storybookUrl: '${UBITS_PRESET.storybook.url}'
     };
     
-    // Sobrescribir initialActiveSection ANTES de que products.js se ejecute
-    // Esto asegura que el template use el módulo/producto seleccionado
+    // Ajustar rutas de imágenes y sobrescribir initialActiveSection después de que products.js se cargue
     (function() {
-      // Interceptar cuando UBITS_PRODUCTS se define
-      const originalDefine = Object.defineProperty;
-      Object.defineProperty(window, 'UBITS_PRODUCTS', {
-        set: function(value) {
-          // Sobrescribir la configuración del template
-          if (value && value['template-${template}']) {
-            const productConfig = value['template-${template}'];
-            if (productConfig.sidebar) {
-              productConfig.sidebar.initialActiveSection = '${module}';
+      const adjustImagePaths = (products) => {
+        if (!products) return;
+        // absolutePathToUBITS ya incluye file:///Users/.../UBITS/packages
+        const ubitsTemplatesPath = '${absolutePathToUBITS || 'file:///Users/elkinmac/Desktop/UBITS/packages'}/templates';
+        
+        // Función recursiva para ajustar rutas en objetos
+        const adjustPaths = (obj) => {
+          if (typeof obj !== 'object' || obj === null) return;
+          
+          for (const key in obj) {
+            if (key === 'avatarImage' || key === 'logoImage' || key === 'avatar') {
+              // Ajustar rutas de imágenes
+              if (typeof obj[key] === 'string' && obj[key].startsWith('assets/')) {
+                obj[key] = ubitsPath + '/' + obj[key];
+              }
+            } else if (Array.isArray(obj[key])) {
+              // Recorrer arrays
+              obj[key].forEach(item => adjustPaths(item));
+            } else {
+              // Recorrer objetos anidados
+              adjustPaths(obj[key]);
             }
           }
-          // Establecer la propiedad normalmente
-          Object.defineProperty(window, 'UBITS_PRODUCTS', {
-            value: value,
-            writable: true,
-            configurable: true
-          });
-        },
-        get: function() {
-          return window._UBITS_PRODUCTS;
-        },
-        configurable: true
-      });
+        };
+        
+        adjustPaths(products);
+      };
       
-      // También sobrescribir después de que se cargue
-      document.addEventListener('DOMContentLoaded', () => {
-        setTimeout(() => {
-          if (window.UBITS_PRODUCTS && window.UBITS_PRODUCTS['template-${template}']) {
+      // Interceptar cuando UBITS_PRODUCTS se define
+      let productsDefined = false;
+      const checkProducts = () => {
+        if (window.UBITS_PRODUCTS && !productsDefined) {
+          productsDefined = true;
+          // Ajustar rutas de imágenes
+          adjustImagePaths(window.UBITS_PRODUCTS);
+          
+          // Sobrescribir initialActiveSection
+          if (window.UBITS_PRODUCTS['template-${template}']) {
             const productConfig = window.UBITS_PRODUCTS['template-${template}'];
             if (productConfig.sidebar) {
               productConfig.sidebar.initialActiveSection = '${module}';
             }
           }
-        }, 0);
+        }
+      };
+      
+      // Verificar periódicamente hasta que products.js se cargue
+      const interval = setInterval(() => {
+        checkProducts();
+        if (productsDefined) {
+          clearInterval(interval);
+        }
+      }, 50);
+      
+      // También verificar en DOMContentLoaded
+      document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(checkProducts, 100);
       });
+      
+      // Limpiar después de 5 segundos
+      setTimeout(() => clearInterval(interval), 5000);
     })();
     
     // Activar el módulo y producto después de que todo esté cargado
