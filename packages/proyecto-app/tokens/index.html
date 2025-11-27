@@ -8923,28 +8923,46 @@ const result = await runTests({ coverage: true });</code></pre>
             </div>
             <div class="step-content">
               <p class="step-description">
-                Ejecuta el wizard de inicialización de Autorun. El wizard te permitirá seleccionar el template (administrador o colaborador), el módulo y el producto, y automáticamente configurará todo y abrirá el template en tu navegador.
+                Clona el repositorio Autorun, instala las dependencias y ejecuta el wizard de inicialización. El wizard te permitirá seleccionar el template, módulo, producto y add-ons, y automáticamente configurará todo y abrirá el template en tu navegador.
               </p>
               <div class="code-block">
-                <pre><code># Ejecutar el wizard de inicialización
+                <pre><code># 1. Clonar el repositorio Autorun
+git clone https://github.com/elkingarcia22/Autorun.git
+cd Autorun
+
+# 2. Instalar dependencias
+npm install
+
+# 3. Ejecutar el wizard de inicialización
 npm run init
 
 # El wizard te preguntará:
 # 1. Template (administrador o colaborador)
 # 2. Módulo (desempeño, empresa, aprendizaje, etc.)
 # 3. Producto (matriz-talento, organigrama, inicio, etc.)
+# 4. Add-ons:
+#    - Te mostrará los add-ons por defecto que se instalarán
+#    - Podrás elegir: "Instalar solo los add-ons por defecto" o "Agregar otros add-ons"
+#    - Si eliges agregar otros, podrás seleccionar cuáles instalar
+
+# Después de instalar los add-ons, el wizard:
+# - Configurará el proyecto
+# - Creará el lienzo de trabajo
+# - Abrirá automáticamente el template en tu navegador
+# - Con el módulo y producto seleccionados activos
 
 # O usar configuración automática con variables de entorno:
 export AUTORUN_TEMPLATE=administrador
 export AUTORUN_MODULE=desempeno
 export AUTORUN_PRODUCT=matriz-talento
-npm run init
-
-# El template se abrirá automáticamente en tu navegador
-# con el módulo y producto seleccionados activos</code></pre>
+export AUTORUN_ADDONS=storybook,eslint,prettier
+npm run init</code></pre>
               </div>
               <p class="step-note" style="margin-top: 16px; padding: 12px; background: rgba(0, 255, 255, 0.1); border-left: 3px solid var(--autorun-neon-cyan); border-radius: 4px;">
-                <strong>📦 Repositorio UBITS:</strong> Este repositorio contiene todos los templates (Administrador y Colaborador) y componentes UBITS listos para usar. Los templates están en <code>packages/templates/</code> y los componentes en <code>packages/components/</code>.
+                <strong>🔌 Add-ons por defecto:</strong> El wizard instalará automáticamente estos add-ons: Storybook, Figma Sync, ESLint, Prettier, Vitest, Playwright, Chromatic, Snyk, Renovate, Lighthouse, Bundle Analyzer, Standalone, Sentry, Clarity, Vercel, GitHub, Codecov y Feedback. Puedes personalizar esta lista durante la inicialización.
+              </p>
+              <p class="step-note" style="margin-top: 12px; padding: 12px; background: rgba(0, 255, 255, 0.1); border-left: 3px solid var(--autorun-neon-cyan); border-radius: 4px;">
+                <strong>📦 Repositorio UBITS:</strong> El wizard utiliza los templates y componentes del repositorio UBITS que debe estar en <code>~/Desktop/UBITS</code>. Los templates están en <code>packages/templates/</code> y los componentes en <code>packages/components/</code>.
               </p>
             </div>
           </div>
