@@ -550,11 +550,11 @@ export class CanvasCreator {
     }
     
     /* Asegurar que el indicador sea visible en dark mode también */
+    /* Usar el token correcto para dark mode: --modifiers-normal-color-dark-accent-blue */
     body[data-theme="dark"] .ubits-sub-nav-tab.ubits-sub-nav-tab--active::after,
     html[data-theme="dark"] .ubits-sub-nav-tab.ubits-sub-nav-tab--active::after,
     [data-theme="dark"] .ubits-sub-nav-tab.ubits-sub-nav-tab--active::after {
-      background-color: var(--modifiers-normal-color-dark-accent-blue, #0c5bef) !important;
-      background-color: var(--ubits-accent-brand-static, #0c5bef) !important;
+      background-color: var(--modifiers-normal-color-dark-accent-blue) !important;
       opacity: 1 !important;
       visibility: visible !important;
       display: block !important;
