@@ -470,11 +470,11 @@ export class InitializationWizard {
 		const otherCanvasPath = await this.createCanvas(otherTemplate, module, product);
 		console.log('   ✅ Lienzo secundario creado\n');
 		
-		// Crear el template principal con referencia al otro
+		// Crear el template principal (sin enlaces cruzados aún)
 		const canvasPath = await this.createCanvas(template, module, product);
 		console.log('   ✅ Lienzo principal creado\n');
 		
-		// Actualizar ambos templates con enlaces cruzados
+		// Actualizar ambos templates con enlaces cruzados en el HTML
 		const fs = await import('fs/promises');
 		const path = await import('path');
 		
@@ -484,14 +484,14 @@ export class InitializationWizard {
 		const otherTemplateName = template === 'administrador' ? 'template-colaborador.html' : 'template-admin.html';
 		const mainTemplateName = template === 'administrador' ? 'template-admin.html' : 'template-colaborador.html';
 		
-		// Actualizar el template principal con enlace al otro
+		// Actualizar el template principal con enlace al otro en el HTML
 		const mainContent = await fs.readFile(canvasPath, 'utf-8');
 		
-		// Contar cuántos reemplazos se harán
+		// Contar cuántos reemplazos se harán en HTML
 		const mainMatches = mainContent.match(new RegExp(otherTemplateName, 'gi'));
 		const mainMatchesCount = mainMatches ? mainMatches.length : 0;
 		
-		const updatedMainContent = mainContent
+		let updatedMainContent = mainContent
 			// Reemplazar en HTML: href="template-xxx.html"
 			.replace(new RegExp(`href=["']${otherTemplateName}["']`, 'gi'), `href="${otherTemplateFileName}"`)
 			// Reemplazar en JavaScript: href: 'template-xxx.html' o href: "template-xxx.html"
@@ -501,16 +501,31 @@ export class InitializationWizard {
 			// Reemplazar cualquier referencia en strings: 'template-xxx.html' o "template-xxx.html"
 			.replace(new RegExp(`["']${otherTemplateName}["']`, 'gi'), `"${otherTemplateFileName}"`);
 		
+		// Actualizar el script inyectado para incluir el nombre del otro template
+		// Buscar el script que tiene window.UBITS_CONFIG y actualizar otherTemplatePath
+		updatedMainContent = updatedMainContent.replace(
+			/otherTemplatePath:\s*['"][^'"]*['"]/,
+			`otherTemplatePath: '${otherTemplateFileName}'`
+		);
+		
+		// Si no existe, agregarlo
+		if (!updatedMainContent.includes('otherTemplatePath')) {
+			updatedMainContent = updatedMainContent.replace(
+				/storybookUrl:\s*['"][^'"]*['"]/,
+				`storybookUrl: '${UBITS_PRESET.storybook.url}',\n      otherTemplatePath: '${otherTemplateFileName}'`
+			);
+		}
+		
 		await fs.writeFile(canvasPath, updatedMainContent, 'utf-8');
 		
-		// Actualizar el otro template con enlace al principal
+		// Actualizar el otro template con enlace al principal en el HTML
 		const otherContent = await fs.readFile(otherCanvasPath, 'utf-8');
 		
-		// Contar cuántos reemplazos se harán
+		// Contar cuántos reemplazos se harán en HTML
 		const otherMatches = otherContent.match(new RegExp(mainTemplateName, 'gi'));
 		const otherMatchesCount = otherMatches ? otherMatches.length : 0;
 		
-		const updatedOtherContent = otherContent
+		let updatedOtherContent = otherContent
 			// Reemplazar en HTML: href="template-xxx.html"
 			.replace(new RegExp(`href=["']${mainTemplateName}["']`, 'gi'), `href="${mainTemplateFileName}"`)
 			// Reemplazar en JavaScript: href: 'template-xxx.html' o href: "template-xxx.html"
@@ -520,8 +535,22 @@ export class InitializationWizard {
 			// Reemplazar cualquier referencia en strings: 'template-xxx.html' o "template-xxx.html"
 			.replace(new RegExp(`["']${mainTemplateName}["']`, 'gi'), `"${mainTemplateFileName}"`);
 		
+		// Actualizar el script inyectado para incluir el nombre del otro template
+		updatedOtherContent = updatedOtherContent.replace(
+			/otherTemplatePath:\s*['"][^'"]*['"]/,
+			`otherTemplatePath: '${mainTemplateFileName}'`
+		);
+		
+		// Si no existe, agregarlo
+		if (!updatedOtherContent.includes('otherTemplatePath')) {
+			updatedOtherContent = updatedOtherContent.replace(
+				/storybookUrl:\s*['"][^'"]*['"]/,
+				`storybookUrl: '${UBITS_PRESET.storybook.url}',\n      otherTemplatePath: '${mainTemplateFileName}'`
+			);
+		}
+		
 		await fs.writeFile(otherCanvasPath, updatedOtherContent, 'utf-8');
-		console.log(`   ✅ Enlaces entre templates actualizados (${mainMatchesCount} en principal, ${otherMatchesCount} en secundario)\n`);
+		console.log(`   ✅ Enlaces entre templates actualizados (${mainMatchesCount} en HTML principal, ${otherMatchesCount} en HTML secundario)\n`);
 
 		// 6. Validar lienzo creado
 		console.log('🔍 Validando que todo cumpla con los estándares UBITS...');
