@@ -522,8 +522,10 @@ export class CanvasCreator {
           adjustImagePaths(window.UBITS_PRODUCTS);
           
           // Sobrescribir initialActiveSection INMEDIATAMENTE
-          if (window.UBITS_PRODUCTS['template-${template}']) {
-            const productConfig = window.UBITS_PRODUCTS['template-${template}'];
+          // La clave en products.js es 'template-admin' o 'template-colaborador'
+          const templateKey = 'template-${template === 'administrador' ? 'admin' : 'colaborador'}';
+          if (window.UBITS_PRODUCTS[templateKey]) {
+            const productConfig = window.UBITS_PRODUCTS[templateKey];
             if (productConfig.sidebar) {
               productConfig.sidebar.initialActiveSection = '${module}';
               console.log('🔍 [Wizard] initialActiveSection sobrescrito a: ${module}');
