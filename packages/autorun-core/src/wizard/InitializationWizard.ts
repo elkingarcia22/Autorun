@@ -100,7 +100,8 @@ export class InitializationWizard {
 	}
 
 	/**
-	 * Obtiene respuestas automáticas desde variables de entorno o valores por defecto
+	 * Obtiene respuestas automáticas desde variables de entorno
+	 * Solo retorna valores si hay variables de entorno explícitas
 	 */
 	private getAutoAnswers(autoSelect?: ProjectType): {
 		projectType: ProjectType;
@@ -108,10 +109,18 @@ export class InitializationWizard {
 		module?: string;
 		product?: string;
 	} | null {
-		// Verificar variables de entorno o usar valores por defecto
+		// Solo usar configuración automática si hay variables de entorno explícitas
+		const hasEnvVars = process.env.AUTORUN_TEMPLATE || process.env.AUTORUN_MODULE || process.env.AUTORUN_PRODUCT;
+		
+		if (!hasEnvVars && !autoSelect) {
+			// No hay variables de entorno ni autoSelect, usar modo interactivo
+			return null;
+		}
+		
+		// Verificar variables de entorno o usar valores por defecto solo si autoSelect está presente
 		const projectType = (process.env.AUTORUN_PROJECT_TYPE as ProjectType) || autoSelect || 'ubits';
-		const template = (process.env.AUTORUN_TEMPLATE as 'administrador' | 'colaborador') || 'administrador';
-		const module = process.env.AUTORUN_MODULE || 'desempeno';
+		const template = (process.env.AUTORUN_TEMPLATE as 'administrador' | 'colaborador') || (autoSelect ? 'administrador' : undefined);
+		const module = process.env.AUTORUN_MODULE || (autoSelect ? 'desempeno' : undefined);
 		let product = process.env.AUTORUN_PRODUCT;
 
 		// Si no hay producto especificado, obtener el primero del módulo según el template
@@ -143,13 +152,18 @@ export class InitializationWizard {
 			}
 		}
 
-		// Retornar respuestas automáticas si están disponibles
-		return {
-			projectType,
-			template: projectType === 'ubits' ? template : undefined,
-			module: projectType === 'ubits' ? module : undefined,
-			product: projectType === 'ubits' ? product : undefined,
-		};
+		// Solo retornar si tenemos template y module (ya sea de env vars o autoSelect)
+		if (projectType === 'ubits' && template && module) {
+			return {
+				projectType,
+				template,
+				module,
+				product,
+			};
+		}
+		
+		// Si no hay suficiente información, retornar null para modo interactivo
+		return null;
 	}
 
 	/**
