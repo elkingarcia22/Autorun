@@ -544,8 +544,11 @@ export class CanvasCreator {
             console.log('🔍 [Wizard] initialActiveSection ANTES:', productConfig.sidebar?.initialActiveSection);
             
             if (productConfig.sidebar) {
-              productConfig.sidebar.initialActiveSection = '${module}';
-              console.log('🔍 [Wizard] ✅ initialActiveSection sobrescrito a: ${module}');
+              // Normalizar nombre del módulo: 'desempeno' -> 'desempeño' (con tilde)
+              // El ContentManager espera 'desempeño' con tilde para encontrar el SubNav correcto
+              const normalizedModule = '${module}' === 'desempeno' ? 'desempeño' : '${module}';
+              productConfig.sidebar.initialActiveSection = normalizedModule;
+              console.log('🔍 [Wizard] ✅ initialActiveSection sobrescrito a:', normalizedModule);
               console.log('🔍 [Wizard] initialActiveSection DESPUÉS:', productConfig.sidebar.initialActiveSection);
             } else {
               console.warn('🔍 [Wizard] ⚠️ productConfig.sidebar no existe');
@@ -633,20 +636,24 @@ export class CanvasCreator {
         }
         
         try {
+          // Normalizar nombre del módulo: 'desempeno' -> 'desempeño' (con tilde)
+          // El ContentManager espera 'desempeño' con tilde para encontrar el SubNav correcto
+          const normalizedModule = '${module}' === 'desempeno' ? 'desempeño' : '${module}';
+          
           // Esperar a que el template termine su inicialización completa
           // El template usa setTimeout de ~1500ms + requestAnimationFrame
           // Verificar que el módulo ya esté activo (gracias a initialActiveSection)
-          if (window.UBITS_ContentManager.currentSection === '${module}') {
-            console.log('🔍 [Wizard] ✅ Módulo ya está activo');
+          if (window.UBITS_ContentManager.currentSection === normalizedModule) {
+            console.log('🔍 [Wizard] ✅ Módulo ya está activo:', normalizedModule);
             
             // Si hay un producto, activarlo usando handleSectionChange con activeTabId
             // Esto actualizará el SubNav y el contenido automáticamente
             if ('${product}') {
               console.log('🔍 [Wizard] 🚀 Activando producto: ${product}');
-              console.log('🔍 [Wizard] Llamando handleSectionChange("${module}", "${product}")');
+              console.log('🔍 [Wizard] Llamando handleSectionChange("' + normalizedModule + '", "${product}")');
               
               // handleSectionChange con activeTabId activa el módulo y el producto en una sola llamada
-              window.UBITS_ContentManager.handleSectionChange('${module}', '${product}');
+              window.UBITS_ContentManager.handleSectionChange(normalizedModule, '${product}');
               
               // Verificar después de un momento
               setTimeout(() => {
@@ -666,7 +673,7 @@ export class CanvasCreator {
           } else {
             console.log('🔍 [Wizard] ⏳ Módulo aún no está activo, esperando...');
             console.log('🔍 [Wizard] currentSection:', window.UBITS_ContentManager.currentSection);
-            console.log('🔍 [Wizard] Esperado: ${module}');
+            console.log('🔍 [Wizard] Esperado:', normalizedModule);
             // Si el módulo aún no está activo, esperar un poco más
             setTimeout(activateProduct, 200);
           }
