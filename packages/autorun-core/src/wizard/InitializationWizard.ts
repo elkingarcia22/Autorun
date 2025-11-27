@@ -48,7 +48,7 @@ export class InitializationWizard {
 	 */
 	async start(options?: { autoSelect?: ProjectType }): Promise<WizardResult> {
 		console.log('🚀 ¡Hola! Soy tu asistente de Autorun.\n');
-		console.log('Voy a guiarte para configurar tu proyecto.\n');
+		console.log('Voy a hacerte 3 preguntas rápidas para configurar tu proyecto:\n');
 
 		// Un solo paso: preguntar todo
 		const answers = await this.askAllQuestions();
@@ -93,7 +93,7 @@ export class InitializationWizard {
 
 		// 2. Template (solo si es UBITS)
 		const template = await this.prompt.select(
-			'\n📋 ¿En qué template quieres trabajar?',
+			'📋 ¿En qué template quieres trabajar?',
 			[
 				{
 					value: 'administrador',
@@ -133,7 +133,7 @@ export class InitializationWizard {
 		}
 
 		const selectedProduct = await this.prompt.select(
-			'\n📦 ¿En qué producto quieres trabajar?',
+			'📦 ¿En qué producto quieres trabajar?',
 			allProducts,
 			allProducts[0]?.value,
 		);

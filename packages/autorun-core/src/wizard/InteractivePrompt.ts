@@ -36,14 +36,14 @@ export class InteractivePrompt {
 		defaultValue?: string,
 	): Promise<string> {
 		// Mostrar opciones de forma más limpia
-		console.log(`${prompt}`);
+		console.log(`\n${prompt}`);
 		options.forEach((option, index) => {
 			const marker = defaultValue === option.value ? '⭐' : ' ';
 			console.log(`${marker} ${index + 1}. ${option.label}`);
 		});
 
 		const answer = await this.question(
-			`\nSelecciona una opción (1-${options.length})${defaultValue ? ` [Enter para default]` : ''}: `,
+			`Selecciona una opción (1-${options.length})${defaultValue ? ` [Enter para default]` : ''}: `,
 		);
 
 		if (!answer && defaultValue) {
