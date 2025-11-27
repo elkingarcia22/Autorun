@@ -552,14 +552,15 @@ export class CanvasCreator {
       background-color: var(--ubits-accent-brand, var(--modifiers-normal-color-light-accent-brand, #0c5bef)) !important;
     }
     
-    /* En dark mode, NO sobrescribir background-color, dejar que use el token normal del CSS original */
+    /* En dark mode, sobrescribir con el token normal para dark mode */
     body[data-theme="dark"] .ubits-sub-nav-tab.ubits-sub-nav-tab--active::after,
     html[data-theme="dark"] .ubits-sub-nav-tab.ubits-sub-nav-tab--active::after,
     [data-theme="dark"] .ubits-sub-nav-tab.ubits-sub-nav-tab--active::after {
       opacity: 1 !important;
       visibility: visible !important;
       display: block !important;
-      /* NO sobrescribir background-color aquí, dejar que use --modifiers-normal-color-dark-accent-blue del CSS original */
+      /* Usar token normal para dark mode */
+      background-color: var(--modifiers-normal-color-dark-accent-blue) !important;
     }
     
     /* Asegurar que el contenedor del subnav permita que el indicador sea visible */
@@ -1078,17 +1079,35 @@ export class CanvasCreator {
         const hasActive = targetTab.classList.contains('ubits-sub-nav-tab--active');
         console.log('🔵 [SubNav Fix] Verificación - tiene clase active:', hasActive);
         
-        // Verificar el ::after
+        // Verificar el ::after y los tokens de color
         const styles = window.getComputedStyle(targetTab, '::after');
-        console.log('🔵 [SubNav Fix] Estilos del ::after:', {
-          content: styles.content,
-          display: styles.display,
-          visibility: styles.visibility,
-          opacity: styles.opacity,
-          backgroundColor: styles.backgroundColor,
-          height: styles.height,
-          position: styles.position
-        });
+        const computedBgColor = styles.backgroundColor;
+        const rootStyles = getComputedStyle(document.documentElement);
+        
+        // Obtener valores de los tokens
+        const ubitsAccentBrand = rootStyles.getPropertyValue('--ubits-accent-brand').trim();
+        const modifiersNormalLightAccentBrand = rootStyles.getPropertyValue('--modifiers-normal-color-light-accent-brand').trim();
+        const modifiersNormalDarkAccentBlue = rootStyles.getPropertyValue('--modifiers-normal-color-dark-accent-blue').trim();
+        const ubitsAccentBrandStatic = rootStyles.getPropertyValue('--ubits-accent-brand-static').trim();
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+        
+        console.log('🔵 [SubNav Fix] ════════════════════════════════════════');
+        console.log('🔵 [SubNav Fix] 🔍 DIAGNÓSTICO DE COLOR DEL INDICADOR');
+        console.log('🔵 [SubNav Fix] Tema actual:', currentTheme);
+        console.log('🔵 [SubNav Fix] Tokens disponibles:');
+        console.log('   - --ubits-accent-brand:', ubitsAccentBrand || '(no definido)');
+        console.log('   - --modifiers-normal-color-light-accent-brand:', modifiersNormalLightAccentBrand || '(no definido)');
+        console.log('   - --modifiers-normal-color-dark-accent-blue:', modifiersNormalDarkAccentBlue || '(no definido)');
+        console.log('   - --ubits-accent-brand-static:', ubitsAccentBrandStatic || '(no definido)');
+        console.log('🔵 [SubNav Fix] Estilos computados del ::after:');
+        console.log('   - backgroundColor (computado):', computedBgColor);
+        console.log('   - display:', styles.display);
+        console.log('   - visibility:', styles.visibility);
+        console.log('   - opacity:', styles.opacity);
+        console.log('   - height:', styles.height);
+        console.log('   - position:', styles.position);
+        console.log('   - content:', styles.content);
+        console.log('🔵 [SubNav Fix] ════════════════════════════════════════');
       } else {
         console.error('🔵 [SubNav Fix] ❌ Tab objetivo NO encontrado');
         console.log('🔵 [SubNav Fix] Tabs disponibles:');
