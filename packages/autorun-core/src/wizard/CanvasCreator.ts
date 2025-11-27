@@ -42,7 +42,7 @@ export class CanvasCreator {
 	}
 
 	/**
-	 * Carga el template desde el repositorio UBITS clonado localmente o desde GitHub
+	 * Carga el template desde la carpeta UBITS local en el escritorio
 	 */
 	private async loadTemplateFromStorybook(
 		template: 'administrador' | 'colaborador',
@@ -52,16 +52,23 @@ export class CanvasCreator {
 		const templateConfig = UBITS_PRESET.templates[template];
 		const templateFileName = template === 'administrador' ? 'template-admin.html' : 'template-colaborador.html';
 		
-		// Primero intentar cargar desde el repositorio local UBITS
-		const ubitsLocalPath = path.join(this.projectPath, 'UBITS', 'packages', 'templates', templateFileName);
+		// Obtener ruta de UBITS en el escritorio
+		const os = await import('os');
+		const ubitsDesktopPath = path.join(os.homedir(), 'Desktop', 'UBITS', 'packages', 'templates', templateFileName);
 		
 		try {
-			// Verificar si existe el archivo local
-			await fs.access(ubitsLocalPath);
+			// Verificar si existe el archivo en el escritorio
+			await fs.access(ubitsDesktopPath);
 			
-			// Cargar desde archivo local
-			console.log(`   📄 Cargando template desde repositorio local: ${ubitsLocalPath}`);
-			let templateContent = await fs.readFile(ubitsLocalPath, 'utf-8');
+			// Cargar desde archivo local del escritorio
+			console.log(`   📄 Cargando template desde UBITS local: ${ubitsDesktopPath}`);
+			let templateContent = await fs.readFile(ubitsDesktopPath, 'utf-8');
+			
+			// Actualizar las rutas relativas para que funcionen desde el nuevo directorio
+			// Las rutas en el template son relativas a packages/templates/
+			// Necesitamos ajustarlas para que funcionen desde prototypes/
+			const ubitsBasePath = path.join(os.homedir(), 'Desktop', 'UBITS');
+			templateContent = this.adjustTemplatePaths(templateContent, ubitsBasePath);
 			
 			// Actualizar el título con el módulo y producto
 			const moduleConfig = UBITS_MODULES_CONFIG[module];
@@ -78,38 +85,47 @@ export class CanvasCreator {
 			
 			return templateContent;
 		} catch (localError) {
-			// Si no existe localmente, intentar desde GitHub
-			console.log(`   🌐 Template no encontrado localmente, intentando desde GitHub...`);
-			const templateUrl = `https://raw.githubusercontent.com/elkingarcia22/UBITS/main/packages/templates/${templateFileName}`;
-			
-			try {
-				const response = await fetch(templateUrl);
-				if (!response.ok) {
-					throw new Error(`Error cargando template: ${response.statusText}`);
-				}
-				
-				let templateContent = await response.text();
-				
-				// Actualizar el título con el módulo y producto
-				const moduleConfig = UBITS_MODULES_CONFIG[module];
-				const moduleName = moduleConfig?.name || this.formatModuleName(module);
-				const productName = product
-					? moduleConfig?.products.find((p) => p.id === product)?.name || product
-					: '';
-				
-				// Actualizar el título en el template
-				templateContent = templateContent.replace(
-					/<title>.*?<\/title>/,
-					`<title>UBITS - ${moduleName}${productName ? ` - ${productName}` : ''} - ${template}</title>`
-				);
-				
-				return templateContent;
-			} catch (githubError) {
-				console.warn('⚠️  No se pudo cargar template desde GitHub, usando fallback:', githubError);
-				// Fallback a template generado localmente
-				return this.generateCanvasContent(template, module, templateConfig, product);
-			}
+			console.warn('⚠️  No se pudo cargar template desde UBITS local:', localError);
+			console.warn(`   💡 Verifica que existe: ${ubitsDesktopPath}`);
+			// Fallback a template generado localmente
+			return this.generateCanvasContent(template, module, templateConfig, product);
 		}
+	}
+
+	/**
+	 * Ajusta las rutas del template para que apunten a UBITS en el escritorio
+	 * Las rutas originales son relativas a packages/templates/ (../tokens/...)
+	 * Las convertimos a rutas absolutas hacia Desktop/UBITS/packages/
+	 */
+	private adjustTemplatePaths(content: string, ubitsBasePath: string): string {
+		const os = require('os');
+		const desktopPath = path.join(os.homedir(), 'Desktop');
+		const ubitsPackagesPath = path.join(desktopPath, 'UBITS', 'packages');
+		
+		// Convertir a URL file:// para que funcione en el navegador
+		// En macOS/Linux: file:///Users/username/Desktop/UBITS/packages/
+		// En Windows: file:///C:/Users/username/Desktop/UBITS/packages/
+		let ubitsUrl = `file://${ubitsPackagesPath}`;
+		
+		// Normalizar para Windows (cambiar \ por /)
+		if (process.platform === 'win32') {
+			ubitsUrl = ubitsUrl.replace(/\\/g, '/');
+		}
+		
+		// Reemplazar rutas relativas ../ por la ruta absoluta a UBITS/packages/
+		// Las rutas originales son como: ../tokens/dist/tokens.css
+		// Se convierten a: file:///Users/.../Desktop/UBITS/packages/tokens/dist/tokens.css
+		content = content.replace(
+			/href="\.\.\//g,
+			`href="${ubitsUrl}/`
+		);
+		
+		content = content.replace(
+			/src="\.\.\//g,
+			`src="${ubitsUrl}/`
+		);
+		
+		return content;
 	}
 
 	/**

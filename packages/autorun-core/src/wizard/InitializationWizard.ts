@@ -528,48 +528,54 @@ export class InitializationWizard {
 	}
 
 	/**
-	 * Clona el repositorio UBITS, instala dependencias y arranca con template administrador
+	 * Verifica y configura acceso a UBITS local en el escritorio
 	 */
 	private async cloneAndSetupUBITS(): Promise<void> {
-		const { exec } = await import('child_process');
-		const { promisify } = await import('util');
-		const execAsync = promisify(exec);
 		const fs = await import('fs/promises');
 		const path = await import('path');
+		const os = await import('os');
 
-		const currentDir = process.cwd();
-		const ubitsDir = path.join(currentDir, 'UBITS');
-		const ubitsRepo = 'https://github.com/elkingarcia22/UBITS.git';
+		// Ruta a UBITS en el escritorio
+		const desktopPath = path.join(os.homedir(), 'Desktop');
+		const ubitsLocalPath = path.join(desktopPath, 'UBITS');
 
 		try {
-			// Verificar si UBITS ya existe
+			// Verificar si existe la carpeta UBITS en el escritorio
+			await fs.access(ubitsLocalPath);
+			console.log('   ✅ Carpeta UBITS encontrada en el escritorio');
+			console.log(`   📁 Ubicación: ${ubitsLocalPath}`);
+			
+			// Verificar que existan los templates
+			const adminTemplate = path.join(ubitsLocalPath, 'packages/templates/template-admin.html');
+			const colaboradorTemplate = path.join(ubitsLocalPath, 'packages/templates/template-colaborador.html');
+			
 			try {
-				await fs.access(ubitsDir);
-				console.log('   ℹ️  El directorio UBITS ya existe, saltando clonación...');
+				await fs.access(adminTemplate);
+				console.log('   ✅ Template administrador encontrado');
 			} catch {
-				// No existe, clonar
-				console.log(`   📥 Clonando ${ubitsRepo}...`);
-				await execAsync(`git clone ${ubitsRepo} ${ubitsDir}`, { cwd: currentDir });
-				console.log('   ✅ Repositorio clonado');
+				console.warn('   ⚠️  Template administrador no encontrado');
+			}
+			
+			try {
+				await fs.access(colaboradorTemplate);
+				console.log('   ✅ Template colaborador encontrado');
+			} catch {
+				console.warn('   ⚠️  Template colaborador no encontrado');
 			}
 
-			// Instalar dependencias
-			console.log('   📦 Instalando dependencias...');
-			await execAsync('npm install', { cwd: ubitsDir });
-			console.log('   ✅ Dependencias instaladas');
-
-			// Informar sobre el template de administrador
-			console.log('   🎯 Template de administrador disponible en:');
-			console.log(`      ${path.join(ubitsDir, 'packages/templates/template-admin.html')}`);
-			console.log('   💡 Para arrancar el proyecto, ejecuta:');
-			console.log(`      cd UBITS && npm run dev`);
-
 		} catch (error: any) {
-			console.warn('   ⚠️  Error durante la configuración de UBITS:', error.message || error);
-			console.warn('   ℹ️  Puedes clonar manualmente con:');
-			console.warn(`      git clone ${ubitsRepo}`);
-			console.warn('      cd UBITS && npm install && npm run dev');
+			console.warn('   ⚠️  No se encontró la carpeta UBITS en el escritorio:', error.message || error);
+			console.warn(`   💡 Asegúrate de que existe: ${ubitsLocalPath}`);
 		}
+	}
+
+	/**
+	 * Obtiene la ruta local de UBITS en el escritorio
+	 */
+	private getUBITSLocalPath(): string {
+		const path = require('path');
+		const os = require('os');
+		return path.join(os.homedir(), 'Desktop', 'UBITS');
 	}
 
 	/**
