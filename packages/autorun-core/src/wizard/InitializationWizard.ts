@@ -6,7 +6,12 @@
  */
 
 import { AutorunHub } from '../AutorunHub';
-import { UBITS_PRESET, UBITS_ADDONS_CONFIG, UBITSTemplate, UBITS_MODULES_CONFIG } from './UBITSPreset';
+import {
+	UBITS_PRESET,
+	UBITS_ADDONS_CONFIG,
+	UBITSTemplate,
+	UBITS_MODULES_CONFIG,
+} from './UBITSPreset';
 import { TemplateLoader } from './TemplateLoader';
 import { ModuleManager } from './ModuleManager';
 import { CanvasCreator } from './CanvasCreator';
@@ -49,7 +54,7 @@ export class InitializationWizard {
 	async start(options?: { autoSelect?: ProjectType }): Promise<WizardResult> {
 		// Intentar obtener respuestas automáticas primero
 		const autoAnswers = this.getAutoAnswers(options?.autoSelect);
-		
+
 		let answers: { template: 'administrador' | 'colaborador'; module: string; product?: string };
 		let selectedAddons: string[];
 
@@ -73,7 +78,7 @@ export class InitializationWizard {
 			// Para add-ons, usar los por defecto si no hay variables de entorno
 			const addonsEnv = process.env.AUTORUN_ADDONS;
 			if (addonsEnv) {
-				selectedAddons = addonsEnv.split(',').map(a => a.trim());
+				selectedAddons = addonsEnv.split(',').map((a) => a.trim());
 			} else {
 				selectedAddons = UBITS_PRESET.addons;
 			}
@@ -85,13 +90,12 @@ export class InitializationWizard {
 			// Preguntar template y producto en un solo paso
 			answers = await this.askTemplateAndProduct();
 
-			// Usar add-ons por defecto automáticamente (sin preguntar)
-			selectedAddons = UBITS_PRESET.addons;
-			console.log('\n📦 Instalando add-ons por defecto automáticamente...\n');
+			// Preguntar por los add-ons a instalar
+			selectedAddons = await this.askAddons();
 		}
 
 		console.log('\n✅ Perfecto, voy a configurar tu proyecto UBITS ahora.\n');
-		
+
 		return await this.setupUBITSFromAnswers({
 			template: answers.template,
 			module: answers.module,
@@ -111,16 +115,19 @@ export class InitializationWizard {
 		product?: string;
 	} | null {
 		// Solo usar configuración automática si hay variables de entorno explícitas
-		const hasEnvVars = process.env.AUTORUN_TEMPLATE || process.env.AUTORUN_MODULE || process.env.AUTORUN_PRODUCT;
-		
+		const hasEnvVars =
+			process.env.AUTORUN_TEMPLATE || process.env.AUTORUN_MODULE || process.env.AUTORUN_PRODUCT;
+
 		if (!hasEnvVars && !autoSelect) {
 			// No hay variables de entorno ni autoSelect, usar modo interactivo
 			return null;
 		}
-		
+
 		// Verificar variables de entorno o usar valores por defecto solo si autoSelect está presente
 		const projectType = (process.env.AUTORUN_PROJECT_TYPE as ProjectType) || autoSelect || 'ubits';
-		const template = (process.env.AUTORUN_TEMPLATE as 'administrador' | 'colaborador') || (autoSelect ? 'administrador' : undefined);
+		const template =
+			(process.env.AUTORUN_TEMPLATE as 'administrador' | 'colaborador') ||
+			(autoSelect ? 'administrador' : undefined);
 		const module = process.env.AUTORUN_MODULE || (autoSelect ? 'desempeno' : undefined);
 		let product = process.env.AUTORUN_PRODUCT;
 
@@ -131,7 +138,14 @@ export class InitializationWizard {
 				// Filtrar productos según el template
 				const templateProductsMap: Record<string, Record<string, string[]>> = {
 					administrador: {
-						empresa: ['gestion-usuarios', 'organigrama', 'datos-empresa', 'personalizacion', 'roles-permisos', 'comunicaciones'],
+						empresa: [
+							'gestion-usuarios',
+							'organigrama',
+							'datos-empresa',
+							'personalizacion',
+							'roles-permisos',
+							'comunicaciones',
+						],
 						aprendizaje: ['lms-cursos', 'plan-formacion', 'certificados', 'metricas-empresa'],
 						desempeno: ['evaluations', 'objectives', 'matriz-talento'],
 					},
@@ -145,7 +159,9 @@ export class InitializationWizard {
 				const templateProducts = templateProductsMap[template]?.[module] || [];
 				if (templateProducts.length > 0) {
 					// Obtener el primer producto válido para este template
-					const validProducts = moduleConfig.products.filter((p: { id: string }) => templateProducts.includes(p.id));
+					const validProducts = moduleConfig.products.filter((p: { id: string }) =>
+						templateProducts.includes(p.id),
+					);
 					if (validProducts.length > 0) {
 						product = validProducts[0].id;
 					}
@@ -162,7 +178,7 @@ export class InitializationWizard {
 				product,
 			};
 		}
-		
+
 		// Si no hay suficiente información, retornar null para modo interactivo
 		return null;
 	}
@@ -176,7 +192,7 @@ export class InitializationWizard {
 		product?: string;
 	}> {
 		// 1. Template
-		const template = await this.prompt.select(
+		const template = (await this.prompt.select(
 			'🎯 ¿En qué template quieres trabajar?',
 			[
 				{
@@ -189,7 +205,7 @@ export class InitializationWizard {
 				},
 			],
 			'administrador',
-		) as 'administrador' | 'colaborador';
+		)) as 'administrador' | 'colaborador';
 
 		// 2. Producto (recopilar todos los productos de todos los módulos del template)
 		const templateConfig = UBITS_PRESET.templates[template];
@@ -198,7 +214,14 @@ export class InitializationWizard {
 		// Mapeo de productos por template según products.js
 		const templateProductsMap: Record<string, Record<string, string[]>> = {
 			administrador: {
-				empresa: ['gestion-usuarios', 'organigrama', 'datos-empresa', 'personalizacion', 'roles-permisos', 'comunicaciones'],
+				empresa: [
+					'gestion-usuarios',
+					'organigrama',
+					'datos-empresa',
+					'personalizacion',
+					'roles-permisos',
+					'comunicaciones',
+				],
 				aprendizaje: ['lms-cursos', 'plan-formacion', 'certificados', 'metricas-empresa'],
 				desempeno: ['evaluations', 'objectives', 'matriz-talento'],
 			},
@@ -216,11 +239,11 @@ export class InitializationWizard {
 
 			// Obtener productos específicos del template para este módulo
 			const templateProducts = templateProductsMap[template]?.[moduleId] || [];
-			
+
 			if (templateProducts.length > 0) {
 				// Filtrar productos que pertenecen a este template
-				const validProducts = moduleConfig.products.filter(p => templateProducts.includes(p.id));
-				
+				const validProducts = moduleConfig.products.filter((p) => templateProducts.includes(p.id));
+
 				// Si encontramos productos válidos, agregarlos
 				if (validProducts.length > 0) {
 					for (const product of validProducts) {
@@ -272,27 +295,27 @@ export class InitializationWizard {
 	 */
 	private async askAddons(): Promise<string[]> {
 		const defaultAddons = UBITS_PRESET.addons;
-		
+
 		// Descripciones de los add-ons
 		const addonDescriptions: Record<string, string> = {
-			'storybook': '📚 Desarrollo y documentación de componentes',
+			storybook: '📚 Desarrollo y documentación de componentes',
 			'figma-sync': '🎨 Sincronización de tokens desde Figma',
-			'eslint': '🔍 Detección de errores de código',
-			'prettier': '✨ Formateo automático de código',
-			'vitest': '🧪 Unit testing (rápido y moderno)',
-			'playwright': '🎭 Testing end-to-end',
-			'chromatic': '🖼️  Visual testing y comparación',
-			'snyk': '🔒 Escaneo de vulnerabilidades',
-			'renovate': '🔄 Actualizaciones automáticas',
-			'lighthouse': '⚡ Análisis de rendimiento',
+			eslint: '🔍 Detección de errores de código',
+			prettier: '✨ Formateo automático de código',
+			vitest: '🧪 Unit testing (rápido y moderno)',
+			playwright: '🎭 Testing end-to-end',
+			chromatic: '🖼️  Visual testing y comparación',
+			snyk: '🔒 Escaneo de vulnerabilidades',
+			renovate: '🔄 Actualizaciones automáticas',
+			lighthouse: '⚡ Análisis de rendimiento',
 			'bundle-analyzer': '📊 Análisis de tamaño de bundle',
-			'standalone': '🚀 Componentes standalone',
-			'sentry': '🐛 Monitoreo de errores',
-			'clarity': '👁️  Análisis de comportamiento de usuarios',
-			'vercel': '☁️  Despliegue en Vercel',
-			'github': '🐙 Integración con GitHub',
-			'codecov': '📈 Cobertura de código',
-			'feedback': '💬 Sistema de feedback automatizado',
+			standalone: '🚀 Componentes standalone',
+			sentry: '🐛 Monitoreo de errores',
+			clarity: '👁️  Análisis de comportamiento de usuarios',
+			vercel: '☁️  Despliegue en Vercel',
+			github: '🐙 Integración con GitHub',
+			codecov: '📈 Cobertura de código',
+			feedback: '💬 Sistema de feedback automatizado',
 		};
 
 		// Obtener todos los add-ons disponibles
@@ -301,8 +324,9 @@ export class InitializationWizard {
 		// Mostrar resumen de add-ons por defecto
 		console.log('\n🔌 Add-ons que se instalarán por defecto:\n');
 		defaultAddons.forEach((addonId, index) => {
-			const description = addonDescriptions[addonId] || 
-				allAvailableAddons.find(a => a.id === addonId)?.description || 
+			const description =
+				addonDescriptions[addonId] ||
+				allAvailableAddons.find((a) => a.id === addonId)?.description ||
 				addonId;
 			console.log(`   ${index + 1}. ${description}`);
 		});
@@ -327,9 +351,7 @@ export class InitializationWizard {
 
 		if (action === 'add') {
 			// Obtener add-ons adicionales (los que NO están en defaultAddons)
-			const additionalAddons = allAvailableAddons.filter(
-				a => !defaultAddons.includes(a.id)
-			);
+			const additionalAddons = allAvailableAddons.filter((a) => !defaultAddons.includes(a.id));
 
 			if (additionalAddons.length === 0) {
 				console.log('\n   ℹ️  No hay otros add-ons disponibles para agregar.');
@@ -337,14 +359,14 @@ export class InitializationWizard {
 			}
 
 			console.log('\n   📦 Otros add-ons disponibles:\n');
-			
+
 			// Permitir seleccionar múltiples add-ons adicionales
 			const additionalSelected: string[] = [];
-			
+
 			while (true) {
 				// Crear opciones de add-ons que aún no se han seleccionado
 				const remainingOptions = additionalAddons
-					.filter(a => !additionalSelected.includes(a.id))
+					.filter((a) => !additionalSelected.includes(a.id))
 					.map((addon, index) => ({
 						value: addon.id,
 						label: `${addon.name} - ${addon.description || 'Sin descripción'}`,
@@ -372,15 +394,12 @@ export class InitializationWizard {
 
 				if (!additionalSelected.includes(selected)) {
 					additionalSelected.push(selected);
-					const addon = additionalAddons.find(a => a.id === selected);
+					const addon = additionalAddons.find((a) => a.id === selected);
 					console.log(`   ✅ Agregado: ${addon?.name || selected}`);
 				}
 
 				// Preguntar si quiere agregar más
-				const addMore = await this.prompt.confirm(
-					'   ¿Quieres agregar otro add-on?',
-					false,
-				);
+				const addMore = await this.prompt.confirm('   ¿Quieres agregar otro add-on?', false);
 
 				if (!addMore) {
 					break;
@@ -389,9 +408,11 @@ export class InitializationWizard {
 
 			// Combinar add-ons por defecto con los adicionales seleccionados
 			selectedAddons = [...defaultAddons, ...additionalSelected];
-			
+
 			if (additionalSelected.length > 0) {
-				console.log(`\n   ✅ Total de add-ons a instalar: ${selectedAddons.length} (${defaultAddons.length} por defecto + ${additionalSelected.length} adicionales)`);
+				console.log(
+					`\n   ✅ Total de add-ons a instalar: ${selectedAddons.length} (${defaultAddons.length} por defecto + ${additionalSelected.length} adicionales)`,
+				);
 			}
 		}
 
@@ -452,141 +473,80 @@ export class InitializationWizard {
 		await this.loadComponentsFromStorybook();
 		console.log('   ✅ Componentes cargados\n');
 
-		// 3. Instalar add-ons seleccionados
+		// 3. Configurar GitHub (preguntar por URL del repositorio)
+		console.log('🐙 Configurando GitHub...');
+		const githubUrl = await this.configureGitHub();
+		if (githubUrl) {
+			console.log(`   ✅ GitHub configurado: ${githubUrl}\n`);
+		} else {
+			console.log('   ⚠️  GitHub no configurado (se puede configurar después)\n');
+		}
+
+		// 4. Instalar add-ons seleccionados
 		console.log('📦 Instalando add-ons seleccionados...');
 		const installedAddons = await this.installAddons(addons);
 		console.log(`   ✅ ${installedAddons.length} add-on(s) instalado(s)\n`);
 
-		// 4. Habilitar módulo en sidebar y configurar subnav
+		// 5. Habilitar módulo en sidebar y configurar subnav
 		console.log(`⚙️  Configurando sidebar y subnav para "${module}"...`);
 		await this.enableModule(module, template, product);
 		console.log('   ✅ Configurado\n');
 
-		// 5. Crear ambos templates (el seleccionado y el otro)
+		// 6. Crear ambos templates (administrador y colaborador)
 		console.log('🎨 Creando tus lienzos de trabajo...');
-		
-		// Crear el otro template primero (sin enlaces cruzados)
-		const otherTemplate = template === 'administrador' ? 'colaborador' : 'administrador';
-		const otherCanvasPath = await this.createCanvas(otherTemplate, module, product);
-		console.log('   ✅ Lienzo secundario creado\n');
-		
-		// Crear el template principal (sin enlaces cruzados aún)
-		const canvasPath = await this.createCanvas(template, module, product);
-		console.log('   ✅ Lienzo principal creado\n');
-		
-		// Actualizar ambos templates con enlaces cruzados en el HTML
-		const fs = await import('fs/promises');
-		const path = await import('path');
-		
-		// Obtener nombres de archivos
-		const mainTemplateFileName = path.basename(canvasPath);
-		const otherTemplateFileName = path.basename(otherCanvasPath);
-		const otherTemplateName = template === 'administrador' ? 'template-colaborador.html' : 'template-admin.html';
-		const mainTemplateName = template === 'administrador' ? 'template-admin.html' : 'template-colaborador.html';
-		
-		// Actualizar el template principal con enlace al otro en el HTML
-		const mainContent = await fs.readFile(canvasPath, 'utf-8');
-		
-		// Contar cuántos reemplazos se harán en HTML
-		const mainMatches = mainContent.match(new RegExp(otherTemplateName, 'gi'));
-		const mainMatchesCount = mainMatches ? mainMatches.length : 0;
-		
-		let updatedMainContent = mainContent
-			// Reemplazar en HTML: href="template-xxx.html"
-			.replace(new RegExp(`href=["']${otherTemplateName}["']`, 'gi'), `href="${otherTemplateFileName}"`)
-			// Reemplazar en JavaScript: href: 'template-xxx.html' o href: "template-xxx.html"
-			.replace(new RegExp(`href:\\s*["']${otherTemplateName}["']`, 'gi'), `href: "${otherTemplateFileName}"`)
-			// Reemplazar en JavaScript: url: 'template-xxx.html' o url: "template-xxx.html"
-			.replace(new RegExp(`url:\\s*["']${otherTemplateName}["']`, 'gi'), `url: "${otherTemplateFileName}"`)
-			// Reemplazar cualquier referencia en strings: 'template-xxx.html' o "template-xxx.html"
-			.replace(new RegExp(`["']${otherTemplateName}["']`, 'gi'), `"${otherTemplateFileName}"`);
-		
-		// Actualizar el script inyectado para incluir el nombre del otro template
-		// Buscar el script que tiene window.UBITS_CONFIG y actualizar otherTemplatePath
-		updatedMainContent = updatedMainContent.replace(
-			/otherTemplatePath:\s*['"][^'"]*['"]/,
-			`otherTemplatePath: '${otherTemplateFileName}'`
+		const { selectedCanvasPath, otherCanvasPath } = await this.createBothTemplates(
+			template,
+			module,
+			product,
 		);
-		
-		// Si no existe, agregarlo
-		if (!updatedMainContent.includes('otherTemplatePath')) {
-			updatedMainContent = updatedMainContent.replace(
-				/storybookUrl:\s*['"][^'"]*['"]/,
-				`storybookUrl: '${UBITS_PRESET.storybook.url}',\n      otherTemplatePath: '${otherTemplateFileName}'`
-			);
-		}
-		
-		await fs.writeFile(canvasPath, updatedMainContent, 'utf-8');
-		
-		// Actualizar el otro template con enlace al principal en el HTML
-		const otherContent = await fs.readFile(otherCanvasPath, 'utf-8');
-		
-		// Contar cuántos reemplazos se harán en HTML
-		const otherMatches = otherContent.match(new RegExp(mainTemplateName, 'gi'));
-		const otherMatchesCount = otherMatches ? otherMatches.length : 0;
-		
-		let updatedOtherContent = otherContent
-			// Reemplazar en HTML: href="template-xxx.html"
-			.replace(new RegExp(`href=["']${mainTemplateName}["']`, 'gi'), `href="${mainTemplateFileName}"`)
-			// Reemplazar en JavaScript: href: 'template-xxx.html' o href: "template-xxx.html"
-			.replace(new RegExp(`href:\\s*["']${mainTemplateName}["']`, 'gi'), `href: "${mainTemplateFileName}"`)
-			// Reemplazar en JavaScript: url: 'template-xxx.html' o url: "template-xxx.html"
-			.replace(new RegExp(`url:\\s*["']${mainTemplateName}["']`, 'gi'), `url: "${mainTemplateFileName}"`)
-			// Reemplazar cualquier referencia en strings: 'template-xxx.html' o "template-xxx.html"
-			.replace(new RegExp(`["']${mainTemplateName}["']`, 'gi'), `"${mainTemplateFileName}"`);
-		
-		// Actualizar el script inyectado para incluir el nombre del otro template
-		updatedOtherContent = updatedOtherContent.replace(
-			/otherTemplatePath:\s*['"][^'"]*['"]/,
-			`otherTemplatePath: '${mainTemplateFileName}'`
-		);
-		
-		// Si no existe, agregarlo
-		if (!updatedOtherContent.includes('otherTemplatePath')) {
-			updatedOtherContent = updatedOtherContent.replace(
-				/storybookUrl:\s*['"][^'"]*['"]/,
-				`storybookUrl: '${UBITS_PRESET.storybook.url}',\n      otherTemplatePath: '${mainTemplateFileName}'`
-			);
-		}
-		
-		await fs.writeFile(otherCanvasPath, updatedOtherContent, 'utf-8');
-		console.log(`   ✅ Enlaces entre templates actualizados (${mainMatchesCount} en HTML principal, ${otherMatchesCount} en HTML secundario)\n`);
+		console.log('   ✅ Ambos templates creados\n');
 
-		// 6. Validar lienzo creado
+		// 6.1. Actualizar enlaces entre templates en el sidebar
+		if (otherCanvasPath) {
+			console.log('🔗 Actualizando enlaces entre templates...');
+			await this.updateCrossTemplateLinks(selectedCanvasPath, otherCanvasPath, template);
+			console.log('   ✅ Enlaces actualizados\n');
+		}
+
+		// 7. Validar lienzo seleccionado
 		console.log('🔍 Validando que todo cumpla con los estándares UBITS...');
-		await this.validateCanvas(canvasPath);
+		await this.validateCanvas(selectedCanvasPath);
 		console.log('   ✅ Validación completada\n');
 
-		// 7. Ajustar rutas para servidor HTTP local si es necesario
-		// Las rutas file:// funcionan, pero un servidor HTTP local es mejor para evitar problemas de CORS
-		console.log('🌐 Abriendo template en el navegador...');
-		await this.openTemplateInBrowser(canvasPath);
+		// 8. Abrir solo el template seleccionado en el navegador
+		console.log('🌐 Abriendo template seleccionado en el navegador...');
+		await this.openTemplateInBrowser(selectedCanvasPath);
 		console.log('   ✅ Template abierto\n');
 
 		// Mostrar resumen final
 		console.log('\n🎉 ¡Excelente! Tu proyecto UBITS está listo.\n');
 		console.log('📋 Resumen de tu configuración:');
-		console.log(`   📁 Lienzo: ${canvasPath}`);
+		console.log(`   📁 Lienzo seleccionado: ${selectedCanvasPath}`);
+		if (otherCanvasPath) {
+			console.log(`   📁 Lienzo adicional: ${otherCanvasPath}`);
+		}
 		console.log(`   🎯 Template: ${template}`);
 		console.log(`   📦 Módulo: ${module}`);
 		if (product) {
 			console.log(`   🎨 Producto: ${product}`);
 		}
-		console.log(`   🔌 Add-ons instalados: ${installedAddons.length}\n`);
-		console.log('🚀 Ya puedes empezar a trabajar. ¡Éxito con tu proyecto!\n');
+		console.log(`   🔌 Add-ons instalados: ${installedAddons.length}`);
+		if (githubUrl) {
+			console.log(`   🐙 GitHub: ${githubUrl}`);
+		}
+		console.log('\n🚀 Ya puedes empezar a trabajar. ¡Éxito con tu proyecto!\n');
 
 		return {
 			projectType: 'ubits',
 			template,
 			module,
 			product: product || '',
-			canvasPath,
+			canvasPath: selectedCanvasPath,
 		};
 	}
 
 	/**
-	 * Abre el template en el navegador usando un servidor HTTP local
-	 * Esto evita problemas de CORS con file:// protocol
+	 * Abre el template en el navegador local
 	 */
 	private async openTemplateInBrowser(filePath: string): Promise<void> {
 		try {
@@ -594,73 +554,29 @@ export class InitializationWizard {
 			const { promisify } = await import('util');
 			const execAsync = promisify(exec);
 			const path = await import('path');
-			const fs = await import('fs/promises');
 
-			// Obtener el directorio del archivo y el directorio Desktop
-			const fileDir = path.dirname(filePath);
-			const fileName = path.basename(filePath);
-			const os = await import('os');
-			const desktopDir = path.join(os.homedir(), 'Desktop');
+			// Convertir a URL file://
+			const fileUrl = `file://${path.resolve(filePath)}`;
 
-			// Intentar iniciar un servidor HTTP local en el directorio Desktop
-			// Esto permite que las rutas relativas ../../UBITS/packages/ funcionen correctamente
-			const port = 8000;
-			// Ruta relativa desde Desktop hacia el archivo
-			// path.relative puede no funcionar bien, calcular manualmente
-			const filePathResolved = path.resolve(filePath);
-			const desktopDirResolved = path.resolve(desktopDir);
-			let relativePathFromDesktop = filePathResolved.replace(desktopDirResolved, '').replace(/^[/\\]/, '');
-			// Normalizar separadores de ruta para URL
-			relativePathFromDesktop = relativePathFromDesktop.replace(/\\/g, '/');
-			const url = `http://localhost:${port}/${relativePathFromDesktop}`;
+			// Detectar el sistema operativo y abrir el navegador
+			const platform = process.platform;
+			let command: string;
 
-			// Verificar si el puerto está disponible
-			try {
-				// Intentar iniciar servidor Python (más común) desde Desktop
-				const serverCommand = `cd "${desktopDir}" && python3 -m http.server ${port} > /dev/null 2>&1 &`;
-				await execAsync(serverCommand);
-				
-				// Esperar un momento para que el servidor inicie
-				await new Promise(resolve => setTimeout(resolve, 1000));
-				
-				// Abrir en el navegador
-				const platform = process.platform;
-				let command: string;
-
-				if (platform === 'darwin') {
-					command = `open "${url}"`;
-				} else if (platform === 'win32') {
-					command = `start "" "${url}"`;
-				} else {
-					command = `xdg-open "${url}"`;
-				}
-
-				await execAsync(command);
-				console.log(`   🌐 Servidor local iniciado en http://localhost:${port}`);
-				console.log(`   📁 Sirviendo desde: ${desktopDir}`);
-				console.log(`   💡 Para detener el servidor, presiona Ctrl+C o cierra esta terminal`);
-			} catch (serverError) {
-				// Si no se puede iniciar el servidor, usar file:// como fallback
-				console.warn('   ⚠️  No se pudo iniciar servidor local, usando file://');
-				const fileUrl = `file://${path.resolve(filePath)}`;
-				
-				const platform = process.platform;
-				let command: string;
-
-				if (platform === 'darwin') {
-					command = `open "${fileUrl}"`;
-				} else if (platform === 'win32') {
-					command = `start "" "${fileUrl}"`;
-				} else {
-					command = `xdg-open "${fileUrl}"`;
-				}
-
-				await execAsync(command);
+			if (platform === 'darwin') {
+				// macOS
+				command = `open "${fileUrl}"`;
+			} else if (platform === 'win32') {
+				// Windows
+				command = `start "" "${fileUrl}"`;
+			} else {
+				// Linux y otros
+				command = `xdg-open "${fileUrl}"`;
 			}
+
+			await execAsync(command);
 		} catch (error: any) {
 			console.warn('   ⚠️  No se pudo abrir el navegador automáticamente:', error.message || error);
 			console.warn(`   💡 Abre manualmente: ${filePath}`);
-			console.warn(`   💡 O inicia un servidor local: cd prototypes && python3 -m http.server 8000`);
 		}
 	}
 
@@ -670,26 +586,29 @@ export class InitializationWizard {
 	/**
 	 * Muestra los add-ons por defecto y permite al usuario revisar y modificar la lista
 	 */
-	private async reviewAndSelectAddons(): Promise<{ finalAddons: string[]; additionalAddons: string[] }> {
+	private async reviewAndSelectAddons(): Promise<{
+		finalAddons: string[];
+		additionalAddons: string[];
+	}> {
 		const addonDescriptions: Record<string, string> = {
-			'storybook': '📚 Desarrollo y documentación de componentes',
+			storybook: '📚 Desarrollo y documentación de componentes',
 			'figma-sync': '🎨 Sincronización de tokens desde Figma',
-			'eslint': '🔍 Detección de errores de código',
-			'prettier': '✨ Formateo automático de código',
-			'vitest': '🧪 Unit testing (rápido y moderno)',
-			'playwright': '🎭 Testing end-to-end',
-			'chromatic': '🖼️  Visual testing y comparación',
-			'snyk': '🔒 Escaneo de vulnerabilidades',
-			'renovate': '🔄 Actualizaciones automáticas',
-			'lighthouse': '⚡ Análisis de rendimiento',
+			eslint: '🔍 Detección de errores de código',
+			prettier: '✨ Formateo automático de código',
+			vitest: '🧪 Unit testing (rápido y moderno)',
+			playwright: '🎭 Testing end-to-end',
+			chromatic: '🖼️  Visual testing y comparación',
+			snyk: '🔒 Escaneo de vulnerabilidades',
+			renovate: '🔄 Actualizaciones automáticas',
+			lighthouse: '⚡ Análisis de rendimiento',
 			'bundle-analyzer': '📊 Análisis de tamaño de bundle',
-			'standalone': '🚀 Componentes standalone',
-			'sentry': '🐛 Monitoreo de errores',
-			'clarity': '👁️  Análisis de comportamiento de usuarios',
-			'vercel': '☁️  Despliegue en Vercel',
-			'github': '🐙 Integración con GitHub',
-			'codecov': '📈 Cobertura de código',
-			'feedback': '💬 Sistema de feedback automatizado',
+			standalone: '🚀 Componentes standalone',
+			sentry: '🐛 Monitoreo de errores',
+			clarity: '👁️  Análisis de comportamiento de usuarios',
+			vercel: '☁️  Despliegue en Vercel',
+			github: '🐙 Integración con GitHub',
+			codecov: '📈 Cobertura de código',
+			feedback: '💬 Sistema de feedback automatizado',
 		};
 
 		// Mostrar add-ons por defecto
@@ -712,10 +631,7 @@ export class InitializationWizard {
 
 		if (wantsToModify) {
 			// Permitir agregar más add-ons
-			const wantsToAdd = await this.prompt.confirm(
-				'   ¿Quieres agregar más add-ons?',
-				false,
-			);
+			const wantsToAdd = await this.prompt.confirm('   ¿Quieres agregar más add-ons?', false);
 
 			if (wantsToAdd) {
 				additionalAddons = await this.selectAdditionalAddons(finalAddons);
@@ -750,8 +666,8 @@ export class InitializationWizard {
 		// Descubrir add-ons disponibles
 		const availableAddons = await this.discoverAvailableAddons();
 		const availableIds = availableAddons
-			.map(a => a.id)
-			.filter(id => !alreadyInstalled.includes(id));
+			.map((a) => a.id)
+			.filter((id) => !alreadyInstalled.includes(id));
 
 		if (availableIds.length === 0) {
 			console.log('   ℹ️  No hay más add-ons disponibles para instalar.');
@@ -760,7 +676,7 @@ export class InitializationWizard {
 
 		console.log('\n   📦 Add-ons disponibles:');
 		const options = availableAddons
-			.filter(a => !alreadyInstalled.includes(a.id))
+			.filter((a) => !alreadyInstalled.includes(a.id))
 			.map((addon, index) => ({
 				value: addon.id,
 				label: `${addon.name} - ${addon.description || 'Sin descripción'}`,
@@ -784,16 +700,13 @@ export class InitializationWizard {
 				break;
 			}
 
-			const remainingOptions = options.filter(opt => !additional.includes(opt.value));
+			const remainingOptions = options.filter((opt) => !additional.includes(opt.value));
 			if (remainingOptions.length === 0) {
 				console.log('   ℹ️  Ya has agregado todos los add-ons disponibles.');
 				break;
 			}
 
-			const nextSelected = await this.prompt.select(
-				'   Selecciona otro add-on:',
-				remainingOptions,
-			);
+			const nextSelected = await this.prompt.select('   Selecciona otro add-on:', remainingOptions);
 
 			if (nextSelected) {
 				additional.push(nextSelected);
@@ -811,24 +724,24 @@ export class InitializationWizard {
 	private async installAddons(addonIds: string[]): Promise<string[]> {
 		const installed: string[] = [];
 		const addonDescriptions: Record<string, string> = {
-			'storybook': '📚 Desarrollo y documentación de componentes',
+			storybook: '📚 Desarrollo y documentación de componentes',
 			'figma-sync': '🎨 Sincronización de tokens desde Figma',
-			'eslint': '🔍 Detección de errores de código',
-			'prettier': '✨ Formateo automático de código',
-			'vitest': '🧪 Unit testing (rápido y moderno)',
-			'playwright': '🎭 Testing end-to-end',
-			'chromatic': '🖼️  Visual testing y comparación',
-			'snyk': '🔒 Escaneo de vulnerabilidades',
-			'renovate': '🔄 Actualizaciones automáticas',
-			'lighthouse': '⚡ Análisis de rendimiento',
+			eslint: '🔍 Detección de errores de código',
+			prettier: '✨ Formateo automático de código',
+			vitest: '🧪 Unit testing (rápido y moderno)',
+			playwright: '🎭 Testing end-to-end',
+			chromatic: '🖼️  Visual testing y comparación',
+			snyk: '🔒 Escaneo de vulnerabilidades',
+			renovate: '🔄 Actualizaciones automáticas',
+			lighthouse: '⚡ Análisis de rendimiento',
 			'bundle-analyzer': '📊 Análisis de tamaño de bundle',
-			'standalone': '🚀 Componentes standalone',
-			'sentry': '🐛 Monitoreo de errores',
-			'clarity': '👁️  Análisis de comportamiento de usuarios',
-			'vercel': '☁️  Despliegue en Vercel',
-			'github': '🐙 Integración con GitHub',
-			'codecov': '📈 Cobertura de código',
-			'feedback': '💬 Sistema de feedback automatizado',
+			standalone: '🚀 Componentes standalone',
+			sentry: '🐛 Monitoreo de errores',
+			clarity: '👁️  Análisis de comportamiento de usuarios',
+			vercel: '☁️  Despliegue en Vercel',
+			github: '🐙 Integración con GitHub',
+			codecov: '📈 Cobertura de código',
+			feedback: '💬 Sistema de feedback automatizado',
 		};
 
 		for (const addonId of addonIds) {
@@ -851,28 +764,30 @@ export class InitializationWizard {
 	/**
 	 * Descubre add-ons disponibles en el sistema
 	 */
-	private async discoverAvailableAddons(): Promise<Array<{ id: string; name: string; description: string }>> {
+	private async discoverAvailableAddons(): Promise<
+		Array<{ id: string; name: string; description: string }>
+	> {
 		const addons: Array<{ id: string; name: string; description: string }> = [];
 		const addonsPath = 'packages/addons/functional';
-		
+
 		try {
 			const fs = await import('fs/promises');
 			const path = await import('path');
-			
+
 			const functionalPath = path.resolve(process.cwd(), addonsPath);
-			
+
 			try {
 				const entries = await fs.readdir(functionalPath, { withFileTypes: true });
-				
+
 				for (const entry of entries) {
 					if (entry.isDirectory()) {
 						const addonPath = path.join(functionalPath, entry.name);
 						const manifestPath = path.join(addonPath, 'manifest.json');
-						
+
 						try {
 							const manifestContent = await fs.readFile(manifestPath, 'utf-8');
 							const manifest = JSON.parse(manifestContent);
-							
+
 							addons.push({
 								id: manifest.id || entry.name,
 								name: manifest.name || entry.name,
@@ -915,27 +830,32 @@ export class InitializationWizard {
 			await fs.access(ubitsLocalPath);
 			console.log('   ✅ Carpeta UBITS encontrada en el escritorio');
 			console.log(`   📁 Ubicación: ${ubitsLocalPath}`);
-			
+
 			// Verificar que existan los templates
 			const adminTemplate = path.join(ubitsLocalPath, 'packages/templates/template-admin.html');
-			const colaboradorTemplate = path.join(ubitsLocalPath, 'packages/templates/template-colaborador.html');
-			
+			const colaboradorTemplate = path.join(
+				ubitsLocalPath,
+				'packages/templates/template-colaborador.html',
+			);
+
 			try {
 				await fs.access(adminTemplate);
 				console.log('   ✅ Template administrador encontrado');
 			} catch {
 				console.warn('   ⚠️  Template administrador no encontrado');
 			}
-			
+
 			try {
 				await fs.access(colaboradorTemplate);
 				console.log('   ✅ Template colaborador encontrado');
 			} catch {
 				console.warn('   ⚠️  Template colaborador no encontrado');
 			}
-
 		} catch (error: any) {
-			console.warn('   ⚠️  No se encontró la carpeta UBITS en el escritorio:', error.message || error);
+			console.warn(
+				'   ⚠️  No se encontró la carpeta UBITS en el escritorio:',
+				error.message || error,
+			);
 			console.warn(`   💡 Asegúrate de que existe: ${ubitsLocalPath}`);
 		}
 	}
@@ -1143,6 +1063,375 @@ export class InitializationWizard {
 	}
 
 	/**
+	 * Crea ambos templates (administrador y colaborador)
+	 * Retorna el path del template seleccionado y el del otro
+	 */
+	private async createBothTemplates(
+		selectedTemplate: 'administrador' | 'colaborador',
+		module: string,
+		product?: string,
+	): Promise<{ selectedCanvasPath: string; otherCanvasPath: string | null }> {
+		const canvasCreator = new CanvasCreator();
+
+		// Crear el template seleccionado
+		const selectedCanvasPath = await canvasCreator.create(selectedTemplate, module, product);
+
+		// Crear el otro template
+		const otherTemplate: 'administrador' | 'colaborador' =
+			selectedTemplate === 'administrador' ? 'colaborador' : 'administrador';
+		const otherCanvasPath = await canvasCreator.create(otherTemplate, module, product);
+
+		return {
+			selectedCanvasPath,
+			otherCanvasPath,
+		};
+	}
+
+	/**
+	 * Actualiza los enlaces entre templates en el sidebar
+	 * Actualiza el botón del sidebar que cambia entre administrador y colaborador
+	 */
+	private async updateCrossTemplateLinks(
+		selectedCanvasPath: string,
+		otherCanvasPath: string,
+		selectedTemplate: 'administrador' | 'colaborador',
+	): Promise<void> {
+		try {
+			const fs = await import('fs/promises');
+			const path = await import('path');
+
+			// Obtener nombres de archivo relativos para usar en los enlaces
+			const selectedFileName = path.basename(selectedCanvasPath);
+			const otherFileName = path.basename(otherCanvasPath);
+
+			// Leer ambos archivos
+			const selectedContent = await fs.readFile(selectedCanvasPath, 'utf-8');
+			const otherContent = await fs.readFile(otherCanvasPath, 'utf-8');
+
+			// Inyectar script que actualice el enlace del botón del sidebar después de que se cargue
+			// El sidebar se carga dinámicamente, así que necesitamos interceptar cuando se carga
+			const updateScript = `
+  <script>
+    // Actualizar enlace del botón del sidebar que cambia entre templates
+    (function() {
+      // Definir targetFileName en el scope global de la función anónima
+      const targetFileName = '${otherFileName}';
+      console.log('🔗 [Wizard] Archivo objetivo configurado:', targetFileName);
+      
+      const updateTemplateLink = () => {
+        console.log('🔗 [Wizard] Actualizando enlaces entre templates...');
+        console.log('🔗 [Wizard] Archivo objetivo:', targetFileName);
+        
+        // 1. Buscar el botón del sidebar principal (data-section="admin" o "colaborador")
+        // En modo colaborador, el primer botón es "Administrador" con data-section="admin"
+        // En modo administrador, no hay botón "Colaborador" en el sidebar principal
+        const sidebarButtons = document.querySelectorAll('.ubits-sidebar-nav-button[data-section="admin"], .ubits-sidebar-nav-button[data-section="colaborador"]');
+        console.log('🔗 [Wizard] Botones del sidebar encontrados:', sidebarButtons.length);
+        
+        sidebarButtons.forEach(button => {
+          const section = button.getAttribute('data-section');
+          console.log('🔗 [Wizard] Botón encontrado con data-section:', section);
+          
+          // Interceptar el click del botón
+          button.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('🔗 [Wizard] Click interceptado en botón del sidebar, redirigiendo a:', targetFileName);
+            window.location.href = targetFileName;
+            return false;
+          }, true); // Usar capture phase para interceptar antes que otros handlers
+          
+          // También actualizar onclick si existe
+          if (button.onclick) {
+            const originalOnclick = button.onclick;
+            button.onclick = function(e) {
+              e.preventDefault();
+              e.stopPropagation();
+              console.log('🔗 [Wizard] onclick interceptado, redirigiendo a:', targetFileName);
+              window.location.href = targetFileName;
+              return false;
+            };
+          }
+        });
+        
+        // 2. Buscar el botón del menú de perfil que cambia entre templates
+        // El botón puede tener texto "Modo Administrador" o "Modo colaborador"
+        // Buscar en múltiples lugares posibles
+        const selectors = [
+          '.ubits-sidebar-profile-menu-item',
+          '[data-section="admin"]',
+          '[data-section="colaborador"]',
+          '.ubits-sidebar-profile-menu .ubits-sidebar-profile-menu-item',
+          '.ubits-sidebar-profile-dropdown .ubits-sidebar-profile-menu-item',
+          '.ubits-sidebar-profile-menu li',
+          '.ubits-sidebar-profile-dropdown li',
+          '[class*="profile-menu"] [class*="menu-item"]',
+          '[class*="profile-dropdown"] [class*="menu-item"]'
+        ];
+        
+        let menuItems = [];
+        selectors.forEach(selector => {
+          try {
+            const found = document.querySelectorAll(selector);
+            if (found.length > 0) {
+              menuItems = Array.from(new Set([...menuItems, ...Array.from(found)]));
+            }
+          } catch (e) {
+            // Ignorar errores de selector
+          }
+        });
+        
+        // También buscar por texto en todos los elementos clickeables
+        const allClickable = document.querySelectorAll('li, button, a, div[onclick], div[role="button"]');
+        allClickable.forEach(item => {
+          const text = (item.textContent || item.innerText || '').trim();
+          if (text.includes('Modo Administrador') || 
+              text.includes('Modo administrador') ||
+              text.includes('Modo colaborador') || 
+              text.includes('Modo Colaborador')) {
+            if (!menuItems.includes(item)) {
+              menuItems.push(item);
+            }
+          }
+        });
+        
+        console.log('🔗 [Wizard] Items del menú de perfil encontrados:', menuItems.length);
+        
+        menuItems.forEach(item => {
+          const text = (item.textContent || item.innerText || '').trim();
+          const isModeButton = 
+            (text.includes('Modo Administrador') || text.includes('Modo administrador')) ||
+            (text.includes('Modo colaborador') || text.includes('Modo Colaborador'));
+          
+          if (isModeButton) {
+            console.log('🔗 [Wizard] Botón del menú de perfil encontrado:', text);
+            console.log('🔗 [Wizard] Elemento:', item);
+            console.log('🔗 [Wizard] Clases:', item.className);
+            console.log('🔗 [Wizard] Tag:', item.tagName);
+            
+            // Interceptar el click con capture phase
+            const clickHandler = function(e) {
+              e.preventDefault();
+              e.stopPropagation();
+              e.stopImmediatePropagation();
+              console.log('🔗 [Wizard] ✅ Click interceptado en menú de perfil, redirigiendo a:', targetFileName);
+              window.location.href = targetFileName;
+              return false;
+            };
+            
+            // Agregar listener con capture
+            item.addEventListener('click', clickHandler, true);
+            
+            // También agregar sin capture como backup
+            item.addEventListener('click', clickHandler, false);
+            
+            // Actualizar onclick si existe
+            if (item.onclick) {
+              const originalOnclick = item.onclick;
+              item.onclick = function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                e.stopImmediatePropagation();
+                console.log('🔗 [Wizard] ✅ onclick interceptado en menú, redirigiendo a:', targetFileName);
+                window.location.href = targetFileName;
+                return false;
+              };
+            }
+            
+            // Actualizar atributo onclick
+            if (item.getAttribute('onclick')) {
+              item.setAttribute('onclick', "event.preventDefault(); event.stopPropagation(); event.stopImmediatePropagation(); window.location.href='" + targetFileName + "'; return false;");
+            }
+            
+            // También actualizar href si existe
+            if (item.tagName === 'A') {
+              item.href = targetFileName;
+              item.addEventListener('click', clickHandler, true);
+            } else if (item.querySelector('a')) {
+              const link = item.querySelector('a');
+              if (link) {
+                link.href = targetFileName;
+                link.addEventListener('click', clickHandler, true);
+              }
+            }
+            
+            // Buscar cualquier elemento hijo que pueda ser clickeable
+            const clickableChildren = item.querySelectorAll('a, button, [onclick], [role="button"]');
+            clickableChildren.forEach(child => {
+              child.addEventListener('click', clickHandler, true);
+              if (child.tagName === 'A') {
+                child.href = targetFileName;
+              }
+            });
+          }
+        });
+        
+        console.log('🔗 [Wizard] ✅ Enlaces actualizados');
+      };
+      
+      // Ejecutar cuando el DOM esté listo
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', updateTemplateLink);
+      } else {
+        updateTemplateLink();
+      }
+      
+      // También ejecutar después de delays para asegurar que el sidebar se haya cargado dinámicamente
+      setTimeout(updateTemplateLink, 500);
+      setTimeout(updateTemplateLink, 1000);
+      setTimeout(updateTemplateLink, 2000);
+      setTimeout(updateTemplateLink, 3000);
+      
+      // Observar cambios en el DOM para cuando el sidebar o menú de perfil se cargue dinámicamente
+      const observer = new MutationObserver(function(mutations) {
+        let shouldUpdate = false;
+        mutations.forEach(function(mutation) {
+          if (mutation.addedNodes.length > 0) {
+            mutation.addedNodes.forEach(function(node) {
+              if (node.nodeType === 1) { // Element node
+                if (node.classList && (
+                  node.classList.contains('ubits-sidebar') ||
+                  node.classList.contains('ubits-sidebar-nav-button') ||
+                  node.classList.contains('ubits-sidebar-profile-menu') ||
+                  node.classList.contains('ubits-sidebar-profile-dropdown') ||
+                  node.classList.contains('ubits-sidebar-profile-menu-item') ||
+                  node.querySelector('.ubits-sidebar-nav-button') ||
+                  node.querySelector('.ubits-sidebar-profile-menu') ||
+                  node.querySelector('.ubits-sidebar-profile-dropdown')
+                )) {
+                  shouldUpdate = true;
+                }
+              }
+            });
+          }
+        });
+        if (shouldUpdate) {
+          setTimeout(updateTemplateLink, 100);
+        }
+      });
+      
+      observer.observe(document.body, {
+        childList: true,
+        subtree: true,
+        attributes: true,
+        attributeFilter: ['class', 'style']
+      });
+      
+      // Interceptar TODOS los clicks en el documento y verificar si es el botón de cambio de modo
+      // Esto es más agresivo pero asegura que funcione incluso si el menú se carga dinámicamente
+      // IMPORTANTE: targetFileName debe estar en el scope superior para que esté disponible aquí
+      document.addEventListener('click', function(e) {
+        const target = e.target;
+        if (!target) return;
+        
+        // Verificar si el click es en el avatar para abrir el menú
+        if (target.closest('.ubits-sidebar-profile-avatar') ||
+            target.closest('[class*="profile-avatar"]') ||
+            target.closest('[class*="user-avatar"]')) {
+          // El menú de perfil se está abriendo, actualizar después de un delay
+          setTimeout(updateTemplateLink, 200);
+          setTimeout(updateTemplateLink, 500);
+          return;
+        }
+        
+        // Verificar si el click es en un elemento que contiene "Modo colaborador" o "Modo Administrador"
+        const clickedElement = target.closest('li, button, a, div[onclick], div[role="button"], [class*="menu-item"]');
+        if (clickedElement) {
+          const text = (clickedElement.textContent || clickedElement.innerText || '').trim();
+          const isModeButton = 
+            (text.includes('Modo Administrador') || text.includes('Modo administrador')) ||
+            (text.includes('Modo colaborador') || text.includes('Modo Colaborador'));
+          
+          if (isModeButton) {
+            console.log('🔗 [Wizard] 🎯 Click detectado en botón de cambio de modo:', text);
+            console.log('🔗 [Wizard] Elemento:', clickedElement);
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            console.log('🔗 [Wizard] ✅ Redirigiendo a:', targetFileName);
+            window.location.href = targetFileName;
+            return false;
+          }
+        }
+      }, true); // Usar capture phase para interceptar ANTES que otros handlers
+    })();
+  </script>
+`;
+
+			// Insertar el script antes del cierre de </body>
+			let updatedSelectedContent = selectedContent;
+			let updatedOtherContent = otherContent;
+
+			// Insertar script en el template seleccionado (apunta al otro)
+			if (updatedSelectedContent.includes('</body>')) {
+				updatedSelectedContent = updatedSelectedContent.replace(
+					'</body>',
+					`${updateScript}\n</body>`,
+				);
+			}
+
+			// Para el otro template, necesitamos cambiar la referencia al template seleccionado
+			const otherUpdateScript = updateScript.replace(otherFileName, selectedFileName);
+			if (updatedOtherContent.includes('</body>')) {
+				updatedOtherContent = updatedOtherContent.replace(
+					'</body>',
+					`${otherUpdateScript}\n</body>`,
+				);
+			}
+
+			// Guardar archivos actualizados
+			await fs.writeFile(selectedCanvasPath, updatedSelectedContent, 'utf-8');
+			await fs.writeFile(otherCanvasPath, updatedOtherContent, 'utf-8');
+		} catch (error) {
+			console.warn('   ⚠️  Error actualizando enlaces entre templates:', error);
+		}
+	}
+
+	/**
+	 * Configura GitHub preguntando por la URL del repositorio
+	 */
+	private async configureGitHub(): Promise<string | null> {
+		try {
+			const githubUrl = await this.prompt.question(
+				'🐙 ¿Cuál es la URL de tu repositorio GitHub? (presiona Enter para omitir): ',
+			);
+
+			if (!githubUrl || githubUrl.trim() === '') {
+				return null;
+			}
+
+			// Guardar configuración de GitHub
+			const configManager = (this.hub as any).configManager;
+			if (configManager) {
+				const currentConfig = await configManager.getConfig();
+				const updatedConfig = {
+					...currentConfig,
+					autorun: {
+						...(currentConfig.autorun || {}),
+						addons: {
+							...(currentConfig.autorun?.addons || {}),
+							config: {
+								...(currentConfig.autorun?.addons?.config || {}),
+								github: {
+									repositoryUrl: githubUrl.trim(),
+									branch: 'main',
+									autoCommit: true,
+								},
+							},
+						},
+					},
+				};
+				await configManager.saveConfig(updatedConfig);
+			}
+
+			return githubUrl.trim();
+		} catch (error) {
+			console.warn('   ⚠️  Error configurando GitHub:', error);
+			return null;
+		}
+	}
+
+	/**
 	 * Valida el lienzo creado contra estándares UBITS
 	 */
 	private async validateCanvas(canvasPath: string): Promise<void> {
@@ -1191,4 +1480,3 @@ export class InitializationWizard {
 		};
 	}
 }
-

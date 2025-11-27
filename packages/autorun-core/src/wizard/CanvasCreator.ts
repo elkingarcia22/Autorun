@@ -17,13 +17,11 @@ export class CanvasCreator {
 
 	/**
 	 * Crea un lienzo/template nuevo cargando el template desde Storybook
-	 * @param otherTemplatePath - Ruta del otro template para arreglar enlaces entre ellos
 	 */
 	async create(
 		template: 'administrador' | 'colaborador',
 		module: string,
 		product?: string,
-		otherTemplatePath?: string,
 	): Promise<string> {
 		const templateConfig = UBITS_PRESET.templates[template];
 		const fileName = this.generateFileName(template, module, product);
@@ -33,7 +31,7 @@ export class CanvasCreator {
 		await fs.mkdir(path.dirname(filePath), { recursive: true });
 
 		// Cargar template desde Storybook
-		const content = await this.loadTemplateFromStorybook(template, module, product, otherTemplatePath);
+		const content = await this.loadTemplateFromStorybook(template, module, product);
 
 		// Escribir archivo
 		await fs.writeFile(filePath, content, 'utf-8');
@@ -51,47 +49,47 @@ export class CanvasCreator {
 		template: 'administrador' | 'colaborador',
 		module: string,
 		product?: string,
-		otherTemplatePath?: string,
 	): Promise<string> {
 		const templateConfig = UBITS_PRESET.templates[template];
-		const templateFileName = template === 'administrador' ? 'template-admin.html' : 'template-colaborador.html';
-		
+		const templateFileName =
+			template === 'administrador' ? 'template-admin.html' : 'template-colaborador.html';
+
 		// Obtener ruta de UBITS en el escritorio
 		const os = await import('os');
-		const ubitsDesktopPath = path.join(os.homedir(), 'Desktop', 'UBITS', 'packages', 'templates', templateFileName);
-		
+		const ubitsDesktopPath = path.join(
+			os.homedir(),
+			'Desktop',
+			'UBITS',
+			'packages',
+			'templates',
+			templateFileName,
+		);
+
 		try {
 			// Verificar si existe el archivo en el escritorio
 			await fs.access(ubitsDesktopPath);
-			
+
 			// Cargar desde archivo local del escritorio
 			console.log(`   📄 Cargando template completo desde UBITS local: ${ubitsDesktopPath}`);
 			let templateContent = await fs.readFile(ubitsDesktopPath, 'utf-8');
-			
-			// Calcular ruta relativa desde el archivo generado hacia UBITS
-			// El archivo generado está en: /Users/elkinmac/Desktop/Autorun/prototypes/
-			// UBITS está en: /Users/elkinmac/Desktop/UBITS/packages/
-			// Ruta relativa: ../../UBITS/packages/
+
+			// Usar rutas absolutas file:// para que funcionen cuando se abre el HTML localmente
 			const ubitsPackagesPath = path.join(os.homedir(), 'Desktop', 'UBITS', 'packages');
 			const absolutePath = `file://${ubitsPackagesPath}`.replace(/\\/g, '/');
-			
-			// Calcular ruta relativa desde prototypes/ hacia UBITS/packages/
-			// Desde: /Users/elkinmac/Desktop/Autorun/prototypes/
-			// Hacia: /Users/elkinmac/Desktop/UBITS/packages/
-			// Relativa: ../../UBITS/packages/
-			const relativePath = '../../UBITS/packages';
-			
-			// Usar rutas relativas para servidor HTTP, file:// absolutas como fallback
-			// Ajustar rutas del template: primero intentar relativas, luego absolutas file://
-			templateContent = await this.adjustTemplatePaths(templateContent, absolutePath, relativePath);
-			
+
+			// Ajustar rutas del template a rutas absolutas file://
+			templateContent = await this.adjustTemplatePaths(templateContent, absolutePath);
+
 			// Personalizar el template con el módulo y producto seleccionados
 			// Esto agrega el script que activa el módulo/producto en sidebar y subnav
-			// otherTemplatePath será el nombre del archivo del otro template (ej: canvas-colaborador-...html)
-			const pathModule = await import('path');
-			const otherTemplateFileName = otherTemplatePath ? pathModule.basename(otherTemplatePath) : '';
-			templateContent = this.customizeTemplate(templateContent, template, module, product, absolutePath, otherTemplateFileName);
-			
+			templateContent = this.customizeTemplate(
+				templateContent,
+				template,
+				module,
+				product,
+				absolutePath,
+			);
+
 			return templateContent;
 		} catch (localError) {
 			console.warn('⚠️  No se pudo cargar template desde UBITS local:', localError);
@@ -102,72 +100,47 @@ export class CanvasCreator {
 	}
 
 	/**
-	 * Ajusta las rutas del template para que funcionen con file:// absolutas o rutas relativas
+	 * Ajusta las rutas del template para que funcionen con file:// absolutas
 	 * Las rutas originales son relativas a packages/templates/ (../tokens/...)
-	 * Las convertimos a rutas absolutas file:// hacia Desktop/UBITS/packages/ o relativas
+	 * Las convertimos a rutas absolutas file:// hacia Desktop/UBITS/packages/
 	 */
-	private async adjustTemplatePaths(content: string, absolutePathToUBITS: string, relativePathToUBITS?: string): Promise<string> {
+	private async adjustTemplatePaths(content: string, absolutePathToUBITS: string): Promise<string> {
 		// Las rutas originales son: ../tokens/dist/tokens.css
 		// Necesitamos: file:///Users/elkinmac/Desktop/UBITS/packages/tokens/dist/tokens.css
-		
-		// Reemplazar rutas relativas ../ por la ruta (relativa o absoluta)
-		// Preferir rutas relativas para servidor HTTP, usar absolutas file:// como fallback
-		const pathToUse = relativePathToUBITS || absolutePathToUBITS;
-		
-		content = content.replace(
-			/href="\.\.\//g,
-			`href="${pathToUse}/`
-		);
-		
-		content = content.replace(
-			/src="\.\.\//g,
-			`src="${pathToUse}/`
-		);
-		
+
+		// Reemplazar rutas relativas ../ por la ruta absoluta
+		content = content.replace(/href="\.\.\//g, `href="${absolutePathToUBITS}/`);
+
+		content = content.replace(/src="\.\.\//g, `src="${absolutePathToUBITS}/`);
+
 		// También ajustar rutas de assets que son relativas al mismo directorio
-		// assets/fontawesome/... debe convertirse a ruta relativa o absoluta
-		content = content.replace(
-			/href="assets\//g,
-			`href="${pathToUse}/templates/assets/`
-		);
-		
-		content = content.replace(
-			/src="assets\//g,
-			`src="${pathToUse}/templates/assets/`
-		);
-		
+		// assets/fontawesome/... debe convertirse a file:///Users/.../templates/assets/fontawesome/...
+		content = content.replace(/href="assets\//g, `href="${absolutePathToUBITS}/templates/assets/`);
+
+		content = content.replace(/src="assets\//g, `src="${absolutePathToUBITS}/templates/assets/`);
+
 		// Ajustar rutas de imágenes en JavaScript (products.js)
-		// 'assets/images/Profile-image.jpg' -> ruta relativa o absoluta
+		// 'assets/images/Profile-image.jpg' -> 'file:///Users/.../templates/assets/images/Profile-image.jpg'
 		content = content.replace(
 			/'assets\/images\//g,
-			`'${pathToUse}/templates/assets/images/`
+			`'${absolutePathToUBITS}/templates/assets/images/`,
 		);
-		
+
 		content = content.replace(
 			/"assets\/images\//g,
-			`"${pathToUse}/templates/assets/images/`
+			`"${absolutePathToUBITS}/templates/assets/images/`,
 		);
-		
+
 		// Ajustar rutas de scripts que son relativas al mismo directorio
 		content = content.replace(
 			/src="components-loader\.js/g,
-			`src="${pathToUse}/templates/components-loader.js`
+			`src="${absolutePathToUBITS}/templates/components-loader.js`,
 		);
-		
-		content = content.replace(
-			/src="config\//g,
-			`src="${pathToUse}/templates/config/`
-		);
-		
-		content = content.replace(
-			/src="engine\//g,
-			`src="${pathToUse}/templates/engine/`
-		);
-		
-		// NOTA: Los enlaces entre templates (template-admin.html <-> template-colaborador.html)
-		// se arreglan después de crear ambos templates en InitializationWizard.ts
-		// para poder usar los nombres reales de los archivos generados
-		
+
+		content = content.replace(/src="config\//g, `src="${absolutePathToUBITS}/templates/config/`);
+
+		content = content.replace(/src="engine\//g, `src="${absolutePathToUBITS}/templates/engine/`);
+
 		return content;
 	}
 
@@ -188,9 +161,7 @@ export class CanvasCreator {
 		const moduleName = moduleConfig?.name || this.formatModuleName(module);
 
 		// Generar subnav HTML
-		const subnavHTML = moduleConfig
-			? this.generateSubNavHTML(moduleConfig, product)
-			: '';
+		const subnavHTML = moduleConfig ? this.generateSubNavHTML(moduleConfig, product) : '';
 
 		return `<!DOCTYPE html>
 <html lang="es">
@@ -469,7 +440,6 @@ export class CanvasCreator {
 		module: string,
 		product?: string,
 		absolutePathToUBITS?: string,
-		otherTemplateFileName?: string,
 	): string {
 		const moduleConfig = UBITS_MODULES_CONFIG[module];
 		const productName = product
@@ -503,16 +473,15 @@ export class CanvasCreator {
       product: '${product || ''}',
       moduleName: '${moduleName}',
       productName: '${productName || ''}',
-      storybookUrl: '${UBITS_PRESET.storybook.url}',
-      otherTemplatePath: '${otherTemplateFileName || ''}'
+      storybookUrl: '${UBITS_PRESET.storybook.url}'
     };
     
     // Ajustar rutas de imágenes y sobrescribir initialActiveSection después de que products.js se cargue
     (function() {
       const adjustImagePaths = (products) => {
         if (!products) return;
-        // absolutePathToUBITS ya incluye file:///Users/.../UBITS/packages
-        const ubitsTemplatesPath = '${absolutePathToUBITS || 'file:///Users/elkinmac/Desktop/UBITS/packages'}/templates';
+        // Usar ruta relativa para el servidor HTTP local
+        const ubitsTemplatesPath = '../../UBITS/packages/templates';
         
         // Función recursiva para ajustar rutas en objetos
         const adjustPaths = (obj) => {
@@ -561,37 +530,6 @@ export class CanvasCreator {
           
           // Ajustar rutas de imágenes
           adjustImagePaths(window.UBITS_PRODUCTS);
-          
-          // Arreglar enlaces entre templates si existe otherTemplateFileName
-          ${otherTemplateFileName ? `
-          const otherTemplateName = '${template === 'administrador' ? 'template-colaborador.html' : 'template-admin.html'}';
-          const otherTemplateFileName = '${otherTemplateFileName}';
-          
-          // Función recursiva para arreglar enlaces en objetos
-          const fixTemplateLinks = (obj) => {
-            if (typeof obj !== 'object' || obj === null) return;
-            
-            for (const key in obj) {
-              if (key === 'href' || key === 'url') {
-                // Reemplazar enlaces a template-admin.html o template-colaborador.html
-                if (typeof obj[key] === 'string' && obj[key].includes(otherTemplateName)) {
-                  console.log('🔗 [Wizard] Arreglando enlace:', obj[key], '->', otherTemplateFileName);
-                  obj[key] = obj[key].replace(otherTemplateName, otherTemplateFileName);
-                }
-              } else if (Array.isArray(obj[key])) {
-                // Recorrer arrays
-                obj[key].forEach(item => fixTemplateLinks(item));
-              } else {
-                // Recorrer objetos anidados
-                fixTemplateLinks(obj[key]);
-              }
-            }
-          };
-          
-          // Arreglar enlaces en todos los productos
-          fixTemplateLinks(window.UBITS_PRODUCTS);
-          console.log('🔗 [Wizard] ✅ Enlaces entre templates arreglados');
-          ` : ''}
           
           // Sobrescribir initialActiveSection INMEDIATAMENTE
           if (window.UBITS_PRODUCTS[templateKey]) {
@@ -981,11 +919,9 @@ export class CanvasCreator {
 			? moduleConfig?.products.find((p) => p.id === product)?.name || product
 			: '';
 		const moduleName = moduleConfig?.name || this.formatModuleName(module);
-		
+
 		// Generar subnav HTML
-		const subnavHTML = moduleConfig
-			? this.generateSubNavHTML(moduleConfig, product)
-			: '';
+		const subnavHTML = moduleConfig ? this.generateSubNavHTML(moduleConfig, product) : '';
 
 		return `<!DOCTYPE html>
 <html lang="es">
@@ -1237,4 +1173,3 @@ export class CanvasCreator {
 			.join(' ');
 	}
 }
-
