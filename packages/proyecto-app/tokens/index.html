@@ -8923,7 +8923,7 @@ const result = await runTests({ coverage: true });</code></pre>
             </div>
             <div class="step-content">
               <p class="step-description">
-                Clona el repositorio Autorun, instala las dependencias y ejecuta el wizard de inicialización. El wizard configurará todo automáticamente y abrirá el template en tu navegador.
+                Clona el repositorio Autorun, instala las dependencias y ejecuta el wizard de inicialización con configuración automática usando variables de entorno.
               </p>
               <div class="code-block">
                 <pre><code># Clonar el repositorio Autorun
@@ -8933,22 +8933,13 @@ cd Autorun
 # Instalar dependencias
 npm install
 
-# Ejecutar el wizard de inicialización
-npm run init
-
-# O usar configuración automática con variables de entorno:
+# Ejecutar el wizard con configuración automática
 export AUTORUN_TEMPLATE=administrador
 export AUTORUN_MODULE=desempeno
 export AUTORUN_PRODUCT=matriz-talento
 export AUTORUN_ADDONS=storybook,eslint,prettier
 npm run init</code></pre>
               </div>
-              <p class="step-note" style="margin-top: 16px; padding: 12px; background: rgba(0, 255, 255, 0.1); border-left: 3px solid var(--autorun-neon-cyan); border-radius: 4px;">
-                <strong>🔌 Add-ons por defecto:</strong> El wizard instalará automáticamente estos add-ons: Storybook, Figma Sync, ESLint, Prettier, Vitest, Playwright, Chromatic, Snyk, Renovate, Lighthouse, Bundle Analyzer, Standalone, Sentry, Clarity, Vercel, GitHub, Codecov y Feedback. Puedes personalizar esta lista durante la inicialización.
-              </p>
-              <p class="step-note" style="margin-top: 12px; padding: 12px; background: rgba(0, 255, 255, 0.1); border-left: 3px solid var(--autorun-neon-cyan); border-radius: 4px;">
-                <strong>📦 Repositorio UBITS:</strong> El wizard utiliza los templates y componentes del repositorio UBITS que debe estar en <code>~/Desktop/UBITS</code>. Los templates están en <code>packages/templates/</code> y los componentes en <code>packages/components/</code>.
-              </p>
             </div>
           </div>
 
