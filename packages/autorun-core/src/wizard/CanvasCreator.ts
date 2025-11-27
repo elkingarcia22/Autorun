@@ -996,13 +996,16 @@ export class CanvasCreator {
       console.log('🔵 [SubNav Fix] Tabs encontrados:', allTabs.length);
       
       // Si no hay producto, mantener el tab que ContentManager ya activó o activar el primero
-      if (!product || product === 'undefined' || product.trim() === '') {
+      if (!product || product === 'undefined' || product === 'null' || product.trim() === '') {
         console.log('🔵 [SubNav Fix] ⚠️ No hay producto específico');
         
         // Verificar si ya hay un tab activo
         const activeTab = subNavElement.querySelector('.ubits-sub-nav-tab--active');
         if (activeTab) {
-          console.log('🔵 [SubNav Fix] ✅ Ya hay un tab activo, manteniéndolo:', activeTab.getAttribute('data-tab'));
+          const dataTab = activeTab.getAttribute('data-tab');
+          console.log('🔵 [SubNav Fix] ✅ Ya hay un tab activo, manteniéndolo:', dataTab);
+          // Asegurar que la clase active esté presente (por si acaso)
+          activeTab.classList.add('ubits-sub-nav-tab--active');
           return;
         }
         
@@ -1020,6 +1023,7 @@ export class CanvasCreator {
         return;
       }
       
+      // Si hay producto, buscar y activar el tab correspondiente
       const productToTabIdMap = {
         'inicio': 'home',
         'catalogo': 'catalog',
@@ -1041,68 +1045,56 @@ export class CanvasCreator {
       const tabId = productToTabIdMap[product] || product;
       console.log('🔵 [SubNav Fix] Tab ID mapeado:', tabId);
       
-      const subNavElement = document.querySelector('.ubits-sub-nav') || 
-                           document.querySelector('#top-nav-container .ubits-sub-nav');
+      // Log estado antes de remover
+      console.log('🔵 [SubNav Fix] Estado ANTES de remover active:');
+      allTabs.forEach((tab, idx) => {
+        const isActive = tab.classList.contains('ubits-sub-nav-tab--active');
+        const dataTab = tab.getAttribute('data-tab');
+        console.log('   Tab ' + idx + ': data-tab="' + dataTab + '", active=' + isActive);
+      });
       
-      console.log('🔵 [SubNav Fix] SubNav encontrado:', !!subNavElement);
+      allTabs.forEach(tab => tab.classList.remove('ubits-sub-nav-tab--active'));
+      console.log('🔵 [SubNav Fix] ✅ Clase active removida de todos los tabs');
       
-      if (subNavElement) {
-        const allTabs = subNavElement.querySelectorAll('.ubits-sub-nav-tab');
-        console.log('🔵 [SubNav Fix] Tabs encontrados:', allTabs.length);
+      let targetTab = subNavElement.querySelector('[data-tab="' + tabId + '"]');
+      console.log('🔵 [SubNav Fix] Buscando tab con data-tab="' + tabId + '":', !!targetTab);
+      
+      if (!targetTab) {
+        console.log('🔵 [SubNav Fix] Tab no encontrado con tabId, buscando con producto original...');
+        targetTab = subNavElement.querySelector('[data-tab="' + product + '"]');
+        console.log('🔵 [SubNav Fix] Tab encontrado con producto original:', !!targetTab);
+      }
+      
+      if (targetTab) {
+        const dataTab = targetTab.getAttribute('data-tab');
+        const text = targetTab.textContent?.trim();
+        console.log('🔵 [SubNav Fix] ✅ Tab objetivo encontrado:', { dataTab, text });
+        targetTab.classList.add('ubits-sub-nav-tab--active');
+        console.log('🔵 [SubNav Fix] ✅ Clase ubits-sub-nav-tab--active agregada');
         
-        // Log estado antes de remover
-        console.log('🔵 [SubNav Fix] Estado ANTES de remover active:');
-        allTabs.forEach((tab, idx) => {
-          const isActive = tab.classList.contains('ubits-sub-nav-tab--active');
-          const dataTab = tab.getAttribute('data-tab');
-          console.log('   Tab ' + idx + ': data-tab="' + dataTab + '", active=' + isActive);
+        // Verificar que se agregó correctamente
+        const hasActive = targetTab.classList.contains('ubits-sub-nav-tab--active');
+        console.log('🔵 [SubNav Fix] Verificación - tiene clase active:', hasActive);
+        
+        // Verificar el ::after
+        const styles = window.getComputedStyle(targetTab, '::after');
+        console.log('🔵 [SubNav Fix] Estilos del ::after:', {
+          content: styles.content,
+          display: styles.display,
+          visibility: styles.visibility,
+          opacity: styles.opacity,
+          backgroundColor: styles.backgroundColor,
+          height: styles.height,
+          position: styles.position
         });
-        
-        allTabs.forEach(tab => tab.classList.remove('ubits-sub-nav-tab--active'));
-        console.log('🔵 [SubNav Fix] ✅ Clase active removida de todos los tabs');
-        
-        let targetTab = subNavElement.querySelector('[data-tab="' + tabId + '"]');
-        console.log('🔵 [SubNav Fix] Buscando tab con data-tab="' + tabId + '":', !!targetTab);
-        
-        if (!targetTab) {
-          console.log('🔵 [SubNav Fix] Tab no encontrado con tabId, buscando con producto original...');
-          targetTab = subNavElement.querySelector('[data-tab="' + product + '"]');
-          console.log('🔵 [SubNav Fix] Tab encontrado con producto original:', !!targetTab);
-        }
-        
-        if (targetTab) {
-          const dataTab = targetTab.getAttribute('data-tab');
-          const text = targetTab.textContent?.trim();
-          console.log('🔵 [SubNav Fix] ✅ Tab objetivo encontrado:', { dataTab, text });
-          targetTab.classList.add('ubits-sub-nav-tab--active');
-          console.log('🔵 [SubNav Fix] ✅ Clase ubits-sub-nav-tab--active agregada');
-          
-          // Verificar que se agregó correctamente
-          const hasActive = targetTab.classList.contains('ubits-sub-nav-tab--active');
-          console.log('🔵 [SubNav Fix] Verificación - tiene clase active:', hasActive);
-          
-          // Verificar el ::after
-          const styles = window.getComputedStyle(targetTab, '::after');
-          console.log('🔵 [SubNav Fix] Estilos del ::after:', {
-            content: styles.content,
-            display: styles.display,
-            visibility: styles.visibility,
-            opacity: styles.opacity,
-            backgroundColor: styles.backgroundColor,
-            height: styles.height,
-            position: styles.position
-          });
-        } else {
-          console.error('🔵 [SubNav Fix] ❌ Tab objetivo NO encontrado');
-          console.log('🔵 [SubNav Fix] Tabs disponibles:');
-          allTabs.forEach((tab, idx) => {
-            const dataTab = tab.getAttribute('data-tab');
-            const text = tab.textContent?.trim();
-            console.log('   Tab ' + idx + ': data-tab="' + dataTab + '", text="' + text + '"');
-          });
-        }
       } else {
-        console.error('🔵 [SubNav Fix] ❌ SubNav no encontrado');
+        console.error('🔵 [SubNav Fix] ❌ Tab objetivo NO encontrado');
+        console.log('🔵 [SubNav Fix] Tabs disponibles:');
+        allTabs.forEach((tab, idx) => {
+          const dataTab = tab.getAttribute('data-tab');
+          const text = tab.textContent?.trim();
+          console.log('   Tab ' + idx + ': data-tab="' + dataTab + '", text="' + text + '"');
+        });
       }
       console.log('🔵 [SubNav Fix] ════════════════════════════════════════');
     };
