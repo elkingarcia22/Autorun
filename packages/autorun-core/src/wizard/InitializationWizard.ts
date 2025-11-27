@@ -85,8 +85,9 @@ export class InitializationWizard {
 			// Preguntar template y producto en un solo paso
 			answers = await this.askTemplateAndProduct();
 
-			// Preguntar por los add-ons a instalar
-			selectedAddons = await this.askAddons();
+			// Usar add-ons por defecto automáticamente (sin preguntar)
+			selectedAddons = UBITS_PRESET.addons;
+			console.log('\n📦 Instalando add-ons por defecto automáticamente...\n');
 		}
 
 		console.log('\n✅ Perfecto, voy a configurar tu proyecto UBITS ahora.\n');
@@ -461,10 +462,33 @@ export class InitializationWizard {
 		await this.enableModule(module, template, product);
 		console.log('   ✅ Configurado\n');
 
-		// 5. Crear lienzo/template
-		console.log('🎨 Creando tu lienzo de trabajo...');
-		const canvasPath = await this.createCanvas(template, module, product);
-		console.log('   ✅ Lienzo creado\n');
+		// 5. Crear ambos templates (el seleccionado y el otro)
+		console.log('🎨 Creando tus lienzos de trabajo...');
+		
+		// Crear el otro template primero (sin enlaces cruzados)
+		const otherTemplate = template === 'administrador' ? 'colaborador' : 'administrador';
+		const otherCanvasPath = await this.createCanvas(otherTemplate, module, product);
+		console.log('   ✅ Lienzo secundario creado\n');
+		
+		// Crear el template principal con referencia al otro
+		const canvasPath = await this.createCanvas(template, module, product, otherCanvasPath);
+		console.log('   ✅ Lienzo principal creado\n');
+		
+		// Actualizar el otro template con referencia al principal
+		const fs = await import('fs/promises');
+		const canvasCreator = new CanvasCreator(this.projectPath);
+		const otherContent = await fs.readFile(otherCanvasPath, 'utf-8');
+		// Usar el método privado a través de un método público o hacerlo público
+		// Por ahora, actualizamos directamente el HTML
+		const path = await import('path');
+		const otherTemplateFileName = path.basename(canvasPath);
+		const otherTemplateName = template === 'administrador' ? 'template-colaborador.html' : 'template-admin.html';
+		const updatedOtherContent = otherContent
+			.replace(new RegExp(`href=["']${otherTemplateName}["']`, 'gi'), `href="${otherTemplateFileName}"`)
+			.replace(new RegExp(`href:\\s*["']${otherTemplateName}["']`, 'gi'), `href: "${otherTemplateFileName}"`)
+			.replace(new RegExp(`["']${otherTemplateName}["']`, 'gi'), `"${otherTemplateFileName}"`);
+		await fs.writeFile(otherCanvasPath, updatedOtherContent, 'utf-8');
+		console.log('   ✅ Enlaces entre templates actualizados\n');
 
 		// 6. Validar lienzo creado
 		console.log('🔍 Validando que todo cumpla con los estándares UBITS...');

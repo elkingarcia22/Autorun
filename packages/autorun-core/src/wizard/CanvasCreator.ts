@@ -17,11 +17,13 @@ export class CanvasCreator {
 
 	/**
 	 * Crea un lienzo/template nuevo cargando el template desde Storybook
+	 * @param otherTemplatePath - Ruta del otro template para arreglar enlaces entre ellos
 	 */
 	async create(
 		template: 'administrador' | 'colaborador',
 		module: string,
 		product?: string,
+		otherTemplatePath?: string,
 	): Promise<string> {
 		const templateConfig = UBITS_PRESET.templates[template];
 		const fileName = this.generateFileName(template, module, product);
@@ -31,7 +33,7 @@ export class CanvasCreator {
 		await fs.mkdir(path.dirname(filePath), { recursive: true });
 
 		// Cargar template desde Storybook
-		const content = await this.loadTemplateFromStorybook(template, module, product);
+		const content = await this.loadTemplateFromStorybook(template, module, product, otherTemplatePath);
 
 		// Escribir archivo
 		await fs.writeFile(filePath, content, 'utf-8');
@@ -49,6 +51,7 @@ export class CanvasCreator {
 		template: 'administrador' | 'colaborador',
 		module: string,
 		product?: string,
+		otherTemplatePath?: string,
 	): Promise<string> {
 		const templateConfig = UBITS_PRESET.templates[template];
 		const templateFileName = template === 'administrador' ? 'template-admin.html' : 'template-colaborador.html';
@@ -74,7 +77,7 @@ export class CanvasCreator {
 			
 			// Personalizar el template con el módulo y producto seleccionados
 			// Esto agrega el script que activa el módulo/producto en sidebar y subnav
-			templateContent = this.customizeTemplate(templateContent, template, module, product, absolutePath);
+			templateContent = this.customizeTemplate(templateContent, template, module, product, absolutePath, otherTemplatePath);
 			
 			return templateContent;
 		} catch (localError) {
@@ -446,6 +449,7 @@ export class CanvasCreator {
 		module: string,
 		product?: string,
 		absolutePathToUBITS?: string,
+		otherTemplatePath?: string,
 	): string {
 		const moduleConfig = UBITS_MODULES_CONFIG[module];
 		const productName = product

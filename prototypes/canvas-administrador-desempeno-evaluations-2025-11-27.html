@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UBITS - Inicio - administrador</title>
+    <title>UBITS - Desempeño - Evaluaciones 360 - administrador</title>
     
     <!-- UBITS Base Styles -->
     <link rel="stylesheet" href="file:///Users/elkinmac/Desktop/UBITS/packages/tokens/dist/tokens.css" />
@@ -416,7 +416,7 @@
         }
     </style>
 </head>
-<body data-template="administrador" data-module="inicio" data-product="">
+<body data-template="administrador" data-module="desempeno" data-product="evaluations">
     <div class="dashboard-container">
         <!-- Sidebar Container -->
         <div id="sidebar-container"></div>
@@ -746,10 +746,10 @@
     // Configuración del módulo y producto activos
     window.UBITS_CONFIG = {
       template: 'administrador',
-      module: 'inicio',
-      product: '',
-      moduleName: 'Inicio',
-      productName: '',
+      module: 'desempeno',
+      product: 'evaluations',
+      moduleName: 'Desempeño',
+      productName: 'Evaluaciones 360',
       storybookUrl: 'https://ubits-storybook10-q59fh1csi-elkin-garcias-projects-a0b1beb6.vercel.app'
     };
     
@@ -802,8 +802,8 @@
           console.log('🔍 [Wizard] ════════════════════════════════════════');
           console.log('🔍 [Wizard] UBITS_PRODUCTS detectado');
           console.log('🔍 [Wizard] templateKey:', templateKey);
-          console.log('🔍 [Wizard] Módulo objetivo: inicio');
-          console.log('🔍 [Wizard] Producto objetivo: undefined');
+          console.log('🔍 [Wizard] Módulo objetivo: desempeno');
+          console.log('🔍 [Wizard] Producto objetivo: evaluations');
           
           // Ajustar rutas de imágenes
           adjustImagePaths(window.UBITS_PRODUCTS);
@@ -817,7 +817,7 @@
             if (productConfig.sidebar) {
               // Normalizar nombre del módulo: 'desempeno' -> 'desempeño' (con tilde)
               // El ContentManager espera 'desempeño' con tilde para encontrar el SubNav correcto
-              const normalizedModule = 'inicio' === 'desempeno' ? 'desempeño' : 'inicio';
+              const normalizedModule = 'desempeno' === 'desempeno' ? 'desempeño' : 'desempeno';
               productConfig.sidebar.initialActiveSection = normalizedModule;
               console.log('🔍 [Wizard] ✅ initialActiveSection sobrescrito a:', normalizedModule);
               console.log('🔍 [Wizard] initialActiveSection DESPUÉS:', productConfig.sidebar.initialActiveSection);
@@ -851,8 +851,8 @@
     document.addEventListener('DOMContentLoaded', () => {
       console.log('🔍 [Wizard] ════════════════════════════════════════');
       console.log('🔍 [Wizard] DOMContentLoaded - Iniciando activación de módulo/producto');
-      console.log('🔍 [Wizard] Módulo objetivo: inicio');
-      console.log('🔍 [Wizard] Producto objetivo: undefined');
+      console.log('🔍 [Wizard] Módulo objetivo: desempeno');
+      console.log('🔍 [Wizard] Producto objetivo: evaluations');
       
       const activateProduct = () => {
         console.log('🔍 [Wizard] ════════════════════════════════════════');
@@ -866,7 +866,7 @@
         
         console.log('🔍 [Wizard] ✅ ContentManager está listo');
         console.log('🔍 [Wizard] currentSection actual:', window.UBITS_ContentManager.currentSection);
-        console.log('🔍 [Wizard] Módulo esperado: inicio');
+        console.log('🔍 [Wizard] Módulo esperado: desempeno');
         
         // Verificar estado del sidebar
         const sidebarElement = document.querySelector('.ubits-sidebar');
@@ -909,7 +909,7 @@
         try {
           // Normalizar nombre del módulo: 'desempeno' -> 'desempeño' (con tilde)
           // El ContentManager espera 'desempeño' con tilde para encontrar el SubNav correcto
-          const normalizedModule = 'inicio' === 'desempeno' ? 'desempeño' : 'inicio';
+          const normalizedModule = 'desempeno' === 'desempeno' ? 'desempeño' : 'desempeno';
           
           // Esperar a que el template termine su inicialización completa
           // El template usa setTimeout de ~1500ms + requestAnimationFrame
@@ -919,12 +919,12 @@
             
             // Si hay un producto, activarlo usando handleSectionChange con activeTabId
             // Esto actualizará el SubNav y el contenido automáticamente
-            if ('undefined') {
-              console.log('🔍 [Wizard] 🚀 Activando producto: undefined');
-              console.log('🔍 [Wizard] Llamando handleSectionChange("' + normalizedModule + '", "undefined")');
+            if ('evaluations') {
+              console.log('🔍 [Wizard] 🚀 Activando producto: evaluations');
+              console.log('🔍 [Wizard] Llamando handleSectionChange("' + normalizedModule + '", "evaluations")');
               
               // handleSectionChange con activeTabId activa el módulo y el producto en una sola llamada
-              window.UBITS_ContentManager.handleSectionChange(normalizedModule, 'undefined');
+              window.UBITS_ContentManager.handleSectionChange(normalizedModule, 'evaluations');
               
               // Mapeo de productos a IDs de tabs del SubNav
               // Algunos productos tienen IDs diferentes en el SubNav
@@ -950,8 +950,8 @@
               };
               
               // Obtener el ID del tab correcto
-              const tabId = productToTabIdMap['undefined'] || 'undefined';
-              console.log('🔍 [Wizard] [SubNav] Producto original: undefined');
+              const tabId = productToTabIdMap['evaluations'] || 'evaluations';
+              console.log('🔍 [Wizard] [SubNav] Producto original: evaluations');
               console.log('🔍 [Wizard] [SubNav] Tab ID mapeado:', tabId);
               
               // Forzar activación del tab en el SubNav después de que se actualice el contenido
@@ -963,7 +963,7 @@
                 attempts++;
                 console.log('🔍 [Wizard] ════════════════════════════════════════');
                 console.log('🔍 [Wizard] [SubNav] Intento', attempts, 'de activar tab en SubNav...');
-                console.log('🔍 [Wizard] [SubNav] Producto objetivo: undefined');
+                console.log('🔍 [Wizard] [SubNav] Producto objetivo: evaluations');
                 console.log('🔍 [Wizard] [SubNav] Tab ID a buscar:', tabId);
                 
                 // Buscar el SubNav de múltiples formas
@@ -1031,13 +1031,13 @@
                     // Si no se encuentra, intentar con el producto original
                     if (!targetTab) {
                       console.log('🔍 [Wizard] [SubNav] Tab no encontrado con tabId mapeado, intentando con producto original...');
-                      targetTab = subNavElement.querySelector('[data-tab="undefined"]');
+                      targetTab = subNavElement.querySelector('[data-tab="evaluations"]');
                     }
                     
                     // Si aún no se encuentra, intentar buscar por texto
                     if (!targetTab) {
                       console.log('🔍 [Wizard] [SubNav] Tab no encontrado por data-tab, buscando por texto...');
-                      const productText = 'undefined'.toLowerCase();
+                      const productText = 'evaluations'.toLowerCase();
                       Array.from(allTabs).forEach(tab => {
                         const text = tab.textContent?.trim().toLowerCase();
                         // Buscar coincidencias parciales
@@ -1073,8 +1073,8 @@
                       });
                       return true; // Éxito
                     } else {
-                      console.warn('🔍 [Wizard] [SubNav] ⚠️ Tab "undefined" no encontrado en SubNav');
-                      console.warn('🔍 [Wizard] [SubNav] Producto buscado:', 'undefined');
+                      console.warn('🔍 [Wizard] [SubNav] ⚠️ Tab "evaluations" no encontrado en SubNav');
+                      console.warn('🔍 [Wizard] [SubNav] Producto buscado:', 'evaluations');
                       if (attempts < maxAttempts) {
                         console.log('🔍 [Wizard] [SubNav] Reintentando en 200ms...');
                         setTimeout(activateTab, 200);

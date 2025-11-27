@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UBITS - Inicio - administrador</title>
+    <title>UBITS - Desempeño - Objetivos - colaborador</title>
     
     <!-- UBITS Base Styles -->
     <link rel="stylesheet" href="file:///Users/elkinmac/Desktop/UBITS/packages/tokens/dist/tokens.css" />
@@ -163,31 +163,10 @@
             }
             
             .main-content > *:first-child {
-                margin-top: calc(-1 * var(--ubits-spacing-xl, 20px));
+                margin-top: -20px;
             }
         }
 
-        /* ========================================
-           TOP NAV CONTAINER (SubNav)
-           ======================================== */
-
-        /* El SubNav debe mantener sus estilos originales del componente */
-        /* Solo establecer el contenedor para que el componente SubNav funcione correctamente */
-        #top-nav-container {
-            width: 100%;
-            max-width: 100%;
-            box-sizing: border-box;
-        }
-
-        /* ========================================
-           SUB NAV CONTAINER
-           ======================================== */
-        
-        #top-nav-container {
-            width: 100%;
-            max-width: 100%;
-            box-sizing: border-box;
-        }
 
         /* ========================================
            CONTENT AREA
@@ -243,7 +222,7 @@
             background-color: transparent !important;
             border: none !important;
             box-shadow: none !important;
-            padding: 0 var(--ubits-spacing-6xl, 40px) !important;
+            padding: 0 40px !important;
         }
 
         /* ========================================
@@ -416,14 +395,17 @@
         }
     </style>
 </head>
-<body data-template="administrador" data-module="inicio" data-product="">
+<body data-template="colaborador" data-module="desempeno" data-product="objectives">
     <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+        
         <!-- Sidebar Container -->
         <div id="sidebar-container"></div>
 
         <!-- Main Content -->
         <main class="main-content">
             <!-- Top Navigation -->
+            <!-- SubNav Container -->
             <div id="top-nav-container"></div>
             
             <!-- Content Area -->
@@ -457,6 +439,129 @@
     <!-- Los componentes se cargan dinámicamente a través de components-loader.js -->
     
     <script>
+        // ========================================
+        // DIAGNÓSTICO: Verificar carga de CSS
+        // ========================================
+        console.log('🔍 [Template] Iniciando diagnóstico de estilos...');
+        
+        // Verificar que los CSS se hayan cargado
+        function checkLoadedStylesheets() {
+            console.log('🔍 [CSS Check] Verificando hojas de estilo cargadas...');
+            const stylesheets = Array.from(document.styleSheets);
+            console.log(`📊 [CSS Check] Total de hojas de estilo encontradas: ${stylesheets.length}`);
+            
+            const expectedCSS = [
+                'tokens.css',
+                'fonts.css',
+                'tokens-typography.css',
+                'sidebar.css',
+                'subnav.css',
+                'tabbar.css',
+                'button.css'
+            ];
+            
+            expectedCSS.forEach(cssName => {
+                const found = stylesheets.some(sheet => {
+                    try {
+                        return sheet.href && sheet.href.includes(cssName);
+                    } catch (e) {
+                        return false;
+                    }
+                });
+                console.log(found ? `✅ [CSS Check] ${cssName} encontrado` : `❌ [CSS Check] ${cssName} NO encontrado`);
+            });
+            
+            // Verificar tokens CSS específicamente
+            const tokensSheet = stylesheets.find(sheet => {
+                try {
+                    return sheet.href && sheet.href.includes('tokens.css');
+                } catch (e) {
+                    return false;
+                }
+            });
+            
+            if (tokensSheet) {
+                console.log('✅ [CSS Check] tokens.css encontrado:', tokensSheet.href);
+                try {
+                    const rules = Array.from(tokensSheet.cssRules || []);
+                    console.log(`📊 [CSS Check] Reglas en tokens.css: ${rules.length}`);
+                    if (rules.length > 0) {
+                        const firstRule = rules[0];
+                        console.log('📋 [CSS Check] Primera regla:', firstRule.cssText.substring(0, 100));
+                    }
+                } catch (e) {
+                    console.error('❌ [CSS Check] Error al leer reglas de tokens.css:', e.message);
+                }
+            } else {
+                console.error('❌ [CSS Check] tokens.css NO encontrado en document.styleSheets');
+            }
+        }
+        
+        // Verificar que los componentes existan en window
+        function checkComponentsAvailable() {
+            console.log('🔍 [Template] Verificando componentes disponibles...');
+            console.log('📦 [Template] window.createSidebar:', typeof window.createSidebar);
+            console.log('📦 [Template] window.createSubNav:', typeof window.createSubNav);
+            console.log('📦 [Template] window.createTabBar:', typeof window.createTabBar);
+            console.log('📦 [Template] window.UBITS_ThemeManager:', typeof window.UBITS_ThemeManager);
+            console.log('📦 [Template] window.UBITS_ResponsiveManager:', typeof window.UBITS_ResponsiveManager);
+            console.log('📦 [Template] window.UBITS_TemplateLoader:', typeof window.UBITS_TemplateLoader);
+        }
+        
+        // Verificar elementos renderizados y sus clases CSS
+        function checkRenderedComponents() {
+            setTimeout(() => {
+                console.log('🔍 [Template] Verificando componentes renderizados...');
+                
+                const sidebar = document.querySelector('.ubits-sidebar');
+                if (sidebar) {
+                    const computedStyle = window.getComputedStyle(sidebar);
+                    console.log('✅ [Template] Sidebar encontrado');
+                    console.log('   - Clases:', sidebar.className);
+                    console.log('   - Background:', computedStyle.backgroundColor);
+                    console.log('   - Width:', computedStyle.width);
+                    console.log('   - Height:', computedStyle.height);
+                    console.log('   - Position:', computedStyle.position);
+                } else {
+                    console.log('❌ [Template] Sidebar NO encontrado');
+                }
+                
+                const subnav = document.querySelector('.ubits-sub-nav');
+                if (subnav) {
+                    const computedStyle = window.getComputedStyle(subnav);
+                    console.log('✅ [Template] SubNav encontrado');
+                    console.log('   - Clases:', subnav.className);
+                    console.log('   - Background:', computedStyle.backgroundColor);
+                    console.log('   - Height:', computedStyle.height);
+                } else {
+                    console.log('❌ [Template] SubNav NO encontrado');
+                }
+                
+                const tabbar = document.querySelector('.ubits-tabbar');
+                if (tabbar) {
+                    const computedStyle = window.getComputedStyle(tabbar);
+                    console.log('✅ [Template] TabBar encontrado');
+                    console.log('   - Clases:', tabbar.className);
+                    console.log('   - Display:', computedStyle.display);
+                    console.log('   - Background:', computedStyle.backgroundColor);
+                } else {
+                    console.log('❌ [Template] TabBar NO encontrado');
+                }
+                
+                const buttons = document.querySelectorAll('.ubits-sidebar-nav-button');
+                console.log(`📊 [Template] Botones del sidebar encontrados: ${buttons.length}`);
+                if (buttons.length > 0) {
+                    const firstButton = buttons[0];
+                    const computedStyle = window.getComputedStyle(firstButton);
+                    console.log('   - Clases del primer botón:', firstButton.className);
+                    console.log('   - Width:', computedStyle.width);
+                    console.log('   - Height:', computedStyle.height);
+                    console.log('   - Background:', computedStyle.backgroundColor);
+                    console.log('   - Color:', computedStyle.color);
+                }
+            }, 1000);
+        }
+        
         // ========================================
         // INITIALIZATION
         // Usando los componentes reales desde components-loader.js
@@ -541,74 +646,28 @@
             }
         }
 
-        // ========================================
-        // INITIALIZATION
-        // ========================================
-        
-        // Función para verificar si los CSS se están cargando
-        function checkLoadedStylesheets() {
-            console.log('🔍 [CSS Check] Verificando hojas de estilo cargadas...');
-            const stylesheets = Array.from(document.styleSheets);
-            console.log(`📊 [CSS Check] Total de hojas de estilo encontradas: ${stylesheets.length}`);
-            
-            const criticalCSS = [
-                'tokens.css',
-                'sidebar.css',
-                'subnav.css',
-                'tabbar.css',
-                'button.css'
-            ];
-            
-            criticalCSS.forEach(cssName => {
-                const found = stylesheets.some(sheet => {
-                    try {
-                        return sheet.href && sheet.href.includes(cssName);
-                    } catch (e) {
-                        return false;
-                    }
-                });
-                console.log(found ? `✅ [CSS Check] ${cssName} encontrado` : `❌ [CSS Check] ${cssName} NO encontrado`);
-            });
-            
-            // Verificar tokens CSS específicamente
-            const tokensSheet = stylesheets.find(sheet => {
-                try {
-                    return sheet.href && sheet.href.includes('tokens.css');
-                } catch (e) {
-                    return false;
-                }
-            });
-            
-            if (tokensSheet) {
-                console.log('✅ [CSS Check] tokens.css encontrado:', tokensSheet.href);
-                try {
-                    const rules = Array.from(tokensSheet.cssRules || []);
-                    console.log(`📊 [CSS Check] Reglas en tokens.css: ${rules.length}`);
-                    if (rules.length > 0) {
-                        const firstRule = rules[0];
-                        console.log('📋 [CSS Check] Primera regla:', firstRule.cssText.substring(0, 100));
-                    }
-                } catch (e) {
-                    console.error('❌ [CSS Check] Error al leer reglas de tokens.css:', e.message);
-                }
-            } else {
-                console.error('❌ [CSS Check] tokens.css NO encontrado en document.styleSheets');
-            }
-        }
-        
-        // ⚠️ PREVENIR múltiples ejecuciones del DOMContentLoaded
-        let domContentLoadedExecuted = false;
-        
         document.addEventListener('DOMContentLoaded', function() {
-            // Prevenir ejecuciones múltiples
-            if (domContentLoadedExecuted) {
-                console.warn('⚠️ [Template Admin] DOMContentLoaded ya ejecutado, ignorando...');
-                return;
-            }
-            domContentLoadedExecuted = true;
-            
             // Verificar CSS inmediatamente
             setTimeout(checkLoadedStylesheets, 100);
+            console.log('🚀 [Template] DOMContentLoaded ejecutado');
+            
+            // Verificar CSS inmediatamente
+            setTimeout(() => {
+                console.log('🔍 [Template] ════════════════════════════════════════');
+                console.log('🔍 [Template] VERIFICACIÓN DE CSS CARGADOS');
+                console.log('🔍 [Template] ════════════════════════════════════════');
+                checkLoadedStylesheets();
+                console.log('🔍 [Template] ════════════════════════════════════════');
+            }, 50);
+            
+            // Verificar componentes disponibles
+            setTimeout(() => {
+                console.log('🔍 [Template] ════════════════════════════════════════');
+                console.log('🔍 [Template] VERIFICACIÓN DE COMPONENTES DISPONIBLES');
+                console.log('🔍 [Template] ════════════════════════════════════════');
+                checkComponentsAvailable();
+                console.log('🔍 [Template] ════════════════════════════════════════');
+            }, 100);
             
             // Esperar a que todos los sistemas estén listos
             setTimeout(() => {
@@ -619,11 +678,16 @@
                 
                 // Detectar producto actual
                 const productId = window.detectCurrentProduct();
+                console.log('🔍 [Init] ProductId detectado:', productId);
                 
                 // Obtener configuración del producto
                 const productConfig = window.getProductConfig(productId);
+                console.log('🔍 [Init] ProductConfig obtenido:', productConfig);
+                console.log('🔍 [Init] ¿Tiene sidebar?', !!productConfig.sidebar);
+                console.log('🔍 [Init] ¿Tiene tabbar?', !!productConfig.tabbar);
                 
                 // Cargar tema guardado
+                console.log('🔍 [Init] Inicializando ThemeManager...');
                 window.UBITS_ThemeManager.init();
                 
                 // Sincronizar tema desde Storybook si estamos en un iframe
@@ -632,72 +696,141 @@
                 
                 // ⚠️ IMPORTANTE: Cargar componentes PRIMERO
                 // Luego inicializar responsive para que adapte los componentes ya creados
+                console.log('🔍 [Init] Cargando componentes con TemplateLoader...');
+                console.log('🔍 [Init] Contenedores:', {
+                    sidebar: 'sidebar-container',
+                    subnav: 'top-nav-container',
+                    tabbar: 'tab-bar-container'
+                });
+                
                 window.UBITS_TemplateLoader.loadProduct(productConfig, {
                     sidebar: 'sidebar-container',
                     subnav: 'top-nav-container',
                     tabbar: 'tab-bar-container'
                 });
                 
+                console.log('✅ [Init] TemplateLoader.loadProduct ejecutado');
+                
+                // Verificar que los componentes se hayan creado
+                setTimeout(() => {
+                    const sidebarContainer = document.getElementById('sidebar-container');
+                    const subnavContainer = document.getElementById('top-nav-container');
+                    const tabbarContainer = document.getElementById('tab-bar-container');
+                    
+                    console.log('🔍 [Init] Verificando contenedores después de loadProduct...');
+                    console.log('   - sidebar-container:', sidebarContainer ? '✅ Encontrado' : '❌ NO encontrado');
+                    if (sidebarContainer) {
+                        console.log('   - sidebar-container.innerHTML length:', sidebarContainer.innerHTML.length);
+                        console.log('   - sidebar-container tiene .ubits-sidebar:', !!sidebarContainer.querySelector('.ubits-sidebar'));
+                    }
+                    
+                    console.log('   - top-nav-container:', subnavContainer ? '✅ Encontrado' : '❌ NO encontrado');
+                    if (subnavContainer) {
+                        console.log('   - top-nav-container.innerHTML length:', subnavContainer.innerHTML.length);
+                        console.log('   - top-nav-container tiene .ubits-sub-nav:', !!subnavContainer.querySelector('.ubits-sub-nav'));
+                    }
+                    
+                    console.log('   - tab-bar-container:', tabbarContainer ? '✅ Encontrado' : '❌ NO encontrado');
+                    if (tabbarContainer) {
+                        console.log('   - tab-bar-container.innerHTML length:', tabbarContainer.innerHTML.length);
+                        console.log('   - tab-bar-container tiene .ubits-tabbar:', !!tabbarContainer.querySelector('.ubits-tabbar'));
+                    }
+                }, 200);
+                
                 // Inicializar responsive DESPUÉS de que los componentes se hayan cargado
                 // Esto asegura que adaptComponents() encuentre los componentes
                 setTimeout(() => {
-                    // ⚠️ CRÍTICO: Establecer currentSection ANTES de inicializar ResponsiveManager
-                    // Esto asegura que adaptComponents() pueda acceder a currentSection cuando se ejecuta
-                    const initialSection = productConfig.sidebar.initialActiveSection || 'inicio';
-                    if (window.UBITS_ContentManager) {
-                        window.UBITS_ContentManager.currentSection = initialSection;
-                        console.log('🔍 [Template Admin] ✅ currentSection establecido ANTES de ResponsiveManager.init():', initialSection);
-                    }
-                    
+                    console.log('🔍 [Init] Inicializando ResponsiveManager...');
                     window.UBITS_ResponsiveManager.init();
                     // Ejecutar adaptComponents manualmente después de que los componentes estén listos
                     window.UBITS_ResponsiveManager.adaptComponents();
+                    console.log('✅ [Init] ResponsiveManager inicializado');
                     
-                    // Cargar sección inicial después de que todo esté listo
-                    // IMPORTANTE: El SubNav NO se carga aquí porque ContentManager lo maneja
-                    // ⚠️ NOTA: El botón ya se activa automáticamente con initialActiveSection en products.js
-                    // Solo necesitamos cargar el contenido inicial
-                    if (window.UBITS_ContentManager) {
-                        // Usar requestAnimationFrame para asegurar que el DOM esté listo
-                        requestAnimationFrame(() => {
-                            setTimeout(() => {
-                                // El ContentManager actualizará el SubNav y el contenido automáticamente
-                                // El botón ya está activo gracias a initialActiveSection, no necesitamos activarlo de nuevo
-                                window.UBITS_ContentManager.handleSectionChange(initialSection);
-                                
-                                // Asegurar que el tooltip esté oculto y que ningún botón tenga focus
-                                const tooltipElement = document.getElementById('ubits-sidebar-tooltip');
-                                if (tooltipElement) {
-                                    tooltipElement.classList.remove('show');
-                                }
-                                
-                                // Asegurar que ningún botón tenga focus (para evitar borde azul)
-                                const sidebarElement = document.querySelector('.ubits-sidebar');
-                                if (sidebarElement) {
-                                    const activeButton = sidebarElement.querySelector('.ubits-sidebar-nav-button.active');
-                                    if (activeButton) {
-                                        activeButton.blur(); // Remover focus si lo tiene
-                                    }
-                                }
-                                
-                                
-                                // ⚠️ LOGS ESPECÍFICOS PARA DEBUG DEL LAYOUT
-                                debugLayout();
-                                
-                                // Escuchar cambios de tamaño de ventana para logs continuos
-                                let resizeTimeout;
-                                window.addEventListener('resize', () => {
-                                    clearTimeout(resizeTimeout);
-                                    resizeTimeout = setTimeout(() => {
-                                        debugLayout();
-                                    }, 300);
-                                });
-                            }, 200); // Delay mínimo solo para asegurar que el DOM esté listo
-                        });
-                    }
+                    // Verificar componentes renderizados después de responsive
+                    checkRenderedComponents();
                 }, 100);
+                
+        // Cargar sección inicial después de que todo esté listo
+        // IMPORTANTE: El SubNav NO se carga aquí porque ContentManager lo maneja
+        // ⚠️ NOTA: El botón ya se activa automáticamente con initialActiveSection en products.js
+        // Solo necesitamos cargar el contenido inicial
+        if (window.UBITS_ContentManager) {
+            // Usar requestAnimationFrame para asegurar que el DOM esté listo
+            requestAnimationFrame(() => {
+                setTimeout(() => {
+                    // ⚠️ IMPORTANTE: Para sidebar "colaborador", la sección inicial es "aprendizaje"
+                    const initialSection = productConfig.sidebar.initialActiveSection || 'aprendizaje';
+                    console.log('🔍 [Template Colaborador] Sección inicial:', initialSection);
+                    console.log('🔍 [Template Colaborador] ContentManager disponible:', !!window.UBITS_ContentManager);
+                    
+                    // Verificar estado del contenedor antes de cambiar sección
+                    const topNavContainerBefore = document.getElementById('top-nav-container');
+                    if (topNavContainerBefore) {
+                        console.log('🔍 [Template Colaborador] top-nav-container ANTES de handleSectionChange:');
+                        console.log('   - Display:', window.getComputedStyle(topNavContainerBefore).display);
+                        console.log('   - InnerHTML length:', topNavContainerBefore.innerHTML.length);
+                        console.log('   - Tiene .ubits-sub-nav:', !!topNavContainerBefore.querySelector('.ubits-sub-nav'));
+                    }
+                    
+                    // El ContentManager actualizará el SubNav y el contenido automáticamente
+                    // El botón ya está activo gracias a initialActiveSection, no necesitamos activarlo de nuevo
+                    window.UBITS_ContentManager.handleSectionChange(initialSection);
+                    
+                    // Verificar estado del contenedor DESPUÉS de cambiar sección
+                    setTimeout(() => {
+                        const topNavContainerAfter = document.getElementById('top-nav-container');
+                        if (topNavContainerAfter) {
+                            console.log('🔍 [Template Colaborador] top-nav-container DESPUÉS de handleSectionChange:');
+                            console.log('   - Display:', window.getComputedStyle(topNavContainerAfter).display);
+                            console.log('   - InnerHTML length:', topNavContainerAfter.innerHTML.length);
+                            console.log('   - Tiene .ubits-sub-nav:', !!topNavContainerAfter.querySelector('.ubits-sub-nav'));
+                            
+                            const subNavElement = topNavContainerAfter.querySelector('.ubits-sub-nav');
+                            if (subNavElement) {
+                                const computedStyle = window.getComputedStyle(subNavElement);
+                                console.log('🔍 [Template Colaborador] Estilos del SubNav:');
+                                console.log('   - Background:', computedStyle.backgroundColor);
+                                console.log('   - Height:', computedStyle.height);
+                                console.log('   - Width:', computedStyle.width);
+                                console.log('   - Display:', computedStyle.display);
+                                console.log('   - BorderRadius:', computedStyle.borderRadius);
+                                console.log('   - BoxShadow:', computedStyle.boxShadow);
+                            } else {
+                                console.error('❌ [Template Colaborador] .ubits-sub-nav NO encontrado después de handleSectionChange');
+                            }
+                        }
+                    }, 200);
+                    
+                    // Asegurar que el tooltip esté oculto y que ningún botón tenga focus
+                    const tooltipElement = document.getElementById('ubits-sidebar-tooltip');
+                    if (tooltipElement) {
+                        tooltipElement.classList.remove('show');
+                    }
+                    
+                    // Asegurar que ningún botón tenga focus (para evitar borde azul)
+                    const sidebarElement = document.querySelector('.ubits-sidebar');
+                    if (sidebarElement) {
+                        const activeButton = sidebarElement.querySelector('.ubits-sidebar-nav-button.active');
+                        if (activeButton) {
+                            activeButton.blur(); // Remover focus si lo tiene
+                        }
+                    }
+                    
+                    
+                    // ⚠️ LOGS ESPECÍFICOS PARA DEBUG DEL LAYOUT
+                    debugLayout();
+                    
+                    // Escuchar cambios de tamaño de ventana para logs continuos
+                    let resizeTimeout;
+                    window.addEventListener('resize', () => {
+                        clearTimeout(resizeTimeout);
+                        resizeTimeout = setTimeout(() => {
+                            debugLayout();
+                        }, 300);
+                    });
+                }, 200); // Delay mínimo solo para asegurar que el DOM esté listo
             });
-        });
+        }
         
         // ⚠️ FUNCIÓN DE DEBUG ESPECÍFICA PARA EL LAYOUT
         function debugLayout() {
@@ -740,16 +873,91 @@
             
             
         }
+                
+                
+                // ⚠️ DEBUG: Verificar posiciones y anchos después de cargar todo
+                setTimeout(() => {
+                    debugLayout();
+                }, 1000);
+            }, 200);
+        });
+        
+        // Función de debug para verificar layout
+        function debugLayout() {
+            
+            const sidebar = document.querySelector('.ubits-sidebar');
+            const sidebarContainer = document.getElementById('sidebar-container');
+            const mainContent = document.querySelector('.main-content');
+            const topNavContainer = document.getElementById('top-nav-container');
+            const contentArea = document.querySelector('.content-area');
+            const contentSections = document.querySelector('.content-sections');
+            
+            if (sidebar) {
+                const sidebarRect = sidebar.getBoundingClientRect();
+                const sidebarStyles = window.getComputedStyle(sidebar);
+            }
+            
+            if (sidebarContainer) {
+                const containerRect = sidebarContainer.getBoundingClientRect();
+                const containerStyles = window.getComputedStyle(sidebarContainer);
+            }
+            
+            if (mainContent) {
+                const mainRect = mainContent.getBoundingClientRect();
+                const mainStyles = window.getComputedStyle(mainContent);
+            }
+            
+            if (topNavContainer) {
+                const navRect = topNavContainer.getBoundingClientRect();
+                const navStyles = window.getComputedStyle(topNavContainer);
+            }
+            
+            if (contentArea) {
+                const areaRect = contentArea.getBoundingClientRect();
+                const areaStyles = window.getComputedStyle(contentArea);
+            }
+            
+            if (contentSections) {
+                const sectionsRect = contentSections.getBoundingClientRect();
+                const sectionsStyles = window.getComputedStyle(contentSections);
+            }
+            
+            // Calcular gaps
+            if (sidebar && mainContent) {
+                const sidebarRight = sidebar.getBoundingClientRect().right;
+                const mainLeft = mainContent.getBoundingClientRect().left;
+                const gap = mainLeft - sidebarRight;
+            }
+            
+            // Calcular espacios laterales
+            if (mainContent) {
+                const windowWidth = window.innerWidth;
+                const mainRight = mainContent.getBoundingClientRect().right;
+                const mainLeft = mainContent.getBoundingClientRect().left;
+                const leftSpace = mainLeft;
+                const rightSpace = windowWidth - mainRight;
+                const diferencia = Math.abs(leftSpace - rightSpace);
+                const balanceado = diferencia < 10;
+                
+                
+                if (!balanceado) {
+                    if (leftSpace > rightSpace) {
+                    } else {
+                    }
+                }
+            }
+            
+        }
     </script>
 
   <script>
     // Configuración del módulo y producto activos
     window.UBITS_CONFIG = {
-      template: 'administrador',
-      module: 'inicio',
-      product: '',
-      moduleName: 'Inicio',
-      productName: '',
+      template: 'colaborador',
+      module: 'desempeno',
+      product: 'objectives',
+      moduleName: 'Desempeño',
+      productName: 'Objetivos',
       storybookUrl: 'https://ubits-storybook10-q59fh1csi-elkin-garcias-projects-a0b1beb6.vercel.app'
     };
     
@@ -784,7 +992,7 @@
       };
       
       // La clave en products.js es 'template-admin' o 'template-colaborador'
-      const templateKey = 'template-admin';
+      const templateKey = 'template-colaborador';
       
       // Sobrescribir detectCurrentProduct ANTES de que products.js se cargue
       // detectCurrentProduct() detecta por nombre de archivo y por defecto retorna 'template-colaborador'
@@ -802,8 +1010,8 @@
           console.log('🔍 [Wizard] ════════════════════════════════════════');
           console.log('🔍 [Wizard] UBITS_PRODUCTS detectado');
           console.log('🔍 [Wizard] templateKey:', templateKey);
-          console.log('🔍 [Wizard] Módulo objetivo: inicio');
-          console.log('🔍 [Wizard] Producto objetivo: undefined');
+          console.log('🔍 [Wizard] Módulo objetivo: desempeno');
+          console.log('🔍 [Wizard] Producto objetivo: objectives');
           
           // Ajustar rutas de imágenes
           adjustImagePaths(window.UBITS_PRODUCTS);
@@ -817,7 +1025,7 @@
             if (productConfig.sidebar) {
               // Normalizar nombre del módulo: 'desempeno' -> 'desempeño' (con tilde)
               // El ContentManager espera 'desempeño' con tilde para encontrar el SubNav correcto
-              const normalizedModule = 'inicio' === 'desempeno' ? 'desempeño' : 'inicio';
+              const normalizedModule = 'desempeno' === 'desempeno' ? 'desempeño' : 'desempeno';
               productConfig.sidebar.initialActiveSection = normalizedModule;
               console.log('🔍 [Wizard] ✅ initialActiveSection sobrescrito a:', normalizedModule);
               console.log('🔍 [Wizard] initialActiveSection DESPUÉS:', productConfig.sidebar.initialActiveSection);
@@ -851,8 +1059,8 @@
     document.addEventListener('DOMContentLoaded', () => {
       console.log('🔍 [Wizard] ════════════════════════════════════════');
       console.log('🔍 [Wizard] DOMContentLoaded - Iniciando activación de módulo/producto');
-      console.log('🔍 [Wizard] Módulo objetivo: inicio');
-      console.log('🔍 [Wizard] Producto objetivo: undefined');
+      console.log('🔍 [Wizard] Módulo objetivo: desempeno');
+      console.log('🔍 [Wizard] Producto objetivo: objectives');
       
       const activateProduct = () => {
         console.log('🔍 [Wizard] ════════════════════════════════════════');
@@ -866,7 +1074,7 @@
         
         console.log('🔍 [Wizard] ✅ ContentManager está listo');
         console.log('🔍 [Wizard] currentSection actual:', window.UBITS_ContentManager.currentSection);
-        console.log('🔍 [Wizard] Módulo esperado: inicio');
+        console.log('🔍 [Wizard] Módulo esperado: desempeno');
         
         // Verificar estado del sidebar
         const sidebarElement = document.querySelector('.ubits-sidebar');
@@ -909,7 +1117,7 @@
         try {
           // Normalizar nombre del módulo: 'desempeno' -> 'desempeño' (con tilde)
           // El ContentManager espera 'desempeño' con tilde para encontrar el SubNav correcto
-          const normalizedModule = 'inicio' === 'desempeno' ? 'desempeño' : 'inicio';
+          const normalizedModule = 'desempeno' === 'desempeno' ? 'desempeño' : 'desempeno';
           
           // Esperar a que el template termine su inicialización completa
           // El template usa setTimeout de ~1500ms + requestAnimationFrame
@@ -919,12 +1127,12 @@
             
             // Si hay un producto, activarlo usando handleSectionChange con activeTabId
             // Esto actualizará el SubNav y el contenido automáticamente
-            if ('undefined') {
-              console.log('🔍 [Wizard] 🚀 Activando producto: undefined');
-              console.log('🔍 [Wizard] Llamando handleSectionChange("' + normalizedModule + '", "undefined")');
+            if ('objectives') {
+              console.log('🔍 [Wizard] 🚀 Activando producto: objectives');
+              console.log('🔍 [Wizard] Llamando handleSectionChange("' + normalizedModule + '", "objectives")');
               
               // handleSectionChange con activeTabId activa el módulo y el producto en una sola llamada
-              window.UBITS_ContentManager.handleSectionChange(normalizedModule, 'undefined');
+              window.UBITS_ContentManager.handleSectionChange(normalizedModule, 'objectives');
               
               // Mapeo de productos a IDs de tabs del SubNav
               // Algunos productos tienen IDs diferentes en el SubNav
@@ -950,8 +1158,8 @@
               };
               
               // Obtener el ID del tab correcto
-              const tabId = productToTabIdMap['undefined'] || 'undefined';
-              console.log('🔍 [Wizard] [SubNav] Producto original: undefined');
+              const tabId = productToTabIdMap['objectives'] || 'objectives';
+              console.log('🔍 [Wizard] [SubNav] Producto original: objectives');
               console.log('🔍 [Wizard] [SubNav] Tab ID mapeado:', tabId);
               
               // Forzar activación del tab en el SubNav después de que se actualice el contenido
@@ -963,7 +1171,7 @@
                 attempts++;
                 console.log('🔍 [Wizard] ════════════════════════════════════════');
                 console.log('🔍 [Wizard] [SubNav] Intento', attempts, 'de activar tab en SubNav...');
-                console.log('🔍 [Wizard] [SubNav] Producto objetivo: undefined');
+                console.log('🔍 [Wizard] [SubNav] Producto objetivo: objectives');
                 console.log('🔍 [Wizard] [SubNav] Tab ID a buscar:', tabId);
                 
                 // Buscar el SubNav de múltiples formas
@@ -1031,13 +1239,13 @@
                     // Si no se encuentra, intentar con el producto original
                     if (!targetTab) {
                       console.log('🔍 [Wizard] [SubNav] Tab no encontrado con tabId mapeado, intentando con producto original...');
-                      targetTab = subNavElement.querySelector('[data-tab="undefined"]');
+                      targetTab = subNavElement.querySelector('[data-tab="objectives"]');
                     }
                     
                     // Si aún no se encuentra, intentar buscar por texto
                     if (!targetTab) {
                       console.log('🔍 [Wizard] [SubNav] Tab no encontrado por data-tab, buscando por texto...');
-                      const productText = 'undefined'.toLowerCase();
+                      const productText = 'objectives'.toLowerCase();
                       Array.from(allTabs).forEach(tab => {
                         const text = tab.textContent?.trim().toLowerCase();
                         // Buscar coincidencias parciales
@@ -1073,8 +1281,8 @@
                       });
                       return true; // Éxito
                     } else {
-                      console.warn('🔍 [Wizard] [SubNav] ⚠️ Tab "undefined" no encontrado en SubNav');
-                      console.warn('🔍 [Wizard] [SubNav] Producto buscado:', 'undefined');
+                      console.warn('🔍 [Wizard] [SubNav] ⚠️ Tab "objectives" no encontrado en SubNav');
+                      console.warn('🔍 [Wizard] [SubNav] Producto buscado:', 'objectives');
                       if (attempts < maxAttempts) {
                         console.log('🔍 [Wizard] [SubNav] Reintentando en 200ms...');
                         setTimeout(activateTab, 200);

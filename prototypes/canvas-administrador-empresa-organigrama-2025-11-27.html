@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UBITS - Inicio - administrador</title>
+    <title>UBITS - Empresa - Organigrama - administrador</title>
     
     <!-- UBITS Base Styles -->
     <link rel="stylesheet" href="file:///Users/elkinmac/Desktop/UBITS/packages/tokens/dist/tokens.css" />
@@ -416,7 +416,7 @@
         }
     </style>
 </head>
-<body data-template="administrador" data-module="inicio" data-product="">
+<body data-template="administrador" data-module="empresa" data-product="organigrama">
     <div class="dashboard-container">
         <!-- Sidebar Container -->
         <div id="sidebar-container"></div>
@@ -746,10 +746,10 @@
     // Configuración del módulo y producto activos
     window.UBITS_CONFIG = {
       template: 'administrador',
-      module: 'inicio',
-      product: '',
-      moduleName: 'Inicio',
-      productName: '',
+      module: 'empresa',
+      product: 'organigrama',
+      moduleName: 'Empresa',
+      productName: 'Organigrama',
       storybookUrl: 'https://ubits-storybook10-q59fh1csi-elkin-garcias-projects-a0b1beb6.vercel.app'
     };
     
@@ -802,8 +802,8 @@
           console.log('🔍 [Wizard] ════════════════════════════════════════');
           console.log('🔍 [Wizard] UBITS_PRODUCTS detectado');
           console.log('🔍 [Wizard] templateKey:', templateKey);
-          console.log('🔍 [Wizard] Módulo objetivo: inicio');
-          console.log('🔍 [Wizard] Producto objetivo: undefined');
+          console.log('🔍 [Wizard] Módulo objetivo: empresa');
+          console.log('🔍 [Wizard] Producto objetivo: organigrama');
           
           // Ajustar rutas de imágenes
           adjustImagePaths(window.UBITS_PRODUCTS);
@@ -817,7 +817,7 @@
             if (productConfig.sidebar) {
               // Normalizar nombre del módulo: 'desempeno' -> 'desempeño' (con tilde)
               // El ContentManager espera 'desempeño' con tilde para encontrar el SubNav correcto
-              const normalizedModule = 'inicio' === 'desempeno' ? 'desempeño' : 'inicio';
+              const normalizedModule = 'empresa' === 'desempeno' ? 'desempeño' : 'empresa';
               productConfig.sidebar.initialActiveSection = normalizedModule;
               console.log('🔍 [Wizard] ✅ initialActiveSection sobrescrito a:', normalizedModule);
               console.log('🔍 [Wizard] initialActiveSection DESPUÉS:', productConfig.sidebar.initialActiveSection);
@@ -851,8 +851,8 @@
     document.addEventListener('DOMContentLoaded', () => {
       console.log('🔍 [Wizard] ════════════════════════════════════════');
       console.log('🔍 [Wizard] DOMContentLoaded - Iniciando activación de módulo/producto');
-      console.log('🔍 [Wizard] Módulo objetivo: inicio');
-      console.log('🔍 [Wizard] Producto objetivo: undefined');
+      console.log('🔍 [Wizard] Módulo objetivo: empresa');
+      console.log('🔍 [Wizard] Producto objetivo: organigrama');
       
       const activateProduct = () => {
         console.log('🔍 [Wizard] ════════════════════════════════════════');
@@ -866,7 +866,7 @@
         
         console.log('🔍 [Wizard] ✅ ContentManager está listo');
         console.log('🔍 [Wizard] currentSection actual:', window.UBITS_ContentManager.currentSection);
-        console.log('🔍 [Wizard] Módulo esperado: inicio');
+        console.log('🔍 [Wizard] Módulo esperado: empresa');
         
         // Verificar estado del sidebar
         const sidebarElement = document.querySelector('.ubits-sidebar');
@@ -909,7 +909,7 @@
         try {
           // Normalizar nombre del módulo: 'desempeno' -> 'desempeño' (con tilde)
           // El ContentManager espera 'desempeño' con tilde para encontrar el SubNav correcto
-          const normalizedModule = 'inicio' === 'desempeno' ? 'desempeño' : 'inicio';
+          const normalizedModule = 'empresa' === 'desempeno' ? 'desempeño' : 'empresa';
           
           // Esperar a que el template termine su inicialización completa
           // El template usa setTimeout de ~1500ms + requestAnimationFrame
@@ -919,40 +919,12 @@
             
             // Si hay un producto, activarlo usando handleSectionChange con activeTabId
             // Esto actualizará el SubNav y el contenido automáticamente
-            if ('undefined') {
-              console.log('🔍 [Wizard] 🚀 Activando producto: undefined');
-              console.log('🔍 [Wizard] Llamando handleSectionChange("' + normalizedModule + '", "undefined")');
+            if ('organigrama') {
+              console.log('🔍 [Wizard] 🚀 Activando producto: organigrama');
+              console.log('🔍 [Wizard] Llamando handleSectionChange("' + normalizedModule + '", "organigrama")');
               
               // handleSectionChange con activeTabId activa el módulo y el producto en una sola llamada
-              window.UBITS_ContentManager.handleSectionChange(normalizedModule, 'undefined');
-              
-              // Mapeo de productos a IDs de tabs del SubNav
-              // Algunos productos tienen IDs diferentes en el SubNav
-              const productToTabIdMap = {
-                // Aprendizaje
-                'inicio': 'home',
-                'catalogo': 'catalog',
-                'corporativa': 'corporate',
-                'zona-estudio': 'study-zone',
-                // Desempeño
-                'evaluations': 'evaluations',
-                'evaluaciones-360': 'evaluations',
-                'objectives': 'objectives',
-                'objetivos': 'objectives',
-                'matriz-talento': 'matriz-talento',
-                // Empresa
-                'gestion-usuarios': 'gestion-usuarios',
-                'organigrama': 'organigrama',
-                'datos-empresa': 'datos-empresa',
-                'personalizacion': 'personalizacion',
-                'roles-permisos': 'roles-permisos',
-                'comunicaciones': 'comunicaciones'
-              };
-              
-              // Obtener el ID del tab correcto
-              const tabId = productToTabIdMap['undefined'] || 'undefined';
-              console.log('🔍 [Wizard] [SubNav] Producto original: undefined');
-              console.log('🔍 [Wizard] [SubNav] Tab ID mapeado:', tabId);
+              window.UBITS_ContentManager.handleSectionChange(normalizedModule, 'organigrama');
               
               // Forzar activación del tab en el SubNav después de que se actualice el contenido
               // Esto es necesario porque el SubNav puede ya existir y no recargarse
@@ -963,8 +935,7 @@
                 attempts++;
                 console.log('🔍 [Wizard] ════════════════════════════════════════');
                 console.log('🔍 [Wizard] [SubNav] Intento', attempts, 'de activar tab en SubNav...');
-                console.log('🔍 [Wizard] [SubNav] Producto objetivo: undefined');
-                console.log('🔍 [Wizard] [SubNav] Tab ID a buscar:', tabId);
+                console.log('🔍 [Wizard] [SubNav] Producto objetivo: organigrama');
                 
                 // Buscar el SubNav de múltiples formas
                 let subNavElement = document.querySelector('.ubits-sub-nav');
@@ -1024,27 +995,15 @@
                     });
                     
                     // Activar el tab correspondiente al producto
-                    // Primero intentar con el tabId mapeado
-                    console.log('🔍 [Wizard] [SubNav] Buscando tab con data-tab="' + tabId + '"...');
-                    let targetTab = subNavElement.querySelector('[data-tab="' + tabId + '"]');
+                    console.log('🔍 [Wizard] [SubNav] Buscando tab con data-tab="organigrama"...');
+                    let targetTab = subNavElement.querySelector('[data-tab="organigrama"]');
                     
-                    // Si no se encuentra, intentar con el producto original
-                    if (!targetTab) {
-                      console.log('🔍 [Wizard] [SubNav] Tab no encontrado con tabId mapeado, intentando con producto original...');
-                      targetTab = subNavElement.querySelector('[data-tab="undefined"]');
-                    }
-                    
-                    // Si aún no se encuentra, intentar buscar por texto
+                    // Si no se encuentra, intentar buscar por texto
                     if (!targetTab) {
                       console.log('🔍 [Wizard] [SubNav] Tab no encontrado por data-tab, buscando por texto...');
-                      const productText = 'undefined'.toLowerCase();
                       Array.from(allTabs).forEach(tab => {
                         const text = tab.textContent?.trim().toLowerCase();
-                        // Buscar coincidencias parciales
-                        if (text.includes(productText) || productText.includes(text) || 
-                            (productText.includes('inicio') && text.includes('inicio')) ||
-                            (productText.includes('matriz') && text.includes('matriz')) ||
-                            (productText.includes('talento') && text.includes('talento'))) {
+                        if (text.includes('matriz') || text.includes('talento')) {
                           console.log('🔍 [Wizard] [SubNav] Tab encontrado por texto:', text);
                           targetTab = tab;
                         }
@@ -1073,8 +1032,8 @@
                       });
                       return true; // Éxito
                     } else {
-                      console.warn('🔍 [Wizard] [SubNav] ⚠️ Tab "undefined" no encontrado en SubNav');
-                      console.warn('🔍 [Wizard] [SubNav] Producto buscado:', 'undefined');
+                      console.warn('🔍 [Wizard] [SubNav] ⚠️ Tab "organigrama" no encontrado en SubNav');
+                      console.warn('🔍 [Wizard] [SubNav] Producto buscado:', 'organigrama');
                       if (attempts < maxAttempts) {
                         console.log('🔍 [Wizard] [SubNav] Reintentando en 200ms...');
                         setTimeout(activateTab, 200);
