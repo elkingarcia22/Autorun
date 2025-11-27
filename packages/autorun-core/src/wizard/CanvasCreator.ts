@@ -517,7 +517,7 @@ export class CanvasCreator {
 			);
 		}
 
-		// Agregar estilos CSS para corregir problemas de dark mode
+		// Agregar estilos CSS para corregir problemas de dark mode y subnav
 		const darkModeFixStyles = `
   <style>
     /* Fix: Asegurar que el botón activo del sidebar sea visible en dark mode */
@@ -530,6 +530,44 @@ export class CanvasCreator {
     body[data-theme="dark"] .ubits-sidebar-nav-button.active i,
     html[data-theme="dark"] .ubits-sidebar-nav-button.active i {
       color: var(--ubits-sidebar-button-fg-active, #303a47) !important;
+    }
+    
+    /* Fix: Asegurar que el indicador activo del subnav (flechita azul) sea visible */
+    .ubits-sub-nav-tab.ubits-sub-nav-tab--active::after {
+      content: '' !important;
+      position: absolute !important;
+      bottom: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      height: 3px !important;
+      background-color: var(--ubits-accent-brand-static, #0c5bef) !important;
+      border-radius: 0 !important;
+      z-index: 1 !important;
+      display: block !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+      width: auto !important;
+    }
+    
+    /* Asegurar que el indicador sea visible en dark mode también */
+    body[data-theme="dark"] .ubits-sub-nav-tab.ubits-sub-nav-tab--active::after,
+    html[data-theme="dark"] .ubits-sub-nav-tab.ubits-sub-nav-tab--active::after,
+    [data-theme="dark"] .ubits-sub-nav-tab.ubits-sub-nav-tab--active::after {
+      background-color: var(--modifiers-normal-color-dark-accent-blue, #0c5bef) !important;
+      background-color: var(--ubits-accent-brand-static, #0c5bef) !important;
+      opacity: 1 !important;
+      visibility: visible !important;
+      display: block !important;
+    }
+    
+    /* Asegurar que el contenedor del subnav permita que el indicador sea visible */
+    .ubits-sub-nav-tabs {
+      overflow: visible !important;
+    }
+    
+    .ubits-sub-nav-tab {
+      position: relative !important;
+      overflow: visible !important;
     }
   </style>`;
 
@@ -916,18 +954,130 @@ export class CanvasCreator {
       }, 2500);
     });
     
-    // Interceptar llamadas a handleSectionChange para ver qué está pasando
+    // Función para mantener el tab activo después de que ContentManager actualice el subnav
+    const maintainActiveTab = () => {
+      const product = '${product}';
+      if (!product) return;
+      
+      const productToTabIdMap = {
+        'inicio': 'home',
+        'catalogo': 'catalog',
+        'corporativa': 'corporate',
+        'zona-estudio': 'study-zone',
+        'evaluations': 'evaluations',
+        'evaluaciones-360': 'evaluations',
+        'objectives': 'objectives',
+        'objetivos': 'objectives',
+        'matriz-talento': 'matriz-talento',
+        'gestion-usuarios': 'gestion-usuarios',
+        'organigrama': 'organigrama',
+        'datos-empresa': 'datos-empresa',
+        'personalizacion': 'personalizacion',
+        'roles-permisos': 'roles-permisos',
+        'comunicaciones': 'comunicaciones'
+      };
+      
+      const tabId = productToTabIdMap[product] || product;
+      const subNavElement = document.querySelector('.ubits-sub-nav') || 
+                           document.querySelector('#top-nav-container .ubits-sub-nav');
+      
+      if (subNavElement) {
+        const allTabs = subNavElement.querySelectorAll('.ubits-sub-nav-tab');
+        allTabs.forEach(tab => tab.classList.remove('ubits-sub-nav-tab--active'));
+        
+        let targetTab = subNavElement.querySelector('[data-tab="' + tabId + '"]');
+        if (!targetTab) {
+          targetTab = subNavElement.querySelector('[data-tab="' + product + '"]');
+        }
+        
+        if (targetTab) {
+          targetTab.classList.add('ubits-sub-nav-tab--active');
+        }
+      }
+    };
+    
+    // Interceptar llamadas a handleSectionChange y updateSubNav para mantener el tab activo
     const originalHandleSectionChange = window.UBITS_ContentManager?.handleSectionChange;
+    const originalUpdateSubNav = window.UBITS_ContentManager?.updateSubNav;
+    
     if (originalHandleSectionChange) {
       window.UBITS_ContentManager.handleSectionChange = function(section, activeTabId) {
         console.log('🔍 [Wizard] ════════════════════════════════════════');
         console.log('🔍 [Wizard] 🔄 handleSectionChange INTERCEPTADO');
         console.log('🔍 [Wizard] section:', section);
         console.log('🔍 [Wizard] activeTabId:', activeTabId);
-        console.log('🔍 [Wizard] currentSection antes:', this.currentSection);
-        return originalHandleSectionChange.call(this, section, activeTabId);
+        const result = originalHandleSectionChange.call(this, section, activeTabId);
+        // Mantener el tab activo después de la actualización
+        setTimeout(maintainActiveTab, 100);
+        return result;
       };
-    } else {
+    }
+    
+    if (originalUpdateSubNav) {
+      window.UBITS_ContentManager.updateSubNav = function(section, activeTabId) {
+        const result = originalUpdateSubNav.call(this, section, activeTabId);
+        // Mantener el tab activo después de la actualización
+        setTimeout(maintainActiveTab, 100);
+        return result;
+      };
+    }
+    
+    // Observar cambios en el DOM para mantener el tab activo
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+          const target = mutation.target;
+          if (target.classList && target.classList.contains('ubits-sub-nav-tab')) {
+            // Si se removió la clase active, restaurarla si es el tab correcto
+            const product = '${product}';
+            if (product) {
+              const productToTabIdMap = {
+                'inicio': 'home',
+                'catalogo': 'catalog',
+                'corporativa': 'corporate',
+                'zona-estudio': 'study-zone',
+                'evaluations': 'evaluations',
+                'evaluaciones-360': 'evaluations',
+                'objectives': 'objectives',
+                'objetivos': 'objectives',
+                'matriz-talento': 'matriz-talento',
+                'gestion-usuarios': 'gestion-usuarios',
+                'organigrama': 'organigrama',
+                'datos-empresa': 'datos-empresa',
+                'personalizacion': 'personalizacion',
+                'roles-permisos': 'roles-permisos',
+                'comunicaciones': 'comunicaciones'
+              };
+              const tabId = productToTabIdMap[product] || product;
+              const dataTab = target.getAttribute('data-tab');
+              if (dataTab === tabId || dataTab === product) {
+                if (!target.classList.contains('ubits-sub-nav-tab--active')) {
+                  setTimeout(() => {
+                    target.classList.add('ubits-sub-nav-tab--active');
+                  }, 50);
+                }
+              }
+            }
+          }
+        }
+      });
+    });
+    
+    // Observar el contenedor del subnav
+    setTimeout(() => {
+      const subNavContainer = document.querySelector('#top-nav-container') || 
+                             document.querySelector('.ubits-sub-nav');
+      if (subNavContainer) {
+        observer.observe(subNavContainer, {
+          attributes: true,
+          attributeFilter: ['class'],
+          subtree: true,
+          childList: true
+        });
+      }
+    }, 1000);
+    
+    if (!originalHandleSectionChange) {
       // Si ContentManager aún no existe, interceptarlo cuando se cree
       Object.defineProperty(window, 'UBITS_ContentManager', {
         set: function(value) {
