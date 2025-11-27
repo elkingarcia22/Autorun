@@ -44,48 +44,22 @@ export class InitializationWizard {
 
 	/**
 	 * Inicia el wizard de inicialización
-	 * Usa valores por defecto automáticos o variables de entorno, solo pregunta si es necesario
+	 * Pregunta template y producto en un solo paso, luego ejecuta todo automáticamente
 	 */
 	async start(options?: { autoSelect?: ProjectType }): Promise<WizardResult> {
 		console.log('🚀 ¡Hola! Soy tu asistente de Autorun.\n');
+		console.log('Voy a preguntarte qué template y producto quieres usar:\n');
 
-		// Intentar obtener respuestas automáticas (variables de entorno o valores por defecto)
-		const autoAnswers = this.getAutoAnswers(options?.autoSelect);
+		// Preguntar template y producto en un solo paso
+		const answers = await this.askTemplateAndProduct();
+
+		console.log('\n✅ Perfecto, voy a configurar tu proyecto UBITS ahora.\n');
 		
-		if (autoAnswers) {
-			console.log('✅ Configurando automáticamente con valores por defecto:\n');
-			console.log(`   📋 Tipo: ${autoAnswers.projectType}`);
-			if (autoAnswers.template) {
-				console.log(`   🎯 Template: ${autoAnswers.template}`);
-			}
-			if (autoAnswers.module) {
-				console.log(`   📦 Módulo: ${autoAnswers.module}`);
-			}
-			if (autoAnswers.product) {
-				console.log(`   🎨 Producto: ${autoAnswers.product}`);
-			}
-			console.log('');
-		} else {
-			console.log('Voy a hacerte 3 preguntas rápidas para configurar tu proyecto:\n');
-		}
-
-		// Usar respuestas automáticas o preguntar
-		const answers = autoAnswers || await this.askAllQuestions();
-
-		if (answers.projectType === 'ubits') {
-			console.log('\n✅ Perfecto, voy a configurar tu proyecto UBITS ahora.\n');
-			if (!answers.template || !answers.module) {
-				throw new Error('Template y módulo son requeridos para proyectos UBITS');
-			}
-			return await this.setupUBITSFromAnswers({
-				template: answers.template,
-				module: answers.module,
-				product: answers.product,
-			});
-		} else {
-			console.log('\n✅ Perfecto, voy a configurar un proyecto independiente.\n');
-			return await this.setupIndependent();
-		}
+		return await this.setupUBITSFromAnswers({
+			template: answers.template,
+			module: answers.module,
+			product: answers.product,
+		});
 	}
 
 	/**
@@ -121,37 +95,16 @@ export class InitializationWizard {
 	}
 
 	/**
-	 * Pregunta todas las opciones en un solo paso
+	 * Pregunta template y producto en un solo paso
 	 */
-	private async askAllQuestions(): Promise<{
-		projectType: ProjectType;
-		template?: 'administrador' | 'colaborador';
-		module?: string;
+	private async askTemplateAndProduct(): Promise<{
+		template: 'administrador' | 'colaborador';
+		module: string;
 		product?: string;
 	}> {
-		// 1. Tipo de proyecto
-		const projectType = await this.prompt.select(
-			'📋 ¿En qué tipo de proyecto quieres trabajar?',
-			[
-				{
-					value: 'ubits',
-					label: 'UBITS (Configuración predefinida con add-ons optimizados)',
-				},
-				{
-					value: 'independent',
-					label: 'Proyecto Independiente (Configuración personalizada)',
-				},
-			],
-			'ubits',
-		) as ProjectType;
-
-		if (projectType === 'independent') {
-			return { projectType };
-		}
-
-		// 2. Template (solo si es UBITS)
+		// 1. Template
 		const template = await this.prompt.select(
-			'📋 ¿En qué template quieres trabajar?',
+			'🎯 ¿En qué template quieres trabajar?',
 			[
 				{
 					value: 'administrador',
@@ -165,7 +118,7 @@ export class InitializationWizard {
 			'administrador',
 		) as 'administrador' | 'colaborador';
 
-		// 3. Producto (recopilar todos los productos de todos los módulos del template)
+		// 2. Producto (recopilar todos los productos de todos los módulos del template)
 		const templateConfig = UBITS_PRESET.templates[template];
 		const allProducts: Array<{ value: string; label: string; module: string }> = [];
 
@@ -200,7 +153,6 @@ export class InitializationWizard {
 		const [module, product] = selectedProduct.split(':');
 
 		return {
-			projectType,
 			template,
 			module,
 			product: product || undefined,
@@ -280,6 +232,11 @@ export class InitializationWizard {
 		await this.validateCanvas(canvasPath);
 		console.log('   ✅ Validación completada\n');
 
+		// 7. Abrir template en el navegador
+		console.log('🌐 Abriendo template en el navegador...');
+		await this.openTemplateInBrowser(canvasPath);
+		console.log('   ✅ Template abierto\n');
+
 		// Mostrar resumen final
 		console.log('\n🎉 ¡Excelente! Tu proyecto UBITS está listo.\n');
 		console.log('📋 Resumen de tu configuración:');
@@ -299,6 +256,41 @@ export class InitializationWizard {
 			product: product || '',
 			canvasPath,
 		};
+	}
+
+	/**
+	 * Abre el template en el navegador local
+	 */
+	private async openTemplateInBrowser(filePath: string): Promise<void> {
+		try {
+			const { exec } = await import('child_process');
+			const { promisify } = await import('util');
+			const execAsync = promisify(exec);
+			const path = await import('path');
+
+			// Convertir a URL file://
+			const fileUrl = `file://${path.resolve(filePath)}`;
+
+			// Detectar el sistema operativo y abrir el navegador
+			const platform = process.platform;
+			let command: string;
+
+			if (platform === 'darwin') {
+				// macOS
+				command = `open "${fileUrl}"`;
+			} else if (platform === 'win32') {
+				// Windows
+				command = `start "" "${fileUrl}"`;
+			} else {
+				// Linux y otros
+				command = `xdg-open "${fileUrl}"`;
+			}
+
+			await execAsync(command);
+		} catch (error: any) {
+			console.warn('   ⚠️  No se pudo abrir el navegador automáticamente:', error.message || error);
+			console.warn(`   💡 Abre manualmente: ${filePath}`);
+		}
 	}
 
 	/**
