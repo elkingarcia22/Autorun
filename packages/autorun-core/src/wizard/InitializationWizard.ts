@@ -605,9 +605,14 @@ export class InitializationWizard {
 			// Intentar iniciar un servidor HTTP local en el directorio Desktop
 			// Esto permite que las rutas relativas ../../UBITS/packages/ funcionen correctamente
 			const port = 8000;
-			// Ruta relativa desde Desktop hacia prototypes/
-			const relativePathFromDesktop = path.relative(desktopDir, filePath);
-			const url = `http://localhost:${port}/${relativePathFromDesktop.replace(/\\/g, '/')}`;
+			// Ruta relativa desde Desktop hacia el archivo
+			// path.relative puede no funcionar bien, calcular manualmente
+			const filePathResolved = path.resolve(filePath);
+			const desktopDirResolved = path.resolve(desktopDir);
+			let relativePathFromDesktop = filePathResolved.replace(desktopDirResolved, '').replace(/^[/\\]/, '');
+			// Normalizar separadores de ruta para URL
+			relativePathFromDesktop = relativePathFromDesktop.replace(/\\/g, '/');
+			const url = `http://localhost:${port}/${relativePathFromDesktop}`;
 
 			// Verificar si el puerto está disponible
 			try {
