@@ -42,27 +42,46 @@ export class CanvasCreator {
 	}
 
 	/**
-	 * Carga el template desde Storybook
-	 * El template "Templates UBITS Desktop" está en Storybook en la sección de templates
+	 * Carga el template desde el repositorio de UBITS en GitHub
 	 */
 	private async loadTemplateFromStorybook(
 		template: 'administrador' | 'colaborador',
 		module: string,
 		product?: string,
 	): Promise<string> {
-		const storybookUrl = UBITS_PRESET.storybook.url.replace(/\/$/, '');
 		const templateConfig = UBITS_PRESET.templates[template];
 		
-		// El template en Storybook está en la ruta: /?path=/docs/templates-ubits-desktop--docs
-		// Intentamos diferentes formas de acceder al template:
-		// 1. Como iframe embebido (más confiable para Storybook protegido)
-		// 2. Como HTML renderizado desde la API de Storybook
-		// 3. Fallback a template generado localmente
+		// Cargar template desde GitHub
+		const templateFileName = template === 'administrador' ? 'template-admin.html' : 'template-colaborador.html';
+		const templateUrl = `https://raw.githubusercontent.com/elkingarcia22/UBITS/main/packages/templates/${templateFileName}`;
 		
-		const storybookStoryUrl = `${storybookUrl}/?path=/docs/templates-ubits-desktop--docs`;
-		
-		// Generar HTML que carga el template desde Storybook como iframe o usando la API
-		return this.generateStorybookTemplateHTML(storybookStoryUrl, template, module, product, templateConfig);
+		try {
+			const response = await fetch(templateUrl);
+			if (!response.ok) {
+				throw new Error(`Error cargando template: ${response.statusText}`);
+			}
+			
+			let templateContent = await response.text();
+			
+			// Actualizar el título con el módulo y producto
+			const moduleConfig = UBITS_MODULES_CONFIG[module];
+			const moduleName = moduleConfig?.name || this.formatModuleName(module);
+			const productName = product
+				? moduleConfig?.products.find((p) => p.id === product)?.name || product
+				: '';
+			
+			// Actualizar el título en el template
+			templateContent = templateContent.replace(
+				/<title>.*?<\/title>/,
+				`<title>UBITS - ${moduleName}${productName ? ` - ${productName}` : ''} - ${template}</title>`
+			);
+			
+			return templateContent;
+		} catch (error) {
+			console.warn('⚠️  No se pudo cargar template desde GitHub, usando fallback:', error);
+			// Fallback a template generado localmente
+			return this.generateCanvasContent(template, module, templateConfig, product);
+		}
 	}
 
 	/**
