@@ -481,7 +481,7 @@ export class CanvasCreator {
       const adjustImagePaths = (products) => {
         if (!products) return;
         // Usar ruta absoluta file:// para que funcione con file:// protocol
-        const ubitsTemplatesPath = '${absolutePathToUBITS}/templates';
+        const ubitsTemplatesPath = \`${absolutePathToUBITS}/templates\`;
         
         // Función recursiva para ajustar rutas en objetos
         const adjustPaths = (obj) => {
