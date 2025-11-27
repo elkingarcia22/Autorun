@@ -103,16 +103,9 @@ export class InitializationWizard {
 		const { module, product } = await this.selectModule(template);
 		console.log(`   ✅ Módulo: ${module}${product ? `, Producto: ${product}` : ''}\n`);
 
-		// 3. Preguntar si quiere agregar add-ons adicionales (antes de instalar los por defecto)
-		console.log('🔌 Paso 3: ¿Quieres agregar add-ons adicionales?');
-		const wantsAdditionalAddons = await this.prompt.confirm(
-			'   ¿Quieres agregar add-ons adicionales antes de instalar los por defecto?',
-			false,
-		);
-		let additionalAddons: string[] = [];
-		if (wantsAdditionalAddons) {
-			additionalAddons = await this.selectAdditionalAddons([]);
-		}
+		// 3. Mostrar add-ons que se van a instalar y permitir modificar
+		console.log('\n📦 Paso 3: Revisión de add-ons...');
+		const { finalAddons, additionalAddons } = await this.reviewAndSelectAddons();
 
 		// AHORA: Ejecutar los pasos automáticos
 		console.log('\n🚀 Ahora voy a configurar todo automáticamente...\n');
@@ -127,17 +120,10 @@ export class InitializationWizard {
 		await this.loadComponentsFromStorybook();
 		console.log('   ✅ Componentes cargados\n');
 
-		// 6. Mostrar e instalar add-ons por defecto
-		console.log('📦 Paso 6: Instalación de add-ons por defecto...');
-		const installedAddons = await this.installDefaultAddons();
+		// 6. Instalar add-ons seleccionados
+		console.log('📦 Paso 6: Instalación de add-ons...');
+		const installedAddons = await this.installAddons(finalAddons);
 		console.log(`   ✅ ${installedAddons.length} add-on(s) instalado(s)\n`);
-
-		// 7. Instalar add-ons adicionales si se seleccionaron
-		if (additionalAddons.length > 0) {
-			console.log('📦 Instalando add-ons adicionales...');
-			await this.installAddons(additionalAddons);
-			console.log(`   ✅ ${additionalAddons.length} add-on(s) adicional(es) instalado(s)\n`);
-		}
 
 		// 8. Habilitar módulo en sidebar y configurar subnav
 		console.log(`⚙️  Paso 7: Estoy configurando sidebar y subnav para "${module}"...`);
@@ -162,7 +148,7 @@ export class InitializationWizard {
 		if (product) {
 			console.log(`   🎨 Producto: ${product}`);
 		}
-		console.log(`   🔌 Add-ons instalados: ${installedAddons.length + additionalAddons.length}\n`);
+		console.log(`   🔌 Add-ons instalados: ${installedAddons.length}\n`);
 		console.log('🚀 Ya puedes empezar a trabajar. ¡Éxito con tu proyecto!\n');
 
 		return {
@@ -177,10 +163,10 @@ export class InitializationWizard {
 	/**
 	 * Instala los add-ons por defecto del preset UBITS
 	 */
-	private async installDefaultAddons(): Promise<string[]> {
-		console.log('\n   📋 Por defecto, voy a instalar estos add-ons para que tu proyecto funcione muy bien:');
-		console.log('   ──────────────────────────────────────────────────────────────');
-		
+	/**
+	 * Muestra los add-ons por defecto y permite al usuario revisar y modificar la lista
+	 */
+	private async reviewAndSelectAddons(): Promise<{ finalAddons: string[]; additionalAddons: string[] }> {
 		const addonDescriptions: Record<string, string> = {
 			'storybook': '📚 Desarrollo y documentación de componentes',
 			'figma-sync': '🎨 Sincronización de tokens desde Figma',
@@ -202,36 +188,46 @@ export class InitializationWizard {
 			'feedback': '💬 Sistema de feedback automatizado',
 		};
 
-		const installed: string[] = [];
-		const failed: string[] = [];
-
-		for (const addonId of UBITS_PRESET.addons) {
+		// Mostrar add-ons por defecto
+		console.log('\n   📋 Voy a instalar estos add-ons por defecto:');
+		console.log('   ──────────────────────────────────────────────────────────────');
+		UBITS_PRESET.addons.forEach((addonId) => {
 			const description = addonDescriptions[addonId] || `   ${addonId}`;
 			console.log(`   ${description}`);
-			
-			try {
-				await this.hub.activateAddon(addonId);
-				installed.push(addonId);
-			} catch (error: any) {
-				// Solo mostrar error si no es "no encontrado" (es esperado si no está compilado)
-				if (error?.code !== 'ADDON_NOT_FOUND') {
-					console.warn(`   ⚠️  Error activando ${addonId}:`, error.message || error);
-				}
-				failed.push(addonId);
-			}
-		}
-
+		});
 		console.log('   ──────────────────────────────────────────────────────────────');
-		
-		if (installed.length > 0) {
-			console.log(`\n   ✅ ${installed.length} add-on(s) instalado(s) correctamente`);
-		}
-		
-		if (failed.length > 0) {
-			console.log(`   ⚠️  ${failed.length} add-on(s) no disponible(s) (pueden requerir compilación)`);
+
+		// Preguntar si quiere continuar o modificar
+		const wantsToModify = await this.prompt.confirm(
+			'\n   ¿Quieres continuar así o añadir/quitar algún add-on? (s=modificar, N=continuar)',
+			false,
+		);
+
+		let finalAddons = [...UBITS_PRESET.addons];
+		let additionalAddons: string[] = [];
+
+		if (wantsToModify) {
+			// Permitir agregar más add-ons
+			const wantsToAdd = await this.prompt.confirm(
+				'   ¿Quieres agregar más add-ons?',
+				false,
+			);
+
+			if (wantsToAdd) {
+				additionalAddons = await this.selectAdditionalAddons(finalAddons);
+				finalAddons = [...finalAddons, ...additionalAddons];
+			}
+
+			// TODO: Permitir quitar add-ons (por ahora solo agregar)
+			// Esto requeriría una interfaz más compleja para seleccionar cuáles quitar
 		}
 
-		return installed;
+		return { finalAddons, additionalAddons };
+	}
+
+	private async installDefaultAddons(): Promise<string[]> {
+		// Este método ya no se usa, pero lo mantengo por compatibilidad
+		return [];
 	}
 
 	/**
@@ -308,15 +304,44 @@ export class InitializationWizard {
 	/**
 	 * Instala una lista de add-ons
 	 */
-	private async installAddons(addonIds: string[]): Promise<void> {
+	private async installAddons(addonIds: string[]): Promise<string[]> {
+		const installed: string[] = [];
+		const addonDescriptions: Record<string, string> = {
+			'storybook': '📚 Desarrollo y documentación de componentes',
+			'figma-sync': '🎨 Sincronización de tokens desde Figma',
+			'eslint': '🔍 Detección de errores de código',
+			'prettier': '✨ Formateo automático de código',
+			'vitest': '🧪 Unit testing (rápido y moderno)',
+			'playwright': '🎭 Testing end-to-end',
+			'chromatic': '🖼️  Visual testing y comparación',
+			'snyk': '🔒 Escaneo de vulnerabilidades',
+			'renovate': '🔄 Actualizaciones automáticas',
+			'lighthouse': '⚡ Análisis de rendimiento',
+			'bundle-analyzer': '📊 Análisis de tamaño de bundle',
+			'standalone': '🚀 Componentes standalone',
+			'sentry': '🐛 Monitoreo de errores',
+			'clarity': '👁️  Análisis de comportamiento de usuarios',
+			'vercel': '☁️  Despliegue en Vercel',
+			'github': '🐙 Integración con GitHub',
+			'codecov': '📈 Cobertura de código',
+			'feedback': '💬 Sistema de feedback automatizado',
+		};
+
 		for (const addonId of addonIds) {
+			const description = addonDescriptions[addonId] || addonId;
 			try {
 				await this.hub.activateAddon(addonId);
-				console.log(`   ✅ ${addonId} instalado`);
+				console.log(`   ✅ ${description}`);
+				installed.push(addonId);
 			} catch (error: any) {
-				console.warn(`   ⚠️  Error instalando ${addonId}:`, error.message || error);
+				// Solo mostrar error si no es "no encontrado" (es esperado si no está compilado)
+				if (error?.code !== 'ADDON_NOT_FOUND') {
+					console.warn(`   ⚠️  Error instalando ${addonId}:`, error.message || error);
+				}
 			}
 		}
+
+		return installed;
 	}
 
 	/**
@@ -447,12 +472,56 @@ export class InitializationWizard {
 			};
 		});
 
-		// SIEMPRE preguntar al usuario
-		const selectedModule = await this.prompt.select(
-			'   ¿En qué módulo quieres trabajar?',
-			moduleOptions,
-			moduleOptions[0]?.value || 'desempeno',
-		);
+		// Preguntar al usuario de forma más directa
+		let selectedModule: string | undefined;
+		let attempts = 0;
+		const maxAttempts = 3;
+
+		while (!selectedModule && attempts < maxAttempts) {
+			const answer = await this.prompt.question(
+				'   ¿En qué módulo quieres trabajar? (escribe el nombre o número): ',
+			);
+
+			// Intentar por número
+			const index = parseInt(answer, 10) - 1;
+			if (index >= 0 && index < moduleOptions.length) {
+				selectedModule = moduleOptions[index].value;
+				break;
+			}
+
+			// Intentar por nombre (búsqueda parcial, case-insensitive)
+			const normalizedAnswer = answer.toLowerCase().trim();
+			const found = moduleOptions.find((opt) => {
+				const normalizedLabel = opt.label.toLowerCase();
+				const normalizedValue = opt.value.toLowerCase();
+				return (
+					normalizedLabel.includes(normalizedAnswer) ||
+					normalizedValue.includes(normalizedAnswer) ||
+					normalizedLabel === normalizedAnswer ||
+					normalizedValue === normalizedAnswer
+				);
+			});
+
+			if (found) {
+				selectedModule = found.value;
+				break;
+			}
+
+			// Si no se encontró, mostrar opciones y pedir de nuevo
+			attempts++;
+			if (attempts < maxAttempts) {
+				console.log('   ⚠️  Módulo no encontrado. Opciones disponibles:');
+				moduleOptions.forEach((opt, idx) => {
+					console.log(`      ${idx + 1}. ${opt.label}`);
+				});
+			}
+		}
+
+		// Si después de varios intentos no se encontró, usar el default
+		if (!selectedModule) {
+			console.log('   ℹ️  Usando módulo por defecto: Desempeño');
+			selectedModule = 'desempeno';
+		}
 
 		// Seleccionar producto dentro del módulo (solo si el módulo tiene productos)
 		const product = await this.selectProduct(selectedModule);
