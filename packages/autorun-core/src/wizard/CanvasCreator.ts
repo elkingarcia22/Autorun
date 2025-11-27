@@ -513,14 +513,14 @@ export class CanvasCreator {
       };
       
       // La clave en products.js es 'template-admin' o 'template-colaborador'
-      const templateKey = 'template-${template === 'administrador' ? 'admin' : 'colaborador'}';
+      const templateKey = '${template === 'administrador' ? 'template-admin' : 'template-colaborador'}';
       
       // Sobrescribir detectCurrentProduct ANTES de que products.js se cargue
       // detectCurrentProduct() detecta por nombre de archivo y por defecto retorna 'template-colaborador'
       // Necesitamos sobrescribirlo para que siempre retorne el template correcto
       window.detectCurrentProduct = function() {
         // Siempre retornar el template correcto
-        return '${templateKey}';
+        return templateKey;
       };
       
       // Interceptar cuando UBITS_PRODUCTS se define ANTES de que el template lo use
