@@ -8926,15 +8926,23 @@ const result = await runTests({ coverage: true });</code></pre>
                 Clona el repositorio Autorun, instala las dependencias y ejecuta el wizard de inicialización en la consola. <strong>⚠️ Importante:</strong> El wizard debe ejecutarse directamente en la terminal/consola, no en el chat de Cursor. Abre tu consola y sigue las instrucciones interactivas del wizard para seleccionar el template, módulo, producto y add-ons.
               </p>
               <div class="code-block">
-                <pre><code># Clonar el repositorio Autorun
+                <pre><code># ⚠️ IMPORTANTE: Ejecuta estos comandos en la TERMINAL/CONSOLA, NO en el chat de Cursor
+# Abre tu terminal y ejecuta los siguientes comandos uno por uno:
+
+# Clonar el repositorio Autorun
 git clone https://github.com/elkingarcia22/Autorun.git
 cd Autorun
 
 # Instalar dependencias
 npm install
 
-# Ejecutar el wizard de inicialización
-npm run init</code></pre>
+# Ejecutar el wizard de inicialización (se ejecutará interactivamente en la consola)
+npm run init
+
+# El wizard te preguntará interactivamente:
+# - ¿Qué template quieres usar? (Administrador o Colaborador)
+# - ¿Qué producto quieres trabajar? (selecciona de la lista)
+# - ¿Qué hacer con los add-ons? (instalar por defecto o agregar otros)</code></pre>
               </div>
             </div>
           </div>
