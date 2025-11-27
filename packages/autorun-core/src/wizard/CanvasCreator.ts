@@ -480,8 +480,8 @@ export class CanvasCreator {
     (function() {
       const adjustImagePaths = (products) => {
         if (!products) return;
-        // Usar ruta absoluta file:// para que funcione con file:// protocol
-        const ubitsTemplatesPath = \`${absolutePathToUBITS}/templates\`;
+        // Usar ruta relativa para el servidor HTTP local
+        const ubitsTemplatesPath = '../../UBITS/packages/templates';
         
         // Función recursiva para ajustar rutas en objetos
         const adjustPaths = (obj) => {
@@ -492,9 +492,6 @@ export class CanvasCreator {
               // Ajustar rutas de imágenes
               if (typeof obj[key] === 'string' && obj[key].startsWith('assets/')) {
                 obj[key] = ubitsTemplatesPath + '/' + obj[key];
-              } else if (typeof obj[key] === 'string' && !obj[key].startsWith('file://') && obj[key].includes('assets/')) {
-                // También ajustar si ya tiene alguna ruta parcial
-                obj[key] = ubitsTemplatesPath + '/' + obj[key].replace(/^.*?assets\//, 'assets/');
               }
             } else if (Array.isArray(obj[key])) {
               // Recorrer arrays
