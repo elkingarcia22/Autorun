@@ -439,34 +439,36 @@ export class InitializationWizard {
 			moduleOptions[0]?.value || 'desempeno',
 		);
 
-		// Seleccionar producto dentro del módulo
+		// Seleccionar producto dentro del módulo (solo si el módulo tiene productos)
 		const product = await this.selectProduct(selectedModule);
 
-		return { module: selectedModule, product };
+		return { module: selectedModule, product: product || undefined };
 	}
 
 	/**
 	 * Selecciona producto dentro de un módulo
+	 * Si el módulo no tiene productos, retorna string vacío (módulo solo)
 	 */
 	private async selectProduct(moduleId: string): Promise<string> {
 		const moduleConfig = UBITS_MODULES_CONFIG[moduleId];
 
 		if (!moduleConfig) {
-			console.warn(`⚠️  Módulo "${moduleId}" no tiene productos configurados`);
+			console.warn(`⚠️  Módulo "${moduleId}" no tiene configuración`);
 			return '';
 		}
 
+		// Si el módulo no tiene productos, es un módulo solo
 		if (moduleConfig.products.length === 0) {
-			console.warn(`⚠️  Módulo "${moduleConfig.name}" no tiene productos disponibles`);
+			console.log(`   ✅ Módulo "${moduleConfig.name}" es un módulo solo (sin productos)`);
 			return '';
 		}
 
+		// Si tiene productos, preguntar al usuario
 		const productOptions = moduleConfig.products.map((product) => ({
 			value: product.id,
 			label: product.name,
 		}));
 
-		// SIEMPRE preguntar al usuario
 		const selectedProduct = await this.prompt.select(
 			`   ¿En qué producto de "${moduleConfig.name}" quieres trabajar?`,
 			productOptions,

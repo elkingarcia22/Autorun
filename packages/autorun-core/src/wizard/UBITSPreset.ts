@@ -104,9 +104,11 @@ export const UBITS_PRESET: UBITSConfig = {
 				'colaboradores',
 				'aprendizaje',
 				'desempeno',
+				'diagnostico',
 				'encuestas',
 				'api',
 				'centro-ayuda',
+				'mi-perfil',
 			],
 			sidebar: {
 				variant: 'administrador',
@@ -115,9 +117,11 @@ export const UBITS_PRESET: UBITSConfig = {
 					'colaboradores',
 					'aprendizaje',
 					'desempeno',
+					'diagnostico',
 					'encuestas',
 					'api',
 					'centro-ayuda',
+					'mi-perfil',
 				],
 			},
 			components: [
@@ -131,7 +135,9 @@ export const UBITS_PRESET: UBITSConfig = {
 		colaborador: {
 			type: 'colaborador',
 			modules: [
+				'inicio',
 				'aprendizaje',
+				'diagnostico',
 				'desempeno',
 				'encuestas',
 				'reclutamiento',
@@ -142,7 +148,9 @@ export const UBITS_PRESET: UBITSConfig = {
 			sidebar: {
 				variant: 'colaborador',
 				enabledModules: [
+					'inicio',
 					'aprendizaje',
+					'diagnostico',
 					'desempeno',
 					'encuestas',
 					'reclutamiento',
@@ -164,8 +172,7 @@ export const UBITS_PRESET: UBITSConfig = {
 		'aprendizaje',
 		'desempeno',
 		'colaboradores',
-		'reportes',
-		'configuracion',
+		'diagnostico',
 		'encuestas',
 		'reclutamiento',
 		'planes',
@@ -184,20 +191,13 @@ export const UBITS_MODULES_CONFIG: Record<string, ModuleConfig> = {
 		id: 'inicio',
 		name: 'Inicio',
 		subnavVariant: 'template',
-		products: [
-			{ id: 'dashboard', name: 'Dashboard', icon: 'far fa-home' },
-		],
+		products: [], // Módulo solo, sin productos
 	},
 	aprendizaje: {
 		id: 'aprendizaje',
 		name: 'Aprendizaje',
-		subnavVariant: 'aprendizaje',
-		products: [
-			{ id: 'lms-cursos-propios', name: 'LMS - Cursos propios', icon: 'far fa-book' },
-			{ id: 'plan-formacion', name: 'Plan de formación', icon: 'far fa-calendar-check' },
-			{ id: 'certificados', name: 'Certificados', icon: 'far fa-certificate' },
-			{ id: 'metricas-empresa', name: 'Métricas de empresa', icon: 'far fa-chart-bar' },
-		],
+		subnavVariant: 'template',
+		products: [], // Módulo solo, sin productos
 	},
 	desempeno: {
 		id: 'desempeno',
@@ -206,7 +206,8 @@ export const UBITS_MODULES_CONFIG: Record<string, ModuleConfig> = {
 		products: [
 			{ id: 'evaluaciones-360', name: 'Evaluaciones 360', icon: 'far fa-chart-pie' },
 			{ id: 'objetivos', name: 'Objetivos', icon: 'far fa-bullseye' },
-			{ id: 'matriz-talento', name: 'Matriz de Talento', icon: 'far fa-users-cog' },
+			{ id: 'metricas', name: 'Métricas', icon: 'far fa-chart-line' },
+			{ id: 'reportes', name: 'Reportes', icon: 'far fa-file-alt' },
 		],
 	},
 	colaboradores: {
@@ -245,47 +246,37 @@ export const UBITS_MODULES_CONFIG: Record<string, ModuleConfig> = {
 		id: 'mi-perfil',
 		name: 'Mi Perfil',
 		subnavVariant: 'template',
-		products: [
-			{ id: 'informacion', name: 'Información', icon: 'far fa-user' },
-			{ id: 'preferencias', name: 'Preferencias', icon: 'far fa-sliders-h' },
-		],
+		products: [], // Módulo solo, sin productos
+	},
+	diagnostico: {
+		id: 'diagnostico',
+		name: 'Diagnóstico',
+		subnavVariant: 'template',
+		products: [], // Módulo solo, sin productos
 	},
 	encuestas: {
 		id: 'encuestas',
 		name: 'Encuestas',
 		subnavVariant: 'template',
-		products: [
-			{ id: 'lista', name: 'Lista', icon: 'far fa-list' },
-			{ id: 'crear', name: 'Crear', icon: 'far fa-plus' },
-			{ id: 'diagnostico', name: 'Diagnóstico', icon: 'far fa-stethoscope' },
-		],
+		products: [], // Módulo solo, sin productos
 	},
 	api: {
 		id: 'api',
 		name: 'API',
 		subnavVariant: 'template',
-		products: [
-			{ id: 'documentacion', name: 'Documentación', icon: 'far fa-code' },
-			{ id: 'endpoints', name: 'Endpoints', icon: 'far fa-plug' },
-		],
+		products: [], // Módulo solo, sin productos
 	},
 	'centro-ayuda': {
 		id: 'centro-ayuda',
 		name: 'Centro de Ayuda',
 		subnavVariant: 'template',
-		products: [
-			{ id: 'articulos', name: 'Artículos', icon: 'far fa-book-open' },
-			{ id: 'faq', name: 'FAQ', icon: 'far fa-question-circle' },
-		],
+		products: [], // Módulo solo, sin productos
 	},
 	reclutamiento: {
 		id: 'reclutamiento',
 		name: 'Reclutamiento',
 		subnavVariant: 'template',
-		products: [
-			{ id: 'vacantes', name: 'Vacantes', icon: 'far fa-briefcase' },
-			{ id: 'candidatos', name: 'Candidatos', icon: 'far fa-users' },
-		],
+		products: [], // Módulo solo, sin productos
 	},
 	planes: {
 		id: 'planes',
@@ -300,10 +291,7 @@ export const UBITS_MODULES_CONFIG: Record<string, ModuleConfig> = {
 		id: 'ubits-ai',
 		name: 'UBITS AI',
 		subnavVariant: 'template',
-		products: [
-			{ id: 'chat', name: 'Chat', icon: 'far fa-comments' },
-			{ id: 'asistente', name: 'Asistente', icon: 'far fa-robot' },
-		],
+		products: [], // Módulo solo, sin productos
 	},
 };
 
