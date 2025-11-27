@@ -65,21 +65,12 @@ export class CanvasCreator {
 			console.log(`   📄 Cargando template completo desde UBITS local: ${ubitsDesktopPath}`);
 			let templateContent = await fs.readFile(ubitsDesktopPath, 'utf-8');
 			
-			// Calcular ruta relativa desde prototypes/ hacia Desktop/UBITS/packages/
-			// prototypes/ está en: projectPath/prototypes/
-			// UBITS/packages/ está en: ~/Desktop/UBITS/packages/
-			const prototypesPath = path.join(this.projectPath, 'prototypes');
+			// Usar rutas absolutas file:// para que funcionen cuando se abre el HTML localmente
 			const ubitsPackagesPath = path.join(os.homedir(), 'Desktop', 'UBITS', 'packages');
+			const absolutePath = `file://${ubitsPackagesPath}`.replace(/\\/g, '/');
 			
-			// Calcular ruta relativa
-			const relativePath = path.relative(prototypesPath, ubitsPackagesPath);
-			// Normalizar para usar en HTML (usar / en lugar de \)
-			const normalizedPath = relativePath.split(path.sep).join('/');
-			
-			// Ajustar rutas relativas del template
-			// Las rutas originales son: ../tokens/dist/tokens.css (relativas a packages/templates/)
-			// Necesitamos: ../../Desktop/UBITS/packages/tokens/dist/tokens.css (relativas a prototypes/)
-			templateContent = await this.adjustTemplatePaths(templateContent, normalizedPath);
+			// Ajustar rutas del template a rutas absolutas file://
+			templateContent = await this.adjustTemplatePaths(templateContent, absolutePath);
 			
 			// Personalizar el template con el módulo y producto seleccionados
 			// Esto agrega el script que activa el módulo/producto en sidebar y subnav
@@ -95,65 +86,63 @@ export class CanvasCreator {
 	}
 
 	/**
-	 * Ajusta las rutas del template para que funcionen desde prototypes/
+	 * Ajusta las rutas del template para que funcionen con file:// absolutas
 	 * Las rutas originales son relativas a packages/templates/ (../tokens/...)
-	 * Las convertimos a rutas relativas desde prototypes/ hacia Desktop/UBITS/packages/
+	 * Las convertimos a rutas absolutas file:// hacia Desktop/UBITS/packages/
 	 */
-	private async adjustTemplatePaths(content: string, relativePathToUBITS: string): Promise<string> {
+	private async adjustTemplatePaths(content: string, absolutePathToUBITS: string): Promise<string> {
 		// Las rutas originales son: ../tokens/dist/tokens.css
-		// Necesitamos: ../../Desktop/UBITS/packages/tokens/dist/tokens.css
-		// Pero relativePathToUBITS ya incluye el path completo relativo
-		// Entonces: ${relativePathToUBITS}/tokens/dist/tokens.css
+		// Necesitamos: file:///Users/elkinmac/Desktop/UBITS/packages/tokens/dist/tokens.css
 		
-		// Reemplazar rutas relativas ../ por la ruta relativa calculada
+		// Reemplazar rutas relativas ../ por la ruta absoluta
 		content = content.replace(
 			/href="\.\.\//g,
-			`href="${relativePathToUBITS}/`
+			`href="${absolutePathToUBITS}/`
 		);
 		
 		content = content.replace(
 			/src="\.\.\//g,
-			`src="${relativePathToUBITS}/`
+			`src="${absolutePathToUBITS}/`
 		);
 		
 		// También ajustar rutas de assets que son relativas al mismo directorio
-		// assets/fontawesome/... debe convertirse a ${relativePathToUBITS}/templates/assets/fontawesome/...
+		// assets/fontawesome/... debe convertirse a file:///Users/.../templates/assets/fontawesome/...
 		content = content.replace(
 			/href="assets\//g,
-			`href="${relativePathToUBITS}/templates/assets/`
+			`href="${absolutePathToUBITS}/templates/assets/`
 		);
 		
 		content = content.replace(
 			/src="assets\//g,
-			`src="${relativePathToUBITS}/templates/assets/`
+			`src="${absolutePathToUBITS}/templates/assets/`
 		);
 		
 		// Ajustar rutas de imágenes en JavaScript (products.js)
-		// 'assets/images/Profile-image.jpg' -> '${relativePathToUBITS}/templates/assets/images/Profile-image.jpg'
+		// 'assets/images/Profile-image.jpg' -> 'file:///Users/.../templates/assets/images/Profile-image.jpg'
 		content = content.replace(
 			/'assets\/images\//g,
-			`'${relativePathToUBITS}/templates/assets/images/`
+			`'${absolutePathToUBITS}/templates/assets/images/`
 		);
 		
 		content = content.replace(
 			/"assets\/images\//g,
-			`"${relativePathToUBITS}/templates/assets/images/`
+			`"${absolutePathToUBITS}/templates/assets/images/`
 		);
 		
 		// Ajustar rutas de scripts que son relativas al mismo directorio
 		content = content.replace(
 			/src="components-loader\.js/g,
-			`src="${relativePathToUBITS}/templates/components-loader.js`
+			`src="${absolutePathToUBITS}/templates/components-loader.js`
 		);
 		
 		content = content.replace(
 			/src="config\//g,
-			`src="${relativePathToUBITS}/templates/config/`
+			`src="${absolutePathToUBITS}/templates/config/`
 		);
 		
 		content = content.replace(
 			/src="engine\//g,
-			`src="${relativePathToUBITS}/templates/engine/`
+			`src="${absolutePathToUBITS}/templates/engine/`
 		);
 		
 		return content;
@@ -479,6 +468,7 @@ export class CanvasCreator {
 		}
 
 		// Agregar script para configurar el módulo y producto activos
+		// Este script debe ejecutarse ANTES de que el template se inicialice
 		const scriptTag = `
   <script>
     // Configuración del módulo y producto activos
@@ -491,18 +481,47 @@ export class CanvasCreator {
       storybookUrl: '${UBITS_PRESET.storybook.url}'
     };
     
-    // Sobrescribir initialActiveSection en products.js para activar el módulo/producto seleccionado
+    // Sobrescribir initialActiveSection ANTES de que products.js se ejecute
+    // Esto asegura que el template use el módulo/producto seleccionado
     (function() {
-      if (window.UBITS_PRODUCTS && window.UBITS_PRODUCTS['template-${template}']) {
-        const productConfig = window.UBITS_PRODUCTS['template-${template}'];
-        if (productConfig.sidebar) {
-          // Establecer el módulo seleccionado como sección inicial
-          productConfig.sidebar.initialActiveSection = '${module}';
-        }
-      }
+      // Interceptar cuando UBITS_PRODUCTS se define
+      const originalDefine = Object.defineProperty;
+      Object.defineProperty(window, 'UBITS_PRODUCTS', {
+        set: function(value) {
+          // Sobrescribir la configuración del template
+          if (value && value['template-${template}']) {
+            const productConfig = value['template-${template}'];
+            if (productConfig.sidebar) {
+              productConfig.sidebar.initialActiveSection = '${module}';
+            }
+          }
+          // Establecer la propiedad normalmente
+          Object.defineProperty(window, 'UBITS_PRODUCTS', {
+            value: value,
+            writable: true,
+            configurable: true
+          });
+        },
+        get: function() {
+          return window._UBITS_PRODUCTS;
+        },
+        configurable: true
+      });
+      
+      // También sobrescribir después de que se cargue
+      document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => {
+          if (window.UBITS_PRODUCTS && window.UBITS_PRODUCTS['template-${template}']) {
+            const productConfig = window.UBITS_PRODUCTS['template-${template}'];
+            if (productConfig.sidebar) {
+              productConfig.sidebar.initialActiveSection = '${module}';
+            }
+          }
+        }, 0);
+      });
     })();
     
-    // Activar el módulo y producto en el sidebar y subnav después de que todo esté cargado
+    // Activar el módulo y producto después de que todo esté cargado
     document.addEventListener('DOMContentLoaded', () => {
       // Esperar a que UBITS_ContentManager y todos los componentes estén listos
       const activateModule = () => {
@@ -516,15 +535,17 @@ export class CanvasCreator {
               // Usar requestAnimationFrame para asegurar que el DOM esté listo
               requestAnimationFrame(() => {
                 setTimeout(() => {
+                  console.log('🔍 Activando módulo: ${module}, producto: ${product}');
                   window.UBITS_ContentManager.handleSectionChange('${module}', '${product}');
-                }, 100);
+                }, 200);
               });
             } else {
               // Para módulos sin productos, solo activar el módulo
               requestAnimationFrame(() => {
                 setTimeout(() => {
+                  console.log('🔍 Activando módulo: ${module}');
                   window.UBITS_ContentManager.handleSectionChange('${module}');
-                }, 100);
+                }, 200);
               });
             }
           } catch (error) {
@@ -536,8 +557,8 @@ export class CanvasCreator {
         }
       };
       
-      // Esperar un poco más para que todos los scripts se carguen
-      setTimeout(activateModule, 500);
+      // Esperar a que todos los scripts se carguen (aumentar delay)
+      setTimeout(activateModule, 1000);
     });
   </script>`;
 
