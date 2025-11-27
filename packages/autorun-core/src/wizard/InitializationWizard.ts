@@ -44,14 +44,33 @@ export class InitializationWizard {
 
 	/**
 	 * Inicia el wizard de inicialización
-	 * Un solo paso interactivo que pregunta todo y luego ejecuta automáticamente
+	 * Usa valores por defecto automáticos o variables de entorno, solo pregunta si es necesario
 	 */
 	async start(options?: { autoSelect?: ProjectType }): Promise<WizardResult> {
 		console.log('🚀 ¡Hola! Soy tu asistente de Autorun.\n');
-		console.log('Voy a hacerte 3 preguntas rápidas para configurar tu proyecto:\n');
 
-		// Un solo paso: preguntar todo
-		const answers = await this.askAllQuestions();
+		// Intentar obtener respuestas automáticas (variables de entorno o valores por defecto)
+		const autoAnswers = this.getAutoAnswers(options?.autoSelect);
+		
+		if (autoAnswers) {
+			console.log('✅ Configurando automáticamente con valores por defecto:\n');
+			console.log(`   📋 Tipo: ${autoAnswers.projectType}`);
+			if (autoAnswers.template) {
+				console.log(`   🎯 Template: ${autoAnswers.template}`);
+			}
+			if (autoAnswers.module) {
+				console.log(`   📦 Módulo: ${autoAnswers.module}`);
+			}
+			if (autoAnswers.product) {
+				console.log(`   🎨 Producto: ${autoAnswers.product}`);
+			}
+			console.log('');
+		} else {
+			console.log('Voy a hacerte 3 preguntas rápidas para configurar tu proyecto:\n');
+		}
+
+		// Usar respuestas automáticas o preguntar
+		const answers = autoAnswers || await this.askAllQuestions();
 
 		if (answers.projectType === 'ubits') {
 			console.log('\n✅ Perfecto, voy a configurar tu proyecto UBITS ahora.\n');
@@ -67,6 +86,38 @@ export class InitializationWizard {
 			console.log('\n✅ Perfecto, voy a configurar un proyecto independiente.\n');
 			return await this.setupIndependent();
 		}
+	}
+
+	/**
+	 * Obtiene respuestas automáticas desde variables de entorno o valores por defecto
+	 */
+	private getAutoAnswers(autoSelect?: ProjectType): {
+		projectType: ProjectType;
+		template?: 'administrador' | 'colaborador';
+		module?: string;
+		product?: string;
+	} | null {
+		// Verificar variables de entorno o usar valores por defecto
+		const projectType = (process.env.AUTORUN_PROJECT_TYPE as ProjectType) || autoSelect || 'ubits';
+		const template = (process.env.AUTORUN_TEMPLATE as 'administrador' | 'colaborador') || 'administrador';
+		const module = process.env.AUTORUN_MODULE || 'desempeno';
+		let product = process.env.AUTORUN_PRODUCT;
+
+		// Si no hay producto especificado, obtener el primero del módulo
+		if (projectType === 'ubits' && !product) {
+			const moduleConfig = UBITS_MODULES_CONFIG[module];
+			if (moduleConfig && moduleConfig.products.length > 0) {
+				product = moduleConfig.products[0].id;
+			}
+		}
+
+		// Siempre usar modo automático con valores por defecto
+		return {
+			projectType,
+			template: projectType === 'ubits' ? template : undefined,
+			module: projectType === 'ubits' ? module : undefined,
+			product: projectType === 'ubits' ? product : undefined,
+		};
 	}
 
 	/**
