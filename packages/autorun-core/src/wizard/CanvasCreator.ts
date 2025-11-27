@@ -480,8 +480,8 @@ export class CanvasCreator {
     (function() {
       const adjustImagePaths = (products) => {
         if (!products) return;
-        // Usar ruta relativa para el servidor HTTP local
-        const ubitsTemplatesPath = '../../UBITS/packages/templates';
+        // Usar ruta absoluta file:// para que funcione con file:// protocol
+        const ubitsTemplatesPath = \`${absolutePathToUBITS}/templates\`;
         
         // Función recursiva para ajustar rutas en objetos
         const adjustPaths = (obj) => {
