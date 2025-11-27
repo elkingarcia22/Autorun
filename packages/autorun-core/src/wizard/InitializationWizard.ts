@@ -47,14 +47,47 @@ export class InitializationWizard {
 	 * Pregunta template y producto en un solo paso, luego ejecuta todo automáticamente
 	 */
 	async start(options?: { autoSelect?: ProjectType }): Promise<WizardResult> {
-		console.log('🚀 ¡Hola! Soy tu asistente de Autorun.\n');
-		console.log('Voy a preguntarte qué template y producto quieres usar:\n');
+		// Intentar obtener respuestas automáticas primero
+		const autoAnswers = this.getAutoAnswers(options?.autoSelect);
+		
+		let answers: { template: 'administrador' | 'colaborador'; module: string; product?: string };
+		let selectedAddons: string[];
 
-		// Preguntar template y producto en un solo paso
-		const answers = await this.askTemplateAndProduct();
+		if (autoAnswers && autoAnswers.template && autoAnswers.module) {
+			// Usar respuestas automáticas
+			console.log('🚀 ¡Hola! Soy tu asistente de Autorun.\n');
+			console.log('📋 Usando configuración automática:\n');
+			console.log(`   🎯 Template: ${autoAnswers.template}`);
+			console.log(`   📦 Módulo: ${autoAnswers.module}`);
+			if (autoAnswers.product) {
+				console.log(`   🎨 Producto: ${autoAnswers.product}`);
+			}
+			console.log('');
 
-		// Preguntar por los add-ons a instalar
-		const selectedAddons = await this.askAddons();
+			answers = {
+				template: autoAnswers.template,
+				module: autoAnswers.module,
+				product: autoAnswers.product,
+			};
+
+			// Para add-ons, usar los por defecto si no hay variables de entorno
+			const addonsEnv = process.env.AUTORUN_ADDONS;
+			if (addonsEnv) {
+				selectedAddons = addonsEnv.split(',').map(a => a.trim());
+			} else {
+				selectedAddons = UBITS_PRESET.addons;
+			}
+		} else {
+			// Modo interactivo
+			console.log('🚀 ¡Hola! Soy tu asistente de Autorun.\n');
+			console.log('Voy a preguntarte qué template y producto quieres usar:\n');
+
+			// Preguntar template y producto en un solo paso
+			answers = await this.askTemplateAndProduct();
+
+			// Preguntar por los add-ons a instalar
+			selectedAddons = await this.askAddons();
+		}
 
 		console.log('\n✅ Perfecto, voy a configurar tu proyecto UBITS ahora.\n');
 		
@@ -81,15 +114,36 @@ export class InitializationWizard {
 		const module = process.env.AUTORUN_MODULE || 'desempeno';
 		let product = process.env.AUTORUN_PRODUCT;
 
-		// Si no hay producto especificado, obtener el primero del módulo
+		// Si no hay producto especificado, obtener el primero del módulo según el template
 		if (projectType === 'ubits' && !product) {
 			const moduleConfig = UBITS_MODULES_CONFIG[module];
 			if (moduleConfig && moduleConfig.products.length > 0) {
-				product = moduleConfig.products[0].id;
+				// Filtrar productos según el template
+				const templateProductsMap: Record<string, Record<string, string[]>> = {
+					administrador: {
+						empresa: ['gestion-usuarios', 'organigrama', 'datos-empresa', 'personalizacion', 'roles-permisos', 'comunicaciones'],
+						aprendizaje: ['lms-cursos', 'plan-formacion', 'certificados', 'metricas-empresa'],
+						desempeno: ['evaluations', 'objectives', 'matriz-talento'],
+					},
+					colaborador: {
+						aprendizaje: ['inicio', 'catalogo', 'corporativa', 'zona-estudio'],
+						desempeno: ['evaluaciones-360', 'objetivos', 'metricas', 'reportes'],
+						planes: ['planes', 'tareas'],
+					},
+				};
+
+				const templateProducts = templateProductsMap[template]?.[module] || [];
+				if (templateProducts.length > 0) {
+					// Obtener el primer producto válido para este template
+					const validProducts = moduleConfig.products.filter(p => templateProducts.includes(p.id));
+					if (validProducts.length > 0) {
+						product = validProducts[0].id;
+					}
+				}
 			}
 		}
 
-		// Siempre usar modo automático con valores por defecto
+		// Retornar respuestas automáticas si están disponibles
 		return {
 			projectType,
 			template: projectType === 'ubits' ? template : undefined,
