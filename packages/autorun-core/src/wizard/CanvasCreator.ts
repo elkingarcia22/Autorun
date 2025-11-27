@@ -497,7 +497,7 @@ export class CanvasCreator {
             if (key === 'avatarImage' || key === 'logoImage' || key === 'avatar') {
               // Ajustar rutas de imágenes
               if (typeof obj[key] === 'string' && obj[key].startsWith('assets/')) {
-                obj[key] = ubitsPath + '/' + obj[key];
+                obj[key] = ubitsTemplatesPath + '/' + obj[key];
               }
             } else if (Array.isArray(obj[key])) {
               // Recorrer arrays
@@ -512,7 +512,8 @@ export class CanvasCreator {
         adjustPaths(products);
       };
       
-      // Interceptar cuando UBITS_PRODUCTS se define
+      // Interceptar cuando UBITS_PRODUCTS se define ANTES de que el template lo use
+      // Usar Object.defineProperty para interceptar la asignación
       let productsDefined = false;
       const checkProducts = () => {
         if (window.UBITS_PRODUCTS && !productsDefined) {
@@ -520,71 +521,59 @@ export class CanvasCreator {
           // Ajustar rutas de imágenes
           adjustImagePaths(window.UBITS_PRODUCTS);
           
-          // Sobrescribir initialActiveSection
+          // Sobrescribir initialActiveSection INMEDIATAMENTE
           if (window.UBITS_PRODUCTS['template-${template}']) {
             const productConfig = window.UBITS_PRODUCTS['template-${template}'];
             if (productConfig.sidebar) {
               productConfig.sidebar.initialActiveSection = '${module}';
+              console.log('🔍 [Wizard] initialActiveSection sobrescrito a: ${module}');
             }
           }
         }
       };
       
-      // Verificar periódicamente hasta que products.js se cargue
+      // Verificar INMEDIATAMENTE (puede que ya esté definido)
+      checkProducts();
+      
+      // Verificar periódicamente con intervalo más corto
       const interval = setInterval(() => {
         checkProducts();
         if (productsDefined) {
           clearInterval(interval);
         }
-      }, 50);
+      }, 10);
       
-      // También verificar en DOMContentLoaded
-      document.addEventListener('DOMContentLoaded', () => {
-        setTimeout(checkProducts, 100);
-      });
-      
-      // Limpiar después de 5 segundos
-      setTimeout(() => clearInterval(interval), 5000);
+      // Limpiar después de 2 segundos
+      setTimeout(() => clearInterval(interval), 2000);
     })();
     
-    // Activar el módulo y producto después de que todo esté cargado
+    // Activar el producto DESPUÉS de que el template termine su inicialización
+    // El template ya activa el módulo gracias a initialActiveSection, solo necesitamos activar el producto
     document.addEventListener('DOMContentLoaded', () => {
-      // Esperar a que UBITS_ContentManager y todos los componentes estén listos
-      const activateModule = () => {
-        if (window.UBITS_ContentManager && window.UBITS_ResponsiveManager) {
+      const activateProduct = () => {
+        // Verificar que ContentManager esté listo y que el módulo ya esté activo
+        if (window.UBITS_ContentManager && window.UBITS_ContentManager.currentSection === '${module}') {
           try {
-            // Establecer currentSection primero
-            window.UBITS_ContentManager.currentSection = '${module}';
-            
-            // Para módulos con productos, activar el producto específico
+            // Si hay un producto, activarlo en el subnav
             if ('${product}') {
-              // Usar requestAnimationFrame para asegurar que el DOM esté listo
-              requestAnimationFrame(() => {
-                setTimeout(() => {
-                  console.log('🔍 Activando módulo: ${module}, producto: ${product}');
-                  window.UBITS_ContentManager.handleSectionChange('${module}', '${product}');
-                }, 200);
-              });
-            } else {
-              // Para módulos sin productos, solo activar el módulo
-              requestAnimationFrame(() => {
-                setTimeout(() => {
-                  console.log('🔍 Activando módulo: ${module}');
-                  window.UBITS_ContentManager.handleSectionChange('${module}');
-                }, 200);
-              });
+              console.log('🔍 [Wizard] Activando producto: ${product} en módulo: ${module}');
+              // Llamar handleSectionChange con el módulo y producto para activar el subnav
+              window.UBITS_ContentManager.handleSectionChange('${module}', '${product}');
             }
           } catch (error) {
-            console.warn('No se pudo activar módulo automáticamente:', error);
+            console.warn('No se pudo activar producto automáticamente:', error);
           }
+        } else if (window.UBITS_ContentManager) {
+          // Si el módulo aún no está activo, esperar un poco más
+          setTimeout(activateProduct, 100);
         } else {
-          // Reintentar después de un breve delay
-          setTimeout(activateModule, 100);
+          // Si ContentManager no está listo, reintentar
+          setTimeout(activateProduct, 100);
         }
       };
       
-      // Esperar a que todos los scripts se carguen (aumentar delay)
-      setTimeout(activateModule, 1000);
+      // Esperar a que el template termine su inicialización (el template usa setTimeout de ~1500ms)
+      setTimeout(activateProduct, 2000);
     });
   </script>`;
 
