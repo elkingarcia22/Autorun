@@ -248,10 +248,11 @@ export class InitializationWizard {
 			}
 		}
 
+		// No usar defaultValue para forzar que el usuario seleccione explícitamente
 		const selectedProduct = await this.prompt.select(
 			'📦 ¿En qué producto quieres trabajar?',
 			allProducts,
-			allProducts[0]?.value,
+			undefined, // Sin defaultValue para forzar selección explícita
 		);
 
 		// Parsear la selección
