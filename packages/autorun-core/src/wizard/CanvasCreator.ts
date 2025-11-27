@@ -462,6 +462,22 @@ export class CanvasCreator {
 			);
 		}
 
+		// Agregar estilos CSS para corregir problemas de dark mode
+		const darkModeFixStyles = `
+  <style>
+    /* Fix: Asegurar que el botón activo del sidebar sea visible en dark mode */
+    body[data-theme="dark"] .ubits-sidebar-nav-button.active,
+    html[data-theme="dark"] .ubits-sidebar-nav-button.active {
+      background: var(--ubits-sidebar-button-bg-active, #ffffff) !important;
+    }
+    
+    /* Asegurar que el icono del botón activo sea visible en dark mode */
+    body[data-theme="dark"] .ubits-sidebar-nav-button.active i,
+    html[data-theme="dark"] .ubits-sidebar-nav-button.active i {
+      color: var(--ubits-sidebar-button-fg-active, #303a47) !important;
+    }
+  </style>`;
+
 		// Agregar script para configurar el módulo y producto activos
 		// Este script debe ejecutarse ANTES de que el template se inicialice
 		const scriptTag = `
@@ -881,6 +897,13 @@ export class CanvasCreator {
       });
     }
   </script>`;
+
+		// Insertar estilos CSS en el <head> si existe, sino antes de </body>
+		if (templateHtml.includes('</head>')) {
+			templateHtml = templateHtml.replace('</head>', `${darkModeFixStyles}\n</head>`);
+		} else if (templateHtml.includes('<head>')) {
+			templateHtml = templateHtml.replace('<head>', `<head>${darkModeFixStyles}`);
+		}
 
 		// Insertar script antes de </body>
 		if (templateHtml.includes('</body>')) {
