@@ -68,7 +68,7 @@ export class CanvasCreator {
 			// Las rutas en el template son relativas a packages/templates/
 			// Necesitamos ajustarlas para que funcionen desde prototypes/
 			const ubitsBasePath = path.join(os.homedir(), 'Desktop', 'UBITS');
-			templateContent = this.adjustTemplatePaths(templateContent, ubitsBasePath);
+			templateContent = await this.adjustTemplatePaths(templateContent, ubitsBasePath);
 			
 			// Actualizar el título con el módulo y producto
 			const moduleConfig = UBITS_MODULES_CONFIG[module];
@@ -97,8 +97,8 @@ export class CanvasCreator {
 	 * Las rutas originales son relativas a packages/templates/ (../tokens/...)
 	 * Las convertimos a rutas absolutas hacia Desktop/UBITS/packages/
 	 */
-	private adjustTemplatePaths(content: string, ubitsBasePath: string): string {
-		const os = require('os');
+	private async adjustTemplatePaths(content: string, ubitsBasePath: string): Promise<string> {
+		const os = await import('os');
 		const desktopPath = path.join(os.homedir(), 'Desktop');
 		const ubitsPackagesPath = path.join(desktopPath, 'UBITS', 'packages');
 		
