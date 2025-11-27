@@ -557,7 +557,8 @@ export class InitializationWizard {
 		await this.validateCanvas(canvasPath);
 		console.log('   ✅ Validación completada\n');
 
-		// 7. Abrir template en el navegador
+		// 7. Ajustar rutas para servidor HTTP local si es necesario
+		// Las rutas file:// funcionan, pero un servidor HTTP local es mejor para evitar problemas de CORS
 		console.log('🌐 Abriendo template en el navegador...');
 		await this.openTemplateInBrowser(canvasPath);
 		console.log('   ✅ Template abierto\n');
