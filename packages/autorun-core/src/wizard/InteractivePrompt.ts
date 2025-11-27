@@ -42,21 +42,30 @@ export class InteractivePrompt {
 			console.log(`${marker} ${index + 1}. ${option.label}`);
 		});
 
+		// Asegurar que stdin esté en modo raw para capturar la entrada correctamente
+		if (process.stdin.isTTY) {
+			process.stdin.setRawMode?.(false);
+		}
+
 		const answer = await this.question(
 			`Selecciona una opción (1-${options.length})${defaultValue ? ` [Enter para default]` : ''}: `,
 		);
 
-		if (!answer && defaultValue) {
-			return defaultValue;
+		// Si la respuesta está vacía y hay un valor por defecto, usarlo
+		if (!answer || answer.trim() === '') {
+			if (defaultValue) {
+				console.log(`✅ Usando opción por defecto: ${options.find(o => o.value === defaultValue)?.label || defaultValue}\n`);
+				return defaultValue;
+			}
+			// Si no hay default y la respuesta está vacía, pedir de nuevo
+			console.log('⚠️  Por favor selecciona una opción válida.\n');
+			return this.select(prompt, options, defaultValue);
 		}
 
-		const index = parseInt(answer, 10) - 1;
+		const index = parseInt(answer.trim(), 10) - 1;
 		if (index >= 0 && index < options.length) {
+			console.log(`✅ Seleccionado: ${options[index].label}\n`);
 			return options[index].value;
-		}
-
-		if (defaultValue) {
-			return defaultValue;
 		}
 
 		// Si la respuesta no es válida, pedir de nuevo
