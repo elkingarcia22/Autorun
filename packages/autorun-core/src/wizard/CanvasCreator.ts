@@ -533,7 +533,8 @@ export class CanvasCreator {
     }
     
     /* Fix: Asegurar que el indicador activo del subnav (flechita azul) sea visible */
-    /* Usar token normal (no static) para que cambie automáticamente con el tema */
+    /* Sobrescribir SOLO en light mode para usar token normal (no static) */
+    /* En dark mode, dejar que use el token normal del CSS original */
     .ubits-sub-nav-tab.ubits-sub-nav-tab--active::after {
       content: '' !important;
       position: absolute !important;
@@ -541,25 +542,24 @@ export class CanvasCreator {
       left: 0 !important;
       right: 0 !important;
       height: 3px !important;
-      /* Usar token normal que cambia con el tema, no static */
-      background-color: var(--ubits-accent-brand, var(--modifiers-normal-color-light-accent-brand, #0c5bef)) !important;
       border-radius: 0 !important;
       z-index: 1 !important;
       display: block !important;
       visibility: visible !important;
       opacity: 1 !important;
       width: auto !important;
+      /* Usar token normal (no static) para light mode, que cambia automáticamente */
+      background-color: var(--ubits-accent-brand, var(--modifiers-normal-color-light-accent-brand, #0c5bef)) !important;
     }
     
-    /* Asegurar que el indicador use el token normal para dark mode */
-    /* El token normal cambia automáticamente de light a dark */
+    /* En dark mode, NO sobrescribir background-color, dejar que use el token normal del CSS original */
     body[data-theme="dark"] .ubits-sub-nav-tab.ubits-sub-nav-tab--active::after,
     html[data-theme="dark"] .ubits-sub-nav-tab.ubits-sub-nav-tab--active::after,
     [data-theme="dark"] .ubits-sub-nav-tab.ubits-sub-nav-tab--active::after {
-      background-color: var(--modifiers-normal-color-dark-accent-blue) !important;
       opacity: 1 !important;
       visibility: visible !important;
       display: block !important;
+      /* NO sobrescribir background-color aquí, dejar que use --modifiers-normal-color-dark-accent-blue del CSS original */
     }
     
     /* Asegurar que el contenedor del subnav permita que el indicador sea visible */
