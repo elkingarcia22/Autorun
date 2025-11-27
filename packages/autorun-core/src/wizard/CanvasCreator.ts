@@ -148,6 +148,10 @@ export class CanvasCreator {
 			`src="${absolutePathToUBITS}/templates/engine/`
 		);
 		
+		// NOTA: Los enlaces entre templates (template-admin.html <-> template-colaborador.html)
+		// se arreglan después de crear ambos templates en InitializationWizard.ts
+		// para poder usar los nombres reales de los archivos generados
+		
 		return content;
 	}
 
