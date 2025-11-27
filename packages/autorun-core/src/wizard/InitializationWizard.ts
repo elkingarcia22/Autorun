@@ -197,23 +197,23 @@ export class InitializationWizard {
 		await this.loadComponentsFromStorybook();
 		console.log('   ✅ Componentes cargados\n');
 
-		// 6. Instalar add-ons seleccionados
-		console.log('📦 Paso 6: Instalación de add-ons...');
-		const installedAddons = await this.installAddons(finalAddons);
+		// 3. Instalar add-ons por defecto
+		console.log('📦 Instalando add-ons optimizados...');
+		const installedAddons = await this.installAddons(UBITS_PRESET.addons);
 		console.log(`   ✅ ${installedAddons.length} add-on(s) instalado(s)\n`);
 
-		// 8. Habilitar módulo en sidebar y configurar subnav
-		console.log(`⚙️  Paso 7: Estoy configurando sidebar y subnav para "${module}"...`);
+		// 4. Habilitar módulo en sidebar y configurar subnav
+		console.log(`⚙️  Configurando sidebar y subnav para "${module}"...`);
 		await this.enableModule(module, template, product);
-		console.log('   ✅ Sidebar y subnav configurados\n');
+		console.log('   ✅ Configurado\n');
 
-		// 9. Crear lienzo/template
-		console.log('🎨 Paso 8: Estoy creando tu lienzo de trabajo...');
+		// 5. Crear lienzo/template
+		console.log('🎨 Creando tu lienzo de trabajo...');
 		const canvasPath = await this.createCanvas(template, module, product);
-		console.log(`   ✅ Lienzo creado\n`);
+		console.log('   ✅ Lienzo creado\n');
 
-		// 10. Validar lienzo creado
-		console.log('🔍 Paso 9: Estoy validando que todo cumpla con los estándares UBITS...');
+		// 6. Validar lienzo creado
+		console.log('🔍 Validando que todo cumpla con los estándares UBITS...');
 		await this.validateCanvas(canvasPath);
 		console.log('   ✅ Validación completada\n');
 
