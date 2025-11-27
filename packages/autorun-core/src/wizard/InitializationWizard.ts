@@ -44,21 +44,109 @@ export class InitializationWizard {
 
 	/**
 	 * Inicia el wizard de inicialización
+	 * Un solo paso interactivo que pregunta todo y luego ejecuta automáticamente
 	 */
 	async start(options?: { autoSelect?: ProjectType }): Promise<WizardResult> {
 		console.log('🚀 ¡Hola! Soy tu asistente de Autorun.\n');
 		console.log('Voy a guiarte para configurar tu proyecto.\n');
 
-		// 1. Determinar tipo de proyecto
-		const projectType = options?.autoSelect || await this.askProjectType();
+		// Un solo paso: preguntar todo
+		const answers = await this.askAllQuestions();
 
-		if (projectType === 'ubits') {
-			console.log('✅ Perfecto, voy a configurar tu proyecto UBITS ahora.\n');
-			return await this.setupUBITS();
+		if (answers.projectType === 'ubits') {
+			console.log('\n✅ Perfecto, voy a configurar tu proyecto UBITS ahora.\n');
+			return await this.setupUBITSFromAnswers(answers);
 		} else {
-			console.log('✅ Perfecto, voy a configurar un proyecto independiente.\n');
+			console.log('\n✅ Perfecto, voy a configurar un proyecto independiente.\n');
 			return await this.setupIndependent();
 		}
+	}
+
+	/**
+	 * Pregunta todas las opciones en un solo paso
+	 */
+	private async askAllQuestions(): Promise<{
+		projectType: ProjectType;
+		template?: 'administrador' | 'colaborador';
+		module?: string;
+		product?: string;
+	}> {
+		// 1. Tipo de proyecto
+		const projectType = await this.prompt.select(
+			'📋 ¿En qué tipo de proyecto quieres trabajar?',
+			[
+				{
+					value: 'ubits',
+					label: 'UBITS (Configuración predefinida con add-ons optimizados)',
+				},
+				{
+					value: 'independent',
+					label: 'Proyecto Independiente (Configuración personalizada)',
+				},
+			],
+			'ubits',
+		) as ProjectType;
+
+		if (projectType === 'independent') {
+			return { projectType };
+		}
+
+		// 2. Template (solo si es UBITS)
+		const template = await this.prompt.select(
+			'\n📋 ¿En qué template quieres trabajar?',
+			[
+				{
+					value: 'administrador',
+					label: 'Administrador (Todos los módulos disponibles)',
+				},
+				{
+					value: 'colaborador',
+					label: 'Colaborador (Módulos limitados)',
+				},
+			],
+			'administrador',
+		) as 'administrador' | 'colaborador';
+
+		// 3. Producto (recopilar todos los productos de todos los módulos del template)
+		const templateConfig = UBITS_PRESET.templates[template];
+		const allProducts: Array<{ value: string; label: string; module: string }> = [];
+
+		// Recopilar todos los productos de todos los módulos
+		for (const moduleId of templateConfig.modules) {
+			const moduleConfig = UBITS_MODULES_CONFIG[moduleId];
+			if (moduleConfig && moduleConfig.products.length > 0) {
+				for (const product of moduleConfig.products) {
+					allProducts.push({
+						value: `${moduleId}:${product.id}`,
+						label: `${moduleConfig.name} - ${product.name}`,
+						module: moduleId,
+					});
+				}
+			} else if (moduleConfig) {
+				// Módulo sin productos (módulo solo)
+				allProducts.push({
+					value: `${moduleId}:`,
+					label: `${moduleConfig.name} (módulo solo)`,
+					module: moduleId,
+				});
+			}
+		}
+
+		const selectedProduct = await this.prompt.select(
+			'\n📦 ¿En qué producto quieres trabajar?',
+			allProducts,
+			allProducts[0]?.value,
+		);
+
+		// Parsear la selección
+		const [module, product] = selectedProduct.split(':');
+
+		return {
+			projectType,
+			template,
+			module,
+			product: product || undefined,
+		};
 	}
 
 	/**
@@ -86,37 +174,26 @@ export class InitializationWizard {
 	}
 
 	/**
-	 * Configuración para UBITS
-	 * PRIMERO pregunta todo, LUEGO ejecuta los pasos automáticos
+	 * Configuración para UBITS desde las respuestas del usuario
+	 * Ejecuta todo automáticamente después de recibir las respuestas
 	 */
-	private async setupUBITS(): Promise<UBITSResult> {
-		console.log('🎯 Perfecto, voy a configurar tu proyecto UBITS ahora.\n');
+	private async setupUBITSFromAnswers(answers: {
+		template: 'administrador' | 'colaborador';
+		module: string;
+		product?: string;
+	}): Promise<UBITSResult> {
+		const { template, module, product } = answers;
 
-		// PRIMERO: Preguntar todas las selecciones del usuario
-		// 1. Seleccionar template (SIEMPRE preguntar)
-		console.log('📋 Paso 1: Selección de template...');
-		const template = await this.selectTemplate();
-		console.log(`   ✅ Template: ${template}\n`);
+		// Ejecutar todos los pasos automáticos
+		console.log('🚀 Configurando todo automáticamente...\n');
 
-		// 2. Seleccionar módulo y producto (SIEMPRE preguntar)
-		console.log('📦 Paso 2: Selección de módulo y producto...');
-		const { module, product } = await this.selectModule(template);
-		console.log(`   ✅ Módulo: ${module}${product ? `, Producto: ${product}` : ''}\n`);
-
-		// 3. Mostrar add-ons que se van a instalar y permitir modificar
-		console.log('\n📦 Paso 3: Revisión de add-ons...');
-		const { finalAddons, additionalAddons } = await this.reviewAndSelectAddons();
-
-		// AHORA: Ejecutar los pasos automáticos
-		console.log('\n🚀 Ahora voy a configurar todo automáticamente...\n');
-
-		// 4. Conectar con Storybook
-		console.log('🔗 Paso 4: Estoy conectando con Storybook UBITS...');
+		// 1. Conectar con Storybook
+		console.log('🔗 Conectando con Storybook UBITS...');
 		await this.connectStorybook();
-		console.log('   ✅ Conectado a Storybook\n');
+		console.log('   ✅ Conectado\n');
 
-		// 5. Cargar componentes desde Storybook
-		console.log('🧩 Paso 5: Estoy cargando componentes desde Storybook...');
+		// 2. Cargar componentes desde Storybook
+		console.log('🧩 Cargando componentes desde Storybook...');
 		await this.loadComponentsFromStorybook();
 		console.log('   ✅ Componentes cargados\n');
 
@@ -140,7 +217,8 @@ export class InitializationWizard {
 		await this.validateCanvas(canvasPath);
 		console.log('   ✅ Validación completada\n');
 
-		console.log('🎉 ¡Excelente! Tu proyecto UBITS está listo.\n');
+		// Mostrar resumen final
+		console.log('\n🎉 ¡Excelente! Tu proyecto UBITS está listo.\n');
 		console.log('📋 Resumen de tu configuración:');
 		console.log(`   📁 Lienzo: ${canvasPath}`);
 		console.log(`   🎯 Template: ${template}`);
