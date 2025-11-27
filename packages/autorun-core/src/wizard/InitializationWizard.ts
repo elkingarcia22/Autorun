@@ -486,6 +486,11 @@ export class InitializationWizard {
 		
 		// Actualizar el template principal con enlace al otro
 		const mainContent = await fs.readFile(canvasPath, 'utf-8');
+		
+		// Contar cuántos reemplazos se harán
+		const mainMatches = mainContent.match(new RegExp(otherTemplateName, 'gi'));
+		const mainMatchesCount = mainMatches ? mainMatches.length : 0;
+		
 		const updatedMainContent = mainContent
 			// Reemplazar en HTML: href="template-xxx.html"
 			.replace(new RegExp(`href=["']${otherTemplateName}["']`, 'gi'), `href="${otherTemplateFileName}"`)
@@ -495,10 +500,16 @@ export class InitializationWizard {
 			.replace(new RegExp(`url:\\s*["']${otherTemplateName}["']`, 'gi'), `url: "${otherTemplateFileName}"`)
 			// Reemplazar cualquier referencia en strings: 'template-xxx.html' o "template-xxx.html"
 			.replace(new RegExp(`["']${otherTemplateName}["']`, 'gi'), `"${otherTemplateFileName}"`);
+		
 		await fs.writeFile(canvasPath, updatedMainContent, 'utf-8');
 		
 		// Actualizar el otro template con enlace al principal
 		const otherContent = await fs.readFile(otherCanvasPath, 'utf-8');
+		
+		// Contar cuántos reemplazos se harán
+		const otherMatches = otherContent.match(new RegExp(mainTemplateName, 'gi'));
+		const otherMatchesCount = otherMatches ? otherMatches.length : 0;
+		
 		const updatedOtherContent = otherContent
 			// Reemplazar en HTML: href="template-xxx.html"
 			.replace(new RegExp(`href=["']${mainTemplateName}["']`, 'gi'), `href="${mainTemplateFileName}"`)
@@ -508,8 +519,9 @@ export class InitializationWizard {
 			.replace(new RegExp(`url:\\s*["']${mainTemplateName}["']`, 'gi'), `url: "${mainTemplateFileName}"`)
 			// Reemplazar cualquier referencia en strings: 'template-xxx.html' o "template-xxx.html"
 			.replace(new RegExp(`["']${mainTemplateName}["']`, 'gi'), `"${mainTemplateFileName}"`);
+		
 		await fs.writeFile(otherCanvasPath, updatedOtherContent, 'utf-8');
-		console.log('   ✅ Enlaces entre templates actualizados\n');
+		console.log(`   ✅ Enlaces entre templates actualizados (${mainMatchesCount} en principal, ${otherMatchesCount} en secundario)\n`);
 
 		// 6. Validar lienzo creado
 		console.log('🔍 Validando que todo cumpla con los estándares UBITS...');
