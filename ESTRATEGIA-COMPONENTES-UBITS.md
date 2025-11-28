@@ -52,13 +52,19 @@ Desktop/
 
 ### **3. Rutas en Templates Generados**
 
-Los templates generados deben usar rutas absolutas `file://`:
-
+**PREFERIDO: Rutas relativas (portable):**
 ```html
-<!-- ✅ CORRECTO: Ruta absoluta a UBITS local -->
+<!-- ✅ CORRECTO: Ruta relativa desde prototypes/ hacia vendor/ubits/packages/ -->
+<link rel="stylesheet" href="../vendor/ubits/packages/tokens/dist/tokens.css" />
+<link rel="stylesheet" href="../vendor/ubits/packages/components/sidebar/src/styles/sidebar.css" />
+<script src="../vendor/ubits/packages/templates/components-loader.js"></script>
+<script src="../vendor/ubits/packages/components/data-table/dist/data-table.umd.js"></script>
+```
+
+**LEGACY: Rutas absolutas file:// (fallback si no existe vendor/ubits/):**
+```html
+<!-- ⚠️ LEGACY: Solo si no existe vendor/ubits/ -->
 <link rel="stylesheet" href="file:///Users/elkinmac/Desktop/UBITS/packages/tokens/dist/tokens.css" />
-<link rel="stylesheet" href="file:///Users/elkinmac/Desktop/UBITS/packages/components/sidebar/src/styles/sidebar.css" />
-<script src="file:///Users/elkinmac/Desktop/UBITS/packages/templates/components-loader.js"></script>
 ```
 
 ### **4. NO Duplicar Componentes**
@@ -106,10 +112,13 @@ Los templates generados solo deben:
 3. Agregar contenido específico del proyecto
 ```
 
-### **Regla 3: Usar Rutas Absolutas file://**
+### **Regla 3: Usar Rutas Relativas (Preferido) o Absolutas (Legacy)**
 
 ```markdown
-Todos los assets (CSS, JS, imágenes) deben usar rutas absolutas file://
+PREFERIDO: Rutas relativas desde prototypes/ hacia vendor/ubits/packages/
+Ejemplo: ../vendor/ubits/packages/tokens/dist/tokens.css
+
+LEGACY: Rutas absolutas file:// solo si no existe vendor/ubits/
 Ejemplo: file:///Users/elkinmac/Desktop/UBITS/packages/tokens/dist/tokens.css
 ```
 
@@ -117,9 +126,10 @@ Ejemplo: file:///Users/elkinmac/Desktop/UBITS/packages/tokens/dist/tokens.css
 
 ```markdown
 Antes de generar un template, verificar que:
-1. Existe Desktop/UBITS/packages/
+1. Existe vendor/ubits/packages/ (preferido) o Desktop/UBITS/packages/ (legacy)
 2. Existen los templates base (template-admin.html, template-colaborador.html)
 3. Existen todos los componentes necesarios
+4. components-loader.js incluye createTabs y createDataTable está disponible
 ```
 
 ---

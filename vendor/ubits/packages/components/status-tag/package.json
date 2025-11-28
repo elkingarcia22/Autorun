@@ -1,0 +1,16 @@
+{
+  "name": "@ubits/status-tag",
+  "version": "1.0.0",
+  "description": "UBITS Status Tag Component - Componente de tag de estado con iconos y colores",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite build --watch"
+  },
+  "keywords": ["ubits", "status-tag", "tag", "component", "ui"],
+  "author": "UBITS",
+  "license": "MIT"
+}
+

@@ -1,0 +1,187 @@
+/* ========================================
+   UBITS EMPTY STATE COMPONENT
+   Componente de estado vacío
+   Usando tokens UBITS exclusivamente
+   ======================================== */
+
+/* ========================================
+   BASE EMPTY STATE STYLES
+   ======================================== */
+
+.ubits-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: var(--ubits-spacing-2xl) var(--ubits-spacing-lg);
+    gap: var(--ubits-spacing-lg);
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+/* ========================================
+   EMPTY STATE VARIANTS
+   ======================================== */
+
+/* Default variant - espaciado completo */
+.ubits-empty-state--default {
+    padding: var(--ubits-spacing-2xl) var(--ubits-spacing-lg);
+    gap: var(--ubits-spacing-lg);
+}
+
+/* ========================================
+   EMPTY STATE IMAGE
+   ======================================== */
+
+.ubits-empty-state__image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: var(--ubits-spacing-xs);
+    max-width: 100%;
+}
+
+.ubits-empty-state__image img {
+    max-width: 100%;
+    height: auto;
+    max-height: var(--ubits-spacing-64);
+    object-fit: contain;
+}
+
+/* ========================================
+   EMPTY STATE ICON
+   ======================================== */
+
+.ubits-empty-state__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--ubits-spacing-10);
+    height: var(--ubits-spacing-10);
+    padding: var(--ubits-spacing-sm);
+    background: var(--modifiers-normal-color-light-bg-2);
+    border-radius: var(--ubits-border-radius-md);
+    margin-bottom: var(--ubits-spacing-xs);
+    color: var(--modifiers-normal-color-light-fg-1-high);
+    flex-shrink: 0;
+    box-sizing: border-box;
+}
+
+.ubits-empty-state__icon i {
+    font-size: var(--modifiers-normal-body-md-regular-fontsize);
+    line-height: 1;
+}
+
+/* ========================================
+   EMPTY STATE CONTENT
+   ======================================== */
+
+.ubits-empty-state__content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--ubits-spacing-sm);
+    max-width: calc(var(--ubits-spacing-12) * 10);
+    width: 100%;
+}
+
+/* ========================================
+   EMPTY STATE TITLE
+   ======================================== */
+
+.ubits-empty-state__title {
+    font-family: var(--font-family-noto-sans-font-family);
+    font-size: var(--modifiers-normal-body-md-regular-fontsize);
+    font-weight: var(--weight-semibold);
+    line-height: var(--modifiers-normal-body-md-regular-lineheight);
+    color: var(--modifiers-normal-color-light-fg-1-high);
+    margin: var(--ubits-spacing-none);
+    padding: var(--ubits-spacing-none);
+    text-align: center;
+    width: 100%;
+}
+
+/* ========================================
+   EMPTY STATE DESCRIPTION
+   ======================================== */
+
+.ubits-empty-state__description {
+    font-family: var(--font-family-noto-sans-font-family);
+    font-size: var(--modifiers-normal-body-sm-regular-fontsize);
+    font-weight: var(--weight-regular);
+    line-height: var(--modifiers-normal-body-sm-regular-lineheight);
+    color: var(--modifiers-normal-color-light-fg-1-medium);
+    margin: var(--ubits-spacing-none);
+    padding: var(--ubits-spacing-none);
+    text-align: center;
+    width: 100%;
+}
+
+/* ========================================
+   EMPTY STATE ACTIONS
+   ======================================== */
+
+.ubits-empty-state__actions {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: var(--ubits-spacing-md);
+    flex-wrap: wrap;
+    margin-top: var(--ubits-spacing-xs);
+}
+
+/* ========================================
+   EMPTY STATE RESPONSIVE
+   ======================================== */
+
+/* ========================================
+   DARK MODE
+   ======================================== */
+
+[data-theme="dark"] {
+    --modifiers-normal-color-light-bg-2: var(--modifiers-normal-color-dark-bg-2);
+    --modifiers-normal-color-light-fg-1-high: var(--modifiers-normal-color-dark-fg-1-high);
+    --modifiers-normal-color-light-fg-1-medium: var(--modifiers-normal-color-dark-fg-1-medium);
+}
+
+/* ========================================
+   EMPTY STATE RESPONSIVE
+   ======================================== */
+
+@media (max-width: 768px) {
+    .ubits-empty-state {
+        padding: var(--ubits-spacing-xl) var(--ubits-spacing-md);
+    }
+    
+    .ubits-empty-state__icon {
+        width: var(--ubits-spacing-10);
+        height: var(--ubits-spacing-10);
+    }
+    
+    .ubits-empty-state__icon i {
+        font-size: var(--modifiers-normal-body-md-regular-fontsize);
+    }
+    
+    .ubits-empty-state__title {
+        font-size: var(--modifiers-normal-body-md-regular-fontsize);
+        line-height: var(--modifiers-normal-body-md-regular-lineheight);
+    }
+    
+    .ubits-empty-state__description {
+        font-size: var(--modifiers-normal-body-sm-regular-fontsize);
+        line-height: var(--modifiers-normal-body-sm-regular-lineheight);
+    }
+    
+    .ubits-empty-state__actions {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .ubits-empty-state__actions .ubits-button {
+        width: 100%;
+    }
+}
+

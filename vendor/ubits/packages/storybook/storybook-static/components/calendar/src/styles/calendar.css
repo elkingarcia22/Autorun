@@ -1,0 +1,352 @@
+/* ========================================
+   UBITS CALENDAR COMPONENT
+   Componente Calendar con selección única y por rango
+   Usando tokens UBITS exclusivamente
+   ======================================== */
+
+/* ========================================
+   CALENDAR CONTAINER
+   ======================================== */
+
+.ubits-calendar {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 352px; /* Aumentado de 320px a 352px para dar espacio al header (320px + 32px extra) */
+    background: var(--modifiers-normal-color-light-bg-1) !important;
+    border: 1px solid var(--modifiers-normal-color-light-border-1) !important;
+    border-radius: calc(var(--p-spacing-mode-1-space-2) * 1px);
+    /* Elevation default UBITS: 0px 1px 2px 0px rgba(0, 0, 0, 0.12) */
+    box-shadow: calc(var(--modifiers-normal-elevation-default-0-x) * 1px) calc(var(--modifiers-normal-elevation-default-0-y) * 1px) calc(var(--modifiers-normal-elevation-default-0-blur) * 1px) calc(var(--modifiers-normal-elevation-default-0-spread) * 1px) var(--modifiers-normal-elevation-default-0-color);
+    padding: calc(var(--p-spacing-mode-1-space-0) * 1px); /* Sin padding para que el header use todo el ancho */
+    font-family: var(--font-family-noto-sans-font-family);
+    box-sizing: border-box;
+    overflow: visible; /* Permite que los dropdowns se muestren fuera del contenedor */
+    position: relative; /* Contexto de posicionamiento para dropdowns */
+    min-width: 352px; /* Asegurar ancho mínimo para que el header tenga espacio */
+}
+
+/* Agregar padding solo a los elementos internos necesarios */
+.ubits-calendar__weekdays,
+.ubits-calendar__days {
+    padding-left: calc(var(--p-spacing-mode-1-space-4) * 1px);
+    padding-right: calc(var(--p-spacing-mode-1-space-4) * 1px);
+}
+
+.ubits-calendar__days {
+    padding-bottom: calc(var(--p-spacing-mode-1-space-4) * 1px);
+}
+
+/* ========================================
+   CALENDAR HEADER
+   ======================================== */
+
+.ubits-calendar__header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start; /* Usar flex-start para que gap funcione correctamente */
+    margin-bottom: calc(var(--p-spacing-mode-1-space-4) * 1px);
+    padding: calc(var(--p-spacing-mode-1-space-4) * 1px) calc(var(--p-spacing-mode-1-space-4) * 1px) calc(var(--p-spacing-mode-1-space-0) * 1px) calc(var(--p-spacing-mode-1-space-4) * 1px);
+    width: 100%; /* Usar el ancho completo del contenedor que ahora es más ancho */
+    min-width: 100%; /* Asegurar que use todo el ancho disponible */
+    box-sizing: border-box;
+    overflow: visible;
+    position: relative;
+    gap: calc(var(--p-spacing-mode-1-space-4) * 1px); /* Espacio entre elementos - esto funciona mejor con flex-start */
+}
+
+.ubits-calendar__nav-button {
+    flex-shrink: 0;
+    flex-grow: 0;
+    width: 32px;
+    height: 32px;
+    margin: calc(var(--p-spacing-mode-1-space-0) * 1px);
+    padding: calc(var(--p-spacing-mode-1-space-0) * 1px);
+}
+
+.ubits-calendar__nav-button--prev {
+    margin-left: 0; /* El padding del header ya proporciona espacio desde el borde */
+    margin-right: 0; /* El gap se encarga del espaciado hacia los inputs */
+}
+
+.ubits-calendar__nav-button--next {
+    margin-right: 0; /* El padding del header ya proporciona espacio desde el borde */
+    margin-left: 0; /* El gap se encarga del espaciado desde los inputs */
+}
+
+.ubits-calendar__month-year {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: calc(var(--p-spacing-mode-1-space-2) * 1px);
+    flex: 1;
+    justify-content: center;
+    min-width: 0;
+    overflow: visible;
+    margin: calc(var(--p-spacing-mode-1-space-0) * 1px);
+    padding: calc(var(--p-spacing-mode-1-space-0) * 1px);
+}
+
+.ubits-calendar__month-input,
+.ubits-calendar__year-input {
+    /* Los inputs usan las clases UBITS Input, solo ajustamos tamaño */
+    font-size: var(--modifiers-normal-body-md-regular-fontsize);
+    font-weight: var(--modifiers-normal-body-md-semibold-fontweight, 600);
+    cursor: pointer;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Asegurar espacio para el icono en inputs sm */
+.ubits-calendar__month-year .ubits-input-container .ubits-input--sm {
+    padding-right: 36px !important; /* Espacio para el icono chevron-down */
+}
+
+/* Asegurar que el contenedor del input tenga el ancho correcto */
+.ubits-calendar__month-year .ubits-input-container {
+    width: 100%;
+    box-sizing: border-box;
+    position: relative;
+    flex: 1;
+    min-width: 120px; /* Aumentar min-width para mes */
+    overflow: visible; /* Permite que los dropdowns se muestren */
+}
+
+/* Contenedor específico para el año */
+.ubits-calendar__month-year .ubits-input-container:last-of-type {
+    min-width: 90px; /* Min-width para año */
+}
+
+/* Dropdowns de mes y año - deben estar dentro del contenedor */
+.ubits-calendar__month-dropdown,
+.ubits-calendar__year-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    margin-top: calc(var(--p-spacing-mode-1-space-1) * 1px);
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+/* ========================================
+   WEEKDAYS
+   ======================================== */
+
+.ubits-calendar__weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: calc(var(--p-spacing-mode-1-space-1) * 1px);
+    margin-bottom: calc(var(--p-spacing-mode-1-space-2) * 1px);
+}
+
+.ubits-calendar__weekday {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 32px;
+    font-family: var(--font-family-noto-sans-font-family);
+    font-size: var(--modifiers-normal-body-sm-regular-fontsize);
+    font-weight: var(--modifiers-normal-body-md-semibold-fontweight, 600);
+    color: var(--modifiers-normal-color-light-fg-1-medium) !important;
+    text-align: center;
+}
+
+/* ========================================
+   DAYS
+   ======================================== */
+
+.ubits-calendar__days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: calc(var(--p-spacing-mode-1-space-1) * 1px);
+}
+
+.ubits-calendar__day {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 36px;
+    padding: 0;
+    border: none;
+    border-radius: calc(var(--p-spacing-mode-1-space-2) * 1px);
+    background: transparent;
+    color: var(--modifiers-normal-color-light-fg-1-high) !important;
+    font-family: var(--font-family-noto-sans-font-family);
+    font-size: var(--modifiers-normal-body-md-regular-fontsize);
+    font-weight: var(--modifiers-normal-body-md-regular-fontweight, 400);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.ubits-calendar__day:hover:not(.ubits-calendar__day--disabled):not(.ubits-calendar__day--selected) {
+    background: var(--modifiers-normal-color-light-bg-2) !important;
+    color: var(--modifiers-normal-color-light-fg-1-high) !important;
+}
+
+.ubits-calendar__day--empty {
+    cursor: default;
+    pointer-events: none;
+}
+
+.ubits-calendar__day--today {
+    font-weight: var(--modifiers-normal-body-md-semibold-fontweight, 600);
+}
+
+.ubits-calendar__day--today:not(.ubits-calendar__day--selected):not(.ubits-calendar__day--in-range) {
+    border: 1px solid var(--modifiers-normal-button-color-light-brand-primary-bg-default) !important;
+}
+
+/* ========================================
+   SELECTED DAY (SINGLE MODE)
+   ======================================== */
+
+.ubits-calendar__day--selected {
+    background: var(--modifiers-normal-button-color-light-brand-primary-bg-default) !important;
+    color: var(--modifiers-normal-color-light-fg-bold) !important;
+    font-weight: var(--modifiers-normal-body-md-semibold-fontweight, 600);
+}
+
+.ubits-calendar__day--selected:hover {
+    background: var(--modifiers-normal-button-color-light-brand-primary-bg-hover) !important;
+    opacity: 1;
+}
+
+/* ========================================
+   RANGE MODE
+   ======================================== */
+
+.ubits-calendar--range .ubits-calendar__day--range-start,
+.ubits-calendar--range .ubits-calendar__day--range-end {
+    background: var(--modifiers-normal-button-color-light-brand-primary-bg-default) !important;
+    color: var(--modifiers-normal-color-light-fg-bold) !important;
+    font-weight: var(--modifiers-normal-body-md-semibold-fontweight, 600);
+}
+
+.ubits-calendar--range .ubits-calendar__day--in-range {
+    position: relative;
+    background-color: transparent !important;
+    color: var(--modifiers-normal-color-light-accent-brand) !important;
+}
+
+.ubits-calendar--range .ubits-calendar__day--in-range::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--modifiers-normal-color-light-bg-active) !important;
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.ubits-calendar--range .ubits-calendar__day--in-range:hover {
+    background-color: transparent !important;
+    color: var(--modifiers-normal-color-light-accent-brand) !important;
+}
+
+.ubits-calendar--range .ubits-calendar__day--in-range:hover::before {
+    background-color: var(--modifiers-normal-color-light-bg-active) !important;
+}
+
+/* ========================================
+   DISABLED DAYS
+   ======================================== */
+
+.ubits-calendar__day--disabled {
+    color: var(--modifiers-normal-color-light-fg-disabled) !important;
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.ubits-calendar__day--disabled:hover {
+    background: transparent;
+    color: var(--modifiers-normal-color-light-fg-disabled) !important;
+}
+
+/* ========================================
+   DROPDOWN SCROLLBAR
+   ======================================== */
+
+/* Mostrar scrollbar UBITS cuando hay hover en el dropdown */
+.ubits-calendar__month-dropdown:hover .ubits-scrollbar__bar,
+.ubits-calendar__year-dropdown:hover .ubits-scrollbar__bar,
+.ubits-calendar__month-dropdown:hover .ubits-scrollbar--vertical .ubits-scrollbar__bar,
+.ubits-calendar__year-dropdown:hover .ubits-scrollbar--vertical .ubits-scrollbar__bar {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+}
+
+/* Mostrar scrollbar cuando se hace hover en la lista */
+.ubits-calendar__month-dropdown [id*="calendar-month-list"]:hover ~ [id*="calendar-month-scrollbar"] .ubits-scrollbar__bar,
+.ubits-calendar__year-dropdown [id*="calendar-year-list"]:hover ~ [id*="calendar-year-scrollbar"] .ubits-scrollbar__bar {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+}
+
+/* Asegurar que el scrollbar sea visible cuando hay scroll */
+.ubits-calendar__month-dropdown .ubits-scrollbar--vertical,
+.ubits-calendar__year-dropdown .ubits-scrollbar--vertical {
+    width: 8px;
+    min-width: 8px;
+    height: 100%;
+    max-height: 200px; /* Limitar altura al max-height de la lista */
+    overflow: hidden; /* Evitar que el scrollbar se salga */
+}
+
+/* Contenedor del scrollbar - debe tener la misma altura que la lista visible */
+.ubits-calendar__month-dropdown > div > div[id*="calendar-scrollbar"],
+.ubits-calendar__year-dropdown > div > div[id*="calendar-scrollbar"] {
+    max-height: 200px; /* Mismo max-height que la lista */
+    height: 100%;
+    overflow: hidden;
+    pointer-events: none; /* Permitir que el scrollbar maneje los eventos */
+}
+
+.ubits-calendar__month-dropdown > div > div[id*="calendar-scrollbar"] .ubits-scrollbar--vertical,
+.ubits-calendar__year-dropdown > div > div[id*="calendar-scrollbar"] .ubits-scrollbar--vertical {
+    pointer-events: auto; /* El scrollbar sí debe recibir eventos */
+}
+
+/* Mostrar scrollbar con opacidad base cuando el dropdown está abierto y hay scroll */
+.ubits-calendar__month-dropdown[style*="display: block"] .ubits-scrollbar__bar,
+.ubits-calendar__year-dropdown[style*="display: block"] .ubits-scrollbar__bar {
+    opacity: 0.6 !important;
+    pointer-events: auto !important;
+}
+
+.ubits-calendar__month-dropdown[style*="display: block"]:hover .ubits-scrollbar__bar,
+.ubits-calendar__year-dropdown[style*="display: block"]:hover .ubits-scrollbar__bar,
+.ubits-calendar__month-dropdown[style*="display: block"] [id*="calendar-month-list"]:hover ~ [id*="calendar-month-scrollbar"] .ubits-scrollbar__bar,
+.ubits-calendar__year-dropdown[style*="display: block"] [id*="calendar-year-list"]:hover ~ [id*="calendar-year-scrollbar"] .ubits-scrollbar__bar {
+    opacity: 1 !important;
+}
+
+
+
+/* ========================================
+   DARK MODE
+   ======================================== */
+
+[data-theme="dark"] {
+  --modifiers-normal-color-light-bg-1: var(--modifiers-normal-color-dark-bg-1);
+  --modifiers-normal-color-light-border-1: var(--modifiers-normal-color-dark-border-1);
+  --modifiers-normal-color-light-fg-1-medium: var(--modifiers-normal-color-dark-fg-1-medium);
+  --modifiers-normal-color-light-fg-1-high: var(--modifiers-normal-color-dark-fg-1-high);
+  --modifiers-normal-color-light-bg-2: var(--modifiers-normal-color-dark-bg-2);
+  --modifiers-normal-color-light-fg-disabled: var(--modifiers-normal-color-dark-fg-disabled);
+  --modifiers-normal-color-light-fg-bold: var(--modifiers-normal-color-dark-fg-bold);
+  /* Usar tokens de botón para consistencia con botones primary */
+  --modifiers-normal-button-color-light-brand-primary-bg-default: var(--modifiers-normal-button-color-dark-brand-primary-bg-default);
+  --modifiers-normal-button-color-light-brand-primary-bg-hover: var(--modifiers-normal-button-color-dark-brand-primary-bg-hover);
+  --modifiers-normal-button-color-light-brand-primary-bg-pressed: var(--modifiers-normal-button-color-dark-brand-primary-bg-pressed);
+  /* Tokens para estado active (días in-range) */
+  --modifiers-normal-color-light-accent-brand: var(--modifiers-normal-color-dark-accent-brand);
+  --modifiers-normal-color-light-bg-active: var(--modifiers-normal-color-dark-bg-active);
+}

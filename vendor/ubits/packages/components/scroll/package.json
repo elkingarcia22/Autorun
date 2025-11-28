@@ -1,0 +1,16 @@
+{
+  "name": "@ubits/scroll",
+  "version": "1.0.0",
+  "description": "UBITS Scrollbar Component - Componente scrollbar personalizado UBITS",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite build --watch"
+  },
+  "keywords": ["ubits", "scrollbar", "scroll", "component", "ui"],
+  "author": "UBITS",
+  "license": "MIT"
+}
+

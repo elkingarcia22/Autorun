@@ -1,0 +1,615 @@
+/* ========================================
+   UBITS STEPPER COMPONENT
+   Componente stepper personalizado UBITS
+   Migrado a tokens Figma
+   ======================================== */
+
+/* ========================================
+   BASE STEPPER STYLES
+   ======================================== */
+
+.ubits-stepper {
+  display: flex;
+  width: 100%;
+  box-sizing: border-box;
+  font-family: var(--font-family-noto-sans-font-family);
+}
+
+/* ========================================
+   HORIZONTAL STEPPER
+   ======================================== */
+
+.ubits-stepper--horizontal {
+  flex-direction: row;
+  align-items: flex-start;
+}
+
+.ubits-stepper--horizontal .ubits-stepper__step {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  position: relative;
+  min-height: 40px;
+  gap: var(--p-spacing-mode-1-sm, 8px);
+}
+
+/* Cuando no hay contenido de texto, reducir el gap para acercar la línea al círculo */
+.ubits-stepper--horizontal .ubits-stepper__step-content--empty {
+  display: none;
+}
+
+.ubits-stepper--horizontal .ubits-stepper__step:has(.ubits-stepper__step-content--empty) {
+  gap: var(--p-spacing-mode-1-xs, 4px);
+}
+
+.ubits-stepper--horizontal .ubits-stepper__step-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex: 0 1 auto;
+  position: relative;
+  gap: var(--p-spacing-mode-1-sm, 8px);
+  min-width: 0;
+}
+
+.ubits-stepper--horizontal .ubits-stepper__step-content {
+  flex: 0 1 auto;
+  text-align: left;
+  position: relative;
+  min-width: 0;
+}
+
+.ubits-stepper--horizontal .ubits-stepper__connector {
+  flex: 1;
+  height: 2px;
+  min-width: 20px;
+  align-self: center;
+}
+
+/* ========================================
+   VERTICAL STEPPER
+   ======================================== */
+
+.ubits-stepper--vertical {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.ubits-stepper--vertical .ubits-stepper__step {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  width: 100%;
+  position: relative;
+  margin-bottom: var(--p-spacing-mode-1-md, 16px);
+}
+
+.ubits-stepper--vertical .ubits-stepper__step-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.ubits-stepper--vertical .ubits-stepper__step-content {
+  margin-left: var(--p-spacing-mode-1-md, 16px);
+  flex: 1;
+}
+
+.ubits-stepper--vertical .ubits-stepper__connector {
+  position: absolute;
+  left: 20px;
+  top: 40px;
+  bottom: -16px;
+  width: 2px;
+  z-index: 0;
+}
+
+.ubits-stepper--vertical .ubits-stepper__step--last .ubits-stepper__connector {
+  display: none;
+}
+
+/* ========================================
+   STEP INDICATOR (Círculo con número o checkmark)
+   ======================================== */
+
+.ubits-stepper__indicator {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--ubits-border-radius-full, 50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+  align-self: center;
+}
+
+/* Estado: Default */
+.ubits-stepper__indicator--default {
+  background-color: var(--modifiers-normal-color-light-bg-1);
+  border: 2px solid var(--modifiers-normal-color-light-border-1);
+  color: var(--modifiers-normal-color-light-fg-disabled);
+}
+
+.ubits-stepper__indicator--default .ubits-stepper__number {
+  color: var(--modifiers-normal-color-light-fg-disabled);
+  font-size: var(--modifiers-normal-body-md-regular-fontsize);
+  font-weight: var(--weight-semibold, 600);
+  line-height: 1;
+}
+
+/* Estado: Active - Estilo como botón activo */
+.ubits-stepper__indicator--active {
+  position: relative;
+  background-color: var(--modifiers-normal-color-light-bg-1);
+  border: 2px solid transparent;
+  color: var(--modifiers-normal-color-light-accent-brand);
+}
+
+.ubits-stepper__indicator--active::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--modifiers-normal-color-light-bg-active);
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.ubits-stepper__indicator--active .ubits-stepper__number {
+  position: relative;
+  z-index: 1;
+  color: var(--modifiers-normal-color-light-accent-brand);
+  font-size: var(--modifiers-normal-body-md-regular-fontsize);
+  font-weight: var(--weight-semibold, 600) !important;
+  line-height: 1;
+}
+
+/* Estado: Completed - Estilo como status tag success */
+.ubits-stepper__indicator--completed {
+  background-color: var(--modifiers-normal-color-light-feedback-bg-success-subtle-default);
+  border: 2px solid var(--modifiers-normal-color-light-feedback-border-success);
+  color: var(--modifiers-normal-color-light-feedback-fg-success-subtle-default);
+}
+
+.ubits-stepper__indicator--completed .ubits-stepper__checkmark {
+  color: var(--modifiers-normal-color-light-feedback-fg-success-subtle-default);
+  stroke: currentColor;
+  stroke-width: 2;
+}
+
+/* Estado: Error - Estilo como status tag error */
+.ubits-stepper__indicator--error {
+  background-color: var(--modifiers-normal-color-light-feedback-bg-error-subtle-default);
+  border: 2px solid var(--modifiers-normal-color-light-feedback-border-error);
+  color: var(--modifiers-normal-color-light-feedback-fg-error-subtle-default);
+}
+
+.ubits-stepper__indicator--error .ubits-stepper__number {
+  color: var(--modifiers-normal-color-light-feedback-fg-error-subtle-default);
+  font-size: var(--modifiers-normal-body-md-regular-fontsize);
+  font-weight: var(--weight-semibold, 600) !important;
+  line-height: 1;
+}
+
+/* Estado: Warning - Estilo como status tag warning */
+.ubits-stepper__indicator--warning {
+  background-color: var(--modifiers-normal-color-light-feedback-bg-warning-subtle-default);
+  border: 2px solid var(--modifiers-normal-color-light-feedback-border-warning);
+  color: var(--modifiers-normal-color-light-feedback-fg-warning-subtle-default);
+}
+
+.ubits-stepper__indicator--warning .ubits-stepper__number {
+  color: var(--modifiers-normal-color-light-feedback-fg-warning-subtle-default);
+  font-size: var(--modifiers-normal-body-md-regular-fontsize);
+  font-weight: var(--weight-semibold, 600) !important;
+  line-height: 1;
+}
+
+/* Hover state */
+.ubits-stepper__step:hover .ubits-stepper__indicator--default {
+  border-color: var(--modifiers-normal-color-light-fg-1-medium);
+  color: var(--modifiers-normal-color-light-fg-1-medium);
+}
+
+.ubits-stepper__step:hover .ubits-stepper__indicator--default .ubits-stepper__number {
+  color: var(--modifiers-normal-color-light-fg-1-medium);
+}
+
+/* ========================================
+   STEP CONNECTOR (Línea entre pasos)
+   ======================================== */
+
+.ubits-stepper__connector {
+  background-color: var(--modifiers-normal-color-light-border-1);
+  transition: background-color 0.2s ease;
+  flex-shrink: 0;
+}
+
+.ubits-stepper__connector--active {
+  background-color: var(--modifiers-normal-color-light-accent-brand) !important;
+}
+
+/* ========================================
+   STEP CONTENT (Título y descripción)
+   ======================================== */
+
+.ubits-stepper__content-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  align-items: flex-start;
+}
+
+.ubits-stepper__title {
+  margin: 0;
+  font-family: var(--font-family-noto-sans-font-family);
+  font-size: var(--modifiers-normal-body-md-regular-fontsize);
+  font-weight: var(--weight-semibold, 600);
+  line-height: var(--modifiers-normal-body-md-regular-lineheight);
+  color: var(--modifiers-normal-color-light-fg-1-high);
+}
+
+.ubits-stepper__description {
+  margin: 0;
+  font-family: var(--font-family-noto-sans-font-family);
+  font-size: var(--modifiers-normal-body-sm-regular-fontsize);
+  font-weight: var(--weight-regular, 400);
+  line-height: var(--modifiers-normal-body-sm-regular-lineheight);
+  color: var(--modifiers-normal-color-light-fg-1-medium);
+}
+
+/* Estados del contenido según el estado del paso */
+.ubits-stepper__step--default .ubits-stepper__title {
+  color: var(--modifiers-normal-color-light-fg-1-high);
+}
+
+.ubits-stepper__step--default .ubits-stepper__description {
+  color: var(--modifiers-normal-color-light-fg-1-medium);
+}
+
+.ubits-stepper__step--active .ubits-stepper__title {
+  color: var(--modifiers-normal-color-light-accent-brand);
+}
+
+.ubits-stepper__step--active .ubits-stepper__description {
+  color: var(--modifiers-normal-color-light-fg-1-medium);
+}
+
+.ubits-stepper__step--completed .ubits-stepper__title {
+  color: var(--modifiers-normal-color-light-fg-1-high);
+}
+
+.ubits-stepper__step--completed .ubits-stepper__description {
+  color: var(--modifiers-normal-color-light-fg-1-medium);
+}
+
+.ubits-stepper__step--error .ubits-stepper__title {
+  color: var(--modifiers-normal-color-light-feedback-fg-error-subtle-default);
+}
+
+.ubits-stepper__step--error .ubits-stepper__description {
+  color: var(--modifiers-normal-color-light-fg-1-medium);
+}
+
+.ubits-stepper__step--warning .ubits-stepper__title {
+  color: var(--modifiers-normal-color-light-feedback-fg-warning-subtle-default);
+}
+
+.ubits-stepper__step--warning .ubits-stepper__description {
+  color: var(--modifiers-normal-color-light-fg-1-medium);
+}
+
+/* ========================================
+   STEPPER SIZES
+   ======================================== */
+
+/* Extra Small (xs) */
+.ubits-stepper--xs .ubits-stepper__indicator {
+  width: 24px;
+  height: 24px;
+}
+
+.ubits-stepper--xs .ubits-stepper__indicator .ubits-stepper__number {
+  font-size: var(--modifiers-normal-body-xs-regular-fontsize);
+  font-weight: var(--weight-semibold, 600) !important;
+}
+
+.ubits-stepper--xs .ubits-stepper__indicator .ubits-stepper__checkmark {
+  width: 12px;
+  height: 12px;
+}
+
+.ubits-stepper--xs .ubits-stepper__title {
+  font-size: var(--modifiers-normal-body-sm-regular-fontsize);
+  line-height: var(--modifiers-normal-body-sm-regular-lineheight);
+}
+
+.ubits-stepper--xs .ubits-stepper__description {
+  font-size: var(--modifiers-normal-body-xs-regular-fontsize);
+  line-height: var(--modifiers-normal-body-xs-regular-lineheight);
+}
+
+.ubits-stepper--xs.ubits-stepper--horizontal .ubits-stepper__connector {
+  /* El conector está en el flujo normal, no necesita posicionamiento absoluto */
+}
+
+.ubits-stepper--xs.ubits-stepper--vertical .ubits-stepper__connector {
+  left: 12px;
+  top: 24px;
+}
+
+/* Small (sm) */
+.ubits-stepper--sm .ubits-stepper__indicator {
+  width: 32px;
+  height: 32px;
+}
+
+.ubits-stepper--sm .ubits-stepper__indicator .ubits-stepper__number {
+  font-size: var(--modifiers-normal-body-sm-regular-fontsize);
+  font-weight: var(--weight-semibold, 600) !important;
+}
+
+.ubits-stepper--sm .ubits-stepper__indicator .ubits-stepper__checkmark {
+  width: 14px;
+  height: 14px;
+}
+
+.ubits-stepper--sm .ubits-stepper__title {
+  font-size: var(--modifiers-normal-body-sm-regular-fontsize);
+  line-height: var(--modifiers-normal-body-sm-regular-lineheight);
+}
+
+.ubits-stepper--sm .ubits-stepper__description {
+  font-size: var(--modifiers-normal-body-xs-regular-fontsize);
+  line-height: var(--modifiers-normal-body-xs-regular-lineheight);
+}
+
+.ubits-stepper--sm.ubits-stepper--horizontal .ubits-stepper__connector {
+  /* El conector está en el flujo normal, no necesita posicionamiento absoluto */
+}
+
+.ubits-stepper--sm.ubits-stepper--vertical .ubits-stepper__connector {
+  left: 16px;
+  top: 32px;
+}
+
+/* Medium (md) - Default */
+.ubits-stepper--md .ubits-stepper__indicator,
+.ubits-stepper:not([class*="--xs"]):not([class*="--sm"]):not([class*="--lg"]) .ubits-stepper__indicator {
+  width: 40px;
+  height: 40px;
+}
+
+.ubits-stepper--md .ubits-stepper__indicator .ubits-stepper__number,
+.ubits-stepper:not([class*="--xs"]):not([class*="--sm"]):not([class*="--lg"]) .ubits-stepper__indicator .ubits-stepper__number {
+  font-size: var(--modifiers-normal-body-md-regular-fontsize);
+  font-weight: var(--weight-semibold, 600) !important;
+}
+
+.ubits-stepper--md .ubits-stepper__indicator .ubits-stepper__checkmark,
+.ubits-stepper:not([class*="--xs"]):not([class*="--sm"]):not([class*="--lg"]) .ubits-stepper__indicator .ubits-stepper__checkmark {
+  width: 16px;
+  height: 16px;
+}
+
+.ubits-stepper--md .ubits-stepper__title,
+.ubits-stepper:not([class*="--xs"]):not([class*="--sm"]):not([class*="--lg"]) .ubits-stepper__title {
+  font-size: var(--modifiers-normal-body-md-regular-fontsize);
+  line-height: var(--modifiers-normal-body-md-regular-lineheight);
+}
+
+.ubits-stepper--md .ubits-stepper__description,
+.ubits-stepper:not([class*="--xs"]):not([class*="--sm"]):not([class*="--lg"]) .ubits-stepper__description {
+  font-size: var(--modifiers-normal-body-sm-regular-fontsize);
+  line-height: var(--modifiers-normal-body-sm-regular-lineheight);
+}
+
+.ubits-stepper--md.ubits-stepper--horizontal .ubits-stepper__connector,
+.ubits-stepper--horizontal:not([class*="--xs"]):not([class*="--sm"]):not([class*="--lg"]) .ubits-stepper__connector {
+  /* El conector está en el flujo normal, no necesita posicionamiento absoluto */
+}
+
+.ubits-stepper--md.ubits-stepper--vertical .ubits-stepper__connector,
+.ubits-stepper--vertical:not([class*="--xs"]):not([class*="--sm"]):not([class*="--lg"]) .ubits-stepper__connector {
+  left: 20px;
+  top: 40px;
+}
+
+/* Large (lg) */
+.ubits-stepper--lg .ubits-stepper__indicator {
+  width: 48px;
+  height: 48px;
+}
+
+.ubits-stepper--lg .ubits-stepper__indicator .ubits-stepper__number {
+  font-size: var(--modifiers-normal-body-lg-regular-fontsize);
+  font-weight: var(--weight-semibold, 600) !important;
+}
+
+.ubits-stepper--lg .ubits-stepper__indicator .ubits-stepper__checkmark {
+  width: 20px;
+  height: 20px;
+}
+
+.ubits-stepper--lg .ubits-stepper__title {
+  font-size: var(--modifiers-normal-body-lg-regular-fontsize);
+  line-height: var(--modifiers-normal-body-lg-regular-lineheight);
+}
+
+.ubits-stepper--lg .ubits-stepper__description {
+  font-size: var(--modifiers-normal-body-md-regular-fontsize);
+  line-height: var(--modifiers-normal-body-md-regular-lineheight);
+}
+
+.ubits-stepper--lg.ubits-stepper--horizontal .ubits-stepper__connector {
+  /* El conector está en el flujo normal, no necesita posicionamiento absoluto */
+}
+
+.ubits-stepper--lg.ubits-stepper--vertical .ubits-stepper__connector {
+  left: 24px;
+  top: 48px;
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+@media (max-width: 767px) {
+  .ubits-stepper--horizontal {
+    flex-direction: column;
+  }
+
+  .ubits-stepper--horizontal .ubits-stepper__step {
+    flex-direction: row;
+    align-items: flex-start;
+    margin-bottom: var(--p-spacing-mode-1-md, 16px);
+  }
+
+  .ubits-stepper--horizontal .ubits-stepper__step-wrapper {
+    flex-direction: row;
+    align-items: flex-start;
+    width: 100%;
+  }
+
+  .ubits-stepper--horizontal .ubits-stepper__step-content {
+    margin-top: 0;
+    margin-left: var(--p-spacing-mode-1-md, 16px);
+    text-align: left;
+  }
+
+  .ubits-stepper--horizontal .ubits-stepper__connector {
+    display: none;
+  }
+}
+
+/* ========================================
+   DARK MODE
+   ======================================== */
+
+[data-theme="dark"] .ubits-stepper__indicator--default {
+  background-color: var(--modifiers-normal-color-dark-bg-1);
+  border-color: var(--modifiers-normal-color-dark-border-1);
+  color: var(--modifiers-normal-color-dark-fg-disabled);
+}
+
+[data-theme="dark"] .ubits-stepper__indicator--default .ubits-stepper__number {
+  color: var(--modifiers-normal-color-dark-fg-disabled);
+}
+
+[data-theme="dark"] .ubits-stepper__indicator--active {
+  background-color: var(--modifiers-normal-color-dark-bg-1);
+  color: var(--modifiers-normal-color-dark-accent-brand);
+}
+
+[data-theme="dark"] .ubits-stepper__indicator--active::before {
+  background-color: var(--modifiers-normal-color-dark-bg-active);
+}
+
+[data-theme="dark"] .ubits-stepper__indicator--active .ubits-stepper__number {
+  color: var(--modifiers-normal-color-dark-accent-brand);
+}
+
+[data-theme="dark"] .ubits-stepper__indicator--completed {
+  background-color: var(--modifiers-normal-color-dark-feedback-bg-success-subtle-default);
+  border-color: var(--modifiers-normal-color-dark-feedback-border-success);
+  color: var(--modifiers-normal-color-dark-feedback-fg-success-subtle-default);
+}
+
+[data-theme="dark"] .ubits-stepper__indicator--completed .ubits-stepper__checkmark {
+  color: var(--modifiers-normal-color-dark-feedback-fg-success-subtle-default);
+}
+
+[data-theme="dark"] .ubits-stepper__indicator--error {
+  background-color: var(--modifiers-normal-color-dark-feedback-bg-error-subtle-default);
+  border-color: var(--modifiers-normal-color-dark-feedback-border-error);
+  color: var(--modifiers-normal-color-dark-feedback-fg-error-subtle-default);
+}
+
+[data-theme="dark"] .ubits-stepper__indicator--error .ubits-stepper__number {
+  color: var(--modifiers-normal-color-dark-feedback-fg-error-subtle-default);
+}
+
+[data-theme="dark"] .ubits-stepper__indicator--warning {
+  background-color: var(--modifiers-normal-color-dark-feedback-bg-warning-subtle-default);
+  border-color: var(--modifiers-normal-color-dark-feedback-border-warning);
+  color: var(--modifiers-normal-color-dark-feedback-fg-warning-subtle-default);
+}
+
+[data-theme="dark"] .ubits-stepper__indicator--warning .ubits-stepper__number {
+  color: var(--modifiers-normal-color-dark-feedback-fg-warning-subtle-default);
+}
+
+[data-theme="dark"] .ubits-stepper__step:hover .ubits-stepper__indicator--default {
+  border-color: var(--modifiers-normal-color-dark-fg-1-medium);
+  color: var(--modifiers-normal-color-dark-fg-1-medium);
+}
+
+[data-theme="dark"] .ubits-stepper__step:hover .ubits-stepper__indicator--default .ubits-stepper__number {
+  color: var(--modifiers-normal-color-dark-fg-1-medium);
+}
+
+[data-theme="dark"] .ubits-stepper__connector {
+  background-color: var(--modifiers-normal-color-dark-border-1);
+}
+
+[data-theme="dark"] .ubits-stepper__connector--active {
+  background-color: var(--modifiers-normal-color-dark-accent-brand) !important;
+}
+
+[data-theme="dark"] .ubits-stepper__title {
+  color: var(--modifiers-normal-color-dark-fg-1-high);
+}
+
+[data-theme="dark"] .ubits-stepper__description {
+  color: var(--modifiers-normal-color-dark-fg-1-medium);
+}
+
+[data-theme="dark"] .ubits-stepper__step--default .ubits-stepper__title {
+  color: var(--modifiers-normal-color-dark-fg-1-high);
+}
+
+[data-theme="dark"] .ubits-stepper__step--default .ubits-stepper__description {
+  color: var(--modifiers-normal-color-dark-fg-1-medium);
+}
+
+[data-theme="dark"] .ubits-stepper__step--active .ubits-stepper__title {
+  color: var(--modifiers-normal-color-dark-accent-brand);
+}
+
+[data-theme="dark"] .ubits-stepper__step--active .ubits-stepper__description {
+  color: var(--modifiers-normal-color-dark-fg-1-medium);
+}
+
+[data-theme="dark"] .ubits-stepper__step--completed .ubits-stepper__title {
+  color: var(--modifiers-normal-color-dark-fg-1-high);
+}
+
+[data-theme="dark"] .ubits-stepper__step--completed .ubits-stepper__description {
+  color: var(--modifiers-normal-color-dark-fg-1-medium);
+}
+
+[data-theme="dark"] .ubits-stepper__step--error .ubits-stepper__title {
+  color: var(--modifiers-normal-color-dark-feedback-fg-error-subtle-default);
+}
+
+[data-theme="dark"] .ubits-stepper__step--error .ubits-stepper__description {
+  color: var(--modifiers-normal-color-dark-fg-1-medium);
+}
+
+[data-theme="dark"] .ubits-stepper__step--warning .ubits-stepper__title {
+  color: var(--modifiers-normal-color-dark-feedback-fg-warning-subtle-default);
+}
+
+[data-theme="dark"] .ubits-stepper__step--warning .ubits-stepper__description {
+  color: var(--modifiers-normal-color-dark-fg-1-medium);
+}
+

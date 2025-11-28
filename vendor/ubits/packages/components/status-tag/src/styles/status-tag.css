@@ -1,0 +1,231 @@
+/* ========================================
+   UBITS STATUS TAG COMPONENT
+   Componente de tag de estado
+   Usando tokens UBITS exclusivamente
+   ======================================== */
+
+/* ========================================
+   BASE STATUS TAG STYLES
+   ======================================== */
+
+.ubits-status-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--ubits-spacing-sm);
+    padding: var(--ubits-spacing-xs) var(--ubits-spacing-sm);
+    border-radius: var(--ubits-border-radius-sm);
+    border: 1px solid;
+    font-family: var(--font-family-noto-sans-font-family);
+    font-size: var(--modifiers-normal-body-sm-regular-fontsize);
+    font-weight: var(--weight-semibold);
+    line-height: var(--modifiers-normal-body-sm-regular-lineheight);
+    white-space: nowrap;
+    box-sizing: border-box;
+    transition: all 0.2s ease;
+}
+
+/* ========================================
+   STATUS TAG SIZES
+   ======================================== */
+
+.ubits-status-tag--xs {
+    padding: var(--ubits-spacing-xs) var(--ubits-spacing-sm);
+    font-size: var(--modifiers-normal-body-xs-regular-fontsize);
+    line-height: var(--modifiers-normal-body-xs-regular-lineheight);
+    gap: var(--ubits-spacing-sm);
+    border-radius: var(--ubits-border-radius-sm);
+}
+
+.ubits-status-tag--xs .ubits-status-tag-left-icon {
+    font-size: var(--modifiers-normal-body-xs-regular-fontsize);
+}
+
+.ubits-status-tag--xs .ubits-status-tag-right-icon {
+    font-size: calc(var(--modifiers-normal-body-xs-regular-fontsize) - 1px);
+}
+
+.ubits-status-tag--sm {
+    padding: var(--ubits-spacing-xs) var(--ubits-spacing-sm);
+    font-size: var(--modifiers-normal-body-sm-regular-fontsize);
+    line-height: var(--modifiers-normal-body-sm-regular-lineheight);
+    gap: var(--ubits-spacing-sm);
+    border-radius: var(--ubits-border-radius-sm);
+}
+
+.ubits-status-tag--sm .ubits-status-tag-left-icon {
+    font-size: var(--modifiers-normal-body-sm-regular-fontsize);
+}
+
+.ubits-status-tag--sm .ubits-status-tag-right-icon {
+    font-size: calc(var(--modifiers-normal-body-sm-regular-fontsize) - 2px);
+}
+
+.ubits-status-tag--md {
+    padding: var(--ubits-spacing-xs) var(--ubits-spacing-sm);
+    font-size: var(--modifiers-normal-body-md-regular-fontsize);
+    line-height: var(--modifiers-normal-body-md-regular-lineheight);
+    gap: var(--ubits-spacing-sm);
+    border-radius: var(--ubits-border-radius-sm);
+}
+
+.ubits-status-tag--md .ubits-status-tag-left-icon {
+    font-size: var(--modifiers-normal-body-md-regular-fontsize);
+}
+
+.ubits-status-tag--md .ubits-status-tag-right-icon {
+    font-size: var(--modifiers-normal-body-md-regular-fontsize);
+}
+
+/* ========================================
+   STATUS TAG ELEMENTS
+   ======================================== */
+
+/* Icono izquierdo */
+.ubits-status-tag-left-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: var(--modifiers-normal-body-sm-regular-fontsize);
+    color: inherit;
+}
+
+/* Label del tag */
+.ubits-status-tag-label {
+    flex: 0 1 auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: inherit; /* Hereda el tamaño del tag */
+}
+
+/* Icono derecho */
+.ubits-status-tag-right-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: var(--modifiers-normal-body-sm-regular-fontsize);
+    color: inherit;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+}
+
+/* ========================================
+   STATUS TAG STATES
+   ======================================== */
+
+.ubits-status-tag--clickable {
+    cursor: pointer;
+    user-select: none;
+}
+
+.ubits-status-tag--clickable:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+.ubits-status-tag--clickable:active {
+    transform: translateY(0);
+    opacity: 0.8;
+}
+
+.ubits-status-tag--clickable:hover .ubits-status-tag-right-icon {
+    opacity: 1;
+}
+
+/* ========================================
+   STATUS TAG STATUS COLORS
+   (Los colores se aplican via inline styles usando tokens)
+   ======================================== */
+
+/* Estados verdes (success) - Valores exactos de Figma */
+.ubits-status-tag[data-status="completed"],
+.ubits-status-tag[data-status="published"],
+.ubits-status-tag[data-status="fulfilled"],
+.ubits-status-tag[data-status="created"],
+.ubits-status-tag[data-status="active"] {
+    background-color: var(--modifiers-normal-color-light-feedback-bg-success-subtle-default);
+    color: var(--modifiers-normal-color-light-feedback-fg-success-subtle-default);
+    border-color: var(--modifiers-normal-color-light-feedback-border-success);
+}
+
+/* Estados rojos (error) - Valores exactos de Figma */
+.ubits-status-tag[data-status="not-fulfilled"],
+.ubits-status-tag[data-status="denied"] {
+    background-color: var(--modifiers-normal-color-light-feedback-bg-error-subtle-default);
+    color: var(--modifiers-normal-color-light-feedback-fg-error-subtle-default);
+    border-color: var(--modifiers-normal-color-light-feedback-border-error);
+}
+
+/* Estados azules (info) - Valores exactos de Figma con gradiente */
+.ubits-status-tag[data-status="draft"],
+.ubits-status-tag[data-status="in-progress"],
+.ubits-status-tag[data-status="syncing"] {
+    background: linear-gradient(90deg, var(--modifiers-normal-color-light-bg-active) 0%, var(--modifiers-normal-color-light-bg-active) 100%), linear-gradient(90deg, var(--modifiers-normal-color-light-bg-1) 0%, var(--modifiers-normal-color-light-bg-1) 100%);
+    background-color: var(--modifiers-normal-color-light-bg-active);
+    color: var(--modifiers-normal-color-light-feedback-fg-info-subtle-default);
+    border-color: var(--modifiers-normal-color-light-accent-brand);
+}
+
+/* Estados naranjas/amarillos (warning) - Valores exactos de Figma */
+.ubits-status-tag[data-status="pending"],
+.ubits-status-tag[data-status="pending-approval"] {
+    background-color: var(--modifiers-normal-color-light-feedback-bg-warning-subtle-default);
+    color: var(--modifiers-normal-color-light-feedback-fg-warning-subtle-default);
+    border-color: var(--modifiers-normal-color-light-feedback-border-warning);
+}
+
+/* Estados grises (neutral) - Valores exactos de Figma */
+.ubits-status-tag[data-status="not-started"],
+.ubits-status-tag[data-status="finished"],
+.ubits-status-tag[data-status="archived"],
+.ubits-status-tag[data-status="disabled"],
+.ubits-status-tag[data-status="paused"],
+.ubits-status-tag[data-status="hidden"] {
+    background-color: var(--modifiers-normal-color-light-bg-2);
+    color: var(--modifiers-normal-color-light-fg-1-medium);
+    border-color: var(--modifiers-normal-color-light-border-1);
+}
+
+/* ========================================
+   DARK MODE SUPPORT
+   ======================================== */
+
+/* ========================================
+   DARK MODE SUPPORT
+   ======================================== */
+
+[data-theme="dark"] {
+    --modifiers-normal-color-light-feedback-bg-success-subtle-default: var(--modifiers-normal-color-dark-feedback-bg-success-subtle-default);
+    --modifiers-normal-color-light-feedback-fg-success-subtle-default: var(--modifiers-normal-color-dark-feedback-fg-success-subtle-default);
+    --modifiers-normal-color-light-feedback-border-success: var(--modifiers-normal-color-dark-feedback-border-success);
+    --modifiers-normal-color-light-feedback-bg-error-subtle-default: var(--modifiers-normal-color-dark-feedback-bg-error-subtle-default);
+    --modifiers-normal-color-light-feedback-fg-error-subtle-default: var(--modifiers-normal-color-dark-feedback-fg-error-subtle-default);
+    --modifiers-normal-color-light-feedback-border-error: var(--modifiers-normal-color-dark-feedback-border-error);
+    --modifiers-normal-color-light-bg-active: var(--modifiers-normal-color-dark-bg-active);
+    --modifiers-normal-color-light-bg-1: var(--modifiers-normal-color-dark-bg-1);
+    --modifiers-normal-color-light-feedback-fg-info-subtle-default: var(--modifiers-normal-color-dark-feedback-fg-info-subtle-default);
+    --modifiers-normal-color-light-accent-brand: var(--modifiers-normal-color-dark-accent-brand);
+    --modifiers-normal-color-light-feedback-bg-warning-subtle-default: var(--modifiers-normal-color-dark-feedback-bg-warning-subtle-default);
+    --modifiers-normal-color-light-feedback-fg-warning-subtle-default: var(--modifiers-normal-color-dark-feedback-fg-warning-subtle-default);
+    --modifiers-normal-color-light-feedback-border-warning: var(--modifiers-normal-color-dark-feedback-border-warning);
+    --modifiers-normal-color-light-bg-2: var(--modifiers-normal-color-dark-bg-2);
+    --modifiers-normal-color-light-bg-3: var(--modifiers-normal-color-dark-bg-3);
+    --modifiers-normal-color-light-fg-1-medium: var(--modifiers-normal-color-dark-fg-1-medium);
+    --modifiers-normal-color-light-fg-1-high: var(--modifiers-normal-color-dark-fg-1-high);
+    --modifiers-normal-color-light-border-1: var(--modifiers-normal-color-dark-border-1);
+}
+
+/* Estados neutrales (paused, not-started, etc.) en dark mode - fondo oscuro con texto claro */
+[data-theme="dark"] .ubits-status-tag[data-status="not-started"],
+[data-theme="dark"] .ubits-status-tag[data-status="finished"],
+[data-theme="dark"] .ubits-status-tag[data-status="archived"],
+[data-theme="dark"] .ubits-status-tag[data-status="disabled"],
+[data-theme="dark"] .ubits-status-tag[data-status="paused"],
+[data-theme="dark"] .ubits-status-tag[data-status="hidden"] {
+    background-color: var(--modifiers-normal-color-dark-bg-gray-subtle-default) !important;
+    color: var(--modifiers-normal-color-dark-fg-1-high) !important;
+    border-color: var(--modifiers-normal-color-dark-border-1) !important;
+}
+

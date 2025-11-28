@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página de Bienvenida - Test de Prototipo UBITS</title>
+    
+    <!-- UBITS Base Styles -->
+    <link rel="stylesheet" href="../tokens/dist/tokens.css" />
+    <link rel="stylesheet" href="../typography/fonts.css" />
+    <link rel="stylesheet" href="../typography/tokens-typography.css" />
+    <!-- FontAwesome Pro -->
+    <link rel="stylesheet" href="assets/fontawesome/css/all.min.css" />
+    
+    <!-- UBITS Component Styles -->
+    <link rel="stylesheet" href="../components/button/src/styles/button.css" />
+    <link rel="stylesheet" href="../components/badge/src/styles/badge.css" />
+    <link rel="stylesheet" href="../components/card/src/styles/card.css" />
+    <link rel="stylesheet" href="../components/alert/src/styles/alert.css" />
+    
+    <style>
+        /* ========================================
+           GLOBAL STYLES
+           ======================================== */
+        
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--ubits-bg-2);
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            overflow-y: auto;
+            font-family: var(--font-sans, 'Noto Sans', sans-serif);
+            min-height: 100vh;
+        }
+
+        /* ========================================
+           WELCOME PAGE CONTAINER
+           ======================================== */
+        
+        .welcome-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: var(--ubits-spacing-2xl, 32px);
+            max-width: 1400px;
+            margin: 0 auto;
+            gap: var(--ubits-spacing-xl, 24px);
+            position: relative;
+        }
+
+        .welcome-container--with-image {
+            padding: 0;
+            max-width: 100%;
+        }
+
+        /* ========================================
+           BANNER SECTION
+           ======================================== */
+        
+        .welcome-banner {
+            background: var(--ubits-fg-green-subtle-static-inverted);
+            border-radius: var(--ubits-border-radius-sm);
+            padding: var(--ubits-spacing-xs) var(--ubits-spacing-md);
+            display: inline-flex;
+            align-items: center;
+            gap: var(--ubits-spacing-xs);
+            color: var(--ubits-fg-green-subtle-static);
+            margin-bottom: var(--ubits-spacing-lg);
+            box-shadow: var(--ubits-effects-elevation-1, 0px 1px 2px 0px rgba(0, 0, 0, 0.12));
+            font-size: var(--modifiers-normal-body-sm-regular-fontsize);
+            font-weight: var(--weight-medium);
+            max-width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .welcome-content--image-right .welcome-banner,
+        .welcome-content--image-left .welcome-banner,
+        .welcome-content--no-image .welcome-banner {
+            display: none;
+        }
+
+        .welcome-banner--inside-card {
+            margin-bottom: var(--ubits-spacing-lg, 20px);
+            margin-top: 0;
+            margin-left: 0;
+            margin-right: auto;
+            align-self: flex-start;
+        }
+
+        .welcome-content--no-image .welcome-banner--inside-card {
+            margin-left: auto;
+            margin-right: auto;
+            align-self: center;
+        }
+
+        .welcome-content--image-right .welcome-banner--inside-card {
+            margin-left: 0;
+            margin-right: auto;
+            align-self: flex-start;
+        }
+
+        .welcome-banner__icon {
+            font-size: var(--modifiers-normal-body-sm-regular-fontsize);
+            flex-shrink: 0;
+        }
+
+        .welcome-banner__text {
+            font-family: var(--font-family-noto-sans-font-family);
+            font-size: var(--modifiers-normal-body-sm-regular-fontsize);
+            font-weight: var(--weight-medium, 500);
+            line-height: var(--modifiers-normal-body-sm-regular-lineheight);
+            margin: 0;
+        }
+
+        /* ========================================
+           MAIN CONTENT AREA
+           ======================================== */
+        
+        .welcome-content {
+            display: flex;
+            flex-direction: column;
+            gap: var(--ubits-spacing-xl);
+            flex: 1;
+            align-items: center;
+            justify-content: center;
+            min-height: calc(100vh - calc(var(--ubits-spacing-2xl) * 2));
+        }
+
+        /* Layout variations */
+        .welcome-content--image-right {
+            flex-direction: row;
+            align-items: stretch;
+            gap: var(--ubits-spacing-xl, 24px);
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: var(--ubits-spacing-xl, 24px);
+            min-height: 100vh;
+        }
+
+        .welcome-content--image-right > * {
+            flex: 1;
+        }
+
+        .welcome-content--image-left {
+            flex-direction: row;
+            align-items: stretch;
+            gap: var(--ubits-spacing-xl, 24px);
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: var(--ubits-spacing-xl, 24px);
+            min-height: 100vh;
+        }
+
+        .welcome-content--image-left > * {
+            flex: 1;
+        }
+
+        .welcome-content--no-image {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .welcome-content--no-image .welcome-text {
+            background: var(--ubits-bg-1);
+            border-radius: var(--ubits-border-radius-lg, 16px);
+            padding: var(--ubits-spacing-2xl, 32px);
+        }
+
+        .welcome-content--no-image .welcome-actions {
+            justify-content: center !important;
+            width: 100%;
+        }
+
+        /* ========================================
+           TEXT CONTENT SECTION
+           ======================================== */
+        
+        .welcome-text {
+            display: flex;
+            flex-direction: column;
+            gap: var(--ubits-spacing-lg, 20px);
+            flex: 1;
+            max-width: 600px;
+        }
+
+        .welcome-content--image-right .welcome-text {
+            order: 1;
+            background: var(--ubits-bg-1);
+            border-radius: var(--ubits-border-radius-lg, 16px);
+            padding: var(--ubits-spacing-2xl, 32px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100%;
+        }
+
+        .welcome-content--image-left .welcome-text {
+            order: 2;
+            background: var(--ubits-bg-1);
+            border-radius: var(--ubits-border-radius-lg, 16px);
+            padding: var(--ubits-spacing-2xl, 32px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100%;
+        }
+
+        .welcome-text--centered {
+            text-align: center;
+            align-items: center;
+            margin: 0 auto;
+        }
+
+        .welcome-title {
+            font-family: var(--font-family-noto-sans-font-family);
+            font-size: clamp(1.5rem, 4vw, 2.5rem);
+            font-weight: var(--weight-bold, 700);
+            line-height: 1.2;
+            color: var(--ubits-fg-1-high);
+            margin: 0;
+            max-width: 100%;
+            letter-spacing: -0.02em;
+        }
+
+        .welcome-description {
+            font-family: var(--font-family-noto-sans-font-family);
+            font-size: var(--modifiers-normal-body-lg-regular-fontsize);
+            font-weight: var(--weight-regular, 400);
+            line-height: 1.6;
+            color: var(--ubits-fg-1-medium);
+            margin: 0;
+            max-width: 100%;
+        }
+
+        /* ========================================
+           FEATURES SECTION
+           ======================================== */
+        
+        .welcome-features {
+            display: flex;
+            flex-direction: column;
+            gap: var(--ubits-spacing-md, 16px);
+            margin-top: var(--ubits-spacing-md, 16px);
+        }
+
+        .welcome-features__title {
+            font-family: var(--font-family-noto-sans-font-family);
+            font-size: var(--modifiers-normal-heading-h3-fontsize);
+            font-weight: var(--weight-semibold, 600);
+            line-height: var(--modifiers-normal-heading-h3-lineheight);
+            color: var(--ubits-fg-1-high);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: var(--ubits-spacing-xs, 8px);
+        }
+
+        .welcome-features__list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--ubits-spacing-sm, 12px);
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .welcome-features__item {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--ubits-spacing-sm, 12px);
+            font-family: var(--font-family-noto-sans-font-family);
+            font-size: var(--modifiers-normal-body-md-regular-fontsize);
+            font-weight: var(--weight-regular, 400);
+            line-height: var(--modifiers-normal-body-md-regular-lineheight);
+            color: var(--ubits-fg-1-medium);
+        }
+
+        .welcome-features__icon {
+            color: var(--ubits-fg-1-medium);
+            font-size: var(--ubits-spacing-md);
+            flex-shrink: 0;
+            margin-top: var(--ubits-spacing-xxs, 2px);
+        }
+
+        /* ========================================
+           INFO BOX SECTION
+           ======================================== */
+        
+        .welcome-info-box {
+            background: var(--ubits-bg-active);
+            border-radius: var(--ubits-border-radius-md);
+            padding: var(--ubits-spacing-lg);
+            display: flex;
+            align-items: flex-start;
+            gap: var(--ubits-spacing-md);
+            margin-top: var(--ubits-spacing-lg);
+        }
+
+        .welcome-info-box__icon {
+            color: var(--ubits-accent-brand-static);
+            font-size: var(--ubits-spacing-lg);
+            flex-shrink: 0;
+        }
+
+        .welcome-info-box__content {
+            flex: 1;
+        }
+
+        .welcome-info-box__title {
+            font-family: var(--font-family-noto-sans-font-family);
+            font-size: var(--modifiers-normal-body-md-semibold-fontsize);
+            font-weight: var(--weight-semibold, 600);
+            line-height: var(--modifiers-normal-body-md-semibold-lineheight);
+            color: var(--ubits-fg-1-high);
+            margin: 0 0 var(--ubits-spacing-xs, 8px) 0;
+        }
+
+        .welcome-info-box__text {
+            font-family: var(--font-family-noto-sans-font-family);
+            font-size: var(--modifiers-normal-body-md-regular-fontsize);
+            font-weight: var(--weight-regular, 400);
+            line-height: var(--modifiers-normal-body-md-regular-lineheight);
+            color: var(--ubits-fg-1-medium);
+            margin: 0;
+        }
+
+        /* ========================================
+           IMAGE SECTION
+           ======================================== */
+        
+        .welcome-image {
+            position: relative;
+            overflow: hidden;
+            border-radius: var(--ubits-border-radius-xl);
+            background: var(--ubits-bg-3);
+            flex: 0 0 auto;
+            box-shadow: var(--ubits-effects-elevation-3, 0px 4px 8px 0px rgba(0, 0, 0, 0.12));
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .welcome-content--image-right .welcome-image {
+            order: 2;
+            display: flex;
+            flex-direction: column;
+            min-height: 100%;
+        }
+
+        .welcome-content--image-left .welcome-image {
+            order: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 100%;
+        }
+
+        .welcome-image:hover {
+            transform: translateY(calc(var(--ubits-spacing-xs) * -1));
+            box-shadow: var(--ubits-effects-elevation-4);
+        }
+
+        .welcome-image img {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+            display: block;
+            border-radius: var(--ubits-border-radius-xl, 20px);
+        }
+
+        .welcome-content--image-right .welcome-image img,
+        .welcome-content--image-left .welcome-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            flex: 1;
+        }
+
+        .welcome-content--image-left .welcome-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            flex: 1;
+        }
+
+        .welcome-image--small {
+            width: 300px;
+            max-width: 100%;
+        }
+
+        .welcome-image--medium {
+            width: 500px;
+            max-width: 100%;
+        }
+
+        .welcome-image--large {
+            width: 600px;
+            max-width: 100%;
+        }
+
+        @media (max-width: 1024px) {
+            .welcome-content--image-right,
+            .welcome-content--image-left {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .welcome-content--image-right .welcome-image,
+            .welcome-content--image-left .welcome-image {
+                order: 1;
+                width: 100%;
+                max-width: 500px;
+            }
+
+            .welcome-content--image-right .welcome-text,
+            .welcome-content--image-left .welcome-text {
+                order: 2;
+                margin: var(--ubits-spacing-lg, 20px) 0 0 0;
+                padding: var(--ubits-spacing-xl, 24px);
+            }
+
+            .welcome-image--small,
+            .welcome-image--medium,
+            .welcome-image--large {
+                width: 100%;
+                max-width: 500px;
+            }
+        }
+
+        /* ========================================
+           BUTTON SECTION
+           ======================================== */
+        
+        .welcome-actions {
+            display: flex;
+            gap: var(--ubits-spacing-md, 16px);
+            margin-top: var(--ubits-spacing-lg, 20px);
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .welcome-actions--centered {
+            justify-content: center;
+        }
+
+        .welcome-actions--left {
+            justify-content: flex-start;
+        }
+
+        .welcome-actions--right {
+            justify-content: flex-end;
+        }
+
+        /* ========================================
+           VARIATIONS - Container Styles
+           ======================================== */
+        
+        /* Compact layout - Diseño más compacto, menos espacio */
+        .welcome-container--compact .welcome-content {
+            padding: var(--ubits-spacing-md, 16px);
+            gap: var(--ubits-spacing-md, 16px);
+        }
+
+        .welcome-container--compact .welcome-content--image-right,
+        .welcome-container--compact .welcome-content--image-left {
+            padding: var(--ubits-spacing-md, 16px);
+            gap: var(--ubits-spacing-md, 16px);
+        }
+
+        .welcome-container--compact .welcome-text {
+            padding: var(--ubits-spacing-lg, 20px);
+        }
+
+        .welcome-container--compact .welcome-title {
+            font-size: clamp(1.25rem, 3.5vw, 2rem);
+            margin-bottom: var(--ubits-spacing-sm, 12px);
+        }
+
+        .welcome-container--compact .welcome-description {
+            font-size: var(--modifiers-normal-body-md-regular-fontsize);
+            margin-bottom: var(--ubits-spacing-sm, 12px);
+        }
+
+        .welcome-container--compact .welcome-features {
+            margin-top: var(--ubits-spacing-sm, 12px);
+            gap: var(--ubits-spacing-sm, 12px);
+        }
+
+        .welcome-container--compact .welcome-info-box {
+            padding: var(--ubits-spacing-md, 16px);
+            margin-top: var(--ubits-spacing-md, 16px);
+        }
+
+        /* Wide layout - Más ancho, más espacio horizontal */
+        .welcome-container--wide .welcome-content {
+            max-width: 1600px;
+        }
+
+        .welcome-container--wide .welcome-content--image-right,
+        .welcome-container--wide .welcome-content--image-left {
+            max-width: 1600px;
+            padding: var(--ubits-spacing-2xl, 32px);
+        }
+
+        .welcome-container--wide .welcome-text {
+            max-width: 700px;
+            padding: var(--ubits-spacing-3xl, 40px);
+        }
+
+        .welcome-container--wide .welcome-title {
+            font-size: clamp(1.75rem, 4.5vw, 3rem);
+        }
+
+        /* Minimal layout - Diseño más limpio, más espacio en blanco, menos decoración */
+        .welcome-container--minimal .welcome-banner {
+            display: none !important;
+        }
+
+        .welcome-container--minimal .welcome-banner--inside-card {
+            display: none !important;
+        }
+
+        .welcome-container--minimal .welcome-content {
+            padding: var(--ubits-spacing-3xl, 40px);
+        }
+
+        .welcome-container--minimal .welcome-content--image-right,
+        .welcome-container--minimal .welcome-content--image-left {
+            padding: var(--ubits-spacing-3xl, 40px);
+            gap: var(--ubits-spacing-2xl, 32px);
+        }
+
+        .welcome-container--minimal .welcome-text {
+            padding: var(--ubits-spacing-3xl, 40px);
+        }
+
+        .welcome-container--minimal .welcome-title {
+            font-weight: var(--weight-regular, 400);
+            letter-spacing: 0;
+        }
+
+        .welcome-container--minimal .welcome-features__title {
+            font-weight: var(--weight-regular, 400);
+        }
+
+        .welcome-container--minimal .welcome-info-box {
+            background: transparent;
+            border: 1px solid var(--ubits-border-1);
+            box-shadow: none;
+        }
+
+        .welcome-container--minimal .welcome-image {
+            box-shadow: none;
+        }
+
+        /* Dark mode support */
+        body[data-theme="dark"] {
+            background-color: var(--ubits-bg-2-dark, var(--modifiers-normal-color-dark-bg-2));
+        }
+
+        body[data-theme="dark"] .welcome-title,
+        body[data-theme="dark"] .welcome-features__title,
+        body[data-theme="dark"] .welcome-info-box__title {
+            color: var(--ubits-fg-1-high-dark, var(--modifiers-normal-color-dark-fg-1-high));
+        }
+
+        body[data-theme="dark"] .welcome-description,
+        body[data-theme="dark"] .welcome-features__item,
+        body[data-theme="dark"] .welcome-info-box__text {
+            color: var(--ubits-fg-1-medium-dark, var(--modifiers-normal-color-dark-fg-1-medium));
+        }
+
+        body[data-theme="dark"] .welcome-info-box {
+            background: var(--ubits-bg-3-dark, var(--modifiers-normal-color-dark-bg-3));
+            border-color: var(--ubits-border-2-dark, var(--modifiers-normal-color-dark-border-2));
+        }
+
+    </style>
+</head>
+<body data-theme="light">
+    <div class="welcome-container" id="welcome-container">
+        <!-- Banner (solo visible en no-image) -->
+        <div class="welcome-banner" id="welcome-banner">
+            <i class="fas fa-rocket welcome-banner__icon"></i>
+            <p class="welcome-banner__text">Construyamos juntos</p>
+        </div>
+
+        <!-- Main Content -->
+        <div class="welcome-content" id="welcome-content">
+            <!-- Text Content -->
+            <div class="welcome-text" id="welcome-text">
+                <!-- Banner dentro de la card (visible en image-left y no-image) -->
+                <div class="welcome-banner welcome-banner--inside-card" id="welcome-banner-inside" style="display: none;">
+                    <i class="fas fa-rocket welcome-banner__icon"></i>
+                    <p class="welcome-banner__text">Construyamos juntos</p>
+                </div>
+                <h1 class="welcome-title" id="welcome-title">
+                    ¡Bienvenido al Prototipo VISTA DE RESULTADOS NOM-035!
+                </h1>
+                
+                <p class="welcome-description" id="welcome-description">
+                    Estás a punto de probar un prototipo funcional de la vista de resultados de la evaluación NOM-035. 
+                    No te enfoques en el diseño - esto es una versión rápida para validar funcionalidades.
+                </p>
+
+                <!-- Features List -->
+                <div class="welcome-features" id="welcome-features">
+                    <h3 class="welcome-features__title">
+                        <i class="fas fa-bullseye"></i>
+                        Lo que vas a probar:
+                    </h3>
+                    <ul class="welcome-features__list" id="welcome-features-list">
+                        <!-- Features will be populated by JavaScript -->
+                    </ul>
+                </div>
+
+                <!-- Info Box -->
+                <div class="welcome-info-box" id="welcome-info-box">
+                    <i class="fas fa-lightbulb welcome-info-box__icon"></i>
+                    <div class="welcome-info-box__content">
+                        <p class="welcome-info-box__title">¡IMPORTANTE!</p>
+                        <p class="welcome-info-box__text">
+                            Usa el botón de feedback (💬) en la esquina inferior derecha para dejar tus comentarios sobre cada sección.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="welcome-actions welcome-actions--centered" id="welcome-actions">
+                    <!-- Button will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Image Section (optional) -->
+            <div class="welcome-image" id="welcome-image" style="display: none;">
+                <!-- Image will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // ========================================
+        // CONFIGURATION
+        // ========================================
+        
+        const welcomeConfig = {
+            // Banner
+            banner: {
+                show: true,
+                text: 'Construyamos juntos',
+                icon: 'fa-rocket'
+            },
+            
+            // Title
+            title: '¡Bienvenido al Prototipo VISTA DE RESULTADOS NOM-035!',
+            
+            // Description
+            description: 'Estás a punto de probar un prototipo funcional de la vista de resultados de la evaluación NOM-035. No te enfoques en el diseño - esto es una versión rápida para validar funcionalidades.',
+            
+            // Features
+            features: [
+                {
+                    icon: 'fa-heart',
+                    text: 'Resultados de Acontecimientos traumáticos: Análisis de acontecimientos traumáticos y afectación'
+                },
+                {
+                    icon: 'fa-briefcase',
+                    text: 'Resultados Riesgo psicosocial: Evaluación de condiciones de trabajo'
+                },
+                {
+                    icon: 'fa-list',
+                    text: 'Vista General: Dashboard con métricas y gráficos'
+                },
+                {
+                    icon: 'fa-download',
+                    text: 'Descarga de Reportes: Exportación de datos en CSV'
+                }
+            ],
+            
+            // Info Box
+            infoBox: {
+                show: true,
+                title: '¡IMPORTANTE!',
+                text: 'Usa el botón de feedback (💬) en la esquina inferior derecha para dejar tus comentarios sobre cada sección.',
+                icon: 'fa-lightbulb'
+            },
+            
+            // Button
+            button: {
+                text: 'Comenzar',
+                icon: 'fa-rocket',
+                variant: 'primary',
+                size: 'lg'
+            },
+            
+            // Image
+            image: {
+                show: false,
+                src: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&h=1200&fit=crop&auto=format',
+                alt: 'Prototipo UBITS',
+                size: 'medium' // small, medium, large
+            },
+            
+            // Layout
+            layout: {
+                imagePosition: 'none', // none, left, right
+                textAlignment: 'left', // left, center
+                buttonAlignment: 'center' // left, center, right
+            }
+        };
+
+        // ========================================
+        // RENDER FUNCTIONS
+        // ========================================
+        
+        function renderButton(text, icon, variant = 'primary', size = 'lg') {
+            const iconHTML = icon ? `<i class="fas ${icon}"></i>` : '';
+            const buttonClasses = `ubits-button ubits-button--${variant} ubits-button--${size}`;
+            return `
+                <button class="${buttonClasses}" onclick="handleStartTest()">
+                    ${iconHTML}
+                    <span>${text}</span>
+                </button>
+            `;
+        }
+
+        function renderFeatures(features) {
+            return features.map(feature => `
+                <li class="welcome-features__item">
+                    <i class="fas ${feature.icon} welcome-features__icon"></i>
+                    <span>${feature.text}</span>
+                </li>
+            `).join('');
+        }
+
+        // ========================================
+        // INITIALIZATION
+        // ========================================
+        
+        function initializeWelcomePage(config) {
+            const container = document.getElementById('welcome-container');
+            const banner = document.getElementById('welcome-banner');
+            const bannerInside = document.getElementById('welcome-banner-inside');
+            const content = document.getElementById('welcome-content');
+            const text = document.getElementById('welcome-text');
+            const title = document.getElementById('welcome-title');
+            const description = document.getElementById('welcome-description');
+            const featuresList = document.getElementById('welcome-features-list');
+            const infoBox = document.getElementById('welcome-info-box');
+            const actions = document.getElementById('welcome-actions');
+            const image = document.getElementById('welcome-image');
+
+            // Banner - mostrar según el layout
+            if (config.banner.show) {
+                // Siempre mostrar el banner dentro del contenedor de información
+                banner.style.display = 'none';
+                if (bannerInside) {
+                    bannerInside.style.display = 'flex';
+                    bannerInside.querySelector('.welcome-banner__text').textContent = config.banner.text;
+                    bannerInside.querySelector('.welcome-banner__icon').className = `fas ${config.banner.icon} welcome-banner__icon`;
+                }
+            } else {
+                banner.style.display = 'none';
+                if (bannerInside) {
+                    bannerInside.style.display = 'none';
+                }
+            }
+
+            // Title & Description
+            title.textContent = config.title;
+            description.textContent = config.description;
+
+            // Features
+            featuresList.innerHTML = renderFeatures(config.features);
+
+            // Info Box
+            if (config.infoBox.show) {
+                infoBox.style.display = 'flex';
+                infoBox.querySelector('.welcome-info-box__title').textContent = config.infoBox.title;
+                infoBox.querySelector('.welcome-info-box__text').textContent = config.infoBox.text;
+                infoBox.querySelector('.welcome-info-box__icon').className = `fas ${config.infoBox.icon} welcome-info-box__icon`;
+            } else {
+                infoBox.style.display = 'none';
+            }
+
+            // Button
+            actions.innerHTML = renderButton(
+                config.button.text,
+                config.button.icon,
+                config.button.variant,
+                config.button.size
+            );
+
+            // Image
+            if (config.image.show && config.image.src) {
+                image.style.display = 'block';
+                image.className = `welcome-image welcome-image--${config.image.size}`;
+                image.innerHTML = `<img src="${config.image.src}" alt="${config.image.alt}" />`;
+            } else {
+                image.style.display = 'none';
+            }
+
+            // Layout
+            content.className = 'welcome-content';
+            if (config.layout.imagePosition === 'right') {
+                content.classList.add('welcome-content--image-right');
+                container.classList.add('welcome-container--with-image');
+            } else if (config.layout.imagePosition === 'left') {
+                content.classList.add('welcome-content--image-left');
+                container.classList.add('welcome-container--with-image');
+            } else {
+                content.classList.add('welcome-content--no-image');
+                container.classList.remove('welcome-container--with-image');
+            }
+
+            // Text alignment
+            text.className = 'welcome-text';
+            if (config.layout.textAlignment === 'center') {
+                text.classList.add('welcome-text--centered');
+            }
+
+            // Button alignment
+            actions.className = 'welcome-actions';
+            
+            // Si es layout no-image, siempre centrar
+            if (config.layout.imagePosition === 'none') {
+                actions.classList.add('welcome-actions--centered');
+            } else {
+                // Para layouts con imagen, usar la configuración
+                if (config.layout.buttonAlignment === 'center') {
+                    actions.classList.add('welcome-actions--centered');
+                } else if (config.layout.buttonAlignment === 'right') {
+                    actions.classList.add('welcome-actions--right');
+                } else {
+                    actions.classList.add('welcome-actions--left');
+                }
+            }
+        }
+
+        // ========================================
+        // EVENT HANDLERS
+        // ========================================
+        
+        function handleStartTest() {
+            console.log('🚀 Iniciando test del prototipo...');
+            // Aquí puedes agregar la lógica para navegar a la siguiente página
+            // window.location.href = '/prototipo/test';
+        }
+
+        // ========================================
+        // INITIALIZE ON LOAD
+        // ========================================
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeWelcomePage(welcomeConfig);
+        });
+
+        // Export config for external modification
+        window.WelcomePageConfig = welcomeConfig;
+        window.initializeWelcomePage = initializeWelcomePage;
+    </script>
+</body>
+</html>
+

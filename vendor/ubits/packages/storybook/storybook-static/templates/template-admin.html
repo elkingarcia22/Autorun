@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UBITS Proyecto - Template Administrador</title>
+    
+    <!-- UBITS Base Styles -->
+    <link rel="stylesheet" href="../tokens/dist/tokens.css" />
+    <link rel="stylesheet" href="../typography/fonts.css" />
+    <link rel="stylesheet" href="../typography/tokens-typography.css" />
+    <!-- FontAwesome Pro -->
+    <link rel="stylesheet" href="assets/fontawesome/css/all.min.css" />
+    
+    <!-- Navigation Components -->
+    <link rel="stylesheet" href="../components/sidebar/src/styles/sidebar.css" />
+    <link rel="stylesheet" href="../components/subnav/src/styles/subnav.css" />
+    <link rel="stylesheet" href="../components/tabbar/src/styles/tabbar.css" />
+    
+    <!-- UBITS Component Styles -->
+    <link rel="stylesheet" href="../components/status-tag/src/styles/status-tag.css" />
+    <link rel="stylesheet" href="../components/avatar/src/styles/avatar.css" />
+    <link rel="stylesheet" href="../components/drawer/src/styles/drawer.css" />
+    <link rel="stylesheet" href="../components/modal/src/styles/modal.css" />
+    <link rel="stylesheet" href="../components/scroll/src/styles/scroll.css" />
+    <link rel="stylesheet" href="../components/progress/src/styles/progress.css" />
+    <link rel="stylesheet" href="../components/file-upload/src/styles/file-upload.css" />
+    <link rel="stylesheet" href="../components/button/src/styles/button.css" />
+    <link rel="stylesheet" href="../components/badge/src/styles/badge.css" />
+    <link rel="stylesheet" href="../components/alert/src/styles/alert.css" />
+    <link rel="stylesheet" href="../components/toast/src/styles/toast.css" />
+    <link rel="stylesheet" href="../components/list/src/styles/list.css" />
+    <link rel="stylesheet" href="../components/input/src/styles/input.css" />
+    <link rel="stylesheet" href="../components/card/src/styles/card.css" />
+    <link rel="stylesheet" href="../components/data-table/src/styles/data-table.css" />
+    <link rel="stylesheet" href="../components/pagination/src/styles/pagination.css" />
+    <link rel="stylesheet" href="../components/checkbox/src/styles/checkbox.css" />
+    <link rel="stylesheet" href="../components/toggle/src/styles/toggle.css" />
+    <link rel="stylesheet" href="../components/radio-button/src/styles/radio-button.css" />
+    <link rel="stylesheet" href="../components/selection-card/src/styles/selection-card.css" />
+    <link rel="stylesheet" href="../components/empty-state/src/styles/empty-state.css" />
+    <link rel="stylesheet" href="../components/tooltip/src/styles/tooltip.css" />
+    <link rel="stylesheet" href="../components/spinner/src/styles/spinner.css" />
+    <link rel="stylesheet" href="../components/calendar/src/styles/calendar.css" />
+    <link rel="stylesheet" href="../components/tabs/src/styles/tabs.css" />
+    <link rel="stylesheet" href="../components/segment-control/src/styles/segment-control.css" />
+    <link rel="stylesheet" href="../components/breadcrumb/src/styles/breadcrumb.css" />
+    <link rel="stylesheet" href="../components/stepper/src/styles/stepper.css" />
+    <link rel="stylesheet" href="../components/participants-menu/src/styles/participants-menu.css" />
+    <link rel="stylesheet" href="../components/metric-card/src/styles/metric-card.css" />
+    <link rel="stylesheet" href="../components/header-section/src/styles/header-section.css" />
+    
+    <style>
+        /* ========================================
+           GLOBAL STYLES
+           ======================================== */
+        
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--ubits-bg-2);
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            overflow-y: auto;
+            font-family: var(--font-sans, 'Noto Sans', sans-serif);
+            scrollbar-width: thin;
+            scrollbar-color: var(--ubits-fg-2-medium-static) var(--ubits-bg-5);
+        }
+
+        /* Scrollbar personalizado */
+        ::-webkit-scrollbar {
+            width: var(--ubits-spacing-sm, 8px);
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--ubits-bg-5);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--ubits-fg-2-medium-static);
+            border-radius: var(--ubits-border-radius-xs, 4px);
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--ubits-fg-2-high-static);
+        }
+
+        /* ========================================
+           DASHBOARD CONTAINER
+           ======================================== */
+        
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+            width: 100%;
+            overflow: visible;
+            /* ⚠️ IMPORTANTE: NO usar justify-content: center aquí */
+            /* El margin: auto en .main-content (≥1440px) se encarga del centrado */
+        }
+
+        /* ========================================
+           TOOLTIP
+           ======================================== */
+        
+        /* ⚠️ NOTA: Los estilos del tooltip del sidebar están en el componente sidebar.css */
+        /* No sobrescribir aquí, usar los estilos del componente oficial */
+
+        /* ========================================
+           MAIN CONTENT
+           ======================================== */
+        
+        .main-content {
+            position: relative;
+            flex: 1;
+            margin: var(--ubits-spacing-lg, 16px) var(--ubits-spacing-2xl, 24px) 0 calc(var(--ubits-spacing-2xl, 24px) + 96px + 23px);
+            width: calc(100% - calc(var(--ubits-spacing-2xl, 24px) + 96px + 23px) - var(--ubits-spacing-2xl, 24px));
+            overflow: visible;
+            max-height: none;
+            display: flex;
+            flex-direction: column;
+            gap: var(--ubits-spacing-xl, 20px); /* Gap entre SubNav y Content Area */
+            z-index: 5;
+            box-sizing: border-box;
+        }
+
+        /* Centrado para pantallas grandes - EXACTAMENTE igual que el proyecto UBITS original */
+        /* El proyecto UBITS original usa margin: auto sin cambiar flex */
+        @media (min-width: 1440px) {
+            .main-content {
+                margin: var(--ubits-spacing-lg, 16px) auto 0 auto; /* ⚠️ margin auto centra el elemento */
+                padding-left: calc(var(--ubits-spacing-2xl, 24px) + 96px + 23px); /* Espacio para sidebar (24px + 96px + 23px gap) */
+                padding-right: var(--ubits-spacing-2xl, 24px);
+                width: 1607px;
+                max-width: 1607px;
+                box-sizing: border-box;
+                /* ⚠️ IMPORTANTE: Mantener flex: 1, igual que el proyecto UBITS original */
+                /* NO cambiar a flex: none, el margin: auto funciona con flex: 1 */
+            }
+        }
+
+        /* Ajustar gap en móvil cuando no hay subnav - igual que el proyecto UBITS original */
+        @media (max-width: 1023px) {
+            /* ⚠️ CRÍTICO: Ocultar sidebar container, igual que el proyecto UBITS original */
+            #sidebar-container {
+                display: none !important;
+            }
+            
+            .main-content {
+                gap: var(--ubits-spacing-xl, 20px);
+                margin: var(--ubits-spacing-lg, 16px) var(--ubits-spacing-md, 12px) 0 var(--ubits-spacing-md, 12px) !important;
+                width: calc(100% - var(--ubits-spacing-2xl, 24px));
+                padding-left: 0;
+                padding-right: 0;
+                max-width: 100%;
+                padding-bottom: var(--ubits-spacing-6xl, 40px); /* Espacio para el TabBar, igual que el proyecto UBITS original */
+            }
+            
+            .content-area {
+                padding-bottom: var(--ubits-spacing-6xl, 40px); /* Espacio para el TabBar, igual que el proyecto UBITS original */
+            }
+            
+            .main-content > *:first-child {
+                margin-top: calc(-1 * var(--ubits-spacing-xl, 20px));
+            }
+        }
+
+        /* ========================================
+           TOP NAV CONTAINER (SubNav)
+           ======================================== */
+
+        /* El SubNav debe mantener sus estilos originales del componente */
+        /* Solo establecer el contenedor para que el componente SubNav funcione correctamente */
+        #top-nav-container {
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* ========================================
+           SUB NAV CONTAINER
+           ======================================== */
+        
+        #top-nav-container {
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* ========================================
+           CONTENT AREA
+           ======================================== */
+        
+        .content-area {
+            background-color: transparent !important;
+            border-radius: var(--ubits-border-radius-md, 12px);
+            border: none !important;
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-start;
+            overflow: visible;
+            box-sizing: border-box;
+            max-height: none;
+            box-shadow: none !important;
+            width: 100%;
+            max-width: 100%;
+            gap: 0;
+        }
+
+        /* ========================================
+           HEADER SECTION CONTAINER
+           ======================================== */
+        
+        #header-section-container {
+            width: 100%;
+            background: transparent;
+            padding: 0;
+            margin-top: 0;
+            margin-bottom: 0;
+            box-sizing: border-box;
+        }
+
+        /* Ajustes responsive para header-section-container */
+        @media (max-width: 1023px) {
+            #header-section-container {
+                padding: 0;
+                margin-top: 0;
+            }
+        }
+
+        @media (max-width: 479px) {
+            #header-section-container {
+                margin-top: 0;
+            }
+        }
+
+        .content-area.no-background {
+            background-color: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            padding: 0 var(--ubits-spacing-6xl, 40px) !important;
+        }
+
+        /* ========================================
+           CONTENT SECTIONS (Sistema de Widgets)
+           ======================================== */
+        
+        .content-sections {
+            display: flex;
+            flex-direction: column;
+            gap: var(--ubits-spacing-lg, 16px);
+            flex: 1;
+            min-width: 0;
+            width: 100%; /* Ocupar el 100% del ancho del content-area */
+            max-width: 100%; /* No exceder el ancho del content-area */
+            overflow: visible;
+            max-height: none;
+            box-sizing: border-box;
+        }
+
+        .content-sections > *:not(:last-child):not(.section-dual):not(.section-single):not(.section-triple):not(.section-quad) {
+            margin-bottom: var(--ubits-spacing-lg, 16px);
+        }
+
+        .content-sections::after {
+            content: '';
+            height: 0px;
+            flex-shrink: 0;
+        }
+
+        .content-sections > *:last-child {
+            margin-bottom: 0;
+        }
+
+        /* ========================================
+           SECTION TYPES
+           ======================================== */
+        
+        /* Secciones de widgets - igual que el proyecto UBITS original */
+        .section-single {
+            display: flex;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .section-dual {
+            display: flex;
+            gap: var(--ubits-spacing-xl, 20px);
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .section-triple {
+            display: flex;
+            gap: var(--ubits-spacing-xl, 20px);
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .section-quad {
+            display: flex;
+            gap: var(--ubits-spacing-xl, 20px);
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* ========================================
+           WIDGETS
+           ======================================== */
+        
+        /* Widgets en secciones - igual que el proyecto UBITS original */
+        .section-single > div,
+        .section-dual > div,
+        .section-triple > div,
+        .section-quad > div {
+            background-color: var(--ubits-bg-1);
+            border: none;
+            border-radius: var(--ubits-border-radius-sm, 8px);
+            padding: var(--ubits-spacing-lg, 16px) !important; /* !important para sobrescribir el reset */
+            width: 100%; /* Ocupar el 100% del ancho de la sección */
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            min-width: 0; /* Permitir que se reduzca si es necesario */
+        }
+
+        /* Distribución de anchos - igual que el proyecto UBITS original */
+        .section-single > div {
+            flex: 1;
+        }
+
+        .section-dual > div {
+            flex: 1;
+        }
+
+        .section-triple > div {
+            flex: 1;
+        }
+
+        .section-quad > div {
+            flex: 1;
+        }
+
+        /* ========================================
+           RESPONSIVE
+           ======================================== */
+        
+        @media (max-width: 1023px) {
+            .content-sections {
+                padding-bottom: 0;
+            }
+            
+            .section-dual,
+            .section-triple,
+            .section-quad {
+                flex-direction: column;
+                gap: var(--ubits-spacing-lg, 16px);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .section-single > div,
+            .section-dual > div,
+            .section-triple > div,
+            .section-quad > div {
+                padding: var(--ubits-spacing-md, 12px) !important;
+            }
+        }
+
+        /* ========================================
+           DARK MODE
+           ======================================== */
+        
+        [data-theme="dark"] body {
+            background-color: var(--ubits-bg-2) !important;
+        }
+
+        [data-theme="dark"] .dashboard-container {
+            background-color: var(--ubits-bg-2) !important;
+        }
+
+        [data-theme="dark"] .content-area {
+            background-color: transparent !important;
+            border-color: transparent !important;
+        }
+
+        body[data-theme="dark"] {
+            background-color: var(--ubits-bg-2) !important;
+        }
+
+        body[data-theme="dark"] .dashboard-container {
+            background-color: var(--ubits-bg-2) !important;
+        }
+
+        body[data-theme="dark"] .content-area {
+            background-color: transparent !important;
+            border-color: transparent !important;
+        }
+
+        /* Transiciones suaves para dark mode */
+        body {
+            transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                        color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        *[data-theme] {
+            transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                        color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                        border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                        box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+    </style>
+</head>
+<body data-theme="light">
+    <div class="dashboard-container">
+        <!-- Sidebar Container -->
+        <div id="sidebar-container"></div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Navigation -->
+            <div id="top-nav-container"></div>
+            
+            <!-- Content Area -->
+            <div class="content-area">
+                <!-- Content wrapper con secciones de widgets -->
+                <div class="content-sections">
+                    <!-- Sección contenido principal -->
+                    <div class="section-single">
+                        <div class="widget-contenido-principal">
+                            <p class="ubits-body-md-regular">Contenido principal</p>
+                            <br><br><br><br><br><br><br><br><br><br><br>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Tab Bar Container -->
+    <div id="tab-bar-container"></div>
+
+    <!-- System Loaders -->
+    <script src="components-loader.js"></script>
+    <script src="config/products.js"></script>
+    <script src="config/theme-manager.js"></script>
+    <script src="config/responsive-manager.js"></script>
+    <script src="engine/template-loader.js"></script>
+    <script src="engine/content-manager.js"></script>
+    
+    <!-- UBITS Components System -->
+    <!-- Los componentes se cargan dinámicamente a través de components-loader.js -->
+    
+    <script>
+        // ========================================
+        // INITIALIZATION
+        // Usando los componentes reales desde components-loader.js
+        // ========================================
+        
+        // ========================================
+        // HELPER FUNCTIONS (Compatibilidad)
+        // ========================================
+        
+        function toggleDarkMode() {
+            if (window.UBITS_ThemeManager) {
+                window.UBITS_ThemeManager.toggleTheme();
+            } else {
+                // Fallback si ThemeManager no está disponible
+                const body = document.body;
+                const currentTheme = body.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                body.setAttribute('data-theme', newTheme);
+                localStorage.setItem('ubits-theme', newTheme);
+            }
+        }
+
+        // ========================================
+        // INITIALIZATION
+        // ========================================
+        
+        // Función para verificar si los CSS se están cargando
+        function checkLoadedStylesheets() {
+            console.log('🔍 [CSS Check] Verificando hojas de estilo cargadas...');
+            const stylesheets = Array.from(document.styleSheets);
+            console.log(`📊 [CSS Check] Total de hojas de estilo encontradas: ${stylesheets.length}`);
+            
+            const criticalCSS = [
+                'tokens.css',
+                'sidebar.css',
+                'subnav.css',
+                'tabbar.css',
+                'button.css'
+            ];
+            
+            criticalCSS.forEach(cssName => {
+                const found = stylesheets.some(sheet => {
+                    try {
+                        return sheet.href && sheet.href.includes(cssName);
+                    } catch (e) {
+                        return false;
+                    }
+                });
+                console.log(found ? `✅ [CSS Check] ${cssName} encontrado` : `❌ [CSS Check] ${cssName} NO encontrado`);
+            });
+            
+            // Verificar tokens CSS específicamente
+            const tokensSheet = stylesheets.find(sheet => {
+                try {
+                    return sheet.href && sheet.href.includes('tokens.css');
+                } catch (e) {
+                    return false;
+                }
+            });
+            
+            if (tokensSheet) {
+                console.log('✅ [CSS Check] tokens.css encontrado:', tokensSheet.href);
+                try {
+                    const rules = Array.from(tokensSheet.cssRules || []);
+                    console.log(`📊 [CSS Check] Reglas en tokens.css: ${rules.length}`);
+                    if (rules.length > 0) {
+                        const firstRule = rules[0];
+                        console.log('📋 [CSS Check] Primera regla:', firstRule.cssText.substring(0, 100));
+                    }
+                } catch (e) {
+                    console.error('❌ [CSS Check] Error al leer reglas de tokens.css:', e.message);
+                }
+            } else {
+                console.error('❌ [CSS Check] tokens.css NO encontrado en document.styleSheets');
+            }
+        }
+        
+        // ⚠️ PREVENIR múltiples ejecuciones del DOMContentLoaded
+        let domContentLoadedExecuted = false;
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Prevenir ejecuciones múltiples
+            if (domContentLoadedExecuted) {
+                console.warn('⚠️ [Template Admin] DOMContentLoaded ya ejecutado, ignorando...');
+                return;
+            }
+            domContentLoadedExecuted = true;
+            
+            // Verificar CSS inmediatamente
+            setTimeout(checkLoadedStylesheets, 100);
+            
+            // Esperar a que todos los sistemas estén listos
+            setTimeout(() => {
+                // Verificar que todos los sistemas estén cargados
+                if (!window.UBITS_ThemeManager || !window.UBITS_ResponsiveManager || !window.UBITS_TemplateLoader) {
+                    return;
+                }
+                
+                // Detectar producto actual
+                const productId = window.detectCurrentProduct();
+                
+                // Obtener configuración del producto
+                const productConfig = window.getProductConfig(productId);
+                
+                // Cargar tema guardado
+                window.UBITS_ThemeManager.init();
+                
+                // ⚠️ IMPORTANTE: Cargar componentes PRIMERO
+                // Luego inicializar responsive para que adapte los componentes ya creados
+                window.UBITS_TemplateLoader.loadProduct(productConfig, {
+                    sidebar: 'sidebar-container',
+                    subnav: 'top-nav-container',
+                    tabbar: 'tab-bar-container'
+                });
+                
+                // Inicializar responsive DESPUÉS de que los componentes se hayan cargado
+                // Esto asegura que adaptComponents() encuentre los componentes
+                setTimeout(() => {
+                    // ⚠️ CRÍTICO: Establecer currentSection ANTES de inicializar ResponsiveManager
+                    // Esto asegura que adaptComponents() pueda acceder a currentSection cuando se ejecuta
+                    const initialSection = productConfig.sidebar.initialActiveSection || 'inicio';
+                    if (window.UBITS_ContentManager) {
+                        window.UBITS_ContentManager.currentSection = initialSection;
+                        console.log('🔍 [Template Admin] ✅ currentSection establecido ANTES de ResponsiveManager.init():', initialSection);
+                    }
+                    
+                    window.UBITS_ResponsiveManager.init();
+                    // Ejecutar adaptComponents manualmente después de que los componentes estén listos
+                    window.UBITS_ResponsiveManager.adaptComponents();
+                    
+                    // Cargar sección inicial después de que todo esté listo
+                    // IMPORTANTE: El SubNav NO se carga aquí porque ContentManager lo maneja
+                    // ⚠️ NOTA: El botón ya se activa automáticamente con initialActiveSection en products.js
+                    // Solo necesitamos cargar el contenido inicial
+                    if (window.UBITS_ContentManager) {
+                        // Usar requestAnimationFrame para asegurar que el DOM esté listo
+                        requestAnimationFrame(() => {
+                            setTimeout(() => {
+                                // El ContentManager actualizará el SubNav y el contenido automáticamente
+                                // El botón ya está activo gracias a initialActiveSection, no necesitamos activarlo de nuevo
+                                window.UBITS_ContentManager.handleSectionChange(initialSection);
+                                
+                                // Asegurar que el tooltip esté oculto y que ningún botón tenga focus
+                                const tooltipElement = document.getElementById('ubits-sidebar-tooltip');
+                                if (tooltipElement) {
+                                    tooltipElement.classList.remove('show');
+                                }
+                                
+                                // Asegurar que ningún botón tenga focus (para evitar borde azul)
+                                const sidebarElement = document.querySelector('.ubits-sidebar');
+                                if (sidebarElement) {
+                                    const activeButton = sidebarElement.querySelector('.ubits-sidebar-nav-button.active');
+                                    if (activeButton) {
+                                        activeButton.blur(); // Remover focus si lo tiene
+                                    }
+                                }
+                                
+                                
+                                // ⚠️ LOGS ESPECÍFICOS PARA DEBUG DEL LAYOUT
+                                debugLayout();
+                                
+                                // Escuchar cambios de tamaño de ventana para logs continuos
+                                let resizeTimeout;
+                                window.addEventListener('resize', () => {
+                                    clearTimeout(resizeTimeout);
+                                    resizeTimeout = setTimeout(() => {
+                                        debugLayout();
+                                    }, 300);
+                                });
+                            }, 200); // Delay mínimo solo para asegurar que el DOM esté listo
+                        });
+                    }
+                }, 100);
+            });
+        });
+        
+        // ⚠️ FUNCIÓN DE DEBUG ESPECÍFICA PARA EL LAYOUT
+        function debugLayout() {
+            const windowWidth = window.innerWidth;
+            const mainContent = document.querySelector('.main-content');
+            const sidebar = document.querySelector('.ubits-sidebar');
+            const tabBar = document.querySelector('.ubits-tabbar');
+            
+            if (!mainContent) return;
+            
+            const mainRect = mainContent.getBoundingClientRect();
+            const computedStyle = window.getComputedStyle(mainContent);
+            const sidebarRect = sidebar ? sidebar.getBoundingClientRect() : null;
+            const tabBarVisible = tabBar && window.getComputedStyle(tabBar).display !== 'none';
+            
+            // ⚠️ CRÍTICO: Verificar si está centrado correctamente
+            // NOTA: getComputedStyle devuelve valores calculados en px, no "auto"
+            // Verificamos centrado comparando los espacios laterales (deben estar balanceados)
+            const marginLeftPx = parseFloat(computedStyle.marginLeft) || 0;
+            const marginRightPx = parseFloat(computedStyle.marginRight) || 0;
+            // Calcular espacios laterales (una sola vez)
+            const leftSpace = mainRect.left;
+            const rightSpace = windowWidth - mainRect.right;
+            const imbalance = Math.abs(leftSpace - rightSpace);
+            const isVisuallyCentered = imbalance < 10; // Considerar centrado si el desbalance es menor a 10px
+            const isWideScreen = windowWidth >= 1440;
+            const shouldBeCentered = isWideScreen && (computedStyle.flex === 'none' || computedStyle.flex === '0 0 auto');
+            if (isWideScreen) {
+            }
+            
+            if (sidebarRect) {
+                const sidebarStyle = window.getComputedStyle(sidebar);
+            }
+            
+            if (tabBar) {
+                const tabBarStyle = window.getComputedStyle(tabBar);
+            }
+            
+            // Mostrar espacios laterales
+            
+            
+        }
+    </script>
+</body>
+</html>

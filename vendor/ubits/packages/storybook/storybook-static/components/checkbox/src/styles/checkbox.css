@@ -1,0 +1,283 @@
+/* ========================================
+   UBITS CHECKBOX COMPONENT
+   Componente checkbox para selección múltiple
+   Usando tokens UBITS exclusivamente
+   ======================================== */
+
+/* ========================================
+   BASE CHECKBOX STYLES
+   ======================================== */
+
+.ubits-checkbox {
+    display: inline-flex;
+    align-items: flex-start;
+    gap: var(--p-spacing-mode-1-sm, 8px);
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.2s ease;
+}
+
+.ubits-checkbox__input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    margin: 0;
+    padding: 0;
+}
+
+.ubits-checkbox__square {
+    position: relative;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--modifiers-normal-color-light-border-1) !important;
+    background-color: var(--modifiers-normal-color-light-bg-1) !important;
+    border-radius: var(--ubits-border-radius-sm, 4px);
+    transition: all 0.2s ease;
+}
+
+.ubits-checkbox__checkmark {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transform: scale(0);
+    transition: all 0.2s ease;
+}
+
+.ubits-checkbox__checkmark::after {
+    content: '';
+    width: 4px;
+    height: 8px;
+    border: solid var(--modifiers-normal-color-light-bg-1);
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+    margin-top: -2px;
+}
+
+/* Estado indeterminado - línea horizontal */
+.ubits-checkbox__indeterminate {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transform: scale(0);
+    transition: all 0.2s ease;
+}
+
+.ubits-checkbox__indeterminate::after {
+    content: '';
+    width: 10px;
+    height: 2px;
+    background-color: var(--modifiers-normal-color-light-bg-1);
+    border-radius: 1px;
+}
+
+.ubits-checkbox__text-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ubits-spacing-none, 0px);
+    flex: 1;
+    min-width: 0;
+}
+
+.ubits-checkbox__label {
+    font-family: var(--font-family-noto-sans-font-family, var(--font-sans, 'Noto Sans', sans-serif));
+    font-size: var(--modifiers-normal-body-sm-regular-fontsize, var(--ubits-font-size-sm, 13px));
+    font-weight: var(--weight-regular, 400);
+    line-height: var(--modifiers-normal-body-sm-regular-lineheight, var(--ubits-line-height-sm, 19.5px));
+    color: var(--modifiers-normal-color-light-fg-1-high) !important;
+    white-space: nowrap;
+}
+
+.ubits-checkbox__complementary-text {
+    font-size: var(--modifiers-normal-body-sm-regular-fontsize, var(--ubits-font-size-sm, 13px));
+    font-weight: var(--weight-regular, 400);
+    line-height: var(--modifiers-normal-body-sm-regular-lineheight, var(--ubits-line-height-sm, 19.5px));
+    color: var(--modifiers-normal-color-light-fg-1-medium) !important;
+    white-space: normal;
+}
+
+/* ========================================
+   CHECKBOX SIZES
+   ======================================== */
+
+.ubits-checkbox--sm .ubits-checkbox__square {
+    width: 16px;
+    height: 16px;
+}
+
+.ubits-checkbox--sm .ubits-checkbox__checkmark::after {
+    width: 3px;
+    height: 6px;
+    border-width: 0 1.5px 1.5px 0;
+}
+
+.ubits-checkbox--sm .ubits-checkbox__indeterminate::after {
+    width: 8px;
+    height: 1.5px;
+}
+
+/* Medium (md) - 20px square - Default */
+.ubits-checkbox--md .ubits-checkbox__square {
+    width: 20px;
+    height: 20px;
+}
+
+.ubits-checkbox--md .ubits-checkbox__checkmark::after {
+    width: 4px;
+    height: 8px;
+    border-width: 0 2px 2px 0;
+}
+
+.ubits-checkbox--md .ubits-checkbox__indeterminate::after {
+    width: 10px;
+    height: 2px;
+}
+
+/* ========================================
+   CHECKBOX STATES
+   ======================================== */
+
+/* Default State */
+.ubits-checkbox--default .ubits-checkbox__square {
+    border-color: var(--modifiers-normal-color-light-border-1) !important;
+    background-color: var(--modifiers-normal-color-light-bg-1) !important;
+}
+
+/* Hover State - cuando la clase hover está presente */
+.ubits-checkbox--hover:not(.ubits-checkbox--disabled):not(.ubits-checkbox--checked) .ubits-checkbox__square {
+    border-color: var(--modifiers-normal-color-light-accent-brand) !important;
+    background-color: var(--modifiers-normal-color-light-bg-1) !important;
+}
+
+/* Hover State - cuando se hace hover con el mouse */
+.ubits-checkbox--hover:not(.ubits-checkbox--disabled):not(.ubits-checkbox--checked):hover .ubits-checkbox__square,
+.ubits-checkbox:not(.ubits-checkbox--disabled):not(.ubits-checkbox--checked):hover .ubits-checkbox__square {
+    border-color: var(--modifiers-normal-color-light-accent-brand) !important;
+    background-color: var(--modifiers-normal-color-light-bg-1) !important;
+}
+
+/* Hover cuando está checked - mantener borde gris */
+.ubits-checkbox--checked:not(.ubits-checkbox--disabled):hover .ubits-checkbox__square {
+    border-color: var(--modifiers-normal-color-light-border-1) !important;
+    background-color: var(--modifiers-normal-color-light-bg-1) !important;
+}
+
+/* Active State - cuadrado azul brand con checkmark blanco (solo cuando NO está checked) */
+.ubits-checkbox--active:not(.ubits-checkbox--checked) .ubits-checkbox__square {
+    border-color: var(--modifiers-normal-color-light-accent-brand) !important;
+    background-color: var(--modifiers-normal-color-light-accent-brand) !important;
+}
+
+.ubits-checkbox--active:not(.ubits-checkbox--checked) .ubits-checkbox__checkmark {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.ubits-checkbox--active:not(.ubits-checkbox--checked) .ubits-checkbox__checkmark::after {
+    border-color: var(--modifiers-normal-color-light-bg-1);
+}
+
+/* Checked State - el borde debe ser gris, fondo azul brand con checkmark blanco */
+.ubits-checkbox--checked .ubits-checkbox__square {
+    border-color: var(--modifiers-normal-color-light-border-1) !important;
+    background-color: var(--modifiers-normal-color-light-accent-brand) !important;
+}
+
+.ubits-checkbox--checked .ubits-checkbox__checkmark {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.ubits-checkbox--checked .ubits-checkbox__checkmark::after {
+    border-color: var(--modifiers-normal-color-light-bg-1);
+}
+
+/* Indeterminate State - borde gris, fondo azul brand con línea horizontal blanca */
+.ubits-checkbox--indeterminate .ubits-checkbox__square {
+    border-color: var(--modifiers-normal-color-light-border-1) !important;
+    background-color: var(--modifiers-normal-color-light-accent-brand) !important;
+}
+
+.ubits-checkbox--indeterminate .ubits-checkbox__indeterminate {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.ubits-checkbox--indeterminate .ubits-checkbox__indeterminate::after {
+    background-color: var(--modifiers-normal-color-light-bg-1);
+}
+
+/* Focus State */
+.ubits-checkbox__input:focus-visible + .ubits-checkbox__square {
+    /* Efecto Focus de los tokens UBITS */
+    outline: none;
+    box-shadow: 0 0 0 4px var(--modifiers-normal-focus-color, rgba(82, 151, 244, 0.3));
+}
+
+/* Disabled State */
+.ubits-checkbox--disabled,
+.ubits-checkbox--disabled .ubits-checkbox__square {
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.ubits-checkbox--disabled .ubits-checkbox__square {
+    border-color: var(--modifiers-normal-color-light-border-disabled, var(--ubits-border-disabled-button, #e1e2e5)) !important;
+    background-color: var(--modifiers-normal-color-light-bg-1) !important;
+}
+
+.ubits-checkbox--disabled .ubits-checkbox__checkmark::after {
+    border-color: var(--modifiers-normal-color-light-fg-on-disabled);
+}
+
+.ubits-checkbox--disabled .ubits-checkbox__label {
+    color: var(--modifiers-normal-color-light-fg-disabled) !important;
+}
+
+.ubits-checkbox--disabled .ubits-checkbox__complementary-text {
+    color: var(--modifiers-normal-color-light-fg-disabled) !important;
+}
+
+/* Disabled checked state */
+.ubits-checkbox--disabled.ubits-checkbox--checked .ubits-checkbox__square {
+    border-color: var(--modifiers-normal-color-light-border-disabled, var(--ubits-border-disabled-button, #e1e2e5)) !important;
+    background-color: var(--modifiers-normal-color-light-bg-1) !important;
+}
+
+.ubits-checkbox--disabled.ubits-checkbox--checked .ubits-checkbox__checkmark::after {
+    border-color: var(--modifiers-normal-color-light-fg-on-disabled);
+}
+
+/* Disabled indeterminate state */
+.ubits-checkbox--disabled.ubits-checkbox--indeterminate .ubits-checkbox__square {
+    border-color: var(--modifiers-normal-color-light-border-disabled, var(--ubits-border-disabled-button, #e1e2e5)) !important;
+    background-color: var(--modifiers-normal-color-light-bg-1) !important;
+}
+
+.ubits-checkbox--disabled.ubits-checkbox--indeterminate .ubits-checkbox__indeterminate::after {
+    background-color: var(--modifiers-normal-color-light-fg-on-disabled);
+}
+
+/* ========================================
+   DARK MODE
+   ======================================== */
+
+[data-theme="dark"] {
+  --modifiers-normal-color-light-bg-1: var(--modifiers-normal-color-dark-bg-1);
+  --modifiers-normal-color-light-border-1: var(--modifiers-normal-color-dark-border-1);
+  --modifiers-normal-color-light-fg-1-high: var(--modifiers-normal-color-dark-fg-1-high);
+  --modifiers-normal-color-light-fg-1-medium: var(--modifiers-normal-color-dark-fg-1-medium);
+  --modifiers-normal-color-light-accent-brand: var(--modifiers-normal-color-dark-accent-brand);
+  --modifiers-normal-color-light-border-disabled: var(--modifiers-normal-color-dark-border-disabled);
+  --modifiers-normal-color-light-fg-disabled: var(--modifiers-normal-color-dark-fg-disabled);
+  --modifiers-normal-color-light-fg-on-disabled: var(--modifiers-normal-color-dark-fg-on-disabled);
+}
+

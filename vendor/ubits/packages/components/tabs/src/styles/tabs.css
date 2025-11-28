@@ -1,0 +1,178 @@
+/* ========================================
+   TABS COMPONENT
+   Migrado a tokens Figma
+   ======================================== */
+
+/* Tabs Container */
+.ubits-tabs {
+  display: flex;
+  gap: 0;
+  align-items: center;
+  background-color: var(--modifiers-normal-color-light-bg-2);
+  padding: 0;
+  border-radius: var(--ubits-border-radius-sm, 8px); /* Token UBITS específico - mantener */
+  width: fit-content;
+}
+
+/* Individual Tab */
+.ubits-tab {
+  background: none;
+  border: none;
+  padding: 0 16px; /* MANTENER MEDIDAS ORIGINALES */
+  height: 40px; /* MANTENER MEDIDA ORIGINAL */
+  cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  gap: var(--p-spacing-mode-1-sm, 8px);
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: var(--ubits-border-radius-sm, 6px); /* Token UBITS específico - mantener */
+  font-family: var(--font-family-noto-sans-font-family);
+  font-size: var(--modifiers-normal-body-sm-regular-fontsize);
+  line-height: var(--modifiers-normal-body-sm-regular-lineheight);
+  color: var(--modifiers-normal-color-light-fg-1-medium);
+  font-weight: var(--modifiers-normal-body-sm-semibold-fontweight, 600);
+  white-space: nowrap;
+  width: fit-content;
+}
+
+/* Tab Icon - Inactive (regular) */
+.ubits-tab i {
+  font-size: 16px; /* MANTENER MEDIDA ORIGINAL */
+  width: 16px; /* MANTENER MEDIDA ORIGINAL */
+  height: 16px; /* MANTENER MEDIDA ORIGINAL */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  color: var(--modifiers-normal-color-light-fg-1-medium);
+}
+
+/* Tab Label - Inactive */
+.ubits-tab__label {
+  color: var(--modifiers-normal-color-light-fg-1-medium);
+  font-weight: var(--modifiers-normal-body-sm-semibold-fontweight, 600);
+}
+
+/* Hover State (solo para tabs inactivos) */
+.ubits-tab:not(.ubits-tab--active):not(.ubits-tab--disabled):hover {
+  background-color: var(--modifiers-normal-color-light-bg-3);
+}
+
+.ubits-tab:not(.ubits-tab--active):not(.ubits-tab--disabled):hover i {
+  color: var(--modifiers-normal-color-light-fg-1-high);
+}
+
+.ubits-tab:not(.ubits-tab--active):not(.ubits-tab--disabled):hover .ubits-tab__label {
+  color: var(--modifiers-normal-color-light-fg-1-high);
+}
+
+/* Active State */
+.ubits-tab--active {
+  background-color: var(--modifiers-normal-color-light-bg-1);
+  color: var(--modifiers-normal-color-light-fg-1-high);
+  font-weight: var(--modifiers-normal-body-sm-bold-fontweight, 700) !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); /* MANTENER VALOR HARDCODEADO PARA SHADOW */
+}
+
+/* Active Tab Icon - Solid */
+.ubits-tab--active i {
+  color: var(--modifiers-normal-color-light-fg-1-high);
+}
+
+/* Active Tab Label - Bold */
+.ubits-tab--active .ubits-tab__label {
+  color: var(--modifiers-normal-color-light-fg-1-high);
+  font-weight: var(--modifiers-normal-body-sm-bold-fontweight, 700) !important;
+}
+
+/* Indicador Active removido - ya no se muestra línea vertical */
+
+/* Disabled State */
+.ubits-tab--disabled {
+  opacity: 0.5; /* MANTENER VALOR HARDCODEADO */
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.ubits-tab--disabled i {
+  color: var(--modifiers-normal-color-light-fg-disabled);
+}
+
+.ubits-tab--disabled .ubits-tab__label {
+  color: var(--modifiers-normal-color-light-fg-disabled);
+}
+
+/* Dark Mode Support */
+[data-theme="dark"] .ubits-tabs {
+  background-color: var(--modifiers-normal-color-dark-bg-2);
+}
+
+[data-theme="dark"] .ubits-tab {
+  color: var(--modifiers-normal-color-dark-fg-1-medium);
+}
+
+[data-theme="dark"] .ubits-tab i {
+  color: var(--modifiers-normal-color-dark-fg-1-medium);
+}
+
+[data-theme="dark"] .ubits-tab__label {
+  color: var(--modifiers-normal-color-dark-fg-1-medium);
+}
+
+[data-theme="dark"] .ubits-tab:not(.ubits-tab--active):not(.ubits-tab--disabled):hover {
+  background-color: var(--modifiers-normal-color-dark-bg-3);
+}
+
+[data-theme="dark"] .ubits-tab:not(.ubits-tab--active):not(.ubits-tab--disabled):hover i {
+  color: var(--modifiers-normal-color-dark-fg-1-high);
+}
+
+[data-theme="dark"] .ubits-tab:not(.ubits-tab--active):not(.ubits-tab--disabled):hover .ubits-tab__label {
+  color: var(--modifiers-normal-color-dark-fg-1-high);
+}
+
+[data-theme="dark"] .ubits-tab--active {
+  background-color: var(--modifiers-normal-color-dark-bg-1);
+  color: var(--modifiers-normal-color-dark-fg-1-high);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3); /* MANTENER VALOR HARDCODEADO PARA SHADOW */
+}
+
+[data-theme="dark"] .ubits-tab--active i {
+  color: var(--modifiers-normal-color-dark-fg-1-high);
+}
+
+[data-theme="dark"] .ubits-tab--active .ubits-tab__label {
+  color: var(--modifiers-normal-color-dark-fg-1-high);
+}
+
+[data-theme="dark"] .ubits-tab--disabled i {
+  color: var(--modifiers-normal-color-dark-fg-disabled);
+}
+
+[data-theme="dark"] .ubits-tab--disabled .ubits-tab__label {
+  color: var(--modifiers-normal-color-dark-fg-disabled);
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+
+@media (max-width: 768px) {
+  .ubits-tab {
+    padding: 0 12px; /* MANTENER MEDIDAS ORIGINALES */
+    height: 36px; /* MANTENER MEDIDA ORIGINAL */
+    font-size: var(--modifiers-normal-body-sm-regular-fontsize);
+    line-height: var(--modifiers-normal-body-sm-regular-lineheight);
+  }
+  
+  .ubits-tab i {
+    font-size: 14px; /* MANTENER MEDIDA ORIGINAL */
+    width: 14px; /* MANTENER MEDIDA ORIGINAL */
+    height: 14px; /* MANTENER MEDIDA ORIGINAL */
+  }
+}
+

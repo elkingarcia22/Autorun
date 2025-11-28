@@ -1,0 +1,573 @@
+/* ========================================
+   UBITS SIDEBAR COMPONENT
+   Componente de navegación lateral
+   Migrado a tokens Figma (mantiene tokens específicos del sidebar)
+   ======================================== */
+
+/* ========================================
+   BASE SIDEBAR STYLES
+   ======================================== */
+
+.ubits-sidebar {
+    background-color: var(--ubits-sidebar-bg);
+    width: 96px; /* MANTENER MEDIDA ORIGINAL */
+    min-width: 96px; /* MANTENER MEDIDA ORIGINAL */
+    max-width: 96px; /* MANTENER MEDIDA ORIGINAL */
+    height: 578px; /* MANTENER MEDIDA ORIGINAL */
+    padding: var(--ubits-spacing-lg, 16px) 0; /* Sin padding horizontal para que items estén pegados al borde */
+    display: flex;
+    flex-direction: column;
+    gap: var(--ubits-spacing-lg);
+    align-items: center;
+    justify-content: flex-start;
+    overflow: hidden;
+    border-radius: var(--ubits-border-radius-md);
+    position: fixed;
+    left: 24px; /* MANTENER MEDIDA ORIGINAL */
+    top: 16px; /* MANTENER MEDIDA ORIGINAL */
+    z-index: 10;
+    box-sizing: border-box;
+}
+
+/* Contenedor principal para header y body */
+.ubits-sidebar-main {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ubits-spacing-lg);
+    align-items: center;
+    flex-shrink: 0;
+}
+
+/* ========================================
+   SIDEBAR HEADER
+   ======================================== */
+
+.ubits-sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    flex-shrink: 0;
+}
+
+.ubits-sidebar-logo {
+    display: flex;
+    gap: var(--ubits-spacing-sm);
+    align-items: center;
+    justify-content: flex-start;
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: none;
+    padding: var(--ubits-spacing-xs);
+    border-radius: var(--ubits-border-radius-sm);
+}
+
+/* Sin efecto hover para el logo */
+.ubits-sidebar-logo:hover {
+    background: transparent;
+    transform: none;
+}
+
+.ubits-sidebar-logo img {
+    width: 24px; /* MANTENER MEDIDA ORIGINAL */
+    height: 25px; /* MANTENER MEDIDA ORIGINAL */
+    object-fit: contain;
+}
+
+/* ========================================
+   SIDEBAR BODY
+   ======================================== */
+
+.ubits-sidebar-body {
+    flex: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--ubits-spacing-sm);
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 0;
+    min-width: 0;
+    flex-shrink: 0;
+}
+
+/* ========================================
+   SIDEBAR FOOTER
+   ======================================== */
+
+.ubits-sidebar-footer {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ubits-spacing-sm);
+    align-items: center;
+    justify-content: flex-start;
+    margin-top: auto;
+    padding: var(--ubits-spacing-lg) 0 0 0;
+    width: 100%;
+    flex-shrink: 0;
+    border-top: 1px solid var(--ubits-sidebar-button-fg-default);
+    position: relative;
+}
+
+.ubits-sidebar-footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background-color: var(--modifiers-normal-color-light-fg-1-medium);
+}
+
+/* ========================================
+   NAVIGATION BUTTONS
+   ======================================== */
+
+.ubits-sidebar-nav-button {
+    background: rgba(255, 255, 255, 0);
+    border: none;
+    padding: var(--ubits-spacing-sm);
+    border-radius: 1000px; /* MANTENER (para círculos perfectos) */
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    flex-shrink: 0;
+    width: 40px; /* MANTENER MEDIDA ORIGINAL */
+    height: 40px; /* MANTENER MEDIDA ORIGINAL */
+    overflow: hidden;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.ubits-sidebar-nav-button i {
+    font-size: 16px; /* MANTENER MEDIDA ORIGINAL */
+    color: var(--ubits-sidebar-button-fg-default);
+    width: 24px; /* MANTENER MEDIDA ORIGINAL */
+    height: 24px; /* MANTENER MEDIDA ORIGINAL */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    flex-shrink: 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    line-height: 1;
+    position: relative;
+}
+
+/* Asegurar que los iconos FontAwesome estén perfectamente centrados */
+.ubits-sidebar-nav-button i::before {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    line-height: 1;
+}
+
+/* Efecto de brillo deshabilitado - quitado según requerimientos */
+/* .ubits-sidebar-nav-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.6s ease;
+    pointer-events: none;
+}
+
+.ubits-sidebar-nav-button:hover::before {
+    left: 100%;
+} */
+
+/* ========================================
+   BUTTON STATES
+   ======================================== */
+
+/* Default State */
+.ubits-sidebar-nav-button {
+    background: rgba(255, 255, 255, 0);
+}
+
+/* Hover State */
+.ubits-sidebar-nav-button:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.08);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+}
+
+.ubits-sidebar-nav-button:hover:not(:disabled) i {
+    color: var(--ubits-sidebar-button-fg-hover);
+    transform: scale(1.1);
+}
+
+/* Active State (Seleccionado) */
+.ubits-sidebar-nav-button.active {
+    background: var(--ubits-sidebar-button-bg-active);
+}
+
+.ubits-sidebar-nav-button.active i {
+    color: var(--ubits-sidebar-button-fg-active);
+}
+
+/* Pressed State (Al mantener presionado) */
+.ubits-sidebar-nav-button:active:not(:disabled) {
+    background: var(--ubits-sidebar-button-bg-pressed);
+    transform: scale(0.95);
+}
+
+.ubits-sidebar-nav-button:active:not(:disabled) i {
+    color: var(--ubits-sidebar-button-fg-pressed);
+    transform: scale(0.9);
+}
+
+/* Focus State (Navegación con teclado) */
+.ubits-sidebar-nav-button:focus-visible {
+    background: rgba(255, 255, 255, 0);
+    box-shadow: 0px 0px 0px 4px var(--ubits-button-focus-ring, rgba(82, 151, 244, 0.3));
+    outline: none;
+}
+
+.ubits-sidebar-nav-button:focus-visible i {
+    color: var(--ubits-sidebar-button-fg-default);
+}
+
+/* Disabled State */
+.ubits-sidebar-nav-button:disabled {
+    background: var(--ubits-sidebar-button-bg-disabled);
+    cursor: not-allowed;
+}
+
+.ubits-sidebar-nav-button:disabled i {
+    color: var(--ubits-sidebar-button-fg-disabled);
+}
+
+/* ========================================
+   DARK MODE TOGGLE (Especial)
+   ======================================== */
+
+.ubits-sidebar-nav-button#ubits-darkmode-toggle {
+    background: rgba(255, 255, 255, 0) !important;
+}
+
+.ubits-sidebar-nav-button#ubits-darkmode-toggle:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+}
+
+.ubits-sidebar-nav-button#ubits-darkmode-toggle:active {
+    background: rgba(255, 255, 255, 0.2) !important;
+}
+
+/* El icono del botón modo oscuro SIEMPRE debe ser visible */
+.ubits-sidebar-nav-button#ubits-darkmode-toggle i {
+    color: var(--ubits-sidebar-button-fg-default) !important;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    margin: 0 auto;
+}
+
+.ubits-sidebar-nav-button#ubits-darkmode-toggle i::before {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+    height: 100%;
+}
+
+/* Animación de transición de icono - una sola vuelta */
+.ubits-sidebar-nav-button#ubits-darkmode-toggle i.ubits-icon-transition {
+    animation: iconSpinFade 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes iconSpinFade {
+    0% {
+        transform: rotate(0deg) scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: rotate(180deg) scale(1.2);
+        opacity: 0.6;
+    }
+    100% {
+        transform: rotate(360deg) scale(1);
+        opacity: 1;
+    }
+}
+
+.ubits-sidebar-nav-button#ubits-darkmode-toggle:hover i {
+    color: var(--ubits-sidebar-button-fg-hover) !important;
+}
+
+/* Cambio de icono en modo oscuro */
+.ubits-sidebar-nav-button#ubits-darkmode-toggle[data-theme="dark"] i {
+    color: var(--modifiers-normal-color-light-fg-yellow-subtle-default);
+}
+
+.ubits-sidebar-nav-button#ubits-darkmode-toggle[data-theme="light"] i {
+    color: var(--ubits-sidebar-button-fg-default);
+}
+
+/* Hover normal para dark mode toggle - sin efectos especiales */
+.ubits-sidebar-nav-button#ubits-darkmode-toggle:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+/* ========================================
+   USER AVATAR
+   ======================================== */
+
+.ubits-sidebar-user-avatar-container {
+    position: relative;
+}
+
+.ubits-sidebar-user-avatar {
+    width: 40px; /* MANTENER MEDIDA ORIGINAL */
+    height: 40px; /* MANTENER MEDIDA ORIGINAL */
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--modifiers-normal-color-light-fg-1-medium);
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.ubits-sidebar-user-avatar:hover {
+    background: var(--modifiers-normal-color-light-fg-1-medium);
+    transform: scale(1.05);
+}
+
+.ubits-sidebar-user-avatar img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid transparent;
+    transition: border-color 0.2s ease;
+}
+
+.ubits-sidebar-user-avatar:hover img {
+    border-color: var(--modifiers-normal-color-light-fg-1-high-inverted);
+}
+
+/* Avatar active state */
+.ubits-sidebar-user-avatar.active img {
+    border: 2px solid var(--modifiers-static-inverted-color-light-accent-brand) !important;
+}
+
+/* ========================================
+   TOOLTIPS
+   ======================================== */
+
+.ubits-sidebar-tooltip {
+    position: absolute;
+    background: var(--ubits-sidebar-bg);
+    color: var(--ubits-fg-1-high-static-inverted, var(--modifiers-static-inverted-color-light-fg-1-high, #edeeef));
+    padding: var(--ubits-spacing-sm) var(--ubits-spacing-md);
+    border-radius: var(--ubits-border-radius-sm);
+    white-space: nowrap;
+    z-index: 10000;
+    box-shadow: 0px var(--ubits-spacing-xs, 4px) var(--ubits-spacing-sm, 8px) rgba(0, 0, 0, 0.15);
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+    display: block;
+    transition: opacity 0.2s ease;
+    font-family: var(--font-family-noto-sans-font-family, 'Noto Sans', sans-serif);
+    font-size: var(--modifiers-normal-body-sm-regular-fontsize, 14px);
+    font-weight: var(--weight-regular, 400);
+}
+
+.ubits-sidebar-tooltip::before {
+    content: '';
+    position: absolute;
+    left: -6px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 6px solid transparent;
+    border-right-color: var(--ubits-sidebar-bg);
+}
+
+.ubits-sidebar-tooltip.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* ========================================
+   PROFILE MENU
+   ======================================== */
+
+.ubits-sidebar-profile-menu {
+    display: none;
+    position: fixed;
+    left: 96px; /* MANTENER MEDIDA ORIGINAL (96px sidebar) */
+    bottom: 27px; /* MANTENER MEDIDA ORIGINAL */
+    width: 200px; /* MANTENER MEDIDA ORIGINAL */
+    background: var(--ubits-sidebar-bg, #202837);
+    border: none;
+    border-radius: var(--ubits-border-radius-md, 8px);
+    box-shadow: 0 var(--ubits-spacing-xs, 4px) var(--ubits-spacing-md, 12px) rgba(0, 0, 0, 0.15);
+    z-index: 2000;
+    padding: var(--ubits-spacing-sm, 8px) 0;
+}
+
+.ubits-sidebar-profile-menu.show {
+    display: block !important;
+}
+
+.ubits-sidebar-profile-menu-item {
+    display: flex;
+    align-items: center;
+    padding: var(--ubits-spacing-sm, 8px) var(--ubits-spacing-lg, 16px);
+    color: var(--ubits-sidebar-button-fg-default, #d0d2d5);
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.ubits-sidebar-profile-menu-item span {
+    color: inherit;
+    font-family: var(--font-family-noto-sans-font-family, 'Noto Sans', sans-serif);
+    font-size: var(--modifiers-normal-body-sm-regular-fontsize, var(--modifiers-normal-body-xs-regular-fontsize, 13px));
+    font-weight: var(--weight-regular, 400);
+    line-height: var(--modifiers-normal-body-sm-regular-lineheight, var(--modifiers-normal-body-xs-regular-lineheight, 19.5px));
+}
+
+.ubits-sidebar-profile-menu-item:hover {
+    background: var(--ubits-sidebar-button-bg-pressed, #3b4350);
+    color: var(--ubits-sidebar-button-fg-hover, #edeeef);
+}
+
+.ubits-sidebar-profile-menu-item:active {
+    background: var(--ubits-sidebar-button-bg-active, #ffffff);
+    color: var(--ubits-sidebar-button-fg-active, #303a47);
+}
+
+.ubits-sidebar-profile-menu-item i {
+    font-size: var(--modifiers-normal-body-sm-regular-fontsize, 13px);
+    margin-right: 10px; /* MANTENER MEDIDA ORIGINAL */
+    color: var(--ubits-sidebar-button-fg-default, #d0d2d5);
+    width: 16px; /* MANTENER MEDIDA ORIGINAL */
+    text-align: center;
+}
+
+.ubits-sidebar-profile-menu-item:hover i {
+    color: var(--ubits-sidebar-button-fg-hover, #edeeef);
+}
+
+/* Profile menu divider */
+/* ⚠️ IMPORTANTE: Los dividers del menú de perfil mantienen el mismo color claro/blanco en light y dark mode */
+.ubits-sidebar-profile-menu-divider {
+    height: 1px;
+    background: var(--ubits-sidebar-button-fg-hover, var(--ubits-fg-1-high-static-inverted, #edeeef));
+    margin: var(--ubits-spacing-xs, 4px) 0;
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+
+/* ⚠️ IMPORTANTE: Ocultar Sidebar en resoluciones menores a 1024px (mismo breakpoint que TabBar) */
+@media (max-width: 1023px) {
+    .ubits-sidebar {
+        display: none !important; /* Oculto en móvil/tablet, se reemplaza por TabBar */
+    }
+}
+
+@media (max-width: 1024px) {
+    .ubits-sidebar-nav-button {
+        width: 36px; /* MANTENER MEDIDA ORIGINAL */
+        height: 36px; /* MANTENER MEDIDA ORIGINAL */
+        padding: 6px; /* MANTENER MEDIDA ORIGINAL */
+    }
+    
+    .ubits-sidebar-nav-button i {
+        width: 20px; /* MANTENER MEDIDA ORIGINAL */
+        height: 20px; /* MANTENER MEDIDA ORIGINAL */
+        font-size: var(--modifiers-normal-body-sm-regular-fontsize);
+    }
+}
+
+/* ========================================
+   DARK MODE
+   ======================================== */
+
+/* Nota: Los colores del sidebar NO cambian con el tema (intencional) */
+/* Los tokens del sidebar son los mismos en light y dark mode */
+/* Sin embargo, los tokens migrados (fg-1-medium, border-1, etc.) SÍ cambian con el tema */
+
+/* Asegurar que el sidebar mantenga sus colores en dark mode */
+body[data-theme="dark"] .ubits-sidebar,
+html[data-theme="dark"] .ubits-sidebar {
+    background-color: var(--ubits-sidebar-bg) !important;
+}
+
+body[data-theme="dark"] .ubits-sidebar-nav-button i,
+html[data-theme="dark"] .ubits-sidebar-nav-button i {
+    color: var(--ubits-sidebar-button-fg-default) !important;
+}
+
+body[data-theme="dark"] .ubits-sidebar-nav-button.active i,
+html[data-theme="dark"] .ubits-sidebar-nav-button.active i {
+    color: var(--ubits-sidebar-button-fg-active) !important;
+}
+
+/* ⚠️ IMPORTANTE: El menú de perfil mantiene el mismo borde claro/blanco en dark mode (igual que light) */
+body[data-theme="dark"] .ubits-sidebar-profile-menu,
+html[data-theme="dark"] .ubits-sidebar-profile-menu {
+    background: var(--ubits-sidebar-bg, #202837) !important;
+    border-color: var(--ubits-sidebar-button-fg-hover, var(--ubits-fg-1-high-static-inverted, #edeeef)) !important;
+}
+
+/* Dark mode para tokens migrados */
+[data-theme="dark"] .ubits-sidebar-footer::before {
+    background-color: var(--modifiers-normal-color-dark-fg-1-medium);
+}
+
+[data-theme="dark"] .ubits-sidebar-user-avatar {
+    background: var(--modifiers-normal-color-dark-fg-1-medium);
+}
+
+[data-theme="dark"] .ubits-sidebar-user-avatar:hover {
+    background: var(--modifiers-normal-color-dark-fg-1-medium);
+}
+
+[data-theme="dark"] .ubits-sidebar-user-avatar:hover img {
+    border-color: var(--modifiers-normal-color-dark-fg-1-high-inverted);
+}
+
+[data-theme="dark"] .ubits-sidebar-tooltip {
+    color: var(--ubits-fg-1-high-static-inverted, var(--modifiers-static-inverted-color-dark-fg-1-high, #edeeef));
+}
+
+/* ⚠️ IMPORTANTE: El menú de perfil mantiene el mismo borde claro/blanco en dark mode (igual que light) */
+[data-theme="dark"] .ubits-sidebar-profile-menu {
+    border-color: var(--ubits-sidebar-button-fg-hover, var(--ubits-fg-1-high-static-inverted, #edeeef)) !important;
+}
+
+/* ⚠️ IMPORTANTE: Los dividers del menú de perfil mantienen el mismo color claro/blanco en dark mode (igual que light) */
+[data-theme="dark"] .ubits-sidebar-profile-menu-divider {
+    background: var(--ubits-sidebar-button-fg-hover, var(--ubits-fg-1-high-static-inverted, #edeeef)) !important;
+}
+
+[data-theme="dark"] .ubits-sidebar-nav-button#ubits-darkmode-toggle[data-theme="dark"] i {
+    color: var(--modifiers-normal-color-dark-fg-yellow-subtle-default);
+}
+

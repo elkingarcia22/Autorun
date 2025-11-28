@@ -156,9 +156,19 @@ npm run test:watch # Tests en modo watch
 
 ## 📚 Documentación
 
+### ⚠️ IMPORTANTE: Leer Antes de Trabajar
+
+**Cursor lee automáticamente estos archivos:**
+
+1. **[`.cursorrules`](./.cursorrules)** - ⚠️ **OBLIGATORIO** - Reglas críticas que Cursor debe seguir
+2. **[`GUIA-TRABAJO-TEMPLATE.md`](./GUIA-TRABAJO-TEMPLATE.md)** - ⚠️ **OBLIGATORIO** - Guía completa para trabajar con templates UBITS
+3. **[`ESTRATEGIA-COMPONENTES-UBITS.md`](./ESTRATEGIA-COMPONENTES-UBITS.md)** - Estrategia de uso de componentes
+4. **[`GUIA-USO-COMPONENTES-UBITS.md`](./GUIA-USO-COMPONENTES-UBITS.md)** - Cómo usar componentes UBITS
+
 ### Guías Principales
 
 - **[QUICK-START.md](./QUICK-START.md)** - Solución rápida de problemas
+- **[INDEX.md](./INDEX.md)** - Instrucciones de inicialización
 - **[docs/GUIA-SETUP-UBITS.md](./docs/GUIA-SETUP-UBITS.md)** - Setup completo para UBITS
 - **[packages/proyecto-app/tokens/index.html](./packages/proyecto-app/tokens/index.html)** - Hub de documentación interactiva
 

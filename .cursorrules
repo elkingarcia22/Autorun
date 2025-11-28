@@ -1,0 +1,186 @@
+# 🎯 Reglas para Trabajar con Templates UBITS en Autorun
+
+## ⚠️ REGLAS CRÍTICAS - LEER ANTES DE TRABAJAR
+
+### 1. **USAR SOLO COMPONENTES UBITS EXISTENTES**
+- ❌ NO crear nuevos componentes
+- ❌ NO duplicar componentes
+- ✅ Usar componentes que ya existen: `window.createSidebar()`, `window.createSubNav()`, `window.createTabBar()`, `window.createTabs()`, `window.createDataTable()`, etc.
+- ✅ Los componentes están en: `vendor/ubits/packages/components/` (portable) o `Desktop/UBITS/packages/components/` (legacy)
+
+### 1.1. **FORMATO CORRECTO DE ICONOS EN `window.createTabs()`** ⚠️ CRÍTICO
+- ❌ **NUNCA usar:** `icon: 'far fa-home'` o `icon: 'fas fa-user'`
+- ✅ **SIEMPRE usar:** `icon: 'home'` o `icon: 'user'` (solo el nombre del icono)
+- El componente automáticamente agrega `fa-` y el estilo (`far` para inactivo, `fas` para activo)
+- Ejemplo correcto:
+  ```javascript
+  window.createTabs({
+    tabs: [
+      { id: 'tab1', label: 'Tab 1', icon: 'home' },  // ✅ CORRECTO
+      { id: 'tab2', label: 'Tab 2', icon: 'user' }   // ✅ CORRECTO
+    ]
+  }, 'container-id')
+  ```
+
+### 2. **USAR TOKENS UBITS CORRECTAMENTE**
+- ✅ Light mode: `--ubits-accent-brand-static` (siempre azul #0c5bef)
+- ✅ Dark mode: `--modifiers-normal-color-dark-accent-blue` (#8c91fa)
+- ✅ Los modifiers tienen versión light y dark
+- ✅ Static = mismo color en light y dark
+- ✅ Normal = diferente color en light y dark
+- ✅ NO sobrescribir tokens con `!important` - dejar que el componente use sus propios tokens
+
+### 3. **RUTAS RELATIVAS (PREFERIDO) O ABSOLUTAS file:// (LEGACY)**
+- ✅ **PREFERIDO:** Usar rutas relativas desde `prototypes/` hacia `vendor/ubits/packages/`
+- ✅ Ejemplo relativo: `../vendor/ubits/packages/tokens/dist/tokens.css`
+- ✅ **LEGACY:** Si no existe `vendor/ubits/`, usar rutas absolutas `file://` hacia `Desktop/UBITS/`
+- ✅ El template carga automáticamente `tokens.css` y `figma-tokens.css`
+- ✅ El template carga automáticamente `data-table.umd.js` para el componente DataTable
+
+### 4. **UBITS EN VENDOR (PORTABLE)**
+- ✅ UBITS está copiado en `vendor/ubits/packages/` para portabilidad
+- ✅ Los templates usan rutas relativas desde `prototypes/` hacia `vendor/ubits/packages/`
+- ✅ Funciona en cualquier computador sin rutas absolutas
+- ✅ Los templates están en `prototypes/canvas-*.html`
+- ⚠️ **LEGACY:** Si no existe `vendor/ubits/`, se usa `Desktop/UBITS/` con rutas absolutas
+
+### 5. **ESTRUCTURA DE TOKENS**
+- Los tokens de modifiers tienen estructura: `--modifiers-[tipo]-color-[theme]-[categoria]-[color]`
+- Ejemplo: `--modifiers-normal-color-dark-accent-blue`
+- `normal` = cambia entre light/dark
+- `static` = mismo color en light/dark
+- `light`/`dark` = tema específico
+- `accent-blue` = categoría y color
+
+## 📚 ARCHIVOS DE REFERENCIA OBLIGATORIOS
+
+Antes de trabajar en un template, LEER:
+1. `ESTRATEGIA-COMPONENTES-UBITS.md` - Estrategia completa
+2. `GUIA-USO-COMPONENTES-UBITS.md` - Cómo usar componentes
+3. `GUIA-IDENTIFICACION-COMPONENTES.md` - Cómo identificar componentes desde imágenes
+4. `CATALOGO-COMPONENTES-UBITS.md` - Catálogo completo de componentes UBITS
+5. `GUIA-ERRORES-COMUNES-UBITS.md` - ⚠️ **OBLIGATORIO:** Errores comunes a evitar
+6. `GUIA-PROCESO-IMPLEMENTACION-PASO-A-PASO.md` - ⚠️ **OBLIGATORIO:** Proceso de implementación paso a paso
+7. `INDEX.md` - Flujo de inicialización
+
+## 🔍 VERIFICACIÓN ANTES DE TRABAJAR
+
+1. Verificar que existe `vendor/ubits/packages/` (preferido) o `Desktop/UBITS/packages/` (legacy)
+2. Verificar que el template carga `tokens.css` y `figma-tokens.css`
+3. Verificar que los componentes están disponibles:
+   - `window.createSidebar`
+   - `window.createSubNav`
+   - `window.createTabBar`
+   - `window.createTabs` ⭐ (nuevo)
+   - `window.createDataTable` ⭐ (nuevo, desde UMD)
+4. Verificar que los tokens están disponibles en la consola del navegador
+
+## 🔍 IDENTIFICACIÓN DE COMPONENTES DESDE IMÁGENES
+
+**⚠️ REGLA CRÍTICA:** Cuando recibas una imagen o solicitud de componente:
+
+1. **SIEMPRE consultar primero:**
+   - Abrir `CATALOGO-COMPONENTES-UBITS.md`
+   - Buscar componente similar en el catálogo
+   - Verificar componentes disponibles: `window.UBITS`, `window.createSidebar`, etc.
+
+2. **SIEMPRE preguntar si no estás seguro:**
+   - "¿Este componente que muestras es un componente UBITS existente?"
+   - "¿O quieres que lo cree usando los tokens de UBITS?"
+   - **NUNCA asumas** - es mejor preguntar que crear algo incorrecto
+
+3. **SIEMPRE usar componentes existentes:**
+   - Si identificas un componente UBITS, úsalo
+   - NO crees duplicados
+   - NO crees nuevos componentes sin preguntar primero
+
+4. **Proceso obligatorio:**
+   - Analizar imagen/solicitud
+   - Consultar catálogo
+   - Verificar componentes disponibles
+   - **Preguntar al usuario si no estás seguro**
+   - Usar componente existente o crear con tokens UBITS
+
+**Ver guía completa:** `GUIA-IDENTIFICACION-COMPONENTES.md`
+
+## 🔄 PROCESO DE IMPLEMENTACIÓN PASO A PASO (OBLIGATORIO)
+
+**⚠️ REGLA CRÍTICA:** **NUNCA implementar todo de golpe. SIEMPRE dividir en tareas pequeñas y pedir aprobación.**
+
+### **FASE 1: ANÁLISIS Y PLANIFICACIÓN** (OBLIGATORIO)
+
+1. **Analizar la imagen/solicitud:**
+   - Identificar componentes UBITS
+   - Identificar estructura visual
+   - Identificar funcionalidades
+   - Identificar tokens y estilos
+
+2. **Crear plan de implementación:**
+   - Listar componentes identificados
+   - Describir estructura
+   - Listar tokens a usar
+   - **Dividir en tareas pequeñas** (ej: Tarea 1: Tabs, Tarea 2: Barra acciones, Tarea 3: DataTable básico, Tarea 4: DataTable completo)
+
+3. **Mostrar plan al usuario:**
+   - Presentar análisis completo
+   - Mostrar plan de tareas
+   - **Esperar aprobación explícita antes de implementar**
+
+### **FASE 2: IMPLEMENTACIÓN PASO A PASO** (OBLIGATORIO)
+
+**Para cada tarea:**
+
+1. **Implementar SOLO esa tarea** (no avanzar a la siguiente)
+2. **Verificar que funciona correctamente**
+3. **Mostrar al usuario lo implementado**
+4. **Pedir aprobación explícita:** "¿Aprobamos para continuar con la siguiente tarea?"
+5. **Solo después de aprobación, continuar con la siguiente tarea**
+
+### **EJEMPLO DE DIVISIÓN DE TAREAS:**
+
+**Para una interfaz con Tabs + Barra de acciones + DataTable:**
+
+- ✅ **Tarea 1:** Estructura HTML base + Tabs (solo tabs, nada más)
+- ✅ **Tarea 2:** Barra de acciones (solo después de aprobación de Tarea 1)
+- ✅ **Tarea 3:** DataTable básico (solo columnas mínimas, sin funcionalidades avanzadas)
+- ✅ **Tarea 4:** DataTable completo (todas las columnas, funcionalidades, personalización)
+
+**NUNCA hacer:** Implementar Tarea 1 + 2 + 3 + 4 en un solo paso.
+
+**Ver guía completa:** `GUIA-PROCESO-IMPLEMENTACION-PASO-A-PASO.md`
+
+## ✅ CHECKLIST PARA CREAR/MODIFICAR PÁGINAS
+
+- [ ] **ANTES DE TODO:** Consultar `CATALOGO-COMPONENTES-UBITS.md` si recibes imagen
+- [ ] **SI NO ESTÁS SEGURO:** Preguntar al usuario si es componente UBITS o crear nuevo
+- [ ] Usar template existente como base (`prototypes/canvas-*.html`)
+- [ ] Verificar componentes disponibles en consola:
+  - `window.createSidebar`, `window.createSubNav`, `window.createTabBar`
+  - `window.createTabs` ⭐ (nuevo)
+  - `window.createDataTable` ⭐ (nuevo)
+- [ ] Usar solo componentes UBITS existentes
+- [ ] Usar tokens UBITS correctos (no sobrescribir)
+- [ ] Rutas relativas desde `prototypes/` hacia `vendor/ubits/packages/` (preferido)
+- [ ] O rutas absolutas `file://` hacia `Desktop/UBITS/` (legacy)
+- [ ] NO modificar archivos de UBITS en `vendor/ubits/` o `Desktop/UBITS/`
+- [ ] NO crear nuevos componentes sin verificar primero
+- [ ] Validar que todo carga correctamente
+
+## 🚨 ERRORES COMUNES A EVITAR
+
+1. ❌ **Crear componentes sin consultar el catálogo primero** - SIEMPRE consulta `CATALOGO-COMPONENTES-UBITS.md`
+2. ❌ **Asumir que un componente no existe** - Pregunta al usuario si no estás seguro
+3. ❌ Crear nuevos componentes en lugar de usar los existentes
+4. ❌ Sobrescribir tokens con `!important` en CSS inyectado
+5. ❌ Usar rutas absolutas cuando existe `vendor/ubits/` (usar relativas)
+6. ❌ Modificar archivos en `vendor/ubits/` o `Desktop/UBITS/`
+7. ❌ Intentar cargar desde Storybook en templates generados
+8. ❌ Usar tokens incorrectos (ej: usar `dark-accent` en lugar de `modifiers-normal-color-dark-accent-blue`)
+9. ❌ **Crear componentes duplicados** - Siempre verifica si existe antes de crear
+10. ❌ **Usar `<ubits-tabs>` o `<ubits-data-table>` como custom elements** - Usar `window.createTabs()` y `window.createDataTable()` en su lugar
+11. ❌ **FORMATO INCORRECTO DE ICONOS EN TABS** - ⚠️ CRÍTICO:
+    - ❌ INCORRECTO: `icon: 'far fa-home'` o `icon: 'fas fa-user'`
+    - ✅ CORRECTO: `icon: 'home'` o `icon: 'user'` (solo el nombre del icono)
+    - El componente automáticamente agrega `fa-` y el estilo (`far`/`fas`) según si el tab está activo
+    - **Ver:** `GUIA-ERRORES-COMUNES-UBITS.md` para detalles completos
+

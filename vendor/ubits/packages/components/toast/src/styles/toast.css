@@ -1,0 +1,486 @@
+/* ========================================
+   UBITS TOAST COMPONENT
+   Componente de notificación flotante
+   Usando tokens UBITS del nuevo playground
+   ======================================== */
+
+/* ========================================
+   CONTAINER (Fixed top-center)
+   ======================================== */
+
+#ubits-toast-container {
+    position: fixed;
+    top: var(--p-spacing-mode-1-lg, 16px);
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--p-spacing-mode-1-md, 12px);
+    width: 100%;
+    max-width: 560px; /* Mantener valor exacto */
+    min-width: 320px; /* Mantener valor exacto */
+    padding: 0 var(--p-spacing-mode-1-lg, 16px);
+    box-sizing: border-box;
+    z-index: 10000;
+    pointer-events: none;
+}
+
+/* ========================================
+   BASE TOAST STYLES
+   ======================================== */
+
+.ubits-toast {
+    display: flex;
+    gap: var(--p-spacing-mode-1-sm, 8px);
+    align-items: flex-start; /* Cambiado de center a flex-start para alinear al inicio */
+    padding: var(--p-spacing-mode-1-lg, 16px); /* Cambiado de 8px a 16px según requerimientos */
+    border-radius: 10px; /* Mantener valor exacto */ /* Mantener valor exacto */
+    position: relative;
+    font-family: var(--font-family-noto-sans-font-family);
+    box-sizing: border-box;
+    background: var(--modifiers-normal-color-light-bg-1);
+    color: var(--modifiers-normal-color-light-fg-1-high);
+    width: 100%;
+    max-width: 560px;
+    min-width: 320px; /* Ancho mínimo para evitar toasts demasiado pequeños */
+    pointer-events: auto;
+}
+
+/* Pseudo-elemento para el borde */
+.ubits-toast::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 1px solid var(--modifiers-normal-color-light-border-1);
+    border-radius: 10px; /* Mantener valor exacto */
+    pointer-events: none;
+}
+
+/* ========================================
+   TOAST ELEMENTS
+   ======================================== */
+
+.ubits-toast__icon {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center; /* Centrado verticalmente para alinearse con título y botón X */
+    justify-content: center;
+    font-size: 18px;
+    line-height: 1;
+}
+
+.ubits-toast__icon i {
+    font-size: 18px;
+    line-height: 1;
+}
+
+.ubits-toast__content {
+    display: flex;
+    flex-direction: column;
+    gap: 2px; /* Reducido para pegar más el título con el cuerpo - Mantener valor exacto */
+    align-items: flex-start;
+    min-width: 0;
+    flex: 1;
+    padding: 0; /* Sin padding para alineación precisa */
+    margin: 0; /* Sin margin para alineación precisa */
+}
+
+/* Header con título y botón cerrar */
+.ubits-toast__header {
+    display: flex;
+    align-items: center; /* Alinear icono, título y X */
+    width: 100%;
+    gap: var(--p-spacing-mode-1-sm, 8px);
+    min-height: 28px; /* Misma altura que el icono para asegurar alineación */
+    padding: 0; /* Sin padding para alineación precisa */
+    margin: 0; /* Sin margin para alineación precisa */
+}
+
+.ubits-toast__title {
+    font-size: var(--modifiers-normal-body-md-regular-fontsize); /* Cambiado de body-sm a body-md */
+    line-height: 1.2; /* Line height más compacto para mejor alineación */
+    font-weight: var(--weight-bold, 700); /* Cambiado de semibold a bold - Token UBITS existe */
+    color: inherit;
+    flex: 1;
+    min-width: 0;
+    padding: 0; /* Sin padding para alineación precisa */
+    margin: 0; /* Sin margin para alineación precisa */
+}
+
+.ubits-toast__body {
+    font-size: var(--modifiers-normal-body-md-regular-fontsize); /* Cambiado de body-sm a body-md */
+    line-height: var(--modifiers-normal-body-md-regular-lineheight); /* Cambiado de body-sm a body-md */
+    font-weight: var(--weight-regular, 400); /* Token UBITS existe */
+    color: inherit;
+    width: 100%;
+    word-wrap: break-word; /* Permite que el texto se divida en múltiples líneas */
+    padding: 0;
+    margin: 0;
+    padding-left: 36px; /* Alineado con el título: icono (28px) + gap (8px) = 36px */
+    box-sizing: border-box;
+}
+
+/* Contenedor del botón de acción */
+.ubits-toast__actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    width: 100%;
+    margin-top: 4px; /* Mantener valor exacto */
+    padding-left: 36px; /* Alineado con el título y cuerpo: icono (28px) + gap (8px) = 36px */
+    box-sizing: border-box;
+}
+
+/* Botón de acción - tamaño sm del button */
+.ubits-toast__action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 32px; /* Altura del button sm */
+    min-height: 32px;
+    padding: 10px 14px; /* Padding del button sm */
+    border: none;
+    border-radius: 6px; /* Mantener valor exacto */
+    font-family: var(--font-family-noto-sans-font-family);
+    font-size: var(--modifiers-normal-body-sm-regular-fontsize); /* Font size del button sm */
+    font-weight: var(--weight-semibold, 600); /* Token UBITS existe */
+    line-height: var(--modifiers-normal-body-sm-regular-lineheight);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    color: white;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
+}
+
+.ubits-toast__action:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.ubits-toast__action:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.ubits-toast__action:focus-visible {
+    outline: 2px solid var(--modifiers-normal-focus-color, rgba(82, 151, 244, 0.3));
+    outline-offset: 2px;
+}
+
+/* Colores del botón de acción según la variante */
+.ubits-toast__action--success {
+    background-color: var(--modifiers-normal-color-light-feedback-border-success);
+}
+
+.ubits-toast__action--success:hover {
+    background-color: var(--modifiers-normal-color-light-feedback-border-success);
+    opacity: 0.9;
+}
+
+.ubits-toast__action--info {
+    background-color: var(--modifiers-normal-color-light-feedback-border-info);
+}
+
+.ubits-toast__action--info:hover {
+    background-color: var(--modifiers-normal-color-light-feedback-border-info);
+    opacity: 0.9;
+}
+
+.ubits-toast__action--warning {
+    background-color: var(--modifiers-normal-color-light-feedback-border-warning);
+}
+
+.ubits-toast__action--warning:hover {
+    background-color: var(--modifiers-normal-color-light-feedback-border-warning);
+    opacity: 0.9;
+}
+
+.ubits-toast__action--error {
+    background-color: var(--modifiers-normal-color-light-feedback-border-error);
+}
+
+.ubits-toast__action--error:hover {
+    background-color: var(--modifiers-normal-color-light-feedback-border-error);
+    opacity: 0.9;
+}
+
+.ubits-toast__close {
+    /* Se usará como botón terciario sm; los estilos base de button aplicarán desde button.css */
+    width: auto;
+    height: 32px;
+    min-height: 32px;
+    padding: 0 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0; /* Evitar que se comprima */
+}
+
+/* Colorear el botón cerrar usando los colores de feedback por tipo */
+.ubits-toast--success .ubits-toast__close {
+    color: var(--modifiers-normal-color-light-feedback-border-success) !important;
+}
+.ubits-toast--success .ubits-toast__close:hover {
+    background: var(--modifiers-normal-color-light-feedback-bg-success-subtle-default) !important;
+}
+.ubits-toast--info .ubits-toast__close {
+    color: var(--modifiers-normal-color-light-feedback-border-info) !important;
+}
+.ubits-toast--info .ubits-toast__close:hover {
+    background: var(--modifiers-normal-color-light-feedback-bg-info-subtle-default) !important;
+}
+.ubits-toast--warning .ubits-toast__close {
+    color: var(--modifiers-normal-color-light-feedback-border-warning) !important;
+}
+.ubits-toast--warning .ubits-toast__close:hover {
+    background: var(--modifiers-normal-color-light-feedback-bg-warning-subtle-default) !important;
+}
+.ubits-toast--error .ubits-toast__close {
+    color: var(--modifiers-normal-color-light-feedback-border-error) !important;
+}
+.ubits-toast--error .ubits-toast__close:hover {
+    background: var(--modifiers-normal-color-light-feedback-bg-error-subtle-default) !important;
+}
+
+/* ========================================
+   TOAST VARIANTS (Success, Info, Warning, Error)
+   ======================================== */
+
+/* Success */
+.ubits-toast--success {
+    background-color: var(--modifiers-normal-color-light-feedback-bg-success-subtle-default) !important;
+    color: var(--modifiers-normal-color-light-feedback-fg-success-subtle-default) !important;
+}
+
+.ubits-toast--success::before {
+    border-color: var(--modifiers-normal-color-light-feedback-border-success);
+}
+
+.ubits-toast--success .ubits-toast__icon {
+    color: var(--modifiers-normal-color-light-feedback-fg-success-subtle-default) !important;
+}
+
+/* Info */
+.ubits-toast--info {
+    background-color: var(--modifiers-normal-color-light-feedback-bg-info-subtle-default) !important;
+    color: var(--modifiers-normal-color-light-feedback-fg-info-subtle-default) !important;
+}
+
+.ubits-toast--info::before {
+    border-color: var(--modifiers-normal-color-light-feedback-border-info);
+}
+
+.ubits-toast--info .ubits-toast__icon {
+    color: var(--modifiers-normal-color-light-feedback-fg-info-subtle-default) !important;
+}
+
+/* Warning */
+.ubits-toast--warning {
+    background-color: var(--modifiers-normal-color-light-feedback-bg-warning-subtle-default) !important;
+    color: var(--modifiers-normal-color-light-feedback-fg-warning-subtle-default) !important;
+}
+
+.ubits-toast--warning::before {
+    border-color: var(--modifiers-normal-color-light-feedback-border-warning);
+}
+
+.ubits-toast--warning .ubits-toast__icon {
+    color: var(--modifiers-normal-color-light-feedback-fg-warning-subtle-default) !important;
+}
+
+/* Error */
+.ubits-toast--error {
+    background-color: var(--modifiers-normal-color-light-feedback-bg-error-subtle-default) !important;
+    color: var(--modifiers-normal-color-light-feedback-fg-error-subtle-default) !important;
+}
+
+.ubits-toast--error::before {
+    border-color: var(--modifiers-normal-color-light-feedback-border-error);
+}
+
+.ubits-toast--error .ubits-toast__icon {
+    color: var(--modifiers-normal-color-light-feedback-fg-error-subtle-default) !important;
+}
+
+/* ========================================
+   DARK MODE SUPPORT
+   ======================================== */
+
+[data-theme="dark"] #ubits-toast-container {
+    /* Container no necesita cambios específicos en dark mode */
+}
+
+[data-theme="dark"] .ubits-toast {
+    background: var(--modifiers-normal-color-dark-bg-1);
+    color: var(--modifiers-normal-color-dark-fg-1-high);
+}
+
+[data-theme="dark"] .ubits-toast::before {
+    border-color: var(--modifiers-normal-color-dark-border-1);
+}
+
+[data-theme="dark"] .ubits-toast--success {
+    background-color: var(--modifiers-normal-color-dark-feedback-bg-success-subtle-default) !important;
+    color: var(--modifiers-normal-color-dark-feedback-fg-success-subtle-default) !important;
+}
+
+[data-theme="dark"] .ubits-toast--success::before {
+    border-color: var(--modifiers-normal-color-dark-feedback-border-success);
+}
+
+[data-theme="dark"] .ubits-toast--success .ubits-toast__icon {
+    color: var(--modifiers-normal-color-dark-feedback-fg-success-subtle-default) !important;
+}
+
+[data-theme="dark"] .ubits-toast--success .ubits-toast__close {
+    color: var(--modifiers-normal-color-dark-feedback-border-success) !important;
+}
+
+[data-theme="dark"] .ubits-toast--success .ubits-toast__close:hover {
+    background: var(--modifiers-normal-color-dark-feedback-bg-success-subtle-default) !important;
+}
+
+[data-theme="dark"] .ubits-toast--info {
+    background-color: var(--modifiers-normal-color-dark-feedback-bg-info-subtle-default) !important;
+    color: var(--modifiers-normal-color-dark-feedback-fg-info-subtle-default) !important;
+}
+
+[data-theme="dark"] .ubits-toast--info::before {
+    border-color: var(--modifiers-normal-color-dark-feedback-border-info);
+}
+
+[data-theme="dark"] .ubits-toast--info .ubits-toast__icon {
+    color: var(--modifiers-normal-color-dark-feedback-fg-info-subtle-default) !important;
+}
+
+[data-theme="dark"] .ubits-toast--info .ubits-toast__close {
+    color: var(--modifiers-normal-color-dark-feedback-border-info) !important;
+}
+
+[data-theme="dark"] .ubits-toast--info .ubits-toast__close:hover {
+    background: var(--modifiers-normal-color-dark-feedback-bg-info-subtle-default) !important;
+}
+
+[data-theme="dark"] .ubits-toast--warning {
+    background-color: var(--modifiers-normal-color-dark-feedback-bg-warning-subtle-default) !important;
+    color: var(--modifiers-normal-color-dark-feedback-fg-warning-subtle-default) !important;
+}
+
+[data-theme="dark"] .ubits-toast--warning::before {
+    border-color: var(--modifiers-normal-color-dark-feedback-border-warning);
+}
+
+[data-theme="dark"] .ubits-toast--warning .ubits-toast__icon {
+    color: var(--modifiers-normal-color-dark-feedback-fg-warning-subtle-default) !important;
+}
+
+[data-theme="dark"] .ubits-toast--warning .ubits-toast__close {
+    color: var(--modifiers-normal-color-dark-feedback-border-warning) !important;
+}
+
+[data-theme="dark"] .ubits-toast--warning .ubits-toast__close:hover {
+    background: var(--modifiers-normal-color-dark-feedback-bg-warning-subtle-default) !important;
+}
+
+[data-theme="dark"] .ubits-toast--error {
+    background-color: var(--modifiers-normal-color-dark-feedback-bg-error-subtle-default) !important;
+    color: var(--modifiers-normal-color-dark-feedback-fg-error-subtle-default) !important;
+}
+
+[data-theme="dark"] .ubits-toast--error::before {
+    border-color: var(--modifiers-normal-color-dark-feedback-border-error);
+}
+
+[data-theme="dark"] .ubits-toast--error .ubits-toast__icon {
+    color: var(--modifiers-normal-color-dark-feedback-fg-error-subtle-default) !important;
+}
+
+[data-theme="dark"] .ubits-toast--error .ubits-toast__close {
+    color: var(--modifiers-normal-color-dark-feedback-border-error) !important;
+}
+
+[data-theme="dark"] .ubits-toast--error .ubits-toast__close:hover {
+    background: var(--modifiers-normal-color-dark-feedback-bg-error-subtle-default) !important;
+}
+
+[data-theme="dark"] .ubits-toast__action--success {
+    background-color: var(--modifiers-normal-color-dark-feedback-border-success);
+}
+
+[data-theme="dark"] .ubits-toast__action--info {
+    background-color: var(--modifiers-normal-color-dark-feedback-border-info);
+}
+
+[data-theme="dark"] .ubits-toast__action--warning {
+    background-color: var(--modifiers-normal-color-dark-feedback-border-warning);
+}
+
+[data-theme="dark"] .ubits-toast__action--error {
+    background-color: var(--modifiers-normal-color-dark-feedback-border-error);
+}
+
+/* ========================================
+   ANIMATIONS (Respetando prefers-reduced-motion)
+   ======================================== */
+
+@media (prefers-reduced-motion: no-preference) {
+    .ubits-toast {
+        opacity: 0;
+        transform: translateY(-6px);
+        transition: opacity 180ms ease, transform 180ms ease;
+    }
+
+    .ubits-toast--enter {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .ubits-toast--exit {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ubits-toast {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+
+    .ubits-toast--enter {
+        opacity: 1;
+        transform: none;
+    }
+
+    .ubits-toast--exit {
+        opacity: 0;
+        transform: none;
+    }
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+@media (max-width: 768px) {
+    #ubits-toast-container {
+        max-width: calc(100% - 32px); /* Mantener cálculo exacto */
+        left: var(--p-spacing-mode-1-lg, 16px);
+        right: var(--p-spacing-mode-1-lg, 16px);
+        transform: none;
+    }
+
+    .ubits-toast {
+        max-width: 100%;
+        width: 100%;
+    }
+}
+

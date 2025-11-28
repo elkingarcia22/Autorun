@@ -1,0 +1,261 @@
+/* ========================================
+   UBITS ACCORDION COMPONENT
+   Componente de acordeón con múltiples variantes
+   Usando tokens UBITS
+   ======================================== */
+
+/* ========================================
+   BASE ACCORDION STYLES
+   ======================================== */
+
+.ubits-accordion {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ubits-spacing-none, 0);
+  width: 100%;
+  font-family: var(--font-family-noto-sans-font-family, 'Noto Sans', sans-serif);
+}
+
+.ubits-accordion-item {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* ========================================
+   LIST VARIANT (Simple)
+   ======================================== */
+
+.ubits-accordion--list .ubits-accordion-item {
+  border-bottom: 1px solid var(--modifiers-normal-color-light-border-1) !important;
+}
+
+.ubits-accordion--list .ubits-accordion-item:last-child {
+  border-bottom: none;
+}
+
+.ubits-accordion--list .ubits-accordion-header {
+  padding: var(--p-spacing-mode-1-lg, 16px) var(--ubits-spacing-none, 0);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: var(--p-spacing-mode-1-md, 12px);
+  transition: all 0.2s ease;
+}
+
+.ubits-accordion--list .ubits-accordion-header:hover {
+  opacity: 0.8;
+}
+
+.ubits-accordion--list .ubits-accordion-header-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--p-spacing-mode-1-xs, 4px);
+}
+
+.ubits-accordion--list .ubits-accordion-title {
+  font-family: var(--font-family-noto-sans-font-family, 'Noto Sans', sans-serif);
+  font-size: var(--modifiers-normal-body-md-semibold-fontsize, 16px);
+  font-weight: var(--weight-semibold, 600);
+  line-height: var(--modifiers-normal-body-md-semibold-lineheight, 28.8px);
+  color: var(--modifiers-normal-color-light-fg-1-high) !important;
+  margin: var(--ubits-spacing-none, 0);
+}
+
+.ubits-accordion--list .ubits-accordion-subheader {
+  font-family: var(--font-family-noto-sans-font-family, 'Noto Sans', sans-serif);
+  font-size: var(--modifiers-normal-body-sm-regular-fontsize, 13px);
+  font-weight: var(--modifiers-normal-body-sm-regular-fontweight, 400);
+  line-height: var(--modifiers-normal-body-sm-regular-lineheight-height, 1.5);
+  color: var(--modifiers-normal-color-light-fg-1-medium) !important;
+  margin: var(--ubits-spacing-none, 0);
+}
+
+.ubits-accordion--list .ubits-accordion-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--modifiers-normal-color-light-fg-1-medium) !important;
+  font-size: var(--modifiers-normal-body-md-regular-fontsize, 16px);
+  flex-shrink: 0;
+}
+
+.ubits-accordion--list .ubits-accordion-chevron {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--modifiers-normal-color-light-fg-1-medium) !important;
+  font-size: var(--modifiers-normal-body-sm-regular-fontsize, 13px);
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.ubits-accordion--list .ubits-accordion-body {
+  display: none;
+  padding: var(--ubits-spacing-none, 0) var(--ubits-spacing-none, 0) var(--p-spacing-mode-1-lg, 16px) var(--ubits-spacing-none, 0);
+  padding-left: var(--ubits-spacing-none, 0);
+}
+
+.ubits-accordion--list .ubits-accordion-body-content {
+  font-family: var(--font-family-noto-sans-font-family, 'Noto Sans', sans-serif);
+  font-size: var(--modifiers-normal-body-md-regular-fontsize, 16px);
+  font-weight: var(--weight-regular, 400);
+  line-height: var(--modifiers-normal-body-md-regular-lineheight, 28.8px);
+  color: var(--modifiers-normal-color-light-fg-1-medium) !important;
+  padding-top: var(--p-spacing-mode-1-sm, 8px);
+}
+
+/* Chevron position adjustments for list */
+.ubits-accordion--list.ubits-accordion--chevron-left .ubits-accordion-header {
+  flex-direction: row;
+}
+
+.ubits-accordion--list.ubits-accordion--chevron-right .ubits-accordion-header {
+  flex-direction: row;
+}
+
+/* ========================================
+   BOXED VARIANT (Caja)
+   ======================================== */
+
+.ubits-accordion--boxed .ubits-accordion-item {
+  background: var(--modifiers-normal-color-light-bg-1) !important;
+  border: 1px solid var(--modifiers-normal-color-light-border-1) !important;
+  border-radius: var(--ubits-border-radius-md, 12px);
+  margin-bottom: var(--p-spacing-mode-1-md, 12px);
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.ubits-accordion--boxed .ubits-accordion-item:last-child {
+  margin-bottom: 0;
+}
+
+.ubits-accordion--boxed .ubits-accordion-item:hover {
+  border-color: var(--modifiers-normal-color-light-fg-1-medium) !important;
+  background: var(--modifiers-normal-color-light-bg-2) !important;
+}
+
+.ubits-accordion--boxed .ubits-accordion-item:hover .ubits-accordion-header {
+  background: var(--modifiers-normal-color-light-bg-2) !important;
+}
+
+.ubits-accordion--boxed .ubits-accordion-header {
+  padding: var(--p-spacing-mode-1-lg, 16px) var(--p-spacing-mode-1-xl, 20px);
+  background: var(--modifiers-normal-color-light-bg-1) !important;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: var(--p-spacing-mode-1-md, 12px);
+  transition: all 0.2s ease;
+}
+
+.ubits-accordion--boxed .ubits-accordion-header--open {
+  background: var(--modifiers-normal-color-light-bg-2) !important;
+}
+
+.ubits-accordion--boxed .ubits-accordion-header-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--p-spacing-mode-1-xs, 4px);
+}
+
+.ubits-accordion--boxed .ubits-accordion-title {
+  font-family: var(--font-family-noto-sans-font-family, 'Noto Sans', sans-serif);
+  font-size: var(--modifiers-normal-body-md-semibold-fontsize, 16px);
+  font-weight: var(--weight-semibold, 600);
+  line-height: var(--modifiers-normal-body-md-semibold-lineheight, 28.8px);
+  color: var(--modifiers-normal-color-light-fg-1-high) !important;
+  margin: var(--ubits-spacing-none, 0);
+}
+
+.ubits-accordion--boxed .ubits-accordion-subheader {
+  font-family: var(--font-family-noto-sans-font-family, 'Noto Sans', sans-serif);
+  font-size: var(--modifiers-normal-body-sm-regular-fontsize, 13px);
+  font-weight: var(--weight-regular, 400);
+  line-height: var(--modifiers-normal-body-sm-regular-lineheight, 23.4px);
+  color: var(--modifiers-normal-color-light-fg-1-medium) !important;
+  margin: var(--ubits-spacing-none, 0);
+}
+
+.ubits-accordion--boxed .ubits-accordion-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--modifiers-normal-color-light-fg-1-medium) !important;
+  font-size: var(--modifiers-normal-body-md-regular-fontsize, 16px);
+  flex-shrink: 0;
+}
+
+.ubits-accordion--boxed .ubits-accordion-chevron {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--modifiers-normal-color-light-fg-1-medium) !important;
+  font-size: var(--modifiers-normal-body-sm-regular-fontsize, 13px);
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.ubits-accordion--boxed .ubits-accordion-body {
+  display: none;
+  padding: var(--ubits-spacing-none, 0) var(--p-spacing-mode-1-xl, 20px) var(--p-spacing-mode-1-xl, 20px) var(--p-spacing-mode-1-xl, 20px);
+  background: var(--modifiers-normal-color-light-bg-1) !important;
+}
+
+.ubits-accordion--boxed .ubits-accordion-body-content {
+  font-family: var(--font-family-noto-sans-font-family, 'Noto Sans', sans-serif);
+  font-size: var(--modifiers-normal-body-md-regular-fontsize, 16px);
+  font-weight: var(--weight-regular, 400);
+  line-height: var(--modifiers-normal-body-md-regular-lineheight, 28.8px);
+  color: var(--modifiers-normal-color-light-fg-1-medium) !important;
+  padding-top: var(--p-spacing-mode-1-sm, 8px);
+}
+
+/* Chevron position adjustments for boxed */
+.ubits-accordion--boxed.ubits-accordion--chevron-left .ubits-accordion-header {
+  flex-direction: row;
+}
+
+.ubits-accordion--boxed.ubits-accordion--chevron-right .ubits-accordion-header {
+  flex-direction: row;
+}
+
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+@media (max-width: 768px) {
+  .ubits-accordion--boxed .ubits-accordion-header {
+    padding: var(--p-spacing-mode-1-md, 12px) var(--p-spacing-mode-1-lg, 16px);
+  }
+
+  .ubits-accordion--boxed .ubits-accordion-body {
+    padding: var(--ubits-spacing-none, 0) var(--p-spacing-mode-1-lg, 16px) var(--p-spacing-mode-1-lg, 16px) var(--p-spacing-mode-1-lg, 16px);
+  }
+
+  .ubits-accordion-item--nested {
+    margin-left: var(--p-spacing-mode-1-lg, 16px);
+  }
+}
+
+
+
+/* ========================================
+   DARK MODE
+   ======================================== */
+
+[data-theme="dark"] {
+  /* Redefinir variables light para que apunten a dark */
+  --modifiers-normal-color-light-border-1: var(--modifiers-normal-color-dark-border-1);
+  --modifiers-normal-color-light-fg-1-high: var(--modifiers-normal-color-dark-fg-1-high);
+  --modifiers-normal-color-light-fg-1-medium: var(--modifiers-normal-color-dark-fg-1-medium);
+  --modifiers-normal-color-light-bg-1: var(--modifiers-normal-color-dark-bg-1);
+  --modifiers-normal-color-light-bg-2: var(--modifiers-normal-color-dark-bg-2);
+}

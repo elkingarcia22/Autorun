@@ -1,0 +1,25 @@
+{
+  "name": "@ubits/mask",
+  "version": "1.0.0",
+  "description": "Mask component for UBITS design system - onboarding overlay",
+  "main": "dist/mask.js",
+  "types": "dist/mask.d.ts",
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite build --watch"
+  },
+  "keywords": [
+    "ubits",
+    "mask",
+    "onboarding",
+    "overlay",
+    "ui"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^5.3.3",
+    "vite": "^5.0.8"
+  }
+}
+

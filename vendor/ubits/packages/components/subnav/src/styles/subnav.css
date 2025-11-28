@@ -1,0 +1,161 @@
+/* ========================================
+   SUB NAVIGATION COMPONENT
+   Migrado a tokens Figma
+   ======================================== */
+
+/* Sub Navigation Base */
+.ubits-sub-nav {
+    background-color: var(--ubits-bg-1);
+    height: 40px; /* MANTENER MEDIDA ORIGINAL */
+    border-radius: var(--ubits-border-radius-sm, 8px);
+    padding: 0 var(--p-spacing-mode-1-md, 12px); /* MANTENER MEDIDAS ORIGINALES (dimensiones del componente) */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%; /* Ocupar el 100% del contenedor padre */
+    max-width: 100%; /* No exceder el ancho del contenedor padre */
+    box-shadow: 0 1px var(--ubits-spacing-xs, 4px) rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+[data-theme="dark"] .ubits-sub-nav {
+    background-color: var(--ubits-bg-1);
+    box-shadow: 0 1px var(--ubits-spacing-xs, 4px) rgba(0, 0, 0, 0.3);
+}
+
+/* Nav Tabs Container */
+.ubits-sub-nav-tabs {
+    display: flex;
+    gap: var(--p-spacing-mode-1-sm, 8px);
+    align-items: stretch; /* Cambiar a stretch para que los tabs ocupen toda la altura */
+    height: 100%;
+    flex: 1;
+    overflow: visible; /* Permitir que el indicador ::after de los tabs sea visible */
+}
+
+/* Nav Right Container */
+.ubits-sub-nav-right {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    position: relative;
+}
+
+
+/* Individual Nav Tab */
+.ubits-sub-nav-tab {
+    background: none;
+    border: none;
+    padding: var(--p-spacing-mode-1-sm, 8px) var(--p-spacing-mode-1-sm, 8px) 0 var(--p-spacing-mode-1-sm, 8px); /* Padding arriba, izquierda, derecha, sin padding abajo para que la línea esté al final */
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    gap: 0; /* Sin gap ya que no hay iconos */
+    align-items: center;
+    position: relative;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: visible; /* Cambiado de hidden a visible para que el indicador ::after sea visible */
+    border-radius: 0;
+    height: 100%; /* Asegurar que el tab ocupe toda la altura del contenedor */
+    min-width: fit-content; /* Asegurar que el tab tenga un ancho mínimo basado en su contenido */
+    flex-shrink: 0; /* Evitar que el tab se encoja */
+}
+
+/* Nav Tab Icon - OCULTO */
+.ubits-sub-nav-tab i {
+    display: none !important; /* Ocultar iconos completamente */
+}
+
+/* Nav Tab Text */
+.ubits-sub-nav-tab span {
+    font-family: var(--font-family-noto-sans-font-family);
+    font-size: var(--modifiers-normal-body-md-regular-fontsize);
+    color: var(--ubits-fg-1-medium);
+    text-align: left;
+    line-height: var(--modifiers-normal-body-md-regular-lineheight);
+    white-space: nowrap;
+    font-weight: var(--weight-regular, 400);
+}
+
+/* Hover States */
+.ubits-sub-nav-tab:hover {
+    background-color: var(--ubits-bg-2);
+    border-radius: var(--ubits-border-radius-sm, 6px);
+}
+
+/* Iconos ocultos, no necesitamos hover para iconos */
+
+.ubits-sub-nav-tab:hover span {
+    color: var(--ubits-fg-1-high);
+}
+
+[data-theme="dark"] .ubits-sub-nav-tab:hover {
+    background-color: var(--ubits-bg-2);
+}
+
+[data-theme="dark"] .ubits-sub-nav-tab:hover span {
+    color: var(--ubits-fg-1-high);
+}
+
+/* Active State */
+.ubits-sub-nav-tab.ubits-sub-nav-tab--active {
+    background: transparent;
+}
+
+.ubits-sub-nav-tab.ubits-sub-nav-tab--active span {
+    font-weight: var(--weight-semibold, 600) !important;
+    color: var(--ubits-fg-1-high);
+}
+
+/* Indicador Active (línea inferior) */
+.ubits-sub-nav-tab.ubits-sub-nav-tab--active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0; /* Usar right: 0 para que el indicador se extienda de borde a borde del tab */
+    height: 3px; /* MANTENER MEDIDA ORIGINAL */
+    background-color: var(--ubits-accent-brand-static); /* Token estático que siempre es azul (#0c5bef) */
+    border-radius: 0; /* Sin border-radius para que llegue hasta los bordes */
+    z-index: 1; /* Asegurar que esté por encima de otros elementos */
+    display: block !important; /* Forzar display para asegurar visibilidad */
+    visibility: visible !important; /* Forzar visibilidad */
+    opacity: 1 !important; /* Forzar opacidad */
+    width: auto; /* Permitir que el ancho se calcule automáticamente basado en left y right */
+}
+
+[data-theme="dark"] .ubits-sub-nav-tab.ubits-sub-nav-tab--active::after {
+    background-color: var(--modifiers-normal-color-dark-accent-blue);
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+
+@media (max-width: 950px) {
+    .ubits-sub-nav {
+        padding: 0 var(--p-spacing-mode-1-sm, 8px); /* MANTENER MEDIDA ORIGINAL */
+        height: 36px; /* MANTENER MEDIDA ORIGINAL */
+    }
+    
+    .ubits-sub-nav-tab {
+        padding: 6px 6px 0 6px; /* Padding arriba, izquierda, derecha, sin padding abajo */
+    }
+    
+    .ubits-sub-nav-tab span {
+        font-size: var(--modifiers-normal-body-sm-regular-fontsize);
+        line-height: var(--modifiers-normal-body-sm-regular-lineheight);
+    }
+    
+    /* Iconos ocultos en responsive también */
+    
+}
+
+/* Ocultar SubNav en resoluciones menores a 1024px */
+@media (max-width: 1023px) {
+    .ubits-sub-nav {
+        display: none !important;
+    }
+}
+
+

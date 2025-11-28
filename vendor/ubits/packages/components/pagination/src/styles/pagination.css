@@ -1,0 +1,353 @@
+/* ========================================
+   UBITS PAGINATION COMPONENT
+   Componente de paginación
+   Usando tokens UBITS
+   ======================================== */
+
+/* ========================================
+   BASE PAGINATION STYLES
+   ======================================== */
+
+.ubits-pagination {
+  /* Base styles usando tokens UBITS */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ubits-spacing-sm);
+  font-family: var(--font-family-noto-sans-font-family);
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+/* ========================================
+   VARIANTS
+   ======================================== */
+
+.ubits-pagination--default {
+  /* Variante por defecto con todos los controles */
+}
+
+.ubits-pagination--compact {
+  /* Variante compacta: solo página actual y total */
+  gap: var(--ubits-spacing-xs);
+}
+
+.ubits-pagination--minimal {
+  /* Variante minimal: solo anterior/siguiente */
+  gap: var(--ubits-spacing-xs);
+}
+
+/* ========================================
+   SIZES
+   ======================================== */
+
+.ubits-pagination--sm {
+  gap: var(--ubits-spacing-xs);
+}
+
+.ubits-pagination--md {
+  gap: var(--ubits-spacing-sm);
+}
+
+.ubits-pagination--lg {
+  gap: var(--ubits-spacing-md);
+}
+
+/* ========================================
+   CONTROLS
+   ======================================== */
+
+.ubits-pagination__controls {
+  display: flex;
+  align-items: center;
+  gap: var(--ubits-spacing-xs);
+  flex-wrap: wrap;
+}
+
+.ubits-pagination__page-button {
+  min-width: var(--ubits-spacing-10);
+}
+
+.ubits-pagination--sm .ubits-pagination__page-button {
+  min-width: var(--ubits-spacing-8);
+}
+
+.ubits-pagination--lg .ubits-pagination__page-button {
+  min-width: var(--ubits-spacing-12);
+}
+
+/* Mejorar contraste del texto en botón activo (secondary) usando tokens UBITS */
+.ubits-pagination__page-button.ubits-button--secondary.ubits-button--active {
+  background: var(--modifiers-normal-color-light-bg-active);
+  color: var(--modifiers-normal-color-light-accent-brand);
+  border-color: var(--modifiers-normal-color-light-accent-brand);
+}
+
+.ubits-pagination__page-button.ubits-button--secondary.ubits-button--active span {
+  color: var(--modifiers-normal-color-light-accent-brand);
+  font-weight: var(--weight-semibold);
+}
+
+.ubits-pagination__page-button.ubits-button--secondary.ubits-button--active:hover:not(:disabled) {
+  background: var(--modifiers-normal-color-light-bg-active);
+  color: var(--modifiers-normal-color-light-accent-brand);
+  border-color: var(--modifiers-normal-color-light-accent-brand);
+}
+
+.ubits-pagination__page-button.ubits-button--secondary.ubits-button--active:hover:not(:disabled) span {
+  color: var(--modifiers-normal-color-light-accent-brand);
+}
+
+.ubits-pagination__nav-button {
+  /* Los botones de navegación ya tienen estilos del componente Button */
+}
+
+/* Asegurar que los botones de navegación deshabilitados mantengan estilo tertiary */
+.ubits-pagination__nav-button.ubits-button--tertiary:disabled {
+  background: transparent !important;
+  color: var(--modifiers-normal-button-color-light-brand-tertiary-fg-default) !important;
+  border-color: transparent !important;
+  opacity: 0.5;
+}
+
+/* ========================================
+   ELLIPSIS
+   ======================================== */
+
+.ubits-pagination__ellipsis {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 var(--ubits-spacing-xs);
+  color: var(--modifiers-normal-color-light-fg-2-medium);
+  font-family: var(--font-family-noto-sans-font-family);
+  font-size: var(--modifiers-normal-body-md-regular-fontsize);
+  font-weight: var(--weight-regular);
+  user-select: none;
+  min-width: var(--ubits-spacing-8);
+  height: var(--ubits-spacing-10);
+}
+
+.ubits-pagination--sm .ubits-pagination__ellipsis {
+  min-width: var(--ubits-spacing-6);
+  height: var(--ubits-spacing-8);
+  font-size: var(--modifiers-normal-body-sm-regular-fontsize);
+}
+
+.ubits-pagination--lg .ubits-pagination__ellipsis {
+  min-width: var(--ubits-spacing-10);
+  height: var(--ubits-spacing-12);
+  font-size: var(--modifiers-normal-body-lg-regular-fontsize);
+}
+
+/* ========================================
+   PAGE INFO
+   ======================================== */
+
+.ubits-pagination__page-info {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 var(--ubits-spacing-sm);
+  color: var(--modifiers-normal-color-light-fg-1-high);
+  font-family: var(--font-family-noto-sans-font-family);
+  white-space: nowrap;
+}
+
+/* ========================================
+   INFO SECTION
+   ======================================== */
+
+.ubits-pagination__info {
+  display: flex;
+  align-items: center;
+  margin-right: var(--ubits-spacing-md);
+  color: var(--modifiers-normal-color-light-fg-2-medium);
+}
+
+/* ========================================
+   ITEMS PER PAGE
+   ======================================== */
+
+.ubits-pagination__items-per-page {
+  display: flex;
+  align-items: center;
+  gap: var(--ubits-spacing-xs);
+  margin-right: var(--ubits-spacing-md);
+}
+
+.ubits-pagination__items-per-page label {
+  color: var(--modifiers-normal-color-light-fg-2-medium);
+  font-family: var(--font-family-noto-sans-font-family);
+  white-space: nowrap;
+}
+
+.ubits-pagination__select-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.ubits-pagination__select-button {
+  padding: var(--ubits-spacing-xs) var(--ubits-spacing-sm);
+  border: var(--ubits-spacing-xs) solid var(--modifiers-normal-color-light-border-1);
+  border-radius: var(--ubits-border-radius-sm);
+  background: var(--modifiers-normal-color-light-bg-1);
+  color: var(--modifiers-normal-color-light-fg-1-high);
+  font-family: var(--font-family-noto-sans-font-family);
+  font-size: var(--modifiers-normal-body-sm-regular-fontsize);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-width: calc(var(--ubits-spacing-12) * 1.5);
+}
+
+.ubits-pagination__select-button:hover {
+  border-color: var(--modifiers-normal-color-light-border-2);
+  background: var(--modifiers-normal-color-light-bg-2);
+}
+
+.ubits-pagination__select-button:focus {
+  border-color: var(--modifiers-normal-color-light-accent-brand);
+  box-shadow: 0 0 0 var(--ubits-spacing-xs) var(--modifiers-normal-focus-color);
+}
+
+.ubits-pagination__select-button:active {
+  background: var(--modifiers-normal-color-light-bg-3);
+}
+
+.ubits-pagination__list-container {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  margin-top: var(--ubits-spacing-xs);
+  min-width: 100%;
+}
+
+.ubits-pagination__list-container .ubits-list {
+  border: var(--ubits-spacing-xs) solid var(--modifiers-normal-color-light-border-1);
+  border-radius: var(--ubits-border-radius-sm);
+  box-shadow: 0 var(--ubits-spacing-xs) var(--ubits-spacing-md) rgba(0, 0, 0, 0.15);
+  background: var(--modifiers-normal-color-light-bg-1);
+  overflow: hidden;
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+@media (max-width: 768px) {
+  .ubits-pagination {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .ubits-pagination__info,
+  .ubits-pagination__items-per-page {
+    margin-right: 0;
+    margin-bottom: var(--ubits-spacing-sm);
+    justify-content: center;
+  }
+  
+  .ubits-pagination__controls {
+    justify-content: center;
+  }
+  
+  /* Ocultar algunos botones en móvil para variante default */
+  .ubits-pagination--default .ubits-pagination__page-button:not(.ubits-button--active) {
+    display: none;
+  }
+  
+  /* Mostrar solo página actual y adyacentes */
+  .ubits-pagination--default .ubits-pagination__page-button.ubits-button--active,
+  .ubits-pagination--default .ubits-pagination__page-button.ubits-button--active + .ubits-pagination__page-button,
+  .ubits-pagination--default .ubits-pagination__page-button:has(+ .ubits-pagination__page-button.ubits-button--active) {
+    display: inline-flex;
+  }
+}
+
+/* ========================================
+   ACCESSIBILITY
+   ======================================== */
+
+.ubits-pagination [aria-disabled="true"],
+.ubits-pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.ubits-pagination [aria-label] {
+  /* Mejorar accesibilidad */
+}
+
+/* ========================================
+   DARK MODE
+   ======================================== */
+
+[data-theme="dark"] .ubits-pagination__page-button.ubits-button--secondary.ubits-button--active {
+  background: var(--modifiers-normal-color-dark-bg-active);
+  color: var(--modifiers-normal-color-dark-accent-brand);
+  border-color: var(--modifiers-normal-color-dark-accent-brand);
+}
+
+[data-theme="dark"] .ubits-pagination__page-button.ubits-button--secondary.ubits-button--active span {
+  color: var(--modifiers-normal-color-dark-accent-brand);
+}
+
+[data-theme="dark"] .ubits-pagination__page-button.ubits-button--secondary.ubits-button--active:hover:not(:disabled) {
+  background: var(--modifiers-normal-color-dark-bg-active);
+  color: var(--modifiers-normal-color-dark-accent-brand);
+  border-color: var(--modifiers-normal-color-dark-accent-brand);
+}
+
+[data-theme="dark"] .ubits-pagination__page-button.ubits-button--secondary.ubits-button--active:hover:not(:disabled) span {
+  color: var(--modifiers-normal-color-dark-accent-brand);
+}
+
+[data-theme="dark"] .ubits-pagination__nav-button.ubits-button--tertiary:disabled {
+  color: var(--modifiers-normal-button-color-dark-brand-tertiary-fg-default) !important;
+}
+
+[data-theme="dark"] .ubits-pagination__ellipsis {
+  color: var(--modifiers-normal-color-dark-fg-2-medium);
+}
+
+[data-theme="dark"] .ubits-pagination__page-info {
+  color: var(--modifiers-normal-color-dark-fg-1-high);
+}
+
+[data-theme="dark"] .ubits-pagination__info {
+  color: var(--modifiers-normal-color-dark-fg-2-medium);
+}
+
+[data-theme="dark"] .ubits-pagination__items-per-page label {
+  color: var(--modifiers-normal-color-dark-fg-2-medium);
+}
+
+[data-theme="dark"] .ubits-pagination__select-button {
+  border-color: var(--modifiers-normal-color-dark-border-1);
+  background: var(--modifiers-normal-color-dark-bg-1);
+  color: var(--modifiers-normal-color-dark-fg-1-high);
+}
+
+[data-theme="dark"] .ubits-pagination__select-button:hover {
+  border-color: var(--modifiers-normal-color-dark-border-2);
+  background: var(--modifiers-normal-color-dark-bg-2);
+}
+
+[data-theme="dark"] .ubits-pagination__select-button:focus {
+  border-color: var(--modifiers-normal-color-dark-accent-brand);
+}
+
+[data-theme="dark"] .ubits-pagination__select-button:active {
+  background: var(--modifiers-normal-color-dark-bg-3);
+}
+
+[data-theme="dark"] .ubits-pagination__list-container .ubits-list {
+  border-color: var(--modifiers-normal-color-dark-border-1);
+  background: var(--modifiers-normal-color-dark-bg-1);
+}
+

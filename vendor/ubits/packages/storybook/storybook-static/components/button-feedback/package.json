@@ -1,0 +1,21 @@
+{
+  "name": "@ubits/button-feedback",
+  "version": "1.0.0",
+  "description": "Botón flotante para obtener feedback de clientes con modal de formulario",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite build --watch"
+  },
+  "dependencies": {
+    "@ubits/button": "workspace:*",
+    "@ubits/input": "workspace:*",
+    "@ubits/modal": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "vite": "^5.0.0"
+  }
+}
+

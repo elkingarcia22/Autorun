@@ -1,0 +1,910 @@
+/* ========================================
+   UBITS INPUT COMPONENT
+   Componente de input con todas las variantes
+   Usando tokens UBITS del nuevo playground
+   ======================================== */
+
+/* ========================================
+   BASE INPUT STYLES
+   ======================================== */
+
+.ubits-input {
+    width: 100%;
+    padding: var(--p-spacing-mode-1-md, 12px);
+    font-size: var(--modifiers-normal-body-md-regular-fontsize, var(--font-body-md-size, 16px));
+    font-family: var(--font-family-noto-sans-font-family, var(--font-sans, 'Noto Sans', sans-serif));
+    color: var(--modifiers-normal-color-light-fg-1-high) !important;
+    background: var(--modifiers-normal-color-light-bg-1) !important;
+    border: 1px solid var(--modifiers-normal-color-light-border-1) !important;
+    border-radius: var(--ubits-border-radius-md, 12px);
+    outline: none;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+}
+
+.ubits-input:hover {
+    border-color: var(--modifiers-normal-color-light-accent-brand) !important;
+}
+
+.ubits-input:focus {
+    border-color: var(--modifiers-normal-color-light-accent-brand) !important;
+    box-shadow: 0 0 0 2px var(--modifiers-normal-focus-color, rgba(12, 91, 239, 0.1));
+}
+
+.ubits-input:disabled {
+    background: var(--modifiers-normal-color-light-bg-disabled) !important;
+    color: var(--modifiers-normal-color-light-fg-disabled) !important;
+    border-color: var(--modifiers-normal-color-light-border-disabled) !important;
+    cursor: not-allowed;
+}
+
+.ubits-input:read-only {
+    background: var(--modifiers-normal-color-light-bg-1) !important;
+    color: var(--modifiers-normal-color-light-fg-1-high) !important;
+    border-color: var(--modifiers-normal-color-light-border-1) !important;
+    cursor: pointer;
+}
+
+.ubits-input::placeholder {
+    color: var(--modifiers-normal-color-light-fg-disabled) !important;
+}
+
+/* ========================================
+   INPUT SIZES - Matching button heights
+   ======================================== */
+
+.ubits-input--xs {
+    padding: var(--p-spacing-mode-1-md, 12px) !important;
+    font-size: var(--modifiers-normal-body-xs-regular-fontsize, var(--font-body-xs-size, 11px)) !important;
+    height: 28px !important; /* Same as ubits-button--xs */
+    min-height: 28px !important;
+}
+
+.ubits-input--sm {
+    padding: var(--p-spacing-mode-1-md, 12px) !important;
+    font-size: var(--modifiers-normal-body-sm-regular-fontsize, var(--font-body-sm-size, 13px)) !important;
+    height: 32px !important; /* Same as ubits-button--sm */
+    min-height: 32px !important;
+}
+
+.ubits-input--md {
+    padding: var(--p-spacing-mode-1-md, 12px);
+    font-size: var(--modifiers-normal-body-md-regular-fontsize, var(--font-body-md-size, 16px));
+    height: 40px; /* Same as ubits-button--md */
+}
+
+.ubits-input--lg {
+    padding: var(--p-spacing-mode-1-md, 12px);
+    font-size: var(--modifiers-normal-body-lg-regular-fontsize, var(--font-body-lg-size, 20px));
+    height: 48px; /* Same as ubits-button--lg */
+}
+
+/* ========================================
+   INPUT STATES
+   ======================================== */
+
+.ubits-input--hover {
+    border-color: var(--modifiers-normal-color-light-accent-brand) !important;
+}
+
+.ubits-input--focus {
+    border-color: var(--modifiers-normal-color-light-accent-brand) !important;
+    box-shadow: 0 0 0 2px var(--modifiers-normal-focus-color, rgba(12, 91, 239, 0.1));
+}
+
+.ubits-input--active {
+    border-color: var(--modifiers-normal-color-light-accent-brand) !important;
+    background: var(--modifiers-normal-color-light-bg-2) !important;
+}
+
+.ubits-input--invalid {
+    border-color: var(--modifiers-normal-color-light-feedback-accent-error) !important;
+}
+
+.ubits-input--invalid.ubits-input--focus {
+    border-color: var(--modifiers-normal-color-light-feedback-accent-error) !important;
+    box-shadow: 0 0 0 2px var(--modifiers-normal-focus-color, rgba(233, 52, 60, 0.1)); /* Error focus - usar focus-color con opacidad similar */
+}
+
+.ubits-input--disabled {
+    background: var(--modifiers-normal-color-light-bg-disabled) !important;
+    color: var(--modifiers-normal-color-light-fg-disabled) !important;
+    border-color: var(--modifiers-normal-color-light-border-disabled) !important;
+    cursor: not-allowed !important;
+}
+
+/* ========================================
+   INPUT WITH ICONS
+   ======================================== */
+
+.ubits-input-wrapper {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+
+.ubits-input-icon-left {
+    position: absolute;
+    left: var(--p-spacing-mode-1-md, 12px);
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--modifiers-normal-color-light-fg-1-medium) !important;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.ubits-input-icon-right {
+    position: absolute;
+    right: var(--p-spacing-mode-1-md, 12px);
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--modifiers-normal-color-light-fg-1-medium) !important;
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Padding dinámico según iconos - XS */
+.ubits-input-wrapper--left-icon .ubits-input--xs {
+    padding-left: 40px !important; /* 12px (icono) + 16px (ancho icono) + 12px (espacio) */
+    padding-right: var(--p-spacing-mode-1-md, 12px) !important;
+}
+
+.ubits-input-wrapper--right-icon .ubits-input--xs {
+    padding-right: 40px !important; /* 12px (icono) + 16px (ancho icono) + 12px (espacio) */
+    padding-left: var(--p-spacing-mode-1-md, 12px) !important;
+}
+
+/* Padding dinámico según iconos - SM */
+.ubits-input-wrapper--left-icon .ubits-input--sm {
+    padding-left: 40px !important; /* 12px (icono) + 16px (ancho icono) + 12px (espacio) */
+    padding-right: var(--p-spacing-mode-1-md, 12px) !important;
+}
+
+.ubits-input-wrapper--right-icon .ubits-input--sm {
+    padding-right: 40px !important; /* 12px (icono) + 16px (ancho icono) + 12px (espacio) */
+    padding-left: var(--p-spacing-mode-1-md, 12px) !important;
+}
+
+/* Padding dinámico según iconos - MD */
+.ubits-input-wrapper--left-icon .ubits-input--md,
+.ubits-input-wrapper--left-icon .ubits-input:not(.ubits-input--xs):not(.ubits-input--sm):not(.ubits-input--lg) {
+    padding-left: 40px; /* 12px (icono) + 16px (ancho icono) + 12px (espacio) */
+    padding-right: var(--p-spacing-mode-1-md, 12px);
+}
+
+.ubits-input-wrapper--right-icon .ubits-input--md,
+.ubits-input-wrapper--right-icon .ubits-input:not(.ubits-input--xs):not(.ubits-input--sm):not(.ubits-input--lg) {
+    padding-right: 40px; /* 12px (icono) + 16px (ancho icono) + 12px (espacio) */
+    padding-left: var(--p-spacing-mode-1-md, 12px);
+}
+
+/* Padding dinámico según iconos - LG */
+.ubits-input-wrapper--left-icon .ubits-input--lg {
+    padding-left: 40px; /* 12px (icono) + 16px (ancho icono) + 12px (espacio) */
+    padding-right: var(--p-spacing-mode-1-md, 12px);
+}
+
+.ubits-input-wrapper--right-icon .ubits-input--lg {
+    padding-right: 40px; /* 12px (icono) + 16px (ancho icono) + 12px (espacio) */
+    padding-left: var(--p-spacing-mode-1-md, 12px);
+}
+
+/* ========================================
+   INPUT LABEL
+   ======================================== */
+
+.ubits-input-label {
+    display: block;
+    color: var(--modifiers-normal-color-light-fg-1-high) !important;
+    margin-bottom: var(--p-spacing-mode-1-sm, 8px);
+    font-family: var(--font-family-noto-sans-font-family, var(--font-sans, 'Noto Sans', sans-serif));
+    font-size: var(--modifiers-normal-body-sm-regular-fontsize, var(--font-body-sm-size, 13px));
+    font-weight: var(--weight-semibold, 600);
+    line-height: var(--modifiers-normal-body-sm-regular-lineheight, var(--font-body-sm-line, 19.5px));
+}
+
+.ubits-input-mandatory {
+    color: var(--modifiers-normal-color-light-fg-1-medium) !important;
+    font-family: var(--font-family-noto-sans-font-family, var(--font-sans, 'Noto Sans', sans-serif));
+    font-size: var(--modifiers-normal-body-xs-regular-fontsize, var(--font-body-xs-size, 11px));
+    font-weight: var(--weight-regular, 400);
+    line-height: var(--modifiers-normal-body-xs-regular-lineheight, var(--font-body-xs-line, 16.5px));
+}
+
+/* ========================================
+   INPUT HELPER TEXT
+   ======================================== */
+
+.ubits-input-helper {
+    color: var(--modifiers-normal-color-light-fg-1-medium) !important;
+    margin-top: var(--p-spacing-mode-1-xs, 4px);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--font-family-noto-sans-font-family, var(--font-sans, 'Noto Sans', sans-serif));
+    font-size: var(--modifiers-normal-body-sm-regular-fontsize, var(--font-body-sm-size, 13px));
+    font-weight: var(--weight-regular, 400);
+    line-height: var(--modifiers-normal-body-sm-regular-lineheight, var(--font-body-sm-line, 19.5px));
+}
+
+.ubits-input-counter {
+    font-family: var(--font-family-noto-sans-font-family, var(--font-sans, 'Noto Sans', sans-serif));
+    font-size: var(--modifiers-normal-body-sm-regular-fontsize, var(--font-body-sm-size, 13px));
+    font-weight: var(--weight-regular, 400);
+    line-height: var(--modifiers-normal-body-sm-regular-lineheight, var(--font-body-sm-line, 19.5px));
+    color: var(--modifiers-normal-color-light-fg-1-medium) !important;
+}
+
+.ubits-input-counter--limit {
+    color: var(--modifiers-normal-color-light-feedback-accent-error) !important;
+    font-weight: var(--weight-semibold, 600);
+}
+
+/* ========================================
+   SELECT SPECIFIC STYLES
+   ======================================== */
+
+.ubits-input select {
+    appearance: none;
+    background: transparent;
+    cursor: pointer;
+}
+
+.ubits-input select:disabled {
+    cursor: not-allowed;
+}
+
+/* ========================================
+   TEXTAREA
+   ======================================== */
+
+.ubits-input textarea {
+    font-family: inherit;
+    font-size: inherit;
+    line-height: 1.5;
+    resize: vertical;
+    min-height: 80px;
+}
+
+/* Textarea hover - mismo azul que otros inputs */
+.ubits-input textarea:hover {
+    border-color: var(--modifiers-normal-color-light-accent-brand) !important;
+}
+
+/* Textarea focus - mismo azul que otros inputs */
+.ubits-input textarea:focus {
+    border-color: var(--modifiers-normal-color-light-accent-brand) !important;
+    box-shadow: 0 0 0 2px var(--modifiers-normal-focus-color, rgba(12, 91, 239, 0.1));
+}
+
+/* Textarea con clase hover - mismo azul que otros inputs */
+.ubits-input--hover textarea {
+    border-color: var(--modifiers-normal-color-light-accent-brand) !important;
+}
+
+/* Textarea con clase focus - mismo azul que otros inputs */
+.ubits-input--focus textarea {
+    border-color: var(--modifiers-normal-color-light-accent-brand) !important;
+    box-shadow: 0 0 0 2px var(--modifiers-normal-focus-color, rgba(12, 91, 239, 0.1));
+}
+
+/* Textarea con clase active - mismo azul que otros inputs */
+.ubits-input--active textarea {
+    border-color: var(--modifiers-normal-color-light-accent-brand) !important;
+    background: var(--modifiers-normal-color-light-bg-2) !important;
+}
+
+.ubits-input-wrapper .ubits-input textarea:disabled,
+.ubits-input-wrapper .ubits-input--disabled textarea {
+    background: var(--modifiers-normal-color-light-bg-disabled) !important;
+    color: var(--modifiers-normal-color-light-fg-disabled) !important;
+    border-color: var(--modifiers-normal-color-light-border-disabled) !important;
+    cursor: not-allowed !important;
+}
+
+/* ========================================
+   AUTOCOMPLETE
+   ======================================== */
+
+.ubits-autocomplete-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--modifiers-normal-color-light-bg-1) !important;
+    border: 1px solid var(--modifiers-normal-color-light-border-1) !important;
+    border-radius: var(--ubits-border-radius-md, 12px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    max-height: 200px;
+    overflow-y: auto;
+    display: none;
+    margin-top: var(--p-spacing-mode-1-xs, 4px);
+    width: 100%;
+}
+
+.ubits-autocomplete-option {
+    padding: var(--p-spacing-mode-1-sm, 8px) var(--p-spacing-mode-1-md, 12px);
+    cursor: pointer;
+    color: var(--modifiers-normal-color-light-fg-1-high) !important;
+    border-bottom: 1px solid var(--modifiers-normal-color-light-border-1) !important;
+    transition: background-color 0.2s ease;
+}
+
+.ubits-autocomplete-option:last-child {
+    border-bottom: none;
+}
+
+.ubits-autocomplete-option:hover {
+    background-color: var(--modifiers-normal-color-light-bg-2) !important;
+}
+
+.ubits-autocomplete-option strong {
+    font-weight: var(--weight-semibold, 600);
+    color: var(--modifiers-normal-color-light-accent-brand) !important;
+}
+
+/* ========================================
+   CALENDAR
+   ======================================== */
+
+.ubits-calendar-picker-container {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    margin-top: var(--p-spacing-mode-1-xs, 4px);
+    display: none;
+}
+
+/* Mantener compatibilidad con el antiguo selector */
+.ubits-calendar-picker {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: var(--modifiers-normal-color-light-bg-1) !important;
+    border: 1px solid var(--modifiers-normal-color-light-border-1) !important;
+    border-radius: var(--ubits-border-radius-lg, 16px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15); /* Box shadow - mantener hardcodeado como fallback visual */
+    z-index: 1000;
+    display: none;
+    margin-top: var(--p-spacing-mode-1-xs, 4px);
+    width: 280px;
+    padding: var(--p-spacing-mode-1-lg, 16px);
+}
+
+.ubits-calendar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--p-spacing-mode-1-lg, 16px);
+}
+
+.ubits-calendar-selectors {
+    display: flex;
+    gap: var(--p-spacing-mode-1-sm, 8px);
+    align-items: center;
+}
+
+.ubits-calendar-month-select,
+.ubits-calendar-year-select {
+    background: var(--modifiers-normal-color-light-bg-1) !important;
+    border: 1px solid var(--modifiers-normal-color-light-border-1) !important;
+    border-radius: var(--ubits-border-radius-sm, 8px);
+    padding: var(--p-spacing-mode-1-xs, 4px) var(--p-spacing-mode-1-sm, 8px);
+    font-size: var(--modifiers-normal-body-sm-regular-fontsize, var(--font-body-sm-size, 14px));
+    color: var(--modifiers-normal-color-light-fg-1-high) !important;
+    cursor: pointer;
+    min-width: 80px;
+    font-family: var(--font-family-noto-sans-font-family, var(--font-sans, 'Noto Sans', sans-serif));
+}
+
+.ubits-calendar-month-select:focus,
+.ubits-calendar-year-select:focus {
+    outline: none;
+    border-color: var(--modifiers-normal-color-light-accent-brand) !important;
+    box-shadow: 0 0 0 2px var(--modifiers-normal-focus-color, rgba(12, 91, 239, 0.1));
+}
+
+.ubits-calendar-prev,
+.ubits-calendar-next {
+    background: none;
+    border: none;
+    color: var(--modifiers-normal-color-light-fg-1-medium) !important;
+    cursor: pointer;
+    padding: var(--p-spacing-mode-1-sm, 8px);
+    border-radius: var(--ubits-border-radius-sm, 8px);
+    transition: all 0.2s ease;
+    font-family: var(--font-family-noto-sans-font-family, var(--font-sans, 'Noto Sans', sans-serif));
+}
+
+.ubits-calendar-prev:hover,
+.ubits-calendar-next:hover {
+    background: var(--modifiers-normal-color-light-bg-2) !important;
+    color: var(--modifiers-normal-color-light-fg-1-high) !important;
+}
+
+.ubits-calendar-title {
+    font-weight: var(--weight-semibold, 600);
+    color: var(--modifiers-normal-color-light-fg-1-high) !important;
+    font-size: var(--modifiers-normal-body-md-regular-fontsize, var(--font-body-md-size, 16px));
+    font-family: var(--font-family-noto-sans-font-family, var(--font-sans, 'Noto Sans', sans-serif));
+}
+
+.ubits-calendar-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: var(--p-spacing-mode-1-xs, 4px);
+    margin-bottom: var(--p-spacing-mode-1-sm, 8px);
+}
+
+.ubits-calendar-weekday {
+    text-align: center;
+    font-size: var(--modifiers-normal-body-xs-regular-fontsize, var(--font-body-xs-size, 12px));
+    font-weight: var(--weight-semibold, 600);
+    color: var(--modifiers-normal-color-light-fg-1-medium) !important;
+    padding: var(--p-spacing-mode-1-sm, 8px) var(--p-spacing-mode-1-xs, 4px);
+    font-family: var(--font-family-noto-sans-font-family, var(--font-sans, 'Noto Sans', sans-serif));
+}
+
+.ubits-calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: var(--p-spacing-mode-1-xs, 4px);
+}
+
+.ubits-calendar-day {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: var(--ubits-border-radius-sm, 8px);
+    font-size: var(--modifiers-normal-body-sm-regular-fontsize, var(--font-body-sm-size, 14px));
+    color: var(--modifiers-normal-color-light-fg-1-high) !important;
+    transition: all 0.2s ease;
+    font-family: var(--font-family-noto-sans-font-family, var(--font-sans, 'Noto Sans', sans-serif));
+}
+
+.ubits-calendar-day:hover {
+    background: var(--modifiers-normal-color-light-bg-2) !important;
+}
+
+.ubits-calendar-day--empty {
+    cursor: default;
+}
+
+.ubits-calendar-day--empty:hover {
+    background: transparent;
+}
+
+.ubits-calendar-day--today {
+    background: var(--modifiers-normal-color-light-bg-2) !important;
+    font-weight: var(--weight-semibold, 600);
+}
+
+.ubits-calendar-day--selected {
+    background: var(--modifiers-normal-color-light-accent-brand) !important;
+    color: var(--modifiers-normal-color-light-fg-bold) !important;
+    font-weight: var(--weight-semibold, 600);
+}
+
+.ubits-calendar-day--selected:hover {
+    background: var(--modifiers-normal-color-light-accent-brand) !important;
+    color: var(--modifiers-normal-color-light-fg-bold) !important;
+}
+
+/* ========================================
+   SELECT DROPDOWN
+   ======================================== */
+
+/* 
+ * CRITICAL: El contenedor padre DEBE tener position: relative
+ * El JavaScript automáticamente lo aplica, pero si usas el CSS manualmente,
+ * asegúrate de que el contenedor tenga position: relative
+ */
+.ubits-select-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--modifiers-normal-color-light-bg-1) !important;
+    border: 1px solid var(--modifiers-normal-color-light-border-1) !important;
+    border-radius: var(--ubits-border-radius-md, 12px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    max-height: 160px;
+    overflow-y: auto;
+    display: none;
+    margin-top: var(--p-spacing-mode-1-xs, 4px);
+    width: 100%;
+}
+
+.ubits-select-option {
+    padding: var(--p-spacing-mode-1-sm, 8px) var(--p-spacing-mode-1-md, 12px);
+    cursor: pointer;
+    color: var(--modifiers-normal-color-light-fg-1-high) !important;
+    border-bottom: 1px solid var(--modifiers-normal-color-light-border-1) !important;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+    transition: background-color 0.2s ease;
+    font-family: var(--font-family-noto-sans-font-family, var(--font-sans, 'Noto Sans', sans-serif));
+}
+
+.ubits-select-option:hover {
+    background-color: var(--modifiers-normal-color-light-bg-2) !important;
+}
+
+.ubits-select-option:last-child {
+    border-bottom: none;
+}
+
+.ubits-select-loading {
+    padding: var(--p-spacing-mode-1-md, 12px);
+    text-align: center;
+    color: var(--modifiers-normal-color-light-fg-1-medium) !important;
+    font-size: var(--modifiers-normal-body-sm-regular-fontsize, var(--font-body-sm-size, 14px));
+    font-style: italic;
+    border-bottom: 1px solid var(--modifiers-normal-color-light-border-1) !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--p-spacing-mode-1-sm, 8px);
+    font-family: var(--font-family-noto-sans-font-family, var(--font-sans, 'Noto Sans', sans-serif));
+}
+
+.ubits-select-loading i {
+    color: var(--modifiers-normal-color-light-accent-brand) !important;
+    font-size: var(--modifiers-normal-body-md-regular-fontsize, var(--font-body-md-size, 16px));
+}
+
+.ubits-select-observer {
+    height: 1px;
+    width: 100%;
+    pointer-events: none;
+}
+
+/* ========================================
+   RICH TEXT TOOLBAR (para textarea)
+   ======================================== */
+
+/* Contenedor que envuelve la barra y el textarea */
+.ubits-input-rich-text-wrapper {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--modifiers-normal-color-light-border-1) !important;
+  border-radius: var(--ubits-border-radius-md, 12px);
+  overflow: hidden;
+  background: var(--modifiers-normal-color-light-bg-1) !important;
+  transition: all 0.2s ease;
+}
+
+/* Hover en el wrapper - mostrar borde azul */
+.ubits-input-rich-text-wrapper:hover {
+  border-color: var(--modifiers-normal-color-light-accent-brand) !important;
+}
+
+/* Hover state con clase - mostrar borde azul */
+.ubits-input--hover .ubits-input-rich-text-wrapper {
+  border-color: var(--modifiers-normal-color-light-accent-brand) !important;
+}
+
+.ubits-input-rich-text-wrapper:focus-within {
+  border-color: var(--modifiers-normal-color-light-accent-brand) !important;
+  box-shadow: 0 0 0 2px var(--modifiers-normal-focus-color, rgba(12, 91, 239, 0.1));
+}
+
+/* Focus state con clase - mostrar borde azul */
+.ubits-input--focus .ubits-input-rich-text-wrapper {
+  border-color: var(--modifiers-normal-color-light-accent-brand) !important;
+  box-shadow: 0 0 0 2px var(--modifiers-normal-focus-color, rgba(12, 91, 239, 0.1));
+}
+
+/* Active state para el wrapper */
+.ubits-input--active .ubits-input-rich-text-wrapper {
+  border-color: var(--modifiers-normal-color-light-accent-brand) !important;
+  background: var(--modifiers-normal-color-light-bg-2) !important;
+}
+
+.ubits-input-rich-text-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start; /* Alineado a la izquierda */
+  gap: var(--p-spacing-mode-1-xs, 4px);
+  padding: var(--p-spacing-mode-1-sm, 8px) var(--p-spacing-mode-1-md, 12px);
+  background: transparent;
+  border-bottom: none !important; /* Forzar que no haya línea divisoria */
+  border-top: none !important; /* Forzar que no haya línea divisoria */
+  flex-wrap: wrap;
+  margin: 0;
+}
+
+.ubits-rich-text-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--modifiers-normal-color-light-fg-1-medium) !important;
+  cursor: pointer;
+  border-radius: var(--ubits-border-radius-sm, 8px);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: var(--modifiers-normal-body-sm-regular-fontsize, var(--font-body-sm-size, 13px));
+  font-family: var(--font-family-noto-sans-font-family, var(--font-sans, 'Noto Sans', sans-serif));
+}
+
+.ubits-rich-text-btn:hover {
+  background: var(--modifiers-normal-color-light-bg-3) !important;
+  color: var(--modifiers-normal-color-light-fg-1-high) !important;
+}
+
+.ubits-rich-text-btn:active {
+  background: var(--modifiers-normal-color-light-bg-3) !important;
+  transform: scale(0.95);
+}
+
+.ubits-rich-text-btn i {
+  font-size: var(--modifiers-normal-body-sm-regular-fontsize, var(--font-body-sm-size, 13px));
+  width: 14px;
+  height: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ubits-rich-text-separator {
+  display: none; /* Ocultar separadores según diseño */
+}
+
+/* Placeholder para contentEditable */
+.ubits-rich-text-placeholder::before {
+  content: attr(data-placeholder);
+  color: var(--modifiers-normal-color-light-fg-disabled) !important;
+  pointer-events: none;
+  position: absolute;
+  left: var(--placeholder-left, var(--p-spacing-mode-1-sm, 8px)); /* Usar padding-left si hay icono, sino usar spacing-sm */
+  top: var(--placeholder-top, var(--p-spacing-mode-1-md, 12px)); /* Usar padding-top del contenido para alineación vertical */
+  font-family: var(--font-family-noto-sans-font-family, var(--font-sans, 'Noto Sans', sans-serif));
+  font-size: var(--modifiers-normal-body-md-regular-fontsize, var(--font-body-md-size, 16px));
+  line-height: var(--modifiers-normal-body-md-regular-lineheight, var(--font-body-md-line, 24px)); /* Asegurar que la línea base coincida con el texto */
+}
+
+/* Asegurar que el contenido editable tenga el padding correcto */
+.ubits-input-rich-text-wrapper div[contenteditable="true"] {
+  padding: var(--p-spacing-mode-1-md, 12px) var(--p-spacing-mode-1-sm, 8px);
+  min-height: 80px;
+  outline: none;
+  font-family: var(--font-family-noto-sans-font-family, var(--font-sans, 'Noto Sans', sans-serif));
+  font-size: var(--modifiers-normal-body-md-regular-fontsize, var(--font-body-md-size, 16px));
+  line-height: var(--modifiers-normal-body-md-regular-lineheight, var(--font-body-md-line, 24px));
+  color: var(--modifiers-normal-color-light-fg-1-high) !important;
+}
+
+.ubits-rich-text-placeholder:focus::before {
+  display: none;
+}
+
+/* Ajustar textarea cuando tiene toolbar - sin borde ya que está dentro del wrapper */
+.ubits-input-rich-text-wrapper textarea,
+.ubits-input-rich-text-wrapper div[contenteditable="true"] {
+  border: none !important;
+  border-radius: 0 !important;
+  margin: 0;
+}
+
+/* Hover en textarea dentro del wrapper - el wrapper maneja el borde */
+.ubits-input-rich-text-wrapper:hover textarea,
+.ubits-input-rich-text-wrapper:hover div[contenteditable="true"] {
+  /* El borde se maneja en el wrapper */
+}
+
+/* Focus en textarea dentro del wrapper - el wrapper maneja el borde */
+.ubits-input-rich-text-wrapper:focus-within textarea,
+.ubits-input-rich-text-wrapper:focus-within div[contenteditable="true"] {
+  /* El borde se maneja en el wrapper */
+}
+
+/* Active state para textarea dentro del wrapper */
+.ubits-input--active .ubits-input-rich-text-wrapper textarea,
+.ubits-input--active .ubits-input-rich-text-wrapper div[contenteditable="true"] {
+  background: var(--modifiers-normal-color-light-bg-2) !important;
+}
+
+/* Asegurar que el textarea dentro del wrapper tenga el estilo correcto */
+.ubits-input-rich-text-wrapper .ubits-input {
+  border: none;
+  border-radius: 0;
+}
+
+/* ========================================
+   DARK MODE SUPPORT
+   ======================================== */
+
+[data-theme="dark"] {
+  --modifiers-normal-color-light-bg-1: var(--modifiers-normal-color-dark-bg-1);
+  --modifiers-normal-color-light-bg-2: var(--modifiers-normal-color-dark-bg-2);
+  --modifiers-normal-color-light-bg-3: var(--modifiers-normal-color-dark-bg-3);
+  --modifiers-normal-color-light-bg-disabled: var(--modifiers-normal-color-dark-bg-disabled);
+  --modifiers-normal-color-light-border-1: var(--modifiers-normal-color-dark-border-1);
+  --modifiers-normal-color-light-border-disabled: var(--modifiers-normal-color-dark-border-disabled);
+  --modifiers-normal-color-light-fg-1-high: var(--modifiers-normal-color-dark-fg-1-high);
+  --modifiers-normal-color-light-fg-1-medium: var(--modifiers-normal-color-dark-fg-1-medium);
+  --modifiers-normal-color-light-fg-disabled: var(--modifiers-normal-color-dark-fg-disabled);
+  --modifiers-normal-color-light-accent-brand: var(--modifiers-normal-color-dark-accent-brand);
+  --modifiers-normal-color-light-feedback-accent-error: var(--modifiers-normal-color-dark-feedback-accent-error);
+  --modifiers-normal-color-light-fg-bold: var(--modifiers-normal-color-dark-fg-bold);
+}
+
+[data-theme="dark"] .ubits-input-rich-text-wrapper {
+  background: var(--modifiers-normal-color-light-bg-1) !important;
+  border-color: var(--modifiers-normal-color-light-border-1) !important;
+}
+
+[data-theme="dark"] .ubits-input-rich-text-toolbar {
+  background: transparent;
+  border-bottom: none !important;
+  border-top: none !important;
+}
+
+[data-theme="dark"] .ubits-rich-text-btn:hover {
+  background: var(--modifiers-normal-color-light-bg-2) !important;
+  color: var(--modifiers-normal-color-light-fg-1-high) !important;
+}
+
+[data-theme="dark"] .ubits-rich-text-btn:active {
+  background: var(--modifiers-normal-color-light-bg-3) !important;
+}
+
+[data-theme="dark"] .ubits-rich-text-separator {
+  background: var(--modifiers-normal-color-light-border-1) !important;
+}
+
+/* ========================================
+   NUMBER INPUT
+   Ocultar controles nativos del navegador
+   ======================================== */
+
+/* Ocultar controles nativos del navegador */
+.ubits-input[type="number"]::-webkit-inner-spin-button,
+.ubits-input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    appearance: none;
+    margin: 0;
+    display: none;
+}
+
+/* Firefox - ocultar controles nativos */
+.ubits-input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+/* Hover state para spinner buttons */
+.ubits-input[type="number"]::-webkit-inner-spin-button:hover,
+.ubits-input[type="number"]::-webkit-outer-spin-button:hover {
+    background: var(--modifiers-normal-color-light-bg-3);
+    border-color: var(--modifiers-normal-color-light-accent-brand);
+}
+
+/* Active state para spinner buttons */
+.ubits-input[type="number"]::-webkit-inner-spin-button:active,
+.ubits-input[type="number"]::-webkit-outer-spin-button:active {
+    background: var(--modifiers-normal-color-light-bg-3);
+    border-color: var(--modifiers-normal-color-light-accent-brand);
+    transform: scale(0.95);
+}
+
+/* Disabled state para spinner buttons */
+.ubits-input[type="number"]:disabled::-webkit-inner-spin-button,
+.ubits-input[type="number"]:disabled::-webkit-outer-spin-button {
+    background: var(--modifiers-normal-color-light-bg-disabled);
+    border-color: var(--modifiers-normal-color-light-border-disabled);
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+/* Firefox */
+.ubits-input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+.ubits-input[type="number"]::-moz-number-spin-box {
+    display: flex;
+    flex-direction: column;
+    height: 20px;
+    width: 20px;
+}
+
+.ubits-input[type="number"]::-moz-number-spin-up,
+.ubits-input[type="number"]::-moz-number-spin-down {
+    background: var(--modifiers-normal-color-light-bg-2);
+    border: 1px solid var(--modifiers-normal-color-light-border-1);
+    border-radius: var(--ubits-border-radius-sm, 8px);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.ubits-input[type="number"]::-moz-number-spin-up:hover,
+.ubits-input[type="number"]::-moz-number-spin-down:hover {
+    background: var(--modifiers-normal-color-light-bg-3);
+    border-color: var(--modifiers-normal-color-light-accent-brand);
+}
+
+.ubits-input[type="number"]:disabled::-moz-number-spin-up,
+.ubits-input[type="number"]:disabled::-moz-number-spin-down {
+    background: var(--modifiers-normal-color-light-bg-disabled);
+    border-color: var(--modifiers-normal-color-light-border-disabled);
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+/* Dark mode para spinner buttons */
+[data-theme="dark"] .ubits-input[type="number"]::-webkit-inner-spin-button,
+[data-theme="dark"] .ubits-input[type="number"]::-webkit-outer-spin-button {
+    background: var(--modifiers-normal-color-dark-bg-2);
+    border-color: var(--modifiers-normal-color-dark-border-1);
+}
+
+[data-theme="dark"] .ubits-input[type="number"]::-webkit-inner-spin-button:hover,
+[data-theme="dark"] .ubits-input[type="number"]::-webkit-outer-spin-button:hover {
+    background: var(--modifiers-normal-color-dark-bg-3);
+    border-color: var(--modifiers-normal-color-dark-accent-brand);
+}
+
+[data-theme="dark"] .ubits-input[type="number"]:disabled::-webkit-inner-spin-button,
+[data-theme="dark"] .ubits-input[type="number"]:disabled::-webkit-outer-spin-button {
+    background: var(--modifiers-normal-color-dark-bg-disabled);
+    border-color: var(--modifiers-normal-color-dark-border-disabled);
+}
+
+[data-theme="dark"] .ubits-input[type="number"]::-moz-number-spin-up,
+[data-theme="dark"] .ubits-input[type="number"]::-moz-number-spin-down {
+    background: var(--modifiers-normal-color-dark-bg-2);
+    border-color: var(--modifiers-normal-color-dark-border-1);
+}
+
+[data-theme="dark"] .ubits-input[type="number"]::-moz-number-spin-up:hover,
+[data-theme="dark"] .ubits-input[type="number"]::-moz-number-spin-down:hover {
+    background: var(--modifiers-normal-color-dark-bg-3);
+    border-color: var(--modifiers-normal-color-dark-accent-brand);
+}
+
+[data-theme="dark"] .ubits-input[type="number"]:disabled::-moz-number-spin-up,
+[data-theme="dark"] .ubits-input[type="number"]:disabled::-moz-number-spin-down {
+    background: var(--modifiers-normal-color-dark-bg-disabled);
+    border-color: var(--modifiers-normal-color-dark-border-disabled);
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+@media (max-width: 768px) {
+    .ubits-input-helper {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--p-spacing-mode-1-xs, 4px);
+    }
+    
+    .ubits-input-rich-text-toolbar {
+      gap: var(--p-spacing-mode-1-xs, 2px);
+      padding: var(--p-spacing-mode-1-xs, 6px);
+    }
+    
+    .ubits-rich-text-btn {
+      width: 28px;
+      height: 28px;
+      font-size: var(--modifiers-normal-body-xs-regular-fontsize, var(--font-body-xs-size, 12px));
+    }
+    
+    .ubits-rich-text-btn i {
+      font-size: var(--modifiers-normal-body-xs-regular-fontsize, var(--font-body-xs-size, 12px));
+      width: 12px;
+      height: 12px;
+    }
+}
+

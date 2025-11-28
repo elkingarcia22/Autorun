@@ -1,0 +1,166 @@
+/* ========================================
+   UBITS SCROLLBAR COMPONENT
+   Componente scrollbar personalizado UBITS
+   Usando tokens UBITS exclusivamente
+   ======================================== */
+
+/* ========================================
+   SCROLLBAR CONTAINER
+   ======================================== */
+
+.ubits-scrollbar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    position: relative;
+    flex-shrink: 0;
+}
+
+/* ========================================
+   VERTICAL SCROLLBAR
+   ======================================== */
+
+.ubits-scrollbar--vertical {
+    flex-direction: column;
+    width: 8px;
+    min-width: 8px;
+    padding: var(--p-spacing-mode-1-sm, 8px) var(--p-spacing-mode-1-xs, 4px);
+    height: 100%;
+}
+
+.ubits-scrollbar--vertical .ubits-scrollbar__bar {
+    width: 8px;
+    min-height: 20px;
+    background-color: var(--color-scroll-bar-color-bg-default) !important;
+    border-radius: var(--ubits-border-radius-full, 1000px);
+    position: absolute;
+    top: var(--p-spacing-mode-1-sm, 8px);
+    left: var(--p-spacing-mode-1-xs, 4px);
+    right: var(--p-spacing-mode-1-xs, 4px);
+    transition: opacity 0.3s ease, transform 0.1s ease, background-color 0.2s ease;
+    cursor: grab;
+    opacity: 0;
+    pointer-events: none;
+    user-select: none;
+}
+
+.ubits-scrollbar--vertical:hover .ubits-scrollbar__bar {
+    opacity: 1;
+    pointer-events: auto;
+    background-color: var(--color-scroll-bar-color-bg-hover) !important;
+}
+
+.ubits-scrollbar--vertical .ubits-scrollbar__bar:active {
+    cursor: grabbing;
+    background-color: var(--color-scroll-bar-color-bg-dragged) !important;
+}
+
+/* Mostrar scrollbar cuando el contenedor scrollable tiene hover */
+[id*="scrollbar-scrollable-vertical"]:hover ~ [id*="scrollbar-vertical"] .ubits-scrollbar__bar,
+[id*="scrollbar-wrapper-vertical"]:hover .ubits-scrollbar__bar {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+}
+
+/* ========================================
+   HORIZONTAL SCROLLBAR
+   ======================================== */
+
+.ubits-scrollbar--horizontal {
+    flex-direction: row;
+    height: 8px;
+    min-height: 8px;
+    padding: var(--p-spacing-mode-1-xs, 4px) var(--p-spacing-mode-1-sm, 8px);
+    width: 100%;
+}
+
+.ubits-scrollbar--horizontal .ubits-scrollbar__bar {
+    height: 8px;
+    min-width: 20px;
+    background-color: var(--color-scroll-bar-color-bg-default) !important;
+    border-radius: var(--ubits-border-radius-full, 1000px);
+    position: absolute;
+    left: var(--p-spacing-mode-1-sm, 8px);
+    top: var(--p-spacing-mode-1-xs, 4px);
+    bottom: var(--p-spacing-mode-1-xs, 4px);
+    transition: opacity 0.3s ease, transform 0.1s ease, background-color 0.2s ease;
+    cursor: grab;
+    opacity: 0;
+    pointer-events: none;
+    user-select: none;
+}
+
+.ubits-scrollbar--horizontal:hover .ubits-scrollbar__bar {
+    opacity: 1;
+    pointer-events: auto;
+    background-color: var(--color-scroll-bar-color-bg-hover) !important;
+}
+
+.ubits-scrollbar--horizontal .ubits-scrollbar__bar:active {
+    cursor: grabbing;
+    background-color: var(--color-scroll-bar-color-bg-dragged) !important;
+}
+
+/* Mostrar scrollbar cuando el contenedor scrollable tiene hover */
+[id*="scrollbar-scrollable-horizontal"]:hover ~ [id*="scrollbar-horizontal"] .ubits-scrollbar__bar,
+[id*="scrollbar-wrapper-horizontal"]:hover .ubits-scrollbar__bar {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+}
+
+/* ========================================
+   STATES
+   ======================================== */
+
+.ubits-scrollbar--default .ubits-scrollbar__bar {
+    background-color: var(--color-scroll-bar-color-bg-default) !important;
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+@media (max-width: 767px) {
+    .ubits-scrollbar--vertical {
+        width: 2px;
+        min-width: 2px;
+        padding: var(--p-spacing-mode-1-sm, 8px) 0;
+    }
+    
+    .ubits-scrollbar--vertical .ubits-scrollbar__bar {
+        width: 2px;
+        left: 0;
+        right: 0;
+    }
+    
+    .ubits-scrollbar--horizontal {
+        height: 2px;
+        min-height: 2px;
+        padding: 0 var(--p-spacing-mode-1-sm, 8px);
+    }
+    
+    .ubits-scrollbar--horizontal .ubits-scrollbar__bar {
+        height: 2px;
+        top: 0;
+        bottom: 0;
+    }
+}
+
+/* ========================================
+   DARK MODE SUPPORT
+   ======================================== */
+
+/* Definir tokens de scroll-bar usando SOLO los tokens nuevos de Figma */
+:root {
+    --color-scroll-bar-color-bg-default: var(--modifiers-normal-scroll-bar-color-light-bg-default);
+    --color-scroll-bar-color-bg-hover: var(--modifiers-normal-scroll-bar-color-light-bg-hover);
+    --color-scroll-bar-color-bg-dragged: var(--modifiers-normal-scroll-bar-color-light-bg-dragged);
+}
+
+[data-theme="dark"] {
+    --color-scroll-bar-color-bg-default: var(--modifiers-normal-scroll-bar-color-dark-bg-default);
+    --color-scroll-bar-color-bg-hover: var(--modifiers-normal-scroll-bar-color-dark-bg-hover);
+    --color-scroll-bar-color-bg-dragged: var(--modifiers-normal-scroll-bar-color-dark-bg-dragged);
+}
+

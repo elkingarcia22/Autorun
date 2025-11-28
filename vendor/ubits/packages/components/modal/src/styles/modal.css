@@ -1,0 +1,362 @@
+/* ========================================
+   UBITS MODAL COMPONENT
+   Componente modal centrado con overlay
+   Usando tokens UBITS exclusivamente
+   ======================================== */
+
+/* ========================================
+   OVERLAY
+   ======================================== */
+
+.ubits-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--modifiers-normal-color-light-bg-dim);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--ubits-spacing-lg);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.ubits-modal-overlay--open {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* ========================================
+   MODAL CONTAINER
+   ======================================== */
+
+.ubits-modal {
+    position: relative;
+    background-color: var(--modifiers-normal-color-light-bg-1);
+    display: flex;
+    flex-direction: column;
+    border-radius: var(--ubits-border-radius-md);
+    overflow: hidden;
+    box-shadow: 0px 14px 28.8px 0px rgba(0, 0, 0, 0.24), 0px 0px 8px 0px rgba(0, 0, 0, 0.2);
+    max-height: calc(100vh - var(--ubits-spacing-8));
+    width: 100%;
+    min-height: 0;
+    height: auto;
+    transform: scale(0.95);
+    opacity: 0;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.ubits-modal-overlay--open .ubits-modal {
+    transform: scale(1);
+    opacity: 1;
+}
+
+/* Tamaños del modal */
+.ubits-modal--size-sm {
+    max-width: calc(var(--ubits-spacing-12) * 4);
+}
+
+.ubits-modal--size-md {
+    max-width: calc(var(--ubits-spacing-12) * 6);
+}
+
+.ubits-modal--size-lg {
+    max-width: calc(var(--ubits-spacing-12) * 8);
+}
+
+.ubits-modal--size-xl {
+    max-width: calc(var(--ubits-spacing-12) * 10);
+}
+
+.ubits-modal--size-full {
+    max-width: calc(var(--ubits-spacing-12) * 16);
+}
+
+/* Variante full-screen */
+.ubits-modal--full-screen {
+    max-height: calc(100vh - var(--ubits-spacing-8));
+    height: calc(100vh - var(--ubits-spacing-8));
+}
+
+@media (max-width: 767px) {
+    .ubits-modal-overlay {
+        padding: var(--ubits-spacing-md);
+    }
+    
+    .ubits-modal {
+        max-width: 100%;
+        max-height: calc(100vh - var(--ubits-spacing-6));
+    }
+    
+    .ubits-modal--full-screen {
+        max-height: calc(100vh - var(--ubits-spacing-6));
+        height: calc(100vh - var(--ubits-spacing-6));
+    }
+}
+
+/* ========================================
+   MODAL HEADER
+   ======================================== */
+
+.ubits-modal__header {
+    display: flex;
+    align-items: center;
+    gap: var(--ubits-spacing-md);
+    padding: var(--ubits-spacing-lg);
+    border-bottom: 1px solid var(--modifiers-normal-color-light-border-1);
+    flex-shrink: 0;
+}
+
+.ubits-modal__header-text {
+    flex: 1 1 0;
+    min-width: 0;
+}
+
+.ubits-modal__header-title {
+    display: flex;
+    align-items: center;
+    gap: var(--ubits-spacing-md);
+    width: 100%;
+}
+
+.ubits-modal__header-title p,
+.ubits-modal__header-title p.ubits-heading-h2,
+.ubits-modal__header-title .ubits-heading-h2,
+.ubits-modal__header-title p.ubits-heading-h2.ubits-heading-h2 {
+    flex: 1 1 0;
+    margin: 0;
+    color: var(--modifiers-normal-color-light-fg-1-high);
+    font-family: var(--font-family-noto-sans-font-family);
+    font-weight: 600 !important;
+    font-size: var(--modifiers-normal-body-md-regular-fontsize) !important;
+    line-height: var(--modifiers-normal-body-md-regular-lineheight) !important;
+}
+
+.ubits-modal__close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: calc(var(--ubits-spacing-sm) + 1.5px);
+    border: 1px solid var(--modifiers-normal-color-light-border-1);
+    border-radius: var(--ubits-border-radius-sm);
+    background-color: var(--modifiers-normal-color-light-bg-1);
+    color: var(--modifiers-normal-color-light-fg-1-high);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+    width: calc((var(--ubits-spacing-sm) + 1.5px) * 2 + var(--modifiers-normal-body-sm-regular-fontsize));
+    height: calc((var(--ubits-spacing-sm) + 1.5px) * 2 + var(--modifiers-normal-body-sm-regular-fontsize));
+    min-width: calc((var(--ubits-spacing-sm) + 1.5px) * 2 + var(--modifiers-normal-body-sm-regular-fontsize));
+    min-height: calc((var(--ubits-spacing-sm) + 1.5px) * 2 + var(--modifiers-normal-body-sm-regular-fontsize));
+    box-sizing: border-box;
+}
+
+.ubits-modal__close:hover {
+    background-color: var(--modifiers-normal-color-light-bg-2);
+    border-color: var(--modifiers-normal-color-light-border-2);
+}
+
+.ubits-modal__close:active {
+    background-color: var(--modifiers-normal-color-light-bg-3);
+    border-color: var(--modifiers-normal-color-light-border-3);
+    transform: translateY(1px);
+}
+
+.ubits-modal__close:focus-visible {
+    outline: none;
+    box-shadow: 0px 0px 0px 4px var(--modifiers-normal-focus-color);
+}
+
+.ubits-modal__close i {
+    font-size: var(--modifiers-normal-body-sm-regular-fontsize);
+    width: var(--modifiers-normal-body-sm-regular-fontsize);
+    height: var(--modifiers-normal-body-sm-regular-fontsize);
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    padding: 0;
+}
+
+/* ========================================
+   MODAL BODY
+   ======================================== */
+
+.ubits-modal__body {
+    flex: 1 1 auto;
+    display: flex;
+    overflow: hidden;
+    position: relative;
+    min-height: 100px;
+    max-height: 100%;
+}
+
+.ubits-modal__body-content {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    padding: var(--ubits-spacing-lg);
+    min-height: 100px;
+    height: auto;
+    color: var(--modifiers-normal-color-light-fg-1-high);
+    font-size: var(--modifiers-normal-body-md-regular-fontsize);
+    line-height: var(--modifiers-normal-body-md-regular-lineheight);
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+/* Ajustar espaciado de párrafos dentro del body-content */
+.ubits-modal__body-content p {
+    margin: 0 0 var(--p-spacing-mode-1-md, 16px) 0;
+    line-height: var(--modifiers-normal-body-md-regular-lineheight);
+}
+
+.ubits-modal__body-content p:last-child {
+    margin-bottom: 0;
+}
+
+/* Ocultar scrollbar para Webkit (Chrome, Safari) */
+.ubits-modal__body-content::-webkit-scrollbar {
+    display: none;
+}
+
+.ubits-modal__placeholder {
+    padding: var(--ubits-spacing-lg);
+    background: var(--modifiers-normal-color-light-bg-2);
+    border: 1px dashed var(--modifiers-normal-color-light-border-1);
+    border-radius: var(--ubits-border-radius-sm);
+    color: var(--modifiers-normal-color-light-fg-1-medium);
+    text-align: center;
+    font-size: var(--modifiers-normal-body-md-regular-fontsize);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(var(--ubits-spacing-12) * 1.25);
+}
+
+/* Custom Scrollbar */
+.ubits-modal__scrollbar {
+    width: var(--ubits-spacing-xs);
+    min-width: var(--ubits-spacing-xs);
+    background-color: transparent;
+    padding: var(--ubits-spacing-xs) var(--ubits-spacing-xs);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    flex-shrink: 0;
+}
+
+.ubits-modal__scrollbar-bar {
+    width: var(--ubits-spacing-xs);
+    height: var(--ubits-spacing-10);
+    background-color: var(--color-scroll-bar-color-bg-default);
+    border-radius: var(--ubits-border-radius-full);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.ubits-modal__body:hover .ubits-modal__scrollbar-bar {
+    opacity: 1;
+}
+
+@media (max-width: 767px) {
+    .ubits-modal__scrollbar {
+        width: calc(var(--ubits-spacing-xs) / 2);
+        min-width: calc(var(--ubits-spacing-xs) / 2);
+        padding: var(--ubits-spacing-sm) 0;
+    }
+    
+    .ubits-modal__scrollbar-bar {
+        width: calc(var(--ubits-spacing-xs) / 2);
+    }
+}
+
+/* ========================================
+   MODAL FOOTER
+   ======================================== */
+
+.ubits-modal__footer {
+    padding: var(--ubits-spacing-lg);
+    border-top: 1px solid var(--modifiers-normal-color-light-border-1);
+    flex-shrink: 0;
+}
+
+.ubits-modal__footer-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: var(--ubits-spacing-md);
+}
+
+.ubits-modal__footer-left {
+    display: flex;
+    gap: var(--ubits-spacing-md);
+    margin-right: auto;
+}
+
+.ubits-modal__footer-right {
+    display: flex;
+    gap: var(--ubits-spacing-md);
+    justify-content: flex-end;
+}
+
+.ubits-modal__footer-button {
+    margin: 0; /* Reset margin from default button styles */
+}
+
+/* ========================================
+   DARK MODE
+   ======================================== */
+
+[data-theme="dark"] .ubits-modal-overlay {
+    background-color: var(--modifiers-normal-color-dark-bg-dim);
+}
+
+[data-theme="dark"] .ubits-modal {
+    background-color: var(--modifiers-normal-color-dark-bg-1);
+}
+
+[data-theme="dark"] .ubits-modal__header {
+    border-bottom-color: var(--modifiers-normal-color-dark-border-1);
+}
+
+[data-theme="dark"] .ubits-modal__header-title p {
+    color: var(--modifiers-normal-color-dark-fg-1-high);
+}
+
+[data-theme="dark"] .ubits-modal__close {
+    border-color: var(--modifiers-normal-color-dark-border-1);
+    background-color: var(--modifiers-normal-color-dark-bg-1);
+    color: var(--modifiers-normal-color-dark-fg-1-high);
+}
+
+[data-theme="dark"] .ubits-modal__close:hover {
+    background-color: var(--modifiers-normal-color-dark-bg-2);
+    border-color: var(--modifiers-normal-color-dark-border-2);
+}
+
+[data-theme="dark"] .ubits-modal__close:active {
+    background-color: var(--modifiers-normal-color-dark-bg-3);
+    border-color: var(--modifiers-normal-color-dark-border-3);
+}
+
+[data-theme="dark"] .ubits-modal__placeholder {
+    background: var(--modifiers-normal-color-dark-bg-2);
+    border-color: var(--modifiers-normal-color-dark-border-1);
+    color: var(--modifiers-normal-color-dark-fg-1-medium);
+}
+
+[data-theme="dark"] .ubits-modal__scrollbar-bar {
+    background-color: var(--color-scroll-bar-color-bg-default);
+}
+
+[data-theme="dark"] .ubits-modal__footer {
+    border-top-color: var(--modifiers-normal-color-dark-border-1);
+}
+

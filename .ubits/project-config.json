@@ -8,9 +8,9 @@
     "projectType": "ubits",
     "ubits": {
       "template": "administrador",
-      "module": "desempeno",
-      "product": "matriz-talento",
-      "canvasPath": "/Users/elkinmac/Desktop/Autorun/prototypes/canvas-administrador-desempeno-matriz-talento-2025-11-27.html"
+      "module": "encuestas",
+      "product": "",
+      "canvasPath": "/Users/elkinmac/Desktop/Autorun/prototypes/canvas-administrador-encuestas-2025-11-27.html"
     }
   }
 }

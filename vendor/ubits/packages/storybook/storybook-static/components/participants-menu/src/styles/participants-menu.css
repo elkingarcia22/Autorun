@@ -1,0 +1,242 @@
+/* ========================================
+   UBITS PARTICIPANTS MENU COMPONENT
+   Menú lateral para mostrar lista de participantes
+   Usando tokens UBITS exclusivamente
+   ======================================== */
+
+.ubits-participants-menu {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-height: 100%;
+  width: 100%;
+  min-width: calc(var(--ubits-spacing-12) * 6);
+  background-color: var(--modifiers-normal-color-light-bg-1);
+  border: none !important;
+  border-width: 0 !important;
+  box-shadow: none !important;
+  outline: none;
+  padding: var(--ubits-spacing-md);
+  box-sizing: border-box;
+  font-family: var(--font-family-noto-sans-font-family);
+  overflow: hidden;
+}
+
+.ubits-participants-menu__header {
+  flex-shrink: 0;
+}
+
+.ubits-participants-menu__title {
+  margin: 0;
+  font-size: var(--modifiers-normal-body-md-regular-fontsize);
+  font-weight: var(--weight-bold);
+  line-height: var(--modifiers-normal-body-md-regular-lineheight);
+  color: var(--modifiers-normal-color-light-fg-1-high);
+  margin-bottom: var(--ubits-spacing-md);
+}
+
+.ubits-participants-menu__search-container {
+  display: flex;
+  gap: var(--ubits-spacing-sm);
+  margin-bottom: var(--ubits-spacing-md);
+}
+
+.ubits-participants-menu__search-input-wrapper {
+  flex: 1;
+  min-width: 0;
+}
+
+/* El input de búsqueda usa el componente Input de UBITS */
+.ubits-participants-menu__search-input-wrapper > div {
+  width: 100%;
+}
+
+.ubits-participants-menu__search-input-wrapper .ubits-input {
+  width: 100%;
+  box-shadow: none !important;
+}
+
+.ubits-participants-menu__search-input-wrapper .ubits-input:focus {
+  box-shadow: none !important;
+}
+
+.ubits-participants-menu__search-input-wrapper .ubits-input--focus {
+  box-shadow: none !important;
+}
+
+.ubits-participants-menu__filter-button-wrapper {
+  flex-shrink: 0;
+}
+
+/* El botón de filtro usa el componente Button de UBITS */
+.ubits-participants-menu__filter-button {
+  /* Los estilos se manejan en button.css */
+}
+
+/* Badge number dentro del botón de filtro - sobrescribir estilos del botón */
+.ubits-participants-menu__filter-button .ubits-button__badge.ubits-badge--number {
+  position: absolute !important;
+  top: calc(var(--ubits-spacing-xs) * -0.5) !important;
+  right: calc(var(--ubits-spacing-xs) * -0.5) !important;
+  width: auto !important;
+  min-width: var(--ubits-spacing-4) !important;
+  height: var(--ubits-spacing-4) !important;
+  padding: var(--ubits-spacing-xs) var(--ubits-spacing-xs) !important;
+  border-radius: var(--ubits-border-radius-full) !important;
+  font-size: var(--modifiers-normal-body-xs-regular-fontsize) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 1 !important;
+  color: var(--modifiers-normal-color-light-fg-bold) !important;
+}
+
+.ubits-participants-menu__list-wrapper {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  position: relative;
+}
+
+.ubits-participants-menu__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ubits-spacing-xs);
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  /* El scrollbar se maneja con el componente Scroll de UBITS */
+}
+
+/* Ocultar scrollbar nativo cuando el scrollbar de UBITS está activado */
+.ubits-participants-menu__list[data-ubits-scrollbar="true"] {
+  overflow-y: scroll;
+  /* Ocultar scrollbar nativo en navegadores WebKit (Chrome, Safari, Edge) */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE y Edge antiguo */
+}
+
+.ubits-participants-menu__list[data-ubits-scrollbar="true"]::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Edge */
+}
+
+/* Cuando el scrollbar de UBITS NO está activado, no permitir scroll */
+.ubits-participants-menu__list:not([data-ubits-scrollbar="true"]) {
+  overflow-y: hidden !important;
+  /* No mostrar scrollbar, los elementos están limitados */
+}
+
+.ubits-participants-menu__item {
+  display: flex;
+  align-items: center;
+  gap: var(--ubits-spacing-sm);
+  padding: var(--ubits-spacing-sm) var(--ubits-spacing-md);
+  border-radius: var(--ubits-border-radius-md);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  max-height: calc(var(--ubits-spacing-12) - var(--ubits-spacing-xs));
+  min-height: calc(var(--ubits-spacing-12) - var(--ubits-spacing-xs));
+  box-sizing: border-box;
+  width: 100%;
+  overflow: hidden;
+}
+
+.ubits-participants-menu__item:hover:not(.ubits-participants-menu__item--selected) {
+  background-color: var(--modifiers-normal-color-light-bg-2);
+}
+
+.ubits-participants-menu__item--selected {
+  background-color: var(--modifiers-normal-color-light-bg-active);
+}
+
+.ubits-participants-menu__item-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ubits-spacing-none);
+  justify-content: center;
+}
+
+.ubits-participants-menu__item-name {
+  font-size: var(--modifiers-normal-body-sm-regular-fontsize);
+  font-weight: var(--weight-bold);
+  line-height: var(--modifiers-normal-body-sm-regular-lineheight);
+  color: var(--modifiers-normal-color-light-fg-1-high);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 0;
+  padding: 0;
+}
+
+.ubits-participants-menu__item--selected .ubits-participants-menu__item-name {
+  color: var(--modifiers-normal-color-light-accent-brand);
+}
+
+.ubits-participants-menu__item-role {
+  font-size: var(--modifiers-normal-body-sm-regular-fontsize);
+  font-weight: var(--weight-regular);
+  line-height: var(--modifiers-normal-body-sm-regular-lineheight);
+  color: var(--modifiers-normal-color-light-fg-1-medium);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 0;
+  padding: 0;
+  margin-top: calc(var(--ubits-spacing-xs) * -0.5);
+}
+
+/* El avatar usa el componente Avatar de UBITS, solo ajustamos el contenedor */
+.ubits-participants-menu__avatar {
+  flex-shrink: 0;
+}
+
+.ubits-participants-menu__status-tag {
+  padding: var(--ubits-spacing-xs) var(--ubits-spacing-sm);
+  border-radius: var(--ubits-border-radius-sm);
+  font-size: var(--modifiers-normal-body-xs-regular-fontsize);
+  font-weight: var(--weight-regular);
+  line-height: var(--modifiers-normal-body-xs-regular-lineheight);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ========================================
+   DARK MODE
+   ======================================== */
+
+[data-theme="dark"] .ubits-participants-menu {
+  background-color: var(--modifiers-normal-color-dark-bg-1);
+}
+
+[data-theme="dark"] .ubits-participants-menu__title {
+  color: var(--modifiers-normal-color-dark-fg-1-high);
+}
+
+[data-theme="dark"] .ubits-participants-menu__filter-button .ubits-button__badge.ubits-badge--number {
+  color: var(--modifiers-normal-color-dark-fg-bold) !important;
+}
+
+[data-theme="dark"] .ubits-participants-menu__item:hover:not(.ubits-participants-menu__item--selected) {
+  background-color: var(--modifiers-normal-color-dark-bg-2);
+}
+
+[data-theme="dark"] .ubits-participants-menu__item--selected {
+  background-color: var(--modifiers-normal-color-dark-bg-active);
+}
+
+[data-theme="dark"] .ubits-participants-menu__item-name {
+  color: var(--modifiers-normal-color-dark-fg-1-high);
+}
+
+[data-theme="dark"] .ubits-participants-menu__item--selected .ubits-participants-menu__item-name {
+  color: var(--modifiers-normal-color-dark-accent-brand);
+}
+
+[data-theme="dark"] .ubits-participants-menu__item-role {
+  color: var(--modifiers-normal-color-dark-fg-1-medium);
+}
+

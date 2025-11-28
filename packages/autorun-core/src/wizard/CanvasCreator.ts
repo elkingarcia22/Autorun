@@ -65,23 +65,28 @@ export class CanvasCreator {
 			templateFileName,
 		);
 
+		// Intentar cargar desde vendor/ubits/ primero (portable)
+		const vendorUbitsPath = path.join(this.projectPath, 'vendor', 'ubits', 'packages', 'templates', templateFileName);
+		const vendorUbitsPackagesPath = path.join(this.projectPath, 'vendor', 'ubits', 'packages');
+		
 		try {
-			// Verificar si existe el archivo en el escritorio
-			await fs.access(ubitsDesktopPath);
+			// Verificar si existe en vendor/ubits/ (preferido - portable)
+			await fs.access(vendorUbitsPath);
+			
+			console.log(`   📄 Cargando template desde vendor/ubits/ (portable): ${vendorUbitsPath}`);
+			let templateContent = await fs.readFile(vendorUbitsPath, 'utf-8');
 
-			// Cargar desde archivo local del escritorio
-			console.log(`   📄 Cargando template completo desde UBITS local: ${ubitsDesktopPath}`);
-			let templateContent = await fs.readFile(ubitsDesktopPath, 'utf-8');
-
-			// Usar rutas absolutas file:// para que funcionen cuando se abre el HTML localmente
-			const ubitsPackagesPath = path.join(os.homedir(), 'Desktop', 'UBITS', 'packages');
-			const absolutePath = `file://${ubitsPackagesPath}`.replace(/\\/g, '/');
+			// Usar rutas relativas desde prototypes/ hacia vendor/ubits/packages/
+			const relativePath = '../vendor/ubits/packages/';
 
 			// Validar que los archivos críticos existen
-			await this.validateUBITSFiles(ubitsPackagesPath);
+			await this.validateUBITSFiles(vendorUbitsPackagesPath);
 
-			// Ajustar rutas del template a rutas absolutas file://
-			templateContent = await this.adjustTemplatePaths(templateContent, absolutePath);
+			// Ajustar rutas del template a rutas relativas
+			templateContent = await this.adjustTemplatePaths(templateContent, relativePath);
+			
+			// Agregar carga del UMD de data-table
+			templateContent = this.addDataTableUMD(templateContent, relativePath);
 
 			// Personalizar el template con el módulo y producto seleccionados
 			// Esto agrega el script que activa el módulo/producto en sidebar y subnav
@@ -90,15 +95,47 @@ export class CanvasCreator {
 				template,
 				module,
 				product,
-				absolutePath,
+				relativePath,
 			);
 
 			return templateContent;
-		} catch (localError) {
-			console.warn('⚠️  No se pudo cargar template desde UBITS local:', localError);
-			console.warn(`   💡 Verifica que existe: ${ubitsDesktopPath}`);
-			// Fallback a template generado localmente
-			return this.generateCanvasContent(template, module, templateConfig, product);
+		} catch (vendorError) {
+			// Fallback: intentar desde Desktop/UBITS/ (legacy)
+			try {
+				await fs.access(ubitsDesktopPath);
+				
+				console.log(`   📄 Cargando template desde Desktop/UBITS/ (legacy): ${ubitsDesktopPath}`);
+				let templateContent = await fs.readFile(ubitsDesktopPath, 'utf-8');
+
+				// Usar rutas absolutas file:// para compatibilidad legacy
+				const ubitsPackagesPath = path.join(os.homedir(), 'Desktop', 'UBITS', 'packages');
+				const absolutePath = `file://${ubitsPackagesPath}`.replace(/\\/g, '/');
+
+				// Validar que los archivos críticos existen
+				await this.validateUBITSFiles(ubitsPackagesPath);
+
+				// Ajustar rutas del template a rutas absolutas file://
+				templateContent = await this.adjustTemplatePaths(templateContent, absolutePath);
+				
+				// Agregar carga del UMD de data-table
+				templateContent = this.addDataTableUMD(templateContent, absolutePath);
+
+				// Personalizar el template
+				templateContent = this.customizeTemplate(
+					templateContent,
+					template,
+					module,
+					product,
+					absolutePath,
+				);
+
+				return templateContent;
+			} catch (localError) {
+				console.warn('⚠️  No se pudo cargar template desde UBITS:', localError);
+				console.warn(`   💡 Verifica que existe vendor/ubits/packages/ o Desktop/UBITS/packages/`);
+				// Fallback a template generado localmente
+				return this.generateCanvasContent(template, module, templateConfig, product);
+			}
 		}
 	}
 
@@ -133,27 +170,77 @@ export class CanvasCreator {
 		if (missingFiles.length > 0) {
 			console.warn('   ⚠️  Archivos críticos de UBITS no encontrados:');
 			missingFiles.forEach((file) => console.warn(`      - ${file}`));
-			console.warn('   💡 Asegúrate de que UBITS está correctamente clonado en Desktop/UBITS/');
+			console.warn('   💡 Asegúrate de que UBITS está en vendor/ubits/packages/ o Desktop/UBITS/packages/');
 		} else {
 			console.log('   ✅ Todos los archivos críticos de UBITS encontrados');
 		}
 	}
 
 	/**
-	 * Ajusta las rutas del template para que funcionen con file:// absolutas
-	 * Las rutas originales son relativas a packages/templates/ (../tokens/...)
-	 * Las convertimos a rutas absolutas file:// hacia Desktop/UBITS/packages/
+	 * Agrega la carga del UMD de data-table a los templates
 	 */
-	private async adjustTemplatePaths(content: string, absolutePathToUBITS: string): Promise<string> {
+	private addDataTableUMD(content: string, basePath: string): string {
+		// Buscar donde se carga components-loader.js y agregar data-table.umd.js después
+		const dataTableScript = `<script src="${basePath}components/data-table/dist/data-table.umd.js"></script>`;
+		
+		// Agregar después de components-loader.js
+		if (content.includes('components-loader.js')) {
+			content = content.replace(
+				/(<script[^>]*src="[^"]*components-loader\.js"[^>]*><\/script>)/i,
+				`$1\n    ${dataTableScript}`
+			);
+		} else {
+			// Si no encuentra components-loader.js, agregar antes del cierre de </body>
+			content = content.replace(
+				/(<\/body>)/i,
+				`    ${dataTableScript}\n$1`
+			);
+		}
+		
+		return content;
+	}
+
+	/**
+	 * Ajusta las rutas del template para que funcionen con rutas relativas o absolutas
+	 * Las rutas originales son relativas a packages/templates/ (../tokens/...)
+	 * Las convertimos a rutas relativas desde prototypes/ hacia vendor/ubits/packages/
+	 * O rutas absolutas file:// si es legacy (Desktop/UBITS/)
+	 */
+	private async adjustTemplatePaths(content: string, basePathToUBITS: string): Promise<string> {
 		// Las rutas originales son: ../tokens/dist/tokens.css
-		// Necesitamos: file:///Users/elkinmac/Desktop/UBITS/packages/tokens/dist/tokens.css
+		// Necesitamos: ../vendor/ubits/packages/tokens/dist/tokens.css (relativo)
+		// O: file:///Users/.../UBITS/packages/tokens/dist/tokens.css (absoluto legacy)
 
 		// ⚠️ IMPORTANTE: Asegurar que la ruta termine con / para evitar problemas
-		const basePath = absolutePathToUBITS.endsWith('/') ? absolutePathToUBITS : `${absolutePathToUBITS}/`;
+		const basePath = basePathToUBITS.endsWith('/') ? basePathToUBITS : `${basePathToUBITS}/`;
 
-		// 1. Reemplazar rutas relativas ../ por la ruta absoluta (CSS y JS)
-		content = content.replace(/href="\.\.\//g, `href="${basePath}`);
-		content = content.replace(/src="\.\.\//g, `src="${basePath}`);
+		// 1. Reemplazar rutas relativas ../ por la ruta base (CSS y JS)
+		// Solo reemplazar si NO tiene ya vendor/ubits/packages/ o file://
+		content = content.replace(/href="(\.\.\/)+([^"]+)"/g, (match, dots, path) => {
+			// Si ya tiene vendor/ubits/packages/ o file://, no reemplazar
+			if (match.includes('vendor/ubits/packages/') || match.includes('file://')) {
+				return match;
+			}
+			return `href="${basePath}${path}"`;
+		});
+		content = content.replace(/src="(\.\.\/)+([^"]+)"/g, (match, dots, path) => {
+			// Si ya tiene vendor/ubits/packages/ o file://, no reemplazar
+			if (match.includes('vendor/ubits/packages/') || match.includes('file://')) {
+				return match;
+			}
+			return `src="${basePath}${path}"`;
+		});
+		
+		// 1.1. Agregar carga de figma-tokens.css después de tokens.css (necesario para tokens de modifiers)
+		// Esto asegura que tokens como --modifiers-normal-color-dark-accent-blue estén disponibles
+		// Extraer la ruta base del tokens.css ya procesado para evitar duplicación
+		content = content.replace(
+			/(<link rel="stylesheet" href="([^"]*tokens\/dist\/)tokens\.css"[^>]*\/>)/,
+			(match, fullMatch, tokensPath) => {
+				// Usar la misma ruta base que ya tiene tokens.css
+				return `${fullMatch}\n    <link rel="stylesheet" href="${tokensPath}figma-tokens.css" />`;
+			},
+		);
 
 		// 2. Ajustar rutas de assets que son relativas al mismo directorio (templates/assets/)
 		// assets/fontawesome/... -> file:///Users/.../templates/assets/fontawesome/...
@@ -181,13 +268,30 @@ export class CanvasCreator {
 		content = content.replace(/src="engine\//g, `src="${basePath}templates/engine/`);
 
 		// 5. Ajustar rutas en template strings de JavaScript (backticks)
-		// `../tokens/...` -> `file:///Users/.../tokens/...`
-		content = content.replace(/`\.\.\//g, `\`${basePath}`);
-
+		// `../tokens/...` -> `../vendor/ubits/packages/tokens/...`
+		// Solo reemplazar si NO tiene ya vendor/ubits/packages/ o file://
+		content = content.replace(/`(\.\.\/)+([^`]+)`/g, (match, dots, path) => {
+			if (match.includes('vendor/ubits/packages/') || match.includes('file://')) {
+				return match;
+			}
+			return `\`${basePath}${path}\``;
+		});
+		
 		// 6. Ajustar rutas en strings de JavaScript (comillas simples y dobles)
-		// '../tokens/...' -> 'file:///Users/.../tokens/...'
-		content = content.replace(/'\.\.\//g, `'${basePath}`);
-		content = content.replace(/"\.\.\//g, `"${basePath}`);
+		// '../tokens/...' -> '../vendor/ubits/packages/tokens/...'
+		// Solo reemplazar si NO tiene ya vendor/ubits/packages/ o file://
+		content = content.replace(/'((\.\.\/)+)([^']+)'/g, (match, dots, dots2, path) => {
+			if (match.includes('vendor/ubits/packages/') || match.includes('file://')) {
+				return match;
+			}
+			return `'${basePath}${path}'`;
+		});
+		content = content.replace(/"((\.\.\/)+)([^"]+)"/g, (match, dots, dots2, path) => {
+			if (match.includes('vendor/ubits/packages/') || match.includes('file://')) {
+				return match;
+			}
+			return `"${basePath}${path}"`;
+		});
 
 		// 7. Remover cualquier intento de cargar desde Storybook en el template generado
 		// Esto asegura que solo se usen componentes locales
@@ -533,7 +637,10 @@ export class CanvasCreator {
     }
     
     /* Fix: Asegurar que el indicador activo del subnav (flechita azul) sea visible */
-    /* Usar token static para light mode (siempre azul #0c5bef) */
+    /* NO sobrescribir el background-color - dejar que el componente use sus propios tokens:
+       - Light mode: --ubits-accent-brand-static (definido en subnav.css línea 118)
+       - Dark mode: --modifiers-normal-color-dark-accent-blue (definido en subnav.css línea 128)
+    */
     .ubits-sub-nav-tab.ubits-sub-nav-tab--active::after {
       content: '' !important;
       position: absolute !important;
@@ -547,21 +654,17 @@ export class CanvasCreator {
       visibility: visible !important;
       opacity: 1 !important;
       width: auto !important;
-      /* Usar token static para light mode (siempre azul) */
-      background-color: var(--ubits-accent-brand-static, #0c5bef) !important;
+      /* NO sobrescribir background-color - el componente ya lo maneja correctamente */
     }
     
-    /* En dark mode, usar el color azul correcto con fallback */
-    /* El token --modifiers-normal-color-dark-accent-blue puede no estar definido, usar fallback */
+    /* En dark mode, solo asegurar visibilidad - el componente ya usa --modifiers-normal-color-dark-accent-blue */
     body[data-theme="dark"] .ubits-sub-nav-tab.ubits-sub-nav-tab--active::after,
     html[data-theme="dark"] .ubits-sub-nav-tab.ubits-sub-nav-tab--active::after,
     [data-theme="dark"] .ubits-sub-nav-tab.ubits-sub-nav-tab--active::after {
       opacity: 1 !important;
       visibility: visible !important;
       display: block !important;
-      /* Usar token con fallback al color azul correcto para dark mode */
-      /* Si el token no está definido, usar el color azul directamente */
-      background-color: var(--modifiers-normal-color-dark-accent-blue, var(--ubits-accent-brand-static-inverted, #3865f5)) !important;
+      /* NO sobrescribir background-color - el componente ya usa --modifiers-normal-color-dark-accent-blue */
     }
     
     /* Asegurar que el contenedor del subnav permita que el indicador sea visible */
@@ -593,8 +696,8 @@ export class CanvasCreator {
     (function() {
       const adjustImagePaths = (products) => {
         if (!products) return;
-        // Usar ruta absoluta file:// para que funcione con file:// protocol
-        const ubitsTemplatesPath = \`${absolutePathToUBITS}/templates\`;
+        // Usar ruta relativa o absoluta según corresponda
+        const ubitsTemplatesPath = \`${absolutePathToUBITS || '../vendor/ubits/packages/'}templates\`;
         
         // Función recursiva para ajustar rutas en objetos
         const adjustPaths = (obj) => {

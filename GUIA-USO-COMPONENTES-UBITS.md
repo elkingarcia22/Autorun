@@ -28,9 +28,11 @@ prototypes/
 Los templates generados ya incluyen todos los componentes de UBITS cargados desde Storybook. No necesitas cargarlos manualmente.
 
 **Componentes disponibles:**
-- ✅ Sidebar (`createSidebar`)
-- ✅ SubNav (`createSubNav`)
-- ✅ TabBar (`createTabBar`)
+- ✅ Sidebar (`window.createSidebar`)
+- ✅ SubNav (`window.createSubNav`)
+- ✅ TabBar (`window.createTabBar`)
+- ✅ **Tabs** (`window.createTabs`) ⭐ NUEVO
+- ✅ **DataTable** (`window.createDataTable`) ⭐ NUEVO
 - ✅ Button (`ubits-button` o `window.UBITS.Button`)
 - ✅ Alert (`ubits-alert`)
 - ✅ Y todos los demás componentes de UBITS
@@ -49,18 +51,46 @@ window.createSubNav(options)
 // TabBar
 window.createTabBar(options)
 
+// Tabs ⭐ NUEVO
+// ⚠️ IMPORTANTE: Para iconos, usar SOLO el nombre del icono (sin 'far fa-' o 'fas fa-')
+// El componente automáticamente agrega el prefijo y el estilo según si está activo
+window.createTabs({
+  tabs: [
+    { id: 'tab1', label: 'Tab 1', icon: 'home' },      // ✅ CORRECTO: solo 'home'
+    { id: 'tab2', label: 'Tab 2', icon: 'user' }       // ✅ CORRECTO: solo 'user'
+    // ❌ INCORRECTO: icon: 'far fa-home' (NO usar prefijos)
+  ],
+  activeTabId: 'tab1',
+  onTabChange: (tabId, tabElement) => {
+    console.log('Tab cambiado:', tabId);
+  }
+}, 'tabs-container')
+
+// DataTable ⭐ NUEVO
+window.createDataTable({
+  columns: [
+    { id: 'name', title: 'Nombre', type: 'nombre' },
+    { id: 'status', title: 'Estado', type: 'estado' }
+  ],
+  rows: [
+    { id: 1, data: { name: 'Item 1', status: 'Activo' } }
+  ],
+  containerId: 'table-container'
+})
+
 // Button
 window.UBITS.Button.create(options)
 // O usar el Web Component:
 // <ubits-button variant="primary">Click me</ubits-button>
 ```
 
-### **3. Storybook URL**
+### **3. Ubicación de UBITS**
 
 Los componentes se cargan desde:
-```
-https://ubits-storybook10-q59fh1csi-elkin-garcias-projects-a0b1beb6.vercel.app
-```
+- **PREFERIDO:** `vendor/ubits/packages/` (portable, funciona en cualquier computador)
+- **LEGACY:** `Desktop/UBITS/packages/` (fallback si no existe vendor/ubits/)
+
+**Nota:** Los templates generados usan rutas relativas desde `prototypes/` hacia `vendor/ubits/packages/` para máxima portabilidad.
 
 ---
 
@@ -99,13 +129,15 @@ Usa los componentes base de UBITS como referencia.
 1. **Sidebar** - `window.createSidebar()`
 2. **SubNav** - `window.createSubNav()`
 3. **TabBar** - `window.createTabBar()`
-4. **Button** - `window.UBITS.Button.create()` o `<ubits-button>`
-5. **Alert** - `<ubits-alert>` o `window.UBITS.Alert`
-6. **Input** - `<ubits-input>` o `window.UBITS.Input`
-7. **Card** - `<ubits-card>` o `window.UBITS.Card`
-8. **Table** - `<ubits-table>` o `window.UBITS.Table`
-9. **Modal** - `<ubits-modal>` o `window.UBITS.Modal`
-10. **Y muchos más...**
+4. **Tabs** ⭐ - `window.createTabs()` (nuevo en components-loader.js)
+5. **DataTable** ⭐ - `window.createDataTable()` (nuevo, desde UMD)
+6. **Button** - `window.UBITS.Button.create()` o `<ubits-button>`
+7. **Alert** - `<ubits-alert>` o `window.UBITS.Alert`
+8. **Input** - `<ubits-input>` o `window.UBITS.Input`
+9. **Card** - `<ubits-card>` o `window.UBITS.Card`
+10. **Table** - `<ubits-table>` o `window.UBITS.Table`
+11. **Modal** - `<ubits-modal>` o `window.UBITS.Modal`
+12. **Y 40+ componentes más...**
 
 ### **Cómo Ver Todos los Componentes Disponibles**
 

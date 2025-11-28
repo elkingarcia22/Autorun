@@ -1,0 +1,130 @@
+/* ========================================
+   BREADCRUMB COMPONENT
+   ======================================== */
+
+/* Breadcrumb Container */
+.ubits-breadcrumb {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+/* Breadcrumb List */
+.ubits-breadcrumb__list {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--p-spacing-mode-1-sm, 8px);
+  list-style: none;
+  margin: var(--ubits-spacing-none, 0);
+  padding: var(--ubits-spacing-none, 0);
+  font-family: var(--font-family-noto-sans-font-family);
+}
+
+/* Breadcrumb Item */
+.ubits-breadcrumb__item {
+  display: inline-flex;
+  align-items: center;
+  font-size: var(--modifiers-normal-body-sm-regular-fontsize, 13px);
+  line-height: var(--modifiers-normal-body-sm-regular-lineheight, 19.5px);
+  font-weight: var(--weight-regular, 400);
+  color: var(--modifiers-normal-color-light-fg-1-medium) !important;
+  text-decoration: none;
+  background: none;
+  border: none;
+  padding: var(--ubits-spacing-none, 0);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+}
+
+/* Breadcrumb Item - Link/Button hover */
+.ubits-breadcrumb__item:not(.ubits-breadcrumb__item--active):not(.ubits-breadcrumb__item--disabled):hover {
+  color: var(--modifiers-normal-color-light-feedback-accent-info) !important;
+  text-decoration: underline;
+}
+
+/* Breadcrumb Item - Active State */
+.ubits-breadcrumb__item--active {
+  color: var(--modifiers-normal-color-light-fg-1-high) !important;
+  font-weight: var(--weight-bold, 700);
+  cursor: default;
+  pointer-events: none;
+}
+
+/* Breadcrumb Item - Disabled State */
+.ubits-breadcrumb__item--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+  color: var(--modifiers-normal-color-light-fg-disabled) !important;
+}
+
+/* Breadcrumb Separator */
+.ubits-breadcrumb__separator {
+  display: inline-flex;
+  align-items: center;
+  color: var(--modifiers-normal-color-light-fg-1-medium) !important;
+  font-size: var(--modifiers-normal-body-sm-regular-fontsize, 13px);
+  line-height: var(--modifiers-normal-body-sm-regular-lineheight, 19.5px);
+  margin: var(--ubits-spacing-none, 0) var(--p-spacing-mode-1-xs, 4px);
+  user-select: none;
+}
+
+/* Dark Mode Support */
+[data-theme="dark"] .ubits-breadcrumb__item {
+  color: var(--modifiers-normal-color-dark-fg-1-medium) !important;
+}
+
+[data-theme="dark"] .ubits-breadcrumb__item:not(.ubits-breadcrumb__item--active):not(.ubits-breadcrumb__item--disabled):hover {
+  color: var(--modifiers-normal-color-dark-feedback-accent-info) !important;
+}
+
+[data-theme="dark"] .ubits-breadcrumb__item--active {
+  color: var(--modifiers-normal-color-dark-fg-1-high) !important;
+}
+
+[data-theme="dark"] .ubits-breadcrumb__separator {
+  color: var(--modifiers-normal-color-dark-fg-1-medium) !important;
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+
+@media (max-width: 768px) {
+  .ubits-breadcrumb__item {
+    font-size: var(--modifiers-normal-body-sm-regular-fontsize, 13px);
+    line-height: var(--modifiers-normal-body-sm-regular-lineheight, 19.5px);
+  }
+  
+  .ubits-breadcrumb__separator {
+    font-size: var(--modifiers-normal-body-sm-regular-fontsize, 13px);
+    line-height: var(--modifiers-normal-body-sm-regular-lineheight, 19.5px);
+  }
+}
+
+
+
+[data-theme="dark"] {
+
+
+
+  --modifiers-normal-color-light-fg-1-medium: var(--modifiers-normal-color-dark-fg-1-medium);
+  --modifiers-normal-color-light-feedback-accent-info: var(--modifiers-normal-color-dark-feedback-accent-info);
+  --modifiers-normal-color-light-fg-1-high: var(--modifiers-normal-color-dark-fg-1-high);
+  --modifiers-normal-color-light-fg-disabled: var(--modifiers-normal-color-dark-fg-disabled);
+
+
+  --modifiers-normal-color-light-fg-1-medium: var(--modifiers-normal-color-dark-fg-1-medium);
+  --modifiers-normal-color-light-feedback-accent-info: var(--modifiers-normal-color-dark-feedback-accent-info);
+  --modifiers-normal-color-light-fg-1-high: var(--modifiers-normal-color-dark-fg-1-high);
+  --modifiers-normal-color-light-fg-disabled: var(--modifiers-normal-color-dark-fg-disabled);
+
+
+  --modifiers-normal-color-light-fg-1-medium: var(--modifiers-normal-color-dark-fg-1-medium);
+  --modifiers-normal-color-light-feedback-accent-info: var(--modifiers-normal-color-dark-feedback-accent-info);
+  --modifiers-normal-color-light-fg-1-high: var(--modifiers-normal-color-dark-fg-1-high);
+  --modifiers-normal-color-light-fg-disabled: var(--modifiers-normal-color-dark-fg-disabled);
+
+}

@@ -1,0 +1,16 @@
+{
+  "name": "@ubits/drawer",
+  "version": "1.0.0",
+  "description": "UBITS Drawer Navigation Component - Componente drawer que sale de izquierda a derecha con overlay",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite build --watch"
+  },
+  "keywords": ["ubits", "drawer", "navigation", "modal", "component", "ui"],
+  "author": "UBITS",
+  "license": "MIT"
+}
+

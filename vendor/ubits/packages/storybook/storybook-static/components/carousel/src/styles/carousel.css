@@ -1,0 +1,219 @@
+/* ========================================
+   UBITS CAROUSEL COMPONENT
+   Componente de carrusel usando tokens UBITS
+   ======================================== */
+
+/* ========================================
+   BASE CAROUSEL STYLES
+   ======================================== */
+
+.ubits-carousel {
+  position: relative;
+  width: 100%;
+  background: var(--modifiers-normal-color-light-bg-1);
+  padding: var(--ubits-spacing-md);
+}
+
+.ubits-carousel--empty {
+  padding: var(--ubits-spacing-xl);
+  text-align: center;
+  color: var(--modifiers-normal-color-light-fg-1-medium);
+  border: 1px dashed var(--modifiers-normal-color-light-border-1);
+  border-radius: var(--ubits-border-radius-md);
+}
+
+/* ========================================
+   CAROUSEL CONTAINER & TRACK
+   ======================================== */
+
+.ubits-carousel__container {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+  border-radius: var(--ubits-border-radius-md);
+}
+
+.ubits-carousel__track {
+  display: flex;
+  transition: transform 0.3s ease;
+  gap: var(--carousel-gap, 16px);
+  will-change: transform;
+  align-items: stretch;
+}
+
+/* ========================================
+   CAROUSEL ITEM
+   ======================================== */
+
+.ubits-carousel-item {
+  flex: 0 0 auto;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  /* No forzar ancho - dejar que la Simple Card use su max-width según su tamaño */
+  width: auto;
+  min-width: 0;
+  /* Asegurar que la card dentro mantenga sus proporciones */
+}
+
+.ubits-carousel-item .ubits-simple-card {
+  /* Las Simple Cards ya tienen max-width definidos según su tamaño */
+  /* sm: 280px, md: 400px, lg: 560px, xl: 720px */
+  /* No sobrescribir estos valores - dejar que las variantes los manejen */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Asegurar que el body de la card use flex para distribuir el contenido */
+.ubits-carousel-item .ubits-simple-card__body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.ubits-carousel-item:hover {
+  transform: translateY(-2px);
+}
+
+.ubits-carousel-item:hover .ubits-simple-card {
+  /* Shadow: No hay token equivalente en Figma, mantener hardcodeado */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-color: var(--modifiers-normal-color-light-accent-brand);
+}
+
+/* ========================================
+   CAROUSEL CONTENT WRAPPER
+   ======================================== */
+
+.ubits-carousel__content-wrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--ubits-spacing-md);
+  width: 100%;
+}
+
+/* ========================================
+   CAROUSEL ARROWS
+   ======================================== */
+
+.ubits-carousel__arrow {
+  flex-shrink: 0;
+  background: var(--modifiers-normal-color-light-bg-1);
+  border: 1px solid var(--modifiers-normal-color-light-border-1);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--modifiers-normal-color-light-fg-1-high);
+  /* Shadow: No hay token equivalente en Figma, mantener hardcodeado */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.ubits-carousel__arrow:hover {
+  background: var(--modifiers-normal-color-light-bg-2);
+  border-color: var(--modifiers-normal-color-light-accent-brand);
+  color: var(--modifiers-normal-color-light-accent-brand);
+  /* Shadow: No hay token equivalente en Figma, mantener hardcodeado */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.ubits-carousel__arrow:active {
+  transform: scale(0.95);
+}
+
+.ubits-carousel__arrow i {
+  font-size: var(--modifiers-normal-body-sm-regular-fontsize);
+}
+
+.ubits-carousel__arrow:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ========================================
+   CAROUSEL DOTS (PAGINATION)
+   ======================================== */
+
+.ubits-carousel__dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ubits-spacing-xs);
+  padding: var(--ubits-spacing-md) 0;
+}
+
+.ubits-carousel--dots-top .ubits-carousel__dots {
+  padding: 0 0 var(--ubits-spacing-md) 0;
+  order: -1;
+}
+
+.ubits-carousel__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: none;
+  background: var(--modifiers-normal-color-light-border-2);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: var(--ubits-spacing-none);
+}
+
+.ubits-carousel__dot:hover {
+  background: var(--modifiers-normal-color-light-fg-1-medium);
+  transform: scale(1.2);
+}
+
+.ubits-carousel__dot--active {
+  background: var(--modifiers-normal-color-light-accent-brand);
+  width: 24px;
+  border-radius: var(--ubits-border-radius-xs);
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+/* ========================================
+   DARK MODE
+   ======================================== */
+
+[data-theme="dark"] {
+  --modifiers-normal-color-light-bg-1: var(--modifiers-normal-color-dark-bg-1);
+  --modifiers-normal-color-light-bg-2: var(--modifiers-normal-color-dark-bg-2);
+  --modifiers-normal-color-light-border-1: var(--modifiers-normal-color-dark-border-1);
+  --modifiers-normal-color-light-border-2: var(--modifiers-normal-color-dark-border-2);
+  --modifiers-normal-color-light-fg-1-high: var(--modifiers-normal-color-dark-fg-1-high);
+  --modifiers-normal-color-light-fg-1-medium: var(--modifiers-normal-color-dark-fg-1-medium);
+  --modifiers-normal-color-light-accent-brand: var(--modifiers-normal-color-dark-accent-brand);
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+@media (max-width: 768px) {
+  .ubits-carousel {
+    padding: var(--ubits-spacing-sm);
+  }
+
+  .ubits-carousel__arrow {
+    width: 32px;
+    height: 32px;
+  }
+
+  .ubits-carousel__arrow--prev {
+    left: var(--ubits-spacing-xs);
+  }
+
+  .ubits-carousel__arrow--next {
+    right: var(--ubits-spacing-xs);
+  }
+
+}
+

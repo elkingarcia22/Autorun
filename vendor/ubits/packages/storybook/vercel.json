@@ -1,0 +1,12 @@
+{
+  "buildCommand": "bash scripts/build.sh",
+  "outputDirectory": "storybook-static",
+  "framework": null,
+  "devCommand": "npm run storybook",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}

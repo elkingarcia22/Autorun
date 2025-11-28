@@ -1,0 +1,202 @@
+/* ========================================
+   UBITS BUTTON FEEDBACK COMPONENT
+   Botón flotante para obtener feedback de clientes
+   Usa el componente Button de UBITS con variante floating
+   ======================================== */
+
+/* ========================================
+   FLOATING BUTTON POSITIONING
+   El botón usa el componente Button de UBITS con floating: true
+   Solo agregamos estilos de posicionamiento y ajustes para texto completo
+   ======================================== */
+
+/* Asegurar que el botón muestre el texto completo sin truncar */
+.ubits-button-feedback--bottom-right,
+.ubits-button-feedback--bottom-left,
+.ubits-button-feedback--top-right,
+.ubits-button-feedback--top-left {
+    min-width: auto;
+    max-width: none;
+}
+
+.ubits-button-feedback--hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+/* ========================================
+   FEEDBACK MODAL HEADER
+   Estilos específicos para el header del modal de feedback
+   ======================================== */
+
+.ubits-button-feedback-modal__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--ubits-spacing-md);
+    padding: var(--ubits-spacing-lg);
+    border-bottom: 1px solid var(--modifiers-normal-color-light-border-1);
+    flex-shrink: 0;
+    margin-left: calc(-1 * var(--ubits-spacing-lg));
+    margin-right: calc(-1 * var(--ubits-spacing-lg));
+    margin-top: calc(-1 * var(--ubits-spacing-lg));
+    margin-bottom: var(--ubits-spacing-lg);
+}
+
+.ubits-button-feedback-modal__header-content {
+    display: flex;
+    align-items: center;
+    gap: var(--ubits-spacing-sm);
+    flex: 1;
+}
+
+[data-theme="dark"] .ubits-button-feedback-modal__header {
+    border-bottom-color: var(--modifiers-normal-color-dark-border-1);
+}
+
+.ubits-button-feedback-modal__header-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    color: var(--modifiers-normal-color-light-fg-1-medium);
+    font-size: var(--ubits-body-md-font-size);
+}
+
+[data-theme="dark"] .ubits-button-feedback-modal__header-icon {
+    color: var(--modifiers-normal-color-dark-fg-1-medium);
+}
+
+.ubits-button-feedback-modal__header-title {
+    margin: 0;
+}
+
+/* El botón de cerrar usa el componente Button de UBITS con variant secondary e iconOnly */
+/* No necesitamos estilos adicionales ya que el botón UBITS maneja todo */
+
+/* ========================================
+   FEEDBACK FORM
+   ======================================== */
+
+.ubits-button-feedback-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ubits-spacing-lg);
+}
+
+.ubits-button-feedback-form__field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ubits-spacing-sm);
+}
+
+/* ========================================
+   MODAL POSITIONING AND STYLING
+   Ocultar overlay y posicionar modal arriba del botón
+   ======================================== */
+
+/* Ocultar el overlay/velo del modal */
+.ubits-button-feedback-modal + .ubits-modal-overlay,
+.ubits-modal-overlay:has(.ubits-button-feedback-modal) {
+    background-color: transparent !important;
+    pointer-events: none !important;
+}
+
+.ubits-modal-overlay:has(.ubits-button-feedback-modal) .ubits-modal-overlay {
+    background-color: transparent !important;
+}
+
+/* Ocultar completamente el header del modal (usamos nuestro propio header) */
+.ubits-button-feedback-modal .ubits-modal__header {
+    display: none !important;
+}
+
+/* Ocultar scrollbar cuando no es necesario */
+.ubits-button-feedback-modal .ubits-modal__body-content {
+    overflow-y: auto;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+.ubits-button-feedback-modal .ubits-modal__body-content::-webkit-scrollbar {
+    display: none;  /* Chrome, Safari, Opera */
+}
+
+/* Ocultar el scrollbar custom del modal */
+.ubits-button-feedback-modal .ubits-modal__scrollbar {
+    display: none !important;
+}
+
+/* ========================================
+   BUTTON ACTIVE STATE
+   Asegurar que el botón floating + active se vea correctamente
+   ======================================== */
+
+/* Asegurar que el botón floating + active tenga los estilos correctos */
+.ubits-button-feedback--bottom-right.ubits-button--floating.ubits-button--active,
+.ubits-button-feedback--bottom-left.ubits-button--floating.ubits-button--active,
+.ubits-button-feedback--top-right.ubits-button--floating.ubits-button--active,
+.ubits-button-feedback--top-left.ubits-button--floating.ubits-button--active {
+    position: relative;
+    background-color: transparent !important;
+    color: var(--modifiers-normal-color-light-accent-brand) !important;
+    border: none !important;
+}
+
+.ubits-button-feedback--bottom-right.ubits-button--floating.ubits-button--active::before,
+.ubits-button-feedback--bottom-left.ubits-button--floating.ubits-button--active::before,
+.ubits-button-feedback--top-right.ubits-button--floating.ubits-button--active::before,
+.ubits-button-feedback--top-left.ubits-button--floating.ubits-button--active::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--modifiers-normal-color-light-bg-active) !important;
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.ubits-button-feedback--bottom-right.ubits-button--floating.ubits-button--active i,
+.ubits-button-feedback--bottom-left.ubits-button--floating.ubits-button--active i,
+.ubits-button-feedback--top-right.ubits-button--floating.ubits-button--active i,
+.ubits-button-feedback--top-left.ubits-button--floating.ubits-button--active i,
+.ubits-button-feedback--bottom-right.ubits-button--floating.ubits-button--active span,
+.ubits-button-feedback--bottom-left.ubits-button--floating.ubits-button--active span,
+.ubits-button-feedback--top-right.ubits-button--floating.ubits-button--active span,
+.ubits-button-feedback--top-left.ubits-button--floating.ubits-button--active span {
+    position: relative;
+    z-index: 1;
+    color: var(--modifiers-normal-color-light-accent-brand) !important;
+}
+
+/* Dark mode */
+[data-theme="dark"] .ubits-button-feedback--bottom-right.ubits-button--floating.ubits-button--active,
+[data-theme="dark"] .ubits-button-feedback--bottom-left.ubits-button--floating.ubits-button--active,
+[data-theme="dark"] .ubits-button-feedback--top-right.ubits-button--floating.ubits-button--active,
+[data-theme="dark"] .ubits-button-feedback--top-left.ubits-button--floating.ubits-button--active {
+    color: var(--modifiers-normal-color-dark-accent-brand) !important;
+}
+
+[data-theme="dark"] .ubits-button-feedback--bottom-right.ubits-button--floating.ubits-button--active::before,
+[data-theme="dark"] .ubits-button-feedback--bottom-left.ubits-button--floating.ubits-button--active::before,
+[data-theme="dark"] .ubits-button-feedback--top-right.ubits-button--floating.ubits-button--active::before,
+[data-theme="dark"] .ubits-button-feedback--top-left.ubits-button--floating.ubits-button--active::before {
+    background-color: var(--modifiers-normal-color-dark-bg-active) !important;
+}
+
+[data-theme="dark"] .ubits-button-feedback--bottom-right.ubits-button--floating.ubits-button--active i,
+[data-theme="dark"] .ubits-button-feedback--bottom-left.ubits-button--floating.ubits-button--active i,
+[data-theme="dark"] .ubits-button-feedback--top-right.ubits-button--floating.ubits-button--active i,
+[data-theme="dark"] .ubits-button-feedback--top-left.ubits-button--floating.ubits-button--active i,
+[data-theme="dark"] .ubits-button-feedback--bottom-right.ubits-button--floating.ubits-button--active span,
+[data-theme="dark"] .ubits-button-feedback--bottom-left.ubits-button--floating.ubits-button--active span,
+[data-theme="dark"] .ubits-button-feedback--top-right.ubits-button--floating.ubits-button--active span,
+[data-theme="dark"] .ubits-button-feedback--top-left.ubits-button--floating.ubits-button--active span {
+    color: var(--modifiers-normal-color-dark-accent-brand) !important;
+}
+

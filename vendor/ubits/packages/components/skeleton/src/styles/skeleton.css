@@ -1,0 +1,254 @@
+/* ========================================
+   UBITS SKELETON COMPONENT
+   Componente de placeholder de carga
+   Migrado a tokens Figma
+   ======================================== */
+
+/* ========================================
+   BASE SKELETON STYLES
+   ======================================== */
+
+.ubits-skeleton {
+    display: inline-block;
+    background-color: var(--modifiers-normal-color-light-bg-2);
+    border-radius: var(--ubits-border-radius-sm);
+    position: relative;
+    overflow: hidden;
+    min-height: 20px; /* MANTENER MEDIDA ORIGINAL */
+}
+
+/* ========================================
+   SKELETON VARIANTS
+   ======================================== */
+
+/* Text variant - líneas de texto */
+.ubits-skeleton--text {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ubits-spacing-xs);
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.ubits-skeleton__line {
+    display: block;
+    height: var(--modifiers-normal-body-md-regular-lineheight);
+    background-color: var(--modifiers-normal-color-light-bg-2);
+    border-radius: var(--ubits-border-radius-sm);
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+/* Circle variant - para avatares */
+.ubits-skeleton--circle {
+    border-radius: 50%;
+    aspect-ratio: 1 / 1;
+    /* Forzar que siempre sea circular */
+    flex-shrink: 0;
+    flex-grow: 0;
+    /* El círculo no debe heredar min-height del skeleton base */
+    min-height: 0 !important;
+    /* Dimensiones por defecto para md (tamaño por defecto) - AUMENTADO */
+    width: 80px;
+    height: 80px;
+    min-width: 80px;
+    min-height: 80px;
+    max-width: 80px;
+    max-height: 80px;
+}
+
+/* Rectangle variant - para imágenes y cards */
+.ubits-skeleton--rectangle {
+    border-radius: var(--ubits-border-radius-sm);
+    min-width: 100px; /* MANTENER MEDIDA ORIGINAL */
+    min-height: 100px; /* MANTENER MEDIDA ORIGINAL */
+}
+
+/* Custom variant - sin restricciones */
+.ubits-skeleton--custom {
+    border-radius: var(--ubits-border-radius-sm);
+    min-width: 100px; /* MANTENER MEDIDA ORIGINAL */
+    min-height: 20px; /* MANTENER MEDIDA ORIGINAL */
+}
+
+/* ========================================
+   SKELETON SIZES
+   ======================================== */
+
+/* XS Size */
+.ubits-skeleton--xs {
+    min-height: 16px; /* MANTENER MEDIDA ORIGINAL */
+}
+
+.ubits-skeleton--xs.ubits-skeleton--circle {
+    width: 16px !important; /* MANTENER MEDIDA ORIGINAL */
+    height: 16px !important; /* MANTENER MEDIDA ORIGINAL */
+    min-width: 16px !important; /* MANTENER MEDIDA ORIGINAL */
+    min-height: 16px !important; /* MANTENER MEDIDA ORIGINAL */
+    max-width: 16px !important; /* MANTENER MEDIDA ORIGINAL */
+    max-height: 16px !important; /* MANTENER MEDIDA ORIGINAL */
+}
+
+.ubits-skeleton--xs .ubits-skeleton__line {
+    height: var(--modifiers-normal-body-xs-regular-lineheight, 16px);
+}
+
+/* SM Size */
+.ubits-skeleton--sm {
+    min-height: 20px; /* MANTENER MEDIDA ORIGINAL */
+}
+
+.ubits-skeleton--sm.ubits-skeleton--circle {
+    width: 24px !important; /* MANTENER MEDIDA ORIGINAL */
+    height: 24px !important; /* MANTENER MEDIDA ORIGINAL */
+    min-width: 24px !important; /* MANTENER MEDIDA ORIGINAL */
+    min-height: 24px !important; /* MANTENER MEDIDA ORIGINAL */
+    max-width: 24px !important; /* MANTENER MEDIDA ORIGINAL */
+    max-height: 24px !important; /* MANTENER MEDIDA ORIGINAL */
+}
+
+.ubits-skeleton--sm .ubits-skeleton__line {
+    height: var(--modifiers-normal-body-sm-regular-lineheight, 19.5px);
+}
+
+/* MD Size (default) */
+.ubits-skeleton--md {
+    min-height: 24px; /* MANTENER MEDIDA ORIGINAL */
+}
+
+.ubits-skeleton--md.ubits-skeleton--circle {
+    width: 40px !important; /* MANTENER MEDIDA ORIGINAL */
+    height: 40px !important; /* MANTENER MEDIDA ORIGINAL */
+    min-width: 40px !important; /* MANTENER MEDIDA ORIGINAL */
+    min-height: 40px !important; /* MANTENER MEDIDA ORIGINAL */
+    max-width: 40px !important; /* MANTENER MEDIDA ORIGINAL */
+    max-height: 40px !important; /* MANTENER MEDIDA ORIGINAL */
+}
+
+.ubits-skeleton--md .ubits-skeleton__line {
+    height: var(--modifiers-normal-body-md-regular-lineheight, 24px);
+}
+
+/* LG Size */
+.ubits-skeleton--lg {
+    min-height: 32px; /* MANTENER MEDIDA ORIGINAL */
+}
+
+.ubits-skeleton--lg.ubits-skeleton--circle {
+    width: 56px !important; /* MANTENER MEDIDA ORIGINAL */
+    height: 56px !important; /* MANTENER MEDIDA ORIGINAL */
+    min-width: 56px !important; /* MANTENER MEDIDA ORIGINAL */
+    min-height: 56px !important; /* MANTENER MEDIDA ORIGINAL */
+    max-width: 56px !important; /* MANTENER MEDIDA ORIGINAL */
+    max-height: 56px !important; /* MANTENER MEDIDA ORIGINAL */
+}
+
+.ubits-skeleton--lg .ubits-skeleton__line {
+    height: var(--modifiers-normal-body-lg-regular-lineheight, 28px);
+}
+
+/* XL Size */
+.ubits-skeleton--xl {
+    min-height: 40px; /* MANTENER MEDIDA ORIGINAL */
+}
+
+.ubits-skeleton--xl.ubits-skeleton--circle {
+    width: 72px !important; /* MANTENER MEDIDA ORIGINAL */
+    height: 72px !important; /* MANTENER MEDIDA ORIGINAL */
+    min-width: 72px !important; /* MANTENER MEDIDA ORIGINAL */
+    min-height: 72px !important; /* MANTENER MEDIDA ORIGINAL */
+    max-width: 72px !important; /* MANTENER MEDIDA ORIGINAL */
+    max-height: 72px !important; /* MANTENER MEDIDA ORIGINAL */
+}
+
+.ubits-skeleton--xl .ubits-skeleton__line {
+    height: var(--modifiers-normal-body-lg-regular-lineheight, 32px); /* body-xl no existe en Figma, usar body-lg con fallback original */
+}
+
+/* ========================================
+   SKELETON ANIMATION
+   ======================================== */
+
+.ubits-skeleton--animated {
+    position: relative;
+}
+
+.ubits-skeleton--animated::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.6) 50%,
+        transparent 100%
+    );
+    animation: skeleton-shimmer 1.5s infinite;
+    pointer-events: none;
+}
+
+.ubits-skeleton--animated .ubits-skeleton__line::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.6) 50%,
+        transparent 100%
+    );
+    animation: skeleton-shimmer 1.5s infinite;
+    pointer-events: none;
+}
+
+/* ========================================
+   DARK MODE
+   ======================================== */
+
+[data-theme="dark"] .ubits-skeleton {
+    background-color: var(--modifiers-normal-color-dark-bg-2);
+}
+
+[data-theme="dark"] .ubits-skeleton__line {
+    background-color: var(--modifiers-normal-color-dark-bg-2);
+}
+
+/* Soporte para modo oscuro - animación */
+[data-theme="dark"] .ubits-skeleton--animated::after,
+[data-theme="dark"] .ubits-skeleton--animated .ubits-skeleton__line::after {
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.2) 50%,
+        transparent 100%
+    );
+}
+
+@keyframes skeleton-shimmer {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+/* ========================================
+   SKELETON STATES
+   ======================================== */
+
+/* Sin animación - estado estático */
+.ubits-skeleton:not(.ubits-skeleton--animated) {
+    opacity: 0.6;
+}
+

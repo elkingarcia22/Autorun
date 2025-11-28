@@ -1,0 +1,249 @@
+/* ========================================
+   UBITS TOGGLE/SWITCH COMPONENT
+   Componente toggle/switch para activar/desactivar opciones
+   Usando tokens UBITS exclusivamente
+   ======================================== */
+
+/* ========================================
+   BASE TOGGLE STYLES
+   ======================================== */
+
+.ubits-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--p-spacing-mode-1-sm, 8px);
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.2s ease;
+}
+
+.ubits-toggle--no-label {
+    display: inline-flex;
+    align-items: center;
+}
+
+.ubits-toggle__input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    margin: 0;
+    padding: 0;
+}
+
+.ubits-toggle__track {
+    position: relative;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    background-color: var(--modifiers-normal-color-light-bg-3);
+    border-radius: var(--ubits-border-radius-full, 1000px); /* Mantener token UBITS específico */
+    transition: all 0.2s ease;
+    overflow: hidden;
+}
+
+.ubits-toggle__thumb {
+    position: absolute;
+    background-color: var(--modifiers-normal-color-light-bg-1);
+    border-radius: var(--ubits-border-radius-full, 1000px); /* Mantener token UBITS específico */
+    box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.14), 0px 0px 2px 0px rgba(0, 0, 0, 0.12);
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.ubits-toggle__text-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0; /* Mantener valor exacto */
+    flex: 1;
+    min-width: 0;
+}
+
+.ubits-toggle__label {
+    font-family: var(--font-family-noto-sans-font-family);
+    font-size: var(--modifiers-normal-body-sm-regular-fontsize);
+    font-weight: var(--weight-regular, 400); /* Token UBITS existe */
+    line-height: var(--modifiers-normal-body-sm-regular-lineheight);
+    color: var(--modifiers-normal-color-light-fg-1-high);
+    white-space: nowrap;
+}
+
+.ubits-toggle__complementary-text {
+    font-size: var(--modifiers-normal-body-sm-regular-fontsize);
+    font-weight: var(--weight-regular, 400); /* Token UBITS existe */
+    line-height: var(--modifiers-normal-body-sm-regular-lineheight);
+    color: var(--modifiers-normal-color-light-fg-1-medium);
+    white-space: normal;
+}
+
+/* ========================================
+   TOGGLE SIZES
+   ======================================== */
+
+/* Small (sm) - Track: 33px x 16px, Thumb: 16px */
+.ubits-toggle--sm .ubits-toggle__track {
+    width: 33px;
+    height: 16px;
+    padding: 2px;
+}
+
+.ubits-toggle--sm .ubits-toggle__thumb {
+    width: 16px;
+    height: 16px;
+    left: 2px;
+}
+
+.ubits-toggle--sm.ubits-toggle--checked .ubits-toggle__thumb {
+    left: calc(100% - 18px); /* 33px - 16px - 2px = 15px desde la izquierda */
+}
+
+/* Medium (md) - Track: 36px x 20px, Thumb: 20px - Default */
+.ubits-toggle--md .ubits-toggle__track {
+    width: 36px;
+    height: 20px;
+    padding: 2px;
+}
+
+.ubits-toggle--md .ubits-toggle__thumb {
+    width: 20px;
+    height: 20px;
+    left: 2px;
+}
+
+.ubits-toggle--md.ubits-toggle--checked .ubits-toggle__thumb {
+    left: calc(100% - 22px); /* 36px - 20px - 2px = 14px desde la izquierda */
+}
+
+/* ========================================
+   TOGGLE STATES
+   ======================================== */
+
+/* Default State - track gris */
+.ubits-toggle--default .ubits-toggle__track {
+    background-color: var(--modifiers-normal-color-light-bg-3);
+}
+
+/* Hover State - cuando la clase hover está presente */
+.ubits-toggle--hover:not(.ubits-toggle--disabled):not(.ubits-toggle--checked) .ubits-toggle__track {
+    background-color: var(--modifiers-normal-color-light-bg-3);
+}
+
+/* Hover State - cuando se hace hover con el mouse */
+.ubits-toggle--hover:not(.ubits-toggle--disabled):not(.ubits-toggle--checked):hover .ubits-toggle__track,
+.ubits-toggle:not(.ubits-toggle--disabled):not(.ubits-toggle--checked):hover .ubits-toggle__track {
+    background-color: var(--modifiers-normal-color-light-bg-3);
+}
+
+/* Active State - track verde success (solo cuando NO está checked) */
+.ubits-toggle--active:not(.ubits-toggle--checked) .ubits-toggle__track {
+    background-color: var(--modifiers-normal-toggle-color-light-bg-active);
+}
+
+/* Checked State - track verde success */
+.ubits-toggle--checked .ubits-toggle__track {
+    background-color: var(--modifiers-normal-toggle-color-light-bg-active);
+}
+
+/* Focus State */
+.ubits-toggle__input:focus-visible + .ubits-toggle__track {
+    /* Efecto Focus de los tokens UBITS */
+    outline: 2px solid var(--modifiers-normal-color-light-accent-brand);
+    outline-offset: 2px;
+    box-shadow: 0px 0px 0px 4px rgba(82, 151, 244, 0.3); /* Mantener valor hardcodeado para shadow */
+}
+
+/* Disabled State */
+.ubits-toggle--disabled,
+.ubits-toggle--disabled .ubits-toggle__track {
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.ubits-toggle--disabled .ubits-toggle__track {
+    background-color: var(--modifiers-normal-color-light-bg-disabled);
+}
+
+.ubits-toggle--disabled .ubits-toggle__thumb {
+    background-color: var(--modifiers-normal-color-light-fg-on-disabled-button);
+}
+
+.ubits-toggle--disabled .ubits-toggle__label {
+    color: var(--modifiers-normal-color-light-fg-1-low);
+}
+
+.ubits-toggle--disabled .ubits-toggle__complementary-text {
+    color: var(--modifiers-normal-color-light-fg-1-low);
+}
+
+/* Disabled checked state */
+.ubits-toggle--disabled.ubits-toggle--checked .ubits-toggle__track {
+    background-color: var(--modifiers-normal-color-light-bg-disabled);
+}
+
+/* ========================================
+   DARK MODE SUPPORT
+   ======================================== */
+
+[data-theme="dark"] .ubits-toggle__track {
+    background-color: var(--modifiers-normal-color-dark-bg-3);
+}
+
+[data-theme="dark"] .ubits-toggle__thumb {
+    background-color: var(--modifiers-normal-color-dark-bg-1);
+}
+
+[data-theme="dark"] .ubits-toggle__label {
+    color: var(--modifiers-normal-color-dark-fg-1-high);
+}
+
+[data-theme="dark"] .ubits-toggle__complementary-text {
+    color: var(--modifiers-normal-color-dark-fg-1-medium);
+}
+
+[data-theme="dark"] .ubits-toggle--default .ubits-toggle__track {
+    background-color: var(--modifiers-normal-color-dark-bg-3);
+}
+
+[data-theme="dark"] .ubits-toggle--hover:not(.ubits-toggle--disabled):not(.ubits-toggle--checked) .ubits-toggle__track {
+    background-color: var(--modifiers-normal-color-dark-bg-3);
+}
+
+[data-theme="dark"] .ubits-toggle--hover:not(.ubits-toggle--disabled):not(.ubits-toggle--checked):hover .ubits-toggle__track,
+[data-theme="dark"] .ubits-toggle:not(.ubits-toggle--disabled):not(.ubits-toggle--checked):hover .ubits-toggle__track {
+    background-color: var(--modifiers-normal-color-dark-bg-3);
+}
+
+[data-theme="dark"] .ubits-toggle--active:not(.ubits-toggle--checked) .ubits-toggle__track {
+    background-color: var(--modifiers-normal-toggle-color-dark-bg-active);
+}
+
+[data-theme="dark"] .ubits-toggle--checked .ubits-toggle__track {
+    background-color: var(--modifiers-normal-toggle-color-dark-bg-active);
+}
+
+[data-theme="dark"] .ubits-toggle__input:focus-visible + .ubits-toggle__track {
+    outline: 2px solid var(--modifiers-normal-color-dark-accent-brand);
+    outline-offset: 2px;
+    box-shadow: 0px 0px 0px 4px rgba(82, 151, 244, 0.3); /* Mantener valor hardcodeado para shadow */
+}
+
+[data-theme="dark"] .ubits-toggle--disabled .ubits-toggle__track {
+    background-color: var(--modifiers-normal-color-dark-bg-disabled);
+}
+
+[data-theme="dark"] .ubits-toggle--disabled .ubits-toggle__thumb {
+    background-color: var(--modifiers-normal-color-dark-fg-on-disabled-button);
+}
+
+[data-theme="dark"] .ubits-toggle--disabled .ubits-toggle__label {
+    color: var(--modifiers-normal-color-dark-fg-1-low);
+}
+
+[data-theme="dark"] .ubits-toggle--disabled .ubits-toggle__complementary-text {
+    color: var(--modifiers-normal-color-dark-fg-1-low);
+}
+
+[data-theme="dark"] .ubits-toggle--disabled.ubits-toggle--checked .ubits-toggle__track {
+    background-color: var(--modifiers-normal-color-dark-bg-disabled);
+}
+

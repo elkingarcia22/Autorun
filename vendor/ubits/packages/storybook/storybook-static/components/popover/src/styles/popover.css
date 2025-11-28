@@ -1,0 +1,326 @@
+/* ========================================
+   UBITS POPOVER COMPONENT
+   Componente popover con tail (flecha) para mostrar información contextual
+   Usando tokens UBITS exclusivamente
+   ======================================== */
+
+/* ========================================
+   POPOVER CONTAINER
+   ======================================== */
+
+.ubits-popover {
+    position: fixed;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s ease, transform 0.2s ease;
+}
+
+/* Cuando está dentro de un contenedor con position relative, usar absolute */
+.ubits-popover[style*="position: absolute"] {
+    position: absolute !important;
+}
+
+.ubits-popover--open {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Para popovers con transform inline (como en el playground) */
+/* Solo aplicar cuando es translateX(-50%) para centrado horizontal en popovers */
+.ubits-popover[style*="transform: translateX(-50%)"] {
+    transform: translateX(-50%) scale(0.95) !important;
+}
+
+.ubits-popover--open[style*="transform: translateX(-50%)"] {
+    transform: translateX(-50%) scale(1) !important;
+}
+
+/* Solo aplicar cuando es translateY(-50%) para centrado vertical en popovers */
+.ubits-popover[style*="transform: translateY(-50%)"] {
+    transform: translateY(-50%) scale(0.95) !important;
+}
+
+.ubits-popover--open[style*="transform: translateY(-50%)"] {
+    transform: translateY(-50%) scale(1) !important;
+}
+
+/* Asegurar que los botones dentro del popover mantengan sus transforms */
+.ubits-popover .ubits-button {
+    transform: none !important;
+}
+
+.ubits-popover .ubits-button:active {
+    transform: translateY(1px) !important;
+}
+
+/* Anchos del popover - MANTENER MEDIDAS EXACTAS ORIGINALES */
+.ubits-popover--width-sm {
+    width: 240px;
+}
+
+.ubits-popover--width-md {
+    width: 360px;
+}
+
+.ubits-popover--width-lg {
+    width: 400px;
+}
+
+.ubits-popover--width-xl {
+    width: 480px;
+}
+
+/* ========================================
+   POPOVER CONTENT
+   ======================================== */
+
+.ubits-popover__content {
+    background-color: var(--modifiers-static-inverted-color-light-bg-1);
+    border-radius: var(--ubits-border-radius-sm);
+    /* Box-shadow: No hay token Figma equivalente, mantener hardcoded */
+    box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.14), 0px 0px 2px 0px rgba(0, 0, 0, 0.12);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-height: 100px;
+}
+
+/* ========================================
+   TAIL (Flecha)
+   ======================================== */
+
+.ubits-popover__tail {
+    position: absolute;
+    width: 19px;
+    height: 9px;
+    z-index: 1001;
+    pointer-events: none;
+}
+
+.ubits-popover--tail-top .ubits-popover__tail {
+    top: -9px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.ubits-popover--tail-bottom .ubits-popover__tail {
+    bottom: -9px;
+    left: 50%;
+    transform: translateX(-50%) rotate(180deg);
+}
+
+.ubits-popover--tail-left .ubits-popover__tail {
+    left: -14px;
+    top: 50%;
+    width: 19px;
+    height: 9px;
+    transform: translateY(-50%) rotate(-90deg);
+}
+
+.ubits-popover--tail-right .ubits-popover__tail {
+    right: -14px;
+    top: 50%;
+    width: 19px;
+    height: 9px;
+    transform: translateY(-50%) rotate(90deg);
+}
+
+.ubits-popover__tail-inner {
+    width: 100%;
+    height: 100%;
+    background-color: var(--modifiers-static-inverted-color-light-bg-1);
+    clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+}
+
+/* ========================================
+   HEADER
+   ======================================== */
+
+.ubits-popover__header {
+    padding: var(--ubits-spacing-md);
+    padding-bottom: var(--ubits-spacing-sm);
+    border-bottom: none;
+}
+
+.ubits-popover__header-title {
+    display: flex;
+    align-items: center;
+    gap: var(--ubits-spacing-xs);
+}
+
+.ubits-popover__header-title p {
+    margin: 0;
+    color: var(--modifiers-static-inverted-color-light-fg-1-high);
+}
+
+/* ========================================
+   BODY
+   ======================================== */
+
+.ubits-popover__body {
+    display: flex;
+    flex-direction: row;
+    gap: var(--ubits-spacing-xs);
+    flex: 1;
+    overflow: hidden;
+    min-height: 0;
+}
+
+.ubits-popover__body-content {
+    flex: 1;
+    padding: var(--ubits-spacing-sm) var(--ubits-spacing-md);
+    overflow-y: auto;
+    overflow-x: hidden;
+    color: var(--modifiers-static-inverted-color-light-fg-1-high);
+    font-family: var(--font-family-noto-sans-font-family);
+    font-size: var(--modifiers-normal-body-md-regular-fontsize);
+    font-weight: var(--weight-regular, 400);
+    line-height: var(--modifiers-normal-body-md-regular-lineheight);
+}
+
+.ubits-popover__body-content::-webkit-scrollbar {
+    width: 0;
+    background: transparent;
+}
+
+.ubits-popover__body-content::-webkit-scrollbar-thumb {
+    background: transparent;
+}
+
+.ubits-popover__body-content::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.ubits-popover__placeholder {
+    color: var(--modifiers-static-inverted-color-light-fg-1-medium);
+    font-style: italic;
+}
+
+/* ========================================
+   SCROLLBAR
+   ======================================== */
+
+.ubits-popover__scrollbar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: var(--ubits-spacing-sm) var(--ubits-scroll-bar-padding, 4px);
+    padding-bottom: 31px;
+    overflow: hidden;
+    flex-shrink: 0;
+    width: 8px;
+}
+
+.ubits-popover__scrollbar-bar {
+    flex: 1;
+    min-height: 20px;
+    width: 8px;
+    background-color: var(--color-scroll-bar-color-bg-default);
+    border-radius: var(--ubits-border-radius-full);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.ubits-popover__body-content:hover ~ .ubits-popover__scrollbar .ubits-popover__scrollbar-bar,
+.ubits-popover__scrollbar:hover .ubits-popover__scrollbar-bar {
+    opacity: 1;
+}
+
+/* ========================================
+   FOOTER
+   ======================================== */
+
+.ubits-popover__footer {
+    padding: var(--ubits-spacing-md);
+    padding-top: var(--ubits-spacing-sm);
+    border-top: none;
+    flex-shrink: 0;
+    min-width: 0;
+    overflow: visible;
+}
+
+.ubits-popover__footer-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--ubits-spacing-md);
+    flex-wrap: nowrap;
+    min-width: 0;
+    overflow: visible;
+}
+
+/* Cuando no hay botón terciario, alinear los botones a la derecha */
+.ubits-popover__footer-actions:not(:has(.ubits-popover__footer-left)) {
+    justify-content: flex-end;
+}
+
+/* Fallback para navegadores que no soportan :has() */
+.ubits-popover__footer-actions.ubits-popover__footer-actions--no-tertiary {
+    justify-content: flex-end;
+}
+
+.ubits-popover__footer-left {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    min-width: 0;
+}
+
+.ubits-popover__footer-right {
+    display: flex;
+    align-items: center;
+    gap: var(--ubits-spacing-md);
+    flex-shrink: 0;
+    min-width: 0;
+}
+
+.ubits-popover__footer-button {
+    margin: 0;
+    white-space: nowrap;
+    flex-shrink: 0;
+    min-width: fit-content;
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+@media (max-width: 767px) {
+    .ubits-popover {
+        max-width: calc(100vw - 32px);
+    }
+    
+    .ubits-popover--width-sm,
+    .ubits-popover--width-md,
+    .ubits-popover--width-lg,
+    .ubits-popover--width-xl {
+        width: 100%;
+        max-width: calc(100vw - 32px);
+    }
+}
+
+/* ========================================
+   DARK MODE
+   ======================================== */
+
+[data-theme="dark"] .ubits-popover__content {
+    background-color: var(--modifiers-static-inverted-color-dark-bg-1);
+}
+
+[data-theme="dark"] .ubits-popover__tail-inner {
+    background-color: var(--modifiers-static-inverted-color-dark-bg-1);
+}
+
+[data-theme="dark"] .ubits-popover__header-title p {
+    color: var(--modifiers-static-inverted-color-dark-fg-1-high);
+}
+
+[data-theme="dark"] .ubits-popover__body-content {
+    color: var(--modifiers-static-inverted-color-dark-fg-1-high);
+}
+
+[data-theme="dark"] .ubits-popover__placeholder {
+    color: var(--modifiers-static-inverted-color-dark-fg-1-medium);
+}

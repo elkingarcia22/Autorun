@@ -1,0 +1,16 @@
+{
+  "name": "@ubits/badge",
+  "version": "1.0.0",
+  "description": "UBITS Badge Component - Badge standalone component",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite build --watch"
+  },
+  "keywords": ["ubits", "badge", "component", "ui"],
+  "author": "UBITS",
+  "license": "MIT"
+}
+

@@ -1,0 +1,217 @@
+/* ========================================
+   UBITS ALERT COMPONENT
+   Componente de alert para notificaciones del sistema
+   Usando tokens UBITS del nuevo playground
+   ======================================== */
+
+/* ========================================
+   BASE ALERT STYLES
+   ======================================== */
+
+.ubits-alert {
+    display: flex;
+    gap: var(--ubits-spacing-sm, 8px);
+    align-items: flex-start;
+    padding: var(--ubits-spacing-sm, 8px);
+    border-radius: var(--ubits-border-radius-md, 12px);
+    position: relative;
+    font-family: var(--font-sans);
+    box-sizing: border-box;
+    width: 100%;
+    animation: alertSlideIn 0.3s ease-out;
+}
+
+/* Pseudo-elemento para el borde */
+.ubits-alert::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 1px solid;
+    border-radius: var(--ubits-border-radius-md, 12px);
+    pointer-events: none;
+}
+
+/* ========================================
+   ALERT ELEMENTS
+   ======================================== */
+
+.ubits-alert__icon {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: var(--weight-regular);
+    line-height: 1;
+}
+
+.ubits-alert__content {
+    display: flex;
+    gap: var(--ubits-spacing-sm, 8px);
+    align-items: center;
+    flex: 1;
+    min-width: 0;
+}
+
+.ubits-alert__text {
+    font-size: var(--font-body-sm-size);
+    line-height: var(--font-body-sm-line);
+    font-weight: var(--weight-regular);
+    color: inherit;
+    display: flex;
+    align-items: center;
+    min-height: 24px;
+}
+
+.ubits-alert__close {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 12px;
+    color: var(--modifiers-normal-color-light-fg-1-medium) !important;
+    opacity: 0.7;
+    transition: opacity 0.2s ease, background-color 0.2s ease;
+    border-radius: var(--ubits-border-radius-xs, 4px);
+    padding: var(--ubits-spacing-none, 0);
+}
+
+.ubits-alert__close:hover {
+    opacity: 1;
+    background-color: var(--modifiers-normal-color-light-bg-2) !important;
+}
+
+.ubits-alert__close:focus-visible {
+    outline: 2px solid var(--ubits-button-focus-ring, rgba(82, 151, 244, 0.3));
+    outline-offset: 2px;
+}
+
+/* ========================================
+   ALERT VARIANTS
+   ======================================== */
+
+/* Success Alert */
+.ubits-alert--success {
+    background-color: var(--modifiers-normal-color-light-feedback-bg-success-subtle-default) !important;
+    color: var(--modifiers-normal-color-light-feedback-fg-success-subtle-default) !important;
+}
+
+.ubits-alert--success::before {
+    border-color: var(--modifiers-normal-color-light-feedback-border-success) !important;
+}
+
+.ubits-alert--success .ubits-alert__icon {
+    color: var(--modifiers-normal-color-light-feedback-fg-success-subtle-default) !important;
+}
+
+/* Info Alert */
+.ubits-alert--info {
+    background-color: var(--modifiers-normal-color-light-feedback-bg-info-subtle-default) !important;
+    color: var(--modifiers-normal-color-light-feedback-fg-info-subtle-default) !important;
+}
+
+.ubits-alert--info::before {
+    border-color: var(--modifiers-normal-color-light-feedback-border-info) !important;
+}
+
+.ubits-alert--info .ubits-alert__icon {
+    color: var(--modifiers-normal-color-light-feedback-fg-info-subtle-default) !important;
+}
+
+/* Warning Alert */
+.ubits-alert--warning {
+    background-color: var(--modifiers-normal-color-light-feedback-bg-warning-subtle-default) !important;
+    color: var(--modifiers-normal-color-light-feedback-fg-warning-subtle-default) !important;
+}
+
+.ubits-alert--warning::before {
+    border-color: var(--modifiers-normal-color-light-feedback-border-warning) !important;
+}
+
+.ubits-alert--warning .ubits-alert__icon {
+    color: var(--modifiers-normal-color-light-feedback-fg-warning-subtle-default) !important;
+}
+
+/* Error Alert */
+.ubits-alert--error {
+    background-color: var(--modifiers-normal-color-light-feedback-bg-error-subtle-default) !important;
+    color: var(--modifiers-normal-color-light-feedback-fg-error-subtle-default) !important;
+}
+
+.ubits-alert--error::before {
+    border-color: var(--modifiers-normal-color-light-feedback-border-error) !important;
+}
+
+.ubits-alert--error .ubits-alert__icon {
+    color: var(--modifiers-normal-color-light-feedback-fg-error-subtle-default) !important;
+}
+
+/* ========================================
+   ALERT VARIATIONS
+   ======================================== */
+
+/* Alert sin botón cerrar */
+.ubits-alert--no-close .ubits-alert__close {
+    display: none;
+}
+
+/* ========================================
+   ALERT ANIMATIONS
+   ======================================== */
+
+@keyframes alertSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes alertSlideOut {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+}
+
+.ubits-alert--closing {
+    animation: alertSlideOut 0.3s ease-in forwards;
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+
+@media (max-width: 768px) {
+    .ubits-alert {
+        padding: var(--ubits-spacing-md, 12px);
+        gap: var(--ubits-spacing-md, 12px);
+    }
+    
+    .ubits-alert__content {
+        gap: var(--ubits-spacing-md, 12px);
+    }
+    
+    .ubits-alert__text {
+        font-size: 14px;
+        line-height: 20px;
+    }
+}
+

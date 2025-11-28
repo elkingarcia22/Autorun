@@ -1,0 +1,656 @@
+/* ========================================
+   UBITS BUTTON AI COMPONENT
+   Componente de botón AI con estilo redondeado y gradación
+   Basado en Button de UBITS pero con bordes más redondeados y gradientes
+   ======================================== */
+
+/* ========================================
+   BASE BUTTON AI STYLES
+   ======================================== */
+
+.ubits-button-ai {
+    /* Base styles */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--p-spacing-mode-1-sm, 8px);
+    padding: var(--p-spacing-mode-1-md, 12px) var(--p-spacing-mode-1-lg, 16px);
+    border: none;
+    border-radius: 9999px; /* Completamente redondeado (pill shape) */
+    font-family: var(--font-family-noto-sans-font-family, var(--font-sans, 'Noto Sans', sans-serif));
+    font-weight: var(--weight-semibold, 600);
+    line-height: 1;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative; /* IMPORTANTE: Para que el badge con position: absolute funcione */
+    user-select: none;
+    white-space: nowrap;
+    overflow: visible; /* IMPORTANTE: Para que el badge no se corte */
+    
+    /* Default state (Primary) - Gradiente radial usando token de AI Button */
+    background: var(--modifiers-normal-ai-button-primary-color-bg, radial-gradient(circle at 50% 180%, #b0affc 0%, var(--modifiers-normal-button-color-light-brand-primary-bg-default) 100%)) !important;
+    color: var(--modifiers-normal-color-light-fg-bold, var(--ubits-btn-primary-fg, #ffffff)) !important;
+    border: 1px solid transparent;
+    
+    /* Medium (default) height */
+    height: 40px;
+}
+
+/* Tipografía Medium (default) - usa tokens de typography */
+.ubits-button-ai span {
+    font-family: var(--font-family-noto-sans-font-family, var(--font-sans, 'Noto Sans', sans-serif));
+    font-size: var(--modifiers-normal-body-md-regular-fontsize, var(--font-body-md-size, 16px));
+    font-weight: var(--weight-semibold, 600);
+    line-height: var(--modifiers-normal-body-md-regular-lineheight, var(--font-body-md-line, 24px));
+}
+
+/* ========================================
+   BUTTON AI STATES
+   ======================================== */
+
+/* Hover State - Solo para botones sin variante primary */
+.ubits-button-ai:not(.ubits-button-ai--primary):hover:not(:disabled) {
+    background: radial-gradient(circle at 50% 180%, var(--modifiers-normal-ai-button-color-light-secondary-accent-gradient-end, #b0affc) 0%, var(--modifiers-normal-button-color-light-brand-primary-bg-hover) 100%) !important;
+}
+
+/* Pressed/Active State */
+.ubits-button-ai:active:not(:disabled) {
+    background: radial-gradient(circle at 50% 180%, var(--modifiers-normal-ai-button-color-light-secondary-accent-gradient-end, #b0affc) 0%, var(--modifiers-normal-button-color-light-brand-primary-bg-pressed) 100%) !important;
+    transform: translateY(0px);
+    box-shadow: 0 2px 6px var(--modifiers-normal-color-light-accent-brand, rgba(12, 91, 239, 0.15));
+}
+
+/* Focus State */
+.ubits-button-ai:focus-visible {
+    outline: none;
+    box-shadow: 0px 0px 0px 4px var(--modifiers-normal-focus-color));
+}
+
+/* Disabled State */
+.ubits-button-ai:disabled,
+.ubits-button-ai[aria-disabled="true"] {
+    background: var(--modifiers-normal-color-light-bg-disabled) !important;
+    color: var(--modifiers-normal-color-light-fg-on-disabled) !important;
+    border-color: var(--modifiers-normal-color-light-border-disabled) !important;
+    cursor: not-allowed;
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+/* ========================================
+   PRIMARY BUTTON AI VARIANT
+   ======================================== */
+
+.ubits-button-ai--primary {
+    background: radial-gradient(
+        circle at 50% 120%,
+        var(--modifiers-normal-ai-button-color-light-secondary-accent-gradient-end, #b0affc) 0%,
+        var(--modifiers-normal-button-color-light-brand-primary-bg-default) 70%,
+        var(--modifiers-normal-button-color-light-brand-primary-bg-default) 100%
+    ) !important;
+    color: var(--modifiers-normal-color-light-fg-bold, var(--ubits-btn-primary-fg, #ffffff)) !important;
+    border: 1px solid transparent;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Remover gradiente cuando está en estado active */
+.ubits-button-ai--primary.ubits-button-ai--active {
+    background: var(--modifiers-normal-color-light-bg-1) !important;
+}
+
+.ubits-button-ai--primary:hover:not(:disabled) {
+    /* Hover sutil: azul más oscuro en la gradación */
+    background: radial-gradient(
+        circle at 50% 120%,
+        var(--modifiers-normal-ai-button-color-light-secondary-accent-gradient-end, #b0affc) 0%,
+        var(--modifiers-normal-button-color-light-brand-primary-bg-hover) 70%,
+        var(--modifiers-normal-button-color-light-brand-primary-bg-hover) 100%
+    ) !important;
+}
+
+
+@keyframes circularGradient {
+    0% {
+        --gradient-x: 50%;
+        --gradient-y: 300%;
+    }
+    25% {
+        --gradient-x: 70%;
+        --gradient-y: 280%;
+    }
+    50% {
+        --gradient-x: 50%;
+        --gradient-y: 320%;
+    }
+    75% {
+        --gradient-x: 30%;
+        --gradient-y: 280%;
+    }
+    100% {
+        --gradient-x: 50%;
+        --gradient-y: 300%;
+    }
+}
+
+/* Asegurar que el contenido (texto e iconos) esté por encima del overlay */
+.ubits-button-ai--primary span,
+.ubits-button-ai--primary i {
+    position: relative;
+    z-index: 1;
+}
+
+.ubits-button-ai--primary:active:not(:disabled) {
+    background: radial-gradient(circle at 50% 120%, var(--modifiers-normal-ai-button-color-light-secondary-accent-gradient-end, #b0affc) 0%, var(--modifiers-normal-button-color-light-brand-primary-bg-pressed) 100%) !important;
+    box-shadow: 0 2px 6px var(--modifiers-normal-color-light-accent-brand, rgba(12, 91, 239, 0.2));
+}
+
+/* Primary Active State - Exactamente igual que el botón normal */
+.ubits-button-ai--primary.ubits-button-ai--active {
+    position: relative;
+    background-color: transparent !important;
+    color: var(--modifiers-normal-color-light-accent-brand) !important;
+    border: none !important;
+}
+
+.ubits-button-ai--primary.ubits-button-ai--active::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--modifiers-normal-color-light-bg-active, var(--ubits-bg-active-button, rgba(12, 91, 239, 0.15))) !important;
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.ubits-button-ai--primary.ubits-button-ai--active:hover:not(:disabled) {
+    background-color: transparent !important;
+    color: var(--modifiers-normal-color-light-accent-brand) !important;
+    border: none !important;
+}
+
+.ubits-button-ai--primary.ubits-button-ai--active:hover:not(:disabled)::before {
+    background-color: var(--modifiers-normal-color-light-bg-active, var(--ubits-bg-active-button, rgba(12, 91, 239, 0.15))) !important;
+}
+
+.ubits-button-ai--primary.ubits-button-ai--active:active:not(:disabled) {
+    background-color: transparent !important;
+    color: var(--modifiers-normal-color-light-accent-brand) !important;
+    border: none !important;
+}
+
+.ubits-button-ai--primary.ubits-button-ai--active:active:not(:disabled)::before {
+    background-color: var(--modifiers-normal-color-light-bg-active, var(--ubits-bg-active-button, rgba(12, 91, 239, 0.15))) !important;
+}
+
+/* Asegurar que los iconos también tengan el color correcto en estado active */
+.ubits-button-ai--primary.ubits-button-ai--active i {
+    position: relative;
+    z-index: 1;
+    color: var(--modifiers-normal-color-light-accent-brand) !important;
+}
+
+/* Asegurar que el texto (span) también tenga el color correcto en estado active */
+.ubits-button-ai--primary.ubits-button-ai--active span {
+    position: relative;
+    z-index: 1;
+    color: var(--modifiers-normal-color-light-accent-brand) !important;
+}
+
+/* ========================================
+   SECONDARY BUTTON AI VARIANT
+   ======================================== */
+
+.ubits-button-ai--secondary {
+    background: var(--modifiers-normal-color-light-bg-1) !important;
+    color: var(--modifiers-normal-button-color-light-brand-secondary-fg-default) !important;
+    border: 1px solid transparent;
+    position: relative;
+}
+
+/* Gradiente radial en el borde para secondary - usando token de AI Button */
+.ubits-button-ai--secondary::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 9999px; /* Completamente redondeado (pill shape) */
+    padding: 1px;
+    background: radial-gradient(circle at var(--gradient-x, 50%) var(--gradient-y, 180%), var(--modifiers-static-color-light-accent-brand) 0%, var(--modifiers-normal-ai-button-color-light-secondary-accent-gradient-end, #6457ff) 95%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+}
+
+.ubits-button-ai--secondary:hover:not(:disabled) {
+    /* Hover secondary light: exactamente igual que primary default */
+    background: radial-gradient(
+        circle at 50% 120%,
+        var(--modifiers-normal-ai-button-color-light-secondary-accent-gradient-end, #b0affc) 0%,
+        var(--modifiers-normal-button-color-light-brand-primary-bg-default) 70%,
+        var(--modifiers-normal-button-color-light-brand-primary-bg-default) 100%
+    ) !important;
+    color: var(--modifiers-normal-color-light-fg-bold, var(--ubits-btn-primary-fg, #ffffff)) !important;
+}
+
+.ubits-button-ai--secondary:hover:not(:disabled)::before {
+    /* Ocultar el borde gradiente en hover */
+    display: none !important;
+}
+
+.ubits-button-ai--secondary:active:not(:disabled) {
+    background: var(--modifiers-normal-button-color-light-brand-secondary-bg-pressed) !important;
+    box-shadow: 0 2px 6px var(--modifiers-normal-color-light-accent-brand, rgba(12, 91, 239, 0.1));
+}
+
+.ubits-button-ai--secondary:active:not(:disabled)::before {
+    background: radial-gradient(circle at 50% 180%, var(--modifiers-static-color-light-accent-brand) 0%, var(--modifiers-normal-ai-button-color-light-secondary-accent-gradient-end, #6457ff) 95%);
+}
+
+/* Secondary Active State - Exactamente igual que el primary active */
+.ubits-button-ai--secondary.ubits-button-ai--active {
+    position: relative;
+    background-color: transparent !important;
+    color: var(--modifiers-normal-color-light-accent-brand) !important;
+    border: none !important;
+}
+
+/* Sobrescribir completamente el ::before del secondary para que sea igual al primary active */
+.ubits-button-ai--secondary.ubits-button-ai--active::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background-color: var(--modifiers-normal-color-light-bg-active, var(--ubits-bg-active-button, rgba(12, 91, 239, 0.15))) !important;
+    border-radius: inherit !important;
+    pointer-events: none !important;
+    z-index: 0 !important;
+    /* Remover todas las propiedades del gradiente del borde */
+    padding: 0 !important;
+    inset: 0 !important;
+    -webkit-mask: none !important;
+    mask: none !important;
+    background: var(--modifiers-normal-color-light-bg-active, var(--ubits-bg-active-button, rgba(12, 91, 239, 0.15))) !important;
+}
+
+.ubits-button-ai--secondary.ubits-button-ai--active:hover:not(:disabled) {
+    background-color: transparent !important;
+    color: var(--modifiers-normal-color-light-accent-brand) !important;
+    border: none !important;
+}
+
+.ubits-button-ai--secondary.ubits-button-ai--active:hover:not(:disabled)::before {
+    background-color: var(--modifiers-normal-color-light-bg-active, var(--ubits-bg-active-button, rgba(12, 91, 239, 0.15))) !important;
+}
+
+.ubits-button-ai--secondary.ubits-button-ai--active:active:not(:disabled) {
+    background-color: transparent !important;
+    color: var(--modifiers-normal-color-light-accent-brand) !important;
+    border: none !important;
+}
+
+.ubits-button-ai--secondary.ubits-button-ai--active:active:not(:disabled)::before {
+    background-color: var(--modifiers-normal-color-light-bg-active, var(--ubits-bg-active-button, rgba(12, 91, 239, 0.15))) !important;
+}
+
+/* Asegurar que los iconos también tengan el color correcto en estado active */
+.ubits-button-ai--secondary.ubits-button-ai--active i {
+    position: relative;
+    z-index: 1;
+    color: var(--modifiers-normal-color-light-accent-brand) !important;
+    /* Remover el gradiente del icono en estado active */
+    background: none !important;
+    -webkit-background-clip: unset !important;
+    background-clip: unset !important;
+    -webkit-text-fill-color: unset !important;
+}
+
+/* Asegurar que el texto (span) también tenga el color correcto en estado active */
+.ubits-button-ai--secondary.ubits-button-ai--active span {
+    position: relative;
+    z-index: 1;
+    color: var(--modifiers-normal-color-light-accent-brand) !important;
+}
+
+/* Asegurar que el contenido esté por encima del pseudo-elemento */
+.ubits-button-ai--secondary span {
+    position: relative;
+    z-index: 1;
+}
+
+/* Aplicar gradiente radial al icono del botón secondary usando token de AI Button */
+.ubits-button-ai--secondary i {
+    position: relative;
+    z-index: 1;
+    background: radial-gradient(circle at 50% 180%, var(--modifiers-static-color-light-accent-brand) 0%, var(--modifiers-normal-ai-button-color-light-secondary-accent-gradient-end, #6457ff) 95%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+}
+
+/* ========================================
+   SECONDARY BUTTON AI DISABLED STATE
+   ======================================== */
+
+/* Remover gradiente del borde en estado disabled - usar color sólido del texto disabled */
+.ubits-button-ai--secondary:disabled::before,
+.ubits-button-ai--secondary[aria-disabled="true"]::before {
+    content: '' !important;
+    position: absolute !important;
+    inset: 0 !important;
+    border-radius: 9999px !important;
+    padding: 1px !important;
+    background: var(--modifiers-normal-color-light-fg-on-disabled) !important;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
+    -webkit-mask-composite: xor !important;
+    mask-composite: exclude !important;
+    pointer-events: none !important;
+    /* Remover el gradiente radial */
+    background-image: none !important;
+}
+
+/* Remover gradiente del icono en estado disabled - usar color sólido del texto disabled */
+.ubits-button-ai--secondary:disabled i,
+.ubits-button-ai--secondary[aria-disabled="true"] i {
+    background: none !important;
+    -webkit-background-clip: unset !important;
+    background-clip: unset !important;
+    -webkit-text-fill-color: unset !important;
+    color: var(--modifiers-normal-color-light-fg-on-disabled) !important;
+}
+
+/* ========================================
+   BUTTON AI SIZES
+   ======================================== */
+
+/* Extra Small (xs) */
+.ubits-button-ai--xs {
+    padding: var(--p-spacing-mode-1-sm, 8px) var(--p-spacing-mode-1-md, 12px) !important;
+    height: 28px !important;
+    min-height: 28px !important;
+    gap: var(--p-spacing-mode-1-xs, 6px) !important;
+    border-radius: 9999px !important; /* Completamente redondeado (pill shape) */
+}
+
+.ubits-button-ai--xs span {
+    font-family: var(--font-family-noto-sans-font-family, var(--font-sans, 'Noto Sans', sans-serif)) !important;
+    font-size: var(--modifiers-normal-body-xs-regular-fontsize, var(--font-body-xs-size, 13px)) !important;
+    font-weight: var(--weight-semibold, 600) !important;
+    line-height: var(--modifiers-normal-body-xs-regular-lineheight, var(--font-body-xs-line, 20.8px)) !important;
+}
+
+.ubits-button-ai--xs i {
+    font-size: 12px !important;
+}
+
+.ubits-button-ai--xs.ubits-button-ai--icon-only {
+    padding: var(--p-spacing-mode-1-sm, 8px) !important;
+    width: 28px !important;
+    min-width: 28px !important;
+    height: 28px !important;
+    min-height: 28px !important;
+}
+
+/* Small (sm) */
+.ubits-button-ai--sm {
+    padding: var(--p-spacing-mode-1-md, 10px) var(--p-spacing-mode-1-md, 14px) !important;
+    height: 32px !important;
+    min-height: 32px !important;
+    gap: var(--p-spacing-mode-1-xs, 6px) !important;
+    border-radius: 9999px !important; /* Completamente redondeado (pill shape) */
+}
+
+.ubits-button-ai--sm span {
+    font-family: var(--font-family-noto-sans-font-family, var(--font-sans, 'Noto Sans', sans-serif)) !important;
+    font-size: var(--modifiers-normal-body-sm-regular-fontsize, var(--font-body-sm-size, 14px)) !important;
+    font-weight: var(--weight-semibold, 600) !important;
+    line-height: var(--modifiers-normal-body-sm-regular-lineheight, var(--font-body-sm-line, 23.4px)) !important;
+}
+
+.ubits-button-ai--sm i {
+    font-size: 14px !important;
+}
+
+.ubits-button-ai--sm.ubits-button-ai--icon-only {
+    padding: 9.5px 8px !important;
+    width: 32px !important;
+    min-width: 32px !important;
+    height: 32px !important;
+    min-height: 32px !important;
+}
+
+/* Medium (md) - Default */
+.ubits-button-ai,
+.ubits-button-ai--md {
+    padding: var(--p-spacing-mode-1-md, 12px) var(--p-spacing-mode-1-lg, 16px);
+    height: 40px;
+    border-radius: 9999px; /* Completamente redondeado (pill shape) */
+}
+
+.ubits-button-ai span,
+.ubits-button-ai--md span {
+    font-family: var(--font-family-noto-sans-font-family, var(--font-sans, 'Noto Sans', sans-serif));
+    font-size: var(--modifiers-normal-body-md-regular-fontsize, var(--font-body-md-size, 16px));
+    font-weight: var(--weight-semibold, 600);
+    line-height: var(--modifiers-normal-body-md-regular-lineheight, var(--font-body-md-line, 24px));
+}
+
+.ubits-button-ai--md.ubits-button-ai--icon-only,
+.ubits-button-ai.ubits-button-ai--icon-only {
+    padding: var(--p-spacing-mode-1-md, 12px);
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    min-height: 40px;
+}
+
+/* Large (lg) */
+.ubits-button-ai--lg {
+    padding: var(--p-spacing-mode-1-md, 14px) var(--p-spacing-mode-1-xl, 20px);
+    height: 48px;
+    border-radius: 9999px; /* Completamente redondeado (pill shape) */
+}
+
+.ubits-button-ai--lg span {
+    font-family: var(--font-family-noto-sans-font-family, var(--font-sans, 'Noto Sans', sans-serif));
+    font-size: var(--modifiers-normal-body-lg-regular-fontsize, var(--font-body-lg-size, 18px));
+    font-weight: var(--weight-semibold, 600);
+    line-height: var(--modifiers-normal-body-lg-regular-lineheight, var(--font-body-lg-line, 27px));
+}
+
+.ubits-button-ai--lg i {
+    font-size: 18px;
+}
+
+.ubits-button-ai--lg.ubits-button-ai--icon-only {
+    padding: var(--p-spacing-mode-1-md, 14px) var(--p-spacing-mode-1-lg, 16px);
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    min-height: 48px;
+}
+
+/* Extra Large (xl) */
+.ubits-button-ai--xl {
+    padding: var(--p-spacing-mode-1-lg, 16px) var(--p-spacing-mode-1-2xl, 24px);
+    height: 56px;
+    border-radius: 9999px; /* Completamente redondeado (pill shape) */
+}
+
+.ubits-button-ai--xl span {
+    font-family: var(--font-family-noto-sans-font-family, var(--font-sans, 'Noto Sans', sans-serif));
+    font-size: 22px; /* Tamaño específico para xl, mantener hardcodeado */
+    font-weight: var(--weight-semibold, 600);
+    line-height: 33px; /* Line-height específico para xl, mantener hardcodeado */
+}
+
+.ubits-button-ai--xl i {
+    font-size: 20px;
+}
+
+.ubits-button-ai--xl.ubits-button-ai--icon-only {
+    padding: var(--p-spacing-mode-1-lg, 16px) var(--p-spacing-mode-1-xl, 20px);
+    width: 56px;
+    height: 56px;
+    min-width: 56px;
+    min-height: 56px;
+}
+
+/* Ajustar border-radius del pseudo-elemento en secondary para todos los tamaños - completamente redondeado */
+.ubits-button-ai--secondary.ubits-button-ai--xs::before,
+.ubits-button-ai--secondary.ubits-button-ai--sm::before,
+.ubits-button-ai--secondary.ubits-button-ai--md::before,
+.ubits-button-ai--secondary::before,
+.ubits-button-ai--secondary.ubits-button-ai--lg::before,
+.ubits-button-ai--secondary.ubits-button-ai--xl::before {
+    border-radius: 9999px; /* Completamente redondeado (pill shape) */
+}
+
+/* ========================================
+   BUTTON AI BADGE
+   ======================================== */
+
+.ubits-button-ai__badge {
+    position: absolute !important;
+    top: -2px !important;
+    right: -3px !important;
+    width: 10px !important;
+    height: 10px !important;
+    background: var(--modifiers-normal-color-light-feedback-accent-error) !important;
+    border-radius: 50% !important;
+    z-index: 100 !important; /* MUY ALTO z-index para estar por encima de TODO, incluyendo ::before */
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: none; /* No interferir con clicks */
+}
+
+/* Badge en icon-only - igual posicionamiento que primary */
+.ubits-button-ai--icon-only .ubits-button-ai__badge {
+    top: -2px !important;
+    right: -2px !important;
+}
+
+/* Badge en secondary - igual posicionamiento que primary en todos los estados */
+.ubits-button-ai--secondary .ubits-button-ai__badge {
+    top: -2px !important;
+    right: -3px !important;
+    z-index: 100 !important; /* Asegurar que esté por encima del ::before del borde (z-index: 0) */
+}
+
+/* Badge en secondary icon-only - igual posicionamiento que primary */
+.ubits-button-ai--secondary.ubits-button-ai--icon-only .ubits-button-ai__badge {
+    top: -2px !important;
+    right: -2px !important;
+}
+
+/* Badge en secondary active - igual posicionamiento que primary */
+.ubits-button-ai--secondary.ubits-button-ai--active .ubits-button-ai__badge {
+    top: -2px !important;
+    right: -3px !important;
+    z-index: 100 !important; /* Asegurar que esté por encima del ::before del fondo activo (z-index: 0) */
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Badge en secondary active icon-only - igual posicionamiento que primary */
+.ubits-button-ai--secondary.ubits-button-ai--active.ubits-button-ai--icon-only .ubits-button-ai__badge {
+    top: -2px !important;
+    right: -2px !important;
+}
+
+/* Badge en primary active - igual posicionamiento */
+.ubits-button-ai--primary.ubits-button-ai--active .ubits-button-ai__badge {
+    top: -2px !important;
+    right: -3px !important;
+    z-index: 100 !important; /* Asegurar que esté por encima del ::before del fondo activo (z-index: 0) */
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Badge en primary active icon-only - igual posicionamiento */
+.ubits-button-ai--primary.ubits-button-ai--active.ubits-button-ai--icon-only .ubits-button-ai__badge {
+    top: -2px !important;
+    right: -2px !important;
+}
+
+/* ========================================
+   BUTTON AI ICONS
+   ======================================== */
+
+.ubits-button-ai i {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+/* Iconos por tamaño */
+.ubits-button-ai--xs i {
+    font-size: 12px !important;
+}
+
+.ubits-button-ai--sm i {
+    font-size: 14px !important;
+}
+
+.ubits-button-ai,
+.ubits-button-ai--md i {
+    font-size: 16px;
+}
+
+.ubits-button-ai--lg i {
+    font-size: 18px;
+}
+
+.ubits-button-ai--xl i {
+    font-size: 20px;
+}
+
+/* ========================================
+   DARK MODE SUPPORT
+   ======================================== */
+
+[data-theme="dark"] {
+    /* AI Button Primary */
+    --modifiers-normal-ai-button-primary-color-bg: var(--modifiers-normal-ai-button-primary-color-bg);
+    --modifiers-normal-button-color-light-brand-primary-bg-default: var(--modifiers-normal-button-color-dark-brand-primary-bg-default);
+    --modifiers-normal-button-color-light-brand-primary-bg-hover: var(--modifiers-normal-button-color-dark-brand-primary-bg-hover);
+    --modifiers-normal-button-color-light-brand-primary-bg-pressed: var(--modifiers-normal-button-color-dark-brand-primary-bg-pressed);
+    --modifiers-normal-color-light-fg-bold: var(--modifiers-normal-color-dark-fg-bold);
+    
+    /* AI Button Secondary */
+    --modifiers-normal-ai-button-color-light-secondary-accent-gradient-end: var(--modifiers-normal-ai-button-color-dark-secondary-accent-gradient-end);
+    --modifiers-static-color-light-accent-brand: var(--modifiers-static-color-dark-accent-brand);
+    --modifiers-normal-button-color-light-brand-secondary-fg-default: var(--modifiers-normal-button-color-dark-brand-secondary-fg-default);
+    --modifiers-normal-button-color-light-brand-secondary-bg-hover: var(--modifiers-normal-button-color-dark-brand-secondary-bg-hover);
+    --modifiers-normal-button-color-light-brand-secondary-bg-pressed: var(--modifiers-normal-button-color-dark-brand-secondary-bg-pressed);
+    
+    /* Active State */
+    --modifiers-normal-color-light-accent-brand: var(--modifiers-normal-color-dark-accent-brand);
+    --modifiers-normal-color-light-bg-active: var(--modifiers-normal-color-dark-bg-active);
+    
+    /* Disabled State */
+    --modifiers-normal-color-light-bg-disabled: var(--modifiers-normal-color-dark-bg-disabled);
+    --modifiers-normal-color-light-fg-on-disabled: var(--modifiers-normal-color-dark-fg-on-disabled);
+    --modifiers-normal-color-light-border-disabled: var(--modifiers-normal-color-dark-border-disabled);
+    
+    /* Background */
+    --modifiers-normal-color-light-bg-1: var(--modifiers-normal-color-dark-bg-1);
+    
+    /* Badge */
+    --modifiers-normal-color-light-feedback-accent-error: var(--modifiers-normal-color-dark-feedback-accent-error);
+    
+    /* Focus */
+    --modifiers-normal-focus-color: var(--modifiers-normal-focus-color);
+}
+

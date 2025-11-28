@@ -1,0 +1,25 @@
+{
+  "name": "@ubits/radio-button",
+  "version": "1.0.0",
+  "description": "UBITS Radio Button Component Add-on",
+  "main": "dist/radio-button.js",
+  "module": "dist/radio-button.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "vite build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "ubits",
+    "component",
+    "radio-button",
+    "addon"
+  ],
+  "author": "UBITS",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^5.0.2",
+    "vite": "^4.4.5"
+  }
+}
+

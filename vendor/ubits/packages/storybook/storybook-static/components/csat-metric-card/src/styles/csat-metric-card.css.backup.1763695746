@@ -1,0 +1,217 @@
+/* ========================================
+   UBITS CSAT METRIC CARD COMPONENT
+   Componente de tarjeta de métricas CSAT con calificación por caritas
+   Usando tokens UBITS
+   ======================================== */
+
+/* ========================================
+   BASE CSAT METRIC CARD STYLES
+   ======================================== */
+
+.ubits-csat-metric-card {
+  /* Base styles usando tokens UBITS */
+  display: flex;
+  flex-direction: column;
+  background: var(--modifiers-normal-color-light-bg-1) !important;
+  border-radius: var(--ubits-border-radius-sm, 8px);
+  padding: var(--ubits-spacing-md, 12px);
+  gap: var(--ubits-spacing-md);
+  font-family: var(--font-family-noto-sans-font-family, 'Noto Sans', sans-serif);
+  transition: all 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
+  border: none;
+  box-shadow: none;
+  position: relative;
+}
+
+/* ========================================
+   SIZES
+   ======================================== */
+
+.ubits-csat-metric-card--sm {
+  padding: var(--ubits-spacing-md, 12px);
+  gap: var(--ubits-spacing-xl);
+}
+
+.ubits-csat-metric-card--md {
+  padding: var(--ubits-spacing-md, 12px);
+  gap: var(--ubits-spacing-md);
+}
+
+.ubits-csat-metric-card--lg {
+  padding: var(--ubits-spacing-md, 12px);
+  gap: var(--ubits-spacing-lg);
+}
+
+/* ========================================
+   HEADER
+   ======================================== */
+
+.ubits-csat-metric-card__header {
+  display: flex;
+  align-items: center;
+  gap: var(--ubits-spacing-xl);
+  width: 100%;
+  position: relative;
+}
+
+.ubits-csat-metric-card__title-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  color: var(--modifiers-normal-color-light-fg-2-medium) !important;
+}
+
+.ubits-csat-metric-card__title-group {
+  display: flex;
+  align-items: center;
+  gap: var(--ubits-spacing-sm);
+  flex: 1;
+}
+
+.ubits-csat-metric-card__title {
+  margin: var(--ubits-spacing-none, 0);
+  font-family: var(--font-family-noto-sans-font-family, 'Noto Sans', sans-serif);
+  color: var(--modifiers-normal-color-light-fg-1-high) !important;
+}
+
+/* Botón terciario de información justo después del título */
+.ubits-csat-metric-card__title-group .ubits-button {
+  flex-shrink: 0;
+}
+
+/* Botón de acción alineado con el título */
+.ubits-csat-metric-card__action-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+}
+
+.ubits-csat-metric-card__action-button .ubits-button {
+  flex-shrink: 0;
+  min-width: auto;
+  min-height: auto;
+}
+
+/* ========================================
+   BODY
+   ======================================== */
+
+.ubits-csat-metric-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ubits-spacing-xl);
+}
+
+/* ========================================
+   STATS
+   ======================================== */
+
+.ubits-csat-metric-card__stats {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ubits-spacing-sm);
+}
+
+.ubits-csat-metric-card__responses {
+  color: var(--modifiers-normal-color-light-fg-2-medium) !important;
+  font-weight: var(--ubits-font-weight-regular, 400);
+  margin: var(--ubits-spacing-none, 0);
+}
+
+.ubits-csat-metric-card__average {
+  color: var(--modifiers-normal-color-light-fg-2-medium) !important;
+  font-weight: var(--ubits-font-weight-regular, 400);
+  margin: var(--ubits-spacing-none, 0);
+}
+
+/* ========================================
+   CHART (CARITAS)
+   ======================================== */
+
+.ubits-csat-metric-card__chart {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ubits-spacing-sm);
+  align-items: center;
+}
+
+.ubits-csat-metric-card__faces {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  width: 100%;
+  padding: var(--ubits-spacing-none, 0);
+}
+
+.ubits-csat-metric-card__face-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--ubits-spacing-sm);
+  flex: 1;
+}
+
+.ubits-csat-metric-card__face {
+  font-size: var(--modifiers-normal-display-d4-regular-fontsize, 32px);
+  line-height: 1;
+  transition: all 0.2s ease;
+  flex: 0 0 auto;
+  display: block;
+}
+
+.ubits-csat-metric-card__face--selected {
+  filter: grayscale(0%);
+  opacity: 1;
+}
+
+.ubits-csat-metric-card__face--empty {
+  filter: grayscale(100%);
+  opacity: 0.4;
+}
+
+.ubits-csat-metric-card__face-label {
+  color: var(--modifiers-normal-color-light-fg-2-medium) !important;
+  font-family: var(--font-family-noto-sans-font-family, 'Noto Sans', sans-serif);
+  font-size: var(--modifiers-normal-body-xs-regular-fontsize, 11px);
+  line-height: 1.2;
+  margin: var(--ubits-spacing-none, 0);
+  text-align: center;
+}
+
+/* ========================================
+   CLICKABLE CARD
+   ======================================== */
+
+.ubits-csat-metric-card[data-clickable="true"] {
+  cursor: pointer;
+}
+
+.ubits-csat-metric-card[data-clickable="true"]:hover {
+  background: var(--modifiers-normal-color-light-bg-2) !important;
+  border-color: var(--modifiers-normal-color-light-border-2) !important;
+}
+
+.ubits-csat-metric-card[data-clickable="true"]:active {
+  background: var(--modifiers-normal-color-light-bg-3) !important;
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+@media (max-width: 768px) {
+  .ubits-csat-metric-card {
+    padding: var(--ubits-spacing-md);
+  }
+  
+  .ubits-csat-metric-card__face {
+    font-size: var(--modifiers-normal-display-d3-regular-fontsize, 28px);
+  }
+}
+

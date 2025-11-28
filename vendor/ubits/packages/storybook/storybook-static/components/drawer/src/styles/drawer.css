@@ -1,0 +1,353 @@
+/* ========================================
+   UBITS DRAWER NAVIGATION COMPONENT
+   Componente drawer que sale de izquierda a derecha con overlay
+   Usando tokens UBITS exclusivamente
+   ======================================== */
+
+/* ========================================
+   DELETE BUTTONS (TRASH ICONS)
+   Los botones de eliminar (trash) en tertiary deben tener icono rojo
+   ======================================== */
+
+.ubits-drawer .ubits-button--tertiary i.fa-trash,
+.ubits-drawer .ubits-button--tertiary i.far.fa-trash {
+    color: var(--modifiers-normal-color-light-feedback-accent-error) !important;
+}
+
+[data-theme="dark"] .ubits-drawer .ubits-button--tertiary i.fa-trash,
+[data-theme="dark"] .ubits-drawer .ubits-button--tertiary i.far.fa-trash {
+    color: var(--modifiers-normal-color-dark-feedback-accent-error) !important;
+}
+
+/* ========================================
+   OVERLAY
+   ======================================== */
+
+.ubits-drawer-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--modifiers-normal-color-light-bg-dim);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.ubits-drawer-overlay--open {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* ========================================
+   DRAWER CONTAINER
+   ======================================== */
+
+.ubits-drawer {
+    position: relative;
+    height: 100vh;
+    background-color: var(--modifiers-normal-color-light-bg-1);
+    display: flex;
+    flex-direction: column;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    overflow: hidden;
+    /* Shadow: No hay token equivalente en Figma, mantener hardcodeado */
+    box-shadow: 0px 14px 28.8px 0px rgba(0, 0, 0, 0.24), 0px 0px 8px 0px rgba(0, 0, 0, 0.2);
+}
+
+.ubits-drawer-overlay--open .ubits-drawer {
+    transform: translateX(0);
+}
+
+/* Anchos del drawer */
+.ubits-drawer--width-100 {
+    width: 100%;
+}
+
+.ubits-drawer--width-80 {
+    width: 80%;
+}
+
+.ubits-drawer--width-60 {
+    width: 60%;
+}
+
+.ubits-drawer--width-50 {
+    width: 50%;
+}
+
+.ubits-drawer--width-40 {
+    width: 40%;
+}
+
+.ubits-drawer--width-30 {
+    width: 30%;
+}
+
+@media (max-width: 767px) {
+    .ubits-drawer--width-80,
+    .ubits-drawer--width-60,
+    .ubits-drawer--width-50,
+    .ubits-drawer--width-40,
+    .ubits-drawer--width-30 {
+        width: 100%;
+    }
+}
+
+.ubits-drawer__header {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--ubits-spacing-md);
+    padding: var(--ubits-spacing-lg);
+    border-bottom: 1px solid var(--modifiers-normal-color-light-border-1);
+    flex-shrink: 0;
+}
+
+.ubits-drawer__header-text {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ubits-spacing-xs);
+    flex: 1 1 0;
+    min-width: 0;
+}
+
+.ubits-drawer__header-title {
+    display: flex;
+    align-items: center;
+    gap: var(--ubits-spacing-md);
+    width: 100%;
+}
+
+.ubits-drawer__header-title p {
+    flex: 1 1 0;
+    margin: var(--ubits-spacing-none);
+    color: var(--modifiers-normal-color-light-fg-1-high);
+    font-family: var(--font-family-noto-sans-font-family);
+    font-weight: var(--weight-semibold);
+    font-size: var(--modifiers-normal-body-md-regular-fontsize);
+    line-height: var(--modifiers-normal-body-md-regular-lineheight);
+}
+
+.ubits-drawer__header-complementary {
+    display: flex;
+    align-items: center;
+    gap: var(--ubits-spacing-md);
+    width: 100%;
+}
+
+.ubits-drawer__header-complementary p {
+    flex: 1 1 0;
+    margin: var(--ubits-spacing-none);
+    color: var(--modifiers-normal-color-light-fg-1-medium);
+    font-family: var(--font-family-noto-sans-font-family);
+    font-weight: var(--weight-regular);
+    font-size: var(--modifiers-normal-body-sm-regular-fontsize);
+    line-height: var(--modifiers-normal-body-sm-regular-lineheight);
+}
+
+/* El botón de cerrar ahora usa el componente Button de UBITS */
+.ubits-drawer__close {
+    flex-shrink: 0;
+}
+
+/* ========================================
+   DRAWER BODY
+   ======================================== */
+
+.ubits-drawer__body {
+    flex: 1 1 0;
+    min-height: 0;
+    border-bottom: 1px solid var(--modifiers-normal-color-light-border-1);
+    overflow: hidden;
+    display: flex;
+    position: relative;
+}
+
+.ubits-drawer__body-content {
+    flex: 1 1 0;
+    padding: var(--ubits-spacing-sm) var(--ubits-spacing-lg);
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: var(--ubits-spacing-md);
+    min-height: 0;
+}
+
+.ubits-drawer__body-content::-webkit-scrollbar {
+    width: 0;
+}
+
+.ubits-drawer__placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--ubits-spacing-lg);
+    border: 1px dashed var(--modifiers-normal-color-light-border-2);
+    background-color: var(--modifiers-normal-color-light-bg-2);
+    border-radius: var(--ubits-border-radius-md);
+    min-height: 200px;
+    color: var(--modifiers-normal-color-light-fg-1-medium);
+    font-family: var(--font-family-noto-sans-font-family);
+    font-size: var(--modifiers-normal-body-sm-regular-fontsize);
+}
+
+/* ========================================
+   DRAWER SCROLLBAR
+   ======================================== */
+
+.ubits-drawer__scrollbar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: var(--ubits-spacing-sm) var(--ubits-spacing-xs) var(--ubits-spacing-sm);
+    overflow: hidden;
+    flex-shrink: 0;
+    width: var(--ubits-spacing-sm);
+}
+
+.ubits-drawer__scrollbar-bar {
+    flex: 1 1 0;
+    min-height: 0;
+    width: var(--ubits-spacing-sm);
+    background-color: var(--modifiers-normal-color-light-fg-2-medium);
+    border-radius: var(--ubits-border-radius-full);
+}
+
+/* ========================================
+   DRAWER FOOTER
+   ======================================== */
+
+.ubits-drawer__footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--ubits-spacing-md);
+    padding: var(--ubits-spacing-lg);
+    flex-shrink: 0;
+}
+
+.ubits-drawer__footer-actions {
+    display: flex;
+    flex: 1 1 0;
+    align-items: center;
+    justify-content: space-between;
+    min-width: 0;
+}
+
+.ubits-drawer__footer-left {
+    display: flex;
+    gap: var(--ubits-spacing-md);
+    align-items: center;
+    margin-right: auto;
+}
+
+.ubits-drawer__footer-right {
+    display: flex;
+    gap: var(--ubits-spacing-md);
+    align-items: center;
+    justify-content: flex-end;
+    margin-left: auto;
+}
+
+.ubits-drawer__footer-button {
+    margin: 0;
+}
+
+/* ========================================
+   INPUTS DENTRO DEL DRAWER
+   ======================================== */
+
+.ubits-drawer__body-content input[type="text"],
+.ubits-drawer__body-content input[type="email"],
+.ubits-drawer__body-content input[type="number"],
+.ubits-drawer__body-content input[type="tel"],
+.ubits-drawer__body-content input[type="url"],
+.ubits-drawer__body-content input[type="password"],
+.ubits-drawer__body-content textarea,
+.ubits-drawer__body-content select {
+    width: 100%;
+    padding: var(--ubits-spacing-sm) var(--ubits-spacing-md);
+    border: 1px solid var(--modifiers-normal-color-light-border-1);
+    border-radius: var(--ubits-border-radius-md);
+    background-color: var(--modifiers-normal-color-light-bg-1);
+    color: var(--modifiers-normal-color-light-fg-1-high);
+    font-family: var(--font-family-noto-sans-font-family);
+    font-size: var(--modifiers-normal-body-sm-regular-fontsize);
+    line-height: var(--modifiers-normal-body-sm-regular-lineheight);
+    box-sizing: border-box;
+    transition: all 0.2s ease;
+}
+
+.ubits-drawer__body-content input[type="text"]:focus,
+.ubits-drawer__body-content input[type="email"]:focus,
+.ubits-drawer__body-content input[type="number"]:focus,
+.ubits-drawer__body-content input[type="tel"]:focus,
+.ubits-drawer__body-content input[type="url"]:focus,
+.ubits-drawer__body-content input[type="password"]:focus,
+.ubits-drawer__body-content textarea:focus,
+.ubits-drawer__body-content select:focus {
+    outline: none;
+    border-color: var(--modifiers-normal-color-light-accent-brand);
+    box-shadow: 0 0 0 3px var(--modifiers-normal-focus-color);
+}
+
+.ubits-drawer__body-content input[type="text"]:hover,
+.ubits-drawer__body-content input[type="email"]:hover,
+.ubits-drawer__body-content input[type="number"]:hover,
+.ubits-drawer__body-content input[type="tel"]:hover,
+.ubits-drawer__body-content input[type="url"]:hover,
+.ubits-drawer__body-content input[type="password"]:hover,
+.ubits-drawer__body-content textarea:hover,
+.ubits-drawer__body-content select:hover {
+    border-color: var(--modifiers-normal-color-light-border-2);
+}
+
+.ubits-drawer__body-content input[type="text"]::placeholder,
+.ubits-drawer__body-content input[type="email"]::placeholder,
+.ubits-drawer__body-content input[type="number"]::placeholder,
+.ubits-drawer__body-content input[type="tel"]::placeholder,
+.ubits-drawer__body-content input[type="url"]::placeholder,
+.ubits-drawer__body-content input[type="password"]::placeholder,
+.ubits-drawer__body-content textarea::placeholder {
+    color: var(--modifiers-normal-color-light-fg-1-medium);
+}
+
+.ubits-drawer__body-content select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%235c646f' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right var(--ubits-spacing-md) center;
+    padding-right: var(--ubits-spacing-2xl);
+}
+
+.ubits-drawer__body-content select option {
+    background-color: var(--modifiers-normal-color-light-bg-1);
+    color: var(--modifiers-normal-color-light-fg-1-high);
+}
+
+/* ========================================
+   DARK MODE
+   ======================================== */
+
+[data-theme="dark"] {
+    --modifiers-normal-color-light-bg-dim: var(--modifiers-normal-color-dark-bg-dim);
+    --modifiers-normal-color-light-bg-1: var(--modifiers-normal-color-dark-bg-1);
+    --modifiers-normal-color-light-bg-2: var(--modifiers-normal-color-dark-bg-2);
+    --modifiers-normal-color-light-border-1: var(--modifiers-normal-color-dark-border-1);
+    --modifiers-normal-color-light-border-2: var(--modifiers-normal-color-dark-border-2);
+    --modifiers-normal-color-light-fg-1-high: var(--modifiers-normal-color-dark-fg-1-high);
+    --modifiers-normal-color-light-fg-1-medium: var(--modifiers-normal-color-dark-fg-1-medium);
+    --modifiers-normal-color-light-fg-2-medium: var(--modifiers-normal-color-dark-fg-2-medium);
+    --modifiers-normal-color-light-accent-brand: var(--modifiers-normal-color-dark-accent-brand);
+}
+
+

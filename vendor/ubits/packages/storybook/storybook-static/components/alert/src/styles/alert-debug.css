@@ -1,0 +1,53 @@
+/* ========================================
+   DEBUG: Verificar valores de tokens
+   ======================================== */
+
+.ubits-alert-debug {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    background: white;
+    border: 2px solid #000;
+    padding: 20px;
+    z-index: 9999;
+    font-family: monospace;
+    font-size: 12px;
+    max-width: 400px;
+    max-height: 80vh;
+    overflow: auto;
+}
+
+.ubits-alert-debug h3 {
+    margin: 0 0 10px 0;
+    color: #000;
+}
+
+.ubits-alert-debug .token-item {
+    margin: 5px 0;
+    padding: 5px;
+    border: 1px solid #ccc;
+}
+
+.ubits-alert-debug .token-item.exists {
+    background: #d4edda;
+}
+
+.ubits-alert-debug .token-item.missing {
+    background: #f8d7da;
+}
+
+.ubits-alert-debug .token-name {
+    font-weight: bold;
+    color: #333;
+}
+
+.ubits-alert-debug .token-value {
+    color: #666;
+    margin-left: 10px;
+}
+
+.ubits-alert-debug .token-status {
+    font-size: 10px;
+    margin-left: 10px;
+}
+

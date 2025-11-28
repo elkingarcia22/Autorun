@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Tokens Alert</title>
+    
+    <!-- Cargar tokens PRIMERO -->
+    <link rel="stylesheet" href="../../tokens/dist/figma-tokens.css">
+    
+    <!-- Cargar componente DESPUÉS -->
+    <link rel="stylesheet" href="src/styles/alert.css">
+    <link rel="stylesheet" href="src/styles/alert-debug.css">
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .alert-test {
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>Test de Tokens - Alert Component</h1>
+        
+        <div id="debug-panel" class="ubits-alert-debug">
+            <h3>🔍 Debug Tokens</h3>
+            <div id="token-list"></div>
+        </div>
+        
+        <div class="alert-test">
+            <h2>Success Alert</h2>
+            <div class="ubits-alert ubits-alert--success">
+                <div class="ubits-alert__icon">
+                    <i class="far fa-check-circle"></i>
+                </div>
+                <div class="ubits-alert__content">
+                    <div class="ubits-alert__text">Este es un alert de éxito</div>
+                </div>
+                <button class="ubits-alert__close" aria-label="Cerrar">
+                    <i class="far fa-times"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div class="alert-test">
+            <h2>Info Alert</h2>
+            <div class="ubits-alert ubits-alert--info">
+                <div class="ubits-alert__icon">
+                    <i class="far fa-info-circle"></i>
+                </div>
+                <div class="ubits-alert__content">
+                    <div class="ubits-alert__text">Este es un alert informativo</div>
+                </div>
+                <button class="ubits-alert__close" aria-label="Cerrar">
+                    <i class="far fa-times"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div class="alert-test">
+            <h2>Warning Alert</h2>
+            <div class="ubits-alert ubits-alert--warning">
+                <div class="ubits-alert__icon">
+                    <i class="far fa-exclamation-triangle"></i>
+                </div>
+                <div class="ubits-alert__content">
+                    <div class="ubits-alert__text">Este es un alert de advertencia</div>
+                </div>
+                <button class="ubits-alert__close" aria-label="Cerrar">
+                    <i class="far fa-times"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div class="alert-test">
+            <h2>Error Alert</h2>
+            <div class="ubits-alert ubits-alert--error">
+                <div class="ubits-alert__icon">
+                    <i class="far fa-times-circle"></i>
+                </div>
+                <div class="ubits-alert__content">
+                    <div class="ubits-alert__text">Este es un alert de error</div>
+                </div>
+                <button class="ubits-alert__close" aria-label="Cerrar">
+                    <i class="far fa-times"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Lista de tokens usados en Alert
+        const tokens = [
+            'modifiers-normal-color-light-feedback-bg-success-subtle-default',
+            'modifiers-normal-color-light-feedback-fg-success-subtle-default',
+            'modifiers-normal-color-light-feedback-border-success',
+            'modifiers-normal-color-light-feedback-bg-info-subtle-default',
+            'modifiers-normal-color-light-feedback-fg-info-subtle-default',
+            'modifiers-normal-color-light-feedback-border-info',
+            'modifiers-normal-color-light-feedback-bg-warning-subtle-default',
+            'modifiers-normal-color-light-feedback-fg-warning-subtle-default',
+            'modifiers-normal-color-light-feedback-border-warning',
+            'modifiers-normal-color-light-feedback-bg-error-subtle-default',
+            'modifiers-normal-color-light-feedback-fg-error-subtle-default',
+            'modifiers-normal-color-light-feedback-border-error',
+            'modifiers-normal-color-light-bg-2',
+            'modifiers-normal-color-light-fg-1-medium',
+        ];
+        
+        function checkTokens() {
+            const root = document.documentElement;
+            const computedStyle = getComputedStyle(root);
+            const tokenList = document.getElementById('token-list');
+            tokenList.innerHTML = '';
+            
+            let existsCount = 0;
+            let missingCount = 0;
+            
+            tokens.forEach(token => {
+                const tokenName = `--${token}`;
+                const value = computedStyle.getPropertyValue(tokenName).trim();
+                
+                const item = document.createElement('div');
+                item.className = `token-item ${value ? 'exists' : 'missing'}`;
+                
+                const nameSpan = document.createElement('span');
+                nameSpan.className = 'token-name';
+                nameSpan.textContent = tokenName;
+                
+                const valueSpan = document.createElement('span');
+                valueSpan.className = 'token-value';
+                valueSpan.textContent = value || '(NO DEFINIDO)';
+                
+                const statusSpan = document.createElement('span');
+                statusSpan.className = 'token-status';
+                statusSpan.textContent = value ? '✅' : '❌';
+                
+                item.appendChild(nameSpan);
+                item.appendChild(statusSpan);
+                item.appendChild(document.createElement('br'));
+                item.appendChild(valueSpan);
+                
+                tokenList.appendChild(item);
+                
+                if (value) {
+                    existsCount++;
+                } else {
+                    missingCount++;
+                }
+            });
+            
+            // Agregar resumen
+            const summary = document.createElement('div');
+            summary.style.marginTop = '10px';
+            summary.style.padding = '10px';
+            summary.style.background = missingCount > 0 ? '#f8d7da' : '#d4edda';
+            summary.style.border = '1px solid #ccc';
+            summary.innerHTML = `
+                <strong>Resumen:</strong><br>
+                ✅ Existentes: ${existsCount}/${tokens.length}<br>
+                ${missingCount > 0 ? `❌ Faltantes: ${missingCount}` : '✅ Todos los tokens están disponibles'}
+            `;
+            tokenList.appendChild(summary);
+            
+            // Log en consola
+            console.log('🔍 DIAGNÓSTICO DE TOKENS:');
+            console.log(`Total tokens verificados: ${tokens.length}`);
+            console.log(`Tokens existentes: ${existsCount}`);
+            console.log(`Tokens faltantes: ${missingCount}`);
+            
+            tokens.forEach(token => {
+                const tokenName = `--${token}`;
+                const value = computedStyle.getPropertyValue(tokenName).trim();
+                if (value) {
+                    console.log(`✅ ${tokenName}: ${value}`);
+                } else {
+                    console.error(`❌ ${tokenName}: NO DEFINIDO`);
+                }
+            });
+        }
+        
+        // Verificar cuando la página carga
+        window.addEventListener('load', () => {
+            setTimeout(checkTokens, 100);
+        });
+        
+        // Verificar también después de un delay adicional (por si hay carga asíncrona)
+        setTimeout(checkTokens, 500);
+    </script>
+</body>
+</html>
+

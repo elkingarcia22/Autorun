@@ -1,0 +1,198 @@
+/* ========================================
+   UBITS CAROUSEL COMPONENT
+   Componente de carrusel usando tokens UBITS
+   ======================================== */
+
+/* ========================================
+   BASE CAROUSEL STYLES
+   ======================================== */
+
+.ubits-carousel {
+  position: relative;
+  width: 100%;
+  background: var(--ubits-bg-1);
+  padding: var(--ubits-spacing-md, 16px);
+}
+
+.ubits-carousel--empty {
+  padding: var(--ubits-spacing-xl, 24px);
+  text-align: center;
+  color: var(--ubits-fg-1-medium);
+  border: 1px dashed var(--ubits-border-1);
+  border-radius: var(--ubits-border-radius-md, 8px);
+}
+
+/* ========================================
+   CAROUSEL CONTAINER & TRACK
+   ======================================== */
+
+.ubits-carousel__container {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+  border-radius: var(--ubits-border-radius-md, 8px);
+}
+
+.ubits-carousel__track {
+  display: flex;
+  transition: transform 0.3s ease;
+  gap: var(--carousel-gap, 16px);
+  will-change: transform;
+  align-items: stretch;
+}
+
+/* ========================================
+   CAROUSEL ITEM
+   ======================================== */
+
+.ubits-carousel-item {
+  flex: 0 0 auto;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  /* No forzar ancho - dejar que la Simple Card use su max-width según su tamaño */
+  width: auto;
+  min-width: 0;
+  /* Asegurar que la card dentro mantenga sus proporciones */
+}
+
+.ubits-carousel-item .ubits-simple-card {
+  /* Las Simple Cards ya tienen max-width definidos según su tamaño */
+  /* sm: 280px, md: 400px, lg: 560px, xl: 720px */
+  /* No sobrescribir estos valores - dejar que las variantes los manejen */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Asegurar que el body de la card use flex para distribuir el contenido */
+.ubits-carousel-item .ubits-simple-card__body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.ubits-carousel-item:hover {
+  transform: translateY(-2px);
+}
+
+.ubits-carousel-item:hover .ubits-simple-card {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-color: var(--ubits-accent-brand-static-inverted, var(--ubits-accent-brand));
+}
+
+/* ========================================
+   CAROUSEL CONTENT WRAPPER
+   ======================================== */
+
+.ubits-carousel__content-wrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--ubits-spacing-md, 16px);
+  width: 100%;
+}
+
+/* ========================================
+   CAROUSEL ARROWS
+   ======================================== */
+
+.ubits-carousel__arrow {
+  flex-shrink: 0;
+  background: var(--ubits-bg-1);
+  border: 1px solid var(--ubits-border-1);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--ubits-fg-1-high);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.ubits-carousel__arrow:hover {
+  background: var(--ubits-bg-2);
+  border-color: var(--ubits-accent-brand-static-inverted, var(--ubits-accent-brand));
+  color: var(--ubits-accent-brand-static-inverted, var(--ubits-accent-brand));
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.ubits-carousel__arrow:active {
+  transform: scale(0.95);
+}
+
+.ubits-carousel__arrow i {
+  font-size: 14px;
+}
+
+.ubits-carousel__arrow:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ========================================
+   CAROUSEL DOTS (PAGINATION)
+   ======================================== */
+
+.ubits-carousel__dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ubits-spacing-xs, 8px);
+  padding: var(--ubits-spacing-md, 16px) 0;
+}
+
+.ubits-carousel--dots-top .ubits-carousel__dots {
+  padding: 0 0 var(--ubits-spacing-md, 16px) 0;
+  order: -1;
+}
+
+.ubits-carousel__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: none;
+  background: var(--ubits-border-2, var(--ubits-border-1));
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0;
+}
+
+.ubits-carousel__dot:hover {
+  background: var(--ubits-fg-1-medium);
+  transform: scale(1.2);
+}
+
+.ubits-carousel__dot--active {
+  background: var(--ubits-accent-brand-static-inverted, var(--ubits-accent-brand));
+  width: 24px;
+  border-radius: 4px;
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+@media (max-width: 768px) {
+  .ubits-carousel {
+    padding: var(--ubits-spacing-sm, 12px);
+  }
+
+  .ubits-carousel__arrow {
+    width: 32px;
+    height: 32px;
+  }
+
+  .ubits-carousel__arrow--prev {
+    left: var(--ubits-spacing-xs, 8px);
+  }
+
+  .ubits-carousel__arrow--next {
+    right: var(--ubits-spacing-xs, 8px);
+  }
+
+}
+

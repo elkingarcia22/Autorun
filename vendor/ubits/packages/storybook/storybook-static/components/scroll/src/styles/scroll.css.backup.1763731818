@@ -1,0 +1,145 @@
+/* ========================================
+   UBITS SCROLLBAR COMPONENT
+   Componente scrollbar personalizado UBITS
+   Usando tokens UBITS exclusivamente
+   ======================================== */
+
+/* ========================================
+   SCROLLBAR CONTAINER
+   ======================================== */
+
+.ubits-scrollbar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    position: relative;
+    flex-shrink: 0;
+}
+
+/* ========================================
+   VERTICAL SCROLLBAR
+   ======================================== */
+
+.ubits-scrollbar--vertical {
+    flex-direction: column;
+    width: 8px;
+    min-width: 8px;
+    padding: var(--ubits-spacing-sm, 8px) var(--ubits-spacing-xs, 4px);
+    height: 100%;
+}
+
+.ubits-scrollbar--vertical .ubits-scrollbar__bar {
+    width: 8px;
+    min-height: 20px;
+    background-color: var(--ubits-scroll-bar-color-bg-default, #c5c6cb);
+    border-radius: var(--ubits-border-radius-full, 1000px);
+    position: absolute;
+    top: var(--ubits-spacing-sm, 8px);
+    left: var(--ubits-spacing-xs, 4px);
+    right: var(--ubits-spacing-xs, 4px);
+    transition: opacity 0.3s ease, transform 0.1s ease;
+    cursor: grab;
+    opacity: 0;
+    pointer-events: none;
+    user-select: none;
+}
+
+.ubits-scrollbar--vertical:hover .ubits-scrollbar__bar {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.ubits-scrollbar--vertical .ubits-scrollbar__bar:active {
+    cursor: grabbing;
+}
+
+/* Mostrar scrollbar cuando el contenedor scrollable tiene hover */
+[id*="scrollbar-scrollable-vertical"]:hover ~ [id*="scrollbar-vertical"] .ubits-scrollbar__bar,
+[id*="scrollbar-wrapper-vertical"]:hover .ubits-scrollbar__bar {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+}
+
+/* ========================================
+   HORIZONTAL SCROLLBAR
+   ======================================== */
+
+.ubits-scrollbar--horizontal {
+    flex-direction: row;
+    height: 8px;
+    min-height: 8px;
+    padding: var(--ubits-spacing-xs, 4px) var(--ubits-spacing-sm, 8px);
+    width: 100%;
+}
+
+.ubits-scrollbar--horizontal .ubits-scrollbar__bar {
+    height: 8px;
+    min-width: 20px;
+    background-color: var(--ubits-scroll-bar-color-bg-default, #c5c6cb);
+    border-radius: var(--ubits-border-radius-full, 1000px);
+    position: absolute;
+    left: var(--ubits-spacing-sm, 8px);
+    top: var(--ubits-spacing-xs, 4px);
+    bottom: var(--ubits-spacing-xs, 4px);
+    transition: opacity 0.3s ease, transform 0.1s ease;
+    cursor: grab;
+    opacity: 0;
+    pointer-events: none;
+    user-select: none;
+}
+
+.ubits-scrollbar--horizontal:hover .ubits-scrollbar__bar {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.ubits-scrollbar--horizontal .ubits-scrollbar__bar:active {
+    cursor: grabbing;
+}
+
+/* Mostrar scrollbar cuando el contenedor scrollable tiene hover */
+[id*="scrollbar-scrollable-horizontal"]:hover ~ [id*="scrollbar-horizontal"] .ubits-scrollbar__bar,
+[id*="scrollbar-wrapper-horizontal"]:hover .ubits-scrollbar__bar {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+}
+
+/* ========================================
+   STATES
+   ======================================== */
+
+.ubits-scrollbar--default .ubits-scrollbar__bar {
+    background-color: var(--ubits-scroll-bar-color-bg-default, #c5c6cb);
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+@media (max-width: 767px) {
+    .ubits-scrollbar--vertical {
+        width: 2px;
+        min-width: 2px;
+        padding: var(--ubits-spacing-sm, 8px) 0;
+    }
+    
+    .ubits-scrollbar--vertical .ubits-scrollbar__bar {
+        width: 2px;
+        left: 0;
+        right: 0;
+    }
+    
+    .ubits-scrollbar--horizontal {
+        height: 2px;
+        min-height: 2px;
+        padding: 0 var(--ubits-spacing-sm, 8px);
+    }
+    
+    .ubits-scrollbar--horizontal .ubits-scrollbar__bar {
+        height: 2px;
+        top: 0;
+        bottom: 0;
+    }
+}
+

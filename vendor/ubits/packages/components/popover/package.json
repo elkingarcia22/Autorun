@@ -1,0 +1,24 @@
+{
+  "name": "@ubits/popover",
+  "version": "1.0.0",
+  "description": "Popover component for UBITS design system",
+  "main": "dist/popover.js",
+  "types": "dist/popover.d.ts",
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite build --watch"
+  },
+  "keywords": [
+    "ubits",
+    "popover",
+    "tooltip",
+    "ui"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^5.3.3",
+    "vite": "^5.0.8"
+  }
+}
+

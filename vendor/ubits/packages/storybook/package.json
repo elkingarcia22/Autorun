@@ -1,0 +1,23 @@
+{
+  "name": "docs-site",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build",
+    "build": "storybook build",
+    "build:tokens": "cd ../.. && npm run build:tokens",
+    "deploy": "npm run build-storybook && npx vercel --prod --yes",
+    "deploy:preview": "npm run build-storybook && npx vercel"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@storybook/addon-docs": "^10.0.8",
+    "@storybook/html-vite": "^10.0.8",
+    "storybook": "^10.0.8"
+  }
+}
