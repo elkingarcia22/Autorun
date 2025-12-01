@@ -4,6 +4,8 @@ node_modules/
 # Build outputs
 dist/
 *.tsbuildinfo
+# Excepción: Los archivos dist/ de vendor/ubits/ SÍ deben estar en el repositorio (portabilidad)
+!vendor/ubits/**/dist/
 
 # Environment
 .env
