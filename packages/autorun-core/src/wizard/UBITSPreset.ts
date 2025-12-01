@@ -53,41 +53,31 @@ export const UBITS_PRESET: UBITSConfig = {
 		loadTemplate: 'desktop',
 	},
 	// Add-ons optimizados para prototipos de alta calidad UBITS
-	// Todos son complementarios, sin solapamientos
+	// Seleccionados: 1,2,3,4,7,12,14,15,16,18
 	addons: [
-		// Desarrollo y Componentes
-		'storybook', // Desarrollo y documentación de componentes
-		'figma-sync', // Sincronización de tokens desde Figma
+		// 1. Desarrollo y Componentes
+		'storybook', // 📚 Desarrollo y documentación de componentes
+		'figma-sync', // 🎨 Sincronización de tokens desde Figma
 		
-		// Calidad de Código (Complementarios)
-		'eslint', // Detección de errores
-		'prettier', // Formateo de código
+		// 3-4. Calidad de Código
+		'eslint', // 🔍 Detección de errores de código
+		'prettier', // ✨ Formateo automático de código
 		
-		// Testing (Todos complementarios - diferentes propósitos)
-		'vitest', // Unit testing (más rápido que Jest, ESM nativo)
-		'playwright', // E2E testing (flujos completos)
-		'chromatic', // Visual testing (screenshots, comparación)
+		// 7. Testing Visual
+		'chromatic', // 🖼️ Visual testing y comparación
 		
-		// Seguridad (Complementarios)
-		'snyk', // Security scanning (detecta vulnerabilidades)
-		'renovate', // Actualizaciones automáticas (aplica parches)
+		// 12. Componentes Standalone
+		'standalone', // 🚀 Componentes standalone
 		
-		// Performance (Complementarios - diferentes aspectos)
-		'lighthouse', // Auditoría web (runtime performance)
-		'bundle-analyzer', // Análisis de bundles (build-time)
-		'standalone', // Builds optimizados
+		// 14. Análisis de Usuarios
+		'clarity', // 👁️ Análisis de comportamiento de usuarios
 		
-		// Monitoreo (Complementarios - diferentes propósitos)
-		'sentry', // Error monitoring técnico
-		'clarity', // Analytics y comportamiento de usuarios
+		// 15-16. Despliegue e Integración
+		'vercel', // ☁️ Despliegue en Vercel
+		'github', // 🐙 Integración con GitHub
 		
-		// Deployment y CI/CD (Complementarios)
-		'vercel', // Deploy automático
-		'github', // Versionado y CI/CD
-		'codecov', // Code coverage tracking
-		
-		// Feedback
-		'feedback', // Feedback automatizado
+		// 18. Feedback
+		'feedback', // 💬 Sistema de feedback automatizado
 	],
 	components: [
 		'welcome',

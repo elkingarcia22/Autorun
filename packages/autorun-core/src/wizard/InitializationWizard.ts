@@ -367,14 +367,38 @@ export class InitializationWizard {
 		// Obtener todos los add-ons disponibles
 		const allAvailableAddons = await this.discoverAvailableAddons();
 
-		// Mostrar resumen de add-ons por defecto
+		// Mostrar resumen de add-ons por defecto con número de opción del wizard
 		console.log('\n🔌 Add-ons que se instalarán por defecto:\n');
-		defaultAddons.forEach((addonId, index) => {
+		
+		// Mapeo de add-on ID a número de opción en el wizard
+		const addonToWizardNumber: Record<string, number> = {
+			'storybook': 1,
+			'figma-sync': 2,
+			'eslint': 3,
+			'prettier': 4,
+			'vitest': 5,
+			'playwright': 6,
+			'chromatic': 7,
+			'snyk': 8,
+			'renovate': 9,
+			'lighthouse': 10,
+			'bundle-analyzer': 11,
+			'standalone': 12,
+			'sentry': 13,
+			'clarity': 14,
+			'vercel': 15,
+			'github': 16,
+			'codecov': 17,
+			'feedback': 18,
+		};
+		
+		defaultAddons.forEach((addonId) => {
 			const description =
 				addonDescriptions[addonId] ||
 				allAvailableAddons.find((a) => a.id === addonId)?.description ||
 				addonId;
-			console.log(`   ${index + 1}. ${description}`);
+			const wizardNumber = addonToWizardNumber[addonId] || '?';
+			console.log(`   ${wizardNumber}. ${description} (add-on: ${addonId})`);
 		});
 
 		// En modo automático SIN AUTORUN_ANSWERS, usar add-ons por defecto sin preguntar
