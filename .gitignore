@@ -22,3 +22,7 @@ Thumbs.db
 # Husky
 .husky/_/
 .vercel
+
+# Generated files
+.ubits/
+prototypes/
