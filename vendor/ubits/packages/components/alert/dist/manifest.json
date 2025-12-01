@@ -1,0 +1,22 @@
+{
+  "name": "@ubits/alert",
+  "version": "1.0.0",
+  "description": "Componente Alert UBITS como add-on intercambiable",
+  "main": "./index.js",
+  "types": "./index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./index.js",
+      "types": "./index.d.ts"
+    },
+    "./styles": "./alert.css"
+  },
+  "components": [
+    {
+      "name": "ubits-alert",
+      "tag": "ubits-alert",
+      "documentation": "https://ubits.design/components/alert"
+    }
+  ]
+}
+

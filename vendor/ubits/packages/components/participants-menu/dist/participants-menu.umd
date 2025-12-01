@@ -1,0 +1,551 @@
+(function(Y,Z){typeof exports=="object"&&typeof module<"u"?Z(exports):typeof define=="function"&&define.amd?define(["exports"],Z):(Y=typeof globalThis<"u"?globalThis:Y||self,Z(Y.UbitsParticipantsMenu={}))})(this,function(Y){"use strict";function Z(t){if(typeof window.renderBadge=="function")return window.renderBadge(t);const{type:s,size:n,variant:l,absolute:c,position:p,className:o,content:a}=t,d=["ubits-badge",`ubits-badge--${n}`,s==="dot"?"ubits-badge--dot":"",s==="number"?"ubits-badge--number":"",`ubits-badge--${l}`,c?"ubits-badge--absolute":"",c&&p?`ubits-badge--absolute-${p}`:"",o].filter(Boolean).join(" "),e=s==="number"&&a!==void 0&&a!==null?String(a):"";return`<span class="${d}">${e}</span>`}const at={xs:20,sm:28,md:36,lg:40},vt="md",yt={green:"success",red:"error",blue:"info",orange:"warning",gray:"primary"},rt={xs:6,sm:8,md:10,lg:10},lt={xs:"var(--font-body-xs-size, 11px)",sm:"var(--font-body-sm-size, 13px)",md:"var(--font-body-md-size, 16px)",lg:"var(--font-body-lg-size, 18px)"};function xt(t){return t.imageUrl?"photo":t.initials?"initials":"icon"}function $t(t){const s=t.trim().split(/\s+/);return s.length===0?"":s.length===1?s[0].substring(0,2).toUpperCase():(s[0][0]+s[s.length-1][0]).toUpperCase()}function _t(t={}){const{imageUrl:s,initials:n,icon:l="user",size:c="md",badgeColor:p,badgeContent:o,alt:a="Avatar",className:d="",onClick:e}=t,i=xt(t),r=at[c]||at.md,v=rt[c]||rt.md,$=lt[c]||lt.md,u=["ubits-avatar",`ubits-avatar--${c}`,`ubits-avatar--${i}`,d].filter(Boolean).join(" "),b=`
+    width: ${r}px;
+    height: ${r}px;
+    min-width: ${r}px;
+    min-height: ${r}px;
+  `.trim();let m="";if(i==="photo"&&s)m=`<div class="ubits-avatar-image-container"><img src="${s}" alt="${a}" class="ubits-avatar-image" /></div>`;else if(i==="initials"){const _=n?$t(n):"";m=`<span class="ubits-avatar-initials" style="font-size: ${$};">${_}</span>`}else{const _=r-v*2;m=`<i class="far fa-${l}" style="font-size: ${_}px;"></i>`}const h=p?Z({type:o!=null&&o!==""?"number":"dot",size:vt,variant:yt[p]||"success",absolute:!0,position:"bottom-right",className:"ubits-avatar-badge-wrapper",content:o}):"";return`
+    <div class="${u}" style="${b}" ${e?'role="button" tabindex="0"':""} data-variant="${i}">
+      ${m}
+      ${h}
+    </div>
+  `.trim()}function et(t){const{items:s,size:n="md",maxHeight:l="400px",className:c="",attributes:p={}}=t,o=["ubits-list",c].filter(Boolean).join(" "),a=Object.entries(p).map(([e,i])=>`${e}="${i}"`).join(" ");let d=`<div class="${o}" role="list" style="max-height: ${l};" ${a}>`;return s.forEach((e,i)=>{const r=e.value||`list-item-${i}`,v=e.state||(e.selected?"active":"default"),$=["ubits-list-item",`ubits-list-item--${n}`,v!=="default"?`ubits-list-item--${v}`:""].filter(Boolean).join(" "),u=[];e.selected&&u.push('aria-selected="true"'),v==="disabled"?u.push('aria-disabled="true"'):u.push('tabindex="0"'),u.push(`data-value="${r}"`),u.push(`data-index="${i}"`),e.attributes&&Object.entries(e.attributes).forEach(([b,m])=>{u.push(`${b}="${m}"`)}),d+=`
+      <div class="${$}" role="listitem" ${u.join(" ")}>
+        ${e.label}
+      </div>
+    `}),d+="</div>",d}function ct(t){const{containerId:s,items:n,size:l="md",onSelectionChange:c,multiple:p=!1}=t,o=document.getElementById(s);if(!o)throw new Error(`Container with id "${s}" not found`);const a=et(t);o.innerHTML=a;const d=o.querySelector(".ubits-list");if(!d)throw new Error("Failed to create list element");const e=d.querySelectorAll(".ubits-list-item");let i=null;return e.forEach((r,v)=>{const $=n[v];$&&($.state!=="disabled"&&r.addEventListener("click",()=>{if($.onClick&&$.onClick($,v),p){if(r.classList.contains("ubits-list-item--active")?(r.classList.remove("ubits-list-item--active"),r.removeAttribute("aria-selected")):(r.classList.add("ubits-list-item--active"),r.setAttribute("aria-selected","true")),c){const b=Array.from(e).map((m,h)=>m.classList.contains("ubits-list-item--active")?{item:n[h],index:h}:null).filter(Boolean);if(b.length>0){const m=b[b.length-1];c(m.item,m.index)}else c(null,null)}}else{if(i!==null&&i!==v){const u=e[i];u.classList.remove("ubits-list-item--active"),u.removeAttribute("aria-selected")}i!==v?(r.classList.add("ubits-list-item--active"),r.setAttribute("aria-selected","true"),i=v,c&&c($,v)):(r.classList.remove("ubits-list-item--active"),r.removeAttribute("aria-selected"),i=null,c&&c(null,null))}}),$.state!=="disabled"&&r.addEventListener("keydown",u=>{var h;const b=v;let m=null;if(u.key==="ArrowDown")u.preventDefault(),m=b<n.length-1?b+1:0;else if(u.key==="ArrowUp")u.preventDefault(),m=b>0?b-1:n.length-1;else if(u.key==="Enter"||u.key===" "){u.preventDefault(),r.click();return}else u.key==="Home"?(u.preventDefault(),m=0):u.key==="End"&&(u.preventDefault(),m=n.length-1);if(m!==null){const _=e[m];_&&((h=n[m])==null?void 0:h.state)!=="disabled"&&(_.focus(),_.scrollIntoView({block:"nearest",behavior:"smooth"}))}}))}),d}const dt={sm:"320px",md:"480px",lg:"640px",xl:"800px",full:"1280px"};function wt(t){const{title:s,bodyContent:n="",size:l="md",fullScreen:c=!1,footerButtons:p,className:o=""}=t,a=dt[l]||dt.md,i=["ubits-modal",`ubits-modal--size-${l}`,c?"ubits-modal--full-screen":"",o].filter(Boolean).join(" "),r=`
+    <div class="ubits-modal__header">
+      <div class="ubits-modal__header-text">
+        <div class="ubits-modal__header-title">
+          <p class="ubits-heading-h2">${s}</p>
+        </div>
+      </div>
+      <button class="ubits-modal__close" aria-label="Cerrar modal" type="button">
+        <i class="far fa-times"></i>
+      </button>
+    </div>
+  `,$=`
+    <div class="ubits-modal__body">
+      <div class="ubits-modal__body-content">
+        ${typeof n=="function"?n():n||'<div class="ubits-modal__placeholder">Contenido del modal</div>'}
+      </div>
+      <div class="ubits-modal__scrollbar">
+        <div class="ubits-modal__scrollbar-bar"></div>
+      </div>
+    </div>
+  `,u=p?`
+    <div class="ubits-modal__footer">
+      <div class="ubits-modal__footer-actions">
+        ${p.tertiary?`
+        <div class="ubits-modal__footer-left">
+          <button class="ubits-button ubits-button--tertiary ubits-button--md ubits-modal__footer-button" type="button">
+            <span>${p.tertiary.label}</span>
+          </button>
+        </div>
+        `:""}
+        <div class="ubits-modal__footer-right">
+          ${p.secondary?`
+          <button class="ubits-button ubits-button--secondary ubits-button--md ubits-modal__footer-button" type="button">
+            <span>${p.secondary.label}</span>
+          </button>
+          `:""}
+          ${p.primary?`
+          <button class="ubits-button ubits-button--primary ubits-button--md ubits-modal__footer-button" type="button">
+            <span>${p.primary.label}</span>
+          </button>
+          `:""}
+        </div>
+      </div>
+    </div>
+  `:"";return`
+    <div class="ubits-modal-overlay">
+      <div class="${i}" style="max-width: ${a};">
+        ${r}
+        ${$}
+        ${u}
+      </div>
+    </div>
+  `.trim()}function st(t){var u,b,m;const{containerId:s,onClose:n,closeOnOverlayClick:l=!0,open:c=!1}=t;let p;s?p=document.getElementById(s)||document.body:p=document.body;const o=document.createElement("div");o.innerHTML=wt(t);const a=o.firstElementChild;if(!a)throw new Error("No se pudo crear el modal");a.querySelector(".ubits-modal");const d=a.querySelector(".ubits-modal__close"),e=a,i=()=>{a.classList.add("ubits-modal-overlay--open"),document.body.style.overflow="hidden"},r=()=>{a.classList.remove("ubits-modal-overlay--open"),document.body.style.overflow="",n&&n()},v=h=>{const _=a.querySelector(".ubits-modal__body-content");if(_){const g=typeof h=="function"?h():h;_.innerHTML=g}};d&&d.addEventListener("click",h=>{h.preventDefault(),h.stopPropagation(),r()}),l&&e&&e.addEventListener("click",h=>{h.target===e&&r()});const $=h=>{h.key==="Escape"&&a.classList.contains("ubits-modal-overlay--open")&&r()};if(document.addEventListener("keydown",$),t.footerButtons){const h=a.querySelector(".ubits-modal__footer-left .ubits-modal__footer-button"),_=a.querySelector(".ubits-modal__footer-right .ubits-button--secondary"),g=a.querySelector(".ubits-modal__footer-right .ubits-button--primary");h&&((u=t.footerButtons.tertiary)!=null&&u.onClick)&&h.addEventListener("click",f=>{f.preventDefault(),t.footerButtons.tertiary.onClick(f)}),_&&((b=t.footerButtons.secondary)!=null&&b.onClick)&&_.addEventListener("click",f=>{f.preventDefault(),t.footerButtons.secondary.onClick(f)}),g&&((m=t.footerButtons.primary)!=null&&m.onClick)&&g.addEventListener("click",f=>{f.preventDefault(),t.footerButtons.primary.onClick(f)})}return p.appendChild(a),c&&i(),{element:a,open:i,close:r,updateContent:v}}function St(t){var B;const{containerId:s,label:n="",placeholder:l="",helperText:c="",size:p="md",state:o="default",type:a="text",showLabel:d=!0,showHelper:e=!1,showCounter:i=!1,maxLength:r=50,mandatory:v=!1,mandatoryType:$="obligatorio",leftIcon:u="",rightIcon:b="",value:m="",className:h="",attributes:_={},showRichTextToolbar:g=!1}=t;let f="";if(d&&n){const S=v?` <span class="ubits-input-mandatory">(${$})</span>`:"";f+=`<label class="ubits-input-label">${n}${S}</label>`}const C=u&&u.trim()!=="",T=b&&b.trim()!=="";C&&u.startsWith("fa-")?`${u}`:C&&`${u}`,T&&b.startsWith("fa-")?`${b}`:T&&`${b}`,f+='<div style="position: relative; display: inline-block; width: 100%;">';let I=b,x=T,k=u,y=C;const L=["ubits-input",`ubits-input--${p}`];o!=="default"&&L.push(`ubits-input--${o}`),h&&L.push(h);const E=o==="disabled"?" disabled":"",M=i?` maxlength="${r}"`:"",w=C?"padding-left: 40px;":"padding-left: 12px;",D=T?"padding-right: 40px;":"padding-right: 12px;";if(a==="select"){const S=t.selectOptions||[],P=m&&((B=S.find(R=>R.value===m))==null?void 0:B.text)||l;f+=`<input type="text" class="${L.join(" ")}" style="width: 100%; ${w} ${D}" value="${P}" readonly>`,T||(I="fa-chevron-down",x=!0,D==="padding-right: 12px;"&&(f=f.replace(`style="width: 100%; ${w} ${D}"`,`style="width: 100%; ${w} padding-right: 40px;"`)))}else if(a==="textarea")if(g){f+='<div class="ubits-input-rich-text-wrapper">',f+=`
+        <div class="ubits-input-rich-text-toolbar" data-container-id="${s}">
+          <button type="button" class="ubits-rich-text-btn" data-command="bold" title="Negrita">
+            <i class="fas fa-bold"></i>
+          </button>
+          <button type="button" class="ubits-rich-text-btn" data-command="italic" title="Cursiva">
+            <i class="fas fa-italic"></i>
+          </button>
+          <button type="button" class="ubits-rich-text-btn" data-command="underline" title="Subrayado">
+            <i class="fas fa-underline"></i>
+          </button>
+          <div class="ubits-rich-text-separator"></div>
+          <button type="button" class="ubits-rich-text-btn" data-command="justifyLeft" title="Alinear izquierda">
+            <i class="fas fa-align-left"></i>
+          </button>
+          <button type="button" class="ubits-rich-text-btn" data-command="justifyCenter" title="Alinear centro">
+            <i class="fas fa-align-center"></i>
+          </button>
+          <button type="button" class="ubits-rich-text-btn" data-command="justifyRight" title="Alinear derecha">
+            <i class="fas fa-align-right"></i>
+          </button>
+          <div class="ubits-rich-text-separator"></div>
+          <button type="button" class="ubits-rich-text-btn" data-command="insertUnorderedList" title="Lista con viñetas">
+            <i class="fas fa-list-ul"></i>
+          </button>
+          <button type="button" class="ubits-rich-text-btn" data-command="insertOrderedList" title="Lista numerada">
+            <i class="fas fa-list-ol"></i>
+          </button>
+          <div class="ubits-rich-text-separator"></div>
+          <button type="button" class="ubits-rich-text-btn" data-command="insertImage" title="Insertar imagen">
+            <i class="fas fa-image"></i>
+          </button>
+          <button type="button" class="ubits-rich-text-btn" data-command="insertTable" title="Insertar tabla">
+            <i class="fas fa-table"></i>
+          </button>
+          <button type="button" class="ubits-rich-text-btn" data-command="createLink" title="Insertar enlace">
+            <i class="fas fa-link"></i>
+          </button>
+          <button type="button" class="ubits-rich-text-btn" data-command="code" title="Código">
+            <i class="fas fa-code"></i>
+          </button>
+          <div class="ubits-rich-text-separator"></div>
+          <button type="button" class="ubits-rich-text-btn" data-command="removeFormat" title="Limpiar formato">
+            <i class="fas fa-remove-format"></i>
+          </button>
+        </div>
+      `;let S=`width: 100%; min-height: 80px; resize: vertical; ${w} ${D}; border: none; border-radius: 0;`;o==="disabled"&&(S+="; background: var(--ubits-bg-3) !important; color: var(--ubits-fg-1-low) !important;");const P=`${s}-textarea`;f+=`<textarea id="${P}" class="${L.join(" ")}" style="${S}" placeholder="${l}"${E}${M}>${m}</textarea>`,f+="</div>"}else{let S=`width: 100%; min-height: 80px; resize: vertical; ${w} ${D}`;o==="disabled"&&(S+="; background: var(--ubits-bg-3) !important; color: var(--ubits-fg-1-low) !important; border-color: var(--ubits-border-2) !important;");const P=`${s}-textarea`;f+=`<textarea id="${P}" class="${L.join(" ")}" style="${S}" placeholder="${l}"${E}${M}>${m}</textarea>`}else if(a==="search"){let S=w,P=D;C||(k="fa-search",y=!0,S=p==="xs"?"padding-left: 32px;":p==="sm"?"padding-left: 36px;":p==="md"?"padding-left: 40px;":"padding-left: 44px;"),T||(I="fa-times",x=!0,P=p==="xs"?"padding-right: 32px;":p==="sm"?"padding-right: 36px;":p==="md"?"padding-right: 40px;":"padding-right: 44px;");let R=`width: 100%; ${S} ${P}`;o==="disabled"&&(R+="; background: var(--ubits-bg-3) !important; color: var(--ubits-fg-1-low) !important; border-color: var(--ubits-border-2) !important;"),f+=`<input type="text" class="${L.join(" ")}" style="${R}" placeholder="${l}" value="${m}" autocomplete="off"${E}${M}>`}else if(a==="autocomplete"){let S=w,P=D;C||(k="fa-search",y=!0,S=p==="xs"?"padding-left: 32px;":p==="sm"?"padding-left: 36px;":p==="md"?"padding-left: 40px;":"padding-left: 44px;"),T||(I="fa-times",x=!0,P=p==="xs"?"padding-right: 32px;":p==="sm"?"padding-right: 36px;":p==="md"?"padding-right: 40px;":"padding-right: 44px;");let R=`width: 100%; ${S} ${P}`;o==="disabled"&&(R+="; background: var(--ubits-bg-3) !important; color: var(--ubits-fg-1-low) !important; border-color: var(--ubits-border-2) !important;"),f+=`<input type="text" class="${L.join(" ")}" style="${R}" placeholder="${l}" value="${m}" autocomplete="off"${E}${M}>`}else if(a==="calendar"){let S=w,P=D;T||(I="fa-calendar",x=!0,P=p==="xs"?"padding-right: 32px;":p==="sm"?"padding-right: 36px;":p==="md"?"padding-right: 40px;":"padding-right: 44px;");let R=`width: 100%; ${S} ${P}`;o==="disabled"&&(R+="; background: var(--ubits-bg-3) !important; color: var(--ubits-fg-1-low) !important; border-color: var(--ubits-border-2) !important;"),f+=`<input type="text" class="${L.join(" ")}" style="${R}" placeholder="${l}" value="${m}" readonly${E}>`}else if(a==="password"){let S=w,P=D;T||(I="fa-eye",x=!0,P=p==="xs"?"padding-right: 32px;":p==="sm"?"padding-right: 36px;":p==="md"?"padding-right: 40px;":"padding-right: 44px;");let R=`width: 100%; ${S} ${P}`;o==="disabled"&&(R+="; background: var(--ubits-bg-3) !important; color: var(--ubits-fg-1-low) !important; border-color: var(--ubits-border-2) !important;"),f+=`<input type="password" class="${L.join(" ")}" style="${R}" placeholder="${l}" value="${m}"${E}${M}>`}else f+=`<input type="${a}" class="${L.join(" ")}" style="width: 100%; ${w} ${D}" placeholder="${l}" value="${m}"${E}${M}>`;if(y){const S=k.startsWith("fa-")?`far ${k}`:`far fa-${k}`;f+=`<i class="${S} ubits-input-icon-left" style="position: absolute; left: var(--ubits-spacing-md, 12px); top: 50%; transform: translateY(-50%); color: var(--ubits-fg-1-medium); pointer-events: none; z-index: 1;"></i>`}if(x){const S=I.startsWith("fa-")?`far ${I}`:`far fa-${I}`;f+=`<i class="${S} ubits-input-icon-right" style="position: absolute; right: var(--ubits-spacing-md, 12px); top: 50%; transform: translateY(-50%); color: var(--ubits-fg-1-medium); pointer-events: none; z-index: 1;"></i>`}f+="</div>",(e||i)&&(f+='<div class="ubits-input-helper">',e&&c&&(f+=`<span>${c}</span>`),i&&(f+=`<span class="ubits-input-counter">0/${r}</span>`),f+="</div>");const H=Object.entries(_).map(([S,P])=>`${S}="${P}"`).join(" ");return H?`<div ${H}>${f}</div>`:f}function Lt(t){const{containerId:s,onChange:n,onFocus:l,onBlur:c,showCounter:p=!1,maxLength:o=50,type:a="text",selectOptions:d=[],autocompleteOptions:e=[],value:i=""}=t;if(!s)return console.error("UBITS Input: containerId es requerido"),null;const r=document.getElementById(s);if(!r)return console.error(`UBITS Input: No se encontró el contenedor con ID "${s}"`),null;const v=St(t);r.innerHTML=v;const $=r.querySelector('div[style*="position: relative"]'),u=r.querySelector(".ubits-input"),b=r.querySelector(".ubits-input-counter");if(!u||!$)return console.error("UBITS Input: No se pudo crear el elemento input"),null;if(getComputedStyle(r).position==="static"&&(r.style.position="relative"),a==="select"&&Tt(r,u,d,i,t.placeholder||"",n,t.size||"md"),a==="search"&&kt(r,u,n),a==="autocomplete"&&It(r,u,e,n,t.size||"md"),a==="calendar"&&Et(r,u,n),a==="password"&&Ct(r,u),a==="textarea"&&t.showRichTextToolbar?Rt(r,u,t.onChange):a==="textarea"&&!t.showRichTextToolbar&&Ht(r,u),p&&b&&Mt(u,b,o),n&&typeof n=="function"){const m=a==="select"?"change":"input";u.addEventListener(m,h=>{n(h.target.value,h)})}return l&&typeof l=="function"&&u.addEventListener("focus",m=>{l(m.target.value,m)}),c&&typeof c=="function"&&u.addEventListener("blur",m=>{c(m.target.value,m)}),{element:$,inputElement:u,getValue:()=>u.value,setValue:m=>{u.value=m,p&&b&&Q(b,m.length,o)},focus:()=>u.focus(),blur:()=>u.blur(),disable:()=>{u.disabled=!0,u.classList.add("ubits-input--disabled")},enable:()=>{u.disabled=!1,u.classList.remove("ubits-input--disabled")},setState:m=>{if(["ubits-input--hover","ubits-input--focus","ubits-input--active","ubits-input--invalid","ubits-input--disabled"].forEach(_=>u.classList.remove(_)),m!=="default"&&u.classList.add(`ubits-input--${m}`),m==="disabled"?u.disabled=!0:u.disabled=!1,a==="textarea"&&t.showRichTextToolbar){const _=u.closest(".ubits-input-rich-text-wrapper"),g=_==null?void 0:_.querySelector(".ubits-input-rich-text-toolbar");if(g){const f=window.getComputedStyle(g).borderBottom;window.getComputedStyle(g).borderTop,f&&f!=="none"&&f!=="0px"&&(console.warn(`[Rich Text] ⚠️ Línea divisoria detectada en setState("${m}"), removiendo...`),g.style.borderBottom="none",g.style.borderTop="none")}}}}}function Ct(t,s){const n=t.querySelector(".ubits-input-icon-right");if(n){let l=!1;n.style.pointerEvents="auto",n.style.cursor="pointer";const p=!n.className.includes("fa-eye");n.addEventListener("click",o=>{o.preventDefault(),o.stopPropagation(),l=!l,l?(s.type="text",p||(n.className="far fa-eye-slash ubits-input-icon-right")):(s.type="password",p||(n.className="far fa-eye ubits-input-icon-right"))})}}function kt(t,s,n){const l=t.querySelector(".ubits-input-icon-right");if(l){l.style.display=s.value.length>0?"block":"none",l.style.pointerEvents="auto",l.style.cursor="pointer";const c=()=>{l.style.display=s.value.length>0?"block":"none"};s.addEventListener("input",c),l.addEventListener("click",p=>{p.preventDefault(),s.value="",s.focus(),c(),n&&n("")})}}function It(t,s,n,l,c="md"){const p=c==="xs"?"xs":c==="sm"?"sm":c==="md"?"md":"lg",o=t.querySelector(".ubits-input-icon-right");if(o){o.style.display=s.value.length>0?"block":"none",o.style.pointerEvents="auto",o.style.cursor="pointer";const e=()=>{o.style.display=s.value.length>0?"block":"none"};s.addEventListener("input",e),o.addEventListener("click",i=>{i.preventDefault(),s.value="",s.focus(),e();const r=t.querySelector(".ubits-autocomplete-list-container");r&&(r.style.display="none"),l&&l("")})}const a=document.createElement("div");a.className="ubits-autocomplete-list-container",a.style.cssText=`
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    margin-top: 4px;
+    display: none;
+  `,t.appendChild(a);const d=(e=!1)=>{const i=s.value.toLowerCase();let r;if(e||i.length<1?r=n.slice(0,8):r=n.filter(u=>u.text.toLowerCase().includes(i)).slice(0,8),r.length===0){a.style.display="none";return}const v=r.map(u=>({label:u.text,state:"default",value:u.value,selected:!1})),$=`ubits-autocomplete-list-${t.id}`;a.id=$,a.innerHTML="";try{ct({containerId:$,items:v,size:p,maxHeight:"200px",onSelectionChange:(u,b)=>{u&&u.value&&(s.value=u.label,a.style.display="none",o&&(o.style.display="block"),l&&l(u.value))}}),i.length>0&&a.querySelectorAll(".ubits-list-item").forEach(b=>{const m=b.textContent||"";if(m.toLowerCase().includes(i)){const h=new RegExp(`(${i})`,"gi"),_=m.replace(h,"<strong>$1</strong>");b.innerHTML=_}})}catch(u){console.warn("Using renderList fallback for autocomplete:",u);const b=et({items:v,size:p,maxHeight:"200px"});a.innerHTML=b,i.length>0&&a.querySelectorAll(".ubits-list-item").forEach(_=>{const g=_.textContent||"";if(g.toLowerCase().includes(i)){const f=new RegExp(`(${i})`,"gi"),C=g.replace(f,"<strong>$1</strong>");_.innerHTML=C}}),a.querySelectorAll(".ubits-list-item").forEach((h,_)=>{const g=v[_];g&&g.state!=="disabled"&&h.addEventListener("click",()=>{s.value=g.label,a.style.display="none",o&&(o.style.display="block"),l&&l(g.value||"")})})}a.style.display="block"};s.addEventListener("focus",()=>{d(!0)}),s.addEventListener("input",()=>{d(!1)}),s.addEventListener("blur",()=>{setTimeout(()=>a.style.display="none",150)})}function Tt(t,s,n,l,c,p,o="md"){s.style.cursor="pointer";const a=o==="xs"?"xs":o==="sm"?"sm":o==="md"?"md":"lg",d=document.createElement("div");d.className="ubits-select-list-container",d.style.cssText=`
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    margin-top: 4px;
+    display: none;
+  `,t.appendChild(d);const e=50;let i=0,r=[],v=!1;const $=(u=0)=>{v||(v=!0,setTimeout(()=>{const b=u*e,m=Math.min(b+e,n.length),_=n.slice(b,m).map(f=>({label:f.text,state:l===f.value?"active":"default",value:f.value,selected:l===f.value}));u===0?r=_:r=[...r,..._];const g=`ubits-select-list-${t.id}`;d.id=g,d.innerHTML="";try{ct({containerId:g,items:r,size:a,maxHeight:"200px",onSelectionChange:(f,C)=>{f&&f.value&&(s.value=f.label,d.style.display="none",p&&p(f.value))}})}catch(f){console.warn("Using renderList fallback for select:",f);const C=et({items:r,size:a,maxHeight:"200px"});d.innerHTML=C,d.querySelectorAll(".ubits-list-item").forEach((I,x)=>{const k=r[x];k&&k.state!=="disabled"&&I.addEventListener("click",()=>{s.value=k.label,d.style.display="none",p&&p(k.value||"")})})}if(m<n.length){const f=d.querySelector(".ubits-list");if(f){const C=new IntersectionObserver(I=>{I[0].isIntersecting&&!v&&m<n.length&&(i++,$(i))},{root:f,rootMargin:"50px"}),T=d.querySelector(".ubits-list-item:last-child");T&&C.observe(T)}}v=!1},150))};s.addEventListener("click",()=>{d.style.display==="block"?d.style.display="none":(i=0,r=[],$(0),d.style.display="block")}),document.addEventListener("click",u=>{t.contains(u.target)||(d.style.display="none")})}function Et(t,s,n){let l=null,c=null;const p=e=>{const i=String(e.getDate()).padStart(2,"0"),r=String(e.getMonth()+1).padStart(2,"0"),v=e.getFullYear();return`${i}/${r}/${v}`},o=e=>{if(!e)return null;const[i,r,v]=e.split("/");return!i||!r||!v?null:new Date(parseInt(v),parseInt(r)-1,parseInt(i))},a=async()=>{if(s.type==="date"&&(s.type="text",s.setAttribute("readonly","readonly")),c&&c.style.display!=="none"){c.style.display="none";return}if(c||(c=document.createElement("div"),c.className="ubits-calendar-picker-container",c.style.cssText="position: absolute; top: 100%; left: 0; right: 0; z-index: 1000; margin-top: 4px; display: none;",t.style.position="relative",t.appendChild(c)),l){c.style.display="block";return}try{const e=await Promise.resolve().then(()=>Zt),{createCalendar:i}=e,r=s.value,v=o(r)||new Date;l=i({mode:"single",selectedDate:o(r),initialDate:v,onDateSelect:$=>{const u=p($);s.value=u,c&&(c.style.display="none"),n&&n(u)}}),c.appendChild(l.element),c.style.display="block"}catch(e){console.error("❌ [Calendar Picker] Error cargando Calendar UBITS:",e),c&&(c.innerHTML='<div style="padding: var(--ubits-spacing-lg, 16px); background: var(--ubits-bg-1); border: 1px solid var(--ubits-border-1); border-radius: var(--ubits-border-radius-lg, 8px); color: var(--ubits-fg-1-high);">Error al cargar el calendario</div>',c.style.display="block")}};s.addEventListener("click",e=>{e.preventDefault(),e.stopPropagation(),a()}),s.addEventListener("focus",e=>{e.preventDefault(),e.stopPropagation(),a()});const d=t.querySelector(".ubits-input-icon-right");d&&d.addEventListener("click",e=>{e.preventDefault(),e.stopPropagation(),a()}),document.addEventListener("click",e=>{c&&!t.contains(e.target)&&(c.style.display="none")}),document.addEventListener("keydown",e=>{e.key==="Escape"&&c&&(c.style.display="none")})}function Mt(t,s,n){const l=()=>{Q(s,t.value.length,n),t.value.length>n&&(t.value=t.value.substring(0,n),Q(s,n,n))};t.addEventListener("input",l),Q(s,t.value.length,n)}function Q(t,s,n){t.textContent=`${s}/${n}`,s>=n?t.classList.add("ubits-input-counter--limit"):t.classList.remove("ubits-input-counter--limit")}function Bt(t,s){const n=`ubits-rich-text-image-modal-${Date.now()}`,l=`${n}-input`,c={title:"Insertar imagen",size:"md",bodyContent:`
+      <div style="padding: var(--ubits-spacing-md, 8px) 0;">
+        <label class="ubits-input-label" style="margin-bottom: var(--ubits-spacing-sm, 8px);">
+          URL de la imagen:
+        </label>
+        <div style="display: flex; gap: var(--ubits-spacing-sm, 8px); align-items: flex-start;">
+          <input 
+            type="text" 
+            id="${l}"
+            class="ubits-input ubits-input--md"
+            placeholder="https://ejemplo.com/imagen.jpg"
+            style="flex: 1;"
+          />
+          <button 
+            type="button"
+            id="${n}-insert-btn"
+            class="ubits-button ubits-button--primary ubits-button--md"
+          >
+            <span>Insertar imagen</span>
+          </button>
+        </div>
+      </div>
+    `,footerButtons:{secondary:{label:"Cancelar",onClick:()=>{}}},onClose:()=>{var i;const e=(i=document.getElementById(n))==null?void 0:i.closest(".ubits-modal-overlay");e&&setTimeout(()=>e.remove(),300)},closeOnOverlayClick:!0,open:!0},p=st(c),o=p.element;o.id=n;const a=document.getElementById(`${n}-insert-btn`),d=document.getElementById(l);if(a&&d){const e=()=>{const r=d.value.trim();if(r){const v=document.createElement("img");v.src=r,v.style.maxWidth="100%",v.style.height="auto",v.style.display="block",v.style.margin="var(--ubits-spacing-sm, 8px) 0";const $=window.getSelection();$&&$.rangeCount>0?$.getRangeAt(0).insertNode(v):t.appendChild(v),s(),p.close()}};a.addEventListener("click",e),d.addEventListener("keydown",r=>{r.key==="Enter"&&(r.preventDefault(),e())});const i=o.querySelector(".ubits-button--secondary");i&&i.addEventListener("click",()=>{p.close()})}}function Dt(t,s){const n=`ubits-rich-text-table-modal-${Date.now()}`,l=`${n}-rows`,c=`${n}-cols`,p={title:"Insertar tabla",size:"sm",bodyContent:`
+      <div style="padding: var(--ubits-spacing-md, 8px) 0;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--ubits-spacing-lg, 16px);">
+          <div>
+            <label class="ubits-input-label" style="margin-bottom: var(--ubits-spacing-sm, 8px);">
+              Filas:
+            </label>
+            <input 
+              type="number" 
+              id="${l}"
+              class="ubits-input ubits-input--md"
+              value="2"
+              min="1"
+              max="20"
+              style="width: 100%;"
+            />
+          </div>
+          <div>
+            <label class="ubits-input-label" style="margin-bottom: var(--ubits-spacing-sm, 8px);">
+              Columnas:
+            </label>
+            <input 
+              type="number" 
+              id="${c}"
+              class="ubits-input ubits-input--md"
+              value="2"
+              min="1"
+              max="20"
+              style="width: 100%;"
+            />
+          </div>
+        </div>
+      </div>
+    `,footerButtons:{secondary:{label:"Cancelar",onClick:()=>{}},primary:{label:"Insertar",onClick:()=>{}}},onClose:()=>{var $;const v=($=document.getElementById(n))==null?void 0:$.closest(".ubits-modal-overlay");v&&setTimeout(()=>v.remove(),300)},closeOnOverlayClick:!0,open:!0},o=st(p),a=o.element;a.id=n;const d=a.querySelector(".ubits-button--primary"),e=document.getElementById(l),i=document.getElementById(c);d&&e&&i&&d.addEventListener("click",()=>{const v=parseInt(e.value)||2,$=parseInt(i.value)||2;if(v>0&&$>0){const u=document.createElement("table");u.style.borderCollapse="collapse",u.style.width="100%",u.style.margin="var(--ubits-spacing-sm, 8px) 0",u.style.border="1px solid var(--ubits-border-1)";for(let m=0;m<v;m++){const h=document.createElement("tr");for(let _=0;_<$;_++){const g=document.createElement("td");g.style.border="1px solid var(--ubits-border-1)",g.style.padding="var(--ubits-spacing-sm, 8px)",g.style.minWidth="50px",g.textContent=" ",h.appendChild(g)}u.appendChild(h)}const b=window.getSelection();b&&b.rangeCount>0?b.getRangeAt(0).insertNode(u):t.appendChild(u),s(),o.close()}});const r=a.querySelector(".ubits-button--secondary");r&&r.addEventListener("click",()=>{o.close()})}function Pt(t,s){const n=`ubits-rich-text-link-modal-${Date.now()}`,l=`${n}-input`,c={title:"Insertar enlace",size:"md",bodyContent:`
+      <div style="padding: var(--ubits-spacing-md, 8px) 0;">
+        <label class="ubits-input-label" style="margin-bottom: var(--ubits-spacing-sm, 8px);">
+          URL del enlace:
+        </label>
+        <input 
+          type="text" 
+          id="${l}"
+          class="ubits-input ubits-input--md"
+          placeholder="https://ejemplo.com"
+          style="width: 100%; box-sizing: border-box;"
+        />
+      </div>
+    `,footerButtons:{secondary:{label:"Cancelar",onClick:()=>{}},primary:{label:"Insertar",onClick:()=>{}}},onClose:()=>{var r;const i=(r=document.getElementById(n))==null?void 0:r.closest(".ubits-modal-overlay");i&&setTimeout(()=>i.remove(),300)},closeOnOverlayClick:!0,open:!0},p=st(c),o=p.element;o.id=n;const a=o.querySelector(".ubits-button--primary"),d=document.getElementById(l);a&&d&&a.addEventListener("click",()=>{const i=d.value.trim();i&&(document.execCommand("createLink",!1,i),s(),p.close())});const e=o.querySelector(".ubits-button--secondary");e&&e.addEventListener("click",()=>{p.close()}),d&&d.addEventListener("keydown",i=>{i.key==="Enter"&&(i.preventDefault(),a&&a.click())})}function Rt(t,s,n){var $,u;const l=t.querySelector(".ubits-input-rich-text-toolbar");if(!l)return;const c=s.closest(".ubits-input-rich-text-wrapper");if(!c)return;const p=s.placeholder||"",o=document.createElement("div");o.className=s.className;const a=window.getComputedStyle(s);o.style.cssText=s.style.cssText,o.style.position="relative",o.style.padding=a.padding||"12px 12px",o.style.margin="0",o.style.outline="none",o.style.overflow="auto",o.style.minHeight=a.minHeight||"80px",o.style.resize="vertical",o.contentEditable="true",o.setAttribute("data-placeholder",p);let d=t.closest(".ubits-input-wrapper");if(d||(d=($=t.parentElement)==null?void 0:$.closest(".ubits-input-wrapper")),!d){const b=(u=document.getElementById(t.id))==null?void 0:u.parentElement;d=b==null?void 0:b.closest(".ubits-input-wrapper")}console.log("[Rich Text Placeholder] ===== DEBUG ALINEAMIENTO ====="),console.log("[Rich Text Placeholder] inputWrapper:",d),console.log("[Rich Text Placeholder] container:",t),console.log("[Rich Text Placeholder] container.parentElement:",t.parentElement),console.log("[Rich Text Placeholder] richTextWrapper:",c),console.log("[Rich Text Placeholder] richTextWrapper.parentElement:",c==null?void 0:c.parentElement);let e=null;if(d&&(e=d.querySelector(".ubits-input-icon-left")),!e&&t.parentElement&&(e=t.parentElement.querySelector(".ubits-input-icon-left")),!e&&(c!=null&&c.parentElement)&&(e=c.parentElement.querySelector(".ubits-input-icon-left")),!e){const b=document.querySelectorAll(".ubits-input-icon-left");for(const m of Array.from(b)){const h=m,_=t.getBoundingClientRect(),g=h.getBoundingClientRect();if(Math.abs(g.top-_.top)<100){e=h;break}}}const i=e!==null;if(console.log("[Rich Text Placeholder] leftIconElement:",e),console.log("[Rich Text Placeholder] hasLeftIcon:",i),i&&e){const b=e.getBoundingClientRect(),m=window.getComputedStyle(e),h=m.left,_=m.top,g=m.transform;console.log("[Rich Text Placeholder] Icono encontrado:",e),console.log("[Rich Text Placeholder] Icono rect:",b),console.log("[Rich Text Placeholder] Icono left (computed):",h),console.log("[Rich Text Placeholder] Icono top (computed):",_),console.log("[Rich Text Placeholder] Icono transform:",g);const f=a.paddingLeft||"12px",C=a.paddingTop||"12px",T=a.paddingRight||"12px",I=a.paddingBottom||"12px";console.log("[Rich Text Placeholder] Textarea padding:",{left:f,top:C,right:T,bottom:I});const x=o.getBoundingClientRect();console.log("[Rich Text Placeholder] EditableDiv rect:",x);const k=b.left-x.left,y=b.top-x.top,L=b.bottom-x.top;console.log("[Rich Text Placeholder] Icono posición relativa:",{left:k,top:y,bottom:L});const E=a.lineHeight||"1.5",M=a.fontSize||"14px";console.log("[Rich Text Placeholder] Texto:",{fontSize:M,lineHeight:E}),o.setAttribute("data-has-left-icon","true"),o.style.setProperty("--placeholder-left",f),o.style.setProperty("--placeholder-top",C),console.log("[Rich Text Placeholder] Variables CSS establecidas:",{"--placeholder-left":f,"--placeholder-top":C}),requestAnimationFrame(()=>{o.querySelector("::before")||window.getComputedStyle(o,"::before");const w=window.getComputedStyle(o,"::before");console.log("[Rich Text Placeholder] Después de render:",{placeholderLeft:w.left,placeholderTop:w.top,placeholderWidth:w.width,placeholderHeight:w.height})})}else{const b=a.paddingTop||"12px",m=a.paddingLeft||"12px";console.log("[Rich Text Placeholder] Sin icono, usando valores por defecto:",{paddingTop:b,paddingLeft:m}),o.style.setProperty("--placeholder-top",b),o.style.setProperty("--placeholder-left",m)}console.log("[Rich Text Placeholder] ===== FIN DEBUG ====="),s.value&&s.value.trim()?o.innerHTML=s.value:o.classList.add("ubits-rich-text-placeholder"),s.style.display="none",s.setAttribute("data-rich-text-editor","true"),c.insertBefore(o,s),i&&e&&requestAnimationFrame(()=>{requestAnimationFrame(()=>{let b=e;if(d&&(b=d.querySelector(".ubits-input-icon-left")||e),!b&&t.parentElement&&(b=t.parentElement.querySelector(".ubits-input-icon-left")||e),b){const m=b.getBoundingClientRect(),h=o.getBoundingClientRect();if(console.log("[Rich Text Placeholder] Después de insertar en DOM:"),console.log("[Rich Text Placeholder] Icono rect:",m),console.log("[Rich Text Placeholder] EditableDiv rect:",h),h.width>0&&h.height>0){const _=m.top-h.top,g=m.bottom-h.top,f=m.left-h.left;console.log("[Rich Text Placeholder] Posiciones relativas:",{iconTop:_,iconBottom:g,iconLeft:f,iconCenterY:_+m.height/2});const C=_+m.height/2,T=parseFloat(a.fontSize||"16px"),I=a.lineHeight;let x;I==="normal"?x=T*1.2:I.includes("px")?x=parseFloat(I):x=T*parseFloat(I);const k=parseFloat(a.paddingTop||"12px"),y=k+T*.75,L=C-y,E=k+L;console.log("[Rich Text Placeholder] Cálculos de alineamiento:",{iconCenterY:C,fontSize:T,lineHeight:x,paddingTop:k,textBaselineY:y,offset:L,adjustedTop:E});const M=Math.max(0,E),D=(o.style.padding||a.padding||"12px 12px").split(" "),H=D[1]||D[0]||"12px",B=D[2]||D[0]||"12px",S=D[3]||D[1]||D[0]||"40px";o.style.padding=`${M}px ${H} ${B} ${S}`,o.style.setProperty("--placeholder-top",`${M}px`),o.style.setProperty("--placeholder-left",S),console.log("[Rich Text Placeholder] Variables CSS finales:",{"--placeholder-top":`${M}px`,"--placeholder-left":S,"editableDiv padding actualizado":`${M}px ${H} ${B} ${S}`})}else console.warn("[Rich Text Placeholder] EditableDiv aún no tiene dimensiones válidas")}})});const r=b=>{const m=o.innerText||"";s.value=m,n&&n(m,b),m.trim()?o.classList.remove("ubits-rich-text-placeholder"):o.classList.add("ubits-rich-text-placeholder")};o.addEventListener("input",r),o.addEventListener("blur",r),o.addEventListener("focus",()=>{o.classList.contains("ubits-rich-text-placeholder")&&(o.textContent="",o.classList.remove("ubits-rich-text-placeholder"));const b=c.querySelector(".ubits-input-rich-text-toolbar");if(b){const m=window.getComputedStyle(b).borderBottom;window.getComputedStyle(b).borderTop,m&&m!=="none"&&m!=="0px"&&(console.warn("[Rich Text] ⚠️ Línea divisoria detectada en focus, removiendo..."),b.style.borderBottom="none",b.style.borderTop="none")}}),c.addEventListener("mouseenter",()=>{const b=c.querySelector(".ubits-input-rich-text-toolbar");if(b){const m=window.getComputedStyle(b).borderBottom;m&&m!=="none"&&m!=="0px"&&(console.warn("[Rich Text] ⚠️ Línea divisoria detectada en hover, removiendo..."),b.style.borderBottom="none",b.style.borderTop="none")}}),l.querySelectorAll(".ubits-rich-text-btn").forEach(b=>{b.addEventListener("click",m=>{m.preventDefault(),o.focus();const h=b.getAttribute("data-command");if(h){if(h==="insertImage")Bt(o,r);else if(h==="insertTable")Dt(o,r);else if(h==="createLink")Pt(o,r);else if(h==="code"){const _=window.getSelection();if(_&&_.rangeCount>0){const g=_.getRangeAt(0),f=document.createElement("code");f.style.background="var(--ubits-bg-2)",f.style.padding="var(--ubits-spacing-xs, 2px) var(--ubits-spacing-sm, 4px)",f.style.borderRadius="var(--ubits-border-radius-sm, 4px)",f.style.fontFamily="var(--font-mono, monospace)";try{g.surroundContents(f)}catch{f.textContent=g.toString(),g.deleteContents(),g.insertNode(f)}}}else document.execCommand(h,!1,void 0);r()}})})}function Ht(t,s){var p,o;let n=t.closest(".ubits-input-wrapper");if(n||(n=(p=t.parentElement)==null?void 0:p.closest(".ubits-input-wrapper")),!n){const a=(o=document.getElementById(t.id))==null?void 0:o.parentElement;n=a==null?void 0:a.closest(".ubits-input-wrapper")}let l=null;if(n&&(l=n.querySelector(".ubits-input-icon-left")),!l&&t.parentElement&&(l=t.parentElement.querySelector(".ubits-input-icon-left")),!l){const a=document.querySelectorAll(".ubits-input-icon-left");for(const d of Array.from(a)){const e=d,i=t.getBoundingClientRect(),r=e.getBoundingClientRect();if(Math.abs(r.top-i.top)<100){l=e;break}}}!(l!==null)||!l||requestAnimationFrame(()=>{requestAnimationFrame(()=>{const a=(n==null?void 0:n.querySelector(".ubits-input-icon-left"))||l;if(a&&s){const d=a.getBoundingClientRect(),e=s.getBoundingClientRect();if(e.width>0&&e.height>0){const i=d.top-e.top;d.bottom-e.top,d.left-e.left;const r=i+d.height/2,v=window.getComputedStyle(s),$=parseFloat(v.fontSize||"16px"),u=parseFloat(v.paddingTop||"12px"),b=u+$*.75,m=r-b,h=u+m,_=Math.max(0,h),f=(v.padding||"12px 12px").split(" "),C=f[1]||f[0]||"12px",T=f[2]||f[0]||"12px",I=f[3]||f[1]||f[0]||"40px";s.style.padding=`${_}px ${C} ${T} ${I}`}}})})}function At(t={}){const{size:s="md",variant:n="primary",animated:l=!0,label:c,fullScreen:p=!1,className:o="",style:a=""}=t,d=["ubits-spinner",`ubits-spinner--${s}`,`ubits-spinner--${n}`,l?"ubits-spinner--animated":"",p?"ubits-spinner--fullscreen":"",o].filter(Boolean).join(" "),e=a?` style="${a}"`:"";return`
+    <div class="${d}"${e}>
+      <div class="ubits-spinner__circle">
+        <div class="ubits-spinner__segment"></div>
+        <div class="ubits-spinner__segment"></div>
+        <div class="ubits-spinner__segment"></div>
+        <div class="ubits-spinner__segment"></div>
+      </div>
+      ${c?`<span class="ubits-spinner__label">${c}</span>`:""}
+    </div>
+  `.trim()}function W(t,s="regular"){try{const n=s==="solid"?"fas":"far",l=t.startsWith("fa-")?t:`fa-${t}`;return`<i class="${n} ${l}"></i>`}catch{const l=s==="solid"?"fas":"far",c=t.startsWith("fa-")?t:`fa-${t}`;return`<i class="${l} ${c}"></i>`}}function ut(t){const{variant:s="primary",size:n="md",text:l="",icon:c,iconStyle:p="regular",iconOnly:o=!1,disabled:a=!1,loading:d=!1,loadingText:e,badge:i=!1,active:r=!1,fullWidth:v=!1,block:$=!1,iconPosition:u="left",className:b="",attributes:m={},dropdown:h=!1,showTooltip:_=!1,tooltipText:g=""}=t,f=["ubits-button",`ubits-button--${s}`,`ubits-button--${n}`,r&&"ubits-button--active",o&&"ubits-button--icon-only",d&&"ubits-button--loading",v&&"ubits-button--full-width",$&&"ubits-button--block",u==="right"&&"ubits-button--icon-right",h&&"ubits-button--dropdown",b].filter(Boolean).join(" "),C=[a&&"disabled",d&&'data-loading="true"',d&&'aria-busy="true"',...Object.entries(m).map(([B,S])=>`${B}="${S}"`)].filter(Boolean).join(" ");let T="";c&&(T=W(c,p));let I=T,x=u;h&&!c&&l?(I=W("chevron-down",p),x="right"):h&&c&&u==="left"&&l?I=`${T}${W("chevron-down",p)}`:h&&!l&&(I=c?`${T}${W("chevron-down",p)}`:W("chevron-down",p));const y={xs:"xs",sm:"sm",md:"sm",lg:"md",xl:"lg"}[n]||"sm",E={primary:"primary",secondary:"secondary",tertiary:"secondary",active:"primary"}[s]||"primary",M=d?At({size:y,variant:E,animated:!0,className:"ubits-button__spinner"}):"";let w="";d&&e?w=`${M}<span class="button-text">${e}</span>`:d&&!l?w=M:d&&l?u==="right"?w=`<span class="button-text">${l}</span>${M}`:w=`${M}<span class="button-text">${l}</span>`:o&&c?w=T:I&&l?h&&c&&u==="left"?w=`${W(c,p)}<span>${l}</span>${W("chevron-down",p)}`:x==="right"?w=`<span>${l}</span>${I}`:w=`${I}<span>${l}</span>`:l?w=h?`<span>${l}</span>${W("chevron-down",p)}`:`<span>${l}</span>`:I&&(w=I);const D=i?'<span class="ubits-button__badge"></span>':"",H=o&&_&&g?`title="${g}"`:"";return`
+    <button class="${f}" ${C} ${H}>
+      ${w}
+      ${D}
+    </button>
+  `.trim()}function bt(t){const{orientation:s="vertical",state:n="default",className:l=""}=t;return`
+    <div class="${["ubits-scrollbar",`ubits-scrollbar--${s}`,n?`ubits-scrollbar--${n}`:"",l].filter(Boolean).join(" ")}">
+      <div class="ubits-scrollbar__bar"></div>
+    </div>
+  `.trim()}function it(t){const{containerId:s,targetId:n,orientation:l="vertical",state:c="default",className:p=""}=t;let o;s?o=document.getElementById(s)||document.body:o=document.body;const a=document.createElement("div");a.innerHTML=bt({orientation:l,state:c,className:p});const d=a.firstElementChild;if(!d)throw new Error("No se pudo crear el scrollbar");const e=d.querySelector(".ubits-scrollbar__bar");if(!e)throw new Error("No se pudo encontrar la barra del scrollbar");let i=null;if(n)i=document.getElementById(n);else if(s){const g=o.querySelector("[data-scrollable]");g&&(i=g)}const r=()=>{if(!i||!e)return;const g=l==="vertical",f=g?"scrollTop":"scrollLeft",C=g?"clientHeight":"clientWidth",T=g?"scrollHeight":"scrollWidth",I=i[f],x=i[C],k=i[T];if(k<=x){e.style.opacity="0";return}const y=g?d.clientHeight:d.clientWidth,L=Math.max(x/k*y,20),E=y-L,M=I/(k-x)*E;g?(e.style.height=`${L}px`,e.style.transform=`translateY(${M}px)`):(e.style.width=`${L}px`,e.style.transform=`translateX(${M}px)`),e.style.opacity="1"},v=g=>{if(!i||!e||g.target===e)return;g.preventDefault(),g.stopPropagation();const f=l==="vertical",C=d.getBoundingClientRect(),T=f?g.clientY-C.top:g.clientX-C.left,I=f?d.clientHeight:d.clientWidth,x=T/I,k=f?"clientHeight":"clientWidth",y=f?"scrollHeight":"scrollWidth",L=f?"scrollTop":"scrollLeft",E=i[k],w=i[y]-E;i[L]=x*w};let $=!1,u=0,b=0;const m=g=>{if(!i||!e||g.target!==e)return;g.preventDefault(),g.stopPropagation(),$=!0;const f=l==="vertical";u=f?g.clientY:g.clientX,b=f?i.scrollTop:i.scrollLeft,document.addEventListener("mousemove",h),document.addEventListener("mouseup",_)},h=g=>{if(!$||!i||!e)return;const f=l==="vertical",T=(f?g.clientY:g.clientX)-u,I=f?d.clientHeight:d.clientWidth,x=f?i.clientHeight:i.clientWidth,y=(f?i.scrollHeight:i.scrollWidth)-x,L=y/I,E=b+T*L;f?i.scrollTop=Math.max(0,Math.min(y,E)):i.scrollLeft=Math.max(0,Math.min(y,E))},_=()=>{$=!1,document.removeEventListener("mousemove",h),document.removeEventListener("mouseup",_)};if(i){i.addEventListener("scroll",r),i.addEventListener("resize",r);const g=new ResizeObserver(()=>{r()});g.observe(i),d.__resizeObserver=g}return d.addEventListener("click",v),e.addEventListener("mousedown",m),d.__handleMouseUp=_,d.__handleMouseMove=h,o.appendChild(d),setTimeout(()=>{r()},100),{element:d,update:r,destroy:()=>{if(i){i.removeEventListener("scroll",r),i.removeEventListener("resize",r);const g=d.__resizeObserver;g&&g.disconnect()}d.removeEventListener("click",v),e.removeEventListener("mousedown",m),d.__handleMouseUp&&(document.removeEventListener("mousemove",d.__handleMouseMove),document.removeEventListener("mouseup",d.__handleMouseUp)),d.remove()}}}const qt=Object.freeze(Object.defineProperty({__proto__:null,createScrollbar:it,renderScrollbar:bt},Symbol.toStringTag,{value:"Module"})),pt={completed:{bg:"var(--ubits-feedback-success-bg, #e8f8e4)",text:"var(--ubits-feedback-success-text, #223b16)",border:"var(--ubits-feedback-success-border, #41c433)"},published:{bg:"var(--ubits-feedback-success-bg, #e8f8e4)",text:"var(--ubits-feedback-success-text, #223b16)",border:"var(--ubits-feedback-success-border, #41c433)"},fulfilled:{bg:"var(--ubits-feedback-success-bg, #e8f8e4)",text:"var(--ubits-feedback-success-text, #223b16)",border:"var(--ubits-feedback-success-border, #41c433)"},created:{bg:"var(--ubits-feedback-success-bg, #e8f8e4)",text:"var(--ubits-feedback-success-text, #223b16)",border:"var(--ubits-feedback-success-border, #41c433)"},active:{bg:"var(--ubits-feedback-success-bg, #e8f8e4)",text:"var(--ubits-feedback-success-text, #223b16)",border:"var(--ubits-feedback-success-border, #41c433)"},"not-fulfilled":{bg:"var(--ubits-feedback-error-bg, #fff0ee)",text:"var(--ubits-feedback-error-text, #65181e)",border:"var(--ubits-feedback-error-border, #fd8a82)"},denied:{bg:"var(--ubits-feedback-error-bg, #fff0ee)",text:"var(--ubits-feedback-error-text, #65181e)",border:"var(--ubits-feedback-error-border, #fd8a82)"},draft:{bg:"rgba(12, 91, 239, 0.15)",text:"var(--ubits-feedback-info-text, #212f70)",border:"var(--ubits-accent-brand-static-inverted, #0c5bef)"},"in-progress":{bg:"rgba(12, 91, 239, 0.15)",text:"var(--ubits-feedback-info-text, #212f70)",border:"var(--ubits-accent-brand-static-inverted, #0c5bef)"},syncing:{bg:"rgba(12, 91, 239, 0.15)",text:"var(--ubits-feedback-info-text, #212f70)",border:"var(--ubits-accent-brand-static-inverted, #0c5bef)"},pending:{bg:"var(--ubits-feedback-warning-bg, #fff1e0)",text:"var(--ubits-feedback-warning-text, #4c2e15)",border:"var(--ubits-feedback-warning-border, #ec9907)"},"pending-approval":{bg:"var(--ubits-feedback-warning-bg, #fff1e0)",text:"var(--ubits-feedback-warning-text, #4c2e15)",border:"var(--ubits-feedback-warning-border, #ec9907)"},"not-started":{bg:"var(--ubits-bg-2, #f3f3f4)",text:"var(--ubits-fg-1-medium, #2b3543)",border:"var(--ubits-border-1, #a8abb2)"},finished:{bg:"var(--ubits-bg-2, #f3f3f4)",text:"var(--ubits-fg-1-medium, #2b3543)",border:"var(--ubits-border-1, #a8abb2)"},archived:{bg:"var(--ubits-bg-2, #f3f3f4)",text:"var(--ubits-fg-1-medium, #2b3543)",border:"var(--ubits-border-1, #a8abb2)"},disabled:{bg:"var(--ubits-bg-2, #f3f3f4)",text:"var(--ubits-fg-1-medium, #2b3543)",border:"var(--ubits-border-1, #a8abb2)"},paused:{bg:"var(--ubits-bg-2, #f3f3f4)",text:"var(--ubits-fg-1-medium, #2b3543)",border:"var(--ubits-border-1, #a8abb2)"},hidden:{bg:"var(--ubits-bg-2, #f3f3f4)",text:"var(--ubits-fg-1-medium, #2b3543)",border:"var(--ubits-border-1, #a8abb2)"}};function zt(t={}){const{label:s="",size:n="md",status:l="pending",leftIcon:c,rightIcon:p="chevron-down",clickable:o=!1,className:a=""}=t,d=pt[l]||pt.pending,e=c?`<span class="ubits-status-tag-left-icon"><i class="far fa-${c}"></i></span>`:"",i=p!=null?`<span class="ubits-status-tag-right-icon"><i class="far fa-${p}"></i></span>`:"",r=["ubits-status-tag",`ubits-status-tag--${n}`,o?"ubits-status-tag--clickable":"",a].filter(Boolean).join(" "),u=`
+    ${l==="draft"||l==="in-progress"||l==="syncing"?`background: linear-gradient(90deg, rgba(12, 91, 239, 0.15) 0%, rgba(12, 91, 239, 0.15) 100%), linear-gradient(90deg, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 1) 100%); background-color: ${d.bg};`:`background-color: ${d.bg};`}
+    color: ${d.text};
+    border-color: ${d.border};
+  `.trim();return`
+    <span class="${r}" style="${u}" data-status="${l}">
+      ${e}
+      <span class="ubits-status-tag-label">${s}</span>
+      ${i}
+    </span>
+  `.trim()}function Nt(t){const{title:s,complementaryText:n,width:l=40,bodyContent:c="",footerButtons:p,className:o=""}=t,d=["ubits-drawer",`ubits-drawer--width-${l}`,o].filter(Boolean).join(" "),e=`
+    <div class="ubits-drawer__header">
+      <div class="ubits-drawer__header-text">
+        <div class="ubits-drawer__header-title">
+          <p class="ubits-heading-h2">${s}</p>
+        </div>
+        ${n?`
+        <div class="ubits-drawer__header-complementary">
+          <p class="ubits-body-sm-regular">${n}</p>
+        </div>
+        `:""}
+      </div>
+      ${ut({variant:"secondary",size:"md",icon:"fa-times",iconOnly:!0,className:"ubits-drawer__close"})}
+    </div>
+  `,r=`
+    <div class="ubits-drawer__body">
+      <div class="ubits-drawer__body-content">
+        ${typeof c=="function"?c():c||'<div class="ubits-drawer__placeholder">Contenido del drawer</div>'}
+      </div>
+      <div class="ubits-drawer__scrollbar">
+        <div class="ubits-drawer__scrollbar-bar"></div>
+      </div>
+    </div>
+  `,v=p?`
+    <div class="ubits-drawer__footer">
+      <div class="ubits-drawer__footer-actions">
+        ${p.tertiary?`
+        <div class="ubits-drawer__footer-left">
+          <button class="ubits-button ubits-button--tertiary ubits-button--md ubits-drawer__footer-button" type="button">
+            <span>${p.tertiary.label}</span>
+          </button>
+        </div>
+        `:""}
+        <div class="ubits-drawer__footer-right">
+          ${p.secondary?`
+          <button class="ubits-button ubits-button--secondary ubits-button--md ubits-drawer__footer-button" type="button">
+            <span>${p.secondary.label}</span>
+          </button>
+          `:""}
+          ${p.primary?`
+          <button class="ubits-button ubits-button--primary ubits-button--md ubits-drawer__footer-button" type="button">
+            <span>${p.primary.label}</span>
+          </button>
+          `:""}
+        </div>
+      </div>
+    </div>
+  `:"";return`
+    <div class="ubits-drawer-overlay">
+      <div class="${d}">
+        ${e}
+        ${r}
+        ${v}
+      </div>
+    </div>
+  `.trim()}function Ot(t){var u,b,m;const{containerId:s,onClose:n,closeOnOverlayClick:l=!0,open:c=!1}=t;let p;s?p=document.getElementById(s)||document.body:p=document.body;const o=document.createElement("div");o.innerHTML=Nt(t);const a=o.firstElementChild;if(!a)throw new Error("No se pudo crear el drawer");a.querySelector(".ubits-drawer");const d=a.querySelector(".ubits-drawer__close"),e=a,i=()=>{a.classList.add("ubits-drawer-overlay--open"),document.body.style.overflow="hidden"},r=()=>{a.classList.remove("ubits-drawer-overlay--open"),document.body.style.overflow="",n&&n()},v=h=>{const _=a.querySelector(".ubits-drawer__body-content");if(_){const g=typeof h=="function"?h():h;_.innerHTML=g}};d&&d.addEventListener("click",h=>{h.preventDefault(),h.stopPropagation(),r()}),l&&e&&e.addEventListener("click",h=>{h.target===e&&r()});const $=h=>{h.key==="Escape"&&a.classList.contains("ubits-drawer-overlay--open")&&r()};if(document.addEventListener("keydown",$),t.footerButtons){const h=a.querySelector(".ubits-drawer__footer-left .ubits-drawer__footer-button"),_=a.querySelector(".ubits-drawer__footer-right .ubits-button--secondary"),g=a.querySelector(".ubits-drawer__footer-right .ubits-button--primary");h&&((u=t.footerButtons.tertiary)!=null&&u.onClick)&&h.addEventListener("click",f=>{f.preventDefault(),t.footerButtons.tertiary.onClick(f)}),_&&((b=t.footerButtons.secondary)!=null&&b.onClick)&&_.addEventListener("click",f=>{f.preventDefault(),t.footerButtons.secondary.onClick(f)}),g&&((m=t.footerButtons.primary)!=null&&m.onClick)&&g.addEventListener("click",f=>{f.preventDefault(),t.footerButtons.primary.onClick(f)})}return p.appendChild(a),c&&i(),{element:a,open:i,close:r,updateContent:v}}function ft(t){const{label:s,complementaryText:n,value:l="",name:c="",checked:p=!1,indeterminate:o=!1,size:a="md",state:d="default",disabled:e=!1,className:i=""}=t,r=e||d==="disabled",v=["ubits-checkbox",`ubits-checkbox--${a}`,d!=="default"?`ubits-checkbox--${d}`:"",p?"ubits-checkbox--checked":"",o?"ubits-checkbox--indeterminate":"",r?"ubits-checkbox--disabled":"",i].filter(Boolean).join(" "),$=`
+    <input
+      type="checkbox"
+      id="checkbox-${c}-${l||"default"}"
+      ${c?`name="${c}"`:""}
+      ${l?`value="${l}"`:""}
+      ${p?"checked":""}
+      ${o?'data-indeterminate="true"':""}
+      ${r?"disabled":""}
+      class="ubits-checkbox__input"
+    />
+  `,u=`
+    <span class="ubits-checkbox__square" aria-hidden="true">
+      ${o?'<span class="ubits-checkbox__indeterminate"></span>':""}
+      ${p&&!o?'<span class="ubits-checkbox__checkmark"></span>':""}
+      ${!p&&!o&&d==="active"?'<span class="ubits-checkbox__checkmark"></span>':""}
+    </span>
+  `,b=`
+    <span class="ubits-checkbox__label">${s}</span>
+  `,m=n?`<span class="ubits-checkbox__complementary-text">${n}</span>`:"",h=`
+    <div class="ubits-checkbox__text-content">
+      ${b}
+      ${m}
+    </div>
+  `;return`
+    <label class="${v}">
+      ${$}
+      ${u}
+      ${h}
+    </label>
+  `.trim()}function mt(t){const{title:s,description:n,imageUrl:l,icon:c,iconSize:p="lg",actionLabel:o,onAction:a,showPrimaryButton:d=!1,primaryButtonIcon:e,showPrimaryButtonIcon:i=!1,secondaryActionLabel:r,onSecondaryAction:v,showSecondaryButton:$=!1,secondaryButtonIcon:u,showSecondaryButtonIcon:b=!1,className:m="",style:h=""}=t,_=["ubits-empty-state","ubits-empty-state--default",m].filter(Boolean).join(" "),g=h?` style="${h}"`:"";let f="";l?f=`
+      <div class="ubits-empty-state__image">
+        <img src="${l}" alt="${s}" />
+      </div>
+    `:c&&(f=`
+      <div class="ubits-empty-state__icon">
+        <i class="far fa-${c}"></i>
+      </div>
+    `);let C="",T=o||"";i&&e&&(T=`<i class="far fa-${e}"></i> ${T}`);let I=r||"";b&&u&&(I=`<i class="far fa-${u}"></i> ${I}`);const x=d&&o?`<button class="ubits-button ubits-button--primary ubits-button--sm" data-action="primary" type="button">${T}</button>`:"",k=$&&r?`<button class="ubits-button ubits-button--secondary ubits-button--sm" data-action="secondary" type="button">${I}</button>`:"";return(x||k)&&(C=`
+      <div class="ubits-empty-state__actions">
+        ${k}
+        ${x}
+      </div>
+    `),`
+    <div class="${_}"${g}>
+      ${f}
+      <div class="ubits-empty-state__content">
+        <h3 class="ubits-empty-state__title">${s}</h3>
+        ${n?`<p class="ubits-empty-state__description">${n}</p>`:""}
+      </div>
+      ${C}
+    </div>
+  `.trim()}const jt={bajo:{status:"completed",label:"Bajo"},medio:{status:"pending",label:"Medio"},alto:{status:"not-fulfilled",label:"Alto"},"muy-alto":{status:"denied",label:"Muy alto"}};function F(t){return typeof t!="string"?"":t.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;")}function Ft(t){const s=jt[t],n={label:s.label,size:"xs",status:s.status,rightIcon:null,className:"ubits-participants-menu__status-tag"};return zt(n)}function Wt(t){const s={size:"sm",alt:t.name,className:"ubits-participants-menu__avatar"};return t.avatarImage?s.imageUrl=t.avatarImage:s.initials=t.name,_t(s)}function gt(t,s,n=!0,l=!0,c=!0){const p=["ubits-participants-menu__item",s?"ubits-participants-menu__item--selected":""].filter(Boolean).join(" "),o=s?"var(--ubits-button-active-fg, var(--ubits-accent-brand-static, #0c5bef))":"var(--ubits-fg-1-high, #303a47)",a=c&&t.status?Ft(t.status):"",d=n?Wt(t):"";return`
+    <div class="${p}" data-participant-id="${F(t.id)}" style="
+      display: flex;
+      align-items: center;
+      gap: var(--ubits-spacing-sm, 8px);
+      padding: 8px 12px;
+      max-height: 46px;
+      min-height: 46px;
+      box-sizing: border-box;
+      border-radius: var(--ubits-border-radius-md, 6px);
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      ${s?"background-color: var(--ubits-bg-active-button, rgba(12, 91, 239, 0.15));":""}
+    ">
+      ${d}
+      <div class="ubits-participants-menu__item-content" style="
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0px;
+        justify-content: center;
+      ">
+        <div class="ubits-participants-menu__item-name ubits-body-sm-bold" style="
+          color: ${o};
+          font-size: var(--font-body-sm-size, 13px);
+          font-weight: var(--weight-bold, 700);
+          line-height: var(--font-body-sm-line, 19.5px);
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          margin: 0;
+          padding: 0;
+        ">
+          ${F(t.name)}
+        </div>
+        ${l?`
+        <div class="ubits-participants-menu__item-role ubits-body-sm-regular" style="
+          color: var(--ubits-fg-1-medium, #5c646f);
+          font-size: var(--font-body-sm-size, 13px);
+          font-weight: var(--weight-regular, 400);
+          line-height: var(--font-body-sm-line, 19.5px);
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          margin: 0;
+          padding: 0;
+          margin-top: -2px;
+        ">
+          ${F(t.role)}
+        </div>
+        `:""}
+      </div>
+      ${a?`<div style="flex-shrink: 0;">${a}</div>`:""}
+    </div>
+  `.trim()}function nt(t){var x,k;const{title:s="Participantes",searchPlaceholder:n="Buscar participan...",participants:l=[],selectedParticipantId:c,className:p="",showAvatar:o=!0,showRole:a=!0,showStatusTag:d=!0,enableScrollbar:e=!0}=t,i=["ubits-participants-menu",p].filter(Boolean).join(" "),v=e?l:l.slice(0,6),$=v.map(y=>{const L=y.id===c;return gt(y,L,o,a,d)}).join(""),u=t.searchInputId||(t.containerId?`participants-menu-search-${t.containerId}`:`participants-menu-search-${Date.now()}`),b=n,m=t.activeFilters||{roles:[],statuses:[]},h=(((x=m.roles)==null?void 0:x.length)||0)+(((k=m.statuses)==null?void 0:k.length)||0),_={variant:"secondary",size:"md",icon:"filter",iconStyle:"regular",iconOnly:!0,active:h>0,badge:h>0,className:"ubits-participants-menu__filter-button"};let g=ut(_);if(h>0){const y=`<span class="ubits-badge ubits-badge--sm ubits-badge--number ubits-badge--error ubits-button__badge">${h}</span>`;g=g.replace('<span class="ubits-button__badge"></span>',y)}else g=g.replace(/<span class="ubits-button__badge"><\/span>/g,"");const f=v.length===0,C=t.searchTerm&&t.searchTerm.trim()!=="",T=h>0;let I="";if(f){let y;C?y={title:"No se encontraron resultados",description:"Intenta con otros términos de búsqueda",icon:"search"}:T?y={title:"No hay resultados",description:"No se encontraron participantes con los filtros aplicados",icon:"filter"}:y={title:"No hay participantes",description:"No hay participantes para mostrar",icon:"users"},y&&(I=mt({title:F(y.title),description:y.description?F(y.description):void 0,icon:y.icon}))}return`
+    <div class="${i}">
+      <div class="ubits-participants-menu__header">
+        <h2 class="ubits-participants-menu__title ubits-body-md-bold" style="
+          margin: 0;
+          font-size: var(--font-body-md-size, 15px);
+          font-weight: var(--weight-bold, 700);
+          line-height: var(--font-body-md-line, 22.5px);
+          color: var(--ubits-fg-1-high, #303a47);
+          margin-bottom: var(--ubits-spacing-md, 16px);
+        ">
+          ${F(s)}
+        </h2>
+        <div class="ubits-participants-menu__search-container" style="
+          display: flex;
+          gap: var(--ubits-spacing-sm, 8px);
+          margin-bottom: var(--ubits-spacing-md, 16px);
+        ">
+          <div class="ubits-participants-menu__search-input-wrapper" style="
+            flex: 1;
+          ">
+            <div id="${u}" data-search-placeholder="${F(b)}"></div>
+          </div>
+          <div class="ubits-participants-menu__filter-button-wrapper">
+            ${g}
+          </div>
+        </div>
+      </div>
+      <div class="ubits-participants-menu__list-wrapper" style="
+        display: flex;
+        flex: 1;
+        min-height: 0;
+        position: relative;
+      ">
+        <div 
+          class="ubits-participants-menu__list" 
+          id="participants-menu-list-${Date.now()}"
+          data-scrollable="true"
+          ${e?'data-ubits-scrollbar="true"':""}
+          style="
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            ${e?"overflow-y: auto;":"overflow-y: hidden;"}
+            flex: 1;
+            min-height: 0;
+          "
+        >
+          ${f?I:$}
+        </div>
+      </div>
+    </div>
+  `.trim()}function Vt(t){const{containerId:s,onParticipantSelect:n,onSearchChange:l,onFilterClick:c,onFilterChange:p,...o}=t;let a={roles:[],statuses:[]},d="";const e=Array.from(new Set(o.participants.map(x=>x.role))).sort(),i=["bajo","medio","alto","muy-alto"],r=s?`participants-menu-search-${s}`:`participants-menu-search-${Date.now()}`,v=()=>nt({...o,searchInputId:r,activeFilters:a,searchTerm:d}),$=document.createElement("div"),u=v();$.innerHTML=u;const b=$.firstElementChild;if(!b)throw console.error("❌ [ParticipantsMenu] No se pudo crear el elemento del menú"),new Error("No se pudo crear el menú de participantes");const m=()=>{let x=null;if(s){if(x=document.getElementById(s),!x){console.error("❌ [ParticipantsMenu] No se encontró el contenedor con ID:",s);const B=document.querySelectorAll(`[id="${s}"]`);B.length>0?x=B[0]:(console.error("❌ [ParticipantsMenu] No se encontró ningún elemento con ese ID"),x=document.body)}}else x=document.body;if(!x){console.error("❌ [ParticipantsMenu] No se pudo obtener un contenedor válido");return}x.appendChild(b),f(),g();const k=()=>{const B=e.map((P,R)=>{const A=`filter-role-${R}`;return`
+          <div class="ubits-participants-menu__filter-item" data-filter-role="${P}">
+            <div id="${A}"></div>
+          </div>
+        `}).join(""),S=i.map((P,R)=>{const A=`filter-status-${R}`;return`
+          <div class="ubits-participants-menu__filter-item" data-filter-status="${P}">
+            <div id="${A}"></div>
+          </div>
+        `}).join("");return`
+        <div class="ubits-participants-menu__filters-container" style="padding: var(--ubits-spacing-lg, 24px);">
+          <div style="margin-bottom: var(--ubits-spacing-lg, 24px);">
+            <h3 style="
+              font-size: var(--font-body-md-size, 15px);
+              font-weight: var(--weight-bold, 700);
+              color: var(--ubits-fg-1-high, #303a47);
+              margin: 0 0 var(--ubits-spacing-md, 16px) 0;
+            ">Rol</h3>
+            <div style="display: flex; flex-direction: column; gap: var(--ubits-spacing-sm, 8px);">
+              ${B}
+            </div>
+          </div>
+          <div style="margin-bottom: var(--ubits-spacing-lg, 24px);">
+            <h3 style="
+              font-size: var(--font-body-md-size, 15px);
+              font-weight: var(--weight-bold, 700);
+              color: var(--ubits-fg-1-high, #303a47);
+              margin: 0 0 var(--ubits-spacing-md, 16px) 0;
+            ">Estado</h3>
+            <div style="display: flex; flex-direction: column; gap: var(--ubits-spacing-sm, 8px);">
+              ${S}
+            </div>
+          </div>
+        </div>
+      `};let y=null,L=[];const E=()=>{if(y)try{y.updateContent(k)}catch(B){if(console.error("❌ [ParticipantsMenu] Error al actualizar drawer:",B),y){y.element.remove(),y=null,E();return}}else try{y=Ot({title:"Filtros",complementaryText:"Selecciona los filtros que deseas aplicar",width:40,bodyContent:k,footerButtons:{secondary:{label:"Limpiar",onClick:B=>{B.preventDefault(),B.stopPropagation(),a={roles:[],statuses:[]},g(),p&&p(a),y&&(y.updateContent(k),setTimeout(()=>{M()},100))}},primary:{label:"Aplicar",onClick:B=>{B.preventDefault(),B.stopPropagation();const S={roles:[],statuses:[]};y&&(e.forEach((P,R)=>{const A=y.element.querySelector(`[data-filter-role="${P}"]`);if(A){const N=A.querySelector(".ubits-checkbox__input");N&&N.checked&&S.roles.push(P)}}),i.forEach((P,R)=>{const A=y.element.querySelector(`[data-filter-status="${P}"]`);if(A){const N=A.querySelector(".ubits-checkbox__input");N&&N.checked&&S.statuses.push(P)}})),a=S,g(),p&&p(a),y&&y.close()}}},closeOnOverlayClick:!0,onClose:()=>{L.forEach(B=>{try{B.destroy()}catch{}}),L=[]}})}catch(B){console.error("❌ [ParticipantsMenu] Error al crear drawer:",B),c&&c();return}y&&(y.open(),setTimeout(()=>{M()},300))},M=()=>{if(!y)return;L.forEach(S=>{try{S.destroy()}catch{}}),L=[],e.forEach((S,P)=>{const R=`filter-role-${P}`,A=y.element.querySelector(`#${R}`);if(A){A.innerHTML="";const N=a.roles.includes(S),j=ft({label:S,name:"filter-role",value:S,checked:N,size:"md"}),V=document.createElement("div");V.innerHTML=j.trim();const q=V.firstElementChild;if(q){A.appendChild(q);const U=q.querySelector(".ubits-checkbox__input"),O=q.querySelector(".ubits-checkbox__square");U&&O&&U.addEventListener("change",X=>{const K=X.target.checked;q.classList.toggle("ubits-checkbox--checked",K);let z=O.querySelector(".ubits-checkbox__checkmark");K?(z||(z=document.createElement("span"),z.className="ubits-checkbox__checkmark",O.appendChild(z)),z.style.opacity="1",z.style.transform="scale(1)"):z&&(z.style.opacity="0",z.style.transform="scale(0)")}),L.push({element:q,destroy:()=>{q.parentNode&&q.parentNode.removeChild(q)},update:()=>{}})}}});const B={bajo:"Bajo",medio:"Medio",alto:"Alto","muy-alto":"Muy Alto"};i.forEach((S,P)=>{const R=`filter-status-${P}`,A=y.element.querySelector(`#${R}`);if(A){A.innerHTML="";const N=a.statuses.includes(S),j=ft({label:B[S],name:"filter-status",value:S,checked:N,size:"md"}),V=document.createElement("div");V.innerHTML=j.trim();const q=V.firstElementChild;if(q){A.appendChild(q);const U=q.querySelector(".ubits-checkbox__input"),O=q.querySelector(".ubits-checkbox__square");U&&O&&U.addEventListener("change",X=>{const K=X.target.checked;q.classList.toggle("ubits-checkbox--checked",K);let z=O.querySelector(".ubits-checkbox__checkmark");K?(z||(z=document.createElement("span"),z.className="ubits-checkbox__checkmark",O.appendChild(z)),z.style.opacity="1",z.style.transform="scale(1)"):z&&(z.style.opacity="0",z.style.transform="scale(0)")}),L.push({element:q,destroy:()=>{q.parentNode&&q.parentNode.removeChild(q)},update:()=>{}})}}})},w=b.querySelector(".ubits-participants-menu__filter-button");w&&w.addEventListener("click",()=>{c&&c(),E()}),b.querySelectorAll("[data-participant-id]").forEach(B=>{const S=B.getAttribute("data-participant-id");B.addEventListener("click",()=>{if(S&&n){b.querySelectorAll(".ubits-participants-menu__item--selected").forEach(N=>{N.classList.remove("ubits-participants-menu__item--selected");const j=N.querySelector(".ubits-participants-menu__item-name");j&&(j.style.color="var(--ubits-fg-1-high, #303a47)"),N.style.backgroundColor=""}),B.classList.add("ubits-participants-menu__item--selected");const R=B.querySelector(".ubits-participants-menu__item-name");R&&(R.style.color="var(--ubits-button-active-fg, var(--ubits-accent-brand-static, #0c5bef))"),B.style.backgroundColor="var(--ubits-bg-active-button, rgba(12, 91, 239, 0.15))",b.querySelectorAll(".ubits-participants-menu__item--selected").length>1;try{n(S)}catch(N){console.error("❌ [ParticipantsMenu] Error al ejecutar onParticipantSelect:",N)}}})});let H=null;if(o.enableScrollbar!==!1){const B=b.querySelector('[data-scrollable="true"]');if(B&&B.id){const S=b.querySelector(".ubits-participants-menu__list-wrapper");if(S){const P=`participants-menu-scrollbar-${Date.now()}`;H=document.createElement("div"),H.id=P,H.style.cssText=`
+            position: absolute;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            width: 8px;
+            pointer-events: none;
+          `,S.style.position="relative",S.appendChild(H),it({containerId:P,targetId:B.id,orientation:"vertical"})}}}else{const B=b.querySelector('[data-scrollable="true"]');B&&B.removeAttribute("data-ubits-scrollbar")}};let h=null,_=!1;const g=()=>{var L,E;const x=b.querySelector(".ubits-participants-menu__filter-button");if(!x)return;const k=(((L=a.roles)==null?void 0:L.length)||0)+(((E=a.statuses)==null?void 0:E.length)||0),y=x.querySelector(".ubits-button__badge");if(k>0){if(y)if(y.classList.contains("ubits-badge--number"))y.textContent=`${k}`;else{const M=`<span class="ubits-badge ubits-badge--sm ubits-badge--number ubits-badge--error ubits-button__badge">${k}</span>`,w=document.createElement("div");w.innerHTML=M;const D=w.firstElementChild;D&&y.parentNode&&y.parentNode.replaceChild(D,y)}else{const M=document.createElement("span");M.className="ubits-badge ubits-badge--sm ubits-badge--number ubits-badge--error ubits-button__badge",M.textContent=`${k}`,x.appendChild(M)}x.classList.add("ubits-button--active")}else y&&y.remove(),x.classList.remove("ubits-button--active")},f=()=>{setTimeout(()=>{const x=b.querySelector(`#${r}`);if(x){const k=x.getAttribute("data-search-placeholder")||t.searchPlaceholder||"Buscar participan...",y=t.preservedSearchValue||"",L={containerId:r,type:"search",size:"md",placeholder:k,showLabel:!1,className:"ubits-participants-menu__search-input",value:y,onChange:(E,M)=>{if(!_){if(d=E||"",l)try{l(E)}catch(w){console.error("[ParticipantsMenu] Error en onSearchChange:",w)}g()}}};y&&(_=!0),h=Lt(L),h!=null&&h.inputElement?(y&&h.inputElement.value!==y&&h.setValue(y),setTimeout(()=>{_=!1},150)):(_=!1,console.error("[ParticipantsMenu] No se pudo crear input"))}},0)};s?requestAnimationFrame(()=>{document.getElementById(s)?m():requestAnimationFrame(m)}):m();const C=(x,k)=>{var S,P;const y=b.querySelector(".ubits-participants-menu__list");if(!y)return;const E=o.enableScrollbar!==!1?x:x.slice(0,6),M=E.map(R=>{const A=R.id===k;return gt(R,A,o.showAvatar!==!1,o.showRole!==!1,o.showStatusTag!==!1)}).join(""),w=E.length===0,D=d&&d.trim()!=="",H=(((S=a.roles)==null?void 0:S.length)||0)+(((P=a.statuses)==null?void 0:P.length)||0)>0;let B="";if(w){let R;D?R={title:"No se encontraron resultados",description:"Intenta con otros términos de búsqueda",icon:"search"}:H?R={title:"No hay resultados",description:"No se encontraron participantes con los filtros aplicados",icon:"filter"}:R={title:"No hay participantes",description:"No hay participantes para mostrar",icon:"users"},R&&(B=mt({title:F(R.title),description:R.description?F(R.description):void 0,icon:R.icon}))}y.innerHTML=w?B:M,w||b.querySelectorAll("[data-participant-id]").forEach(A=>{var V;const N=A.getAttribute("data-participant-id"),j=A.cloneNode(!0);(V=A.parentNode)==null||V.replaceChild(j,A),j.addEventListener("click",()=>{if(N&&n){b.querySelectorAll(".ubits-participants-menu__item--selected").forEach(O=>{O.classList.remove("ubits-participants-menu__item--selected");const X=O.querySelector(".ubits-participants-menu__item-name");X&&(X.style.color="var(--ubits-fg-1-high, #303a47)"),O.style.backgroundColor=""}),j.classList.add("ubits-participants-menu__item--selected");const U=j.querySelector(".ubits-participants-menu__item-name");U&&(U.style.color="var(--ubits-button-active-fg, var(--ubits-accent-brand-static, #0c5bef))"),j.style.backgroundColor="var(--ubits-bg-active-button, rgba(12, 91, 239, 0.15))";try{n(N)}catch(O){console.error("❌ [ParticipantsMenu] Error al ejecutar onParticipantSelect:",O)}}})}),g()};return{element:b,update:x=>{if(x.participants&&Object.keys(x).every(w=>w==="participants"||w==="selectedParticipantId")&&h){C(x.participants,x.selectedParticipantId);return}if(x.enableScrollbar!==void 0&&x.enableScrollbar!==o.enableScrollbar){const w=b.querySelector(".ubits-participants-menu__list-wrapper");if(w){const D=w.querySelector('[id^="participants-menu-scrollbar-"]');D&&D.remove()}}const y={...o,...x},L=nt({...y,searchInputId:r,activeFilters:a,searchTerm:d}),E=document.createElement("div");E.innerHTML=L;const M=E.firstElementChild;if(M&&b.parentNode)if(b.parentNode.replaceChild(M,b),Object.assign(b,M),f(),g(),y.enableScrollbar!==!1){const w=b.querySelector('[data-scrollable="true"]');if(w&&w.id){const D=b.querySelector(".ubits-participants-menu__list-wrapper");if(D){const H=`participants-menu-scrollbar-${Date.now()}`,B=document.createElement("div");B.id=H,B.style.cssText=`
+              position: absolute;
+              right: 0;
+              top: 0;
+              bottom: 0;
+              width: 8px;
+              pointer-events: none;
+            `,D.style.position="relative",D.appendChild(B),it({containerId:H,targetId:w.id,orientation:"vertical"})}}}else{const w=b.querySelector('[data-scrollable="true"]');w&&w.removeAttribute("data-ubits-scrollbar")}},updateParticipantsList:C,destroy:()=>{b.parentNode&&b.parentNode.removeChild(b)}}}const J=["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"],Ut=["Dom","Lun","Mar","Mié","Jue","Vie","Sáb"];function Yt(t){const s=String(t.getDate()).padStart(2,"0"),n=String(t.getMonth()+1).padStart(2,"0"),l=t.getFullYear();return`${s}/${n}/${l}`}function G(t,s){const n=new Date(t.getFullYear(),t.getMonth(),t.getDate()),l=new Date(s.getFullYear(),s.getMonth(),s.getDate());return n.getTime()-l.getTime()}function tt(t,s){return G(t,s)===0}function Gt(t,s,n){const l=G(t,s),c=G(n,t);return l>=0&&c>=0}function ht(t,s){const n=document.createElement("div");n.style.cssText="position: relative; width: 100%;";const l=`calendar-list-container-${Date.now()}`,c=`calendar-list-${Date.now()}`,p=`calendar-scrollbar-${Date.now()}`;let o=`
+    <div id="${l}" style="position: relative; width: 100%; max-height: 200px; overflow: hidden;">
+      <div id="${c}" class="ubits-list" role="list" style="max-height: 200px; overflow-y: auto; overflow-x: hidden; -ms-overflow-style: none; scrollbar-width: none; padding-right: 0; background: var(--ubits-bg-1); border: 1px solid var(--ubits-border-1); border-radius: 6px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);">
+  `;t.forEach(e=>{const i=e.selected?"active":"default",r=["ubits-list-item","ubits-list-item--sm",i!=="default"?`ubits-list-item--${i}`:""].filter(Boolean).join(" "),v=[];i==="active"&&v.push('aria-selected="true"'),v.push('tabindex="0"'),v.push(`data-value="${e.value}"`),o+=`
+      <div class="${r}" role="listitem" ${v.join(" ")} style="cursor: pointer;">
+        ${e.label}
+      </div>
+    `}),o+=`
+      </div>
+      <div id="${p}" style="position: absolute; top: 0; right: 0; width: 8px; height: 100%; max-height: 200px; overflow: hidden; pointer-events: auto; z-index: 10;"></div>
+    </div>
+    <style>
+      /* Ocultar scrollbar nativo completamente - solo mostrar UBITS scrollbar */
+      #${c}::-webkit-scrollbar {
+        display: none !important;
+        width: 0 !important;
+        height: 0 !important;
+        background: transparent !important;
+      }
+      #${c}::-webkit-scrollbar-track {
+        display: none !important;
+        background: transparent !important;
+      }
+      #${c}::-webkit-scrollbar-thumb {
+        display: none !important;
+        background: transparent !important;
+      }
+      /* Firefox */
+      #${c} {
+        scrollbar-width: none !important;
+        -ms-overflow-style: none !important;
+      }
+    </style>
+  `,n.innerHTML=o;const a=async()=>{console.log("📜 [SCROLLBAR] ========== INICIO initScrollbar =========="),console.log("📜 [SCROLLBAR] listId:",c),console.log("📜 [SCROLLBAR] scrollbarContainerId:",p);const e=document.getElementById(c),i=document.getElementById(p);if(!e||!i){console.log("📜 [SCROLLBAR] ❌ Elementos no encontrados:",{listElement:!!e,scrollbarContainer:!!i});return}if(console.log("📜 [SCROLLBAR] Elementos encontrados:",{listElement:{scrollHeight:e.scrollHeight,clientHeight:e.clientHeight,offsetHeight:e.offsetHeight,maxHeight:e.style.maxHeight,computedMaxHeight:window.getComputedStyle(e).maxHeight},scrollbarContainer:{offsetHeight:i.offsetHeight,offsetWidth:i.offsetWidth,styleHeight:i.style.height,styleMaxHeight:i.style.maxHeight,computedHeight:window.getComputedStyle(i).height,computedMaxHeight:window.getComputedStyle(i).maxHeight}}),e.scrollHeight<=e.clientHeight){console.log("📜 [SCROLLBAR] ⚠️ No necesita scroll:",{scrollHeight:e.scrollHeight,clientHeight:e.clientHeight});return}console.log("📜 [SCROLLBAR] ✅ Necesita scroll, inicializando...");try{const r=window.createScrollbarLocal;if(typeof r=="function"){console.log("📜 [SCROLLBAR] Usando createScrollbarLocal");const u=r(e,i,"vertical");if(u){n._scrollbarInstance=u,console.log("📜 [SCROLLBAR] ✅ Scrollbar creado con createScrollbarLocal");return}}console.log("📜 [SCROLLBAR] Importando ScrollProvider...");const{createScrollbar:v}=await Promise.resolve().then(()=>qt),$=v({orientation:"vertical",targetId:c,containerId:p});$?(n._scrollbarInstance=$,console.log("📜 [SCROLLBAR] ✅ Scrollbar creado con ScrollProvider")):console.log("📜 [SCROLLBAR] ⚠️ Scrollbar no se creó")}catch(r){console.error("📜 [SCROLLBAR] ❌ Error inicializando scrollbar:",r)}console.log("📜 [SCROLLBAR] ========== FIN initScrollbar ==========")},d=()=>{console.log("📜 [SCROLLBAR] setupScrollbar llamado, isConnected:",n.isConnected),n.isConnected&&requestAnimationFrame(()=>{console.log("📜 [SCROLLBAR] requestAnimationFrame ejecutado, llamando initScrollbar"),a()})};if(n.parentElement)console.log("📜 [SCROLLBAR] Contenedor ya en DOM, inicializando inmediatamente"),d();else{console.log("📜 [SCROLLBAR] Contenedor no en DOM, configurando observer");const e=new MutationObserver(()=>{n.isConnected&&(console.log("📜 [SCROLLBAR] Contenedor conectado al DOM, inicializando"),e.disconnect(),d())});e.observe(document.body,{childList:!0,subtree:!0}),setTimeout(()=>{n.isConnected&&(console.log("📜 [SCROLLBAR] Timeout alcanzado, inicializando"),e.disconnect(),d())},1e3)}return setTimeout(()=>{const e=document.getElementById(c);e&&e.querySelectorAll(".ubits-list-item").forEach(i=>{i.addEventListener("click",r=>{r.preventDefault(),r.stopPropagation();const v=parseInt(r.currentTarget.dataset.value||"0"),$=n._scrollbarInstance;$&&$.destroy&&$.destroy(),s(v)})})},100),n}function ot(t){const{mode:s="single",selectedDate:n,endDate:l,minDate:c,maxDate:p,initialDate:o=new Date,className:a="",style:d=""}=t,e=o,i=e.getFullYear(),r=e.getMonth(),v=new Date(i,r,1),u=new Date(i,r+1,0).getDate(),b=v.getDay(),h=new Date().toDateString(),_=["ubits-calendar",s==="range"?"ubits-calendar--range":"ubits-calendar--single",a].filter(Boolean).join(" "),g=d?` style="${d}"`:"",C=`
+    <div class="ubits-calendar__header">
+      <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-calendar__nav-button ubits-calendar__nav-button--prev" aria-label="Mes anterior">
+        <i class="far fa-chevron-left"></i>
+      </button>
+      <div class="ubits-calendar__month-year">
+        <div class="ubits-input-container" style="position: relative; flex: 1; min-width: 120px;">
+          <input type="text" class="ubits-input ubits-input--sm ubits-calendar__month-input" value="${J[r]}" readonly style="cursor: pointer;">
+          <i class="far fa-chevron-down ubits-input-icon-right" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--ubits-fg-1-medium); pointer-events: none; z-index: 1;"></i>
+          <div class="ubits-calendar__month-dropdown" style="display: none; position: absolute; top: 100%; left: 0; right: 0; z-index: 1000; margin-top: 4px;"></div>
+        </div>
+        <div class="ubits-input-container" style="position: relative; flex: 1; min-width: 90px;">
+          <input type="text" class="ubits-input ubits-input--sm ubits-calendar__year-input" value="${i}" readonly style="cursor: pointer;">
+          <i class="far fa-chevron-down ubits-input-icon-right" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--ubits-fg-1-medium); pointer-events: none; z-index: 1;"></i>
+          <div class="ubits-calendar__year-dropdown" style="display: none; position: absolute; top: 100%; left: 0; right: 0; z-index: 1000; margin-top: 4px;"></div>
+        </div>
+      </div>
+      <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-calendar__nav-button ubits-calendar__nav-button--next" aria-label="Mes siguiente">
+        <i class="far fa-chevron-right"></i>
+      </button>
+    </div>
+  `,T=`
+    <div class="ubits-calendar__weekdays">
+      ${Ut.map(x=>`<div class="ubits-calendar__weekday">${x}</div>`).join("")}
+    </div>
+  `;let I='<div class="ubits-calendar__days">';for(let x=0;x<b;x++)I+='<div class="ubits-calendar__day ubits-calendar__day--empty"></div>';for(let x=1;x<=u;x++){const k=new Date(i,r,x),L=k.toDateString()===h;let E=["ubits-calendar__day"];s==="single"&&n&&tt(k,n)&&E.push("ubits-calendar__day--selected"),s==="range"&&n&&(l?tt(k,n)?E.push("ubits-calendar__day--range-start"):tt(k,l)?E.push("ubits-calendar__day--range-end"):Gt(k,n,l)&&E.push("ubits-calendar__day--in-range"):tt(k,n)&&E.push("ubits-calendar__day--range-start")),L&&E.push("ubits-calendar__day--today");let M=!1;c&&G(k,c)<0&&(M=!0,E.push("ubits-calendar__day--disabled")),p&&G(k,p)>0&&(M=!0,E.push("ubits-calendar__day--disabled"));const w=M?" disabled":"",D=Yt(k);I+=`<button type="button" class="${E.join(" ")}" data-date="${D}"${w}>${x}</button>`}return I+="</div>",`
+    <div class="${_}"${g}>
+      ${C}
+      ${T}
+      ${I}
+    </div>
+  `.trim()}function Xt(t){const{mode:s="single",selectedDate:n,endDate:l,minDate:c,maxDate:p,initialDate:o=new Date,onDateSelect:a,onRangeSelect:d}=t,e=document.createElement("div");e.innerHTML=ot(t);const i=e.firstElementChild;if(!i)throw new Error("No se pudo crear el calendario");let r=new Date(o),v=n?new Date(n):null,$=l?new Date(l):null,u=!1;const b=()=>{u||(u=!0,i.innerHTML=ot({...t,mode:s,selectedDate:v,endDate:$,minDate:c,maxDate:p,initialDate:r}),m(),setTimeout(()=>{u=!1},100))},m=()=>{const g=i.querySelector(".ubits-calendar__nav-button--prev"),f=i.querySelector(".ubits-calendar__nav-button--next"),C=i.querySelector(".ubits-calendar__month-input"),T=i.querySelector(".ubits-calendar__year-input"),I=i.querySelector(".ubits-calendar__month-dropdown"),x=i.querySelector(".ubits-calendar__year-dropdown");g==null||g.addEventListener("click",y=>{y.preventDefault(),y.stopPropagation(),r.setMonth(r.getMonth()-1),C&&(C.value=J[r.getMonth()]),T&&(T.value=String(r.getFullYear())),b()}),f==null||f.addEventListener("click",y=>{y.preventDefault(),y.stopPropagation(),r.setMonth(r.getMonth()+1),C&&(C.value=J[r.getMonth()]),T&&(T.value=String(r.getFullYear())),b()}),C==null||C.addEventListener("click",y=>{if(y.preventDefault(),y.stopPropagation(),I){const L=I;if(L.style.display==="block")L.style.display="none";else{x&&(x.style.display="none");const M=J.map((D,H)=>({label:D,value:H,selected:H===r.getMonth()}));L.innerHTML="";const w=ht(M,D=>{r.setMonth(D),L.style.display="none",C&&(C.value=J[D]),b()});L.appendChild(w),L.style.display="block"}}}),T==null||T.addEventListener("click",y=>{if(y.preventDefault(),y.stopPropagation(),x){const L=x;if(L.style.display==="block")L.style.display="none";else{I&&(I.style.display="none");const M=r.getFullYear(),w=Array.from({length:100},(H,B)=>{const S=M-50+B;return{label:String(S),value:S,selected:S===M}});L.innerHTML="";const D=ht(w,H=>{r.setFullYear(H),L.style.display="none",T&&(T.value=String(H)),b()});L.appendChild(D),L.style.display="block"}}}),i.querySelectorAll(".ubits-calendar__day:not(.ubits-calendar__day--empty):not(.ubits-calendar__day--disabled)").forEach(y=>{y.addEventListener("click",L=>{L.preventDefault(),L.stopPropagation();const E=y.dataset.date||"",[M,w,D]=E.split("/"),H=new Date(parseInt(D),parseInt(w)-1,parseInt(M));s==="single"?(v=H,b(),a&&a(H)):s==="range"&&(!v||v&&$?(v=H,$=null,b()):v&&!$&&(G(H,v)<0?($=v,v=H):$=H,b(),d&&v&&$&&d(v,$)))})})};return b(),{element:i,update:g=>{g.selectedDate!==void 0&&(v=g.selectedDate?new Date(g.selectedDate):null),g.endDate!==void 0&&($=g.endDate?new Date(g.endDate):null),g.initialDate&&(r=new Date(g.initialDate)),Object.assign(t,g),b()},destroy:()=>{const g=i.querySelector(".ubits-calendar__month-dropdown"),f=i.querySelector(".ubits-calendar__year-dropdown");if(g){const C=g._scrollbarInstance;C&&C.destroy&&C.destroy()}if(f){const C=f._scrollbarInstance;C&&C.destroy&&C.destroy()}i.parentElement&&i.parentElement.removeChild(i)}}}const Zt=Object.freeze(Object.defineProperty({__proto__:null,createCalendar:Xt,renderCalendar:ot},Symbol.toStringTag,{value:"Module"}));Y.createParticipantsMenu=Vt,Y.renderParticipantsMenu=nt,Object.defineProperty(Y,Symbol.toStringTag,{value:"Module"})});

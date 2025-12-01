@@ -7,8 +7,10 @@
 export interface UBITSConfig {
 	storybook: {
 		url: string;
+		bypassToken?: string;
 		useStorybookComponents: boolean;
 		loadTemplate: 'desktop';
+		getUrl?: (path?: string) => string;
 	};
 	addons: string[];
 	components: string[];
@@ -48,9 +50,26 @@ export interface ModuleConfig {
  */
 export const UBITS_PRESET: UBITSConfig = {
 	storybook: {
+		// URL de Vercel con token de bypass para acceso automatizado
+		// Token: dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT
 		url: 'https://ubits-storybook10-q59fh1csi-elkin-garcias-projects-a0b1beb6.vercel.app',
+		bypassToken: 'dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT',
 		useStorybookComponents: true,
 		loadTemplate: 'desktop',
+		/**
+		 * Construye la URL de Storybook con el token de bypass si está disponible
+		 * @param path - Ruta adicional (ej: '/index.json', '/components/button/manifest.json')
+		 */
+		getUrl: (path: string = '') => {
+			const baseUrl = UBITS_PRESET.storybook.url.replace(/\/$/, '');
+			const cleanPath = path.startsWith('/') ? path : `/${path}`;
+			if (UBITS_PRESET.storybook.bypassToken) {
+				// Agregar token como query parameter para bypass
+				const separator = cleanPath.includes('?') ? '&' : '?';
+				return `${baseUrl}${cleanPath}${separator}x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=${UBITS_PRESET.storybook.bypassToken}`;
+			}
+			return `${baseUrl}${cleanPath}`;
+		},
 	},
 	// Add-ons optimizados para prototipos de alta calidad UBITS
 	// Seleccionados: 1,2,3,4,7,12,14,15,16,18

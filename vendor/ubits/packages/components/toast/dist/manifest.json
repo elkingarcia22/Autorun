@@ -1,0 +1,39 @@
+{
+  "name": "@ubits/toast",
+  "version": "1.0.0",
+  "type": "component",
+  "description": "Componente Toast UBITS con todas las variantes y estados, timer inteligente, pausa en hover, apilado",
+  "components": [
+    {
+      "name": "ubits-toast",
+      "tag": "ubits-toast",
+      "path": "./toast.js"
+    }
+  ],
+  "styles": ["./toast.css"],
+  "dependencies": {
+    "@ubits/tokens": "^1.0.0",
+    "@ubits/icons": "^1.0.0",
+    "@ubits/button": "^1.0.0",
+    "@ubits/typography": "^1.0.0"
+  },
+  "api": {
+    "render": "renderToast",
+    "create": "createToast",
+    "show": "showToast"
+  },
+  "features": {
+    "variants": ["success", "info", "warning", "error"],
+    "states": ["default", "enter", "exit"],
+    "modifiers": ["no-close", "with-action", "pause-on-hover"],
+    "animations": ["enter", "exit"],
+    "functionality": [
+      "Auto-dismiss con duraciones por tipo",
+      "Pausa en hover/focus",
+      "Apilado inteligente (max 3)",
+      "Botón de acción opcional",
+      "Timer inteligente con performance.now()"
+    ]
+  }
+}
+

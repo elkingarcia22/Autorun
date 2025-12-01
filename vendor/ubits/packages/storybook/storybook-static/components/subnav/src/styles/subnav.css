@@ -14,13 +14,16 @@
     justify-content: space-between;
     width: 100%; /* Ocupar el 100% del contenedor padre */
     max-width: 100%; /* No exceder el ancho del contenedor padre */
-    box-shadow: 0 1px var(--ubits-spacing-xs, 4px) rgba(0, 0, 0, 0.1);
+    /* Sin border ni elevación */
+    border: none;
+    box-shadow: none;
     position: relative;
 }
 
 [data-theme="dark"] .ubits-sub-nav {
     background-color: var(--ubits-bg-1);
-    box-shadow: 0 1px var(--ubits-spacing-xs, 4px) rgba(0, 0, 0, 0.3);
+    border: none;
+    box-shadow: none;
 }
 
 /* Nav Tabs Container */

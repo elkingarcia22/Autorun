@@ -983,10 +983,15 @@ export class InitializationWizard {
 			return;
 		}
 
-		const baseUrl = UBITS_PRESET.storybook.url.replace(/\/$/, '');
+		// Usar getUrl si está disponible (con token), sino usar url directamente
+		const getStorybookUrl = UBITS_PRESET.storybook.getUrl || ((path: string) => {
+			const baseUrl = UBITS_PRESET.storybook.url.replace(/\/$/, '');
+			return `${baseUrl}${path.startsWith('/') ? path : `/${path}`}`;
+		});
+		
 		for (const component of UBITS_PRESET.components) {
 			try {
-				const manifestUrl = `${baseUrl}/components/${component}/manifest.json`;
+				const manifestUrl = getStorybookUrl(`/components/${component}/manifest.json`);
 				await ComponentsAPI.loadFromStorybook({ manifestUrl });
 				// No mostrar cada componente individualmente para mantener el flujo fluido
 			} catch (error) {
