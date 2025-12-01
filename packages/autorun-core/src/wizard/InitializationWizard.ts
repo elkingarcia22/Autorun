@@ -31,6 +31,7 @@ export interface UBITSResult extends WizardResult {
 	module: string;
 	product: string;
 	canvasPath: string;
+	disableOtherModulesNavigation?: boolean;
 }
 
 export interface IndependentResult extends WizardResult {
@@ -41,6 +42,7 @@ export interface IndependentResult extends WizardResult {
 export class InitializationWizard {
 	private hub: AutorunHub;
 	private prompt: InteractivePrompt;
+	private templateOpened: boolean = false; // Bandera para evitar abrir múltiples veces
 
 	constructor(hub: AutorunHub) {
 		this.hub = hub;
@@ -52,14 +54,20 @@ export class InitializationWizard {
 	 * Pregunta template y producto en un solo paso, luego ejecuta todo automáticamente
 	 */
 	async start(options?: { autoSelect?: ProjectType }): Promise<WizardResult> {
-		// Intentar obtener respuestas automáticas primero
-		const autoAnswers = this.getAutoAnswers(options?.autoSelect);
+		// Verificar si hay AUTORUN_ANSWERS (modo automático con preguntas visibles)
+		// Si hay AUTORUN_ANSWERS, SIEMPRE mostrar preguntas (igual que terminal)
+		const hasAutoAnswers = !!process.env.AUTORUN_ANSWERS;
+		
+		// Intentar obtener respuestas automáticas primero (solo si NO hay AUTORUN_ANSWERS)
+		// Si hay AUTORUN_ANSWERS, forzar modo interactivo para mostrar preguntas
+		const autoAnswers = hasAutoAnswers ? null : this.getAutoAnswers(options?.autoSelect);
 
 		let answers: { template: 'administrador' | 'colaborador'; module: string; product?: string };
 		let selectedAddons: string[];
+		let disableOtherModulesNavigation: boolean = false;
 
-		if (autoAnswers && autoAnswers.template && autoAnswers.module) {
-			// Usar respuestas automáticas
+		if (autoAnswers && autoAnswers.template && autoAnswers.module && !hasAutoAnswers) {
+			// Usar respuestas automáticas (solo si NO hay AUTORUN_ANSWERS)
 			console.log('🚀 ¡Hola! Soy tu asistente de Autorun.\n');
 			console.log('📋 Usando configuración automática:\n');
 			console.log(`   🎯 Template: ${autoAnswers.template}`);
@@ -82,13 +90,20 @@ export class InitializationWizard {
 			} else {
 				selectedAddons = UBITS_PRESET.addons;
 			}
+
+			// Para desactivar navegación de otros módulos, verificar variable de entorno
+			const disableNavEnv = process.env.AUTORUN_DISABLE_OTHER_MODULES;
+			disableOtherModulesNavigation = disableNavEnv === 'true' || disableNavEnv === '1';
 		} else {
-			// Modo interactivo
+			// Modo interactivo (o automático con AUTORUN_ANSWERS - muestra preguntas)
 			console.log('🚀 ¡Hola! Soy tu asistente de Autorun.\n');
 			console.log('Voy a preguntarte qué template y producto quieres usar:\n');
 
 			// Preguntar template y producto en un solo paso
 			answers = await this.askTemplateAndProduct();
+
+			// Preguntar si quiere desactivar navegación de otros módulos
+			disableOtherModulesNavigation = await this.askDisableOtherModulesNavigation();
 
 			// Preguntar por los add-ons a instalar
 			selectedAddons = await this.askAddons();
@@ -96,11 +111,18 @@ export class InitializationWizard {
 
 		console.log('\n✅ Perfecto, voy a configurar tu proyecto UBITS ahora.\n');
 
+		// NO saltar GitHub si hay AUTORUN_ANSWERS (queremos mostrar la pregunta)
+		// Solo saltar si está en modo completamente automático (sin AUTORUN_ANSWERS)
+		if (this.prompt.isAuto() && !hasAutoAnswers) {
+			process.env.AUTORUN_SKIP_GITHUB = 'true';
+		}
+
 		return await this.setupUBITSFromAnswers({
 			template: answers.template,
 			module: answers.module,
 			product: answers.product,
 			addons: selectedAddons,
+			disableOtherModulesNavigation,
 		});
 	}
 
@@ -290,6 +312,30 @@ export class InitializationWizard {
 	}
 
 	/**
+	 * Pregunta si quiere desactivar la navegación de otros módulos
+	 * Si dice que sí, se quitarán los enlaces a otros módulos del sidebar
+	 */
+	private async askDisableOtherModulesNavigation(): Promise<boolean> {
+		console.log('\n🔒 Navegación de otros módulos:\n');
+		console.log('   Por defecto, el prototipo permite navegar a todos los módulos.');
+		console.log('   Si desactivas esta opción, solo podrás navegar al módulo seleccionado.');
+		console.log('   Esto es útil para evitar que el usuario se pierda navegando.\n');
+
+		const answer = await this.prompt.confirm(
+			'¿Quieres desactivar la navegación a otros módulos en el prototipo?',
+			false, // Por defecto: NO (mantener navegación activa)
+		);
+
+		if (answer) {
+			console.log('✅ Navegación a otros módulos desactivada\n');
+		} else {
+			console.log('✅ Navegación a otros módulos activa (comportamiento por defecto)\n');
+		}
+
+		return answer;
+	}
+
+	/**
 	 * Pregunta por los add-ons a instalar
 	 * Muestra los add-ons por defecto y permite agregar otros
 	 */
@@ -330,6 +376,14 @@ export class InitializationWizard {
 				addonId;
 			console.log(`   ${index + 1}. ${description}`);
 		});
+
+		// En modo automático SIN AUTORUN_ANSWERS, usar add-ons por defecto sin preguntar
+		// Si hay AUTORUN_ANSWERS, mostrar la pregunta para que el usuario responda
+		const hasAutoAnswers = !!process.env.AUTORUN_ANSWERS;
+		if (this.prompt.isAuto() && !hasAutoAnswers) {
+			console.log('\n   ✅ Usando add-ons por defecto (modo automático)\n');
+			return defaultAddons;
+		}
 
 		// Preguntar qué quiere hacer
 		const action = await this.prompt.select(
@@ -452,8 +506,9 @@ export class InitializationWizard {
 		module: string;
 		product?: string;
 		addons: string[];
+		disableOtherModulesNavigation?: boolean;
 	}): Promise<UBITSResult> {
-		const { template, module, product, addons } = answers;
+		const { template, module, product, addons, disableOtherModulesNavigation } = answers;
 
 		// Ejecutar todos los pasos automáticos
 		console.log('🚀 Configurando todo automáticamente...\n');
@@ -473,19 +528,19 @@ export class InitializationWizard {
 		await this.loadComponentsFromStorybook();
 		console.log('   ✅ Componentes cargados\n');
 
-		// 3. Configurar GitHub (preguntar por URL del repositorio)
-		console.log('🐙 Configurando GitHub...');
-		const githubUrl = await this.configureGitHub();
-		if (githubUrl) {
-			console.log(`   ✅ GitHub configurado: ${githubUrl}\n`);
-		} else {
-			console.log('   ⚠️  GitHub no configurado (se puede configurar después)\n');
-		}
-
-		// 4. Instalar add-ons seleccionados
+		// 3. Instalar add-ons seleccionados
 		console.log('📦 Instalando add-ons seleccionados...');
 		const installedAddons = await this.installAddons(addons);
 		console.log(`   ✅ ${installedAddons.length} add-on(s) instalado(s)\n`);
+
+		// 4. Configurar GitHub (preguntar si quiere configurar ahora)
+		console.log('🐙 Configuración de GitHub...');
+		const githubUrl = await this.askAndConfigureGitHub();
+		if (githubUrl) {
+			console.log(`   ✅ GitHub configurado: ${githubUrl}\n`);
+		} else {
+			console.log('   ⚠️  Continuando sin configurar GitHub (se puede configurar después)\n');
+		}
 
 		// 5. Habilitar módulo en sidebar y configurar subnav
 		console.log(`⚙️  Configurando sidebar y subnav para "${module}"...`);
@@ -498,6 +553,7 @@ export class InitializationWizard {
 			template,
 			module,
 			product,
+			disableOtherModulesNavigation,
 		);
 		console.log('   ✅ Ambos templates creados\n');
 
@@ -542,13 +598,20 @@ export class InitializationWizard {
 			module,
 			product: product || '',
 			canvasPath: selectedCanvasPath,
+			disableOtherModulesNavigation,
 		};
 	}
 
 	/**
 	 * Abre el template en el navegador local
+	 * Solo se ejecuta una vez, incluso si se llama múltiples veces
 	 */
 	private async openTemplateInBrowser(filePath: string): Promise<void> {
+		// Si ya se abrió, no hacer nada
+		if (this.templateOpened) {
+			return;
+		}
+
 		try {
 			const { exec } = await import('child_process');
 			const { promisify } = await import('util');
@@ -574,6 +637,9 @@ export class InitializationWizard {
 			}
 
 			await execAsync(command);
+			
+			// Marcar como abierto
+			this.templateOpened = true;
 		} catch (error: any) {
 			console.warn('   ⚠️  No se pudo abrir el navegador automáticamente:', error.message || error);
 			console.warn(`   💡 Abre manualmente: ${filePath}`);
@@ -1057,9 +1123,10 @@ export class InitializationWizard {
 		template: 'administrador' | 'colaborador',
 		module: string,
 		product?: string,
+		disableOtherModulesNavigation?: boolean,
 	): Promise<string> {
 		const canvasCreator = new CanvasCreator();
-		return await canvasCreator.create(template, module, product);
+		return await canvasCreator.create(template, module, product, disableOtherModulesNavigation);
 	}
 
 	/**
@@ -1070,16 +1137,27 @@ export class InitializationWizard {
 		selectedTemplate: 'administrador' | 'colaborador',
 		module: string,
 		product?: string,
+		disableOtherModulesNavigation?: boolean,
 	): Promise<{ selectedCanvasPath: string; otherCanvasPath: string | null }> {
 		const canvasCreator = new CanvasCreator();
 
 		// Crear el template seleccionado
-		const selectedCanvasPath = await canvasCreator.create(selectedTemplate, module, product);
+		const selectedCanvasPath = await canvasCreator.create(
+			selectedTemplate,
+			module,
+			product,
+			disableOtherModulesNavigation,
+		);
 
 		// Crear el otro template
 		const otherTemplate: 'administrador' | 'colaborador' =
 			selectedTemplate === 'administrador' ? 'colaborador' : 'administrador';
-		const otherCanvasPath = await canvasCreator.create(otherTemplate, module, product);
+		const otherCanvasPath = await canvasCreator.create(
+			otherTemplate,
+			module,
+			product,
+			disableOtherModulesNavigation,
+		);
 
 		return {
 			selectedCanvasPath,
@@ -1388,10 +1466,76 @@ export class InitializationWizard {
 	}
 
 	/**
-	 * Configura GitHub preguntando por la URL del repositorio
+	 * Pregunta si quiere configurar GitHub y luego configura si es necesario
 	 */
-	private async configureGitHub(): Promise<string | null> {
+	private async askAndConfigureGitHub(): Promise<string | null> {
+		// Solo omitir si está explícitamente configurado para saltar
+		if (process.env.AUTORUN_SKIP_GITHUB === 'true') {
+			return null;
+		}
+
+		// Verificar si hay URL de GitHub en variables de entorno
+		const githubUrlEnv = process.env.AUTORUN_GITHUB_URL;
+		if (githubUrlEnv) {
+			// Si hay variable de entorno, configurar directamente
+			return await this.configureGitHub(githubUrlEnv);
+		}
+
+		// Preguntar si quiere configurar GitHub ahora (siempre en modo interactivo)
+		const wantsToConfigure = await this.prompt.confirm(
+			'¿Quieres configurar GitHub ahora? (puedes configurarlo después)',
+			false, // Por defecto: NO (continuar sin configurar)
+		);
+
+		if (!wantsToConfigure) {
+			console.log('   ℹ️  Continuando sin configurar GitHub por el momento\n');
+			return null;
+		}
+
+		// Si quiere configurar, preguntar por la URL
+		return await this.configureGitHub();
+	}
+
+	/**
+	 * Configura GitHub preguntando por la URL del repositorio
+	 * Maneja tanto modo automático como interactivo
+	 */
+	private async configureGitHub(githubUrlEnv?: string): Promise<string | null> {
 		try {
+			// Solo omitir si está explícitamente configurado para saltar
+			if (process.env.AUTORUN_SKIP_GITHUB === 'true') {
+				return null;
+			}
+
+			// Usar el parámetro si se proporciona, o verificar variable de entorno
+			const githubUrlFromEnv = githubUrlEnv || process.env.AUTORUN_GITHUB_URL;
+			if (githubUrlFromEnv) {
+				const configManager = (this.hub as any).configManager;
+				if (configManager) {
+					const currentConfig = await configManager.getConfig();
+					const updatedConfig = {
+						...currentConfig,
+						autorun: {
+							...(currentConfig.autorun || {}),
+							addons: {
+								...(currentConfig.autorun?.addons || {}),
+								config: {
+									...(currentConfig.autorun?.addons?.config || {}),
+									github: {
+										repositoryUrl: githubUrlFromEnv.trim(),
+										branch: 'main',
+										autoCommit: true,
+									},
+								},
+							},
+						},
+					};
+					await configManager.saveConfig(updatedConfig);
+				}
+				return githubUrlFromEnv.trim();
+			}
+
+			// Modo interactivo: preguntar al usuario
 			const githubUrl = await this.prompt.question(
 				'🐙 ¿Cuál es la URL de tu repositorio GitHub? (presiona Enter para omitir): ',
 			);
@@ -1425,8 +1569,13 @@ export class InitializationWizard {
 			}
 
 			return githubUrl.trim();
-		} catch (error) {
-			console.warn('   ⚠️  Error configurando GitHub:', error);
+		} catch (error: any) {
+			// Si el error es porque readline está cerrado, simplemente omitir
+			if (error.code === 'ERR_USE_AFTER_CLOSE' || error.message?.includes('readline')) {
+				console.log('   ℹ️  Configuración de GitHub omitida (modo automático)');
+				return null;
+			}
+			console.warn('   ⚠️  Error configurando GitHub:', error.message || error);
 			return null;
 		}
 	}

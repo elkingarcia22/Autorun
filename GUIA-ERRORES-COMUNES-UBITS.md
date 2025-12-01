@@ -271,6 +271,162 @@ function initCompleteTable() {
 
 ---
 
+## ⚠️ ERROR CRÍTICO #8: Implementar Componentes en Todos los Módulos
+
+### ❌ **ERROR COMÚN:**
+```javascript
+// ❌ INCORRECTO: Inicializar tabs en TODOS los módulos
+function initTabs() {
+  window.createTabs({
+    tabs: [
+      { id: 'encuestas', label: 'Encuestas', icon: 'list' },
+      { id: 'datos-demograficos', label: 'Datos demográficos', icon: 'chart-pie' }
+    ]
+  }, 'tabs-container');
+}
+// Esto se ejecuta en TODOS los módulos (inicio, empresa, aprendizaje, etc.)
+```
+
+### ✅ **CORRECTO:**
+```javascript
+// ✅ CORRECTO: Verificar módulo actual ANTES de inicializar
+function initEncuestasTabs() {
+  // ⚠️ CRÍTICO: Verificar que estamos en el módulo correcto
+  const currentModule = document.body.getAttribute('data-module');
+  if (currentModule !== 'encuestas') {
+    console.log('⏭️ No estamos en módulo encuestas, saltando inicialización');
+    return; // NO inicializar si no estamos en el módulo correcto
+  }
+  
+  window.createTabs({
+    tabs: [
+      { id: 'encuestas', label: 'Encuestas', icon: 'list' },
+      { id: 'datos-demograficos', label: 'Datos demográficos', icon: 'chart-pie' }
+    ]
+  }, 'tabs-container');
+}
+```
+
+### 🔍 **¿Por qué?**
+- Los componentes específicos de un módulo NO deben aparecer en otros módulos
+- Si implementas tabs en "encuestas", NO deben aparecer en "inicio", "empresa", etc.
+- Cada módulo tiene su propia implementación específica
+
+### 📝 **Regla de Oro:**
+**SIEMPRE verificar el módulo actual antes de inicializar componentes específicos:**
+```javascript
+// Verificar módulo
+const currentModule = document.body.getAttribute('data-module');
+if (currentModule !== 'encuestas') {
+  return; // NO hacer nada si no estamos en el módulo correcto
+}
+
+// Verificar sección (alternativa)
+const currentSection = window.UBITS_ContentManager?.currentSection;
+if (currentSection !== 'encuestas') {
+  return; // NO hacer nada si no estamos en la sección correcta
+}
+```
+
+### 📋 **Checklist:**
+- [ ] ¿Verifico el módulo actual antes de inicializar?
+- [ ] ¿Uso `document.body.getAttribute('data-module')` para verificar?
+- [ ] ¿Uso `window.UBITS_ContentManager?.currentSection` si es necesario?
+- [ ] ¿Retorno temprano (`return`) si no estamos en el módulo correcto?
+
+---
+
+## ⚠️ ERROR CRÍTICO #9: Eliminar HeaderSection en Todos los Módulos
+
+### ❌ **ERROR COMÚN:**
+```javascript
+// ❌ INCORRECTO: Eliminar HeaderSection en TODOS los módulos
+function interceptContentManager() {
+  window.UBITS_ContentManager.updateContent = function(section, subSection) {
+    // Eliminar HeaderSection SIEMPRE (sin verificar módulo)
+    const headerSection = document.getElementById('header-section-container');
+    if (headerSection) {
+      headerSection.remove(); // ❌ Esto elimina HeaderSection en TODOS los módulos
+    }
+    // ...
+  };
+}
+
+// Observer que elimina HeaderSection en TODOS los módulos
+const observer = new MutationObserver((mutations) => {
+  const headerSection = document.getElementById('header-section-container');
+  if (headerSection) {
+    headerSection.remove(); // ❌ Esto elimina HeaderSection en TODOS los módulos
+  }
+});
+```
+
+### ✅ **CORRECTO:**
+```javascript
+// ✅ CORRECTO: Eliminar HeaderSection SOLO en el módulo específico
+function interceptContentManager() {
+  window.UBITS_ContentManager.updateContent = function(section, subSection) {
+    // ⚠️ CRÍTICO: Verificar que estamos en el módulo correcto
+    if (section !== 'encuestas') {
+      // Para otras secciones, usar el método original (con HeaderSection)
+      return originalUpdateContent.call(this, section, subSection);
+    }
+    
+    // Solo eliminar HeaderSection si estamos en 'encuestas'
+    // ... código sin HeaderSection ...
+  };
+}
+
+// Observer que elimina HeaderSection SOLO en el módulo específico
+const observer = new MutationObserver((mutations) => {
+  // ⚠️ CRÍTICO: Verificar módulo/sección actual
+  const currentSection = window.UBITS_ContentManager?.currentSection;
+  if (currentSection !== 'encuestas') {
+    return; // NO eliminar si no estamos en encuestas
+  }
+  
+  const headerSection = document.getElementById('header-section-container');
+  if (headerSection) {
+    headerSection.remove(); // ✅ Solo eliminar en módulo encuestas
+  }
+});
+```
+
+### 🔍 **¿Por qué?**
+- El HeaderSection es necesario en otros módulos (inicio, empresa, aprendizaje, etc.)
+- Si lo eliminas en todos los módulos, rompes la UI de otros módulos
+- Solo debes eliminarlo en el módulo específico donde la imagen no lo muestra
+
+### 📝 **Regla de Oro:**
+**SIEMPRE verificar el módulo/sección antes de eliminar HeaderSection:**
+```javascript
+// Opción 1: Verificar módulo
+const currentModule = document.body.getAttribute('data-module');
+if (currentModule !== 'encuestas') {
+  return; // NO eliminar si no estamos en el módulo correcto
+}
+
+// Opción 2: Verificar sección en ContentManager
+const currentSection = window.UBITS_ContentManager?.currentSection;
+if (currentSection !== 'encuestas') {
+  return; // NO eliminar si no estamos en la sección correcta
+}
+
+// Opción 3: Verificar en interceptación
+if (section !== 'encuestas') {
+  return originalUpdateContent.call(this, section, subSection);
+}
+```
+
+### 📋 **Checklist:**
+- [ ] ¿Verifico el módulo/sección antes de eliminar HeaderSection?
+- [ ] ¿Uso `section !== 'encuestas'` en la interceptación?
+- [ ] ¿Uso `currentSection !== 'encuestas'` en el observer?
+- [ ] ¿Retorno temprano (`return`) si no estamos en el módulo correcto?
+- [ ] ¿Llamo al método original para otros módulos?
+
+---
+
 ## 📋 Checklist Antes de Usar Componentes
 
 Antes de usar cualquier componente UBITS, verificar:

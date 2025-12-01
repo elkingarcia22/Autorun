@@ -14,6 +14,15 @@ async function main() {
 	const args = process.argv.slice(2);
 	const autoSelect = args.find(arg => arg.startsWith('--project='))?.split('=')[1] as 'ubits' | 'independent' | undefined;
 	
+	// Verificar si hay respuestas automáticas para el wizard (formato: --answers="1,16")
+	const answersArg = args.find(arg => arg.startsWith('--answers='));
+	if (answersArg) {
+		const answersValue = answersArg.split('=')[1]?.replace(/^["']|["']$/g, '');
+		if (answersValue) {
+			process.env.AUTORUN_ANSWERS = answersValue;
+		}
+	}
+	
 	// También verificar variables de entorno
 	if (!autoSelect && process.env.AUTORUN_PROJECT_TYPE) {
 		process.env.AUTORUN_PROJECT_TYPE = process.env.AUTORUN_PROJECT_TYPE;

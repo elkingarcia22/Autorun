@@ -8913,7 +8913,7 @@ const result = await runTests({ coverage: true });</code></pre>
             <div class="step-header">
               <div class="step-number-large">1</div>
               <div class="step-header-content">
-                <h3 class="step-title">Ejecuta el Wizard de Inicialización</h3>
+                <h3 class="step-title">Clonar e Instalar Dependencias</h3>
                 <div class="step-toggle-icon">
                   <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -8923,7 +8923,7 @@ const result = await runTests({ coverage: true });</code></pre>
             </div>
             <div class="step-content">
               <p class="step-description">
-                Clona el repositorio Autorun, instala las dependencias y ejecuta el wizard de inicialización. El wizard te preguntará por el template y producto, luego instalará los add-ons por defecto y creará ambos templates (administrador y colaborador) para que puedas navegar entre ellos.
+                Clona el repositorio Autorun e instala las dependencias. El proyecto incluye <code style="background: rgba(255,255,0,0.1); padding: 2px 6px; border-radius: 3px;">vendor/ubits/packages/</code> para que funcione en cualquier computador sin configuración adicional.
               </p>
               <div class="code-block">
                 <pre><code># Clonar el repositorio Autorun
@@ -8931,20 +8931,20 @@ git clone https://github.com/elkingarcia22/Autorun.git
 cd Autorun
 
 # Instalar dependencias
-npm install
-
-# Ejecutar el wizard de inicialización
-npm run init</code></pre>
+npm install</code></pre>
               </div>
+              <p class="step-note" style="margin-top: 16px;">
+                <strong>Verificación:</strong> Si ves <code style="background: rgba(0,255,255,0.1); padding: 2px 6px; border-radius: 3px;">✅ ¡Todo está listo! Puedes ejecutar: npm run init</code>, todo está correcto.
+              </p>
             </div>
           </div>
 
-          <!-- Paso 2 -->
+          <!-- Paso 2: Inicializar Wizard -->
           <div class="conectar-step">
             <div class="step-header">
               <div class="step-number-large">2</div>
               <div class="step-header-content">
-                <h3 class="step-title">Elige tus Add-ons</h3>
+                <h3 class="step-title">Inicializar el Wizard</h3>
                 <div class="step-toggle-icon">
                   <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -8954,250 +8954,32 @@ npm run init</code></pre>
             </div>
             <div class="step-content">
               <p class="step-description">
-                Selecciona los add-ons que quieres usar en tu proyecto. Puedes elegir entre add-ons de diseño, funcionales y de componentes.
-              </p>
-              <div class="addons-selection-example">
-                <div class="addon-category">
-                  <h4 class="category-title">Add-ons Disponibles</h4>
-                  <ul class="addon-list">
-                    <li>✅ GitHub (Auto-commit)</li>
-                    <li>✅ Clarity (Analytics)</li>
-                    <li>✅ Vercel (Deploy automático)</li>
-                    <li>✅ Storybook (Componentes)</li>
-                    <li>✅ Supabase (Base de datos)</li>
-                    <li>✅ AI Assistant (Ollama/Gemini)</li>
-                    <li>✅ JEST (Testing)</li>
-                    <li>✅ ESLint (Linting)</li>
-                    <li>✅ Prettier (Formateo)</li>
-                    <li>✅ Lighthouse (Performance)</li>
-                    <li>✅ Docusaurus (Documentación)</li>
-                    <li>✅ i18n (Internacionalización)</li>
-                    <li>✅ Figma Sync (Sincronización)</li>
-                    <li>✅ FontAwesome (Iconos)</li>
-                    <li>✅ Feedback Automatizado (Recopilación de feedback)</li>
-                    <li>✅ Bundle Analyzer (Análisis de bundles)</li>
-                    <li>✅ Changesets (Versionado)</li>
-                    <li>✅ Chromatic (Visual testing)</li>
-                    <li>✅ Codecov (Code coverage)</li>
-                    <li>✅ Docker (Containerización)</li>
-                    <li>✅ Playwright (Testing E2E)</li>
-                    <li>✅ Renovate (Actualización de dependencias)</li>
-                    <li>✅ Sentry (Monitoreo de errores)</li>
-                    <li>✅ Snyk (Security scanning)</li>
-                    <li>✅ Standalone (Builds optimizados)</li>
-                    <li>✅ Turborepo (Monorepo management)</li>
-                    <li>✅ Vitest (Testing rápido)</li>
-                  </ul>
-                </div>
-              </div>
-              <p class="step-note">
-                Puedes activar o desactivar add-ons en cualquier momento. Los add-ons adicionales se solicitarán cuando los necesites.
-              </p>
-            </div>
-          </div>
-
-          <!-- Paso 3 -->
-          <div class="conectar-step">
-            <div class="step-header">
-              <div class="step-number-large">3</div>
-              <div class="step-header-content">
-                <h3 class="step-title">Configura Credenciales y APIs Iniciales</h3>
-                <div class="step-toggle-icon">
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                </div>
-              </div>
-            </div>
-            <div class="step-content">
-              <p class="step-description">
-                Para los add-ons iniciales que hayas seleccionado, configura las credenciales necesarias.
-              </p>
-              <div class="credentials-example">
-                <div class="credential-item">
-                  <h4 class="credential-title">1. GitHub (Primero)</h4>
-                  <ul class="credential-list">
-                    <li><strong>Repository URL:</strong> https://github.com/tu-usuario/tu-repo</li>
-                    <li><strong>Branch:</strong> main</li>
-                    <li><strong>Auto-commit:</strong> Activado</li>
-                  </ul>
-                </div>
-                <div class="credential-item">
-                  <h4 class="credential-title">2. Storybook</h4>
-                  <ul class="credential-list">
-                    <li><strong>Configuración:</strong> Se configura automáticamente</li>
-                    <li><strong>Puerto:</strong> 6006 (por defecto)</li>
-                  </ul>
-                </div>
-                <div class="credential-item">
-                  <h4 class="credential-title">3. Resto de Add-ons</h4>
-                  <ul class="credential-list">
-                    <li><strong>Supabase:</strong> URL, Anon Key, Service Role Key</li>
-                    <li><strong>AI Assistant:</strong> API Key (Ollama/Gemini)</li>
-                    <li><strong>JEST, ESLint, Prettier:</strong> Configuración automática</li>
-                    <li><strong>Lighthouse:</strong> Configuración automática</li>
-                    <li><strong>Docusaurus:</strong> Configuración automática</li>
-                    <li><strong>i18n:</strong> Archivos de traducción</li>
-                    <li><strong>Figma Sync:</strong> Figma Access Token, File Key, JSON de Tokens (recomendado)</li>
-                    <li><strong>FontAwesome:</strong> Configuración automática</li>
-                  </ul>
-                </div>
-              </div>
-              <p class="step-note">
-                Las credenciales se solicitan en este orden específico. Los add-ons adicionales (Vercel, Clarity, Feedback Automatizado) se configurarán más adelante cuando los necesites. Las credenciales se guardan de forma segura en el archivo de configuración.
-              </p>
-            </div>
-          </div>
-
-          <!-- Paso 5 -->
-          <div class="conectar-step">
-            <div class="step-header">
-              <div class="step-number-large">5</div>
-              <div class="step-header-content">
-                <h3 class="step-title">Elige tu Template o Crea uno Nuevo</h3>
-                <div class="step-toggle-icon">
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                </div>
-              </div>
-            </div>
-            <div class="step-content">
-              <p class="step-description">
-                Elige entre usar un template existente del repositorio o crear un documento nuevo desde cero.
-              </p>
-              <div class="template-options">
-                <div class="template-option">
-                  <h4 class="template-option-title">Opción 1: Elegir Template del Repositorio</h4>
-                  <p class="template-option-desc">El Hub buscará automáticamente documentos llamados "template" o "index" en tu repositorio de GitHub y te preguntará si ese es el template que quieres usar. Si no es el correcto, podrás indicarle cuál es el archivo correcto.</p>
-                </div>
-                <div class="template-option">
-                  <h4 class="template-option-title">Opción 2: Crear Documento Nuevo</h4>
-                  <p class="template-option-desc">Crea un nuevo archivo HTML desde cero y estructura tu proyecto como prefieras.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Paso 6 -->
-          <div class="conectar-step">
-            <div class="step-header">
-              <div class="step-number-large">6</div>
-              <div class="step-header-content">
-                <h3 class="step-title">Comienza a Desarrollar</h3>
-                <div class="step-toggle-icon">
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                </div>
-              </div>
-            </div>
-            <div class="step-content">
-              <p class="step-description">
-                Inicia el servidor de desarrollo y comienza a trabajar en tu proyecto.
+                Ejecuta el wizard interactivo. El wizard te preguntará por el template, módulo, producto, navegación, add-ons y GitHub, luego creará automáticamente ambos templates (administrador y colaborador).
               </p>
               <div class="code-block">
-                <pre><code># Terminal 1: Auto-commit y validación (opcional)
-npm run watch
-
-# Terminal 2: Servidor de desarrollo
-npm run dev</code></pre>
+                <pre><code># Ejecutar el wizard de inicialización
+npm run init</code></pre>
               </div>
-              <p class="step-note">
-                El sistema de validación automática detectará colores hardcodeados, clases incorrectas y sugerirá correcciones. Los cambios se commitean automáticamente si activaste el add-on de GitHub.
-              </p>
-            </div>
-          </div>
-
-          <!-- Paso 7 -->
-          <div class="conectar-step">
-            <div class="step-header">
-              <div class="step-number-large">7</div>
-              <div class="step-header-content">
-                <h3 class="step-title">Despliega a Vercel</h3>
-                <div class="step-toggle-icon">
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                </div>
+              <div style="margin-top: 20px;">
+                <h4 style="color: var(--autorun-neon-yellow); margin-bottom: 12px; font-size: 16px;">El wizard te preguntará:</h4>
+                <ul style="list-style: none; padding-left: 0;">
+                  <li style="margin-bottom: 8px;">🎯 <strong>Template:</strong> Administrador o Colaborador</li>
+                  <li style="margin-bottom: 8px;">📦 <strong>Módulo y Producto:</strong> Selecciona el módulo (Aprendizaje, Desempeño, Empresa, Encuestas, etc.)</li>
+                  <li style="margin-bottom: 8px;">🔒 <strong>Navegación:</strong> ¿Desactivar navegación a otros módulos? (útil para evitar que el usuario se pierda)</li>
+                  <li style="margin-bottom: 8px;">🔌 <strong>Add-ons:</strong> Instalar solo los por defecto o agregar otros</li>
+                  <li style="margin-bottom: 8px;">🐙 <strong>GitHub:</strong> ¿Configurar GitHub ahora? (opcional)</li>
+                </ul>
               </div>
-            </div>
-            <div class="step-content">
-              <p class="step-description">
-                Cuando estés listo, despliega tu aplicación a Vercel con un solo comando.
-              </p>
-              <div class="code-block">
-                <pre><code># Desplegar a Vercel
-npm run deploy
-
-# O si prefieres hacerlo manualmente
-vercel --prod</code></pre>
-              </div>
-              <p class="step-note">
-                Si configuraste el add-on de Vercel, el despliegue será automático en cada push a la rama principal. Tu aplicación estará disponible en una URL de Vercel.
-              </p>
-            </div>
-          </div>
-
-          <!-- Paso 8 -->
-          <div class="conectar-step">
-            <div class="step-header">
-              <div class="step-number-large">8</div>
-              <div class="step-header-content">
-                <h3 class="step-title">Configura Clarity</h3>
-                <div class="step-toggle-icon">
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                </div>
-              </div>
-            </div>
-            <div class="step-content">
-              <p class="step-description">
-                Configura Microsoft Clarity para analizar el comportamiento de los usuarios en tu aplicación.
-              </p>
-              <div class="code-block">
-                <pre><code># Configurar Clarity después del despliegue
-npm run addon:activate clarity
-
-# Se te solicitarán:
-# - Project ID de Clarity
-# - API Key (opcional)</code></pre>
-              </div>
-              <p class="step-note">
-                Clarity comenzará a recopilar datos automáticamente una vez configurado. Podrás ver grabaciones de sesiones, mapas de calor y análisis de comportamiento.
-              </p>
-            </div>
-          </div>
-
-          <!-- Paso 9 -->
-          <div class="conectar-step">
-            <div class="step-header">
-              <div class="step-number-large">9</div>
-              <div class="step-header-content">
-                <h3 class="step-title">Activa Feedback Automatizado</h3>
-                <div class="step-toggle-icon">
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                </div>
-              </div>
-            </div>
-            <div class="step-content">
-              <p class="step-description">
-                Activa el add-on de Feedback Automatizado para recopilar y gestionar feedback de usuarios automáticamente.
-              </p>
-              <div class="code-block">
-                <pre><code># Activar Feedback Automatizado
-npm run addon:activate feedback-automatizado
-
-# Configuración:
-# - Endpoint para recibir feedback
-# - Integración con servicios externos (opcional)
-# - Reglas de notificación</code></pre>
-              </div>
-              <p class="step-note">
-                El sistema de feedback automatizado recopilará comentarios, sugerencias y reportes de usuarios, organizándolos automáticamente y notificándote según las reglas que configures.
+              <p class="step-note" style="margin-top: 16px;">
+                <strong>¿Qué hace el wizard automáticamente?</strong><br>
+                ✅ Clona y verifica repositorio UBITS (si no existe vendor/ubits/)<br>
+                ✅ Conecta con Storybook UBITS<br>
+                ✅ Carga componentes desde Storybook<br>
+                ✅ Instala add-ons seleccionados<br>
+                ✅ Configura sidebar y subnav para tu módulo<br>
+                ✅ Crea ambos templates (administrador y colaborador)<br>
+                ✅ Valida templates creados<br>
+                ✅ Abre solo el template seleccionado en el navegador
               </p>
             </div>
           </div>

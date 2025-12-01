@@ -22,6 +22,7 @@ export class CanvasCreator {
 		template: 'administrador' | 'colaborador',
 		module: string,
 		product?: string,
+		disableOtherModulesNavigation?: boolean,
 	): Promise<string> {
 		const templateConfig = UBITS_PRESET.templates[template];
 		const fileName = this.generateFileName(template, module, product);
@@ -31,7 +32,7 @@ export class CanvasCreator {
 		await fs.mkdir(path.dirname(filePath), { recursive: true });
 
 		// Cargar template desde Storybook
-		const content = await this.loadTemplateFromStorybook(template, module, product);
+		const content = await this.loadTemplateFromStorybook(template, module, product, disableOtherModulesNavigation);
 
 		// Escribir archivo
 		await fs.writeFile(filePath, content, 'utf-8');
@@ -49,6 +50,7 @@ export class CanvasCreator {
 		template: 'administrador' | 'colaborador',
 		module: string,
 		product?: string,
+		disableOtherModulesNavigation?: boolean,
 	): Promise<string> {
 		const templateConfig = UBITS_PRESET.templates[template];
 		const templateFileName =
@@ -96,6 +98,7 @@ export class CanvasCreator {
 				module,
 				product,
 				relativePath,
+				disableOtherModulesNavigation,
 			);
 
 			return templateContent;
@@ -127,6 +130,7 @@ export class CanvasCreator {
 					module,
 					product,
 					absolutePath,
+					disableOtherModulesNavigation,
 				);
 
 				return templateContent;
@@ -599,6 +603,7 @@ export class CanvasCreator {
 		module: string,
 		product?: string,
 		absolutePathToUBITS?: string,
+		disableOtherModulesNavigation?: boolean,
 	): string {
 		const moduleConfig = UBITS_MODULES_CONFIG[module];
 		const productName = product
@@ -1418,6 +1423,147 @@ export class CanvasCreator {
 			templateHtml = templateHtml.replace('</body>', `${scriptTag}\n</body>`);
 		} else {
 			templateHtml += scriptTag;
+		}
+
+		// Si se desactiva la navegación de otros módulos, agregar script para quitar enlaces
+		if (disableOtherModulesNavigation) {
+			const disableNavigationScript = `
+  <script>
+    // Desactivar navegación de otros módulos en el sidebar
+    (function() {
+      const currentModule = '${module}';
+      
+      function disableOtherModules() {
+        const sidebar = document.querySelector('.ubits-sidebar');
+        if (!sidebar) {
+          // Si el sidebar aún no está cargado, reintentar
+          setTimeout(disableOtherModules, 100);
+          return;
+        }
+        
+        // Buscar todos los botones del sidebar
+        const allButtons = sidebar.querySelectorAll('.ubits-sidebar-nav-button');
+        let disabledCount = 0;
+        
+        allButtons.forEach(button => {
+          const buttonModule = button.getAttribute('data-section');
+          
+          // Si el botón NO es del módulo actual, deshabilitarlo
+          if (buttonModule && buttonModule !== currentModule) {
+            // Remover el atributo data-section para que no funcione el click
+            button.removeAttribute('data-section');
+            
+            // Deshabilitar el botón visualmente
+            button.style.opacity = '0.5';
+            button.style.cursor = 'not-allowed';
+            button.style.pointerEvents = 'none';
+            
+            // Prevenir cualquier click
+            button.addEventListener('click', function(e) {
+              e.preventDefault();
+              e.stopPropagation();
+              return false;
+            }, true);
+            
+            disabledCount++;
+          }
+        });
+        
+        // Desactivar el logo de UBITS que lleva al inicio
+        const logoElements = sidebar.querySelectorAll('a[href*="inicio"], .ubits-sidebar-logo, .ubits-logo, [data-section="inicio"]');
+        logoElements.forEach(logo => {
+          // Remover atributos de navegación
+          logo.removeAttribute('href');
+          logo.removeAttribute('data-section');
+          
+          // Deshabilitar visualmente
+          logo.style.opacity = '0.5';
+          logo.style.cursor = 'not-allowed';
+          logo.style.pointerEvents = 'none';
+          
+          // Prevenir cualquier click
+          logo.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+          }, true);
+          
+          disabledCount++;
+        });
+        
+        // También buscar el logo por su posición común (primer elemento del sidebar)
+        const sidebarHeader = sidebar.querySelector('.ubits-sidebar-header, .sidebar-header, [class*="header"]');
+        if (sidebarHeader) {
+          const headerLinks = sidebarHeader.querySelectorAll('a');
+          headerLinks.forEach(link => {
+            // Si el enlace apunta al inicio o no tiene data-section específico, desactivarlo
+            const href = link.getAttribute('href') || '';
+            const dataSection = link.getAttribute('data-section') || '';
+            if (href.includes('inicio') || dataSection === 'inicio' || (!dataSection && href !== '#')) {
+              link.removeAttribute('href');
+              link.removeAttribute('data-section');
+              link.style.opacity = '0.5';
+              link.style.cursor = 'not-allowed';
+              link.style.pointerEvents = 'none';
+              link.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                return false;
+              }, true);
+              disabledCount++;
+            }
+          });
+        }
+        
+        if (disabledCount > 0) {
+          console.log('🔒 [Navegación] Desactivados ' + disabledCount + ' elemento(s) del sidebar (módulos + logo)');
+        }
+      }
+      
+      // Ejecutar cuando el DOM esté listo
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', disableOtherModules);
+      } else {
+        disableOtherModules();
+      }
+      
+      // También ejecutar después de que el sidebar se cargue dinámicamente
+      setTimeout(disableOtherModules, 500);
+      setTimeout(disableOtherModules, 1000);
+      setTimeout(disableOtherModules, 2000);
+      
+      // Observar cambios en el DOM para cuando el sidebar se cargue
+      const observer = new MutationObserver((mutations) => {
+        let shouldDisable = false;
+        mutations.forEach((mutation) => {
+          if (mutation.addedNodes.length > 0) {
+            mutation.addedNodes.forEach((node) => {
+              if (node.nodeType === 1 && 
+                  (node.classList?.contains('ubits-sidebar') || 
+                   node.querySelector?.('.ubits-sidebar-nav-button'))) {
+                shouldDisable = true;
+              }
+            });
+          }
+        });
+        if (shouldDisable) {
+          setTimeout(disableOtherModules, 100);
+        }
+      });
+      
+      observer.observe(document.body, {
+        childList: true,
+        subtree: true
+      });
+    })();
+  </script>`;
+			
+			// Insertar script antes de </body>
+			if (templateHtml.includes('</body>')) {
+				templateHtml = templateHtml.replace('</body>', `${disableNavigationScript}\n</body>`);
+			} else {
+				templateHtml += disableNavigationScript;
+			}
 		}
 
 		return templateHtml;

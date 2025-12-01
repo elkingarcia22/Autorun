@@ -21,21 +21,77 @@ Esta guía establece el proceso **OBLIGATORIO** para implementar interfaces desd
 1. **Identificar componentes UBITS:**
    - ¿Qué componentes UBITS veo en la imagen?
    - ¿Sidebar? ¿SubNav? ¿Tabs? ¿DataTable? ¿Buttons? ¿Inputs?
+   - **⚠️ CRÍTICO: Verificar HeaderSection:**
+     - ¿Hay un HeaderSection en la imagen? (título grande, descripción, botones de acción)
+     - Si **NO hay HeaderSection** en la imagen, **DEBE eliminarse del template:**
+       - Eliminar CSS: `<link rel="stylesheet" href="...header-section.css" />`
+       - Eliminar estilos CSS de `#header-section-container`
+       - Eliminar contenedor HTML `<div id="header-section-container"></div>` si existe
    - Consultar `CATALOGO-COMPONENTES-UBITS.md`
 
-2. **Identificar estructura:**
-   - ¿Cuál es la jerarquía visual?
-   - ¿Qué va primero? ¿Qué va después?
-   - ¿Hay secciones separadas?
+2. **Identificar estructura y contenedores** ⚠️ CRÍTICO:
+   - **Orden de elementos:** ¿Qué va primero? ¿Qué va después?
+   - **Contenedores:**
+     - ¿Qué elementos van en contenedores?
+     - ¿Qué elementos NO van en contenedores?
+     - ¿Qué elementos van en contenedores independientes?
+     - ¿Hay un contenedor principal o múltiples contenedores?
+   - **Ejemplo de análisis:**
+     ```markdown
+     ### Estructura identificada:
+     1. SubNav (sin contenedor, va directo después del header)
+     2. Tabs (sin contenedor, va directo después del SubNav)
+     3. Barra de acciones (en contenedor independiente con id="actions-bar")
+     4. DataTable (en contenedor independiente con id="table-container")
+     
+     ### Contenedores:
+     - ❌ Tabs NO van en contenedor (van directo en el body/main)
+     - ✅ Barra de acciones SÍ va en contenedor: `<div id="actions-bar">`
+     - ✅ DataTable SÍ va en contenedor: `<div id="table-container">`
+     ```
 
-3. **Identificar funcionalidades:**
+3. **Analizar spacing de forma específica** ⚠️ CRÍTICO:
+   - **Spacing entre elementos:**
+     - ¿Cuánto espacio hay entre cada elemento?
+     - Medir visualmente y mapear a tokens UBITS
+   - **Spacing dentro de elementos:**
+     - ¿Cuánto padding tiene cada contenedor?
+     - ¿Cuánto gap hay entre elementos dentro de un contenedor?
+   - **Tokens de spacing disponibles:**
+     - `--ubits-spacing-xs` (4px)
+     - `--ubits-spacing-sm` (8px)
+     - `--ubits-spacing-md` (12px)
+     - `--ubits-spacing-lg` (16px)
+     - `--ubits-spacing-xl` (20px)
+     - `--ubits-spacing-2xl` (24px)
+     - `--ubits-spacing-3xl` (28px)
+     - `--ubits-spacing-4xl` (32px)
+     - `--ubits-spacing-5xl` (36px)
+     - `--ubits-spacing-6xl` (40px)
+     - `--ubits-spacing-8` (32px)
+     - `--ubits-spacing-10` (40px)
+     - `--ubits-spacing-12` (48px)
+     - `--ubits-spacing-16` (64px)
+     - `--ubits-spacing-20` (80px)
+     - `--ubits-spacing-24` (96px)
+   - **Ejemplo de análisis:**
+     ```markdown
+     ### Spacing identificado:
+     - **Entre SubNav y Tabs:** `--ubits-spacing-none` (0px, van pegados)
+     - **Entre Tabs y Barra de acciones:** `--ubits-spacing-lg` (16px)
+     - **Entre Barra de acciones y DataTable:** `--ubits-spacing-lg` (16px)
+     - **Dentro de Barra de acciones (gap entre botones):** `--ubits-spacing-sm` (8px)
+     - **Padding del contenedor de acciones:** `--ubits-spacing-none` (0px, sin padding)
+     - **Padding del contenedor de DataTable:** `--ubits-spacing-none` (0px, sin padding)
+     ```
+
+4. **Identificar funcionalidades:**
    - ¿Qué debe hacer cada componente?
    - ¿Hay interacciones? ¿Callbacks?
    - ¿Hay datos dinámicos?
 
-4. **Identificar tokens y estilos:**
+5. **Identificar tokens de colores:**
    - ¿Qué colores se usan?
-   - ¿Qué espaciados?
    - ¿Qué tokens UBITS corresponden?
 
 #### **Paso 1.2: Crear Plan de Implementación**
@@ -51,15 +107,22 @@ Esta guía establece el proceso **OBLIGATORIO** para implementar interfaces desd
 - ✅ Input de búsqueda (`<ubits-input>`)
 - ✅ Botones (`<ubits-button>`)
 
-### Estructura:
-1. Header con título
-2. Tabs de navegación (Encuestas / Datos demográficos)
-3. Barra de acciones (búsqueda, filtros, botones)
-4. DataTable con columnas: checkbox, nombre, tipo, estado, fechas, participantes, avance
+### Estructura y Contenedores:
+1. SubNav (sin contenedor, directo después del header)
+2. Tabs (sin contenedor, directo después del SubNav)
+3. Barra de acciones (en contenedor independiente: `<div id="actions-bar">`)
+4. DataTable (en contenedor independiente: `<div id="table-container">`)
+
+### Spacing Específico:
+- **Entre SubNav y Tabs:** `--ubits-spacing-none` (0px)
+- **Entre Tabs y Barra de acciones:** `--ubits-spacing-lg` (16px)
+- **Entre Barra de acciones y DataTable:** `--ubits-spacing-lg` (16px)
+- **Dentro de Barra de acciones (gap):** `--ubits-spacing-sm` (8px)
+- **Padding contenedores:** `--ubits-spacing-none` (0px)
 
 ### Tokens a usar:
 - Colores: `--ubits-accent-brand-static` (botones primarios)
-- Espaciados: `--ubits-spacing-md`, `--ubits-spacing-lg`
+- Spacing: Ver análisis específico arriba
 - Tipografía: `ubits-heading-lg-semibold`, `ubits-body-md-regular`
 
 ### Tareas Divididas:
@@ -79,34 +142,238 @@ Esta guía establece el proceso **OBLIGATORIO** para implementar interfaces desd
 
 ### **FASE 2: IMPLEMENTACIÓN PASO A PASO** 🛠️
 
+#### **Paso 2.0: Revisar Componente Antes de Implementar** 🔍
+
+**⚠️ OBLIGATORIO:** Antes de implementar CUALQUIER componente, revisar su archivo de tipos para identificar variantes, controladores y funcionalidades.
+
+**Ubicación del archivo de tipos:**
+```
+vendor/ubits/packages/components/[nombre-componente]/src/types/[Nombre]Options.ts
+```
+
+**Ejemplo de rutas:**
+- Button: `vendor/ubits/packages/components/button/src/types/ButtonOptions.ts`
+- DataTable: `vendor/ubits/packages/components/data-table/src/types/DataTableOptions.ts`
+- Input: `vendor/ubits/packages/components/input/src/types/InputOptions.ts`
+- Tabs: `vendor/ubits/packages/components/tabs/src/types/TabsOptions.ts`
+
+**Proceso de revisión:**
+
+1. **Variantes disponibles:**
+   - ¿Qué variantes tiene el componente? (ej: `primary`, `secondary`, `ghost`)
+   - ¿Qué tamaños? (ej: `sm`, `md`, `lg`)
+   - Consultar el archivo de tipos: `vendor/ubits/packages/components/[nombre]/src/types/[Nombre]Options.ts`
+
+2. **Controladores (opciones que prende/apaga funcionalidades):**
+   - ¿Qué opciones booleanas tiene? (ej: `disabled`, `loading`, `showCheckbox`)
+   - ¿Qué opciones de configuración? (ej: `columnSortable`, `rowReorderable`)
+   - ¿Qué callbacks/eventos? (ej: `onClick`, `onRowSelect`, `onSort`)
+
+3. **Funcionalidades:**
+   - Listar todas las funcionalidades disponibles
+   - Identificar cuáles se necesitan para esta implementación
+   - Dividir en tareas independientes
+
+**Ejemplo de revisión para Button:**
+```typescript
+// Revisar: vendor/ubits/packages/components/button/src/types/ButtonOptions.ts
+
+// Variantes:
+- variant: 'primary' | 'secondary' | 'ghost' | 'danger' | 'link'
+- size: 'sm' | 'md' | 'lg'
+
+// Controladores:
+- disabled: boolean
+- loading: boolean
+- iconOnly: boolean
+- fullWidth: boolean
+- dropdown: boolean
+- showTooltip: boolean
+
+// Funcionalidades:
+1. Botón básico (texto + variante)
+2. Botón con icono
+3. Botón icon-only
+4. Botón con loading
+5. Botón deshabilitado
+6. Botón con dropdown
+7. Botón con tooltip
+```
+
+**Ejemplo de revisión para DataTable:**
+```typescript
+// Revisar: vendor/ubits/packages/components/data-table/src/types/DataTableOptions.ts
+
+// Controladores principales:
+- showCheckbox: boolean
+- rowReorderable: boolean
+- columnReorderable: boolean
+- columnSortable: boolean
+- header.filterButton: boolean
+- header.columnSelectorButton: boolean
+- header.actionBar.showOnSingleSelect: boolean
+- header.actionBar.showOnMultipleSelect: boolean
+
+// Funcionalidades identificadas:
+1. Checkboxes
+2. Arrastrar y soltar filas
+3. Arrastrar y soltar columnas
+4. Ordenamiento
+5. Fijar columnas
+6. Selector de columnas
+7. Barra de acciones (selección única)
+8. Barra de acciones (selección múltiple)
+9. Dropdown con filtros
+10. Buscador
+```
+
+**Mostrar al usuario:**
+```markdown
+## 🔍 Revisión de Componente: [Nombre]
+
+### Variantes disponibles:
+- [Lista de variantes]
+
+### Controladores:
+- [Lista de opciones booleanas y de configuración]
+
+### Funcionalidades identificadas:
+1. [Funcionalidad 1]
+2. [Funcionalidad 2]
+...
+
+### Plan de implementación:
+- Tarea 1: [Funcionalidad básica]
+- Tarea 2: [Funcionalidad 2]
+...
+
+### ¿Aprobamos este plan?
+```
+
+---
+
+#### **Paso 2.0.5: Verificar Módulo Actual** ⚠️ CRÍTICO
+
+**ANTES de implementar cualquier componente específico de módulo:**
+
+1. **Verificar módulo actual:**
+   ```javascript
+   // ⚠️ CRÍTICO: Verificar módulo antes de inicializar
+   const currentModule = document.body.getAttribute('data-module');
+   if (currentModule !== 'encuestas') {
+     console.log('⏭️ No estamos en módulo encuestas, saltando inicialización');
+     return; // NO inicializar si no estamos en el módulo correcto
+   }
+   ```
+
+2. **Verificar sección actual (si es necesario):**
+   ```javascript
+   // Alternativa: Verificar sección en ContentManager
+   const currentSection = window.UBITS_ContentManager?.currentSection;
+   if (currentSection !== 'encuestas') {
+     return; // NO hacer nada si no estamos en la sección correcta
+   }
+   ```
+
+3. **Aplicar a TODAS las funciones de inicialización:**
+   - ✅ Función de inicialización de tabs
+   - ✅ Función de inicialización de DataTable
+   - ✅ Interceptación de ContentManager
+   - ✅ Observers del DOM
+   - ✅ Eliminación de HeaderSection
+
+**Ejemplo correcto:**
+```javascript
+function initEncuestasTabs() {
+  // ⚠️ CRÍTICO: Verificar módulo
+  const currentModule = document.body.getAttribute('data-module');
+  if (currentModule !== 'encuestas') {
+    return; // NO inicializar si no estamos en encuestas
+  }
+  
+  // Solo aquí inicializar los tabs
+  window.createTabs({...}, 'tabs-container');
+}
+```
+
+**⚠️ ERROR COMÚN A EVITAR:**
+```javascript
+// ❌ INCORRECTO: Inicializar sin verificar módulo
+function initTabs() {
+  window.createTabs({...}, 'tabs-container'); // ❌ Se ejecuta en TODOS los módulos
+}
+```
+
+**Ver:** `GUIA-ERRORES-COMUNES-UBITS.md` - Error #8 y #9 para más detalles.
+
+---
+
 #### **Paso 2.1: Implementar Tarea 1 (Estructura Base + Tabs)**
 
 **Hacer SOLO esto:**
 
-1. Crear estructura HTML básica
-2. Implementar tabs de navegación
-3. Verificar que los tabs funcionen correctamente
+1. **Verificar módulo actual** (Paso 2.0.5)
+2. Crear estructura HTML básica
+3. Implementar tabs de navegación (con verificación de módulo)
+4. Verificar que los tabs funcionen correctamente
+5. **Ejecutar validación automática** (ver Paso 2.1.1)
 
 **Código de ejemplo:**
 ```javascript
-// SOLO tabs, nada más
-window.createTabs({
-  tabs: [
-    { id: 'encuestas', label: 'Encuestas', icon: 'list' },
-    { id: 'datos-demograficos', label: 'Datos demográficos', icon: 'clock' }
-  ],
-  activeTabId: 'encuestas',
-  onTabChange: (tabId) => console.log('Tab:', tabId)
-}, 'tabs-container');
+// ⚠️ CRÍTICO: Verificar módulo antes de inicializar
+function initEncuestasTabs() {
+  // Verificar que estamos en el módulo correcto
+  const currentModule = document.body.getAttribute('data-module');
+  if (currentModule !== 'encuestas') {
+    console.log('⏭️ No estamos en módulo encuestas, saltando inicialización');
+    return; // NO inicializar si no estamos en el módulo correcto
+  }
+  
+  // SOLO tabs, nada más
+  window.createTabs({
+    tabs: [
+      { id: 'encuestas', label: 'Encuestas', icon: 'list' },
+      { id: 'datos-demograficos', label: 'Datos demográficos', icon: 'chart-pie' }
+    ],
+    activeTabId: 'encuestas',
+    onTabChange: (tabId) => console.log('Tab:', tabId)
+  }, 'tabs-container');
+}
 ```
+
+**Paso 2.1.1: Ejecutar Validación Automática** ✅
+
+**OBLIGATORIO después de cada implementación:**
+
+```bash
+npm run lint
+```
+
+**El validador verifica:**
+- ✅ Componentes oficiales UBITS (no componentes custom)
+- ✅ Tokens UBITS (no valores hardcodeados)
+- ✅ Estilos correctos (no estilos inline sin tokens)
+- ✅ Uso correcto de componentes
+- ✅ Formato de código correcto
+
+**Si hay errores:**
+1. Leer los errores del validador
+2. Corregir automáticamente:
+   - Reemplazar colores hardcodeados con tokens
+   - Reemplazar clases prohibidas con oficiales
+   - Usar componentes oficiales en lugar de custom
+   - Corregir formato de código
+3. Ejecutar validación de nuevo: `npm run lint`
+4. Repetir hasta que pase
 
 **Mostrar al usuario:**
 - ✅ Tabs implementados
 - ✅ Funcionan correctamente
 - ✅ Estilos UBITS aplicados
+- ✅ Validación pasada (o errores corregidos)
 
 **Preguntar:**
-> "✅ Tarea 1 completada: Tabs implementados. ¿Los tabs se ven correctos? ¿Aprobamos para continuar con la Tarea 2 (barra de acciones)?"
+> "✅ Tarea 1 completada: Tabs implementados y validación pasada. ¿Los tabs se ven correctos? ¿Aprobamos para continuar con la Tarea 2 (barra de acciones)?"
 
 ---
 
@@ -130,13 +397,20 @@ window.createTabs({
 </div>
 ```
 
+**Paso 2.2.1: Ejecutar Validación Automática** ✅
+
+```bash
+npm run lint
+```
+
 **Mostrar al usuario:**
 - ✅ Barra de acciones implementada
 - ✅ Todos los botones visibles
 - ✅ Input de búsqueda funcional
+- ✅ Validación pasada (o errores corregidos)
 
 **Preguntar:**
-> "✅ Tarea 2 completada: Barra de acciones implementada. ¿Se ve correctamente? ¿Aprobamos para continuar con la Tarea 3 (DataTable básico)?"
+> "✅ Tarea 2 completada: Barra de acciones implementada y validación pasada. ¿Se ve correctamente? ¿Aprobamos para continuar con la Tarea 3 (DataTable básico)?"
 
 ---
 
@@ -144,9 +418,12 @@ window.createTabs({
 
 **Solo después de aprobación de Tarea 2:**
 
-1. Implementar DataTable con estructura mínima
-2. Solo columnas básicas (sin funcionalidades avanzadas)
-3. Datos de ejemplo simples
+**⚠️ IMPORTANTE:** Para DataTable, seguir la guía específica: `GUIA-IMPLEMENTACION-DATATABLE-PASO-A-PASO.md`
+
+1. **Primero:** Analizar columnas (cantidad y tipo)
+2. **Segundo:** Implementar DataTable con estructura mínima
+3. **Tercero:** Solo columnas básicas (sin funcionalidades avanzadas)
+4. **Cuarto:** Datos de ejemplo simples
 
 **Código de ejemplo:**
 ```javascript
@@ -154,8 +431,8 @@ window.createTabs({
 window.createDataTable({
   containerId: 'encuestas-table-container',
   columns: [
-    { id: 'nombre', title: 'Nombre', type: 'nombre' },
-    { id: 'tipo', title: 'Tipo', type: 'nombre' },
+    { id: 'nombre', title: 'Nombre', type: 'text' },
+    { id: 'tipo', title: 'Tipo', type: 'text' },
     { id: 'estado', title: 'Estado', type: 'estado' }
   ],
   rows: [
@@ -171,51 +448,33 @@ window.createDataTable({
 - ✅ Datos mostrándose
 
 **Preguntar:**
-> "✅ Tarea 3 completada: DataTable básico implementado. ¿La tabla se ve correctamente? ¿Aprobamos para continuar con la Tarea 4 (personalización completa)?"
+> "✅ Tarea 3 completada: DataTable básico implementado. ¿La tabla se ve correctamente? ¿Aprobamos para continuar con las funcionalidades del DataTable (siguiendo `GUIA-IMPLEMENTACION-DATATABLE-PASO-A-PASO.md`)?"
 
 ---
 
-#### **Paso 2.4: Implementar Tarea 4 (Personalización DataTable)**
+#### **Paso 2.4: Implementar Funcionalidades del DataTable (Paso a Paso)**
 
 **Solo después de aprobación de Tarea 3:**
 
-1. Agregar todas las columnas faltantes
-2. Agregar funcionalidades (checkboxes, sorting, etc.)
-3. Personalizar tipos de columna (progreso, fechas, etc.)
-4. Agregar datos completos
+**⚠️ CRÍTICO:** Para DataTable, **NUNCA** implementar todas las funcionalidades de golpe. Seguir `GUIA-IMPLEMENTACION-DATATABLE-PASO-A-PASO.md` e implementar **UNA funcionalidad a la vez:**
 
-**Código de ejemplo:**
-```javascript
-// DataTable COMPLETO con todas las funcionalidades
-window.createDataTable({
-  containerId: 'encuestas-table-container',
-  columns: [
-    { id: 'select', title: '', type: 'checkbox', width: 50 },
-    { id: 'nombre', title: 'Nombre', type: 'nombre' },
-    { id: 'tipo', title: 'Tipo', type: 'nombre' },
-    { id: 'estado', title: 'Estado', type: 'estado' },
-    { id: 'inicio', title: 'Inicio', type: 'fecha' },
-    { id: 'cierre', title: 'Cierre', type: 'fecha' },
-    { id: 'participantes', title: 'Participantes', type: 'nombre' },
-    { id: 'avance', title: 'Avance', type: 'progreso' }
-  ],
-  rows: [
-    // ... datos completos
-  ],
-  showCheckbox: true,
-  columnSortable: true,
-  // ... otras opciones
-});
-```
+1. ✅ **Tarea 4.1:** Checkboxes
+2. ✅ **Tarea 4.2:** Arrastrar y soltar filas
+3. ✅ **Tarea 4.3:** Arrastrar y soltar columnas
+4. ✅ **Tarea 4.4:** Ordenamiento
+5. ✅ **Tarea 4.5:** Fijar columnas
+6. ✅ **Tarea 4.6:** Selector de columnas
+7. ✅ **Tarea 4.7:** Barra de acciones (selección única)
+8. ✅ **Tarea 4.8:** Barra de acciones (selección múltiple)
+9. ✅ **Tarea 4.9:** Dropdown con filtros
+10. ✅ **Tarea 4.10:** Buscador con componentes UBITS
 
-**Mostrar al usuario:**
-- ✅ DataTable completo
-- ✅ Todas las columnas
-- ✅ Todas las funcionalidades
-- ✅ Datos completos
+**Cada funcionalidad debe:**
+- Implementarse independientemente
+- Verificarse antes de continuar
+- Aprobarse explícitamente por el usuario
 
-**Preguntar:**
-> "✅ Tarea 4 completada: DataTable personalizado implementado. ¿Todo funciona correctamente? ¿Hay algo que ajustar?"
+**Ver guía completa:** `GUIA-IMPLEMENTACION-DATATABLE-PASO-A-PASO.md`
 
 ---
 
@@ -312,7 +571,8 @@ window.createDataTable({
 - **Catálogo:** `CATALOGO-COMPONENTES-UBITS.md`
 - **Guía de uso:** `GUIA-USO-COMPONENTES-UBITS.md`
 - **Errores comunes:** `GUIA-ERRORES-COMUNES-UBITS.md`
-- **DataTable completo:** `vendor/ubits/packages/components/data-table/src/types/DataTableOptions.ts`
+- **DataTable paso a paso:** `GUIA-IMPLEMENTACION-DATATABLE-PASO-A-PASO.md` ⭐ **OBLIGATORIO para DataTable**
+- **DataTable Options:** `vendor/ubits/packages/components/data-table/src/types/DataTableOptions.ts`
 
 ---
 
