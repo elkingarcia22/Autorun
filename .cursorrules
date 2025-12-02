@@ -132,24 +132,59 @@ Antes de trabajar en un template, LEER:
 
 ## 🖼️ CREAR DESDE IMAGEN DESPUÉS DEL WIZARD
 
-**⚠️ REGLA CRÍTICA:** Cuando el usuario pide crear/modificar algo desde una imagen **DESPUÉS** de ejecutar el wizard:
+**⚠️ REGLA CRÍTICA ABSOLUTA:** Cuando el usuario pide crear/modificar algo desde una imagen **DESPUÉS** de ejecutar el wizard:
 
-1. **SIEMPRE identificar template existente PRIMERO:**
-   - Buscar templates en `prototypes/canvas-*.html`
-   - Identificar template correcto según módulo/producto
-   - **MODIFICAR ese template existente** (NO crear uno nuevo)
+### **PASO 0: IDENTIFICAR TEMPLATE EXISTENTE** ⚠️ OBLIGATORIO PRIMERO
 
-2. **SIEMPRE seguir proceso paso a paso:**
-   - Analizar imagen (componentes, estructura, spacing)
-   - Consultar catálogo
-   - Crear plan de implementación
-   - Mostrar plan y esperar aprobación
-   - Implementar en tareas pequeñas
-   - Pedir aprobación después de cada tarea
+**ANTES de hacer CUALQUIER cosa:**
+1. **Buscar templates existentes:**
+   ```bash
+   ls prototypes/*.html
+   ```
+2. **Identificar template correcto:**
+   - "home de encuestas" → `canvas-*-encuestas-*.html`
+   - "administrador" → `canvas-administrador-*.html`
+   - "colaborador" → `canvas-colaborador-*.html`
+3. **MODIFICAR ese template** (NO crear uno nuevo)
 
-3. **NUNCA crear HTML nuevo:**
-   - ❌ INCORRECTO: Crear `home-encuestas.html` nuevo
-   - ✅ CORRECTO: Modificar `prototypes/canvas-*-encuestas-*.html` existente
+### **PASO 1: ANALIZAR IMAGEN** ⚠️ OBLIGATORIO ANTES DE CÓDIGO
+
+**NO escribir código todavía. Primero analizar:**
+
+1. **Identificar componentes UBITS en la imagen:**
+   - ¿Sidebar? ¿SubNav? ¿Tabs? ¿DataTable? ¿Buttons?
+   - Consultar `CATALOGO-COMPONENTES-UBITS.md`
+2. **Analizar estructura:**
+   - ¿Qué va primero? ¿Qué va después?
+   - ¿Qué elementos van en contenedores?
+3. **Analizar spacing:**
+   - Medir visualmente espacios entre elementos
+   - Mapear a tokens UBITS específicos
+4. **Crear plan de implementación:**
+   - Listar componentes identificados
+   - Describir estructura
+   - Dividir en tareas pequeñas
+5. **MOSTRAR PLAN AL USUARIO Y ESPERAR APROBACIÓN**
+
+### **PASO 2: IMPLEMENTAR PASO A PASO** ⚠️ SOLO DESPUÉS DE APROBACIÓN
+
+**Para cada tarea:**
+1. Implementar SOLO esa tarea
+2. Validar (`npm run lint`)
+3. Mostrar resultado
+4. Pedir aprobación explícita
+5. Solo después de aprobación, continuar
+
+**❌ NUNCA:**
+- Crear `home-encuestas.html` nuevo
+- Implementar todo de golpe
+- Escribir código sin analizar imagen primero
+
+**✅ SIEMPRE:**
+- Modificar `prototypes/canvas-*-encuestas-*.html` existente
+- Analizar imagen antes de código
+- Mostrar plan y esperar aprobación
+- Implementar una tarea a la vez
 
 **Ver guía completa:** `GUIA-CREAR-DESDE-IMAGEN-DESPUES-WIZARD.md`
 
