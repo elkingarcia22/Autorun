@@ -8939,10 +8939,46 @@ npm install</code></pre>
             </div>
           </div>
 
-          <!-- Paso 2: Inicializar Wizard -->
+          <!-- Paso 2: Configurar Scripts en la Raíz del Proyecto -->
           <div class="conectar-step">
             <div class="step-header">
               <div class="step-number-large">2</div>
+              <div class="step-header-content">
+                <h3 class="step-title">Configurar Scripts en la Raíz del Proyecto</h3>
+                <div class="step-toggle-icon">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+            <div class="step-content">
+              <p class="step-description">
+                Este comando creará un <code style="background: rgba(0,255,255,0.1); padding: 2px 6px; border-radius: 3px;">package.json</code> en la raíz del proyecto (un nivel arriba de Autorun) con los scripts necesarios para ejecutar el wizard desde cualquier directorio del proyecto.
+              </p>
+              <div class="code-block">
+                <pre><code># Desde dentro del directorio Autorun
+cd Autorun
+npm run setup-project</code></pre>
+              </div>
+              <div style="margin-top: 20px; padding: 16px; background: rgba(255, 255, 0, 0.1); border-left: 4px solid var(--autorun-neon-yellow); border-radius: 6px;">
+                <p style="margin: 0; color: var(--autorun-neon-yellow); font-weight: 600;">
+                  ⚠️ <strong>IMPORTANTE:</strong> Ejecuta este comando en la <strong>TERMINAL</strong>, NO en el chat de Cursor.
+                </p>
+              </div>
+              <p class="step-note" style="margin-top: 16px;">
+                <strong>Ejemplo de estructura:</strong><br>
+                <code style="background: rgba(0,255,255,0.1); padding: 2px 6px; border-radius: 3px;">MiProyecto/</code><br>
+                <code style="background: rgba(0,255,255,0.1); padding: 2px 6px; border-radius: 3px;">├── Autorun/</code> ← Aquí ejecutas: npm run setup-project<br>
+                <code style="background: rgba(0,255,255,0.1); padding: 2px 6px; border-radius: 3px;">└── package.json</code> ← Se crea automáticamente aquí
+              </p>
+            </div>
+          </div>
+
+          <!-- Paso 3: Inicializar Wizard -->
+          <div class="conectar-step">
+            <div class="step-header">
+              <div class="step-number-large">3</div>
               <div class="step-header-content">
                 <h3 class="step-title">Inicializar el Wizard</h3>
                 <div class="step-toggle-icon">
@@ -8957,9 +8993,21 @@ npm install</code></pre>
                 Ejecuta el wizard interactivo. El wizard te preguntará por el template, módulo, producto, navegación, add-ons y GitHub, luego creará automáticamente ambos templates (administrador y colaborador).
               </p>
               <div class="code-block">
-                <pre><code># Ejecutar el wizard de inicialización
+                <pre><code># Desde la raíz del proyecto (un nivel arriba de Autorun)
+npm run wizard
+
+# O desde dentro de Autorun
+cd Autorun
 npm run init</code></pre>
                 </div>
+              <div style="margin-top: 20px; padding: 16px; background: rgba(255, 255, 0, 0.1); border-left: 4px solid var(--autorun-neon-yellow); border-radius: 6px;">
+                <p style="margin: 0; color: var(--autorun-neon-yellow); font-weight: 600;">
+                  ⚠️ <strong>IMPORTANTE:</strong> Ejecuta este comando en la <strong>TERMINAL</strong>, NO en el chat de Cursor.
+                </p>
+                <p style="margin: 8px 0 0 0; color: var(--autorun-gray-600); font-size: 14px;">
+                  💡 <strong>Por qué en la terminal:</strong> El wizard necesita acceso interactivo a stdin/stdout para leer tus respuestas. El chat de Cursor no puede proporcionar input interactivo correctamente. Ejecutar en la terminal garantiza que puedas responder todas las preguntas.
+                </p>
+              </div>
               <div style="margin-top: 20px;">
                 <h4 style="color: var(--autorun-neon-yellow); margin-bottom: 12px; font-size: 16px;">El wizard te preguntará:</h4>
                 <ul style="list-style: none; padding-left: 0;">
