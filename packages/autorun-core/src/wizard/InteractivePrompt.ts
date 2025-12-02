@@ -184,14 +184,17 @@ export class InteractivePrompt {
 		// Si estamos en modo automático pero no hay más respuestas Y el readline está cerrado, usar valor por defecto
 		// Solo hacer esto si realmente estamos en modo automático (con respuestas) y se agotaron
 		// NO hacer esto si el usuario está en modo interactivo normal
-		if (this.isAutoMode && this.autoAnswerIndex >= this.autoAnswers.length) {
+		// IMPORTANTE: Solo usar defaults si realmente había respuestas automáticas (autoAnswers.length > 0)
+		// Si nunca hubo respuestas automáticas, el usuario está en modo interactivo y debe poder elegir
+		if (this.isAutoMode && this.autoAnswers.length > 0 && this.autoAnswerIndex >= this.autoAnswers.length) {
 			// Verificar si el readline está cerrado antes de usar defaults
 			try {
 				if (this.rl && !(this.rl as any).closed) {
 					// Readline está disponible, esperar input del usuario normalmente
-					// No usar defaults automáticamente
+					// No usar defaults automáticamente - el usuario debe poder elegir
+					// Continuar con el flujo normal de modo interactivo
 				} else {
-					// Readline está cerrado, usar defaults
+					// Readline está cerrado, usar defaults solo si realmente estábamos en modo automático
 					if (defaultValue) {
 						console.log(`Selecciona una opción (1-${options.length})${defaultValue ? ` [Enter para default]` : ''}: (readline cerrado, usando default)`);
 						console.log(`✅ Usando opción por defecto: ${options.find(o => o.value === defaultValue)?.label || defaultValue}\n`);
@@ -204,7 +207,7 @@ export class InteractivePrompt {
 					return firstOption.value;
 				}
 			} catch (error) {
-				// Si hay error verificando readline, usar defaults
+				// Si hay error verificando readline, usar defaults solo si realmente estábamos en modo automático
 				if (defaultValue) {
 					console.log(`Selecciona una opción (1-${options.length})${defaultValue ? ` [Enter para default]` : ''}: (error verificando readline, usando default)`);
 					console.log(`✅ Usando opción por defecto: ${options.find(o => o.value === defaultValue)?.label || defaultValue}\n`);

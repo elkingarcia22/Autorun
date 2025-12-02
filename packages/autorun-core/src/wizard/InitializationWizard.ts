@@ -407,11 +407,31 @@ export class InitializationWizard {
 		// En modo automático SIN AUTORUN_ANSWERS, usar add-ons por defecto sin preguntar
 		// Si hay AUTORUN_ANSWERS, mostrar la pregunta para que el usuario responda
 		const hasAutoAnswers = !!process.env.AUTORUN_ANSWERS;
-		// Solo usar defaults automáticamente si realmente hay respuestas automáticas disponibles
-		// Si no hay respuestas, el usuario debe poder elegir interactivamente
-		if (this.prompt.isAuto() && !hasAutoAnswers && this.prompt.hasAutoAnswers()) {
-			console.log('\n   ✅ Usando add-ons por defecto (modo automático)\n');
-			return defaultAddons;
+		const isAuto = this.prompt.isAuto();
+		const hasAutoAnswersEver = this.prompt.hasAutoAnswers();
+		
+		// DEBUG: Log para entender qué está pasando
+		// console.log('[DEBUG askAddons] isAuto:', isAuto, 'hasAutoAnswers:', hasAutoAnswers, 'hasAutoAnswersEver:', hasAutoAnswersEver);
+		
+		// Lógica simplificada:
+		// 1. Si NO estamos en modo automático (isAuto() retorna false), SIEMPRE preguntar al usuario
+		// 2. Si estamos en modo automático PERO hay AUTORUN_ANSWERS, preguntar al usuario (quiere responder)
+		// 3. Si estamos en modo automático SIN AUTORUN_ANSWERS Y se agotaron las respuestas, usar defaults
+		
+		// Si no estamos en modo automático, SIEMPRE preguntar al usuario
+		if (!isAuto) {
+			// Continuar normalmente, preguntar al usuario - NO usar defaults automáticamente
+		} else if (hasAutoAnswers) {
+			// Estamos en modo automático pero hay AUTORUN_ANSWERS, el usuario quiere responder
+			// Continuar normalmente, preguntar al usuario
+		} else {
+			// Estamos en modo automático sin AUTORUN_ANSWERS y se agotaron las respuestas
+			// Solo usar defaults si realmente había respuestas automáticas que se agotaron
+			if (hasAutoAnswersEver) {
+				console.log('\n   ✅ Usando add-ons por defecto (modo automático, respuestas agotadas)\n');
+				return defaultAddons;
+			}
+			// Si nunca hubo respuestas automáticas, continuar normalmente (preguntar al usuario)
 		}
 
 		// Preguntar qué quiere hacer
