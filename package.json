@@ -12,6 +12,7 @@
 		"verify": "node scripts/verify-setup.js",
 		"init": "tsx packages/autorun-core/src/cli/autorun-init.ts",
 		"autorun:init": "npm run init",
+		"setup-project": "node scripts/create-project-package-json.js",
 		"postinstall": "npm run verify",
 		"wizard": "node scripts/run-init.js"
 	},
