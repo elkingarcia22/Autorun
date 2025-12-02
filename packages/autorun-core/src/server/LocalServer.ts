@@ -203,9 +203,21 @@ export class LocalServer {
 			}
 		}
 
-		// Si es la raíz, servir index o listar archivos
-		if (filePath === '/') {
-			filePath = '/index.html';
+		// Si es la raíz, detectar automáticamente el template más reciente
+		if (filePath === '/' || filePath === '/index.html') {
+			try {
+				const mostRecentTemplate = await this.findMostRecentTemplate();
+				if (mostRecentTemplate) {
+					// Redirigir al template más reciente
+					res.writeHead(302, { 'Location': `/${mostRecentTemplate}` });
+					res.end();
+					console.log(`   ✅ Redirigido a template más reciente: ${mostRecentTemplate}`);
+					return;
+				}
+			} catch (error) {
+				console.log(`   ⚠️  Error al buscar template más reciente: ${error}`);
+				// Continuar con el flujo normal (listar archivos)
+			}
 		}
 
 		// Remover leading slash
@@ -505,6 +517,47 @@ export class LocalServer {
 
 			proxyReq.end();
 		});
+	}
+
+	/**
+	 * Encuentra el template más reciente en el directorio prototypes/
+	 */
+	private async findMostRecentTemplate(): Promise<string | null> {
+		try {
+			const files = await fs.readdir(this.directory);
+			
+			// Filtrar solo archivos HTML que coincidan con el patrón de templates
+			// Patrón: canvas-{template}-{module}-{date}.html
+			const templateFiles = files.filter(file => 
+				file.endsWith('.html') && 
+				file.startsWith('canvas-')
+			);
+			
+			if (templateFiles.length === 0) {
+				return null;
+			}
+			
+			// Obtener información de cada archivo (fecha de modificación)
+			const fileStats = await Promise.all(
+				templateFiles.map(async (file) => {
+					const filePath = path.join(this.directory, file);
+					const stats = await fs.stat(filePath);
+					return {
+						fileName: file,
+						mtime: stats.mtime.getTime(),
+					};
+				})
+			);
+			
+			// Ordenar por fecha de modificación (más reciente primero)
+			fileStats.sort((a, b) => b.mtime - a.mtime);
+			
+			// Retornar el más reciente
+			return fileStats[0].fileName;
+		} catch (error) {
+			console.error(`   ❌ Error al buscar template más reciente: ${error}`);
+			return null;
+		}
 	}
 
 	/**
