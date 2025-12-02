@@ -64,7 +64,8 @@ Antes de trabajar en un template, LEER:
 7. `GUIA-ANALISIS-ESTRUCTURA-SPACING.md` - ⚠️ **OBLIGATORIO:** Análisis de estructura (contenedores) y spacing
 8. `GUIA-PROCESO-IMPLEMENTACION-PASO-A-PASO.md` - ⚠️ **OBLIGATORIO:** Proceso de implementación paso a paso
 9. `GUIA-IMPLEMENTACION-DATATABLE-PASO-A-PASO.md` - ⚠️ **OBLIGATORIO:** Implementación de DataTable funcionalidad por funcionalidad
-10. `INDEX.md` - Flujo de inicialización
+10. `GUIA-CREAR-DESDE-IMAGEN-DESPUES-WIZARD.md` - ⚠️ **OBLIGATORIO:** Crear desde imagen DESPUÉS del wizard (modificar template existente)
+11. `INDEX.md` - Flujo de inicialización
 
 ## 🔍 VERIFICACIÓN ANTES DE TRABAJAR
 
@@ -105,6 +106,29 @@ Antes de trabajar en un template, LEER:
    - Usar componente existente o crear con tokens UBITS
 
 **Ver guía completa:** `GUIA-IDENTIFICACION-COMPONENTES.md`
+
+## 🖼️ CREAR DESDE IMAGEN DESPUÉS DEL WIZARD
+
+**⚠️ REGLA CRÍTICA:** Cuando el usuario pide crear/modificar algo desde una imagen **DESPUÉS** de ejecutar el wizard:
+
+1. **SIEMPRE identificar template existente PRIMERO:**
+   - Buscar templates en `prototypes/canvas-*.html`
+   - Identificar template correcto según módulo/producto
+   - **MODIFICAR ese template existente** (NO crear uno nuevo)
+
+2. **SIEMPRE seguir proceso paso a paso:**
+   - Analizar imagen (componentes, estructura, spacing)
+   - Consultar catálogo
+   - Crear plan de implementación
+   - Mostrar plan y esperar aprobación
+   - Implementar en tareas pequeñas
+   - Pedir aprobación después de cada tarea
+
+3. **NUNCA crear HTML nuevo:**
+   - ❌ INCORRECTO: Crear `home-encuestas.html` nuevo
+   - ✅ CORRECTO: Modificar `prototypes/canvas-*-encuestas-*.html` existente
+
+**Ver guía completa:** `GUIA-CREAR-DESDE-IMAGEN-DESPUES-WIZARD.md`
 
 ## 🔄 PROCESO DE IMPLEMENTACIÓN PASO A PASO (OBLIGATORIO)
 
