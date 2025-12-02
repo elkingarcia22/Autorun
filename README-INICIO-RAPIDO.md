@@ -19,9 +19,19 @@
    npm install
    ```
 
-4. **Ejecutar el wizard:**
+4. **Configurar scripts en la raíz del proyecto (opcional pero recomendado):**
    ```bash
-   npm run init
+   # Desde Autorun/
+   npm run setup-project
+   ```
+   Esto creará un `package.json` en la raíz del proyecto con los scripts necesarios.
+
+5. **Ejecutar el wizard:**
+   ```bash
+   # Desde cualquier directorio del proyecto
+   npm run wizard
+   # O desde dentro de Autorun/
+   cd Autorun && npm run init
    ```
 
 ## ⚠️ IMPORTANTE
