@@ -14,10 +14,27 @@ export class InteractivePrompt {
 	private isAutoMode: boolean = false;
 
 	constructor() {
-		this.rl = readline.createInterface({
-			input: process.stdin,
-			output: process.stdout,
-		});
+		// Solo crear readline si realmente hay TTY disponible
+		// Si no hay TTY, no crear readline para evitar bloqueos
+		if (process.stdin.isTTY && process.stdout.isTTY) {
+			this.rl = readline.createInterface({
+				input: process.stdin,
+				output: process.stdout,
+			});
+		} else {
+			// Crear un readline dummy que no bloquee
+			// Esto permite que el código funcione pero no intenta leer de stdin
+			this.rl = readline.createInterface({
+				input: process.stdin,
+				output: process.stdout,
+			});
+			// Cerrar inmediatamente para evitar bloqueos
+			try {
+				this.rl.close();
+			} catch (error) {
+				// Ignorar errores al cerrar
+			}
+		}
 
 		// Verificar si hay respuestas automáticas desde variables de entorno o argumentos
 		this.initializeAutoMode();
