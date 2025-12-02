@@ -1,5 +1,24 @@
 # 🎯 Reglas para Trabajar con Templates UBITS en Autorun
 
+## 🚨🚨🚨 VERIFICACIÓN OBLIGATORIA ANTES DE CUALQUIER ACCIÓN 🚨🚨🚨
+
+**⚠️⚠️⚠️ SI EL USUARIO ENVÍA UNA IMAGEN O PIDE CREAR/MODIFICAR DESDE IMAGEN:**
+
+**ANTES de hacer CUALQUIER cosa (buscar archivos, leer código, escribir código, etc.), DEBES:**
+
+1. **DETENER TODO INMEDIATAMENTE**
+2. **LEER ESTA SECCIÓN COMPLETA**
+3. **NO escribir código JavaScript**
+4. **NO modificar archivos HTML**
+5. **NO buscar templates**
+6. **NO implementar componentes**
+7. **NO crear archivos nuevos**
+8. **NO reemplazar contenido**
+
+**SOLO después de completar el análisis completo (ver abajo), puedes implementar.**
+
+---
+
 ## 🚨 INSTRUCCIÓN CRÍTICA PARA IMÁGENES 🚨
 
 **⚠️ BLOQUEO ABSOLUTO: SI EL USUARIO ENVÍA UNA IMAGEN O PIDE CREAR DESDE IMAGEN:**
