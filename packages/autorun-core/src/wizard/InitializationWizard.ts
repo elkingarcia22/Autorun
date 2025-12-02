@@ -407,6 +407,9 @@ export class InitializationWizard {
 		// Verificar si estamos en modo automático (con respuestas disponibles)
 		const isAuto = this.prompt.isAuto();
 		
+		// DEBUG: Log para entender qué está pasando
+		console.log('[DEBUG askAddons] isAuto:', isAuto, 'isAutoMode:', (this.prompt as any).isAutoMode, 'autoAnswerIndex:', (this.prompt as any).autoAnswerIndex, 'autoAnswers.length:', (this.prompt as any).autoAnswers.length);
+		
 		// IMPORTANTE: Si NO estamos en modo automático (isAuto() retorna false),
 		// significa que se agotaron las respuestas automáticas y volvimos a modo interactivo.
 		// En ese caso, SIEMPRE preguntar al usuario.
@@ -416,11 +419,15 @@ export class InitializationWizard {
 		if (!isAuto) {
 			// Continuar normalmente, preguntar al usuario
 			// Esto incluye el caso donde se agotaron las respuestas automáticas
+			console.log('[DEBUG askAddons] NO estamos en modo automático, preguntando al usuario');
+		} else {
+			console.log('[DEBUG askAddons] Estamos en modo automático, preguntando (select manejará respuesta automática)');
 		}
 		// Si estamos en modo automático, también preguntar
 		// (el método select() manejará la respuesta automática internamente si está disponible)
 
 		// Preguntar qué quiere hacer
+		console.log('[DEBUG askAddons] Llamando a prompt.select()...');
 		const action = await this.prompt.select(
 			'\n   ¿Qué quieres hacer?',
 			[
@@ -1395,7 +1402,7 @@ export class InitializationWizard {
             item.addEventListener('click', clickHandler, { capture: false, passive: false });
             
             // Actualizar onclick si existe (sobrescribir completamente)
-            item.onclick = function(e) {
+              item.onclick = function(e) {
               console.log('🔗 [Wizard] ✅ onclick interceptado en menú, redirigiendo a:', targetFileName);
               if (e) {
                 e.preventDefault();
@@ -1403,9 +1410,9 @@ export class InitializationWizard {
                 e.stopImmediatePropagation();
                 e.cancelBubble = true;
               }
-              window.location.href = targetFileName;
-              return false;
-            };
+                window.location.href = targetFileName;
+                return false;
+              };
             
             // Actualizar atributo onclick
             item.setAttribute('onclick', "event.preventDefault(); event.stopPropagation(); event.stopImmediatePropagation(); event.cancelBubble = true; window.location.href='" + targetFileName + "'; return false;");

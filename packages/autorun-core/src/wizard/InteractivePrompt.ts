@@ -240,22 +240,46 @@ export class InteractivePrompt {
 		// console.log('[DEBUG select] answer:', answer, 'isAutoMode:', this.isAutoMode, 'autoAnswers.length:', this.autoAnswers.length, 'autoAnswerIndex:', this.autoAnswerIndex);
 
 		// Si la respuesta está vacía, verificar el contexto
-		// IMPORTANTE: En modo interactivo (sin respuestas automáticas), una respuesta vacía significa que el usuario presionó Enter
-		// En ese caso, usar default si está disponible (comportamiento normal)
-		// Pero si question() retornó vacío por error/readline cerrado, NO usar default automáticamente
+		// IMPORTANTE: En modo interactivo (sin respuestas automáticas), una respuesta vacía puede significar:
+		// 1. El usuario presionó Enter (comportamiento normal, usar default si está disponible)
+		// 2. El readline estaba cerrado y question() retornó vacío (NO usar default, recrear readline y preguntar de nuevo)
 		if (!answer || answer.trim() === '') {
 			// Verificar si realmente estábamos en modo automático con respuestas que se agotaron
 			const wasAutoModeWithAnswers = this.isAutoMode && this.autoAnswers.length > 0 && this.autoAnswerIndex >= this.autoAnswers.length;
 			
-			// Si estamos en modo interactivo (no automático), una respuesta vacía es válida (usuario presionó Enter)
+			// Si estamos en modo interactivo (no automático), verificar si el readline está disponible
 			if (!this.isAutoMode) {
-				if (defaultValue) {
-					console.log(`✅ Usando opción por defecto: ${options.find(o => o.value === defaultValue)?.label || defaultValue}\n`);
-					return defaultValue;
+				// Verificar si el readline está disponible y funcionando
+				try {
+					if (this.rl && !(this.rl as any).closed) {
+						// Readline está disponible, el usuario presionó Enter intencionalmente
+						if (defaultValue) {
+							console.log(`✅ Usando opción por defecto: ${options.find(o => o.value === defaultValue)?.label || defaultValue}\n`);
+							return defaultValue;
+						}
+						// Si no hay default, pedir de nuevo
+						console.log('⚠️  Por favor selecciona una opción válida.\n');
+						return this.select(prompt, options, defaultValue);
+					} else {
+						// Readline está cerrado, NO usar default automáticamente
+						// Recrear readline y preguntar de nuevo
+						console.log('[DEBUG select] Readline cerrado, recreando y preguntando de nuevo...');
+						this.rl = readline.createInterface({
+							input: process.stdin,
+							output: process.stdout,
+						});
+						// Preguntar de nuevo sin usar default
+						return this.select(prompt, options, defaultValue);
+					}
+				} catch (error) {
+					// Error verificando readline, recrear y preguntar de nuevo
+					console.log('[DEBUG select] Error verificando readline, recreando...');
+					this.rl = readline.createInterface({
+						input: process.stdin,
+						output: process.stdout,
+					});
+					return this.select(prompt, options, defaultValue);
 				}
-				// Si no hay default, pedir de nuevo
-				console.log('⚠️  Por favor selecciona una opción válida.\n');
-				return this.select(prompt, options, defaultValue);
 			}
 			
 			// Si estamos en modo automático
