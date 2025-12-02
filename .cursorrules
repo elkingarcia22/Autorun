@@ -1,5 +1,28 @@
 # 🎯 Reglas para Trabajar con Templates UBITS en Autorun
 
+## 🚨 INSTRUCCIÓN CRÍTICA PARA IMÁGENES 🚨
+
+**⚠️ SI EL USUARIO ENVÍA UNA IMAGEN O PIDE CREAR DESDE IMAGEN:**
+
+1. **DETENER TODO** - NO escribir código todavía
+2. **LEER PRIMERO:** `GUIA-CREAR-DESDE-IMAGEN-DESPUES-WIZARD.md`
+3. **IDENTIFICAR TEMPLATE EXISTENTE:**
+   - Buscar en `prototypes/canvas-*.html`
+   - NO crear HTML nuevo
+   - MODIFICAR template existente
+4. **ANALIZAR LA IMAGEN:**
+   - Identificar componentes UBITS
+   - Consultar `CATALOGO-COMPONENTES-UBITS.md`
+   - Analizar estructura y spacing
+5. **CREAR PLAN:**
+   - Listar componentes identificados
+   - Dividir en tareas pequeñas
+   - MOSTRAR PLAN AL USUARIO
+   - ESPERAR APROBACIÓN antes de implementar
+6. **SOLO DESPUÉS de aprobación, implementar UNA tarea a la vez**
+
+**NUNCA implementar directamente sin analizar primero la imagen.**
+
 ## ⚠️ REGLAS CRÍTICAS - LEER ANTES DE TRABAJAR
 
 ### 1. **USAR SOLO COMPONENTES UBITS EXISTENTES**
