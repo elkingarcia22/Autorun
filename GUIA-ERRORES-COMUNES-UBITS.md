@@ -427,6 +427,96 @@ if (section !== 'encuestas') {
 
 ---
 
+## ⚠️ ERROR CRÍTICO #10: Conflicto de Interceptores con Object.defineProperty
+
+### ❌ **ERROR COMÚN:**
+```javascript
+// ❌ INCORRECTO: Múltiples interceptores usando Object.defineProperty
+// Interceptor 1 (wizard)
+Object.defineProperty(window, 'UBITS_ContentManager', {
+  set: function(value) {
+    window._UBITS_ContentManager = value;
+    // ...
+  },
+  get: function() {
+    return window._UBITS_ContentManager;
+  }
+});
+
+// Interceptor 2 (HeaderSection) - PROBLEMA: Interfiere con el primero
+Object.defineProperty(window, 'UBITS_ContentManager', {
+  set: function(value) {
+    // Esto reemplaza el descriptor anterior
+    // ...
+  }
+});
+```
+
+**Problema:**
+- El primer interceptor usa `Object.defineProperty` con getter/setter
+- Si luego reemplaza el descriptor con `{ value, writable: true }`, elimina el getter/setter
+- El segundo interceptor intenta usar `Object.defineProperty` de nuevo
+- **Resultado:** `UBITS_ContentManager` nunca se crea correctamente
+- **Síntoma:** SubNav no aparece porque `updateSubNav` nunca se llama
+
+### ✅ **CORRECTO:**
+```javascript
+// ✅ CORRECTO: Usar setInterval polling para detectar cuando se crea
+const checkContentManager = setInterval(() => {
+  if (window.UBITS_ContentManager && !window._UBITS_ContentManager_HeaderSection_Intercepted) {
+    window._UBITS_ContentManager_HeaderSection_Intercepted = true;
+    
+    // Interceptar métodos después de que se crea
+    const originalUpdateContent = window.UBITS_ContentManager.updateContent;
+    window.UBITS_ContentManager.updateContent = function(section, subSection) {
+      // Tu lógica aquí
+      return originalUpdateContent.call(this, section, subSection);
+    };
+    
+    clearInterval(checkContentManager);
+  }
+}, 100);
+
+// Timeout de seguridad
+setTimeout(() => clearInterval(checkContentManager), 10000);
+```
+
+### 🔍 **¿Por qué?**
+- No interfiere con otros interceptores
+- Espera a que `UBITS_ContentManager` exista antes de interceptar
+- No modifica el descriptor, solo intercepta métodos después de que se crea
+- Funciona incluso si hay múltiples interceptores
+
+### 📝 **Regla de Oro:**
+**SIEMPRE usar polling (`setInterval`) o `MutationObserver` para interceptar `UBITS_ContentManager`:**
+```javascript
+// Opción 1: setInterval (recomendado)
+const checkContentManager = setInterval(() => {
+  if (window.UBITS_ContentManager) {
+    interceptContentManager();
+    clearInterval(checkContentManager);
+  }
+}, 100);
+
+// Opción 2: MutationObserver
+const observer = new MutationObserver(() => {
+  if (window.UBITS_ContentManager) {
+    interceptContentManager();
+    observer.disconnect();
+  }
+});
+observer.observe(document.body, { childList: true, subtree: true });
+```
+
+### 📋 **Checklist:**
+- [ ] ¿Verifico si ya existe un interceptor antes de crear uno nuevo?
+- [ ] ¿Uso `setInterval` o `MutationObserver` en lugar de `Object.defineProperty`?
+- [ ] ¿Verifico que `UBITS_ContentManager` existe antes de interceptar métodos?
+- [ ] ¿Agrego un timeout de seguridad para evitar loops infinitos?
+- [ ] ¿Uso una bandera para evitar interceptar múltiples veces?
+
+---
+
 ## 📋 Checklist Antes de Usar Componentes
 
 Antes de usar cualquier componente UBITS, verificar:
