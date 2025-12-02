@@ -613,25 +613,39 @@ export class InitializationWizard {
 
 		// 8. Abrir solo el template seleccionado en el navegador
 		console.log('🌐 Abriendo template seleccionado en el navegador...');
-		await this.openTemplateInBrowser(selectedCanvasPath);
+		const openedUrl = await this.openTemplateInBrowser(selectedCanvasPath);
 		console.log('   ✅ Template abierto\n');
 
 		// Mostrar resumen final
 		console.log('\n🎉 ¡Excelente! Tu proyecto UBITS está listo.\n');
 		console.log('📋 Resumen de tu configuración:');
-		console.log(`   📁 Lienzo seleccionado: ${selectedCanvasPath}`);
-		if (otherCanvasPath) {
-			console.log(`   📁 Lienzo adicional: ${otherCanvasPath}`);
-		}
 		console.log(`   🎯 Template: ${template}`);
 		console.log(`   📦 Módulo: ${module}`);
 		if (product) {
 			console.log(`   🎨 Producto: ${product}`);
 		}
+		console.log(`   📁 Lienzo seleccionado: ${selectedCanvasPath}`);
+		if (openedUrl) {
+			console.log(`   🌐 Template abierto en: ${openedUrl}`);
+		}
+		if (otherCanvasPath) {
+			console.log(`   📁 Lienzo adicional: ${otherCanvasPath}`);
+		}
 		console.log(`   🔌 Add-ons instalados: ${installedAddons.length}`);
 		if (githubUrl) {
 			console.log(`   🐙 GitHub: ${githubUrl}`);
 		}
+		
+		// Mostrar información del servidor
+		if (this.localServer && this.localServer.isServerRunning()) {
+			const serverUrl = this.localServer.getUrl();
+			console.log(`   🖥️  Servidor local: ${serverUrl}`);
+			console.log('\n   💡 IMPORTANTE:');
+			console.log('      - El servidor HTTP local está corriendo');
+			console.log('      - Mantén esta terminal abierta para que el servidor siga funcionando');
+			console.log('      - Presiona Ctrl+C para detener el servidor y salir');
+		}
+		
 		console.log('\n🚀 Ya puedes empezar a trabajar. ¡Éxito con tu proyecto!\n');
 
 		return {
@@ -666,10 +680,10 @@ export class InitializationWizard {
 	 * Abre el template en el navegador local usando servidor HTTP
 	 * Solo se ejecuta una vez, incluso si se llama múltiples veces
 	 */
-	private async openTemplateInBrowser(filePath: string): Promise<void> {
+	private async openTemplateInBrowser(filePath: string): Promise<string | null> {
 		// Si ya se abrió, no hacer nada
 		if (this.templateOpened) {
-			return;
+			return null;
 		}
 
 		let httpUrl: string = '';
@@ -707,15 +721,27 @@ export class InitializationWizard {
 			
 			// Marcar como abierto
 			this.templateOpened = true;
-			console.log(`   ✅ Template abierto en: ${httpUrl}`);
+			
+			// Identificar tipo de template desde el nombre del archivo
+			const templateType = fileName.includes('administrador') ? 'Administrador' : 
+			                     fileName.includes('colaborador') ? 'Colaborador' : 
+			                     'Template';
+			
+			console.log(`   ✅ Template ${templateType} abierto en el navegador`);
+			console.log(`   📄 Archivo: ${fileName}`);
+			console.log(`   🌐 URL: ${httpUrl}`);
 			console.log(`   💡 El servidor HTTP local seguirá corriendo en ${serverUrl}`);
 			console.log(`   💡 Para detenerlo, presiona Ctrl+C o cierra esta terminal`);
+			
+			return httpUrl;
 		} catch (error: any) {
 			console.warn('   ⚠️  No se pudo abrir el navegador automáticamente:', error.message || error);
 			if (httpUrl) {
 				console.warn(`   💡 Abre manualmente: ${httpUrl}`);
+				return httpUrl;
 			} else {
 				console.warn(`   💡 Abre manualmente: ${filePath}`);
+				return null;
 			}
 		}
 	}
