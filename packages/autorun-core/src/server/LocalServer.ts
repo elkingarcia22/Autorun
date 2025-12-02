@@ -129,28 +129,78 @@ export class LocalServer {
 		let filePath = url.pathname;
 
 		// Detectar si es una petición de proxy a Vercel
-		if (filePath.startsWith('/vercel-proxy/') && this.vercelUrl) {
-			// Servir sidebar.css local corregido en lugar de hacer proxy a Vercel
-			if (filePath.includes('/components/sidebar/src/styles/sidebar.css')) {
-				const localSidebarPath = path.join(process.cwd(), 'vendor/ubits/packages/components/sidebar/src/styles/sidebar.css');
-				try {
-					const stats = await fs.stat(localSidebarPath);
-					if (stats.isFile()) {
-						const content = await fs.readFile(localSidebarPath, 'utf-8');
-						res.setHeader('Content-Type', 'text/css');
-						res.setHeader('Access-Control-Allow-Origin', '*');
-						res.writeHead(200);
-						res.end(content);
-						console.log(`   ✅ Servido sidebar.css local (corregido) en lugar de Vercel`);
-						return;
+		// PRIMERO intentar servir desde archivos locales, luego hacer proxy a Vercel
+		if (filePath.startsWith('/vercel-proxy/')) {
+			// Remover /vercel-proxy/ del path para obtener la ruta relativa
+			const relativePath = filePath.replace(/^\/vercel-proxy\//, '');
+			const localPath = path.join(process.cwd(), 'vendor/ubits/packages', relativePath);
+			
+			// Intentar servir desde archivos locales primero
+			try {
+				const stats = await fs.stat(localPath);
+				if (stats.isFile()) {
+					const content = await fs.readFile(localPath);
+					const contentType = this.getContentType(localPath);
+					
+					const headers: Record<string, string> = {
+						'Content-Type': contentType,
+						'Access-Control-Allow-Origin': '*',
+					};
+					
+					// Headers anti-caché para desarrollo
+					if (localPath.endsWith('.html') || localPath.endsWith('.js') || localPath.endsWith('.css')) {
+						headers['Cache-Control'] = 'no-cache, no-store, must-revalidate';
+						headers['Pragma'] = 'no-cache';
+						headers['Expires'] = '0';
 					}
-				} catch (error) {
-					// Si no existe local, hacer proxy a Vercel
-					console.log(`   ⚠️  sidebar.css local no encontrado, usando proxy a Vercel`);
+					
+					res.writeHead(200, headers);
+					res.end(content);
+					console.log(`   ✅ Servido desde local: ${relativePath}`);
+					return;
+				}
+			} catch (error) {
+				// Si no existe local, hacer proxy a Vercel (si está configurado)
+				if (this.vercelUrl) {
+					console.log(`   ⚠️  Archivo local no encontrado (${relativePath}), usando proxy a Vercel`);
+					await this.proxyVercelRequest(req, res, filePath);
+					return;
+				} else {
+					// Si no hay Vercel configurado, retornar 404
+					res.writeHead(404, { 'Content-Type': 'text/plain' });
+					res.end(`File not found: ${relativePath}\n\nArchivo no encontrado localmente y Vercel no está configurado.`);
+					return;
 				}
 			}
-			await this.proxyVercelRequest(req, res, filePath);
-			return;
+		}
+
+		// Detectar si es una ruta a imágenes del template (logo, avatar, etc.)
+		// Mapear /images/... a vendor/ubits/packages/templates/assets/images/...
+		if (filePath.startsWith('/images/')) {
+			const imageName = filePath.replace('/images/', '');
+			const localImagePath = path.join(process.cwd(), 'vendor/ubits/packages/templates/assets/images', imageName);
+			
+			try {
+				const stats = await fs.stat(localImagePath);
+				if (stats.isFile()) {
+					const content = await fs.readFile(localImagePath);
+					const contentType = this.getContentType(localImagePath);
+					
+					res.writeHead(200, {
+						'Content-Type': contentType,
+						'Access-Control-Allow-Origin': '*',
+						'Cache-Control': 'no-cache, no-store, must-revalidate',
+						'Pragma': 'no-cache',
+						'Expires': '0',
+					});
+					res.end(content);
+					console.log(`   ✅ Servida imagen desde local: ${imageName}`);
+					return;
+				}
+			} catch (error) {
+				// Si no existe, continuar con el flujo normal (puede estar en otro lugar)
+				console.log(`   ⚠️  Imagen no encontrada en templates/assets/images/: ${imageName}`);
+			}
 		}
 
 		// Si es la raíz, servir index o listar archivos
