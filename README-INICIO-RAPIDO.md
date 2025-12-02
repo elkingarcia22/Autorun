@@ -26,17 +26,30 @@
 
 ## ⚠️ IMPORTANTE
 
-**Siempre ejecuta `npm run init` desde dentro del directorio `Autorun`:**
+**Ahora puedes ejecutar el wizard desde cualquier directorio del proyecto:**
+
+### Opción 1: Desde cualquier directorio (Recomendado) ⭐
+
+```bash
+# Desde MiProyecto/ o cualquier subdirectorio
+npm run wizard
+# O usando el script directamente:
+node Autorun/scripts/run-init.js
+```
+
+El script buscará automáticamente el directorio `Autorun` y ejecutará el wizard.
+
+### Opción 2: Desde dentro de Autorun (Tradicional)
 
 ```bash
 cd MiProyecto/Autorun
 npm run init
 ```
 
-**NO desde la carpeta del proyecto:**
+**NO desde la carpeta del proyecto sin el script:**
 ```bash
 cd MiProyecto
-npm run init  # ❌ Esto NO funcionará
+npm run init  # ❌ Esto NO funcionará (a menos que uses npm run wizard)
 ```
 
 ## 🎯 Estructura de Carpetas
