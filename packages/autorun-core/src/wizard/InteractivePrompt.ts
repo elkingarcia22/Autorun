@@ -355,7 +355,8 @@ export class InteractivePrompt {
 				return defaultValue;
 			}
 			
-			// Desactivar modo automático - volver a modo interactivo
+			// Hay TTY (terminal interactivo): desactivar modo automático y volver a modo interactivo
+			// Esto permite que el usuario responda en la terminal
 			this.isAutoMode = false;
 			// Intentar recrear readline si está cerrado
 			try {
@@ -366,25 +367,31 @@ export class InteractivePrompt {
 					});
 				}
 			} catch (error) {
-				// Si falla recrear readline, usar default si no hay TTY
+				// Si falla recrear readline, verificar TTY de nuevo
 				if (!process.stdin.isTTY || !process.stdout.isTTY) {
+					// No hay TTY: usar default
 					console.log(`${prompt} (${defaultText}): (error recreando readline, usando default: ${defaultValue ? 'Sí' : 'No'})`);
 					return defaultValue;
 				}
-				// Si hay TTY, intentar de nuevo
+				// Hay TTY: intentar recrear readline de nuevo
 				this.rl = readline.createInterface({
 					input: process.stdin,
 					output: process.stdout,
 				});
 			}
+			// Continuar con el flujo normal de modo interactivo (esperar respuesta del usuario en terminal)
 		}
 
-		// Verificar si estamos en contexto no interactivo antes de preguntar
+		// Verificar si estamos en contexto no interactivo ANTES de preguntar
+		// Solo usar default automáticamente si NO hay TTY (chat de Cursor)
+		// Si hay TTY (terminal), esperar respuesta del usuario
 		if (!process.stdin.isTTY || !process.stdout.isTTY) {
-			// Contexto no interactivo: usar default automáticamente
+			// Contexto no interactivo (chat de Cursor): usar default automáticamente
 			console.log(`${prompt} (${defaultText}): (contexto no interactivo, usando default: ${defaultValue ? 'Sí' : 'No'})`);
 			return defaultValue;
 		}
+		
+		// Hay TTY (terminal interactivo): continuar normalmente y esperar respuesta del usuario
 
 		// Modo interactivo
 		const answer = await this.question(`${prompt} (${defaultText}): `);
