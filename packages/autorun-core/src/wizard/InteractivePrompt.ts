@@ -78,19 +78,21 @@ export class InteractivePrompt {
 		}
 
 		// Si estamos en modo automático pero no hay más respuestas Y el readline está cerrado, retornar string vacío
-		// Solo hacer esto si realmente el readline está cerrado (no disponible)
-		if (this.isAutoMode && this.autoAnswerIndex >= this.autoAnswers.length) {
+		// IMPORTANTE: Solo hacer esto si realmente había respuestas automáticas (autoAnswers.length > 0)
+		// Si nunca hubo respuestas automáticas, el usuario está en modo interactivo y debe poder responder
+		if (this.isAutoMode && this.autoAnswers.length > 0 && this.autoAnswerIndex >= this.autoAnswers.length) {
 			try {
 				if (this.rl && !(this.rl as any).closed) {
 					// Readline está disponible, esperar input del usuario normalmente
-					// No retornar vacío automáticamente
+					// NO retornar vacío - el usuario debe poder responder
+					// Continuar con el flujo normal de modo interactivo
 				} else {
-					// Readline está cerrado, retornar vacío
+					// Readline está cerrado Y realmente estábamos en modo automático, retornar vacío
 					console.log(`${prompt}(readline cerrado, usando vacío)`);
 					return '';
 				}
 			} catch (error) {
-				// Si hay error verificando readline, retornar vacío
+				// Si hay error verificando readline Y realmente estábamos en modo automático, retornar vacío
 				console.log(`${prompt}(error verificando readline, usando vacío)`);
 				return '';
 			}
@@ -226,21 +228,45 @@ export class InteractivePrompt {
 			`Selecciona una opción (1-${options.length})${defaultValue ? ` [Enter para default]` : ''}: `,
 		);
 
-		// Si la respuesta está vacía y hay un valor por defecto, usarlo
+		// Si la respuesta está vacía, verificar el contexto
+		// IMPORTANTE: En modo interactivo (sin respuestas automáticas), una respuesta vacía significa que el usuario presionó Enter
+		// En ese caso, usar default si está disponible (comportamiento normal)
+		// Pero si question() retornó vacío por error/readline cerrado, NO usar default automáticamente
 		if (!answer || answer.trim() === '') {
+			// Verificar si realmente estábamos en modo automático con respuestas que se agotaron
+			const wasAutoModeWithAnswers = this.isAutoMode && this.autoAnswers.length > 0 && this.autoAnswerIndex >= this.autoAnswers.length;
+			
+			// Si estamos en modo interactivo (no automático), una respuesta vacía es válida (usuario presionó Enter)
+			if (!this.isAutoMode) {
+				if (defaultValue) {
+					console.log(`✅ Usando opción por defecto: ${options.find(o => o.value === defaultValue)?.label || defaultValue}\n`);
+					return defaultValue;
+				}
+				// Si no hay default, pedir de nuevo
+				console.log('⚠️  Por favor selecciona una opción válida.\n');
+				return this.select(prompt, options, defaultValue);
+			}
+			
+			// Si estamos en modo automático
+			if (wasAutoModeWithAnswers) {
+				// Realmente estábamos en modo automático y se agotaron las respuestas
+				if (defaultValue) {
+					console.log(`✅ Usando opción por defecto: ${options.find(o => o.value === defaultValue)?.label || defaultValue}\n`);
+					return defaultValue;
+				}
+				const firstOption = options[0];
+				console.log(`✅ Seleccionado: ${firstOption.label}\n`);
+				return firstOption.value;
+			}
+			
+			// Si estamos en modo automático pero nunca hubo respuestas, esto no debería pasar
+			// Pero por seguridad, pedir de nuevo
 			if (defaultValue) {
 				console.log(`✅ Usando opción por defecto: ${options.find(o => o.value === defaultValue)?.label || defaultValue}\n`);
 				return defaultValue;
 			}
-			// Si no hay default y la respuesta está vacía, pedir de nuevo (solo si no estamos en modo automático)
-			if (!this.isAutoMode) {
-				console.log('⚠️  Por favor selecciona una opción válida.\n');
-				return this.select(prompt, options, defaultValue);
-			}
-			// En modo automático, usar primera opción
-			const firstOption = options[0];
-			console.log(`✅ Seleccionado: ${firstOption.label}\n`);
-			return firstOption.value;
+			console.log('⚠️  Por favor selecciona una opción válida.\n');
+			return this.select(prompt, options, defaultValue);
 		}
 
 		const index = parseInt(answer.trim(), 10) - 1;
