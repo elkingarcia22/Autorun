@@ -1636,10 +1636,14 @@ export class InitializationWizard {
 			return await this.configureGitHub(githubUrlEnv);
 		}
 
-		// Si estamos en modo automático y se agotaron las respuestas, usar default (NO configurar)
-		if (this.prompt.isAuto() === false && this.prompt.hasAutoAnswers()) {
+		// Verificar si se agotaron las respuestas automáticas
+		// Si había respuestas pero se agotaron, usar default (NO configurar)
+		const hadAutoAnswers = this.prompt.hasAutoAnswers();
+		const hasMoreAnswers = this.prompt.isAuto();
+		
+		if (hadAutoAnswers && !hasMoreAnswers) {
 			// Se agotaron las respuestas automáticas, usar default (NO)
-			console.log('   ℹ️  Continuando sin configurar GitHub por el momento (modo automático)\n');
+			console.log('   ℹ️  Continuando sin configurar GitHub por el momento (respuestas automáticas agotadas)\n');
 			return null;
 		}
 
