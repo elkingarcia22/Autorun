@@ -129,6 +129,19 @@ ls prototypes/canvas-*-encuestas-*.html 2>/dev/null || ls prototypes/canvas-*-*.
 2. [Componente 2] - [Tipo] - [Ubicación]
 ...
 
+### 📋 HeaderSection (Verificación Obligatoria):
+- **¿Hay HeaderSection visible en la imagen?** [SÍ / NO]
+- **Si NO hay HeaderSection:**
+  - ✅ DEBE eliminarse del template (viene por defecto)
+  - Interceptar ContentManager para NO crear HeaderSection
+  - Verificar módulo/sección antes de eliminar: `if (section !== 'encuestas') return`
+- **Si SÍ hay HeaderSection:**
+  - ✅ MANTENER HeaderSection
+  - Título: [título si está visible]
+  - Botón primario: [texto del botón si está visible]
+- **Módulo afectado:** [encuestas / inicio / empresa / etc.]
+...
+
 ### 🎨 Iconos Identificados (con variaciones):
 1. [Icono 1]: 
    - Variaciones posibles: `icono-simple`, `icono`, `icono-regular`

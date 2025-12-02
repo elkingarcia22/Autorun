@@ -64,7 +64,27 @@ await createNewTemplate('home-encuestas.html', image);
    - ¿Sidebar? ¿SubNav? ¿Tabs? ¿DataTable? ¿Buttons? ¿Inputs?
    - Consultar `CATALOGO-COMPONENTES-UBITS.md`
 
-2. **Identificar iconos FontAwesome DETALLADAMENTE:** ⚠️ CRÍTICO
+2. **Verificar HeaderSection:** ⚠️ CRÍTICO
+   - **¿Hay un HeaderSection visible en la imagen?**
+     - HeaderSection típicamente muestra:
+       - Título grande de la sección (H2)
+       - Botón primario de acción (ej: "Crear", "Nuevo", "Agregar")
+       - A veces breadcrumb o botones secundarios
+       - Se encuentra en la parte superior del contenido principal
+     - **Si NO hay HeaderSection en la imagen:**
+       - ✅ **DEBE eliminarse** del template
+       - El template viene con HeaderSection por defecto (creado por ContentManager)
+       - Necesitas interceptar ContentManager para NO crear HeaderSection
+       - Documentar: "HeaderSection: NO (debe eliminarse)"
+     - **Si SÍ hay HeaderSection en la imagen:**
+       - ✅ **MANTENER** HeaderSection
+       - Verificar que el título y botones coincidan con la imagen
+       - Documentar: "HeaderSection: SÍ (título: [X], botón: [Y])"
+   - **⚠️ IMPORTANTE:** Solo eliminar HeaderSection en el módulo específico donde la imagen no lo muestra
+     - Verificar módulo/sección antes de eliminar: `if (section !== 'encuestas') return`
+     - Ver guía: `GUIA-ERRORES-COMUNES-UBITS.md` - Error #9
+
+3. **Identificar iconos FontAwesome DETALLADAMENTE:** ⚠️ CRÍTICO
    - **Para cada icono visible en la imagen:**
      - Analizar la forma visual del icono (no asumir)
      - Identificar variaciones posibles:
