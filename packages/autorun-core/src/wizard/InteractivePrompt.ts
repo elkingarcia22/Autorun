@@ -117,24 +117,27 @@ export class InteractivePrompt {
 			// Continuar con el flujo normal de modo interactivo (NO retornar vacío)
 		}
 
+		// Verificar si se fuerza modo interactivo con variable de entorno
+		const forceInteractive = process.env.AUTORUN_FORCE_INTERACTIVE === 'true';
+		
 		// DEBUG: Verificar estado de TTY
 		const hasTTY = process.stdin.isTTY && process.stdout.isTTY;
-		console.error(`[DEBUG question] stdin.isTTY: ${process.stdin.isTTY}, stdout.isTTY: ${process.stdout.isTTY}, hasTTY: ${hasTTY}`);
+		console.error(`[DEBUG question] stdin.isTTY: ${process.stdin.isTTY}, stdout.isTTY: ${process.stdout.isTTY}, hasTTY: ${hasTTY}, forceInteractive: ${forceInteractive}`);
 
 		// Modo interactivo: esperar respuesta del usuario
-		// SIEMPRE intentar leer de stdin si hay TTY, incluso si falla
+		// SIEMPRE intentar leer de stdin si hay TTY o si se fuerza modo interactivo
 		return new Promise((resolve, reject) => {
-			// Verificar TTY: si NO hay TTY, usar default automáticamente
-			// Si HAY TTY, SIEMPRE intentar leer de stdin (no usar default automáticamente)
-			if (!hasTTY) {
-				// No hay TTY: retornar vacío para que use default
-				// Esto solo pasa cuando se ejecuta desde chat de Cursor
-				console.error(`[DEBUG question] No hay TTY, retornando vacío para usar default`);
+			// Verificar TTY: si NO hay TTY y NO se fuerza modo interactivo, usar default automáticamente
+			// Si HAY TTY o se fuerza modo interactivo, SIEMPRE intentar leer de stdin
+			if (!hasTTY && !forceInteractive) {
+				// No hay TTY y no se fuerza modo interactivo: retornar vacío para que use default
+				// Esto solo pasa cuando se ejecuta desde chat de Cursor sin forzar modo interactivo
+				console.error(`[DEBUG question] No hay TTY y no se fuerza modo interactivo, retornando vacío para usar default`);
 				resolve('');
 				return;
 			}
 
-			console.error(`[DEBUG question] HAY TTY, intentando leer de stdin...`);
+			console.error(`[DEBUG question] HAY TTY o modo interactivo forzado, intentando leer de stdin...`);
 
 			// HAY TTY (terminal real): SIEMPRE intentar leer de stdin
 			// Intentar recrear readline si es necesario
