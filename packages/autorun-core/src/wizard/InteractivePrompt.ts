@@ -311,9 +311,19 @@ export class InteractivePrompt {
 
 	/**
 	 * Verifica si está en modo automático
+	 * Solo retorna true si realmente hay respuestas automáticas disponibles
 	 */
 	isAuto(): boolean {
-		return this.isAutoMode;
+		// Solo considerar modo automático si hay respuestas automáticas disponibles
+		// Si se agotaron todas las respuestas, ya no estamos en modo automático
+		return this.isAutoMode && this.autoAnswers.length > 0 && this.autoAnswerIndex < this.autoAnswers.length;
+	}
+
+	/**
+	 * Verifica si hay respuestas automáticas disponibles (aunque se hayan agotado)
+	 */
+	hasAutoAnswers(): boolean {
+		return this.isAutoMode && this.autoAnswers.length > 0;
 	}
 
 	/**

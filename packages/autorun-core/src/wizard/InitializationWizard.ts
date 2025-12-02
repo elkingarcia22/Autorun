@@ -407,7 +407,9 @@ export class InitializationWizard {
 		// En modo automático SIN AUTORUN_ANSWERS, usar add-ons por defecto sin preguntar
 		// Si hay AUTORUN_ANSWERS, mostrar la pregunta para que el usuario responda
 		const hasAutoAnswers = !!process.env.AUTORUN_ANSWERS;
-		if (this.prompt.isAuto() && !hasAutoAnswers) {
+		// Solo usar defaults automáticamente si realmente hay respuestas automáticas disponibles
+		// Si no hay respuestas, el usuario debe poder elegir interactivamente
+		if (this.prompt.isAuto() && !hasAutoAnswers && this.prompt.hasAutoAnswers()) {
 			console.log('\n   ✅ Usando add-ons por defecto (modo automático)\n');
 			return defaultAddons;
 		}
@@ -1351,58 +1353,64 @@ export class InitializationWizard {
             console.log('🔗 [Wizard] Clases:', item.className);
             console.log('🔗 [Wizard] Tag:', item.tagName);
             
-            // Interceptar el click con capture phase
-            const clickHandler = function(e) {
-              e.preventDefault();
-              e.stopPropagation();
-              e.stopImmediatePropagation();
-              console.log('🔗 [Wizard] ✅ Click interceptado en menú de perfil, redirigiendo a:', targetFileName);
-              window.location.href = targetFileName;
-              return false;
-            };
-            
-            // Agregar listener con capture
-            item.addEventListener('click', clickHandler, true);
-            
-            // También agregar sin capture como backup
-            item.addEventListener('click', clickHandler, false);
-            
-            // Actualizar onclick si existe
-            if (item.onclick) {
-              const originalOnclick = item.onclick;
-              item.onclick = function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                e.stopImmediatePropagation();
-                console.log('🔗 [Wizard] ✅ onclick interceptado en menú, redirigiendo a:', targetFileName);
-                window.location.href = targetFileName;
-                return false;
-              };
-            }
-            
-            // Actualizar atributo onclick
-            if (item.getAttribute('onclick')) {
-              item.setAttribute('onclick', "event.preventDefault(); event.stopPropagation(); event.stopImmediatePropagation(); window.location.href='" + targetFileName + "'; return false;");
-            }
-            
-            // También actualizar href si existe
+            // Actualizar href PRIMERO para que apunte al archivo correcto
             if (item.tagName === 'A') {
               item.href = targetFileName;
-              item.addEventListener('click', clickHandler, true);
+              item.setAttribute('href', targetFileName);
             } else if (item.querySelector('a')) {
               const link = item.querySelector('a');
               if (link) {
                 link.href = targetFileName;
-                link.addEventListener('click', clickHandler, true);
+                link.setAttribute('href', targetFileName);
               }
             }
             
+            // También actualizar data-href si existe
+            if (item.hasAttribute('data-href')) {
+              item.setAttribute('data-href', targetFileName);
+            }
+            
+            // Interceptar el click con capture phase (máxima prioridad)
+            const clickHandler = function(e) {
+              console.log('🔗 [Wizard] ✅ Click interceptado en menú de perfil, redirigiendo a:', targetFileName);
+              e.preventDefault();
+              e.stopPropagation();
+              e.stopImmediatePropagation();
+              e.cancelBubble = true;
+              // Navegar directamente sin abrir nueva pestaña
+              window.location.href = targetFileName;
+              return false;
+            };
+            
+            // Agregar listener con capture (máxima prioridad)
+            item.addEventListener('click', clickHandler, { capture: true, passive: false });
+            
+            // También agregar sin capture como backup
+            item.addEventListener('click', clickHandler, { capture: false, passive: false });
+            
+            // Actualizar onclick si existe (sobrescribir completamente)
+            item.onclick = function(e) {
+              console.log('🔗 [Wizard] ✅ onclick interceptado en menú, redirigiendo a:', targetFileName);
+              if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                e.stopImmediatePropagation();
+                e.cancelBubble = true;
+              }
+              window.location.href = targetFileName;
+              return false;
+            };
+            
+            // Actualizar atributo onclick
+            item.setAttribute('onclick', "event.preventDefault(); event.stopPropagation(); event.stopImmediatePropagation(); event.cancelBubble = true; window.location.href='" + targetFileName + "'; return false;");
+            
             // Buscar cualquier elemento hijo que pueda ser clickeable
-            const clickableChildren = item.querySelectorAll('a, button, [onclick], [role="button"]');
+            const clickableChildren = item.querySelectorAll('a, button, [onclick], [role="button"], span, div');
             clickableChildren.forEach(child => {
-              child.addEventListener('click', clickHandler, true);
+              child.addEventListener('click', clickHandler, { capture: true, passive: false });
               if (child.tagName === 'A') {
                 child.href = targetFileName;
+                child.setAttribute('href', targetFileName);
               }
             });
           }
@@ -1462,6 +1470,7 @@ export class InitializationWizard {
       // Interceptar TODOS los clicks en el documento y verificar si es el botón de cambio de modo
       // Esto es más agresivo pero asegura que funcione incluso si el menú se carga dinámicamente
       // IMPORTANTE: targetFileName debe estar en el scope superior para que esté disponible aquí
+      // Usar capture phase con máxima prioridad para interceptar ANTES que components-loader.js
       document.addEventListener('click', function(e) {
         const target = e.target;
         if (!target) return;
@@ -1477,7 +1486,7 @@ export class InitializationWizard {
         }
         
         // Verificar si el click es en un elemento que contiene "Modo colaborador" o "Modo Administrador"
-        const clickedElement = target.closest('li, button, a, div[onclick], div[role="button"], [class*="menu-item"]');
+        const clickedElement = target.closest('li, button, a, div[onclick], div[role="button"], [class*="menu-item"], [class*="profile-menu"]');
         if (clickedElement) {
           const text = (clickedElement.textContent || clickedElement.innerText || '').trim();
           const isModeButton = 
@@ -1490,22 +1499,58 @@ export class InitializationWizard {
             e.preventDefault();
             e.stopPropagation();
             e.stopImmediatePropagation();
+            e.cancelBubble = true; // IE compatibility
+            console.log('🔗 [Wizard] ✅ Redirigiendo a:', targetFileName);
+            // Navegar directamente sin abrir nueva pestaña
+            window.location.href = targetFileName;
+            return false;
+          }
+        }
+      }, { capture: true, passive: false }); // Capture phase con máxima prioridad
+      
+      // También interceptar en el phase de bubbling como backup
+      document.addEventListener('click', function(e) {
+        const target = e.target;
+        if (!target) return;
+        
+        const clickedElement = target.closest('li, button, a, div[onclick], div[role="button"], [class*="menu-item"], [class*="profile-menu"]');
+        if (clickedElement) {
+          const text = (clickedElement.textContent || clickedElement.innerText || '').trim();
+          const isModeButton = 
+            (text.includes('Modo Administrador') || text.includes('Modo administrador')) ||
+            (text.includes('Modo colaborador') || text.includes('Modo Colaborador'));
+          
+          if (isModeButton) {
+            console.log('🔗 [Wizard] 🎯 Click detectado (bubbling phase) en botón de cambio de modo:', text);
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            e.cancelBubble = true;
             console.log('🔗 [Wizard] ✅ Redirigiendo a:', targetFileName);
             window.location.href = targetFileName;
             return false;
           }
         }
-      }, true); // Usar capture phase para interceptar ANTES que otros handlers
+      }, { capture: false, passive: false }); // Bubbling phase como backup
     })();
   </script>
 `;
 
-			// Insertar el script antes del cierre de </body>
+			// Insertar el script lo más temprano posible (justo después de <body>)
+			// para que se ejecute ANTES que components-loader.js
 			let updatedSelectedContent = selectedContent;
 			let updatedOtherContent = otherContent;
 
 			// Insertar script en el template seleccionado (apunta al otro)
-			if (updatedSelectedContent.includes('</body>')) {
+			// Intentar insertar justo después de <body> para máxima prioridad
+			if (updatedSelectedContent.includes('<body')) {
+				// Buscar la etiqueta <body> y insertar el script justo después
+				updatedSelectedContent = updatedSelectedContent.replace(
+					/(<body[^>]*>)/,
+					`$1\n${updateScript}`,
+				);
+			} else if (updatedSelectedContent.includes('</body>')) {
+				// Fallback: insertar antes del cierre de </body>
 				updatedSelectedContent = updatedSelectedContent.replace(
 					'</body>',
 					`${updateScript}\n</body>`,
@@ -1514,7 +1559,14 @@ export class InitializationWizard {
 
 			// Para el otro template, necesitamos cambiar la referencia al template seleccionado
 			const otherUpdateScript = updateScript.replace(otherFileName, selectedFileName);
-			if (updatedOtherContent.includes('</body>')) {
+			if (updatedOtherContent.includes('<body')) {
+				// Buscar la etiqueta <body> y insertar el script justo después
+				updatedOtherContent = updatedOtherContent.replace(
+					/(<body[^>]*>)/,
+					`$1\n${otherUpdateScript}`,
+				);
+			} else if (updatedOtherContent.includes('</body>')) {
+				// Fallback: insertar antes del cierre de </body>
 				updatedOtherContent = updatedOtherContent.replace(
 					'</body>',
 					`${otherUpdateScript}\n</body>`,
