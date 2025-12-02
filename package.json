@@ -12,7 +12,8 @@
 		"verify": "node scripts/verify-setup.js",
 		"init": "tsx packages/autorun-core/src/cli/autorun-init.ts",
 		"autorun:init": "npm run init",
-		"postinstall": "npm run verify"
+		"postinstall": "npm run verify",
+		"wizard": "node scripts/run-init.js"
 	},
 	"bin": {
 		"autorun-init": "./packages/autorun-core/dist/cli/autorun-init.js"

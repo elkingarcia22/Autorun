@@ -120,23 +120,48 @@ export class InteractivePrompt {
 		// Verificar si se fuerza modo interactivo con variable de entorno
 		const forceInteractive = process.env.AUTORUN_FORCE_INTERACTIVE === 'true';
 		
-		// DEBUG: Verificar estado de TTY
+		// Verificar TTY
 		const hasTTY = process.stdin.isTTY && process.stdout.isTTY;
-		console.error(`[DEBUG question] stdin.isTTY: ${process.stdin.isTTY}, stdout.isTTY: ${process.stdout.isTTY}, hasTTY: ${hasTTY}, forceInteractive: ${forceInteractive}`);
-
+		
+		// ESTRATEGIA: SIEMPRE intentar leer de stdin primero
+		// Solo usar default si realmente falla la lectura
+		// Esto permite que funcione tanto en terminal como en chat (si el chat puede inyectar input)
+		
 		// Modo interactivo: esperar respuesta del usuario
-		// SIEMPRE intentar leer de stdin si hay TTY o si se fuerza modo interactivo
 		return new Promise((resolve, reject) => {
-			// Verificar TTY: si NO hay TTY y NO se fuerza modo interactivo, usar default automáticamente
-			// Si HAY TTY o se fuerza modo interactivo, SIEMPRE intentar leer de stdin
+			// Si NO hay TTY y NO se fuerza modo interactivo, intentar leer de todas formas
+			// pero con un timeout corto para detectar si realmente no hay input disponible
 			if (!hasTTY && !forceInteractive) {
-				// No hay TTY y no se fuerza modo interactivo: retornar vacío para que use default
-				// Esto solo pasa cuando se ejecuta desde chat de Cursor sin forzar modo interactivo
-				console.error(`[DEBUG question] No hay TTY y no se fuerza modo interactivo, retornando vacío para usar default`);
-				resolve('');
+				// Intentar leer con timeout para detectar si hay input disponible
+				const timeout = setTimeout(() => {
+					// Si después de 500ms no hay respuesta, probablemente no hay input disponible
+					// Retornar vacío para usar default
+					console.error(`[DEBUG question] Timeout: No hay input disponible, usando default`);
+					resolve('');
+				}, 500);
+				
+				// Intentar leer de stdin de todas formas (por si el chat puede inyectar input)
+				try {
+					if (!this.rl || (this.rl as any).closed) {
+						this.rl = readline.createInterface({
+							input: process.stdin,
+							output: process.stdout,
+						});
+					}
+					
+					this.rl.question(prompt, (answer) => {
+						clearTimeout(timeout);
+						resolve(answer.trim());
+					});
+				} catch (error) {
+					clearTimeout(timeout);
+					// Si falla, retornar vacío para usar default
+					resolve('');
+				}
 				return;
 			}
 
+			// HAY TTY o modo interactivo forzado: SIEMPRE intentar leer de stdin
 			console.error(`[DEBUG question] HAY TTY o modo interactivo forzado, intentando leer de stdin...`);
 
 			// HAY TTY (terminal real): SIEMPRE intentar leer de stdin
