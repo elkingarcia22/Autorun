@@ -37,9 +37,12 @@
 2. **Identificar template existente** usando `list_dir()` en `prototypes/`
 3. **Analizar la imagen** detalladamente:
    - Componentes UBITS identificados
-   - Iconos con variaciones
+   - **Iconos con variaciones** (usar `GUIA-ANALISIS-ICONOS-DETALLADO.md`)
    - Estructura visual
-   - Spacing identificado
+   - **Spacing identificado** (usar `GUIA-ANALISIS-ESTRUCTURA-SPACING.md`):
+     - ⚠️ **NO asumir basándose en ejemplos**
+     - ⚠️ **Medir visualmente cada espacio entre elementos**
+     - ⚠️ **Comparar con tokens disponibles antes de documentar**
    - Funcionalidades identificadas
 4. **Mostrar análisis completo** al usuario en el formato obligatorio
 5. **ESPERAR aprobación explícita** del usuario
