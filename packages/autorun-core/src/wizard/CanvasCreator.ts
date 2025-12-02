@@ -133,51 +133,51 @@ export class CanvasCreator {
 			return templateContent;
 		} catch (vendorError) {
 			// PRIORIDAD 3: Fallback a Desktop/UBITS/ (legacy)
-			const os = await import('os');
-			const ubitsDesktopPath = path.join(
-				os.homedir(),
-				'Desktop',
-				'UBITS',
-				'packages',
-				'templates',
-				templateFileName,
-			);
+		const os = await import('os');
+		const ubitsDesktopPath = path.join(
+			os.homedir(),
+			'Desktop',
+			'UBITS',
+			'packages',
+			'templates',
+			templateFileName,
+		);
 
-			try {
-				await fs.access(ubitsDesktopPath);
-				
+		try {
+			await fs.access(ubitsDesktopPath);
+
 				console.log(`   📄 Cargando template desde Desktop/UBITS/ (legacy): ${ubitsDesktopPath}`);
-				let templateContent = await fs.readFile(ubitsDesktopPath, 'utf-8');
+			let templateContent = await fs.readFile(ubitsDesktopPath, 'utf-8');
 
 				// Usar rutas absolutas file:// para compatibilidad legacy
-				const ubitsPackagesPath = path.join(os.homedir(), 'Desktop', 'UBITS', 'packages');
-				const absolutePath = `file://${ubitsPackagesPath}`.replace(/\\/g, '/');
+			const ubitsPackagesPath = path.join(os.homedir(), 'Desktop', 'UBITS', 'packages');
+			const absolutePath = `file://${ubitsPackagesPath}`.replace(/\\/g, '/');
 
-				// Validar que los archivos críticos existen
-				await this.validateUBITSFiles(ubitsPackagesPath);
+			// Validar que los archivos críticos existen
+			await this.validateUBITSFiles(ubitsPackagesPath);
 
-				// Ajustar rutas del template a rutas absolutas file://
-				templateContent = await this.adjustTemplatePaths(templateContent, absolutePath);
-				
+			// Ajustar rutas del template a rutas absolutas file://
+			templateContent = await this.adjustTemplatePaths(templateContent, absolutePath);
+
 				// Agregar carga del UMD de data-table
 				templateContent = this.addDataTableUMD(templateContent, absolutePath);
 
 				// Personalizar el template
-				templateContent = this.customizeTemplate(
-					templateContent,
-					template,
-					module,
-					product,
-					absolutePath,
+			templateContent = this.customizeTemplate(
+				templateContent,
+				template,
+				module,
+				product,
+				absolutePath,
 					disableOtherModulesNavigation,
-				);
+			);
 
-				return templateContent;
-			} catch (localError) {
+			return templateContent;
+		} catch (localError) {
 				console.warn('⚠️  No se pudo cargar template desde ninguna fuente:', localError);
 				console.warn(`   💡 Verifica conexión a internet o que existe vendor/ubits/packages/`);
-				// Fallback a template generado localmente
-				return this.generateCanvasContent(template, module, templateConfig, product);
+			// Fallback a template generado localmente
+			return this.generateCanvasContent(template, module, templateConfig, product);
 			}
 		}
 	}
@@ -439,7 +439,7 @@ export class CanvasCreator {
 
 		// Detectar si es URL de Vercel
 		const isVercelUrl = basePathToUBITS.startsWith('https://') || basePathToUBITS.startsWith('http://');
-		
+
 		// ⚠️ IMPORTANTE: Asegurar que la ruta termine con / para evitar problemas
 		const basePath = basePathToUBITS.endsWith('/') ? basePathToUBITS : `${basePathToUBITS}/`;
 
@@ -526,8 +526,8 @@ export class CanvasCreator {
 				return `src="/vercel-proxy/templates/assets/${assetPath}"`;
 			});
 		} else {
-			content = content.replace(/href="assets\//g, `href="${basePath}templates/assets/`);
-			content = content.replace(/src="assets\//g, `src="${basePath}templates/assets/`);
+		content = content.replace(/href="assets\//g, `href="${basePath}templates/assets/`);
+		content = content.replace(/src="assets\//g, `src="${basePath}templates/assets/`);
 		}
 
 		// 3. Ajustar rutas de imágenes en JavaScript (products.js)
@@ -545,7 +545,7 @@ export class CanvasCreator {
 		// components-loader.js -> Proxy local o ruta relativa/absoluta
 		if (isVercelUrl) {
 			// Usar proxy local para scripts (sin prefijo storybook-static/ porque Vercel sirve desde la raíz)
-			content = content.replace(
+		content = content.replace(
 				/src="components-loader\.js"/g,
 				() => `src="/vercel-proxy/templates/components-loader.js"`,
 			);
@@ -559,9 +559,9 @@ export class CanvasCreator {
 			content = content.replace(
 				/src="components-loader\.js"/g,
 				`src="${basePath}templates/components-loader.js"`,
-			);
-			content = content.replace(/src="config\//g, `src="${basePath}templates/config/`);
-			content = content.replace(/src="engine\//g, `src="${basePath}templates/engine/`);
+		);
+		content = content.replace(/src="config\//g, `src="${basePath}templates/config/`);
+		content = content.replace(/src="engine\//g, `src="${basePath}templates/engine/`);
 		}
 
 		// 5. Ajustar rutas en template strings de JavaScript (backticks)
@@ -573,7 +573,7 @@ export class CanvasCreator {
 			}
 			return `\`${basePath}${path}\``;
 		});
-		
+
 		// 6. Ajustar rutas en strings de JavaScript (comillas simples y dobles)
 		// '../tokens/...' -> '../vendor/ubits/packages/tokens/...'
 		// Solo reemplazar si NO tiene ya vendor/ubits/packages/ o file://
@@ -1023,12 +1023,98 @@ export class CanvasCreator {
       // La clave en products.js es 'template-admin' o 'template-colaborador'
       const templateKey = '${template === 'administrador' ? 'template-admin' : 'template-colaborador'}';
       
-      // Sobrescribir detectCurrentProduct ANTES de que products.js se cargue
-      // detectCurrentProduct() detecta por nombre de archivo y por defecto retorna 'template-colaborador'
-      // Necesitamos sobrescribirlo para que siempre retorne el template correcto
-      window.detectCurrentProduct = function() {
-        // Siempre retornar el template correcto
-        return templateKey;
+      // ⚠️ CRÍTICO: Sobrescritura robusta de detectCurrentProduct y getProductConfig
+      // products.js puede sobrescribir estas funciones después de que las definamos,
+      // así que necesitamos interceptarlas y corregirlas continuamente
+      
+      // Función para sobrescribir detectCurrentProduct (se llamará múltiples veces)
+      const overrideDetectCurrentProduct = () => {
+        const originalDetectCurrentProduct = window.detectCurrentProduct;
+        window.detectCurrentProduct = function() {
+          // Siempre retornar el template correcto
+          console.log('🔍 [Wizard] detectCurrentProduct() llamado, retornando:', templateKey);
+          return templateKey;
+        };
+        console.log('🔍 [Wizard] ✅ detectCurrentProduct sobrescrito. Original:', typeof originalDetectCurrentProduct);
+      };
+      
+      // Sobrescribir INMEDIATAMENTE (antes de que products.js se cargue)
+      overrideDetectCurrentProduct();
+      
+      // También interceptar cuando products.js lo sobrescriba después
+      // Usar Object.defineProperty para interceptar cambios
+      let currentDetectCurrentProduct = window.detectCurrentProduct;
+      Object.defineProperty(window, 'detectCurrentProduct', {
+        get: function() {
+          return currentDetectCurrentProduct;
+        },
+        set: function(newValue) {
+          console.log('🔍 [Wizard] ⚠️ detectCurrentProduct está siendo sobrescrito por products.js');
+          // Guardar la función original pero seguir usando nuestra versión
+          currentDetectCurrentProduct = function() {
+            console.log('🔍 [Wizard] detectCurrentProduct() llamado (interceptado), retornando:', templateKey);
+            return templateKey;
+          };
+          console.log('🔍 [Wizard] ✅ detectCurrentProduct interceptado y corregido');
+        },
+        configurable: true,
+        enumerable: true
+      });
+      
+      // También sobrescribir getProductConfig INMEDIATAMENTE para asegurar que siempre devuelva el producto correcto
+      const originalGetProductConfig = window.getProductConfig;
+      window.getProductConfig = function(productId) {
+        console.log('🔍 [Wizard] getProductConfig() llamado con productId:', productId, 'templateKey esperado:', templateKey);
+        
+        // Si UBITS_PRODUCTS aún no está disponible, esperar un poco
+        if (!window.UBITS_PRODUCTS) {
+          console.warn('🔍 [Wizard] ⚠️ UBITS_PRODUCTS no disponible todavía, esperando...');
+          // Si hay función original, usarla temporalmente
+          if (originalGetProductConfig) {
+            return originalGetProductConfig(productId);
+          }
+          return null;
+        }
+        
+        // Si el productId es el templateKey correcto, forzar su uso
+        if (productId === templateKey && window.UBITS_PRODUCTS[templateKey]) {
+          console.log('🔍 [Wizard] ✅ getProductConfig() usando templateKey correcto:', templateKey);
+          return window.UBITS_PRODUCTS[templateKey];
+        }
+        
+        // Si no coincide, loguear y corregir
+        if (productId !== templateKey) {
+          console.warn('🔍 [Wizard] ⚠️ getProductConfig() recibió productId incorrecto:', productId, 'esperado:', templateKey);
+          // Forzar uso del templateKey correcto
+          if (window.UBITS_PRODUCTS[templateKey]) {
+            console.log('🔍 [Wizard] ✅ Corrigiendo: usando templateKey:', templateKey);
+            return window.UBITS_PRODUCTS[templateKey];
+          }
+        }
+        
+        // Usar función original si existe
+        if (originalGetProductConfig) {
+          const result = originalGetProductConfig(productId);
+          // Verificar si devolvió el producto incorrecto
+          if (result && result.name && result.name.includes('Colaborador') && templateKey === 'template-admin') {
+            console.error('🔍 [Wizard] ❌ getProductConfig() devolvió producto Colaborador cuando debería ser Admin');
+            // Forzar uso del producto correcto
+            if (window.UBITS_PRODUCTS && window.UBITS_PRODUCTS[templateKey]) {
+              console.log('🔍 [Wizard] ✅ Corrigiendo: usando template-admin');
+              return window.UBITS_PRODUCTS[templateKey];
+            }
+          }
+          return result;
+        }
+        
+        // Fallback: usar templateKey si está disponible
+        if (window.UBITS_PRODUCTS && window.UBITS_PRODUCTS[templateKey]) {
+          console.warn('🔍 [Wizard] ⚠️ Usando templateKey como fallback:', templateKey);
+          return window.UBITS_PRODUCTS[templateKey];
+        }
+        
+        // Fallback final: template-colaborador (comportamiento original)
+        return window.UBITS_PRODUCTS ? window.UBITS_PRODUCTS['template-colaborador'] : null;
       };
       
       // Interceptar cuando UBITS_PRODUCTS se define ANTES de que el template lo use
@@ -1044,6 +1130,11 @@ export class CanvasCreator {
           
           // Ajustar rutas de imágenes
           adjustImagePaths(window.UBITS_PRODUCTS);
+          
+          // ⚠️ CRÍTICO: Volver a sobrescribir detectCurrentProduct después de que products.js se carga
+          // products.js define detectCurrentProduct al final, así que necesitamos sobrescribirlo de nuevo
+          overrideDetectCurrentProduct();
+          console.log('🔍 [Wizard] ✅ detectCurrentProduct vuelto a sobrescribir después de que products.js se cargó');
           
           // Sobrescribir initialActiveSection INMEDIATAMENTE
           if (window.UBITS_PRODUCTS[templateKey]) {
@@ -1074,13 +1165,28 @@ export class CanvasCreator {
       // Verificar periódicamente con intervalo más corto
       const interval = setInterval(() => {
         checkProducts();
+        // También volver a sobrescribir detectCurrentProduct periódicamente por si products.js lo cambió
+        if (window.UBITS_PRODUCTS) {
+          const currentResult = window.detectCurrentProduct();
+          if (currentResult !== templateKey) {
+            console.warn('🔍 [Wizard] ⚠️ detectCurrentProduct devolvió:', currentResult, 'esperado:', templateKey, '- Corrigiendo...');
+            overrideDetectCurrentProduct();
+          }
+        }
         if (productsDefined) {
           clearInterval(interval);
         }
       }, 10);
       
       // Limpiar después de 2 segundos
-      setTimeout(() => clearInterval(interval), 2000);
+      setTimeout(() => {
+        clearInterval(interval);
+        // Una última verificación y corrección
+        if (window.UBITS_PRODUCTS) {
+          overrideDetectCurrentProduct();
+          console.log('🔍 [Wizard] ✅ Última verificación: detectCurrentProduct sobrescrito');
+        }
+      }, 2000);
     })();
     
     // Activar el producto DESPUÉS de que el template termine su inicialización

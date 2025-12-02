@@ -64,20 +64,44 @@ await createNewTemplate('home-encuestas.html', image);
    - ¿Sidebar? ¿SubNav? ¿Tabs? ¿DataTable? ¿Buttons? ¿Inputs?
    - Consultar `CATALOGO-COMPONENTES-UBITS.md`
 
-2. **Identificar estructura y contenedores:**
+2. **Identificar iconos FontAwesome DETALLADAMENTE:** ⚠️ CRÍTICO
+   - **Para cada icono visible en la imagen:**
+     - Analizar la forma visual del icono (no asumir)
+     - Identificar variaciones posibles:
+       - ¿Es "simple"? (ej: `chart-pie-simple`, `list-ul-simple`)
+       - ¿Es "regular"? (outline, `far`)
+       - ¿Es "solid"? (filled, `fas`)
+       - ¿Es "light"? (`fal`)
+       - ¿Es "thin"? (`fat`)
+     - **NO tomar solo el primer resultado de FontAwesome**
+     - **Verificar múltiples opciones:**
+       - Si ves un gráfico de pastel → buscar: `chart-pie`, `chart-pie-simple`, `pie-chart`
+       - Si ves una lista → buscar: `list`, `list-ul`, `list-ul-simple`, `list-check`
+       - Si ves un reloj → buscar: `clock`, `clock-simple`, `clock-rotate-left`
+     - **Identificar el icono EXACTO:**
+       - Comparar visualmente con la descripción de la imagen
+       - Si la descripción dice "simple" o muestra detalles específicos, usar la variación "simple"
+       - Documentar el icono completo: `chart-pie-simple`, `list-ul`, etc.
+   - **Formato para usar en código:**
+     - Para `window.createTabs()`: usar solo el nombre sin prefijos
+       - ✅ `icon: 'chart-pie-simple'` (correcto)
+       - ❌ `icon: 'fa-chart-pie-simple'` (incorrecto)
+       - ❌ `icon: 'chart-pie'` (incorrecto si es simple)
+
+3. **Identificar estructura y contenedores:**
    - ¿Qué va primero? ¿Qué va después?
    - ¿Qué elementos van en contenedores?
    - ¿Qué elementos NO van en contenedores?
 
-3. **Analizar spacing específicamente:**
+4. **Analizar spacing específicamente:**
    - Medir visualmente el espacio entre elementos
    - Mapear a tokens UBITS específicos
 
-4. **Identificar funcionalidades:**
+5. **Identificar funcionalidades:**
    - ¿Qué debe hacer cada componente?
    - ¿Hay interacciones? ¿Callbacks?
 
-5. **Identificar tokens de colores:**
+6. **Identificar tokens de colores:**
    - ¿Qué colores se usan?
    - ¿Qué tokens UBITS corresponden?
 
@@ -245,6 +269,7 @@ Antes de crear/modificar desde imagen:
 
 - **Proceso completo:** `GUIA-PROCESO-IMPLEMENTACION-PASO-A-PASO.md`
 - **Identificación de componentes:** `GUIA-IDENTIFICACION-COMPONENTES.md`
+- **Análisis de iconos:** `GUIA-ANALISIS-ICONOS-DETALLADO.md` ⭐ **OBLIGATORIO para iconos**
 - **Catálogo de componentes:** `CATALOGO-COMPONENTES-UBITS.md`
 - **Implementación DataTable:** `GUIA-IMPLEMENTACION-DATATABLE-PASO-A-PASO.md`
 
@@ -260,4 +285,7 @@ Antes de crear/modificar desde imagen:
 6. **Aprobar** cada tarea antes de continuar
 
 **Recuerda: El template ya existe después del wizard. Solo necesitas modificarlo, no crear uno nuevo.**
+
+
+
 

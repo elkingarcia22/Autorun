@@ -6,22 +6,44 @@
 
 1. **DETENER TODO** - NO escribir código todavía
 2. **LEER PRIMERO:** `GUIA-CREAR-DESDE-IMAGEN-DESPUES-WIZARD.md`
-3. **IDENTIFICAR TEMPLATE EXISTENTE:**
-   - Buscar en `prototypes/canvas-*.html`
+3. **IDENTIFICAR TEMPLATE EXISTENTE AUTOMÁTICAMENTE:**
+   ```bash
+   # Ejecutar esto PRIMERO para encontrar el template
+   ls prototypes/canvas-*-encuestas-*.html 2>/dev/null || ls prototypes/canvas-*-*.html
+   ```
+   - Si el usuario dice "home de encuestas" → buscar `canvas-*-encuestas-*.html`
+   - Si el usuario dice "administrador" → buscar `canvas-administrador-*.html`
+   - Si el usuario dice "colaborador" → buscar `canvas-colaborador-*.html`
+   - **LEER el template encontrado** para ver su estructura actual
    - NO crear HTML nuevo
    - MODIFICAR template existente
-4. **ANALIZAR LA IMAGEN:**
-   - Identificar componentes UBITS
-   - Consultar `CATALOGO-COMPONENTES-UBITS.md`
-   - Analizar estructura y spacing
-5. **CREAR PLAN:**
-   - Listar componentes identificados
-   - Dividir en tareas pequeñas
-   - MOSTRAR PLAN AL USUARIO
-   - ESPERAR APROBACIÓN antes de implementar
+4. **ANALIZAR LA IMAGEN DETALLADAMENTE:**
+   - Identificar componentes UBITS visibles en la imagen
+   - Consultar `CATALOGO-COMPONENTES-UBITS.md` para verificar componentes
+   - **ANALIZAR ICONOS DETALLADAMENTE:** ⚠️ CRÍTICO
+     - Para cada icono: analizar visualmente la forma
+     - Listar TODAS las variaciones posibles (simple, regular, solid, etc.)
+     - NO tomar solo el primer resultado de FontAwesome
+     - Verificar si es "simple" o no (ej: `chart-pie-simple` vs `chart-pie`)
+     - Comparar visualmente con la descripción de la imagen
+     - Documentar el icono completo con nombre y estilo
+     - Consultar `GUIA-ANALISIS-ICONOS-DETALLADO.md` para el proceso completo
+   - Analizar estructura visual (layout, contenedores)
+   - Analizar spacing entre elementos
+   - Identificar funcionalidades (buscador, filtros, acciones)
+5. **CREAR PLAN DETALLADO:**
+   - Listar TODOS los componentes identificados
+   - Describir estructura completa
+   - Dividir en tareas pequeñas (ej: Tarea 1: Tabs, Tarea 2: Barra acciones, Tarea 3: DataTable)
+   - **MOSTRAR PLAN COMPLETO AL USUARIO**
+   - **ESPERAR APROBACIÓN EXPLÍCITA** antes de implementar
 6. **SOLO DESPUÉS de aprobación, implementar UNA tarea a la vez**
 
-**NUNCA implementar directamente sin analizar primero la imagen.**
+**NUNCA implementar directamente sin:**
+- ❌ Identificar template existente primero
+- ❌ Analizar la imagen detalladamente
+- ❌ Crear plan y mostrar al usuario
+- ❌ Esperar aprobación explícita
 
 ## ⚠️ REGLAS CRÍTICAS - LEER ANTES DE TRABAJAR
 
@@ -31,19 +53,28 @@
 - ✅ Usar componentes que ya existen: `window.createSidebar()`, `window.createSubNav()`, `window.createTabBar()`, `window.createTabs()`, `window.createDataTable()`, etc.
 - ✅ Los componentes están en: `vendor/ubits/packages/components/` (portable) o `Desktop/UBITS/packages/components/` (legacy)
 
-### 1.1. **FORMATO CORRECTO DE ICONOS EN `window.createTabs()`** ⚠️ CRÍTICO
-- ❌ **NUNCA usar:** `icon: 'far fa-home'` o `icon: 'fas fa-user'`
-- ✅ **SIEMPRE usar:** `icon: 'home'` o `icon: 'user'` (solo el nombre del icono)
-- El componente automáticamente agrega `fa-` y el estilo (`far` para inactivo, `fas` para activo)
-- Ejemplo correcto:
-  ```javascript
-  window.createTabs({
-    tabs: [
-      { id: 'tab1', label: 'Tab 1', icon: 'home' },  // ✅ CORRECTO
-      { id: 'tab2', label: 'Tab 2', icon: 'user' }   // ✅ CORRECTO
-    ]
-  }, 'container-id')
-  ```
+### 1.1. **ANÁLISIS Y FORMATO CORRECTO DE ICONOS** ⚠️ CRÍTICO
+- **ANÁLISIS DE ICONOS DESDE IMÁGENES:**
+  - ❌ **NUNCA asumir el primer resultado** de FontAwesome
+  - ✅ **SIEMPRE verificar variaciones:** `chart-pie`, `chart-pie-simple`, `pie-chart`
+  - ✅ **SIEMPRE verificar si es "simple":** Si la imagen muestra un icono minimalista, usar `-simple`
+  - ✅ **SIEMPRE comparar visualmente** con la descripción de la imagen
+  - ✅ **SIEMPRE documentar** el icono completo con nombre y estilo
+  - **Consultar:** `GUIA-ANALISIS-ICONOS-DETALLADO.md` para el proceso completo
+- **FORMATO CORRECTO EN `window.createTabs()`:**
+  - ❌ **NUNCA usar:** `icon: 'far fa-home'` o `icon: 'fas fa-user'` o `icon: 'fa-chart-pie-simple'`
+  - ❌ **NUNCA omitir sufijos:** Si es `chart-pie-simple`, usar `chart-pie-simple` (no `chart-pie`)
+  - ✅ **SIEMPRE usar:** `icon: 'home'` o `icon: 'chart-pie-simple'` (solo el nombre, sin prefijos `fa-`)
+  - El componente automáticamente agrega `fa-` y el estilo (`far` para inactivo, `fas` para activo)
+  - Ejemplo correcto:
+    ```javascript
+    window.createTabs({
+      tabs: [
+        { id: 'tab1', label: 'Tab 1', icon: 'list-ul' },  // ✅ CORRECTO
+        { id: 'tab2', label: 'Tab 2', icon: 'chart-pie-simple' }   // ✅ CORRECTO (con -simple)
+      ]
+    }, 'container-id')
+    ```
 
 ### 2. **USAR TOKENS UBITS CORRECTAMENTE**
 - ✅ Light mode: `--ubits-accent-brand-static` (siempre azul #0c5bef)
@@ -85,10 +116,11 @@ Antes de trabajar en un template, LEER:
 5. `GUIA-ERRORES-COMUNES-UBITS.md` - ⚠️ **OBLIGATORIO:** Errores comunes a evitar
 6. `GUIA-REVISION-COMPONENTES-UBITS.md` - ⚠️ **OBLIGATORIO:** Cómo revisar componentes antes de implementar
 7. `GUIA-ANALISIS-ESTRUCTURA-SPACING.md` - ⚠️ **OBLIGATORIO:** Análisis de estructura (contenedores) y spacing
-8. `GUIA-PROCESO-IMPLEMENTACION-PASO-A-PASO.md` - ⚠️ **OBLIGATORIO:** Proceso de implementación paso a paso
-9. `GUIA-IMPLEMENTACION-DATATABLE-PASO-A-PASO.md` - ⚠️ **OBLIGATORIO:** Implementación de DataTable funcionalidad por funcionalidad
-10. `GUIA-CREAR-DESDE-IMAGEN-DESPUES-WIZARD.md` - ⚠️ **OBLIGATORIO:** Crear desde imagen DESPUÉS del wizard (modificar template existente)
-11. `INDEX.md` - Flujo de inicialización
+8. `GUIA-ANALISIS-ICONOS-DETALLADO.md` - ⚠️ **OBLIGATORIO:** Análisis detallado de iconos FontAwesome (variaciones, simple, etc.)
+9. `GUIA-PROCESO-IMPLEMENTACION-PASO-A-PASO.md` - ⚠️ **OBLIGATORIO:** Proceso de implementación paso a paso
+10. `GUIA-IMPLEMENTACION-DATATABLE-PASO-A-PASO.md` - ⚠️ **OBLIGATORIO:** Implementación de DataTable funcionalidad por funcionalidad
+11. `GUIA-CREAR-DESDE-IMAGEN-DESPUES-WIZARD.md` - ⚠️ **OBLIGATORIO:** Crear desde imagen DESPUÉS del wizard (modificar template existente)
+12. `INDEX.md` - Flujo de inicialización
 
 ## 🔍 VERIFICACIÓN ANTES DE TRABAJAR
 
@@ -292,10 +324,14 @@ Antes de trabajar en un template, LEER:
 8. ❌ Usar tokens incorrectos (ej: usar `dark-accent` en lugar de `modifiers-normal-color-dark-accent-blue`)
 9. ❌ **Crear componentes duplicados** - Siempre verifica si existe antes de crear
 10. ❌ **Usar `<ubits-tabs>` o `<ubits-data-table>` como custom elements** - Usar `window.createTabs()` y `window.createDataTable()` en su lugar
-11. ❌ **FORMATO INCORRECTO DE ICONOS EN TABS** - ⚠️ CRÍTICO:
-    - ❌ INCORRECTO: `icon: 'far fa-home'` o `icon: 'fas fa-user'`
-    - ✅ CORRECTO: `icon: 'home'` o `icon: 'user'` (solo el nombre del icono)
+11. ❌ **ANÁLISIS Y FORMATO INCORRECTO DE ICONOS** - ⚠️ CRÍTICO:
+    - ❌ INCORRECTO: Asumir el primer resultado de FontAwesome sin verificar variaciones
+    - ❌ INCORRECTO: Omitir sufijos como `-simple` (ej: usar `chart-pie` cuando es `chart-pie-simple`)
+    - ❌ INCORRECTO: `icon: 'far fa-home'` o `icon: 'fas fa-user'` o `icon: 'fa-chart-pie-simple'`
+    - ✅ CORRECTO: Analizar visualmente, listar variaciones, verificar si es "simple", comparar con imagen
+    - ✅ CORRECTO: `icon: 'home'` o `icon: 'chart-pie-simple'` (solo el nombre, sin prefijos `fa-`, con sufijos si aplica)
     - El componente automáticamente agrega `fa-` y el estilo (`far`/`fas`) según si el tab está activo
+    - **Ver:** `GUIA-ANALISIS-ICONOS-DETALLADO.md` para el proceso completo de análisis
     - **Ver:** `GUIA-ERRORES-COMUNES-UBITS.md` para detalles completos
 12. ❌ **IMPLEMENTAR TODAS LAS FUNCIONALIDADES DE DATATABLE DE GOLPE** - ⚠️ CRÍTICO:
     - ❌ INCORRECTO: Implementar checkboxes + drag & drop + ordenamiento + filtros + buscador en un solo paso
