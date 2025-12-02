@@ -130,6 +130,25 @@ export class LocalServer {
 
 		// Detectar si es una petición de proxy a Vercel
 		if (filePath.startsWith('/vercel-proxy/') && this.vercelUrl) {
+			// Servir sidebar.css local corregido en lugar de hacer proxy a Vercel
+			if (filePath.includes('/components/sidebar/src/styles/sidebar.css')) {
+				const localSidebarPath = path.join(process.cwd(), 'vendor/ubits/packages/components/sidebar/src/styles/sidebar.css');
+				try {
+					const stats = await fs.stat(localSidebarPath);
+					if (stats.isFile()) {
+						const content = await fs.readFile(localSidebarPath, 'utf-8');
+						res.setHeader('Content-Type', 'text/css');
+						res.setHeader('Access-Control-Allow-Origin', '*');
+						res.writeHead(200);
+						res.end(content);
+						console.log(`   ✅ Servido sidebar.css local (corregido) en lugar de Vercel`);
+						return;
+					}
+				} catch (error) {
+					// Si no existe local, hacer proxy a Vercel
+					console.log(`   ⚠️  sidebar.css local no encontrado, usando proxy a Vercel`);
+				}
+			}
 			await this.proxyVercelRequest(req, res, filePath);
 			return;
 		}
@@ -189,7 +208,19 @@ export class LocalServer {
 			// Determinar Content-Type
 			const contentType = this.getContentType(filePath);
 			
-			res.writeHead(200, { 'Content-Type': contentType });
+			// Headers para evitar caché en archivos HTML y JS (desarrollo)
+			const headers: Record<string, string> = {
+				'Content-Type': contentType,
+			};
+			
+			// Para archivos HTML y JS, evitar caché para que siempre se cargue la versión más reciente
+			if (filePath.endsWith('.html') || filePath.endsWith('.js')) {
+				headers['Cache-Control'] = 'no-cache, no-store, must-revalidate';
+				headers['Pragma'] = 'no-cache';
+				headers['Expires'] = '0';
+			}
+			
+			res.writeHead(200, headers);
 			res.end(content);
 		} catch (error: any) {
 			if (error.code === 'ENOENT') {
