@@ -1,23 +1,51 @@
 # 🎯 Reglas para Trabajar con Templates UBITS en Autorun
 
-## 🚨🚨🚨🚨🚨 ALERTA CRÍTICA: DETECCIÓN DE IMAGEN 🚨🚨🚨🚨🚨
+## 🚨🚨🚨🚨🚨 ALERTA CRÍTICA: DETECCIÓN AUTOMÁTICA DE IMAGEN 🚨🚨🚨🚨🚨
 
-**SI DETECTAS UNA IMAGEN EN EL MENSAJE DEL USUARIO O UNA SOLICITUD DE CREAR/MODIFICAR DESDE IMAGEN:**
+**⚠️⚠️⚠️ VERIFICACIÓN OBLIGATORIA AL INICIO DE CADA MENSAJE ⚠️⚠️⚠️**
+
+**ANTES de hacer CUALQUIER cosa, DEBES verificar si hay triggers de imagen:**
+
+### 🔍 TRIGGERS DE DETECCIÓN (LEER AUTO-DETECT-IMAGES.md):
+
+1. **Detección de Imagen:**
+   - ✅ `<image_description>` en el mensaje
+   - ✅ `<image>` en el mensaje
+   - ✅ `[imagen]` en el mensaje
+   - ✅ Cualquier referencia a imagen adjunta
+
+2. **Detección de Palabras Clave:**
+   - ✅ "imagen" o "image"
+   - ✅ "crear desde imagen"
+   - ✅ "modificar desde imagen"
+   - ✅ "home de [módulo]" (ej: "home de encuestas")
+   - ✅ "crear home"
+   - ✅ "implementar desde imagen"
+   - ✅ Cualquier combinación de "crear" + "imagen"
+
+3. **Detección de Solicitudes:**
+   - ✅ "crea el home"
+   - ✅ "haz el home"
+   - ✅ "implementa el home"
+   - ✅ "crea la página"
+
+**SI DETECTAS CUALQUIER TRIGGER:**
 
 ### ⛔⛔⛔ BLOQUEO TOTAL - NO PROCEDER ⛔⛔⛔
 
 **DEBES DETENER TODO INMEDIATAMENTE Y SEGUIR ESTE PROCESO EXACTO:**
 
 1. **🛑 DETENER** - NO usar ninguna herramienta de escritura/edición
-2. **📖 LEER PRIMERO:** `VERIFICACION-IMAGEN.md` usando `read_file()` - ⚠️ OBLIGATORIO
-3. **📖 LEER SEGUNDO:** `BLOQUEO-IMAGEN.md` usando `read_file()`
-4. **📖 LEER TERCERO:** `GUIA-CREAR-DESDE-IMAGEN-DESPUES-WIZARD.md` usando `read_file()`
-5. **📖 LEER CUARTO:** `GUIA-PROCESO-IMPLEMENTACION-PASO-A-PASO.md` usando `read_file()`
-6. **🔍 IDENTIFICAR** template existente usando `list_dir()` (NO `read_file()` todavía)
-7. **📋 ANALIZAR** la imagen detalladamente
-8. **📝 MOSTRAR** el análisis completo al usuario en el formato obligatorio
-9. **⏸️ ESPERAR** aprobación explícita del usuario
-10. **✅ SOLO DESPUÉS** de aprobación, implementar UNA tarea a la vez
+2. **📖 LEER PRIMERO:** `AUTO-DETECT-IMAGES.md` usando `read_file()` - ⚠️ OBLIGATORIO
+3. **📖 LEER SEGUNDO:** `VERIFICACION-IMAGEN.md` usando `read_file()` - ⚠️ OBLIGATORIO
+4. **📖 LEER TERCERO:** `BLOQUEO-IMAGEN.md` usando `read_file()`
+5. **📖 LEER CUARTO:** `GUIA-CREAR-DESDE-IMAGEN-DESPUES-WIZARD.md` usando `read_file()`
+6. **📖 LEER QUINTO:** `GUIA-PROCESO-IMPLEMENTACION-PASO-A-PASO.md` usando `read_file()`
+7. **🔍 IDENTIFICAR** template existente usando `list_dir()` (NO `read_file()` todavía)
+8. **📋 ANALIZAR** la imagen detalladamente
+9. **📝 MOSTRAR** el análisis completo al usuario en el formato obligatorio
+10. **⏸️ ESPERAR** aprobación explícita del usuario
+11. **✅ SOLO DESPUÉS** de aprobación, implementar UNA tarea a la vez
 
 ### 🚫 HERRAMIENTAS PROHIBIDAS ANTES DEL ANÁLISIS:
 
@@ -46,7 +74,16 @@
 
 ## 🚨🚨🚨 VERIFICACIÓN OBLIGATORIA ANTES DE CUALQUIER ACCIÓN 🚨🚨🚨
 
-**⚠️⚠️⚠️ SI EL USUARIO ENVÍA UNA IMAGEN O PIDE CREAR/MODIFICAR DESDE IMAGEN:**
+**⚠️⚠️⚠️ AL INICIO DE CADA MENSAJE, VERIFICAR TRIGGERS DE IMAGEN:**
+
+**PASO 0: DETECCIÓN AUTOMÁTICA (OBLIGATORIO AL INICIO)**
+
+**ANTES de hacer CUALQUIER cosa, verificar si hay triggers:**
+1. ¿Hay `<image_description>`, `<image>`, o `[imagen]` en el mensaje?
+2. ¿Hay palabras clave: "imagen", "crear desde", "home de", "crear home", etc.?
+3. ¿Es una solicitud de creación/modificación?
+
+**SI HAY CUALQUIER TRIGGER:**
 
 **ANTES de hacer CUALQUIER cosa (buscar archivos, leer código, escribir código, etc.), DEBES:**
 
