@@ -117,17 +117,24 @@ export class InteractivePrompt {
 			// Continuar con el flujo normal de modo interactivo (NO retornar vacío)
 		}
 
+		// DEBUG: Verificar estado de TTY
+		const hasTTY = process.stdin.isTTY && process.stdout.isTTY;
+		console.error(`[DEBUG question] stdin.isTTY: ${process.stdin.isTTY}, stdout.isTTY: ${process.stdout.isTTY}, hasTTY: ${hasTTY}`);
+
 		// Modo interactivo: esperar respuesta del usuario
 		// SIEMPRE intentar leer de stdin si hay TTY, incluso si falla
 		return new Promise((resolve, reject) => {
 			// Verificar TTY: si NO hay TTY, usar default automáticamente
 			// Si HAY TTY, SIEMPRE intentar leer de stdin (no usar default automáticamente)
-			if (!process.stdin.isTTY || !process.stdout.isTTY) {
+			if (!hasTTY) {
 				// No hay TTY: retornar vacío para que use default
 				// Esto solo pasa cuando se ejecuta desde chat de Cursor
+				console.error(`[DEBUG question] No hay TTY, retornando vacío para usar default`);
 				resolve('');
 				return;
 			}
+
+			console.error(`[DEBUG question] HAY TTY, intentando leer de stdin...`);
 
 			// HAY TTY (terminal real): SIEMPRE intentar leer de stdin
 			// Intentar recrear readline si es necesario
