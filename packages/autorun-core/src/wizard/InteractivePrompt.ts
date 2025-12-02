@@ -117,16 +117,20 @@ export class InteractivePrompt {
 			// Continuar con el flujo normal de modo interactivo (NO retornar vacío)
 		}
 
-		// Verificar si realmente podemos leer de stdin
-		// Si stdin está siendo capturado por Cursor o no es realmente interactivo, usar default
-		if (!process.stdin.isTTY || !process.stdout.isTTY) {
-			// No hay TTY real: retornar vacío para que use default
-			return '';
-		}
-
 		// Modo interactivo: esperar respuesta del usuario
+		// SIEMPRE intentar leer de stdin si hay TTY, incluso si falla
 		return new Promise((resolve, reject) => {
-			// Intentar recrear readline si es necesario (manejar errores silenciosamente)
+			// Verificar TTY: si NO hay TTY, usar default automáticamente
+			// Si HAY TTY, SIEMPRE intentar leer de stdin (no usar default automáticamente)
+			if (!process.stdin.isTTY || !process.stdout.isTTY) {
+				// No hay TTY: retornar vacío para que use default
+				// Esto solo pasa cuando se ejecuta desde chat de Cursor
+				resolve('');
+				return;
+			}
+
+			// HAY TTY (terminal real): SIEMPRE intentar leer de stdin
+			// Intentar recrear readline si es necesario
 			try {
 				// Verificar si readline está disponible intentando usarlo
 				if (!this.rl || (this.rl as any).closed) {
@@ -136,13 +140,8 @@ export class InteractivePrompt {
 					});
 				}
 			} catch (error) {
-				// Si falla, verificar si realmente hay TTY
-				if (!process.stdin.isTTY || !process.stdout.isTTY) {
-					// No hay TTY: retornar vacío para usar default
-					resolve('');
-					return;
-				}
-				// Hay TTY: intentar recrear readline de todas formas
+				// Si falla, intentar recrear readline de todas formas
+				// NO retornar vacío automáticamente si hay TTY
 				this.rl = readline.createInterface({
 					input: process.stdin,
 					output: process.stdout,
@@ -150,28 +149,14 @@ export class InteractivePrompt {
 			}
 
 			try {
-				// Configurar timeout para detectar si stdin está bloqueado
-				const timeout = setTimeout(() => {
-					// Si después de 1 segundo no hay respuesta, puede que stdin esté bloqueado
-					// Solo cancelar si realmente no hay TTY
-					if (!process.stdin.isTTY || !process.stdout.isTTY) {
-						this.rl.close();
-						resolve(''); // Retornar vacío para usar default
-					}
-				}, 1000);
-
+				// SIEMPRE intentar leer de stdin cuando hay TTY
+				// NO usar timeout que cancele automáticamente
 				this.rl.question(prompt, (answer) => {
-					clearTimeout(timeout);
 					resolve(answer.trim());
 				});
 			} catch (error: any) {
 				// Si el error es porque readline está cerrado, intentar recrearlo y volver a preguntar
 				if (error.code === 'ERR_USE_AFTER_CLOSE') {
-					// Verificar TTY antes de recrear
-					if (!process.stdin.isTTY || !process.stdout.isTTY) {
-						resolve(''); // Retornar vacío para usar default
-						return;
-					}
 					// Recrear readline y volver a preguntar
 					try {
 						this.rl = readline.createInterface({
@@ -182,21 +167,13 @@ export class InteractivePrompt {
 							resolve(answer.trim());
 						});
 					} catch (retryError) {
-						// Si falla de nuevo, verificar TTY
-						if (!process.stdin.isTTY || !process.stdout.isTTY) {
-							resolve(''); // Retornar vacío para usar default
-						} else {
-							reject(retryError);
-						}
+						// Si falla de nuevo, rechazar el error (no usar default automáticamente)
+						reject(retryError);
 					}
 					return;
 				}
-				// Si hay otro error y no hay TTY, usar default
-				if (!process.stdin.isTTY || !process.stdout.isTTY) {
-					resolve(''); // Retornar vacío para usar default
-				} else {
-					reject(error);
-				}
+				// Si hay otro error, rechazarlo (no usar default automáticamente)
+				reject(error);
 			}
 		});
 	}
@@ -436,18 +413,8 @@ export class InteractivePrompt {
 			// Continuar con el flujo normal de modo interactivo (esperar respuesta del usuario en terminal)
 		}
 
-		// Verificar si estamos en contexto no interactivo ANTES de preguntar
+		// Modo interactivo: SIEMPRE intentar leer de stdin si hay TTY
 		// Solo usar default automáticamente si NO hay TTY (chat de Cursor)
-		// Si hay TTY (terminal), esperar respuesta del usuario
-		if (!process.stdin.isTTY || !process.stdout.isTTY) {
-			// Contexto no interactivo (chat de Cursor): usar default automáticamente
-			console.log(`${prompt} (${defaultText}): (contexto no interactivo, usando default: ${defaultValue ? 'Sí' : 'No'})`);
-			return defaultValue;
-		}
-		
-		// Hay TTY (terminal interactivo): continuar normalmente y esperar respuesta del usuario
-
-		// Modo interactivo
 		const answer = await this.question(`${prompt} (${defaultText}): `);
 
 		if (!answer) {
