@@ -231,7 +231,21 @@ export class InteractivePrompt {
 		// IMPORTANTE: En modo interactivo (sin respuestas automáticas), una respuesta vacía puede significar:
 		// 1. El usuario presionó Enter (comportamiento normal, usar default si está disponible)
 		// 2. El readline estaba cerrado y question() retornó vacío (NO usar default, recrear readline y preguntar de nuevo)
+		// 3. Contexto no interactivo (sin TTY) - usar default automáticamente
 		if (!answer || answer.trim() === '') {
+			// Verificar si estamos en contexto no interactivo
+			if (!process.stdin.isTTY || !process.stdout.isTTY) {
+				// Contexto no interactivo: usar default automáticamente
+				if (defaultValue) {
+					console.log(`✅ Usando opción por defecto: ${options.find(o => o.value === defaultValue)?.label || defaultValue}\n`);
+					return defaultValue;
+				}
+				// Si no hay default, usar primera opción
+				const firstOption = options[0];
+				console.log(`✅ Usando primera opción (contexto no interactivo): ${firstOption.label}\n`);
+				return firstOption.value;
+			}
+			
 			// Verificar si realmente estábamos en modo automático con respuestas que se agotaron
 			const wasAutoModeWithAnswers = this.isAutoMode && this.autoAnswers.length > 0 && this.autoAnswerIndex >= this.autoAnswers.length;
 			
@@ -331,9 +345,16 @@ export class InteractivePrompt {
 			return lowerAnswer === 's' || lowerAnswer === 'y' || lowerAnswer === 'yes' || lowerAnswer === 'si';
 		}
 
-		// Si estamos en modo automático pero se agotaron las respuestas, DESACTIVAR modo automático
-		// para volver a modo interactivo y permitir que el usuario responda
+		// Si estamos en modo automático pero se agotaron las respuestas
 		if (this.isAutoMode && this.autoAnswers.length > 0 && this.autoAnswerIndex >= this.autoAnswers.length) {
+			// Verificar si estamos en un contexto no interactivo (sin TTY)
+			// Si no hay TTY, usar default automáticamente en lugar de intentar modo interactivo
+			if (!process.stdin.isTTY || !process.stdout.isTTY) {
+				// Contexto no interactivo: usar default automáticamente
+				console.log(`${prompt} (${defaultText}): (contexto no interactivo, usando default: ${defaultValue ? 'Sí' : 'No'})`);
+				return defaultValue;
+			}
+			
 			// Desactivar modo automático - volver a modo interactivo
 			this.isAutoMode = false;
 			// Intentar recrear readline si está cerrado
@@ -345,13 +366,24 @@ export class InteractivePrompt {
 					});
 				}
 			} catch (error) {
-				// Si falla recrear readline, intentar de nuevo
+				// Si falla recrear readline, usar default si no hay TTY
+				if (!process.stdin.isTTY || !process.stdout.isTTY) {
+					console.log(`${prompt} (${defaultText}): (error recreando readline, usando default: ${defaultValue ? 'Sí' : 'No'})`);
+					return defaultValue;
+				}
+				// Si hay TTY, intentar de nuevo
 				this.rl = readline.createInterface({
 					input: process.stdin,
 					output: process.stdout,
 				});
 			}
-			// Continuar con el flujo normal de modo interactivo (NO usar default automáticamente)
+		}
+
+		// Verificar si estamos en contexto no interactivo antes de preguntar
+		if (!process.stdin.isTTY || !process.stdout.isTTY) {
+			// Contexto no interactivo: usar default automáticamente
+			console.log(`${prompt} (${defaultText}): (contexto no interactivo, usando default: ${defaultValue ? 'Sí' : 'No'})`);
+			return defaultValue;
 		}
 
 		// Modo interactivo
