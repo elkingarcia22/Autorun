@@ -1,0 +1,58 @@
+# Biome Ignore - Archivos y directorios a excluir del linting
+
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Vendor UBITS (archivos externos, no necesitan linting)
+vendor/
+**/vendor/
+
+# Build outputs
+dist/
+**/dist/
+build/
+**/build/
+*.tsbuildinfo
+
+# Generated files
+prototypes/
+**/prototypes/
+.ubits/
+**/.ubits/
+
+# Coverage
+coverage/
+**/coverage/
+*.lcov
+
+# Logs
+*.log
+logs/
+**/logs/
+
+# Cache
+.cache/
+**/.cache/
+.parcel-cache/
+**/.parcel-cache/
+
+# Storybook build
+storybook-static/
+**/storybook-static/
+
+# Minified files
+*.min.js
+*.min.css
+*.bundle.js
+
+# Large generated files
+*.umd.js
+**/*.umd.js
+
+# Temporary files
+*.tmp
+*.temp
+**/*.tmp
+**/*.temp
+
