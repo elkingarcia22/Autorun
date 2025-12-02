@@ -31,13 +31,14 @@
 ### ✅ DEBES HACER ESTO PRIMERO:
 
 1. **DETENER TODO INMEDIATAMENTE**
-2. **LEER:** `GUIA-CREAR-DESDE-IMAGEN-DESPUES-WIZARD.md`
-3. **LEER:** `GUIA-PROCESO-IMPLEMENTACION-PASO-A-PASO.md`
-4. **IDENTIFICAR template existente** (buscar en `prototypes/`)
-5. **ANALIZAR la imagen detalladamente**
-6. **MOSTRAR análisis completo al usuario** (formato obligatorio)
-7. **ESPERAR aprobación explícita del usuario**
-8. **SOLO DESPUÉS** de aprobación, implementar UNA tarea a la vez
+2. **LEER PRIMERO:** `VERIFICACION-IMAGEN.md` - ⚠️ OBLIGATORIO (archivo de verificación)
+3. **LEER SEGUNDO:** `GUIA-CREAR-DESDE-IMAGEN-DESPUES-WIZARD.md`
+4. **LEER TERCERO:** `GUIA-PROCESO-IMPLEMENTACION-PASO-A-PASO.md`
+5. **IDENTIFICAR template existente** (buscar en `prototypes/`)
+6. **ANALIZAR la imagen detalladamente**
+7. **MOSTRAR análisis completo al usuario** (formato obligatorio)
+8. **ESPERAR aprobación explícita del usuario**
+9. **SOLO DESPUÉS** de aprobación, implementar UNA tarea a la vez
 
 ### 📋 FORMATO OBLIGATORIO PARA MOSTRAR ANÁLISIS:
 
