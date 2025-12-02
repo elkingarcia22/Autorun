@@ -5,7 +5,7 @@
  */
 
 import { execSync } from 'child_process';
-import { existsSync } from 'fs';
+import { existsSync, readFileSync } from 'fs';
 import { join, dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -15,7 +15,7 @@ const __dirname = dirname(__filename);
 /**
  * Busca el directorio Autorun desde el directorio actual hacia arriba
  */
-async function findAutorunDir() {
+function findAutorunDir() {
 	let currentDir = process.cwd();
 	
 	// Buscar hacia arriba desde el directorio actual
@@ -34,7 +34,6 @@ async function findAutorunDir() {
 	const currentPackageJson = join(process.cwd(), 'package.json');
 	if (existsSync(currentPackageJson)) {
 		try {
-			const { readFileSync } = await import('fs');
 			const packageJson = JSON.parse(
 				readFileSync(currentPackageJson, 'utf-8')
 			);
@@ -50,7 +49,7 @@ async function findAutorunDir() {
 }
 
 // Buscar directorio Autorun
-const autorunDir = await findAutorunDir();
+const autorunDir = findAutorunDir();
 
 if (!autorunDir) {
 	console.error('❌ No se encontró el directorio Autorun.');
