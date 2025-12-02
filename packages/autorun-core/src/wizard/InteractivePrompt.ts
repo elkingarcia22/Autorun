@@ -100,6 +100,13 @@ export class InteractivePrompt {
 			// Continuar con el flujo normal de modo interactivo (NO retornar vacío)
 		}
 
+		// Verificar si realmente podemos leer de stdin
+		// Si stdin está siendo capturado por Cursor o no es realmente interactivo, usar default
+		if (!process.stdin.isTTY || !process.stdout.isTTY) {
+			// No hay TTY real: retornar vacío para que use default
+			return '';
+		}
+
 		// Modo interactivo: esperar respuesta del usuario
 		return new Promise((resolve, reject) => {
 			// Intentar recrear readline si es necesario (manejar errores silenciosamente)
@@ -112,8 +119,13 @@ export class InteractivePrompt {
 					});
 				}
 			} catch (error) {
-				// Si falla, intentar recrear readline de todas formas
-				// NO retornar vacío automáticamente - siempre intentar modo interactivo
+				// Si falla, verificar si realmente hay TTY
+				if (!process.stdin.isTTY || !process.stdout.isTTY) {
+					// No hay TTY: retornar vacío para usar default
+					resolve('');
+					return;
+				}
+				// Hay TTY: intentar recrear readline de todas formas
 				this.rl = readline.createInterface({
 					input: process.stdin,
 					output: process.stdout,
@@ -121,12 +133,28 @@ export class InteractivePrompt {
 			}
 
 			try {
+				// Configurar timeout para detectar si stdin está bloqueado
+				const timeout = setTimeout(() => {
+					// Si después de 1 segundo no hay respuesta, puede que stdin esté bloqueado
+					// Solo cancelar si realmente no hay TTY
+					if (!process.stdin.isTTY || !process.stdout.isTTY) {
+						this.rl.close();
+						resolve(''); // Retornar vacío para usar default
+					}
+				}, 1000);
+
 				this.rl.question(prompt, (answer) => {
+					clearTimeout(timeout);
 					resolve(answer.trim());
 				});
 			} catch (error: any) {
 				// Si el error es porque readline está cerrado, intentar recrearlo y volver a preguntar
 				if (error.code === 'ERR_USE_AFTER_CLOSE') {
+					// Verificar TTY antes de recrear
+					if (!process.stdin.isTTY || !process.stdout.isTTY) {
+						resolve(''); // Retornar vacío para usar default
+						return;
+					}
 					// Recrear readline y volver a preguntar
 					try {
 						this.rl = readline.createInterface({
@@ -137,12 +165,21 @@ export class InteractivePrompt {
 							resolve(answer.trim());
 						});
 					} catch (retryError) {
-						// Si falla de nuevo, rechazar el error
-						reject(retryError);
+						// Si falla de nuevo, verificar TTY
+						if (!process.stdin.isTTY || !process.stdout.isTTY) {
+							resolve(''); // Retornar vacío para usar default
+						} else {
+							reject(retryError);
+						}
 					}
 					return;
 				}
-				reject(error);
+				// Si hay otro error y no hay TTY, usar default
+				if (!process.stdin.isTTY || !process.stdout.isTTY) {
+					resolve(''); // Retornar vacío para usar default
+				} else {
+					reject(error);
+				}
 			}
 		});
 	}
