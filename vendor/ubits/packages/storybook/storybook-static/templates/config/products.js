@@ -96,7 +96,7 @@ const defaultTabBarConfig = {
       ]
     },
     {
-      id: 'diagnostico',
+      id: 'diagnóstico', // ⚠️ IMPORTANTE: Usar 'diagnóstico' (con tilde) para que coincida con ContentManager
       title: 'Diagnóstico',
       icon: 'chart-mixed',
       url: 'diagnostico.html',

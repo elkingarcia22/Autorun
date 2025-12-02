@@ -51,16 +51,19 @@ class ContentManager {
     
     console.log('🔍 [ContentManager] isAdminMode:', this.isAdminMode);
     
+    // Normalizar el nombre de la sección (manejar variaciones con/sin tilde)
+    const normalizedSection = section === 'diagnostico' ? 'diagnóstico' : section;
+    
     // ⚠️ IMPORTANTE: Secciones sin SubNav
     // En modo admin: inicio y diagnóstico no tienen SubNav
-    if (this.isAdminMode && (section === 'inicio' || section === 'diagnóstico')) {
-      console.log('⚠️ [ContentManager] Sección sin SubNav (modo admin):', section);
+    if (this.isAdminMode && (normalizedSection === 'inicio' || normalizedSection === 'diagnóstico')) {
+      console.log('⚠️ [ContentManager] Sección sin SubNav (modo admin):', normalizedSection);
       return null;
     }
     
     // En modo colaborador: diagnóstico no tiene SubNav
-    if (!this.isAdminMode && section === 'diagnóstico') {
-      console.log('⚠️ [ContentManager] Sección sin SubNav (modo colaborador):', section);
+    if (!this.isAdminMode && normalizedSection === 'diagnóstico') {
+      console.log('⚠️ [ContentManager] Sección sin SubNav (modo colaborador):', normalizedSection);
       return null;
     }
     
@@ -183,16 +186,17 @@ class ContentManager {
       }
     };
 
-    const subNavConfig = subNavMap[section];
+    // Usar la sección normalizada para buscar en el mapa
+    const subNavConfig = subNavMap[normalizedSection] || subNavMap[section];
     if (subNavConfig) {
-      console.log('✅ [ContentManager] Configuración de SubNav encontrada para:', section);
+      console.log('✅ [ContentManager] Configuración de SubNav encontrada para:', normalizedSection);
       console.log('   - Variant:', subNavConfig.variant);
       console.log('   - Tabs count:', subNavConfig.tabs?.length);
       console.log('   - ActiveTabId:', subNavConfig.activeTabId);
       return subNavConfig;
     }
 
-    console.warn(`⚠️ [ContentManager] No hay configuración de SubNav para la sección: ${section}`);
+    console.warn(`⚠️ [ContentManager] No hay configuración de SubNav para la sección: ${normalizedSection}`);
     console.log('🔍 [ContentManager] Secciones disponibles en subNavMap:', Object.keys(subNavMap));
 
     // Configuración por defecto

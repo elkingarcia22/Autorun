@@ -79,9 +79,17 @@ export class InteractivePrompt {
 
 		// Modo interactivo: esperar respuesta del usuario
 		return new Promise((resolve) => {
-			// Verificar que stdin esté disponible y no esté cerrado
-			if (this.rl.closed) {
-				// Si readline está cerrado, intentar recrearlo
+			// Intentar recrear readline si es necesario (manejar errores silenciosamente)
+			try {
+				// Verificar si readline está disponible intentando usarlo
+				if (!this.rl) {
+					this.rl = readline.createInterface({
+						input: process.stdin,
+						output: process.stdout,
+					});
+				}
+			} catch (error) {
+				// Si falla, recrear readline
 				this.rl = readline.createInterface({
 					input: process.stdin,
 					output: process.stdout,
@@ -172,21 +180,6 @@ export class InteractivePrompt {
 
 	/**
 	 * Hace una pregunta de confirmación (sí/no)
-	 */
-	async confirm(prompt: string, defaultValue: boolean = true): Promise<boolean> {
-		const defaultText = defaultValue ? 'S/n' : 's/N';
-		const answer = await this.question(`${prompt} (${defaultText}): `);
-
-		if (!answer) {
-			return defaultValue;
-		}
-
-		const lowerAnswer = answer.toLowerCase();
-		return lowerAnswer === 's' || lowerAnswer === 'y' || lowerAnswer === 'yes' || lowerAnswer === 'si';
-	}
-
-	/**
-	 * Hace una pregunta de confirmación (sí/no)
 	 * Soporta modo automático y modo interactivo
 	 */
 	async confirm(prompt: string, defaultValue: boolean = true): Promise<boolean> {
@@ -225,8 +218,10 @@ export class InteractivePrompt {
 	 * Cierra la interfaz readline de forma segura
 	 */
 	close(): void {
-		if (!this.rl.closed) {
+		try {
 			this.rl.close();
+		} catch (error) {
+			// Ignorar errores si ya está cerrado
 		}
 	}
 }

@@ -2010,5 +2010,183 @@ window.createTabBar = function(options) {
   }
 };
 
+// ========================================
+// TABS COMPONENT
+// ========================================
+
+/**
+ * Helper para renderizar iconos FontAwesome en tabs
+ */
+function renderTabsIconHelper(iconName, isActive = false) {
+  if (!iconName) return '';
+  
+  // Normalizar icono: asegurar que tiene prefijo fa-
+  let normalizedIcon = iconName;
+  if (!normalizedIcon.startsWith('fa-')) {
+    normalizedIcon = `fa-${normalizedIcon}`;
+  }
+  
+  // Determinar estilo según estado activo
+  // Active: solid (fas), Inactive: regular (far)
+  const iconStyle = isActive ? 'fas' : 'far';
+  
+  // Si ya tiene prefijo far o fas, reemplazarlo según el estado
+  if (normalizedIcon.startsWith('far ') || normalizedIcon.startsWith('fas ')) {
+    // Extraer solo el nombre del icono sin el prefijo
+    const iconNameOnly = normalizedIcon.replace(/^(far|fas)\s+/, '');
+    return `<i class="${iconStyle} ${iconNameOnly}"></i>`;
+  }
+  
+  // Si no tiene prefijo, agregar el estilo correspondiente
+  return `<i class="${iconStyle} ${normalizedIcon}"></i>`;
+}
+
+/**
+ * Renderiza el HTML del componente Tabs
+ */
+function renderTabs(options) {
+  const tabs = options.tabs || [];
+  const activeTabId = options.activeTabId;
+  const className = options.className || '';
+
+  if (!tabs || tabs.length === 0) {
+    return '<div class="ubits-tabs"></div>';
+  }
+
+  // Determinar tab activo
+  let activeId = activeTabId;
+  if (!activeId) {
+    const activeTab = tabs.find(tab => tab.active);
+    activeId = activeTab ? activeTab.id : tabs[0].id;
+  }
+
+  // Renderizar tabs
+  const tabsHTML = tabs.map(tab => {
+    const isActive = tab.id === activeId;
+    const activeClass = isActive ? 'ubits-tab--active' : '';
+    const disabledClass = tab.disabled ? 'ubits-tab--disabled' : '';
+    const classes = ['ubits-tab', activeClass, disabledClass].filter(Boolean).join(' ');
+    
+    // Pasar isActive para determinar si usa solid (active) o regular (inactive)
+    const iconHTML = tab.icon ? renderTabsIconHelper(tab.icon, isActive) : '';
+    
+    return `
+      <button 
+        class="${classes}" 
+        data-tab-id="${tab.id}"
+        ${tab.disabled ? 'disabled' : ''}
+        ${tab.url ? `data-url="${tab.url}"` : ''}
+        ${tab.onClick ? 'data-has-click-handler="true"' : ''}
+      >
+        ${iconHTML}
+        <span class="ubits-tab__label">${tab.label}</span>
+      </button>
+    `;
+  }).join('');
+
+  const containerClasses = ['ubits-tabs', className].filter(Boolean).join(' ');
+
+  return `
+    <div class="${containerClasses}">
+      ${tabsHTML}
+    </div>
+  `.trim();
+}
+
+/**
+ * Inicializa los event listeners de los tabs
+ */
+function initTabsListeners(tabsElement, options) {
+  // Remover listeners anteriores si existen (marcar con data attribute)
+  const existingTabs = tabsElement.querySelectorAll('.ubits-tab[data-listener-attached]');
+  existingTabs.forEach(tab => {
+    const clonedTab = tab.cloneNode(true);
+    tab.parentNode?.replaceChild(clonedTab, tab);
+  });
+  
+  const tabs = tabsElement.querySelectorAll('.ubits-tab:not(.ubits-tab--disabled)');
+  
+  const handleTabClick = (tabElement) => {
+    const tabId = tabElement.getAttribute('data-tab-id');
+    const url = tabElement.getAttribute('data-url');
+    
+    // Remover active de todos los tabs
+    tabsElement.querySelectorAll('.ubits-tab').forEach(t => {
+      t.classList.remove('ubits-tab--active');
+    });
+    
+    // Agregar active al tab clickeado
+    tabElement.classList.add('ubits-tab--active');
+    
+    // Navegar a URL si existe
+    if (url) {
+      window.location.href = url;
+      return;
+    }
+    
+    // Buscar el callback onClick del tab original
+    const tabConfig = options.tabs.find(t => t.id === tabId);
+    
+    if (tabConfig && tabConfig.onClick) {
+      tabConfig.onClick(new MouseEvent('click'));
+    }
+    
+    // Llamar callback si existe
+    if (options.onTabChange) {
+      options.onTabChange(tabId || '', tabElement);
+    }
+    
+    // Disparar evento personalizado
+    const event = new CustomEvent('tabsTabClick', {
+      detail: { tabId: tabId, tabElement: tabElement }
+    });
+    document.dispatchEvent(event);
+  };
+
+  // Event listeners para tabs
+  tabs.forEach(tab => {
+    tab.setAttribute('data-listener-attached', 'true');
+    tab.addEventListener('click', (e) => {
+      e.preventDefault();
+      handleTabClick(tab);
+    });
+  });
+}
+
+/**
+ * Crea un componente Tabs interactivo en el DOM
+ */
+window.createTabs = function(options, containerId) {
+  const container = containerId 
+    ? document.getElementById(containerId) || document.createElement('div')
+    : document.createElement('div');
+  
+  if (containerId && !container.id) {
+    container.id = containerId;
+  }
+  
+  container.innerHTML = renderTabs(options);
+  
+  // Inicializar listeners - buscar el elemento .ubits-tabs dentro del contenedor
+  requestAnimationFrame(() => {
+    const tabsElement = container.querySelector('.ubits-tabs');
+    if (tabsElement) {
+      initTabsListeners(tabsElement, options);
+    } else {
+      // Fallback: usar el contenedor directamente si no se encuentra .ubits-tabs
+      initTabsListeners(container, options);
+    }
+  });
+  
+  return container;
+};
+
+// ========================================
+// DATA TABLE COMPONENT
+// ========================================
+// Nota: DataTable es muy complejo (6000+ líneas) y tiene muchas dependencias
+// Se carga desde el UMD compilado: data-table.umd.js
+// Las funciones window.createDataTable y window.renderDataTable estarán disponibles
+// después de cargar el script UMD en los templates generados
 
 

@@ -1,0 +1,480 @@
+/**
+ * LocalServer
+ * 
+ * Servidor HTTP local simple para servir templates generados
+ * Evita problemas de CORS al cargar recursos desde Vercel
+ */
+
+import * as http from 'http';
+import * as https from 'https';
+import * as fs from 'fs/promises';
+import * as path from 'path';
+import { URL } from 'url';
+
+export interface LocalServerOptions {
+	port?: number;
+	directory?: string;
+	vercelUrl?: string;
+	vercelBypassToken?: string;
+}
+
+export class LocalServer {
+	private server: http.Server | null = null;
+	private port: number;
+	private directory: string;
+	private vercelUrl: string | undefined;
+	private vercelBypassToken: string | undefined;
+	private isRunning: boolean = false;
+
+	constructor(options: LocalServerOptions = {}) {
+		this.port = options.port || 3000;
+		this.directory = options.directory || path.join(process.cwd(), 'prototypes');
+		this.vercelUrl = options.vercelUrl;
+		this.vercelBypassToken = options.vercelBypassToken;
+	}
+
+	/**
+	 * Inicia el servidor HTTP local
+	 */
+	async start(): Promise<void> {
+		if (this.isRunning) {
+			console.log(`   ℹ️  Servidor ya está corriendo en http://localhost:${this.port}`);
+			return;
+		}
+
+		return new Promise((resolve, reject) => {
+			this.server = http.createServer(async (req, res) => {
+				try {
+					await this.handleRequest(req, res);
+				} catch (error) {
+					console.error('   ❌ Error en servidor:', error);
+					res.writeHead(500, { 'Content-Type': 'text/plain' });
+					res.end('Internal Server Error');
+				}
+			});
+
+			this.server.listen(this.port, () => {
+				this.isRunning = true;
+				console.log(`   ✅ Servidor HTTP local iniciado en http://localhost:${this.port}`);
+				resolve();
+			});
+
+			this.server.on('error', (error: NodeJS.ErrnoException) => {
+				if (error.code === 'EADDRINUSE') {
+					console.log(`   ⚠️  Puerto ${this.port} en uso, intentando puerto ${this.port + 1}`);
+					this.port += 1;
+					this.start().then(resolve).catch(reject);
+				} else {
+					reject(error);
+				}
+			});
+		});
+	}
+
+	/**
+	 * Detiene el servidor HTTP local
+	 */
+	async stop(): Promise<void> {
+		if (!this.server || !this.isRunning) {
+			return;
+		}
+
+		return new Promise((resolve) => {
+			this.server!.close(() => {
+				this.isRunning = false;
+				this.server = null;
+				console.log('   ✅ Servidor HTTP local detenido');
+				resolve();
+			});
+		});
+	}
+
+	/**
+	 * Obtiene la URL base del servidor
+	 */
+	getUrl(): string {
+		return `http://localhost:${this.port}`;
+	}
+
+	/**
+	 * Verifica si el servidor está corriendo
+	 */
+	isServerRunning(): boolean {
+		return this.isRunning;
+	}
+
+	/**
+	 * Maneja las peticiones HTTP
+	 */
+	private async handleRequest(req: http.IncomingMessage, res: http.ServerResponse): Promise<void> {
+		// Configurar CORS para permitir cargar recursos desde Vercel
+		res.setHeader('Access-Control-Allow-Origin', '*');
+		res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+		res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+		if (req.method === 'OPTIONS') {
+			res.writeHead(200);
+			res.end();
+			return;
+		}
+
+		if (req.method !== 'GET') {
+			res.writeHead(405, { 'Content-Type': 'text/plain' });
+			res.end('Method Not Allowed');
+			return;
+		}
+
+		// Parsear URL
+		const url = new URL(req.url || '/', `http://localhost:${this.port}`);
+		let filePath = url.pathname;
+
+		// Detectar si es una petición de proxy a Vercel
+		if (filePath.startsWith('/vercel-proxy/') && this.vercelUrl) {
+			await this.proxyVercelRequest(req, res, filePath);
+			return;
+		}
+
+		// Si es la raíz, servir index o listar archivos
+		if (filePath === '/') {
+			filePath = '/index.html';
+		}
+
+		// Remover leading slash
+		filePath = filePath.replace(/^\//, '');
+
+		// Detectar si es una ruta a vendor/ubits/ (recursos UBITS)
+		// Las rutas relativas ../vendor/ubits/ se resuelven como vendor/ubits/ desde la raíz
+		let fullPath: string;
+		if (filePath.startsWith('vendor/ubits/')) {
+			// Servir desde la raíz del proyecto (process.cwd())
+			fullPath = path.join(process.cwd(), filePath);
+		} else {
+			// Servir desde el directorio de prototypes
+			fullPath = path.join(this.directory, filePath);
+		}
+
+		try {
+			// Verificar que el archivo esté dentro de los directorios permitidos (seguridad)
+			const resolvedPath = path.resolve(fullPath);
+			const resolvedDirectory = path.resolve(this.directory);
+			const resolvedProjectRoot = path.resolve(process.cwd());
+			const resolvedVendorPath = path.resolve(process.cwd(), 'vendor');
+			
+			// Permitir acceso a prototypes/ y vendor/ubits/
+			const isInPrototypes = resolvedPath.startsWith(resolvedDirectory);
+			const isInVendor = resolvedPath.startsWith(resolvedVendorPath) && resolvedPath.startsWith(path.resolve(process.cwd(), 'vendor', 'ubits'));
+			const isInProjectRoot = resolvedPath.startsWith(resolvedProjectRoot);
+			
+			if (!isInPrototypes && !isInVendor && !isInProjectRoot) {
+				res.writeHead(403, { 'Content-Type': 'text/plain' });
+				res.end('Forbidden');
+				return;
+			}
+
+			// Leer archivo
+			const stats = await fs.stat(fullPath);
+			
+			if (stats.isDirectory()) {
+				// Si es directorio, listar archivos
+				const files = await fs.readdir(fullPath);
+				const html = this.generateDirectoryListing(filePath, files);
+				res.writeHead(200, { 'Content-Type': 'text/html' });
+				res.end(html);
+				return;
+			}
+
+			// Leer contenido del archivo
+			const content = await fs.readFile(fullPath);
+			
+			// Determinar Content-Type
+			const contentType = this.getContentType(filePath);
+			
+			res.writeHead(200, { 'Content-Type': contentType });
+			res.end(content);
+		} catch (error: any) {
+			if (error.code === 'ENOENT') {
+				res.writeHead(404, { 'Content-Type': 'text/plain' });
+				res.end('File Not Found');
+			} else {
+				throw error;
+			}
+		}
+	}
+
+	/**
+	 * Determina el Content-Type basado en la extensión del archivo
+	 */
+	private getContentType(filePath: string): string {
+		const ext = path.extname(filePath).toLowerCase();
+		const contentTypes: Record<string, string> = {
+			'.html': 'text/html',
+			'.css': 'text/css',
+			'.js': 'application/javascript',
+			'.json': 'application/json',
+			'.png': 'image/png',
+			'.jpg': 'image/jpeg',
+			'.jpeg': 'image/jpeg',
+			'.gif': 'image/gif',
+			'.svg': 'image/svg+xml',
+			'.ico': 'image/x-icon',
+			'.woff': 'font/woff',
+			'.woff2': 'font/woff2',
+			'.ttf': 'font/ttf',
+			'.eot': 'application/vnd.ms-fontobject',
+		};
+		return contentTypes[ext] || 'application/octet-stream';
+	}
+
+	/**
+	 * Hace proxy de una petición a Vercel
+	 */
+	private async proxyVercelRequest(
+		req: http.IncomingMessage,
+		res: http.ServerResponse,
+		proxyPath: string
+	): Promise<void> {
+		// Remover /vercel-proxy/ del path
+		let vercelPath = proxyPath.replace(/^\/vercel-proxy/, '');
+		
+		// Asegurar que el path empiece con /
+		if (!vercelPath.startsWith('/')) {
+			vercelPath = `/${vercelPath}`;
+		}
+		
+		// Construir URL completa de Vercel
+		// NOTA: Vercel sirve los archivos desde la raíz cuando outputDirectory es storybook-static
+		const vercelBaseUrl = this.vercelUrl!.replace(/\/$/, '');
+		const vercelFullUrl = `${vercelBaseUrl}${vercelPath}`;
+		
+		console.log(`   🔄 Proxy: ${proxyPath} -> ${vercelFullUrl}`);
+		
+		// Construir URL con bypass token si está disponible
+		const urlObj = new URL(vercelFullUrl);
+		if (this.vercelBypassToken) {
+			const separator = urlObj.search ? '&' : '?';
+			urlObj.search += `${separator}x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=${this.vercelBypassToken}`;
+		}
+
+		return new Promise((resolve, reject) => {
+			const options = {
+				hostname: urlObj.hostname,
+				path: urlObj.pathname + urlObj.search,
+				method: 'GET',
+				headers: {} as Record<string, string>,
+			};
+
+			// Agregar headers de bypass token
+			if (this.vercelBypassToken) {
+				options.headers['x-vercel-set-bypass-cookie'] = 'true';
+				options.headers['x-vercel-protection-bypass'] = this.vercelBypassToken;
+			}
+
+			const proxyReq = https.request(options, (proxyRes) => {
+				console.log(`   📥 Proxy respuesta: ${proxyRes.statusCode} para ${vercelPath}`);
+				
+				// Extraer cookie de set-cookie header si existe
+				const setCookie = proxyRes.headers['set-cookie'];
+				let cookieHeader = '';
+				if (setCookie) {
+					const cookieString = Array.isArray(setCookie) ? setCookie.join('; ') : String(setCookie);
+					const cookieMatch = cookieString.match(/_vercel_jwt=([^;]+)/);
+					if (cookieMatch) {
+						cookieHeader = `_vercel_jwt=${cookieMatch[1]}`;
+						console.log(`   🍪 Cookie extraída: ${cookieHeader.substring(0, 30)}...`);
+					}
+				}
+				
+				// Copiar headers de respuesta
+				const contentType = proxyRes.headers['content-type'] || 'application/octet-stream';
+				res.setHeader('Content-Type', contentType);
+				res.setHeader('Access-Control-Allow-Origin', '*');
+				res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+				res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+				// Headers adicionales para fuentes
+				if (vercelPath.match(/\.(woff|woff2|ttf|eot|otf)$/i)) {
+					res.setHeader('Cache-Control', 'public, max-age=31536000');
+				}
+				
+				// Si hay redirect, seguir recursivamente con cookie
+				if (proxyRes.statusCode === 307 || proxyRes.statusCode === 302 || proxyRes.statusCode === 301) {
+					const location = proxyRes.headers.location;
+					if (location) {
+						console.log(`   🔀 Redirect: ${location}`);
+						proxyRes.resume();
+						const redirectUrl = location.startsWith('http') ? location : `https://${urlObj.hostname}${location}`;
+						// Extraer pathname del redirect
+						const redirectPath = new URL(redirectUrl).pathname;
+						
+						// Si tenemos cookie, hacer la siguiente petición con cookie
+						if (cookieHeader) {
+							const redirectUrlObj = new URL(redirectUrl);
+							const redirectOptions = {
+								hostname: redirectUrlObj.hostname,
+								path: redirectUrlObj.pathname + redirectUrlObj.search,
+								method: 'GET',
+								headers: {
+									'Cookie': cookieHeader,
+								} as Record<string, string>,
+							};
+							
+							// Agregar bypass token si está disponible
+							if (this.vercelBypassToken) {
+								redirectOptions.headers['x-vercel-set-bypass-cookie'] = 'true';
+								redirectOptions.headers['x-vercel-protection-bypass'] = this.vercelBypassToken;
+							}
+							
+							const reqRedirect = https.request(redirectOptions, (resRedirect) => {
+								// Usar Buffer para datos binarios (woff2, imágenes, etc.)
+								const chunks: Buffer[] = [];
+								resRedirect.on('data', (chunk: Buffer) => { chunks.push(chunk); });
+								resRedirect.on('end', () => {
+									if (resRedirect.statusCode === 200) {
+										const contentTypeRedirect = resRedirect.headers['content-type'] || 'application/octet-stream';
+										res.setHeader('Content-Type', contentTypeRedirect);
+										res.setHeader('Access-Control-Allow-Origin', '*');
+										// Headers adicionales para fuentes
+										if (vercelPath.match(/\.(woff|woff2|ttf|eot|otf)$/i)) {
+											res.setHeader('Cache-Control', 'public, max-age=31536000');
+										}
+										res.writeHead(200);
+										res.end(Buffer.concat(chunks));
+										resolve();
+									} else {
+										console.log(`   ❌ Redirect error: ${resRedirect.statusCode}`);
+										res.writeHead(resRedirect.statusCode || 500, { 'Content-Type': 'text/plain' });
+										res.end(`Error ${resRedirect.statusCode}`);
+										reject(new Error(`HTTP ${resRedirect.statusCode}`));
+									}
+								});
+							});
+							reqRedirect.on('error', reject);
+							reqRedirect.setTimeout(10000, () => {
+								reqRedirect.destroy();
+								reject(new Error('Timeout en redirect'));
+							});
+							reqRedirect.end();
+							return;
+						}
+						
+						// Si no hay cookie, hacer proxy recursivo (puede entrar en bucle si Vercel siempre requiere cookie)
+						return this.proxyVercelRequest(req, res, `/vercel-proxy${redirectPath}`)
+							.then(resolve)
+							.catch(reject);
+					}
+				}
+
+				// Si es redirect, ya se manejó arriba
+				if (proxyRes.statusCode === 307 || proxyRes.statusCode === 302 || proxyRes.statusCode === 301) {
+					return; // Ya se maneja arriba
+				}
+				
+				// Si no es OK, verificar si es página de autenticación
+				const statusCode = proxyRes.statusCode || 500;
+				if (statusCode !== 200) {
+					// Leer el body para verificar si es página de autenticación
+					const chunks: Buffer[] = [];
+					proxyRes.on('data', (chunk: Buffer) => { chunks.push(chunk); });
+					proxyRes.on('end', () => {
+						const body = Buffer.concat(chunks).toString('utf-8');
+						if (body.includes('Authentication Required') || body.includes('Authentication')) {
+							console.log(`   ❌ Proxy error: Archivo no encontrado o requiere autenticación (${statusCode})`);
+							console.log(`   💡 Verificar que el archivo existe en Vercel: ${vercelFullUrl}`);
+							res.writeHead(404, { 'Content-Type': 'text/plain' });
+							res.end(`Archivo no encontrado en Vercel: ${vercelPath}\n\nVerificar que el archivo existe en storybook-static/`);
+						} else {
+							console.log(`   ❌ Proxy error: ${statusCode} ${proxyRes.statusMessage}`);
+							res.writeHead(statusCode, { 'Content-Type': 'text/plain' });
+							res.end(`Error ${statusCode}: ${proxyRes.statusMessage}`);
+						}
+						reject(new Error(`HTTP ${statusCode}: ${proxyRes.statusMessage}`));
+					});
+					return;
+				}
+
+				// Copiar status code
+				res.writeHead(proxyRes.statusCode || 200);
+
+				// Pipe de datos binarios correctamente
+				// No establecer encoding para que los datos vengan como Buffer
+				proxyRes.on('data', (chunk: Buffer) => {
+					res.write(chunk);
+				});
+
+				proxyRes.on('end', () => {
+					res.end();
+					resolve();
+				});
+			});
+
+			proxyReq.on('error', (error) => {
+				console.error(`   ❌ Error en proxy a Vercel (${vercelPath}):`, error.message);
+				if (!res.headersSent) {
+					res.writeHead(502, { 'Content-Type': 'text/plain' });
+					res.end(`Bad Gateway: Error al conectar con Vercel: ${error.message}`);
+				}
+				reject(error);
+			});
+
+			proxyReq.setTimeout(10000, () => {
+				proxyReq.destroy();
+				res.writeHead(504, { 'Content-Type': 'text/plain' });
+				res.end('Gateway Timeout');
+				reject(new Error('Timeout al conectar con Vercel'));
+			});
+
+			proxyReq.end();
+		});
+	}
+
+	/**
+	 * Genera HTML para listar directorio
+	 */
+	private generateDirectoryListing(dirPath: string, files: string[]): string {
+		const filesList = files
+			.map((file) => {
+				const filePath = dirPath === '/' ? file : `${dirPath}/${file}`;
+				return `      <li><a href="${filePath}">${file}</a></li>`;
+			})
+			.join('\n');
+
+		return `<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Directorio: ${dirPath}</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    h1 {
+      color: #333;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      margin: 8px 0;
+    }
+    a {
+      color: #0066cc;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <h1>Directorio: ${dirPath}</h1>
+  <ul>
+${filesList}
+  </ul>
+</body>
+</html>`;
+	}
+}
+

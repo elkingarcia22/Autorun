@@ -18,6 +18,9 @@
     <link rel="stylesheet" href="../components/card/src/styles/card.css" />
     <link rel="stylesheet" href="../components/alert/src/styles/alert.css" />
     
+    <!-- Theme Manager -->
+    <script src="config/theme-manager.js"></script>
+    
     <style>
         /* ========================================
            GLOBAL STYLES
@@ -562,26 +565,59 @@
         }
 
         /* Dark mode support */
+        /* Los tokens UBITS ya se redefinen automáticamente en [data-theme="dark"] */
+        /* Solo necesitamos asegurar que los elementos usen los tokens correctos */
         body[data-theme="dark"] {
-            background-color: var(--ubits-bg-2-dark, var(--modifiers-normal-color-dark-bg-2));
+            background-color: var(--ubits-bg-2);
         }
 
-        body[data-theme="dark"] .welcome-title,
-        body[data-theme="dark"] .welcome-features__title,
-        body[data-theme="dark"] .welcome-info-box__title {
-            color: var(--ubits-fg-1-high-dark, var(--modifiers-normal-color-dark-fg-1-high));
+        body[data-theme="dark"] .welcome-container {
+            background: var(--ubits-bg-2);
         }
 
-        body[data-theme="dark"] .welcome-description,
-        body[data-theme="dark"] .welcome-features__item,
-        body[data-theme="dark"] .welcome-info-box__text {
-            color: var(--ubits-fg-1-medium-dark, var(--modifiers-normal-color-dark-fg-1-medium));
+        body[data-theme="dark"] .welcome-content--image-right .welcome-text,
+        body[data-theme="dark"] .welcome-content--image-left .welcome-text,
+        body[data-theme="dark"] .welcome-content--no-image .welcome-text {
+            background: var(--ubits-bg-1);
         }
 
         body[data-theme="dark"] .welcome-info-box {
-            background: var(--ubits-bg-3-dark, var(--modifiers-normal-color-dark-bg-3));
-            border-color: var(--ubits-border-2-dark, var(--modifiers-normal-color-dark-border-2));
+            background: var(--ubits-bg-active);
+            border-color: var(--ubits-border-2);
         }
+
+        body[data-theme="dark"] .welcome-image {
+            background: var(--ubits-bg-3);
+        }
+
+        /* Transiciones suaves para dark mode */
+        body {
+            transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                        color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        *[data-theme] {
+            transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                        color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                        border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                        box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .welcome-container,
+        .welcome-text,
+        .welcome-banner,
+        .welcome-info-box,
+        .welcome-title,
+        .welcome-description,
+        .welcome-features__item,
+        .welcome-features__title,
+        .welcome-info-box__title,
+        .welcome-info-box__text {
+            transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                        color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                        border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
 
     </style>
 </head>
@@ -857,10 +893,61 @@
         }
 
         // ========================================
+        // DARK MODE SYNC (para Storybook)
+        // ========================================
+        
+        function syncThemeFromParent() {
+            // Si estamos en un iframe, intentar obtener el tema del parent (Storybook)
+            if (window.parent && window.parent !== window) {
+                try {
+                    const parentBody = window.parent.document.body;
+                    const parentTheme = parentBody.getAttribute('data-theme') || 'light';
+                    document.body.setAttribute('data-theme', parentTheme);
+                    document.documentElement.setAttribute('data-theme', parentTheme);
+                } catch (e) {
+                    // Si hay error de CORS, usar el tema por defecto
+                    console.log('⚠️ No se puede acceder al parent (CORS), usando tema light');
+                }
+            }
+        }
+        
+        // Observar cambios en el tema del parent (Storybook)
+        function observeParentTheme() {
+            if (window.parent && window.parent !== window) {
+                try {
+                    // Observar cambios en el atributo data-theme del body del parent
+                    const observer = new MutationObserver((mutations) => {
+                        mutations.forEach((mutation) => {
+                            if (mutation.type === 'attributes' && mutation.attributeName === 'data-theme') {
+                                const parentTheme = window.parent.document.body.getAttribute('data-theme') || 'light';
+                                document.body.setAttribute('data-theme', parentTheme);
+                                document.documentElement.setAttribute('data-theme', parentTheme);
+                            }
+                        });
+                    });
+                    
+                    observer.observe(window.parent.document.body, {
+                        attributes: true,
+                        attributeFilter: ['data-theme']
+                    });
+                } catch (e) {
+                    // Si hay error de CORS, usar polling como fallback
+                    console.log('⚠️ MutationObserver no disponible (CORS), usando polling');
+                    setInterval(syncThemeFromParent, 500);
+                }
+            }
+        }
+
+        // ========================================
         // INITIALIZE ON LOAD
         // ========================================
         
         document.addEventListener('DOMContentLoaded', () => {
+            // Sincronizar tema desde el parent (Storybook) si estamos en un iframe
+            syncThemeFromParent();
+            observeParentTheme();
+            
+            // Inicializar página de bienvenida
             initializeWelcomePage(welcomeConfig);
         });
 

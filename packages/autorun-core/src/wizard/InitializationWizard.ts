@@ -5,6 +5,7 @@
  * Permite elegir entre trabajar en UBITS o proyecto independiente
  */
 
+import * as path from 'path';
 import { AutorunHub } from '../AutorunHub';
 import {
 	UBITS_PRESET,
@@ -17,6 +18,7 @@ import { ModuleManager } from './ModuleManager';
 import { CanvasCreator } from './CanvasCreator';
 import { ComponentValidator } from './ComponentValidator';
 import { InteractivePrompt } from './InteractivePrompt';
+import { LocalServer } from '../server/LocalServer';
 
 export type ProjectType = 'ubits' | 'independent';
 
@@ -43,6 +45,7 @@ export class InitializationWizard {
 	private hub: AutorunHub;
 	private prompt: InteractivePrompt;
 	private templateOpened: boolean = false; // Bandera para evitar abrir múltiples veces
+	private localServer: LocalServer | null = null; // Servidor HTTP local
 
 	constructor(hub: AutorunHub) {
 		this.hub = hub;
@@ -627,7 +630,25 @@ export class InitializationWizard {
 	}
 
 	/**
-	 * Abre el template en el navegador local
+	 * Inicia el servidor HTTP local si no está corriendo
+	 */
+	private async ensureLocalServer(): Promise<LocalServer> {
+		if (!this.localServer) {
+			this.localServer = new LocalServer({
+				port: 3000,
+				directory: path.join(process.cwd(), 'prototypes'),
+				vercelUrl: UBITS_PRESET.storybook.url,
+				vercelBypassToken: UBITS_PRESET.storybook.bypassToken,
+			});
+			await this.localServer.start();
+		} else if (!this.localServer.isServerRunning()) {
+			await this.localServer.start();
+		}
+		return this.localServer;
+	}
+
+	/**
+	 * Abre el template en el navegador local usando servidor HTTP
 	 * Solo se ejecuta una vez, incluso si se llama múltiples veces
 	 */
 	private async openTemplateInBrowser(filePath: string): Promise<void> {
@@ -636,14 +657,21 @@ export class InitializationWizard {
 			return;
 		}
 
+		let httpUrl: string = '';
+
 		try {
 			const { exec } = await import('child_process');
 			const { promisify } = await import('util');
 			const execAsync = promisify(exec);
-			const path = await import('path');
+			const pathModule = await import('path');
 
-			// Convertir a URL file://
-			const fileUrl = `file://${path.resolve(filePath)}`;
+			// Iniciar servidor HTTP local
+			const server = await this.ensureLocalServer();
+			const serverUrl = server.getUrl();
+
+			// Obtener nombre del archivo relativo a prototypes/
+			const fileName = pathModule.basename(filePath);
+			httpUrl = `${serverUrl}/${fileName}`;
 
 			// Detectar el sistema operativo y abrir el navegador
 			const platform = process.platform;
@@ -651,22 +679,29 @@ export class InitializationWizard {
 
 			if (platform === 'darwin') {
 				// macOS
-				command = `open "${fileUrl}"`;
+				command = `open "${httpUrl}"`;
 			} else if (platform === 'win32') {
 				// Windows
-				command = `start "" "${fileUrl}"`;
+				command = `start "" "${httpUrl}"`;
 			} else {
 				// Linux y otros
-				command = `xdg-open "${fileUrl}"`;
+				command = `xdg-open "${httpUrl}"`;
 			}
 
 			await execAsync(command);
 			
 			// Marcar como abierto
 			this.templateOpened = true;
+			console.log(`   ✅ Template abierto en: ${httpUrl}`);
+			console.log(`   💡 El servidor HTTP local seguirá corriendo en ${serverUrl}`);
+			console.log(`   💡 Para detenerlo, presiona Ctrl+C o cierra esta terminal`);
 		} catch (error: any) {
 			console.warn('   ⚠️  No se pudo abrir el navegador automáticamente:', error.message || error);
-			console.warn(`   💡 Abre manualmente: ${filePath}`);
+			if (httpUrl) {
+				console.warn(`   💡 Abre manualmente: ${httpUrl}`);
+			} else {
+				console.warn(`   💡 Abre manualmente: ${filePath}`);
+			}
 		}
 	}
 

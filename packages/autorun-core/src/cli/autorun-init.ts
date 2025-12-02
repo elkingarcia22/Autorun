@@ -91,7 +91,28 @@ async function main() {
 			console.warn('   La configuración se mostró arriba, puedes guardarla manualmente.');
 		}
 
-		process.exit(0);
+		// Verificar si el servidor HTTP local está corriendo
+		const localServer = (wizard as any).localServer;
+		if (localServer && localServer.isServerRunning && localServer.isServerRunning()) {
+			console.log('\n🌐 Servidor HTTP local está corriendo.');
+			console.log('   💡 Mantén esta terminal abierta para que el servidor siga funcionando.');
+			console.log('   💡 Presiona Ctrl+C para detener el servidor y salir.\n');
+			
+			// Mantener el proceso vivo
+			// El servidor se detendrá cuando el proceso termine (Ctrl+C)
+			process.on('SIGINT', async () => {
+				console.log('\n\n🛑 Deteniendo servidor...');
+				if (localServer.stop) {
+					await localServer.stop();
+				}
+				process.exit(0);
+			});
+			
+			// No hacer exit, mantener el proceso vivo
+			// El proceso terminará cuando el usuario presione Ctrl+C
+		} else {
+			process.exit(0);
+		}
 	} catch (error) {
 		console.error('❌ Error durante inicialización:', error);
 		process.exit(1);

@@ -1,0 +1,29 @@
+{
+  "buildCommand": "bash scripts/build.sh && node ../../scripts/copy-ubits-files-to-storybook-static.js",
+  "outputDirectory": "storybook-static",
+  "framework": null,
+  "devCommand": "npm run storybook",
+  "installCommand": "npm install",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET, OPTIONS"
+        }
+      ]
+    }
+  ]
+}
+

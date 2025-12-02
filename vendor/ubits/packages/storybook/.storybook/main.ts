@@ -26,32 +26,54 @@ const config: StorybookConfig = {
     name: getAbsolutePath('@storybook/html-vite'),
     options: {}
   },
-  staticDirs: [
-    { 
-      from: resolve(dirname(fileURLToPath(import.meta.url)), '../stories/assets/images'), 
-      to: '/images' 
-    },
-    { 
-      from: resolve(dirname(fileURLToPath(import.meta.url)), '../stories/assets/webfonts'), 
-      to: '/webfonts' 
-    },
-    { 
-      from: resolve(dirname(fileURLToPath(import.meta.url)), '../../tokens/dist'), 
-      to: '/tokens/dist' 
-    },
-    { 
-      from: resolve(dirname(fileURLToPath(import.meta.url)), '../../typography'), 
-      to: '/typography' 
-    },
-    { 
-      from: resolve(dirname(fileURLToPath(import.meta.url)), '../../components'), 
-      to: '/components' 
-    },
-    { 
-      from: resolve(dirname(fileURLToPath(import.meta.url)), '../../templates'), 
-      to: '/templates' 
+  staticDirs: (() => {
+    const currentDir = dirname(fileURLToPath(import.meta.url));
+    const rootDir = resolve(currentDir, '../..');
+    const projectRoot = resolve(rootDir, '..');
+    
+    const staticDirs: any[] = [
+      { 
+        from: resolve(currentDir, '../stories/assets/images'), 
+        to: '/images' 
+      },
+      { 
+        from: resolve(currentDir, '../stories/assets/webfonts'), 
+        to: '/webfonts' 
+      }
+    ];
+    
+    // Solo agregar si los directorios existen (para evitar errores en Vercel)
+    const tokensDir = resolve(projectRoot, 'packages/tokens/dist');
+    const typographyDir = resolve(projectRoot, 'packages/typography');
+    const componentsDir = resolve(projectRoot, 'packages/components');
+    const templatesDir = resolve(projectRoot, 'packages/templates');
+    
+    try {
+      const fs = require('fs');
+      if (fs.existsSync(tokensDir)) {
+        staticDirs.push({ from: tokensDir, to: '/tokens/dist' });
+      }
+      if (fs.existsSync(typographyDir)) {
+        staticDirs.push({ from: typographyDir, to: '/typography' });
+      }
+      if (fs.existsSync(componentsDir)) {
+        staticDirs.push({ from: componentsDir, to: '/components' });
+      }
+      if (fs.existsSync(templatesDir)) {
+        staticDirs.push({ from: templatesDir, to: '/templates' });
+      }
+    } catch (e) {
+      // Si no se puede verificar, usar rutas relativas como fallback
+      staticDirs.push(
+        { from: resolve(currentDir, '../../tokens/dist'), to: '/tokens/dist' },
+        { from: resolve(currentDir, '../../typography'), to: '/typography' },
+        { from: resolve(currentDir, '../../components'), to: '/components' },
+        { from: resolve(currentDir, '../../templates'), to: '/templates' }
+      );
     }
-  ],
+    
+    return staticDirs;
+  })(),
   viteFinal: async (config) => {
     // Configurar alias para que 'addons' apunte a 'components'
     const currentDir = dirname(fileURLToPath(import.meta.url));

@@ -571,7 +571,69 @@
         // HELPER FUNCTIONS (Compatibilidad)
         // ========================================
         
+        // ========================================
+        // DARK MODE SYNC (para Storybook)
+        // ========================================
+        
+        function syncThemeFromParent() {
+            // Si estamos en un iframe, intentar obtener el tema del parent (Storybook)
+            if (window.parent && window.parent !== window) {
+                try {
+                    const parentBody = window.parent.document.body;
+                    const parentTheme = parentBody.getAttribute('data-theme') || 'light';
+                    document.body.setAttribute('data-theme', parentTheme);
+                    document.documentElement.setAttribute('data-theme', parentTheme);
+                    
+                    // Sincronizar con ThemeManager si está disponible
+                    if (window.UBITS_ThemeManager) {
+                        window.UBITS_ThemeManager.setTheme(parentTheme, false);
+                    }
+                } catch (e) {
+                    // Si hay error de CORS, usar el tema por defecto
+                    console.log('⚠️ No se puede acceder al parent (CORS), usando tema light');
+                }
+            }
+        }
+        
+        // Observar cambios en el tema del parent (Storybook)
+        function observeParentTheme() {
+            if (window.parent && window.parent !== window) {
+                try {
+                    // Observar cambios en el atributo data-theme del body del parent
+                    const observer = new MutationObserver((mutations) => {
+                        mutations.forEach((mutation) => {
+                            if (mutation.type === 'attributes' && mutation.attributeName === 'data-theme') {
+                                const parentTheme = window.parent.document.body.getAttribute('data-theme') || 'light';
+                                document.body.setAttribute('data-theme', parentTheme);
+                                document.documentElement.setAttribute('data-theme', parentTheme);
+                                
+                                // Sincronizar con ThemeManager si está disponible
+                                if (window.UBITS_ThemeManager) {
+                                    window.UBITS_ThemeManager.setTheme(parentTheme, false);
+                                }
+                            }
+                        });
+                    });
+                    
+                    observer.observe(window.parent.document.body, {
+                        attributes: true,
+                        attributeFilter: ['data-theme']
+                    });
+                } catch (e) {
+                    // Si hay error de CORS, usar polling como fallback
+                    console.log('⚠️ MutationObserver no disponible (CORS), usando polling');
+                    setInterval(syncThemeFromParent, 500);
+                }
+            }
+        }
+        
         function toggleDarkMode() {
+            // Solo usar si NO estamos en Storybook (iframe)
+            if (window.parent && window.parent !== window) {
+                // En Storybook, el toggle se maneja desde el parent
+                return;
+            }
+            
             if (window.UBITS_ThemeManager) {
                 window.UBITS_ThemeManager.toggleTheme();
             } else {
@@ -627,6 +689,10 @@
                 // Cargar tema guardado
                 console.log('🔍 [Init] Inicializando ThemeManager...');
                 window.UBITS_ThemeManager.init();
+                
+                // Sincronizar tema desde Storybook si estamos en un iframe
+                syncThemeFromParent();
+                observeParentTheme();
                 
                 // ⚠️ IMPORTANTE: Cargar componentes PRIMERO
                 // Luego inicializar responsive para que adapte los componentes ya creados

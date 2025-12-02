@@ -1,12 +1,28 @@
 {
-  "buildCommand": "bash scripts/build.sh",
+  "buildCommand": "npm run build-storybook",
   "outputDirectory": "storybook-static",
   "framework": null,
   "devCommand": "npm run storybook",
+  "installCommand": "npm install",
   "rewrites": [
     {
       "source": "/(.*)",
       "destination": "/index.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET, OPTIONS"
+        }
+      ]
     }
   ]
 }

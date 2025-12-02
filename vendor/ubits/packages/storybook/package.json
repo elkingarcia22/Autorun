@@ -5,7 +5,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build",
+    "build-storybook": "bash scripts/build.sh && node ../../scripts/copy-ubits-files-to-storybook-static.js",
     "build": "storybook build",
     "build:tokens": "cd ../.. && npm run build:tokens",
     "deploy": "npm run build-storybook && npx vercel --prod --yes",
