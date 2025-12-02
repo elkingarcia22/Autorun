@@ -33,7 +33,7 @@
 		"style-dictionary": "^4.4.0",
 		"tsx": "^4.20.6",
 		"typescript": "^5.9.3",
-		"vite": "^7.1.12"
+		"vite": "^7.2.6"
 	},
 	"dependencies": {
 		"@fortawesome/fontawesome-pro": "^7.1.0",
