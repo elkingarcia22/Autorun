@@ -14,6 +14,20 @@
 - ❌ **NO reemplazar contenido**
 - ❌ **NO hacer NADA hasta completar el análisis**
 
+### 🚫 PROHIBIDO USAR ESTAS HERRAMIENTAS ANTES DEL ANÁLISIS:
+
+- ❌ **NO usar `write()`** - PROHIBIDO antes de análisis
+- ❌ **NO usar `search_replace()`** - PROHIBIDO antes de análisis
+- ❌ **NO usar `read_file()` para templates** - PROHIBIDO antes de análisis (solo leer guías)
+- ❌ **NO usar ninguna herramienta que modifique archivos** - PROHIBIDO antes de análisis
+
+### ✅ SOLO PUEDES USAR:
+
+- ✅ `read_file()` para leer `BLOQUEO-IMAGEN.md` y guías
+- ✅ `list_dir()` para identificar templates existentes
+- ✅ `grep()` para buscar referencias en guías
+- ✅ Mostrar el análisis completo al usuario
+
 ### ✅ DEBES HACER ESTO PRIMERO:
 
 1. **DETENER TODO INMEDIATAMENTE**
