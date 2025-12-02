@@ -2,46 +2,104 @@
 
 ## 🚨 INSTRUCCIÓN CRÍTICA PARA IMÁGENES 🚨
 
-**⚠️ SI EL USUARIO ENVÍA UNA IMAGEN O PIDE CREAR DESDE IMAGEN:**
+**⚠️ BLOQUEO ABSOLUTO: SI EL USUARIO ENVÍA UNA IMAGEN O PIDE CREAR DESDE IMAGEN:**
+
+### **🚫 PROHIBIDO IMPLEMENTAR SIN ANÁLISIS**
+
+**❌ NUNCA hacer esto:**
+- ❌ NO escribir código JavaScript
+- ❌ NO modificar archivos HTML
+- ❌ NO buscar templates
+- ❌ NO implementar componentes
+- ❌ NO crear archivos nuevos
+- ❌ NO reemplazar contenido
+
+**✅ SIEMPRE hacer esto PRIMERO:**
+
+### **PASO 0: DETENER TODO Y LEER GUÍAS** ⚠️ OBLIGATORIO
 
 1. **DETENER TODO** - NO escribir código todavía
 2. **LEER PRIMERO:** `GUIA-CREAR-DESDE-IMAGEN-DESPUES-WIZARD.md`
-3. **IDENTIFICAR TEMPLATE EXISTENTE AUTOMÁTICAMENTE:**
-   ```bash
-   # Ejecutar esto PRIMERO para encontrar el template
-   ls prototypes/canvas-*-encuestas-*.html 2>/dev/null || ls prototypes/canvas-*-*.html
-   ```
-   - Si el usuario dice "home de encuestas" → buscar `canvas-*-encuestas-*.html`
-   - Si el usuario dice "administrador" → buscar `canvas-administrador-*.html`
-   - Si el usuario dice "colaborador" → buscar `canvas-colaborador-*.html`
-   - **LEER el template encontrado** para ver su estructura actual
-   - NO crear HTML nuevo
-   - MODIFICAR template existente
-4. **ANALIZAR LA IMAGEN DETALLADAMENTE:**
-   - Identificar componentes UBITS visibles en la imagen
-   - Consultar `CATALOGO-COMPONENTES-UBITS.md` para verificar componentes
-   - **ANALIZAR ICONOS DETALLADAMENTE:** ⚠️ CRÍTICO
-     - Para cada icono: analizar visualmente la forma
-     - Listar TODAS las variaciones posibles (simple, regular, solid, etc.)
-     - NO tomar solo el primer resultado de FontAwesome
-     - Verificar si es "simple" o no (ej: `chart-pie-simple` vs `chart-pie`)
-     - Comparar visualmente con la descripción de la imagen
-     - Documentar el icono completo con nombre y estilo
-     - Consultar `GUIA-ANALISIS-ICONOS-DETALLADO.md` para el proceso completo
-   - Analizar estructura visual (layout, contenedores)
-   - Analizar spacing entre elementos
-   - Identificar funcionalidades (buscador, filtros, acciones)
-5. **CREAR PLAN DETALLADO:**
-   - Listar TODOS los componentes identificados
-   - Describir estructura completa
-   - Dividir en tareas pequeñas (ej: Tarea 1: Tabs, Tarea 2: Barra acciones, Tarea 3: DataTable)
-   - **MOSTRAR PLAN COMPLETO AL USUARIO**
-   - **ESPERAR APROBACIÓN EXPLÍCITA** antes de implementar
-6. **SOLO DESPUÉS de aprobación, implementar UNA tarea a la vez**
+3. **LEER TAMBIÉN:** `GUIA-PROCESO-IMPLEMENTACION-PASO-A-PASO.md`
+
+### **PASO 1: IDENTIFICAR TEMPLATE EXISTENTE** ⚠️ OBLIGATORIO
+
+**ANTES de hacer CUALQUIER cosa:**
+```bash
+# Ejecutar esto PRIMERO para encontrar el template
+ls prototypes/canvas-*-encuestas-*.html 2>/dev/null || ls prototypes/canvas-*-*.html
+```
+- Si el usuario dice "home de encuestas" → buscar `canvas-*-encuestas-*.html`
+- Si el usuario dice "administrador" → buscar `canvas-administrador-*.html`
+- Si el usuario dice "colaborador" → buscar `canvas-colaborador-*.html`
+- **LEER el template encontrado** para ver su estructura actual
+- **NO crear HTML nuevo**
+- **MODIFICAR template existente**
+
+### **PASO 2: ANALIZAR LA IMAGEN DETALLADAMENTE** ⚠️ OBLIGATORIO
+
+**⚠️ CRÍTICO: Mostrar análisis completo al usuario ANTES de implementar**
+
+**Formato obligatorio para mostrar el análisis:**
+
+```markdown
+## 📋 Análisis Detallado de la Imagen
+
+### 🔍 Componentes UBITS Identificados:
+1. [Componente 1] - [Tipo] - [Ubicación]
+2. [Componente 2] - [Tipo] - [Ubicación]
+...
+
+### 🎨 Iconos Identificados (con variaciones):
+1. [Icono 1]: 
+   - Variaciones posibles: `icono-simple`, `icono`, `icono-regular`
+   - Icono seleccionado: `icono-simple` (razón: [explicación visual])
+2. [Icono 2]: ...
+...
+
+### 📐 Estructura Visual:
+1. [Elemento 1] (sin contenedor / con contenedor: `#id`)
+2. [Elemento 2] (sin contenedor / con contenedor: `#id`)
+...
+
+### 📏 Spacing Identificado:
+- Entre [Elemento A] y [Elemento B]: `--ubits-spacing-lg` (16px)
+- Entre [Elemento B] y [Elemento C]: `--ubits-spacing-md` (12px)
+...
+
+### ⚙️ Funcionalidades Identificadas:
+1. [Funcionalidad 1]: [Descripción]
+2. [Funcionalidad 2]: [Descripción]
+...
+
+### 📋 Plan de Implementación:
+1. **Tarea 1:** [Descripción] (solo esto, nada más)
+2. **Tarea 2:** [Descripción] (solo después de aprobación de Tarea 1)
+3. **Tarea 3:** [Descripción] (solo después de aprobación de Tarea 2)
+...
+
+### ❓ ¿Aprobamos este plan antes de implementar?
+```
+
+**⚠️ CRÍTICO:** 
+- **NO implementar** hasta que el usuario apruebe explícitamente
+- **MOSTRAR** el análisis completo en el formato de arriba
+- **ESPERAR** respuesta del usuario antes de continuar
+
+### **PASO 3: IMPLEMENTAR SOLO DESPUÉS DE APROBACIÓN** ⚠️ OBLIGATORIO
+
+**Solo después de que el usuario apruebe explícitamente:**
+
+1. **Implementar SOLO la Tarea 1** (nada más)
+2. **Mostrar resultado** al usuario
+3. **Pedir aprobación explícita** para continuar
+4. **Solo después de aprobación**, continuar con Tarea 2
+5. **Repetir** para cada tarea
 
 **NUNCA implementar directamente sin:**
 - ❌ Identificar template existente primero
 - ❌ Analizar la imagen detalladamente
+- ❌ Mostrar análisis completo al usuario
 - ❌ Crear plan y mostrar al usuario
 - ❌ Esperar aprobación explícita
 
