@@ -191,39 +191,27 @@ export class InteractivePrompt {
 			}
 		}
 
-		// Si estamos en modo automático pero no hay más respuestas Y el readline está cerrado, usar valor por defecto
-		// Solo hacer esto si realmente estamos en modo automático (con respuestas) y se agotaron
-		// NO hacer esto si el usuario está en modo interactivo normal
-		// IMPORTANTE: Solo usar defaults si realmente había respuestas automáticas (autoAnswers.length > 0)
-		// Si nunca hubo respuestas automáticas, el usuario está en modo interactivo y debe poder elegir
+		// Si estamos en modo automático pero se agotaron las respuestas, DESACTIVAR modo automático
+		// para volver a modo interactivo y permitir que el usuario responda
 		if (this.isAutoMode && this.autoAnswers.length > 0 && this.autoAnswerIndex >= this.autoAnswers.length) {
-			// Verificar si el readline está cerrado antes de usar defaults
+			// Desactivar modo automático - volver a modo interactivo
+			this.isAutoMode = false;
+			// Intentar recrear readline si está cerrado
 			try {
-				if (this.rl && !(this.rl as any).closed) {
-					// Readline está disponible, esperar input del usuario normalmente
-					// No usar defaults automáticamente - el usuario debe poder elegir
-					// Continuar con el flujo normal de modo interactivo
-				} else {
-					// Readline está cerrado, usar defaults solo si realmente estábamos en modo automático
-					if (defaultValue) {
-						console.log(`Selecciona una opción (1-${options.length})${defaultValue ? ` [Enter para default]` : ''}: (readline cerrado, usando default)`);
-						console.log(`✅ Usando opción por defecto: ${options.find(o => o.value === defaultValue)?.label || defaultValue}\n`);
-						return defaultValue;
-					}
-					// Si no hay default, usar la primera opción
-					const firstOption = options[0];
-					console.log(`Selecciona una opción (1-${options.length}): (readline cerrado, usando primera opción)`);
-					console.log(`✅ Seleccionado: ${firstOption.label}\n`);
-					return firstOption.value;
+				if (!this.rl || (this.rl as any).closed) {
+					this.rl = readline.createInterface({
+						input: process.stdin,
+						output: process.stdout,
+					});
 				}
 			} catch (error) {
-				// Si hay error verificando readline, usar defaults solo si realmente estábamos en modo automático
-				if (defaultValue) {
-					console.log(`Selecciona una opción (1-${options.length})${defaultValue ? ` [Enter para default]` : ''}: (error verificando readline, usando default)`);
-					console.log(`✅ Usando opción por defecto: ${options.find(o => o.value === defaultValue)?.label || defaultValue}\n`);
-					return defaultValue;
-				}
+				// Si falla recrear readline, intentar de nuevo
+				this.rl = readline.createInterface({
+					input: process.stdin,
+					output: process.stdout,
+				});
 			}
+			// Continuar con el flujo normal de modo interactivo (NO usar defaults automáticamente)
 		}
 
 		// Modo interactivo: esperar respuesta del usuario
