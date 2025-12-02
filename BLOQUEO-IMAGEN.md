@@ -34,11 +34,16 @@
 2. **LEER PRIMERO:** `VERIFICACION-IMAGEN.md` - ⚠️ OBLIGATORIO (archivo de verificación)
 3. **LEER SEGUNDO:** `GUIA-CREAR-DESDE-IMAGEN-DESPUES-WIZARD.md`
 4. **LEER TERCERO:** `GUIA-PROCESO-IMPLEMENTACION-PASO-A-PASO.md`
-5. **IDENTIFICAR template existente** (buscar en `prototypes/`)
-6. **ANALIZAR la imagen detalladamente**
-7. **MOSTRAR análisis completo al usuario** (formato obligatorio)
-8. **ESPERAR aprobación explícita del usuario**
-9. **SOLO DESPUÉS** de aprobación, implementar UNA tarea a la vez
+5. **LEER CUARTO:** `GUIA-ANALISIS-ESTRUCTURA-SPACING.md` - ⚠️ OBLIGATORIO para spacing
+6. **LEER QUINTO:** `GUIA-ANALISIS-ICONOS-DETALLADO.md` - ⚠️ OBLIGATORIO para iconos
+7. **IDENTIFICAR template existente** (buscar en `prototypes/`)
+8. **ANALIZAR la imagen detalladamente:**
+   - ⚠️ **Medir visualmente cada spacing (NO asumir basándose en ejemplos)**
+   - ⚠️ **Comparar spacing con tokens disponibles antes de documentar**
+   - ⚠️ **Verificar cada espacio individualmente**
+9. **MOSTRAR análisis completo al usuario** (formato obligatorio)
+10. **ESPERAR aprobación explícita del usuario**
+11. **SOLO DESPUÉS** de aprobación, implementar UNA tarea a la vez
 
 ### 📋 FORMATO OBLIGATORIO PARA MOSTRAR ANÁLISIS:
 

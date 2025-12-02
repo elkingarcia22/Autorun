@@ -140,10 +140,13 @@ Esta guía establece el proceso **OBLIGATORIO** para analizar la estructura (con
 ```markdown
 ### Spacing entre elementos:
 
+⚠️ **IMPORTANTE:** Los ejemplos siguientes son SOLO referencias. DEBES medir visualmente cada caso específico. NO asumas que SubNav y Tabs siempre están pegados - en algunos casos pueden tener 16px de espacio.
+
 1. **Entre SubNav y Tabs:**
-   - Visual: Pegados (0px)
-   - Token: `--ubits-spacing-none`
-   - CSS: `margin-top: 0` o sin margin
+   - ⚠️ **MEDIR VISUALMENTE** - Puede ser 0px (pegados) O 16px (separados)
+   - Si están pegados: Token `--ubits-spacing-none` (0px)
+   - Si hay espacio: Token `--ubits-spacing-lg` (16px)
+   - CSS: `margin-top: 0` (pegados) o `margin-top: var(--ubits-spacing-lg)` (separados)
 
 2. **Entre Tabs y Barra de acciones:**
    - Visual: ~16px de espacio

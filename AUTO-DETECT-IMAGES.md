@@ -51,6 +51,8 @@
 2. ✅ **LEER SEGUNDO:** `BLOQUEO-IMAGEN.md`
 3. ✅ **LEER TERCERO:** `GUIA-CREAR-DESDE-IMAGEN-DESPUES-WIZARD.md`
 4. ✅ **LEER CUARTO:** `GUIA-PROCESO-IMPLEMENTACION-PASO-A-PASO.md`
+5. ✅ **LEER QUINTO:** `GUIA-ANALISIS-ESTRUCTURA-SPACING.md` - ⚠️ OBLIGATORIO para análisis de spacing
+6. ✅ **LEER SEXTO:** `GUIA-ANALISIS-ICONOS-DETALLADO.md` - ⚠️ OBLIGATORIO para análisis de iconos
 
 ### PASO 3: VERIFICAR TEMPLATE EXISTENTE
 - ✅ Usar `list_dir()` para buscar en `prototypes/`
@@ -61,8 +63,12 @@
 - ✅ Analizar detalladamente la imagen
 - ✅ Identificar componentes UBITS
 - ✅ Verificar HeaderSection (¿está o no está?)
-- ✅ Identificar iconos con variaciones
-- ✅ Analizar estructura y spacing
+- ✅ Identificar iconos con variaciones (usar `GUIA-ANALISIS-ICONOS-DETALLADO.md`)
+- ✅ **Analizar estructura y spacing (usar `GUIA-ANALISIS-ESTRUCTURA-SPACING.md`):**
+  - ⚠️ **NO asumir basándose en ejemplos**
+  - ⚠️ **Medir visualmente cada espacio entre elementos**
+  - ⚠️ **Comparar con tokens disponibles antes de documentar**
+  - ⚠️ **Verificar cada spacing individualmente**
 
 ### PASO 5: MOSTRAR ANÁLISIS COMPLETO
 - ✅ Mostrar análisis en el formato obligatorio
@@ -140,8 +146,12 @@ function verificarAntesDeActuar(mensajeUsuario) {
 - [ ] Leer `BLOQUEO-IMAGEN.md`
 - [ ] Leer `GUIA-CREAR-DESDE-IMAGEN-DESPUES-WIZARD.md`
 - [ ] Leer `GUIA-PROCESO-IMPLEMENTACION-PASO-A-PASO.md`
+- [ ] Leer `GUIA-ANALISIS-ESTRUCTURA-SPACING.md` - ⚠️ OBLIGATORIO
+- [ ] Leer `GUIA-ANALISIS-ICONOS-DETALLADO.md` - ⚠️ OBLIGATORIO
 - [ ] NO usar herramientas de escritura todavía
 - [ ] Analizar imagen detalladamente
+- [ ] **Medir visualmente cada spacing (NO asumir)**
+- [ ] **Comparar spacing con tokens disponibles**
 - [ ] Mostrar análisis completo
 - [ ] Esperar aprobación
 

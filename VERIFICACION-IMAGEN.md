@@ -12,6 +12,8 @@
 2. ✅ Leer `BLOQUEO-IMAGEN.md`
 3. ✅ Leer `GUIA-CREAR-DESDE-IMAGEN-DESPUES-WIZARD.md`
 4. ✅ Leer `GUIA-PROCESO-IMPLEMENTACION-PASO-A-PASO.md`
+5. ✅ Leer `GUIA-ANALISIS-ESTRUCTURA-SPACING.md` - ⚠️ OBLIGATORIO para análisis de spacing
+6. ✅ Leer `GUIA-ANALISIS-ICONOS-DETALLADO.md` - ⚠️ OBLIGATORIO para análisis de iconos
 
 ### 🚫 PASO 2: VERIFICAR QUE NO ESTÁS USANDO HERRAMIENTAS PROHIBIDAS
 
@@ -48,8 +50,12 @@
 **ANTES de usar CUALQUIER herramienta de escritura/edición, responde:**
 
 - [ ] ¿He leído todas las guías? → Si NO, LEERLAS PRIMERO
+- [ ] ¿He leído `GUIA-ANALISIS-ESTRUCTURA-SPACING.md`? → Si NO, LEERLA PRIMERO
+- [ ] ¿He leído `GUIA-ANALISIS-ICONOS-DETALLADO.md`? → Si NO, LEERLA PRIMERO
 - [ ] ¿He identificado el template existente? → Si NO, IDENTIFICARLO PRIMERO
 - [ ] ¿He analizado la imagen detalladamente? → Si NO, ANALIZARLA PRIMERO
+- [ ] ¿He medido visualmente cada spacing (NO asumido)? → Si NO, MEDIR PRIMERO
+- [ ] ¿He comparado spacing con tokens disponibles? → Si NO, COMPARAR PRIMERO
 - [ ] ¿He mostrado el análisis completo al usuario? → Si NO, MOSTRARLO PRIMERO
 - [ ] ¿El usuario ha aprobado explícitamente? → Si NO, ESPERAR APROBACIÓN
 

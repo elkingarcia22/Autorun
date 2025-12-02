@@ -41,6 +41,8 @@
 4. **📖 LEER TERCERO:** `BLOQUEO-IMAGEN.md` usando `read_file()`
 5. **📖 LEER CUARTO:** `GUIA-CREAR-DESDE-IMAGEN-DESPUES-WIZARD.md` usando `read_file()`
 6. **📖 LEER QUINTO:** `GUIA-PROCESO-IMPLEMENTACION-PASO-A-PASO.md` usando `read_file()`
+7. **📖 LEER SEXTO:** `GUIA-ANALISIS-ESTRUCTURA-SPACING.md` usando `read_file()` - ⚠️ OBLIGATORIO para spacing
+8. **📖 LEER SÉPTIMO:** `GUIA-ANALISIS-ICONOS-DETALLADO.md` usando `read_file()` - ⚠️ OBLIGATORIO para iconos
 7. **🔍 IDENTIFICAR** template existente usando `list_dir()` (NO `read_file()` todavía)
 8. **📋 ANALIZAR** la imagen detalladamente
 9. **📝 MOSTRAR** el análisis completo al usuario en el formato obligatorio
