@@ -228,6 +228,9 @@ export class InteractivePrompt {
 			`Selecciona una opción (1-${options.length})${defaultValue ? ` [Enter para default]` : ''}: `,
 		);
 
+		// DEBUG: Log para entender qué está pasando
+		// console.log('[DEBUG select] answer:', answer, 'isAutoMode:', this.isAutoMode, 'autoAnswers.length:', this.autoAnswers.length, 'autoAnswerIndex:', this.autoAnswerIndex);
+
 		// Si la respuesta está vacía, verificar el contexto
 		// IMPORTANTE: En modo interactivo (sin respuestas automáticas), una respuesta vacía significa que el usuario presionó Enter
 		// En ese caso, usar default si está disponible (comportamiento normal)
