@@ -404,35 +404,21 @@ export class InitializationWizard {
 			console.log(`   ${wizardNumber}. ${description} (add-on: ${addonId})`);
 		});
 
-		// En modo automático SIN AUTORUN_ANSWERS, usar add-ons por defecto sin preguntar
-		// Si hay AUTORUN_ANSWERS, mostrar la pregunta para que el usuario responda
-		const hasAutoAnswers = !!process.env.AUTORUN_ANSWERS;
+		// Verificar si estamos en modo automático (con respuestas disponibles)
 		const isAuto = this.prompt.isAuto();
-		const hasAutoAnswersEver = this.prompt.hasAutoAnswers();
 		
-		// DEBUG: Log para entender qué está pasando
-		// console.log('[DEBUG askAddons] isAuto:', isAuto, 'hasAutoAnswers:', hasAutoAnswers, 'hasAutoAnswersEver:', hasAutoAnswersEver);
+		// IMPORTANTE: Si NO estamos en modo automático (isAuto() retorna false),
+		// significa que se agotaron las respuestas automáticas y volvimos a modo interactivo.
+		// En ese caso, SIEMPRE preguntar al usuario.
 		
-		// Lógica simplificada:
-		// 1. Si NO estamos en modo automático (isAuto() retorna false), SIEMPRE preguntar al usuario
-		// 2. Si estamos en modo automático PERO hay AUTORUN_ANSWERS, preguntar al usuario (quiere responder)
-		// 3. Si estamos en modo automático SIN AUTORUN_ANSWERS Y se agotaron las respuestas, usar defaults
-		
-		// Si no estamos en modo automático, SIEMPRE preguntar al usuario
+		// Si NO estamos en modo automático, SIEMPRE preguntar al usuario
+		// (no usar defaults automáticamente)
 		if (!isAuto) {
-			// Continuar normalmente, preguntar al usuario - NO usar defaults automáticamente
-		} else if (hasAutoAnswers) {
-			// Estamos en modo automático pero hay AUTORUN_ANSWERS, el usuario quiere responder
 			// Continuar normalmente, preguntar al usuario
-		} else {
-			// Estamos en modo automático sin AUTORUN_ANSWERS y se agotaron las respuestas
-			// Solo usar defaults si realmente había respuestas automáticas que se agotaron
-			if (hasAutoAnswersEver) {
-				console.log('\n   ✅ Usando add-ons por defecto (modo automático, respuestas agotadas)\n');
-				return defaultAddons;
-			}
-			// Si nunca hubo respuestas automáticas, continuar normalmente (preguntar al usuario)
+			// Esto incluye el caso donde se agotaron las respuestas automáticas
 		}
+		// Si estamos en modo automático, también preguntar
+		// (el método select() manejará la respuesta automática internamente si está disponible)
 
 		// Preguntar qué quiere hacer
 		const action = await this.prompt.select(
