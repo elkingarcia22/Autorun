@@ -8923,7 +8923,7 @@ const result = await runTests({ coverage: true });</code></pre>
             </div>
             <div class="step-content">
               <p class="step-description">
-                Clona el repositorio Autorun e instala las dependencias. El proyecto incluye <code style="background: rgba(255,255,0,0.1); padding: 2px 6px; border-radius: 3px;">vendor/ubits/packages/</code> para que funcione en cualquier computador sin configuración adicional.
+                Clona el repositorio Autorun e instala las dependencias. El sistema funciona con <strong>arquitectura dual</strong>: carga componentes desde <code style="background: rgba(0,255,255,0.1); padding: 2px 6px; border-radius: 3px;">Vercel</code> (principal, requiere internet) y usa <code style="background: rgba(255,255,0,0.1); padding: 2px 6px; border-radius: 3px;">vendor/ubits/packages/</code> como fallback (funciona offline). Todo funciona automáticamente sin configuración adicional.
               </p>
               <div class="code-block">
                 <pre><code># Clonar el repositorio Autorun
@@ -8972,9 +8972,9 @@ npm run init</code></pre>
                 </div>
               <p class="step-note" style="margin-top: 16px;">
                 <strong>¿Qué hace el wizard automáticamente?</strong><br>
+                ✅ Carga componentes desde Vercel (principal, requiere internet)<br>
+                ✅ Usa vendor/ubits/ como fallback (si no hay internet o Vercel falla)<br>
                 ✅ Clona y verifica repositorio UBITS (si no existe vendor/ubits/)<br>
-                ✅ Conecta con Storybook UBITS<br>
-                ✅ Carga componentes desde Storybook<br>
                 ✅ Instala add-ons seleccionados<br>
                 ✅ Configura sidebar y subnav para tu módulo<br>
                 ✅ Crea ambos templates (administrador y colaborador)<br>
