@@ -15,7 +15,7 @@ const __dirname = dirname(__filename);
 /**
  * Busca el directorio Autorun desde el directorio actual hacia arriba
  */
-function findAutorunDir() {
+async function findAutorunDir() {
 	let currentDir = process.cwd();
 	
 	// Buscar hacia arriba desde el directorio actual
@@ -34,8 +34,9 @@ function findAutorunDir() {
 	const currentPackageJson = join(process.cwd(), 'package.json');
 	if (existsSync(currentPackageJson)) {
 		try {
+			const { readFileSync } = await import('fs');
 			const packageJson = JSON.parse(
-				require('fs').readFileSync(currentPackageJson, 'utf-8')
+				readFileSync(currentPackageJson, 'utf-8')
 			);
 			if (packageJson.name === 'autorun' && existsSync(join(process.cwd(), 'packages', 'autorun-core'))) {
 				return process.cwd();
@@ -49,7 +50,7 @@ function findAutorunDir() {
 }
 
 // Buscar directorio Autorun
-const autorunDir = findAutorunDir();
+const autorunDir = await findAutorunDir();
 
 if (!autorunDir) {
 	console.error('❌ No se encontró el directorio Autorun.');
