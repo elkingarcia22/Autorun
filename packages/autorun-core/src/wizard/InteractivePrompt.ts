@@ -77,25 +77,27 @@ export class InteractivePrompt {
 			return autoAnswer;
 		}
 
-		// Si estamos en modo automático pero no hay más respuestas Y el readline está cerrado, retornar string vacío
-		// IMPORTANTE: Solo hacer esto si realmente había respuestas automáticas (autoAnswers.length > 0)
-		// Si nunca hubo respuestas automáticas, el usuario está en modo interactivo y debe poder responder
+		// Si estamos en modo automático pero se agotaron las respuestas, DESACTIVAR modo automático
+		// para volver a modo interactivo y permitir que el usuario responda
 		if (this.isAutoMode && this.autoAnswers.length > 0 && this.autoAnswerIndex >= this.autoAnswers.length) {
+			// Desactivar modo automático - volver a modo interactivo
+			this.isAutoMode = false;
+			// Intentar recrear readline si está cerrado
 			try {
-				if (this.rl && !(this.rl as any).closed) {
-					// Readline está disponible, esperar input del usuario normalmente
-					// NO retornar vacío - el usuario debe poder responder
-					// Continuar con el flujo normal de modo interactivo
-				} else {
-					// Readline está cerrado Y realmente estábamos en modo automático, retornar vacío
-					console.log(`${prompt}(readline cerrado, usando vacío)`);
-					return '';
+				if (!this.rl || (this.rl as any).closed) {
+					this.rl = readline.createInterface({
+						input: process.stdin,
+						output: process.stdout,
+					});
 				}
 			} catch (error) {
-				// Si hay error verificando readline Y realmente estábamos en modo automático, retornar vacío
-				console.log(`${prompt}(error verificando readline, usando vacío)`);
-				return '';
+				// Si falla recrear readline, intentar de nuevo
+				this.rl = readline.createInterface({
+					input: process.stdin,
+					output: process.stdout,
+				});
 			}
+			// Continuar con el flujo normal de modo interactivo (NO retornar vacío)
 		}
 
 		// Modo interactivo: esperar respuesta del usuario
@@ -110,13 +112,8 @@ export class InteractivePrompt {
 					});
 				}
 			} catch (error) {
-				// Si falla y estamos en modo automático, retornar string vacío
-				if (this.isAutoMode) {
-					console.log(`${prompt}(readline no disponible, usando vacío)`);
-					resolve('');
-					return;
-				}
-				// Si no estamos en modo automático, recrear readline
+				// Si falla, intentar recrear readline de todas formas
+				// NO retornar vacío automáticamente - siempre intentar modo interactivo
 				this.rl = readline.createInterface({
 					input: process.stdin,
 					output: process.stdout,
@@ -128,10 +125,21 @@ export class InteractivePrompt {
 					resolve(answer.trim());
 				});
 			} catch (error: any) {
-				// Si el error es porque readline está cerrado y estamos en modo automático, retornar vacío
-				if (error.code === 'ERR_USE_AFTER_CLOSE' && this.isAutoMode) {
-					console.log(`${prompt}(readline cerrado, usando vacío)`);
-					resolve('');
+				// Si el error es porque readline está cerrado, intentar recrearlo y volver a preguntar
+				if (error.code === 'ERR_USE_AFTER_CLOSE') {
+					// Recrear readline y volver a preguntar
+					try {
+						this.rl = readline.createInterface({
+							input: process.stdin,
+							output: process.stdout,
+						});
+						this.rl.question(prompt, (answer) => {
+							resolve(answer.trim());
+						});
+					} catch (retryError) {
+						// Si falla de nuevo, rechazar el error
+						reject(retryError);
+					}
 					return;
 				}
 				reject(error);
@@ -311,23 +319,27 @@ export class InteractivePrompt {
 			return lowerAnswer === 's' || lowerAnswer === 'y' || lowerAnswer === 'yes' || lowerAnswer === 'si';
 		}
 
-		// Si estamos en modo automático pero no hay más respuestas Y el readline está cerrado, usar valor por defecto
-		// Solo hacer esto si realmente el readline está cerrado (no disponible)
-		if (this.isAutoMode && this.autoAnswerIndex >= this.autoAnswers.length) {
+		// Si estamos en modo automático pero se agotaron las respuestas, DESACTIVAR modo automático
+		// para volver a modo interactivo y permitir que el usuario responda
+		if (this.isAutoMode && this.autoAnswers.length > 0 && this.autoAnswerIndex >= this.autoAnswers.length) {
+			// Desactivar modo automático - volver a modo interactivo
+			this.isAutoMode = false;
+			// Intentar recrear readline si está cerrado
 			try {
-				if (this.rl && !(this.rl as any).closed) {
-					// Readline está disponible, esperar input del usuario normalmente
-					// No usar defaults automáticamente
-				} else {
-					// Readline está cerrado, usar defaults
-					console.log(`${prompt} (${defaultText}): (readline cerrado, usando default: ${defaultText})`);
-					return defaultValue;
+				if (!this.rl || (this.rl as any).closed) {
+					this.rl = readline.createInterface({
+						input: process.stdin,
+						output: process.stdout,
+					});
 				}
 			} catch (error) {
-				// Si hay error verificando readline, usar defaults
-				console.log(`${prompt} (${defaultText}): (error verificando readline, usando default: ${defaultText})`);
-				return defaultValue;
+				// Si falla recrear readline, intentar de nuevo
+				this.rl = readline.createInterface({
+					input: process.stdin,
+					output: process.stdout,
+				});
 			}
+			// Continuar con el flujo normal de modo interactivo (NO usar default automáticamente)
 		}
 
 		// Modo interactivo
