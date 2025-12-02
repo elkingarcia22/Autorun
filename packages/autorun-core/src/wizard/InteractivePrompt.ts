@@ -77,28 +77,50 @@ export class InteractivePrompt {
 			return autoAnswer;
 		}
 
+		// Si estamos en modo automático pero no hay más respuestas, retornar string vacío
+		if (this.isAutoMode && this.autoAnswerIndex >= this.autoAnswers.length) {
+			console.log(`${prompt}(sin respuesta, usando vacío)`);
+			return '';
+		}
+
 		// Modo interactivo: esperar respuesta del usuario
-		return new Promise((resolve) => {
+		return new Promise((resolve, reject) => {
 			// Intentar recrear readline si es necesario (manejar errores silenciosamente)
 			try {
 				// Verificar si readline está disponible intentando usarlo
-				if (!this.rl) {
+				if (!this.rl || (this.rl as any).closed) {
 					this.rl = readline.createInterface({
 						input: process.stdin,
 						output: process.stdout,
 					});
 				}
 			} catch (error) {
-				// Si falla, recrear readline
+				// Si falla y estamos en modo automático, retornar string vacío
+				if (this.isAutoMode) {
+					console.log(`${prompt}(readline no disponible, usando vacío)`);
+					resolve('');
+					return;
+				}
+				// Si no estamos en modo automático, recrear readline
 				this.rl = readline.createInterface({
 					input: process.stdin,
 					output: process.stdout,
 				});
 			}
 
-			this.rl.question(prompt, (answer) => {
-				resolve(answer.trim());
-			});
+			try {
+				this.rl.question(prompt, (answer) => {
+					resolve(answer.trim());
+				});
+			} catch (error: any) {
+				// Si el error es porque readline está cerrado y estamos en modo automático, retornar vacío
+				if (error.code === 'ERR_USE_AFTER_CLOSE' && this.isAutoMode) {
+					console.log(`${prompt}(readline cerrado, usando vacío)`);
+					resolve('');
+					return;
+				}
+				reject(error);
+			}
 		});
 	}
 
@@ -146,6 +168,20 @@ export class InteractivePrompt {
 			}
 		}
 
+		// Si estamos en modo automático pero no hay más respuestas, usar valor por defecto
+		if (this.isAutoMode && this.autoAnswerIndex >= this.autoAnswers.length) {
+			if (defaultValue) {
+				console.log(`Selecciona una opción (1-${options.length})${defaultValue ? ` [Enter para default]` : ''}: (sin respuesta, usando default)`);
+				console.log(`✅ Usando opción por defecto: ${options.find(o => o.value === defaultValue)?.label || defaultValue}\n`);
+				return defaultValue;
+			}
+			// Si no hay default, usar la primera opción
+			const firstOption = options[0];
+			console.log(`Selecciona una opción (1-${options.length}): (sin respuesta, usando primera opción)`);
+			console.log(`✅ Seleccionado: ${firstOption.label}\n`);
+			return firstOption.value;
+		}
+
 		// Modo interactivo: esperar respuesta del usuario
 		// Asegurar que stdin esté en modo raw para capturar la entrada correctamente
 		if (process.stdin.isTTY) {
@@ -162,9 +198,15 @@ export class InteractivePrompt {
 				console.log(`✅ Usando opción por defecto: ${options.find(o => o.value === defaultValue)?.label || defaultValue}\n`);
 				return defaultValue;
 			}
-			// Si no hay default y la respuesta está vacía, pedir de nuevo
-			console.log('⚠️  Por favor selecciona una opción válida.\n');
-			return this.select(prompt, options, defaultValue);
+			// Si no hay default y la respuesta está vacía, pedir de nuevo (solo si no estamos en modo automático)
+			if (!this.isAutoMode) {
+				console.log('⚠️  Por favor selecciona una opción válida.\n');
+				return this.select(prompt, options, defaultValue);
+			}
+			// En modo automático, usar primera opción
+			const firstOption = options[0];
+			console.log(`✅ Seleccionado: ${firstOption.label}\n`);
+			return firstOption.value;
 		}
 
 		const index = parseInt(answer.trim(), 10) - 1;
@@ -173,9 +215,19 @@ export class InteractivePrompt {
 			return options[index].value;
 		}
 
-		// Si la respuesta no es válida, pedir de nuevo
-		console.log('⚠️  Opción inválida. Intenta de nuevo.\n');
-		return this.select(prompt, options, defaultValue);
+		// Si la respuesta no es válida, pedir de nuevo (solo si no estamos en modo automático)
+		if (!this.isAutoMode) {
+			console.log('⚠️  Opción inválida. Intenta de nuevo.\n');
+			return this.select(prompt, options, defaultValue);
+		}
+		// En modo automático, usar default o primera opción
+		if (defaultValue) {
+			console.log(`⚠️  Opción inválida, usando opción por defecto: ${options.find(o => o.value === defaultValue)?.label || defaultValue}\n`);
+			return defaultValue;
+		}
+		const firstOption = options[0];
+		console.log(`⚠️  Opción inválida, usando primera opción: ${firstOption.label}\n`);
+		return firstOption.value;
 	}
 
 	/**
@@ -194,6 +246,12 @@ export class InteractivePrompt {
 			}
 			const lowerAnswer = autoAnswer.toLowerCase();
 			return lowerAnswer === 's' || lowerAnswer === 'y' || lowerAnswer === 'yes' || lowerAnswer === 'si';
+		}
+
+		// Si estamos en modo automático pero no hay más respuestas, usar valor por defecto
+		if (this.isAutoMode && this.autoAnswerIndex >= this.autoAnswers.length) {
+			console.log(`${prompt} (${defaultText}): (sin respuesta, usando default: ${defaultText})`);
+			return defaultValue;
 		}
 
 		// Modo interactivo
