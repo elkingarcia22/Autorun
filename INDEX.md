@@ -17,13 +17,50 @@ npm install
 
 ---
 
-## 🎯 Inicializar el Wizard
+## 📋 Paso 2: Configurar Scripts en la Raíz del Proyecto
 
-Una vez instaladas las dependencias, ejecuta el wizard interactivo:
+**⚠️ IMPORTANTE: Ejecuta este comando en la TERMINAL, NO en el chat de Cursor.**
 
 ```bash
+# Desde dentro del directorio Autorun
+npm run setup-project
+```
+
+Este comando creará un `package.json` en la raíz del proyecto (un nivel arriba de Autorun) con los scripts necesarios para ejecutar el wizard desde cualquier directorio del proyecto.
+
+**Ejemplo de estructura:**
+```
+MiProyecto/
+├── Autorun/          ← Aquí ejecutas: npm run setup-project
+│   └── ...
+└── package.json      ← Se crea automáticamente aquí
+```
+
+---
+
+## 🎯 Paso 3: Inicializar el Wizard
+
+**⚠️ IMPORTANTE: Ejecuta este comando en la TERMINAL, NO en el chat de Cursor.**
+
+Una vez configurado, ejecuta el wizard interactivo desde la raíz del proyecto:
+
+```bash
+# Desde la raíz del proyecto (un nivel arriba de Autorun)
+npm run wizard
+```
+
+O desde dentro de Autorun:
+
+```bash
+# Desde dentro del directorio Autorun
+cd Autorun
 npm run init
 ```
+
+**💡 Por qué en la terminal:**
+- El wizard necesita acceso interactivo a stdin/stdout para leer tus respuestas
+- El chat de Cursor no puede proporcionar input interactivo correctamente
+- Ejecutar en la terminal garantiza que puedas responder todas las preguntas
 
 **El wizard te preguntará:**
 
