@@ -1636,6 +1636,13 @@ export class InitializationWizard {
 			return await this.configureGitHub(githubUrlEnv);
 		}
 
+		// Si estamos en modo automático y se agotaron las respuestas, usar default (NO configurar)
+		if (this.prompt.isAuto() === false && this.prompt.hasAutoAnswers()) {
+			// Se agotaron las respuestas automáticas, usar default (NO)
+			console.log('   ℹ️  Continuando sin configurar GitHub por el momento (modo automático)\n');
+			return null;
+		}
+
 		// Preguntar si quiere configurar GitHub ahora (siempre en modo interactivo)
 		const wantsToConfigure = await this.prompt.confirm(
 			'¿Quieres configurar GitHub ahora? (puedes configurarlo después)',
