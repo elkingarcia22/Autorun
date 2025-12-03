@@ -28,3 +28,6 @@ Thumbs.db
 # Generated files
 .ubits/
 prototypes/
+# Excepciones: templates de encuestas (mejoras de sidebar y limpieza de logs)
+!prototypes/canvas-administrador-encuestas-2025-12-03.html
+!prototypes/canvas-colaborador-encuestas-2025-12-03.html
