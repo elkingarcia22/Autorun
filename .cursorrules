@@ -1,5 +1,20 @@
 # 🎯 Reglas para Trabajar con Templates UBITS en Autorun
 
+## 🚨🚨🚨🚨🚨 LEE ESTO PRIMERO - VERIFICACIÓN OBLIGATORIA 🚨🚨🚨🚨🚨
+
+**⚠️⚠️⚠️ ESTE ARCHIVO DEBE SER LEÍDO COMPLETO AL INICIO DE CADA MENSAJE ⚠️⚠️⚠️**
+
+**ANTES de usar CUALQUIER herramienta, DEBES:**
+
+1. **Leer este archivo completo** (`.cursorrules`)
+2. **Leer:** `.cursor/CHECK-INICIAL-OBLIGATORIO.md` usando `read_file()` - ⚠️ OBLIGATORIO
+3. **Verificar triggers de imagen** (ver sección abajo)
+4. **Si hay triggers, seguir el proceso de bloqueo** (ver sección abajo)
+
+**NO puedes usar `write()`, `search_replace()`, etc. hasta completar esta verificación.**
+
+---
+
 ## 🚨🚨🚨🚨🚨 ALERTA CRÍTICA: DETECCIÓN AUTOMÁTICA DE IMAGEN 🚨🚨🚨🚨🚨
 
 **⚠️⚠️⚠️ VERIFICACIÓN OBLIGATORIA AL INICIO DE CADA MENSAJE ⚠️⚠️⚠️**
