@@ -1789,9 +1789,9 @@ export class InitializationWizard {
 	}
 
 	/**
-	 * Configura MCP para los add-ons instalados que lo soportan
+	 * Configura MCP para los add-ons seleccionados que lo soportan
 	 */
-	private async configureMCPForAddons(installedAddons: string[]): Promise<void> {
+	private async configureMCPForAddons(selectedAddons: string[]): Promise<void> {
 		// Add-ons que tienen soporte MCP
 		const mcpSupportedAddons: Record<string, { name: string; mcpNames: string[]; getCredentials: () => Promise<Record<string, any> | null> }> = {
 			github: {
@@ -1838,11 +1838,11 @@ export class InitializationWizard {
 
 		// Filtrar add-ons que tienen soporte MCP
 		// Usar la lista de add-ons seleccionados, no solo los instalados exitosamente
-		const addonsWithMCP = installedAddons.filter((id) => mcpSupportedAddons[id]);
+		const addonsWithMCP = selectedAddons.filter((id) => mcpSupportedAddons[id]);
 
 		// Debug: mostrar qué add-ons se seleccionaron y cuáles tienen MCP
-		if (installedAddons.length > 0) {
-			console.log(`   📋 Add-ons seleccionados: ${installedAddons.join(', ')}`);
+		if (selectedAddons.length > 0) {
+			console.log(`   📋 Add-ons seleccionados: ${selectedAddons.join(', ')}`);
 		}
 
 		if (addonsWithMCP.length === 0) {
