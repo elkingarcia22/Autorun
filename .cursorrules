@@ -43,6 +43,7 @@
 6. **📖 LEER QUINTO:** `GUIA-PROCESO-IMPLEMENTACION-PASO-A-PASO.md` usando `read_file()`
 7. **📖 LEER SEXTO:** `GUIA-ANALISIS-ESTRUCTURA-SPACING.md` usando `read_file()` - ⚠️ OBLIGATORIO para spacing
 8. **📖 LEER SÉPTIMO:** `GUIA-ANALISIS-ICONOS-DETALLADO.md` usando `read_file()` - ⚠️ OBLIGATORIO para iconos
+9. **📖 LEER OCTAVO:** `GUIA-CONTENTMANAGER-UPDATECONTENT.md` usando `read_file()` - ⚠️ OBLIGATORIO si agregas elementos a `.content-area`
 7. **🔍 IDENTIFICAR** template existente usando `list_dir()` (NO `read_file()` todavía)
 8. **📋 ANALIZAR** la imagen detalladamente
 9. **📝 MOSTRAR** el análisis completo al usuario en el formato obligatorio
