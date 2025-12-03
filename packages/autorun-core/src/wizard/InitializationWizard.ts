@@ -1837,10 +1837,20 @@ export class InitializationWizard {
 		// Filtrar add-ons que tienen soporte MCP
 		const addonsWithMCP = installedAddons.filter((id) => mcpSupportedAddons[id]);
 
+		// Debug: mostrar qué add-ons se instalaron
+		if (installedAddons.length > 0) {
+			console.log(`   📋 Add-ons instalados: ${installedAddons.join(', ')}`);
+		}
+
 		if (addonsWithMCP.length === 0) {
-			console.log('   ℹ️  Ningún add-on instalado requiere configuración MCP');
+			const supportedIds = Object.keys(mcpSupportedAddons).join(', ');
+			console.log(`   ℹ️  Ningún add-on instalado requiere configuración MCP`);
+			console.log(`   💡 Add-ons con soporte MCP: ${supportedIds}`);
+			console.log(`   💡 Para configurar MCP, instala uno de estos add-ons: github, vercel, clarity, figma-sync`);
 			return;
 		}
+
+		console.log(`   🔍 Add-ons con soporte MCP detectados: ${addonsWithMCP.join(', ')}`);
 
 		// Preguntar si quiere configurar MCP
 		try {
