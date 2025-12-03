@@ -4,6 +4,33 @@
 
 ---
 
+## 🔌 USO OBLIGATORIO DE MCPs
+
+**⚠️ CRÍTICO:** Antes de implementar cualquier componente UBITS, DEBES consultar los MCPs disponibles para obtener información exacta.
+
+**Ver guía completa:** `docs/guias/implementacion/GUIA-USO-MCP-EN-IMPLEMENTACION.md` - ⚠️ **OBLIGATORIO**
+
+### Proceso Obligatorio:
+
+1. **Consultar Storybook MCP:**
+   - Usar `mcp_storybook_getComponentList` para listar componentes
+   - Usar `mcp_storybook_getComponentsProps` para obtener props exactas
+   - Verificar estructura, tokens, controles y variantes
+
+2. **Consultar Storybook directamente:**
+   - Abrir `http://localhost:6006` en navegador
+   - Revisar Controls, Tokens, Ejemplos y Variantes
+   - Obtener código exacto del componente
+
+3. **Implementar con información exacta:**
+   - Usar props exactas obtenidas del MCP
+   - Usar tokens exactos obtenidos del Storybook
+   - Seguir estructura exacta del componente
+
+**NO implementar componentes sin consultar MCPs primero.**
+
+---
+
 ## 🔄 PROCESO DE IMPLEMENTACIÓN PASO A PASO (OBLIGATORIO)
 
 **⚠️ REGLA CRÍTICA:** **NUNCA implementar todo de golpe. SIEMPRE dividir en tareas pequeñas y pedir aprobación.**
