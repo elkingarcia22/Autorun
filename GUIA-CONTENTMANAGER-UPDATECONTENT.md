@@ -6,6 +6,11 @@
 
 Esto significa que **CUALQUIER elemento** que agregues al HTML estático dentro de `.content-area` será **eliminado** cuando el ContentManager actualice el contenido.
 
+**En `content-manager.js` línea 680:**
+```javascript
+contentArea.innerHTML = ''; // ❌ Limpia TODO el contenido
+```
+
 ---
 
 ## 🔍 CÓMO IDENTIFICAR EL PROBLEMA
@@ -15,6 +20,21 @@ Esto significa que **CUALQUIER elemento** que agregues al HTML estático dentro 
 2. ✅ Elemento se inicializa correctamente
 3. ❌ Elemento desaparece después de que el ContentManager actualiza el contenido
 4. ❌ Los logs muestran que el `content-area` solo contiene `content-sections`
+
+### **Flujo del problema:**
+```
+1. Agregas elementos al HTML estático en .content-area
+   ↓
+2. Los elementos aparecen correctamente
+   ↓
+3. Usuario navega a otra sección o ContentManager actualiza
+   ↓
+4. ContentManager.updateContent() se ejecuta
+   ↓
+5. contentArea.innerHTML = ''; // ❌ Limpia TODO
+   ↓
+6. Tus elementos agregados desaparecen
+```
 
 ### **Verificación en Logs:**
 ```javascript
@@ -133,6 +153,18 @@ window.UBITS_ContentManager.updateContent = function(section, subSection) {
 - [ ] **5. Implementar interceptación ANTES de agregar elementos al DOM**
   - No agregar elementos al HTML estático sin interceptar `updateContent`
   - Interceptar `updateContent` primero, luego agregar elementos
+
+- [ ] **6. Verificar módulo/sección antes de preservar elementos**
+  - Solo interceptar para módulos específicos
+  - No afectar otros módulos
+
+- [ ] **7. Guardar elementos ANTES de llamar al método original**
+  - Guardar `outerHTML` de los elementos
+  - Llamar al método original después
+
+- [ ] **8. Restaurar elementos DESPUÉS de que se actualice el contenido**
+  - Usar `setTimeout` para restaurar en el siguiente tick
+  - Verificar que el elemento no existe antes de restaurar
 
 ---
 
@@ -280,6 +312,9 @@ document.getElementById('encuestas-tabs-container')?.addEventListener('restored'
 3. **SIEMPRE interceptar `updateContent` ANTES de agregar elementos al DOM**
 4. **SIEMPRE verificar módulo/sección antes de preservar elementos**
 5. **SIEMPRE re-inicializar elementos después de restaurarlos**
+6. **SIEMPRE guardar elementos ANTES de llamar al método original**
+7. **SIEMPRE restaurar elementos DESPUÉS de que se actualice el contenido**
+8. **SIEMPRE usar `setTimeout` para restaurar en el siguiente tick**
 
 ---
 
@@ -288,8 +323,8 @@ document.getElementById('encuestas-tabs-container')?.addEventListener('restored'
 - **Código fuente:** `vendor/ubits/packages/templates/engine/content-manager.js` (línea 680)
 - **Análisis completo:** `ANALISIS-PROBLEMAS-IMPLEMENTACION.md` (Problema 4)
 - **Patrón de interceptación:** Ver sección "Interceptar ContentManager" en `.cursorrules`
+- **Guía de errores comunes:** `GUIA-ERRORES-COMUNES-UBITS.md` - Error #10
 
 ---
 
 **Última actualización:** Diciembre 2024
-

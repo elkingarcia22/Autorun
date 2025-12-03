@@ -43,6 +43,7 @@
 6. **📖 LEER QUINTO:** `GUIA-PROCESO-IMPLEMENTACION-PASO-A-PASO.md` usando `read_file()`
 7. **📖 LEER SEXTO:** `GUIA-ANALISIS-ESTRUCTURA-SPACING.md` usando `read_file()` - ⚠️ OBLIGATORIO para spacing
 8. **📖 LEER SÉPTIMO:** `GUIA-ANALISIS-ICONOS-DETALLADO.md` usando `read_file()` - ⚠️ OBLIGATORIO para iconos
+9. **📖 LEER OCTAVO:** `GUIA-CONTENTMANAGER-UPDATECONTENT.md` usando `read_file()` - ⚠️ OBLIGATORIO si agregas elementos a `.content-area`
 7. **🔍 IDENTIFICAR** template existente usando `list_dir()` (NO `read_file()` todavía)
 8. **📋 ANALIZAR** la imagen detalladamente
 9. **📝 MOSTRAR** el análisis completo al usuario en el formato obligatorio
@@ -584,4 +585,15 @@ Antes de trabajar en un template, LEER:
     - ✅ CORRECTO: Llamar al método original para otros módulos (mantener HeaderSection)
     - ✅ CORRECTO: Solo eliminar HeaderSection en el módulo específico donde la imagen no lo muestra
     - **Ver:** `GUIA-ERRORES-COMUNES-UBITS.md` - Error #9 para detalles completos
+19. ❌ **AGREGAR ELEMENTOS AL DOM SIN INTERCEPTAR CONTENTMANAGER** - ⚠️ CRÍTICO:
+    - ❌ INCORRECTO: Agregar elementos a `.content-area` sin interceptar `updateContent`
+    - ❌ INCORRECTO: Asumir que los elementos estarán siempre disponibles
+    - ❌ INCORRECTO: No investigar el comportamiento de `ContentManager.updateContent`
+    - ✅ CORRECTO: Leer `GUIA-CONTENTMANAGER-UPDATECONTENT.md` antes de agregar elementos
+    - ✅ CORRECTO: Investigar el código fuente del ContentManager (línea 680: `contentArea.innerHTML = ''`)
+    - ✅ CORRECTO: Interceptar `updateContent` para preservar elementos personalizados
+    - ✅ CORRECTO: Guardar elementos ANTES de llamar al método original
+    - ✅ CORRECTO: Restaurar elementos DESPUÉS de que se actualice el contenido
+    - ✅ CORRECTO: Verificar módulo/sección antes de preservar elementos
+    - **Ver:** `GUIA-CONTENTMANAGER-UPDATECONTENT.md` para detalles completos
 

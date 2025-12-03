@@ -55,10 +55,12 @@
 - [ ] ¿He leído todas las guías? → Si NO, LEERLAS PRIMERO
 - [ ] ¿He leído `GUIA-ANALISIS-ESTRUCTURA-SPACING.md`? → Si NO, LEERLA PRIMERO
 - [ ] ¿He leído `GUIA-ANALISIS-ICONOS-DETALLADO.md`? → Si NO, LEERLA PRIMERO
+- [ ] ¿He leído `GUIA-CONTENTMANAGER-UPDATECONTENT.md`? → Si NO, LEERLA PRIMERO (si agregas elementos a `.content-area`)
 - [ ] ¿He identificado el template existente? → Si NO, IDENTIFICARLO PRIMERO
 - [ ] ¿He analizado la imagen detalladamente? → Si NO, ANALIZARLA PRIMERO
 - [ ] ¿He medido visualmente cada spacing (NO asumido)? → Si NO, MEDIR PRIMERO
 - [ ] ¿He comparado spacing con tokens disponibles? → Si NO, COMPARAR PRIMERO
+- [ ] ¿He verificado si necesito interceptar ContentManager antes de agregar elementos? → Si NO, VERIFICAR PRIMERO
 - [ ] ¿He mostrado el análisis completo al usuario? → Si NO, MOSTRARLO PRIMERO
 - [ ] ¿El usuario ha aprobado explícitamente? → Si NO, ESPERAR APROBACIÓN
 

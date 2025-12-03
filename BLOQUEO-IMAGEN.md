@@ -36,11 +36,13 @@
 4. **LEER TERCERO:** `GUIA-PROCESO-IMPLEMENTACION-PASO-A-PASO.md`
 5. **LEER CUARTO:** `GUIA-ANALISIS-ESTRUCTURA-SPACING.md` - ⚠️ OBLIGATORIO para spacing
 6. **LEER QUINTO:** `GUIA-ANALISIS-ICONOS-DETALLADO.md` - ⚠️ OBLIGATORIO para iconos
-7. **IDENTIFICAR template existente** (buscar en `prototypes/`)
-8. **ANALIZAR la imagen detalladamente:**
+7. **LEER SEXTO:** `GUIA-CONTENTMANAGER-UPDATECONTENT.md` - ⚠️ OBLIGATORIO si agregas elementos a `.content-area`
+8. **IDENTIFICAR template existente** (buscar en `prototypes/`)
+9. **ANALIZAR la imagen detalladamente:**
    - ⚠️ **Medir visualmente cada spacing (NO asumir basándose en ejemplos)**
    - ⚠️ **Comparar spacing con tokens disponibles antes de documentar**
    - ⚠️ **Verificar cada espacio individualmente**
+   - ⚠️ **Verificar si necesitas interceptar ContentManager antes de agregar elementos**
 9. **MOSTRAR análisis completo al usuario** (formato obligatorio)
 10. **ESPERAR aprobación explícita del usuario**
 11. **SOLO DESPUÉS** de aprobación, implementar UNA tarea a la vez
