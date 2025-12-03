@@ -271,6 +271,30 @@ export class MCPInstaller {
 						: {},
 				};
 
+			case 'storybook':
+				return {
+					command: 'npx',
+					args: ['-y', 'storybook-mcp@latest'],
+					env: credentials?.storybookUrl
+						? {
+								STORYBOOK_URL: credentials.storybookUrl,
+								CUSTOM_TOOLS: credentials.customTools || '',
+							}
+						: {},
+				};
+
+			case 'supabase':
+				return {
+					command: 'npx',
+					args: ['-y', '@supabase/mcp-server-supabase'],
+					env: credentials?.accessToken && credentials?.projectRef
+						? {
+								SUPABASE_ACCESS_TOKEN: credentials.accessToken,
+								SUPABASE_PROJECT_REF: credentials.projectRef,
+							}
+						: {},
+				};
+
 			default:
 				return {
 					command: 'npx',

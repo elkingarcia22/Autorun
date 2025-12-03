@@ -1916,6 +1916,58 @@ export class InitializationWizard {
 					return accessToken ? { accessToken, fileKey: figmaConfig?.fileKey } : null;
 				},
 			},
+			storybook: {
+				name: 'Storybook',
+				mcpNames: ['storybook'],
+				getCredentials: async () => {
+					const configManager = (this.hub as any).configManager;
+					if (!configManager) return null;
+					const config = await configManager.load();
+					const storybookConfig = config?.autorun?.addons?.config?.storybook;
+					const storybookUrl = storybookConfig?.storybookUrl || process.env.STORYBOOK_URL;
+					const customTools = storybookConfig?.customTools || process.env.CUSTOM_TOOLS;
+					// Si no hay URL, intentar detectar automáticamente desde el proyecto
+					if (!storybookUrl) {
+						// Intentar encontrar Storybook en el proyecto
+						const fs = await import('fs/promises');
+						const path = await import('path');
+						const possiblePaths = [
+							path.join(process.cwd(), '.storybook', 'main.js'),
+							path.join(process.cwd(), 'storybook-static', 'index.json'),
+						];
+						for (const possiblePath of possiblePaths) {
+							try {
+								await fs.access(possiblePath);
+								// Si existe .storybook/main.js, construir URL local
+								if (possiblePath.includes('.storybook')) {
+									return { storybookUrl: 'http://localhost:6006/index.json', customTools };
+								}
+								// Si existe storybook-static, usar esa ruta
+								if (possiblePath.includes('storybook-static')) {
+									const staticPath = path.join(process.cwd(), 'storybook-static', 'index.json');
+									return { storybookUrl: `file://${staticPath}`, customTools };
+								}
+							} catch {
+								// Continuar
+							}
+						}
+					}
+					return storybookUrl ? { storybookUrl, customTools } : null;
+				},
+			},
+			supabase: {
+				name: 'Supabase',
+				mcpNames: ['supabase'],
+				getCredentials: async () => {
+					const configManager = (this.hub as any).configManager;
+					if (!configManager) return null;
+					const config = await configManager.load();
+					const supabaseConfig = config?.autorun?.addons?.config?.supabase;
+					const accessToken = supabaseConfig?.accessToken || process.env.SUPABASE_ACCESS_TOKEN;
+					const projectRef = supabaseConfig?.projectRef || process.env.SUPABASE_PROJECT_REF;
+					return accessToken && projectRef ? { accessToken, projectRef } : null;
+				},
+			},
 		};
 
 		// Filtrar add-ons que tienen soporte MCP
@@ -1931,7 +1983,7 @@ export class InitializationWizard {
 			const supportedIds = Object.keys(mcpSupportedAddons).join(', ');
 			console.log(`   ℹ️  Ningún add-on instalado requiere configuración MCP`);
 			console.log(`   💡 Add-ons con soporte MCP disponibles: ${supportedIds}`);
-			console.log(`   💡 Para configurar MCP, instala uno de estos add-ons: github, vercel, clarity, figma-sync`);
+			console.log(`   💡 Para configurar MCP, instala uno de estos add-ons: github, vercel, clarity, figma-sync, storybook, supabase`);
 			return;
 		}
 
@@ -1966,66 +2018,74 @@ export class InitializationWizard {
 			return;
 		}
 
-		// Preguntar si quiere configurar MCP
+		// Preguntar si quiere configurar MCP automáticamente
 		try {
 			const configureMCP = await this.prompt.question(
-				'\n🔌 ¿Deseas configurar MCP para mejorar la experiencia con los add-ons? (S/N): ',
+				'\n🔌 ¿Deseas instalar y configurar MCP automáticamente para mejorar la experiencia con los add-ons? (S/N): ',
 			);
 
 			if (!configureMCP || configureMCP.trim().toUpperCase() !== 'S') {
-				console.log('   ℹ️  Configuración de MCP omitida (se puede configurar después)');
+				console.log('   ℹ️  Instalación de MCP omitida (se puede configurar después)');
 				return;
 			}
 
-			// Configurar MCP para cada add-on
+			console.log('\n   📦 Instalando y configurando MCPs automáticamente...\n');
+
+			// Instalar MCPs automáticamente para cada add-on
+			let installedCount = 0;
+			let skippedCount = 0;
+
 			for (const addonId of addonsWithMCP) {
 				const addonInfo = mcpSupportedAddons[addonId];
 				
 				// Obtener credenciales
 				const credentials = await addonInfo.getCredentials();
-				if (!credentials) {
-					console.log(`   ⚠️  No se encontraron credenciales para ${addonInfo.name}. Configura las credenciales primero.`);
-					continue;
-				}
-
-				// Para Figma, intentar ambos MCPs
+				
+				// Para cada MCP del add-on
 				for (const mcpName of addonInfo.mcpNames) {
 					const mcpInfo = await MCPDetector.detectMCPServer(mcpName);
 
 					// Si ya está configurado, saltar
 					if (mcpInfo.configured) {
 						console.log(`   ✅ MCP '${mcpName}' para ${addonInfo.name} ya está configurado`);
+						skippedCount++;
 						continue;
 					}
 
 					// Si MCP no está disponible, saltar
 					if (!mcpInfo.available) {
 						if (addonInfo.mcpNames.length > 1) {
-							// Si hay múltiples MCPs, solo mostrar mensaje si ninguno está disponible
 							continue;
 						}
-						console.log(`   ℹ️  MCP no está disponible para ${addonInfo.name}`);
+						console.log(`   ⚠️  MCP no está disponible para ${addonInfo.name}`);
+						skippedCount++;
 						continue;
 					}
 
-					// Preguntar si quiere configurar este MCP específico
+					// Instalar automáticamente (sin preguntar individualmente)
 					const mcpDisplayName = mcpName === 'talk-to-figma' ? 'Talk to Figma' : mcpName.charAt(0).toUpperCase() + mcpName.slice(1);
-					const configureThis = await this.prompt.question(
-						`   🔌 ¿Configurar MCP '${mcpDisplayName}' para ${addonInfo.name}? (S/N): `,
-					);
-
-					if (configureThis && configureThis.trim().toUpperCase() === 'S') {
-						const result = await MCPInstaller.installMCPServer(mcpName, credentials);
-						if (result.success) {
-							console.log(`   ✅ MCP '${mcpDisplayName}' para ${addonInfo.name} configurado exitosamente`);
-							console.log(`   🔄 Reinicia Cursor para que los cambios surtan efecto`);
-						} else {
-							console.log(`   ⚠️  Error configurando MCP '${mcpDisplayName}' para ${addonInfo.name}: ${result.message}`);
+					
+					// Si no hay credenciales, instalar sin ellas (el usuario puede configurarlas después)
+					const result = await MCPInstaller.installMCPServer(mcpName, credentials || {});
+					
+					if (result.success) {
+						console.log(`   ✅ MCP '${mcpDisplayName}' para ${addonInfo.name} instalado y configurado`);
+						if (!credentials) {
+							console.log(`   ⚠️  Nota: Configura las credenciales en variables de entorno o en la configuración del proyecto`);
 						}
+						installedCount++;
 					} else {
-						console.log(`   ℹ️  MCP '${mcpDisplayName}' para ${addonInfo.name} omitido`);
+						console.log(`   ⚠️  Error instalando MCP '${mcpDisplayName}' para ${addonInfo.name}: ${result.message}`);
 					}
 				}
+			}
+
+			if (installedCount > 0) {
+				console.log(`\n   ✅ ${installedCount} MCP(s) instalado(s) exitosamente`);
+				console.log(`   🔄 Reinicia Cursor para que los cambios surtan efecto`);
+			}
+			if (skippedCount > 0) {
+				console.log(`   ℹ️  ${skippedCount} MCP(s) omitido(s) (ya configurados o no disponibles)`);
 			}
 		} catch (error: any) {
 			// Si el error es porque readline está cerrado, simplemente omitir
