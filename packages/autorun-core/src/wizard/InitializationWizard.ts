@@ -1874,8 +1874,10 @@ export class InitializationWizard {
 				name: 'GitHub',
 				mcpNames: ['github'],
 				getCredentials: async () => {
-					const config = (this.hub as any).configManager?.getConfig();
-					const githubConfig = (await config)?.autorun?.addons?.config?.github;
+					const configManager = (this.hub as any).configManager;
+					if (!configManager) return null;
+					const config = await configManager.load();
+					const githubConfig = config?.autorun?.addons?.config?.github;
 					const token = process.env.GITHUB_TOKEN || process.env.GH_TOKEN || githubConfig?.token;
 					return token ? { token } : null;
 				},
@@ -1893,8 +1895,10 @@ export class InitializationWizard {
 				name: 'Clarity',
 				mcpNames: ['clarity'],
 				getCredentials: async () => {
-					const config = (this.hub as any).configManager?.getConfig();
-					const clarityConfig = (await config)?.autorun?.addons?.config?.clarity;
+					const configManager = (this.hub as any).configManager;
+					if (!configManager) return null;
+					const config = await configManager.load();
+					const clarityConfig = config?.autorun?.addons?.config?.clarity;
 					const projectId = clarityConfig?.projectId || process.env.CLARITY_PROJECT_ID;
 					const apiKey = clarityConfig?.apiKey || process.env.CLARITY_API_KEY;
 					return projectId ? { projectId, apiKey } : null;
