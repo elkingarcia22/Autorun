@@ -69,6 +69,11 @@
   - ⚠️ **Medir visualmente cada espacio entre elementos**
   - ⚠️ **Comparar con tokens disponibles antes de documentar**
   - ⚠️ **Verificar cada spacing individualmente**
+- ✅ **Verificar ContentManager (usar `GUIA-CONTENTMANAGER-UPDATECONTENT.md`):**
+  - ⚠️ **Si agregas elementos a `.content-area`, DEBES interceptar `updateContent`**
+  - ⚠️ **Investigar el código fuente del ContentManager antes de agregar elementos**
+  - ⚠️ **Verificar si `updateContent` limpia el contenido (línea 680: `contentArea.innerHTML = ''`)**
+  - ⚠️ **Interceptar `updateContent` para preservar elementos personalizados**
 
 ### PASO 5: MOSTRAR ANÁLISIS COMPLETO
 - ✅ Mostrar análisis en el formato obligatorio
@@ -148,10 +153,12 @@ function verificarAntesDeActuar(mensajeUsuario) {
 - [ ] Leer `GUIA-PROCESO-IMPLEMENTACION-PASO-A-PASO.md`
 - [ ] Leer `GUIA-ANALISIS-ESTRUCTURA-SPACING.md` - ⚠️ OBLIGATORIO
 - [ ] Leer `GUIA-ANALISIS-ICONOS-DETALLADO.md` - ⚠️ OBLIGATORIO
+- [ ] Leer `GUIA-CONTENTMANAGER-UPDATECONTENT.md` - ⚠️ OBLIGATORIO si agregas elementos a `.content-area`
 - [ ] NO usar herramientas de escritura todavía
 - [ ] Analizar imagen detalladamente
 - [ ] **Medir visualmente cada spacing (NO asumir)**
 - [ ] **Comparar spacing con tokens disponibles**
+- [ ] **Verificar si necesitas interceptar ContentManager antes de agregar elementos**
 - [ ] Mostrar análisis completo
 - [ ] Esperar aprobación
 
