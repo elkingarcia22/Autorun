@@ -426,6 +426,53 @@ Para instalar MCP de Talk to Figma manualmente:
 ⚠️ IMPORTANTE: Ni MCP ni la API de Figma pueden acceder directamente a las Variables de Figma.
 Se recomienda descargar el JSON de tokens usando el plugin de Figma Tokens.
       `,
+			storybook: `
+Para instalar MCP de Storybook manualmente:
+
+1. Instala el servidor MCP:
+   npm install -g storybook-mcp
+
+2. Configura en tu archivo MCP (usualmente ~/.cursor/mcp.json o ~/.config/mcp/config.json):
+   {
+     "mcpServers": {
+       "storybook": {
+         "command": "npx",
+         "args": ["-y", "storybook-mcp@latest"],
+         "env": {
+           "STORYBOOK_URL": "https://tu-storybook.com/index.json"
+         }
+       }
+     }
+   }
+
+3. Reinicia tu editor/IDE.
+
+Nota: STORYBOOK_URL debe apuntar al archivo index.json de tu Storybook.
+      `,
+			supabase: `
+Para instalar MCP de Supabase manualmente:
+
+1. Instala el servidor MCP:
+   npm install -g @supabase/mcp-server-supabase
+
+2. Configura en tu archivo MCP (usualmente ~/.cursor/mcp.json o ~/.config/mcp/config.json):
+   {
+     "mcpServers": {
+       "supabase": {
+         "command": "npx",
+         "args": ["-y", "@supabase/mcp-server-supabase"],
+         "env": {
+           "SUPABASE_ACCESS_TOKEN": "tu-access-token",
+           "SUPABASE_PROJECT_REF": "tu-project-ref"
+         }
+       }
+     }
+   }
+
+3. Reinicia tu editor/IDE.
+
+Nota: Necesitas un token de acceso personal de Supabase y la referencia de tu proyecto.
+      `,
 		};
 
 		return instructions[service] || `Instrucciones para ${serviceName} no disponibles.`;
