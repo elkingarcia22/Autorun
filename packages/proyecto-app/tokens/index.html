@@ -8923,7 +8923,7 @@ const result = await runTests({ coverage: true });</code></pre>
             </div>
             <div class="step-content">
               <p class="step-description">
-                Clona el repositorio Autorun, instala las dependencias del proyecto y las dependencias de Storybook (incluyendo el addon MCP). El sistema funciona con <strong>arquitectura dual</strong>: carga componentes desde <code style="background: rgba(0,255,255,0.1); padding: 2px 6px; border-radius: 3px;">Vercel</code> (principal, requiere internet) y usa <code style="background: rgba(255,255,0,0.1); padding: 2px 6px; border-radius: 3px;">vendor/ubits/packages/</code> como fallback (funciona offline). Todo funciona automáticamente sin configuración adicional.
+                Clona el repositorio Autorun, instala las dependencias del proyecto y las dependencias de Storybook. El sistema funciona con <strong>arquitectura dual</strong>: carga componentes desde <code style="background: rgba(0,255,255,0.1); padding: 2px 6px; border-radius: 3px;">Vercel</code> (principal, requiere internet) y usa <code style="background: rgba(255,255,0,0.1); padding: 2px 6px; border-radius: 3px;">vendor/ubits/packages/</code> como fallback (funciona offline). El wizard configurará automáticamente el MCP de Storybook usando el paquete standalone <code style="background: rgba(0,255,255,0.1); padding: 2px 6px; border-radius: 3px;">storybook-mcp@latest</code>.
               </p>
               <div class="code-block">
                 <pre><code># 1. Clonar el repositorio Autorun
@@ -8933,7 +8933,7 @@ cd Autorun
 # 2. Instalar dependencias del proyecto
 npm install
 
-# 3. Instalar dependencias de Storybook (instala el addon MCP automáticamente)
+# 3. Instalar dependencias de Storybook
 cd vendor/ubits/packages/storybook
 npm install</code></pre>
               </div>
@@ -8945,9 +8945,9 @@ npm install</code></pre>
               <p class="step-note" style="margin-top: 16px;">
                 <strong>¿Qué se instala automáticamente?</strong><br>
                 ✅ Dependencias del proyecto Autorun<br>
-                ✅ Dependencias de Storybook (incluyendo <code style="background: rgba(0,255,255,0.1); padding: 2px 6px; border-radius: 3px;">@storybook/addon-mcp</code>)<br>
-                ✅ Configuración de Storybook ya está incluida en el repositorio<br><br>
-                <strong>Nota:</strong> El addon MCP de Storybook se instala automáticamente porque está en <code style="background: rgba(0,255,255,0.1); padding: 2px 6px; border-radius: 3px;">package.json</code> del proyecto Storybook.
+                ✅ Dependencias de Storybook (configuración ya incluida en el repositorio)<br>
+                ✅ El wizard configurará el MCP de Storybook usando <code style="background: rgba(0,255,255,0.1); padding: 2px 6px; border-radius: 3px;">storybook-mcp@latest</code> (paquete standalone, más confiable)<br><br>
+                <strong>Nota sobre Storybook MCP:</strong> El wizard configurará automáticamente el MCP de Storybook para que Cursor pueda acceder a los componentes. Solo necesitas tener Storybook corriendo (<code style="background: rgba(0,255,255,0.1); padding: 2px 6px; border-radius: 3px;">npm run storybook</code>) cuando uses el MCP.
               </p>
             </div>
           </div>
@@ -9003,6 +9003,7 @@ npm run init</code></pre>
                 ✅ Instala add-ons seleccionados<br>
                 ✅ Configura MCPs automáticamente (si aceptas)<br>
                 ✅ Crea archivo <code style="background: rgba(0,255,255,0.1); padding: 2px 6px; border-radius: 3px;">.cursor/mcp.json</code> con todos los MCPs<br>
+                ✅ Storybook MCP usa <code style="background: rgba(0,255,255,0.1); padding: 2px 6px; border-radius: 3px;">storybook-mcp@latest</code> (paquete standalone, más confiable)<br>
                 ✅ Configura sidebar y subnav para tu módulo<br>
                 ✅ Crea ambos templates (administrador y colaborador)<br>
                 ✅ Valida templates creados<br>

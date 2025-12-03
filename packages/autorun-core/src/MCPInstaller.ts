@@ -264,16 +264,16 @@ export class MCPInstaller {
 				};
 
 			case 'storybook':
-				// Storybook tiene un addon oficial @storybook/addon-mcp que expone MCP en http://localhost:6006/mcp
-				// Si el addon está instalado y Storybook está corriendo, usar el servidor MCP integrado
-				// Si no, usar el paquete standalone storybook-mcp con la URL del index.json
+				// Storybook MCP usa el paquete standalone storybook-mcp
+				// Requiere STORYBOOK_URL apuntando al index.json del Storybook
 				const storybookUrl = credentials?.storybookUrl || 'http://localhost:6006/index.json';
-
-				// Preferir el servidor MCP integrado del addon (más potente, más tools)
-				// Si Storybook está corriendo con el addon, usar la URL del servidor MCP
-				// Si no, usar el paquete standalone como fallback
 				return {
-					url: 'http://localhost:6006/mcp', // Servidor MCP integrado del addon @storybook/addon-mcp
+					command: 'npx',
+					args: ['-y', 'storybook-mcp@latest'],
+					env: {
+						STORYBOOK_URL: storybookUrl,
+						...(credentials?.customTools ? { CUSTOM_TOOLS: credentials.customTools } : {}),
+					},
 				};
 
 			case 'supabase':

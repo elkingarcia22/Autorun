@@ -2249,12 +2249,14 @@ export class InitializationWizard {
 									break;
 								case 'storybook':
 									console.log(
-										`   💡 Storybook MCP usa el servidor integrado del addon @storybook/addon-mcp`,
+										`   💡 Storybook MCP requiere que Storybook esté corriendo en http://localhost:6006`,
 									);
 									console.log(
-										`   💡 Asegúrate de que Storybook esté corriendo con el addon instalado`,
+										`   💡 Inicia Storybook: cd vendor/ubits/packages/storybook && npm run storybook`,
 									);
-									console.log(`   💡 Ver: https://storybook.js.org/addons/@storybook/addon-mcp`);
+									console.log(
+										`   💡 El MCP usará automáticamente: http://localhost:6006/index.json`,
+									);
 									break;
 								default:
 									console.log(
