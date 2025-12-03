@@ -49,10 +49,10 @@
 ### PASO 2: LEER GUÍAS OBLIGATORIAS (EN ORDEN)
 1. ✅ **LEER PRIMERO:** `VERIFICACION-IMAGEN.md`
 2. ✅ **LEER SEGUNDO:** `BLOQUEO-IMAGEN.md`
-3. ✅ **LEER TERCERO:** `GUIA-CREAR-DESDE-IMAGEN-DESPUES-WIZARD.md`
-4. ✅ **LEER CUARTO:** `GUIA-PROCESO-IMPLEMENTACION-PASO-A-PASO.md`
-5. ✅ **LEER QUINTO:** `GUIA-ANALISIS-ESTRUCTURA-SPACING.md` - ⚠️ OBLIGATORIO para análisis de spacing
-6. ✅ **LEER SEXTO:** `GUIA-ANALISIS-ICONOS-DETALLADO.md` - ⚠️ OBLIGATORIO para análisis de iconos
+3. ✅ **LEER TERCERO:** `docs/guias/implementacion/GUIA-CREAR-DESDE-IMAGEN-DESPUES-WIZARD.md`
+4. ✅ **LEER CUARTO:** `docs/guias/implementacion/GUIA-PROCESO-IMPLEMENTACION-PASO-A-PASO.md`
+5. ✅ **LEER QUINTO:** `docs/guias/analisis/GUIA-ANALISIS-ESTRUCTURA-SPACING.md` - ⚠️ OBLIGATORIO para análisis de spacing
+6. ✅ **LEER SEXTO:** `docs/guias/analisis/GUIA-ANALISIS-ICONOS-DETALLADO.md` - ⚠️ OBLIGATORIO para análisis de iconos
 
 ### PASO 3: VERIFICAR TEMPLATE EXISTENTE
 - ✅ Usar `list_dir()` para buscar en `prototypes/`
@@ -63,13 +63,13 @@
 - ✅ Analizar detalladamente la imagen
 - ✅ Identificar componentes UBITS
 - ✅ Verificar HeaderSection (¿está o no está?)
-- ✅ Identificar iconos con variaciones (usar `GUIA-ANALISIS-ICONOS-DETALLADO.md`)
-- ✅ **Analizar estructura y spacing (usar `GUIA-ANALISIS-ESTRUCTURA-SPACING.md`):**
+- ✅ Identificar iconos con variaciones (usar `docs/guias/analisis/GUIA-ANALISIS-ICONOS-DETALLADO.md`)
+- ✅ **Analizar estructura y spacing (usar `docs/guias/analisis/GUIA-ANALISIS-ESTRUCTURA-SPACING.md`):**
   - ⚠️ **NO asumir basándose en ejemplos**
   - ⚠️ **Medir visualmente cada espacio entre elementos**
   - ⚠️ **Comparar con tokens disponibles antes de documentar**
   - ⚠️ **Verificar cada spacing individualmente**
-- ✅ **Verificar ContentManager (usar `GUIA-CONTENTMANAGER-UPDATECONTENT.md`):**
+- ✅ **Verificar ContentManager (usar `docs/guias/referencia/GUIA-CONTENTMANAGER-UPDATECONTENT.md`):**
   - ⚠️ **Si agregas elementos a `.content-area`, DEBES interceptar `updateContent`**
   - ⚠️ **Investigar el código fuente del ContentManager antes de agregar elementos**
   - ⚠️ **Verificar si `updateContent` limpia el contenido (línea 680: `contentArea.innerHTML = ''`)**
@@ -121,8 +121,8 @@ function verificarAntesDeActuar(mensajeUsuario) {
   if (tieneImagen || tienePalabrasClave || esSolicitudCreacion) {
     leerGuia('VERIFICACION-IMAGEN.md');
     leerGuia('BLOQUEO-IMAGEN.md');
-    leerGuia('GUIA-CREAR-DESDE-IMAGEN-DESPUES-WIZARD.md');
-    leerGuia('GUIA-PROCESO-IMPLEMENTACION-PASO-A-PASO.md');
+    leerGuia('docs/guias/implementacion/GUIA-CREAR-DESDE-IMAGEN-DESPUES-WIZARD.md');
+    leerGuia('docs/guias/implementacion/GUIA-PROCESO-IMPLEMENTACION-PASO-A-PASO.md');
     
     // 3. NO usar herramientas de escritura todavía
     return 'BLOQUEADO - Leer guías primero';
@@ -149,11 +149,11 @@ function verificarAntesDeActuar(mensajeUsuario) {
 **Si CUALQUIERA es SÍ:**
 - [ ] Leer `VERIFICACION-IMAGEN.md`
 - [ ] Leer `BLOQUEO-IMAGEN.md`
-- [ ] Leer `GUIA-CREAR-DESDE-IMAGEN-DESPUES-WIZARD.md`
-- [ ] Leer `GUIA-PROCESO-IMPLEMENTACION-PASO-A-PASO.md`
-- [ ] Leer `GUIA-ANALISIS-ESTRUCTURA-SPACING.md` - ⚠️ OBLIGATORIO
-- [ ] Leer `GUIA-ANALISIS-ICONOS-DETALLADO.md` - ⚠️ OBLIGATORIO
-- [ ] Leer `GUIA-CONTENTMANAGER-UPDATECONTENT.md` - ⚠️ OBLIGATORIO si agregas elementos a `.content-area`
+- [ ] Leer `docs/guias/implementacion/GUIA-CREAR-DESDE-IMAGEN-DESPUES-WIZARD.md`
+- [ ] Leer `docs/guias/implementacion/GUIA-PROCESO-IMPLEMENTACION-PASO-A-PASO.md`
+- [ ] Leer `docs/guias/analisis/GUIA-ANALISIS-ESTRUCTURA-SPACING.md` - ⚠️ OBLIGATORIO
+- [ ] Leer `docs/guias/analisis/GUIA-ANALISIS-ICONOS-DETALLADO.md` - ⚠️ OBLIGATORIO
+- [ ] Leer `docs/guias/referencia/GUIA-CONTENTMANAGER-UPDATECONTENT.md` - ⚠️ OBLIGATORIO si agregas elementos a `.content-area`
 - [ ] NO usar herramientas de escritura todavía
 - [ ] Analizar imagen detalladamente
 - [ ] **Medir visualmente cada spacing (NO asumir)**
@@ -187,8 +187,8 @@ function verificarAntesDeActuar(mensajeUsuario) {
 
 - **Verificación:** `VERIFICACION-IMAGEN.md`
 - **Bloqueo:** `BLOQUEO-IMAGEN.md`
-- **Guía creación:** `GUIA-CREAR-DESDE-IMAGEN-DESPUES-WIZARD.md`
-- **Proceso:** `GUIA-PROCESO-IMPLEMENTACION-PASO-A-PASO.md`
+- **Guía creación:** `docs/guias/implementacion/GUIA-CREAR-DESDE-IMAGEN-DESPUES-WIZARD.md`
+- **Proceso:** `docs/guias/implementacion/GUIA-PROCESO-IMPLEMENTACION-PASO-A-PASO.md`
 - **Reglas:** `.cursorrules`
 
 ---

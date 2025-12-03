@@ -32,11 +32,11 @@
 
 1. **DETENER TODO INMEDIATAMENTE**
 2. **LEER PRIMERO:** `VERIFICACION-IMAGEN.md` - ⚠️ OBLIGATORIO (archivo de verificación)
-3. **LEER SEGUNDO:** `GUIA-CREAR-DESDE-IMAGEN-DESPUES-WIZARD.md`
-4. **LEER TERCERO:** `GUIA-PROCESO-IMPLEMENTACION-PASO-A-PASO.md`
-5. **LEER CUARTO:** `GUIA-ANALISIS-ESTRUCTURA-SPACING.md` - ⚠️ OBLIGATORIO para spacing
-6. **LEER QUINTO:** `GUIA-ANALISIS-ICONOS-DETALLADO.md` - ⚠️ OBLIGATORIO para iconos
-7. **LEER SEXTO:** `GUIA-CONTENTMANAGER-UPDATECONTENT.md` - ⚠️ OBLIGATORIO si agregas elementos a `.content-area`
+3. **LEER SEGUNDO:** `docs/guias/implementacion/GUIA-CREAR-DESDE-IMAGEN-DESPUES-WIZARD.md`
+4. **LEER TERCERO:** `docs/guias/implementacion/GUIA-PROCESO-IMPLEMENTACION-PASO-A-PASO.md`
+5. **LEER CUARTO:** `docs/guias/analisis/GUIA-ANALISIS-ESTRUCTURA-SPACING.md` - ⚠️ OBLIGATORIO para spacing
+6. **LEER QUINTO:** `docs/guias/analisis/GUIA-ANALISIS-ICONOS-DETALLADO.md` - ⚠️ OBLIGATORIO para iconos
+7. **LEER SEXTO:** `docs/guias/referencia/GUIA-CONTENTMANAGER-UPDATECONTENT.md` - ⚠️ OBLIGATORIO si agregas elementos a `.content-area`
 8. **IDENTIFICAR template existente** (buscar en `prototypes/`)
 9. **ANALIZAR la imagen detalladamente:**
    - ⚠️ **Medir visualmente cada spacing (NO asumir basándose en ejemplos)**

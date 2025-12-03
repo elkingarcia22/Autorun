@@ -1,34 +1,40 @@
-# 🚀 Instrucciones de Inicialización - Autorun
+# 🚀 Inicio Rápido - Autorun
 
-Este documento contiene las instrucciones para inicializar un proyecto Autorun desde cero usando Cursor.
+> ⚡ **Empieza aquí** - Guía de 5 minutos para comenzar con Autorun
 
-## 📋 Paso 1: Clonar e Instalar Dependencias
+---
+
+## 📋 Paso 1: Clonar e Instalar
 
 ```bash
 # Clonar el repositorio
 git clone https://github.com/elkingarcia22/Autorun.git
 cd Autorun
 
-# Instalar dependencias
+# Instalar dependencias (verificación automática incluida)
 npm install
 ```
 
-**Verificación:** Si ves `✅ ¡Todo está listo! Puedes ejecutar: npm run init`, todo está correcto.
+**✅ Verificación automática:** Después de `npm install`, se ejecuta automáticamente una verificación que comprueba:
+- Estructura del proyecto
+- Scripts configurados
+- Dependencias necesarias
+- Archivos del wizard
+
+Si todo está correcto, verás: `✅ ¡Todo está listo! Puedes ejecutar: npm run init`
 
 ---
 
-## 📋 Paso 2: Configurar Scripts en la Raíz del Proyecto
-
-**⚠️ IMPORTANTE: Ejecuta este comando en la TERMINAL, NO en el chat de Cursor.**
+## 📋 Paso 2: Configurar Scripts (Opcional pero Recomendado)
 
 ```bash
 # Desde dentro del directorio Autorun
 npm run setup-project
 ```
 
-Este comando creará un `package.json` en la raíz del proyecto (un nivel arriba de Autorun) con los scripts necesarios para ejecutar el wizard desde cualquier directorio del proyecto.
+Esto creará un `package.json` en la raíz del proyecto (un nivel arriba de Autorun) con los scripts necesarios para ejecutar el wizard desde cualquier directorio del proyecto.
 
-**Ejemplo de estructura:**
+**Estructura resultante:**
 ```
 MiProyecto/
 ├── Autorun/          ← Aquí ejecutas: npm run setup-project
@@ -38,18 +44,18 @@ MiProyecto/
 
 ---
 
-## 🎯 Paso 3: Inicializar el Wizard
+## 📋 Paso 3: Inicializar el Wizard
 
-**⚠️ IMPORTANTE: Ejecuta este comando en la TERMINAL, NO en el chat de Cursor.**
-
-Una vez configurado, ejecuta el wizard interactivo desde la raíz del proyecto:
+### Opción 1: Desde cualquier directorio (Recomendado) ⭐
 
 ```bash
-# Desde la raíz del proyecto (un nivel arriba de Autorun)
+# Desde MiProyecto/ o cualquier subdirectorio
 npm run wizard
 ```
 
-O desde dentro de Autorun:
+El script buscará automáticamente el directorio `Autorun` y ejecutará el wizard.
+
+### Opción 2: Desde dentro de Autorun (Tradicional)
 
 ```bash
 # Desde dentro del directorio Autorun
@@ -62,7 +68,9 @@ npm run init
 - El chat de Cursor no puede proporcionar input interactivo correctamente
 - Ejecutar en la terminal garantiza que puedas responder todas las preguntas
 
-**El wizard te preguntará:**
+---
+
+## 🎯 El Wizard Te Preguntará
 
 1. **🎯 Template:** 
    - Administrador (Todos los módulos disponibles)
@@ -126,3 +134,11 @@ Para más información sobre:
 - **Proceso de implementación:** Ver `docs/guias/implementacion/GUIA-PROCESO-IMPLEMENTACION-PASO-A-PASO.md`
 - **Errores comunes:** Ver `docs/guias/referencia/GUIA-ERRORES-COMUNES-UBITS.md`
 - **Wizard automático:** Ver `docs/guias/uso/GUIA-USO-WIZARD-AUTOMATICO.md`
+- **Solución de problemas:** Ver `QUICK-START.md`
+
+---
+
+## ❓ ¿Problemas?
+
+Consulta **[QUICK-START.md](./QUICK-START.md)** para soluciones rápidas a problemas comunes.
+

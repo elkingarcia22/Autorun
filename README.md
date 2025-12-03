@@ -163,14 +163,26 @@ npm run test:watch # Tests en modo watch
 1. **[`.cursorrules`](./.cursorrules)** - ⚠️ **OBLIGATORIO** - Reglas críticas que Cursor debe seguir
 2. **[`GUIA-TRABAJO-TEMPLATE.md`](./GUIA-TRABAJO-TEMPLATE.md)** - ⚠️ **OBLIGATORIO** - Guía completa para trabajar con templates UBITS
 3. **[`ESTRATEGIA-COMPONENTES-UBITS.md`](./ESTRATEGIA-COMPONENTES-UBITS.md)** - Estrategia de uso de componentes
-4. **[`GUIA-USO-COMPONENTES-UBITS.md`](./GUIA-USO-COMPONENTES-UBITS.md)** - Cómo usar componentes UBITS
+4. **[`docs/guias/referencia/GUIA-USO-COMPONENTES-UBITS.md`](./docs/guias/referencia/GUIA-USO-COMPONENTES-UBITS.md)** - Cómo usar componentes UBITS
 
 ### Guías Principales
 
+- **[GETTING-STARTED.md](./GETTING-STARTED.md)** - ⭐ Inicio rápido (5 minutos)
 - **[QUICK-START.md](./QUICK-START.md)** - Solución rápida de problemas
 - **[INDEX.md](./INDEX.md)** - Instrucciones de inicialización
 - **[docs/GUIA-SETUP-UBITS.md](./docs/GUIA-SETUP-UBITS.md)** - Setup completo para UBITS
 - **[packages/proyecto-app/tokens/index.html](./packages/proyecto-app/tokens/index.html)** - Hub de documentación interactiva
+
+### Guías Organizadas por Categoría
+
+- **Análisis:** `docs/guias/analisis/` - Guías de análisis de estructura, iconos, spacing
+- **Implementación:** `docs/guias/implementacion/` - Guías de implementación paso a paso
+- **Referencia:** `docs/guias/referencia/` - Referencias rápidas de componentes y errores comunes
+- **Troubleshooting:** `docs/guias/troubleshooting/` - Solución de problemas del wizard y validación
+- **Uso:** `docs/guias/uso/` - Guías de uso del wizard y templates
+- **Configuración:** `docs/guias/configuracion/` - Configuración de Vercel, Storybook, MCP
+- **Integración:** `docs/guias/integracion/` - Guías de integración con servicios externos
+- **Recuperación:** `docs/guias/recuperacion/` - Guías de recuperación de contenido
 
 ### Documentación de Add-ons
 

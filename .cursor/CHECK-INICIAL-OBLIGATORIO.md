@@ -24,11 +24,11 @@
 2. **LEER PRIMERO:** `AUTO-DETECT-IMAGES.md` usando `read_file()`
 3. **LEER SEGUNDO:** `VERIFICACION-IMAGEN.md` usando `read_file()`
 4. **LEER TERCERO:** `BLOQUEO-IMAGEN.md` usando `read_file()`
-5. **LEER CUARTO:** `GUIA-CREAR-DESDE-IMAGEN-DESPUES-WIZARD.md` usando `read_file()`
-6. **LEER QUINTO:** `GUIA-PROCESO-IMPLEMENTACION-PASO-A-PASO.md` usando `read_file()`
-7. **LEER SEXTO:** `GUIA-ANALISIS-ESTRUCTURA-SPACING.md` usando `read_file()`
-8. **LEER SÉPTIMO:** `GUIA-ANALISIS-ICONOS-DETALLADO.md` usando `read_file()`
-9. **LEER OCTAVO:** `GUIA-CONTENTMANAGER-UPDATECONTENT.md` usando `read_file()`
+5. **LEER CUARTO:** `docs/guias/implementacion/GUIA-CREAR-DESDE-IMAGEN-DESPUES-WIZARD.md` usando `read_file()`
+6. **LEER QUINTO:** `docs/guias/implementacion/GUIA-PROCESO-IMPLEMENTACION-PASO-A-PASO.md` usando `read_file()`
+7. **LEER SEXTO:** `docs/guias/analisis/GUIA-ANALISIS-ESTRUCTURA-SPACING.md` usando `read_file()`
+8. **LEER SÉPTIMO:** `docs/guias/analisis/GUIA-ANALISIS-ICONOS-DETALLADO.md` usando `read_file()`
+9. **LEER OCTAVO:** `docs/guias/referencia/GUIA-CONTENTMANAGER-UPDATECONTENT.md` usando `read_file()`
 
 **NO puedes usar:**
 - ❌ `write()` - BLOQUEADO
@@ -97,8 +97,8 @@
 - **Detección:** `AUTO-DETECT-IMAGES.md`
 - **Verificación:** `VERIFICACION-IMAGEN.md`
 - **Bloqueo:** `BLOQUEO-IMAGEN.md`
-- **Guía creación:** `GUIA-CREAR-DESDE-IMAGEN-DESPUES-WIZARD.md`
-- **Proceso:** `GUIA-PROCESO-IMPLEMENTACION-PASO-A-PASO.md`
+- **Guía creación:** `docs/guias/implementacion/GUIA-CREAR-DESDE-IMAGEN-DESPUES-WIZARD.md`
+- **Proceso:** `docs/guias/implementacion/GUIA-PROCESO-IMPLEMENTACION-PASO-A-PASO.md`
 - **Reglas completas:** `.cursorrules`
 
 ---

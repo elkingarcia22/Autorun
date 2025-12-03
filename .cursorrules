@@ -21,7 +21,7 @@
 
 **ANTES de hacer CUALQUIER cosa, DEBES verificar si hay triggers de imagen:**
 
-### 🔍 TRIGGERS DE DETECCIÓN (LEER AUTO-DETECT-IMAGES.md):
+### 🔍 TRIGGERS DE DETECCIÓN
 
 1. **Detección de Imagen:**
    - ✅ `<image_description>` en el mensaje
@@ -51,21 +51,22 @@
 **DEBES DETENER TODO INMEDIATAMENTE Y SEGUIR ESTE PROCESO EXACTO:**
 
 1. **🛑 DETENER** - NO usar ninguna herramienta de escritura/edición
-2. **📖 LEER PRIMERO:** `AUTO-DETECT-IMAGES.md` usando `read_file()` - ⚠️ OBLIGATORIO
-3. **📖 LEER SEGUNDO:** `VERIFICACION-IMAGEN.md` usando `read_file()` - ⚠️ OBLIGATORIO
-4. **📖 LEER TERCERO:** `BLOQUEO-IMAGEN.md` usando `read_file()`
-5. **📖 LEER CUARTO:** `GUIA-CREAR-DESDE-IMAGEN-DESPUES-WIZARD.md` usando `read_file()`
-6. **📖 LEER QUINTO:** `GUIA-PROCESO-IMPLEMENTACION-PASO-A-PASO.md` usando `read_file()`
-7. **📖 LEER SEXTO:** `GUIA-ANALISIS-ESTRUCTURA-SPACING.md` usando `read_file()` - ⚠️ OBLIGATORIO para spacing
-8. **📖 LEER SÉPTIMO:** `GUIA-ANALISIS-ICONOS-DETALLADO.md` usando `read_file()` - ⚠️ OBLIGATORIO para iconos
-9. **📖 LEER OCTAVO:** `GUIA-CONTENTMANAGER-UPDATECONTENT.md` usando `read_file()` - ⚠️ OBLIGATORIO si agregas elementos a `.content-area`
-7. **🔍 IDENTIFICAR** template existente usando `list_dir()` (NO `read_file()` todavía)
-8. **📋 ANALIZAR** la imagen detalladamente
-9. **📝 MOSTRAR** el análisis completo al usuario en el formato obligatorio
-10. **⏸️ ESPERAR** aprobación explícita del usuario
-11. **✅ SOLO DESPUÉS** de aprobación, implementar UNA tarea a la vez
+2. **📖 LEER:** `.cursor/DETECCION-IMAGEN.md` usando `read_file()` - ⚠️ OBLIGATORIO
+3. **📖 LEER:** `AUTO-DETECT-IMAGES.md` usando `read_file()` - ⚠️ OBLIGATORIO
+4. **📖 LEER:** `VERIFICACION-IMAGEN.md` usando `read_file()` - ⚠️ OBLIGATORIO
+5. **📖 LEER:** `BLOQUEO-IMAGEN.md` usando `read_file()`
+6. **📖 LEER:** `docs/guias/implementacion/GUIA-CREAR-DESDE-IMAGEN-DESPUES-WIZARD.md` usando `read_file()` - ⚠️ OBLIGATORIO
+7. **📖 LEER:** `docs/guias/implementacion/GUIA-PROCESO-IMPLEMENTACION-PASO-A-PASO.md` usando `read_file()` - ⚠️ OBLIGATORIO
+8. **📖 LEER:** `docs/guias/analisis/GUIA-ANALISIS-ESTRUCTURA-SPACING.md` usando `read_file()` - ⚠️ OBLIGATORIO para spacing
+9. **📖 LEER:** `docs/guias/analisis/GUIA-ANALISIS-ICONOS-DETALLADO.md` usando `read_file()` - ⚠️ OBLIGATORIO para iconos
+10. **📖 LEER:** `docs/guias/referencia/GUIA-CONTENTMANAGER-UPDATECONTENT.md` usando `read_file()` - ⚠️ OBLIGATORIO si agregas elementos a `.content-area`
+11. **🔍 IDENTIFICAR** template existente usando `list_dir()` (NO `read_file()` todavía)
+12. **📋 ANALIZAR** la imagen detalladamente
+13. **📝 MOSTRAR** el análisis completo al usuario en el formato obligatorio
+14. **⏸️ ESPERAR** aprobación explícita del usuario
+15. **✅ SOLO DESPUÉS** de aprobación, implementar UNA tarea a la vez
 
-### 🚫 HERRAMIENTAS PROHIBIDAS ANTES DEL ANÁLISIS:
+### 🚫 HERRAMIENTAS PROHIBIDAS ANTES DEL ANÁLISIS
 
 **❌ PROHIBIDO ABSOLUTO:**
 - `write()` - BLOQUEADO
@@ -79,253 +80,42 @@
 - `grep()` para buscar en guías
 - Mostrar análisis al usuario
 
-### ⚠️ VERIFICACIÓN OBLIGATORIA:
-
-**ANTES de usar CUALQUIER herramienta de escritura/edición, PREGÚNTATE:**
-- ¿He leído `BLOQUEO-IMAGEN.md`? → Si NO, LEERLO PRIMERO
-- ¿He mostrado el análisis completo al usuario? → Si NO, MOSTRARLO PRIMERO
-- ¿El usuario ha aprobado explícitamente? → Si NO, ESPERAR APROBACIÓN
-
-**SI LA RESPUESTA ES "NO" A CUALQUIERA → DETENER Y COMPLETAR EL PASO FALTANTE**
-
 ---
 
-## 🚨🚨🚨 VERIFICACIÓN OBLIGATORIA ANTES DE CUALQUIER ACCIÓN 🚨🚨🚨
+## 📚 REGLAS ORGANIZADAS POR MÓDULOS
 
-**⚠️⚠️⚠️ AL INICIO DE CADA MENSAJE, VERIFICAR TRIGGERS DE IMAGEN:**
+### 🚨 Detección de Imágenes
+**Ver:** `.cursor/DETECCION-IMAGEN.md` - Detección automática y proceso de bloqueo
 
-**PASO 0: DETECCIÓN AUTOMÁTICA (OBLIGATORIO AL INICIO)**
+### 🎯 Reglas de Componentes UBITS
+**Ver:** `.cursor/REGLAS-COMPONENTES.md` - Reglas para usar componentes UBITS correctamente
 
-**ANTES de hacer CUALQUIER cosa, verificar si hay triggers:**
-1. ¿Hay `<image_description>`, `<image>`, o `[imagen]` en el mensaje?
-2. ¿Hay palabras clave: "imagen", "crear desde", "home de", "crear home", etc.?
-3. ¿Es una solicitud de creación/modificación?
+### 🛠️ Reglas de Implementación
+**Ver:** `.cursor/REGLAS-IMPLEMENTACION.md` - Proceso de implementación paso a paso
 
-**SI HAY CUALQUIER TRIGGER:**
-
-**ANTES de hacer CUALQUIER cosa (buscar archivos, leer código, escribir código, etc.), DEBES:**
-
-1. **DETENER TODO INMEDIATAMENTE**
-2. **LEER PRIMERO:** `BLOQUEO-IMAGEN.md` (archivo de bloqueo absoluto)
-3. **LEER SEGUNDO:** `GUIA-CREAR-DESDE-IMAGEN-DESPUES-WIZARD.md`
-4. **LEER TERCERO:** `GUIA-PROCESO-IMPLEMENTACION-PASO-A-PASO.md`
-5. **NO escribir código JavaScript**
-6. **NO modificar archivos HTML**
-7. **NO buscar templates**
-8. **NO implementar componentes**
-9. **NO crear archivos nuevos**
-10. **NO reemplazar contenido**
-
-**⚠️⚠️⚠️ PROHIBIDO USAR HERRAMIENTAS DE ESCRITURA/EDICIÓN ANTES DE MOSTRAR EL ANÁLISIS ⚠️⚠️⚠️**
-
-**NO puedes usar:**
-- ❌ `write()` - PROHIBIDO antes de análisis
-- ❌ `search_replace()` - PROHIBIDO antes de análisis
-- ❌ `read_file()` para templates - PROHIBIDO antes de análisis (solo leer guías)
-- ❌ Cualquier herramienta que modifique archivos - PROHIBIDO antes de análisis
-
-**SOLO puedes usar:**
-- ✅ `read_file()` para leer `BLOQUEO-IMAGEN.md` y guías
-- ✅ `list_dir()` para identificar templates existentes
-- ✅ `grep()` para buscar referencias en guías
-- ✅ Mostrar el análisis completo al usuario
-
-**SOLO después de completar el análisis completo (ver abajo), puedes implementar.**
+### 🚨 Errores Comunes
+**Ver:** `.cursor/ERRORES-COMUNES.md` - Lista completa de errores a evitar
 
 ---
-
-## 🚨 INSTRUCCIÓN CRÍTICA PARA IMÁGENES 🚨
-
-**⚠️ BLOQUEO ABSOLUTO: SI EL USUARIO ENVÍA UNA IMAGEN O PIDE CREAR DESDE IMAGEN:**
-
-### **🚫 PROHIBIDO IMPLEMENTAR SIN ANÁLISIS**
-
-**❌ NUNCA hacer esto:**
-- ❌ NO escribir código JavaScript
-- ❌ NO modificar archivos HTML
-- ❌ NO buscar templates
-- ❌ NO implementar componentes
-- ❌ NO crear archivos nuevos
-- ❌ NO reemplazar contenido
-
-**✅ SIEMPRE hacer esto PRIMERO:**
-
-### **PASO 0: DETENER TODO Y LEER GUÍAS** ⚠️ OBLIGATORIO
-
-1. **DETENER TODO** - NO escribir código todavía
-2. **LEER PRIMERO:** `GUIA-CREAR-DESDE-IMAGEN-DESPUES-WIZARD.md`
-3. **LEER TAMBIÉN:** `GUIA-PROCESO-IMPLEMENTACION-PASO-A-PASO.md`
-
-### **PASO 1: IDENTIFICAR TEMPLATE EXISTENTE** ⚠️ OBLIGATORIO
-
-**ANTES de hacer CUALQUIER cosa:**
-```bash
-# Ejecutar esto PRIMERO para encontrar el template
-ls prototypes/canvas-*-encuestas-*.html 2>/dev/null || ls prototypes/canvas-*-*.html
-```
-- Si el usuario dice "home de encuestas" → buscar `canvas-*-encuestas-*.html`
-- Si el usuario dice "administrador" → buscar `canvas-administrador-*.html`
-- Si el usuario dice "colaborador" → buscar `canvas-colaborador-*.html`
-- **LEER el template encontrado** para ver su estructura actual
-- **NO crear HTML nuevo**
-- **MODIFICAR template existente**
-
-### **PASO 2: ANALIZAR LA IMAGEN DETALLADAMENTE** ⚠️ OBLIGATORIO
-
-**⚠️ CRÍTICO: Mostrar análisis completo al usuario ANTES de implementar**
-
-**Formato obligatorio para mostrar el análisis:**
-
-```markdown
-## 📋 Análisis Detallado de la Imagen
-
-### 🔍 Componentes UBITS Identificados:
-1. [Componente 1] - [Tipo] - [Ubicación]
-2. [Componente 2] - [Tipo] - [Ubicación]
-...
-
-### 📋 HeaderSection (Verificación Obligatoria):
-- **¿Hay HeaderSection visible en la imagen?** [SÍ / NO]
-- **Si NO hay HeaderSection:**
-  - ✅ DEBE eliminarse del template (viene por defecto)
-  - Interceptar ContentManager para NO crear HeaderSection
-  - Verificar módulo/sección antes de eliminar: `if (section !== 'encuestas') return`
-- **Si SÍ hay HeaderSection:**
-  - ✅ MANTENER HeaderSection
-  - Título: [título si está visible]
-  - Botón primario: [texto del botón si está visible]
-- **Módulo afectado:** [encuestas / inicio / empresa / etc.]
-...
-
-### 🎨 Iconos Identificados (con variaciones):
-1. [Icono 1]: 
-   - Variaciones posibles: `icono-simple`, `icono`, `icono-regular`
-   - Icono seleccionado: `icono-simple` (razón: [explicación visual])
-2. [Icono 2]: ...
-...
-
-### 📐 Estructura Visual:
-1. [Elemento 1] (sin contenedor / con contenedor: `#id`)
-2. [Elemento 2] (sin contenedor / con contenedor: `#id`)
-...
-
-### 📏 Spacing Identificado:
-- Entre [Elemento A] y [Elemento B]: `--ubits-spacing-lg` (16px)
-- Entre [Elemento B] y [Elemento C]: `--ubits-spacing-md` (12px)
-...
-
-### ⚙️ Funcionalidades Identificadas:
-1. [Funcionalidad 1]: [Descripción]
-2. [Funcionalidad 2]: [Descripción]
-...
-
-### 📋 Plan de Implementación:
-1. **Tarea 1:** [Descripción] (solo esto, nada más)
-2. **Tarea 2:** [Descripción] (solo después de aprobación de Tarea 1)
-3. **Tarea 3:** [Descripción] (solo después de aprobación de Tarea 2)
-...
-
-### ❓ ¿Aprobamos este plan antes de implementar?
-```
-
-**⚠️ CRÍTICO:** 
-- **NO implementar** hasta que el usuario apruebe explícitamente
-- **MOSTRAR** el análisis completo en el formato de arriba
-- **ESPERAR** respuesta del usuario antes de continuar
-
-### **PASO 3: IMPLEMENTAR SOLO DESPUÉS DE APROBACIÓN** ⚠️ OBLIGATORIO
-
-**Solo después de que el usuario apruebe explícitamente:**
-
-1. **Implementar SOLO la Tarea 1** (nada más)
-2. **Mostrar resultado** al usuario
-3. **Pedir aprobación explícita** para continuar
-4. **Solo después de aprobación**, continuar con Tarea 2
-5. **Repetir** para cada tarea
-
-**NUNCA implementar directamente sin:**
-- ❌ Identificar template existente primero
-- ❌ Analizar la imagen detalladamente
-- ❌ Mostrar análisis completo al usuario
-- ❌ Crear plan y mostrar al usuario
-- ❌ Esperar aprobación explícita
-
-## ⚠️ REGLAS CRÍTICAS - LEER ANTES DE TRABAJAR
-
-### 1. **USAR SOLO COMPONENTES UBITS EXISTENTES**
-- ❌ NO crear nuevos componentes
-- ❌ NO duplicar componentes
-- ✅ Usar componentes que ya existen: `window.createSidebar()`, `window.createSubNav()`, `window.createTabBar()`, `window.createTabs()`, `window.createDataTable()`, etc.
-- ✅ Los componentes están en: `vendor/ubits/packages/components/` (portable) o `Desktop/UBITS/packages/components/` (legacy)
-
-### 1.1. **ANÁLISIS Y FORMATO CORRECTO DE ICONOS** ⚠️ CRÍTICO
-- **ANÁLISIS DE ICONOS DESDE IMÁGENES:**
-  - ❌ **NUNCA asumir el primer resultado** de FontAwesome
-  - ✅ **SIEMPRE verificar variaciones:** `chart-pie`, `chart-pie-simple`, `pie-chart`
-  - ✅ **SIEMPRE verificar si es "simple":** Si la imagen muestra un icono minimalista, usar `-simple`
-  - ✅ **SIEMPRE comparar visualmente** con la descripción de la imagen
-  - ✅ **SIEMPRE documentar** el icono completo con nombre y estilo
-  - **Consultar:** `GUIA-ANALISIS-ICONOS-DETALLADO.md` para el proceso completo
-- **FORMATO CORRECTO EN `window.createTabs()`:**
-  - ❌ **NUNCA usar:** `icon: 'far fa-home'` o `icon: 'fas fa-user'` o `icon: 'fa-chart-pie-simple'`
-  - ❌ **NUNCA omitir sufijos:** Si es `chart-pie-simple`, usar `chart-pie-simple` (no `chart-pie`)
-  - ✅ **SIEMPRE usar:** `icon: 'home'` o `icon: 'chart-pie-simple'` (solo el nombre, sin prefijos `fa-`)
-  - El componente automáticamente agrega `fa-` y el estilo (`far` para inactivo, `fas` para activo)
-  - Ejemplo correcto:
-    ```javascript
-    window.createTabs({
-      tabs: [
-        { id: 'tab1', label: 'Tab 1', icon: 'list-ul' },  // ✅ CORRECTO
-        { id: 'tab2', label: 'Tab 2', icon: 'chart-pie-simple' }   // ✅ CORRECTO (con -simple)
-      ]
-    }, 'container-id')
-    ```
-
-### 2. **USAR TOKENS UBITS CORRECTAMENTE**
-- ✅ Light mode: `--ubits-accent-brand-static` (siempre azul #0c5bef)
-- ✅ Dark mode: `--modifiers-normal-color-dark-accent-blue` (#8c91fa)
-- ✅ Los modifiers tienen versión light y dark
-- ✅ Static = mismo color en light y dark
-- ✅ Normal = diferente color en light y dark
-- ✅ NO sobrescribir tokens con `!important` - dejar que el componente use sus propios tokens
-
-### 3. **RUTAS RELATIVAS (PREFERIDO) O ABSOLUTAS file:// (LEGACY)**
-- ✅ **PREFERIDO:** Usar rutas relativas desde `prototypes/` hacia `vendor/ubits/packages/`
-- ✅ Ejemplo relativo: `../vendor/ubits/packages/tokens/dist/tokens.css`
-- ✅ **LEGACY:** Si no existe `vendor/ubits/`, usar rutas absolutas `file://` hacia `Desktop/UBITS/`
-- ✅ El template carga automáticamente `tokens.css` y `figma-tokens.css`
-- ✅ El template carga automáticamente `data-table.umd.js` para el componente DataTable
-
-### 4. **UBITS EN VENDOR (PORTABLE)**
-- ✅ UBITS está copiado en `vendor/ubits/packages/` para portabilidad
-- ✅ Los templates usan rutas relativas desde `prototypes/` hacia `vendor/ubits/packages/`
-- ✅ Funciona en cualquier computador sin rutas absolutas
-- ✅ Los templates están en `prototypes/canvas-*.html`
-- ⚠️ **LEGACY:** Si no existe `vendor/ubits/`, se usa `Desktop/UBITS/` con rutas absolutas
-
-### 5. **ESTRUCTURA DE TOKENS**
-- Los tokens de modifiers tienen estructura: `--modifiers-[tipo]-color-[theme]-[categoria]-[color]`
-- Ejemplo: `--modifiers-normal-color-dark-accent-blue`
-- `normal` = cambia entre light/dark
-- `static` = mismo color en light/dark
-- `light`/`dark` = tema específico
-- `accent-blue` = categoría y color
 
 ## 📚 ARCHIVOS DE REFERENCIA OBLIGATORIOS
 
 Antes de trabajar en un template, LEER:
+
 1. `ESTRATEGIA-COMPONENTES-UBITS.md` - Estrategia completa
-2. `GUIA-USO-COMPONENTES-UBITS.md` - Cómo usar componentes
-3. `GUIA-IDENTIFICACION-COMPONENTES.md` - Cómo identificar componentes desde imágenes
+2. `docs/guias/referencia/GUIA-USO-COMPONENTES-UBITS.md` - Cómo usar componentes
+3. `docs/guias/referencia/GUIA-IDENTIFICACION-COMPONENTES.md` - Cómo identificar componentes desde imágenes
 4. `CATALOGO-COMPONENTES-UBITS.md` - Catálogo completo de componentes UBITS
-5. `GUIA-ERRORES-COMUNES-UBITS.md` - ⚠️ **OBLIGATORIO:** Errores comunes a evitar
-6. `GUIA-REVISION-COMPONENTES-UBITS.md` - ⚠️ **OBLIGATORIO:** Cómo revisar componentes antes de implementar
-7. `GUIA-ANALISIS-ESTRUCTURA-SPACING.md` - ⚠️ **OBLIGATORIO:** Análisis de estructura (contenedores) y spacing
-8. `GUIA-ANALISIS-ICONOS-DETALLADO.md` - ⚠️ **OBLIGATORIO:** Análisis detallado de iconos FontAwesome (variaciones, simple, etc.)
-9. `GUIA-PROCESO-IMPLEMENTACION-PASO-A-PASO.md` - ⚠️ **OBLIGATORIO:** Proceso de implementación paso a paso
-10. `GUIA-IMPLEMENTACION-DATATABLE-PASO-A-PASO.md` - ⚠️ **OBLIGATORIO:** Implementación de DataTable funcionalidad por funcionalidad
-11. `GUIA-CREAR-DESDE-IMAGEN-DESPUES-WIZARD.md` - ⚠️ **OBLIGATORIO:** Crear desde imagen DESPUÉS del wizard (modificar template existente)
+5. `docs/guias/referencia/GUIA-ERRORES-COMUNES-UBITS.md` - ⚠️ **OBLIGATORIO:** Errores comunes a evitar
+6. `docs/guias/referencia/GUIA-REVISION-COMPONENTES-UBITS.md` - ⚠️ **OBLIGATORIO:** Cómo revisar componentes antes de implementar
+7. `docs/guias/analisis/GUIA-ANALISIS-ESTRUCTURA-SPACING.md` - ⚠️ **OBLIGATORIO:** Análisis de estructura (contenedores) y spacing
+8. `docs/guias/analisis/GUIA-ANALISIS-ICONOS-DETALLADO.md` - ⚠️ **OBLIGATORIO:** Análisis detallado de iconos FontAwesome (variaciones, simple, etc.)
+9. `docs/guias/implementacion/GUIA-PROCESO-IMPLEMENTACION-PASO-A-PASO.md` - ⚠️ **OBLIGATORIO:** Proceso de implementación paso a paso
+10. `docs/guias/implementacion/GUIA-IMPLEMENTACION-DATATABLE-PASO-A-PASO.md` - ⚠️ **OBLIGATORIO:** Implementación de DataTable funcionalidad por funcionalidad
+11. `docs/guias/implementacion/GUIA-CREAR-DESDE-IMAGEN-DESPUES-WIZARD.md` - ⚠️ **OBLIGATORIO:** Crear desde imagen DESPUÉS del wizard (modificar template existente)
 12. `INDEX.md` - Flujo de inicialización
+
+---
 
 ## 🔍 VERIFICACIÓN ANTES DE TRABAJAR
 
@@ -339,276 +129,45 @@ Antes de trabajar en un template, LEER:
    - `window.createDataTable` ⭐ (nuevo, desde UMD)
 4. Verificar que los tokens están disponibles en la consola del navegador
 
-## 🔍 IDENTIFICACIÓN DE COMPONENTES DESDE IMÁGENES
+---
 
-**⚠️ REGLA CRÍTICA:** Cuando recibas una imagen o solicitud de componente:
+## 📋 RESUMEN RÁPIDO DE REGLAS CRÍTICAS
 
-1. **SIEMPRE consultar primero:**
-   - Abrir `CATALOGO-COMPONENTES-UBITS.md`
-   - Buscar componente similar en el catálogo
-   - Verificar componentes disponibles: `window.UBITS`, `window.createSidebar`, etc.
+### Componentes UBITS
+- ✅ Usar solo componentes existentes
+- ✅ Consultar `CATALOGO-COMPONENTES-UBITS.md` antes de crear
+- ✅ Usar formato correcto de iconos (sin prefijos `fa-`, con sufijos si aplica)
+- ✅ Usar tokens UBITS correctos (no sobrescribir con `!important`)
 
-2. **SIEMPRE preguntar si no estás seguro:**
-   - "¿Este componente que muestras es un componente UBITS existente?"
-   - "¿O quieres que lo cree usando los tokens de UBITS?"
-   - **NUNCA asumas** - es mejor preguntar que crear algo incorrecto
+### Implementación
+- ✅ NUNCA implementar todo de golpe
+- ✅ SIEMPRE dividir en tareas pequeñas
+- ✅ SIEMPRE pedir aprobación antes de continuar
+- ✅ SIEMPRE ejecutar `npm run lint` después de implementar
+- ✅ Verificar módulo actual antes de inicializar componentes
+- ✅ Interceptar ContentManager si agregas elementos a `.content-area`
 
-3. **SIEMPRE usar componentes existentes:**
-   - Si identificas un componente UBITS, úsalo
-   - NO crees duplicados
-   - NO crees nuevos componentes sin preguntar primero
+### Análisis
+- ✅ Analizar estructura visual antes de implementar
+- ✅ Medir spacing visualmente (NO asumir)
+- ✅ Verificar iconos con variaciones (usar `-simple` si aplica)
+- ✅ Documentar todo antes de implementar
 
-4. **Proceso obligatorio:**
-   - Analizar imagen/solicitud
-   - Consultar catálogo
-   - Verificar componentes disponibles
-   - **Preguntar al usuario si no estás seguro**
-   - Usar componente existente o crear con tokens UBITS
+**Para detalles completos, ver los módulos en `.cursor/`**
 
-**Ver guía completa:** `GUIA-IDENTIFICACION-COMPONENTES.md`
+---
 
-## 🖼️ CREAR DESDE IMAGEN DESPUÉS DEL WIZARD
+## 🔗 Referencias Rápidas
 
-**⚠️ REGLA CRÍTICA ABSOLUTA:** Cuando el usuario pide crear/modificar algo desde una imagen **DESPUÉS** de ejecutar el wizard:
+- **Detección de imágenes:** `.cursor/DETECCION-IMAGEN.md`
+- **Reglas de componentes:** `.cursor/REGLAS-COMPONENTES.md`
+- **Reglas de implementación:** `.cursor/REGLAS-IMPLEMENTACION.md`
+- **Errores comunes:** `.cursor/ERRORES-COMUNES.md`
+- **Verificación inicial:** `.cursor/CHECK-INICIAL-OBLIGATORIO.md`
+- **Detección automática:** `AUTO-DETECT-IMAGES.md`
+- **Verificación de imagen:** `VERIFICACION-IMAGEN.md`
+- **Bloqueo de imagen:** `BLOQUEO-IMAGEN.md`
 
-### **PASO 0: IDENTIFICAR TEMPLATE EXISTENTE** ⚠️ OBLIGATORIO PRIMERO
+---
 
-**ANTES de hacer CUALQUIER cosa:**
-1. **Buscar templates existentes:**
-   ```bash
-   ls prototypes/*.html
-   ```
-2. **Identificar template correcto:**
-   - "home de encuestas" → `canvas-*-encuestas-*.html`
-   - "administrador" → `canvas-administrador-*.html`
-   - "colaborador" → `canvas-colaborador-*.html`
-3. **MODIFICAR ese template** (NO crear uno nuevo)
-
-### **PASO 1: ANALIZAR IMAGEN** ⚠️ OBLIGATORIO ANTES DE CÓDIGO
-
-**NO escribir código todavía. Primero analizar:**
-
-1. **Identificar componentes UBITS en la imagen:**
-   - ¿Sidebar? ¿SubNav? ¿Tabs? ¿DataTable? ¿Buttons?
-   - Consultar `CATALOGO-COMPONENTES-UBITS.md`
-2. **Analizar estructura:**
-   - ¿Qué va primero? ¿Qué va después?
-   - ¿Qué elementos van en contenedores?
-3. **Analizar spacing:**
-   - Medir visualmente espacios entre elementos
-   - Mapear a tokens UBITS específicos
-4. **Crear plan de implementación:**
-   - Listar componentes identificados
-   - Describir estructura
-   - Dividir en tareas pequeñas
-5. **MOSTRAR PLAN AL USUARIO Y ESPERAR APROBACIÓN**
-
-### **PASO 2: IMPLEMENTAR PASO A PASO** ⚠️ SOLO DESPUÉS DE APROBACIÓN
-
-**Para cada tarea:**
-1. Implementar SOLO esa tarea
-2. Validar (`npm run lint`)
-3. Mostrar resultado
-4. Pedir aprobación explícita
-5. Solo después de aprobación, continuar
-
-**❌ NUNCA:**
-- Crear `home-encuestas.html` nuevo
-- Implementar todo de golpe
-- Escribir código sin analizar imagen primero
-
-**✅ SIEMPRE:**
-- Modificar `prototypes/canvas-*-encuestas-*.html` existente
-- Analizar imagen antes de código
-- Mostrar plan y esperar aprobación
-- Implementar una tarea a la vez
-
-**Ver guía completa:** `GUIA-CREAR-DESDE-IMAGEN-DESPUES-WIZARD.md`
-
-## 🔄 PROCESO DE IMPLEMENTACIÓN PASO A PASO (OBLIGATORIO)
-
-**⚠️ REGLA CRÍTICA:** **NUNCA implementar todo de golpe. SIEMPRE dividir en tareas pequeñas y pedir aprobación.**
-
-### **FASE 1: ANÁLISIS Y PLANIFICACIÓN** (OBLIGATORIO)
-
-1. **Analizar la imagen/solicitud:**
-   - Identificar componentes UBITS
-   - Identificar estructura visual
-   - Identificar funcionalidades
-   - Identificar tokens y estilos
-
-2. **Crear plan de implementación:**
-   - Listar componentes identificados
-   - Describir estructura
-   - Listar tokens a usar
-   - **Dividir en tareas pequeñas** (ej: Tarea 1: Tabs, Tarea 2: Barra acciones, Tarea 3: DataTable básico, Tarea 4: DataTable completo)
-
-3. **Mostrar plan al usuario:**
-   - Presentar análisis completo
-   - Mostrar plan de tareas
-   - **Esperar aprobación explícita antes de implementar**
-
-### **FASE 2: IMPLEMENTACIÓN PASO A PASO** (OBLIGATORIO)
-
-**⚠️ ANTES de implementar cualquier componente:**
-
-1. **🚨 CRÍTICO: Verificar comportamiento del ContentManager (OBLIGATORIO si agregas elementos a `.content-area`):**
-   - **SI vas a agregar elementos dentro de `.content-area`**, DEBES:
-     - [ ] Leer: `GUIA-CONTENTMANAGER-UPDATECONTENT.md` (OBLIGATORIO)
-     - [ ] Investigar código fuente: `grep -r "updateContent\|contentArea.innerHTML" vendor/ubits/packages/templates/engine/`
-     - [ ] Verificar si `ContentManager.updateContent` limpia el contenido: `contentArea.innerHTML = ''`
-     - [ ] **SI limpia el contenido:** Interceptar `updateContent` ANTES de agregar elementos al DOM
-     - [ ] Verificar logs del navegador: `console.log(document.querySelector('.content-area')?.innerHTML)`
-     - [ ] **NO asumir** que los elementos en HTML estático estarán siempre disponibles
-   - **Ver guía completa:** `GUIA-CONTENTMANAGER-UPDATECONTENT.md`
-
-2. **Revisar variantes, controladores y funcionalidades:**
-   - Consultar archivo de tipos: `vendor/ubits/packages/components/[nombre]/src/types/[Nombre]Options.ts`
-   - Identificar todas las variantes disponibles
-   - Identificar todos los controladores (opciones booleanas que prende/apaga funcionalidades)
-   - Listar todas las funcionalidades disponibles
-   - Dividir funcionalidades en tareas independientes
-   - Mostrar plan al usuario y esperar aprobación
-
-**Para cada tarea:**
-
-1. **Implementar SOLO esa tarea** (no avanzar a la siguiente)
-2. **Ejecutar validación automática:** `npm run lint`
-3. **Corregir errores automáticamente** si los hay
-4. **Verificar que funciona correctamente**
-5. **Mostrar al usuario lo implementado** (incluyendo resultado de validación)
-6. **Pedir aprobación explícita:** "¿Aprobamos para continuar con la siguiente tarea?"
-7. **Solo después de aprobación, continuar con la siguiente tarea**
-
-### **EJEMPLO DE DIVISIÓN DE TAREAS:**
-
-**Para una interfaz con Tabs + Barra de acciones + DataTable:**
-
-- ✅ **Tarea 1:** Estructura HTML base + Tabs (solo tabs, nada más)
-- ✅ **Tarea 2:** Barra de acciones (solo después de aprobación de Tarea 1)
-- ✅ **Tarea 3:** DataTable básico (solo columnas mínimas, sin funcionalidades avanzadas)
-- ✅ **Tarea 4:** Funcionalidades del DataTable (UNA a la vez, ver guía específica)
-
-**⚠️ CRÍTICO PARA DATATABLE:**
-- ❌ **NUNCA** implementar todas las funcionalidades de DataTable de golpe
-- ✅ **SIEMPRE** implementar UNA funcionalidad a la vez:
-  1. Checkboxes
-  2. Arrastrar y soltar filas
-  3. Arrastrar y soltar columnas
-  4. Ordenamiento
-  5. Fijar columnas
-  6. Selector de columnas
-  7. Barra de acciones (selección única)
-  8. Barra de acciones (selección múltiple)
-  9. Dropdown con filtros
-  10. Buscador con componentes UBITS
-- ✅ **SIEMPRE** analizar columnas primero (cantidad y tipo)
-- ✅ **SIEMPRE** usar componentes UBITS para el buscador (`<ubits-input>` y `<ubits-button>`)
-
-**NUNCA hacer:** Implementar Tarea 1 + 2 + 3 + 4 en un solo paso.
-
-**Ver guía completa:** `GUIA-PROCESO-IMPLEMENTACION-PASO-A-PASO.md`  
-**Ver guía específica de DataTable:** `GUIA-IMPLEMENTACION-DATATABLE-PASO-A-PASO.md` ⭐ **OBLIGATORIO**
-
-## ✅ CHECKLIST PARA CREAR/MODIFICAR PÁGINAS
-
-- [ ] **ANTES DE TODO:** Consultar `CATALOGO-COMPONENTES-UBITS.md` si recibes imagen
-- [ ] **SI NO ESTÁS SEGURO:** Preguntar al usuario si es componente UBITS o crear nuevo
-- [ ] Usar template existente como base (`prototypes/canvas-*.html`)
-- [ ] Verificar componentes disponibles en consola:
-  - `window.createSidebar`, `window.createSubNav`, `window.createTabBar`
-  - `window.createTabs` ⭐ (nuevo)
-  - `window.createDataTable` ⭐ (nuevo)
-- [ ] Usar solo componentes UBITS existentes
-- [ ] Usar tokens UBITS correctos (no sobrescribir)
-- [ ] Rutas relativas desde `prototypes/` hacia `vendor/ubits/packages/` (preferido)
-- [ ] O rutas absolutas `file://` hacia `Desktop/UBITS/` (legacy)
-- [ ] NO modificar archivos de UBITS en `vendor/ubits/` o `Desktop/UBITS/`
-- [ ] NO crear nuevos componentes sin verificar primero
-- [ ] Validar que todo carga correctamente
-
-## 🚨 ERRORES COMUNES A EVITAR
-
-1. ❌ **Crear componentes sin consultar el catálogo primero** - SIEMPRE consulta `CATALOGO-COMPONENTES-UBITS.md`
-2. ❌ **Asumir que un componente no existe** - Pregunta al usuario si no estás seguro
-3. ❌ Crear nuevos componentes en lugar de usar los existentes
-4. ❌ Sobrescribir tokens con `!important` en CSS inyectado
-5. ❌ Usar rutas absolutas cuando existe `vendor/ubits/` (usar relativas)
-6. ❌ Modificar archivos en `vendor/ubits/` o `Desktop/UBITS/`
-7. ❌ Intentar cargar desde Storybook en templates generados
-8. ❌ Usar tokens incorrectos (ej: usar `dark-accent` en lugar de `modifiers-normal-color-dark-accent-blue`)
-9. ❌ **Crear componentes duplicados** - Siempre verifica si existe antes de crear
-10. ❌ **Usar `<ubits-tabs>` o `<ubits-data-table>` como custom elements** - Usar `window.createTabs()` y `window.createDataTable()` en su lugar
-11. ❌ **ANÁLISIS Y FORMATO INCORRECTO DE ICONOS** - ⚠️ CRÍTICO:
-    - ❌ INCORRECTO: Asumir el primer resultado de FontAwesome sin verificar variaciones
-    - ❌ INCORRECTO: Omitir sufijos como `-simple` (ej: usar `chart-pie` cuando es `chart-pie-simple`)
-    - ❌ INCORRECTO: `icon: 'far fa-home'` o `icon: 'fas fa-user'` o `icon: 'fa-chart-pie-simple'`
-    - ✅ CORRECTO: Analizar visualmente, listar variaciones, verificar si es "simple", comparar con imagen
-    - ✅ CORRECTO: `icon: 'home'` o `icon: 'chart-pie-simple'` (solo el nombre, sin prefijos `fa-`, con sufijos si aplica)
-    - El componente automáticamente agrega `fa-` y el estilo (`far`/`fas`) según si el tab está activo
-    - **Ver:** `GUIA-ANALISIS-ICONOS-DETALLADO.md` para el proceso completo de análisis
-    - **Ver:** `GUIA-ERRORES-COMUNES-UBITS.md` para detalles completos
-12. ❌ **IMPLEMENTAR TODAS LAS FUNCIONALIDADES DE DATATABLE DE GOLPE** - ⚠️ CRÍTICO:
-    - ❌ INCORRECTO: Implementar checkboxes + drag & drop + ordenamiento + filtros + buscador en un solo paso
-    - ✅ CORRECTO: Implementar UNA funcionalidad a la vez, pedir aprobación, y solo después continuar
-    - ✅ CORRECTO: Analizar columnas primero (cantidad y tipo) antes de crear el DataTable
-    - ✅ CORRECTO: Usar componentes UBITS (`<ubits-input>` y `<ubits-button>`) para el buscador personalizado
-    - **Ver:** `GUIA-IMPLEMENTACION-DATATABLE-PASO-A-PASO.md` para el proceso completo
-13. ❌ **NO REVISAR VARIANTES Y CONTROLADORES ANTES DE IMPLEMENTAR** - ⚠️ CRÍTICO:
-    - ❌ INCORRECTO: Implementar componente sin revisar sus opciones, variantes y funcionalidades
-    - ✅ CORRECTO: Revisar archivo de tipos del componente ANTES de implementar
-    - ✅ CORRECTO: Identificar variantes, controladores (opciones booleanas) y funcionalidades
-    - ✅ CORRECTO: Dividir funcionalidades en tareas independientes
-    - ✅ CORRECTO: Mostrar plan al usuario antes de implementar
-14. ❌ **NO EJECUTAR VALIDACIÓN AUTOMÁTICA DESPUÉS DE IMPLEMENTAR** - ⚠️ CRÍTICO:
-    - ❌ INCORRECTO: Implementar componente sin ejecutar `npm run lint`
-    - ✅ CORRECTO: Ejecutar `npm run lint` DESPUÉS de cada implementación
-    - ✅ CORRECTO: Corregir errores automáticamente si los hay
-    - ✅ CORRECTO: Repetir validación hasta que pase
-    - ✅ CORRECTO: Mostrar resultado de validación al usuario
-15. ❌ **METER TODO EN UN SOLO CONTENEDOR O NO ANALIZAR ESTRUCTURA** - ⚠️ CRÍTICO:
-    - ❌ INCORRECTO: Asumir que todo va en un solo contenedor
-    - ❌ INCORRECTO: Poner elementos en contenedores innecesarios
-    - ❌ INCORRECTO: No analizar qué elementos van en contenedores y cuáles no
-    - ✅ CORRECTO: Analizar visualmente si cada elemento necesita contenedor
-    - ✅ CORRECTO: Verificar si el componente UBITS ya maneja su contenedor
-    - ✅ CORRECTO: Crear contenedores independientes solo cuando sea necesario
-    - ✅ CORRECTO: Documentar estructura de contenedores antes de implementar
-    - **Ver:** `GUIA-ANALISIS-ESTRUCTURA-SPACING.md` para el proceso completo
-16. ❌ **NO ANALIZAR SPACING ESPECÍFICAMENTE** - ⚠️ CRÍTICO:
-    - ❌ INCORRECTO: Usar spacing genérico para todo (`--ubits-spacing-md`)
-    - ❌ INCORRECTO: Adivinar el spacing sin medir visualmente
-    - ❌ INCORRECTO: No documentar spacing entre elementos
-    - ✅ CORRECTO: Medir visualmente el espacio entre cada elemento
-    - ✅ CORRECTO: Mapear a tokens UBITS específicos (xs, sm, md, lg, xl, etc.)
-    - ✅ CORRECTO: Documentar spacing entre elementos y dentro de contenedores
-    - ✅ CORRECTO: Crear mapa completo de spacing antes de implementar
-    - **Ver:** `GUIA-ANALISIS-ESTRUCTURA-SPACING.md` para el proceso completo
-17. ❌ **IMPLEMENTAR COMPONENTES EN TODOS LOS MÓDULOS** - ⚠️ CRÍTICO:
-    - ❌ INCORRECTO: Inicializar tabs/componentes sin verificar el módulo actual
-    - ❌ INCORRECTO: Implementar componentes que aparecen en TODOS los módulos (inicio, empresa, aprendizaje, etc.)
-    - ✅ CORRECTO: Verificar módulo actual ANTES de inicializar: `const currentModule = document.body.getAttribute('data-module')`
-    - ✅ CORRECTO: Retornar temprano (`return`) si no estamos en el módulo correcto
-    - ✅ CORRECTO: Aplicar verificación a TODAS las funciones de inicialización (tabs, DataTable, interceptaciones, observers)
-    - **Ver:** `GUIA-ERRORES-COMUNES-UBITS.md` - Error #8 para detalles completos
-18. ❌ **ELIMINAR HEADERSECTION EN TODOS LOS MÓDULOS** - ⚠️ CRÍTICO:
-    - ❌ INCORRECTO: Eliminar HeaderSection sin verificar el módulo/sección actual
-    - ❌ INCORRECTO: Interceptar ContentManager para eliminar HeaderSection en TODOS los módulos
-    - ❌ INCORRECTO: Observer que elimina HeaderSection sin verificar módulo
-    - ✅ CORRECTO: Verificar módulo/sección ANTES de eliminar: `if (section !== 'encuestas') return`
-    - ✅ CORRECTO: Verificar en observer: `if (currentSection !== 'encuestas') return`
-    - ✅ CORRECTO: Llamar al método original para otros módulos (mantener HeaderSection)
-    - ✅ CORRECTO: Solo eliminar HeaderSection en el módulo específico donde la imagen no lo muestra
-    - **Ver:** `GUIA-ERRORES-COMUNES-UBITS.md` - Error #9 para detalles completos
-19. ❌ **AGREGAR ELEMENTOS AL DOM SIN INTERCEPTAR CONTENTMANAGER** - ⚠️ CRÍTICO:
-    - ❌ INCORRECTO: Agregar elementos a `.content-area` sin interceptar `updateContent`
-    - ❌ INCORRECTO: Asumir que los elementos estarán siempre disponibles
-    - ❌ INCORRECTO: No investigar el comportamiento de `ContentManager.updateContent`
-    - ✅ CORRECTO: Leer `GUIA-CONTENTMANAGER-UPDATECONTENT.md` antes de agregar elementos
-    - ✅ CORRECTO: Investigar el código fuente del ContentManager (línea 680: `contentArea.innerHTML = ''`)
-    - ✅ CORRECTO: Interceptar `updateContent` para preservar elementos personalizados
-    - ✅ CORRECTO: Guardar elementos ANTES de llamar al método original
-    - ✅ CORRECTO: Restaurar elementos DESPUÉS de que se actualice el contenido
-    - ✅ CORRECTO: Verificar módulo/sección antes de preservar elementos
-    - **Ver:** `GUIA-CONTENTMANAGER-UPDATECONTENT.md` para detalles completos
-
+**Este archivo es el índice principal. Para detalles completos, consulta los módulos en `.cursor/`**

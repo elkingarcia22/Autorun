@@ -1030,10 +1030,10 @@ export class CanvasCreator {
       // Función para sobrescribir detectCurrentProduct (se llamará múltiples veces)
       const overrideDetectCurrentProduct = () => {
         const originalDetectCurrentProduct = window.detectCurrentProduct;
-        window.detectCurrentProduct = function() {
-          // Siempre retornar el template correcto
+      window.detectCurrentProduct = function() {
+        // Siempre retornar el template correcto
           console.log('🔍 [Wizard] detectCurrentProduct() llamado, retornando:', templateKey);
-          return templateKey;
+        return templateKey;
         };
         console.log('🔍 [Wizard] ✅ detectCurrentProduct sobrescrito. Original:', typeof originalDetectCurrentProduct);
       };

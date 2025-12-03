@@ -34,11 +34,11 @@ const config: StorybookConfig = {
     const staticDirs: any[] = [
       { 
         from: resolve(currentDir, '../stories/assets/images'), 
-        to: '/images' 
-      },
-      { 
+      to: '/images' 
+    },
+    { 
         from: resolve(currentDir, '../stories/assets/webfonts'), 
-        to: '/webfonts' 
+      to: '/webfonts' 
       }
     ];
     

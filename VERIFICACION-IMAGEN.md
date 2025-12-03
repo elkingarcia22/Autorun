@@ -10,10 +10,10 @@
 
 1. ✅ Leer este archivo (`VERIFICACION-IMAGEN.md`)
 2. ✅ Leer `BLOQUEO-IMAGEN.md`
-3. ✅ Leer `GUIA-CREAR-DESDE-IMAGEN-DESPUES-WIZARD.md`
-4. ✅ Leer `GUIA-PROCESO-IMPLEMENTACION-PASO-A-PASO.md`
-5. ✅ Leer `GUIA-ANALISIS-ESTRUCTURA-SPACING.md` - ⚠️ OBLIGATORIO para análisis de spacing
-6. ✅ Leer `GUIA-ANALISIS-ICONOS-DETALLADO.md` - ⚠️ OBLIGATORIO para análisis de iconos
+3. ✅ Leer `docs/guias/implementacion/GUIA-CREAR-DESDE-IMAGEN-DESPUES-WIZARD.md`
+4. ✅ Leer `docs/guias/implementacion/GUIA-PROCESO-IMPLEMENTACION-PASO-A-PASO.md`
+5. ✅ Leer `docs/guias/analisis/GUIA-ANALISIS-ESTRUCTURA-SPACING.md` - ⚠️ OBLIGATORIO para análisis de spacing
+6. ✅ Leer `docs/guias/analisis/GUIA-ANALISIS-ICONOS-DETALLADO.md` - ⚠️ OBLIGATORIO para análisis de iconos
 
 ### 🚫 PASO 2: VERIFICAR QUE NO ESTÁS USANDO HERRAMIENTAS PROHIBIDAS
 
@@ -37,9 +37,9 @@
 2. **Identificar template existente** usando `list_dir()` en `prototypes/`
 3. **Analizar la imagen** detalladamente:
    - Componentes UBITS identificados
-   - **Iconos con variaciones** (usar `GUIA-ANALISIS-ICONOS-DETALLADO.md`)
+   - **Iconos con variaciones** (usar `docs/guias/analisis/GUIA-ANALISIS-ICONOS-DETALLADO.md`)
    - Estructura visual
-   - **Spacing identificado** (usar `GUIA-ANALISIS-ESTRUCTURA-SPACING.md`):
+   - **Spacing identificado** (usar `docs/guias/analisis/GUIA-ANALISIS-ESTRUCTURA-SPACING.md`):
      - ⚠️ **NO asumir basándose en ejemplos**
      - ⚠️ **Medir visualmente cada espacio entre elementos**
      - ⚠️ **Comparar con tokens disponibles antes de documentar**
@@ -53,9 +53,9 @@
 **ANTES de usar CUALQUIER herramienta de escritura/edición, responde:**
 
 - [ ] ¿He leído todas las guías? → Si NO, LEERLAS PRIMERO
-- [ ] ¿He leído `GUIA-ANALISIS-ESTRUCTURA-SPACING.md`? → Si NO, LEERLA PRIMERO
-- [ ] ¿He leído `GUIA-ANALISIS-ICONOS-DETALLADO.md`? → Si NO, LEERLA PRIMERO
-- [ ] ¿He leído `GUIA-CONTENTMANAGER-UPDATECONTENT.md`? → Si NO, LEERLA PRIMERO (si agregas elementos a `.content-area`)
+- [ ] ¿He leído `docs/guias/analisis/GUIA-ANALISIS-ESTRUCTURA-SPACING.md`? → Si NO, LEERLA PRIMERO
+- [ ] ¿He leído `docs/guias/analisis/GUIA-ANALISIS-ICONOS-DETALLADO.md`? → Si NO, LEERLA PRIMERO
+- [ ] ¿He leído `docs/guias/referencia/GUIA-CONTENTMANAGER-UPDATECONTENT.md`? → Si NO, LEERLA PRIMERO (si agregas elementos a `.content-area`)
 - [ ] ¿He identificado el template existente? → Si NO, IDENTIFICARLO PRIMERO
 - [ ] ¿He analizado la imagen detalladamente? → Si NO, ANALIZARLA PRIMERO
 - [ ] ¿He medido visualmente cada spacing (NO asumido)? → Si NO, MEDIR PRIMERO

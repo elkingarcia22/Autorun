@@ -6,7 +6,7 @@
 	"scripts": {
 		"dev": "vite",
 		"build": "vite build",
-		"lint": "biome check packages/ scripts/ --skip-errors",
+		"lint": "biome check packages/ scripts/",
 		"lint:all": "biome check . --skip-errors",
 		"lint:file": "biome check",
 		"lint:prototypes": "biome check prototypes/ --skip-errors",

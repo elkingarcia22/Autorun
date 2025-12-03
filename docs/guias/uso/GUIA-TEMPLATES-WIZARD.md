@@ -146,3 +146,4 @@ prototypes/
 - **Guía del servidor local:** `GUIA-SERVIDOR-LOCAL.md`
 - **Proceso de implementación:** `GUIA-PROCESO-IMPLEMENTACION-PASO-A-PASO.md`
 
+
