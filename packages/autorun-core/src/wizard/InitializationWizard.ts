@@ -1791,9 +1791,10 @@ export class InitializationWizard {
 	 */
 	private async configureMCPForAddons(installedAddons: string[]): Promise<void> {
 		// Add-ons que tienen soporte MCP
-		const mcpSupportedAddons: Record<string, { name: string; getCredentials: () => Promise<Record<string, any> | null> }> = {
+		const mcpSupportedAddons: Record<string, { name: string; mcpNames: string[]; getCredentials: () => Promise<Record<string, any> | null> }> = {
 			github: {
 				name: 'GitHub',
+				mcpNames: ['github'],
 				getCredentials: async () => {
 					const config = (this.hub as any).configManager?.getConfig();
 					const githubConfig = (await config)?.autorun?.addons?.config?.github;
@@ -1803,6 +1804,7 @@ export class InitializationWizard {
 			},
 			vercel: {
 				name: 'Vercel',
+				mcpNames: ['vercel'],
 				getCredentials: async () => {
 					const token = process.env.VERCEL_TOKEN;
 					const teamId = process.env.VERCEL_TEAM_ID;
@@ -1811,12 +1813,23 @@ export class InitializationWizard {
 			},
 			clarity: {
 				name: 'Clarity',
+				mcpNames: ['clarity'],
 				getCredentials: async () => {
 					const config = (this.hub as any).configManager?.getConfig();
 					const clarityConfig = (await config)?.autorun?.addons?.config?.clarity;
 					const projectId = clarityConfig?.projectId || process.env.CLARITY_PROJECT_ID;
 					const apiKey = clarityConfig?.apiKey || process.env.CLARITY_API_KEY;
 					return projectId ? { projectId, apiKey } : null;
+				},
+			},
+			'figma-sync': {
+				name: 'Figma Sync',
+				mcpNames: ['figma', 'talk-to-figma'],
+				getCredentials: async () => {
+					const config = (this.hub as any).configManager?.getConfig();
+					const figmaConfig = (await config)?.autorun?.addons?.config?.['figma-sync'];
+					const accessToken = figmaConfig?.accessToken || process.env.FIGMA_ACCESS_TOKEN;
+					return accessToken ? { accessToken, fileKey: figmaConfig?.fileKey } : null;
 				},
 			},
 		};
@@ -1843,20 +1856,7 @@ export class InitializationWizard {
 			// Configurar MCP para cada add-on
 			for (const addonId of addonsWithMCP) {
 				const addonInfo = mcpSupportedAddons[addonId];
-				const mcpInfo = await MCPDetector.detectMCPServer(addonId);
-
-				// Si ya está configurado, saltar
-				if (mcpInfo.configured) {
-					console.log(`   ✅ MCP para ${addonInfo.name} ya está configurado`);
-					continue;
-				}
-
-				// Si MCP no está disponible, saltar
-				if (!mcpInfo.available) {
-					console.log(`   ℹ️  MCP no está disponible para ${addonInfo.name}`);
-					continue;
-				}
-
+				
 				// Obtener credenciales
 				const credentials = await addonInfo.getCredentials();
 				if (!credentials) {
@@ -1864,21 +1864,43 @@ export class InitializationWizard {
 					continue;
 				}
 
-				// Preguntar si quiere configurar este MCP específico
-				const configureThis = await this.prompt.question(
-					`   🔌 ¿Configurar MCP para ${addonInfo.name}? (S/N): `,
-				);
+				// Para Figma, intentar ambos MCPs
+				for (const mcpName of addonInfo.mcpNames) {
+					const mcpInfo = await MCPDetector.detectMCPServer(mcpName);
 
-				if (configureThis && configureThis.trim().toUpperCase() === 'S') {
-					const result = await MCPInstaller.installMCPServer(addonId, credentials);
-					if (result.success) {
-						console.log(`   ✅ MCP para ${addonInfo.name} configurado exitosamente`);
-						console.log(`   🔄 Reinicia Cursor para que los cambios surtan efecto`);
-					} else {
-						console.log(`   ⚠️  Error configurando MCP para ${addonInfo.name}: ${result.message}`);
+					// Si ya está configurado, saltar
+					if (mcpInfo.configured) {
+						console.log(`   ✅ MCP '${mcpName}' para ${addonInfo.name} ya está configurado`);
+						continue;
 					}
-				} else {
-					console.log(`   ℹ️  MCP para ${addonInfo.name} omitido`);
+
+					// Si MCP no está disponible, saltar
+					if (!mcpInfo.available) {
+						if (addonInfo.mcpNames.length > 1) {
+							// Si hay múltiples MCPs, solo mostrar mensaje si ninguno está disponible
+							continue;
+						}
+						console.log(`   ℹ️  MCP no está disponible para ${addonInfo.name}`);
+						continue;
+					}
+
+					// Preguntar si quiere configurar este MCP específico
+					const mcpDisplayName = mcpName === 'talk-to-figma' ? 'Talk to Figma' : mcpName.charAt(0).toUpperCase() + mcpName.slice(1);
+					const configureThis = await this.prompt.question(
+						`   🔌 ¿Configurar MCP '${mcpDisplayName}' para ${addonInfo.name}? (S/N): `,
+					);
+
+					if (configureThis && configureThis.trim().toUpperCase() === 'S') {
+						const result = await MCPInstaller.installMCPServer(mcpName, credentials);
+						if (result.success) {
+							console.log(`   ✅ MCP '${mcpDisplayName}' para ${addonInfo.name} configurado exitosamente`);
+							console.log(`   🔄 Reinicia Cursor para que los cambios surtan efecto`);
+						} else {
+							console.log(`   ⚠️  Error configurando MCP '${mcpDisplayName}' para ${addonInfo.name}: ${result.message}`);
+						}
+					} else {
+						console.log(`   ℹ️  MCP '${mcpDisplayName}' para ${addonInfo.name} omitido`);
+					}
 				}
 			}
 		} catch (error: any) {

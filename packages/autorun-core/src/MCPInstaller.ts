@@ -161,6 +161,30 @@ export class MCPInstaller {
 						: {},
 				};
 
+			case 'figma':
+				return {
+					command: 'npx',
+					args: ['-y', '@modelcontextprotocol/server-figma'],
+					env: credentials?.accessToken
+						? {
+								FIGMA_ACCESS_TOKEN: credentials.accessToken,
+								FIGMA_FILE_KEY: credentials.fileKey || '',
+							}
+						: {},
+				};
+
+			case 'talk-to-figma':
+				return {
+					command: 'npx',
+					args: ['-y', '@modelcontextprotocol/server-talk-to-figma'],
+					env: credentials?.accessToken
+						? {
+								FIGMA_ACCESS_TOKEN: credentials.accessToken,
+								FIGMA_FILE_KEY: credentials.fileKey || '',
+							}
+						: {},
+				};
+
 			default:
 				return {
 					command: 'npx',
@@ -241,6 +265,56 @@ Para instalar MCP de Clarity manualmente:
    }
 
 3. Reinicia tu editor/IDE.
+      `,
+			figma: `
+Para instalar MCP de Figma manualmente:
+
+1. Instala el servidor MCP:
+   npm install -g @modelcontextprotocol/server-figma
+
+2. Configura en tu archivo MCP:
+   {
+     "servers": {
+       "figma": {
+         "command": "npx",
+         "args": ["-y", "@modelcontextprotocol/server-figma"],
+         "env": {
+           "FIGMA_ACCESS_TOKEN": "tu-access-token",
+           "FIGMA_FILE_KEY": "tu-file-key-opcional"
+         }
+       }
+     }
+   }
+
+3. Reinicia tu editor/IDE.
+
+⚠️ IMPORTANTE: Ni MCP ni la API de Figma pueden acceder directamente a las Variables de Figma.
+Se recomienda descargar el JSON de tokens usando el plugin de Figma Tokens.
+      `,
+			'talk-to-figma': `
+Para instalar MCP de Talk to Figma manualmente:
+
+1. Instala el servidor MCP:
+   npm install -g @modelcontextprotocol/server-talk-to-figma
+
+2. Configura en tu archivo MCP:
+   {
+     "servers": {
+       "talk-to-figma": {
+         "command": "npx",
+         "args": ["-y", "@modelcontextprotocol/server-talk-to-figma"],
+         "env": {
+           "FIGMA_ACCESS_TOKEN": "tu-access-token",
+           "FIGMA_FILE_KEY": "tu-file-key-opcional"
+         }
+       }
+     }
+   }
+
+3. Reinicia tu editor/IDE.
+
+⚠️ IMPORTANTE: Ni MCP ni la API de Figma pueden acceder directamente a las Variables de Figma.
+Se recomienda descargar el JSON de tokens usando el plugin de Figma Tokens.
       `,
 		};
 

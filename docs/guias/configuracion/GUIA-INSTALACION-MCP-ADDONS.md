@@ -98,6 +98,33 @@ await hub.activateAddon('clarity');
 
 ---
 
+### 4. **Figma Sync Add-on** ✅
+
+**Cuándo se ofrece:**
+- Cuando configuras `accessToken` o `FIGMA_ACCESS_TOKEN`
+- Durante `initialize()` del add-on
+
+**Qué hace:**
+- Detecta si hay servidores MCP de Figma disponibles (`figma` o `talk-to-figma`)
+- Muestra prompt interactivo preguntando si quieres instalar
+- Si aceptas, configura MCP automáticamente con tu accessToken y fileKey
+
+**MCPs soportados:**
+- `figma` - MCP oficial de Figma
+- `talk-to-figma` - MCP alternativo para conversación con Figma
+
+**Ejemplo:**
+```typescript
+await hub.activateAddon('figma-sync');
+// Sistema detecta MCP disponible
+// Muestra prompt: "¿Deseas instalar MCP para Figma? (S/N/I)"
+// Si respondes "S", instala automáticamente
+```
+
+**⚠️ IMPORTANTE:** Ni MCP ni la API de Figma pueden acceder directamente a las Variables de Figma. Se recomienda descargar el JSON de tokens usando el plugin de Figma Tokens.
+
+---
+
 ## 📚 Storybook MCP (Configuración Manual)
 
 ### ⚠️ Diferencia Importante
@@ -209,6 +236,7 @@ allInfo.forEach(info => {
 | **GitHub** | ✅ Sí | ⚠️ Solo si aceptas | Al configurar token/repo | ❌ No necesaria |
 | **Vercel** | ✅ Sí | ⚠️ Solo si aceptas | Al configurar token | ❌ No necesaria |
 | **Clarity** | ✅ Sí | ⚠️ Solo si aceptas | Al configurar projectId | ❌ No necesaria |
+| **Figma Sync** | ✅ Sí | ⚠️ Solo si aceptas | Al configurar accessToken | ❌ No necesaria |
 | **Storybook** | ✅ Sí | ❌ No | N/A | ✅ **Sí, obligatoria** |
 
 ---
