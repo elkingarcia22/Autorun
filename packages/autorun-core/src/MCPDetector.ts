@@ -88,22 +88,29 @@ export class MCPDetector {
 	 */
 	private static isRunningInCursor(): boolean {
 		try {
-			// Verificar variables de entorno de Cursor
+			// Verificar variables de entorno de Cursor (más confiable)
 			if (process.env.CURSOR_VERSION || process.env.CURSOR_AGENT) {
 				return true;
 			}
 
-			// Verificar si existe el directorio .cursor (indicador de que estamos en Cursor)
+			// Verificar si existe el directorio .cursor en el proyecto actual
+			// Esto es un indicador fuerte de que estamos en Cursor
 			const fs = require('fs');
 			const path = require('path');
-			const cursorDir = process.env.HOME ? path.join(process.env.HOME, '.cursor') : null;
-			if (cursorDir && fs.existsSync(cursorDir)) {
+			const projectCursorDir = path.join(process.cwd(), '.cursor');
+			if (fs.existsSync(projectCursorDir)) {
 				return true;
 			}
 
 			// Verificar si existe .cursor/mcp.json en el proyecto actual
 			const projectCursorMCP = path.join(process.cwd(), '.cursor', 'mcp.json');
 			if (fs.existsSync(projectCursorMCP)) {
+				return true;
+			}
+
+			// Verificar si existe el directorio .cursor global (indicador secundario)
+			const cursorDir = process.env.HOME ? path.join(process.env.HOME, '.cursor') : null;
+			if (cursorDir && fs.existsSync(cursorDir)) {
 				return true;
 			}
 
