@@ -436,7 +436,17 @@ Antes de trabajar en un template, LEER:
 
 **⚠️ ANTES de implementar cualquier componente:**
 
-1. **Revisar variantes, controladores y funcionalidades:**
+1. **🚨 CRÍTICO: Verificar comportamiento del ContentManager (OBLIGATORIO si agregas elementos a `.content-area`):**
+   - **SI vas a agregar elementos dentro de `.content-area`**, DEBES:
+     - [ ] Leer: `GUIA-CONTENTMANAGER-UPDATECONTENT.md` (OBLIGATORIO)
+     - [ ] Investigar código fuente: `grep -r "updateContent\|contentArea.innerHTML" vendor/ubits/packages/templates/engine/`
+     - [ ] Verificar si `ContentManager.updateContent` limpia el contenido: `contentArea.innerHTML = ''`
+     - [ ] **SI limpia el contenido:** Interceptar `updateContent` ANTES de agregar elementos al DOM
+     - [ ] Verificar logs del navegador: `console.log(document.querySelector('.content-area')?.innerHTML)`
+     - [ ] **NO asumir** que los elementos en HTML estático estarán siempre disponibles
+   - **Ver guía completa:** `GUIA-CONTENTMANAGER-UPDATECONTENT.md`
+
+2. **Revisar variantes, controladores y funcionalidades:**
    - Consultar archivo de tipos: `vendor/ubits/packages/components/[nombre]/src/types/[Nombre]Options.ts`
    - Identificar todas las variantes disponibles
    - Identificar todos los controladores (opciones booleanas que prende/apaga funcionalidades)
