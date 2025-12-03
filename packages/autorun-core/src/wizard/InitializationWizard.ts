@@ -918,17 +918,47 @@ export class InitializationWizard {
 			feedback: '💬 Sistema de feedback automatizado',
 		};
 
+		const fs = await import('fs/promises');
+		const path = await import('path');
+
 		for (const addonId of addonIds) {
 			const description = addonDescriptions[addonId] || addonId;
 			try {
+				// Intentar registrar el add-on primero si no está registrado
+				const addonPath = path.join(process.cwd(), 'packages', 'addons', 'functional', addonId);
+				try {
+					const stats = await fs.stat(addonPath);
+					if (stats.isDirectory()) {
+						// Verificar que existe dist/index.js
+						const distPath = path.join(addonPath, 'dist', 'index.js');
+						try {
+							await fs.access(distPath);
+							// El add-on existe y está compilado, registrarlo
+							try {
+								await this.hub.registerAddon(addonPath);
+							} catch (regError: any) {
+								// Si ya está registrado, continuar
+								if (!regError.message?.includes('ya está registrado')) {
+									throw regError;
+								}
+							}
+						} catch {
+							// No está compilado, pero continuar para configurar MCP
+						}
+					}
+				} catch {
+					// El directorio no existe, continuar
+				}
+
+				// Intentar activar el add-on
 				await this.hub.activateAddon(addonId);
 				console.log(`   ✅ ${description}`);
 				installed.push(addonId);
 			} catch (error: any) {
-				// Si el add-on no se encuentra (no está compilado), aún así lo consideramos "seleccionado"
+				// Si el add-on no se encuentra, aún así lo consideramos "seleccionado"
 				// porque el usuario lo eligió y puede querer configurar MCP para él
 				if (error?.code === 'ADDON_NOT_FOUND') {
-					console.log(`   ⚠️  ${description} (no compilado, pero seleccionado para configuración)`);
+					console.log(`   ⚠️  ${description} (no encontrado o no compilado, pero seleccionado para configuración)`);
 					// Agregar a la lista de instalados aunque no se haya podido activar
 					// Esto permite configurar MCP para add-ons que el usuario seleccionó
 					installed.push(addonId);
