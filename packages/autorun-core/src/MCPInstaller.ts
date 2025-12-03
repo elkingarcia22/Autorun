@@ -77,7 +77,7 @@ export class MCPInstaller {
 	 */
 	private static async ensureMCPConfigPath(): Promise<string> {
 		// Verificar si estamos en Cursor (prioridad)
-		if (this.isRunningInCursor()) {
+		if (await this.isRunningInCursor()) {
 			// Cursor usa .cursor/mcp.json en el proyecto o ~/.cursor/mcp.json globalmente
 			// Preferir proyecto local primero
 			const projectCursorPath = path.join(process.cwd(), '.cursor');
@@ -115,7 +115,7 @@ export class MCPInstaller {
 	/**
 	 * Verifica si estamos ejecutando en Cursor
 	 */
-	private static isRunningInCursor(): boolean {
+	private static async isRunningInCursor(): Promise<boolean> {
 		try {
 			// Verificar variables de entorno de Cursor (más confiable)
 			if (process.env.CURSOR_VERSION || process.env.CURSOR_AGENT) {
@@ -124,22 +124,36 @@ export class MCPInstaller {
 
 			// Verificar si existe el directorio .cursor en el proyecto actual
 			// Esto es un indicador fuerte de que estamos en Cursor
-			const fsSync = require('fs');
 			const projectCursorDir = path.join(process.cwd(), '.cursor');
-			if (fsSync.existsSync(projectCursorDir)) {
-				return true;
+			try {
+				const stats = await fs.stat(projectCursorDir);
+				if (stats.isDirectory()) {
+					return true;
+				}
+			} catch {
+				// No existe, continuar
 			}
 
 			// Verificar si existe .cursor/mcp.json en el proyecto actual
 			const projectCursorMCP = path.join(process.cwd(), '.cursor', 'mcp.json');
-			if (fsSync.existsSync(projectCursorMCP)) {
+			try {
+				await fs.access(projectCursorMCP);
 				return true;
+			} catch {
+				// No existe, continuar
 			}
 
 			// Verificar si existe el directorio .cursor global (indicador secundario)
-			const cursorDir = process.env.HOME ? path.join(process.env.HOME, '.cursor') : null;
-			if (cursorDir && fsSync.existsSync(cursorDir)) {
-				return true;
+			if (process.env.HOME) {
+				const cursorDir = path.join(process.env.HOME, '.cursor');
+				try {
+					const stats = await fs.stat(cursorDir);
+					if (stats.isDirectory()) {
+						return true;
+					}
+				} catch {
+					// No existe, continuar
+				}
 			}
 
 			return false;
@@ -153,7 +167,7 @@ export class MCPInstaller {
 	 */
 	private static async loadOrCreateConfig(configPath: string): Promise<MCPConfig> {
 		// Determinar nombre del archivo según el entorno
-		const isCursor = this.isRunningInCursor();
+		const isCursor = await this.isRunningInCursor();
 		const configFileName = isCursor ? 'mcp.json' : 'config.json';
 		const configFile = path.join(configPath, configFileName);
 
@@ -179,7 +193,7 @@ export class MCPInstaller {
 	 */
 	private static async saveConfig(configPath: string, config: MCPConfig): Promise<void> {
 		// Determinar nombre del archivo según el entorno
-		const isCursor = this.isRunningInCursor();
+		const isCursor = await this.isRunningInCursor();
 		const configFileName = isCursor ? 'mcp.json' : 'config.json';
 		const configFile = path.join(configPath, configFileName);
 

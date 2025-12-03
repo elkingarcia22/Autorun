@@ -63,7 +63,7 @@ export class MCPDetector {
 	private static async checkMCPAvailable(): Promise<boolean> {
 		try {
 			// Verificar si estamos en Cursor (que tiene soporte MCP nativo)
-			const isCursor = this.isRunningInCursor();
+			const isCursor = await this.isRunningInCursor();
 			if (isCursor) {
 				return true; // Cursor siempre tiene soporte MCP
 			}
@@ -91,7 +91,7 @@ export class MCPDetector {
 	/**
 	 * Verifica si estamos ejecutando en Cursor
 	 */
-	private static isRunningInCursor(): boolean {
+	private static async isRunningInCursor(): Promise<boolean> {
 		try {
 			// Verificar variables de entorno de Cursor (más confiable)
 			const hasCursorEnv = !!(process.env.CURSOR_VERSION || process.env.CURSOR_AGENT);
@@ -101,26 +101,38 @@ export class MCPDetector {
 
 			// Verificar si existe el directorio .cursor en el proyecto actual
 			// Esto es un indicador fuerte de que estamos en Cursor
-			const fs = require('fs');
-			const path = require('path');
+			const fs = await import('fs/promises');
+			const path = await import('path');
 			const projectCursorDir = path.join(process.cwd(), '.cursor');
-			const hasProjectCursor = fs.existsSync(projectCursorDir);
-			if (hasProjectCursor) {
-				return true;
+			try {
+				const stats = await fs.stat(projectCursorDir);
+				if (stats.isDirectory()) {
+					return true;
+				}
+			} catch {
+				// No existe, continuar
 			}
 
 			// Verificar si existe .cursor/mcp.json en el proyecto actual
 			const projectCursorMCP = path.join(process.cwd(), '.cursor', 'mcp.json');
-			const hasProjectMCP = fs.existsSync(projectCursorMCP);
-			if (hasProjectMCP) {
+			try {
+				await fs.access(projectCursorMCP);
 				return true;
+			} catch {
+				// No existe, continuar
 			}
 
 			// Verificar si existe el directorio .cursor global (indicador secundario)
-			const cursorDir = process.env.HOME ? path.join(process.env.HOME, '.cursor') : null;
-			const hasGlobalCursor = cursorDir && fs.existsSync(cursorDir);
-			if (hasGlobalCursor) {
-				return true;
+			if (process.env.HOME) {
+				const cursorDir = path.join(process.env.HOME, '.cursor');
+				try {
+					const stats = await fs.stat(cursorDir);
+					if (stats.isDirectory()) {
+						return true;
+					}
+				} catch {
+					// No existe, continuar
+				}
 			}
 
 			return false;
