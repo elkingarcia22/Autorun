@@ -81,4 +81,3 @@ export class ComponentManager {
 		return this.loader;
 	}
 }
-

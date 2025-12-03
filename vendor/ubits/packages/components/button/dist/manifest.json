@@ -1,31 +1,30 @@
 {
-  "name": "@ubits/button",
-  "version": "1.0.0",
-  "type": "component",
-  "description": "Componente Button UBITS con todas las variantes, tamaños y estados",
-  "components": [
-    {
-      "name": "ubits-button",
-      "tag": "ubits-button",
-      "path": "./button.js"
-    }
-  ],
-  "styles": ["./button.css"],
-  "dependencies": {
-    "@ubits/tokens": "^1.0.0",
-    "@ubits/icons": "^1.0.0",
-    "@ubits/typography": "^1.0.0"
-  },
-  "api": {
-    "render": "renderButton",
-    "create": "createButton"
-  },
-  "features": {
-    "variants": ["primary", "secondary", "tertiary", "active"],
-    "sizes": ["xs", "sm", "md", "lg", "xl"],
-    "states": ["default", "hover", "active", "focus", "disabled", "loading"],
-    "modifiers": ["icon-only", "full-width", "block", "icon-right"],
-    "extras": ["badge"]
-  }
+	"name": "@ubits/button",
+	"version": "1.0.0",
+	"type": "component",
+	"description": "Componente Button UBITS con todas las variantes, tamaños y estados",
+	"components": [
+		{
+			"name": "ubits-button",
+			"tag": "ubits-button",
+			"path": "./button.js"
+		}
+	],
+	"styles": ["./button.css"],
+	"dependencies": {
+		"@ubits/tokens": "^1.0.0",
+		"@ubits/icons": "^1.0.0",
+		"@ubits/typography": "^1.0.0"
+	},
+	"api": {
+		"render": "renderButton",
+		"create": "createButton"
+	},
+	"features": {
+		"variants": ["primary", "secondary", "tertiary", "active"],
+		"sizes": ["xs", "sm", "md", "lg", "xl"],
+		"states": ["default", "hover", "active", "focus", "disabled", "loading"],
+		"modifiers": ["icon-only", "full-width", "block", "icon-right"],
+		"extras": ["badge"]
+	}
 }
-

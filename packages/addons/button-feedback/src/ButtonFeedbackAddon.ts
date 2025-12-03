@@ -24,7 +24,9 @@ export class ButtonFeedbackAddon implements IComponentAddon {
 		if (typeof window !== 'undefined') {
 			const ComponentsAPI = (window as any).AUTORUN?.Components;
 			if (ComponentsAPI?.isLoaded && ComponentsAPI.isLoaded('@autorun/button-feedback')) {
-				console.log('⏭️  ButtonFeedback ya está cargado desde Storybook, omitiendo inicialización local');
+				console.log(
+					'⏭️  ButtonFeedback ya está cargado desde Storybook, omitiendo inicialización local',
+				);
 				this.active = true;
 				return;
 			}
@@ -95,4 +97,3 @@ export class ButtonFeedbackAddon implements IComponentAddon {
 		// Los componentes ya se registran en initialize()
 	}
 }
-

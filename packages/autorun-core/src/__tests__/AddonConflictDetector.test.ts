@@ -3,10 +3,7 @@
  */
 
 import { describe, it, expect, beforeEach } from 'vitest';
-import {
-	AddonConflictDetector,
-	CONFLICT_GROUPS,
-} from '../AddonConflictDetector';
+import { AddonConflictDetector, CONFLICT_GROUPS } from '../AddonConflictDetector';
 
 describe('AddonConflictDetector', () => {
 	let detector: AddonConflictDetector;
@@ -54,10 +51,7 @@ describe('AddonConflictDetector', () => {
 			const activeAddons = ['vitest'];
 			const addonsToActivate = ['jest', 'playwright'];
 
-			const conflicts = detector.checkMultipleConflicts(
-				addonsToActivate,
-				activeAddons,
-			);
+			const conflicts = detector.checkMultipleConflicts(addonsToActivate, activeAddons);
 
 			expect(conflicts.length).toBeGreaterThan(0);
 			expect(conflicts.some((c) => c.addonId === 'jest')).toBe(true);
@@ -67,10 +61,7 @@ describe('AddonConflictDetector', () => {
 			const activeAddons: string[] = [];
 			const addonsToActivate = ['jest', 'vitest'];
 
-			const conflicts = detector.checkMultipleConflicts(
-				addonsToActivate,
-				activeAddons,
-			);
+			const conflicts = detector.checkMultipleConflicts(addonsToActivate, activeAddons);
 
 			expect(conflicts.length).toBeGreaterThan(0);
 		});
@@ -104,4 +95,3 @@ describe('AddonConflictDetector', () => {
 		});
 	});
 });
-

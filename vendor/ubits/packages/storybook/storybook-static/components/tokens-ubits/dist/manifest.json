@@ -1,30 +1,29 @@
 {
-  "name": "@ubits/tokens-ubits",
-  "version": "1.0.0",
-  "type": "tokens",
-  "description": "Tokens UBITS oficiales como add-on intercambiable",
-  "tokens": {
-    "css": "./tokens.css",
-    "js": "./tokens.js",
-    "source": "../../../tokens/tokens.json"
-  },
-  "requiredTokens": [
-    "--ubits-button-primary-bg-default",
-    "--ubits-button-primary-hover",
-    "--ubits-button-primary-pressed",
-    "--ubits-btn-primary-fg",
-    "--ubits-bg-1",
-    "--ubits-bg-2",
-    "--ubits-fg-1-high",
-    "--ubits-fg-1-medium",
-    "--ubits-border-1",
-    "--ubits-accent-brand",
-    "--ubits-spacing-2",
-    "--ubits-spacing-3"
-  ],
-  "api": {
-    "getTokens": "getTokensCSS",
-    "validate": "validate"
-  }
+	"name": "@ubits/tokens-ubits",
+	"version": "1.0.0",
+	"type": "tokens",
+	"description": "Tokens UBITS oficiales como add-on intercambiable",
+	"tokens": {
+		"css": "./tokens.css",
+		"js": "./tokens.js",
+		"source": "../../../tokens/tokens.json"
+	},
+	"requiredTokens": [
+		"--ubits-button-primary-bg-default",
+		"--ubits-button-primary-hover",
+		"--ubits-button-primary-pressed",
+		"--ubits-btn-primary-fg",
+		"--ubits-bg-1",
+		"--ubits-bg-2",
+		"--ubits-fg-1-high",
+		"--ubits-fg-1-medium",
+		"--ubits-border-1",
+		"--ubits-accent-brand",
+		"--ubits-spacing-2",
+		"--ubits-spacing-3"
+	],
+	"api": {
+		"getTokens": "getTokensCSS",
+		"validate": "validate"
+	}
 }
-

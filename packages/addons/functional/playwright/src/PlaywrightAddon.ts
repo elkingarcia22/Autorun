@@ -6,11 +6,7 @@
  */
 
 import { IFunctionalAddon, AutorunContext } from '@autorun/core';
-import {
-	PlaywrightService,
-	PlaywrightConfig,
-	TestResult,
-} from './PlaywrightService';
+import { PlaywrightService, PlaywrightConfig, TestResult } from './PlaywrightService';
 
 export class PlaywrightAddon implements IFunctionalAddon {
 	readonly id = 'playwright';
@@ -98,8 +94,7 @@ export class PlaywrightAddon implements IFunctionalAddon {
 
 		if (config.enabled !== undefined) playwrightConfig.enabled = config.enabled;
 		if (config.testDir !== undefined) playwrightConfig.testDir = config.testDir;
-		if (config.outputDir !== undefined)
-			playwrightConfig.outputDir = config.outputDir;
+		if (config.outputDir !== undefined) playwrightConfig.outputDir = config.outputDir;
 		if (config.timeout !== undefined) playwrightConfig.timeout = config.timeout;
 		if (config.retries !== undefined) playwrightConfig.retries = config.retries;
 		if (config.workers !== undefined) playwrightConfig.workers = config.workers;
@@ -192,4 +187,3 @@ export class PlaywrightAddon implements IFunctionalAddon {
 		};
 	}
 }
-

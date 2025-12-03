@@ -11,11 +11,7 @@ export class AutorunError extends Error {
 	public readonly code: string;
 	public readonly context?: Record<string, any>;
 
-	constructor(
-		message: string,
-		code: string,
-		context?: Record<string, any>,
-	) {
+	constructor(message: string, code: string, context?: Record<string, any>) {
 		super(message);
 		this.name = 'AutorunError';
 		this.code = code;
@@ -30,7 +26,7 @@ export class AutorunError extends Error {
 export class AddonNotFoundError extends AutorunError {
 	constructor(addonId: string, availableAddons?: string[]) {
 		let message = `Add-on "${addonId}" no encontrado.`;
-		
+
 		if (availableAddons && availableAddons.length > 0) {
 			message += `\n\nAdd-ons disponibles: ${availableAddons.join(', ')}`;
 			message += `\n\n¿Quisiste decir uno de estos?`;
@@ -158,4 +154,3 @@ export class ServiceNotFoundError extends AutorunError {
 		this.name = 'ServiceNotFoundError';
 	}
 }
-

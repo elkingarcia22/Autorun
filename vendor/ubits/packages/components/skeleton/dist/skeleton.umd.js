@@ -1,1 +1,60 @@
-(function(e,n){typeof exports=="object"&&typeof module<"u"?n(exports):typeof define=="function"&&define.amd?define(["exports"],n):(e=typeof globalThis<"u"?globalThis:e||self,n(e.UBITSSkeleton={}))})(this,(function(e){"use strict";function n(d={}){const{variant:t="text",size:c="md",width:s,height:l,lines:u=1,animated:h=!0,className:p="",style:$=""}=d,o=["ubits-skeleton",`ubits-skeleton--${t}`,c!=="md"?`ubits-skeleton--${c}`:"",h?"ubits-skeleton--animated":"",p].filter(Boolean).join(" "),i=[];s&&(s==="full"?i.push("width: 100%"):typeof s=="number"?i.push(`width: ${s}px`):i.push(`width: ${s}`)),l&&(typeof l=="number"?i.push(`height: ${l}px`):i.push(`height: ${l}`));const f=[...i,$].filter(Boolean).join("; "),r=f?` style="${f}"`:"";if(t==="text"){const m=Array.from({length:u},(v,y)=>`<span class="ubits-skeleton__line" style="width: ${y===u-1&&u>1?"60%":"100%"}"></span>`).join("");return`<div class="${o}"${r}>${m}</div>`}return t==="circle"?`<div class="${o}"${r}></div>`:t==="rectangle"?`<div class="${o}"${r}></div>`:`<div class="${o}"${r}></div>`}function a(d={}){const t=document.createElement("div");return t.innerHTML=n(d),t.querySelector(".ubits-skeleton")}e.createSkeleton=a,e.renderSkeleton=n,Object.defineProperty(e,Symbol.toStringTag,{value:"Module"})}));
+(function (e, n) {
+	typeof exports == 'object' && typeof module < 'u'
+		? n(exports)
+		: typeof define == 'function' && define.amd
+			? define(['exports'], n)
+			: ((e = typeof globalThis < 'u' ? globalThis : e || self), n((e.UBITSSkeleton = {})));
+})(this, function (e) {
+	'use strict';
+	function n(d = {}) {
+		const {
+				variant: t = 'text',
+				size: c = 'md',
+				width: s,
+				height: l,
+				lines: u = 1,
+				animated: h = !0,
+				className: p = '',
+				style: $ = '',
+			} = d,
+			o = [
+				'ubits-skeleton',
+				`ubits-skeleton--${t}`,
+				c !== 'md' ? `ubits-skeleton--${c}` : '',
+				h ? 'ubits-skeleton--animated' : '',
+				p,
+			]
+				.filter(Boolean)
+				.join(' '),
+			i = [];
+		s &&
+			(s === 'full'
+				? i.push('width: 100%')
+				: typeof s == 'number'
+					? i.push(`width: ${s}px`)
+					: i.push(`width: ${s}`)),
+			l && (typeof l == 'number' ? i.push(`height: ${l}px`) : i.push(`height: ${l}`));
+		const f = [...i, $].filter(Boolean).join('; '),
+			r = f ? ` style="${f}"` : '';
+		if (t === 'text') {
+			const m = Array.from(
+				{ length: u },
+				(v, y) =>
+					`<span class="ubits-skeleton__line" style="width: ${y === u - 1 && u > 1 ? '60%' : '100%'}"></span>`,
+			).join('');
+			return `<div class="${o}"${r}>${m}</div>`;
+		}
+		return t === 'circle'
+			? `<div class="${o}"${r}></div>`
+			: t === 'rectangle'
+				? `<div class="${o}"${r}></div>`
+				: `<div class="${o}"${r}></div>`;
+	}
+	function a(d = {}) {
+		const t = document.createElement('div');
+		return (t.innerHTML = n(d)), t.querySelector('.ubits-skeleton');
+	}
+	(e.createSkeleton = a),
+		(e.renderSkeleton = n),
+		Object.defineProperty(e, Symbol.toStringTag, { value: 'Module' });
+});

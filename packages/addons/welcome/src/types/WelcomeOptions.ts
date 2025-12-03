@@ -133,4 +133,3 @@ export interface WelcomeOptions {
 	 */
 	className?: string;
 }
-

@@ -40,26 +40,31 @@ export function renderWelcome(options: WelcomeOptions): string {
 		'welcome-container',
 		containerStyle !== 'default' ? `welcome-container--${containerStyle}` : null,
 		className,
-	].filter(Boolean).join(' ');
+	]
+		.filter(Boolean)
+		.join(' ');
 
 	const contentClasses = [
 		'welcome-content',
 		layout === 'image-right' ? 'welcome-content--image-right' : null,
 		layout === 'image-left' ? 'welcome-content--image-left' : null,
 		layout === 'no-image' ? 'welcome-content--no-image' : null,
-	].filter(Boolean).join(' ');
+	]
+		.filter(Boolean)
+		.join(' ');
 
-	const textClasses = [
-		'welcome-text',
-		textAlignment === 'center' ? 'welcome-text--centered' : null,
-	].filter(Boolean).join(' ');
+	const textClasses = ['welcome-text', textAlignment === 'center' ? 'welcome-text--centered' : null]
+		.filter(Boolean)
+		.join(' ');
 
 	const actionsClasses = [
 		'welcome-actions',
 		buttonAlignment === 'center' ? 'welcome-actions--centered' : null,
 		buttonAlignment === 'left' ? 'welcome-actions--left' : null,
 		buttonAlignment === 'right' ? 'welcome-actions--right' : null,
-	].filter(Boolean).join(' ');
+	]
+		.filter(Boolean)
+		.join(' ');
 
 	// Renderizar banner
 	const bannerHTML = showBanner
@@ -88,7 +93,7 @@ export function renderWelcome(options: WelcomeOptions): string {
 					<i class="fas ${feature.icon || 'fa-check'} welcome-features__icon"></i>
 					<span>${feature.text}</span>
 				</li>
-			`
+			`,
 					)
 					.join('')}
 			</ul>
@@ -176,4 +181,3 @@ export function createWelcome(options: WelcomeOptions): HTMLElement {
 
 	return welcome;
 }
-

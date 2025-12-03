@@ -74,9 +74,7 @@ export class SnykService {
 		try {
 			// Verificar si Snyk está instalado
 			if (!this.isSnykInstalled()) {
-				console.warn(
-					'⚠️  Snyk no está instalado. Ejecuta: npm install -g snyk',
-				);
+				console.warn('⚠️  Snyk no está instalado. Ejecuta: npm install -g snyk');
 				return;
 			}
 
@@ -115,11 +113,12 @@ export class SnykService {
 
 		try {
 			const threshold = options?.severityThreshold || this.config.severityThreshold || 'medium';
-			const failOnError = options?.failOnError !== undefined ? options.failOnError : this.config.failOnError;
+			const failOnError =
+				options?.failOnError !== undefined ? options.failOnError : this.config.failOnError;
 
 			// Construir comando de Snyk
 			let command = 'snyk test';
-			
+
 			if (this.config.org) {
 				command += ` --org=${this.config.org}`;
 			}
@@ -148,7 +147,7 @@ export class SnykService {
 			} catch (error: any) {
 				// Snyk retorna código de error si encuentra vulnerabilidades
 				const output = error.stdout || error.message;
-				
+
 				// Parsear vulnerabilidades del output
 				const vulnerabilities = this.parseVulnerabilities(output);
 
@@ -254,7 +253,11 @@ export class SnykService {
 							id: '',
 							package: packageMatch ? packageMatch[1] : '',
 							version: '',
-							severity: (severityMatch ? severityMatch[1].toLowerCase() : 'medium') as 'low' | 'medium' | 'high' | 'critical',
+							severity: (severityMatch ? severityMatch[1].toLowerCase() : 'medium') as
+								| 'low'
+								| 'medium'
+								| 'high'
+								| 'critical',
 							title: line.trim(),
 							description: '',
 							url: '',
@@ -296,4 +299,3 @@ export class SnykService {
 		this.config = { ...this.config, ...config };
 	}
 }
-

@@ -309,4 +309,3 @@ export class RenovateService {
 		this.config = { ...this.config, ...config };
 	}
 }
-

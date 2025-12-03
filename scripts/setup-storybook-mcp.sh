@@ -1,93 +1,59 @@
 #!/bin/bash
 
-# Script para configurar Storybook MCP en Cursor
-# Este script ayuda a configurar el servidor MCP de Storybook
+# Script para configurar Storybook MCP automáticamente
+# Este script instala el addon @storybook/addon-mcp y lo configura
 
-echo "🔧 Configuración de Storybook MCP para Cursor"
-echo ""
+set -e
 
-# Detectar sistema operativo
-if [[ "$OSTYPE" == "darwin"* ]]; then
-    MCP_CONFIG_PATH="$HOME/Library/Application Support/Cursor/User/globalStorage/rooveterinaryinc.roo-cline/settings/cline_mcp_settings.json"
-    echo "📱 Sistema detectado: macOS"
-elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
-    MCP_CONFIG_PATH="$HOME/.config/Cursor/User/globalStorage/rooveterinaryinc.roo-cline/settings/cline_mcp_settings.json"
-    echo "📱 Sistema detectado: Linux"
-else
-    echo "⚠️  Sistema operativo no reconocido. Por favor, configura manualmente."
+echo "🔧 Configurando Storybook MCP..."
+
+# Colores para output
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
+# Detectar la ubicación del Storybook
+STORYBOOK_DIR="vendor/ubits/packages/storybook"
+
+if [ ! -d "$STORYBOOK_DIR" ]; then
+    echo "❌ No se encontró el directorio de Storybook en: $STORYBOOK_DIR"
+    echo "💡 Verifica que vendor/ubits/packages/storybook existe"
     exit 1
 fi
 
-echo "📁 Ruta de configuración: $MCP_CONFIG_PATH"
-echo ""
+cd "$STORYBOOK_DIR"
 
-# Verificar si Storybook está corriendo
-echo "🔍 Verificando Storybook local..."
-if curl -s http://localhost:6006/index.json > /dev/null 2>&1; then
-    echo "✅ Storybook local está corriendo en http://localhost:6006"
-    STORYBOOK_URL="http://localhost:6006/index.json"
+echo "📦 Instalando @storybook/addon-mcp..."
+npm install -D @storybook/addon-mcp
+
+echo "✅ Addon instalado"
+
+# Verificar si el addon ya está en main.ts
+if grep -q "@storybook/addon-mcp" .storybook/main.ts 2>/dev/null; then
+    echo "✅ Addon ya está configurado en .storybook/main.ts"
 else
-    echo "⚠️  Storybook local no está corriendo"
-    echo "   Iniciando Storybook..."
-    cd vendor/ubits/packages/storybook
-    npm run storybook > /dev/null 2>&1 &
-    sleep 5
-    if curl -s http://localhost:6006/index.json > /dev/null 2>&1; then
-        echo "✅ Storybook iniciado correctamente"
-        STORYBOOK_URL="http://localhost:6006/index.json"
-    else
-        echo "❌ No se pudo iniciar Storybook. Usando URL de Vercel como fallback."
-        STORYBOOK_URL="https://ubits-storybook10-q59fh1csi-elkin-garcias-projects-a0b1beb6.vercel.app/index.json"
-    fi
-    cd - > /dev/null
+    echo "⚠️  Necesitas agregar manualmente el addon a .storybook/main.ts:"
+    echo ""
+    echo "   addons: ["
+    echo "     getAbsolutePath('@storybook/addon-docs'),"
+    echo "     getAbsolutePath('@storybook/addon-mcp')  // ← Agregar esta línea"
+    echo "   ],"
+    echo ""
+    echo "💡 O ejecuta este script nuevamente después de agregarlo manualmente"
 fi
 
 echo ""
-echo "📝 Configuración MCP:"
-echo "   STORYBOOK_URL: $STORYBOOK_URL"
+echo "${GREEN}✅ Storybook MCP configurado${NC}"
 echo ""
-
-# Crear directorio si no existe
-mkdir -p "$(dirname "$MCP_CONFIG_PATH")"
-
-# Crear o actualizar configuración
-if [ -f "$MCP_CONFIG_PATH" ]; then
-    echo "📄 Archivo de configuración existe. Creando backup..."
-    cp "$MCP_CONFIG_PATH" "${MCP_CONFIG_PATH}.backup.$(date +%Y%m%d_%H%M%S)"
-    
-    # Verificar si ya existe la configuración de storybook-ubits
-    if grep -q "storybook-ubits" "$MCP_CONFIG_PATH"; then
-        echo "⚠️  La configuración de storybook-ubits ya existe."
-        echo "   Por favor, actualiza manualmente la URL si es necesario."
-    else
-        echo "➕ Agregando configuración de storybook-ubits..."
-        # Aquí necesitarías usar jq o similar para agregar al JSON
-        echo "   Por favor, agrega manualmente la configuración (ver GUIA-CONFIGURACION-STORYBOOK-MCP.md)"
-    fi
-else
-    echo "📄 Creando nuevo archivo de configuración..."
-    cat > "$MCP_CONFIG_PATH" << JSON
-{
-  "mcpServers": {
-    "storybook-ubits": {
-      "command": "npx",
-      "args": ["-y", "storybook-mcp@latest"],
-      "env": {
-        "STORYBOOK_URL": "$STORYBOOK_URL"
-      }
-    }
-  }
-}
-JSON
-    echo "✅ Archivo de configuración creado"
-fi
-
-echo ""
-echo "✅ Configuración completada!"
-echo ""
-echo "📋 Próximos pasos:"
-echo "   1. Reinicia Cursor para que los cambios surtan efecto"
-echo "   2. Verifica que el MCP esté funcionando preguntando al asistente:"
-echo "      'Lista los componentes disponibles en Storybook'"
-echo ""
-echo "📚 Para más información, consulta: GUIA-CONFIGURACION-STORYBOOK-MCP.md"
+echo "📝 Próximos pasos:"
+echo "   1. Asegúrate de que el addon esté en .storybook/main.ts"
+echo "   2. Inicia Storybook: npm run storybook"
+echo "   3. El servidor MCP estará disponible en: http://localhost:6006/mcp"
+echo "   4. Configura .cursor/mcp.json con:"
+echo "      {"
+echo "        \"mcpServers\": {"
+echo "          \"storybook\": {"
+echo "            \"url\": \"http://localhost:6006/mcp\""
+echo "          }"
+echo "        }"
+echo "      }"

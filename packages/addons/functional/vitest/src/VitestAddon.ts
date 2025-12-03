@@ -116,11 +116,7 @@ export class VitestAddon implements IFunctionalAddon {
 
 	getServices() {
 		return {
-			runTests: async (options?: {
-				watch?: boolean;
-				ui?: boolean;
-				coverage?: boolean;
-			}) => {
+			runTests: async (options?: { watch?: boolean; ui?: boolean; coverage?: boolean }) => {
 				if (!this.service) {
 					throw new Error('Vitest service no está inicializado');
 				}
@@ -141,4 +137,3 @@ export class VitestAddon implements IFunctionalAddon {
 		};
 	}
 }
-

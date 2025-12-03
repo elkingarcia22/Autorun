@@ -1,31 +1,48 @@
 {
-  "name": "@ubits/input",
-  "version": "1.0.0",
-  "type": "component",
-  "description": "Componente Input UBITS con todos los tipos, estados, tamaños y funcionalidades",
-  "components": [
-    {
-      "name": "ubits-input",
-      "tag": "ubits-input",
-      "path": "./input.js"
-    }
-  ],
-  "styles": ["./input.css"],
-  "dependencies": {
-    "@ubits/tokens": "^1.0.0",
-    "@ubits/icons": "^1.0.0",
-    "@ubits/typography": "^1.0.0"
-  },
-  "api": {
-    "create": "createInput",
-    "render": "renderInput"
-  },
-  "features": {
-    "types": ["text", "email", "password", "number", "tel", "url", "select", "textarea", "search", "autocomplete", "calendar"],
-    "sizes": ["xs", "sm", "md", "lg"],
-    "states": ["default", "hover", "focus", "active", "invalid", "disabled"],
-    "modifiers": ["with-icons", "with-helper", "with-counter", "mandatory", "validation"],
-    "special-features": ["password-toggle", "search-clear", "autocomplete", "select-infinite-scroll", "calendar-picker"]
-  }
+	"name": "@ubits/input",
+	"version": "1.0.0",
+	"type": "component",
+	"description": "Componente Input UBITS con todos los tipos, estados, tamaños y funcionalidades",
+	"components": [
+		{
+			"name": "ubits-input",
+			"tag": "ubits-input",
+			"path": "./input.js"
+		}
+	],
+	"styles": ["./input.css"],
+	"dependencies": {
+		"@ubits/tokens": "^1.0.0",
+		"@ubits/icons": "^1.0.0",
+		"@ubits/typography": "^1.0.0"
+	},
+	"api": {
+		"create": "createInput",
+		"render": "renderInput"
+	},
+	"features": {
+		"types": [
+			"text",
+			"email",
+			"password",
+			"number",
+			"tel",
+			"url",
+			"select",
+			"textarea",
+			"search",
+			"autocomplete",
+			"calendar"
+		],
+		"sizes": ["xs", "sm", "md", "lg"],
+		"states": ["default", "hover", "focus", "active", "invalid", "disabled"],
+		"modifiers": ["with-icons", "with-helper", "with-counter", "mandatory", "validation"],
+		"special-features": [
+			"password-toggle",
+			"search-clear",
+			"autocomplete",
+			"select-infinite-scroll",
+			"calendar-picker"
+		]
+	}
 }
-

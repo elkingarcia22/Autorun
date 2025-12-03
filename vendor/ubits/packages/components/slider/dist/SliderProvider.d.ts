@@ -12,11 +12,11 @@ export declare function renderSlider(options: SliderOptions): string;
  * Crea un elemento slider programáticamente
  */
 export declare function createSlider(options: SliderOptions): {
-    element: HTMLDivElement;
-    getValue: () => number | [number, number];
-    setValue: (value: number | [number, number]) => void;
-    disable: () => void;
-    enable: () => void;
-    setState: (newState: 'default' | 'disabled') => void;
+	element: HTMLDivElement;
+	getValue: () => number | [number, number];
+	setValue: (value: number | [number, number]) => void;
+	disable: () => void;
+	enable: () => void;
+	setState: (newState: 'default' | 'disabled') => void;
 } | null;
 //# sourceMappingURL=SliderProvider.d.ts.map

@@ -43,4 +43,3 @@ export {
 
 // Export default para que AddonLoader pueda cargarlo
 export { StandaloneAddon as default } from './StandaloneAddon';
-

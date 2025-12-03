@@ -75,9 +75,7 @@ export class ChromaticService {
 		try {
 			// Verificar si Chromatic está instalado
 			if (!this.isChromaticInstalled()) {
-				console.warn(
-					'⚠️  Chromatic no está instalado. Ejecuta: npm install --save-dev chromatic',
-				);
+				console.warn('⚠️  Chromatic no está instalado. Ejecuta: npm install --save-dev chromatic');
 				return;
 			}
 
@@ -144,11 +142,19 @@ export class ChromaticService {
 				command += ' --only-changed';
 			}
 
-			if (options?.exitZeroOnChanges !== undefined ? options.exitZeroOnChanges : this.config.exitZeroOnChanges) {
+			if (
+				options?.exitZeroOnChanges !== undefined
+					? options.exitZeroOnChanges
+					: this.config.exitZeroOnChanges
+			) {
 				command += ' --exit-zero-on-changes';
 			}
 
-			if (options?.autoAcceptChanges !== undefined ? options.autoAcceptChanges : this.config.autoAcceptChanges) {
+			if (
+				options?.autoAcceptChanges !== undefined
+					? options.autoAcceptChanges
+					: this.config.autoAcceptChanges
+			) {
 				command += ' --auto-accept-changes';
 			}
 
@@ -187,7 +193,8 @@ export class ChromaticService {
 				const buildNumberMatch = output.match(/build #(\d+)/);
 
 				// Verificar si hay cambios visuales
-				const changesDetected = output.includes('visual changes') || output.includes('changes detected');
+				const changesDetected =
+					output.includes('visual changes') || output.includes('changes detected');
 
 				return {
 					success: !this.config.exitZeroOnChanges || !changesDetected,
@@ -240,4 +247,3 @@ export class ChromaticService {
 		this.config = { ...this.config, ...config };
 	}
 }
-

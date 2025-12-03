@@ -76,11 +76,9 @@ export class CodecovAddon implements IFunctionalAddon {
 		const codecovConfig: Partial<CodecovConfig> = {};
 		if (config.enabled !== undefined) codecovConfig.enabled = config.enabled;
 		if (config.token !== undefined) codecovConfig.token = config.token;
-		if (config.coverageDir !== undefined)
-			codecovConfig.coverageDir = config.coverageDir;
+		if (config.coverageDir !== undefined) codecovConfig.coverageDir = config.coverageDir;
 		if (config.flags !== undefined) codecovConfig.flags = config.flags;
-		if (config.failOnError !== undefined)
-			codecovConfig.failOnError = config.failOnError;
+		if (config.failOnError !== undefined) codecovConfig.failOnError = config.failOnError;
 
 		this.config = { ...this.config, ...codecovConfig };
 		if (this.service) {
@@ -126,4 +124,3 @@ export class CodecovAddon implements IFunctionalAddon {
 		};
 	}
 }
-

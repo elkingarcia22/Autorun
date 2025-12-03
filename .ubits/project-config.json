@@ -1,24 +1,24 @@
 {
-  "autorun": {
-    "version": "1.0.0",
-    "addons": {
-      "active": [
-        "storybook",
-        "figma-sync",
-        "eslint",
-        "prettier",
-        "chromatic",
-        "standalone",
-        "supabase"
-      ],
-      "config": {}
-    },
-    "projectType": "ubits",
-    "ubits": {
-      "template": "administrador",
-      "module": "encuestas",
-      "product": "",
-      "canvasPath": "/Users/elkinmac/Desktop/Autorun/prototypes/canvas-administrador-encuestas-2025-12-03.html"
-    }
-  }
+	"autorun": {
+		"version": "1.0.0",
+		"addons": {
+			"active": [
+				"storybook",
+				"figma-sync",
+				"eslint",
+				"prettier",
+				"chromatic",
+				"standalone",
+				"supabase"
+			],
+			"config": {}
+		},
+		"projectType": "ubits",
+		"ubits": {
+			"template": "administrador",
+			"module": "encuestas",
+			"product": "",
+			"canvasPath": "/Users/elkinmac/Desktop/Autorun/prototypes/canvas-administrador-encuestas-2025-12-03.html"
+		}
+	}
 }

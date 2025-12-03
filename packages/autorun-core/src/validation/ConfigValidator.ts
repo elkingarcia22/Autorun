@@ -261,4 +261,3 @@ export class ConfigValidator {
 		return message;
 	}
 }
-

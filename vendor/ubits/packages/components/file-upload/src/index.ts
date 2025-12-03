@@ -8,7 +8,6 @@ export type { FileUploadOptions };
 
 // Exponer globalmente para uso en playground
 if (typeof window !== 'undefined') {
-  (window as any).createFileUpload = createFileUpload;
-  (window as any).renderFileUpload = renderFileUpload;
+	(window as any).createFileUpload = createFileUpload;
+	(window as any).renderFileUpload = renderFileUpload;
 }
-

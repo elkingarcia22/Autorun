@@ -17,6 +17,9 @@ dist/
 *.swp
 *.swo
 
+# Cursor MCP configuration (local, no versionar)
+.cursor/mcp.json
+
 # OS
 .DS_Store
 Thumbs.db

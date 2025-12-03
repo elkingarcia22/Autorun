@@ -47,7 +47,10 @@ export class InteractivePrompt {
 		// Verificar variable de entorno AUTORUN_ANSWERS (formato: "1,16" o "1\n16")
 		const envAnswers = process.env.AUTORUN_ANSWERS;
 		if (envAnswers) {
-			this.autoAnswers = envAnswers.split(/[,\n]/).map(a => a.trim()).filter(a => a);
+			this.autoAnswers = envAnswers
+				.split(/[,\n]/)
+				.map((a) => a.trim())
+				.filter((a) => a);
 			this.isAutoMode = this.autoAnswers.length > 0;
 			if (this.isAutoMode) {
 				console.log('🤖 Modo automático activado (respuestas del asistente)\n');
@@ -56,11 +59,14 @@ export class InteractivePrompt {
 
 		// Verificar argumentos de línea de comandos --answers="1,16"
 		const args = process.argv.slice(2);
-		const answersArg = args.find(arg => arg.startsWith('--answers='));
+		const answersArg = args.find((arg) => arg.startsWith('--answers='));
 		if (answersArg && !this.isAutoMode) {
 			const answersValue = answersArg.split('=')[1]?.replace(/^["']|["']$/g, '');
 			if (answersValue) {
-				this.autoAnswers = answersValue.split(/[,\n]/).map(a => a.trim()).filter(a => a);
+				this.autoAnswers = answersValue
+					.split(/[,\n]/)
+					.map((a) => a.trim())
+					.filter((a) => a);
 				this.isAutoMode = this.autoAnswers.length > 0;
 				if (this.isAutoMode) {
 					console.log('🤖 Modo automático activado (respuestas desde argumentos)\n');
@@ -96,7 +102,11 @@ export class InteractivePrompt {
 
 		// Si estamos en modo automático pero se agotaron las respuestas, DESACTIVAR modo automático
 		// para volver a modo interactivo y permitir que el usuario responda
-		if (this.isAutoMode && this.autoAnswers.length > 0 && this.autoAnswerIndex >= this.autoAnswers.length) {
+		if (
+			this.isAutoMode &&
+			this.autoAnswers.length > 0 &&
+			this.autoAnswerIndex >= this.autoAnswers.length
+		) {
 			// Desactivar modo automático - volver a modo interactivo
 			this.isAutoMode = false;
 			// Intentar recrear readline si está cerrado
@@ -119,14 +129,14 @@ export class InteractivePrompt {
 
 		// Verificar si se fuerza modo interactivo con variable de entorno
 		const forceInteractive = process.env.AUTORUN_FORCE_INTERACTIVE === 'true';
-		
+
 		// Verificar TTY
 		const hasTTY = process.stdin.isTTY && process.stdout.isTTY;
-		
+
 		// ESTRATEGIA: SIEMPRE intentar leer de stdin primero
 		// Solo usar default si realmente falla la lectura
 		// Esto permite que funcione tanto en terminal como en chat (si el chat puede inyectar input)
-		
+
 		// Modo interactivo: esperar respuesta del usuario
 		return new Promise((resolve, reject) => {
 			// Si NO hay TTY y NO se fuerza modo interactivo, intentar leer de todas formas
@@ -139,7 +149,7 @@ export class InteractivePrompt {
 					console.error(`[DEBUG question] Timeout: No hay input disponible, usando default`);
 					resolve('');
 				}, 500);
-				
+
 				// Intentar leer de stdin de todas formas (por si el chat puede inyectar input)
 				try {
 					if (!this.rl || (this.rl as any).closed) {
@@ -148,7 +158,7 @@ export class InteractivePrompt {
 							output: process.stdout,
 						});
 					}
-					
+
 					this.rl.question(prompt, (answer) => {
 						clearTimeout(timeout);
 						resolve(answer.trim());
@@ -162,7 +172,9 @@ export class InteractivePrompt {
 			}
 
 			// HAY TTY o modo interactivo forzado: SIEMPRE intentar leer de stdin
-			console.error(`[DEBUG question] HAY TTY o modo interactivo forzado, intentando leer de stdin...`);
+			console.error(
+				`[DEBUG question] HAY TTY o modo interactivo forzado, intentando leer de stdin...`,
+			);
 
 			// HAY TTY (terminal real): SIEMPRE intentar leer de stdin
 			// Intentar recrear readline si es necesario
@@ -234,12 +246,16 @@ export class InteractivePrompt {
 		if (autoAnswer !== null) {
 			// Modo automático: usar respuesta del asistente
 			const answerText = autoAnswer;
-			console.log(`Selecciona una opción (1-${options.length})${defaultValue ? ` [Enter para default]` : ''}: ${answerText}`);
-			
+			console.log(
+				`Selecciona una opción (1-${options.length})${defaultValue ? ` [Enter para default]` : ''}: ${answerText}`,
+			);
+
 			// Si la respuesta está vacía y hay un valor por defecto, usarlo
 			if (!answerText || answerText.trim() === '') {
 				if (defaultValue) {
-					console.log(`✅ Usando opción por defecto: ${options.find(o => o.value === defaultValue)?.label || defaultValue}\n`);
+					console.log(
+						`✅ Usando opción por defecto: ${options.find((o) => o.value === defaultValue)?.label || defaultValue}\n`,
+					);
 					return defaultValue;
 				}
 			}
@@ -252,14 +268,20 @@ export class InteractivePrompt {
 
 			// Si la respuesta automática no es válida, usar default o primera opción
 			if (defaultValue) {
-				console.log(`⚠️  Respuesta automática inválida, usando opción por defecto: ${options.find(o => o.value === defaultValue)?.label || defaultValue}\n`);
+				console.log(
+					`⚠️  Respuesta automática inválida, usando opción por defecto: ${options.find((o) => o.value === defaultValue)?.label || defaultValue}\n`,
+				);
 				return defaultValue;
 			}
 		}
 
 		// Si estamos en modo automático pero se agotaron las respuestas, DESACTIVAR modo automático
 		// para volver a modo interactivo y permitir que el usuario responda
-		if (this.isAutoMode && this.autoAnswers.length > 0 && this.autoAnswerIndex >= this.autoAnswers.length) {
+		if (
+			this.isAutoMode &&
+			this.autoAnswers.length > 0 &&
+			this.autoAnswerIndex >= this.autoAnswers.length
+		) {
 			// Desactivar modo automático - volver a modo interactivo
 			this.isAutoMode = false;
 			// Intentar recrear readline si está cerrado
@@ -303,7 +325,9 @@ export class InteractivePrompt {
 			if (!process.stdin.isTTY || !process.stdout.isTTY) {
 				// Contexto no interactivo: usar default automáticamente
 				if (defaultValue) {
-					console.log(`✅ Usando opción por defecto: ${options.find(o => o.value === defaultValue)?.label || defaultValue}\n`);
+					console.log(
+						`✅ Usando opción por defecto: ${options.find((o) => o.value === defaultValue)?.label || defaultValue}\n`,
+					);
 					return defaultValue;
 				}
 				// Si no hay default, usar primera opción
@@ -311,10 +335,13 @@ export class InteractivePrompt {
 				console.log(`✅ Usando primera opción (contexto no interactivo): ${firstOption.label}\n`);
 				return firstOption.value;
 			}
-			
+
 			// Verificar si realmente estábamos en modo automático con respuestas que se agotaron
-			const wasAutoModeWithAnswers = this.isAutoMode && this.autoAnswers.length > 0 && this.autoAnswerIndex >= this.autoAnswers.length;
-			
+			const wasAutoModeWithAnswers =
+				this.isAutoMode &&
+				this.autoAnswers.length > 0 &&
+				this.autoAnswerIndex >= this.autoAnswers.length;
+
 			// Si estamos en modo interactivo (no automático), verificar si el readline está disponible
 			if (!this.isAutoMode) {
 				// Verificar si el readline está disponible y funcionando
@@ -322,7 +349,9 @@ export class InteractivePrompt {
 					if (this.rl && !(this.rl as any).closed) {
 						// Readline está disponible, el usuario presionó Enter intencionalmente
 						if (defaultValue) {
-							console.log(`✅ Usando opción por defecto: ${options.find(o => o.value === defaultValue)?.label || defaultValue}\n`);
+							console.log(
+								`✅ Usando opción por defecto: ${options.find((o) => o.value === defaultValue)?.label || defaultValue}\n`,
+							);
 							return defaultValue;
 						}
 						// Si no hay default, pedir de nuevo
@@ -349,23 +378,27 @@ export class InteractivePrompt {
 					return this.select(prompt, options, defaultValue);
 				}
 			}
-			
+
 			// Si estamos en modo automático
 			if (wasAutoModeWithAnswers) {
 				// Realmente estábamos en modo automático y se agotaron las respuestas
 				if (defaultValue) {
-					console.log(`✅ Usando opción por defecto: ${options.find(o => o.value === defaultValue)?.label || defaultValue}\n`);
+					console.log(
+						`✅ Usando opción por defecto: ${options.find((o) => o.value === defaultValue)?.label || defaultValue}\n`,
+					);
 					return defaultValue;
 				}
 				const firstOption = options[0];
 				console.log(`✅ Seleccionado: ${firstOption.label}\n`);
 				return firstOption.value;
 			}
-			
+
 			// Si estamos en modo automático pero nunca hubo respuestas, esto no debería pasar
 			// Pero por seguridad, pedir de nuevo
 			if (defaultValue) {
-				console.log(`✅ Usando opción por defecto: ${options.find(o => o.value === defaultValue)?.label || defaultValue}\n`);
+				console.log(
+					`✅ Usando opción por defecto: ${options.find((o) => o.value === defaultValue)?.label || defaultValue}\n`,
+				);
 				return defaultValue;
 			}
 			console.log('⚠️  Por favor selecciona una opción válida.\n');
@@ -385,7 +418,9 @@ export class InteractivePrompt {
 		}
 		// En modo automático, usar default o primera opción
 		if (defaultValue) {
-			console.log(`⚠️  Opción inválida, usando opción por defecto: ${options.find(o => o.value === defaultValue)?.label || defaultValue}\n`);
+			console.log(
+				`⚠️  Opción inválida, usando opción por defecto: ${options.find((o) => o.value === defaultValue)?.label || defaultValue}\n`,
+			);
 			return defaultValue;
 		}
 		const firstOption = options[0];
@@ -399,7 +434,7 @@ export class InteractivePrompt {
 	 */
 	async confirm(prompt: string, defaultValue: boolean = true): Promise<boolean> {
 		const defaultText = defaultValue ? 'S/n' : 's/N';
-		
+
 		// Verificar si hay respuesta automática
 		const autoAnswer = this.getNextAutoAnswer();
 		if (autoAnswer !== null) {
@@ -408,19 +443,27 @@ export class InteractivePrompt {
 				return defaultValue;
 			}
 			const lowerAnswer = autoAnswer.toLowerCase();
-			return lowerAnswer === 's' || lowerAnswer === 'y' || lowerAnswer === 'yes' || lowerAnswer === 'si';
+			return (
+				lowerAnswer === 's' || lowerAnswer === 'y' || lowerAnswer === 'yes' || lowerAnswer === 'si'
+			);
 		}
 
 		// Si estamos en modo automático pero se agotaron las respuestas
-		if (this.isAutoMode && this.autoAnswers.length > 0 && this.autoAnswerIndex >= this.autoAnswers.length) {
+		if (
+			this.isAutoMode &&
+			this.autoAnswers.length > 0 &&
+			this.autoAnswerIndex >= this.autoAnswers.length
+		) {
 			// Verificar si estamos en un contexto no interactivo (sin TTY)
 			// Si no hay TTY, usar default automáticamente en lugar de intentar modo interactivo
 			if (!process.stdin.isTTY || !process.stdout.isTTY) {
 				// Contexto no interactivo: usar default automáticamente
-				console.log(`${prompt} (${defaultText}): (contexto no interactivo, usando default: ${defaultValue ? 'Sí' : 'No'})`);
+				console.log(
+					`${prompt} (${defaultText}): (contexto no interactivo, usando default: ${defaultValue ? 'Sí' : 'No'})`,
+				);
 				return defaultValue;
 			}
-			
+
 			// Hay TTY (terminal interactivo): desactivar modo automático y volver a modo interactivo
 			// Esto permite que el usuario responda en la terminal
 			this.isAutoMode = false;
@@ -436,7 +479,9 @@ export class InteractivePrompt {
 				// Si falla recrear readline, verificar TTY de nuevo
 				if (!process.stdin.isTTY || !process.stdout.isTTY) {
 					// No hay TTY: usar default
-					console.log(`${prompt} (${defaultText}): (error recreando readline, usando default: ${defaultValue ? 'Sí' : 'No'})`);
+					console.log(
+						`${prompt} (${defaultText}): (error recreando readline, usando default: ${defaultValue ? 'Sí' : 'No'})`,
+					);
 					return defaultValue;
 				}
 				// Hay TTY: intentar recrear readline de nuevo
@@ -457,7 +502,9 @@ export class InteractivePrompt {
 		}
 
 		const lowerAnswer = answer.toLowerCase();
-		return lowerAnswer === 's' || lowerAnswer === 'y' || lowerAnswer === 'yes' || lowerAnswer === 'si';
+		return (
+			lowerAnswer === 's' || lowerAnswer === 'y' || lowerAnswer === 'yes' || lowerAnswer === 'si'
+		);
 	}
 
 	/**
@@ -467,7 +514,11 @@ export class InteractivePrompt {
 	isAuto(): boolean {
 		// Solo considerar modo automático si hay respuestas automáticas disponibles
 		// Si se agotaron todas las respuestas, ya no estamos en modo automático
-		return this.isAutoMode && this.autoAnswers.length > 0 && this.autoAnswerIndex < this.autoAnswers.length;
+		return (
+			this.isAutoMode &&
+			this.autoAnswers.length > 0 &&
+			this.autoAnswerIndex < this.autoAnswers.length
+		);
 	}
 
 	/**
@@ -488,4 +539,3 @@ export class InteractivePrompt {
 		}
 	}
 }
-

@@ -102,4 +102,3 @@ export class ButtonAddon implements IComponentAddon {
 		// Los componentes ya se registran en initialize()
 	}
 }
-

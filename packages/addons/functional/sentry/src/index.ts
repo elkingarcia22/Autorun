@@ -52,4 +52,3 @@ export { SentryService, SentryConfig, SentryStatus } from './SentryService';
 
 // Export default para que AddonLoader pueda cargarlo
 export { SentryAddon as default } from './SentryAddon';
-

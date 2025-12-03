@@ -50,9 +50,7 @@ export class TurborepoService {
 
 		try {
 			if (!this.isTurborepoInstalled()) {
-				console.warn(
-					'⚠️  Turborepo no está instalado. Ejecuta: npm install --save-dev turbo',
-				);
+				console.warn('⚠️  Turborepo no está instalado. Ejecuta: npm install --save-dev turbo');
 				return;
 			}
 
@@ -89,11 +87,14 @@ export class TurborepoService {
 		await fs.writeFile(configPath, JSON.stringify(config, null, 2), 'utf-8');
 	}
 
-	async run(task: string, options?: {
-		filter?: string;
-		cache?: boolean;
-		parallel?: boolean;
-	}): Promise<BuildResult> {
+	async run(
+		task: string,
+		options?: {
+			filter?: string;
+			cache?: boolean;
+			parallel?: boolean;
+		},
+	): Promise<BuildResult> {
 		if (!this.config.enabled) {
 			return {
 				success: false,
@@ -162,4 +163,3 @@ export class TurborepoService {
 		this.config = { ...this.config, ...config };
 	}
 }
-

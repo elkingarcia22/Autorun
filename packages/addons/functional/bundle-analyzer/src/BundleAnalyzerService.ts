@@ -132,15 +132,10 @@ export class BundleAnalyzerService {
 			// 4. Calcular estadísticas
 			result.bundles = bundles;
 			result.totalSize = bundles.reduce((sum, b) => sum + b.size, 0);
-			result.totalGzippedSize = bundles.reduce(
-				(sum, b) => sum + (b.gzippedSize || 0),
-				0,
-			);
+			result.totalGzippedSize = bundles.reduce((sum, b) => sum + (b.gzippedSize || 0), 0);
 
 			// 5. Identificar bundles más grandes
-			result.largestBundles = [...bundles]
-				.sort((a, b) => b.size - a.size)
-				.slice(0, 10);
+			result.largestBundles = [...bundles].sort((a, b) => b.size - a.size).slice(0, 10);
 
 			// 6. Generar warnings y errores basados en thresholds
 			this.generateWarningsAndErrors(result, finalConfig);
@@ -168,9 +163,7 @@ export class BundleAnalyzerService {
 	/**
 	 * Analiza el build de Storybook
 	 */
-	private async analyzeStorybookBuild(
-		config: BundleAnalyzerConfig,
-	): Promise<BundleInfo[]> {
+	private async analyzeStorybookBuild(config: BundleAnalyzerConfig): Promise<BundleInfo[]> {
 		const bundles: BundleInfo[] = [];
 		const storybookBuildDir = path.join(this.projectPath, 'storybook-static');
 
@@ -536,8 +529,8 @@ export class BundleAnalyzerService {
     </thead>
     <tbody>
       ${data.largestBundles
-			.map(
-				(b: any) => `
+				.map(
+					(b: any) => `
       <tr>
         <td>${b.name}</td>
         <td>${b.sizeKB} KB</td>
@@ -545,8 +538,8 @@ export class BundleAnalyzerService {
         <td>${b.dependencies.length}</td>
       </tr>
       `,
-			)
-			.join('')}
+				)
+				.join('')}
     </tbody>
   </table>
 
@@ -592,4 +585,3 @@ export class BundleAnalyzerService {
 		this.config = { ...this.config, ...config };
 	}
 }
-

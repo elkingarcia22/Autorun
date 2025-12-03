@@ -6,73 +6,73 @@
 
 // Esperar a que UBITS esté disponible
 function waitForUBITS() {
-  return new Promise((resolve) => {
-    if (window.UBITS && window.UBITS.Tokens && window.UBITS.Components) {
-      resolve();
-    } else {
-      const checkInterval = setInterval(() => {
-        if (window.UBITS && window.UBITS.Tokens && window.UBITS.Components) {
-          clearInterval(checkInterval);
-          resolve();
-        }
-      }, 100);
-    }
-  });
+	return new Promise((resolve) => {
+		if (window.UBITS && window.UBITS.Tokens && window.UBITS.Components) {
+			resolve();
+		} else {
+			const checkInterval = setInterval(() => {
+				if (window.UBITS && window.UBITS.Tokens && window.UBITS.Components) {
+					clearInterval(checkInterval);
+					resolve();
+				}
+			}, 100);
+		}
+	});
 }
 
 /**
  * Cargar tokens desde Storybook
  */
 async function loadTokensFromStorybook(url) {
-  try {
-    await waitForUBITS();
-    
-    console.log('🔄 Cargando tokens desde Storybook...');
-    await window.UBITS.Tokens.applyFromSource({ cssUrl: url });
-    
-    console.log('✅ Tokens cargados exitosamente');
-    
-    // Verificar
-    const info = window.UBITS.Tokens.getInfo();
-    console.log('📊 Información de tokens:', info);
-    
-    return { success: true, info };
-  } catch (error) {
-    console.error('❌ Error cargando tokens:', error);
-    return { success: false, error: error.message };
-  }
+	try {
+		await waitForUBITS();
+
+		console.log('🔄 Cargando tokens desde Storybook...');
+		await window.UBITS.Tokens.applyFromSource({ cssUrl: url });
+
+		console.log('✅ Tokens cargados exitosamente');
+
+		// Verificar
+		const info = window.UBITS.Tokens.getInfo();
+		console.log('📊 Información de tokens:', info);
+
+		return { success: true, info };
+	} catch (error) {
+		console.error('❌ Error cargando tokens:', error);
+		return { success: false, error: error.message };
+	}
 }
 
 /**
  * Cargar componente desde Storybook
  */
 async function loadComponentFromStorybook(manifestUrl) {
-  try {
-    await waitForUBITS();
-    
-    console.log('🔄 Cargando componente desde Storybook...');
-    await window.UBITS.Components.loadFromStorybook({ manifestUrl });
-    
-    console.log('✅ Componente cargado exitosamente');
-    
-    // Verificar
-    const loaded = window.UBITS.Components.getLoadedComponents();
-    console.log('📊 Componentes cargados:', loaded);
-    
-    return { success: true, loaded };
-  } catch (error) {
-    console.error('❌ Error cargando componente:', error);
-    return { success: false, error: error.message };
-  }
+	try {
+		await waitForUBITS();
+
+		console.log('🔄 Cargando componente desde Storybook...');
+		await window.UBITS.Components.loadFromStorybook({ manifestUrl });
+
+		console.log('✅ Componente cargado exitosamente');
+
+		// Verificar
+		const loaded = window.UBITS.Components.getLoadedComponents();
+		console.log('📊 Componentes cargados:', loaded);
+
+		return { success: true, loaded };
+	} catch (error) {
+		console.error('❌ Error cargando componente:', error);
+		return { success: false, error: error.message };
+	}
 }
 
 /**
  * Crear panel de control para Storybook
  */
 function createStorybookPanel() {
-  const panel = document.createElement('div');
-  panel.id = 'storybook-panel';
-  panel.innerHTML = `
+	const panel = document.createElement('div');
+	panel.id = 'storybook-panel';
+	panel.innerHTML = `
     <div class="storybook-panel-container">
       <div class="storybook-panel-header">
         <h3>🎨 Storybook Loader</h3>
@@ -107,10 +107,10 @@ function createStorybookPanel() {
       </div>
     </div>
   `;
-  
-  // Estilos
-  const style = document.createElement('style');
-  style.textContent = `
+
+	// Estilos
+	const style = document.createElement('style');
+	style.textContent = `
     #storybook-panel {
       position: fixed;
       top: 20px;
@@ -255,128 +255,128 @@ function createStorybookPanel() {
       color: var(--ubits-fg-1-high);
     }
   `;
-  
-  document.head.appendChild(style);
-  document.body.appendChild(panel);
-  
-  // Actualizar información
-  updateStorybookInfo();
-  
-  return panel;
+
+	document.head.appendChild(style);
+	document.body.appendChild(panel);
+
+	// Actualizar información
+	updateStorybookInfo();
+
+	return panel;
 }
 
 /**
  * Actualizar información del panel
  */
 async function updateStorybookInfo() {
-  await waitForUBITS();
-  
-  const infoDiv = document.getElementById('storybook-info');
-  if (!infoDiv) return;
-  
-  try {
-    const tokensInfo = window.UBITS.Tokens.getInfo();
-    const componentsInfo = window.UBITS.Components.getLoadedComponents();
-    
-    infoDiv.innerHTML = `
+	await waitForUBITS();
+
+	const infoDiv = document.getElementById('storybook-info');
+	if (!infoDiv) return;
+
+	try {
+		const tokensInfo = window.UBITS.Tokens.getInfo();
+		const componentsInfo = window.UBITS.Components.getLoadedComponents();
+
+		infoDiv.innerHTML = `
       <div><strong>Tokens:</strong> ${tokensInfo.source} ${tokensInfo.isValid ? '✅' : '⚠️'}</div>
       <div><strong>Componentes:</strong> ${componentsInfo.length} cargados</div>
-      ${componentsInfo.length > 0 ? `<div style="margin-top: 8px; font-size: 11px;">${componentsInfo.map(c => c.name).join(', ')}</div>` : ''}
+      ${componentsInfo.length > 0 ? `<div style="margin-top: 8px; font-size: 11px;">${componentsInfo.map((c) => c.name).join(', ')}</div>` : ''}
     `;
-  } catch (error) {
-    infoDiv.innerHTML = `<div style="color: var(--ubits-accent-error);">Error: ${error.message}</div>`;
-  }
+	} catch (error) {
+		infoDiv.innerHTML = `<div style="color: var(--ubits-accent-error);">Error: ${error.message}</div>`;
+	}
 }
 
 /**
  * Cargar tokens desde input
  */
 async function loadTokensFromInput() {
-  const input = document.getElementById('tokens-url');
-  const status = document.getElementById('tokens-status');
-  
-  if (!input.value.trim()) {
-    status.className = 'storybook-status error';
-    status.textContent = 'Por favor ingresa una URL';
-    return;
-  }
-  
-  status.className = 'storybook-status';
-  status.textContent = 'Cargando...';
-  
-  const result = await loadTokensFromStorybook(input.value);
-  
-  if (result.success) {
-    status.className = 'storybook-status success';
-    status.textContent = '✅ Tokens cargados exitosamente';
-    updateStorybookInfo();
-  } else {
-    status.className = 'storybook-status error';
-    status.textContent = `❌ Error: ${result.error}`;
-  }
+	const input = document.getElementById('tokens-url');
+	const status = document.getElementById('tokens-status');
+
+	if (!input.value.trim()) {
+		status.className = 'storybook-status error';
+		status.textContent = 'Por favor ingresa una URL';
+		return;
+	}
+
+	status.className = 'storybook-status';
+	status.textContent = 'Cargando...';
+
+	const result = await loadTokensFromStorybook(input.value);
+
+	if (result.success) {
+		status.className = 'storybook-status success';
+		status.textContent = '✅ Tokens cargados exitosamente';
+		updateStorybookInfo();
+	} else {
+		status.className = 'storybook-status error';
+		status.textContent = `❌ Error: ${result.error}`;
+	}
 }
 
 /**
  * Cargar componente desde input
  */
 async function loadComponentFromInput() {
-  const input = document.getElementById('component-manifest-url');
-  const status = document.getElementById('component-status');
-  
-  if (!input.value.trim()) {
-    status.className = 'storybook-status error';
-    status.textContent = 'Por favor ingresa una URL';
-    return;
-  }
-  
-  status.className = 'storybook-status';
-  status.textContent = 'Cargando...';
-  
-  const result = await loadComponentFromStorybook(input.value);
-  
-  if (result.success) {
-    status.className = 'storybook-status success';
-    status.textContent = '✅ Componente cargado exitosamente';
-    updateStorybookInfo();
-  } else {
-    status.className = 'storybook-status error';
-    status.textContent = `❌ Error: ${result.error}`;
-  }
+	const input = document.getElementById('component-manifest-url');
+	const status = document.getElementById('component-status');
+
+	if (!input.value.trim()) {
+		status.className = 'storybook-status error';
+		status.textContent = 'Por favor ingresa una URL';
+		return;
+	}
+
+	status.className = 'storybook-status';
+	status.textContent = 'Cargando...';
+
+	const result = await loadComponentFromStorybook(input.value);
+
+	if (result.success) {
+		status.className = 'storybook-status success';
+		status.textContent = '✅ Componente cargado exitosamente';
+		updateStorybookInfo();
+	} else {
+		status.className = 'storybook-status error';
+		status.textContent = `❌ Error: ${result.error}`;
+	}
 }
 
 /**
  * Inicializar panel de Storybook
  */
 function initStorybookPanel() {
-  // Esperar a que el DOM esté listo
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-      setTimeout(() => {
-        createStorybookPanel();
-        // Actualizar cada 5 segundos
-        setInterval(updateStorybookInfo, 5000);
-      }, 1000);
-    });
-  } else {
-    setTimeout(() => {
-      createStorybookPanel();
-      setInterval(updateStorybookInfo, 5000);
-    }, 1000);
-  }
-  
-  // Agregar botón flotante para abrir panel
-  const toggleButton = document.createElement('button');
-  toggleButton.innerHTML = '🎨';
-  toggleButton.className = 'storybook-toggle-button';
-  toggleButton.onclick = () => {
-    const panel = document.getElementById('storybook-panel');
-    if (panel) {
-      panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
-    }
-  };
-  
-  const toggleStyle = document.createElement('style');
-  toggleStyle.textContent = `
+	// Esperar a que el DOM esté listo
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', () => {
+			setTimeout(() => {
+				createStorybookPanel();
+				// Actualizar cada 5 segundos
+				setInterval(updateStorybookInfo, 5000);
+			}, 1000);
+		});
+	} else {
+		setTimeout(() => {
+			createStorybookPanel();
+			setInterval(updateStorybookInfo, 5000);
+		}, 1000);
+	}
+
+	// Agregar botón flotante para abrir panel
+	const toggleButton = document.createElement('button');
+	toggleButton.innerHTML = '🎨';
+	toggleButton.className = 'storybook-toggle-button';
+	toggleButton.onclick = () => {
+		const panel = document.getElementById('storybook-panel');
+		if (panel) {
+			panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+		}
+	};
+
+	const toggleStyle = document.createElement('style');
+	toggleStyle.textContent = `
     .storybook-toggle-button {
       position: fixed;
       bottom: 20px;
@@ -399,9 +399,9 @@ function initStorybookPanel() {
       background: var(--ubits-button-primary-hover);
     }
   `;
-  
-  document.head.appendChild(toggleStyle);
-  document.body.appendChild(toggleButton);
+
+	document.head.appendChild(toggleStyle);
+	document.body.appendChild(toggleButton);
 }
 
 // Auto-inicializar
@@ -410,4 +410,3 @@ initStorybookPanel();
 // Exportar funciones globales
 window.loadTokensFromStorybook = loadTokensFromStorybook;
 window.loadComponentFromStorybook = loadComponentFromStorybook;
-

@@ -53,9 +53,7 @@ export class AddonConflictDetector {
 		activeAddonIds: string[],
 	): { conflict: ConflictGroup; conflictingAddon: string } | null {
 		// Buscar el grupo de conflicto al que pertenece el add-on
-		const conflictGroup = this.conflictGroups.find((group) =>
-			group.addons.includes(addonId),
-		);
+		const conflictGroup = this.conflictGroups.find((group) => group.addons.includes(addonId));
 
 		if (!conflictGroup) {
 			// No hay conflicto conocido para este add-on
@@ -108,9 +106,7 @@ export class AddonConflictDetector {
 		for (let i = 0; i < addonIds.length; i++) {
 			for (let j = i + 1; j < addonIds.length; j++) {
 				const conflictGroup = this.conflictGroups.find(
-					(group) =>
-						group.addons.includes(addonIds[i]) &&
-						group.addons.includes(addonIds[j]),
+					(group) => group.addons.includes(addonIds[i]) && group.addons.includes(addonIds[j]),
 				);
 
 				if (conflictGroup) {
@@ -133,11 +129,7 @@ export class AddonConflictDetector {
 	 * @param conflictingAddon ID del add-on que está en conflicto
 	 * @returns Mensaje de error formateado
 	 */
-	generateErrorMessage(
-		addonId: string,
-		conflict: ConflictGroup,
-		conflictingAddon: string,
-	): string {
+	generateErrorMessage(addonId: string, conflict: ConflictGroup, conflictingAddon: string): string {
 		const addonNames = conflict.addons.map((id) => `"${id}"`).join(' y ');
 		let message = `\n❌ Conflicto detectado:\n\n`;
 		message += `   No puedes activar "${addonId}" porque "${conflictingAddon}" ya está activo.\n\n`;
@@ -214,4 +206,3 @@ export function getConflictDetector(): AddonConflictDetector {
 	}
 	return conflictDetectorInstance;
 }
-

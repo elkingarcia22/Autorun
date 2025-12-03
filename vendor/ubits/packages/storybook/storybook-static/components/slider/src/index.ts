@@ -11,10 +11,9 @@ export { renderSlider, createSlider } from './SliderProvider';
 // export { UBITSSlider } from './SliderComponent';
 
 export type {
-  SliderOptions,
-  SliderOrientation,
-  SliderSize,
-  SliderState,
-  SliderMode
+	SliderOptions,
+	SliderOrientation,
+	SliderSize,
+	SliderState,
+	SliderMode,
 } from './types/SliderOptions';
-

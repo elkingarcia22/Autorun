@@ -6,5 +6,7 @@
 import './styles/score-card-metrics.css';
 
 export { renderScoreCardMetrics, createScoreCardMetrics } from './ScoreCardMetricsProvider';
-export type { ScoreCardMetricsOptions, ScoreCardMetricsSize } from './types/ScoreCardMetricsOptions';
-
+export type {
+	ScoreCardMetricsOptions,
+	ScoreCardMetricsSize,
+} from './types/ScoreCardMetricsOptions';

@@ -64,7 +64,8 @@ export class FeedbackService {
 			showSectionIndicator: true,
 			enableOnboarding: false,
 			welcomeTitle: '¡Bienvenido!',
-			welcomeSubtitle: 'Estás a punto de probar esta aplicación. Usa el botón de feedback (💬) para dejar tus comentarios.',
+			welcomeSubtitle:
+				'Estás a punto de probar esta aplicación. Usa el botón de feedback (💬) para dejar tus comentarios.',
 			welcomeFeatures: [],
 			feedbackButtonPosition: 'bottom-right',
 			feedbackButtonIcon: '💬',
@@ -74,7 +75,7 @@ export class FeedbackService {
 			persistLocally: true,
 			...config,
 		};
-		
+
 		// Si hay sectionOptions configuradas, usar la primera como sección inicial
 		if (this.config.sectionOptions && this.config.sectionOptions.length > 0) {
 			this.currentSection = this.config.sectionOptions[0];
@@ -492,7 +493,9 @@ export class FeedbackService {
 			// Verificar si window.AUTORUN.Components está disponible
 			const ComponentsAPI = (window as any).AUTORUN?.Components;
 			if (!ComponentsAPI) {
-				console.warn('⚠️  window.AUTORUN.Components no está disponible. Asegúrate de inicializar el sistema de componentes.');
+				console.warn(
+					'⚠️  window.AUTORUN.Components no está disponible. Asegúrate de inicializar el sistema de componentes.',
+				);
 				return;
 			}
 
@@ -500,7 +503,7 @@ export class FeedbackService {
 			for (const component of components) {
 				try {
 					const manifestUrl = `${baseUrl}/components/${component}/manifest.json`;
-					
+
 					// Verificar si ya está cargado para evitar duplicados
 					const componentName = `@autorun/${component}`;
 					if (ComponentsAPI.isLoaded && ComponentsAPI.isLoaded(componentName)) {
@@ -521,7 +524,7 @@ export class FeedbackService {
 			}
 
 			// Esperar un momento para que los scripts se ejecuten
-			await new Promise(resolve => setTimeout(resolve, 100));
+			await new Promise((resolve) => setTimeout(resolve, 100));
 		} catch (error) {
 			console.warn('⚠️  Error al cargar componentes del Storybook:', error);
 		}
@@ -533,7 +536,7 @@ export class FeedbackService {
 	 */
 	private checkComponentsAvailability(): boolean {
 		if (typeof window === 'undefined') return false;
-		
+
 		return !!(
 			(window as any).AUTORUN?.Welcome?.create ||
 			(window as any).AUTORUN?.Button?.create ||
@@ -558,13 +561,14 @@ export class FeedbackService {
 		if (this.storybookComponentsLoaded && typeof window !== 'undefined') {
 			try {
 				// Verificar si hay una función global para crear Welcome
-				const createWelcome = (window as any).createWelcome || (window as any).AUTORUN?.Welcome?.create;
+				const createWelcome =
+					(window as any).createWelcome || (window as any).AUTORUN?.Welcome?.create;
 				if (createWelcome) {
 					const welcomeFeatures = (this.config.welcomeFeatures || []).map((text) => ({
 						text,
 						icon: 'fa-check',
 					}));
-					
+
 					const welcomeElement = createWelcome({
 						title: this.config.welcomeTitle || '¡Bienvenido!',
 						subtitle: this.config.welcomeSubtitle || 'Estás a punto de probar esta aplicación.',
@@ -605,10 +609,12 @@ export class FeedbackService {
 
 		const subtitle = document.createElement('p');
 		subtitle.className = 'autorun-feedback-welcome-subtitle';
-		subtitle.textContent = this.config.welcomeSubtitle || 'Estás a punto de probar esta aplicación.';
+		subtitle.textContent =
+			this.config.welcomeSubtitle || 'Estás a punto de probar esta aplicación.';
 
 		const featuresList = document.createElement('ul');
-		featuresList.style.cssText = 'text-align: left; margin: 24px 0; padding: 0 20px; list-style: none;';
+		featuresList.style.cssText =
+			'text-align: left; margin: 24px 0; padding: 0 20px; list-style: none;';
 		if (this.config.welcomeFeatures && this.config.welcomeFeatures.length > 0) {
 			this.config.welcomeFeatures.forEach((feature) => {
 				const li = document.createElement('li');
@@ -666,7 +672,8 @@ export class FeedbackService {
 		// Intentar usar componente ButtonFeedback si está disponible
 		if (typeof window !== 'undefined') {
 			try {
-				const createButtonFeedback = (window as any).createButtonFeedback || (window as any).AUTORUN?.ButtonFeedback?.create;
+				const createButtonFeedback =
+					(window as any).createButtonFeedback || (window as any).AUTORUN?.ButtonFeedback?.create;
 				if (createButtonFeedback) {
 					const buttonFeedbackInstance = createButtonFeedback({
 						text: '',
@@ -674,10 +681,11 @@ export class FeedbackService {
 						position: this.config.feedbackButtonPosition || 'bottom-right',
 						offset: 24,
 						modalTitle: 'Deja tu Feedback',
-						sectionOptions: this.config.sectionOptions?.map(opt => ({
-							value: opt,
-							text: opt,
-						})) || [],
+						sectionOptions:
+							this.config.sectionOptions?.map((opt) => ({
+								value: opt,
+								text: opt,
+							})) || [],
 						defaultSection: this.config.sectionOptions?.[0] || '',
 						commentPlaceholder: '¿Qué funciona bien? ¿Qué falta? ¿Qué mejorarías?',
 						n8nWebhookUrl: this.config.webhookUrl,
@@ -758,7 +766,7 @@ export class FeedbackService {
 				<div class="autorun-feedback-form-group">
 					<label for="autorun-feedback-section">Sección actual:</label>
 					<select id="autorun-feedback-section" name="section" required>
-						${this.config.sectionOptions?.map(opt => `<option value="${opt}">${opt}</option>`).join('') || ''}
+						${this.config.sectionOptions?.map((opt) => `<option value="${opt}">${opt}</option>`).join('') || ''}
 					</select>
 				</div>
 				<div class="autorun-feedback-form-group">
@@ -801,7 +809,9 @@ export class FeedbackService {
 		}
 
 		this.feedbackModal.classList.add('show');
-		const commentTextarea = document.getElementById('autorun-feedback-comment') as HTMLTextAreaElement;
+		const commentTextarea = document.getElementById(
+			'autorun-feedback-comment',
+		) as HTMLTextAreaElement;
 		if (commentTextarea) {
 			commentTextarea.focus();
 		}
@@ -828,8 +838,12 @@ export class FeedbackService {
 	private async handleFeedbackSubmit(section?: string, comment?: string): Promise<void> {
 		// Si no se proporcionan parámetros, obtener del DOM (modal antiguo)
 		if (!section || !comment) {
-			const sectionSelect = document.getElementById('autorun-feedback-section') as HTMLSelectElement;
-			const commentTextarea = document.getElementById('autorun-feedback-comment') as HTMLTextAreaElement;
+			const sectionSelect = document.getElementById(
+				'autorun-feedback-section',
+			) as HTMLSelectElement;
+			const commentTextarea = document.getElementById(
+				'autorun-feedback-comment',
+			) as HTMLTextAreaElement;
 
 			if (sectionSelect) {
 				section = sectionSelect.value;
@@ -879,7 +893,10 @@ export class FeedbackService {
 
 		// Cerrar modal y mostrar confirmación
 		this.closeFeedbackModal();
-		await this.showNotification('¡Gracias por tu feedback! Se ha guardado correctamente.', 'success');
+		await this.showNotification(
+			'¡Gracias por tu feedback! Se ha guardado correctamente.',
+			'success',
+		);
 	}
 
 	/**
@@ -1034,7 +1051,10 @@ export class FeedbackService {
 	/**
 	 * Muestra una notificación
 	 */
-	private async showNotification(message: string, type: 'success' | 'error' | 'info' = 'info'): Promise<void> {
+	private async showNotification(
+		message: string,
+		type: 'success' | 'error' | 'info' = 'info',
+	): Promise<void> {
 		if (typeof document === 'undefined') return;
 
 		// Intentar usar componente Alert local si está disponible
@@ -1042,16 +1062,12 @@ export class FeedbackService {
 			try {
 				const showAlert = (window as any).showAlert || (window as any).AUTORUN?.Alert?.show;
 				const createAlert = (window as any).createAlert || (window as any).AUTORUN?.Alert?.create;
-				
+
 				if (showAlert) {
-					showAlert(
-						type === 'success' ? 'success' : type === 'error' ? 'error' : 'info',
-						message,
-						{
-							duration: 5000,
-							closable: true,
-						}
-					);
+					showAlert(type === 'success' ? 'success' : type === 'error' ? 'error' : 'info', message, {
+						duration: 5000,
+						closable: true,
+					});
 					return;
 				} else if (createAlert) {
 					const alertElement = createAlert({
@@ -1120,13 +1136,16 @@ export class FeedbackService {
 				const createMask = (window as any).createMask || (window as any).AUTORUN?.Mask?.create;
 				if (createMask) {
 					// Buscar el primer elemento interactivo para destacar
-					const firstInteractive = document.querySelector('button, a, input, select, textarea') as HTMLElement;
+					const firstInteractive = document.querySelector(
+						'button, a, input, select, textarea',
+					) as HTMLElement;
 					if (firstInteractive) {
 						const maskInstance = createMask({
 							targetElement: firstInteractive,
 							popover: {
 								title: 'Bienvenido',
-								content: 'Este es el sistema de feedback. Usa el botón flotante para dejar comentarios.',
+								content:
+									'Este es el sistema de feedback. Usa el botón flotante para dejar comentarios.',
 								onClose: () => {},
 							},
 							padding: 8,
@@ -1270,4 +1289,3 @@ export class FeedbackService {
 		}
 	}
 }
-

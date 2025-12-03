@@ -99,4 +99,3 @@ export class CodecovService {
 		this.config = { ...this.config, ...config };
 	}
 }
-

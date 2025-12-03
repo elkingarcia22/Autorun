@@ -12,14 +12,14 @@ export declare function renderInput(options: InputOptions): string;
  * Crea un elemento input programáticamente
  */
 export declare function createInput(options: InputOptions): {
-    element: HTMLDivElement;
-    inputElement: HTMLInputElement | HTMLTextAreaElement;
-    getValue: () => string;
-    setValue: (value: string) => void;
-    focus: () => void;
-    blur: () => void;
-    disable: () => void;
-    enable: () => void;
-    setState: (newState: string) => void;
+	element: HTMLDivElement;
+	inputElement: HTMLInputElement | HTMLTextAreaElement;
+	getValue: () => string;
+	setValue: (value: string) => void;
+	focus: () => void;
+	blur: () => void;
+	disable: () => void;
+	enable: () => void;
+	setState: (newState: string) => void;
 } | null;
 //# sourceMappingURL=InputProvider.d.ts.map

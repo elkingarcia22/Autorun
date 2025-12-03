@@ -13,39 +13,39 @@ import '../../button/src/styles/button.css';
 console.log('✅ [data-view/DataViewProvider.ts] Estilos button.css importados');
 // Helper para renderizar iconos FontAwesome
 function renderIconHelper(iconName, iconStyle = 'regular') {
-    const iconClass = iconStyle === 'solid' ? 'fas' : 'far';
-    const name = iconName.startsWith('fa-') ? iconName : `fa-${iconName}`;
-    return `<i class="${iconClass} ${name}"></i>`;
+	const iconClass = iconStyle === 'solid' ? 'fas' : 'far';
+	const name = iconName.startsWith('fa-') ? iconName : `fa-${iconName}`;
+	return `<i class="${iconClass} ${name}"></i>`;
 }
 // Helper para renderizar el badge de stock
 function renderStockBadge(status = 'INSTOCK') {
-    const statusConfig = {
-        INSTOCK: { text: 'INSTOCK', class: 'ubits-data-view__stock-badge--instock' },
-        LOWSTOCK: { text: 'LOWSTOCK', class: 'ubits-data-view__stock-badge--lowstock' },
-        OUTOFSTOCK: { text: 'OUTOFSTOCK', class: 'ubits-data-view__stock-badge--outofstock' }
-    };
-    const config = statusConfig[status] || statusConfig.INSTOCK;
-    return `<span class="ubits-data-view__stock-badge ${config.class}">${config.text}</span>`;
+	const statusConfig = {
+		INSTOCK: { text: 'INSTOCK', class: 'ubits-data-view__stock-badge--instock' },
+		LOWSTOCK: { text: 'LOWSTOCK', class: 'ubits-data-view__stock-badge--lowstock' },
+		OUTOFSTOCK: { text: 'OUTOFSTOCK', class: 'ubits-data-view__stock-badge--outofstock' },
+	};
+	const config = statusConfig[status] || statusConfig.INSTOCK;
+	return `<span class="ubits-data-view__stock-badge ${config.class}">${config.text}</span>`;
 }
 // Helper para renderizar el rating con estrellas
 function renderRating(rating) {
-    const fullStars = Math.floor(rating);
-    const hasHalfStar = rating % 1 >= 0.5;
-    const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
-    let starsHTML = '';
-    // Estrellas llenas
-    for (let i = 0; i < fullStars; i++) {
-        starsHTML += `<i class="fas fa-star ubits-data-view__star ubits-data-view__star--filled"></i>`;
-    }
-    // Media estrella
-    if (hasHalfStar) {
-        starsHTML += `<i class="fas fa-star-half-alt ubits-data-view__star ubits-data-view__star--half"></i>`;
-    }
-    // Estrellas vacías
-    for (let i = 0; i < emptyStars; i++) {
-        starsHTML += `<i class="far fa-star ubits-data-view__star ubits-data-view__star--empty"></i>`;
-    }
-    return `
+	const fullStars = Math.floor(rating);
+	const hasHalfStar = rating % 1 >= 0.5;
+	const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+	let starsHTML = '';
+	// Estrellas llenas
+	for (let i = 0; i < fullStars; i++) {
+		starsHTML += `<i class="fas fa-star ubits-data-view__star ubits-data-view__star--filled"></i>`;
+	}
+	// Media estrella
+	if (hasHalfStar) {
+		starsHTML += `<i class="fas fa-star-half-alt ubits-data-view__star ubits-data-view__star--half"></i>`;
+	}
+	// Estrellas vacías
+	for (let i = 0; i < emptyStars; i++) {
+		starsHTML += `<i class="far fa-star ubits-data-view__star ubits-data-view__star--empty"></i>`;
+	}
+	return `
     <div class="ubits-data-view__rating">
       ${starsHTML}
       <span class="ubits-body-sm-regular ubits-data-view__rating-number">${rating}</span>
@@ -54,22 +54,31 @@ function renderRating(rating) {
 }
 // Helper para formatear precio
 function formatPrice(price) {
-    return new Intl.NumberFormat('es-CO', {
-        style: 'currency',
-        currency: 'USD',
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0
-    }).format(price);
+	return new Intl.NumberFormat('es-CO', {
+		style: 'currency',
+		currency: 'USD',
+		minimumFractionDigits: 0,
+		maximumFractionDigits: 0,
+	}).format(price);
 }
 /**
  * Renderiza un producto individual como HTML string
  */
 function renderProduct(product, index, options) {
-    const { showCategory = true, showRating = true, showPrice = true, showWishlist = true, showBuyButton = true, buyButtonText = 'Buy Now', buyButtonIcon = 'shopping-cart', wishlistIcon = 'heart' } = options;
-    const productId = product.id || `product-${index}`;
-    const stockStatus = product.stockStatus || 'INSTOCK';
-    const inWishlist = product.inWishlist || false;
-    return `
+	const {
+		showCategory = true,
+		showRating = true,
+		showPrice = true,
+		showWishlist = true,
+		showBuyButton = true,
+		buyButtonText = 'Buy Now',
+		buyButtonIcon = 'shopping-cart',
+		wishlistIcon = 'heart',
+	} = options;
+	const productId = product.id || `product-${index}`;
+	const stockStatus = product.stockStatus || 'INSTOCK';
+	const inWishlist = product.inWishlist || false;
+	return `
     <div class="ubits-data-view__item" data-product-id="${productId}" data-index="${index}">
       <div class="ubits-data-view__image-wrapper">
         <img 
@@ -88,7 +97,9 @@ function renderProduct(product, index, options) {
         <div class="ubits-data-view__right">
           ${showPrice ? `<span class="ubits-body-md-bold ubits-data-view__price">${formatPrice(product.price)}</span>` : ''}
           <div class="ubits-data-view__actions">
-            ${showWishlist ? `
+            ${
+							showWishlist
+								? `
               <button 
                 class="ubits-button ubits-button--secondary ubits-button--sm ubits-data-view__wishlist-button ${inWishlist ? 'ubits-data-view__wishlist-button--active' : ''}"
                 data-action="wishlist"
@@ -96,13 +107,19 @@ function renderProduct(product, index, options) {
               >
                 ${renderIconHelper(wishlistIcon, inWishlist ? 'solid' : 'regular')}
               </button>
-            ` : ''}
-            ${showBuyButton ? `
+            `
+								: ''
+						}
+            ${
+							showBuyButton
+								? `
               <button class="ubits-button ubits-button--primary ubits-button--sm ubits-data-view__buy-button" data-action="buy">
                 ${renderIconHelper(buyButtonIcon, 'solid')}
                 <span>${buyButtonText}</span>
               </button>
-            ` : ''}
+            `
+								: ''
+						}
           </div>
         </div>
       </div>
@@ -113,84 +130,93 @@ function renderProduct(product, index, options) {
  * Renderiza el componente DataView como HTML string
  */
 export function renderDataView(options) {
-    console.log('🔵 [data-view] renderDataView llamado con opciones:', {
-        productsCount: options.products?.length || 0,
-        size: options.size,
-        containerId: options.containerId
-    });
-    const { products = [], containerId, size = 'md', className = '', attributes = {} } = options;
-    const sizeClass = `ubits-data-view--${size}`;
-    const containerClasses = ['ubits-data-view', sizeClass, className].filter(Boolean).join(' ');
-    const containerAttrs = Object.entries(attributes)
-        .map(([key, value]) => `${key}="${value}"`)
-        .join(' ');
-    const idAttr = containerId ? `id="${containerId}"` : '';
-    let html = `<div class="${containerClasses}" ${idAttr} ${containerAttrs}>`;
-    products.forEach((product, index) => {
-        html += renderProduct(product, index, options);
-    });
-    html += '</div>';
-    return html;
+	console.log('🔵 [data-view] renderDataView llamado con opciones:', {
+		productsCount: options.products?.length || 0,
+		size: options.size,
+		containerId: options.containerId,
+	});
+	const { products = [], containerId, size = 'md', className = '', attributes = {} } = options;
+	const sizeClass = `ubits-data-view--${size}`;
+	const containerClasses = ['ubits-data-view', sizeClass, className].filter(Boolean).join(' ');
+	const containerAttrs = Object.entries(attributes)
+		.map(([key, value]) => `${key}="${value}"`)
+		.join(' ');
+	const idAttr = containerId ? `id="${containerId}"` : '';
+	let html = `<div class="${containerClasses}" ${idAttr} ${containerAttrs}>`;
+	products.forEach((product, index) => {
+		html += renderProduct(product, index, options);
+	});
+	html += '</div>';
+	return html;
 }
 /**
  * Crea un elemento DataView programáticamente
  */
 export function createDataView(options) {
-    console.log('🔵 [data-view] createDataView llamado con opciones:', {
-        productsCount: options.products?.length || 0,
-        size: options.size,
-        containerId: options.containerId,
-        hasContainer: !!options.container
-    });
-    if (typeof document === 'undefined') {
-        throw new Error('createDataView requiere un entorno con DOM (navegador)');
-    }
-    const { container, containerId, products = [], size = 'md', onProductClick, onBuyClick, onWishlistClick, className = '', attributes = {} } = options;
-    // Crear contenedor
-    const element = container || document.createElement('div');
-    const sizeClass = `ubits-data-view--${size}`;
-    element.className = ['ubits-data-view', sizeClass, className].filter(Boolean).join(' ');
-    if (containerId) {
-        element.id = containerId;
-    }
-    // Aplicar atributos
-    Object.entries(attributes).forEach(([key, value]) => {
-        element.setAttribute(key, value);
-    });
-    // Renderizar productos
-    element.innerHTML = renderDataView(options);
-    // Agregar event listeners
-    const items = element.querySelectorAll('.ubits-data-view__item');
-    items.forEach((item, index) => {
-        const product = products[index];
-        if (!product)
-            return;
-        // Click en el producto
-        if (onProductClick) {
-            item.addEventListener('click', (e) => {
-                // No disparar si se hace click en un botón
-                const target = e.target;
-                if (!target.closest('button')) {
-                    onProductClick(product, index, item);
-                }
-            });
-        }
-        // Click en botón de compra
-        const buyButton = item.querySelector('[data-action="buy"]');
-        if (buyButton && onBuyClick) {
-            buyButton.addEventListener('click', (e) => {
-                e.stopPropagation();
-                onBuyClick(product, index, item);
-            });
-        }
-        // Click en botón de wishlist
-        const wishlistButton = item.querySelector('[data-action="wishlist"]');
-        if (wishlistButton && onWishlistClick) {
-            wishlistButton.addEventListener('click', (e) => {
-                e.stopPropagation();
-                onWishlistClick(product, index, item);
-            });
-        }
-    });
-    return element;
+	console.log('🔵 [data-view] createDataView llamado con opciones:', {
+		productsCount: options.products?.length || 0,
+		size: options.size,
+		containerId: options.containerId,
+		hasContainer: !!options.container,
+	});
+	if (typeof document === 'undefined') {
+		throw new Error('createDataView requiere un entorno con DOM (navegador)');
+	}
+	const {
+		container,
+		containerId,
+		products = [],
+		size = 'md',
+		onProductClick,
+		onBuyClick,
+		onWishlistClick,
+		className = '',
+		attributes = {},
+	} = options;
+	// Crear contenedor
+	const element = container || document.createElement('div');
+	const sizeClass = `ubits-data-view--${size}`;
+	element.className = ['ubits-data-view', sizeClass, className].filter(Boolean).join(' ');
+	if (containerId) {
+		element.id = containerId;
+	}
+	// Aplicar atributos
+	Object.entries(attributes).forEach(([key, value]) => {
+		element.setAttribute(key, value);
+	});
+	// Renderizar productos
+	element.innerHTML = renderDataView(options);
+	// Agregar event listeners
+	const items = element.querySelectorAll('.ubits-data-view__item');
+	items.forEach((item, index) => {
+		const product = products[index];
+		if (!product) return;
+		// Click en el producto
+		if (onProductClick) {
+			item.addEventListener('click', (e) => {
+				// No disparar si se hace click en un botón
+				const target = e.target;
+				if (!target.closest('button')) {
+					onProductClick(product, index, item);
+				}
+			});
+		}
+		// Click en botón de compra
+		const buyButton = item.querySelector('[data-action="buy"]');
+		if (buyButton && onBuyClick) {
+			buyButton.addEventListener('click', (e) => {
+				e.stopPropagation();
+				onBuyClick(product, index, item);
+			});
+		}
+		// Click en botón de wishlist
+		const wishlistButton = item.querySelector('[data-action="wishlist"]');
+		if (wishlistButton && onWishlistClick) {
+			wishlistButton.addEventListener('click', (e) => {
+				e.stopPropagation();
+				onWishlistClick(product, index, item);
+			});
+		}
+	});
+	return element;
 }

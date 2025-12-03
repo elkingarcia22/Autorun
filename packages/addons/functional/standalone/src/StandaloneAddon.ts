@@ -6,11 +6,7 @@
  */
 
 import { IFunctionalAddon, AutorunContext } from '@autorun/core';
-import {
-	StandaloneService,
-	StandaloneConfig,
-	StandaloneBuildResult,
-} from './StandaloneService';
+import { StandaloneService, StandaloneConfig, StandaloneBuildResult } from './StandaloneService';
 
 export class StandaloneAddon implements IFunctionalAddon {
 	readonly id = 'standalone';
@@ -209,4 +205,3 @@ export class StandaloneAddon implements IFunctionalAddon {
 		return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i];
 	}
 }
-

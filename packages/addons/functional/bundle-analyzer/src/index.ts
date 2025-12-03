@@ -47,4 +47,3 @@ export {
 
 // Export default para que AddonLoader pueda cargarlo
 export { BundleAnalyzerAddon as default } from './BundleAnalyzerAddon';
-

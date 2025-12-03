@@ -10,10 +10,7 @@ import { IFunctionalAddon } from './interfaces/IFunctionalAddon';
 import { AddonRegistry } from './AddonRegistry';
 import { AddonLoader } from './AddonLoader';
 import { ConfigManager } from './ConfigManager';
-import {
-	getConflictDetector,
-	AddonConflictError,
-} from './AddonConflictDetector';
+import { getConflictDetector, AddonConflictError } from './AddonConflictDetector';
 import {
 	HubNotInitializedError,
 	HubAlreadyInitializedError,
@@ -96,9 +93,7 @@ export class AutorunHub {
 				);
 				console.error(errorMessage);
 			}
-			throw new Error(
-				`No se pueden activar add-ons con conflictos. Revisa los mensajes arriba.`,
-			);
+			throw new Error(`No se pueden activar add-ons con conflictos. Revisa los mensajes arriba.`);
 		}
 
 		// Resolver orden de dependencias
@@ -210,9 +205,7 @@ export class AutorunHub {
 					);
 				}
 			} else {
-				const availableAddons = this.registry
-					.getAll()
-					.map((a) => a.id);
+				const availableAddons = this.registry.getAll().map((a) => a.id);
 				throw new AddonNotFoundError(addonId, availableAddons);
 			}
 		}
@@ -241,10 +234,7 @@ export class AutorunHub {
 			try {
 				await addon.activate();
 			} catch (error: any) {
-				throw new AddonActivationError(
-					addonId,
-					error.message || 'Error desconocido al activar',
-				);
+				throw new AddonActivationError(addonId, error.message || 'Error desconocido al activar');
 			}
 		}
 
@@ -381,10 +371,7 @@ export class AutorunHub {
 		}
 
 		if (addon.type !== 'functional') {
-			throw new ServiceNotFoundError(
-				addonId,
-				serviceName,
-			);
+			throw new ServiceNotFoundError(addonId, serviceName);
 		}
 
 		const functionalAddon = addon as IFunctionalAddon;

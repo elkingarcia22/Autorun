@@ -6,7 +6,6 @@ export { createProgressBar, renderProgressBar };
 export type { ProgressOptions, ProgressSegment };
 
 if (typeof window !== 'undefined') {
-  (window as any).createProgressBar = createProgressBar;
-  (window as any).renderProgressBar = renderProgressBar;
+	(window as any).createProgressBar = createProgressBar;
+	(window as any).renderProgressBar = renderProgressBar;
 }
-

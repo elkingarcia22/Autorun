@@ -27,13 +27,13 @@ export class TemplateLoader {
 
 		// Intentar cargar desde Storybook
 		const templateUrl = `${this.storybookUrl}/templates/desktop`;
-		
+
 		try {
 			const response = await fetch(templateUrl);
 			if (!response.ok) {
 				throw new Error(`Error cargando template: ${response.statusText}`);
 			}
-			
+
 			// El template puede venir como HTML, JSON con estructura, etc.
 			const template = await response.text();
 			return this.parseTemplate(template);
@@ -85,14 +85,12 @@ export class TemplateLoader {
 	/**
 	 * Carga template específico (Administrador/Colaborador)
 	 */
-	async loadTemplate(
-		type: 'administrador' | 'colaborador',
-	): Promise<any> {
+	async loadTemplate(type: 'administrador' | 'colaborador'): Promise<any> {
 		const templateConfig = UBITS_PRESET.templates[type];
-		
+
 		// Cargar template base desktop
 		const desktopTemplate = await this.loadDesktopTemplate();
-		
+
 		// Aplicar configuración específica del template
 		return {
 			...desktopTemplate,
@@ -100,4 +98,3 @@ export class TemplateLoader {
 		};
 	}
 }
-

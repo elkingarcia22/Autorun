@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Script de Setup Automatizado Robusto para Feedback
- * 
+ *
  * Automatiza TODO lo posible si se proporcionan las APIs y credenciales.
  * Si no, guía al usuario paso a paso para hacerlo manualmente.
  */
@@ -362,18 +362,23 @@ async function main() {
 		console.log('📝 INFORMACIÓN DEL PROYECTO\n');
 		config.projectName = (await question('Nombre del proyecto: ')) || 'Feedback';
 		const sectionOptionsInput =
-			(await question('Secciones (separadas por comas, ej: Inicio,Productos,Contacto): ')) || 'Inicio,Otra';
+			(await question('Secciones (separadas por comas, ej: Inicio,Productos,Contacto): ')) ||
+			'Inicio,Otra';
 		config.sectionOptions = sectionOptionsInput.split(',').map((s) => s.trim());
 
 		// 2. Google Sheets - Intentar automatizar
 		console.log('\n📊 CONFIGURACIÓN DE GOOGLE SHEETS\n');
-		const useGoogleApi = (await question('¿Tienes credenciales de Service Account? (s/n): ')).toLowerCase() === 's';
+		const useGoogleApi =
+			(await question('¿Tienes credenciales de Service Account? (s/n): ')).toLowerCase() === 's';
 
 		if (useGoogleApi) {
 			config.googleCredentialsPath = await question('Ruta al archivo de credenciales JSON: ');
 
 			if (config.googleCredentialsPath && existsSync(config.googleCredentialsPath)) {
-				const sheet = await createGoogleSheet(config.googleCredentialsPath, `${config.projectName} - Feedback`);
+				const sheet = await createGoogleSheet(
+					config.googleCredentialsPath,
+					`${config.projectName} - Feedback`,
+				);
 				if (sheet) {
 					config.googleSheetId = sheet.sheetId;
 					config.googleSheetUrl = sheet.url;
@@ -391,7 +396,9 @@ async function main() {
 
 		// Si no se creó automáticamente, pedir ID
 		if (!config.googleSheetId) {
-			const sheetId = await question('\nID del Google Sheet (o presiona Enter para configurarlo después): ');
+			const sheetId = await question(
+				'\nID del Google Sheet (o presiona Enter para configurarlo después): ',
+			);
 			if (sheetId) {
 				config.googleSheetId = sheetId;
 			} else {
@@ -401,14 +408,16 @@ async function main() {
 
 		// 3. Gemini API
 		console.log('\n🤖 CONFIGURACIÓN DE GEMINI AI (Opcional)\n');
-		config.geminiApiKey = (await question('API Key de Gemini (presiona Enter para omitir): ')) || undefined;
+		config.geminiApiKey =
+			(await question('API Key de Gemini (presiona Enter para omitir): ')) || undefined;
 		if (!config.geminiApiKey) {
 			result.warnings.push('Gemini API Key no configurada - el análisis automático no funcionará');
 		}
 
 		// 4. Slack
 		console.log('\n💬 CONFIGURACIÓN DE SLACK (Opcional)\n');
-		config.slackChannelId = (await question('ID del canal de Slack (presiona Enter para omitir): ')) || undefined;
+		config.slackChannelId =
+			(await question('ID del canal de Slack (presiona Enter para omitir): ')) || undefined;
 		if (!config.slackChannelId) {
 			result.warnings.push('Slack Channel ID no configurado - las notificaciones no se enviarán');
 		}
@@ -429,10 +438,13 @@ async function main() {
 
 		// 6. n8n - Intentar automatizar importación
 		console.log('\n🔗 CONFIGURACIÓN DE N8N\n');
-		const useN8nApi = (await question('¿Tienes acceso a la API de n8n? (s/n): ')).toLowerCase() === 's';
+		const useN8nApi =
+			(await question('¿Tienes acceso a la API de n8n? (s/n): ')).toLowerCase() === 's';
 
 		if (useN8nApi) {
-			config.n8nApiUrl = await question('URL de tu instancia de n8n (ej: https://tu-n8n.app.n8n.cloud): ');
+			config.n8nApiUrl = await question(
+				'URL de tu instancia de n8n (ej: https://tu-n8n.app.n8n.cloud): ',
+			);
 			config.n8nApiKey = await question('API Key de n8n: ');
 
 			if (config.n8nApiUrl && config.n8nApiKey) {
@@ -459,7 +471,9 @@ async function main() {
 			console.log('   3. Activa el workflow');
 			console.log('   4. Copia el Webhook URL que aparece\n');
 
-			config.webhookUrl = (await question('Webhook URL de n8n (o presiona Enter para configurarlo después): ')) || undefined;
+			config.webhookUrl =
+				(await question('Webhook URL de n8n (o presiona Enter para configurarlo después): ')) ||
+				undefined;
 			if (!config.webhookUrl) {
 				result.manualSteps.push('Obtener Webhook URL de n8n y actualizar configuración');
 			}
@@ -468,7 +482,11 @@ async function main() {
 		// 7. Actualizar configuración del proyecto
 		if (config.webhookUrl) {
 			const configPath = join(process.cwd(), '.ubits', 'project-config.json');
-			const updated = await updateProjectConfig(configPath, config.webhookUrl, config.sectionOptions);
+			const updated = await updateProjectConfig(
+				configPath,
+				config.webhookUrl,
+				config.sectionOptions,
+			);
 			if (updated) {
 				result.configUpdated = true;
 				log('✅ Configuración del proyecto actualizada!', 'success');

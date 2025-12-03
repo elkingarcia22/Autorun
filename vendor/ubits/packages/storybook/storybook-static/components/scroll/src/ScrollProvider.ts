@@ -9,21 +9,19 @@ import type { ScrollOptions } from './types/ScrollOptions';
  * Renderiza el HTML de un Scrollbar
  */
 export function renderScrollbar(options: ScrollOptions): string {
-  const {
-    orientation = 'vertical',
-    state = 'default',
-    className = ''
-  } = options;
+	const { orientation = 'vertical', state = 'default', className = '' } = options;
 
-  // Construir clases
-  const classes = [
-    'ubits-scrollbar',
-    `ubits-scrollbar--${orientation}`,
-    state ? `ubits-scrollbar--${state}` : '',
-    className
-  ].filter(Boolean).join(' ');
+	// Construir clases
+	const classes = [
+		'ubits-scrollbar',
+		`ubits-scrollbar--${orientation}`,
+		state ? `ubits-scrollbar--${state}` : '',
+		className,
+	]
+		.filter(Boolean)
+		.join(' ');
 
-  return `
+	return `
     <div class="${classes}">
       <div class="ubits-scrollbar__bar"></div>
     </div>
@@ -34,225 +32,222 @@ export function renderScrollbar(options: ScrollOptions): string {
  * Crea y renderiza un Scrollbar en el DOM y lo sincroniza con un elemento scrollable
  */
 export function createScrollbar(options: ScrollOptions): {
-  element: HTMLElement;
-  update: () => void;
-  destroy: () => void;
+	element: HTMLElement;
+	update: () => void;
+	destroy: () => void;
 } {
-  const {
-    containerId,
-    targetId,
-    orientation = 'vertical',
-    state = 'default',
-    className = ''
-  } = options;
+	const {
+		containerId,
+		targetId,
+		orientation = 'vertical',
+		state = 'default',
+		className = '',
+	} = options;
 
-  // Crear contenedor si no existe
-  let container: HTMLElement;
-  if (containerId) {
-    container = document.getElementById(containerId) || document.body;
-  } else {
-    container = document.body;
-  }
+	// Crear contenedor si no existe
+	let container: HTMLElement;
+	if (containerId) {
+		container = document.getElementById(containerId) || document.body;
+	} else {
+		container = document.body;
+	}
 
-  // Crear elemento del scrollbar
-  const wrapper = document.createElement('div');
-  wrapper.innerHTML = renderScrollbar({ orientation, state, className });
-  const scrollbarElement = wrapper.firstElementChild as HTMLElement;
+	// Crear elemento del scrollbar
+	const wrapper = document.createElement('div');
+	wrapper.innerHTML = renderScrollbar({ orientation, state, className });
+	const scrollbarElement = wrapper.firstElementChild as HTMLElement;
 
-  if (!scrollbarElement) {
-    throw new Error('No se pudo crear el scrollbar');
-  }
+	if (!scrollbarElement) {
+		throw new Error('No se pudo crear el scrollbar');
+	}
 
-  const barElement = scrollbarElement.querySelector('.ubits-scrollbar__bar') as HTMLElement;
+	const barElement = scrollbarElement.querySelector('.ubits-scrollbar__bar') as HTMLElement;
 
-  if (!barElement) {
-    throw new Error('No se pudo encontrar la barra del scrollbar');
-  }
+	if (!barElement) {
+		throw new Error('No se pudo encontrar la barra del scrollbar');
+	}
 
-  // Obtener el elemento target (scrollable)
-  let targetElement: HTMLElement | null = null;
-  if (targetId) {
-    targetElement = document.getElementById(targetId);
-  } else if (containerId) {
-    // Si no hay targetId, buscar el primer elemento scrollable en el contenedor
-    const scrollable = container.querySelector('[data-scrollable]');
-    if (scrollable) {
-      targetElement = scrollable as HTMLElement;
-    }
-  }
+	// Obtener el elemento target (scrollable)
+	let targetElement: HTMLElement | null = null;
+	if (targetId) {
+		targetElement = document.getElementById(targetId);
+	} else if (containerId) {
+		// Si no hay targetId, buscar el primer elemento scrollable en el contenedor
+		const scrollable = container.querySelector('[data-scrollable]');
+		if (scrollable) {
+			targetElement = scrollable as HTMLElement;
+		}
+	}
 
-  // Función para actualizar el scrollbar basado en el scroll del target
-  const updateScrollbar = () => {
-    if (!targetElement || !barElement) return;
+	// Función para actualizar el scrollbar basado en el scroll del target
+	const updateScrollbar = () => {
+		if (!targetElement || !barElement) return;
 
-    const isVertical = orientation === 'vertical';
-    const scrollProperty = isVertical ? 'scrollTop' : 'scrollLeft';
-    const clientProperty = isVertical ? 'clientHeight' : 'clientWidth';
-    const scrollSizeProperty = isVertical ? 'scrollHeight' : 'scrollWidth';
+		const isVertical = orientation === 'vertical';
+		const scrollProperty = isVertical ? 'scrollTop' : 'scrollLeft';
+		const clientProperty = isVertical ? 'clientHeight' : 'clientWidth';
+		const scrollSizeProperty = isVertical ? 'scrollHeight' : 'scrollWidth';
 
-    const scroll = targetElement[scrollProperty];
-    const clientSize = targetElement[clientProperty];
-    const scrollSize = targetElement[scrollSizeProperty];
+		const scroll = targetElement[scrollProperty];
+		const clientSize = targetElement[clientProperty];
+		const scrollSize = targetElement[scrollSizeProperty];
 
-    if (scrollSize <= clientSize) {
-      // No hay scroll necesario
-      barElement.style.opacity = '0';
-      return;
-    }
+		if (scrollSize <= clientSize) {
+			// No hay scroll necesario
+			barElement.style.opacity = '0';
+			return;
+		}
 
-    // Calcular posición y tamaño del thumb
-    const scrollbarSize = isVertical ? scrollbarElement.clientHeight : scrollbarElement.clientWidth;
-    const thumbSize = Math.max((clientSize / scrollSize) * scrollbarSize, 20); // Mínimo 20px
-    const maxThumbPosition = scrollbarSize - thumbSize;
-    const thumbPosition = (scroll / (scrollSize - clientSize)) * maxThumbPosition;
+		// Calcular posición y tamaño del thumb
+		const scrollbarSize = isVertical ? scrollbarElement.clientHeight : scrollbarElement.clientWidth;
+		const thumbSize = Math.max((clientSize / scrollSize) * scrollbarSize, 20); // Mínimo 20px
+		const maxThumbPosition = scrollbarSize - thumbSize;
+		const thumbPosition = (scroll / (scrollSize - clientSize)) * maxThumbPosition;
 
-    if (isVertical) {
-      barElement.style.height = `${thumbSize}px`;
-      barElement.style.transform = `translateY(${thumbPosition}px)`;
-    } else {
-      barElement.style.width = `${thumbSize}px`;
-      barElement.style.transform = `translateX(${thumbPosition}px)`;
-    }
+		if (isVertical) {
+			barElement.style.height = `${thumbSize}px`;
+			barElement.style.transform = `translateY(${thumbPosition}px)`;
+		} else {
+			barElement.style.width = `${thumbSize}px`;
+			barElement.style.transform = `translateX(${thumbPosition}px)`;
+		}
 
-    barElement.style.opacity = '1';
-  };
+		barElement.style.opacity = '1';
+	};
 
-  // Función para hacer scroll al hacer clic en el scrollbar
-  const handleScrollbarClick = (e: MouseEvent) => {
-    if (!targetElement || !barElement) return;
+	// Función para hacer scroll al hacer clic en el scrollbar
+	const handleScrollbarClick = (e: MouseEvent) => {
+		if (!targetElement || !barElement) return;
 
-    // Prevenir que el clic en la barra misma active el scroll
-    if (e.target === barElement) {
-      return;
-    }
+		// Prevenir que el clic en la barra misma active el scroll
+		if (e.target === barElement) {
+			return;
+		}
 
-    e.preventDefault();
-    e.stopPropagation();
+		e.preventDefault();
+		e.stopPropagation();
 
-    const isVertical = orientation === 'vertical';
-    const rect = scrollbarElement.getBoundingClientRect();
-    const clickPosition = isVertical 
-      ? e.clientY - rect.top 
-      : e.clientX - rect.left;
-    
-    const scrollbarSize = isVertical ? scrollbarElement.clientHeight : scrollbarElement.clientWidth;
-    const percentage = clickPosition / scrollbarSize;
+		const isVertical = orientation === 'vertical';
+		const rect = scrollbarElement.getBoundingClientRect();
+		const clickPosition = isVertical ? e.clientY - rect.top : e.clientX - rect.left;
 
-    const clientProperty = isVertical ? 'clientHeight' : 'clientWidth';
-    const scrollSizeProperty = isVertical ? 'scrollHeight' : 'scrollWidth';
-    const scrollProperty = isVertical ? 'scrollTop' : 'scrollLeft';
+		const scrollbarSize = isVertical ? scrollbarElement.clientHeight : scrollbarElement.clientWidth;
+		const percentage = clickPosition / scrollbarSize;
 
-    const clientSize = targetElement[clientProperty];
-    const scrollSize = targetElement[scrollSizeProperty];
-    const maxScroll = scrollSize - clientSize;
+		const clientProperty = isVertical ? 'clientHeight' : 'clientWidth';
+		const scrollSizeProperty = isVertical ? 'scrollHeight' : 'scrollWidth';
+		const scrollProperty = isVertical ? 'scrollTop' : 'scrollLeft';
 
-    targetElement[scrollProperty] = percentage * maxScroll;
-  };
+		const clientSize = targetElement[clientProperty];
+		const scrollSize = targetElement[scrollSizeProperty];
+		const maxScroll = scrollSize - clientSize;
 
-  // Función para arrastrar el scrollbar
-  let isDragging = false;
-  let startPosition = 0;
-  let startScroll = 0;
+		targetElement[scrollProperty] = percentage * maxScroll;
+	};
 
-  const handleMouseDown = (e: MouseEvent) => {
-    if (!targetElement || !barElement) return;
-    if (e.target !== barElement) return;
+	// Función para arrastrar el scrollbar
+	let isDragging = false;
+	let startPosition = 0;
+	let startScroll = 0;
 
-    e.preventDefault();
-    e.stopPropagation();
+	const handleMouseDown = (e: MouseEvent) => {
+		if (!targetElement || !barElement) return;
+		if (e.target !== barElement) return;
 
-    isDragging = true;
-    const isVertical = orientation === 'vertical';
-    startPosition = isVertical ? e.clientY : e.clientX;
-    startScroll = isVertical ? targetElement.scrollTop : targetElement.scrollLeft;
+		e.preventDefault();
+		e.stopPropagation();
 
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
-  };
+		isDragging = true;
+		const isVertical = orientation === 'vertical';
+		startPosition = isVertical ? e.clientY : e.clientX;
+		startScroll = isVertical ? targetElement.scrollTop : targetElement.scrollLeft;
 
-  const handleMouseMove = (e: MouseEvent) => {
-    if (!isDragging || !targetElement || !barElement) return;
+		document.addEventListener('mousemove', handleMouseMove);
+		document.addEventListener('mouseup', handleMouseUp);
+	};
 
-    const isVertical = orientation === 'vertical';
-    const currentPosition = isVertical ? e.clientY : e.clientX;
-    const delta = currentPosition - startPosition;
+	const handleMouseMove = (e: MouseEvent) => {
+		if (!isDragging || !targetElement || !barElement) return;
 
-    const scrollbarSize = isVertical ? scrollbarElement.clientHeight : scrollbarElement.clientWidth;
-    const clientSize = isVertical ? targetElement.clientHeight : targetElement.clientWidth;
-    const scrollSize = isVertical ? targetElement.scrollHeight : targetElement.scrollWidth;
-    const maxScroll = scrollSize - clientSize;
+		const isVertical = orientation === 'vertical';
+		const currentPosition = isVertical ? e.clientY : e.clientX;
+		const delta = currentPosition - startPosition;
 
-    const scrollRatio = maxScroll / scrollbarSize;
-    const newScroll = startScroll + (delta * scrollRatio);
+		const scrollbarSize = isVertical ? scrollbarElement.clientHeight : scrollbarElement.clientWidth;
+		const clientSize = isVertical ? targetElement.clientHeight : targetElement.clientWidth;
+		const scrollSize = isVertical ? targetElement.scrollHeight : targetElement.scrollWidth;
+		const maxScroll = scrollSize - clientSize;
 
-    if (isVertical) {
-      targetElement.scrollTop = Math.max(0, Math.min(maxScroll, newScroll));
-    } else {
-      targetElement.scrollLeft = Math.max(0, Math.min(maxScroll, newScroll));
-    }
-  };
+		const scrollRatio = maxScroll / scrollbarSize;
+		const newScroll = startScroll + delta * scrollRatio;
 
-  const handleMouseUp = () => {
-    isDragging = false;
-    document.removeEventListener('mousemove', handleMouseMove);
-    document.removeEventListener('mouseup', handleMouseUp);
-  };
+		if (isVertical) {
+			targetElement.scrollTop = Math.max(0, Math.min(maxScroll, newScroll));
+		} else {
+			targetElement.scrollLeft = Math.max(0, Math.min(maxScroll, newScroll));
+		}
+	};
 
-  // Event listeners
-  if (targetElement) {
-    targetElement.addEventListener('scroll', updateScrollbar);
-    targetElement.addEventListener('resize', updateScrollbar);
-    
-    // Observar cambios en el contenido
-    const resizeObserver = new ResizeObserver(() => {
-      updateScrollbar();
-    });
-    resizeObserver.observe(targetElement);
+	const handleMouseUp = () => {
+		isDragging = false;
+		document.removeEventListener('mousemove', handleMouseMove);
+		document.removeEventListener('mouseup', handleMouseUp);
+	};
 
-    // Guardar referencia al observer para poder desconectarlo
-    (scrollbarElement as any).__resizeObserver = resizeObserver;
-  }
+	// Event listeners
+	if (targetElement) {
+		targetElement.addEventListener('scroll', updateScrollbar);
+		targetElement.addEventListener('resize', updateScrollbar);
 
-  // Eventos del scrollbar
-  scrollbarElement.addEventListener('click', handleScrollbarClick);
-  barElement.addEventListener('mousedown', handleMouseDown);
+		// Observar cambios en el contenido
+		const resizeObserver = new ResizeObserver(() => {
+			updateScrollbar();
+		});
+		resizeObserver.observe(targetElement);
 
-  // Guardar funciones para poder limpiarlas después
-  (scrollbarElement as any).__handleMouseUp = handleMouseUp;
-  (scrollbarElement as any).__handleMouseMove = handleMouseMove;
+		// Guardar referencia al observer para poder desconectarlo
+		(scrollbarElement as any).__resizeObserver = resizeObserver;
+	}
 
-  // Agregar al DOM
-  container.appendChild(scrollbarElement);
+	// Eventos del scrollbar
+	scrollbarElement.addEventListener('click', handleScrollbarClick);
+	barElement.addEventListener('mousedown', handleMouseDown);
 
-  // Actualizar inicialmente
-  setTimeout(() => {
-    updateScrollbar();
-  }, 100);
+	// Guardar funciones para poder limpiarlas después
+	(scrollbarElement as any).__handleMouseUp = handleMouseUp;
+	(scrollbarElement as any).__handleMouseMove = handleMouseMove;
 
-  return {
-    element: scrollbarElement,
-    update: updateScrollbar,
-    destroy: () => {
-      if (targetElement) {
-        targetElement.removeEventListener('scroll', updateScrollbar);
-        targetElement.removeEventListener('resize', updateScrollbar);
-        
-        const resizeObserver = (scrollbarElement as any).__resizeObserver;
-        if (resizeObserver) {
-          resizeObserver.disconnect();
-        }
-      }
-      scrollbarElement.removeEventListener('click', handleScrollbarClick);
-      barElement.removeEventListener('mousedown', handleMouseDown);
-      
-      // Limpiar listeners de drag si existen
-      if ((scrollbarElement as any).__handleMouseUp) {
-        document.removeEventListener('mousemove', (scrollbarElement as any).__handleMouseMove);
-        document.removeEventListener('mouseup', (scrollbarElement as any).__handleMouseUp);
-      }
-      
-      scrollbarElement.remove();
-    }
-  };
+	// Agregar al DOM
+	container.appendChild(scrollbarElement);
+
+	// Actualizar inicialmente
+	setTimeout(() => {
+		updateScrollbar();
+	}, 100);
+
+	return {
+		element: scrollbarElement,
+		update: updateScrollbar,
+		destroy: () => {
+			if (targetElement) {
+				targetElement.removeEventListener('scroll', updateScrollbar);
+				targetElement.removeEventListener('resize', updateScrollbar);
+
+				const resizeObserver = (scrollbarElement as any).__resizeObserver;
+				if (resizeObserver) {
+					resizeObserver.disconnect();
+				}
+			}
+			scrollbarElement.removeEventListener('click', handleScrollbarClick);
+			barElement.removeEventListener('mousedown', handleMouseDown);
+
+			// Limpiar listeners de drag si existen
+			if ((scrollbarElement as any).__handleMouseUp) {
+				document.removeEventListener('mousemove', (scrollbarElement as any).__handleMouseMove);
+				document.removeEventListener('mouseup', (scrollbarElement as any).__handleMouseUp);
+			}
+
+			scrollbarElement.remove();
+		},
+	};
 }
-

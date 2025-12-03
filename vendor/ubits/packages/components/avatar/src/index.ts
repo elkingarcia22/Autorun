@@ -8,7 +8,6 @@ export type { AvatarOptions };
 
 // Exponer globalmente para el playground y otros usos directos
 if (typeof window !== 'undefined') {
-  (window as any).createAvatar = createAvatar;
-  (window as any).renderAvatar = renderAvatar;
+	(window as any).createAvatar = createAvatar;
+	(window as any).renderAvatar = renderAvatar;
 }
-

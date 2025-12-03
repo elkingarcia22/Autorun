@@ -27,12 +27,10 @@ export class ModuleManager {
 		productId?: string,
 	): Promise<void> {
 		const templateConfig = UBITS_PRESET.templates[template];
-		
+
 		// Verificar que el módulo está disponible en el template
 		if (!templateConfig.modules.includes(moduleName)) {
-			throw new Error(
-				`Módulo "${moduleName}" no está disponible en template "${template}"`,
-			);
+			throw new Error(`Módulo "${moduleName}" no está disponible en template "${template}"`);
 		}
 
 		// Agregar a módulos habilitados
@@ -59,9 +57,7 @@ export class ModuleManager {
 	/**
 	 * Actualiza el sidebar con los módulos habilitados
 	 */
-	private async updateSidebar(
-		template?: 'administrador' | 'colaborador',
-	): Promise<void> {
+	private async updateSidebar(template?: 'administrador' | 'colaborador'): Promise<void> {
 		if (typeof window === 'undefined') {
 			return; // Solo funciona en navegador
 		}
@@ -84,12 +80,8 @@ export class ModuleManager {
 	/**
 	 * Genera HTML del sidebar
 	 */
-	private generateSidebarHTML(
-		template?: 'administrador' | 'colaborador',
-	): string {
-		const templateConfig = template
-			? UBITS_PRESET.templates[template]
-			: null;
+	private generateSidebarHTML(template?: 'administrador' | 'colaborador'): string {
+		const templateConfig = template ? UBITS_PRESET.templates[template] : null;
 
 		const modules = templateConfig
 			? templateConfig.modules.filter((m) => this.enabledModules.has(m))
@@ -138,8 +130,7 @@ export class ModuleManager {
 		links.forEach((link) => {
 			link.addEventListener('click', (e) => {
 				e.preventDefault();
-				const module = (link.closest('.sidebar-item') as HTMLElement)?.dataset
-					.module;
+				const module = (link.closest('.sidebar-item') as HTMLElement)?.dataset.module;
 				if (module) {
 					this.navigateToModule(module);
 				}
@@ -170,4 +161,3 @@ export class ModuleManager {
 		return this.subNavManager;
 	}
 }
-

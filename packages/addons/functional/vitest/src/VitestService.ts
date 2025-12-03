@@ -69,9 +69,7 @@ export class VitestService {
 
 		try {
 			if (!this.isVitestInstalled()) {
-				console.warn(
-					'⚠️  Vitest no está instalado. Ejecuta: npm install --save-dev vitest',
-				);
+				console.warn('⚠️  Vitest no está instalado. Ejecuta: npm install --save-dev vitest');
 				return;
 			}
 
@@ -177,4 +175,3 @@ export default defineConfig({
 		this.config = { ...this.config, ...config };
 	}
 }
-

@@ -5,9 +5,8 @@
 
 export { renderAccordion, createAccordion } from './AccordionProvider';
 export type {
-  AccordionOptions,
-  AccordionItem,
-  AccordionVariant,
-  ChevronPosition
+	AccordionOptions,
+	AccordionItem,
+	AccordionVariant,
+	ChevronPosition,
 } from './types/AccordionOptions';
-

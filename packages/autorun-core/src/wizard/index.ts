@@ -20,4 +20,3 @@ export type {
 } from './InitializationWizard';
 export type { UBITSConfig, UBITSTemplate, ModuleConfig, ModuleProduct } from './UBITSPreset';
 export type { ValidationResult, ValidationError, ValidationWarning } from './ComponentValidator';
-

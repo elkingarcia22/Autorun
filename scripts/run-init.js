@@ -17,34 +17,35 @@ const __dirname = dirname(__filename);
  */
 function findAutorunDir() {
 	let currentDir = process.cwd();
-	
+
 	// Buscar hacia arriba desde el directorio actual
 	while (currentDir !== '/' && currentDir !== dirname(currentDir)) {
 		const autorunPath = join(currentDir, 'Autorun');
 		const packageJsonPath = join(autorunPath, 'package.json');
-		
+
 		if (existsSync(autorunPath) && existsSync(packageJsonPath)) {
 			return autorunPath;
 		}
-		
+
 		currentDir = dirname(currentDir);
 	}
-	
+
 	// Si no se encuentra, verificar si estamos dentro de Autorun
 	const currentPackageJson = join(process.cwd(), 'package.json');
 	if (existsSync(currentPackageJson)) {
 		try {
-			const packageJson = JSON.parse(
-				readFileSync(currentPackageJson, 'utf-8')
-			);
-			if (packageJson.name === 'autorun' && existsSync(join(process.cwd(), 'packages', 'autorun-core'))) {
+			const packageJson = JSON.parse(readFileSync(currentPackageJson, 'utf-8'));
+			if (
+				packageJson.name === 'autorun' &&
+				existsSync(join(process.cwd(), 'packages', 'autorun-core'))
+			) {
 				return process.cwd();
 			}
 		} catch (error) {
 			// Ignorar errores
 		}
 	}
-	
+
 	return null;
 }
 
@@ -65,11 +66,11 @@ console.log('🚀 Ejecutando wizard de inicialización...\n');
 // Cambiar al directorio Autorun y ejecutar init
 try {
 	process.chdir(autorunDir);
-	
+
 	// Obtener argumentos pasados al script
 	const args = process.argv.slice(2);
 	const command = `npm run init${args.length > 0 ? ' -- ' + args.join(' ') : ''}`;
-	
+
 	execSync(command, {
 		stdio: 'inherit',
 		cwd: autorunDir,
@@ -78,4 +79,3 @@ try {
 	console.error('❌ Error ejecutando el wizard:', error.message);
 	process.exit(1);
 }
-

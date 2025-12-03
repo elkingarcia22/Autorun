@@ -4,9 +4,8 @@
  */
 
 export { renderNPSCard, createNPSCard } from './NPSCardProvider';
-export type { 
-  NPSCardOptions, 
-  NPSCategory,
-  NPSCardSize 
+export type {
+	NPSCardOptions,
+	NPSCategory,
+	NPSCardSize,
 } from './types/NPSCardOptions';
-

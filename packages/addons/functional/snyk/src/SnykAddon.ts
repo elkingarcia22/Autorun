@@ -6,12 +6,7 @@
  */
 
 import { IFunctionalAddon, AutorunContext } from '@autorun/core';
-import {
-	SnykService,
-	SnykConfig,
-	SnykResult,
-	Vulnerability,
-} from './SnykService';
+import { SnykService, SnykConfig, SnykResult, Vulnerability } from './SnykService';
 
 export class SnykAddon implements IFunctionalAddon {
 	readonly id = 'snyk';
@@ -92,8 +87,7 @@ export class SnykAddon implements IFunctionalAddon {
 		if (config.org !== undefined) snykConfig.org = config.org;
 		if (config.severityThreshold !== undefined)
 			snykConfig.severityThreshold = config.severityThreshold;
-		if (config.failOnError !== undefined)
-			snykConfig.failOnError = config.failOnError;
+		if (config.failOnError !== undefined) snykConfig.failOnError = config.failOnError;
 		if (config.monitor !== undefined) snykConfig.monitor = config.monitor;
 
 		this.config = { ...this.config, ...snykConfig };
@@ -203,4 +197,3 @@ export class SnykAddon implements IFunctionalAddon {
 		};
 	}
 }
-

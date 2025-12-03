@@ -1,4 +1,105 @@
-import{c as B}from"./utils-QDDdDBjb.js";function Y(d){const l=[],r=d.toLowerCase();try{Array.from(document.styleSheets).forEach(t=>{try{Array.from(t.cssRules||[]).forEach(b=>{if(b instanceof CSSStyleRule){const O=b.style;for(let f=0;f<O.length;f++){const C=O[f];C.startsWith("--")&&C.toLowerCase().includes(r)&&!l.includes(C)&&l.push(C)}}})}catch{}})}catch{}return l.sort()}function $(d){const l={};return d.forEach(r=>{const m=r.toLowerCase();let t="otros";m.includes("chart")?t="chart":m.includes("button")?t="button":m.includes("scroll-bar")?t="scroll-bar":m.includes("toggle")?t="toggle":m.includes("feedback")?t="feedback":m.includes("accent")?t="accent":m.includes("-fg-")?t="fg":m.includes("-bg-")?t="bg":m.includes("border")&&(t="border");let u="base";m.includes("-pressed")?u="pressed":m.includes("-hover")?u="hover":m.includes("-default")&&(u="default"),l[t]||(l[t]={}),l[t][u]||(l[t][u]=[]),l[t][u].push(r)}),Object.keys(l).forEach(r=>{Object.keys(l[r]).forEach(m=>{l[r][m].sort()})}),l}const q={title:"Tokens UBITS/01. Modificadores (.modifiers)",tags:["autodocs"],parameters:{layout:"padded",docs:{description:{component:"Todos los colores del sistema organizados por modificador. Cada modificador (Normal, Inverted, Static, Static Inverted) contiene todos los colores (accent, fg, bg, border, feedback, chart, button) organizados por modo Light/Dark. Esta es la categoría principal con 1296 tokens totales."}}}};function H(d){let l=Y("modifiers");if(l.length===0)return{light:[],dark:[]};const r=l.filter(t=>t.includes(`modifiers-${d}-color-light`)),m=l.filter(t=>t.includes(`modifiers-${d}-color-dark`));return{light:r.sort(),dark:m.sort()}}const j={render:()=>{const d=document.createElement("div");d.style.padding="24px",d.style.maxWidth="1400px";const l=document.createElement("h2");l.textContent="Modificadores (.modifiers) - Resumen",l.style.fontSize="24px",l.style.fontWeight="700",l.style.marginBottom="16px",d.appendChild(l);const r=document.createElement("div");return r.style.marginBottom="24px",r.style.padding="16px",r.style.backgroundColor="#dbeafe",r.style.border="1px solid #3b82f6",r.style.borderRadius="8px",r.style.fontSize="14px",r.style.color="#1e40af",r.innerHTML=`
+import { c as B } from './utils-QDDdDBjb.js';
+function Y(d) {
+	const l = [],
+		r = d.toLowerCase();
+	try {
+		Array.from(document.styleSheets).forEach((t) => {
+			try {
+				Array.from(t.cssRules || []).forEach((b) => {
+					if (b instanceof CSSStyleRule) {
+						const O = b.style;
+						for (let f = 0; f < O.length; f++) {
+							const C = O[f];
+							C.startsWith('--') && C.toLowerCase().includes(r) && !l.includes(C) && l.push(C);
+						}
+					}
+				});
+			} catch {}
+		});
+	} catch {}
+	return l.sort();
+}
+function $(d) {
+	const l = {};
+	return (
+		d.forEach((r) => {
+			const m = r.toLowerCase();
+			let t = 'otros';
+			m.includes('chart')
+				? (t = 'chart')
+				: m.includes('button')
+					? (t = 'button')
+					: m.includes('scroll-bar')
+						? (t = 'scroll-bar')
+						: m.includes('toggle')
+							? (t = 'toggle')
+							: m.includes('feedback')
+								? (t = 'feedback')
+								: m.includes('accent')
+									? (t = 'accent')
+									: m.includes('-fg-')
+										? (t = 'fg')
+										: m.includes('-bg-')
+											? (t = 'bg')
+											: m.includes('border') && (t = 'border');
+			let u = 'base';
+			m.includes('-pressed')
+				? (u = 'pressed')
+				: m.includes('-hover')
+					? (u = 'hover')
+					: m.includes('-default') && (u = 'default'),
+				l[t] || (l[t] = {}),
+				l[t][u] || (l[t][u] = []),
+				l[t][u].push(r);
+		}),
+		Object.keys(l).forEach((r) => {
+			Object.keys(l[r]).forEach((m) => {
+				l[r][m].sort();
+			});
+		}),
+		l
+	);
+}
+const q = {
+	title: 'Tokens UBITS/01. Modificadores (.modifiers)',
+	tags: ['autodocs'],
+	parameters: {
+		layout: 'padded',
+		docs: {
+			description: {
+				component:
+					'Todos los colores del sistema organizados por modificador. Cada modificador (Normal, Inverted, Static, Static Inverted) contiene todos los colores (accent, fg, bg, border, feedback, chart, button) organizados por modo Light/Dark. Esta es la categoría principal con 1296 tokens totales.',
+			},
+		},
+	},
+};
+function H(d) {
+	let l = Y('modifiers');
+	if (l.length === 0) return { light: [], dark: [] };
+	const r = l.filter((t) => t.includes(`modifiers-${d}-color-light`)),
+		m = l.filter((t) => t.includes(`modifiers-${d}-color-dark`));
+	return { light: r.sort(), dark: m.sort() };
+}
+const j = {
+		render: () => {
+			const d = document.createElement('div');
+			(d.style.padding = '24px'), (d.style.maxWidth = '1400px');
+			const l = document.createElement('h2');
+			(l.textContent = 'Modificadores (.modifiers) - Resumen'),
+				(l.style.fontSize = '24px'),
+				(l.style.fontWeight = '700'),
+				(l.style.marginBottom = '16px'),
+				d.appendChild(l);
+			const r = document.createElement('div');
+			return (
+				(r.style.marginBottom = '24px'),
+				(r.style.padding = '16px'),
+				(r.style.backgroundColor = '#dbeafe'),
+				(r.style.border = '1px solid #3b82f6'),
+				(r.style.borderRadius = '8px'),
+				(r.style.fontSize = '14px'),
+				(r.style.color = '#1e40af'),
+				(r.innerHTML = `
       <strong>📊 Resumen de Modificadores:</strong><br><br>
       • <strong>Normal</strong>: 162 tokens Light + 162 tokens Dark = 324 tokens<br>
       • <strong>Inverted</strong>: 162 tokens Light + 162 tokens Dark = 324 tokens<br>
@@ -6,7 +107,737 @@ import{c as B}from"./utils-QDDdDBjb.js";function Y(d){const l=[],r=d.toLowerCase
       • <strong>Static Inverted</strong>: 162 tokens Light + 162 tokens Dark = 324 tokens<br><br>
       <strong>Total: 1296 tokens</strong><br><br>
       Cada modificador contiene TODOS los colores del sistema: accent, fg, bg, border, feedback, chart, button, etc.
-    `,d.appendChild(r),["normal","inverted","static","static-inverted"].forEach(t=>{const u=document.createElement("div");u.style.marginBottom="40px",u.style.padding="20px",u.style.border="1px solid #e5e7eb",u.style.borderRadius="12px",u.style.backgroundColor="#f9fafb";const b=document.createElement("h3");b.textContent=`${t.charAt(0).toUpperCase()+t.slice(1).replace("-"," ")}`,b.style.fontSize="20px",b.style.fontWeight="600",b.style.marginBottom="16px",b.style.textTransform="capitalize",u.appendChild(b);const O=H(t),f=O.light.length+O.dark.length,C=document.createElement("div");if(C.style.marginBottom="16px",C.style.fontSize="16px",C.style.fontWeight="600",C.textContent=`Total: ${f} tokens (${O.light.length} Light + ${O.dark.length} Dark)`,u.appendChild(C),f>0){const k=$(O.light),v=$(O.dark);new Set([...Object.keys(k),...Object.keys(v)]).forEach(w=>{const G=k[w]||{},h=v[w]||{},z=new Set([...Object.keys(G),...Object.keys(h)]);if(z.size===0)return;const R=document.createElement("div");R.style.marginBottom="32px";const n=Object.values(G).reduce((T,p)=>T+p.length,0),s=Object.values(h).reduce((T,p)=>T+p.length,0),i=document.createElement("h4");i.textContent=`${w.charAt(0).toUpperCase()+w.slice(1)} (${n} Light + ${s} Dark = ${n+s} tokens)`,i.style.fontSize="16px",i.style.fontWeight="600",i.style.marginBottom="16px",i.style.paddingBottom="8px",i.style.borderBottom="2px solid #e5e7eb",R.appendChild(i);const o=["base","default","hover","pressed"];Array.from(z).sort((T,p)=>{const y=o.indexOf(T),a=o.indexOf(p);return y===-1&&a===-1?T.localeCompare(p):y===-1?1:a===-1?-1:y-a}).forEach(T=>{const p=G[T]||[],y=h[T]||[];if(p.length===0&&y.length===0)return;const a=document.createElement("div");a.style.marginBottom="24px",a.style.padding="12px",a.style.backgroundColor="#f9fafb",a.style.border="1px solid #e5e7eb",a.style.borderRadius="8px";const g=document.createElement("h5"),c=T==="base"?"Base":T.charAt(0).toUpperCase()+T.slice(1);g.textContent=`${c} (${p.length} Light + ${y.length} Dark)`,g.style.fontSize="14px",g.style.fontWeight="600",g.style.marginBottom="12px",g.style.color="#303a47",a.appendChild(g);const e=document.createElement("div");e.style.display="grid",e.style.gridTemplateColumns="1fr 1fr",e.style.gap="12px";const A=document.createElement("div");A.style.background="#ffffff",A.style.border="1px solid #e5e7eb",A.style.borderRadius="8px",A.style.padding="12px";const L=document.createElement("div");if(L.style.display="flex",L.style.flexDirection="column",L.style.gap="6px",L.style.maxHeight="400px",L.style.overflowY="auto",L.style.paddingRight="8px",p.forEach(E=>{L.appendChild(B(E,"light",{showVariable:!0,showValue:!0,width:"100%"}))}),p.length===0){const E=document.createElement("div");E.style.padding="8px",E.style.textAlign="center",E.style.color="#9ca3af",E.style.fontSize="12px",E.textContent="No hay tokens",L.appendChild(E)}A.appendChild(L),e.appendChild(A);const I=document.createElement("div");I.style.background="#0E1825",I.style.color="#edeeef",I.style.border="1px solid #0E1825",I.style.borderRadius="8px",I.style.padding="12px";const D=document.createElement("div");if(D.style.display="flex",D.style.flexDirection="column",D.style.gap="6px",D.style.maxHeight="400px",D.style.overflowY="auto",D.style.paddingRight="8px",y.forEach(E=>{D.appendChild(B(E,"dark",{showVariable:!0,showValue:!0,width:"100%"}))}),y.length===0){const E=document.createElement("div");E.style.padding="8px",E.style.textAlign="center",E.style.color="#9ca3af",E.style.fontSize="12px",E.textContent="No hay tokens",D.appendChild(E)}I.appendChild(D),e.appendChild(I),a.appendChild(e),R.appendChild(a)}),u.appendChild(R)})}else{const k=document.createElement("div");k.style.padding="12px",k.style.backgroundColor="#fef3c7",k.style.border="1px solid #fbbf24",k.style.borderRadius="8px",k.style.fontSize="14px",k.style.color="#92400e",k.textContent="Los tokens se cargarán dinámicamente desde el CSS. Si no aparecen, verifica que figma-tokens.css esté importado.",u.appendChild(k)}d.appendChild(u)}),d}},W={render:()=>{const d=document.createElement("div");d.style.padding="24px",d.style.maxWidth="1400px";const l=document.createElement("h2");l.textContent="Normal - Todos los Colores",l.style.fontSize="24px",l.style.fontWeight="700",l.style.marginBottom="16px",d.appendChild(l);const r=H("normal"),m=r.light.length+r.dark.length,t=document.createElement("div");if(t.style.marginBottom="24px",t.style.padding="12px",t.style.backgroundColor="#f3f4f6",t.style.border="1px solid #d1d5db",t.style.borderRadius="8px",t.style.fontSize="16px",t.style.fontWeight="600",t.textContent=`Total: ${m} tokens (${r.light.length} Light + ${r.dark.length} Dark)`,d.appendChild(t),m>0){const u=$(r.light),b=$(r.dark);new Set([...Object.keys(u),...Object.keys(b)]).forEach(f=>{const C=u[f]||{},k=b[f]||{},v=new Set([...Object.keys(C),...Object.keys(k)]);if(v.size===0)return;const S=document.createElement("div");S.style.marginBottom="40px";const w=Object.values(C).reduce((n,s)=>n+s.length,0),G=Object.values(k).reduce((n,s)=>n+s.length,0),h=document.createElement("h3");h.textContent=`${f.charAt(0).toUpperCase()+f.slice(1)} (${w} Light + ${G} Dark)`,h.style.fontSize="20px",h.style.fontWeight="600",h.style.marginBottom="16px",h.style.paddingBottom="8px",h.style.borderBottom="2px solid #e5e7eb",S.appendChild(h);const z=["base","default","hover","pressed"];Array.from(v).sort((n,s)=>{const i=z.indexOf(n),o=z.indexOf(s);return i===-1&&o===-1?n.localeCompare(s):i===-1?1:o===-1?-1:i-o}).forEach(n=>{const s=C[n]||[],i=k[n]||[];if(s.length===0&&i.length===0)return;const o=document.createElement("div");o.style.marginBottom="24px",o.style.padding="12px",o.style.backgroundColor="#f9fafb",o.style.border="1px solid #e5e7eb",o.style.borderRadius="8px";const x=document.createElement("h4"),T=n==="base"?"Base":n.charAt(0).toUpperCase()+n.slice(1);x.textContent=`${T} (${s.length} Light + ${i.length} Dark)`,x.style.fontSize="16px",x.style.fontWeight="600",x.style.marginBottom="12px",x.style.color="#303a47",o.appendChild(x);const p=document.createElement("div");p.style.display="grid",p.style.gridTemplateColumns="1fr 1fr",p.style.gap="12px";const y=document.createElement("div");y.style.background="#ffffff",y.style.border="1px solid #e5e7eb",y.style.borderRadius="8px",y.style.padding="12px";const a=document.createElement("div");if(a.style.display="flex",a.style.flexDirection="column",a.style.gap="6px",a.style.maxHeight="400px",a.style.overflowY="auto",a.style.paddingRight="8px",s.forEach(e=>{a.appendChild(B(e,"light",{showVariable:!0,showValue:!0,width:"100%"}))}),s.length===0){const e=document.createElement("div");e.style.padding="8px",e.style.textAlign="center",e.style.color="#9ca3af",e.style.fontSize="12px",e.textContent="No hay tokens",a.appendChild(e)}y.appendChild(a),p.appendChild(y);const g=document.createElement("div");g.style.background="#0E1825",g.style.color="#edeeef",g.style.border="1px solid #0E1825",g.style.borderRadius="8px",g.style.padding="12px";const c=document.createElement("div");if(c.style.display="flex",c.style.flexDirection="column",c.style.gap="6px",c.style.maxHeight="400px",c.style.overflowY="auto",c.style.paddingRight="8px",i.forEach(e=>{c.appendChild(B(e,"dark",{showVariable:!0,showValue:!0,width:"100%"}))}),i.length===0){const e=document.createElement("div");e.style.padding="8px",e.style.textAlign="center",e.style.color="#9ca3af",e.style.fontSize="12px",e.textContent="No hay tokens",c.appendChild(e)}g.appendChild(c),p.appendChild(g),o.appendChild(p),S.appendChild(o)}),d.appendChild(S)})}return d}},N={render:()=>{const d=document.createElement("div");d.style.padding="24px",d.style.maxWidth="1400px";const l=document.createElement("h2");l.textContent="Inverted - Todos los Colores",l.style.fontSize="24px",l.style.fontWeight="700",l.style.marginBottom="16px",d.appendChild(l);const r=H("inverted"),m=r.light.length+r.dark.length,t=document.createElement("div");if(t.style.marginBottom="24px",t.style.padding="12px",t.style.backgroundColor="#f3f4f6",t.style.border="1px solid #d1d5db",t.style.borderRadius="8px",t.style.fontSize="16px",t.style.fontWeight="600",t.textContent=`Total: ${m} tokens (${r.light.length} Light + ${r.dark.length} Dark)`,d.appendChild(t),m>0){const u=$(r.light),b=$(r.dark);new Set([...Object.keys(u),...Object.keys(b)]).forEach(f=>{const C=u[f]||{},k=b[f]||{},v=new Set([...Object.keys(C),...Object.keys(k)]);if(v.size===0)return;const S=document.createElement("div");S.style.marginBottom="40px";const w=Object.values(C).reduce((n,s)=>n+s.length,0),G=Object.values(k).reduce((n,s)=>n+s.length,0),h=document.createElement("h3");h.textContent=`${f.charAt(0).toUpperCase()+f.slice(1)} (${w} Light + ${G} Dark)`,h.style.fontSize="20px",h.style.fontWeight="600",h.style.marginBottom="16px",h.style.paddingBottom="8px",h.style.borderBottom="2px solid #e5e7eb",S.appendChild(h);const z=["base","default","hover","pressed"];Array.from(v).sort((n,s)=>{const i=z.indexOf(n),o=z.indexOf(s);return i===-1&&o===-1?n.localeCompare(s):i===-1?1:o===-1?-1:i-o}).forEach(n=>{const s=C[n]||[],i=k[n]||[];if(s.length===0&&i.length===0)return;const o=document.createElement("div");o.style.marginBottom="24px",o.style.padding="12px",o.style.backgroundColor="#f9fafb",o.style.border="1px solid #e5e7eb",o.style.borderRadius="8px";const x=document.createElement("h4"),T=n==="base"?"Base":n.charAt(0).toUpperCase()+n.slice(1);x.textContent=`${T} (${s.length} Light + ${i.length} Dark)`,x.style.fontSize="16px",x.style.fontWeight="600",x.style.marginBottom="12px",x.style.color="#303a47",o.appendChild(x);const p=document.createElement("div");p.style.display="grid",p.style.gridTemplateColumns="1fr 1fr",p.style.gap="12px";const y=document.createElement("div");y.style.background="#ffffff",y.style.border="1px solid #e5e7eb",y.style.borderRadius="8px",y.style.padding="12px";const a=document.createElement("div");if(a.style.display="flex",a.style.flexDirection="column",a.style.gap="6px",a.style.maxHeight="400px",a.style.overflowY="auto",a.style.paddingRight="8px",s.forEach(e=>{a.appendChild(B(e,"light",{showVariable:!0,showValue:!0,width:"100%"}))}),s.length===0){const e=document.createElement("div");e.style.padding="8px",e.style.textAlign="center",e.style.color="#9ca3af",e.style.fontSize="12px",e.textContent="No hay tokens",a.appendChild(e)}y.appendChild(a),p.appendChild(y);const g=document.createElement("div");g.style.background="#0E1825",g.style.color="#edeeef",g.style.border="1px solid #0E1825",g.style.borderRadius="8px",g.style.padding="12px";const c=document.createElement("div");if(c.style.display="flex",c.style.flexDirection="column",c.style.gap="6px",c.style.maxHeight="400px",c.style.overflowY="auto",c.style.paddingRight="8px",i.forEach(e=>{c.appendChild(B(e,"dark",{showVariable:!0,showValue:!0,width:"100%"}))}),i.length===0){const e=document.createElement("div");e.style.padding="8px",e.style.textAlign="center",e.style.color="#9ca3af",e.style.fontSize="12px",e.textContent="No hay tokens",c.appendChild(e)}g.appendChild(c),p.appendChild(g),o.appendChild(p),S.appendChild(o)}),d.appendChild(S)})}return d}},V={render:()=>{const d=document.createElement("div");d.style.padding="24px",d.style.maxWidth="1400px";const l=document.createElement("h2");l.textContent="Static - Todos los Colores",l.style.fontSize="24px",l.style.fontWeight="700",l.style.marginBottom="16px",d.appendChild(l);const r=H("static"),m=r.light.length+r.dark.length,t=document.createElement("div");if(t.style.marginBottom="24px",t.style.padding="12px",t.style.backgroundColor="#f3f4f6",t.style.border="1px solid #d1d5db",t.style.borderRadius="8px",t.style.fontSize="16px",t.style.fontWeight="600",t.textContent=`Total: ${m} tokens (${r.light.length} Light + ${r.dark.length} Dark)`,d.appendChild(t),m>0){const u=$(r.light),b=$(r.dark);new Set([...Object.keys(u),...Object.keys(b)]).forEach(f=>{const C=u[f]||{},k=b[f]||{},v=new Set([...Object.keys(C),...Object.keys(k)]);if(v.size===0)return;const S=document.createElement("div");S.style.marginBottom="40px";const w=Object.values(C).reduce((n,s)=>n+s.length,0),G=Object.values(k).reduce((n,s)=>n+s.length,0),h=document.createElement("h3");h.textContent=`${f.charAt(0).toUpperCase()+f.slice(1)} (${w} Light + ${G} Dark)`,h.style.fontSize="20px",h.style.fontWeight="600",h.style.marginBottom="16px",h.style.paddingBottom="8px",h.style.borderBottom="2px solid #e5e7eb",S.appendChild(h);const z=["base","default","hover","pressed"];Array.from(v).sort((n,s)=>{const i=z.indexOf(n),o=z.indexOf(s);return i===-1&&o===-1?n.localeCompare(s):i===-1?1:o===-1?-1:i-o}).forEach(n=>{const s=C[n]||[],i=k[n]||[];if(s.length===0&&i.length===0)return;const o=document.createElement("div");o.style.marginBottom="24px",o.style.padding="12px",o.style.backgroundColor="#f9fafb",o.style.border="1px solid #e5e7eb",o.style.borderRadius="8px";const x=document.createElement("h4"),T=n==="base"?"Base":n.charAt(0).toUpperCase()+n.slice(1);x.textContent=`${T} (${s.length} Light + ${i.length} Dark)`,x.style.fontSize="16px",x.style.fontWeight="600",x.style.marginBottom="12px",x.style.color="#303a47",o.appendChild(x);const p=document.createElement("div");p.style.display="grid",p.style.gridTemplateColumns="1fr 1fr",p.style.gap="12px";const y=document.createElement("div");y.style.background="#ffffff",y.style.border="1px solid #e5e7eb",y.style.borderRadius="8px",y.style.padding="12px";const a=document.createElement("div");if(a.style.display="flex",a.style.flexDirection="column",a.style.gap="6px",a.style.maxHeight="400px",a.style.overflowY="auto",a.style.paddingRight="8px",s.forEach(e=>{a.appendChild(B(e,"light",{showVariable:!0,showValue:!0,width:"100%"}))}),s.length===0){const e=document.createElement("div");e.style.padding="8px",e.style.textAlign="center",e.style.color="#9ca3af",e.style.fontSize="12px",e.textContent="No hay tokens",a.appendChild(e)}y.appendChild(a),p.appendChild(y);const g=document.createElement("div");g.style.background="#0E1825",g.style.color="#edeeef",g.style.border="1px solid #0E1825",g.style.borderRadius="8px",g.style.padding="12px";const c=document.createElement("div");if(c.style.display="flex",c.style.flexDirection="column",c.style.gap="6px",c.style.maxHeight="400px",c.style.overflowY="auto",c.style.paddingRight="8px",i.forEach(e=>{c.appendChild(B(e,"dark",{showVariable:!0,showValue:!0,width:"100%"}))}),i.length===0){const e=document.createElement("div");e.style.padding="8px",e.style.textAlign="center",e.style.color="#9ca3af",e.style.fontSize="12px",e.textContent="No hay tokens",c.appendChild(e)}g.appendChild(c),p.appendChild(g),o.appendChild(p),S.appendChild(o)}),d.appendChild(S)})}return d}},U={render:()=>{const d=document.createElement("div");d.style.padding="24px",d.style.maxWidth="1400px";const l=document.createElement("h2");l.textContent="Static Inverted - Todos los Colores",l.style.fontSize="24px",l.style.fontWeight="700",l.style.marginBottom="16px",d.appendChild(l);const r=H("static-inverted"),m=r.light.length+r.dark.length,t=document.createElement("div");if(t.style.marginBottom="24px",t.style.padding="12px",t.style.backgroundColor="#f3f4f6",t.style.border="1px solid #d1d5db",t.style.borderRadius="8px",t.style.fontSize="16px",t.style.fontWeight="600",t.textContent=`Total: ${m} tokens (${r.light.length} Light + ${r.dark.length} Dark)`,d.appendChild(t),m>0){const u=$(r.light),b=$(r.dark);new Set([...Object.keys(u),...Object.keys(b)]).forEach(f=>{const C=u[f]||{},k=b[f]||{},v=new Set([...Object.keys(C),...Object.keys(k)]);if(v.size===0)return;const S=document.createElement("div");S.style.marginBottom="40px";const w=Object.values(C).reduce((n,s)=>n+s.length,0),G=Object.values(k).reduce((n,s)=>n+s.length,0),h=document.createElement("h3");h.textContent=`${f.charAt(0).toUpperCase()+f.slice(1)} (${w} Light + ${G} Dark)`,h.style.fontSize="20px",h.style.fontWeight="600",h.style.marginBottom="16px",h.style.paddingBottom="8px",h.style.borderBottom="2px solid #e5e7eb",S.appendChild(h);const z=["base","default","hover","pressed"];Array.from(v).sort((n,s)=>{const i=z.indexOf(n),o=z.indexOf(s);return i===-1&&o===-1?n.localeCompare(s):i===-1?1:o===-1?-1:i-o}).forEach(n=>{const s=C[n]||[],i=k[n]||[];if(s.length===0&&i.length===0)return;const o=document.createElement("div");o.style.marginBottom="24px",o.style.padding="12px",o.style.backgroundColor="#f9fafb",o.style.border="1px solid #e5e7eb",o.style.borderRadius="8px";const x=document.createElement("h4"),T=n==="base"?"Base":n.charAt(0).toUpperCase()+n.slice(1);x.textContent=`${T} (${s.length} Light + ${i.length} Dark)`,x.style.fontSize="16px",x.style.fontWeight="600",x.style.marginBottom="12px",x.style.color="#303a47",o.appendChild(x);const p=document.createElement("div");p.style.display="grid",p.style.gridTemplateColumns="1fr 1fr",p.style.gap="12px";const y=document.createElement("div");y.style.background="#ffffff",y.style.border="1px solid #e5e7eb",y.style.borderRadius="8px",y.style.padding="12px";const a=document.createElement("div");if(a.style.display="flex",a.style.flexDirection="column",a.style.gap="6px",a.style.maxHeight="400px",a.style.overflowY="auto",a.style.paddingRight="8px",s.forEach(e=>{a.appendChild(B(e,"light",{showVariable:!0,showValue:!0,width:"100%"}))}),s.length===0){const e=document.createElement("div");e.style.padding="8px",e.style.textAlign="center",e.style.color="#9ca3af",e.style.fontSize="12px",e.textContent="No hay tokens",a.appendChild(e)}y.appendChild(a),p.appendChild(y);const g=document.createElement("div");g.style.background="#0E1825",g.style.color="#edeeef",g.style.border="1px solid #0E1825",g.style.borderRadius="8px",g.style.padding="12px";const c=document.createElement("div");if(c.style.display="flex",c.style.flexDirection="column",c.style.gap="6px",c.style.maxHeight="400px",c.style.overflowY="auto",c.style.paddingRight="8px",i.forEach(e=>{c.appendChild(B(e,"dark",{showVariable:!0,showValue:!0,width:"100%"}))}),i.length===0){const e=document.createElement("div");e.style.padding="8px",e.style.textAlign="center",e.style.color="#9ca3af",e.style.fontSize="12px",e.textContent="No hay tokens",c.appendChild(e)}g.appendChild(c),p.appendChild(g),o.appendChild(p),S.appendChild(o)}),d.appendChild(S)})}return d}};j.parameters={...j.parameters,docs:{...j.parameters?.docs,source:{originalSource:`{
+    `),
+				d.appendChild(r),
+				['normal', 'inverted', 'static', 'static-inverted'].forEach((t) => {
+					const u = document.createElement('div');
+					(u.style.marginBottom = '40px'),
+						(u.style.padding = '20px'),
+						(u.style.border = '1px solid #e5e7eb'),
+						(u.style.borderRadius = '12px'),
+						(u.style.backgroundColor = '#f9fafb');
+					const b = document.createElement('h3');
+					(b.textContent = `${t.charAt(0).toUpperCase() + t.slice(1).replace('-', ' ')}`),
+						(b.style.fontSize = '20px'),
+						(b.style.fontWeight = '600'),
+						(b.style.marginBottom = '16px'),
+						(b.style.textTransform = 'capitalize'),
+						u.appendChild(b);
+					const O = H(t),
+						f = O.light.length + O.dark.length,
+						C = document.createElement('div');
+					if (
+						((C.style.marginBottom = '16px'),
+						(C.style.fontSize = '16px'),
+						(C.style.fontWeight = '600'),
+						(C.textContent = `Total: ${f} tokens (${O.light.length} Light + ${O.dark.length} Dark)`),
+						u.appendChild(C),
+						f > 0)
+					) {
+						const k = $(O.light),
+							v = $(O.dark);
+						new Set([...Object.keys(k), ...Object.keys(v)]).forEach((w) => {
+							const G = k[w] || {},
+								h = v[w] || {},
+								z = new Set([...Object.keys(G), ...Object.keys(h)]);
+							if (z.size === 0) return;
+							const R = document.createElement('div');
+							R.style.marginBottom = '32px';
+							const n = Object.values(G).reduce((T, p) => T + p.length, 0),
+								s = Object.values(h).reduce((T, p) => T + p.length, 0),
+								i = document.createElement('h4');
+							(i.textContent = `${w.charAt(0).toUpperCase() + w.slice(1)} (${n} Light + ${s} Dark = ${n + s} tokens)`),
+								(i.style.fontSize = '16px'),
+								(i.style.fontWeight = '600'),
+								(i.style.marginBottom = '16px'),
+								(i.style.paddingBottom = '8px'),
+								(i.style.borderBottom = '2px solid #e5e7eb'),
+								R.appendChild(i);
+							const o = ['base', 'default', 'hover', 'pressed'];
+							Array.from(z)
+								.sort((T, p) => {
+									const y = o.indexOf(T),
+										a = o.indexOf(p);
+									return y === -1 && a === -1
+										? T.localeCompare(p)
+										: y === -1
+											? 1
+											: a === -1
+												? -1
+												: y - a;
+								})
+								.forEach((T) => {
+									const p = G[T] || [],
+										y = h[T] || [];
+									if (p.length === 0 && y.length === 0) return;
+									const a = document.createElement('div');
+									(a.style.marginBottom = '24px'),
+										(a.style.padding = '12px'),
+										(a.style.backgroundColor = '#f9fafb'),
+										(a.style.border = '1px solid #e5e7eb'),
+										(a.style.borderRadius = '8px');
+									const g = document.createElement('h5'),
+										c = T === 'base' ? 'Base' : T.charAt(0).toUpperCase() + T.slice(1);
+									(g.textContent = `${c} (${p.length} Light + ${y.length} Dark)`),
+										(g.style.fontSize = '14px'),
+										(g.style.fontWeight = '600'),
+										(g.style.marginBottom = '12px'),
+										(g.style.color = '#303a47'),
+										a.appendChild(g);
+									const e = document.createElement('div');
+									(e.style.display = 'grid'),
+										(e.style.gridTemplateColumns = '1fr 1fr'),
+										(e.style.gap = '12px');
+									const A = document.createElement('div');
+									(A.style.background = '#ffffff'),
+										(A.style.border = '1px solid #e5e7eb'),
+										(A.style.borderRadius = '8px'),
+										(A.style.padding = '12px');
+									const L = document.createElement('div');
+									if (
+										((L.style.display = 'flex'),
+										(L.style.flexDirection = 'column'),
+										(L.style.gap = '6px'),
+										(L.style.maxHeight = '400px'),
+										(L.style.overflowY = 'auto'),
+										(L.style.paddingRight = '8px'),
+										p.forEach((E) => {
+											L.appendChild(
+												B(E, 'light', { showVariable: !0, showValue: !0, width: '100%' }),
+											);
+										}),
+										p.length === 0)
+									) {
+										const E = document.createElement('div');
+										(E.style.padding = '8px'),
+											(E.style.textAlign = 'center'),
+											(E.style.color = '#9ca3af'),
+											(E.style.fontSize = '12px'),
+											(E.textContent = 'No hay tokens'),
+											L.appendChild(E);
+									}
+									A.appendChild(L), e.appendChild(A);
+									const I = document.createElement('div');
+									(I.style.background = '#0E1825'),
+										(I.style.color = '#edeeef'),
+										(I.style.border = '1px solid #0E1825'),
+										(I.style.borderRadius = '8px'),
+										(I.style.padding = '12px');
+									const D = document.createElement('div');
+									if (
+										((D.style.display = 'flex'),
+										(D.style.flexDirection = 'column'),
+										(D.style.gap = '6px'),
+										(D.style.maxHeight = '400px'),
+										(D.style.overflowY = 'auto'),
+										(D.style.paddingRight = '8px'),
+										y.forEach((E) => {
+											D.appendChild(
+												B(E, 'dark', { showVariable: !0, showValue: !0, width: '100%' }),
+											);
+										}),
+										y.length === 0)
+									) {
+										const E = document.createElement('div');
+										(E.style.padding = '8px'),
+											(E.style.textAlign = 'center'),
+											(E.style.color = '#9ca3af'),
+											(E.style.fontSize = '12px'),
+											(E.textContent = 'No hay tokens'),
+											D.appendChild(E);
+									}
+									I.appendChild(D), e.appendChild(I), a.appendChild(e), R.appendChild(a);
+								}),
+								u.appendChild(R);
+						});
+					} else {
+						const k = document.createElement('div');
+						(k.style.padding = '12px'),
+							(k.style.backgroundColor = '#fef3c7'),
+							(k.style.border = '1px solid #fbbf24'),
+							(k.style.borderRadius = '8px'),
+							(k.style.fontSize = '14px'),
+							(k.style.color = '#92400e'),
+							(k.textContent =
+								'Los tokens se cargarán dinámicamente desde el CSS. Si no aparecen, verifica que figma-tokens.css esté importado.'),
+							u.appendChild(k);
+					}
+					d.appendChild(u);
+				}),
+				d
+			);
+		},
+	},
+	W = {
+		render: () => {
+			const d = document.createElement('div');
+			(d.style.padding = '24px'), (d.style.maxWidth = '1400px');
+			const l = document.createElement('h2');
+			(l.textContent = 'Normal - Todos los Colores'),
+				(l.style.fontSize = '24px'),
+				(l.style.fontWeight = '700'),
+				(l.style.marginBottom = '16px'),
+				d.appendChild(l);
+			const r = H('normal'),
+				m = r.light.length + r.dark.length,
+				t = document.createElement('div');
+			if (
+				((t.style.marginBottom = '24px'),
+				(t.style.padding = '12px'),
+				(t.style.backgroundColor = '#f3f4f6'),
+				(t.style.border = '1px solid #d1d5db'),
+				(t.style.borderRadius = '8px'),
+				(t.style.fontSize = '16px'),
+				(t.style.fontWeight = '600'),
+				(t.textContent = `Total: ${m} tokens (${r.light.length} Light + ${r.dark.length} Dark)`),
+				d.appendChild(t),
+				m > 0)
+			) {
+				const u = $(r.light),
+					b = $(r.dark);
+				new Set([...Object.keys(u), ...Object.keys(b)]).forEach((f) => {
+					const C = u[f] || {},
+						k = b[f] || {},
+						v = new Set([...Object.keys(C), ...Object.keys(k)]);
+					if (v.size === 0) return;
+					const S = document.createElement('div');
+					S.style.marginBottom = '40px';
+					const w = Object.values(C).reduce((n, s) => n + s.length, 0),
+						G = Object.values(k).reduce((n, s) => n + s.length, 0),
+						h = document.createElement('h3');
+					(h.textContent = `${f.charAt(0).toUpperCase() + f.slice(1)} (${w} Light + ${G} Dark)`),
+						(h.style.fontSize = '20px'),
+						(h.style.fontWeight = '600'),
+						(h.style.marginBottom = '16px'),
+						(h.style.paddingBottom = '8px'),
+						(h.style.borderBottom = '2px solid #e5e7eb'),
+						S.appendChild(h);
+					const z = ['base', 'default', 'hover', 'pressed'];
+					Array.from(v)
+						.sort((n, s) => {
+							const i = z.indexOf(n),
+								o = z.indexOf(s);
+							return i === -1 && o === -1
+								? n.localeCompare(s)
+								: i === -1
+									? 1
+									: o === -1
+										? -1
+										: i - o;
+						})
+						.forEach((n) => {
+							const s = C[n] || [],
+								i = k[n] || [];
+							if (s.length === 0 && i.length === 0) return;
+							const o = document.createElement('div');
+							(o.style.marginBottom = '24px'),
+								(o.style.padding = '12px'),
+								(o.style.backgroundColor = '#f9fafb'),
+								(o.style.border = '1px solid #e5e7eb'),
+								(o.style.borderRadius = '8px');
+							const x = document.createElement('h4'),
+								T = n === 'base' ? 'Base' : n.charAt(0).toUpperCase() + n.slice(1);
+							(x.textContent = `${T} (${s.length} Light + ${i.length} Dark)`),
+								(x.style.fontSize = '16px'),
+								(x.style.fontWeight = '600'),
+								(x.style.marginBottom = '12px'),
+								(x.style.color = '#303a47'),
+								o.appendChild(x);
+							const p = document.createElement('div');
+							(p.style.display = 'grid'),
+								(p.style.gridTemplateColumns = '1fr 1fr'),
+								(p.style.gap = '12px');
+							const y = document.createElement('div');
+							(y.style.background = '#ffffff'),
+								(y.style.border = '1px solid #e5e7eb'),
+								(y.style.borderRadius = '8px'),
+								(y.style.padding = '12px');
+							const a = document.createElement('div');
+							if (
+								((a.style.display = 'flex'),
+								(a.style.flexDirection = 'column'),
+								(a.style.gap = '6px'),
+								(a.style.maxHeight = '400px'),
+								(a.style.overflowY = 'auto'),
+								(a.style.paddingRight = '8px'),
+								s.forEach((e) => {
+									a.appendChild(B(e, 'light', { showVariable: !0, showValue: !0, width: '100%' }));
+								}),
+								s.length === 0)
+							) {
+								const e = document.createElement('div');
+								(e.style.padding = '8px'),
+									(e.style.textAlign = 'center'),
+									(e.style.color = '#9ca3af'),
+									(e.style.fontSize = '12px'),
+									(e.textContent = 'No hay tokens'),
+									a.appendChild(e);
+							}
+							y.appendChild(a), p.appendChild(y);
+							const g = document.createElement('div');
+							(g.style.background = '#0E1825'),
+								(g.style.color = '#edeeef'),
+								(g.style.border = '1px solid #0E1825'),
+								(g.style.borderRadius = '8px'),
+								(g.style.padding = '12px');
+							const c = document.createElement('div');
+							if (
+								((c.style.display = 'flex'),
+								(c.style.flexDirection = 'column'),
+								(c.style.gap = '6px'),
+								(c.style.maxHeight = '400px'),
+								(c.style.overflowY = 'auto'),
+								(c.style.paddingRight = '8px'),
+								i.forEach((e) => {
+									c.appendChild(B(e, 'dark', { showVariable: !0, showValue: !0, width: '100%' }));
+								}),
+								i.length === 0)
+							) {
+								const e = document.createElement('div');
+								(e.style.padding = '8px'),
+									(e.style.textAlign = 'center'),
+									(e.style.color = '#9ca3af'),
+									(e.style.fontSize = '12px'),
+									(e.textContent = 'No hay tokens'),
+									c.appendChild(e);
+							}
+							g.appendChild(c), p.appendChild(g), o.appendChild(p), S.appendChild(o);
+						}),
+						d.appendChild(S);
+				});
+			}
+			return d;
+		},
+	},
+	N = {
+		render: () => {
+			const d = document.createElement('div');
+			(d.style.padding = '24px'), (d.style.maxWidth = '1400px');
+			const l = document.createElement('h2');
+			(l.textContent = 'Inverted - Todos los Colores'),
+				(l.style.fontSize = '24px'),
+				(l.style.fontWeight = '700'),
+				(l.style.marginBottom = '16px'),
+				d.appendChild(l);
+			const r = H('inverted'),
+				m = r.light.length + r.dark.length,
+				t = document.createElement('div');
+			if (
+				((t.style.marginBottom = '24px'),
+				(t.style.padding = '12px'),
+				(t.style.backgroundColor = '#f3f4f6'),
+				(t.style.border = '1px solid #d1d5db'),
+				(t.style.borderRadius = '8px'),
+				(t.style.fontSize = '16px'),
+				(t.style.fontWeight = '600'),
+				(t.textContent = `Total: ${m} tokens (${r.light.length} Light + ${r.dark.length} Dark)`),
+				d.appendChild(t),
+				m > 0)
+			) {
+				const u = $(r.light),
+					b = $(r.dark);
+				new Set([...Object.keys(u), ...Object.keys(b)]).forEach((f) => {
+					const C = u[f] || {},
+						k = b[f] || {},
+						v = new Set([...Object.keys(C), ...Object.keys(k)]);
+					if (v.size === 0) return;
+					const S = document.createElement('div');
+					S.style.marginBottom = '40px';
+					const w = Object.values(C).reduce((n, s) => n + s.length, 0),
+						G = Object.values(k).reduce((n, s) => n + s.length, 0),
+						h = document.createElement('h3');
+					(h.textContent = `${f.charAt(0).toUpperCase() + f.slice(1)} (${w} Light + ${G} Dark)`),
+						(h.style.fontSize = '20px'),
+						(h.style.fontWeight = '600'),
+						(h.style.marginBottom = '16px'),
+						(h.style.paddingBottom = '8px'),
+						(h.style.borderBottom = '2px solid #e5e7eb'),
+						S.appendChild(h);
+					const z = ['base', 'default', 'hover', 'pressed'];
+					Array.from(v)
+						.sort((n, s) => {
+							const i = z.indexOf(n),
+								o = z.indexOf(s);
+							return i === -1 && o === -1
+								? n.localeCompare(s)
+								: i === -1
+									? 1
+									: o === -1
+										? -1
+										: i - o;
+						})
+						.forEach((n) => {
+							const s = C[n] || [],
+								i = k[n] || [];
+							if (s.length === 0 && i.length === 0) return;
+							const o = document.createElement('div');
+							(o.style.marginBottom = '24px'),
+								(o.style.padding = '12px'),
+								(o.style.backgroundColor = '#f9fafb'),
+								(o.style.border = '1px solid #e5e7eb'),
+								(o.style.borderRadius = '8px');
+							const x = document.createElement('h4'),
+								T = n === 'base' ? 'Base' : n.charAt(0).toUpperCase() + n.slice(1);
+							(x.textContent = `${T} (${s.length} Light + ${i.length} Dark)`),
+								(x.style.fontSize = '16px'),
+								(x.style.fontWeight = '600'),
+								(x.style.marginBottom = '12px'),
+								(x.style.color = '#303a47'),
+								o.appendChild(x);
+							const p = document.createElement('div');
+							(p.style.display = 'grid'),
+								(p.style.gridTemplateColumns = '1fr 1fr'),
+								(p.style.gap = '12px');
+							const y = document.createElement('div');
+							(y.style.background = '#ffffff'),
+								(y.style.border = '1px solid #e5e7eb'),
+								(y.style.borderRadius = '8px'),
+								(y.style.padding = '12px');
+							const a = document.createElement('div');
+							if (
+								((a.style.display = 'flex'),
+								(a.style.flexDirection = 'column'),
+								(a.style.gap = '6px'),
+								(a.style.maxHeight = '400px'),
+								(a.style.overflowY = 'auto'),
+								(a.style.paddingRight = '8px'),
+								s.forEach((e) => {
+									a.appendChild(B(e, 'light', { showVariable: !0, showValue: !0, width: '100%' }));
+								}),
+								s.length === 0)
+							) {
+								const e = document.createElement('div');
+								(e.style.padding = '8px'),
+									(e.style.textAlign = 'center'),
+									(e.style.color = '#9ca3af'),
+									(e.style.fontSize = '12px'),
+									(e.textContent = 'No hay tokens'),
+									a.appendChild(e);
+							}
+							y.appendChild(a), p.appendChild(y);
+							const g = document.createElement('div');
+							(g.style.background = '#0E1825'),
+								(g.style.color = '#edeeef'),
+								(g.style.border = '1px solid #0E1825'),
+								(g.style.borderRadius = '8px'),
+								(g.style.padding = '12px');
+							const c = document.createElement('div');
+							if (
+								((c.style.display = 'flex'),
+								(c.style.flexDirection = 'column'),
+								(c.style.gap = '6px'),
+								(c.style.maxHeight = '400px'),
+								(c.style.overflowY = 'auto'),
+								(c.style.paddingRight = '8px'),
+								i.forEach((e) => {
+									c.appendChild(B(e, 'dark', { showVariable: !0, showValue: !0, width: '100%' }));
+								}),
+								i.length === 0)
+							) {
+								const e = document.createElement('div');
+								(e.style.padding = '8px'),
+									(e.style.textAlign = 'center'),
+									(e.style.color = '#9ca3af'),
+									(e.style.fontSize = '12px'),
+									(e.textContent = 'No hay tokens'),
+									c.appendChild(e);
+							}
+							g.appendChild(c), p.appendChild(g), o.appendChild(p), S.appendChild(o);
+						}),
+						d.appendChild(S);
+				});
+			}
+			return d;
+		},
+	},
+	V = {
+		render: () => {
+			const d = document.createElement('div');
+			(d.style.padding = '24px'), (d.style.maxWidth = '1400px');
+			const l = document.createElement('h2');
+			(l.textContent = 'Static - Todos los Colores'),
+				(l.style.fontSize = '24px'),
+				(l.style.fontWeight = '700'),
+				(l.style.marginBottom = '16px'),
+				d.appendChild(l);
+			const r = H('static'),
+				m = r.light.length + r.dark.length,
+				t = document.createElement('div');
+			if (
+				((t.style.marginBottom = '24px'),
+				(t.style.padding = '12px'),
+				(t.style.backgroundColor = '#f3f4f6'),
+				(t.style.border = '1px solid #d1d5db'),
+				(t.style.borderRadius = '8px'),
+				(t.style.fontSize = '16px'),
+				(t.style.fontWeight = '600'),
+				(t.textContent = `Total: ${m} tokens (${r.light.length} Light + ${r.dark.length} Dark)`),
+				d.appendChild(t),
+				m > 0)
+			) {
+				const u = $(r.light),
+					b = $(r.dark);
+				new Set([...Object.keys(u), ...Object.keys(b)]).forEach((f) => {
+					const C = u[f] || {},
+						k = b[f] || {},
+						v = new Set([...Object.keys(C), ...Object.keys(k)]);
+					if (v.size === 0) return;
+					const S = document.createElement('div');
+					S.style.marginBottom = '40px';
+					const w = Object.values(C).reduce((n, s) => n + s.length, 0),
+						G = Object.values(k).reduce((n, s) => n + s.length, 0),
+						h = document.createElement('h3');
+					(h.textContent = `${f.charAt(0).toUpperCase() + f.slice(1)} (${w} Light + ${G} Dark)`),
+						(h.style.fontSize = '20px'),
+						(h.style.fontWeight = '600'),
+						(h.style.marginBottom = '16px'),
+						(h.style.paddingBottom = '8px'),
+						(h.style.borderBottom = '2px solid #e5e7eb'),
+						S.appendChild(h);
+					const z = ['base', 'default', 'hover', 'pressed'];
+					Array.from(v)
+						.sort((n, s) => {
+							const i = z.indexOf(n),
+								o = z.indexOf(s);
+							return i === -1 && o === -1
+								? n.localeCompare(s)
+								: i === -1
+									? 1
+									: o === -1
+										? -1
+										: i - o;
+						})
+						.forEach((n) => {
+							const s = C[n] || [],
+								i = k[n] || [];
+							if (s.length === 0 && i.length === 0) return;
+							const o = document.createElement('div');
+							(o.style.marginBottom = '24px'),
+								(o.style.padding = '12px'),
+								(o.style.backgroundColor = '#f9fafb'),
+								(o.style.border = '1px solid #e5e7eb'),
+								(o.style.borderRadius = '8px');
+							const x = document.createElement('h4'),
+								T = n === 'base' ? 'Base' : n.charAt(0).toUpperCase() + n.slice(1);
+							(x.textContent = `${T} (${s.length} Light + ${i.length} Dark)`),
+								(x.style.fontSize = '16px'),
+								(x.style.fontWeight = '600'),
+								(x.style.marginBottom = '12px'),
+								(x.style.color = '#303a47'),
+								o.appendChild(x);
+							const p = document.createElement('div');
+							(p.style.display = 'grid'),
+								(p.style.gridTemplateColumns = '1fr 1fr'),
+								(p.style.gap = '12px');
+							const y = document.createElement('div');
+							(y.style.background = '#ffffff'),
+								(y.style.border = '1px solid #e5e7eb'),
+								(y.style.borderRadius = '8px'),
+								(y.style.padding = '12px');
+							const a = document.createElement('div');
+							if (
+								((a.style.display = 'flex'),
+								(a.style.flexDirection = 'column'),
+								(a.style.gap = '6px'),
+								(a.style.maxHeight = '400px'),
+								(a.style.overflowY = 'auto'),
+								(a.style.paddingRight = '8px'),
+								s.forEach((e) => {
+									a.appendChild(B(e, 'light', { showVariable: !0, showValue: !0, width: '100%' }));
+								}),
+								s.length === 0)
+							) {
+								const e = document.createElement('div');
+								(e.style.padding = '8px'),
+									(e.style.textAlign = 'center'),
+									(e.style.color = '#9ca3af'),
+									(e.style.fontSize = '12px'),
+									(e.textContent = 'No hay tokens'),
+									a.appendChild(e);
+							}
+							y.appendChild(a), p.appendChild(y);
+							const g = document.createElement('div');
+							(g.style.background = '#0E1825'),
+								(g.style.color = '#edeeef'),
+								(g.style.border = '1px solid #0E1825'),
+								(g.style.borderRadius = '8px'),
+								(g.style.padding = '12px');
+							const c = document.createElement('div');
+							if (
+								((c.style.display = 'flex'),
+								(c.style.flexDirection = 'column'),
+								(c.style.gap = '6px'),
+								(c.style.maxHeight = '400px'),
+								(c.style.overflowY = 'auto'),
+								(c.style.paddingRight = '8px'),
+								i.forEach((e) => {
+									c.appendChild(B(e, 'dark', { showVariable: !0, showValue: !0, width: '100%' }));
+								}),
+								i.length === 0)
+							) {
+								const e = document.createElement('div');
+								(e.style.padding = '8px'),
+									(e.style.textAlign = 'center'),
+									(e.style.color = '#9ca3af'),
+									(e.style.fontSize = '12px'),
+									(e.textContent = 'No hay tokens'),
+									c.appendChild(e);
+							}
+							g.appendChild(c), p.appendChild(g), o.appendChild(p), S.appendChild(o);
+						}),
+						d.appendChild(S);
+				});
+			}
+			return d;
+		},
+	},
+	U = {
+		render: () => {
+			const d = document.createElement('div');
+			(d.style.padding = '24px'), (d.style.maxWidth = '1400px');
+			const l = document.createElement('h2');
+			(l.textContent = 'Static Inverted - Todos los Colores'),
+				(l.style.fontSize = '24px'),
+				(l.style.fontWeight = '700'),
+				(l.style.marginBottom = '16px'),
+				d.appendChild(l);
+			const r = H('static-inverted'),
+				m = r.light.length + r.dark.length,
+				t = document.createElement('div');
+			if (
+				((t.style.marginBottom = '24px'),
+				(t.style.padding = '12px'),
+				(t.style.backgroundColor = '#f3f4f6'),
+				(t.style.border = '1px solid #d1d5db'),
+				(t.style.borderRadius = '8px'),
+				(t.style.fontSize = '16px'),
+				(t.style.fontWeight = '600'),
+				(t.textContent = `Total: ${m} tokens (${r.light.length} Light + ${r.dark.length} Dark)`),
+				d.appendChild(t),
+				m > 0)
+			) {
+				const u = $(r.light),
+					b = $(r.dark);
+				new Set([...Object.keys(u), ...Object.keys(b)]).forEach((f) => {
+					const C = u[f] || {},
+						k = b[f] || {},
+						v = new Set([...Object.keys(C), ...Object.keys(k)]);
+					if (v.size === 0) return;
+					const S = document.createElement('div');
+					S.style.marginBottom = '40px';
+					const w = Object.values(C).reduce((n, s) => n + s.length, 0),
+						G = Object.values(k).reduce((n, s) => n + s.length, 0),
+						h = document.createElement('h3');
+					(h.textContent = `${f.charAt(0).toUpperCase() + f.slice(1)} (${w} Light + ${G} Dark)`),
+						(h.style.fontSize = '20px'),
+						(h.style.fontWeight = '600'),
+						(h.style.marginBottom = '16px'),
+						(h.style.paddingBottom = '8px'),
+						(h.style.borderBottom = '2px solid #e5e7eb'),
+						S.appendChild(h);
+					const z = ['base', 'default', 'hover', 'pressed'];
+					Array.from(v)
+						.sort((n, s) => {
+							const i = z.indexOf(n),
+								o = z.indexOf(s);
+							return i === -1 && o === -1
+								? n.localeCompare(s)
+								: i === -1
+									? 1
+									: o === -1
+										? -1
+										: i - o;
+						})
+						.forEach((n) => {
+							const s = C[n] || [],
+								i = k[n] || [];
+							if (s.length === 0 && i.length === 0) return;
+							const o = document.createElement('div');
+							(o.style.marginBottom = '24px'),
+								(o.style.padding = '12px'),
+								(o.style.backgroundColor = '#f9fafb'),
+								(o.style.border = '1px solid #e5e7eb'),
+								(o.style.borderRadius = '8px');
+							const x = document.createElement('h4'),
+								T = n === 'base' ? 'Base' : n.charAt(0).toUpperCase() + n.slice(1);
+							(x.textContent = `${T} (${s.length} Light + ${i.length} Dark)`),
+								(x.style.fontSize = '16px'),
+								(x.style.fontWeight = '600'),
+								(x.style.marginBottom = '12px'),
+								(x.style.color = '#303a47'),
+								o.appendChild(x);
+							const p = document.createElement('div');
+							(p.style.display = 'grid'),
+								(p.style.gridTemplateColumns = '1fr 1fr'),
+								(p.style.gap = '12px');
+							const y = document.createElement('div');
+							(y.style.background = '#ffffff'),
+								(y.style.border = '1px solid #e5e7eb'),
+								(y.style.borderRadius = '8px'),
+								(y.style.padding = '12px');
+							const a = document.createElement('div');
+							if (
+								((a.style.display = 'flex'),
+								(a.style.flexDirection = 'column'),
+								(a.style.gap = '6px'),
+								(a.style.maxHeight = '400px'),
+								(a.style.overflowY = 'auto'),
+								(a.style.paddingRight = '8px'),
+								s.forEach((e) => {
+									a.appendChild(B(e, 'light', { showVariable: !0, showValue: !0, width: '100%' }));
+								}),
+								s.length === 0)
+							) {
+								const e = document.createElement('div');
+								(e.style.padding = '8px'),
+									(e.style.textAlign = 'center'),
+									(e.style.color = '#9ca3af'),
+									(e.style.fontSize = '12px'),
+									(e.textContent = 'No hay tokens'),
+									a.appendChild(e);
+							}
+							y.appendChild(a), p.appendChild(y);
+							const g = document.createElement('div');
+							(g.style.background = '#0E1825'),
+								(g.style.color = '#edeeef'),
+								(g.style.border = '1px solid #0E1825'),
+								(g.style.borderRadius = '8px'),
+								(g.style.padding = '12px');
+							const c = document.createElement('div');
+							if (
+								((c.style.display = 'flex'),
+								(c.style.flexDirection = 'column'),
+								(c.style.gap = '6px'),
+								(c.style.maxHeight = '400px'),
+								(c.style.overflowY = 'auto'),
+								(c.style.paddingRight = '8px'),
+								i.forEach((e) => {
+									c.appendChild(B(e, 'dark', { showVariable: !0, showValue: !0, width: '100%' }));
+								}),
+								i.length === 0)
+							) {
+								const e = document.createElement('div');
+								(e.style.padding = '8px'),
+									(e.style.textAlign = 'center'),
+									(e.style.color = '#9ca3af'),
+									(e.style.fontSize = '12px'),
+									(e.textContent = 'No hay tokens'),
+									c.appendChild(e);
+							}
+							g.appendChild(c), p.appendChild(g), o.appendChild(p), S.appendChild(o);
+						}),
+						d.appendChild(S);
+				});
+			}
+			return d;
+		},
+	};
+j.parameters = {
+	...j.parameters,
+	docs: {
+		...j.parameters?.docs,
+		source: {
+			originalSource: `{
   render: () => {
     const container = document.createElement('div');
     container.style.padding = '24px';
@@ -206,7 +1037,21 @@ import{c as B}from"./utils-QDDdDBjb.js";function Y(d){const l=[],r=d.toLowerCase
     });
     return container;
   }
-}`,...j.parameters?.docs?.source},description:{story:"Story principal que muestra todos los modificadores",...j.parameters?.docs?.description}}};W.parameters={...W.parameters,docs:{...W.parameters?.docs,source:{originalSource:`{
+}`,
+			...j.parameters?.docs?.source,
+		},
+		description: {
+			story: 'Story principal que muestra todos los modificadores',
+			...j.parameters?.docs?.description,
+		},
+	},
+};
+W.parameters = {
+	...W.parameters,
+	docs: {
+		...W.parameters?.docs,
+		source: {
+			originalSource: `{
   render: () => {
     const container = document.createElement('div');
     container.style.padding = '24px';
@@ -365,7 +1210,18 @@ import{c as B}from"./utils-QDDdDBjb.js";function Y(d){const l=[],r=d.toLowerCase
     }
     return container;
   }
-}`,...W.parameters?.docs?.source},description:{story:"Story para Normal",...W.parameters?.docs?.description}}};N.parameters={...N.parameters,docs:{...N.parameters?.docs,source:{originalSource:`{
+}`,
+			...W.parameters?.docs?.source,
+		},
+		description: { story: 'Story para Normal', ...W.parameters?.docs?.description },
+	},
+};
+N.parameters = {
+	...N.parameters,
+	docs: {
+		...N.parameters?.docs,
+		source: {
+			originalSource: `{
   render: () => {
     const container = document.createElement('div');
     container.style.padding = '24px';
@@ -522,7 +1378,18 @@ import{c as B}from"./utils-QDDdDBjb.js";function Y(d){const l=[],r=d.toLowerCase
     }
     return container;
   }
-}`,...N.parameters?.docs?.source},description:{story:"Story para Inverted",...N.parameters?.docs?.description}}};V.parameters={...V.parameters,docs:{...V.parameters?.docs,source:{originalSource:`{
+}`,
+			...N.parameters?.docs?.source,
+		},
+		description: { story: 'Story para Inverted', ...N.parameters?.docs?.description },
+	},
+};
+V.parameters = {
+	...V.parameters,
+	docs: {
+		...V.parameters?.docs,
+		source: {
+			originalSource: `{
   render: () => {
     const container = document.createElement('div');
     container.style.padding = '24px';
@@ -679,7 +1546,18 @@ import{c as B}from"./utils-QDDdDBjb.js";function Y(d){const l=[],r=d.toLowerCase
     }
     return container;
   }
-}`,...V.parameters?.docs?.source},description:{story:"Story para Static",...V.parameters?.docs?.description}}};U.parameters={...U.parameters,docs:{...U.parameters?.docs,source:{originalSource:`{
+}`,
+			...V.parameters?.docs?.source,
+		},
+		description: { story: 'Story para Static', ...V.parameters?.docs?.description },
+	},
+};
+U.parameters = {
+	...U.parameters,
+	docs: {
+		...U.parameters?.docs,
+		source: {
+			originalSource: `{
   render: () => {
     const container = document.createElement('div');
     container.style.padding = '24px';
@@ -836,4 +1714,19 @@ import{c as B}from"./utils-QDDdDBjb.js";function Y(d){const l=[],r=d.toLowerCase
     }
     return container;
   }
-}`,...U.parameters?.docs?.source},description:{story:"Story para Static Inverted",...U.parameters?.docs?.description}}};const _=["TodosLosModificadores","Normal","Inverted","Static","StaticInverted"];export{N as Inverted,W as Normal,V as Static,U as StaticInverted,j as TodosLosModificadores,_ as __namedExportsOrder,q as default};
+}`,
+			...U.parameters?.docs?.source,
+		},
+		description: { story: 'Story para Static Inverted', ...U.parameters?.docs?.description },
+	},
+};
+const _ = ['TodosLosModificadores', 'Normal', 'Inverted', 'Static', 'StaticInverted'];
+export {
+	N as Inverted,
+	W as Normal,
+	V as Static,
+	U as StaticInverted,
+	j as TodosLosModificadores,
+	_ as __namedExportsOrder,
+	q as default,
+};

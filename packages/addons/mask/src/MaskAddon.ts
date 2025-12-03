@@ -96,4 +96,3 @@ export class MaskAddon implements IComponentAddon {
 		// Los componentes ya se registran en initialize()
 	}
 }
-

@@ -12,17 +12,20 @@ import { initComponents } from '../initComponents.js';
 async function main() {
 	// Verificar si hay respuestas automáticas en argumentos
 	const args = process.argv.slice(2);
-	const autoSelect = args.find(arg => arg.startsWith('--project='))?.split('=')[1] as 'ubits' | 'independent' | undefined;
-	
+	const autoSelect = args.find((arg) => arg.startsWith('--project='))?.split('=')[1] as
+		| 'ubits'
+		| 'independent'
+		| undefined;
+
 	// Verificar si hay respuestas automáticas para el wizard (formato: --answers="1,16")
-	const answersArg = args.find(arg => arg.startsWith('--answers='));
+	const answersArg = args.find((arg) => arg.startsWith('--answers='));
 	if (answersArg) {
 		const answersValue = answersArg.split('=')[1]?.replace(/^["']|["']$/g, '');
 		if (answersValue) {
 			process.env.AUTORUN_ANSWERS = answersValue;
 		}
 	}
-	
+
 	// También verificar variables de entorno
 	if (!autoSelect && process.env.AUTORUN_PROJECT_TYPE) {
 		process.env.AUTORUN_PROJECT_TYPE = process.env.AUTORUN_PROJECT_TYPE;
@@ -55,7 +58,7 @@ async function main() {
 			if (configManager) {
 				// Guardar configuración del proyecto
 				const config = await configManager.load();
-				
+
 				// Actualizar con resultado del wizard
 				if (!config.autorun) {
 					config.autorun = {
@@ -97,7 +100,7 @@ async function main() {
 			console.log('\n🌐 Servidor HTTP local está corriendo.');
 			console.log('   💡 Mantén esta terminal abierta para que el servidor siga funcionando.');
 			console.log('   💡 Presiona Ctrl+C para detener el servidor y salir.\n');
-			
+
 			// Mantener el proceso vivo
 			// El servidor se detendrá cuando el proceso termine (Ctrl+C)
 			process.on('SIGINT', async () => {
@@ -107,7 +110,7 @@ async function main() {
 				}
 				process.exit(0);
 			});
-			
+
 			// No hacer exit, mantener el proceso vivo
 			// El proceso terminará cuando el usuario presione Ctrl+C
 		} else {
@@ -126,4 +129,3 @@ main().catch((error) => {
 });
 
 export { main };
-

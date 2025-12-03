@@ -8,9 +8,9 @@ export declare function renderParticipantsMenu(options: ParticipantsMenuOptions)
  * Crea un elemento DOM del menú de participantes y lo inserta en el contenedor
  */
 export declare function createParticipantsMenu(options: ParticipantsMenuOptions): {
-    element: HTMLElement;
-    update: (newOptions: Partial<ParticipantsMenuOptions>) => void;
-    updateParticipantsList: (participants: Participant[], selectedParticipantId?: string) => void;
-    destroy: () => void;
+	element: HTMLElement;
+	update: (newOptions: Partial<ParticipantsMenuOptions>) => void;
+	updateParticipantsList: (participants: Participant[], selectedParticipantId?: string) => void;
+	destroy: () => void;
 };
 //# sourceMappingURL=ParticipantsMenuProvider.d.ts.map

@@ -87,10 +87,7 @@ export class ChangesetsService {
 			}
 
 			// Crear directorio .changeset si no existe
-			const changesetsDir = path.join(
-				this.projectPath,
-				this.config.changesetsPath || '.changeset',
-			);
+			const changesetsDir = path.join(this.projectPath, this.config.changesetsPath || '.changeset');
 			await fs.mkdir(changesetsDir, { recursive: true });
 
 			// Crear config.json si no existe
@@ -135,10 +132,7 @@ export class ChangesetsService {
 		try {
 			// Generar ID único para el changeset
 			const changesetId = this.generateChangesetId();
-			const changesetsDir = path.join(
-				this.projectPath,
-				this.config.changesetsPath || '.changeset',
-			);
+			const changesetsDir = path.join(this.projectPath, this.config.changesetsPath || '.changeset');
 
 			// Crear archivo de changeset
 			const changesetPath = path.join(changesetsDir, `${changesetId}.md`);
@@ -375,10 +369,7 @@ ${summary}
 	 */
 	async hasPendingChangesets(): Promise<boolean> {
 		try {
-			const changesetsDir = path.join(
-				this.projectPath,
-				this.config.changesetsPath || '.changeset',
-			);
+			const changesetsDir = path.join(this.projectPath, this.config.changesetsPath || '.changeset');
 			if (!existsSync(changesetsDir)) {
 				return false;
 			}
@@ -401,10 +392,7 @@ ${summary}
 		const changesets: Changeset[] = [];
 
 		try {
-			const changesetsDir = path.join(
-				this.projectPath,
-				this.config.changesetsPath || '.changeset',
-			);
+			const changesetsDir = path.join(this.projectPath, this.config.changesetsPath || '.changeset');
 			if (!existsSync(changesetsDir)) {
 				return changesets;
 			}
@@ -448,13 +436,18 @@ ${summary}
 	private async createGitHubRelease(version: string): Promise<boolean> {
 		try {
 			// Leer CHANGELOG.md para obtener notas del release
-			const changelogPath = path.join(this.projectPath, this.config.changelogPath || 'CHANGELOG.md');
+			const changelogPath = path.join(
+				this.projectPath,
+				this.config.changelogPath || 'CHANGELOG.md',
+			);
 			let releaseNotes = `Release ${version}`;
 
 			if (existsSync(changelogPath)) {
 				const changelog = readFileSync(changelogPath, 'utf-8');
 				// Extraer notas del release más reciente
-				const versionMatch = changelog.match(new RegExp(`## ${version.replace(/\./g, '\\.')}([\\s\\S]*?)(?=##|$)`));
+				const versionMatch = changelog.match(
+					new RegExp(`## ${version.replace(/\./g, '\\.')}([\\s\\S]*?)(?=##|$)`),
+				);
 				if (versionMatch) {
 					releaseNotes = versionMatch[1].trim();
 				}
@@ -493,4 +486,3 @@ ${summary}
 		this.config = { ...this.config, ...config };
 	}
 }
-

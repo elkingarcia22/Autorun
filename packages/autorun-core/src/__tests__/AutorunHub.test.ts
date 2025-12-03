@@ -62,9 +62,7 @@ describe('AutorunHub', () => {
 
 			await hub.initialize();
 
-			await expect(hub.initialize()).rejects.toThrow(
-				HubAlreadyInitializedError,
-			);
+			await expect(hub.initialize()).rejects.toThrow(HubAlreadyInitializedError);
 		});
 	});
 
@@ -110,4 +108,3 @@ describe('AutorunHub', () => {
 		});
 	});
 });
-

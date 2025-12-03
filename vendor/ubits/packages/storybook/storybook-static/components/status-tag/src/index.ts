@@ -7,19 +7,18 @@ export type { StatusTagOptions };
 
 // Exponer API global si está en el navegador
 if (typeof window !== 'undefined') {
-  window.UBITS = window.UBITS || {};
-  window.UBITS.StatusTag = {
-    render: renderStatusTag,
-    create: createStatusTag
-  };
+	window.UBITS = window.UBITS || {};
+	window.UBITS.StatusTag = {
+		render: renderStatusTag,
+		create: createStatusTag,
+	};
 
-  // Exponer función global para compatibilidad
-  if (!window.createStatusTag) {
-    window.createStatusTag = createStatusTag;
-  }
-  
-  if (!window.renderStatusTag) {
-    window.renderStatusTag = renderStatusTag;
-  }
+	// Exponer función global para compatibilidad
+	if (!window.createStatusTag) {
+		window.createStatusTag = createStatusTag;
+	}
+
+	if (!window.renderStatusTag) {
+		window.renderStatusTag = renderStatusTag;
+	}
 }
-

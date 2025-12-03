@@ -97,4 +97,3 @@ export class WelcomeAddon implements IComponentAddon {
 		// Los componentes ya se registran en initialize()
 	}
 }
-

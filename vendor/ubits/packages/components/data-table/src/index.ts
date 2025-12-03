@@ -4,11 +4,10 @@ export type { DataTableOptions, TableColumn, TableRow } from './types/DataTableO
 
 // Para builds UMD
 if (typeof window !== 'undefined') {
-  (window as any).UBITSDataTable = {
-    renderDataTable,
-    createDataTable
-  };
-  (window as any).renderDataTable = renderDataTable;
-  (window as any).createDataTable = createDataTable;
+	(window as any).UBITSDataTable = {
+		renderDataTable,
+		createDataTable,
+	};
+	(window as any).renderDataTable = renderDataTable;
+	(window as any).createDataTable = createDataTable;
 }
-

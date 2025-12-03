@@ -39,4 +39,3 @@ export {
 
 // Export default para que AddonLoader pueda cargarlo
 export { PlaywrightAddon as default } from './PlaywrightAddon';
-

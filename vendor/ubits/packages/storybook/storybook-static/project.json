@@ -1,1 +1,28 @@
-{"generatedAt":1764627922807,"userSince":1754532686163,"hasCustomBabel":false,"hasCustomWebpack":false,"hasStaticDirs":true,"hasStorybookEslint":false,"refCount":0,"testPackages":{},"hasRouterPackage":false,"monorepo":"Workspaces","packageManager":{"type":"npm","agent":"npm","nodeLinker":"node_modules"},"preview":{"usesGlobals":true},"framework":{"name":"@storybook/html-vite","options":{}},"builder":"@storybook/builder-vite","renderer":"@storybook/html","portableStoriesFileCount":1,"applicationFileCount":0,"storybookVersion":"10.1.2","storybookVersionSpecifier":"^10.0.8","language":"javascript","storybookPackages":{"@storybook/addon-docs":{"version":"10.1.2"},"@storybook/html-vite":{"version":"10.1.2"},"storybook":{}},"addons":{"$SNIP/node_modules/@storybook/addon-docs":{}}}
+{
+	"generatedAt": 1764627922807,
+	"userSince": 1754532686163,
+	"hasCustomBabel": false,
+	"hasCustomWebpack": false,
+	"hasStaticDirs": true,
+	"hasStorybookEslint": false,
+	"refCount": 0,
+	"testPackages": {},
+	"hasRouterPackage": false,
+	"monorepo": "Workspaces",
+	"packageManager": { "type": "npm", "agent": "npm", "nodeLinker": "node_modules" },
+	"preview": { "usesGlobals": true },
+	"framework": { "name": "@storybook/html-vite", "options": {} },
+	"builder": "@storybook/builder-vite",
+	"renderer": "@storybook/html",
+	"portableStoriesFileCount": 1,
+	"applicationFileCount": 0,
+	"storybookVersion": "10.1.2",
+	"storybookVersionSpecifier": "^10.0.8",
+	"language": "javascript",
+	"storybookPackages": {
+		"@storybook/addon-docs": { "version": "10.1.2" },
+		"@storybook/html-vite": { "version": "10.1.2" },
+		"storybook": {}
+	},
+	"addons": { "$SNIP/node_modules/@storybook/addon-docs": {} }
+}

@@ -1,6 +1,6 @@
 /**
  * Ejemplos de uso: Aplicar tokens desde Storybook u otras fuentes
- * 
+ *
  * Este archivo muestra cómo usar las utilidades para cambiar tokens
  * y aplicarlos a todos los componentes automáticamente.
  */
@@ -12,12 +12,12 @@ import { applyTokensFromStorybook, createTokensAddonFromSource } from './createT
 // ========================================
 
 export async function ejemploDesdeStorybookURL() {
-  await applyTokensFromStorybook({
-    cssUrl: 'https://storybook.tu-empresa.com/tokens.css'
-  });
-  
-  // Los componentes automáticamente usarán los nuevos tokens
-  // porque todos usan var(--ubits-*)
+	await applyTokensFromStorybook({
+		cssUrl: 'https://storybook.tu-empresa.com/tokens.css',
+	});
+
+	// Los componentes automáticamente usarán los nuevos tokens
+	// porque todos usan var(--ubits-*)
 }
 
 // ========================================
@@ -25,9 +25,9 @@ export async function ejemploDesdeStorybookURL() {
 // ========================================
 
 export async function ejemploDesdeStorybookJSON() {
-  await applyTokensFromStorybook({
-    jsonUrl: 'https://storybook.tu-empresa.com/tokens.json'
-  });
+	await applyTokensFromStorybook({
+		jsonUrl: 'https://storybook.tu-empresa.com/tokens.json',
+	});
 }
 
 // ========================================
@@ -35,9 +35,9 @@ export async function ejemploDesdeStorybookJSON() {
 // ========================================
 
 export async function ejemploDesdeCSS() {
-  // Ejemplo: tokens CSS (los valores reales vendrían de Storybook)
-  // Nota: En uso real, estos valores vendrían directamente de Storybook
-  const tokensCSS = `
+	// Ejemplo: tokens CSS (los valores reales vendrían de Storybook)
+	// Nota: En uso real, estos valores vendrían directamente de Storybook
+	const tokensCSS = `
     :root {
       --ubits-accent-brand-static-inverted: var(--ubits-accent-brand-static-inverted);
       --ubits-button-primary-bg-default: var(--ubits-accent-brand-static-inverted);
@@ -47,9 +47,9 @@ export async function ejemploDesdeCSS() {
     }
   `;
 
-  await applyTokensFromStorybook({
-    css: tokensCSS
-  });
+	await applyTokensFromStorybook({
+		css: tokensCSS,
+	});
 }
 
 // ========================================
@@ -57,28 +57,28 @@ export async function ejemploDesdeCSS() {
 // ========================================
 
 export async function ejemploDesdeJSON() {
-  // Ejemplo: tokens JSON (los valores reales vendrían de Storybook)
-  // Nota: En uso real, estos valores vendrían directamente de Storybook
-  const tokensJSON = {
-    light: {
-      brand: {
-        'ubits-accent-brand': 'var(--ubits-accent-brand-static-inverted)',
-        'ubits-accent-success': 'var(--ubits-accent-success)'
-      },
-      button: {
-        'ubits-button-primary-bg-default': 'var(--ubits-accent-brand-static-inverted)',
-        'ubits-button-primary-hover': 'var(--ubits-accent-brand-static-inverted)'
-      },
-      background: {
-        'ubits-bg-1': 'var(--modifiers-normal-color-light-bg-1)',
-        'ubits-bg-2': 'var(--modifiers-normal-color-light-bg-2)'
-      }
-    }
-  };
+	// Ejemplo: tokens JSON (los valores reales vendrían de Storybook)
+	// Nota: En uso real, estos valores vendrían directamente de Storybook
+	const tokensJSON = {
+		light: {
+			brand: {
+				'ubits-accent-brand': 'var(--ubits-accent-brand-static-inverted)',
+				'ubits-accent-success': 'var(--ubits-accent-success)',
+			},
+			button: {
+				'ubits-button-primary-bg-default': 'var(--ubits-accent-brand-static-inverted)',
+				'ubits-button-primary-hover': 'var(--ubits-accent-brand-static-inverted)',
+			},
+			background: {
+				'ubits-bg-1': 'var(--modifiers-normal-color-light-bg-1)',
+				'ubits-bg-2': 'var(--modifiers-normal-color-light-bg-2)',
+			},
+		},
+	};
 
-  await applyTokensFromStorybook({
-    json: tokensJSON
-  });
+	await applyTokensFromStorybook({
+		json: tokensJSON,
+	});
 }
 
 // ========================================
@@ -86,17 +86,20 @@ export async function ejemploDesdeJSON() {
 // ========================================
 
 export async function ejemploDesdeAPI() {
-  // Si ya tienes window.UBITS.Tokens disponible
-  if (typeof window !== 'undefined' && (window as any).UBITS?.Tokens) {
-    // Crear add-on desde Storybook
-    const addon = await createTokensAddonFromSource({
-      cssUrl: 'https://storybook.tu-empresa.com/tokens.css'
-    }, 'storybook-tokens');
+	// Si ya tienes window.UBITS.Tokens disponible
+	if (typeof window !== 'undefined' && (window as any).UBITS?.Tokens) {
+		// Crear add-on desde Storybook
+		const addon = await createTokensAddonFromSource(
+			{
+				cssUrl: 'https://storybook.tu-empresa.com/tokens.css',
+			},
+			'storybook-tokens',
+		);
 
-    // Aplicar usando el manager
-    const manager = (window as any).UBITS.Tokens.getManager();
-    await manager.switchTokensAddon('/addons/tokens-storybook/manifest.json');
-  }
+		// Aplicar usando el manager
+		const manager = (window as any).UBITS.Tokens.getManager();
+		await manager.switchTokensAddon('/addons/tokens-storybook/manifest.json');
+	}
 }
 
 // ========================================
@@ -105,42 +108,41 @@ export async function ejemploDesdeAPI() {
 
 /**
  * Función helper que puedes llamar desde la consola del navegador
- * 
+ *
  * Uso:
  * ```javascript
  * await cambiarTokensDesdeStorybook('https://storybook.tu-empresa.com/tokens.css');
  * ```
  */
 export async function cambiarTokensDesdeStorybook(
-  storybookUrl: string,
-  options: {
-    validar?: boolean;
-    reemplazar?: boolean;
-  } = {}
+	storybookUrl: string,
+	options: {
+		validar?: boolean;
+		reemplazar?: boolean;
+	} = {},
 ) {
-  console.log('🔄 Cambiando tokens desde Storybook...');
-  
-  try {
-    await applyTokensFromStorybook(
-      { cssUrl: storybookUrl },
-      {
-        validate: options.validar !== false,
-        replaceExisting: options.reemplazar !== false
-      }
-    );
-    
-    console.log('✅ Tokens cambiados exitosamente');
-    console.log('📦 Todos los componentes ahora usan los nuevos tokens');
-    
-    return true;
-  } catch (error) {
-    console.error('❌ Error cambiando tokens:', error);
-    return false;
-  }
+	console.log('🔄 Cambiando tokens desde Storybook...');
+
+	try {
+		await applyTokensFromStorybook(
+			{ cssUrl: storybookUrl },
+			{
+				validate: options.validar !== false,
+				replaceExisting: options.reemplazar !== false,
+			},
+		);
+
+		console.log('✅ Tokens cambiados exitosamente');
+		console.log('📦 Todos los componentes ahora usan los nuevos tokens');
+
+		return true;
+	} catch (error) {
+		console.error('❌ Error cambiando tokens:', error);
+		return false;
+	}
 }
 
 // Exponer función global para uso fácil
 if (typeof window !== 'undefined') {
-  (window as any).cambiarTokensDesdeStorybook = cambiarTokensDesdeStorybook;
+	(window as any).cambiarTokensDesdeStorybook = cambiarTokensDesdeStorybook;
 }
-

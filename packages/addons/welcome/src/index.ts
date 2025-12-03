@@ -11,7 +11,7 @@ export type { WelcomeOptions, WelcomeFeature } from './types/WelcomeOptions';
 if (typeof window !== 'undefined') {
 	(window as any).createWelcome = createWelcome;
 	(window as any).renderWelcome = renderWelcome;
-	
+
 	// También exponer en AUTORUNWelcome para compatibilidad
 	if (!(window as any).AUTORUNWelcome) {
 		(window as any).AUTORUNWelcome = {};
@@ -19,4 +19,3 @@ if (typeof window !== 'undefined') {
 	(window as any).AUTORUNWelcome.create = createWelcome;
 	(window as any).AUTORUNWelcome.render = renderWelcome;
 }
-

@@ -14,4 +14,3 @@ export * from './configs/cardConfigs';
 
 export { renderSimpleCard, createSimpleCard } from './SimpleCardProvider';
 export * from './types/SimpleCardOptions';
-

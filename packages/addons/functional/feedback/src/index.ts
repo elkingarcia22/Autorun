@@ -12,4 +12,3 @@ export type { SetupOptions } from './FeedbackSetupService';
 
 // Export default para que AddonLoader pueda cargarlo
 export { FeedbackAddon as default } from './FeedbackAddon';
-

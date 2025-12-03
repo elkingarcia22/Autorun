@@ -13,7 +13,7 @@ export class AlertAddon implements IComponentAddon {
 	readonly name = 'Alert';
 	readonly version = '1.0.0';
 	readonly type = 'component' as const;
-		readonly description = 'Componente Alert AUTORUN como add-on intercambiable';
+	readonly description = 'Componente Alert AUTORUN como add-on intercambiable';
 
 	private context?: AutorunContext;
 	private active = false;
@@ -107,4 +107,3 @@ export class AlertAddon implements IComponentAddon {
 		// Los componentes ya se registran en initialize()
 	}
 }
-

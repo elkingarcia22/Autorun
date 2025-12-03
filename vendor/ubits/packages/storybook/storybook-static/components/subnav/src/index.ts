@@ -5,9 +5,8 @@
 
 export { renderSubNav, createSubNav, updateActiveSubNavTab } from './SubNavProvider';
 export type {
-  SubNavOptions,
-  SubNavTab,
-  SubNavVariant
+	SubNavOptions,
+	SubNavTab,
+	SubNavVariant,
 } from './types/SubNavOptions';
 export { getSubNavConfig, SUBNAV_VARIANTS } from './configs/subNavVariants';
-

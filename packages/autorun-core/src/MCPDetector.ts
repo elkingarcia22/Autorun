@@ -247,7 +247,15 @@ export class MCPDetector {
 	 * Detecta todas las capacidades MCP disponibles
 	 */
 	static async detectAllCapabilities(): Promise<MCPCapabilities> {
-		const services = ['github', 'vercel', 'clarity', 'figma', 'talk-to-figma', 'storybook', 'supabase'];
+		const services = [
+			'github',
+			'vercel',
+			'clarity',
+			'figma',
+			'talk-to-figma',
+			'storybook',
+			'supabase',
+		];
 		const capabilities: MCPCapabilities = {};
 
 		for (const service of services) {
@@ -262,7 +270,15 @@ export class MCPDetector {
 	 * Obtiene información detallada de todos los servidores MCP
 	 */
 	static async getAllServerInfo(): Promise<MCPServerInfo[]> {
-		const services = ['github', 'vercel', 'clarity', 'figma', 'talk-to-figma', 'storybook', 'supabase'];
+		const services = [
+			'github',
+			'vercel',
+			'clarity',
+			'figma',
+			'talk-to-figma',
+			'storybook',
+			'supabase',
+		];
 		const infos: MCPServerInfo[] = [];
 
 		for (const service of services) {

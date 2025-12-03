@@ -8923,18 +8923,19 @@ const result = await runTests({ coverage: true });</code></pre>
             </div>
             <div class="step-content">
               <p class="step-description">
-                Clona el repositorio Autorun, instala las dependencias y configura los scripts en la raíz del proyecto. El sistema funciona con <strong>arquitectura dual</strong>: carga componentes desde <code style="background: rgba(0,255,255,0.1); padding: 2px 6px; border-radius: 3px;">Vercel</code> (principal, requiere internet) y usa <code style="background: rgba(255,255,0,0.1); padding: 2px 6px; border-radius: 3px;">vendor/ubits/packages/</code> como fallback (funciona offline). Todo funciona automáticamente sin configuración adicional.
+                Clona el repositorio Autorun, instala las dependencias del proyecto y las dependencias de Storybook (incluyendo el addon MCP). El sistema funciona con <strong>arquitectura dual</strong>: carga componentes desde <code style="background: rgba(0,255,255,0.1); padding: 2px 6px; border-radius: 3px;">Vercel</code> (principal, requiere internet) y usa <code style="background: rgba(255,255,0,0.1); padding: 2px 6px; border-radius: 3px;">vendor/ubits/packages/</code> como fallback (funciona offline). Todo funciona automáticamente sin configuración adicional.
               </p>
               <div class="code-block">
-                <pre><code># Clonar el repositorio Autorun
+                <pre><code># 1. Clonar el repositorio Autorun
 git clone https://github.com/elkingarcia22/Autorun.git
 cd Autorun
 
-# Instalar dependencias
+# 2. Instalar dependencias del proyecto
 npm install
 
-# Configurar scripts en la raíz del proyecto
-npm run setup-project</code></pre>
+# 3. Instalar dependencias de Storybook (instala el addon MCP automáticamente)
+cd vendor/ubits/packages/storybook
+npm install</code></pre>
               </div>
               <div style="margin-top: 20px; padding: 16px; background: rgba(255, 255, 0, 0.1); border-left: 4px solid var(--autorun-neon-yellow); border-radius: 6px;">
                 <p style="margin: 0; color: var(--autorun-neon-yellow); font-weight: 600;">
@@ -8942,11 +8943,11 @@ npm run setup-project</code></pre>
                 </p>
               </div>
               <p class="step-note" style="margin-top: 16px;">
-                <strong>Verificación:</strong> Si ves <code style="background: rgba(0,255,255,0.1); padding: 2px 6px; border-radius: 3px;">✅ ¡Todo está listo! Puedes ejecutar: npm run init</code>, todo está correcto.<br><br>
-                <strong>Ejemplo de estructura creada:</strong><br>
-                <code style="background: rgba(0,255,255,0.1); padding: 2px 6px; border-radius: 3px;">MiProyecto/</code><br>
-                <code style="background: rgba(0,255,255,0.1); padding: 2px 6px; border-radius: 3px;">├── Autorun/</code> ← Aquí ejecutas: npm run setup-project<br>
-                <code style="background: rgba(0,255,255,0.1); padding: 2px 6px; border-radius: 3px;">└── package.json</code> ← Se crea automáticamente aquí
+                <strong>¿Qué se instala automáticamente?</strong><br>
+                ✅ Dependencias del proyecto Autorun<br>
+                ✅ Dependencias de Storybook (incluyendo <code style="background: rgba(0,255,255,0.1); padding: 2px 6px; border-radius: 3px;">@storybook/addon-mcp</code>)<br>
+                ✅ Configuración de Storybook ya está incluida en el repositorio<br><br>
+                <strong>Nota:</strong> El addon MCP de Storybook se instala automáticamente porque está en <code style="background: rgba(0,255,255,0.1); padding: 2px 6px; border-radius: 3px;">package.json</code> del proyecto Storybook.
               </p>
             </div>
           </div>
@@ -8966,14 +8967,13 @@ npm run setup-project</code></pre>
             </div>
             <div class="step-content">
               <p class="step-description">
-                Ejecuta el wizard interactivo. El wizard te preguntará por el template, módulo, producto, navegación, add-ons y GitHub, luego creará automáticamente ambos templates (administrador y colaborador).
+                Vuelve a la raíz del proyecto y ejecuta el wizard interactivo. El wizard te preguntará por el template, módulo, producto, navegación, add-ons, MCPs y GitHub, luego creará automáticamente ambos templates (administrador y colaborador) y configurará los MCPs.
               </p>
               <div class="code-block">
-                <pre><code># Desde la raíz del proyecto (un nivel arriba de Autorun)
-npm run wizard
+                <pre><code># Volver a la raíz del proyecto
+cd ../../../
 
-# O desde dentro de Autorun
-cd Autorun
+# Ejecutar el wizard interactivo
 npm run init</code></pre>
                 </div>
               <div style="margin-top: 20px; padding: 16px; background: rgba(255, 255, 0, 0.1); border-left: 4px solid var(--autorun-neon-yellow); border-radius: 6px;">
@@ -8991,6 +8991,7 @@ npm run init</code></pre>
                   <li style="margin-bottom: 8px;">📦 <strong>Módulo y Producto:</strong> Selecciona el módulo (Aprendizaje, Desempeño, Empresa, Encuestas, etc.)</li>
                   <li style="margin-bottom: 8px;">🔒 <strong>Navegación:</strong> ¿Desactivar navegación a otros módulos? (útil para evitar que el usuario se pierda)</li>
                   <li style="margin-bottom: 8px;">🔌 <strong>Add-ons:</strong> Instalar solo los por defecto o agregar otros</li>
+                  <li style="margin-bottom: 8px;">🤖 <strong>MCPs:</strong> ¿Instalar y configurar MCPs automáticamente? (Storybook, Figma, Supabase, Vercel, GitHub, Clarity)</li>
                   <li style="margin-bottom: 8px;">🐙 <strong>GitHub:</strong> ¿Configurar GitHub ahora? (opcional)</li>
                   </ul>
                 </div>
@@ -9000,6 +9001,8 @@ npm run init</code></pre>
                 ✅ Usa vendor/ubits/ como fallback (si no hay internet o Vercel falla)<br>
                 ✅ Clona y verifica repositorio UBITS (si no existe vendor/ubits/)<br>
                 ✅ Instala add-ons seleccionados<br>
+                ✅ Configura MCPs automáticamente (si aceptas)<br>
+                ✅ Crea archivo <code style="background: rgba(0,255,255,0.1); padding: 2px 6px; border-radius: 3px;">.cursor/mcp.json</code> con todos los MCPs<br>
                 ✅ Configura sidebar y subnav para tu módulo<br>
                 ✅ Crea ambos templates (administrador y colaborador)<br>
                 ✅ Valida templates creados<br>

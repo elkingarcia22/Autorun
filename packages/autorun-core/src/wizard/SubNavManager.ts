@@ -20,10 +20,7 @@ export class SubNavManager {
 	/**
 	 * Configura el subnav para un módulo específico
 	 */
-	async setModule(
-		moduleId: string,
-		productId?: string,
-	): Promise<void> {
+	async setModule(moduleId: string, productId?: string): Promise<void> {
 		const moduleConfig = UBITS_MODULES_CONFIG[moduleId];
 		if (!moduleConfig) {
 			throw new Error(`Módulo "${moduleId}" no encontrado`);
@@ -54,9 +51,7 @@ export class SubNavManager {
 		const product = moduleConfig.products.find((p) => p.id === productId);
 
 		if (!product) {
-			throw new Error(
-				`Producto "${productId}" no encontrado en módulo "${this.currentModule}"`,
-			);
+			throw new Error(`Producto "${productId}" no encontrado en módulo "${this.currentModule}"`);
 		}
 
 		this.currentProduct = productId;
@@ -77,9 +72,7 @@ export class SubNavManager {
 		}
 
 		// Buscar o crear contenedor del subnav
-		let subnavContainer = document.querySelector(
-			'[data-subnav]',
-		) as HTMLElement;
+		let subnavContainer = document.querySelector('[data-subnav]') as HTMLElement;
 
 		if (!subnavContainer) {
 			// Crear contenedor si no existe
@@ -110,10 +103,7 @@ export class SubNavManager {
 	/**
 	 * Genera HTML del subnav
 	 */
-	private generateSubNavHTML(
-		moduleConfig: ModuleConfig,
-		activeProductId: string | null,
-	): string {
+	private generateSubNavHTML(moduleConfig: ModuleConfig, activeProductId: string | null): string {
 		const tabs = moduleConfig.products
 			.map(
 				(product) => `
@@ -158,10 +148,7 @@ export class SubNavManager {
 	/**
 	 * Maneja el click en un producto del subnav
 	 */
-	private async handleProductClick(
-		productId: string,
-		moduleConfig: ModuleConfig,
-	): Promise<void> {
+	private async handleProductClick(productId: string, moduleConfig: ModuleConfig): Promise<void> {
 		const product = moduleConfig.products.find((p) => p.id === productId);
 		if (!product) return;
 
@@ -210,4 +197,3 @@ export class SubNavManager {
 		return UBITS_MODULES_CONFIG[this.currentModule] || null;
 	}
 }
-

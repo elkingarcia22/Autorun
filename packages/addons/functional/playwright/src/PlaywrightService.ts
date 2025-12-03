@@ -214,10 +214,7 @@ test('example test', async ({ page }) => {
 			});
 
 			// Leer resultados del reporte
-			const reportPath = path.join(
-				this.projectPath,
-				this.config.outputDir || 'test-results',
-			);
+			const reportPath = path.join(this.projectPath, this.config.outputDir || 'test-results');
 
 			console.log('✅ Playwright: Tests ejecutados correctamente');
 
@@ -243,10 +240,7 @@ test('example test', async ({ page }) => {
 				stdio: 'pipe',
 			});
 
-			const reportPath = path.join(
-				this.projectPath,
-				this.config.outputDir || 'test-results',
-			);
+			const reportPath = path.join(this.projectPath, this.config.outputDir || 'test-results');
 
 			return reportPath;
 		} catch (error: any) {
@@ -306,4 +300,3 @@ test('example test', async ({ page }) => {
 		this.config = { ...this.config, ...config };
 	}
 }
-

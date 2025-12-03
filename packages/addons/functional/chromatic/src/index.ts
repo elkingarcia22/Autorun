@@ -36,4 +36,3 @@ export {
 
 // Export default para que AddonLoader pueda cargarlo
 export { ChromaticAddon as default } from './ChromaticAddon';
-

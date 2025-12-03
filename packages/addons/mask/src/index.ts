@@ -11,7 +11,7 @@ export type { MaskOptions } from './types/MaskOptions';
 if (typeof window !== 'undefined') {
 	(window as any).createMask = createMask;
 	(window as any).renderMask = renderMask;
-	
+
 	// También exponer en AUTORUNMask para compatibilidad
 	if (!(window as any).AUTORUNMask) {
 		(window as any).AUTORUNMask = {};
@@ -19,4 +19,3 @@ if (typeof window !== 'undefined') {
 	(window as any).AUTORUNMask.createMask = createMask;
 	(window as any).AUTORUNMask.renderMask = renderMask;
 }
-

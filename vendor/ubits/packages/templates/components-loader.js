@@ -6,10 +6,10 @@
 
 // Helper para renderizar iconos
 function renderIconHelper(iconName, iconStyle = 'regular') {
-  const iconClass = iconStyle === 'regular' ? 'far' : 'fas';
-  let name = iconName.startsWith('fa-') ? iconName : `fa-${iconName}`;
-  
-  return `<i class="${iconClass} ${name}"></i>`;
+	const iconClass = iconStyle === 'regular' ? 'far' : 'fas';
+	let name = iconName.startsWith('fa-') ? iconName : `fa-${iconName}`;
+
+	return `<i class="${iconClass} ${name}"></i>`;
 }
 
 // ========================================
@@ -18,46 +18,49 @@ function renderIconHelper(iconName, iconStyle = 'regular') {
 
 // Función para ajustar la altura del sidebar dinámicamente
 function adjustSidebarHeight(sidebarElement) {
-  const windowHeight = window.innerHeight;
-  const topMargin = 16;
-  const bottomMargin = 16;
-  const availableHeight = windowHeight - topMargin - bottomMargin;
-  const minHeight = 578;
-  const sidebarHeight = Math.max(minHeight, availableHeight);
-  
-  sidebarElement.style.height = `${sidebarHeight}px`;
-  sidebarElement.style.top = `${topMargin}px`;
+	const windowHeight = window.innerHeight;
+	const topMargin = 16;
+	const bottomMargin = 16;
+	const availableHeight = windowHeight - topMargin - bottomMargin;
+	const minHeight = 578;
+	const sidebarHeight = Math.max(minHeight, availableHeight);
+
+	sidebarElement.style.height = `${sidebarHeight}px`;
+	sidebarElement.style.top = `${topMargin}px`;
 }
 
 // Renderiza el HTML del sidebar (CÓDIGO EXACTO DEL PROVIDER OFICIAL)
 function renderSidebar(options) {
-  const variant = options.variant || 'colaborador';
-  const bodyButtons = options.bodyButtons || [];
-  const footerButtons = options.footerButtons || [];
-  const logoHref = options.logoHref || (variant === 'admin' ? 'admin.html' : 'index.html');
-  const logoImage = options.logoImage || 'images/Ubits-logo.svg';
-  const profileMenuItems = options.profileMenuItems || [];
-  const avatarImage = options.avatarImage || 'images/Profile-image.jpg';
-  const darkModeEnabled = options.darkModeEnabled !== false;
-  const className = options.className || '';
-  const attributes = options.attributes || {};
+	const variant = options.variant || 'colaborador';
+	const bodyButtons = options.bodyButtons || [];
+	const footerButtons = options.footerButtons || [];
+	const logoHref = options.logoHref || (variant === 'admin' ? 'admin.html' : 'index.html');
+	const logoImage = options.logoImage || 'images/Ubits-logo.svg';
+	const profileMenuItems = options.profileMenuItems || [];
+	const avatarImage = options.avatarImage || 'images/Profile-image.jpg';
+	const darkModeEnabled = options.darkModeEnabled !== false;
+	const className = options.className || '';
+	const attributes = options.attributes || {};
 
-  const containerClasses = ['ubits-sidebar', className].filter(Boolean).join(' ');
-  const containerAttrs = Object.entries(attributes)
-    .map(([key, value]) => `${key}="${value}"`)
-    .join(' ');
+	const containerClasses = ['ubits-sidebar', className].filter(Boolean).join(' ');
+	const containerAttrs = Object.entries(attributes)
+		.map(([key, value]) => `${key}="${value}"`)
+		.join(' ');
 
-  const bodyButtonsHTML = bodyButtons.map(button => {
-    const buttonClasses = [
-      'ubits-sidebar-nav-button',
-      button.state === 'active' ? 'active' : '',
-      button.state === 'disabled' ? 'disabled' : ''
-    ].filter(Boolean).join(' ');
+	const bodyButtonsHTML = bodyButtons
+		.map((button) => {
+			const buttonClasses = [
+				'ubits-sidebar-nav-button',
+				button.state === 'active' ? 'active' : '',
+				button.state === 'disabled' ? 'disabled' : '',
+			]
+				.filter(Boolean)
+				.join(' ');
 
-    const onClickAttr = button.onClick ? 'data-has-click-handler="true"' : '';
-    const hrefAttr = button.href ? `data-href="${button.href}"` : '';
-    
-    return `
+			const onClickAttr = button.onClick ? 'data-has-click-handler="true"' : '';
+			const hrefAttr = button.href ? `data-href="${button.href}"` : '';
+
+			return `
       <button 
         class="${buttonClasses}" 
         data-section="${button.section}" 
@@ -69,20 +72,23 @@ function renderSidebar(options) {
         ${renderIconHelper(button.icon)}
       </button>
     `;
-  }).join('\n');
-  
+		})
+		.join('\n');
 
-  const footerButtonsHTML = footerButtons.map(button => {
-    const buttonClasses = [
-      'ubits-sidebar-nav-button',
-      button.state === 'active' ? 'active' : '',
-      button.state === 'disabled' ? 'disabled' : ''
-    ].filter(Boolean).join(' ');
+	const footerButtonsHTML = footerButtons
+		.map((button) => {
+			const buttonClasses = [
+				'ubits-sidebar-nav-button',
+				button.state === 'active' ? 'active' : '',
+				button.state === 'disabled' ? 'disabled' : '',
+			]
+				.filter(Boolean)
+				.join(' ');
 
-    const onClickAttr = button.onClick ? 'data-has-click-handler="true"' : '';
-    const hrefAttr = button.href ? `data-href="${button.href}"` : '';
-    
-    return `
+			const onClickAttr = button.onClick ? 'data-has-click-handler="true"' : '';
+			const hrefAttr = button.href ? `data-href="${button.href}"` : '';
+
+			return `
       <button 
         class="${buttonClasses}" 
         ${button.id ? `id="ubits-${button.id}"` : ''}
@@ -96,9 +102,11 @@ function renderSidebar(options) {
         ${renderIconHelper(button.icon)}
       </button>
     `;
-  }).join('\n');
+		})
+		.join('\n');
 
-  const darkModeToggleHTML = darkModeEnabled ? `
+	const darkModeToggleHTML = darkModeEnabled
+		? `
     <button 
       class="ubits-sidebar-nav-button" 
       id="ubits-darkmode-toggle" 
@@ -108,27 +116,33 @@ function renderSidebar(options) {
     >
       ${renderIconHelper('fa-moon', 'regular')}
     </button>
-  ` : '';
+  `
+		: '';
 
-  const profileMenuHTML = profileMenuItems.length > 0 ? `
+	const profileMenuHTML =
+		profileMenuItems.length > 0
+			? `
     <div class="ubits-sidebar-profile-menu" id="ubits-sidebar-profile-menu">
-      ${profileMenuItems.map(item => {
-        if (item.divider) {
-          return '<div class="ubits-sidebar-profile-menu-divider"></div>';
-        }
-        const onClickAttr = item.onClick ? 'data-has-click-handler="true"' : '';
-        const hrefAttr = item.href ? `data-href="${item.href}"` : '';
-        return `
+      ${profileMenuItems
+				.map((item) => {
+					if (item.divider) {
+						return '<div class="ubits-sidebar-profile-menu-divider"></div>';
+					}
+					const onClickAttr = item.onClick ? 'data-has-click-handler="true"' : '';
+					const hrefAttr = item.href ? `data-href="${item.href}"` : '';
+					return `
           <div class="ubits-sidebar-profile-menu-item" ${onClickAttr} ${hrefAttr}>
             ${renderIconHelper(item.icon)}
             <span>${item.label}</span>
           </div>
         `;
-      }).join('')}
+				})
+				.join('')}
     </div>
-  ` : '';
+  `
+			: '';
 
-  return `
+	return `
     <aside class="${containerClasses}" id="ubits-sidebar" ${containerAttrs}>
       <div class="ubits-sidebar-main">
         <div class="ubits-sidebar-header">
@@ -157,843 +171,904 @@ function renderSidebar(options) {
 
 // Inicializa tooltips para el sidebar
 function initTooltips(sidebarElement) {
-  const tooltipElement = document.getElementById('ubits-sidebar-tooltip');
-  if (!tooltipElement) {
-    return;
-  }
+	const tooltipElement = document.getElementById('ubits-sidebar-tooltip');
+	if (!tooltipElement) {
+		return;
+	}
 
-  // Verificar estilos CSS del tooltip
-  const computedStyle = window.getComputedStyle(tooltipElement);
+	// Verificar estilos CSS del tooltip
+	const computedStyle = window.getComputedStyle(tooltipElement);
 
-  // Verificar si el CSS del sidebar está cargado
-  const sidebarStylesheet = Array.from(document.styleSheets).find(sheet => {
-    try {
-      return sheet.href && sheet.href.includes('sidebar.css');
-    } catch (e) {
-      return false;
-    }
-  });
+	// Verificar si el CSS del sidebar está cargado
+	const sidebarStylesheet = Array.from(document.styleSheets).find((sheet) => {
+		try {
+			return sheet.href && sheet.href.includes('sidebar.css');
+		} catch (e) {
+			return false;
+		}
+	});
 
-  // ⚠️ CRÍTICO: Función global para ocultar tooltip (compartida por todos los botones)
-  const hideTooltipGlobal = () => {
-    if (tooltipElement) {
-      tooltipElement.classList.remove('show');
-      tooltipElement.style.opacity = '0';
-      tooltipElement.style.visibility = 'hidden';
-    }
-  };
+	// ⚠️ CRÍTICO: Función global para ocultar tooltip (compartida por todos los botones)
+	const hideTooltipGlobal = () => {
+		if (tooltipElement) {
+			tooltipElement.classList.remove('show');
+			tooltipElement.style.opacity = '0';
+			tooltipElement.style.visibility = 'hidden';
+		}
+	};
 
-  const buttons = sidebarElement.querySelectorAll('[data-tooltip]');
-  
-  // ⚠️ CRÍTICO: Observar TODOS los botones para detectar cuando CUALQUIERA se vuelve activo
-  // Solo ocultar el tooltip si el tooltip visible pertenece al botón que se volvió activo
-  const allButtons = sidebarElement.querySelectorAll('.ubits-sidebar-nav-button');
-  
-  allButtons.forEach((btn, idx) => {
-    const globalObserver = new MutationObserver(() => {
-      if (btn.classList.contains('active')) {
-        // Verificar si el tooltip está mostrando el texto de este botón específico
-        const btnTooltipText = btn.getAttribute('data-tooltip');
-        const tooltipText = tooltipElement.textContent;
-        const isTooltipVisible = tooltipElement.classList.contains('show');
-        
-        if (btnTooltipText && tooltipText === btnTooltipText && isTooltipVisible) {
-          // Solo ocultar si el tooltip visible pertenece al botón que se volvió activo
-          hideTooltipGlobal();
-        }
-      }
-    });
-    
-    globalObserver.observe(btn, {
-      attributes: true,
-      attributeFilter: ['class']
-    });
-  });
-  
-  buttons.forEach((button, buttonIdx) => {
-    const tooltipText = button.getAttribute('data-tooltip');
-    if (!tooltipText) {
-      return;
-    }
+	const buttons = sidebarElement.querySelectorAll('[data-tooltip]');
 
-    let hideTimeout = null;
-    let isTooltipVisible = false;
+	// ⚠️ CRÍTICO: Observar TODOS los botones para detectar cuando CUALQUIERA se vuelve activo
+	// Solo ocultar el tooltip si el tooltip visible pertenece al botón que se volvió activo
+	const allButtons = sidebarElement.querySelectorAll('.ubits-sidebar-nav-button');
 
-    const showTooltip = () => {
-      // ⚠️ CRÍTICO: Solo verificar si ESTE botón específico está activo
-      // NO bloquear si otros botones están activos, solo si este botón está activo
-      const isThisButtonActive = button.classList.contains('active');
-      
-      if (isThisButtonActive) {
-        hideTooltipGlobal();
-        return; // NO mostrar tooltip si este botón está activo
-      }
+	allButtons.forEach((btn, idx) => {
+		const globalObserver = new MutationObserver(() => {
+			if (btn.classList.contains('active')) {
+				// Verificar si el tooltip está mostrando el texto de este botón específico
+				const btnTooltipText = btn.getAttribute('data-tooltip');
+				const tooltipText = tooltipElement.textContent;
+				const isTooltipVisible = tooltipElement.classList.contains('show');
 
-      if (hideTimeout) {
-        clearTimeout(hideTimeout);
-        hideTimeout = null;
-      }
+				if (btnTooltipText && tooltipText === btnTooltipText && isTooltipVisible) {
+					// Solo ocultar si el tooltip visible pertenece al botón que se volvió activo
+					hideTooltipGlobal();
+				}
+			}
+		});
 
-      const rect = button.getBoundingClientRect();
-      const tooltip = tooltipElement;
-      
-      tooltip.textContent = tooltipText;
-      tooltip.style.opacity = '1';
-      tooltip.style.visibility = 'visible';
-      tooltip.classList.add('show');
-      isTooltipVisible = true;
-      
-      // Posicionar tooltip a la derecha del botón
-      const leftPos = `${rect.right + 12}px`;
-      const topPos = `${rect.top + (rect.height / 2) - (tooltip.offsetHeight / 2)}px`;
-      tooltip.style.left = leftPos;
-      tooltip.style.top = topPos;
-    };
+		globalObserver.observe(btn, {
+			attributes: true,
+			attributeFilter: ['class'],
+		});
+	});
 
-    const hideTooltip = () => {
-      hideTooltipGlobal(); // Usar función global para asegurar que se oculte
-      isTooltipVisible = false;
-      if (hideTimeout) {
-        clearTimeout(hideTimeout);
-        hideTimeout = null;
-      }
-    };
+	buttons.forEach((button, buttonIdx) => {
+		const tooltipText = button.getAttribute('data-tooltip');
+		if (!tooltipText) {
+			return;
+		}
 
-    button.addEventListener('mouseenter', () => {
-      // Solo mostrar tooltip si este botón NO está activo
-      if (!button.classList.contains('active')) {
-        showTooltip();
-      } else {
-        hideTooltip();
-      }
-    });
+		let hideTimeout = null;
+		let isTooltipVisible = false;
 
-    button.addEventListener('mouseleave', () => {
-      hideTooltip();
-    });
+		const showTooltip = () => {
+			// ⚠️ CRÍTICO: Solo verificar si ESTE botón específico está activo
+			// NO bloquear si otros botones están activos, solo si este botón está activo
+			const isThisButtonActive = button.classList.contains('active');
 
-    // ⚠️ IMPORTANTE: Ocultar tooltip al hacer clic en el botón
-    button.addEventListener('click', () => {
-      hideTooltip();
-    });
+			if (isThisButtonActive) {
+				hideTooltipGlobal();
+				return; // NO mostrar tooltip si este botón está activo
+			}
 
-    // También ocultar tooltip cuando el botón pierde el foco
-    button.addEventListener('blur', () => {
-      hideTooltip();
-  });
-    
-    // ⚠️ IMPORTANTE: Observar cambios en la clase 'active' de ESTE botón específico
-    const observer = new MutationObserver(() => {
-      const isActive = button.classList.contains('active');
-      
-      // Si este botón específico se vuelve activo, ocultar tooltip inmediatamente
-      if (isActive) {
-        hideTooltipGlobal();
-      }
-    });
-    
-    observer.observe(button, {
-      attributes: true,
-      attributeFilter: ['class']
-    });
-  });
+			if (hideTimeout) {
+				clearTimeout(hideTimeout);
+				hideTimeout = null;
+			}
+
+			const rect = button.getBoundingClientRect();
+			const tooltip = tooltipElement;
+
+			tooltip.textContent = tooltipText;
+			tooltip.style.opacity = '1';
+			tooltip.style.visibility = 'visible';
+			tooltip.classList.add('show');
+			isTooltipVisible = true;
+
+			// Posicionar tooltip a la derecha del botón
+			const leftPos = `${rect.right + 12}px`;
+			const topPos = `${rect.top + (rect.height / 2) - tooltip.offsetHeight / 2}px`;
+			tooltip.style.left = leftPos;
+			tooltip.style.top = topPos;
+		};
+
+		const hideTooltip = () => {
+			hideTooltipGlobal(); // Usar función global para asegurar que se oculte
+			isTooltipVisible = false;
+			if (hideTimeout) {
+				clearTimeout(hideTimeout);
+				hideTimeout = null;
+			}
+		};
+
+		button.addEventListener('mouseenter', () => {
+			// Solo mostrar tooltip si este botón NO está activo
+			if (!button.classList.contains('active')) {
+				showTooltip();
+			} else {
+				hideTooltip();
+			}
+		});
+
+		button.addEventListener('mouseleave', () => {
+			hideTooltip();
+		});
+
+		// ⚠️ IMPORTANTE: Ocultar tooltip al hacer clic en el botón
+		button.addEventListener('click', () => {
+			hideTooltip();
+		});
+
+		// También ocultar tooltip cuando el botón pierde el foco
+		button.addEventListener('blur', () => {
+			hideTooltip();
+		});
+
+		// ⚠️ IMPORTANTE: Observar cambios en la clase 'active' de ESTE botón específico
+		const observer = new MutationObserver(() => {
+			const isActive = button.classList.contains('active');
+
+			// Si este botón específico se vuelve activo, ocultar tooltip inmediatamente
+			if (isActive) {
+				hideTooltipGlobal();
+			}
+		});
+
+		observer.observe(button, {
+			attributes: true,
+			attributeFilter: ['class'],
+		});
+	});
 }
 
 // Inicializa el menú de perfil
 function initProfileMenu(sidebarElement, options) {
-  const avatarElement = sidebarElement.querySelector('.ubits-sidebar-user-avatar');
-  const menuElement = document.getElementById('ubits-sidebar-profile-menu');
-  
-  if (!avatarElement || !menuElement) return;
+	const avatarElement = sidebarElement.querySelector('.ubits-sidebar-user-avatar');
+	const menuElement = document.getElementById('ubits-sidebar-profile-menu');
 
-  // Encontrar el contenedor del sidebar para posicionar el menú relativo a él
-  const containerId = options.containerId;
-  const sidebarContainer = containerId ? document.getElementById(containerId) : sidebarElement.parentElement;
-  
-  // Función para calcular posición del menú relativa al contenedor
-  const updateMenuPosition = () => {
-    if (!sidebarContainer || sidebarContainer === document.body) return;
-    
-    const sidebarRect = sidebarElement.getBoundingClientRect();
-    const containerRect = sidebarContainer.getBoundingClientRect();
-    
-    // Posicionar el menú justo al lado del sidebar (96px, completamente pegado)
-    const menuLeft = sidebarRect.left - containerRect.left + 96;
-    // Alinear con el avatar en la parte inferior
-    const menuBottom = 27;
-    
-    menuElement.style.position = 'absolute';
-    menuElement.style.left = `${menuLeft}px`;
-    menuElement.style.bottom = `${menuBottom}px`;
-  };
-  
-  // Si hay contenedor, usar position absolute y calcular posición relativa
-  if (sidebarContainer && sidebarContainer !== document.body) {
-    // Asegurar que el contenedor tenga position relative
-    const containerStyle = window.getComputedStyle(sidebarContainer);
-    if (containerStyle.position === 'static') {
-      sidebarContainer.style.position = 'relative';
-    }
-    
-    // Calcular y aplicar posición inicial
-    updateMenuPosition();
-    
-    // Actualizar posición en caso de resize
-    window.addEventListener('resize', updateMenuPosition);
-  } else {
-    // Fallback a position fixed para cuando no hay contenedor específico
-    menuElement.style.position = 'fixed';
-    menuElement.style.left = '96px';
-    menuElement.style.bottom = '27px';
-  }
+	if (!avatarElement || !menuElement) return;
 
-  menuElement.style.zIndex = '2000';
-  menuElement.style.display = 'none';
+	// Encontrar el contenedor del sidebar para posicionar el menú relativo a él
+	const containerId = options.containerId;
+	const sidebarContainer = containerId
+		? document.getElementById(containerId)
+		: sidebarElement.parentElement;
 
-  let showTimeout = null;
-  let hideTimeout = null;
+	// Función para calcular posición del menú relativa al contenedor
+	const updateMenuPosition = () => {
+		if (!sidebarContainer || sidebarContainer === document.body) return;
 
-  const showMenu = () => {
-    if (hideTimeout) {
-      clearTimeout(hideTimeout);
-      hideTimeout = null;
-    }
-    if (showTimeout) {
-      clearTimeout(showTimeout);
-    }
-    // Actualizar posición antes de mostrar (por si cambió el scroll o resize)
-    if (sidebarContainer && sidebarContainer !== document.body) {
-      updateMenuPosition();
-    }
-    showTimeout = window.setTimeout(() => {
-      menuElement.classList.add('show');
-      menuElement.style.display = 'block';
-    }, 100);
-  };
+		const sidebarRect = sidebarElement.getBoundingClientRect();
+		const containerRect = sidebarContainer.getBoundingClientRect();
 
-  const hideMenu = () => {
-    if (showTimeout) {
-      clearTimeout(showTimeout);
-      showTimeout = null;
-    }
-    hideTimeout = window.setTimeout(() => {
-      menuElement.classList.remove('show');
-      menuElement.style.display = 'none';
-    }, 200);
-  };
+		// Posicionar el menú justo al lado del sidebar (96px, completamente pegado)
+		const menuLeft = sidebarRect.left - containerRect.left + 96;
+		// Alinear con el avatar en la parte inferior
+		const menuBottom = 27;
 
-  // Manejar hover para mostrar/ocultar el menú
-  // CRÍTICO: Aumentar el delay del hideMenu para permitir clicks
-  let isClickInProgress = false;
-  
-  avatarElement.addEventListener('mouseenter', showMenu);
-  avatarElement.addEventListener('mouseleave', (e) => {
-    // No cerrar si el mouse está sobre el menú O si hay un click en progreso
-    const relatedTarget = e.relatedTarget;
-    if (relatedTarget && (menuElement.contains(relatedTarget) || relatedTarget.closest('.ubits-sidebar-profile-menu'))) {
-      return;
-    }
-    if (isClickInProgress) {
-      return;
-    }
-    hideMenu();
-  });
-  menuElement.addEventListener('mouseenter', showMenu);
-  menuElement.addEventListener('mouseleave', (e) => {
-    // No cerrar si el mouse está sobre el avatar O si hay un click en progreso
-    const relatedTarget = e.relatedTarget;
-    if (relatedTarget && (avatarElement.contains(relatedTarget) || relatedTarget.closest('.ubits-sidebar-user-avatar'))) {
-      return;
-    }
-    if (isClickInProgress) {
-      return;
-    }
-    hideMenu();
-  });
-  
-  // Cerrar el menú al hacer click fuera
-  // IMPORTANTE: Usar capture: false para ejecutar DESPUÉS del listener del item
-  // Y verificar si el evento ya fue manejado por stopImmediatePropagation
-  document.addEventListener('click', (e) => {
-    if (!menuElement.classList.contains('show')) return;
-    
-    const target = e.target;
-    const isInsideMenu = menuElement.contains(target);
-    const isAvatar = avatarElement.contains(target) || target === avatarElement;
-    
-    // Verificar si es un item del menú o cualquier elemento dentro de él
-    const isMenuItem = target.closest('.ubits-sidebar-profile-menu-item');
-    const isInsideMenuItem = isInsideMenu && (target.closest('.ubits-sidebar-profile-menu-item') || 
-                                             target.classList.contains('ubits-sidebar-profile-menu-item'));
-    
-    // Si es un item del menú O está dentro de un item, ejecutar la lógica aquí
-    // porque el listener del item puede no ejecutarse si hay conflictos de timing
-    if (isMenuItem || isInsideMenuItem) {
-      // Encontrar el item del menú que contiene el click
-      const clickedMenuItem = isMenuItem || target.closest('.ubits-sidebar-profile-menu-item');
-      if (!clickedMenuItem) {
-        return;
-      }
-      
-      // Obtener el href del DOM
-      const domHref = clickedMenuItem.getAttribute('data-href');
-      const clickedText = clickedMenuItem.innerText?.trim() || clickedMenuItem.textContent?.trim();
-      
-      // Obtener el índice del item del menú (sin dividers)
-      const menuItemsArray = Array.from(menuElement.querySelectorAll('.ubits-sidebar-profile-menu-item'));
-      const clickedIndex = menuItemsArray.indexOf(clickedMenuItem);
-      
-      // Buscar el menuItem en profileMenuItems
-      // Primero intentar por href, luego por label, luego por índice
-      let menuItem = null;
-      
-      // 1. Buscar por href (más confiable)
-      if (domHref) {
-        menuItem = profileMenuItems.find(item => 
-          !item.divider && (
-            item.href === domHref || 
-            (domHref.includes('template-admin.html') && (item.id === 'admin-mode' || item.label === 'Modo Administrador'))
-          )
-        );
-      }
-      
-      // 2. Buscar por label (texto visible)
-      if (!menuItem && clickedText) {
-        menuItem = profileMenuItems.find(item => !item.divider && item.label === clickedText);
-      }
-      
-      // 3. Buscar por índice (filtrando dividers)
-      if (!menuItem && clickedIndex >= 0) {
-        const nonDividerItems = profileMenuItems.filter(item => !item.divider);
-        if (clickedIndex < nonDividerItems.length) {
-          menuItem = nonDividerItems[clickedIndex];
-        }
-      }
-      
-      if (!menuItem || menuItem.divider) {
-        return;
-      }
-      
-      // Usar href de la configuración o del DOM
-      const hrefToUse = menuItem.href || domHref || clickedMenuItem.getAttribute('data-href');
-      
-      // Si es "Cambio de contraseña", no hacer nada
-      const isPasswordChange = (menuItem.id === 'password' || menuItem.id === 'cambio-contraseña' || 
-                               menuItem.label === 'Cambio de contraseña' || clickedText === 'Cambio de contraseña');
-      
-      if (isPasswordChange) {
-        hideMenu();
-        return;
-      }
-      
-      // Si es "Ver mi perfil", usar ContentManager
-      if ((menuItem.id === 'perfil' || menuItem.id === 'ver-perfil' || menuItem.label === 'Ver mi perfil') && window.UBITS_ContentManager) {
-        window.UBITS_ContentManager.handleSectionChange('perfil');
-        hideMenu();
-        return;
-      }
-      
-      // Si es "Modo Administrador", navegar a template-admin.html
-      // IMPORTANTE: Verificar que NO sea "Cambio de contraseña" antes de abrir admin
-      const isAdminMode = !isPasswordChange && (menuItem.id === 'admin-mode' || menuItem.label === 'Modo Administrador') && (hrefToUse || domHref);
-      
-      if (isAdminMode && !isPasswordChange) {
-        const urlToOpen = hrefToUse || domHref || 'template-admin.html';
-        hideMenu();
-        
-        setTimeout(() => {
-          const newWindow = window.open(urlToOpen, '_blank');
-          if (!newWindow) {
-            window.location.href = urlToOpen;
-          }
-        }, 10);
-        return;
-      }
-      
-      // Si es "Modo colaborador"
-      // IMPORTANTE: Verificar que NO sea "Cambio de contraseña" antes de abrir
-      const isColaboradorMode = !isPasswordChange && (menuItem.id === 'modo-colaborador' || menuItem.label === 'Modo colaborador') && (hrefToUse || domHref);
-      if (isColaboradorMode) {
-        const urlToOpen = hrefToUse || domHref;
-        hideMenu();
-        
-        setTimeout(() => {
-          const newWindow = window.open(urlToOpen, '_blank');
-          if (!newWindow) {
-            window.location.href = urlToOpen;
-          }
-        }, 10);
-        return;
-      }
-      
-      // Otras acciones - PERO NO si es "Cambio de contraseña"
-      if (!isPasswordChange) {
-        if (menuItem.onClick) {
-          menuItem.onClick();
-        } else if (menuItem.href || domHref) {
-          window.location.href = menuItem.href || domHref;
-        }
-      }
-      hideMenu();
-      
-      return;
-    }
-    
-    // Solo cerrar si el click es fuera del menú Y no es en el avatar
-    if (!isInsideMenu && !isAvatar) {
-      hideMenu();
-    }
-  }, false);
+		menuElement.style.position = 'absolute';
+		menuElement.style.left = `${menuLeft}px`;
+		menuElement.style.bottom = `${menuBottom}px`;
+	};
 
-  // Click en avatar
-  if (options.onAvatarClick) {
-    avatarElement.addEventListener('click', (e) => {
-      e.preventDefault();
-      options.onAvatarClick();
-    });
-  } else {
-    const href = avatarElement.getAttribute('data-href');
-    if (href) {
-      avatarElement.addEventListener('click', () => {
-        window.location.href = href;
-      });
-    }
-  }
+	// Si hay contenedor, usar position absolute y calcular posición relativa
+	if (sidebarContainer && sidebarContainer !== document.body) {
+		// Asegurar que el contenedor tenga position relative
+		const containerStyle = window.getComputedStyle(sidebarContainer);
+		if (containerStyle.position === 'static') {
+			sidebarContainer.style.position = 'relative';
+		}
 
-  // Click en items del menú
-  const menuItems = menuElement.querySelectorAll('.ubits-sidebar-profile-menu-item');
-  const profileMenuItems = options.profileMenuItems || [];
-  
-  // IMPORTANTE: Filtrar dividers una sola vez
-  const nonDividerItems = profileMenuItems.filter(i => !i.divider);
-  
-  menuItems.forEach((item, index) => {
-    // Usar el índice del DOM para obtener el menuItem correspondiente (sin dividers)
-    const menuItem = nonDividerItems[index];
-    
-    if (!menuItem) {
-      return;
-    }
+		// Calcular y aplicar posición inicial
+		updateMenuPosition();
 
-    // También leer el data-href del DOM por si acaso
-    const domHref = item.getAttribute('data-href');
-    const itemText = item.innerText?.trim() || item.textContent?.trim();
-    const itemId = item.getAttribute('data-profile-item-id') || item.getAttribute('id');
+		// Actualizar posición en caso de resize
+		window.addEventListener('resize', updateMenuPosition);
+	} else {
+		// Fallback a position fixed para cuando no hay contenedor específico
+		menuElement.style.position = 'fixed';
+		menuElement.style.left = '96px';
+		menuElement.style.bottom = '27px';
+	}
 
-    // Asegurarse de que el elemento sea clickeable
-    item.style.cursor = 'pointer';
-    item.setAttribute('role', 'button');
-    item.setAttribute('tabindex', '0');
-    
-    // Función para manejar el click
-    const handleItemClick = (e) => {
-      // Verificar que el menuItem corresponde al item del DOM clickeado
-      const itemText = item.innerText?.trim() || item.textContent?.trim();
+	menuElement.style.zIndex = '2000';
+	menuElement.style.display = 'none';
 
-      // CRÍTICO: Marcar que hay un click en progreso para evitar que mouseleave cierre el menú
-      isClickInProgress = true;
-      
-      // CRÍTICO: Prevenir default y stopPropagation INMEDIATAMENTE
-      e.preventDefault();
-      e.stopPropagation();
-      e.stopImmediatePropagation(); // Detener TODOS los otros listeners en este elemento
-      
+	let showTimeout = null;
+	let hideTimeout = null;
 
-      // Si es "Cambio de contraseña", no hacer nada
-      // Verificar tanto por menuItem como por el texto del elemento DOM y el ID del DOM
-      const itemIdFromDOM = item.getAttribute('data-profile-item-id') || item.getAttribute('id');
-      const isPasswordChange = (menuItem.id === 'password' || menuItem.id === 'cambio-contraseña' || 
-                               menuItem.label === 'Cambio de contraseña' ||
-                               itemText === 'Cambio de contraseña' ||
-                               itemIdFromDOM === 'password' || itemIdFromDOM === 'cambio-contraseña');
-      
-      if (isPasswordChange) {
-        hideMenu();
-        setTimeout(() => {
-          isClickInProgress = false;
-        }, 300);
-        return;
-      }
+	const showMenu = () => {
+		if (hideTimeout) {
+			clearTimeout(hideTimeout);
+			hideTimeout = null;
+		}
+		if (showTimeout) {
+			clearTimeout(showTimeout);
+		}
+		// Actualizar posición antes de mostrar (por si cambió el scroll o resize)
+		if (sidebarContainer && sidebarContainer !== document.body) {
+			updateMenuPosition();
+		}
+		showTimeout = window.setTimeout(() => {
+			menuElement.classList.add('show');
+			menuElement.style.display = 'block';
+		}, 100);
+	};
 
-      // Si es "Ver mi perfil", usar ContentManager
-      if ((menuItem.id === 'perfil' || menuItem.id === 'ver-perfil' || menuItem.label === 'Ver mi perfil') && window.UBITS_ContentManager) {
-        window.UBITS_ContentManager.handleSectionChange('perfil');
-        hideMenu();
-        setTimeout(() => {
-          isClickInProgress = false;
-        }, 300);
-        return;
-      }
-      
-      // Si es "Modo Administrador", navegar a template-admin.html
-      // Usar href de la configuración o del DOM
-      const hrefToUse = menuItem.href || domHref;
-      const isAdminMode = (menuItem.id === 'admin-mode' || menuItem.label === 'Modo Administrador') && hrefToUse;
-      
-      if (isAdminMode) {
-        hideMenu();
-        
-        // Abrir en nueva pestaña con timeout para asegurar que se ejecute
-        setTimeout(() => {
-          const newWindow = window.open(hrefToUse, '_blank');
-          if (!newWindow) {
-            // Fallback: navegar en la misma pestaña
-            window.location.href = hrefToUse;
-          }
-        }, 10);
-        return;
-      }
-      
-      // Si es "Modo colaborador" desde admin, navegar a template-colaborador.html
-      const hrefColaborador = menuItem.href || domHref;
-      const isColaboradorMode = (menuItem.id === 'modo-colaborador' || menuItem.label === 'Modo colaborador') && hrefColaborador;
-      
-      if (isColaboradorMode) {
-        hideMenu();
-        
-        // Abrir en nueva pestaña con timeout para asegurar que se ejecute
-        setTimeout(() => {
-          const newWindow = window.open(hrefColaborador, '_blank');
-          if (!newWindow) {
-            // Fallback: navegar en la misma pestaña
-            window.location.href = hrefColaborador;
-          }
-        }, 10);
-        return;
-      }
-      
-      // Si tiene onClick, ejecutarlo (solo si no es "Cambio de contraseña")
-      if (menuItem.onClick) {
-        menuItem.onClick();
-      // NO navegar si tiene href a menos que sea específicamente "Modo Administrador" o "Modo colaborador"
-      // Esto previene que "Cambio de contraseña" navegue accidentalmente
-      } else if (menuItem.href && (menuItem.id === 'admin-mode' || menuItem.id === 'modo-colaborador')) {
-        window.location.href = menuItem.href;
-      }
-      
-      // Cerrar el menú después de procesar el click
-      hideMenu();
-      
-      // Resetear el flag después de un delay
-      setTimeout(() => {
-        isClickInProgress = false;
-      }, 300);
-    };
-    
-    // Usar mousedown EN LUGAR de click para capturar ANTES que otros eventos
-    // mousedown se ejecuta antes que click y antes que mouseleave
-    item.addEventListener('mousedown', (e) => {
-      // Marcar que hay un click en progreso INMEDIATAMENTE
-      isClickInProgress = true;
-      // NO prevenir default aquí, dejar que el click normal continúe
-    }, true);
-    
-    // Agregar listener de click con capture: true para ejecutar PRIMERO
-    item.addEventListener('click', handleItemClick, true);
-    
-    // También agregar listener para Enter key por accesibilidad
-    item.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        handleItemClick(e);
-      }
-    });
-  });
+	const hideMenu = () => {
+		if (showTimeout) {
+			clearTimeout(showTimeout);
+			showTimeout = null;
+		}
+		hideTimeout = window.setTimeout(() => {
+			menuElement.classList.remove('show');
+			menuElement.style.display = 'none';
+		}, 200);
+	};
+
+	// Manejar hover para mostrar/ocultar el menú
+	// CRÍTICO: Aumentar el delay del hideMenu para permitir clicks
+	let isClickInProgress = false;
+
+	avatarElement.addEventListener('mouseenter', showMenu);
+	avatarElement.addEventListener('mouseleave', (e) => {
+		// No cerrar si el mouse está sobre el menú O si hay un click en progreso
+		const relatedTarget = e.relatedTarget;
+		if (
+			relatedTarget &&
+			(menuElement.contains(relatedTarget) || relatedTarget.closest('.ubits-sidebar-profile-menu'))
+		) {
+			return;
+		}
+		if (isClickInProgress) {
+			return;
+		}
+		hideMenu();
+	});
+	menuElement.addEventListener('mouseenter', showMenu);
+	menuElement.addEventListener('mouseleave', (e) => {
+		// No cerrar si el mouse está sobre el avatar O si hay un click en progreso
+		const relatedTarget = e.relatedTarget;
+		if (
+			relatedTarget &&
+			(avatarElement.contains(relatedTarget) || relatedTarget.closest('.ubits-sidebar-user-avatar'))
+		) {
+			return;
+		}
+		if (isClickInProgress) {
+			return;
+		}
+		hideMenu();
+	});
+
+	// Cerrar el menú al hacer click fuera
+	// IMPORTANTE: Usar capture: false para ejecutar DESPUÉS del listener del item
+	// Y verificar si el evento ya fue manejado por stopImmediatePropagation
+	document.addEventListener(
+		'click',
+		(e) => {
+			if (!menuElement.classList.contains('show')) return;
+
+			const target = e.target;
+			const isInsideMenu = menuElement.contains(target);
+			const isAvatar = avatarElement.contains(target) || target === avatarElement;
+
+			// Verificar si es un item del menú o cualquier elemento dentro de él
+			const isMenuItem = target.closest('.ubits-sidebar-profile-menu-item');
+			const isInsideMenuItem =
+				isInsideMenu &&
+				(target.closest('.ubits-sidebar-profile-menu-item') ||
+					target.classList.contains('ubits-sidebar-profile-menu-item'));
+
+			// Si es un item del menú O está dentro de un item, ejecutar la lógica aquí
+			// porque el listener del item puede no ejecutarse si hay conflictos de timing
+			if (isMenuItem || isInsideMenuItem) {
+				// Encontrar el item del menú que contiene el click
+				const clickedMenuItem = isMenuItem || target.closest('.ubits-sidebar-profile-menu-item');
+				if (!clickedMenuItem) {
+					return;
+				}
+
+				// Obtener el href del DOM
+				const domHref = clickedMenuItem.getAttribute('data-href');
+				const clickedText =
+					clickedMenuItem.innerText?.trim() || clickedMenuItem.textContent?.trim();
+
+				// Obtener el índice del item del menú (sin dividers)
+				const menuItemsArray = Array.from(
+					menuElement.querySelectorAll('.ubits-sidebar-profile-menu-item'),
+				);
+				const clickedIndex = menuItemsArray.indexOf(clickedMenuItem);
+
+				// Buscar el menuItem en profileMenuItems
+				// Primero intentar por href, luego por label, luego por índice
+				let menuItem = null;
+
+				// 1. Buscar por href (más confiable)
+				if (domHref) {
+					menuItem = profileMenuItems.find(
+						(item) =>
+							!item.divider &&
+							(item.href === domHref ||
+								(domHref.includes('template-admin.html') &&
+									(item.id === 'admin-mode' || item.label === 'Modo Administrador'))),
+					);
+				}
+
+				// 2. Buscar por label (texto visible)
+				if (!menuItem && clickedText) {
+					menuItem = profileMenuItems.find((item) => !item.divider && item.label === clickedText);
+				}
+
+				// 3. Buscar por índice (filtrando dividers)
+				if (!menuItem && clickedIndex >= 0) {
+					const nonDividerItems = profileMenuItems.filter((item) => !item.divider);
+					if (clickedIndex < nonDividerItems.length) {
+						menuItem = nonDividerItems[clickedIndex];
+					}
+				}
+
+				if (!menuItem || menuItem.divider) {
+					return;
+				}
+
+				// Usar href de la configuración o del DOM
+				const hrefToUse = menuItem.href || domHref || clickedMenuItem.getAttribute('data-href');
+
+				// Si es "Cambio de contraseña", no hacer nada
+				const isPasswordChange =
+					menuItem.id === 'password' ||
+					menuItem.id === 'cambio-contraseña' ||
+					menuItem.label === 'Cambio de contraseña' ||
+					clickedText === 'Cambio de contraseña';
+
+				if (isPasswordChange) {
+					hideMenu();
+					return;
+				}
+
+				// Si es "Ver mi perfil", usar ContentManager
+				if (
+					(menuItem.id === 'perfil' ||
+						menuItem.id === 'ver-perfil' ||
+						menuItem.label === 'Ver mi perfil') &&
+					window.UBITS_ContentManager
+				) {
+					window.UBITS_ContentManager.handleSectionChange('perfil');
+					hideMenu();
+					return;
+				}
+
+				// Si es "Modo Administrador", navegar a template-admin.html
+				// IMPORTANTE: Verificar que NO sea "Cambio de contraseña" antes de abrir admin
+				const isAdminMode =
+					!isPasswordChange &&
+					(menuItem.id === 'admin-mode' || menuItem.label === 'Modo Administrador') &&
+					(hrefToUse || domHref);
+
+				if (isAdminMode && !isPasswordChange) {
+					const urlToOpen = hrefToUse || domHref || 'template-admin.html';
+					hideMenu();
+
+					setTimeout(() => {
+						const newWindow = window.open(urlToOpen, '_blank');
+						if (!newWindow) {
+							window.location.href = urlToOpen;
+						}
+					}, 10);
+					return;
+				}
+
+				// Si es "Modo colaborador"
+				// IMPORTANTE: Verificar que NO sea "Cambio de contraseña" antes de abrir
+				const isColaboradorMode =
+					!isPasswordChange &&
+					(menuItem.id === 'modo-colaborador' || menuItem.label === 'Modo colaborador') &&
+					(hrefToUse || domHref);
+				if (isColaboradorMode) {
+					const urlToOpen = hrefToUse || domHref;
+					hideMenu();
+
+					setTimeout(() => {
+						const newWindow = window.open(urlToOpen, '_blank');
+						if (!newWindow) {
+							window.location.href = urlToOpen;
+						}
+					}, 10);
+					return;
+				}
+
+				// Otras acciones - PERO NO si es "Cambio de contraseña"
+				if (!isPasswordChange) {
+					if (menuItem.onClick) {
+						menuItem.onClick();
+					} else if (menuItem.href || domHref) {
+						window.location.href = menuItem.href || domHref;
+					}
+				}
+				hideMenu();
+
+				return;
+			}
+
+			// Solo cerrar si el click es fuera del menú Y no es en el avatar
+			if (!isInsideMenu && !isAvatar) {
+				hideMenu();
+			}
+		},
+		false,
+	);
+
+	// Click en avatar
+	if (options.onAvatarClick) {
+		avatarElement.addEventListener('click', (e) => {
+			e.preventDefault();
+			options.onAvatarClick();
+		});
+	} else {
+		const href = avatarElement.getAttribute('data-href');
+		if (href) {
+			avatarElement.addEventListener('click', () => {
+				window.location.href = href;
+			});
+		}
+	}
+
+	// Click en items del menú
+	const menuItems = menuElement.querySelectorAll('.ubits-sidebar-profile-menu-item');
+	const profileMenuItems = options.profileMenuItems || [];
+
+	// IMPORTANTE: Filtrar dividers una sola vez
+	const nonDividerItems = profileMenuItems.filter((i) => !i.divider);
+
+	menuItems.forEach((item, index) => {
+		// Usar el índice del DOM para obtener el menuItem correspondiente (sin dividers)
+		const menuItem = nonDividerItems[index];
+
+		if (!menuItem) {
+			return;
+		}
+
+		// También leer el data-href del DOM por si acaso
+		const domHref = item.getAttribute('data-href');
+		const itemText = item.innerText?.trim() || item.textContent?.trim();
+		const itemId = item.getAttribute('data-profile-item-id') || item.getAttribute('id');
+
+		// Asegurarse de que el elemento sea clickeable
+		item.style.cursor = 'pointer';
+		item.setAttribute('role', 'button');
+		item.setAttribute('tabindex', '0');
+
+		// Función para manejar el click
+		const handleItemClick = (e) => {
+			// Verificar que el menuItem corresponde al item del DOM clickeado
+			const itemText = item.innerText?.trim() || item.textContent?.trim();
+
+			// CRÍTICO: Marcar que hay un click en progreso para evitar que mouseleave cierre el menú
+			isClickInProgress = true;
+
+			// CRÍTICO: Prevenir default y stopPropagation INMEDIATAMENTE
+			e.preventDefault();
+			e.stopPropagation();
+			e.stopImmediatePropagation(); // Detener TODOS los otros listeners en este elemento
+
+			// Si es "Cambio de contraseña", no hacer nada
+			// Verificar tanto por menuItem como por el texto del elemento DOM y el ID del DOM
+			const itemIdFromDOM = item.getAttribute('data-profile-item-id') || item.getAttribute('id');
+			const isPasswordChange =
+				menuItem.id === 'password' ||
+				menuItem.id === 'cambio-contraseña' ||
+				menuItem.label === 'Cambio de contraseña' ||
+				itemText === 'Cambio de contraseña' ||
+				itemIdFromDOM === 'password' ||
+				itemIdFromDOM === 'cambio-contraseña';
+
+			if (isPasswordChange) {
+				hideMenu();
+				setTimeout(() => {
+					isClickInProgress = false;
+				}, 300);
+				return;
+			}
+
+			// Si es "Ver mi perfil", usar ContentManager
+			if (
+				(menuItem.id === 'perfil' ||
+					menuItem.id === 'ver-perfil' ||
+					menuItem.label === 'Ver mi perfil') &&
+				window.UBITS_ContentManager
+			) {
+				window.UBITS_ContentManager.handleSectionChange('perfil');
+				hideMenu();
+				setTimeout(() => {
+					isClickInProgress = false;
+				}, 300);
+				return;
+			}
+
+			// Si es "Modo Administrador", navegar a template-admin.html
+			// Usar href de la configuración o del DOM
+			const hrefToUse = menuItem.href || domHref;
+			const isAdminMode =
+				(menuItem.id === 'admin-mode' || menuItem.label === 'Modo Administrador') && hrefToUse;
+
+			if (isAdminMode) {
+				hideMenu();
+
+				// Abrir en nueva pestaña con timeout para asegurar que se ejecute
+				setTimeout(() => {
+					const newWindow = window.open(hrefToUse, '_blank');
+					if (!newWindow) {
+						// Fallback: navegar en la misma pestaña
+						window.location.href = hrefToUse;
+					}
+				}, 10);
+				return;
+			}
+
+			// Si es "Modo colaborador" desde admin, navegar a template-colaborador.html
+			const hrefColaborador = menuItem.href || domHref;
+			const isColaboradorMode =
+				(menuItem.id === 'modo-colaborador' || menuItem.label === 'Modo colaborador') &&
+				hrefColaborador;
+
+			if (isColaboradorMode) {
+				hideMenu();
+
+				// Abrir en nueva pestaña con timeout para asegurar que se ejecute
+				setTimeout(() => {
+					const newWindow = window.open(hrefColaborador, '_blank');
+					if (!newWindow) {
+						// Fallback: navegar en la misma pestaña
+						window.location.href = hrefColaborador;
+					}
+				}, 10);
+				return;
+			}
+
+			// Si tiene onClick, ejecutarlo (solo si no es "Cambio de contraseña")
+			if (menuItem.onClick) {
+				menuItem.onClick();
+				// NO navegar si tiene href a menos que sea específicamente "Modo Administrador" o "Modo colaborador"
+				// Esto previene que "Cambio de contraseña" navegue accidentalmente
+			} else if (
+				menuItem.href &&
+				(menuItem.id === 'admin-mode' || menuItem.id === 'modo-colaborador')
+			) {
+				window.location.href = menuItem.href;
+			}
+
+			// Cerrar el menú después de procesar el click
+			hideMenu();
+
+			// Resetear el flag después de un delay
+			setTimeout(() => {
+				isClickInProgress = false;
+			}, 300);
+		};
+
+		// Usar mousedown EN LUGAR de click para capturar ANTES que otros eventos
+		// mousedown se ejecuta antes que click y antes que mouseleave
+		item.addEventListener(
+			'mousedown',
+			(e) => {
+				// Marcar que hay un click en progreso INMEDIATAMENTE
+				isClickInProgress = true;
+				// NO prevenir default aquí, dejar que el click normal continúe
+			},
+			true,
+		);
+
+		// Agregar listener de click con capture: true para ejecutar PRIMERO
+		item.addEventListener('click', handleItemClick, true);
+
+		// También agregar listener para Enter key por accesibilidad
+		item.addEventListener('keydown', (e) => {
+			if (e.key === 'Enter' || e.key === ' ') {
+				e.preventDefault();
+				handleItemClick(e);
+			}
+		});
+	});
 }
 
 // Inicializa el dark mode toggle
 function initDarkModeToggle(sidebarElement, options) {
-  const darkModeButton = sidebarElement.querySelector('#ubits-darkmode-toggle');
-  if (!darkModeButton) return;
+	const darkModeButton = sidebarElement.querySelector('#ubits-darkmode-toggle');
+	if (!darkModeButton) return;
 
-  // Encontrar el contenedor del sidebar - buscar el contenedor padre que tiene el ID del containerId
-  const containerId = options.containerId;
-  let sidebarContainer = null;
-  
-  if (containerId) {
-    sidebarContainer = document.getElementById(containerId);
-  }
-  
-  // Si no se encuentra por ID, usar el padre del sidebar
-  if (!sidebarContainer) {
-    sidebarContainer = sidebarElement.parentElement;
-  }
-  
-  // Función para actualizar el icono según el tema con animación
-  const updateIcon = (theme) => {
-    const iconElement = darkModeButton.querySelector('i');
-    if (iconElement) {
-      // Remover todas las clases de iconos anteriores
-      iconElement.classList.remove('fa-moon', 'fa-sun', 'fa-sun-bright', 'far', 'fas', 'fa-solid', 'fa-regular');
-      
-      // Agregar clase de animación
-      iconElement.classList.add('ubits-icon-transition');
-      
-      // Agregar la clase del icono correspondiente después de un pequeño delay para asegurar que se aplique la animación
-      requestAnimationFrame(() => {
-        if (theme === 'dark') {
-          iconElement.classList.add('fa-solid', 'fa-sun-bright');
-        } else {
-          iconElement.classList.add('far', 'fa-moon');
-        }
-      });
-      
-      // Remover clase de animación después de la transición (ajustado a 400ms para coincidir con la duración de la animación)
-      setTimeout(() => {
-        iconElement.classList.remove('ubits-icon-transition');
-      }, 400);
-    };
-  }
+	// Encontrar el contenedor del sidebar - buscar el contenedor padre que tiene el ID del containerId
+	const containerId = options.containerId;
+	let sidebarContainer = null;
 
-  darkModeButton.addEventListener('click', (e) => {
-    e.preventDefault();
-    e.stopPropagation();
+	if (containerId) {
+		sidebarContainer = document.getElementById(containerId);
+	}
 
-    const currentTheme = darkModeButton.getAttribute('data-theme') || 'light';
-    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-    
-    // Actualizar atributo del botón
-    darkModeButton.setAttribute('data-theme', newTheme);
-    
-    // Actualizar el icono
-    updateIcon(newTheme);
-    
-    // Actualizar atributo en el body completo para que todos los componentes se actualicen
-    document.body.setAttribute('data-theme', newTheme);
-    
-    // También actualizar el contenedor del sidebar
-    if (sidebarContainer) {
-      sidebarContainer.setAttribute('data-theme', newTheme);
-    }
+	// Si no se encuentra por ID, usar el padre del sidebar
+	if (!sidebarContainer) {
+		sidebarContainer = sidebarElement.parentElement;
+	}
 
-    // Notificar Theme Manager si está disponible
-    if (window.UBITS_ThemeManager) {
-      window.UBITS_ThemeManager.setTheme(newTheme);
-    }
-    
-    // Llamar callback si existe
-    if (options.onDarkModeToggle) {
-      options.onDarkModeToggle(newTheme === 'dark');
-    }
-  });
+	// Función para actualizar el icono según el tema con animación
+	const updateIcon = (theme) => {
+		const iconElement = darkModeButton.querySelector('i');
+		if (iconElement) {
+			// Remover todas las clases de iconos anteriores
+			iconElement.classList.remove(
+				'fa-moon',
+				'fa-sun',
+				'fa-sun-bright',
+				'far',
+				'fas',
+				'fa-solid',
+				'fa-regular',
+			);
+
+			// Agregar clase de animación
+			iconElement.classList.add('ubits-icon-transition');
+
+			// Agregar la clase del icono correspondiente después de un pequeño delay para asegurar que se aplique la animación
+			requestAnimationFrame(() => {
+				if (theme === 'dark') {
+					iconElement.classList.add('fa-solid', 'fa-sun-bright');
+				} else {
+					iconElement.classList.add('far', 'fa-moon');
+				}
+			});
+
+			// Remover clase de animación después de la transición (ajustado a 400ms para coincidir con la duración de la animación)
+			setTimeout(() => {
+				iconElement.classList.remove('ubits-icon-transition');
+			}, 400);
+		}
+	};
+
+	darkModeButton.addEventListener('click', (e) => {
+		e.preventDefault();
+		e.stopPropagation();
+
+		const currentTheme = darkModeButton.getAttribute('data-theme') || 'light';
+		const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+
+		// Actualizar atributo del botón
+		darkModeButton.setAttribute('data-theme', newTheme);
+
+		// Actualizar el icono
+		updateIcon(newTheme);
+
+		// Actualizar atributo en el body completo para que todos los componentes se actualicen
+		document.body.setAttribute('data-theme', newTheme);
+
+		// También actualizar el contenedor del sidebar
+		if (sidebarContainer) {
+			sidebarContainer.setAttribute('data-theme', newTheme);
+		}
+
+		// Notificar Theme Manager si está disponible
+		if (window.UBITS_ThemeManager) {
+			window.UBITS_ThemeManager.setTheme(newTheme);
+		}
+
+		// Llamar callback si existe
+		if (options.onDarkModeToggle) {
+			options.onDarkModeToggle(newTheme === 'dark');
+		}
+	});
 }
 
 // Crea un sidebar interactivo en el DOM
-window.createSidebar = function(options) {
-  try {
-    const containerId = options.containerId;
-    const bodyButtons = options.bodyButtons;
-    const height = options.height;
-    const variant = options.variant || 'colaborador'; // Guardar variant para uso posterior
+window.createSidebar = function (options) {
+	try {
+		const containerId = options.containerId;
+		const bodyButtons = options.bodyButtons;
+		const height = options.height;
+		const variant = options.variant || 'colaborador'; // Guardar variant para uso posterior
 
-    const container = document.getElementById(containerId);
-    if (!container) {
-      throw new Error(`Container with id "${containerId}" not found`);
-    }
+		const container = document.getElementById(containerId);
+		if (!container) {
+			throw new Error(`Container with id "${containerId}" not found`);
+		}
 
-  const containerStyle = window.getComputedStyle(container);
-  if (containerStyle.position === 'static') {
-    container.style.position = 'relative';
-  }
+		const containerStyle = window.getComputedStyle(container);
+		if (containerStyle.position === 'static') {
+			container.style.position = 'relative';
+		}
 
-    const sidebarHTML = renderSidebar(options);
-    
-    container.innerHTML = sidebarHTML;
+		const sidebarHTML = renderSidebar(options);
 
-    const sidebarElement = container.querySelector('.ubits-sidebar');
-  
-  const menuElement = document.getElementById('ubits-sidebar-profile-menu');
-  if (menuElement && !container.contains(menuElement)) {
-    container.appendChild(menuElement);
-  }
-  
-  if (!sidebarElement) {
-    throw new Error('Failed to create sidebar element');
-  }
+		container.innerHTML = sidebarHTML;
 
-  if (height) {
-    sidebarElement.style.height = typeof height === 'number' ? `${height}px` : height;
-  } else {
-    adjustSidebarHeight(sidebarElement);
-    window.addEventListener('resize', () => adjustSidebarHeight(sidebarElement));
-  }
+		const sidebarElement = container.querySelector('.ubits-sidebar');
 
-  initTooltips(sidebarElement);
-  initProfileMenu(sidebarElement, options);
-  
-  if (options.darkModeEnabled !== false) {
-    initDarkModeToggle(sidebarElement, options);
-  }
+		const menuElement = document.getElementById('ubits-sidebar-profile-menu');
+		if (menuElement && !container.contains(menuElement)) {
+			container.appendChild(menuElement);
+		}
 
-  // ⚠️ ACTIVAR BOTÓN INICIAL si se especifica
-  // IMPORTANTE: Hacer esto ANTES de agregar los event listeners para evitar conflictos
-  if (options.initialActiveSection) {
-    const initialButton = sidebarElement.querySelector(`[data-section="${options.initialActiveSection}"]`);
-    if (initialButton) {
-      // Remover active de todos los botones primero
-      sidebarElement.querySelectorAll('.ubits-sidebar-nav-button').forEach(btn => {
-        btn.classList.remove('active');
-        btn.blur(); // Remover foco para evitar borde azul
-      });
-      // Activar el botón inicial (SIN focus para evitar borde azul)
-      initialButton.classList.add('active');
-      // NO llamar focus() aquí para evitar el borde azul de focus-visible
-      
-      // ⚠️ IMPORTANTE: Ocultar tooltip cuando se activa el botón inicial
-      const tooltipElement = document.getElementById('ubits-sidebar-tooltip');
-      if (tooltipElement) {
-        tooltipElement.classList.remove('show');
-      }
-    }
-  }
+		if (!sidebarElement) {
+			throw new Error('Failed to create sidebar element');
+		}
 
-  const bodyButtonsElements = sidebarElement.querySelectorAll('.ubits-sidebar-body .ubits-sidebar-nav-button');
-  bodyButtonsElements.forEach((button, index) => {
-    const buttonConfig = bodyButtons[index];
-    if (!buttonConfig) return;
+		if (height) {
+			sidebarElement.style.height = typeof height === 'number' ? `${height}px` : height;
+		} else {
+			adjustSidebarHeight(sidebarElement);
+			window.addEventListener('resize', () => adjustSidebarHeight(sidebarElement));
+		}
 
-    button.addEventListener('click', (e) => {
-      if (buttonConfig.state === 'disabled') {
-        e.preventDefault();
-        return;
-      }
+		initTooltips(sidebarElement);
+		initProfileMenu(sidebarElement, options);
 
-      // ⚠️ IMPORTANTE: Si el botón tiene href y es "admin" o tiene isNavigation, navegar directamente
-      // El botón "admin" debe navegar a la página template-admin.html, no cargar contenido
-      // NO prevenir el comportamiento por defecto aquí para permitir la navegación
-      const shouldNavigate = (buttonConfig.section === 'admin' || buttonConfig.isNavigation) && buttonConfig.href;
+		if (options.darkModeEnabled !== false) {
+			initDarkModeToggle(sidebarElement, options);
+		}
 
-      if (shouldNavigate) {
-        window.open(buttonConfig.href, '_blank');
-        return; // Salir inmediatamente sin prevenir default
-      }
+		// ⚠️ ACTIVAR BOTÓN INICIAL si se especifica
+		// IMPORTANTE: Hacer esto ANTES de agregar los event listeners para evitar conflictos
+		if (options.initialActiveSection) {
+			const initialButton = sidebarElement.querySelector(
+				`[data-section="${options.initialActiveSection}"]`,
+			);
+			if (initialButton) {
+				// Remover active de todos los botones primero
+				sidebarElement.querySelectorAll('.ubits-sidebar-nav-button').forEach((btn) => {
+					btn.classList.remove('active');
+					btn.blur(); // Remover foco para evitar borde azul
+				});
+				// Activar el botón inicial (SIN focus para evitar borde azul)
+				initialButton.classList.add('active');
+				// NO llamar focus() aquí para evitar el borde azul de focus-visible
 
-      // Solo prevenir default si NO es navegación
-      e.preventDefault();
-      e.stopPropagation(); // Evitar que el evento se propague
+				// ⚠️ IMPORTANTE: Ocultar tooltip cuando se activa el botón inicial
+				const tooltipElement = document.getElementById('ubits-sidebar-tooltip');
+				if (tooltipElement) {
+					tooltipElement.classList.remove('show');
+				}
+			}
+		}
 
-      // ⚠️ IMPORTANTE: Actualizar estado activo INMEDIATAMENTE
-      // Remover activo de todos los botones primero
-      bodyButtonsElements.forEach(btn => {
-        btn.classList.remove('active');
-        // También remover cualquier estado hover que pueda estar activo
-        btn.blur(); // Remover foco del botón
-      });
+		const bodyButtonsElements = sidebarElement.querySelectorAll(
+			'.ubits-sidebar-body .ubits-sidebar-nav-button',
+		);
+		bodyButtonsElements.forEach((button, index) => {
+			const buttonConfig = bodyButtons[index];
+			if (!buttonConfig) return;
 
-      // Agregar clase active al botón clickeado INMEDIATAMENTE
-      button.classList.add('active');
-      // ⚠️ NO llamar focus() aquí para evitar el borde azul de focus-visible
-      // El estado active es suficiente para el feedback visual
+			button.addEventListener('click', (e) => {
+				if (buttonConfig.state === 'disabled') {
+					e.preventDefault();
+					return;
+				}
 
-      // ⚠️ IMPORTANTE: Ocultar tooltip cuando el botón se vuelve activo
-      const tooltipElement = document.getElementById('ubits-sidebar-tooltip');
-      if (tooltipElement) {
-        tooltipElement.classList.remove('show');
-      }
-      if (tooltipElement) {
-        tooltipElement.classList.remove('show');
-      }
+				// ⚠️ IMPORTANTE: Si el botón tiene href y es "admin" o tiene isNavigation, navegar directamente
+				// El botón "admin" debe navegar a la página template-admin.html, no cargar contenido
+				// NO prevenir el comportamiento por defecto aquí para permitir la navegación
+				const shouldNavigate =
+					(buttonConfig.section === 'admin' || buttonConfig.isNavigation) && buttonConfig.href;
 
-      // Notificar Content Manager si está disponible
-      if (window.UBITS_ContentManager) {
-        window.UBITS_ContentManager.handleSectionChange(buttonConfig.section);
-      }
+				if (shouldNavigate) {
+					window.open(buttonConfig.href, '_blank');
+					return; // Salir inmediatamente sin prevenir default
+				}
 
-      if (options.onActiveButtonChange) {
-        options.onActiveButtonChange(buttonConfig.section);
-      }
+				// Solo prevenir default si NO es navegación
+				e.preventDefault();
+				e.stopPropagation(); // Evitar que el evento se propague
 
-      // NO redirigir a href automáticamente - usar Content Manager en su lugar
-      if (buttonConfig.onClick) {
-        buttonConfig.onClick(e);
-      }
-      // Removido: window.location.href para evitar errores 404
-    });
-  });
+				// ⚠️ IMPORTANTE: Actualizar estado activo INMEDIATAMENTE
+				// Remover activo de todos los botones primero
+				bodyButtonsElements.forEach((btn) => {
+					btn.classList.remove('active');
+					// También remover cualquier estado hover que pueda estar activo
+					btn.blur(); // Remover foco del botón
+				});
 
-  const footerButtonsElements = sidebarElement.querySelectorAll('.ubits-sidebar-footer .ubits-sidebar-nav-button');
-  footerButtonsElements.forEach((button, index) => {
-    const buttonConfig = options.footerButtons[index];
-    if (!buttonConfig) return;
+				// Agregar clase active al botón clickeado INMEDIATAMENTE
+				button.classList.add('active');
+				// ⚠️ NO llamar focus() aquí para evitar el borde azul de focus-visible
+				// El estado active es suficiente para el feedback visual
 
-    if (button.id === 'ubits-darkmode-toggle') return;
+				// ⚠️ IMPORTANTE: Ocultar tooltip cuando el botón se vuelve activo
+				const tooltipElement = document.getElementById('ubits-sidebar-tooltip');
+				if (tooltipElement) {
+					tooltipElement.classList.remove('show');
+				}
+				if (tooltipElement) {
+					tooltipElement.classList.remove('show');
+				}
 
-    button.addEventListener('click', (e) => {
-      e.preventDefault();
-      
-      if (buttonConfig.state === 'disabled') return;
+				// Notificar Content Manager si está disponible
+				if (window.UBITS_ContentManager) {
+					window.UBITS_ContentManager.handleSectionChange(buttonConfig.section);
+				}
 
-      // Si tiene una sección definida, usar ContentManager
-      if (buttonConfig.section && window.UBITS_ContentManager) {
-        window.UBITS_ContentManager.handleSectionChange(buttonConfig.section);
-        return;
-      }
+				if (options.onActiveButtonChange) {
+					options.onActiveButtonChange(buttonConfig.section);
+				}
 
-      if (buttonConfig.onClick) {
-        buttonConfig.onClick(e);
-      } else if (buttonConfig.href) {
-        window.location.href = buttonConfig.href;
-      }
-    });
-  });
+				// NO redirigir a href automáticamente - usar Content Manager en su lugar
+				if (buttonConfig.onClick) {
+					buttonConfig.onClick(e);
+				}
+				// Removido: window.location.href para evitar errores 404
+			});
+		});
 
-  // Click en logo - debe ir a la primera sección (aprendizaje) en lugar de redirigir
-  const logoElement = sidebarElement.querySelector('.ubits-sidebar-logo');
-  if (logoElement) {
-    logoElement.style.cursor = 'pointer';
-    logoElement.addEventListener('click', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      
-      // En lugar de redirigir, activar la primera sección disponible (aprendizaje)
-      // Para sidebar colaborador, la primera sección útil es "aprendizaje"
-      const sidebarVariant = options.variant || 'colaborador';
-      const firstSection = sidebarVariant === 'admin' 
-        ? 'inicio' 
-        : 'aprendizaje'; // Para colaborador, usar "aprendizaje"
-      
-      
-      // Remover active de todos los botones
-      const allButtons = sidebarElement.querySelectorAll('.ubits-sidebar-nav-button');
-      allButtons.forEach(btn => {
-        btn.classList.remove('active');
-        btn.blur();
-      });
-      
-      // Activar el botón correspondiente a la sección
-      const targetButton = sidebarElement.querySelector(`[data-section="${firstSection}"]`);
-      if (targetButton) {
-        targetButton.classList.add('active');
-        targetButton.focus();
-      }
-      
-      // Ocultar tooltip si está visible
-      const tooltipElement = document.getElementById('ubits-sidebar-tooltip');
-      if (tooltipElement) {
-        tooltipElement.classList.remove('show');
-      }
-      
-      // Usar ContentManager para cargar la sección
-      if (window.UBITS_ContentManager) {
-        window.UBITS_ContentManager.handleSectionChange(firstSection);
-      }
-      
-      // Notificar callback si existe
-      if (options.onActiveButtonChange) {
-        options.onActiveButtonChange(firstSection);
-      }
-    });
-  }
+		const footerButtonsElements = sidebarElement.querySelectorAll(
+			'.ubits-sidebar-footer .ubits-sidebar-nav-button',
+		);
+		footerButtonsElements.forEach((button, index) => {
+			const buttonConfig = options.footerButtons[index];
+			if (!buttonConfig) return;
 
-    // Verificación final de estilos antes de retornar
-    if (sidebarElement) {
-      const finalStyle = window.getComputedStyle(sidebarElement);
-    }
-    
-    return sidebarElement;
-  } catch (error) {
-    throw error;
-  }
+			if (button.id === 'ubits-darkmode-toggle') return;
+
+			button.addEventListener('click', (e) => {
+				e.preventDefault();
+
+				if (buttonConfig.state === 'disabled') return;
+
+				// Si tiene una sección definida, usar ContentManager
+				if (buttonConfig.section && window.UBITS_ContentManager) {
+					window.UBITS_ContentManager.handleSectionChange(buttonConfig.section);
+					return;
+				}
+
+				if (buttonConfig.onClick) {
+					buttonConfig.onClick(e);
+				} else if (buttonConfig.href) {
+					window.location.href = buttonConfig.href;
+				}
+			});
+		});
+
+		// Click en logo - debe ir a la primera sección (aprendizaje) en lugar de redirigir
+		const logoElement = sidebarElement.querySelector('.ubits-sidebar-logo');
+		if (logoElement) {
+			logoElement.style.cursor = 'pointer';
+			logoElement.addEventListener('click', (e) => {
+				e.preventDefault();
+				e.stopPropagation();
+
+				// En lugar de redirigir, activar la primera sección disponible (aprendizaje)
+				// Para sidebar colaborador, la primera sección útil es "aprendizaje"
+				const sidebarVariant = options.variant || 'colaborador';
+				const firstSection = sidebarVariant === 'admin' ? 'inicio' : 'aprendizaje'; // Para colaborador, usar "aprendizaje"
+
+				// Remover active de todos los botones
+				const allButtons = sidebarElement.querySelectorAll('.ubits-sidebar-nav-button');
+				allButtons.forEach((btn) => {
+					btn.classList.remove('active');
+					btn.blur();
+				});
+
+				// Activar el botón correspondiente a la sección
+				const targetButton = sidebarElement.querySelector(`[data-section="${firstSection}"]`);
+				if (targetButton) {
+					targetButton.classList.add('active');
+					targetButton.focus();
+				}
+
+				// Ocultar tooltip si está visible
+				const tooltipElement = document.getElementById('ubits-sidebar-tooltip');
+				if (tooltipElement) {
+					tooltipElement.classList.remove('show');
+				}
+
+				// Usar ContentManager para cargar la sección
+				if (window.UBITS_ContentManager) {
+					window.UBITS_ContentManager.handleSectionChange(firstSection);
+				}
+
+				// Notificar callback si existe
+				if (options.onActiveButtonChange) {
+					options.onActiveButtonChange(firstSection);
+				}
+			});
+		}
+
+		// Verificación final de estilos antes de retornar
+		if (sidebarElement) {
+			const finalStyle = window.getComputedStyle(sidebarElement);
+		}
+
+		return sidebarElement;
+	} catch (error) {
+		throw error;
+	}
 };
 
 // ========================================
@@ -1002,108 +1077,122 @@ window.createSidebar = function(options) {
 
 // Configuración de variantes del SubNav (del provider oficial)
 function getSubNavConfig(variant) {
-  const SUBNAV_VARIANTS = {
-    template: {
-      name: 'Plantilla',
-      tabs: [
-        { id: 'section1', label: 'Sección 1', icon: 'home' },
-        { id: 'section2', label: 'Sección 2', icon: 'book' },
-        { id: 'section3', label: 'Sección 3', icon: 'chart-line' },
-        { id: 'section4', label: 'Sección 4', icon: 'cog' },
-        { id: 'section5', label: 'Sección 5', icon: 'star' }
-      ]
-    },
-    aprendizaje: {
-      name: 'Aprendizaje',
-      tabs: [
-        { id: 'home', label: 'Inicio', icon: 'home', url: 'home-learn.html' },
-        { id: 'catalog', label: 'Catálogo', icon: 'book', url: 'catalogo.html' },
-        { id: 'corporate', label: 'U. Corporativa', icon: 'building-columns', url: 'u-corporativa.html' },
-        { id: 'study-zone', label: 'Zona de estudio', icon: 'books', url: 'zona-estudio.html' }
-      ]
-    },
-    desempeno: {
-      name: 'Desempeño',
-      tabs: [
-        { id: 'evaluations', label: 'Evaluaciones 360', icon: 'chart-pie', url: 'evaluaciones-360.html' },
-        { id: 'objectives', label: 'Objetivos', icon: 'bullseye', url: 'objetivos.html' },
-        { id: 'metrics', label: 'Métricas', icon: 'chart-line', url: 'metricas.html' },
-        { id: 'reports', label: 'Reportes', icon: 'file-chart-line', url: 'reportes.html' }
-      ]
-    },
-    encuestas: {
-      name: 'Encuestas',
-      tabs: [
-        { id: 'encuestas', label: 'Encuestas', icon: 'clipboard-list-check', url: 'encuestas.html' }
-      ]
-    },
-    tareas: {
-      name: 'Tareas',
-      tabs: [
-        { id: 'plans', label: 'Planes', icon: 'layer-group', url: 'planes.html' },
-        { id: 'tasks', label: 'Tareas', icon: 'tasks', url: 'tareas.html' }
-      ]
-    },
-    empresa: {
-      name: 'Empresa',
-      tabs: [
-        { id: 'gestion-usuarios', label: 'Gestión de usuarios', icon: 'users' },
-        { id: 'organigrama', label: 'Organigrama', icon: 'sitemap' },
-        { id: 'datos-empresa', label: 'Datos de empresa', icon: 'building' },
-        { id: 'personalizacion', label: 'Personalización', icon: 'paint-brush' },
-        { id: 'roles-permisos', label: 'Roles y permisos', icon: 'user-shield' },
-        { id: 'comunicaciones', label: 'Comunicaciones', icon: 'envelope' }
-      ]
-    },
-    'admin-aprendizaje': {
-      name: 'Aprendizaje',
-      tabs: [
-        { id: 'lms-cursos', label: 'LMS - Cursos propios', icon: 'book' },
-        { id: 'plan-formacion', label: 'Plan de formación', icon: 'clipboard-list-check' },
-        { id: 'certificados', label: 'Certificados', icon: 'file-certificate' },
-        { id: 'metricas-empresa', label: 'Métricas de empresa', icon: 'chart-line' }
-      ]
-    },
-    'admin-desempeno': {
-      name: 'Desempeño',
-      tabs: [
-        { id: 'evaluations', label: 'Evaluaciones 360', icon: 'chart-pie' },
-        { id: 'objectives', label: 'Objetivos', icon: 'bullseye' },
-        { id: 'matriz-talento', label: 'Matriz de Talento', icon: 'sitemap' }
-      ]
-    }
-  };
-  
-  return SUBNAV_VARIANTS[variant] || SUBNAV_VARIANTS.template;
+	const SUBNAV_VARIANTS = {
+		template: {
+			name: 'Plantilla',
+			tabs: [
+				{ id: 'section1', label: 'Sección 1', icon: 'home' },
+				{ id: 'section2', label: 'Sección 2', icon: 'book' },
+				{ id: 'section3', label: 'Sección 3', icon: 'chart-line' },
+				{ id: 'section4', label: 'Sección 4', icon: 'cog' },
+				{ id: 'section5', label: 'Sección 5', icon: 'star' },
+			],
+		},
+		aprendizaje: {
+			name: 'Aprendizaje',
+			tabs: [
+				{ id: 'home', label: 'Inicio', icon: 'home', url: 'home-learn.html' },
+				{ id: 'catalog', label: 'Catálogo', icon: 'book', url: 'catalogo.html' },
+				{
+					id: 'corporate',
+					label: 'U. Corporativa',
+					icon: 'building-columns',
+					url: 'u-corporativa.html',
+				},
+				{ id: 'study-zone', label: 'Zona de estudio', icon: 'books', url: 'zona-estudio.html' },
+			],
+		},
+		desempeno: {
+			name: 'Desempeño',
+			tabs: [
+				{
+					id: 'evaluations',
+					label: 'Evaluaciones 360',
+					icon: 'chart-pie',
+					url: 'evaluaciones-360.html',
+				},
+				{ id: 'objectives', label: 'Objetivos', icon: 'bullseye', url: 'objetivos.html' },
+				{ id: 'metrics', label: 'Métricas', icon: 'chart-line', url: 'metricas.html' },
+				{ id: 'reports', label: 'Reportes', icon: 'file-chart-line', url: 'reportes.html' },
+			],
+		},
+		encuestas: {
+			name: 'Encuestas',
+			tabs: [
+				{
+					id: 'encuestas',
+					label: 'Encuestas',
+					icon: 'clipboard-list-check',
+					url: 'encuestas.html',
+				},
+			],
+		},
+		tareas: {
+			name: 'Tareas',
+			tabs: [
+				{ id: 'plans', label: 'Planes', icon: 'layer-group', url: 'planes.html' },
+				{ id: 'tasks', label: 'Tareas', icon: 'tasks', url: 'tareas.html' },
+			],
+		},
+		empresa: {
+			name: 'Empresa',
+			tabs: [
+				{ id: 'gestion-usuarios', label: 'Gestión de usuarios', icon: 'users' },
+				{ id: 'organigrama', label: 'Organigrama', icon: 'sitemap' },
+				{ id: 'datos-empresa', label: 'Datos de empresa', icon: 'building' },
+				{ id: 'personalizacion', label: 'Personalización', icon: 'paint-brush' },
+				{ id: 'roles-permisos', label: 'Roles y permisos', icon: 'user-shield' },
+				{ id: 'comunicaciones', label: 'Comunicaciones', icon: 'envelope' },
+			],
+		},
+		'admin-aprendizaje': {
+			name: 'Aprendizaje',
+			tabs: [
+				{ id: 'lms-cursos', label: 'LMS - Cursos propios', icon: 'book' },
+				{ id: 'plan-formacion', label: 'Plan de formación', icon: 'clipboard-list-check' },
+				{ id: 'certificados', label: 'Certificados', icon: 'file-certificate' },
+				{ id: 'metricas-empresa', label: 'Métricas de empresa', icon: 'chart-line' },
+			],
+		},
+		'admin-desempeno': {
+			name: 'Desempeño',
+			tabs: [
+				{ id: 'evaluations', label: 'Evaluaciones 360', icon: 'chart-pie' },
+				{ id: 'objectives', label: 'Objetivos', icon: 'bullseye' },
+				{ id: 'matriz-talento', label: 'Matriz de Talento', icon: 'sitemap' },
+			],
+		},
+	};
+
+	return SUBNAV_VARIANTS[variant] || SUBNAV_VARIANTS.template;
 }
 
 // Renderiza el HTML del SubNav (CÓDIGO EXACTO DEL PROVIDER OFICIAL)
 function renderSubNav(options) {
-  
-  const variant = options.variant || 'template';
-  const customTabs = options.tabs;
-  const activeTabId = options.activeTabId;
-  const showIcons = options.showIcons || false;
+	const variant = options.variant || 'template';
+	const customTabs = options.tabs;
+	const activeTabId = options.activeTabId;
+	const showIcons = options.showIcons || false;
 
-  // Obtener configuración de la variante o usar tabs personalizados
-  const config = getSubNavConfig(variant);
-  
-  const tabs = (variant === 'template' && customTabs && customTabs.length > 0) 
-    ? customTabs 
-    : config.tabs;
+	// Obtener configuración de la variante o usar tabs personalizados
+	const config = getSubNavConfig(variant);
 
-  // Determinar tab activo
-  const activeId = activeTabId || (tabs.length > 0 ? tabs[0].id : '');
+	const tabs =
+		variant === 'template' && customTabs && customTabs.length > 0 ? customTabs : config.tabs;
 
-  // Renderizar tabs normales
-  const tabsHTML = tabs.map(tab => {
-    const isActive = tab.id === activeId || tab.active;
-    const activeClass = isActive ? 'ubits-sub-nav-tab--active' : '';
-    
-    // Renderizar icono solo si showIcons es true
-    const iconHTML = showIcons ? renderIconHelper(tab.icon) : '';
-    
-    return `
+	// Determinar tab activo
+	const activeId = activeTabId || (tabs.length > 0 ? tabs[0].id : '');
+
+	// Renderizar tabs normales
+	const tabsHTML = tabs
+		.map((tab) => {
+			const isActive = tab.id === activeId || tab.active;
+			const activeClass = isActive ? 'ubits-sub-nav-tab--active' : '';
+
+			// Renderizar icono solo si showIcons es true
+			const iconHTML = showIcons ? renderIconHelper(tab.icon) : '';
+
+			return `
       <button 
         class="ubits-sub-nav-tab ${activeClass}" 
         data-tab="${tab.id}"
@@ -1114,110 +1203,112 @@ function renderSubNav(options) {
         <span>${tab.label}</span>
       </button>
     `;
-  }).join('');
+		})
+		.join('');
 
-  const html = `
+	const html = `
     <nav class="ubits-sub-nav" data-variant="${variant}">
       <div class="ubits-sub-nav-tabs">
         ${tabsHTML}
       </div>
     </nav>
   `.trim();
-  
-  return html;
+
+	return html;
 }
 
 // Inicializa los event listeners de los tabs (CÓDIGO EXACTO DEL PROVIDER OFICIAL)
 function initTabListeners(subNavElement, options) {
-  // ⚠️ IMPORTANTE: Remover listeners anteriores antes de agregar nuevos
-  // Esto previene que se agreguen múltiples listeners cuando updateSubNav se llama varias veces
-  const existingTabs = subNavElement.querySelectorAll('.ubits-sub-nav-tab');
-  existingTabs.forEach((tab) => {
-    // Remover todos los event listeners clonando el elemento
-    const newTab = tab.cloneNode(true);
-    tab.parentNode?.replaceChild(newTab, tab);
-  });
-  
-  // Obtener los tabs actualizados después del clonado
-  const tabs = subNavElement.querySelectorAll('.ubits-sub-nav-tab');
-  
-  const handleTabClick = (tabElement) => {
-    const tabId = tabElement.getAttribute('data-tab');
-    const url = tabElement.getAttribute('data-url');
-    
-    // Remover active de todos los tabs
-    tabs.forEach(t => t.classList.remove('ubits-sub-nav-tab--active'));
-    
-    // Agregar active al tab clickeado
-    tabElement.classList.add('ubits-sub-nav-tab--active');
-    
-    // ⚠️ IMPORTANTE: Si hay un callback onTabChange, usarlo en lugar de navegar directamente
-    // Esto permite que el ContentManager maneje el cambio de contenido dinámicamente
-    if (options.onTabChange) {
-      options.onTabChange(tabId || '', tabElement);
-      // Disparar evento personalizado
-      const event = new CustomEvent('subNavTabClick', {
-        detail: { tabId: tabId, tabElement: tabElement }
-      });
-      document.dispatchEvent(event);
-      return;
-    }
-    
-    // Solo navegar a URL si NO hay callback onTabChange
-    if (url) {
-      window.location.href = url;
-      return;
-    }
-    
-    // Buscar el callback onClick del tab original
-    const config = getSubNavConfig(options.variant || 'template');
-    const allTabs = (options.variant === 'template' && options.tabs && options.tabs.length > 0)
-      ? options.tabs
-      : config.tabs;
-    const tabConfig = allTabs.find(t => t.id === tabId);
-    
-    if (tabConfig && tabConfig.onClick) {
-      tabConfig.onClick(new MouseEvent('click'));
-    }
-    
-    // Disparar evento personalizado
-    const event = new CustomEvent('subNavTabClick', {
-      detail: { tabId: tabId, tabElement: tabElement }
-    });
-    document.dispatchEvent(event);
-  };
+	// ⚠️ IMPORTANTE: Remover listeners anteriores antes de agregar nuevos
+	// Esto previene que se agreguen múltiples listeners cuando updateSubNav se llama varias veces
+	const existingTabs = subNavElement.querySelectorAll('.ubits-sub-nav-tab');
+	existingTabs.forEach((tab) => {
+		// Remover todos los event listeners clonando el elemento
+		const newTab = tab.cloneNode(true);
+		tab.parentNode?.replaceChild(newTab, tab);
+	});
 
-  // Event listeners para tabs
-  tabs.forEach((tab, index) => {
-    tab.addEventListener('click', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      handleTabClick(tab);
-    });
-  });
+	// Obtener los tabs actualizados después del clonado
+	const tabs = subNavElement.querySelectorAll('.ubits-sub-nav-tab');
+
+	const handleTabClick = (tabElement) => {
+		const tabId = tabElement.getAttribute('data-tab');
+		const url = tabElement.getAttribute('data-url');
+
+		// Remover active de todos los tabs
+		tabs.forEach((t) => t.classList.remove('ubits-sub-nav-tab--active'));
+
+		// Agregar active al tab clickeado
+		tabElement.classList.add('ubits-sub-nav-tab--active');
+
+		// ⚠️ IMPORTANTE: Si hay un callback onTabChange, usarlo en lugar de navegar directamente
+		// Esto permite que el ContentManager maneje el cambio de contenido dinámicamente
+		if (options.onTabChange) {
+			options.onTabChange(tabId || '', tabElement);
+			// Disparar evento personalizado
+			const event = new CustomEvent('subNavTabClick', {
+				detail: { tabId: tabId, tabElement: tabElement },
+			});
+			document.dispatchEvent(event);
+			return;
+		}
+
+		// Solo navegar a URL si NO hay callback onTabChange
+		if (url) {
+			window.location.href = url;
+			return;
+		}
+
+		// Buscar el callback onClick del tab original
+		const config = getSubNavConfig(options.variant || 'template');
+		const allTabs =
+			options.variant === 'template' && options.tabs && options.tabs.length > 0
+				? options.tabs
+				: config.tabs;
+		const tabConfig = allTabs.find((t) => t.id === tabId);
+
+		if (tabConfig && tabConfig.onClick) {
+			tabConfig.onClick(new MouseEvent('click'));
+		}
+
+		// Disparar evento personalizado
+		const event = new CustomEvent('subNavTabClick', {
+			detail: { tabId: tabId, tabElement: tabElement },
+		});
+		document.dispatchEvent(event);
+	};
+
+	// Event listeners para tabs
+	tabs.forEach((tab, index) => {
+		tab.addEventListener('click', (e) => {
+			e.preventDefault();
+			e.stopPropagation();
+			handleTabClick(tab);
+		});
+	});
 }
 
 // Crea un SubNav interactivo en el DOM (CÓDIGO EXACTO DEL PROVIDER OFICIAL)
-window.createSubNav = function(options) {
-  const containerId = options.containerId;
+window.createSubNav = function (options) {
+	const containerId = options.containerId;
 
-  const container = document.getElementById(containerId);
-  if (!container) {
-    throw new Error(`Container with id "${containerId}" not found`);
-  }
+	const container = document.getElementById(containerId);
+	if (!container) {
+		throw new Error(`Container with id "${containerId}" not found`);
+	}
 
-  const subNavHTML = renderSubNav(options);
-  
-  container.innerHTML = subNavHTML;
+	const subNavHTML = renderSubNav(options);
 
-  const subNavElement = container.querySelector('.ubits-sub-nav');
-  if (!subNavElement) {
-    throw new Error('Failed to create sub-nav element');
-  }
-  
-  initTabListeners(subNavElement, options);
+	container.innerHTML = subNavHTML;
 
-  return subNavElement;
+	const subNavElement = container.querySelector('.ubits-sub-nav');
+	if (!subNavElement) {
+		throw new Error('Failed to create sub-nav element');
+	}
+
+	initTabListeners(subNavElement, options);
+
+	return subNavElement;
 };
 
 // ========================================
@@ -1231,32 +1322,30 @@ window.defaultProfileMenuItems = [];
 
 // Renderiza el HTML del TabBar (CÓDIGO EXACTO DEL PROVIDER OFICIAL)
 function renderTabBar(options) {
-  const items = options.items || [];
-  const activeTabId = options.activeTabId;
-  const visible = options.visible || false;
-  const className = options.className || '';
+	const items = options.items || [];
+	const activeTabId = options.activeTabId;
+	const visible = options.visible || false;
+	const className = options.className || '';
 
-  const containerClasses = [
-    'ubits-tabbar',
-    visible ? 'ubits-tabbar--visible' : '',
-    className
-  ].filter(Boolean).join(' ');
+	const containerClasses = ['ubits-tabbar', visible ? 'ubits-tabbar--visible' : '', className]
+		.filter(Boolean)
+		.join(' ');
 
-  const itemsHTML = items.map(item => {
-    const isActive = item.id === activeTabId;
-    const itemClasses = [
-      'ubits-tabbar-item',
-      isActive ? 'ubits-tabbar-item--active' : ''
-    ].filter(Boolean).join(' ');
+	const itemsHTML = items
+		.map((item) => {
+			const isActive = item.id === activeTabId;
+			const itemClasses = ['ubits-tabbar-item', isActive ? 'ubits-tabbar-item--active' : '']
+				.filter(Boolean)
+				.join(' ');
 
-    let iconOrAvatarHTML = '';
-    if (item.avatar) {
-      iconOrAvatarHTML = `<img src="${item.avatar}" alt="${item.avatarAlt || item.label}" class="ubits-tabbar-avatar">`;
-    } else if (item.icon) {
-      iconOrAvatarHTML = `<span class="ubits-tabbar-icon">${renderIconHelper(item.icon)}</span>`;
-    }
+			let iconOrAvatarHTML = '';
+			if (item.avatar) {
+				iconOrAvatarHTML = `<img src="${item.avatar}" alt="${item.avatarAlt || item.label}" class="ubits-tabbar-avatar">`;
+			} else if (item.icon) {
+				iconOrAvatarHTML = `<span class="ubits-tabbar-icon">${renderIconHelper(item.icon)}</span>`;
+			}
 
-    return `
+			return `
       <div 
         class="${itemClasses}" 
         data-tab-id="${item.id}"
@@ -1266,9 +1355,10 @@ function renderTabBar(options) {
         <span class="ubits-tabbar-text">${item.label}</span>
       </div>
     `;
-  }).join('\n');
+		})
+		.join('\n');
 
-  return `
+	return `
     <div class="${containerClasses}" id="ubits-tabbar">
       <div class="ubits-tabbar-content">
         ${itemsHTML}
@@ -1279,52 +1369,82 @@ function renderTabBar(options) {
 
 // Renderiza un item del tree menu recursivamente usando la estructura del componente TreeMenu de Storybook
 function renderTreeMenuItem(item, level = 0, size = 'md', parentSectionId = null) {
-  // Verificar si tiene hijos (children o subitems)
-  const hasChildren = (item.children && item.children.length > 0) || (item.subitems && item.subitems.length > 0);
-  
-  // Un item es un link si NO tiene hijos (independientemente de isLink o url)
-  // Si tiene hijos, es expandible (con chevron)
-  // Si NO tiene hijos, es un link directo (sin chevron)
-  const isLink = !hasChildren;
-  
-  const nodeId = `floating-menu-node-${level}-${item.id}`;
-  
-  // Si es nivel 0, este item es la sección principal
-  const sectionId = level === 0 ? item.id : (parentSectionId || item.id);
-  // Si es nivel > 0, es un subitem
-  const subitemId = level > 0 ? item.id : null;
-  
-  // Calcular valores según tamaño (matching TreeMenu Storybook)
-  const padding = size === 'xs' ? '8px 12px' : size === 'sm' ? '10px 14px' : size === 'lg' ? '16px 20px' : '12px 16px';
-  const minHeight = size === 'xs' ? '28px' : size === 'sm' ? '32px' : size === 'lg' ? '48px' : '40px';
-  const fontSize = size === 'xs' ? 'var(--font-body-xs-size, 11px)' : size === 'sm' ? 'var(--font-body-sm-size, 13px)' : size === 'lg' ? 'var(--font-body-lg-size, 20px)' : 'var(--font-body-md-size, 16px)';
-  const lineHeight = size === 'xs' ? 'var(--font-body-xs-line, 16.5px)' : size === 'sm' ? 'var(--font-body-sm-line, 19.5px)' : size === 'lg' ? 'var(--font-body-lg-line, 30px)' : 'var(--font-body-md-line, 24px)';
-  const iconSize = size === 'xs' ? '12px' : size === 'sm' ? '14px' : size === 'lg' ? '18px' : '16px';
-  const chevronSize = size === 'xs' ? '10px' : size === 'sm' ? '12px' : size === 'lg' ? '16px' : '14px';
-  
-  // Clases de tipografía según tamaño
-  const typographyClass = size === 'xs'
-    ? 'ubits-body-xs-regular'
-    : size === 'sm' 
-    ? 'ubits-body-sm-regular' 
-    : size === 'lg' 
-    ? 'ubits-body-lg-regular' 
-    : 'ubits-body-md-regular';
-  
-  // Si es un enlace directo (sin hijos)
-  if (isLink) {
-    const iconHTML = level === 0 && item.icon ? `
+	// Verificar si tiene hijos (children o subitems)
+	const hasChildren =
+		(item.children && item.children.length > 0) || (item.subitems && item.subitems.length > 0);
+
+	// Un item es un link si NO tiene hijos (independientemente de isLink o url)
+	// Si tiene hijos, es expandible (con chevron)
+	// Si NO tiene hijos, es un link directo (sin chevron)
+	const isLink = !hasChildren;
+
+	const nodeId = `floating-menu-node-${level}-${item.id}`;
+
+	// Si es nivel 0, este item es la sección principal
+	const sectionId = level === 0 ? item.id : parentSectionId || item.id;
+	// Si es nivel > 0, es un subitem
+	const subitemId = level > 0 ? item.id : null;
+
+	// Calcular valores según tamaño (matching TreeMenu Storybook)
+	const padding =
+		size === 'xs'
+			? '8px 12px'
+			: size === 'sm'
+				? '10px 14px'
+				: size === 'lg'
+					? '16px 20px'
+					: '12px 16px';
+	const minHeight =
+		size === 'xs' ? '28px' : size === 'sm' ? '32px' : size === 'lg' ? '48px' : '40px';
+	const fontSize =
+		size === 'xs'
+			? 'var(--font-body-xs-size, 11px)'
+			: size === 'sm'
+				? 'var(--font-body-sm-size, 13px)'
+				: size === 'lg'
+					? 'var(--font-body-lg-size, 20px)'
+					: 'var(--font-body-md-size, 16px)';
+	const lineHeight =
+		size === 'xs'
+			? 'var(--font-body-xs-line, 16.5px)'
+			: size === 'sm'
+				? 'var(--font-body-sm-line, 19.5px)'
+				: size === 'lg'
+					? 'var(--font-body-lg-line, 30px)'
+					: 'var(--font-body-md-line, 24px)';
+	const iconSize =
+		size === 'xs' ? '12px' : size === 'sm' ? '14px' : size === 'lg' ? '18px' : '16px';
+	const chevronSize =
+		size === 'xs' ? '10px' : size === 'sm' ? '12px' : size === 'lg' ? '16px' : '14px';
+
+	// Clases de tipografía según tamaño
+	const typographyClass =
+		size === 'xs'
+			? 'ubits-body-xs-regular'
+			: size === 'sm'
+				? 'ubits-body-sm-regular'
+				: size === 'lg'
+					? 'ubits-body-lg-regular'
+					: 'ubits-body-md-regular';
+
+	// Si es un enlace directo (sin hijos)
+	if (isLink) {
+		const iconHTML =
+			level === 0 && item.icon
+				? `
       <span class="ubits-tree-node__icon" style="font-size: ${iconSize};">
         ${renderIconHelper(item.icon)}
       </span>
-    ` : '';
-    
-    // Para subitems, usar data-section-id de la sección principal y data-subitem-id del subitem
-    const dataAttributes = level > 0 && parentSectionId
-      ? `data-section-id="${parentSectionId}" data-subitem-id="${item.id}"`
-      : `data-section-id="${item.id}"`;
-    
-    return `
+    `
+				: '';
+
+		// Para subitems, usar data-section-id de la sección principal y data-subitem-id del subitem
+		const dataAttributes =
+			level > 0 && parentSectionId
+				? `data-section-id="${parentSectionId}" data-subitem-id="${item.id}"`
+				: `data-section-id="${item.id}"`;
+
+		return `
       <div class="ubits-tree-node ubits-tree-node--vertical" data-level="${level}">
         <a 
           href="${item.url || '#'}" 
@@ -1341,25 +1461,33 @@ function renderTreeMenuItem(item, level = 0, size = 'md', parentSectionId = null
         </a>
       </div>
     `;
-  }
-  
-  // Si tiene hijos, renderizar como nodo expandible
-  const children = item.children || item.subitems?.map(sub => ({
-    id: sub.id,
-    title: sub.title || sub.title,
-    icon: sub.icon || sub.icon,
-    url: sub.url || sub.url,
-    children: undefined
-  })) || [];
-  
-  const childrenHTML = children.map(child => renderTreeMenuItem(child, level + 1, size, sectionId)).join('');
-  const iconHTML = level === 0 && item.icon ? `
+	}
+
+	// Si tiene hijos, renderizar como nodo expandible
+	const children =
+		item.children ||
+		item.subitems?.map((sub) => ({
+			id: sub.id,
+			title: sub.title || sub.title,
+			icon: sub.icon || sub.icon,
+			url: sub.url || sub.url,
+			children: undefined,
+		})) ||
+		[];
+
+	const childrenHTML = children
+		.map((child) => renderTreeMenuItem(child, level + 1, size, sectionId))
+		.join('');
+	const iconHTML =
+		level === 0 && item.icon
+			? `
     <span class="ubits-tree-node__icon" style="font-size: ${iconSize};">
       ${renderIconHelper(item.icon)}
     </span>
-  ` : '';
-  
-  return `
+  `
+			: '';
+
+	return `
     <div class="ubits-tree-node ubits-tree-node--vertical" data-level="${level}">
       <div 
         class="ubits-tree-node__content ubits-tree-node__content--expandable" 
@@ -1387,9 +1515,9 @@ function renderTreeMenuItem(item, level = 0, size = 'md', parentSectionId = null
 
 // Renderiza el Floating Menu como Tree Menu usando la estructura del componente TreeMenu de Storybook
 function renderFloatingMenu(sections, size = 'md') {
-  const treeHTML = sections.map(section => renderTreeMenuItem(section, 0, size)).join('');
+	const treeHTML = sections.map((section) => renderTreeMenuItem(section, 0, size)).join('');
 
-  return `
+	return `
     <div class="ubits-floating-menu" id="ubits-floating-menu">
       <div class="ubits-floating-menu-header">
         <h2 class="ubits-floating-menu-title">Módulos</h2>
@@ -1408,13 +1536,13 @@ function renderFloatingMenu(sections, size = 'md') {
 
 // Renderiza un item del Profile Menu Tree recursivamente
 function renderProfileTreeMenuItem(item, level = 0) {
-  const hasChildren = item.children && item.children.length > 0;
-  const indent = level * 24; // 24px de indentación por nivel
-  const url = item.url || item.href || '';
-  
-  // Si no tiene hijos, renderizar como enlace simple
-  if (!hasChildren) {
-    return `
+	const hasChildren = item.children && item.children.length > 0;
+	const indent = level * 24; // 24px de indentación por nivel
+	const url = item.url || item.href || '';
+
+	// Si no tiene hijos, renderizar como enlace simple
+	if (!hasChildren) {
+		return `
       <div class="ubits-profile-tree-item" data-profile-item-id="${item.id}" data-tree-level="${level}">
         <a href="${url || '#'}" class="ubits-profile-tree-link" ${item.onClick ? 'data-has-onclick="true"' : ''}>
           <i class="far fa-${item.icon} ubits-profile-tree-icon"></i>
@@ -1422,12 +1550,14 @@ function renderProfileTreeMenuItem(item, level = 0) {
         </a>
       </div>
     `;
-  }
-  
-  // Si tiene hijos, renderizar como nodo expandible
-  const childrenHTML = item.children.map(child => renderProfileTreeMenuItem(child, level + 1)).join('');
-  
-  return `
+	}
+
+	// Si tiene hijos, renderizar como nodo expandible
+	const childrenHTML = item.children
+		.map((child) => renderProfileTreeMenuItem(child, level + 1))
+		.join('');
+
+	return `
     <div class="ubits-profile-tree-item" data-profile-item-id="${item.id}" data-tree-level="${level}">
       <div class="ubits-profile-tree-node" data-tree-node-id="${item.id}">
         <div class="ubits-profile-tree-header">
@@ -1445,9 +1575,9 @@ function renderProfileTreeMenuItem(item, level = 0) {
 
 // Renderiza el Profile Menu como Tree Menu
 function renderProfileMenu(items) {
-  const itemsHTML = items.map(item => renderProfileTreeMenuItem(item, 0)).join('');
+	const itemsHTML = items.map((item) => renderProfileTreeMenuItem(item, 0)).join('');
 
-  return `
+	return `
     <div class="ubits-profile-menu" id="ubits-profile-menu">
       ${itemsHTML}
     </div>
@@ -1456,558 +1586,584 @@ function renderProfileMenu(items) {
 
 // Toggle de dark mode para TabBar
 function toggleDarkMode(tabBarElement, onDarkModeToggle) {
-  const currentTheme = tabBarElement.getAttribute('data-theme') || 'light';
-  const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-  
-  tabBarElement.setAttribute('data-theme', newTheme);
-  
-  // Notificar Theme Manager si está disponible
-  if (window.UBITS_ThemeManager) {
-    window.UBITS_ThemeManager.setTheme(newTheme);
-  }
-  
-  // Actualizar body también
-  document.body.setAttribute('data-theme', newTheme);
-  
-  const darkModeItem = tabBarElement.querySelector('[data-tab-id="modo-oscuro"]');
-  if (darkModeItem) {
-    const iconElement = darkModeItem.querySelector('.ubits-tabbar-icon i');
-    if (iconElement) {
-      iconElement.classList.remove('fa-moon', 'fa-sun', 'fa-sun-bright', 'fa-solid', 'fa-regular', 'far');
-      if (newTheme === 'dark') {
-        iconElement.classList.add('fa-solid', 'fa-sun-bright');
-      } else {
-        iconElement.classList.add('far', 'fa-moon');
-      }
-    }
-  }
+	const currentTheme = tabBarElement.getAttribute('data-theme') || 'light';
+	const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
 
-  if (onDarkModeToggle) {
-    onDarkModeToggle(newTheme === 'dark');
-  }
+	tabBarElement.setAttribute('data-theme', newTheme);
+
+	// Notificar Theme Manager si está disponible
+	if (window.UBITS_ThemeManager) {
+		window.UBITS_ThemeManager.setTheme(newTheme);
+	}
+
+	// Actualizar body también
+	document.body.setAttribute('data-theme', newTheme);
+
+	const darkModeItem = tabBarElement.querySelector('[data-tab-id="modo-oscuro"]');
+	if (darkModeItem) {
+		const iconElement = darkModeItem.querySelector('.ubits-tabbar-icon i');
+		if (iconElement) {
+			iconElement.classList.remove(
+				'fa-moon',
+				'fa-sun',
+				'fa-sun-bright',
+				'fa-solid',
+				'fa-regular',
+				'far',
+			);
+			if (newTheme === 'dark') {
+				iconElement.classList.add('fa-solid', 'fa-sun-bright');
+			} else {
+				iconElement.classList.add('far', 'fa-moon');
+			}
+		}
+	}
+
+	if (onDarkModeToggle) {
+		onDarkModeToggle(newTheme === 'dark');
+	}
 }
 
 // Actualiza el tab activo
 function updateActiveTab(tabBarElement, tabId) {
-  const tabItems = tabBarElement.querySelectorAll('.ubits-tabbar-item');
-  tabItems.forEach(item => {
-    item.classList.remove('ubits-tabbar-item--active');
-  });
-  const activeItem = tabBarElement.querySelector(`[data-tab-id="${tabId}"]`);
-  if (activeItem) {
-    activeItem.classList.add('ubits-tabbar-item--active');
-  }
+	const tabItems = tabBarElement.querySelectorAll('.ubits-tabbar-item');
+	tabItems.forEach((item) => {
+		item.classList.remove('ubits-tabbar-item--active');
+	});
+	const activeItem = tabBarElement.querySelector(`[data-tab-id="${tabId}"]`);
+	if (activeItem) {
+		activeItem.classList.add('ubits-tabbar-item--active');
+	}
 }
 
 // Toggle de tree menu node (expandir/colapsar) usando la nueva estructura
 function toggleTreeMenuNode(container, nodeId) {
-  const content = container.querySelector(`[data-node-id="${nodeId}"]`);
-  const children = container.querySelector(`[data-children-id="${nodeId}"]`);
-  
-  if (!content || !children) {
-    return;
-  }
+	const content = container.querySelector(`[data-node-id="${nodeId}"]`);
+	const children = container.querySelector(`[data-children-id="${nodeId}"]`);
 
-  const chevron = content.querySelector('.ubits-tree-node__chevron i');
-  if (!chevron) {
-    return;
-  }
+	if (!content || !children) {
+		return;
+	}
 
-  // Verificar si está expandido usando data-expanded y computedStyle
-  const isExpanded = content.getAttribute('data-expanded') === 'true';
-  const computedStyle = window.getComputedStyle(children);
-  const isCurrentlyOpen = computedStyle.display !== 'none';
+	const chevron = content.querySelector('.ubits-tree-node__chevron i');
+	if (!chevron) {
+		return;
+	}
 
-  if (isCurrentlyOpen || isExpanded) {
-    // Cerrar
-    children.style.display = 'none';
-    content.setAttribute('data-expanded', 'false');
-    content.setAttribute('aria-expanded', 'false');
-    chevron.style.transform = 'rotate(0deg)';
-  } else {
-    // Abrir
-    children.style.display = 'block';
-    content.setAttribute('data-expanded', 'true');
-    content.setAttribute('aria-expanded', 'true');
-    chevron.style.transform = 'rotate(90deg)';
-  }
+	// Verificar si está expandido usando data-expanded y computedStyle
+	const isExpanded = content.getAttribute('data-expanded') === 'true';
+	const computedStyle = window.getComputedStyle(children);
+	const isCurrentlyOpen = computedStyle.display !== 'none';
+
+	if (isCurrentlyOpen || isExpanded) {
+		// Cerrar
+		children.style.display = 'none';
+		content.setAttribute('data-expanded', 'false');
+		content.setAttribute('aria-expanded', 'false');
+		chevron.style.transform = 'rotate(0deg)';
+	} else {
+		// Abrir
+		children.style.display = 'block';
+		content.setAttribute('data-expanded', 'true');
+		content.setAttribute('aria-expanded', 'true');
+		chevron.style.transform = 'rotate(90deg)';
+	}
 }
 
 // Toggle de profile tree menu node (expandir/colapsar)
 function toggleProfileTreeMenuNode(container, nodeId) {
-  const children = container.querySelector(`[data-tree-children-id="${nodeId}"]`);
-  const chevron = container.querySelector(`[data-chevron-id="${nodeId}"]`);
+	const children = container.querySelector(`[data-tree-children-id="${nodeId}"]`);
+	const chevron = container.querySelector(`[data-chevron-id="${nodeId}"]`);
 
-  if (!children || !chevron) {
-    return;
-  }
+	if (!children || !chevron) {
+		return;
+	}
 
-  // Verificar si está abierto usando computedStyle
-  const computedStyle = window.getComputedStyle(children);
-  const isCurrentlyOpen = computedStyle.display !== 'none';
+	// Verificar si está abierto usando computedStyle
+	const computedStyle = window.getComputedStyle(children);
+	const isCurrentlyOpen = computedStyle.display !== 'none';
 
-  if (isCurrentlyOpen) {
-    // Cerrar
-    children.style.display = 'none';
-    chevron.style.transform = 'rotate(0deg)';
-  } else {
-    // Abrir
-    children.style.display = 'block';
-    chevron.style.transform = 'rotate(180deg)';
-  }
+	if (isCurrentlyOpen) {
+		// Cerrar
+		children.style.display = 'none';
+		chevron.style.transform = 'rotate(0deg)';
+	} else {
+		// Abrir
+		children.style.display = 'block';
+		chevron.style.transform = 'rotate(180deg)';
+	}
 }
 
 // Inicializa listeners del Floating Menu usando la nueva estructura del TreeMenu
 function initFloatingMenuListeners(container, onFloatingMenuItemClick) {
-  const floatingMenu = container.querySelector('.ubits-floating-menu');
-  if (!floatingMenu) return;
+	const floatingMenu = container.querySelector('.ubits-floating-menu');
+	if (!floatingMenu) return;
 
-  const closeButton = floatingMenu.querySelector('#ubits-floating-menu-close');
-  if (closeButton) {
-    closeButton.addEventListener('click', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      container.style.display = 'none';
-      floatingMenu.classList.remove('ubits-floating-menu--show');
-    });
-  }
+	const closeButton = floatingMenu.querySelector('#ubits-floating-menu-close');
+	if (closeButton) {
+		closeButton.addEventListener('click', (e) => {
+			e.preventDefault();
+			e.stopPropagation();
+			container.style.display = 'none';
+			floatingMenu.classList.remove('ubits-floating-menu--show');
+		});
+	}
 
-  // Usar un solo event listener en el contenedor del tree menu (matching TabBarProvider.ts)
-  const treeMenu = floatingMenu.querySelector('.ubits-tree-menu');
-  if (treeMenu) {
-    treeMenu.addEventListener('click', (e) => {
-      const target = e.target.closest('.ubits-tree-node__content');
-      if (!target) return;
+	// Usar un solo event listener en el contenedor del tree menu (matching TabBarProvider.ts)
+	const treeMenu = floatingMenu.querySelector('.ubits-tree-menu');
+	if (treeMenu) {
+		treeMenu.addEventListener('click', (e) => {
+			const target = e.target.closest('.ubits-tree-node__content');
+			if (!target) return;
 
-      e.preventDefault();
-      e.stopPropagation();
+			e.preventDefault();
+			e.stopPropagation();
 
-      const isExpandable = target.classList.contains('ubits-tree-node__content--expandable');
-      const nodeId = target.getAttribute('data-node-id');
-      const sectionId = target.getAttribute('data-section-id');
-      const subitemId = target.getAttribute('data-subitem-id'); // Para subitems
-      const url = target.getAttribute('href');
+			const isExpandable = target.classList.contains('ubits-tree-node__content--expandable');
+			const nodeId = target.getAttribute('data-node-id');
+			const sectionId = target.getAttribute('data-section-id');
+			const subitemId = target.getAttribute('data-subitem-id'); // Para subitems
+			const url = target.getAttribute('href');
 
-      // Manejar expandir/colapsar para nodos con hijos (matching TabBarProvider.ts)
-      if (isExpandable && nodeId) {
-        const children = treeMenu.querySelector(`[data-children-id="${nodeId}"]`);
-        const chevron = target.querySelector('.ubits-tree-node__chevron i');
-        const isExpanded = target.getAttribute('data-expanded') === 'true';
-        
-        if (children) {
-          if (isExpanded) {
-            children.style.display = 'none';
-            target.setAttribute('data-expanded', 'false');
-            target.setAttribute('aria-expanded', 'false');
-            if (chevron) {
-              chevron.className = 'far fa-chevron-right';
-              chevron.style.fontSize = chevron.style.fontSize || '14px';
-            }
-          } else {
-            children.style.display = 'block';
-            target.setAttribute('data-expanded', 'true');
-            target.setAttribute('aria-expanded', 'true');
-            if (chevron) {
-              chevron.className = 'far fa-chevron-down';
-              chevron.style.fontSize = chevron.style.fontSize || '14px';
-            }
-          }
-        }
-      }
-      
-      // Manejar selección (active state) para TODOS los nodos (expandibles y links) - matching TabBarProvider.ts
-      // Remover active de todos los nodos
-      const allContents = treeMenu.querySelectorAll('.ubits-tree-node__content');
-      allContents.forEach((node) => {
-        node.classList.remove('ubits-tree-node__content--active');
-        node.removeAttribute('aria-selected');
-      });
-      
-      // Agregar active al nodo clickeado
-      target.classList.add('ubits-tree-node__content--active');
-      target.setAttribute('aria-selected', 'true');
-      
-      // Si es un link directo (no expandible), ejecutar callback y cerrar menú
-      if (!isExpandable && (sectionId || url)) {
-        if (onFloatingMenuItemClick) {
-          // Si hay subitemId, pasar la sección principal y el subitemId
-          // Si no hay subitemId, pasar solo la sección (es un link directo de nivel 0)
-          onFloatingMenuItemClick(sectionId || '', subitemId || undefined, url || undefined);
-        }
-        
-        // Cerrar el menú inmediatamente después del click
-        container.style.display = 'none';
-        floatingMenu.classList.remove('ubits-floating-menu--show');
-      }
-    });
+			// Manejar expandir/colapsar para nodos con hijos (matching TabBarProvider.ts)
+			if (isExpandable && nodeId) {
+				const children = treeMenu.querySelector(`[data-children-id="${nodeId}"]`);
+				const chevron = target.querySelector('.ubits-tree-node__chevron i');
+				const isExpanded = target.getAttribute('data-expanded') === 'true';
 
-    // Soporte para teclado (Enter/Space)
-    treeMenu.addEventListener('keydown', (e) => {
-      const target = e.target.closest('.ubits-tree-node__content');
-      if (!target) return;
+				if (children) {
+					if (isExpanded) {
+						children.style.display = 'none';
+						target.setAttribute('data-expanded', 'false');
+						target.setAttribute('aria-expanded', 'false');
+						if (chevron) {
+							chevron.className = 'far fa-chevron-right';
+							chevron.style.fontSize = chevron.style.fontSize || '14px';
+						}
+					} else {
+						children.style.display = 'block';
+						target.setAttribute('data-expanded', 'true');
+						target.setAttribute('aria-expanded', 'true');
+						if (chevron) {
+							chevron.className = 'far fa-chevron-down';
+							chevron.style.fontSize = chevron.style.fontSize || '14px';
+						}
+					}
+				}
+			}
 
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        target.click();
-      }
-    });
-  }
+			// Manejar selección (active state) para TODOS los nodos (expandibles y links) - matching TabBarProvider.ts
+			// Remover active de todos los nodos
+			const allContents = treeMenu.querySelectorAll('.ubits-tree-node__content');
+			allContents.forEach((node) => {
+				node.classList.remove('ubits-tree-node__content--active');
+				node.removeAttribute('aria-selected');
+			});
 
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && floatingMenu.classList.contains('ubits-floating-menu--show')) {
-      container.style.display = 'none';
-      floatingMenu.classList.remove('ubits-floating-menu--show');
-    }
-  });
+			// Agregar active al nodo clickeado
+			target.classList.add('ubits-tree-node__content--active');
+			target.setAttribute('aria-selected', 'true');
 
-  document.addEventListener('click', (e) => {
-    if (floatingMenu.classList.contains('ubits-floating-menu--show')) {
-      const target = e.target;
-      if (!floatingMenu.contains(target) && !target.closest('[data-tab-id="modulos"]')) {
-        container.style.display = 'none';
-        floatingMenu.classList.remove('ubits-floating-menu--show');
-      }
-    }
-  });
+			// Si es un link directo (no expandible), ejecutar callback y cerrar menú
+			if (!isExpandable && (sectionId || url)) {
+				if (onFloatingMenuItemClick) {
+					// Si hay subitemId, pasar la sección principal y el subitemId
+					// Si no hay subitemId, pasar solo la sección (es un link directo de nivel 0)
+					onFloatingMenuItemClick(sectionId || '', subitemId || undefined, url || undefined);
+				}
+
+				// Cerrar el menú inmediatamente después del click
+				container.style.display = 'none';
+				floatingMenu.classList.remove('ubits-floating-menu--show');
+			}
+		});
+
+		// Soporte para teclado (Enter/Space)
+		treeMenu.addEventListener('keydown', (e) => {
+			const target = e.target.closest('.ubits-tree-node__content');
+			if (!target) return;
+
+			if (e.key === 'Enter' || e.key === ' ') {
+				e.preventDefault();
+				target.click();
+			}
+		});
+	}
+
+	document.addEventListener('keydown', (e) => {
+		if (e.key === 'Escape' && floatingMenu.classList.contains('ubits-floating-menu--show')) {
+			container.style.display = 'none';
+			floatingMenu.classList.remove('ubits-floating-menu--show');
+		}
+	});
+
+	document.addEventListener('click', (e) => {
+		if (floatingMenu.classList.contains('ubits-floating-menu--show')) {
+			const target = e.target;
+			if (!floatingMenu.contains(target) && !target.closest('[data-tab-id="modulos"]')) {
+				container.style.display = 'none';
+				floatingMenu.classList.remove('ubits-floating-menu--show');
+			}
+		}
+	});
 }
 
 // Inicializa listeners del Profile Menu
 function initProfileMenuListeners(container, items, onProfileMenuItemClick) {
-  
-  const profileMenu = container.querySelector('.ubits-profile-menu');
-  if (!profileMenu) {
-    return;
-  }
+	const profileMenu = container.querySelector('.ubits-profile-menu');
+	if (!profileMenu) {
+		return;
+	}
 
-  // Tree menu nodes (expandible/collapsible)
-  const treeNodes = profileMenu.querySelectorAll('.ubits-profile-tree-node');
-  treeNodes.forEach(node => {
-    const header = node.querySelector('.ubits-profile-tree-header');
-    if (header) {
-      header.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        const nodeId = node.getAttribute('data-tree-node-id');
-        if (nodeId) {
-          toggleProfileTreeMenuNode(profileMenu, nodeId);
-        }
-      });
-    }
-  });
+	// Tree menu nodes (expandible/collapsible)
+	const treeNodes = profileMenu.querySelectorAll('.ubits-profile-tree-node');
+	treeNodes.forEach((node) => {
+		const header = node.querySelector('.ubits-profile-tree-header');
+		if (header) {
+			header.addEventListener('click', (e) => {
+				e.preventDefault();
+				e.stopPropagation();
+				const nodeId = node.getAttribute('data-tree-node-id');
+				if (nodeId) {
+					toggleProfileTreeMenuNode(profileMenu, nodeId);
+				}
+			});
+		}
+	});
 
-  // Tree menu links (enlaces directos)
-  const links = profileMenu.querySelectorAll('.ubits-profile-tree-link');
-  links.forEach(link => {
-    link.addEventListener('click', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      e.stopImmediatePropagation();
-      
-      const itemId = link.closest('[data-profile-item-id]')?.getAttribute('data-profile-item-id');
-      
-      if (itemId) {
-        const item = items.find(i => i.id === itemId);
-        
-        if (item) {
-          // Usar url o href (soporta ambos)
-          const itemUrl = item.url || item.href;
-          
-          // Si es "Cambio de contraseña", no hacer nada
-          const isPasswordChange = (itemId === 'password' || itemId === 'cambio-contraseña' || 
-                                   item.label === 'Cambio de contraseña');
-          if (isPasswordChange) {
-            container.style.display = 'none';
-            profileMenu.classList.remove('ubits-profile-menu--show');
-            return;
-          }
-          
-          // Si es "Modo Administrador" o "Modo colaborador", abrir en nueva pestaña
-          const isModeSwitch = (itemId === 'admin-mode' || itemId === 'modo-colaborador' || 
-                               item.label === 'Modo Administrador' || item.label === 'Modo colaborador') && itemUrl;
-          
-          if (isModeSwitch) {
-            // Cerrar el menú primero
-            container.style.display = 'none';
-            profileMenu.classList.remove('ubits-profile-menu--show');
-            
-            // Abrir en nueva pestaña con timeout para asegurar que se ejecute
-            setTimeout(() => {
-              const newWindow = window.open(itemUrl, '_blank');
-              if (!newWindow) {
-                // Fallback: navegar en la misma pestaña
-                window.location.href = itemUrl;
-              }
-            }, 10);
-            
-            // Llamar al callback si existe
-            if (onProfileMenuItemClick) {
-              onProfileMenuItemClick(itemId, item);
-            }
-            return;
-          }
-          
-          // Si tiene onClick, ejecutarlo
-          if (item.onClick) {
-            item.onClick();
-          // Si tiene url/href y no tiene onClick, navegar directamente
-          } else if (itemUrl) {
-            window.location.href = itemUrl;
-          }
-          
-          // Llamar al callback si existe
-          if (onProfileMenuItemClick) {
-            onProfileMenuItemClick(itemId, item);
-          }
-          
-          container.style.display = 'none';
-          profileMenu.classList.remove('ubits-profile-menu--show');
-        }
-      }
-    }, false);
-  });
+	// Tree menu links (enlaces directos)
+	const links = profileMenu.querySelectorAll('.ubits-profile-tree-link');
+	links.forEach((link) => {
+		link.addEventListener(
+			'click',
+			(e) => {
+				e.preventDefault();
+				e.stopPropagation();
+				e.stopImmediatePropagation();
 
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && profileMenu.classList.contains('ubits-profile-menu--show')) {
-      container.style.display = 'none';
-      profileMenu.classList.remove('ubits-profile-menu--show');
-    }
-  });
+				const itemId = link.closest('[data-profile-item-id]')?.getAttribute('data-profile-item-id');
 
-  document.addEventListener('click', (e) => {
-    if (profileMenu.classList.contains('ubits-profile-menu--show')) {
-      const target = e.target;
-      const isInsideMenu = profileMenu.contains(target);
-      const isProfileTab = target.closest('[data-tab-id="perfil"]');
-      const isMenuItem = target.closest('.ubits-profile-menu-item');
-      
-      // IMPORTANTE: Si es un item del menú, NO hacer nada aquí
-      // El listener del item ya manejará el click con stopImmediatePropagation
-      if (isMenuItem) {
-        return;
-      }
-      // Solo cerrar si el click es fuera del menú Y no es en el tab de perfil
-      if (!isInsideMenu && !isProfileTab) {
-        container.style.display = 'none';
-        profileMenu.classList.remove('ubits-profile-menu--show');
-      }
-    }
-  }, { capture: false }); // Usar capture: false para ejecutar DESPUÉS del listener del item
+				if (itemId) {
+					const item = items.find((i) => i.id === itemId);
+
+					if (item) {
+						// Usar url o href (soporta ambos)
+						const itemUrl = item.url || item.href;
+
+						// Si es "Cambio de contraseña", no hacer nada
+						const isPasswordChange =
+							itemId === 'password' ||
+							itemId === 'cambio-contraseña' ||
+							item.label === 'Cambio de contraseña';
+						if (isPasswordChange) {
+							container.style.display = 'none';
+							profileMenu.classList.remove('ubits-profile-menu--show');
+							return;
+						}
+
+						// Si es "Modo Administrador" o "Modo colaborador", abrir en nueva pestaña
+						const isModeSwitch =
+							(itemId === 'admin-mode' ||
+								itemId === 'modo-colaborador' ||
+								item.label === 'Modo Administrador' ||
+								item.label === 'Modo colaborador') &&
+							itemUrl;
+
+						if (isModeSwitch) {
+							// Cerrar el menú primero
+							container.style.display = 'none';
+							profileMenu.classList.remove('ubits-profile-menu--show');
+
+							// Abrir en nueva pestaña con timeout para asegurar que se ejecute
+							setTimeout(() => {
+								const newWindow = window.open(itemUrl, '_blank');
+								if (!newWindow) {
+									// Fallback: navegar en la misma pestaña
+									window.location.href = itemUrl;
+								}
+							}, 10);
+
+							// Llamar al callback si existe
+							if (onProfileMenuItemClick) {
+								onProfileMenuItemClick(itemId, item);
+							}
+							return;
+						}
+
+						// Si tiene onClick, ejecutarlo
+						if (item.onClick) {
+							item.onClick();
+							// Si tiene url/href y no tiene onClick, navegar directamente
+						} else if (itemUrl) {
+							window.location.href = itemUrl;
+						}
+
+						// Llamar al callback si existe
+						if (onProfileMenuItemClick) {
+							onProfileMenuItemClick(itemId, item);
+						}
+
+						container.style.display = 'none';
+						profileMenu.classList.remove('ubits-profile-menu--show');
+					}
+				}
+			},
+			false,
+		);
+	});
+
+	document.addEventListener('keydown', (e) => {
+		if (e.key === 'Escape' && profileMenu.classList.contains('ubits-profile-menu--show')) {
+			container.style.display = 'none';
+			profileMenu.classList.remove('ubits-profile-menu--show');
+		}
+	});
+
+	document.addEventListener(
+		'click',
+		(e) => {
+			if (profileMenu.classList.contains('ubits-profile-menu--show')) {
+				const target = e.target;
+				const isInsideMenu = profileMenu.contains(target);
+				const isProfileTab = target.closest('[data-tab-id="perfil"]');
+				const isMenuItem = target.closest('.ubits-profile-menu-item');
+
+				// IMPORTANTE: Si es un item del menú, NO hacer nada aquí
+				// El listener del item ya manejará el click con stopImmediatePropagation
+				if (isMenuItem) {
+					return;
+				}
+				// Solo cerrar si el click es fuera del menú Y no es en el tab de perfil
+				if (!isInsideMenu && !isProfileTab) {
+					container.style.display = 'none';
+					profileMenu.classList.remove('ubits-profile-menu--show');
+				}
+			}
+		},
+		{ capture: false },
+	); // Usar capture: false para ejecutar DESPUÉS del listener del item
 }
 
 // Inicializa los event listeners del TabBar
 function initTabBarListeners(
-  tabBarElement,
-  items,
-  onTabChange,
-  darkModeEnabled,
-  onDarkModeToggle,
-  floatingMenuSections,
-  profileMenuItems,
-  onFloatingMenuItemClick,
-  onProfileMenuItemClick,
-  container
+	tabBarElement,
+	items,
+	onTabChange,
+	darkModeEnabled,
+	onDarkModeToggle,
+	floatingMenuSections,
+	profileMenuItems,
+	onFloatingMenuItemClick,
+	onProfileMenuItemClick,
+	container,
 ) {
-  const tabItems = tabBarElement.querySelectorAll('.ubits-tabbar-item');
-  
-  const tabBarContainer = container || tabBarElement.parentElement;
+	const tabItems = tabBarElement.querySelectorAll('.ubits-tabbar-item');
 
-  let floatingMenuContainer = null;
-  let profileMenuContainer = null;
+	const tabBarContainer = container || tabBarElement.parentElement;
 
-  if (floatingMenuSections && floatingMenuSections.length > 0) {
-    floatingMenuContainer = document.getElementById('ubits-floating-menu-container') || document.createElement('div');
-    floatingMenuContainer.id = 'ubits-floating-menu-container';
-    floatingMenuContainer.style.cssText = 'position: fixed; top: 16px; left: 16px; right: 16px; bottom: 76px; display: none; z-index: 2000; overflow: hidden;';
-    
-    if (!document.getElementById('ubits-floating-menu-container')) {
-      if (tabBarContainer) {
-        tabBarContainer.appendChild(floatingMenuContainer);
-      } else {
-        document.body.appendChild(floatingMenuContainer);
-      }
-    }
-    
-    const floatingMenuHTML = renderFloatingMenu(floatingMenuSections, 'md');
-    floatingMenuContainer.innerHTML = floatingMenuHTML;
-    initFloatingMenuListeners(floatingMenuContainer, onFloatingMenuItemClick);
-  }
+	let floatingMenuContainer = null;
+	let profileMenuContainer = null;
 
-  if (profileMenuItems && profileMenuItems.length > 0) {
-    profileMenuContainer = document.getElementById('ubits-profile-menu-container') || document.createElement('div');
-    profileMenuContainer.id = 'ubits-profile-menu-container';
-    profileMenuContainer.style.cssText = 'position: fixed; bottom: 76px; left: 16px; right: 16px; max-width: 300px; display: none; z-index: 2001;';
-    
-    if (!document.getElementById('ubits-profile-menu-container')) {
-      if (tabBarContainer) {
-        tabBarContainer.appendChild(profileMenuContainer);
-      } else {
-        document.body.appendChild(profileMenuContainer);
-      }
-    }
-    
-    profileMenuContainer.innerHTML = renderProfileMenu(profileMenuItems);
-    
-    initProfileMenuListeners(profileMenuContainer, profileMenuItems, onProfileMenuItemClick);
-  }
+	if (floatingMenuSections && floatingMenuSections.length > 0) {
+		floatingMenuContainer =
+			document.getElementById('ubits-floating-menu-container') || document.createElement('div');
+		floatingMenuContainer.id = 'ubits-floating-menu-container';
+		floatingMenuContainer.style.cssText =
+			'position: fixed; top: 16px; left: 16px; right: 16px; bottom: 76px; display: none; z-index: 2000; overflow: hidden;';
 
-  
-  tabItems.forEach((tabItemElement, tabIndex) => {
-    const itemElement = tabItemElement;
-    const tabId = itemElement.getAttribute('data-tab-id');
-    
-    if (!tabId) {
-      return;
-    }
+		if (!document.getElementById('ubits-floating-menu-container')) {
+			if (tabBarContainer) {
+				tabBarContainer.appendChild(floatingMenuContainer);
+			} else {
+				document.body.appendChild(floatingMenuContainer);
+			}
+		}
 
-    const item = items.find(i => i.id === tabId);
-    if (!item) {
-      return;
-    }
+		const floatingMenuHTML = renderFloatingMenu(floatingMenuSections, 'md');
+		floatingMenuContainer.innerHTML = floatingMenuHTML;
+		initFloatingMenuListeners(floatingMenuContainer, onFloatingMenuItemClick);
+	}
 
-    itemElement.addEventListener('click', (event) => {
-      event.preventDefault();
-      event.stopPropagation();
+	if (profileMenuItems && profileMenuItems.length > 0) {
+		profileMenuContainer =
+			document.getElementById('ubits-profile-menu-container') || document.createElement('div');
+		profileMenuContainer.id = 'ubits-profile-menu-container';
+		profileMenuContainer.style.cssText =
+			'position: fixed; bottom: 76px; left: 16px; right: 16px; max-width: 300px; display: none; z-index: 2001;';
 
-      if (tabId === 'modo-oscuro' && darkModeEnabled) {
-        toggleDarkMode(tabBarElement, onDarkModeToggle);
-        if (floatingMenuContainer) {
-          floatingMenuContainer.style.display = 'none';
-          const floatingMenu = floatingMenuContainer.querySelector('.ubits-floating-menu');
-          if (floatingMenu) {
-            floatingMenu.classList.remove('ubits-floating-menu--show');
-          }
-        }
-        if (profileMenuContainer) {
-          profileMenuContainer.style.display = 'none';
-          const profileMenu = profileMenuContainer.querySelector('.ubits-profile-menu');
-          if (profileMenu) {
-            profileMenu.classList.remove('ubits-profile-menu--show');
-          }
-        }
-        return;
-      }
+		if (!document.getElementById('ubits-profile-menu-container')) {
+			if (tabBarContainer) {
+				tabBarContainer.appendChild(profileMenuContainer);
+			} else {
+				document.body.appendChild(profileMenuContainer);
+			}
+		}
 
-      if (tabId === 'modulos' && floatingMenuContainer) {
-        const floatingMenu = floatingMenuContainer.querySelector('.ubits-floating-menu');
-        if (floatingMenu) {
-          if (floatingMenu.classList.contains('ubits-floating-menu--show')) {
-            floatingMenu.classList.remove('ubits-floating-menu--show');
-            floatingMenuContainer.style.display = 'none';
-          } else {
-            floatingMenu.classList.add('ubits-floating-menu--show');
-            floatingMenuContainer.style.display = 'block';
-            if (profileMenuContainer) {
-              profileMenuContainer.style.display = 'none';
-              const profileMenu = profileMenuContainer.querySelector('.ubits-profile-menu');
-              if (profileMenu) {
-                profileMenu.classList.remove('ubits-profile-menu--show');
-              }
-            }
-          }
-        }
-        return;
-      }
+		profileMenuContainer.innerHTML = renderProfileMenu(profileMenuItems);
 
-      if (tabId === 'perfil' && profileMenuContainer) {
-        const profileMenu = profileMenuContainer.querySelector('.ubits-profile-menu');
-        if (profileMenu) {
-          const wasVisible = profileMenu.classList.contains('ubits-profile-menu--show');
-          
-          if (wasVisible) {
-            profileMenu.classList.remove('ubits-profile-menu--show');
-            profileMenuContainer.style.display = 'none';
-          } else {
-            profileMenu.classList.add('ubits-profile-menu--show');
-            profileMenuContainer.style.display = 'block';
-            
-            if (floatingMenuContainer) {
-              floatingMenuContainer.style.display = 'none';
-              const floatingMenu = floatingMenuContainer.querySelector('.ubits-floating-menu');
-              if (floatingMenu) {
-                floatingMenu.classList.remove('ubits-floating-menu--show');
-              }
-            }
-          }
-        }
-        return;
-      }
+		initProfileMenuListeners(profileMenuContainer, profileMenuItems, onProfileMenuItemClick);
+	}
 
-      if (item.onClick) {
-        item.onClick(item, event);
-      }
+	tabItems.forEach((tabItemElement, tabIndex) => {
+		const itemElement = tabItemElement;
+		const tabId = itemElement.getAttribute('data-tab-id');
 
-      updateActiveTab(tabBarElement, tabId);
+		if (!tabId) {
+			return;
+		}
 
-      if (onTabChange) {
-        onTabChange(tabId, item, itemElement);
-      }
-    });
-  });
+		const item = items.find((i) => i.id === tabId);
+		if (!item) {
+			return;
+		}
+
+		itemElement.addEventListener('click', (event) => {
+			event.preventDefault();
+			event.stopPropagation();
+
+			if (tabId === 'modo-oscuro' && darkModeEnabled) {
+				toggleDarkMode(tabBarElement, onDarkModeToggle);
+				if (floatingMenuContainer) {
+					floatingMenuContainer.style.display = 'none';
+					const floatingMenu = floatingMenuContainer.querySelector('.ubits-floating-menu');
+					if (floatingMenu) {
+						floatingMenu.classList.remove('ubits-floating-menu--show');
+					}
+				}
+				if (profileMenuContainer) {
+					profileMenuContainer.style.display = 'none';
+					const profileMenu = profileMenuContainer.querySelector('.ubits-profile-menu');
+					if (profileMenu) {
+						profileMenu.classList.remove('ubits-profile-menu--show');
+					}
+				}
+				return;
+			}
+
+			if (tabId === 'modulos' && floatingMenuContainer) {
+				const floatingMenu = floatingMenuContainer.querySelector('.ubits-floating-menu');
+				if (floatingMenu) {
+					if (floatingMenu.classList.contains('ubits-floating-menu--show')) {
+						floatingMenu.classList.remove('ubits-floating-menu--show');
+						floatingMenuContainer.style.display = 'none';
+					} else {
+						floatingMenu.classList.add('ubits-floating-menu--show');
+						floatingMenuContainer.style.display = 'block';
+						if (profileMenuContainer) {
+							profileMenuContainer.style.display = 'none';
+							const profileMenu = profileMenuContainer.querySelector('.ubits-profile-menu');
+							if (profileMenu) {
+								profileMenu.classList.remove('ubits-profile-menu--show');
+							}
+						}
+					}
+				}
+				return;
+			}
+
+			if (tabId === 'perfil' && profileMenuContainer) {
+				const profileMenu = profileMenuContainer.querySelector('.ubits-profile-menu');
+				if (profileMenu) {
+					const wasVisible = profileMenu.classList.contains('ubits-profile-menu--show');
+
+					if (wasVisible) {
+						profileMenu.classList.remove('ubits-profile-menu--show');
+						profileMenuContainer.style.display = 'none';
+					} else {
+						profileMenu.classList.add('ubits-profile-menu--show');
+						profileMenuContainer.style.display = 'block';
+
+						if (floatingMenuContainer) {
+							floatingMenuContainer.style.display = 'none';
+							const floatingMenu = floatingMenuContainer.querySelector('.ubits-floating-menu');
+							if (floatingMenu) {
+								floatingMenu.classList.remove('ubits-floating-menu--show');
+							}
+						}
+					}
+				}
+				return;
+			}
+
+			if (item.onClick) {
+				item.onClick(item, event);
+			}
+
+			updateActiveTab(tabBarElement, tabId);
+
+			if (onTabChange) {
+				onTabChange(tabId, item, itemElement);
+			}
+		});
+	});
 }
 
 // Crea e inicializa el componente TabBar en el DOM
-window.createTabBar = function(options) {
-  try {
-    const containerId = options.containerId;
-    const container = options.container;
-    const items = options.items;
-    const activeTabId = options.activeTabId;
-    const onTabChange = options.onTabChange;
-    const visible = options.visible || false;
-    const darkModeEnabled = options.darkModeEnabled || false;
-    const onDarkModeToggle = options.onDarkModeToggle;
+window.createTabBar = function (options) {
+	try {
+		const containerId = options.containerId;
+		const container = options.container;
+		const items = options.items;
+		const activeTabId = options.activeTabId;
+		const onTabChange = options.onTabChange;
+		const visible = options.visible || false;
+		const darkModeEnabled = options.darkModeEnabled || false;
+		const onDarkModeToggle = options.onDarkModeToggle;
 
-    let targetContainer = null;
-    if (container) {
-      targetContainer = container;
-    } else if (containerId) {
-      targetContainer = document.getElementById(containerId);
-    }
+		let targetContainer = null;
+		if (container) {
+			targetContainer = container;
+		} else if (containerId) {
+			targetContainer = document.getElementById(containerId);
+		}
 
-    if (!targetContainer) {
-      return null;
-    }
+		if (!targetContainer) {
+			return null;
+		}
 
-    const html = renderTabBar({
-      items,
-      activeTabId,
-      visible,
-    });
-    
-    targetContainer.innerHTML = html;
+		const html = renderTabBar({
+			items,
+			activeTabId,
+			visible,
+		});
 
-    const tabBarElement = targetContainer.querySelector('.ubits-tabbar');
-    if (!tabBarElement) {
-      return null;
-    }
-    
-    // Verificar estilos aplicados
-    const computedStyle = window.getComputedStyle(tabBarElement);
-    
-    // Verificar si los estilos están aplicados
-    const hasBackground = computedStyle.backgroundColor && computedStyle.backgroundColor !== 'rgba(0, 0, 0, 0)' && computedStyle.backgroundColor !== 'transparent';
-    const hasDisplay = computedStyle.display && computedStyle.display !== 'none';
-    
-    // Verificar items del tabbar
-    const tabBarItems = tabBarElement.querySelectorAll('.ubits-tabbar-item');
+		targetContainer.innerHTML = html;
 
-    initTabBarListeners(
-      tabBarElement,
-      items,
-      onTabChange,
-      darkModeEnabled,
-      onDarkModeToggle,
-      options.floatingMenuSections,
-      options.profileMenuItems,
-      options.onFloatingMenuItemClick,
-      options.onProfileMenuItemClick,
-      targetContainer
-    );
+		const tabBarElement = targetContainer.querySelector('.ubits-tabbar');
+		if (!tabBarElement) {
+			return null;
+		}
 
-    return tabBarElement;
-  } catch (error) {
-    throw error;
-  }
+		// Verificar estilos aplicados
+		const computedStyle = window.getComputedStyle(tabBarElement);
+
+		// Verificar si los estilos están aplicados
+		const hasBackground =
+			computedStyle.backgroundColor &&
+			computedStyle.backgroundColor !== 'rgba(0, 0, 0, 0)' &&
+			computedStyle.backgroundColor !== 'transparent';
+		const hasDisplay = computedStyle.display && computedStyle.display !== 'none';
+
+		// Verificar items del tabbar
+		const tabBarItems = tabBarElement.querySelectorAll('.ubits-tabbar-item');
+
+		initTabBarListeners(
+			tabBarElement,
+			items,
+			onTabChange,
+			darkModeEnabled,
+			onDarkModeToggle,
+			options.floatingMenuSections,
+			options.profileMenuItems,
+			options.onFloatingMenuItemClick,
+			options.onProfileMenuItemClick,
+			targetContainer,
+		);
+
+		return tabBarElement;
+	} catch (error) {
+		throw error;
+	}
 };
 
 // ========================================
@@ -2018,59 +2174,60 @@ window.createTabBar = function(options) {
  * Helper para renderizar iconos FontAwesome en tabs
  */
 function renderTabsIconHelper(iconName, isActive = false) {
-  if (!iconName) return '';
-  
-  // Normalizar icono: asegurar que tiene prefijo fa-
-  let normalizedIcon = iconName;
-  if (!normalizedIcon.startsWith('fa-')) {
-    normalizedIcon = `fa-${normalizedIcon}`;
-  }
-  
-  // Determinar estilo según estado activo
-  // Active: solid (fas), Inactive: regular (far)
-  const iconStyle = isActive ? 'fas' : 'far';
-  
-  // Si ya tiene prefijo far o fas, reemplazarlo según el estado
-  if (normalizedIcon.startsWith('far ') || normalizedIcon.startsWith('fas ')) {
-    // Extraer solo el nombre del icono sin el prefijo
-    const iconNameOnly = normalizedIcon.replace(/^(far|fas)\s+/, '');
-    return `<i class="${iconStyle} ${iconNameOnly}"></i>`;
-  }
-  
-  // Si no tiene prefijo, agregar el estilo correspondiente
-  return `<i class="${iconStyle} ${normalizedIcon}"></i>`;
+	if (!iconName) return '';
+
+	// Normalizar icono: asegurar que tiene prefijo fa-
+	let normalizedIcon = iconName;
+	if (!normalizedIcon.startsWith('fa-')) {
+		normalizedIcon = `fa-${normalizedIcon}`;
+	}
+
+	// Determinar estilo según estado activo
+	// Active: solid (fas), Inactive: regular (far)
+	const iconStyle = isActive ? 'fas' : 'far';
+
+	// Si ya tiene prefijo far o fas, reemplazarlo según el estado
+	if (normalizedIcon.startsWith('far ') || normalizedIcon.startsWith('fas ')) {
+		// Extraer solo el nombre del icono sin el prefijo
+		const iconNameOnly = normalizedIcon.replace(/^(far|fas)\s+/, '');
+		return `<i class="${iconStyle} ${iconNameOnly}"></i>`;
+	}
+
+	// Si no tiene prefijo, agregar el estilo correspondiente
+	return `<i class="${iconStyle} ${normalizedIcon}"></i>`;
 }
 
 /**
  * Renderiza el HTML del componente Tabs
  */
 function renderTabs(options) {
-  const tabs = options.tabs || [];
-  const activeTabId = options.activeTabId;
-  const className = options.className || '';
+	const tabs = options.tabs || [];
+	const activeTabId = options.activeTabId;
+	const className = options.className || '';
 
-  if (!tabs || tabs.length === 0) {
-    return '<div class="ubits-tabs"></div>';
-  }
+	if (!tabs || tabs.length === 0) {
+		return '<div class="ubits-tabs"></div>';
+	}
 
-  // Determinar tab activo
-  let activeId = activeTabId;
-  if (!activeId) {
-    const activeTab = tabs.find(tab => tab.active);
-    activeId = activeTab ? activeTab.id : tabs[0].id;
-  }
+	// Determinar tab activo
+	let activeId = activeTabId;
+	if (!activeId) {
+		const activeTab = tabs.find((tab) => tab.active);
+		activeId = activeTab ? activeTab.id : tabs[0].id;
+	}
 
-  // Renderizar tabs
-  const tabsHTML = tabs.map(tab => {
-    const isActive = tab.id === activeId;
-    const activeClass = isActive ? 'ubits-tab--active' : '';
-    const disabledClass = tab.disabled ? 'ubits-tab--disabled' : '';
-    const classes = ['ubits-tab', activeClass, disabledClass].filter(Boolean).join(' ');
-    
-    // Pasar isActive para determinar si usa solid (active) o regular (inactive)
-    const iconHTML = tab.icon ? renderTabsIconHelper(tab.icon, isActive) : '';
-    
-    return `
+	// Renderizar tabs
+	const tabsHTML = tabs
+		.map((tab) => {
+			const isActive = tab.id === activeId;
+			const activeClass = isActive ? 'ubits-tab--active' : '';
+			const disabledClass = tab.disabled ? 'ubits-tab--disabled' : '';
+			const classes = ['ubits-tab', activeClass, disabledClass].filter(Boolean).join(' ');
+
+			// Pasar isActive para determinar si usa solid (active) o regular (inactive)
+			const iconHTML = tab.icon ? renderTabsIconHelper(tab.icon, isActive) : '';
+
+			return `
       <button 
         class="${classes}" 
         data-tab-id="${tab.id}"
@@ -2082,11 +2239,12 @@ function renderTabs(options) {
         <span class="ubits-tab__label">${tab.label}</span>
       </button>
     `;
-  }).join('');
+		})
+		.join('');
 
-  const containerClasses = ['ubits-tabs', className].filter(Boolean).join(' ');
+	const containerClasses = ['ubits-tabs', className].filter(Boolean).join(' ');
 
-  return `
+	return `
     <div class="${containerClasses}">
       ${tabsHTML}
     </div>
@@ -2097,88 +2255,88 @@ function renderTabs(options) {
  * Inicializa los event listeners de los tabs
  */
 function initTabsListeners(tabsElement, options) {
-  // Remover listeners anteriores si existen (marcar con data attribute)
-  const existingTabs = tabsElement.querySelectorAll('.ubits-tab[data-listener-attached]');
-  existingTabs.forEach(tab => {
-    const clonedTab = tab.cloneNode(true);
-    tab.parentNode?.replaceChild(clonedTab, tab);
-  });
-  
-  const tabs = tabsElement.querySelectorAll('.ubits-tab:not(.ubits-tab--disabled)');
-  
-  const handleTabClick = (tabElement) => {
-    const tabId = tabElement.getAttribute('data-tab-id');
-    const url = tabElement.getAttribute('data-url');
-    
-    // Remover active de todos los tabs
-    tabsElement.querySelectorAll('.ubits-tab').forEach(t => {
-      t.classList.remove('ubits-tab--active');
-    });
-    
-    // Agregar active al tab clickeado
-    tabElement.classList.add('ubits-tab--active');
-    
-    // Navegar a URL si existe
-    if (url) {
-      window.location.href = url;
-      return;
-    }
-    
-    // Buscar el callback onClick del tab original
-    const tabConfig = options.tabs.find(t => t.id === tabId);
-    
-    if (tabConfig && tabConfig.onClick) {
-      tabConfig.onClick(new MouseEvent('click'));
-    }
-    
-    // Llamar callback si existe
-    if (options.onTabChange) {
-      options.onTabChange(tabId || '', tabElement);
-    }
-    
-    // Disparar evento personalizado
-    const event = new CustomEvent('tabsTabClick', {
-      detail: { tabId: tabId, tabElement: tabElement }
-    });
-    document.dispatchEvent(event);
-  };
+	// Remover listeners anteriores si existen (marcar con data attribute)
+	const existingTabs = tabsElement.querySelectorAll('.ubits-tab[data-listener-attached]');
+	existingTabs.forEach((tab) => {
+		const clonedTab = tab.cloneNode(true);
+		tab.parentNode?.replaceChild(clonedTab, tab);
+	});
 
-  // Event listeners para tabs
-  tabs.forEach(tab => {
-    tab.setAttribute('data-listener-attached', 'true');
-    tab.addEventListener('click', (e) => {
-      e.preventDefault();
-      handleTabClick(tab);
-    });
-  });
+	const tabs = tabsElement.querySelectorAll('.ubits-tab:not(.ubits-tab--disabled)');
+
+	const handleTabClick = (tabElement) => {
+		const tabId = tabElement.getAttribute('data-tab-id');
+		const url = tabElement.getAttribute('data-url');
+
+		// Remover active de todos los tabs
+		tabsElement.querySelectorAll('.ubits-tab').forEach((t) => {
+			t.classList.remove('ubits-tab--active');
+		});
+
+		// Agregar active al tab clickeado
+		tabElement.classList.add('ubits-tab--active');
+
+		// Navegar a URL si existe
+		if (url) {
+			window.location.href = url;
+			return;
+		}
+
+		// Buscar el callback onClick del tab original
+		const tabConfig = options.tabs.find((t) => t.id === tabId);
+
+		if (tabConfig && tabConfig.onClick) {
+			tabConfig.onClick(new MouseEvent('click'));
+		}
+
+		// Llamar callback si existe
+		if (options.onTabChange) {
+			options.onTabChange(tabId || '', tabElement);
+		}
+
+		// Disparar evento personalizado
+		const event = new CustomEvent('tabsTabClick', {
+			detail: { tabId: tabId, tabElement: tabElement },
+		});
+		document.dispatchEvent(event);
+	};
+
+	// Event listeners para tabs
+	tabs.forEach((tab) => {
+		tab.setAttribute('data-listener-attached', 'true');
+		tab.addEventListener('click', (e) => {
+			e.preventDefault();
+			handleTabClick(tab);
+		});
+	});
 }
 
 /**
  * Crea un componente Tabs interactivo en el DOM
  */
-window.createTabs = function(options, containerId) {
-  const container = containerId 
-    ? document.getElementById(containerId) || document.createElement('div')
-    : document.createElement('div');
-  
-  if (containerId && !container.id) {
-    container.id = containerId;
-  }
-  
-  container.innerHTML = renderTabs(options);
-  
-  // Inicializar listeners - buscar el elemento .ubits-tabs dentro del contenedor
-  requestAnimationFrame(() => {
-    const tabsElement = container.querySelector('.ubits-tabs');
-    if (tabsElement) {
-      initTabsListeners(tabsElement, options);
-    } else {
-      // Fallback: usar el contenedor directamente si no se encuentra .ubits-tabs
-      initTabsListeners(container, options);
-    }
-  });
-  
-  return container;
+window.createTabs = function (options, containerId) {
+	const container = containerId
+		? document.getElementById(containerId) || document.createElement('div')
+		: document.createElement('div');
+
+	if (containerId && !container.id) {
+		container.id = containerId;
+	}
+
+	container.innerHTML = renderTabs(options);
+
+	// Inicializar listeners - buscar el elemento .ubits-tabs dentro del contenedor
+	requestAnimationFrame(() => {
+		const tabsElement = container.querySelector('.ubits-tabs');
+		if (tabsElement) {
+			initTabsListeners(tabsElement, options);
+		} else {
+			// Fallback: usar el contenedor directamente si no se encuentra .ubits-tabs
+			initTabsListeners(container, options);
+		}
+	});
+
+	return container;
 };
 
 // ========================================
@@ -2188,5 +2346,3 @@ window.createTabs = function(options, containerId) {
 // Se carga desde el UMD compilado: data-table.umd.js
 // Las funciones window.createDataTable y window.renderDataTable estarán disponibles
 // después de cargar el script UMD en los templates generados
-
-

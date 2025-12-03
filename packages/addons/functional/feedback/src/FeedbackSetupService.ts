@@ -24,7 +24,7 @@ export class FeedbackSetupService {
 	 * Genera el JSON del flujo de n8n listo para importar
 	 * Incluye: Webhook → Google Sheets (guardar feedback)
 	 * Y: Schedule → Leer → Filtrar → Agrupar → Gemini → Slack (análisis diario)
-	 * 
+	 *
 	 * Usa el JSON completo con IA (Gemini) y Slack como base
 	 */
 	static generateN8nWorkflow(options: SetupOptions = {}): string {
@@ -112,10 +112,30 @@ export class FeedbackSetupService {
 					parameters: {
 						assignments: {
 							assignments: [
-								{ id: this.generateId(), name: 'user', value: '={{$json["body"]["user"]}}', type: 'string' },
-								{ id: this.generateId(), name: 'section', value: '={{$json["body"]["section"]}}', type: 'string' },
-								{ id: this.generateId(), name: 'comment', value: '={{$json["body"]["comment"]}}', type: 'string' },
-								{ id: this.generateId(), name: 'timestamp', value: '={{$json["body"]["timestamp"]}}', type: 'string' },
+								{
+									id: this.generateId(),
+									name: 'user',
+									value: '={{$json["body"]["user"]}}',
+									type: 'string',
+								},
+								{
+									id: this.generateId(),
+									name: 'section',
+									value: '={{$json["body"]["section"]}}',
+									type: 'string',
+								},
+								{
+									id: this.generateId(),
+									name: 'comment',
+									value: '={{$json["body"]["comment"]}}',
+									type: 'string',
+								},
+								{
+									id: this.generateId(),
+									name: 'timestamp',
+									value: '={{$json["body"]["timestamp"]}}',
+									type: 'string',
+								},
 								{ id: this.generateId(), name: 'ts_recibido', value: '={{$now}}', type: 'string' },
 							],
 						},
@@ -328,9 +348,7 @@ return filtered;`,
 						url: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:generateContent?key=YOUR_GEMINI_API_KEY',
 						sendHeaders: true,
 						headerParameters: {
-							parameters: [
-								{ name: 'Content-Type', value: 'application/json' },
-							],
+							parameters: [{ name: 'Content-Type', value: 'application/json' }],
 						},
 						sendBody: true,
 						specifyBody: 'json',
@@ -486,11 +504,51 @@ return [{
 							},
 							matchingColumns: [],
 							schema: [
-								{ id: 'user', displayName: 'user', required: false, defaultMatch: false, display: true, type: 'string', canBeUsedToMatch: true },
-								{ id: 'section', displayName: 'section', required: false, defaultMatch: false, display: true, type: 'string', canBeUsedToMatch: true },
-								{ id: 'comment', displayName: 'comment', required: false, defaultMatch: false, display: true, type: 'string', canBeUsedToMatch: true },
-								{ id: 'timestamp', displayName: 'timestamp', required: false, defaultMatch: false, display: true, type: 'string', canBeUsedToMatch: true },
-								{ id: 'ts_recibido', displayName: 'ts_recibido', required: false, defaultMatch: false, display: true, type: 'string', canBeUsedToMatch: true },
+								{
+									id: 'user',
+									displayName: 'user',
+									required: false,
+									defaultMatch: false,
+									display: true,
+									type: 'string',
+									canBeUsedToMatch: true,
+								},
+								{
+									id: 'section',
+									displayName: 'section',
+									required: false,
+									defaultMatch: false,
+									display: true,
+									type: 'string',
+									canBeUsedToMatch: true,
+								},
+								{
+									id: 'comment',
+									displayName: 'comment',
+									required: false,
+									defaultMatch: false,
+									display: true,
+									type: 'string',
+									canBeUsedToMatch: true,
+								},
+								{
+									id: 'timestamp',
+									displayName: 'timestamp',
+									required: false,
+									defaultMatch: false,
+									display: true,
+									type: 'string',
+									canBeUsedToMatch: true,
+								},
+								{
+									id: 'ts_recibido',
+									displayName: 'ts_recibido',
+									required: false,
+									defaultMatch: false,
+									display: true,
+									type: 'string',
+									canBeUsedToMatch: true,
+								},
 							],
 							attemptToConvertTypes: false,
 							convertFieldsToString: false,
@@ -526,12 +584,14 @@ return [{
 					main: [[{ node: 'filtrar por día anterior', type: 'main', index: 0 }]],
 				},
 				'filtrar por día anterior': {
-					main: [[{ node: 'agrupar por "Sección" y compactar comentarios', type: 'main', index: 0 }]],
+					main: [
+						[{ node: 'agrupar por "Sección" y compactar comentarios', type: 'main', index: 0 }],
+					],
 				},
 				'agrupar por "Sección" y compactar comentarios': {
 					main: [[{ node: 'construir_gemini_body', type: 'main', index: 0 }]],
 				},
-				'construir_gemini_body': {
+				construir_gemini_body: {
 					main: [[{ node: 'HTTP Request', type: 'main', index: 0 }]],
 				},
 				'HTTP Request': {
@@ -657,8 +717,4 @@ console.log('Sheet creado:', sheetId);
 	private static generateId(): string {
 		return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 	}
-
 }
-
-
-

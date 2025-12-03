@@ -10,66 +10,67 @@ import { renderButton } from '../../button/src/ButtonProvider';
  * Anchos del drawer en porcentajes del viewport
  */
 const DRAWER_WIDTHS: Record<number, string> = {
-  100: '100%',
-  80: '80%',
-  60: '60%',
-  50: '50%',
-  40: '40%',
-  30: '30%'
+	100: '100%',
+	80: '80%',
+	60: '60%',
+	50: '50%',
+	40: '40%',
+	30: '30%',
 };
 
 /**
  * Renderiza el HTML de un Drawer Navigation
  */
 export function renderDrawer(options: DrawerOptions): string {
-  const {
-    title,
-    complementaryText,
-    width = 40,
-    bodyContent = '',
-    footerButtons,
-    className = ''
-  } = options;
+	const {
+		title,
+		complementaryText,
+		width = 40,
+		bodyContent = '',
+		footerButtons,
+		className = '',
+	} = options;
 
-  const drawerWidth = DRAWER_WIDTHS[width] || DRAWER_WIDTHS[40];
-  const drawerWidthClass = `ubits-drawer--width-${width}`;
+	const drawerWidth = DRAWER_WIDTHS[width] || DRAWER_WIDTHS[40];
+	const drawerWidthClass = `ubits-drawer--width-${width}`;
 
-  // Construir clases
-  const classes = [
-    'ubits-drawer',
-    drawerWidthClass,
-    className
-  ].filter(Boolean).join(' ');
+	// Construir clases
+	const classes = ['ubits-drawer', drawerWidthClass, className].filter(Boolean).join(' ');
 
-  // Header HTML
-  const headerHTML = `
+	// Header HTML
+	const headerHTML = `
     <div class="ubits-drawer__header">
       <div class="ubits-drawer__header-text">
         <div class="ubits-drawer__header-title">
           <p class="ubits-heading-h2">${title}</p>
         </div>
-        ${complementaryText ? `
+        ${
+					complementaryText
+						? `
         <div class="ubits-drawer__header-complementary">
           <p class="ubits-body-sm-regular">${complementaryText}</p>
         </div>
-        ` : ''}
+        `
+						: ''
+				}
       </div>
       ${renderButton({
-        variant: 'secondary',
-        size: 'md',
-        icon: 'fa-times',
-        iconOnly: true,
-        className: 'ubits-drawer__close'
-      })}
+				variant: 'secondary',
+				size: 'md',
+				icon: 'fa-times',
+				iconOnly: true,
+				className: 'ubits-drawer__close',
+			})}
     </div>
   `;
 
-  // Body HTML
-  const bodyHTMLContent = typeof bodyContent === 'function' 
-    ? bodyContent() 
-    : bodyContent || '<div class="ubits-drawer__placeholder">Contenido del drawer</div>';
+	// Body HTML
+	const bodyHTMLContent =
+		typeof bodyContent === 'function'
+			? bodyContent()
+			: bodyContent || '<div class="ubits-drawer__placeholder">Contenido del drawer</div>';
 
-  const bodyHTML = `
+	const bodyHTML = `
     <div class="ubits-drawer__body">
       <div class="ubits-drawer__body-content">
         ${bodyHTMLContent}
@@ -80,40 +81,54 @@ export function renderDrawer(options: DrawerOptions): string {
     </div>
   `;
 
-  // Footer HTML
-  const footerHTML = footerButtons ? `
+	// Footer HTML
+	const footerHTML = footerButtons
+		? `
     <div class="ubits-drawer__footer">
       <div class="ubits-drawer__footer-actions">
-        ${footerButtons.tertiary ? `
+        ${
+					footerButtons.tertiary
+						? `
         <div class="ubits-drawer__footer-left">
           ${renderButton({
-            variant: 'tertiary',
-            size: 'md',
-            text: footerButtons.tertiary.label,
-            className: 'ubits-drawer__footer-button'
-          })}
+						variant: 'tertiary',
+						size: 'md',
+						text: footerButtons.tertiary.label,
+						className: 'ubits-drawer__footer-button',
+					})}
         </div>
-        ` : ''}
+        `
+						: ''
+				}
         <div class="ubits-drawer__footer-right">
-          ${footerButtons.secondary ? renderButton({
-            variant: 'secondary',
-            size: 'md',
-            text: footerButtons.secondary.label,
-            className: 'ubits-drawer__footer-button'
-          }) : ''}
-          ${footerButtons.primary ? renderButton({
-            variant: 'primary',
-            size: 'md',
-            text: footerButtons.primary.label,
-            className: 'ubits-drawer__footer-button'
-          }) : ''}
+          ${
+						footerButtons.secondary
+							? renderButton({
+									variant: 'secondary',
+									size: 'md',
+									text: footerButtons.secondary.label,
+									className: 'ubits-drawer__footer-button',
+								})
+							: ''
+					}
+          ${
+						footerButtons.primary
+							? renderButton({
+									variant: 'primary',
+									size: 'md',
+									text: footerButtons.primary.label,
+									className: 'ubits-drawer__footer-button',
+								})
+							: ''
+					}
         </div>
       </div>
     </div>
-  ` : '';
+  `
+		: '';
 
-  // Drawer container HTML
-  const drawerContainerHTML = `
+	// Drawer container HTML
+	const drawerContainerHTML = `
     <div class="ubits-drawer__container" style="width: ${drawerWidth};">
       ${headerHTML}
       ${bodyHTML}
@@ -121,8 +136,8 @@ export function renderDrawer(options: DrawerOptions): string {
     </div>
   `;
 
-  // Overlay + Drawer HTML completo
-  return `
+	// Overlay + Drawer HTML completo
+	return `
     <div class="ubits-drawer-overlay">
       <div class="${classes}">
         ${headerHTML}
@@ -137,128 +152,128 @@ export function renderDrawer(options: DrawerOptions): string {
  * Crea y renderiza un Drawer Navigation en el DOM
  */
 export function createDrawer(options: DrawerOptions): {
-  element: HTMLElement;
-  open: () => void;
-  close: () => void;
-  updateContent: (content: string | (() => string)) => void;
+	element: HTMLElement;
+	open: () => void;
+	close: () => void;
+	updateContent: (content: string | (() => string)) => void;
 } {
-  const {
-    containerId,
-    onClose,
-    closeOnOverlayClick = true,
-    open = false
-  } = options;
+	const { containerId, onClose, closeOnOverlayClick = true, open = false } = options;
 
-  // Crear contenedor si no existe
-  let container: HTMLElement;
-  if (containerId) {
-    container = document.getElementById(containerId) || document.body;
-  } else {
-    container = document.body;
-  }
+	// Crear contenedor si no existe
+	let container: HTMLElement;
+	if (containerId) {
+		container = document.getElementById(containerId) || document.body;
+	} else {
+		container = document.body;
+	}
 
-  // Crear elemento del drawer
-  const wrapper = document.createElement('div');
-  wrapper.innerHTML = renderDrawer(options);
-  const drawerOverlay = wrapper.firstElementChild as HTMLElement;
+	// Crear elemento del drawer
+	const wrapper = document.createElement('div');
+	wrapper.innerHTML = renderDrawer(options);
+	const drawerOverlay = wrapper.firstElementChild as HTMLElement;
 
-  if (!drawerOverlay) {
-    throw new Error('No se pudo crear el drawer');
-  }
+	if (!drawerOverlay) {
+		throw new Error('No se pudo crear el drawer');
+	}
 
-  const drawer = drawerOverlay.querySelector('.ubits-drawer') as HTMLElement;
-  const closeButton = drawerOverlay.querySelector('.ubits-drawer__close') as HTMLButtonElement;
-  const overlay = drawerOverlay as HTMLElement;
+	const drawer = drawerOverlay.querySelector('.ubits-drawer') as HTMLElement;
+	const closeButton = drawerOverlay.querySelector('.ubits-drawer__close') as HTMLButtonElement;
+	const overlay = drawerOverlay as HTMLElement;
 
-  // Funciones de control
-  const openDrawer = () => {
-    drawerOverlay.classList.add('ubits-drawer-overlay--open');
-    document.body.style.overflow = 'hidden';
-  };
+	// Funciones de control
+	const openDrawer = () => {
+		drawerOverlay.classList.add('ubits-drawer-overlay--open');
+		document.body.style.overflow = 'hidden';
+	};
 
-  const closeDrawer = () => {
-    drawerOverlay.classList.remove('ubits-drawer-overlay--open');
-    document.body.style.overflow = '';
-    if (onClose) {
-      onClose();
-    }
-  };
+	const closeDrawer = () => {
+		drawerOverlay.classList.remove('ubits-drawer-overlay--open');
+		document.body.style.overflow = '';
+		if (onClose) {
+			onClose();
+		}
+	};
 
-  const updateContent = (content: string | (() => string)) => {
-    const bodyContentElement = drawerOverlay.querySelector('.ubits-drawer__body-content');
-    if (bodyContentElement) {
-      const contentHTML = typeof content === 'function' ? content() : content;
-      bodyContentElement.innerHTML = contentHTML;
-    }
-  };
+	const updateContent = (content: string | (() => string)) => {
+		const bodyContentElement = drawerOverlay.querySelector('.ubits-drawer__body-content');
+		if (bodyContentElement) {
+			const contentHTML = typeof content === 'function' ? content() : content;
+			bodyContentElement.innerHTML = contentHTML;
+		}
+	};
 
-  // Event listeners
-  if (closeButton) {
-    closeButton.addEventListener('click', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      closeDrawer();
-    });
-  }
+	// Event listeners
+	if (closeButton) {
+		closeButton.addEventListener('click', (e) => {
+			e.preventDefault();
+			e.stopPropagation();
+			closeDrawer();
+		});
+	}
 
-  if (closeOnOverlayClick && overlay) {
-    overlay.addEventListener('click', (e) => {
-      // Solo cerrar si se hace clic directamente en el overlay, no en el drawer
-      if (e.target === overlay) {
-        closeDrawer();
-      }
-    });
-  }
+	if (closeOnOverlayClick && overlay) {
+		overlay.addEventListener('click', (e) => {
+			// Solo cerrar si se hace clic directamente en el overlay, no en el drawer
+			if (e.target === overlay) {
+				closeDrawer();
+			}
+		});
+	}
 
-  // Cerrar con ESC
-  const handleEsc = (e: KeyboardEvent) => {
-    if (e.key === 'Escape' && drawerOverlay.classList.contains('ubits-drawer-overlay--open')) {
-      closeDrawer();
-    }
-  };
-  document.addEventListener('keydown', handleEsc);
+	// Cerrar con ESC
+	const handleEsc = (e: KeyboardEvent) => {
+		if (e.key === 'Escape' && drawerOverlay.classList.contains('ubits-drawer-overlay--open')) {
+			closeDrawer();
+		}
+	};
+	document.addEventListener('keydown', handleEsc);
 
-  // Agregar event listeners a los botones del footer
-  if (options.footerButtons) {
-    const tertiaryButton = drawerOverlay.querySelector('.ubits-drawer__footer-left .ubits-drawer__footer-button') as HTMLButtonElement;
-    const secondaryButton = drawerOverlay.querySelector('.ubits-drawer__footer-right .ubits-button--secondary.ubits-drawer__footer-button') as HTMLButtonElement;
-    const primaryButton = drawerOverlay.querySelector('.ubits-drawer__footer-right .ubits-button--primary.ubits-drawer__footer-button') as HTMLButtonElement;
+	// Agregar event listeners a los botones del footer
+	if (options.footerButtons) {
+		const tertiaryButton = drawerOverlay.querySelector(
+			'.ubits-drawer__footer-left .ubits-drawer__footer-button',
+		) as HTMLButtonElement;
+		const secondaryButton = drawerOverlay.querySelector(
+			'.ubits-drawer__footer-right .ubits-button--secondary.ubits-drawer__footer-button',
+		) as HTMLButtonElement;
+		const primaryButton = drawerOverlay.querySelector(
+			'.ubits-drawer__footer-right .ubits-button--primary.ubits-drawer__footer-button',
+		) as HTMLButtonElement;
 
-    if (tertiaryButton && options.footerButtons.tertiary?.onClick) {
-      tertiaryButton.addEventListener('click', (e) => {
-        e.preventDefault();
-        options.footerButtons!.tertiary!.onClick!(e);
-      });
-    }
+		if (tertiaryButton && options.footerButtons.tertiary?.onClick) {
+			tertiaryButton.addEventListener('click', (e) => {
+				e.preventDefault();
+				options.footerButtons!.tertiary!.onClick!(e);
+			});
+		}
 
-    if (secondaryButton && options.footerButtons.secondary?.onClick) {
-      secondaryButton.addEventListener('click', (e) => {
-        e.preventDefault();
-        options.footerButtons!.secondary!.onClick!(e);
-      });
-    }
+		if (secondaryButton && options.footerButtons.secondary?.onClick) {
+			secondaryButton.addEventListener('click', (e) => {
+				e.preventDefault();
+				options.footerButtons!.secondary!.onClick!(e);
+			});
+		}
 
-    if (primaryButton && options.footerButtons.primary?.onClick) {
-      primaryButton.addEventListener('click', (e) => {
-        e.preventDefault();
-        options.footerButtons!.primary!.onClick!(e);
-      });
-    }
-  }
+		if (primaryButton && options.footerButtons.primary?.onClick) {
+			primaryButton.addEventListener('click', (e) => {
+				e.preventDefault();
+				options.footerButtons!.primary!.onClick!(e);
+			});
+		}
+	}
 
-  // Agregar al DOM
-  container.appendChild(drawerOverlay);
+	// Agregar al DOM
+	container.appendChild(drawerOverlay);
 
-  // Abrir si está configurado para abrirse inicialmente
-  if (open) {
-    openDrawer();
-  }
+	// Abrir si está configurado para abrirse inicialmente
+	if (open) {
+		openDrawer();
+	}
 
-  return {
-    element: drawerOverlay,
-    open: openDrawer,
-    close: closeDrawer,
-    updateContent
-  };
+	return {
+		element: drawerOverlay,
+		open: openDrawer,
+		close: closeDrawer,
+		updateContent,
+	};
 }
-

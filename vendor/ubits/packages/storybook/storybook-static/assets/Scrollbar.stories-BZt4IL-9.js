@@ -1,4 +1,46 @@
-import{createScrollbar as v}from"./ScrollProvider-BVL7eCy8.js";import"./iframe-BcZai5-G.js";import"./preload-helper-PPVm8Dsz.js";const I={title:"Básicos/Scrollbar",tags:["autodocs"],parameters:{docs:{description:{component:"Componente Scrollbar personalizado UBITS. Se usa para crear scrollbars personalizados en elementos scrollable. Soporta orientación vertical y horizontal. Se sincroniza automáticamente con el elemento scrollable asociado. Aparece en hover y se adapta al tamaño del contenido. Soporta arrastrar y clic para navegar."}},layout:"fullscreen"},argTypes:{orientation:{control:{type:"select"},options:["vertical","horizontal"],description:"Orientación del scrollbar (vertical u horizontal).",table:{type:{summary:"string"},defaultValue:{summary:"vertical"},category:"Apariencia"}},state:{control:{type:"select"},options:["default"],description:"Estado del scrollbar.",table:{type:{summary:"string"},defaultValue:{summary:"default"},category:"Estado"}}}},h={args:{orientation:"vertical",state:"default"},render:(l,{updateArgs:E})=>{const f=document.createElement("div");f.style.cssText=`
+import { createScrollbar as v } from './ScrollProvider-BVL7eCy8.js';
+import './iframe-BcZai5-G.js';
+import './preload-helper-PPVm8Dsz.js';
+const I = {
+		title: 'Básicos/Scrollbar',
+		tags: ['autodocs'],
+		parameters: {
+			docs: {
+				description: {
+					component:
+						'Componente Scrollbar personalizado UBITS. Se usa para crear scrollbars personalizados en elementos scrollable. Soporta orientación vertical y horizontal. Se sincroniza automáticamente con el elemento scrollable asociado. Aparece en hover y se adapta al tamaño del contenido. Soporta arrastrar y clic para navegar.',
+				},
+			},
+			layout: 'fullscreen',
+		},
+		argTypes: {
+			orientation: {
+				control: { type: 'select' },
+				options: ['vertical', 'horizontal'],
+				description: 'Orientación del scrollbar (vertical u horizontal).',
+				table: {
+					type: { summary: 'string' },
+					defaultValue: { summary: 'vertical' },
+					category: 'Apariencia',
+				},
+			},
+			state: {
+				control: { type: 'select' },
+				options: ['default'],
+				description: 'Estado del scrollbar.',
+				table: {
+					type: { summary: 'string' },
+					defaultValue: { summary: 'default' },
+					category: 'Estado',
+				},
+			},
+		},
+	},
+	h = {
+		args: { orientation: 'vertical', state: 'default' },
+		render: (l, { updateArgs: E }) => {
+			const f = document.createElement('div');
+			f.style.cssText = `
       width: 100vw;
       height: 100vh;
       display: flex;
@@ -6,18 +48,33 @@ import{createScrollbar as v}from"./ScrollProvider-BVL7eCy8.js";import"./iframe-B
       justify-content: center;
       padding: 40px;
       background: var(--modifiers-normal-color-light-bg-2, #f3f3f4);
-    `;const u=document.createElement("div");u.style.cssText=`
+    `;
+			const u = document.createElement('div');
+			u.style.cssText = `
       background: var(--modifiers-normal-color-light-bg-1, #ffffff);
       padding: 24px;
       border-radius: 12px;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    `;let i=null,n=null;const g=y=>{if(i&&(i.destroy(),i=null),n&&n.remove(),n=document.createElement("div"),y==="vertical"){n.style.cssText=`
+    `;
+			let i = null,
+				n = null;
+			const g = (y) => {
+				if (
+					(i && (i.destroy(), (i = null)),
+					n && n.remove(),
+					(n = document.createElement('div')),
+					y === 'vertical')
+				) {
+					n.style.cssText = `
           display: flex;
           align-items: stretch;
           gap: 8px;
           width: 600px;
           height: 400px;
-        `;const e=document.createElement("div");e.id=`scrollbar-target-vertical-${Date.now()}`,e.style.cssText=`
+        `;
+					const e = document.createElement('div');
+					(e.id = `scrollbar-target-vertical-${Date.now()}`),
+						(e.style.cssText = `
           flex: 1;
           overflow-y: auto;
           overflow-x: hidden;
@@ -27,44 +84,96 @@ import{createScrollbar as v}from"./ScrollProvider-BVL7eCy8.js";import"./iframe-B
           border: 1px solid var(--modifiers-normal-color-light-border-1, #d0d2d5);
           -ms-overflow-style: none;
           scrollbar-width: none;
-        `,e.style.setProperty("-ms-overflow-style","none"),e.style.setProperty("scrollbar-width","none");const b=`scrollbar-style-vertical-${Date.now()}`;let t=document.getElementById(b);t||(t=document.createElement("style"),t.id=b,t.textContent=`
+        `),
+						e.style.setProperty('-ms-overflow-style', 'none'),
+						e.style.setProperty('scrollbar-width', 'none');
+					const b = `scrollbar-style-vertical-${Date.now()}`;
+					let t = document.getElementById(b);
+					t ||
+						((t = document.createElement('style')),
+						(t.id = b),
+						(t.textContent = `
             #${e.id}::-webkit-scrollbar {
               display: none;
             }
-          `,document.head.appendChild(t));const r=document.createElement("div");r.style.cssText=`
+          `),
+						document.head.appendChild(t));
+					const r = document.createElement('div');
+					r.style.cssText = `
           height: 1200px;
           padding: 16px;
-        `;const s=document.createElement("p");s.textContent="Scrollbar Vertical",s.style.cssText=`
+        `;
+					const s = document.createElement('p');
+					(s.textContent = 'Scrollbar Vertical'),
+						(s.style.cssText = `
           margin: 0 0 16px 0;
           color: var(--modifiers-normal-color-light-fg-1-high, #303a47);
           font-size: var(--font-body-md-size, 16px);
           font-weight: var(--weight-bold, 700);
-        `;const c=document.createElement("p");c.textContent="Este es un ejemplo de contenido largo que requiere scroll vertical. El scrollbar aparecerá a la derecha cuando pases el mouse sobre el contenedor. Puedes arrastrar la barra del scrollbar o hacer clic en el área del scrollbar para navegar.",c.style.cssText=`
+        `);
+					const c = document.createElement('p');
+					(c.textContent =
+						'Este es un ejemplo de contenido largo que requiere scroll vertical. El scrollbar aparecerá a la derecha cuando pases el mouse sobre el contenedor. Puedes arrastrar la barra del scrollbar o hacer clic en el área del scrollbar para navegar.'),
+						(c.style.cssText = `
           margin: 0 0 24px 0;
           color: var(--modifiers-normal-color-light-fg-1-medium, #5c646f);
           font-size: var(--font-body-sm-size, 13px);
-        `;const d=document.createElement("div");d.style.cssText=`
+        `);
+					const d = document.createElement('div');
+					d.style.cssText = `
           display: flex;
           flex-direction: column;
           gap: 12px;
-        `;for(let o=1;o<=30;o++){const p=document.createElement("div");p.style.cssText=`
+        `;
+					for (let o = 1; o <= 30; o++) {
+						const p = document.createElement('div');
+						p.style.cssText = `
             padding: 12px;
             background: var(--modifiers-normal-color-light-bg-1, #ffffff);
             border-radius: 8px;
             border: 1px solid var(--modifiers-normal-color-light-border-1, #d0d2d5);
-          `;const m=document.createElement("p");m.textContent=`Elemento ${o}`,m.style.cssText=`
+          `;
+						const m = document.createElement('p');
+						(m.textContent = `Elemento ${o}`),
+							(m.style.cssText = `
             margin: 0;
             color: var(--modifiers-normal-color-light-fg-1-high, #303a47);
             font-size: var(--font-body-sm-size, 13px);
-          `,p.appendChild(m),d.appendChild(p)}r.appendChild(s),r.appendChild(c),r.appendChild(d),e.appendChild(r);const a=document.createElement("div");a.id=`scrollbar-container-vertical-${Date.now()}`,a.style.cssText=`
+          `),
+							p.appendChild(m),
+							d.appendChild(p);
+					}
+					r.appendChild(s), r.appendChild(c), r.appendChild(d), e.appendChild(r);
+					const a = document.createElement('div');
+					(a.id = `scrollbar-container-vertical-${Date.now()}`),
+						(a.style.cssText = `
           height: 100%;
-        `,n.appendChild(e),n.appendChild(a),setTimeout(()=>{try{i=v({orientation:"vertical",state:l.state,targetId:e.id,containerId:a.id})}catch(o){console.error("Error al crear scrollbar:",o)}},100)}else{n.style.cssText=`
+        `),
+						n.appendChild(e),
+						n.appendChild(a),
+						setTimeout(() => {
+							try {
+								i = v({
+									orientation: 'vertical',
+									state: l.state,
+									targetId: e.id,
+									containerId: a.id,
+								});
+							} catch (o) {
+								console.error('Error al crear scrollbar:', o);
+							}
+						}, 100);
+				} else {
+					n.style.cssText = `
           display: flex;
           flex-direction: column;
           gap: 8px;
           width: 600px;
           height: 300px;
-        `;const e=document.createElement("div");e.id=`scrollbar-target-horizontal-${Date.now()}`,e.style.cssText=`
+        `;
+					const e = document.createElement('div');
+					(e.id = `scrollbar-target-horizontal-${Date.now()}`),
+						(e.style.cssText = `
           flex: 1;
           overflow-x: auto;
           overflow-y: hidden;
@@ -74,38 +183,115 @@ import{createScrollbar as v}from"./ScrollProvider-BVL7eCy8.js";import"./iframe-B
           border: 1px solid var(--modifiers-normal-color-light-border-1, #d0d2d5);
           -ms-overflow-style: none;
           scrollbar-width: none;
-        `,e.style.setProperty("-ms-overflow-style","none"),e.style.setProperty("scrollbar-width","none");const b=`scrollbar-style-horizontal-${Date.now()}`;let t=document.getElementById(b);t||(t=document.createElement("style"),t.id=b,t.textContent=`
+        `),
+						e.style.setProperty('-ms-overflow-style', 'none'),
+						e.style.setProperty('scrollbar-width', 'none');
+					const b = `scrollbar-style-horizontal-${Date.now()}`;
+					let t = document.getElementById(b);
+					t ||
+						((t = document.createElement('style')),
+						(t.id = b),
+						(t.textContent = `
             #${e.id}::-webkit-scrollbar {
               display: none;
             }
-          `,document.head.appendChild(t));const r=document.createElement("div");r.style.cssText=`
+          `),
+						document.head.appendChild(t));
+					const r = document.createElement('div');
+					r.style.cssText = `
           width: 1800px;
           padding: 16px;
-        `;const s=document.createElement("p");s.textContent="Scrollbar Horizontal",s.style.cssText=`
+        `;
+					const s = document.createElement('p');
+					(s.textContent = 'Scrollbar Horizontal'),
+						(s.style.cssText = `
           margin: 0 0 16px 0;
           color: var(--modifiers-normal-color-light-fg-1-high, #303a47);
           font-size: var(--font-body-md-size, 16px);
           font-weight: var(--weight-bold, 700);
-        `;const c=document.createElement("p");c.textContent="Este es un ejemplo de contenido ancho que requiere scroll horizontal. El scrollbar aparecerá abajo cuando pases el mouse sobre el contenedor. Puedes arrastrar la barra del scrollbar o hacer clic en el área del scrollbar para navegar.",c.style.cssText=`
+        `);
+					const c = document.createElement('p');
+					(c.textContent =
+						'Este es un ejemplo de contenido ancho que requiere scroll horizontal. El scrollbar aparecerá abajo cuando pases el mouse sobre el contenedor. Puedes arrastrar la barra del scrollbar o hacer clic en el área del scrollbar para navegar.'),
+						(c.style.cssText = `
           margin: 0 0 24px 0;
           color: var(--modifiers-normal-color-light-fg-1-medium, #5c646f);
           font-size: var(--font-body-sm-size, 13px);
-        `;const d=document.createElement("div");d.style.cssText=`
+        `);
+					const d = document.createElement('div');
+					d.style.cssText = `
           display: flex;
           gap: 12px;
-        `;for(let o=1;o<=20;o++){const p=document.createElement("div");p.style.cssText=`
+        `;
+					for (let o = 1; o <= 20; o++) {
+						const p = document.createElement('div');
+						p.style.cssText = `
             min-width: 200px;
             padding: 12px;
             background: var(--modifiers-normal-color-light-bg-1, #ffffff);
             border-radius: 8px;
             border: 1px solid var(--modifiers-normal-color-light-border-1, #d0d2d5);
-          `;const m=document.createElement("p");m.textContent=`Elemento ${o}`,m.style.cssText=`
+          `;
+						const m = document.createElement('p');
+						(m.textContent = `Elemento ${o}`),
+							(m.style.cssText = `
             margin: 0;
             color: var(--modifiers-normal-color-light-fg-1-high, #303a47);
             font-size: var(--font-body-sm-size, 13px);
-          `,p.appendChild(m),d.appendChild(p)}r.appendChild(s),r.appendChild(c),r.appendChild(d),e.appendChild(r);const a=document.createElement("div");a.id=`scrollbar-container-horizontal-${Date.now()}`,a.style.cssText=`
+          `),
+							p.appendChild(m),
+							d.appendChild(p);
+					}
+					r.appendChild(s), r.appendChild(c), r.appendChild(d), e.appendChild(r);
+					const a = document.createElement('div');
+					(a.id = `scrollbar-container-horizontal-${Date.now()}`),
+						(a.style.cssText = `
           width: 100%;
-        `,n.appendChild(e),n.appendChild(a),setTimeout(()=>{try{i=v({orientation:"horizontal",state:l.state,targetId:e.id,containerId:a.id})}catch(o){console.error("Error al crear scrollbar:",o)}},100)}u.appendChild(n)};g(l.orientation),new MutationObserver(()=>{l.orientation&&n&&(n.querySelector('[id*="scrollbar-target-vertical"]')?"vertical":"horizontal")!==l.orientation&&g(l.orientation)});let x=l.orientation;const C=setInterval(()=>{l.orientation!==x&&(x=l.orientation,g(l.orientation))},100);return f.addEventListener("DOMNodeRemoved",()=>{clearInterval(C),i&&i.destroy()}),f.appendChild(u),f}};h.parameters={...h.parameters,docs:{...h.parameters?.docs,source:{originalSource:`{
+        `),
+						n.appendChild(e),
+						n.appendChild(a),
+						setTimeout(() => {
+							try {
+								i = v({
+									orientation: 'horizontal',
+									state: l.state,
+									targetId: e.id,
+									containerId: a.id,
+								});
+							} catch (o) {
+								console.error('Error al crear scrollbar:', o);
+							}
+						}, 100);
+				}
+				u.appendChild(n);
+			};
+			g(l.orientation),
+				new MutationObserver(() => {
+					l.orientation &&
+						n &&
+						(n.querySelector('[id*="scrollbar-target-vertical"]') ? 'vertical' : 'horizontal') !==
+							l.orientation &&
+						g(l.orientation);
+				});
+			let x = l.orientation;
+			const C = setInterval(() => {
+				l.orientation !== x && ((x = l.orientation), g(l.orientation));
+			}, 100);
+			return (
+				f.addEventListener('DOMNodeRemoved', () => {
+					clearInterval(C), i && i.destroy();
+				}),
+				f.appendChild(u),
+				f
+			);
+		},
+	};
+h.parameters = {
+	...h.parameters,
+	docs: {
+		...h.parameters?.docs,
+		source: {
+			originalSource: `{
   args: {
     orientation: 'vertical',
     state: 'default'
@@ -397,4 +583,10 @@ import{createScrollbar as v}from"./ScrollProvider-BVL7eCy8.js";import"./iframe-B
     container.appendChild(wrapper);
     return container;
   }
-}`,...h.parameters?.docs?.source}}};const S=["Default"];export{h as Default,S as __namedExportsOrder,I as default};
+}`,
+			...h.parameters?.docs?.source,
+		},
+	},
+};
+const S = ['Default'];
+export { h as Default, S as __namedExportsOrder, I as default };

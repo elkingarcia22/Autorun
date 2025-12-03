@@ -6,4 +6,3 @@
 	"main": "./dist/index.js",
 	"export": "ChangesetsAddon"
 }
-

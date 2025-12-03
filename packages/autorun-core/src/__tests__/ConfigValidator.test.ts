@@ -47,9 +47,7 @@ describe('ConfigValidator', () => {
 
 			const result = validator.validate(config);
 			expect(result.valid).toBe(false);
-			expect(result.errors.some((e) => e.path === 'autorun.projectType')).toBe(
-				true,
-			);
+			expect(result.errors.some((e) => e.path === 'autorun.projectType')).toBe(true);
 		});
 
 		it('debe rechazar addons.active que no sea array', () => {
@@ -63,9 +61,7 @@ describe('ConfigValidator', () => {
 
 			const result = validator.validate(config);
 			expect(result.valid).toBe(false);
-			expect(
-				result.errors.some((e) => e.path === 'autorun.addons.active'),
-			).toBe(true);
+			expect(result.errors.some((e) => e.path === 'autorun.addons.active')).toBe(true);
 		});
 
 		it('debe rechazar elementos no-string en addons.active', () => {
@@ -79,9 +75,7 @@ describe('ConfigValidator', () => {
 
 			const result = validator.validate(config);
 			expect(result.valid).toBe(false);
-			expect(
-				result.errors.some((e) => e.path.includes('autorun.addons.active')),
-			).toBe(true);
+			expect(result.errors.some((e) => e.path.includes('autorun.addons.active'))).toBe(true);
 		});
 	});
 
@@ -111,4 +105,3 @@ describe('ConfigValidator', () => {
 		});
 	});
 });
-

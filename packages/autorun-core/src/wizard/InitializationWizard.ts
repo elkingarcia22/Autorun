@@ -61,7 +61,7 @@ export class InitializationWizard {
 		// Verificar si hay AUTORUN_ANSWERS (modo automático con preguntas visibles)
 		// Si hay AUTORUN_ANSWERS, SIEMPRE mostrar preguntas (igual que terminal)
 		const hasAutoAnswers = !!process.env.AUTORUN_ANSWERS;
-		
+
 		// Intentar obtener respuestas automáticas primero (solo si NO hay AUTORUN_ANSWERS)
 		// Si hay AUTORUN_ANSWERS, forzar modo interactivo para mostrar preguntas
 		const autoAnswers = hasAutoAnswers ? null : this.getAutoAnswers(options?.autoSelect);
@@ -373,29 +373,29 @@ export class InitializationWizard {
 
 		// Mostrar resumen de add-ons por defecto con número de opción del wizard
 		console.log('\n🔌 Add-ons que se instalarán por defecto:\n');
-		
+
 		// Mapeo de add-on ID a número de opción en el wizard
 		const addonToWizardNumber: Record<string, number> = {
-			'storybook': 1,
+			storybook: 1,
 			'figma-sync': 2,
-			'eslint': 3,
-			'prettier': 4,
-			'vitest': 5,
-			'playwright': 6,
-			'chromatic': 7,
-			'snyk': 8,
-			'renovate': 9,
-			'lighthouse': 10,
+			eslint: 3,
+			prettier: 4,
+			vitest: 5,
+			playwright: 6,
+			chromatic: 7,
+			snyk: 8,
+			renovate: 9,
+			lighthouse: 10,
 			'bundle-analyzer': 11,
-			'standalone': 12,
-			'sentry': 13,
-			'clarity': 14,
-			'vercel': 15,
-			'github': 16,
-			'codecov': 17,
-			'feedback': 18,
+			standalone: 12,
+			sentry: 13,
+			clarity: 14,
+			vercel: 15,
+			github: 16,
+			codecov: 17,
+			feedback: 18,
 		};
-		
+
 		defaultAddons.forEach((addonId) => {
 			const description =
 				addonDescriptions[addonId] ||
@@ -407,14 +407,23 @@ export class InitializationWizard {
 
 		// Verificar si estamos en modo automático (con respuestas disponibles)
 		const isAuto = this.prompt.isAuto();
-		
+
 		// DEBUG: Log para entender qué está pasando
-		console.log('[DEBUG askAddons] isAuto:', isAuto, 'isAutoMode:', (this.prompt as any).isAutoMode, 'autoAnswerIndex:', (this.prompt as any).autoAnswerIndex, 'autoAnswers.length:', (this.prompt as any).autoAnswers.length);
-		
+		console.log(
+			'[DEBUG askAddons] isAuto:',
+			isAuto,
+			'isAutoMode:',
+			(this.prompt as any).isAutoMode,
+			'autoAnswerIndex:',
+			(this.prompt as any).autoAnswerIndex,
+			'autoAnswers.length:',
+			(this.prompt as any).autoAnswers.length,
+		);
+
 		// IMPORTANTE: Si NO estamos en modo automático (isAuto() retorna false),
 		// significa que se agotaron las respuestas automáticas y volvimos a modo interactivo.
 		// En ese caso, SIEMPRE preguntar al usuario.
-		
+
 		// Si NO estamos en modo automático, SIEMPRE preguntar al usuario
 		// (no usar defaults automáticamente)
 		if (!isAuto) {
@@ -422,7 +431,9 @@ export class InitializationWizard {
 			// Esto incluye el caso donde se agotaron las respuestas automáticas
 			console.log('[DEBUG askAddons] NO estamos en modo automático, preguntando al usuario');
 		} else {
-			console.log('[DEBUG askAddons] Estamos en modo automático, preguntando (select manejará respuesta automática)');
+			console.log(
+				'[DEBUG askAddons] Estamos en modo automático, preguntando (select manejará respuesta automática)',
+			);
 		}
 		// Si estamos en modo automático, también preguntar
 		// (el método select() manejará la respuesta automática internamente si está disponible)
@@ -643,7 +654,7 @@ export class InitializationWizard {
 		if (githubUrl) {
 			console.log(`   🐙 GitHub: ${githubUrl}`);
 		}
-		
+
 		// Mostrar información del servidor
 		if (this.localServer && this.localServer.isServerRunning()) {
 			const serverUrl = this.localServer.getUrl();
@@ -653,7 +664,7 @@ export class InitializationWizard {
 			console.log('      - Mantén esta terminal abierta para que el servidor siga funcionando');
 			console.log('      - Presiona Ctrl+C para detener el servidor y salir');
 		}
-		
+
 		console.log('\n🚀 Ya puedes empezar a trabajar. ¡Éxito con tu proyecto!\n');
 
 		return {
@@ -726,21 +737,23 @@ export class InitializationWizard {
 			}
 
 			await execAsync(command);
-			
+
 			// Marcar como abierto
 			this.templateOpened = true;
-			
+
 			// Identificar tipo de template desde el nombre del archivo
-			const templateType = fileName.includes('administrador') ? 'Administrador' : 
-			                     fileName.includes('colaborador') ? 'Colaborador' : 
-			                     'Template';
-			
+			const templateType = fileName.includes('administrador')
+				? 'Administrador'
+				: fileName.includes('colaborador')
+					? 'Colaborador'
+					: 'Template';
+
 			console.log(`   ✅ Template ${templateType} abierto en el navegador`);
 			console.log(`   📄 Archivo: ${fileName}`);
 			console.log(`   🌐 URL: ${httpUrl}`);
 			console.log(`   💡 El servidor HTTP local seguirá corriendo en ${serverUrl}`);
 			console.log(`   💡 Para detenerlo, presiona Ctrl+C o cierra esta terminal`);
-			
+
 			return httpUrl;
 		} catch (error: any) {
 			console.warn('   ⚠️  No se pudo abrir el navegador automáticamente:', error.message || error);
@@ -933,7 +946,7 @@ export class InitializationWizard {
 						const distIndexJs = path.join(addonPath, 'dist', 'index.js');
 						const distIndexDts = path.join(addonPath, 'dist', 'index.d.ts');
 						const distDir = path.join(addonPath, 'dist');
-						
+
 						try {
 							// Verificar que existe el directorio dist
 							const distStats = await fs.stat(distDir);
@@ -951,7 +964,7 @@ export class InitializationWizard {
 										// No tiene archivos principales, pero tiene dist/
 									}
 								}
-								
+
 								if (hasMainFile) {
 									// El add-on existe y está compilado, registrarlo
 									try {
@@ -965,26 +978,37 @@ export class InitializationWizard {
 										if (!regError.message?.includes('ya está registrado')) {
 											// Debug: mostrar error de registro
 											if (process.env.DEBUG) {
-												console.warn(`   🔍 Debug: Error registrando ${addonId}:`, regError.message);
+												console.warn(
+													`   🔍 Debug: Error registrando ${addonId}:`,
+													regError.message,
+												);
 											}
 											throw regError;
 										}
 									}
 								} else if (process.env.DEBUG) {
-									console.log(`   🔍 Debug: Add-on ${addonId} tiene dist/ pero no tiene index.js ni index.d.ts`);
+									console.log(
+										`   🔍 Debug: Add-on ${addonId} tiene dist/ pero no tiene index.js ni index.d.ts`,
+									);
 								}
 							}
 						} catch (distError: any) {
 							// No está compilado, pero continuar para configurar MCP
 							if (process.env.DEBUG) {
-								console.log(`   🔍 Debug: Add-on ${addonId} no tiene dist/ o no está compilado:`, distError.message);
+								console.log(
+									`   🔍 Debug: Add-on ${addonId} no tiene dist/ o no está compilado:`,
+									distError.message,
+								);
 							}
 						}
 					}
 				} catch (pathError: any) {
 					// El directorio no existe, continuar
 					if (process.env.DEBUG) {
-						console.log(`   🔍 Debug: Add-on ${addonId} no encontrado en ${addonPath}:`, pathError.message);
+						console.log(
+							`   🔍 Debug: Add-on ${addonId} no encontrado en ${addonPath}:`,
+							pathError.message,
+						);
 					}
 				}
 
@@ -996,7 +1020,9 @@ export class InitializationWizard {
 				// Si el add-on no se encuentra, aún así lo consideramos "seleccionado"
 				// porque el usuario lo eligió y puede querer configurar MCP para él
 				if (error?.code === 'ADDON_NOT_FOUND') {
-					console.log(`   ⚠️  ${description} (no encontrado o no compilado, pero seleccionado para configuración)`);
+					console.log(
+						`   ⚠️  ${description} (no encontrado o no compilado, pero seleccionado para configuración)`,
+					);
 					// Agregar a la lista de instalados aunque no se haya podido activar
 					// Esto permite configurar MCP para add-ons que el usuario seleccionó
 					installed.push(addonId);
@@ -1144,11 +1170,13 @@ export class InitializationWizard {
 		}
 
 		// Usar getUrl si está disponible (con token), sino usar url directamente
-		const getStorybookUrl = UBITS_PRESET.storybook.getUrl || ((path: string) => {
-			const baseUrl = UBITS_PRESET.storybook.url.replace(/\/$/, '');
-			return `${baseUrl}${path.startsWith('/') ? path : `/${path}`}`;
-		});
-		
+		const getStorybookUrl =
+			UBITS_PRESET.storybook.getUrl ||
+			((path: string) => {
+				const baseUrl = UBITS_PRESET.storybook.url.replace(/\/$/, '');
+				return `${baseUrl}${path.startsWith('/') ? path : `/${path}`}`;
+			});
+
 		for (const component of UBITS_PRESET.components) {
 			try {
 				const manifestUrl = getStorybookUrl(`/components/${component}/manifest.json`);
@@ -1724,10 +1752,12 @@ export class InitializationWizard {
 		// Si había respuestas pero se agotaron, usar default (NO configurar)
 		const hadAutoAnswers = this.prompt.hasAutoAnswers();
 		const hasMoreAnswers = this.prompt.isAuto();
-		
+
 		if (hadAutoAnswers && !hasMoreAnswers) {
 			// Se agotaron las respuestas automáticas, usar default (NO)
-			console.log('   ℹ️  Continuando sin configurar GitHub por el momento (respuestas automáticas agotadas)\n');
+			console.log(
+				'   ℹ️  Continuando sin configurar GitHub por el momento (respuestas automáticas agotadas)\n',
+			);
 			return null;
 		}
 
@@ -1869,7 +1899,14 @@ export class InitializationWizard {
 	 */
 	private async configureMCPForAddons(selectedAddons: string[]): Promise<void> {
 		// Add-ons que tienen soporte MCP
-		const mcpSupportedAddons: Record<string, { name: string; mcpNames: string[]; getCredentials: () => Promise<Record<string, any> | null> }> = {
+		const mcpSupportedAddons: Record<
+			string,
+			{
+				name: string;
+				mcpNames: string[];
+				getCredentials: () => Promise<Record<string, any> | null>;
+			}
+		> = {
 			github: {
 				name: 'GitHub',
 				mcpNames: ['github'],
@@ -1912,7 +1949,12 @@ export class InitializationWizard {
 					if (!configManager) return null;
 					const config = await configManager.load();
 					const figmaConfig = config?.autorun?.addons?.config?.['figma-sync'];
-					const accessToken = figmaConfig?.accessToken || process.env.FIGMA_ACCESS_TOKEN;
+					// figma-developer-mcp requiere FIGMA_API_KEY o FIGMA_OAUTH_TOKEN
+					const accessToken =
+						figmaConfig?.accessToken ||
+						process.env.FIGMA_API_KEY ||
+						process.env.FIGMA_OAUTH_TOKEN ||
+						process.env.FIGMA_ACCESS_TOKEN;
 					return accessToken ? { accessToken, fileKey: figmaConfig?.fileKey } : null;
 				},
 			},
@@ -1932,25 +1974,98 @@ export class InitializationWizard {
 						const fs = await import('fs/promises');
 						const path = await import('path');
 						const possiblePaths = [
+							// Proyecto actual
 							path.join(process.cwd(), '.storybook', 'main.js'),
+							path.join(process.cwd(), '.storybook', 'main.ts'),
 							path.join(process.cwd(), 'storybook-static', 'index.json'),
+							// UBITS vendor
+							path.join(
+								process.cwd(),
+								'vendor',
+								'ubits',
+								'packages',
+								'storybook',
+								'.storybook',
+								'main.js',
+							),
+							path.join(
+								process.cwd(),
+								'vendor',
+								'ubits',
+								'packages',
+								'storybook',
+								'.storybook',
+								'main.ts',
+							),
+							path.join(
+								process.cwd(),
+								'vendor',
+								'ubits',
+								'packages',
+								'storybook',
+								'storybook-static',
+								'index.json',
+							),
+							// Desktop UBITS (legacy)
+							path.join(
+								process.env.HOME || '',
+								'Desktop',
+								'UBITS',
+								'packages',
+								'storybook',
+								'.storybook',
+								'main.js',
+							),
+							path.join(
+								process.env.HOME || '',
+								'Desktop',
+								'UBITS',
+								'packages',
+								'storybook',
+								'.storybook',
+								'main.ts',
+							),
+							path.join(
+								process.env.HOME || '',
+								'Desktop',
+								'UBITS',
+								'packages',
+								'storybook',
+								'storybook-static',
+								'index.json',
+							),
 						];
+
 						for (const possiblePath of possiblePaths) {
 							try {
 								await fs.access(possiblePath);
-								// Si existe .storybook/main.js, construir URL local
+								// Si existe .storybook/main.js o main.ts, construir URL local
 								if (possiblePath.includes('.storybook')) {
 									return { storybookUrl: 'http://localhost:6006/index.json', customTools };
 								}
 								// Si existe storybook-static, usar esa ruta
 								if (possiblePath.includes('storybook-static')) {
-									const staticPath = path.join(process.cwd(), 'storybook-static', 'index.json');
-									return { storybookUrl: `file://${staticPath}`, customTools };
+									return { storybookUrl: `file://${possiblePath}`, customTools };
 								}
 							} catch {
 								// Continuar
 							}
 						}
+
+						// Si no se encontró nada, usar URL local por defecto (puede que Storybook esté corriendo)
+						// O usar la URL de Vercel como fallback
+						const configManager = (this.hub as any).configManager;
+						if (configManager) {
+							const config = await configManager.load();
+							const storybookPreset = (config as any)?.storybook;
+							if (storybookPreset?.url) {
+								// Usar URL del preset UBITS
+								return { storybookUrl: `${storybookPreset.url}/index.json`, customTools };
+							}
+						}
+
+						// Último fallback: URL local
+						return { storybookUrl: 'http://localhost:6006/index.json', customTools };
 					}
 					return storybookUrl ? { storybookUrl, customTools } : null;
 				},
@@ -1983,7 +2098,9 @@ export class InitializationWizard {
 			const supportedIds = Object.keys(mcpSupportedAddons).join(', ');
 			console.log(`   ℹ️  Ningún add-on instalado requiere configuración MCP`);
 			console.log(`   💡 Add-ons con soporte MCP disponibles: ${supportedIds}`);
-			console.log(`   💡 Para configurar MCP, instala uno de estos add-ons: github, vercel, clarity, figma-sync, storybook, supabase`);
+			console.log(
+				`   💡 Para configurar MCP, instala uno de estos add-ons: github, vercel, clarity, figma-sync, storybook, supabase`,
+			);
 			return;
 		}
 
@@ -1994,26 +2111,32 @@ export class InitializationWizard {
 		try {
 			const mcpInfo = await MCPDetector.detectMCPServer('github');
 			mcpAvailable = mcpInfo.available;
-			
+
 			// Debug: mostrar información de detección
 			if (process.env.DEBUG) {
 				console.log(`   🔍 Debug MCP: available=${mcpAvailable}, configured=${mcpInfo.configured}`);
-				console.log(`   🔍 Debug Cursor: CURSOR_AGENT=${process.env.CURSOR_AGENT}, CURSOR_VERSION=${process.env.CURSOR_VERSION}`);
+				console.log(
+					`   🔍 Debug Cursor: CURSOR_AGENT=${process.env.CURSOR_AGENT}, CURSOR_VERSION=${process.env.CURSOR_VERSION}`,
+				);
 			}
 		} catch (error: any) {
 			console.warn(`   ⚠️  Error detectando MCP:`, error.message || error);
 		}
-		
+
 		if (!mcpAvailable) {
 			console.log(`   ⚠️  MCP no está disponible en este entorno`);
 			console.log(`   💡 Para usar MCP, necesitas tener Cursor o un editor compatible con MCP`);
 			console.log(`   💡 Los add-ons funcionarán sin MCP usando implementación tradicional`);
-			console.log(`   💡 Puedes configurar MCP manualmente después. Ver: docs/guias/configuracion/GUIA-INSTALACION-MCP-ADDONS.md`);
+			console.log(
+				`   💡 Puedes configurar MCP manualmente después. Ver: docs/guias/configuracion/GUIA-INSTALACION-MCP-ADDONS.md`,
+			);
 			// Continuar para mostrar instrucciones de configuración manual
 			console.log(`\n   📖 Instrucciones para configurar MCP manualmente:`);
 			for (const addonId of addonsWithMCP) {
 				const addonInfo = mcpSupportedAddons[addonId];
-				console.log(`   - ${addonInfo.name}: Ver docs/guias/configuracion/GUIA-INSTALACION-MCP-ADDONS.md`);
+				console.log(
+					`   - ${addonInfo.name}: Ver docs/guias/configuracion/GUIA-INSTALACION-MCP-ADDONS.md`,
+				);
 			}
 			return;
 		}
@@ -2037,10 +2160,10 @@ export class InitializationWizard {
 
 			for (const addonId of addonsWithMCP) {
 				const addonInfo = mcpSupportedAddons[addonId];
-				
+
 				// Obtener credenciales
 				const credentials = await addonInfo.getCredentials();
-				
+
 				// Para cada MCP del add-on
 				for (const mcpName of addonInfo.mcpNames) {
 					const mcpInfo = await MCPDetector.detectMCPServer(mcpName);
@@ -2063,19 +2186,87 @@ export class InitializationWizard {
 					}
 
 					// Instalar automáticamente (sin preguntar individualmente)
-					const mcpDisplayName = mcpName === 'talk-to-figma' ? 'Talk to Figma' : mcpName.charAt(0).toUpperCase() + mcpName.slice(1);
-					
-					// Si no hay credenciales, instalar sin ellas (el usuario puede configurarlas después)
+					// Instalamos TODOS los MCPs, incluso sin credenciales (el usuario puede configurarlas después)
+					const mcpDisplayName =
+						mcpName === 'talk-to-figma'
+							? 'Talk to Figma'
+							: mcpName.charAt(0).toUpperCase() + mcpName.slice(1);
+
+					// Instalar con credenciales (o sin ellas)
 					const result = await MCPInstaller.installMCPServer(mcpName, credentials || {});
-					
+
 					if (result.success) {
-						console.log(`   ✅ MCP '${mcpDisplayName}' para ${addonInfo.name} instalado y configurado`);
+						console.log(
+							`   ✅ MCP '${mcpDisplayName}' para ${addonInfo.name} instalado y configurado`,
+						);
+
+						// Mensajes específicos según el MCP y si tiene credenciales
 						if (!credentials) {
-							console.log(`   ⚠️  Nota: Configura las credenciales en variables de entorno o en la configuración del proyecto`);
+							switch (mcpName) {
+								case 'storybook':
+									console.log(
+										`   💡 Storybook MCP intentará detectar automáticamente la URL local`,
+									);
+									console.log(
+										`   💡 Si no funciona, configura STORYBOOK_URL en variables de entorno`,
+									);
+									break;
+								case 'vercel':
+									console.log(
+										`   💡 Vercel MCP usará OAuth - autoriza cuando Cursor te lo solicite`,
+									);
+									break;
+								case 'clarity':
+									console.log(
+										`   ⚠️  Funcionalidad limitada sin credenciales - configura CLARITY_PROJECT_ID y CLARITY_API_KEY para uso completo`,
+									);
+									break;
+								case 'github':
+									console.log(
+										`   ⚠️  Configura GITHUB_TOKEN o GH_TOKEN en variables de entorno para que funcione`,
+									);
+									break;
+								case 'figma':
+									console.log(
+										`   💡 Figma MCP usa servidor remoto oficial - autoriza cuando Cursor te lo solicite`,
+									);
+									console.log(`   💡 Ver: https://www.figma.com/es-la/mcp-catalog/`);
+									break;
+								case 'talk-to-figma':
+									console.log(`   ⚠️  Requiere Figma Desktop abierto con el plugin instalado`);
+									console.log(
+										`   💡 Instala el plugin desde: https://github.com/cursor-sh/talk-to-figma-mcp`,
+									);
+									break;
+								case 'supabase':
+									console.log(
+										`   💡 Supabase MCP usa servidor remoto oficial con OAuth automático`,
+									);
+									console.log(
+										`   💡 Autoriza cuando Cursor te lo solicite - ya no requiere PAT manual`,
+									);
+									console.log(`   💡 Ver: https://supabase.com/docs/guides/getting-started/mcp`);
+									break;
+								case 'storybook':
+									console.log(
+										`   💡 Storybook MCP usa el servidor integrado del addon @storybook/addon-mcp`,
+									);
+									console.log(
+										`   💡 Asegúrate de que Storybook esté corriendo con el addon instalado`,
+									);
+									console.log(`   💡 Ver: https://storybook.js.org/addons/@storybook/addon-mcp`);
+									break;
+								default:
+									console.log(
+										`   ⚠️  Configura las credenciales necesarias en variables de entorno para que funcione`,
+									);
+							}
 						}
 						installedCount++;
 					} else {
-						console.log(`   ⚠️  Error instalando MCP '${mcpDisplayName}' para ${addonInfo.name}: ${result.message}`);
+						console.log(
+							`   ⚠️  Error instalando MCP '${mcpDisplayName}' para ${addonInfo.name}: ${result.message}`,
+						);
 					}
 				}
 			}

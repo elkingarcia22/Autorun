@@ -9,12 +9,12 @@
    ======================================== */
 
 .ubits-progress-bar {
-    display: flex;
-    align-items: center;
-    gap: var(--ubits-spacing-sm);
-    width: 100%;
-    position: relative;
-    box-sizing: border-box;
+	display: flex;
+	align-items: center;
+	gap: var(--ubits-spacing-sm);
+	width: 100%;
+	position: relative;
+	box-sizing: border-box;
 }
 
 /* ========================================
@@ -22,14 +22,14 @@
    ======================================== */
 
 .ubits-progress-bar__container {
-    flex: 1;
-    height: 100%;
-    background-color: var(--modifiers-normal-color-light-bg-3);
-    border-radius: var(--ubits-border-radius-full);
-    overflow: hidden;
-    position: relative;
-    display: flex;
-    align-items: center;
+	flex: 1;
+	height: 100%;
+	background-color: var(--modifiers-normal-color-light-bg-3);
+	border-radius: var(--ubits-border-radius-full);
+	overflow: hidden;
+	position: relative;
+	display: flex;
+	align-items: center;
 }
 
 /* ========================================
@@ -37,11 +37,11 @@
    ======================================== */
 
 .ubits-progress-bar__indicator-wrapper {
-    height: 100%;
-    background-color: var(--ubits-chart-color-bg-neutral-blue-base);
-    border-radius: var(--ubits-border-radius-full);
-    transition: width 0.3s ease;
-    min-width: 0;
+	height: 100%;
+	background-color: var(--ubits-chart-color-bg-neutral-blue-base);
+	border-radius: var(--ubits-border-radius-full);
+	transition: width 0.3s ease;
+	min-width: 0;
 }
 
 /* ========================================
@@ -49,30 +49,30 @@
    ======================================== */
 
 .ubits-progress-bar--multi-color .ubits-progress-bar__indicator-wrapper {
-    display: flex;
-    width: 100%;
-    height: 100%;
-    background-color: transparent;
-    border-radius: 0;
+	display: flex;
+	width: 100%;
+	height: 100%;
+	background-color: transparent;
+	border-radius: 0;
 }
 
 .ubits-progress-bar__segment {
-    height: 100%;
-    border-radius: 0;
-    transition: width 0.3s ease;
-    min-width: 0;
+	height: 100%;
+	border-radius: 0;
+	transition: width 0.3s ease;
+	min-width: 0;
 }
 
 /* Redondear bordes del primer segmento */
 .ubits-progress-bar--multi-color .ubits-progress-bar__segment:first-child {
-    border-top-left-radius: var(--ubits-border-radius-full);
-    border-bottom-left-radius: var(--ubits-border-radius-full);
+	border-top-left-radius: var(--ubits-border-radius-full);
+	border-bottom-left-radius: var(--ubits-border-radius-full);
 }
 
 /* Redondear bordes del último segmento */
 .ubits-progress-bar--multi-color .ubits-progress-bar__segment:last-child {
-    border-top-right-radius: var(--ubits-border-radius-full);
-    border-bottom-right-radius: var(--ubits-border-radius-full);
+	border-top-right-radius: var(--ubits-border-radius-full);
+	border-bottom-right-radius: var(--ubits-border-radius-full);
 }
 
 /* ========================================
@@ -80,12 +80,12 @@
    ======================================== */
 
 .ubits-progress-bar__indicator {
-    flex-shrink: 0;
-    font-family: var(--font-family-noto-sans-font-family);
-    font-weight: var(--weight-semibold);
-    color: var(--modifiers-normal-color-light-fg-1-high);
-    white-space: nowrap;
-    line-height: 1;
+	flex-shrink: 0;
+	font-family: var(--font-family-noto-sans-font-family);
+	font-weight: var(--weight-semibold);
+	color: var(--modifiers-normal-color-light-fg-1-high);
+	white-space: nowrap;
+	line-height: 1;
 }
 
 /* ========================================
@@ -94,44 +94,45 @@
 
 /* Extra Small (xs) - 4px - MANTENER MEDIDA ORIGINAL */
 .ubits-progress-bar--xs {
-    height: 4px;
+	height: 4px;
 }
 
 .ubits-progress-bar--xs .ubits-progress-bar__indicator {
-    font-size: var(--modifiers-normal-body-xs-regular-fontsize);
-    line-height: var(--modifiers-normal-body-xs-regular-lineheight);
+	font-size: var(--modifiers-normal-body-xs-regular-fontsize);
+	line-height: var(--modifiers-normal-body-xs-regular-lineheight);
 }
 
 /* Small (sm) - 8px - MANTENER MEDIDA ORIGINAL */
 .ubits-progress-bar--sm {
-    height: 8px;
+	height: 8px;
 }
 
 .ubits-progress-bar--sm .ubits-progress-bar__indicator {
-    font-size: var(--modifiers-normal-body-sm-regular-fontsize);
-    line-height: var(--modifiers-normal-body-sm-regular-lineheight);
+	font-size: var(--modifiers-normal-body-sm-regular-fontsize);
+	line-height: var(--modifiers-normal-body-sm-regular-lineheight);
 }
 
 /* Medium (md) - 16px - Default - MANTENER MEDIDA ORIGINAL */
 .ubits-progress-bar--md,
 .ubits-progress-bar:not([class*="--xs"]):not([class*="--sm"]):not([class*="--lg"]) {
-    height: 16px;
+	height: 16px;
 }
 
 .ubits-progress-bar--md .ubits-progress-bar__indicator,
-.ubits-progress-bar:not([class*="--xs"]):not([class*="--sm"]):not([class*="--lg"]) .ubits-progress-bar__indicator {
-    font-size: var(--modifiers-normal-body-md-regular-fontsize);
-    line-height: var(--modifiers-normal-body-md-regular-lineheight);
+.ubits-progress-bar:not([class*="--xs"]):not([class*="--sm"]):not([class*="--lg"])
+	.ubits-progress-bar__indicator {
+	font-size: var(--modifiers-normal-body-md-regular-fontsize);
+	line-height: var(--modifiers-normal-body-md-regular-lineheight);
 }
 
 /* Large (lg) - 20px - MANTENER MEDIDA ORIGINAL */
 .ubits-progress-bar--lg {
-    height: 20px;
+	height: 20px;
 }
 
 .ubits-progress-bar--lg .ubits-progress-bar__indicator {
-    font-size: var(--modifiers-normal-body-lg-regular-fontsize);
-    line-height: var(--modifiers-normal-body-lg-regular-lineheight);
+	font-size: var(--modifiers-normal-body-lg-regular-fontsize);
+	line-height: var(--modifiers-normal-body-lg-regular-lineheight);
 }
 
 /* ========================================
@@ -139,9 +140,9 @@
    ======================================== */
 
 @media (max-width: 767px) {
-    .ubits-progress-bar__indicator {
-        font-size: var(--modifiers-normal-body-sm-regular-fontsize) !important;
-    }
+	.ubits-progress-bar__indicator {
+		font-size: var(--modifiers-normal-body-sm-regular-fontsize) !important;
+	}
 }
 
 /* ========================================
@@ -149,35 +150,34 @@
    ======================================== */
 
 [data-theme="dark"] .ubits-progress-bar__container {
-    background-color: var(--modifiers-normal-color-dark-bg-3);
+	background-color: var(--modifiers-normal-color-dark-bg-3);
 }
 
 [data-theme="dark"] .ubits-progress-bar__indicator-wrapper {
-    background-color: var(--ubits-chart-color-bg-neutral-blue-base);
+	background-color: var(--ubits-chart-color-bg-neutral-blue-base);
 }
 
 [data-theme="dark"] .ubits-progress-bar__indicator {
-    color: var(--modifiers-normal-color-dark-fg-1-high);
+	color: var(--modifiers-normal-color-dark-fg-1-high);
 }
 
 /* Dark mode para segmentos multi-color */
 [data-theme="dark"] .ubits-progress-bar__segment[data-color="yellow"] {
-    background-color: var(--modifiers-normal-color-dark-feedback-chart-warning-bold) !important;
+	background-color: var(--modifiers-normal-color-dark-feedback-chart-warning-bold) !important;
 }
 
 [data-theme="dark"] .ubits-progress-bar__segment[data-color="green"] {
-    background-color: var(--modifiers-normal-color-dark-feedback-accent-success) !important;
+	background-color: var(--modifiers-normal-color-dark-feedback-accent-success) !important;
 }
 
 [data-theme="dark"] .ubits-progress-bar__segment[data-color="gray"] {
-    background-color: var(--modifiers-normal-color-dark-bg-4) !important;
+	background-color: var(--modifiers-normal-color-dark-bg-4) !important;
 }
 
 [data-theme="dark"] .ubits-progress-bar__segment[data-color="info"] {
-    background-color: var(--modifiers-normal-color-dark-feedback-chart-info-bold) !important;
+	background-color: var(--modifiers-normal-color-dark-feedback-chart-info-bold) !important;
 }
 
 [data-theme="dark"] .ubits-progress-bar__segment[data-color="error"] {
-    background-color: var(--modifiers-normal-color-dark-feedback-accent-error) !important;
+	background-color: var(--modifiers-normal-color-dark-feedback-accent-error) !important;
 }
-

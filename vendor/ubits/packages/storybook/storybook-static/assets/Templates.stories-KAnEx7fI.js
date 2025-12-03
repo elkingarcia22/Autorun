@@ -1,15 +1,92 @@
-const y={title:"Templates/Templates UBITS Desktop",tags:["autodocs"],parameters:{docs:{description:{component:"Templates completos de UBITS para modo Administrador y Colaborador. Incluyen Sidebar, TabBar, SubNav y todos los componentes del sistema de diseño UBITS. Estos templates representan las vistas completas de escritorio de las aplicaciones UBITS."}},layout:"fullscreen"},argTypes:{template:{control:{type:"select"},options:["admin","colaborador"],description:"Template a mostrar: Administrador o Colaborador",table:{defaultValue:{summary:"colaborador"},type:{summary:"admin | colaborador"}}}}};function f(o){const t="/templates";return o==="admin"?`${t}/template-admin.html`:`${t}/template-colaborador.html`}const m=new Map,s={args:{template:"colaborador"},render:o=>{const t=`template-instance-${Date.now()}-${Math.random().toString(36).substr(2,9)}`,n=document.createElement("div");n.id="templates-story-container",n.setAttribute("data-instance-id",t),n.style.cssText=`
+const y = {
+	title: 'Templates/Templates UBITS Desktop',
+	tags: ['autodocs'],
+	parameters: {
+		docs: {
+			description: {
+				component:
+					'Templates completos de UBITS para modo Administrador y Colaborador. Incluyen Sidebar, TabBar, SubNav y todos los componentes del sistema de diseño UBITS. Estos templates representan las vistas completas de escritorio de las aplicaciones UBITS.',
+			},
+		},
+		layout: 'fullscreen',
+	},
+	argTypes: {
+		template: {
+			control: { type: 'select' },
+			options: ['admin', 'colaborador'],
+			description: 'Template a mostrar: Administrador o Colaborador',
+			table: { defaultValue: { summary: 'colaborador' }, type: { summary: 'admin | colaborador' } },
+		},
+	},
+};
+function f(o) {
+	const t = '/templates';
+	return o === 'admin' ? `${t}/template-admin.html` : `${t}/template-colaborador.html`;
+}
+const m = new Map(),
+	s = {
+		args: { template: 'colaborador' },
+		render: (o) => {
+			const t = `template-instance-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+				n = document.createElement('div');
+			(n.id = 'templates-story-container'),
+				n.setAttribute('data-instance-id', t),
+				(n.style.cssText = `
       width: 100%;
       height: 100vh;
       position: relative;
       background: var(--modifiers-normal-color-light-bg-2);
       overflow: hidden;
-    `;const e=document.createElement("iframe");e.id=`template-iframe-${t}`,e.style.cssText=`
+    `);
+			const e = document.createElement('iframe');
+			(e.id = `template-iframe-${t}`),
+				(e.style.cssText = `
       width: 100%;
       height: 100%;
       border: none;
       display: block;
-    `,e.setAttribute("sandbox","allow-same-origin allow-scripts allow-forms allow-popups allow-modals"),m.set(t,{iframe:e,currentTemplate:null,isLoading:!1}),(r=>{const a=m.get(t);if(!a||a.isLoading&&a.currentTemplate===r)return;if(a.currentTemplate===r&&e.src){const l=f(r);if(e.src.includes(l))return}a.isLoading=!0,a.currentTemplate=r;const i=f(r),b=window.location.origin+i;(!e.src||!e.src.includes(i))&&(e.src=i);const d=()=>{try{const c=e.contentWindow?.document;if(c){const u=document.body.getAttribute("data-theme")||"light";c.body.setAttribute("data-theme",u),c.documentElement.setAttribute("data-theme",u)}}catch{}},p=new MutationObserver(()=>{d()});p.observe(document.body,{attributes:!0,attributeFilter:["data-theme"]}),p.observe(document.documentElement,{attributes:!0,attributeFilter:["data-theme"]}),e.onload=()=>{d(),a.isLoading=!1,console.log(`✅ Template ${r} cargado exitosamente`)},e.onerror=()=>{a.isLoading=!1,console.error(`❌ Error cargando template ${r}`),e.srcdoc=`
+    `),
+				e.setAttribute(
+					'sandbox',
+					'allow-same-origin allow-scripts allow-forms allow-popups allow-modals',
+				),
+				m.set(t, { iframe: e, currentTemplate: null, isLoading: !1 }),
+				((r) => {
+					const a = m.get(t);
+					if (!a || (a.isLoading && a.currentTemplate === r)) return;
+					if (a.currentTemplate === r && e.src) {
+						const l = f(r);
+						if (e.src.includes(l)) return;
+					}
+					(a.isLoading = !0), (a.currentTemplate = r);
+					const i = f(r),
+						b = window.location.origin + i;
+					(!e.src || !e.src.includes(i)) && (e.src = i);
+					const d = () => {
+							try {
+								const c = e.contentWindow?.document;
+								if (c) {
+									const u = document.body.getAttribute('data-theme') || 'light';
+									c.body.setAttribute('data-theme', u),
+										c.documentElement.setAttribute('data-theme', u);
+								}
+							} catch {}
+						},
+						p = new MutationObserver(() => {
+							d();
+						});
+					p.observe(document.body, { attributes: !0, attributeFilter: ['data-theme'] }),
+						p.observe(document.documentElement, {
+							attributes: !0,
+							attributeFilter: ['data-theme'],
+						}),
+						(e.onload = () => {
+							d(), (a.isLoading = !1), console.log(`✅ Template ${r} cargado exitosamente`);
+						}),
+						(e.onerror = () => {
+							(a.isLoading = !1),
+								console.error(`❌ Error cargando template ${r}`),
+								(e.srcdoc = `
           <!DOCTYPE html>
           <html>
             <head>
@@ -43,7 +120,26 @@ const y={title:"Templates/Templates UBITS Desktop",tags:["autodocs"],parameters:
               </div>
             </body>
           </html>
-        `}})(o.template),n.setAttribute("data-template",o.template),n.appendChild(e);const h=n.remove;return n.remove=function(){themeObserver.disconnect(),m.delete(t),h.call(this)},n}};s.parameters={...s.parameters,docs:{...s.parameters?.docs,source:{originalSource:`{
+        `);
+						});
+				})(o.template),
+				n.setAttribute('data-template', o.template),
+				n.appendChild(e);
+			const h = n.remove;
+			return (
+				(n.remove = function () {
+					themeObserver.disconnect(), m.delete(t), h.call(this);
+				}),
+				n
+			);
+		},
+	};
+s.parameters = {
+	...s.parameters,
+	docs: {
+		...s.parameters?.docs,
+		source: {
+			originalSource: `{
   args: {
     template: 'colaborador'
   } as {
@@ -211,4 +307,10 @@ const y={title:"Templates/Templates UBITS Desktop",tags:["autodocs"],parameters:
     };
     return container;
   }
-}`,...s.parameters?.docs?.source}}};const T=["Default"];export{s as Default,T as __namedExportsOrder,y as default};
+}`,
+			...s.parameters?.docs?.source,
+		},
+	},
+};
+const T = ['Default'];
+export { s as Default, T as __namedExportsOrder, y as default };

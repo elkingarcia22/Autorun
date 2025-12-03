@@ -5,4 +5,3 @@
 
 export { renderHeaderSection, createHeaderSection } from './HeaderSectionProvider';
 export type { HeaderSectionOptions, HeaderSectionAction } from './types/HeaderSectionOptions';
-

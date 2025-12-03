@@ -103,13 +103,15 @@ export class SentryAddon implements IFunctionalAddon {
 		if (config.dsn !== undefined) sentryConfig.dsn = config.dsn;
 		if (config.environment !== undefined) sentryConfig.environment = config.environment;
 		if (config.release !== undefined) sentryConfig.release = config.release;
-		if (config.tracesSampleRate !== undefined) sentryConfig.tracesSampleRate = config.tracesSampleRate;
+		if (config.tracesSampleRate !== undefined)
+			sentryConfig.tracesSampleRate = config.tracesSampleRate;
 		if (config.sampleRate !== undefined) sentryConfig.sampleRate = config.sampleRate;
 		if (config.beforeSend !== undefined) sentryConfig.beforeSend = config.beforeSend;
 		if (config.integrations !== undefined) sentryConfig.integrations = config.integrations;
 		if (config.enabled !== undefined) sentryConfig.enabled = config.enabled;
 		if (config.debug !== undefined) sentryConfig.debug = config.debug;
-		if (config.attachStacktrace !== undefined) sentryConfig.attachStacktrace = config.attachStacktrace;
+		if (config.attachStacktrace !== undefined)
+			sentryConfig.attachStacktrace = config.attachStacktrace;
 		if (config.maxBreadcrumbs !== undefined) sentryConfig.maxBreadcrumbs = config.maxBreadcrumbs;
 		if (config.user !== undefined) sentryConfig.user = config.user;
 		if (config.tags !== undefined) sentryConfig.tags = config.tags;
@@ -215,12 +217,7 @@ export class SentryAddon implements IFunctionalAddon {
 			},
 
 			// Establecer usuario
-			setUser: (user: {
-				id?: string;
-				email?: string;
-				username?: string;
-				[key: string]: any;
-			}) => {
+			setUser: (user: { id?: string; email?: string; username?: string; [key: string]: any }) => {
 				if (!this.service) {
 					throw new Error('Sentry service no está inicializado');
 				}
@@ -279,4 +276,3 @@ export class SentryAddon implements IFunctionalAddon {
 		};
 	}
 }
-

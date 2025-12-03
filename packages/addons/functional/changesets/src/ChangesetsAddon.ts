@@ -91,17 +91,14 @@ export class ChangesetsAddon implements IFunctionalAddon {
 		const changesetsConfig: Partial<ChangesetsConfig> = {};
 
 		if (config.enabled !== undefined) changesetsConfig.enabled = config.enabled;
-		if (config.autoVersion !== undefined)
-			changesetsConfig.autoVersion = config.autoVersion;
-		if (config.autoRelease !== undefined)
-			changesetsConfig.autoRelease = config.autoRelease;
+		if (config.autoVersion !== undefined) changesetsConfig.autoVersion = config.autoVersion;
+		if (config.autoRelease !== undefined) changesetsConfig.autoRelease = config.autoRelease;
 		if (config.commitChangesets !== undefined)
 			changesetsConfig.commitChangesets = config.commitChangesets;
 		if (config.createGitHubRelease !== undefined)
 			changesetsConfig.createGitHubRelease = config.createGitHubRelease;
 		if (config.releaseType !== undefined) changesetsConfig.releaseType = config.releaseType;
-		if (config.changelogPath !== undefined)
-			changesetsConfig.changelogPath = config.changelogPath;
+		if (config.changelogPath !== undefined) changesetsConfig.changelogPath = config.changelogPath;
 		if (config.changesetsPath !== undefined)
 			changesetsConfig.changesetsPath = config.changesetsPath;
 
@@ -191,10 +188,7 @@ export class ChangesetsAddon implements IFunctionalAddon {
 	getServices() {
 		return {
 			// Crear changeset
-			createChangeset: async (
-				summary: string,
-				type: 'major' | 'minor' | 'patch' = 'patch',
-			) => {
+			createChangeset: async (summary: string, type: 'major' | 'minor' | 'patch' = 'patch') => {
 				if (!this.service) {
 					throw new Error('Changesets service no está inicializado');
 				}
@@ -259,4 +253,3 @@ export class ChangesetsAddon implements IFunctionalAddon {
 		};
 	}
 }
-

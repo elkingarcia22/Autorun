@@ -5,4 +5,3 @@
 
 export { renderCalendar, createCalendar } from './CalendarProvider';
 export type { CalendarOptions, CalendarMode } from './types/CalendarOptions';
-

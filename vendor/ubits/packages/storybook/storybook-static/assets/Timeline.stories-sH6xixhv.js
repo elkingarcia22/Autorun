@@ -1,173 +1,412 @@
-import{r as w}from"./AvatarProvider-CF4x-oFR.js";const C={title:"Layout/Timeline",tags:["autodocs"],parameters:{docs:{description:{component:"Componente Timeline UBITS para mostrar secuencias de eventos o fases. Soporta avatar, fecha, título, descripción, iconos y alineación izquierda o centrada. Usa tokens UBITS."}}},argTypes:{showAvatar:{control:{type:"boolean"},description:"Mostrar avatar en cada item del timeline (mutuamente excluyente con icono)",table:{defaultValue:{summary:"false"},type:{summary:"boolean"}}},showDate:{control:{type:"boolean"},description:"Mostrar fecha en cada item",table:{defaultValue:{summary:"true"},type:{summary:"boolean"}}},showDescription:{control:{type:"boolean"},description:"Mostrar descripción en cada item",table:{defaultValue:{summary:"true"},type:{summary:"boolean"}}},showIcon:{control:{type:"boolean"},description:"Mostrar icono en el marcador del timeline (mutuamente excluyente con avatar)",table:{defaultValue:{summary:"true"},type:{summary:"boolean"}}},alignment:{control:{type:"select"},options:["left","center"],description:"Alineación del contenido del texto (la línea siempre está a la izquierda)",table:{defaultValue:{summary:"left"},type:{summary:"left | center"}}},filledItems:{control:{type:"number",min:0,max:4,step:1},description:"Cantidad de items con círculo relleno (0-4)",table:{defaultValue:{summary:"2"},type:{summary:"number"}}}}};function $(i,t="regular"){return`<i class="${t==="solid"?"fas":"far"} fa-${i}"></i>`}function I(i=2){return[{date:"Mar 15, 2024",title:"Project Kickoff",description:"Initial team meeting and project scope definition. Established key milestones and resource allocation.",state:i>0?"filled":"default",avatar:{imageUrl:"/images/Profile-image.jpg"},icon:"circle"},{date:"Mar 22, 2024",title:"Design Phase",description:"Completed wireframes and user interface mockups. Stakeholder review and feedback incorporated.",state:i>1?"filled":"default",avatar:{imageUrl:"/images/Profile-image.jpg"},icon:"paint-brush"},{date:"Apr 5, 2024",title:"Development Sprint",description:"Backend API implementation and frontend component development in progress.",state:i>2?"filled":"default",avatar:{imageUrl:"/images/Profile-image.jpg"},icon:"code"},{date:"Apr 19, 2024",title:"Testing & Deployment",description:"Quality assurance testing, performance optimization, and production deployment preparation.",state:i>3?"filled":"default",avatar:{imageUrl:"/images/Profile-image.jpg"},icon:"rocket"}]}function z(i,t,o,n){const{showAvatar:m=!1,showDate:r=!0,showDescription:e=!0,showIcon:d=!0,alignment:f="left"}=n,g=m===!0&&d!==!0,v=d===!0&&m!==!0,c=i.state==="filled";i.state;const u=c?"ubits-timeline-marker--filled":"ubits-timeline-marker--default",h=c?"var(--modifiers-static-color-light-fg-1-medium)":"var(--modifiers-normal-color-light-border-1)";let p="";if(g&&i.avatar){const l={size:"xs",alt:i.title};i.avatar.imageUrl?l.imageUrl=i.avatar.imageUrl:i.avatar.initials?l.initials=i.avatar.initials:l.icon=i.avatar.icon||"user",p=w(l)}let _="";if(v){const l=i.icon||"circle";_=`
+import { r as w } from './AvatarProvider-CF4x-oFR.js';
+const C = {
+	title: 'Layout/Timeline',
+	tags: ['autodocs'],
+	parameters: {
+		docs: {
+			description: {
+				component:
+					'Componente Timeline UBITS para mostrar secuencias de eventos o fases. Soporta avatar, fecha, título, descripción, iconos y alineación izquierda o centrada. Usa tokens UBITS.',
+			},
+		},
+	},
+	argTypes: {
+		showAvatar: {
+			control: { type: 'boolean' },
+			description: 'Mostrar avatar en cada item del timeline (mutuamente excluyente con icono)',
+			table: { defaultValue: { summary: 'false' }, type: { summary: 'boolean' } },
+		},
+		showDate: {
+			control: { type: 'boolean' },
+			description: 'Mostrar fecha en cada item',
+			table: { defaultValue: { summary: 'true' }, type: { summary: 'boolean' } },
+		},
+		showDescription: {
+			control: { type: 'boolean' },
+			description: 'Mostrar descripción en cada item',
+			table: { defaultValue: { summary: 'true' }, type: { summary: 'boolean' } },
+		},
+		showIcon: {
+			control: { type: 'boolean' },
+			description: 'Mostrar icono en el marcador del timeline (mutuamente excluyente con avatar)',
+			table: { defaultValue: { summary: 'true' }, type: { summary: 'boolean' } },
+		},
+		alignment: {
+			control: { type: 'select' },
+			options: ['left', 'center'],
+			description: 'Alineación del contenido del texto (la línea siempre está a la izquierda)',
+			table: { defaultValue: { summary: 'left' }, type: { summary: 'left | center' } },
+		},
+		filledItems: {
+			control: { type: 'number', min: 0, max: 4, step: 1 },
+			description: 'Cantidad de items con círculo relleno (0-4)',
+			table: { defaultValue: { summary: '2' }, type: { summary: 'number' } },
+		},
+	},
+};
+function $(i, t = 'regular') {
+	return `<i class="${t === 'solid' ? 'fas' : 'far'} fa-${i}"></i>`;
+}
+function I(i = 2) {
+	return [
+		{
+			date: 'Mar 15, 2024',
+			title: 'Project Kickoff',
+			description:
+				'Initial team meeting and project scope definition. Established key milestones and resource allocation.',
+			state: i > 0 ? 'filled' : 'default',
+			avatar: { imageUrl: '/images/Profile-image.jpg' },
+			icon: 'circle',
+		},
+		{
+			date: 'Mar 22, 2024',
+			title: 'Design Phase',
+			description:
+				'Completed wireframes and user interface mockups. Stakeholder review and feedback incorporated.',
+			state: i > 1 ? 'filled' : 'default',
+			avatar: { imageUrl: '/images/Profile-image.jpg' },
+			icon: 'paint-brush',
+		},
+		{
+			date: 'Apr 5, 2024',
+			title: 'Development Sprint',
+			description: 'Backend API implementation and frontend component development in progress.',
+			state: i > 2 ? 'filled' : 'default',
+			avatar: { imageUrl: '/images/Profile-image.jpg' },
+			icon: 'code',
+		},
+		{
+			date: 'Apr 19, 2024',
+			title: 'Testing & Deployment',
+			description:
+				'Quality assurance testing, performance optimization, and production deployment preparation.',
+			state: i > 3 ? 'filled' : 'default',
+			avatar: { imageUrl: '/images/Profile-image.jpg' },
+			icon: 'rocket',
+		},
+	];
+}
+function z(i, t, o, n) {
+	const {
+			showAvatar: m = !1,
+			showDate: r = !0,
+			showDescription: e = !0,
+			showIcon: d = !0,
+			alignment: f = 'left',
+		} = n,
+		g = m === !0 && d !== !0,
+		v = d === !0 && m !== !0,
+		c = i.state === 'filled';
+	i.state;
+	const u = c ? 'ubits-timeline-marker--filled' : 'ubits-timeline-marker--default',
+		h = c
+			? 'var(--modifiers-static-color-light-fg-1-medium)'
+			: 'var(--modifiers-normal-color-light-border-1)';
+	let p = '';
+	if (g && i.avatar) {
+		const l = { size: 'xs', alt: i.title };
+		i.avatar.imageUrl
+			? (l.imageUrl = i.avatar.imageUrl)
+			: i.avatar.initials
+				? (l.initials = i.avatar.initials)
+				: (l.icon = i.avatar.icon || 'user'),
+			(p = w(l));
+	}
+	let _ = '';
+	if (v) {
+		const l = i.icon || 'circle';
+		_ = `
       <span class="ubits-timeline-marker__icon">
-        ${$(l,"solid")}
+        ${$(l, 'solid')}
       </span>
-    `}const a=f==="center",x=t%2===0,s=a?x?"left":"right":"left";if(g&&p){const l=o?"":`
+    `;
+	}
+	const a = f === 'center',
+		x = t % 2 === 0,
+		s = a ? (x ? 'left' : 'right') : 'left';
+	if (g && p) {
+		const l = o
+			? ''
+			: `
         <div class="ubits-timeline-line"></div>
-      `;return`
-      <div class="ubits-timeline-item ${a?`ubits-timeline-item--${s}`:""}" data-index="${t}" data-state="${i.state}">
-        ${a&&s==="right"?`
+      `;
+		return `
+      <div class="ubits-timeline-item ${a ? `ubits-timeline-item--${s}` : ''}" data-index="${t}" data-state="${i.state}">
+        ${
+					a && s === 'right'
+						? `
           <div class="ubits-timeline-item__content">
             <div class="ubits-timeline-item__text">
-              ${r&&i.date?`
+              ${
+								r && i.date
+									? `
                 <div class="ubits-timeline-item__date ubits-body-sm-regular">
                   ${i.date}
                 </div>
-              `:""}
+              `
+									: ''
+							}
               <div class="ubits-timeline-item__title ubits-body-md-semibold">
                 ${i.title}
               </div>
-              ${e&&i.description?`
+              ${
+								e && i.description
+									? `
                 <div class="ubits-timeline-item__description ubits-body-sm-regular">
                   ${i.description}
                 </div>
-              `:""}
+              `
+									: ''
+							}
             </div>
           </div>
-        `:""}
+        `
+						: ''
+				}
         <div class="ubits-timeline-item__marker-container">
           <div class="ubits-timeline-marker ubits-timeline-marker--avatar">
             ${p}
           </div>
         </div>
         ${l}
-        ${a&&s==="left"?`
+        ${
+					a && s === 'left'
+						? `
           <div class="ubits-timeline-item__content">
             <div class="ubits-timeline-item__text">
-              ${r&&i.date?`
+              ${
+								r && i.date
+									? `
                 <div class="ubits-timeline-item__date ubits-body-sm-regular">
                   ${i.date}
                 </div>
-              `:""}
+              `
+									: ''
+							}
               <div class="ubits-timeline-item__title ubits-body-md-semibold">
                 ${i.title}
               </div>
-              ${e&&i.description?`
+              ${
+								e && i.description
+									? `
                 <div class="ubits-timeline-item__description ubits-body-sm-regular">
                   ${i.description}
                 </div>
-              `:""}
+              `
+									: ''
+							}
             </div>
           </div>
-        `:a?"":`
+        `
+						: a
+							? ''
+							: `
           <div class="ubits-timeline-item__content">
             <div class="ubits-timeline-item__text">
-              ${r&&i.date?`
+              ${
+								r && i.date
+									? `
                 <div class="ubits-timeline-item__date ubits-body-sm-regular">
                   ${i.date}
                 </div>
-              `:""}
+              `
+									: ''
+							}
               <div class="ubits-timeline-item__title ubits-body-md-semibold">
                 ${i.title}
               </div>
-              ${e&&i.description?`
+              ${
+								e && i.description
+									? `
                 <div class="ubits-timeline-item__description ubits-body-sm-regular">
                   ${i.description}
                 </div>
-              `:""}
+              `
+									: ''
+							}
             </div>
           </div>
-        `}
+        `
+				}
       </div>
-    `}const k=c?h:"var(--modifiers-normal-color-light-bg-1)",y=o?"":`
+    `;
+	}
+	const k = c ? h : 'var(--modifiers-normal-color-light-bg-1)',
+		y = o
+			? ''
+			: `
         <div class="ubits-timeline-line"></div>
-      `;return`
-    <div class="ubits-timeline-item ${a?`ubits-timeline-item--${s}`:""}" data-index="${t}" data-state="${i.state}">
-      ${a&&s==="right"?`
+      `;
+	return `
+    <div class="ubits-timeline-item ${a ? `ubits-timeline-item--${s}` : ''}" data-index="${t}" data-state="${i.state}">
+      ${
+				a && s === 'right'
+					? `
         <div class="ubits-timeline-item__content">
           <div class="ubits-timeline-item__text">
-            ${r&&i.date?`
+            ${
+							r && i.date
+								? `
               <div class="ubits-timeline-item__date ubits-body-sm-regular">
                 ${i.date}
               </div>
-            `:""}
+            `
+								: ''
+						}
             <div class="ubits-timeline-item__title ubits-body-md-semibold">
               ${i.title}
             </div>
-            ${e&&i.description?`
+            ${
+							e && i.description
+								? `
               <div class="ubits-timeline-item__description ubits-body-sm-regular">
                 ${i.description}
               </div>
-            `:""}
+            `
+								: ''
+						}
           </div>
         </div>
-      `:""}
+      `
+					: ''
+			}
       <div class="ubits-timeline-item__marker-container">
         <div class="ubits-timeline-marker ${u}" style="border-color: ${h}; background-color: ${k}; border-radius: var(--ubits-border-radius-full, 50%) !important;">
           ${_}
         </div>
       </div>
       ${y}
-      ${a&&s==="left"?`
+      ${
+				a && s === 'left'
+					? `
         <div class="ubits-timeline-item__content">
           <div class="ubits-timeline-item__text">
-            ${r&&i.date?`
+            ${
+							r && i.date
+								? `
               <div class="ubits-timeline-item__date ubits-body-sm-regular">
                 ${i.date}
               </div>
-            `:""}
+            `
+								: ''
+						}
             <div class="ubits-timeline-item__title ubits-body-md-semibold">
               ${i.title}
             </div>
-            ${e&&i.description?`
+            ${
+							e && i.description
+								? `
               <div class="ubits-timeline-item__description ubits-body-sm-regular">
                 ${i.description}
               </div>
-            `:""}
+            `
+								: ''
+						}
           </div>
         </div>
-      `:a?"":`
+      `
+					: a
+						? ''
+						: `
         <div class="ubits-timeline-item__content">
           <div class="ubits-timeline-item__text">
-            ${r&&i.date?`
+            ${
+							r && i.date
+								? `
               <div class="ubits-timeline-item__date ubits-body-sm-regular">
                 ${i.date}
               </div>
-            `:""}
+            `
+								: ''
+						}
             <div class="ubits-timeline-item__title ubits-body-md-semibold">
               ${i.title}
             </div>
-            ${e&&i.description?`
+            ${
+							e && i.description
+								? `
               <div class="ubits-timeline-item__description ubits-body-sm-regular">
                 ${i.description}
               </div>
-            `:""}
+            `
+								: ''
+						}
           </div>
         </div>
-      `}
+      `
+			}
     </div>
-  `}function T(i){const{showAvatar:t=!1,showDate:o=!0,showDescription:n=!0,showIcon:m=!0,alignment:r="left",filledItems:e=2}=i,d=I(e),f=`timeline-${Date.now()}`;return`
-    <div class="ubits-timeline ${r==="center"?"ubits-timeline--center":"ubits-timeline--left"}" id="${f}">
-      ${d.map((c,u)=>z(c,u,u===d.length-1,i)).join("")}
+  `;
+}
+function T(i) {
+	const {
+			showAvatar: t = !1,
+			showDate: o = !0,
+			showDescription: n = !0,
+			showIcon: m = !0,
+			alignment: r = 'left',
+			filledItems: e = 2,
+		} = i,
+		d = I(e),
+		f = `timeline-${Date.now()}`;
+	return `
+    <div class="ubits-timeline ${r === 'center' ? 'ubits-timeline--center' : 'ubits-timeline--left'}" id="${f}">
+      ${d.map((c, u) => z(c, u, u === d.length - 1, i)).join('')}
     </div>
-  `}const b={args:{showAvatar:!1,showDate:!0,showDescription:!0,showIcon:!0,alignment:"left",filledItems:2},render:i=>{i.showAvatar===!0&&(i.showIcon=!1),i.showIcon===!0&&(i.showAvatar=!1);const t=document.createElement("div");t.style.cssText=`
+  `;
+}
+const b = {
+	args: {
+		showAvatar: !1,
+		showDate: !0,
+		showDescription: !0,
+		showIcon: !0,
+		alignment: 'left',
+		filledItems: 2,
+	},
+	render: (i) => {
+		i.showAvatar === !0 && (i.showIcon = !1), i.showIcon === !0 && (i.showAvatar = !1);
+		const t = document.createElement('div');
+		t.style.cssText = `
       padding: var(--p-spacing-mode-1-lg, 16px);
       background: var(--modifiers-normal-color-light-bg-2);
       border-radius: var(--ubits-border-radius-md, 8px);
       max-width: 800px;
-    `;const o=document.createElement("div");o.style.cssText=`
+    `;
+		const o = document.createElement('div');
+		(o.style.cssText = `
       padding: var(--p-spacing-mode-1-md, 12px);
       background: var(--modifiers-normal-color-light-bg-2);
       border-radius: var(--ubits-border-radius-md, 8px);
       border: 1px solid var(--modifiers-normal-color-light-border-1);
       margin-bottom: var(--p-spacing-mode-1-lg, 16px);
-    `,o.innerHTML=`
+    `),
+			(o.innerHTML = `
         <div style="margin-bottom: var(--p-spacing-mode-1-sm, 8px);">
         <strong class="ubits-body-md-semibold" style="color: var(--modifiers-normal-color-light-fg-1-high);">Configuración:</strong>
       </div>
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--p-spacing-mode-1-sm, 8px); font-size: var(--modifiers-normal-body-sm-regular-fontsize); color: var(--modifiers-normal-color-light-fg-1-medium);" class="ubits-body-sm-regular">
-        <div><strong>Avatar:</strong> ${i.showAvatar?"Sí":"No"}</div>
-        <div><strong>Fecha:</strong> ${i.showDate!==!1?"Sí":"No"}</div>
-        <div><strong>Descripción:</strong> ${i.showDescription!==!1?"Sí":"No"}</div>
-        <div><strong>Icono:</strong> ${i.showIcon!==!1?"Sí":"No"}</div>
-        <div><strong>Alineación:</strong> ${i.alignment==="center"?"Centrada":"Izquierda"}</div>
-        <div><strong>Items rellenos:</strong> ${i.filledItems||2}</div>
+        <div><strong>Avatar:</strong> ${i.showAvatar ? 'Sí' : 'No'}</div>
+        <div><strong>Fecha:</strong> ${i.showDate !== !1 ? 'Sí' : 'No'}</div>
+        <div><strong>Descripción:</strong> ${i.showDescription !== !1 ? 'Sí' : 'No'}</div>
+        <div><strong>Icono:</strong> ${i.showIcon !== !1 ? 'Sí' : 'No'}</div>
+        <div><strong>Alineación:</strong> ${i.alignment === 'center' ? 'Centrada' : 'Izquierda'}</div>
+        <div><strong>Items rellenos:</strong> ${i.filledItems || 2}</div>
       </div>
-    `;const n=document.createElement("div");n.style.cssText=`
+    `);
+		const n = document.createElement('div');
+		n.style.cssText = `
       background: var(--modifiers-normal-color-light-bg-1);
       border-radius: var(--ubits-border-radius-md, 8px);
       padding: var(--p-spacing-mode-1-lg, 16px);
-    `;const m=T(i);n.innerHTML=m;const r="ubits-timeline-styles";if(!document.getElementById(r)){const e=document.createElement("style");e.id=r,e.textContent=`
+    `;
+		const m = T(i);
+		n.innerHTML = m;
+		const r = 'ubits-timeline-styles';
+		if (!document.getElementById(r)) {
+			const e = document.createElement('style');
+			(e.id = r),
+				(e.textContent = `
         .ubits-timeline {
           position: relative;
           display: flex;
@@ -559,7 +798,18 @@ import{r as w}from"./AvatarProvider-CF4x-oFR.js";const C={title:"Layout/Timeline
         [data-theme="dark"] .ubits-timeline-item[data-state="filled"] .ubits-timeline-item__description {
           color: var(--modifiers-normal-color-dark-fg-1-medium);
         }
-      `,document.head.appendChild(e)}return t.appendChild(o),t.appendChild(n),t}};b.parameters={...b.parameters,docs:{...b.parameters?.docs,source:{originalSource:`{
+      `),
+				document.head.appendChild(e);
+		}
+		return t.appendChild(o), t.appendChild(n), t;
+	},
+};
+b.parameters = {
+	...b.parameters,
+	docs: {
+		...b.parameters?.docs,
+		source: {
+			originalSource: `{
   args: {
     showAvatar: false,
     showDate: true,
@@ -1027,4 +1277,10 @@ import{r as w}from"./AvatarProvider-CF4x-oFR.js";const C={title:"Layout/Timeline
     container.appendChild(timelineContainer);
     return container;
   }
-}`,...b.parameters?.docs?.source}}};const D=["Default"];export{b as Default,D as __namedExportsOrder,C as default};
+}`,
+			...b.parameters?.docs?.source,
+		},
+	},
+};
+const D = ['Default'];
+export { b as Default, D as __namedExportsOrder, C as default };

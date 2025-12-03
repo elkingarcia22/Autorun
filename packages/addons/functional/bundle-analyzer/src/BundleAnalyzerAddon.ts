@@ -101,8 +101,7 @@ export class BundleAnalyzerAddon implements IFunctionalAddon {
 		if (config.outputDir !== undefined) analyzerConfig.outputDir = config.outputDir;
 		if (config.format !== undefined) analyzerConfig.format = config.format;
 		if (config.openBrowser !== undefined) analyzerConfig.openBrowser = config.openBrowser;
-		if (config.generateReport !== undefined)
-			analyzerConfig.generateReport = config.generateReport;
+		if (config.generateReport !== undefined) analyzerConfig.generateReport = config.generateReport;
 		if (config.threshold !== undefined) analyzerConfig.threshold = config.threshold;
 		if (config.exclude !== undefined) analyzerConfig.exclude = config.exclude;
 
@@ -179,4 +178,3 @@ export class BundleAnalyzerAddon implements IFunctionalAddon {
 		};
 	}
 }
-

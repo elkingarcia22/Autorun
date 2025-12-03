@@ -48,4 +48,3 @@ if (typeof window !== 'undefined') {
 	// Inicializar automáticamente
 	initComponents();
 }
-

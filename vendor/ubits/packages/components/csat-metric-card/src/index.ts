@@ -7,4 +7,3 @@ import './styles/csat-metric-card.css';
 
 export { renderCSATMetricCard, createCSATMetricCard } from './CSATMetricCardProvider';
 export type { CSATMetricCardOptions, CSATMetricCardSize } from './types/CSATMetricCardOptions';
-

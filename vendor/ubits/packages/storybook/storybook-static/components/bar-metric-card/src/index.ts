@@ -4,10 +4,9 @@
  */
 
 export { renderBarMetricCard, createBarMetricCard } from './BarMetricCardProvider';
-export type { 
-  BarMetricCardOptions, 
-  BarCategory,
-  BarMetricCardLayout,
-  BarMetricCardSize 
+export type {
+	BarMetricCardOptions,
+	BarCategory,
+	BarMetricCardLayout,
+	BarMetricCardSize,
 } from './types/BarMetricCardOptions';
-

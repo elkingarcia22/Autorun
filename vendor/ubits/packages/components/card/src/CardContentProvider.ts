@@ -9,25 +9,25 @@ import { LEVELS, STATUSES } from './configs/cardConfigs';
 
 // Helper para renderizar iconos - compatible con Storybook
 function renderIconHelper(iconName: string, iconStyle: 'regular' | 'solid' = 'regular'): string {
-  const iconClass = iconStyle === 'solid' ? 'fas' : 'far';
-  const name = iconName.startsWith('fa-') ? iconName : `fa-${iconName}`;
-  return `<i class="${iconClass} ${name}"></i>`;
+	const iconClass = iconStyle === 'solid' ? 'fas' : 'far';
+	const name = iconName.startsWith('fa-') ? iconName : `fa-${iconName}`;
+	return `<i class="${iconClass} ${name}"></i>`;
 }
 
 /**
  * Renderiza una course-card individual como HTML string
  */
 export function renderCardContent(cardData: CardData): string {
-  // Determinar estado y texto
-  const statusConfig = STATUSES[cardData.status];
-  const statusClass = statusConfig.class;
-  const statusText = statusConfig.text;
+	// Determinar estado y texto
+	const statusConfig = STATUSES[cardData.status];
+	const statusClass = statusConfig.class;
+	const statusText = statusConfig.text;
 
-  // Determinar icono según el nivel
-  const levelIcon = LEVELS[cardData.level] || LEVELS['Intermedio'];
+	// Determinar icono según el nivel
+	const levelIcon = LEVELS[cardData.level] || LEVELS['Intermedio'];
 
-  // Template de la card
-  return `
+	// Template de la card
+	return `
     <div class="course-card" data-progress="${cardData.progress}" data-status="${cardData.status}">
       <div class="course-thumbnail-wrapper">
         <div class="course-thumbnail">
@@ -88,61 +88,60 @@ export function renderCardContent(cardData: CardData): string {
  * Carga múltiples course-cards en un contenedor
  */
 export function loadCardContent(options: CardContentOptions): void {
-  const { containerId, container, cards, onClick } = options;
+	const { containerId, container, cards, onClick } = options;
 
-  // Obtener contenedor
-  let targetContainer: HTMLElement | null = null;
-  if (container) {
-    targetContainer = container;
-  } else if (containerId) {
-    targetContainer = document.getElementById(containerId);
-  }
+	// Obtener contenedor
+	let targetContainer: HTMLElement | null = null;
+	if (container) {
+		targetContainer = container;
+	} else if (containerId) {
+		targetContainer = document.getElementById(containerId);
+	}
 
-  if (!targetContainer) {
-    console.error(`Container not found: ${containerId || 'container element'}`);
-    return;
-  }
+	if (!targetContainer) {
+		console.error(`Container not found: ${containerId || 'container element'}`);
+		return;
+	}
 
-  // Limpiar contenedor
-  targetContainer.innerHTML = '';
+	// Limpiar contenedor
+	targetContainer.innerHTML = '';
 
-  // Renderizar cada card
-  cards.forEach((cardData, index) => {
-    const cardHTML = renderCardContent(cardData);
-    const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = cardHTML;
-    const cardElement = tempDiv.firstElementChild as HTMLElement;
+	// Renderizar cada card
+	cards.forEach((cardData, index) => {
+		const cardHTML = renderCardContent(cardData);
+		const tempDiv = document.createElement('div');
+		tempDiv.innerHTML = cardHTML;
+		const cardElement = tempDiv.firstElementChild as HTMLElement;
 
-    if (!cardElement) {
-      console.error('Failed to create card element');
-      return;
-    }
+		if (!cardElement) {
+			console.error('Failed to create card element');
+			return;
+		}
 
-    // Agregar event listener si se proporciona onClick
-    if (onClick) {
-      cardElement.addEventListener('click', () => {
-        onClick(cardData, index, cardElement);
-      });
-    }
+		// Agregar event listener si se proporciona onClick
+		if (onClick) {
+			cardElement.addEventListener('click', () => {
+				onClick(cardData, index, cardElement);
+			});
+		}
 
-    // Agregar al contenedor
-    targetContainer!.appendChild(cardElement);
-  });
+		// Agregar al contenedor
+		targetContainer!.appendChild(cardElement);
+	});
 }
 
 /**
  * Crea un elemento card programáticamente
  */
 export function createCard(cardData: CardData): HTMLElement {
-  const cardHTML = renderCardContent(cardData);
-  const tempDiv = document.createElement('div');
-  tempDiv.innerHTML = cardHTML;
-  const cardElement = tempDiv.firstElementChild as HTMLElement;
+	const cardHTML = renderCardContent(cardData);
+	const tempDiv = document.createElement('div');
+	tempDiv.innerHTML = cardHTML;
+	const cardElement = tempDiv.firstElementChild as HTMLElement;
 
-  if (!cardElement) {
-    throw new Error('Failed to create card element');
-  }
+	if (!cardElement) {
+		throw new Error('Failed to create card element');
+	}
 
-  return cardElement;
+	return cardElement;
 }
-

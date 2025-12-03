@@ -1,68 +1,344 @@
-const T={title:"Navegación/TreeMenu",tags:["autodocs"],parameters:{docs:{description:{component:"Componente Tree Menu UBITS para mostrar estructuras jerárquicas con expandir/colapsar. Soporta iconos opcionales, múltiples niveles, chevron opcional y modo cascada o vertical."}}},argTypes:{showIcons:{control:{type:"boolean"},description:"Mostrar iconos en los nodos del árbol",table:{defaultValue:{summary:"true"},type:{summary:"boolean"}}},showChevron:{control:{type:"boolean"},description:"Mostrar icono de chevron (flecha) para expandir/colapsar",table:{defaultValue:{summary:"true"},type:{summary:"boolean"}}},maxLevels:{control:{type:"number",min:1,max:5,step:1},description:"Cantidad máxima de niveles en el árbol",table:{defaultValue:{summary:"3"},type:{summary:"number"}}},defaultExpanded:{control:{type:"boolean"},description:"Expandir todos los nodos por defecto",table:{defaultValue:{summary:"false"},type:{summary:"boolean"}}},size:{control:{type:"select"},options:["xs","sm","md","lg"],description:"Tamaño del texto y espaciado (matching List component)",table:{defaultValue:{summary:"md"},type:{summary:"xs | sm | md | lg"}}},cascade:{control:{type:"boolean"},description:"Modo cascada (con indentación) o vertical (sin indentación, se despliega hacia abajo)",table:{defaultValue:{summary:"true"},type:{summary:"boolean"}}}}};function z(n,e="regular"){return`<i class="${e==="solid"?"fas":"far"} fa-${n}"></i>`}function $(n,e){return n===1?[{label:"Engineering",icon:e?"code":void 0},{label:"Marketing",icon:e?"chart-line":void 0},{label:"Operations",icon:e?"cog":void 0}]:n===2?[{label:"Engineering",icon:e?"code":void 0,children:[{label:"Frontend",icon:e?"paint-brush":void 0},{label:"Backend",icon:e?"server":void 0},{label:"Platform Team",icon:e?"cog":void 0}]},{label:"Marketing",icon:e?"chart-line":void 0,children:[{label:"Content",icon:e?"file-alt":void 0},{label:"SEO",icon:e?"search":void 0}]},{label:"Operations",icon:e?"cog":void 0,children:[{label:"Support",icon:e?"headset":void 0}]}]:n===3?[{label:"Engineering",icon:e?"code":void 0,children:[{label:"Frontend",icon:e?"paint-brush":void 0,children:[{label:"Design System",icon:e?"palette":void 0,children:[{label:"Components",icon:e?"cubes":void 0},{label:"Tokens",icon:e?"tags":void 0},{label:"Guidelines",icon:e?"book":void 0}]},{label:"Web Platform",icon:e?"globe":void 0}]},{label:"Backend",icon:e?"server":void 0},{label:"Platform Team",icon:e?"cog":void 0}]},{label:"Marketing",icon:e?"chart-line":void 0,children:[{label:"Content",icon:e?"file-alt":void 0}]},{label:"Operations",icon:e?"cog":void 0}]:n===4?[{label:"Engineering",icon:e?"code":void 0,children:[{label:"Frontend",icon:e?"paint-brush":void 0,children:[{label:"Design System",icon:e?"palette":void 0,children:[{label:"Components",icon:e?"cubes":void 0,children:[{label:"Button",icon:e?"square":void 0},{label:"Input",icon:e?"keyboard":void 0}]},{label:"Tokens",icon:e?"tags":void 0},{label:"Guidelines",icon:e?"book":void 0}]},{label:"Web Platform",icon:e?"globe":void 0}]},{label:"Backend",icon:e?"server":void 0}]},{label:"Marketing",icon:e?"chart-line":void 0}]:[{label:"Engineering",icon:e?"code":void 0,children:[{label:"Frontend",icon:e?"paint-brush":void 0,children:[{label:"Design System",icon:e?"palette":void 0,children:[{label:"Components",icon:e?"cubes":void 0,children:[{label:"Button",icon:e?"square":void 0,children:[{label:"Primary",icon:e?"circle":void 0},{label:"Secondary",icon:e?"circle":void 0}]},{label:"Input",icon:e?"keyboard":void 0}]},{label:"Tokens",icon:e?"tags":void 0}]}]}]}]}function v(n,e=0,d,r,l,s,i,t,c){const o=n.children&&n.children.length>0,u=`${c}-node-${e}-${n.label.toLowerCase().replace(/\s+/g,"-")}`,a=r&&o,g=t==="xs"?"ubits-body-xs-regular":t==="sm"?"ubits-body-sm-regular":t==="lg"?"ubits-body-lg-regular":"ubits-body-md-regular",m=i?t==="xs"?`calc(var(--p-spacing-mode-1-sm, 8px) * ${e})`:t==="sm"?`calc(var(--p-spacing-mode-1-md, 16px) * ${e})`:t==="lg"?`calc(var(--p-spacing-mode-1-lg, 24px) * ${e})`:`calc(var(--p-spacing-mode-1-md, 16px) * ${e})`:"0",b=t==="xs"?"12px":t==="sm"?"14px":t==="lg"?"18px":"16px",h=t==="xs"?"10px":t==="sm"?"12px":t==="lg"?"16px":"14px",f=t==="xs"?"8px 12px":t==="sm"?"10px 14px":t==="lg"?"16px 20px":"12px 16px",x=t==="xs"?"28px":t==="sm"?"32px":t==="lg"?"48px":"40px",y=t==="xs"?"var(--modifiers-normal-body-xs-regular-fontsize)":t==="sm"?"var(--modifiers-normal-body-sm-regular-fontsize)":t==="lg"?"var(--modifiers-normal-body-lg-regular-fontsize)":"var(--modifiers-normal-body-md-regular-fontsize)",_=t==="xs"?"var(--modifiers-normal-body-xs-regular-lineheight)":t==="sm"?"var(--modifiers-normal-body-sm-regular-lineheight)":t==="lg"?"var(--modifiers-normal-body-lg-regular-lineheight)":"var(--modifiers-normal-body-md-regular-lineheight)";return`
-    <div class="ubits-tree-node ${i?"ubits-tree-node--cascade":"ubits-tree-node--vertical"}" data-level="${e}" style="${i?`padding-left: ${m};`:""}">
+const T = {
+	title: 'Navegación/TreeMenu',
+	tags: ['autodocs'],
+	parameters: {
+		docs: {
+			description: {
+				component:
+					'Componente Tree Menu UBITS para mostrar estructuras jerárquicas con expandir/colapsar. Soporta iconos opcionales, múltiples niveles, chevron opcional y modo cascada o vertical.',
+			},
+		},
+	},
+	argTypes: {
+		showIcons: {
+			control: { type: 'boolean' },
+			description: 'Mostrar iconos en los nodos del árbol',
+			table: { defaultValue: { summary: 'true' }, type: { summary: 'boolean' } },
+		},
+		showChevron: {
+			control: { type: 'boolean' },
+			description: 'Mostrar icono de chevron (flecha) para expandir/colapsar',
+			table: { defaultValue: { summary: 'true' }, type: { summary: 'boolean' } },
+		},
+		maxLevels: {
+			control: { type: 'number', min: 1, max: 5, step: 1 },
+			description: 'Cantidad máxima de niveles en el árbol',
+			table: { defaultValue: { summary: '3' }, type: { summary: 'number' } },
+		},
+		defaultExpanded: {
+			control: { type: 'boolean' },
+			description: 'Expandir todos los nodos por defecto',
+			table: { defaultValue: { summary: 'false' }, type: { summary: 'boolean' } },
+		},
+		size: {
+			control: { type: 'select' },
+			options: ['xs', 'sm', 'md', 'lg'],
+			description: 'Tamaño del texto y espaciado (matching List component)',
+			table: { defaultValue: { summary: 'md' }, type: { summary: 'xs | sm | md | lg' } },
+		},
+		cascade: {
+			control: { type: 'boolean' },
+			description:
+				'Modo cascada (con indentación) o vertical (sin indentación, se despliega hacia abajo)',
+			table: { defaultValue: { summary: 'true' }, type: { summary: 'boolean' } },
+		},
+	},
+};
+function z(n, e = 'regular') {
+	return `<i class="${e === 'solid' ? 'fas' : 'far'} fa-${n}"></i>`;
+}
+function $(n, e) {
+	return n === 1
+		? [
+				{ label: 'Engineering', icon: e ? 'code' : void 0 },
+				{ label: 'Marketing', icon: e ? 'chart-line' : void 0 },
+				{ label: 'Operations', icon: e ? 'cog' : void 0 },
+			]
+		: n === 2
+			? [
+					{
+						label: 'Engineering',
+						icon: e ? 'code' : void 0,
+						children: [
+							{ label: 'Frontend', icon: e ? 'paint-brush' : void 0 },
+							{ label: 'Backend', icon: e ? 'server' : void 0 },
+							{ label: 'Platform Team', icon: e ? 'cog' : void 0 },
+						],
+					},
+					{
+						label: 'Marketing',
+						icon: e ? 'chart-line' : void 0,
+						children: [
+							{ label: 'Content', icon: e ? 'file-alt' : void 0 },
+							{ label: 'SEO', icon: e ? 'search' : void 0 },
+						],
+					},
+					{
+						label: 'Operations',
+						icon: e ? 'cog' : void 0,
+						children: [{ label: 'Support', icon: e ? 'headset' : void 0 }],
+					},
+				]
+			: n === 3
+				? [
+						{
+							label: 'Engineering',
+							icon: e ? 'code' : void 0,
+							children: [
+								{
+									label: 'Frontend',
+									icon: e ? 'paint-brush' : void 0,
+									children: [
+										{
+											label: 'Design System',
+											icon: e ? 'palette' : void 0,
+											children: [
+												{ label: 'Components', icon: e ? 'cubes' : void 0 },
+												{ label: 'Tokens', icon: e ? 'tags' : void 0 },
+												{ label: 'Guidelines', icon: e ? 'book' : void 0 },
+											],
+										},
+										{ label: 'Web Platform', icon: e ? 'globe' : void 0 },
+									],
+								},
+								{ label: 'Backend', icon: e ? 'server' : void 0 },
+								{ label: 'Platform Team', icon: e ? 'cog' : void 0 },
+							],
+						},
+						{
+							label: 'Marketing',
+							icon: e ? 'chart-line' : void 0,
+							children: [{ label: 'Content', icon: e ? 'file-alt' : void 0 }],
+						},
+						{ label: 'Operations', icon: e ? 'cog' : void 0 },
+					]
+				: n === 4
+					? [
+							{
+								label: 'Engineering',
+								icon: e ? 'code' : void 0,
+								children: [
+									{
+										label: 'Frontend',
+										icon: e ? 'paint-brush' : void 0,
+										children: [
+											{
+												label: 'Design System',
+												icon: e ? 'palette' : void 0,
+												children: [
+													{
+														label: 'Components',
+														icon: e ? 'cubes' : void 0,
+														children: [
+															{ label: 'Button', icon: e ? 'square' : void 0 },
+															{ label: 'Input', icon: e ? 'keyboard' : void 0 },
+														],
+													},
+													{ label: 'Tokens', icon: e ? 'tags' : void 0 },
+													{ label: 'Guidelines', icon: e ? 'book' : void 0 },
+												],
+											},
+											{ label: 'Web Platform', icon: e ? 'globe' : void 0 },
+										],
+									},
+									{ label: 'Backend', icon: e ? 'server' : void 0 },
+								],
+							},
+							{ label: 'Marketing', icon: e ? 'chart-line' : void 0 },
+						]
+					: [
+							{
+								label: 'Engineering',
+								icon: e ? 'code' : void 0,
+								children: [
+									{
+										label: 'Frontend',
+										icon: e ? 'paint-brush' : void 0,
+										children: [
+											{
+												label: 'Design System',
+												icon: e ? 'palette' : void 0,
+												children: [
+													{
+														label: 'Components',
+														icon: e ? 'cubes' : void 0,
+														children: [
+															{
+																label: 'Button',
+																icon: e ? 'square' : void 0,
+																children: [
+																	{ label: 'Primary', icon: e ? 'circle' : void 0 },
+																	{ label: 'Secondary', icon: e ? 'circle' : void 0 },
+																],
+															},
+															{ label: 'Input', icon: e ? 'keyboard' : void 0 },
+														],
+													},
+													{ label: 'Tokens', icon: e ? 'tags' : void 0 },
+												],
+											},
+										],
+									},
+								],
+							},
+						];
+}
+function v(n, e = 0, d, r, l, s, i, t, c) {
+	const o = n.children && n.children.length > 0,
+		u = `${c}-node-${e}-${n.label.toLowerCase().replace(/\s+/g, '-')}`,
+		a = r && o,
+		g =
+			t === 'xs'
+				? 'ubits-body-xs-regular'
+				: t === 'sm'
+					? 'ubits-body-sm-regular'
+					: t === 'lg'
+						? 'ubits-body-lg-regular'
+						: 'ubits-body-md-regular',
+		m = i
+			? t === 'xs'
+				? `calc(var(--p-spacing-mode-1-sm, 8px) * ${e})`
+				: t === 'sm'
+					? `calc(var(--p-spacing-mode-1-md, 16px) * ${e})`
+					: t === 'lg'
+						? `calc(var(--p-spacing-mode-1-lg, 24px) * ${e})`
+						: `calc(var(--p-spacing-mode-1-md, 16px) * ${e})`
+			: '0',
+		b = t === 'xs' ? '12px' : t === 'sm' ? '14px' : t === 'lg' ? '18px' : '16px',
+		h = t === 'xs' ? '10px' : t === 'sm' ? '12px' : t === 'lg' ? '16px' : '14px',
+		f = t === 'xs' ? '8px 12px' : t === 'sm' ? '10px 14px' : t === 'lg' ? '16px 20px' : '12px 16px',
+		x = t === 'xs' ? '28px' : t === 'sm' ? '32px' : t === 'lg' ? '48px' : '40px',
+		y =
+			t === 'xs'
+				? 'var(--modifiers-normal-body-xs-regular-fontsize)'
+				: t === 'sm'
+					? 'var(--modifiers-normal-body-sm-regular-fontsize)'
+					: t === 'lg'
+						? 'var(--modifiers-normal-body-lg-regular-fontsize)'
+						: 'var(--modifiers-normal-body-md-regular-fontsize)',
+		_ =
+			t === 'xs'
+				? 'var(--modifiers-normal-body-xs-regular-lineheight)'
+				: t === 'sm'
+					? 'var(--modifiers-normal-body-sm-regular-lineheight)'
+					: t === 'lg'
+						? 'var(--modifiers-normal-body-lg-regular-lineheight)'
+						: 'var(--modifiers-normal-body-md-regular-lineheight)';
+	return `
+    <div class="ubits-tree-node ${i ? 'ubits-tree-node--cascade' : 'ubits-tree-node--vertical'}" data-level="${e}" style="${i ? `padding-left: ${m};` : ''}">
       <div 
-        class="ubits-tree-node__content ${o?"ubits-tree-node__content--expandable":""}" 
+        class="ubits-tree-node__content ${o ? 'ubits-tree-node__content--expandable' : ''}" 
         data-node-id="${u}"
         data-size="${t}"
         style="min-height: ${x} !important; padding: ${f} !important; font-size: ${y} !important; line-height: ${_} !important; margin: 0 !important; border: none !important;"
-        ${o?`data-expanded="${a}"`:""}
-        role="${o?"button":"treeitem"}"
-        ${o?'tabindex="0"':""}
-        aria-expanded="${o?a:void 0}"
+        ${o ? `data-expanded="${a}"` : ''}
+        role="${o ? 'button' : 'treeitem'}"
+        ${o ? 'tabindex="0"' : ''}
+        aria-expanded="${o ? a : void 0}"
         aria-label="${n.label}"
       >
-        ${o&&s?`
+        ${
+					o && s
+						? `
           <span class="ubits-tree-node__chevron" style="width: ${h}; height: ${h};">
-            <i class="far fa-chevron-${a?"down":"right"}" style="font-size: ${h};"></i>
+            <i class="far fa-chevron-${a ? 'down' : 'right'}" style="font-size: ${h};"></i>
           </span>
-        `:`
+        `
+						: `
           <span class="ubits-tree-node__chevron" style="width: 0; height: 0; display: none;"></span>
-        `}
-        ${l&&n.icon?`
+        `
+				}
+        ${
+					l && n.icon
+						? `
           <span class="ubits-tree-node__icon" style="font-size: ${b};">
-            ${z(n.icon,"regular")}
+            ${z(n.icon, 'regular')}
           </span>
-        `:""}
+        `
+						: ''
+				}
         <span class="ubits-tree-node__label ${g}" style="line-height: ${_};">${n.label}</span>
       </div>
-      ${o?`
-        <div class="ubits-tree-node__children ${i?"ubits-tree-node__children--cascade":"ubits-tree-node__children--vertical"}" data-children-id="${u}" style="display: ${a?"block":"none"};">
-          ${n.children.map(k=>v(k,e+1,d,r,l,s,i,t,c)).join("")}
+      ${
+				o
+					? `
+        <div class="ubits-tree-node__children ${i ? 'ubits-tree-node__children--cascade' : 'ubits-tree-node__children--vertical'}" data-children-id="${u}" style="display: ${a ? 'block' : 'none'};">
+          ${n.children.map((k) => v(k, e + 1, d, r, l, s, i, t, c)).join('')}
         </div>
-      `:""}
+      `
+					: ''
+			}
     </div>
-  `}function E(n){const{showIcons:e=!0,showChevron:d=!0,maxLevels:r=3,defaultExpanded:l=!1,size:s="md",cascade:i=!0}=n,t=`tree-${Date.now()}`,c=$(r,e);return`
-    <div class="ubits-tree-menu ${i?"ubits-tree-menu--cascade":"ubits-tree-menu--vertical"}" id="${t}" role="tree">
-      ${c.map(u=>v(u,0,r,l,e,d,i,s,t)).join("")}
+  `;
+}
+function E(n) {
+	const {
+			showIcons: e = !0,
+			showChevron: d = !0,
+			maxLevels: r = 3,
+			defaultExpanded: l = !1,
+			size: s = 'md',
+			cascade: i = !0,
+		} = n,
+		t = `tree-${Date.now()}`,
+		c = $(r, e);
+	return `
+    <div class="ubits-tree-menu ${i ? 'ubits-tree-menu--cascade' : 'ubits-tree-menu--vertical'}" id="${t}" role="tree">
+      ${c.map((u) => v(u, 0, r, l, e, d, i, s, t)).join('')}
     </div>
-  `}const p={args:{showIcons:!0,showChevron:!0,maxLevels:3,defaultExpanded:!1,size:"md",cascade:!0},render:n=>{const e=document.createElement("div");e.style.cssText=`
+  `;
+}
+const p = {
+	args: {
+		showIcons: !0,
+		showChevron: !0,
+		maxLevels: 3,
+		defaultExpanded: !1,
+		size: 'md',
+		cascade: !0,
+	},
+	render: (n) => {
+		const e = document.createElement('div');
+		e.style.cssText = `
       padding: var(--p-spacing-mode-1-lg, 24px);
       background: var(--modifiers-normal-color-light-bg-2);
       border-radius: 8px);
       max-width: 600px;
-    `;const d=document.createElement("div");d.style.cssText=`
+    `;
+		const d = document.createElement('div');
+		(d.style.cssText = `
       padding: var(--p-spacing-mode-1-md, 16px);
       background: var(--modifiers-normal-color-light-bg-2);
       border-radius: 8px);
       border: 1px solid var(--modifiers-normal-color-light-border-1);
       margin-bottom: var(--p-spacing-mode-1-lg, 24px);
-    `,d.innerHTML=`
+    `),
+			(d.innerHTML = `
       <div style="margin-bottom: 12px;">
         <strong class="ubits-body-md-semibold" style="color: var(--modifiers-normal-color-light-fg-1-high);">Configuración:</strong>
       </div>
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; font-size: 13px; color: var(--modifiers-normal-color-light-fg-1-medium);" class="ubits-body-sm-regular">
-        <div><strong>Iconos:</strong> ${n.showIcons?"Sí":"No"}</div>
-        <div><strong>Chevron:</strong> ${n.showChevron!==!1?"Sí":"No"}</div>
-        <div><strong>Niveles:</strong> ${n.maxLevels||3}</div>
-        <div><strong>Expandido:</strong> ${n.defaultExpanded?"Sí":"No"}</div>
-        <div><strong>Tamaño:</strong> ${n.size||"md"}</div>
-        <div><strong>Modo:</strong> ${n.cascade!==!1?"Cascada":"Vertical"}</div>
+        <div><strong>Iconos:</strong> ${n.showIcons ? 'Sí' : 'No'}</div>
+        <div><strong>Chevron:</strong> ${n.showChevron !== !1 ? 'Sí' : 'No'}</div>
+        <div><strong>Niveles:</strong> ${n.maxLevels || 3}</div>
+        <div><strong>Expandido:</strong> ${n.defaultExpanded ? 'Sí' : 'No'}</div>
+        <div><strong>Tamaño:</strong> ${n.size || 'md'}</div>
+        <div><strong>Modo:</strong> ${n.cascade !== !1 ? 'Cascada' : 'Vertical'}</div>
       </div>
-    `;const r=document.createElement("div");r.style.cssText=`
+    `);
+		const r = document.createElement('div');
+		r.style.cssText = `
       background: var(--modifiers-normal-color-light-bg-1);
       border-radius: 8px);
       padding: var(--p-spacing-mode-1-md, 16px);
-    `;const l=E(n);r.innerHTML=l;const s="ubits-tree-menu-styles";if(!document.getElementById(s)){const i=document.createElement("style");i.id=s,i.textContent=`
+    `;
+		const l = E(n);
+		r.innerHTML = l;
+		const s = 'ubits-tree-menu-styles';
+		if (!document.getElementById(s)) {
+			const i = document.createElement('style');
+			(i.id = s),
+				(i.textContent = `
         .ubits-tree-menu {
           width: 100%;
           user-select: none;
@@ -77,7 +353,7 @@ const T={title:"Navegación/TreeMenu",tags:["autodocs"],parameters:{docs:{descri
           align-items: center;
           gap: var(--p-spacing-mode-1-sm, 8px);
           border-radius: 6px);
-          cursor: ${n.maxLevels&&n.maxLevels>1?"pointer":"default"};
+          cursor: ${n.maxLevels && n.maxLevels > 1 ? 'pointer' : 'default'};
           transition: all 0.2s ease;
           color: var(--modifiers-normal-color-light-fg-1-high);
           background: transparent;
@@ -341,7 +617,56 @@ const T={title:"Navegación/TreeMenu",tags:["autodocs"],parameters:{docs:{descri
         [data-theme="dark"] .ubits-tree-node__label {
           color: var(--modifiers-normal-color-dark-fg-1-high);
         }
-      `,document.head.appendChild(i)}return setTimeout(()=>{const i=r.querySelector(".ubits-tree-menu");i&&(i.addEventListener("click",t=>{const o=t.target.closest(".ubits-tree-node__content");if(!o)return;if(o.classList.contains("ubits-tree-node__content--expandable")){const a=o.getAttribute("data-node-id"),g=i.querySelector(`[data-children-id="${a}"]`),m=o.querySelector(".ubits-tree-node__chevron i"),b=o.getAttribute("data-expanded")==="true";g&&(b?(g.style.display="none",o.setAttribute("data-expanded","false"),o.setAttribute("aria-expanded","false"),m&&n.showChevron!==!1&&(m.className="far fa-chevron-right")):(g.style.display="block",o.setAttribute("data-expanded","true"),o.setAttribute("aria-expanded","true"),m&&n.showChevron!==!1&&(m.className="far fa-chevron-down")))}i.querySelectorAll(".ubits-tree-node__content").forEach(a=>{a.classList.remove("ubits-tree-node__content--active"),a.removeAttribute("aria-selected")}),o.classList.add("ubits-tree-node__content--active"),o.setAttribute("aria-selected","true")}),i.addEventListener("keydown",t=>{const o=t.target.closest(".ubits-tree-node__content");o&&(t.key==="Enter"||t.key===" ")&&(t.preventDefault(),o.click())}))},100),e.appendChild(d),e.appendChild(r),e}};p.parameters={...p.parameters,docs:{...p.parameters?.docs,source:{originalSource:`{
+      `),
+				document.head.appendChild(i);
+		}
+		return (
+			setTimeout(() => {
+				const i = r.querySelector('.ubits-tree-menu');
+				i &&
+					(i.addEventListener('click', (t) => {
+						const o = t.target.closest('.ubits-tree-node__content');
+						if (!o) return;
+						if (o.classList.contains('ubits-tree-node__content--expandable')) {
+							const a = o.getAttribute('data-node-id'),
+								g = i.querySelector(`[data-children-id="${a}"]`),
+								m = o.querySelector('.ubits-tree-node__chevron i'),
+								b = o.getAttribute('data-expanded') === 'true';
+							g &&
+								(b
+									? ((g.style.display = 'none'),
+										o.setAttribute('data-expanded', 'false'),
+										o.setAttribute('aria-expanded', 'false'),
+										m && n.showChevron !== !1 && (m.className = 'far fa-chevron-right'))
+									: ((g.style.display = 'block'),
+										o.setAttribute('data-expanded', 'true'),
+										o.setAttribute('aria-expanded', 'true'),
+										m && n.showChevron !== !1 && (m.className = 'far fa-chevron-down')));
+						}
+						i.querySelectorAll('.ubits-tree-node__content').forEach((a) => {
+							a.classList.remove('ubits-tree-node__content--active'),
+								a.removeAttribute('aria-selected');
+						}),
+							o.classList.add('ubits-tree-node__content--active'),
+							o.setAttribute('aria-selected', 'true');
+					}),
+					i.addEventListener('keydown', (t) => {
+						const o = t.target.closest('.ubits-tree-node__content');
+						o && (t.key === 'Enter' || t.key === ' ') && (t.preventDefault(), o.click());
+					}));
+			}, 100),
+			e.appendChild(d),
+			e.appendChild(r),
+			e
+		);
+	},
+};
+p.parameters = {
+	...p.parameters,
+	docs: {
+		...p.parameters?.docs,
+		source: {
+			originalSource: `{
   args: {
     showIcons: true,
     showChevron: true,
@@ -746,4 +1071,10 @@ const T={title:"Navegación/TreeMenu",tags:["autodocs"],parameters:{docs:{descri
     container.appendChild(treeContainer);
     return container;
   }
-}`,...p.parameters?.docs?.source}}};const L=["Default"];export{p as Default,L as __namedExportsOrder,T as default};
+}`,
+			...p.parameters?.docs?.source,
+		},
+	},
+};
+const L = ['Default'];
+export { p as Default, L as __namedExportsOrder, T as default };

@@ -77,34 +77,28 @@ export const UBITS_PRESET: UBITSConfig = {
 		// 1. Desarrollo y Componentes
 		'storybook', // 📚 Desarrollo y documentación de componentes
 		'figma-sync', // 🎨 Sincronización de tokens desde Figma
-		
+
 		// 3-4. Calidad de Código
 		'eslint', // 🔍 Detección de errores de código
 		'prettier', // ✨ Formateo automático de código
-		
+
 		// 7. Testing Visual
 		'chromatic', // 🖼️ Visual testing y comparación
-		
+
 		// 12. Componentes Standalone
 		'standalone', // 🚀 Componentes standalone
-		
+
 		// 14. Análisis de Usuarios
 		'clarity', // 👁️ Análisis de comportamiento de usuarios
-		
+
 		// 15-16. Despliegue e Integración
 		'vercel', // ☁️ Despliegue en Vercel
 		'github', // 🐙 Integración con GitHub
-		
+
 		// 18. Feedback
 		'feedback', // 💬 Sistema de feedback automatizado
 	],
-	components: [
-		'welcome',
-		'button-feedback',
-		'alert',
-		'mask',
-		'button',
-	],
+	components: ['welcome', 'button-feedback', 'alert', 'mask', 'button'],
 	templates: {
 		administrador: {
 			type: 'administrador',
@@ -131,13 +125,7 @@ export const UBITS_PRESET: UBITSConfig = {
 					'mi-perfil',
 				],
 			},
-			components: [
-				'sidebar',
-				'header',
-				'dashboard',
-				'tables',
-				'forms',
-			],
+			components: ['sidebar', 'header', 'dashboard', 'tables', 'forms'],
 		},
 		colaborador: {
 			type: 'colaborador',
@@ -166,12 +154,7 @@ export const UBITS_PRESET: UBITSConfig = {
 					'mi-perfil',
 				],
 			},
-			components: [
-				'sidebar',
-				'header',
-				'cards',
-				'forms',
-			],
+			components: ['sidebar', 'header', 'cards', 'forms'],
 		},
 	},
 	modules: [
@@ -472,4 +455,3 @@ export const UBITS_ADDONS_CONFIG = {
 		syncComponents: false, // Solo tokens por ahora
 	},
 };
-

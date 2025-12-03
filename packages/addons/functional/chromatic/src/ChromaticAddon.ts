@@ -6,11 +6,7 @@
  */
 
 import { IFunctionalAddon, AutorunContext } from '@autorun/core';
-import {
-	ChromaticService,
-	ChromaticConfig,
-	ChromaticResult,
-} from './ChromaticService';
+import { ChromaticService, ChromaticConfig, ChromaticResult } from './ChromaticService';
 
 export class ChromaticAddon implements IFunctionalAddon {
 	readonly id = 'chromatic';
@@ -94,14 +90,12 @@ export class ChromaticAddon implements IFunctionalAddon {
 
 		if (config.enabled !== undefined) chromaticConfig.enabled = config.enabled;
 		if (config.token !== undefined) chromaticConfig.token = config.token;
-		if (config.projectToken !== undefined)
-			chromaticConfig.projectToken = config.projectToken;
+		if (config.projectToken !== undefined) chromaticConfig.projectToken = config.projectToken;
 		if (config.buildScriptName !== undefined)
 			chromaticConfig.buildScriptName = config.buildScriptName;
 		if (config.storybookBuildDir !== undefined)
 			chromaticConfig.storybookBuildDir = config.storybookBuildDir;
-		if (config.onlyChanged !== undefined)
-			chromaticConfig.onlyChanged = config.onlyChanged;
+		if (config.onlyChanged !== undefined) chromaticConfig.onlyChanged = config.onlyChanged;
 		if (config.exitZeroOnChanges !== undefined)
 			chromaticConfig.exitZeroOnChanges = config.exitZeroOnChanges;
 		if (config.exitOnceUploaded !== undefined)
@@ -186,4 +180,3 @@ export class ChromaticAddon implements IFunctionalAddon {
 		};
 	}
 }
-

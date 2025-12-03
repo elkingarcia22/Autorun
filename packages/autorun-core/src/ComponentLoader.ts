@@ -97,7 +97,7 @@ export class ComponentLoader {
 		if (manifest.styles && manifest.styles.length > 0) {
 			for (const stylePath of manifest.styles) {
 				const styleUrl = this.resolveUrl(stylePath, manifestDir, baseUrl);
-				
+
 				// Verificar si ya está cargado
 				if (!this.isStyleLoaded(styleUrl)) {
 					await this.loadCSS(styleUrl);
@@ -110,7 +110,7 @@ export class ComponentLoader {
 		const scriptsLoaded = new Set<string>();
 		for (const component of manifest.components) {
 			const jsUrl = this.resolveUrl(component.path, manifestDir, baseUrl);
-			
+
 			// Verificar si ya está cargado
 			if (!this.isScriptLoaded(jsUrl)) {
 				await this.loadJS(jsUrl);
@@ -256,4 +256,3 @@ export class ComponentLoader {
 		}
 	}
 }
-

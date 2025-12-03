@@ -224,21 +224,15 @@ export class MCPInstaller {
 				};
 
 			case 'vercel':
+				// Vercel MCP es un servidor remoto HTTP, no un paquete npm
 				return {
-					command: 'npx',
-					args: ['-y', '@modelcontextprotocol/server-vercel'],
-					env: credentials?.token
-						? {
-								VERCEL_TOKEN: credentials.token,
-								VERCEL_TEAM_ID: credentials.teamId || '',
-							}
-						: {},
+					url: 'https://mcp.vercel.com',
 				};
 
 			case 'clarity':
 				return {
 					command: 'npx',
-					args: ['-y', '@modelcontextprotocol/server-clarity'],
+					args: ['-y', '@microsoft/clarity-mcp-server'],
 					env: credentials?.projectId
 						? {
 								CLARITY_PROJECT_ID: credentials.projectId,
@@ -248,51 +242,46 @@ export class MCPInstaller {
 				};
 
 			case 'figma':
+				// Figma tiene un servidor MCP remoto oficial: https://mcp.figma.com/mcp
+				// También puede ser local desde Figma Desktop (http://127.0.0.1:3845/mcp)
+				// Preferir servidor remoto oficial sobre paquetes npm comunitarios
 				return {
-					command: 'npx',
-					args: ['-y', '@modelcontextprotocol/server-figma'],
-					env: credentials?.accessToken
-						? {
-								FIGMA_ACCESS_TOKEN: credentials.accessToken,
-								FIGMA_FILE_KEY: credentials.fileKey || '',
-							}
-						: {},
+					url: 'https://mcp.figma.com/mcp',
 				};
 
 			case 'talk-to-figma':
+				// Usar paquete comunitario
+				// cursor-talk-to-figma-mcp puede usar FIGMA_ACCESS_TOKEN o FIGMA_API_KEY
 				return {
 					command: 'npx',
-					args: ['-y', '@modelcontextprotocol/server-talk-to-figma'],
+					args: ['-y', 'cursor-talk-to-figma-mcp'],
 					env: credentials?.accessToken
 						? {
 								FIGMA_ACCESS_TOKEN: credentials.accessToken,
-								FIGMA_FILE_KEY: credentials.fileKey || '',
+								...(credentials.fileKey ? { FIGMA_FILE_KEY: credentials.fileKey } : {}),
 							}
 						: {},
 				};
 
 			case 'storybook':
+				// Storybook tiene un addon oficial @storybook/addon-mcp que expone MCP en http://localhost:6006/mcp
+				// Si el addon está instalado y Storybook está corriendo, usar el servidor MCP integrado
+				// Si no, usar el paquete standalone storybook-mcp con la URL del index.json
+				const storybookUrl = credentials?.storybookUrl || 'http://localhost:6006/index.json';
+
+				// Preferir el servidor MCP integrado del addon (más potente, más tools)
+				// Si Storybook está corriendo con el addon, usar la URL del servidor MCP
+				// Si no, usar el paquete standalone como fallback
 				return {
-					command: 'npx',
-					args: ['-y', 'storybook-mcp@latest'],
-					env: credentials?.storybookUrl
-						? {
-								STORYBOOK_URL: credentials.storybookUrl,
-								CUSTOM_TOOLS: credentials.customTools || '',
-							}
-						: {},
+					url: 'http://localhost:6006/mcp', // Servidor MCP integrado del addon @storybook/addon-mcp
 				};
 
 			case 'supabase':
+				// Supabase ahora usa un servidor remoto oficial: https://mcp.supabase.com/mcp
+				// Ya no requiere PAT manualmente - usa OAuth dinámico
+				// La autenticación se hace automáticamente cuando Cursor se conecta
 				return {
-					command: 'npx',
-					args: ['-y', '@supabase/mcp-server-supabase'],
-					env: credentials?.accessToken && credentials?.projectRef
-						? {
-								SUPABASE_ACCESS_TOKEN: credentials.accessToken,
-								SUPABASE_PROJECT_REF: credentials.projectRef,
-							}
-						: {},
+					url: 'https://mcp.supabase.com/mcp',
 				};
 
 			default:
@@ -335,37 +324,36 @@ Para instalar MCP de GitHub manualmente:
 			vercel: `
 Para instalar MCP de Vercel manualmente:
 
-1. Instala el servidor MCP:
-   npm install -g @modelcontextprotocol/server-vercel
+⚠️ Vercel MCP es un servidor remoto HTTP, no requiere instalación de paquete npm.
 
-2. Configura en tu archivo MCP:
+1. Configura en tu archivo MCP (usualmente ~/.cursor/mcp.json):
    {
-     "servers": {
+     "mcpServers": {
        "vercel": {
-         "command": "npx",
-         "args": ["-y", "@modelcontextprotocol/server-vercel"],
-         "env": {
-           "VERCEL_TOKEN": "tu-token-aqui",
-           "VERCEL_TEAM_ID": "tu-team-id-opcional"
-         }
+         "url": "https://mcp.vercel.com"
        }
      }
    }
 
-3. Reinicia tu editor/IDE.
+2. Reinicia tu editor/IDE (Cursor, VS Code, etc.).
+
+3. Cuando se conecte, aparecerá un prompt "Needs login". Haz clic para autorizar
+   el acceso a tu cuenta de Vercel mediante OAuth.
+
+Nota: Vercel MCP usa autenticación OAuth, no requiere tokens manuales.
       `,
 			clarity: `
 Para instalar MCP de Clarity manualmente:
 
 1. Instala el servidor MCP:
-   npm install -g @modelcontextprotocol/server-clarity
+   npm install -g @microsoft/clarity-mcp-server
 
-2. Configura en tu archivo MCP:
+2. Configura en tu archivo MCP (usualmente ~/.cursor/mcp.json o ~/.config/mcp/config.json):
    {
-     "servers": {
+     "mcpServers": {
        "clarity": {
          "command": "npx",
-         "args": ["-y", "@modelcontextprotocol/server-clarity"],
+         "args": ["-y", "@microsoft/clarity-mcp-server"],
          "env": {
            "CLARITY_PROJECT_ID": "tu-project-id",
            "CLARITY_API_KEY": "tu-api-key-opcional"
@@ -379,17 +367,17 @@ Para instalar MCP de Clarity manualmente:
 			figma: `
 Para instalar MCP de Figma manualmente:
 
-1. Instala el servidor MCP:
-   npm install -g @modelcontextprotocol/server-figma
+1. Instala el servidor MCP (paquete comunitario):
+   npm install -g figma-developer-mcp
 
-2. Configura en tu archivo MCP:
+2. Configura en tu archivo MCP (usualmente ~/.cursor/mcp.json o ~/.config/mcp/config.json):
    {
-     "servers": {
+     "mcpServers": {
        "figma": {
          "command": "npx",
-         "args": ["-y", "@modelcontextprotocol/server-figma"],
+         "args": ["-y", "figma-developer-mcp"],
          "env": {
-           "FIGMA_ACCESS_TOKEN": "tu-access-token",
+           "FIGMA_API_KEY": "tu-api-key",
            "FIGMA_FILE_KEY": "tu-file-key-opcional"
          }
        }
@@ -398,21 +386,23 @@ Para instalar MCP de Figma manualmente:
 
 3. Reinicia tu editor/IDE.
 
-⚠️ IMPORTANTE: Ni MCP ni la API de Figma pueden acceder directamente a las Variables de Figma.
-Se recomienda descargar el JSON de tokens usando el plugin de Figma Tokens.
+⚠️ IMPORTANTE: 
+- figma-developer-mcp requiere FIGMA_API_KEY o FIGMA_OAUTH_TOKEN (no FIGMA_ACCESS_TOKEN)
+- Ni MCP ni la API de Figma pueden acceder directamente a las Variables de Figma.
+- Se recomienda descargar el JSON de tokens usando el plugin de Figma Tokens.
       `,
 			'talk-to-figma': `
 Para instalar MCP de Talk to Figma manualmente:
 
-1. Instala el servidor MCP:
-   npm install -g @modelcontextprotocol/server-talk-to-figma
+1. Instala el servidor MCP (paquete comunitario):
+   npm install -g cursor-talk-to-figma-mcp
 
-2. Configura en tu archivo MCP:
+2. Configura en tu archivo MCP (usualmente ~/.cursor/mcp.json o ~/.config/mcp/config.json):
    {
-     "servers": {
+     "mcpServers": {
        "talk-to-figma": {
          "command": "npx",
-         "args": ["-y", "@modelcontextprotocol/server-talk-to-figma"],
+         "args": ["-y", "cursor-talk-to-figma-mcp"],
          "env": {
            "FIGMA_ACCESS_TOKEN": "tu-access-token",
            "FIGMA_FILE_KEY": "tu-file-key-opcional"
@@ -423,8 +413,10 @@ Para instalar MCP de Talk to Figma manualmente:
 
 3. Reinicia tu editor/IDE.
 
-⚠️ IMPORTANTE: Ni MCP ni la API de Figma pueden acceder directamente a las Variables de Figma.
-Se recomienda descargar el JSON de tokens usando el plugin de Figma Tokens.
+⚠️ IMPORTANTE: 
+- Requiere que Figma Desktop esté abierto con el plugin instalado
+- Ni MCP ni la API de Figma pueden acceder directamente a las Variables de Figma.
+- Se recomienda descargar el JSON de tokens usando el plugin de Figma Tokens.
       `,
 			storybook: `
 Para instalar MCP de Storybook manualmente:

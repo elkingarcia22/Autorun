@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Script de setup para el add-on de Feedback Automatizado
- * 
+ *
  * Genera:
  * - Flujo de n8n como JSON
  * - Instrucciones para crear Google Sheet
@@ -120,6 +120,3 @@ Variables de entorno opcionales:
 }
 
 main().catch(console.error);
-
-
-

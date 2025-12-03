@@ -236,4 +236,3 @@ export class FeedbackAddon implements IFunctionalAddon {
 		};
 	}
 }
-

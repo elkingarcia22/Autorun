@@ -6,7 +6,7 @@ export { InputAddon } from './InputAddon';
 export { renderInput, createInput } from './InputProvider';
 export { UBITSInput } from './InputComponent';
 if (typeof window !== 'undefined') {
-    import('./InputComponent').then(() => {
-        console.log('✅ UBITS Input component registered');
-    });
+	import('./InputComponent').then(() => {
+		console.log('✅ UBITS Input component registered');
+	});
 }

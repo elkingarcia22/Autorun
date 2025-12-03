@@ -1,4 +1,165 @@
-import{r as i}from"./EmptyStateProvider-B1CNps4j.js";import"./ButtonProvider-Dmy-L2BE.js";import"./ListProvider-Bx601uSc.js";import"./iframe-BcZai5-G.js";import"./preload-helper-PPVm8Dsz.js";import"./SpinnerProvider-o6XHV06V.js";const u={title:"Feedback/Empty State",tags:["autodocs"],parameters:{docs:{description:{component:"Componente Empty State UBITS para mostrar estados vacíos en la interfaz. Soporta imagen o icono, título, descripción y botones de acción."}}},argTypes:{title:{control:{type:"text"},description:"Título del empty state",table:{type:{summary:"string"},category:"Contenido"}},description:{control:{type:"text"},description:"Descripción o mensaje del empty state",table:{type:{summary:"string"},category:"Contenido"}},imageUrl:{control:{type:"text"},description:"URL de la imagen/ilustración (opcional)",table:{type:{summary:"string"},category:"Visual"}},icon:{control:{type:"text"},description:"Nombre del icono FontAwesome a mostrar (opcional, si no hay imagen)",table:{type:{summary:"string"},category:"Visual"}},actionLabel:{control:{type:"text"},description:"Texto del botón de acción principal (opcional)",table:{type:{summary:"string"},category:"Botón Primario"}},showPrimaryButton:{control:{type:"boolean"},description:"Mostrar botón primario",table:{defaultValue:{summary:"false"},type:{summary:"boolean"},category:"Botón Primario"}},primaryButtonIcon:{control:{type:"text"},description:"Nombre del icono FontAwesome para el botón primario (opcional)",table:{type:{summary:"string"},category:"Botón Primario"}},showPrimaryButtonIcon:{control:{type:"boolean"},description:"Mostrar icono en el botón primario",table:{defaultValue:{summary:"false"},type:{summary:"boolean"},category:"Botón Primario"}},secondaryActionLabel:{control:{type:"text"},description:"Texto del botón secundario (opcional)",table:{type:{summary:"string"},category:"Botón Secundario"}},showSecondaryButton:{control:{type:"boolean"},description:"Mostrar botón secundario",table:{defaultValue:{summary:"false"},type:{summary:"boolean"},category:"Botón Secundario"}},secondaryButtonIcon:{control:{type:"text"},description:"Nombre del icono FontAwesome para el botón secundario (opcional)",table:{type:{summary:"string"},category:"Botón Secundario"}},showSecondaryButtonIcon:{control:{type:"boolean"},description:"Mostrar icono en el botón secundario",table:{defaultValue:{summary:"false"},type:{summary:"boolean"},category:"Botón Secundario"}}}},a={args:{title:"No hay resultados",description:"Intenta ajustar tus filtros de búsqueda",icon:"inbox",actionLabel:"Buscar",showPrimaryButton:!1,primaryButtonIcon:"search",showPrimaryButtonIcon:!1,secondaryActionLabel:"Cancelar",showSecondaryButton:!1,secondaryButtonIcon:"times",showSecondaryButtonIcon:!1},render:s=>{const n=document.createElement("div");n.style.padding="40px",n.style.background="var(--modifiers-normal-color-light-bg-1, #ffffff)",n.style.borderRadius="8px",n.style.width="100%",n.style.boxSizing="border-box";const e=document.createElement("div");e.style.background="var(--modifiers-normal-color-light-bg-1)",e.style.padding="48px",e.style.borderRadius="8px",e.style.border="none",e.style.minHeight="400px",e.style.display="flex",e.style.alignItems="center",e.style.justifyContent="center",e.style.boxSizing="border-box",e.style.width="100%",e.innerHTML=i(s);const t=e.querySelector(".ubits-empty-state");t&&(t.style.width="100%",t.style.maxWidth="100%",t.style.display="flex",t.style.flexDirection="column",t.style.alignItems="center",t.style.justifyContent="center",t.style.textAlign="center");const o=e.querySelector(".ubits-empty-state__content");o&&(o.style.display="flex",o.style.flexDirection="column",o.style.alignItems="center",o.style.textAlign="center",o.style.width="100%");const r=e.querySelector(".ubits-empty-state__actions");return r&&(r.style.display="flex",r.style.justifyContent="center",r.style.alignItems="center"),n.appendChild(e),n}};a.parameters={...a.parameters,docs:{...a.parameters?.docs,source:{originalSource:`{
+import { r as i } from './EmptyStateProvider-B1CNps4j.js';
+import './ButtonProvider-Dmy-L2BE.js';
+import './ListProvider-Bx601uSc.js';
+import './iframe-BcZai5-G.js';
+import './preload-helper-PPVm8Dsz.js';
+import './SpinnerProvider-o6XHV06V.js';
+const u = {
+		title: 'Feedback/Empty State',
+		tags: ['autodocs'],
+		parameters: {
+			docs: {
+				description: {
+					component:
+						'Componente Empty State UBITS para mostrar estados vacíos en la interfaz. Soporta imagen o icono, título, descripción y botones de acción.',
+				},
+			},
+		},
+		argTypes: {
+			title: {
+				control: { type: 'text' },
+				description: 'Título del empty state',
+				table: { type: { summary: 'string' }, category: 'Contenido' },
+			},
+			description: {
+				control: { type: 'text' },
+				description: 'Descripción o mensaje del empty state',
+				table: { type: { summary: 'string' }, category: 'Contenido' },
+			},
+			imageUrl: {
+				control: { type: 'text' },
+				description: 'URL de la imagen/ilustración (opcional)',
+				table: { type: { summary: 'string' }, category: 'Visual' },
+			},
+			icon: {
+				control: { type: 'text' },
+				description: 'Nombre del icono FontAwesome a mostrar (opcional, si no hay imagen)',
+				table: { type: { summary: 'string' }, category: 'Visual' },
+			},
+			actionLabel: {
+				control: { type: 'text' },
+				description: 'Texto del botón de acción principal (opcional)',
+				table: { type: { summary: 'string' }, category: 'Botón Primario' },
+			},
+			showPrimaryButton: {
+				control: { type: 'boolean' },
+				description: 'Mostrar botón primario',
+				table: {
+					defaultValue: { summary: 'false' },
+					type: { summary: 'boolean' },
+					category: 'Botón Primario',
+				},
+			},
+			primaryButtonIcon: {
+				control: { type: 'text' },
+				description: 'Nombre del icono FontAwesome para el botón primario (opcional)',
+				table: { type: { summary: 'string' }, category: 'Botón Primario' },
+			},
+			showPrimaryButtonIcon: {
+				control: { type: 'boolean' },
+				description: 'Mostrar icono en el botón primario',
+				table: {
+					defaultValue: { summary: 'false' },
+					type: { summary: 'boolean' },
+					category: 'Botón Primario',
+				},
+			},
+			secondaryActionLabel: {
+				control: { type: 'text' },
+				description: 'Texto del botón secundario (opcional)',
+				table: { type: { summary: 'string' }, category: 'Botón Secundario' },
+			},
+			showSecondaryButton: {
+				control: { type: 'boolean' },
+				description: 'Mostrar botón secundario',
+				table: {
+					defaultValue: { summary: 'false' },
+					type: { summary: 'boolean' },
+					category: 'Botón Secundario',
+				},
+			},
+			secondaryButtonIcon: {
+				control: { type: 'text' },
+				description: 'Nombre del icono FontAwesome para el botón secundario (opcional)',
+				table: { type: { summary: 'string' }, category: 'Botón Secundario' },
+			},
+			showSecondaryButtonIcon: {
+				control: { type: 'boolean' },
+				description: 'Mostrar icono en el botón secundario',
+				table: {
+					defaultValue: { summary: 'false' },
+					type: { summary: 'boolean' },
+					category: 'Botón Secundario',
+				},
+			},
+		},
+	},
+	a = {
+		args: {
+			title: 'No hay resultados',
+			description: 'Intenta ajustar tus filtros de búsqueda',
+			icon: 'inbox',
+			actionLabel: 'Buscar',
+			showPrimaryButton: !1,
+			primaryButtonIcon: 'search',
+			showPrimaryButtonIcon: !1,
+			secondaryActionLabel: 'Cancelar',
+			showSecondaryButton: !1,
+			secondaryButtonIcon: 'times',
+			showSecondaryButtonIcon: !1,
+		},
+		render: (s) => {
+			const n = document.createElement('div');
+			(n.style.padding = '40px'),
+				(n.style.background = 'var(--modifiers-normal-color-light-bg-1, #ffffff)'),
+				(n.style.borderRadius = '8px'),
+				(n.style.width = '100%'),
+				(n.style.boxSizing = 'border-box');
+			const e = document.createElement('div');
+			(e.style.background = 'var(--modifiers-normal-color-light-bg-1)'),
+				(e.style.padding = '48px'),
+				(e.style.borderRadius = '8px'),
+				(e.style.border = 'none'),
+				(e.style.minHeight = '400px'),
+				(e.style.display = 'flex'),
+				(e.style.alignItems = 'center'),
+				(e.style.justifyContent = 'center'),
+				(e.style.boxSizing = 'border-box'),
+				(e.style.width = '100%'),
+				(e.innerHTML = i(s));
+			const t = e.querySelector('.ubits-empty-state');
+			t &&
+				((t.style.width = '100%'),
+				(t.style.maxWidth = '100%'),
+				(t.style.display = 'flex'),
+				(t.style.flexDirection = 'column'),
+				(t.style.alignItems = 'center'),
+				(t.style.justifyContent = 'center'),
+				(t.style.textAlign = 'center'));
+			const o = e.querySelector('.ubits-empty-state__content');
+			o &&
+				((o.style.display = 'flex'),
+				(o.style.flexDirection = 'column'),
+				(o.style.alignItems = 'center'),
+				(o.style.textAlign = 'center'),
+				(o.style.width = '100%'));
+			const r = e.querySelector('.ubits-empty-state__actions');
+			return (
+				r &&
+					((r.style.display = 'flex'),
+					(r.style.justifyContent = 'center'),
+					(r.style.alignItems = 'center')),
+				n.appendChild(e),
+				n
+			);
+		},
+	};
+a.parameters = {
+	...a.parameters,
+	docs: {
+		...a.parameters?.docs,
+		source: {
+			originalSource: `{
   args: {
     title: 'No hay resultados',
     description: 'Intenta ajustar tus filtros de búsqueda',
@@ -69,4 +230,10 @@ import{r as i}from"./EmptyStateProvider-B1CNps4j.js";import"./ButtonProvider-Dmy
     container.appendChild(preview);
     return container;
   }
-}`,...a.parameters?.docs?.source}}};const b=["Default"];export{a as Default,b as __namedExportsOrder,u as default};
+}`,
+			...a.parameters?.docs?.source,
+		},
+	},
+};
+const b = ['Default'];
+export { a as Default, b as __namedExportsOrder, u as default };

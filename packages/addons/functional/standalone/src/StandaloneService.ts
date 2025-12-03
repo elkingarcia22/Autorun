@@ -126,10 +126,7 @@ export class StandaloneService {
 			// 2. Extraer componentes (si está habilitado)
 			if (finalConfig.extractComponents && result.storybookBuildPath) {
 				console.log('🔧 Standalone: Extrayendo componentes...');
-				const components = await this.extractComponents(
-					result.storybookBuildPath,
-					finalConfig,
-				);
+				const components = await this.extractComponents(result.storybookBuildPath, finalConfig);
 				result.components = components;
 				result.componentsPath = path.join(
 					this.projectPath,
@@ -304,10 +301,7 @@ export class StandaloneService {
 
 				for (const story of stories) {
 					if (story.isFile() && story.name.endsWith('.stories.tsx')) {
-						const storyContent = readFileSync(
-							path.join(storiesPath, story.name),
-							'utf-8',
-						);
+						const storyContent = readFileSync(path.join(storiesPath, story.name), 'utf-8');
 						const componentInfo = this.parseStoryFile(storyContent, story.name);
 
 						if (componentInfo) {
@@ -410,10 +404,7 @@ export class StandaloneService {
 	/**
 	 * Minifica archivos JavaScript con terser o esbuild
 	 */
-	private async minifyJavaScriptFiles(
-		files: string[],
-		config: StandaloneConfig,
-	): Promise<number> {
+	private async minifyJavaScriptFiles(files: string[], config: StandaloneConfig): Promise<number> {
 		let minifiedCount = 0;
 
 		for (const filePath of files) {
@@ -531,10 +522,7 @@ export class StandaloneService {
 	/**
 	 * Comprime imágenes con sharp
 	 */
-	private async compressAssets(
-		buildPath: string,
-		config: StandaloneConfig,
-	): Promise<number> {
+	private async compressAssets(buildPath: string, config: StandaloneConfig): Promise<number> {
 		if (!config.imageCompression) {
 			return 0;
 		}
@@ -567,12 +555,10 @@ export class StandaloneService {
 					try {
 						const originalSize = statSync(imagePath).size;
 						const ext = path.extname(imagePath).toLowerCase();
-						const outputPath = imagePath.replace(
-							new RegExp(`\\${ext}$`, 'i'),
-							'.webp',
-						);
+						const outputPath = imagePath.replace(new RegExp(`\\${ext}$`, 'i'), '.webp');
 
-						await sharp.default(imagePath)
+						await sharp
+							.default(imagePath)
 							.webp({ quality: config.imageQuality || 80 })
 							.toFile(outputPath);
 
@@ -587,16 +573,11 @@ export class StandaloneService {
 							compressedCount++;
 						}
 					} catch (error: any) {
-						console.warn(
-							`      ⚠️  Error comprimiendo ${imagePath}:`,
-							error.message,
-						);
+						console.warn(`      ⚠️  Error comprimiendo ${imagePath}:`, error.message);
 					}
 				}
 			} catch {
-				console.warn(
-					'   ⚠️  Sharp no está instalado. Instala con: npm install --save-dev sharp',
-				);
+				console.warn('   ⚠️  Sharp no está instalado. Instala con: npm install --save-dev sharp');
 			}
 
 			return compressedCount;
@@ -618,10 +599,7 @@ export class StandaloneService {
 			this.projectPath,
 			config.tokensSourcePath || 'packages/tokens',
 		);
-		const tokensOutputDir = path.join(
-			this.projectPath,
-			config.tokensOutputDir || 'dist/tokens',
-		);
+		const tokensOutputDir = path.join(this.projectPath, config.tokensOutputDir || 'dist/tokens');
 
 		await fs.mkdir(tokensOutputDir, { recursive: true });
 
@@ -657,7 +635,9 @@ export class StandaloneService {
 				countTokens(tokensData);
 
 				await fs.writeFile(outputJsonPath, JSON.stringify(tokensData, null, 2), 'utf-8');
-				console.log(`   ✅ Tokens JSON copiado: ${total} tokens en ${categories.length} categorías`);
+				console.log(
+					`   ✅ Tokens JSON copiado: ${total} tokens en ${categories.length} categorías`,
+				);
 			}
 
 			// Copiar tokens.css si existe
@@ -774,7 +754,7 @@ export class StandaloneService {
 		const sizes = ['Bytes', 'KB', 'MB', 'GB'];
 		const i = Math.floor(Math.log(bytes) / Math.log(k));
 
-		return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+		return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i];
 	}
 
 	/**
@@ -831,4 +811,3 @@ export class StandaloneService {
 		this.config = { ...this.config, ...config };
 	}
 }
-

@@ -12,4 +12,3 @@ export {
 } from './VitestService';
 
 export { VitestAddon as default } from './VitestAddon';
-

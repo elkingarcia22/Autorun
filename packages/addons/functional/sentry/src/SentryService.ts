@@ -80,13 +80,13 @@ export class SentryService {
 		const isBrowser = typeof window !== 'undefined';
 		const isReact = this.detectReact();
 
-			try {
-				if (isBrowser) {
-					if (isReact) {
-						// Intentar usar @sentry/react si está disponible
-						try {
-							// @ts-ignore - Peer dependency, puede no estar instalado
-							const Sentry = await import('@sentry/react');
+		try {
+			if (isBrowser) {
+				if (isReact) {
+					// Intentar usar @sentry/react si está disponible
+					try {
+						// @ts-ignore - Peer dependency, puede no estar instalado
+						const Sentry = await import('@sentry/react');
 						Sentry.init({
 							dsn: this.config.dsn,
 							environment: this.config.environment,
@@ -243,7 +243,11 @@ export class SentryService {
 	/**
 	 * Captura un mensaje
 	 */
-	captureMessage(message: string, level: 'info' | 'warning' | 'error' = 'info', context?: Record<string, any>): string | undefined {
+	captureMessage(
+		message: string,
+		level: 'info' | 'warning' | 'error' = 'info',
+		context?: Record<string, any>,
+	): string | undefined {
 		if (!this.initialized || !this.sentryInstance) {
 			console.warn('⚠️  Sentry no está inicializado. Mensaje no capturado:', message);
 			return undefined;
@@ -284,12 +288,7 @@ export class SentryService {
 	/**
 	 * Establece el usuario actual
 	 */
-	setUser(user: {
-		id?: string;
-		email?: string;
-		username?: string;
-		[key: string]: any;
-	}): void {
+	setUser(user: { id?: string; email?: string; username?: string; [key: string]: any }): void {
 		if (!this.initialized || !this.sentryInstance) {
 			return;
 		}
@@ -389,4 +388,3 @@ export class SentryService {
 		}
 	}
 }
-

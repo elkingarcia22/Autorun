@@ -1,6 +1,6 @@
 /**
  * LocalServer
- * 
+ *
  * Servidor HTTP local simple para servir templates generados
  * Evita problemas de CORS al cargar recursos desde Vercel
  */
@@ -134,26 +134,30 @@ export class LocalServer {
 			// Remover /vercel-proxy/ del path para obtener la ruta relativa
 			const relativePath = filePath.replace(/^\/vercel-proxy\//, '');
 			const localPath = path.join(process.cwd(), 'vendor/ubits/packages', relativePath);
-			
+
 			// Intentar servir desde archivos locales primero
 			try {
 				const stats = await fs.stat(localPath);
 				if (stats.isFile()) {
 					const content = await fs.readFile(localPath);
 					const contentType = this.getContentType(localPath);
-					
+
 					const headers: Record<string, string> = {
 						'Content-Type': contentType,
 						'Access-Control-Allow-Origin': '*',
 					};
-					
+
 					// Headers anti-caché para desarrollo
-					if (localPath.endsWith('.html') || localPath.endsWith('.js') || localPath.endsWith('.css')) {
+					if (
+						localPath.endsWith('.html') ||
+						localPath.endsWith('.js') ||
+						localPath.endsWith('.css')
+					) {
 						headers['Cache-Control'] = 'no-cache, no-store, must-revalidate';
 						headers['Pragma'] = 'no-cache';
 						headers['Expires'] = '0';
 					}
-					
+
 					res.writeHead(200, headers);
 					res.end(content);
 					console.log(`   ✅ Servido desde local: ${relativePath}`);
@@ -168,7 +172,9 @@ export class LocalServer {
 				} else {
 					// Si no hay Vercel configurado, retornar 404
 					res.writeHead(404, { 'Content-Type': 'text/plain' });
-					res.end(`File not found: ${relativePath}\n\nArchivo no encontrado localmente y Vercel no está configurado.`);
+					res.end(
+						`File not found: ${relativePath}\n\nArchivo no encontrado localmente y Vercel no está configurado.`,
+					);
 					return;
 				}
 			}
@@ -178,20 +184,24 @@ export class LocalServer {
 		// Mapear /images/... a vendor/ubits/packages/templates/assets/images/...
 		if (filePath.startsWith('/images/')) {
 			const imageName = filePath.replace('/images/', '');
-			const localImagePath = path.join(process.cwd(), 'vendor/ubits/packages/templates/assets/images', imageName);
-			
+			const localImagePath = path.join(
+				process.cwd(),
+				'vendor/ubits/packages/templates/assets/images',
+				imageName,
+			);
+
 			try {
 				const stats = await fs.stat(localImagePath);
 				if (stats.isFile()) {
 					const content = await fs.readFile(localImagePath);
 					const contentType = this.getContentType(localImagePath);
-					
+
 					res.writeHead(200, {
 						'Content-Type': contentType,
 						'Access-Control-Allow-Origin': '*',
 						'Cache-Control': 'no-cache, no-store, must-revalidate',
-						'Pragma': 'no-cache',
-						'Expires': '0',
+						Pragma: 'no-cache',
+						Expires: '0',
 					});
 					res.end(content);
 					console.log(`   ✅ Servida imagen desde local: ${imageName}`);
@@ -209,7 +219,7 @@ export class LocalServer {
 				const mostRecentTemplate = await this.findMostRecentTemplate();
 				if (mostRecentTemplate) {
 					// Redirigir al template más reciente
-					res.writeHead(302, { 'Location': `/${mostRecentTemplate}` });
+					res.writeHead(302, { Location: `/${mostRecentTemplate}` });
 					res.end();
 					console.log(`   ✅ Redirigido a template más reciente: ${mostRecentTemplate}`);
 					return;
@@ -240,12 +250,14 @@ export class LocalServer {
 			const resolvedDirectory = path.resolve(this.directory);
 			const resolvedProjectRoot = path.resolve(process.cwd());
 			const resolvedVendorPath = path.resolve(process.cwd(), 'vendor');
-			
+
 			// Permitir acceso a prototypes/ y vendor/ubits/
 			const isInPrototypes = resolvedPath.startsWith(resolvedDirectory);
-			const isInVendor = resolvedPath.startsWith(resolvedVendorPath) && resolvedPath.startsWith(path.resolve(process.cwd(), 'vendor', 'ubits'));
+			const isInVendor =
+				resolvedPath.startsWith(resolvedVendorPath) &&
+				resolvedPath.startsWith(path.resolve(process.cwd(), 'vendor', 'ubits'));
 			const isInProjectRoot = resolvedPath.startsWith(resolvedProjectRoot);
-			
+
 			if (!isInPrototypes && !isInVendor && !isInProjectRoot) {
 				res.writeHead(403, { 'Content-Type': 'text/plain' });
 				res.end('Forbidden');
@@ -254,7 +266,7 @@ export class LocalServer {
 
 			// Leer archivo
 			const stats = await fs.stat(fullPath);
-			
+
 			if (stats.isDirectory()) {
 				// Si es directorio, listar archivos
 				const files = await fs.readdir(fullPath);
@@ -266,22 +278,22 @@ export class LocalServer {
 
 			// Leer contenido del archivo
 			const content = await fs.readFile(fullPath);
-			
+
 			// Determinar Content-Type
 			const contentType = this.getContentType(filePath);
-			
+
 			// Headers para evitar caché en archivos HTML y JS (desarrollo)
 			const headers: Record<string, string> = {
 				'Content-Type': contentType,
 			};
-			
+
 			// Para archivos HTML y JS, evitar caché para que siempre se cargue la versión más reciente
 			if (filePath.endsWith('.html') || filePath.endsWith('.js')) {
 				headers['Cache-Control'] = 'no-cache, no-store, must-revalidate';
 				headers['Pragma'] = 'no-cache';
 				headers['Expires'] = '0';
 			}
-			
+
 			res.writeHead(200, headers);
 			res.end(content);
 		} catch (error: any) {
@@ -324,23 +336,23 @@ export class LocalServer {
 	private async proxyVercelRequest(
 		req: http.IncomingMessage,
 		res: http.ServerResponse,
-		proxyPath: string
+		proxyPath: string,
 	): Promise<void> {
 		// Remover /vercel-proxy/ del path
 		let vercelPath = proxyPath.replace(/^\/vercel-proxy/, '');
-		
+
 		// Asegurar que el path empiece con /
 		if (!vercelPath.startsWith('/')) {
 			vercelPath = `/${vercelPath}`;
 		}
-		
+
 		// Construir URL completa de Vercel
 		// NOTA: Vercel sirve los archivos desde la raíz cuando outputDirectory es storybook-static
 		const vercelBaseUrl = this.vercelUrl!.replace(/\/$/, '');
 		const vercelFullUrl = `${vercelBaseUrl}${vercelPath}`;
-		
+
 		console.log(`   🔄 Proxy: ${proxyPath} -> ${vercelFullUrl}`);
-		
+
 		// Construir URL con bypass token si está disponible
 		const urlObj = new URL(vercelFullUrl);
 		if (this.vercelBypassToken) {
@@ -364,7 +376,7 @@ export class LocalServer {
 
 			const proxyReq = https.request(options, (proxyRes) => {
 				console.log(`   📥 Proxy respuesta: ${proxyRes.statusCode} para ${vercelPath}`);
-				
+
 				// Extraer cookie de set-cookie header si existe
 				const setCookie = proxyRes.headers['set-cookie'];
 				let cookieHeader = '';
@@ -376,7 +388,7 @@ export class LocalServer {
 						console.log(`   🍪 Cookie extraída: ${cookieHeader.substring(0, 30)}...`);
 					}
 				}
-				
+
 				// Copiar headers de respuesta
 				const contentType = proxyRes.headers['content-type'] || 'application/octet-stream';
 				res.setHeader('Content-Type', contentType);
@@ -387,17 +399,23 @@ export class LocalServer {
 				if (vercelPath.match(/\.(woff|woff2|ttf|eot|otf)$/i)) {
 					res.setHeader('Cache-Control', 'public, max-age=31536000');
 				}
-				
+
 				// Si hay redirect, seguir recursivamente con cookie
-				if (proxyRes.statusCode === 307 || proxyRes.statusCode === 302 || proxyRes.statusCode === 301) {
+				if (
+					proxyRes.statusCode === 307 ||
+					proxyRes.statusCode === 302 ||
+					proxyRes.statusCode === 301
+				) {
 					const location = proxyRes.headers.location;
 					if (location) {
 						console.log(`   🔀 Redirect: ${location}`);
 						proxyRes.resume();
-						const redirectUrl = location.startsWith('http') ? location : `https://${urlObj.hostname}${location}`;
+						const redirectUrl = location.startsWith('http')
+							? location
+							: `https://${urlObj.hostname}${location}`;
 						// Extraer pathname del redirect
 						const redirectPath = new URL(redirectUrl).pathname;
-						
+
 						// Si tenemos cookie, hacer la siguiente petición con cookie
 						if (cookieHeader) {
 							const redirectUrlObj = new URL(redirectUrl);
@@ -406,23 +424,26 @@ export class LocalServer {
 								path: redirectUrlObj.pathname + redirectUrlObj.search,
 								method: 'GET',
 								headers: {
-									'Cookie': cookieHeader,
+									Cookie: cookieHeader,
 								} as Record<string, string>,
 							};
-							
+
 							// Agregar bypass token si está disponible
 							if (this.vercelBypassToken) {
 								redirectOptions.headers['x-vercel-set-bypass-cookie'] = 'true';
 								redirectOptions.headers['x-vercel-protection-bypass'] = this.vercelBypassToken;
 							}
-							
+
 							const reqRedirect = https.request(redirectOptions, (resRedirect) => {
 								// Usar Buffer para datos binarios (woff2, imágenes, etc.)
 								const chunks: Buffer[] = [];
-								resRedirect.on('data', (chunk: Buffer) => { chunks.push(chunk); });
+								resRedirect.on('data', (chunk: Buffer) => {
+									chunks.push(chunk);
+								});
 								resRedirect.on('end', () => {
 									if (resRedirect.statusCode === 200) {
-										const contentTypeRedirect = resRedirect.headers['content-type'] || 'application/octet-stream';
+										const contentTypeRedirect =
+											resRedirect.headers['content-type'] || 'application/octet-stream';
 										res.setHeader('Content-Type', contentTypeRedirect);
 										res.setHeader('Access-Control-Allow-Origin', '*');
 										// Headers adicionales para fuentes
@@ -448,7 +469,7 @@ export class LocalServer {
 							reqRedirect.end();
 							return;
 						}
-						
+
 						// Si no hay cookie, hacer proxy recursivo (puede entrar en bucle si Vercel siempre requiere cookie)
 						return this.proxyVercelRequest(req, res, `/vercel-proxy${redirectPath}`)
 							.then(resolve)
@@ -457,23 +478,33 @@ export class LocalServer {
 				}
 
 				// Si es redirect, ya se manejó arriba
-				if (proxyRes.statusCode === 307 || proxyRes.statusCode === 302 || proxyRes.statusCode === 301) {
+				if (
+					proxyRes.statusCode === 307 ||
+					proxyRes.statusCode === 302 ||
+					proxyRes.statusCode === 301
+				) {
 					return; // Ya se maneja arriba
 				}
-				
+
 				// Si no es OK, verificar si es página de autenticación
 				const statusCode = proxyRes.statusCode || 500;
 				if (statusCode !== 200) {
 					// Leer el body para verificar si es página de autenticación
 					const chunks: Buffer[] = [];
-					proxyRes.on('data', (chunk: Buffer) => { chunks.push(chunk); });
+					proxyRes.on('data', (chunk: Buffer) => {
+						chunks.push(chunk);
+					});
 					proxyRes.on('end', () => {
 						const body = Buffer.concat(chunks).toString('utf-8');
 						if (body.includes('Authentication Required') || body.includes('Authentication')) {
-							console.log(`   ❌ Proxy error: Archivo no encontrado o requiere autenticación (${statusCode})`);
+							console.log(
+								`   ❌ Proxy error: Archivo no encontrado o requiere autenticación (${statusCode})`,
+							);
 							console.log(`   💡 Verificar que el archivo existe en Vercel: ${vercelFullUrl}`);
 							res.writeHead(404, { 'Content-Type': 'text/plain' });
-							res.end(`Archivo no encontrado en Vercel: ${vercelPath}\n\nVerificar que el archivo existe en storybook-static/`);
+							res.end(
+								`Archivo no encontrado en Vercel: ${vercelPath}\n\nVerificar que el archivo existe en storybook-static/`,
+							);
 						} else {
 							console.log(`   ❌ Proxy error: ${statusCode} ${proxyRes.statusMessage}`);
 							res.writeHead(statusCode, { 'Content-Type': 'text/plain' });
@@ -525,18 +556,17 @@ export class LocalServer {
 	private async findMostRecentTemplate(): Promise<string | null> {
 		try {
 			const files = await fs.readdir(this.directory);
-			
+
 			// Filtrar solo archivos HTML que coincidan con el patrón de templates
 			// Patrón: canvas-{template}-{module}-{date}.html
-			const templateFiles = files.filter(file => 
-				file.endsWith('.html') && 
-				file.startsWith('canvas-')
+			const templateFiles = files.filter(
+				(file) => file.endsWith('.html') && file.startsWith('canvas-'),
 			);
-			
+
 			if (templateFiles.length === 0) {
 				return null;
 			}
-			
+
 			// Obtener información de cada archivo (fecha de modificación)
 			const fileStats = await Promise.all(
 				templateFiles.map(async (file) => {
@@ -546,12 +576,12 @@ export class LocalServer {
 						fileName: file,
 						mtime: stats.mtime.getTime(),
 					};
-				})
+				}),
 			);
-			
+
 			// Ordenar por fecha de modificación (más reciente primero)
 			fileStats.sort((a, b) => b.mtime - a.mtime);
-			
+
 			// Retornar el más reciente
 			return fileStats[0].fileName;
 		} catch (error) {
@@ -611,4 +641,3 @@ ${filesList}
 </html>`;
 	}
 }
-

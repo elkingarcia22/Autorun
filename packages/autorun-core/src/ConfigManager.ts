@@ -40,9 +40,7 @@ export class ConfigManager {
 			// Validar configuración
 			const validation = this.validator.validate(this.config);
 			if (!validation.valid) {
-				const errorMessage = this.validator.generateErrorMessage(
-					validation.errors,
-				);
+				const errorMessage = this.validator.generateErrorMessage(validation.errors);
 				throw new InvalidConfigError(
 					'La configuración no cumple con el schema',
 					this.configPath,
@@ -74,10 +72,7 @@ export class ConfigManager {
 
 			// Si es error de JSON, lanzar error de archivo
 			if (error instanceof SyntaxError) {
-				throw new ConfigFileError(
-					this.configPath,
-					`JSON inválido: ${error.message}`,
-				);
+				throw new ConfigFileError(this.configPath, `JSON inválido: ${error.message}`);
 			}
 
 			// Otros errores de archivo
@@ -96,9 +91,7 @@ export class ConfigManager {
 		if (this.config) {
 			const validation = this.validator.validate(this.config);
 			if (!validation.valid) {
-				const errorMessage = this.validator.generateErrorMessage(
-					validation.errors,
-				);
+				const errorMessage = this.validator.generateErrorMessage(validation.errors);
 				throw new InvalidConfigError(
 					'No se puede guardar: la configuración no cumple con el schema',
 					this.configPath,
@@ -110,11 +103,7 @@ export class ConfigManager {
 		try {
 			const dir = path.dirname(this.configPath);
 			await fs.mkdir(dir, { recursive: true });
-			await fs.writeFile(
-				this.configPath,
-				JSON.stringify(this.config, null, 2),
-				'utf-8',
-			);
+			await fs.writeFile(this.configPath, JSON.stringify(this.config, null, 2), 'utf-8');
 		} catch (error: any) {
 			throw new ConfigFileError(
 				this.configPath,

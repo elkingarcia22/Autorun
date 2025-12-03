@@ -39,4 +39,3 @@ export {
 
 // Export default para que AddonLoader pueda cargarlo
 export { RenovateAddon as default } from './RenovateAddon';
-

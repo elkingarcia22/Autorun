@@ -6,12 +6,7 @@
  */
 
 import { IFunctionalAddon, AutorunContext } from '@autorun/core';
-import {
-	RenovateService,
-	RenovateConfig,
-	RenovateResult,
-	UpdateInfo,
-} from './RenovateService';
+import { RenovateService, RenovateConfig, RenovateResult, UpdateInfo } from './RenovateService';
 
 export class RenovateAddon implements IFunctionalAddon {
 	readonly id = 'renovate';
@@ -98,8 +93,7 @@ export class RenovateAddon implements IFunctionalAddon {
 		if (config.labels !== undefined) renovateConfig.labels = config.labels;
 		if (config.assignees !== undefined) renovateConfig.assignees = config.assignees;
 		if (config.reviewers !== undefined) renovateConfig.reviewers = config.reviewers;
-		if (config.packageRules !== undefined)
-			renovateConfig.packageRules = config.packageRules;
+		if (config.packageRules !== undefined) renovateConfig.packageRules = config.packageRules;
 		if (config.extends !== undefined) renovateConfig.extends = config.extends;
 
 		this.config = { ...this.config, ...renovateConfig };
@@ -194,4 +188,3 @@ export class RenovateAddon implements IFunctionalAddon {
 		};
 	}
 }
-

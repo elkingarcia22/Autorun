@@ -43,7 +43,7 @@ if (existsSync(packageJsonPath)) {
 	try {
 		const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'));
 		hasInitScript = packageJson.scripts?.init !== undefined;
-		
+
 		if (!hasInitScript) {
 			console.log('\n⚠️  ⚠️  ⚠️  ADVERTENCIA IMPORTANTE ⚠️  ⚠️  ⚠️\n');
 			console.log('❌ El script "init" NO está presente en package.json\n');
@@ -80,17 +80,9 @@ if (existsSync(packageJsonPath)) {
 
 // 1. Verificar estructura del proyecto
 console.log('📁 Verificando estructura del proyecto...');
-check(
-	'Directorio raíz',
-	existsSync(rootDir),
-	'Directorio raíz existe',
-);
+check('Directorio raíz', existsSync(rootDir), 'Directorio raíz existe');
 
-check(
-	'package.json raíz',
-	existsSync(join(rootDir, 'package.json')),
-	'package.json existe',
-);
+check('package.json raíz', existsSync(join(rootDir, 'package.json')), 'package.json existe');
 
 check(
 	'packages/autorun-core',
@@ -106,15 +98,9 @@ check(
 
 // 2. Verificar scripts
 console.log('\n📜 Verificando scripts...');
-const rootPackageJson = JSON.parse(
-	readFileSync(join(rootDir, 'package.json'), 'utf-8'),
-);
+const rootPackageJson = JSON.parse(readFileSync(join(rootDir, 'package.json'), 'utf-8'));
 
-check(
-	'Script init',
-	rootPackageJson.scripts?.init !== undefined,
-	'Script "init" está configurado',
-);
+check('Script init', rootPackageJson.scripts?.init !== undefined, 'Script "init" está configurado');
 
 check(
 	'Script autorun:init',
@@ -124,21 +110,10 @@ check(
 
 // 3. Verificar compilación
 console.log('\n🔨 Verificando compilación...');
-const initScriptPath = join(
-	rootDir,
-	'packages',
-	'autorun-core',
-	'dist',
-	'cli',
-	'autorun-init.js',
-);
+const initScriptPath = join(rootDir, 'packages', 'autorun-core', 'dist', 'cli', 'autorun-init.js');
 
 if (existsSync(initScriptPath)) {
-	check(
-		'Script init compilado',
-		true,
-		'Script init está compilado y listo',
-	);
+	check('Script init compilado', true, 'Script init está compilado y listo');
 } else {
 	warn(
 		'Script init no compilado',
@@ -162,11 +137,7 @@ check(
 const vitestPath = join(rootDir, 'node_modules', 'vitest');
 if (corePackageJson.devDependencies?.vitest !== undefined) {
 	if (existsSync(vitestPath)) {
-		check(
-			'Vitest instalado',
-			true,
-			'Vitest está instalado y disponible',
-		);
+		check('Vitest instalado', true, 'Vitest está instalado y disponible');
 	} else {
 		warn(
 			'Vitest en package.json pero no instalado',
@@ -174,10 +145,7 @@ if (corePackageJson.devDependencies?.vitest !== undefined) {
 		);
 	}
 } else {
-	warn(
-		'Vitest no configurado',
-		'Vitest no está en devDependencies (opcional para testing)',
-	);
+	warn('Vitest no configurado', 'Vitest no está en devDependencies (opcional para testing)');
 }
 
 // 5. Verificar archivos clave del wizard
@@ -193,11 +161,7 @@ const wizardFiles = [
 wizardFiles.forEach((file) => {
 	const filePath = join(rootDir, file);
 	const fileName = file.split('/').pop();
-	check(
-		`Archivo ${fileName}`,
-		existsSync(filePath),
-		`${fileName} existe`,
-	);
+	check(`Archivo ${fileName}`, existsSync(filePath), `${fileName} existe`);
 });
 
 // 6. Resumen
@@ -226,4 +190,3 @@ if (checks.warnings.length > 0) {
 console.log('✅ ¡Todo está listo! Puedes ejecutar:');
 console.log('   npm run init\n');
 process.exit(0);
-

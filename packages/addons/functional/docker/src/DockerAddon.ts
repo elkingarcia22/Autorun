@@ -106,21 +106,13 @@ export class DockerAddon implements IFunctionalAddon {
 
 	getServices() {
 		return {
-			build: async (options?: {
-				imageName?: string;
-				tag?: string;
-				dockerfile?: string;
-			}) => {
+			build: async (options?: { imageName?: string; tag?: string; dockerfile?: string }) => {
 				if (!this.service) {
 					throw new Error('Docker service no está inicializado');
 				}
 				return await this.service.build(options);
 			},
-			push: async (options?: {
-				imageName?: string;
-				tag?: string;
-				registry?: string;
-			}) => {
+			push: async (options?: { imageName?: string; tag?: string; registry?: string }) => {
 				if (!this.service) {
 					throw new Error('Docker service no está inicializado');
 				}
@@ -141,4 +133,3 @@ export class DockerAddon implements IFunctionalAddon {
 		};
 	}
 }
-

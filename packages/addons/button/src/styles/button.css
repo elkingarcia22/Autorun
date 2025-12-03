@@ -9,39 +9,46 @@
    ======================================== */
 
 .autorun-button {
-    /* Base styles */
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--p-spacing-mode-1-sm, 8px);
-    padding: var(--p-spacing-mode-1-md, 12px) var(--p-spacing-mode-1-lg, 16px);
-    border: none;
-    border-radius: var(--ubits-border-radius-sm, 8px);
-    font-family: var(--font-family-noto-sans-font-family);
-    font-weight: var(--weight-semibold, 600);
-    line-height: 1;
-    text-decoration: none;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    position: relative;
-    user-select: none;
-    white-space: nowrap;
-    
-    /* Default state (Primary) */
-    background: var(--ubits-button-primary-bg-default, var(--modifiers-normal-button-color-light-brand-primary-bg-default, #0c5bef));
-    color: var(--ubits-btn-primary-fg, var(--modifiers-normal-color-light-fg-bold, #ffffff));
-    border: 1px solid var(--ubits-button-primary-bg-default, var(--modifiers-normal-button-color-light-brand-primary-bg-default, #0c5bef));
-    
-    /* Medium (default) height */
-    height: 40px;
+	/* Base styles */
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: var(--p-spacing-mode-1-sm, 8px);
+	padding: var(--p-spacing-mode-1-md, 12px) var(--p-spacing-mode-1-lg, 16px);
+	border: none;
+	border-radius: var(--ubits-border-radius-sm, 8px);
+	font-family: var(--font-family-noto-sans-font-family);
+	font-weight: var(--weight-semibold, 600);
+	line-height: 1;
+	text-decoration: none;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	position: relative;
+	user-select: none;
+	white-space: nowrap;
+
+	/* Default state (Primary) */
+	background: var(
+		--ubits-button-primary-bg-default,
+		var(--modifiers-normal-button-color-light-brand-primary-bg-default, #0c5bef)
+	);
+	color: var(--ubits-btn-primary-fg, var(--modifiers-normal-color-light-fg-bold, #ffffff));
+	border: 1px solid
+		var(
+			--ubits-button-primary-bg-default,
+			var(--modifiers-normal-button-color-light-brand-primary-bg-default, #0c5bef)
+		);
+
+	/* Medium (default) height */
+	height: 40px;
 }
 
 /* Tipografía Medium (default) - usa tokens de typography */
 .autorun-button span {
-    font-family: var(--font-family-noto-sans-font-family);
-    font-size: var(--modifiers-normal-body-md-semibold-fontsize);
-    font-weight: var(--weight-semibold, 600);
-    line-height: var(--modifiers-normal-body-md-semibold-lineheight);
+	font-family: var(--font-family-noto-sans-font-family);
+	font-size: var(--modifiers-normal-body-md-semibold-fontsize);
+	font-weight: var(--weight-semibold, 600);
+	line-height: var(--modifiers-normal-body-md-semibold-lineheight);
 }
 
 /* ========================================
@@ -50,144 +57,160 @@
 
 /* Hover State */
 .autorun-button:hover:not(:disabled):not(.autorun-button--loading) {
-    background: var(--ubits-button-primary-hover, var(--modifiers-normal-button-color-light-brand-primary-bg-hover, #223a91)) !important;
-    border-color: var(--ubits-button-primary-hover, var(--modifiers-normal-button-color-light-brand-primary-bg-hover, #223a91)) !important;
+	background: var(
+		--ubits-button-primary-hover,
+		var(--modifiers-normal-button-color-light-brand-primary-bg-hover, #223a91)
+	) !important;
+	border-color: var(
+		--ubits-button-primary-hover,
+		var(--modifiers-normal-button-color-light-brand-primary-bg-hover, #223a91)
+	) !important;
 }
 
 /* Pressed/Active State */
 .autorun-button:active:not(:disabled):not(.autorun-button--loading) {
-    background: var(--ubits-button-primary-pressed, var(--modifiers-normal-button-color-light-brand-primary-bg-pressed, #1e4abf)) !important;
-    border-color: var(--ubits-button-primary-pressed, var(--modifiers-normal-button-color-light-brand-primary-bg-pressed, #1e4abf)) !important;
-    transform: translateY(1px);
+	background: var(
+		--ubits-button-primary-pressed,
+		var(--modifiers-normal-button-color-light-brand-primary-bg-pressed, #1e4abf)
+	) !important;
+	border-color: var(
+		--ubits-button-primary-pressed,
+		var(--modifiers-normal-button-color-light-brand-primary-bg-pressed, #1e4abf)
+	) !important;
+	transform: translateY(1px);
 }
 
 /* Focus State */
 .autorun-button:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 4px var(--modifiers-normal-focus-color);
+	outline: none;
+	box-shadow: 0 0 0 4px var(--modifiers-normal-focus-color);
 }
 
 /* Disabled State */
 .autorun-button:disabled,
 .autorun-button[aria-disabled="true"] {
-    background: var(--modifiers-normal-color-light-bg-disabled) !important;
-    color: var(--modifiers-normal-color-light-fg-on-disabled) !important;
-    border-color: var(--modifiers-normal-color-light-border-disabled) !important;
-    cursor: not-allowed;
-    pointer-events: none;
+	background: var(--modifiers-normal-color-light-bg-disabled) !important;
+	color: var(--modifiers-normal-color-light-fg-on-disabled) !important;
+	border-color: var(--modifiers-normal-color-light-border-disabled) !important;
+	cursor: not-allowed;
+	pointer-events: none;
 }
 
 /* Disabled State for all variants */
 .autorun-button--primary:disabled,
 .autorun-button--secondary:disabled {
-    background: var(--modifiers-normal-color-light-bg-disabled) !important;
-    color: var(--modifiers-normal-color-light-fg-on-disabled) !important;
-    border-color: var(--modifiers-normal-color-light-border-disabled) !important;
-    cursor: not-allowed;
-    pointer-events: none;
+	background: var(--modifiers-normal-color-light-bg-disabled) !important;
+	color: var(--modifiers-normal-color-light-fg-on-disabled) !important;
+	border-color: var(--modifiers-normal-color-light-border-disabled) !important;
+	cursor: not-allowed;
+	pointer-events: none;
 }
 
 /* Tertiary disabled mantiene su estilo pero con opacidad menor */
 .autorun-button--tertiary:disabled {
-    background: transparent !important;
-    color: var(--modifiers-normal-button-color-light-brand-tertiary-fg) !important;
-    border-color: transparent !important;
-    opacity: 0.5;
-    cursor: not-allowed;
-    pointer-events: none;
+	background: transparent !important;
+	color: var(--modifiers-normal-button-color-light-brand-tertiary-fg) !important;
+	border-color: transparent !important;
+	opacity: 0.5;
+	cursor: not-allowed;
+	pointer-events: none;
 }
 
 .autorun-button:disabled::before,
 .autorun-button[aria-disabled="true"]::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    border: 1px solid var(--modifiers-normal-color-light-border-disabled);
-    border-radius: var(--ubits-border-radius-sm, 8px);
-    pointer-events: none;
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	border: 1px solid var(--modifiers-normal-color-light-border-disabled);
+	border-radius: var(--ubits-border-radius-sm, 8px);
+	pointer-events: none;
 }
 
 /* Tertiary disabled no debe tener el pseudo-elemento ::before */
 .autorun-button--tertiary:disabled::before,
 .autorun-button--tertiary[aria-disabled="true"]::before {
-    content: none;
-    border: none;
+	content: none;
+	border: none;
 }
 
 /* Loading State */
 .autorun-button--loading,
 .autorun-button[data-loading="true"] {
-    cursor: wait;
-    pointer-events: none;
-    opacity: 0.8;
-    position: relative;
+	cursor: wait;
+	pointer-events: none;
+	opacity: 0.8;
+	position: relative;
 }
 
 /* Ocultar contenido original durante loading */
 .autorun-button--loading > span:not(.button-text),
 .autorun-button[data-loading="true"] > span:not(.button-text) {
-    opacity: 0;
-    transition: opacity 0.2s ease;
+	opacity: 0;
+	transition: opacity 0.2s ease;
 }
 
 .autorun-button--loading > i:not(.autorun-button__spinner *),
 .autorun-button[data-loading="true"] > i:not(.autorun-button__spinner *) {
-    opacity: 0;
-    transition: opacity 0.2s ease;
+	opacity: 0;
+	transition: opacity 0.2s ease;
 }
 
 /* Spinner de UBITS dentro del botón */
 .autorun-button__spinner {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    margin: var(--ubits-spacing-none, 0);
-    padding: var(--ubits-spacing-none, 0);
-    line-height: 1;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	flex-shrink: 0;
+	margin: var(--ubits-spacing-none, 0);
+	padding: var(--ubits-spacing-none, 0);
+	line-height: 1;
 }
 
 /* Asegurar que el spinner tenga el color correcto según la variante del botón */
 .autorun-button--primary .autorun-button__spinner,
 .autorun-button--primary .autorun-button__spinner .autorun-spinner__segment {
-    color: var(--modifiers-normal-color-light-fg-bold) !important;
+	color: var(--modifiers-normal-color-light-fg-bold) !important;
 }
 
 .autorun-button--secondary .autorun-button__spinner,
 .autorun-button--secondary .autorun-button__spinner .autorun-spinner__segment {
-    color: var(--modifiers-normal-button-color-light-brand-secondary-fg-default) !important;
+	color: var(--modifiers-normal-button-color-light-brand-secondary-fg-default) !important;
 }
 
 .autorun-button--tertiary .autorun-button__spinner,
 .autorun-button--tertiary .autorun-button__spinner .autorun-spinner__segment {
-    color: var(--modifiers-normal-button-color-light-brand-tertiary-fg) !important;
+	color: var(--modifiers-normal-button-color-light-brand-tertiary-fg) !important;
 }
 
 /* Ocultar label del spinner si existe dentro del botón */
 .autorun-button__spinner .autorun-spinner__label {
-    display: none;
+	display: none;
 }
 
 /* Ajustar tamaño del spinner dentro del botón para que se vea bien */
 .autorun-button__spinner .autorun-spinner__circle {
-    margin: var(--ubits-spacing-none, 0);
+	margin: var(--ubits-spacing-none, 0);
 }
 
 /* Loading overlay (opcional) */
 .autorun-button--loading::after,
 .autorun-button[data-loading="true"]::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: color-mix(in srgb, var(--modifiers-normal-color-light-bg-1) 10%, transparent); /* Overlay blanco semi-transparente construido desde bg-1 */
-    border-radius: var(--ubits-border-radius-sm, 8px);
-    pointer-events: none;
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: color-mix(
+		in srgb,
+		var(--modifiers-normal-color-light-bg-1) 10%,
+		transparent
+	); /* Overlay blanco semi-transparente construido desde bg-1 */
+	border-radius: var(--ubits-border-radius-sm, 8px);
+	pointer-events: none;
 }
 
 /* ========================================
@@ -196,128 +219,156 @@
 
 /* Primary Variant (default) */
 .autorun-button--primary {
-    background: var(--ubits-button-primary-bg-default, var(--modifiers-normal-button-color-light-brand-primary-bg-default, #0c5bef)) !important;
-    color: var(--ubits-btn-primary-fg, var(--modifiers-normal-color-light-fg-bold, #ffffff)) !important;
-    border: 1px solid var(--ubits-button-primary-bg-default, var(--modifiers-normal-button-color-light-brand-primary-bg-default, #0c5bef)) !important;
+	background: var(
+		--ubits-button-primary-bg-default,
+		var(--modifiers-normal-button-color-light-brand-primary-bg-default, #0c5bef)
+	) !important;
+	color: var(
+		--ubits-btn-primary-fg,
+		var(--modifiers-normal-color-light-fg-bold, #ffffff)
+	) !important;
+	border: 1px solid
+		var(
+			--ubits-button-primary-bg-default,
+			var(--modifiers-normal-button-color-light-brand-primary-bg-default, #0c5bef)
+		) !important;
 }
 
 .autorun-button--primary:hover:not(:disabled):not(.autorun-button--loading) {
-    background: var(--ubits-button-primary-hover, var(--modifiers-normal-button-color-light-brand-primary-bg-hover, #223a91)) !important;
-    border-color: var(--ubits-button-primary-hover, var(--modifiers-normal-button-color-light-brand-primary-bg-hover, #223a91)) !important;
+	background: var(
+		--ubits-button-primary-hover,
+		var(--modifiers-normal-button-color-light-brand-primary-bg-hover, #223a91)
+	) !important;
+	border-color: var(
+		--ubits-button-primary-hover,
+		var(--modifiers-normal-button-color-light-brand-primary-bg-hover, #223a91)
+	) !important;
 }
 
 .autorun-button--primary:active:not(:disabled):not(.autorun-button--loading) {
-    background: var(--ubits-button-primary-pressed, var(--modifiers-normal-button-color-light-brand-primary-bg-pressed, #1e4abf)) !important;
-    border-color: var(--ubits-button-primary-pressed, var(--modifiers-normal-button-color-light-brand-primary-bg-pressed, #1e4abf)) !important;
-    transform: translateY(1px);
+	background: var(
+		--ubits-button-primary-pressed,
+		var(--modifiers-normal-button-color-light-brand-primary-bg-pressed, #1e4abf)
+	) !important;
+	border-color: var(
+		--ubits-button-primary-pressed,
+		var(--modifiers-normal-button-color-light-brand-primary-bg-pressed, #1e4abf)
+	) !important;
+	transform: translateY(1px);
 }
 
 /* Active/Outline Variant */
 .autorun-button--active {
-    position: relative;
-    background-color: transparent !important;
-    color: var(--modifiers-normal-color-light-accent-brand) !important;
-    border: none !important;
+	position: relative;
+	background-color: transparent !important;
+	color: var(--modifiers-normal-color-light-accent-brand) !important;
+	border: none !important;
 }
 
 .autorun-button--active::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: var(--modifiers-normal-color-light-bg-active) !important;
-    border-radius: inherit;
-    pointer-events: none;
-    z-index: 0;
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: var(--modifiers-normal-color-light-bg-active) !important;
+	border-radius: inherit;
+	pointer-events: none;
+	z-index: 0;
 }
 
 .autorun-button--active:hover:not(:disabled):not(.autorun-button--loading) {
-    background-color: transparent !important;
-    color: var(--modifiers-normal-color-light-accent-brand) !important;
-    border: none;
+	background-color: transparent !important;
+	color: var(--modifiers-normal-color-light-accent-brand) !important;
+	border: none;
 }
 
 .autorun-button--active:hover:not(:disabled):not(.autorun-button--loading)::before {
-    background-color: var(--modifiers-normal-color-light-bg-active) !important;
+	background-color: var(--modifiers-normal-color-light-bg-active) !important;
 }
 
 .autorun-button--active:active:not(:disabled):not(.autorun-button--loading) {
-    background-color: transparent !important;
-    color: var(--modifiers-normal-color-light-accent-brand) !important;
-    border: none;
+	background-color: transparent !important;
+	color: var(--modifiers-normal-color-light-accent-brand) !important;
+	border: none;
 }
 
 .autorun-button--active:active:not(:disabled):not(.autorun-button--loading)::before {
-    background-color: var(--modifiers-normal-color-light-bg-active) !important;
+	background-color: var(--modifiers-normal-color-light-bg-active) !important;
 }
 
 /* Asegurar que los iconos también tengan el color correcto en estado active */
 .autorun-button--active i {
-    position: relative;
-    z-index: 1;
-    color: var(--modifiers-normal-color-light-accent-brand) !important;
+	position: relative;
+	z-index: 1;
+	color: var(--modifiers-normal-color-light-accent-brand) !important;
 }
 
 /* Asegurar que el texto (span) también tenga el color correcto en estado active */
 .autorun-button--active span {
-    position: relative;
-    z-index: 1;
-    color: var(--modifiers-normal-color-light-accent-brand) !important;
+	position: relative;
+	z-index: 1;
+	color: var(--modifiers-normal-color-light-accent-brand) !important;
 }
 
 /* Primary + Active: mismo estilo que secondary active (fondo transparente con overlay azul) */
 .autorun-button--primary.autorun-button--active {
-    position: relative;
-    background-color: transparent !important;
-    color: var(--modifiers-normal-color-light-accent-brand) !important;
-    border: none !important;
+	position: relative;
+	background-color: transparent !important;
+	color: var(--modifiers-normal-color-light-accent-brand) !important;
+	border: none !important;
 }
 
 .autorun-button--primary.autorun-button--active::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: var(--modifiers-normal-color-light-bg-active) !important;
-    border-radius: inherit;
-    pointer-events: none;
-    z-index: 0;
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: var(--modifiers-normal-color-light-bg-active) !important;
+	border-radius: inherit;
+	pointer-events: none;
+	z-index: 0;
 }
 
 .autorun-button--primary.autorun-button--active:hover:not(:disabled):not(.autorun-button--loading) {
-    background-color: transparent !important;
-    color: var(--modifiers-normal-color-light-accent-brand) !important;
-    border: none !important;
+	background-color: transparent !important;
+	color: var(--modifiers-normal-color-light-accent-brand) !important;
+	border: none !important;
 }
 
-.autorun-button--primary.autorun-button--active:hover:not(:disabled):not(.autorun-button--loading)::before {
-    background-color: var(--modifiers-normal-color-light-bg-active) !important;
+.autorun-button--primary.autorun-button--active:hover:not(:disabled):not(
+		.autorun-button--loading
+	)::before {
+	background-color: var(--modifiers-normal-color-light-bg-active) !important;
 }
 
-.autorun-button--primary.autorun-button--active:active:not(:disabled):not(.autorun-button--loading) {
-    background-color: transparent !important;
-    color: var(--modifiers-normal-color-light-accent-brand) !important;
-    border: none !important;
+.autorun-button--primary.autorun-button--active:active:not(:disabled):not(
+		.autorun-button--loading
+	) {
+	background-color: transparent !important;
+	color: var(--modifiers-normal-color-light-accent-brand) !important;
+	border: none !important;
 }
 
-.autorun-button--primary.autorun-button--active:active:not(:disabled):not(.autorun-button--loading)::before {
-    background-color: var(--modifiers-normal-color-light-bg-active) !important;
+.autorun-button--primary.autorun-button--active:active:not(:disabled):not(
+		.autorun-button--loading
+	)::before {
+	background-color: var(--modifiers-normal-color-light-bg-active) !important;
 }
 
 .autorun-button--primary.autorun-button--active i {
-    position: relative;
-    z-index: 1;
-    color: var(--modifiers-normal-color-light-accent-brand) !important;
+	position: relative;
+	z-index: 1;
+	color: var(--modifiers-normal-color-light-accent-brand) !important;
 }
 
 .autorun-button--primary.autorun-button--active span {
-    position: relative;
-    z-index: 1;
-    color: var(--modifiers-normal-color-light-accent-brand) !important;
+	position: relative;
+	z-index: 1;
+	color: var(--modifiers-normal-color-light-accent-brand) !important;
 }
 
 /* ========================================
@@ -326,77 +377,85 @@
 
 /* Secondary Button Base */
 .autorun-button--secondary {
-    background: var(--modifiers-normal-button-color-light-brand-secondary-bg-default) !important;
-    color: var(--modifiers-normal-button-color-light-brand-secondary-fg-default) !important;
-    border: 1px solid var(--modifiers-normal-button-color-light-brand-secondary-border) !important;
+	background: var(--modifiers-normal-button-color-light-brand-secondary-bg-default) !important;
+	color: var(--modifiers-normal-button-color-light-brand-secondary-fg-default) !important;
+	border: 1px solid var(--modifiers-normal-button-color-light-brand-secondary-border) !important;
 }
 
 /* Secondary Button Hover */
 .autorun-button--secondary:hover:not(:disabled):not(.autorun-button--loading) {
-    background: var(--modifiers-normal-button-color-light-brand-secondary-bg-hover) !important;
-    color: var(--modifiers-normal-button-color-light-brand-secondary-fg-default) !important;
-    border-color: var(--modifiers-normal-button-color-light-brand-secondary-border) !important;
+	background: var(--modifiers-normal-button-color-light-brand-secondary-bg-hover) !important;
+	color: var(--modifiers-normal-button-color-light-brand-secondary-fg-default) !important;
+	border-color: var(--modifiers-normal-button-color-light-brand-secondary-border) !important;
 }
 
 /* Secondary Button Pressed */
 .autorun-button--secondary:active:not(:disabled):not(.autorun-button--loading) {
-    background: var(--modifiers-normal-button-color-light-brand-secondary-bg-pressed) !important;
-    color: var(--modifiers-normal-button-color-light-brand-secondary-fg-default) !important;
-    border-color: var(--modifiers-normal-button-color-light-brand-secondary-border) !important;
-    transform: translateY(1px);
+	background: var(--modifiers-normal-button-color-light-brand-secondary-bg-pressed) !important;
+	color: var(--modifiers-normal-button-color-light-brand-secondary-fg-default) !important;
+	border-color: var(--modifiers-normal-button-color-light-brand-secondary-border) !important;
+	transform: translateY(1px);
 }
 
 /* Secondary Button Active State */
 .autorun-button--secondary.autorun-button--active {
-    position: relative;
-    background-color: transparent !important;
-    color: var(--modifiers-normal-color-light-accent-brand) !important;
-    border: none !important;
+	position: relative;
+	background-color: transparent !important;
+	color: var(--modifiers-normal-color-light-accent-brand) !important;
+	border: none !important;
 }
 
 .autorun-button--secondary.autorun-button--active::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: var(--modifiers-normal-color-light-bg-active) !important;
-    border-radius: inherit;
-    pointer-events: none;
-    z-index: 0;
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: var(--modifiers-normal-color-light-bg-active) !important;
+	border-radius: inherit;
+	pointer-events: none;
+	z-index: 0;
 }
 
-.autorun-button--secondary.autorun-button--active:hover:not(:disabled):not(.autorun-button--loading) {
-    background-color: transparent !important;
-    color: var(--modifiers-normal-color-light-accent-brand) !important;
-    border: none !important;
+.autorun-button--secondary.autorun-button--active:hover:not(:disabled):not(
+		.autorun-button--loading
+	) {
+	background-color: transparent !important;
+	color: var(--modifiers-normal-color-light-accent-brand) !important;
+	border: none !important;
 }
 
-.autorun-button--secondary.autorun-button--active:hover:not(:disabled):not(.autorun-button--loading)::before {
-    background-color: var(--modifiers-normal-color-light-bg-active) !important;
+.autorun-button--secondary.autorun-button--active:hover:not(:disabled):not(
+		.autorun-button--loading
+	)::before {
+	background-color: var(--modifiers-normal-color-light-bg-active) !important;
 }
 
-.autorun-button--secondary.autorun-button--active:active:not(:disabled):not(.autorun-button--loading) {
-    background-color: transparent !important;
-    color: var(--modifiers-normal-color-light-accent-brand) !important;
-    border: none !important;
+.autorun-button--secondary.autorun-button--active:active:not(:disabled):not(
+		.autorun-button--loading
+	) {
+	background-color: transparent !important;
+	color: var(--modifiers-normal-color-light-accent-brand) !important;
+	border: none !important;
 }
 
-.autorun-button--secondary.autorun-button--active:active:not(:disabled):not(.autorun-button--loading)::before {
-    background-color: var(--modifiers-normal-color-light-bg-active) !important;
+.autorun-button--secondary.autorun-button--active:active:not(:disabled):not(
+		.autorun-button--loading
+	)::before {
+	background-color: var(--modifiers-normal-color-light-bg-active) !important;
 }
 
 .autorun-button--secondary.autorun-button--active i {
-    position: relative;
-    z-index: 1;
-    color: var(--modifiers-normal-color-light-accent-brand) !important;
+	position: relative;
+	z-index: 1;
+	color: var(--modifiers-normal-color-light-accent-brand) !important;
 }
 
 .autorun-button--secondary.autorun-button--active span {
-    position: relative;
-    z-index: 1;
-    color: var(--modifiers-normal-color-light-accent-brand) !important;
+	position: relative;
+	z-index: 1;
+	color: var(--modifiers-normal-color-light-accent-brand) !important;
 }
 
 /* ========================================
@@ -408,192 +467,344 @@
 /* Elevation floating construido con tokens de Figma */
 /* Nota: Usar calc() para agregar 'px' a los valores numéricos de los tokens */
 :root {
-    --ubits-elevation-floating: calc(var(--modifiers-normal-elevation-floating-0-x) * 1px) calc(var(--modifiers-normal-elevation-floating-0-y) * 1px) calc(var(--modifiers-normal-elevation-floating-0-blur) * 1px) calc(var(--modifiers-normal-elevation-floating-0-spread) * 1px) var(--modifiers-normal-elevation-floating-0-color), calc(var(--modifiers-normal-elevation-floating-1-x) * 1px) calc(var(--modifiers-normal-elevation-floating-1-y) * 1px) calc(var(--modifiers-normal-elevation-floating-1-blur) * 1px) calc(var(--modifiers-normal-elevation-floating-1-spread) * 1px) var(--modifiers-normal-elevation-floating-1-color);
-    --ubits-elevation-floating-hover: calc(var(--modifiers-normal-elevation-hover-0-x) * 1px) calc(var(--modifiers-normal-elevation-hover-0-y) * 1px) calc(var(--modifiers-normal-elevation-hover-0-blur) * 1px) calc(var(--modifiers-normal-elevation-hover-0-spread) * 1px) var(--modifiers-normal-elevation-hover-0-color), calc(var(--modifiers-normal-elevation-hover-1-x) * 1px) calc(var(--modifiers-normal-elevation-hover-1-y) * 1px) calc(var(--modifiers-normal-elevation-hover-1-blur) * 1px) calc(var(--modifiers-normal-elevation-hover-1-spread) * 1px) var(--modifiers-normal-elevation-hover-1-color);
-    --ubits-elevation-floating-active: calc(var(--modifiers-normal-elevation-default-0-x) * 1px) calc(var(--modifiers-normal-elevation-default-0-y) * 1px) calc(var(--modifiers-normal-elevation-default-0-blur) * 1px) calc(var(--modifiers-normal-elevation-default-0-spread) * 1px) var(--modifiers-normal-elevation-default-0-color), calc(var(--modifiers-normal-elevation-default-1-x) * 1px) calc(var(--modifiers-normal-elevation-default-1-y) * 1px) calc(var(--modifiers-normal-elevation-default-1-blur) * 1px) calc(var(--modifiers-normal-elevation-default-1-spread) * 1px) var(--modifiers-normal-elevation-default-1-color);
+	--ubits-elevation-floating:
+		calc(var(--modifiers-normal-elevation-floating-0-x) * 1px)
+		calc(var(--modifiers-normal-elevation-floating-0-y) * 1px)
+		calc(var(--modifiers-normal-elevation-floating-0-blur) * 1px)
+		calc(var(--modifiers-normal-elevation-floating-0-spread) * 1px)
+		var(--modifiers-normal-elevation-floating-0-color),
+		calc(var(--modifiers-normal-elevation-floating-1-x) * 1px)
+		calc(var(--modifiers-normal-elevation-floating-1-y) * 1px)
+		calc(var(--modifiers-normal-elevation-floating-1-blur) * 1px)
+		calc(var(--modifiers-normal-elevation-floating-1-spread) * 1px)
+		var(--modifiers-normal-elevation-floating-1-color);
+	--ubits-elevation-floating-hover:
+		calc(var(--modifiers-normal-elevation-hover-0-x) * 1px)
+		calc(var(--modifiers-normal-elevation-hover-0-y) * 1px)
+		calc(var(--modifiers-normal-elevation-hover-0-blur) * 1px)
+		calc(var(--modifiers-normal-elevation-hover-0-spread) * 1px)
+		var(--modifiers-normal-elevation-hover-0-color),
+		calc(var(--modifiers-normal-elevation-hover-1-x) * 1px)
+		calc(var(--modifiers-normal-elevation-hover-1-y) * 1px)
+		calc(var(--modifiers-normal-elevation-hover-1-blur) * 1px)
+		calc(var(--modifiers-normal-elevation-hover-1-spread) * 1px)
+		var(--modifiers-normal-elevation-hover-1-color);
+	--ubits-elevation-floating-active:
+		calc(var(--modifiers-normal-elevation-default-0-x) * 1px)
+		calc(var(--modifiers-normal-elevation-default-0-y) * 1px)
+		calc(var(--modifiers-normal-elevation-default-0-blur) * 1px)
+		calc(var(--modifiers-normal-elevation-default-0-spread) * 1px)
+		var(--modifiers-normal-elevation-default-0-color),
+		calc(var(--modifiers-normal-elevation-default-1-x) * 1px)
+		calc(var(--modifiers-normal-elevation-default-1-y) * 1px)
+		calc(var(--modifiers-normal-elevation-default-1-blur) * 1px)
+		calc(var(--modifiers-normal-elevation-default-1-spread) * 1px)
+		var(--modifiers-normal-elevation-default-1-color);
 }
 
 [data-theme="dark"] {
+	--ubits-elevation-floating:
+		calc(var(--modifiers-normal-elevation-floating-0-x) * 1px)
+		calc(var(--modifiers-normal-elevation-floating-0-y) * 1px)
+		calc(var(--modifiers-normal-elevation-floating-0-blur) * 1px)
+		calc(var(--modifiers-normal-elevation-floating-0-spread) * 1px)
+		var(--modifiers-normal-elevation-floating-0-color),
+		calc(var(--modifiers-normal-elevation-floating-1-x) * 1px)
+		calc(var(--modifiers-normal-elevation-floating-1-y) * 1px)
+		calc(var(--modifiers-normal-elevation-floating-1-blur) * 1px)
+		calc(var(--modifiers-normal-elevation-floating-1-spread) * 1px)
+		var(--modifiers-normal-elevation-floating-1-color);
+	--ubits-elevation-floating-hover:
+		calc(var(--modifiers-normal-elevation-hover-0-x) * 1px)
+		calc(var(--modifiers-normal-elevation-hover-0-y) * 1px)
+		calc(var(--modifiers-normal-elevation-hover-0-blur) * 1px)
+		calc(var(--modifiers-normal-elevation-hover-0-spread) * 1px)
+		var(--modifiers-normal-elevation-hover-0-color),
+		calc(var(--modifiers-normal-elevation-hover-1-x) * 1px)
+		calc(var(--modifiers-normal-elevation-hover-1-y) * 1px)
+		calc(var(--modifiers-normal-elevation-hover-1-blur) * 1px)
+		calc(var(--modifiers-normal-elevation-hover-1-spread) * 1px)
+		var(--modifiers-normal-elevation-hover-1-color);
+	--ubits-elevation-floating-active:
+		calc(var(--modifiers-normal-elevation-default-0-x) * 1px)
+		calc(var(--modifiers-normal-elevation-default-0-y) * 1px)
+		calc(var(--modifiers-normal-elevation-default-0-blur) * 1px)
+		calc(var(--modifiers-normal-elevation-default-0-spread) * 1px)
+		var(--modifiers-normal-elevation-default-0-color),
+		calc(var(--modifiers-normal-elevation-default-1-x) * 1px)
+		calc(var(--modifiers-normal-elevation-default-1-y) * 1px)
+		calc(var(--modifiers-normal-elevation-default-1-blur) * 1px)
+		calc(var(--modifiers-normal-elevation-default-1-spread) * 1px)
+		var(--modifiers-normal-elevation-default-1-color);
 
+	--modifiers-normal-button-color-light-brand-primary-bg-default: var(
+		--modifiers-normal-button-color-dark-brand-primary-bg-default
+	);
+	--modifiers-normal-color-light-fg-bold: var(--modifiers-normal-color-dark-fg-bold);
+	--modifiers-normal-button-color-light-brand-primary-bg-hover: var(
+		--modifiers-normal-button-color-dark-brand-primary-bg-hover
+	);
+	--modifiers-normal-button-color-light-brand-primary-bg-pressed: var(
+		--modifiers-normal-button-color-dark-brand-primary-bg-pressed
+	);
+	--modifiers-normal-color-light-bg-disabled: var(--modifiers-normal-color-dark-bg-disabled);
+	--modifiers-normal-color-light-fg-on-disabled: var(--modifiers-normal-color-dark-fg-on-disabled);
+	--modifiers-normal-color-light-border-disabled: var(
+		--modifiers-normal-color-dark-border-disabled
+	);
+	--modifiers-normal-button-color-light-brand-tertiary-fg: var(
+		--modifiers-normal-button-color-dark-brand-tertiary-fg
+	);
+	--modifiers-normal-button-color-light-brand-secondary-fg-default: var(
+		--modifiers-normal-button-color-dark-brand-secondary-fg-default
+	);
+	--modifiers-normal-color-light-bg-1: var(--modifiers-normal-color-dark-bg-1);
+	--modifiers-normal-color-light-accent-brand: var(--modifiers-normal-color-dark-accent-brand);
+	--modifiers-normal-color-light-bg-active: var(--modifiers-normal-color-dark-bg-active);
+	--modifiers-normal-button-color-light-brand-secondary-bg-default: var(
+		--modifiers-normal-button-color-dark-brand-secondary-bg-default
+	);
+	--modifiers-normal-button-color-light-brand-secondary-border: var(
+		--modifiers-normal-button-color-dark-brand-secondary-border
+	);
+	--modifiers-normal-button-color-light-brand-secondary-bg-hover: var(
+		--modifiers-normal-button-color-dark-brand-secondary-bg-hover
+	);
+	--modifiers-normal-button-color-light-brand-secondary-bg-pressed: var(
+		--modifiers-normal-button-color-dark-brand-secondary-bg-pressed
+	);
+	--modifiers-normal-button-color-light-brand-tertiary-bg-hover: var(
+		--modifiers-normal-button-color-dark-brand-tertiary-bg-hover
+	);
+	--modifiers-normal-button-color-light-brand-tertiary-bg-pressed: var(
+		--modifiers-normal-button-color-dark-brand-tertiary-bg-pressed
+	);
+	--modifiers-normal-color-light-feedback-accent-error: var(
+		--modifiers-normal-color-dark-feedback-accent-error
+	);
+	--modifiers-static-inverted-color-light-accent-brand: var(
+		--modifiers-static-inverted-color-dark-accent-brand
+	);
 
+	--modifiers-normal-button-color-light-brand-primary-bg-default: var(
+		--modifiers-normal-button-color-dark-brand-primary-bg-default
+	);
+	--modifiers-normal-color-light-fg-bold: var(--modifiers-normal-color-dark-fg-bold);
+	--modifiers-normal-button-color-light-brand-primary-bg-hover: var(
+		--modifiers-normal-button-color-dark-brand-primary-bg-hover
+	);
+	--modifiers-normal-button-color-light-brand-primary-bg-pressed: var(
+		--modifiers-normal-button-color-dark-brand-primary-bg-pressed
+	);
+	--modifiers-normal-color-light-bg-disabled: var(--modifiers-normal-color-dark-bg-disabled);
+	--modifiers-normal-color-light-fg-on-disabled: var(--modifiers-normal-color-dark-fg-on-disabled);
+	--modifiers-normal-color-light-border-disabled: var(
+		--modifiers-normal-color-dark-border-disabled
+	);
+	--modifiers-normal-button-color-light-brand-tertiary-fg: var(
+		--modifiers-normal-button-color-dark-brand-tertiary-fg
+	);
+	--modifiers-normal-button-color-light-brand-secondary-fg-default: var(
+		--modifiers-normal-button-color-dark-brand-secondary-fg-default
+	);
+	--modifiers-normal-color-light-bg-1: var(--modifiers-normal-color-dark-bg-1);
+	--modifiers-normal-color-light-accent-brand: var(--modifiers-normal-color-dark-accent-brand);
+	--modifiers-normal-color-light-bg-active: var(--modifiers-normal-color-dark-bg-active);
+	--modifiers-normal-button-color-light-brand-secondary-bg-default: var(
+		--modifiers-normal-button-color-dark-brand-secondary-bg-default
+	);
+	--modifiers-normal-button-color-light-brand-secondary-border: var(
+		--modifiers-normal-button-color-dark-brand-secondary-border
+	);
+	--modifiers-normal-button-color-light-brand-secondary-bg-hover: var(
+		--modifiers-normal-button-color-dark-brand-secondary-bg-hover
+	);
+	--modifiers-normal-button-color-light-brand-secondary-bg-pressed: var(
+		--modifiers-normal-button-color-dark-brand-secondary-bg-pressed
+	);
+	--modifiers-normal-button-color-light-brand-tertiary-bg-hover: var(
+		--modifiers-normal-button-color-dark-brand-tertiary-bg-hover
+	);
+	--modifiers-normal-button-color-light-brand-tertiary-bg-pressed: var(
+		--modifiers-normal-button-color-dark-brand-tertiary-bg-pressed
+	);
+	--modifiers-normal-color-light-feedback-accent-error: var(
+		--modifiers-normal-color-dark-feedback-accent-error
+	);
 
-    --ubits-elevation-floating: calc(var(--modifiers-normal-elevation-floating-0-x) * 1px) calc(var(--modifiers-normal-elevation-floating-0-y) * 1px) calc(var(--modifiers-normal-elevation-floating-0-blur) * 1px) calc(var(--modifiers-normal-elevation-floating-0-spread) * 1px) var(--modifiers-normal-elevation-floating-0-color), calc(var(--modifiers-normal-elevation-floating-1-x) * 1px) calc(var(--modifiers-normal-elevation-floating-1-y) * 1px) calc(var(--modifiers-normal-elevation-floating-1-blur) * 1px) calc(var(--modifiers-normal-elevation-floating-1-spread) * 1px) var(--modifiers-normal-elevation-floating-1-color);
-    --ubits-elevation-floating-hover: calc(var(--modifiers-normal-elevation-hover-0-x) * 1px) calc(var(--modifiers-normal-elevation-hover-0-y) * 1px) calc(var(--modifiers-normal-elevation-hover-0-blur) * 1px) calc(var(--modifiers-normal-elevation-hover-0-spread) * 1px) var(--modifiers-normal-elevation-hover-0-color), calc(var(--modifiers-normal-elevation-hover-1-x) * 1px) calc(var(--modifiers-normal-elevation-hover-1-y) * 1px) calc(var(--modifiers-normal-elevation-hover-1-blur) * 1px) calc(var(--modifiers-normal-elevation-hover-1-spread) * 1px) var(--modifiers-normal-elevation-hover-1-color);
-    --ubits-elevation-floating-active: calc(var(--modifiers-normal-elevation-default-0-x) * 1px) calc(var(--modifiers-normal-elevation-default-0-y) * 1px) calc(var(--modifiers-normal-elevation-default-0-blur) * 1px) calc(var(--modifiers-normal-elevation-default-0-spread) * 1px) var(--modifiers-normal-elevation-default-0-color), calc(var(--modifiers-normal-elevation-default-1-x) * 1px) calc(var(--modifiers-normal-elevation-default-1-y) * 1px) calc(var(--modifiers-normal-elevation-default-1-blur) * 1px) calc(var(--modifiers-normal-elevation-default-1-spread) * 1px) var(--modifiers-normal-elevation-default-1-color);
-
-  --modifiers-normal-button-color-light-brand-primary-bg-default: var(--modifiers-normal-button-color-dark-brand-primary-bg-default);
-  --modifiers-normal-color-light-fg-bold: var(--modifiers-normal-color-dark-fg-bold);
-  --modifiers-normal-button-color-light-brand-primary-bg-hover: var(--modifiers-normal-button-color-dark-brand-primary-bg-hover);
-  --modifiers-normal-button-color-light-brand-primary-bg-pressed: var(--modifiers-normal-button-color-dark-brand-primary-bg-pressed);
-  --modifiers-normal-color-light-bg-disabled: var(--modifiers-normal-color-dark-bg-disabled);
-  --modifiers-normal-color-light-fg-on-disabled: var(--modifiers-normal-color-dark-fg-on-disabled);
-  --modifiers-normal-color-light-border-disabled: var(--modifiers-normal-color-dark-border-disabled);
-  --modifiers-normal-button-color-light-brand-tertiary-fg: var(--modifiers-normal-button-color-dark-brand-tertiary-fg);
-  --modifiers-normal-button-color-light-brand-secondary-fg-default: var(--modifiers-normal-button-color-dark-brand-secondary-fg-default);
-  --modifiers-normal-color-light-bg-1: var(--modifiers-normal-color-dark-bg-1);
-  --modifiers-normal-color-light-accent-brand: var(--modifiers-normal-color-dark-accent-brand);
-  --modifiers-normal-color-light-bg-active: var(--modifiers-normal-color-dark-bg-active);
-  --modifiers-normal-button-color-light-brand-secondary-bg-default: var(--modifiers-normal-button-color-dark-brand-secondary-bg-default);
-  --modifiers-normal-button-color-light-brand-secondary-border: var(--modifiers-normal-button-color-dark-brand-secondary-border);
-  --modifiers-normal-button-color-light-brand-secondary-bg-hover: var(--modifiers-normal-button-color-dark-brand-secondary-bg-hover);
-  --modifiers-normal-button-color-light-brand-secondary-bg-pressed: var(--modifiers-normal-button-color-dark-brand-secondary-bg-pressed);
-  --modifiers-normal-button-color-light-brand-tertiary-bg-hover: var(--modifiers-normal-button-color-dark-brand-tertiary-bg-hover);
-  --modifiers-normal-button-color-light-brand-tertiary-bg-pressed: var(--modifiers-normal-button-color-dark-brand-tertiary-bg-pressed);
-  --modifiers-normal-color-light-feedback-accent-error: var(--modifiers-normal-color-dark-feedback-accent-error);
-  --modifiers-static-inverted-color-light-accent-brand: var(--modifiers-static-inverted-color-dark-accent-brand);
-
-
-  --modifiers-normal-button-color-light-brand-primary-bg-default: var(--modifiers-normal-button-color-dark-brand-primary-bg-default);
-  --modifiers-normal-color-light-fg-bold: var(--modifiers-normal-color-dark-fg-bold);
-  --modifiers-normal-button-color-light-brand-primary-bg-hover: var(--modifiers-normal-button-color-dark-brand-primary-bg-hover);
-  --modifiers-normal-button-color-light-brand-primary-bg-pressed: var(--modifiers-normal-button-color-dark-brand-primary-bg-pressed);
-  --modifiers-normal-color-light-bg-disabled: var(--modifiers-normal-color-dark-bg-disabled);
-  --modifiers-normal-color-light-fg-on-disabled: var(--modifiers-normal-color-dark-fg-on-disabled);
-  --modifiers-normal-color-light-border-disabled: var(--modifiers-normal-color-dark-border-disabled);
-  --modifiers-normal-button-color-light-brand-tertiary-fg: var(--modifiers-normal-button-color-dark-brand-tertiary-fg);
-  --modifiers-normal-button-color-light-brand-secondary-fg-default: var(--modifiers-normal-button-color-dark-brand-secondary-fg-default);
-  --modifiers-normal-color-light-bg-1: var(--modifiers-normal-color-dark-bg-1);
-  --modifiers-normal-color-light-accent-brand: var(--modifiers-normal-color-dark-accent-brand);
-  --modifiers-normal-color-light-bg-active: var(--modifiers-normal-color-dark-bg-active);
-  --modifiers-normal-button-color-light-brand-secondary-bg-default: var(--modifiers-normal-button-color-dark-brand-secondary-bg-default);
-  --modifiers-normal-button-color-light-brand-secondary-border: var(--modifiers-normal-button-color-dark-brand-secondary-border);
-  --modifiers-normal-button-color-light-brand-secondary-bg-hover: var(--modifiers-normal-button-color-dark-brand-secondary-bg-hover);
-  --modifiers-normal-button-color-light-brand-secondary-bg-pressed: var(--modifiers-normal-button-color-dark-brand-secondary-bg-pressed);
-  --modifiers-normal-button-color-light-brand-tertiary-bg-hover: var(--modifiers-normal-button-color-dark-brand-tertiary-bg-hover);
-  --modifiers-normal-button-color-light-brand-tertiary-bg-pressed: var(--modifiers-normal-button-color-dark-brand-tertiary-bg-pressed);
-  --modifiers-normal-color-light-feedback-accent-error: var(--modifiers-normal-color-dark-feedback-accent-error);
-
-
-  --modifiers-normal-button-color-light-brand-primary-bg-default: var(--modifiers-normal-button-color-dark-brand-primary-bg-default);
-  --modifiers-normal-color-light-fg-bold: var(--modifiers-normal-color-dark-fg-bold);
-  --modifiers-normal-button-color-light-brand-primary-bg-hover: var(--modifiers-normal-button-color-dark-brand-primary-bg-hover);
-  --modifiers-normal-button-color-light-brand-primary-bg-pressed: var(--modifiers-normal-button-color-dark-brand-primary-bg-pressed);
-  --modifiers-normal-color-light-bg-disabled: var(--modifiers-normal-color-dark-bg-disabled);
-  --modifiers-normal-color-light-fg-on-disabled: var(--modifiers-normal-color-dark-fg-on-disabled);
-  --modifiers-normal-color-light-border-disabled: var(--modifiers-normal-color-dark-border-disabled);
-  --modifiers-normal-button-color-light-brand-tertiary-fg: var(--modifiers-normal-button-color-dark-brand-tertiary-fg);
-  --modifiers-normal-button-color-light-brand-secondary-fg-default: var(--modifiers-normal-button-color-dark-brand-secondary-fg-default);
-  --modifiers-normal-color-light-bg-1: var(--modifiers-normal-color-dark-bg-1);
-  --modifiers-normal-color-light-accent-brand: var(--modifiers-normal-color-dark-accent-brand);
-  --modifiers-normal-color-light-bg-active: var(--modifiers-normal-color-dark-bg-active);
-  --modifiers-normal-button-color-light-brand-secondary-bg-default: var(--modifiers-normal-button-color-dark-brand-secondary-bg-default);
-  --modifiers-normal-button-color-light-brand-secondary-border: var(--modifiers-normal-button-color-dark-brand-secondary-border);
-  --modifiers-normal-button-color-light-brand-secondary-bg-hover: var(--modifiers-normal-button-color-dark-brand-secondary-bg-hover);
-  --modifiers-normal-button-color-light-brand-secondary-bg-pressed: var(--modifiers-normal-button-color-dark-brand-secondary-bg-pressed);
-  --modifiers-normal-button-color-light-brand-tertiary-bg-hover: var(--modifiers-normal-button-color-dark-brand-tertiary-bg-hover);
-  --modifiers-normal-button-color-light-brand-tertiary-bg-pressed: var(--modifiers-normal-button-color-dark-brand-tertiary-bg-pressed);
-  --modifiers-normal-color-light-feedback-accent-error: var(--modifiers-normal-color-dark-feedback-accent-error);
-
+	--modifiers-normal-button-color-light-brand-primary-bg-default: var(
+		--modifiers-normal-button-color-dark-brand-primary-bg-default
+	);
+	--modifiers-normal-color-light-fg-bold: var(--modifiers-normal-color-dark-fg-bold);
+	--modifiers-normal-button-color-light-brand-primary-bg-hover: var(
+		--modifiers-normal-button-color-dark-brand-primary-bg-hover
+	);
+	--modifiers-normal-button-color-light-brand-primary-bg-pressed: var(
+		--modifiers-normal-button-color-dark-brand-primary-bg-pressed
+	);
+	--modifiers-normal-color-light-bg-disabled: var(--modifiers-normal-color-dark-bg-disabled);
+	--modifiers-normal-color-light-fg-on-disabled: var(--modifiers-normal-color-dark-fg-on-disabled);
+	--modifiers-normal-color-light-border-disabled: var(
+		--modifiers-normal-color-dark-border-disabled
+	);
+	--modifiers-normal-button-color-light-brand-tertiary-fg: var(
+		--modifiers-normal-button-color-dark-brand-tertiary-fg
+	);
+	--modifiers-normal-button-color-light-brand-secondary-fg-default: var(
+		--modifiers-normal-button-color-dark-brand-secondary-fg-default
+	);
+	--modifiers-normal-color-light-bg-1: var(--modifiers-normal-color-dark-bg-1);
+	--modifiers-normal-color-light-accent-brand: var(--modifiers-normal-color-dark-accent-brand);
+	--modifiers-normal-color-light-bg-active: var(--modifiers-normal-color-dark-bg-active);
+	--modifiers-normal-button-color-light-brand-secondary-bg-default: var(
+		--modifiers-normal-button-color-dark-brand-secondary-bg-default
+	);
+	--modifiers-normal-button-color-light-brand-secondary-border: var(
+		--modifiers-normal-button-color-dark-brand-secondary-border
+	);
+	--modifiers-normal-button-color-light-brand-secondary-bg-hover: var(
+		--modifiers-normal-button-color-dark-brand-secondary-bg-hover
+	);
+	--modifiers-normal-button-color-light-brand-secondary-bg-pressed: var(
+		--modifiers-normal-button-color-dark-brand-secondary-bg-pressed
+	);
+	--modifiers-normal-button-color-light-brand-tertiary-bg-hover: var(
+		--modifiers-normal-button-color-dark-brand-tertiary-bg-hover
+	);
+	--modifiers-normal-button-color-light-brand-tertiary-bg-pressed: var(
+		--modifiers-normal-button-color-dark-brand-tertiary-bg-pressed
+	);
+	--modifiers-normal-color-light-feedback-accent-error: var(
+		--modifiers-normal-color-dark-feedback-accent-error
+	);
 }
 
 /* Botón flotante con sombra del token de elevación floating */
 .autorun-button--floating {
-    box-shadow: var(--ubits-elevation-floating) !important;
-    transition: box-shadow 0.2s ease, transform 0.2s ease;
+	box-shadow: var(--ubits-elevation-floating) !important;
+	transition:
+		box-shadow 0.2s ease,
+		transform 0.2s ease;
 }
 
 /* 🔍 LOGS: Verificar tokens de floating */
 .autorun-button--floating::before {
-    content: '';
-    position: absolute;
-    top: -20px;
-    left: 0;
-    width: 100%;
-    height: 18px;
-    background: rgba(255, 0, 0, 0.1);
-    border: 1px solid red;
-    font-size: 10px;
-    color: red;
-    z-index: 9999;
-    display: none; /* Cambiar a block para ver logs visuales */
+	content: "";
+	position: absolute;
+	top: -20px;
+	left: 0;
+	width: 100%;
+	height: 18px;
+	background: rgba(255, 0, 0, 0.1);
+	border: 1px solid red;
+	font-size: 10px;
+	color: red;
+	z-index: 9999;
+	display: none; /* Cambiar a block para ver logs visuales */
 }
 
 /* Logs en consola - se ejecutarán cuando el botón flotante se renderice */
 
 /* Log visual para debugging - remover en producción */
 .autorun-button--floating::after {
-    content: '';
-    position: absolute;
-    top: -2px;
-    right: -2px;
-    width: var(--ubits-spacing-sm, 8px);
-    height: var(--ubits-spacing-sm, 8px);
-    background: red;
-    border-radius: 50%;
-    z-index: 9999;
-    display: none; /* Cambiar a block para ver el indicador visual */
+	content: "";
+	position: absolute;
+	top: -2px;
+	right: -2px;
+	width: var(--ubits-spacing-sm, 8px);
+	height: var(--ubits-spacing-sm, 8px);
+	background: red;
+	border-radius: 50%;
+	z-index: 9999;
+	display: none; /* Cambiar a block para ver el indicador visual */
 }
 
 /* Hover del botón flotante - sombra más pronunciada */
 .autorun-button--floating:hover:not(:disabled):not(.autorun-button--loading) {
-    box-shadow: var(--ubits-elevation-floating-hover) !important;
-    transform: translateY(-2px);
+	box-shadow: var(--ubits-elevation-floating-hover) !important;
+	transform: translateY(-2px);
 }
 
 /* Active del botón flotante - sombra reducida */
 .autorun-button--floating:active:not(:disabled):not(.autorun-button--loading) {
-    box-shadow: var(--ubits-elevation-floating-active) !important;
-    transform: translateY(0px);
+	box-shadow: var(--ubits-elevation-floating-active) !important;
+	transform: translateY(0px);
 }
 
 /* Floating + Primary variant */
 .autorun-button--floating.autorun-button--primary {
-    box-shadow: var(--ubits-elevation-floating) !important;
+	box-shadow: var(--ubits-elevation-floating) !important;
 }
 
-.autorun-button--floating.autorun-button--primary:hover:not(:disabled):not(.autorun-button--loading) {
-    box-shadow: var(--ubits-elevation-floating-hover) !important;
-    transform: translateY(-2px);
+.autorun-button--floating.autorun-button--primary:hover:not(:disabled):not(
+		.autorun-button--loading
+	) {
+	box-shadow: var(--ubits-elevation-floating-hover) !important;
+	transform: translateY(-2px);
 }
 
-.autorun-button--floating.autorun-button--primary:active:not(:disabled):not(.autorun-button--loading) {
-    box-shadow: var(--ubits-elevation-floating-active) !important;
-    transform: translateY(0px);
+.autorun-button--floating.autorun-button--primary:active:not(:disabled):not(
+		.autorun-button--loading
+	) {
+	box-shadow: var(--ubits-elevation-floating-active) !important;
+	transform: translateY(0px);
 }
 
 /* Floating + Secondary variant */
 .autorun-button--floating.autorun-button--secondary {
-    box-shadow: var(--ubits-elevation-floating) !important;
+	box-shadow: var(--ubits-elevation-floating) !important;
 }
 
-.autorun-button--floating.autorun-button--secondary:hover:not(:disabled):not(.autorun-button--loading) {
-    box-shadow: var(--ubits-elevation-floating-hover) !important;
-    transform: translateY(-2px);
+.autorun-button--floating.autorun-button--secondary:hover:not(:disabled):not(
+		.autorun-button--loading
+	) {
+	box-shadow: var(--ubits-elevation-floating-hover) !important;
+	transform: translateY(-2px);
 }
 
-.autorun-button--floating.autorun-button--secondary:active:not(:disabled):not(.autorun-button--loading) {
-    box-shadow: var(--ubits-elevation-floating-active) !important;
-    transform: translateY(0px);
+.autorun-button--floating.autorun-button--secondary:active:not(:disabled):not(
+		.autorun-button--loading
+	) {
+	box-shadow: var(--ubits-elevation-floating-active) !important;
+	transform: translateY(0px);
 }
 
 /* Floating + Tertiary variant */
 .autorun-button--floating.autorun-button--tertiary {
-    box-shadow: var(--ubits-elevation-floating) !important;
+	box-shadow: var(--ubits-elevation-floating) !important;
 }
 
-.autorun-button--floating.autorun-button--tertiary:hover:not(:disabled):not(.autorun-button--loading) {
-    box-shadow: var(--ubits-elevation-floating-hover) !important;
-    transform: translateY(-2px);
+.autorun-button--floating.autorun-button--tertiary:hover:not(:disabled):not(
+		.autorun-button--loading
+	) {
+	box-shadow: var(--ubits-elevation-floating-hover) !important;
+	transform: translateY(-2px);
 }
 
-.autorun-button--floating.autorun-button--tertiary:active:not(:disabled):not(.autorun-button--loading) {
-    box-shadow: var(--ubits-elevation-floating-active) !important;
-    transform: translateY(0px);
+.autorun-button--floating.autorun-button--tertiary:active:not(:disabled):not(
+		.autorun-button--loading
+	) {
+	box-shadow: var(--ubits-elevation-floating-active) !important;
+	transform: translateY(0px);
 }
 
 /* Floating + Active state - mantener sombra pero con overlay */
 .autorun-button--floating.autorun-button--active {
-    box-shadow: var(--ubits-elevation-floating) !important;
+	box-shadow: var(--ubits-elevation-floating) !important;
 }
 
-.autorun-button--floating.autorun-button--active:hover:not(:disabled):not(.autorun-button--loading) {
-    box-shadow: var(--ubits-elevation-floating-hover) !important;
-    transform: translateY(-2px);
+.autorun-button--floating.autorun-button--active:hover:not(:disabled):not(
+		.autorun-button--loading
+	) {
+	box-shadow: var(--ubits-elevation-floating-hover) !important;
+	transform: translateY(-2px);
 }
 
-.autorun-button--floating.autorun-button--active:active:not(:disabled):not(.autorun-button--loading) {
-    box-shadow: var(--ubits-elevation-floating-active) !important;
-    transform: translateY(0px);
+.autorun-button--floating.autorun-button--active:active:not(:disabled):not(
+		.autorun-button--loading
+	) {
+	box-shadow: var(--ubits-elevation-floating-active) !important;
+	transform: translateY(0px);
 }
 
 /* ========================================
@@ -602,86 +813,94 @@
 
 /* Tertiary Button Base */
 .autorun-button--tertiary {
-    background: transparent;
-    color: var(--modifiers-normal-button-color-light-brand-tertiary-fg);
-    border: 1px solid transparent;
+	background: transparent;
+	color: var(--modifiers-normal-button-color-light-brand-tertiary-fg);
+	border: 1px solid transparent;
 }
 
 /* Tertiary Button Hover */
 .autorun-button--tertiary:hover:not(:disabled):not(.autorun-button--loading) {
-    background: var(--modifiers-normal-button-color-light-brand-tertiary-bg-hover) !important;
-    color: var(--modifiers-normal-button-color-light-brand-tertiary-fg) !important;
-    border: 1px solid transparent !important;
+	background: var(--modifiers-normal-button-color-light-brand-tertiary-bg-hover) !important;
+	color: var(--modifiers-normal-button-color-light-brand-tertiary-fg) !important;
+	border: 1px solid transparent !important;
 }
 
 /* Tertiary Button Pressed */
 .autorun-button--tertiary:active:not(:disabled):not(.autorun-button--loading) {
-    background: var(--modifiers-normal-button-color-light-brand-tertiary-bg-pressed);
-    color: var(--modifiers-normal-button-color-light-brand-tertiary-fg);
-    border: 1px solid transparent;
-    transform: translateY(1px);
+	background: var(--modifiers-normal-button-color-light-brand-tertiary-bg-pressed);
+	color: var(--modifiers-normal-button-color-light-brand-tertiary-fg);
+	border: 1px solid transparent;
+	transform: translateY(1px);
 }
 
 /* Tertiary Button Active State */
 .autorun-button--tertiary.autorun-button--active {
-    position: relative;
-    background-color: transparent !important;
-    color: var(--modifiers-normal-color-light-accent-brand) !important;
-    border: none !important;
+	position: relative;
+	background-color: transparent !important;
+	color: var(--modifiers-normal-color-light-accent-brand) !important;
+	border: none !important;
 }
 
 .autorun-button--tertiary.autorun-button--active::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: var(--modifiers-normal-color-light-bg-active) !important;
-    border-radius: inherit;
-    pointer-events: none;
-    z-index: 0;
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: var(--modifiers-normal-color-light-bg-active) !important;
+	border-radius: inherit;
+	pointer-events: none;
+	z-index: 0;
 }
 
-.autorun-button--tertiary.autorun-button--active:hover:not(:disabled):not(.autorun-button--loading) {
-    background-color: transparent !important;
-    color: var(--modifiers-normal-color-light-accent-brand) !important;
-    border: none !important;
+.autorun-button--tertiary.autorun-button--active:hover:not(:disabled):not(
+		.autorun-button--loading
+	) {
+	background-color: transparent !important;
+	color: var(--modifiers-normal-color-light-accent-brand) !important;
+	border: none !important;
 }
 
-.autorun-button--tertiary.autorun-button--active:hover:not(:disabled):not(.autorun-button--loading)::before {
-    background-color: var(--modifiers-normal-color-light-bg-active) !important;
+.autorun-button--tertiary.autorun-button--active:hover:not(:disabled):not(
+		.autorun-button--loading
+	)::before {
+	background-color: var(--modifiers-normal-color-light-bg-active) !important;
 }
 
-.autorun-button--tertiary.autorun-button--active:active:not(:disabled):not(.autorun-button--loading) {
-    background-color: transparent !important;
-    color: var(--modifiers-normal-color-light-accent-brand) !important;
-    border: none !important;
+.autorun-button--tertiary.autorun-button--active:active:not(:disabled):not(
+		.autorun-button--loading
+	) {
+	background-color: transparent !important;
+	color: var(--modifiers-normal-color-light-accent-brand) !important;
+	border: none !important;
 }
 
-.autorun-button--tertiary.autorun-button--active:active:not(:disabled):not(.autorun-button--loading)::before {
-    background-color: var(--modifiers-normal-color-light-bg-active) !important;
+.autorun-button--tertiary.autorun-button--active:active:not(:disabled):not(
+		.autorun-button--loading
+	)::before {
+	background-color: var(--modifiers-normal-color-light-bg-active) !important;
 }
 
 .autorun-button--tertiary.autorun-button--active i {
-    position: relative;
-    z-index: 1;
-    color: var(--modifiers-normal-color-light-accent-brand) !important;
+	position: relative;
+	z-index: 1;
+	color: var(--modifiers-normal-color-light-accent-brand) !important;
 }
 
 .autorun-button--tertiary.autorun-button--active span {
-    position: relative;
-    z-index: 1;
-    color: var(--modifiers-normal-color-light-accent-brand) !important;
+	position: relative;
+	z-index: 1;
+	color: var(--modifiers-normal-color-light-accent-brand) !important;
 }
 
 /* Tertiary Button Focus State */
 .autorun-button--tertiary:focus-visible {
-    background: transparent;
-    color: var(--modifiers-normal-button-color-light-brand-tertiary-fg);
-    border: 1px solid transparent;
-    outline: none;
-    box-shadow: 0 0 0 4px var(--modifiers-normal-focus-color);
+	background: transparent;
+	color: var(--modifiers-normal-button-color-light-brand-tertiary-fg);
+	border: 1px solid transparent;
+	outline: none;
+	box-shadow: 0 0 0 4px var(--modifiers-normal-focus-color);
 }
 
 /* ========================================
@@ -690,9 +909,9 @@
 
 /* Icon Only Button */
 .autorun-button--icon-only {
-    padding: var(--p-spacing-mode-1-md, 12px);
-    min-width: 40px;
-    min-height: 40px;
+	padding: var(--p-spacing-mode-1-md, 12px);
+	min-width: 40px;
+	min-height: 40px;
 }
 
 /* ========================================
@@ -702,125 +921,131 @@
 /* Extra Small (xs) - NUEVO */
 .autorun-button.autorun-button--xs,
 .autorun-button--xs {
-    padding: var(--p-spacing-mode-1-sm, 8px) var(--p-spacing-mode-1-md, 12px) !important;
-    height: 28px !important;
-    min-height: 28px !important;
-    gap: var(--p-spacing-mode-1-sm, 8px) !important;
+	padding: var(--p-spacing-mode-1-sm, 8px) var(--p-spacing-mode-1-md, 12px) !important;
+	height: 28px !important;
+	min-height: 28px !important;
+	gap: var(--p-spacing-mode-1-sm, 8px) !important;
 }
 
 .autorun-button.autorun-button--xs span,
 .autorun-button--xs span {
-    font-family: var(--font-family-noto-sans-font-family) !important;
-    font-size: var(--modifiers-normal-body-xs-semibold-fontsize, 11px) !important;
-    font-weight: var(--weight-semibold, 600) !important;
-    line-height: var(--modifiers-normal-body-xs-semibold-lineheight, 19.8px) !important;
+	font-family: var(--font-family-noto-sans-font-family) !important;
+	font-size: var(--modifiers-normal-body-xs-semibold-fontsize, 11px) !important;
+	font-weight: var(--weight-semibold, 600) !important;
+	line-height: var(--modifiers-normal-body-xs-semibold-lineheight, 19.8px) !important;
 }
 
 .autorun-button.autorun-button--xs i,
 .autorun-button--xs i {
-    font-size: 12px !important;
+	font-size: 12px !important;
 }
 
 .autorun-button.autorun-button--xs.autorun-button--icon-only,
 .autorun-button--xs.autorun-button--icon-only {
-    padding: var(--p-spacing-mode-1-sm, 8px) !important;
-    width: 28px !important;
-    min-width: 28px !important;
-    height: 28px !important;
-    min-height: 28px !important;
+	padding: var(--p-spacing-mode-1-sm, 8px) !important;
+	width: 28px !important;
+	min-width: 28px !important;
+	height: 28px !important;
+	min-height: 28px !important;
 }
 
 /* Small (sm) */
 .autorun-button.autorun-button--sm,
 .autorun-button--sm {
-    padding: var(--p-spacing-mode-1-md, 12px) var(--p-spacing-mode-1-md, 12px) !important;
-    height: 32px !important;
-    min-height: 32px !important;
-    gap: var(--p-spacing-mode-1-sm, 8px) !important;
+	padding: var(--p-spacing-mode-1-md, 12px) var(--p-spacing-mode-1-md, 12px) !important;
+	height: 32px !important;
+	min-height: 32px !important;
+	gap: var(--p-spacing-mode-1-sm, 8px) !important;
 }
 
 .autorun-button.autorun-button--sm span,
 .autorun-button--sm span {
-    font-family: var(--font-family-noto-sans-font-family) !important;
-    font-size: var(--modifiers-normal-body-sm-semibold-fontsize, 13px) !important;
-    font-weight: var(--weight-semibold, 600) !important;
-    line-height: var(--modifiers-normal-body-sm-semibold-lineheight, 23.4px) !important;
+	font-family: var(--font-family-noto-sans-font-family) !important;
+	font-size: var(--modifiers-normal-body-sm-semibold-fontsize, 13px) !important;
+	font-weight: var(--weight-semibold, 600) !important;
+	line-height: var(--modifiers-normal-body-sm-semibold-lineheight, 23.4px) !important;
 }
 
 .autorun-button.autorun-button--sm i,
 .autorun-button--sm i {
-    font-size: 14px !important;
+	font-size: 14px !important;
 }
 
 .autorun-button.autorun-button--sm.autorun-button--icon-only,
 .autorun-button--sm.autorun-button--icon-only {
-    padding: var(--p-spacing-mode-1-sm, 8px) var(--p-spacing-mode-1-sm, 8px) !important;
-    width: 32px !important;
-    min-width: 32px !important;
-    height: 32px !important;
-    min-height: 32px !important;
+	padding: var(--p-spacing-mode-1-sm, 8px) var(--p-spacing-mode-1-sm, 8px) !important;
+	width: 32px !important;
+	min-width: 32px !important;
+	height: 32px !important;
+	min-height: 32px !important;
 }
 
 /* Medium (md) - Default */
 .autorun-button,
 .autorun-button--md {
-    padding: var(--p-spacing-mode-1-md, 12px) var(--p-spacing-mode-1-lg, 16px);
-    height: 40px;
+	padding: var(--p-spacing-mode-1-md, 12px) var(--p-spacing-mode-1-lg, 16px);
+	height: 40px;
 }
 
 .autorun-button span,
 .autorun-button--md span {
-    font-family: var(--font-family-noto-sans-font-family);
-    font-size: var(--modifiers-normal-body-md-semibold-fontsize);
-    font-weight: var(--weight-semibold, 600);
-    line-height: var(--modifiers-normal-body-md-semibold-lineheight);
+	font-family: var(--font-family-noto-sans-font-family);
+	font-size: var(--modifiers-normal-body-md-semibold-fontsize);
+	font-weight: var(--weight-semibold, 600);
+	line-height: var(--modifiers-normal-body-md-semibold-lineheight);
 }
 
 .autorun-button--md.autorun-button--icon-only,
 .autorun-button.autorun-button--icon-only {
-    padding: var(--p-spacing-mode-1-md, 12px);
-    width: 40px;
-    height: 40px;
-    min-width: 40px;
-    min-height: 40px;
+	padding: var(--p-spacing-mode-1-md, 12px);
+	width: 40px;
+	height: 40px;
+	min-width: 40px;
+	min-height: 40px;
 }
 
 /* Large (lg) */
 .autorun-button--lg {
-    padding: var(--p-spacing-mode-1-md, 12px) var(--p-spacing-mode-1-xl, 20px);
-    height: 48px;
+	padding: var(--p-spacing-mode-1-md, 12px) var(--p-spacing-mode-1-xl, 20px);
+	height: 48px;
 }
 
 .autorun-button--lg span {
-    font-family: var(--font-family-noto-sans-font-family);
-    font-size: var(--modifiers-normal-heading-h2-fontsize);
-    font-weight: var(--weight-semibold, 600);
-    line-height: 1.5; /* 30px / 20px = 1.5 (equivalente a --font-body-lg-line: 30px) */
+	font-family: var(--font-family-noto-sans-font-family);
+	font-size: var(--modifiers-normal-heading-h2-fontsize);
+	font-weight: var(--weight-semibold, 600);
+	line-height: 1.5; /* 30px / 20px = 1.5 (equivalente a --font-body-lg-line: 30px) */
 }
 
 .autorun-button--lg.autorun-button--icon-only {
-    padding: var(--p-spacing-mode-1-md, 12px) var(--p-spacing-mode-1-lg, 16px);
-    width: 48px;
-    height: 48px;
+	padding: var(--p-spacing-mode-1-md, 12px) var(--p-spacing-mode-1-lg, 16px);
+	width: 48px;
+	height: 48px;
 }
 
 /* Extra Large (xl) - NUEVO */
 .autorun-button--xl {
-    padding: var(--p-spacing-mode-1-lg, 16px) var(--ubits-spacing-2xl, 24px);
-    height: 56px;
+	padding: var(--p-spacing-mode-1-lg, 16px) var(--ubits-spacing-2xl, 24px);
+	height: 56px;
 }
 
 .autorun-button--xl span {
-    font-family: var(--font-family-noto-sans-font-family);
-    font-size: var(--modifiers-normal-heading-h1-fontsize, 20px); /* 22px no tiene token exacto, usar h1 más cercano */
-    font-weight: var(--weight-semibold, 600);
-    line-height: var(--modifiers-normal-heading-h1-lineheight, 30px); /* 33px no tiene token exacto, usar h1 más cercano */
+	font-family: var(--font-family-noto-sans-font-family);
+	font-size: var(
+		--modifiers-normal-heading-h1-fontsize,
+		20px
+	); /* 22px no tiene token exacto, usar h1 más cercano */
+	font-weight: var(--weight-semibold, 600);
+	line-height: var(
+		--modifiers-normal-heading-h1-lineheight,
+		30px
+	); /* 33px no tiene token exacto, usar h1 más cercano */
 }
 
 .autorun-button--xl.autorun-button--icon-only {
-    padding: var(--p-spacing-mode-1-lg, 16px) var(--p-spacing-mode-1-xl, 20px);
-    width: 56px;
-    height: 56px;
+	padding: var(--p-spacing-mode-1-lg, 16px) var(--p-spacing-mode-1-xl, 20px);
+	width: 56px;
+	height: 56px;
 }
 
 /* ========================================
@@ -828,18 +1053,18 @@
    ======================================== */
 
 .autorun-button__badge {
-    position: absolute;
-    top: -2px;
-    right: -3px;
-    width: var(--ubits-spacing-md, 12px); /* Ajustado al token más cercano */
-    height: var(--ubits-spacing-md, 12px); /* Ajustado al token más cercano */
-    background: var(--modifiers-normal-color-light-feedback-accent-error);
-    border-radius: 50%;
+	position: absolute;
+	top: -2px;
+	right: -3px;
+	width: var(--ubits-spacing-md, 12px); /* Ajustado al token más cercano */
+	height: var(--ubits-spacing-md, 12px); /* Ajustado al token más cercano */
+	background: var(--modifiers-normal-color-light-feedback-accent-error);
+	border-radius: 50%;
 }
 
 .autorun-button--icon-only .autorun-button__badge {
-    top: -2px;
-    right: -2px;
+	top: -2px;
+	right: -2px;
 }
 
 /* ========================================
@@ -847,58 +1072,58 @@
    ======================================== */
 
 .autorun-button__icon {
-    font-size: 16px;
-    line-height: 1;
+	font-size: 16px;
+	line-height: 1;
 }
 
 /* Iconos por tamaño */
 .autorun-button--xs .autorun-button__icon,
 .autorun-button--xs i {
-    font-size: 12px !important;
+	font-size: 12px !important;
 }
 
 .autorun-button--sm .autorun-button__icon,
 .autorun-button--sm i {
-    font-size: 14px !important;
+	font-size: 14px !important;
 }
 
 .autorun-button,
 .autorun-button--md .autorun-button__icon,
 .autorun-button--md i {
-    font-size: var(--modifiers-normal-body-md-regular-fontsize, 16px);
+	font-size: var(--modifiers-normal-body-md-regular-fontsize, 16px);
 }
 
 .autorun-button--lg .autorun-button__icon,
 .autorun-button--lg i {
-    font-size: var(--modifiers-normal-heading-h2-fontsize, 18px);
+	font-size: var(--modifiers-normal-heading-h2-fontsize, 18px);
 }
 
 .autorun-button--xl .autorun-button__icon,
 .autorun-button--xl i {
-    font-size: var(--modifiers-normal-heading-h1-fontsize, 20px);
+	font-size: var(--modifiers-normal-heading-h1-fontsize, 20px);
 }
 
 /* Gap ajustado para tamaños pequeños */
 /* Gap ya definido arriba con !important, estas reglas son duplicadas pero las dejamos para compatibilidad */
 .autorun-button--xs {
-    gap: var(--p-spacing-mode-1-sm, 8px) !important;
+	gap: var(--p-spacing-mode-1-sm, 8px) !important;
 }
 
 .autorun-button--sm {
-    gap: var(--p-spacing-mode-1-sm, 8px) !important;
+	gap: var(--p-spacing-mode-1-sm, 8px) !important;
 }
 
 .autorun-button,
 .autorun-button--md {
-    gap: var(--p-spacing-mode-1-sm, 8px);
+	gap: var(--p-spacing-mode-1-sm, 8px);
 }
 
 .autorun-button--lg {
-    gap: var(--p-spacing-mode-1-md, 12px);
+	gap: var(--p-spacing-mode-1-md, 12px);
 }
 
 .autorun-button--xl {
-    gap: var(--p-spacing-mode-1-md, 12px);
+	gap: var(--p-spacing-mode-1-md, 12px);
 }
 
 /* ========================================
@@ -907,14 +1132,14 @@
 
 /* Full Width Button */
 .autorun-button--full-width {
-    width: 100%;
-    display: flex;
+	width: 100%;
+	display: flex;
 }
 
 /* Block Level Button */
 .autorun-button--block {
-    display: flex;
-    width: 100%;
+	display: flex;
+	width: 100%;
 }
 
 /* Icon Position Right */
@@ -922,8 +1147,8 @@
 /* No necesitamos row-reverse, solo mantener el orden natural del flex */
 .autorun-button.autorun-button--icon-right,
 .autorun-button--icon-right {
-    flex-direction: row !important;
-    gap: var(--p-spacing-mode-1-sm, 8px) !important;
+	flex-direction: row !important;
+	gap: var(--p-spacing-mode-1-sm, 8px) !important;
 }
 
 /* ========================================
@@ -931,33 +1156,33 @@
    ======================================== */
 
 @media (max-width: 768px) {
-    /* Ajustes para mobile - asegurar touch targets mínimos */
-    .autorun-button {
-        font-size: var(--modifiers-normal-body-sm-regular-fontsize, 13px);
-        padding: var(--p-spacing-mode-1-md, 12px) var(--p-spacing-mode-1-md, 12px);
-    }
-    
-    .autorun-button--xs {
-        /* XS ajustado para mobile manteniendo altura de 28px */
-        min-height: 28px;
-        height: 28px !important;
-        padding: var(--p-spacing-mode-1-sm, 8px) var(--p-spacing-mode-1-md, 12px) !important;
-    }
-    
-    .autorun-button--sm {
-        font-size: var(--modifiers-normal-body-sm-regular-fontsize, 13px);
-        padding: var(--p-spacing-mode-1-md, 12px) var(--p-spacing-mode-1-md, 12px);
-    }
-    
-    .autorun-button--lg {
-        font-size: var(--modifiers-normal-heading-h2-fontsize, 18px);
-        padding: var(--p-spacing-mode-1-md, 12px) var(--p-spacing-mode-1-xl, 20px);
-    }
-    
-    .autorun-button--xl {
-        font-size: var(--modifiers-normal-heading-h1-fontsize, 20px);
-        padding: var(--p-spacing-mode-1-lg, 16px) var(--ubits-spacing-2xl, 24px);
-    }
+	/* Ajustes para mobile - asegurar touch targets mínimos */
+	.autorun-button {
+		font-size: var(--modifiers-normal-body-sm-regular-fontsize, 13px);
+		padding: var(--p-spacing-mode-1-md, 12px) var(--p-spacing-mode-1-md, 12px);
+	}
+
+	.autorun-button--xs {
+		/* XS ajustado para mobile manteniendo altura de 28px */
+		min-height: 28px;
+		height: 28px !important;
+		padding: var(--p-spacing-mode-1-sm, 8px) var(--p-spacing-mode-1-md, 12px) !important;
+	}
+
+	.autorun-button--sm {
+		font-size: var(--modifiers-normal-body-sm-regular-fontsize, 13px);
+		padding: var(--p-spacing-mode-1-md, 12px) var(--p-spacing-mode-1-md, 12px);
+	}
+
+	.autorun-button--lg {
+		font-size: var(--modifiers-normal-heading-h2-fontsize, 18px);
+		padding: var(--p-spacing-mode-1-md, 12px) var(--p-spacing-mode-1-xl, 20px);
+	}
+
+	.autorun-button--xl {
+		font-size: var(--modifiers-normal-heading-h1-fontsize, 20px);
+		padding: var(--p-spacing-mode-1-lg, 16px) var(--ubits-spacing-2xl, 24px);
+	}
 }
 
 /* ========================================
@@ -965,16 +1190,16 @@
    ======================================== */
 
 .autorun-button--dropdown {
-    /* El botón dropdown tiene un chevron-down agregado automáticamente */
+	/* El botón dropdown tiene un chevron-down agregado automáticamente */
 }
 
 .autorun-button-dropdown-container {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    z-index: 1000;
-    margin-top: var(--p-spacing-mode-1-xs, 4px);
-    min-width: 100%;
+	position: absolute;
+	top: 100%;
+	left: 0;
+	z-index: 1000;
+	margin-top: var(--p-spacing-mode-1-xs, 4px);
+	min-width: 100%;
 }
 
 /* ========================================
@@ -983,21 +1208,43 @@
 
 /* Estilos para el botón "Dejar de ver seleccionados" en modo dark */
 [data-theme="dark"] #action-btn-view-selected.autorun-button--active,
-[data-theme="dark"] #action-btn-view-selected.autorun-button--active:hover:not(:disabled):not(.autorun-button--loading),
-[data-theme="dark"] #action-btn-view-selected.autorun-button--active:active:not(:disabled):not(.autorun-button--loading) {
-    color: var(--modifiers-static-inverted-color-dark-accent-brand) !important;
+[data-theme="dark"]
+	#action-btn-view-selected.autorun-button--active:hover:not(:disabled):not(
+		.autorun-button--loading
+	),
+[data-theme="dark"]
+	#action-btn-view-selected.autorun-button--active:active:not(:disabled):not(
+		.autorun-button--loading
+	) {
+	color: var(--modifiers-static-inverted-color-dark-accent-brand) !important;
 }
 
 [data-theme="dark"] #action-btn-view-selected.autorun-button--active i,
-[data-theme="dark"] #action-btn-view-selected.autorun-button--active:hover:not(:disabled):not(.autorun-button--loading) i,
-[data-theme="dark"] #action-btn-view-selected.autorun-button--active:active:not(:disabled):not(.autorun-button--loading) i {
-    color: var(--modifiers-static-inverted-color-dark-accent-brand) !important;
+[data-theme="dark"]
+	#action-btn-view-selected.autorun-button--active:hover:not(:disabled):not(
+		.autorun-button--loading
+	)
+	i,
+[data-theme="dark"]
+	#action-btn-view-selected.autorun-button--active:active:not(:disabled):not(
+		.autorun-button--loading
+	)
+	i {
+	color: var(--modifiers-static-inverted-color-dark-accent-brand) !important;
 }
 
 [data-theme="dark"] #action-btn-view-selected.autorun-button--active span,
-[data-theme="dark"] #action-btn-view-selected.autorun-button--active:hover:not(:disabled):not(.autorun-button--loading) span,
-[data-theme="dark"] #action-btn-view-selected.autorun-button--active:active:not(:disabled):not(.autorun-button--loading) span {
-    color: var(--modifiers-static-inverted-color-dark-accent-brand) !important;
+[data-theme="dark"]
+	#action-btn-view-selected.autorun-button--active:hover:not(:disabled):not(
+		.autorun-button--loading
+	)
+	span,
+[data-theme="dark"]
+	#action-btn-view-selected.autorun-button--active:active:not(:disabled):not(
+		.autorun-button--loading
+	)
+	span {
+	color: var(--modifiers-static-inverted-color-dark-accent-brand) !important;
 }
 
 /* ========================================
@@ -1009,49 +1256,93 @@
 
 /* Si el botón tiene la clase --active, SIEMPRE mantener el estilo active (transparente + overlay azul) */
 .autorun-button--active[data-state-preview="hover"]:not(:disabled):not(.autorun-button--loading),
-.autorun-button--primary.autorun-button--active[data-state-preview="hover"]:not(:disabled):not(.autorun-button--loading),
-.autorun-button--secondary.autorun-button--active[data-state-preview="hover"]:not(:disabled):not(.autorun-button--loading),
-.autorun-button--tertiary.autorun-button--active[data-state-preview="hover"]:not(:disabled):not(.autorun-button--loading) {
-    background-color: transparent !important;
-    color: var(--modifiers-normal-color-light-accent-brand) !important;
-    border: none !important;
+.autorun-button--primary.autorun-button--active[data-state-preview="hover"]:not(:disabled):not(
+		.autorun-button--loading
+	),
+.autorun-button--secondary.autorun-button--active[data-state-preview="hover"]:not(:disabled):not(
+		.autorun-button--loading
+	),
+.autorun-button--tertiary.autorun-button--active[data-state-preview="hover"]:not(:disabled):not(
+		.autorun-button--loading
+	) {
+	background-color: transparent !important;
+	color: var(--modifiers-normal-color-light-accent-brand) !important;
+	border: none !important;
 }
 
-[data-theme="dark"] .autorun-button--active[data-state-preview="hover"]:not(:disabled):not(.autorun-button--loading),
-[data-theme="dark"] .autorun-button--primary.autorun-button--active[data-state-preview="hover"]:not(:disabled):not(.autorun-button--loading),
-[data-theme="dark"] .autorun-button--secondary.autorun-button--active[data-state-preview="hover"]:not(:disabled):not(.autorun-button--loading),
-[data-theme="dark"] .autorun-button--tertiary.autorun-button--active[data-state-preview="hover"]:not(:disabled):not(.autorun-button--loading) {
-    color: var(--modifiers-normal-color-dark-accent-brand) !important;
+[data-theme="dark"]
+	.autorun-button--active[data-state-preview="hover"]:not(:disabled):not(.autorun-button--loading),
+[data-theme="dark"]
+	.autorun-button--primary.autorun-button--active[data-state-preview="hover"]:not(:disabled):not(
+		.autorun-button--loading
+	),
+[data-theme="dark"]
+	.autorun-button--secondary.autorun-button--active[data-state-preview="hover"]:not(:disabled):not(
+		.autorun-button--loading
+	),
+[data-theme="dark"]
+	.autorun-button--tertiary.autorun-button--active[data-state-preview="hover"]:not(:disabled):not(
+		.autorun-button--loading
+	) {
+	color: var(--modifiers-normal-color-dark-accent-brand) !important;
 }
 
-.autorun-button--active[data-state-preview="hover"]:not(:disabled):not(.autorun-button--loading)::before,
-.autorun-button--primary.autorun-button--active[data-state-preview="hover"]:not(:disabled):not(.autorun-button--loading)::before,
-.autorun-button--secondary.autorun-button--active[data-state-preview="hover"]:not(:disabled):not(.autorun-button--loading)::before,
-.autorun-button--tertiary.autorun-button--active[data-state-preview="hover"]:not(:disabled):not(.autorun-button--loading)::before {
-    background-color: var(--modifiers-normal-color-light-bg-active) !important;
+.autorun-button--active[data-state-preview="hover"]:not(:disabled):not(
+		.autorun-button--loading
+	)::before,
+.autorun-button--primary.autorun-button--active[data-state-preview="hover"]:not(:disabled):not(
+		.autorun-button--loading
+	)::before,
+.autorun-button--secondary.autorun-button--active[data-state-preview="hover"]:not(:disabled):not(
+		.autorun-button--loading
+	)::before,
+.autorun-button--tertiary.autorun-button--active[data-state-preview="hover"]:not(:disabled):not(
+		.autorun-button--loading
+	)::before {
+	background-color: var(--modifiers-normal-color-light-bg-active) !important;
 }
 
-[data-theme="dark"] .autorun-button--active[data-state-preview="hover"]:not(:disabled):not(.autorun-button--loading)::before,
-[data-theme="dark"] .autorun-button--primary.autorun-button--active[data-state-preview="hover"]:not(:disabled):not(.autorun-button--loading)::before,
-[data-theme="dark"] .autorun-button--secondary.autorun-button--active[data-state-preview="hover"]:not(:disabled):not(.autorun-button--loading)::before,
-[data-theme="dark"] .autorun-button--tertiary.autorun-button--active[data-state-preview="hover"]:not(:disabled):not(.autorun-button--loading)::before {
-    background-color: var(--modifiers-normal-color-dark-bg-active) !important;
+[data-theme="dark"]
+	.autorun-button--active[data-state-preview="hover"]:not(:disabled):not(
+		.autorun-button--loading
+	)::before,
+[data-theme="dark"]
+	.autorun-button--primary.autorun-button--active[data-state-preview="hover"]:not(:disabled):not(
+		.autorun-button--loading
+	)::before,
+[data-theme="dark"]
+	.autorun-button--secondary.autorun-button--active[data-state-preview="hover"]:not(:disabled):not(
+		.autorun-button--loading
+	)::before,
+[data-theme="dark"]
+	.autorun-button--tertiary.autorun-button--active[data-state-preview="hover"]:not(:disabled):not(
+		.autorun-button--loading
+	)::before {
+	background-color: var(--modifiers-normal-color-dark-bg-active) !important;
 }
 
 /* Si NO tiene la clase --active, aplicar estilos hover normales */
-.autorun-button[data-state-preview="hover"]:not(.autorun-button--active):not(:disabled):not(.autorun-button--loading),
-.autorun-button--primary[data-state-preview="hover"]:not(.autorun-button--active):not(:disabled):not(.autorun-button--loading) {
-    background: var(--modifiers-normal-button-color-light-brand-primary-bg-hover) !important;
-    border-color: var(--modifiers-normal-button-color-light-brand-primary-bg-hover) !important;
+.autorun-button[data-state-preview="hover"]:not(.autorun-button--active):not(:disabled):not(
+		.autorun-button--loading
+	),
+.autorun-button--primary[data-state-preview="hover"]:not(.autorun-button--active):not(
+		:disabled
+	):not(.autorun-button--loading) {
+	background: var(--modifiers-normal-button-color-light-brand-primary-bg-hover) !important;
+	border-color: var(--modifiers-normal-button-color-light-brand-primary-bg-hover) !important;
 }
 
-.autorun-button--secondary[data-state-preview="hover"]:not(.autorun-button--active):not(:disabled):not(.autorun-button--loading) {
-    background: var(--modifiers-normal-button-color-light-brand-secondary-bg-hover) !important;
-    border-color: var(--modifiers-normal-button-color-light-brand-secondary-border) !important;
+.autorun-button--secondary[data-state-preview="hover"]:not(.autorun-button--active):not(
+		:disabled
+	):not(.autorun-button--loading) {
+	background: var(--modifiers-normal-button-color-light-brand-secondary-bg-hover) !important;
+	border-color: var(--modifiers-normal-button-color-light-brand-secondary-border) !important;
 }
 
-.autorun-button--tertiary[data-state-preview="hover"]:not(.autorun-button--active):not(:disabled):not(.autorun-button--loading) {
-    background: var(--modifiers-normal-button-color-light-brand-tertiary-bg-hover) !important;
+.autorun-button--tertiary[data-state-preview="hover"]:not(.autorun-button--active):not(
+		:disabled
+	):not(.autorun-button--loading) {
+	background: var(--modifiers-normal-button-color-light-brand-tertiary-bg-hover) !important;
 }
 
 /* Simular estado active (pressed) para Storybook */
@@ -1059,61 +1350,96 @@
 
 /* Si el botón tiene la clase --active, SIEMPRE mantener el estilo active (transparente + overlay azul) */
 .autorun-button--active[data-state-preview="active"]:not(:disabled):not(.autorun-button--loading),
-.autorun-button--primary.autorun-button--active[data-state-preview="active"]:not(:disabled):not(.autorun-button--loading),
-.autorun-button--secondary.autorun-button--active[data-state-preview="active"]:not(:disabled):not(.autorun-button--loading),
-.autorun-button--tertiary.autorun-button--active[data-state-preview="active"]:not(:disabled):not(.autorun-button--loading) {
-    background-color: transparent !important;
-    color: var(--modifiers-normal-color-light-accent-brand) !important;
-    border: none !important;
-    transform: translateY(1px);
+.autorun-button--primary.autorun-button--active[data-state-preview="active"]:not(:disabled):not(
+		.autorun-button--loading
+	),
+.autorun-button--secondary.autorun-button--active[data-state-preview="active"]:not(:disabled):not(
+		.autorun-button--loading
+	),
+.autorun-button--tertiary.autorun-button--active[data-state-preview="active"]:not(:disabled):not(
+		.autorun-button--loading
+	) {
+	background-color: transparent !important;
+	color: var(--modifiers-normal-color-light-accent-brand) !important;
+	border: none !important;
+	transform: translateY(1px);
 }
 
-.autorun-button--active[data-state-preview="active"]:not(:disabled):not(.autorun-button--loading)::before,
-.autorun-button--primary.autorun-button--active[data-state-preview="active"]:not(:disabled):not(.autorun-button--loading)::before,
-.autorun-button--secondary.autorun-button--active[data-state-preview="active"]:not(:disabled):not(.autorun-button--loading)::before,
-.autorun-button--tertiary.autorun-button--active[data-state-preview="active"]:not(:disabled):not(.autorun-button--loading)::before {
-    background-color: var(--modifiers-normal-color-light-bg-active) !important;
+.autorun-button--active[data-state-preview="active"]:not(:disabled):not(
+		.autorun-button--loading
+	)::before,
+.autorun-button--primary.autorun-button--active[data-state-preview="active"]:not(:disabled):not(
+		.autorun-button--loading
+	)::before,
+.autorun-button--secondary.autorun-button--active[data-state-preview="active"]:not(:disabled):not(
+		.autorun-button--loading
+	)::before,
+.autorun-button--tertiary.autorun-button--active[data-state-preview="active"]:not(:disabled):not(
+		.autorun-button--loading
+	)::before {
+	background-color: var(--modifiers-normal-color-light-bg-active) !important;
 }
 
 /* Si NO tiene la clase --active, aplicar estilos pressed normales */
-.autorun-button[data-state-preview="active"]:not(.autorun-button--active):not(:disabled):not(.autorun-button--loading) {
-    transform: translateY(1px);
+.autorun-button[data-state-preview="active"]:not(.autorun-button--active):not(:disabled):not(
+		.autorun-button--loading
+	) {
+	transform: translateY(1px);
 }
 
-.autorun-button--primary[data-state-preview="active"]:not(.autorun-button--active):not(:disabled):not(.autorun-button--loading) {
-    background: var(--modifiers-normal-button-color-light-brand-primary-bg-pressed) !important;
-    border-color: var(--modifiers-normal-button-color-light-brand-primary-bg-pressed) !important;
+.autorun-button--primary[data-state-preview="active"]:not(.autorun-button--active):not(
+		:disabled
+	):not(.autorun-button--loading) {
+	background: var(--modifiers-normal-button-color-light-brand-primary-bg-pressed) !important;
+	border-color: var(--modifiers-normal-button-color-light-brand-primary-bg-pressed) !important;
 }
 
-.autorun-button--secondary[data-state-preview="active"]:not(.autorun-button--active):not(:disabled):not(.autorun-button--loading) {
-    background: var(--modifiers-normal-button-color-light-brand-secondary-bg-pressed) !important;
-    border-color: var(--modifiers-normal-button-color-light-brand-secondary-border) !important;
+.autorun-button--secondary[data-state-preview="active"]:not(.autorun-button--active):not(
+		:disabled
+	):not(.autorun-button--loading) {
+	background: var(--modifiers-normal-button-color-light-brand-secondary-bg-pressed) !important;
+	border-color: var(--modifiers-normal-button-color-light-brand-secondary-border) !important;
 }
 
-.autorun-button--tertiary[data-state-preview="active"]:not(.autorun-button--active):not(:disabled):not(.autorun-button--loading) {
-    background: var(--modifiers-normal-button-color-light-brand-tertiary-bg-pressed) !important;
+.autorun-button--tertiary[data-state-preview="active"]:not(.autorun-button--active):not(
+		:disabled
+	):not(.autorun-button--loading) {
+	background: var(--modifiers-normal-button-color-light-brand-tertiary-bg-pressed) !important;
 }
 
 /* Simular estado focus para Storybook */
 .autorun-button[data-state-preview="focus"]:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 4px var(--modifiers-normal-focus-color);
+	outline: none;
+	box-shadow: 0 0 0 4px var(--modifiers-normal-focus-color);
 }
 
 /* IMPORTANTE: Asegurar que botones con --active siempre muestren el estilo active, incluso sin data-state-preview */
 .autorun-button--active:not([data-state-preview]):not(:disabled):not(.autorun-button--loading),
-.autorun-button--primary.autorun-button--active:not([data-state-preview]):not(:disabled):not(.autorun-button--loading),
-.autorun-button--secondary.autorun-button--active:not([data-state-preview]):not(:disabled):not(.autorun-button--loading),
-.autorun-button--tertiary.autorun-button--active:not([data-state-preview]):not(:disabled):not(.autorun-button--loading) {
-    background-color: transparent !important;
-    color: var(--modifiers-normal-color-light-accent-brand) !important;
-    border: none !important;
+.autorun-button--primary.autorun-button--active:not([data-state-preview]):not(:disabled):not(
+		.autorun-button--loading
+	),
+.autorun-button--secondary.autorun-button--active:not([data-state-preview]):not(:disabled):not(
+		.autorun-button--loading
+	),
+.autorun-button--tertiary.autorun-button--active:not([data-state-preview]):not(:disabled):not(
+		.autorun-button--loading
+	) {
+	background-color: transparent !important;
+	color: var(--modifiers-normal-color-light-accent-brand) !important;
+	border: none !important;
 }
 
-.autorun-button--active:not([data-state-preview]):not(:disabled):not(.autorun-button--loading)::before,
-.autorun-button--primary.autorun-button--active:not([data-state-preview]):not(:disabled):not(.autorun-button--loading)::before,
-.autorun-button--secondary.autorun-button--active:not([data-state-preview]):not(:disabled):not(.autorun-button--loading)::before,
-.autorun-button--tertiary.autorun-button--active:not([data-state-preview]):not(:disabled):not(.autorun-button--loading)::before {
-    background-color: var(--modifiers-normal-color-light-bg-active) !important;
+.autorun-button--active:not([data-state-preview]):not(:disabled):not(
+		.autorun-button--loading
+	)::before,
+.autorun-button--primary.autorun-button--active:not([data-state-preview]):not(:disabled):not(
+		.autorun-button--loading
+	)::before,
+.autorun-button--secondary.autorun-button--active:not([data-state-preview]):not(:disabled):not(
+		.autorun-button--loading
+	)::before,
+.autorun-button--tertiary.autorun-button--active:not([data-state-preview]):not(:disabled):not(
+		.autorun-button--loading
+	)::before {
+	background-color: var(--modifiers-normal-color-light-bg-active) !important;
 }
-

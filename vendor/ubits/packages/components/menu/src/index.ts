@@ -3,11 +3,10 @@
  */
 
 export { renderMenu, createMenu, updateActiveMenuItem } from './MenuProvider';
-export type { 
-  MenuOptions, 
-  MenuSection, 
-  MenuItem, 
-  MenuBadge, 
-  MenuUserInfo 
+export type {
+	MenuOptions,
+	MenuSection,
+	MenuItem,
+	MenuBadge,
+	MenuUserInfo,
 } from './types/MenuOptions';
-

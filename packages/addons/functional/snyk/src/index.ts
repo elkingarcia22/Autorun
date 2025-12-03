@@ -36,4 +36,3 @@ export {
 
 // Export default para que AddonLoader pueda cargarlo
 export { SnykAddon as default } from './SnykAddon';
-

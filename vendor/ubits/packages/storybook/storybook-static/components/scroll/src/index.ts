@@ -6,7 +6,6 @@ export { createScrollbar, renderScrollbar };
 export type { ScrollOptions };
 
 if (typeof window !== 'undefined') {
-  (window as any).createScrollbar = createScrollbar;
-  (window as any).renderScrollbar = renderScrollbar;
+	(window as any).createScrollbar = createScrollbar;
+	(window as any).renderScrollbar = renderScrollbar;
 }
-

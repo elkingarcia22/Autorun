@@ -1,15 +1,14 @@
 {
-  "name": "@ubits/list",
-  "version": "1.0.0",
-  "description": "Componente List UBITS como add-on intercambiable",
-  "main": "./index.js",
-  "styles": "./list.css",
-  "components": [
-    {
-      "name": "List",
-      "tag": "ubits-list",
-      "documentation": "Componente de lista con estados (default, hover, active, disabled)"
-    }
-  ]
+	"name": "@ubits/list",
+	"version": "1.0.0",
+	"description": "Componente List UBITS como add-on intercambiable",
+	"main": "./index.js",
+	"styles": "./list.css",
+	"components": [
+		{
+			"name": "List",
+			"tag": "ubits-list",
+			"documentation": "Componente de lista con estados (default, hover, active, disabled)"
+		}
+	]
 }
-

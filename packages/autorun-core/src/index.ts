@@ -11,12 +11,19 @@
 // Exportar clases principales
 export { AutorunHub } from './AutorunHub';
 export { AddonRegistry } from './AddonRegistry';
-export { AddonConflictDetector, getConflictDetector, AddonConflictError } from './AddonConflictDetector';
+export {
+	AddonConflictDetector,
+	getConflictDetector,
+	AddonConflictError,
+} from './AddonConflictDetector';
 export type { ConflictGroup } from './AddonConflictDetector';
 export { AddonLoader } from './AddonLoader';
 export { ConfigManager } from './ConfigManager';
 export { ConfigValidator } from './validation/ConfigValidator';
-export type { ConfigSchema, ValidationError as ConfigValidationError } from './validation/ConfigValidator';
+export type {
+	ConfigSchema,
+	ValidationError as ConfigValidationError,
+} from './validation/ConfigValidator';
 
 // Exportar errores
 export {
@@ -61,9 +68,18 @@ export { ModuleManager } from './wizard/ModuleManager';
 export { SubNavManager } from './wizard/SubNavManager';
 export { CanvasCreator } from './wizard/CanvasCreator';
 export { ComponentValidator } from './wizard/ComponentValidator';
-export type { ProjectType, WizardResult, UBITSResult, IndependentResult } from './wizard/InitializationWizard';
+export type {
+	ProjectType,
+	WizardResult,
+	UBITSResult,
+	IndependentResult,
+} from './wizard/InitializationWizard';
 export type { UBITSConfig, UBITSTemplate, ModuleConfig, ModuleProduct } from './wizard/UBITSPreset';
-export type { ValidationResult, ValidationError, ValidationWarning } from './wizard/ComponentValidator';
+export type {
+	ValidationResult,
+	ValidationError,
+	ValidationWarning,
+} from './wizard/ComponentValidator';
 
 // Placeholder - estructura base creada
 export const VERSION = '1.0.0';

@@ -5,11 +5,13 @@
  */
 
 export { renderTabBar, createTabBar } from './TabBarProvider';
-export { defaultFloatingMenuSections, defaultProfileMenuItems } from './configs/defaultFloatingMenu';
-export type { 
-  TabBarOptions, 
-  TabBarItem, 
-  FloatingMenuSection, 
-  ProfileMenuItem 
+export {
+	defaultFloatingMenuSections,
+	defaultProfileMenuItems,
+} from './configs/defaultFloatingMenu';
+export type {
+	TabBarOptions,
+	TabBarItem,
+	FloatingMenuSection,
+	ProfileMenuItem,
 } from './types/TabBarOptions';
-

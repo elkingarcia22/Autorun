@@ -9,29 +9,29 @@
    ======================================== */
 
 .autorun-alert {
-    display: flex;
-    gap: var(--p-spacing-mode-1-sm, 8px);
-    align-items: flex-start;
-    padding: var(--p-spacing-mode-1-sm, 8px);
-    border-radius: var(--ubits-border-radius-md, 12px);
-    position: relative;
-    font-family: var(--font-family-noto-sans-font-family);
-    box-sizing: border-box;
-    width: 100%;
-    animation: alertSlideIn 0.3s ease-out;
+	display: flex;
+	gap: var(--p-spacing-mode-1-sm, 8px);
+	align-items: flex-start;
+	padding: var(--p-spacing-mode-1-sm, 8px);
+	border-radius: var(--ubits-border-radius-md, 12px);
+	position: relative;
+	font-family: var(--font-family-noto-sans-font-family);
+	box-sizing: border-box;
+	width: 100%;
+	animation: alertSlideIn 0.3s ease-out;
 }
 
 /* Pseudo-elemento para el borde */
 .autorun-alert::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    border: 1px solid;
-    border-radius: var(--ubits-border-radius-md, 12px);
-    pointer-events: none;
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	border: 1px solid;
+	border-radius: var(--ubits-border-radius-md, 12px);
+	pointer-events: none;
 }
 
 /* ========================================
@@ -39,61 +39,63 @@
    ======================================== */
 
 .autorun-alert__icon {
-    flex-shrink: 0;
-    width: 24px;
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: var(--modifiers-normal-body-xs-regular-fontsize, 11px);
-    font-weight: var(--weight-regular, 400);
-    line-height: 1;
+	flex-shrink: 0;
+	width: 24px;
+	height: 24px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: var(--modifiers-normal-body-xs-regular-fontsize, 11px);
+	font-weight: var(--weight-regular, 400);
+	line-height: 1;
 }
 
 .autorun-alert__content {
-    display: flex;
-    gap: var(--p-spacing-mode-1-sm, 8px);
-    align-items: center;
-    flex: 1;
-    min-width: 0;
+	display: flex;
+	gap: var(--p-spacing-mode-1-sm, 8px);
+	align-items: center;
+	flex: 1;
+	min-width: 0;
 }
 
 .autorun-alert__text {
-    font-size: var(--modifiers-normal-body-sm-regular-fontsize);
-    line-height: var(--modifiers-normal-body-sm-regular-lineheight);
-    font-weight: var(--weight-regular, 400);
-    color: inherit;
-    display: flex;
-    align-items: center;
-    min-height: 24px;
+	font-size: var(--modifiers-normal-body-sm-regular-fontsize);
+	line-height: var(--modifiers-normal-body-sm-regular-lineheight);
+	font-weight: var(--weight-regular, 400);
+	color: inherit;
+	display: flex;
+	align-items: center;
+	min-height: 24px;
 }
 
 .autorun-alert__close {
-    flex-shrink: 0;
-    width: 24px;
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: var(--modifiers-normal-body-xs-regular-fontsize, 11px);
-    color: var(--modifiers-normal-color-light-fg-1-medium) !important;
-    opacity: 0.7;
-    transition: opacity 0.2s ease, background-color 0.2s ease;
-    border-radius: var(--ubits-border-radius-xs, 4px);
-    padding: var(--ubits-spacing-none, 0);
+	flex-shrink: 0;
+	width: 24px;
+	height: 24px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: none;
+	border: none;
+	cursor: pointer;
+	font-size: var(--modifiers-normal-body-xs-regular-fontsize, 11px);
+	color: var(--modifiers-normal-color-light-fg-1-medium) !important;
+	opacity: 0.7;
+	transition:
+		opacity 0.2s ease,
+		background-color 0.2s ease;
+	border-radius: var(--ubits-border-radius-xs, 4px);
+	padding: var(--ubits-spacing-none, 0);
 }
 
 .autorun-alert__close:hover {
-    opacity: 1;
-    background-color: var(--modifiers-normal-color-light-bg-2) !important;
+	opacity: 1;
+	background-color: var(--modifiers-normal-color-light-bg-2) !important;
 }
 
 .autorun-alert__close:focus-visible {
-    outline: 2px solid var(--modifiers-normal-focus-color);
-    outline-offset: 2px;
+	outline: 2px solid var(--modifiers-normal-focus-color);
+	outline-offset: 2px;
 }
 
 /* ========================================
@@ -102,58 +104,62 @@
 
 /* Success Alert */
 .autorun-alert--success {
-    background-color: var(--modifiers-normal-color-light-feedback-bg-success-subtle-default) !important;
-    color: var(--modifiers-normal-color-light-feedback-fg-success-subtle-default) !important;
+	background-color: var(
+		--modifiers-normal-color-light-feedback-bg-success-subtle-default
+	) !important;
+	color: var(--modifiers-normal-color-light-feedback-fg-success-subtle-default) !important;
 }
 
 .autorun-alert--success::before {
-    border-color: var(--modifiers-normal-color-light-feedback-border-success) !important;
+	border-color: var(--modifiers-normal-color-light-feedback-border-success) !important;
 }
 
 .autorun-alert--success .autorun-alert__icon {
-    color: var(--modifiers-normal-color-light-feedback-fg-success-subtle-default) !important;
+	color: var(--modifiers-normal-color-light-feedback-fg-success-subtle-default) !important;
 }
 
 /* Info Alert */
 .autorun-alert--info {
-    background-color: var(--modifiers-normal-color-light-feedback-bg-info-subtle-default) !important;
-    color: var(--modifiers-normal-color-light-feedback-fg-info-subtle-default) !important;
+	background-color: var(--modifiers-normal-color-light-feedback-bg-info-subtle-default) !important;
+	color: var(--modifiers-normal-color-light-feedback-fg-info-subtle-default) !important;
 }
 
 .autorun-alert--info::before {
-    border-color: var(--modifiers-normal-color-light-feedback-border-info) !important;
+	border-color: var(--modifiers-normal-color-light-feedback-border-info) !important;
 }
 
 .autorun-alert--info .autorun-alert__icon {
-    color: var(--modifiers-normal-color-light-feedback-fg-info-subtle-default) !important;
+	color: var(--modifiers-normal-color-light-feedback-fg-info-subtle-default) !important;
 }
 
 /* Warning Alert */
 .autorun-alert--warning {
-    background-color: var(--modifiers-normal-color-light-feedback-bg-warning-subtle-default) !important;
-    color: var(--modifiers-normal-color-light-feedback-fg-warning-subtle-default) !important;
+	background-color: var(
+		--modifiers-normal-color-light-feedback-bg-warning-subtle-default
+	) !important;
+	color: var(--modifiers-normal-color-light-feedback-fg-warning-subtle-default) !important;
 }
 
 .autorun-alert--warning::before {
-    border-color: var(--modifiers-normal-color-light-feedback-border-warning) !important;
+	border-color: var(--modifiers-normal-color-light-feedback-border-warning) !important;
 }
 
 .autorun-alert--warning .autorun-alert__icon {
-    color: var(--modifiers-normal-color-light-feedback-fg-warning-subtle-default) !important;
+	color: var(--modifiers-normal-color-light-feedback-fg-warning-subtle-default) !important;
 }
 
 /* Error Alert */
 .autorun-alert--error {
-    background-color: var(--modifiers-normal-color-light-feedback-bg-error-subtle-default) !important;
-    color: var(--modifiers-normal-color-light-feedback-fg-error-subtle-default) !important;
+	background-color: var(--modifiers-normal-color-light-feedback-bg-error-subtle-default) !important;
+	color: var(--modifiers-normal-color-light-feedback-fg-error-subtle-default) !important;
 }
 
 .autorun-alert--error::before {
-    border-color: var(--modifiers-normal-color-light-feedback-border-error) !important;
+	border-color: var(--modifiers-normal-color-light-feedback-border-error) !important;
 }
 
 .autorun-alert--error .autorun-alert__icon {
-    color: var(--modifiers-normal-color-light-feedback-fg-error-subtle-default) !important;
+	color: var(--modifiers-normal-color-light-feedback-fg-error-subtle-default) !important;
 }
 
 /* ========================================
@@ -162,7 +168,7 @@
 
 /* Alert sin botón cerrar */
 .autorun-alert--no-close .autorun-alert__close {
-    display: none;
+	display: none;
 }
 
 /* ========================================
@@ -170,29 +176,29 @@
    ======================================== */
 
 @keyframes alertSlideIn {
-    from {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+	from {
+		opacity: 0;
+		transform: translateY(-10px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
 }
 
 @keyframes alertSlideOut {
-    from {
-        opacity: 1;
-        transform: translateY(0);
-    }
-    to {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
+	from {
+		opacity: 1;
+		transform: translateY(0);
+	}
+	to {
+		opacity: 0;
+		transform: translateY(-10px);
+	}
 }
 
 .autorun-alert--closing {
-    animation: alertSlideOut 0.3s ease-in forwards;
+	animation: alertSlideOut 0.3s ease-in forwards;
 }
 
 /* ========================================
@@ -200,76 +206,140 @@
    ======================================== */
 
 @media (max-width: 768px) {
-    .autorun-alert {
-        padding: var(--p-spacing-mode-1-md, 12px);
-        gap: var(--p-spacing-mode-1-md, 12px);
-    }
-    
-    .autorun-alert__content {
-        gap: var(--p-spacing-mode-1-md, 12px);
-    }
-    
-    .autorun-alert__text {
-        font-size: var(--modifiers-normal-body-sm-regular-fontsize, 13px);
-        line-height: var(--modifiers-normal-body-sm-regular-lineheight, 23.4px);
-    }
+	.autorun-alert {
+		padding: var(--p-spacing-mode-1-md, 12px);
+		gap: var(--p-spacing-mode-1-md, 12px);
+	}
+
+	.autorun-alert__content {
+		gap: var(--p-spacing-mode-1-md, 12px);
+	}
+
+	.autorun-alert__text {
+		font-size: var(--modifiers-normal-body-sm-regular-fontsize, 13px);
+		line-height: var(--modifiers-normal-body-sm-regular-lineheight, 23.4px);
+	}
 }
-
-
 
 /* ========================================
    DARK MODE
    ======================================== */
 
 [data-theme="dark"] {
+	--modifiers-normal-color-light-fg-1-medium: var(--modifiers-normal-color-dark-fg-1-medium);
+	--modifiers-normal-color-light-bg-2: var(--modifiers-normal-color-dark-bg-2);
+	--modifiers-normal-color-light-feedback-bg-success-subtle-default: var(
+		--modifiers-normal-color-dark-feedback-bg-success-subtle-default
+	);
+	--modifiers-normal-color-light-feedback-fg-success-subtle-default: var(
+		--modifiers-normal-color-dark-feedback-fg-success-subtle-default
+	);
+	--modifiers-normal-color-light-feedback-border-success: var(
+		--modifiers-normal-color-dark-feedback-border-success
+	);
+	--modifiers-normal-color-light-feedback-bg-info-subtle-default: var(
+		--modifiers-normal-color-dark-feedback-bg-info-subtle-default
+	);
+	--modifiers-normal-color-light-feedback-fg-info-subtle-default: var(
+		--modifiers-normal-color-dark-feedback-fg-info-subtle-default
+	);
+	--modifiers-normal-color-light-feedback-border-info: var(
+		--modifiers-normal-color-dark-feedback-border-info
+	);
+	--modifiers-normal-color-light-feedback-bg-warning-subtle-default: var(
+		--modifiers-normal-color-dark-feedback-bg-warning-subtle-default
+	);
+	--modifiers-normal-color-light-feedback-fg-warning-subtle-default: var(
+		--modifiers-normal-color-dark-feedback-fg-warning-subtle-default
+	);
+	--modifiers-normal-color-light-feedback-border-warning: var(
+		--modifiers-normal-color-dark-feedback-border-warning
+	);
+	--modifiers-normal-color-light-feedback-bg-error-subtle-default: var(
+		--modifiers-normal-color-dark-feedback-bg-error-subtle-default
+	);
+	--modifiers-normal-color-light-feedback-fg-error-subtle-default: var(
+		--modifiers-normal-color-dark-feedback-fg-error-subtle-default
+	);
+	--modifiers-normal-color-light-feedback-border-error: var(
+		--modifiers-normal-color-dark-feedback-border-error
+	);
 
+	--modifiers-normal-color-light-fg-1-medium: var(--modifiers-normal-color-dark-fg-1-medium);
+	--modifiers-normal-color-light-bg-2: var(--modifiers-normal-color-dark-bg-2);
+	--modifiers-normal-color-light-feedback-bg-success-subtle-default: var(
+		--modifiers-normal-color-dark-feedback-bg-success-subtle-default
+	);
+	--modifiers-normal-color-light-feedback-fg-success-subtle-default: var(
+		--modifiers-normal-color-dark-feedback-fg-success-subtle-default
+	);
+	--modifiers-normal-color-light-feedback-border-success: var(
+		--modifiers-normal-color-dark-feedback-border-success
+	);
+	--modifiers-normal-color-light-feedback-bg-info-subtle-default: var(
+		--modifiers-normal-color-dark-feedback-bg-info-subtle-default
+	);
+	--modifiers-normal-color-light-feedback-fg-info-subtle-default: var(
+		--modifiers-normal-color-dark-feedback-fg-info-subtle-default
+	);
+	--modifiers-normal-color-light-feedback-border-info: var(
+		--modifiers-normal-color-dark-feedback-border-info
+	);
+	--modifiers-normal-color-light-feedback-bg-warning-subtle-default: var(
+		--modifiers-normal-color-dark-feedback-bg-warning-subtle-default
+	);
+	--modifiers-normal-color-light-feedback-fg-warning-subtle-default: var(
+		--modifiers-normal-color-dark-feedback-fg-warning-subtle-default
+	);
+	--modifiers-normal-color-light-feedback-border-warning: var(
+		--modifiers-normal-color-dark-feedback-border-warning
+	);
+	--modifiers-normal-color-light-feedback-bg-error-subtle-default: var(
+		--modifiers-normal-color-dark-feedback-bg-error-subtle-default
+	);
+	--modifiers-normal-color-light-feedback-fg-error-subtle-default: var(
+		--modifiers-normal-color-dark-feedback-fg-error-subtle-default
+	);
+	--modifiers-normal-color-light-feedback-border-error: var(
+		--modifiers-normal-color-dark-feedback-border-error
+	);
 
-
-  --modifiers-normal-color-light-fg-1-medium: var(--modifiers-normal-color-dark-fg-1-medium);
-  --modifiers-normal-color-light-bg-2: var(--modifiers-normal-color-dark-bg-2);
-  --modifiers-normal-color-light-feedback-bg-success-subtle-default: var(--modifiers-normal-color-dark-feedback-bg-success-subtle-default);
-  --modifiers-normal-color-light-feedback-fg-success-subtle-default: var(--modifiers-normal-color-dark-feedback-fg-success-subtle-default);
-  --modifiers-normal-color-light-feedback-border-success: var(--modifiers-normal-color-dark-feedback-border-success);
-  --modifiers-normal-color-light-feedback-bg-info-subtle-default: var(--modifiers-normal-color-dark-feedback-bg-info-subtle-default);
-  --modifiers-normal-color-light-feedback-fg-info-subtle-default: var(--modifiers-normal-color-dark-feedback-fg-info-subtle-default);
-  --modifiers-normal-color-light-feedback-border-info: var(--modifiers-normal-color-dark-feedback-border-info);
-  --modifiers-normal-color-light-feedback-bg-warning-subtle-default: var(--modifiers-normal-color-dark-feedback-bg-warning-subtle-default);
-  --modifiers-normal-color-light-feedback-fg-warning-subtle-default: var(--modifiers-normal-color-dark-feedback-fg-warning-subtle-default);
-  --modifiers-normal-color-light-feedback-border-warning: var(--modifiers-normal-color-dark-feedback-border-warning);
-  --modifiers-normal-color-light-feedback-bg-error-subtle-default: var(--modifiers-normal-color-dark-feedback-bg-error-subtle-default);
-  --modifiers-normal-color-light-feedback-fg-error-subtle-default: var(--modifiers-normal-color-dark-feedback-fg-error-subtle-default);
-  --modifiers-normal-color-light-feedback-border-error: var(--modifiers-normal-color-dark-feedback-border-error);
-
-
-  --modifiers-normal-color-light-fg-1-medium: var(--modifiers-normal-color-dark-fg-1-medium);
-  --modifiers-normal-color-light-bg-2: var(--modifiers-normal-color-dark-bg-2);
-  --modifiers-normal-color-light-feedback-bg-success-subtle-default: var(--modifiers-normal-color-dark-feedback-bg-success-subtle-default);
-  --modifiers-normal-color-light-feedback-fg-success-subtle-default: var(--modifiers-normal-color-dark-feedback-fg-success-subtle-default);
-  --modifiers-normal-color-light-feedback-border-success: var(--modifiers-normal-color-dark-feedback-border-success);
-  --modifiers-normal-color-light-feedback-bg-info-subtle-default: var(--modifiers-normal-color-dark-feedback-bg-info-subtle-default);
-  --modifiers-normal-color-light-feedback-fg-info-subtle-default: var(--modifiers-normal-color-dark-feedback-fg-info-subtle-default);
-  --modifiers-normal-color-light-feedback-border-info: var(--modifiers-normal-color-dark-feedback-border-info);
-  --modifiers-normal-color-light-feedback-bg-warning-subtle-default: var(--modifiers-normal-color-dark-feedback-bg-warning-subtle-default);
-  --modifiers-normal-color-light-feedback-fg-warning-subtle-default: var(--modifiers-normal-color-dark-feedback-fg-warning-subtle-default);
-  --modifiers-normal-color-light-feedback-border-warning: var(--modifiers-normal-color-dark-feedback-border-warning);
-  --modifiers-normal-color-light-feedback-bg-error-subtle-default: var(--modifiers-normal-color-dark-feedback-bg-error-subtle-default);
-  --modifiers-normal-color-light-feedback-fg-error-subtle-default: var(--modifiers-normal-color-dark-feedback-fg-error-subtle-default);
-  --modifiers-normal-color-light-feedback-border-error: var(--modifiers-normal-color-dark-feedback-border-error);
-
-
-  --modifiers-normal-color-light-fg-1-medium: var(--modifiers-normal-color-dark-fg-1-medium);
-  --modifiers-normal-color-light-bg-2: var(--modifiers-normal-color-dark-bg-2);
-  --modifiers-normal-color-light-feedback-bg-success-subtle-default: var(--modifiers-normal-color-dark-feedback-bg-success-subtle-default);
-  --modifiers-normal-color-light-feedback-fg-success-subtle-default: var(--modifiers-normal-color-dark-feedback-fg-success-subtle-default);
-  --modifiers-normal-color-light-feedback-border-success: var(--modifiers-normal-color-dark-feedback-border-success);
-  --modifiers-normal-color-light-feedback-bg-info-subtle-default: var(--modifiers-normal-color-dark-feedback-bg-info-subtle-default);
-  --modifiers-normal-color-light-feedback-fg-info-subtle-default: var(--modifiers-normal-color-dark-feedback-fg-info-subtle-default);
-  --modifiers-normal-color-light-feedback-border-info: var(--modifiers-normal-color-dark-feedback-border-info);
-  --modifiers-normal-color-light-feedback-bg-warning-subtle-default: var(--modifiers-normal-color-dark-feedback-bg-warning-subtle-default);
-  --modifiers-normal-color-light-feedback-fg-warning-subtle-default: var(--modifiers-normal-color-dark-feedback-fg-warning-subtle-default);
-  --modifiers-normal-color-light-feedback-border-warning: var(--modifiers-normal-color-dark-feedback-border-warning);
-  --modifiers-normal-color-light-feedback-bg-error-subtle-default: var(--modifiers-normal-color-dark-feedback-bg-error-subtle-default);
-  --modifiers-normal-color-light-feedback-fg-error-subtle-default: var(--modifiers-normal-color-dark-feedback-fg-error-subtle-default);
-  --modifiers-normal-color-light-feedback-border-error: var(--modifiers-normal-color-dark-feedback-border-error);
-
+	--modifiers-normal-color-light-fg-1-medium: var(--modifiers-normal-color-dark-fg-1-medium);
+	--modifiers-normal-color-light-bg-2: var(--modifiers-normal-color-dark-bg-2);
+	--modifiers-normal-color-light-feedback-bg-success-subtle-default: var(
+		--modifiers-normal-color-dark-feedback-bg-success-subtle-default
+	);
+	--modifiers-normal-color-light-feedback-fg-success-subtle-default: var(
+		--modifiers-normal-color-dark-feedback-fg-success-subtle-default
+	);
+	--modifiers-normal-color-light-feedback-border-success: var(
+		--modifiers-normal-color-dark-feedback-border-success
+	);
+	--modifiers-normal-color-light-feedback-bg-info-subtle-default: var(
+		--modifiers-normal-color-dark-feedback-bg-info-subtle-default
+	);
+	--modifiers-normal-color-light-feedback-fg-info-subtle-default: var(
+		--modifiers-normal-color-dark-feedback-fg-info-subtle-default
+	);
+	--modifiers-normal-color-light-feedback-border-info: var(
+		--modifiers-normal-color-dark-feedback-border-info
+	);
+	--modifiers-normal-color-light-feedback-bg-warning-subtle-default: var(
+		--modifiers-normal-color-dark-feedback-bg-warning-subtle-default
+	);
+	--modifiers-normal-color-light-feedback-fg-warning-subtle-default: var(
+		--modifiers-normal-color-dark-feedback-fg-warning-subtle-default
+	);
+	--modifiers-normal-color-light-feedback-border-warning: var(
+		--modifiers-normal-color-dark-feedback-border-warning
+	);
+	--modifiers-normal-color-light-feedback-bg-error-subtle-default: var(
+		--modifiers-normal-color-dark-feedback-bg-error-subtle-default
+	);
+	--modifiers-normal-color-light-feedback-fg-error-subtle-default: var(
+		--modifiers-normal-color-dark-feedback-fg-error-subtle-default
+	);
+	--modifiers-normal-color-light-feedback-border-error: var(
+		--modifiers-normal-color-dark-feedback-border-error
+	);
 }

@@ -5,4 +5,3 @@
 
 export { renderMetricCard, createMetricCard } from './MetricCardProvider';
 export type { MetricCardOptions, MetricCardSize } from './types/MetricCardOptions';
-

@@ -8,43 +8,40 @@ import type { AlertOptions, AlertType } from './types/AlertOptions';
 
 // Mapeo de iconos por tipo de alert
 const iconMap: Record<AlertType, string> = {
-  success: 'fa-check-circle',
-  info: 'fa-info-circle',
-  warning: 'fa-exclamation-triangle',
-  error: 'fa-times-circle'
+	success: 'fa-check-circle',
+	info: 'fa-info-circle',
+	warning: 'fa-exclamation-triangle',
+	error: 'fa-times-circle',
 };
 
 // Helper para renderizar iconos - compatible con Storybook
 function renderIconHelper(iconName: string, iconStyle: 'regular' | 'solid' = 'regular'): string {
-  const iconClass = iconStyle === 'solid' ? 'fas' : 'far';
-  const name = iconName.startsWith('fa-') ? iconName : `fa-${iconName}`;
-  return `<i class="${iconClass} ${name}"></i>`;
+	const iconClass = iconStyle === 'solid' ? 'fas' : 'far';
+	const name = iconName.startsWith('fa-') ? iconName : `fa-${iconName}`;
+	return `<i class="${iconClass} ${name}"></i>`;
 }
 
 /**
  * Renderiza un alert AUTORUN como HTML string
  */
 export function renderAlert(options: AlertOptions = {}): string {
-  const {
-    type = 'success',
-    message = '',
-    closable = true,
-    className = ''
-  } = options;
+	const { type = 'success', message = '', closable = true, className = '' } = options;
 
-  // Obtener el icono apropiado para el tipo
-  const iconClass = iconMap[type] || iconMap.success;
+	// Obtener el icono apropiado para el tipo
+	const iconClass = iconMap[type] || iconMap.success;
 
-  // Construir clases CSS
-  const classes = [
-    'autorun-alert',
-    `autorun-alert--${type}`,
-    !closable && 'autorun-alert--no-close',
-    className
-  ].filter(Boolean).join(' ');
+	// Construir clases CSS
+	const classes = [
+		'autorun-alert',
+		`autorun-alert--${type}`,
+		!closable && 'autorun-alert--no-close',
+		className,
+	]
+		.filter(Boolean)
+		.join(' ');
 
-  // Generar HTML del alert
-  return `
+	// Generar HTML del alert
+	return `
     <div class="${classes}" role="alert" aria-live="polite">
       <div class="ubits-alert__icon">
         ${renderIconHelper(iconClass, 'regular')}
@@ -52,11 +49,15 @@ export function renderAlert(options: AlertOptions = {}): string {
       <div class="ubits-alert__content">
         <div class="ubits-alert__text">${message}</div>
       </div>
-      ${closable ? `
+      ${
+				closable
+					? `
         <button class="ubits-alert__close" aria-label="Cerrar alerta">
           ${renderIconHelper('fa-times', 'regular')}
         </button>
-      ` : ''}
+      `
+					: ''
+			}
     </div>
   `.trim();
 }
@@ -65,87 +66,87 @@ export function renderAlert(options: AlertOptions = {}): string {
  * Crea un elemento alert programáticamente
  */
 export function createAlert(options: AlertOptions = {}): HTMLDivElement {
-  const div = document.createElement('div');
-  div.innerHTML = renderAlert(options);
-  const alert = div.querySelector('.autorun-alert');
-  
-  if (!alert) {
-    throw new Error('Failed to create alert element');
-  }
+	const div = document.createElement('div');
+	div.innerHTML = renderAlert(options);
+	const alert = div.querySelector('.autorun-alert');
 
-  // Agregar event listener para el botón cerrar
-  if (options.closable !== false) {
-    const closeButton = alert.querySelector('.autorun-alert__close');
-    if (closeButton) {
-      closeButton.addEventListener('click', () => {
-        if (options.onClose) {
-          options.onClose();
-        }
-        // Agregar animación de cierre
-        alert.classList.add('autorun-alert--closing');
-        setTimeout(() => {
-          if (alert.parentNode) {
-            alert.parentNode.removeChild(alert);
-          }
-        }, 300);
-      });
-    }
-  }
+	if (!alert) {
+		throw new Error('Failed to create alert element');
+	}
 
-  // Configurar auto-close si se especifica duration
-  if (options.duration && options.duration > 0) {
-    setTimeout(() => {
-      const closeBtn = alert.querySelector('.autorun-alert__close') as HTMLButtonElement;
-      if (closeBtn) {
-        closeBtn.click();
-      } else {
-        // Si no hay botón cerrar, simplemente remover
-        alert.classList.add('autorun-alert--closing');
-        setTimeout(() => {
-          if (alert.parentNode) {
-            alert.parentNode.removeChild(alert);
-          }
-          if (options.onClose) {
-            options.onClose();
-          }
-        }, 300);
-      }
-    }, options.duration);
-  }
+	// Agregar event listener para el botón cerrar
+	if (options.closable !== false) {
+		const closeButton = alert.querySelector('.autorun-alert__close');
+		if (closeButton) {
+			closeButton.addEventListener('click', () => {
+				if (options.onClose) {
+					options.onClose();
+				}
+				// Agregar animación de cierre
+				alert.classList.add('autorun-alert--closing');
+				setTimeout(() => {
+					if (alert.parentNode) {
+						alert.parentNode.removeChild(alert);
+					}
+				}, 300);
+			});
+		}
+	}
 
-  // Mover el alert fuera del div temporal
-  const parent = alert.parentElement;
-  if (parent) {
-    parent.replaceChild(alert, parent);
-  }
+	// Configurar auto-close si se especifica duration
+	if (options.duration && options.duration > 0) {
+		setTimeout(() => {
+			const closeBtn = alert.querySelector('.autorun-alert__close') as HTMLButtonElement;
+			if (closeBtn) {
+				closeBtn.click();
+			} else {
+				// Si no hay botón cerrar, simplemente remover
+				alert.classList.add('autorun-alert--closing');
+				setTimeout(() => {
+					if (alert.parentNode) {
+						alert.parentNode.removeChild(alert);
+					}
+					if (options.onClose) {
+						options.onClose();
+					}
+				}, 300);
+			}
+		}, options.duration);
+	}
 
-  return alert as HTMLDivElement;
+	// Mover el alert fuera del div temporal
+	const parent = alert.parentElement;
+	if (parent) {
+		parent.replaceChild(alert, parent);
+	}
+
+	return alert as HTMLDivElement;
 }
 
 /**
  * Función helper para mostrar alert fácilmente
  */
 export function showAlert(
-  type: AlertType,
-  message: string,
-  options: Omit<AlertOptions, 'type' | 'message'> = {}
+	type: AlertType,
+	message: string,
+	options: Omit<AlertOptions, 'type' | 'message'> = {},
 ): HTMLDivElement | null {
-  const containerId = options.container ? undefined : (options as any).containerId;
-  const container = options.container || (containerId ? document.getElementById(containerId || '') : document.body);
-  
-  if (!container) {
-    console.error('Alert container not found:', containerId);
-    return null;
-  }
+	const containerId = options.container ? undefined : (options as any).containerId;
+	const container =
+		options.container || (containerId ? document.getElementById(containerId || '') : document.body);
 
-  const alert = createAlert({
-    type,
-    message,
-    ...options,
-    container
-  });
+	if (!container) {
+		console.error('Alert container not found:', containerId);
+		return null;
+	}
 
-  container.appendChild(alert);
-  return alert;
+	const alert = createAlert({
+		type,
+		message,
+		...options,
+		container,
+	});
+
+	container.appendChild(alert);
+	return alert;
 }
-

@@ -57,10 +57,7 @@ export class DockerService {
 				return;
 			}
 
-			const dockerfilePath = path.join(
-				this.projectPath,
-				this.config.dockerfile || 'Dockerfile',
-			);
+			const dockerfilePath = path.join(this.projectPath, this.config.dockerfile || 'Dockerfile');
 			if (!existsSync(dockerfilePath)) {
 				await this.createDockerfile();
 				console.log('✅ Dockerfile creado');
@@ -152,9 +149,7 @@ CMD ["node", "dist/index.js"]
 			const tag = options?.tag || this.config.tag || 'latest';
 			const registry = options?.registry || this.config.registry;
 
-			const imageTag = registry
-				? `${registry}/${imageName}:${tag}`
-				: `${imageName}:${tag}`;
+			const imageTag = registry ? `${registry}/${imageName}:${tag}` : `${imageName}:${tag}`;
 
 			const command = `docker push ${imageTag}`;
 
@@ -197,4 +192,3 @@ CMD ["node", "dist/index.js"]
 		this.config = { ...this.config, ...config };
 	}
 }
-

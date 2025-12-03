@@ -141,8 +141,7 @@ export class ComponentValidator {
 		}
 
 		// Detectar modificaciones a componentes oficiales
-		const componentModificationRegex =
-			/(autorun-\w+)\s*\{[^}]*\}/g;
+		const componentModificationRegex = /(autorun-\w+)\s*\{[^}]*\}/g;
 		const styleMatches = content.matchAll(componentModificationRegex);
 
 		for (const match of styleMatches) {
@@ -171,7 +170,8 @@ export class ComponentValidator {
 		const warnings: ValidationWarning[] = [];
 
 		// Detectar valores hardcodeados de color
-		const hardcodedColorRegex = /(?:color|background|border-color):\s*(?:#[\da-fA-F]{3,6}|rgb\(|rgba\(|hsl\(|hsla\(|red|blue|green|yellow|black|white)(?![\s;]*var\(--ubits)/g;
+		const hardcodedColorRegex =
+			/(?:color|background|border-color):\s*(?:#[\da-fA-F]{3,6}|rgb\(|rgba\(|hsl\(|hsla\(|red|blue|green|yellow|black|white)(?![\s;]*var\(--ubits)/g;
 		const colorMatches = content.matchAll(hardcodedColorRegex);
 
 		for (const match of colorMatches) {
@@ -184,7 +184,8 @@ export class ComponentValidator {
 		}
 
 		// Detectar valores hardcodeados de spacing
-		const hardcodedSpacingRegex = /(?:padding|margin|gap|top|right|bottom|left):\s*(\d+px)(?![\s;]*var\(--ubits)/g;
+		const hardcodedSpacingRegex =
+			/(?:padding|margin|gap|top|right|bottom|left):\s*(\d+px)(?![\s;]*var\(--ubits)/g;
 		const spacingMatches = content.matchAll(hardcodedSpacingRegex);
 
 		for (const match of spacingMatches) {
@@ -282,9 +283,11 @@ export class ComponentValidator {
 		if (!content.includes('window.AUTORUN.Components.loadFromStorybook')) {
 			warnings.push({
 				type: 'usage',
-				message: 'No se detectó carga de componentes desde Storybook. Asegúrate de cargar componentes oficiales.',
+				message:
+					'No se detectó carga de componentes desde Storybook. Asegúrate de cargar componentes oficiales.',
 				file: filePath,
-				suggestion: 'Agrega carga de componentes desde Storybook usando window.AUTORUN.Components.loadFromStorybook()',
+				suggestion:
+					'Agrega carga de componentes desde Storybook usando window.AUTORUN.Components.loadFromStorybook()',
 			});
 		}
 
@@ -297,7 +300,8 @@ export class ComponentValidator {
 				type: 'usage',
 				message: `Importación directa detectada: "${match[0]}". Los componentes deben cargarse desde Storybook.`,
 				file: filePath,
-				suggestion: 'Usa window.AUTORUN.Components.loadFromStorybook() en lugar de imports directos.',
+				suggestion:
+					'Usa window.AUTORUN.Components.loadFromStorybook() en lugar de imports directos.',
 			});
 		}
 
@@ -307,9 +311,7 @@ export class ComponentValidator {
 	/**
 	 * Valida múltiples archivos
 	 */
-	async validateFiles(
-		files: Array<{ path: string; content: string }>,
-	): Promise<ValidationResult> {
+	async validateFiles(files: Array<{ path: string; content: string }>): Promise<ValidationResult> {
 		const allErrors: ValidationError[] = [];
 		const allWarnings: ValidationWarning[] = [];
 
@@ -373,4 +375,3 @@ export class ComponentValidator {
 		return report;
 	}
 }
-
