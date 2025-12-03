@@ -8945,9 +8945,11 @@ npm install</code></pre>
               <p class="step-note" style="margin-top: 16px;">
                 <strong>¿Qué se instala automáticamente?</strong><br>
                 ✅ Dependencias del proyecto Autorun<br>
-                ✅ Dependencias de Storybook (configuración ya incluida en el repositorio)<br>
+                ✅ Dependencias de Storybook (necesarias para que Storybook funcione localmente)<br>
                 ✅ El wizard configurará el MCP de Storybook usando <code style="background: rgba(0,255,255,0.1); padding: 2px 6px; border-radius: 3px;">storybook-mcp@latest</code> (paquete standalone, más confiable)<br><br>
-                <strong>Nota sobre Storybook MCP:</strong> El wizard configurará automáticamente el MCP de Storybook para que Cursor pueda acceder a los componentes. Solo necesitas tener Storybook corriendo (<code style="background: rgba(0,255,255,0.1); padding: 2px 6px; border-radius: 3px;">npm run storybook</code>) cuando uses el MCP.
+                <strong>¿Por qué necesitamos instalar dependencias de Storybook?</strong><br>
+                El MCP de Storybook necesita acceder al Storybook local corriendo en <code style="background: rgba(0,255,255,0.1); padding: 2px 6px; border-radius: 3px;">http://localhost:6006</code>. Para que Storybook funcione, sus dependencias deben estar instaladas. El paso 3 es <strong>obligatorio</strong> si quieres usar el MCP de Storybook.<br><br>
+                <strong>Nota sobre Storybook MCP:</strong> Después de instalar las dependencias, inicia Storybook con <code style="background: rgba(0,255,255,0.1); padding: 2px 6px; border-radius: 3px;">npm run storybook</code> cuando quieras usar el MCP. El wizard configurará automáticamente el MCP para que Cursor pueda acceder a los componentes.
               </p>
             </div>
           </div>
