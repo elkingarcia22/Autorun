@@ -19,6 +19,7 @@ import { CanvasCreator } from './CanvasCreator';
 import { ComponentValidator } from './ComponentValidator';
 import { InteractivePrompt } from './InteractivePrompt';
 import { LocalServer } from '../server/LocalServer';
+import { MCPDetector, MCPInstaller } from '../index';
 
 export type ProjectType = 'ubits' | 'independent';
 
@@ -574,6 +575,11 @@ export class InitializationWizard {
 		console.log('📦 Instalando add-ons seleccionados...');
 		const installedAddons = await this.installAddons(addons);
 		console.log(`   ✅ ${installedAddons.length} add-on(s) instalado(s)\n`);
+
+		// 3.1. Configurar MCP para add-ons que lo soportan
+		console.log('🔌 Configurando MCP para add-ons...');
+		await this.configureMCPForAddons(installedAddons);
+		console.log('   ✅ Configuración de MCP completada\n');
 
 		// 4. Configurar GitHub (preguntar si quiere configurar ahora)
 		console.log('🐙 Configuración de GitHub...');
@@ -1778,6 +1784,111 @@ export class InitializationWizard {
 	 */
 	close(): void {
 		this.prompt.close();
+	}
+
+	/**
+	 * Configura MCP para los add-ons instalados que lo soportan
+	 */
+	private async configureMCPForAddons(installedAddons: string[]): Promise<void> {
+		// Add-ons que tienen soporte MCP
+		const mcpSupportedAddons: Record<string, { name: string; getCredentials: () => Promise<Record<string, any> | null> }> = {
+			github: {
+				name: 'GitHub',
+				getCredentials: async () => {
+					const config = (this.hub as any).configManager?.getConfig();
+					const githubConfig = (await config)?.autorun?.addons?.config?.github;
+					const token = process.env.GITHUB_TOKEN || process.env.GH_TOKEN || githubConfig?.token;
+					return token ? { token } : null;
+				},
+			},
+			vercel: {
+				name: 'Vercel',
+				getCredentials: async () => {
+					const token = process.env.VERCEL_TOKEN;
+					const teamId = process.env.VERCEL_TEAM_ID;
+					return token ? { token, teamId } : null;
+				},
+			},
+			clarity: {
+				name: 'Clarity',
+				getCredentials: async () => {
+					const config = (this.hub as any).configManager?.getConfig();
+					const clarityConfig = (await config)?.autorun?.addons?.config?.clarity;
+					const projectId = clarityConfig?.projectId || process.env.CLARITY_PROJECT_ID;
+					const apiKey = clarityConfig?.apiKey || process.env.CLARITY_API_KEY;
+					return projectId ? { projectId, apiKey } : null;
+				},
+			},
+		};
+
+		// Filtrar add-ons que tienen soporte MCP
+		const addonsWithMCP = installedAddons.filter((id) => mcpSupportedAddons[id]);
+
+		if (addonsWithMCP.length === 0) {
+			console.log('   ℹ️  Ningún add-on instalado requiere configuración MCP');
+			return;
+		}
+
+		// Preguntar si quiere configurar MCP
+		try {
+			const configureMCP = await this.prompt.question(
+				'\n🔌 ¿Deseas configurar MCP para mejorar la experiencia con los add-ons? (S/N): ',
+			);
+
+			if (!configureMCP || configureMCP.trim().toUpperCase() !== 'S') {
+				console.log('   ℹ️  Configuración de MCP omitida (se puede configurar después)');
+				return;
+			}
+
+			// Configurar MCP para cada add-on
+			for (const addonId of addonsWithMCP) {
+				const addonInfo = mcpSupportedAddons[addonId];
+				const mcpInfo = await MCPDetector.detectMCPServer(addonId);
+
+				// Si ya está configurado, saltar
+				if (mcpInfo.configured) {
+					console.log(`   ✅ MCP para ${addonInfo.name} ya está configurado`);
+					continue;
+				}
+
+				// Si MCP no está disponible, saltar
+				if (!mcpInfo.available) {
+					console.log(`   ℹ️  MCP no está disponible para ${addonInfo.name}`);
+					continue;
+				}
+
+				// Obtener credenciales
+				const credentials = await addonInfo.getCredentials();
+				if (!credentials) {
+					console.log(`   ⚠️  No se encontraron credenciales para ${addonInfo.name}. Configura las credenciales primero.`);
+					continue;
+				}
+
+				// Preguntar si quiere configurar este MCP específico
+				const configureThis = await this.prompt.question(
+					`   🔌 ¿Configurar MCP para ${addonInfo.name}? (S/N): `,
+				);
+
+				if (configureThis && configureThis.trim().toUpperCase() === 'S') {
+					const result = await MCPInstaller.installMCPServer(addonId, credentials);
+					if (result.success) {
+						console.log(`   ✅ MCP para ${addonInfo.name} configurado exitosamente`);
+						console.log(`   🔄 Reinicia Cursor para que los cambios surtan efecto`);
+					} else {
+						console.log(`   ⚠️  Error configurando MCP para ${addonInfo.name}: ${result.message}`);
+					}
+				} else {
+					console.log(`   ℹ️  MCP para ${addonInfo.name} omitido`);
+				}
+			}
+		} catch (error: any) {
+			// Si el error es porque readline está cerrado, simplemente omitir
+			if (error.code === 'ERR_USE_AFTER_CLOSE' || error.message?.includes('readline')) {
+				console.log('   ℹ️  Configuración de MCP omitida (modo automático)');
+				return;
+			}
+			console.warn('   ⚠️  Error configurando MCP:', error.message || error);
+		}
 	}
 
 	/**

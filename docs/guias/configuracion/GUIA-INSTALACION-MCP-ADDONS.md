@@ -8,7 +8,15 @@
 
 ## 🎯 Cómo Funciona la Instalación de MCP
 
-### Flujo Actual
+### Flujo en el Wizard (`npm run init`)
+
+1. **Usuario selecciona add-ons** durante el wizard
+2. **Wizard instala add-ons** seleccionados
+3. **Wizard pregunta** si quiere configurar MCP para los add-ons instalados
+4. **Si acepta**, el wizard configura MCP para cada add-on que lo soporte
+5. **Si rechaza**, puede configurar MCP después
+
+### Flujo Manual (Fuera del Wizard)
 
 1. **Usuario instala add-on** (ej: `github`, `vercel`, `clarity`)
 2. **Usuario configura credenciales** (token, API key, etc.)
@@ -310,7 +318,7 @@ npm install -g @modelcontextprotocol/server-clarity
 
 ### ¿Los MCP se instalan automáticamente cuando ejecuto `npm run init`?
 
-**No.** Los MCP se **ofrecen** cuando configuras credenciales para los add-ons, pero debes **aceptar explícitamente**.
+**Sí, pero con confirmación.** Durante el wizard, después de instalar los add-ons, el sistema pregunta si quieres configurar MCP. Si aceptas, se configura automáticamente para cada add-on que lo soporte.
 
 ### ¿Puedo usar los add-ons sin MCP?
 
