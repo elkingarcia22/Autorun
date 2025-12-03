@@ -956,20 +956,36 @@ export class InitializationWizard {
 									// El add-on existe y está compilado, registrarlo
 									try {
 										await this.hub.registerAddon(addonPath);
+										// Debug: confirmar registro exitoso
+										if (process.env.DEBUG) {
+											console.log(`   🔍 Debug: Add-on ${addonId} registrado desde ${addonPath}`);
+										}
 									} catch (regError: any) {
 										// Si ya está registrado, continuar
 										if (!regError.message?.includes('ya está registrado')) {
+											// Debug: mostrar error de registro
+											if (process.env.DEBUG) {
+												console.warn(`   🔍 Debug: Error registrando ${addonId}:`, regError.message);
+											}
 											throw regError;
 										}
 									}
+								} else if (process.env.DEBUG) {
+									console.log(`   🔍 Debug: Add-on ${addonId} tiene dist/ pero no tiene index.js ni index.d.ts`);
 								}
 							}
-						} catch {
+						} catch (distError: any) {
 							// No está compilado, pero continuar para configurar MCP
+							if (process.env.DEBUG) {
+								console.log(`   🔍 Debug: Add-on ${addonId} no tiene dist/ o no está compilado:`, distError.message);
+							}
 						}
 					}
-				} catch {
+				} catch (pathError: any) {
 					// El directorio no existe, continuar
+					if (process.env.DEBUG) {
+						console.log(`   🔍 Debug: Add-on ${addonId} no encontrado en ${addonPath}:`, pathError.message);
+					}
 				}
 
 				// Intentar activar el add-on
@@ -1916,7 +1932,19 @@ export class InitializationWizard {
 		console.log(`   🔍 Add-ons con soporte MCP detectados: ${addonsWithMCP.join(', ')}`);
 
 		// Verificar si MCP está disponible en el sistema
-		const mcpAvailable = await MCPDetector.detectMCPServer('github').then(info => info.available).catch(() => false);
+		let mcpAvailable = false;
+		try {
+			const mcpInfo = await MCPDetector.detectMCPServer('github');
+			mcpAvailable = mcpInfo.available;
+			
+			// Debug: mostrar información de detección
+			if (process.env.DEBUG) {
+				console.log(`   🔍 Debug MCP: available=${mcpAvailable}, configured=${mcpInfo.configured}`);
+				console.log(`   🔍 Debug Cursor: CURSOR_AGENT=${process.env.CURSOR_AGENT}, CURSOR_VERSION=${process.env.CURSOR_VERSION}`);
+			}
+		} catch (error: any) {
+			console.warn(`   ⚠️  Error detectando MCP:`, error.message || error);
+		}
 		
 		if (!mcpAvailable) {
 			console.log(`   ⚠️  MCP no está disponible en este entorno`);

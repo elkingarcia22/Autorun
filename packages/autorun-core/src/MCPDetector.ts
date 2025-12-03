@@ -63,7 +63,8 @@ export class MCPDetector {
 	private static async checkMCPAvailable(): Promise<boolean> {
 		try {
 			// Verificar si estamos en Cursor (que tiene soporte MCP nativo)
-			if (this.isRunningInCursor()) {
+			const isCursor = this.isRunningInCursor();
+			if (isCursor) {
 				return true; // Cursor siempre tiene soporte MCP
 			}
 
@@ -78,7 +79,11 @@ export class MCPDetector {
 				);
 			}
 			return false;
-		} catch {
+		} catch (error) {
+			// Log error en modo desarrollo para debugging
+			if (process.env.DEBUG) {
+				console.warn('Error checking MCP availability:', error);
+			}
 			return false;
 		}
 	}
@@ -89,7 +94,8 @@ export class MCPDetector {
 	private static isRunningInCursor(): boolean {
 		try {
 			// Verificar variables de entorno de Cursor (más confiable)
-			if (process.env.CURSOR_VERSION || process.env.CURSOR_AGENT) {
+			const hasCursorEnv = !!(process.env.CURSOR_VERSION || process.env.CURSOR_AGENT);
+			if (hasCursorEnv) {
 				return true;
 			}
 
@@ -98,24 +104,31 @@ export class MCPDetector {
 			const fs = require('fs');
 			const path = require('path');
 			const projectCursorDir = path.join(process.cwd(), '.cursor');
-			if (fs.existsSync(projectCursorDir)) {
+			const hasProjectCursor = fs.existsSync(projectCursorDir);
+			if (hasProjectCursor) {
 				return true;
 			}
 
 			// Verificar si existe .cursor/mcp.json en el proyecto actual
 			const projectCursorMCP = path.join(process.cwd(), '.cursor', 'mcp.json');
-			if (fs.existsSync(projectCursorMCP)) {
+			const hasProjectMCP = fs.existsSync(projectCursorMCP);
+			if (hasProjectMCP) {
 				return true;
 			}
 
 			// Verificar si existe el directorio .cursor global (indicador secundario)
 			const cursorDir = process.env.HOME ? path.join(process.env.HOME, '.cursor') : null;
-			if (cursorDir && fs.existsSync(cursorDir)) {
+			const hasGlobalCursor = cursorDir && fs.existsSync(cursorDir);
+			if (hasGlobalCursor) {
 				return true;
 			}
 
 			return false;
-		} catch {
+		} catch (error) {
+			// Log error en modo desarrollo para debugging
+			if (process.env.DEBUG) {
+				console.warn('Error checking if running in Cursor:', error);
+			}
 			return false;
 		}
 	}
