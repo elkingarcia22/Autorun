@@ -62,6 +62,11 @@ export class MCPDetector {
 	 */
 	private static async checkMCPAvailable(): Promise<boolean> {
 		try {
+			// Verificar si estamos en Cursor (que tiene soporte MCP nativo)
+			if (this.isRunningInCursor()) {
+				return true; // Cursor siempre tiene soporte MCP
+			}
+
 			// Verificar si hay herramientas MCP disponibles
 			// Esto verifica si el entorno tiene acceso a MCP
 			if (typeof process !== 'undefined' && process.env) {
@@ -79,30 +84,78 @@ export class MCPDetector {
 	}
 
 	/**
+	 * Verifica si estamos ejecutando en Cursor
+	 */
+	private static isRunningInCursor(): boolean {
+		try {
+			// Verificar variables de entorno de Cursor
+			if (process.env.CURSOR_VERSION || process.env.CURSOR_AGENT) {
+				return true;
+			}
+
+			// Verificar si existe el directorio .cursor (indicador de que estamos en Cursor)
+			const fs = require('fs');
+			const path = require('path');
+			const cursorDir = process.env.HOME ? path.join(process.env.HOME, '.cursor') : null;
+			if (cursorDir && fs.existsSync(cursorDir)) {
+				return true;
+			}
+
+			// Verificar si existe .cursor/mcp.json en el proyecto actual
+			const projectCursorMCP = path.join(process.cwd(), '.cursor', 'mcp.json');
+			if (fs.existsSync(projectCursorMCP)) {
+				return true;
+			}
+
+			return false;
+		} catch {
+			return false;
+		}
+	}
+
+	/**
 	 * Verifica si un servidor MCP específico está configurado
 	 */
 	private static async checkServerConfigured(serviceName: string): Promise<boolean> {
 		try {
-			const configPath = this.getMCPConfigPath();
-			if (!configPath) {
-				return false;
-			}
-
-			// Intentar leer configuración de MCP
+			// Buscar configuración en múltiples ubicaciones (Cursor y estándar)
 			const fs = await import('fs/promises');
 			const path = await import('path');
 
-			const configFile = path.join(configPath, 'mcp.json');
-			try {
-				const configContent = await fs.readFile(configFile, 'utf-8');
-				const config = JSON.parse(configContent);
+			// Rutas posibles de configuración
+			const configPaths = [
+				// Cursor: proyecto local
+				path.join(process.cwd(), '.cursor', 'mcp.json'),
+				// Cursor: global
+				process.env.HOME ? path.join(process.env.HOME, '.cursor', 'mcp.json') : null,
+				// Estándar: proyecto local
+				path.join(process.cwd(), '.mcp', 'config.json'),
+				path.join(process.cwd(), 'mcp.json'),
+				// Estándar: global
+				process.env.HOME ? path.join(process.env.HOME, '.config', 'mcp', 'mcp.json') : null,
+				process.env.HOME ? path.join(process.env.HOME, '.mcp', 'mcp.json') : null,
+				// Variable de entorno
+				process.env.MCP_CONFIG_PATH ? path.join(process.env.MCP_CONFIG_PATH, 'mcp.json') : null,
+			].filter((p): p is string => p !== null);
 
-				// Verificar si el servidor está en la configuración
-				const servers = config.servers || config.mcpServers || {};
-				return !!servers[serviceName.toLowerCase()];
-			} catch {
-				return false;
+			for (const configFile of configPaths) {
+				try {
+					const configContent = await fs.readFile(configFile, 'utf-8');
+					const config = JSON.parse(configContent);
+
+					// Verificar si el servidor está en la configuración
+					// Cursor usa "mcpServers", estándar puede usar "servers" o "mcpServers"
+					const servers = config.mcpServers || config.servers || {};
+					if (servers[serviceName.toLowerCase()]) {
+						return true;
+					}
+				} catch {
+					// Continuar con la siguiente ruta
+					continue;
+				}
 			}
+
+			return false;
 		} catch {
 			return false;
 		}
@@ -113,8 +166,13 @@ export class MCPDetector {
 	 */
 	private static getMCPConfigPath(): string | undefined {
 		// Rutas comunes de configuración de MCP
+		// Priorizar rutas de Cursor si estamos en Cursor
 		const possiblePaths = [
 			process.env.MCP_CONFIG_PATH,
+			// Rutas de Cursor (prioridad alta)
+			process.env.HOME ? `${process.env.HOME}/.cursor` : undefined,
+			process.cwd() + '/.cursor',
+			// Rutas estándar de MCP
 			process.env.HOME ? `${process.env.HOME}/.config/mcp` : undefined,
 			process.env.HOME ? `${process.env.HOME}/.mcp` : undefined,
 			process.cwd() + '/.mcp',

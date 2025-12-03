@@ -76,7 +76,26 @@ export class MCPInstaller {
 	 * Asegura que existe el directorio de configuración de MCP
 	 */
 	private static async ensureMCPConfigPath(): Promise<string> {
-		// Intentar usar ruta de configuración estándar
+		// Verificar si estamos en Cursor (prioridad)
+		if (this.isRunningInCursor()) {
+			// Cursor usa .cursor/mcp.json en el proyecto o ~/.cursor/mcp.json globalmente
+			// Preferir proyecto local primero
+			const projectCursorPath = path.join(process.cwd(), '.cursor');
+			try {
+				await fs.mkdir(projectCursorPath, { recursive: true });
+				return projectCursorPath; // Retornar directorio, el archivo será mcp.json
+			} catch {
+				// Fallback a global
+				const homeDir = process.env.HOME || process.env.USERPROFILE;
+				if (homeDir) {
+					const globalCursorPath = path.join(homeDir, '.cursor');
+					await fs.mkdir(globalCursorPath, { recursive: true });
+					return globalCursorPath;
+				}
+			}
+		}
+
+		// Rutas estándar de MCP
 		const homeDir = process.env.HOME || process.env.USERPROFILE;
 		const configPath = homeDir
 			? path.join(homeDir, '.config', 'mcp')
@@ -94,14 +113,51 @@ export class MCPInstaller {
 	}
 
 	/**
+	 * Verifica si estamos ejecutando en Cursor
+	 */
+	private static isRunningInCursor(): boolean {
+		try {
+			// Verificar variables de entorno de Cursor
+			if (process.env.CURSOR_VERSION || process.env.CURSOR_AGENT) {
+				return true;
+			}
+
+			// Verificar si existe el directorio .cursor
+			const fsSync = require('fs');
+			const cursorDir = process.env.HOME ? path.join(process.env.HOME, '.cursor') : null;
+			if (cursorDir && fsSync.existsSync(cursorDir)) {
+				return true;
+			}
+
+			// Verificar si existe .cursor/mcp.json en el proyecto actual
+			const projectCursorMCP = path.join(process.cwd(), '.cursor', 'mcp.json');
+			if (fsSync.existsSync(projectCursorMCP)) {
+				return true;
+			}
+
+			return false;
+		} catch {
+			return false;
+		}
+	}
+
+	/**
 	 * Carga o crea configuración de MCP
 	 */
 	private static async loadOrCreateConfig(configPath: string): Promise<MCPConfig> {
-		const configFile = path.join(configPath, 'config.json');
+		// Determinar nombre del archivo según el entorno
+		const isCursor = this.isRunningInCursor();
+		const configFileName = isCursor ? 'mcp.json' : 'config.json';
+		const configFile = path.join(configPath, configFileName);
 
 		try {
 			const content = await fs.readFile(configFile, 'utf-8');
-			return JSON.parse(content);
+			const parsed = JSON.parse(content);
+			// Asegurar que tiene la estructura correcta
+			return {
+				servers: parsed.servers || parsed.mcpServers || {},
+				mcpServers: parsed.mcpServers || parsed.servers || {},
+			};
 		} catch {
 			// Crear configuración nueva
 			return {
@@ -115,8 +171,17 @@ export class MCPInstaller {
 	 * Guarda configuración de MCP
 	 */
 	private static async saveConfig(configPath: string, config: MCPConfig): Promise<void> {
-		const configFile = path.join(configPath, 'config.json');
-		await fs.writeFile(configFile, JSON.stringify(config, null, 2), 'utf-8');
+		// Determinar nombre del archivo según el entorno
+		const isCursor = this.isRunningInCursor();
+		const configFileName = isCursor ? 'mcp.json' : 'config.json';
+		const configFile = path.join(configPath, configFileName);
+
+		// Cursor usa "mcpServers", estándar puede usar ambos
+		const configToSave = isCursor
+			? { mcpServers: config.mcpServers || config.servers || {} }
+			: { servers: config.servers || {}, mcpServers: config.mcpServers || {} };
+
+		await fs.writeFile(configFile, JSON.stringify(configToSave, null, 2), 'utf-8');
 	}
 
 	/**
