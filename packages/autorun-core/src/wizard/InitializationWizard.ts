@@ -20,6 +20,7 @@ import { ComponentValidator } from './ComponentValidator';
 import { InteractivePrompt } from './InteractivePrompt';
 import { LocalServer } from '../server/LocalServer';
 import { MCPDetector, MCPInstaller } from '../index';
+import { CursorRulesNotifier } from './CursorRulesNotifier';
 
 export type ProjectType = 'ubits' | 'independent';
 
@@ -664,6 +665,17 @@ export class InitializationWizard {
 			console.log('      - Mantén esta terminal abierta para que el servidor siga funcionando');
 			console.log('      - Presiona Ctrl+C para detener el servidor y salir');
 		}
+
+		// 9. Generar resumen de reglas para Cursor AI
+		console.log('📚 Generando resumen de reglas para Cursor AI...');
+		const rulesNotifier = new CursorRulesNotifier(process.cwd());
+		const summaryPath = await rulesNotifier.generateRulesSummary();
+		if (summaryPath) {
+			console.log('   ✅ Resumen de reglas generado\n');
+		}
+
+		// Mostrar mensaje sobre reglas de Cursor
+		console.log(rulesNotifier.getFinalMessage());
 
 		console.log('\n🚀 Ya puedes empezar a trabajar. ¡Éxito con tu proyecto!\n');
 
