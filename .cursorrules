@@ -113,7 +113,43 @@ Antes de trabajar en un template, LEER:
 9. `docs/guias/implementacion/GUIA-PROCESO-IMPLEMENTACION-PASO-A-PASO.md` - ⚠️ **OBLIGATORIO:** Proceso de implementación paso a paso
 10. `docs/guias/implementacion/GUIA-IMPLEMENTACION-DATATABLE-PASO-A-PASO.md` - ⚠️ **OBLIGATORIO:** Implementación de DataTable funcionalidad por funcionalidad
 11. `docs/guias/implementacion/GUIA-CREAR-DESDE-IMAGEN-DESPUES-WIZARD.md` - ⚠️ **OBLIGATORIO:** Crear desde imagen DESPUÉS del wizard (modificar template existente)
-12. `INDEX.md` - Flujo de inicialización
+12. `docs/guias/implementacion/GUIA-USO-MCP-EN-IMPLEMENTACION.md` - ⚠️ **OBLIGATORIO:** Usar MCPs para consultar componentes exactamente como están
+13. `INDEX.md` - Flujo de inicialización
+
+---
+
+## 🔌 USO OBLIGATORIO DE MCPs Y ADD-ONS
+
+### ⚠️ REGLA CRÍTICA: SIEMPRE USAR MCPs DISPONIBLES
+
+**ANTES de implementar cualquier componente UBITS, DEBES:**
+
+1. **Consultar Storybook MCP:**
+   - ✅ Usar `mcp_storybook_getComponentList` para listar componentes
+   - ✅ Usar `mcp_storybook_getComponentsProps` para obtener props exactas
+   - ✅ Verificar estructura, tokens, controles y variantes
+
+2. **Consultar Storybook directamente:**
+   - ✅ Abrir `http://localhost:6006` en navegador
+   - ✅ Revisar Controls, Tokens, Ejemplos y Variantes
+   - ✅ Obtener código exacto del componente
+
+3. **Usar información exacta:**
+   - ✅ Implementar con props exactas obtenidas del MCP
+   - ✅ Usar tokens exactos obtenidos del Storybook
+   - ✅ Seguir estructura exacta del componente
+
+**Ver guía completa:** `docs/guias/implementacion/GUIA-USO-MCP-EN-IMPLEMENTACION.md` - ⚠️ **OBLIGATORIO**
+
+### MCPs Disponibles:
+
+- **Storybook MCP** ⭐ - Consultar componentes UBITS (props, tokens, estructura)
+- **Figma MCP** - Consultar tokens de diseño desde Figma
+- **Supabase MCP** - Consultar esquemas de base de datos
+- **GitHub MCP** - Consultar código de componentes
+- **Vercel MCP** - Consultar deployments y proyectos
+
+**NO implementar componentes sin consultar MCPs primero.**
 
 ---
 

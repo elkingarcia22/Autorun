@@ -55,6 +55,7 @@ export class CursorRulesNotifier {
 - **\`docs/guias/implementacion/GUIA-CREAR-DESDE-IMAGEN-DESPUES-WIZARD.md\`** - Crear desde imagen después del wizard
 - **\`docs/guias/implementacion/GUIA-PROCESO-IMPLEMENTACION-PASO-A-PASO.md\`** - Proceso de implementación paso a paso
 - **\`docs/guias/implementacion/GUIA-IMPLEMENTACION-DATATABLE-PASO-A-PASO.md\`** - Implementación de DataTable paso a paso
+- **\`docs/guias/implementacion/GUIA-USO-MCP-EN-IMPLEMENTACION.md\`** - ⚠️ **OBLIGATORIO:** Usar MCPs para consultar componentes exactamente como están
 
 ### Guías de Referencia:
 
@@ -127,12 +128,36 @@ export class CursorRulesNotifier {
 
 ## 💡 Tips para Cursor AI
 
-1. **Siempre verificar módulo** antes de hacer cambios
-2. **Siempre medir spacing visualmente** (NO asumir)
-3. **Siempre verificar iconos** con variaciones (simple, regular, solid)
-4. **Siempre interceptar ContentManager** si agregas elementos a \`.content-area\`
-5. **Siempre implementar paso a paso** (una tarea a la vez)
-6. **Siempre pedir aprobación** antes de continuar
+1. **Siempre usar MCPs disponibles** antes de implementar componentes
+   - Consultar Storybook MCP para props, tokens, estructura exacta
+   - NO asumir props o estructura sin consultar MCP primero
+2. **Siempre verificar módulo** antes de hacer cambios
+3. **Siempre medir spacing visualmente** (NO asumir)
+4. **Siempre verificar iconos** con variaciones (simple, regular, solid)
+5. **Siempre interceptar ContentManager** si agregas elementos a \`.content-area\`
+6. **Siempre implementar paso a paso** (una tarea a la vez)
+7. **Siempre pedir aprobación** antes de continuar
+
+## 🔌 MCPs y Add-ons Disponibles
+
+### MCPs Configurados:
+
+- **Storybook MCP** ⭐ - Consultar componentes UBITS (props, tokens, estructura)
+  - Herramientas: \`mcp_storybook_getComponentList\`, \`mcp_storybook_getComponentsProps\`
+  - URL: \`http://localhost:6006/index.json\` (requiere Storybook corriendo)
+- **Figma MCP** - Consultar tokens de diseño desde Figma
+- **Supabase MCP** - Consultar esquemas de base de datos
+- **GitHub MCP** - Consultar código de componentes
+- **Vercel MCP** - Consultar deployments y proyectos
+
+### Regla Crítica:
+
+**ANTES de implementar cualquier componente UBITS:**
+1. ✅ Consultar Storybook MCP para obtener props exactas
+2. ✅ Consultar Storybook directamente para ver Controls, Tokens, Ejemplos
+3. ✅ Implementar con información exacta obtenida del MCP
+
+**NO implementar componentes sin consultar MCPs primero.**
 
 ---
 
