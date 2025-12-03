@@ -2,7 +2,15 @@
   "autorun": {
     "version": "1.0.0",
     "addons": {
-      "active": [],
+      "active": [
+        "storybook",
+        "figma-sync",
+        "eslint",
+        "prettier",
+        "chromatic",
+        "standalone",
+        "supabase"
+      ],
       "config": {}
     },
     "projectType": "ubits",
