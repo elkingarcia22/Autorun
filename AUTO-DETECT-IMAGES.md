@@ -51,8 +51,9 @@
 2. ✅ **LEER SEGUNDO:** `BLOQUEO-IMAGEN.md`
 3. ✅ **LEER TERCERO:** `docs/guias/implementacion/GUIA-CREAR-DESDE-IMAGEN-DESPUES-WIZARD.md`
 4. ✅ **LEER CUARTO:** `docs/guias/implementacion/GUIA-PROCESO-IMPLEMENTACION-PASO-A-PASO.md`
-5. ✅ **LEER QUINTO:** `docs/guias/analisis/GUIA-ANALISIS-ESTRUCTURA-SPACING.md` - ⚠️ OBLIGATORIO para análisis de spacing
-6. ✅ **LEER SEXTO:** `docs/guias/analisis/GUIA-ANALISIS-ICONOS-DETALLADO.md` - ⚠️ OBLIGATORIO para análisis de iconos
+5. ✅ **LEER QUINTO:** `docs/guias/analisis/GUIA-DISTINGUIR-SUBNAV-TABS.md` - ⚠️ OBLIGATORIO para distinguir SubNav de Tabs
+6. ✅ **LEER SEXTO:** `docs/guias/analisis/GUIA-ANALISIS-ESTRUCTURA-SPACING.md` - ⚠️ OBLIGATORIO para análisis de spacing
+7. ✅ **LEER SÉPTIMO:** `docs/guias/analisis/GUIA-ANALISIS-ICONOS-DETALLADO.md` - ⚠️ OBLIGATORIO para análisis de iconos
 
 ### PASO 3: VERIFICAR TEMPLATE EXISTENTE
 - ✅ Usar `list_dir()` para buscar en `prototypes/`

@@ -53,9 +53,18 @@
 ## 📋 Análisis Detallado de la Imagen
 
 ### 🔍 Componentes UBITS Identificados:
-1. [Componente 1] - [Tipo] - [Ubicación]
-2. [Componente 2] - [Tipo] - [Ubicación]
+1. [Componente 1] - [Tipo] - [Ubicación] - [¿Ya existe o se implementa?]
+2. [Componente 2] - [Tipo] - [Ubicación] - [¿Ya existe o se implementa?]
 ...
+
+### 🔍 SubNav vs Tabs (Verificación Obligatoria):
+- **SubNav:** ¿Hay barra horizontal con tabs debajo del header?
+  - Si SÍ → Ya existe en template, NO implementar
+  - Documentar: "SubNav: Ya existe (tabs: [X, Y])"
+- **Tabs:** ¿Hay tabs adicionales dentro del contenido principal?
+  - Si SÍ → Implementar con `window.createTabs()`
+  - Si NO → Documentar: "Tabs: NO (solo SubNav existe)"
+- **Ver guía:** `docs/guias/analisis/GUIA-DISTINGUIR-SUBNAV-TABS.md` - ⚠️ OBLIGATORIO
 
 ### 📋 HeaderSection (Verificación Obligatoria):
 - **¿Hay HeaderSection visible en la imagen?** [SÍ / NO]

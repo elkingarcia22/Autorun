@@ -26,9 +26,10 @@
 4. **LEER TERCERO:** `BLOQUEO-IMAGEN.md` usando `read_file()`
 5. **LEER CUARTO:** `docs/guias/implementacion/GUIA-CREAR-DESDE-IMAGEN-DESPUES-WIZARD.md` usando `read_file()`
 6. **LEER QUINTO:** `docs/guias/implementacion/GUIA-PROCESO-IMPLEMENTACION-PASO-A-PASO.md` usando `read_file()`
-7. **LEER SEXTO:** `docs/guias/analisis/GUIA-ANALISIS-ESTRUCTURA-SPACING.md` usando `read_file()`
-8. **LEER SÉPTIMO:** `docs/guias/analisis/GUIA-ANALISIS-ICONOS-DETALLADO.md` usando `read_file()`
-9. **LEER OCTAVO:** `docs/guias/referencia/GUIA-CONTENTMANAGER-UPDATECONTENT.md` usando `read_file()`
+7. **LEER SEXTO:** `docs/guias/analisis/GUIA-DISTINGUIR-SUBNAV-TABS.md` usando `read_file()` - ⚠️ OBLIGATORIO para distinguir SubNav de Tabs
+8. **LEER SÉPTIMO:** `docs/guias/analisis/GUIA-ANALISIS-ESTRUCTURA-SPACING.md` usando `read_file()`
+9. **LEER OCTAVO:** `docs/guias/analisis/GUIA-ANALISIS-ICONOS-DETALLADO.md` usando `read_file()`
+10. **LEER NOVENO:** `docs/guias/referencia/GUIA-CONTENTMANAGER-UPDATECONTENT.md` usando `read_file()`
 
 **NO puedes usar:**
 - ❌ `write()` - BLOQUEADO

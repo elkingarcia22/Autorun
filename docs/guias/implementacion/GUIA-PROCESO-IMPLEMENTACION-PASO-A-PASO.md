@@ -21,6 +21,10 @@ Esta guía establece el proceso **OBLIGATORIO** para implementar interfaces desd
 1. **Identificar componentes UBITS:**
    - ¿Qué componentes UBITS veo en la imagen?
    - ¿Sidebar? ¿SubNav? ¿Tabs? ¿DataTable? ¿Buttons? ¿Inputs?
+   - **⚠️ CRÍTICO: Distinguir SubNav de Tabs:**
+     - **SubNav:** Barra horizontal debajo del header → Ya existe, NO implementar
+     - **Tabs:** Tabs dentro del contenido → Se implementa con `window.createTabs()`
+     - **Ver guía:** `docs/guias/analisis/GUIA-DISTINGUIR-SUBNAV-TABS.md` - ⚠️ OBLIGATORIO
    - **⚠️ CRÍTICO: Verificar HeaderSection:**
      - ¿Hay un HeaderSection en la imagen? (título grande, descripción, botones de acción)
      - Si **NO hay HeaderSection** en la imagen, **DEBE eliminarse del template:**

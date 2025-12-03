@@ -62,6 +62,16 @@ await createNewTemplate('home-encuestas.html', image);
 1. **Identificar componentes UBITS:**
    - ¿Qué componentes UBITS veo en la imagen?
    - ¿Sidebar? ¿SubNav? ¿Tabs? ¿DataTable? ¿Buttons? ¿Inputs?
+   - **⚠️ CRÍTICO: Distinguir SubNav de Tabs:**
+     - **SubNav:** Barra horizontal debajo del header con tabs de navegación secundaria
+       - ✅ Ya existe en el template (se crea automáticamente por ContentManager)
+       - ✅ NO se implementa
+       - ✅ Documentar: "SubNav: Ya existe (tabs: [X, Y])"
+     - **Tabs:** Tabs adicionales dentro del contenido principal
+       - ✅ Se implementa con `window.createTabs()`
+       - ✅ Requiere contenedor con ID
+       - ✅ Documentar: "Tabs: Implementar (tabs: [X, Y])" o "Tabs: NO (solo SubNav existe)"
+     - **Ver guía:** `docs/guias/analisis/GUIA-DISTINGUIR-SUBNAV-TABS.md` - ⚠️ OBLIGATORIO
    - Consultar `CATALOGO-COMPONENTES-UBITS.md`
 
 2. **Verificar HeaderSection:** ⚠️ CRÍTICO

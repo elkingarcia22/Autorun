@@ -12,8 +12,9 @@
 2. ✅ Leer `BLOQUEO-IMAGEN.md`
 3. ✅ Leer `docs/guias/implementacion/GUIA-CREAR-DESDE-IMAGEN-DESPUES-WIZARD.md`
 4. ✅ Leer `docs/guias/implementacion/GUIA-PROCESO-IMPLEMENTACION-PASO-A-PASO.md`
-5. ✅ Leer `docs/guias/analisis/GUIA-ANALISIS-ESTRUCTURA-SPACING.md` - ⚠️ OBLIGATORIO para análisis de spacing
-6. ✅ Leer `docs/guias/analisis/GUIA-ANALISIS-ICONOS-DETALLADO.md` - ⚠️ OBLIGATORIO para análisis de iconos
+5. ✅ Leer `docs/guias/analisis/GUIA-DISTINGUIR-SUBNAV-TABS.md` - ⚠️ OBLIGATORIO para distinguir SubNav de Tabs
+6. ✅ Leer `docs/guias/analisis/GUIA-ANALISIS-ESTRUCTURA-SPACING.md` - ⚠️ OBLIGATORIO para análisis de spacing
+7. ✅ Leer `docs/guias/analisis/GUIA-ANALISIS-ICONOS-DETALLADO.md` - ⚠️ OBLIGATORIO para análisis de iconos
 
 ### 🚫 PASO 2: VERIFICAR QUE NO ESTÁS USANDO HERRAMIENTAS PROHIBIDAS
 
