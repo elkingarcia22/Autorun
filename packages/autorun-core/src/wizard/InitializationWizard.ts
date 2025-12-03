@@ -577,8 +577,10 @@ export class InitializationWizard {
 		console.log(`   ✅ ${installedAddons.length} add-on(s) instalado(s)\n`);
 
 		// 3.1. Configurar MCP para add-ons que lo soportan
+		// IMPORTANTE: Usar addons seleccionados, no solo los instalados exitosamente
+		// porque algunos pueden fallar pero aún así queremos configurar MCP
 		console.log('🔌 Configurando MCP para add-ons...');
-		await this.configureMCPForAddons(installedAddons);
+		await this.configureMCPForAddons(addons);
 		console.log('   ✅ Configuración de MCP completada\n');
 
 		// 4. Configurar GitHub (preguntar si quiere configurar ahora)
@@ -1835,11 +1837,12 @@ export class InitializationWizard {
 		};
 
 		// Filtrar add-ons que tienen soporte MCP
+		// Usar la lista de add-ons seleccionados, no solo los instalados exitosamente
 		const addonsWithMCP = installedAddons.filter((id) => mcpSupportedAddons[id]);
 
-		// Debug: mostrar qué add-ons se instalaron
+		// Debug: mostrar qué add-ons se seleccionaron y cuáles tienen MCP
 		if (installedAddons.length > 0) {
-			console.log(`   📋 Add-ons instalados: ${installedAddons.join(', ')}`);
+			console.log(`   📋 Add-ons seleccionados: ${installedAddons.join(', ')}`);
 		}
 
 		if (addonsWithMCP.length === 0) {
