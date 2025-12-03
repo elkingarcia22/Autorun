@@ -1797,7 +1797,7 @@ export class InitializationWizard {
 			// Guardar configuración de GitHub
 			const configManager = (this.hub as any).configManager;
 			if (configManager) {
-				const currentConfig = await configManager.getConfig();
+				const currentConfig = await configManager.load();
 				const updatedConfig = {
 					...currentConfig,
 					autorun: {
@@ -1908,8 +1908,10 @@ export class InitializationWizard {
 				name: 'Figma Sync',
 				mcpNames: ['figma', 'talk-to-figma'],
 				getCredentials: async () => {
-					const config = (this.hub as any).configManager?.getConfig();
-					const figmaConfig = (await config)?.autorun?.addons?.config?.['figma-sync'];
+					const configManager = (this.hub as any).configManager;
+					if (!configManager) return null;
+					const config = await configManager.load();
+					const figmaConfig = config?.autorun?.addons?.config?.['figma-sync'];
 					const accessToken = figmaConfig?.accessToken || process.env.FIGMA_ACCESS_TOKEN;
 					return accessToken ? { accessToken, fileKey: figmaConfig?.fileKey } : null;
 				},
