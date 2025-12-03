@@ -929,17 +929,39 @@ export class InitializationWizard {
 				try {
 					const stats = await fs.stat(addonPath);
 					if (stats.isDirectory()) {
-						// Verificar que existe dist/index.js
-						const distPath = path.join(addonPath, 'dist', 'index.js');
+						// Verificar que existe dist/index.js o dist/index.d.ts (indicador de compilación)
+						const distIndexJs = path.join(addonPath, 'dist', 'index.js');
+						const distIndexDts = path.join(addonPath, 'dist', 'index.d.ts');
+						const distDir = path.join(addonPath, 'dist');
+						
 						try {
-							await fs.access(distPath);
-							// El add-on existe y está compilado, registrarlo
-							try {
-								await this.hub.registerAddon(addonPath);
-							} catch (regError: any) {
-								// Si ya está registrado, continuar
-								if (!regError.message?.includes('ya está registrado')) {
-									throw regError;
+							// Verificar que existe el directorio dist
+							const distStats = await fs.stat(distDir);
+							if (distStats.isDirectory()) {
+								// Verificar que existe al menos uno de los archivos principales
+								let hasMainFile = false;
+								try {
+									await fs.access(distIndexJs);
+									hasMainFile = true;
+								} catch {
+									try {
+										await fs.access(distIndexDts);
+										hasMainFile = true;
+									} catch {
+										// No tiene archivos principales, pero tiene dist/
+									}
+								}
+								
+								if (hasMainFile) {
+									// El add-on existe y está compilado, registrarlo
+									try {
+										await this.hub.registerAddon(addonPath);
+									} catch (regError: any) {
+										// Si ya está registrado, continuar
+										if (!regError.message?.includes('ya está registrado')) {
+											throw regError;
+										}
+									}
 								}
 							}
 						} catch {
@@ -1900,6 +1922,13 @@ export class InitializationWizard {
 			console.log(`   ⚠️  MCP no está disponible en este entorno`);
 			console.log(`   💡 Para usar MCP, necesitas tener Cursor o un editor compatible con MCP`);
 			console.log(`   💡 Los add-ons funcionarán sin MCP usando implementación tradicional`);
+			console.log(`   💡 Puedes configurar MCP manualmente después. Ver: docs/guias/configuracion/GUIA-INSTALACION-MCP-ADDONS.md`);
+			// Continuar para mostrar instrucciones de configuración manual
+			console.log(`\n   📖 Instrucciones para configurar MCP manualmente:`);
+			for (const addonId of addonsWithMCP) {
+				const addonInfo = mcpSupportedAddons[addonId];
+				console.log(`   - ${addonInfo.name}: Ver docs/guias/configuracion/GUIA-INSTALACION-MCP-ADDONS.md`);
+			}
 			return;
 		}
 
