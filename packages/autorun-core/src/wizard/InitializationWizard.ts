@@ -925,9 +925,17 @@ export class InitializationWizard {
 				console.log(`   ✅ ${description}`);
 				installed.push(addonId);
 			} catch (error: any) {
-				// Solo mostrar error si no es "no encontrado" (es esperado si no está compilado)
-				if (error?.code !== 'ADDON_NOT_FOUND') {
+				// Si el add-on no se encuentra (no está compilado), aún así lo consideramos "seleccionado"
+				// porque el usuario lo eligió y puede querer configurar MCP para él
+				if (error?.code === 'ADDON_NOT_FOUND') {
+					console.log(`   ⚠️  ${description} (no compilado, pero seleccionado para configuración)`);
+					// Agregar a la lista de instalados aunque no se haya podido activar
+					// Esto permite configurar MCP para add-ons que el usuario seleccionó
+					installed.push(addonId);
+				} else {
 					console.warn(`   ⚠️  Error instalando ${addonId}:`, error.message || error);
+					// Para otros errores, también agregar para permitir configuración MCP
+					installed.push(addonId);
 				}
 			}
 		}
