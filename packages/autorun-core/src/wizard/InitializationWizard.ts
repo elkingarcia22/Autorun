@@ -1845,12 +1845,22 @@ export class InitializationWizard {
 		if (addonsWithMCP.length === 0) {
 			const supportedIds = Object.keys(mcpSupportedAddons).join(', ');
 			console.log(`   ℹ️  Ningún add-on instalado requiere configuración MCP`);
-			console.log(`   💡 Add-ons con soporte MCP: ${supportedIds}`);
+			console.log(`   💡 Add-ons con soporte MCP disponibles: ${supportedIds}`);
 			console.log(`   💡 Para configurar MCP, instala uno de estos add-ons: github, vercel, clarity, figma-sync`);
 			return;
 		}
 
 		console.log(`   🔍 Add-ons con soporte MCP detectados: ${addonsWithMCP.join(', ')}`);
+
+		// Verificar si MCP está disponible en el sistema
+		const mcpAvailable = await MCPDetector.detectMCPServer('github').then(info => info.available).catch(() => false);
+		
+		if (!mcpAvailable) {
+			console.log(`   ⚠️  MCP no está disponible en este entorno`);
+			console.log(`   💡 Para usar MCP, necesitas tener Cursor o un editor compatible con MCP`);
+			console.log(`   💡 Los add-ons funcionarán sin MCP usando implementación tradicional`);
+			return;
+		}
 
 		// Preguntar si quiere configurar MCP
 		try {
