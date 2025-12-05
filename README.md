@@ -160,16 +160,19 @@ npm run test:watch # Tests en modo watch
 
 **Cursor lee automáticamente estos archivos:**
 
-1. **[`.cursorrules`](./.cursorrules)** - ⚠️ **OBLIGATORIO** - Reglas críticas que Cursor debe seguir
-2. **[`GUIA-TRABAJO-TEMPLATE.md`](./GUIA-TRABAJO-TEMPLATE.md)** - ⚠️ **OBLIGATORIO** - Guía completa para trabajar con templates UBITS
-3. **[`ESTRATEGIA-COMPONENTES-UBITS.md`](./ESTRATEGIA-COMPONENTES-UBITS.md)** - Estrategia de uso de componentes
-4. **[`docs/guias/referencia/GUIA-USO-COMPONENTES-UBITS.md`](./docs/guias/referencia/GUIA-USO-COMPONENTES-UBITS.md)** - Cómo usar componentes UBITS
+1. **[`.cursorrules`](./.cursorrules)** - ⚠️ **OBLIGATORIO** - Reglas críticas que Cursor debe seguir (simplificado)
+2. **[`.cursor/rules/`](./.cursor/rules/)** - ⭐ **NUEVO** - Reglas organizadas por módulos
+3. **[`docs/referencia/GUIA-TRABAJO-TEMPLATE.md`](./docs/referencia/GUIA-TRABAJO-TEMPLATE.md)** - ⚠️ **OBLIGATORIO** - Guía completa para trabajar con templates UBITS
+4. **[`docs/referencia/ESTRATEGIA-COMPONENTES-UBITS.md`](./docs/referencia/ESTRATEGIA-COMPONENTES-UBITS.md)** - Estrategia de uso de componentes
+5. **[`docs/guias/referencia/GUIA-USO-COMPONENTES-UBITS.md`](./docs/guias/referencia/GUIA-USO-COMPONENTES-UBITS.md)** - Cómo usar componentes UBITS
+6. **[`docs/referencia/componentes/`](./docs/referencia/componentes/)** - ⭐ **NUEVO** - Documentación completa de componentes con historias de Storybook
 
 ### Guías Principales
 
 - **[GETTING-STARTED.md](./GETTING-STARTED.md)** - ⭐ Inicio rápido (5 minutos)
 - **[QUICK-START.md](./QUICK-START.md)** - Solución rápida de problemas
 - **[INDEX.md](./INDEX.md)** - Instrucciones de inicialización
+- **[docs/INDEX.md](./docs/INDEX.md)** - ⭐ Índice maestro de documentación
 - **[docs/GUIA-SETUP-UBITS.md](./docs/GUIA-SETUP-UBITS.md)** - Setup completo para UBITS
 - **[packages/proyecto-app/tokens/index.html](./packages/proyecto-app/tokens/index.html)** - Hub de documentación interactiva
 
@@ -177,7 +180,9 @@ npm run test:watch # Tests en modo watch
 
 - **Análisis:** `docs/guias/analisis/` - Guías de análisis de estructura, iconos, spacing
 - **Implementación:** `docs/guias/implementacion/` - Guías de implementación paso a paso
+  - ⭐ **[GUIA-IMPLEMENTACION-MAESTRA.md](./docs/guias/implementacion/GUIA-IMPLEMENTACION-MAESTRA.md)** - Guía maestra de implementación
 - **Referencia:** `docs/guias/referencia/` - Referencias rápidas de componentes y errores comunes
+  - ⭐ **[Componentes documentados](./docs/referencia/componentes/)** - 56 componentes con historias de Storybook
 - **Troubleshooting:** `docs/guias/troubleshooting/` - Solución de problemas del wizard y validación
 - **Uso:** `docs/guias/uso/` - Guías de uso del wizard y templates
 - **Configuración:** `docs/guias/configuracion/` - Configuración de Vercel, Storybook, MCP
