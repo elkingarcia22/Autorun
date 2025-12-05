@@ -1,100 +1,34 @@
 # 🎯 Reglas para Trabajar con Templates UBITS en Autorun
 
-## 🚨🚨🚨🚨🚨 LEE ESTO PRIMERO - VERIFICACIÓN OBLIGATORIA 🚨🚨🚨🚨🚨
-
-**⚠️⚠️⚠️ ESTE ARCHIVO DEBE SER LEÍDO COMPLETO AL INICIO DE CADA MENSAJE ⚠️⚠️⚠️**
+## ⚠️⚠️⚠️ VERIFICACIÓN OBLIGATORIA AL INICIO ⚠️⚠️⚠️
 
 **ANTES de usar CUALQUIER herramienta, DEBES:**
 
 1. **Leer este archivo completo** (`.cursorrules`)
-2. **Leer:** `.cursor/CHECK-INICIAL-OBLIGATORIO.md` usando `read_file()` - ⚠️ OBLIGATORIO
-3. **Verificar triggers de imagen** (ver sección abajo)
-4. **Si hay triggers, seguir el proceso de bloqueo** (ver sección abajo)
+2. **Leer:** `.cursor/rules/00-inicio.md` - ⚠️ OBLIGATORIO
+3. **Verificar triggers de imagen** (ver: `.cursor/rules/01-deteccion-imagen.md`)
+4. **Si hay triggers, seguir el proceso de bloqueo** (ver: `.cursor/rules/02-bloqueo-imagen.md`)
 
 **NO puedes usar `write()`, `search_replace()`, etc. hasta completar esta verificación.**
-
----
-
-## 🚨🚨🚨🚨🚨 ALERTA CRÍTICA: DETECCIÓN AUTOMÁTICA DE IMAGEN 🚨🚨🚨🚨🚨
-
-**⚠️⚠️⚠️ VERIFICACIÓN OBLIGATORIA AL INICIO DE CADA MENSAJE ⚠️⚠️⚠️**
-
-**ANTES de hacer CUALQUIER cosa, DEBES verificar si hay triggers de imagen:**
-
-### 🔍 TRIGGERS DE DETECCIÓN
-
-1. **Detección de Imagen:**
-   - ✅ `<image_description>` en el mensaje
-   - ✅ `<image>` en el mensaje
-   - ✅ `[imagen]` en el mensaje
-   - ✅ Cualquier referencia a imagen adjunta
-
-2. **Detección de Palabras Clave:**
-   - ✅ "imagen" o "image"
-   - ✅ "crear desde imagen"
-   - ✅ "modificar desde imagen"
-   - ✅ "home de [módulo]" (ej: "home de encuestas")
-   - ✅ "crear home"
-   - ✅ "implementar desde imagen"
-   - ✅ Cualquier combinación de "crear" + "imagen"
-
-3. **Detección de Solicitudes:**
-   - ✅ "crea el home"
-   - ✅ "haz el home"
-   - ✅ "implementa el home"
-   - ✅ "crea la página"
-
-**SI DETECTAS CUALQUIER TRIGGER:**
-
-### ⛔⛔⛔ BLOQUEO TOTAL - NO PROCEDER ⛔⛔⛔
-
-**DEBES DETENER TODO INMEDIATAMENTE Y SEGUIR ESTE PROCESO EXACTO:**
-
-1. **🛑 DETENER** - NO usar ninguna herramienta de escritura/edición
-2. **📖 LEER:** `.cursor/DETECCION-IMAGEN.md` usando `read_file()` - ⚠️ OBLIGATORIO
-3. **📖 LEER:** `AUTO-DETECT-IMAGES.md` usando `read_file()` - ⚠️ OBLIGATORIO
-4. **📖 LEER:** `VERIFICACION-IMAGEN.md` usando `read_file()` - ⚠️ OBLIGATORIO
-5. **📖 LEER:** `BLOQUEO-IMAGEN.md` usando `read_file()`
-6. **📖 LEER:** `docs/guias/implementacion/GUIA-CREAR-DESDE-IMAGEN-DESPUES-WIZARD.md` usando `read_file()` - ⚠️ OBLIGATORIO
-7. **📖 LEER:** `docs/guias/implementacion/GUIA-PROCESO-IMPLEMENTACION-PASO-A-PASO.md` usando `read_file()` - ⚠️ OBLIGATORIO
-8. **📖 LEER:** `docs/guias/analisis/GUIA-ANALISIS-ESTRUCTURA-SPACING.md` usando `read_file()` - ⚠️ OBLIGATORIO para spacing
-9. **📖 LEER:** `docs/guias/analisis/GUIA-ANALISIS-ICONOS-DETALLADO.md` usando `read_file()` - ⚠️ OBLIGATORIO para iconos
-10. **📖 LEER:** `docs/guias/referencia/GUIA-CONTENTMANAGER-UPDATECONTENT.md` usando `read_file()` - ⚠️ OBLIGATORIO si agregas elementos a `.content-area`
-11. **🔍 IDENTIFICAR** template existente usando `list_dir()` (NO `read_file()` todavía)
-12. **📋 ANALIZAR** la imagen detalladamente
-13. **📝 MOSTRAR** el análisis completo al usuario en el formato obligatorio
-14. **⏸️ ESPERAR** aprobación explícita del usuario
-15. **✅ SOLO DESPUÉS** de aprobación, implementar UNA tarea a la vez
-
-### 🚫 HERRAMIENTAS PROHIBIDAS ANTES DEL ANÁLISIS
-
-**❌ PROHIBIDO ABSOLUTO:**
-- `write()` - BLOQUEADO
-- `search_replace()` - BLOQUEADO
-- `read_file()` para templates HTML - BLOQUEADO (solo para guías)
-- Cualquier herramienta que modifique archivos - BLOQUEADO
-
-**✅ PERMITIDO SOLO:**
-- `read_file()` para leer guías (`BLOQUEO-IMAGEN.md`, etc.)
-- `list_dir()` para identificar templates
-- `grep()` para buscar en guías
-- Mostrar análisis al usuario
 
 ---
 
 ## 📚 REGLAS ORGANIZADAS POR MÓDULOS
 
 ### 🚨 Detección de Imágenes
-**Ver:** `.cursor/DETECCION-IMAGEN.md` - Detección automática y proceso de bloqueo
+**Ver:** `.cursor/rules/01-deteccion-imagen.md` - Detección automática y proceso de bloqueo
 
 ### 🎯 Reglas de Componentes UBITS
-**Ver:** `.cursor/REGLAS-COMPONENTES.md` - Reglas para usar componentes UBITS correctamente
+**Ver:** `.cursor/rules/03-componentes.md` - Reglas para usar componentes UBITS correctamente
 
 ### 🛠️ Reglas de Implementación
-**Ver:** `.cursor/REGLAS-IMPLEMENTACION.md` - Proceso de implementación paso a paso
+**Ver:** `.cursor/rules/04-implementacion.md` - Proceso de implementación paso a paso
 
 ### 🚨 Errores Comunes
-**Ver:** `.cursor/ERRORES-COMUNES.md` - Lista completa de errores a evitar
+**Ver:** `.cursor/rules/05-errores.md` - Lista completa de errores a evitar
+
+### 🤖 Implementación Automática
+**Ver:** `.cursor/rules/06-implementacion-automatica.md` - ⭐ **NUEVO:** Proceso automático que carga documentación y reglas al implementar componentes
 
 ---
 
@@ -102,42 +36,56 @@
 
 Antes de trabajar en un template, LEER:
 
-1. `ESTRATEGIA-COMPONENTES-UBITS.md` - Estrategia completa
+1. `docs/referencia/ESTRATEGIA-IMPLEMENTACION-AUTOMATICA.md` - ⭐ **NUEVO:** Estrategia de implementación automática con documentación
+2. `docs/referencia/ESTRATEGIA-COMPONENTES-UBITS.md` - Estrategia completa
 2. `docs/guias/referencia/GUIA-USO-COMPONENTES-UBITS.md` - Cómo usar componentes
 3. `docs/guias/referencia/GUIA-IDENTIFICACION-COMPONENTES.md` - Cómo identificar componentes desde imágenes
-4. `CATALOGO-COMPONENTES-UBITS.md` - Catálogo completo de componentes UBITS
+4. `docs/referencia/CATALOGO-COMPONENTES-UBITS.md` - Catálogo completo de componentes UBITS
+5. `docs/referencia/componentes/` - ⭐ Documentación completa de componentes con historias de Storybook
 5. `docs/guias/referencia/GUIA-ERRORES-COMUNES-UBITS.md` - ⚠️ **OBLIGATORIO:** Errores comunes a evitar
 6. `docs/guias/referencia/GUIA-REVISION-COMPONENTES-UBITS.md` - ⚠️ **OBLIGATORIO:** Cómo revisar componentes antes de implementar
-7. `docs/guias/analisis/GUIA-ANALISIS-ESTRUCTURA-SPACING.md` - ⚠️ **OBLIGATORIO:** Análisis de estructura (contenedores) y spacing
-8. `docs/guias/analisis/GUIA-ANALISIS-ICONOS-DETALLADO.md` - ⚠️ **OBLIGATORIO:** Análisis detallado de iconos FontAwesome (variaciones, simple, etc.)
-9. `docs/guias/implementacion/GUIA-PROCESO-IMPLEMENTACION-PASO-A-PASO.md` - ⚠️ **OBLIGATORIO:** Proceso de implementación paso a paso
-10. `docs/guias/implementacion/GUIA-IMPLEMENTACION-DATATABLE-PASO-A-PASO.md` - ⚠️ **OBLIGATORIO:** Implementación de DataTable funcionalidad por funcionalidad
-11. `docs/guias/implementacion/GUIA-CREAR-DESDE-IMAGEN-DESPUES-WIZARD.md` - ⚠️ **OBLIGATORIO:** Crear desde imagen DESPUÉS del wizard (modificar template existente)
-12. `docs/guias/implementacion/GUIA-USO-MCP-EN-IMPLEMENTACION.md` - ⚠️ **OBLIGATORIO:** Usar MCPs para consultar componentes exactamente como están
-13. `INDEX.md` - Flujo de inicialización
+7. `docs/guias/analisis/GUIA-ANALISIS-IMAGEN-MEJORADO.md` - ⭐ **NUEVO:** Análisis mejorado con documentación automática de componentes
+8. `docs/guias/analisis/GUIA-ANALISIS-ESTRUCTURA-SPACING.md` - ⚠️ **OBLIGATORIO:** Análisis de estructura (contenedores) y spacing
+9. `docs/guias/analisis/GUIA-ANALISIS-ICONOS-DETALLADO.md` - ⚠️ **OBLIGATORIO:** Análisis detallado de iconos FontAwesome (variaciones, simple, etc.)
+10. `docs/guias/analisis/GUIA-ANALISIS-DATATABLE-COMPLETO.md` - ⚠️ **OBLIGATORIO:** Análisis completo del DataTable (si hay DataTable en la imagen)
+11. `docs/guias/analisis/GUIA-ANALISIS-FUNCIONALIDADES-DATATABLE.md` - ⚠️ **OBLIGATORIO:** Análisis de funcionalidades del DataTable - Lista TODAS las funcionalidades con SÍ/NO (si hay DataTable en la imagen)
+11. `docs/guias/implementacion/GUIA-PROCESO-IMPLEMENTACION-PASO-A-PASO.md` - ⚠️ **OBLIGATORIO:** Proceso de implementación paso a paso
+12. `docs/guias/implementacion/GUIA-CREAR-DESDE-IMAGEN-DESPUES-WIZARD.md` - ⚠️ **OBLIGATORIO:** Crear desde imagen DESPUÉS del wizard (modificar template existente)
+13. `docs/guias/implementacion/GUIA-USO-MCP-EN-IMPLEMENTACION.md` - ⚠️ **OBLIGATORIO:** Usar MCPs para consultar componentes exactamente como están
+14. `docs/guias/implementacion/GUIA-VERIFICAR-STORYBOOK-VERCEL.md` - ⚠️ **OBLIGATORIO:** Verificar Storybook en Vercel antes de implementar
+15. `INDEX.md` - Flujo de inicialización
 
 ---
 
 ## 🔌 USO OBLIGATORIO DE MCPs Y ADD-ONS
 
-### ⚠️ REGLA CRÍTICA: SIEMPRE USAR MCPs DISPONIBLES
+### ⚠️ REGLA CRÍTICA: SIEMPRE USAR MCPs DISPONIBLES Y VERIFICAR STORYBOOK EN VERCEL
 
 **ANTES de implementar cualquier componente UBITS, DEBES:**
 
-1. **Consultar Storybook MCP:**
+1. **⚠️ CRÍTICO: Consultar Storybook en Vercel (versión más reciente):** ⚠️ PRIMERO
+   - ✅ URL: `https://ubits-storybook10.vercel.app/`
+   - ✅ Buscar el componente específico (ej: `data-data-table`)
+   - ✅ Revisar pestaña "Code" para ver estructura exacta
+   - ✅ Revisar pestaña "Controls" para ver todas las opciones disponibles
+   - ✅ Verificar tipos de columnas, opciones y estructura de datos
+   - ✅ **Ver guía:** `docs/guias/implementacion/GUIA-VERIFICAR-STORYBOOK-VERCEL.md` - ⚠️ **OBLIGATORIO**
+
+2. **Consultar Storybook MCP:**
    - ✅ Usar `mcp_storybook_getComponentList` para listar componentes
    - ✅ Usar `mcp_storybook_getComponentsProps` para obtener props exactas
    - ✅ Verificar estructura, tokens, controles y variantes
 
-2. **Consultar Storybook directamente:**
+3. **Consultar Storybook local (si está disponible):**
    - ✅ Abrir `http://localhost:6006` en navegador
    - ✅ Revisar Controls, Tokens, Ejemplos y Variantes
-   - ✅ Obtener código exacto del componente
+   - ✅ Comparar con Storybook en Vercel (usar versión más reciente)
 
-3. **Usar información exacta:**
-   - ✅ Implementar con props exactas obtenidas del MCP
+4. **Usar información exacta:**
+   - ✅ Implementar con props exactas obtenidas del Storybook en Vercel
    - ✅ Usar tokens exactos obtenidos del Storybook
    - ✅ Seguir estructura exacta del componente
+   - ✅ Si hay diferencias entre Storybook en Vercel y código local, usar versión del Storybook
 
 **Ver guía completa:** `docs/guias/implementacion/GUIA-USO-MCP-EN-IMPLEMENTACION.md` - ⚠️ **OBLIGATORIO**
 
@@ -183,27 +131,35 @@ Antes de trabajar en un template, LEER:
 - ✅ Verificar módulo actual antes de inicializar componentes
 - ✅ Interceptar ContentManager si agregas elementos a `.content-area`
 
+### DataTable con Checkboxes
+- ✅ **SIEMPRE implementar Action Bar cuando `showCheckbox: true`**
+- ✅ Rastrear selecciones con estado `selectionState`
+- ✅ Interceptar checkboxes individuales y header checkbox
+- ✅ Implementar funcionalidad "Ver seleccionados"
+- ✅ Preservar Action Bar durante re-renderizados con MutationObserver
+
 ### Análisis
 - ✅ Analizar estructura visual antes de implementar
 - ✅ Medir spacing visualmente (NO asumir)
 - ✅ Verificar iconos con variaciones (usar `-simple` si aplica)
 - ✅ Documentar todo antes de implementar
 
-**Para detalles completos, ver los módulos en `.cursor/`**
+**Para detalles completos, ver los módulos en `.cursor/rules/`**
 
 ---
 
 ## 🔗 Referencias Rápidas
 
-- **Detección de imágenes:** `.cursor/DETECCION-IMAGEN.md`
-- **Reglas de componentes:** `.cursor/REGLAS-COMPONENTES.md`
-- **Reglas de implementación:** `.cursor/REGLAS-IMPLEMENTACION.md`
-- **Errores comunes:** `.cursor/ERRORES-COMUNES.md`
-- **Verificación inicial:** `.cursor/CHECK-INICIAL-OBLIGATORIO.md`
-- **Detección automática:** `AUTO-DETECT-IMAGES.md`
-- **Verificación de imagen:** `VERIFICACION-IMAGEN.md`
-- **Bloqueo de imagen:** `BLOQUEO-IMAGEN.md`
+- **Índice de reglas:** `.cursor/rules/index.md`
+- **Detección de imágenes:** `.cursor/rules/01-deteccion-imagen.md`
+- **Reglas de componentes:** `.cursor/rules/03-componentes.md`
+- **Reglas de implementación:** `.cursor/rules/04-implementacion.md`
+- **Errores comunes:** `.cursor/rules/05-errores.md`
+- **Documentación:** `docs/README.md`
+- **Inicio rápido:** `GETTING-STARTED.md`
+- **Catálogo componentes:** `docs/referencia/CATALOGO-COMPONENTES-UBITS.md`
+- **Documentación componentes:** `docs/referencia/componentes/`
 
 ---
 
-**Este archivo es el índice principal. Para detalles completos, consulta los módulos en `.cursor/`**
+**Este archivo es el índice principal. Para detalles completos, consulta los módulos en `.cursor/rules/`**

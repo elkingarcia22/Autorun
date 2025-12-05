@@ -57,11 +57,26 @@ await createNewTemplate('home-encuestas.html', image);
 
 **SIEMPRE hacer esto PRIMERO antes de escribir código:**
 
-#### **1.1: Analizar la Imagen/Solicitud**
+**⚠️ NUEVO:** Usar el proceso mejorado de análisis con documentación automática:
+- **Ver guía completa:** `docs/guias/analisis/GUIA-ANALISIS-IMAGEN-MEJORADO.md` ⭐
 
-1. **Identificar componentes UBITS:**
+#### **1.1: Analizar la Imagen/Solicitud (PROCESO MEJORADO)**
+
+**Proceso mejorado con documentación automática:**
+
+1. **Cargar catálogo y documentación:**
+   - Consultar: `docs/referencia/CATALOGO-COMPONENTES-UBITS.md`
+   - Consultar: `docs/referencia/componentes/README.md`
+   - Para cada componente identificado, cargar su documentación específica
+
+2. **Identificar componentes UBITS:**
    - ¿Qué componentes UBITS veo en la imagen?
    - ¿Sidebar? ¿SubNav? ¿Tabs? ¿DataTable? ¿Buttons? ¿Inputs?
+   - **Para cada componente identificado:**
+     - ✅ Cargar documentación: `docs/referencia/componentes/[nombre].md`
+     - ✅ Identificar subcomponentes automáticamente
+     - ✅ Identificar subfuncionalidades automáticamente
+     - ✅ Verificar props y opciones disponibles
    - **⚠️ CRÍTICO: Distinguir SubNav de Tabs:**
      - **SubNav:** Barra horizontal debajo del header con tabs de navegación secundaria
        - ✅ Ya existe en el template (se crea automáticamente por ContentManager)
@@ -94,7 +109,53 @@ await createNewTemplate('home-encuestas.html', image);
      - Verificar módulo/sección antes de eliminar: `if (section !== 'encuestas') return`
      - Ver guía: `GUIA-ERRORES-COMUNES-UBITS.md` - Error #9
 
-3. **Identificar iconos FontAwesome DETALLADAMENTE:** ⚠️ CRÍTICO
+4. **Verificar contenedor `.content-sections` por defecto:** ⚠️ CRÍTICO
+   - **¿Hay un contenedor `.content-sections` en el template?**
+     - El template viene con `.content-sections` por defecto (contenido genérico)
+     - **Si implementas componentes personalizados (Tabs, DataTable, etc.):**
+       - ✅ **DEBE eliminarse** del HTML estático
+       - ✅ **DEBE eliminarse** si se crea dinámicamente por `ContentManager.updateContent`
+       - Documentar: "content-sections: NO (eliminar, hay componentes personalizados)"
+     - **Si NO hay componentes personalizados:**
+       - ✅ **MANTENER** `.content-sections` (es el contenido por defecto)
+       - Documentar: "content-sections: SÍ (mantener)"
+   - **⚠️ IMPORTANTE:** Solo eliminar `.content-sections` cuando hay componentes personalizados
+     - Verificar que los componentes personalizados reemplazan el contenido por defecto
+     - Ver guía: `GUIA-ERRORES-COMUNES-UBITS.md` - Error #13
+
+3. **Contar items/filas en DataTable (si aplica):** ⚠️ CRÍTICO
+   - **Si hay una tabla/DataTable en la imagen:**
+     - Contar cuántas filas se ven completamente en la imagen
+     - Verificar si hay scroll o paginación visible
+     - Verificar si hay contador en el header (ej: "206 encuestas")
+     - Documentar: "Filas visibles: [X], Scroll: Sí/No, Contador: [texto], Items a crear: [X]"
+     - **⚠️ REGLA CRÍTICA:** NO crear solo 2-3 items de ejemplo. Crear cantidad razonable (mínimo 10-15 si hay scroll)
+     - **Ver guía:** `docs/guias/analisis/GUIA-ANALISIS-DATATABLE-COMPLETO.md` - Paso 0
+
+4. **Verificar tipos de columnas del DataTable (si aplica):** ⚠️ CRÍTICO
+   - **Para cada columna, verificar visualmente el tipo de dato:**
+     - ¿Estado muestra badge/tag? → `type: 'estado'` (NO `type: 'text'`)
+     - ¿Avance muestra barra de progreso? → `type: 'progreso'` (NO `type: 'text'`)
+     - ¿Fechas están formateadas? → `type: 'fecha'` (NO `type: 'text'`)
+     - ¿Números están formateados? → `type: 'numero'` (NO `type: 'text'`)
+   - **⚠️ ERROR COMÚN:** Asumir que todas las columnas son `type: 'text'`
+   - **Ver guía:** `docs/guias/analisis/GUIA-ANALISIS-DATATABLE-COMPLETO.md` - Paso 1.5
+
+5. **Verificar funcionalidades NO visibles del DataTable (si aplica):** ⚠️ CRÍTICO
+   - **¿Hay opción de expandir filas?**
+     - Si NO hay → Configurar `rowExpandable: false`
+     - Si SÍ hay → Configurar `rowExpandable: true` + agregar `renderExpandedContent` a cada fila
+     - **⚠️ ERROR COMÚN:** Dejar `rowExpandable: true` por defecto cuando NO está en la imagen
+   - **¿Hay columnas fijas (sticky)?**
+     - Si NO hay → NO configurar `pinned: true` en columnas
+     - Si SÍ hay → Configurar `pinned: true` solo en las columnas que están fijas
+     - **⚠️ ERROR COMÚN:** Configurar columnas fijas cuando NO están en la imagen (redimensiona la tabla)
+   - **¿La tabla debe aprovechar todo el espacio vertical?**
+     - Si SÍ → Configurar altura dinámica después de crear el DataTable
+     - **⚠️ ERROR COMÚN:** Dejar altura fija por defecto (400px), no aprovecha espacio vertical
+   - **Ver guía:** `docs/guias/analisis/GUIA-ANALISIS-DATATABLE-COMPLETO.md` - Paso 0.7
+
+4. **Identificar iconos FontAwesome DETALLADAMENTE:** ⚠️ CRÍTICO
    - **Para cada icono visible en la imagen:**
      - Analizar la forma visual del icono (no asumir)
      - Identificar variaciones posibles:
@@ -285,10 +346,18 @@ Antes de crear/modificar desde imagen:
 - [ ] **PASO 0:** Identificar template existente en `prototypes/`
 - [ ] **PASO 0:** Verificar que el template existe
 - [ ] **PASO 1:** Analizar imagen (componentes, estructura, spacing)
+- [ ] **PASO 1:** Verificar HeaderSection (eliminar si no está en la imagen)
+- [ ] **PASO 1:** Verificar `.content-sections` (eliminar si hay componentes personalizados)
 - [ ] **PASO 1:** Consultar `CATALOGO-COMPONENTES-UBITS.md`
+- [ ] **PASO 1:** **⚠️ CRÍTICO: Si hay DataTable, verificar:**
+  - [ ] Tipos de columnas correctos (estado → `type: 'estado'`, avance → `type: 'progreso'`, etc.)
+  - [ ] Funcionalidades NO visibles (expansión de filas, columnas fijas, altura dinámica)
+  - [ ] Consultar Storybook MCP o archivo de tipos antes de implementar
 - [ ] **PASO 1:** Crear plan de implementación
 - [ ] **PASO 1:** Mostrar plan al usuario y esperar aprobación
-- [ ] **PASO 2:** Implementar SOLO primera tarea
+- [ ] **PASO 2:** Eliminar `.content-sections` del HTML estático si hay componentes personalizados
+- [ ] **PASO 2:** Interceptar `updateContent` para eliminar `.content-sections` dinámicamente
+- [ ] **PASO 2:** **⚠️ CRÍTICO: Implementar UNA tarea a la vez (NO múltiples tareas al tiempo)**
 - [ ] **PASO 2:** Validar (`npm run lint`)
 - [ ] **PASO 2:** Mostrar resultado y pedir aprobación
 - [ ] **PASO 2:** Solo después de aprobación, continuar con siguiente tarea
