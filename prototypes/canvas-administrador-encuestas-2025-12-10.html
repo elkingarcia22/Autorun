@@ -1024,38 +1024,34 @@
                         // ⚠️ CRÍTICO: Reinicializar el DataTable después de restaurar el contenedor
                         // Usar múltiples timeouts para asegurar que se cree después de que el ContentManager termine
                         if (shouldRestoreDataTable) {
-                            setTimeout(() => {
+                            // Usar un intervalo para verificar y crear la DataTable hasta que esté visible
+                            let attempts = 0;
+                            const maxAttempts = 10;
+                            const checkAndCreateInterval = setInterval(() => {
+                                attempts++;
                                 const finalContainer = contentArea.querySelector('#encuestas-table-container');
-                                if (finalContainer && !finalContainer.querySelector('.ubits-data-table')) {
-                                    console.log('🔵 [Encuestas] Reinicializando DataTable (intento 1)...');
-                                    encuestasDataTableInitialized = false;
-                                    if (typeof window.createDataTable === 'function') {
-                                        initializeEncuestasDataTable();
+                                if (finalContainer) {
+                                    const dataTable = finalContainer.querySelector('.ubits-data-table');
+                                    if (dataTable) {
+                                        console.log('✅ [Encuestas] DataTable encontrada en el contenedor');
+                                        clearInterval(checkAndCreateInterval);
+                                    } else if (attempts < maxAttempts) {
+                                        console.log(`🔵 [Encuestas] Reinicializando DataTable (intento ${attempts})...`);
+                                        encuestasDataTableInitialized = false;
+                                        if (typeof window.createDataTable === 'function') {
+                                            initializeEncuestasDataTable();
+                                        }
+                                    } else {
+                                        console.error('❌ [Encuestas] No se pudo crear la DataTable después de múltiples intentos');
+                                        clearInterval(checkAndCreateInterval);
+                                    }
+                                } else {
+                                    console.warn('⚠️ [Encuestas] Contenedor no encontrado durante verificación');
+                                    if (attempts >= maxAttempts) {
+                                        clearInterval(checkAndCreateInterval);
                                     }
                                 }
                             }, 500);
-                            
-                            setTimeout(() => {
-                                const finalContainer = contentArea.querySelector('#encuestas-table-container');
-                                if (finalContainer && !finalContainer.querySelector('.ubits-data-table')) {
-                                    console.log('🔵 [Encuestas] Reinicializando DataTable (intento 2)...');
-                                    encuestasDataTableInitialized = false;
-                                    if (typeof window.createDataTable === 'function') {
-                                        initializeEncuestasDataTable();
-                                    }
-                                }
-                            }, 1500);
-                            
-                            setTimeout(() => {
-                                const finalContainer = contentArea.querySelector('#encuestas-table-container');
-                                if (finalContainer && !finalContainer.querySelector('.ubits-data-table')) {
-                                    console.log('🔵 [Encuestas] Reinicializando DataTable (intento 3)...');
-                                    encuestasDataTableInitialized = false;
-                                    if (typeof window.createDataTable === 'function') {
-                                        initializeEncuestasDataTable();
-                                    }
-                                }
-                            }, 2500);
                         }
                     });
                     
