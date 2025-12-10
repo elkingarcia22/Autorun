@@ -229,7 +229,7 @@ export async function discoverStorybookComponents(): Promise<DiscoveryResult> {
     console.log(
       `📚 [Storybook ID Discovery] Usando fallback: descubrir desde archivos .stories.ts locales`
     );
-    
+
     // Fallback: descubrir desde archivos locales
     return discoverFromLocalStories();
   }
