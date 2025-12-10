@@ -1023,7 +1023,8 @@
                             contentArea.insertAdjacentElement('afterbegin', tableContainer);
                         }
                         
-                        // Eliminar elementos no deseados que el ContentManager crea
+                        // ⚠️ CRÍTICO: Eliminar elementos no deseados que el ContentManager crea
+                        // Esto debe hacerse ANTES de reinicializar la DataTable para evitar headers duplicados
                         const headerContainer = contentArea.querySelector('#header-section-container');
                         if (headerContainer) {
                             console.log('🔵 [Encuestas] Eliminando HeaderSection');
@@ -1051,6 +1052,16 @@
                         if (widgetPrincipal) {
                             console.log('🔵 [Encuestas] Eliminando .widget-contenido-principal');
                             widgetPrincipal.closest('.section-single')?.remove() || widgetPrincipal.remove();
+                        }
+                        
+                        // ⚠️ CRÍTICO: Verificar si hay headers duplicados del DataTable y eliminarlos
+                        const allHeaders = contentArea.querySelectorAll('.ubits-data-table__header');
+                        if (allHeaders.length > 1) {
+                            console.log(`⚠️ [Encuestas] Se encontraron ${allHeaders.length} headers del DataTable, eliminando duplicados...`);
+                            // Mantener solo el último header (el más reciente)
+                            for (let i = 0; i < allHeaders.length - 1; i++) {
+                                allHeaders[i].remove();
+                            }
                         }
                         
                         // Reinicializar la DataTable si no existe
