@@ -1231,21 +1231,8 @@
                                 // ========================================
                                 // INICIALIZAR TABS DE ENCUESTAS
                                 // ========================================
-                                const currentModule = document.body.getAttribute('data-module');
-                                if (currentModule === 'encuestas') {
-                                    // Escuchar evento de components-loader listo
-                                    window.addEventListener('ubits-components-loader-ready', function() {
-                                        console.log('🔵 [Encuestas Tabs] Evento ubits-components-loader-ready recibido');
-                                        initializeEncuestasTabs();
-                                    });
-                                    
-                                    // Intentar inicializar inmediatamente y con delays
-                                    initializeEncuestasTabs();
-                                    setTimeout(initializeEncuestasTabs, 200);
-                                    setTimeout(initializeEncuestasTabs, 500);
-                                    setTimeout(initializeEncuestasTabs, 1000);
-                                    setTimeout(initializeEncuestasTabs, 2000);
-                                }
+                                // La inicialización se maneja con múltiples métodos más abajo
+                                // (event listeners, interval checks, window.load)
                                 
                                 
                                 // ⚠️ LOGS ESPECÍFICOS PARA DEBUG DEL LAYOUT
