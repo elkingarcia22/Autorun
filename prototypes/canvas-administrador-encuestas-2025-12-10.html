@@ -2279,50 +2279,87 @@
           const classes = ['ubits-tooltip', tailPositionClass, className].filter(Boolean).join(' ');
           const combinedStyle = `${tooltipWidthStyle}${style ? `; ${style}` : ''}`;
 
-          const titleHTML = showTitle && title
-            ? `<div class="ubits-tooltip__title">${title}</div>`
-            : '';
+          // Header HTML (solo si hay título y showTitle es true)
+          const headerHTML =
+            showTitle && title
+              ? `
+    <div class="ubits-tooltip__header">
+      <div class="ubits-tooltip__header-title">
+        <p class="ubits-body-md-semibold">${title}</p>
+      </div>
+    </div>
+  `
+              : '';
 
-          const descriptionHTML = showDescription && description
-            ? `<div class="ubits-tooltip__description">${description}</div>`
-            : '';
+          // Body HTML (solo si hay descripción y showDescription es true)
+          const bodyHTML =
+            showDescription && description
+              ? `
+    <div class="ubits-tooltip__body">
+      <div class="ubits-tooltip__body-content">
+        <p class="ubits-body-md">${description}</p>
+      </div>
+    </div>
+  `
+              : '';
 
-          const primaryButtonHTML = showPrimaryButton && primaryButtonLabel
-            ? `<button class="ubits-button ubits-button--primary ubits-button--${buttonSize}" data-action="primary">
-                ${showPrimaryButtonIcon && primaryButtonIcon ? `<i class="far fa-${primaryButtonIcon}"></i>` : ''}
-                <span>${primaryButtonLabel}</span>
-              </button>`
-            : '';
+          // Footer HTML (solo si hay botones)
+          let footerHTML = '';
+          const hasButtons = showPrimaryButton || showSecondaryButton || showTertiaryButton;
 
-          const secondaryButtonHTML = showSecondaryButton && secondaryButtonLabel
-            ? `<button class="ubits-button ubits-button--secondary ubits-button--${buttonSize}" data-action="secondary">
-                ${showSecondaryButtonIcon && secondaryButtonIcon ? `<i class="far fa-${secondaryButtonIcon}"></i>` : ''}
-                <span>${secondaryButtonLabel}</span>
-              </button>`
-            : '';
+          if (hasButtons) {
+            // Botón primario
+            let primaryButtonContent = primaryButtonLabel || '';
+            if (showPrimaryButtonIcon && primaryButtonIcon) {
+              primaryButtonContent = `<i class="far fa-${primaryButtonIcon}"></i> ${primaryButtonContent}`;
+            }
+            const primaryButton =
+              showPrimaryButton && primaryButtonLabel
+                ? `<button class="ubits-button ubits-button--primary ubits-button--${buttonSize} ubits-tooltip__footer-button" data-action="primary" type="button">${primaryButtonContent}</button>`
+                : '';
 
-          const tertiaryButtonHTML = showTertiaryButton && tertiaryButtonLabel
-            ? `<button class="ubits-button ubits-button--tertiary ubits-button--${buttonSize}" data-action="tertiary">
-                ${showTertiaryButtonIcon && tertiaryButtonIcon ? `<i class="far fa-${tertiaryButtonIcon}"></i>` : ''}
-                <span>${tertiaryButtonLabel}</span>
-              </button>`
-            : '';
+            // Botón secundario
+            let secondaryButtonContent = secondaryButtonLabel || '';
+            if (showSecondaryButtonIcon && secondaryButtonIcon) {
+              secondaryButtonContent = `<i class="far fa-${secondaryButtonIcon}"></i> ${secondaryButtonContent}`;
+            }
+            const secondaryButton =
+              showSecondaryButton && secondaryButtonLabel
+                ? `<button class="ubits-button ubits-button--secondary ubits-button--${buttonSize} ubits-tooltip__footer-button" data-action="secondary" type="button">${secondaryButtonContent}</button>`
+                : '';
 
-          const hasFooter = primaryButtonHTML || secondaryButtonHTML || tertiaryButtonHTML;
-          const footerHTML = hasFooter
-            ? `<div class="ubits-tooltip__footer">
-                ${tertiaryButtonHTML}
-                ${secondaryButtonHTML}
-                ${primaryButtonHTML}
-              </div>`
-            : '';
+            // Botón terciario
+            let tertiaryButtonContent = tertiaryButtonLabel || '';
+            if (showTertiaryButtonIcon && tertiaryButtonIcon) {
+              tertiaryButtonContent = `<i class="far fa-${tertiaryButtonIcon}"></i> ${tertiaryButtonContent}`;
+            }
+            const tertiaryButton =
+              showTertiaryButton && tertiaryButtonLabel
+                ? `<button class="ubits-button ubits-button--tertiary ubits-button--${buttonSize} ubits-tooltip__footer-button" data-action="tertiary" type="button">${tertiaryButtonContent}</button>`
+                : '';
+
+            footerHTML = `
+    <div class="ubits-tooltip__footer">
+      ${tertiaryButton}
+      ${secondaryButton}
+      ${primaryButton}
+    </div>
+  `;
+          }
+
+          // Tail HTML (flecha)
+          const tailHTML = `
+    <div class="ubits-tooltip__tail">
+      <div class="ubits-tooltip__tail-inner"></div>
+    </div>
+  `;
 
           return `
             <div class="${classes}" style="${combinedStyle}">
-              <div class="ubits-tooltip__tail"></div>
+              ${tailHTML}
               <div class="ubits-tooltip__content">
-                ${titleHTML}
-                ${descriptionHTML}
+                ${headerHTML}
+                ${bodyHTML}
                 ${footerHTML}
               </div>
             </div>
