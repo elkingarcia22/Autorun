@@ -2463,14 +2463,14 @@
             tooltip.style.left = `${rect.left + (rect.width / 2) - tooltipRect.width / 2}px`;
           }
 
-          // Función para calcular posición óptima del tooltip dentro de la pantalla
+          // ⚠️ CRÍTICO: Función para calcular posición óptima del tooltip dentro de la pantalla
+          // Esta función DEBE usarse siempre para tooltips/popovers para evitar que se salgan de la pantalla
           const calculateOptimalPosition = (refRect, tooltipRect, preferredTailPosition) => {
             const viewport = {
               width: window.innerWidth,
               height: window.innerHeight,
             };
             const padding = 8; // Padding mínimo desde los bordes
-            const tailHeight = 8; // Altura del tail (flecha)
 
             let finalTailPosition = preferredTailPosition;
             let finalTop = 0;
@@ -2484,19 +2484,23 @@
               finalLeft = refRect.left + refRect.width / 2;
               finalTransform = 'translateX(-50%)';
               
-              // Verificar si se sale por abajo
+              // ⚠️ CRÍTICO: Verificar si se sale por abajo
               if (finalTop + tooltipRect.height > viewport.height - padding) {
-                // Cambiar a arriba
+                // Cambiar a arriba automáticamente
                 finalTailPosition = 'top';
                 finalTop = refRect.top - tooltipRect.height - padding;
+                // Verificar que tampoco se salga por arriba después del cambio
+                if (finalTop < padding) {
+                  finalTop = padding;
+                }
               }
               
-              // Verificar si se sale por la izquierda
+              // ⚠️ CRÍTICO: Verificar si se sale por la izquierda
               if (finalLeft - tooltipRect.width / 2 < padding) {
                 finalLeft = padding + tooltipRect.width / 2;
               }
               
-              // Verificar si se sale por la derecha
+              // ⚠️ CRÍTICO: Verificar si se sale por la derecha
               if (finalLeft + tooltipRect.width / 2 > viewport.width - padding) {
                 finalLeft = viewport.width - padding - tooltipRect.width / 2;
               }
@@ -2506,19 +2510,23 @@
               finalLeft = refRect.left + refRect.width / 2;
               finalTransform = 'translateX(-50%)';
               
-              // Verificar si se sale por arriba
+              // ⚠️ CRÍTICO: Verificar si se sale por arriba
               if (finalTop < padding) {
-                // Cambiar a abajo
+                // Cambiar a abajo automáticamente
                 finalTailPosition = 'bottom';
                 finalTop = refRect.bottom + padding;
+                // Verificar que tampoco se salga por abajo después del cambio
+                if (finalTop + tooltipRect.height > viewport.height - padding) {
+                  finalTop = viewport.height - padding - tooltipRect.height;
+                }
               }
               
-              // Verificar si se sale por la izquierda
+              // ⚠️ CRÍTICO: Verificar si se sale por la izquierda
               if (finalLeft - tooltipRect.width / 2 < padding) {
                 finalLeft = padding + tooltipRect.width / 2;
               }
               
-              // Verificar si se sale por la derecha
+              // ⚠️ CRÍTICO: Verificar si se sale por la derecha
               if (finalLeft + tooltipRect.width / 2 > viewport.width - padding) {
                 finalLeft = viewport.width - padding - tooltipRect.width / 2;
               }
@@ -2528,19 +2536,23 @@
               finalLeft = refRect.right + padding;
               finalTransform = 'translateY(-50%)';
               
-              // Verificar si se sale por la derecha
+              // ⚠️ CRÍTICO: Verificar si se sale por la derecha
               if (finalLeft + tooltipRect.width > viewport.width - padding) {
-                // Cambiar a izquierda
+                // Cambiar a izquierda automáticamente
                 finalTailPosition = 'left';
                 finalLeft = refRect.left - tooltipRect.width - padding;
+                // Verificar que tampoco se salga por la izquierda después del cambio
+                if (finalLeft < padding) {
+                  finalLeft = padding;
+                }
               }
               
-              // Verificar si se sale por arriba
+              // ⚠️ CRÍTICO: Verificar si se sale por arriba
               if (finalTop - tooltipRect.height / 2 < padding) {
                 finalTop = padding + tooltipRect.height / 2;
               }
               
-              // Verificar si se sale por abajo
+              // ⚠️ CRÍTICO: Verificar si se sale por abajo
               if (finalTop + tooltipRect.height / 2 > viewport.height - padding) {
                 finalTop = viewport.height - padding - tooltipRect.height / 2;
               }
@@ -2550,19 +2562,23 @@
               finalLeft = refRect.left - tooltipRect.width - padding;
               finalTransform = 'translateY(-50%)';
               
-              // Verificar si se sale por la izquierda
+              // ⚠️ CRÍTICO: Verificar si se sale por la izquierda
               if (finalLeft < padding) {
-                // Cambiar a derecha
+                // Cambiar a derecha automáticamente
                 finalTailPosition = 'right';
                 finalLeft = refRect.right + padding;
+                // Verificar que tampoco se salga por la derecha después del cambio
+                if (finalLeft + tooltipRect.width > viewport.width - padding) {
+                  finalLeft = viewport.width - padding - tooltipRect.width;
+                }
               }
               
-              // Verificar si se sale por arriba
+              // ⚠️ CRÍTICO: Verificar si se sale por arriba
               if (finalTop - tooltipRect.height / 2 < padding) {
                 finalTop = padding + tooltipRect.height / 2;
               }
               
-              // Verificar si se sale por abajo
+              // ⚠️ CRÍTICO: Verificar si se sale por abajo
               if (finalTop + tooltipRect.height / 2 > viewport.height - padding) {
                 finalTop = viewport.height - padding - tooltipRect.height / 2;
               }
