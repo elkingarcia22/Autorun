@@ -994,22 +994,26 @@
                             widgetPrincipal.closest('.section-single')?.remove() || widgetPrincipal.remove();
                         }
                         
-                        // ⚠️ CRÍTICO: Restaurar contenedor del DataTable si fue eliminado
+                        // ⚠️ CRÍTICO: Asegurar que el contenedor del DataTable siempre exista
                         let tableContainer = contentArea.querySelector('#encuestas-table-container');
                         if (!tableContainer) {
                             console.log('🔵 [Encuestas] Restaurando contenedor del DataTable');
                             tableContainer = document.createElement('div');
                             tableContainer.id = 'encuestas-table-container';
                             contentArea.appendChild(tableContainer);
-                            
-                            // Reinicializar el DataTable después de restaurar el contenedor
-                            setTimeout(() => {
+                        }
+                        
+                        // ⚠️ CRÍTICO: Reinicializar el DataTable después de restaurar el contenedor
+                        setTimeout(() => {
+                            const finalContainer = contentArea.querySelector('#encuestas-table-container');
+                            if (finalContainer && !finalContainer.querySelector('.ubits-data-table')) {
+                                console.log('🔵 [Encuestas] DataTable no encontrado en contenedor, reinicializando...');
                                 encuestasDataTableInitialized = false;
                                 if (typeof window.createDataTable === 'function') {
                                     initializeEncuestasDataTable();
                                 }
-                            }, 500);
-                        }
+                            }
+                        }, 800);
                     });
                     
                     return result;
