@@ -25,6 +25,84 @@ export interface DiscoveryResult {
 }
 
 /**
+ * Descubrir componentes desde archivos .stories.ts locales (fallback)
+ */
+async function discoverFromLocalStories(): Promise<DiscoveryResult> {
+  console.log(
+    '📚 [Storybook ID Discovery] Descubriendo desde archivos locales...'
+  );
+
+  const result: DiscoveryResult = {
+    components: [],
+    totalComponents: 0,
+    errors: [],
+  };
+
+  try {
+    const verifyModule = await import('./verifyStorybookStories');
+    const verifyAvailableStories = verifyModule.verifyAvailableStories;
+    const COMPONENT_STORIES_PATH_MAP = verifyModule.COMPONENT_STORIES_PATH_MAP;
+
+    // Obtener componentes únicos del mapeo
+    // Usar solo los nombres base de componentes (sin alias)
+    const baseComponents = [
+      'DataTable',
+      'Tabs',
+      'Button',
+      'Modal',
+      'Sidebar',
+      'SubNav',
+      'TabBar',
+      'Input',
+      'Checkbox',
+      'Radio',
+      'Select',
+      'Alert',
+      'Toast',
+      'Drawer',
+      'Popover',
+      'Tooltip',
+      'Chip',
+    ];
+    const componentIdentifiers = baseComponents.filter((comp) =>
+      Object.keys(COMPONENT_STORIES_PATH_MAP).some(
+        (key) => key === comp || key.includes(comp)
+      )
+    );
+
+    for (const identifier of componentIdentifiers) {
+      try {
+        const storyInfo = await verifyAvailableStories(identifier);
+        if (storyInfo) {
+          result.components.push({
+            componentId: storyInfo.componentId,
+            title: storyInfo.componentTitle,
+            stories: storyInfo.availableStories.map((s) => s.name),
+            firstStoryId: `${storyInfo.componentId}--${storyInfo.availableStories[0]?.name || 'default'}`,
+          });
+        }
+      } catch (error: any) {
+        console.warn(
+          `⚠️ [Storybook ID Discovery] Error verificando ${identifier}: ${error.message}`
+        );
+      }
+    }
+
+    result.totalComponents = result.components.length;
+    console.log(
+      `✅ [Storybook ID Discovery] ${result.totalComponents} componentes descubiertos desde archivos locales`
+    );
+
+    return result;
+  } catch (error: any) {
+    const errorMsg = `Error descubriendo desde archivos locales: ${error.message}`;
+    console.error(`❌ [Storybook ID Discovery] ${errorMsg}`);
+    result.errors.push(errorMsg);
+    return result;
+  }
+}
+
+/**
  * Descubrir todos los componentes disponibles en Storybook
  * consultando index.json
  */
@@ -148,8 +226,12 @@ export async function discoverStorybookComponents(): Promise<DiscoveryResult> {
   } catch (error: any) {
     const errorMsg = `Error descubriendo componentes: ${error.message}`;
     console.error(`❌ [Storybook ID Discovery] ${errorMsg}`);
-    result.errors.push(errorMsg);
-    return result;
+    console.log(
+      `📚 [Storybook ID Discovery] Usando fallback: descubrir desde archivos .stories.ts locales`
+    );
+    
+    // Fallback: descubrir desde archivos locales
+    return discoverFromLocalStories();
   }
 }
 
