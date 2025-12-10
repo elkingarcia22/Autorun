@@ -2574,7 +2574,7 @@
               title: 'Información del Chip',
               description: 'Este es un chip con tooltip. Haz click en el chip para ver más información.',
               width: 'md',
-              tailPosition: 'top',
+              tailPosition: 'bottom', // Tail apuntando hacia arriba (tooltip debajo del chip)
               open: false,
               closeOnOutsideClick: true,
               onClose: () => {
@@ -2586,9 +2586,16 @@
           // Crear tooltip inicialmente
           createTooltipForChip();
 
-          // También mostrar tooltip al hacer hover
+          // Mostrar tooltip al hacer hover
           chipElement.addEventListener('mouseenter', () => {
             if (tooltipInstance) {
+              // Recalcular posición antes de abrir
+              const rect = chipElement.getBoundingClientRect();
+              const tooltipRect = tooltipInstance.element.getBoundingClientRect();
+              tooltipInstance.element.style.position = 'fixed';
+              tooltipInstance.element.style.left = `${rect.left + rect.width / 2}px`;
+              tooltipInstance.element.style.transform = 'translateX(-50%)';
+              tooltipInstance.element.style.top = `${rect.bottom + 8}px`;
               tooltipInstance.open();
             }
           });
