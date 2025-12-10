@@ -2098,12 +2098,12 @@
         console.log('🔵 [SubNav Fix] ✅ MutationObserver activo');
       } else {
         console.error('🔵 [SubNav Fix] ❌ Contenedor del subnav no encontrado');
+      }
+    }, 1000);
     
     // ========================================
     // FUNCIÓN: Inicializar Tabs de Encuestas
     // ========================================
-    let tabsInitializationAttempts = 0;
-    const MAX_TABS_INIT_ATTEMPTS = 50; // Máximo 5 segundos (50 * 100ms)
     let tabsInitialized = false; // Flag para evitar múltiples inicializaciones
     
     function initializeEncuestasTabs() {
@@ -2111,24 +2111,17 @@
         if (tabsInitialized) {
             return;
         }
-        tabsInitializationAttempts++;
         
         const currentModule = document.body.getAttribute('data-module');
         if (currentModule !== 'encuestas') {
-            console.log('🔵 [Encuestas Tabs] No estamos en módulo encuestas, saliendo');
             return; // Solo inicializar en módulo encuestas
         }
         
-        console.log(`🔵 [Encuestas Tabs] Intento ${tabsInitializationAttempts} de inicialización...`);
+        console.log('🔵 [Encuestas Tabs] Iniciando inicialización...');
         
         const tabsContainer = document.getElementById('encuestas-tabs-container');
         if (!tabsContainer) {
             console.warn('⚠️ [Encuestas Tabs] Contenedor no encontrado');
-            if (tabsInitializationAttempts < MAX_TABS_INIT_ATTEMPTS) {
-                setTimeout(initializeEncuestasTabs, 100);
-            } else {
-                console.error('❌ [Encuestas Tabs] Máximo de intentos alcanzado sin encontrar contenedor');
-            }
             return;
         }
         
@@ -2142,11 +2135,6 @@
                 createSidebar: typeof window.createSidebar,
                 createSubNav: typeof window.createSubNav
             });
-            if (tabsInitializationAttempts < MAX_TABS_INIT_ATTEMPTS) {
-                setTimeout(initializeEncuestasTabs, 100);
-            } else {
-                console.error('❌ [Encuestas Tabs] Máximo de intentos alcanzado sin encontrar window.createTabs');
-            }
             return;
         }
         
@@ -2156,14 +2144,16 @@
         const existingTabs = tabsContainer.querySelector('.ubits-tabs');
         if (existingTabs) {
             console.log('✅ [Encuestas Tabs] Tabs ya existen, no se recrean');
+            tabsInitialized = true;
             return;
         }
         
         console.log('🔵 [Encuestas Tabs] Creando tabs...');
         
         try {
-            // Crear tabs con iconos
-            const result = window.createTabs({
+            // Crear tabs con iconos - Usar containerId dentro del objeto options
+            window.createTabs({
+                containerId: 'encuestas-tabs-container',
                 tabs: [
                     {
                         id: 'encuestas',
@@ -2183,7 +2173,7 @@
                     console.log('🔵 [Encuestas Tabs] Tab cambiado:', tabId);
                     // Aquí puedes agregar lógica para cambiar el contenido según el tab seleccionado
                 }
-            }, 'encuestas-tabs-container');
+            });
             
             // Marcar como inicializado
             tabsInitialized = true;
@@ -2200,12 +2190,55 @@
                     // Resetear flag para reintentar
                     tabsInitialized = false;
                 }
-            }, 100);
+            }, 200);
         } catch (error) {
             console.error('❌ [Encuestas Tabs] Error al crear tabs:', error);
+            console.error('❌ [Encuestas Tabs] Stack:', error.stack);
+            tabsInitialized = false;
         }
     }
-      }
+    
+    // ⚠️ CRÍTICO: Esperar a que components-loader.js se cargue completamente
+    // Usar múltiples métodos para asegurar que se ejecute cuando el script esté listo
+    
+    // Método 1: Escuchar evento personalizado cuando el script se carga
+    window.addEventListener('ubits-components-loader-ready', function() {
+        console.log('✅ [Encuestas Tabs] Evento ubits-components-loader-ready recibido');
+        setTimeout(initializeEncuestasTabs, 100);
+    });
+    
+    // Método 2: Verificar periódicamente si window.createTabs está disponible
+    let checkAttempts = 0;
+    const maxCheckAttempts = 50; // 50 intentos * 300ms = 15 segundos máximo
+    const checkInterval = setInterval(() => {
+        checkAttempts++;
+        if (typeof window.createTabs === 'function') {
+            clearInterval(checkInterval);
+            console.log(`✅ [Encuestas Tabs] window.createTabs disponible después de ${checkAttempts} intentos`);
+            initializeEncuestasTabs();
+        } else if (checkAttempts >= maxCheckAttempts) {
+            clearInterval(checkInterval);
+            console.error('❌ [Encuestas Tabs] window.createTabs no disponible después de 15 segundos');
+            console.error('   Verificar que components-loader.js se esté cargando correctamente');
+        }
+    }, 300);
+    
+    // Método 3: Intentar después de que window.load se complete
+    if (document.readyState === 'complete') {
+        setTimeout(() => {
+            if (typeof window.createTabs === 'function') {
+                initializeEncuestasTabs();
+            }
+        }, 1000);
+    } else {
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                if (typeof window.createTabs === 'function') {
+                    initializeEncuestasTabs();
+                }
+            }, 1000);
+        });
+    }
     }, 1000);
     
     if (!originalHandleSectionChange) {
