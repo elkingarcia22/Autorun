@@ -3085,14 +3085,14 @@
       encuestasDataOriginal = [...encuestasData];
       
       // ⚠️ CRÍTICO: Asegurar que el contenedor exista y sea visible
-      let container = document.getElementById('encuestas-table-container');
-      if (!container) {
+      let tableContainer = document.getElementById('encuestas-table-container');
+      if (!tableContainer) {
         console.log('⚠️ [Encuestas DataTable] Contenedor no encontrado, creando...');
         const contentArea = document.querySelector('.content-area');
         if (contentArea) {
-          container = document.createElement('div');
-          container.id = 'encuestas-table-container';
-          contentArea.insertAdjacentElement('afterbegin', container);
+          tableContainer = document.createElement('div');
+          tableContainer.id = 'encuestas-table-container';
+          contentArea.insertAdjacentElement('afterbegin', tableContainer);
           console.log('✅ [Encuestas DataTable] Contenedor creado');
         } else {
           console.error('❌ [Encuestas DataTable] content-area no encontrado, no se puede crear contenedor');
@@ -3101,25 +3101,25 @@
       }
       
       // Asegurar que el contenedor sea visible
-      container.style.display = 'flex';
-      container.style.visibility = 'visible';
-      container.style.opacity = '1';
-      container.style.minHeight = '400px';
+      tableContainer.style.display = 'flex';
+      tableContainer.style.visibility = 'visible';
+      tableContainer.style.opacity = '1';
+      tableContainer.style.minHeight = '400px';
       
       // Verificar si ya hay un DataTable creado
-      const existingDataTable = container.querySelector('.ubits-data-table');
+      const existingDataTable = tableContainer.querySelector('.ubits-data-table');
       if (existingDataTable) {
         console.log('⚠️ [Encuestas DataTable] DataTable ya existe, destruyendo instancia anterior...');
         if (encuestasDataTableInstance && typeof encuestasDataTableInstance.destroy === 'function') {
           encuestasDataTableInstance.destroy();
         }
         // Limpiar completamente el contenedor
-        container.innerHTML = '';
+        tableContainer.innerHTML = '';
         console.log('🔵 [Encuestas DataTable] Contenedor limpiado antes de crear nuevo DataTable');
       }
       
       // ⚠️ CRÍTICO: Verificar y eliminar headers duplicados ANTES de crear el DataTable
-      const allHeaders = container.querySelectorAll('.ubits-data-table__header');
+      const allHeaders = tableContainer.querySelectorAll('.ubits-data-table__header');
       if (allHeaders.length > 0) {
         console.log(`⚠️ [Encuestas DataTable] Se encontraron ${allHeaders.length} headers antes de crear DataTable, eliminando...`);
         allHeaders.forEach(header => header.remove());
