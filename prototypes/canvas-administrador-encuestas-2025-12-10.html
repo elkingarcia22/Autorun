@@ -3031,16 +3031,16 @@
       setTimeout(initializeEncuestasDataTable, 100);
     });
     
-    let checkAttempts = 0;
-    const maxCheckAttempts = 50;
-    const checkInterval = setInterval(() => {
-      checkAttempts++;
+    let dataTableCheckAttempts = 0;
+    const maxDataTableCheckAttempts = 50;
+    const dataTableCheckInterval = setInterval(() => {
+      dataTableCheckAttempts++;
       if (typeof window.createDataTable === 'function') {
-        clearInterval(checkInterval);
-        console.log(`✅ [Encuestas DataTable] window.createDataTable disponible después de ${checkAttempts} intentos`);
+        clearInterval(dataTableCheckInterval);
+        console.log(`✅ [Encuestas DataTable] window.createDataTable disponible después de ${dataTableCheckAttempts} intentos`);
         initializeEncuestasDataTable();
-      } else if (checkAttempts >= maxCheckAttempts) {
-        clearInterval(checkInterval);
+      } else if (dataTableCheckAttempts >= maxDataTableCheckAttempts) {
+        clearInterval(dataTableCheckInterval);
         console.error('❌ [Encuestas DataTable] window.createDataTable no disponible después de 15 segundos');
       }
     }, 300);
