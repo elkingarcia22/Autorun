@@ -2522,8 +2522,12 @@
             );
             
             // Ajustar ancho del tooltip si es necesario (pero mantener min-width)
+            // Solo ajustar si hay espacio limitado y el tooltip es más ancho que el espacio disponible
             const currentMaxWidth = parseInt(window.getComputedStyle(tooltipElement).maxWidth) || 320;
-            if (maxAvailableWidth < currentMaxWidth) {
+            const currentWidth = tooltipRect.width;
+            
+            // Si el tooltip actual es más ancho que el espacio disponible, ajustar
+            if (currentWidth > maxAvailableWidth && maxAvailableWidth > 160) {
               finalMaxWidth = Math.max(160, maxAvailableWidth - 16); // Mantener padding mínimo
               tooltipElement.style.maxWidth = `${finalMaxWidth}px`;
               // Recalcular dimensiones después de cambiar el ancho
