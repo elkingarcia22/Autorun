@@ -259,6 +259,9 @@ export async function discoverStorybookComponents(): Promise<DiscoveryResult> {
       `✅ [Storybook ID Discovery] ${result.totalComponents} componentes descubiertos`
     );
     console.log(
+      `📊 [Storybook ID Discovery] Estadísticas: ${processedCount} historias procesadas, ${skippedDocs} docs omitidos`
+    );
+    console.log(
       '🔍 [Storybook ID Discovery] ========================================\n'
     );
 
