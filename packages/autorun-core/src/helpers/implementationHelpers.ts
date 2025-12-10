@@ -1,6 +1,6 @@
 /**
  * Implementation Helpers
- * 
+ *
  * Funciones helper obligatorias para verificar que se sigan los lineamientos
  * antes de implementar componentes UBITS.
  */
@@ -9,42 +9,50 @@ import { getAutorunHub } from '@autorun/core';
 
 /**
  * ⚠️ OBLIGATORIO: Verificar que se completó el checklist obligatorio antes de implementar
- * 
+ *
  * Esta función DEBE ejecutarse ANTES de usar write() o search_replace() para implementar un componente.
- * 
+ *
  * @param componentName Nombre del componente a implementar (ej: 'DataTable', 'Tabs', 'Modal')
  * @throws Error si el checklist no está completo
- * 
+ *
  * @example
  * ```typescript
  * // ⚠️ OBLIGATORIO: Verificar antes de implementar
  * await ensureImplementationReady('DataTable');
- * 
+ *
  * // Solo después de que esta función pase, puedes usar write() o search_replace()
  * await write('file.html', content);
  * ```
  */
-export async function ensureImplementationReady(componentName: string): Promise<void> {
+export async function ensureImplementationReady(
+  componentName: string
+): Promise<void> {
   if (!componentName) {
-    throw new Error('❌ Componente no especificado. Debes proporcionar el nombre del componente.');
+    throw new Error(
+      '❌ Componente no especificado. Debes proporcionar el nombre del componente.'
+    );
   }
 
   // Obtener AutorunHub
-  const hub = getAutorunHub();
+  const hub = await getAutorunHub();
   if (!hub) {
-    throw new Error('❌ AutorunHub no está inicializado. Ejecuta: npm run autorun:init-hub');
+    throw new Error(
+      '❌ AutorunHub no está inicializado. Ejecuta: npm run autorun:init-hub'
+    );
   }
 
   // Obtener Pre-Implementation Check add-on
   const preCheckAddon = hub.getAddon('pre-implementation-check');
   if (!preCheckAddon) {
-    console.warn('⚠️ Pre-Implementation Check add-on no está disponible. Continuando sin verificación...');
+    console.warn(
+      '⚠️ Pre-Implementation Check add-on no está disponible. Continuando sin verificación...'
+    );
     return; // Permitir continuar si el add-on no está disponible
   }
 
   // Verificar si se puede implementar
   const checkResult = await (preCheckAddon as any).canImplement(componentName);
-  
+
   if (!checkResult.allowed) {
     const errorMessage = `
 ❌❌❌ IMPLEMENTACIÓN BLOQUEADA ❌❌❌
@@ -84,11 +92,13 @@ ${checkResult.missingSteps?.map((step: string) => `  - ${step}`).join('\n') || '
     (error as any).componentName = componentName;
     (error as any).missingSteps = checkResult.missingSteps || [];
     (error as any).checklist = checkResult.checklist;
-    
+
     throw error;
   }
 
-  console.log(`✅ Checklist completo para ${componentName}, procediendo con implementación`);
+  console.log(
+    `✅ Checklist completo para ${componentName}, procediendo con implementación`
+  );
 }
 
 /**
@@ -122,7 +132,10 @@ export function detectComponentFromContent(content: string): string | null {
  */
 export function detectComponentFromMessage(message: string): string | null {
   const patterns = [
-    { pattern: /implementar.*data.?table|crear.*tabla|data.?table/i, component: 'DataTable' },
+    {
+      pattern: /implementar.*data.?table|crear.*tabla|data.?table/i,
+      component: 'DataTable',
+    },
     { pattern: /implementar.*tabs?|crear.*tabs?/i, component: 'Tabs' },
     { pattern: /implementar.*modal|crear.*modal/i, component: 'Modal' },
     { pattern: /implementar.*button|crear.*botón/i, component: 'Button' },
