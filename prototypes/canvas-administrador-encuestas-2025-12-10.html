@@ -2370,8 +2370,20 @@
             let modalInstance = null;
             
             const openModal = () => {
-              if (modalInstance) {
-                return; // Ya está abierto
+              // Verificar si hay un modal abierto (verificando si existe en el DOM y tiene la clase open)
+              if (modalInstance && modalInstance.element) {
+                const isOpen = modalInstance.element.classList.contains('ubits-modal-overlay--open');
+                if (isOpen) {
+                  console.log('ℹ️ [Button/Modal] Modal ya está abierto');
+                  return; // Ya está abierto
+                } else {
+                  // El modal existe pero está cerrado, limpiarlo del DOM antes de crear uno nuevo
+                  console.log('🧹 [Button/Modal] Limpiando modal cerrado del DOM');
+                  if (modalInstance.element.parentNode) {
+                    modalInstance.element.parentNode.removeChild(modalInstance.element);
+                  }
+                  modalInstance = null;
+                }
               }
               
               try {
@@ -2387,14 +2399,20 @@
                   open: true,
                   containerId: 'modal-container',
                   closeOnOverlayClick: true,
+                  onClose: () => {
+                    // Callback cuando se cierra el modal (por cualquier método)
+                    console.log('🔴 [Button/Modal] Modal cerrado');
+                    modalInstance = null;
+                  },
                   footerButtons: {
                     tertiary: {
                       label: 'Cancelar',
                       onClick: () => {
+                        console.log('🔴 [Button/Modal] Botón Cancelar clickeado');
                         if (modalInstance && modalInstance.close) {
                           modalInstance.close();
                         }
-                        modalInstance = null;
+                        // onClose se encargará de limpiar modalInstance
                       }
                     },
                     primary: {
@@ -2404,7 +2422,7 @@
                         if (modalInstance && modalInstance.close) {
                           modalInstance.close();
                         }
-                        modalInstance = null;
+                        // onClose se encargará de limpiar modalInstance
                       }
                     }
                   }
@@ -2413,6 +2431,7 @@
                 console.log('✅ [Button/Modal] Modal creado y abierto');
               } catch (error) {
                 console.error('❌ [Button/Modal] Error al crear modal:', error);
+                modalInstance = null;
               }
             };
             
