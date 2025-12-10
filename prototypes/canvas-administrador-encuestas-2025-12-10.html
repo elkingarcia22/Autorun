@@ -2092,6 +2092,89 @@
       // Ejecutar cuando el DOM esté listo
       if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', disableOtherModules);
+        
+        // Inicializar botón y modal
+        document.addEventListener('DOMContentLoaded', () => {
+          // Esperar a que los componentes estén cargados
+          const initButtonAndModal = () => {
+            const buttonContainer = document.getElementById('button-container');
+            const modalContainer = document.getElementById('modal-container');
+            const openButton = document.getElementById('open-modal-button');
+            
+            if (!buttonContainer || !modalContainer || !openButton) {
+              console.log('⏳ [Button/Modal] Esperando componentes...');
+              setTimeout(initButtonAndModal, 100);
+              return;
+            }
+            
+            // Verificar que createModal esté disponible
+            if (typeof window.createModal !== 'function') {
+              console.log('⏳ [Button/Modal] Esperando createModal...');
+              setTimeout(initButtonAndModal, 100);
+              return;
+            }
+            
+            console.log('✅ [Button/Modal] Componentes listos, inicializando...');
+            
+            // Crear modal
+            let modalInstance = null;
+            
+            const openModal = () => {
+              if (modalInstance) {
+                return; // Ya está abierto
+              }
+              
+              modalInstance = window.createModal({
+                title: 'Modal de Ejemplo',
+                bodyContent: `
+                  <div style="padding: var(--ubits-spacing-lg, 16px);">
+                    <p class="ubits-body-md-regular">Este es el contenido del modal.</p>
+                    <p class="ubits-body-md-regular">Puedes agregar cualquier contenido aquí.</p>
+                  </div>
+                `,
+                size: 'md',
+                open: true,
+                containerId: 'modal-container',
+                closeOnOverlayClick: true,
+                footerButtons: {
+                  tertiary: {
+                    label: 'Cancelar',
+                    onClick: () => {
+                      if (modalInstance && modalInstance.close) {
+                        modalInstance.close();
+                      }
+                      modalInstance = null;
+                    }
+                  },
+                  primary: {
+                    label: 'Aceptar',
+                    onClick: () => {
+                      console.log('✅ [Button/Modal] Botón Aceptar clickeado');
+                      if (modalInstance && modalInstance.close) {
+                        modalInstance.close();
+                      }
+                      modalInstance = null;
+                    }
+                  }
+                }
+              });
+              
+              console.log('✅ [Button/Modal] Modal creado y abierto');
+            };
+            
+            // Agregar event listener al botón
+            openButton.addEventListener('click', (e) => {
+              e.preventDefault();
+              console.log('🔵 [Button/Modal] Botón clickeado, abriendo modal...');
+              openModal();
+            });
+            
+            console.log('✅ [Button/Modal] Botón y modal inicializados correctamente');
+          };
+          
+          // Iniciar después de un pequeño delay para asegurar que los componentes estén cargados
+          setTimeout(initButtonAndModal, 500);
+        });
       } else {
         disableOtherModules();
       }
