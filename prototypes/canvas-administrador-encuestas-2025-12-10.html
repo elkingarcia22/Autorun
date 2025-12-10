@@ -836,6 +836,47 @@
                                 </ubits-alert>
                             </div>
                             
+                            <!-- 🧪 COMPONENTE DE PRUEBA 4: Tabs (Componente más complejo para activar validación) -->
+                            <div style="margin-top: var(--ubits-spacing-xl, 20px);">
+                                <h3 class="ubits-heading-sm-semibold" style="margin-bottom: var(--ubits-spacing-md, 12px);">🧪 Prueba de Autorun - Componente Tabs</h3>
+                                <ubits-tabs>
+                                    <ubits-tab-list>
+                                        <ubits-tab>General</ubits-tab>
+                                        <ubits-tab>Configuración</ubits-tab>
+                                        <ubits-tab>Avanzado</ubits-tab>
+                                    </ubits-tab-list>
+                                    <ubits-tab-panels>
+                                        <ubits-tab-panel>
+                                            <div style="padding: var(--ubits-spacing-lg, 16px);">
+                                                <p class="ubits-body-md-regular">Contenido de la pestaña General</p>
+                                                <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-2-medium); margin-top: var(--ubits-spacing-sm, 8px);">
+                                                    Esta es una prueba del componente Tabs para verificar que Autorun está funcionando correctamente.
+                                                </p>
+                                            </div>
+                                        </ubits-tab-panel>
+                                        <ubits-tab-panel>
+                                            <div style="padding: var(--ubits-spacing-lg, 16px);">
+                                                <p class="ubits-body-md-regular">Contenido de la pestaña Configuración</p>
+                                                <ubits-input 
+                                                    label="Nombre de configuración" 
+                                                    placeholder="Ingresa el nombre"
+                                                    size="md"
+                                                    style="margin-top: var(--ubits-spacing-md, 12px);">
+                                                </ubits-input>
+                                            </div>
+                                        </ubits-tab-panel>
+                                        <ubits-tab-panel>
+                                            <div style="padding: var(--ubits-spacing-lg, 16px);">
+                                                <p class="ubits-body-md-regular">Contenido de la pestaña Avanzado</p>
+                                                <ubits-alert variant="warning" size="md" style="margin-top: var(--ubits-spacing-md, 12px);">
+                                                    ⚠️ Esta es una sección avanzada. Ten cuidado con los cambios.
+                                                </ubits-alert>
+                                            </div>
+                                        </ubits-tab-panel>
+                                    </ubits-tab-panels>
+                                </ubits-tabs>
+                            </div>
+                            
                             <br><br><br><br><br><br><br><br><br><br><br>
                         </div>
                     </div>
