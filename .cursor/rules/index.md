@@ -37,12 +37,14 @@ Este directorio contiene todas las reglas organizadas por tema para trabajar con
 - Proceso de implementación
 - Errores críticos a evitar
 - Fases de análisis e implementación
+- ⭐ **NUEVO:** Validación de iconos contra análisis (previene errores como usar `clock` en lugar de `chart-pie-simple`)
 
 ### 05-errores.md
 **Errores comunes** - Lista completa de errores a evitar
 - Errores críticos
 - Soluciones
 - Referencias a guías
+- ⭐ **NUEVO:** Error #14 - SubNav desaparece después de crearse (con sistema de restauración automática)
 
 ### 06-implementacion-automatica.md
 **Implementación automática** - ⭐ Proceso automático para implementar componentes

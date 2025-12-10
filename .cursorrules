@@ -1,15 +1,187 @@
 # 🎯 Reglas para Trabajar con Templates UBITS en Autorun
 
+## ⚠️⚠️⚠️ CRÍTICO: INICIALIZAR AUTORUN PRIMERO ⚠️⚠️⚠️
+
+**🚨 ESTA ES LA PRIMERA ACCIÓN OBLIGATORIA EN CADA SESIÓN 🚨**
+
+### 📋 Flujo de Inicialización:
+
+**1. Si es la primera vez o necesitas configurar:**
+```bash
+npm run init
+# o
+npm run wizard
+```
+**El wizard ahora inicializa AutorunHub automáticamente al finalizar** ✅
+
+**2. Si ya está configurado, solo inicializar AutorunHub:**
+```bash
+npm run autorun:init-hub
+```
+
+**O usando run_terminal_cmd (RECOMENDADO para agentes):**
+```typescript
+await run_terminal_cmd({
+  command: 'npm run autorun:init-hub',
+  is_background: false
+});
+```
+
+**Este comando ahora:**
+- ✅ Inicializa AutorunHub automáticamente
+- ✅ **Registra add-ons disponibles automáticamente** ⭐ NUEVO
+- ✅ Activa FileWatcher para detectar cambios
+- ✅ Muestra el estado de todos los componentes
+- ✅ Verifica que todo esté funcionando
+- ✅ **Pre-Implementation Check, Auto-Reload y Problem Tracker ahora funcionan** ⭐ NUEVO
+
+**DEBES ver en la salida:**
+- ✅ "🚀 Inicializando AutorunHub..."
+- ✅ "✅ AutorunHub inicializado correctamente"
+- ✅ "📊 Estado de Autorun:"
+- ✅ "   - Inicializado: ✅"
+- ✅ "   - File Watching: ✅ activo"
+
+**Si NO ves estos logs o hay errores:**
+1. Verificar que existe `.ubits/project-config.json`
+2. Ejecutar `npm run init` si no existe (ahora inicializa AutorunHub automáticamente)
+3. Reintentar: `npm run autorun:init-hub`
+
+---
+
 ## ⚠️⚠️⚠️ VERIFICACIÓN OBLIGATORIA AL INICIO ⚠️⚠️⚠️
 
-**ANTES de usar CUALQUIER herramienta, DEBES:**
+**ANTES de usar CUALQUIER herramienta (`write`, `search_replace`, `read_file`, etc.), DEBES:**
 
-1. **Leer este archivo completo** (`.cursorrules`)
-2. **Leer:** `.cursor/rules/00-inicio.md` - ⚠️ OBLIGATORIO
-3. **Verificar triggers de imagen** (ver: `.cursor/rules/01-deteccion-imagen.md`)
-4. **Si hay triggers, seguir el proceso de bloqueo** (ver: `.cursor/rules/02-bloqueo-imagen.md`)
+1. **✅ INICIALIZAR AUTORUNHUB** (ver arriba) ⚠️ PRIMERO - **OBLIGATORIO**
+   - Usar `ensureAutorunHubInitialized()` para verificación automática
+   - Verificar estado con `getAutorunHubStatus()`
+   - NO continuar hasta que esté inicializado
 
-**NO puedes usar `write()`, `search_replace()`, etc. hasta completar esta verificación.**
+2. **Leer este archivo completo** (`.cursorrules`)
+
+3. **Leer:** `.cursor/rules/00-inicio.md` - ⚠️ OBLIGATORIO
+
+4. **Verificar triggers de imagen** (ver: `.cursor/rules/01-deteccion-imagen.md`)
+
+5. **Si hay triggers, seguir el proceso de bloqueo** (ver: `.cursor/rules/02-bloqueo-imagen.md`)
+
+**🚨 BLOQUEO: NO puedes usar `write()`, `search_replace()`, etc. hasta completar esta verificación.**
+
+---
+
+## 🚨🚨🚨 BLOQUEO TÉCNICO - VERIFICACIÓN OBLIGATORIA ANTES DE ESCRIBIR 🚨🚨🚨
+
+**⚠️ CRÍTICO: ANTES de usar `write()` o `search_replace()` para implementar un componente UBITS, DEBES:**
+
+### **PASO 1: Verificar Checklist Obligatorio**
+
+```typescript
+// ⚠️ OBLIGATORIO: Ejecutar esta verificación ANTES de escribir código
+import { ensureImplementationReady } from '@autorun/core/helpers/implementationHelpers';
+
+// Detectar componente del mensaje o contenido
+const componentName = 'DataTable'; // o el componente que vayas a implementar
+
+// Verificar que se completó el checklist obligatorio
+await ensureImplementationReady(componentName);
+
+// ⚠️ SI ESTA FUNCIÓN LANZA ERROR: NO puedes usar write() o search_replace() hasta completar los pasos faltantes
+```
+
+### **PASO 2: Verificar Antes de Escribir**
+
+```typescript
+// ⚠️ OBLIGATORIO: Verificar antes de cada write() o search_replace()
+import { PreWriteValidator } from '@autorun/core/validation/PreWriteValidator';
+
+const validation = await PreWriteValidator.validateBeforeWrite(
+  filePath,
+  content,
+  { componentName: 'DataTable' }
+);
+
+if (!validation.valid) {
+  // ❌ BLOQUEAR - No se puede escribir hasta completar pasos
+  throw new Error('❌ BLOQUEADO: ' + validation.errors.join('\n'));
+}
+
+// Solo entonces escribir
+await write(filePath, content);
+```
+
+### **PASO 3: El Sistema Bloquea Automáticamente**
+
+**El sistema ejecuta estas verificaciones AUTOMÁTICAMENTE:**
+- ✅ Verifica Pre-Implementation Check antes de escribir
+- ✅ Verifica triggers de imagen sin análisis
+- ✅ Verifica que se consultó Storybook en Vercel
+- ✅ Verifica que se consultó Storybook MCP
+- ✅ Verifica que se consultó documentación
+
+**Si CUALQUIERA falla → `write()` y `search_replace()` LANZAN ERROR y NO se ejecutan.**
+
+### **⚠️ REGLAS CRÍTICAS:**
+
+1. **NO puedes saltarte esta verificación** - El sistema bloquea técnicamente
+2. **NO puedes implementar sin completar checklist** - Se detecta automáticamente
+3. **NO puedes implementar todo de golpe** - Debe ser paso a paso
+4. **NO puedes ignorar las advertencias** - Son bloqueos técnicos, no sugerencias
+
+---
+
+## 🚨 DETECCIÓN AUTOMÁTICA DE IMPLEMENTACIONES
+
+**⚠️ IMPORTANTE:** El Pre-Implementation Check add-on detecta automáticamente cuando escribes código con patrones de componentes UBITS:
+- `window.createTabs()`
+- `window.createDataTable()`
+- `window.createModal()`
+- `window.UBITS.Button.create()`
+- etc.
+
+**⭐ NUEVO: DETECCIÓN PROACTIVA (ANTES DE ESCRIBIR)**
+
+**El sistema ahora detecta la intención de implementar ANTES de escribir código:**
+
+```typescript
+import { PreImplementationCheckAddon } from '@autorun/core';
+import { detectComponentFromMessage } from '@autorun/core/helpers/implementationHelpers';
+
+// Detectar componente del mensaje del usuario
+const userMessage = 'Implementar DataTable con todas sus funcionalidades';
+const detectedComponents = detectComponentFromMessage(userMessage);
+
+if (detectedComponents.length > 0) {
+  // Verificar inmediatamente para cada componente detectado
+  const hub = getAutorunHub();
+  const preCheckAddon = hub?.getAddon('pre-implementation-check');
+  
+  for (const componentName of detectedComponents) {
+    if (preCheckAddon) {
+      const verification = await preCheckAddon.verifyOnDetection(componentName);
+      if (verification.blocked) {
+        // ❌ BLOQUEAR - No se puede continuar hasta completar pasos
+        console.error('❌ IMPLEMENTACIÓN BLOQUEADA:', verification.reason);
+        // Completar pasos faltantes antes de continuar
+        return;
+      }
+    }
+  }
+}
+```
+
+**CUANDO VES ADVERTENCIAS EN CONSOLA como:**
+```
+🚨 PRE-IMPLEMENTATION CHECK: Intento de implementar [Componente] sin completar checklist
+📋 Pasos faltantes: ...
+⚠️ IMPLEMENTACIÓN BLOQUEADA hasta completar checklist
+```
+
+**DEBES:**
+1. ⚠️ **DETENER** la implementación inmediatamente
+2. 🔍 **COMPLETAR** el checklist automáticamente (ver sección "USAR PRE-IMPLEMENTATION CHECK ADD-ON")
+3. ✅ **VERIFICAR** que todos los pasos estén completos
+4. 🚀 **CONTINUAR** con la implementación usando la información obtenida
 
 ---
 
@@ -36,24 +208,47 @@
 
 Antes de trabajar en un template, LEER:
 
-1. `docs/referencia/ESTRATEGIA-IMPLEMENTACION-AUTOMATICA.md` - ⭐ **NUEVO:** Estrategia de implementación automática con documentación
-2. `docs/referencia/ESTRATEGIA-COMPONENTES-UBITS.md` - Estrategia completa
-2. `docs/guias/referencia/GUIA-USO-COMPONENTES-UBITS.md` - Cómo usar componentes
-3. `docs/guias/referencia/GUIA-IDENTIFICACION-COMPONENTES.md` - Cómo identificar componentes desde imágenes
-4. `docs/referencia/CATALOGO-COMPONENTES-UBITS.md` - Catálogo completo de componentes UBITS
-5. `docs/referencia/componentes/` - ⭐ Documentación completa de componentes con historias de Storybook
-5. `docs/guias/referencia/GUIA-ERRORES-COMUNES-UBITS.md` - ⚠️ **OBLIGATORIO:** Errores comunes a evitar
-6. `docs/guias/referencia/GUIA-REVISION-COMPONENTES-UBITS.md` - ⚠️ **OBLIGATORIO:** Cómo revisar componentes antes de implementar
+1. `docs/guias/implementacion/CHECKLIST-ANTES-IMPLEMENTAR-COMPONENTE.md` - ⚠️ **OBLIGATORIO PRIMERO:** Checklist completo antes de implementar cualquier componente
+2. `docs/referencia/ESTRATEGIA-IMPLEMENTACION-AUTOMATICA.md` - ⭐ **NUEVO:** Estrategia de implementación automática con documentación
+3. `docs/referencia/ESTRATEGIA-COMPONENTES-UBITS.md` - Estrategia completa
+4. `docs/guias/referencia/GUIA-USO-COMPONENTES-UBITS.md` - Cómo usar componentes
+5. `docs/guias/referencia/GUIA-IDENTIFICACION-COMPONENTES.md` - Cómo identificar componentes desde imágenes
+6. `docs/referencia/CATALOGO-COMPONENTES-UBITS.md` - Catálogo completo de componentes UBITS
+7. `docs/referencia/componentes/` - ⭐ Documentación completa de componentes con historias de Storybook
+8. `docs/guias/referencia/GUIA-ERRORES-COMUNES-UBITS.md` - ⚠️ **OBLIGATORIO:** Errores comunes a evitar
+9. `docs/guias/referencia/GUIA-REVISION-COMPONENTES-UBITS.md` - ⚠️ **OBLIGATORIO:** Cómo revisar componentes antes de implementar
+10. `docs/guias/implementacion/GUIA-NO-AGREGAR-ESTILOS-EXTRA-COMPONENTES.md` - ⚠️ **OBLIGATORIO:** NO agregar estilos extra a componentes
 7. `docs/guias/analisis/GUIA-ANALISIS-IMAGEN-MEJORADO.md` - ⭐ **NUEVO:** Análisis mejorado con documentación automática de componentes
 8. `docs/guias/analisis/GUIA-ANALISIS-ESTRUCTURA-SPACING.md` - ⚠️ **OBLIGATORIO:** Análisis de estructura (contenedores) y spacing
 9. `docs/guias/analisis/GUIA-ANALISIS-ICONOS-DETALLADO.md` - ⚠️ **OBLIGATORIO:** Análisis detallado de iconos FontAwesome (variaciones, simple, etc.)
 10. `docs/guias/analisis/GUIA-ANALISIS-DATATABLE-COMPLETO.md` - ⚠️ **OBLIGATORIO:** Análisis completo del DataTable (si hay DataTable en la imagen)
 11. `docs/guias/analisis/GUIA-ANALISIS-FUNCIONALIDADES-DATATABLE.md` - ⚠️ **OBLIGATORIO:** Análisis de funcionalidades del DataTable - Lista TODAS las funcionalidades con SÍ/NO (si hay DataTable en la imagen)
 11. `docs/guias/implementacion/GUIA-PROCESO-IMPLEMENTACION-PASO-A-PASO.md` - ⚠️ **OBLIGATORIO:** Proceso de implementación paso a paso
-12. `docs/guias/implementacion/GUIA-CREAR-DESDE-IMAGEN-DESPUES-WIZARD.md` - ⚠️ **OBLIGATORIO:** Crear desde imagen DESPUÉS del wizard (modificar template existente)
-13. `docs/guias/implementacion/GUIA-USO-MCP-EN-IMPLEMENTACION.md` - ⚠️ **OBLIGATORIO:** Usar MCPs para consultar componentes exactamente como están
-14. `docs/guias/implementacion/GUIA-VERIFICAR-STORYBOOK-VERCEL.md` - ⚠️ **OBLIGATORIO:** Verificar Storybook en Vercel antes de implementar
-15. `INDEX.md` - Flujo de inicialización
+12. `docs/guias/implementacion/GUIA-IMPLEMENTACION-DATATABLE-PASO-A-PASO.md` - ⚠️ **OBLIGATORIO:** Implementación de DataTable paso a paso (si hay DataTable en la imagen)
+13. `docs/guias/implementacion/GUIA-ESPACIO-DINAMICO-DATATABLE-PAGINADOR.md` - ⚠️ **OBLIGATORIO:** ⭐ **NUEVO:** Guía completa de espacio dinámico del DataTable y paginador correcto - DEBE seguirse SIEMPRE al implementar DataTable con paginador - Incluye recálculo de altura después de cambios (paginación, ordenamiento, búsqueda, filtros) y 2900 items al inicio
+14. `docs/guias/implementacion/GUIA-ERRORES-IMPLEMENTACION-DATATABLE-COMPLETA.md` - ⚠️ **OBLIGATORIO:** ⭐ **NUEVO:** Todos los errores encontrados en implementación de DataTable y sus soluciones
+15. `docs/guias/implementacion/GUIA-ERROR-CONTENEDOR-SCROLLABLE-DATATABLE.md` - ⚠️ **OBLIGATORIO:** ⭐ **NUEVO:** Error - Contenedor scrollable no encontrado (altura dinámica)
+16. `docs/guias/implementacion/GUIA-ERROR-ACTION-BAR-NO-SE-MUESTRA-DATATABLE.md` - ⚠️ **OBLIGATORIO:** ⭐ **NUEVO:** Error - Action Bar no se muestra (si `showCheckbox: true`)
+17. `docs/guias/implementacion/GUIA-ACTION-BAR-DATATABLE.md` - ⚠️ **OBLIGATORIO:** ⭐ **ACTUALIZADO:** Implementación completa de Action Bar con todos los errores encontrados y soluciones (border-bottom, iconos, datos originales, listeners) - DEBE seguirse SIEMPRE al implementar Action Bar
+18. `docs/guias/analisis/ANALISIS-ERROR-DATATABLE-THEAD-NO-STICKY.md` - ⚠️ **OBLIGATORIO:** ⭐ **NUEVO:** Header de columnas (thead) DEBE quedarse fijo al hacer scroll - SIEMPRE configurar `showVerticalScrollbar: true` y CSS sticky - DEBE seguirse SIEMPRE al implementar DataTable
+19. `docs/guias/implementacion/GUIA-ERROR-HEADER-CHECKBOX-NO-STICKY-DATATABLE.md` - ⚠️ **OBLIGATORIO:** ⭐ **NUEVO:** Error - Header del checkbox no se queda fijo (sticky) - queda por debajo de las filas - Solución completa con CSS + JavaScript + MutationObserver - DEBE seguirse SIEMPRE al implementar DataTable con checkboxes
+17. `docs/guias/implementacion/GUIA-ERROR-SEARCHBUTTON-BOTON-CERRAR-FUERA-INPUT.md` - ⚠️ **OBLIGATORIO:** ⭐ **NUEVO:** Error - Botón de cerrar (X) del SearchButton fuera del input - Solución completa con CSS + JavaScript + función de verificación - DEBE seguirse SIEMPRE al implementar SearchButton en DataTable (si hay `searchButton` en el header)
+18. `docs/guias/implementacion/GUIA-ERROR-NO-IMPLEMENTAR-EMPTY-STATES-DATATABLE.md` - ⚠️ **OBLIGATORIO:** ⭐ **NUEVO:** Error - No implementar empty states para búsqueda y filtros (si hay `searchButton` o `filterButton`)
+19. `docs/guias/implementacion/GUIA-DRAWER-BASICO-CON-INPUTS.md` - ⚠️ **OBLIGATORIO:** ⭐ **NUEVO:** Guía simple para drawer básico con inputs genéricos - NO seguir reglas anteriores, implementar desde cero
+27. `docs/guias/implementacion/GUIA-ERROR-CONSULTAR-HISTORIA-STORYBOOK-INEXISTENTE-INPUT.md` - ⚠️ **OBLIGATORIO:** ⭐ **NUEVO:** Error - Consultar historia de Storybook inexistente para Input - SIEMPRE usar buildSafeStorybookUrl() para todos los inputs, usar nombre correcto "formularios-input" (NO "entrada-input"), usar historia 'default' (NO "calendar")
+28. `docs/guias/implementacion/GUIA-SOLUCION-GENERAL-CONSULTAR-STORYBOOK-INPUTS.md` - ⚠️ **OBLIGATORIO:** ⭐ **NUEVO:** Solución general para consultar Storybook para todos los inputs - SIEMPRE usar buildSafeStorybookUrl(), mapeo de nombres correctos, historias disponibles
+20. `docs/guias/implementacion/GUIA-ERROR-USAR-DEPLOY-VIEJO-VERCEL.md` - ⚠️ **OBLIGATORIO:** Error - Usar deploy viejo de Vercel en lugar del más reciente
+21. `docs/guias/implementacion/GUIA-ERROR-TAMANO-TABLA-PEQUENO.md` - ⚠️ **OBLIGATORIO:** ⭐ **NUEVO:** Error - Tamaño de tabla pequeño - no aprovecha espacio horizontal y vertical
+22. `docs/guias/implementacion/GUIA-ERROR-PADDING-INCORRECTO-TABLA.md` - ⚠️ **OBLIGATORIO:** ⭐ **NUEVO:** Error - Padding incorrecto - debe ser 16px interno y 24px externo solo abajo
+23. `docs/guias/implementacion/GUIA-ERROR-SCROLL-PAGINA.md` - ⚠️ **OBLIGATORIO:** ⭐ **NUEVO:** Error - Scroll en la página - no debería haber scroll, solo en el DataTable
+25. `docs/guias/implementacion/GUIA-ACTION-BAR-DATATABLE.md` - ⚠️ **OBLIGATORIO:** Implementación completa de Action Bar (si `showCheckbox: true`)
+17. `docs/guias/implementacion/GUIA-CREAR-DESDE-IMAGEN-DESPUES-WIZARD.md` - ⚠️ **OBLIGATORIO:** Crear desde imagen DESPUÉS del wizard (modificar template existente)
+18. `docs/guias/implementacion/GUIA-ELIMINAR-HEADERSECTION.md` - ⚠️ **OBLIGATORIO:** Eliminar HeaderSection correctamente (si la imagen NO lo muestra) - Solución completa con código
+19. `docs/guias/implementacion/GUIA-USO-MCP-EN-IMPLEMENTACION.md` - ⚠️ **OBLIGATORIO:** Usar MCPs para consultar componentes exactamente como están
+20. `docs/guias/implementacion/GUIA-VERIFICAR-STORYBOOK-VERCEL.md` - ⚠️ **OBLIGATORIO:** Verificar Storybook en Vercel antes de implementar
+21. `docs/guias/implementacion/GUIA-ERROR-HEADER-CHECKBOX-NO-STICKY-DATATABLE.md` - ⚠️ **OBLIGATORIO:** ⭐ **NUEVO:** Error - Header del checkbox no se queda fijo (sticky) - queda por debajo de las filas
+22. `docs/guias/implementacion/GUIA-ERROR-SUBNAV-DESAPARECE-DESPUES-CREARSE.md` - ⚠️ **OBLIGATORIO:** ⭐ **NUEVO:** Error - SubNav desaparece después de crearse - SIEMPRE implementar sistema de restauración automática
+23. `INDEX.md` - Flujo de inicialización
 
 ---
 
@@ -64,12 +259,20 @@ Antes de trabajar en un template, LEER:
 **ANTES de implementar cualquier componente UBITS, DEBES:**
 
 1. **⚠️ CRÍTICO: Consultar Storybook en Vercel (versión más reciente):** ⚠️ PRIMERO
-   - ✅ URL: `https://ubits-storybook10.vercel.app/`
+   - ✅ **Guardar URL del template ANTES de navegar** (para volver después)
+   - ✅ **URL PRINCIPAL (SIEMPRE usar esta):** `https://ubits-storybook10.vercel.app/` - ⚠️ **SIEMPRE apunta al deployment más reciente**
+   - ❌ **NO usar URLs de deployments específicos** (pueden estar desactualizados)
+   - ✅ **🔄 FALLBACK AUTOMÁTICO:** Si Vercel falla, el sistema usa GitHub automáticamente (`https://github.com/elkingarcia22/UBITS`)
+   - ✅ **Ver guía:** `docs/guias/implementacion/GUIA-ERROR-USAR-DEPLOY-VIEJO-VERCEL.md` - ⚠️ **OBLIGATORIO**
+   - ✅ **⚠️ CRÍTICO: Verificar historias existentes ANTES de navegar** (ver: `docs/guias/implementacion/GUIA-VERIFICAR-HISTORIAS-STORYBOOK-AUTOMATICO.md`)
+   - ✅ Usar `buildSafeStorybookUrl()` para construir URL verificada
    - ✅ Buscar el componente específico (ej: `data-data-table`)
    - ✅ Revisar pestaña "Code" para ver estructura exacta
    - ✅ Revisar pestaña "Controls" para ver todas las opciones disponibles
    - ✅ Verificar tipos de columnas, opciones y estructura de datos
+   - ✅ **⚠️ OBLIGATORIO: Volver automáticamente al template DESPUÉS de consultar**
    - ✅ **Ver guía:** `docs/guias/implementacion/GUIA-VERIFICAR-STORYBOOK-VERCEL.md` - ⚠️ **OBLIGATORIO**
+   - ✅ **Ver guía de fallback:** `docs/guias/configuracion/GUIA-FALLBACK-STORYBOOK-GITHUB.md` - 🔄 **NUEVO**
 
 2. **Consultar Storybook MCP:**
    - ✅ Usar `mcp_storybook_getComponentList` para listar componentes
@@ -99,6 +302,292 @@ Antes de trabajar en un template, LEER:
 
 **NO implementar componentes sin consultar MCPs primero.**
 
+### ⚠️ REGLA CRÍTICA: USAR PRE-IMPLEMENTATION CHECK ADD-ON (AUTOMÁTICO) ⭐ SIMPLIFICADO
+
+**⚠️ DETECCIÓN AUTOMÁTICA:** El Pre-Implementation Check add-on detecta automáticamente cuando escribes código con patrones como `window.createTabs()`, `window.createDataTable()`, etc.
+
+**CUANDO DETECTES UN INTENTO DE IMPLEMENTACIÓN (o veas advertencias del add-on):**
+
+1. **⚠️ DETENER INMEDIATAMENTE** - No continuar con la implementación
+
+2. **🔍 OBTENER PLAN AUTOMÁTICAMENTE:** ⚠️ OBLIGATORIO ⭐ SIMPLIFICADO
+   
+   **El add-on automáticamente obtiene el plan basado en historias. Solo necesitas usarlo:**
+   ```typescript
+   // OPCIÓN 1: Usar el plan que el add-on ya obtuvo automáticamente
+   const hub = getAutorunHub();
+   const preCheckAddon = hub?.getAddon('pre-implementation-check');
+   const plan = preCheckAddon?.getStoryBasedPlan(componentName);
+   
+   // OPCIÓN 2: Si no existe, obtenerlo automáticamente
+   if (!plan) {
+     const plan = await preCheckAddon?.getOrCreateStoryBasedPlan(componentName, componentId);
+   }
+   
+   // Mostrar plan al usuario
+   if (plan) {
+     console.log(`📚 Plan obtenido: ${plan.totalSteps} historias`);
+     console.log(plan.summary);
+     // Pedir aprobación antes de continuar
+   }
+   ```
+
+   **PASO 2: Implementar UNA Historia a la Vez con Checklist** ⚠️ OBLIGATORIO ⭐ NUEVO
+   ```typescript
+   // Para CADA historia del plan (UNA A LA VEZ):
+   for (const step of plan.storySteps) {
+     // ⚠️ CRÍTICO: Verificar que el checklist de la historia anterior esté completo
+     if (stepIndex > 0) {
+       const previousStep = plan.storySteps[stepIndex - 1];
+       if (!previousStep.checklist.allCompleted) {
+         throw new Error(`⚠️ No se puede continuar: Checklist de "${previousStep.story.name}" no está completo`);
+       }
+     }
+     
+     // Obtener checklist de la historia actual
+     const checklist = step.checklist;
+     console.log(`📋 Checklist para "${step.story.name}": ${checklist.items.length} items`);
+     
+     // ⚠️ CRÍTICO: Guardar URL del template ANTES de navegar a Storybook
+     const snapshot = await mcp_cursor-ide-browser_browser_snapshot();
+     const templateUrl = snapshot?.url;
+     
+     // Item 1: Consultar historia en Storybook
+     if (!checklist.items.find(i => i.id === 'consult-storybook')?.completed) {
+       // ⚠️ CRÍTICO: Verificar que la historia existe ANTES de navegar
+       import { buildSafeStorybookUrl } from '@autorun/core/helpers/verifyStorybookStories';
+       const urlResult = await buildSafeStorybookUrl(plan.componentName, step.story.name);
+       // Si la historia no existe, automáticamente usa 'default' y muestra advertencia
+       
+       // Abrir historia específica en Storybook (con parámetros para esa funcionalidad)
+       const storyUrl = urlResult.url; // URL segura verificada
+       if (urlResult.warning) {
+         console.warn(`⚠️ ${urlResult.warning}`);
+       }
+       await mcp_cursor-ide-browser_browser_navigate({ url: storyUrl });
+       await mcp_cursor-ide-browser_browser_snapshot();
+       
+         // Revisar pestaña "Code" para ver código exacto
+       // Hacer clic en pestaña "Code" si no está activa
+       // Leer el código y entender la implementación
+       
+       // Revisar pestaña "Controls" para ver opciones
+       // Hacer clic en pestaña "Controls"
+       // Revisar todas las opciones específicas de esta funcionalidad
+       
+       // Revisar pestaña "Docs" si está disponible
+       // Hacer clic en pestaña "Docs"
+       
+       // ⚠️ OBLIGATORIO: Volver al template DESPUÉS de consultar
+       await mcp_cursor-ide-browser_browser_navigate({ url: templateUrl });
+       await mcp_cursor-ide-browser_browser_snapshot();
+       
+       // Marcar item como completado
+       completeChecklistItem(plan, step.story.id, 'consult-storybook');
+     }
+     
+     // Item 2: Entender la funcionalidad
+     if (!checklist.items.find(i => i.id === 'understand-functionality')?.completed) {
+       // Documentar qué funcionalidad específica se va a implementar
+       // Marcar como completado después de entender
+       completeChecklistItem(plan, step.story.id, 'understand-functionality');
+     }
+     
+     // Item 3: Implementar la funcionalidad
+     if (!checklist.items.find(i => i.id === 'implement-functionality')?.completed) {
+       // Implementar SOLO la funcionalidad de esta historia específica
+       // NO implementar otras funcionalidades
+       // Usar los parámetros exactos vistos en Storybook
+       
+       // Marcar como completado después de implementar
+       completeChecklistItem(plan, step.story.id, 'implement-functionality');
+     }
+     
+     // Item 4: Probar la funcionalidad
+     if (!checklist.items.find(i => i.id === 'test-functionality')?.completed) {
+       // Probar que la funcionalidad funciona correctamente
+       // Verificar en el navegador
+       
+       // Marcar como completado después de probar
+       completeChecklistItem(plan, step.story.id, 'test-functionality');
+     }
+     
+     // Items adicionales específicos de la historia (drag-drop, expand-collapse, etc.)
+     // Completar cada uno antes de continuar
+     
+     // ⚠️ CRÍTICO: Verificar que TODO el checklist esté completo
+     if (!step.checklist.allCompleted) {
+       throw new Error(`⚠️ Checklist incompleto para "${step.story.name}". Debe completarse antes de continuar.`);
+     }
+     
+     console.log(`✅ Historia "${step.story.name}" completada. Continuando con la siguiente...`);
+   }
+     // Revisar pestaña "Controls" para ver opciones
+     // Revisar pestaña "Docs" para ver documentación
+     
+     // ⚠️ OBLIGATORIO: Volver al template DESPUÉS de consultar
+     await mcp_cursor-ide-browser_browser_navigate({ url: templateUrl });
+     await mcp_cursor-ide-browser_browser_snapshot();
+     
+     // Implementar la funcionalidad de esta historia
+     // Verificar que funciona
+     // Continuar con la siguiente historia
+   }
+   ```
+
+   **PASO 3: Consultar Storybook en Vercel (PRIMERO)** ⚠️ OBLIGATORIO (si no se usa historias)
+   ```typescript
+   // ⚠️ CRÍTICO: Guardar URL del template ANTES de navegar a Storybook
+   const snapshot = await mcp_cursor-ide-browser_browser_snapshot();
+   const templateUrl = snapshot?.url; // Guardar para volver después
+   
+   // ⚠️ CRÍTICO: Verificar historias existentes ANTES de construir URL
+   import { buildSafeStorybookUrl } from '@autorun/core/helpers/verifyStorybookStories';
+   const urlResult = await buildSafeStorybookUrl('DataTable', 'with-checkboxes');
+   // Si 'with-checkboxes' no existe, automáticamente usa 'default'
+   // urlResult.warning contiene advertencia si se usó fallback
+   
+   // Abrir Storybook en Vercel usando Browser MCP con URL verificada
+   await mcp_cursor-ide-browser_browser_navigate({ 
+     url: urlResult.url // URL segura que siempre funciona
+   });
+   await mcp_cursor-ide-browser_browser_snapshot();
+   // Revisar pestaña "Code" y "Controls"
+   
+   // ⚠️ OBLIGATORIO: Volver al template DESPUÉS de consultar
+   await mcp_cursor-ide-browser_browser_navigate({ url: templateUrl });
+   await mcp_cursor-ide-browser_browser_snapshot();
+   // Marcar como completado después de revisar y volver
+   ```
+   
+   **PASO 2: Consultar Storybook MCP** ⚠️ OBLIGATORIO
+   ```typescript
+   // Consultar props del componente
+   const props = await mcp_storybook_getComponentsProps(['tabs']);
+   // Usar props exactas obtenidas
+   // Marcar como completado después de consultar
+   ```
+   
+   **PASO 3: Consultar Documentación** ⚠️ OBLIGATORIO
+   ```typescript
+   // Leer documentación específica
+   // docs/referencia/componentes/navegacin-tabs.md
+   // Marcar como completado después de leer
+   ```
+
+3. **✅ VERIFICAR ANTES DE CONTINUAR:**
+   - ✅ Todos los pasos completados
+   - ✅ Información obtenida y revisada
+   - ✅ Props exactas identificadas
+   - ✅ Estructura correcta verificada
+
+4. **🚀 IMPLEMENTAR CON INFORMACIÓN CORRECTA:**
+   - ✅ Usar props exactas obtenidas de Storybook MCP
+   - ✅ Seguir estructura de Storybook en Vercel
+   - ✅ Usar ejemplos de documentación
+
+**⚠️ IMPORTANTE:**
+- El add-on BLOQUEA automáticamente implementaciones sin checklist completo
+- Las advertencias en consola indican que falta completar pasos
+- NO ignorar las advertencias del add-on
+- SIEMPRE completar checklist antes de implementar
+
+**Ver guía completa:** `docs/guias/implementacion/GUIA-USO-PRE-IMPLEMENTATION-CHECK.md` - ⚠️ **OBLIGATORIO**
+
+---
+
+### ⚠️⚠️⚠️ REGLA CRÍTICA: IMPLEMENTACIÓN AUTOMÁTICA POR HISTORIAS DE STORYBOOK ⭐ AUTOMÁTICO ⚠️⚠️⚠️
+
+**⚠️ AUTOMÁTICO: El Pre-Implementation Check add-on obtiene automáticamente el plan basado en historias cuando detecta un componente.**
+
+**Para CUALQUIER componente, el proceso es AUTOMÁTICO:**
+
+1. **El add-on automáticamente obtiene el plan** (NO necesitas hacerlo manualmente):
+   - Detecta cuando escribes código con patrones como `window.createDataTable()`
+   - Obtiene todas las historias del componente desde Storybook
+   - Crea un plan de implementación basado en esas historias
+   - Muestra el plan en la consola
+
+2. **El agente solo necesita usar el plan:**
+   ```typescript
+   // Obtener plan que el add-on ya obtuvo automáticamente
+   const hub = getAutorunHub();
+   const preCheckAddon = hub?.getAddon('pre-implementation-check');
+   const plan = preCheckAddon?.getStoryBasedPlan(componentName);
+   
+   // Si no existe, obtenerlo automáticamente
+   if (!plan) {
+     const componentId = mapComponentNameToStorybookId(componentName);
+     plan = await preCheckAddon?.getOrCreateStoryBasedPlan(componentName, componentId);
+   }
+   
+   // Mostrar plan al usuario y pedir aprobación
+   ```
+
+3. **Para CADA historia (UNA A LA VEZ con checklist):**
+   - ✅ **Obtener el checklist de la historia** antes de empezar
+   - ✅ **Consultar la historia en Storybook ANTES de implementar** (guardar URL del template, navegar, revisar Code/Controls/Docs, volver)
+   - ✅ **Implementar SOLO la funcionalidad de esa historia específica**
+   - ✅ **Completar TODO el checklist** antes de continuar
+   - ✅ **Probar y verificar** que funciona
+   - ✅ **NO continuar hasta que TODO el checklist esté completo**
+
+4. **⚠️ REGLAS CRÍTICAS:**
+   - ❌ **NO usar historia "default"** - tiene todas las funcionalidades mezcladas
+   - ❌ **NO implementar múltiples historias al mismo tiempo**
+   - ✅ **Implementar UNA historia a la vez**
+   - ✅ **Completar TODO el checklist antes de pasar a la siguiente**
+   - ✅ **Consultar cada historia antes de implementarla**
+   - ✅ **Implementar SOLO la funcionalidad de esa historia**
+
+**Ver guía completa:** `docs/guias/implementacion/GUIA-IMPLEMENTACION-AUTOMATICA-POR-HISTORIAS.md` - ⚠️ **OBLIGATORIO**
+
+**Ejemplo: DataTable tiene historias específicas:**
+- `columnas-reordenables` - Solo reordenamiento de columnas
+- `filas-reordenables` - Solo reordenamiento de filas
+- `filas-expandibles` - Solo expandir/colapsar filas
+- `ordenamiento-columnas` - Solo ordenamiento (asc/desc)
+- `seleccion-multiple` - Solo checkboxes y Action Bar
+- `paginacion` - Solo paginación
+- `busqueda-filtros` - Solo búsqueda y filtros
+- `columnas-sticky` - Solo columnas fijas
+- `with-checkboxes` - Con checkboxes
+- `with-action-bar` - Con barra de acciones
+- `with-sorting` - Con ordenamiento
+- `with-pagination` - Con paginación
+- etc.
+
+**Ver guía completa:** `docs/guias/implementacion/GUIA-IMPLEMENTACION-POR-HISTORIAS-STORYBOOK.md` - ⚠️ **OBLIGATORIO**
+
+### ⚠️ REGLA CRÍTICA: IMPLEMENTACIÓN AUTOMÁTICA POR HISTORIAS (SIMPLIFICADO)
+
+**⚠️ AUTOMÁTICO: El add-on obtiene automáticamente el plan basado en historias. Solo necesitas usarlo.**
+
+**Para CUALQUIER componente (simple o complejo):**
+
+1. **El add-on automáticamente:**
+   - Detecta el componente cuando escribes código
+   - Obtiene todas las historias desde Storybook
+   - Crea un plan de implementación basado en esas historias
+   - Muestra el plan en la consola
+
+2. **El agente solo necesita:**
+   - Usar el plan que el add-on ya obtuvo
+   - Implementar UNA historia a la vez
+   - Completar TODO el checklist antes de continuar
+
+3. **NO implementar todo de golpe:**
+   - ❌ NO implementar todas las funcionalidades a la vez
+   - ✅ Implementar UNA historia a la vez
+   - ✅ Completar TODO el checklist antes de continuar
+
+**Ejemplo: DataTable**
+- El add-on obtiene automáticamente todas las historias (ej: `columnas-reordenables`, `filas-expandibles`, `seleccion-multiple`, etc.)
+- El agente implementa UNA historia a la vez siguiendo el plan
+- Cada historia tiene su checklist que debe completarse antes de continuar
+
+**Ver guía completa:** `docs/guias/implementacion/GUIA-IMPLEMENTACION-AUTOMATICA-POR-HISTORIAS.md` - ⚠️ **OBLIGATORIO**
+
 ---
 
 ## 🔍 VERIFICACIÓN ANTES DE TRABAJAR
@@ -122,14 +611,29 @@ Antes de trabajar en un template, LEER:
 - ✅ Consultar `CATALOGO-COMPONENTES-UBITS.md` antes de crear
 - ✅ Usar formato correcto de iconos (sin prefijos `fa-`, con sufijos si aplica)
 - ✅ Usar tokens UBITS correctos (no sobrescribir con `!important`)
+- ⚠️ **CHECKLIST OBLIGATORIO:** Leer `docs/guias/implementacion/CHECKLIST-ANTES-IMPLEMENTAR-COMPONENTE.md` antes de implementar cualquier componente
+- ⚠️ **CRÍTICO: NO agregar padding, margin, margin-top ni estilos extra a componentes** - Los componentes deben venir tal cual de Storybook
+- ⚠️ **NUNCA agregar margin-top automáticamente**, incluso si el usuario menciona "spacing" o "a X px del subnav"
+- ⚠️ **NUNCA agregar margin-top inline o en CSS al contenedor de componentes** - El spacing debe venir del `gap` del contenedor padre
+- ⚠️ **Solo agregar margin-top si el usuario dice explícitamente "agregar margin-top"** - NO asumir ni agregar automáticamente
+- ⚠️ **Solo agregar estilos si el usuario lo solicita explícitamente** - NO asumir ni agregar automáticamente
+- ⚠️ **Usar `gap` del contenedor padre para spacing entre elementos** - NO agregar margin-top a componentes
 
 ### Implementación
 - ✅ NUNCA implementar todo de golpe
 - ✅ SIEMPRE dividir en tareas pequeñas
 - ✅ SIEMPRE pedir aprobación antes de continuar
-- ✅ SIEMPRE ejecutar `npm run lint` después de implementar
+- ⚠️ NO ejecutar `npm run lint` automáticamente (solo cuando el usuario lo pida o haya un error real)
 - ✅ Verificar módulo actual antes de inicializar componentes
 - ✅ Interceptar ContentManager si agregas elementos a `.content-area`
+- ⚠️ **CRÍTICO: SIEMPRE implementar sistema de restauración automática para SubNav** - Ver: `docs/guias/implementacion/GUIA-ERROR-SUBNAV-DESAPARECE-DESPUES-CREARSE.md`
+- ⚠️ **NO agregar logs de diagnóstico excesivos** - Solo logs esenciales, remover después de resolver
+- ⚠️ **CRÍTICO: Al interceptar ContentManager para eliminar HeaderSection/content-sections:**
+  - ✅ Interceptar INMEDIATAMENTE después de cargar content-manager.js
+  - ✅ Usar `requestAnimationFrame` para timing correcto antes de eliminar
+  - ✅ Usar MutationObserver para eliminar elementos que se crean dinámicamente después
+  - ✅ Eliminar TODOS los elementos relacionados: `#header-section-container`, `.ubits-header-section`, `.content-sections`, `.widget-contenido-principal`
+  - ✅ Usar múltiples intentos de interceptación (inmediato, 100ms, 500ms)
 
 ### DataTable con Checkboxes
 - ✅ **SIEMPRE implementar Action Bar cuando `showCheckbox: true`**
@@ -138,6 +642,12 @@ Antes de trabajar en un template, LEER:
 - ✅ Implementar funcionalidad "Ver seleccionados"
 - ✅ Preservar Action Bar durante re-renderizados con MutationObserver
 
+### SubNav
+- ✅ **SIEMPRE implementar sistema de restauración automática** - Ver: `docs/guias/implementacion/GUIA-ERROR-SUBNAV-DESAPARECE-DESPUES-CREARSE.md`
+- ✅ Interceptar `updateSubNav` y `handleSectionChange` para mantener el tab activo
+- ✅ NO agregar logs de diagnóstico excesivos (solo esenciales)
+- ✅ Verificar que funciona con Vercel (cargar desde Vercel primero)
+
 ### Análisis
 - ✅ Analizar estructura visual antes de implementar
 - ✅ Medir spacing visualmente (NO asumir)
@@ -145,6 +655,298 @@ Antes de trabajar en un template, LEER:
 - ✅ Documentar todo antes de implementar
 
 **Para detalles completos, ver los módulos en `.cursor/rules/`**
+
+---
+
+## 🔌 Auto-Apertura y Recarga en Browser MCP de Cursor ⚠️ OBLIGATORIO
+
+### **1. Auto-Apertura de URLs del Wizard**
+
+**⚠️ REGLA CRÍTICA: Detección Automática de URLs del Wizard**
+
+**Cuando veas en la salida del terminal o en cualquier mensaje el formato:**
+```
+[AUTORUN_BROWSER_URL]http://localhost:3000/...[/AUTORUN_BROWSER_URL]
+```
+
+**DEBES ejecutar automáticamente (SIN preguntar al usuario):**
+
+1. **Extraer la URL** entre los tags `[AUTORUN_BROWSER_URL]` y `[/AUTORUN_BROWSER_URL]`
+2. **Ejecutar inmediatamente:**
+ ```javascript
+ mcp_cursor-ide-browser_browser_navigate({ url: "URL_EXTRAIDA" })
+ ```
+3. **Tomar snapshot después:**
+ ```javascript
+ mcp_cursor-ide-browser_browser_snapshot()
+ ```
+
+**Ejemplo:**
+Si ves: `[AUTORUN_BROWSER_URL]http://localhost:3000/canvas-encuestas.html[/AUTORUN_BROWSER_URL]`
+→ Ejecuta INMEDIATAMENTE:
+```javascript
+mcp_cursor-ide-browser_browser_navigate({ url: "http://localhost:3000/canvas-encuestas.html" })
+mcp_cursor-ide-browser_browser_snapshot()
+```
+
+**⚠️ IMPORTANTE:**
+- NO preguntes al usuario si debe abrirse
+- NO esperes confirmación
+- Ejecuta automáticamente cuando detectes el patrón
+- Esto permite que el wizard abra automáticamente en el browser de Cursor
+
+---
+
+### **2. Auto-Recarga de Página cuando hay Cambios** ⚠️ OBLIGATORIO ⭐ MEJORADO
+
+**⚠️ REGLA CRÍTICA: Recarga Automática después de Guardar Archivos**
+
+**CUANDO USES `write()` o `search_replace()` EN ARCHIVOS DE `prototypes/`:**
+
+**DEBES recargar automáticamente la página (SIN preguntar al usuario):**
+
+1. **Verificar si el archivo debe activar recarga:**
+   - Si el archivo está en `prototypes/`
+   - Si es `.html`, `.js` o `.css`
+   - Ejemplo: `prototypes/canvas-encuestas.html` → ✅ Debe recargarse
+
+2. **Obtener la URL actual del navegador:**
+   ```javascript
+   const snapshot = await mcp_cursor-ide-browser_browser_snapshot();
+   const currentUrl = snapshot?.url || `http://localhost:3000/${path.basename(filePath)}`;
+   ```
+
+3. **Recargar la página inmediatamente:**
+   ```javascript
+   await mcp_cursor-ide-browser_browser_navigate({ url: currentUrl });
+   ```
+
+4. **Tomar snapshot después de recargar:**
+   ```javascript
+   setTimeout(async () => {
+     await mcp_cursor-ide-browser_browser_snapshot();
+   }, 1000);
+   ```
+
+**Ejemplo completo:**
+```javascript
+// Después de usar write() o search_replace() en prototypes/
+const filePath = 'prototypes/canvas-encuestas.html';
+if (filePath.includes('prototypes/') && (filePath.endsWith('.html') || filePath.endsWith('.js') || filePath.endsWith('.css'))) {
+  // Recargar automáticamente
+  const snapshot = await mcp_cursor-ide-browser_browser_snapshot();
+  const currentUrl = snapshot?.url || `http://localhost:3000/${path.basename(filePath)}`;
+  await mcp_cursor-ide-browser_browser_navigate({ url: currentUrl });
+  setTimeout(async () => {
+    await mcp_cursor-ide-browser_browser_snapshot();
+  }, 1000);
+}
+```
+
+**⚠️ IMPORTANTE:**
+- NO preguntes al usuario si debe recargarse
+- NO esperes confirmación
+- Ejecuta automáticamente después de guardar archivos en `prototypes/`
+- Esto permite ver los cambios inmediatamente sin recargar manualmente
+
+---
+
+**⚠️ REGLA CRÍTICA: Detección Automática de Mensajes de Auto-Reload**
+
+**Cuando veas en la salida del terminal o en cualquier mensaje el formato:**
+```
+[AUTORUN_AUTO_RELOAD]/path/to/file[/AUTORUN_AUTO_RELOAD]
+```
+
+**O cuando veas mensajes como:**
+```
+🔄 AutoReload: Cambio detectado en ...
+💡 AutoReload: El agente de Cursor debe interceptar este mensaje y recargar la página
+```
+
+**DEBES ejecutar automáticamente (SIN preguntar al usuario):**
+
+1. **Obtener la URL actual del navegador:**
+   ```javascript
+   const snapshot = await mcp_cursor-ide-browser_browser_snapshot();
+   const currentUrl = snapshot?.url || "http://localhost:3000/canvas-administrador-encuestas-2025-12-05.html";
+   ```
+
+2. **Recargar la página inmediatamente:**
+   ```javascript
+   await mcp_cursor-ide-browser_browser_navigate({ url: currentUrl });
+   ```
+
+3. **Tomar snapshot después de recargar:**
+   ```javascript
+   await mcp_cursor-ide-browser_browser_snapshot();
+   ```
+
+**Ejemplo:**
+Si ves: `[AUTORUN_AUTO_RELOAD]/Users/elkinmac/Desktop/Autorun/prototypes/canvas-administrador-encuestas-2025-12-05.html[/AUTORUN_AUTO_RELOAD]`
+→ Ejecuta INMEDIATAMENTE:
+```javascript
+const snapshot = await mcp_cursor-ide-browser_browser_snapshot();
+const currentUrl = snapshot?.url || "http://localhost:3000/canvas-administrador-encuestas-2025-12-05.html";
+await mcp_cursor-ide-browser_browser_navigate({ url: currentUrl });
+await mcp_cursor-ide-browser_browser_snapshot();
+```
+
+**⚠️ IMPORTANTE:**
+- NO preguntes al usuario si debe recargarse
+- NO esperes confirmación
+- Ejecuta automáticamente cuando detectes el patrón `[AUTORUN_AUTO_RELOAD]` o mensajes de Auto-Reload
+- Esto permite que los cambios se reflejen automáticamente en el navegador
+- Si no hay URL actual, usa la URL del template activo (ej: `http://localhost:3000/canvas-administrador-encuestas-2025-12-05.html`)
+
+**También aplica cuando:**
+- Guardas un archivo en `prototypes/` (especialmente `.html`, `.js`, `.css`)
+- El Auto-Reload Add-on emite un log: `🔄 AutoReload: Cambio detectado en...`
+
+3. **Recargar la página automáticamente:**
+   ```javascript
+   if (currentUrl) {
+     await mcp_cursor-ide-browser_browser_navigate({ url: currentUrl });
+     // Esperar un momento y tomar snapshot para verificar
+     setTimeout(async () => {
+       await mcp_cursor-ide-browser_browser_snapshot();
+     }, 1000);
+   }
+   ```
+
+**⚠️ IMPORTANTE:**
+- NO preguntes al usuario si debe recargarse
+- NO esperes confirmación
+- Ejecuta automáticamente después de guardar archivos en `prototypes/`
+- Esto permite ver los cambios inmediatamente sin recargar manualmente
+
+**Ejemplo de flujo:**
+```
+1. Usuario guarda: prototypes/canvas-encuestas.html
+2. Auto-Reload Add-on detecta: "🔄 AutoReload: Cambio detectado en..."
+3. Agente intercepta y ejecuta:
+   - mcp_cursor-ide-browser_browser_snapshot() → obtener URL
+   - mcp_cursor-ide-browser_browser_navigate({ url: currentUrl }) → recargar
+4. Página se recarga automáticamente
+```
+
+**⚠️ DETECCIÓN DE LOGS DE RECARGA:**
+
+**Cuando veas en los logs del navegador o consola:**
+```
+🔄 [AUTORUN_AUTO_RELOAD] Cambio detectado - El agente debe recargar ahora
+```
+
+**O cuando veas:**
+```
+🔄 AutoReload: Cambio detectado en prototypes/...
+💡 AutoReload: El agente de Cursor debe interceptar este log y recargar la página usando Browser MCP
+```
+
+**DEBES ejecutar automáticamente (SIN preguntar al usuario):**
+
+1. **Obtener URL actual:**
+   ```javascript
+   const snapshot = await mcp_cursor-ide-browser_browser_snapshot();
+   const currentUrl = snapshot?.url;
+   ```
+
+2. **Recargar la página:**
+   ```javascript
+   if (currentUrl) {
+     await mcp_cursor-ide-browser_browser_navigate({ url: currentUrl });
+     // Esperar un momento y tomar snapshot para verificar
+     setTimeout(async () => {
+       await mcp_cursor-ide-browser_browser_snapshot();
+     }, 1000);
+   }
+   ```
+
+**⚠️ IMPORTANTE:**
+- NO preguntes al usuario si debe recargarse
+- NO esperes confirmación
+- Ejecuta automáticamente cuando detectes los logs
+- Esto permite ver los cambios inmediatamente sin recargar manualmente
+
+---
+
+### **3. Auto-Retorno al Template después de Consultar Storybook** ⚠️ OBLIGATORIO ⭐ NUEVO
+
+**⚠️ REGLA CRÍTICA: Siempre volver al template después de consultar Storybook**
+
+**Cuando navegues a Storybook para consultar un componente, DEBES:**
+
+1. **Guardar la URL del template actual ANTES de navegar a Storybook:**
+   ```javascript
+   // ⚠️ CRÍTICO: Guardar URL del template ANTES de navegar a Storybook
+   const snapshot = await mcp_cursor-ide-browser_browser_snapshot();
+   const templateUrl = snapshot?.url; // Ej: "http://localhost:3000/canvas-administrador-encuestas-2025-12-05.html"
+   
+   // Solo guardar si NO es una URL de Storybook
+   if (templateUrl && !templateUrl.includes('storybook') && !templateUrl.includes('vercel.app')) {
+     // Guardar para volver después
+     window._AUTORUN_TEMPLATE_URL = templateUrl;
+   }
+   ```
+
+2. **Navegar a Storybook para consultar:**
+   ```javascript
+   // Navegar a Storybook
+   await mcp_cursor-ide-browser_browser_navigate({ 
+     url: 'https://ubits-storybook10.vercel.app/?path=/story/navegacion-tabs--default' 
+   });
+   await mcp_cursor-ide-browser_browser_snapshot();
+   // Revisar pestaña "Code" y "Controls"
+   ```
+
+3. **⚠️ CRÍTICO: Volver automáticamente al template DESPUÉS de consultar:**
+   ```javascript
+   // ⚠️ OBLIGATORIO: Volver al template después de consultar Storybook
+   const templateUrl = window._AUTORUN_TEMPLATE_URL || 
+                      "http://localhost:3000/canvas-administrador-encuestas-2025-12-05.html";
+   
+   // Volver al template
+   await mcp_cursor-ide-browser_browser_navigate({ url: templateUrl });
+   await mcp_cursor-ide-browser_browser_snapshot();
+   ```
+
+**⚠️ REGLA CRÍTICA:**
+- **SIEMPRE** guardar la URL del template antes de navegar a Storybook
+- **SIEMPRE** volver al template después de consultar Storybook
+- **NO** quedarse en Storybook después de consultar
+- **NO** preguntar al usuario si debe volver
+- **Ejecutar automáticamente** el retorno después de consultar
+
+**Ejemplo de flujo completo:**
+```javascript
+// 1. Guardar URL del template actual
+const snapshot = await mcp_cursor-ide-browser_browser_snapshot();
+const templateUrl = snapshot?.url; // "http://localhost:3000/canvas-administrador-encuestas-2025-12-05.html"
+
+// 2. Navegar a Storybook para consultar (con verificación automática)
+// ⚠️ CRÍTICO: Verificar historias existentes ANTES de navegar
+import { buildSafeStorybookUrl } from '@autorun/core/helpers/verifyStorybookStories';
+const urlResult = await buildSafeStorybookUrl('Tabs', 'default');
+if (urlResult.warning) {
+  console.warn(`⚠️ ${urlResult.warning}`);
+}
+
+await mcp_cursor-ide-browser_browser_navigate({ 
+  url: urlResult.url // URL segura verificada
+});
+await mcp_cursor-ide-browser_browser_snapshot();
+// Revisar pestaña "Code" y "Controls" aquí
+
+// 3. ⚠️ OBLIGATORIO: Volver al template automáticamente
+await mcp_cursor-ide-browser_browser_navigate({ url: templateUrl });
+await mcp_cursor-ide-browser_browser_snapshot();
+// Ahora estás de vuelta en el template para ver la implementación
+```
+
+**⚠️ IMPORTANTE:**
+- Esta regla aplica cuando consultas Storybook para verificar componentes antes de implementar
+- El objetivo es que siempre veas el template para verificar que la implementación está correcta
+- NO quedarse en Storybook después de consultar
 
 ---
 
@@ -159,6 +961,9 @@ Antes de trabajar en un template, LEER:
 - **Inicio rápido:** `GETTING-STARTED.md`
 - **Catálogo componentes:** `docs/referencia/CATALOGO-COMPONENTES-UBITS.md`
 - **Documentación componentes:** `docs/referencia/componentes/`
+- **⚠️ Prevención Error margin-top en Tabs:** `docs/guias/implementacion/GUIA-PREVENCION-ERROR-MARGIN-TOP-TABS.md` - ⭐ **NUEVO:** Guía específica para prevenir el error de agregar margin-top a tabs
+- **⚠️ Error SubNav Desaparece:** `docs/guias/implementacion/GUIA-ERROR-SUBNAV-DESAPARECE-DESPUES-CREARSE.md` - ⭐ **NUEVO:** Error - SubNav desaparece después de crearse - SIEMPRE implementar sistema de restauración automática
+- **📋 Resumen Errores Sesión:** `docs/guias/implementacion/RESUMEN-ERRORES-SESION-SUBNAV-TABS.md` - ⭐ **NUEVO:** Resumen completo de errores encontrados y solucionados en esta sesión
 
 ---
 
