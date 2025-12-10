@@ -2510,10 +2510,11 @@
             let tooltipRect = tooltipElement.getBoundingClientRect();
             
             // Calcular espacio disponible en cada dirección RELATIVO AL CONTENEDOR
-            const spaceAbove = refRect.top - viewport.top - padding;
-            const spaceBelow = viewport.bottom - refRect.bottom - padding;
-            const spaceLeft = refRect.left - viewport.left - padding;
-            const spaceRight = viewport.right - refRect.right - padding;
+            // ⚠️ CRÍTICO: Asegurar que los cálculos no den NaN
+            const spaceAbove = Math.max(0, refRect.top - viewport.top - padding);
+            const spaceBelow = Math.max(0, viewport.bottom - refRect.bottom - padding);
+            const spaceLeft = Math.max(0, refRect.left - viewport.left - padding);
+            const spaceRight = Math.max(0, viewport.right - refRect.right - padding);
             
             // ⚠️ CRÍTICO: Calcular ancho máximo disponible para centrar el tooltip
             // Para centrar correctamente, el tooltip debe poder extenderse igualmente a ambos lados
