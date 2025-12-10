@@ -2536,9 +2536,15 @@
             
             // ⚠️ CRÍTICO: SIEMPRE ajustar el ancho para mantener el centrado
             // Aplicar el nuevo ancho SIEMPRE que sea diferente al actual o si el tooltip es más ancho
-            if (newMaxWidth !== currentMaxWidth || currentWidth > maxAvailableWidth) {
+            // También verificar que el ancho actual del tooltip sea mayor que el espacio disponible
+            const needsAdjustment = newMaxWidth !== currentMaxWidth || 
+                                   currentWidth > maxAvailableWidth ||
+                                   tooltipRect.width > maxAvailableWidth;
+            
+            if (needsAdjustment) {
               finalMaxWidth = newMaxWidth;
-              tooltipElement.style.maxWidth = `${newMaxWidth}px`;
+              // ⚠️ CRÍTICO: Aplicar el nuevo maxWidth y asegurar que se respete
+              tooltipElement.style.maxWidth = `${newMaxWidth}px !important`;
               tooltipElement.style.width = 'auto'; // Permitir que se ajuste al contenido pero respetando maxWidth
               // Forzar recálculo del layout
               tooltipElement.offsetHeight; // Trigger reflow
@@ -2547,11 +2553,14 @@
               
               // ⚠️ DEBUG: Log para verificar el ajuste
               console.log('🔧 [Tooltip] Ajustando ancho:', {
-                maxAvailableWidth,
+                maxAvailableWidth: Math.round(maxAvailableWidth),
                 newMaxWidth,
                 currentMaxWidth,
-                currentWidth,
-                tooltipRectWidth: tooltipRect.width
+                currentWidth: Math.round(currentWidth),
+                tooltipRectWidth: Math.round(tooltipRect.width),
+                spaceLeft: Math.round(spaceLeft),
+                spaceRight: Math.round(spaceRight),
+                minSpace: Math.round(minSpace)
               });
             }
             
@@ -2719,9 +2728,12 @@
               // Esto permite ajustar el ancho dinámicamente y respetar los límites del contenedor
               const optimal = calculateOptimalPosition(rect, tooltip, preferredTailPosition, referenceElement);
               
-              // Aplicar ancho máximo si se ajustó dinámicamente
+              // ⚠️ CRÍTICO: Aplicar ancho máximo si se ajustó dinámicamente
+              // Esto asegura que el tooltip respete los límites del contenedor
               if (optimal.maxWidth !== null) {
                 tooltip.style.maxWidth = `${optimal.maxWidth}px`;
+                // Forzar recálculo para asegurar que el ancho se aplique
+                tooltip.offsetHeight; // Trigger reflow
               }
               
               // Aplicar posición (recalcular dimensiones después de ajustar ancho si es necesario)
