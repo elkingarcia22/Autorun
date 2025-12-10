@@ -2340,9 +2340,21 @@
 
             footerHTML = `
     <div class="ubits-tooltip__footer">
-      ${tertiaryButton}
-      ${secondaryButton}
-      ${primaryButton}
+      <div class="ubits-tooltip__footer-actions${!showTertiaryButton ? ' ubits-tooltip__footer-actions--no-tertiary' : ''}">
+        ${
+          tertiaryButton
+            ? `
+        <div class="ubits-tooltip__footer-left">
+          ${tertiaryButton}
+        </div>
+        `
+            : ''
+        }
+        <div class="ubits-tooltip__footer-right">
+          ${secondaryButton}
+          ${primaryButton}
+        </div>
+      </div>
     </div>
   `;
           }
