@@ -244,7 +244,8 @@ export async function discoverStorybookComponents(): Promise<DiscoveryResult> {
         processedCount++;
 
         // Extraer ID del componente desde el storyId (formato: "component-id--story-name")
-        const componentIdMatch = storyId.match(/^([^--]+)--/);
+        // El regex debe capturar todo antes del primer "--"
+        const componentIdMatch = storyId.match(/^(.+?)--/);
         if (!componentIdMatch) {
           // Debug: mostrar algunas entradas sin match
           if (processedCount < 5) {
