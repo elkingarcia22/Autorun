@@ -818,16 +818,241 @@
     <!-- System Loaders -->
     <script src="https://ubits-storybook10.vercel.app/templates/components-loader.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
     
-    <!-- Modal Component Script (cargado manualmente porque components-loader.js no lo carga) -->
-    <script type="module">
-      // Cargar modal dinámicamente
-      import('https://ubits-storybook10.vercel.app/components/modal/src/index.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT')
-        .then(() => {
-          console.log('✅ [Modal] Script del modal cargado correctamente');
-        })
-        .catch((error) => {
-          console.error('❌ [Modal] Error al cargar script del modal:', error);
-        });
+    <!-- Modal Component Script (implementación manual porque components-loader.js no lo carga) -->
+    <script>
+      // Implementación manual de createModal basada en ModalProvider.ts
+      // Esto funciona sin depender de components-loader.js
+      (function() {
+        const MODAL_SIZES = {
+          sm: 'calc(var(--ubits-spacing-12) * 4)',
+          md: 'calc(var(--ubits-spacing-12) * 6)',
+          lg: 'calc(var(--ubits-spacing-12) * 8)',
+          xl: 'calc(var(--ubits-spacing-12) * 10)',
+          full: 'calc(var(--ubits-spacing-12) * 16)',
+        };
+
+        function renderModal(options) {
+          const {
+            title,
+            bodyContent = '',
+            size = 'md',
+            fullScreen = false,
+            footerButtons,
+            className = '',
+          } = options;
+
+          const modalSizeClass = `ubits-modal--size-${size}`;
+          const fullScreenClass = fullScreen ? 'ubits-modal--full-screen' : '';
+          const classes = ['ubits-modal', modalSizeClass, fullScreenClass, className].filter(Boolean).join(' ');
+
+          // Header HTML
+          const headerHTML = `
+            <div class="ubits-modal__header">
+              <div class="ubits-modal__header-text">
+                <div class="ubits-modal__header-title">
+                  <p class="ubits-heading-h2">${title || ''}</p>
+                </div>
+              </div>
+              <button class="ubits-modal__close" aria-label="Cerrar modal" type="button">
+                <i class="far fa-times"></i>
+              </button>
+            </div>
+          `;
+
+          // Body HTML
+          const bodyHTMLContent = typeof bodyContent === 'function' ? bodyContent() : bodyContent || '<div class="ubits-modal__placeholder">Contenido del modal</div>';
+          const bodyHTML = `
+            <div class="ubits-modal__body">
+              <div class="ubits-modal__body-content">
+                ${bodyHTMLContent}
+              </div>
+              <div class="ubits-modal__scrollbar">
+                <div class="ubits-modal__scrollbar-bar"></div>
+              </div>
+            </div>
+          `;
+
+          // Footer HTML
+          let footerHTML = '';
+          if (footerButtons) {
+            const buttons = [];
+            if (footerButtons.tertiary) {
+              buttons.push(`
+                <button class="ubits-button ubits-button--tertiary ubits-button--md" type="button">
+                  <span>${footerButtons.tertiary.label || 'Cancelar'}</span>
+                </button>
+              `);
+            }
+            if (footerButtons.secondary) {
+              buttons.push(`
+                <button class="ubits-button ubits-button--secondary ubits-button--md" type="button">
+                  <span>${footerButtons.secondary.label || 'Guardar'}</span>
+                </button>
+              `);
+            }
+            if (footerButtons.primary) {
+              buttons.push(`
+                <button class="ubits-button ubits-button--primary ubits-button--md" type="button">
+                  <span>${footerButtons.primary.label || 'Aplicar'}</span>
+                </button>
+              `);
+            }
+            footerHTML = `
+              <div class="ubits-modal__footer">
+                <div class="ubits-modal__footer-actions">
+                  ${buttons.join('')}
+                </div>
+              </div>
+            `;
+          }
+
+          // Modal completo
+          return `
+            <div class="ubits-modal-overlay">
+              <div class="${classes}">
+                ${headerHTML}
+                ${bodyHTML}
+                ${footerHTML}
+              </div>
+            </div>
+          `;
+        }
+
+        function createModal(options) {
+          const { containerId, onClose, closeOnOverlayClick = true, open = false } = options;
+
+          // Crear contenedor
+          let container;
+          if (containerId) {
+            container = document.getElementById(containerId) || document.body;
+          } else {
+            container = document.body;
+          }
+
+          // Crear elemento del modal
+          const wrapper = document.createElement('div');
+          wrapper.innerHTML = renderModal(options);
+          const modalOverlay = wrapper.firstElementChild;
+
+          if (!modalOverlay) {
+            console.error('❌ [Modal] No se pudo crear el modal');
+            throw new Error('No se pudo crear el modal');
+          }
+
+          const modal = modalOverlay.querySelector('.ubits-modal');
+          const closeButton = modalOverlay.querySelector('.ubits-modal__close');
+          const overlay = modalOverlay;
+
+          // Funciones de control
+          const openModal = () => {
+            modalOverlay.classList.add('ubits-modal-overlay--open');
+            document.body.style.overflow = 'hidden';
+          };
+
+          const closeModal = () => {
+            modalOverlay.classList.remove('ubits-modal-overlay--open');
+            document.body.style.overflow = '';
+            if (onClose) {
+              onClose();
+            }
+          };
+
+          const updateContent = (content) => {
+            const bodyContentElement = modalOverlay.querySelector('.ubits-modal__body-content');
+            if (bodyContentElement) {
+              const contentHTML = typeof content === 'function' ? content() : content;
+              bodyContentElement.innerHTML = contentHTML;
+            }
+          };
+
+          // Event listeners
+          if (closeButton) {
+            closeButton.addEventListener('click', (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              closeModal();
+            });
+          }
+
+          if (closeOnOverlayClick && overlay) {
+            overlay.addEventListener('click', (e) => {
+              if (e.target === overlay) {
+                closeModal();
+              }
+            });
+          }
+
+          // Cerrar con ESC
+          const handleEsc = (e) => {
+            if (e.key === 'Escape' && modalOverlay.classList.contains('ubits-modal-overlay--open')) {
+              closeModal();
+            }
+          };
+          document.addEventListener('keydown', handleEsc);
+
+          // Agregar event listeners a los botones del footer
+          if (options.footerButtons) {
+            const buttons = modalOverlay.querySelectorAll('.ubits-modal__footer-actions button');
+            let buttonIndex = 0;
+            
+            if (options.footerButtons.tertiary && buttons[buttonIndex]) {
+              buttons[buttonIndex].addEventListener('click', (e) => {
+                e.preventDefault();
+                if (options.footerButtons.tertiary.onClick) {
+                  options.footerButtons.tertiary.onClick();
+                }
+                closeModal();
+              });
+              buttonIndex++;
+            }
+            
+            if (options.footerButtons.secondary && buttons[buttonIndex]) {
+              buttons[buttonIndex].addEventListener('click', (e) => {
+                e.preventDefault();
+                if (options.footerButtons.secondary.onClick) {
+                  options.footerButtons.secondary.onClick();
+                }
+                closeModal();
+              });
+              buttonIndex++;
+            }
+            
+            if (options.footerButtons.primary && buttons[buttonIndex]) {
+              buttons[buttonIndex].addEventListener('click', (e) => {
+                e.preventDefault();
+                if (options.footerButtons.primary.onClick) {
+                  options.footerButtons.primary.onClick();
+                }
+                closeModal();
+              });
+            }
+          }
+
+          // Agregar al contenedor
+          container.appendChild(modalOverlay);
+
+          // Abrir si está configurado
+          if (open) {
+            openModal();
+          }
+
+          return {
+            element: modalOverlay,
+            open: openModal,
+            close: closeModal,
+            updateContent: updateContent,
+          };
+        }
+
+        // Exponer globalmente
+        window.createModal = createModal;
+        if (!window.UBITSModal) {
+          window.UBITSModal = {};
+        }
+        window.UBITSModal.createModal = createModal;
+
+        console.log('✅ [Modal] createModal implementado manualmente');
+      })();
     </script>
     
     <script src="https://ubits-storybook10.vercel.app/templates/config/products.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
