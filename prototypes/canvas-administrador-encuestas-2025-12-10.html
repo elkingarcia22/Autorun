@@ -3092,8 +3092,16 @@
           if (encuestasDataTableInstance && typeof encuestasDataTableInstance.destroy === 'function') {
             encuestasDataTableInstance.destroy();
           }
+          // Limpiar completamente el contenedor
           container.innerHTML = '';
           console.log('🔵 [Encuestas DataTable] Contenedor limpiado antes de crear nuevo DataTable');
+        }
+        
+        // ⚠️ CRÍTICO: Verificar y eliminar headers duplicados ANTES de crear el DataTable
+        const allHeaders = container.querySelectorAll('.ubits-data-table__header');
+        if (allHeaders.length > 0) {
+          console.log(`⚠️ [Encuestas DataTable] Se encontraron ${allHeaders.length} headers antes de crear DataTable, eliminando...`);
+          allHeaders.forEach(header => header.remove());
         }
       }
       
