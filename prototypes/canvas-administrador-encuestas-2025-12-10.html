@@ -3057,6 +3057,13 @@
       
       encuestasDataOriginal = [...encuestasData];
       
+      // ⚠️ CRÍTICO: Limpiar el contenedor antes de crear el DataTable para evitar headers duplicados
+      const container = document.getElementById('encuestas-table-container');
+      if (container) {
+        container.innerHTML = '';
+        console.log('🔵 [Encuestas DataTable] Contenedor limpiado antes de crear DataTable');
+      }
+      
       try {
         encuestasDataTableInstance = window.createDataTable({
           containerId: 'encuestas-table-container',
