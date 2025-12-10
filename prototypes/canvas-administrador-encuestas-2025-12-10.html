@@ -817,6 +817,261 @@
 
     <!-- System Loaders -->
     <script src="https://ubits-storybook10.vercel.app/templates/components-loader.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
+    
+    <!-- Drawer Component Script (implementación manual porque components-loader.js no lo carga) -->
+    <script>
+      // Implementación manual de createDrawer basada en DrawerProvider.ts
+      // Esto funciona sin depender de components-loader.js
+      (function() {
+        const DRAWER_WIDTHS = {
+          100: '100%',
+          80: '80%',
+          60: '60%',
+          50: '50%',
+          40: '40%',
+          30: '30%',
+        };
+
+        function renderDrawer(options) {
+          const {
+            title,
+            complementaryText = '',
+            width = 40,
+            bodyContent = '',
+            footerButtons,
+            className = '',
+          } = options;
+
+          const drawerWidthClass = `ubits-drawer--width-${width}`;
+          const classes = ['ubits-drawer', drawerWidthClass, className].filter(Boolean).join(' ');
+
+          // Header HTML
+          const headerHTML = `
+            <div class="ubits-drawer__header">
+              <div class="ubits-drawer__header-text">
+                <div class="ubits-drawer__header-title">
+                  <p class="ubits-heading-h2">${title || ''}</p>
+                </div>
+                ${complementaryText ? `
+                <div class="ubits-drawer__header-complementary">
+                  <p class="ubits-body-sm-regular">${complementaryText}</p>
+                </div>
+                ` : ''}
+              </div>
+              <button class="ubits-drawer__close ubits-button ubits-button--secondary ubits-button--md" aria-label="Cerrar drawer" type="button">
+                <i class="far fa-times"></i>
+              </button>
+            </div>
+          `;
+
+          // Body HTML
+          const bodyHTMLContent = typeof bodyContent === 'function' ? bodyContent() : bodyContent || '<div class="ubits-drawer__placeholder">Contenido del drawer</div>';
+          const bodyHTML = `
+            <div class="ubits-drawer__body">
+              <div class="ubits-drawer__body-content">
+                ${bodyHTMLContent}
+              </div>
+              <div class="ubits-drawer__scrollbar">
+                <div class="ubits-drawer__scrollbar-bar"></div>
+              </div>
+            </div>
+          `;
+
+          // Footer HTML
+          let footerHTML = '';
+          if (footerButtons) {
+            const buttons = [];
+            if (footerButtons.tertiary) {
+              buttons.push(`
+                <div class="ubits-drawer__footer-left">
+                  <button class="ubits-drawer__footer-button ubits-button ubits-button--tertiary ubits-button--md" type="button">
+                    <span>${footerButtons.tertiary.label || 'Cancelar'}</span>
+                  </button>
+                </div>
+              `);
+            }
+            const rightButtons = [];
+            if (footerButtons.secondary) {
+              rightButtons.push(`
+                <button class="ubits-drawer__footer-button ubits-button ubits-button--secondary ubits-button--md" type="button">
+                  <span>${footerButtons.secondary.label || 'Guardar'}</span>
+                </button>
+              `);
+            }
+            if (footerButtons.primary) {
+              rightButtons.push(`
+                <button class="ubits-drawer__footer-button ubits-button ubits-button--primary ubits-button--md" type="button">
+                  <span>${footerButtons.primary.label || 'Aplicar'}</span>
+                </button>
+              `);
+            }
+            if (rightButtons.length > 0) {
+              buttons.push(`
+                <div class="ubits-drawer__footer-right">
+                  ${rightButtons.join('')}
+                </div>
+              `);
+            }
+            footerHTML = `
+              <div class="ubits-drawer__footer">
+                <div class="ubits-drawer__footer-actions">
+                  ${buttons.join('')}
+                </div>
+              </div>
+            `;
+          }
+
+          // Drawer completo
+          return `
+            <div class="ubits-drawer-overlay">
+              <div class="${classes}">
+                ${headerHTML}
+                ${bodyHTML}
+                ${footerHTML}
+              </div>
+            </div>
+          `;
+        }
+
+        function createDrawer(options) {
+          const { containerId, onClose, closeOnOverlayClick = true, open = false } = options;
+
+          // Crear contenedor
+          let container;
+          if (containerId) {
+            container = document.getElementById(containerId) || document.body;
+          } else {
+            container = document.body;
+          }
+
+          // Crear elemento del drawer
+          const wrapper = document.createElement('div');
+          wrapper.innerHTML = renderDrawer(options);
+          const drawerOverlay = wrapper.firstElementChild;
+
+          if (!drawerOverlay) {
+            console.error('❌ [Drawer] No se pudo crear el drawer');
+            throw new Error('No se pudo crear el drawer');
+          }
+
+          const drawer = drawerOverlay.querySelector('.ubits-drawer');
+          const closeButton = drawerOverlay.querySelector('.ubits-drawer__close');
+          const overlay = drawerOverlay;
+
+          // Funciones de control
+          const openDrawer = () => {
+            drawerOverlay.classList.add('ubits-drawer-overlay--open');
+            document.body.style.overflow = 'hidden';
+          };
+
+          const closeDrawer = () => {
+            drawerOverlay.classList.remove('ubits-drawer-overlay--open');
+            document.body.style.overflow = '';
+            if (onClose) {
+              onClose();
+            }
+          };
+
+          const updateContent = (content) => {
+            const bodyContentElement = drawerOverlay.querySelector('.ubits-drawer__body-content');
+            if (bodyContentElement) {
+              const contentHTML = typeof content === 'function' ? content() : content;
+              bodyContentElement.innerHTML = contentHTML;
+            }
+          };
+
+          // Event listeners
+          if (closeButton) {
+            closeButton.addEventListener('click', (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              closeDrawer();
+            });
+          }
+
+          if (closeOnOverlayClick && overlay) {
+            overlay.addEventListener('click', (e) => {
+              if (e.target === overlay) {
+                closeDrawer();
+              }
+            });
+          }
+
+          // Cerrar con ESC
+          const handleEsc = (e) => {
+            if (e.key === 'Escape' && drawerOverlay.classList.contains('ubits-drawer-overlay--open')) {
+              closeDrawer();
+            }
+          };
+          document.addEventListener('keydown', handleEsc);
+
+          // Agregar event listeners a los botones del footer
+          if (options.footerButtons) {
+            const footerLeft = drawerOverlay.querySelector('.ubits-drawer__footer-left');
+            const footerRight = drawerOverlay.querySelector('.ubits-drawer__footer-right');
+            
+            if (footerLeft && options.footerButtons.tertiary) {
+              const tertiaryButton = footerLeft.querySelector('.ubits-drawer__footer-button');
+              if (tertiaryButton && options.footerButtons.tertiary.onClick) {
+                tertiaryButton.addEventListener('click', (e) => {
+                  e.preventDefault();
+                  options.footerButtons.tertiary.onClick(e);
+                });
+              }
+            }
+            
+            if (footerRight) {
+              const buttons = footerRight.querySelectorAll('.ubits-drawer__footer-button');
+              let buttonIndex = 0;
+              
+              if (options.footerButtons.secondary && buttons[buttonIndex]) {
+                buttons[buttonIndex].addEventListener('click', (e) => {
+                  e.preventDefault();
+                  if (options.footerButtons.secondary.onClick) {
+                    options.footerButtons.secondary.onClick(e);
+                  }
+                });
+                buttonIndex++;
+              }
+              
+              if (options.footerButtons.primary && buttons[buttonIndex]) {
+                buttons[buttonIndex].addEventListener('click', (e) => {
+                  e.preventDefault();
+                  if (options.footerButtons.primary.onClick) {
+                    options.footerButtons.primary.onClick(e);
+                  }
+                });
+              }
+            }
+          }
+
+          // Agregar al contenedor
+          container.appendChild(drawerOverlay);
+
+          // Abrir si está configurado
+          if (open) {
+            openDrawer();
+          }
+
+          return {
+            element: drawerOverlay,
+            open: openDrawer,
+            close: closeDrawer,
+            updateContent: updateContent,
+          };
+        }
+
+        // Exponer globalmente
+        window.createDrawer = createDrawer;
+        if (!window.UBITSDrawer) {
+          window.UBITSDrawer = {};
+        }
+        window.UBITSDrawer.createDrawer = createDrawer;
+
+        console.log('✅ [Drawer] createDrawer implementado manualmente');
+      })();
+    </script>
+    
     <script src="https://ubits-storybook10.vercel.app/templates/config/products.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
     <script src="https://ubits-storybook10.vercel.app/templates/config/theme-manager.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
     <script src="https://ubits-storybook10.vercel.app/templates/config/responsive-manager.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
