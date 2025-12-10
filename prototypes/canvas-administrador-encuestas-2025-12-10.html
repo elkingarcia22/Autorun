@@ -2115,6 +2115,460 @@
         subtree: true
       });
     })();
+
+    // Chip Component Script (implementación manual porque components-loader.js puede no cargar createChip)
+    <script>
+      (function() {
+        // Implementación manual de renderChip y createChip basada en ChipProvider.ts
+        function renderChip(options) {
+          const {
+            label = '',
+            size = 'md',
+            state = 'default',
+            leftIcon,
+            rightIcon,
+            clickable = false,
+            closable = false,
+            className = '',
+          } = options;
+
+          const classes = [
+            'ubits-chip',
+            `ubits-chip--${size}`,
+            state !== 'default' ? `ubits-chip--${state}` : '',
+            clickable ? 'ubits-chip--clickable' : '',
+            closable ? 'ubits-chip--closable' : '',
+            className,
+          ]
+            .filter(Boolean)
+            .join(' ');
+
+          const leftIconHTML = leftIcon
+            ? `<span class="ubits-chip__left-icon" aria-hidden="true"><i class="far fa-${leftIcon}"></i></span>`
+            : '';
+
+          const rightIconHTML =
+            closable || rightIcon
+              ? `<button class="ubits-chip__right-icon" type="button" aria-label="Cerrar chip" ${state === 'disabled' ? 'disabled' : ''}>
+                  <i class="far fa-${rightIcon || 'xmark'}"></i>
+                </button>`
+              : '';
+
+          const role = clickable ? 'button' : 'none';
+          const tabIndex = clickable && state !== 'disabled' ? '0' : '-1';
+          const ariaDisabled = state === 'disabled' ? 'true' : 'false';
+
+          return `
+            <span class="${classes}" role="${role}" tabindex="${tabIndex}" aria-disabled="${ariaDisabled}">
+              ${leftIconHTML}
+              <span class="ubits-chip__label">${label}</span>
+              ${rightIconHTML}
+            </span>
+          `.trim();
+        }
+
+        function createChip(options = {}) {
+          const { containerId, onClick, onClose } = options;
+
+          const wrapper = document.createElement('div');
+          wrapper.innerHTML = renderChip(options);
+          const chip = wrapper.firstElementChild;
+
+          if (!chip) {
+            throw new Error('No se pudo crear el chip');
+          }
+
+          if (onClick && options.state !== 'disabled') {
+            chip.addEventListener('click', (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onClick(e);
+            });
+          }
+
+          const closeButton = chip.querySelector('.ubits-chip__right-icon');
+          if (closeButton && onClose) {
+            closeButton.addEventListener('click', (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onClose(e);
+            });
+          }
+
+          const container = containerId
+            ? document.getElementById(containerId) || document.body
+            : document.body;
+
+          container.appendChild(chip);
+
+          return {
+            element: chip,
+            destroy: () => {
+              if (chip.parentElement) {
+                chip.parentElement.removeChild(chip);
+              }
+            },
+          };
+        }
+
+        // Exponer globalmente
+        window.createChip = createChip;
+        if (!window.UBITSChip) { window.UBITSChip = {}; }
+        window.UBITSChip.createChip = createChip;
+        console.log('✅ [Chip] createChip implementado manualmente');
+      })();
+    </script>
+
+    <!-- Tooltip Component Script (implementación manual porque components-loader.js puede no cargar createTooltip) -->
+    <script>
+      (function() {
+        // Implementación manual de renderTooltip y createTooltip basada en TooltipProvider.ts
+        const TOOLTIP_WIDTHS = {
+          sm: '240px',
+          md: '320px',
+          lg: '400px',
+        };
+
+        function renderTooltip(options) {
+          const {
+            title,
+            showTitle = true,
+            description,
+            showDescription = true,
+            primaryButtonLabel,
+            showPrimaryButton = false,
+            primaryButtonIcon,
+            showPrimaryButtonIcon = false,
+            secondaryButtonLabel,
+            showSecondaryButton = false,
+            secondaryButtonIcon,
+            showSecondaryButtonIcon = false,
+            tertiaryButtonLabel,
+            showTertiaryButton = false,
+            tertiaryButtonIcon,
+            showTertiaryButtonIcon = false,
+            width = 'md',
+            tailPosition = 'top',
+            tailOffset = 0,
+            className = '',
+            style = '',
+          } = options;
+
+          const buttonSizeMap = { sm: 'xs', md: 'sm', lg: 'md' };
+          const buttonSize = buttonSizeMap[width] || 'sm';
+
+          const buttonCount =
+            (showPrimaryButton ? 1 : 0) + (showSecondaryButton ? 1 : 0) + (showTertiaryButton ? 1 : 0);
+
+          const baseMinWidths = { sm: 120, md: 160, lg: 200 };
+          const baseMaxWidths = { sm: 240, md: 320, lg: 400 };
+          let minWidth = baseMinWidths[width] || baseMinWidths.md;
+          let maxWidth = baseMaxWidths[width] || baseMaxWidths.md;
+
+          if (buttonCount === 3) {
+            maxWidth = Math.max(maxWidth, 420);
+          } else if (buttonCount === 2) {
+            maxWidth = Math.max(maxWidth, 360);
+          }
+
+          const tooltipWidthStyle = `min-width: ${minWidth}px; max-width: ${maxWidth}px; width: auto;`;
+          const tailPositionClass = `ubits-tooltip--tail-${tailPosition}`;
+          const classes = ['ubits-tooltip', tailPositionClass, className].filter(Boolean).join(' ');
+          const combinedStyle = `${tooltipWidthStyle}${style ? `; ${style}` : ''}`;
+
+          const titleHTML = showTitle && title
+            ? `<div class="ubits-tooltip__title">${title}</div>`
+            : '';
+
+          const descriptionHTML = showDescription && description
+            ? `<div class="ubits-tooltip__description">${description}</div>`
+            : '';
+
+          const primaryButtonHTML = showPrimaryButton && primaryButtonLabel
+            ? `<button class="ubits-button ubits-button--primary ubits-button--${buttonSize}" data-action="primary">
+                ${showPrimaryButtonIcon && primaryButtonIcon ? `<i class="far fa-${primaryButtonIcon}"></i>` : ''}
+                <span>${primaryButtonLabel}</span>
+              </button>`
+            : '';
+
+          const secondaryButtonHTML = showSecondaryButton && secondaryButtonLabel
+            ? `<button class="ubits-button ubits-button--secondary ubits-button--${buttonSize}" data-action="secondary">
+                ${showSecondaryButtonIcon && secondaryButtonIcon ? `<i class="far fa-${secondaryButtonIcon}"></i>` : ''}
+                <span>${secondaryButtonLabel}</span>
+              </button>`
+            : '';
+
+          const tertiaryButtonHTML = showTertiaryButton && tertiaryButtonLabel
+            ? `<button class="ubits-button ubits-button--tertiary ubits-button--${buttonSize}" data-action="tertiary">
+                ${showTertiaryButtonIcon && tertiaryButtonIcon ? `<i class="far fa-${tertiaryButtonIcon}"></i>` : ''}
+                <span>${tertiaryButtonLabel}</span>
+              </button>`
+            : '';
+
+          const hasFooter = primaryButtonHTML || secondaryButtonHTML || tertiaryButtonHTML;
+          const footerHTML = hasFooter
+            ? `<div class="ubits-tooltip__footer">
+                ${tertiaryButtonHTML}
+                ${secondaryButtonHTML}
+                ${primaryButtonHTML}
+              </div>`
+            : '';
+
+          return `
+            <div class="${classes}" style="${combinedStyle}">
+              <div class="ubits-tooltip__tail"></div>
+              <div class="ubits-tooltip__content">
+                ${titleHTML}
+                ${descriptionHTML}
+                ${footerHTML}
+              </div>
+            </div>
+          `.trim();
+        }
+
+        function createTooltip(options) {
+          const {
+            onClose,
+            closeOnOutsideClick = true,
+            open = false,
+            position,
+            referenceElement,
+            onPrimaryAction,
+            onSecondaryAction,
+            onTertiaryAction,
+          } = options;
+
+          const container = document.body;
+          const wrapper = document.createElement('div');
+          wrapper.innerHTML = renderTooltip(options);
+          const tooltip = wrapper.firstElementChild;
+
+          if (!tooltip) {
+            throw new Error('No se pudo crear el tooltip');
+          }
+
+          if (position) {
+            tooltip.style.position = 'fixed';
+            const tailPosition = options.tailPosition || 'top';
+
+            if (tailPosition === 'top' || tailPosition === 'bottom') {
+              if (position.left !== undefined) {
+                tooltip.style.left = `${position.left}px`;
+                tooltip.style.transform = 'translateX(-50%)';
+              }
+              if (position.top !== undefined) {
+                tooltip.style.top = `${position.top}px`;
+              }
+            } else if (tailPosition === 'left' || tailPosition === 'right') {
+              if (position.top !== undefined) {
+                tooltip.style.top = `${position.top}px`;
+                tooltip.style.transform = 'translateY(-50%)';
+              }
+              if (position.left !== undefined) {
+                tooltip.style.left = `${position.left}px`;
+              }
+            }
+          } else if (referenceElement) {
+            const rect = referenceElement.getBoundingClientRect();
+            const tooltipRect = tooltip.getBoundingClientRect();
+            tooltip.style.position = 'fixed';
+            tooltip.style.top = `${rect.bottom + 8}px`;
+            tooltip.style.left = `${rect.left + (rect.width / 2) - tooltipRect.width / 2}px`;
+          }
+
+          const openTooltip = () => {
+            tooltip.classList.add('ubits-tooltip--open');
+            if (position && referenceElement) {
+              const rect = referenceElement.getBoundingClientRect();
+              const tailPosition = options.tailPosition || 'top';
+              tooltip.style.position = 'fixed';
+
+              if (tailPosition === 'top' || tailPosition === 'bottom') {
+                tooltip.style.left = `${rect.left + rect.width / 2}px`;
+                tooltip.style.transform = 'translateX(-50%)';
+                tooltip.style.top = tailPosition === 'top' ? `${rect.top - 8}px` : `${rect.bottom + 8}px`;
+              } else if (tailPosition === 'left' || tailPosition === 'right') {
+                tooltip.style.top = `${rect.top + rect.height / 2}px`;
+                tooltip.style.transform = 'translateY(-50%)';
+                tooltip.style.left = tailPosition === 'left' ? `${rect.left - 8}px` : `${rect.right + 8}px`;
+              }
+            }
+          };
+
+          const closeTooltip = () => {
+            tooltip.classList.remove('ubits-tooltip--open');
+            if (onClose) {
+              onClose();
+            }
+          };
+
+          if (closeOnOutsideClick) {
+            const handleClickOutside = (e) => {
+              if (tooltip.classList.contains('ubits-tooltip--open') && !tooltip.contains(e.target)) {
+                const clickedElement = e.target;
+                const isTriggerButton = clickedElement.closest && clickedElement.closest('[data-tooltip-trigger]');
+                if (!isTriggerButton) {
+                  closeTooltip();
+                }
+              }
+            };
+            document.addEventListener('click', handleClickOutside, true);
+            const originalDestroy = destroy;
+            destroy = () => {
+              document.removeEventListener('click', handleClickOutside, true);
+              originalDestroy();
+            };
+          }
+
+          if (onPrimaryAction) {
+            const primaryButton = tooltip.querySelector('[data-action="primary"]');
+            if (primaryButton) {
+              primaryButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onPrimaryAction();
+              });
+            }
+          }
+
+          if (onSecondaryAction) {
+            const secondaryButton = tooltip.querySelector('[data-action="secondary"]');
+            if (secondaryButton) {
+              secondaryButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onSecondaryAction();
+              });
+            }
+          }
+
+          if (onTertiaryAction) {
+            const tertiaryButton = tooltip.querySelector('[data-action="tertiary"]');
+            if (tertiaryButton) {
+              tertiaryButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onTertiaryAction();
+              });
+            }
+          }
+
+          let destroy = () => {
+            if (tooltip.parentElement) {
+              tooltip.parentElement.removeChild(tooltip);
+            }
+          };
+
+          container.appendChild(tooltip);
+
+          if (open) {
+            openTooltip();
+          }
+
+          return {
+            element: tooltip,
+            open: openTooltip,
+            close: closeTooltip,
+            destroy,
+          };
+        }
+
+        // Exponer globalmente
+        window.createTooltip = createTooltip;
+        if (!window.UBITSTooltip) { window.UBITSTooltip = {}; }
+        window.UBITSTooltip.createTooltip = createTooltip;
+        console.log('✅ [Tooltip] createTooltip implementado manualmente');
+      })();
+    </script>
+
+    <!-- Inicializar Chip con Tooltip -->
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const initChipWithTooltip = () => {
+          const chipContainer = document.getElementById('chip-container');
+          const chipTooltipContainer = document.getElementById('chip-tooltip-container');
+
+          if (!chipContainer || !chipTooltipContainer) {
+            console.log('⏳ [Chip/Tooltip] Esperando contenedores...');
+            setTimeout(initChipWithTooltip, 100);
+            return;
+          }
+
+          const createChipFn = window.createChip || window.UBITSChip?.createChip;
+          const createTooltipFn = window.createTooltip || window.UBITSTooltip?.createTooltip;
+
+          if (typeof createChipFn !== 'function' || typeof createTooltipFn !== 'function') {
+            console.log('⏳ [Chip/Tooltip] Esperando funciones createChip/createTooltip...');
+            setTimeout(initChipWithTooltip, 100);
+            return;
+          }
+
+          console.log('✅ [Chip/Tooltip] Componentes listos, inicializando...');
+
+          // Crear chip
+          const chipInstance = createChipFn({
+            containerId: 'chip-container',
+            label: 'Etiqueta',
+            size: 'md',
+            state: 'default',
+            leftIcon: 'tag',
+            clickable: true,
+            onClick: (e) => {
+              console.log('🔵 [Chip/Tooltip] Chip clickeado');
+              // Abrir tooltip al hacer click en el chip
+              if (tooltipInstance) {
+                tooltipInstance.open();
+              }
+            },
+          });
+
+          const chipElement = chipInstance.element;
+
+          // Crear tooltip
+          let tooltipInstance = null;
+          const createTooltipForChip = () => {
+            // Limpiar tooltip existente si hay
+            if (tooltipInstance) {
+              tooltipInstance.destroy();
+              tooltipInstance = null;
+            }
+
+            tooltipInstance = createTooltipFn({
+              referenceElement: chipElement,
+              title: 'Información del Chip',
+              description: 'Este es un chip con tooltip. Haz click en el chip para ver más información.',
+              width: 'md',
+              tailPosition: 'top',
+              open: false,
+              closeOnOutsideClick: true,
+              onClose: () => {
+                console.log('🔴 [Chip/Tooltip] Tooltip cerrado');
+              },
+            });
+          };
+
+          // Crear tooltip inicialmente
+          createTooltipForChip();
+
+          // También mostrar tooltip al hacer hover
+          chipElement.addEventListener('mouseenter', () => {
+            if (tooltipInstance) {
+              tooltipInstance.open();
+            }
+          });
+
+          chipElement.addEventListener('mouseleave', () => {
+            if (tooltipInstance) {
+              tooltipInstance.close();
+            }
+          });
+
+          console.log('✅ [Chip/Tooltip] Chip y tooltip inicializados correctamente');
+        };
+
+        setTimeout(initChipWithTooltip, 500);
+      });
+    </script>
   </script>
 </body>
 </html>
