@@ -24,7 +24,7 @@ export interface ComponentStoryInfo {
 /**
  * Mapeo de componentes a rutas de archivos .stories.ts
  */
-const COMPONENT_STORIES_PATH_MAP: Record<string, string> = {
+export const COMPONENT_STORIES_PATH_MAP: Record<string, string> = {
   'Data/Data Table':
     'vendor/ubits/packages/storybook/stories/DataTable.stories.ts',
   'data-data-table':
