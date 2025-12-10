@@ -2105,10 +2105,24 @@
               return;
             }
             
-            // Verificar que createModal esté disponible
-            if (typeof window.createModal !== 'function') {
+            // Verificar que createModal esté disponible (puede estar en window.createModal o window.UBITSModal.createModal)
+            const createModalFn = window.createModal || window.UBITSModal?.createModal;
+            
+            if (typeof createModalFn !== 'function') {
               console.log('⏳ [Button/Modal] Esperando createModal...');
-              setTimeout(initButtonAndModal, 100);
+              console.log('⏳ [Button/Modal] window.createModal:', typeof window.createModal);
+              console.log('⏳ [Button/Modal] window.UBITSModal:', window.UBITSModal);
+              // Intentar hasta 50 veces (5 segundos máximo)
+              if (initButtonAndModal.attempts === undefined) {
+                initButtonAndModal.attempts = 0;
+              }
+              initButtonAndModal.attempts++;
+              if (initButtonAndModal.attempts < 50) {
+                setTimeout(initButtonAndModal, 100);
+              } else {
+                console.error('❌ [Button/Modal] createModal no está disponible después de 5 segundos');
+                console.error('❌ [Button/Modal] Verificar que components-loader.js se cargó correctamente');
+              }
               return;
             }
             
@@ -2122,47 +2136,52 @@
                 return; // Ya está abierto
               }
               
-              modalInstance = window.createModal({
-                title: 'Modal de Ejemplo',
-                bodyContent: `
-                  <div style="padding: var(--ubits-spacing-lg, 16px);">
-                    <p class="ubits-body-md-regular">Este es el contenido del modal.</p>
-                    <p class="ubits-body-md-regular">Puedes agregar cualquier contenido aquí.</p>
-                  </div>
-                `,
-                size: 'md',
-                open: true,
-                containerId: 'modal-container',
-                closeOnOverlayClick: true,
-                footerButtons: {
-                  tertiary: {
-                    label: 'Cancelar',
-                    onClick: () => {
-                      if (modalInstance && modalInstance.close) {
-                        modalInstance.close();
+              try {
+                modalInstance = createModalFn({
+                  title: 'Modal de Ejemplo',
+                  bodyContent: `
+                    <div style="padding: var(--ubits-spacing-lg, 16px);">
+                      <p class="ubits-body-md-regular">Este es el contenido del modal.</p>
+                      <p class="ubits-body-md-regular">Puedes agregar cualquier contenido aquí.</p>
+                    </div>
+                  `,
+                  size: 'md',
+                  open: true,
+                  containerId: 'modal-container',
+                  closeOnOverlayClick: true,
+                  footerButtons: {
+                    tertiary: {
+                      label: 'Cancelar',
+                      onClick: () => {
+                        if (modalInstance && modalInstance.close) {
+                          modalInstance.close();
+                        }
+                        modalInstance = null;
                       }
-                      modalInstance = null;
-                    }
-                  },
-                  primary: {
-                    label: 'Aceptar',
-                    onClick: () => {
-                      console.log('✅ [Button/Modal] Botón Aceptar clickeado');
-                      if (modalInstance && modalInstance.close) {
-                        modalInstance.close();
+                    },
+                    primary: {
+                      label: 'Aceptar',
+                      onClick: () => {
+                        console.log('✅ [Button/Modal] Botón Aceptar clickeado');
+                        if (modalInstance && modalInstance.close) {
+                          modalInstance.close();
+                        }
+                        modalInstance = null;
                       }
-                      modalInstance = null;
                     }
                   }
-                }
-              });
-              
-              console.log('✅ [Button/Modal] Modal creado y abierto');
+                });
+                
+                console.log('✅ [Button/Modal] Modal creado y abierto');
+              } catch (error) {
+                console.error('❌ [Button/Modal] Error al crear modal:', error);
+              }
             };
             
             // Agregar event listener al botón
             openButton.addEventListener('click', (e) => {
               e.preventDefault();
+              e.stopPropagation();
               console.log('🔵 [Button/Modal] Botón clickeado, abriendo modal...');
               openModal();
             });
