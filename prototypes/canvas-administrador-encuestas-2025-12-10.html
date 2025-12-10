@@ -2689,9 +2689,9 @@
               // Por defecto, tooltip debajo del elemento = flecha arriba = 'top'
               const preferredTailPosition = options.tailPosition || 'top';
               
-              // ⚠️ IMPORTANTE: Pasar el elemento del tooltip, no solo las dimensiones
-              // Esto permite ajustar el ancho dinámicamente antes de calcular la posición
-              const optimal = calculateOptimalPosition(rect, tooltip, preferredTailPosition);
+              // ⚠️ IMPORTANTE: Pasar el elemento del tooltip y el elemento de referencia
+              // Esto permite ajustar el ancho dinámicamente y respetar los límites del contenedor
+              const optimal = calculateOptimalPosition(rect, tooltip, preferredTailPosition, referenceElement);
               
               // Aplicar ancho máximo si se ajustó dinámicamente
               if (optimal.maxWidth !== null) {
