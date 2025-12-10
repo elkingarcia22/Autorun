@@ -64,7 +64,8 @@ export class PreWriteValidator {
     }
 
     if (!componentName && context?.userMessage) {
-      componentName = detectComponentFromMessage(context.userMessage);
+      componentName =
+        detectComponentFromMessage(context.userMessage) || undefined;
     }
 
     // 2. Si se detectó un componente, verificar checklist obligatorio
