@@ -269,14 +269,17 @@
    INPUTS DENTRO DEL DRAWER
    ======================================== */
 
-.ubits-drawer__body-content input[type="text"],
-.ubits-drawer__body-content input[type="email"],
-.ubits-drawer__body-content input[type="number"],
-.ubits-drawer__body-content input[type="tel"],
-.ubits-drawer__body-content input[type="url"],
-.ubits-drawer__body-content input[type="password"],
-.ubits-drawer__body-content textarea,
-.ubits-drawer__body-content select {
+/* ⚠️ CRÍTICO: Excluir inputs de UBITS de los estilos genéricos del drawer */
+/* Los inputs de UBITS (con clase .ubits-input) ya tienen sus propios estilos con !important */
+/* Solo aplicar estilos genéricos a inputs que NO sean de UBITS */
+.ubits-drawer__body-content input[type="text"]:not(.ubits-input),
+.ubits-drawer__body-content input[type="email"]:not(.ubits-input),
+.ubits-drawer__body-content input[type="number"]:not(.ubits-input),
+.ubits-drawer__body-content input[type="tel"]:not(.ubits-input),
+.ubits-drawer__body-content input[type="url"]:not(.ubits-input),
+.ubits-drawer__body-content input[type="password"]:not(.ubits-input),
+.ubits-drawer__body-content textarea:not(.ubits-input),
+.ubits-drawer__body-content select:not(.ubits-input) {
 	width: 100%;
 	padding: var(--ubits-spacing-sm) var(--ubits-spacing-md);
 	border: 1px solid var(--modifiers-normal-color-light-border-1);
@@ -290,37 +293,40 @@
 	transition: all 0.2s ease;
 }
 
-.ubits-drawer__body-content input[type="text"]:focus,
-.ubits-drawer__body-content input[type="email"]:focus,
-.ubits-drawer__body-content input[type="number"]:focus,
-.ubits-drawer__body-content input[type="tel"]:focus,
-.ubits-drawer__body-content input[type="url"]:focus,
-.ubits-drawer__body-content input[type="password"]:focus,
-.ubits-drawer__body-content textarea:focus,
-.ubits-drawer__body-content select:focus {
+/* ⚠️ CRÍTICO: Excluir inputs de UBITS de los estilos focus genéricos del drawer */
+.ubits-drawer__body-content input[type="text"]:not(.ubits-input):focus,
+.ubits-drawer__body-content input[type="email"]:not(.ubits-input):focus,
+.ubits-drawer__body-content input[type="number"]:not(.ubits-input):focus,
+.ubits-drawer__body-content input[type="tel"]:not(.ubits-input):focus,
+.ubits-drawer__body-content input[type="url"]:not(.ubits-input):focus,
+.ubits-drawer__body-content input[type="password"]:not(.ubits-input):focus,
+.ubits-drawer__body-content textarea:not(.ubits-input):focus,
+.ubits-drawer__body-content select:not(.ubits-input):focus {
 	outline: none;
 	border-color: var(--modifiers-normal-color-light-accent-brand);
 	box-shadow: 0 0 0 3px var(--modifiers-normal-focus-color);
 }
 
-.ubits-drawer__body-content input[type="text"]:hover,
-.ubits-drawer__body-content input[type="email"]:hover,
-.ubits-drawer__body-content input[type="number"]:hover,
-.ubits-drawer__body-content input[type="tel"]:hover,
-.ubits-drawer__body-content input[type="url"]:hover,
-.ubits-drawer__body-content input[type="password"]:hover,
-.ubits-drawer__body-content textarea:hover,
-.ubits-drawer__body-content select:hover {
+/* ⚠️ CRÍTICO: Excluir inputs de UBITS de los estilos hover genéricos del drawer */
+.ubits-drawer__body-content input[type="text"]:not(.ubits-input):hover,
+.ubits-drawer__body-content input[type="email"]:not(.ubits-input):hover,
+.ubits-drawer__body-content input[type="number"]:not(.ubits-input):hover,
+.ubits-drawer__body-content input[type="tel"]:not(.ubits-input):hover,
+.ubits-drawer__body-content input[type="url"]:not(.ubits-input):hover,
+.ubits-drawer__body-content input[type="password"]:not(.ubits-input):hover,
+.ubits-drawer__body-content textarea:not(.ubits-input):hover,
+.ubits-drawer__body-content select:not(.ubits-input):hover {
 	border-color: var(--modifiers-normal-color-light-border-2);
 }
 
-.ubits-drawer__body-content input[type="text"]::placeholder,
-.ubits-drawer__body-content input[type="email"]::placeholder,
-.ubits-drawer__body-content input[type="number"]::placeholder,
-.ubits-drawer__body-content input[type="tel"]::placeholder,
-.ubits-drawer__body-content input[type="url"]::placeholder,
-.ubits-drawer__body-content input[type="password"]::placeholder,
-.ubits-drawer__body-content textarea::placeholder {
+/* ⚠️ CRÍTICO: Excluir inputs de UBITS de los estilos placeholder genéricos del drawer */
+.ubits-drawer__body-content input[type="text"]:not(.ubits-input)::placeholder,
+.ubits-drawer__body-content input[type="email"]:not(.ubits-input)::placeholder,
+.ubits-drawer__body-content input[type="number"]:not(.ubits-input)::placeholder,
+.ubits-drawer__body-content input[type="tel"]:not(.ubits-input)::placeholder,
+.ubits-drawer__body-content input[type="url"]:not(.ubits-input)::placeholder,
+.ubits-drawer__body-content input[type="password"]:not(.ubits-input)::placeholder,
+.ubits-drawer__body-content textarea:not(.ubits-input)::placeholder {
 	color: var(--modifiers-normal-color-light-fg-1-medium);
 }
 

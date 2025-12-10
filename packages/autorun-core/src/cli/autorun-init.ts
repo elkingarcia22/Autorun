@@ -94,6 +94,18 @@ async function main() {
 			console.warn('   La configuración se mostró arriba, puedes guardarla manualmente.');
 		}
 
+		// Inicializar AutorunHub automáticamente después del wizard
+		try {
+			console.log('\n🚀 Inicializando AutorunHub...');
+			await hub.initialize();
+			console.log('✅ AutorunHub inicializado correctamente');
+			console.log('   - File watching activo');
+			console.log('   - Add-ons cargados');
+		} catch (error: any) {
+			console.warn('⚠️  No se pudo inicializar AutorunHub completamente:', error.message);
+			console.warn('   Puedes ejecutar "npm run autorun:init-hub" después para inicializarlo.');
+		}
+
 		// Verificar si el servidor HTTP local está corriendo
 		const localServer = (wizard as any).localServer;
 		if (localServer && localServer.isServerRunning && localServer.isServerRunning()) {

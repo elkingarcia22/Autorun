@@ -1,5 +1,11 @@
 # 🚨 SISTEMA DE AUTO-DETECCIÓN DE IMÁGENES 🚨
 
+> ⚠️ **DEPRECADO:** Este archivo ha sido consolidado en `.cursor/rules/01-deteccion-imagen.md`  
+> **Por favor, usa:** `.cursor/rules/01-deteccion-imagen.md` en su lugar  
+> **Fecha de deprecación:** 2025-01-03
+
+---
+
 ## ⚠️⚠️⚠️ LEER ESTO PRIMERO EN CADA MENSAJE ⚠️⚠️⚠️
 
 **ESTE ARCHIVO DEBE SER LEÍDO AUTOMÁTICAMENTE AL INICIO DE CADA MENSAJE DEL USUARIO.**
@@ -54,6 +60,10 @@
 5. ✅ **LEER QUINTO:** `docs/guias/analisis/GUIA-DISTINGUIR-SUBNAV-TABS.md` - ⚠️ OBLIGATORIO para distinguir SubNav de Tabs
 6. ✅ **LEER SEXTO:** `docs/guias/analisis/GUIA-ANALISIS-ESTRUCTURA-SPACING.md` - ⚠️ OBLIGATORIO para análisis de spacing
 7. ✅ **LEER SÉPTIMO:** `docs/guias/analisis/GUIA-ANALISIS-ICONOS-DETALLADO.md` - ⚠️ OBLIGATORIO para análisis de iconos
+8. ✅ **LEER OCTAVO:** `docs/guias/analisis/GUIA-ANALISIS-DATATABLE-COMPLETO.md` - ⚠️ OBLIGATORIO si hay DataTable en la imagen
+9. ✅ **LEER NOVENO:** `docs/guias/analisis/GUIA-ANALISIS-FUNCIONALIDADES-DATATABLE.md` - ⚠️ OBLIGATORIO si hay DataTable (lista TODAS las funcionalidades con SÍ/NO)
+10. ✅ **LEER DÉCIMO:** `docs/guias/analisis/ANALISIS-ERROR-REDIMENSIONAR-DATATABLE-ESPACIO-VERTICAL-HORIZONTAL.md` - ⚠️ OBLIGATORIO si hay DataTable (análisis de errores al redimensionar)
+11. ✅ **LEER UNDÉCIMO:** `docs/guias/implementacion/GUIA-REDIMENSIONAR-DATATABLE-ESPACIO-COMPLETO.md` - ⚠️ OBLIGATORIO si hay DataTable (cómo redimensionar correctamente)
 
 ### PASO 3: VERIFICAR TEMPLATE EXISTENTE
 - ✅ Usar `list_dir()` para buscar en `prototypes/`
@@ -70,6 +80,12 @@
   - ⚠️ **Medir visualmente cada espacio entre elementos**
   - ⚠️ **Comparar con tokens disponibles antes de documentar**
   - ⚠️ **Verificar cada spacing individualmente**
+- ✅ **Si hay DataTable en la imagen (usar `docs/guias/analisis/GUIA-ANALISIS-FUNCIONALIDADES-DATATABLE.md`):**
+  - ⚠️ **OBLIGATORIO: Consultar Storybook para ver TODAS las funcionalidades disponibles**
+  - ⚠️ **OBLIGATORIO: Listar TODAS las funcionalidades con SÍ/NO para cada una**
+  - ⚠️ **OBLIGATORIO: Documentar qué funcionalidades implementar y cuáles NO**
+  - ⚠️ **NO asumir funcionalidades sin verificar en la imagen**
+  - ⚠️ **NO implementar funcionalidades que NO están en la imagen**
 - ✅ **Verificar ContentManager (usar `docs/guias/referencia/GUIA-CONTENTMANAGER-UPDATECONTENT.md`):**
   - ⚠️ **Si agregas elementos a `.content-area`, DEBES interceptar `updateContent`**
   - ⚠️ **Investigar el código fuente del ContentManager antes de agregar elementos**

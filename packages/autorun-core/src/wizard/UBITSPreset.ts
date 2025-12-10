@@ -7,10 +7,12 @@
 export interface UBITSConfig {
 	storybook: {
 		url: string;
+		fallbackUrl?: string; // URL de fallback si Vercel falla (GitHub)
 		bypassToken?: string;
 		useStorybookComponents: boolean;
 		loadTemplate: 'desktop';
 		getUrl?: (path?: string) => string;
+		getFallbackUrl?: (path?: string) => string;
 	};
 	addons: string[];
 	components: string[];
@@ -50,9 +52,16 @@ export interface ModuleConfig {
  */
 export const UBITS_PRESET: UBITSConfig = {
 	storybook: {
-		// URL de Vercel con token de bypass para acceso automatizado
+		// ⚠️ CRÍTICO: Usar URL principal que siempre apunta al deployment más reciente en producción
+		// URL principal: https://ubits-storybook10.vercel.app/ (siempre apunta al deployment más reciente)
+		// NO usar URLs de deployments específicos (pueden estar desactualizados)
 		// Token: dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT
-		url: 'https://ubits-storybook10-q59fh1csi-elkin-garcias-projects-a0b1beb6.vercel.app',
+		url: 'https://ubits-storybook10.vercel.app',
+		// ⚠️ FALLBACK: URL de GitHub como respaldo si Vercel falla
+		// Repositorio: https://github.com/elkingarcia22/UBITS
+		// Si GitHub Pages está configurado, usar: https://elkingarcia22.github.io/UBITS/
+		// Si no, usar raw GitHub: https://raw.githubusercontent.com/elkingarcia22/UBITS/main/
+		fallbackUrl: 'https://github.com/elkingarcia22/UBITS',
 		bypassToken: 'dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT',
 		useStorybookComponents: true,
 		loadTemplate: 'desktop',
@@ -70,9 +79,30 @@ export const UBITS_PRESET: UBITSConfig = {
 			}
 			return `${baseUrl}${cleanPath}`;
 		},
+		/**
+		 * Construye la URL de fallback (GitHub) para Storybook
+		 * @param path - Ruta adicional (ej: '/index.json', '/components/button/manifest.json')
+		 */
+		getFallbackUrl: (path: string = '') => {
+			const fallbackBase = UBITS_PRESET.storybook.fallbackUrl || 'https://github.com/elkingarcia22/UBITS';
+			const cleanPath = path.startsWith('/') ? path : `/${path}`;
+			
+			// Intentar GitHub Pages primero (si está configurado)
+			// Si no funciona, usar raw GitHub para archivos específicos
+			if (path.includes('.json') || path.includes('.js') || path.includes('.css')) {
+				// Para archivos, usar raw GitHub
+				return `https://raw.githubusercontent.com/elkingarcia22/UBITS/main${cleanPath}`;
+			}
+			
+			// Para URLs de navegación, usar GitHub Pages o el repositorio
+			// Intentar GitHub Pages primero
+			const githubPagesUrl = `https://elkingarcia22.github.io/UBITS${cleanPath}`;
+			// Si no funciona, usar el repositorio de GitHub
+			return githubPagesUrl;
+		},
 	},
 	// Add-ons optimizados para prototipos de alta calidad UBITS
-	// Seleccionados: 1,2,3,4,7,12,14,15,16,18
+	// Seleccionados: 1,2,3,4,7,12,14,15,16,18,19
 	addons: [
 		// 1. Desarrollo y Componentes
 		'storybook', // 📚 Desarrollo y documentación de componentes
@@ -97,6 +127,15 @@ export const UBITS_PRESET: UBITSConfig = {
 
 		// 18. Feedback
 		'feedback', // 💬 Sistema de feedback automatizado
+
+		// 19. Problem Tracker
+		'problem-tracker', // 🤖 Sistema automático de captura de problemas y soluciones
+
+		// 20. Auto Reload
+		'auto-reload', // 🔄 Recarga automática de página y logs automáticos cuando hay errores
+
+		// 21. Pre-Implementation Check
+		'pre-implementation-check', // ✅ Verifica automáticamente que se sigan todos los pasos obligatorios antes de implementar componentes
 	],
 	components: ['welcome', 'button-feedback', 'alert', 'mask', 'button'],
 	templates: {
@@ -332,6 +371,34 @@ export const UBITS_ADDONS_CONFIG = {
 		showFeedbackButton: true,
 		storybookUrl: UBITS_PRESET.storybook.url,
 		useStorybookComponents: true,
+	},
+	'problem-tracker': {
+		enabled: true,
+		persistLocally: true,
+		problemsDirectory: 'docs/problems-solutions',
+		indexFile: 'docs/problems-solutions/index.json',
+		autoDetectProblems: true,
+		autoSuggestSolutions: true,
+		autoUpdateGuides: false,
+		categories: [
+			'headersection',
+			'contentmanager',
+			'datatable',
+			'componentes',
+			'otros',
+		],
+	},
+	'auto-reload': {
+		enabled: true,
+		reloadOnFileChange: true,
+		autoLogErrors: true,
+		reloadAfterFix: true,
+	},
+	'pre-implementation-check': {
+		enabled: true,
+		blockOnMissingSteps: true,
+		registerInProblemTracker: true,
+		requiredSteps: ['storybookVercel', 'storybookMCP', 'documentation'],
 	},
 	vercel: {
 		autoDeploy: true,

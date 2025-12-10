@@ -1,5 +1,11 @@
 # 🚨 Detección Automática de Imágenes
 
+> ⚠️ **DEPRECADO:** Este archivo ha sido consolidado en `.cursor/rules/01-deteccion-imagen.md`  
+> **Por favor, usa:** `.cursor/rules/01-deteccion-imagen.md` en su lugar  
+> **Fecha de deprecación:** 2025-01-03
+
+---
+
 > **⚠️ CRÍTICO:** Este archivo debe leerse cuando se detecta una imagen o solicitud de creación desde imagen.
 
 ---

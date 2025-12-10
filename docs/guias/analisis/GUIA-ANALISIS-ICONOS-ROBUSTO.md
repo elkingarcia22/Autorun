@@ -264,3 +264,7 @@
 
 **Última actualización:** 2025-12-05  
 **Versión:** 1.0.0 (guía robusta mejorada)
+
+
+
+

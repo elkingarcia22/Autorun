@@ -91,9 +91,24 @@ window.UBITS_ContentManager.updateContent = function(section, subSection) {
           // Insertar al inicio del content-area
           contentArea.insertAdjacentHTML('afterbegin', tabsHTML);
           
-          // Re-inicializar si es necesario
+          // ✅ CRÍTICO: Re-inicializar SIEMPRE después de restaurar (los event listeners se pierden)
           const restoredContainer = document.getElementById('encuestas-tabs-container');
-          if (restoredContainer && !restoredContainer.querySelector('.ubits-tabs')) {
+          if (restoredContainer) {
+            // Verificar si los tabs tienen event listeners
+            const existingTabsElement = restoredContainer.querySelector('.ubits-tabs');
+            if (existingTabsElement) {
+              const tabsWithListeners = existingTabsElement.querySelectorAll('.ubits-tab[data-listener-attached="true"]');
+              if (tabsWithListeners.length === 0) {
+                // Los tabs existen pero NO tienen listeners, eliminar y reinicializar
+                console.log('🔵 [Preserve] Tabs restaurados sin listeners, eliminando y reinicializando...');
+                existingTabsElement.remove();
+              } else {
+                // Los tabs tienen listeners, no es necesario reinicializar
+                console.log('✅ [Preserve] Tabs restaurados con listeners, no es necesario reinicializar');
+                return;
+              }
+            }
+            // Reinicializar para agregar event listeners
             if (window.initEncuestasTabs) {
               window.initEncuestasTabs();
             }
@@ -315,6 +330,9 @@ document.getElementById('encuestas-tabs-container')?.addEventListener('restored'
 6. **SIEMPRE guardar elementos ANTES de llamar al método original**
 7. **SIEMPRE restaurar elementos DESPUÉS de que se actualice el contenido**
 8. **SIEMPRE usar `setTimeout` para restaurar en el siguiente tick**
+9. **SIEMPRE reinicializar componentes después de restaurar HTML** - El HTML restaurado NO tiene event listeners
+10. **SIEMPRE agregar listeners al contenedor externo** - No agregar listeners a elementos que pueden ser reemplazados
+11. **SIEMPRE verificar instancia activa** - No solo verificar si el HTML existe, verificar también si tiene instancia activa
 
 ---
 
@@ -323,7 +341,62 @@ document.getElementById('encuestas-tabs-container')?.addEventListener('restored'
 - **Código fuente:** `vendor/ubits/packages/templates/engine/content-manager.js` (línea 680)
 - **Análisis completo:** `ANALISIS-PROBLEMAS-IMPLEMENTACION.md` (Problema 4)
 - **Patrón de interceptación:** Ver sección "Interceptar ContentManager" en `.cursorrules`
-- **Guía de errores comunes:** `GUIA-ERRORES-COMUNES-UBITS.md` - Error #10
+- **Guía de errores comunes:** `GUIA-ERRORES-COMUNES-UBITS.md` - Error #10, Error #18, Error #21, Error #22
+- **Error checkboxes desaparecen tabla:** `docs/guias/analisis/ANALISIS-ERROR-CHECKBOXES-DATATABLE-DESAPARECE.md` - ⚠️ **OBLIGATORIO**
+- **Error checkboxes intermitentes:** `docs/guias/analisis/ANALISIS-ERROR-CHECKBOXES-INTERMITENTES-DATATABLE.md` - ⚠️ **OBLIGATORIO**
+
+---
+
+## ⚠️ ERROR CRÍTICO: Event Listeners Perdidos al Restaurar HTML
+
+### **Problema:**
+
+Cuando `ContentManager.updateContent` restaura el HTML de un componente (como DataTable), el HTML se restaura pero los **event listeners internos se pierden**.
+
+**Síntomas:**
+- El componente aparece visualmente correcto después de restaurar
+- Pero las funcionalidades interactivas (checkboxes, botones, etc.) **NO funcionan**
+- El comportamiento es **intermitente** (a veces funciona, a veces no)
+
+### **Causa Raíz:**
+
+```javascript
+// ❌ ERROR: Asumir que HTML restaurado tiene event listeners
+if (hasDataTable) {
+  console.log('✅ DataTable ya existe, no es necesario reinicializar');
+  // NO se reinicializa - los event listeners se perdieron
+}
+```
+
+**Problema:**
+- El HTML restaurado contiene el markup del componente
+- Pero los event listeners que el componente agregó internamente se perdieron
+- El código asume que si el HTML existe, el componente funciona
+
+### **Solución:**
+
+```javascript
+// ✅ CORRECTO: Siempre reinicializar después de restaurar HTML
+if (restoredTable) {
+  const hasDataTable = restoredTable.querySelector('.ubits-data-table');
+  
+  // ⚠️ CRÍTICO: Siempre reinicializar después de restaurar HTML
+  // El HTML restaurado NO tiene event listeners, necesitamos reinicializar
+  console.log('⚠️ DataTable restaurado desde HTML - Event listeners perdidos, reinicializando...');
+  
+  if (window.initEncuestasDataTable && typeof window.initEncuestasDataTable === 'function') {
+    // ✅ Limpiar contenido y reinicializar para restaurar event listeners
+    restoredTable.innerHTML = '';
+    window.initEncuestasDataTable();
+  }
+}
+```
+
+### **Regla de Oro:**
+
+**SIEMPRE reinicializar componentes después de restaurar HTML desde `ContentManager.updateContent`.**
+
+**Ver:** ERROR CRÍTICO #22 en `GUIA-ERRORES-COMUNES-UBITS.md` y `ANALISIS-ERROR-CHECKBOXES-INTERMITENTES-DATATABLE.md`
 
 ---
 

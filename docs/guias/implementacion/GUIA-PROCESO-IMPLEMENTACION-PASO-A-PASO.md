@@ -28,9 +28,12 @@ Esta guía establece el proceso **OBLIGATORIO** para implementar interfaces desd
    - **⚠️ CRÍTICO: Verificar HeaderSection:**
      - ¿Hay un HeaderSection en la imagen? (título grande, descripción, botones de acción)
      - Si **NO hay HeaderSection** en la imagen, **DEBE eliminarse del template:**
+       - **Ver guía completa:** `docs/guias/implementacion/GUIA-ELIMINAR-HEADERSECTION.md` - ⚠️ **OBLIGATORIO**
        - Eliminar CSS: `<link rel="stylesheet" href="...header-section.css" />`
        - Eliminar estilos CSS de `#header-section-container`
        - Eliminar contenedor HTML `<div id="header-section-container"></div>` si existe
+       - Interceptar `ContentManager.updateContent` para eliminar dinámicamente
+       - Configurar MutationObserver para eliminar si se crea después
    - Consultar `CATALOGO-COMPONENTES-UBITS.md`
 
 2. **Identificar estructura y contenedores** ⚠️ CRÍTICO:
@@ -149,6 +152,28 @@ Esta guía establece el proceso **OBLIGATORIO** para implementar interfaces desd
 #### **Paso 2.0: Revisar Componente Antes de Implementar** 🔍
 
 **⚠️ OBLIGATORIO:** Antes de implementar CUALQUIER componente, revisar su archivo de tipos para identificar variantes, controladores y funcionalidades.
+
+**⚠️ CRÍTICO: Para DataTable, SIEMPRE (en este orden):**
+1. **Consultar Storybook en Vercel (versión más reciente):** ⚠️ PRIMERO
+   - URL: `https://ubits-storybook10.vercel.app/?path=/story/data-data-table--ver-usuarios-seleccionados`
+   - Revisar pestaña "Code" para ver estructura exacta
+   - Revisar pestaña "Controls" para ver todas las opciones disponibles
+   - Verificar tipos de columnas disponibles (nombre, nombre-avatar, progreso, estado, fecha, pais, ciudad, etc.)
+   - **Ver guía:** `docs/guias/implementacion/GUIA-VERIFICAR-STORYBOOK-VERCEL.md` - ⚠️ OBLIGATORIO
+
+2. **Consultar Storybook MCP** (si está disponible) para ver todas las opciones
+
+3. **Revisar archivo de tipos** (`DataTableOptions.ts`) para ver controladores
+   - Comparar con lo visto en Storybook en Vercel
+   - Si hay diferencias, usar versión del Storybook (es la más actualizada)
+
+4. **Verificar en la imagen** qué funcionalidades están presentes:
+   - ¿Hay opción de expandir filas? → Configurar `rowExpandable` correctamente
+   - ¿Qué tipos de columnas hay? → Verificar tipos correctos (estado, progreso, fecha, etc.)
+   - ¿Hay columnas fijas? → Solo configurar si están en la imagen
+   - ¿La tabla debe aprovechar espacio vertical? → Configurar altura dinámica
+
+5. **NO asumir** tipos de columnas o funcionalidades sin verificar en la imagen
 
 **Ubicación del archivo de tipos:**
 ```
@@ -424,10 +449,20 @@ npm run lint
 
 **⚠️ IMPORTANTE:** Para DataTable, seguir la guía específica: `GUIA-IMPLEMENTACION-DATATABLE-PASO-A-PASO.md`
 
-1. **Primero:** Analizar columnas (cantidad y tipo)
-2. **Segundo:** Implementar DataTable con estructura mínima
-3. **Tercero:** Solo columnas básicas (sin funcionalidades avanzadas)
-4. **Cuarto:** Datos de ejemplo simples
+1. **Primero:** Contar items/filas en la imagen (⚠️ CRÍTICO)
+2. **Segundo:** Analizar columnas (cantidad y tipo)
+3. **Tercero:** Generar items con variedad (⚠️ CRÍTICO - ver `GUIA-GENERAR-ITEMS-DATATABLE.md`)
+4. **Cuarto:** Implementar DataTable con estructura mínima
+5. **Quinto:** Solo columnas básicas (sin funcionalidades avanzadas)
+
+**⚠️ CRÍTICO: ANTES de implementar, verificar en la imagen:**
+- [ ] ¿Hay opción de expandir filas? → Si NO, configurar `rowExpandable: false`
+- [ ] ¿Qué tipo de dato muestra cada columna? → Verificar tipos correctos:
+  - Estado con badge/tag → `type: 'estado'` (NO `type: 'text'`)
+  - Avance con barra de progreso → `type: 'progreso'` (NO `type: 'text'`)
+  - Fecha formateada → `type: 'fecha'` (NO `type: 'text'`)
+  - Número → `type: 'numero'` (NO `type: 'text'`)
+- [ ] ¿La tabla debe aprovechar todo el espacio vertical? → Si SÍ, configurar altura dinámica
 
 **Código de ejemplo:**
 ```javascript
@@ -437,14 +472,40 @@ window.createDataTable({
   columns: [
     { id: 'nombre', title: 'Nombre', type: 'text' },
     { id: 'tipo', title: 'Tipo', type: 'text' },
-    { id: 'estado', title: 'Estado', type: 'estado' }
+    { id: 'estado', title: 'Estado', type: 'estado' } // ✅ CORRECTO: tipo 'estado' para status tag
+    // ⚠️ CRÍTICO: Usar tipos correctos según la imagen
   ],
-  rows: [
-    { id: 1, data: { nombre: 'Cultura 2025', tipo: 'Cultura', estado: 'en-progreso' } },
-    { id: 2, data: { nombre: 'Cultura 2025', tipo: 'Cultura', estado: 'en-progreso' } }
-  ]
+  rows: (() => {
+    // ⚠️ CRÍTICO: Generar items con variedad (mínimo 10-15 si hay scroll)
+    const tipos = ['Cultura', 'Satisfacción', 'Clima', 'Desempeño', 'Innovación'];
+    const estados = ['en-progreso', 'completada', 'pausada', 'programada'];
+    const cantidadItems = 15; // Mínimo para mostrar scroll
+    
+    const items = [];
+    for (let i = 1; i <= cantidadItems; i++) {
+      items.push({
+        id: `encuesta-${i}`,
+        data: {
+          nombre: `${tipos[i % tipos.length]} ${2025 + (i % 2)}`,
+          tipo: tipos[i % tipos.length],
+          estado: estados[i % estados.length]
+        }
+      });
+    }
+    return items;
+  })(),
+  // ⚠️ CRÍTICO: Deshabilitar expansión de filas si NO está en la imagen
+  rowExpandable: false, // ✅ Deshabilitar si no hay opción de expandir en la imagen
+  // ⚠️ CRÍTICO: NO configurar columnas fijas si NO están en la imagen (evita redimensionamiento)
 });
+
+// ⚠️ CRÍTICO: Configurar altura dinámica después de crear el DataTable
+setTimeout(() => {
+  adjustDataTableHeight('encuestas-table-container');
+}, 200);
 ```
+
+**⚠️ CRÍTICO:** NO usar solo 2-3 items de ejemplo. Generar cantidad razonable con variedad. **Ver:** `docs/guias/implementacion/GUIA-GENERAR-ITEMS-DATATABLE.md`
 
 **Mostrar al usuario:**
 - ✅ DataTable renderizado
@@ -486,28 +547,57 @@ window.createDataTable({
 
 ### **1. NUNCA Implementar Todo de Golpe**
 - ❌ NO implementar tabs + barra + tabla en un solo paso
+- ❌ NO implementar múltiples tareas al tiempo (Tarea 1, 2 y 3 juntas)
 - ✅ SIEMPRE dividir en tareas pequeñas
+- ✅ SIEMPRE implementar UNA tarea a la vez
 - ✅ SIEMPRE pedir aprobación entre tareas
 
 ### **2. SIEMPRE Analizar Primero**
 - ❌ NO empezar a codificar inmediatamente
+- ❌ NO asumir tipos de columnas o funcionalidades sin verificar
 - ✅ SIEMPRE analizar la imagen/solicitud primero
+- ✅ SIEMPRE verificar en la imagen antes de implementar:
+  - Tipos de columnas correctos (estado → `type: 'estado'`, avance → `type: 'progreso'`)
+  - Funcionalidades NO visibles (expansión de filas, columnas fijas, altura dinámica)
 - ✅ SIEMPRE crear un plan y mostrarlo al usuario
 
-### **3. SIEMPRE Esperar Aprobación**
+### **3. SIEMPRE Consultar Componentes Antes de Implementar**
+- ❌ NO implementar sin consultar Storybook MCP o archivo de tipos
+- ✅ SIEMPRE consultar Storybook MCP (si está disponible) antes de implementar
+- ✅ SIEMPRE revisar archivo de tipos del componente antes de implementar
+- ✅ SIEMPRE verificar en la imagen qué funcionalidades están presentes
+
+### **4. SIEMPRE Esperar Aprobación**
 - ❌ NO continuar sin aprobación explícita
 - ✅ SIEMPRE preguntar: "¿Aprobamos para continuar?"
 - ✅ SIEMPRE mostrar lo que se implementó antes de continuar
 
-### **4. SIEMPRE Verificar Funcionalidad**
+### **5. SIEMPRE Verificar Funcionalidad**
 - ❌ NO asumir que funciona
 - ✅ SIEMPRE verificar que cada componente funciona
 - ✅ SIEMPRE probar antes de pedir aprobación
 
-### **5. SIEMPRE Documentar Opciones**
+### **6. SIEMPRE Documentar Opciones**
 - ❌ NO usar opciones sin explicar
 - ✅ SIEMPRE explicar qué opciones se usan y por qué
 - ✅ SIEMPRE consultar documentación de componentes complejos (como DataTable)
+
+### **7. SIEMPRE Verificar Tipos de Columnas Correctos** ⚠️ CRÍTICO
+- ❌ NO asumir que todas las columnas son `type: 'text'`
+- ✅ SIEMPRE verificar visualmente en la imagen el tipo de dato:
+  - Estado con badge/tag → `type: 'estado'` (NO `type: 'text'`)
+  - Avance con barra de progreso → `type: 'progreso'` (NO `type: 'text'`)
+  - Fecha formateada → `type: 'fecha'` (NO `type: 'text'`)
+  - Número → `type: 'numero'` (NO `type: 'text'`)
+
+### **8. SIEMPRE Verificar Funcionalidades NO Visibles** ⚠️ CRÍTICO
+- ❌ NO dejar `rowExpandable: true` por defecto cuando NO está en la imagen
+- ❌ NO configurar columnas fijas cuando NO están en la imagen (redimensiona la tabla)
+- ❌ NO dejar altura fija por defecto (no aprovecha espacio vertical)
+- ✅ SIEMPRE verificar en la imagen:
+  - ¿Hay opción de expandir filas? → Configurar `rowExpandable` correctamente
+  - ¿Hay columnas fijas? → Solo configurar si están en la imagen
+  - ¿La tabla debe aprovechar espacio vertical? → Configurar altura dinámica
 
 ---
 

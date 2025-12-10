@@ -69,9 +69,27 @@ await createNewTemplate('home-encuestas.html', image);
    - Consultar: `docs/referencia/componentes/README.md`
    - Para cada componente identificado, cargar su documentación específica
 
-2. **Identificar componentes UBITS:**
-   - ¿Qué componentes UBITS veo en la imagen?
-   - ¿Sidebar? ¿SubNav? ¿Tabs? ¿DataTable? ¿Buttons? ¿Inputs?
+2. **⚠️ CRÍTICO PRIMERO: Verificar componentes existentes del template:**
+   - **Sidebar (Barra Lateral Izquierda):**
+     - Características: Barra vertical fija izquierda, fondo azul oscuro, logo "U", iconos de navegación, avatar, toggle dark mode
+     - Estado: ✅ Ya existe en el template (NO implementar)
+     - Documentar: "Sidebar: Ya existe (variante: admin/colaborador, ya renderizado en el template)"
+   - **Header (Barra Superior):**
+     - Características: Barra horizontal delgada en la parte superior
+     - Estado: ✅ Ya existe en el template (NO implementar)
+     - Documentar: "Header: Ya existe (ya renderizado en el template)"
+   - **SubNav (Barra de Navegación Secundaria):**
+     - Características: Barra horizontal debajo del header, muestra NOMBRE DEL PRODUCTO/MÓDULO
+     - Estado: ✅ Ya existe en el template (NO implementar)
+     - Documentar: "SubNav: Ya existe (producto: [X])"
+   - **TabBar (Barra de Tabs Inferior - Móvil):**
+     - Características: Barra inferior con iconos grandes (solo en vista móvil)
+     - Estado: ✅ Ya existe si es móvil (NO implementar)
+     - Documentar: "TabBar: Ya existe (solo móvil)" o "TabBar: NO (vista desktop)"
+
+3. **Identificar componentes UBITS a implementar:**
+   - ¿Qué componentes UBITS veo en la imagen que NO son existentes del template?
+   - ¿Tabs? ¿DataTable? ¿Buttons? ¿Inputs?
    - **Para cada componente identificado:**
      - ✅ Cargar documentación: `docs/referencia/componentes/[nombre].md`
      - ✅ Identificar subcomponentes automáticamente
@@ -107,7 +125,8 @@ await createNewTemplate('home-encuestas.html', image);
        - Documentar: "HeaderSection: SÍ (título: [X], botón: [Y])"
    - **⚠️ IMPORTANTE:** Solo eliminar HeaderSection en el módulo específico donde la imagen no lo muestra
      - Verificar módulo/sección antes de eliminar: `if (section !== 'encuestas') return`
-     - Ver guía: `GUIA-ERRORES-COMUNES-UBITS.md` - Error #9
+     - **Ver guía completa:** `docs/guias/implementacion/GUIA-ELIMINAR-HEADERSECTION.md` - ⚠️ **OBLIGATORIO**
+     - Ver guía de errores: `GUIA-ERRORES-COMUNES-UBITS.md` - Error #9
 
 4. **Verificar contenedor `.content-sections` por defecto:** ⚠️ CRÍTICO
    - **¿Hay un contenedor `.content-sections` en el template?**

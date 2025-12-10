@@ -218,3 +218,7 @@ El gap del `.main-content` proporciona 20px, pero necesitamos 24px total, así q
 
 **Última actualización:** 2025-12-05  
 **Versión:** 1.0.0 (guía mejorada considerando contenedores padre)
+
+
+
+

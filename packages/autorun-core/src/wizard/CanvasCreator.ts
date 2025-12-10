@@ -78,13 +78,13 @@ export class CanvasCreator {
 			let templateContent = await this.fetchFromVercel(templateUrl);
 			console.log(`   ✅ Template cargado desde Vercel (${templateContent.length} bytes)`);
 
-			// IMPORTANTE: Usamos URLs de proxy (/vercel-proxy/...) para que el servidor local
-			// haga el fetch con headers de bypass token. El navegador no puede cargar recursos
-			// de Vercel directamente porque requiere headers de bypass.
-			const vercelBaseUrl = UBITS_PRESET.storybook.url;
+		// ⚠️ NUEVO: Usamos URLs directas de Vercel con bypass token en query string
+		// Esto permite abrir el HTML directamente sin necesidad de servidor con proxy
+		// El bypass token se pasa como query parameter, no como header
+		const vercelBaseUrl = UBITS_PRESET.storybook.url;
 
-			// Ajustar rutas del template a URLs de proxy
-			templateContent = await this.adjustTemplatePaths(templateContent, vercelBaseUrl);
+		// Ajustar rutas del template a URLs directas de Vercel con bypass token
+		templateContent = await this.adjustTemplatePaths(templateContent, vercelBaseUrl);
 
 			// Agregar carga del UMD de data-table usando proxy
 			templateContent = this.addDataTableUMD(templateContent, vercelBaseUrl);
@@ -430,9 +430,10 @@ export class CanvasCreator {
 		// Construir URL del script de data-table
 		let dataTableScript: string;
 		if (isVercelUrl) {
-			// Usar proxy local para data-table.umd.js
-			// En Vercel, los archivos se sirven desde la raíz cuando outputDirectory es storybook-static
-			dataTableScript = `<script src="/vercel-proxy/components/data-table/dist/data-table.umd.js"></script>`;
+			// Usar URL directa de Vercel con bypass token para data-table.umd.js
+			const dataTableUrl = UBITS_PRESET.storybook.getUrl?.('/components/data-table/dist/data-table.umd.js') || 
+				`${basePath.replace(/\/$/, '')}/components/data-table/dist/data-table.umd.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=${UBITS_PRESET.storybook.bypassToken}`;
+			dataTableScript = `<script src="${dataTableUrl}"></script>`;
 		} else {
 			dataTableScript = `<script src="${basePath}components/data-table/dist/data-table.umd.js"></script>`;
 		}
@@ -475,7 +476,7 @@ export class CanvasCreator {
 		const basePath = basePathToUBITS.endsWith('/') ? basePathToUBITS : `${basePathToUBITS}/`;
 
 		// 1. Reemplazar rutas relativas ../ por la ruta base (CSS y JS)
-		// Si es URL de Vercel, usar proxy local (/vercel-proxy/...) para que el servidor haga el fetch con bypass token
+		// ⚠️ NUEVO: Si es URL de Vercel, usar URLs directas con bypass token (más simple, funciona sin servidor proxy)
 		content = content.replace(/href="(\.\.\/)+([^"]+)"/g, (match, dots, path) => {
 			// Si ya tiene vendor/ubits/packages/, file:// o https://, no reemplazar
 			if (
@@ -486,11 +487,13 @@ export class CanvasCreator {
 			) {
 				return match;
 			}
-			// Si es URL de Vercel, usar proxy local (sin prefijo storybook-static/ porque Vercel sirve desde la raíz)
+			// Si es URL de Vercel, usar URL directa con bypass token (funciona sin servidor proxy)
 			if (isVercelUrl) {
-				// Usar /vercel-proxy/ para que el servidor local haga el fetch con bypass token
-				// NOTA: Vercel sirve los archivos desde la raíz cuando outputDirectory es storybook-static
-				return `href="/vercel-proxy/${path}"`;
+				// Usar URL directa de Vercel con bypass token en query string
+				// Esto permite abrir el HTML directamente sin necesidad de servidor con proxy
+				const vercelUrl = UBITS_PRESET.storybook.getUrl?.(`/${path}`) || 
+					`${basePath.replace(/\/$/, '')}/${path}?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=${UBITS_PRESET.storybook.bypassToken}`;
+				return `href="${vercelUrl}"`;
 			}
 			return `href="${basePath}${path}"`;
 		});
@@ -504,11 +507,13 @@ export class CanvasCreator {
 			) {
 				return match;
 			}
-			// Si es URL de Vercel, usar proxy local (sin prefijo storybook-static/ porque Vercel sirve desde la raíz)
+			// Si es URL de Vercel, usar URL directa con bypass token (funciona sin servidor proxy)
 			if (isVercelUrl) {
-				// Usar /vercel-proxy/ para que el servidor local haga el fetch con bypass token
-				// NOTA: Vercel sirve los archivos desde la raíz cuando outputDirectory es storybook-static
-				return `src="/vercel-proxy/${path}"`;
+				// Usar URL directa de Vercel con bypass token en query string
+				// Esto permite abrir el HTML directamente sin necesidad de servidor con proxy
+				const vercelUrl = UBITS_PRESET.storybook.getUrl?.(`/${path}`) || 
+					`${basePath.replace(/\/$/, '')}/${path}?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=${UBITS_PRESET.storybook.bypassToken}`;
+				return `src="${vercelUrl}"`;
 			}
 			return `src="${basePath}${path}"`;
 		});
@@ -517,9 +522,15 @@ export class CanvasCreator {
 		// Esto asegura que tokens como --modifiers-normal-color-dark-accent-blue estén disponibles
 		// Extraer la ruta base del tokens.css ya procesado para evitar duplicación
 		content = content.replace(
-			/(<link rel="stylesheet" href="([^"]*tokens\/dist\/)tokens\.css"[^>]*\/>)/,
+			/(<link rel="stylesheet" href="([^"]*tokens\/dist\/)tokens\.css[^"]*"[^>]*\/>)/,
 			(match, fullMatch, tokensPath) => {
-				// Si es proxy de Vercel, usar proxy también para figma-tokens (sin prefijo storybook-static/)
+				// Si es URL directa de Vercel, usar URL directa también para figma-tokens
+				if (tokensPath.includes('ubits-storybook10.vercel.app')) {
+					const figmaTokensUrl = UBITS_PRESET.storybook.getUrl?.('/tokens/dist/figma-tokens.css') || 
+						`${UBITS_PRESET.storybook.url}/tokens/dist/figma-tokens.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=${UBITS_PRESET.storybook.bypassToken}`;
+					return `${fullMatch}\n    <link rel="stylesheet" href="${figmaTokensUrl}" />`;
+				}
+				// Si es proxy de Vercel (legacy), usar proxy también para figma-tokens
 				if (tokensPath.startsWith('/vercel-proxy/')) {
 					return `${fullMatch}\n    <link rel="stylesheet" href="/vercel-proxy/tokens/dist/figma-tokens.css" />`;
 				}
@@ -528,43 +539,49 @@ export class CanvasCreator {
 			},
 		);
 
-		// 2. Convertir URLs directas de Vercel a rutas de proxy (para scripts y assets que ya vienen con URLs)
+		// 2. Asegurar que URLs directas de Vercel tengan bypass token (para scripts y assets que ya vienen con URLs)
 		if (isVercelUrl) {
 			const vercelBaseUrl = basePath.replace(/\/$/, '');
-			// Convertir URLs directas de Vercel a rutas de proxy con prefijo storybook-static/
+			// Si ya tienen bypass token, no cambiar. Si no, agregarlo
 			content = content.replace(
 				new RegExp(`href="${vercelBaseUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}([^"]+)"`, 'g'),
 				(match, path) => {
-					// Remover query parameters del path
-					const cleanPath = path.split('?')[0];
-					// Vercel sirve desde la raíz, así que no necesitamos prefijo storybook-static/
-					// Remover prefijo storybook-static/ si existe
-					const finalPath = cleanPath.replace(/^\/storybook-static/, '');
-					return `href="/vercel-proxy${finalPath}"`;
+					// Si ya tiene bypass token, no cambiar
+					if (path.includes('x-vercel-protection-bypass')) {
+						return match;
+					}
+					// Agregar bypass token si no lo tiene
+					const separator = path.includes('?') ? '&' : '?';
+					return `href="${vercelBaseUrl}${path}${separator}x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=${UBITS_PRESET.storybook.bypassToken}"`;
 				},
 			);
 			content = content.replace(
 				new RegExp(`src="${vercelBaseUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}([^"]+)"`, 'g'),
 				(match, path) => {
-					// Remover query parameters del path
-					const cleanPath = path.split('?')[0];
-					// Vercel sirve desde la raíz, así que no necesitamos prefijo storybook-static/
-					// Remover prefijo storybook-static/ si existe
-					const finalPath = cleanPath.replace(/^\/storybook-static/, '');
-					return `src="/vercel-proxy${finalPath}"`;
+					// Si ya tiene bypass token, no cambiar
+					if (path.includes('x-vercel-protection-bypass')) {
+						return match;
+					}
+					// Agregar bypass token si no lo tiene
+					const separator = path.includes('?') ? '&' : '?';
+					return `src="${vercelBaseUrl}${path}${separator}x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=${UBITS_PRESET.storybook.bypassToken}"`;
 				},
 			);
 		}
 
 		// 3. Ajustar rutas de assets que son relativas al mismo directorio (templates/assets/)
-		// assets/fontawesome/... -> Proxy local o ruta relativa/absoluta
+		// assets/fontawesome/... -> URL directa de Vercel o ruta relativa/absoluta
 		if (isVercelUrl) {
-			// Usar proxy local para assets (sin prefijo storybook-static/ porque Vercel sirve desde la raíz)
+			// Usar URL directa de Vercel para assets con bypass token
 			content = content.replace(/href="assets\/([^"]+)"/g, (match, assetPath) => {
-				return `href="/vercel-proxy/templates/assets/${assetPath}"`;
+				const vercelUrl = UBITS_PRESET.storybook.getUrl?.(`/templates/assets/${assetPath}`) || 
+					`${basePath.replace(/\/$/, '')}/templates/assets/${assetPath}?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=${UBITS_PRESET.storybook.bypassToken}`;
+				return `href="${vercelUrl}"`;
 			});
 			content = content.replace(/src="assets\/([^"]+)"/g, (match, assetPath) => {
-				return `src="/vercel-proxy/templates/assets/${assetPath}"`;
+				const vercelUrl = UBITS_PRESET.storybook.getUrl?.(`/templates/assets/${assetPath}`) || 
+					`${basePath.replace(/\/$/, '')}/templates/assets/${assetPath}?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=${UBITS_PRESET.storybook.bypassToken}`;
+				return `src="${vercelUrl}"`;
 			});
 		} else {
 			content = content.replace(/href="assets\//g, `href="${basePath}templates/assets/`);
@@ -577,18 +594,26 @@ export class CanvasCreator {
 		content = content.replace(/"assets\/images\//g, `"${basePath}templates/assets/images/`);
 
 		// 4. Ajustar rutas de scripts que son relativas al mismo directorio
-		// components-loader.js -> Proxy local o ruta relativa/absoluta
+		// components-loader.js -> URL directa de Vercel o ruta relativa/absoluta
 		if (isVercelUrl) {
-			// Usar proxy local para scripts (sin prefijo storybook-static/ porque Vercel sirve desde la raíz)
+			// Usar URL directa de Vercel para scripts con bypass token
 			content = content.replace(
 				/src="components-loader\.js"/g,
-				() => `src="/vercel-proxy/templates/components-loader.js"`,
+				() => {
+					const vercelUrl = UBITS_PRESET.storybook.getUrl?.('/templates/components-loader.js') || 
+						`${basePath.replace(/\/$/, '')}/templates/components-loader.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=${UBITS_PRESET.storybook.bypassToken}`;
+					return `src="${vercelUrl}"`;
+				},
 			);
 			content = content.replace(/src="config\/([^"]+)"/g, (match, configPath) => {
-				return `src="/vercel-proxy/templates/config/${configPath}"`;
+				const vercelUrl = UBITS_PRESET.storybook.getUrl?.(`/templates/config/${configPath}`) || 
+					`${basePath.replace(/\/$/, '')}/templates/config/${configPath}?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=${UBITS_PRESET.storybook.bypassToken}`;
+				return `src="${vercelUrl}"`;
 			});
 			content = content.replace(/src="engine\/([^"]+)"/g, (match, enginePath) => {
-				return `src="/vercel-proxy/templates/engine/${enginePath}"`;
+				const vercelUrl = UBITS_PRESET.storybook.getUrl?.(`/templates/engine/${enginePath}`) || 
+					`${basePath.replace(/\/$/, '')}/templates/engine/${enginePath}?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=${UBITS_PRESET.storybook.bypassToken}`;
+				return `src="${vercelUrl}"`;
 			});
 		} else {
 			content = content.replace(

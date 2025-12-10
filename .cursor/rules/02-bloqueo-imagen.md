@@ -50,8 +50,9 @@
 10. **LEER:** `docs/guias/analisis/GUIA-ANALISIS-DATATABLE-COMPLETO.md` - ⚠️ OBLIGATORIO si hay DataTable
 11. **LEER:** `docs/guias/analisis/GUIA-ANALISIS-FUNCIONALIDADES-DATATABLE.md` - ⚠️ OBLIGATORIO si hay DataTable
 12. **LEER:** `docs/guias/referencia/GUIA-CONTENTMANAGER-UPDATECONTENT.md` - ⚠️ OBLIGATORIO si agregas elementos a `.content-area`
-13. **CONSULTAR:** `docs/referencia/CATALOGO-COMPONENTES-UBITS.md` - ⭐ Para identificar componentes
-14. **CONSULTAR:** `docs/referencia/componentes/README.md` - ⭐ Para mapear a documentación
+13. **LEER:** `docs/guias/implementacion/GUIA-ELIMINAR-HEADERSECTION.md` - ⚠️ OBLIGATORIO si la imagen NO muestra HeaderSection
+14. **CONSULTAR:** `docs/referencia/CATALOGO-COMPONENTES-UBITS.md` - ⭐ Para identificar componentes
+15. **CONSULTAR:** `docs/referencia/componentes/README.md` - ⭐ Para mapear a documentación
 15. **IDENTIFICAR** template existente (buscar en `prototypes/`)
 16. **ANALIZAR** la imagen detalladamente usando documentación automática (ver formato abajo)
 17. **MOSTRAR** análisis completo al usuario (formato obligatorio mejorado)
@@ -65,7 +66,12 @@
 Ver el formato completo en: `docs/guias/analisis/GUIA-ANALISIS-IMAGEN-MEJORADO.md` ⭐
 
 **Elementos obligatorios del análisis mejorado:**
-- Componentes UBITS identificados (con documentación cargada)
+- **⚠️ CRÍTICO: Componentes existentes del template verificados PRIMERO:**
+  - Sidebar identificado (SÍ/NO) - Ya existe, NO implementar
+  - Header identificado (SÍ/NO) - Ya existe, NO implementar
+  - SubNav identificado (SÍ/NO) - Ya existe, NO implementar
+  - TabBar identificado (SÍ/NO, solo si es móvil) - Ya existe, NO implementar
+- Componentes UBITS a implementar identificados (con documentación cargada)
 - **Subcomponentes identificados** para cada componente ⭐
 - **Subfuncionalidades identificadas** para cada componente ⭐
 - **Tipos/variantes identificados** (ej: tipos de columnas) ⭐
@@ -99,6 +105,7 @@ Ver el formato completo en: `docs/guias/analisis/GUIA-ANALISIS-IMAGEN-MEJORADO.m
 - **Implementación automática:** `.cursor/rules/06-implementacion-automatica.md` ⭐
 - **Guía crear desde imagen:** `docs/guias/implementacion/GUIA-CREAR-DESDE-IMAGEN-DESPUES-WIZARD.md`
 - **Proceso implementación:** `docs/guias/implementacion/GUIA-PROCESO-IMPLEMENTACION-PASO-A-PASO.md`
+- **Eliminar HeaderSection:** `docs/guias/implementacion/GUIA-ELIMINAR-HEADERSECTION.md` ⭐ **NUEVO**
 - **Documentación componentes:** `docs/referencia/componentes/` ⭐
 
 

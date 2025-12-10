@@ -331,9 +331,9 @@ Para instalar MCP de Vercel manualmente:
      "mcpServers": {
        "vercel": {
          "url": "https://mcp.vercel.com"
+         }
        }
      }
-   }
 
 2. Reinicia tu editor/IDE (Cursor, VS Code, etc.).
 

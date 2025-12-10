@@ -11,6 +11,8 @@ import { AddonRegistry } from './AddonRegistry';
 import { AddonLoader } from './AddonLoader';
 import { ConfigManager } from './ConfigManager';
 import { getConflictDetector, AddonConflictError } from './AddonConflictDetector';
+import { FileWatcher } from './core/FileWatcher';
+import * as path from 'path';
 import {
 	HubNotInitializedError,
 	HubAlreadyInitializedError,
@@ -29,6 +31,7 @@ export class AutorunHub {
 	private activeAddons: Map<string, IAddon> = new Map();
 	private context: AutorunContext;
 	private initialized = false;
+	private fileWatcher?: FileWatcher;
 
 	/**
 	 * Crea una instancia de AutorunHub
@@ -66,6 +69,12 @@ export class AutorunHub {
 		if (activeAddonIds.length > 0) {
 			// Cargar y activar add-ons en orden de dependencias
 			await this.loadAddons(activeAddonIds);
+		}
+
+		// Inicializar file watching si está habilitado
+		const enableFileWatching = config.autorun?.fileWatching?.enabled !== false;
+		if (enableFileWatching) {
+			this.startFileWatching(config.autorun?.fileWatching);
 		}
 
 		this.initialized = true;
@@ -309,23 +318,84 @@ export class AutorunHub {
 	 * @param data Datos del evento (opcional)
 	 */
 	async emitEvent(event: string, data?: any): Promise<void> {
+		console.log(`📡 AutorunHub: Emitiendo evento '${event}' con datos:`, typeof data === 'string' ? data : JSON.stringify(data).substring(0, 100));
+		
 		// Convertir nombre del evento a nombre del método
 		// Ej: 'fileChange' -> 'onFileChange'
 		const eventMethod = `on${event.charAt(0).toUpperCase() + event.slice(1)}`;
+		console.log(`🔍 AutorunHub: Buscando método '${eventMethod}' en ${this.activeAddons.size} add-on(s) activo(s)`);
 
+		let handlersFound = 0;
 		for (const addon of this.activeAddons.values()) {
 			if (addon.type === 'functional') {
 				const functionalAddon = addon as IFunctionalAddon;
 				const handler = (functionalAddon as any)[eventMethod];
 
 				if (typeof handler === 'function') {
+					handlersFound++;
+					console.log(`✅ AutorunHub: Handler encontrado en add-on '${addon.id}'`);
 					try {
-						await handler.call(functionalAddon, data);
+						// Para fileChange, pasar filePath como primer argumento
+						if (event === 'fileChange' && typeof data === 'string') {
+							console.log(`📞 AutorunHub: Llamando ${eventMethod} en add-on '${addon.id}' con filePath: ${data}`);
+							await handler.call(functionalAddon, data);
+						} else {
+							console.log(`📞 AutorunHub: Llamando ${eventMethod} en add-on '${addon.id}'`);
+							await handler.call(functionalAddon, data);
+						}
+						console.log(`✅ AutorunHub: Handler en add-on '${addon.id}' completado`);
 					} catch (error) {
-						console.error(`Error en add-on ${addon.id} manejando evento ${event}:`, error);
+						console.error(`❌ Error en add-on ${addon.id} manejando evento ${event}:`, error);
 					}
+				} else {
+					console.log(`⏭️ AutorunHub: Add-on '${addon.id}' no tiene método '${eventMethod}'`);
 				}
 			}
+		}
+		
+		console.log(`📊 AutorunHub: Evento '${event}' procesado - ${handlersFound} handler(s) ejecutado(s)`);
+	}
+
+	/**
+	 * Inicia el file watching para detectar cambios en archivos
+	 * @param options Opciones de configuración del file watching
+	 */
+	private startFileWatching(options?: any): void {
+		try {
+			const watchPaths = options?.paths || ['prototypes/', 'src/'];
+			const ignored = options?.ignored || ['node_modules/', '.git/', 'dist/', '.next/'];
+			const debounceMs = options?.debounceMs || 300;
+
+			// Resolver rutas absolutas
+			const projectRoot = process.cwd();
+			const absolutePaths = watchPaths.map((p: string) => path.resolve(projectRoot, p));
+
+			this.fileWatcher = new FileWatcher({
+				watchPaths: absolutePaths,
+				ignored,
+				debounceMs,
+			});
+
+			this.fileWatcher.start((filePath: string) => {
+				console.log(`📥 AutorunHub: FileWatcher callback recibido para: ${filePath}`);
+				// Emitir evento fileChange a todos los add-ons
+				this.emitEvent('fileChange', filePath);
+			});
+
+			console.log('✅ AutorunHub: File watching iniciado');
+		} catch (error) {
+			console.error('❌ AutorunHub: Error iniciando file watching:', error);
+		}
+	}
+
+	/**
+	 * Detiene el file watching
+	 */
+	stopFileWatching(): void {
+		if (this.fileWatcher) {
+			this.fileWatcher.stop();
+			this.fileWatcher = undefined;
+			console.log('🛑 AutorunHub: File watching detenido');
 		}
 	}
 

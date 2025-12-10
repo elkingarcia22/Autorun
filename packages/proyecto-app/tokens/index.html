@@ -9009,7 +9009,67 @@ npm run init</code></pre>
                 ✅ Configura sidebar y subnav para tu módulo<br>
                 ✅ Crea ambos templates (administrador y colaborador)<br>
                 ✅ Valida templates creados<br>
-                ✅ Abre solo el template seleccionado en el navegador
+                ✅ Abre solo el template seleccionado en el navegador<br>
+                ✅ <strong style="color: var(--autorun-neon-green);">Inicializa AutorunHub automáticamente</strong> ⭐ (FileWatcher, Pre-Implementation Check, Auto-Reload activos)
+              </p>
+              <div style="margin-top: 20px; padding: 16px; background: rgba(0, 255, 0, 0.1); border-left: 4px solid var(--autorun-neon-green); border-radius: 6px;">
+                <p style="margin: 0; color: var(--autorun-neon-green); font-weight: 600;">
+                  ✅ <strong>AutorunHub se inicializa automáticamente</strong>
+                </p>
+                <p style="margin: 8px 0 0 0; color: var(--autorun-gray-600); font-size: 14px;">
+                  Después del wizard, AutorunHub está completamente inicializado y funcionando. Ya no necesitas ejecutar comandos adicionales. FileWatcher detectará cambios automáticamente, Pre-Implementation Check funcionará, y Auto-Reload recargará el navegador cuando hagas cambios.
+                </p>
+                <p style="margin: 12px 0 0 0; color: var(--autorun-gray-600); font-size: 14px;">
+                  <strong>Para sesiones siguientes (ya configurado):</strong> Solo ejecuta <code style="background: rgba(0,255,255,0.1); padding: 2px 6px; border-radius: 3px;">npm run autorun:init-hub</code> para inicializar AutorunHub rápidamente.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Nota sobre AutorunHub - Acordeón -->
+        <div class="conectar-note-accordion" data-scroll="fade-up" style="margin-top: 30px;">
+          <div class="note-header">
+            <div class="note-icon-small">
+              <svg width="24" height="24" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="16" cy="16" r="12" stroke="currentColor" stroke-width="2" fill="none"/>
+                <path d="M16 10V16M16 22H16.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <h4 class="note-title">🚀 AutorunHub: Inicialización Automática</h4>
+            <div class="note-toggle-icon">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
+          <div class="note-content-collapsible">
+            <p class="note-text">
+              <strong>El wizard ahora inicializa AutorunHub automáticamente al finalizar.</strong> Esto significa que después de ejecutar <code style="background: rgba(0,255,255,0.1); padding: 2px 6px; border-radius: 3px;">npm run init</code>, AutorunHub está completamente funcional sin pasos adicionales.
+            </p>
+            <div style="margin-top: 16px;">
+              <h5 style="color: var(--autorun-neon-green); margin-bottom: 12px; font-size: 15px;">✅ Qué está activo después del wizard:</h5>
+              <ul style="list-style: none; padding-left: 0;">
+                <li style="margin-bottom: 8px;">📝 <strong>FileWatcher:</strong> Detecta cambios automáticamente en <code style="background: rgba(0,255,255,0.1); padding: 2px 6px; border-radius: 3px;">prototypes/</code></li>
+                <li style="margin-bottom: 8px;">🔍 <strong>Pre-Implementation Check:</strong> Bloquea implementaciones sin checklist completo</li>
+                <li style="margin-bottom: 8px;">🔄 <strong>Auto-Reload:</strong> Recarga el navegador automáticamente cuando guardas cambios</li>
+                <li style="margin-bottom: 8px;">📋 <strong>Problem Tracker:</strong> Documenta problemas y soluciones automáticamente</li>
+                <li style="margin-bottom: 8px;">📊 <strong>Sistema de Pasos:</strong> Sugiere implementación por pasos para componentes complejos</li>
+              </ul>
+            </div>
+            <div style="margin-top: 20px;">
+              <h5 style="color: var(--autorun-neon-yellow); margin-bottom: 12px; font-size: 15px;">💡 Para sesiones siguientes:</h5>
+              <p style="margin-bottom: 12px; color: var(--autorun-gray-600);">
+                Si ya ejecutaste el wizard y solo necesitas inicializar AutorunHub:
+              </p>
+              <div class="code-block">
+                <pre><code># Inicializar AutorunHub rápidamente (sin ejecutar wizard)
+npm run autorun:init-hub</code></pre>
+              </div>
+            </div>
+            <div style="margin-top: 20px; padding: 12px; background: rgba(255, 255, 0, 0.1); border-left: 3px solid var(--autorun-neon-yellow); border-radius: 4px;">
+              <p style="margin: 0; color: var(--autorun-gray-600); font-size: 13px;">
+                <strong>Nota:</strong> En Cursor, el agente debe ejecutar <code style="background: rgba(0,255,255,0.1); padding: 2px 6px; border-radius: 3px;">npm run autorun:init-hub</code> al inicio de cada sesión para asegurar que Autorun esté funcionando.
               </p>
             </div>
           </div>

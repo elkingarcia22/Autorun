@@ -15,22 +15,22 @@ import {
 	createSearchButton,
 } from '../../search-button/src/SearchButtonProvider';
 import type { SearchButtonOptions } from '../../search-button/src/types/SearchButtonOptions';
-import { createDrawer } from '../../drawer/src/DrawerProvider';
 import { renderBadge } from '../../badge/src/BadgeProvider';
 import { renderInput, createInput } from '../../input/src/InputProvider';
 import { renderEmptyState } from '../../empty-state/src/EmptyStateProvider';
+import { createDrawer } from '../../drawer/src/DrawerProvider';
 // Importar estilos del List para que se carguen
 import '../../list/src/styles/list.css';
 // Importar estilos del SearchButton para que se carguen
 import '../../search-button/src/styles/search-button.css';
-// Importar estilos del Drawer para que se carguen
-import '../../drawer/src/styles/drawer.css';
 // Importar estilos del Badge para que se carguen
 import '../../badge/src/styles/badge.css';
 // Importar estilos del Input para que se carguen
 import '../../input/src/styles/input.css';
 // Importar estilos del EmptyState para que se carguen
 import '../../empty-state/src/styles/empty-state.css';
+// Importar estilos del Drawer para que se carguen
+import '../../drawer/src/styles/drawer.css';
 
 /**
  * Renderiza una celda según el tipo de columna
@@ -955,7 +955,6 @@ function renderRow(
  */
 function renderDataTableHeader(
 	options: DataTableOptions,
-	activeFilters: Record<string, string> = {},
 ): string {
 	const { header, rows } = options;
 
@@ -1024,24 +1023,25 @@ function renderDataTableHeader(
   `
 				: '';
 
-	// Renderizar botón primario (icon-only)
+	// Renderizar botón primario (icon-only o icono + texto)
 	const primaryButtonHTML =
 		showPrimaryButton && primaryButton
 			? renderButton({
 					variant: 'primary',
 					size: 'sm',
+					text: primaryButton.text || '', // Agregar texto si está disponible
 					icon: primaryButton.icon || 'plus',
 					iconStyle: primaryButton.iconStyle || 'regular',
-					iconOnly: true,
+					iconOnly: !primaryButton.text, // iconOnly solo si NO hay texto
 					disabled: primaryButton.disabled || false,
 					loading: primaryButton.loading || false,
 					className: 'ubits-data-table__header-primary-button',
-					showTooltip: true,
+					showTooltip: !primaryButton.text, // Tooltip solo si es iconOnly
 					tooltipText: primaryButton.text || 'Nuevo',
 				})
 			: '';
 
-	// Renderizar botones secundarios (máximo 2, icon-only)
+	// Renderizar botones secundarios (máximo 2, icon-only o icono + texto)
 	const secondaryButtonsHTML =
 		showSecondaryButtons && secondaryButtons.length > 0
 			? secondaryButtons
@@ -1050,26 +1050,22 @@ function renderDataTableHeader(
 						renderButton({
 							variant: 'secondary',
 							size: 'sm',
+							text: btn.text || '', // Agregar texto si está disponible
 							icon: btn.icon || 'download',
 							iconStyle: btn.iconStyle || 'regular',
-							iconOnly: true,
+							iconOnly: !btn.text, // iconOnly solo si NO hay texto
 							disabled: btn.disabled || false,
 							loading: btn.loading || false,
 							className: 'ubits-data-table__header-secondary-button',
-							showTooltip: true,
+							showTooltip: !btn.text, // Tooltip solo si es iconOnly
 							tooltipText: btn.text || '',
 						}),
 					)
 					.join('')
 			: '';
 
-	// Contar filtros activos
-	const activeFiltersCount = Object.keys(activeFilters).filter(
-		(key) => activeFilters[key] && activeFilters[key].trim() !== '',
-	).length;
-
-	// Renderizar botón de filtros (icon-only) con badge si hay filtros activos
-	let filterButtonHTML =
+	// Renderizar botón de filtros (icon-only)
+	const filterButtonHTML =
 		showFilterButton && filterButton
 			? renderButton({
 					variant: 'secondary',
@@ -1078,25 +1074,12 @@ function renderDataTableHeader(
 					iconStyle: 'regular',
 					iconOnly: true,
 					disabled: filterButton.disabled || false,
-					active: filterButton.active || false || activeFiltersCount > 0,
-					badge: activeFiltersCount > 0, // Activar badge si hay filtros activos
+					active: filterButton.active || false,
 					className: 'ubits-data-table__header-filter-button',
 					showTooltip: true,
 					tooltipText: 'Filtros',
 				})
 			: '';
-
-	// Reemplazar el badge genérico con uno que muestre el número si hay filtros activos
-	if (filterButtonHTML && activeFiltersCount > 0) {
-		// Crear el badge con el número de filtros activos
-		// Usar las clases del badge normal pero mantener la clase del botón para posicionamiento
-		const badgeHTML = `<span class="ubits-badge ubits-badge--sm ubits-badge--number ubits-badge--error ubits-button__badge">${activeFiltersCount}</span>`;
-		// Reemplazar el badge genérico del botón con el badge personalizado
-		filterButtonHTML = filterButtonHTML.replace(
-			'<span class="ubits-button__badge"></span>',
-			badgeHTML,
-		);
-	}
 
 	// Renderizar botón de seleccionar columnas (icon-only)
 	const columnSelectorButtonHTML =
@@ -1169,7 +1152,6 @@ export function renderDataTable(
 	options: DataTableOptions,
 	columnOrder: string[] = [],
 	rowOrder: (string | number)[] = [],
-	activeFilters: Record<string, string> = {},
 ): string {
 	const {
 		columns,
@@ -1568,7 +1550,6 @@ export function renderDataTable(
 	let emptyStateHTML = '';
 	const hasNoData = rows.length === 0;
 	const hasNoResults = paginatedRows.length === 0;
-	const hasActiveFilters = Object.keys(activeFilters).length > 0;
 	const hasSearchTerm = searchTerm && searchTerm.trim() !== '';
 
 	if (hasNoResults && emptyState) {
@@ -1580,9 +1561,6 @@ export function renderDataTable(
 		} else if (hasSearchTerm && emptyState.noSearchResults) {
 			// No hay resultados de búsqueda
 			emptyStateConfig = emptyState.noSearchResults;
-		} else if (hasActiveFilters && emptyState.noFilterResults) {
-			// No hay resultados de filtros
-			emptyStateConfig = emptyState.noFilterResults;
 		}
 
 		if (emptyStateConfig) {
@@ -1697,7 +1675,7 @@ export function renderDataTable(
 	}
 
 	// Renderizar el header del DataTable
-	const headerHTML = renderDataTableHeader(options, activeFilters);
+		const headerHTML = renderDataTableHeader(options);
 
 	// Agregar el paginador FUERA del contenedor de la tabla, siempre debajo
 	let html: string;
@@ -1851,14 +1829,6 @@ export function createDataTable(options: DataTableOptions): {
 		update: (newOptions: Partial<SearchButtonOptions>) => void;
 	} | null = null;
 
-	// Estado de filtros
-	let activeFilters: Record<string, string> = {};
-	let drawerInstance: {
-		element: HTMLElement;
-		open: () => void;
-		close: () => void;
-		updateContent: (content: string | (() => string)) => void;
-	} | null = null;
 
 	// Función para filtrar filas basándose en el término de búsqueda
 	const filterRowsBySearch = (
@@ -1886,98 +1856,6 @@ export function createDataTable(options: DataTableOptions): {
 		});
 	};
 
-	// Función para filtrar filas basándose en los filtros aplicados
-	const filterRowsByFilters = (
-		rows: TableRow[],
-		filters: Record<string, string>,
-		columns: TableColumn[],
-	): TableRow[] => {
-		const activeFilterEntries = Object.entries(filters).filter(
-			([_, value]) => value && value.trim() !== '',
-		);
-
-		if (activeFilterEntries.length === 0) {
-			return rows;
-		}
-
-		return rows.filter((row) => {
-			// Todas las condiciones de filtro deben cumplirse (AND)
-			return activeFilterEntries.every(([filterId, filterValue]) => {
-				// Buscar la columna correspondiente al filtro (usar filterId como columnId)
-				const column = columns.find((col) => col.id === filterId);
-
-				if (!column) {
-					// Si no encontramos la columna directamente, buscar en los filtros configurados
-					const filterConfig = currentOptions.header?.filterButton?.filters?.find(
-						(f) => f.id === filterId,
-					);
-					if (!filterConfig) return true;
-
-					const columnId = filterConfig.columnId;
-					const cellValue = row.data[columnId];
-
-					if (cellValue == null) return false;
-
-					const cellValueStr = String(cellValue).toLowerCase().trim();
-					const filterValueStr = filterValue.toLowerCase().trim();
-
-					// Filtrar según el tipo del filtro configurado
-					switch (filterConfig.type) {
-						case 'text':
-							return cellValueStr.includes(filterValueStr);
-						case 'select':
-							return cellValueStr === filterValueStr;
-						case 'number':
-							return (
-								cellValueStr === filterValueStr ||
-								parseFloat(cellValueStr) === parseFloat(filterValueStr)
-							);
-						case 'date':
-							return cellValueStr.includes(filterValueStr);
-						default:
-							return cellValueStr.includes(filterValueStr);
-					}
-				}
-
-				// Usar la columna encontrada directamente
-				const cellValue = row.data[column.id];
-
-				if (cellValue == null) return false;
-
-				const cellValueStr = String(cellValue).toLowerCase().trim();
-				const filterValueStr = filterValue.toLowerCase().trim();
-
-				// Determinar el tipo de filtro basado en el tipo de columna
-				const columnType = column.type || 'text';
-
-				// Filtrar según el tipo de columna
-				switch (columnType) {
-					case 'estado':
-						// Para estados, comparación exacta
-						return cellValueStr === filterValueStr;
-					case 'fecha':
-						// Para fechas, búsqueda parcial
-						return cellValueStr.includes(filterValueStr);
-					case 'progreso':
-						// Para números, comparación numérica
-						const cellNum = parseFloat(cellValueStr);
-						const filterNum = parseFloat(filterValueStr);
-						return !isNaN(cellNum) && !isNaN(filterNum) && cellNum === filterNum;
-					case 'nombre':
-					case 'nombre-avatar':
-					case 'nombre-avatar-texto':
-					case 'correo':
-					case 'area':
-					case 'lider':
-					case 'pais':
-					case 'ciudad':
-					default:
-						// Para texto, búsqueda parcial
-						return cellValueStr.includes(filterValueStr);
-				}
-			});
-		});
-	};
 
 	// Estado de lazy load
 	const isLazyLoadEnabled = currentOptions.showPagination
@@ -2218,15 +2096,10 @@ export function createDataTable(options: DataTableOptions): {
 		} else {
 		}
 
-		// Filtrar filas por filtros y búsqueda
+		// Filtrar filas por búsqueda
 		let filteredRows = currentOptions.rows;
 
-		// Aplicar filtros primero
-		if (Object.keys(activeFilters).length > 0) {
-			filteredRows = filterRowsByFilters(filteredRows, activeFilters, currentOptions.columns);
-		}
-
-		// Luego aplicar búsqueda sobre las filas filtradas
+		// Aplicar búsqueda
 		if (searchTerm) {
 			filteredRows = filterRowsBySearch(filteredRows, searchTerm, currentOptions.columns);
 		}
@@ -2252,11 +2125,10 @@ export function createDataTable(options: DataTableOptions): {
 			header: currentOptions.header
 				? {
 						...currentOptions.header,
-						// Solo actualizar displayedItems si no está definido explícitamente o si hay búsqueda/filtros activos
+						// Solo actualizar displayedItems si no está definido explícitamente o si hay búsqueda activa
 						displayedItems:
 							currentOptions.header.displayedItems !== undefined &&
-							!searchTerm &&
-							Object.keys(activeFilters).length === 0
+							!searchTerm
 								? currentOptions.header.displayedItems
 								: filteredRows.length,
 						// Pasar el estado activo del SearchButton y el término de búsqueda a través de las opciones
@@ -2280,7 +2152,7 @@ export function createDataTable(options: DataTableOptions): {
 		// Actualizar renderOptions con columnas únicas
 		renderOptions.columns = uniqueColumns;
 
-		const newHTML = renderDataTable(renderOptions as any, columnOrder, rowOrder, activeFilters);
+		const newHTML = renderDataTable(renderOptions as any, columnOrder, rowOrder);
 
 		const beforeReplace = performance.now();
 		element.innerHTML = newHTML.trim();
@@ -2633,6 +2505,17 @@ export function createDataTable(options: DataTableOptions): {
 
 	// Función para adjuntar event listeners
 	const attachEventListeners = () => {
+		console.log('🔵 [DATA TABLE ATTACH] ========== INICIO attachEventListeners ==========');
+		console.log('🔵 [DATA TABLE ATTACH] currentOptions existe:', !!currentOptions);
+		console.log('🔵 [DATA TABLE ATTACH] currentOptions.onRowSelect existe:', !!currentOptions?.onRowSelect);
+		console.log('🔵 [DATA TABLE ATTACH] Tipo de onRowSelect:', typeof currentOptions?.onRowSelect);
+		console.log('🔵 [DATA TABLE ATTACH] currentOptions keys:', Object.keys(currentOptions || {}));
+		if (currentOptions?.header) {
+			console.log('🔵 [DATA TABLE ATTACH] currentOptions.header existe');
+			console.log('🔵 [DATA TABLE ATTACH] currentOptions.header.searchButton existe:', !!currentOptions.header.searchButton);
+		}
+		console.log('🔵 [DATA TABLE ATTACH] ========== FIN VERIFICACIÓN INICIAL ==========');
+		
 		// Detectar si estamos en la web (no en Storybook)
 		const isWeb =
 			typeof window !== 'undefined' &&
@@ -3368,11 +3251,21 @@ export function createDataTable(options: DataTableOptions): {
 				// IMPORTANTE: Usar { capture: false } para que este listener se ejecute DESPUÉS del listener del "select all"
 				// El listener del "select all" se ejecuta primero (se adjunta primero) y detiene la propagación
 				const checkboxIndividualHandler = (e: Event) => {
+					console.log('🔵 [DATA TABLE CHECKBOX HANDLER] ========== CHECKBOX CHANGE EVENT ==========');
+					console.log('🔵 [DATA TABLE CHECKBOX HANDLER] Event type:', e.type);
+					console.log('🔵 [DATA TABLE CHECKBOX HANDLER] Event target:', e.target);
+					
 					const input = e.target as HTMLInputElement;
+					console.log('🔵 [DATA TABLE CHECKBOX HANDLER] Input element:', input);
+					console.log('🔵 [DATA TABLE CHECKBOX HANDLER] Input checked:', input?.checked);
+					console.log('🔵 [DATA TABLE CHECKBOX HANDLER] Input data-row-id:', input?.getAttribute('data-row-id'));
+					console.log('🔵 [DATA TABLE CHECKBOX HANDLER] Input data-column-id:', input?.getAttribute('data-column-id'));
+					console.log('🔵 [DATA TABLE CHECKBOX HANDLER] Input has data-column-checkbox-header:', input?.hasAttribute('data-column-checkbox-header'));
 
 					// CRÍTICO: Verificar PRIMERO si es un checkbox del header ANTES de cualquier log
 					// Esto debe ser lo primero que se verifica para evitar procesar el header checkbox
 					if (input.hasAttribute('data-column-checkbox-header')) {
+						console.log('🔵 [DATA TABLE CHECKBOX HANDLER] ⚠️ Es checkbox del header, ignorando...');
 						// IMPORTANTE: Detener la propagación aquí también por si acaso
 						// NO usar preventDefault() porque bloquea el cambio visual del checkbox
 						e.stopPropagation();
@@ -3383,19 +3276,25 @@ export function createDataTable(options: DataTableOptions): {
 					// IMPORTANTE: Si estamos en modo "select all", ignorar este evento
 					// porque el handler de select all ya está manejando la actualización masiva
 					if (isSelectAllInProgress) {
+						console.log('🔵 [DATA TABLE CHECKBOX HANDLER] ⚠️ Select all en progreso, ignorando...');
 						return;
 					}
 
 					const currentRowIdStr = input.getAttribute('data-row-id');
 					const currentColumnId = input.getAttribute('data-column-id');
+					console.log('🔵 [DATA TABLE CHECKBOX HANDLER] currentRowIdStr:', currentRowIdStr);
+					console.log('🔵 [DATA TABLE CHECKBOX HANDLER] currentColumnId:', currentColumnId);
 
 					// Validar que tiene data-row-id (los checkboxes del header no lo tienen)
 					if (!currentRowIdStr || !currentColumnId) {
+						console.warn('⚠️ [DATA TABLE CHECKBOX HANDLER] No tiene data-row-id o data-column-id, ignorando...');
 						return;
 					}
 
 					const rowId = isNaN(Number(currentRowIdStr)) ? currentRowIdStr : Number(currentRowIdStr);
 					const isChecked = input.checked;
+					console.log('🔵 [DATA TABLE CHECKBOX HANDLER] rowId procesado:', rowId);
+					console.log('🔵 [DATA TABLE CHECKBOX HANDLER] isChecked:', isChecked);
 
 					const row = currentOptions.rows.find((r) => r.id === rowId);
 					if (row) {
@@ -3696,26 +3595,36 @@ export function createDataTable(options: DataTableOptions): {
 								// Forzar reflow para que el navegador procese el cambio
 								void rowElement.offsetHeight;
 
-								// Ahora aplicar los estilos
-								// Obtener valor del token UBITS (sin fallback hardcodeado para cumplir validación)
-								const bg1Value = getComputedStyle(document.documentElement)
-									.getPropertyValue('--modifiers-normal-color-light-bg-1')
-									.trim();
+							// Ahora aplicar los estilos
+							// Detectar tema actual (light o dark)
+							const currentTheme = document.body.getAttribute('data-theme') || 
+							                     document.documentElement.getAttribute('data-theme') || 
+							                     'light';
+							
+							// Obtener token correcto según el tema
+							const bgTokenName = currentTheme === 'dark' 
+								? '--modifiers-normal-color-dark-bg-1'
+								: '--modifiers-normal-color-light-bg-1';
+							
+							// Obtener valor del token UBITS (sin fallback hardcodeado para cumplir validación)
+							const bg1Value = getComputedStyle(document.documentElement)
+								.getPropertyValue(bgTokenName)
+								.trim();
 
-								// Agregar clase para forzar limpieza del hover inmediatamente
-								rowElement.classList.add('ubits-data-table__row--clear-hover');
+							// Agregar clase para forzar limpieza del hover inmediatamente
+							rowElement.classList.add('ubits-data-table__row--clear-hover');
 
-								// Aplicar también inline style como respaldo para forzar el cambio
-								rowElement.style.setProperty('background-color', bg1Value, 'important');
+							// Aplicar también inline style como respaldo para forzar el cambio
+							rowElement.style.setProperty('background-color', bg1Value, 'important');
 
-								// Aplicar también a todas las celdas
-								cells.forEach((cell, index) => {
-									(cell as HTMLElement).style.setProperty(
-										'background-color',
-										bg1Value,
-										'important',
-									);
-								});
+							// Aplicar también a todas las celdas
+							cells.forEach((cell, index) => {
+								(cell as HTMLElement).style.setProperty(
+									'background-color',
+									bg1Value,
+									'important',
+								);
+							});
 
 								// Forzar otro reflow después de aplicar estilos
 								void rowElement.offsetHeight;
@@ -3755,9 +3664,26 @@ export function createDataTable(options: DataTableOptions): {
 							}
 
 							// Llamar a onRowSelect callback
+							console.log('🔵 [DATA TABLE CHECKBOX] ========== VERIFICACIÓN ANTES DE LLAMAR CALLBACK ==========');
+							console.log('🔵 [DATA TABLE CHECKBOX] rowId:', rowId);
+							console.log('🔵 [DATA TABLE CHECKBOX] isChecked:', isChecked);
+							console.log('🔵 [DATA TABLE CHECKBOX] currentOptions existe:', !!currentOptions);
+							console.log('🔵 [DATA TABLE CHECKBOX] currentOptions.onRowSelect existe:', !!currentOptions?.onRowSelect);
+							console.log('🔵 [DATA TABLE CHECKBOX] Tipo de onRowSelect:', typeof currentOptions?.onRowSelect);
+							
 							if (currentOptions.onRowSelect) {
-								currentOptions.onRowSelect(rowId, isChecked);
+								console.log('🔵 [DATA TABLE] ✅ Llamando onRowSelect con rowId:', rowId, 'isChecked:', isChecked);
+								try {
+									currentOptions.onRowSelect(rowId, isChecked);
+									console.log('🔵 [DATA TABLE] ✅ onRowSelect ejecutado correctamente');
+								} catch (error) {
+									console.error('❌ [DATA TABLE] Error al ejecutar onRowSelect:', error);
+								}
+							} else {
+								console.warn('⚠️ [DATA TABLE] onRowSelect no está definido en currentOptions');
+								console.warn('⚠️ [DATA TABLE] currentOptions keys:', Object.keys(currentOptions || {}));
 							}
+							console.log('🔵 [DATA TABLE CHECKBOX] ========== FIN VERIFICACIÓN ==========');
 
 							// NO llamar a render() - esto evita el brinco
 							// El checkbox visual ya está actualizado por el evento nativo y las clases CSS
@@ -3846,7 +3772,10 @@ export function createDataTable(options: DataTableOptions): {
 					}
 
 					if (currentOptions.onSort) {
+						console.log('🔵 [DATA TABLE] Llamando onSort con columnId:', columnId, 'direction:', sortDirection);
 						currentOptions.onSort(columnId, sortDirection!);
+					} else {
+						console.warn('⚠️ [DATA TABLE] onSort no está definido');
 					}
 
 					render();
@@ -4035,7 +3964,10 @@ export function createDataTable(options: DataTableOptions): {
 
 										// Llamar callback si existe
 										if (currentOptions.onColumnPin) {
+											console.log('🔵 [DATA TABLE] Llamando onColumnPin con columnId:', columnId, 'pinned:', column.pinned);
 											currentOptions.onColumnPin(columnId, column.pinned);
+										} else {
+											console.warn('⚠️ [DATA TABLE] onColumnPin no está definido');
 										}
 
 										// Re-renderizar
@@ -5665,7 +5597,10 @@ export function createDataTable(options: DataTableOptions): {
 
 									// Llamar onChange si existe
 									if (currentOptions.header.searchButton.onChange) {
+										console.log('🔵 [DATA TABLE] Llamando searchButton.onChange con valor:', value);
 										currentOptions.header.searchButton.onChange(value);
+									} else {
+										console.warn('⚠️ [DATA TABLE] searchButton.onChange no está definido');
 									}
 
 									// Re-renderizar la tabla con las filas filtradas
@@ -5805,7 +5740,7 @@ export function createDataTable(options: DataTableOptions): {
 						}
 					}
 
-					// Botón de filtros
+					// Botón de filtros - IMPLEMENTACIÓN DESDE CERO
 					if (
 						currentOptions.header.filterButton &&
 						currentOptions.header.showFilterButton !== false
@@ -5818,326 +5753,104 @@ export function createDataTable(options: DataTableOptions): {
 								e.stopPropagation();
 								e.preventDefault();
 
-								// Generar filtros automáticamente si no están configurados
-								let filters = currentOptions.header.filterButton.filters || [];
-
-								// Si no hay filtros configurados, generarlos automáticamente basados en las columnas
-								if (filters.length === 0) {
-									filters = currentOptions.columns
-										.filter((col) => {
-											// Excluir columnas especiales que no se pueden filtrar
-											const excludedTypes = [
-												'drag-handle',
-												'expand',
-												'checkbox',
-												'radio',
-												'toggle',
-												'acciones',
-											];
-											return col.visible !== false && col.type && !excludedTypes.includes(col.type);
-										})
-										.map((col) => {
-											// Determinar el tipo de filtro basado en el tipo de columna
-											let filterType: 'text' | 'select' | 'date' | 'number' = 'text';
-											let options: Array<{ value: string; label: string }> | undefined = undefined;
-
-											if (col.type === 'estado') {
-												filterType = 'select';
-												// Obtener valores únicos de estado de las filas
-												const uniqueValues = new Set<string>();
-												currentOptions.rows.forEach((row) => {
-													const value = row.data[col.id];
-													if (value != null) {
-														uniqueValues.add(String(value));
-													}
-												});
-												options = Array.from(uniqueValues).map((val) => ({
-													value: val,
-													label: val,
-												}));
-											} else if (col.type === 'fecha') {
-												filterType = 'date';
-											} else if (col.type === 'progreso') {
-												filterType = 'number';
-											} else {
-												filterType = 'text';
-											}
-
-											return {
-												id: col.id,
-												label: col.title,
-												columnId: col.id,
-												type: filterType,
-												options: options,
-											};
-										});
-								}
-
-								if (filters.length === 0) {
-									console.warn('🔍 [DATA TABLE] No hay columnas disponibles para filtrar');
-									// Si no hay filtros disponibles, llamar onClick si existe como fallback
-									if (currentOptions.header.filterButton.onClick) {
-										currentOptions.header.filterButton.onClick(e);
-									}
+								// Si hay onClick personalizado, ejecutarlo
+								if (currentOptions.header.filterButton?.onClick) {
+									currentOptions.header.filterButton.onClick(e);
 									return;
 								}
 
-								// NO llamar onClick si hay filtros configurados, el drawer es la funcionalidad principal
-
-								// Función para renderizar el contenido del drawer con los filtros
-								const renderFiltersContent = (): string => {
-									const filtersHTML = filters
-										.map((filter) => {
-											const currentValue = activeFilters[filter.id] || filter.value || '';
-
-											let inputHTML = '';
-											const containerId = `filter-input-${filter.id}`;
-
-											switch (filter.type) {
-												case 'text':
-												case 'number':
-												case 'date':
-													inputHTML = renderInput({
-														containerId: containerId,
-														label: filter.label,
-														type: filter.type,
-														value: currentValue,
-														placeholder: `Filtrar por ${filter.label.toLowerCase()}...`,
-														size: 'md',
-													});
-													break;
-												case 'select':
-													if (filter.options && filter.options.length > 0) {
-														inputHTML = renderInput({
-															containerId: containerId,
-															label: filter.label,
-															type: 'select',
-															selectOptions: filter.options,
-															value: currentValue,
-															placeholder: `Seleccionar ${filter.label.toLowerCase()}...`,
-															size: 'md',
-														});
-													}
-													break;
-											}
-
-											return `
-                    <div class="ubits-data-table__filter-item" data-filter-id="${filter.id}">
-                      <div id="${containerId}">${inputHTML}</div>
-                    </div>
-                  `;
-										})
-										.join('');
-
-									return `
-                  <div class="ubits-data-table__filters-container">
-                    ${filtersHTML}
-                  </div>
-                `;
-								};
-
-								// Crear o actualizar el drawer
-								if (!drawerInstance) {
-									try {
-										drawerInstance = createDrawer({
-											title: 'Filtros',
-											complementaryText: 'Aplica filtros para refinar los resultados',
-											width: 40,
-											bodyContent: renderFiltersContent,
-											footerButtons: {
-												secondary: {
-													label: 'Limpiar',
-													onClick: (e) => {
-														e.preventDefault();
-														e.stopPropagation();
-														activeFilters = {};
-														if (currentOptions.header.filterButton.onClearFilters) {
-															currentOptions.header.filterButton.onClearFilters();
-														}
-														render();
-														if (drawerInstance) {
-															drawerInstance.close();
-														}
-													},
-												},
-												primary: {
-													label: 'Aplicar',
-													onClick: (e) => {
-														e.preventDefault();
-														e.stopPropagation();
-
-														// Recopilar valores de los filtros desde los inputs
-														const newFilters: Record<string, string> = {};
-														filters.forEach((filter) => {
-															const filterItem = drawerInstance.element.querySelector(
-																`[data-filter-id="${filter.id}"]`,
-															);
-															if (filterItem) {
-																const input = filterItem.querySelector(
-																	'.ubits-input',
-																) as HTMLInputElement;
-																if (input && input.value && input.value.trim() !== '') {
-																	newFilters[filter.id] = input.value.trim();
-																}
-															}
-														});
-
-														// Actualizar filtros activos
-														activeFilters = newFilters;
-
-														// Llamar callback si existe
-														if (currentOptions.header.filterButton.onApplyFilters) {
-															currentOptions.header.filterButton.onApplyFilters(activeFilters);
-														}
-
-														// Re-renderizar la tabla con los filtros aplicados
-														render();
-
-														// Cerrar el drawer
-														if (drawerInstance) {
-															drawerInstance.close();
-														}
-													},
-												},
-											},
-											onClose: () => {
-												// No hacer nada al cerrar, los filtros ya están aplicados
-											},
-											closeOnOverlayClick: true,
-										});
-									} catch (error) {
-										console.error('🔍 [DATA TABLE] Error al crear drawer:', error);
-										// Si hay error, llamar onClick si existe como fallback
-										if (currentOptions.header.filterButton.onClick) {
-											currentOptions.header.filterButton.onClick(e);
-										}
-										return;
-									}
-								} else {
-									// Actualizar el contenido del drawer
-									try {
-										drawerInstance.updateContent(renderFiltersContent);
-									} catch (error) {
-										console.error('🔍 [DATA TABLE] Error al actualizar drawer:', error);
-										// Si hay error, recrear el drawer
-										drawerInstance = createDrawer({
-											title: 'Filtros',
-											complementaryText: 'Aplica filtros para refinar los resultados',
-											width: 40,
-											bodyContent: renderFiltersContent,
-											footerButtons: {
-												secondary: {
-													label: 'Limpiar',
-													onClick: (e) => {
-														e.preventDefault();
-														e.stopPropagation();
-														activeFilters = {};
-														if (currentOptions.header.filterButton.onClearFilters) {
-															currentOptions.header.filterButton.onClearFilters();
-														}
-														render();
-														if (drawerInstance) {
-															drawerInstance.close();
-														}
-													},
-												},
-												primary: {
-													label: 'Aplicar',
-													onClick: (e) => {
-														e.preventDefault();
-														e.stopPropagation();
-
-														// Recopilar valores de los filtros desde los inputs
-														const newFilters: Record<string, string> = {};
-														filters.forEach((filter) => {
-															const filterItem = drawerInstance.element.querySelector(
-																`[data-filter-id="${filter.id}"]`,
-															);
-															if (filterItem) {
-																const input = filterItem.querySelector(
-																	'.ubits-input',
-																) as HTMLInputElement;
-																if (input && input.value && input.value.trim() !== '') {
-																	newFilters[filter.id] = input.value.trim();
-																}
-															}
-														});
-
-														// Actualizar filtros activos
-														activeFilters = newFilters;
-
-														// Llamar callback si existe
-														if (currentOptions.header.filterButton.onApplyFilters) {
-															currentOptions.header.filterButton.onApplyFilters(activeFilters);
-														}
-
-														// Re-renderizar la tabla con los filtros aplicados
-														render();
-
-														// Cerrar el drawer
-														if (drawerInstance) {
-															drawerInstance.close();
-														}
-													},
-												},
-											},
-											onClose: () => {
-												// No hacer nada al cerrar, los filtros ya están aplicados
-											},
-											closeOnOverlayClick: true,
-										});
-									}
-								}
-
-								// Abrir el drawer solo si existe
-								if (drawerInstance) {
-									drawerInstance.open();
-
-									// Crear los inputs después de abrir el drawer usando createInput
-									setTimeout(() => {
-										if (!drawerInstance) return; // Verificar que aún existe
-
-										filters.forEach((filter) => {
-											const containerId = `filter-input-${filter.id}`;
-											const inputContainer = drawerInstance.element.querySelector(
-												`#${containerId}`,
-											) as HTMLElement;
-											if (inputContainer) {
-												// Limpiar el contenedor primero
-												inputContainer.innerHTML = '';
-
-												// Crear el input usando createInput
-												const currentValue = activeFilters[filter.id] || filter.value || '';
-												let inputOptions: any = {
-													containerId: containerId,
-													label: filter.label,
-													value: currentValue,
-													placeholder:
-														filter.type === 'select'
-															? `Seleccionar ${filter.label.toLowerCase()}...`
-															: `Filtrar por ${filter.label.toLowerCase()}...`,
-													size: 'md',
-												};
-
-												if (filter.type === 'select' && filter.options) {
-													inputOptions.type = 'select';
-													// Convertir las opciones al formato que espera el componente Input
-													// Input espera { value: string, text: string }
-													// Filtros tienen { value: string, label: string }
-													inputOptions.selectOptions = filter.options.map((opt) => ({
-														value: opt.value,
-														text: opt.label || opt.value,
-													}));
-												} else {
-													inputOptions.type = filter.type;
+								// Crear drawer simple
+								const drawer = createDrawer({
+									title: 'Filtros',
+									complementaryText: 'Aplica filtros para refinar los resultados',
+									width: 40,
+									bodyContent: () => {
+										return '<div id="filters-container"></div>';
+									},
+									footerButtons: {
+										secondary: {
+											label: 'Limpiar',
+											onClick: (e) => {
+												e.preventDefault();
+												if (currentOptions.header.filterButton?.onClearFilters) {
+													currentOptions.header.filterButton.onClearFilters();
 												}
+												drawer.close();
+											},
+										},
+										primary: {
+											label: 'Aplicar',
+											onClick: (e) => {
+												e.preventDefault();
+												// Recopilar valores de filtros
+												const filters: Record<string, string> = {};
+												const inputs = drawer.element.querySelectorAll('#filters-container .ubits-input');
+												inputs.forEach((input) => {
+													const htmlInput = input as HTMLInputElement;
+													if (htmlInput.value) {
+														const filterId = htmlInput.getAttribute('data-filter-id');
+														if (filterId) {
+															filters[filterId] = htmlInput.value;
+														}
+													}
+												});
+												if (currentOptions.header.filterButton?.onApplyFilters) {
+													currentOptions.header.filterButton.onApplyFilters(filters);
+												}
+												drawer.close();
+											},
+										},
+									},
+									onClose: () => {
+										if (drawer.element?.parentElement) {
+											drawer.element.remove();
+										}
+									},
+									open: true,
+								});
 
-												// Crear el input
-												createInput(inputOptions);
+								// Crear inputs después de que el drawer esté renderizado
+								setTimeout(() => {
+									const container = drawer.element?.querySelector('#filters-container') as HTMLElement;
+									if (!container) return;
+
+									// Si hay filtros configurados, usarlos
+									const filters = currentOptions.header.filterButton?.filters || [];
+									
+									if (filters.length > 0) {
+										filters.forEach((filter) => {
+											const filterDiv = document.createElement('div');
+											filterDiv.id = `filter-${filter.id}`;
+											container.appendChild(filterDiv);
+
+											const inputOptions: any = {
+												containerId: `filter-${filter.id}`,
+												label: filter.label,
+												type: filter.type === 'date' ? 'calendar' : filter.type,
+												value: filter.value || '',
+												size: 'md',
+											};
+
+											if (filter.type === 'select' && filter.options) {
+												inputOptions.selectOptions = filter.options.map((opt) => ({
+													value: opt.value,
+													text: opt.label || opt.value,
+												}));
 											}
+
+											createInput(inputOptions);
 										});
-									}, 300);
-								}
+									} else {
+										// Si no hay filtros configurados, crear uno de prueba
+										createInput({
+											containerId: 'filters-container',
+											label: 'Prueba',
+											type: 'text',
+											placeholder: 'Escribe algo',
+											size: 'md',
+										});
+									}
+								}, 200);
 							});
 						}
 					}
@@ -6586,6 +6299,17 @@ export function createDataTable(options: DataTableOptions): {
 													});
 												}
 
+												// Llamar callback onColumnVisibilityChange si existe
+												if (currentOptions.onColumnVisibilityChange) {
+													const visibleColumns = currentOptions.columns
+														.filter((col) => col.visible !== false)
+														.map((col) => col.id);
+													console.log('🔵 [DATA TABLE] Llamando onColumnVisibilityChange con columnas:', visibleColumns);
+													currentOptions.onColumnVisibilityChange(visibleColumns);
+												} else {
+													console.warn('⚠️ [DATA TABLE] onColumnVisibilityChange no está definido');
+												}
+
 												// Actualizar el contenido del dropdown para reflejar el cambio
 												updateDropdownContent();
 
@@ -6662,15 +6386,12 @@ export function createDataTable(options: DataTableOptions): {
 					// Detectar qué tipo de empty state es
 					const hasNoData = currentOptions.rows.length === 0;
 					const hasSearchTerm = searchTerm && searchTerm.trim() !== '';
-					const hasActiveFilters = Object.keys(activeFilters).length > 0;
 
 					let emptyStateConfig;
 					if (hasNoData && currentOptions.emptyState.noData) {
 						emptyStateConfig = currentOptions.emptyState.noData;
 					} else if (hasSearchTerm && currentOptions.emptyState.noSearchResults) {
 						emptyStateConfig = currentOptions.emptyState.noSearchResults;
-					} else if (hasActiveFilters && currentOptions.emptyState.noFilterResults) {
-						emptyStateConfig = currentOptions.emptyState.noFilterResults;
 					}
 
 					if (emptyStateConfig) {

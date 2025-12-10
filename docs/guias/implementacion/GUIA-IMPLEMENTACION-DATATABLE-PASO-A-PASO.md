@@ -8,6 +8,104 @@ Esta guía establece el proceso **OBLIGATORIO** para implementar DataTable con m
 
 > **"Una funcionalidad a la vez"** - Implementar cada característica de DataTable de forma independiente, pedir aprobación en cada paso, y solo avanzar cuando el usuario apruebe.
 
+## 🚨 ERRORES CRÍTICOS A EVITAR
+
+### **ERROR #1: Asumir Tipos de Columnas Incorrectos**
+- ❌ **INCORRECTO:** Usar `type: 'text'` para todas las columnas
+- ✅ **CORRECTO:** Verificar visualmente en la imagen y usar tipos correctos:
+  - Estado con badge/tag → `type: 'estado'` (NO `type: 'text'`)
+  - Avance con barra de progreso → `type: 'progreso'` (NO `type: 'text'`)
+  - Fecha formateada → `type: 'fecha'` (NO `type: 'text'`)
+  - Número → `type: 'numero'` (NO `type: 'text'`)
+
+### **ERROR #2: Dejar rowExpandable en true por Defecto**
+- ❌ **INCORRECTO:** Dejar `rowExpandable: true` cuando NO hay opción de expandir en la imagen
+- ✅ **CORRECTO:** Verificar en la imagen si hay opción de expandir filas:
+  - Si NO hay → `rowExpandable: false`
+  - Si SÍ hay → `rowExpandable: true` + agregar `renderExpandedContent` a cada fila
+
+### **ERROR #3: Configurar Columnas Fijas sin Verificar**
+- ❌ **INCORRECTO:** Configurar `pinned: true` en columnas cuando NO están fijas en la imagen
+- ✅ **CORRECTO:** Solo configurar `pinned: true` si las columnas están fijas en la imagen (evita redimensionamiento incorrecto)
+
+### **ERROR #4: No Configurar Altura Dinámica**
+- ❌ **INCORRECTO:** Dejar altura fija por defecto (400px), no aprovecha espacio vertical
+- ✅ **CORRECTO:** Configurar altura dinámica después de crear el DataTable para aprovechar todo el espacio vertical disponible
+- ⚠️ **CRÍTICO:** Buscar contenedor scrollable en el **PADRE** del table, no dentro de él
+- **Ver guía:** `docs/guias/implementacion/GUIA-ERROR-CONTENEDOR-SCROLLABLE-DATATABLE.md`
+
+### **ERROR #5: No Implementar Action Bar cuando showCheckbox: true**
+- ❌ **INCORRECTO:** No implementar Action Bar cuando hay checkboxes habilitados
+- ✅ **CORRECTO:** SIEMPRE implementar Action Bar cuando `showCheckbox: true`
+- ⚠️ **CRÍTICO:** Variables en scope de script, listeners después del renderizado, estilos completos
+- **Ver guía:** `docs/guias/implementacion/GUIA-ERROR-ACTION-BAR-NO-SE-MUESTRA-DATATABLE.md`
+- **Ver guía completa:** `docs/guias/implementacion/GUIA-ACTION-BAR-DATATABLE.md` - ⚠️ **OBLIGATORIO** (incluye todos los errores encontrados: border-bottom, iconos, datos originales, listeners)
+
+### **ERROR #6: No Configurar Estilos CSS del Contenedor**
+- ❌ **INCORRECTO:** Solo agregar `margin-top` inline, sin estilos de layout
+- ✅ **CORRECTO:** Configurar estilos completos: `display: flex`, `overflow: hidden`, `padding`, etc.
+- **Ver guía:** `docs/guias/implementacion/GUIA-ERRORES-IMPLEMENTACION-DATATABLE-COMPLETA.md`
+
+### **ERROR #7: Implementar Múltiples Tareas al Tiempo**
+- ❌ **INCORRECTO:** Implementar Tarea 1, 2 y 3 al mismo tiempo sin analizar bien cada una
+- ✅ **CORRECTO:** Implementar UNA tarea a la vez, analizando bien todo antes de implementar
+
+### **ERROR #8: No Agregar Logs Detallados**
+- ❌ **INCORRECTO:** Logs mínimos o inexistentes, difícil diagnosticar problemas
+- ✅ **CORRECTO:** Logs detallados en cada paso: inicialización, búsqueda de elementos, selección, renderizado
+- **Ver guía:** `docs/guias/implementacion/GUIA-ERRORES-IMPLEMENTACION-DATATABLE-COMPLETA.md`
+
+### **ERROR #9: No Implementar Empty States para Búsqueda y Filtros**
+- ❌ **INCORRECTO:** Implementar `searchButton` y `filterButton` sin configurar empty states
+- ✅ **CORRECTO:** SIEMPRE implementar `noSearchResults` si hay `searchButton` y `noFilterResults` si hay `filterButton`
+- ⚠️ **CRÍTICO:** Guardar instancia del DataTable en `window._encuestasDataTableInstance` para que callbacks puedan acceder
+- **Ver guía:** `docs/guias/implementacion/GUIA-ERROR-NO-IMPLEMENTAR-EMPTY-STATES-DATATABLE.md` - ⚠️ **OBLIGATORIO**
+
+### **ERROR #16: Botón de Cerrar (X) del SearchButton Fuera del Input**
+- ❌ **INCORRECTO:** Implementar `searchButton` sin agregar estilos CSS y sin verificar/corregir estructura del DOM
+- ✅ **CORRECTO:** SIEMPRE agregar estilos CSS completos del SearchButton (input-wrapper con `height: 32px`, botón de cerrar con `position: relative`) y función de verificación/corrección de estructura
+- ⚠️ **CRÍTICO:** El botón de cerrar (X) debe estar dentro del `input-wrapper`, NO fuera. Usar `position: relative` (NO `absolute`) para mantenerlo en el flujo flexbox
+- **Ver guía:** `docs/guias/implementacion/GUIA-ERROR-SEARCHBUTTON-BOTON-CERRAR-FUERA-INPUT.md` - ⚠️ **OBLIGATORIO** (DEBE seguirse SIEMPRE al implementar SearchButton)
+
+### **ERROR #10: Usar Deploy Viejo de Vercel**
+- ❌ **INCORRECTO:** Usar URL de deployment específico (`https://ubits-storybook10-{hash}-...vercel.app`) que puede estar desactualizado
+- ✅ **CORRECTO:** SIEMPRE usar URL principal (`https://ubits-storybook10.vercel.app/`) que siempre apunta al deployment más reciente
+- ⚠️ **CRÍTICO:** Verificar en `UBITSPreset.ts` que use la URL principal
+- **Ver guía:** `docs/guias/implementacion/GUIA-ERROR-USAR-DEPLOY-VIEJO-VERCEL.md` - ⚠️ **OBLIGATORIO**
+
+### **ERROR #11: Tamaño de Tabla Pequeño - No Aprovecha Espacio**
+- ❌ **INCORRECTO:** Contenedor sin `width: 100%` y `flex: 1`, contenedor interno con `flex: 0 1 auto`
+- ✅ **CORRECTO:** Configurar `width: 100%`, `flex: 1`, `min-height: 0` en contenedor de tabla y contenedor interno
+- ⚠️ **CRÍTICO:** Verificar que `.content-area` tenga `align-items: stretch` para que los hijos ocupen todo el ancho
+- **Ver guía:** `docs/guias/implementacion/GUIA-ERROR-TAMANO-TABLA-PEQUENO.md` - ⚠️ **OBLIGATORIO**
+
+### **ERROR #12: Padding Incorrecto**
+- ❌ **INCORRECTO:** Padding de 24px en todos los lados o padding externo dentro del contenedor
+- ✅ **CORRECTO:** Padding interno de 16px en todos los lados del contenedor de tabla, padding externo de 24px solo abajo en `.content-area`
+- ⚠️ **CRÍTICO:** El padding externo debe estar FUERA del contenedor de la tabla (en `.content-area`)
+- **Ver guía:** `docs/guias/implementacion/GUIA-ERROR-PADDING-INCORRECTO-TABLA.md` - ⚠️ **OBLIGATORIO**
+
+### **ERROR #13: Scroll en la Página**
+- ❌ **INCORRECTO:** `body` con `overflow-y: auto`, contenedores con `overflow: visible`, `.dashboard-container` con `min-height: 100vh`
+- ✅ **CORRECTO:** `body` con `overflow-y: hidden`, contenedores con `overflow: hidden`, `.dashboard-container` con `height: 100vh`
+- ⚠️ **CRÍTICO:** Solo debe haber scroll en `.ubits-data-table__scrollable-container--vertical`, NO en la página
+- **Ver guía:** `docs/guias/implementacion/GUIA-ERROR-SCROLL-PAGINA.md` - ⚠️ **OBLIGATORIO**
+
+### **ERROR #14: Header de Columnas (thead) No Se Queda Fijo al Hacer Scroll** ⚠️ **NUEVO**
+- ❌ **INCORRECTO:** No configurar `showVerticalScrollbar: true` y no agregar CSS para hacer el thead sticky
+- ✅ **CORRECTO:** SIEMPRE configurar `showVerticalScrollbar: true` y agregar CSS para que el thead sea sticky
+- ⚠️ **CRÍTICO:** El header de las columnas (thead) DEBE quedarse fijo al hacer scroll, solo los items (filas) deben hacer scroll
+- **Ver guía:** `docs/guias/analisis/ANALISIS-ERROR-DATATABLE-THEAD-NO-STICKY.md` - ⚠️ **OBLIGATORIO**
+
+### **ERROR #15: Header del Checkbox No Se Queda Fijo (Sticky) - Queda por Debajo de las Filas** ⚠️ **NUEVO**
+- ❌ **INCORRECTO:** El header del checkbox (`checkbox-2`) no tiene z-index suficiente o no tiene sticky vertical configurado correctamente
+- ✅ **CORRECTO:** SIEMPRE configurar z-index del header del checkbox mayor que las celdas (50+) y aplicar estilos desde JavaScript
+- ⚠️ **CRÍTICO:** El header del checkbox DEBE quedarse fijo por encima de las filas al hacer scroll, las filas deben pasar por debajo
+- ⚠️ **CRÍTICO:** El thead DEBE tener z-index base (10) para crear stacking context correcto
+- ⚠️ **CRÍTICO:** Las celdas de checkbox DEBEN tener z-index menor (12) que el header (50)
+- ⚠️ **CRÍTICO:** Aplicar estilos desde JavaScript con `!important` para sobrescribir estilos inline del DataTable
+- **Ver guía:** `docs/guias/implementacion/GUIA-ERROR-HEADER-CHECKBOX-NO-STICKY-DATATABLE.md` - ⚠️ **OBLIGATORIO**
+
 ---
 
 ## 📋 PROCESO COMPLETO (OBLIGATORIO)
@@ -117,6 +215,108 @@ Esta guía establece el proceso **OBLIGATORIO** para implementar DataTable con m
 
 ---
 
+### **FASE 0.6: CONTAR ITEMS/FILAS EN LA IMAGEN** ⚠️ CRÍTICO
+
+#### **Paso 0.6.1: Contar Items/Filas Visibles**
+
+**⚠️ OBLIGATORIO:** Antes de analizar columnas, SIEMPRE contar cuántos items/filas hay en la tabla:
+
+1. **Contar filas visibles:**
+   - ¿Cuántas filas se ven completamente en la imagen?
+   - ¿Hay scroll o paginación visible?
+   - ¿La tabla llega hasta abajo de la imagen?
+
+2. **Verificar contador en header:**
+   - ¿Hay un contador en el header? (ej: "206 encuestas")
+   - Si existe, usar ese número como referencia
+
+3. **Estimar cantidad total:**
+   - Si hay scroll, estimar cuántos items hay en total
+   - Si no hay scroll, contar las filas visibles exactamente
+
+4. **Documentar en el análisis:**
+   ```markdown
+   ## 📊 Análisis de Cantidad de Items
+   
+   ### Items/Filas identificados:
+   - **Filas visibles en imagen:** 12 filas
+   - **Scroll visible:** Sí (la tabla continúa más abajo)
+   - **Contador en header:** "206 encuestas"
+   - **Cantidad total estimada:** 206 items
+   - **Items a crear en implementación:** Mínimo 15-20 items para mostrar scroll correctamente
+   ```
+
+**⚠️ REGLA CRÍTICA:** NO crear solo 2-3 items de ejemplo. Crear una cantidad razonable que refleje la imagen (mínimo 10-15 items si hay scroll, o la cantidad exacta si se ve completa).
+
+**Ver guía completa:** `docs/guias/implementacion/GUIA-GENERAR-ITEMS-DATATABLE.md` - ⚠️ **OBLIGATORIO para generar items**
+
+---
+
+### **FASE 0.8: CONFIGURAR ALTURA DINÁMICA** 📏
+
+#### **Paso 0.8.1: Configurar Altura Dinámica para Aprovechar Espacio Vertical**
+
+**⚠️ OBLIGATORIO:** Después de crear el DataTable, configurar la altura dinámica para aprovechar el espacio vertical disponible:
+
+1. **Calcular espacio disponible:**
+   - Obtener altura del viewport (`window.innerHeight`)
+   - Obtener posición del contenedor (`getBoundingClientRect().top`)
+   - Calcular altura de elementos superiores (tabs, header, etc.)
+   - Calcular altura del header del DataTable
+   - Restar padding y margins (usar tokens UBITS)
+
+2. **Configurar max-height dinámicamente:**
+   - Buscar el contenedor scrollable (`.ubits-data-table__scrollable-container--vertical`)
+   - Configurar `maxHeight` con el espacio disponible calculado
+   - Agregar listener de resize para recalcular cuando cambie el tamaño de la ventana
+
+**Ver guía completa:** `docs/guias/implementacion/GUIA-ALTURA-DINAMICA-DATATABLE.md` - ⚠️ **OBLIGATORIO**
+
+---
+
+### **FASE 0.7: GENERAR ITEMS CON VARIEDAD** 🛠️
+
+#### **Paso 0.7.1: Generar Items Según Análisis**
+
+**⚠️ OBLIGATORIO:** Después de contar items y analizar columnas, generar items con variedad:
+
+1. **Usar función generadora (IIFE):**
+   ```javascript
+   rows: (() => {
+     // Definir arrays de valores posibles
+     const tipos = ['Cultura', 'Satisfacción', 'Clima', 'Desempeño', 'Innovación'];
+     const estados = ['en-progreso', 'completada', 'pausada', 'programada'];
+     
+     // Determinar cantidad según análisis
+     const cantidadItems = 20; // Mínimo para mostrar scroll
+     
+     // Generar items
+     const items = [];
+     for (let i = 1; i <= cantidadItems; i++) {
+       items.push({
+         id: `encuesta-${i}`,
+         data: {
+           nombre: `${tipos[i % tipos.length]} ${2025 + (i % 2)}`,
+           tipo: tipos[i % tipos.length],
+           estado: estados[i % estados.length],
+           // ... otros campos con variedad
+         }
+       });
+     }
+     return items;
+   })()
+   ```
+
+2. **Asegurar variedad:**
+   - Usar arrays de valores posibles
+   - Usar operador módulo (`%`) para distribuir valores
+   - Agregar variación aleatoria donde sea apropiado
+   - Relacionar valores cuando tenga sentido (ej: avance con estado)
+
+**Ver guía completa:** `docs/guias/implementacion/GUIA-GENERAR-ITEMS-DATATABLE.md` - ⚠️ **OBLIGATORIO**
+
+---
+
 ### **FASE 1: ANÁLISIS DE COLUMNAS** 🔍
 
 #### **Paso 1.1: Analizar Columnas de la Imagen/Solicitud**
@@ -127,15 +327,21 @@ Esta guía establece el proceso **OBLIGATORIO** para implementar DataTable con m
    - ¿Cuántas columnas tiene la tabla?
    - ¿Hay columnas ocultas o que se muestran condicionalmente?
 
-2. **Identificar tipo de cada columna:**
+2. **Identificar tipo de cada columna:** ⚠️ CRÍTICO
    - ¿Qué tipo de dato muestra cada columna?
+   - ⚠️ **ERROR COMÚN:** Asumir que todas las columnas son `type: 'text'`
+   - ⚠️ **VERIFICAR VISUALMENTE** en la imagen el tipo de dato:
+     - Si muestra un badge/tag de estado → `type: 'estado'` (NO `type: 'text'`)
+     - Si muestra una barra de progreso → `type: 'progreso'` (NO `type: 'text'`)
+     - Si muestra una fecha formateada → `type: 'fecha'` (NO `type: 'text'`)
+     - Si muestra un número → `type: 'numero'` (NO `type: 'text'`)
    - Tipos comunes:
      - `text` / `nombre` - Texto simple
      - `checkbox` - Casilla de selección
-     - `estado` - Badge/tag de estado (ej: "En progreso", "Completado")
-     - `fecha` - Fecha formateada
-     - `numero` - Número formateado
-     - `progreso` - Barra de progreso
+     - `estado` - Badge/tag de estado (ej: "En progreso", "Completado") ⚠️ NO usar `text`
+     - `fecha` - Fecha formateada ⚠️ NO usar `text`
+     - `numero` - Número formateado ⚠️ NO usar `text`
+     - `progreso` - Barra de progreso ⚠️ NO usar `text`
      - `acciones` - Botones de acción (editar, eliminar, etc.)
      - `avatar` - Imagen de perfil
      - `custom` - Contenido personalizado
@@ -144,7 +350,12 @@ Esta guía establece el proceso **OBLIGATORIO** para implementar DataTable con m
    - ¿Hay columna de checkbox para selección múltiple?
    - ¿Hay columna de drag handle para reordenar filas?
    - ¿Hay columna de acciones?
-   - ¿Hay columnas fijas (sticky)?
+   - ¿Hay columnas fijas (sticky)? ⚠️ CRÍTICO: Solo si están en la imagen, NO asumir
+   - ⚠️ **ERROR COMÚN:** Configurar columnas fijas cuando NO están en la imagen → Esto redimensiona la tabla incorrectamente
+
+4. **Verificar funcionalidades NO visibles en la imagen:** ⚠️ CRÍTICO
+   - ¿Hay opción de expandir filas? → Si NO está en la imagen, configurar `rowExpandable: false`
+   - ⚠️ **ERROR COMÚN:** Dejar `rowExpandable: true` por defecto cuando NO está en la imagen
 
 4. **Crear lista de columnas:**
    ```markdown
@@ -192,6 +403,16 @@ Esta guía establece el proceso **OBLIGATORIO** para implementar DataTable con m
 
 **OBJETIVO:** Crear el DataTable con solo la estructura básica y las columnas identificadas. **SIN funcionalidades avanzadas.**
 
+**⚠️ CRÍTICO: ANTES de implementar, verificar en la imagen:**
+- [ ] ¿Hay opción de expandir filas? → Si NO, configurar `rowExpandable: false`
+- [ ] ¿Hay columnas fijas (sticky)? → Si NO, NO configurar `pinned: true` en columnas
+- [ ] ¿Qué tipo de dato muestra cada columna? → Verificar tipos correctos:
+  - Estado con badge/tag → `type: 'estado'` (NO `type: 'text'`)
+  - Avance con barra de progreso → `type: 'progreso'` (NO `type: 'text'`)
+  - Fecha formateada → `type: 'fecha'` (NO `type: 'text'`)
+  - Número → `type: 'numero'` (NO `type: 'text'`)
+- [ ] ¿La tabla debe aprovechar todo el espacio vertical? → Si SÍ, configurar altura dinámica después de crear
+
 **Implementar SOLO esto:**
 
 ```javascript
@@ -201,15 +422,25 @@ window.createDataTable({
   columns: [
     { id: 'nombre', title: 'Nombre', type: 'text' },
     { id: 'tipo', title: 'Tipo', type: 'text' },
-    { id: 'estado', title: 'Estado', type: 'estado' }
+    { id: 'estado', title: 'Estado', type: 'estado' } // ✅ CORRECTO: tipo 'estado' para status tag
+    // ⚠️ CRÍTICO: Usar tipos correctos según la imagen
     // ... solo las columnas básicas identificadas
   ],
   rows: [
     { id: 1, data: { nombre: 'Ejemplo 1', tipo: 'Tipo A', estado: 'en-progreso' } },
     { id: 2, data: { nombre: 'Ejemplo 2', tipo: 'Tipo B', estado: 'completado' } }
     // ... solo datos de ejemplo mínimos
-  ]
+  ],
+  // ⚠️ CRÍTICO: Deshabilitar expansión de filas si NO está en la imagen
+  rowExpandable: false, // ✅ Deshabilitar si no hay opción de expandir en la imagen
+  // ⚠️ CRÍTICO: NO configurar columnas fijas si NO están en la imagen (evita redimensionamiento)
+  // NO agregar pinned: true a columnas si no está en la imagen
 });
+
+// ⚠️ CRÍTICO: Configurar altura dinámica después de crear el DataTable
+setTimeout(() => {
+  adjustDataTableHeight('table-container');
+}, 200);
 ```
 
 **NO incluir aún:**
@@ -220,8 +451,28 @@ window.createDataTable({
 - ❌ Buscador
 - ❌ Header con botones
 - ❌ Barra de acciones
+- ❌ Expansión de filas (si no está en la imagen)
+- ❌ Columnas fijas (si no están en la imagen)
 
-**Paso 1.1.1: Ejecutar Validación Automática** ✅
+**Paso 1.1.1: Verificar Configuración Crítica** ⚠️ CRÍTICO
+
+**ANTES de ejecutar validación, verificar:**
+
+1. **Tipos de columnas correctos:**
+   - [ ] ¿Estado usa `type: 'estado'`? (NO `type: 'text'`)
+   - [ ] ¿Avance usa `type: 'progreso'`? (NO `type: 'text'`)
+   - [ ] ¿Fechas usan `type: 'fecha'`? (NO `type: 'text'`)
+   - [ ] ¿Números usan `type: 'numero'`? (NO `type: 'text'`)
+
+2. **Funcionalidades deshabilitadas si NO están en la imagen:**
+   - [ ] ¿`rowExpandable: false` si NO hay opción de expandir? (NO dejar `true` por defecto)
+   - [ ] ¿NO hay `pinned: true` en columnas si NO están fijas en la imagen? (Evita redimensionamiento)
+
+3. **Altura dinámica configurada:**
+   - [ ] ¿Se configuró altura dinámica después de crear el DataTable?
+   - [ ] ¿Se agregó listener de resize para recalcular altura?
+
+**Paso 1.1.2: Ejecutar Validación Automática** ✅
 
 **OBLIGATORIO después de cada implementación:**
 
@@ -245,6 +496,9 @@ npm run lint
 **Verificar:**
 - ✅ DataTable se renderiza
 - ✅ Columnas se muestran correctamente
+- ✅ Tipos de columnas correctos (estado muestra badge, avance muestra progress bar)
+- ✅ NO hay opción de expandir filas si no está en la imagen
+- ✅ La tabla aprovecha todo el espacio vertical
 - ✅ Datos se muestran en las filas
 - ✅ Estilos UBITS aplicados
 - ✅ Validación pasada (o errores corregidos)
@@ -554,6 +808,51 @@ window.createDataTable({
 - ✅ Contador de seleccionados se muestra (ej: "3 seleccionados")
 - ✅ Al hacer clic en una acción, se ejecuta el callback con todas las filas seleccionadas
 - ✅ Barra cambia entre selección única y múltiple correctamente
+- ✅ **Barra de acciones aparece cuando se selecciona todos desde el header checkbox** ⚠️ **CRÍTICO**
+
+**⚠️ IMPLEMENTACIÓN ADICIONAL OBLIGATORIA: Listener del Header Checkbox**
+
+**IMPORTANTE:** El DataTable NO activa automáticamente la barra de acciones cuando se selecciona todos desde el header checkbox. Debes agregar un listener adicional usando **delegado de eventos**:
+
+```javascript
+// ✅ OBLIGATORIO: Agregar delegado de eventos para el header checkbox (selección masiva)
+// Esto debe agregarse DESPUÉS de crear el DataTable
+setTimeout(() => {
+  const container = document.getElementById('encuestas-table-container');
+  if (container) {
+    const dataTable = container.querySelector('.ubits-data-table');
+    if (dataTable) {
+      // Usar delegado de eventos en el contenedor del DataTable
+      // Esto captura el evento incluso si el checkbox se reemplaza
+      dataTable.addEventListener('change', (e) => {
+        const target = e.target;
+        
+        // Verificar si es el checkbox del header (select all)
+        if (target && target.hasAttribute && target.hasAttribute('data-column-checkbox-header')) {
+          const columnId = target.getAttribute('data-column-checkbox-header');
+          
+          // Solo procesar si es checkbox o checkbox-2 (columna fija)
+          if (columnId === 'checkbox' || columnId === 'checkbox-2') {
+            const isChecked = target.checked;
+            
+            // Esperar un poco para que el DataTable actualice todos los checkboxes
+            setTimeout(() => {
+              renderActionBar(); // Función que renderiza la barra de acciones
+            }, 200);
+          }
+        }
+      }, true); // ✅ Usar capture: true para capturar antes que otros listeners
+    }
+  }
+}, 300);
+```
+
+**⚠️ ERRORES COMUNES A EVITAR:**
+- ❌ **NO clonar el checkbox** - Esto elimina los listeners del DataTable
+- ❌ **NO agregar listener directo al checkbox** - Se puede perder si el DataTable reemplaza el elemento
+- ❌ **NO usar stopPropagation** - Dejar que el DataTable maneje el evento normalmente
+
+**Ver:** `docs/guias/analisis/ANALISIS-ERROR-HEADER-CHECKBOX-DATATABLE.md` y ERROR CRÍTICO #21 en `GUIA-ERRORES-COMUNES-UBITS.md`
 
 **Preguntar:**
 > "✅ Tarea 9 completada: Barra de acciones (selección múltiple) implementada. ¿Funciona correctamente? ¿Aprobamos para continuar con la Tarea 10 (dropdown con filtros)?"
@@ -751,10 +1050,33 @@ filterButton.addEventListener('click', () => {
 6. ✅ **Ordenamiento** (Tarea 5)
 7. ✅ **Fijar columnas** (Tarea 6)
 8. ✅ **Selector de columnas** (Tarea 7)
+9. ✅ **Header completo con SearchButton** (si hay `searchButton` en el header) - ⚠️ **CRÍTICO:** Ver `docs/guias/implementacion/GUIA-ERROR-SEARCHBUTTON-BOTON-CERRAR-FUERA-INPUT.md` para evitar error del botón X fuera del input
 9. ✅ **Barra de acciones (selección única)** (Tarea 8)
 10. ✅ **Barra de acciones (selección múltiple)** (Tarea 9)
 11. ✅ **Dropdown con filtros** (Tarea 10)
 12. ✅ **Buscador con componentes UBITS** (Tarea 11)
+
+---
+
+## ⚠️ ERRORES CRÍTICOS A EVITAR
+
+### **ERROR CRÍTICO #22: Checkboxes Funcionan Intermitentemente**
+
+**Problema:** Los checkboxes del DataTable funcionan a veces y a veces no después de recargar la página.
+
+**Causas:**
+1. Listener del header checkbox agregado al DataTable interno (se reemplaza)
+2. DataTable restaurado desde HTML sin event listeners
+3. Verificación insuficiente (solo verifica HTML, no instancia activa)
+
+**Solución:**
+1. ✅ Agregar listener del header checkbox al **contenedor externo** (`#encuestas-table-container`)
+2. ✅ Usar **bandera global** (`window._encuestasHeaderCheckboxListenerAdded`) para prevenir duplicados
+3. ✅ **Siempre reinicializar** DataTable después de restaurar HTML desde `ContentManager.updateContent`
+4. ✅ Verificar **instancia activa** (`dataTableInstance`), no solo HTML
+5. ✅ Establecer **bandera de inicialización** (`window._encuestasDataTableInitialized`) después de crear exitosamente
+
+**Ver:** `docs/guias/analisis/ANALISIS-ERROR-CHECKBOXES-INTERMITENTES-DATATABLE.md` y ERROR CRÍTICO #22 en `GUIA-ERRORES-COMUNES-UBITS.md`
 
 **Nota:** Este orden puede variar según las necesidades del proyecto, pero **SIEMPRE** implementar una funcionalidad a la vez.
 
@@ -762,10 +1084,24 @@ filterButton.addEventListener('click', () => {
 
 ## 🔗 Referencias
 
+### **Guías de Implementación:**
 - **DataTable Options:** `vendor/ubits/packages/components/data-table/src/types/DataTableOptions.ts`
 - **Guía general:** `GUIA-PROCESO-IMPLEMENTACION-PASO-A-PASO.md`
+- **Action Bar:** `GUIA-ACTION-BAR-DATATABLE.md` - ⚠️ **OBLIGATORIO** si `showCheckbox: true`
+- **Layout y posicionamiento:** `GUIA-LAYOUT-TEMPLATE-DATATABLE.md`
+- **Altura dinámica:** `GUIA-REDIMENSIONAR-DATATABLE-ESPACIO-COMPLETO.md`
+
+### **Guías de Errores (OBLIGATORIO LEER):**
+- **Errores completos:** `GUIA-ERRORES-IMPLEMENTACION-DATATABLE-COMPLETA.md` - ⚠️ **OBLIGATORIO** (todos los errores encontrados)
+- **Contenedor scrollable no encontrado:** `GUIA-ERROR-CONTENEDOR-SCROLLABLE-DATATABLE.md` - ⚠️ **OBLIGATORIO**
+- **Action Bar no se muestra:** `GUIA-ERROR-ACTION-BAR-NO-SE-MUESTRA-DATATABLE.md` - ⚠️ **OBLIGATORIO** si `showCheckbox: true`
+- **Error checkboxes desaparecen tabla:** `docs/guias/analisis/ANALISIS-ERROR-CHECKBOXES-DATATABLE-DESAPARECE.md` - ⚠️ **OBLIGATORIO**
+- **Error crítico #18:** `docs/guias/referencia/GUIA-ERRORES-COMUNES-UBITS.md#error-crítico-18`
+
+### **Referencias Generales:**
 - **Catálogo de componentes:** `CATALOGO-COMPONENTES-UBITS.md`
 - **Componentes UBITS:** `GUIA-USO-COMPONENTES-UBITS.md`
+- **Errores comunes:** `docs/guias/referencia/GUIA-ERRORES-COMUNES-UBITS.md`
 
 ---
 

@@ -1,0 +1,236 @@
+# 🎯 Reglas Principales - Autorun
+
+> **⚠️ IMPORTANTE:** Este archivo es un índice simplificado. Para detalles completos, ver `.cursor/rules/` y `QUICK-REFERENCE.md`
+
+---
+
+## ⚠️⚠️⚠️ CRÍTICO: INICIALIZAR AUTORUN PRIMERO ⚠️⚠️⚠️
+
+**🚨 ESTA ES LA PRIMERA ACCIÓN OBLIGATORIA EN CADA SESIÓN 🚨**
+
+### Comando Obligatorio:
+```bash
+npm run autorun:init-hub
+```
+
+**O usando run_terminal_cmd:**
+```typescript
+await run_terminal_cmd({
+  command: 'npm run autorun:init-hub',
+  is_background: false
+});
+```
+
+**DEBES ver en la salida:**
+- ✅ "🚀 Inicializando AutorunHub..."
+- ✅ "✅ AutorunHub inicializado correctamente"
+- ✅ "📊 Estado de Autorun:"
+- ✅ "   - Inicializado: ✅"
+- ✅ "   - File Watching: ✅ activo"
+
+**Si NO ves estos logs:** Ejecutar `npm run init` primero
+
+**Ver detalles completos:** `.cursor/rules/00-inicio.md`
+
+---
+
+## ⚠️⚠️⚠️ VERIFICACIÓN OBLIGATORIA AL INICIO ⚠️⚠️⚠️
+
+**ANTES de usar CUALQUIER herramienta, DEBES:**
+
+1. ✅ **INICIALIZAR AUTORUNHUB** (ver arriba) - ⚠️ OBLIGATORIO
+2. ✅ **Leer:** `.cursor/rules/00-inicio.md` - ⚠️ OBLIGATORIO
+3. ✅ **Verificar triggers de imagen** (ver: `.cursor/rules/01-deteccion-imagen.md`)
+4. ✅ **Si hay triggers, seguir el proceso de bloqueo** (ver: `.cursor/rules/02-bloqueo-imagen.md`)
+
+**🚨 BLOQUEO: NO puedes usar `write()`, `search_replace()`, etc. hasta completar esta verificación.**
+
+**Ver detalles completos:** `.cursor/rules/00-inicio.md`
+
+---
+
+## 🚨🚨🚨 BLOQUEO TÉCNICO - VERIFICACIÓN OBLIGATORIA ANTES DE ESCRIBIR 🚨🚨🚨
+
+**⚠️ CRÍTICO: ANTES de usar `write()` o `search_replace()` para implementar un componente UBITS, DEBES:**
+
+### Verificar Checklist Obligatorio:
+```typescript
+import { ensureImplementationReady } from '@autorun/core/helpers/implementationHelpers';
+const componentName = 'DataTable'; // o el componente que vayas a implementar
+await ensureImplementationReady(componentName);
+// ⚠️ SI ESTA FUNCIÓN LANZA ERROR: NO puedes usar write() o search_replace() hasta completar los pasos faltantes
+```
+
+### Verificar Antes de Escribir:
+```typescript
+import { PreWriteValidator } from '@autorun/core/validation/PreWriteValidator';
+const validation = await PreWriteValidator.validateBeforeWrite(filePath, content, { componentName: 'DataTable' });
+if (!validation.valid) {
+  throw new Error('❌ BLOQUEADO: ' + validation.errors.join('\n'));
+}
+```
+
+**El sistema ejecuta estas verificaciones AUTOMÁTICAMENTE. Si CUALQUIERA falla → `write()` y `search_replace()` LANZAN ERROR y NO se ejecutan.**
+
+**Ver detalles completos:** `.cursor/rules/04-implementacion.md`
+
+---
+
+## 📚 REGLAS ORGANIZADAS POR MÓDULOS
+
+### 🚨 Detección de Imágenes
+**Ver:** `.cursor/rules/01-deteccion-imagen.md` - Detección automática y proceso de bloqueo
+
+### 🎯 Reglas de Componentes UBITS
+**Ver:** `.cursor/rules/03-componentes.md` - Reglas para usar componentes UBITS correctamente
+
+### 🛠️ Reglas de Implementación
+**Ver:** `.cursor/rules/04-implementacion.md` - Proceso de implementación paso a paso
+
+### 🚨 Errores Comunes
+**Ver:** `.cursor/rules/05-errores.md` - Lista completa de errores a evitar
+
+### 🤖 Implementación Automática
+**Ver:** `.cursor/rules/06-implementacion-automatica.md` - Proceso automático que carga documentación y reglas al implementar componentes
+
+**Ver índice completo:** `.cursor/rules/index.md`
+
+---
+
+## 🔌 USO OBLIGATORIO DE MCPs Y ADD-ONS
+
+### ⚠️ REGLA CRÍTICA: SIEMPRE USAR MCPs DISPONIBLES Y VERIFICAR STORYBOOK EN VERCEL
+
+**ANTES de implementar cualquier componente UBITS, DEBES:**
+
+1. **⚠️ CRÍTICO: Consultar Storybook en Vercel (versión más reciente):** ⚠️ PRIMERO
+   - ✅ **URL PRINCIPAL:** `https://ubits-storybook10.vercel.app/` - ⚠️ **SIEMPRE apunta al deployment más reciente**
+   - ✅ **Guardar URL del template ANTES de navegar** (para volver después)
+   - ✅ **Revisar pestaña "Code" y "Controls"**
+   - ✅ **⚠️ OBLIGATORIO: Volver automáticamente al template DESPUÉS de consultar**
+
+2. **Consultar Storybook MCP:**
+   - ✅ Usar `mcp_storybook_getComponentList` para listar componentes
+   - ✅ Usar `mcp_storybook_getComponentsProps` para obtener props exactas
+
+3. **Usar información exacta:**
+   - ✅ Implementar con props exactas obtenidas del Storybook en Vercel
+   - ✅ Usar tokens exactos obtenidos del Storybook
+   - ✅ Seguir estructura exacta del componente
+
+**Ver guía completa:** `docs/guias/implementacion/GUIA-USO-MCP-EN-IMPLEMENTACION.md` - ⚠️ **OBLIGATORIO**
+
+### MCPs Disponibles:
+- **Storybook MCP** ⭐ - Consultar componentes UBITS (props, tokens, estructura)
+- **Figma MCP** - Consultar tokens de diseño desde Figma
+- **Supabase MCP** - Consultar esquemas de base de datos
+- **GitHub MCP** - Consultar código de componentes
+- **Vercel MCP** - Consultar deployments y proyectos
+
+**NO implementar componentes sin consultar MCPs primero.**
+
+---
+
+## ⚠️⚠️⚠️ REGLA CRÍTICA: IMPLEMENTACIÓN AUTOMÁTICA POR HISTORIAS DE STORYBOOK ⭐ AUTOMÁTICO ⚠️⚠️⚠️
+
+**⚠️ AUTOMÁTICO: El Pre-Implementation Check add-on obtiene automáticamente el plan basado en historias cuando detecta un componente.**
+
+**Para CUALQUIER componente, el proceso es AUTOMÁTICO:**
+
+1. **El add-on automáticamente obtiene el plan** (NO necesitas hacerlo manualmente)
+2. **El agente solo necesita usar el plan**
+3. **Para CADA historia (UNA A LA VEZ con checklist):**
+   - ✅ **Obtener el checklist de la historia** antes de empezar
+   - ✅ **Consultar la historia en Storybook ANTES de implementar**
+   - ✅ **Implementar SOLO la funcionalidad de esa historia específica**
+   - ✅ **Completar TODO el checklist** antes de continuar
+   - ✅ **NO continuar hasta que TODO el checklist esté completo**
+
+**⚠️ REGLAS CRÍTICAS:**
+- ❌ **NO usar historia "default"** - tiene todas las funcionalidades mezcladas
+- ❌ **NO implementar múltiples historias al mismo tiempo**
+- ✅ **Implementar UNA historia a la vez**
+- ✅ **Completar TODO el checklist antes de pasar a la siguiente**
+
+**Ver guía completa:** `docs/guias/implementacion/GUIA-IMPLEMENTACION-AUTOMATICA-POR-HISTORIAS.md` - ⚠️ **OBLIGATORIO**
+
+---
+
+## 📋 RESUMEN RÁPIDO DE REGLAS CRÍTICAS
+
+### Componentes UBITS
+- ✅ Usar solo componentes existentes
+- ✅ Consultar `CATALOGO-COMPONENTES-UBITS.md` antes de crear
+- ✅ Usar formato correcto de iconos (sin prefijos `fa-`, con sufijos si aplica)
+- ⚠️ **CRÍTICO: NO agregar padding, margin, margin-top ni estilos extra a componentes**
+- ⚠️ **NUNCA agregar margin-top automáticamente** - El spacing debe venir del `gap` del contenedor padre
+
+### Implementación
+- ✅ NUNCA implementar todo de golpe
+- ✅ SIEMPRE dividir en tareas pequeñas
+- ✅ SIEMPRE pedir aprobación antes de continuar
+- ⚠️ **CRÍTICO: SIEMPRE implementar sistema de restauración automática para SubNav**
+
+**Ver detalles completos:** `.cursor/rules/03-componentes.md` y `.cursor/rules/04-implementacion.md`
+
+---
+
+## 🔌 Auto-Apertura y Recarga en Browser MCP de Cursor ⚠️ OBLIGATORIO
+
+### **1. Auto-Apertura de URLs del Wizard**
+**Cuando veas:** `[AUTORUN_BROWSER_URL]http://localhost:3000/...[/AUTORUN_BROWSER_URL]`
+**DEBES ejecutar automáticamente (SIN preguntar):**
+```javascript
+mcp_cursor-ide-browser_browser_navigate({ url: "URL_EXTRAIDA" })
+mcp_cursor-ide-browser_browser_snapshot()
+```
+
+### **2. Auto-Recarga de Página cuando hay Cambios**
+**CUANDO USES `write()` o `search_replace()` EN ARCHIVOS DE `prototypes/`:**
+**DEBES recargar automáticamente la página (SIN preguntar):**
+```javascript
+const snapshot = await mcp_cursor-ide-browser_browser_snapshot();
+const currentUrl = snapshot?.url || `http://localhost:3000/${path.basename(filePath)}`;
+await mcp_cursor-ide-browser_browser_navigate({ url: currentUrl });
+setTimeout(async () => { await mcp_cursor-ide-browser_browser_snapshot(); }, 1000);
+```
+
+### **3. Auto-Retorno al Template después de Consultar Storybook**
+**Cuando navegues a Storybook para consultar un componente, DEBES:**
+1. **Guardar la URL del template actual ANTES de navegar a Storybook**
+2. **Navegar a Storybook para consultar**
+3. **⚠️ CRÍTICO: Volver automáticamente al template DESPUÉS de consultar**
+
+**Ver detalles completos:** `.cursorrules` (versión completa) - Sección "Auto-Apertura y Recarga"
+
+---
+
+## 🔗 Referencias Rápidas
+
+### Archivos de Reglas
+- **Índice de reglas:** `.cursor/rules/index.md`
+- **Verificación inicial:** `.cursor/rules/00-inicio.md`
+- **Detección de imágenes:** `.cursor/rules/01-deteccion-imagen.md`
+- **Bloqueo para imágenes:** `.cursor/rules/02-bloqueo-imagen.md`
+- **Reglas de componentes:** `.cursor/rules/03-componentes.md`
+- **Reglas de implementación:** `.cursor/rules/04-implementacion.md`
+- **Errores comunes:** `.cursor/rules/05-errores.md`
+- **Implementación automática:** `.cursor/rules/06-implementacion-automatica.md`
+
+### Documentación
+- **Quick Reference:** `QUICK-REFERENCE.md` - ⭐ Referencia rápida (máx 50 líneas)
+- **Documentación:** `docs/README.md`
+- **Inicio rápido:** `GETTING-STARTED.md`
+- **Catálogo componentes:** `docs/referencia/CATALOGO-COMPONENTES-UBITS.md`
+- **Documentación componentes:** `docs/referencia/componentes/`
+
+### Guías Críticas
+- **Checklist antes de implementar:** `docs/guias/implementacion/CHECKLIST-ANTES-IMPLEMENTAR-COMPONENTE.md` - ⚠️ **OBLIGATORIO**
+- **Uso de MCPs:** `docs/guias/implementacion/GUIA-USO-MCP-EN-IMPLEMENTACION.md` - ⚠️ **OBLIGATORIO**
+- **Errores comunes:** `docs/guias/referencia/GUIA-ERRORES-COMUNES-UBITS.md` - ⚠️ **OBLIGATORIO**
+
+---
+
+**Este archivo es el índice principal. Para detalles completos, consulta los módulos en `.cursor/rules/` y `QUICK-REFERENCE.md`**
+
+**Última actualización:** 2025-01-03

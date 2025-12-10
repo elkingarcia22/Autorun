@@ -38,11 +38,72 @@ Crear un análisis sistemático y completo de imágenes que:
 
 ---
 
-### **FASE 1: IDENTIFICACIÓN SISTEMÁTICA DE COMPONENTES** 🔍
+### **FASE 1: IDENTIFICACIÓN DE COMPONENTES EXISTENTES DEL TEMPLATE** ⚠️ CRÍTICO
 
-#### **1.1 Identificar Componentes Principales**
+**⚠️ OBLIGATORIO: ANTES de identificar componentes a implementar, SIEMPRE verificar componentes existentes del template.**
 
-**Para cada elemento visible en la imagen, verificar:**
+#### **1.0 Verificar Componentes Existentes del Template (OBLIGATORIO PRIMERO)** 🏗️
+
+**Estos componentes YA están en el template y NO se implementan. DEBEN identificarse primero:**
+
+1. **Sidebar (Barra Lateral Izquierda):**
+   - **Características visuales:**
+     - Barra vertical fija en el lado izquierdo
+     - Fondo azul oscuro o gris muy oscuro
+     - Logo "U" o logo de la aplicación en la parte superior
+     - Iconos de navegación verticales (Home, Building, Graduación, Gráfico, Documentos, etc.)
+     - Avatar de perfil circular en la parte inferior
+     - Toggle de dark mode (icono de luna) en la parte inferior
+   - **Documentación:** `docs/referencia/componentes/navegacin-sidebar.md`
+   - **Estado:** ✅ Ya existe en el template (NO implementar)
+   - **Documentar:** "Sidebar: Ya existe (variante: admin/colaborador, ya renderizado en el template)"
+
+2. **Header (Barra Superior):**
+   - **Características visuales:**
+     - Barra horizontal delgada en la parte superior
+     - Puede tener logo de la aplicación
+     - Puede tener título o breadcrumb
+     - Puede tener botones de acción globales
+   - **Estado:** ✅ Ya existe en el template (NO implementar)
+   - **Documentar:** "Header: Ya existe (ya renderizado en el template)"
+
+3. **SubNav (Barra de Navegación Secundaria):**
+   - **Características visuales:**
+     - Barra horizontal debajo del header
+     - Muestra el NOMBRE DEL PRODUCTO/MÓDULO (ej: "Encuestas", "Aprendizaje", "Desempeño")
+     - Tabs/pestañas horizontales con nombres de productos
+     - Solo UN tab si hay un solo producto, o varios tabs si hay varios productos
+   - **Documentación:** `docs/referencia/componentes/navegacin-subnav.md`
+   - **Estado:** ✅ Ya existe en el template (NO implementar)
+   - **Documentar:** "SubNav: Ya existe (producto: [X])" o "SubNav: Ya existe (productos: [X, Y])"
+   - **⚠️ CRÍTICO:** Distinguir de Tabs (ver FASE 3.1)
+
+4. **TabBar (Barra de Tabs Inferior - Móvil):**
+   - **Características visuales:**
+     - Barra inferior con iconos grandes (solo en vista móvil)
+     - Navegación principal para dispositivos móviles
+   - **Estado:** ✅ Ya existe en el template si es móvil (NO implementar)
+   - **Documentar:** "TabBar: Ya existe (solo móvil)" o "TabBar: NO (vista desktop)"
+
+**Checklist obligatorio antes de continuar:**
+- [ ] ✅ Sidebar identificado (SÍ/NO en la imagen)
+- [ ] ✅ Header identificado (SÍ/NO en la imagen)
+- [ ] ✅ SubNav identificado (SÍ/NO en la imagen)
+- [ ] ✅ TabBar identificado (SÍ/NO en la imagen, solo si es móvil)
+- [ ] ✅ Todos los componentes existentes documentados como "Ya existe (NO implementar)"
+
+**⚠️ ERROR COMÚN A EVITAR:**
+- ❌ NO identificar Sidebar, Header o SubNav como componentes a implementar
+- ❌ NO omitir la verificación de componentes existentes
+- ✅ SIEMPRE verificar primero componentes existentes antes de identificar componentes a implementar
+
+---
+
+### **FASE 2: IDENTIFICACIÓN SISTEMÁTICA DE COMPONENTES A IMPLEMENTAR** 🔍
+
+#### **2.1 Identificar Componentes Principales**
+
+**Para cada elemento visible en la imagen que NO sea componente existente del template, verificar:**
 
 1. **¿Es un componente UBITS?**
    - Consultar catálogo: `docs/referencia/CATALOGO-COMPONENTES-UBITS.md`
@@ -58,7 +119,7 @@ Crear un análisis sistemático y completo de imágenes que:
    - ❌ NO implementar como componente UBITS
    - ✅ Preguntar al usuario si debe crearse con tokens UBITS
 
-#### **1.2 Identificar Subcomponentes Automáticamente** ⭐
+#### **2.2 Identificar Subcomponentes Automáticamente** ⭐
 
 **Para cada componente identificado, usar su documentación para identificar subcomponentes:**
 
@@ -80,7 +141,7 @@ Crear un análisis sistemático y completo de imágenes que:
    - Footer (con botones configurables)
 3. Verificar en la imagen cuáles están presentes
 
-#### **1.3 Identificar Subfuncionalidades Automáticamente** ⭐
+#### **2.3 Identificar Subfuncionalidades Automáticamente** ⭐
 
 **Para cada componente identificado, usar su documentación para identificar subfuncionalidades:**
 
@@ -110,9 +171,9 @@ Crear un análisis sistemático y completo de imágenes que:
 
 ---
 
-### **FASE 2: ANÁLISIS DETALLADO CON DOCUMENTACIÓN** 📖
+### **FASE 3: ANÁLISIS DETALLADO CON DOCUMENTACIÓN** 📖
 
-#### **2.1 Para Cada Componente Identificado**
+#### **3.1 Para Cada Componente Identificado**
 
 **Proceso automático:**
 
@@ -132,7 +193,7 @@ Crear un análisis sistemático y completo de imágenes que:
    - ¿Qué variantes se ven en la imagen?
    - ¿Qué subfuncionalidades están presentes?
 
-#### **2.2 Análisis de DataTable (si aplica)** ⚠️ CRÍTICO
+#### **3.2 Análisis de DataTable (si aplica)** ⚠️ CRÍTICO
 
 **Si hay DataTable en la imagen, seguir proceso completo:**
 
@@ -168,7 +229,7 @@ Crear un análisis sistemático y completo de imágenes que:
      - Botón primario (¿hay botón principal?)
      - Botones secundarios (¿hay botones secundarios?)
 
-#### **2.3 Análisis de Iconos** 🎨
+#### **3.3 Análisis de Iconos** 🎨
 
 **Para cada icono visible:**
 
@@ -185,7 +246,7 @@ Crear un análisis sistemático y completo de imágenes que:
    - Comparar con la imagen
    - Documentar variación exacta
 
-#### **2.4 Análisis de Estructura y Spacing** 📐
+#### **3.4 Análisis de Estructura y Spacing** 📐
 
 **Para la estructura completa:**
 
@@ -209,9 +270,9 @@ Crear un análisis sistemático y completo de imágenes que:
 
 ---
 
-### **FASE 3: VERIFICACIONES CRÍTICAS** ⚠️
+### **FASE 4: VERIFICACIONES CRÍTICAS** ⚠️
 
-#### **3.1 Verificar SubNav vs Tabs**
+#### **4.1 Verificar SubNav vs Tabs**
 
 1. **Consultar guía:**
    - `docs/guias/analisis/GUIA-DISTINGUIR-SUBNAV-TABS.md`
@@ -224,7 +285,7 @@ Crear un análisis sistemático y completo de imágenes que:
    - "SubNav: Ya existe (tabs: [X, Y])" o "SubNav: NO"
    - "Tabs: Implementar (tabs: [X, Y])" o "Tabs: NO (solo SubNav existe)"
 
-#### **3.2 Verificar HeaderSection**
+#### **4.2 Verificar HeaderSection**
 
 1. **¿Hay HeaderSection visible en la imagen?**
    - Si NO hay → Eliminar del template
@@ -233,7 +294,7 @@ Crear un análisis sistemático y completo de imágenes que:
 2. **Documentar:**
    - "HeaderSection: NO (debe eliminarse)" o "HeaderSection: SÍ (título: [X], botón: [Y])"
 
-#### **3.3 Verificar Contenedor .content-sections**
+#### **4.3 Verificar Contenedor .content-sections**
 
 1. **¿Hay componentes personalizados?**
    - Si SÍ → Eliminar `.content-sections`
@@ -244,16 +305,33 @@ Crear un análisis sistemático y completo de imágenes que:
 
 ---
 
-### **FASE 4: CREAR PLAN CON DOCUMENTACIÓN** 📋
+### **FASE 5: CREAR PLAN CON DOCUMENTACIÓN** 📋
 
-#### **4.1 Plan de Implementación Mejorado**
+#### **5.1 Plan de Implementación Mejorado**
 
 **Basado en la documentación cargada, crear plan:**
 
 ```markdown
 ## 📋 Plan de Implementación Mejorado
 
-### Componentes Identificados (con documentación):
+### Componentes Existentes del Template (NO implementar):
+
+#### 1. Sidebar
+- **Estado:** ✅ Ya existe (variante: admin/colaborador, ya renderizado en el template)
+- **Evidencia:** Barra lateral izquierda con iconos de navegación, logo "U", avatar y toggle de dark mode
+- **Acción:** NO implementar
+
+#### 2. Header
+- **Estado:** ✅ Ya existe (ya renderizado en el template)
+- **Evidencia:** Barra superior delgada
+- **Acción:** NO implementar
+
+#### 3. SubNav
+- **Estado:** ✅ Ya existe (producto: "Encuestas")
+- **Evidencia:** Barra horizontal debajo del header con tab "Encuestas"
+- **Acción:** NO implementar
+
+### Componentes a Implementar (con documentación):
 
 #### 1. DataTable
 - **Documentación:** `docs/referencia/componentes/data-data-table.md`
@@ -337,6 +415,11 @@ Crear un análisis sistemático y completo de imágenes que:
 - [ ] ✅ Props verificadas en documentación
 - [ ] ✅ Iconos analizados con variaciones
 - [ ] ✅ Estructura y spacing medidos visualmente
+- [ ] ✅ **Componentes existentes del template verificados (OBLIGATORIO PRIMERO):**
+  - [ ] Sidebar identificado (SÍ/NO)
+  - [ ] Header identificado (SÍ/NO)
+  - [ ] SubNav identificado (SÍ/NO)
+  - [ ] TabBar identificado (SÍ/NO, solo si es móvil)
 - [ ] ✅ SubNav vs Tabs verificado
 - [ ] ✅ HeaderSection verificado
 - [ ] ✅ Contenedor .content-sections verificado
@@ -351,14 +434,18 @@ Crear un análisis sistemático y completo de imágenes que:
 
 ## 🚨 REGLAS CRÍTICAS DEL ANÁLISIS
 
-1. **NUNCA asumir** - Verificar todo en la imagen
-2. **NUNCA implementar** sin identificar TODOS los subcomponentes
-3. **NUNCA implementar** sin identificar TODAS las subfuncionalidades
-4. **SIEMPRE usar** documentación de componentes para verificar
-5. **SIEMPRE medir** spacing visualmente (NO asumir)
-6. **SIEMPRE contar** items/filas en DataTable
-7. **SIEMPRE verificar** tipos de columnas visualmente
-8. **SIEMPRE documentar** qué NO está presente (no solo lo que está)
+1. **⚠️ CRÍTICO: SIEMPRE verificar componentes existentes del template PRIMERO**
+   - Sidebar, Header, SubNav, TabBar ya existen en el template
+   - NO implementar estos componentes
+   - Documentar como "Ya existe (NO implementar)"
+2. **NUNCA asumir** - Verificar todo en la imagen
+3. **NUNCA implementar** sin identificar TODOS los subcomponentes
+4. **NUNCA implementar** sin identificar TODAS las subfuncionalidades
+5. **SIEMPRE usar** documentación de componentes para verificar
+6. **SIEMPRE medir** spacing visualmente (NO asumir)
+7. **SIEMPRE contar** items/filas en DataTable
+8. **SIEMPRE verificar** tipos de columnas visualmente
+9. **SIEMPRE documentar** qué NO está presente (no solo lo que está)
 
 ---
 

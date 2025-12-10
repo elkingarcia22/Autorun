@@ -31,14 +31,14 @@ echo "✅ Addon instalado"
 # Verificar si el addon ya está en main.ts
 if grep -q "@storybook/addon-mcp" .storybook/main.ts 2>/dev/null; then
     echo "✅ Addon ya está configurado en .storybook/main.ts"
-else
+    else
     echo "⚠️  Necesitas agregar manualmente el addon a .storybook/main.ts:"
-    echo ""
+echo ""
     echo "   addons: ["
     echo "     getAbsolutePath('@storybook/addon-docs'),"
     echo "     getAbsolutePath('@storybook/addon-mcp')  // ← Agregar esta línea"
     echo "   ],"
-    echo ""
+echo ""
     echo "💡 O ejecuta este script nuevamente después de agregarlo manualmente"
 fi
 

@@ -179,3 +179,12 @@ El MCP de Storybook no funcionará, pero los demás MCPs (Figma, Supabase, Verce
 - **Figma, Supabase, Vercel:** No, usan OAuth automático
 - **GitHub, Clarity:** Sí, necesitas tokens en variables de entorno o en la configuración
 
+
+
+
+
+
+
+
+
+

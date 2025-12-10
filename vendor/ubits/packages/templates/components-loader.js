@@ -2268,13 +2268,55 @@ function initTabsListeners(tabsElement, options) {
 		const tabId = tabElement.getAttribute('data-tab-id');
 		const url = tabElement.getAttribute('data-url');
 
-		// Remover active de todos los tabs
+		console.log('🔵 [Tabs] handleTabClick - Tab clickeado:', tabId);
+		console.log('🔵 [Tabs] handleTabClick - URL:', url);
+		console.log('🔵 [Tabs] handleTabClick - Elemento:', tabElement);
+
+		// Remover active de todos los tabs y actualizar iconos
 		tabsElement.querySelectorAll('.ubits-tab').forEach((t) => {
+			const currentTabId = t.getAttribute('data-tab-id');
+			console.log('🔵 [Tabs] Removiendo active de tab:', currentTabId);
+			
 			t.classList.remove('ubits-tab--active');
+			console.log('🔵 [Tabs] Clases después de remover active:', t.className);
+			
+			// Actualizar icono del tab inactivo (regular)
+			const iconElement = t.querySelector('i');
+			if (iconElement) {
+				console.log('🔵 [Tabs] Icono antes de actualizar:', iconElement.className);
+				const iconName = iconElement.className.replace(/^(fas|far)\s+/, '').replace(/^fa-/, '');
+				console.log('🔵 [Tabs] Nombre del icono extraído:', iconName);
+				if (iconName) {
+					iconElement.className = `far fa-${iconName}`;
+					console.log('🔵 [Tabs] Icono después de actualizar a regular:', iconElement.className);
+				} else {
+					console.warn('⚠️ [Tabs] No se pudo extraer el nombre del icono');
+				}
+			} else {
+				console.warn('⚠️ [Tabs] No se encontró elemento <i> en el tab:', currentTabId);
+			}
 		});
 
-		// Agregar active al tab clickeado
+		// Agregar active al tab clickeado y actualizar icono
+		console.log('🔵 [Tabs] Agregando active a tab:', tabId);
 		tabElement.classList.add('ubits-tab--active');
+		console.log('🔵 [Tabs] Clases después de agregar active:', tabElement.className);
+		
+		// Actualizar icono del tab activo (solid)
+		const activeIconElement = tabElement.querySelector('i');
+		if (activeIconElement) {
+			console.log('🔵 [Tabs] Icono activo antes de actualizar:', activeIconElement.className);
+			const iconName = activeIconElement.className.replace(/^(fas|far)\s+/, '').replace(/^fa-/, '');
+			console.log('🔵 [Tabs] Nombre del icono activo extraído:', iconName);
+			if (iconName) {
+				activeIconElement.className = `fas fa-${iconName}`;
+				console.log('🔵 [Tabs] Icono activo después de actualizar a solid:', activeIconElement.className);
+			} else {
+				console.warn('⚠️ [Tabs] No se pudo extraer el nombre del icono activo');
+			}
+		} else {
+			console.warn('⚠️ [Tabs] No se encontró elemento <i> en el tab activo:', tabId);
+		}
 
 		// Navegar a URL si existe
 		if (url) {
@@ -2302,13 +2344,19 @@ function initTabsListeners(tabsElement, options) {
 	};
 
 	// Event listeners para tabs
-	tabs.forEach((tab) => {
+	console.log('🔵 [Tabs] Agregando event listeners a', tabs.length, 'tabs');
+	tabs.forEach((tab, index) => {
+		const tabId = tab.getAttribute('data-tab-id');
+		console.log('🔵 [Tabs] Agregando listener a tab', index, '- ID:', tabId);
 		tab.setAttribute('data-listener-attached', 'true');
 		tab.addEventListener('click', (e) => {
+			console.log('🔵 [Tabs] Click detectado en tab:', tabId);
 			e.preventDefault();
 			handleTabClick(tab);
 		});
+		console.log('🔵 [Tabs] ✅ Listener agregado a tab:', tabId);
 	});
+	console.log('🔵 [Tabs] ✅ Todos los listeners agregados correctamente');
 }
 
 /**

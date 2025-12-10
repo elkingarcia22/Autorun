@@ -34,11 +34,33 @@ Guías paso a paso para implementar componentes y funcionalidades:
 
 - **[GUIA-PROCESO-IMPLEMENTACION-PASO-A-PASO.md](guias/implementacion/GUIA-PROCESO-IMPLEMENTACION-PASO-A-PASO.md)** - ⭐ Proceso de implementación paso a paso
 - **[GUIA-CREAR-DESDE-IMAGEN-DESPUES-WIZARD.md](guias/implementacion/GUIA-CREAR-DESDE-IMAGEN-DESPUES-WIZARD.md)** - Crear desde imagen DESPUÉS del wizard
+- **[GUIA-ELIMINAR-HEADERSECTION.md](guias/implementacion/GUIA-ELIMINAR-HEADERSECTION.md)** - ⚠️ Eliminar HeaderSection correctamente (solución completa)
+- **[GUIA-SISTEMA-AUTOMATICO-PROBLEMAS-SOLUCIONES.md](guias/implementacion/GUIA-SISTEMA-AUTOMATICO-PROBLEMAS-SOLUCIONES.md)** - 🤖 Sistema automático de captura de problemas y soluciones
+- **[GUIA-IMPLEMENTACION-POR-HISTORIAS-STORYBOOK.md](guias/implementacion/GUIA-IMPLEMENTACION-POR-HISTORIAS-STORYBOOK.md)** - ⭐ **NUEVO:** Implementar componentes dividiendo por historias de Storybook
+- **[GUIA-NO-AGREGAR-ESTILOS-EXTRA-COMPONENTES.md](guias/implementacion/GUIA-NO-AGREGAR-ESTILOS-EXTRA-COMPONENTES.md)** - ⚠️ **CRÍTICO:** NO agregar padding, margin ni estilos extra a componentes automáticamente
 - **[GUIA-IMPLEMENTACION-DATATABLE-PASO-A-PASO.md](guias/implementacion/GUIA-IMPLEMENTACION-DATATABLE-PASO-A-PASO.md)** - Implementación de DataTable funcionalidad por funcionalidad
 - **[GUIA-USO-MCP-EN-IMPLEMENTACION.md](guias/implementacion/GUIA-USO-MCP-EN-IMPLEMENTACION.md)** - Usar MCPs para consultar componentes
 - **[GUIA-VERIFICAR-STORYBOOK-VERCEL.md](guias/implementacion/GUIA-VERIFICAR-STORYBOOK-VERCEL.md)** - Verificar Storybook en Vercel antes de implementar
 
 **Ver todas:** [guias/implementacion/](guias/implementacion/)
+
+### 🐛 Problemas y Soluciones (`problems-solutions/`)
+
+Base de datos de problemas encontrados y soluciones aplicadas:
+
+- **[Índice de Problemas y Soluciones](problems-solutions/index.json)** - ⭐ Índice completo de todos los problemas y soluciones
+- **HeaderSection:** [Problema](problems-solutions/headersection/issue-001.md) | [Solución](problems-solutions/headersection/solution-001.md)
+
+**Ver todas:** [problems-solutions/](problems-solutions/)
+
+### 🤖 Add-ons (`packages/addons/functional/`)
+
+Add-ons funcionales disponibles:
+
+- **[Problem Tracker](packages/addons/functional/problem-tracker/README.md)** - ⭐ **NUEVO:** Sistema automático de captura de problemas y soluciones
+- **[Feedback](packages/addons/functional/feedback/README.md)** - Sistema de recopilación de feedback
+
+**Ver todos:** [packages/addons/functional/](packages/addons/functional/)
 
 ---
 
@@ -76,6 +98,7 @@ Configuración de servicios externos:
 - **[GUIA-CONFIGURACION-STORYBOOK-MCP.md](guias/configuracion/GUIA-CONFIGURACION-STORYBOOK-MCP.md)** - Configuración de Storybook MCP
 - **[GUIA-DUALIDAD-VERCEL-LOCAL.md](guias/configuracion/GUIA-DUALIDAD-VERCEL-LOCAL.md)** - Dualidad Vercel/Local
 - **[GUIA-VERCEL-BYPASS-TOKEN.md](guias/configuracion/GUIA-VERCEL-BYPASS-TOKEN.md)** - Bypass token de Vercel
+- **[GUIA-FALLBACK-STORYBOOK-GITHUB.md](guias/configuracion/GUIA-FALLBACK-STORYBOOK-GITHUB.md)** - 🔄 **NUEVO:** Sistema de fallback automático de Storybook a GitHub
 
 **Ver todas:** [guias/configuracion/](guias/configuracion/)
 
@@ -172,6 +195,7 @@ Guías de recuperación de contenido:
 Documentos de análisis técnico y resúmenes de implementación:
 
 - **[ANALISIS-PROBLEMAS-IMPLEMENTACION.md](analisis/ANALISIS-PROBLEMAS-IMPLEMENTACION.md)** - Análisis de problemas en la implementación
+- **[ANALISIS-SISTEMA-IMPLEMENTACION-POR-HISTORIAS.md](analisis/ANALISIS-SISTEMA-IMPLEMENTACION-POR-HISTORIAS.md)** - ⭐ **NUEVO:** Análisis completo del sistema de implementación por historias de Storybook
 - **[RESUMEN-FINAL.md](analisis/RESUMEN-FINAL.md)** - Resumen final del proyecto
 - **[RESUMEN-IMPLEMENTACION-UBITS.md](analisis/RESUMEN-IMPLEMENTACION-UBITS.md)** - Resumen de implementación UBITS
 - **[RESUMEN-IMPLEMENTACION-ADDONS.md](analisis/RESUMEN-IMPLEMENTACION-ADDONS.md)** - Resumen de implementación de add-ons

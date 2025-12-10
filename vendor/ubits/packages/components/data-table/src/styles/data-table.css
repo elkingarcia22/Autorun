@@ -179,17 +179,8 @@
 	width: 100%;
 }
 
-/* Estilos para el contenedor de filtros en el drawer */
-.ubits-data-table__filters-container {
-	display: flex;
-	flex-direction: column;
-	gap: var(--ubits-spacing-lg);
-	padding: var(--ubits-spacing-lg);
-}
-
-.ubits-data-table__filter-item {
-	width: 100%;
-}
+/* Estilos para el contenedor de filtros en el drawer - ELIMINADOS */
+/* NO agregar estilos CSS aquí - los inputs de UBITS ya tienen sus estilos */
 
 /* Responsive: en pantallas pequeñas, el header se apila verticalmente */
 @media (max-width: 768px) {

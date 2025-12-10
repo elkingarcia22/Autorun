@@ -35,6 +35,35 @@
 
 **⚠️ REGLA CRÍTICA:** **NUNCA implementar todo de golpe. SIEMPRE dividir en tareas pequeñas y pedir aprobación.**
 
+### **⚠️ ERRORES CRÍTICOS A EVITAR:**
+
+1. **Event Listeners Perdidos al Restaurar HTML:**
+   - ❌ **NUNCA** asumir que los elementos restaurados tienen event listeners
+   - ✅ **SIEMPRE** verificar si tienen listeners antes de evitar reinicialización
+   - ✅ **SIEMPRE** reinicializar componentes después de restaurar HTML
+   - **Ver:** `docs/guias/referencia/GUIA-ERRORES-COMUNES-UBITS.md` - Error #11
+
+2. **Padding Aplicado al Contenedor Interno en Lugar del Externo:**
+   - ❌ **NUNCA** aplicar padding al contenedor interno del componente (ej: `.ubits-data-table__container`, `.ubits-tabs`)
+   - ✅ **SIEMPRE** aplicar padding y fondo blanco al contenedor externo (el que se pasa como `containerId`)
+   - ✅ **SIEMPRE** verificar cómo está estructurado el componente en Storybook antes de aplicar estilos
+   - ✅ **SIEMPRE** mantener `padding: 0` en el contenedor interno (como está en el CSS base)
+   - **Ver:** `docs/guias/referencia/GUIA-ERRORES-COMUNES-UBITS.md` - Error #12
+
+3. **Contenedor .content-sections por Defecto Aparece Debajo de Componentes Personalizados:**
+   - ❌ **NUNCA** dejar el contenedor `.content-sections` por defecto cuando hay componentes personalizados
+   - ✅ **SIEMPRE** eliminar `.content-sections` del HTML estático cuando hay componentes personalizados
+   - ✅ **SIEMPRE** interceptar `updateContent` para eliminar `.content-sections` si se crea dinámicamente
+   - ✅ **SIEMPRE** verificar visualmente que no aparece contenido por defecto
+   - **Ver:** `docs/guias/referencia/GUIA-ERRORES-COMUNES-UBITS.md` - Error #13
+
+3. **Manejo de Logs:**
+   - ❌ **NUNCA** usar logs sin prefijos identificables
+   - ❌ **NUNCA** usar logs sin contexto completo
+   - ✅ **SIEMPRE** usar prefijos `[Componente]` y emojis apropiados
+   - ✅ **SIEMPRE** mostrar estado ANTES y DESPUÉS de cambios críticos
+   - **Ver:** `docs/guias/implementacion/GUIA-MANEJO-LOGS-DEPURACION.md` - ⚠️ **OBLIGATORIO**
+
 ### **FASE 1: ANÁLISIS Y PLANIFICACIÓN** (OBLIGATORIO)
 
 1. **Analizar la imagen/solicitud:**
@@ -42,12 +71,20 @@
    - Identificar estructura visual
    - Identificar funcionalidades
    - Identificar tokens y estilos
+   - **⚠️ CRÍTICO: Si hay DataTable, contar items/filas en la imagen**
+     - Contar filas visibles
+     - Verificar scroll o paginación
+     - Verificar contador en header
+     - Documentar cantidad de items a crear
+     - **Ver:** `docs/guias/implementacion/GUIA-GENERAR-ITEMS-DATATABLE.md` - ⚠️ **OBLIGATORIO**
 
 2. **Crear plan de implementación:**
    - Listar componentes identificados
    - Describir estructura
    - Listar tokens a usar
    - **Dividir en tareas pequeñas** (ej: Tarea 1: Tabs, Tarea 2: Barra acciones, Tarea 3: DataTable básico, Tarea 4: DataTable completo)
+   - **Planificar interceptación de ContentManager** si se agregan elementos a `.content-area`
+   - **Planificar manejo de event listeners** si se restauran elementos HTML
 
 3. **Mostrar plan al usuario:**
    - Presentar análisis completo
@@ -66,7 +103,13 @@
      - [ ] **SI limpia el contenido:** Interceptar `updateContent` ANTES de agregar elementos al DOM
      - [ ] Verificar logs del navegador: `console.log(document.querySelector('.content-area')?.innerHTML)`
      - [ ] **NO asumir** que los elementos en HTML estático estarán siempre disponibles
+     - [ ] **🚨 CRÍTICO: Al restaurar HTML, SIEMPRE reinicializar componentes para agregar event listeners:**
+       - [ ] Verificar si los componentes tienen event listeners antes de evitar reinicialización
+       - [ ] Usar atributo `data-listener-attached="true"` para verificar
+       - [ ] Si NO tienen listeners, eliminar elementos existentes y reinicializar
+       - [ ] **NUNCA asumir** que elementos restaurados desde HTML tienen listeners
    - **Ver guía completa:** `docs/guias/referencia/GUIA-CONTENTMANAGER-UPDATECONTENT.md`
+   - **Ver error crítico:** `docs/guias/referencia/GUIA-ERRORES-COMUNES-UBITS.md` - Error #11
 
 2. **Revisar variantes, controladores y funcionalidades:**
    - Consultar archivo de tipos: `vendor/ubits/packages/components/[nombre]/src/types/[Nombre]Options.ts`
@@ -79,12 +122,21 @@
 **Para cada tarea:**
 
 1. **Implementar SOLO esa tarea** (no avanzar a la siguiente)
-2. **Ejecutar validación automática:** `npm run lint`
-3. **Corregir errores automáticamente** si los hay
-4. **Verificar que funciona correctamente**
-5. **Mostrar al usuario lo implementado** (incluyendo resultado de validación)
-6. **Pedir aprobación explícita:** "¿Aprobamos para continuar con la siguiente tarea?"
-7. **Solo después de aprobación, continuar con la siguiente tarea**
+2. **Usar logs apropiados:**
+   - [ ] Prefijos identificables: `[Componente]`
+   - [ ] Emojis apropiados: 🔵 ✅ ⚠️ ❌
+   - [ ] Estado ANTES y DESPUÉS de cambios críticos
+   - [ ] Contexto completo (IDs, clases, atributos)
+   - **Ver:** `docs/guias/implementacion/GUIA-MANEJO-LOGS-DEPURACION.md`
+3. **Ejecutar validación automática:** `npm run lint`
+4. **Corregir errores automáticamente** si los hay
+5. **Verificar que funciona correctamente:**
+   - [ ] Probar funcionalidad manualmente
+   - [ ] Verificar logs en consola
+   - [ ] Verificar que event listeners funcionan (especialmente después de restaurar HTML)
+6. **Mostrar al usuario lo implementado** (incluyendo resultado de validación)
+7. **Pedir aprobación explícita:** "¿Aprobamos para continuar con la siguiente tarea?"
+8. **Solo después de aprobación, continuar con la siguiente tarea**
 
 ---
 

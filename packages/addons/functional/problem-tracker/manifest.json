@@ -1,0 +1,12 @@
+{
+	"name": "@autorun/problem-tracker",
+	"version": "1.0.0",
+	"type": "functional",
+	"description": "Problem Tracker - Sistema automático de captura y tracking de problemas y soluciones durante el desarrollo",
+	"main": "./dist/index.js",
+	"export": "ProblemTrackerAddon"
+}
+
+
+
+

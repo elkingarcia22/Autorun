@@ -1,5 +1,11 @@
 # 🚨🚨🚨 VERIFICACIÓN INICIAL OBLIGATORIA 🚨🚨🚨
 
+> ⚠️ **DEPRECADO:** Este archivo ha sido consolidado en `.cursor/rules/00-inicio.md`  
+> **Por favor, usa:** `.cursor/rules/00-inicio.md` en su lugar  
+> **Fecha de deprecación:** 2025-01-03
+
+---
+
 ## ⚠️⚠️⚠️ ESTE ARCHIVO DEBE SER LEÍDO PRIMERO EN CADA MENSAJE ⚠️⚠️⚠️
 
 **SI ESTÁS LEYENDO ESTO, DEBES COMPLETAR ESTA VERIFICACIÓN ANTES DE HACER CUALQUIER COSA.**
@@ -29,7 +35,11 @@
 7. **LEER SEXTO:** `docs/guias/analisis/GUIA-DISTINGUIR-SUBNAV-TABS.md` usando `read_file()` - ⚠️ OBLIGATORIO para distinguir SubNav de Tabs
 8. **LEER SÉPTIMO:** `docs/guias/analisis/GUIA-ANALISIS-ESTRUCTURA-SPACING.md` usando `read_file()`
 9. **LEER OCTAVO:** `docs/guias/analisis/GUIA-ANALISIS-ICONOS-DETALLADO.md` usando `read_file()`
-10. **LEER NOVENO:** `docs/guias/referencia/GUIA-CONTENTMANAGER-UPDATECONTENT.md` usando `read_file()`
+10. **LEER NOVENO:** `docs/guias/analisis/GUIA-ANALISIS-DATATABLE-COMPLETO.md` usando `read_file()` - ⚠️ OBLIGATORIO si hay DataTable en la imagen
+11. **LEER DÉCIMO:** `docs/guias/analisis/GUIA-ANALISIS-FUNCIONALIDADES-DATATABLE.md` usando `read_file()` - ⚠️ OBLIGATORIO si hay DataTable (lista TODAS las funcionalidades con SÍ/NO)
+12. **LEER UNDÉCIMO:** `docs/guias/analisis/ANALISIS-ERROR-REDIMENSIONAR-DATATABLE-ESPACIO-VERTICAL-HORIZONTAL.md` usando `read_file()` - ⚠️ OBLIGATORIO si hay DataTable (análisis de errores al redimensionar)
+13. **LEER DUODÉCIMO:** `docs/guias/implementacion/GUIA-REDIMENSIONAR-DATATABLE-ESPACIO-COMPLETO.md` usando `read_file()` - ⚠️ OBLIGATORIO si hay DataTable (cómo redimensionar correctamente)
+14. **LEER DECIMOTERCERO:** `docs/guias/referencia/GUIA-CONTENTMANAGER-UPDATECONTENT.md` usando `read_file()`
 
 **NO puedes usar:**
 - ❌ `write()` - BLOQUEADO

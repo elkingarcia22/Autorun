@@ -62,7 +62,7 @@ export class InitializationWizard {
 		// Verificar si hay AUTORUN_ANSWERS (modo automático con preguntas visibles)
 		// Si hay AUTORUN_ANSWERS, SIEMPRE mostrar preguntas (igual que terminal)
 		const hasAutoAnswers = !!process.env.AUTORUN_ANSWERS;
-
+		
 		// Intentar obtener respuestas automáticas primero (solo si NO hay AUTORUN_ANSWERS)
 		// Si hay AUTORUN_ANSWERS, forzar modo interactivo para mostrar preguntas
 		const autoAnswers = hasAutoAnswers ? null : this.getAutoAnswers(options?.autoSelect);
@@ -374,7 +374,7 @@ export class InitializationWizard {
 
 		// Mostrar resumen de add-ons por defecto con número de opción del wizard
 		console.log('\n🔌 Add-ons que se instalarán por defecto:\n');
-
+		
 		// Mapeo de add-on ID a número de opción en el wizard
 		const addonToWizardNumber: Record<string, number> = {
 			storybook: 1,
@@ -396,7 +396,7 @@ export class InitializationWizard {
 			codecov: 17,
 			feedback: 18,
 		};
-
+		
 		defaultAddons.forEach((addonId) => {
 			const description =
 				addonDescriptions[addonId] ||
@@ -408,7 +408,7 @@ export class InitializationWizard {
 
 		// Verificar si estamos en modo automático (con respuestas disponibles)
 		const isAuto = this.prompt.isAuto();
-
+		
 		// DEBUG: Log para entender qué está pasando
 		console.log(
 			'[DEBUG askAddons] isAuto:',
@@ -420,11 +420,11 @@ export class InitializationWizard {
 			'autoAnswers.length:',
 			(this.prompt as any).autoAnswers.length,
 		);
-
+		
 		// IMPORTANTE: Si NO estamos en modo automático (isAuto() retorna false),
 		// significa que se agotaron las respuestas automáticas y volvimos a modo interactivo.
 		// En ese caso, SIEMPRE preguntar al usuario.
-
+		
 		// Si NO estamos en modo automático, SIEMPRE preguntar al usuario
 		// (no usar defaults automáticamente)
 		if (!isAuto) {
@@ -655,7 +655,7 @@ export class InitializationWizard {
 		if (githubUrl) {
 			console.log(`   🐙 GitHub: ${githubUrl}`);
 		}
-
+		
 		// Mostrar información del servidor
 		if (this.localServer && this.localServer.isServerRunning()) {
 			const serverUrl = this.localServer.getUrl();
@@ -676,7 +676,7 @@ export class InitializationWizard {
 
 		// Mostrar mensaje sobre reglas de Cursor
 		console.log(rulesNotifier.getFinalMessage());
-
+		
 		console.log('\n🚀 Ya puedes empezar a trabajar. ¡Éxito con tu proyecto!\n');
 
 		return {
@@ -708,7 +708,46 @@ export class InitializationWizard {
 	}
 
 	/**
+	 * Verifica si estamos ejecutando en Cursor usando múltiples métodos
+	 */
+	private async isRunningInCursor(): Promise<boolean> {
+		try {
+			// Verificar variables de entorno de Cursor (más confiable)
+			if (process.env.CURSOR_VERSION || process.env.CURSOR_AGENT) {
+				return true;
+			}
+
+			// Verificar si existe el directorio .cursor en el proyecto actual
+			const fs = await import('fs/promises');
+			const pathModule = await import('path');
+			const projectCursorDir = pathModule.join(process.cwd(), '.cursor');
+			try {
+				const stats = await fs.stat(projectCursorDir);
+				if (stats.isDirectory()) {
+					return true;
+				}
+			} catch {
+				// No existe, continuar
+			}
+
+			// Verificar si existe .cursor/mcp.json en el proyecto actual
+			const projectCursorMCP = pathModule.join(process.cwd(), '.cursor', 'mcp.json');
+			try {
+				await fs.access(projectCursorMCP);
+				return true;
+			} catch {
+				// No existe, continuar
+			}
+
+			return false;
+		} catch {
+			return false;
+		}
+	}
+
+	/**
 	 * Abre el template en el navegador local usando servidor HTTP
+	 * Intenta abrir en browser MCP de Cursor primero, luego abre externo como fallback
 	 * Solo se ejecuta una vez, incluso si se llama múltiples veces
 	 */
 	private async openTemplateInBrowser(filePath: string): Promise<string | null> {
@@ -720,9 +759,6 @@ export class InitializationWizard {
 		let httpUrl: string = '';
 
 		try {
-			const { exec } = await import('child_process');
-			const { promisify } = await import('util');
-			const execAsync = promisify(exec);
 			const pathModule = await import('path');
 
 			// Iniciar servidor HTTP local
@@ -733,44 +769,70 @@ export class InitializationWizard {
 			const fileName = pathModule.basename(filePath);
 			httpUrl = `${serverUrl}/${fileName}`;
 
-			// Detectar el sistema operativo y abrir el navegador
-			const platform = process.platform;
-			let command: string;
+			// Paso 1: Abrir en navegador externo primero
+			console.log(`\n   🌐 Abriendo en navegador externo...`);
+			
+			try {
+				const { exec } = await import('child_process');
+				const { promisify } = await import('util');
+				const execAsync = promisify(exec);
 
-			if (platform === 'darwin') {
-				// macOS
-				command = `open "${httpUrl}"`;
-			} else if (platform === 'win32') {
-				// Windows
-				command = `start "" "${httpUrl}"`;
-			} else {
-				// Linux y otros
-				command = `xdg-open "${httpUrl}"`;
+				// Detectar el sistema operativo y abrir el navegador
+				const platform = process.platform;
+				let command: string;
+
+				if (platform === 'darwin') {
+					// macOS
+					command = `open "${httpUrl}"`;
+				} else if (platform === 'win32') {
+					// Windows
+					command = `start "" "${httpUrl}"`;
+				} else {
+					// Linux y otros
+					command = `xdg-open "${httpUrl}"`;
+				}
+
+				await execAsync(command);
+				console.log(`   ✅ Navegador externo abierto`);
+				
+				// Paso 2: Esperar un momento para que el navegador se abra
+				await new Promise(resolve => setTimeout(resolve, 1000));
+				
+				// Paso 3: Detectar URL y mostrar para que el agente la abra automáticamente en Cursor
+				console.log(`\n   🔌 URL detectada: ${httpUrl}`);
+				console.log(`   📋 El agente de Cursor debe abrir automáticamente en browser MCP:`);
+				console.log(`      [AUTORUN_BROWSER_URL]${httpUrl}[/AUTORUN_BROWSER_URL]`);
+				console.log(`   📚 Guía completa: docs/guias/uso/GUIA-USO-VISBUG-AUTORUN.md`);
+				
+			} catch (error: any) {
+				console.warn(`   ⚠️  No se pudo abrir navegador externo: ${error.message || error}`);
+				console.log(`   💡 Abre manualmente: ${httpUrl}`);
+				console.log(`   📋 El agente de Cursor debe abrir automáticamente en browser MCP:`);
+				console.log(`      [AUTORUN_BROWSER_URL]${httpUrl}[/AUTORUN_BROWSER_URL]`);
 			}
-
-			await execAsync(command);
-
+			
 			// Marcar como abierto
 			this.templateOpened = true;
-
+			
 			// Identificar tipo de template desde el nombre del archivo
 			const templateType = fileName.includes('administrador')
 				? 'Administrador'
 				: fileName.includes('colaborador')
 					? 'Colaborador'
 					: 'Template';
-
-			console.log(`   ✅ Template ${templateType} abierto en el navegador`);
+			
+			console.log(`\n   ✅ Template ${templateType} listo`);
 			console.log(`   📄 Archivo: ${fileName}`);
 			console.log(`   🌐 URL: ${httpUrl}`);
 			console.log(`   💡 El servidor HTTP local seguirá corriendo en ${serverUrl}`);
 			console.log(`   💡 Para detenerlo, presiona Ctrl+C o cierra esta terminal`);
-
+			
 			return httpUrl;
 		} catch (error: any) {
-			console.warn('   ⚠️  No se pudo abrir el navegador automáticamente:', error.message || error);
+			console.warn('   ⚠️  Error al preparar template:', error.message || error);
 			if (httpUrl) {
 				console.warn(`   💡 Abre manualmente: ${httpUrl}`);
+				console.warn(`   💡 O usa el browser MCP de Cursor: mcp_cursor-ide-browser_browser_navigate({ url: "${httpUrl}" })`);
 				return httpUrl;
 			} else {
 				console.warn(`   💡 Abre manualmente: ${filePath}`);
@@ -1185,10 +1247,10 @@ export class InitializationWizard {
 		const getStorybookUrl =
 			UBITS_PRESET.storybook.getUrl ||
 			((path: string) => {
-				const baseUrl = UBITS_PRESET.storybook.url.replace(/\/$/, '');
-				return `${baseUrl}${path.startsWith('/') ? path : `/${path}`}`;
-			});
-
+			const baseUrl = UBITS_PRESET.storybook.url.replace(/\/$/, '');
+			return `${baseUrl}${path.startsWith('/') ? path : `/${path}`}`;
+		});
+		
 		for (const component of UBITS_PRESET.components) {
 			try {
 				const manifestUrl = getStorybookUrl(`/components/${component}/manifest.json`);
@@ -1764,7 +1826,7 @@ export class InitializationWizard {
 		// Si había respuestas pero se agotaron, usar default (NO configurar)
 		const hadAutoAnswers = this.prompt.hasAutoAnswers();
 		const hasMoreAnswers = this.prompt.isAuto();
-
+		
 		if (hadAutoAnswers && !hasMoreAnswers) {
 			// Se agotaron las respuestas automáticas, usar default (NO)
 			console.log(

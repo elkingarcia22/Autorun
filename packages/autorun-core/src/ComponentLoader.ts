@@ -64,16 +64,35 @@ export class ComponentLoader {
 		manifestUrl: string,
 		replaceExisting: boolean,
 	): Promise<LoadedComponent> {
-		// 1. Fetch del manifest
+		// 1. Fetch del manifest con fallback automático
 		let manifest: ComponentManifest;
 		try {
+			// Intentar fetch directo primero (Vercel)
 			const response = await fetch(manifestUrl);
 			if (!response.ok) {
 				throw new Error(`Error al cargar manifest: ${response.statusText}`);
 			}
 			manifest = await response.json();
 		} catch (error) {
-			throw new Error(`No se puede cargar manifest desde ${manifestUrl}: ${error}`);
+			// Si Vercel falla, intentar usar el sistema de fallback (GitHub)
+			try {
+				const { fetchStorybookWithFallback } = await import('./helpers/storybookFallback');
+				
+				// Extraer el path del manifestUrl
+				const urlObj = new URL(manifestUrl);
+				const path = urlObj.pathname + urlObj.search;
+				
+				// Intentar fetch con fallback a GitHub
+				console.warn(`⚠️ [ComponentLoader] Vercel falló, intentando fallback a GitHub para: ${path}`);
+				const response = await fetchStorybookWithFallback(path);
+				if (!response.ok) {
+					throw new Error(`Error al cargar manifest desde fallback: ${response.statusText}`);
+				}
+				manifest = await response.json();
+				console.log(`✅ [ComponentLoader] Manifest cargado desde GitHub (fallback)`);
+			} catch (fallbackError) {
+				throw new Error(`No se puede cargar manifest desde ${manifestUrl} (ni desde fallback GitHub): ${fallbackError}`);
+			}
 		}
 
 		// 2. Verificar si ya está cargado

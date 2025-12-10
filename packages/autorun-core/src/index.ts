@@ -48,11 +48,50 @@ export * from './adapters';
 
 // Exportar helpers
 export * from './helpers/registerLegacyComponent';
+export * from './helpers/storyBasedImplementation';
+export * from './helpers/storybookStories';
+export * from './helpers/stepByStepImplementation';
+export * from './helpers/componentPlans';
+export * from './helpers/componentHelpers';
+export * from './helpers/autoReloadHelper';
+export * from './helpers/implementationHelpers';
+export * from './helpers/proactiveDetection'; // ⭐ NUEVO: Detección proactiva mejorada
+export * from './helpers/implementationProgress'; // ⭐ NUEVO: Dashboard de progreso
+export * from './helpers/implementationDashboard'; // ⭐ NUEVO: Clase Dashboard
+export * from './helpers/errorMessages'; // ⭐ NUEVO: Mensajes de error mejorados
+
+// Exportar validación
+export * from './validation/PreWriteValidator';
+export * from './validation/ImplementationGuard';
 
 // Exportar utilidades MCP
 export { MCPDetector } from './MCPDetector';
 export { MCPInstaller } from './MCPInstaller';
 export { MCPPrompt } from './MCPPrompt';
+
+// Exportar FileWatcher
+export { FileWatcher } from './core/FileWatcher';
+export type { FileWatcherOptions } from './core/FileWatcher';
+
+// Exportar AutorunAgent (inicialización automática)
+export {
+	getAutorunHub,
+	isAutorunHubInitialized,
+	getCurrentHub,
+	restartAutorunHub,
+	ensureAutorunHubInitialized,
+	getAutorunHubStatus,
+} from './AutorunAgent';
+
+export {
+	discoverAvailableAddons,
+	registerAvailableAddons,
+} from './helpers/discoverAndRegisterAddons';
+export {
+	generateAddonDocumentation,
+	generateAddonREADME,
+	generateAllAddonsDocumentation,
+} from './helpers/addonDocumentation'; // ⭐ NUEVO: Documentación automática de add-ons
 
 // Exportar sistema de componentes
 export { ComponentLoader } from './ComponentLoader';

@@ -1,5 +1,11 @@
 # 🚨 VERIFICACIÓN OBLIGATORIA: IMAGEN DETECTADA 🚨
 
+> ⚠️ **DEPRECADO:** Este archivo ha sido consolidado en `.cursor/rules/01-deteccion-imagen.md`  
+> **Por favor, usa:** `.cursor/rules/01-deteccion-imagen.md` en su lugar  
+> **Fecha de deprecación:** 2025-01-03
+
+---
+
 ## ⚠️⚠️⚠️ ESTE ARCHIVO DEBE SER LEÍDO PRIMERO ⚠️⚠️⚠️
 
 **SI ESTÁS LEYENDO ESTO, SIGNIFICA QUE SE DETECTÓ UNA IMAGEN O SOLICITUD DE CREAR DESDE IMAGEN.**
@@ -15,6 +21,10 @@
 5. ✅ Leer `docs/guias/analisis/GUIA-DISTINGUIR-SUBNAV-TABS.md` - ⚠️ OBLIGATORIO para distinguir SubNav de Tabs
 6. ✅ Leer `docs/guias/analisis/GUIA-ANALISIS-ESTRUCTURA-SPACING.md` - ⚠️ OBLIGATORIO para análisis de spacing
 7. ✅ Leer `docs/guias/analisis/GUIA-ANALISIS-ICONOS-DETALLADO.md` - ⚠️ OBLIGATORIO para análisis de iconos
+8. ✅ Leer `docs/guias/analisis/GUIA-ANALISIS-DATATABLE-COMPLETO.md` - ⚠️ OBLIGATORIO si hay DataTable en la imagen
+9. ✅ Leer `docs/guias/analisis/GUIA-ANALISIS-FUNCIONALIDADES-DATATABLE.md` - ⚠️ OBLIGATORIO si hay DataTable (lista TODAS las funcionalidades con SÍ/NO)
+10. ✅ Leer `docs/guias/analisis/ANALISIS-ERROR-REDIMENSIONAR-DATATABLE-ESPACIO-VERTICAL-HORIZONTAL.md` - ⚠️ OBLIGATORIO si hay DataTable (análisis de errores al redimensionar)
+11. ✅ Leer `docs/guias/implementacion/GUIA-REDIMENSIONAR-DATATABLE-ESPACIO-COMPLETO.md` - ⚠️ OBLIGATORIO si hay DataTable (cómo redimensionar correctamente)
 
 ### 🚫 PASO 2: VERIFICAR QUE NO ESTÁS USANDO HERRAMIENTAS PROHIBIDAS
 
@@ -41,9 +51,16 @@
    - **Iconos con variaciones** (usar `docs/guias/analisis/GUIA-ANALISIS-ICONOS-DETALLADO.md`)
    - Estructura visual
    - **Spacing identificado** (usar `docs/guias/analisis/GUIA-ANALISIS-ESTRUCTURA-SPACING.md`):
-     - ⚠️ **NO asumir basándose en ejemplos**
-     - ⚠️ **Medir visualmente cada espacio entre elementos**
-     - ⚠️ **Comparar con tokens disponibles antes de documentar**
+     - ⚠️ **🚨 CRÍTICO: NO asumir basándose en ejemplos anteriores**
+     - ⚠️ **🚨 ERROR COMÚN: NO asumir que SubNav y Tabs están pegados (0px) - MEDIR en la imagen**
+     - ⚠️ **Medir visualmente cada espacio entre elementos en la imagen actual**
+     - ⚠️ **Documentar la medida visual específica (ej: "16px medido visualmente")**
+     - ⚠️ **Comparar spacing medido con tokens disponibles antes de documentar**
+   - **Funcionalidades del DataTable** (si hay DataTable, usar `docs/guias/analisis/GUIA-ANALISIS-FUNCIONALIDADES-DATATABLE.md`):
+     - ⚠️ **🚨 CRÍTICO: Consultar Storybook para ver TODAS las funcionalidades disponibles**
+     - ⚠️ **🚨 CRÍTICO: Listar TODAS las funcionalidades con SÍ/NO para cada una**
+     - ⚠️ **🚨 CRÍTICO: NO asumir funcionalidades sin verificar en la imagen**
+     - ⚠️ **🚨 CRÍTICO: NO implementar funcionalidades que NO están en la imagen**
    - Funcionalidades identificadas
 4. **Mostrar análisis completo** al usuario en el formato obligatorio
 5. **ESPERAR aprobación explícita** del usuario
@@ -59,7 +76,8 @@
 - [ ] ¿He leído `docs/guias/referencia/GUIA-CONTENTMANAGER-UPDATECONTENT.md`? → Si NO, LEERLA PRIMERO (si agregas elementos a `.content-area`)
 - [ ] ¿He identificado el template existente? → Si NO, IDENTIFICARLO PRIMERO
 - [ ] ¿He analizado la imagen detalladamente? → Si NO, ANALIZARLA PRIMERO
-- [ ] ¿He medido visualmente cada spacing (NO asumido)? → Si NO, MEDIR PRIMERO
+- [ ] ¿He medido visualmente cada spacing en la imagen actual (NO asumido, NO basado en ejemplos)? → Si NO, MEDIR PRIMERO
+- [ ] ¿He verificado que NO asumí que SubNav y Tabs están pegados? → Si NO, VERIFICAR PRIMERO
 - [ ] ¿He comparado spacing con tokens disponibles? → Si NO, COMPARAR PRIMERO
 - [ ] ¿He verificado si necesito interceptar ContentManager antes de agregar elementos? → Si NO, VERIFICAR PRIMERO
 - [ ] ¿He mostrado el análisis completo al usuario? → Si NO, MOSTRARLO PRIMERO

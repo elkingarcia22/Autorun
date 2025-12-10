@@ -15,9 +15,11 @@
 		"verify": "node scripts/verify-setup.js",
 		"init": "tsx packages/autorun-core/src/cli/autorun-init.ts",
 		"autorun:init": "npm run init",
+		"autorun:init-hub": "tsx packages/autorun-core/src/cli/autorun-init-hub.ts",
 		"setup-project": "node scripts/create-project-package-json.js",
 		"postinstall": "npm run verify",
-		"wizard": "node scripts/run-init.js"
+		"wizard": "node scripts/run-init.js",
+		"open:browser": "node scripts/open-in-cursor-browser.js"
 	},
 	"bin": {
 		"autorun-init": "./packages/autorun-core/dist/cli/autorun-init.js"

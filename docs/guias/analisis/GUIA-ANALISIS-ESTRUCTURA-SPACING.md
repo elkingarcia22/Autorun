@@ -103,17 +103,31 @@ Esta guía establece el proceso **OBLIGATORIO** para analizar la estructura (con
 
 ### **PASO 2: ANALIZAR SPACING ESPECÍFICO** 📏
 
-#### **2.1: Identificar Spacing Entre Elementos**
+#### **2.1: Identificar Spacing Entre Elementos** ⚠️ CRÍTICO
+
+**🚨 ERROR COMÚN CRÍTICO: NO ASUMIR SPACING**
+
+**❌ ERROR FRECUENTE:**
+- Asumir que SubNav y Tabs están pegados (0px) cuando en realidad tienen 16px de espacio
+- Asumir spacing basándose en ejemplos anteriores
+- No medir visualmente cada caso específico
+
+**✅ REGLA OBLIGATORIA:**
+- ⚠️ **SIEMPRE medir visualmente** el espacio entre elementos en CADA imagen
+- ⚠️ **NUNCA asumir** que SubNav y Tabs están pegados
+- ⚠️ **NUNCA asumir** basándose en ejemplos anteriores
+- ⚠️ **SIEMPRE verificar** cada spacing individualmente en la imagen actual
 
 **Preguntas clave:**
-- ¿Cuánto espacio hay entre cada elemento?
-- ¿Los elementos están pegados o hay espacio?
-- ¿El spacing es consistente o varía?
+- ¿Cuánto espacio hay entre cada elemento? (MEDIR VISUALMENTE)
+- ¿Los elementos están pegados o hay espacio? (VERIFICAR EN LA IMAGEN)
+- ¿El spacing es consistente o varía? (ANALIZAR EN LA IMAGEN)
 
-**Proceso:**
-1. **Medir visualmente** el espacio entre elementos
-2. **Mapear a tokens UBITS** más cercanos
-3. **Documentar cada spacing** específicamente
+**Proceso OBLIGATORIO:**
+1. **⚠️ MEDIR VISUALMENTE** el espacio entre elementos en la imagen actual (NO asumir)
+2. **⚠️ COMPARAR** con tokens UBITS disponibles para encontrar el más cercano
+3. **⚠️ DOCUMENTAR** cada spacing específicamente con la medida visual
+4. **⚠️ VERIFICAR** que NO estás asumiendo basándote en ejemplos anteriores
 
 **Tokens de spacing disponibles:**
 ```css
@@ -136,27 +150,43 @@ Esta guía establece el proceso **OBLIGATORIO** para analizar la estructura (con
 --ubits-spacing-24: 96px
 ```
 
-**Ejemplo de análisis:**
+**Ejemplo de análisis CORRECTO:**
 ```markdown
 ### Spacing entre elementos:
 
-⚠️ **IMPORTANTE:** Los ejemplos siguientes son SOLO referencias. DEBES medir visualmente cada caso específico. NO asumas que SubNav y Tabs siempre están pegados - en algunos casos pueden tener 16px de espacio.
+⚠️ **CRÍTICO:** Este análisis se basa en MEDICIÓN VISUAL de la imagen actual. NO asumir basándose en ejemplos anteriores.
 
 1. **Entre SubNav y Tabs:**
-   - ⚠️ **MEDIR VISUALMENTE** - Puede ser 0px (pegados) O 16px (separados)
-   - Si están pegados: Token `--ubits-spacing-none` (0px)
-   - Si hay espacio: Token `--ubits-spacing-lg` (16px)
-   - CSS: `margin-top: 0` (pegados) o `margin-top: var(--ubits-spacing-lg)` (separados)
+   - ⚠️ **MEDICIÓN VISUAL EN LA IMAGEN:** [X]px de espacio visible
+   - ⚠️ **NO ASUMIR** que están pegados - MEDIR en la imagen actual
+   - Si hay 0px (pegados): Token `--ubits-spacing-none` (0px)
+   - Si hay ~16px (separados): Token `--ubits-spacing-lg` (16px)
+   - ⚠️ **ERROR COMÚN:** Asumir 0px cuando en realidad es 16px
+   - CSS: `margin-top: var(--ubits-spacing-lg)` (si hay 16px) o `margin-top: 0` (si están pegados)
 
 2. **Entre Tabs y Barra de acciones:**
-   - Visual: ~16px de espacio
-   - Token: `--ubits-spacing-lg`
+   - ⚠️ **MEDICIÓN VISUAL EN LA IMAGEN:** [X]px de espacio visible
+   - Token: `--ubits-spacing-lg` (si es ~16px)
    - CSS: `margin-top: var(--ubits-spacing-lg)`
 
 3. **Entre Barra de acciones y DataTable:**
-   - Visual: ~16px de espacio
-   - Token: `--ubits-spacing-lg`
+   - ⚠️ **MEDICIÓN VISUAL EN LA IMAGEN:** [X]px de espacio visible
+   - Token: `--ubits-spacing-lg` (si es ~16px)
    - CSS: `margin-top: var(--ubits-spacing-lg)`
+```
+
+**Ejemplo de análisis INCORRECTO (ERROR COMÚN):**
+```markdown
+❌ INCORRECTO: Asumir sin medir
+### Spacing entre elementos:
+- SubNav → Tabs: `--ubits-spacing-none` (0px, pegados) ← ❌ ERROR: Asumido sin medir
+```
+
+**Ejemplo de análisis CORRECTO:**
+```markdown
+✅ CORRECTO: Medir visualmente
+### Spacing entre elementos:
+- SubNav → Tabs: `--ubits-spacing-lg` (16px) ← ✅ CORRECTO: Medido visualmente en la imagen
 ```
 
 ---
@@ -213,10 +243,13 @@ Esta guía establece el proceso **OBLIGATORIO** para analizar la estructura (con
 | Barra acciones → DataTable | 16px | `--ubits-spacing-lg` | `margin-top: var(--ubits-spacing-lg)` |
 
 ### Spacing dentro de contenedores:
-| Contenedor | Padding | Gap interno | Tokens |
-|------------|---------|-------------|--------|
-| `#actions-bar` | 0px | 8px | `padding: var(--ubits-spacing-none)`, `gap: var(--ubits-spacing-sm)` |
-| `#table-container` | 0px | N/A | `padding: var(--ubits-spacing-none)` |
+| Contenedor | Padding | Fondo | Gap interno | Tokens |
+|------------|---------|-------|-------------|--------|
+| `#actions-bar` | 0px | N/A | 8px | `padding: var(--ubits-spacing-none)`, `gap: var(--ubits-spacing-sm)` |
+| `#tabs-container` | 16px | Blanco | N/A | `padding: var(--ubits-spacing-lg)`, `background: var(--modifiers-normal-color-light-bg-1)`, `border-radius: var(--ubits-border-radius-md)` |
+| `#table-container` | 16px | Blanco | N/A | `padding: var(--ubits-spacing-lg)`, `background: var(--modifiers-normal-color-light-bg-1)`, `border-radius: var(--ubits-border-radius-md)` |
+
+**⚠️ CRÍTICO:** El padding y fondo deben estar en el contenedor externo (el que se pasa como `containerId`), NO en el contenedor interno que crea el componente (ej: `.ubits-data-table__container`, `.ubits-tabs`). **Ver:** `docs/guias/referencia/GUIA-ERRORES-COMUNES-UBITS.md` - Error #12
 
 ### Spacing dentro de componentes:
 | Componente | Spacing interno | Notas |
@@ -251,7 +284,10 @@ Esta guía establece el proceso **OBLIGATORIO** para analizar la estructura (con
 
 ### Spacing dentro de contenedores:
 - `#actions-bar`: padding `--ubits-spacing-none`, gap `--ubits-spacing-sm`
-- `#table-container`: padding `--ubits-spacing-none`
+- `#tabs-container`: padding `--ubits-spacing-lg`, fondo blanco, border-radius `--ubits-border-radius-md`
+- `#table-container`: padding `--ubits-spacing-lg`, fondo blanco, border-radius `--ubits-border-radius-md`
+
+**⚠️ CRÍTICO:** El padding y fondo deben estar en el contenedor externo, NO en el contenedor interno del componente. **Ver:** `docs/guias/referencia/GUIA-ERRORES-COMUNES-UBITS.md` - Error #12
 
 ### ¿Este análisis es correcto?
 ```
@@ -266,12 +302,35 @@ Esta guía establece el proceso **OBLIGATORIO** para analizar la estructura (con
 - ✅ SIEMPRE analizar visualmente si cada elemento necesita contenedor
 - ✅ SIEMPRE verificar si el componente UBITS ya maneja su contenedor
 
-### **2. SIEMPRE Analizar Spacing Específicamente**
-- ❌ NO usar spacing genérico (`--ubits-spacing-md` para todo)
-- ❌ NO adivinar el spacing
-- ✅ SIEMPRE medir visualmente el espacio
-- ✅ SIEMPRE mapear a tokens UBITS específicos
-- ✅ SIEMPRE documentar cada spacing
+### **2. Padding y Fondo en el Contenedor Externo** ⚠️ CRÍTICO
+- ❌ **NUNCA** aplicar padding al contenedor interno del componente (ej: `.ubits-data-table__container`, `.ubits-tabs`)
+- ✅ **SIEMPRE** aplicar padding y fondo blanco al contenedor externo (el que se pasa como `containerId`)
+- ✅ **SIEMPRE** verificar cómo está estructurado el componente en Storybook antes de aplicar estilos
+- ✅ **SIEMPRE** mantener `padding: 0` en el contenedor interno (como está en el CSS base del componente)
+- **Ver:** `docs/guias/referencia/GUIA-ERRORES-COMUNES-UBITS.md` - Error #12
+
+### **2. NO Asumir que Todos los Componentes Necesitan Contenedor** ⚠️ CRÍTICO
+- ❌ NO asumir que todos los componentes necesitan contenedor con padding y fondo
+- ❌ NO aplicar la misma solución (contenedor) a todos los componentes
+- ✅ SIEMPRE verificar en el análisis si cada componente necesita contenedor
+- ✅ SIEMPRE seguir el análisis de la imagen (si dice "sin contenedor", NO crear contenedor)
+- ✅ SIEMPRE distinguir entre componentes que necesitan contenedor (DataTable) y los que no (Tabs)
+- **Ver:** `docs/guias/referencia/GUIA-ERRORES-COMUNES-UBITS.md` - Error #14
+
+### **3. SIEMPRE Analizar Spacing Específicamente** ⚠️ CRÍTICO
+- ❌ **NUNCA** usar spacing genérico (`--ubits-spacing-md` para todo)
+- ❌ **NUNCA** adivinar el spacing
+- ❌ **NUNCA** asumir que SubNav y Tabs están pegados (error común)
+- ❌ **NUNCA** asumir basándose en ejemplos anteriores
+- ✅ **SIEMPRE** medir visualmente el espacio en la imagen actual
+- ✅ **SIEMPRE** mapear a tokens UBITS específicos después de medir
+- ✅ **SIEMPRE** documentar cada spacing con la medida visual
+- ✅ **SIEMPRE** verificar que NO estás asumiendo
+
+**🚨 ERROR COMÚN CRÍTICO:**
+- ❌ Asumir que SubNav y Tabs están pegados (0px) cuando en realidad tienen 16px
+- ❌ Asumir basándose en ejemplos anteriores sin medir la imagen actual
+- ✅ **SOLUCIÓN:** Siempre medir visualmente en la imagen actual antes de documentar
 
 ### **3. SIEMPRE Documentar Estructura**
 - ❌ NO implementar sin documentar estructura
@@ -307,9 +366,9 @@ Esta guía establece el proceso **OBLIGATORIO** para analizar la estructura (con
 
 **Análisis de spacing:**
 ```markdown
-### Spacing identificado:
-- SubNav → Tabs: `--ubits-spacing-none` (0px, pegados)
-- Tabs → DataTable: `--ubits-spacing-lg` (16px)
+### Spacing identificado (MEDIDO VISUALMENTE):
+- SubNav → Tabs: `--ubits-spacing-lg` (16px) ⚠️ MEDIDO en la imagen, NO asumido
+- Tabs → DataTable: `--ubits-spacing-lg` (16px) ⚠️ MEDIDO en la imagen
 ```
 
 **Implementación:**

@@ -4,6 +4,28 @@
 
 > **"SIEMPRE usar MCPs disponibles para consultar componentes exactamente como están"** - Antes de implementar un componente, consulta su estructura, props, tokens y controles usando los MCPs disponibles.
 
+## 🚨 CRÍTICO: Verificar Versión Actualizada del Storybook
+
+**ANTES de implementar cualquier componente, SIEMPRE:**
+
+1. **Consultar Storybook en Vercel (versión más reciente):**
+   - URL: `https://ubits-storybook10.vercel.app/`
+   - Buscar el componente específico (ej: `data-data-table`)
+   - Revisar la pestaña "Code" para ver el código actualizado
+   - Revisar la pestaña "Controls" para ver todas las opciones disponibles
+
+2. **Comparar con el código local:**
+   - Verificar que los tipos de columnas coincidan
+   - Verificar que las opciones disponibles coincidan
+   - Verificar que la estructura de datos coincida
+
+3. **Si hay diferencias:**
+   - Actualizar la implementación para usar la versión más reciente
+   - Actualizar las guías si es necesario
+   - Documentar los cambios
+
+**⚠️ ERROR COMÚN:** Usar información desactualizada del código local sin verificar el Storybook en Vercel.
+
 ---
 
 ## 🎯 MCPs Disponibles en Autorun
@@ -133,39 +155,63 @@
 
 **ANTES de implementar:**
 
-1. **Consultar Storybook MCP:**
+1. **⚠️ CRÍTICO: Consultar Storybook en Vercel (versión más reciente):** ⚠️ PRIMERO
+   - URL: `https://ubits-storybook10.vercel.app/?path=/story/data-data-table--ver-usuarios-seleccionados`
+   - Revisar:
+     - **Pestaña "Code":** Ver el código actualizado del ejemplo
+     - **Pestaña "Controls":** Ver todas las opciones disponibles (showCheckbox, columnSortable, rowExpandable, tipos de columnas, etc.)
+     - **Tipos de columnas disponibles:** Verificar todos los tipos (nombre, nombre-avatar, progreso, estado, fecha, pais, ciudad, etc.)
+     - **Estructura de datos:** Ver cómo se estructuran las filas y columnas
+   - **Ver guía:** `docs/guias/implementacion/GUIA-VERIFICAR-STORYBOOK-VERCEL.md` - ⚠️ OBLIGATORIO
+
+2. **Consultar Storybook MCP (si está disponible):**
    ```
    mcp_storybook_getComponentList
    // Buscar "DataTable" o "data-table"
    ```
 
-2. **Obtener props:**
+3. **Obtener props del MCP:**
    ```
    mcp_storybook_getComponentsProps(["DataTable"])
    // Obtener:
    // - columns: estructura exacta
    // - rows: estructura exacta
    // - header: opciones disponibles
-   // - showCheckbox, columnSortable, etc.
+   // - showCheckbox, columnSortable, rowExpandable, etc.
    ```
 
-3. **Consultar Storybook:**
-   - Abrir: `http://localhost:6006/?path=/docs/data-datatable--docs`
-   - Revisar:
-     - **Controls:** Todas las opciones (showCheckbox, columnSortable, etc.)
-     - **Tokens:** Tokens usados (spacing, colores)
-     - **Ejemplos:** Ejemplos de código con todas las opciones
+4. **Comparar con código local:**
+   - Verificar que `vendor/ubits/packages/components/data-table/src/types/DataTableOptions.ts` tenga los mismos tipos
+   - Verificar que la implementación local coincida con el Storybook en Vercel
+   - Si hay diferencias, usar la versión del Storybook en Vercel (es la más actualizada)
 
-4. **Implementar con información exacta:**
+5. **⚠️ CRÍTICO: Verificar en la imagen antes de implementar:**
+   - ¿Hay opción de expandir filas? → Configurar `rowExpandable` correctamente
+   - ¿Qué tipos de columnas hay? → Verificar tipos correctos (estado, progreso, fecha, etc.)
+   - ¿Hay columnas fijas? → Solo configurar si están en la imagen
+   - ¿La tabla debe aprovechar espacio vertical? → Configurar altura dinámica
+
+5. **Implementar con información exacta:**
    ```javascript
    window.createDataTable({
      containerId: 'encuestas-table-container',
-     columns: [ /* estructura exacta obtenida del MCP */ ],
+     columns: [ 
+       { id: 'estado', title: 'Estado', type: 'estado' }, // ✅ CORRECTO: tipo 'estado' para status tag
+       { id: 'avance', title: 'Avance', type: 'progreso' } // ✅ CORRECTO: tipo 'progreso' para progress bar
+       // ⚠️ CRÍTICO: Usar tipos correctos según la imagen
+     ],
      rows: [ /* estructura exacta obtenida del MCP */ ],
      header: { /* opciones exactas obtenidas del MCP */ },
      showCheckbox: true, // valor obtenido del MCP
-     columnSortable: true // valor obtenido del MCP
+     columnSortable: true, // valor obtenido del MCP
+     rowExpandable: false, // ✅ CORRECTO: Deshabilitar si NO está en la imagen
+     // ⚠️ CRÍTICO: NO configurar columnas fijas si NO están en la imagen
    });
+   
+   // ⚠️ CRÍTICO: Configurar altura dinámica después de crear
+   setTimeout(() => {
+     adjustDataTableHeight('encuestas-table-container');
+   }, 200);
    ```
 
 ---

@@ -21,6 +21,16 @@ cd Autorun
 npm install
 ```
 
+### 🛠️ Herramientas de Inspección (Opcional pero Recomendado)
+
+**Para mejorar el flujo de trabajo, instala:**
+
+1. **VisBug** (extensión Chrome):
+   - https://chrome.google.com/webstore/detail/visbug/cdockenadnadldjbbgcallicgledbeoc
+   - Permite medir spacing visualmente y ajustar valores "al vuelo"
+
+**Ver guía completa:** `GUIA-RAPIDA-HERRAMIENTAS-INSPECCION.md`
+
 **✅ Verificación automática:** Después de `npm install`, se ejecuta automáticamente una verificación que comprueba:
 - Estructura del proyecto
 - Scripts configurados
@@ -108,6 +118,7 @@ Autorun/
 | `npm run build` | 📦 Build del proyecto |
 | `npm run lint` | 🔍 Linter (Biome) |
 | `npm run format` | ✨ Formateo de código |
+| `npm run open:browser` | 🔌 Abrir template en browser MCP de Cursor |
 
 ### Scripts del Core
 
@@ -160,8 +171,9 @@ npm run test:watch # Tests en modo watch
 
 **Cursor lee automáticamente estos archivos:**
 
-1. **[`.cursorrules`](./.cursorrules)** - ⚠️ **OBLIGATORIO** - Reglas críticas que Cursor debe seguir (simplificado)
-2. **[`.cursor/rules/`](./.cursor/rules/)** - ⭐ **NUEVO** - Reglas organizadas por módulos
+1. **[`.cursorrules`](./.cursorrules)** - ⚠️ **OBLIGATORIO** - Reglas críticas que Cursor debe seguir (simplificado - 236 líneas)
+2. **[`QUICK-REFERENCE.md`](./QUICK-REFERENCE.md)** - ⭐ **NUEVO** - Referencia rápida con reglas críticas (máx 50 líneas)
+3. **[`.cursor/rules/`](./.cursor/rules/)** - ⭐ **NUEVO** - Reglas organizadas por módulos con tags de prioridad
 3. **[`docs/referencia/GUIA-TRABAJO-TEMPLATE.md`](./docs/referencia/GUIA-TRABAJO-TEMPLATE.md)** - ⚠️ **OBLIGATORIO** - Guía completa para trabajar con templates UBITS
 4. **[`docs/referencia/ESTRATEGIA-COMPONENTES-UBITS.md`](./docs/referencia/ESTRATEGIA-COMPONENTES-UBITS.md)** - Estrategia de uso de componentes
 5. **[`docs/guias/referencia/GUIA-USO-COMPONENTES-UBITS.md`](./docs/guias/referencia/GUIA-USO-COMPONENTES-UBITS.md)** - Cómo usar componentes UBITS

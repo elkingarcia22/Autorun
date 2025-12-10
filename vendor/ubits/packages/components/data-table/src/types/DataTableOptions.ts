@@ -200,6 +200,11 @@ export interface DataTableOptions {
 	onColumnPin?: (columnId: string, pinned: boolean) => void;
 
 	/**
+	 * Callback cuando cambia la visibilidad de las columnas
+	 */
+	onColumnVisibilityChange?: (visibleColumnIds: string[]) => void;
+
+	/**
 	 * Si se muestra la columna de checkbox (por defecto: true)
 	 */
 	showCheckbox?: boolean;
@@ -410,9 +415,10 @@ export interface DataTableOptions {
 				 */
 				columnId: string;
 				/**
-				 * Tipo de filtro: 'text', 'select', 'date', 'number'
+				 * Tipo de filtro: 'text', 'select', 'date', 'number', 'calendar'
+				 * 'calendar' usa el componente Calendar de UBITS (no el calendario nativo del sistema)
 				 */
-				type: 'text' | 'select' | 'date' | 'number';
+				type: 'text' | 'select' | 'date' | 'number' | 'calendar';
 				/**
 				 * Opciones para filtros de tipo 'select'
 				 */
