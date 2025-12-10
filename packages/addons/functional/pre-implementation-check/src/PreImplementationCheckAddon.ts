@@ -561,6 +561,7 @@ ${missingSteps.map((step) => `  - ${step}`).join('\n')}
         Sidebar: 'navegacion-sidebar', // ⚠️ CORREGIDO: era 'navegacin-sidebar'
         SubNav: 'navegacion-sub-nav', // ⚠️ CORREGIDO: era 'navegacin-subnav'
         TabBar: 'navegacion-tab-bar', // ⚠️ CORREGIDO: era 'navegacin-tab-bar'
+        Drawer: 'feedback-drawer-navigation', // ⚠️ CORREGIDO: era 'feedback-drawer'
       };
       return componentIdMap[componentName] || componentName.toLowerCase();
     }
