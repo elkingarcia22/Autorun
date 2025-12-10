@@ -1217,9 +1217,10 @@
                                 // ========================================
                                 const currentModule = document.body.getAttribute('data-module');
                                 if (currentModule === 'encuestas') {
-                                    initializeEncuestasTabs();
-                                }
-                                    }
+                                    // Esperar un poco más para asegurar que createTabs esté disponible
+                                    setTimeout(() => {
+                                        initializeEncuestasTabs();
+                                    }, 300);
                                 }
                                 
                                 
