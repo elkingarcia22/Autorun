@@ -2463,6 +2463,119 @@
             tooltip.style.left = `${rect.left + (rect.width / 2) - tooltipRect.width / 2}px`;
           }
 
+          // Función para calcular posición óptima del tooltip dentro de la pantalla
+          const calculateOptimalPosition = (refRect, tooltipRect, preferredTailPosition) => {
+            const viewport = {
+              width: window.innerWidth,
+              height: window.innerHeight,
+            };
+            const padding = 8; // Padding mínimo desde los bordes
+            const tailHeight = 8; // Altura del tail (flecha)
+
+            let finalTailPosition = preferredTailPosition;
+            let finalTop = 0;
+            let finalLeft = 0;
+            let finalTransform = '';
+
+            // Intentar posición preferida primero
+            if (preferredTailPosition === 'bottom') {
+              // Tooltip debajo del elemento
+              finalTop = refRect.bottom + padding;
+              finalLeft = refRect.left + refRect.width / 2;
+              finalTransform = 'translateX(-50%)';
+              
+              // Verificar si se sale por abajo
+              if (finalTop + tooltipRect.height > viewport.height - padding) {
+                // Cambiar a arriba
+                finalTailPosition = 'top';
+                finalTop = refRect.top - tooltipRect.height - padding;
+              }
+              
+              // Verificar si se sale por la izquierda
+              if (finalLeft - tooltipRect.width / 2 < padding) {
+                finalLeft = padding + tooltipRect.width / 2;
+              }
+              
+              // Verificar si se sale por la derecha
+              if (finalLeft + tooltipRect.width / 2 > viewport.width - padding) {
+                finalLeft = viewport.width - padding - tooltipRect.width / 2;
+              }
+            } else if (preferredTailPosition === 'top') {
+              // Tooltip arriba del elemento
+              finalTop = refRect.top - tooltipRect.height - padding;
+              finalLeft = refRect.left + refRect.width / 2;
+              finalTransform = 'translateX(-50%)';
+              
+              // Verificar si se sale por arriba
+              if (finalTop < padding) {
+                // Cambiar a abajo
+                finalTailPosition = 'bottom';
+                finalTop = refRect.bottom + padding;
+              }
+              
+              // Verificar si se sale por la izquierda
+              if (finalLeft - tooltipRect.width / 2 < padding) {
+                finalLeft = padding + tooltipRect.width / 2;
+              }
+              
+              // Verificar si se sale por la derecha
+              if (finalLeft + tooltipRect.width / 2 > viewport.width - padding) {
+                finalLeft = viewport.width - padding - tooltipRect.width / 2;
+              }
+            } else if (preferredTailPosition === 'right') {
+              // Tooltip a la derecha del elemento
+              finalTop = refRect.top + refRect.height / 2;
+              finalLeft = refRect.right + padding;
+              finalTransform = 'translateY(-50%)';
+              
+              // Verificar si se sale por la derecha
+              if (finalLeft + tooltipRect.width > viewport.width - padding) {
+                // Cambiar a izquierda
+                finalTailPosition = 'left';
+                finalLeft = refRect.left - tooltipRect.width - padding;
+              }
+              
+              // Verificar si se sale por arriba
+              if (finalTop - tooltipRect.height / 2 < padding) {
+                finalTop = padding + tooltipRect.height / 2;
+              }
+              
+              // Verificar si se sale por abajo
+              if (finalTop + tooltipRect.height / 2 > viewport.height - padding) {
+                finalTop = viewport.height - padding - tooltipRect.height / 2;
+              }
+            } else if (preferredTailPosition === 'left') {
+              // Tooltip a la izquierda del elemento
+              finalTop = refRect.top + refRect.height / 2;
+              finalLeft = refRect.left - tooltipRect.width - padding;
+              finalTransform = 'translateY(-50%)';
+              
+              // Verificar si se sale por la izquierda
+              if (finalLeft < padding) {
+                // Cambiar a derecha
+                finalTailPosition = 'right';
+                finalLeft = refRect.right + padding;
+              }
+              
+              // Verificar si se sale por arriba
+              if (finalTop - tooltipRect.height / 2 < padding) {
+                finalTop = padding + tooltipRect.height / 2;
+              }
+              
+              // Verificar si se sale por abajo
+              if (finalTop + tooltipRect.height / 2 > viewport.height - padding) {
+                finalTop = viewport.height - padding - tooltipRect.height / 2;
+              }
+            }
+
+            return {
+              top: finalTop,
+              left: finalLeft,
+              transform: finalTransform,
+              tailPosition: finalTailPosition,
+            };
+          };
+
           const openTooltip = () => {
             tooltip.classList.add('ubits-tooltip--open');
             
@@ -2470,28 +2583,24 @@
             if (referenceElement) {
               const rect = referenceElement.getBoundingClientRect();
               const tooltipRect = tooltip.getBoundingClientRect();
-              const tailPosition = options.tailPosition || 'top';
+              const preferredTailPosition = options.tailPosition || 'bottom';
+              
+              // Calcular posición óptima
+              const optimal = calculateOptimalPosition(rect, tooltipRect, preferredTailPosition);
+              
+              // Aplicar posición
               tooltip.style.position = 'fixed';
-
-              if (tailPosition === 'top' || tailPosition === 'bottom') {
-                // Centrar horizontalmente y posicionar arriba/abajo
-                tooltip.style.left = `${rect.left + rect.width / 2}px`;
-                tooltip.style.transform = 'translateX(-50%)';
-                if (tailPosition === 'top') {
-                  tooltip.style.top = `${rect.top - tooltipRect.height - 8}px`;
-                } else {
-                  tooltip.style.top = `${rect.bottom + 8}px`;
-                }
-              } else if (tailPosition === 'left' || tailPosition === 'right') {
-                // Centrar verticalmente y posicionar izquierda/derecha
-                tooltip.style.top = `${rect.top + rect.height / 2}px`;
-                tooltip.style.transform = 'translateY(-50%)';
-                if (tailPosition === 'left') {
-                  tooltip.style.left = `${rect.left - tooltipRect.width - 8}px`;
-                } else {
-                  tooltip.style.left = `${rect.right + 8}px`;
-                }
+              tooltip.style.top = `${optimal.top}px`;
+              tooltip.style.left = `${optimal.left}px`;
+              tooltip.style.transform = optimal.transform;
+              tooltip.style.zIndex = '9999';
+              
+              // Actualizar clase de tail si cambió la posición
+              const currentTailClass = tooltip.className.match(/ubits-tooltip--tail-\w+/);
+              if (currentTailClass) {
+                tooltip.classList.remove(currentTailClass[0]);
               }
+              tooltip.classList.add(`ubits-tooltip--tail-${optimal.tailPosition}`);
             } else if (position) {
               // Usar posición absoluta si se proporciona
               tooltip.style.position = 'fixed';
@@ -2676,13 +2785,7 @@
           chipElement.addEventListener('mouseenter', () => {
             if (tooltipInstance && tooltipInstance.element) {
               console.log('🟢 [Chip/Tooltip] Mouseenter detectado, abriendo tooltip...');
-              // Recalcular posición antes de abrir
-              const rect = chipElement.getBoundingClientRect();
-              tooltipInstance.element.style.position = 'fixed';
-              tooltipInstance.element.style.left = `${rect.left + rect.width / 2}px`;
-              tooltipInstance.element.style.transform = 'translateX(-50%)';
-              tooltipInstance.element.style.top = `${rect.bottom + 8}px`;
-              tooltipInstance.element.style.zIndex = '9999';
+              // La función openTooltip ya calcula la posición óptima automáticamente
               tooltipInstance.open();
               console.log('✅ [Chip/Tooltip] Tooltip abierto, clases:', tooltipInstance.element.className);
             } else {
