@@ -246,6 +246,12 @@ export async function discoverStorybookComponents(): Promise<DiscoveryResult> {
         // Extraer ID del componente desde el storyId (formato: "component-id--story-name")
         const componentIdMatch = storyId.match(/^([^--]+)--/);
         if (!componentIdMatch) {
+          // Debug: mostrar algunas entradas sin match
+          if (processedCount < 5) {
+            console.log(
+              `  ⚠️ [Storybook ID Discovery] No match para: ${storyId}`
+            );
+          }
           continue;
         }
 
@@ -261,18 +267,18 @@ export async function discoverStorybookComponents(): Promise<DiscoveryResult> {
             stories: [],
             firstStoryId: storyId,
           });
+
+          // Debug: mostrar algunos componentes encontrados
+          if (componentsMap.size <= 10) {
+            console.log(
+              `  ✅ [Storybook ID Discovery] Nuevo componente: ${componentId} (${title})`
+            );
+          }
         }
 
         const component = componentsMap.get(componentId)!;
         if (!component.stories.includes(storyName)) {
           component.stories.push(storyName);
-        }
-
-        // Debug: mostrar algunos componentes encontrados
-        if (componentsMap.size <= 10) {
-          console.log(
-            `  ✅ [Storybook ID Discovery] Componente: ${componentId} (${title}) - Historia: ${storyName}`
-          );
         }
       }
     }
