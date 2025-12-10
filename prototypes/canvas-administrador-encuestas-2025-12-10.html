@@ -3223,17 +3223,61 @@
       }
     }
     
+    // Función para inicializar DataTable de forma segura después de que el ContentManager termine
+    function safeInitializeDataTable() {
+      const currentModule = document.body.getAttribute('data-module');
+      if (currentModule !== 'encuestas') {
+        return;
+      }
+      
+      const contentArea = document.querySelector('.content-area');
+      if (!contentArea) {
+        setTimeout(safeInitializeDataTable, 200);
+        return;
+      }
+      
+      let tableContainer = contentArea.querySelector('#encuestas-table-container');
+      if (!tableContainer) {
+        tableContainer = document.createElement('div');
+        tableContainer.id = 'encuestas-table-container';
+        contentArea.appendChild(tableContainer);
+      }
+      
+      // Verificar si la DataTable ya existe
+      if (tableContainer.querySelector('.ubits-data-table')) {
+        console.log('✅ [Encuestas DataTable] DataTable ya existe en el contenedor');
+        return;
+      }
+      
+      // Inicializar solo si no está inicializado
+      if (!encuestasDataTableInitialized && typeof window.createDataTable === 'function') {
+        console.log('🔵 [Encuestas DataTable] Inicializando DataTable de forma segura...');
+        initializeEncuestasDataTable();
+      } else if (typeof window.createDataTable !== 'function') {
+        setTimeout(safeInitializeDataTable, 200);
+      }
+    }
+    
     // Esperar a que components-loader.js se cargue
     window.addEventListener('ubits-components-loader-ready', function() {
       console.log('✅ [Encuestas DataTable] Evento ubits-components-loader-ready recibido');
-      setTimeout(initializeEncuestasDataTable, 100);
+      setTimeout(safeInitializeDataTable, 500);
     });
     
     // Esperar a que data-table.umd.js se cargue
     window.addEventListener('ubits-datatable-ready', function() {
       console.log('✅ [Encuestas DataTable] Evento ubits-datatable-ready recibido');
-      setTimeout(initializeEncuestasDataTable, 100);
+      setTimeout(safeInitializeDataTable, 500);
     });
+    
+    // También intentar inicializar después de que la página cargue completamente
+    if (document.readyState === 'complete') {
+      setTimeout(safeInitializeDataTable, 2000);
+    } else {
+      window.addEventListener('load', () => {
+        setTimeout(safeInitializeDataTable, 2000);
+      });
+    }
     
     let dataTableCheckAttempts = 0;
     const maxDataTableCheckAttempts = 50;
