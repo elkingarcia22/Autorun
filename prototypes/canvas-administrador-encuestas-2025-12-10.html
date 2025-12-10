@@ -2101,8 +2101,13 @@
     // ========================================
     let tabsInitializationAttempts = 0;
     const MAX_TABS_INIT_ATTEMPTS = 50; // Máximo 5 segundos (50 * 100ms)
+    let tabsInitialized = false; // Flag para evitar múltiples inicializaciones
     
     function initializeEncuestasTabs() {
+        // Evitar múltiples inicializaciones
+        if (tabsInitialized) {
+            return;
+        }
         tabsInitializationAttempts++;
         
         const currentModule = document.body.getAttribute('data-module');
@@ -2177,6 +2182,9 @@
                 }
             }, 'encuestas-tabs-container');
             
+            // Marcar como inicializado
+            tabsInitialized = true;
+            
             // Verificar que se crearon correctamente
             setTimeout(() => {
                 const createdTabs = tabsContainer.querySelector('.ubits-tabs');
@@ -2186,6 +2194,8 @@
                 } else {
                     console.error('❌ [Encuestas Tabs] Tabs no se crearon correctamente');
                     console.log('🔍 [Encuestas Tabs] Contenedor después de createTabs:', tabsContainer.innerHTML.substring(0, 200));
+                    // Resetear flag para reintentar
+                    tabsInitialized = false;
                 }
             }, 100);
         } catch (error) {
