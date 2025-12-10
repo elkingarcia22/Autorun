@@ -2659,15 +2659,20 @@
             // Recalcular posición si hay referenceElement
             if (referenceElement) {
               const rect = referenceElement.getBoundingClientRect();
-              const tooltipRect = tooltip.getBoundingClientRect();
               // ⚠️ IMPORTANTE: tailPosition indica dónde está la flecha en el tooltip
               // Por defecto, tooltip debajo del elemento = flecha arriba = 'top'
               const preferredTailPosition = options.tailPosition || 'top';
               
-              // Calcular posición óptima
-              const optimal = calculateOptimalPosition(rect, tooltipRect, preferredTailPosition);
+              // ⚠️ IMPORTANTE: Pasar el elemento del tooltip, no solo las dimensiones
+              // Esto permite ajustar el ancho dinámicamente antes de calcular la posición
+              const optimal = calculateOptimalPosition(rect, tooltip, preferredTailPosition);
               
-              // Aplicar posición
+              // Aplicar ancho máximo si se ajustó dinámicamente
+              if (optimal.maxWidth !== null) {
+                tooltip.style.maxWidth = `${optimal.maxWidth}px`;
+              }
+              
+              // Aplicar posición (recalcular dimensiones después de ajustar ancho si es necesario)
               tooltip.style.position = 'fixed';
               tooltip.style.top = `${optimal.top}px`;
               tooltip.style.left = `${optimal.left}px`;
