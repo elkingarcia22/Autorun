@@ -590,6 +590,8 @@ ${missingSteps.map((step) => `  - ${step}`).join('\n')}
         SubNav: 'navegacin-subnav.md', // ⚠️ NOTA: El archivo real se llama 'navegacin-subnav.md' (sin 'o')
         TabBar: 'navegacin-tab-bar.md', // ⚠️ NOTA: El archivo real se llama 'navegacin-tab-bar.md' (sin 'o')
         Drawer: 'feedback-drawer-navigation.md',
+        Chip: 'bsicos-chip.md',
+        Tooltip: 'feedback-tooltip.md',
       };
       return docFileMap[componentName] || `${componentName.toLowerCase()}.md`;
     }
