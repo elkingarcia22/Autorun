@@ -1013,6 +1013,31 @@
                     // Ejecutar adaptComponents manualmente después de que los componentes estén listos
                     window.UBITS_ResponsiveManager.adaptComponents();
                     
+                    // Inicializar componente Tabs: Encuestas y Datos Demográficos
+                    if (window.createTabs) {
+                        window.createTabs({
+                            tabs: [
+                                { 
+                                    id: 'encuestas', 
+                                    label: 'Encuestas'
+                                },
+                                { 
+                                    id: 'datos-demograficos', 
+                                    label: 'Datos Demográficos',
+                                    icon: 'chart-bar'
+                                }
+                            ],
+                            activeTabId: 'encuestas',
+                            onTabChange: (tabId, tabElement) => {
+                                console.log('Tab cambiado:', tabId);
+                                // Aquí puedes agregar lógica para cambiar el contenido según el tab activo
+                            }
+                        }, 'tabs-container');
+                        console.log('✅ Componente Tabs inicializado');
+                    } else {
+                        console.warn('⚠️ window.createTabs no está disponible');
+                    }
+                    
                     // ========================================
                     // DIAGNÓSTICO: Línea divisoria del footer
                     // ========================================
