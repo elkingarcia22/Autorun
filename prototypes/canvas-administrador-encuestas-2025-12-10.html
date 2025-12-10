@@ -3237,7 +3237,7 @@
         encuestasDataTableInitialized = true;
         
         // Interceptar cambios en checkboxes
-        container.addEventListener('change', (e) => {
+        tableContainer.addEventListener('change', (e) => {
           const target = e.target;
           
           if (!target || target.type !== 'checkbox') return;
