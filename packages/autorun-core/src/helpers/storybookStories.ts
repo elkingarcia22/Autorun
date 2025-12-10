@@ -308,11 +308,11 @@ export function mapComponentNameToStorybookId(componentName: string): string {
 /**
  * Mapea y valida nombre de componente a ID de Storybook
  *
- * Usa buildSafeStorybookUrl para validar que el ID existe antes de retornarlo.
- * Si el ID mapeado no existe, intenta usar verifyAvailableStories para encontrar el ID correcto.
+ * Usa descubrimiento automático para encontrar el ID correcto si el mapeo falla.
+ * Si el ID mapeado no existe, intenta descubrirlo automáticamente desde Storybook.
  *
- * @param componentName - Nombre del componente (ej: "Drawer", "DataTable")
- * @returns ID de Storybook validado, o el ID mapeado si no se puede validar
+ * @param componentName - Nombre del componente (ej: "Drawer", "DataTable", "Tabs")
+ * @returns ID de Storybook validado, o el ID descubierto automáticamente
  */
 export async function mapAndValidateComponentNameToStorybookId(
   componentName: string
@@ -321,7 +321,26 @@ export async function mapAndValidateComponentNameToStorybookId(
   const mappedId = mapComponentNameToStorybookId(componentName);
 
   try {
-    // Intentar validar usando buildSafeStorybookUrl
+    // ⭐ NUEVO: Intentar descubrir el ID correcto automáticamente
+    const { getCorrectStorybookId } = await import('./storybookIdDiscovery');
+    const discoveryResult = await getCorrectStorybookId(
+      componentName,
+      mappedId
+    );
+
+    if (discoveryResult.found) {
+      console.log(
+        `✅ [Map & Validate] ID descubierto para ${componentName}: ${discoveryResult.componentId} (${discoveryResult.title})`
+      );
+      if (discoveryResult.availableStories) {
+        console.log(
+          `  📚 Historias disponibles: ${discoveryResult.availableStories.join(', ')}`
+        );
+      }
+      return discoveryResult.componentId;
+    }
+
+    // Si no se encontró, intentar validar usando buildSafeStorybookUrl
     const { buildSafeStorybookUrl } = await import('./verifyStorybookStories');
     const urlResult = await buildSafeStorybookUrl(mappedId, 'default');
 

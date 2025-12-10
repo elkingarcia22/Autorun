@@ -73,6 +73,16 @@ export {
   type GuideLoadResult,
 } from './helpers/guidesLoader'; // ⭐ NUEVO: Cargador automático de guías
 export {
+  discoverStorybookComponents,
+  findComponentByIdOrName,
+  getCorrectStorybookId,
+  verifyStorybookIdExists,
+  getAvailableStoriesForComponent,
+  generateComponentInventory,
+  type DiscoveredComponent,
+  type DiscoveryResult,
+} from './helpers/storybookIdDiscovery'; // ⭐ NUEVO: Descubrimiento automático de IDs de Storybook
+export {
   interceptedWrite,
   interceptedSearchReplace,
   interceptAutoReload,
