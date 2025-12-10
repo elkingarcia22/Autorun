@@ -850,6 +850,7 @@ Problema: Falta interceptación de ContentManager para eliminar HeaderSection
       Sidebar: /window\.createSidebar\s*\(/i,
       SubNav: /window\.createSubNav\s*\(/i,
       TabBar: /window\.createTabBar\s*\(/i,
+      Drawer: /window\.createDrawer\s*\(/i,
     };
 
     // Detectar componentes en el código
