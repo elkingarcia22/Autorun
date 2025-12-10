@@ -208,9 +208,19 @@ export async function discoverStorybookComponents(): Promise<DiscoveryResult> {
     // Agrupar historias por componente
     const componentsMap = new Map<string, DiscoveredComponent>();
 
+    console.log(
+      `🔍 [Storybook ID Discovery] Procesando ${Object.keys(indexData.entries).length} entradas...`
+    );
+
     for (const [storyId, entry] of Object.entries(indexData.entries)) {
       if (typeof entry === 'object' && entry !== null) {
         const entryObj = entry as any;
+
+        // ⚠️ CRÍTICO: Filtrar solo historias (no docs)
+        // Las entradas con type "docs" no son historias reales
+        if (entryObj.type === 'docs') {
+          continue;
+        }
 
         // Extraer ID del componente desde el storyId (formato: "component-id--story-name")
         const componentIdMatch = storyId.match(/^([^--]+)--/);
