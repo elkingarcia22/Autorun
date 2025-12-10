@@ -2351,6 +2351,716 @@
         });
     }
   </script>
+
+  <script>
+    // ========================================
+    // FUNCIÓN: Inicializar DataTable de Encuestas
+    // ========================================
+    let encuestasDataTableInitialized = false;
+    let encuestasDataTableInstance = null;
+    let encuestasDataOriginal = [];
+    let encuestasData = [];
+    let selectionState = {
+      selectedRowIds: new Set(),
+      viewSelectedActive: false
+    };
+    let actionBarClickHandler = null;
+    let actionBarObserver = null;
+
+    // ⚠️ CRÍTICO: Función para limpiar filtros sin abrir el drawer visiblemente
+    const clearFiltersWithoutDrawer = () => {
+      console.log('🔵 [Encuestas DataTable] ========== INICIO clearFiltersWithoutDrawerCallback ==========');
+      
+      if (!window._encuestasDataTableInstance || !window._encuestasDataTableInstance.element) {
+        console.error('❌ [Encuestas DataTable] Instancia del DataTable no disponible');
+        return;
+      }
+      
+      const drawerOverlay = document.querySelector('.ubits-drawer-overlay.ubits-drawer-overlay--open');
+      
+      if (drawerOverlay) {
+        const drawer = drawerOverlay.querySelector('.ubits-drawer');
+        if (drawer) {
+          const footer = drawer.querySelector('.ubits-drawer__footer');
+          if (footer) {
+            const footerRight = footer.querySelector('.ubits-drawer__footer-right');
+            if (footerRight) {
+              const buttons = footerRight.querySelectorAll('.ubits-drawer__footer-button');
+              for (let i = 0; i < buttons.length; i++) {
+                const btn = buttons[i];
+                const btnText = btn.textContent?.trim() || '';
+                if (btnText.toLowerCase().includes('limpiar')) {
+                  btn.click();
+                  return;
+                }
+              }
+            }
+          }
+        }
+      } else {
+        const headerElement = window._encuestasDataTableInstance.element.querySelector('.ubits-data-table__header');
+        if (headerElement) {
+          const filterButton = headerElement.querySelector('.ubits-data-table__header-filter-button');
+          if (filterButton) {
+            const style = document.createElement('style');
+            style.id = 'hide-drawer-temporarily';
+            style.textContent = '.ubits-drawer-overlay { opacity: 0 !important; pointer-events: none !important; }';
+            document.head.appendChild(style);
+            
+            filterButton.click();
+            
+            let attempts = 0;
+            const maxAttempts = 20;
+            const checkInterval = setInterval(() => {
+              attempts++;
+              const drawerOverlayAfterOpen = document.querySelector('.ubits-drawer-overlay.ubits-drawer-overlay--open');
+              if (drawerOverlayAfterOpen) {
+                clearInterval(checkInterval);
+                const drawerAfterOpen = drawerOverlayAfterOpen.querySelector('.ubits-drawer');
+                if (drawerAfterOpen) {
+                  const footer = drawerAfterOpen.querySelector('.ubits-drawer__footer');
+                  if (footer) {
+                    const footerRight = footer.querySelector('.ubits-drawer__footer-right');
+                    if (footerRight) {
+                      const buttons = footerRight.querySelectorAll('.ubits-drawer__footer-button');
+                      for (let i = 0; i < buttons.length; i++) {
+                        const btn = buttons[i];
+                        const btnText = btn.textContent?.trim() || '';
+                        if (btnText.toLowerCase().includes('limpiar')) {
+                          btn.click();
+                          setTimeout(() => {
+                            const hideStyle = document.getElementById('hide-drawer-temporarily');
+                            if (hideStyle) {
+                              hideStyle.remove();
+                            }
+                          }, 100);
+                          return;
+                        }
+                      }
+                    }
+                  }
+                }
+              } else if (attempts >= maxAttempts) {
+                clearInterval(checkInterval);
+                const hideStyle = document.getElementById('hide-drawer-temporarily');
+                if (hideStyle) {
+                  hideStyle.remove();
+                }
+              }
+            }, 100);
+          }
+        }
+      }
+    };
+
+    // Función para renderizar Action Bar
+    const renderActionBar = (container) => {
+      const header = container.querySelector('.ubits-data-table__header');
+      if (!header) {
+        return;
+      }
+
+      let actionBar = container.querySelector('.ubits-data-table__action-bar');
+
+      if (!actionBar) {
+        actionBar = document.createElement('div');
+        actionBar.className = 'ubits-data-table__action-bar';
+        actionBar.style.cssText = `
+          display: flex;
+          align-items: center;
+          justify-content: flex-start;
+          flex-wrap: wrap;
+          gap: var(--ubits-spacing-xs, 4px);
+          padding: var(--ubits-spacing-sm, 8px) 0;
+          background-color: var(--ubits-bg-1);
+        `;
+        header.insertAdjacentElement('afterend', actionBar);
+      }
+
+      const selectedCount = selectionState.selectedRowIds.size;
+      const selectedIds = Array.from(selectionState.selectedRowIds);
+
+      if (selectedCount === 0) {
+        actionBar.style.display = 'none';
+        return;
+      }
+
+      actionBar.style.display = 'flex';
+
+      const isMultipleSelection = selectedCount > 1;
+      const countText = `(${selectedCount})`;
+      const isViewSelectedActive = selectionState.viewSelectedActive;
+      const viewSelectedText = isViewSelectedActive
+        ? `Dejar de ver seleccionados ${countText}`
+        : `Ver seleccionados ${countText}`;
+      const viewSelectedIcon = isViewSelectedActive ? 'eye-slash' : 'eye';
+
+      const hasButtonRender = typeof window.UBITS !== 'undefined' && 
+                             window.UBITS.Button && 
+                             window.UBITS.Button.render;
+
+      let buttonsHTML = '';
+
+      if (hasButtonRender) {
+        const renderBtn = window.UBITS.Button.render;
+        
+        if (isMultipleSelection) {
+          buttonsHTML = `
+            ${renderBtn({
+              variant: 'secondary',
+              size: 'sm',
+              text: viewSelectedText,
+              icon: viewSelectedIcon,
+              iconStyle: 'regular',
+              active: isViewSelectedActive,
+              attributes: { id: 'action-btn-view-selected' },
+            })}
+            ${renderBtn({
+              variant: 'secondary',
+              size: 'sm',
+              icon: 'bell',
+              iconStyle: 'regular',
+              iconOnly: true,
+              attributes: { id: 'action-btn-notifications' },
+            })}
+            ${renderBtn({
+              variant: 'error',
+              size: 'sm',
+              icon: 'trash',
+              iconStyle: 'regular',
+              iconOnly: true,
+              attributes: { id: 'action-btn-delete' },
+            })}
+          `;
+        } else {
+          buttonsHTML = `
+            ${renderBtn({
+              variant: 'secondary',
+              size: 'sm',
+              text: viewSelectedText,
+              icon: viewSelectedIcon,
+              iconStyle: 'regular',
+              active: isViewSelectedActive,
+              attributes: { id: 'action-btn-view-selected' },
+            })}
+            ${renderBtn({
+              variant: 'secondary',
+              size: 'sm',
+              icon: 'bell',
+              iconStyle: 'regular',
+              iconOnly: true,
+              attributes: { id: 'action-btn-notifications' },
+            })}
+            ${renderBtn({
+              variant: 'secondary',
+              size: 'sm',
+              icon: 'copy',
+              iconStyle: 'regular',
+              iconOnly: true,
+              attributes: { id: 'action-btn-copy' },
+            })}
+            ${renderBtn({
+              variant: 'secondary',
+              size: 'sm',
+              icon: 'eye',
+              iconStyle: 'regular',
+              iconOnly: true,
+              attributes: { id: 'action-btn-view' },
+            })}
+            ${renderBtn({
+              variant: 'secondary',
+              size: 'sm',
+              icon: 'edit',
+              iconStyle: 'regular',
+              iconOnly: true,
+              attributes: { id: 'action-btn-edit' },
+            })}
+            ${renderBtn({
+              variant: 'secondary',
+              size: 'sm',
+              icon: 'download',
+              iconStyle: 'regular',
+              iconOnly: true,
+              attributes: { id: 'action-btn-download' },
+            })}
+            ${renderBtn({
+              variant: 'error',
+              size: 'sm',
+              icon: 'trash',
+              iconStyle: 'regular',
+              iconOnly: true,
+              attributes: { id: 'action-btn-delete' },
+            })}
+          `;
+        }
+      } else {
+        const buttonClass = 'ubits-button ubits-button--secondary ubits-button--sm';
+        const iconClass = (icon, style = 'regular') => {
+          const stylePrefix = style === 'solid' ? 'fa-solid' : 'fa-regular';
+          return `${stylePrefix} fa-${icon}`;
+        };
+        
+        const viewSelectedActiveClass = isViewSelectedActive ? ' ubits-button--active' : '';
+        
+        if (isMultipleSelection) {
+          buttonsHTML = `
+            <button class="${buttonClass}${viewSelectedActiveClass}" id="action-btn-view-selected">
+              <i class="${iconClass(viewSelectedIcon, 'regular')}"></i>
+              <span>${viewSelectedText}</span>
+            </button>
+            <button class="${buttonClass} ubits-button--icon-only" id="action-btn-notifications" aria-label="Notificaciones">
+              <i class="${iconClass('bell', 'regular')}"></i>
+            </button>
+            <button class="ubits-button ubits-button--error ubits-button--sm ubits-button--icon-only" id="action-btn-delete" aria-label="Eliminar">
+              <i class="${iconClass('trash', 'regular')}"></i>
+            </button>
+          `;
+        } else {
+          buttonsHTML = `
+            <button class="${buttonClass}${viewSelectedActiveClass}" id="action-btn-view-selected">
+              <i class="${iconClass(viewSelectedIcon, 'regular')}"></i>
+              <span>${viewSelectedText}</span>
+            </button>
+            <button class="${buttonClass} ubits-button--icon-only" id="action-btn-notifications" aria-label="Notificaciones">
+              <i class="${iconClass('bell', 'regular')}"></i>
+            </button>
+            <button class="${buttonClass} ubits-button--icon-only" id="action-btn-copy" aria-label="Copiar">
+              <i class="${iconClass('copy', 'regular')}"></i>
+            </button>
+            <button class="${buttonClass} ubits-button--icon-only" id="action-btn-view" aria-label="Ver">
+              <i class="${iconClass('eye', 'regular')}"></i>
+            </button>
+            <button class="${buttonClass} ubits-button--icon-only" id="action-btn-edit" aria-label="Editar">
+              <i class="${iconClass('pen-to-square', 'regular')}"></i>
+            </button>
+            <button class="${buttonClass} ubits-button--icon-only" id="action-btn-download" aria-label="Descargar">
+              <i class="${iconClass('download', 'regular')}"></i>
+            </button>
+            <button class="ubits-button ubits-button--error ubits-button--sm ubits-button--icon-only" id="action-btn-delete" aria-label="Eliminar">
+              <i class="${iconClass('trash', 'regular')}"></i>
+            </button>
+          `;
+        }
+      }
+
+      actionBar.innerHTML = buttonsHTML;
+
+      if (actionBarClickHandler) {
+        actionBar.removeEventListener('click', actionBarClickHandler);
+      }
+      
+      actionBarClickHandler = (e) => {
+        const target = e.target.closest('button');
+        if (!target) return;
+        
+        const btnId = target.getAttribute('id');
+        if (!btnId) return;
+        
+        if (btnId === 'action-btn-view-selected') {
+          e.preventDefault();
+          e.stopPropagation();
+          
+          selectionState.viewSelectedActive = !selectionState.viewSelectedActive;
+          
+          if (encuestasDataTableInstance && encuestasDataTableInstance.update) {
+            if (selectionState.viewSelectedActive) {
+              const filteredRows = encuestasDataOriginal.filter((row) => 
+                selectionState.selectedRowIds.has(row.id)
+              );
+              encuestasDataTableInstance.update({ rows: filteredRows });
+            } else {
+              encuestasDataTableInstance.update({ rows: encuestasDataOriginal });
+            }
+          }
+          
+          renderActionBar(container);
+        } else {
+          const action = btnId.replace('action-btn-', '');
+          console.log(`Acción ${action} ejecutada para:`, selectedIds);
+        }
+      };
+      
+      actionBar.addEventListener('click', actionBarClickHandler);
+    };
+
+    // Función para ajustar altura dinámica
+    function adjustDataTableHeight(containerId) {
+      const currentModule = document.body.getAttribute('data-module');
+      if (currentModule !== 'encuestas') {
+        return;
+      }
+      
+      const container = document.getElementById(containerId);
+      if (!container) {
+        return;
+      }
+      
+      const dataTable = container.querySelector('.ubits-data-table');
+      if (!dataTable) {
+        setTimeout(() => adjustDataTableHeight(containerId), 200);
+        return;
+      }
+      
+      const scrollableContainer = container.querySelector('.ubits-data-table__scrollable-container--vertical');
+      if (!scrollableContainer) {
+        setTimeout(() => adjustDataTableHeight(containerId), 200);
+        return;
+      }
+      
+      const sidebarElement = document.querySelector('.ubits-sidebar');
+      const sidebarRect = sidebarElement ? sidebarElement.getBoundingClientRect() : null;
+      const sidebarBottom = sidebarRect ? sidebarRect.bottom : window.innerHeight - 16;
+      
+      const containerRect = container.getBoundingClientRect();
+      const maxContainerHeight = sidebarBottom - containerRect.top;
+      
+      if (maxContainerHeight > 0) {
+        container.style.height = `${maxContainerHeight}px`;
+        container.style.maxHeight = `${maxContainerHeight}px`;
+        
+        requestAnimationFrame(() => {
+          setTimeout(() => {
+            const newContainerRect = container.getBoundingClientRect();
+            const diferencia = sidebarBottom - newContainerRect.bottom;
+            
+            if (Math.abs(diferencia) >= 2) {
+              const ajusteHeight = maxContainerHeight + diferencia;
+              if (ajusteHeight > 0) {
+                container.style.height = `${ajusteHeight}px`;
+                container.style.maxHeight = `${ajusteHeight}px`;
+              }
+            }
+          }, 100);
+        });
+      }
+      
+      let header = dataTable.querySelector('.ubits-data-table__header');
+      if (!header) {
+        header = container.querySelector('.ubits-data-table__header');
+      }
+      if (!header) {
+        const allHeaders = dataTable.querySelectorAll('[class*="header"]');
+        if (allHeaders.length > 0) {
+          header = allHeaders[0];
+        }
+      }
+      const headerHeight = header ? header.getBoundingClientRect().height : 0;
+      
+      const containerPaddingTop = 16;
+      const availableHeightForScrollable = maxContainerHeight - headerHeight - containerPaddingTop;
+      
+      const tableBody = scrollableContainer.querySelector('tbody');
+      const rowCount = tableBody ? tableBody.querySelectorAll('tr').length : 0;
+      
+      const rowHeight = 45;
+      const tableHeaderHeight = 45;
+      const minHeightNeeded = tableHeaderHeight + (rowCount * rowHeight);
+      
+      if (minHeightNeeded > availableHeightForScrollable && availableHeightForScrollable > 200) {
+        scrollableContainer.style.setProperty('max-height', `${availableHeightForScrollable}px`, 'important');
+        
+        requestAnimationFrame(() => {
+          const scrollableComputedStyle = window.getComputedStyle(scrollableContainer);
+          if (scrollableComputedStyle.maxHeight !== `${availableHeightForScrollable}px`) {
+            scrollableContainer.style.setProperty('max-height', `${availableHeightForScrollable}px`, 'important');
+          }
+        });
+      } else {
+        scrollableContainer.style.setProperty('max-height', 'none', 'important');
+      }
+      
+      dataTable.style.width = '100%';
+      dataTable.style.maxWidth = '100%';
+      container.style.width = '100%';
+      container.style.maxWidth = '100%';
+    }
+
+    function initializeEncuestasDataTable() {
+      if (encuestasDataTableInitialized) {
+        return;
+      }
+      
+      const currentModule = document.body.getAttribute('data-module');
+      if (currentModule !== 'encuestas') {
+        return;
+      }
+      
+      const container = document.getElementById('encuestas-table-container');
+      if (!container) {
+        console.warn('⚠️ [Encuestas DataTable] Contenedor no encontrado');
+        return;
+      }
+      
+      if (typeof window.createDataTable !== 'function') {
+        console.warn('⚠️ [Encuestas DataTable] window.createDataTable no está disponible');
+        return;
+      }
+      
+      console.log('🔵 [Encuestas DataTable] Iniciando inicialización...');
+      
+      // Generar datos de ejemplo
+      const tipos = ['Cultura', 'Satisfacción', 'Clima', 'Desempeño', 'Innovación'];
+      const estados = ['en-progreso', 'completada', 'pausada', 'programada'];
+      const meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 
+                     'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+      
+      encuestasData = [];
+      for (let i = 1; i <= 20; i++) {
+        const tipo = tipos[i % tipos.length];
+        const año = 2025 + (i % 2);
+        const mesIndex = (i - 1) % meses.length;
+        const mesInicio = meses[mesIndex];
+        const mesCierre = meses[(mesIndex + 1) % meses.length];
+        const diaInicio = (i % 28) + 1;
+        const diaCierre = ((i + 5) % 28) + 1;
+        
+        let estado, avance;
+        if (i % 3 === 0) {
+          estado = 'en-progreso';
+          avance = Math.floor(Math.random() * 70) + 10;
+        } else if (i % 5 === 0) {
+          estado = 'completada';
+          avance = 100;
+        } else if (i % 7 === 0) {
+          estado = 'pausada';
+          avance = Math.floor(Math.random() * 50) + 20;
+        } else {
+          estado = 'programada';
+          avance = 0;
+        }
+        
+        encuestasData.push({
+          id: `encuesta-${i}`,
+          data: {
+            nombre: `${tipo} ${año}${i > 10 ? ' - ' + (i > 15 ? 'Segunda' : 'Primera') + ' fase' : ''}`,
+            tipo: tipo,
+            estado: estado,
+            inicio: `${diaInicio} - ${mesInicio} - ${año}`,
+            cierre: `${diaCierre} - ${mesCierre} - ${año}`,
+            participantes: String(Math.floor(Math.random() * 300) + 50),
+            avance: avance
+          }
+        });
+      }
+      
+      encuestasDataOriginal = [...encuestasData];
+      
+      try {
+        encuestasDataTableInstance = window.createDataTable({
+          containerId: 'encuestas-table-container',
+          columns: [
+            { id: 'nombre', title: 'Nombre', type: 'nombre' },
+            { id: 'tipo', title: 'Tipo', type: 'nombre' },
+            { id: 'estado', title: 'Estado', type: 'estado' },
+            { id: 'inicio', title: 'Inicio', type: 'fecha' },
+            { id: 'cierre', title: 'Cierre', type: 'fecha' },
+            { id: 'participantes', title: 'Participantes', type: 'nombre' },
+            { id: 'avance', title: 'Avance', type: 'progreso' }
+          ],
+          rows: encuestasData,
+          showCheckbox: true,
+          columnSortable: true,
+          rowExpandable: false,
+          columnReorderable: false,
+          rowReorderable: false,
+          showVerticalScrollbar: true,
+          header: {
+            title: 'Lista de encuestas',
+            counter: true,
+            displayedItems: encuestasData.length,
+            totalItems: 206,
+            primaryButton: {
+              text: 'Crear encuesta',
+              icon: 'plus',
+              onClick: () => {
+                console.log('🔵 [Encuestas] Crear encuesta');
+              }
+            },
+            secondaryButtons: [
+              {
+                text: 'Crear con plantilla',
+                icon: 'file-lines',
+                onClick: () => {
+                  console.log('🔵 [Encuestas] Crear con plantilla');
+                }
+              }
+            ],
+            searchButton: {
+              placeholder: 'Buscar encuestas...',
+              onChange: (value) => {
+                console.log('🔵 [Encuestas] Búsqueda:', value);
+              }
+            },
+            filterButton: {
+              onClick: (event) => {
+                console.log('🔵 [Encuestas] Abrir filtros');
+              }
+            }
+          },
+          emptyState: {
+            noSearchResults: {
+              title: 'No se encontraron resultados',
+              description: 'Intenta con otros términos de búsqueda o ajusta los filtros.',
+              icon: 'magnifying-glass',
+              showPrimaryButton: false
+            },
+            noFilterResults: {
+              title: 'No hay resultados con los filtros aplicados',
+              description: 'Intenta ajustar los filtros o limpiarlos para ver más resultados.',
+              icon: 'filter',
+              actionLabel: 'Ajustar filtros',
+              showPrimaryButton: true,
+              onAction: () => {
+                console.log('🔵 [Encuestas] Empty State: Abrir drawer de filtros');
+                if (window._encuestasDataTableInstance && window._encuestasDataTableInstance.element) {
+                  const headerElement = window._encuestasDataTableInstance.element.querySelector('.ubits-data-table__header');
+                  if (headerElement) {
+                    const filterButton = headerElement.querySelector('.ubits-data-table__header-filter-button');
+                    if (filterButton) {
+                      filterButton.click();
+                    }
+                  }
+                }
+              },
+              secondaryActionLabel: 'Limpiar filtros',
+              showSecondaryButton: true,
+              onSecondaryAction: () => {
+                clearFiltersWithoutDrawer();
+              }
+            }
+          },
+          onRowSelect: (rowId, rowData, selected) => {
+            if (selected) {
+              selectionState.selectedRowIds.add(rowId);
+            } else {
+              selectionState.selectedRowIds.delete(rowId);
+            }
+            if (selectionState.selectedRowIds.size === 0) {
+              selectionState.viewSelectedActive = false;
+            }
+            renderActionBar(container);
+          },
+          onSelectAll: (selected) => {
+            if (selected) {
+              encuestasData.forEach((row) => selectionState.selectedRowIds.add(row.id));
+            } else {
+              selectionState.selectedRowIds.clear();
+              selectionState.viewSelectedActive = false;
+            }
+            setTimeout(() => renderActionBar(container), 200);
+          }
+        });
+        
+        window._encuestasDataTableInstance = encuestasDataTableInstance;
+        console.log('✅ [Encuestas] Instancia del DataTable guardada en window._encuestasDataTableInstance');
+        
+        encuestasDataTableInitialized = true;
+        
+        // Interceptar cambios en checkboxes
+        container.addEventListener('change', (e) => {
+          const target = e.target;
+          
+          if (!target || target.type !== 'checkbox') return;
+          
+          if (target.hasAttribute('data-column-checkbox-header')) {
+            const columnId = target.getAttribute('data-column-checkbox-header');
+            if (columnId === 'checkbox' || columnId === 'checkbox-2') {
+              if (target.checked) {
+                encuestasData.forEach((row) => selectionState.selectedRowIds.add(row.id));
+              } else {
+                selectionState.selectedRowIds.clear();
+                selectionState.viewSelectedActive = false;
+              }
+              setTimeout(() => renderActionBar(container), 200);
+            }
+          } else {
+            const rowId = target.getAttribute('data-row-id');
+            if (!rowId) return;
+            
+            if (target.checked) {
+              selectionState.selectedRowIds.add(rowId);
+            } else {
+              selectionState.selectedRowIds.delete(rowId);
+            }
+            
+            if (selectionState.selectedRowIds.size === 0) {
+              selectionState.viewSelectedActive = false;
+            }
+            
+            renderActionBar(container);
+          }
+        }, true);
+        
+        // MutationObserver para preservar Action Bar
+        if (!actionBarObserver) {
+          actionBarObserver = new MutationObserver(() => {
+            const bar = container.querySelector('.ubits-data-table__action-bar');
+            if (!bar) {
+              setTimeout(() => {
+                renderActionBar(container);
+              }, 100);
+            }
+          });
+          actionBarObserver.observe(container, { childList: true, subtree: true });
+        }
+        
+        // Configurar altura dinámica
+        setTimeout(() => {
+          adjustDataTableHeight('encuestas-table-container');
+        }, 300);
+        
+        // Listener de resize
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+          clearTimeout(resizeTimeout);
+          resizeTimeout = setTimeout(() => {
+            adjustDataTableHeight('encuestas-table-container');
+          }, 200);
+        });
+        
+        console.log('✅ [Encuestas DataTable] DataTable inicializado correctamente');
+      } catch (error) {
+        console.error('❌ [Encuestas DataTable] Error al crear DataTable:', error);
+        encuestasDataTableInitialized = false;
+      }
+    }
+    
+    // Esperar a que components-loader.js se cargue
+    window.addEventListener('ubits-components-loader-ready', function() {
+      console.log('✅ [Encuestas DataTable] Evento ubits-components-loader-ready recibido');
+      setTimeout(initializeEncuestasDataTable, 100);
+    });
+    
+    let checkAttempts = 0;
+    const maxCheckAttempts = 50;
+    const checkInterval = setInterval(() => {
+      checkAttempts++;
+      if (typeof window.createDataTable === 'function') {
+        clearInterval(checkInterval);
+        console.log(`✅ [Encuestas DataTable] window.createDataTable disponible después de ${checkAttempts} intentos`);
+        initializeEncuestasDataTable();
+      } else if (checkAttempts >= maxCheckAttempts) {
+        clearInterval(checkInterval);
+        console.error('❌ [Encuestas DataTable] window.createDataTable no disponible después de 15 segundos');
+      }
+    }, 300);
+    
+    if (document.readyState === 'complete') {
+      setTimeout(() => {
+        if (typeof window.createDataTable === 'function') {
+          initializeEncuestasDataTable();
+        }
+      }, 1000);
+    } else {
+      window.addEventListener('load', () => {
+        setTimeout(() => {
+          if (typeof window.createDataTable === 'function') {
+            initializeEncuestasDataTable();
+          }
+        }, 1000);
+      });
+    }
+  </script>
     
     if (!originalHandleSectionChange) {
       // Si ContentManager aún no existe, interceptarlo cuando se cree
