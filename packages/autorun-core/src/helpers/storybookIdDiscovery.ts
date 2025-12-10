@@ -228,15 +228,20 @@ export async function discoverStorybookComponents(): Promise<DiscoveryResult> {
         }
 
         // Aceptar si tiene type "story" o subtype "story"
-        // Si no tiene type/subtype definido, asumir que es una historia si tiene id y name
         const isStory =
-          entryObj.type === 'story' ||
-          entryObj.subtype === 'story' ||
-          (entryObj.id && entryObj.name && !entryObj.type);
+          entryObj.type === 'story' || entryObj.subtype === 'story';
 
         if (!isStory) {
+          // Debug: mostrar algunas entradas que se están omitiendo
+          if (processedCount === 0 && skippedDocs < 5) {
+            console.log(
+              `  ⚠️ [Storybook ID Discovery] Omitiendo entrada: ${storyId} (type: ${entryObj.type}, subtype: ${entryObj.subtype})`
+            );
+          }
           continue;
         }
+
+        processedCount++;
 
         // Extraer ID del componente desde el storyId (formato: "component-id--story-name")
         const componentIdMatch = storyId.match(/^([^--]+)--/);
