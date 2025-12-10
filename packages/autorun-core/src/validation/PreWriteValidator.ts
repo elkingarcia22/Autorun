@@ -125,13 +125,24 @@ export class PreWriteValidator {
       }
     }
 
-    return {
+    const result = {
       valid: errors.length === 0,
       errors,
       warnings,
       componentName,
       missingSteps: errors.length > 0 ? errors : undefined,
     };
+
+    console.log(`🔍 [PreWriteValidator] Resultado final:`, {
+      valid: result.valid,
+      errorsCount: result.errors.length,
+      warningsCount: result.warnings.length,
+    });
+    console.log(
+      '🔍 [PreWriteValidator] ========================================\n'
+    );
+
+    return result;
   }
 
   /**
