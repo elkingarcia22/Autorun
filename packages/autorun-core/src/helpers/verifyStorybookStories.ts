@@ -86,6 +86,13 @@ const COMPONENT_TITLE_TO_ID_MAP: Record<string, string> = {
   Input: 'formularios-input',
   'entrada-input': 'formularios-input', // ⚠️ Mapear alias incorrecto al ID correcto
   'Entrada/Input': 'formularios-input', // ⚠️ Mapear alias incorrecto al ID correcto
+  'Feedback/Drawer Navigation': 'feedback-drawer-navigation',
+  Drawer: 'feedback-drawer-navigation',
+  'feedback-drawer': 'feedback-drawer-navigation', // ⚠️ Mapear alias incorrecto al ID correcto
+  'Básicos/Chip': 'bsicos-chip',
+  Chip: 'bsicos-chip',
+  'Feedback/Tooltip': 'feedback-tooltip',
+  Tooltip: 'feedback-tooltip',
 };
 
 /**
