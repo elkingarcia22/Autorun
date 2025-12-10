@@ -1217,10 +1217,11 @@
                                 // ========================================
                                 const currentModule = document.body.getAttribute('data-module');
                                 if (currentModule === 'encuestas') {
-                                    // Esperar un poco más para asegurar que createTabs esté disponible
-                                    setTimeout(() => {
-                                        initializeEncuestasTabs();
-                                    }, 300);
+                                    // Intentar inicializar inmediatamente y con delays
+                                    initializeEncuestasTabs();
+                                    setTimeout(initializeEncuestasTabs, 200);
+                                    setTimeout(initializeEncuestasTabs, 500);
+                                    setTimeout(initializeEncuestasTabs, 1000);
                                 }
                                 
                                 
@@ -2091,52 +2092,98 @@
     // ========================================
     // FUNCIÓN: Inicializar Tabs de Encuestas
     // ========================================
+    let tabsInitializationAttempts = 0;
+    const MAX_TABS_INIT_ATTEMPTS = 50; // Máximo 5 segundos (50 * 100ms)
+    
     function initializeEncuestasTabs() {
+        tabsInitializationAttempts++;
+        
         const currentModule = document.body.getAttribute('data-module');
         if (currentModule !== 'encuestas') {
+            console.log('🔵 [Encuestas Tabs] No estamos en módulo encuestas, saliendo');
             return; // Solo inicializar en módulo encuestas
         }
         
+        console.log(`🔵 [Encuestas Tabs] Intento ${tabsInitializationAttempts} de inicialización...`);
+        
         const tabsContainer = document.getElementById('encuestas-tabs-container');
         if (!tabsContainer) {
-            console.warn('⚠️ [Encuestas Tabs] Contenedor no encontrado, reintentando...');
-            setTimeout(initializeEncuestasTabs, 100);
+            console.warn('⚠️ [Encuestas Tabs] Contenedor no encontrado');
+            if (tabsInitializationAttempts < MAX_TABS_INIT_ATTEMPTS) {
+                setTimeout(initializeEncuestasTabs, 100);
+            } else {
+                console.error('❌ [Encuestas Tabs] Máximo de intentos alcanzado sin encontrar contenedor');
+            }
             return;
         }
+        
+        console.log('✅ [Encuestas Tabs] Contenedor encontrado');
         
         // Verificar que createTabs esté disponible
         if (typeof window.createTabs !== 'function') {
-            console.warn('⚠️ [Encuestas Tabs] window.createTabs no está disponible, reintentando...');
-            setTimeout(initializeEncuestasTabs, 100);
+            console.warn('⚠️ [Encuestas Tabs] window.createTabs no está disponible');
+            console.log('🔍 [Encuestas Tabs] Verificando componentes disponibles:', {
+                createTabs: typeof window.createTabs,
+                createSidebar: typeof window.createSidebar,
+                createSubNav: typeof window.createSubNav
+            });
+            if (tabsInitializationAttempts < MAX_TABS_INIT_ATTEMPTS) {
+                setTimeout(initializeEncuestasTabs, 100);
+            } else {
+                console.error('❌ [Encuestas Tabs] Máximo de intentos alcanzado sin encontrar window.createTabs');
+            }
             return;
         }
         
-        console.log('🔵 [Encuestas Tabs] Inicializando tabs...');
+        console.log('✅ [Encuestas Tabs] window.createTabs disponible');
         
-        // Crear tabs con iconos
-        window.createTabs({
-            tabs: [
-                {
-                    id: 'encuestas',
-                    label: 'Encuestas',
-                    icon: 'clipboard-list', // ✅ Formato correcto: solo el nombre
-                    active: true
-                },
-                {
-                    id: 'datos-demograficos',
-                    label: 'Datos demográficos',
-                    icon: 'chart-bar', // ✅ Formato correcto: solo el nombre
-                    active: false
+        // Verificar si ya hay tabs creados
+        const existingTabs = tabsContainer.querySelector('.ubits-tabs');
+        if (existingTabs) {
+            console.log('✅ [Encuestas Tabs] Tabs ya existen, no se recrean');
+            return;
+        }
+        
+        console.log('🔵 [Encuestas Tabs] Creando tabs...');
+        
+        try {
+            // Crear tabs con iconos
+            const result = window.createTabs({
+                tabs: [
+                    {
+                        id: 'encuestas',
+                        label: 'Encuestas',
+                        icon: 'clipboard-list', // ✅ Formato correcto: solo el nombre
+                        active: true
+                    },
+                    {
+                        id: 'datos-demograficos',
+                        label: 'Datos demográficos',
+                        icon: 'chart-bar', // ✅ Formato correcto: solo el nombre
+                        active: false
+                    }
+                ],
+                activeTabId: 'encuestas',
+                onTabChange: (tabId, tabElement) => {
+                    console.log('🔵 [Encuestas Tabs] Tab cambiado:', tabId);
+                    // Aquí puedes agregar lógica para cambiar el contenido según el tab seleccionado
                 }
-            ],
-            activeTabId: 'encuestas',
-            onTabChange: (tabId, tabElement) => {
-                console.log('🔵 [Encuestas Tabs] Tab cambiado:', tabId);
-                // Aquí puedes agregar lógica para cambiar el contenido según el tab seleccionado
-            }
-        }, 'encuestas-tabs-container');
-        
-        console.log('✅ [Encuestas Tabs] Tabs inicializados correctamente');
+            }, 'encuestas-tabs-container');
+            
+            // Verificar que se crearon correctamente
+            setTimeout(() => {
+                const createdTabs = tabsContainer.querySelector('.ubits-tabs');
+                if (createdTabs) {
+                    console.log('✅ [Encuestas Tabs] Tabs inicializados correctamente');
+                    console.log('🔍 [Encuestas Tabs] Tabs creados:', createdTabs.outerHTML.substring(0, 200));
+                } else {
+                    console.error('❌ [Encuestas Tabs] Tabs no se crearon correctamente');
+                    console.log('🔍 [Encuestas Tabs] Contenedor después de createTabs:', tabsContainer.innerHTML.substring(0, 200));
+                }
+            }, 100);
+        } catch (error) {
+            console.error('❌ [Encuestas Tabs] Error al crear tabs:', error);
+        }
     }
       }
     }, 1000);
