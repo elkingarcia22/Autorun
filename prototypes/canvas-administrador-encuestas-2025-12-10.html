@@ -3247,15 +3247,24 @@
       
       let tableContainer = contentArea.querySelector('#encuestas-table-container');
       if (!tableContainer) {
+        console.log('🔵 [Encuestas DataTable] Creando contenedor...');
         tableContainer = document.createElement('div');
         tableContainer.id = 'encuestas-table-container';
         contentArea.appendChild(tableContainer);
       }
       
-      // Verificar si la DataTable ya existe
-      if (tableContainer.querySelector('.ubits-data-table')) {
-        console.log('✅ [Encuestas DataTable] DataTable ya existe en el contenedor');
-        return;
+      // Verificar si la DataTable ya existe y está visible
+      const existingDataTable = tableContainer.querySelector('.ubits-data-table');
+      if (existingDataTable) {
+        const isVisible = existingDataTable.offsetHeight > 0 && existingDataTable.offsetWidth > 0;
+        if (isVisible) {
+          console.log('✅ [Encuestas DataTable] DataTable ya existe y es visible en el contenedor');
+          return;
+        } else {
+          console.log('⚠️ [Encuestas DataTable] DataTable existe pero no es visible, reinicializando...');
+          existingDataTable.remove();
+          encuestasDataTableInitialized = false;
+        }
       }
       
       // Inicializar solo si no está inicializado
@@ -3263,6 +3272,7 @@
         console.log('🔵 [Encuestas DataTable] Inicializando DataTable de forma segura...');
         initializeEncuestasDataTable();
       } else if (typeof window.createDataTable !== 'function') {
+        console.warn('⚠️ [Encuestas DataTable] window.createDataTable no disponible, reintentando...');
         setTimeout(safeInitializeDataTable, 200);
       }
     }
