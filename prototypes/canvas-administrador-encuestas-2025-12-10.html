@@ -2641,7 +2641,15 @@
               // ⚠️ CRÍTICO: Aplicar el nuevo maxWidth y asegurar que se respete
               // Usar setProperty para aplicar !important correctamente
               tooltipElement.style.setProperty('max-width', `${newMaxWidth}px`, 'important');
-              tooltipElement.style.setProperty('min-width', 'auto', 'important'); // Remover min-width si existe
+              // ⚠️ CRÍTICO: Remover o ajustar min-width para permitir que el tooltip se reduzca
+              const computedMinWidth = window.getComputedStyle(tooltipElement).minWidth;
+              const minWidthValue = parseInt(computedMinWidth) || 0;
+              if (minWidthValue > newMaxWidth) {
+                // Si el min-width es mayor que el nuevo max-width, reducirlo
+                tooltipElement.style.setProperty('min-width', `${Math.min(120, newMaxWidth)}px`, 'important');
+              } else {
+                tooltipElement.style.setProperty('min-width', 'auto', 'important');
+              }
               tooltipElement.style.setProperty('width', 'auto', 'important'); // Permitir que se ajuste al contenido pero respetando maxWidth
               // Forzar recálculo del layout
               tooltipElement.offsetHeight; // Trigger reflow
@@ -2658,8 +2666,9 @@
                 spaceLeft: Math.round(spaceLeft),
                 spaceRight: Math.round(spaceRight),
                 minSpace: Math.round(minSpace),
-                appliedMaxWidth: tooltipElement.style.maxWidth,
-                computedMaxWidth: window.getComputedStyle(tooltipElement).maxWidth
+                appliedMaxWidth: tooltipElement.style.getPropertyValue('max-width'),
+                computedMaxWidth: window.getComputedStyle(tooltipElement).maxWidth,
+                computedMinWidth: window.getComputedStyle(tooltipElement).minWidth
               });
             }
             
