@@ -1117,6 +1117,20 @@
                                         return;
                                     }
                                     
+                                    // ⚠️ CRÍTICO: Eliminar headers duplicados del DataTable
+                                    const dataTableHeaders = node.querySelectorAll?.('.ubits-data-table__header');
+                                    if (dataTableHeaders && dataTableHeaders.length > 0) {
+                                        const container = document.getElementById('encuestas-table-container');
+                                        if (container) {
+                                            const existingHeaders = container.querySelectorAll('.ubits-data-table__header');
+                                            if (existingHeaders.length > 0 && dataTableHeaders.length > 0) {
+                                                console.log('⚠️ [Encuestas] Detectado header duplicado del DataTable, eliminando...');
+                                                // Eliminar los headers que se están agregando si ya existe uno
+                                                dataTableHeaders.forEach(header => header.remove());
+                                            }
+                                        }
+                                    }
+                                    
                                     // Eliminar HeaderSection
                                     if (node.id === 'header-section-container' || 
                                         node.classList?.contains('ubits-header-section') ||
