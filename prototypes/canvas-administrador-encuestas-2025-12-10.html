@@ -1038,6 +1038,13 @@
                         if (mutation.type === 'childList') {
                             mutation.addedNodes.forEach((node) => {
                                 if (node.nodeType === 1) {
+                                    // ⚠️ CRÍTICO: NO eliminar el contenedor del DataTable
+                                    if (node.id === 'encuestas-table-container' || 
+                                        node.querySelector?.('#encuestas-table-container')) {
+                                        // Permitir que el contenedor del DataTable permanezca
+                                        return;
+                                    }
+                                    
                                     // Eliminar HeaderSection
                                     if (node.id === 'header-section-container' || 
                                         node.classList?.contains('ubits-header-section') ||
@@ -1083,18 +1090,44 @@
                                         console.log('🔵 [Encuestas] Contenedor del DataTable eliminado, restaurando...');
                                         const contentArea = document.querySelector('.content-area');
                                         if (contentArea) {
-                                            const tableContainer = document.createElement('div');
-                                            tableContainer.id = 'encuestas-table-container';
-                                            contentArea.appendChild(tableContainer);
-                                            
-                                            // Reinicializar el DataTable
-                                            setTimeout(() => {
-                                                encuestasDataTableInitialized = false;
-                                                if (typeof window.createDataTable === 'function') {
-                                                    initializeEncuestasDataTable();
-                                                }
-                                            }, 500);
+                                            // Verificar si ya existe antes de crear uno nuevo
+                                            let tableContainer = contentArea.querySelector('#encuestas-table-container');
+                                            if (!tableContainer) {
+                                                tableContainer = document.createElement('div');
+                                                tableContainer.id = 'encuestas-table-container';
+                                                contentArea.appendChild(tableContainer);
+                                                
+                                                // Reinicializar el DataTable
+                                                setTimeout(() => {
+                                                    encuestasDataTableInitialized = false;
+                                                    if (typeof window.createDataTable === 'function') {
+                                                        initializeEncuestasDataTable();
+                                                    }
+                                                }, 500);
+                                            }
                                         }
+                                    }
+                                }
+                            });
+                            
+                            // ⚠️ CRÍTICO: Verificar que el contenedor del DataTable siempre exista después de cualquier cambio
+                            requestAnimationFrame(() => {
+                                const contentArea = document.querySelector('.content-area');
+                                if (contentArea) {
+                                    let tableContainer = contentArea.querySelector('#encuestas-table-container');
+                                    if (!tableContainer) {
+                                        console.log('🔵 [Encuestas] Contenedor del DataTable no encontrado después de mutación, restaurando...');
+                                        tableContainer = document.createElement('div');
+                                        tableContainer.id = 'encuestas-table-container';
+                                        contentArea.appendChild(tableContainer);
+                                        
+                                        // Reinicializar el DataTable
+                                        setTimeout(() => {
+                                            encuestasDataTableInitialized = false;
+                                            if (typeof window.createDataTable === 'function') {
+                                                initializeEncuestasDataTable();
+                                            }
+                                        }, 500);
                                     }
                                 }
                             });
