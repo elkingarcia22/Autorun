@@ -3218,7 +3218,7 @@
             if (selectionState.selectedRowIds.size === 0) {
               selectionState.viewSelectedActive = false;
             }
-            renderActionBar(container);
+            renderActionBar(tableContainer);
           },
           onSelectAll: (selected) => {
             if (selected) {
@@ -3227,7 +3227,7 @@
               selectionState.selectedRowIds.clear();
               selectionState.viewSelectedActive = false;
             }
-            setTimeout(() => renderActionBar(container), 200);
+            setTimeout(() => renderActionBar(tableContainer), 200);
           }
         });
         
