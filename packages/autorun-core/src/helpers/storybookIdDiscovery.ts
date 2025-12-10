@@ -64,11 +64,18 @@ async function discoverFromLocalStories(): Promise<DiscoveryResult> {
       'Tooltip',
       'Chip',
     ];
-    const componentIdentifiers = baseComponents.filter((comp) =>
-      Object.keys(COMPONENT_STORIES_PATH_MAP).some(
-        (key) => key === comp || key.includes(comp)
-      )
-    );
+
+    // Filtrar componentes que tienen archivos .stories.ts
+    const componentIdentifiers: string[] = [];
+    for (const comp of baseComponents) {
+      // Buscar cualquier clave que contenga el nombre del componente
+      const hasStories = Object.keys(COMPONENT_STORIES_PATH_MAP).some(
+        (key) => key === comp || key.toLowerCase().includes(comp.toLowerCase())
+      );
+      if (hasStories) {
+        componentIdentifiers.push(comp);
+      }
+    }
 
     for (const identifier of componentIdentifiers) {
       try {
