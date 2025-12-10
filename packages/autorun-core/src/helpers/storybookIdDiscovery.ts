@@ -155,7 +155,25 @@ export async function discoverStorybookComponents(): Promise<DiscoveryResult> {
         throw new Error(`Respuesta no es JSON: ${contentType}`);
       }
 
-      indexData = await indexResponse.json();
+      const text = await indexResponse.text();
+
+      // Verificar que es JSON válido
+      try {
+        indexData = JSON.parse(text);
+      } catch (parseError) {
+        throw new Error(
+          `Respuesta no es JSON válido: ${text.substring(0, 100)}`
+        );
+      }
+
+      // Verificar que tiene entries
+      if (
+        !indexData ||
+        !indexData.entries ||
+        Object.keys(indexData.entries).length === 0
+      ) {
+        throw new Error('index.json vacío o sin "entries"');
+      }
     } catch (fetchError: any) {
       console.warn(
         `⚠️ [Storybook ID Discovery] No se pudo obtener index.json desde ${indexUrl}: ${fetchError.message}`
@@ -165,17 +183,6 @@ export async function discoverStorybookComponents(): Promise<DiscoveryResult> {
       );
 
       // Fallback: descubrir desde archivos locales
-      return discoverFromLocalStories();
-    }
-
-    if (
-      !indexData ||
-      !indexData.entries ||
-      Object.keys(indexData.entries).length === 0
-    ) {
-      console.warn(
-        `⚠️ [Storybook ID Discovery] index.json vacío o sin "entries", usando fallback`
-      );
       return discoverFromLocalStories();
     }
 
