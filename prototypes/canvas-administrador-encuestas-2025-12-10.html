@@ -2153,9 +2153,8 @@
         console.log('🔵 [Encuestas Tabs] Creando tabs...');
         
         try {
-            // Crear tabs con iconos - Usar containerId dentro del objeto options
-            window.createTabs({
-                containerId: 'encuestas-tabs-container',
+            // Crear tabs con iconos - Usar containerId como segundo parámetro (como en el código fuente)
+            const result = window.createTabs({
                 tabs: [
                     {
                         id: 'encuestas',
@@ -2175,7 +2174,9 @@
                     console.log('🔵 [Encuestas Tabs] Tab cambiado:', tabId);
                     // Aquí puedes agregar lógica para cambiar el contenido según el tab seleccionado
                 }
-            });
+            }, 'encuestas-tabs-container');
+            
+            console.log('🔵 [Encuestas Tabs] createTabs retornó:', result);
             
             // Marcar como inicializado
             tabsInitialized = true;
