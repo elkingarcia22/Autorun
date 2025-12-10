@@ -1022,19 +1022,40 @@
                         }
                         
                         // ⚠️ CRÍTICO: Reinicializar el DataTable después de restaurar el contenedor
+                        // Usar múltiples timeouts para asegurar que se cree después de que el ContentManager termine
                         if (shouldRestoreDataTable) {
                             setTimeout(() => {
                                 const finalContainer = contentArea.querySelector('#encuestas-table-container');
-                                if (finalContainer) {
-                                    if (!finalContainer.querySelector('.ubits-data-table')) {
-                                        console.log('🔵 [Encuestas] Reinicializando DataTable...');
-                                        encuestasDataTableInitialized = false;
-                                        if (typeof window.createDataTable === 'function') {
-                                            initializeEncuestasDataTable();
-                                        }
+                                if (finalContainer && !finalContainer.querySelector('.ubits-data-table')) {
+                                    console.log('🔵 [Encuestas] Reinicializando DataTable (intento 1)...');
+                                    encuestasDataTableInitialized = false;
+                                    if (typeof window.createDataTable === 'function') {
+                                        initializeEncuestasDataTable();
                                     }
                                 }
-                            }, 1000);
+                            }, 500);
+                            
+                            setTimeout(() => {
+                                const finalContainer = contentArea.querySelector('#encuestas-table-container');
+                                if (finalContainer && !finalContainer.querySelector('.ubits-data-table')) {
+                                    console.log('🔵 [Encuestas] Reinicializando DataTable (intento 2)...');
+                                    encuestasDataTableInitialized = false;
+                                    if (typeof window.createDataTable === 'function') {
+                                        initializeEncuestasDataTable();
+                                    }
+                                }
+                            }, 1500);
+                            
+                            setTimeout(() => {
+                                const finalContainer = contentArea.querySelector('#encuestas-table-container');
+                                if (finalContainer && !finalContainer.querySelector('.ubits-data-table')) {
+                                    console.log('🔵 [Encuestas] Reinicializando DataTable (intento 3)...');
+                                    encuestasDataTableInitialized = false;
+                                    if (typeof window.createDataTable === 'function') {
+                                        initializeEncuestasDataTable();
+                                    }
+                                }
+                            }, 2500);
                         }
                     });
                     
