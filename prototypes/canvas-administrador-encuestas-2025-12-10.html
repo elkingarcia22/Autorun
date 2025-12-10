@@ -967,6 +967,12 @@
           const closeDrawer = () => {
             drawerOverlay.classList.remove('ubits-drawer-overlay--open');
             document.body.style.overflow = '';
+            // Remover del DOM después de la animación
+            setTimeout(() => {
+              if (drawerOverlay.parentNode) {
+                drawerOverlay.parentNode.removeChild(drawerOverlay);
+              }
+            }, 300); // Esperar a que termine la animación (0.3s)
             if (onClose) {
               onClose();
             }
