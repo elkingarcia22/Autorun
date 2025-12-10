@@ -2608,14 +2608,14 @@
               finalLeft = refRect.left - tooltipRect.width - padding;
               finalTransform = 'translateY(-50%)';
               
-              // ⚠️ CRÍTICO: Verificar si se sale por la izquierda
-              if (finalLeft < padding) {
+              // ⚠️ CRÍTICO: Verificar si se sale por la izquierda del contenedor
+              if (finalLeft < viewport.left + padding) {
                 // Cambiar a derecha automáticamente (flecha izquierda)
                 finalTailPosition = 'left';
                 finalLeft = refRect.right + padding;
                 // Verificar que tampoco se salga por la derecha después del cambio
-                if (finalLeft + tooltipRect.width > viewport.width - padding) {
-                  finalLeft = viewport.width - padding - tooltipRect.width;
+                if (finalLeft + tooltipRect.width > viewport.right - padding) {
+                  finalLeft = viewport.right - padding - tooltipRect.width;
                 }
               }
               
@@ -2623,13 +2623,13 @@
               const idealTop = refRect.top + refRect.height / 2;
               const tooltipHalfHeight = tooltipRect.height / 2;
               
-              // Verificar si se sale por arriba
-              if (idealTop - tooltipHalfHeight < padding) {
-                finalTop = padding + tooltipHalfHeight;
+              // Verificar si se sale por arriba del contenedor
+              if (idealTop - tooltipHalfHeight < viewport.top + padding) {
+                finalTop = viewport.top + padding + tooltipHalfHeight;
               }
-              // Verificar si se sale por abajo
-              else if (idealTop + tooltipHalfHeight > viewport.height - padding) {
-                finalTop = viewport.height - padding - tooltipHalfHeight;
+              // Verificar si se sale por abajo del contenedor
+              else if (idealTop + tooltipHalfHeight > viewport.bottom - padding) {
+                finalTop = viewport.bottom - padding - tooltipHalfHeight;
               }
               else {
                 // Centrado perfecto al componente
@@ -2641,14 +2641,14 @@
               finalLeft = refRect.right + padding;
               finalTransform = 'translateY(-50%)';
               
-              // ⚠️ CRÍTICO: Verificar si se sale por la derecha
-              if (finalLeft + tooltipRect.width > viewport.width - padding) {
+              // ⚠️ CRÍTICO: Verificar si se sale por la derecha del contenedor
+              if (finalLeft + tooltipRect.width > viewport.right - padding) {
                 // Cambiar a izquierda automáticamente (flecha derecha)
                 finalTailPosition = 'right';
                 finalLeft = refRect.left - tooltipRect.width - padding;
                 // Verificar que tampoco se salga por la izquierda después del cambio
-                if (finalLeft < padding) {
-                  finalLeft = padding;
+                if (finalLeft < viewport.left + padding) {
+                  finalLeft = viewport.left + padding;
                 }
               }
               
@@ -2656,13 +2656,13 @@
               const idealTop = refRect.top + refRect.height / 2;
               const tooltipHalfHeight = tooltipRect.height / 2;
               
-              // Verificar si se sale por arriba
-              if (idealTop - tooltipHalfHeight < padding) {
-                finalTop = padding + tooltipHalfHeight;
+              // Verificar si se sale por arriba del contenedor
+              if (idealTop - tooltipHalfHeight < viewport.top + padding) {
+                finalTop = viewport.top + padding + tooltipHalfHeight;
               }
-              // Verificar si se sale por abajo
-              else if (idealTop + tooltipHalfHeight > viewport.height - padding) {
-                finalTop = viewport.height - padding - tooltipHalfHeight;
+              // Verificar si se sale por abajo del contenedor
+              else if (idealTop + tooltipHalfHeight > viewport.bottom - padding) {
+                finalTop = viewport.bottom - padding - tooltipHalfHeight;
               }
               else {
                 // Centrado perfecto al componente
