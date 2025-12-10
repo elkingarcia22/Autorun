@@ -2477,43 +2477,23 @@
             let finalLeft = 0;
             let finalTransform = '';
 
+            // ⚠️ IMPORTANTE: tailPosition indica dónde está la flecha en el tooltip, no dónde está el tooltip
+            // - tailPosition: 'top' → flecha arriba del tooltip (tooltip debajo del elemento)
+            // - tailPosition: 'bottom' → flecha abajo del tooltip (tooltip arriba del elemento)
+            // - tailPosition: 'left' → flecha izquierda del tooltip (tooltip a la derecha del elemento)
+            // - tailPosition: 'right' → flecha derecha del tooltip (tooltip a la izquierda del elemento)
+            
             // Intentar posición preferida primero
             if (preferredTailPosition === 'bottom') {
-              // Tooltip debajo del elemento
-              finalTop = refRect.bottom + padding;
-              finalLeft = refRect.left + refRect.width / 2;
-              finalTransform = 'translateX(-50%)';
-              
-              // ⚠️ CRÍTICO: Verificar si se sale por abajo
-              if (finalTop + tooltipRect.height > viewport.height - padding) {
-                // Cambiar a arriba automáticamente
-                finalTailPosition = 'top';
-                finalTop = refRect.top - tooltipRect.height - padding;
-                // Verificar que tampoco se salga por arriba después del cambio
-                if (finalTop < padding) {
-                  finalTop = padding;
-                }
-              }
-              
-              // ⚠️ CRÍTICO: Verificar si se sale por la izquierda
-              if (finalLeft - tooltipRect.width / 2 < padding) {
-                finalLeft = padding + tooltipRect.width / 2;
-              }
-              
-              // ⚠️ CRÍTICO: Verificar si se sale por la derecha
-              if (finalLeft + tooltipRect.width / 2 > viewport.width - padding) {
-                finalLeft = viewport.width - padding - tooltipRect.width / 2;
-              }
-            } else if (preferredTailPosition === 'top') {
-              // Tooltip arriba del elemento
+              // ⚠️ CORREGIDO: 'bottom' significa flecha abajo → tooltip ARRIBA del elemento
               finalTop = refRect.top - tooltipRect.height - padding;
               finalLeft = refRect.left + refRect.width / 2;
               finalTransform = 'translateX(-50%)';
               
               // ⚠️ CRÍTICO: Verificar si se sale por arriba
               if (finalTop < padding) {
-                // Cambiar a abajo automáticamente
-                finalTailPosition = 'bottom';
+                // Cambiar a debajo automáticamente (flecha arriba)
+                finalTailPosition = 'top';
                 finalTop = refRect.bottom + padding;
                 // Verificar que tampoco se salga por abajo después del cambio
                 if (finalTop + tooltipRect.height > viewport.height - padding) {
@@ -2530,20 +2510,46 @@
               if (finalLeft + tooltipRect.width / 2 > viewport.width - padding) {
                 finalLeft = viewport.width - padding - tooltipRect.width / 2;
               }
-            } else if (preferredTailPosition === 'right') {
-              // Tooltip a la derecha del elemento
-              finalTop = refRect.top + refRect.height / 2;
-              finalLeft = refRect.right + padding;
-              finalTransform = 'translateY(-50%)';
+            } else if (preferredTailPosition === 'top') {
+              // ⚠️ CORREGIDO: 'top' significa flecha arriba → tooltip DEBAJO del elemento
+              finalTop = refRect.bottom + padding;
+              finalLeft = refRect.left + refRect.width / 2;
+              finalTransform = 'translateX(-50%)';
+              
+              // ⚠️ CRÍTICO: Verificar si se sale por abajo
+              if (finalTop + tooltipRect.height > viewport.height - padding) {
+                // Cambiar a arriba automáticamente (flecha abajo)
+                finalTailPosition = 'bottom';
+                finalTop = refRect.top - tooltipRect.height - padding;
+                // Verificar que tampoco se salga por arriba después del cambio
+                if (finalTop < padding) {
+                  finalTop = padding;
+                }
+              }
+              
+              // ⚠️ CRÍTICO: Verificar si se sale por la izquierda
+              if (finalLeft - tooltipRect.width / 2 < padding) {
+                finalLeft = padding + tooltipRect.width / 2;
+              }
               
               // ⚠️ CRÍTICO: Verificar si se sale por la derecha
-              if (finalLeft + tooltipRect.width > viewport.width - padding) {
-                // Cambiar a izquierda automáticamente
+              if (finalLeft + tooltipRect.width / 2 > viewport.width - padding) {
+                finalLeft = viewport.width - padding - tooltipRect.width / 2;
+              }
+            } else if (preferredTailPosition === 'right') {
+              // ⚠️ CORREGIDO: 'right' significa flecha derecha → tooltip a la IZQUIERDA del elemento
+              finalTop = refRect.top + refRect.height / 2;
+              finalLeft = refRect.left - tooltipRect.width - padding;
+              finalTransform = 'translateY(-50%)';
+              
+              // ⚠️ CRÍTICO: Verificar si se sale por la izquierda
+              if (finalLeft < padding) {
+                // Cambiar a derecha automáticamente (flecha izquierda)
                 finalTailPosition = 'left';
-                finalLeft = refRect.left - tooltipRect.width - padding;
-                // Verificar que tampoco se salga por la izquierda después del cambio
-                if (finalLeft < padding) {
-                  finalLeft = padding;
+                finalLeft = refRect.right + padding;
+                // Verificar que tampoco se salga por la derecha después del cambio
+                if (finalLeft + tooltipRect.width > viewport.width - padding) {
+                  finalLeft = viewport.width - padding - tooltipRect.width;
                 }
               }
               
@@ -2557,19 +2563,19 @@
                 finalTop = viewport.height - padding - tooltipRect.height / 2;
               }
             } else if (preferredTailPosition === 'left') {
-              // Tooltip a la izquierda del elemento
+              // ⚠️ CORREGIDO: 'left' significa flecha izquierda → tooltip a la DERECHA del elemento
               finalTop = refRect.top + refRect.height / 2;
-              finalLeft = refRect.left - tooltipRect.width - padding;
+              finalLeft = refRect.right + padding;
               finalTransform = 'translateY(-50%)';
               
-              // ⚠️ CRÍTICO: Verificar si se sale por la izquierda
-              if (finalLeft < padding) {
-                // Cambiar a derecha automáticamente
+              // ⚠️ CRÍTICO: Verificar si se sale por la derecha
+              if (finalLeft + tooltipRect.width > viewport.width - padding) {
+                // Cambiar a izquierda automáticamente (flecha derecha)
                 finalTailPosition = 'right';
-                finalLeft = refRect.right + padding;
-                // Verificar que tampoco se salga por la derecha después del cambio
-                if (finalLeft + tooltipRect.width > viewport.width - padding) {
-                  finalLeft = viewport.width - padding - tooltipRect.width;
+                finalLeft = refRect.left - tooltipRect.width - padding;
+                // Verificar que tampoco se salga por la izquierda después del cambio
+                if (finalLeft < padding) {
+                  finalLeft = padding;
                 }
               }
               
@@ -2785,7 +2791,7 @@
               title: 'Información del Chip',
               description: 'Este es un chip con tooltip. Haz click en el chip para ver más información.',
               width: 'md',
-              tailPosition: 'bottom', // Tail apuntando hacia arriba (tooltip debajo del chip)
+              tailPosition: 'top', // ⚠️ CORREGIDO: 'top' = flecha arriba del tooltip (tooltip debajo del chip)
               open: false,
               closeOnOutsideClick: true,
               onClose: () => {
