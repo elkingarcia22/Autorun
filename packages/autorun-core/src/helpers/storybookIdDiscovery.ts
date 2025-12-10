@@ -267,8 +267,19 @@ export async function discoverStorybookComponents(): Promise<DiscoveryResult> {
         if (!component.stories.includes(storyName)) {
           component.stories.push(storyName);
         }
+
+        // Debug: mostrar algunos componentes encontrados
+        if (componentsMap.size <= 10) {
+          console.log(
+            `  ✅ [Storybook ID Discovery] Componente: ${componentId} (${title}) - Historia: ${storyName}`
+          );
+        }
       }
     }
+
+    console.log(
+      `📊 [Storybook ID Discovery] Componentes únicos encontrados: ${componentsMap.size}`
+    );
 
     // Convertir a array y ordenar
     result.components = Array.from(componentsMap.values()).sort((a, b) =>
