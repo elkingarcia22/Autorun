@@ -868,9 +868,9 @@ Problema: Falta interceptación de ContentManager para eliminar HeaderSection
         // ⭐ NUEVO: Obtener automáticamente plan basado en historias de Storybook
         let storyBasedPlan = null;
         try {
-          const { getStoryBasedImplementationPlan } = await import(
-            '@autorun/core/helpers/componentHelpers'
-          );
+          const {
+            getStoryBasedImplementationPlan,
+          } = require('@autorun/core/helpers/componentHelpers');
           console.log(
             `\n📚 Pre-Implementation Check: Obteniendo plan basado en historias para: ${componentName}`
           );
