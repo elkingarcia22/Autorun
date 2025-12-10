@@ -133,8 +133,7 @@ export class PreWriteValidator {
                 ? 'storybook-not-consulted'
                 : 'checklist-incomplete',
           {
-            componentName,
-            missingSteps: errors,
+            componentName: componentName || undefined,
             problemTracker: problemTracker
               ? (problemTracker as any).service
               : undefined,
