@@ -578,12 +578,12 @@ ${missingSteps.map((step) => `  - ${step}`).join('\n')}
       // Fallback si no está disponible
       const docFileMap: Record<string, string> = {
         DataTable: 'data-data-table.md',
-        Tabs: 'navegacin-tabs.md', // ⚠️ NOTA: El archivo real se llama 'navegacin-tabs.md' (sin 'o')
+        Tabs: 'navegacin-tabs.md', // ⚠️ NOTA: El archivo real se llama 'navegacin-tabs.md' (sin 'o'), pero el ID de Storybook es 'navegacion-tabs' (con 'o')
         Button: 'bsicos-button.md',
         Modal: 'feedback-modal.md',
-        Sidebar: 'navegacion-sidebar.md', // ⚠️ CORREGIDO: era 'navegacin-sidebar.md'
-        SubNav: 'navegacion-sub-nav.md', // ⚠️ CORREGIDO: era 'navegacin-subnav.md'
-        TabBar: 'navegacin-tab-bar.md', // ⚠️ NOTA: Verificar nombre real del archivo
+        Sidebar: 'navegacin-sidebar.md', // ⚠️ NOTA: El archivo real se llama 'navegacin-sidebar.md' (sin 'o')
+        SubNav: 'navegacin-subnav.md', // ⚠️ NOTA: El archivo real se llama 'navegacin-subnav.md' (sin 'o')
+        TabBar: 'navegacin-tab-bar.md', // ⚠️ NOTA: El archivo real se llama 'navegacin-tab-bar.md' (sin 'o')
       };
     return docFileMap[componentName] || `${componentName.toLowerCase()}.md`;
   }
