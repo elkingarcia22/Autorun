@@ -19,6 +19,7 @@ import {
   mapComponentNameToStorybookId,
   mapAndValidateComponentNameToStorybookId,
 } from './storybookStories';
+import { loadRequiredGuides, getGuidesSummary } from './guidesLoader';
 import * as path from 'path';
 
 /**
@@ -69,7 +70,24 @@ export async function autoImplementationFlow(
       `🚀 [Auto Implementation Flow] Ejecutando flujo para componente: ${componentName}`
     );
 
-    // 2.1 Validar con PreWriteValidator
+    // 2.0 Cargar guías automáticamente PRIMERO
+    console.log(
+      `🚀 [Auto Implementation Flow] Cargando guías automáticamente...`
+    );
+    const guidesResult = await loadRequiredGuides(componentName);
+    if (guidesResult.allLoaded) {
+      console.log(`✅ [Auto Implementation Flow] Guías cargadas correctamente`);
+      console.log(getGuidesSummary(guidesResult));
+    } else {
+      console.warn(
+        `⚠️ [Auto Implementation Flow] Algunas guías no se pudieron cargar`
+      );
+      guidesResult.errors.forEach((error) => {
+        console.warn(`  ${error}`);
+      });
+    }
+
+    // 2.1 Validar con PreWriteValidator (que también verifica guías)
     console.log(
       `🚀 [Auto Implementation Flow] Validando con PreWriteValidator...`
     );

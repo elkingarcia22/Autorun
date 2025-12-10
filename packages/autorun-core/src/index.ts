@@ -66,6 +66,13 @@ export {
   AUTO_IMPLEMENTATION_FLOW_INSTRUCTIONS,
 } from './helpers/autoImplementationFlow'; // ⭐ NUEVO: Flujo automático de implementación
 export {
+  loadRequiredGuides,
+  verifyGuidesLoaded,
+  getGuidesSummary,
+  type GuidesLoadResult,
+  type GuideLoadResult,
+} from './helpers/guidesLoader'; // ⭐ NUEVO: Cargador automático de guías
+export {
   interceptedWrite,
   interceptedSearchReplace,
   interceptAutoReload,
