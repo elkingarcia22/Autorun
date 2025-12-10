@@ -2515,23 +2515,35 @@
             const spaceLeft = refRect.left - viewport.left - padding;
             const spaceRight = viewport.right - refRect.right - padding;
             
-            // Calcular ancho máximo disponible para centrar el tooltip
-            // Usar el espacio disponible dentro del contenedor
+            // ⚠️ CRÍTICO: Calcular ancho máximo disponible para centrar el tooltip
+            // El ancho disponible es el espacio a la izquierda + espacio a la derecha del elemento
+            // Pero debemos asegurarnos de que el tooltip no se salga del contenedor
             const maxAvailableWidth = Math.min(
               spaceLeft + spaceRight + refRect.width,
               viewport.width - (padding * 2)
             );
             
-            // Ajustar ancho del tooltip si es necesario (pero mantener min-width)
-            // Solo ajustar si hay espacio limitado y el tooltip es más ancho que el espacio disponible
+            // ⚠️ CRÍTICO: Ajustar ancho del tooltip ANTES de calcular la posición
+            // Esto asegura que el tooltip se ajuste al espacio disponible
             const currentMaxWidth = parseInt(window.getComputedStyle(tooltipElement).maxWidth) || 320;
             const currentWidth = tooltipRect.width;
             
-            // Si el tooltip actual es más ancho que el espacio disponible, ajustar
-            if (currentWidth > maxAvailableWidth && maxAvailableWidth > 160) {
-              finalMaxWidth = Math.max(160, maxAvailableWidth - 16); // Mantener padding mínimo
-              tooltipElement.style.maxWidth = `${finalMaxWidth}px`;
+            // Si el tooltip es más ancho que el espacio disponible, ajustar agresivamente
+            if (currentWidth > maxAvailableWidth) {
+              // Calcular nuevo maxWidth: usar el espacio disponible menos padding adicional
+              const newMaxWidth = Math.max(160, maxAvailableWidth - (padding * 2));
+              finalMaxWidth = newMaxWidth;
+              tooltipElement.style.maxWidth = `${newMaxWidth}px`;
+              // Forzar recálculo del layout
+              tooltipElement.offsetHeight; // Trigger reflow
               // Recalcular dimensiones después de cambiar el ancho
+              tooltipRect = tooltipElement.getBoundingClientRect();
+            } else if (maxAvailableWidth < currentMaxWidth) {
+              // Si hay menos espacio disponible que el maxWidth actual, ajustar preventivamente
+              const newMaxWidth = Math.max(160, maxAvailableWidth - (padding * 2));
+              finalMaxWidth = newMaxWidth;
+              tooltipElement.style.maxWidth = `${newMaxWidth}px`;
+              tooltipElement.offsetHeight; // Trigger reflow
               tooltipRect = tooltipElement.getBoundingClientRect();
             }
             
