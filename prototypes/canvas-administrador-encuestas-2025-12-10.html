@@ -964,6 +964,17 @@
                         }
                     }
                     
+                    // ⚠️ CRÍTICO: Guardar el HTML del contenedor del DataTable ANTES de llamar al método original
+                    const contentAreaBefore = document.querySelector('.content-area');
+                    let savedTableContainerHTML = null;
+                    if (contentAreaBefore) {
+                        const existingTableContainer = contentAreaBefore.querySelector('#encuestas-table-container');
+                        if (existingTableContainer) {
+                            savedTableContainerHTML = existingTableContainer.outerHTML;
+                            console.log('🔵 [Encuestas] Guardando HTML del contenedor del DataTable antes de updateContent');
+                        }
+                    }
+                    
                     // Llamar al método original (que limpia el content-area y crea HeaderSection)
                     const result = originalUpdateContent.call(this, section, subSection);
                     
@@ -1008,17 +1019,28 @@
                             widgetPrincipal.closest('.section-single')?.remove() || widgetPrincipal.remove();
                         }
                         
-                        // ⚠️ CRÍTICO: Verificar si el contenedor del DataTable fue eliminado
+                        // ⚠️ CRÍTICO: Restaurar el contenedor del DataTable DESPUÉS de que el ContentManager termine
                         let tableContainer = contentArea.querySelector('#encuestas-table-container');
                         if (!tableContainer) {
                             console.log('🔵 [Encuestas] Contenedor del DataTable eliminado, restaurando...');
-                            tableContainer = document.createElement('div');
-                            tableContainer.id = 'encuestas-table-container';
-                            contentArea.appendChild(tableContainer);
+                            if (savedTableContainerHTML) {
+                                // Restaurar desde el HTML guardado
+                                contentArea.insertAdjacentHTML('afterbegin', savedTableContainerHTML);
+                                tableContainer = contentArea.querySelector('#encuestas-table-container');
+                                console.log('✅ [Encuestas] Contenedor restaurado desde HTML guardado');
+                            } else {
+                                // Crear nuevo contenedor
+                                tableContainer = document.createElement('div');
+                                tableContainer.id = 'encuestas-table-container';
+                                contentArea.appendChild(tableContainer);
+                                console.log('✅ [Encuestas] Nuevo contenedor creado');
+                            }
                             shouldRestoreDataTable = true;
                         } else if (!tableContainer.querySelector('.ubits-data-table')) {
                             console.log('🔵 [Encuestas] Contenedor existe pero DataTable no encontrado, reinicializando...');
                             shouldRestoreDataTable = true;
+                        } else {
+                            console.log('✅ [Encuestas] Contenedor y DataTable ya existen');
                         }
                         
                         // ⚠️ CRÍTICO: Reinicializar el DataTable después de restaurar el contenedor
