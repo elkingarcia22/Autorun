@@ -232,7 +232,9 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            min-height: 200px; /* Asegurar altura mínima para visibilidad */
+            min-height: 400px !important; /* Asegurar altura mínima para visibilidad */
+            visibility: visible !important;
+            opacity: 1 !important;
         }
 
         /* ⚠️ CRÍTICO: Sobrescribir el CSS del DataTable para altura dinámica */
@@ -3082,27 +3084,45 @@
       
       encuestasDataOriginal = [...encuestasData];
       
-      // ⚠️ CRÍTICO: Limpiar el contenedor antes de crear el DataTable para evitar headers duplicados
-      const container = document.getElementById('encuestas-table-container');
-      if (container) {
-        // Verificar si ya hay un DataTable creado
-        const existingDataTable = container.querySelector('.ubits-data-table');
-        if (existingDataTable) {
-          console.log('⚠️ [Encuestas DataTable] DataTable ya existe, destruyendo instancia anterior...');
-          if (encuestasDataTableInstance && typeof encuestasDataTableInstance.destroy === 'function') {
-            encuestasDataTableInstance.destroy();
-          }
-          // Limpiar completamente el contenedor
-          container.innerHTML = '';
-          console.log('🔵 [Encuestas DataTable] Contenedor limpiado antes de crear nuevo DataTable');
+      // ⚠️ CRÍTICO: Asegurar que el contenedor exista y sea visible
+      let container = document.getElementById('encuestas-table-container');
+      if (!container) {
+        console.log('⚠️ [Encuestas DataTable] Contenedor no encontrado, creando...');
+        const contentArea = document.querySelector('.content-area');
+        if (contentArea) {
+          container = document.createElement('div');
+          container.id = 'encuestas-table-container';
+          contentArea.insertAdjacentElement('afterbegin', container);
+          console.log('✅ [Encuestas DataTable] Contenedor creado');
+        } else {
+          console.error('❌ [Encuestas DataTable] content-area no encontrado, no se puede crear contenedor');
+          return;
         }
-        
-        // ⚠️ CRÍTICO: Verificar y eliminar headers duplicados ANTES de crear el DataTable
-        const allHeaders = container.querySelectorAll('.ubits-data-table__header');
-        if (allHeaders.length > 0) {
-          console.log(`⚠️ [Encuestas DataTable] Se encontraron ${allHeaders.length} headers antes de crear DataTable, eliminando...`);
-          allHeaders.forEach(header => header.remove());
+      }
+      
+      // Asegurar que el contenedor sea visible
+      container.style.display = 'flex';
+      container.style.visibility = 'visible';
+      container.style.opacity = '1';
+      container.style.minHeight = '400px';
+      
+      // Verificar si ya hay un DataTable creado
+      const existingDataTable = container.querySelector('.ubits-data-table');
+      if (existingDataTable) {
+        console.log('⚠️ [Encuestas DataTable] DataTable ya existe, destruyendo instancia anterior...');
+        if (encuestasDataTableInstance && typeof encuestasDataTableInstance.destroy === 'function') {
+          encuestasDataTableInstance.destroy();
         }
+        // Limpiar completamente el contenedor
+        container.innerHTML = '';
+        console.log('🔵 [Encuestas DataTable] Contenedor limpiado antes de crear nuevo DataTable');
+      }
+      
+      // ⚠️ CRÍTICO: Verificar y eliminar headers duplicados ANTES de crear el DataTable
+      const allHeaders = container.querySelectorAll('.ubits-data-table__header');
+      if (allHeaders.length > 0) {
+        console.log(`⚠️ [Encuestas DataTable] Se encontraron ${allHeaders.length} headers antes de crear DataTable, eliminando...`);
+        allHeaders.forEach(header => header.remove());
       }
       
       try {
