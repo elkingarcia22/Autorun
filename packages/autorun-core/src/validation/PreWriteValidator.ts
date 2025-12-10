@@ -13,6 +13,11 @@ import {
   detectComponentFromMessage,
 } from '../helpers/implementationHelpers';
 import { generateContextualErrorMessage } from '../helpers/errorMessages';
+import {
+  loadRequiredGuides,
+  verifyGuidesLoaded,
+  getGuidesSummary,
+} from '../helpers/guidesLoader';
 
 export interface ValidationResult {
   valid: boolean;
@@ -69,8 +74,44 @@ export class PreWriteValidator {
       componentName = detected || undefined;
     }
 
-    // 2. Si se detectó un componente, verificar checklist obligatorio
+    // 2. Si se detectó un componente, cargar guías automáticamente
     if (componentName) {
+      console.log(
+        `🔍 [PreWriteValidator] Cargando guías para: ${componentName}`
+      );
+
+      // ⭐ NUEVO: Cargar guías automáticamente
+      const guidesResult = await loadRequiredGuides(componentName);
+      const guidesVerification = verifyGuidesLoaded(guidesResult);
+
+      console.log(`🔍 [PreWriteValidator] Resultado carga de guías:`, {
+        allLoaded: guidesResult.allLoaded,
+        generalGuides: guidesResult.generalGuides.length,
+        specificGuides: guidesResult.componentSpecificGuides.length,
+      });
+
+      if (!guidesVerification.valid) {
+        errors.push(...guidesVerification.errors);
+        console.error(
+          `❌ [PreWriteValidator] Errores al cargar guías:`,
+          guidesVerification.errors
+        );
+      }
+
+      if (guidesVerification.warnings.length > 0) {
+        warnings.push(...guidesVerification.warnings);
+        console.warn(
+          `⚠️ [PreWriteValidator] Advertencias al cargar guías:`,
+          guidesVerification.warnings
+        );
+      }
+
+      // Mostrar resumen de guías cargadas
+      if (guidesResult.allLoaded) {
+        console.log(getGuidesSummary(guidesResult));
+      }
+
+      // 2.1 Verificar checklist obligatorio
       console.log(
         `🔍 [PreWriteValidator] Verificando checklist para: ${componentName}`
       );
