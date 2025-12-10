@@ -759,6 +759,22 @@
 
     <!-- System Loaders -->
     <script src="https://ubits-storybook10.vercel.app/templates/components-loader.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
+    <script>
+        // Verificar que createTabs esté disponible después de cargar components-loader.js
+        (function() {
+            function checkCreateTabs() {
+                if (typeof window.createTabs === 'function') {
+                    console.log('✅ [Encuestas Tabs] window.createTabs disponible después de cargar components-loader.js');
+                    window.dispatchEvent(new CustomEvent('ubits-components-loader-ready'));
+                } else {
+                    console.log('⏳ [Encuestas Tabs] Esperando window.createTabs...');
+                    setTimeout(checkCreateTabs, 100);
+                }
+            }
+            // Verificar después de que el script se ejecute
+            setTimeout(checkCreateTabs, 100);
+        })();
+    </script>
     <script src="https://ubits-storybook10.vercel.app/templates/config/products.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
     <script src="https://ubits-storybook10.vercel.app/templates/config/theme-manager.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
     <script src="https://ubits-storybook10.vercel.app/templates/config/responsive-manager.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
