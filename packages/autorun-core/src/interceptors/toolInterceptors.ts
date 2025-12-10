@@ -12,6 +12,7 @@ import {
   autoImplementationFlow,
   getTemplateUrlFromPathForFlow,
 } from '../helpers/autoImplementationFlow';
+import { ComponentImplementationValidator } from '../helpers/componentImplementationValidator';
 import * as path from 'path';
 
 /**
@@ -36,6 +37,48 @@ export async function interceptedWrite(
   );
   console.log('🛡️ [Tool Interceptor] Interceptando write()...');
   console.log(`🛡️ [Tool Interceptor] Archivo: ${filePath}`);
+
+  // ⭐ NUEVO: Validar implementación común ANTES del flujo automático
+  const implementationValidation =
+    ComponentImplementationValidator.validateImplementation(
+      contents,
+      context?.componentName
+    );
+
+  if (!implementationValidation.valid) {
+    console.error(
+      '❌ [Tool Interceptor] Errores de implementación detectados:'
+    );
+    implementationValidation.errors.forEach((error) => {
+      console.error(`  ${error}`);
+    });
+    if (implementationValidation.warnings.length > 0) {
+      console.warn('⚠️ [Tool Interceptor] Advertencias:');
+      implementationValidation.warnings.forEach((warning) => {
+        console.warn(`  ${warning}`);
+      });
+    }
+    const suggestions = ComponentImplementationValidator.generateSuggestions(
+      implementationValidation.errors,
+      context?.componentName
+    );
+    if (suggestions.length > 0) {
+      console.log('💡 [Tool Interceptor] Sugerencias:');
+      suggestions.forEach((suggestion) => {
+        console.log(`  ${suggestion}`);
+      });
+    }
+    throw new Error(
+      `❌ IMPLEMENTACIÓN BLOQUEADA: Errores detectados:\n${implementationValidation.errors.join('\n')}`
+    );
+  }
+
+  if (implementationValidation.warnings.length > 0) {
+    console.warn('⚠️ [Tool Interceptor] Advertencias de implementación:');
+    implementationValidation.warnings.forEach((warning) => {
+      console.warn(`  ${warning}`);
+    });
+  }
 
   // Ejecutar flujo automático ANTES de escribir
   const flow = await autoImplementationFlow(
