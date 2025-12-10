@@ -59,6 +59,7 @@ export * from './helpers/proactiveDetection'; // ⭐ NUEVO: Detección proactiva
 export * from './helpers/implementationProgress'; // ⭐ NUEVO: Dashboard de progreso
 export * from './helpers/implementationDashboard'; // ⭐ NUEVO: Clase Dashboard
 export * from './helpers/errorMessages'; // ⭐ NUEVO: Mensajes de error mejorados
+export * from './helpers/componentImplementationValidator'; // ⭐ NUEVO: Validador de implementación común
 export {
   autoImplementationFlow,
   getTemplateUrlFromPathForFlow,
