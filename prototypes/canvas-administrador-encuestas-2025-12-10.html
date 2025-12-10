@@ -2498,6 +2498,14 @@
             // - tailPosition: 'left' → flecha izquierda del tooltip (tooltip a la derecha del elemento)
             // - tailPosition: 'right' → flecha derecha del tooltip (tooltip a la izquierda del elemento)
             
+            // ⚠️ CRÍTICO: Asegurar que el tooltip esté en el DOM antes de calcular dimensiones
+            if (!tooltipElement.parentElement) {
+              // Si no está en el DOM, agregarlo temporalmente para calcular dimensiones
+              tooltipElement.style.visibility = 'hidden';
+              tooltipElement.style.position = 'absolute';
+              document.body.appendChild(tooltipElement);
+            }
+            
             // Obtener dimensiones actuales del tooltip (puede cambiar después de ajustar ancho)
             let tooltipRect = tooltipElement.getBoundingClientRect();
             
