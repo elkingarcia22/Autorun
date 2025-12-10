@@ -1050,6 +1050,30 @@
                                     }
                                 }
                             });
+                            
+                            // ⚠️ CRÍTICO: Verificar si el contenedor del DataTable fue eliminado
+                            mutation.removedNodes.forEach((node) => {
+                                if (node.nodeType === 1) {
+                                    if (node.id === 'encuestas-table-container' || 
+                                        node.querySelector?.('#encuestas-table-container')) {
+                                        console.log('🔵 [Encuestas] Contenedor del DataTable eliminado, restaurando...');
+                                        const contentArea = document.querySelector('.content-area');
+                                        if (contentArea) {
+                                            const tableContainer = document.createElement('div');
+                                            tableContainer.id = 'encuestas-table-container';
+                                            contentArea.appendChild(tableContainer);
+                                            
+                                            // Reinicializar el DataTable
+                                            setTimeout(() => {
+                                                encuestasDataTableInitialized = false;
+                                                if (typeof window.createDataTable === 'function') {
+                                                    initializeEncuestasDataTable();
+                                                }
+                                            }, 500);
+                                        }
+                                    }
+                                }
+                            });
                         }
                     });
                 });
