@@ -969,6 +969,23 @@
                             console.log('🔵 [Encuestas] Eliminando .widget-contenido-principal');
                             widgetPrincipal.closest('.section-single')?.remove() || widgetPrincipal.remove();
                         }
+                        
+                        // ⚠️ CRÍTICO: Restaurar contenedor del DataTable si fue eliminado
+                        let tableContainer = contentArea.querySelector('#encuestas-table-container');
+                        if (!tableContainer) {
+                            console.log('🔵 [Encuestas] Restaurando contenedor del DataTable');
+                            tableContainer = document.createElement('div');
+                            tableContainer.id = 'encuestas-table-container';
+                            contentArea.appendChild(tableContainer);
+                            
+                            // Reinicializar el DataTable después de restaurar el contenedor
+                            setTimeout(() => {
+                                encuestasDataTableInitialized = false;
+                                if (typeof window.createDataTable === 'function') {
+                                    initializeEncuestasDataTable();
+                                }
+                            }, 500);
+                        }
                     });
                     
                     return result;
