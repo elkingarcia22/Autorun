@@ -208,9 +208,13 @@ export async function discoverStorybookComponents(): Promise<DiscoveryResult> {
     // Agrupar historias por componente
     const componentsMap = new Map<string, DiscoveredComponent>();
 
+    const totalEntries = Object.keys(indexData.entries).length;
     console.log(
-      `🔍 [Storybook ID Discovery] Procesando ${Object.keys(indexData.entries).length} entradas...`
+      `🔍 [Storybook ID Discovery] Procesando ${totalEntries} entradas...`
     );
+
+    let processedCount = 0;
+    let skippedDocs = 0;
 
     for (const [storyId, entry] of Object.entries(indexData.entries)) {
       if (typeof entry === 'object' && entry !== null) {
