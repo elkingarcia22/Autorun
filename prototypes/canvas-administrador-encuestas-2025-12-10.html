@@ -2863,9 +2863,32 @@
           createTabs: typeof window.createTabs,
           createSidebar: typeof window.createSidebar,
           createSubNav: typeof window.createSubNav,
-          createDataTable: typeof window.createDataTable
+          createDataTable: typeof window.createDataTable,
+          UBITSDataTable: typeof window.UBITSDataTable,
+          renderDataTable: typeof window.renderDataTable
         });
-        return;
+        
+        // Intentar usar UBITSDataTable.createDataTable si está disponible
+        if (typeof window.UBITSDataTable !== 'undefined' && typeof window.UBITSDataTable.createDataTable === 'function') {
+          console.log('✅ [Encuestas DataTable] Usando window.UBITSDataTable.createDataTable');
+          window.createDataTable = window.UBITSDataTable.createDataTable;
+        } else if (typeof window.renderDataTable === 'function') {
+          console.log('✅ [Encuestas DataTable] Usando window.renderDataTable');
+          window.createDataTable = window.renderDataTable;
+        } else {
+          console.warn('⚠️ [Encuestas DataTable] Esperando a que se cargue data-table.umd.js...');
+          // Esperar un poco más y reintentar
+          setTimeout(() => {
+            if (typeof window.createDataTable === 'function' || 
+                (typeof window.UBITSDataTable !== 'undefined' && typeof window.UBITSDataTable.createDataTable === 'function')) {
+              if (typeof window.UBITSDataTable !== 'undefined' && typeof window.UBITSDataTable.createDataTable === 'function') {
+                window.createDataTable = window.UBITSDataTable.createDataTable;
+              }
+              initializeEncuestasDataTable();
+            }
+          }, 1000);
+          return;
+        }
       }
       
       console.log('🔵 [Encuestas DataTable] Iniciando inicialización...');
