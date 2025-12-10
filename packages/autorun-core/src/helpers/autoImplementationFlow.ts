@@ -108,17 +108,30 @@ export async function autoImplementationFlow(
       );
 
       // 2.2 Obtener URL de Storybook para navegar automáticamente
-      // ⚠️ CRÍTICO: Validar ID antes de construir URL
+      // ⚠️ CRÍTICO: Usar descubrimiento automático para encontrar ID correcto
       let storybookUrl: string | undefined;
       try {
-        // Primero validar y corregir el ID si es necesario
-        const validatedComponentId =
-          await mapAndValidateComponentNameToStorybookId(componentName);
+        // ⭐ NUEVO: Usar descubrimiento automático para encontrar ID correcto
+        const { getCorrectStorybookId } = await import(
+          './storybookIdDiscovery'
+        );
+        const discoveryResult = await getCorrectStorybookId(componentName);
+
+        const validatedComponentId = discoveryResult.found
+          ? discoveryResult.componentId
+          : await mapAndValidateComponentNameToStorybookId(componentName);
+
         console.log(
-          `✅ [Auto Implementation Flow] ID validado para ${componentName}: ${validatedComponentId}`
+          `✅ [Auto Implementation Flow] ID ${discoveryResult.found ? 'descubierto' : 'validado'} para ${componentName}: ${validatedComponentId}`
         );
 
-        // Construir URL usando el ID validado
+        if (discoveryResult.found && discoveryResult.availableStories) {
+          console.log(
+            `📚 [Auto Implementation Flow] Historias disponibles: ${discoveryResult.availableStories.join(', ')}`
+          );
+        }
+
+        // Construir URL usando el ID validado/descubierto
         const urlResult = await buildSafeStorybookUrl(
           validatedComponentId,
           'default'
