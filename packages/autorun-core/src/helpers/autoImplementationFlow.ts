@@ -129,7 +129,12 @@ export async function autoImplementationFlow(
         const hub = await getAutorunHub();
         const preCheckAddon = hub?.getAddon('pre-implementation-check');
         if (preCheckAddon) {
-          const componentId = mapComponentNameToStorybookId(componentName);
+          // ⚠️ CRÍTICO: Validar ID antes de usarlo
+          const componentId =
+            await mapAndValidateComponentNameToStorybookId(componentName);
+          console.log(
+            `✅ [Auto Implementation Flow] ID validado para plan: ${componentId}`
+          );
           plan = await (preCheckAddon as any).getOrCreateStoryBasedPlan?.(
             componentName,
             componentId
