@@ -2605,7 +2605,9 @@
             if (referenceElement) {
               const rect = referenceElement.getBoundingClientRect();
               const tooltipRect = tooltip.getBoundingClientRect();
-              const preferredTailPosition = options.tailPosition || 'bottom';
+              // ⚠️ IMPORTANTE: tailPosition indica dónde está la flecha en el tooltip
+              // Por defecto, tooltip debajo del elemento = flecha arriba = 'top'
+              const preferredTailPosition = options.tailPosition || 'top';
               
               // Calcular posición óptima
               const optimal = calculateOptimalPosition(rect, tooltipRect, preferredTailPosition);
