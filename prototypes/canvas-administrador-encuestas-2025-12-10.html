@@ -2565,55 +2565,61 @@
                 }
               }
               
-              // ⚠️ CRÍTICO: Centrar al componente, ajustando si se sale por los lados
+              // ⚠️ CRÍTICO: Centrar al componente, ajustando si se sale por los lados del contenedor
               const idealLeft = refRect.left + refRect.width / 2;
               const tooltipHalfWidth = tooltipRect.width / 2;
+              const containerLeftBound = viewport.left + padding;
+              const containerRightBound = viewport.right - padding;
               
-              // Verificar si se sale por la izquierda
-              if (idealLeft - tooltipHalfWidth < padding) {
-                finalLeft = padding + tooltipHalfWidth;
+              // Calcular posición centrada ideal
+              let calculatedLeft = idealLeft;
+              
+              // Verificar si se sale por la izquierda del contenedor
+              if (calculatedLeft - tooltipHalfWidth < containerLeftBound) {
+                calculatedLeft = containerLeftBound + tooltipHalfWidth;
               }
-              // Verificar si se sale por la derecha
-              else if (idealLeft + tooltipHalfWidth > viewport.width - padding) {
-                finalLeft = viewport.width - padding - tooltipHalfWidth;
+              // Verificar si se sale por la derecha del contenedor
+              if (calculatedLeft + tooltipHalfWidth > containerRightBound) {
+                calculatedLeft = containerRightBound - tooltipHalfWidth;
               }
-              else {
-                // Centrado perfecto al componente
-                finalLeft = idealLeft;
-              }
+              
+              finalLeft = calculatedLeft;
             } else if (preferredTailPosition === 'top') {
               // ⚠️ CORREGIDO: 'top' significa flecha arriba → tooltip DEBAJO del elemento
               finalTop = refRect.bottom + padding;
               finalLeft = refRect.left + refRect.width / 2;
               finalTransform = 'translateX(-50%)';
               
-              // ⚠️ CRÍTICO: Verificar si se sale por abajo
-              if (finalTop + tooltipRect.height > viewport.height - padding) {
+              // ⚠️ CRÍTICO: Verificar si se sale por abajo (relativo al contenedor)
+              if (finalTop + tooltipRect.height > viewport.bottom - padding) {
                 // Cambiar a arriba automáticamente (flecha abajo)
                 finalTailPosition = 'bottom';
                 finalTop = refRect.top - tooltipRect.height - padding;
                 // Verificar que tampoco se salga por arriba después del cambio
-                if (finalTop < padding) {
-                  finalTop = padding;
+                if (finalTop < viewport.top + padding) {
+                  finalTop = viewport.top + padding;
                 }
               }
               
-              // ⚠️ CRÍTICO: Centrar al componente, ajustando si se sale por los lados
+              // ⚠️ CRÍTICO: Centrar al componente, ajustando si se sale por los lados del contenedor
               const idealLeft = refRect.left + refRect.width / 2;
               const tooltipHalfWidth = tooltipRect.width / 2;
+              const containerLeftBound = viewport.left + padding;
+              const containerRightBound = viewport.right - padding;
               
-              // Verificar si se sale por la izquierda
-              if (idealLeft - tooltipHalfWidth < padding) {
-                finalLeft = padding + tooltipHalfWidth;
+              // Calcular posición centrada ideal
+              let calculatedLeft = idealLeft;
+              
+              // Verificar si se sale por la izquierda del contenedor
+              if (calculatedLeft - tooltipHalfWidth < containerLeftBound) {
+                calculatedLeft = containerLeftBound + tooltipHalfWidth;
               }
-              // Verificar si se sale por la derecha
-              else if (idealLeft + tooltipHalfWidth > viewport.width - padding) {
-                finalLeft = viewport.width - padding - tooltipHalfWidth;
+              // Verificar si se sale por la derecha del contenedor
+              if (calculatedLeft + tooltipHalfWidth > containerRightBound) {
+                calculatedLeft = containerRightBound - tooltipHalfWidth;
               }
-              else {
-                // Centrado perfecto al componente
-                finalLeft = idealLeft;
-              }
+              
+              finalLeft = calculatedLeft;
             } else if (preferredTailPosition === 'right') {
               // ⚠️ CORREGIDO: 'right' significa flecha derecha → tooltip a la IZQUIERDA del elemento
               finalTop = refRect.top + refRect.height / 2;
