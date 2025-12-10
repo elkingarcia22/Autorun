@@ -297,6 +297,7 @@ export function mapComponentNameToStorybookId(componentName: string): string {
     Drawer: 'feedback-drawer-navigation', // ⚠️ CORREGIDO: era 'feedback-drawer'
     Popover: 'feedback-popover',
     Tooltip: 'feedback-tooltip',
+    Chip: 'bsicos-chip',
   };
 
   return (
