@@ -119,7 +119,7 @@ export class PreWriteValidator {
 
     // ⭐ NUEVO: Si hay errores, generar mensajes más claros
     if (errors.length > 0) {
-      const hub = getAutorunHub();
+      const hub = await getAutorunHub();
       const problemTracker = hub?.getAddon('problem-tracker');
 
       try {
@@ -177,7 +177,7 @@ export class PreWriteValidator {
       `  📋 [verifyChecklist] Verificando checklist para: ${componentName}`
     );
 
-    const hub = getAutorunHub();
+    const hub = await getAutorunHub();
     if (!hub) {
       console.log(`  ❌ [verifyChecklist] AutorunHub no está inicializado`);
       return {
