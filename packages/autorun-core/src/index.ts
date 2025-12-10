@@ -59,7 +59,11 @@ export * from './helpers/proactiveDetection'; // ⭐ NUEVO: Detección proactiva
 export * from './helpers/implementationProgress'; // ⭐ NUEVO: Dashboard de progreso
 export * from './helpers/implementationDashboard'; // ⭐ NUEVO: Clase Dashboard
 export * from './helpers/errorMessages'; // ⭐ NUEVO: Mensajes de error mejorados
-export * from './helpers/autoImplementationFlow'; // ⭐ NUEVO: Flujo automático de implementación
+export {
+  autoImplementationFlow,
+  getTemplateUrlFromPathForFlow,
+  AUTO_IMPLEMENTATION_FLOW_INSTRUCTIONS,
+} from './helpers/autoImplementationFlow'; // ⭐ NUEVO: Flujo automático de implementación
 
 // Exportar validación
 export * from './validation/PreWriteValidator';
