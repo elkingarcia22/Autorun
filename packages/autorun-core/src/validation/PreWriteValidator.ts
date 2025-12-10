@@ -69,24 +69,32 @@ export class PreWriteValidator {
 
     // 2. Si se detectó un componente, verificar checklist obligatorio
     if (componentName) {
+      console.log(`🔍 [PreWriteValidator] Verificando checklist para: ${componentName}`);
       const checklistResult = await this.verifyChecklist(componentName);
+      console.log(`🔍 [PreWriteValidator] Resultado checklist:`, checklistResult);
       if (!checklistResult.valid) {
         errors.push(...checklistResult.errors);
       }
 
       // 3. Verificar que se consultó Storybook
+      console.log(`🔍 [PreWriteValidator] Verificando Storybook para: ${componentName}`);
       const storybookResult =
         await this.verifyStorybookConsultation(componentName);
+      console.log(`🔍 [PreWriteValidator] Resultado Storybook:`, storybookResult);
       if (!storybookResult.valid) {
         errors.push(...storybookResult.errors);
       }
 
       // 4. Verificar que se consultó documentación
+      console.log(`🔍 [PreWriteValidator] Verificando documentación para: ${componentName}`);
       const docResult =
         await this.verifyDocumentationConsultation(componentName);
+      console.log(`🔍 [PreWriteValidator] Resultado documentación:`, docResult);
       if (!docResult.valid) {
         errors.push(...docResult.errors);
       }
+    } else {
+      console.log(`🔍 [PreWriteValidator] No se detectó componente, saltando verificaciones`);
     }
 
     // 5. Verificar triggers de imagen (si aplica)
@@ -151,8 +159,13 @@ export class PreWriteValidator {
   private static async verifyChecklist(
     componentName: string
   ): Promise<ValidationResult> {
+    console.log(
+      `  📋 [verifyChecklist] Verificando checklist para: ${componentName}`
+    );
+
     const hub = getAutorunHub();
     if (!hub) {
+      console.log(`  ❌ [verifyChecklist] AutorunHub no está inicializado`);
       return {
         valid: false,
         errors: [
@@ -161,9 +174,13 @@ export class PreWriteValidator {
         warnings: [],
       };
     }
+    console.log(`  ✅ [verifyChecklist] AutorunHub está inicializado`);
 
     const preCheckAddon = hub.getAddon('pre-implementation-check');
     if (!preCheckAddon) {
+      console.log(
+        `  ⚠️  [verifyChecklist] Pre-Implementation Check add-on no está disponible`
+      );
       // Si el add-on no está disponible, solo advertir (no bloquear)
       return {
         valid: true,
@@ -173,10 +190,24 @@ export class PreWriteValidator {
         ],
       };
     }
+    console.log(
+      `  ✅ [verifyChecklist] Pre-Implementation Check add-on encontrado`
+    );
 
     try {
+      console.log(
+        `  🔍 [verifyChecklist] Llamando canImplement(${componentName})...`
+      );
       const check = await (preCheckAddon as any).canImplement(componentName);
+      console.log(
+        `  📊 [verifyChecklist] Resultado de canImplement:`,
+        JSON.stringify(check, null, 2)
+      );
+
       if (!check.allowed) {
+        console.log(
+          `  ❌ [verifyChecklist] Checklist incompleto: ${check.reason}`
+        );
         return {
           valid: false,
           errors: [
@@ -187,8 +218,10 @@ export class PreWriteValidator {
         };
       }
 
+      console.log(`  ✅ [verifyChecklist] Checklist completo`);
       return { valid: true, errors: [], warnings: [] };
     } catch (error: any) {
+      console.log(`  ❌ [verifyChecklist] Error:`, error);
       return {
         valid: false,
         errors: [`❌ Error al verificar checklist: ${error.message}`],
