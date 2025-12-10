@@ -90,10 +90,29 @@ export async function autoImplementationFlow(
       );
 
       // 2.2 Obtener URL de Storybook para navegar automáticamente
+      // ⚠️ CRÍTICO: Validar ID antes de construir URL
       let storybookUrl: string | undefined;
       try {
-        const urlResult = await buildSafeStorybookUrl(componentName, 'default');
+        // Primero validar y corregir el ID si es necesario
+        const validatedComponentId =
+          await mapAndValidateComponentNameToStorybookId(componentName);
+        console.log(
+          `✅ [Auto Implementation Flow] ID validado para ${componentName}: ${validatedComponentId}`
+        );
+
+        // Construir URL usando el ID validado
+        const urlResult = await buildSafeStorybookUrl(
+          validatedComponentId,
+          'default'
+        );
         storybookUrl = urlResult.url;
+
+        if (urlResult.warning) {
+          console.warn(
+            `⚠️ [Auto Implementation Flow] Advertencia al construir URL: ${urlResult.warning}`
+          );
+        }
+
         console.log(
           `📚 [Auto Implementation Flow] URL de Storybook: ${storybookUrl}`
         );
