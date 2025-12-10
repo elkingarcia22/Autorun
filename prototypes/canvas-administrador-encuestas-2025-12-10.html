@@ -755,6 +755,174 @@
     <script src="https://ubits-storybook10.vercel.app/templates/engine/template-loader.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
     <script src="https://ubits-storybook10.vercel.app/templates/engine/content-manager.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
     
+    <!-- ========================================
+         INTERCEPTAR ContentManager.updateContent
+         Para eliminar HeaderSection y content-sections dinámicamente
+         ⚠️ CRÍTICO: Interceptar INMEDIATAMENTE después de cargar content-manager.js
+         ======================================== -->
+    <script>
+        (function() {
+            const currentModule = document.body.getAttribute('data-module');
+            if (currentModule !== 'encuestas') {
+                return; // Solo interceptar en módulo encuestas
+            }
+            
+            function interceptContentManagerImmediately() {
+                if (!window.UBITS_ContentManager) {
+                    // Si ContentManager aún no existe, esperar
+                    setTimeout(interceptContentManagerImmediately, 50);
+                    return;
+                }
+                
+                // Verificar si ya está interceptado (evitar múltiples interceptaciones)
+                if (window.UBITS_ContentManager.updateContent._encuestasIntercepted) {
+                    return;
+                }
+                
+                // Guardar referencia al método original
+                const originalUpdateContent = window.UBITS_ContentManager.updateContent;
+                if (!originalUpdateContent) {
+                    setTimeout(interceptContentManagerImmediately, 50);
+                    return;
+                }
+                
+                // Interceptar el método
+                window.UBITS_ContentManager.updateContent = function(section, subSection) {
+                    // ⚠️ CRÍTICO: Solo interceptar si estamos en módulo encuestas
+                    const currentModule = document.body.getAttribute('data-module');
+                    if (currentModule !== 'encuestas') {
+                        return originalUpdateContent.call(this, section, subSection);
+                    }
+                    
+                    console.log('🔵 [Encuestas] updateContent interceptado para sección:', section);
+                    
+                    // Llamar al método original (que limpia el content-area y crea HeaderSection)
+                    const result = originalUpdateContent.call(this, section, subSection);
+                    
+                    // ⚠️ CRÍTICO: Usar requestAnimationFrame para timing correcto
+                    requestAnimationFrame(() => {
+                        const contentArea = document.querySelector('.content-area');
+                        if (!contentArea) {
+                            return;
+                        }
+                        
+                        // Eliminar TODOS los elementos relacionados
+                        const headerContainer = contentArea.querySelector('#header-section-container');
+                        if (headerContainer) {
+                            console.log('🔵 [Encuestas] Eliminando HeaderSection');
+                            headerContainer.remove();
+                        }
+                        
+                        const headerSection = contentArea.querySelector('.ubits-header-section');
+                        if (headerSection) {
+                            console.log('🔵 [Encuestas] Eliminando .ubits-header-section');
+                            const container = headerSection.closest('#header-section-container');
+                            if (container) {
+                                container.remove();
+                            } else {
+                                headerSection.remove();
+                            }
+                        }
+                        
+                        const contentSections = contentArea.querySelector('.content-sections');
+                        if (contentSections) {
+                            console.log('🔵 [Encuestas] Eliminando .content-sections');
+                            contentSections.remove();
+                        }
+                        
+                        const widgetPrincipal = contentArea.querySelector('.widget-contenido-principal');
+                        if (widgetPrincipal) {
+                            console.log('🔵 [Encuestas] Eliminando .widget-contenido-principal');
+                            widgetPrincipal.closest('.section-single')?.remove() || widgetPrincipal.remove();
+                        }
+                    });
+                    
+                    return result;
+                };
+                
+                // Marcar como interceptado
+                window.UBITS_ContentManager.updateContent._encuestasIntercepted = true;
+                console.log('✅ [Encuestas] ContentManager.updateContent interceptado INMEDIATAMENTE');
+            }
+            
+            // ⚠️ CRÍTICO: Ejecutar inmediatamente y con múltiples intentos
+            interceptContentManagerImmediately();
+            setTimeout(interceptContentManagerImmediately, 100);
+            setTimeout(interceptContentManagerImmediately, 500);
+            
+            // ⚠️ CRÍTICO: MutationObserver para eliminar elementos que se crean dinámicamente
+            function setupAggressiveObserver() {
+                const contentArea = document.querySelector('.content-area');
+                if (!contentArea) {
+                    setTimeout(setupAggressiveObserver, 50);
+                    return;
+                }
+                
+                const observer = new MutationObserver((mutations) => {
+                    mutations.forEach((mutation) => {
+                        if (mutation.type === 'childList') {
+                            mutation.addedNodes.forEach((node) => {
+                                if (node.nodeType === 1) {
+                                    // Eliminar HeaderSection
+                                    if (node.id === 'header-section-container' || 
+                                        node.classList?.contains('ubits-header-section') ||
+                                        node.querySelector?.('#header-section-container') ||
+                                        node.querySelector?.('.ubits-header-section')) {
+                                        const headerContainer = document.getElementById('header-section-container');
+                                        if (headerContainer) headerContainer.remove();
+                                        
+                                        const headerSection = document.querySelector('.ubits-header-section');
+                                        if (headerSection) {
+                                            const container = headerSection.closest('#header-section-container');
+                                            if (container) {
+                                                container.remove();
+                                            } else {
+                                                headerSection.remove();
+                                            }
+                                        }
+                                    }
+                                    
+                                    // Eliminar content-sections
+                                    if (node.classList?.contains('content-sections') ||
+                                        node.querySelector?.('.content-sections')) {
+                                        const contentSections = document.querySelector('.content-sections');
+                                        if (contentSections) contentSections.remove();
+                                    }
+                                    
+                                    // Eliminar widget-contenido-principal
+                                    if (node.classList?.contains('widget-contenido-principal') ||
+                                        node.querySelector?.('.widget-contenido-principal')) {
+                                        const widgetPrincipal = document.querySelector('.widget-contenido-principal');
+                                        if (widgetPrincipal) {
+                                            widgetPrincipal.closest('.section-single')?.remove() || widgetPrincipal.remove();
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                });
+                
+                observer.observe(contentArea, {
+                    childList: true,
+                    subtree: true
+                });
+                
+                console.log('✅ [Encuestas] MutationObserver agresivo configurado');
+            }
+            
+            // Configurar observer
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', setupAggressiveObserver);
+            } else {
+                setupAggressiveObserver();
+            }
+            
+            setTimeout(setupAggressiveObserver, 100);
+            setTimeout(setupAggressiveObserver, 500);
+        })();
+    </script>
+    
     <!-- UBITS Components System -->
     <!-- Los componentes se cargan dinámicamente a través de components-loader.js -->
     
