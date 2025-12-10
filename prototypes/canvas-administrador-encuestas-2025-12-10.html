@@ -2531,18 +2531,28 @@
             
             // Calcular nuevo maxWidth: usar el espacio disponible menos padding adicional
             // Asegurar que el tooltip quepa centrado sin salirse
-            const newMaxWidth = Math.max(160, maxAvailableWidth - (padding * 2));
+            // ⚠️ IMPORTANTE: El ancho debe ser menor que el espacio disponible para que quepa centrado
+            const newMaxWidth = Math.max(160, Math.floor(maxAvailableWidth - (padding * 2)));
             
-            // ⚠️ CRÍTICO: SIEMPRE ajustar el ancho si es necesario para mantener el centrado
-            // Si el tooltip actual es más ancho que el espacio disponible, o si el nuevo maxWidth
-            // es menor que el actual, ajustar para que quepa centrado
-            if (currentWidth > maxAvailableWidth || newMaxWidth < currentMaxWidth) {
+            // ⚠️ CRÍTICO: SIEMPRE ajustar el ancho para mantener el centrado
+            // Aplicar el nuevo ancho SIEMPRE que sea diferente al actual o si el tooltip es más ancho
+            if (newMaxWidth !== currentMaxWidth || currentWidth > maxAvailableWidth) {
               finalMaxWidth = newMaxWidth;
               tooltipElement.style.maxWidth = `${newMaxWidth}px`;
+              tooltipElement.style.width = 'auto'; // Permitir que se ajuste al contenido pero respetando maxWidth
               // Forzar recálculo del layout
               tooltipElement.offsetHeight; // Trigger reflow
               // Recalcular dimensiones después de cambiar el ancho
               tooltipRect = tooltipElement.getBoundingClientRect();
+              
+              // ⚠️ DEBUG: Log para verificar el ajuste
+              console.log('🔧 [Tooltip] Ajustando ancho:', {
+                maxAvailableWidth,
+                newMaxWidth,
+                currentMaxWidth,
+                currentWidth,
+                tooltipRectWidth: tooltipRect.width
+              });
             }
             
             // Intentar posición preferida primero
