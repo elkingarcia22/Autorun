@@ -783,9 +783,6 @@
             <!-- Top Navigation -->
             <div id="top-nav-container"></div>
             
-            <!-- Tabs Component: Encuestas y Datos Demográficos -->
-            <div id="tabs-container" style="margin-top: var(--ubits-spacing-lg, 16px); margin-left: calc(var(--ubits-spacing-2xl, 24px) + 96px + 23px); margin-right: var(--ubits-spacing-2xl, 24px);"></div>
-            
             <!-- Content Area -->
             <div class="content-area">
                 <!-- Content wrapper con secciones de widgets -->
@@ -1012,33 +1009,6 @@
                     window.UBITS_ResponsiveManager.init();
                     // Ejecutar adaptComponents manualmente después de que los componentes estén listos
                     window.UBITS_ResponsiveManager.adaptComponents();
-                    
-                    // Inicializar componente Tabs: Encuestas y Datos Demográficos
-                    if (window.createTabs) {
-                        window.createTabs({
-                            containerId: 'tabs-container',
-                            tabs: [
-                                { 
-                                    id: 'encuestas', 
-                                    label: 'Encuestas',
-                                    icon: 'far fa-clipboard'
-                                },
-                                { 
-                                    id: 'datos-demograficos', 
-                                    label: 'Datos Demográficos',
-                                    icon: 'far fa-chart-bar'
-                                }
-                            ],
-                            activeTabId: 'encuestas',
-                            onTabChange: (tabId, tabElement) => {
-                                console.log('Tab cambiado:', tabId);
-                                // Aquí puedes agregar lógica para cambiar el contenido según el tab activo
-                            }
-                        });
-                        console.log('✅ Componente Tabs inicializado');
-                    } else {
-                        console.warn('⚠️ window.createTabs no está disponible');
-                    }
                     
                     // ========================================
                     // DIAGNÓSTICO: Línea divisoria del footer
