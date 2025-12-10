@@ -2839,7 +2839,14 @@
               // ⚠️ CRÍTICO: Aplicar ancho máximo si se ajustó dinámicamente
               // Esto asegura que el tooltip respete los límites del contenedor
               if (optimal.maxWidth !== null) {
-                tooltip.style.maxWidth = `${optimal.maxWidth}px`;
+                // ⚠️ CRÍTICO: Aplicar maxWidth con !important usando setProperty
+                tooltip.style.setProperty('max-width', `${optimal.maxWidth}px`, 'important');
+                // Asegurar que el min-width no sea mayor que el max-width
+                const computedMinWidth = window.getComputedStyle(tooltip).minWidth;
+                const minWidthValue = parseInt(computedMinWidth) || 0;
+                if (minWidthValue > optimal.maxWidth) {
+                  tooltip.style.setProperty('min-width', `${Math.min(120, optimal.maxWidth)}px`, 'important');
+                }
                 // Forzar recálculo para asegurar que el ancho se aplique
                 tooltip.offsetHeight; // Trigger reflow
               }
