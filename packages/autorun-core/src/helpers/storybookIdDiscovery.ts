@@ -168,11 +168,11 @@ export async function discoverStorybookComponents(): Promise<DiscoveryResult> {
       return discoverFromLocalStories();
     }
 
-    if (!indexData.entries) {
-      const error = 'index.json no tiene campo "entries"';
-      console.error(`❌ [Storybook ID Discovery] ${error}`);
-      result.errors.push(error);
-      return result;
+    if (!indexData || !indexData.entries) {
+      console.warn(
+        `⚠️ [Storybook ID Discovery] index.json no tiene campo "entries", usando fallback`
+      );
+      return discoverFromLocalStories();
     }
 
     // Agrupar historias por componente
@@ -229,7 +229,7 @@ export async function discoverStorybookComponents(): Promise<DiscoveryResult> {
     console.log(
       `📚 [Storybook ID Discovery] Usando fallback: descubrir desde archivos .stories.ts locales`
     );
-
+    
     // Fallback: descubrir desde archivos locales
     return discoverFromLocalStories();
   }
