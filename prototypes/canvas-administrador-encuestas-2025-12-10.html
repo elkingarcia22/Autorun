@@ -2379,19 +2379,54 @@
 
           const openTooltip = () => {
             tooltip.classList.add('ubits-tooltip--open');
-            if (position && referenceElement) {
+            
+            // Recalcular posición si hay referenceElement
+            if (referenceElement) {
               const rect = referenceElement.getBoundingClientRect();
+              const tooltipRect = tooltip.getBoundingClientRect();
               const tailPosition = options.tailPosition || 'top';
               tooltip.style.position = 'fixed';
 
               if (tailPosition === 'top' || tailPosition === 'bottom') {
+                // Centrar horizontalmente y posicionar arriba/abajo
                 tooltip.style.left = `${rect.left + rect.width / 2}px`;
                 tooltip.style.transform = 'translateX(-50%)';
-                tooltip.style.top = tailPosition === 'top' ? `${rect.top - 8}px` : `${rect.bottom + 8}px`;
+                if (tailPosition === 'top') {
+                  tooltip.style.top = `${rect.top - tooltipRect.height - 8}px`;
+                } else {
+                  tooltip.style.top = `${rect.bottom + 8}px`;
+                }
               } else if (tailPosition === 'left' || tailPosition === 'right') {
+                // Centrar verticalmente y posicionar izquierda/derecha
                 tooltip.style.top = `${rect.top + rect.height / 2}px`;
                 tooltip.style.transform = 'translateY(-50%)';
-                tooltip.style.left = tailPosition === 'left' ? `${rect.left - 8}px` : `${rect.right + 8}px`;
+                if (tailPosition === 'left') {
+                  tooltip.style.left = `${rect.left - tooltipRect.width - 8}px`;
+                } else {
+                  tooltip.style.left = `${rect.right + 8}px`;
+                }
+              }
+            } else if (position) {
+              // Usar posición absoluta si se proporciona
+              tooltip.style.position = 'fixed';
+              const tailPosition = options.tailPosition || 'top';
+
+              if (tailPosition === 'top' || tailPosition === 'bottom') {
+                if (position.left !== undefined) {
+                  tooltip.style.left = `${position.left}px`;
+                  tooltip.style.transform = 'translateX(-50%)';
+                }
+                if (position.top !== undefined) {
+                  tooltip.style.top = `${position.top}px`;
+                }
+              } else if (tailPosition === 'left' || tailPosition === 'right') {
+                if (position.top !== undefined) {
+                  tooltip.style.top = `${position.top}px`;
+                  tooltip.style.transform = 'translateY(-50%)';
+                }
+                if (position.left !== undefined) {
+                  tooltip.style.left = `${position.left}px`;
+                }
               }
             }
           };
