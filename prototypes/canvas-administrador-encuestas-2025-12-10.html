@@ -2639,20 +2639,25 @@
 
           // Mostrar tooltip al hacer hover
           chipElement.addEventListener('mouseenter', () => {
-            if (tooltipInstance) {
+            if (tooltipInstance && tooltipInstance.element) {
+              console.log('🟢 [Chip/Tooltip] Mouseenter detectado, abriendo tooltip...');
               // Recalcular posición antes de abrir
               const rect = chipElement.getBoundingClientRect();
-              const tooltipRect = tooltipInstance.element.getBoundingClientRect();
               tooltipInstance.element.style.position = 'fixed';
               tooltipInstance.element.style.left = `${rect.left + rect.width / 2}px`;
               tooltipInstance.element.style.transform = 'translateX(-50%)';
               tooltipInstance.element.style.top = `${rect.bottom + 8}px`;
+              tooltipInstance.element.style.zIndex = '9999';
               tooltipInstance.open();
+              console.log('✅ [Chip/Tooltip] Tooltip abierto, clases:', tooltipInstance.element.className);
+            } else {
+              console.error('❌ [Chip/Tooltip] tooltipInstance o element no disponible');
             }
           });
 
           chipElement.addEventListener('mouseleave', () => {
             if (tooltipInstance) {
+              console.log('🟡 [Chip/Tooltip] Mouseleave detectado, cerrando tooltip...');
               tooltipInstance.close();
             }
           });
