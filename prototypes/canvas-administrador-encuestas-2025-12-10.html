@@ -969,6 +969,39 @@
                     // Llamar al método original (que limpia el content-area y crea HeaderSection)
                     const result = originalUpdateContent.call(this, section, subSection);
                     
+                    // ⚠️ CRÍTICO: Restaurar el contenedor del DataTable INMEDIATAMENTE después de que el ContentManager termine
+                    // Usar setTimeout con delay mínimo para restaurar después de que innerHTML = '' se ejecute
+                    setTimeout(() => {
+                        const contentArea = document.querySelector('.content-area');
+                        if (!contentArea) {
+                            return;
+                        }
+                        
+                        // Restaurar el contenedor del DataTable
+                        let tableContainer = contentArea.querySelector('#encuestas-table-container');
+                        if (!tableContainer && savedTableContainerHTML) {
+                            console.log('🔵 [Encuestas] Restaurando contenedor del DataTable desde HTML guardado...');
+                            contentArea.insertAdjacentHTML('afterbegin', savedTableContainerHTML);
+                            tableContainer = contentArea.querySelector('#encuestas-table-container');
+                        } else if (!tableContainer) {
+                            console.log('🔵 [Encuestas] Creando nuevo contenedor del DataTable...');
+                            tableContainer = document.createElement('div');
+                            tableContainer.id = 'encuestas-table-container';
+                            contentArea.insertAdjacentElement('afterbegin', tableContainer);
+                        }
+                        
+                        // Reinicializar la DataTable si no existe
+                        if (tableContainer && !tableContainer.querySelector('.ubits-data-table')) {
+                            console.log('🔵 [Encuestas] DataTable no encontrada, reinicializando...');
+                            encuestasDataTableInitialized = false;
+                            setTimeout(() => {
+                                if (typeof window.createDataTable === 'function') {
+                                    initializeEncuestasDataTable();
+                                }
+                            }, 100);
+                        }
+                    }, 100);
+                    
                     // ⚠️ CRÍTICO: Usar requestAnimationFrame para timing correcto
                     requestAnimationFrame(() => {
                         const contentArea = document.querySelector('.content-area');
