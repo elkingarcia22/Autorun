@@ -63,7 +63,7 @@ export class PreImplementationCheckAddon implements IFunctionalAddon {
         detectComponentsProactively,
       } = require('@autorun/core/helpers/proactiveDetection');
       const result = detectComponentsProactively(message);
-      return result.components.map((c) => c.name);
+      return result.components.map((c: { name: string }) => c.name);
     } catch (error) {
       // Fallback a detección básica si el sistema mejorado no está disponible
       const patterns = [
