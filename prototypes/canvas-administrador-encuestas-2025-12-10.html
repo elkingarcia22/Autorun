@@ -2123,6 +2123,123 @@
         subtree: true
       });
     })();
+    
+    // Inicializar botón de filtros y drawer
+    document.addEventListener('DOMContentLoaded', () => {
+      const initFiltersButtonAndDrawer = () => {
+        const buttonContainer = document.getElementById('filters-button-container');
+        const drawerContainer = document.getElementById('drawer-container');
+        const openButton = document.getElementById('open-filters-drawer-button');
+        
+        if (!buttonContainer || !drawerContainer || !openButton) {
+          console.log('⏳ [Filters/Drawer] Esperando componentes...');
+          setTimeout(initFiltersButtonAndDrawer, 100);
+          return;
+        }
+        
+        // Verificar que createDrawer esté disponible
+        const createDrawerFn = window.createDrawer || window.UBITSDrawer?.createDrawer;
+        
+        if (typeof createDrawerFn !== 'function') {
+          console.log('⏳ [Filters/Drawer] Esperando createDrawer...');
+          if (initFiltersButtonAndDrawer.attempts === undefined) {
+            initFiltersButtonAndDrawer.attempts = 0;
+          }
+          initFiltersButtonAndDrawer.attempts++;
+          if (initFiltersButtonAndDrawer.attempts < 50) {
+            setTimeout(initFiltersButtonAndDrawer, 100);
+          } else {
+            console.error('❌ [Filters/Drawer] createDrawer no está disponible después de 5 segundos');
+          }
+          return;
+        }
+        
+        console.log('✅ [Filters/Drawer] Componentes listos, inicializando...');
+        
+        // Crear drawer
+        let drawerInstance = null;
+        
+        const openDrawer = () => {
+          // Verificar si hay un drawer abierto (verificando si existe en el DOM y tiene la clase open)
+          if (drawerInstance && drawerInstance.element) {
+            const isOpen = drawerInstance.element.classList.contains('ubits-drawer-overlay--open');
+            if (isOpen) {
+              console.log('ℹ️ [Filters/Drawer] Drawer ya está abierto');
+              return; // Ya está abierto
+            } else {
+              // El drawer existe pero está cerrado, limpiarlo del DOM antes de crear uno nuevo
+              console.log('🧹 [Filters/Drawer] Limpiando drawer cerrado del DOM');
+              if (drawerInstance.element.parentNode) {
+                drawerInstance.element.parentNode.removeChild(drawerInstance.element);
+              }
+              drawerInstance = null;
+            }
+          }
+          
+          try {
+            drawerInstance = createDrawerFn({
+              title: 'Filtros',
+              complementaryText: 'Ajusta los filtros para encontrar lo que buscas',
+              width: 40,
+              bodyContent: `
+                <div style="padding: var(--ubits-spacing-lg, 16px);">
+                  <p class="ubits-body-md-regular">Contenido de filtros del drawer.</p>
+                  <p class="ubits-body-md-regular">Aquí puedes agregar los controles de filtros.</p>
+                </div>
+              `,
+              open: true,
+              containerId: 'drawer-container',
+              closeOnOverlayClick: true,
+              onClose: () => {
+                // Callback cuando se cierra el drawer (por cualquier método)
+                console.log('🔴 [Filters/Drawer] Drawer cerrado');
+                drawerInstance = null;
+              },
+              footerButtons: {
+                tertiary: {
+                  label: 'Limpiar',
+                  onClick: () => {
+                    console.log('🔴 [Filters/Drawer] Botón Limpiar clickeado');
+                    if (drawerInstance && drawerInstance.close) {
+                      drawerInstance.close();
+                    }
+                    // onClose se encargará de limpiar drawerInstance
+                  }
+                },
+                primary: {
+                  label: 'Aplicar',
+                  onClick: () => {
+                    console.log('✅ [Filters/Drawer] Botón Aplicar clickeado');
+                    if (drawerInstance && drawerInstance.close) {
+                      drawerInstance.close();
+                    }
+                    // onClose se encargará de limpiar drawerInstance
+                  }
+                }
+              }
+            });
+            
+            console.log('✅ [Filters/Drawer] Drawer creado y abierto');
+          } catch (error) {
+            console.error('❌ [Filters/Drawer] Error al crear drawer:', error);
+            drawerInstance = null;
+          }
+        };
+        
+        // Agregar event listener al botón
+        openButton.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          console.log('🔵 [Filters/Drawer] Botón clickeado, abriendo drawer...');
+          openDrawer();
+        });
+        
+        console.log('✅ [Filters/Drawer] Botón y drawer inicializados correctamente');
+      };
+      
+      // Iniciar después de un pequeño delay para asegurar que los componentes estén cargados
+      setTimeout(initFiltersButtonAndDrawer, 500);
+    });
   </script>
 </body>
 </html>
