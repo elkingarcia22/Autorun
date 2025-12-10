@@ -2580,8 +2580,19 @@
                 refRectWidth: refRect.width,
                 viewportWidth: viewport.width,
                 spaceLeft,
-                spaceRight
+                spaceRight,
+                viewport,
+                containerRect
               });
+              // Usar valores seguros como fallback
+              const safeMaxWidth = Math.max(160, viewport.width - (padding * 4));
+              return {
+                top: refRect.bottom + padding,
+                left: refRect.left + refRect.width / 2,
+                transform: 'translateX(-50%)',
+                tailPosition: preferredTailPosition,
+                maxWidth: safeMaxWidth,
+              };
             }
             
             const maxAvailableWidth = Math.min(maxWidthForCentering, maxWidthForContainer);
@@ -2597,6 +2608,15 @@
                 spaceRight,
                 refRect
               });
+              // Usar valores seguros como fallback
+              const safeMaxWidth = Math.max(160, viewport.width - (padding * 4));
+              return {
+                top: refRect.bottom + padding,
+                left: refRect.left + refRect.width / 2,
+                transform: 'translateX(-50%)',
+                tailPosition: preferredTailPosition,
+                maxWidth: safeMaxWidth,
+              };
             }
             
             // ⚠️ CRÍTICO: Ajustar ancho del tooltip ANTES de calcular la posición
