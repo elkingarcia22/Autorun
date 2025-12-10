@@ -8,6 +8,8 @@
  */
 
 import { getStorybookUrlWithFallback } from './storybookFallback';
+import * as fs from 'fs/promises';
+import * as path from 'path';
 
 export interface DiscoveredComponent {
   componentId: string; // ID real en Storybook (ej: "navegacion-tabs")
@@ -85,7 +87,7 @@ export async function discoverStorybookComponents(): Promise<DiscoveryResult> {
       );
 
       // Fallback: descubrir desde archivos locales
-      return await discoverFromLocalStories();
+      return discoverFromLocalStories();
     }
 
     if (!indexData.entries) {
