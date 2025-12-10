@@ -168,9 +168,9 @@ export async function discoverStorybookComponents(): Promise<DiscoveryResult> {
       return discoverFromLocalStories();
     }
 
-    if (!indexData || !indexData.entries) {
+    if (!indexData || !indexData.entries || Object.keys(indexData.entries).length === 0) {
       console.warn(
-        `⚠️ [Storybook ID Discovery] index.json no tiene campo "entries", usando fallback`
+        `⚠️ [Storybook ID Discovery] index.json vacío o sin "entries", usando fallback`
       );
       return discoverFromLocalStories();
     }
