@@ -55,16 +55,38 @@ export async function discoverStorybookComponents(): Promise<DiscoveryResult> {
     const indexUrl = `${baseUrl}/index.json`;
     console.log(`🔍 [Storybook ID Discovery] Consultando: ${indexUrl}`);
 
-    const indexResponse = await fetch(indexUrl);
+    let indexData: any;
 
-    if (!indexResponse.ok) {
-      const error = `No se pudo obtener index.json: ${indexResponse.status} ${indexResponse.statusText}`;
-      console.error(`❌ [Storybook ID Discovery] ${error}`);
-      result.errors.push(error);
-      return result;
+    try {
+      const indexResponse = await fetch(indexUrl, {
+        headers: {
+          Accept: 'application/json',
+        },
+      });
+
+      if (!indexResponse.ok) {
+        throw new Error(
+          `HTTP ${indexResponse.status}: ${indexResponse.statusText}`
+        );
+      }
+
+      const contentType = indexResponse.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        throw new Error(`Respuesta no es JSON: ${contentType}`);
+      }
+
+      indexData = await indexResponse.json();
+    } catch (fetchError: any) {
+      console.warn(
+        `⚠️ [Storybook ID Discovery] No se pudo obtener index.json desde ${indexUrl}: ${fetchError.message}`
+      );
+      console.log(
+        `📚 [Storybook ID Discovery] Usando fallback: descubrir desde archivos .stories.ts locales`
+      );
+
+      // Fallback: descubrir desde archivos locales
+      return await discoverFromLocalStories();
     }
-
-    const indexData = await indexResponse.json();
 
     if (!indexData.entries) {
       const error = 'index.json no tiene campo "entries"';
