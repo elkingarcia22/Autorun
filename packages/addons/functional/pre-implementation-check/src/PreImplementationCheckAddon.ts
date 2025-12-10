@@ -572,7 +572,9 @@ ${missingSteps.map((step) => `  - ${step}`).join('\n')}
   private getDocFileName(componentName: string): string {
     // ⚠️ CRÍTICO: Usar mapComponentNameToDocFile del core para consistencia
     try {
-      const { mapComponentNameToDocFile } = require('@autorun/core/helpers/componentHelpers');
+      const {
+        mapComponentNameToDocFile,
+      } = require('@autorun/core/helpers/componentHelpers');
       return mapComponentNameToDocFile(componentName) + '.md';
     } catch (error) {
       // Fallback si no está disponible
@@ -584,8 +586,10 @@ ${missingSteps.map((step) => `  - ${step}`).join('\n')}
         Sidebar: 'navegacin-sidebar.md', // ⚠️ NOTA: El archivo real se llama 'navegacin-sidebar.md' (sin 'o')
         SubNav: 'navegacin-subnav.md', // ⚠️ NOTA: El archivo real se llama 'navegacin-subnav.md' (sin 'o')
         TabBar: 'navegacin-tab-bar.md', // ⚠️ NOTA: El archivo real se llama 'navegacin-tab-bar.md' (sin 'o')
+        Drawer: 'feedback-drawer-navigation.md',
       };
-    return docFileMap[componentName] || `${componentName.toLowerCase()}.md`;
+      return docFileMap[componentName] || `${componentName.toLowerCase()}.md`;
+    }
   }
 
   /**
