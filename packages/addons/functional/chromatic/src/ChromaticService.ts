@@ -73,17 +73,17 @@ export class ChromaticService {
 		}
 
 		try {
-			// Verificar si Chromatic está instalado
-			if (!this.isChromaticInstalled()) {
-				console.warn('⚠️  Chromatic no está instalado. Ejecuta: npm install --save-dev chromatic');
-				return;
-			}
-
-			// Crear .chromaticrc.json si no existe
+			// Crear .chromaticrc.json si no existe (siempre, para tener todo listo)
 			const configPath = path.join(this.projectPath, '.chromaticrc.json');
 			if (!existsSync(configPath)) {
 				await this.createChromaticConfig();
-				console.log('✅ .chromaticrc.json creado');
+				console.log('✅ .chromaticrc.json creado automáticamente');
+			}
+
+			// Verificar si Chromatic está instalado
+			if (!this.isChromaticInstalled()) {
+				// No instalar automáticamente durante initialize, solo preparar configuración
+				return;
 			}
 
 			console.log('✅ Chromatic Service: Inicializado correctamente');
@@ -124,6 +124,19 @@ export class ChromaticService {
 				success: false,
 				error: 'Chromatic está deshabilitado',
 			};
+		}
+
+		// Si Chromatic no está instalado, intentar instalar automáticamente
+		if (!this.isChromaticInstalled()) {
+			console.log('📦 Chromatic no está instalado. Instalando automáticamente...');
+			try {
+				await this.installChromatic();
+			} catch (error) {
+				return {
+					success: false,
+					error: 'Chromatic no está instalado. Ejecuta: npm install --save-dev chromatic',
+				};
+			}
 		}
 
 		try {
@@ -231,6 +244,41 @@ export class ChromaticService {
 		} catch {
 			return false;
 		}
+	}
+
+	/**
+	 * Instala Chromatic automáticamente
+	 */
+	private async installChromatic(): Promise<void> {
+		const { execSync } = await import('child_process');
+		
+		try {
+			console.log('📦 Instalando Chromatic automáticamente...');
+			
+			execSync('npm install --save-dev chromatic', {
+				cwd: this.projectPath,
+				stdio: 'inherit',
+			});
+
+			console.log('✅ Chromatic instalado correctamente');
+		} catch (error: any) {
+			console.warn('⚠️  No se pudo instalar Chromatic automáticamente. Ejecuta manualmente: npm install --save-dev chromatic');
+			throw error;
+		}
+	}
+
+	/**
+	 * Obtiene el estado del servicio
+	 */
+	getStatus(): {
+		chromaticInstalled: boolean;
+		hasConfig: boolean;
+	} {
+		const configPath = path.join(this.projectPath, '.chromaticrc.json');
+		return {
+			chromaticInstalled: this.isChromaticInstalled(),
+			hasConfig: existsSync(configPath),
+		};
 	}
 
 	/**

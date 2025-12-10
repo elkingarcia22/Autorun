@@ -51,7 +51,12 @@ export class ChromaticAddon implements IFunctionalAddon {
 
 		try {
 			await this.service.initialize();
-			console.log('✅ Chromatic Add-on: Inicializado correctamente');
+			// Solo mostrar mensaje si Chromatic está instalado y configurado
+			// El servicio no lanzará error si no está instalado, solo retornará silenciosamente
+			const status = this.service.getStatus();
+			if (status.chromaticInstalled) {
+				console.log('✅ Chromatic Add-on: Inicializado correctamente');
+			}
 		} catch (error) {
 			console.error(`❌ Chromatic Add-on: Error al inicializar - ${error}`);
 		}

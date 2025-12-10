@@ -1,0 +1,9 @@
+{
+	"id": "n8n",
+	"name": "@autorun/n8n",
+	"version": "1.0.0",
+	"type": "functional",
+	"description": "n8n Integration - Automatización de workflows con n8n y MCP",
+	"main": "./dist/index.js",
+	"export": "N8nAddon"
+}

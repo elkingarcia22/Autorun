@@ -50,11 +50,15 @@ export class StorybookAddon implements IFunctionalAddon {
 
 		try {
 			await this.service.initialize();
-			console.log('✅ Storybook Add-on: Inicializado correctamente');
+			// Solo mostrar mensaje si Storybook está instalado y configurado
+			const status = this.service.getStatus();
+			if (status.initialized) {
+				console.log('✅ Storybook Add-on: Inicializado correctamente');
 
-			// Auto-start si está configurado
-			if (this.config.autoStart) {
-				await this.activate();
+				// Auto-start si está configurado
+				if (this.config.autoStart) {
+					await this.activate();
+				}
 			}
 		} catch (error) {
 			console.error(`❌ Storybook Add-on: Error al inicializar - ${error}`);
@@ -68,14 +72,19 @@ export class StorybookAddon implements IFunctionalAddon {
 			await this.service.initialize();
 		}
 
-		// Iniciar servidor de desarrollo si no está corriendo
+		// Solo intentar iniciar si Storybook está instalado y configurado
 		const status = this.service.getStatus();
-		if (!status.running) {
+		if (!status.running && status.initialized) {
 			try {
 				const process = await this.service.start();
 				console.log(`✅ Storybook Add-on: Servidor iniciado en ${process.url}`);
 			} catch (error) {
-				console.error(`❌ Storybook Add-on: Error al iniciar servidor - ${error}`);
+				// No mostrar error si Storybook no está instalado o configurado
+				// Solo mostrar si es un error real de inicio
+				const errorMessage = error instanceof Error ? error.message : String(error);
+				if (!errorMessage.includes('no está instalado') && !errorMessage.includes('no está configurado')) {
+					console.error(`❌ Storybook Add-on: Error al iniciar servidor - ${error}`);
+				}
 			}
 		}
 

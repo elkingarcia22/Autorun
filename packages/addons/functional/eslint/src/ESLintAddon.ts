@@ -45,7 +45,10 @@ export class ESLintAddon implements IFunctionalAddon {
 
 		try {
 			await this.service.initialize();
-			console.log('✅ ESLint Add-on: Inicializado correctamente');
+			// Solo mostrar mensaje si se inicializó correctamente (ESLint instalado)
+			if (this.service.getStatus().initialized) {
+				console.log('✅ ESLint Add-on: Inicializado correctamente');
+			}
 		} catch (error) {
 			console.error(`❌ ESLint Add-on: Error al inicializar - ${error}`);
 			// No lanzar error, permitir que el add-on funcione sin inicialización completa

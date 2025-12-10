@@ -53,7 +53,10 @@ export class PrettierAddon implements IFunctionalAddon {
 
 		try {
 			await this.service.initialize();
-			console.log('✅ Prettier Add-on: Inicializado correctamente');
+			// Solo mostrar mensaje si se inicializó correctamente (Prettier instalado)
+			if (this.service.getStatus().initialized) {
+				console.log('✅ Prettier Add-on: Inicializado correctamente');
+			}
 		} catch (error) {
 			console.error(`❌ Prettier Add-on: Error al inicializar - ${error}`);
 			// No lanzar error, permitir que el add-on funcione sin inicialización completa

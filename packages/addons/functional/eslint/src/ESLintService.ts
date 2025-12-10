@@ -70,17 +70,39 @@ export class ESLintService {
 	 * Inicializa el servicio y verifica dependencias
 	 */
 	async initialize(): Promise<void> {
+		// Generar configuración si no existe (siempre, para tener todo listo)
+		await this.ensureESLintConfig();
+
 		// Verificar que ESLint esté instalado
 		if (!this.isESLintInstalled()) {
-			console.warn('⚠️  ESLint no está instalado. Ejecuta: npm install --save-dev eslint');
+			// No instalar automáticamente durante initialize, solo preparar configuración
+			this.initialized = false;
 			return;
 		}
 
-		// Generar configuración si no existe
-		await this.ensureESLintConfig();
-
 		this.initialized = true;
 		console.log('✅ ESLint Service: Inicializado correctamente');
+	}
+
+	/**
+	 * Instala ESLint automáticamente
+	 */
+	private async installESLint(): Promise<void> {
+		const { execSync } = await import('child_process');
+		
+		try {
+			console.log('📦 Instalando ESLint automáticamente...');
+			
+			execSync('npm install --save-dev eslint', {
+				cwd: this.projectPath,
+				stdio: 'inherit',
+			});
+
+			console.log('✅ ESLint instalado correctamente');
+		} catch (error: any) {
+			console.warn('⚠️  No se pudo instalar ESLint automáticamente. Ejecuta manualmente: npm install --save-dev eslint');
+			throw error;
+		}
 	}
 
 	/**
@@ -163,6 +185,17 @@ export class ESLintService {
 	async lint(files: string[], options?: Partial<ESLintConfig>): Promise<ESLintReport> {
 		if (!this.initialized) {
 			await this.initialize();
+		}
+
+		// Si no está inicializado (ESLint no instalado), intentar instalar automáticamente
+		if (!this.initialized && !this.isESLintInstalled()) {
+			console.log('📦 ESLint no está instalado. Instalando automáticamente...');
+			try {
+				await this.installESLint();
+				await this.initialize();
+			} catch (error) {
+				throw new Error('ESLint no está instalado. Ejecuta: npm install --save-dev eslint');
+			}
 		}
 
 		const config = { ...this.config, ...options };

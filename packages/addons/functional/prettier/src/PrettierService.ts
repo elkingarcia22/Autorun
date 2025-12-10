@@ -57,17 +57,39 @@ export class PrettierService {
 	 * Inicializa el servicio y verifica dependencias
 	 */
 	async initialize(): Promise<void> {
+		// Generar configuración si no existe (siempre, para tener todo listo)
+		await this.ensurePrettierConfig();
+
 		// Verificar que Prettier esté instalado
 		if (!this.isPrettierInstalled()) {
-			console.warn('⚠️  Prettier no está instalado. Ejecuta: npm install --save-dev prettier');
+			// No instalar automáticamente durante initialize, solo preparar configuración
+			this.initialized = false;
 			return;
 		}
 
-		// Generar configuración si no existe
-		await this.ensurePrettierConfig();
-
 		this.initialized = true;
 		console.log('✅ Prettier Service: Inicializado correctamente');
+	}
+
+	/**
+	 * Instala Prettier automáticamente
+	 */
+	private async installPrettier(): Promise<void> {
+		const { execSync } = await import('child_process');
+		
+		try {
+			console.log('📦 Instalando Prettier automáticamente...');
+			
+			execSync('npm install --save-dev prettier', {
+				cwd: this.projectPath,
+				stdio: 'inherit',
+			});
+
+			console.log('✅ Prettier instalado correctamente');
+		} catch (error: any) {
+			console.warn('⚠️  No se pudo instalar Prettier automáticamente. Ejecuta manualmente: npm install --save-dev prettier');
+			throw error;
+		}
 	}
 
 	/**
@@ -138,6 +160,17 @@ export class PrettierService {
 	async format(files: string[], options?: Partial<PrettierConfig>): Promise<PrettierResult[]> {
 		if (!this.initialized) {
 			await this.initialize();
+		}
+
+		// Si no está inicializado (Prettier no instalado), intentar instalar automáticamente
+		if (!this.initialized && !this.isPrettierInstalled()) {
+			console.log('📦 Prettier no está instalado. Instalando automáticamente...');
+			try {
+				await this.installPrettier();
+				await this.initialize();
+			} catch (error) {
+				throw new Error('Prettier no está instalado. Ejecuta: npm install --save-dev prettier');
+			}
 		}
 
 		const config = { ...this.config, ...options };

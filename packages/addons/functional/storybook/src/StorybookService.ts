@@ -57,16 +57,25 @@ export class StorybookService {
 	 * Inicializa el servicio y verifica dependencias
 	 */
 	async initialize(): Promise<void> {
-		// Verificar que Storybook esté instalado
-		if (!this.isStorybookInstalled()) {
-			console.warn(
-				'⚠️  Storybook no está instalado. Ejecuta: npm install --save-dev @storybook/react @storybook/addon-essentials',
-			);
-			return;
-		}
-
 		// Crear directorios necesarios si no existen
 		await this.ensureDirectories();
+
+		// Generar configuración si no existe (siempre, para tener todo listo)
+		if (!this.hasStorybookConfig()) {
+			try {
+				await this.generateConfig();
+				console.log('✅ Configuración de Storybook generada automáticamente');
+			} catch (error) {
+				// Si falla, continuar sin configuración
+			}
+		}
+
+		// Verificar que Storybook esté instalado
+		if (!this.isStorybookInstalled()) {
+			// No instalar automáticamente durante initialize, solo preparar configuración
+			this.initialized = false;
+			return;
+		}
 
 		this.initialized = true;
 		console.log('✅ Storybook Service: Inicializado correctamente');
@@ -90,6 +99,60 @@ export class StorybookService {
 			return Object.keys(allDeps).some((dep) => dep.includes('storybook'));
 		} catch {
 			return false;
+		}
+	}
+
+	/**
+	 * Verifica si existe configuración de Storybook
+	 */
+	private hasStorybookConfig(): boolean {
+		const configDir = path.join(this.projectPath, this.config.configDir!);
+		const mainJsPath = path.join(configDir, 'main.js');
+		const mainTsPath = path.join(configDir, 'main.ts');
+		return existsSync(mainJsPath) || existsSync(mainTsPath);
+	}
+
+	/**
+	 * Instala Storybook automáticamente
+	 */
+	private async installStorybook(): Promise<void> {
+		const { execSync } = await import('child_process');
+		const framework = this.config.framework || 'react';
+		
+		try {
+			console.log('📦 Instalando Storybook automáticamente...');
+			
+			// Instalar Storybook según el framework
+			let installCommand = '';
+			switch (framework) {
+				case 'react':
+					installCommand = 'npm install --save-dev @storybook/react-webpack5@^8.0.0 @storybook/addon-essentials@^8.0.0';
+					break;
+				case 'vue':
+					installCommand = 'npm install --save-dev @storybook/vue3 @storybook/addon-essentials';
+					break;
+				case 'angular':
+					installCommand = 'npm install --save-dev @storybook/angular @storybook/addon-essentials';
+					break;
+				case 'web-components':
+					installCommand = 'npm install --save-dev @storybook/web-components @storybook/addon-essentials';
+					break;
+				case 'html':
+					installCommand = 'npm install --save-dev @storybook/html @storybook/addon-essentials';
+					break;
+				default:
+					installCommand = 'npm install --save-dev @storybook/react-webpack5@^8.0.0 @storybook/addon-essentials@^8.0.0';
+			}
+
+			execSync(installCommand, {
+				cwd: this.projectPath,
+				stdio: 'inherit',
+			});
+
+			console.log('✅ Storybook instalado correctamente');
+		} catch (error: any) {
+			console.warn('⚠️  No se pudo instalar Storybook automáticamente. Ejecuta manualmente: npm install --save-dev @storybook/react @storybook/addon-essentials');
+			throw error;
 		}
 	}
 
@@ -119,6 +182,26 @@ export class StorybookService {
 
 		if (!this.initialized) {
 			await this.initialize();
+		}
+
+		// Verificar que Storybook esté instalado
+		if (!this.isStorybookInstalled()) {
+			// Intentar instalar automáticamente cuando se intenta usar
+			console.log('📦 Storybook no está instalado. Instalando automáticamente...');
+			try {
+				await this.installStorybook();
+				// Re-inicializar después de instalar
+				await this.initialize();
+			} catch (error) {
+				throw new Error('Storybook no está instalado. Ejecuta: npm install --save-dev @storybook/react @storybook/addon-essentials');
+			}
+		}
+
+		// Verificar que existe configuración de Storybook
+		if (!this.hasStorybookConfig()) {
+			// Generar configuración automáticamente si no existe
+			console.log('📝 Generando configuración de Storybook...');
+			await this.generateConfig();
 		}
 
 		return new Promise((resolve, reject) => {

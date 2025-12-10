@@ -1,0 +1,9 @@
+{
+	"id": "google-sheets",
+	"name": "@autorun/google-sheets",
+	"version": "1.0.0",
+	"type": "functional",
+	"description": "Google Sheets Integration - Creación y gestión de hojas de cálculo con MCP",
+	"main": "./dist/index.js",
+	"export": "GoogleSheetsAddon"
+}

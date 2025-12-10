@@ -284,6 +284,56 @@ export class MCPInstaller {
 					url: 'https://mcp.supabase.com/mcp',
 				};
 
+			case 'n8n-mcp':
+			case 'n8n':
+				// n8n MCP usa npx n8n-mcp
+				// Soporta modo stdio y HTTP
+				// Requiere N8N_API_URL y N8N_API_KEY si se quiere gestión de workflows
+				return {
+					command: 'npx',
+					args: ['n8n-mcp'],
+					env: {
+						MCP_MODE: credentials?.mode || 'stdio',
+						LOG_LEVEL: credentials?.logLevel || 'error',
+						DISABLE_CONSOLE_OUTPUT: credentials?.disableConsoleOutput !== false ? 'true' : 'false',
+						...(credentials?.n8nApiUrl ? { N8N_API_URL: credentials.n8nApiUrl } : {}),
+						...(credentials?.n8nApiKey ? { N8N_API_KEY: credentials.n8nApiKey } : {}),
+					},
+				};
+
+			case 'google-sheets':
+			case 'mcp-gsheets':
+				// Google Sheets MCP usa mcp-gsheets (freema)
+				// Soporta múltiples métodos de autenticación
+				// Requiere GOOGLE_PROJECT_ID y credenciales (Service Account)
+				const env: Record<string, string> = {};
+				
+				if (credentials?.googleProjectId) {
+					env.GOOGLE_PROJECT_ID = credentials.googleProjectId;
+				}
+				
+				// Método 1: Archivo de credenciales
+				if (credentials?.googleApplicationCredentials) {
+					env.GOOGLE_APPLICATION_CREDENTIALS = credentials.googleApplicationCredentials;
+				}
+				
+				// Método 2: JSON string completo
+				if (credentials?.googleServiceAccountKey) {
+					env.GOOGLE_SERVICE_ACCOUNT_KEY = credentials.googleServiceAccountKey;
+				}
+				
+				// Método 3: Private Key + Email (más simple)
+				if (credentials?.googlePrivateKey && credentials?.googleClientEmail) {
+					env.GOOGLE_PRIVATE_KEY = credentials.googlePrivateKey;
+					env.GOOGLE_CLIENT_EMAIL = credentials.googleClientEmail;
+				}
+				
+				return {
+					command: 'npx',
+					args: ['-y', 'mcp-gsheets@latest'],
+					env,
+				};
+
 			default:
 				return {
 					command: 'npx',
@@ -464,6 +514,126 @@ Para instalar MCP de Supabase manualmente:
 3. Reinicia tu editor/IDE.
 
 Nota: Necesitas un token de acceso personal de Supabase y la referencia de tu proyecto.
+      `,
+			'n8n-mcp': `
+Para instalar MCP de n8n manualmente:
+
+1. El servidor MCP se ejecuta con npx (no requiere instalación global):
+   npx n8n-mcp
+
+2. Configura en tu archivo MCP (usualmente ~/.cursor/mcp.json o ~/.config/mcp/config.json):
+   {
+     "mcpServers": {
+       "n8n-mcp": {
+         "command": "npx",
+         "args": ["n8n-mcp"],
+         "env": {
+           "MCP_MODE": "stdio",
+           "LOG_LEVEL": "error",
+           "DISABLE_CONSOLE_OUTPUT": "true",
+           "N8N_API_URL": "https://your-n8n-instance.com",
+           "N8N_API_KEY": "your-api-key"
+         }
+       }
+     }
+   }
+
+3. Reinicia tu editor/IDE.
+
+Nota: 
+- N8N_API_URL y N8N_API_KEY son opcionales si solo quieres usar las herramientas de documentación
+- Si los proporcionas, tendrás acceso completo a gestión de workflows y ejecuciones
+- El MCP proporciona acceso a 525+ nodos de n8n con 99% de cobertura de propiedades
+- Más información: https://www.n8n-mcp.com/
+      `,
+			n8n: `
+Para instalar MCP de n8n manualmente:
+
+1. El servidor MCP se ejecuta con npx (no requiere instalación global):
+   npx n8n-mcp
+
+2. Configura en tu archivo MCP (usualmente ~/.cursor/mcp.json o ~/.config/mcp/config.json):
+   {
+     "mcpServers": {
+       "n8n-mcp": {
+         "command": "npx",
+         "args": ["n8n-mcp"],
+         "env": {
+           "MCP_MODE": "stdio",
+           "LOG_LEVEL": "error",
+           "DISABLE_CONSOLE_OUTPUT": "true",
+           "N8N_API_URL": "https://your-n8n-instance.com",
+           "N8N_API_KEY": "your-api-key"
+         }
+       }
+     }
+   }
+
+3. Reinicia tu editor/IDE.
+
+Nota: 
+- N8N_API_URL y N8N_API_KEY son opcionales si solo quieres usar las herramientas de documentación
+- Si los proporcionas, tendrás acceso completo a gestión de workflows y ejecuciones
+- El MCP proporciona acceso a 525+ nodos de n8n con 99% de cobertura de propiedades
+- Más información: https://www.n8n-mcp.com/
+      `,
+			'google-sheets': `
+Para instalar MCP de Google Sheets manualmente:
+
+1. El servidor MCP se ejecuta con npx (no requiere instalación global):
+   npx -y mcp-gsheets@latest
+
+2. Configura en tu archivo MCP (usualmente ~/.cursor/mcp.json o ~/.config/mcp/config.json):
+   {
+     "mcpServers": {
+       "google-sheets": {
+         "command": "npx",
+         "args": ["-y", "mcp-gsheets@latest"],
+         "env": {
+           "GOOGLE_PROJECT_ID": "your-project-id",
+           "GOOGLE_APPLICATION_CREDENTIALS": "/absolute/path/to/service-account-key.json"
+         }
+       }
+     }
+   }
+
+3. Reinicia tu editor/IDE.
+
+Nota: 
+- Requiere Google Cloud Project con Google Sheets API habilitada
+- Necesitas crear un Service Account y descargar el JSON key
+- Comparte tus hojas de cálculo con el email del Service Account
+- La API es completamente gratuita: 300 requests/min por proyecto, 60 por usuario
+- Más información: https://github.com/freema/mcp-gsheets
+      `,
+			'mcp-gsheets': `
+Para instalar MCP de Google Sheets manualmente:
+
+1. El servidor MCP se ejecuta con npx (no requiere instalación global):
+   npx -y mcp-gsheets@latest
+
+2. Configura en tu archivo MCP (usualmente ~/.cursor/mcp.json o ~/.config/mcp/config.json):
+   {
+     "mcpServers": {
+       "google-sheets": {
+         "command": "npx",
+         "args": ["-y", "mcp-gsheets@latest"],
+         "env": {
+           "GOOGLE_PROJECT_ID": "your-project-id",
+           "GOOGLE_APPLICATION_CREDENTIALS": "/absolute/path/to/service-account-key.json"
+         }
+       }
+     }
+   }
+
+3. Reinicia tu editor/IDE.
+
+Nota: 
+- Requiere Google Cloud Project con Google Sheets API habilitada
+- Necesitas crear un Service Account y descargar el JSON key
+- Comparte tus hojas de cálculo con el email del Service Account
+- La API es completamente gratuita: 300 requests/min por proyecto, 60 por usuario
+- Más información: https://github.com/freema/mcp-gsheets
       `,
 		};
 
