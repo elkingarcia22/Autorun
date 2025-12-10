@@ -69,24 +69,36 @@ export class PreWriteValidator {
 
     // 2. Si se detectó un componente, verificar checklist obligatorio
     if (componentName) {
-      console.log(`🔍 [PreWriteValidator] Verificando checklist para: ${componentName}`);
+      console.log(
+        `🔍 [PreWriteValidator] Verificando checklist para: ${componentName}`
+      );
       const checklistResult = await this.verifyChecklist(componentName);
-      console.log(`🔍 [PreWriteValidator] Resultado checklist:`, checklistResult);
+      console.log(
+        `🔍 [PreWriteValidator] Resultado checklist:`,
+        checklistResult
+      );
       if (!checklistResult.valid) {
         errors.push(...checklistResult.errors);
       }
 
       // 3. Verificar que se consultó Storybook
-      console.log(`🔍 [PreWriteValidator] Verificando Storybook para: ${componentName}`);
+      console.log(
+        `🔍 [PreWriteValidator] Verificando Storybook para: ${componentName}`
+      );
       const storybookResult =
         await this.verifyStorybookConsultation(componentName);
-      console.log(`🔍 [PreWriteValidator] Resultado Storybook:`, storybookResult);
+      console.log(
+        `🔍 [PreWriteValidator] Resultado Storybook:`,
+        storybookResult
+      );
       if (!storybookResult.valid) {
         errors.push(...storybookResult.errors);
       }
 
       // 4. Verificar que se consultó documentación
-      console.log(`🔍 [PreWriteValidator] Verificando documentación para: ${componentName}`);
+      console.log(
+        `🔍 [PreWriteValidator] Verificando documentación para: ${componentName}`
+      );
       const docResult =
         await this.verifyDocumentationConsultation(componentName);
       console.log(`🔍 [PreWriteValidator] Resultado documentación:`, docResult);
@@ -94,7 +106,9 @@ export class PreWriteValidator {
         errors.push(...docResult.errors);
       }
     } else {
-      console.log(`🔍 [PreWriteValidator] No se detectó componente, saltando verificaciones`);
+      console.log(
+        `🔍 [PreWriteValidator] No se detectó componente, saltando verificaciones`
+      );
     }
 
     // 5. Verificar triggers de imagen (si aplica)
