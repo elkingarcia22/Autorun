@@ -2516,10 +2516,11 @@
             const spaceRight = viewport.right - refRect.right - padding;
             
             // ⚠️ CRÍTICO: Calcular ancho máximo disponible para centrar el tooltip
-            // El ancho disponible es el espacio a la izquierda + espacio a la derecha del elemento
-            // Pero debemos asegurarnos de que el tooltip no se salga del contenedor
-            // Para centrar correctamente, necesitamos el doble del espacio más pequeño (izquierda o derecha)
-            const maxWidthForCentering = Math.min(spaceLeft, spaceRight) * 2 + refRect.width;
+            // Para centrar correctamente, el tooltip debe poder extenderse igualmente a ambos lados
+            // El ancho máximo es: 2 * (espacio más pequeño entre izquierda/derecha) + ancho del elemento
+            // O el ancho total del contenedor menos padding
+            const minSpace = Math.min(spaceLeft, spaceRight);
+            const maxWidthForCentering = minSpace * 2 + refRect.width;
             const maxWidthForContainer = viewport.width - (padding * 2);
             const maxAvailableWidth = Math.min(maxWidthForCentering, maxWidthForContainer);
             
@@ -2529,9 +2530,12 @@
             const currentWidth = tooltipRect.width;
             
             // Calcular nuevo maxWidth: usar el espacio disponible menos padding adicional
+            // Asegurar que el tooltip quepa centrado sin salirse
             const newMaxWidth = Math.max(160, maxAvailableWidth - (padding * 2));
             
             // ⚠️ CRÍTICO: SIEMPRE ajustar el ancho si es necesario para mantener el centrado
+            // Si el tooltip actual es más ancho que el espacio disponible, o si el nuevo maxWidth
+            // es menor que el actual, ajustar para que quepa centrado
             if (currentWidth > maxAvailableWidth || newMaxWidth < currentMaxWidth) {
               finalMaxWidth = newMaxWidth;
               tooltipElement.style.maxWidth = `${newMaxWidth}px`;
