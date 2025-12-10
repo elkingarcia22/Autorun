@@ -2465,7 +2465,8 @@
 
           // ⚠️ CRÍTICO: Función para calcular posición óptima del tooltip dentro de la pantalla
           // Esta función DEBE usarse siempre para tooltips/popovers para evitar que se salgan de la pantalla
-          const calculateOptimalPosition = (refRect, tooltipRect, preferredTailPosition) => {
+          // Ajusta dinámicamente el ancho y la posición para centrar el tooltip al componente
+          const calculateOptimalPosition = (refRect, tooltipElement, preferredTailPosition) => {
             const viewport = {
               width: window.innerWidth,
               height: window.innerHeight,
@@ -2476,12 +2477,37 @@
             let finalTop = 0;
             let finalLeft = 0;
             let finalTransform = '';
+            let finalMaxWidth = null; // Ancho máximo ajustado dinámicamente
 
             // ⚠️ IMPORTANTE: tailPosition indica dónde está la flecha en el tooltip, no dónde está el tooltip
             // - tailPosition: 'top' → flecha arriba del tooltip (tooltip debajo del elemento)
             // - tailPosition: 'bottom' → flecha abajo del tooltip (tooltip arriba del elemento)
             // - tailPosition: 'left' → flecha izquierda del tooltip (tooltip a la derecha del elemento)
             // - tailPosition: 'right' → flecha derecha del tooltip (tooltip a la izquierda del elemento)
+            
+            // Obtener dimensiones actuales del tooltip (puede cambiar después de ajustar ancho)
+            let tooltipRect = tooltipElement.getBoundingClientRect();
+            
+            // Calcular espacio disponible en cada dirección
+            const spaceAbove = refRect.top - padding;
+            const spaceBelow = viewport.height - refRect.bottom - padding;
+            const spaceLeft = refRect.left - padding;
+            const spaceRight = viewport.width - refRect.right - padding;
+            
+            // Calcular ancho máximo disponible para centrar el tooltip
+            const maxAvailableWidth = Math.min(
+              spaceLeft + spaceRight + refRect.width,
+              viewport.width - (padding * 2)
+            );
+            
+            // Ajustar ancho del tooltip si es necesario (pero mantener min-width)
+            const currentMaxWidth = parseInt(window.getComputedStyle(tooltipElement).maxWidth) || 320;
+            if (maxAvailableWidth < currentMaxWidth) {
+              finalMaxWidth = Math.max(160, maxAvailableWidth - 16); // Mantener padding mínimo
+              tooltipElement.style.maxWidth = `${finalMaxWidth}px`;
+              // Recalcular dimensiones después de cambiar el ancho
+              tooltipRect = tooltipElement.getBoundingClientRect();
+            }
             
             // Intentar posición preferida primero
             if (preferredTailPosition === 'bottom') {
@@ -2501,14 +2527,21 @@
                 }
               }
               
-              // ⚠️ CRÍTICO: Verificar si se sale por la izquierda
-              if (finalLeft - tooltipRect.width / 2 < padding) {
-                finalLeft = padding + tooltipRect.width / 2;
-              }
+              // ⚠️ CRÍTICO: Centrar al componente, ajustando si se sale por los lados
+              const idealLeft = refRect.left + refRect.width / 2;
+              const tooltipHalfWidth = tooltipRect.width / 2;
               
-              // ⚠️ CRÍTICO: Verificar si se sale por la derecha
-              if (finalLeft + tooltipRect.width / 2 > viewport.width - padding) {
-                finalLeft = viewport.width - padding - tooltipRect.width / 2;
+              // Verificar si se sale por la izquierda
+              if (idealLeft - tooltipHalfWidth < padding) {
+                finalLeft = padding + tooltipHalfWidth;
+              }
+              // Verificar si se sale por la derecha
+              else if (idealLeft + tooltipHalfWidth > viewport.width - padding) {
+                finalLeft = viewport.width - padding - tooltipHalfWidth;
+              }
+              else {
+                // Centrado perfecto al componente
+                finalLeft = idealLeft;
               }
             } else if (preferredTailPosition === 'top') {
               // ⚠️ CORREGIDO: 'top' significa flecha arriba → tooltip DEBAJO del elemento
@@ -2527,14 +2560,21 @@
                 }
               }
               
-              // ⚠️ CRÍTICO: Verificar si se sale por la izquierda
-              if (finalLeft - tooltipRect.width / 2 < padding) {
-                finalLeft = padding + tooltipRect.width / 2;
-              }
+              // ⚠️ CRÍTICO: Centrar al componente, ajustando si se sale por los lados
+              const idealLeft = refRect.left + refRect.width / 2;
+              const tooltipHalfWidth = tooltipRect.width / 2;
               
-              // ⚠️ CRÍTICO: Verificar si se sale por la derecha
-              if (finalLeft + tooltipRect.width / 2 > viewport.width - padding) {
-                finalLeft = viewport.width - padding - tooltipRect.width / 2;
+              // Verificar si se sale por la izquierda
+              if (idealLeft - tooltipHalfWidth < padding) {
+                finalLeft = padding + tooltipHalfWidth;
+              }
+              // Verificar si se sale por la derecha
+              else if (idealLeft + tooltipHalfWidth > viewport.width - padding) {
+                finalLeft = viewport.width - padding - tooltipHalfWidth;
+              }
+              else {
+                // Centrado perfecto al componente
+                finalLeft = idealLeft;
               }
             } else if (preferredTailPosition === 'right') {
               // ⚠️ CORREGIDO: 'right' significa flecha derecha → tooltip a la IZQUIERDA del elemento
@@ -2553,14 +2593,21 @@
                 }
               }
               
-              // ⚠️ CRÍTICO: Verificar si se sale por arriba
-              if (finalTop - tooltipRect.height / 2 < padding) {
-                finalTop = padding + tooltipRect.height / 2;
-              }
+              // ⚠️ CRÍTICO: Centrar verticalmente al componente
+              const idealTop = refRect.top + refRect.height / 2;
+              const tooltipHalfHeight = tooltipRect.height / 2;
               
-              // ⚠️ CRÍTICO: Verificar si se sale por abajo
-              if (finalTop + tooltipRect.height / 2 > viewport.height - padding) {
-                finalTop = viewport.height - padding - tooltipRect.height / 2;
+              // Verificar si se sale por arriba
+              if (idealTop - tooltipHalfHeight < padding) {
+                finalTop = padding + tooltipHalfHeight;
+              }
+              // Verificar si se sale por abajo
+              else if (idealTop + tooltipHalfHeight > viewport.height - padding) {
+                finalTop = viewport.height - padding - tooltipHalfHeight;
+              }
+              else {
+                // Centrado perfecto al componente
+                finalTop = idealTop;
               }
             } else if (preferredTailPosition === 'left') {
               // ⚠️ CORREGIDO: 'left' significa flecha izquierda → tooltip a la DERECHA del elemento
@@ -2579,14 +2626,21 @@
                 }
               }
               
-              // ⚠️ CRÍTICO: Verificar si se sale por arriba
-              if (finalTop - tooltipRect.height / 2 < padding) {
-                finalTop = padding + tooltipRect.height / 2;
-              }
+              // ⚠️ CRÍTICO: Centrar verticalmente al componente
+              const idealTop = refRect.top + refRect.height / 2;
+              const tooltipHalfHeight = tooltipRect.height / 2;
               
-              // ⚠️ CRÍTICO: Verificar si se sale por abajo
-              if (finalTop + tooltipRect.height / 2 > viewport.height - padding) {
-                finalTop = viewport.height - padding - tooltipRect.height / 2;
+              // Verificar si se sale por arriba
+              if (idealTop - tooltipHalfHeight < padding) {
+                finalTop = padding + tooltipHalfHeight;
+              }
+              // Verificar si se sale por abajo
+              else if (idealTop + tooltipHalfHeight > viewport.height - padding) {
+                finalTop = viewport.height - padding - tooltipHalfHeight;
+              }
+              else {
+                // Centrado perfecto al componente
+                finalTop = idealTop;
               }
             }
 
@@ -2595,6 +2649,7 @@
               left: finalLeft,
               transform: finalTransform,
               tailPosition: finalTailPosition,
+              maxWidth: finalMaxWidth,
             };
           };
 
