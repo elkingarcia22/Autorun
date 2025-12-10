@@ -223,6 +223,12 @@ export async function discoverStorybookComponents(): Promise<DiscoveryResult> {
         // ⚠️ CRÍTICO: Filtrar solo historias (no docs)
         // Las entradas con type "docs" no son historias reales
         if (entryObj.type === 'docs') {
+          skippedDocs++;
+          continue;
+        }
+
+        // Verificar que tiene type "story" o subtype "story"
+        if (entryObj.type !== 'story' && entryObj.subtype !== 'story') {
           continue;
         }
 
