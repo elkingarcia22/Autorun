@@ -272,6 +272,12 @@ async function getStoriesFromBrowser(
 
 /**
  * Mapea nombre de componente a ID de Storybook
+ *
+ * ⚠️ IMPORTANTE: Este mapeo debe estar sincronizado con:
+ * - verifyStorybookStories.ts (COMPONENT_TITLE_TO_ID_MAP)
+ * - La documentación en docs/referencia/componentes/
+ *
+ * Para validar que un ID existe, usar buildSafeStorybookUrl() después de mapear.
  */
 export function mapComponentNameToStorybookId(componentName: string): string {
   const mapping: Record<string, string> = {
@@ -288,7 +294,7 @@ export function mapComponentNameToStorybookId(componentName: string): string {
     Select: 'formularios-select',
     Alert: 'feedback-alert',
     Toast: 'feedback-toast',
-    Drawer: 'feedback-drawer-navigation',
+    Drawer: 'feedback-drawer-navigation', // ⚠️ CORREGIDO: era 'feedback-drawer'
     Popover: 'feedback-popover',
     Tooltip: 'feedback-tooltip',
   };
@@ -296,6 +302,53 @@ export function mapComponentNameToStorybookId(componentName: string): string {
   return (
     mapping[componentName] || componentName.toLowerCase().replace(/\s+/g, '-')
   );
+}
+
+/**
+ * Mapea y valida nombre de componente a ID de Storybook
+ *
+ * Usa buildSafeStorybookUrl para validar que el ID existe antes de retornarlo.
+ * Si el ID mapeado no existe, intenta usar verifyAvailableStories para encontrar el ID correcto.
+ *
+ * @param componentName - Nombre del componente (ej: "Drawer", "DataTable")
+ * @returns ID de Storybook validado, o el ID mapeado si no se puede validar
+ */
+export async function mapAndValidateComponentNameToStorybookId(
+  componentName: string
+): Promise<string> {
+  // Obtener ID mapeado
+  const mappedId = mapComponentNameToStorybookId(componentName);
+
+  try {
+    // Intentar validar usando buildSafeStorybookUrl
+    const { buildSafeStorybookUrl } = await import('./verifyStorybookStories');
+    const urlResult = await buildSafeStorybookUrl(mappedId, 'default');
+
+    // Si hay warning, el ID podría no ser correcto
+    if (urlResult.warning) {
+      console.warn(
+        `⚠️ [Map & Validate] Advertencia para ${componentName} (ID: ${mappedId}): ${urlResult.warning}`
+      );
+    }
+
+    // Extraer el ID real usado de la URL
+    const urlMatch = urlResult.url.match(/\/story\/([^--]+)--/);
+    if (urlMatch && urlMatch[1] !== mappedId) {
+      console.log(
+        `🔄 [Map & Validate] ID corregido para ${componentName}: ${mappedId} → ${urlMatch[1]}`
+      );
+      return urlMatch[1];
+    }
+
+    return mappedId;
+  } catch (error) {
+    // Si falla la validación, retornar el ID mapeado como fallback
+    console.warn(
+      `⚠️ [Map & Validate] No se pudo validar ID para ${componentName}, usando mapeo: ${mappedId}`,
+      error
+    );
+    return mappedId;
+  }
 }
 
 /**

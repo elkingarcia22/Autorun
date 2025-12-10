@@ -15,7 +15,10 @@ import {
   detectComponentFromMessage,
 } from './implementationHelpers';
 import { buildSafeStorybookUrl } from './verifyStorybookStories';
-import { mapComponentNameToStorybookId } from './storybookStories';
+import {
+  mapComponentNameToStorybookId,
+  mapAndValidateComponentNameToStorybookId,
+} from './storybookStories';
 import * as path from 'path';
 
 /**
