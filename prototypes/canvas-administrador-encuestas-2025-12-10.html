@@ -817,6 +817,19 @@
 
     <!-- System Loaders -->
     <script src="https://ubits-storybook10.vercel.app/templates/components-loader.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
+    
+    <!-- Modal Component Script (cargado manualmente porque components-loader.js no lo carga) -->
+    <script type="module">
+      // Cargar modal dinámicamente
+      import('https://ubits-storybook10.vercel.app/components/modal/src/index.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT')
+        .then(() => {
+          console.log('✅ [Modal] Script del modal cargado correctamente');
+        })
+        .catch((error) => {
+          console.error('❌ [Modal] Error al cargar script del modal:', error);
+        });
+    </script>
+    
     <script src="https://ubits-storybook10.vercel.app/templates/config/products.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
     <script src="https://ubits-storybook10.vercel.app/templates/config/theme-manager.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
     <script src="https://ubits-storybook10.vercel.app/templates/config/responsive-manager.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
