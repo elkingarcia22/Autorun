@@ -2466,7 +2466,7 @@
           // ⚠️ CRÍTICO: Función para calcular posición óptima del tooltip dentro de la pantalla
           // Esta función DEBE usarse siempre para tooltips/popovers para evitar que se salgan de la pantalla
           // Ajusta dinámicamente el ancho y la posición para centrar el tooltip al componente
-          const calculateOptimalPosition = (refRect, tooltipElement, preferredTailPosition, referenceElement) => {
+          const calculateOptimalPosition = (refRect, tooltipElement, preferredTailPosition) => {
             // ⚠️ CRÍTICO: Verificar que tooltipElement sea un elemento válido
             if (!tooltipElement || typeof tooltipElement.getBoundingClientRect !== 'function') {
               console.error('❌ [Tooltip] tooltipElement no es un elemento válido:', tooltipElement);
@@ -2570,9 +2570,34 @@
             // El ancho máximo es: 2 * (espacio más pequeño entre izquierda/derecha) + ancho del elemento
             // O el ancho total del contenedor menos padding
             const minSpace = Math.min(spaceLeft, spaceRight);
-            const maxWidthForCentering = minSpace * 2 + refRect.width;
+            const maxWidthForCentering = (minSpace * 2) + refRect.width;
             const maxWidthForContainer = viewport.width - (padding * 2);
+            
+            // ⚠️ CRÍTICO: Validar que los valores sean números válidos antes de calcular
+            if (isNaN(minSpace) || isNaN(refRect.width) || isNaN(viewport.width)) {
+              console.error('❌ [Tooltip] Valores inválidos en cálculo de ancho:', {
+                minSpace,
+                refRectWidth: refRect.width,
+                viewportWidth: viewport.width,
+                spaceLeft,
+                spaceRight
+              });
+            }
+            
             const maxAvailableWidth = Math.min(maxWidthForCentering, maxWidthForContainer);
+            
+            // ⚠️ DEBUG: Log para diagnóstico
+            if (isNaN(maxAvailableWidth)) {
+              console.error('❌ [Tooltip] maxAvailableWidth es NaN:', {
+                minSpace,
+                maxWidthForCentering,
+                maxWidthForContainer,
+                viewport,
+                spaceLeft,
+                spaceRight,
+                refRect
+              });
+            }
             
             // ⚠️ CRÍTICO: Ajustar ancho del tooltip ANTES de calcular la posición
             // Esto asegura que el tooltip se ajuste al espacio disponible y se mantenga centrado
