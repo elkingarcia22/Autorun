@@ -186,6 +186,18 @@ export async function discoverStorybookComponents(): Promise<DiscoveryResult> {
       return discoverFromLocalStories();
     }
 
+    // Verificar nuevamente antes de procesar (por si acaso)
+    if (
+      !indexData ||
+      !indexData.entries ||
+      Object.keys(indexData.entries).length === 0
+    ) {
+      console.warn(
+        `⚠️ [Storybook ID Discovery] index.json vacío después de parsear, usando fallback`
+      );
+      return discoverFromLocalStories();
+    }
+
     // Agrupar historias por componente
     const componentsMap = new Map<string, DiscoveredComponent>();
 
