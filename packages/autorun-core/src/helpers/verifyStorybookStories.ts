@@ -62,6 +62,14 @@ const COMPONENT_STORIES_PATH_MAP: Record<string, string> = {
   Drawer: 'vendor/ubits/packages/storybook/stories/Drawer.stories.ts',
   'feedback-drawer':
     'vendor/ubits/packages/storybook/stories/Drawer.stories.ts', // ⚠️ Alias común pero incorrecto
+  'Básicos/Chip': 'vendor/ubits/packages/storybook/stories/Chip.stories.ts',
+  'bsicos-chip': 'vendor/ubits/packages/storybook/stories/Chip.stories.ts',
+  Chip: 'vendor/ubits/packages/storybook/stories/Chip.stories.ts',
+  'Feedback/Tooltip':
+    'vendor/ubits/packages/storybook/stories/Tooltip.stories.ts',
+  'feedback-tooltip':
+    'vendor/ubits/packages/storybook/stories/Tooltip.stories.ts',
+  Tooltip: 'vendor/ubits/packages/storybook/stories/Tooltip.stories.ts',
   // Agregar más mapeos según sea necesario
 };
 
