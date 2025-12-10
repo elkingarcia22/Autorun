@@ -2421,19 +2421,21 @@
         let drawerInstance = null;
         
         const openDrawer = () => {
+          // Limpiar cualquier drawer existente en el DOM (puede haber múltiples si no se limpiaron correctamente)
+          const existingDrawers = document.querySelectorAll('.ubits-drawer-overlay');
+          existingDrawers.forEach((drawer) => {
+            if (drawer.parentNode) {
+              drawer.parentNode.removeChild(drawer);
+            }
+          });
+          drawerInstance = null;
+          
           // Verificar si hay un drawer abierto (verificando si existe en el DOM y tiene la clase open)
           if (drawerInstance && drawerInstance.element) {
             const isOpen = drawerInstance.element.classList.contains('ubits-drawer-overlay--open');
             if (isOpen) {
               console.log('ℹ️ [Filters/Drawer] Drawer ya está abierto');
               return; // Ya está abierto
-            } else {
-              // El drawer existe pero está cerrado, limpiarlo del DOM antes de crear uno nuevo
-              console.log('🧹 [Filters/Drawer] Limpiando drawer cerrado del DOM');
-              if (drawerInstance.element.parentNode) {
-                drawerInstance.element.parentNode.removeChild(drawerInstance.element);
-              }
-              drawerInstance = null;
             }
           }
           
