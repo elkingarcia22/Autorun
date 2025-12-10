@@ -64,6 +64,13 @@ export {
   getTemplateUrlFromPathForFlow,
   AUTO_IMPLEMENTATION_FLOW_INSTRUCTIONS,
 } from './helpers/autoImplementationFlow'; // ⭐ NUEVO: Flujo automático de implementación
+export {
+  interceptedWrite,
+  interceptedSearchReplace,
+  interceptAutoReload,
+  interceptStorybookMCP,
+  TOOL_INTERCEPTOR_INSTRUCTIONS,
+} from './interceptors/toolInterceptors'; // ⭐ NUEVO: Interceptores automáticos de herramientas
 
 // Exportar validación
 export * from './validation/PreWriteValidator';
