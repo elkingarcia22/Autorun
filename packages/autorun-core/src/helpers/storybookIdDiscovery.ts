@@ -227,8 +227,14 @@ export async function discoverStorybookComponents(): Promise<DiscoveryResult> {
           continue;
         }
 
-        // Verificar que tiene type "story" o subtype "story"
-        if (entryObj.type !== 'story' && entryObj.subtype !== 'story') {
+        // Aceptar si tiene type "story" o subtype "story"
+        // Si no tiene type/subtype definido, asumir que es una historia si tiene id y name
+        const isStory =
+          entryObj.type === 'story' ||
+          entryObj.subtype === 'story' ||
+          (entryObj.id && entryObj.name && !entryObj.type);
+
+        if (!isStory) {
           continue;
         }
 
