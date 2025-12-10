@@ -851,17 +851,22 @@ Problema: Falta interceptación de ContentManager para eliminar HeaderSection
     }
 
     // Patrones que indican implementación de componentes
+    // ⚠️ IMPORTANTE: Detectar tanto llamadas como asignaciones (window.createChip = createChip)
     const componentPatterns: Record<string, RegExp> = {
-      Tabs: /window\.createTabs\s*\(/i,
-      DataTable: /window\.createDataTable\s*\(/i,
-      Button: /window\.UBITS\.Button\.create\s*\(/i,
-      Modal: /window\.createModal\s*\(/i,
-      Sidebar: /window\.createSidebar\s*\(/i,
-      SubNav: /window\.createSubNav\s*\(/i,
-      TabBar: /window\.createTabBar\s*\(/i,
-      Drawer: /window\.createDrawer\s*\(/i,
-      Chip: /window\.createChip\s*\(/i,
-      Tooltip: /window\.createTooltip\s*\(/i,
+      Tabs: /window\.createTabs\s*\(|window\.createTabs\s*=/i,
+      DataTable: /window\.createDataTable\s*\(|window\.createDataTable\s*=/i,
+      Button:
+        /window\.UBITS\.Button\.create\s*\(|window\.UBITS\.Button\.create\s*=/i,
+      Modal:
+        /window\.createModal\s*\(|window\.createModal\s*=|window\.UBITSModal\?\.createModal/i,
+      Sidebar: /window\.createSidebar\s*\(|window\.createSidebar\s*=/i,
+      SubNav: /window\.createSubNav\s*\(|window\.createSubNav\s*=/i,
+      TabBar: /window\.createTabBar\s*\(|window\.createTabBar\s*=/i,
+      Drawer:
+        /window\.createDrawer\s*\(|window\.createDrawer\s*=|window\.UBITSDrawer\?\.createDrawer/i,
+      Chip: /window\.createChip\s*\(|window\.createChip\s*=|window\.UBITSChip\?\.createChip|createChip\s*\(/i,
+      Tooltip:
+        /window\.createTooltip\s*\(|window\.createTooltip\s*=|window\.UBITSTooltip\?\.createTooltip|createTooltip\s*\(/i,
     };
 
     // Detectar componentes en el código
