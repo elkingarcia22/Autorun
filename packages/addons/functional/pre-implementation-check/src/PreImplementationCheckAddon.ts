@@ -545,16 +545,25 @@ ${missingSteps.map((step) => `  - ${step}`).join('\n')}
    * Obtiene el ID de Storybook para un componente
    */
   private getStorybookId(componentName: string): string {
-    const componentIdMap: Record<string, string> = {
-      DataTable: 'data-data-table',
-      Tabs: 'navegacin-tabs',
-      Button: 'bsicos-button',
-      Modal: 'feedback-modal',
-      Sidebar: 'navegacin-sidebar',
-      SubNav: 'navegacin-subnav',
-      TabBar: 'navegacin-tab-bar',
-    };
-    return componentIdMap[componentName] || componentName.toLowerCase();
+    // ⚠️ CRÍTICO: Usar mapComponentNameToStorybookId del core para consistencia
+    try {
+      const {
+        mapComponentNameToStorybookId,
+      } = require('@autorun/core/helpers/storybookStories');
+      return mapComponentNameToStorybookId(componentName);
+    } catch (error) {
+      // Fallback si no está disponible
+      const componentIdMap: Record<string, string> = {
+        DataTable: 'data-data-table',
+        Tabs: 'navegacion-tabs', // ⚠️ CORREGIDO: era 'navegacin-tabs'
+        Button: 'bsicos-button',
+        Modal: 'feedback-modal',
+        Sidebar: 'navegacion-sidebar', // ⚠️ CORREGIDO: era 'navegacin-sidebar'
+        SubNav: 'navegacion-sub-nav', // ⚠️ CORREGIDO: era 'navegacin-subnav'
+        TabBar: 'navegacion-tab-bar', // ⚠️ CORREGIDO: era 'navegacin-tab-bar'
+      };
+      return componentIdMap[componentName] || componentName.toLowerCase();
+    }
   }
 
   /**
