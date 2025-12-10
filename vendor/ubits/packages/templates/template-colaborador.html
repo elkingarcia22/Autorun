@@ -48,7 +48,6 @@
     <link rel="stylesheet" href="../components/stepper/src/styles/stepper.css" />
     <link rel="stylesheet" href="../components/participants-menu/src/styles/participants-menu.css" />
     <link rel="stylesheet" href="../components/metric-card/src/styles/metric-card.css" />
-    <link rel="stylesheet" href="../components/header-section/src/styles/header-section.css" />
     
     <style>
         /* ========================================
@@ -189,33 +188,6 @@
             width: 100%;
             max-width: 100%;
             gap: 0;
-        }
-
-        /* ========================================
-           HEADER SECTION CONTAINER
-           ======================================== */
-        
-        #header-section-container {
-            width: 100%;
-            background: transparent;
-            padding: 0;
-            margin-top: 0;
-            margin-bottom: 0;
-            box-sizing: border-box;
-        }
-
-        /* Ajustes responsive para header-section-container */
-        @media (max-width: 1023px) {
-            #header-section-container {
-                padding: 0;
-                margin-top: 0;
-            }
-        }
-
-        @media (max-width: 479px) {
-            #header-section-container {
-                margin-top: 0;
-            }
         }
 
         .content-area.no-background {
@@ -410,16 +382,6 @@
             
             <!-- Content Area -->
             <div class="content-area">
-                <!-- Content wrapper con secciones de widgets -->
-                <div class="content-sections">
-                    <!-- Sección contenido principal -->
-                    <div class="section-single">
-                        <div class="widget-contenido-principal">
-                            <p class="ubits-body-md-regular">Contenido principal</p>
-                            <br><br><br><br><br><br><br><br><br><br><br>
-                        </div>
-                    </div>
-                </div>
             </div>
         </main>
     </div>
@@ -437,6 +399,112 @@
     
     <!-- UBITS Components System -->
     <!-- Los componentes se cargan dinámicamente a través de components-loader.js -->
+    
+    <script>
+        // ========================================
+        // INTERCEPTAR ContentManager.updateContent
+        // Para eliminar HeaderSection y content-sections dinámicamente
+        // ⚠️ CRÍTICO: Interceptar INMEDIATAMENTE después de cargar content-manager.js
+        // ========================================
+        (function() {
+            if (window.UBITS_ContentManager && !window._UBITS_ContentManager_HeaderSection_Intercepted) {
+                window._UBITS_ContentManager_HeaderSection_Intercepted = true;
+                
+                const originalUpdateContent = window.UBITS_ContentManager.updateContent;
+                
+                window.UBITS_ContentManager.updateContent = function(section, subSection = null) {
+                    // Llamar al método original
+                    const result = originalUpdateContent.call(this, section, subSection);
+                    
+                    // Eliminar HeaderSection si se creó
+                    const contentArea = document.querySelector('.content-area');
+                    if (contentArea) {
+                        const headerSectionContainer = contentArea.querySelector('#header-section-container');
+                        if (headerSectionContainer) {
+                            console.log('🔵 [Template] Eliminando HeaderSection');
+                            headerSectionContainer.remove();
+                        }
+                        
+                        const headerSection = contentArea.querySelector('.ubits-header-section');
+                        if (headerSection) {
+                            const container = headerSection.closest('#header-section-container');
+                            if (container) {
+                                container.remove();
+                            } else {
+                                headerSection.remove();
+                            }
+                        }
+                    }
+                    
+                    return result;
+                };
+                
+                console.log('✅ [Template] ContentManager.updateContent interceptado para eliminar HeaderSection');
+            }
+            
+            // MutationObserver para eliminar HeaderSection si se crea dinámicamente
+            function setupHeaderSectionObserver() {
+                const contentArea = document.querySelector('.content-area');
+                if (!contentArea) {
+                    setTimeout(setupHeaderSectionObserver, 100);
+                    return;
+                }
+                
+                const observer = new MutationObserver((mutations) => {
+                    mutations.forEach((mutation) => {
+                        mutation.addedNodes.forEach((node) => {
+                            if (node.nodeType === 1) { // Element node
+                                // Verificar si es el contenedor del HeaderSection
+                                if (node.id === 'header-section-container' || 
+                                    node.querySelector && node.querySelector('#header-section-container')) {
+                                    console.log('🔵 [Template] HeaderSection detectado en MutationObserver, eliminando...');
+                                    const headerSectionContainer = node.id === 'header-section-container' 
+                                        ? node 
+                                        : node.querySelector('#header-section-container');
+                                    if (headerSectionContainer) {
+                                        setTimeout(() => {
+                                            headerSectionContainer.remove();
+                                            console.log('🔵 [Template] ✅ HeaderSection eliminado por MutationObserver');
+                                        }, 0);
+                                    }
+                                }
+                                
+                                // Verificar si contiene .ubits-header-section
+                                const headerSection = node.querySelector && node.querySelector('.ubits-header-section');
+                                if (headerSection) {
+                                    const container = headerSection.closest('#header-section-container');
+                                    if (container) {
+                                        setTimeout(() => {
+                                            container.remove();
+                                            console.log('🔵 [Template] ✅ HeaderSection eliminado por MutationObserver');
+                                        }, 0);
+                                    }
+                                }
+                            }
+                        });
+                    });
+                });
+                
+                observer.observe(contentArea, {
+                    childList: true,
+                    subtree: true
+                });
+                
+                console.log('✅ [Template] MutationObserver configurado para eliminar HeaderSection');
+            }
+            
+            // Configurar observer cuando el DOM esté listo
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', setupHeaderSectionObserver);
+            } else {
+                setupHeaderSectionObserver();
+            }
+            
+            // Reintentos adicionales por si acaso
+            setTimeout(setupHeaderSectionObserver, 500);
+            setTimeout(setupHeaderSectionObserver, 1000);
+        })();
+    </script>
     
     <script>
         // ========================================
