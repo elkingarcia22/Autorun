@@ -2467,6 +2467,19 @@
           // Esta función DEBE usarse siempre para tooltips/popovers para evitar que se salgan de la pantalla
           // Ajusta dinámicamente el ancho y la posición para centrar el tooltip al componente
           const calculateOptimalPosition = (refRect, tooltipElement, preferredTailPosition) => {
+            // ⚠️ CRÍTICO: Verificar que tooltipElement sea un elemento válido
+            if (!tooltipElement || typeof tooltipElement.getBoundingClientRect !== 'function') {
+              console.error('❌ [Tooltip] tooltipElement no es un elemento válido:', tooltipElement);
+              // Retornar valores por defecto si hay error
+              return {
+                top: refRect.bottom + 8,
+                left: refRect.left + refRect.width / 2,
+                transform: 'translateX(-50%)',
+                tailPosition: preferredTailPosition,
+                maxWidth: null,
+              };
+            }
+            
             const viewport = {
               width: window.innerWidth,
               height: window.innerHeight,
