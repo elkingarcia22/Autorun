@@ -43,7 +43,13 @@ export async function discoverStorybookComponents(): Promise<DiscoveryResult> {
     const baseUrlResult = await getStorybookUrlWithFallback('', {
       checkAvailability: false,
     });
-    const baseUrl = baseUrlResult.url.replace(/\/$/, '');
+    let baseUrl = baseUrlResult.url.replace(/\/$/, '');
+
+    // ⚠️ CRÍTICO: Remover parámetros de bypass de la URL base para index.json
+    // La URL base puede tener parámetros como ?x-vercel-set-bypass-cookie=...
+    // Necesitamos solo el dominio para index.json
+    const urlObj = new URL(baseUrl);
+    baseUrl = `${urlObj.protocol}//${urlObj.host}`;
 
     // Intentar obtener index.json
     const indexUrl = `${baseUrl}/index.json`;
