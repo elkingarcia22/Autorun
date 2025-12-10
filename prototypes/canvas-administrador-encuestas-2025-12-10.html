@@ -2480,11 +2480,60 @@
               };
             }
             
-            const viewport = {
+            // ⚠️ CRÍTICO: Encontrar el contenedor principal (main-content o el contenedor más cercano)
+            // Esto asegura que el tooltip respete los límites del área de contenido, no solo el viewport
+            let containerRect = null;
+            if (referenceElement) {
+              // Buscar el contenedor principal (.main-content o .content-area)
+              let container = referenceElement.closest('.main-content') || 
+                             referenceElement.closest('.content-area') ||
+                             referenceElement.closest('main') ||
+                             referenceElement.parentElement;
+              
+              // Si encontramos un contenedor, usar sus límites
+              if (container) {
+                containerRect = container.getBoundingClientRect();
+              }
+            }
+            
+            // Si no hay contenedor, usar viewport como fallback
+            const bounds = containerRect || {
+              left: 0,
+              top: 0,
+              right: window.innerWidth,
+              bottom: window.innerHeight,
               width: window.innerWidth,
               height: window.innerHeight,
             };
+            
+            // ⚠️ CRÍTICO: Asegurar que todos los valores sean números válidos
+            const viewport = {
+              width: bounds.width || window.innerWidth,
+              height: bounds.height || window.innerHeight,
+              left: bounds.left || 0,
+              top: bounds.top || 0,
+              right: bounds.right || window.innerWidth,
+              bottom: bounds.bottom || window.innerHeight,
+            };
             const padding = 8; // Padding mínimo desde los bordes
+            
+            // ⚠️ DEBUG: Verificar valores del viewport
+            if (isNaN(viewport.width) || isNaN(viewport.height) || isNaN(viewport.left) || isNaN(viewport.right)) {
+              console.error('❌ [Tooltip] Valores inválidos del viewport:', {
+                containerRect,
+                bounds,
+                viewport,
+                windowInnerWidth: window.innerWidth,
+                windowInnerHeight: window.innerHeight
+              });
+              // Usar valores del window como fallback seguro
+              viewport.width = window.innerWidth;
+              viewport.height = window.innerHeight;
+              viewport.left = 0;
+              viewport.top = 0;
+              viewport.right = window.innerWidth;
+              viewport.bottom = window.innerHeight;
+            }
 
             let finalTailPosition = preferredTailPosition;
             let finalTop = 0;
