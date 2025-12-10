@@ -15,7 +15,7 @@ import {
   detectComponentFromMessage,
 } from './implementationHelpers';
 import { buildSafeStorybookUrl } from './verifyStorybookStories';
-import { mapComponentNameToStorybookId } from './componentHelpers';
+import { mapComponentNameToStorybookId } from './storybookStories';
 import * as path from 'path';
 
 /**
@@ -158,8 +158,11 @@ export async function autoImplementationFlow(
 
 /**
  * Obtener URL del template desde la ruta del archivo
+ *
+ * ⚠️ NOTA: Esta función también está exportada desde autoReloadHelper.ts
+ * Se mantiene aquí para compatibilidad, pero se recomienda usar la de autoReloadHelper
  */
-export function getTemplateUrlFromPath(filePath: string): string {
+export function getTemplateUrlFromPathForFlow(filePath: string): string {
   const fileName = path.basename(filePath);
   return `http://localhost:3000/${fileName}`;
 }
