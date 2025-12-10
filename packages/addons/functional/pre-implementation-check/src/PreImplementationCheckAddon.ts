@@ -570,15 +570,21 @@ ${missingSteps.map((step) => `  - ${step}`).join('\n')}
    * Obtiene el nombre del archivo de documentación para un componente
    */
   private getDocFileName(componentName: string): string {
-    const docFileMap: Record<string, string> = {
-      DataTable: 'data-data-table.md',
-      Tabs: 'navegacin-tabs.md',
-      Button: 'bsicos-button.md',
-      Modal: 'feedback-modal.md',
-      Sidebar: 'navegacin-sidebar.md',
-      SubNav: 'navegacin-subnav.md',
-      TabBar: 'navegacin-tab-bar.md',
-    };
+    // ⚠️ CRÍTICO: Usar mapComponentNameToDocFile del core para consistencia
+    try {
+      const { mapComponentNameToDocFile } = require('@autorun/core/helpers/componentHelpers');
+      return mapComponentNameToDocFile(componentName) + '.md';
+    } catch (error) {
+      // Fallback si no está disponible
+      const docFileMap: Record<string, string> = {
+        DataTable: 'data-data-table.md',
+        Tabs: 'navegacin-tabs.md', // ⚠️ NOTA: El archivo real se llama 'navegacin-tabs.md' (sin 'o')
+        Button: 'bsicos-button.md',
+        Modal: 'feedback-modal.md',
+        Sidebar: 'navegacion-sidebar.md', // ⚠️ CORREGIDO: era 'navegacin-sidebar.md'
+        SubNav: 'navegacion-sub-nav.md', // ⚠️ CORREGIDO: era 'navegacin-subnav.md'
+        TabBar: 'navegacin-tab-bar.md', // ⚠️ NOTA: Verificar nombre real del archivo
+      };
     return docFileMap[componentName] || `${componentName.toLowerCase()}.md`;
   }
 
