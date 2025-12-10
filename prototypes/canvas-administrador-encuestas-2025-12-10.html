@@ -954,6 +954,16 @@
                     
                     console.log('🔵 [Encuestas] updateContent interceptado para sección:', section);
                     
+                    // ⚠️ CRÍTICO: Guardar referencia al contenedor del DataTable ANTES de llamar al método original
+                    const contentAreaBefore = document.querySelector('.content-area');
+                    let existingTableContainer = null;
+                    if (contentAreaBefore) {
+                        existingTableContainer = contentAreaBefore.querySelector('#encuestas-table-container');
+                        if (existingTableContainer) {
+                            console.log('🔵 [Encuestas] Guardando referencia al contenedor del DataTable antes de updateContent');
+                        }
+                    }
+                    
                     // Llamar al método original (que limpia el content-area y crea HeaderSection)
                     const result = originalUpdateContent.call(this, section, subSection);
                     
