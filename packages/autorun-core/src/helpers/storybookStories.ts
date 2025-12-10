@@ -288,7 +288,7 @@ export function mapComponentNameToStorybookId(componentName: string): string {
     Select: 'formularios-select',
     Alert: 'feedback-alert',
     Toast: 'feedback-toast',
-    Drawer: 'feedback-drawer',
+    Drawer: 'feedback-drawer-navigation',
     Popover: 'feedback-popover',
     Tooltip: 'feedback-tooltip',
   };
