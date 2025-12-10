@@ -1002,18 +1002,28 @@
                         }
                     }, 100);
                     
-                    // ⚠️ CRÍTICO: Usar requestAnimationFrame para timing correcto
-                    requestAnimationFrame(() => {
+                    // ⚠️ CRÍTICO: Restaurar el contenedor del DataTable INMEDIATAMENTE después de que el ContentManager termine
+                    // Usar setTimeout con delay mínimo para restaurar después de que innerHTML = '' se ejecute
+                    setTimeout(() => {
                         const contentArea = document.querySelector('.content-area');
                         if (!contentArea) {
                             return;
                         }
                         
-                        // ⚠️ CRÍTICO: Guardar referencia al contenedor del DataTable ANTES de limpiar
-                        let existingTableContainer = contentArea.querySelector('#encuestas-table-container');
-                        let shouldRestoreDataTable = false;
+                        // Restaurar el contenedor del DataTable
+                        let tableContainer = contentArea.querySelector('#encuestas-table-container');
+                        if (!tableContainer && savedTableContainerHTML) {
+                            console.log('🔵 [Encuestas] Restaurando contenedor del DataTable desde HTML guardado...');
+                            contentArea.insertAdjacentHTML('afterbegin', savedTableContainerHTML);
+                            tableContainer = contentArea.querySelector('#encuestas-table-container');
+                        } else if (!tableContainer) {
+                            console.log('🔵 [Encuestas] Creando nuevo contenedor del DataTable...');
+                            tableContainer = document.createElement('div');
+                            tableContainer.id = 'encuestas-table-container';
+                            contentArea.insertAdjacentElement('afterbegin', tableContainer);
+                        }
                         
-                        // Eliminar TODOS los elementos relacionados (EXCEPTO el contenedor del DataTable)
+                        // Eliminar elementos no deseados que el ContentManager crea
                         const headerContainer = contentArea.querySelector('#header-section-container');
                         if (headerContainer) {
                             console.log('🔵 [Encuestas] Eliminando HeaderSection');
@@ -1043,54 +1053,25 @@
                             widgetPrincipal.closest('.section-single')?.remove() || widgetPrincipal.remove();
                         }
                         
-                        // ⚠️ CRÍTICO: Restaurar el contenedor del DataTable DESPUÉS de que el ContentManager termine
-                        let tableContainer = contentArea.querySelector('#encuestas-table-container');
-                        if (!tableContainer) {
-                            console.log('🔵 [Encuestas] Contenedor del DataTable eliminado, restaurando...');
-                            if (savedTableContainerHTML) {
-                                // Restaurar desde el HTML guardado
-                                contentArea.insertAdjacentHTML('afterbegin', savedTableContainerHTML);
-                                tableContainer = contentArea.querySelector('#encuestas-table-container');
-                                console.log('✅ [Encuestas] Contenedor restaurado desde HTML guardado');
-                            } else {
-                                // Crear nuevo contenedor
-                                tableContainer = document.createElement('div');
-                                tableContainer.id = 'encuestas-table-container';
-                                contentArea.appendChild(tableContainer);
-                                console.log('✅ [Encuestas] Nuevo contenedor creado');
-                            }
-                            shouldRestoreDataTable = true;
-                        } else if (!tableContainer.querySelector('.ubits-data-table')) {
-                            console.log('🔵 [Encuestas] Contenedor existe pero DataTable no encontrado, reinicializando...');
-                            shouldRestoreDataTable = true;
-                        } else {
-                            console.log('✅ [Encuestas] Contenedor y DataTable ya existen');
-                        }
-                        
-                        // ⚠️ CRÍTICO: Reinicializar el DataTable después de restaurar el contenedor
-                        // Usar múltiples timeouts para asegurar que se cree después de que el ContentManager termine
-                        if (shouldRestoreDataTable) {
-                            // Esperar un poco más para asegurar que el ContentManager terminó completamente
+                        // Reinicializar la DataTable si no existe
+                        if (tableContainer && !tableContainer.querySelector('.ubits-data-table')) {
+                            console.log('🔵 [Encuestas] DataTable no encontrada, reinicializando...');
+                            encuestasDataTableInitialized = false;
                             setTimeout(() => {
-                                const finalContainer = contentArea.querySelector('#encuestas-table-container');
-                                if (finalContainer && !finalContainer.querySelector('.ubits-data-table')) {
-                                    console.log('🔵 [Encuestas] Reinicializando DataTable después de restaurar contenedor...');
-                                    encuestasDataTableInitialized = false;
-                                    if (typeof window.createDataTable === 'function') {
-                                        initializeEncuestasDataTable();
-                                    } else {
-                                        console.warn('⚠️ [Encuestas] window.createDataTable no disponible, esperando...');
-                                        setTimeout(() => {
-                                            if (typeof window.createDataTable === 'function') {
-                                                encuestasDataTableInitialized = false;
-                                                initializeEncuestasDataTable();
-                                            }
-                                        }, 1000);
-                                    }
+                                if (typeof window.createDataTable === 'function') {
+                                    initializeEncuestasDataTable();
+                                } else {
+                                    console.warn('⚠️ [Encuestas] window.createDataTable no disponible, esperando...');
+                                    setTimeout(() => {
+                                        if (typeof window.createDataTable === 'function') {
+                                            encuestasDataTableInitialized = false;
+                                            initializeEncuestasDataTable();
+                                        }
+                                    }, 1000);
                                 }
-                            }, 1500);
+                            }, 200);
                         }
-                    });
+                    }, 100);
                     
                     return result;
                 };
