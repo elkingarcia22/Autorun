@@ -2817,23 +2817,53 @@
     }
 
     function initializeEncuestasDataTable() {
+      console.log('🔵 [Encuestas DataTable] initializeEncuestasDataTable llamada');
+      
       if (encuestasDataTableInitialized) {
+        console.log('⚠️ [Encuestas DataTable] Ya inicializado, saltando...');
         return;
       }
       
       const currentModule = document.body.getAttribute('data-module');
+      console.log('🔵 [Encuestas DataTable] Módulo actual:', currentModule);
       if (currentModule !== 'encuestas') {
+        console.warn('⚠️ [Encuestas DataTable] No es módulo encuestas, saltando...');
         return;
       }
       
       const container = document.getElementById('encuestas-table-container');
       if (!container) {
         console.warn('⚠️ [Encuestas DataTable] Contenedor no encontrado');
+        console.log('🔵 [Encuestas DataTable] Buscando contenedor en content-area...');
+        const contentArea = document.querySelector('.content-area');
+        if (contentArea) {
+          console.log('🔵 [Encuestas DataTable] content-area encontrado, creando contenedor...');
+          const newContainer = document.createElement('div');
+          newContainer.id = 'encuestas-table-container';
+          contentArea.appendChild(newContainer);
+          console.log('✅ [Encuestas DataTable] Contenedor creado');
+        } else {
+          console.error('❌ [Encuestas DataTable] content-area no encontrado');
+          return;
+        }
+      } else {
+        console.log('✅ [Encuestas DataTable] Contenedor encontrado');
+      }
+      
+      const containerFinal = document.getElementById('encuestas-table-container');
+      if (!containerFinal) {
+        console.error('❌ [Encuestas DataTable] Contenedor aún no existe después de intentar crearlo');
         return;
       }
       
       if (typeof window.createDataTable !== 'function') {
         console.warn('⚠️ [Encuestas DataTable] window.createDataTable no está disponible');
+        console.log('🔵 [Encuestas DataTable] Funciones disponibles:', {
+          createTabs: typeof window.createTabs,
+          createSidebar: typeof window.createSidebar,
+          createSubNav: typeof window.createSubNav,
+          createDataTable: typeof window.createDataTable
+        });
         return;
       }
       
