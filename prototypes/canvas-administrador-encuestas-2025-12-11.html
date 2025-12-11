@@ -1404,6 +1404,123 @@
                     }, 200);
                 });
                 
+                // ========================================
+                // FUNCIÓN: Actualizar Action Bar
+                // ========================================
+                let viewSelectedActive = false;
+                let encuestasDataOriginal = [];
+                
+                function updateActionBar(containerId, allData) {
+                    const container = document.getElementById(containerId);
+                    if (!container) return;
+                    
+                    // Guardar datos originales si no están guardados
+                    if (encuestasDataOriginal.length === 0) {
+                        encuestasDataOriginal = [...allData];
+                    }
+                    
+                    const dataTable = container.querySelector('.ubits-data-table');
+                    if (!dataTable) return;
+                    
+                    // Obtener filas seleccionadas
+                    const checkboxes = dataTable.querySelectorAll('input[type="checkbox"]:checked');
+                    const selectedCount = Array.from(checkboxes).filter(cb => cb.closest('tbody tr')).length;
+                    
+                    // Buscar o crear Action Bar
+                    let actionBar = container.querySelector('.ubits-data-table__action-bar');
+                    if (!actionBar && selectedCount > 0) {
+                        actionBar = document.createElement('div');
+                        actionBar.className = 'ubits-data-table__action-bar';
+                        actionBar.style.cssText = `
+                            display: flex;
+                            align-items: center;
+                            justify-content: flex-start;
+                            flex-wrap: wrap;
+                            gap: var(--ubits-spacing-xs, 4px);
+                            padding: var(--ubits-spacing-sm, 8px) 0;
+                            background-color: var(--ubits-bg-1);
+                        `;
+                        
+                        const header = container.querySelector('.ubits-data-table__header');
+                        if (header && header.nextSibling) {
+                            header.parentNode.insertBefore(actionBar, header.nextSibling);
+                        } else if (header) {
+                            header.parentNode.appendChild(actionBar);
+                        }
+                    }
+                    
+                    // Mostrar/ocultar Action Bar
+                    if (actionBar) {
+                        if (selectedCount === 0) {
+                            actionBar.style.display = 'none';
+                            // Restaurar datos originales si "Ver seleccionados" estaba activo
+                            if (viewSelectedActive) {
+                                viewSelectedActive = false;
+                                // Restaurar tabla con todos los datos
+                                if (window.createDataTable) {
+                                    const currentTable = container.querySelector('.ubits-data-table');
+                                    if (currentTable) {
+                                        // Aquí se podría restaurar la tabla, pero por ahora solo ocultamos
+                                    }
+                                }
+                            }
+                        } else {
+                            actionBar.style.display = 'flex';
+                            
+                            // Limpiar contenido previo
+                            actionBar.innerHTML = '';
+                            
+                            // Botón "Ver seleccionados"
+                            const viewButton = document.createElement('button');
+                            viewButton.className = 'ubits-button ubits-button--variant-ghost ubits-button--size-md';
+                            viewButton.textContent = `Ver seleccionados (${selectedCount})`;
+                            viewButton.onclick = () => {
+                                viewSelectedActive = !viewSelectedActive;
+                                // Aquí se implementaría el filtrado de la tabla
+                                console.log('🔵 [Encuestas] Ver seleccionados:', selectedCount);
+                            };
+                            actionBar.appendChild(viewButton);
+                            
+                            // Botones según cantidad de selección
+                            if (selectedCount === 1) {
+                                // Acciones individuales
+                                const actions = [
+                                    { icon: 'bell', label: 'Notificaciones' },
+                                    { icon: 'copy', label: 'Copiar' },
+                                    { icon: 'eye', label: 'Ver' },
+                                    { icon: 'pencil', label: 'Editar' },
+                                    { icon: 'download', label: 'Descargar' },
+                                    { icon: 'trash', label: 'Eliminar', variant: 'error' }
+                                ];
+                                
+                                actions.forEach(action => {
+                                    const btn = document.createElement('button');
+                                    btn.className = `ubits-button ubits-button--variant-ghost ubits-button--size-md ${action.variant === 'error' ? 'ubits-button--color-error' : ''}`;
+                                    btn.innerHTML = `<i class="fa-${action.icon}"></i>`;
+                                    btn.title = action.label;
+                                    btn.onclick = () => console.log(`🔵 [Encuestas] ${action.label}`);
+                                    actionBar.appendChild(btn);
+                                });
+                            } else {
+                                // Acciones grupales
+                                const actions = [
+                                    { icon: 'bell', label: 'Notificaciones' },
+                                    { icon: 'trash', label: 'Eliminar', variant: 'error' }
+                                ];
+                                
+                                actions.forEach(action => {
+                                    const btn = document.createElement('button');
+                                    btn.className = `ubits-button ubits-button--variant-ghost ubits-button--size-md ${action.variant === 'error' ? 'ubits-button--color-error' : ''}`;
+                                    btn.innerHTML = `<i class="fa-${action.icon}"></i>`;
+                                    btn.title = action.label;
+                                    btn.onclick = () => console.log(`🔵 [Encuestas] ${action.label} (${selectedCount} items)`);
+                                    actionBar.appendChild(btn);
+                                });
+                            }
+                        }
+                    }
+                }
+                
                 // Inicializar responsive DESPUÉS de que los componentes se hayan cargado
                 // Esto asegura que adaptComponents() encuentre los componentes
                 setTimeout(() => {
