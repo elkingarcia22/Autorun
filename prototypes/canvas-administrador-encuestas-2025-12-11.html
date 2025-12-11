@@ -1199,6 +1199,8 @@
                             return encuestas;
                         }
                         
+                        const encuestasData = generateEncuestasData();
+                        
                         window.createDataTable({
                             containerId: 'encuestas-table-container',
                             columns: [
@@ -1209,10 +1211,38 @@
                                 { id: 'participantes', title: 'Participantes', type: 'nombre' },
                                 { id: 'avance', title: 'Avance', type: 'progreso' }
                             ],
-                            rows: generateEncuestasData(),
+                            rows: encuestasData,
+                            
+                            // Header completo
+                            header: {
+                                title: 'Lista de encuestas',
+                                counter: true,
+                                displayedItems: encuestasData.length,
+                                totalItems: encuestasData.length,
+                                primaryButton: {
+                                    text: 'Crear encuesta',
+                                    icon: 'plus',
+                                    onClick: () => {
+                                        console.log('🔵 [Encuestas] Crear encuesta');
+                                    }
+                                },
+                                secondaryButtons: [
+                                    {
+                                        text: 'Crear con plantilla',
+                                        icon: 'file-lines',
+                                        onClick: () => {
+                                            console.log('🔵 [Encuestas] Crear con plantilla');
+                                        }
+                                    }
+                                ],
+                                searchButton: true,
+                                filterButton: true
+                            },
+                            
+                            // Checkboxes (después del header)
+                            showCheckbox: true,
                             
                             // Configuración básica (sin funcionalidades avanzadas todavía)
-                            showCheckbox: false, // Se agregará después del header
                             columnSortable: false, // Se agregará después
                             rowExpandable: false, // Se agregará después
                             columnReorderable: false, // Se agregará después
