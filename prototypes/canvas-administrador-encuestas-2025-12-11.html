@@ -832,7 +832,10 @@
                             return;
                         }
                         
-                        // Eliminar TODOS los elementos relacionados
+                        // ⚠️ CRÍTICO: NO eliminar el contenedor del DataTable
+                        const dataTableContainer = contentArea.querySelector('#encuestas-table-container');
+                        
+                        // Eliminar TODOS los elementos relacionados (excepto el DataTable)
                         const headerContainer = contentArea.querySelector('#header-section-container');
                         if (headerContainer) {
                             console.log('🔵 [Encuestas] Eliminando HeaderSection');
@@ -860,6 +863,16 @@
                         if (widgetPrincipal) {
                             console.log('🔵 [Encuestas] Eliminando .widget-contenido-principal');
                             widgetPrincipal.closest('.section-single')?.remove() || widgetPrincipal.remove();
+                        }
+                        
+                        // ⚠️ CRÍTICO: Asegurar que el contenedor del DataTable esté presente
+                        if (!dataTableContainer) {
+                            const newContainer = document.createElement('div');
+                            newContainer.id = 'encuestas-table-container';
+                            contentArea.appendChild(newContainer);
+                            console.log('🔵 [Encuestas] Contenedor del DataTable recreado');
+                            // Reinicializar el DataTable
+                            setTimeout(initializeDataTable, 500);
                         }
                     });
                     
