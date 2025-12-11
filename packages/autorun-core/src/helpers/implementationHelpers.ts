@@ -133,7 +133,21 @@ export function detectComponentFromContent(content: string): string | null {
 export function detectComponentFromMessage(message: string): string | null {
   const patterns = [
     {
-      pattern: /implementar.*data.?table|crear.*tabla|data.?table/i,
+      // ⚠️ MEJORADO: Detección más amplia de DataTable
+      pattern:
+        /(?:implementar|crear|agregar|poner|hacer|necesito|quiero|debe).*(?:data.?table|data-table|tabla|tabla de datos|tabla con|tabla que|tabla para)/i,
+      component: 'DataTable',
+    },
+    // Detección directa de "tabla" o "data table" (sin verbo)
+    {
+      pattern:
+        /(?:^|\s)(?:una\s+)?(?:data.?table|data-table|tabla\s+de\s+datos|tabla\s+con\s+columnas|tabla\s+con\s+filas)(?:\s|$)/i,
+      component: 'DataTable',
+    },
+    // Detección de contexto de tabla (columnas, filas, paginación, etc.)
+    {
+      pattern:
+        /(?:tabla|data.?table).*(?:columnas|filas|paginación|búsqueda|filtros|ordenamiento|checkboxes)/i,
       component: 'DataTable',
     },
     { pattern: /implementar.*tabs?|crear.*tabs?/i, component: 'Tabs' },

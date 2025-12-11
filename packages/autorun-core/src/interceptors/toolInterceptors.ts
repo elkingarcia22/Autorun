@@ -13,6 +13,8 @@ import {
   getTemplateUrlFromPathForFlow,
 } from '../helpers/autoImplementationFlow';
 import { ComponentImplementationValidator } from '../helpers/componentImplementationValidator';
+import { PhaseValidator } from '../validation/PhaseValidator';
+import { ActiveStepGuide } from '../helpers/activeStepGuide';
 import * as path from 'path';
 
 /**
@@ -37,6 +39,67 @@ export async function interceptedWrite(
   );
   console.log('🛡️ [Tool Interceptor] Interceptando write()...');
   console.log(`🛡️ [Tool Interceptor] Archivo: ${filePath}`);
+
+  // ⭐ NUEVO: Validar fase actual ANTES de continuar
+  if (context?.componentName) {
+    console.log(
+      `🔍 [Tool Interceptor] Validando fase actual para: ${context.componentName}`
+    );
+
+    // Obtener paso activo actual
+    const activeStepResult = await ActiveStepGuide.getCurrentStep(
+      context.componentName
+    );
+
+    if (activeStepResult.blocked && activeStepResult.currentStep) {
+      const step = activeStepResult.currentStep;
+      console.error(
+        `❌ [Tool Interceptor] BLOQUEADO: Debes completar el paso activo primero`
+      );
+      console.error(
+        `❌ [Tool Interceptor] Paso requerido: ${step.description}`
+      );
+      console.error(
+        `❌ [Tool Interceptor] Acciones requeridas: ${step.requiredActions.join(', ')}`
+      );
+
+      if (step.storybookUrl) {
+        console.log(
+          `📚 [Tool Interceptor] URL de Storybook: ${step.storybookUrl}`
+        );
+      }
+
+      if (step.guides && step.guides.length > 0) {
+        console.log(
+          `📖 [Tool Interceptor] Guías requeridas: ${step.guides.join(', ')}`
+        );
+      }
+
+      throw new Error(
+        `❌ IMPLEMENTACIÓN BLOQUEADA: Debes completar "${step.description}" antes de continuar. Acciones requeridas: ${step.requiredActions.join('; ')}`
+      );
+    }
+
+    // Validar orden de fases si estamos en una fase específica
+    // (Esto se hace automáticamente en autoImplementationFlow, pero lo validamos aquí también)
+    const currentPhase = await PhaseValidator.getNextRequiredPhase(
+      context.componentName
+    );
+    if (currentPhase) {
+      const phaseValidation = await PhaseValidator.validatePhaseOrder(
+        context.componentName,
+        currentPhase
+      );
+      if (!phaseValidation.valid) {
+        console.error(
+          `❌ [Tool Interceptor] Orden de fases inválido: ${phaseValidation.reason}`
+        );
+        throw new Error(
+          `❌ IMPLEMENTACIÓN BLOQUEADA: ${phaseValidation.reason}`
+        );
+      }
+    }
+  }
 
   // ⭐ NUEVO: Validar implementación común ANTES del flujo automático
   const implementationValidation =

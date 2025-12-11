@@ -160,6 +160,20 @@ export class PreWriteValidator {
       errors.push(...imageResult.errors);
     }
 
+    // ⭐ NUEVO: Detectar operaciones comunes y verificar guías obligatorias
+    console.log(`🔍 [PreWriteValidator] Detectando operaciones comunes...`);
+    const operationsResult = await this.verifyCommonOperations(
+      content,
+      filePath
+    );
+    console.log(
+      `🔍 [PreWriteValidator] Resultado detección de operaciones:`,
+      operationsResult
+    );
+    if (!operationsResult.valid) {
+      errors.push(...operationsResult.errors);
+    }
+
     // ⭐ NUEVO: Si hay errores, generar mensajes más claros
     if (errors.length > 0) {
       const hub = await getAutorunHub();
@@ -341,6 +355,77 @@ export class PreWriteValidator {
     }
 
     return { valid: true, errors: [], warnings: [] };
+  }
+
+  /**
+   * ⭐ NUEVO: Verificar operaciones comunes y guías obligatorias
+   */
+  private static async verifyCommonOperations(
+    content: string,
+    filePath: string
+  ): Promise<ValidationResult> {
+    const errors: string[] = [];
+    const warnings: string[] = [];
+
+    // Importar OperationDetector dinámicamente
+    try {
+      const { OperationDetector } = await import('./OperationDetector');
+
+      // Detectar operaciones comunes
+      const detectedOperations = OperationDetector.detectOperations(
+        content,
+        filePath
+      );
+
+      if (detectedOperations.length === 0) {
+        return { valid: true, errors: [], warnings: [] };
+      }
+
+      console.log(
+        `🔍 [PreWriteValidator] ${detectedOperations.length} operación(es) común(es) detectada(s)`
+      );
+
+      // Verificar cada operación detectada
+      for (const operation of detectedOperations) {
+        // Por ahora, siempre requerir consultar la guía
+        // En el futuro, esto podría usar un sistema de tracking más sofisticado
+        const guideWasRead = OperationDetector.checkGuideWasRead(
+          operation.requiredGuide
+        );
+
+        if (!guideWasRead) {
+          const errorMessage = OperationDetector.getErrorMessage(operation);
+
+          if (operation.severity === 'critical') {
+            errors.push(errorMessage);
+            console.error(
+              `❌ [PreWriteValidator] Operación crítica detectada sin guía consultada: ${operation.operation}`
+            );
+          } else {
+            warnings.push(errorMessage);
+            console.warn(
+              `⚠️ [PreWriteValidator] Operación detectada sin guía consultada: ${operation.operation}`
+            );
+          }
+        } else {
+          console.log(
+            `✅ [PreWriteValidator] Guía consultada para operación: ${operation.operation}`
+          );
+        }
+      }
+    } catch (error) {
+      // Si OperationDetector no está disponible, solo advertir
+      console.warn(
+        '⚠️ [PreWriteValidator] OperationDetector no está disponible, saltando verificación de operaciones comunes'
+      );
+      return { valid: true, errors: [], warnings: [] };
+    }
+
+    return {
+      valid: errors.length === 0,
+      errors,
+      warnings,
+    };
   }
 }
 

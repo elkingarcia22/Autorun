@@ -214,11 +214,48 @@ await run_terminal_cmd({
 
 ---
 
-## 📋 PASO 2: CHECKLIST ANTES DE CUALQUIER ACCIÓN
+## 📋 PASO 2: DETECCIÓN AUTOMÁTICA DE COMPONENTES ⭐ NUEVO
+
+**⚠️ OBLIGATORIO: Ejecutar detección automática de componentes (después de inicializar AutorunHub):**
+
+```typescript
+// ⚠️ OBLIGATORIO: Ejecutar esto PRIMERO en cada mensaje
+import { executeAutoDetectionOnMessage } from '@autorun/core/helpers/autoComponentDetection';
+
+const detectionResult = await executeAutoDetectionOnMessage(userMessage);
+
+if (detectionResult.detected && detectionResult.componentName) {
+  console.log(`✅ Componente detectado: ${detectionResult.componentName}`);
+  console.log(`   Confianza: ${detectionResult.confidence}`);
+  
+  if (detectionResult.plan) {
+    console.log(`📋 Plan basado en historias: ${detectionResult.plan.totalSteps} historias`);
+    // ⚠️ CRÍTICO: Mostrar plan al usuario y pedir aprobación antes de implementar
+  }
+  
+  if (detectionResult.verification?.blocked) {
+    console.error(`❌ Implementación bloqueada: ${detectionResult.verification.reason}`);
+    // Completar pasos faltantes antes de continuar
+  }
+}
+```
+
+**Este sistema detecta automáticamente:**
+- ✅ "tabla" → DataTable
+- ✅ "data table" → DataTable
+- ✅ "tabs" → Tabs
+- ✅ Y otros componentes UBITS
+
+**Ver guía completa:** `docs/guias/implementacion/GUIA-DETECCION-AUTOMATICA-COMPONENTES.md` - ⚠️ **OBLIGATORIO**
+
+---
+
+## 📋 PASO 3: CHECKLIST ANTES DE CUALQUIER ACCIÓN
 
 **ANTES de usar CUALQUIER herramienta de escritura/edición, verifica:**
 
 - [ ] ¿He detectado triggers de imagen? → Si SÍ, leer `.cursor/rules/01-deteccion-imagen.md` primero
+- [ ] ¿He detectado componentes automáticamente? → Si SÍ, mostrar plan y pedir aprobación ⭐ NUEVO
 - [ ] ¿He leído las guías obligatorias? → Si NO y hay triggers, LEERLAS PRIMERO
 - [ ] ¿He identificado el template existente? → Si NO y hay triggers, IDENTIFICARLO PRIMERO
 - [ ] ¿He analizado la imagen detalladamente? → Si NO y hay triggers, ANALIZARLA PRIMERO

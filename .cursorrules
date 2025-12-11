@@ -8,7 +8,106 @@
 
 **🚨 ESTA ES LA PRIMERA ACCIÓN OBLIGATORIA EN CADA SESIÓN 🚨**
 
-## 🔍 DETECCIÓN AUTOMÁTICA DEL WIZARD (EJECUTAR PRIMERO) ⚠️ OBLIGATORIO
+## 🔍🔍🔍 EJECUCIÓN AUTOMÁTICA AL INICIO (EJECUTAR PRIMERO) ⚠️ OBLIGATORIO ⭐ NUEVO
+
+**🚨 ESTA ES LA PRIMERA ACCIÓN: EJECUTAR executeOnMessageStart() 🚨**
+
+**⚠️ ANTES de cualquier otra cosa, SIEMPRE ejecutar executeOnMessageStart() al inicio de cada mensaje:**
+
+```typescript
+// ⚠️ OBLIGATORIO: Ejecutar esto PRIMERO en cada mensaje (después de inicializar AutorunHub)
+import { executeOnMessageStart, ActiveStepGuide, PhaseValidator } from '@autorun/core';
+
+const result = await executeOnMessageStart(userMessage);
+
+if (result.blocked) {
+  // ❌ NO continuar con la implementación
+  console.error(`❌ IMPLEMENTACIÓN BLOQUEADA: ${result.reason}`);
+  console.error(`📋 Pasos faltantes o fases no completadas`);
+  
+  if (result.plan) {
+    console.log(`📚 Plan basado en historias disponible: ${result.plan.totalSteps} historias`);
+  }
+  
+  // Obtener paso activo actual para mostrar al usuario
+  if (result.componentName) {
+    const activeStep = await ActiveStepGuide.getCurrentStep(result.componentName);
+    if (activeStep.currentStep) {
+      console.error(`📋 Paso activo requerido: ${activeStep.currentStep.description}`);
+      console.error(`📋 Acciones requeridas: ${activeStep.currentStep.requiredActions.join('; ')}`);
+      if (activeStep.currentStep.storybookUrl) {
+        console.log(`📚 URL de Storybook: ${activeStep.currentStep.storybookUrl}`);
+      }
+      if (activeStep.currentStep.guides) {
+        console.log(`📖 Guías requeridas: ${activeStep.currentStep.guides.join(', ')}`);
+      }
+    }
+  }
+  
+  // Mostrar razón y plan al usuario
+  // Completar pasos faltantes antes de continuar
+  throw new Error(`❌ BLOQUEADO: ${result.reason}`);
+}
+
+if (result.detected && result.componentName) {
+  console.log(`✅ Componente detectado: ${result.componentName}`);
+  console.log(`   Fase actual: ${result.currentPhase || 'Ninguna'}`);
+  console.log(`   Siguiente fase: ${result.nextPhase || 'Ninguna'}`);
+  
+  // Obtener paso activo actual
+  const activeStep = await ActiveStepGuide.getCurrentStep(result.componentName);
+  if (activeStep.hasActiveStep && activeStep.currentStep) {
+    console.log(`📋 Paso activo: ${activeStep.currentStep.description}`);
+    console.log(`📋 Acciones requeridas: ${activeStep.currentStep.requiredActions.join('; ')}`);
+    
+    // Bloquear hasta completar el paso activo
+    if (activeStep.blocked) {
+      throw new Error(`❌ BLOQUEADO: ${activeStep.reason}`);
+    }
+  }
+  
+  if (result.plan) {
+    console.log(`📋 Plan basado en historias disponible: ${result.plan.totalSteps} historias`);
+    // ⚠️ CRÍTICO: Mostrar plan al usuario y pedir aprobación antes de implementar
+  }
+  
+  // ✅ Continuar con la implementación siguiendo el plan
+}
+```
+
+**Este sistema:**
+- ✅ Detecta triggers de palabras clave automáticamente (`implementar`, `crear`, `agregar`, etc.)
+- ✅ Detecta componentes automáticamente
+- ✅ Verifica fases en orden (FASE 0 → 0.1 → 0.5 → 0.6 → 1 → 2)
+- ✅ Obtiene plan basado en historias
+- ✅ Muestra paso activo actual con acciones requeridas
+- ✅ Bloquea si faltan pasos o fases
+- ✅ Guía paso a paso la implementación
+
+**Ver guías completas:**
+- `docs/guias/implementacion/GUIA-SISTEMA-PASO-A-PASO-AUTOMATICO.md` - ⚠️ **OBLIGATORIO**
+- `docs/guias/implementacion/GUIA-SISTEMA-TRIGGERS-AUTOMATICOS.md` - ⚠️ **OBLIGATORIO**
+- `docs/analisis/RESUMEN-COMPLETO-SISTEMA-BLINDADO-AUTORUN.md` - ⚠️ **OBLIGATORIO**
+
+**Este sistema detecta automáticamente:**
+- ✅ "tabla" → DataTable
+- ✅ "data table" → DataTable
+- ✅ "data-table" → DataTable
+- ✅ "tabs" → Tabs
+- ✅ "modal" → Modal
+- ✅ Y otros componentes UBITS
+
+**Cuando detecta un componente:**
+1. ✅ Obtiene automáticamente el plan basado en historias de Storybook
+2. ✅ Muestra el plan al usuario
+3. ✅ Bloquea la implementación hasta completar el checklist
+4. ✅ Guía paso a paso la implementación
+
+**Ver guía completa:** `docs/guias/implementacion/GUIA-DETECCION-AUTOMATICA-COMPONENTES.md` - ⚠️ **OBLIGATORIO**
+
+---
+
+## 🔍 DETECCIÓN AUTOMÁTICA DEL WIZARD (EJECUTAR SEGUNDO) ⚠️ OBLIGATORIO
 
 **🚨 ESTA ES LA PRIMERA ACCIÓN: EJECUTAR ESTE SCRIPT AL INICIO DE CADA MENSAJE 🚨**
 
@@ -203,18 +302,28 @@ if (!validation.valid) {
 
 ---
 
-## 🔄 FLUJO OBLIGATORIO: ANÁLISIS → PLAN → CHECKLIST → IMPLEMENTACIÓN
+## 🔄 FLUJO OBLIGATORIO: TRIGGERS → DETECCIÓN → FASES → PLAN → CHECKLIST → IMPLEMENTACIÓN
 
 **⚠️ CRÍTICO: SIEMPRE seguir este flujo para cualquier implementación:**
 
-1. **🔍 ANÁLISIS** - Analizar primero (componentes, iconos, spacing, estructura)
-2. **📋 PLAN** - Crear plan detallado y mostrarlo al usuario
-3. **✅ CHECKLIST** - Crear checklist para cada componente/tarea
-4. **🛠️ IMPLEMENTACIÓN** - Implementar paso a paso, UNA tarea a la vez
+0. **🎯 TRIGGERS AUTOMÁTICOS** - Sistema detecta palabras clave automáticamente (`implementar`, `crear`, `agregar`, etc.) (⭐ NUEVO)
+1. **🔍 DETECCIÓN AUTOMÁTICA** - Detectar componente automáticamente al inicio del mensaje (⭐ NUEVO)
+2. **📋 PASO ACTIVO** - Obtener paso activo actual con ActiveStepGuide (⭐ NUEVO)
+3. **🔍 VALIDACIÓN DE FASES** - Validar orden de fases con PhaseValidator (FASE 0 → 0.1 → 0.5 → 0.6 → 1 → 2) (⭐ NUEVO)
+4. **🔍 ANÁLISIS** - Analizar primero (componentes, iconos, spacing, estructura)
+5. **📋 PLAN** - Crear plan detallado y mostrarlo al usuario (obtenido automáticamente si se detectó componente)
+6. **✅ CHECKLIST** - Crear checklist para cada componente/tarea
+7. **🛠️ IMPLEMENTACIÓN** - Implementar paso a paso, UNA tarea a la vez
+8. **✅ MARCAR FASE COMPLETADA** - Marcar fase como completada con PhaseValidator.markPhaseCompleted() (⭐ NUEVO)
 
-**❌ NUNCA:** Implementar todo de una vez sin análisis y plan.
+**❌ NUNCA:** Implementar todo de una vez sin detección, análisis y plan.
 
-**Ver:** `docs/guias/FLUJO-COMPLETO-ANALISIS-PLAN-IMPLEMENTACION.md` - ⚠️ **OBLIGATORIO**
+**Ver:** 
+- `docs/guias/implementacion/GUIA-SISTEMA-TRIGGERS-AUTOMATICOS.md` - ⚠️ **OBLIGATORIO** (triggers automáticos)
+- `docs/guias/implementacion/GUIA-DETECCION-AUTOMATICA-COMPONENTES.md` - ⚠️ **OBLIGATORIO** (detección automática)
+- `docs/guias/implementacion/GUIA-SISTEMA-PASO-A-PASO-AUTOMATICO.md` - ⚠️ **OBLIGATORIO** (sistema paso a paso)
+- `docs/guias/FLUJO-COMPLETO-ANALISIS-PLAN-IMPLEMENTACION.md` - ⚠️ **OBLIGATORIO** (flujo completo)
+- `docs/analisis/RESUMEN-COMPLETO-SISTEMA-BLINDADO-AUTORUN.md` - ⚠️ **OBLIGATORIO** (sistema completo blindado)
 
 ---
 
@@ -289,6 +398,24 @@ if (!validation.valid) {
 - **Vercel MCP** - Consultar deployments y proyectos
 
 **NO implementar componentes sin consultar MCPs primero.**
+
+---
+
+## ⚠️⚠️⚠️ REGLA CRÍTICA: DETECCIÓN AUTOMÁTICA DE OPERACIONES COMUNES ⚠️⚠️⚠️
+
+**✅ SISTEMA IMPLEMENTADO Y FUNCIONANDO AUTOMÁTICAMENTE**
+
+**El sistema detecta AUTOMÁTICAMENTE operaciones comunes y BLOQUEA si no se consultaron las guías obligatorias.**
+
+### **Operaciones Detectadas Automáticamente:**
+
+1. **Eliminar HeaderSection** → Debe consultar `GUIA-ELIMINAR-HEADERSECTION.md` ⚠️ OBLIGATORIO
+2. **Interceptar ContentManager** → Debe consultar `GUIA-CONTENTMANAGER-UPDATECONTENT.md` ⚠️ OBLIGATORIO
+3. **Modificar .content-area** → Debe consultar `GUIA-CONTENTMANAGER-UPDATECONTENT.md` ⚠️ OBLIGATORIO
+4. **Agregar componentes UBITS** → Debe consultar `CHECKLIST-ANTES-IMPLEMENTAR-COMPONENTE.md` ⚠️ OBLIGATORIO
+5. **Agregar estilos a componentes** → Debe consultar `GUIA-ERRORES-COMUNES-UBITS.md` (Error #53, #55) ⚠️ ADVERTENCIA
+
+**Ver guía completa:** `docs/guias/implementacion/GUIA-SISTEMA-PREVENCION-ERRORES-AUTOMATICO.md` - ⚠️ **OBLIGATORIO**
 
 ---
 
@@ -455,14 +582,36 @@ setTimeout(async () => {
 }, 1000);
 ```
 
+**⚠️ OBLIGATORIO: Recargar automáticamente después de `write()` o `search_replace()` en `prototypes/`**
+
 **CUANDO USES `write()` o `search_replace()` EN ARCHIVOS DE `prototypes/`:**
-**El flujo automático ya maneja esto, pero si no usas el flujo, DEBES recargar manualmente:**
+**DEBES recargar automáticamente (SIN preguntar al usuario):**
+
 ```javascript
-const snapshot = await mcp_cursor-ide-browser_browser_snapshot();
-const currentUrl = snapshot?.url || `http://localhost:3000/${path.basename(filePath)}`;
-await mcp_cursor-ide-browser_browser_navigate({ url: currentUrl });
-setTimeout(async () => { await mcp_cursor-ide-browser_browser_snapshot(); }, 1000);
+// ⚠️ OBLIGATORIO: Después de write() o search_replace() en prototypes/
+import { shouldAutoReload, getTemplateUrlFromPath } from '@autorun/core/helpers/autoReloadHelper';
+
+// 1. Verificar si debe recargarse
+if (shouldAutoReload(filePath)) {
+  // 2. Obtener URL actual del navegador
+  const snapshot = await mcp_cursor-ide-browser_browser_snapshot();
+  const currentUrl = snapshot?.url || getTemplateUrlFromPath(filePath);
+  
+  // 3. Recargar automáticamente (SIN preguntar)
+  await mcp_cursor-ide-browser_browser_navigate({ url: currentUrl });
+  
+  // 4. Esperar y verificar
+  setTimeout(async () => {
+    await mcp_cursor-ide-browser_browser_snapshot();
+  }, 1000);
+}
 ```
+
+**⚠️ REGLAS CRÍTICAS:**
+- ✅ **SIEMPRE recargar automáticamente** después de write() o search_replace() en prototypes/
+- ✅ **NO preguntar al usuario** si debe recargarse
+- ✅ **NO esperar confirmación** - ejecutar inmediatamente
+- ✅ **Solo recargar** si el archivo es .html, .js o .css en prototypes/
 
 ### **3. Auto-Retorno al Template después de Consultar Storybook**
 **Cuando navegues a Storybook para consultar un componente, DEBES:**

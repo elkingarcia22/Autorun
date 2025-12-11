@@ -25,6 +25,14 @@
 - [ ] **⚠️ CRÍTICO:** Anotar TODOS los estilos que tiene el componente por defecto
 - [ ] Volver al template después de consultar
 
+#### 1.2.1. **Verificar Script UMD de DataTable** ⚠️ CRÍTICO (Solo para DataTable)
+- [ ] Verificar que el script `data-table.umd.js` está en el HTML
+- [ ] Verificar que la ruta es correcta (local: `/vendor/ubits/packages/components/data-table/dist/data-table.umd.js` o Vercel)
+- [ ] Abrir consola del navegador (F12) y verificar que no hay errores de carga
+- [ ] Verificar que `window.createDataTable` o `window.UBITSDataTable.createDataTable` está disponible
+- [ ] Si NO está disponible, agregar script con carga dinámica y fallback
+- [ ] **Ver guía completa:** `docs/guias/implementacion/GUIA-ERROR-SCRIPT-UMD-DATATABLE-NO-CARGA.md` - ⚠️ **OBLIGATORIO**
+
 #### 1.3. **Consultar Storybook MCP** ⚠️ OBLIGATORIO
 - [ ] Usar `mcp_storybook_getComponentList` para listar componentes
 - [ ] Usar `mcp_storybook_getComponentsProps` para obtener props exactas del componente

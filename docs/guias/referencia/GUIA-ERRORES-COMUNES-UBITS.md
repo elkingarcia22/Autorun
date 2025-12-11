@@ -6752,6 +6752,136 @@ onColumnPin: (columnId, pinned) => {
 
 ---
 
+---
+
+## ⚠️ ERROR CRÍTICO #57: Script UMD de DataTable No Se Carga - `window.createDataTable` es `undefined`
+
+### ❌ **ERROR COMÚN:**
+```javascript
+// ❌ INCORRECTO: Intentar usar createDataTable sin verificar que el script UMD esté cargado
+window.createDataTable({
+  containerId: 'table-container',
+  columns: [...],
+  rows: [...]
+});
+// Error: TypeError: window.createDataTable is not a function
+```
+
+**Síntomas:**
+- `window.createDataTable` es `undefined`
+- `window.UBITSDataTable` es `undefined`
+- La DataTable no se renderiza
+- Logs muestran: `❌ [Encuestas DataTable] window.createDataTable no está disponible`
+
+**Causa:**
+- El script `data-table.umd.js` no se está cargando desde ninguna fuente (ni local ni Vercel)
+- La ruta del script puede ser incorrecta
+- El script puede estar fallando al cargar (CORS, 404, etc.)
+- El script se carga después de intentar usar `window.createDataTable`
+
+### ✅ **CORRECTO:**
+```html
+<!-- ✅ CORRECTO: Cargar script UMD con fallback automático -->
+<script>
+    (function() {
+        function loadDataTableScript() {
+            const script = document.createElement('script');
+            script.src = '/vendor/ubits/packages/components/data-table/dist/data-table.umd.js';
+            
+            script.onload = function() {
+                if (typeof window.createDataTable === 'function') {
+                    console.log('✅ [DataTable UMD] window.createDataTable está disponible');
+                } else if (window.UBITSDataTable && typeof window.UBITSDataTable.createDataTable === 'function') {
+                    window.createDataTable = window.UBITSDataTable.createDataTable;
+                    console.log('✅ [DataTable UMD] window.UBITSDataTable.createDataTable asignado');
+                } else {
+                    loadDataTableFromVercel();
+                }
+            };
+            
+            script.onerror = function() {
+                loadDataTableFromVercel();
+            };
+            
+            document.head.appendChild(script);
+        }
+        
+        function loadDataTableFromVercel() {
+            const fallbackScript = document.createElement('script');
+            fallbackScript.src = 'https://ubits-storybook10.vercel.app/components/data-table/dist/data-table.umd.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT';
+            fallbackScript.onload = function() {
+                if (window.UBITSDataTable && typeof window.UBITSDataTable.createDataTable === 'function' && !window.createDataTable) {
+                    window.createDataTable = window.UBITSDataTable.createDataTable;
+                }
+            };
+            document.head.appendChild(fallbackScript);
+        }
+        
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', loadDataTableScript);
+        } else {
+            loadDataTableScript();
+        }
+    })();
+</script>
+```
+
+```javascript
+// ✅ CORRECTO: Verificar disponibilidad ANTES de usar
+function initializeEncuestasDataTable() {
+    // Verificar que createDataTable esté disponible
+    let createDataTableFn = window.createDataTable;
+    if (typeof createDataTableFn !== 'function' && window.UBITSDataTable && typeof window.UBITSDataTable.createDataTable === 'function') {
+        createDataTableFn = window.UBITSDataTable.createDataTable;
+    }
+    
+    if (typeof createDataTableFn !== 'function') {
+        // Implementar retry logic
+        let attempts = 0;
+        const maxAttempts = 10;
+        const checkInterval = setInterval(() => {
+            attempts++;
+            if (typeof window.createDataTable === 'function' || 
+                (window.UBITSDataTable && typeof window.UBITSDataTable.createDataTable === 'function')) {
+                clearInterval(checkInterval);
+                initializeEncuestasDataTable();
+            } else if (attempts >= maxAttempts) {
+                clearInterval(checkInterval);
+                console.error('❌ [Encuestas DataTable] createDataTable no está disponible después de', maxAttempts, 'intentos');
+            }
+        }, 500);
+        return;
+    }
+    
+    // Usar createDataTableFn para crear el DataTable
+    const dataTableInstance = createDataTableFn({
+        containerId: 'encuestas-table-container',
+        // ... opciones
+    });
+}
+```
+
+### 🔍 **¿Por qué?**
+1. **El script UMD no se carga automáticamente:** A diferencia de otros componentes que se cargan con `components-loader.js`, el DataTable requiere cargar explícitamente el script UMD
+2. **Rutas pueden fallar:** La ruta local puede no existir o la ruta de Vercel puede fallar (CORS, 404, etc.)
+3. **Timing:** El script puede cargarse después de intentar usar `window.createDataTable`
+
+### 📝 **Regla de Oro:**
+**SIEMPRE verificar que el script UMD esté cargado ANTES de implementar DataTable:**
+1. ✅ Verificar que el script `data-table.umd.js` está en el HTML
+2. ✅ Verificar que la ruta es correcta (local o Vercel)
+3. ✅ Usar carga dinámica con fallback automático
+4. ✅ Verificar `window.createDataTable` o `window.UBITSDataTable.createDataTable` antes de usar
+5. ✅ Implementar retry logic con timeout máximo
+
+### 🔗 **Referencias:**
+- **Guía completa:** `docs/guias/implementacion/GUIA-ERROR-SCRIPT-UMD-DATATABLE-NO-CARGA.md` - ⚠️ **OBLIGATORIO**
+- **Estrategia general:** `docs/guias/implementacion/ESTRATEGIA-IMPLEMENTACION-SIN-ERRORES.md`
+- **Checklist:** `docs/guias/implementacion/CHECKLIST-ANTES-IMPLEMENTAR-COMPONENTE.md`
+- **Análisis de errores:** `docs/guias/analisis/ANALISIS-ERRORES-IMPLEMENTACION-DATATABLE-ENCUESTAS.md`
+
+---
+
 **Última actualización:** Enero 2025  
-**Versión:** 2.7.0
+**Versión:** 2.8.0
 

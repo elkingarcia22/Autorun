@@ -46,3 +46,10 @@ export {
 	detectWizardProblemInMessage,
 	type WizardState,
 } from './wizardStateDetector';
+
+// Detección automática de componentes ⭐ NUEVO
+export {
+	autoDetectComponent,
+	executeAutoDetectionOnMessage,
+	type AutoDetectionResult,
+} from './autoComponentDetection';

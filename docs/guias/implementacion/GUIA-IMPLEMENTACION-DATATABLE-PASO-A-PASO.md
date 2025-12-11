@@ -110,9 +110,28 @@ Esta guía establece el proceso **OBLIGATORIO** para implementar DataTable con m
 
 ## 📋 PROCESO COMPLETO (OBLIGATORIO)
 
-### **FASE 0: REVISAR COMPONENTE DATATABLE** 🔍
+### **FASE 0: VERIFICACIÓN DE SCRIPTS Y DEPENDENCIAS** ⚠️ CRÍTICO - OBLIGATORIO
 
-#### **Paso 0.1: Revisar Variantes, Controladores y Funcionalidades**
+#### **Paso 0.0: Verificar que el Script UMD Esté Cargado** ⚠️ CRÍTICO
+
+**⚠️ OBLIGATORIO:** ANTES de cualquier otra cosa, verificar que el script UMD de DataTable esté cargado:
+
+**Checklist:**
+- [ ] Verificar que el script UMD está en el HTML: `<script src="...data-table.umd.js">`
+- [ ] Verificar que la ruta es correcta (local: `/vendor/ubits/packages/components/data-table/dist/data-table.umd.js` o Vercel)
+- [ ] Abrir consola del navegador (F12) y verificar que no hay errores de carga
+- [ ] Verificar que `window.createDataTable` o `window.UBITSDataTable.createDataTable` está disponible
+- [ ] Si NO está disponible, agregar script con carga dinámica y fallback (ver `GUIA-ERROR-SCRIPT-UMD-DATATABLE-NO-CARGA.md`)
+
+**⚠️ CRÍTICO:** Si el script UMD no está cargado, `window.createDataTable` será `undefined` y la implementación fallará.
+
+**Ver guía completa:** `docs/guias/implementacion/GUIA-ERROR-SCRIPT-UMD-DATATABLE-NO-CARGA.md` - ⚠️ **OBLIGATORIO**
+
+---
+
+### **FASE 0.1: REVISAR COMPONENTE DATATABLE** 🔍
+
+#### **Paso 0.1.1: Revisar Variantes, Controladores y Funcionalidades**
 
 **⚠️ OBLIGATORIO:** Antes de implementar DataTable, revisar el archivo de tipos:
 

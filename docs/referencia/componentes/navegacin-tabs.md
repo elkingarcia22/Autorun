@@ -3,8 +3,9 @@
 > **Componente UBITS:** `navegacion-tabs`  
 > **Categoría:** Navegación  
 > **API:** `window.createTabs()` o `<ubits-tabs>`  
-> **Storybook Local:** http://localhost:6006/?path=/story/navegacion-tabs--default  
-> **Storybook Vercel:** https://ubits-storybook10.vercel.app/?path=/story/navegacion-tabs--default
+> **⚠️ IMPORTANTE:** El ID en Storybook es `navegación-tabs` (CON ACENTO)  
+> **Storybook Local:** http://localhost:6006/?path=/story/navegación-tabs--default  
+> **Storybook Vercel:** https://ubits-storybook10.vercel.app/?path=/story/navegación-tabs--default
 
 ## 🎯 Descripción
 
@@ -20,8 +21,8 @@ Componente Tabs UBITS de navegación horizontal con soporte para iconos opcional
 
 ## 🔗 Enlaces Rápidos
 
-- **Storybook Local:** http://localhost:6006/?path=/story/navegacion-tabs--default
-- **Storybook Vercel:** https://ubits-storybook10.vercel.app/?path=/story/navegacion-tabs--default
+- **Storybook Local:** http://localhost:6006/?path=/story/navegación-tabs--default
+- **Storybook Vercel:** https://ubits-storybook10.vercel.app/?path=/story/navegación-tabs--default
 - **Código fuente:** `vendor/ubits/packages/components/tabs/`
 - **Tipos TypeScript:** `vendor/ubits/packages/components/tabs/src/types/TabsOptions.ts`
 - **Stories:** `vendor/ubits/packages/storybook/stories/Tabs.stories.ts`
@@ -32,9 +33,9 @@ Componente Tabs UBITS de navegación horizontal con soporte para iconos opcional
 
 ### Historia: Default
 
-**ID en Storybook:** `navegacion-tabs--default`  
-**URL Local:** http://localhost:6006/?path=/story/navegacion-tabs--default  
-**URL Vercel:** https://ubits-storybook10.vercel.app/?path=/story/navegacion-tabs--default
+**ID en Storybook:** `navegación-tabs--default` (⚠️ CON ACENTO)  
+**URL Local:** http://localhost:6006/?path=/story/navegación-tabs--default  
+**URL Vercel:** https://ubits-storybook10.vercel.app/?path=/story/navegación-tabs--default
 
 **Descripción:**
 Tabs con todos los controles disponibles. Permite configurar el número de tabs, mostrar/ocultar iconos y cambiar el tab activo.

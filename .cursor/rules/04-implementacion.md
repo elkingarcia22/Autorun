@@ -29,6 +29,29 @@
 
 ---
 
+## 🚨🚨🚨 DETECCIÓN AUTOMÁTICA DE OPERACIONES COMUNES ⚠️ NUEVO
+
+**⚠️ CRÍTICO: El sistema detecta AUTOMÁTICAMENTE operaciones comunes y BLOQUEA si no se consultaron las guías obligatorias.**
+
+### **Operaciones Detectadas Automáticamente:**
+
+1. **Eliminar HeaderSection** → Debe consultar `GUIA-ELIMINAR-HEADERSECTION.md` ⚠️ OBLIGATORIO
+2. **Interceptar ContentManager** → Debe consultar `GUIA-CONTENTMANAGER-UPDATECONTENT.md` ⚠️ OBLIGATORIO
+3. **Modificar .content-area** → Debe consultar `GUIA-CONTENTMANAGER-UPDATECONTENT.md` ⚠️ OBLIGATORIO
+4. **Agregar componentes UBITS** → Debe consultar `CHECKLIST-ANTES-IMPLEMENTAR-COMPONENTE.md` ⚠️ OBLIGATORIO
+5. **Agregar estilos a componentes** → Debe consultar `GUIA-ERRORES-COMUNES-UBITS.md` (Error #53, #55) ⚠️ ADVERTENCIA
+
+### **Cómo Funciona:**
+
+1. **El sistema detecta automáticamente** cuando el código contiene patrones de estas operaciones
+2. **Verifica si se consultó la guía obligatoria** antes de permitir escribir
+3. **Si NO se consultó → BLOQUEA** y muestra mensaje claro con la guía obligatoria
+4. **Solo después de consultar la guía** → Permite continuar
+
+**Ver guía completa:** `docs/guias/implementacion/GUIA-SISTEMA-PREVENCION-ERRORES-AUTOMATICO.md` - ⚠️ **OBLIGATORIO**
+
+---
+
 ## 🔌 USO OBLIGATORIO DE MCPs
 
 **⚠️ CRÍTICO:** Antes de implementar cualquier componente UBITS, DEBES consultar los MCPs disponibles para obtener información exacta.

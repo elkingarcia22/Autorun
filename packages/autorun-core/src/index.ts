@@ -54,6 +54,7 @@ export * from './helpers/stepByStepImplementation';
 export * from './helpers/componentPlans';
 export * from './helpers/componentHelpers';
 export * from './helpers/autoReloadHelper';
+export * from './helpers/autoReloadAgentHelper'; // ⭐ NUEVO: Helper automático para el agente
 export * from './helpers/implementationHelpers';
 export * from './helpers/proactiveDetection'; // ⭐ NUEVO: Detección proactiva mejorada
 export * from './helpers/implementationProgress'; // ⭐ NUEVO: Dashboard de progreso
@@ -89,10 +90,32 @@ export {
   interceptStorybookMCP,
   TOOL_INTERCEPTOR_INSTRUCTIONS,
 } from './interceptors/toolInterceptors'; // ⭐ NUEVO: Interceptores automáticos de herramientas
+export {
+  executeOnMessageStart,
+  EXECUTE_ON_MESSAGE_START_INSTRUCTIONS,
+  type MessageStartResult,
+} from './helpers/executeOnMessageStart'; // ⭐ NUEVO: Ejecución automática al inicio de cada mensaje
+export {
+  KeywordTriggerSystem,
+  executeKeywordTriggerSystem,
+  type KeywordTrigger,
+  type TriggerResult,
+} from './helpers/keywordTriggerSystem'; // ⭐ NUEVO: Sistema de triggers de palabras clave
+export {
+  ActiveStepGuide,
+  type ActiveStep,
+  type ActiveStepResult,
+} from './helpers/activeStepGuide'; // ⭐ NUEVO: Sistema de guía paso a paso activa
 
 // Exportar validación
 export * from './validation/PreWriteValidator';
 export * from './validation/ImplementationGuard';
+export * from './validation/OperationDetector';
+export {
+  PhaseValidator,
+  type PhaseStatus,
+  type PhaseValidationResult,
+} from './validation/PhaseValidator'; // ⭐ NUEVO: Validador de orden de fases
 
 // Exportar utilidades MCP
 export { MCPDetector } from './MCPDetector';

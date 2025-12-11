@@ -2,7 +2,7 @@
 
 > **Componente UBITS:** `tabs`  
 > **API:** `window.createTabs()`  
-> **Storybook:** https://ubits-storybook10.vercel.app/?path=/story/navegacion-tabs--default
+> **Storybook:** https://ubits-storybook10.vercel.app/?path=/story/navegación-tabs--default
 
 ## 🎯 Descripción
 

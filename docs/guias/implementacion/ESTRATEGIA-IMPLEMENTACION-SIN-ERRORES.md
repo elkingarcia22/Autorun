@@ -101,7 +101,7 @@ icon: 'fa-home'
 - [ ] NO agregar `background` automáticamente
 - [ ] Solo agregar estilos si el usuario lo solicita EXPLÍCITAMENTE
 
-#### 2.3. **Verificar Dependencias de Scripts**
+#### 2.3. **Verificar Dependencias de Scripts** ⚠️ CRÍTICO
 ```typescript
 // Verificar que scripts necesarios estén cargados
 if (typeof window.createModal !== 'function') {
@@ -113,6 +113,19 @@ if (typeof window.createModal !== 'function') {
 - [ ] Verificar que `components-loader.js` carga el componente
 - [ ] Si no carga, implementar manualmente
 - [ ] Verificar disponibilidad antes de usar
+
+#### 2.3.1. **Verificar Script UMD de DataTable** ⚠️ CRÍTICO (Solo para DataTable)
+
+**⚠️ OBLIGATORIO para DataTable:** Verificar que el script UMD esté cargado ANTES de implementar:
+
+**Checklist:**
+- [ ] Verificar que el script `data-table.umd.js` está en el HTML
+- [ ] Verificar que la ruta es correcta (local o Vercel)
+- [ ] Verificar que `window.createDataTable` o `window.UBITSDataTable.createDataTable` está disponible
+- [ ] Si NO está disponible, agregar script con carga dinámica y fallback
+- [ ] Implementar retry logic con timeout máximo
+
+**Ver guía completa:** `docs/guias/implementacion/GUIA-ERROR-SCRIPT-UMD-DATATABLE-NO-CARGA.md` - ⚠️ **OBLIGATORIO**
 
 ---
 
