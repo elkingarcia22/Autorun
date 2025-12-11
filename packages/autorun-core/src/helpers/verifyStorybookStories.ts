@@ -31,7 +31,7 @@ export const COMPONENT_STORIES_PATH_MAP: Record<string, string> = {
     'vendor/ubits/packages/storybook/stories/DataTable.stories.ts',
   DataTable: 'vendor/ubits/packages/storybook/stories/DataTable.stories.ts',
   'Navegación/Tabs': 'vendor/ubits/packages/storybook/stories/Tabs.stories.ts',
-  'navegacion-tabs': 'vendor/ubits/packages/storybook/stories/Tabs.stories.ts',
+  'navegación-tabs': 'vendor/ubits/packages/storybook/stories/Tabs.stories.ts',
   Tabs: 'vendor/ubits/packages/storybook/stories/Tabs.stories.ts',
   'Navegación/Tab Bar':
     'vendor/ubits/packages/storybook/stories/TabBar.stories.ts',
@@ -78,7 +78,7 @@ export const COMPONENT_STORIES_PATH_MAP: Record<string, string> = {
  */
 const COMPONENT_TITLE_TO_ID_MAP: Record<string, string> = {
   'Data/Data Table': 'data-data-table',
-  'Navegación/Tabs': 'navegacion-tabs',
+  'Navegación/Tabs': 'navegación-tabs',
   'Navegación/Tab Bar': 'navegacion-tab-bar',
   'Navegación/Sub Nav': 'navegacion-sub-nav',
   'Layout/Sidebar': 'navegacion-sidebar',

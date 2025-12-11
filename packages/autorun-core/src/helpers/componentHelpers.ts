@@ -71,7 +71,7 @@ function mapComponentNameToStorybookURLSync(componentName: string): string {
   const baseURL = 'https://ubits-storybook10.vercel.app/';
 
   const urlMapping: Record<string, string> = {
-    Tabs: `${baseURL}?path=/story/navegacion-tabs--default`,
+    Tabs: `${baseURL}?path=/story/navegación-tabs--default`,
     DataTable: `${baseURL}?path=/story/data-data-table--default`,
     Button: `${baseURL}?path=/story/bsicos-button--default`,
     Modal: `${baseURL}?path=/story/feedback-modal--default`,
