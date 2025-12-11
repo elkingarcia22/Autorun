@@ -2309,8 +2309,6 @@
       // Si ContentManager aún no existe, interceptarlo cuando se cree
       Object.defineProperty(window, 'UBITS_ContentManager', {
       
-      const drawerOverlay = document.querySelector('.ubits-drawer-overlay.ubits-drawer-overlay--open');
-      
       if (drawerOverlay) {
         const drawer = drawerOverlay.querySelector('.ubits-drawer');
         if (drawer) {
