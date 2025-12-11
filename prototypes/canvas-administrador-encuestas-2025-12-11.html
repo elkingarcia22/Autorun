@@ -1230,6 +1230,11 @@
                     }
                     
                     console.log('🔵 [Encuestas] Inicializando DataTable básico...');
+                    console.log('🔍 [Encuestas] Estado del contenedor:', {
+                        exists: !!tableContainer,
+                        visible: tableContainer.style.display !== 'none',
+                        hasContent: tableContainer.children.length > 0
+                    });
                         
                         // Generar datos de ejemplo
                         function generateEncuestasData() {
@@ -1328,6 +1333,9 @@
                         }, 500);
                         
                         console.log('✅ [Encuestas] DataTable básico inicializado correctamente');
+                        } catch (error) {
+                            console.error('❌ [Encuestas] Error al inicializar DataTable:', error);
+                        }
                         
                         // ========================================
                         // CONFIGURAR ALTURA DINÁMICA Y SPACING
