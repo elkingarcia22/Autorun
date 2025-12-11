@@ -762,7 +762,6 @@
 
     <!-- System Loaders -->
     <script src="https://ubits-storybook10.vercel.app/templates/components-loader.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
-    <script src="../vendor/ubits/packages/components/data-table/dist/data-table.umd.js" onload="console.log('✅ [DataTable] data-table.umd.js cargado'); if (typeof window.UBITSDataTable !== 'undefined' && typeof window.UBITSDataTable.createDataTable === 'function') { window.createDataTable = window.UBITSDataTable.createDataTable; console.log('✅ [DataTable] window.createDataTable asignado desde UBITSDataTable'); } else if (typeof window.createDataTable === 'function') { console.log('✅ [DataTable] window.createDataTable ya disponible'); }" onerror="console.error('❌ [DataTable] Error al cargar data-table.umd.js, intentando desde Vercel...'); var script = document.createElement('script'); script.src = 'https://ubits-storybook10.vercel.app/components/data-table/dist/data-table.umd.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT'; script.onload = function() { console.log('✅ [DataTable] data-table.umd.js cargado desde Vercel'); if (typeof window.UBITSDataTable !== 'undefined' && typeof window.UBITSDataTable.createDataTable === 'function') { window.createDataTable = window.UBITSDataTable.createDataTable; } window.dispatchEvent(new CustomEvent('ubits-datatable-ready')); }; script.onerror = function() { console.error('❌ [DataTable] Error al cargar desde Vercel también'); }; document.head.appendChild(script);"></script>
     <script>
         // Verificar que createTabs esté disponible después de cargar components-loader.js
         (function() {
@@ -777,29 +776,6 @@
             }
             // Verificar después de que el script se ejecute
             setTimeout(checkCreateTabs, 100);
-        })();
-        
-        // Verificar que createDataTable esté disponible después de cargar data-table.umd.js
-        (function() {
-            function checkCreateDataTable() {
-                if (typeof window.createDataTable === 'function') {
-                    console.log('✅ [DataTable] window.createDataTable disponible');
-                    window.dispatchEvent(new CustomEvent('ubits-datatable-ready'));
-                } else if (typeof window.UBITSDataTable !== 'undefined' && typeof window.UBITSDataTable.createDataTable === 'function') {
-                    console.log('✅ [DataTable] UBITSDataTable.createDataTable disponible, asignando a window.createDataTable');
-                    window.createDataTable = window.UBITSDataTable.createDataTable;
-                    window.dispatchEvent(new CustomEvent('ubits-datatable-ready'));
-                } else if (typeof window.renderDataTable === 'function') {
-                    console.log('✅ [DataTable] window.renderDataTable disponible, asignando a window.createDataTable');
-                    window.createDataTable = window.renderDataTable;
-                    window.dispatchEvent(new CustomEvent('ubits-datatable-ready'));
-                } else {
-                    console.log('⏳ [DataTable] Esperando window.createDataTable...');
-                    setTimeout(checkCreateDataTable, 100);
-                }
-            }
-            // Verificar después de que el script se ejecute
-            setTimeout(checkCreateDataTable, 100);
         })();
     </script>
     <script src="https://ubits-storybook10.vercel.app/templates/config/products.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
