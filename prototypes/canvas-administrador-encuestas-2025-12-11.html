@@ -1170,7 +1170,19 @@
                             activeTabId: 'encuestas',
                             onTabChange: (tabId, tabElement) => {
                                 console.log('🔵 [Encuestas] Tab cambiado:', tabId);
-                                // Aquí se puede agregar lógica para cambiar el contenido según el tab activo
+                                // Mostrar/ocultar DataTable según el tab activo
+                                const tableContainer = document.getElementById('encuestas-table-container');
+                                if (tableContainer) {
+                                    if (tabId === 'encuestas') {
+                                        tableContainer.style.display = 'block';
+                                        // Reinicializar si no existe la tabla
+                                        if (!tableContainer.querySelector('.ubits-data-table')) {
+                                            setTimeout(initializeDataTable, 300);
+                                        }
+                                    } else {
+                                        tableContainer.style.display = 'none';
+                                    }
+                                }
                             }
                         }, 'encuestas-tabs-container');
                         console.log('✅ [Encuestas] Tabs inicializados correctamente');
@@ -1186,10 +1198,28 @@
                 // INICIALIZAR DATATABLE DE ENCUESTAS (BÁSICO)
                 // ========================================
                 function initializeDataTable() {
+                    // Verificar que estamos en el módulo correcto
+                    const currentModule = document.body.getAttribute('data-module');
+                    if (currentModule !== 'encuestas') {
+                        return;
+                    }
+                    
                     const tableContainer = document.getElementById('encuestas-table-container');
                     if (!tableContainer) {
                         console.warn('⚠️ [Encuestas] Contenedor no encontrado, reintentando...');
                         setTimeout(initializeDataTable, 500);
+                        return;
+                    }
+                    
+                    // Verificar que el contenedor esté visible (tab activo)
+                    if (tableContainer.style.display === 'none') {
+                        console.log('🔵 [Encuestas] Contenedor oculto, esperando tab activo...');
+                        return;
+                    }
+                    
+                    // Verificar si ya existe una tabla
+                    if (tableContainer.querySelector('.ubits-data-table')) {
+                        console.log('🔵 [Encuestas] DataTable ya existe, no reinicializar');
                         return;
                     }
                     
