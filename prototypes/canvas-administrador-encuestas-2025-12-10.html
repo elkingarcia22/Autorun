@@ -2306,12 +2306,8 @@
   
   <script>
     if (!originalHandleSectionChange) {
-      console.log('🔵 [Encuestas DataTable] ========== INICIO clearFiltersWithoutDrawerCallback ==========');
-      
-      if (!window._encuestasDataTableInstance || !window._encuestasDataTableInstance.element) {
-        console.error('❌ [Encuestas DataTable] Instancia del DataTable no disponible');
-        return;
-      }
+      // Si ContentManager aún no existe, interceptarlo cuando se cree
+      Object.defineProperty(window, 'UBITS_ContentManager', {
       
       const drawerOverlay = document.querySelector('.ubits-drawer-overlay.ubits-drawer-overlay--open');
       
