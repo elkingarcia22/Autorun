@@ -2305,9 +2305,7 @@
   </script>
   
   <script>
-
-    // ⚠️ CRÍTICO: Función para limpiar filtros sin abrir el drawer visiblemente
-    const clearFiltersWithoutDrawer = () => {
+    if (!originalHandleSectionChange) {
       console.log('🔵 [Encuestas DataTable] ========== INICIO clearFiltersWithoutDrawerCallback ==========');
       
       if (!window._encuestasDataTableInstance || !window._encuestasDataTableInstance.element) {
