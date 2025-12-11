@@ -1351,9 +1351,14 @@
                     }
                 }
                 
+                // Inicializar DataTable después de que todo esté cargado
                 // Esperar a que los componentes estén disponibles
+                let dataTableInitAttempts = 0;
+                const maxAttempts = 20; // Máximo 10 segundos (20 * 500ms)
+                
                 function waitForComponents() {
-                    console.log('🔍 [Encuestas] Verificando componentes:', {
+                    dataTableInitAttempts++;
+                    console.log(`🔍 [Encuestas] Intento ${dataTableInitAttempts}: Verificando componentes:`, {
                         createDataTable: !!window.createDataTable,
                         createTabs: !!window.createTabs,
                         container: !!document.getElementById('encuestas-table-container')
@@ -1362,9 +1367,11 @@
                     if (window.createDataTable) {
                         console.log('✅ [Encuestas] createDataTable disponible, inicializando...');
                         initializeDataTable();
-                    } else {
+                    } else if (dataTableInitAttempts < maxAttempts) {
                         console.log('⏳ [Encuestas] Esperando createDataTable...');
                         setTimeout(waitForComponents, 500);
+                    } else {
+                        console.error('❌ [Encuestas] createDataTable no disponible después de', maxAttempts, 'intentos');
                     }
                 }
                 
