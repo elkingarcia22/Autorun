@@ -825,76 +825,17 @@
                     
                     console.log('🔵 [Encuestas] updateContent interceptado para sección:', section);
                     
-                    // ⚠️ CRÍTICO: Guardar el HTML del contenedor del DataTable ANTES de llamar al método original
-                    const contentAreaBefore = document.querySelector('.content-area');
-                    let savedTableContainerHTML = null;
-                    if (contentAreaBefore) {
-                        const existingTableContainer = contentAreaBefore.querySelector('#encuestas-table-container');
-                        if (existingTableContainer) {
-                            savedTableContainerHTML = existingTableContainer.outerHTML;
-                            console.log('🔵 [Encuestas] Guardando HTML del contenedor del DataTable antes de updateContent');
-                        }
-                    }
-                    
                     // Llamar al método original (que limpia el content-area y crea HeaderSection)
                     const result = originalUpdateContent.call(this, section, subSection);
                     
-                    // ⚠️ CRÍTICO: Restaurar el contenedor del DataTable INMEDIATAMENTE después de que el ContentManager termine
-                    // Usar setTimeout con delay mínimo para restaurar después de que innerHTML = '' se ejecute
+                    // ⚠️ CRÍTICO: Eliminar elementos no deseados que el ContentManager crea
                     setTimeout(() => {
                         const contentArea = document.querySelector('.content-area');
                         if (!contentArea) {
                             return;
                         }
                         
-                        // Restaurar el contenedor del DataTable
-                        let tableContainer = contentArea.querySelector('#encuestas-table-container');
-                        if (!tableContainer && savedTableContainerHTML) {
-                            console.log('🔵 [Encuestas] Restaurando contenedor del DataTable desde HTML guardado...');
-                            contentArea.insertAdjacentHTML('afterbegin', savedTableContainerHTML);
-                            tableContainer = contentArea.querySelector('#encuestas-table-container');
-                        } else if (!tableContainer) {
-                            console.log('🔵 [Encuestas] Creando nuevo contenedor del DataTable...');
-                            tableContainer = document.createElement('div');
-                            tableContainer.id = 'encuestas-table-container';
-                            contentArea.insertAdjacentElement('afterbegin', tableContainer);
-                        }
-                        
-                        // Reinicializar la DataTable si no existe
-                        if (tableContainer && !tableContainer.querySelector('.ubits-data-table')) {
-                            console.log('🔵 [Encuestas] DataTable no encontrada, reinicializando...');
-                            encuestasDataTableInitialized = false;
-                            setTimeout(() => {
-                                if (typeof window.createDataTable === 'function') {
-                                    initializeEncuestasDataTable();
-                                }
-                            }, 100);
-                        }
-                    }, 100);
-                    
-                    // ⚠️ CRÍTICO: Restaurar el contenedor del DataTable INMEDIATAMENTE después de que el ContentManager termine
-                    // Usar setTimeout con delay mínimo para restaurar después de que innerHTML = '' se ejecute
-                    setTimeout(() => {
-                        const contentArea = document.querySelector('.content-area');
-                        if (!contentArea) {
-                            return;
-                        }
-                        
-                        // Restaurar el contenedor del DataTable
-                        let tableContainer = contentArea.querySelector('#encuestas-table-container');
-                        if (!tableContainer && savedTableContainerHTML) {
-                            console.log('🔵 [Encuestas] Restaurando contenedor del DataTable desde HTML guardado...');
-                            contentArea.insertAdjacentHTML('afterbegin', savedTableContainerHTML);
-                            tableContainer = contentArea.querySelector('#encuestas-table-container');
-                        } else if (!tableContainer) {
-                            console.log('🔵 [Encuestas] Creando nuevo contenedor del DataTable...');
-                            tableContainer = document.createElement('div');
-                            tableContainer.id = 'encuestas-table-container';
-                            contentArea.insertAdjacentElement('afterbegin', tableContainer);
-                        }
-                        
-                        // ⚠️ CRÍTICO: Eliminar elementos no deseados que el ContentManager crea
-                        // Esto debe hacerse ANTES de reinicializar la DataTable para evitar headers duplicados
+                        // Eliminar HeaderSection
                         const headerContainer = contentArea.querySelector('#header-section-container');
                         if (headerContainer) {
                             console.log('🔵 [Encuestas] Eliminando HeaderSection');
@@ -922,35 +863,6 @@
                         if (widgetPrincipal) {
                             console.log('🔵 [Encuestas] Eliminando .widget-contenido-principal');
                             widgetPrincipal.closest('.section-single')?.remove() || widgetPrincipal.remove();
-                        }
-                        
-                        // ⚠️ CRÍTICO: Verificar si hay headers duplicados del DataTable y eliminarlos
-                        const allHeaders = contentArea.querySelectorAll('.ubits-data-table__header');
-                        if (allHeaders.length > 1) {
-                            console.log(`⚠️ [Encuestas] Se encontraron ${allHeaders.length} headers del DataTable, eliminando duplicados...`);
-                            // Mantener solo el último header (el más reciente)
-                            for (let i = 0; i < allHeaders.length - 1; i++) {
-                                allHeaders[i].remove();
-                            }
-                        }
-                        
-                        // Reinicializar la DataTable si no existe
-                        if (tableContainer && !tableContainer.querySelector('.ubits-data-table')) {
-                            console.log('🔵 [Encuestas] DataTable no encontrada, reinicializando...');
-                            encuestasDataTableInitialized = false;
-                            setTimeout(() => {
-                                if (typeof window.createDataTable === 'function') {
-                                    initializeEncuestasDataTable();
-                                } else {
-                                    console.warn('⚠️ [Encuestas] window.createDataTable no disponible, esperando...');
-                                    setTimeout(() => {
-                                        if (typeof window.createDataTable === 'function') {
-                                            encuestasDataTableInitialized = false;
-                                            initializeEncuestasDataTable();
-                                        }
-                                    }, 1000);
-                                }
-                            }, 200);
                         }
                     }, 100);
                     
@@ -980,27 +892,6 @@
                         if (mutation.type === 'childList') {
                             mutation.addedNodes.forEach((node) => {
                                 if (node.nodeType === 1) {
-                                    // ⚠️ CRÍTICO: NO eliminar el contenedor del DataTable
-                                    if (node.id === 'encuestas-table-container' || 
-                                        node.querySelector?.('#encuestas-table-container')) {
-                                        // Permitir que el contenedor del DataTable permanezca
-                                        return;
-                                    }
-                                    
-                                    // ⚠️ CRÍTICO: Eliminar headers duplicados del DataTable
-                                    const dataTableHeaders = node.querySelectorAll?.('.ubits-data-table__header');
-                                    if (dataTableHeaders && dataTableHeaders.length > 0) {
-                                        const container = document.getElementById('encuestas-table-container');
-                                        if (container) {
-                                            const existingHeaders = container.querySelectorAll('.ubits-data-table__header');
-                                            if (existingHeaders.length > 0 && dataTableHeaders.length > 0) {
-                                                console.log('⚠️ [Encuestas] Detectado header duplicado del DataTable, eliminando...');
-                                                // Eliminar los headers que se están agregando si ya existe uno
-                                                dataTableHeaders.forEach(header => header.remove());
-                                            }
-                                        }
-                                    }
-                                    
                                     // Eliminar HeaderSection
                                     if (node.id === 'header-section-container' || 
                                         node.classList?.contains('ubits-header-section') ||
@@ -2408,18 +2299,9 @@
 
   <script>
     // ========================================
-    // FUNCIÓN: Inicializar DataTable de Encuestas
+    // DataTable será implementado usando el plan predefinido
+    // Ver: packages/autorun-core/src/helpers/componentPlans.ts
     // ========================================
-    let encuestasDataTableInitialized = false;
-    let encuestasDataTableInstance = null;
-    let encuestasDataOriginal = [];
-    let encuestasData = [];
-    let selectionState = {
-      selectedRowIds: new Set(),
-      viewSelectedActive: false
-    };
-    let actionBarClickHandler = null;
-    let actionBarObserver = null;
 
     // ⚠️ CRÍTICO: Función para limpiar filtros sin abrir el drawer visiblemente
     const clearFiltersWithoutDrawer = () => {
