@@ -1338,25 +1338,27 @@
                     } else {
                 }
                 
-                // Inicializar después de que todo esté cargado
+                // Inicializar después de que los tabs estén listos
+                // Esperar un poco más para asegurar que createDataTable esté disponible
+                setTimeout(() => {
+                    waitForComponents();
+                }, 2000);
+                
                 // Esperar a que los componentes estén disponibles
                 function waitForComponents() {
-                    if (window.createDataTable && window.createTabs) {
-                        console.log('✅ [Encuestas] Componentes disponibles, inicializando DataTable...');
-                        setTimeout(initializeDataTable, 500);
-                    } else {
-                        console.log('⏳ [Encuestas] Esperando componentes...');
-                        setTimeout(waitForComponents, 200);
-                    }
-                }
-                
-                // Iniciar espera después de que el DOM esté listo
-                if (document.readyState === 'loading') {
-                    document.addEventListener('DOMContentLoaded', () => {
-                        setTimeout(waitForComponents, 1000);
+                    console.log('🔍 [Encuestas] Verificando componentes:', {
+                        createDataTable: !!window.createDataTable,
+                        createTabs: !!window.createTabs,
+                        container: !!document.getElementById('encuestas-table-container')
                     });
-                } else {
-                    setTimeout(waitForComponents, 1000);
+                    
+                    if (window.createDataTable) {
+                        console.log('✅ [Encuestas] createDataTable disponible, inicializando...');
+                        initializeDataTable();
+                    } else {
+                        console.log('⏳ [Encuestas] Esperando createDataTable...');
+                        setTimeout(waitForComponents, 500);
+                    }
                 }
                 
                 // ========================================
