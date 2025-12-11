@@ -1222,6 +1222,13 @@
                         });
                         
                         console.log('✅ [Encuestas] DataTable básico inicializado correctamente');
+                        
+                        // ========================================
+                        // CONFIGURAR ALTURA DINÁMICA Y SPACING
+                        // ========================================
+                        setTimeout(() => {
+                            adjustDataTableHeight('encuestas-table-container');
+                        }, 300);
                     } else {
                         console.warn('⚠️ [Encuestas] No se pudo inicializar DataTable:', {
                             container: !!tableContainer,
@@ -1229,6 +1236,130 @@
                         });
                     }
                 }, 1000);
+                
+                // ========================================
+                // FUNCIÓN: Ajustar altura dinámica del DataTable
+                // ========================================
+                function adjustDataTableHeight(containerId) {
+                    const currentModule = document.body.getAttribute('data-module');
+                    if (currentModule !== 'encuestas') {
+                        return;
+                    }
+                    
+                    const container = document.getElementById(containerId);
+                    if (!container) {
+                        return;
+                    }
+                    
+                    const dataTable = container.querySelector('.ubits-data-table');
+                    if (!dataTable) {
+                        // Reintentar si el DataTable aún no se ha renderizado
+                        setTimeout(() => adjustDataTableHeight(containerId), 200);
+                        return;
+                    }
+                    
+                    const scrollableContainer = container.querySelector('.ubits-data-table__scrollable-container--vertical');
+                    if (!scrollableContainer) {
+                        // Reintentar si el scrollable container aún no se ha renderizado
+                        setTimeout(() => adjustDataTableHeight(containerId), 200);
+                        return;
+                    }
+                    
+                    // ✅ PASO 1: Obtener posición REAL del sidebar (NO usar cálculos teóricos)
+                    const sidebarElement = document.querySelector('.ubits-sidebar');
+                    const sidebarRect = sidebarElement ? sidebarElement.getBoundingClientRect() : null;
+                    const sidebarBottom = sidebarRect ? sidebarRect.bottom : window.innerHeight - 16; // Fallback si no hay sidebar
+                    
+                    // ✅ PASO 2: Obtener posición del contenedor de la tabla
+                    const containerRect = container.getBoundingClientRect();
+                    
+                    // ✅ PASO 3: Calcular altura máxima del contenedor para alinearlo con el sidebar
+                    // Fórmula: maxContainerHeight = sidebarBottom - containerRect.top
+                    const maxContainerHeight = sidebarBottom - containerRect.top;
+                    
+                    // ✅ PASO 4: Aplicar altura al contenedor principal (height Y max-height)
+                    // ⚠️ CRÍTICO: Usar height en lugar de solo max-height para forzar la altura exacta
+                    if (maxContainerHeight > 0) {
+                        container.style.height = `${maxContainerHeight}px`;
+                        container.style.maxHeight = `${maxContainerHeight}px`;
+                        
+                        // ✅ PASO 5: Verificar alineación después de aplicar
+                        requestAnimationFrame(() => {
+                            setTimeout(() => {
+                                const newContainerRect = container.getBoundingClientRect();
+                                const diferencia = sidebarBottom - newContainerRect.bottom;
+                                
+                                // Si no está alineado (diferencia >= 2px), ajustar automáticamente
+                                if (Math.abs(diferencia) >= 2) {
+                                    const ajusteHeight = maxContainerHeight + diferencia;
+                                    if (ajusteHeight > 0) {
+                                        container.style.height = `${ajusteHeight}px`;
+                                        container.style.maxHeight = `${ajusteHeight}px`;
+                                    }
+                                }
+                            }, 100);
+                        });
+                    }
+                    
+                    // ✅ PASO 6: Obtener altura del header del DataTable
+                    let header = dataTable.querySelector('.ubits-data-table__header');
+                    if (!header) {
+                        header = container.querySelector('.ubits-data-table__header');
+                    }
+                    if (!header) {
+                        const allHeaders = dataTable.querySelectorAll('[class*="header"]');
+                        if (allHeaders.length > 0) {
+                            header = allHeaders[0];
+                        }
+                    }
+                    const headerHeight = header ? header.getBoundingClientRect().height : 0;
+                    
+                    // ✅ PASO 7: Calcular altura disponible para el scrollable container
+                    const containerPaddingTop = 0; // Sin padding superior por ahora
+                    const availableHeightForScrollable = maxContainerHeight - headerHeight - containerPaddingTop;
+                    
+                    // ✅ PASO 8: Contar items para determinar si necesitamos scroll
+                    const tableBody = scrollableContainer.querySelector('tbody');
+                    const rowCount = tableBody ? tableBody.querySelectorAll('tr').length : 0;
+                    
+                    // ✅ PASO 9: Calcular altura mínima necesaria para mostrar todos los items
+                    const rowHeight = 45; // Altura estimada por fila
+                    const tableHeaderHeight = 45; // Altura estimada del header de la tabla
+                    const minHeightNeeded = tableHeaderHeight + (rowCount * rowHeight);
+                    
+                    // ✅ PASO 10: Aplicar altura al scrollable container solo si hay suficientes items
+                    if (minHeightNeeded > availableHeightForScrollable && availableHeightForScrollable > 200) {
+                        // ⚠️ CRÍTICO: Usar setProperty con !important para sobrescribir el CSS del DataTable
+                        scrollableContainer.style.setProperty('max-height', `${availableHeightForScrollable}px`, 'important');
+                        
+                        // Verificar después de aplicar que el CSS no lo sobrescribió
+                        requestAnimationFrame(() => {
+                            const scrollableComputedStyle = window.getComputedStyle(scrollableContainer);
+                            if (scrollableComputedStyle.maxHeight !== `${availableHeightForScrollable}px`) {
+                                // Si fue sobrescrito, volver a aplicar
+                                scrollableContainer.style.setProperty('max-height', `${availableHeightForScrollable}px`, 'important');
+                            }
+                        });
+                    } else {
+                        // Pocos items o espacio insuficiente, usar altura natural (sin scroll)
+                        scrollableContainer.style.setProperty('max-height', 'none', 'important');
+                    }
+                    
+                    // ✅ PASO 11: Asegurar que la tabla ocupe TODO el ancho disponible
+                    dataTable.style.width = '100%';
+                    dataTable.style.maxWidth = '100%';
+                    container.style.width = '100%';
+                    container.style.maxWidth = '100%';
+                }
+                
+                // Llamar la función cuando se redimensiona la ventana (con debounce)
+                let resizeTimeout;
+                window.addEventListener('resize', () => {
+                    clearTimeout(resizeTimeout);
+                    resizeTimeout = setTimeout(() => {
+                        adjustDataTableHeight('encuestas-table-container');
+                    }, 200);
+                });
                 
                 // Inicializar responsive DESPUÉS de que los componentes se hayan cargado
                 // Esto asegura que adaptComponents() encuentre los componentes
