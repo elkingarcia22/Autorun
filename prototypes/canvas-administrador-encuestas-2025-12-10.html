@@ -2560,11 +2560,33 @@
       }
     })();
   </script>
-        actionBar.style.display = 'none';
-        return;
-      }
-
-      actionBar.style.display = 'flex';
+  
+  <script>
+    if (!originalHandleSectionChange) {
+      // Si ContentManager aún no existe, interceptarlo cuando se cree
+      Object.defineProperty(window, 'UBITS_ContentManager', {
+        set: function(value) {
+          console.log('🔍 [Wizard] UBITS_ContentManager definido');
+          if (value && value.handleSectionChange) {
+            const original = value.handleSectionChange;
+            value.handleSectionChange = function(section, activeTabId) {
+              console.log('🔍 [Wizard] ════════════════════════════════════════');
+              console.log('🔍 [Wizard] 🔄 handleSectionChange INTERCEPTADO (desde setter)');
+              console.log('🔍 [Wizard] section:', section);
+              console.log('🔍 [Wizard] activeTabId:', activeTabId);
+              console.log('🔍 [Wizard] currentSection antes:', this.currentSection);
+              return original.call(this, section, activeTabId);
+            };
+          }
+          Object.defineProperty(window, 'UBITS_ContentManager', { value, writable: true, configurable: true });
+        },
+        get: function() {
+          return window._UBITS_ContentManager;
+        },
+        configurable: true
+      });
+    }
+  </script>
 
       const isMultipleSelection = selectedCount > 1;
       const countText = `(${selectedCount})`;
