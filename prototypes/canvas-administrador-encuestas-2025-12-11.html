@@ -1339,7 +1339,25 @@
                 }
                 
                 // Inicializar después de que todo esté cargado
-                setTimeout(initializeDataTable, 1500);
+                // Esperar a que los componentes estén disponibles
+                function waitForComponents() {
+                    if (window.createDataTable && window.createTabs) {
+                        console.log('✅ [Encuestas] Componentes disponibles, inicializando DataTable...');
+                        setTimeout(initializeDataTable, 500);
+                    } else {
+                        console.log('⏳ [Encuestas] Esperando componentes...');
+                        setTimeout(waitForComponents, 200);
+                    }
+                }
+                
+                // Iniciar espera después de que el DOM esté listo
+                if (document.readyState === 'loading') {
+                    document.addEventListener('DOMContentLoaded', () => {
+                        setTimeout(waitForComponents, 1000);
+                    });
+                } else {
+                    setTimeout(waitForComponents, 1000);
+                }
                 
                 // ========================================
                 // FUNCIÓN: Ajustar altura dinámica del DataTable
