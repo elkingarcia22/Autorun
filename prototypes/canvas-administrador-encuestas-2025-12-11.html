@@ -1172,10 +1172,21 @@
                 // ========================================
                 // INICIALIZAR DATATABLE DE ENCUESTAS (BÁSICO)
                 // ========================================
-                setTimeout(() => {
+                function initializeDataTable() {
                     const tableContainer = document.getElementById('encuestas-table-container');
-                    if (tableContainer && window.createDataTable) {
-                        console.log('🔵 [Encuestas] Inicializando DataTable básico...');
+                    if (!tableContainer) {
+                        console.warn('⚠️ [Encuestas] Contenedor no encontrado, reintentando...');
+                        setTimeout(initializeDataTable, 500);
+                        return;
+                    }
+                    
+                    if (!window.createDataTable) {
+                        console.warn('⚠️ [Encuestas] createDataTable no disponible, reintentando...');
+                        setTimeout(initializeDataTable, 500);
+                        return;
+                    }
+                    
+                    console.log('🔵 [Encuestas] Inicializando DataTable básico...');
                         
                         // Generar datos de ejemplo
                         function generateEncuestasData() {
@@ -1282,12 +1293,10 @@
                             adjustDataTableHeight('encuestas-table-container');
                         }, 300);
                     } else {
-                        console.warn('⚠️ [Encuestas] No se pudo inicializar DataTable:', {
-                            container: !!tableContainer,
-                            createDataTable: !!window.createDataTable
-                        });
-                    }
-                }, 1000);
+                }
+                
+                // Inicializar después de que todo esté cargado
+                setTimeout(initializeDataTable, 1500);
                 
                 // ========================================
                 // FUNCIÓN: Ajustar altura dinámica del DataTable
