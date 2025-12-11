@@ -2334,82 +2334,10 @@
   <script>
     // Desactivar navegación de otros módulos en el sidebar
     (function() {
-        const drawer = drawerOverlay.querySelector('.ubits-drawer');
-        if (drawer) {
-          const footer = drawer.querySelector('.ubits-drawer__footer');
-          if (footer) {
-            const footerRight = footer.querySelector('.ubits-drawer__footer-right');
-            if (footerRight) {
-              const buttons = footerRight.querySelectorAll('.ubits-drawer__footer-button');
-              for (let i = 0; i < buttons.length; i++) {
-                const btn = buttons[i];
-                const btnText = btn.textContent?.trim() || '';
-                if (btnText.toLowerCase().includes('limpiar')) {
-                  btn.click();
-                  return;
-                }
-              }
-            }
-          }
-        }
-      } else {
-        const headerElement = window._encuestasDataTableInstance.element.querySelector('.ubits-data-table__header');
-        if (headerElement) {
-          const filterButton = headerElement.querySelector('.ubits-data-table__header-filter-button');
-          if (filterButton) {
-            const style = document.createElement('style');
-            style.id = 'hide-drawer-temporarily';
-            style.textContent = '.ubits-drawer-overlay { opacity: 0 !important; pointer-events: none !important; }';
-            document.head.appendChild(style);
-            
-            filterButton.click();
-            
-            let attempts = 0;
-            const maxAttempts = 20;
-            const checkInterval = setInterval(() => {
-              attempts++;
-              const drawerOverlayAfterOpen = document.querySelector('.ubits-drawer-overlay.ubits-drawer-overlay--open');
-              if (drawerOverlayAfterOpen) {
-                clearInterval(checkInterval);
-                const drawerAfterOpen = drawerOverlayAfterOpen.querySelector('.ubits-drawer');
-                if (drawerAfterOpen) {
-                  const footer = drawerAfterOpen.querySelector('.ubits-drawer__footer');
-                  if (footer) {
-                    const footerRight = footer.querySelector('.ubits-drawer__footer-right');
-                    if (footerRight) {
-                      const buttons = footerRight.querySelectorAll('.ubits-drawer__footer-button');
-                      for (let i = 0; i < buttons.length; i++) {
-                        const btn = buttons[i];
-                        const btnText = btn.textContent?.trim() || '';
-                        if (btnText.toLowerCase().includes('limpiar')) {
-                          btn.click();
-                          setTimeout(() => {
-                            const hideStyle = document.getElementById('hide-drawer-temporarily');
-                            if (hideStyle) {
-                              hideStyle.remove();
-                            }
-                          }, 100);
-                          return;
-                        }
-                      }
-                    }
-                  }
-                }
-              } else if (attempts >= maxAttempts) {
-                clearInterval(checkInterval);
-                const hideStyle = document.getElementById('hide-drawer-temporarily');
-                if (hideStyle) {
-                  hideStyle.remove();
-                }
-              }
-            }, 100);
-          }
-        }
-      }
-    };
-
-    // Función para renderizar Action Bar
-    const renderActionBar = (container) => {
+      const currentModule = 'encuestas';
+      
+      function disableOtherModules() {
+        const sidebar = document.querySelector('.ubits-sidebar');
       const header = container.querySelector('.ubits-data-table__header');
       if (!header) {
         return;
