@@ -2434,34 +2434,6 @@
   </script>
 
   <script>
-    // Desactivar navegación de otros módulos en el sidebar
-    (function() {
-      const currentModule = 'encuestas';
-      
-      function disableOtherModules() {
-        const sidebar = document.querySelector('.ubits-sidebar');
-      if (!header) {
-        return;
-      }
-
-      let actionBar = container.querySelector('.ubits-data-table__action-bar');
-
-      if (!actionBar) {
-        actionBar = document.createElement('div');
-        actionBar.className = 'ubits-data-table__action-bar';
-        actionBar.style.cssText = `
-          display: flex;
-          align-items: center;
-          justify-content: flex-start;
-          flex-wrap: wrap;
-          gap: var(--ubits-spacing-xs, 4px);
-          padding: var(--ubits-spacing-sm, 8px) 0;
-          background-color: var(--ubits-bg-1);
-        `;
-        header.insertAdjacentElement('afterend', actionBar);
-      }
-    }
-
     // TODO: La implementación de DataTable se realizará siguiendo el plan predefinido
     // Ver: packages/autorun-core/src/helpers/componentPlans.ts (DATATABLE_IMPLEMENTATION_PLAN)
     // y el plan automático obtenido del add-on Pre-Implementation Check basado en Storybook
