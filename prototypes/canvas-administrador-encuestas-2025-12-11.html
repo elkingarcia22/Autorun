@@ -250,6 +250,16 @@
         }
 
         /* ========================================
+           DATATABLE CONTAINER
+           ======================================== */
+        
+        #encuestas-table-container {
+            width: 100%;
+            box-sizing: border-box;
+            /* ⚠️ CRÍTICO: NO agregar margin-top - el spacing viene del gap del contenedor padre (.main-content) */
+        }
+
+        /* ========================================
            SECTION TYPES
            ======================================== */
         
@@ -739,7 +749,8 @@
             
             <!-- Content Area -->
             <div class="content-area">
-                <!-- Contenedor personalizado para componentes -->
+                <!-- Contenedor para DataTable de Encuestas -->
+                <div id="encuestas-table-container"></div>
             </div>
         </main>
     </div>
