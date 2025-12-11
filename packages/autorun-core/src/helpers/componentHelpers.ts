@@ -14,7 +14,7 @@ import { buildSafeStorybookUrl } from './verifyStorybookStories';
  */
 function mapComponentNameToStorybook(componentName: string): string {
   const mapping: Record<string, string> = {
-    Tabs: 'navegacion-tabs',
+    Tabs: 'navegación-tabs',
     DataTable: 'data-data-table',
     Button: 'bsicos-button',
     Modal: 'feedback-modal',
