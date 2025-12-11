@@ -322,7 +322,9 @@ export async function buildSafeStorybookUrl(
   // Usar la historia deseada si existe, sino usar 'default'
   const safeStoryName = storyExists ? normalizedStoryName : 'default';
 
-  const url = `https://ubits-storybook10.vercel.app/?path=/story/${storyInfo.componentId}--${safeStoryName}`;
+  // ⚠️ CRÍTICO: Codificar el componentId para manejar caracteres especiales (acentos, etc.)
+  const encodedComponentId = encodeURIComponent(storyInfo.componentId);
+  const url = `https://ubits-storybook10.vercel.app/?path=/story/${encodedComponentId}--${safeStoryName}`;
 
   let warning: string | undefined;
   if (!storyExists && storyName !== 'default') {
