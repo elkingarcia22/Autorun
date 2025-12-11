@@ -1344,13 +1344,12 @@
                             adjustDataTableHeight('encuestas-table-container');
                         }, 300);
                     } else {
+                        console.warn('⚠️ [Encuestas] No se pudo inicializar DataTable:', {
+                            container: !!tableContainer,
+                            createDataTable: !!window.createDataTable
+                        });
+                    }
                 }
-                
-                // Inicializar después de que los tabs estén listos
-                // Esperar un poco más para asegurar que createDataTable esté disponible
-                setTimeout(() => {
-                    waitForComponents();
-                }, 2000);
                 
                 // Esperar a que los componentes estén disponibles
                 function waitForComponents() {
@@ -1368,6 +1367,12 @@
                         setTimeout(waitForComponents, 500);
                     }
                 }
+                
+                // Inicializar después de que los tabs estén listos
+                // Esperar un poco más para asegurar que createDataTable esté disponible
+                setTimeout(() => {
+                    waitForComponents();
+                }, 2000);
                 
                 // ========================================
                 // FUNCIÓN: Ajustar altura dinámica del DataTable
