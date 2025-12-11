@@ -152,3 +152,7 @@ tabsContainer.style.cssText = 'width: 100%; margin-top: var(--ubits-spacing-lg, 
 **Última actualización:** 2025-12-09  
 **Estado:** ✅ Error corregido y prevención implementada
 
+
+
+
+

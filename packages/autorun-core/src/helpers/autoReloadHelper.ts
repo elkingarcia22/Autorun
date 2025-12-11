@@ -1,6 +1,6 @@
 /**
  * Helper para recarga automática de página después de guardar archivos
- * 
+ *
  * Este helper permite que el agente de Cursor recargue automáticamente
  * la página cuando guarda archivos en prototypes/
  */
@@ -34,9 +34,9 @@ export function getTemplateUrlFromPath(filePath: string): string {
 
 /**
  * Instrucciones para que el agente recargue automáticamente
- * 
+ *
  * ⚠️ IMPORTANTE: El agente debe usar estas instrucciones después de guardar archivos
- * 
+ *
  * Ejemplo de uso:
  * ```typescript
  * // Después de usar write() o search_replace() en prototypes/
@@ -44,10 +44,10 @@ export function getTemplateUrlFromPath(filePath: string): string {
  *   // 1. Obtener URL actual del navegador
  *   const snapshot = await mcp_cursor-ide-browser_browser_snapshot();
  *   const currentUrl = snapshot?.url || getTemplateUrlFromPath(filePath);
- *   
+ *
  *   // 2. Recargar la página
  *   await mcp_cursor-ide-browser_browser_navigate({ url: currentUrl });
- *   
+ *
  *   // 3. Esperar un momento y tomar snapshot para verificar
  *   setTimeout(async () => {
  *     await mcp_cursor-ide-browser_browser_snapshot();
@@ -83,7 +83,6 @@ Cuando guardes un archivo en prototypes/ (HTML, JS o CSS), DEBES:
 - Ejecuta automáticamente después de guardar archivos en prototypes/
 - Esto permite ver los cambios inmediatamente sin recargar manualmente
 `;
-
 
 
 

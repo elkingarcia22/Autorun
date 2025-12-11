@@ -132,14 +132,17 @@ export class N8nService {
 		}
 
 		try {
-			const response = await fetch(`${this.config.n8nApiUrl}/api/v1/workflows/${workflowId}/execute`, {
-				method: 'POST',
-				headers: {
-					'X-N8N-API-KEY': this.config.n8nApiKey,
-					'Content-Type': 'application/json',
+			const response = await fetch(
+				`${this.config.n8nApiUrl}/api/v1/workflows/${workflowId}/execute`,
+				{
+					method: 'POST',
+					headers: {
+						'X-N8N-API-KEY': this.config.n8nApiKey,
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify(input || {}),
 				},
-				body: JSON.stringify(input || {}),
-			});
+			);
 
 			if (!response.ok) {
 				throw new Error(`Error al ejecutar workflow: ${response.status} ${response.statusText}`);
@@ -165,3 +168,6 @@ export class N8nService {
 		return { ...this.config };
 	}
 }
+
+
+

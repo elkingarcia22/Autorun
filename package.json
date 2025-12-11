@@ -16,10 +16,17 @@
 		"init": "tsx packages/autorun-core/src/cli/autorun-init.ts",
 		"autorun:init": "npm run init",
 		"autorun:init-hub": "tsx packages/autorun-core/src/cli/autorun-init-hub.ts",
+		"autorun:daemon": "tsx packages/autorun-core/src/cli/autorun-daemon.ts",
+		"setup-storybook-mcp": "node scripts/setup-storybook-mcp-auto.js",
+		"generate-storybook-inventory": "tsx scripts/generate-storybook-inventory.ts",
 		"setup-project": "node scripts/create-project-package-json.js",
 		"postinstall": "npm run verify",
 		"wizard": "node scripts/run-init.js",
-		"open:browser": "node scripts/open-in-cursor-browser.js"
+		"open:browser": "node scripts/open-in-cursor-browser.js",
+		"deploy:index": "bash scripts/deploy-index.sh",
+		"deploy:index:preview": "cd deploy && npx vercel",
+		"deploy": "vercel --prod",
+		"deploy:preview": "vercel"
 	},
 	"bin": {
 		"autorun-init": "./packages/autorun-core/dist/cli/autorun-init.js"
@@ -38,6 +45,7 @@
 		"style-dictionary": "^4.4.0",
 		"tsx": "^4.20.6",
 		"typescript": "^5.9.3",
+		"vercel": "^49.1.2",
 		"vite": "^7.2.6"
 	},
 	"dependencies": {

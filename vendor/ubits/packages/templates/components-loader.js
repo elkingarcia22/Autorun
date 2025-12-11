@@ -2276,10 +2276,10 @@ function initTabsListeners(tabsElement, options) {
 		tabsElement.querySelectorAll('.ubits-tab').forEach((t) => {
 			const currentTabId = t.getAttribute('data-tab-id');
 			console.log('🔵 [Tabs] Removiendo active de tab:', currentTabId);
-			
+
 			t.classList.remove('ubits-tab--active');
 			console.log('🔵 [Tabs] Clases después de remover active:', t.className);
-			
+
 			// Actualizar icono del tab inactivo (regular)
 			const iconElement = t.querySelector('i');
 			if (iconElement) {
@@ -2301,7 +2301,7 @@ function initTabsListeners(tabsElement, options) {
 		console.log('🔵 [Tabs] Agregando active a tab:', tabId);
 		tabElement.classList.add('ubits-tab--active');
 		console.log('🔵 [Tabs] Clases después de agregar active:', tabElement.className);
-		
+
 		// Actualizar icono del tab activo (solid)
 		const activeIconElement = tabElement.querySelector('i');
 		if (activeIconElement) {
@@ -2310,7 +2310,10 @@ function initTabsListeners(tabsElement, options) {
 			console.log('🔵 [Tabs] Nombre del icono activo extraído:', iconName);
 			if (iconName) {
 				activeIconElement.className = `fas fa-${iconName}`;
-				console.log('🔵 [Tabs] Icono activo después de actualizar a solid:', activeIconElement.className);
+				console.log(
+					'🔵 [Tabs] Icono activo después de actualizar a solid:',
+					activeIconElement.className,
+				);
 			} else {
 				console.warn('⚠️ [Tabs] No se pudo extraer el nombre del icono activo');
 			}

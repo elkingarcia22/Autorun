@@ -1,6 +1,6 @@
 /**
  * AutorunAgent
- * 
+ *
  * Agente que inicializa AutorunHub automáticamente cuando Cursor está trabajando.
  * Este archivo se ejecuta automáticamente cuando el agente de Cursor detecta que
  * necesita usar Autorun (por ejemplo, cuando se editan archivos en prototypes/).
@@ -53,7 +53,7 @@ async function initializeAutorunHub(): Promise<AutorunHub> {
 
 		// Crear e inicializar hub
 		const hub = new AutorunHub(configPath);
-		
+
 		// ⚠️ CRÍTICO: Registrar add-ons disponibles ANTES de inicializar
 		// Esto asegura que los add-ons estén disponibles cuando se intenten activar
 		try {
@@ -65,7 +65,7 @@ async function initializeAutorunHub(): Promise<AutorunHub> {
 			// No bloquear si falla el registro automático
 			console.warn('⚠️ AutorunAgent: Error registrando add-ons automáticamente:', error.message);
 		}
-		
+
 		await hub.initialize();
 
 		globalHub = hub;
@@ -96,7 +96,7 @@ export async function ensureAutorunHubInitialized(): Promise<AutorunHub> {
 	if (isAutorunHubInitialized()) {
 		return globalHub!;
 	}
-	
+
 	console.log('⚠️ AutorunHub no está inicializado. Inicializando automáticamente...');
 	return await getAutorunHub();
 }
@@ -113,11 +113,11 @@ export async function getAutorunHubStatus(): Promise<{
 	try {
 		const hub = await ensureAutorunHubInitialized();
 		const activeAddonsMap = (hub as any).activeAddons as Map<string, any> | undefined;
-		const activeAddons: string[] = activeAddonsMap 
-			? Array.from(activeAddonsMap.keys()).map(key => String(key))
+		const activeAddons: string[] = activeAddonsMap
+			? Array.from(activeAddonsMap.keys()).map((key) => String(key))
 			: [];
 		const fileWatching = !!(hub as any).fileWatcher;
-		
+
 		return {
 			initialized: hub['initialized'] || false,
 			fileWatching,

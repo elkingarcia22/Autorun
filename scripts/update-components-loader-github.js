@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 /**
  * Script para actualizar components-loader.js en GitHub con window.createTabs
- * 
+ *
  * Uso:
  *   node scripts/update-components-loader-github.js
- * 
+ *
  * Requisitos:
  *   - Tener acceso al repositorio elkingarcia22/UBITS
  *   - Tener GITHUB_TOKEN configurado en variables de entorno
@@ -36,7 +36,15 @@ if (!GITHUB_TOKEN) {
 }
 
 // Leer el archivo local
-const localFilePath = path.join(__dirname, '..', 'vendor', 'ubits', 'packages', 'templates', 'components-loader.js');
+const localFilePath = path.join(
+	__dirname,
+	'..',
+	'vendor',
+	'ubits',
+	'packages',
+	'templates',
+	'components-loader.js',
+);
 
 if (!fs.existsSync(localFilePath)) {
 	console.error(`❌ Error: No se encuentra el archivo local: ${localFilePath}`);
@@ -55,7 +63,9 @@ if (!fileContent.includes('window.createTabs')) {
 
 console.log('✅ Archivo local leído correctamente');
 console.log(`   Tamaño: ${fileContent.length} caracteres`);
-console.log(`   Contiene window.createTabs: ${fileContent.includes('window.createTabs') ? '✅' : '❌'}`);
+console.log(
+	`   Contiene window.createTabs: ${fileContent.includes('window.createTabs') ? '✅' : '❌'}`,
+);
 
 // Obtener SHA del archivo actual en GitHub
 async function getCurrentSHA() {
@@ -66,8 +76,8 @@ async function getCurrentSHA() {
 			method: 'GET',
 			headers: {
 				'User-Agent': 'Node.js Script',
-				'Authorization': `token ${GITHUB_TOKEN}`,
-				'Accept': 'application/vnd.github.v3+json',
+				Authorization: `token ${GITHUB_TOKEN}`,
+				Accept: 'application/vnd.github.v3+json',
 			},
 		};
 
@@ -99,7 +109,8 @@ async function getCurrentSHA() {
 // Actualizar archivo en GitHub
 async function updateFile(sha) {
 	return new Promise((resolve, reject) => {
-		const commitMessage = 'feat: add window.createTabs to components-loader.js\n\nAdds renderTabs, initTabsListeners, and window.createTabs functions to support Tabs component';
+		const commitMessage =
+			'feat: add window.createTabs to components-loader.js\n\nAdds renderTabs, initTabsListeners, and window.createTabs functions to support Tabs component';
 
 		const payload = JSON.stringify({
 			message: commitMessage,
@@ -114,8 +125,8 @@ async function updateFile(sha) {
 			method: 'PUT',
 			headers: {
 				'User-Agent': 'Node.js Script',
-				'Authorization': `token ${GITHUB_TOKEN}`,
-				'Accept': 'application/vnd.github.v3+json',
+				Authorization: `token ${GITHUB_TOKEN}`,
+				Accept: 'application/vnd.github.v3+json',
 				'Content-Type': 'application/json',
 				'Content-Length': Buffer.byteLength(payload),
 			},
@@ -185,3 +196,6 @@ async function main() {
 }
 
 main();
+
+
+

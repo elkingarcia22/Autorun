@@ -1,11 +1,5 @@
 # 🚀 Inicio de Sesión - Reglas y Contexto
 
-> ⚠️ **NOTA:** Este archivo se genera automáticamente después de ejecutar el wizard.  
-> **Para reglas actualizadas, ver:** `.cursor/rules/`  
-> **Última actualización:** 2025-01-03
-
----
-
 **Este archivo se genera automáticamente después de ejecutar el wizard.**
 
 ## 📋 Estado del Proyecto
@@ -20,14 +14,15 @@
 
 ### Archivos de Reglas Principales:
 
-1. **`.cursorrules`** - Reglas principales (Cursor lo lee automáticamente)
-2. **`.cursor/rules/00-inicio.md`** - ⭐ Verificación inicial obligatoria
-3. **`.cursor/rules/01-deteccion-imagen.md`** - ⭐ Detección de triggers de imagen
-4. **`.cursor/rules/02-bloqueo-imagen.md`** - ⭐ Bloqueo absoluto para imágenes
-5. **`.cursor/rules/03-componentes.md`** - ⭐ Reglas para componentes UBITS
-6. **`.cursor/rules/04-implementacion.md`** - ⭐ Reglas de implementación paso a paso
-7. **`.cursor/rules/05-errores.md`** - ⭐ Errores comunes a evitar
-8. **`.cursor/rules/06-implementacion-automatica.md`** - ⭐ Implementación automática
+1. **`.cursorrules`** - ⭐ Reglas principales (Cursor lo lee automáticamente) - Simplificado (236 líneas)
+2. **`QUICK-REFERENCE.md`** - ⭐ NUEVO: Referencia rápida (máx 50 líneas)
+3. **`.cursor/rules/00-inicio.md`** - ⭐ Verificación inicial obligatoria
+4. **`.cursor/rules/01-deteccion-imagen.md`** - ⭐ Detección de triggers de imagen
+5. **`.cursor/rules/02-bloqueo-imagen.md`** - ⭐ Bloqueo absoluto para imágenes
+6. **`.cursor/rules/03-componentes.md`** - ⭐ Reglas para componentes UBITS
+7. **`.cursor/rules/04-implementacion.md`** - ⭐ Reglas de implementación paso a paso
+8. **`.cursor/rules/05-errores.md`** - ⭐ Errores comunes a evitar
+9. **`.cursor/rules/06-implementacion-automatica.md`** - ⭐ Implementación automática
 
 **Ver índice completo:** `.cursor/rules/index.md`
 
@@ -59,7 +54,7 @@
 
 ### Al inicio de CADA mensaje, Cursor AI DEBE:
 
-1. ✅ **Leer `.cursorrules` completo** (Cursor lo hace automáticamente)
+1. ✅ **Leer `.cursorrules` completo** (Cursor lo hace automáticamente) - ⭐ Simplificado
 2. ✅ **Leer `.cursor/rules/00-inicio.md`** usando `read_file()` - ⭐ Actualizado
 3. ✅ **Verificar triggers de imagen** en el mensaje del usuario
 4. ✅ **Si hay triggers, leer todas las guías obligatorias:**
@@ -149,5 +144,5 @@
 ---
 
 **Última actualización:** Generado automáticamente por el wizard  
-**Fecha:** 2025-12-10
+**Fecha:** 2025-12-11
 

@@ -1,6 +1,6 @@
 /**
  * Step-by-Step Implementation System
- * 
+ *
  * Sistema para implementar componentes complejos por pasos incrementales
  */
 
@@ -22,19 +22,24 @@ export interface ComponentImplementationPlan {
 
 export class StepByStepImplementation {
 	private plans: Map<string, ComponentImplementationPlan> = new Map();
-	private currentImplementations: Map<string, {
-		plan: ComponentImplementationPlan;
-		completedSteps: Set<string>;
-		currentStep?: string;
-		startedAt: number;
-	}> = new Map();
+	private currentImplementations: Map<
+		string,
+		{
+			plan: ComponentImplementationPlan;
+			completedSteps: Set<string>;
+			currentStep?: string;
+			startedAt: number;
+		}
+	> = new Map();
 
 	/**
 	 * Registra un plan de implementación para un componente
 	 */
 	registerPlan(plan: ComponentImplementationPlan): void {
 		this.plans.set(plan.componentName, plan);
-		console.log(`✅ Step-by-Step: Plan registrado para ${plan.componentName} (${plan.totalSteps} pasos)`);
+		console.log(
+			`✅ Step-by-Step: Plan registrado para ${plan.componentName} (${plan.totalSteps} pasos)`,
+		);
 	}
 
 	/**
@@ -64,7 +69,7 @@ export class StepByStepImplementation {
 		});
 
 		const nextStep = this.getNextStep(componentName);
-		
+
 		console.log(`🚀 Step-by-Step: Iniciando implementación de ${componentName}`);
 		if (nextStep) {
 			console.log(`📋 Step-by-Step: Siguiente paso: ${nextStep.name}`);
@@ -76,7 +81,10 @@ export class StepByStepImplementation {
 	/**
 	 * Marca un paso como completado
 	 */
-	completeStep(componentName: string, stepId: string): {
+	completeStep(
+		componentName: string,
+		stepId: string,
+	): {
 		completed: boolean;
 		nextStep: ImplementationStep | null;
 		progress: { completed: number; total: number; percentage: number };
@@ -92,7 +100,9 @@ export class StepByStepImplementation {
 		const nextStep = this.getNextStep(componentName);
 		const progress = this.getProgress(componentName);
 
-		console.log(`✅ Step-by-Step: Paso completado: ${stepId} (${progress.completed}/${progress.total})`);
+		console.log(
+			`✅ Step-by-Step: Paso completado: ${stepId} (${progress.completed}/${progress.total})`,
+		);
 
 		return {
 			completed: progress.completed === progress.total,
@@ -120,9 +130,7 @@ export class StepByStepImplementation {
 
 			// Verificar dependencias
 			if (step.dependencies) {
-				const allDependenciesMet = step.dependencies.every(depId => 
-					completedSteps.has(depId)
-				);
+				const allDependenciesMet = step.dependencies.every((depId) => completedSteps.has(depId));
 
 				if (!allDependenciesMet) {
 					continue;
@@ -196,7 +204,9 @@ export class StepByStepImplementation {
 
 		this.currentImplementations.delete(componentName);
 
-		console.log(`🎉 Step-by-Step: Implementación de ${componentName} finalizada (${progress.completed}/${progress.total} pasos, ${Math.round(duration / 1000)}s)`);
+		console.log(
+			`🎉 Step-by-Step: Implementación de ${componentName} finalizada (${progress.completed}/${progress.total} pasos, ${Math.round(duration / 1000)}s)`,
+		);
 
 		return {
 			completed: progress.completed === progress.total,
@@ -208,7 +218,6 @@ export class StepByStepImplementation {
 
 // Instancia global del sistema
 export const stepByStepImplementation = new StepByStepImplementation();
-
 
 
 

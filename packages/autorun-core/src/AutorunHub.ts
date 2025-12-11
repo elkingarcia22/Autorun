@@ -318,12 +318,17 @@ export class AutorunHub {
 	 * @param data Datos del evento (opcional)
 	 */
 	async emitEvent(event: string, data?: any): Promise<void> {
-		console.log(`📡 AutorunHub: Emitiendo evento '${event}' con datos:`, typeof data === 'string' ? data : JSON.stringify(data).substring(0, 100));
-		
+		console.log(
+			`📡 AutorunHub: Emitiendo evento '${event}' con datos:`,
+			typeof data === 'string' ? data : JSON.stringify(data).substring(0, 100),
+		);
+
 		// Convertir nombre del evento a nombre del método
 		// Ej: 'fileChange' -> 'onFileChange'
 		const eventMethod = `on${event.charAt(0).toUpperCase() + event.slice(1)}`;
-		console.log(`🔍 AutorunHub: Buscando método '${eventMethod}' en ${this.activeAddons.size} add-on(s) activo(s)`);
+		console.log(
+			`🔍 AutorunHub: Buscando método '${eventMethod}' en ${this.activeAddons.size} add-on(s) activo(s)`,
+		);
 
 		let handlersFound = 0;
 		for (const addon of this.activeAddons.values()) {
@@ -337,7 +342,9 @@ export class AutorunHub {
 					try {
 						// Para fileChange, pasar filePath como primer argumento
 						if (event === 'fileChange' && typeof data === 'string') {
-							console.log(`📞 AutorunHub: Llamando ${eventMethod} en add-on '${addon.id}' con filePath: ${data}`);
+							console.log(
+								`📞 AutorunHub: Llamando ${eventMethod} en add-on '${addon.id}' con filePath: ${data}`,
+							);
 							await handler.call(functionalAddon, data);
 						} else {
 							console.log(`📞 AutorunHub: Llamando ${eventMethod} en add-on '${addon.id}'`);
@@ -352,8 +359,10 @@ export class AutorunHub {
 				}
 			}
 		}
-		
-		console.log(`📊 AutorunHub: Evento '${event}' procesado - ${handlersFound} handler(s) ejecutado(s)`);
+
+		console.log(
+			`📊 AutorunHub: Evento '${event}' procesado - ${handlersFound} handler(s) ejecutado(s)`,
+		);
 	}
 
 	/**

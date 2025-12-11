@@ -816,14 +816,12 @@
 				setTimeout(() => {
 					const S = e * i,
 						b = Math.min(S + i, s.length),
-						I = s
-							.slice(S, b)
-							.map((v) => ({
-								label: v.text,
-								state: a === v.value ? 'active' : 'default',
-								value: v.value,
-								selected: a === v.value,
-							}));
+						I = s.slice(S, b).map((v) => ({
+							label: v.text,
+							state: a === v.value ? 'active' : 'default',
+							value: v.value,
+							selected: a === v.value,
+						}));
 					e === 0 ? (l = I) : (l = [...l, ...I]);
 					const y = `ubits-select-list-${d.id}`;
 					(c.id = y), (c.innerHTML = '');

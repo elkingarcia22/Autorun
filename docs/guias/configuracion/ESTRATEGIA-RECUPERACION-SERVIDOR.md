@@ -284,3 +284,7 @@ pkill -f "start-server.mjs"
 # Verificar estado
 ps aux | grep -E "start-server|LocalServer" | grep -v grep
 ```
+
+
+
+

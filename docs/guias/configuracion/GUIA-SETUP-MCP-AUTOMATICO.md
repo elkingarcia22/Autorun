@@ -188,3 +188,7 @@ El MCP de Storybook no funcionará, pero los demás MCPs (Figma, Supabase, Verce
 
 
 
+
+
+
+

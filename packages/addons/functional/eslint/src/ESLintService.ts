@@ -14,330 +14,350 @@ import { readFileSync, existsSync } from 'fs';
 import * as path from 'path';
 
 export interface ESLintConfig {
-	configFile?: string;
-	extensions?: string[];
-	fix?: boolean;
-	format?: 'stylish' | 'compact' | 'json' | 'html';
-	maxWarnings?: number;
-	ignorePath?: string;
-	rules?: Record<string, any>;
+  configFile?: string;
+  extensions?: string[];
+  fix?: boolean;
+  format?: 'stylish' | 'compact' | 'json' | 'html';
+  maxWarnings?: number;
+  ignorePath?: string;
+  rules?: Record<string, any>;
 }
 
 export interface ESLintResult {
-	filePath: string;
-	messages: Array<{
-		ruleId: string | null;
-		severity: number;
-		message: string;
-		line: number;
-		column: number;
-		fix?: {
-			range: [number, number];
-			text: string;
-		};
-	}>;
-	errorCount: number;
-	warningCount: number;
-	fixableErrorCount: number;
-	fixableWarningCount: number;
+  filePath: string;
+  messages: Array<{
+    ruleId: string | null;
+    severity: number;
+    message: string;
+    line: number;
+    column: number;
+    fix?: {
+      range: [number, number];
+      text: string;
+    };
+  }>;
+  errorCount: number;
+  warningCount: number;
+  fixableErrorCount: number;
+  fixableWarningCount: number;
 }
 
 export interface ESLintReport {
-	results: ESLintResult[];
-	errorCount: number;
-	warningCount: number;
-	fixableErrorCount: number;
-	fixableWarningCount: number;
+  results: ESLintResult[];
+  errorCount: number;
+  warningCount: number;
+  fixableErrorCount: number;
+  fixableWarningCount: number;
 }
 
 export class ESLintService {
-	private config: ESLintConfig;
-	private projectPath: string;
-	private initialized = false;
+  private config: ESLintConfig;
+  private projectPath: string;
+  private initialized = false;
 
-	constructor(config: ESLintConfig, projectPath: string = process.cwd()) {
-		this.config = {
-			extensions: ['.js', '.jsx', '.ts', '.tsx'],
-			fix: false,
-			format: 'stylish',
-			maxWarnings: 0,
-			...config,
-		};
-		this.projectPath = projectPath;
-	}
+  constructor(config: ESLintConfig, projectPath: string = process.cwd()) {
+    this.config = {
+      extensions: ['.js', '.jsx', '.ts', '.tsx'],
+      fix: false,
+      format: 'stylish',
+      maxWarnings: 0,
+      ...config,
+    };
+    this.projectPath = projectPath;
+  }
 
-	/**
-	 * Inicializa el servicio y verifica dependencias
-	 */
-	async initialize(): Promise<void> {
-		// Generar configuración si no existe (siempre, para tener todo listo)
-		await this.ensureESLintConfig();
+  /**
+   * Inicializa el servicio y verifica dependencias
+   */
+  async initialize(): Promise<void> {
+    // Generar configuración si no existe (siempre, para tener todo listo)
+    await this.ensureESLintConfig();
 
-		// Verificar que ESLint esté instalado
-		if (!this.isESLintInstalled()) {
-			// No instalar automáticamente durante initialize, solo preparar configuración
-			this.initialized = false;
-			return;
-		}
+    // Verificar que ESLint esté instalado
+    if (!this.isESLintInstalled()) {
+      // No instalar automáticamente durante initialize, solo preparar configuración
+      this.initialized = false;
+      return;
+    }
 
-		this.initialized = true;
-		console.log('✅ ESLint Service: Inicializado correctamente');
-	}
+    this.initialized = true;
+    console.log('✅ ESLint Service: Inicializado correctamente');
+  }
 
-	/**
-	 * Instala ESLint automáticamente
-	 */
-	private async installESLint(): Promise<void> {
-		const { execSync } = await import('child_process');
-		
-		try {
-			console.log('📦 Instalando ESLint automáticamente...');
-			
-			execSync('npm install --save-dev eslint', {
-				cwd: this.projectPath,
-				stdio: 'inherit',
-			});
+  /**
+   * Instala ESLint automáticamente
+   */
+  private async installESLint(): Promise<void> {
+    const { execSync } = await import('child_process');
 
-			console.log('✅ ESLint instalado correctamente');
-		} catch (error: any) {
-			console.warn('⚠️  No se pudo instalar ESLint automáticamente. Ejecuta manualmente: npm install --save-dev eslint');
-			throw error;
-		}
-	}
+    try {
+      console.log('📦 Instalando ESLint automáticamente...');
 
-	/**
-	 * Verifica si ESLint está instalado
-	 */
-	private isESLintInstalled(): boolean {
-		try {
-			const packageJsonPath = path.join(this.projectPath, 'package.json');
-			if (!existsSync(packageJsonPath)) {
-				return false;
-			}
-			const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'));
-			const allDeps = {
-				...packageJson.dependencies,
-				...packageJson.devDependencies,
-			};
+      execSync('npm install --save-dev eslint', {
+        cwd: this.projectPath,
+        stdio: 'inherit',
+      });
 
-			return 'eslint' in allDeps;
-		} catch {
-			return false;
-		}
-	}
+      console.log('✅ ESLint instalado correctamente');
+    } catch (error: any) {
+      console.warn(
+        '⚠️  No se pudo instalar ESLint automáticamente. Ejecuta manualmente: npm install --save-dev eslint'
+      );
+      throw error;
+    }
+  }
 
-	/**
-	 * Asegura que existe configuración de ESLint
-	 */
-	private async ensureESLintConfig(): Promise<void> {
-		const eslintConfigPath = path.join(this.projectPath, '.eslintrc.json');
-		const eslintConfigJsPath = path.join(this.projectPath, '.eslintrc.js');
-		const packageJsonPath = path.join(this.projectPath, 'package.json');
+  /**
+   * Verifica si ESLint está instalado
+   */
+  private isESLintInstalled(): boolean {
+    try {
+      const packageJsonPath = path.join(this.projectPath, 'package.json');
+      if (!existsSync(packageJsonPath)) {
+        return false;
+      }
+      const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'));
+      const allDeps = {
+        ...packageJson.dependencies,
+        ...packageJson.devDependencies,
+      };
 
-		// Verificar si ya existe configuración
-		if (existsSync(eslintConfigPath) || existsSync(eslintConfigJsPath)) {
-			return;
-		}
+      return 'eslint' in allDeps;
+    } catch {
+      return false;
+    }
+  }
 
-		// Verificar si está en package.json
-		try {
-			if (existsSync(packageJsonPath)) {
-				const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'));
-				if (packageJson.eslintConfig) {
-					return;
-				}
-			}
-		} catch {
-			// Ignorar errores
-		}
+  /**
+   * Asegura que existe configuración de ESLint
+   */
+  private async ensureESLintConfig(): Promise<void> {
+    const eslintConfigPath = path.join(this.projectPath, '.eslintrc.json');
+    const eslintConfigJsPath = path.join(this.projectPath, '.eslintrc.js');
+    const packageJsonPath = path.join(this.projectPath, 'package.json');
 
-		// Generar configuración básica
-		const config = this.generateESLintConfig();
-		await fs.writeFile(eslintConfigPath, JSON.stringify(config, null, 2), 'utf-8');
-		console.log(`✅ Configuración de ESLint generada en: ${eslintConfigPath}`);
-	}
+    // Verificar si ya existe configuración
+    if (existsSync(eslintConfigPath) || existsSync(eslintConfigJsPath)) {
+      return;
+    }
 
-	/**
-	 * Genera configuración básica de ESLint
-	 */
-	private generateESLintConfig(): any {
-		return {
-			env: {
-				browser: true,
-				es2021: true,
-				node: true,
-			},
-			extends: ['eslint:recommended'],
-			parserOptions: {
-				ecmaVersion: 'latest',
-				sourceType: 'module',
-			},
-			rules: {
-				'no-unused-vars': 'warn',
-				'no-console': 'off',
-			},
-		};
-	}
+    // Verificar si está en package.json
+    try {
+      if (existsSync(packageJsonPath)) {
+        const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'));
+        if (packageJson.eslintConfig) {
+          return;
+        }
+      }
+    } catch {
+      // Ignorar errores
+    }
 
-	/**
-	 * Ejecuta ESLint en archivos
-	 */
-	async lint(files: string[], options?: Partial<ESLintConfig>): Promise<ESLintReport> {
-		if (!this.initialized) {
-			await this.initialize();
-		}
+    // Generar configuración básica
+    const config = this.generateESLintConfig();
+    await fs.writeFile(
+      eslintConfigPath,
+      JSON.stringify(config, null, 2),
+      'utf-8'
+    );
+    console.log(`✅ Configuración de ESLint generada en: ${eslintConfigPath}`);
+  }
 
-		// Si no está inicializado (ESLint no instalado), intentar instalar automáticamente
-		if (!this.initialized && !this.isESLintInstalled()) {
-			console.log('📦 ESLint no está instalado. Instalando automáticamente...');
-			try {
-				await this.installESLint();
-				await this.initialize();
-			} catch (error) {
-				throw new Error('ESLint no está instalado. Ejecuta: npm install --save-dev eslint');
-			}
-		}
+  /**
+   * Genera configuración básica de ESLint
+   */
+  private generateESLintConfig(): any {
+    return {
+      env: {
+        browser: true,
+        es2021: true,
+        node: true,
+      },
+      extends: ['eslint:recommended'],
+      parserOptions: {
+        ecmaVersion: 'latest',
+        sourceType: 'module',
+      },
+      rules: {
+        'no-unused-vars': 'warn',
+        'no-console': 'off',
+      },
+    };
+  }
 
-		const config = { ...this.config, ...options };
-		const args = this.buildESLintArgs(files, config);
+  /**
+   * Ejecuta ESLint en archivos
+   */
+  async lint(
+    files: string[],
+    options?: Partial<ESLintConfig>
+  ): Promise<ESLintReport> {
+    if (!this.initialized) {
+      await this.initialize();
+    }
 
-		try {
-			console.log('🔍 ESLint: Ejecutando linting...');
-			const output = execSync(`npx eslint ${args.join(' ')}`, {
-				cwd: this.projectPath,
-				encoding: 'utf-8',
-				stdio: 'pipe',
-			});
+    // Si no está inicializado (ESLint no instalado), intentar instalar automáticamente
+    if (!this.initialized && !this.isESLintInstalled()) {
+      console.log('📦 ESLint no está instalado. Instalando automáticamente...');
+      try {
+        await this.installESLint();
+        await this.initialize();
+      } catch (error) {
+        throw new Error(
+          'ESLint no está instalado. Ejecuta: npm install --save-dev eslint'
+        );
+      }
+    }
 
-			// Si hay salida, parsearla
-			return this.parseESLintOutput(output, files);
-		} catch (error: any) {
-			// ESLint puede retornar código de error si hay problemas
-			const output = error.stdout || error.message;
-			return this.parseESLintOutput(output, files);
-		}
-	}
+    const config = { ...this.config, ...options };
+    const args = this.buildESLintArgs(files, config);
 
-	/**
-	 * Auto-fix errores de ESLint
-	 */
-	async fix(files: string[], options?: Partial<ESLintConfig>): Promise<ESLintReport> {
-		return await this.lint(files, { ...options, fix: true });
-	}
+    try {
+      console.log('🔍 ESLint: Ejecutando linting...');
+      const output = execSync(`npx eslint ${args.join(' ')}`, {
+        cwd: this.projectPath,
+        encoding: 'utf-8',
+        stdio: 'pipe',
+      });
 
-	/**
-	 * Construye argumentos de ESLint
-	 */
-	private buildESLintArgs(files: string[], config: ESLintConfig): string[] {
-		const args: string[] = [];
+      // Si hay salida, parsearla
+      return this.parseESLintOutput(output, files);
+    } catch (error: any) {
+      // ESLint puede retornar código de error si hay problemas
+      const output = error.stdout || error.message;
+      return this.parseESLintOutput(output, files);
+    }
+  }
 
-		// Archivos
-		files.forEach((file) => {
-			args.push(`"${file}"`);
-		});
+  /**
+   * Auto-fix errores de ESLint
+   */
+  async fix(
+    files: string[],
+    options?: Partial<ESLintConfig>
+  ): Promise<ESLintReport> {
+    return await this.lint(files, { ...options, fix: true });
+  }
 
-		// Formato
-		if (config.format) {
-			args.push(`--format=${config.format}`);
-		}
+  /**
+   * Construye argumentos de ESLint
+   */
+  private buildESLintArgs(files: string[], config: ESLintConfig): string[] {
+    const args: string[] = [];
 
-		// Auto-fix
-		if (config.fix) {
-			args.push('--fix');
-		}
+    // Archivos
+    files.forEach((file) => {
+      args.push(`"${file}"`);
+    });
 
-		// Config file
-		if (config.configFile) {
-			args.push(`--config=${config.configFile}`);
-		}
+    // Formato
+    if (config.format) {
+      args.push(`--format=${config.format}`);
+    }
 
-		// Max warnings
-		if (config.maxWarnings !== undefined) {
-			args.push(`--max-warnings=${config.maxWarnings}`);
-		}
+    // Auto-fix
+    if (config.fix) {
+      args.push('--fix');
+    }
 
-		// Ignore path
-		if (config.ignorePath) {
-			args.push(`--ignore-path=${config.ignorePath}`);
-		}
+    // Config file
+    if (config.configFile) {
+      args.push(`--config=${config.configFile}`);
+    }
 
-		return args;
-	}
+    // Max warnings
+    if (config.maxWarnings !== undefined) {
+      args.push(`--max-warnings=${config.maxWarnings}`);
+    }
 
-	/**
-	 * Parsea la salida de ESLint
-	 */
-	private parseESLintOutput(output: string, files: string[]): ESLintReport {
-		// Intentar parsear JSON si el formato es JSON
-		if (this.config.format === 'json') {
-			try {
-				const parsed = JSON.parse(output);
-				return {
-					results: parsed,
-					errorCount: parsed.reduce((sum: number, r: ESLintResult) => sum + r.errorCount, 0),
-					warningCount: parsed.reduce((sum: number, r: ESLintResult) => sum + r.warningCount, 0),
-					fixableErrorCount: parsed.reduce(
-						(sum: number, r: ESLintResult) => sum + r.fixableErrorCount,
-						0,
-					),
-					fixableWarningCount: parsed.reduce(
-						(sum: number, r: ESLintResult) => sum + r.fixableWarningCount,
-						0,
-					),
-				};
-			} catch {
-				// Si falla, continuar con parsing básico
-			}
-		}
+    // Ignore path
+    if (config.ignorePath) {
+      args.push(`--ignore-path=${config.ignorePath}`);
+    }
 
-		// Parsing básico para otros formatos
-		const results: ESLintResult[] = files.map((filePath) => ({
-			filePath,
-			messages: [],
-			errorCount: 0,
-			warningCount: 0,
-			fixableErrorCount: 0,
-			fixableWarningCount: 0,
-		}));
+    return args;
+  }
 
-		return {
-			results,
-			errorCount: 0,
-			warningCount: 0,
-			fixableErrorCount: 0,
-			fixableWarningCount: 0,
-		};
-	}
+  /**
+   * Parsea la salida de ESLint
+   */
+  private parseESLintOutput(output: string, files: string[]): ESLintReport {
+    // Intentar parsear JSON si el formato es JSON
+    if (this.config.format === 'json') {
+      try {
+        const parsed = JSON.parse(output);
+        return {
+          results: parsed,
+          errorCount: parsed.reduce(
+            (sum: number, r: ESLintResult) => sum + r.errorCount,
+            0
+          ),
+          warningCount: parsed.reduce(
+            (sum: number, r: ESLintResult) => sum + r.warningCount,
+            0
+          ),
+          fixableErrorCount: parsed.reduce(
+            (sum: number, r: ESLintResult) => sum + r.fixableErrorCount,
+            0
+          ),
+          fixableWarningCount: parsed.reduce(
+            (sum: number, r: ESLintResult) => sum + r.fixableWarningCount,
+            0
+          ),
+        };
+      } catch {
+        // Si falla, continuar con parsing básico
+      }
+    }
 
-	/**
-	 * Obtiene el estado del servicio
-	 */
-	getStatus(): {
-		initialized: boolean;
-		eslintInstalled: boolean;
-		hasConfig: boolean;
-	} {
-		const configPath = path.join(this.projectPath, '.eslintrc.json');
-		const configJsPath = path.join(this.projectPath, '.eslintrc.js');
+    // Parsing básico para otros formatos
+    const results: ESLintResult[] = files.map((filePath) => ({
+      filePath,
+      messages: [],
+      errorCount: 0,
+      warningCount: 0,
+      fixableErrorCount: 0,
+      fixableWarningCount: 0,
+    }));
 
-		return {
-			initialized: this.initialized,
-			eslintInstalled: this.isESLintInstalled(),
-			hasConfig: existsSync(configPath) || existsSync(configJsPath),
-		};
-	}
+    return {
+      results,
+      errorCount: 0,
+      warningCount: 0,
+      fixableErrorCount: 0,
+      fixableWarningCount: 0,
+    };
+  }
 
-	/**
-	 * Obtiene la configuración actual
-	 */
-	getConfig(): ESLintConfig {
-		return { ...this.config };
-	}
+  /**
+   * Obtiene el estado del servicio
+   */
+  getStatus(): {
+    initialized: boolean;
+    eslintInstalled: boolean;
+    hasConfig: boolean;
+  } {
+    const configPath = path.join(this.projectPath, '.eslintrc.json');
+    const configJsPath = path.join(this.projectPath, '.eslintrc.js');
 
-	/**
-	 * Actualiza la configuración
-	 */
-	updateConfig(config: Partial<ESLintConfig>): void {
-		this.config = { ...this.config, ...config };
-	}
+    return {
+      initialized: this.initialized,
+      eslintInstalled: this.isESLintInstalled(),
+      hasConfig: existsSync(configPath) || existsSync(configJsPath),
+    };
+  }
+
+  /**
+   * Obtiene la configuración actual
+   */
+  getConfig(): ESLintConfig {
+    return { ...this.config };
+  }
+
+  /**
+   * Actualiza la configuración
+   */
+  updateConfig(config: Partial<ESLintConfig>): void {
+    this.config = { ...this.config, ...config };
+  }
 }

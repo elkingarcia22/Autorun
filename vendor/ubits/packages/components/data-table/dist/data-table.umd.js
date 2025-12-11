@@ -1,126 +1,616 @@
-(function(He,Ae){typeof exports=="object"&&typeof module<"u"?Ae(exports):typeof define=="function"&&define.amd?define(["exports"],Ae):(He=typeof globalThis<"u"?globalThis:He||self,Ae(He.UBITSDataTable={}))})(this,(function(He){"use strict";function Ae(t){const{label:l,complementaryText:u,value:d="",name:c="",checked:r=!1,indeterminate:a=!1,size:b="md",state:n="default",disabled:s=!1,className:e=""}=t,p=s||n==="disabled",w=["ubits-checkbox",`ubits-checkbox--${b}`,n!=="default"?`ubits-checkbox--${n}`:"",r?"ubits-checkbox--checked":"",a?"ubits-checkbox--indeterminate":"",p?"ubits-checkbox--disabled":"",e].filter(Boolean).join(" "),y=`
+(function (He, Ae) {
+	typeof exports == 'object' && typeof module < 'u'
+		? Ae(exports)
+		: typeof define == 'function' && define.amd
+			? define(['exports'], Ae)
+			: ((He = typeof globalThis < 'u' ? globalThis : He || self), Ae((He.UBITSDataTable = {})));
+})(this, function (He) {
+	'use strict';
+	function Ae(t) {
+		const {
+				label: l,
+				complementaryText: u,
+				value: d = '',
+				name: c = '',
+				checked: r = !1,
+				indeterminate: a = !1,
+				size: b = 'md',
+				state: n = 'default',
+				disabled: s = !1,
+				className: e = '',
+			} = t,
+			p = s || n === 'disabled',
+			w = [
+				'ubits-checkbox',
+				`ubits-checkbox--${b}`,
+				n !== 'default' ? `ubits-checkbox--${n}` : '',
+				r ? 'ubits-checkbox--checked' : '',
+				a ? 'ubits-checkbox--indeterminate' : '',
+				p ? 'ubits-checkbox--disabled' : '',
+				e,
+			]
+				.filter(Boolean)
+				.join(' '),
+			y = `
     <input
       type="checkbox"
-      id="checkbox-${c}-${d||"default"}"
-      ${c?`name="${c}"`:""}
-      ${d?`value="${d}"`:""}
-      ${r?"checked":""}
-      ${a?'data-indeterminate="true"':""}
-      ${p?"disabled":""}
+      id="checkbox-${c}-${d || 'default'}"
+      ${c ? `name="${c}"` : ''}
+      ${d ? `value="${d}"` : ''}
+      ${r ? 'checked' : ''}
+      ${a ? 'data-indeterminate="true"' : ''}
+      ${p ? 'disabled' : ''}
       class="ubits-checkbox__input"
     />
-  `,i=`
+  `,
+			i = `
     <span class="ubits-checkbox__square" aria-hidden="true">
-      ${a?'<span class="ubits-checkbox__indeterminate"></span>':""}
-      ${r&&!a?'<span class="ubits-checkbox__checkmark"></span>':""}
-      ${!r&&!a&&n==="active"?'<span class="ubits-checkbox__checkmark"></span>':""}
+      ${a ? '<span class="ubits-checkbox__indeterminate"></span>' : ''}
+      ${r && !a ? '<span class="ubits-checkbox__checkmark"></span>' : ''}
+      ${!r && !a && n === 'active' ? '<span class="ubits-checkbox__checkmark"></span>' : ''}
     </span>
-  `,L=`
+  `,
+			L = `
     <span class="ubits-checkbox__label">${l}</span>
-  `,E=u?`<span class="ubits-checkbox__complementary-text">${u}</span>`:"",C=`
+  `,
+			E = u ? `<span class="ubits-checkbox__complementary-text">${u}</span>` : '',
+			C = `
     <div class="ubits-checkbox__text-content">
       ${L}
       ${E}
     </div>
-  `;return`
+  `;
+		return `
     <label class="${w}">
       ${y}
       ${i}
       ${C}
     </label>
-  `.trim()}const Ze={yellow:"var(--modifiers-normal-color-light-feedback-chart-warning-bold)",green:"var(--modifiers-normal-color-light-feedback-accent-success)",gray:"var(--modifiers-normal-color-light-bg-4)",info:"var(--modifiers-normal-color-light-feedback-chart-info-bold)",error:"var(--modifiers-normal-color-light-feedback-accent-error)"},ct={xs:{height:4,indicatorFontSize:"var(--modifiers-normal-body-xs-regular-fontsize)"},sm:{height:8,indicatorFontSize:"var(--modifiers-normal-body-sm-regular-fontsize)"},md:{height:16,indicatorFontSize:"var(--modifiers-normal-body-md-regular-fontsize)"},lg:{height:20,indicatorFontSize:"var(--modifiers-normal-body-lg-regular-fontsize)"}};function dt(t){const{size:l="md",value:u=0,variant:d="default",segments:c=[],indicator:r,className:a=""}=t,b=ct[l],n=["ubits-progress-bar",`ubits-progress-bar--${l}`,d==="multi-color"?"ubits-progress-bar--multi-color":"",a].filter(Boolean).join(" ");let s="";r!==void 0&&r!==!1&&(s=`<span class="ubits-progress-bar__indicator">${typeof r=="string"?r:`${Math.round(u)}%`}</span>`);let e="";if(d==="multi-color"&&c.length>0){const p=c.reduce((L,E)=>L+E.value,0),w=Math.max(0,100-p),y=[...c];w>0&&y.push({value:w,color:"gray"}),e=`<div class="ubits-progress-bar__indicator-wrapper">${y.map((L,E)=>{const C=L.value,H=Ze[L.color]||Ze.gray,A=E===0,T=E===y.length-1;return`<div 
+  `.trim();
+	}
+	const Ze = {
+			yellow: 'var(--modifiers-normal-color-light-feedback-chart-warning-bold)',
+			green: 'var(--modifiers-normal-color-light-feedback-accent-success)',
+			gray: 'var(--modifiers-normal-color-light-bg-4)',
+			info: 'var(--modifiers-normal-color-light-feedback-chart-info-bold)',
+			error: 'var(--modifiers-normal-color-light-feedback-accent-error)',
+		},
+		ct = {
+			xs: { height: 4, indicatorFontSize: 'var(--modifiers-normal-body-xs-regular-fontsize)' },
+			sm: { height: 8, indicatorFontSize: 'var(--modifiers-normal-body-sm-regular-fontsize)' },
+			md: { height: 16, indicatorFontSize: 'var(--modifiers-normal-body-md-regular-fontsize)' },
+			lg: { height: 20, indicatorFontSize: 'var(--modifiers-normal-body-lg-regular-fontsize)' },
+		};
+	function dt(t) {
+		const {
+				size: l = 'md',
+				value: u = 0,
+				variant: d = 'default',
+				segments: c = [],
+				indicator: r,
+				className: a = '',
+			} = t,
+			b = ct[l],
+			n = [
+				'ubits-progress-bar',
+				`ubits-progress-bar--${l}`,
+				d === 'multi-color' ? 'ubits-progress-bar--multi-color' : '',
+				a,
+			]
+				.filter(Boolean)
+				.join(' ');
+		let s = '';
+		r !== void 0 &&
+			r !== !1 &&
+			(s = `<span class="ubits-progress-bar__indicator">${typeof r == 'string' ? r : `${Math.round(u)}%`}</span>`);
+		let e = '';
+		if (d === 'multi-color' && c.length > 0) {
+			const p = c.reduce((L, E) => L + E.value, 0),
+				w = Math.max(0, 100 - p),
+				y = [...c];
+			w > 0 && y.push({ value: w, color: 'gray' }),
+				(e = `<div class="ubits-progress-bar__indicator-wrapper">${y
+					.map((L, E) => {
+						const C = L.value,
+							H = Ze[L.color] || Ze.gray,
+							A = E === 0,
+							T = E === y.length - 1;
+						return `<div 
         class="ubits-progress-bar__segment" 
-        style="width: ${C}%; background-color: ${H}; ${`border-radius: ${A?"1000px 0 0 1000px":T?"0 1000px 1000px 0":"0"};`}"
+        style="width: ${C}%; background-color: ${H}; ${`border-radius: ${A ? '1000px 0 0 1000px' : T ? '0 1000px 1000px 0' : '0'};`}"
         data-color="${L.color}"
-      ></div>`}).join("")}</div>`}else e=`<div 
+      ></div>`;
+					})
+					.join('')}</div>`);
+		} else
+			e = `<div 
       class="ubits-progress-bar__indicator-wrapper" 
-      style="width: ${Math.max(0,Math.min(100,u))}%;"
-    ></div>`;return`
+      style="width: ${Math.max(0, Math.min(100, u))}%;"
+    ></div>`;
+		return `
     <div class="${n}" style="height: ${b.height}px;">
       <div class="ubits-progress-bar__container">
         ${e}
       </div>
       ${s}
     </div>
-  `.trim()}const Je={completed:{bg:"var(--modifiers-normal-color-light-feedback-bg-success-subtle-default)",text:"var(--modifiers-normal-color-light-feedback-fg-success-subtle-default)",border:"var(--modifiers-normal-color-light-feedback-border-success)"},published:{bg:"var(--modifiers-normal-color-light-feedback-bg-success-subtle-default)",text:"var(--modifiers-normal-color-light-feedback-fg-success-subtle-default)",border:"var(--modifiers-normal-color-light-feedback-border-success)"},fulfilled:{bg:"var(--modifiers-normal-color-light-feedback-bg-success-subtle-default)",text:"var(--modifiers-normal-color-light-feedback-fg-success-subtle-default)",border:"var(--modifiers-normal-color-light-feedback-border-success)"},created:{bg:"var(--modifiers-normal-color-light-feedback-bg-success-subtle-default)",text:"var(--modifiers-normal-color-light-feedback-fg-success-subtle-default)",border:"var(--modifiers-normal-color-light-feedback-border-success)"},active:{bg:"var(--modifiers-normal-color-light-feedback-bg-success-subtle-default)",text:"var(--modifiers-normal-color-light-feedback-fg-success-subtle-default)",border:"var(--modifiers-normal-color-light-feedback-border-success)"},"not-fulfilled":{bg:"var(--modifiers-normal-color-light-feedback-bg-error-subtle-default)",text:"var(--modifiers-normal-color-light-feedback-fg-error-subtle-default)",border:"var(--modifiers-normal-color-light-feedback-border-error)"},denied:{bg:"var(--modifiers-normal-color-light-feedback-bg-error-subtle-default)",text:"var(--modifiers-normal-color-light-feedback-fg-error-subtle-default)",border:"var(--modifiers-normal-color-light-feedback-border-error)"},draft:{bg:"var(--modifiers-normal-color-light-bg-active)",text:"var(--modifiers-normal-color-light-feedback-fg-info-subtle-default)",border:"var(--modifiers-normal-color-light-accent-brand)"},"in-progress":{bg:"var(--modifiers-normal-color-light-bg-active)",text:"var(--modifiers-normal-color-light-feedback-fg-info-subtle-default)",border:"var(--modifiers-normal-color-light-accent-brand)"},syncing:{bg:"var(--modifiers-normal-color-light-bg-active)",text:"var(--modifiers-normal-color-light-feedback-fg-info-subtle-default)",border:"var(--modifiers-normal-color-light-accent-brand)"},pending:{bg:"var(--modifiers-normal-color-light-feedback-bg-warning-subtle-default)",text:"var(--modifiers-normal-color-light-feedback-fg-warning-subtle-default)",border:"var(--modifiers-normal-color-light-feedback-border-warning)"},"pending-approval":{bg:"var(--modifiers-normal-color-light-feedback-bg-warning-subtle-default)",text:"var(--modifiers-normal-color-light-feedback-fg-warning-subtle-default)",border:"var(--modifiers-normal-color-light-feedback-border-warning)"},"not-started":{bg:"var(--modifiers-normal-color-light-bg-2)",text:"var(--modifiers-normal-color-light-fg-1-medium)",border:"var(--modifiers-normal-color-light-border-1)"},finished:{bg:"var(--modifiers-normal-color-light-bg-2)",text:"var(--modifiers-normal-color-light-fg-1-medium)",border:"var(--modifiers-normal-color-light-border-1)"},archived:{bg:"var(--modifiers-normal-color-light-bg-2)",text:"var(--modifiers-normal-color-light-fg-1-medium)",border:"var(--modifiers-normal-color-light-border-1)"},disabled:{bg:"var(--modifiers-normal-color-light-bg-2)",text:"var(--modifiers-normal-color-light-fg-1-medium)",border:"var(--modifiers-normal-color-light-border-1)"},paused:{bg:"var(--modifiers-normal-color-light-bg-2)",text:"var(--modifiers-normal-color-light-fg-1-medium)",border:"var(--modifiers-normal-color-light-border-1)"},hidden:{bg:"var(--modifiers-normal-color-light-bg-2)",text:"var(--modifiers-normal-color-light-fg-1-medium)",border:"var(--modifiers-normal-color-light-border-1)"}};function ut(t={}){const{label:l="",size:u="md",status:d="pending",leftIcon:c,rightIcon:r="chevron-down",clickable:a=!1,className:b=""}=t,n=Je[d]||Je.pending,s=c?`<span class="ubits-status-tag-left-icon"><i class="far fa-${c}"></i></span>`:"",e=r!=null?`<span class="ubits-status-tag-right-icon"><i class="far fa-${r}"></i></span>`:"",p=["ubits-status-tag",`ubits-status-tag--${u}`,a?"ubits-status-tag--clickable":"",b].filter(Boolean).join(" "),i=`
-    ${d==="draft"||d==="in-progress"||d==="syncing"?`background: linear-gradient(90deg, var(--modifiers-normal-color-light-bg-active) 0%, var(--modifiers-normal-color-light-bg-active) 100%), linear-gradient(90deg, var(--modifiers-normal-color-light-bg-1) 0%, var(--modifiers-normal-color-light-bg-1) 100%); background-color: ${n.bg};`:`background-color: ${n.bg};`}
+  `.trim();
+	}
+	const Je = {
+		completed: {
+			bg: 'var(--modifiers-normal-color-light-feedback-bg-success-subtle-default)',
+			text: 'var(--modifiers-normal-color-light-feedback-fg-success-subtle-default)',
+			border: 'var(--modifiers-normal-color-light-feedback-border-success)',
+		},
+		published: {
+			bg: 'var(--modifiers-normal-color-light-feedback-bg-success-subtle-default)',
+			text: 'var(--modifiers-normal-color-light-feedback-fg-success-subtle-default)',
+			border: 'var(--modifiers-normal-color-light-feedback-border-success)',
+		},
+		fulfilled: {
+			bg: 'var(--modifiers-normal-color-light-feedback-bg-success-subtle-default)',
+			text: 'var(--modifiers-normal-color-light-feedback-fg-success-subtle-default)',
+			border: 'var(--modifiers-normal-color-light-feedback-border-success)',
+		},
+		created: {
+			bg: 'var(--modifiers-normal-color-light-feedback-bg-success-subtle-default)',
+			text: 'var(--modifiers-normal-color-light-feedback-fg-success-subtle-default)',
+			border: 'var(--modifiers-normal-color-light-feedback-border-success)',
+		},
+		active: {
+			bg: 'var(--modifiers-normal-color-light-feedback-bg-success-subtle-default)',
+			text: 'var(--modifiers-normal-color-light-feedback-fg-success-subtle-default)',
+			border: 'var(--modifiers-normal-color-light-feedback-border-success)',
+		},
+		'not-fulfilled': {
+			bg: 'var(--modifiers-normal-color-light-feedback-bg-error-subtle-default)',
+			text: 'var(--modifiers-normal-color-light-feedback-fg-error-subtle-default)',
+			border: 'var(--modifiers-normal-color-light-feedback-border-error)',
+		},
+		denied: {
+			bg: 'var(--modifiers-normal-color-light-feedback-bg-error-subtle-default)',
+			text: 'var(--modifiers-normal-color-light-feedback-fg-error-subtle-default)',
+			border: 'var(--modifiers-normal-color-light-feedback-border-error)',
+		},
+		draft: {
+			bg: 'var(--modifiers-normal-color-light-bg-active)',
+			text: 'var(--modifiers-normal-color-light-feedback-fg-info-subtle-default)',
+			border: 'var(--modifiers-normal-color-light-accent-brand)',
+		},
+		'in-progress': {
+			bg: 'var(--modifiers-normal-color-light-bg-active)',
+			text: 'var(--modifiers-normal-color-light-feedback-fg-info-subtle-default)',
+			border: 'var(--modifiers-normal-color-light-accent-brand)',
+		},
+		syncing: {
+			bg: 'var(--modifiers-normal-color-light-bg-active)',
+			text: 'var(--modifiers-normal-color-light-feedback-fg-info-subtle-default)',
+			border: 'var(--modifiers-normal-color-light-accent-brand)',
+		},
+		pending: {
+			bg: 'var(--modifiers-normal-color-light-feedback-bg-warning-subtle-default)',
+			text: 'var(--modifiers-normal-color-light-feedback-fg-warning-subtle-default)',
+			border: 'var(--modifiers-normal-color-light-feedback-border-warning)',
+		},
+		'pending-approval': {
+			bg: 'var(--modifiers-normal-color-light-feedback-bg-warning-subtle-default)',
+			text: 'var(--modifiers-normal-color-light-feedback-fg-warning-subtle-default)',
+			border: 'var(--modifiers-normal-color-light-feedback-border-warning)',
+		},
+		'not-started': {
+			bg: 'var(--modifiers-normal-color-light-bg-2)',
+			text: 'var(--modifiers-normal-color-light-fg-1-medium)',
+			border: 'var(--modifiers-normal-color-light-border-1)',
+		},
+		finished: {
+			bg: 'var(--modifiers-normal-color-light-bg-2)',
+			text: 'var(--modifiers-normal-color-light-fg-1-medium)',
+			border: 'var(--modifiers-normal-color-light-border-1)',
+		},
+		archived: {
+			bg: 'var(--modifiers-normal-color-light-bg-2)',
+			text: 'var(--modifiers-normal-color-light-fg-1-medium)',
+			border: 'var(--modifiers-normal-color-light-border-1)',
+		},
+		disabled: {
+			bg: 'var(--modifiers-normal-color-light-bg-2)',
+			text: 'var(--modifiers-normal-color-light-fg-1-medium)',
+			border: 'var(--modifiers-normal-color-light-border-1)',
+		},
+		paused: {
+			bg: 'var(--modifiers-normal-color-light-bg-2)',
+			text: 'var(--modifiers-normal-color-light-fg-1-medium)',
+			border: 'var(--modifiers-normal-color-light-border-1)',
+		},
+		hidden: {
+			bg: 'var(--modifiers-normal-color-light-bg-2)',
+			text: 'var(--modifiers-normal-color-light-fg-1-medium)',
+			border: 'var(--modifiers-normal-color-light-border-1)',
+		},
+	};
+	function ut(t = {}) {
+		const {
+				label: l = '',
+				size: u = 'md',
+				status: d = 'pending',
+				leftIcon: c,
+				rightIcon: r = 'chevron-down',
+				clickable: a = !1,
+				className: b = '',
+			} = t,
+			n = Je[d] || Je.pending,
+			s = c ? `<span class="ubits-status-tag-left-icon"><i class="far fa-${c}"></i></span>` : '',
+			e =
+				r != null
+					? `<span class="ubits-status-tag-right-icon"><i class="far fa-${r}"></i></span>`
+					: '',
+			p = ['ubits-status-tag', `ubits-status-tag--${u}`, a ? 'ubits-status-tag--clickable' : '', b]
+				.filter(Boolean)
+				.join(' '),
+			i = `
+    ${d === 'draft' || d === 'in-progress' || d === 'syncing' ? `background: linear-gradient(90deg, var(--modifiers-normal-color-light-bg-active) 0%, var(--modifiers-normal-color-light-bg-active) 100%), linear-gradient(90deg, var(--modifiers-normal-color-light-bg-1) 0%, var(--modifiers-normal-color-light-bg-1) 100%); background-color: ${n.bg};` : `background-color: ${n.bg};`}
     color: ${n.text};
     border-color: ${n.border};
-  `.trim();return`
+  `.trim();
+		return `
     <span class="${p}" style="${i}" data-status="${d}">
       ${s}
       <span class="ubits-status-tag-label">${l}</span>
       ${e}
     </span>
-  `.trim()}function bt(t){if(typeof window.renderBadge=="function")return window.renderBadge(t);const{type:l,size:u,variant:d,absolute:c,position:r,className:a,content:b}=t,n=["ubits-badge",`ubits-badge--${u}`,l==="dot"?"ubits-badge--dot":"",l==="number"?"ubits-badge--number":"",`ubits-badge--${d}`,c?"ubits-badge--absolute":"",c&&r?`ubits-badge--absolute-${r}`:"",a].filter(Boolean).join(" "),s=l==="number"&&b!==void 0&&b!==null?String(b):"";return`<span class="${n}">${s}</span>`}const Qe={xs:20,sm:28,md:36,lg:40},pt="md",ft={green:"success",red:"error",blue:"info",orange:"warning",gray:"primary"},et={xs:6,sm:8,md:10,lg:10},tt={xs:"var(--font-body-xs-size, 11px)",sm:"var(--font-body-sm-size, 13px)",md:"var(--font-body-md-size, 16px)",lg:"var(--font-body-lg-size, 18px)"};function mt(t){return t.imageUrl?"photo":t.initials?"initials":"icon"}function ht(t){const l=t.trim().split(/\s+/);return l.length===0?"":l.length===1?l[0].substring(0,2).toUpperCase():(l[0][0]+l[l.length-1][0]).toUpperCase()}function Te(t={}){const{imageUrl:l,initials:u,icon:d="user",size:c="md",badgeColor:r,badgeContent:a,alt:b="Avatar",className:n="",onClick:s}=t,e=mt(t),p=Qe[c]||Qe.md,w=et[c]||et.md,y=tt[c]||tt.md,i=["ubits-avatar",`ubits-avatar--${c}`,`ubits-avatar--${e}`,n].filter(Boolean).join(" "),L=`
+  `.trim();
+	}
+	function bt(t) {
+		if (typeof window.renderBadge == 'function') return window.renderBadge(t);
+		const { type: l, size: u, variant: d, absolute: c, position: r, className: a, content: b } = t,
+			n = [
+				'ubits-badge',
+				`ubits-badge--${u}`,
+				l === 'dot' ? 'ubits-badge--dot' : '',
+				l === 'number' ? 'ubits-badge--number' : '',
+				`ubits-badge--${d}`,
+				c ? 'ubits-badge--absolute' : '',
+				c && r ? `ubits-badge--absolute-${r}` : '',
+				a,
+			]
+				.filter(Boolean)
+				.join(' '),
+			s = l === 'number' && b !== void 0 && b !== null ? String(b) : '';
+		return `<span class="${n}">${s}</span>`;
+	}
+	const Qe = { xs: 20, sm: 28, md: 36, lg: 40 },
+		pt = 'md',
+		ft = { green: 'success', red: 'error', blue: 'info', orange: 'warning', gray: 'primary' },
+		et = { xs: 6, sm: 8, md: 10, lg: 10 },
+		tt = {
+			xs: 'var(--font-body-xs-size, 11px)',
+			sm: 'var(--font-body-sm-size, 13px)',
+			md: 'var(--font-body-md-size, 16px)',
+			lg: 'var(--font-body-lg-size, 18px)',
+		};
+	function mt(t) {
+		return t.imageUrl ? 'photo' : t.initials ? 'initials' : 'icon';
+	}
+	function ht(t) {
+		const l = t.trim().split(/\s+/);
+		return l.length === 0
+			? ''
+			: l.length === 1
+				? l[0].substring(0, 2).toUpperCase()
+				: (l[0][0] + l[l.length - 1][0]).toUpperCase();
+	}
+	function Te(t = {}) {
+		const {
+				imageUrl: l,
+				initials: u,
+				icon: d = 'user',
+				size: c = 'md',
+				badgeColor: r,
+				badgeContent: a,
+				alt: b = 'Avatar',
+				className: n = '',
+				onClick: s,
+			} = t,
+			e = mt(t),
+			p = Qe[c] || Qe.md,
+			w = et[c] || et.md,
+			y = tt[c] || tt.md,
+			i = ['ubits-avatar', `ubits-avatar--${c}`, `ubits-avatar--${e}`, n].filter(Boolean).join(' '),
+			L = `
     width: ${p}px;
     height: ${p}px;
     min-width: ${p}px;
     min-height: ${p}px;
-  `.trim();let E="";if(e==="photo"&&l)E=`<div class="ubits-avatar-image-container"><img src="${l}" alt="${b}" class="ubits-avatar-image" /></div>`;else if(e==="initials"){const H=u?ht(u):"";E=`<span class="ubits-avatar-initials" style="font-size: ${y};">${H}</span>`}else{const H=p-w*2;E=`<i class="far fa-${d}" style="font-size: ${H}px;"></i>`}const C=r?bt({type:a!=null&&a!==""?"number":"dot",size:pt,variant:ft[r]||"success",absolute:!0,position:"bottom-right",className:"ubits-avatar-badge-wrapper",content:a}):"";return`
-    <div class="${i}" style="${L}" ${s?'role="button" tabindex="0"':""} data-variant="${e}">
+  `.trim();
+		let E = '';
+		if (e === 'photo' && l)
+			E = `<div class="ubits-avatar-image-container"><img src="${l}" alt="${b}" class="ubits-avatar-image" /></div>`;
+		else if (e === 'initials') {
+			const H = u ? ht(u) : '';
+			E = `<span class="ubits-avatar-initials" style="font-size: ${y};">${H}</span>`;
+		} else {
+			const H = p - w * 2;
+			E = `<i class="far fa-${d}" style="font-size: ${H}px;"></i>`;
+		}
+		const C = r
+			? bt({
+					type: a != null && a !== '' ? 'number' : 'dot',
+					size: pt,
+					variant: ft[r] || 'success',
+					absolute: !0,
+					position: 'bottom-right',
+					className: 'ubits-avatar-badge-wrapper',
+					content: a,
+				})
+			: '';
+		return `
+    <div class="${i}" style="${L}" ${s ? 'role="button" tabindex="0"' : ''} data-variant="${e}">
       ${E}
       ${C}
     </div>
-  `.trim()}function gt(t){const{label:l,complementaryText:u,value:d="",name:c="",checked:r=!1,size:a="md",state:b="default",disabled:n=!1,className:s=""}=t,e=n||b==="disabled",p=["ubits-toggle",`ubits-toggle--${a}`,b!=="default"?`ubits-toggle--${b}`:"",r?"ubits-toggle--checked":"",e?"ubits-toggle--disabled":"",s].filter(Boolean).join(" "),w=`
+  `.trim();
+	}
+	function gt(t) {
+		const {
+				label: l,
+				complementaryText: u,
+				value: d = '',
+				name: c = '',
+				checked: r = !1,
+				size: a = 'md',
+				state: b = 'default',
+				disabled: n = !1,
+				className: s = '',
+			} = t,
+			e = n || b === 'disabled',
+			p = [
+				'ubits-toggle',
+				`ubits-toggle--${a}`,
+				b !== 'default' ? `ubits-toggle--${b}` : '',
+				r ? 'ubits-toggle--checked' : '',
+				e ? 'ubits-toggle--disabled' : '',
+				s,
+			]
+				.filter(Boolean)
+				.join(' '),
+			w = `
     <input
       type="checkbox"
-      id="toggle-${c}-${d||"default"}"
-      ${c?`name="${c}"`:""}
-      ${d?`value="${d}"`:""}
-      ${r?"checked":""}
-      ${e?"disabled":""}
+      id="toggle-${c}-${d || 'default'}"
+      ${c ? `name="${c}"` : ''}
+      ${d ? `value="${d}"` : ''}
+      ${r ? 'checked' : ''}
+      ${e ? 'disabled' : ''}
       class="ubits-toggle__input"
       role="switch"
       aria-checked="${r}"
     />
-  `,y=`
+  `,
+			y = `
     <span class="ubits-toggle__track" aria-hidden="true">
       <span class="ubits-toggle__thumb"></span>
     </span>
-  `;let i="";if(l||u){const C=l?`<span class="ubits-toggle__label">${l}</span>`:"",H=u?`<span class="ubits-toggle__complementary-text">${u}</span>`:"";i=`
+  `;
+		let i = '';
+		if (l || u) {
+			const C = l ? `<span class="ubits-toggle__label">${l}</span>` : '',
+				H = u ? `<span class="ubits-toggle__complementary-text">${u}</span>` : '';
+			i = `
       <div class="ubits-toggle__text-content">
         ${C}
         ${H}
       </div>
-    `}const L=l||u?"label":"div",E=l||u?p:`${p} ubits-toggle--no-label`;return`
+    `;
+		}
+		const L = l || u ? 'label' : 'div',
+			E = l || u ? p : `${p} ubits-toggle--no-label`;
+		return `
     <${L} class="${E}">
       ${w}
       ${i}
       ${y}
     </${L}>
-  `.trim()}function yt(t){const{label:l,complementaryText:u,value:d,name:c,checked:r=!1,size:a="md",state:b="default",disabled:n=!1,className:s=""}=t,e=n||b==="disabled",p=["ubits-radio-button",`ubits-radio-button--${a}`,b!=="default"?`ubits-radio-button--${b}`:"",r?"ubits-radio-button--checked":"",e?"ubits-radio-button--disabled":"",s].filter(Boolean).join(" "),w=`
+  `.trim();
+	}
+	function yt(t) {
+		const {
+				label: l,
+				complementaryText: u,
+				value: d,
+				name: c,
+				checked: r = !1,
+				size: a = 'md',
+				state: b = 'default',
+				disabled: n = !1,
+				className: s = '',
+			} = t,
+			e = n || b === 'disabled',
+			p = [
+				'ubits-radio-button',
+				`ubits-radio-button--${a}`,
+				b !== 'default' ? `ubits-radio-button--${b}` : '',
+				r ? 'ubits-radio-button--checked' : '',
+				e ? 'ubits-radio-button--disabled' : '',
+				s,
+			]
+				.filter(Boolean)
+				.join(' '),
+			w = `
     <input
       type="radio"
       id="radio-${c}-${d}"
       name="${c}"
       value="${d}"
-      ${r?"checked":""}
-      ${e?"disabled":""}
+      ${r ? 'checked' : ''}
+      ${e ? 'disabled' : ''}
       class="ubits-radio-button__input"
     />
-  `,y=`
+  `,
+			y = `
     <span class="ubits-radio-button__circle" aria-hidden="true">
-      ${r||b==="active"&&!r?'<span class="ubits-radio-button__dot"></span>':""}
+      ${r || (b === 'active' && !r) ? '<span class="ubits-radio-button__dot"></span>' : ''}
     </span>
-  `,i=`
+  `,
+			i = `
     <span class="ubits-radio-button__label">${l}</span>
-  `,L=u?`<span class="ubits-radio-button__complementary-text">${u}</span>`:"",E=`
+  `,
+			L = u ? `<span class="ubits-radio-button__complementary-text">${u}</span>` : '',
+			E = `
     <div class="ubits-radio-button__text-content">
       ${i}
       ${L}
     </div>
-  `;return`
+  `;
+		return `
     <label class="${p}">
       ${w}
       ${y}
       ${E}
     </label>
-  `.trim()}function Ne(t){const{items:l,size:u="md",maxHeight:d="400px",className:c="",attributes:r={}}=t,a=["ubits-list",c].filter(Boolean).join(" "),b=Object.entries(r).map(([s,e])=>`${s}="${e}"`).join(" ");let n=`<div class="${a}" role="list" style="max-height: ${d};" ${b}>`;return l.forEach((s,e)=>{const p=s.value||`list-item-${e}`,w=s.state||(s.selected?"active":"default"),y=["ubits-list-item",`ubits-list-item--${u}`,w!=="default"?`ubits-list-item--${w}`:""].filter(Boolean).join(" "),i=[];s.selected&&i.push('aria-selected="true"'),w==="disabled"?i.push('aria-disabled="true"'):i.push('tabindex="0"'),i.push(`data-value="${p}"`),i.push(`data-index="${e}"`),s.attributes&&Object.entries(s.attributes).forEach(([L,E])=>{i.push(`${L}="${E}"`)}),n+=`
-      <div class="${y}" role="listitem" ${i.join(" ")}>
+  `.trim();
+	}
+	function Ne(t) {
+		const {
+				items: l,
+				size: u = 'md',
+				maxHeight: d = '400px',
+				className: c = '',
+				attributes: r = {},
+			} = t,
+			a = ['ubits-list', c].filter(Boolean).join(' '),
+			b = Object.entries(r)
+				.map(([s, e]) => `${s}="${e}"`)
+				.join(' ');
+		let n = `<div class="${a}" role="list" style="max-height: ${d};" ${b}>`;
+		return (
+			l.forEach((s, e) => {
+				const p = s.value || `list-item-${e}`,
+					w = s.state || (s.selected ? 'active' : 'default'),
+					y = [
+						'ubits-list-item',
+						`ubits-list-item--${u}`,
+						w !== 'default' ? `ubits-list-item--${w}` : '',
+					]
+						.filter(Boolean)
+						.join(' '),
+					i = [];
+				s.selected && i.push('aria-selected="true"'),
+					w === 'disabled' ? i.push('aria-disabled="true"') : i.push('tabindex="0"'),
+					i.push(`data-value="${p}"`),
+					i.push(`data-index="${e}"`),
+					s.attributes &&
+						Object.entries(s.attributes).forEach(([L, E]) => {
+							i.push(`${L}="${E}"`);
+						}),
+					(n += `
+      <div class="${y}" role="listitem" ${i.join(' ')}>
         ${s.label}
       </div>
-    `}),n+="</div>",n}function Re(t){const{containerId:l,items:u,size:d="md",onSelectionChange:c,multiple:r=!1}=t,a=document.getElementById(l);if(!a)throw new Error(`Container with id "${l}" not found`);const b=Ne(t);a.innerHTML=b;const n=a.querySelector(".ubits-list");if(!n)throw new Error("Failed to create list element");const s=n.querySelectorAll(".ubits-list-item");let e=null;return s.forEach((p,w)=>{const y=u[w];y&&(y.state!=="disabled"&&p.addEventListener("click",()=>{if(y.onClick&&y.onClick(y,w),r){if(p.classList.contains("ubits-list-item--active")?(p.classList.remove("ubits-list-item--active"),p.removeAttribute("aria-selected")):(p.classList.add("ubits-list-item--active"),p.setAttribute("aria-selected","true")),c){const L=Array.from(s).map((E,C)=>E.classList.contains("ubits-list-item--active")?{item:u[C],index:C}:null).filter(Boolean);if(L.length>0){const E=L[L.length-1];c(E.item,E.index)}else c(null,null)}}else{if(e!==null&&e!==w){const i=s[e];i.classList.remove("ubits-list-item--active"),i.removeAttribute("aria-selected")}e!==w?(p.classList.add("ubits-list-item--active"),p.setAttribute("aria-selected","true"),e=w,c&&c(y,w)):(p.classList.remove("ubits-list-item--active"),p.removeAttribute("aria-selected"),e=null,c&&c(null,null))}}),y.state!=="disabled"&&p.addEventListener("keydown",i=>{const L=w;let E=null;if(i.key==="ArrowDown")i.preventDefault(),E=L<u.length-1?L+1:0;else if(i.key==="ArrowUp")i.preventDefault(),E=L>0?L-1:u.length-1;else if(i.key==="Enter"||i.key===" "){i.preventDefault(),p.click();return}else i.key==="Home"?(i.preventDefault(),E=0):i.key==="End"&&(i.preventDefault(),E=u.length-1);if(E!==null){const C=s[E];C&&u[E]?.state!=="disabled"&&(C.focus(),C.scrollIntoView({block:"nearest",behavior:"smooth"}))}}))}),n}function vt(t={}){const{size:l="md",variant:u="primary",animated:d=!0,label:c,fullScreen:r=!1,className:a="",style:b=""}=t,n=["ubits-spinner",`ubits-spinner--${l}`,`ubits-spinner--${u}`,d?"ubits-spinner--animated":"",r?"ubits-spinner--fullscreen":"",a].filter(Boolean).join(" "),s=b?` style="${b}"`:"";return`
+    `);
+			}),
+			(n += '</div>'),
+			n
+		);
+	}
+	function Re(t) {
+		const { containerId: l, items: u, size: d = 'md', onSelectionChange: c, multiple: r = !1 } = t,
+			a = document.getElementById(l);
+		if (!a) throw new Error(`Container with id "${l}" not found`);
+		const b = Ne(t);
+		a.innerHTML = b;
+		const n = a.querySelector('.ubits-list');
+		if (!n) throw new Error('Failed to create list element');
+		const s = n.querySelectorAll('.ubits-list-item');
+		let e = null;
+		return (
+			s.forEach((p, w) => {
+				const y = u[w];
+				y &&
+					(y.state !== 'disabled' &&
+						p.addEventListener('click', () => {
+							if ((y.onClick && y.onClick(y, w), r)) {
+								if (
+									(p.classList.contains('ubits-list-item--active')
+										? (p.classList.remove('ubits-list-item--active'),
+											p.removeAttribute('aria-selected'))
+										: (p.classList.add('ubits-list-item--active'),
+											p.setAttribute('aria-selected', 'true')),
+									c)
+								) {
+									const L = Array.from(s)
+										.map((E, C) =>
+											E.classList.contains('ubits-list-item--active')
+												? { item: u[C], index: C }
+												: null,
+										)
+										.filter(Boolean);
+									if (L.length > 0) {
+										const E = L[L.length - 1];
+										c(E.item, E.index);
+									} else c(null, null);
+								}
+							} else {
+								if (e !== null && e !== w) {
+									const i = s[e];
+									i.classList.remove('ubits-list-item--active'), i.removeAttribute('aria-selected');
+								}
+								e !== w
+									? (p.classList.add('ubits-list-item--active'),
+										p.setAttribute('aria-selected', 'true'),
+										(e = w),
+										c && c(y, w))
+									: (p.classList.remove('ubits-list-item--active'),
+										p.removeAttribute('aria-selected'),
+										(e = null),
+										c && c(null, null));
+							}
+						}),
+					y.state !== 'disabled' &&
+						p.addEventListener('keydown', (i) => {
+							const L = w;
+							let E = null;
+							if (i.key === 'ArrowDown') i.preventDefault(), (E = L < u.length - 1 ? L + 1 : 0);
+							else if (i.key === 'ArrowUp') i.preventDefault(), (E = L > 0 ? L - 1 : u.length - 1);
+							else if (i.key === 'Enter' || i.key === ' ') {
+								i.preventDefault(), p.click();
+								return;
+							} else
+								i.key === 'Home'
+									? (i.preventDefault(), (E = 0))
+									: i.key === 'End' && (i.preventDefault(), (E = u.length - 1));
+							if (E !== null) {
+								const C = s[E];
+								C &&
+									u[E]?.state !== 'disabled' &&
+									(C.focus(), C.scrollIntoView({ block: 'nearest', behavior: 'smooth' }));
+							}
+						}));
+			}),
+			n
+		);
+	}
+	function vt(t = {}) {
+		const {
+				size: l = 'md',
+				variant: u = 'primary',
+				animated: d = !0,
+				label: c,
+				fullScreen: r = !1,
+				className: a = '',
+				style: b = '',
+			} = t,
+			n = [
+				'ubits-spinner',
+				`ubits-spinner--${l}`,
+				`ubits-spinner--${u}`,
+				d ? 'ubits-spinner--animated' : '',
+				r ? 'ubits-spinner--fullscreen' : '',
+				a,
+			]
+				.filter(Boolean)
+				.join(' '),
+			s = b ? ` style="${b}"` : '';
+		return `
     <div class="${n}"${s}>
       <div class="ubits-spinner__circle">
         <div class="ubits-spinner__segment"></div>
@@ -128,22 +618,327 @@
         <div class="ubits-spinner__segment"></div>
         <div class="ubits-spinner__segment"></div>
       </div>
-      ${c?`<span class="ubits-spinner__label">${c}</span>`:""}
+      ${c ? `<span class="ubits-spinner__label">${c}</span>` : ''}
     </div>
-  `.trim()}function Ie(t,l="regular"){try{const u=l==="solid"?"fas":"far",d=t.startsWith("fa-")?t:`fa-${t}`;return`<i class="${u} ${d}"></i>`}catch{const d=l==="solid"?"fas":"far",c=t.startsWith("fa-")?t:`fa-${t}`;return`<i class="${d} ${c}"></i>`}}function _e(t){const{variant:l="primary",size:u="md",text:d="",icon:c,iconStyle:r="regular",iconOnly:a=!1,disabled:b=!1,loading:n=!1,loadingText:s,badge:e=!1,active:p=!1,fullWidth:w=!1,block:y=!1,iconPosition:i="left",className:L="",attributes:E={},dropdown:C=!1,showTooltip:H=!1,tooltipText:A=""}=t,T=["ubits-button",`ubits-button--${l}`,`ubits-button--${u}`,p&&"ubits-button--active",a&&"ubits-button--icon-only",n&&"ubits-button--loading",w&&"ubits-button--full-width",y&&"ubits-button--block",i==="right"&&"ubits-button--icon-right",C&&"ubits-button--dropdown",L].filter(Boolean).join(" "),z=[b&&"disabled",n&&'data-loading="true"',n&&'aria-busy="true"',...Object.entries(E).map(([de,M])=>`${de}="${M}"`)].filter(Boolean).join(" ");let F="";c&&(F=Ie(c,r));let J=F,G=i;C&&!c&&d?(J=Ie("chevron-down",r),G="right"):C&&c&&i==="left"&&d?J=`${F}${Ie("chevron-down",r)}`:C&&!d&&(J=c?`${F}${Ie("chevron-down",r)}`:Ie("chevron-down",r));const U={xs:"xs",sm:"sm",md:"sm",lg:"md",xl:"lg"}[u]||"sm",ae={primary:"primary",secondary:"secondary",tertiary:"secondary",active:"primary"}[l]||"primary",ce=n?vt({size:U,variant:ae,animated:!0,className:"ubits-button__spinner"}):"";let O="";n&&s?O=`${ce}<span class="button-text">${s}</span>`:n&&!d?O=ce:n&&d?i==="right"?O=`<span class="button-text">${d}</span>${ce}`:O=`${ce}<span class="button-text">${d}</span>`:a&&c?O=F:J&&d?C&&c&&i==="left"?O=`${Ie(c,r)}<span>${d}</span>${Ie("chevron-down",r)}`:G==="right"?O=`<span>${d}</span>${J}`:O=`${J}<span>${d}</span>`:d?O=C?`<span>${d}</span>${Ie("chevron-down",r)}`:`<span>${d}</span>`:J&&(O=J);const fe=e?'<span class="ubits-button__badge"></span>':"",se=a&&H&&A?`title="${A}"`:"";return`
+  `.trim();
+	}
+	function Ie(t, l = 'regular') {
+		try {
+			const u = l === 'solid' ? 'fas' : 'far',
+				d = t.startsWith('fa-') ? t : `fa-${t}`;
+			return `<i class="${u} ${d}"></i>`;
+		} catch {
+			const d = l === 'solid' ? 'fas' : 'far',
+				c = t.startsWith('fa-') ? t : `fa-${t}`;
+			return `<i class="${d} ${c}"></i>`;
+		}
+	}
+	function _e(t) {
+		const {
+				variant: l = 'primary',
+				size: u = 'md',
+				text: d = '',
+				icon: c,
+				iconStyle: r = 'regular',
+				iconOnly: a = !1,
+				disabled: b = !1,
+				loading: n = !1,
+				loadingText: s,
+				badge: e = !1,
+				active: p = !1,
+				fullWidth: w = !1,
+				block: y = !1,
+				iconPosition: i = 'left',
+				className: L = '',
+				attributes: E = {},
+				dropdown: C = !1,
+				showTooltip: H = !1,
+				tooltipText: A = '',
+			} = t,
+			T = [
+				'ubits-button',
+				`ubits-button--${l}`,
+				`ubits-button--${u}`,
+				p && 'ubits-button--active',
+				a && 'ubits-button--icon-only',
+				n && 'ubits-button--loading',
+				w && 'ubits-button--full-width',
+				y && 'ubits-button--block',
+				i === 'right' && 'ubits-button--icon-right',
+				C && 'ubits-button--dropdown',
+				L,
+			]
+				.filter(Boolean)
+				.join(' '),
+			z = [
+				b && 'disabled',
+				n && 'data-loading="true"',
+				n && 'aria-busy="true"',
+				...Object.entries(E).map(([de, M]) => `${de}="${M}"`),
+			]
+				.filter(Boolean)
+				.join(' ');
+		let F = '';
+		c && (F = Ie(c, r));
+		let J = F,
+			G = i;
+		C && !c && d
+			? ((J = Ie('chevron-down', r)), (G = 'right'))
+			: C && c && i === 'left' && d
+				? (J = `${F}${Ie('chevron-down', r)}`)
+				: C && !d && (J = c ? `${F}${Ie('chevron-down', r)}` : Ie('chevron-down', r));
+		const U = { xs: 'xs', sm: 'sm', md: 'sm', lg: 'md', xl: 'lg' }[u] || 'sm',
+			ae =
+				{ primary: 'primary', secondary: 'secondary', tertiary: 'secondary', active: 'primary' }[
+					l
+				] || 'primary',
+			ce = n ? vt({ size: U, variant: ae, animated: !0, className: 'ubits-button__spinner' }) : '';
+		let O = '';
+		n && s
+			? (O = `${ce}<span class="button-text">${s}</span>`)
+			: n && !d
+				? (O = ce)
+				: n && d
+					? i === 'right'
+						? (O = `<span class="button-text">${d}</span>${ce}`)
+						: (O = `${ce}<span class="button-text">${d}</span>`)
+					: a && c
+						? (O = F)
+						: J && d
+							? C && c && i === 'left'
+								? (O = `${Ie(c, r)}<span>${d}</span>${Ie('chevron-down', r)}`)
+								: G === 'right'
+									? (O = `<span>${d}</span>${J}`)
+									: (O = `${J}<span>${d}</span>`)
+							: d
+								? (O = C ? `<span>${d}</span>${Ie('chevron-down', r)}` : `<span>${d}</span>`)
+								: J && (O = J);
+		const fe = e ? '<span class="ubits-button__badge"></span>' : '',
+			se = a && H && A ? `title="${A}"` : '';
+		return `
     <button class="${T}" ${z} ${se}>
       ${O}
       ${fe}
     </button>
-  `.trim()}function nt(t){const{orientation:l="vertical",state:u="default",className:d=""}=t;return`
-    <div class="${["ubits-scrollbar",`ubits-scrollbar--${l}`,u?`ubits-scrollbar--${u}`:"",d].filter(Boolean).join(" ")}">
+  `.trim();
+	}
+	function nt(t) {
+		const { orientation: l = 'vertical', state: u = 'default', className: d = '' } = t;
+		return `
+    <div class="${['ubits-scrollbar', `ubits-scrollbar--${l}`, u ? `ubits-scrollbar--${u}` : '', d].filter(Boolean).join(' ')}">
       <div class="ubits-scrollbar__bar"></div>
     </div>
-  `.trim()}function Xe(t){const{containerId:l,targetId:u,orientation:d="vertical",state:c="default",className:r=""}=t;let a;l?a=document.getElementById(l)||document.body:a=document.body;const b=document.createElement("div");b.innerHTML=nt({orientation:d,state:c,className:r});const n=b.firstElementChild;if(!n)throw new Error("No se pudo crear el scrollbar");const s=n.querySelector(".ubits-scrollbar__bar");if(!s)throw new Error("No se pudo encontrar la barra del scrollbar");let e=null;if(u)e=document.getElementById(u);else if(l){const A=a.querySelector("[data-scrollable]");A&&(e=A)}const p=()=>{if(!e||!s)return;const A=d==="vertical",T=A?"scrollTop":"scrollLeft",z=A?"clientHeight":"clientWidth",F=A?"scrollHeight":"scrollWidth",J=e[T],G=e[z],K=e[F];if(K<=G){s.style.opacity="0";return}const U=A?n.clientHeight:n.clientWidth,B=Math.max(G/K*U,20),ae=U-B,ce=J/(K-G)*ae;A?(s.style.height=`${B}px`,s.style.transform=`translateY(${ce}px)`):(s.style.width=`${B}px`,s.style.transform=`translateX(${ce}px)`),s.style.opacity="1"},w=A=>{if(!e||!s||A.target===s)return;A.preventDefault(),A.stopPropagation();const T=d==="vertical",z=n.getBoundingClientRect(),F=T?A.clientY-z.top:A.clientX-z.left,J=T?n.clientHeight:n.clientWidth,G=F/J,K=T?"clientHeight":"clientWidth",U=T?"scrollHeight":"scrollWidth",B=T?"scrollTop":"scrollLeft",ae=e[K],O=e[U]-ae;e[B]=G*O};let y=!1,i=0,L=0;const E=A=>{if(!e||!s||A.target!==s)return;A.preventDefault(),A.stopPropagation(),y=!0;const T=d==="vertical";i=T?A.clientY:A.clientX,L=T?e.scrollTop:e.scrollLeft,document.addEventListener("mousemove",C),document.addEventListener("mouseup",H)},C=A=>{if(!y||!e||!s)return;const T=d==="vertical",F=(T?A.clientY:A.clientX)-i,J=T?n.clientHeight:n.clientWidth,G=T?e.clientHeight:e.clientWidth,U=(T?e.scrollHeight:e.scrollWidth)-G,B=U/J,ae=L+F*B;T?e.scrollTop=Math.max(0,Math.min(U,ae)):e.scrollLeft=Math.max(0,Math.min(U,ae))},H=()=>{y=!1,document.removeEventListener("mousemove",C),document.removeEventListener("mouseup",H)};if(e){e.addEventListener("scroll",p),e.addEventListener("resize",p);const A=new ResizeObserver(()=>{p()});A.observe(e),n.__resizeObserver=A}return n.addEventListener("click",w),s.addEventListener("mousedown",E),n.__handleMouseUp=H,n.__handleMouseMove=C,a.appendChild(n),setTimeout(()=>{p()},100),{element:n,update:p,destroy:()=>{if(e){e.removeEventListener("scroll",p),e.removeEventListener("resize",p);const A=n.__resizeObserver;A&&A.disconnect()}n.removeEventListener("click",w),s.removeEventListener("mousedown",E),n.__handleMouseUp&&(document.removeEventListener("mousemove",n.__handleMouseMove),document.removeEventListener("mouseup",n.__handleMouseUp)),n.remove()}}}const xt=Object.freeze(Object.defineProperty({__proto__:null,createScrollbar:Xe,renderScrollbar:nt},Symbol.toStringTag,{value:"Module"}));function wt(t,l,u){const d=[];if(l<=u)for(let c=1;c<=l;c++)d.push(c);else{const c=Math.floor(u/2);let r=Math.max(1,t-c),a=Math.min(l,r+u-1);a-r<u-1&&(r=Math.max(1,a-u+1));for(let b=r;b<=a;b++)d.push(b)}return d}function _t(t,l,u="md",d){return _e({variant:l?"secondary":"tertiary",size:u==="sm"?"sm":u==="lg"?"lg":"md",text:String(t),active:l,className:"ubits-pagination__page-button"})}function Ct(t){const{currentPage:l=1,totalPages:u,totalItems:d,itemsPerPage:c,variant:r="default",size:a="md",maxVisiblePages:b=7,showFirst:n=!0,showLast:s=!0,showPrevNext:e=!0,showInfo:p=!1,showItemsPerPage:w=!1,itemsPerPageOptions:y=[10,20,50,100],className:i="",attributes:L={},labels:E={}}=t,C=Math.max(1,Math.min(l,u)),H=["ubits-pagination",`ubits-pagination--${r}`,`ubits-pagination--${a}`,i].filter(Boolean).join(" "),A=[...Object.entries(L).map(([K,U])=>`${K}="${U}"`)].filter(Boolean).join(" "),T={first:"Primera",last:"Última",previous:"Anterior",next:"Siguiente",page:"Página",of:"de",items:"items",itemsPerPage:"Por página",...E};let z="";if(p&&d!==void 0){const K=(C-1)*(c||10)+1,U=Math.min(C*(c||10),d);z=`
+  `.trim();
+	}
+	function Xe(t) {
+		const {
+			containerId: l,
+			targetId: u,
+			orientation: d = 'vertical',
+			state: c = 'default',
+			className: r = '',
+		} = t;
+		let a;
+		l ? (a = document.getElementById(l) || document.body) : (a = document.body);
+		const b = document.createElement('div');
+		b.innerHTML = nt({ orientation: d, state: c, className: r });
+		const n = b.firstElementChild;
+		if (!n) throw new Error('No se pudo crear el scrollbar');
+		const s = n.querySelector('.ubits-scrollbar__bar');
+		if (!s) throw new Error('No se pudo encontrar la barra del scrollbar');
+		let e = null;
+		if (u) e = document.getElementById(u);
+		else if (l) {
+			const A = a.querySelector('[data-scrollable]');
+			A && (e = A);
+		}
+		const p = () => {
+				if (!e || !s) return;
+				const A = d === 'vertical',
+					T = A ? 'scrollTop' : 'scrollLeft',
+					z = A ? 'clientHeight' : 'clientWidth',
+					F = A ? 'scrollHeight' : 'scrollWidth',
+					J = e[T],
+					G = e[z],
+					K = e[F];
+				if (K <= G) {
+					s.style.opacity = '0';
+					return;
+				}
+				const U = A ? n.clientHeight : n.clientWidth,
+					B = Math.max((G / K) * U, 20),
+					ae = U - B,
+					ce = (J / (K - G)) * ae;
+				A
+					? ((s.style.height = `${B}px`), (s.style.transform = `translateY(${ce}px)`))
+					: ((s.style.width = `${B}px`), (s.style.transform = `translateX(${ce}px)`)),
+					(s.style.opacity = '1');
+			},
+			w = (A) => {
+				if (!e || !s || A.target === s) return;
+				A.preventDefault(), A.stopPropagation();
+				const T = d === 'vertical',
+					z = n.getBoundingClientRect(),
+					F = T ? A.clientY - z.top : A.clientX - z.left,
+					J = T ? n.clientHeight : n.clientWidth,
+					G = F / J,
+					K = T ? 'clientHeight' : 'clientWidth',
+					U = T ? 'scrollHeight' : 'scrollWidth',
+					B = T ? 'scrollTop' : 'scrollLeft',
+					ae = e[K],
+					O = e[U] - ae;
+				e[B] = G * O;
+			};
+		let y = !1,
+			i = 0,
+			L = 0;
+		const E = (A) => {
+				if (!e || !s || A.target !== s) return;
+				A.preventDefault(), A.stopPropagation(), (y = !0);
+				const T = d === 'vertical';
+				(i = T ? A.clientY : A.clientX),
+					(L = T ? e.scrollTop : e.scrollLeft),
+					document.addEventListener('mousemove', C),
+					document.addEventListener('mouseup', H);
+			},
+			C = (A) => {
+				if (!y || !e || !s) return;
+				const T = d === 'vertical',
+					F = (T ? A.clientY : A.clientX) - i,
+					J = T ? n.clientHeight : n.clientWidth,
+					G = T ? e.clientHeight : e.clientWidth,
+					U = (T ? e.scrollHeight : e.scrollWidth) - G,
+					B = U / J,
+					ae = L + F * B;
+				T
+					? (e.scrollTop = Math.max(0, Math.min(U, ae)))
+					: (e.scrollLeft = Math.max(0, Math.min(U, ae)));
+			},
+			H = () => {
+				(y = !1),
+					document.removeEventListener('mousemove', C),
+					document.removeEventListener('mouseup', H);
+			};
+		if (e) {
+			e.addEventListener('scroll', p), e.addEventListener('resize', p);
+			const A = new ResizeObserver(() => {
+				p();
+			});
+			A.observe(e), (n.__resizeObserver = A);
+		}
+		return (
+			n.addEventListener('click', w),
+			s.addEventListener('mousedown', E),
+			(n.__handleMouseUp = H),
+			(n.__handleMouseMove = C),
+			a.appendChild(n),
+			setTimeout(() => {
+				p();
+			}, 100),
+			{
+				element: n,
+				update: p,
+				destroy: () => {
+					if (e) {
+						e.removeEventListener('scroll', p), e.removeEventListener('resize', p);
+						const A = n.__resizeObserver;
+						A && A.disconnect();
+					}
+					n.removeEventListener('click', w),
+						s.removeEventListener('mousedown', E),
+						n.__handleMouseUp &&
+							(document.removeEventListener('mousemove', n.__handleMouseMove),
+							document.removeEventListener('mouseup', n.__handleMouseUp)),
+						n.remove();
+				},
+			}
+		);
+	}
+	const xt = Object.freeze(
+		Object.defineProperty(
+			{ __proto__: null, createScrollbar: Xe, renderScrollbar: nt },
+			Symbol.toStringTag,
+			{ value: 'Module' },
+		),
+	);
+	function wt(t, l, u) {
+		const d = [];
+		if (l <= u) for (let c = 1; c <= l; c++) d.push(c);
+		else {
+			const c = Math.floor(u / 2);
+			let r = Math.max(1, t - c),
+				a = Math.min(l, r + u - 1);
+			a - r < u - 1 && (r = Math.max(1, a - u + 1));
+			for (let b = r; b <= a; b++) d.push(b);
+		}
+		return d;
+	}
+	function _t(t, l, u = 'md', d) {
+		return _e({
+			variant: l ? 'secondary' : 'tertiary',
+			size: u === 'sm' ? 'sm' : u === 'lg' ? 'lg' : 'md',
+			text: String(t),
+			active: l,
+			className: 'ubits-pagination__page-button',
+		});
+	}
+	function Ct(t) {
+		const {
+				currentPage: l = 1,
+				totalPages: u,
+				totalItems: d,
+				itemsPerPage: c,
+				variant: r = 'default',
+				size: a = 'md',
+				maxVisiblePages: b = 7,
+				showFirst: n = !0,
+				showLast: s = !0,
+				showPrevNext: e = !0,
+				showInfo: p = !1,
+				showItemsPerPage: w = !1,
+				itemsPerPageOptions: y = [10, 20, 50, 100],
+				className: i = '',
+				attributes: L = {},
+				labels: E = {},
+			} = t,
+			C = Math.max(1, Math.min(l, u)),
+			H = ['ubits-pagination', `ubits-pagination--${r}`, `ubits-pagination--${a}`, i]
+				.filter(Boolean)
+				.join(' '),
+			A = [...Object.entries(L).map(([K, U]) => `${K}="${U}"`)].filter(Boolean).join(' '),
+			T = {
+				first: 'Primera',
+				last: 'Última',
+				previous: 'Anterior',
+				next: 'Siguiente',
+				page: 'Página',
+				of: 'de',
+				items: 'items',
+				itemsPerPage: 'Por página',
+				...E,
+			};
+		let z = '';
+		if (p && d !== void 0) {
+			const K = (C - 1) * (c || 10) + 1,
+				U = Math.min(C * (c || 10), d);
+			z = `
       <div class="ubits-pagination__info">
         <span class="ubits-body-sm">${K}-${U} ${T.of} ${d} ${T.items}</span>
       </div>
-    `}let F="";if(w){const K=`ubits-pagination-items-per-page-${Date.now()}`,U=`ubits-pagination-list-${Date.now()}`,B=c||y[0];y.map(ae=>({label:String(ae),value:String(ae),state:"default",selected:ae===B})),F=`
+    `;
+		}
+		let F = '';
+		if (w) {
+			const K = `ubits-pagination-items-per-page-${Date.now()}`,
+				U = `ubits-pagination-list-${Date.now()}`,
+				B = c || y[0];
+			y.map((ae) => ({
+				label: String(ae),
+				value: String(ae),
+				state: 'default',
+				selected: ae === B,
+			})),
+				(F = `
       <div class="ubits-pagination__items-per-page">
         <label class="ubits-body-sm">${T.itemsPerPage}:</label>
         <div class="ubits-pagination__select-wrapper" style="position: relative; display: inline-block;">
@@ -161,19 +956,107 @@
           <div id="${U}" class="ubits-pagination__list-container" style="display: none;"></div>
         </div>
       </div>
-    `}const J=a==="sm"?"sm":a==="lg"?"lg":"md",G=[];if(n&&r==="default"&&G.push(_e({variant:"tertiary",size:J,icon:"angle-double-left",iconStyle:"solid",iconOnly:!0,disabled:C===1,className:"ubits-pagination__nav-button",attributes:{"aria-label":T.first,title:T.first}})),e&&G.push(_e({variant:"tertiary",size:J,icon:"chevron-left",iconStyle:"solid",iconOnly:!0,disabled:C===1,className:"ubits-pagination__nav-button",attributes:{"aria-label":T.previous,title:T.previous}})),r==="default"){const K=wt(C,u,b);K[0]>1&&G.push('<span class="ubits-pagination__ellipsis">...</span>'),K.forEach(U=>{G.push(_t(U,U===C,a))}),K[K.length-1]<u&&G.push('<span class="ubits-pagination__ellipsis">...</span>')}else r==="compact"&&G.push(`
+    `);
+		}
+		const J = a === 'sm' ? 'sm' : a === 'lg' ? 'lg' : 'md',
+			G = [];
+		if (
+			(n &&
+				r === 'default' &&
+				G.push(
+					_e({
+						variant: 'tertiary',
+						size: J,
+						icon: 'angle-double-left',
+						iconStyle: 'solid',
+						iconOnly: !0,
+						disabled: C === 1,
+						className: 'ubits-pagination__nav-button',
+						attributes: { 'aria-label': T.first, title: T.first },
+					}),
+				),
+			e &&
+				G.push(
+					_e({
+						variant: 'tertiary',
+						size: J,
+						icon: 'chevron-left',
+						iconStyle: 'solid',
+						iconOnly: !0,
+						disabled: C === 1,
+						className: 'ubits-pagination__nav-button',
+						attributes: { 'aria-label': T.previous, title: T.previous },
+					}),
+				),
+			r === 'default')
+		) {
+			const K = wt(C, u, b);
+			K[0] > 1 && G.push('<span class="ubits-pagination__ellipsis">...</span>'),
+				K.forEach((U) => {
+					G.push(_t(U, U === C, a));
+				}),
+				K[K.length - 1] < u && G.push('<span class="ubits-pagination__ellipsis">...</span>');
+		} else
+			r === 'compact' &&
+				G.push(`
       <span class="ubits-pagination__page-info ubits-body-md">
         ${T.page} ${C} ${T.of} ${u}
       </span>
-    `);return e&&G.push(_e({variant:"tertiary",size:J,icon:"chevron-right",iconStyle:"solid",iconOnly:!0,disabled:C===u,className:"ubits-pagination__nav-button",attributes:{"aria-label":T.next,title:T.next}})),s&&r==="default"&&G.push(_e({variant:"tertiary",size:J,icon:"angle-double-right",iconStyle:"solid",iconOnly:!0,disabled:C===u,className:"ubits-pagination__nav-button",attributes:{"aria-label":T.last,title:T.last}})),`
+    `);
+		return (
+			e &&
+				G.push(
+					_e({
+						variant: 'tertiary',
+						size: J,
+						icon: 'chevron-right',
+						iconStyle: 'solid',
+						iconOnly: !0,
+						disabled: C === u,
+						className: 'ubits-pagination__nav-button',
+						attributes: { 'aria-label': T.next, title: T.next },
+					}),
+				),
+			s &&
+				r === 'default' &&
+				G.push(
+					_e({
+						variant: 'tertiary',
+						size: J,
+						icon: 'angle-double-right',
+						iconStyle: 'solid',
+						iconOnly: !0,
+						disabled: C === u,
+						className: 'ubits-pagination__nav-button',
+						attributes: { 'aria-label': T.last, title: T.last },
+					}),
+				),
+			`
     <div class="${H}" ${A} data-current-page="${C}" data-total-pages="${u}">
       ${z}
       ${F}
       <div class="ubits-pagination__controls">
-        ${G.join("")}
+        ${G.join('')}
       </div>
     </div>
-  `}const ot={sm:"320px",md:"480px",lg:"640px",xl:"800px",full:"1280px"};function Lt(t){const{title:l,bodyContent:u="",size:d="md",fullScreen:c=!1,footerButtons:r,className:a=""}=t,b=ot[d]||ot.md,e=["ubits-modal",`ubits-modal--size-${d}`,c?"ubits-modal--full-screen":"",a].filter(Boolean).join(" "),p=`
+  `
+		);
+	}
+	const ot = { sm: '320px', md: '480px', lg: '640px', xl: '800px', full: '1280px' };
+	function Lt(t) {
+		const {
+				title: l,
+				bodyContent: u = '',
+				size: d = 'md',
+				fullScreen: c = !1,
+				footerButtons: r,
+				className: a = '',
+			} = t,
+			b = ot[d] || ot.md,
+			e = ['ubits-modal', `ubits-modal--size-${d}`, c ? 'ubits-modal--full-screen' : '', a]
+				.filter(Boolean)
+				.join(' '),
+			p = `
     <div class="ubits-modal__header">
       <div class="ubits-modal__header-text">
         <div class="ubits-modal__header-title">
@@ -184,40 +1067,57 @@
         <i class="far fa-times"></i>
       </button>
     </div>
-  `,y=`
+  `,
+			y = `
     <div class="ubits-modal__body">
       <div class="ubits-modal__body-content">
-        ${typeof u=="function"?u():u||'<div class="ubits-modal__placeholder">Contenido del modal</div>'}
+        ${typeof u == 'function' ? u() : u || '<div class="ubits-modal__placeholder">Contenido del modal</div>'}
       </div>
       <div class="ubits-modal__scrollbar">
         <div class="ubits-modal__scrollbar-bar"></div>
       </div>
     </div>
-  `,i=r?`
+  `,
+			i = r
+				? `
     <div class="ubits-modal__footer">
       <div class="ubits-modal__footer-actions">
-        ${r.tertiary?`
+        ${
+					r.tertiary
+						? `
         <div class="ubits-modal__footer-left">
           <button class="ubits-button ubits-button--tertiary ubits-button--md ubits-modal__footer-button" type="button">
             <span>${r.tertiary.label}</span>
           </button>
         </div>
-        `:""}
+        `
+						: ''
+				}
         <div class="ubits-modal__footer-right">
-          ${r.secondary?`
+          ${
+						r.secondary
+							? `
           <button class="ubits-button ubits-button--secondary ubits-button--md ubits-modal__footer-button" type="button">
             <span>${r.secondary.label}</span>
           </button>
-          `:""}
-          ${r.primary?`
+          `
+							: ''
+					}
+          ${
+						r.primary
+							? `
           <button class="ubits-button ubits-button--primary ubits-button--md ubits-modal__footer-button" type="button">
             <span>${r.primary.label}</span>
           </button>
-          `:""}
+          `
+							: ''
+					}
         </div>
       </div>
     </div>
-  `:"";return`
+  `
+				: '';
+		return `
     <div class="ubits-modal-overlay">
       <div class="${e}" style="max-width: ${b};">
         ${p}
@@ -225,7 +1125,126 @@
         ${i}
       </div>
     </div>
-  `.trim()}function Ye(t){const{containerId:l,onClose:u,closeOnOverlayClick:d=!0,open:c=!1}=t;let r;l?r=document.getElementById(l)||document.body:r=document.body;const a=document.createElement("div");a.innerHTML=Lt(t);const b=a.firstElementChild;if(!b)throw new Error("No se pudo crear el modal");b.querySelector(".ubits-modal");const n=b.querySelector(".ubits-modal__close"),s=b,e=()=>{b.classList.add("ubits-modal-overlay--open"),document.body.style.overflow="hidden"},p=()=>{b.classList.remove("ubits-modal-overlay--open"),document.body.style.overflow="",u&&u()},w=i=>{const L=b.querySelector(".ubits-modal__body-content");if(L){const E=typeof i=="function"?i():i;L.innerHTML=E}};n&&n.addEventListener("click",i=>{i.preventDefault(),i.stopPropagation(),p()}),d&&s&&s.addEventListener("click",i=>{i.target===s&&p()});const y=i=>{i.key==="Escape"&&b.classList.contains("ubits-modal-overlay--open")&&p()};if(document.addEventListener("keydown",y),t.footerButtons){const i=b.querySelector(".ubits-modal__footer-left .ubits-modal__footer-button"),L=b.querySelector(".ubits-modal__footer-right .ubits-button--secondary"),E=b.querySelector(".ubits-modal__footer-right .ubits-button--primary");i&&t.footerButtons.tertiary?.onClick&&i.addEventListener("click",C=>{C.preventDefault(),t.footerButtons.tertiary.onClick(C)}),L&&t.footerButtons.secondary?.onClick&&L.addEventListener("click",C=>{C.preventDefault(),t.footerButtons.secondary.onClick(C)}),E&&t.footerButtons.primary?.onClick&&E.addEventListener("click",C=>{C.preventDefault(),t.footerButtons.primary.onClick(C)})}return r.appendChild(b),c&&e(),{element:b,open:e,close:p,updateContent:w}}function Oe(t){const{containerId:l,label:u="",placeholder:d="",helperText:c="",size:r="md",state:a="default",type:b="text",showLabel:n=!0,showHelper:s=!1,showCounter:e=!1,maxLength:p=50,mandatory:w=!1,mandatoryType:y="obligatorio",leftIcon:i="",rightIcon:L="",value:E="",className:C="",attributes:H={},showRichTextToolbar:A=!1}=t;let T="";if(n&&u){const de=w?` <span class="ubits-input-mandatory">(${y})</span>`:"";T+=`<label class="ubits-input-label">${u}${de}</label>`}const z=i&&i.trim()!=="",F=L&&L.trim()!=="";z&&i.startsWith("fa-")?`${i}`:z&&`${i}`,F&&L.startsWith("fa-")?`${L}`:F&&`${L}`,T+='<div style="position: relative; display: inline-block; width: 100%;">';let J=L,G=F,K=i,U=z;const B=["ubits-input",`ubits-input--${r}`];a!=="default"&&B.push(`ubits-input--${a}`),C&&B.push(C);const ae=a==="disabled"?" disabled":"",ce=e?` maxlength="${p}"`:"",O=z?"padding-left: 40px;":"padding-left: 12px;",fe=F?"padding-right: 40px;":"padding-right: 12px;";if(b==="select"){const de=t.selectOptions||[],M=E&&de.find(Z=>Z.value===E)?.text||d;T+=`<input type="text" class="${B.join(" ")}" style="width: 100%; ${O} ${fe}" value="${M}" readonly>`,F||(J="fa-chevron-down",G=!0,fe==="padding-right: 12px;"&&(T=T.replace(`style="width: 100%; ${O} ${fe}"`,`style="width: 100%; ${O} padding-right: 40px;"`)))}else if(b==="textarea")if(A){T+='<div class="ubits-input-rich-text-wrapper">',T+=`
+  `.trim();
+	}
+	function Ye(t) {
+		const { containerId: l, onClose: u, closeOnOverlayClick: d = !0, open: c = !1 } = t;
+		let r;
+		l ? (r = document.getElementById(l) || document.body) : (r = document.body);
+		const a = document.createElement('div');
+		a.innerHTML = Lt(t);
+		const b = a.firstElementChild;
+		if (!b) throw new Error('No se pudo crear el modal');
+		b.querySelector('.ubits-modal');
+		const n = b.querySelector('.ubits-modal__close'),
+			s = b,
+			e = () => {
+				b.classList.add('ubits-modal-overlay--open'), (document.body.style.overflow = 'hidden');
+			},
+			p = () => {
+				b.classList.remove('ubits-modal-overlay--open'),
+					(document.body.style.overflow = ''),
+					u && u();
+			},
+			w = (i) => {
+				const L = b.querySelector('.ubits-modal__body-content');
+				if (L) {
+					const E = typeof i == 'function' ? i() : i;
+					L.innerHTML = E;
+				}
+			};
+		n &&
+			n.addEventListener('click', (i) => {
+				i.preventDefault(), i.stopPropagation(), p();
+			}),
+			d &&
+				s &&
+				s.addEventListener('click', (i) => {
+					i.target === s && p();
+				});
+		const y = (i) => {
+			i.key === 'Escape' && b.classList.contains('ubits-modal-overlay--open') && p();
+		};
+		if ((document.addEventListener('keydown', y), t.footerButtons)) {
+			const i = b.querySelector('.ubits-modal__footer-left .ubits-modal__footer-button'),
+				L = b.querySelector('.ubits-modal__footer-right .ubits-button--secondary'),
+				E = b.querySelector('.ubits-modal__footer-right .ubits-button--primary');
+			i &&
+				t.footerButtons.tertiary?.onClick &&
+				i.addEventListener('click', (C) => {
+					C.preventDefault(), t.footerButtons.tertiary.onClick(C);
+				}),
+				L &&
+					t.footerButtons.secondary?.onClick &&
+					L.addEventListener('click', (C) => {
+						C.preventDefault(), t.footerButtons.secondary.onClick(C);
+					}),
+				E &&
+					t.footerButtons.primary?.onClick &&
+					E.addEventListener('click', (C) => {
+						C.preventDefault(), t.footerButtons.primary.onClick(C);
+					});
+		}
+		return r.appendChild(b), c && e(), { element: b, open: e, close: p, updateContent: w };
+	}
+	function Oe(t) {
+		const {
+			containerId: l,
+			label: u = '',
+			placeholder: d = '',
+			helperText: c = '',
+			size: r = 'md',
+			state: a = 'default',
+			type: b = 'text',
+			showLabel: n = !0,
+			showHelper: s = !1,
+			showCounter: e = !1,
+			maxLength: p = 50,
+			mandatory: w = !1,
+			mandatoryType: y = 'obligatorio',
+			leftIcon: i = '',
+			rightIcon: L = '',
+			value: E = '',
+			className: C = '',
+			attributes: H = {},
+			showRichTextToolbar: A = !1,
+		} = t;
+		let T = '';
+		if (n && u) {
+			const de = w ? ` <span class="ubits-input-mandatory">(${y})</span>` : '';
+			T += `<label class="ubits-input-label">${u}${de}</label>`;
+		}
+		const z = i && i.trim() !== '',
+			F = L && L.trim() !== '';
+		z && i.startsWith('fa-') ? `${i}` : z && `${i}`,
+			F && L.startsWith('fa-') ? `${L}` : F && `${L}`,
+			(T += '<div style="position: relative; display: inline-block; width: 100%;">');
+		let J = L,
+			G = F,
+			K = i,
+			U = z;
+		const B = ['ubits-input', `ubits-input--${r}`];
+		a !== 'default' && B.push(`ubits-input--${a}`), C && B.push(C);
+		const ae = a === 'disabled' ? ' disabled' : '',
+			ce = e ? ` maxlength="${p}"` : '',
+			O = z ? 'padding-left: 40px;' : 'padding-left: 12px;',
+			fe = F ? 'padding-right: 40px;' : 'padding-right: 12px;';
+		if (b === 'select') {
+			const de = t.selectOptions || [],
+				M = (E && de.find((Z) => Z.value === E)?.text) || d;
+			(T += `<input type="text" class="${B.join(' ')}" style="width: 100%; ${O} ${fe}" value="${M}" readonly>`),
+				F ||
+					((J = 'fa-chevron-down'),
+					(G = !0),
+					fe === 'padding-right: 12px;' &&
+						(T = T.replace(
+							`style="width: 100%; ${O} ${fe}"`,
+							`style="width: 100%; ${O} padding-right: 40px;"`,
+						)));
+		} else if (b === 'textarea')
+			if (A) {
+				(T += '<div class="ubits-input-rich-text-wrapper">'),
+					(T += `
         <div class="ubits-input-rich-text-toolbar" data-container-id="${l}">
           <button type="button" class="ubits-rich-text-btn" data-command="bold" title="Negrita">
             <i class="fas fa-bold"></i>
@@ -271,7 +1290,291 @@
             <i class="fas fa-remove-format"></i>
           </button>
         </div>
-      `;let de=`width: 100%; min-height: 80px; resize: vertical; ${O} ${fe}; border: none; border-radius: 0;`;a==="disabled"&&(de+="; background: var(--ubits-bg-3) !important; color: var(--ubits-fg-1-low) !important;");const M=`${l}-textarea`;T+=`<textarea id="${M}" class="${B.join(" ")}" style="${de}" placeholder="${d}"${ae}${ce}>${E}</textarea>`,T+="</div>"}else{let de=`width: 100%; min-height: 80px; resize: vertical; ${O} ${fe}`;a==="disabled"&&(de+="; background: var(--ubits-bg-3) !important; color: var(--ubits-fg-1-low) !important; border-color: var(--ubits-border-2) !important;");const M=`${l}-textarea`;T+=`<textarea id="${M}" class="${B.join(" ")}" style="${de}" placeholder="${d}"${ae}${ce}>${E}</textarea>`}else if(b==="search"){let de=O,M=fe;z||(K="fa-search",U=!0,de=r==="xs"?"padding-left: 32px;":r==="sm"?"padding-left: 36px;":r==="md"?"padding-left: 40px;":"padding-left: 44px;"),F||(J="fa-times",G=!0,M=r==="xs"?"padding-right: 32px;":r==="sm"?"padding-right: 36px;":r==="md"?"padding-right: 40px;":"padding-right: 44px;");let Z=`width: 100%; ${de} ${M}`;a==="disabled"&&(Z+="; background: var(--ubits-bg-3) !important; color: var(--ubits-fg-1-low) !important; border-color: var(--ubits-border-2) !important;"),T+=`<input type="text" class="${B.join(" ")}" style="${Z}" placeholder="${d}" value="${E}" autocomplete="off"${ae}${ce}>`}else if(b==="autocomplete"){let de=O,M=fe;z||(K="fa-search",U=!0,de=r==="xs"?"padding-left: 32px;":r==="sm"?"padding-left: 36px;":r==="md"?"padding-left: 40px;":"padding-left: 44px;"),F||(J="fa-times",G=!0,M=r==="xs"?"padding-right: 32px;":r==="sm"?"padding-right: 36px;":r==="md"?"padding-right: 40px;":"padding-right: 44px;");let Z=`width: 100%; ${de} ${M}`;a==="disabled"&&(Z+="; background: var(--ubits-bg-3) !important; color: var(--ubits-fg-1-low) !important; border-color: var(--ubits-border-2) !important;"),T+=`<input type="text" class="${B.join(" ")}" style="${Z}" placeholder="${d}" value="${E}" autocomplete="off"${ae}${ce}>`}else if(b==="calendar"){let de=O,M=fe;F||(J="fa-calendar",G=!0,M=r==="xs"?"padding-right: 32px;":r==="sm"?"padding-right: 36px;":r==="md"?"padding-right: 40px;":"padding-right: 44px;");let Z=`width: 100%; ${de} ${M}`;a==="disabled"&&(Z+="; background: var(--ubits-bg-3) !important; color: var(--ubits-fg-1-low) !important; border-color: var(--ubits-border-2) !important;"),T+=`<input type="text" class="${B.join(" ")}" style="${Z}" placeholder="${d}" value="${E}" readonly${ae}>`}else if(b==="password"){let de=O,M=fe;F||(J="fa-eye",G=!0,M=r==="xs"?"padding-right: 32px;":r==="sm"?"padding-right: 36px;":r==="md"?"padding-right: 40px;":"padding-right: 44px;");let Z=`width: 100%; ${de} ${M}`;a==="disabled"&&(Z+="; background: var(--ubits-bg-3) !important; color: var(--ubits-fg-1-low) !important; border-color: var(--ubits-border-2) !important;"),T+=`<input type="password" class="${B.join(" ")}" style="${Z}" placeholder="${d}" value="${E}"${ae}${ce}>`}else T+=`<input type="${b}" class="${B.join(" ")}" style="width: 100%; ${O} ${fe}" placeholder="${d}" value="${E}"${ae}${ce}>`;if(U){const de=K.startsWith("fa-")?`far ${K}`:`far fa-${K}`;T+=`<i class="${de} ubits-input-icon-left" style="position: absolute; left: var(--ubits-spacing-md, 12px); top: 50%; transform: translateY(-50%); color: var(--ubits-fg-1-medium); pointer-events: none; z-index: 1;"></i>`}if(G){const de=J.startsWith("fa-")?`far ${J}`:`far fa-${J}`;T+=`<i class="${de} ubits-input-icon-right" style="position: absolute; right: var(--ubits-spacing-md, 12px); top: 50%; transform: translateY(-50%); color: var(--ubits-fg-1-medium); pointer-events: none; z-index: 1;"></i>`}T+="</div>",(s||e)&&(T+='<div class="ubits-input-helper">',s&&c&&(T+=`<span>${c}</span>`),e&&(T+=`<span class="ubits-input-counter">0/${p}</span>`),T+="</div>");const se=Object.entries(H).map(([de,M])=>`${de}="${M}"`).join(" ");return se?`<div ${se}>${T}</div>`:T}function at(t){const{containerId:l,onChange:u,onFocus:d,onBlur:c,showCounter:r=!1,maxLength:a=50,type:b="text",selectOptions:n=[],autocompleteOptions:s=[],value:e=""}=t;if(!l)return console.error("UBITS Input: containerId es requerido"),null;const p=document.getElementById(l);if(!p)return console.error(`UBITS Input: No se encontró el contenedor con ID "${l}"`),null;const w=Oe(t);p.innerHTML=w;const y=p.querySelector('div[style*="position: relative"]'),i=p.querySelector(".ubits-input"),L=p.querySelector(".ubits-input-counter");if(!i||!y)return console.error("UBITS Input: No se pudo crear el elemento input"),null;if(getComputedStyle(p).position==="static"&&(p.style.position="relative"),b==="select"&&Tt(p,i,n,e,t.placeholder||"",u,t.size||"md"),b==="search"&&Et(p,i,u),b==="autocomplete"&&kt(p,i,s,u,t.size||"md"),b==="calendar"&&$t(p,i,u),b==="password"&&St(p,i),b==="textarea"&&t.showRichTextToolbar?Ht(p,i,t.onChange):b==="textarea"&&!t.showRichTextToolbar&&Nt(p,i),r&&L&&At(i,L,a),u&&typeof u=="function"){const E=b==="select"?"change":"input";i.addEventListener(E,C=>{u(C.target.value,C)})}return d&&typeof d=="function"&&i.addEventListener("focus",E=>{d(E.target.value,E)}),c&&typeof c=="function"&&i.addEventListener("blur",E=>{c(E.target.value,E)}),{element:y,inputElement:i,getValue:()=>i.value,setValue:E=>{i.value=E,r&&L&&je(L,E.length,a)},focus:()=>i.focus(),blur:()=>i.blur(),disable:()=>{i.disabled=!0,i.classList.add("ubits-input--disabled")},enable:()=>{i.disabled=!1,i.classList.remove("ubits-input--disabled")},setState:E=>{if(["ubits-input--hover","ubits-input--focus","ubits-input--active","ubits-input--invalid","ubits-input--disabled"].forEach(H=>i.classList.remove(H)),E!=="default"&&i.classList.add(`ubits-input--${E}`),E==="disabled"?i.disabled=!0:i.disabled=!1,b==="textarea"&&t.showRichTextToolbar){const A=i.closest(".ubits-input-rich-text-wrapper")?.querySelector(".ubits-input-rich-text-toolbar");if(A){const T=window.getComputedStyle(A).borderBottom;window.getComputedStyle(A).borderTop,T&&T!=="none"&&T!=="0px"&&(console.warn(`[Rich Text] ⚠️ Línea divisoria detectada en setState("${E}"), removiendo...`),A.style.borderBottom="none",A.style.borderTop="none")}}}}}function St(t,l){const u=t.querySelector(".ubits-input-icon-right");if(u){let d=!1;u.style.pointerEvents="auto",u.style.cursor="pointer";const r=!u.className.includes("fa-eye");u.addEventListener("click",a=>{a.preventDefault(),a.stopPropagation(),d=!d,d?(l.type="text",r||(u.className="far fa-eye-slash ubits-input-icon-right")):(l.type="password",r||(u.className="far fa-eye ubits-input-icon-right"))})}}function Et(t,l,u){const d=t.querySelector(".ubits-input-icon-right");if(d){d.style.display=l.value.length>0?"block":"none",d.style.pointerEvents="auto",d.style.cursor="pointer";const c=()=>{d.style.display=l.value.length>0?"block":"none"};l.addEventListener("input",c),d.addEventListener("click",r=>{r.preventDefault(),l.value="",l.focus(),c(),u&&u("")})}}function kt(t,l,u,d,c="md"){const r=c==="xs"?"xs":c==="sm"?"sm":c==="md"?"md":"lg",a=t.querySelector(".ubits-input-icon-right");if(a){a.style.display=l.value.length>0?"block":"none",a.style.pointerEvents="auto",a.style.cursor="pointer";const s=()=>{a.style.display=l.value.length>0?"block":"none"};l.addEventListener("input",s),a.addEventListener("click",e=>{e.preventDefault(),l.value="",l.focus(),s();const p=t.querySelector(".ubits-autocomplete-list-container");p&&(p.style.display="none"),d&&d("")})}const b=document.createElement("div");b.className="ubits-autocomplete-list-container",b.style.cssText=`
+      `);
+				let de = `width: 100%; min-height: 80px; resize: vertical; ${O} ${fe}; border: none; border-radius: 0;`;
+				a === 'disabled' &&
+					(de +=
+						'; background: var(--ubits-bg-3) !important; color: var(--ubits-fg-1-low) !important;');
+				const M = `${l}-textarea`;
+				(T += `<textarea id="${M}" class="${B.join(' ')}" style="${de}" placeholder="${d}"${ae}${ce}>${E}</textarea>`),
+					(T += '</div>');
+			} else {
+				let de = `width: 100%; min-height: 80px; resize: vertical; ${O} ${fe}`;
+				a === 'disabled' &&
+					(de +=
+						'; background: var(--ubits-bg-3) !important; color: var(--ubits-fg-1-low) !important; border-color: var(--ubits-border-2) !important;');
+				const M = `${l}-textarea`;
+				T += `<textarea id="${M}" class="${B.join(' ')}" style="${de}" placeholder="${d}"${ae}${ce}>${E}</textarea>`;
+			}
+		else if (b === 'search') {
+			let de = O,
+				M = fe;
+			z ||
+				((K = 'fa-search'),
+				(U = !0),
+				(de =
+					r === 'xs'
+						? 'padding-left: 32px;'
+						: r === 'sm'
+							? 'padding-left: 36px;'
+							: r === 'md'
+								? 'padding-left: 40px;'
+								: 'padding-left: 44px;')),
+				F ||
+					((J = 'fa-times'),
+					(G = !0),
+					(M =
+						r === 'xs'
+							? 'padding-right: 32px;'
+							: r === 'sm'
+								? 'padding-right: 36px;'
+								: r === 'md'
+									? 'padding-right: 40px;'
+									: 'padding-right: 44px;'));
+			let Z = `width: 100%; ${de} ${M}`;
+			a === 'disabled' &&
+				(Z +=
+					'; background: var(--ubits-bg-3) !important; color: var(--ubits-fg-1-low) !important; border-color: var(--ubits-border-2) !important;'),
+				(T += `<input type="text" class="${B.join(' ')}" style="${Z}" placeholder="${d}" value="${E}" autocomplete="off"${ae}${ce}>`);
+		} else if (b === 'autocomplete') {
+			let de = O,
+				M = fe;
+			z ||
+				((K = 'fa-search'),
+				(U = !0),
+				(de =
+					r === 'xs'
+						? 'padding-left: 32px;'
+						: r === 'sm'
+							? 'padding-left: 36px;'
+							: r === 'md'
+								? 'padding-left: 40px;'
+								: 'padding-left: 44px;')),
+				F ||
+					((J = 'fa-times'),
+					(G = !0),
+					(M =
+						r === 'xs'
+							? 'padding-right: 32px;'
+							: r === 'sm'
+								? 'padding-right: 36px;'
+								: r === 'md'
+									? 'padding-right: 40px;'
+									: 'padding-right: 44px;'));
+			let Z = `width: 100%; ${de} ${M}`;
+			a === 'disabled' &&
+				(Z +=
+					'; background: var(--ubits-bg-3) !important; color: var(--ubits-fg-1-low) !important; border-color: var(--ubits-border-2) !important;'),
+				(T += `<input type="text" class="${B.join(' ')}" style="${Z}" placeholder="${d}" value="${E}" autocomplete="off"${ae}${ce}>`);
+		} else if (b === 'calendar') {
+			let de = O,
+				M = fe;
+			F ||
+				((J = 'fa-calendar'),
+				(G = !0),
+				(M =
+					r === 'xs'
+						? 'padding-right: 32px;'
+						: r === 'sm'
+							? 'padding-right: 36px;'
+							: r === 'md'
+								? 'padding-right: 40px;'
+								: 'padding-right: 44px;'));
+			let Z = `width: 100%; ${de} ${M}`;
+			a === 'disabled' &&
+				(Z +=
+					'; background: var(--ubits-bg-3) !important; color: var(--ubits-fg-1-low) !important; border-color: var(--ubits-border-2) !important;'),
+				(T += `<input type="text" class="${B.join(' ')}" style="${Z}" placeholder="${d}" value="${E}" readonly${ae}>`);
+		} else if (b === 'password') {
+			let de = O,
+				M = fe;
+			F ||
+				((J = 'fa-eye'),
+				(G = !0),
+				(M =
+					r === 'xs'
+						? 'padding-right: 32px;'
+						: r === 'sm'
+							? 'padding-right: 36px;'
+							: r === 'md'
+								? 'padding-right: 40px;'
+								: 'padding-right: 44px;'));
+			let Z = `width: 100%; ${de} ${M}`;
+			a === 'disabled' &&
+				(Z +=
+					'; background: var(--ubits-bg-3) !important; color: var(--ubits-fg-1-low) !important; border-color: var(--ubits-border-2) !important;'),
+				(T += `<input type="password" class="${B.join(' ')}" style="${Z}" placeholder="${d}" value="${E}"${ae}${ce}>`);
+		} else
+			T += `<input type="${b}" class="${B.join(' ')}" style="width: 100%; ${O} ${fe}" placeholder="${d}" value="${E}"${ae}${ce}>`;
+		if (U) {
+			const de = K.startsWith('fa-') ? `far ${K}` : `far fa-${K}`;
+			T += `<i class="${de} ubits-input-icon-left" style="position: absolute; left: var(--ubits-spacing-md, 12px); top: 50%; transform: translateY(-50%); color: var(--ubits-fg-1-medium); pointer-events: none; z-index: 1;"></i>`;
+		}
+		if (G) {
+			const de = J.startsWith('fa-') ? `far ${J}` : `far fa-${J}`;
+			T += `<i class="${de} ubits-input-icon-right" style="position: absolute; right: var(--ubits-spacing-md, 12px); top: 50%; transform: translateY(-50%); color: var(--ubits-fg-1-medium); pointer-events: none; z-index: 1;"></i>`;
+		}
+		(T += '</div>'),
+			(s || e) &&
+				((T += '<div class="ubits-input-helper">'),
+				s && c && (T += `<span>${c}</span>`),
+				e && (T += `<span class="ubits-input-counter">0/${p}</span>`),
+				(T += '</div>'));
+		const se = Object.entries(H)
+			.map(([de, M]) => `${de}="${M}"`)
+			.join(' ');
+		return se ? `<div ${se}>${T}</div>` : T;
+	}
+	function at(t) {
+		const {
+			containerId: l,
+			onChange: u,
+			onFocus: d,
+			onBlur: c,
+			showCounter: r = !1,
+			maxLength: a = 50,
+			type: b = 'text',
+			selectOptions: n = [],
+			autocompleteOptions: s = [],
+			value: e = '',
+		} = t;
+		if (!l) return console.error('UBITS Input: containerId es requerido'), null;
+		const p = document.getElementById(l);
+		if (!p) return console.error(`UBITS Input: No se encontró el contenedor con ID "${l}"`), null;
+		const w = Oe(t);
+		p.innerHTML = w;
+		const y = p.querySelector('div[style*="position: relative"]'),
+			i = p.querySelector('.ubits-input'),
+			L = p.querySelector('.ubits-input-counter');
+		if (!i || !y) return console.error('UBITS Input: No se pudo crear el elemento input'), null;
+		if (
+			(getComputedStyle(p).position === 'static' && (p.style.position = 'relative'),
+			b === 'select' && Tt(p, i, n, e, t.placeholder || '', u, t.size || 'md'),
+			b === 'search' && Et(p, i, u),
+			b === 'autocomplete' && kt(p, i, s, u, t.size || 'md'),
+			b === 'calendar' && $t(p, i, u),
+			b === 'password' && St(p, i),
+			b === 'textarea' && t.showRichTextToolbar
+				? Ht(p, i, t.onChange)
+				: b === 'textarea' && !t.showRichTextToolbar && Nt(p, i),
+			r && L && At(i, L, a),
+			u && typeof u == 'function')
+		) {
+			const E = b === 'select' ? 'change' : 'input';
+			i.addEventListener(E, (C) => {
+				u(C.target.value, C);
+			});
+		}
+		return (
+			d &&
+				typeof d == 'function' &&
+				i.addEventListener('focus', (E) => {
+					d(E.target.value, E);
+				}),
+			c &&
+				typeof c == 'function' &&
+				i.addEventListener('blur', (E) => {
+					c(E.target.value, E);
+				}),
+			{
+				element: y,
+				inputElement: i,
+				getValue: () => i.value,
+				setValue: (E) => {
+					(i.value = E), r && L && je(L, E.length, a);
+				},
+				focus: () => i.focus(),
+				blur: () => i.blur(),
+				disable: () => {
+					(i.disabled = !0), i.classList.add('ubits-input--disabled');
+				},
+				enable: () => {
+					(i.disabled = !1), i.classList.remove('ubits-input--disabled');
+				},
+				setState: (E) => {
+					if (
+						([
+							'ubits-input--hover',
+							'ubits-input--focus',
+							'ubits-input--active',
+							'ubits-input--invalid',
+							'ubits-input--disabled',
+						].forEach((H) => i.classList.remove(H)),
+						E !== 'default' && i.classList.add(`ubits-input--${E}`),
+						E === 'disabled' ? (i.disabled = !0) : (i.disabled = !1),
+						b === 'textarea' && t.showRichTextToolbar)
+					) {
+						const A = i
+							.closest('.ubits-input-rich-text-wrapper')
+							?.querySelector('.ubits-input-rich-text-toolbar');
+						if (A) {
+							const T = window.getComputedStyle(A).borderBottom;
+							window.getComputedStyle(A).borderTop,
+								T &&
+									T !== 'none' &&
+									T !== '0px' &&
+									(console.warn(
+										`[Rich Text] ⚠️ Línea divisoria detectada en setState("${E}"), removiendo...`,
+									),
+									(A.style.borderBottom = 'none'),
+									(A.style.borderTop = 'none'));
+						}
+					}
+				},
+			}
+		);
+	}
+	function St(t, l) {
+		const u = t.querySelector('.ubits-input-icon-right');
+		if (u) {
+			let d = !1;
+			(u.style.pointerEvents = 'auto'), (u.style.cursor = 'pointer');
+			const r = !u.className.includes('fa-eye');
+			u.addEventListener('click', (a) => {
+				a.preventDefault(),
+					a.stopPropagation(),
+					(d = !d),
+					d
+						? ((l.type = 'text'), r || (u.className = 'far fa-eye-slash ubits-input-icon-right'))
+						: ((l.type = 'password'), r || (u.className = 'far fa-eye ubits-input-icon-right'));
+			});
+		}
+	}
+	function Et(t, l, u) {
+		const d = t.querySelector('.ubits-input-icon-right');
+		if (d) {
+			(d.style.display = l.value.length > 0 ? 'block' : 'none'),
+				(d.style.pointerEvents = 'auto'),
+				(d.style.cursor = 'pointer');
+			const c = () => {
+				d.style.display = l.value.length > 0 ? 'block' : 'none';
+			};
+			l.addEventListener('input', c),
+				d.addEventListener('click', (r) => {
+					r.preventDefault(), (l.value = ''), l.focus(), c(), u && u('');
+				});
+		}
+	}
+	function kt(t, l, u, d, c = 'md') {
+		const r = c === 'xs' ? 'xs' : c === 'sm' ? 'sm' : c === 'md' ? 'md' : 'lg',
+			a = t.querySelector('.ubits-input-icon-right');
+		if (a) {
+			(a.style.display = l.value.length > 0 ? 'block' : 'none'),
+				(a.style.pointerEvents = 'auto'),
+				(a.style.cursor = 'pointer');
+			const s = () => {
+				a.style.display = l.value.length > 0 ? 'block' : 'none';
+			};
+			l.addEventListener('input', s),
+				a.addEventListener('click', (e) => {
+					e.preventDefault(), (l.value = ''), l.focus(), s();
+					const p = t.querySelector('.ubits-autocomplete-list-container');
+					p && (p.style.display = 'none'), d && d('');
+				});
+		}
+		const b = document.createElement('div');
+		(b.className = 'ubits-autocomplete-list-container'),
+			(b.style.cssText = `
     position: absolute;
     top: 100%;
     left: 0;
@@ -279,7 +1582,90 @@
     z-index: 1000;
     margin-top: 4px;
     display: none;
-  `,t.appendChild(b);const n=(s=!1)=>{const e=l.value.toLowerCase();let p;if(s||e.length<1?p=u.slice(0,8):p=u.filter(i=>i.text.toLowerCase().includes(e)).slice(0,8),p.length===0){b.style.display="none";return}const w=p.map(i=>({label:i.text,state:"default",value:i.value,selected:!1})),y=`ubits-autocomplete-list-${t.id}`;b.id=y,b.innerHTML="";try{Re({containerId:y,items:w,size:r,maxHeight:"200px",onSelectionChange:(i,L)=>{i&&i.value&&(l.value=i.label,b.style.display="none",a&&(a.style.display="block"),d&&d(i.value))}}),e.length>0&&b.querySelectorAll(".ubits-list-item").forEach(L=>{const E=L.textContent||"";if(E.toLowerCase().includes(e)){const C=new RegExp(`(${e})`,"gi"),H=E.replace(C,"<strong>$1</strong>");L.innerHTML=H}})}catch(i){console.warn("Using renderList fallback for autocomplete:",i);const L=Ne({items:w,size:r,maxHeight:"200px"});b.innerHTML=L,e.length>0&&b.querySelectorAll(".ubits-list-item").forEach(H=>{const A=H.textContent||"";if(A.toLowerCase().includes(e)){const T=new RegExp(`(${e})`,"gi"),z=A.replace(T,"<strong>$1</strong>");H.innerHTML=z}}),b.querySelectorAll(".ubits-list-item").forEach((C,H)=>{const A=w[H];A&&A.state!=="disabled"&&C.addEventListener("click",()=>{l.value=A.label,b.style.display="none",a&&(a.style.display="block"),d&&d(A.value||"")})})}b.style.display="block"};l.addEventListener("focus",()=>{n(!0)}),l.addEventListener("input",()=>{n(!1)}),l.addEventListener("blur",()=>{setTimeout(()=>b.style.display="none",150)})}function Tt(t,l,u,d,c,r,a="md"){l.style.cursor="pointer";const b=a==="xs"?"xs":a==="sm"?"sm":a==="md"?"md":"lg",n=document.createElement("div");n.className="ubits-select-list-container",n.style.cssText=`
+  `),
+			t.appendChild(b);
+		const n = (s = !1) => {
+			const e = l.value.toLowerCase();
+			let p;
+			if (
+				(s || e.length < 1
+					? (p = u.slice(0, 8))
+					: (p = u.filter((i) => i.text.toLowerCase().includes(e)).slice(0, 8)),
+				p.length === 0)
+			) {
+				b.style.display = 'none';
+				return;
+			}
+			const w = p.map((i) => ({ label: i.text, state: 'default', value: i.value, selected: !1 })),
+				y = `ubits-autocomplete-list-${t.id}`;
+			(b.id = y), (b.innerHTML = '');
+			try {
+				Re({
+					containerId: y,
+					items: w,
+					size: r,
+					maxHeight: '200px',
+					onSelectionChange: (i, L) => {
+						i &&
+							i.value &&
+							((l.value = i.label),
+							(b.style.display = 'none'),
+							a && (a.style.display = 'block'),
+							d && d(i.value));
+					},
+				}),
+					e.length > 0 &&
+						b.querySelectorAll('.ubits-list-item').forEach((L) => {
+							const E = L.textContent || '';
+							if (E.toLowerCase().includes(e)) {
+								const C = new RegExp(`(${e})`, 'gi'),
+									H = E.replace(C, '<strong>$1</strong>');
+								L.innerHTML = H;
+							}
+						});
+			} catch (i) {
+				console.warn('Using renderList fallback for autocomplete:', i);
+				const L = Ne({ items: w, size: r, maxHeight: '200px' });
+				(b.innerHTML = L),
+					e.length > 0 &&
+						b.querySelectorAll('.ubits-list-item').forEach((H) => {
+							const A = H.textContent || '';
+							if (A.toLowerCase().includes(e)) {
+								const T = new RegExp(`(${e})`, 'gi'),
+									z = A.replace(T, '<strong>$1</strong>');
+								H.innerHTML = z;
+							}
+						}),
+					b.querySelectorAll('.ubits-list-item').forEach((C, H) => {
+						const A = w[H];
+						A &&
+							A.state !== 'disabled' &&
+							C.addEventListener('click', () => {
+								(l.value = A.label),
+									(b.style.display = 'none'),
+									a && (a.style.display = 'block'),
+									d && d(A.value || '');
+							});
+					});
+			}
+			b.style.display = 'block';
+		};
+		l.addEventListener('focus', () => {
+			n(!0);
+		}),
+			l.addEventListener('input', () => {
+				n(!1);
+			}),
+			l.addEventListener('blur', () => {
+				setTimeout(() => (b.style.display = 'none'), 150);
+			});
+	}
+	function Tt(t, l, u, d, c, r, a = 'md') {
+		l.style.cursor = 'pointer';
+		const b = a === 'xs' ? 'xs' : a === 'sm' ? 'sm' : a === 'md' ? 'md' : 'lg',
+			n = document.createElement('div');
+		(n.className = 'ubits-select-list-container'),
+			(n.style.cssText = `
     position: absolute;
     top: 100%;
     left: 0;
@@ -287,7 +1673,174 @@
     z-index: 1000;
     margin-top: 4px;
     display: none;
-  `,t.appendChild(n);const s=50;let e=0,p=[],w=!1;const y=(i=0)=>{w||(w=!0,setTimeout(()=>{const L=i*s,E=Math.min(L+s,u.length),H=u.slice(L,E).map(T=>({label:T.text,state:d===T.value?"active":"default",value:T.value,selected:d===T.value}));i===0?p=H:p=[...p,...H];const A=`ubits-select-list-${t.id}`;n.id=A,n.innerHTML="";try{Re({containerId:A,items:p,size:b,maxHeight:"200px",onSelectionChange:(T,z)=>{T&&T.value&&(l.value=T.label,n.style.display="none",r&&r(T.value))}})}catch(T){console.warn("Using renderList fallback for select:",T);const z=Ne({items:p,size:b,maxHeight:"200px"});n.innerHTML=z,n.querySelectorAll(".ubits-list-item").forEach((J,G)=>{const K=p[G];K&&K.state!=="disabled"&&J.addEventListener("click",()=>{l.value=K.label,n.style.display="none",r&&r(K.value||"")})})}if(E<u.length){const T=n.querySelector(".ubits-list");if(T){const z=new IntersectionObserver(J=>{J[0].isIntersecting&&!w&&E<u.length&&(e++,y(e))},{root:T,rootMargin:"50px"}),F=n.querySelector(".ubits-list-item:last-child");F&&z.observe(F)}}w=!1},150))};l.addEventListener("click",()=>{n.style.display==="block"?n.style.display="none":(e=0,p=[],y(0),n.style.display="block")}),document.addEventListener("click",i=>{t.contains(i.target)||(n.style.display="none")})}function $t(t,l,u){let d=null,c=null;const r=s=>{const e=String(s.getDate()).padStart(2,"0"),p=String(s.getMonth()+1).padStart(2,"0"),w=s.getFullYear();return`${e}/${p}/${w}`},a=s=>{if(!s)return null;const[e,p,w]=s.split("/");return!e||!p||!w?null:new Date(parseInt(w),parseInt(p)-1,parseInt(e))},b=async()=>{if(l.type==="date"&&(l.type="text",l.setAttribute("readonly","readonly")),c&&c.style.display!=="none"){c.style.display="none";return}if(c||(c=document.createElement("div"),c.className="ubits-calendar-picker-container",c.style.cssText="position: absolute; top: 100%; left: 0; right: 0; z-index: 1000; margin-top: 4px; display: none;",t.style.position="relative",t.appendChild(c)),d){c.style.display="block";return}try{const s=await Promise.resolve().then(()=>Yt),{createCalendar:e}=s,p=l.value,w=a(p)||new Date;d=e({mode:"single",selectedDate:a(p),initialDate:w,onDateSelect:y=>{const i=r(y);l.value=i,c&&(c.style.display="none"),u&&u(i)}}),c.appendChild(d.element),c.style.display="block"}catch(s){console.error("❌ [Calendar Picker] Error cargando Calendar UBITS:",s),c&&(c.innerHTML='<div style="padding: var(--ubits-spacing-lg, 16px); background: var(--ubits-bg-1); border: 1px solid var(--ubits-border-1); border-radius: var(--ubits-border-radius-lg, 8px); color: var(--ubits-fg-1-high);">Error al cargar el calendario</div>',c.style.display="block")}};l.addEventListener("click",s=>{s.preventDefault(),s.stopPropagation(),b()}),l.addEventListener("focus",s=>{s.preventDefault(),s.stopPropagation(),b()});const n=t.querySelector(".ubits-input-icon-right");n&&n.addEventListener("click",s=>{s.preventDefault(),s.stopPropagation(),b()}),document.addEventListener("click",s=>{c&&!t.contains(s.target)&&(c.style.display="none")}),document.addEventListener("keydown",s=>{s.key==="Escape"&&c&&(c.style.display="none")})}function At(t,l,u){const d=()=>{je(l,t.value.length,u),t.value.length>u&&(t.value=t.value.substring(0,u),je(l,u,u))};t.addEventListener("input",d),je(l,t.value.length,u)}function je(t,l,u){t.textContent=`${l}/${u}`,l>=u?t.classList.add("ubits-input-counter--limit"):t.classList.remove("ubits-input-counter--limit")}function It(t,l){const u=`ubits-rich-text-image-modal-${Date.now()}`,d=`${u}-input`,c={title:"Insertar imagen",size:"md",bodyContent:`
+  `),
+			t.appendChild(n);
+		const s = 50;
+		let e = 0,
+			p = [],
+			w = !1;
+		const y = (i = 0) => {
+			w ||
+				((w = !0),
+				setTimeout(() => {
+					const L = i * s,
+						E = Math.min(L + s, u.length),
+						H = u
+							.slice(L, E)
+							.map((T) => ({
+								label: T.text,
+								state: d === T.value ? 'active' : 'default',
+								value: T.value,
+								selected: d === T.value,
+							}));
+					i === 0 ? (p = H) : (p = [...p, ...H]);
+					const A = `ubits-select-list-${t.id}`;
+					(n.id = A), (n.innerHTML = '');
+					try {
+						Re({
+							containerId: A,
+							items: p,
+							size: b,
+							maxHeight: '200px',
+							onSelectionChange: (T, z) => {
+								T && T.value && ((l.value = T.label), (n.style.display = 'none'), r && r(T.value));
+							},
+						});
+					} catch (T) {
+						console.warn('Using renderList fallback for select:', T);
+						const z = Ne({ items: p, size: b, maxHeight: '200px' });
+						(n.innerHTML = z),
+							n.querySelectorAll('.ubits-list-item').forEach((J, G) => {
+								const K = p[G];
+								K &&
+									K.state !== 'disabled' &&
+									J.addEventListener('click', () => {
+										(l.value = K.label), (n.style.display = 'none'), r && r(K.value || '');
+									});
+							});
+					}
+					if (E < u.length) {
+						const T = n.querySelector('.ubits-list');
+						if (T) {
+							const z = new IntersectionObserver(
+									(J) => {
+										J[0].isIntersecting && !w && E < u.length && (e++, y(e));
+									},
+									{ root: T, rootMargin: '50px' },
+								),
+								F = n.querySelector('.ubits-list-item:last-child');
+							F && z.observe(F);
+						}
+					}
+					w = !1;
+				}, 150));
+		};
+		l.addEventListener('click', () => {
+			n.style.display === 'block'
+				? (n.style.display = 'none')
+				: ((e = 0), (p = []), y(0), (n.style.display = 'block'));
+		}),
+			document.addEventListener('click', (i) => {
+				t.contains(i.target) || (n.style.display = 'none');
+			});
+	}
+	function $t(t, l, u) {
+		let d = null,
+			c = null;
+		const r = (s) => {
+				const e = String(s.getDate()).padStart(2, '0'),
+					p = String(s.getMonth() + 1).padStart(2, '0'),
+					w = s.getFullYear();
+				return `${e}/${p}/${w}`;
+			},
+			a = (s) => {
+				if (!s) return null;
+				const [e, p, w] = s.split('/');
+				return !e || !p || !w ? null : new Date(parseInt(w), parseInt(p) - 1, parseInt(e));
+			},
+			b = async () => {
+				if (
+					(l.type === 'date' && ((l.type = 'text'), l.setAttribute('readonly', 'readonly')),
+					c && c.style.display !== 'none')
+				) {
+					c.style.display = 'none';
+					return;
+				}
+				if (
+					(c ||
+						((c = document.createElement('div')),
+						(c.className = 'ubits-calendar-picker-container'),
+						(c.style.cssText =
+							'position: absolute; top: 100%; left: 0; right: 0; z-index: 1000; margin-top: 4px; display: none;'),
+						(t.style.position = 'relative'),
+						t.appendChild(c)),
+					d)
+				) {
+					c.style.display = 'block';
+					return;
+				}
+				try {
+					const s = await Promise.resolve().then(() => Yt),
+						{ createCalendar: e } = s,
+						p = l.value,
+						w = a(p) || new Date();
+					(d = e({
+						mode: 'single',
+						selectedDate: a(p),
+						initialDate: w,
+						onDateSelect: (y) => {
+							const i = r(y);
+							(l.value = i), c && (c.style.display = 'none'), u && u(i);
+						},
+					})),
+						c.appendChild(d.element),
+						(c.style.display = 'block');
+				} catch (s) {
+					console.error('❌ [Calendar Picker] Error cargando Calendar UBITS:', s),
+						c &&
+							((c.innerHTML =
+								'<div style="padding: var(--ubits-spacing-lg, 16px); background: var(--ubits-bg-1); border: 1px solid var(--ubits-border-1); border-radius: var(--ubits-border-radius-lg, 8px); color: var(--ubits-fg-1-high);">Error al cargar el calendario</div>'),
+							(c.style.display = 'block'));
+				}
+			};
+		l.addEventListener('click', (s) => {
+			s.preventDefault(), s.stopPropagation(), b();
+		}),
+			l.addEventListener('focus', (s) => {
+				s.preventDefault(), s.stopPropagation(), b();
+			});
+		const n = t.querySelector('.ubits-input-icon-right');
+		n &&
+			n.addEventListener('click', (s) => {
+				s.preventDefault(), s.stopPropagation(), b();
+			}),
+			document.addEventListener('click', (s) => {
+				c && !t.contains(s.target) && (c.style.display = 'none');
+			}),
+			document.addEventListener('keydown', (s) => {
+				s.key === 'Escape' && c && (c.style.display = 'none');
+			});
+	}
+	function At(t, l, u) {
+		const d = () => {
+			je(l, t.value.length, u),
+				t.value.length > u && ((t.value = t.value.substring(0, u)), je(l, u, u));
+		};
+		t.addEventListener('input', d), je(l, t.value.length, u);
+	}
+	function je(t, l, u) {
+		(t.textContent = `${l}/${u}`),
+			l >= u
+				? t.classList.add('ubits-input-counter--limit')
+				: t.classList.remove('ubits-input-counter--limit');
+	}
+	function It(t, l) {
+		const u = `ubits-rich-text-image-modal-${Date.now()}`,
+			d = `${u}-input`,
+			c = {
+				title: 'Insertar imagen',
+				size: 'md',
+				bodyContent: `
       <div style="padding: var(--ubits-spacing-md, 8px) 0;">
         <label class="ubits-input-label" style="margin-bottom: var(--ubits-spacing-sm, 8px);">
           URL de la imagen:
@@ -309,7 +1862,53 @@
           </button>
         </div>
       </div>
-    `,footerButtons:{secondary:{label:"Cancelar",onClick:()=>{}}},onClose:()=>{const s=document.getElementById(u)?.closest(".ubits-modal-overlay");s&&setTimeout(()=>s.remove(),300)},closeOnOverlayClick:!0,open:!0},r=Ye(c),a=r.element;a.id=u;const b=document.getElementById(`${u}-insert-btn`),n=document.getElementById(d);if(b&&n){const s=()=>{const p=n.value.trim();if(p){const w=document.createElement("img");w.src=p,w.style.maxWidth="100%",w.style.height="auto",w.style.display="block",w.style.margin="var(--ubits-spacing-sm, 8px) 0";const y=window.getSelection();y&&y.rangeCount>0?y.getRangeAt(0).insertNode(w):t.appendChild(w),l(),r.close()}};b.addEventListener("click",s),n.addEventListener("keydown",p=>{p.key==="Enter"&&(p.preventDefault(),s())});const e=a.querySelector(".ubits-button--secondary");e&&e.addEventListener("click",()=>{r.close()})}}function Bt(t,l){const u=`ubits-rich-text-table-modal-${Date.now()}`,d=`${u}-rows`,c=`${u}-cols`,r={title:"Insertar tabla",size:"sm",bodyContent:`
+    `,
+				footerButtons: { secondary: { label: 'Cancelar', onClick: () => {} } },
+				onClose: () => {
+					const s = document.getElementById(u)?.closest('.ubits-modal-overlay');
+					s && setTimeout(() => s.remove(), 300);
+				},
+				closeOnOverlayClick: !0,
+				open: !0,
+			},
+			r = Ye(c),
+			a = r.element;
+		a.id = u;
+		const b = document.getElementById(`${u}-insert-btn`),
+			n = document.getElementById(d);
+		if (b && n) {
+			const s = () => {
+				const p = n.value.trim();
+				if (p) {
+					const w = document.createElement('img');
+					(w.src = p),
+						(w.style.maxWidth = '100%'),
+						(w.style.height = 'auto'),
+						(w.style.display = 'block'),
+						(w.style.margin = 'var(--ubits-spacing-sm, 8px) 0');
+					const y = window.getSelection();
+					y && y.rangeCount > 0 ? y.getRangeAt(0).insertNode(w) : t.appendChild(w), l(), r.close();
+				}
+			};
+			b.addEventListener('click', s),
+				n.addEventListener('keydown', (p) => {
+					p.key === 'Enter' && (p.preventDefault(), s());
+				});
+			const e = a.querySelector('.ubits-button--secondary');
+			e &&
+				e.addEventListener('click', () => {
+					r.close();
+				});
+		}
+	}
+	function Bt(t, l) {
+		const u = `ubits-rich-text-table-modal-${Date.now()}`,
+			d = `${u}-rows`,
+			c = `${u}-cols`,
+			r = {
+				title: 'Insertar tabla',
+				size: 'sm',
+				bodyContent: `
       <div style="padding: var(--ubits-spacing-md, 8px) 0;">
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--ubits-spacing-lg, 16px);">
           <div>
@@ -342,7 +1941,65 @@
           </div>
         </div>
       </div>
-    `,footerButtons:{secondary:{label:"Cancelar",onClick:()=>{}},primary:{label:"Insertar",onClick:()=>{}}},onClose:()=>{const w=document.getElementById(u)?.closest(".ubits-modal-overlay");w&&setTimeout(()=>w.remove(),300)},closeOnOverlayClick:!0,open:!0},a=Ye(r),b=a.element;b.id=u;const n=b.querySelector(".ubits-button--primary"),s=document.getElementById(d),e=document.getElementById(c);n&&s&&e&&n.addEventListener("click",()=>{const w=parseInt(s.value)||2,y=parseInt(e.value)||2;if(w>0&&y>0){const i=document.createElement("table");i.style.borderCollapse="collapse",i.style.width="100%",i.style.margin="var(--ubits-spacing-sm, 8px) 0",i.style.border="1px solid var(--ubits-border-1)";for(let E=0;E<w;E++){const C=document.createElement("tr");for(let H=0;H<y;H++){const A=document.createElement("td");A.style.border="1px solid var(--ubits-border-1)",A.style.padding="var(--ubits-spacing-sm, 8px)",A.style.minWidth="50px",A.textContent=" ",C.appendChild(A)}i.appendChild(C)}const L=window.getSelection();L&&L.rangeCount>0?L.getRangeAt(0).insertNode(i):t.appendChild(i),l(),a.close()}});const p=b.querySelector(".ubits-button--secondary");p&&p.addEventListener("click",()=>{a.close()})}function Dt(t,l){const u=`ubits-rich-text-link-modal-${Date.now()}`,d=`${u}-input`,c={title:"Insertar enlace",size:"md",bodyContent:`
+    `,
+				footerButtons: {
+					secondary: { label: 'Cancelar', onClick: () => {} },
+					primary: { label: 'Insertar', onClick: () => {} },
+				},
+				onClose: () => {
+					const w = document.getElementById(u)?.closest('.ubits-modal-overlay');
+					w && setTimeout(() => w.remove(), 300);
+				},
+				closeOnOverlayClick: !0,
+				open: !0,
+			},
+			a = Ye(r),
+			b = a.element;
+		b.id = u;
+		const n = b.querySelector('.ubits-button--primary'),
+			s = document.getElementById(d),
+			e = document.getElementById(c);
+		n &&
+			s &&
+			e &&
+			n.addEventListener('click', () => {
+				const w = parseInt(s.value) || 2,
+					y = parseInt(e.value) || 2;
+				if (w > 0 && y > 0) {
+					const i = document.createElement('table');
+					(i.style.borderCollapse = 'collapse'),
+						(i.style.width = '100%'),
+						(i.style.margin = 'var(--ubits-spacing-sm, 8px) 0'),
+						(i.style.border = '1px solid var(--ubits-border-1)');
+					for (let E = 0; E < w; E++) {
+						const C = document.createElement('tr');
+						for (let H = 0; H < y; H++) {
+							const A = document.createElement('td');
+							(A.style.border = '1px solid var(--ubits-border-1)'),
+								(A.style.padding = 'var(--ubits-spacing-sm, 8px)'),
+								(A.style.minWidth = '50px'),
+								(A.textContent = ' '),
+								C.appendChild(A);
+						}
+						i.appendChild(C);
+					}
+					const L = window.getSelection();
+					L && L.rangeCount > 0 ? L.getRangeAt(0).insertNode(i) : t.appendChild(i), l(), a.close();
+				}
+			});
+		const p = b.querySelector('.ubits-button--secondary');
+		p &&
+			p.addEventListener('click', () => {
+				a.close();
+			});
+	}
+	function Dt(t, l) {
+		const u = `ubits-rich-text-link-modal-${Date.now()}`,
+			d = `${u}-input`,
+			c = {
+				title: 'Insertar enlace',
+				size: 'md',
+				bodyContent: `
       <div style="padding: var(--ubits-spacing-md, 8px) 0;">
         <label class="ubits-input-label" style="margin-bottom: var(--ubits-spacing-sm, 8px);">
           URL del enlace:
@@ -355,7 +2012,347 @@
           style="width: 100%; box-sizing: border-box;"
         />
       </div>
-    `,footerButtons:{secondary:{label:"Cancelar",onClick:()=>{}},primary:{label:"Insertar",onClick:()=>{}}},onClose:()=>{const e=document.getElementById(u)?.closest(".ubits-modal-overlay");e&&setTimeout(()=>e.remove(),300)},closeOnOverlayClick:!0,open:!0},r=Ye(c),a=r.element;a.id=u;const b=a.querySelector(".ubits-button--primary"),n=document.getElementById(d);b&&n&&b.addEventListener("click",()=>{const e=n.value.trim();e&&(document.execCommand("createLink",!1,e),l(),r.close())});const s=a.querySelector(".ubits-button--secondary");s&&s.addEventListener("click",()=>{r.close()}),n&&n.addEventListener("keydown",e=>{e.key==="Enter"&&(e.preventDefault(),b&&b.click())})}function Ht(t,l,u){const d=t.querySelector(".ubits-input-rich-text-toolbar");if(!d)return;const c=l.closest(".ubits-input-rich-text-wrapper");if(!c)return;const r=l.placeholder||"",a=document.createElement("div");a.className=l.className;const b=window.getComputedStyle(l);a.style.cssText=l.style.cssText,a.style.position="relative",a.style.padding=b.padding||"12px 12px",a.style.margin="0",a.style.outline="none",a.style.overflow="auto",a.style.minHeight=b.minHeight||"80px",a.style.resize="vertical",a.contentEditable="true",a.setAttribute("data-placeholder",r);let n=t.closest(".ubits-input-wrapper");n||(n=t.parentElement?.closest(".ubits-input-wrapper")),n||(n=document.getElementById(t.id)?.parentElement?.closest(".ubits-input-wrapper")),console.log("[Rich Text Placeholder] ===== DEBUG ALINEAMIENTO ====="),console.log("[Rich Text Placeholder] inputWrapper:",n),console.log("[Rich Text Placeholder] container:",t),console.log("[Rich Text Placeholder] container.parentElement:",t.parentElement),console.log("[Rich Text Placeholder] richTextWrapper:",c),console.log("[Rich Text Placeholder] richTextWrapper.parentElement:",c?.parentElement);let s=null;if(n&&(s=n.querySelector(".ubits-input-icon-left")),!s&&t.parentElement&&(s=t.parentElement.querySelector(".ubits-input-icon-left")),!s&&c?.parentElement&&(s=c.parentElement.querySelector(".ubits-input-icon-left")),!s){const y=document.querySelectorAll(".ubits-input-icon-left");for(const i of Array.from(y)){const L=i,E=t.getBoundingClientRect(),C=L.getBoundingClientRect();if(Math.abs(C.top-E.top)<100){s=L;break}}}const e=s!==null;if(console.log("[Rich Text Placeholder] leftIconElement:",s),console.log("[Rich Text Placeholder] hasLeftIcon:",e),e&&s){const y=s.getBoundingClientRect(),i=window.getComputedStyle(s),L=i.left,E=i.top,C=i.transform;console.log("[Rich Text Placeholder] Icono encontrado:",s),console.log("[Rich Text Placeholder] Icono rect:",y),console.log("[Rich Text Placeholder] Icono left (computed):",L),console.log("[Rich Text Placeholder] Icono top (computed):",E),console.log("[Rich Text Placeholder] Icono transform:",C);const H=b.paddingLeft||"12px",A=b.paddingTop||"12px",T=b.paddingRight||"12px",z=b.paddingBottom||"12px";console.log("[Rich Text Placeholder] Textarea padding:",{left:H,top:A,right:T,bottom:z});const F=a.getBoundingClientRect();console.log("[Rich Text Placeholder] EditableDiv rect:",F);const J=y.left-F.left,G=y.top-F.top,K=y.bottom-F.top;console.log("[Rich Text Placeholder] Icono posición relativa:",{left:J,top:G,bottom:K});const U=b.lineHeight||"1.5",B=b.fontSize||"14px";console.log("[Rich Text Placeholder] Texto:",{fontSize:B,lineHeight:U}),a.setAttribute("data-has-left-icon","true"),a.style.setProperty("--placeholder-left",H),a.style.setProperty("--placeholder-top",A),console.log("[Rich Text Placeholder] Variables CSS establecidas:",{"--placeholder-left":H,"--placeholder-top":A}),requestAnimationFrame(()=>{a.querySelector("::before")||window.getComputedStyle(a,"::before");const ae=window.getComputedStyle(a,"::before");console.log("[Rich Text Placeholder] Después de render:",{placeholderLeft:ae.left,placeholderTop:ae.top,placeholderWidth:ae.width,placeholderHeight:ae.height})})}else{const y=b.paddingTop||"12px",i=b.paddingLeft||"12px";console.log("[Rich Text Placeholder] Sin icono, usando valores por defecto:",{paddingTop:y,paddingLeft:i}),a.style.setProperty("--placeholder-top",y),a.style.setProperty("--placeholder-left",i)}console.log("[Rich Text Placeholder] ===== FIN DEBUG ====="),l.value&&l.value.trim()?a.innerHTML=l.value:a.classList.add("ubits-rich-text-placeholder"),l.style.display="none",l.setAttribute("data-rich-text-editor","true"),c.insertBefore(a,l),e&&s&&requestAnimationFrame(()=>{requestAnimationFrame(()=>{let y=s;if(n&&(y=n.querySelector(".ubits-input-icon-left")||s),!y&&t.parentElement&&(y=t.parentElement.querySelector(".ubits-input-icon-left")||s),y){const i=y.getBoundingClientRect(),L=a.getBoundingClientRect();if(console.log("[Rich Text Placeholder] Después de insertar en DOM:"),console.log("[Rich Text Placeholder] Icono rect:",i),console.log("[Rich Text Placeholder] EditableDiv rect:",L),L.width>0&&L.height>0){const E=i.top-L.top,C=i.bottom-L.top,H=i.left-L.left;console.log("[Rich Text Placeholder] Posiciones relativas:",{iconTop:E,iconBottom:C,iconLeft:H,iconCenterY:E+i.height/2});const A=E+i.height/2,T=parseFloat(b.fontSize||"16px"),z=b.lineHeight;let F;z==="normal"?F=T*1.2:z.includes("px")?F=parseFloat(z):F=T*parseFloat(z);const J=parseFloat(b.paddingTop||"12px"),G=J+T*.75,K=A-G,U=J+K;console.log("[Rich Text Placeholder] Cálculos de alineamiento:",{iconCenterY:A,fontSize:T,lineHeight:F,paddingTop:J,textBaselineY:G,offset:K,adjustedTop:U});const B=Math.max(0,U),ce=(a.style.padding||b.padding||"12px 12px").split(" "),O=ce[1]||ce[0]||"12px",fe=ce[2]||ce[0]||"12px",se=ce[3]||ce[1]||ce[0]||"40px";a.style.padding=`${B}px ${O} ${fe} ${se}`,a.style.setProperty("--placeholder-top",`${B}px`),a.style.setProperty("--placeholder-left",se),console.log("[Rich Text Placeholder] Variables CSS finales:",{"--placeholder-top":`${B}px`,"--placeholder-left":se,"editableDiv padding actualizado":`${B}px ${O} ${fe} ${se}`})}else console.warn("[Rich Text Placeholder] EditableDiv aún no tiene dimensiones válidas")}})});const p=y=>{const i=a.innerText||"";l.value=i,u&&u(i,y),i.trim()?a.classList.remove("ubits-rich-text-placeholder"):a.classList.add("ubits-rich-text-placeholder")};a.addEventListener("input",p),a.addEventListener("blur",p),a.addEventListener("focus",()=>{a.classList.contains("ubits-rich-text-placeholder")&&(a.textContent="",a.classList.remove("ubits-rich-text-placeholder"));const y=c.querySelector(".ubits-input-rich-text-toolbar");if(y){const i=window.getComputedStyle(y).borderBottom;window.getComputedStyle(y).borderTop,i&&i!=="none"&&i!=="0px"&&(console.warn("[Rich Text] ⚠️ Línea divisoria detectada en focus, removiendo..."),y.style.borderBottom="none",y.style.borderTop="none")}}),c.addEventListener("mouseenter",()=>{const y=c.querySelector(".ubits-input-rich-text-toolbar");if(y){const i=window.getComputedStyle(y).borderBottom;i&&i!=="none"&&i!=="0px"&&(console.warn("[Rich Text] ⚠️ Línea divisoria detectada en hover, removiendo..."),y.style.borderBottom="none",y.style.borderTop="none")}}),d.querySelectorAll(".ubits-rich-text-btn").forEach(y=>{y.addEventListener("click",i=>{i.preventDefault(),a.focus();const L=y.getAttribute("data-command");if(L){if(L==="insertImage")It(a,p);else if(L==="insertTable")Bt(a,p);else if(L==="createLink")Dt(a,p);else if(L==="code"){const E=window.getSelection();if(E&&E.rangeCount>0){const C=E.getRangeAt(0),H=document.createElement("code");H.style.background="var(--ubits-bg-2)",H.style.padding="var(--ubits-spacing-xs, 2px) var(--ubits-spacing-sm, 4px)",H.style.borderRadius="var(--ubits-border-radius-sm, 4px)",H.style.fontFamily="var(--font-mono, monospace)";try{C.surroundContents(H)}catch{H.textContent=C.toString(),C.deleteContents(),C.insertNode(H)}}}else document.execCommand(L,!1,void 0);p()}})})}function Nt(t,l){let u=t.closest(".ubits-input-wrapper");u||(u=t.parentElement?.closest(".ubits-input-wrapper")),u||(u=document.getElementById(t.id)?.parentElement?.closest(".ubits-input-wrapper"));let d=null;if(u&&(d=u.querySelector(".ubits-input-icon-left")),!d&&t.parentElement&&(d=t.parentElement.querySelector(".ubits-input-icon-left")),!d){const r=document.querySelectorAll(".ubits-input-icon-left");for(const a of Array.from(r)){const b=a,n=t.getBoundingClientRect(),s=b.getBoundingClientRect();if(Math.abs(s.top-n.top)<100){d=b;break}}}!(d!==null)||!d||requestAnimationFrame(()=>{requestAnimationFrame(()=>{const r=u?.querySelector(".ubits-input-icon-left")||d;if(r&&l){const a=r.getBoundingClientRect(),b=l.getBoundingClientRect();if(b.width>0&&b.height>0){const n=a.top-b.top;a.bottom-b.top,a.left-b.left;const s=n+a.height/2,e=window.getComputedStyle(l),p=parseFloat(e.fontSize||"16px"),w=parseFloat(e.paddingTop||"12px"),y=w+p*.75,i=s-y,L=w+i,E=Math.max(0,L),H=(e.padding||"12px 12px").split(" "),A=H[1]||H[0]||"12px",T=H[2]||H[0]||"12px",z=H[3]||H[1]||H[0]||"40px";l.style.padding=`${E}px ${A} ${T} ${z}`}}})})}function Rt(){return`
+    `,
+				footerButtons: {
+					secondary: { label: 'Cancelar', onClick: () => {} },
+					primary: { label: 'Insertar', onClick: () => {} },
+				},
+				onClose: () => {
+					const e = document.getElementById(u)?.closest('.ubits-modal-overlay');
+					e && setTimeout(() => e.remove(), 300);
+				},
+				closeOnOverlayClick: !0,
+				open: !0,
+			},
+			r = Ye(c),
+			a = r.element;
+		a.id = u;
+		const b = a.querySelector('.ubits-button--primary'),
+			n = document.getElementById(d);
+		b &&
+			n &&
+			b.addEventListener('click', () => {
+				const e = n.value.trim();
+				e && (document.execCommand('createLink', !1, e), l(), r.close());
+			});
+		const s = a.querySelector('.ubits-button--secondary');
+		s &&
+			s.addEventListener('click', () => {
+				r.close();
+			}),
+			n &&
+				n.addEventListener('keydown', (e) => {
+					e.key === 'Enter' && (e.preventDefault(), b && b.click());
+				});
+	}
+	function Ht(t, l, u) {
+		const d = t.querySelector('.ubits-input-rich-text-toolbar');
+		if (!d) return;
+		const c = l.closest('.ubits-input-rich-text-wrapper');
+		if (!c) return;
+		const r = l.placeholder || '',
+			a = document.createElement('div');
+		a.className = l.className;
+		const b = window.getComputedStyle(l);
+		(a.style.cssText = l.style.cssText),
+			(a.style.position = 'relative'),
+			(a.style.padding = b.padding || '12px 12px'),
+			(a.style.margin = '0'),
+			(a.style.outline = 'none'),
+			(a.style.overflow = 'auto'),
+			(a.style.minHeight = b.minHeight || '80px'),
+			(a.style.resize = 'vertical'),
+			(a.contentEditable = 'true'),
+			a.setAttribute('data-placeholder', r);
+		let n = t.closest('.ubits-input-wrapper');
+		n || (n = t.parentElement?.closest('.ubits-input-wrapper')),
+			n || (n = document.getElementById(t.id)?.parentElement?.closest('.ubits-input-wrapper')),
+			console.log('[Rich Text Placeholder] ===== DEBUG ALINEAMIENTO ====='),
+			console.log('[Rich Text Placeholder] inputWrapper:', n),
+			console.log('[Rich Text Placeholder] container:', t),
+			console.log('[Rich Text Placeholder] container.parentElement:', t.parentElement),
+			console.log('[Rich Text Placeholder] richTextWrapper:', c),
+			console.log('[Rich Text Placeholder] richTextWrapper.parentElement:', c?.parentElement);
+		let s = null;
+		if (
+			(n && (s = n.querySelector('.ubits-input-icon-left')),
+			!s && t.parentElement && (s = t.parentElement.querySelector('.ubits-input-icon-left')),
+			!s && c?.parentElement && (s = c.parentElement.querySelector('.ubits-input-icon-left')),
+			!s)
+		) {
+			const y = document.querySelectorAll('.ubits-input-icon-left');
+			for (const i of Array.from(y)) {
+				const L = i,
+					E = t.getBoundingClientRect(),
+					C = L.getBoundingClientRect();
+				if (Math.abs(C.top - E.top) < 100) {
+					s = L;
+					break;
+				}
+			}
+		}
+		const e = s !== null;
+		if (
+			(console.log('[Rich Text Placeholder] leftIconElement:', s),
+			console.log('[Rich Text Placeholder] hasLeftIcon:', e),
+			e && s)
+		) {
+			const y = s.getBoundingClientRect(),
+				i = window.getComputedStyle(s),
+				L = i.left,
+				E = i.top,
+				C = i.transform;
+			console.log('[Rich Text Placeholder] Icono encontrado:', s),
+				console.log('[Rich Text Placeholder] Icono rect:', y),
+				console.log('[Rich Text Placeholder] Icono left (computed):', L),
+				console.log('[Rich Text Placeholder] Icono top (computed):', E),
+				console.log('[Rich Text Placeholder] Icono transform:', C);
+			const H = b.paddingLeft || '12px',
+				A = b.paddingTop || '12px',
+				T = b.paddingRight || '12px',
+				z = b.paddingBottom || '12px';
+			console.log('[Rich Text Placeholder] Textarea padding:', {
+				left: H,
+				top: A,
+				right: T,
+				bottom: z,
+			});
+			const F = a.getBoundingClientRect();
+			console.log('[Rich Text Placeholder] EditableDiv rect:', F);
+			const J = y.left - F.left,
+				G = y.top - F.top,
+				K = y.bottom - F.top;
+			console.log('[Rich Text Placeholder] Icono posición relativa:', {
+				left: J,
+				top: G,
+				bottom: K,
+			});
+			const U = b.lineHeight || '1.5',
+				B = b.fontSize || '14px';
+			console.log('[Rich Text Placeholder] Texto:', { fontSize: B, lineHeight: U }),
+				a.setAttribute('data-has-left-icon', 'true'),
+				a.style.setProperty('--placeholder-left', H),
+				a.style.setProperty('--placeholder-top', A),
+				console.log('[Rich Text Placeholder] Variables CSS establecidas:', {
+					'--placeholder-left': H,
+					'--placeholder-top': A,
+				}),
+				requestAnimationFrame(() => {
+					a.querySelector('::before') || window.getComputedStyle(a, '::before');
+					const ae = window.getComputedStyle(a, '::before');
+					console.log('[Rich Text Placeholder] Después de render:', {
+						placeholderLeft: ae.left,
+						placeholderTop: ae.top,
+						placeholderWidth: ae.width,
+						placeholderHeight: ae.height,
+					});
+				});
+		} else {
+			const y = b.paddingTop || '12px',
+				i = b.paddingLeft || '12px';
+			console.log('[Rich Text Placeholder] Sin icono, usando valores por defecto:', {
+				paddingTop: y,
+				paddingLeft: i,
+			}),
+				a.style.setProperty('--placeholder-top', y),
+				a.style.setProperty('--placeholder-left', i);
+		}
+		console.log('[Rich Text Placeholder] ===== FIN DEBUG ====='),
+			l.value && l.value.trim()
+				? (a.innerHTML = l.value)
+				: a.classList.add('ubits-rich-text-placeholder'),
+			(l.style.display = 'none'),
+			l.setAttribute('data-rich-text-editor', 'true'),
+			c.insertBefore(a, l),
+			e &&
+				s &&
+				requestAnimationFrame(() => {
+					requestAnimationFrame(() => {
+						let y = s;
+						if (
+							(n && (y = n.querySelector('.ubits-input-icon-left') || s),
+							!y &&
+								t.parentElement &&
+								(y = t.parentElement.querySelector('.ubits-input-icon-left') || s),
+							y)
+						) {
+							const i = y.getBoundingClientRect(),
+								L = a.getBoundingClientRect();
+							if (
+								(console.log('[Rich Text Placeholder] Después de insertar en DOM:'),
+								console.log('[Rich Text Placeholder] Icono rect:', i),
+								console.log('[Rich Text Placeholder] EditableDiv rect:', L),
+								L.width > 0 && L.height > 0)
+							) {
+								const E = i.top - L.top,
+									C = i.bottom - L.top,
+									H = i.left - L.left;
+								console.log('[Rich Text Placeholder] Posiciones relativas:', {
+									iconTop: E,
+									iconBottom: C,
+									iconLeft: H,
+									iconCenterY: E + i.height / 2,
+								});
+								const A = E + i.height / 2,
+									T = parseFloat(b.fontSize || '16px'),
+									z = b.lineHeight;
+								let F;
+								z === 'normal'
+									? (F = T * 1.2)
+									: z.includes('px')
+										? (F = parseFloat(z))
+										: (F = T * parseFloat(z));
+								const J = parseFloat(b.paddingTop || '12px'),
+									G = J + T * 0.75,
+									K = A - G,
+									U = J + K;
+								console.log('[Rich Text Placeholder] Cálculos de alineamiento:', {
+									iconCenterY: A,
+									fontSize: T,
+									lineHeight: F,
+									paddingTop: J,
+									textBaselineY: G,
+									offset: K,
+									adjustedTop: U,
+								});
+								const B = Math.max(0, U),
+									ce = (a.style.padding || b.padding || '12px 12px').split(' '),
+									O = ce[1] || ce[0] || '12px',
+									fe = ce[2] || ce[0] || '12px',
+									se = ce[3] || ce[1] || ce[0] || '40px';
+								(a.style.padding = `${B}px ${O} ${fe} ${se}`),
+									a.style.setProperty('--placeholder-top', `${B}px`),
+									a.style.setProperty('--placeholder-left', se),
+									console.log('[Rich Text Placeholder] Variables CSS finales:', {
+										'--placeholder-top': `${B}px`,
+										'--placeholder-left': se,
+										'editableDiv padding actualizado': `${B}px ${O} ${fe} ${se}`,
+									});
+							} else
+								console.warn(
+									'[Rich Text Placeholder] EditableDiv aún no tiene dimensiones válidas',
+								);
+						}
+					});
+				});
+		const p = (y) => {
+			const i = a.innerText || '';
+			(l.value = i),
+				u && u(i, y),
+				i.trim()
+					? a.classList.remove('ubits-rich-text-placeholder')
+					: a.classList.add('ubits-rich-text-placeholder');
+		};
+		a.addEventListener('input', p),
+			a.addEventListener('blur', p),
+			a.addEventListener('focus', () => {
+				a.classList.contains('ubits-rich-text-placeholder') &&
+					((a.textContent = ''), a.classList.remove('ubits-rich-text-placeholder'));
+				const y = c.querySelector('.ubits-input-rich-text-toolbar');
+				if (y) {
+					const i = window.getComputedStyle(y).borderBottom;
+					window.getComputedStyle(y).borderTop,
+						i &&
+							i !== 'none' &&
+							i !== '0px' &&
+							(console.warn('[Rich Text] ⚠️ Línea divisoria detectada en focus, removiendo...'),
+							(y.style.borderBottom = 'none'),
+							(y.style.borderTop = 'none'));
+				}
+			}),
+			c.addEventListener('mouseenter', () => {
+				const y = c.querySelector('.ubits-input-rich-text-toolbar');
+				if (y) {
+					const i = window.getComputedStyle(y).borderBottom;
+					i &&
+						i !== 'none' &&
+						i !== '0px' &&
+						(console.warn('[Rich Text] ⚠️ Línea divisoria detectada en hover, removiendo...'),
+						(y.style.borderBottom = 'none'),
+						(y.style.borderTop = 'none'));
+				}
+			}),
+			d.querySelectorAll('.ubits-rich-text-btn').forEach((y) => {
+				y.addEventListener('click', (i) => {
+					i.preventDefault(), a.focus();
+					const L = y.getAttribute('data-command');
+					if (L) {
+						if (L === 'insertImage') It(a, p);
+						else if (L === 'insertTable') Bt(a, p);
+						else if (L === 'createLink') Dt(a, p);
+						else if (L === 'code') {
+							const E = window.getSelection();
+							if (E && E.rangeCount > 0) {
+								const C = E.getRangeAt(0),
+									H = document.createElement('code');
+								(H.style.background = 'var(--ubits-bg-2)'),
+									(H.style.padding = 'var(--ubits-spacing-xs, 2px) var(--ubits-spacing-sm, 4px)'),
+									(H.style.borderRadius = 'var(--ubits-border-radius-sm, 4px)'),
+									(H.style.fontFamily = 'var(--font-mono, monospace)');
+								try {
+									C.surroundContents(H);
+								} catch {
+									(H.textContent = C.toString()), C.deleteContents(), C.insertNode(H);
+								}
+							}
+						} else document.execCommand(L, !1, void 0);
+						p();
+					}
+				});
+			});
+	}
+	function Nt(t, l) {
+		let u = t.closest('.ubits-input-wrapper');
+		u || (u = t.parentElement?.closest('.ubits-input-wrapper')),
+			u || (u = document.getElementById(t.id)?.parentElement?.closest('.ubits-input-wrapper'));
+		let d = null;
+		if (
+			(u && (d = u.querySelector('.ubits-input-icon-left')),
+			!d && t.parentElement && (d = t.parentElement.querySelector('.ubits-input-icon-left')),
+			!d)
+		) {
+			const r = document.querySelectorAll('.ubits-input-icon-left');
+			for (const a of Array.from(r)) {
+				const b = a,
+					n = t.getBoundingClientRect(),
+					s = b.getBoundingClientRect();
+				if (Math.abs(s.top - n.top) < 100) {
+					d = b;
+					break;
+				}
+			}
+		}
+		!(d !== null) ||
+			!d ||
+			requestAnimationFrame(() => {
+				requestAnimationFrame(() => {
+					const r = u?.querySelector('.ubits-input-icon-left') || d;
+					if (r && l) {
+						const a = r.getBoundingClientRect(),
+							b = l.getBoundingClientRect();
+						if (b.width > 0 && b.height > 0) {
+							const n = a.top - b.top;
+							a.bottom - b.top, a.left - b.left;
+							const s = n + a.height / 2,
+								e = window.getComputedStyle(l),
+								p = parseFloat(e.fontSize || '16px'),
+								w = parseFloat(e.paddingTop || '12px'),
+								y = w + p * 0.75,
+								i = s - y,
+								L = w + i,
+								E = Math.max(0, L),
+								H = (e.padding || '12px 12px').split(' '),
+								A = H[1] || H[0] || '12px',
+								T = H[2] || H[0] || '12px',
+								z = H[3] || H[1] || H[0] || '40px';
+							l.style.padding = `${E}px ${A} ${T} ${z}`;
+						}
+					}
+				});
+			});
+	}
+	function Rt() {
+		return `
     <button
       type="button"
       class="ubits-search-button__clear"
@@ -364,51 +2361,235 @@
     >
       <i class="far fa-times ubits-search-button__clear-icon" aria-hidden="true"></i>
     </button>
-  `}function Ke(t){const{active:l=!1,size:u="md",state:d="default",disabled:c=!1,placeholder:r="",value:a="",width:b=248,className:n=""}=t,s=c||d==="disabled",e=l||d==="active",w=a&&a.trim().length>0?Rt():"";if(e){const i=["ubits-search-button","ubits-search-button--active",`ubits-search-button--${u}`,s?"ubits-search-button--disabled":"",n].filter(Boolean).join(" "),L=b?`width: ${b}px;`:"",E=Oe({type:"text",size:u,placeholder:r,value:a,showLabel:!1,showHelper:!1,className:"ubits-search-button__input",state:s?"disabled":"default"});let C=E;const H=E.match(/^<div[^>]*style="[^"]*position:\s*relative[^"]*"[^>]*>(.*?)<\/div>$/s);return H&&H[1]&&(C=H[1].trim(),C=C.replace(/padding-left:\s*\d+px;/g,"padding-left: 0;")),C=C.replace(/(<input[^>]*class="[^"]*ubits-search-button__input[^"]*"[^>]*)(>)/,'$1 aria-label="Buscar"$2'),`
+  `;
+	}
+	function Ke(t) {
+		const {
+				active: l = !1,
+				size: u = 'md',
+				state: d = 'default',
+				disabled: c = !1,
+				placeholder: r = '',
+				value: a = '',
+				width: b = 248,
+				className: n = '',
+			} = t,
+			s = c || d === 'disabled',
+			e = l || d === 'active',
+			w = a && a.trim().length > 0 ? Rt() : '';
+		if (e) {
+			const i = [
+					'ubits-search-button',
+					'ubits-search-button--active',
+					`ubits-search-button--${u}`,
+					s ? 'ubits-search-button--disabled' : '',
+					n,
+				]
+					.filter(Boolean)
+					.join(' '),
+				L = b ? `width: ${b}px;` : '',
+				E = Oe({
+					type: 'text',
+					size: u,
+					placeholder: r,
+					value: a,
+					showLabel: !1,
+					showHelper: !1,
+					className: 'ubits-search-button__input',
+					state: s ? 'disabled' : 'default',
+				});
+			let C = E;
+			const H = E.match(/^<div[^>]*style="[^"]*position:\s*relative[^"]*"[^>]*>(.*?)<\/div>$/s);
+			return (
+				H &&
+					H[1] &&
+					((C = H[1].trim()), (C = C.replace(/padding-left:\s*\d+px;/g, 'padding-left: 0;'))),
+				(C = C.replace(
+					/(<input[^>]*class="[^"]*ubits-search-button__input[^"]*"[^>]*)(>)/,
+					'$1 aria-label="Buscar"$2',
+				)),
+				`
       <div class="${i}" style="${L}">
         <div class="ubits-search-button__input-wrapper">
           ${C}
           ${w}
         </div>
       </div>
-    `.trim()}const y=[d==="hover"?"ubits-search-button--force-hover":"",n].filter(Boolean).join(" ");return _e({variant:"secondary",size:u,icon:"magnifying-glass",iconOnly:!0,disabled:s,className:y,attributes:{"aria-label":"Buscar"}})}function Pt(t){const l=t.containerId?document.getElementById(t.containerId):document.body;if(!l)throw new Error(`Container with id "${t.containerId}" not found`);const u=Ke(t),d=document.createElement("div");d.innerHTML=u.trim();const c=d.firstElementChild;if(!c)throw new Error("Failed to create search button element");if(l.appendChild(c),t.active||t.state==="active"){const n=c.querySelector(".ubits-search-button__input"),s=c.querySelector(".ubits-search-button__clear");n&&(t.onChange&&(n.addEventListener("input",t.onChange),n.addEventListener("change",t.onChange)),t.onFocus&&n.addEventListener("focus",t.onFocus),t.onBlur&&n.addEventListener("blur",t.onBlur)),s&&s.addEventListener("click",function(e){if(e.preventDefault(),e.stopPropagation(),n&&(n.value="",n.focus(),t.onChange)){const p=new Event("input",{bubbles:!0});n.dispatchEvent(p)}})}else{const n=c;n&&t.onClick&&n.addEventListener("click",t.onClick)}return{element:c,destroy:()=>{c.parentNode&&c.parentNode.removeChild(c)},update:n=>{const s={...t,...n},e=s.active||s.state==="active",p=t.active||t.state==="active";if(e&&p){const L=c.querySelector(".ubits-search-button__input");if(c.querySelector(".ubits-search-button__clear"),L&&n.value!==void 0&&n.value!==L.value){const H=L.selectionStart||0;L.value=n.value||"",L.setSelectionRange(H,H);return}if(L&&n.placeholder!==void 0&&(L.placeholder=n.placeholder||""),L&&n.disabled!==void 0&&(L.disabled=n.disabled||!1),!["active","state","size","width","className"].some(H=>n[H]!==void 0&&n[H]!==t[H]))return}const w=Ke(s),y=document.createElement("div");y.innerHTML=w.trim();const i=y.firstElementChild;if(i&&c.parentNode){let L=!1,E=0;if(e&&p){const C=c.querySelector(".ubits-search-button__input");C&&C===document.activeElement&&(L=!0,E=C.selectionStart||0)}if(c.parentNode.replaceChild(i,c),e){const C=i.querySelector(".ubits-search-button__input"),H=i.querySelector(".ubits-search-button__clear");C&&(L&&(C.focus(),C.setSelectionRange(E,E)),s.onChange&&(C.addEventListener("input",s.onChange),C.addEventListener("change",s.onChange)),s.onFocus&&C.addEventListener("focus",s.onFocus),s.onBlur&&C.addEventListener("blur",s.onBlur)),H&&H.addEventListener("click",function(A){if(A.preventDefault(),A.stopPropagation(),C&&(C.value="",C.focus(),s.onChange)){const T=new Event("input",{bubbles:!0});C.dispatchEvent(T)}})}else{const C=i;C&&s.onClick&&C.addEventListener("click",s.onClick)}}}}}function Mt(t){const{title:l,complementaryText:u,width:d=40,bodyContent:c="",footerButtons:r,className:a=""}=t,n=["ubits-drawer",`ubits-drawer--width-${d}`,a].filter(Boolean).join(" "),s=`
+    `.trim()
+			);
+		}
+		const y = [d === 'hover' ? 'ubits-search-button--force-hover' : '', n]
+			.filter(Boolean)
+			.join(' ');
+		return _e({
+			variant: 'secondary',
+			size: u,
+			icon: 'magnifying-glass',
+			iconOnly: !0,
+			disabled: s,
+			className: y,
+			attributes: { 'aria-label': 'Buscar' },
+		});
+	}
+	function Pt(t) {
+		const l = t.containerId ? document.getElementById(t.containerId) : document.body;
+		if (!l) throw new Error(`Container with id "${t.containerId}" not found`);
+		const u = Ke(t),
+			d = document.createElement('div');
+		d.innerHTML = u.trim();
+		const c = d.firstElementChild;
+		if (!c) throw new Error('Failed to create search button element');
+		if ((l.appendChild(c), t.active || t.state === 'active')) {
+			const n = c.querySelector('.ubits-search-button__input'),
+				s = c.querySelector('.ubits-search-button__clear');
+			n &&
+				(t.onChange &&
+					(n.addEventListener('input', t.onChange), n.addEventListener('change', t.onChange)),
+				t.onFocus && n.addEventListener('focus', t.onFocus),
+				t.onBlur && n.addEventListener('blur', t.onBlur)),
+				s &&
+					s.addEventListener('click', function (e) {
+						if (
+							(e.preventDefault(),
+							e.stopPropagation(),
+							n && ((n.value = ''), n.focus(), t.onChange))
+						) {
+							const p = new Event('input', { bubbles: !0 });
+							n.dispatchEvent(p);
+						}
+					});
+		} else {
+			const n = c;
+			n && t.onClick && n.addEventListener('click', t.onClick);
+		}
+		return {
+			element: c,
+			destroy: () => {
+				c.parentNode && c.parentNode.removeChild(c);
+			},
+			update: (n) => {
+				const s = { ...t, ...n },
+					e = s.active || s.state === 'active',
+					p = t.active || t.state === 'active';
+				if (e && p) {
+					const L = c.querySelector('.ubits-search-button__input');
+					if (
+						(c.querySelector('.ubits-search-button__clear'),
+						L && n.value !== void 0 && n.value !== L.value)
+					) {
+						const H = L.selectionStart || 0;
+						(L.value = n.value || ''), L.setSelectionRange(H, H);
+						return;
+					}
+					if (
+						(L && n.placeholder !== void 0 && (L.placeholder = n.placeholder || ''),
+						L && n.disabled !== void 0 && (L.disabled = n.disabled || !1),
+						!['active', 'state', 'size', 'width', 'className'].some(
+							(H) => n[H] !== void 0 && n[H] !== t[H],
+						))
+					)
+						return;
+				}
+				const w = Ke(s),
+					y = document.createElement('div');
+				y.innerHTML = w.trim();
+				const i = y.firstElementChild;
+				if (i && c.parentNode) {
+					let L = !1,
+						E = 0;
+					if (e && p) {
+						const C = c.querySelector('.ubits-search-button__input');
+						C && C === document.activeElement && ((L = !0), (E = C.selectionStart || 0));
+					}
+					if ((c.parentNode.replaceChild(i, c), e)) {
+						const C = i.querySelector('.ubits-search-button__input'),
+							H = i.querySelector('.ubits-search-button__clear');
+						C &&
+							(L && (C.focus(), C.setSelectionRange(E, E)),
+							s.onChange &&
+								(C.addEventListener('input', s.onChange), C.addEventListener('change', s.onChange)),
+							s.onFocus && C.addEventListener('focus', s.onFocus),
+							s.onBlur && C.addEventListener('blur', s.onBlur)),
+							H &&
+								H.addEventListener('click', function (A) {
+									if (
+										(A.preventDefault(),
+										A.stopPropagation(),
+										C && ((C.value = ''), C.focus(), s.onChange))
+									) {
+										const T = new Event('input', { bubbles: !0 });
+										C.dispatchEvent(T);
+									}
+								});
+					} else {
+						const C = i;
+						C && s.onClick && C.addEventListener('click', s.onClick);
+					}
+				}
+			},
+		};
+	}
+	function Mt(t) {
+		const {
+				title: l,
+				complementaryText: u,
+				width: d = 40,
+				bodyContent: c = '',
+				footerButtons: r,
+				className: a = '',
+			} = t,
+			n = ['ubits-drawer', `ubits-drawer--width-${d}`, a].filter(Boolean).join(' '),
+			s = `
     <div class="ubits-drawer__header">
       <div class="ubits-drawer__header-text">
         <div class="ubits-drawer__header-title">
           <p class="ubits-heading-h2">${l}</p>
         </div>
-        ${u?`
+        ${
+					u
+						? `
         <div class="ubits-drawer__header-complementary">
           <p class="ubits-body-sm-regular">${u}</p>
         </div>
-        `:""}
+        `
+						: ''
+				}
       </div>
-      ${_e({variant:"secondary",size:"md",icon:"fa-times",iconOnly:!0,className:"ubits-drawer__close"})}
+      ${_e({ variant: 'secondary', size: 'md', icon: 'fa-times', iconOnly: !0, className: 'ubits-drawer__close' })}
     </div>
-  `,p=`
+  `,
+			p = `
     <div class="ubits-drawer__body">
       <div class="ubits-drawer__body-content">
-        ${typeof c=="function"?c():c||'<div class="ubits-drawer__placeholder">Contenido del drawer</div>'}
+        ${typeof c == 'function' ? c() : c || '<div class="ubits-drawer__placeholder">Contenido del drawer</div>'}
       </div>
       <div class="ubits-drawer__scrollbar">
         <div class="ubits-drawer__scrollbar-bar"></div>
       </div>
     </div>
-  `,w=r?`
+  `,
+			w = r
+				? `
     <div class="ubits-drawer__footer">
       <div class="ubits-drawer__footer-actions">
-        ${r.tertiary?`
+        ${
+					r.tertiary
+						? `
         <div class="ubits-drawer__footer-left">
-          ${_e({variant:"tertiary",size:"md",text:r.tertiary.label,className:"ubits-drawer__footer-button"})}
+          ${_e({ variant: 'tertiary', size: 'md', text: r.tertiary.label, className: 'ubits-drawer__footer-button' })}
         </div>
-        `:""}
+        `
+						: ''
+				}
         <div class="ubits-drawer__footer-right">
-          ${r.secondary?_e({variant:"secondary",size:"md",text:r.secondary.label,className:"ubits-drawer__footer-button"}):""}
-          ${r.primary?_e({variant:"primary",size:"md",text:r.primary.label,className:"ubits-drawer__footer-button"}):""}
+          ${r.secondary ? _e({ variant: 'secondary', size: 'md', text: r.secondary.label, className: 'ubits-drawer__footer-button' }) : ''}
+          ${r.primary ? _e({ variant: 'primary', size: 'md', text: r.primary.label, className: 'ubits-drawer__footer-button' }) : ''}
         </div>
       </div>
     </div>
-  `:"";return`
+  `
+				: '';
+		return `
     <div class="ubits-drawer-overlay">
       <div class="${n}">
         ${s}
@@ -416,100 +2597,590 @@
         ${w}
       </div>
     </div>
-  `.trim()}function st(t){const{containerId:l,onClose:u,closeOnOverlayClick:d=!0,open:c=!1}=t;let r;l?r=document.getElementById(l)||document.body:r=document.body;const a=document.createElement("div");a.innerHTML=Mt(t);const b=a.firstElementChild;if(!b)throw new Error("No se pudo crear el drawer");b.querySelector(".ubits-drawer");const n=b.querySelector(".ubits-drawer__close"),s=b,e=()=>{b.classList.add("ubits-drawer-overlay--open"),document.body.style.overflow="hidden"},p=()=>{b.classList.remove("ubits-drawer-overlay--open"),document.body.style.overflow="",u&&u()},w=i=>{const L=b.querySelector(".ubits-drawer__body-content");if(L){const E=typeof i=="function"?i():i;L.innerHTML=E}};n&&n.addEventListener("click",i=>{i.preventDefault(),i.stopPropagation(),p()}),d&&s&&s.addEventListener("click",i=>{i.target===s&&p()});const y=i=>{i.key==="Escape"&&b.classList.contains("ubits-drawer-overlay--open")&&p()};if(document.addEventListener("keydown",y),t.footerButtons){const i=b.querySelector(".ubits-drawer__footer-left .ubits-drawer__footer-button"),L=b.querySelector(".ubits-drawer__footer-right .ubits-button--secondary.ubits-drawer__footer-button"),E=b.querySelector(".ubits-drawer__footer-right .ubits-button--primary.ubits-drawer__footer-button");i&&t.footerButtons.tertiary?.onClick&&i.addEventListener("click",C=>{C.preventDefault(),t.footerButtons.tertiary.onClick(C)}),L&&t.footerButtons.secondary?.onClick&&L.addEventListener("click",C=>{C.preventDefault(),t.footerButtons.secondary.onClick(C)}),E&&t.footerButtons.primary?.onClick&&E.addEventListener("click",C=>{C.preventDefault(),t.footerButtons.primary.onClick(C)})}return r.appendChild(b),c&&e(),{element:b,open:e,close:p,updateContent:w}}function qt(t){const{title:l,description:u,imageUrl:d,icon:c,actionLabel:r,showPrimaryButton:a=!1,primaryButtonIcon:b,showPrimaryButtonIcon:n=!1,secondaryActionLabel:s,showSecondaryButton:e=!1,secondaryButtonIcon:p,showSecondaryButtonIcon:w=!1,className:y="",style:i=""}=t,L=["ubits-empty-state","ubits-empty-state--default",y].filter(Boolean).join(" "),E=i?` style="${i}"`:"";let C="";d?C=`
+  `.trim();
+	}
+	function st(t) {
+		const { containerId: l, onClose: u, closeOnOverlayClick: d = !0, open: c = !1 } = t;
+		let r;
+		l ? (r = document.getElementById(l) || document.body) : (r = document.body);
+		const a = document.createElement('div');
+		a.innerHTML = Mt(t);
+		const b = a.firstElementChild;
+		if (!b) throw new Error('No se pudo crear el drawer');
+		b.querySelector('.ubits-drawer');
+		const n = b.querySelector('.ubits-drawer__close'),
+			s = b,
+			e = () => {
+				b.classList.add('ubits-drawer-overlay--open'), (document.body.style.overflow = 'hidden');
+			},
+			p = () => {
+				b.classList.remove('ubits-drawer-overlay--open'),
+					(document.body.style.overflow = ''),
+					u && u();
+			},
+			w = (i) => {
+				const L = b.querySelector('.ubits-drawer__body-content');
+				if (L) {
+					const E = typeof i == 'function' ? i() : i;
+					L.innerHTML = E;
+				}
+			};
+		n &&
+			n.addEventListener('click', (i) => {
+				i.preventDefault(), i.stopPropagation(), p();
+			}),
+			d &&
+				s &&
+				s.addEventListener('click', (i) => {
+					i.target === s && p();
+				});
+		const y = (i) => {
+			i.key === 'Escape' && b.classList.contains('ubits-drawer-overlay--open') && p();
+		};
+		if ((document.addEventListener('keydown', y), t.footerButtons)) {
+			const i = b.querySelector('.ubits-drawer__footer-left .ubits-drawer__footer-button'),
+				L = b.querySelector(
+					'.ubits-drawer__footer-right .ubits-button--secondary.ubits-drawer__footer-button',
+				),
+				E = b.querySelector(
+					'.ubits-drawer__footer-right .ubits-button--primary.ubits-drawer__footer-button',
+				);
+			i &&
+				t.footerButtons.tertiary?.onClick &&
+				i.addEventListener('click', (C) => {
+					C.preventDefault(), t.footerButtons.tertiary.onClick(C);
+				}),
+				L &&
+					t.footerButtons.secondary?.onClick &&
+					L.addEventListener('click', (C) => {
+						C.preventDefault(), t.footerButtons.secondary.onClick(C);
+					}),
+				E &&
+					t.footerButtons.primary?.onClick &&
+					E.addEventListener('click', (C) => {
+						C.preventDefault(), t.footerButtons.primary.onClick(C);
+					});
+		}
+		return r.appendChild(b), c && e(), { element: b, open: e, close: p, updateContent: w };
+	}
+	function qt(t) {
+		const {
+				title: l,
+				description: u,
+				imageUrl: d,
+				icon: c,
+				actionLabel: r,
+				showPrimaryButton: a = !1,
+				primaryButtonIcon: b,
+				showPrimaryButtonIcon: n = !1,
+				secondaryActionLabel: s,
+				showSecondaryButton: e = !1,
+				secondaryButtonIcon: p,
+				showSecondaryButtonIcon: w = !1,
+				className: y = '',
+				style: i = '',
+			} = t,
+			L = ['ubits-empty-state', 'ubits-empty-state--default', y].filter(Boolean).join(' '),
+			E = i ? ` style="${i}"` : '';
+		let C = '';
+		d
+			? (C = `
       <div class="ubits-empty-state__image">
         <img src="${d}" alt="${l}" />
       </div>
-    `:c&&(C=`
+    `)
+			: c &&
+				(C = `
       <div class="ubits-empty-state__icon">
         <i class="far fa-${c}"></i>
       </div>
-    `);let H="";const A=a&&r?_e({variant:"primary",size:"sm",text:r,icon:n&&b?b:void 0,className:"",attributes:{"data-action":"primary"}}):"",T=e&&s?_e({variant:"secondary",size:"sm",text:s,icon:w&&p?p:void 0,className:"",attributes:{"data-action":"secondary"}}):"";return(A||T)&&(H=`
+    `);
+		let H = '';
+		const A =
+				a && r
+					? _e({
+							variant: 'primary',
+							size: 'sm',
+							text: r,
+							icon: n && b ? b : void 0,
+							className: '',
+							attributes: { 'data-action': 'primary' },
+						})
+					: '',
+			T =
+				e && s
+					? _e({
+							variant: 'secondary',
+							size: 'sm',
+							text: s,
+							icon: w && p ? p : void 0,
+							className: '',
+							attributes: { 'data-action': 'secondary' },
+						})
+					: '';
+		return (
+			(A || T) &&
+				(H = `
       <div class="ubits-empty-state__actions">
         ${T}
         ${A}
       </div>
-    `),`
+    `),
+			`
     <div class="${L}"${E}>
       ${C}
       <div class="ubits-empty-state__content">
         <h3 class="ubits-empty-state__title">${l}</h3>
-        ${u?`<p class="ubits-empty-state__description">${u}</p>`:""}
+        ${u ? `<p class="ubits-empty-state__description">${u}</p>` : ''}
       </div>
       ${H}
     </div>
-  `.trim()}function zt(t,l,u){const d=l.data[t.id],c=l.data;switch(u){case"nombre":{const r=d||c.nombre||c.name||"";return t.editable?`<span class="ubits-body-md-regular" contenteditable="true" data-editable-text="true">${r}</span>`:`<span class="ubits-body-md-regular">${r}</span>`}case"progreso":{let r=null;if(d!=null){if(typeof d=="number")r=d;else if(typeof d=="string"){const b=parseFloat(d.replace("%","").trim());isNaN(b)||(r=b)}}if(r===null&&c){const b=c.progress!==void 0?c.progress:c.progreso;if(b!=null){if(typeof b=="number")r=b;else if(typeof b=="string"){const n=parseFloat(b.replace("%","").trim());isNaN(n)||(r=n)}}}return r===null&&(r=50),r=Math.max(0,Math.min(100,r)),dt({value:r,size:"sm",variant:"default",indicator:`${Math.round(r)}%`})}case"nombre-avatar":{const r=d||c.nombre||c.name||"",a=c.avatar||c.avatarUrl||null,b=t.avatarVariant||"initials",n=y=>y.split(" ").map(i=>i[0]).join("").toUpperCase().slice(0,2)||"U";let s="";if(b==="photo"){let y=null;a&&typeof a=="string"?y=a:a&&typeof a=="object"&&(y=a.imageUrl||a.url||null),!y&&c&&(y=c.imageUrl||c.avatarUrl||c.avatarImage||null),y?s=Te({imageUrl:y,size:"sm"}):s=Te({imageUrl:"../assets/images/Profile-image.jpg",size:"sm"})}else if(b==="initials")if(a&&typeof a=="object"&&a.initials)s=Te({initials:a.initials,size:"sm"});else{const y=n(r);s=Te({initials:y,size:"sm"})}else{const y=a&&typeof a=="object"&&a.icon?a.icon:"user";s=Te({icon:y,size:"sm"})}const p=t.editable?`<span class="ubits-body-md-regular" contenteditable="true" data-editable-text="true">${r}</span>`:`<span class="ubits-body-md-regular">${r}</span>`;return`
+  `.trim()
+		);
+	}
+	function zt(t, l, u) {
+		const d = l.data[t.id],
+			c = l.data;
+		switch (u) {
+			case 'nombre': {
+				const r = d || c.nombre || c.name || '';
+				return t.editable
+					? `<span class="ubits-body-md-regular" contenteditable="true" data-editable-text="true">${r}</span>`
+					: `<span class="ubits-body-md-regular">${r}</span>`;
+			}
+			case 'progreso': {
+				let r = null;
+				if (d != null) {
+					if (typeof d == 'number') r = d;
+					else if (typeof d == 'string') {
+						const b = parseFloat(d.replace('%', '').trim());
+						isNaN(b) || (r = b);
+					}
+				}
+				if (r === null && c) {
+					const b = c.progress !== void 0 ? c.progress : c.progreso;
+					if (b != null) {
+						if (typeof b == 'number') r = b;
+						else if (typeof b == 'string') {
+							const n = parseFloat(b.replace('%', '').trim());
+							isNaN(n) || (r = n);
+						}
+					}
+				}
+				return (
+					r === null && (r = 50),
+					(r = Math.max(0, Math.min(100, r))),
+					dt({ value: r, size: 'sm', variant: 'default', indicator: `${Math.round(r)}%` })
+				);
+			}
+			case 'nombre-avatar': {
+				const r = d || c.nombre || c.name || '',
+					a = c.avatar || c.avatarUrl || null,
+					b = t.avatarVariant || 'initials',
+					n = (y) =>
+						y
+							.split(' ')
+							.map((i) => i[0])
+							.join('')
+							.toUpperCase()
+							.slice(0, 2) || 'U';
+				let s = '';
+				if (b === 'photo') {
+					let y = null;
+					a && typeof a == 'string'
+						? (y = a)
+						: a && typeof a == 'object' && (y = a.imageUrl || a.url || null),
+						!y && c && (y = c.imageUrl || c.avatarUrl || c.avatarImage || null),
+						y
+							? (s = Te({ imageUrl: y, size: 'sm' }))
+							: (s = Te({ imageUrl: '../assets/images/Profile-image.jpg', size: 'sm' }));
+				} else if (b === 'initials')
+					if (a && typeof a == 'object' && a.initials) s = Te({ initials: a.initials, size: 'sm' });
+					else {
+						const y = n(r);
+						s = Te({ initials: y, size: 'sm' });
+					}
+				else {
+					const y = a && typeof a == 'object' && a.icon ? a.icon : 'user';
+					s = Te({ icon: y, size: 'sm' });
+				}
+				const p = t.editable
+					? `<span class="ubits-body-md-regular" contenteditable="true" data-editable-text="true">${r}</span>`
+					: `<span class="ubits-body-md-regular">${r}</span>`;
+				return `
         <div style="display: flex; align-items: center; gap: var(--ubits-spacing-sm);">
           ${s}
           ${p}
         </div>
-      `}case"nombre-avatar-texto":{const r=d||c.nombre||c.name||"",a=c.avatar||c.avatarUrl||null,b=c.area||c.areaNombre||c.textoComplementario||c.complementario||"",n=t.avatarVariant||"initials",s=w=>w.split(" ").map(y=>y[0]).join("").toUpperCase().slice(0,2)||"U";let e="";if(n==="photo"){let w=null;a&&typeof a=="string"?w=a:a&&typeof a=="object"&&(w=a.imageUrl||a.url||null),!w&&c&&(w=c.imageUrl||c.avatarUrl||c.avatarImage||null),w?e=Te({imageUrl:w,size:"sm"}):e=Te({imageUrl:"../assets/images/Profile-image.jpg",size:"sm"})}else if(n==="initials")if(a&&typeof a=="object"&&a.initials)e=Te({initials:a.initials,size:"sm"});else{const w=s(r);e=Te({initials:w,size:"sm"})}else{const w=a&&typeof a=="object"&&a.icon?a.icon:"user";e=Te({icon:w,size:"sm"})}const p=`<span class="ubits-body-md-regular">${r}</span>`;return`
+      `;
+			}
+			case 'nombre-avatar-texto': {
+				const r = d || c.nombre || c.name || '',
+					a = c.avatar || c.avatarUrl || null,
+					b = c.area || c.areaNombre || c.textoComplementario || c.complementario || '',
+					n = t.avatarVariant || 'initials',
+					s = (w) =>
+						w
+							.split(' ')
+							.map((y) => y[0])
+							.join('')
+							.toUpperCase()
+							.slice(0, 2) || 'U';
+				let e = '';
+				if (n === 'photo') {
+					let w = null;
+					a && typeof a == 'string'
+						? (w = a)
+						: a && typeof a == 'object' && (w = a.imageUrl || a.url || null),
+						!w && c && (w = c.imageUrl || c.avatarUrl || c.avatarImage || null),
+						w
+							? (e = Te({ imageUrl: w, size: 'sm' }))
+							: (e = Te({ imageUrl: '../assets/images/Profile-image.jpg', size: 'sm' }));
+				} else if (n === 'initials')
+					if (a && typeof a == 'object' && a.initials) e = Te({ initials: a.initials, size: 'sm' });
+					else {
+						const w = s(r);
+						e = Te({ initials: w, size: 'sm' });
+					}
+				else {
+					const w = a && typeof a == 'object' && a.icon ? a.icon : 'user';
+					e = Te({ icon: w, size: 'sm' });
+				}
+				const p = `<span class="ubits-body-md-regular">${r}</span>`;
+				return `
         <div style="display: flex; align-items: flex-start; gap: var(--ubits-spacing-sm);">
           ${e}
           <div style="display: flex; flex-direction: column; gap: var(--ubits-spacing-xs);">
             ${p}
-            ${b?`<span class="ubits-body-sm-regular" style="color: var(--modifiers-normal-color-light-fg-1-medium);">${b}</span>`:""}
+            ${b ? `<span class="ubits-body-sm-regular" style="color: var(--modifiers-normal-color-light-fg-1-medium);">${b}</span>` : ''}
           </div>
         </div>
-      `}case"estado":{const r={activo:"active",inactivo:"disabled",pendiente:"pending",completado:"completed",publicado:"published",cumplido:"fulfilled",creado:"created",error:"not-fulfilled",denegado:"denied",borrador:"draft","en-progreso":"in-progress",sincronizando:"syncing","pendiente-aprobacion":"pending-approval","no-iniciado":"not-started",finalizado:"finished",archivado:"archived",deshabilitado:"disabled",pausado:"paused",oculto:"hidden",cancelado:"denied"},a=d||c.estado||c.status||"pendiente",b=String(a).toLowerCase().trim(),n=r[b]||r.pendiente,e={active:"Activo",completed:"Completado",published:"Publicado",fulfilled:"Cumplido",created:"Creado","not-fulfilled":"No cumplido",denied:"Denegado",draft:"Borrador","in-progress":"En progreso",syncing:"Sincronizando",pending:"Pendiente","pending-approval":"Pendiente aprobación","not-started":"No iniciado",finished:"Finalizado",archived:"Archivado",disabled:"Deshabilitado",paused:"Pausado",hidden:"Oculto"}[n]||String(a),p=t.editable,w=ut({label:e,status:n,size:"xs",rightIcon:p?"chevron-down":null,clickable:p});return p?`
+      `;
+			}
+			case 'estado': {
+				const r = {
+						activo: 'active',
+						inactivo: 'disabled',
+						pendiente: 'pending',
+						completado: 'completed',
+						publicado: 'published',
+						cumplido: 'fulfilled',
+						creado: 'created',
+						error: 'not-fulfilled',
+						denegado: 'denied',
+						borrador: 'draft',
+						'en-progreso': 'in-progress',
+						sincronizando: 'syncing',
+						'pendiente-aprobacion': 'pending-approval',
+						'no-iniciado': 'not-started',
+						finalizado: 'finished',
+						archivado: 'archived',
+						deshabilitado: 'disabled',
+						pausado: 'paused',
+						oculto: 'hidden',
+						cancelado: 'denied',
+					},
+					a = d || c.estado || c.status || 'pendiente',
+					b = String(a).toLowerCase().trim(),
+					n = r[b] || r.pendiente,
+					e =
+						{
+							active: 'Activo',
+							completed: 'Completado',
+							published: 'Publicado',
+							fulfilled: 'Cumplido',
+							created: 'Creado',
+							'not-fulfilled': 'No cumplido',
+							denied: 'Denegado',
+							draft: 'Borrador',
+							'in-progress': 'En progreso',
+							syncing: 'Sincronizando',
+							pending: 'Pendiente',
+							'pending-approval': 'Pendiente aprobación',
+							'not-started': 'No iniciado',
+							finished: 'Finalizado',
+							archived: 'Archivado',
+							disabled: 'Deshabilitado',
+							paused: 'Pausado',
+							hidden: 'Oculto',
+						}[n] || String(a),
+					p = t.editable,
+					w = ut({
+						label: e,
+						status: n,
+						size: 'xs',
+						rightIcon: p ? 'chevron-down' : null,
+						clickable: p,
+					});
+				return p
+					? `
           <div class="ubits-data-table__status-editable" data-row-id="${l.id}" data-column-id="${t.id}" data-editable="true" data-current-status="${n}">
             ${w}
             <div class="ubits-data-table__status-dropdown" id="status-dropdown-${l.id}-${t.id}" style="display: none;"></div>
           </div>
-        `:w}case"radio":{const r=d===!0||d==="true"||d===1||d===l.id||d===String(l.id),a=t.radioLabel!==!1&&t.radioLabel!==void 0,b=typeof t.radioLabel=="string"?t.radioLabel:a?String(l.data[t.id]||l.id):"",n=t.editable===!0,s=!n;return yt({label:b,name:`radio-${t.id}`,value:String(l.id),checked:r,size:"md",disabled:s}).replace("<input",`<input data-row-id="${l.id}" data-column-id="${t.id}" data-radio-button="true" ${n?'data-editable="true"':""}`)}case"toggle":{const r=d===!0||d==="true"||d===1,a=t.toggleLabel!==!1&&t.toggleLabel!==void 0,b=typeof t.toggleLabel=="string"?t.toggleLabel:a?String(l.data[t.id]||l.id):"";return gt({label:b,checked:r,size:"md"}).replace("<input",`<input data-row-id="${l.id}" data-column-id="${t.id}" data-toggle-button="true"`)}case"checkbox":{const r=d===!0||d==="true"||d===1,a=t.checkboxLabel!==!1&&t.checkboxLabel!==void 0,b=typeof t.checkboxLabel=="string"?t.checkboxLabel:a?String(l.data[t.id]||l.id):"",n=t.editable===!0;return Ae({label:b,checked:r,size:"md",disabled:!n}).replace("<input",`<input data-row-id="${l.id}" data-column-id="${t.id}" data-checkbox-button="true" ${n?'data-editable="true"':""}`)}case"correo":{const r=d||"";return t.emailClickable!==!1?`<a href="mailto:${r}" class="ubits-body-md-regular" style="color: var(--modifiers-normal-color-light-accent-brand); text-decoration: none;">${r}</a>`:`<span class="ubits-body-md-regular">${r}</span>`}case"acciones":return _e({text:"Eliminar",variant:"error",size:"sm",icon:"trash",iconStyle:"regular",className:"ubits-data-table__action-button",attributes:{"data-row-id":String(l.id),"data-column-id":t.id}});case"fecha":{const r=d||"";return t.editable===!0?`
+        `
+					: w;
+			}
+			case 'radio': {
+				const r = d === !0 || d === 'true' || d === 1 || d === l.id || d === String(l.id),
+					a = t.radioLabel !== !1 && t.radioLabel !== void 0,
+					b =
+						typeof t.radioLabel == 'string' ? t.radioLabel : a ? String(l.data[t.id] || l.id) : '',
+					n = t.editable === !0,
+					s = !n;
+				return yt({
+					label: b,
+					name: `radio-${t.id}`,
+					value: String(l.id),
+					checked: r,
+					size: 'md',
+					disabled: s,
+				}).replace(
+					'<input',
+					`<input data-row-id="${l.id}" data-column-id="${t.id}" data-radio-button="true" ${n ? 'data-editable="true"' : ''}`,
+				);
+			}
+			case 'toggle': {
+				const r = d === !0 || d === 'true' || d === 1,
+					a = t.toggleLabel !== !1 && t.toggleLabel !== void 0,
+					b =
+						typeof t.toggleLabel == 'string'
+							? t.toggleLabel
+							: a
+								? String(l.data[t.id] || l.id)
+								: '';
+				return gt({ label: b, checked: r, size: 'md' }).replace(
+					'<input',
+					`<input data-row-id="${l.id}" data-column-id="${t.id}" data-toggle-button="true"`,
+				);
+			}
+			case 'checkbox': {
+				const r = d === !0 || d === 'true' || d === 1,
+					a = t.checkboxLabel !== !1 && t.checkboxLabel !== void 0,
+					b =
+						typeof t.checkboxLabel == 'string'
+							? t.checkboxLabel
+							: a
+								? String(l.data[t.id] || l.id)
+								: '',
+					n = t.editable === !0;
+				return Ae({ label: b, checked: r, size: 'md', disabled: !n }).replace(
+					'<input',
+					`<input data-row-id="${l.id}" data-column-id="${t.id}" data-checkbox-button="true" ${n ? 'data-editable="true"' : ''}`,
+				);
+			}
+			case 'correo': {
+				const r = d || '';
+				return t.emailClickable !== !1
+					? `<a href="mailto:${r}" class="ubits-body-md-regular" style="color: var(--modifiers-normal-color-light-accent-brand); text-decoration: none;">${r}</a>`
+					: `<span class="ubits-body-md-regular">${r}</span>`;
+			}
+			case 'acciones':
+				return _e({
+					text: 'Eliminar',
+					variant: 'error',
+					size: 'sm',
+					icon: 'trash',
+					iconStyle: 'regular',
+					className: 'ubits-data-table__action-button',
+					attributes: { 'data-row-id': String(l.id), 'data-column-id': t.id },
+				});
+			case 'fecha': {
+				const r = d || '';
+				return t.editable === !0
+					? `
             <div class="ubits-data-table__date-editable" data-row-id="${l.id}" data-column-id="${t.id}">
-              <span class="ubits-body-md-regular ubits-data-table__date-display">${r||"Seleccionar fecha"}</span>
+              <span class="ubits-body-md-regular ubits-data-table__date-display">${r || 'Seleccionar fecha'}</span>
             </div>
-          `:`<span class="ubits-body-md-regular">${r}</span>`}case"area":return`<span class="ubits-body-md-regular">${d||"Desarrollo"}</span>`;case"lider":return`<span class="ubits-body-md-regular">${d||"Juan Pérez"}</span>`;case"pais":return`<span class="ubits-body-md-regular">${d||"Colombia"}</span>`;case"ciudad":return`<span class="ubits-body-md-regular">${d||"Bogotá"}</span>`;case"drag-handle":return`
+          `
+					: `<span class="ubits-body-md-regular">${r}</span>`;
+			}
+			case 'area':
+				return `<span class="ubits-body-md-regular">${d || 'Desarrollo'}</span>`;
+			case 'lider':
+				return `<span class="ubits-body-md-regular">${d || 'Juan Pérez'}</span>`;
+			case 'pais':
+				return `<span class="ubits-body-md-regular">${d || 'Colombia'}</span>`;
+			case 'ciudad':
+				return `<span class="ubits-body-md-regular">${d || 'Bogotá'}</span>`;
+			case 'drag-handle':
+				return `
         <div class="ubits-data-table__row-drag-handle" draggable="true" data-row-id="${l.id}">
           <wa-icon name="grip-dots-vertical"></wa-icon>
           <i class="fas fa-grip-vertical" aria-hidden="true"></i>
         </div>
-      `;case"expand":{const r=l.expanded||!1;return`
+      `;
+			case 'expand': {
+				const r = l.expanded || !1;
+				return `
         <button
           type="button"
           class="ubits-data-table__row-expand"
-          aria-label="${r?"Colapsar":"Expandir"} fila"
+          aria-label="${r ? 'Colapsar' : 'Expandir'} fila"
           data-row-id="${l.id}"
           data-expand-button="true"
         >
-          <i class="far fa-chevron-${r?"down":"right"}" aria-hidden="true"></i>
+          <i class="far fa-chevron-${r ? 'down' : 'right'}" aria-hidden="true"></i>
         </button>
-      `}default:return`<span class="ubits-body-md-regular">${d||""}</span>`}}function Ft(t,l,u=0){if(t.type!=="checkbox"&&(t.id==="checkbox"||t.id.startsWith("checkbox-"))){const b=l.data[t.id]||!1,s=Ae({label:"",checked:b,size:"md",className:"ubits-data-table__cell-checkbox"}).replace("<input",`<input data-row-id="${l.id}" data-column-id="${t.id}" aria-label="Checkbox ${t.title}"`),e=t.id==="checkbox-2"?"12px":"var(--ubits-spacing-md)",p=t.pinned?" ubits-data-table__cell--pinned":"",w=t.pinned?`position: sticky !important; left: ${u}px !important; z-index: 12 !important;`:"",i=`${`text-align: center; vertical-align: middle; padding-left: ${e} !important;`}${w?" "+w:""}`;return`
-      <td class="ubits-data-table__cell ubits-data-table__cell--checkbox${p}" data-column-id="${t.id}" ${t.pinned?'data-pinned="true"':""} style="${i}">
+      `;
+			}
+			default:
+				return `<span class="ubits-body-md-regular">${d || ''}</span>`;
+		}
+	}
+	function Ft(t, l, u = 0) {
+		if (t.type !== 'checkbox' && (t.id === 'checkbox' || t.id.startsWith('checkbox-'))) {
+			const b = l.data[t.id] || !1,
+				s = Ae({
+					label: '',
+					checked: b,
+					size: 'md',
+					className: 'ubits-data-table__cell-checkbox',
+				}).replace(
+					'<input',
+					`<input data-row-id="${l.id}" data-column-id="${t.id}" aria-label="Checkbox ${t.title}"`,
+				),
+				e = t.id === 'checkbox-2' ? '12px' : 'var(--ubits-spacing-md)',
+				p = t.pinned ? ' ubits-data-table__cell--pinned' : '',
+				w = t.pinned
+					? `position: sticky !important; left: ${u}px !important; z-index: 12 !important;`
+					: '',
+				i = `${`text-align: center; vertical-align: middle; padding-left: ${e} !important;`}${w ? ' ' + w : ''}`;
+			return `
+      <td class="ubits-data-table__cell ubits-data-table__cell--checkbox${p}" data-column-id="${t.id}" ${t.pinned ? 'data-pinned="true"' : ''} style="${i}">
         ${s}
       </td>
-    `}if(t.type){const b=zt(t,l,t.type),n=t.editable&&(t.type==="nombre"||t.type==="nombre-avatar"||t.type==="estado"||t.type==="fecha"||t.type==="checkbox"||t.type==="radio")&&t.type!=="drag-handle"&&t.type!=="expand",s=t.type==="drag-handle"?"ubits-data-table__cell--drag-handle":t.type==="expand"?"ubits-data-table__cell--expand":`ubits-data-table__cell--${t.type}`,e=n?"ubits-data-table__cell--editable":"",p=t.pinned?" ubits-data-table__cell--pinned":"",w=t.type==="drag-handle"||t.type==="expand"?"text-align: center; vertical-align: middle;":"",y=t.pinned?`position: sticky !important; left: ${u}px !important; z-index: 12 !important;`:"",i=`${w}${y?" "+y:""}`,L=i?` style="${i}"`:"",E=n&&(t.type==="nombre"||t.type==="nombre-avatar"||t.type==="estado"||t.type==="fecha")?`data-row-id="${l.id}" data-column-id="${t.id}" data-editable="true"${t.pinned?' data-pinned="true"':""}`:`data-column-id="${t.id}"${t.pinned?' data-pinned="true"':""}`;return`
+    `;
+		}
+		if (t.type) {
+			const b = zt(t, l, t.type),
+				n =
+					t.editable &&
+					(t.type === 'nombre' ||
+						t.type === 'nombre-avatar' ||
+						t.type === 'estado' ||
+						t.type === 'fecha' ||
+						t.type === 'checkbox' ||
+						t.type === 'radio') &&
+					t.type !== 'drag-handle' &&
+					t.type !== 'expand',
+				s =
+					t.type === 'drag-handle'
+						? 'ubits-data-table__cell--drag-handle'
+						: t.type === 'expand'
+							? 'ubits-data-table__cell--expand'
+							: `ubits-data-table__cell--${t.type}`,
+				e = n ? 'ubits-data-table__cell--editable' : '',
+				p = t.pinned ? ' ubits-data-table__cell--pinned' : '',
+				w =
+					t.type === 'drag-handle' || t.type === 'expand'
+						? 'text-align: center; vertical-align: middle;'
+						: '',
+				y = t.pinned
+					? `position: sticky !important; left: ${u}px !important; z-index: 12 !important;`
+					: '',
+				i = `${w}${y ? ' ' + y : ''}`,
+				L = i ? ` style="${i}"` : '',
+				E =
+					n &&
+					(t.type === 'nombre' ||
+						t.type === 'nombre-avatar' ||
+						t.type === 'estado' ||
+						t.type === 'fecha')
+						? `data-row-id="${l.id}" data-column-id="${t.id}" data-editable="true"${t.pinned ? ' data-pinned="true"' : ''}`
+						: `data-column-id="${t.id}"${t.pinned ? ' data-pinned="true"' : ''}`;
+			return `
       <td class="ubits-data-table__cell ${s} ${e}${p}" ${E}${L}>
         ${b}
       </td>
-    `}const c=t.renderCell?t.renderCell(l.data):l.data[t.id]||"",r=t.pinned?" ubits-data-table__cell--pinned":"",a=t.pinned?` style="position: sticky !important; left: ${u}px !important; z-index: 12 !important;"`:"";return`
-    <td class="ubits-data-table__cell${r}" data-column-id="${t.id}"${t.pinned?' data-pinned="true"':""}${a}>
+    `;
+		}
+		const c = t.renderCell ? t.renderCell(l.data) : l.data[t.id] || '',
+			r = t.pinned ? ' ubits-data-table__cell--pinned' : '',
+			a = t.pinned
+				? ` style="position: sticky !important; left: ${u}px !important; z-index: 12 !important;"`
+				: '';
+		return `
+    <td class="ubits-data-table__cell${r}" data-column-id="${t.id}"${t.pinned ? ' data-pinned="true"' : ''}${a}>
       ${c}
     </td>
-  `}function Ot(t,l=!1,u=!0,d=[],c=null,r=null,a=!0,b=0){if(t.type==="drag-handle"||t.type==="expand"){const F=t.pinned?" ubits-data-table__column-header--pinned":"",J=t.pinned?`position: sticky !important; left: ${b}px !important; z-index: 10 !important;`:"",G=t.width?`width: ${t.width}px;`:"",K=[J,G].filter(Boolean).join(" "),U=K?`style="${K}"`:"";return`
+  `;
+	}
+	function Ot(t, l = !1, u = !0, d = [], c = null, r = null, a = !0, b = 0) {
+		if (t.type === 'drag-handle' || t.type === 'expand') {
+			const F = t.pinned ? ' ubits-data-table__column-header--pinned' : '',
+				J = t.pinned
+					? `position: sticky !important; left: ${b}px !important; z-index: 10 !important;`
+					: '',
+				G = t.width ? `width: ${t.width}px;` : '',
+				K = [J, G].filter(Boolean).join(' '),
+				U = K ? `style="${K}"` : '';
+			return `
       <th 
         class="ubits-data-table__column-header ubits-data-table__column-header--${t.type}${F}" 
         ${U}
         data-column-id="${t.id}"
-        ${t.pinned?'data-pinned="true"':""}
+        ${t.pinned ? 'data-pinned="true"' : ''}
       >
       </th>
-    `}const n=t.type!=="checkbox"&&(t.id==="checkbox"||t.id.startsWith("checkbox-"));if(t.type,n){const F=d.length>0&&d.every(se=>se.data[t.id]===!0),J=d.some(se=>se.data[t.id]===!0),K=Ae({label:"",checked:F,indeterminate:J&&!F,size:"md",className:"ubits-data-table__column-checkbox-header"}).replace("<input",`<input data-column-checkbox-header="${t.id}" aria-label="Seleccionar todos ${t.title}"`),U=t.pinned?" ubits-data-table__column-header--pinned":"",B=t.pinned?`position: sticky !important; left: ${b}px !important; z-index: 10 !important;`:"",ae=t.width?`width: ${t.width}px;`:"",ce=[B,ae].filter(Boolean).join(" "),O=ce?`style="${ce}"`:"";return`
+    `;
+		}
+		const n = t.type !== 'checkbox' && (t.id === 'checkbox' || t.id.startsWith('checkbox-'));
+		if ((t.type, n)) {
+			const F = d.length > 0 && d.every((se) => se.data[t.id] === !0),
+				J = d.some((se) => se.data[t.id] === !0),
+				K = Ae({
+					label: '',
+					checked: F,
+					indeterminate: J && !F,
+					size: 'md',
+					className: 'ubits-data-table__column-checkbox-header',
+				}).replace(
+					'<input',
+					`<input data-column-checkbox-header="${t.id}" aria-label="Seleccionar todos ${t.title}"`,
+				),
+				U = t.pinned ? ' ubits-data-table__column-header--pinned' : '',
+				B = t.pinned
+					? `position: sticky !important; left: ${b}px !important; z-index: 10 !important;`
+					: '',
+				ae = t.width ? `width: ${t.width}px;` : '',
+				ce = [B, ae].filter(Boolean).join(' '),
+				O = ce ? `style="${ce}"` : '';
+			return `
       <th 
         class="ubits-data-table__column-header ubits-data-table__column-header--checkbox${U}" 
         ${O}
         data-column-id="${t.id}"
-        ${t.pinned?'data-pinned="true"':""}
+        ${t.pinned ? 'data-pinned="true"' : ''}
       >
         ${K}
       </th>
-    `}const s=t.type==="drag-handle"||t.type==="expand",e=l&&!n&&!s?`
+    `;
+		}
+		const s = t.type === 'drag-handle' || t.type === 'expand',
+			e =
+				l && !n && !s
+					? `
     <div class="ubits-data-table__column-drag-handle" draggable="true" data-column-id="${t.id}">
       <wa-icon name="grip-dots-vertical"></wa-icon>
       <i class="fas fa-grip-vertical" aria-hidden="true"></i>
     </div>
-  `:"",p=!n&&!s&&u?(()=>{const F=c===t.id,J=F?" ubits-data-table__column-sort--active":"";let G="arrow-up-a-z",K="fas fa-sort-alpha-up";return F&&r&&(r==="asc"?(G="arrow-up-a-z",K="fas fa-sort-alpha-up"):(G="arrow-down-a-z",K="fas fa-sort-alpha-down")),`
+  `
+					: '',
+			p =
+				!n && !s && u
+					? (() => {
+							const F = c === t.id,
+								J = F ? ' ubits-data-table__column-sort--active' : '';
+							let G = 'arrow-up-a-z',
+								K = 'fas fa-sort-alpha-up';
+							return (
+								F &&
+									r &&
+									(r === 'asc'
+										? ((G = 'arrow-up-a-z'), (K = 'fas fa-sort-alpha-up'))
+										: ((G = 'arrow-down-a-z'), (K = 'fas fa-sort-alpha-down'))),
+								`
       <div class="ubits-data-table__column-drag-handle ubits-data-table__column-sort${J}" 
            data-column-id="${t.id}" 
            data-sort-button="true"
@@ -519,7 +3190,27 @@
         <wa-icon name="${G}"></wa-icon>
         <i class="${K}" aria-hidden="true"></i>
       </div>
-    `})():"",w=!n&&!s&&a?_e({variant:"tertiary",size:"xs",icon:"ellipsis",iconStyle:"solid",iconOnly:!0,className:"ubits-data-table__column-menu-button",attributes:{"aria-label":`Menú de opciones de ${t.title}`,"data-column-id":t.id,"data-menu-button":"true"}}):"",y=`
+    `
+							);
+						})()
+					: '',
+			w =
+				!n && !s && a
+					? _e({
+							variant: 'tertiary',
+							size: 'xs',
+							icon: 'ellipsis',
+							iconStyle: 'solid',
+							iconOnly: !0,
+							className: 'ubits-data-table__column-menu-button',
+							attributes: {
+								'aria-label': `Menú de opciones de ${t.title}`,
+								'data-column-id': t.id,
+								'data-menu-button': 'true',
+							},
+						})
+					: '',
+			y = `
     <div class="ubits-data-table__column-header-content">
       ${e}
       <span class="ubits-data-table__column-title">${t.title}</span>
@@ -528,35 +3219,197 @@
         ${w}
       </div>
     </div>
-  `,i=t.pinned?" ubits-data-table__column-header--pinned":"",L=t.pinned?`left: ${b}px !important;`:"",E=t.width?`width: ${t.width}px;`:"",C=t.pinned?"position: sticky !important;":"",H=t.pinned?"z-index: 10 !important;":"",A=[C,L,H,E].filter(Boolean).join(" "),T=A?`style="${A}"`:"";return`
+  `,
+			i = t.pinned ? ' ubits-data-table__column-header--pinned' : '',
+			L = t.pinned ? `left: ${b}px !important;` : '',
+			E = t.width ? `width: ${t.width}px;` : '',
+			C = t.pinned ? 'position: sticky !important;' : '',
+			H = t.pinned ? 'z-index: 10 !important;' : '',
+			A = [C, L, H, E].filter(Boolean).join(' '),
+			T = A ? `style="${A}"` : '';
+		return `
     <th 
       class="ubits-data-table__column-header${i}" 
       ${T} 
       data-column-id="${t.id}"
-      ${t.pinned?'data-pinned="true"':""}
+      ${t.pinned ? 'data-pinned="true"' : ''}
     >
       ${y}
     </th>
-  `}function jt(t,l,u,d=[]){const c=t.expanded||!1,r=l.filter(s=>s.visible!==!1),a=r.map((s,e)=>{const p=d[e]||0;return Ft(s,t,p)}).join("");let n=`
-    <tr class="${["ubits-data-table__row",c?"ubits-data-table__row--expanded":""].filter(Boolean).join(" ")}" data-row-id="${t.id}">
+  `;
+	}
+	function jt(t, l, u, d = []) {
+		const c = t.expanded || !1,
+			r = l.filter((s) => s.visible !== !1),
+			a = r
+				.map((s, e) => {
+					const p = d[e] || 0;
+					return Ft(s, t, p);
+				})
+				.join('');
+		let n = `
+    <tr class="${['ubits-data-table__row', c ? 'ubits-data-table__row--expanded' : ''].filter(Boolean).join(' ')}" data-row-id="${t.id}">
       ${a}
     </tr>
-  `;if(c&&t.renderExpandedContent){const s=t.renderExpandedContent(t.data),e=r.length;n+=`
+  `;
+		if (c && t.renderExpandedContent) {
+			const s = t.renderExpandedContent(t.data),
+				e = r.length;
+			n += `
       <tr class="ubits-data-table__row-expanded-row" data-expanded-for="${t.id}">
         <td class="ubits-data-table__row-expanded-content" colspan="${e}">
           ${s}
         </td>
       </tr>
-    `}else c&&!t.renderExpandedContent&&console.warn("📋 [ROW RENDER] ⚠️ Fila marcada como expandida pero no tiene renderExpandedContent - rowId:",t.id);return n}function Wt(t,l={}){const{header:u,rows:d}=t;if(!u)return"";const{title:c,showTitle:r=c!==void 0,counter:a,displayedItems:b,totalItems:n,showCounter:s=a!==void 0&&a!==!1,primaryButton:e,showPrimaryButton:p=e!==void 0,secondaryButtons:w=[],showSecondaryButtons:y=w!==void 0&&w.length>0,searchButton:i,showSearchButton:L=i!==void 0,filterButton:E,showFilterButton:C=E!==void 0,columnSelectorButton:H,showColumnSelectorButton:A=H!==void 0}=u,T=u.__isSearchActive||!1,z=u.__searchTerm||"";let F="";if(s&&a){if(typeof a=="string")a==="total-only"?F=`${n!==void 0?n:d.length} resultados`:F=a;else if(a===!0){const se=b!==void 0?b:d.length,de=n!==void 0?n:d.length;F=`${se}/${de} resultados`}}const J=r&&c?`
+    `;
+		} else
+			c &&
+				!t.renderExpandedContent &&
+				console.warn(
+					'📋 [ROW RENDER] ⚠️ Fila marcada como expandida pero no tiene renderExpandedContent - rowId:',
+					t.id,
+				);
+		return n;
+	}
+	function Wt(t, l = {}) {
+		const { header: u, rows: d } = t;
+		if (!u) return '';
+		const {
+				title: c,
+				showTitle: r = c !== void 0,
+				counter: a,
+				displayedItems: b,
+				totalItems: n,
+				showCounter: s = a !== void 0 && a !== !1,
+				primaryButton: e,
+				showPrimaryButton: p = e !== void 0,
+				secondaryButtons: w = [],
+				showSecondaryButtons: y = w !== void 0 && w.length > 0,
+				searchButton: i,
+				showSearchButton: L = i !== void 0,
+				filterButton: E,
+				showFilterButton: C = E !== void 0,
+				columnSelectorButton: H,
+				showColumnSelectorButton: A = H !== void 0,
+			} = u,
+			T = u.__isSearchActive || !1,
+			z = u.__searchTerm || '';
+		let F = '';
+		if (s && a) {
+			if (typeof a == 'string')
+				a === 'total-only' ? (F = `${n !== void 0 ? n : d.length} resultados`) : (F = a);
+			else if (a === !0) {
+				const se = b !== void 0 ? b : d.length,
+					de = n !== void 0 ? n : d.length;
+				F = `${se}/${de} resultados`;
+			}
+		}
+		const J =
+				r && c
+					? `
     <div class="ubits-data-table__header-title">
       <span class="ubits-body-md-bold ubits-data-table__header-title-text">${c}</span>
-      ${F?`<span class="ubits-data-table__header-counter ubits-body-sm-regular">${F}</span>`:""}
+      ${F ? `<span class="ubits-data-table__header-counter ubits-body-sm-regular">${F}</span>` : ''}
     </div>
-  `:F?`
+  `
+					: F
+						? `
     <div class="ubits-data-table__header-title">
       <span class="ubits-data-table__header-counter ubits-body-sm-regular">${F}</span>
     </div>
-  `:"",G=p&&e?_e({variant:"primary",size:"sm",text:e.text||"",icon:e.icon||"plus",iconStyle:e.iconStyle||"regular",iconOnly:!e.text,disabled:e.disabled||!1,loading:e.loading||!1,className:"ubits-data-table__header-primary-button",showTooltip:!e.text,tooltipText:e.text||"Nuevo"}):"",K=y&&w.length>0?w.slice(0,2).map(se=>_e({variant:"secondary",size:"sm",text:se.text||"",icon:se.icon||"download",iconStyle:se.iconStyle||"regular",iconOnly:!se.text,disabled:se.disabled||!1,loading:se.loading||!1,className:"ubits-data-table__header-secondary-button",showTooltip:!se.text,tooltipText:se.text||""})).join(""):"",U=Object.keys(l).filter(se=>l[se]&&l[se].trim()!=="").length;let B=C&&E?_e({variant:"secondary",size:"sm",icon:"filter",iconStyle:"regular",iconOnly:!0,disabled:E.disabled||!1,active:E.active||!1||U>0,badge:U>0,className:"ubits-data-table__header-filter-button",showTooltip:!0,tooltipText:"Filtros"}):"";if(B&&U>0){const se=`<span class="ubits-badge ubits-badge--sm ubits-badge--number ubits-badge--error ubits-button__badge">${U}</span>`;B=B.replace('<span class="ubits-button__badge"></span>',se)}const ae=A&&H?_e({variant:"secondary",size:"sm",icon:"columns-3",iconStyle:"regular",iconOnly:!0,disabled:H.disabled||!1,active:H.active||!1,className:"ubits-data-table__header-column-selector-button",showTooltip:!0,tooltipText:"Seleccionar columnas"}):"",ce=z||i&&i.value||"",O=L&&i?Ke({active:T,size:"sm",state:T?"active":"default",disabled:i.disabled||!1,placeholder:i.placeholder||"Buscar...",value:ce,width:248,className:"ubits-data-table__header-search-button"}):"";return!(J||G||K||O||B||ae)?(console.warn("⚠️ [DATA TABLE HEADER] No hay elementos para renderizar, retornando vacío"),""):`
+  `
+						: '',
+			G =
+				p && e
+					? _e({
+							variant: 'primary',
+							size: 'sm',
+							text: e.text || '',
+							icon: e.icon || 'plus',
+							iconStyle: e.iconStyle || 'regular',
+							iconOnly: !e.text,
+							disabled: e.disabled || !1,
+							loading: e.loading || !1,
+							className: 'ubits-data-table__header-primary-button',
+							showTooltip: !e.text,
+							tooltipText: e.text || 'Nuevo',
+						})
+					: '',
+			K =
+				y && w.length > 0
+					? w
+							.slice(0, 2)
+							.map((se) =>
+								_e({
+									variant: 'secondary',
+									size: 'sm',
+									text: se.text || '',
+									icon: se.icon || 'download',
+									iconStyle: se.iconStyle || 'regular',
+									iconOnly: !se.text,
+									disabled: se.disabled || !1,
+									loading: se.loading || !1,
+									className: 'ubits-data-table__header-secondary-button',
+									showTooltip: !se.text,
+									tooltipText: se.text || '',
+								}),
+							)
+							.join('')
+					: '',
+			U = Object.keys(l).filter((se) => l[se] && l[se].trim() !== '').length;
+		let B =
+			C && E
+				? _e({
+						variant: 'secondary',
+						size: 'sm',
+						icon: 'filter',
+						iconStyle: 'regular',
+						iconOnly: !0,
+						disabled: E.disabled || !1,
+						active: E.active || !1 || U > 0,
+						badge: U > 0,
+						className: 'ubits-data-table__header-filter-button',
+						showTooltip: !0,
+						tooltipText: 'Filtros',
+					})
+				: '';
+		if (B && U > 0) {
+			const se = `<span class="ubits-badge ubits-badge--sm ubits-badge--number ubits-badge--error ubits-button__badge">${U}</span>`;
+			B = B.replace('<span class="ubits-button__badge"></span>', se);
+		}
+		const ae =
+				A && H
+					? _e({
+							variant: 'secondary',
+							size: 'sm',
+							icon: 'columns-3',
+							iconStyle: 'regular',
+							iconOnly: !0,
+							disabled: H.disabled || !1,
+							active: H.active || !1,
+							className: 'ubits-data-table__header-column-selector-button',
+							showTooltip: !0,
+							tooltipText: 'Seleccionar columnas',
+						})
+					: '',
+			ce = z || (i && i.value) || '',
+			O =
+				L && i
+					? Ke({
+							active: T,
+							size: 'sm',
+							state: T ? 'active' : 'default',
+							disabled: i.disabled || !1,
+							placeholder: i.placeholder || 'Buscar...',
+							value: ce,
+							width: 248,
+							className: 'ubits-data-table__header-search-button',
+						})
+					: '';
+		return !(J || G || K || O || B || ae)
+			? (console.warn('⚠️ [DATA TABLE HEADER] No hay elementos para renderizar, retornando vacío'),
+				'')
+			: `
     <div class="ubits-data-table__header">
       ${J}
       <div class="ubits-data-table__header-actions">
@@ -567,7 +3420,230 @@
         ${G}
       </div>
     </div>
-  `.trim()}function ze(t,l=[],u=[],d={}){const{columns:c,rows:r,className:a="",columnReorderable:b=!1,columnSortable:n=!0,rowReorderable:s=!1,rowExpandable:e=!0,showCheckbox:p=!0,showVerticalScrollbar:w=!1,showHorizontalScrollbar:y=!1,showColumnMenu:i=!0,showPagination:L=!1,currentPage:E=1,itemsPerPage:C=10,paginationVariant:H="default",paginationSize:A="md",lazyLoad:T,lazyLoadItemsPerBatch:z=10,emptyState:F}=t,J=t.header?.__searchTerm||"",G=L?!1:T!==!1,K=new Set;let B=c.filter(o=>K.has(o.id)?!1:(K.add(o.id),!0)).filter(o=>o.visible!==!1);if(B=B.filter(o=>o.id!=="checkbox"),l.length>0){const o=l.filter(m=>m!=="checkbox"),f=new Map(B.map(m=>{const g={...m};return m.pinned!==void 0&&(g.pinned=m.pinned),[m.id,g]}));B=o.map(m=>{const g=f.get(m);if(g){const I=B.find(W=>W.id===m);I&&I.pinned!==void 0&&(g.pinned=I.pinned)}return g}).filter(m=>m!==void 0).concat(B.filter(m=>!o.includes(m.id)).map(m=>{const g={...m};return m.pinned!==void 0&&(g.pinned=m.pinned),g}))}else B=B.map(o=>{const f={...o};return o.pinned!==void 0&&(f.pinned=o.pinned),f});if(p!==!1){if(!B.some(f=>f.id==="checkbox-2")){const f={id:"checkbox-2",title:"",type:void 0,visible:!0,width:48};B.unshift(f)}}else B.map(o=>o.id),B=B.filter(o=>o.id!=="checkbox-2"),B.map(o=>o.id);if(s){if(!B.some(f=>f.type==="drag-handle")){const f={id:"drag-handle",title:"",type:"drag-handle",visible:!0,width:32};B.unshift(f)}}else B=B.filter(o=>o.type!=="drag-handle");if(e){if(!B.some(f=>f.type==="expand")){const f={id:"expand",title:"",type:"expand",visible:!0,width:32},m=B.findIndex(g=>g.type==="drag-handle");m>=0?B.splice(m+1,0,f):B.unshift(f)}}else B=B.filter(o=>o.type!=="expand");const{checkboxSticky:ae=!1,dragHandleSticky:ce=!1,expandSticky:O=!1}=t;B=B.map(o=>{const f={...o};return o.id==="checkbox-2"?ae===!0?f.pinned=!0:f.pinned=!1:o.type==="drag-handle"?ce===!0?f.pinned=!0:f.pinned=!1:o.type==="expand"&&(O===!0?f.pinned=!0:f.pinned=!1),f.pinned&&!o.id.startsWith("checkbox")&&o.type!=="drag-handle"&&o.type,f}),B.filter(o=>o.pinned);const fe=t.sortColumnId||null,se=t.sortDirection||null;let de=[...r];if(u.length>0){const o=new Map(r.map(f=>[f.id,f]));de=u.map(f=>o.get(f)).filter(f=>f!==void 0).concat(r.filter(f=>!u.includes(f.id)))}fe&&se&&(de=[...de].sort((o,f)=>{const m=o.data[fe],g=f.data[fe];if(m==null&&g==null)return 0;if(m==null)return 1;if(g==null)return-1;const I=String(m).toLowerCase(),W=String(g).toLowerCase();let q=0;return I<W?q=-1:I>W&&(q=1),se==="asc"?q:-q}));const M=(o,f,m)=>{let g=0;const I={columnId:o.id,steps:[]};for(let W=0;W<f;W++){const q=m[W];if(q&&q.pinned){let V=q.width;V||(q.type==="drag-handle"||q.type==="expand"?V=32:q.id==="checkbox-2"?V=48:V=150),g+=V,I.steps.push({step:`columna-${q.id}`,added:V,total:g,reason:`Columna fijada anterior: ${q.id} (tipo: ${q.type||"normal"})`})}else q&&!q.pinned&&I.steps.push({step:`columna-${q.id}`,added:0,total:g,reason:`Columna anterior no fijada: ${q.id}`})}return I.finalLeft=g,o.pinned,g},Z=B.map((o,f)=>{const m=o.pinned?M(o,f,B):0;return o.pinned,Ot(o,b,n,de,fe,se,i,m)}).join("");let re=de,ee=1,he="";const ve=t.__lazyLoadCurrentItems||z;if(L){const o=de.length;ee=Math.max(1,Math.ceil(o/C));const f=Math.max(1,Math.min(E,ee)),m=(f-1)*C,g=m+C;re=de.slice(m,g);try{he=Ct({currentPage:f,totalPages:ee,totalItems:o,itemsPerPage:C,variant:H,size:A,maxVisiblePages:7,showFirst:!1,showLast:!1,showPrevNext:!0,showInfo:!1,showItemsPerPage:!1,itemsPerPageOptions:[10,20,50,100],className:"ubits-data-table__pagination"})}catch(I){console.error("❌ [PAGINATION] ERROR:",I),he=""}}else G&&(re=de.slice(0,ve));let Ce="";const Le=r.length===0,ke=re.length===0,$e=Object.keys(d).length>0,Ee=J&&J.trim()!=="";if(ke&&F){let o;Le&&F.noData?o=F.noData:Ee&&F.noSearchResults?o=F.noSearchResults:$e&&F.noFilterResults&&(o=F.noFilterResults),o&&(Ce=qt({title:o.title||"No hay resultados",description:o.description,icon:o.icon,imageUrl:o.imageUrl,actionLabel:o.actionLabel,showPrimaryButton:o.showPrimaryButton||!1,primaryButtonIcon:o.primaryButtonIcon,showPrimaryButtonIcon:o.showPrimaryButtonIcon||!1,secondaryActionLabel:o.secondaryActionLabel,showSecondaryButton:o.showSecondaryButton||!1,secondaryButtonIcon:o.secondaryButtonIcon,showSecondaryButtonIcon:o.showSecondaryButtonIcon||!1,className:"ubits-data-table__empty-state"}))}const Ue=re.map((o,f)=>{const m=B.map((g,I)=>g.pinned?M(g,I,B):0);return jt(o,B,f,m)}).join(""),xe=Ce||Ue,Be=["ubits-data-table",a].filter(Boolean).join(" "),Pe=B.length,le=`
+  `.trim();
+	}
+	function ze(t, l = [], u = [], d = {}) {
+		const {
+				columns: c,
+				rows: r,
+				className: a = '',
+				columnReorderable: b = !1,
+				columnSortable: n = !0,
+				rowReorderable: s = !1,
+				rowExpandable: e = !0,
+				showCheckbox: p = !0,
+				showVerticalScrollbar: w = !1,
+				showHorizontalScrollbar: y = !1,
+				showColumnMenu: i = !0,
+				showPagination: L = !1,
+				currentPage: E = 1,
+				itemsPerPage: C = 10,
+				paginationVariant: H = 'default',
+				paginationSize: A = 'md',
+				lazyLoad: T,
+				lazyLoadItemsPerBatch: z = 10,
+				emptyState: F,
+			} = t,
+			J = t.header?.__searchTerm || '',
+			G = L ? !1 : T !== !1,
+			K = new Set();
+		let B = c.filter((o) => (K.has(o.id) ? !1 : (K.add(o.id), !0))).filter((o) => o.visible !== !1);
+		if (((B = B.filter((o) => o.id !== 'checkbox')), l.length > 0)) {
+			const o = l.filter((m) => m !== 'checkbox'),
+				f = new Map(
+					B.map((m) => {
+						const g = { ...m };
+						return m.pinned !== void 0 && (g.pinned = m.pinned), [m.id, g];
+					}),
+				);
+			B = o
+				.map((m) => {
+					const g = f.get(m);
+					if (g) {
+						const I = B.find((W) => W.id === m);
+						I && I.pinned !== void 0 && (g.pinned = I.pinned);
+					}
+					return g;
+				})
+				.filter((m) => m !== void 0)
+				.concat(
+					B.filter((m) => !o.includes(m.id)).map((m) => {
+						const g = { ...m };
+						return m.pinned !== void 0 && (g.pinned = m.pinned), g;
+					}),
+				);
+		} else
+			B = B.map((o) => {
+				const f = { ...o };
+				return o.pinned !== void 0 && (f.pinned = o.pinned), f;
+			});
+		if (p !== !1) {
+			if (!B.some((f) => f.id === 'checkbox-2')) {
+				const f = { id: 'checkbox-2', title: '', type: void 0, visible: !0, width: 48 };
+				B.unshift(f);
+			}
+		} else B.map((o) => o.id), (B = B.filter((o) => o.id !== 'checkbox-2')), B.map((o) => o.id);
+		if (s) {
+			if (!B.some((f) => f.type === 'drag-handle')) {
+				const f = { id: 'drag-handle', title: '', type: 'drag-handle', visible: !0, width: 32 };
+				B.unshift(f);
+			}
+		} else B = B.filter((o) => o.type !== 'drag-handle');
+		if (e) {
+			if (!B.some((f) => f.type === 'expand')) {
+				const f = { id: 'expand', title: '', type: 'expand', visible: !0, width: 32 },
+					m = B.findIndex((g) => g.type === 'drag-handle');
+				m >= 0 ? B.splice(m + 1, 0, f) : B.unshift(f);
+			}
+		} else B = B.filter((o) => o.type !== 'expand');
+		const { checkboxSticky: ae = !1, dragHandleSticky: ce = !1, expandSticky: O = !1 } = t;
+		(B = B.map((o) => {
+			const f = { ...o };
+			return (
+				o.id === 'checkbox-2'
+					? ae === !0
+						? (f.pinned = !0)
+						: (f.pinned = !1)
+					: o.type === 'drag-handle'
+						? ce === !0
+							? (f.pinned = !0)
+							: (f.pinned = !1)
+						: o.type === 'expand' && (O === !0 ? (f.pinned = !0) : (f.pinned = !1)),
+				f.pinned && !o.id.startsWith('checkbox') && o.type !== 'drag-handle' && o.type,
+				f
+			);
+		})),
+			B.filter((o) => o.pinned);
+		const fe = t.sortColumnId || null,
+			se = t.sortDirection || null;
+		let de = [...r];
+		if (u.length > 0) {
+			const o = new Map(r.map((f) => [f.id, f]));
+			de = u
+				.map((f) => o.get(f))
+				.filter((f) => f !== void 0)
+				.concat(r.filter((f) => !u.includes(f.id)));
+		}
+		fe &&
+			se &&
+			(de = [...de].sort((o, f) => {
+				const m = o.data[fe],
+					g = f.data[fe];
+				if (m == null && g == null) return 0;
+				if (m == null) return 1;
+				if (g == null) return -1;
+				const I = String(m).toLowerCase(),
+					W = String(g).toLowerCase();
+				let q = 0;
+				return I < W ? (q = -1) : I > W && (q = 1), se === 'asc' ? q : -q;
+			}));
+		const M = (o, f, m) => {
+				let g = 0;
+				const I = { columnId: o.id, steps: [] };
+				for (let W = 0; W < f; W++) {
+					const q = m[W];
+					if (q && q.pinned) {
+						let V = q.width;
+						V ||
+							(q.type === 'drag-handle' || q.type === 'expand'
+								? (V = 32)
+								: q.id === 'checkbox-2'
+									? (V = 48)
+									: (V = 150)),
+							(g += V),
+							I.steps.push({
+								step: `columna-${q.id}`,
+								added: V,
+								total: g,
+								reason: `Columna fijada anterior: ${q.id} (tipo: ${q.type || 'normal'})`,
+							});
+					} else
+						q &&
+							!q.pinned &&
+							I.steps.push({
+								step: `columna-${q.id}`,
+								added: 0,
+								total: g,
+								reason: `Columna anterior no fijada: ${q.id}`,
+							});
+				}
+				return (I.finalLeft = g), o.pinned, g;
+			},
+			Z = B.map((o, f) => {
+				const m = o.pinned ? M(o, f, B) : 0;
+				return o.pinned, Ot(o, b, n, de, fe, se, i, m);
+			}).join('');
+		let re = de,
+			ee = 1,
+			he = '';
+		const ve = t.__lazyLoadCurrentItems || z;
+		if (L) {
+			const o = de.length;
+			ee = Math.max(1, Math.ceil(o / C));
+			const f = Math.max(1, Math.min(E, ee)),
+				m = (f - 1) * C,
+				g = m + C;
+			re = de.slice(m, g);
+			try {
+				he = Ct({
+					currentPage: f,
+					totalPages: ee,
+					totalItems: o,
+					itemsPerPage: C,
+					variant: H,
+					size: A,
+					maxVisiblePages: 7,
+					showFirst: !1,
+					showLast: !1,
+					showPrevNext: !0,
+					showInfo: !1,
+					showItemsPerPage: !1,
+					itemsPerPageOptions: [10, 20, 50, 100],
+					className: 'ubits-data-table__pagination',
+				});
+			} catch (I) {
+				console.error('❌ [PAGINATION] ERROR:', I), (he = '');
+			}
+		} else G && (re = de.slice(0, ve));
+		let Ce = '';
+		const Le = r.length === 0,
+			ke = re.length === 0,
+			$e = Object.keys(d).length > 0,
+			Ee = J && J.trim() !== '';
+		if (ke && F) {
+			let o;
+			Le && F.noData
+				? (o = F.noData)
+				: Ee && F.noSearchResults
+					? (o = F.noSearchResults)
+					: $e && F.noFilterResults && (o = F.noFilterResults),
+				o &&
+					(Ce = qt({
+						title: o.title || 'No hay resultados',
+						description: o.description,
+						icon: o.icon,
+						imageUrl: o.imageUrl,
+						actionLabel: o.actionLabel,
+						showPrimaryButton: o.showPrimaryButton || !1,
+						primaryButtonIcon: o.primaryButtonIcon,
+						showPrimaryButtonIcon: o.showPrimaryButtonIcon || !1,
+						secondaryActionLabel: o.secondaryActionLabel,
+						showSecondaryButton: o.showSecondaryButton || !1,
+						secondaryButtonIcon: o.secondaryButtonIcon,
+						showSecondaryButtonIcon: o.showSecondaryButtonIcon || !1,
+						className: 'ubits-data-table__empty-state',
+					}));
+		}
+		const Ue = re
+				.map((o, f) => {
+					const m = B.map((g, I) => (g.pinned ? M(g, I, B) : 0));
+					return jt(o, B, f, m);
+				})
+				.join(''),
+			xe = Ce || Ue,
+			Be = ['ubits-data-table', a].filter(Boolean).join(' '),
+			Pe = B.length,
+			le = `
     <table class="${Be} ubits-data-table__table">
       <thead class="ubits-data-table__thead">
         <tr class="ubits-data-table__header-row">
@@ -575,24 +3651,1281 @@
         </tr>
       </thead>
       <tbody class="ubits-data-table__tbody">
-        ${Ce?`<tr><td colspan="${Pe}" style="padding: 0;">${Ce}</td></tr>`:xe}
+        ${Ce ? `<tr><td colspan="${Pe}" style="padding: 0;">${Ce}</td></tr>` : xe}
       </tbody>
     </table>
-  `.trim(),S=B.some(o=>o.pinned);let x=y;S&&!y&&(x=!0);let h=w;G&&!L&&(h=!0),!L&&!G&&!h&&45+de.length*45>600&&(h=!0);let v;if(h||x){const o=[];h&&o.push("ubits-data-table__scrollable-container--vertical"),x&&o.push("ubits-data-table__scrollable-container--horizontal"),v=`<div class="ubits-data-table__scrollable-container ${o.join(" ")}">${le}</div>`}else v=le;const k=Wt(t,d);let _;return L&&he?_=`<div class="ubits-data-table__container">
+  `.trim(),
+			S = B.some((o) => o.pinned);
+		let x = y;
+		S && !y && (x = !0);
+		let h = w;
+		G && !L && (h = !0), !L && !G && !h && 45 + de.length * 45 > 600 && (h = !0);
+		let v;
+		if (h || x) {
+			const o = [];
+			h && o.push('ubits-data-table__scrollable-container--vertical'),
+				x && o.push('ubits-data-table__scrollable-container--horizontal'),
+				(v = `<div class="ubits-data-table__scrollable-container ${o.join(' ')}">${le}</div>`);
+		} else v = le;
+		const k = Wt(t, d);
+		let _;
+		return (
+			L && he
+				? (_ = `<div class="ubits-data-table__container">
       ${k}
       ${v}
       <div class="ubits-data-table__pagination-wrapper">${he}</div>
-    </div>`:k?_=`<div class="ubits-data-table__container">
+    </div>`)
+				: k
+					? (_ = `<div class="ubits-data-table__container">
         ${k}
         ${v}
-      </div>`:_=v,_}function Ge(t){const l=t.containerId?document.getElementById(t.containerId):document.body;if(!l)throw new Error(`Container with id "${t.containerId}" not found`);const u=l.querySelector(".ubits-data-table"),d=l.querySelector(".ubits-data-table__scrollable-container");if(d){const Z=d.querySelector(".ubits-data-table");if(Z){const re=Z;if(re._dataTableInstance)try{const ee=re._dataTableInstance;ee&&typeof ee.destroy=="function"&&ee.destroy()}catch(ee){console.warn("Error destroying previous table instance:",ee)}}d.remove()}else if(u){const M=u;if(M._dataTableInstance)try{const Z=M._dataTableInstance;Z&&typeof Z.destroy=="function"&&Z.destroy()}catch(Z){console.warn("Error destroying previous table instance:",Z)}u.remove()}const c=t.lazyLoad!==!1&&!t.showPagination?t.lazyLoadItemsPerBatch||10:void 0,r={...t,__lazyLoadCurrentItems:c},a=ze(r),b=document.createElement("div");b.innerHTML=a.trim();const n=b.firstElementChild;if(!n)throw new Error("Failed to create data table 3 element");l.appendChild(n);const s=M=>{const Z=new Set,re=[];for(const ee of M)Z.has(ee.id)||(Z.add(ee.id),re.push({...ee}));return re.length,M.length,re};let e={...t,columns:s(t.columns)},p=e.columns.filter(M=>M.visible!==!1).map(M=>M.id),w=e.rows.map(M=>M.id),y=null,i=null,L=null,E=null,C="",H=!1,A=null,T={},z=null;const F=(M,Z,re)=>{if(!Z||Z.trim()==="")return M;const ee=Z.toLowerCase().trim(),he=re.filter(ve=>ve.visible!==!1);return M.filter(ve=>he.some(Ce=>{const Le=ve.data[Ce.id];return Le==null?!1:String(Le).toLowerCase().includes(ee)}))},J=(M,Z,re)=>{const ee=Object.entries(Z).filter(([he,ve])=>ve&&ve.trim()!=="");return ee.length===0?M:M.filter(he=>ee.every(([ve,Ce])=>{const Le=re.find(xe=>xe.id===ve);if(!Le){const xe=e.header?.filterButton?.filters?.find(x=>x.id===ve);if(!xe)return!0;const Be=xe.columnId,Pe=he.data[Be];if(Pe==null)return!1;const le=String(Pe).toLowerCase().trim(),S=Ce.toLowerCase().trim();switch(xe.type){case"text":return le.includes(S);case"select":return le===S;case"number":return le===S||parseFloat(le)===parseFloat(S);case"date":return le.includes(S);default:return le.includes(S)}}const ke=he.data[Le.id];if(ke==null)return!1;const $e=String(ke).toLowerCase().trim(),Ee=Ce.toLowerCase().trim();switch(Le.type||"text"){case"estado":return $e===Ee;case"fecha":return $e.includes(Ee);case"progreso":const xe=parseFloat($e),Be=parseFloat(Ee);return!isNaN(xe)&&!isNaN(Be)&&xe===Be;case"nombre":case"nombre-avatar":case"nombre-avatar-texto":case"correo":case"area":case"lider":case"pais":case"ciudad":default:return $e.includes(Ee)}}))},G=e.showPagination?!1:e.lazyLoad!==!1,K=e.lazyLoadItemsPerBatch||10;let U=K,B=null;const ae=()=>{if(B){const re=n.querySelector(".ubits-data-table__scrollable-container");re&&re.removeEventListener("scroll",B),window.removeEventListener("scroll",B,!0),B=null}const M=n.querySelector(".ubits-data-table__scrollable-container"),Z=()=>{const re=e.rows.length;if(U>=re)return;let ee,he,ve;if(M)ee=M.scrollTop,he=M.scrollHeight,ve=M.clientHeight;else{ee=window.scrollY||document.documentElement.scrollTop,he=document.documentElement.scrollHeight,ve=window.innerHeight;const ke=n.getBoundingClientRect().bottom+ee;if(ee+ve>=ke-200){const Ee=Math.min(U+K,re);Ee>U&&(U=Ee,e.onLazyLoad&&e.onLazyLoad(U,re),O(!0))}return}if((ee+ve)/he>=.8){const Le=Math.min(U+K,re);Le>U&&(U=Le,e.onLazyLoad&&e.onLazyLoad(U,re),O(!0))}};M?(B=Z,M.addEventListener("scroll",B,{passive:!0})):(console.warn("⚠️ [LAZY LOAD] No se encontró contenedor scrollable, esperando renderizado..."),setTimeout(()=>{const re=n.querySelector(".ubits-data-table__scrollable-container");re?(B=Z,re.addEventListener("scroll",B,{passive:!0})):console.error("❌ [LAZY LOAD] No se pudo encontrar contenedor scrollable. El lazy load requiere scroll vertical activo.")},100))},ce=()=>{n.querySelectorAll("wa-icon").forEach((Z,re)=>{const ee=Z.nextElementSibling,he=Z.parentElement,ve=he&&he.classList.contains("ubits-data-table__column-drag-handle");ee&&ee.tagName==="I"&&(customElements.get("wa-icon")?(ve?(Z.style.display="block",Z.style.width="14px",Z.style.height="14px",Z.style.opacity="1",Z.style.margin="0",Z.style.padding="0",Z.style.position="absolute",Z.style.top="50%",Z.style.left="50%",Z.style.transform="translate(-50%, -50%)",window.getComputedStyle(Z),he&&(window.getComputedStyle(he),he.getBoundingClientRect())):(Z.style.display="inline-block",Z.style.width="12px",Z.style.height="12px",Z.style.opacity="1"),ee.style.display="none"):(Z.style.display="none",ve?(ee.style.display="block",ee.style.fontSize="14px",ee.style.width="14px",ee.style.height="14px",ee.style.margin="0",ee.style.padding="0",ee.style.lineHeight="1",ee.style.position="absolute",ee.style.top="50%",ee.style.left="50%",ee.style.transform="translate(-50%, -50%)",ee.style.boxSizing="border-box",ee.style.textAlign="center",ee.style.verticalAlign="middle",window.getComputedStyle(ee),ee.getBoundingClientRect(),he&&(window.getComputedStyle(he),he.getBoundingClientRect())):(ee.style.display="inline-block",ee.style.fontSize="12px",ee.style.width="12px",ee.style.height="12px")))})},O=(M=!1)=>{`${Date.now()}${Math.random().toString(36).substr(2,5)}`;let Z=0,re=0,ee=0,he=M;const ve=n.querySelector(".ubits-data-table__scrollable-container");ve&&(Z=ve.scrollTop,re=ve.scrollHeight,ee=ve.clientHeight,re>ee&&!M&&(he=!0),Z>0&&!M&&!he&&(he=!0));let Ce=e.rows;Object.keys(T).length>0&&(Ce=J(Ce,T,e.columns)),C&&(Ce=F(Ce,C,e.columns));const Le={...e,rows:Ce,columns:e.columns.map(le=>{const S={...le};return le.pinned!==void 0&&(S.pinned=le.pinned),S}),sortColumnId:L,sortDirection:E,__lazyLoadCurrentItems:U,header:e.header?{...e.header,displayedItems:e.header.displayedItems!==void 0&&!C&&Object.keys(T).length===0?e.header.displayedItems:Ce.length,__isSearchActive:H,__searchTerm:C}:void 0},ke=new Set,$e=Le.columns.filter(le=>ke.has(le.id)?!1:(ke.add(le.id),!0));Le.columns=$e;const Ee=ze(Le,p,w,T);if(performance.now(),n.innerHTML=Ee.trim(),performance.now(),e.header?.searchButton&&e.header?.showSearchButton!==!1){const le=n.querySelector(".ubits-data-table__header-search-button");if(le){if(A)try{A.destroy()}catch{}if(!e.header?.searchButton)console.warn("🔍 [DATA TABLE] searchButton no está definido, saltando creación del componente");else{const S=document.createElement("div");S.style.display="none",document.body.appendChild(S),S.id="temp-search-button-container-"+Date.now(),A=Pt({containerId:S.id,active:H,size:"sm",state:H?"active":"default",disabled:e.header.searchButton.disabled||!1,placeholder:e.header.searchButton.placeholder||"Buscar...",value:C,width:248,className:"ubits-data-table__header-search-button",onChange:h=>{const v=h.target.value;if(C=v,e.header.searchButton.onChange&&e.header.searchButton.onChange(v),O(),e.header.searchButton.onSearch){const k=F(e.rows,v,e.columns);e.header.searchButton.onSearch(v,k)}},onClick:h=>{h.stopPropagation(),h.preventDefault(),H=!0,e.header.searchButton.onClick&&e.header.searchButton.onClick(h),O(),setTimeout(()=>{const v=A?.element.querySelector(".ubits-search-button__input");v&&v.focus()},150)},onBlur:h=>{const v=h.target;setTimeout(()=>{if(!v.value.trim()&&document.activeElement!==v){const k=A?.element.querySelector(".ubits-search-button__clear");document.activeElement!==k&&(H=!1,O())}},200)}});const x=A.element;le.parentNode?.replaceChild(x,le),H&&x.style.width&&(x.style.width=""),document.body.removeChild(S)}setTimeout(()=>{const S=n.querySelector(".ubits-data-table__header-search-button.ubits-search-button--active"),x=S?.previousElementSibling;if(S&&x){const h=S.getBoundingClientRect(),v=x.getBoundingClientRect(),k=window.getComputedStyle(S),_=S.querySelector(".ubits-search-button__input-wrapper"),o=_?window.getComputedStyle(_):null,f={actualGap:h.left-v.right,difference:h.left-v.right-8,searchButton:{left:h.left,width:h.width,right:h.right,marginLeft:k.marginLeft,marginRight:k.marginRight,inlineWidth:S.style.width||"none",computedWidth:k.width},prevButton:{right:v.right,width:v.width},inputWrapper:{width:o?.width||"N/A",computedWidth:o?.width||"N/A"}};Math.abs(f.actualGap-8)>1&&h.width}},100)}}fe(),ce(),e.showPagination&&setTimeout(()=>{Pe()},100),G&&!e.showPagination&&ae(),(he||re>0&&ee>0&&re>ee)&&requestAnimationFrame(()=>{const le=n.querySelector(".ubits-data-table__scrollable-container");if(le){const S=le.scrollHeight,x=le.clientHeight,h=S-x,v=re-ee,k=v>0?Z/v:0;if(h>0){const _=k*h;le.scrollTop=_}}});const xe=n.querySelectorAll(".ubits-data-table__row");if(n.querySelector(".ubits-data-table__table"),n.querySelector(".ubits-data-table__tbody"),n.querySelector(".ubits-data-table__scrollable-container"),n.querySelector(".ubits-data-table"),xe.length>0){const le=xe[0],S=xe[1],x=xe[xe.length-1];le.getBoundingClientRect(),S&&S.getBoundingClientRect(),x.getBoundingClientRect()}if(xe.forEach((le,S)=>{S===0&&le.querySelectorAll("td").forEach((h,v)=>{const k=h;Array.from(k.classList),window.getComputedStyle(k).backgroundColor})}),xe.length>0){const le=xe[0];le.addEventListener("mouseenter",()=>{le.querySelectorAll("td").forEach((x,h)=>{const v=x;Array.from(v.classList),window.getComputedStyle(v).backgroundColor})}),le.addEventListener("mouseleave",()=>{})}n.querySelectorAll("input[data-column-checkbox-header]").forEach(le=>{const S=le,x=S.getAttribute("data-column-checkbox-header");if(x){const h=e.rows.length>0&&e.rows.every(_=>_.data[x]===!0),k=e.rows.some(_=>_.data[x]===!0)&&!h;S.indeterminate=k}});const Pe=()=>{try{const le=n.closest(".ubits-data-table__container")||n.querySelector(".ubits-data-table__container");if(le){const S=window.getComputedStyle(le),x=le.querySelector(".ubits-data-table__scrollable-container")||le.querySelector(".ubits-data-table"),v=(x?.querySelector(".ubits-data-table__table")||x)?.querySelector(".ubits-data-table__row:last-child");if(x){const _=window.getComputedStyle(x);if(v){const o=v.getBoundingClientRect()}}const k=le.querySelector(".ubits-data-table__pagination-wrapper");if(k){const _=window.getComputedStyle(k),o=k.getBoundingClientRect();if(v){const f=v.getBoundingClientRect(),m=o.top-f.bottom}}}}catch(le){console.error("📄 [SPACING] ❌ Error verificando espaciado:",le)}}},fe=()=>{console.log("🔵 [DATA TABLE ATTACH] ========== INICIO attachEventListeners =========="),console.log("🔵 [DATA TABLE ATTACH] currentOptions existe:",!!e),console.log("🔵 [DATA TABLE ATTACH] currentOptions.onRowSelect existe:",!!e?.onRowSelect),console.log("🔵 [DATA TABLE ATTACH] Tipo de onRowSelect:",typeof e?.onRowSelect),console.log("🔵 [DATA TABLE ATTACH] currentOptions keys:",Object.keys(e||{})),e?.header&&(console.log("🔵 [DATA TABLE ATTACH] currentOptions.header existe"),console.log("🔵 [DATA TABLE ATTACH] currentOptions.header.searchButton existe:",!!e.header.searchButton),console.log("🔵 [DATA TABLE ATTACH] currentOptions.header.filterButton existe:",!!e.header.filterButton)),console.log("🔵 [DATA TABLE ATTACH] ========== FIN VERIFICACIÓN INICIAL =========="),typeof window<"u"&&window.location&&window.location.href.includes("storybook");try{e.columnReorderable&&(n.hasAttribute("data-column-drag-listener")||(n.setAttribute("data-column-drag-listener","true"),n.addEventListener("dragstart",S=>{const h=S.target.closest(".ubits-data-table__column-drag-handle");if(h&&(y=h.getAttribute("data-column-id"),y)){S.dataTransfer.effectAllowed="move",S.dataTransfer.setData("text/plain",y);const v=h.closest(".ubits-data-table__column-header");v&&v.classList.add("ubits-data-table__column-header--dragging")}},!0),n.addEventListener("dragend",S=>{const h=S.target.closest(".ubits-data-table__column-drag-handle");if(h){const v=h.closest(".ubits-data-table__column-header");v&&v.classList.remove("ubits-data-table__column-header--dragging")}y=null},!0),n.addEventListener("dragover",S=>{const h=S.target.closest(".ubits-data-table__column-header");if(h&&y){const v=h.getAttribute("data-column-id");if(v&&v!==y){const k=v==="checkbox"||v.startsWith("checkbox-"),_=y==="checkbox"||y.startsWith("checkbox-");if(k)return;if(!_){const o=p.findIndex(f=>f==="checkbox"||f.startsWith("checkbox-"));if(o!==-1&&p.indexOf(v)<o)return}S.preventDefault(),S.dataTransfer.dropEffect="move",h.classList.add("ubits-data-table__column-header--drag-over")}}},!0),n.addEventListener("dragleave",S=>{const h=S.target.closest(".ubits-data-table__column-header");h&&h.classList.remove("ubits-data-table__column-header--drag-over")},!0),n.addEventListener("drop",S=>{const h=S.target.closest(".ubits-data-table__column-header");if(h){S.preventDefault(),h.classList.remove("ubits-data-table__column-header--drag-over");const v=h.getAttribute("data-column-id");if(!v||!y)return;const k=y==="checkbox"||y.startsWith("checkbox-"),_=v==="checkbox"||v.startsWith("checkbox-");if(k||_)return;if(y!==v){const o=p.indexOf(y),f=p.indexOf(v),m=p.findIndex(g=>g==="checkbox"||g.startsWith("checkbox-"));if(m===-1){o!==-1&&f!==-1&&(p.splice(o,1),p.splice(f,0,y),e.onColumnReorder&&e.onColumnReorder([...p]),O());return}if(f<m||o>m&&f<m)return;if(o!==-1&&f!==-1){const g=[...p];g.splice(o,1),g.splice(f,0,y);const I=g.findIndex(W=>W==="checkbox"||W.startsWith("checkbox-"));if(I!==-1&&I<m)return;p=g,e.onColumnReorder&&e.onColumnReorder([...p]),O()}}}},!0))),e.rowReorderable&&(n.hasAttribute("data-row-drag-listener")||(n.setAttribute("data-row-drag-listener","true"),n.addEventListener("dragstart",S=>{const h=S.target.closest(".ubits-data-table__row-drag-handle");if(!h)return;const v=h.getAttribute("data-row-id");if(v){const k=isNaN(Number(v))?v:Number(v);i=k,S.dataTransfer.effectAllowed="move",S.dataTransfer.setData("text/plain",String(k));const _=h.closest(".ubits-data-table__row");_&&_.classList.add("ubits-data-table__row--dragging")}},!0),n.addEventListener("dragend",S=>{const h=S.target.closest(".ubits-data-table__row-drag-handle");if(h){const v=h.closest(".ubits-data-table__row");v&&v.classList.remove("ubits-data-table__row--dragging")}i=null},!0),n.addEventListener("dragover",S=>{const h=S.target.closest(".ubits-data-table__row");if(h&&i!==null){const v=h.getAttribute("data-row-id");v&&(isNaN(Number(v))?v:Number(v))!==i&&(S.preventDefault(),S.dataTransfer.dropEffect="move",h.classList.add("ubits-data-table__row--drag-over"))}},!0),n.addEventListener("dragleave",S=>{const h=S.target.closest(".ubits-data-table__row");h&&h.classList.remove("ubits-data-table__row--drag-over")},!0),n.addEventListener("drop",S=>{const h=S.target.closest(".ubits-data-table__row");if(h){S.preventDefault(),h.classList.remove("ubits-data-table__row--drag-over");const v=h.getAttribute("data-row-id");if(!v||!i)return;const k=isNaN(Number(v))?v:Number(v),_=S.dataTransfer.getData("text/plain");if(_&&String(k)!==_){const o=isNaN(Number(_))?_:Number(_),f=w.indexOf(o),m=w.indexOf(k);f!==-1&&m!==-1&&(w.splice(f,1),w.splice(m,0,o),e.onRowReorder&&e.onRowReorder([...w]),O())}}},!0)));let M=!1;if(n.querySelectorAll("input[data-column-checkbox-header]").forEach((S,x)=>{const h=S,v=h.getAttribute("data-column-checkbox-header"),k=h.cloneNode(!0);k.checked=h.checked,v&&k.setAttribute("data-column-checkbox-header",v),Array.from(h.attributes).forEach(f=>{(f.name!=="data-column-checkbox-header"||!k.hasAttribute(f.name))&&k.setAttribute(f.name,f.value)}),h.parentNode?.replaceChild(k,h);const _=f=>{f.stopPropagation(),f.stopImmediatePropagation();const m=f.target;if(!m.hasAttribute("data-column-checkbox-header"))return;const g=m.getAttribute("data-column-checkbox-header"),I=m.checked,W=n.querySelector(".ubits-data-table__scrollable-container");let q=0,V=0,ue=0;if(W&&(q=W.scrollTop,V=W.scrollHeight,ue=W.clientHeight),e.rows.forEach(ne=>{ne.data[g]=I}),g==="checkbox-2"){const ne=n.querySelectorAll(`input[data-column-id="${g}"][data-row-id]`);M=!0,ne.forEach(Y=>{const Q=Y,N=Q.getAttribute("data-row-id");if(N){const ge=isNaN(Number(N))?N:Number(N),ie=e.rows.find(we=>we.id===ge);ie&&(ie.data[g]=I),Q.checked=I;const me=Q.closest(".ubits-checkbox");if(me){const we=me.querySelector(".ubits-checkbox__square");if(I){if(me.classList.add("ubits-checkbox--checked"),me.classList.remove("ubits-checkbox--indeterminate"),we){const Se=we.querySelector(".ubits-checkbox__indeterminate");Se&&Se.remove();let ye=we.querySelector(".ubits-checkbox__checkmark");ye||(ye=document.createElement("span"),ye.className="ubits-checkbox__checkmark",we.appendChild(ye));const Me=ye.style.transition;ye.style.transition="none",ye.style.setProperty("opacity","1","important"),ye.style.setProperty("transform","scale(1)","important"),ye.style.setProperty("display","flex","important"),window.getComputedStyle(ye).opacity,window.getComputedStyle(ye).transform,window.getComputedStyle(ye).display,ye.offsetHeight,we.offsetHeight,me.offsetHeight,setTimeout(()=>{ye.style.transition=Me||""},0)}}else if(me.classList.remove("ubits-checkbox--checked"),me.classList.remove("ubits-checkbox--indeterminate"),we){const Se=we.querySelector(".ubits-checkbox__checkmark");Se&&Se.remove();const ye=we.querySelector(".ubits-checkbox__indeterminate");ye&&ye.remove()}}}});const X=e.rows.length>0&&e.rows.every(Y=>Y.data[g]===!0),D=e.rows.some(Y=>Y.data[g]===!0)&&!X,P=m;P.checked=X,P.indeterminate=D;const $=P.closest(".ubits-checkbox");if($){const Y=$.querySelector(".ubits-checkbox__square");if(X){if($.classList.add("ubits-checkbox--checked"),$.classList.remove("ubits-checkbox--indeterminate"),Y){const Q=Y.querySelector(".ubits-checkbox__indeterminate");Q&&Q.remove(),$.classList.add("ubits-checkbox--checked"),$.offsetHeight;let N=Y.querySelector(".ubits-checkbox__checkmark");N||(N=document.createElement("span"),N.className="ubits-checkbox__checkmark",Y.appendChild(N));const ge=N.style.transition;N.style.transition="none",N.style.setProperty("opacity","1","important"),N.style.setProperty("transform","scale(1)","important"),N.style.setProperty("display","flex","important"),window.getComputedStyle(N).opacity,window.getComputedStyle(N).transform,window.getComputedStyle(N).display,N.offsetHeight,Y.offsetHeight,$.offsetHeight,setTimeout(()=>{N.style.transition=ge||""},0)}}else if(D){if($.classList.remove("ubits-checkbox--checked"),$.classList.add("ubits-checkbox--indeterminate"),Y){const Q=Y.querySelector(".ubits-checkbox__checkmark");Q&&Q.remove();let N=Y.querySelector(".ubits-checkbox__indeterminate");N||(N=document.createElement("span"),N.className="ubits-checkbox__indeterminate",Y.appendChild(N)),N.style.setProperty("opacity","1","important"),N.style.setProperty("transform","scale(1)","important"),N.style.setProperty("display","flex","important")}}else if($.classList.remove("ubits-checkbox--checked"),$.classList.remove("ubits-checkbox--indeterminate"),Y){const Q=Y.querySelector(".ubits-checkbox__checkmark");Q&&Q.remove();const N=Y.querySelector(".ubits-checkbox__indeterminate");N&&N.remove()}$.offsetHeight}n.offsetHeight,M=!1;const j=e;if(j.onSelectAll){const Y=n.querySelector(".ubits-data-table__scrollable-container"),Q=Y?.scrollTop||0,N=Y?.scrollHeight||0,ge=Y?.clientHeight||0;try{j.onSelectAll(I)}catch(De){console.error("☑️ [SELECT ALL] ❌ Error en onSelectAll callback:",De)}const ie=n.querySelector(".ubits-data-table__scrollable-container"),me=ie?.scrollTop||0,we=ie?.scrollHeight||0,Se=ie?.clientHeight||0,ye=Math.abs(me-Q)>1,Me=Math.abs(we-N)>1||Math.abs(Se-ge)>1;(ye||Me)&&(console.warn("☑️ [SELECT ALL] ⚠️ El callback onSelectAll parece haber causado cambios:",{scrollCambió:ye,scrollAntes:Q,scrollDespues:me,diferenciaScroll:me-Q,dimensionesCambiaron:Me,scrollHeightAntes:N,scrollHeightDespues:we,clientHeightAntes:ge,clientHeightDespues:Se}),ye&&q>0&&ie&&(ie.scrollTop=q,setTimeout(()=>{const De=ie.scrollTop},50)))}const R=n.querySelector(".ubits-data-table__scrollable-container"),oe=R?.scrollTop||0,pe=R?.scrollHeight||0,be=R?.clientHeight||0}else O()};k.addEventListener("change",_,{capture:!0});const o=f=>{const m=f.target};k.addEventListener("click",o,{capture:!0})}),n.querySelectorAll("input[data-column-id]:not([data-column-checkbox-header])").forEach(S=>{const x=S,h=x.getAttribute("data-row-id"),v=x.getAttribute("data-column-id"),k=x.cloneNode(!0);k.checked=x.checked,x.parentNode?.replaceChild(k,x);const _=o=>{console.log("🔵 [DATA TABLE CHECKBOX HANDLER] ========== CHECKBOX CHANGE EVENT =========="),console.log("🔵 [DATA TABLE CHECKBOX HANDLER] Event type:",o.type),console.log("🔵 [DATA TABLE CHECKBOX HANDLER] Event target:",o.target);const f=o.target;if(console.log("🔵 [DATA TABLE CHECKBOX HANDLER] Input element:",f),console.log("🔵 [DATA TABLE CHECKBOX HANDLER] Input checked:",f?.checked),console.log("🔵 [DATA TABLE CHECKBOX HANDLER] Input data-row-id:",f?.getAttribute("data-row-id")),console.log("🔵 [DATA TABLE CHECKBOX HANDLER] Input data-column-id:",f?.getAttribute("data-column-id")),console.log("🔵 [DATA TABLE CHECKBOX HANDLER] Input has data-column-checkbox-header:",f?.hasAttribute("data-column-checkbox-header")),f.hasAttribute("data-column-checkbox-header")){console.log("🔵 [DATA TABLE CHECKBOX HANDLER] ⚠️ Es checkbox del header, ignorando..."),o.stopPropagation(),o.stopImmediatePropagation();return}if(M){console.log("🔵 [DATA TABLE CHECKBOX HANDLER] ⚠️ Select all en progreso, ignorando...");return}const m=f.getAttribute("data-row-id"),g=f.getAttribute("data-column-id");if(console.log("🔵 [DATA TABLE CHECKBOX HANDLER] currentRowIdStr:",m),console.log("🔵 [DATA TABLE CHECKBOX HANDLER] currentColumnId:",g),!m||!g){console.warn("⚠️ [DATA TABLE CHECKBOX HANDLER] No tiene data-row-id o data-column-id, ignorando...");return}const I=isNaN(Number(m))?m:Number(m),W=f.checked;console.log("🔵 [DATA TABLE CHECKBOX HANDLER] rowId procesado:",I),console.log("🔵 [DATA TABLE CHECKBOX HANDLER] isChecked:",W);const q=e.rows.find(V=>V.id===I);if(q)if(q.data[g]=W,g==="checkbox-2"){let V=f.closest(".ubits-checkbox");if(V){const X=V.querySelector(`input[data-row-id="${I}"][data-column-id="${g}"]`);if(!X||X!==f){const te=n.querySelector(`input[data-row-id="${I}"][data-column-id="${g}"]`);te&&(V=te.closest(".ubits-checkbox"))}}if(V){const X=V.querySelector(".ubits-checkbox__square");if(W){if(V.classList.add("ubits-checkbox--checked"),V.classList.remove("ubits-checkbox--indeterminate"),X){const te=X.querySelector(".ubits-checkbox__indeterminate");te&&te.remove(),V.classList.add("ubits-checkbox--checked"),V.classList.remove("ubits-checkbox--indeterminate"),V.offsetHeight;let D=X.querySelector(".ubits-checkbox__checkmark");D||(D=document.createElement("span"),D.className="ubits-checkbox__checkmark",X.appendChild(D));const P=D.style.transition;D.style.transition="none",D.style.setProperty("opacity","1","important"),D.style.setProperty("transform","scale(1)","important"),D.style.setProperty("display","flex","important"),window.getComputedStyle(D).opacity,window.getComputedStyle(D).transform,window.getComputedStyle(D).display,D.offsetHeight,X.offsetHeight,V.offsetHeight,setTimeout(()=>{D.style.transition=P||""},0),requestAnimationFrame(()=>{const $=X.querySelector(".ubits-checkbox__checkmark");if($){const j=window.getComputedStyle($),R=window.getComputedStyle($,"::after");(j.opacity==="0"||j.transform.includes("scale(0)"))&&($.style.setProperty("opacity","1","important"),$.style.setProperty("transform","scale(1)","important"),$.style.setProperty("display","flex","important"),$.offsetHeight)}})}}else if(V.classList.remove("ubits-checkbox--checked"),V.classList.remove("ubits-checkbox--indeterminate"),X){const te=X.querySelector(".ubits-checkbox__checkmark");te&&te.remove();const D=X.querySelector(".ubits-checkbox__indeterminate");D&&D.remove()}}else{const X=n.querySelectorAll(`input[data-row-id="${I}"][data-column-id="${v}"]`);if(X.length>0){const D=(Array.from(X).find(P=>P===f)||X[0])?.closest(".ubits-checkbox");if(D){const P=D.querySelector(".ubits-checkbox__square");if(W){if(D.classList.add("ubits-checkbox--checked"),D.classList.remove("ubits-checkbox--indeterminate"),P){const $=P.querySelector(".ubits-checkbox__indeterminate");$&&$.remove();let j=P.querySelector(".ubits-checkbox__checkmark");j||(j=document.createElement("span"),j.className="ubits-checkbox__checkmark",P.appendChild(j))}}else if(D.classList.remove("ubits-checkbox--checked"),D.classList.remove("ubits-checkbox--indeterminate"),P){const $=P.querySelector(".ubits-checkbox__checkmark");$&&$.remove()}}}}const ue=n.querySelector(`input[data-column-checkbox-header="${v}"]`);if(ue){const X=e.rows.length>0&&e.rows.every($=>$.data[v]===!0),D=e.rows.some($=>$.data[v]===!0)&&!X;ue.checked=X,ue.indeterminate=D;const P=ue.closest(".ubits-checkbox");if(P){const $=P.querySelector(".ubits-checkbox__square");if(X){if(P.classList.add("ubits-checkbox--checked"),P.classList.remove("ubits-checkbox--indeterminate"),$){const j=$.querySelector(".ubits-checkbox__indeterminate");j&&j.remove();let R=$.querySelector(".ubits-checkbox__checkmark");R||(R=document.createElement("span"),R.className="ubits-checkbox__checkmark",$.appendChild(R))}}else if(D){if(P.classList.remove("ubits-checkbox--checked"),P.classList.add("ubits-checkbox--indeterminate"),$){const j=$.querySelector(".ubits-checkbox__checkmark");j&&j.remove();let R=$.querySelector(".ubits-checkbox__indeterminate");R||(R=document.createElement("span"),R.className="ubits-checkbox__indeterminate",$.appendChild(R))}}else if(P.classList.remove("ubits-checkbox--checked"),P.classList.remove("ubits-checkbox--indeterminate"),$){const j=$.querySelector(".ubits-checkbox__checkmark");j&&j.remove();const R=$.querySelector(".ubits-checkbox__indeterminate");R&&R.remove()}}}const ne=k.closest(".ubits-data-table__row");if(ne){const X=Array.from(ne.classList),D=window.getComputedStyle(ne).backgroundColor,P=ne.querySelectorAll(".ubits-data-table__cell"),$=ne.style.pointerEvents;ne.style.pointerEvents="none",ne.offsetHeight;const R=(document.body.getAttribute("data-theme")||document.documentElement.getAttribute("data-theme")||"light")==="dark"?"--modifiers-normal-color-dark-bg-1":"--modifiers-normal-color-light-bg-1",oe=getComputedStyle(document.documentElement).getPropertyValue(R).trim();ne.classList.add("ubits-data-table__row--clear-hover"),ne.style.setProperty("background-color",oe,"important"),P.forEach((Q,N)=>{Q.style.setProperty("background-color",oe,"important")}),ne.offsetHeight,ne.style.pointerEvents=$||"";const be=window.getComputedStyle(ne).backgroundColor,Y=Array.from(ne.classList);P.forEach((Q,N)=>{const ie=window.getComputedStyle(Q).backgroundColor}),requestAnimationFrame(()=>{setTimeout(()=>{const Q=window.getComputedStyle(ne).backgroundColor;ne.classList.remove("ubits-data-table__row--clear-hover"),ne.style.removeProperty("background-color"),P.forEach(ge=>{ge.style.removeProperty("background-color")});const N=window.getComputedStyle(ne).backgroundColor},150)})}if(console.log("🔵 [DATA TABLE CHECKBOX] ========== VERIFICACIÓN ANTES DE LLAMAR CALLBACK =========="),console.log("🔵 [DATA TABLE CHECKBOX] rowId:",I),console.log("🔵 [DATA TABLE CHECKBOX] isChecked:",W),console.log("🔵 [DATA TABLE CHECKBOX] currentOptions existe:",!!e),console.log("🔵 [DATA TABLE CHECKBOX] currentOptions.onRowSelect existe:",!!e?.onRowSelect),console.log("🔵 [DATA TABLE CHECKBOX] Tipo de onRowSelect:",typeof e?.onRowSelect),e.onRowSelect){console.log("🔵 [DATA TABLE] ✅ Llamando onRowSelect con rowId:",I,"isChecked:",W);try{e.onRowSelect(I,W),console.log("🔵 [DATA TABLE] ✅ onRowSelect ejecutado correctamente")}catch(X){console.error("❌ [DATA TABLE] Error al ejecutar onRowSelect:",X)}}else console.warn("⚠️ [DATA TABLE] onRowSelect no está definido en currentOptions"),console.warn("⚠️ [DATA TABLE] currentOptions keys:",Object.keys(e||{}));console.log("🔵 [DATA TABLE CHECKBOX] ========== FIN VERIFICACIÓN ==========")}else O()};k.addEventListener("change",_,{capture:!1})}),n.querySelectorAll('[data-expand-button="true"]').forEach((S,x)=>{const h=S.cloneNode(!0);S.parentNode?.replaceChild(h,S),h.addEventListener("click",v=>{v.preventDefault(),v.stopPropagation();const k=h.getAttribute("data-row-id"),_=isNaN(Number(k))?k:Number(k),o=e.rows.find(f=>f.id===_);if(o){const f=o.expanded||!1;o.expanded=!f,e.onRowExpand&&e.onRowExpand(_,o.expanded),O(),o.expanded&&requestAnimationFrame(()=>{const m=n.querySelector(`[data-row-id="${_}"]`);if(m){const g=m.nextElementSibling;if(g&&g.classList.contains("ubits-data-table__row-expanded-row")){const I=n.querySelector(".ubits-data-table__scrollable-container--vertical");if(I){const W=m.offsetTop;I.scrollTop=W-50}else m.scrollIntoView({behavior:"smooth",block:"nearest"})}}})}else console.warn("🔘 [EXPAND] ⚠️ Fila no encontrada para rowId:",_)})}),n.querySelectorAll('[data-sort-button="true"]').forEach(S=>{S.addEventListener("click",x=>{x.preventDefault(),x.stopPropagation();const h=S.getAttribute("data-column-id");L===h?E=E==="asc"?"desc":"asc":(L=h,E="asc"),e.onSort?(console.log("🔵 [DATA TABLE] Llamando onSort con columnId:",h,"direction:",E),e.onSort(h,E)):console.warn("⚠️ [DATA TABLE] onSort no está definido"),O()})}),n.querySelectorAll('[data-menu-button="true"]').forEach(S=>{const x=S,h=x.getAttribute("data-column-id");if(!h||!e.columns.find(V=>V.id===h))return;const k=x.closest("th");if(!k){console.warn("⚠️ [MENU BUTTON] No se encontró el header cell");return}const _=k.hasAttribute("data-pinned")&&k.getAttribute("data-pinned")==="true",o=k.classList.contains("ubits-data-table__column-header--pinned"),f=typeof window<"u"&&!window.location?.href?.includes("storybook");let m,g=null;if(_||o){const ue=n.querySelector(".ubits-data-table")?.closest(".ubits-data-table__scrollable-container")||n;m=ue.querySelector(`.ubits-data-table__column-menu-dropdown[data-column-id="${h}"]`),m||(m=document.createElement("div"),m.className="ubits-data-table__column-menu-dropdown",m.setAttribute("data-column-id",h),m.style.cssText=`
+      </div>`)
+					: (_ = v),
+			_
+		);
+	}
+	function Ge(t) {
+		const l = t.containerId ? document.getElementById(t.containerId) : document.body;
+		if (!l) throw new Error(`Container with id "${t.containerId}" not found`);
+		const u = l.querySelector('.ubits-data-table'),
+			d = l.querySelector('.ubits-data-table__scrollable-container');
+		if (d) {
+			const Z = d.querySelector('.ubits-data-table');
+			if (Z) {
+				const re = Z;
+				if (re._dataTableInstance)
+					try {
+						const ee = re._dataTableInstance;
+						ee && typeof ee.destroy == 'function' && ee.destroy();
+					} catch (ee) {
+						console.warn('Error destroying previous table instance:', ee);
+					}
+			}
+			d.remove();
+		} else if (u) {
+			const M = u;
+			if (M._dataTableInstance)
+				try {
+					const Z = M._dataTableInstance;
+					Z && typeof Z.destroy == 'function' && Z.destroy();
+				} catch (Z) {
+					console.warn('Error destroying previous table instance:', Z);
+				}
+			u.remove();
+		}
+		const c = t.lazyLoad !== !1 && !t.showPagination ? t.lazyLoadItemsPerBatch || 10 : void 0,
+			r = { ...t, __lazyLoadCurrentItems: c },
+			a = ze(r),
+			b = document.createElement('div');
+		b.innerHTML = a.trim();
+		const n = b.firstElementChild;
+		if (!n) throw new Error('Failed to create data table 3 element');
+		l.appendChild(n);
+		const s = (M) => {
+			const Z = new Set(),
+				re = [];
+			for (const ee of M) Z.has(ee.id) || (Z.add(ee.id), re.push({ ...ee }));
+			return re.length, M.length, re;
+		};
+		let e = { ...t, columns: s(t.columns) },
+			p = e.columns.filter((M) => M.visible !== !1).map((M) => M.id),
+			w = e.rows.map((M) => M.id),
+			y = null,
+			i = null,
+			L = null,
+			E = null,
+			C = '',
+			H = !1,
+			A = null,
+			T = {},
+			z = null;
+		const F = (M, Z, re) => {
+				if (!Z || Z.trim() === '') return M;
+				const ee = Z.toLowerCase().trim(),
+					he = re.filter((ve) => ve.visible !== !1);
+				return M.filter((ve) =>
+					he.some((Ce) => {
+						const Le = ve.data[Ce.id];
+						return Le == null ? !1 : String(Le).toLowerCase().includes(ee);
+					}),
+				);
+			},
+			J = (M, Z, re) => {
+				const ee = Object.entries(Z).filter(([he, ve]) => ve && ve.trim() !== '');
+				return ee.length === 0
+					? M
+					: M.filter((he) =>
+							ee.every(([ve, Ce]) => {
+								const Le = re.find((xe) => xe.id === ve);
+								if (!Le) {
+									const xe = e.header?.filterButton?.filters?.find((x) => x.id === ve);
+									if (!xe) return !0;
+									const Be = xe.columnId,
+										Pe = he.data[Be];
+									if (Pe == null) return !1;
+									const le = String(Pe).toLowerCase().trim(),
+										S = Ce.toLowerCase().trim();
+									switch (xe.type) {
+										case 'text':
+											return le.includes(S);
+										case 'select':
+											return le === S;
+										case 'number':
+											return le === S || parseFloat(le) === parseFloat(S);
+										case 'date':
+											return le.includes(S);
+										default:
+											return le.includes(S);
+									}
+								}
+								const ke = he.data[Le.id];
+								if (ke == null) return !1;
+								const $e = String(ke).toLowerCase().trim(),
+									Ee = Ce.toLowerCase().trim();
+								switch (Le.type || 'text') {
+									case 'estado':
+										return $e === Ee;
+									case 'fecha':
+										return $e.includes(Ee);
+									case 'progreso':
+										const xe = parseFloat($e),
+											Be = parseFloat(Ee);
+										return !isNaN(xe) && !isNaN(Be) && xe === Be;
+									case 'nombre':
+									case 'nombre-avatar':
+									case 'nombre-avatar-texto':
+									case 'correo':
+									case 'area':
+									case 'lider':
+									case 'pais':
+									case 'ciudad':
+									default:
+										return $e.includes(Ee);
+								}
+							}),
+						);
+			},
+			G = e.showPagination ? !1 : e.lazyLoad !== !1,
+			K = e.lazyLoadItemsPerBatch || 10;
+		let U = K,
+			B = null;
+		const ae = () => {
+				if (B) {
+					const re = n.querySelector('.ubits-data-table__scrollable-container');
+					re && re.removeEventListener('scroll', B),
+						window.removeEventListener('scroll', B, !0),
+						(B = null);
+				}
+				const M = n.querySelector('.ubits-data-table__scrollable-container'),
+					Z = () => {
+						const re = e.rows.length;
+						if (U >= re) return;
+						let ee, he, ve;
+						if (M) (ee = M.scrollTop), (he = M.scrollHeight), (ve = M.clientHeight);
+						else {
+							(ee = window.scrollY || document.documentElement.scrollTop),
+								(he = document.documentElement.scrollHeight),
+								(ve = window.innerHeight);
+							const ke = n.getBoundingClientRect().bottom + ee;
+							if (ee + ve >= ke - 200) {
+								const Ee = Math.min(U + K, re);
+								Ee > U && ((U = Ee), e.onLazyLoad && e.onLazyLoad(U, re), O(!0));
+							}
+							return;
+						}
+						if ((ee + ve) / he >= 0.8) {
+							const Le = Math.min(U + K, re);
+							Le > U && ((U = Le), e.onLazyLoad && e.onLazyLoad(U, re), O(!0));
+						}
+					};
+				M
+					? ((B = Z), M.addEventListener('scroll', B, { passive: !0 }))
+					: (console.warn(
+							'⚠️ [LAZY LOAD] No se encontró contenedor scrollable, esperando renderizado...',
+						),
+						setTimeout(() => {
+							const re = n.querySelector('.ubits-data-table__scrollable-container');
+							re
+								? ((B = Z), re.addEventListener('scroll', B, { passive: !0 }))
+								: console.error(
+										'❌ [LAZY LOAD] No se pudo encontrar contenedor scrollable. El lazy load requiere scroll vertical activo.',
+									);
+						}, 100));
+			},
+			ce = () => {
+				n.querySelectorAll('wa-icon').forEach((Z, re) => {
+					const ee = Z.nextElementSibling,
+						he = Z.parentElement,
+						ve = he && he.classList.contains('ubits-data-table__column-drag-handle');
+					ee &&
+						ee.tagName === 'I' &&
+						(customElements.get('wa-icon')
+							? (ve
+									? ((Z.style.display = 'block'),
+										(Z.style.width = '14px'),
+										(Z.style.height = '14px'),
+										(Z.style.opacity = '1'),
+										(Z.style.margin = '0'),
+										(Z.style.padding = '0'),
+										(Z.style.position = 'absolute'),
+										(Z.style.top = '50%'),
+										(Z.style.left = '50%'),
+										(Z.style.transform = 'translate(-50%, -50%)'),
+										window.getComputedStyle(Z),
+										he && (window.getComputedStyle(he), he.getBoundingClientRect()))
+									: ((Z.style.display = 'inline-block'),
+										(Z.style.width = '12px'),
+										(Z.style.height = '12px'),
+										(Z.style.opacity = '1')),
+								(ee.style.display = 'none'))
+							: ((Z.style.display = 'none'),
+								ve
+									? ((ee.style.display = 'block'),
+										(ee.style.fontSize = '14px'),
+										(ee.style.width = '14px'),
+										(ee.style.height = '14px'),
+										(ee.style.margin = '0'),
+										(ee.style.padding = '0'),
+										(ee.style.lineHeight = '1'),
+										(ee.style.position = 'absolute'),
+										(ee.style.top = '50%'),
+										(ee.style.left = '50%'),
+										(ee.style.transform = 'translate(-50%, -50%)'),
+										(ee.style.boxSizing = 'border-box'),
+										(ee.style.textAlign = 'center'),
+										(ee.style.verticalAlign = 'middle'),
+										window.getComputedStyle(ee),
+										ee.getBoundingClientRect(),
+										he && (window.getComputedStyle(he), he.getBoundingClientRect()))
+									: ((ee.style.display = 'inline-block'),
+										(ee.style.fontSize = '12px'),
+										(ee.style.width = '12px'),
+										(ee.style.height = '12px'))));
+				});
+			},
+			O = (M = !1) => {
+				`${Date.now()}${Math.random().toString(36).substr(2, 5)}`;
+				let Z = 0,
+					re = 0,
+					ee = 0,
+					he = M;
+				const ve = n.querySelector('.ubits-data-table__scrollable-container');
+				ve &&
+					((Z = ve.scrollTop),
+					(re = ve.scrollHeight),
+					(ee = ve.clientHeight),
+					re > ee && !M && (he = !0),
+					Z > 0 && !M && !he && (he = !0));
+				let Ce = e.rows;
+				Object.keys(T).length > 0 && (Ce = J(Ce, T, e.columns)), C && (Ce = F(Ce, C, e.columns));
+				const Le = {
+						...e,
+						rows: Ce,
+						columns: e.columns.map((le) => {
+							const S = { ...le };
+							return le.pinned !== void 0 && (S.pinned = le.pinned), S;
+						}),
+						sortColumnId: L,
+						sortDirection: E,
+						__lazyLoadCurrentItems: U,
+						header: e.header
+							? {
+									...e.header,
+									displayedItems:
+										e.header.displayedItems !== void 0 && !C && Object.keys(T).length === 0
+											? e.header.displayedItems
+											: Ce.length,
+									__isSearchActive: H,
+									__searchTerm: C,
+								}
+							: void 0,
+					},
+					ke = new Set(),
+					$e = Le.columns.filter((le) => (ke.has(le.id) ? !1 : (ke.add(le.id), !0)));
+				Le.columns = $e;
+				const Ee = ze(Le, p, w, T);
+				if (
+					(performance.now(),
+					(n.innerHTML = Ee.trim()),
+					performance.now(),
+					e.header?.searchButton && e.header?.showSearchButton !== !1)
+				) {
+					const le = n.querySelector('.ubits-data-table__header-search-button');
+					if (le) {
+						if (A)
+							try {
+								A.destroy();
+							} catch {}
+						if (!e.header?.searchButton)
+							console.warn(
+								'🔍 [DATA TABLE] searchButton no está definido, saltando creación del componente',
+							);
+						else {
+							const S = document.createElement('div');
+							(S.style.display = 'none'),
+								document.body.appendChild(S),
+								(S.id = 'temp-search-button-container-' + Date.now()),
+								(A = Pt({
+									containerId: S.id,
+									active: H,
+									size: 'sm',
+									state: H ? 'active' : 'default',
+									disabled: e.header.searchButton.disabled || !1,
+									placeholder: e.header.searchButton.placeholder || 'Buscar...',
+									value: C,
+									width: 248,
+									className: 'ubits-data-table__header-search-button',
+									onChange: (h) => {
+										const v = h.target.value;
+										if (
+											((C = v),
+											e.header.searchButton.onChange && e.header.searchButton.onChange(v),
+											O(),
+											e.header.searchButton.onSearch)
+										) {
+											const k = F(e.rows, v, e.columns);
+											e.header.searchButton.onSearch(v, k);
+										}
+									},
+									onClick: (h) => {
+										h.stopPropagation(),
+											h.preventDefault(),
+											(H = !0),
+											e.header.searchButton.onClick && e.header.searchButton.onClick(h),
+											O(),
+											setTimeout(() => {
+												const v = A?.element.querySelector('.ubits-search-button__input');
+												v && v.focus();
+											}, 150);
+									},
+									onBlur: (h) => {
+										const v = h.target;
+										setTimeout(() => {
+											if (!v.value.trim() && document.activeElement !== v) {
+												const k = A?.element.querySelector('.ubits-search-button__clear');
+												document.activeElement !== k && ((H = !1), O());
+											}
+										}, 200);
+									},
+								}));
+							const x = A.element;
+							le.parentNode?.replaceChild(x, le),
+								H && x.style.width && (x.style.width = ''),
+								document.body.removeChild(S);
+						}
+						setTimeout(() => {
+							const S = n.querySelector(
+									'.ubits-data-table__header-search-button.ubits-search-button--active',
+								),
+								x = S?.previousElementSibling;
+							if (S && x) {
+								const h = S.getBoundingClientRect(),
+									v = x.getBoundingClientRect(),
+									k = window.getComputedStyle(S),
+									_ = S.querySelector('.ubits-search-button__input-wrapper'),
+									o = _ ? window.getComputedStyle(_) : null,
+									f = {
+										actualGap: h.left - v.right,
+										difference: h.left - v.right - 8,
+										searchButton: {
+											left: h.left,
+											width: h.width,
+											right: h.right,
+											marginLeft: k.marginLeft,
+											marginRight: k.marginRight,
+											inlineWidth: S.style.width || 'none',
+											computedWidth: k.width,
+										},
+										prevButton: { right: v.right, width: v.width },
+										inputWrapper: { width: o?.width || 'N/A', computedWidth: o?.width || 'N/A' },
+									};
+								Math.abs(f.actualGap - 8) > 1 && h.width;
+							}
+						}, 100);
+					}
+				}
+				fe(),
+					ce(),
+					e.showPagination &&
+						setTimeout(() => {
+							Pe();
+						}, 100),
+					G && !e.showPagination && ae(),
+					(he || (re > 0 && ee > 0 && re > ee)) &&
+						requestAnimationFrame(() => {
+							const le = n.querySelector('.ubits-data-table__scrollable-container');
+							if (le) {
+								const S = le.scrollHeight,
+									x = le.clientHeight,
+									h = S - x,
+									v = re - ee,
+									k = v > 0 ? Z / v : 0;
+								if (h > 0) {
+									const _ = k * h;
+									le.scrollTop = _;
+								}
+							}
+						});
+				const xe = n.querySelectorAll('.ubits-data-table__row');
+				if (
+					(n.querySelector('.ubits-data-table__table'),
+					n.querySelector('.ubits-data-table__tbody'),
+					n.querySelector('.ubits-data-table__scrollable-container'),
+					n.querySelector('.ubits-data-table'),
+					xe.length > 0)
+				) {
+					const le = xe[0],
+						S = xe[1],
+						x = xe[xe.length - 1];
+					le.getBoundingClientRect(), S && S.getBoundingClientRect(), x.getBoundingClientRect();
+				}
+				if (
+					(xe.forEach((le, S) => {
+						S === 0 &&
+							le.querySelectorAll('td').forEach((h, v) => {
+								const k = h;
+								Array.from(k.classList), window.getComputedStyle(k).backgroundColor;
+							});
+					}),
+					xe.length > 0)
+				) {
+					const le = xe[0];
+					le.addEventListener('mouseenter', () => {
+						le.querySelectorAll('td').forEach((x, h) => {
+							const v = x;
+							Array.from(v.classList), window.getComputedStyle(v).backgroundColor;
+						});
+					}),
+						le.addEventListener('mouseleave', () => {});
+				}
+				n.querySelectorAll('input[data-column-checkbox-header]').forEach((le) => {
+					const S = le,
+						x = S.getAttribute('data-column-checkbox-header');
+					if (x) {
+						const h = e.rows.length > 0 && e.rows.every((_) => _.data[x] === !0),
+							k = e.rows.some((_) => _.data[x] === !0) && !h;
+						S.indeterminate = k;
+					}
+				});
+				const Pe = () => {
+					try {
+						const le =
+							n.closest('.ubits-data-table__container') ||
+							n.querySelector('.ubits-data-table__container');
+						if (le) {
+							const S = window.getComputedStyle(le),
+								x =
+									le.querySelector('.ubits-data-table__scrollable-container') ||
+									le.querySelector('.ubits-data-table'),
+								v = (x?.querySelector('.ubits-data-table__table') || x)?.querySelector(
+									'.ubits-data-table__row:last-child',
+								);
+							if (x) {
+								const _ = window.getComputedStyle(x);
+								if (v) {
+									const o = v.getBoundingClientRect();
+								}
+							}
+							const k = le.querySelector('.ubits-data-table__pagination-wrapper');
+							if (k) {
+								const _ = window.getComputedStyle(k),
+									o = k.getBoundingClientRect();
+								if (v) {
+									const f = v.getBoundingClientRect(),
+										m = o.top - f.bottom;
+								}
+							}
+						}
+					} catch (le) {
+						console.error('📄 [SPACING] ❌ Error verificando espaciado:', le);
+					}
+				};
+			},
+			fe = () => {
+				console.log('🔵 [DATA TABLE ATTACH] ========== INICIO attachEventListeners =========='),
+					console.log('🔵 [DATA TABLE ATTACH] currentOptions existe:', !!e),
+					console.log(
+						'🔵 [DATA TABLE ATTACH] currentOptions.onRowSelect existe:',
+						!!e?.onRowSelect,
+					),
+					console.log('🔵 [DATA TABLE ATTACH] Tipo de onRowSelect:', typeof e?.onRowSelect),
+					console.log('🔵 [DATA TABLE ATTACH] currentOptions keys:', Object.keys(e || {})),
+					e?.header &&
+						(console.log('🔵 [DATA TABLE ATTACH] currentOptions.header existe'),
+						console.log(
+							'🔵 [DATA TABLE ATTACH] currentOptions.header.searchButton existe:',
+							!!e.header.searchButton,
+						),
+						console.log(
+							'🔵 [DATA TABLE ATTACH] currentOptions.header.filterButton existe:',
+							!!e.header.filterButton,
+						)),
+					console.log('🔵 [DATA TABLE ATTACH] ========== FIN VERIFICACIÓN INICIAL =========='),
+					typeof window < 'u' && window.location && window.location.href.includes('storybook');
+				try {
+					e.columnReorderable &&
+						(n.hasAttribute('data-column-drag-listener') ||
+							(n.setAttribute('data-column-drag-listener', 'true'),
+							n.addEventListener(
+								'dragstart',
+								(S) => {
+									const h = S.target.closest('.ubits-data-table__column-drag-handle');
+									if (h && ((y = h.getAttribute('data-column-id')), y)) {
+										(S.dataTransfer.effectAllowed = 'move'),
+											S.dataTransfer.setData('text/plain', y);
+										const v = h.closest('.ubits-data-table__column-header');
+										v && v.classList.add('ubits-data-table__column-header--dragging');
+									}
+								},
+								!0,
+							),
+							n.addEventListener(
+								'dragend',
+								(S) => {
+									const h = S.target.closest('.ubits-data-table__column-drag-handle');
+									if (h) {
+										const v = h.closest('.ubits-data-table__column-header');
+										v && v.classList.remove('ubits-data-table__column-header--dragging');
+									}
+									y = null;
+								},
+								!0,
+							),
+							n.addEventListener(
+								'dragover',
+								(S) => {
+									const h = S.target.closest('.ubits-data-table__column-header');
+									if (h && y) {
+										const v = h.getAttribute('data-column-id');
+										if (v && v !== y) {
+											const k = v === 'checkbox' || v.startsWith('checkbox-'),
+												_ = y === 'checkbox' || y.startsWith('checkbox-');
+											if (k) return;
+											if (!_) {
+												const o = p.findIndex((f) => f === 'checkbox' || f.startsWith('checkbox-'));
+												if (o !== -1 && p.indexOf(v) < o) return;
+											}
+											S.preventDefault(),
+												(S.dataTransfer.dropEffect = 'move'),
+												h.classList.add('ubits-data-table__column-header--drag-over');
+										}
+									}
+								},
+								!0,
+							),
+							n.addEventListener(
+								'dragleave',
+								(S) => {
+									const h = S.target.closest('.ubits-data-table__column-header');
+									h && h.classList.remove('ubits-data-table__column-header--drag-over');
+								},
+								!0,
+							),
+							n.addEventListener(
+								'drop',
+								(S) => {
+									const h = S.target.closest('.ubits-data-table__column-header');
+									if (h) {
+										S.preventDefault(),
+											h.classList.remove('ubits-data-table__column-header--drag-over');
+										const v = h.getAttribute('data-column-id');
+										if (!v || !y) return;
+										const k = y === 'checkbox' || y.startsWith('checkbox-'),
+											_ = v === 'checkbox' || v.startsWith('checkbox-');
+										if (k || _) return;
+										if (y !== v) {
+											const o = p.indexOf(y),
+												f = p.indexOf(v),
+												m = p.findIndex((g) => g === 'checkbox' || g.startsWith('checkbox-'));
+											if (m === -1) {
+												o !== -1 &&
+													f !== -1 &&
+													(p.splice(o, 1),
+													p.splice(f, 0, y),
+													e.onColumnReorder && e.onColumnReorder([...p]),
+													O());
+												return;
+											}
+											if (f < m || (o > m && f < m)) return;
+											if (o !== -1 && f !== -1) {
+												const g = [...p];
+												g.splice(o, 1), g.splice(f, 0, y);
+												const I = g.findIndex((W) => W === 'checkbox' || W.startsWith('checkbox-'));
+												if (I !== -1 && I < m) return;
+												(p = g), e.onColumnReorder && e.onColumnReorder([...p]), O();
+											}
+										}
+									}
+								},
+								!0,
+							))),
+						e.rowReorderable &&
+							(n.hasAttribute('data-row-drag-listener') ||
+								(n.setAttribute('data-row-drag-listener', 'true'),
+								n.addEventListener(
+									'dragstart',
+									(S) => {
+										const h = S.target.closest('.ubits-data-table__row-drag-handle');
+										if (!h) return;
+										const v = h.getAttribute('data-row-id');
+										if (v) {
+											const k = isNaN(Number(v)) ? v : Number(v);
+											(i = k),
+												(S.dataTransfer.effectAllowed = 'move'),
+												S.dataTransfer.setData('text/plain', String(k));
+											const _ = h.closest('.ubits-data-table__row');
+											_ && _.classList.add('ubits-data-table__row--dragging');
+										}
+									},
+									!0,
+								),
+								n.addEventListener(
+									'dragend',
+									(S) => {
+										const h = S.target.closest('.ubits-data-table__row-drag-handle');
+										if (h) {
+											const v = h.closest('.ubits-data-table__row');
+											v && v.classList.remove('ubits-data-table__row--dragging');
+										}
+										i = null;
+									},
+									!0,
+								),
+								n.addEventListener(
+									'dragover',
+									(S) => {
+										const h = S.target.closest('.ubits-data-table__row');
+										if (h && i !== null) {
+											const v = h.getAttribute('data-row-id');
+											v &&
+												(isNaN(Number(v)) ? v : Number(v)) !== i &&
+												(S.preventDefault(),
+												(S.dataTransfer.dropEffect = 'move'),
+												h.classList.add('ubits-data-table__row--drag-over'));
+										}
+									},
+									!0,
+								),
+								n.addEventListener(
+									'dragleave',
+									(S) => {
+										const h = S.target.closest('.ubits-data-table__row');
+										h && h.classList.remove('ubits-data-table__row--drag-over');
+									},
+									!0,
+								),
+								n.addEventListener(
+									'drop',
+									(S) => {
+										const h = S.target.closest('.ubits-data-table__row');
+										if (h) {
+											S.preventDefault(), h.classList.remove('ubits-data-table__row--drag-over');
+											const v = h.getAttribute('data-row-id');
+											if (!v || !i) return;
+											const k = isNaN(Number(v)) ? v : Number(v),
+												_ = S.dataTransfer.getData('text/plain');
+											if (_ && String(k) !== _) {
+												const o = isNaN(Number(_)) ? _ : Number(_),
+													f = w.indexOf(o),
+													m = w.indexOf(k);
+												f !== -1 &&
+													m !== -1 &&
+													(w.splice(f, 1),
+													w.splice(m, 0, o),
+													e.onRowReorder && e.onRowReorder([...w]),
+													O());
+											}
+										}
+									},
+									!0,
+								)));
+					let M = !1;
+					if (
+						(n.querySelectorAll('input[data-column-checkbox-header]').forEach((S, x) => {
+							const h = S,
+								v = h.getAttribute('data-column-checkbox-header'),
+								k = h.cloneNode(!0);
+							(k.checked = h.checked),
+								v && k.setAttribute('data-column-checkbox-header', v),
+								Array.from(h.attributes).forEach((f) => {
+									(f.name !== 'data-column-checkbox-header' || !k.hasAttribute(f.name)) &&
+										k.setAttribute(f.name, f.value);
+								}),
+								h.parentNode?.replaceChild(k, h);
+							const _ = (f) => {
+								f.stopPropagation(), f.stopImmediatePropagation();
+								const m = f.target;
+								if (!m.hasAttribute('data-column-checkbox-header')) return;
+								const g = m.getAttribute('data-column-checkbox-header'),
+									I = m.checked,
+									W = n.querySelector('.ubits-data-table__scrollable-container');
+								let q = 0,
+									V = 0,
+									ue = 0;
+								if (
+									(W && ((q = W.scrollTop), (V = W.scrollHeight), (ue = W.clientHeight)),
+									e.rows.forEach((ne) => {
+										ne.data[g] = I;
+									}),
+									g === 'checkbox-2')
+								) {
+									const ne = n.querySelectorAll(`input[data-column-id="${g}"][data-row-id]`);
+									(M = !0),
+										ne.forEach((Y) => {
+											const Q = Y,
+												N = Q.getAttribute('data-row-id');
+											if (N) {
+												const ge = isNaN(Number(N)) ? N : Number(N),
+													ie = e.rows.find((we) => we.id === ge);
+												ie && (ie.data[g] = I), (Q.checked = I);
+												const me = Q.closest('.ubits-checkbox');
+												if (me) {
+													const we = me.querySelector('.ubits-checkbox__square');
+													if (I) {
+														if (
+															(me.classList.add('ubits-checkbox--checked'),
+															me.classList.remove('ubits-checkbox--indeterminate'),
+															we)
+														) {
+															const Se = we.querySelector('.ubits-checkbox__indeterminate');
+															Se && Se.remove();
+															let ye = we.querySelector('.ubits-checkbox__checkmark');
+															ye ||
+																((ye = document.createElement('span')),
+																(ye.className = 'ubits-checkbox__checkmark'),
+																we.appendChild(ye));
+															const Me = ye.style.transition;
+															(ye.style.transition = 'none'),
+																ye.style.setProperty('opacity', '1', 'important'),
+																ye.style.setProperty('transform', 'scale(1)', 'important'),
+																ye.style.setProperty('display', 'flex', 'important'),
+																window.getComputedStyle(ye).opacity,
+																window.getComputedStyle(ye).transform,
+																window.getComputedStyle(ye).display,
+																ye.offsetHeight,
+																we.offsetHeight,
+																me.offsetHeight,
+																setTimeout(() => {
+																	ye.style.transition = Me || '';
+																}, 0);
+														}
+													} else if (
+														(me.classList.remove('ubits-checkbox--checked'),
+														me.classList.remove('ubits-checkbox--indeterminate'),
+														we)
+													) {
+														const Se = we.querySelector('.ubits-checkbox__checkmark');
+														Se && Se.remove();
+														const ye = we.querySelector('.ubits-checkbox__indeterminate');
+														ye && ye.remove();
+													}
+												}
+											}
+										});
+									const X = e.rows.length > 0 && e.rows.every((Y) => Y.data[g] === !0),
+										D = e.rows.some((Y) => Y.data[g] === !0) && !X,
+										P = m;
+									(P.checked = X), (P.indeterminate = D);
+									const $ = P.closest('.ubits-checkbox');
+									if ($) {
+										const Y = $.querySelector('.ubits-checkbox__square');
+										if (X) {
+											if (
+												($.classList.add('ubits-checkbox--checked'),
+												$.classList.remove('ubits-checkbox--indeterminate'),
+												Y)
+											) {
+												const Q = Y.querySelector('.ubits-checkbox__indeterminate');
+												Q && Q.remove(), $.classList.add('ubits-checkbox--checked'), $.offsetHeight;
+												let N = Y.querySelector('.ubits-checkbox__checkmark');
+												N ||
+													((N = document.createElement('span')),
+													(N.className = 'ubits-checkbox__checkmark'),
+													Y.appendChild(N));
+												const ge = N.style.transition;
+												(N.style.transition = 'none'),
+													N.style.setProperty('opacity', '1', 'important'),
+													N.style.setProperty('transform', 'scale(1)', 'important'),
+													N.style.setProperty('display', 'flex', 'important'),
+													window.getComputedStyle(N).opacity,
+													window.getComputedStyle(N).transform,
+													window.getComputedStyle(N).display,
+													N.offsetHeight,
+													Y.offsetHeight,
+													$.offsetHeight,
+													setTimeout(() => {
+														N.style.transition = ge || '';
+													}, 0);
+											}
+										} else if (D) {
+											if (
+												($.classList.remove('ubits-checkbox--checked'),
+												$.classList.add('ubits-checkbox--indeterminate'),
+												Y)
+											) {
+												const Q = Y.querySelector('.ubits-checkbox__checkmark');
+												Q && Q.remove();
+												let N = Y.querySelector('.ubits-checkbox__indeterminate');
+												N ||
+													((N = document.createElement('span')),
+													(N.className = 'ubits-checkbox__indeterminate'),
+													Y.appendChild(N)),
+													N.style.setProperty('opacity', '1', 'important'),
+													N.style.setProperty('transform', 'scale(1)', 'important'),
+													N.style.setProperty('display', 'flex', 'important');
+											}
+										} else if (
+											($.classList.remove('ubits-checkbox--checked'),
+											$.classList.remove('ubits-checkbox--indeterminate'),
+											Y)
+										) {
+											const Q = Y.querySelector('.ubits-checkbox__checkmark');
+											Q && Q.remove();
+											const N = Y.querySelector('.ubits-checkbox__indeterminate');
+											N && N.remove();
+										}
+										$.offsetHeight;
+									}
+									n.offsetHeight, (M = !1);
+									const j = e;
+									if (j.onSelectAll) {
+										const Y = n.querySelector('.ubits-data-table__scrollable-container'),
+											Q = Y?.scrollTop || 0,
+											N = Y?.scrollHeight || 0,
+											ge = Y?.clientHeight || 0;
+										try {
+											j.onSelectAll(I);
+										} catch (De) {
+											console.error('☑️ [SELECT ALL] ❌ Error en onSelectAll callback:', De);
+										}
+										const ie = n.querySelector('.ubits-data-table__scrollable-container'),
+											me = ie?.scrollTop || 0,
+											we = ie?.scrollHeight || 0,
+											Se = ie?.clientHeight || 0,
+											ye = Math.abs(me - Q) > 1,
+											Me = Math.abs(we - N) > 1 || Math.abs(Se - ge) > 1;
+										(ye || Me) &&
+											(console.warn(
+												'☑️ [SELECT ALL] ⚠️ El callback onSelectAll parece haber causado cambios:',
+												{
+													scrollCambió: ye,
+													scrollAntes: Q,
+													scrollDespues: me,
+													diferenciaScroll: me - Q,
+													dimensionesCambiaron: Me,
+													scrollHeightAntes: N,
+													scrollHeightDespues: we,
+													clientHeightAntes: ge,
+													clientHeightDespues: Se,
+												},
+											),
+											ye &&
+												q > 0 &&
+												ie &&
+												((ie.scrollTop = q),
+												setTimeout(() => {
+													const De = ie.scrollTop;
+												}, 50)));
+									}
+									const R = n.querySelector('.ubits-data-table__scrollable-container'),
+										oe = R?.scrollTop || 0,
+										pe = R?.scrollHeight || 0,
+										be = R?.clientHeight || 0;
+								} else O();
+							};
+							k.addEventListener('change', _, { capture: !0 });
+							const o = (f) => {
+								const m = f.target;
+							};
+							k.addEventListener('click', o, { capture: !0 });
+						}),
+						n
+							.querySelectorAll('input[data-column-id]:not([data-column-checkbox-header])')
+							.forEach((S) => {
+								const x = S,
+									h = x.getAttribute('data-row-id'),
+									v = x.getAttribute('data-column-id'),
+									k = x.cloneNode(!0);
+								(k.checked = x.checked), x.parentNode?.replaceChild(k, x);
+								const _ = (o) => {
+									console.log(
+										'🔵 [DATA TABLE CHECKBOX HANDLER] ========== CHECKBOX CHANGE EVENT ==========',
+									),
+										console.log('🔵 [DATA TABLE CHECKBOX HANDLER] Event type:', o.type),
+										console.log('🔵 [DATA TABLE CHECKBOX HANDLER] Event target:', o.target);
+									const f = o.target;
+									if (
+										(console.log('🔵 [DATA TABLE CHECKBOX HANDLER] Input element:', f),
+										console.log('🔵 [DATA TABLE CHECKBOX HANDLER] Input checked:', f?.checked),
+										console.log(
+											'🔵 [DATA TABLE CHECKBOX HANDLER] Input data-row-id:',
+											f?.getAttribute('data-row-id'),
+										),
+										console.log(
+											'🔵 [DATA TABLE CHECKBOX HANDLER] Input data-column-id:',
+											f?.getAttribute('data-column-id'),
+										),
+										console.log(
+											'🔵 [DATA TABLE CHECKBOX HANDLER] Input has data-column-checkbox-header:',
+											f?.hasAttribute('data-column-checkbox-header'),
+										),
+										f.hasAttribute('data-column-checkbox-header'))
+									) {
+										console.log(
+											'🔵 [DATA TABLE CHECKBOX HANDLER] ⚠️ Es checkbox del header, ignorando...',
+										),
+											o.stopPropagation(),
+											o.stopImmediatePropagation();
+										return;
+									}
+									if (M) {
+										console.log(
+											'🔵 [DATA TABLE CHECKBOX HANDLER] ⚠️ Select all en progreso, ignorando...',
+										);
+										return;
+									}
+									const m = f.getAttribute('data-row-id'),
+										g = f.getAttribute('data-column-id');
+									if (
+										(console.log('🔵 [DATA TABLE CHECKBOX HANDLER] currentRowIdStr:', m),
+										console.log('🔵 [DATA TABLE CHECKBOX HANDLER] currentColumnId:', g),
+										!m || !g)
+									) {
+										console.warn(
+											'⚠️ [DATA TABLE CHECKBOX HANDLER] No tiene data-row-id o data-column-id, ignorando...',
+										);
+										return;
+									}
+									const I = isNaN(Number(m)) ? m : Number(m),
+										W = f.checked;
+									console.log('🔵 [DATA TABLE CHECKBOX HANDLER] rowId procesado:', I),
+										console.log('🔵 [DATA TABLE CHECKBOX HANDLER] isChecked:', W);
+									const q = e.rows.find((V) => V.id === I);
+									if (q)
+										if (((q.data[g] = W), g === 'checkbox-2')) {
+											let V = f.closest('.ubits-checkbox');
+											if (V) {
+												const X = V.querySelector(
+													`input[data-row-id="${I}"][data-column-id="${g}"]`,
+												);
+												if (!X || X !== f) {
+													const te = n.querySelector(
+														`input[data-row-id="${I}"][data-column-id="${g}"]`,
+													);
+													te && (V = te.closest('.ubits-checkbox'));
+												}
+											}
+											if (V) {
+												const X = V.querySelector('.ubits-checkbox__square');
+												if (W) {
+													if (
+														(V.classList.add('ubits-checkbox--checked'),
+														V.classList.remove('ubits-checkbox--indeterminate'),
+														X)
+													) {
+														const te = X.querySelector('.ubits-checkbox__indeterminate');
+														te && te.remove(),
+															V.classList.add('ubits-checkbox--checked'),
+															V.classList.remove('ubits-checkbox--indeterminate'),
+															V.offsetHeight;
+														let D = X.querySelector('.ubits-checkbox__checkmark');
+														D ||
+															((D = document.createElement('span')),
+															(D.className = 'ubits-checkbox__checkmark'),
+															X.appendChild(D));
+														const P = D.style.transition;
+														(D.style.transition = 'none'),
+															D.style.setProperty('opacity', '1', 'important'),
+															D.style.setProperty('transform', 'scale(1)', 'important'),
+															D.style.setProperty('display', 'flex', 'important'),
+															window.getComputedStyle(D).opacity,
+															window.getComputedStyle(D).transform,
+															window.getComputedStyle(D).display,
+															D.offsetHeight,
+															X.offsetHeight,
+															V.offsetHeight,
+															setTimeout(() => {
+																D.style.transition = P || '';
+															}, 0),
+															requestAnimationFrame(() => {
+																const $ = X.querySelector('.ubits-checkbox__checkmark');
+																if ($) {
+																	const j = window.getComputedStyle($),
+																		R = window.getComputedStyle($, '::after');
+																	(j.opacity === '0' || j.transform.includes('scale(0)')) &&
+																		($.style.setProperty('opacity', '1', 'important'),
+																		$.style.setProperty('transform', 'scale(1)', 'important'),
+																		$.style.setProperty('display', 'flex', 'important'),
+																		$.offsetHeight);
+																}
+															});
+													}
+												} else if (
+													(V.classList.remove('ubits-checkbox--checked'),
+													V.classList.remove('ubits-checkbox--indeterminate'),
+													X)
+												) {
+													const te = X.querySelector('.ubits-checkbox__checkmark');
+													te && te.remove();
+													const D = X.querySelector('.ubits-checkbox__indeterminate');
+													D && D.remove();
+												}
+											} else {
+												const X = n.querySelectorAll(
+													`input[data-row-id="${I}"][data-column-id="${v}"]`,
+												);
+												if (X.length > 0) {
+													const D = (Array.from(X).find((P) => P === f) || X[0])?.closest(
+														'.ubits-checkbox',
+													);
+													if (D) {
+														const P = D.querySelector('.ubits-checkbox__square');
+														if (W) {
+															if (
+																(D.classList.add('ubits-checkbox--checked'),
+																D.classList.remove('ubits-checkbox--indeterminate'),
+																P)
+															) {
+																const $ = P.querySelector('.ubits-checkbox__indeterminate');
+																$ && $.remove();
+																let j = P.querySelector('.ubits-checkbox__checkmark');
+																j ||
+																	((j = document.createElement('span')),
+																	(j.className = 'ubits-checkbox__checkmark'),
+																	P.appendChild(j));
+															}
+														} else if (
+															(D.classList.remove('ubits-checkbox--checked'),
+															D.classList.remove('ubits-checkbox--indeterminate'),
+															P)
+														) {
+															const $ = P.querySelector('.ubits-checkbox__checkmark');
+															$ && $.remove();
+														}
+													}
+												}
+											}
+											const ue = n.querySelector(`input[data-column-checkbox-header="${v}"]`);
+											if (ue) {
+												const X = e.rows.length > 0 && e.rows.every(($) => $.data[v] === !0),
+													D = e.rows.some(($) => $.data[v] === !0) && !X;
+												(ue.checked = X), (ue.indeterminate = D);
+												const P = ue.closest('.ubits-checkbox');
+												if (P) {
+													const $ = P.querySelector('.ubits-checkbox__square');
+													if (X) {
+														if (
+															(P.classList.add('ubits-checkbox--checked'),
+															P.classList.remove('ubits-checkbox--indeterminate'),
+															$)
+														) {
+															const j = $.querySelector('.ubits-checkbox__indeterminate');
+															j && j.remove();
+															let R = $.querySelector('.ubits-checkbox__checkmark');
+															R ||
+																((R = document.createElement('span')),
+																(R.className = 'ubits-checkbox__checkmark'),
+																$.appendChild(R));
+														}
+													} else if (D) {
+														if (
+															(P.classList.remove('ubits-checkbox--checked'),
+															P.classList.add('ubits-checkbox--indeterminate'),
+															$)
+														) {
+															const j = $.querySelector('.ubits-checkbox__checkmark');
+															j && j.remove();
+															let R = $.querySelector('.ubits-checkbox__indeterminate');
+															R ||
+																((R = document.createElement('span')),
+																(R.className = 'ubits-checkbox__indeterminate'),
+																$.appendChild(R));
+														}
+													} else if (
+														(P.classList.remove('ubits-checkbox--checked'),
+														P.classList.remove('ubits-checkbox--indeterminate'),
+														$)
+													) {
+														const j = $.querySelector('.ubits-checkbox__checkmark');
+														j && j.remove();
+														const R = $.querySelector('.ubits-checkbox__indeterminate');
+														R && R.remove();
+													}
+												}
+											}
+											const ne = k.closest('.ubits-data-table__row');
+											if (ne) {
+												const X = Array.from(ne.classList),
+													D = window.getComputedStyle(ne).backgroundColor,
+													P = ne.querySelectorAll('.ubits-data-table__cell'),
+													$ = ne.style.pointerEvents;
+												(ne.style.pointerEvents = 'none'), ne.offsetHeight;
+												const R =
+														(document.body.getAttribute('data-theme') ||
+															document.documentElement.getAttribute('data-theme') ||
+															'light') === 'dark'
+															? '--modifiers-normal-color-dark-bg-1'
+															: '--modifiers-normal-color-light-bg-1',
+													oe = getComputedStyle(document.documentElement)
+														.getPropertyValue(R)
+														.trim();
+												ne.classList.add('ubits-data-table__row--clear-hover'),
+													ne.style.setProperty('background-color', oe, 'important'),
+													P.forEach((Q, N) => {
+														Q.style.setProperty('background-color', oe, 'important');
+													}),
+													ne.offsetHeight,
+													(ne.style.pointerEvents = $ || '');
+												const be = window.getComputedStyle(ne).backgroundColor,
+													Y = Array.from(ne.classList);
+												P.forEach((Q, N) => {
+													const ie = window.getComputedStyle(Q).backgroundColor;
+												}),
+													requestAnimationFrame(() => {
+														setTimeout(() => {
+															const Q = window.getComputedStyle(ne).backgroundColor;
+															ne.classList.remove('ubits-data-table__row--clear-hover'),
+																ne.style.removeProperty('background-color'),
+																P.forEach((ge) => {
+																	ge.style.removeProperty('background-color');
+																});
+															const N = window.getComputedStyle(ne).backgroundColor;
+														}, 150);
+													});
+											}
+											if (
+												(console.log(
+													'🔵 [DATA TABLE CHECKBOX] ========== VERIFICACIÓN ANTES DE LLAMAR CALLBACK ==========',
+												),
+												console.log('🔵 [DATA TABLE CHECKBOX] rowId:', I),
+												console.log('🔵 [DATA TABLE CHECKBOX] isChecked:', W),
+												console.log('🔵 [DATA TABLE CHECKBOX] currentOptions existe:', !!e),
+												console.log(
+													'🔵 [DATA TABLE CHECKBOX] currentOptions.onRowSelect existe:',
+													!!e?.onRowSelect,
+												),
+												console.log(
+													'🔵 [DATA TABLE CHECKBOX] Tipo de onRowSelect:',
+													typeof e?.onRowSelect,
+												),
+												e.onRowSelect)
+											) {
+												console.log(
+													'🔵 [DATA TABLE] ✅ Llamando onRowSelect con rowId:',
+													I,
+													'isChecked:',
+													W,
+												);
+												try {
+													e.onRowSelect(I, W),
+														console.log('🔵 [DATA TABLE] ✅ onRowSelect ejecutado correctamente');
+												} catch (X) {
+													console.error('❌ [DATA TABLE] Error al ejecutar onRowSelect:', X);
+												}
+											} else
+												console.warn(
+													'⚠️ [DATA TABLE] onRowSelect no está definido en currentOptions',
+												),
+													console.warn('⚠️ [DATA TABLE] currentOptions keys:', Object.keys(e || {}));
+											console.log(
+												'🔵 [DATA TABLE CHECKBOX] ========== FIN VERIFICACIÓN ==========',
+											);
+										} else O();
+								};
+								k.addEventListener('change', _, { capture: !1 });
+							}),
+						n.querySelectorAll('[data-expand-button="true"]').forEach((S, x) => {
+							const h = S.cloneNode(!0);
+							S.parentNode?.replaceChild(h, S),
+								h.addEventListener('click', (v) => {
+									v.preventDefault(), v.stopPropagation();
+									const k = h.getAttribute('data-row-id'),
+										_ = isNaN(Number(k)) ? k : Number(k),
+										o = e.rows.find((f) => f.id === _);
+									if (o) {
+										const f = o.expanded || !1;
+										(o.expanded = !f),
+											e.onRowExpand && e.onRowExpand(_, o.expanded),
+											O(),
+											o.expanded &&
+												requestAnimationFrame(() => {
+													const m = n.querySelector(`[data-row-id="${_}"]`);
+													if (m) {
+														const g = m.nextElementSibling;
+														if (g && g.classList.contains('ubits-data-table__row-expanded-row')) {
+															const I = n.querySelector(
+																'.ubits-data-table__scrollable-container--vertical',
+															);
+															if (I) {
+																const W = m.offsetTop;
+																I.scrollTop = W - 50;
+															} else m.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+														}
+													}
+												});
+									} else console.warn('🔘 [EXPAND] ⚠️ Fila no encontrada para rowId:', _);
+								});
+						}),
+						n.querySelectorAll('[data-sort-button="true"]').forEach((S) => {
+							S.addEventListener('click', (x) => {
+								x.preventDefault(), x.stopPropagation();
+								const h = S.getAttribute('data-column-id');
+								L === h ? (E = E === 'asc' ? 'desc' : 'asc') : ((L = h), (E = 'asc')),
+									e.onSort
+										? (console.log(
+												'🔵 [DATA TABLE] Llamando onSort con columnId:',
+												h,
+												'direction:',
+												E,
+											),
+											e.onSort(h, E))
+										: console.warn('⚠️ [DATA TABLE] onSort no está definido'),
+									O();
+							});
+						}),
+						n.querySelectorAll('[data-menu-button="true"]').forEach((S) => {
+							const x = S,
+								h = x.getAttribute('data-column-id');
+							if (!h || !e.columns.find((V) => V.id === h)) return;
+							const k = x.closest('th');
+							if (!k) {
+								console.warn('⚠️ [MENU BUTTON] No se encontró el header cell');
+								return;
+							}
+							const _ = k.hasAttribute('data-pinned') && k.getAttribute('data-pinned') === 'true',
+								o = k.classList.contains('ubits-data-table__column-header--pinned'),
+								f = typeof window < 'u' && !window.location?.href?.includes('storybook');
+							let m,
+								g = null;
+							if (_ || o) {
+								const ue =
+									n
+										.querySelector('.ubits-data-table')
+										?.closest('.ubits-data-table__scrollable-container') || n;
+								(m = ue.querySelector(
+									`.ubits-data-table__column-menu-dropdown[data-column-id="${h}"]`,
+								)),
+									m ||
+										((m = document.createElement('div')),
+										(m.className = 'ubits-data-table__column-menu-dropdown'),
+										m.setAttribute('data-column-id', h),
+										(m.style.cssText = `
             position: fixed;
             z-index: 10000 !important;
             display: none;
             width: 160px;
             max-width: 160px;
             box-sizing: border-box;
-          `,ue.appendChild(m))}else m=k.querySelector(".ubits-data-table__column-menu-dropdown"),m||(m=document.createElement("div"),m.className="ubits-data-table__column-menu-dropdown",m.setAttribute("data-column-id",h),m.style.cssText=`
+          `),
+										ue.appendChild(m));
+							} else
+								(m = k.querySelector('.ubits-data-table__column-menu-dropdown')),
+									m ||
+										((m = document.createElement('div')),
+										(m.className = 'ubits-data-table__column-menu-dropdown'),
+										m.setAttribute('data-column-id', h),
+										(m.style.cssText = `
             position: absolute;
             top: 100%;
             right: 0;
@@ -602,7 +4935,167 @@
             width: 160px;
             max-width: 160px;
             box-sizing: border-box;
-          `,k.style.position="relative",k.appendChild(m));let I=!1;const W=()=>{m&&(m.style.display="none"),I=!1,q&&(document.removeEventListener("click",q),q=null),(_||o)&&m.parentElement&&m.parentElement!==k&&m.remove()};let q=null;x.addEventListener("click",V=>{const ue=typeof window<"u"&&window.location&&!window.location.href.includes("storybook");V.preventDefault(),V.stopPropagation();const ne=e.columns.find(pe=>pe.id===h);if(!ne){console.error("❌ [COLUMN MENU] Columna no encontrada:",h);return}const X=ne.pinned||!1;if(I){W();return}n.querySelectorAll(".ubits-data-table__column-menu-dropdown").forEach(pe=>{pe!==m&&(pe.style.display="none")});const te=[{label:X?"Desfijar columna":"Fijar columna",value:"pin",state:"default"}];m.innerHTML="";const D=`column-menu-list-${h}-${Math.random().toString(36).substr(2,9)}`;m.id=D;try{const pe=Re({containerId:D,items:te,size:"sm",maxHeight:"200px",onSelectionChange:(be,Y)=>{if(be&&be.value==="pin"){const Q=e.columns.find(N=>N.id===h);if(Q){const N=Q.pinned||!1;Q.pinned=!N,e.onColumnPin?(console.log("🔵 [DATA TABLE] Llamando onColumnPin con columnId:",h,"pinned:",Q.pinned),e.onColumnPin(h,Q.pinned)):console.warn("⚠️ [DATA TABLE] onColumnPin no está definido"),O()}else console.error("❌ [COLUMN MENU] Columna no encontrada al intentar fijar:",h)}W()}})}catch(pe){console.error("❌ [COLUMN MENU] Error al crear lista con createList:",pe);const be=Ne({items:te,size:"sm",maxHeight:"200px"});m.innerHTML=be,m.querySelectorAll(".ubits-list-item").forEach(Q=>{Q.addEventListener("click",()=>{const N=e.columns.find(ge=>ge.id===h);if(N){const ge=N.pinned||!1;N.pinned=!ge,e.onColumnPin&&e.onColumnPin(h,N.pinned),O()}W()})})}const P=k.hasAttribute("data-pinned")&&k.getAttribute("data-pinned")==="true",$=k.classList.contains("ubits-data-table__column-header--pinned"),j=P||$?1e4:1e3,R=x.getBoundingClientRect(),oe=k.getBoundingClientRect();if(P||$){m.style.setProperty("position","fixed","important"),m.style.setProperty("top",`${R.bottom+4}px`,"important");const pe=R.right-160;m.style.setProperty("left",`${pe}px`,"important"),m.style.setProperty("right","auto","important"),m.style.setProperty("z-index",`${j}`,"important"),m.style.setProperty("display","block","important")}else m.style.position="absolute",m.style.top="100%",m.style.right="0",m.style.left="auto",m.style.zIndex=`${j}`,m.style.setProperty("z-index",`${j}`,"important"),m.style.display="block";I=!0,q=pe=>{!m.contains(pe.target)&&!x.contains(pe.target)&&W()},setTimeout(()=>{document.addEventListener("click",q)},0)})}),n.querySelectorAll(".ubits-data-table__action-button").forEach(S=>{const x=S,h=x.getAttribute("data-row-id"),v=x.getAttribute("data-column-id");if(!h){console.warn("⚠️ [ACTION BUTTONS] No se encontró el data-row-id en el botón");return}const k=isNaN(Number(h))?h:Number(h),_=x.cloneNode(!0);x.parentNode?.replaceChild(_,x),_.addEventListener("click",o=>{o.preventDefault(),o.stopPropagation();const f=e.rows.find(m=>m.id===k);f?e.onRowAction?e.onRowAction(k,f):alert(`Acción ejecutada para fila: ${k}`):console.warn("⚠️ [ACTION BUTTONS] Fila no encontrada para rowId:",k)})}),e.showContextMenu!==!1){const S=n.querySelectorAll("tr.ubits-data-table__row[data-row-id]");if(S.length===0){console.warn("🖱️ [CONTEXT MENU] ⚠️ No se encontraron filas con selector: tr.ubits-data-table__row[data-row-id]");const _=n.querySelectorAll("[data-row-id]");if(_.length>0){_.forEach((o,f)=>{const m=o,g=m.getAttribute("data-row-id");if(!g){console.warn("🖱️ [CONTEXT MENU] ⚠️ Fila sin data-row-id en índice:",f);return}const I=isNaN(Number(g))?g:Number(g),W=document.getElementById("ubits-data-table-context-menu")||(()=>{const q=document.createElement("div");return q.id="ubits-data-table-context-menu",q.style.cssText=`
+          `),
+										(k.style.position = 'relative'),
+										k.appendChild(m));
+							let I = !1;
+							const W = () => {
+								m && (m.style.display = 'none'),
+									(I = !1),
+									q && (document.removeEventListener('click', q), (q = null)),
+									(_ || o) && m.parentElement && m.parentElement !== k && m.remove();
+							};
+							let q = null;
+							x.addEventListener('click', (V) => {
+								const ue =
+									typeof window < 'u' &&
+									window.location &&
+									!window.location.href.includes('storybook');
+								V.preventDefault(), V.stopPropagation();
+								const ne = e.columns.find((pe) => pe.id === h);
+								if (!ne) {
+									console.error('❌ [COLUMN MENU] Columna no encontrada:', h);
+									return;
+								}
+								const X = ne.pinned || !1;
+								if (I) {
+									W();
+									return;
+								}
+								n.querySelectorAll('.ubits-data-table__column-menu-dropdown').forEach((pe) => {
+									pe !== m && (pe.style.display = 'none');
+								});
+								const te = [
+									{
+										label: X ? 'Desfijar columna' : 'Fijar columna',
+										value: 'pin',
+										state: 'default',
+									},
+								];
+								m.innerHTML = '';
+								const D = `column-menu-list-${h}-${Math.random().toString(36).substr(2, 9)}`;
+								m.id = D;
+								try {
+									const pe = Re({
+										containerId: D,
+										items: te,
+										size: 'sm',
+										maxHeight: '200px',
+										onSelectionChange: (be, Y) => {
+											if (be && be.value === 'pin') {
+												const Q = e.columns.find((N) => N.id === h);
+												if (Q) {
+													const N = Q.pinned || !1;
+													(Q.pinned = !N),
+														e.onColumnPin
+															? (console.log(
+																	'🔵 [DATA TABLE] Llamando onColumnPin con columnId:',
+																	h,
+																	'pinned:',
+																	Q.pinned,
+																),
+																e.onColumnPin(h, Q.pinned))
+															: console.warn('⚠️ [DATA TABLE] onColumnPin no está definido'),
+														O();
+												} else
+													console.error(
+														'❌ [COLUMN MENU] Columna no encontrada al intentar fijar:',
+														h,
+													);
+											}
+											W();
+										},
+									});
+								} catch (pe) {
+									console.error('❌ [COLUMN MENU] Error al crear lista con createList:', pe);
+									const be = Ne({ items: te, size: 'sm', maxHeight: '200px' });
+									(m.innerHTML = be),
+										m.querySelectorAll('.ubits-list-item').forEach((Q) => {
+											Q.addEventListener('click', () => {
+												const N = e.columns.find((ge) => ge.id === h);
+												if (N) {
+													const ge = N.pinned || !1;
+													(N.pinned = !ge), e.onColumnPin && e.onColumnPin(h, N.pinned), O();
+												}
+												W();
+											});
+										});
+								}
+								const P = k.hasAttribute('data-pinned') && k.getAttribute('data-pinned') === 'true',
+									$ = k.classList.contains('ubits-data-table__column-header--pinned'),
+									j = P || $ ? 1e4 : 1e3,
+									R = x.getBoundingClientRect(),
+									oe = k.getBoundingClientRect();
+								if (P || $) {
+									m.style.setProperty('position', 'fixed', 'important'),
+										m.style.setProperty('top', `${R.bottom + 4}px`, 'important');
+									const pe = R.right - 160;
+									m.style.setProperty('left', `${pe}px`, 'important'),
+										m.style.setProperty('right', 'auto', 'important'),
+										m.style.setProperty('z-index', `${j}`, 'important'),
+										m.style.setProperty('display', 'block', 'important');
+								} else
+									(m.style.position = 'absolute'),
+										(m.style.top = '100%'),
+										(m.style.right = '0'),
+										(m.style.left = 'auto'),
+										(m.style.zIndex = `${j}`),
+										m.style.setProperty('z-index', `${j}`, 'important'),
+										(m.style.display = 'block');
+								(I = !0),
+									(q = (pe) => {
+										!m.contains(pe.target) && !x.contains(pe.target) && W();
+									}),
+									setTimeout(() => {
+										document.addEventListener('click', q);
+									}, 0);
+							});
+						}),
+						n.querySelectorAll('.ubits-data-table__action-button').forEach((S) => {
+							const x = S,
+								h = x.getAttribute('data-row-id'),
+								v = x.getAttribute('data-column-id');
+							if (!h) {
+								console.warn('⚠️ [ACTION BUTTONS] No se encontró el data-row-id en el botón');
+								return;
+							}
+							const k = isNaN(Number(h)) ? h : Number(h),
+								_ = x.cloneNode(!0);
+							x.parentNode?.replaceChild(_, x),
+								_.addEventListener('click', (o) => {
+									o.preventDefault(), o.stopPropagation();
+									const f = e.rows.find((m) => m.id === k);
+									f
+										? e.onRowAction
+											? e.onRowAction(k, f)
+											: alert(`Acción ejecutada para fila: ${k}`)
+										: console.warn('⚠️ [ACTION BUTTONS] Fila no encontrada para rowId:', k);
+								});
+						}),
+						e.showContextMenu !== !1)
+					) {
+						const S = n.querySelectorAll('tr.ubits-data-table__row[data-row-id]');
+						if (S.length === 0) {
+							console.warn(
+								'🖱️ [CONTEXT MENU] ⚠️ No se encontraron filas con selector: tr.ubits-data-table__row[data-row-id]',
+							);
+							const _ = n.querySelectorAll('[data-row-id]');
+							if (_.length > 0) {
+								_.forEach((o, f) => {
+									const m = o,
+										g = m.getAttribute('data-row-id');
+									if (!g) {
+										console.warn('🖱️ [CONTEXT MENU] ⚠️ Fila sin data-row-id en índice:', f);
+										return;
+									}
+									const I = isNaN(Number(g)) ? g : Number(g),
+										W =
+											document.getElementById('ubits-data-table-context-menu') ||
+											(() => {
+												const q = document.createElement('div');
+												return (
+													(q.id = 'ubits-data-table-context-menu'),
+													(q.style.cssText = `
                 position: fixed;
                 z-index: 10000;
                 display: none;
@@ -612,7 +5105,27 @@
                 box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
                 min-width: 200px;
                 max-width: 300px;
-              `,document.body.appendChild(q),q})();m.addEventListener("contextmenu",q=>{q.preventDefault(),q.stopPropagation(),alert(`Click derecho en fila ${I} - Menú contextual (implementación completa pendiente)`)})});return}}let x=document.getElementById("ubits-data-table-context-menu");x||(x=document.createElement("div"),x.id="ubits-data-table-context-menu",x.style.cssText=`
+              `),
+													document.body.appendChild(q),
+													q
+												);
+											})();
+									m.addEventListener('contextmenu', (q) => {
+										q.preventDefault(),
+											q.stopPropagation(),
+											alert(
+												`Click derecho en fila ${I} - Menú contextual (implementación completa pendiente)`,
+											);
+									});
+								});
+								return;
+							}
+						}
+						let x = document.getElementById('ubits-data-table-context-menu');
+						x ||
+							((x = document.createElement('div')),
+							(x.id = 'ubits-data-table-context-menu'),
+							(x.style.cssText = `
           position: fixed;
           z-index: 10000;
           display: none;
@@ -622,36 +5135,1330 @@
           box-shadow: var(--ubits-elevation-2, 0 4px 6px rgba(0, 0, 0, 0.1));
           min-width: 200px;
           max-width: 300px;
-        `,document.body.appendChild(x));let h=null,v=null;const k=()=>{x&&(x.style.display="none",x.innerHTML=""),h=null,v&&(document.removeEventListener("click",v),document.removeEventListener("contextmenu",v),v=null)};S.forEach((_,o)=>{const f=_,m=f.getAttribute("data-row-id");if(!m){console.warn("🖱️ [CONTEXT MENU] ⚠️ Fila sin data-row-id en índice:",o);return}const g=isNaN(Number(m))?m:Number(m);f.addEventListener("contextmenu",I=>{if(I.preventDefault(),I.stopPropagation(),!e.rows.find(X=>X.id===g)){console.warn("🖱️ [CONTEXT MENU] ⚠️ Fila no encontrada en currentOptions.rows:",g);return}h=g,k();const q=(X,te)=>`<div style="display: flex; align-items: center; gap: var(--ubits-spacing-xs);">
+        `),
+							document.body.appendChild(x));
+						let h = null,
+							v = null;
+						const k = () => {
+							x && ((x.style.display = 'none'), (x.innerHTML = '')),
+								(h = null),
+								v &&
+									(document.removeEventListener('click', v),
+									document.removeEventListener('contextmenu', v),
+									(v = null));
+						};
+						S.forEach((_, o) => {
+							const f = _,
+								m = f.getAttribute('data-row-id');
+							if (!m) {
+								console.warn('🖱️ [CONTEXT MENU] ⚠️ Fila sin data-row-id en índice:', o);
+								return;
+							}
+							const g = isNaN(Number(m)) ? m : Number(m);
+							f.addEventListener('contextmenu', (I) => {
+								if ((I.preventDefault(), I.stopPropagation(), !e.rows.find((X) => X.id === g))) {
+									console.warn('🖱️ [CONTEXT MENU] ⚠️ Fila no encontrada en currentOptions.rows:', g);
+									return;
+								}
+								(h = g), k();
+								const q = (
+										X,
+										te,
+									) => `<div style="display: flex; align-items: center; gap: var(--ubits-spacing-xs);">
             <i class="far fa-${X}" style="font-size: 14px; width: 16px; text-align: center;"></i>
             <span>${te}</span>
-          </div>`,V=[{label:q("eye","Ver seleccionados"),value:"view-selected",state:"default",onClick:()=>{k()}},{label:q("bell","Notificaciones"),value:"notifications",state:"default",onClick:()=>{k(),alert(`Notificaciones para fila: ${g}`)}},{label:q("copy","Copiar"),value:"copy",state:"default",onClick:()=>{k(),alert(`Copiar para fila: ${g}`)}},{label:q("eye","Ver"),value:"view",state:"default",onClick:()=>{k(),alert(`Ver para fila: ${g}`)}},{label:q("edit","Editar"),value:"edit",state:"default",onClick:()=>{k(),alert(`Editar para fila: ${g}`)}},{label:q("download","Descargar"),value:"download",state:"default",onClick:()=>{k(),alert(`Descargar para fila: ${g}`)}},{label:q("trash","Eliminar"),value:"delete",state:"default",onClick:()=>{k(),alert(`Eliminar para fila: ${g}`)}}],ue=`context-menu-list-${Date.now()}-${Math.random().toString(36).substr(2,9)}`;if(!x){console.error("🖱️ [CONTEXT MENU] ❌ contextMenuContainer es null!");return}const ne=document.createElement("div");ne.id=ue,x.innerHTML="",x.appendChild(ne);try{const X=Re({containerId:ue,items:V,size:"sm",maxHeight:"400px",onSelectionChange:(P,$)=>{P&&P.onClick&&P.onClick()}}),te=I.clientX,D=I.clientY;x.style.left=`${te}px`,x.style.top=`${D}px`,x.style.display="block",requestAnimationFrame(()=>{const P=x.getBoundingClientRect(),$=window.innerWidth,j=window.innerHeight;P.right>$&&(x.style.left=`${$-P.width-10}px`),P.bottom>j&&(x.style.top=`${j-P.height-10}px`)}),v=P=>{x.contains(P.target)||k()},setTimeout(()=>{document.addEventListener("click",v),document.addEventListener("contextmenu",v)},0)}catch(X){console.error("🖱️ [CONTEXT MENU] ❌ Error al crear menú contextual:",X),console.error("🖱️ [CONTEXT MENU] Stack:",X instanceof Error?X.stack:"N/A");const te=Ne({items:V,size:"sm",maxHeight:"400px"});ne.innerHTML=te,ne.querySelectorAll(".ubits-list-item").forEach((j,R)=>{const oe=V[R];oe&&oe.onClick&&j.addEventListener("click",()=>{oe.onClick()})});const P=I.clientX,$=I.clientY;x.style.left=`${P}px`,x.style.top=`${$}px`,x.style.display="block",requestAnimationFrame(()=>{const j=x.getBoundingClientRect(),R=window.innerWidth,oe=window.innerHeight;j.right>R&&(x.style.left=`${R-j.width-10}px`),j.bottom>oe&&(x.style.top=`${oe-j.height-10}px`)}),v=j=>{x.contains(j.target)||k()},setTimeout(()=>{document.addEventListener("click",v),document.addEventListener("contextmenu",v)},0)}})})}n.querySelectorAll('[data-editable-text="true"]').forEach(S=>{const x=S.closest('[data-editable="true"]');if(!x)return;const h=x.getAttribute("data-row-id"),v=x.getAttribute("data-column-id");if(!h||!v)return;const k=isNaN(Number(h))?h:Number(h);S.addEventListener("keydown",_=>{_.key==="Enter"&&(_.preventDefault(),S.blur())}),S.addEventListener("blur",_=>{_.stopPropagation();const o=S.textContent||"",f=e.rows.find(m=>m.id===k);if(f){const m=e.columns.find(g=>g.id===v);m&&(m.type==="nombre"||m.type==="nombre-avatar")?(f.data.nombre=o.trim(),f.data[v]!==void 0&&(f.data[v]=o.trim())):m&&m.type==="estado"?(f.data[v]=o.trim(),f.data.estado=o.trim(),f.data.status=o.trim()):f.data[v]=o.trim()}}),S.addEventListener("dblclick",_=>{_.stopPropagation()}),S.addEventListener("click",_=>{_.stopPropagation()})}),n.querySelectorAll(".ubits-data-table__status-editable").forEach(S=>{const x=S.getAttribute("data-row-id"),h=S.getAttribute("data-column-id"),v=S.getAttribute("data-current-status");if(!x||!h)return;const k=isNaN(Number(x))?x:Number(x),_=S.querySelector(".ubits-status-tag"),o=S.querySelector(".ubits-data-table__status-dropdown");if(!_||!o)return;const f=[{value:"active",label:"Activo",status:"active"},{value:"completed",label:"Completado",status:"completed"},{value:"published",label:"Publicado",status:"published"},{value:"fulfilled",label:"Cumplido",status:"fulfilled"},{value:"created",label:"Creado",status:"created"},{value:"not-fulfilled",label:"No cumplido",status:"not-fulfilled"},{value:"denied",label:"Denegado",status:"denied"},{value:"draft",label:"Borrador",status:"draft"},{value:"in-progress",label:"En progreso",status:"in-progress"},{value:"syncing",label:"Sincronizando",status:"syncing"},{value:"pending",label:"Pendiente",status:"pending"},{value:"pending-approval",label:"Pendiente aprobación",status:"pending-approval"},{value:"not-started",label:"No iniciado",status:"not-started"},{value:"finished",label:"Finalizado",status:"finished"},{value:"archived",label:"Archivado",status:"archived"},{value:"disabled",label:"Deshabilitado",status:"disabled"},{value:"paused",label:"Pausado",status:"paused"},{value:"hidden",label:"Oculto",status:"hidden"}];let m=null,g=null,I=null,W=!1,q=0;const V=[],ue=$=>{const j=[];let R=$;for(;R&&R!==document.body&&R!==document.documentElement;){const oe=window.getComputedStyle(R),pe=oe.overflow+oe.overflowX+oe.overflowY,be=pe.includes("auto")||pe.includes("scroll"),Y=R.scrollHeight>R.clientHeight||R.scrollWidth>R.clientWidth;(be||Y)&&j.push(R),R=R.parentElement}return j},ne=()=>{try{if(!o||o.style.display==="none"||!document.body.contains(o)){te();return}if(!_||!_.isConnected){te();return}const $=_.getBoundingClientRect(),j=$.bottom+4,R=$.left,oe=o.style.top,pe=o.style.left,be=`${j}px`,Y=`${R}px`;(oe!==be||pe!==Y)&&(o.style.top=be,o.style.left=Y,q++)}catch{te()}},X=()=>{if(W)return;W=!0;const $=()=>{if(o.style.display==="none"||!document.body.contains(o)){te();return}ne(),I=requestAnimationFrame($)};$()},te=()=>{I&&(cancelAnimationFrame(I),I=null),W=!1,q=0};g=ne;const D=()=>{te(),o.style.display="none";const $=o.__scrollbarInstance;if($&&$.destroy){try{$.destroy()}catch{}o.__scrollbarInstance=null}o.parentElement===document.body&&S.appendChild(o),m&&(document.removeEventListener("click",m),m=null),g&&(window.removeEventListener("scroll",g,!0),n.removeEventListener("scroll",g,!0),V.forEach(j=>{j.removeEventListener("scroll",g,!0)}),V.length=0,g=null)},P=$=>{try{if($.preventDefault(),$.stopPropagation(),!_||!o)return;n.querySelectorAll(".ubits-data-table__status-dropdown").forEach(ie=>{if(ie!==o&&(ie.style.display="none",ie.parentElement===document.body)){const me=n.querySelector(`[data-row-id="${ie.getAttribute("data-row-id")}"][data-column-id="${ie.getAttribute("data-column-id")}"]`);me&&me.appendChild(ie)}});const j={active:"Activo",completed:"Completado",published:"Publicado",fulfilled:"Cumplido",created:"Creado","not-fulfilled":"No cumplido",denied:"Denegado",draft:"Borrador","in-progress":"En progreso",syncing:"Sincronizando",pending:"Pendiente","pending-approval":"Pendiente aprobación","not-started":"No iniciado",finished:"Finalizado",archived:"Archivado",disabled:"Deshabilitado",paused:"Pausado",hidden:"Oculto"},R=f.map(ie=>({label:ie.label,value:ie.value,state:ie.status===v?"active":"default",selected:ie.status===v}));if(!document.querySelector('link[href*="scroll.css"]')){const ie=document.createElement("link");ie.rel="stylesheet",ie.href="../../addons/scroll/src/styles/scroll.css",document.head.appendChild(ie)}o.innerHTML="";const oe=`status-list-${k}-${h}`,pe=`status-scrollbar-${k}-${h}`;if(o.id=`status-dropdown-${k}-${h}`,o.innerHTML=`
+          </div>`,
+									V = [
+										{
+											label: q('eye', 'Ver seleccionados'),
+											value: 'view-selected',
+											state: 'default',
+											onClick: () => {
+												k();
+											},
+										},
+										{
+											label: q('bell', 'Notificaciones'),
+											value: 'notifications',
+											state: 'default',
+											onClick: () => {
+												k(), alert(`Notificaciones para fila: ${g}`);
+											},
+										},
+										{
+											label: q('copy', 'Copiar'),
+											value: 'copy',
+											state: 'default',
+											onClick: () => {
+												k(), alert(`Copiar para fila: ${g}`);
+											},
+										},
+										{
+											label: q('eye', 'Ver'),
+											value: 'view',
+											state: 'default',
+											onClick: () => {
+												k(), alert(`Ver para fila: ${g}`);
+											},
+										},
+										{
+											label: q('edit', 'Editar'),
+											value: 'edit',
+											state: 'default',
+											onClick: () => {
+												k(), alert(`Editar para fila: ${g}`);
+											},
+										},
+										{
+											label: q('download', 'Descargar'),
+											value: 'download',
+											state: 'default',
+											onClick: () => {
+												k(), alert(`Descargar para fila: ${g}`);
+											},
+										},
+										{
+											label: q('trash', 'Eliminar'),
+											value: 'delete',
+											state: 'default',
+											onClick: () => {
+												k(), alert(`Eliminar para fila: ${g}`);
+											},
+										},
+									],
+									ue = `context-menu-list-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+								if (!x) {
+									console.error('🖱️ [CONTEXT MENU] ❌ contextMenuContainer es null!');
+									return;
+								}
+								const ne = document.createElement('div');
+								(ne.id = ue), (x.innerHTML = ''), x.appendChild(ne);
+								try {
+									const X = Re({
+											containerId: ue,
+											items: V,
+											size: 'sm',
+											maxHeight: '400px',
+											onSelectionChange: (P, $) => {
+												P && P.onClick && P.onClick();
+											},
+										}),
+										te = I.clientX,
+										D = I.clientY;
+									(x.style.left = `${te}px`),
+										(x.style.top = `${D}px`),
+										(x.style.display = 'block'),
+										requestAnimationFrame(() => {
+											const P = x.getBoundingClientRect(),
+												$ = window.innerWidth,
+												j = window.innerHeight;
+											P.right > $ && (x.style.left = `${$ - P.width - 10}px`),
+												P.bottom > j && (x.style.top = `${j - P.height - 10}px`);
+										}),
+										(v = (P) => {
+											x.contains(P.target) || k();
+										}),
+										setTimeout(() => {
+											document.addEventListener('click', v),
+												document.addEventListener('contextmenu', v);
+										}, 0);
+								} catch (X) {
+									console.error('🖱️ [CONTEXT MENU] ❌ Error al crear menú contextual:', X),
+										console.error('🖱️ [CONTEXT MENU] Stack:', X instanceof Error ? X.stack : 'N/A');
+									const te = Ne({ items: V, size: 'sm', maxHeight: '400px' });
+									(ne.innerHTML = te),
+										ne.querySelectorAll('.ubits-list-item').forEach((j, R) => {
+											const oe = V[R];
+											oe &&
+												oe.onClick &&
+												j.addEventListener('click', () => {
+													oe.onClick();
+												});
+										});
+									const P = I.clientX,
+										$ = I.clientY;
+									(x.style.left = `${P}px`),
+										(x.style.top = `${$}px`),
+										(x.style.display = 'block'),
+										requestAnimationFrame(() => {
+											const j = x.getBoundingClientRect(),
+												R = window.innerWidth,
+												oe = window.innerHeight;
+											j.right > R && (x.style.left = `${R - j.width - 10}px`),
+												j.bottom > oe && (x.style.top = `${oe - j.height - 10}px`);
+										}),
+										(v = (j) => {
+											x.contains(j.target) || k();
+										}),
+										setTimeout(() => {
+											document.addEventListener('click', v),
+												document.addEventListener('contextmenu', v);
+										}, 0);
+								}
+							});
+						});
+					}
+					n.querySelectorAll('[data-editable-text="true"]').forEach((S) => {
+						const x = S.closest('[data-editable="true"]');
+						if (!x) return;
+						const h = x.getAttribute('data-row-id'),
+							v = x.getAttribute('data-column-id');
+						if (!h || !v) return;
+						const k = isNaN(Number(h)) ? h : Number(h);
+						S.addEventListener('keydown', (_) => {
+							_.key === 'Enter' && (_.preventDefault(), S.blur());
+						}),
+							S.addEventListener('blur', (_) => {
+								_.stopPropagation();
+								const o = S.textContent || '',
+									f = e.rows.find((m) => m.id === k);
+								if (f) {
+									const m = e.columns.find((g) => g.id === v);
+									m && (m.type === 'nombre' || m.type === 'nombre-avatar')
+										? ((f.data.nombre = o.trim()), f.data[v] !== void 0 && (f.data[v] = o.trim()))
+										: m && m.type === 'estado'
+											? ((f.data[v] = o.trim()),
+												(f.data.estado = o.trim()),
+												(f.data.status = o.trim()))
+											: (f.data[v] = o.trim());
+								}
+							}),
+							S.addEventListener('dblclick', (_) => {
+								_.stopPropagation();
+							}),
+							S.addEventListener('click', (_) => {
+								_.stopPropagation();
+							});
+					}),
+						n.querySelectorAll('.ubits-data-table__status-editable').forEach((S) => {
+							const x = S.getAttribute('data-row-id'),
+								h = S.getAttribute('data-column-id'),
+								v = S.getAttribute('data-current-status');
+							if (!x || !h) return;
+							const k = isNaN(Number(x)) ? x : Number(x),
+								_ = S.querySelector('.ubits-status-tag'),
+								o = S.querySelector('.ubits-data-table__status-dropdown');
+							if (!_ || !o) return;
+							const f = [
+								{ value: 'active', label: 'Activo', status: 'active' },
+								{ value: 'completed', label: 'Completado', status: 'completed' },
+								{ value: 'published', label: 'Publicado', status: 'published' },
+								{ value: 'fulfilled', label: 'Cumplido', status: 'fulfilled' },
+								{ value: 'created', label: 'Creado', status: 'created' },
+								{ value: 'not-fulfilled', label: 'No cumplido', status: 'not-fulfilled' },
+								{ value: 'denied', label: 'Denegado', status: 'denied' },
+								{ value: 'draft', label: 'Borrador', status: 'draft' },
+								{ value: 'in-progress', label: 'En progreso', status: 'in-progress' },
+								{ value: 'syncing', label: 'Sincronizando', status: 'syncing' },
+								{ value: 'pending', label: 'Pendiente', status: 'pending' },
+								{
+									value: 'pending-approval',
+									label: 'Pendiente aprobación',
+									status: 'pending-approval',
+								},
+								{ value: 'not-started', label: 'No iniciado', status: 'not-started' },
+								{ value: 'finished', label: 'Finalizado', status: 'finished' },
+								{ value: 'archived', label: 'Archivado', status: 'archived' },
+								{ value: 'disabled', label: 'Deshabilitado', status: 'disabled' },
+								{ value: 'paused', label: 'Pausado', status: 'paused' },
+								{ value: 'hidden', label: 'Oculto', status: 'hidden' },
+							];
+							let m = null,
+								g = null,
+								I = null,
+								W = !1,
+								q = 0;
+							const V = [],
+								ue = ($) => {
+									const j = [];
+									let R = $;
+									for (; R && R !== document.body && R !== document.documentElement; ) {
+										const oe = window.getComputedStyle(R),
+											pe = oe.overflow + oe.overflowX + oe.overflowY,
+											be = pe.includes('auto') || pe.includes('scroll'),
+											Y = R.scrollHeight > R.clientHeight || R.scrollWidth > R.clientWidth;
+										(be || Y) && j.push(R), (R = R.parentElement);
+									}
+									return j;
+								},
+								ne = () => {
+									try {
+										if (!o || o.style.display === 'none' || !document.body.contains(o)) {
+											te();
+											return;
+										}
+										if (!_ || !_.isConnected) {
+											te();
+											return;
+										}
+										const $ = _.getBoundingClientRect(),
+											j = $.bottom + 4,
+											R = $.left,
+											oe = o.style.top,
+											pe = o.style.left,
+											be = `${j}px`,
+											Y = `${R}px`;
+										(oe !== be || pe !== Y) && ((o.style.top = be), (o.style.left = Y), q++);
+									} catch {
+										te();
+									}
+								},
+								X = () => {
+									if (W) return;
+									W = !0;
+									const $ = () => {
+										if (o.style.display === 'none' || !document.body.contains(o)) {
+											te();
+											return;
+										}
+										ne(), (I = requestAnimationFrame($));
+									};
+									$();
+								},
+								te = () => {
+									I && (cancelAnimationFrame(I), (I = null)), (W = !1), (q = 0);
+								};
+							g = ne;
+							const D = () => {
+									te(), (o.style.display = 'none');
+									const $ = o.__scrollbarInstance;
+									if ($ && $.destroy) {
+										try {
+											$.destroy();
+										} catch {}
+										o.__scrollbarInstance = null;
+									}
+									o.parentElement === document.body && S.appendChild(o),
+										m && (document.removeEventListener('click', m), (m = null)),
+										g &&
+											(window.removeEventListener('scroll', g, !0),
+											n.removeEventListener('scroll', g, !0),
+											V.forEach((j) => {
+												j.removeEventListener('scroll', g, !0);
+											}),
+											(V.length = 0),
+											(g = null));
+								},
+								P = ($) => {
+									try {
+										if (($.preventDefault(), $.stopPropagation(), !_ || !o)) return;
+										n.querySelectorAll('.ubits-data-table__status-dropdown').forEach((ie) => {
+											if (
+												ie !== o &&
+												((ie.style.display = 'none'), ie.parentElement === document.body)
+											) {
+												const me = n.querySelector(
+													`[data-row-id="${ie.getAttribute('data-row-id')}"][data-column-id="${ie.getAttribute('data-column-id')}"]`,
+												);
+												me && me.appendChild(ie);
+											}
+										});
+										const j = {
+												active: 'Activo',
+												completed: 'Completado',
+												published: 'Publicado',
+												fulfilled: 'Cumplido',
+												created: 'Creado',
+												'not-fulfilled': 'No cumplido',
+												denied: 'Denegado',
+												draft: 'Borrador',
+												'in-progress': 'En progreso',
+												syncing: 'Sincronizando',
+												pending: 'Pendiente',
+												'pending-approval': 'Pendiente aprobación',
+												'not-started': 'No iniciado',
+												finished: 'Finalizado',
+												archived: 'Archivado',
+												disabled: 'Deshabilitado',
+												paused: 'Pausado',
+												hidden: 'Oculto',
+											},
+											R = f.map((ie) => ({
+												label: ie.label,
+												value: ie.value,
+												state: ie.status === v ? 'active' : 'default',
+												selected: ie.status === v,
+											}));
+										if (!document.querySelector('link[href*="scroll.css"]')) {
+											const ie = document.createElement('link');
+											(ie.rel = 'stylesheet'),
+												(ie.href = '../../addons/scroll/src/styles/scroll.css'),
+												document.head.appendChild(ie);
+										}
+										o.innerHTML = '';
+										const oe = `status-list-${k}-${h}`,
+											pe = `status-scrollbar-${k}-${h}`;
+										if (
+											((o.id = `status-dropdown-${k}-${h}`),
+											(o.innerHTML = `
           <div style="display: flex; align-items: stretch; gap: 0; height: 300px; width: 100%;">
             <div id="${oe}" style="flex: 1; overflow-y: auto; overflow-x: hidden; -ms-overflow-style: none; scrollbar-width: none; height: 100%; position: relative;"></div>
             <div id="${pe}" style="flex-shrink: 0; width: 8px; height: 100%; position: relative;"></div>
           </div>
-        `,document.getElementById(oe)){const ie=document.createElement("style");ie.textContent=`
+        `),
+											document.getElementById(oe))
+										) {
+											const ie = document.createElement('style');
+											(ie.textContent = `
             #${oe}::-webkit-scrollbar {
               display: none;
             }
-          `,document.head.appendChild(ie)}o.parentElement!==document.body&&document.body.appendChild(o);const Y=_.getBoundingClientRect();o.style.position="fixed",o.style.top=`${Y.bottom+4}px`,o.style.left=`${Y.left}px`,o.style.zIndex="1000",o.style.backgroundColor="var(--modifiers-normal-color-light-bg-1)",o.style.border="1px solid var(--modifiers-normal-color-light-border-1)",o.style.borderRadius="var(--ubits-border-radius-sm)",o.style.display="block",o.style.minWidth="200px",o.style.maxWidth="300px",o.style.padding="4px",o.style.boxSizing="border-box",o.style.maxHeight="308px";const Q=ue(_);V.push(...Q),ne(),X(),window.addEventListener("scroll",ne,!0),n.addEventListener("scroll",ne,!0),Q.forEach(ie=>{ie.addEventListener("scroll",ne,!0)});let N=null;try{const ie=Re({containerId:oe,items:R,size:"sm",maxHeight:"none",onSelectionChange:(me,we)=>{if(me&&we!==null){const Se=f[we];if(Se){const ye=e.rows.find(Me=>Me.id===k);if(ye&&e.columns.find(De=>De.id===h)){const De=j[Se.status]||Se.label;ye.data[h]=De,ye.data.estado=De,ye.data.status=De,O()}D()}}}});ie&&(ie.style.maxHeight="none",ie.style.height="auto",ie.style.overflow="visible",ie.style.overflowY="visible",ie.style.overflowX="visible"),requestAnimationFrame(()=>{if(typeof Xe<"u")try{const me=document.getElementById(oe);me&&me.scrollHeight>me.clientHeight&&(N=Xe({containerId:pe,targetId:oe,orientation:"vertical",state:"default"}),N?.update&&N.update())}catch{}})}catch{}o.__scrollbarInstance=N;const ge=ie=>{!o.contains(ie.target)&&!_.contains(ie.target)&&D()};m=ge,setTimeout(()=>{document.addEventListener("click",ge)},0)}catch{te()}};_.addEventListener("click",P)}),n.querySelectorAll('input[data-radio-button="true"][data-editable="true"]').forEach(S=>{const x=S,h=x.getAttribute("data-row-id"),v=x.getAttribute("data-column-id");if(!h||!v)return;const k=isNaN(Number(h))?h:Number(h),_=x.cloneNode(!0);x.parentNode?.replaceChild(_,x),_.addEventListener("change",o=>{if(o.stopPropagation(),_.checked){n.querySelectorAll(`input[data-radio-button="true"][data-column-id="${v}"]`).forEach(g=>{const I=g.getAttribute("data-row-id");if(I&&I!==String(k)){g.checked=!1;const W=e.rows.find(q=>String(q.id)===I);W&&(W.data[v]=!1)}});const m=e.rows.find(g=>String(g.id)===String(k));m&&(m.data[v]=!0,m.data[`${v}_value`]=k)}O()})}),n.querySelectorAll('input[data-checkbox-button="true"]:not([data-column-id="checkbox-2"])').forEach(S=>{const x=S,h=x.getAttribute("data-row-id"),v=x.getAttribute("data-column-id");if(!h||!v||v==="checkbox-2")return;const k=isNaN(Number(h))?h:Number(h),_=x.cloneNode(!0);x.parentNode?.replaceChild(_,x),_.addEventListener("change",o=>{o.stopPropagation();const f=e.rows.find(m=>String(m.id)===String(k));f&&(f.data[v]=_.checked,e.onRowSelect&&e.onRowSelect(k,_.checked),O())})}),n.querySelectorAll("input[data-column-checkbox-header]").forEach((S,x)=>{const h=S,v=h.getAttribute("data-column-checkbox-header"),k=()=>{};h.addEventListener("click",k,{once:!0,capture:!0});const _=()=>{};h.addEventListener("change",_,{once:!0,capture:!0})});const Be=typeof window<"u"&&window.location&&!window.location.href.includes("storybook");if(n.querySelectorAll(".ubits-data-table__date-editable").forEach((S,x)=>{const h=S.getAttribute("data-row-id"),v=S.getAttribute("data-column-id");if(!h||!v)return;const k=isNaN(Number(h))?h:Number(h),_=S.querySelector(".ubits-data-table__date-display");if(!_)return;let o=null,f=null,m=null,g=null,I=null,W=null;const q=D=>{const P=String(D.getDate()).padStart(2,"0"),$=String(D.getMonth()+1).padStart(2,"0"),j=D.getFullYear();return`${P}/${$}/${j}`},V=D=>{if(!D)return null;const[P,$,j]=D.split("/");if(P&&$&&j)return new Date(parseInt(j),parseInt($)-1,parseInt(P));try{const R=new Date(D);if(!isNaN(R.getTime()))return R}catch{}return null},ue=()=>{f&&(f.style.display="none",f.parentElement&&f.remove(),f=null),m&&(document.removeEventListener("click",m),m=null),g&&(document.removeEventListener("keydown",g),g=null),I&&(window.removeEventListener("scroll",I,!0),W&&W.removeEventListener("scroll",I,!0),I=null)},ne=()=>{m=D=>{f&&!S.contains(D.target)&&!f.contains(D.target)&&ue()},g=D=>{D.key==="Escape"&&f&&ue()},I=D=>{if(!f)return;const P=f.querySelector(".ubits-calendar");if(P){const $=P.querySelector('.ubits-calendar__month-dropdown[style*="display: block"]'),j=P.querySelector('.ubits-calendar__year-dropdown[style*="display: block"]');if($||j){const R=document.activeElement;if(R&&(f.contains(R)||R.closest(".ubits-calendar")||R.closest(".ubits-calendar__month-dropdown")||R.closest(".ubits-calendar__year-dropdown")||R.closest(".ubits-list")||R.closest('[id*="calendar-list"]')||R.closest('[id*="calendar-scrollbar"]')))return;if(D&&D.target){const oe=D.target;if(f.contains(oe)||oe.closest(".ubits-calendar")||oe.closest(".ubits-calendar__month-dropdown")||oe.closest(".ubits-calendar__year-dropdown")||oe.closest(".ubits-list")||oe.closest('[id*="calendar-list"]')||oe.closest('[id*="calendar-scrollbar"]'))return}return}}ue()},document.addEventListener("click",m),document.addEventListener("keydown",g),W=n.querySelector(".ubits-data-table__scrollable-container"),W&&W.addEventListener("scroll",I,!0),window.addEventListener("scroll",I,!0)},X=async()=>{const D=[{id:"ubits-calendar-styles",fileName:"calendar.css",href:"../../addons/calendar/src/styles/calendar.css"},{id:"ubits-button-styles",fileName:"button.css",href:"../../addons/button/src/styles/button.css"},{id:"ubits-input-styles",fileName:"input.css",href:"../../addons/input/src/styles/input.css"},{id:"ubits-list-styles",fileName:"list.css",href:"../../addons/list/src/styles/list.css"}];for(const P of D){const $=document.getElementById(P.id),j=Array.from(document.head.querySelectorAll('link[rel="stylesheet"]')).find(oe=>(oe.href||"").includes(P.fileName)||oe.id===P.id);if($||j)continue;const R=document.createElement("link");R.rel="stylesheet",R.href=P.href,R.id=P.id,document.head.appendChild(R)}},te=async()=>{if(f&&f.style.display!=="none"){ue();return}if(o&&f){const D=_.getBoundingClientRect();f.style.top=`${D.bottom+4}px`,f.style.left=`${D.left}px`,f.style.display="block",ne();return}try{await X();const{createCalendar:D}=await Promise.resolve().then(()=>lt),P=_.textContent||"",$=V(P);o=D({mode:"single",selectedDate:$,initialDate:$||new Date,onDateSelect:be=>{const Y=q(be);_.textContent=Y;const Q=e.rows.find(N=>N.id===k);Q&&(Q.data[v]=Y,Q.data[`${v}_iso`]=be.toISOString().split("T")[0]),ue(),O()}}),f=document.createElement("div"),f.className="ubits-data-table__calendar-container",f.setAttribute("data-row-id",String(k)),f.setAttribute("data-column-id",v);const R=_.getBoundingClientRect(),oe=R.bottom+4,pe=R.left;f.style.cssText=`
+          `),
+												document.head.appendChild(ie);
+										}
+										o.parentElement !== document.body && document.body.appendChild(o);
+										const Y = _.getBoundingClientRect();
+										(o.style.position = 'fixed'),
+											(o.style.top = `${Y.bottom + 4}px`),
+											(o.style.left = `${Y.left}px`),
+											(o.style.zIndex = '1000'),
+											(o.style.backgroundColor = 'var(--modifiers-normal-color-light-bg-1)'),
+											(o.style.border = '1px solid var(--modifiers-normal-color-light-border-1)'),
+											(o.style.borderRadius = 'var(--ubits-border-radius-sm)'),
+											(o.style.display = 'block'),
+											(o.style.minWidth = '200px'),
+											(o.style.maxWidth = '300px'),
+											(o.style.padding = '4px'),
+											(o.style.boxSizing = 'border-box'),
+											(o.style.maxHeight = '308px');
+										const Q = ue(_);
+										V.push(...Q),
+											ne(),
+											X(),
+											window.addEventListener('scroll', ne, !0),
+											n.addEventListener('scroll', ne, !0),
+											Q.forEach((ie) => {
+												ie.addEventListener('scroll', ne, !0);
+											});
+										let N = null;
+										try {
+											const ie = Re({
+												containerId: oe,
+												items: R,
+												size: 'sm',
+												maxHeight: 'none',
+												onSelectionChange: (me, we) => {
+													if (me && we !== null) {
+														const Se = f[we];
+														if (Se) {
+															const ye = e.rows.find((Me) => Me.id === k);
+															if (ye && e.columns.find((De) => De.id === h)) {
+																const De = j[Se.status] || Se.label;
+																(ye.data[h] = De),
+																	(ye.data.estado = De),
+																	(ye.data.status = De),
+																	O();
+															}
+															D();
+														}
+													}
+												},
+											});
+											ie &&
+												((ie.style.maxHeight = 'none'),
+												(ie.style.height = 'auto'),
+												(ie.style.overflow = 'visible'),
+												(ie.style.overflowY = 'visible'),
+												(ie.style.overflowX = 'visible')),
+												requestAnimationFrame(() => {
+													if (typeof Xe < 'u')
+														try {
+															const me = document.getElementById(oe);
+															me &&
+																me.scrollHeight > me.clientHeight &&
+																((N = Xe({
+																	containerId: pe,
+																	targetId: oe,
+																	orientation: 'vertical',
+																	state: 'default',
+																})),
+																N?.update && N.update());
+														} catch {}
+												});
+										} catch {}
+										o.__scrollbarInstance = N;
+										const ge = (ie) => {
+											!o.contains(ie.target) && !_.contains(ie.target) && D();
+										};
+										(m = ge),
+											setTimeout(() => {
+												document.addEventListener('click', ge);
+											}, 0);
+									} catch {
+										te();
+									}
+								};
+							_.addEventListener('click', P);
+						}),
+						n
+							.querySelectorAll('input[data-radio-button="true"][data-editable="true"]')
+							.forEach((S) => {
+								const x = S,
+									h = x.getAttribute('data-row-id'),
+									v = x.getAttribute('data-column-id');
+								if (!h || !v) return;
+								const k = isNaN(Number(h)) ? h : Number(h),
+									_ = x.cloneNode(!0);
+								x.parentNode?.replaceChild(_, x),
+									_.addEventListener('change', (o) => {
+										if ((o.stopPropagation(), _.checked)) {
+											n.querySelectorAll(
+												`input[data-radio-button="true"][data-column-id="${v}"]`,
+											).forEach((g) => {
+												const I = g.getAttribute('data-row-id');
+												if (I && I !== String(k)) {
+													g.checked = !1;
+													const W = e.rows.find((q) => String(q.id) === I);
+													W && (W.data[v] = !1);
+												}
+											});
+											const m = e.rows.find((g) => String(g.id) === String(k));
+											m && ((m.data[v] = !0), (m.data[`${v}_value`] = k));
+										}
+										O();
+									});
+							}),
+						n
+							.querySelectorAll(
+								'input[data-checkbox-button="true"]:not([data-column-id="checkbox-2"])',
+							)
+							.forEach((S) => {
+								const x = S,
+									h = x.getAttribute('data-row-id'),
+									v = x.getAttribute('data-column-id');
+								if (!h || !v || v === 'checkbox-2') return;
+								const k = isNaN(Number(h)) ? h : Number(h),
+									_ = x.cloneNode(!0);
+								x.parentNode?.replaceChild(_, x),
+									_.addEventListener('change', (o) => {
+										o.stopPropagation();
+										const f = e.rows.find((m) => String(m.id) === String(k));
+										f &&
+											((f.data[v] = _.checked), e.onRowSelect && e.onRowSelect(k, _.checked), O());
+									});
+							}),
+						n.querySelectorAll('input[data-column-checkbox-header]').forEach((S, x) => {
+							const h = S,
+								v = h.getAttribute('data-column-checkbox-header'),
+								k = () => {};
+							h.addEventListener('click', k, { once: !0, capture: !0 });
+							const _ = () => {};
+							h.addEventListener('change', _, { once: !0, capture: !0 });
+						});
+					const Be =
+						typeof window < 'u' && window.location && !window.location.href.includes('storybook');
+					if (
+						(n.querySelectorAll('.ubits-data-table__date-editable').forEach((S, x) => {
+							const h = S.getAttribute('data-row-id'),
+								v = S.getAttribute('data-column-id');
+							if (!h || !v) return;
+							const k = isNaN(Number(h)) ? h : Number(h),
+								_ = S.querySelector('.ubits-data-table__date-display');
+							if (!_) return;
+							let o = null,
+								f = null,
+								m = null,
+								g = null,
+								I = null,
+								W = null;
+							const q = (D) => {
+									const P = String(D.getDate()).padStart(2, '0'),
+										$ = String(D.getMonth() + 1).padStart(2, '0'),
+										j = D.getFullYear();
+									return `${P}/${$}/${j}`;
+								},
+								V = (D) => {
+									if (!D) return null;
+									const [P, $, j] = D.split('/');
+									if (P && $ && j) return new Date(parseInt(j), parseInt($) - 1, parseInt(P));
+									try {
+										const R = new Date(D);
+										if (!isNaN(R.getTime())) return R;
+									} catch {}
+									return null;
+								},
+								ue = () => {
+									f && ((f.style.display = 'none'), f.parentElement && f.remove(), (f = null)),
+										m && (document.removeEventListener('click', m), (m = null)),
+										g && (document.removeEventListener('keydown', g), (g = null)),
+										I &&
+											(window.removeEventListener('scroll', I, !0),
+											W && W.removeEventListener('scroll', I, !0),
+											(I = null));
+								},
+								ne = () => {
+									(m = (D) => {
+										f && !S.contains(D.target) && !f.contains(D.target) && ue();
+									}),
+										(g = (D) => {
+											D.key === 'Escape' && f && ue();
+										}),
+										(I = (D) => {
+											if (!f) return;
+											const P = f.querySelector('.ubits-calendar');
+											if (P) {
+												const $ = P.querySelector(
+														'.ubits-calendar__month-dropdown[style*="display: block"]',
+													),
+													j = P.querySelector(
+														'.ubits-calendar__year-dropdown[style*="display: block"]',
+													);
+												if ($ || j) {
+													const R = document.activeElement;
+													if (
+														R &&
+														(f.contains(R) ||
+															R.closest('.ubits-calendar') ||
+															R.closest('.ubits-calendar__month-dropdown') ||
+															R.closest('.ubits-calendar__year-dropdown') ||
+															R.closest('.ubits-list') ||
+															R.closest('[id*="calendar-list"]') ||
+															R.closest('[id*="calendar-scrollbar"]'))
+													)
+														return;
+													if (D && D.target) {
+														const oe = D.target;
+														if (
+															f.contains(oe) ||
+															oe.closest('.ubits-calendar') ||
+															oe.closest('.ubits-calendar__month-dropdown') ||
+															oe.closest('.ubits-calendar__year-dropdown') ||
+															oe.closest('.ubits-list') ||
+															oe.closest('[id*="calendar-list"]') ||
+															oe.closest('[id*="calendar-scrollbar"]')
+														)
+															return;
+													}
+													return;
+												}
+											}
+											ue();
+										}),
+										document.addEventListener('click', m),
+										document.addEventListener('keydown', g),
+										(W = n.querySelector('.ubits-data-table__scrollable-container')),
+										W && W.addEventListener('scroll', I, !0),
+										window.addEventListener('scroll', I, !0);
+								},
+								X = async () => {
+									const D = [
+										{
+											id: 'ubits-calendar-styles',
+											fileName: 'calendar.css',
+											href: '../../addons/calendar/src/styles/calendar.css',
+										},
+										{
+											id: 'ubits-button-styles',
+											fileName: 'button.css',
+											href: '../../addons/button/src/styles/button.css',
+										},
+										{
+											id: 'ubits-input-styles',
+											fileName: 'input.css',
+											href: '../../addons/input/src/styles/input.css',
+										},
+										{
+											id: 'ubits-list-styles',
+											fileName: 'list.css',
+											href: '../../addons/list/src/styles/list.css',
+										},
+									];
+									for (const P of D) {
+										const $ = document.getElementById(P.id),
+											j = Array.from(document.head.querySelectorAll('link[rel="stylesheet"]')).find(
+												(oe) => (oe.href || '').includes(P.fileName) || oe.id === P.id,
+											);
+										if ($ || j) continue;
+										const R = document.createElement('link');
+										(R.rel = 'stylesheet'),
+											(R.href = P.href),
+											(R.id = P.id),
+											document.head.appendChild(R);
+									}
+								},
+								te = async () => {
+									if (f && f.style.display !== 'none') {
+										ue();
+										return;
+									}
+									if (o && f) {
+										const D = _.getBoundingClientRect();
+										(f.style.top = `${D.bottom + 4}px`),
+											(f.style.left = `${D.left}px`),
+											(f.style.display = 'block'),
+											ne();
+										return;
+									}
+									try {
+										await X();
+										const { createCalendar: D } = await Promise.resolve().then(() => lt),
+											P = _.textContent || '',
+											$ = V(P);
+										(o = D({
+											mode: 'single',
+											selectedDate: $,
+											initialDate: $ || new Date(),
+											onDateSelect: (be) => {
+												const Y = q(be);
+												_.textContent = Y;
+												const Q = e.rows.find((N) => N.id === k);
+												Q &&
+													((Q.data[v] = Y), (Q.data[`${v}_iso`] = be.toISOString().split('T')[0])),
+													ue(),
+													O();
+											},
+										})),
+											(f = document.createElement('div')),
+											(f.className = 'ubits-data-table__calendar-container'),
+											f.setAttribute('data-row-id', String(k)),
+											f.setAttribute('data-column-id', v);
+										const R = _.getBoundingClientRect(),
+											oe = R.bottom + 4,
+											pe = R.left;
+										(f.style.cssText = `
             position: fixed;
             top: ${oe}px;
             left: ${pe}px;
             z-index: 99999;
             display: block;
             margin: 0;
-          `,document.body.appendChild(f),f.appendChild(o.element),ne()}catch(D){console.error("❌ [CALENDAR] Error cargando Calendar UBITS:",D)}};_.addEventListener("click",D=>{D.preventDefault(),D.stopPropagation(),te()})}),n.querySelectorAll('input[data-toggle-button="true"]').forEach(S=>{const x=S,h=x.getAttribute("data-row-id"),v=x.getAttribute("data-column-id");if(!h||!v)return;const k=isNaN(Number(h))?h:Number(h),_=x.cloneNode(!0);x.parentNode?.replaceChild(_,x),_.addEventListener("change",f=>{f.stopPropagation();const m=e.rows.find(g=>String(g.id)===String(k));m&&(m.data[v]=_.checked,O())});const o=_.closest(".ubits-toggle");o&&o.addEventListener("click",f=>{f.target!==_&&!_.contains(f.target)&&(f.preventDefault(),f.stopPropagation(),_.checked=!_.checked,_.dispatchEvent(new Event("change",{bubbles:!0})))})}),e.showPagination){const S=n.querySelector(".ubits-data-table__pagination");if(S){S.querySelectorAll(".ubits-pagination__page-button").forEach(k=>{k.addEventListener("click",()=>{const _=parseInt(k.textContent||"1");e.onPageChange&&e.onPageChange(_),e.currentPage=_,O()})}),S.querySelectorAll(".ubits-pagination__nav-button").forEach(k=>{k.addEventListener("click",()=>{const _=parseInt(S.getAttribute("data-current-page")||"1"),o=parseInt(S.getAttribute("data-total-pages")||"1"),f=k.getAttribute("aria-label")||"";let m=_;f.includes("Primera")||f.includes("First")?m=1:f.includes("Última")||f.includes("Last")?m=o:f.includes("Anterior")||f.includes("Previous")?m=Math.max(1,_-1):(f.includes("Siguiente")||f.includes("Next"))&&(m=Math.min(o,_+1)),m!==_&&(e.onPageChange&&e.onPageChange(m),e.currentPage=m,O())})});const v=S.querySelector(".ubits-pagination__select");v&&v.addEventListener("change",k=>{const _=k.target,o=parseInt(_.value);e.onItemsPerPageChange&&e.onItemsPerPageChange(o),e.itemsPerPage=o,e.currentPage=1,O()})}}if(e.header){const S=n.querySelector(".ubits-data-table__header");if(S){if(e.header.primaryButton&&e.header.showPrimaryButton!==!1){const x=S.querySelector(".ubits-data-table__header-primary-button");x&&e.header.primaryButton.onClick&&x.addEventListener("click",e.header.primaryButton.onClick)}if(e.header.secondaryButtons&&e.header.showSecondaryButtons!==!1&&S.querySelectorAll(".ubits-data-table__header-secondary-button").forEach((h,v)=>{const k=e.header.secondaryButtons[v];k&&k.onClick&&h.addEventListener("click",k.onClick)}),e.header.searchButton&&e.header.showSearchButton!==!1){const x=S.querySelector(".ubits-data-table__header-search-button"),h=x?.previousElementSibling,v=x?window.getComputedStyle(x):null,k=h?window.getComputedStyle(h):null;let _=null;if(x&&h){const o=h.getBoundingClientRect(),f=x.getBoundingClientRect(),m=f.left-o.right;_={prevButtonRight:o.right,searchBtnLeft:f.left,actualGap:m,expectedGap:8,difference:m-8,prevButtonWidth:o.width,searchBtnWidth:f.width,marginLeft:v?.marginLeft,marginRight:v?.marginRight}}if(x){const o=x.querySelector("button"),f=x.tagName==="BUTTON";(f||!!o)&&!H&&(f?x:o).addEventListener("click",W=>{W.stopPropagation(),W.preventDefault(),H=!0,e.header.searchButton.onClick&&e.header.searchButton.onClick(W),O(),setTimeout(()=>{const q=n.querySelector(".ubits-data-table__header-search-button");if(q){const V=q.querySelector(".ubits-search-button__input");V?(V.focus(),setTimeout(()=>{V.setSelectionRange(0,V.value.length)},10)):console.warn("🔍 [DATA TABLE] Input no encontrado después de renderizar")}},150)});const g=x.querySelector(".ubits-search-button__input");if(g){g.value=C;const I=X=>{if(C=X,e.header.searchButton.onChange?(console.log("🔵 [DATA TABLE] Llamando searchButton.onChange con valor:",X),e.header.searchButton.onChange(X)):console.warn("⚠️ [DATA TABLE] searchButton.onChange no está definido"),O(),X&&setTimeout(()=>{const te=n.querySelector(".ubits-data-table__header-search-button");if(te){const D=te.querySelector(".ubits-search-button__input");D&&(D.focus(),D.setSelectionRange(D.value.length,D.value.length))}},50),e.header.searchButton.onSearch){const te=F(e.rows,X,e.columns);e.header.searchButton.onSearch(X,te)}};g.addEventListener("input",X=>{const te=X.target.value;I(te)}),g.addEventListener("change",X=>{const te=X.target.value;I(te)});let W=null,q=!1,V=0;g.addEventListener("focus",()=>{q=!0,V=Date.now(),setTimeout(()=>{q=!1},200)}),g.addEventListener("blur",X=>{const D=Date.now()-V;q||D<200||(W&&clearTimeout(W),W=setTimeout(()=>{const P=n.querySelector(".ubits-search-button__input"),$=document.activeElement,j=n.querySelector(".ubits-search-button__clear"),R=n.querySelector(".ubits-data-table__header-search-button");P&&C===""&&!P.value&&$!==j&&!R?.contains($)&&(H=!1,O()),W=null},200))});const ue=x.closest(".ubits-data-table__header-search-button");ue&&ue.addEventListener("mousedown",X=>{X.target.closest(".ubits-search-button__input-wrapper")&&X.preventDefault()});const ne=x.querySelector(".ubits-search-button__clear");ne&&ne.addEventListener("click",X=>{X.stopPropagation(),X.preventDefault(),C="",g.value="",H=!1,I("")})}}}if(e.header.filterButton&&e.header.showFilterButton!==!1){const x=S.querySelector(".ubits-data-table__header-filter-button");x&&x.addEventListener("click",h=>{h.stopPropagation(),h.preventDefault();let v=e.header.filterButton.filters||[];if(v.length===0&&(v=e.columns.filter(_=>{const o=["drag-handle","expand","checkbox","radio","toggle","acciones"];return _.visible!==!1&&_.type&&!o.includes(_.type)}).map(_=>{let o="text",f;if(_.type==="estado"){o="select";const m=new Set;e.rows.forEach(g=>{const I=g.data[_.id];I!=null&&m.add(String(I))}),f=Array.from(m).map(g=>({value:g,label:g}))}else _.type==="fecha"?o="calendar":_.type==="progreso"?o="number":o="text";return{id:_.id,label:_.title,columnId:_.id,type:o,options:f}})),v.length===0){console.warn("🔍 [DATA TABLE] No hay columnas disponibles para filtrar"),e.header.filterButton.onClick&&e.header.filterButton.onClick(h);return}const k=()=>`
+          `),
+											document.body.appendChild(f),
+											f.appendChild(o.element),
+											ne();
+									} catch (D) {
+										console.error('❌ [CALENDAR] Error cargando Calendar UBITS:', D);
+									}
+								};
+							_.addEventListener('click', (D) => {
+								D.preventDefault(), D.stopPropagation(), te();
+							});
+						}),
+						n.querySelectorAll('input[data-toggle-button="true"]').forEach((S) => {
+							const x = S,
+								h = x.getAttribute('data-row-id'),
+								v = x.getAttribute('data-column-id');
+							if (!h || !v) return;
+							const k = isNaN(Number(h)) ? h : Number(h),
+								_ = x.cloneNode(!0);
+							x.parentNode?.replaceChild(_, x),
+								_.addEventListener('change', (f) => {
+									f.stopPropagation();
+									const m = e.rows.find((g) => String(g.id) === String(k));
+									m && ((m.data[v] = _.checked), O());
+								});
+							const o = _.closest('.ubits-toggle');
+							o &&
+								o.addEventListener('click', (f) => {
+									f.target !== _ &&
+										!_.contains(f.target) &&
+										(f.preventDefault(),
+										f.stopPropagation(),
+										(_.checked = !_.checked),
+										_.dispatchEvent(new Event('change', { bubbles: !0 })));
+								});
+						}),
+						e.showPagination)
+					) {
+						const S = n.querySelector('.ubits-data-table__pagination');
+						if (S) {
+							S.querySelectorAll('.ubits-pagination__page-button').forEach((k) => {
+								k.addEventListener('click', () => {
+									const _ = parseInt(k.textContent || '1');
+									e.onPageChange && e.onPageChange(_), (e.currentPage = _), O();
+								});
+							}),
+								S.querySelectorAll('.ubits-pagination__nav-button').forEach((k) => {
+									k.addEventListener('click', () => {
+										const _ = parseInt(S.getAttribute('data-current-page') || '1'),
+											o = parseInt(S.getAttribute('data-total-pages') || '1'),
+											f = k.getAttribute('aria-label') || '';
+										let m = _;
+										f.includes('Primera') || f.includes('First')
+											? (m = 1)
+											: f.includes('Última') || f.includes('Last')
+												? (m = o)
+												: f.includes('Anterior') || f.includes('Previous')
+													? (m = Math.max(1, _ - 1))
+													: (f.includes('Siguiente') || f.includes('Next')) &&
+														(m = Math.min(o, _ + 1)),
+											m !== _ && (e.onPageChange && e.onPageChange(m), (e.currentPage = m), O());
+									});
+								});
+							const v = S.querySelector('.ubits-pagination__select');
+							v &&
+								v.addEventListener('change', (k) => {
+									const _ = k.target,
+										o = parseInt(_.value);
+									e.onItemsPerPageChange && e.onItemsPerPageChange(o),
+										(e.itemsPerPage = o),
+										(e.currentPage = 1),
+										O();
+								});
+						}
+					}
+					if (e.header) {
+						const S = n.querySelector('.ubits-data-table__header');
+						if (S) {
+							if (e.header.primaryButton && e.header.showPrimaryButton !== !1) {
+								const x = S.querySelector('.ubits-data-table__header-primary-button');
+								x &&
+									e.header.primaryButton.onClick &&
+									x.addEventListener('click', e.header.primaryButton.onClick);
+							}
+							if (
+								(e.header.secondaryButtons &&
+									e.header.showSecondaryButtons !== !1 &&
+									S.querySelectorAll('.ubits-data-table__header-secondary-button').forEach(
+										(h, v) => {
+											const k = e.header.secondaryButtons[v];
+											k && k.onClick && h.addEventListener('click', k.onClick);
+										},
+									),
+								e.header.searchButton && e.header.showSearchButton !== !1)
+							) {
+								const x = S.querySelector('.ubits-data-table__header-search-button'),
+									h = x?.previousElementSibling,
+									v = x ? window.getComputedStyle(x) : null,
+									k = h ? window.getComputedStyle(h) : null;
+								let _ = null;
+								if (x && h) {
+									const o = h.getBoundingClientRect(),
+										f = x.getBoundingClientRect(),
+										m = f.left - o.right;
+									_ = {
+										prevButtonRight: o.right,
+										searchBtnLeft: f.left,
+										actualGap: m,
+										expectedGap: 8,
+										difference: m - 8,
+										prevButtonWidth: o.width,
+										searchBtnWidth: f.width,
+										marginLeft: v?.marginLeft,
+										marginRight: v?.marginRight,
+									};
+								}
+								if (x) {
+									const o = x.querySelector('button'),
+										f = x.tagName === 'BUTTON';
+									(f || !!o) &&
+										!H &&
+										(f ? x : o).addEventListener('click', (W) => {
+											W.stopPropagation(),
+												W.preventDefault(),
+												(H = !0),
+												e.header.searchButton.onClick && e.header.searchButton.onClick(W),
+												O(),
+												setTimeout(() => {
+													const q = n.querySelector('.ubits-data-table__header-search-button');
+													if (q) {
+														const V = q.querySelector('.ubits-search-button__input');
+														V
+															? (V.focus(),
+																setTimeout(() => {
+																	V.setSelectionRange(0, V.value.length);
+																}, 10))
+															: console.warn(
+																	'🔍 [DATA TABLE] Input no encontrado después de renderizar',
+																);
+													}
+												}, 150);
+										});
+									const g = x.querySelector('.ubits-search-button__input');
+									if (g) {
+										g.value = C;
+										const I = (X) => {
+											if (
+												((C = X),
+												e.header.searchButton.onChange
+													? (console.log(
+															'🔵 [DATA TABLE] Llamando searchButton.onChange con valor:',
+															X,
+														),
+														e.header.searchButton.onChange(X))
+													: console.warn('⚠️ [DATA TABLE] searchButton.onChange no está definido'),
+												O(),
+												X &&
+													setTimeout(() => {
+														const te = n.querySelector('.ubits-data-table__header-search-button');
+														if (te) {
+															const D = te.querySelector('.ubits-search-button__input');
+															D && (D.focus(), D.setSelectionRange(D.value.length, D.value.length));
+														}
+													}, 50),
+												e.header.searchButton.onSearch)
+											) {
+												const te = F(e.rows, X, e.columns);
+												e.header.searchButton.onSearch(X, te);
+											}
+										};
+										g.addEventListener('input', (X) => {
+											const te = X.target.value;
+											I(te);
+										}),
+											g.addEventListener('change', (X) => {
+												const te = X.target.value;
+												I(te);
+											});
+										let W = null,
+											q = !1,
+											V = 0;
+										g.addEventListener('focus', () => {
+											(q = !0),
+												(V = Date.now()),
+												setTimeout(() => {
+													q = !1;
+												}, 200);
+										}),
+											g.addEventListener('blur', (X) => {
+												const D = Date.now() - V;
+												q ||
+													D < 200 ||
+													(W && clearTimeout(W),
+													(W = setTimeout(() => {
+														const P = n.querySelector('.ubits-search-button__input'),
+															$ = document.activeElement,
+															j = n.querySelector('.ubits-search-button__clear'),
+															R = n.querySelector('.ubits-data-table__header-search-button');
+														P &&
+															C === '' &&
+															!P.value &&
+															$ !== j &&
+															!R?.contains($) &&
+															((H = !1), O()),
+															(W = null);
+													}, 200)));
+											});
+										const ue = x.closest('.ubits-data-table__header-search-button');
+										ue &&
+											ue.addEventListener('mousedown', (X) => {
+												X.target.closest('.ubits-search-button__input-wrapper') &&
+													X.preventDefault();
+											});
+										const ne = x.querySelector('.ubits-search-button__clear');
+										ne &&
+											ne.addEventListener('click', (X) => {
+												X.stopPropagation(),
+													X.preventDefault(),
+													(C = ''),
+													(g.value = ''),
+													(H = !1),
+													I('');
+											});
+									}
+								}
+							}
+							if (e.header.filterButton && e.header.showFilterButton !== !1) {
+								const x = S.querySelector('.ubits-data-table__header-filter-button');
+								x &&
+									x.addEventListener('click', (h) => {
+										h.stopPropagation(), h.preventDefault();
+										let v = e.header.filterButton.filters || [];
+										if (
+											(v.length === 0 &&
+												(v = e.columns
+													.filter((_) => {
+														const o = [
+															'drag-handle',
+															'expand',
+															'checkbox',
+															'radio',
+															'toggle',
+															'acciones',
+														];
+														return _.visible !== !1 && _.type && !o.includes(_.type);
+													})
+													.map((_) => {
+														let o = 'text',
+															f;
+														if (_.type === 'estado') {
+															o = 'select';
+															const m = new Set();
+															e.rows.forEach((g) => {
+																const I = g.data[_.id];
+																I != null && m.add(String(I));
+															}),
+																(f = Array.from(m).map((g) => ({ value: g, label: g })));
+														} else
+															_.type === 'fecha'
+																? (o = 'calendar')
+																: _.type === 'progreso'
+																	? (o = 'number')
+																	: (o = 'text');
+														return {
+															id: _.id,
+															label: _.title,
+															columnId: _.id,
+															type: o,
+															options: f,
+														};
+													})),
+											v.length === 0)
+										) {
+											console.warn('🔍 [DATA TABLE] No hay columnas disponibles para filtrar'),
+												e.header.filterButton.onClick && e.header.filterButton.onClick(h);
+											return;
+										}
+										const k = () => `
                   <div class="ubits-data-table__filters-container">
-                    ${v.map(o=>{const f=T[o.id]||o.value||"";let m="";const g=`filter-input-${o.id}`;switch(o.type){case"text":case"number":case"date":case"calendar":m=Oe({containerId:g,label:o.label,type:o.type,value:f,placeholder:`Filtrar por ${o.label.toLowerCase()}...`,size:"md"});break;case"select":o.options&&o.options.length>0&&(m=Oe({containerId:g,label:o.label,type:"select",selectOptions:o.options,value:f,placeholder:`Seleccionar ${o.label.toLowerCase()}...`,size:"md"}));break}return`
+                    ${v
+											.map((o) => {
+												const f = T[o.id] || o.value || '';
+												let m = '';
+												const g = `filter-input-${o.id}`;
+												switch (o.type) {
+													case 'text':
+													case 'number':
+													case 'date':
+													case 'calendar':
+														m = Oe({
+															containerId: g,
+															label: o.label,
+															type: o.type,
+															value: f,
+															placeholder: `Filtrar por ${o.label.toLowerCase()}...`,
+															size: 'md',
+														});
+														break;
+													case 'select':
+														o.options &&
+															o.options.length > 0 &&
+															(m = Oe({
+																containerId: g,
+																label: o.label,
+																type: 'select',
+																selectOptions: o.options,
+																value: f,
+																placeholder: `Seleccionar ${o.label.toLowerCase()}...`,
+																size: 'md',
+															}));
+														break;
+												}
+												return `
                     <div class="ubits-data-table__filter-item" data-filter-id="${o.id}">
                       <div id="${g}">${m}</div>
                     </div>
-                  `}).join("")}
+                  `;
+											})
+											.join('')}
                   </div>
-                `;if(z)try{z.updateContent(k)}catch(_){console.error("🔍 [DATA TABLE] Error al actualizar drawer:",_),z=st({title:"Filtros",complementaryText:"Aplica filtros para refinar los resultados",width:40,bodyContent:k,footerButtons:{secondary:{label:"Limpiar",onClick:o=>{o.preventDefault(),o.stopPropagation(),T={},e.header.filterButton.onClearFilters&&e.header.filterButton.onClearFilters(),O(),z&&z.close()}},primary:{label:"Aplicar",onClick:o=>{o.preventDefault(),o.stopPropagation();const f={};v.forEach(m=>{const g=z.element.querySelector(`[data-filter-id="${m.id}"]`);if(g){const I=g.querySelector(".ubits-input");I&&I.value&&I.value.trim()!==""&&(f[m.id]=I.value.trim())}}),T=f,e.header.filterButton.onApplyFilters&&e.header.filterButton.onApplyFilters(T),O(),z&&z.close()}}},onClose:()=>{},closeOnOverlayClick:!0})}else try{z=st({title:"Filtros",complementaryText:"Aplica filtros para refinar los resultados",width:40,bodyContent:k,footerButtons:{secondary:{label:"Limpiar",onClick:_=>{_.preventDefault(),_.stopPropagation(),T={},e.header.filterButton.onClearFilters&&e.header.filterButton.onClearFilters(),O(),z&&z.close()}},primary:{label:"Aplicar",onClick:_=>{_.preventDefault(),_.stopPropagation();const o={};v.forEach(f=>{const m=z.element.querySelector(`[data-filter-id="${f.id}"]`);if(m){const g=m.querySelector(".ubits-input");g&&g.value&&g.value.trim()!==""&&(o[f.id]=g.value.trim())}}),T=o,e.header.filterButton.onApplyFilters&&e.header.filterButton.onApplyFilters(T),O(),z&&z.close()}}},onClose:()=>{},closeOnOverlayClick:!0})}catch(_){console.error("🔍 [DATA TABLE] Error al crear drawer:",_),e.header.filterButton.onClick&&e.header.filterButton.onClick(h);return}z&&(z.open(),setTimeout(()=>{if(console.log("🔵 [DATA TABLE FILTERS] ========== INICIO creación de inputs =========="),!z){console.error("❌ [DATA TABLE FILTERS] drawerInstance no existe");return}console.log("✅ [DATA TABLE FILTERS] drawerInstance existe");const _=m=>{const g=String(m.getDate()).padStart(2,"0"),I=String(m.getMonth()+1).padStart(2,"0"),W=m.getFullYear();return`${g}/${I}/${W}`},o=m=>{if(!m)return null;const[g,I,W]=m.split("/");if(g&&I&&W)return new Date(parseInt(W),parseInt(I)-1,parseInt(g));try{const q=new Date(m);if(!isNaN(q.getTime()))return q}catch{}return null},f=async()=>{console.log("🔵 [DATA TABLE FILTERS] Cargando estilos CSS del Calendar...");const m=[{id:"ubits-calendar-styles",fileName:"calendar.css",href:"../../addons/calendar/src/styles/calendar.css"},{id:"ubits-button-styles",fileName:"button.css",href:"../../addons/button/src/styles/button.css"},{id:"ubits-input-styles",fileName:"input.css",href:"../../addons/input/src/styles/input.css"},{id:"ubits-list-styles",fileName:"list.css",href:"../../addons/list/src/styles/list.css"}];for(const g of m){const I=document.getElementById(g.id),W=Array.from(document.head.querySelectorAll('link[rel="stylesheet"]')).find(V=>(V.href||"").includes(g.fileName)||V.id===g.id);if(I||W){console.log(`ℹ️ [DATA TABLE FILTERS] Estilo ${g.fileName} ya está cargado`);continue}console.log(`📦 [DATA TABLE FILTERS] Cargando estilo: ${g.fileName}`);const q=document.createElement("link");q.rel="stylesheet",q.href=g.href,q.id=g.id,document.head.appendChild(q),console.log(`✅ [DATA TABLE FILTERS] Estilo ${g.fileName} cargado`)}console.log("✅ [DATA TABLE FILTERS] Todos los estilos CSS cargados")};console.log(`🔵 [DATA TABLE FILTERS] Procesando ${v.length} filtros...`);for(let m=0;m<v.length;m++){const g=v[m];console.log(`🔵 [DATA TABLE FILTERS] Procesando filtro ${m+1}/${v.length}: id=${g.id}, label=${g.label}, type=${g.type}`);const I=`filter-input-${g.id}`,W=z.element.querySelector(`#${I}`);if(!W){console.warn(`⚠️ [DATA TABLE FILTERS] Contenedor ${I} no encontrado para filtro ${g.id}`);continue}console.log(`✅ [DATA TABLE FILTERS] Contenedor ${I} encontrado`),W.innerHTML="";const q=T[g.id]||g.value||"";if(console.log(`🔵 [DATA TABLE FILTERS] Valor actual del filtro ${g.id}:`,q),g.type==="calendar")console.log(`📅 [DATA TABLE FILTERS] Filtro ${g.id} es de tipo CALENDAR, usando createCalendar`),(async()=>{try{await f(),console.log("📅 [DATA TABLE FILTERS] Importando createCalendar...");const{createCalendar:V}=await Promise.resolve().then(()=>lt);console.log("✅ [DATA TABLE FILTERS] createCalendar importado:",typeof V),console.log("📅 [DATA TABLE FILTERS] Creando estructura del input readonly...");const ue=document.createElement("div");ue.className="ubits-input",ue.style.position="relative";const ne=document.createElement("label");ne.className="ubits-input__label",ne.textContent=g.label,console.log("📅 [DATA TABLE FILTERS] Label creado:",g.label);const X=document.createElement("div");X.className="ubits-input__wrapper";const te=document.createElement("input");te.type="text",te.readOnly=!0,te.value=q,te.placeholder=`Filtrar por ${g.label.toLowerCase()}...`,te.className="ubits-input__input",te.style.cursor="pointer",console.log("📅 [DATA TABLE FILTERS] Input readonly creado con valor:",q);const D=document.createElement("div");D.className="ubits-input-icon-right",D.innerHTML='<i class="far fa-calendar"></i>',console.log("📅 [DATA TABLE FILTERS] Icono de calendario agregado (far fa-calendar)"),X.appendChild(te),X.appendChild(D),ue.appendChild(ne),ue.appendChild(X);let P=null,$=null,j=null,R=null;const oe=()=>{$&&($.style.display="none",$.parentElement&&$.remove(),$=null),j&&(document.removeEventListener("click",j),j=null),R&&(document.removeEventListener("keydown",R),R=null)},pe=async()=>{if($&&$.style.display!=="none"){oe();return}if(P&&$){const be=X.getBoundingClientRect();$.style.top=`${be.bottom+4}px`,$.style.left=`${be.left}px`,$.style.display="block";return}try{const be=o(q),Y=be||new Date;console.log("📅 [DATA TABLE FILTERS] Fecha parseada:",be),console.log("📅 [DATA TABLE FILTERS] Fecha inicial:",Y),console.log("📅 [DATA TABLE FILTERS] Creando instancia del Calendar..."),P=V({mode:"single",selectedDate:be,initialDate:Y,onDateSelect:N=>{console.log("📅 [DATA TABLE FILTERS] Fecha seleccionada:",N);const ge=_(N);console.log("📅 [DATA TABLE FILTERS] Fecha formateada:",ge),te.value=ge,T[g.id]=ge,oe(),console.log("📅 [DATA TABLE FILTERS] Actualizando filtros y re-renderizando..."),O()}}),console.log("✅ [DATA TABLE FILTERS] Instancia del Calendar creada:",P),$=document.createElement("div"),$.className="ubits-calendar-container";const Q=X.getBoundingClientRect();$.style.cssText=`
+                `;
+										if (z)
+											try {
+												z.updateContent(k);
+											} catch (_) {
+												console.error('🔍 [DATA TABLE] Error al actualizar drawer:', _),
+													(z = st({
+														title: 'Filtros',
+														complementaryText: 'Aplica filtros para refinar los resultados',
+														width: 40,
+														bodyContent: k,
+														footerButtons: {
+															secondary: {
+																label: 'Limpiar',
+																onClick: (o) => {
+																	o.preventDefault(),
+																		o.stopPropagation(),
+																		(T = {}),
+																		e.header.filterButton.onClearFilters &&
+																			e.header.filterButton.onClearFilters(),
+																		O(),
+																		z && z.close();
+																},
+															},
+															primary: {
+																label: 'Aplicar',
+																onClick: (o) => {
+																	o.preventDefault(), o.stopPropagation();
+																	const f = {};
+																	v.forEach((m) => {
+																		const g = z.element.querySelector(`[data-filter-id="${m.id}"]`);
+																		if (g) {
+																			const I = g.querySelector('.ubits-input');
+																			I &&
+																				I.value &&
+																				I.value.trim() !== '' &&
+																				(f[m.id] = I.value.trim());
+																		}
+																	}),
+																		(T = f),
+																		e.header.filterButton.onApplyFilters &&
+																			e.header.filterButton.onApplyFilters(T),
+																		O(),
+																		z && z.close();
+																},
+															},
+														},
+														onClose: () => {},
+														closeOnOverlayClick: !0,
+													}));
+											}
+										else
+											try {
+												z = st({
+													title: 'Filtros',
+													complementaryText: 'Aplica filtros para refinar los resultados',
+													width: 40,
+													bodyContent: k,
+													footerButtons: {
+														secondary: {
+															label: 'Limpiar',
+															onClick: (_) => {
+																_.preventDefault(),
+																	_.stopPropagation(),
+																	(T = {}),
+																	e.header.filterButton.onClearFilters &&
+																		e.header.filterButton.onClearFilters(),
+																	O(),
+																	z && z.close();
+															},
+														},
+														primary: {
+															label: 'Aplicar',
+															onClick: (_) => {
+																_.preventDefault(), _.stopPropagation();
+																const o = {};
+																v.forEach((f) => {
+																	const m = z.element.querySelector(`[data-filter-id="${f.id}"]`);
+																	if (m) {
+																		const g = m.querySelector('.ubits-input');
+																		g &&
+																			g.value &&
+																			g.value.trim() !== '' &&
+																			(o[f.id] = g.value.trim());
+																	}
+																}),
+																	(T = o),
+																	e.header.filterButton.onApplyFilters &&
+																		e.header.filterButton.onApplyFilters(T),
+																	O(),
+																	z && z.close();
+															},
+														},
+													},
+													onClose: () => {},
+													closeOnOverlayClick: !0,
+												});
+											} catch (_) {
+												console.error('🔍 [DATA TABLE] Error al crear drawer:', _),
+													e.header.filterButton.onClick && e.header.filterButton.onClick(h);
+												return;
+											}
+										z &&
+											(z.open(),
+											setTimeout(() => {
+												if (
+													(console.log(
+														'🔵 [DATA TABLE FILTERS] ========== INICIO creación de inputs ==========',
+													),
+													!z)
+												) {
+													console.error('❌ [DATA TABLE FILTERS] drawerInstance no existe');
+													return;
+												}
+												console.log('✅ [DATA TABLE FILTERS] drawerInstance existe');
+												const _ = (m) => {
+														const g = String(m.getDate()).padStart(2, '0'),
+															I = String(m.getMonth() + 1).padStart(2, '0'),
+															W = m.getFullYear();
+														return `${g}/${I}/${W}`;
+													},
+													o = (m) => {
+														if (!m) return null;
+														const [g, I, W] = m.split('/');
+														if (g && I && W)
+															return new Date(parseInt(W), parseInt(I) - 1, parseInt(g));
+														try {
+															const q = new Date(m);
+															if (!isNaN(q.getTime())) return q;
+														} catch {}
+														return null;
+													},
+													f = async () => {
+														console.log(
+															'🔵 [DATA TABLE FILTERS] Cargando estilos CSS del Calendar...',
+														);
+														const m = [
+															{
+																id: 'ubits-calendar-styles',
+																fileName: 'calendar.css',
+																href: '../../addons/calendar/src/styles/calendar.css',
+															},
+															{
+																id: 'ubits-button-styles',
+																fileName: 'button.css',
+																href: '../../addons/button/src/styles/button.css',
+															},
+															{
+																id: 'ubits-input-styles',
+																fileName: 'input.css',
+																href: '../../addons/input/src/styles/input.css',
+															},
+															{
+																id: 'ubits-list-styles',
+																fileName: 'list.css',
+																href: '../../addons/list/src/styles/list.css',
+															},
+														];
+														for (const g of m) {
+															const I = document.getElementById(g.id),
+																W = Array.from(
+																	document.head.querySelectorAll('link[rel="stylesheet"]'),
+																).find((V) => (V.href || '').includes(g.fileName) || V.id === g.id);
+															if (I || W) {
+																console.log(
+																	`ℹ️ [DATA TABLE FILTERS] Estilo ${g.fileName} ya está cargado`,
+																);
+																continue;
+															}
+															console.log(`📦 [DATA TABLE FILTERS] Cargando estilo: ${g.fileName}`);
+															const q = document.createElement('link');
+															(q.rel = 'stylesheet'),
+																(q.href = g.href),
+																(q.id = g.id),
+																document.head.appendChild(q),
+																console.log(`✅ [DATA TABLE FILTERS] Estilo ${g.fileName} cargado`);
+														}
+														console.log('✅ [DATA TABLE FILTERS] Todos los estilos CSS cargados');
+													};
+												console.log(`🔵 [DATA TABLE FILTERS] Procesando ${v.length} filtros...`);
+												for (let m = 0; m < v.length; m++) {
+													const g = v[m];
+													console.log(
+														`🔵 [DATA TABLE FILTERS] Procesando filtro ${m + 1}/${v.length}: id=${g.id}, label=${g.label}, type=${g.type}`,
+													);
+													const I = `filter-input-${g.id}`,
+														W = z.element.querySelector(`#${I}`);
+													if (!W) {
+														console.warn(
+															`⚠️ [DATA TABLE FILTERS] Contenedor ${I} no encontrado para filtro ${g.id}`,
+														);
+														continue;
+													}
+													console.log(`✅ [DATA TABLE FILTERS] Contenedor ${I} encontrado`),
+														(W.innerHTML = '');
+													const q = T[g.id] || g.value || '';
+													if (
+														(console.log(
+															`🔵 [DATA TABLE FILTERS] Valor actual del filtro ${g.id}:`,
+															q,
+														),
+														g.type === 'calendar')
+													)
+														console.log(
+															`📅 [DATA TABLE FILTERS] Filtro ${g.id} es de tipo CALENDAR, usando createCalendar`,
+														),
+															(async () => {
+																try {
+																	await f(),
+																		console.log(
+																			'📅 [DATA TABLE FILTERS] Importando createCalendar...',
+																		);
+																	const { createCalendar: V } = await Promise.resolve().then(
+																		() => lt,
+																	);
+																	console.log(
+																		'✅ [DATA TABLE FILTERS] createCalendar importado:',
+																		typeof V,
+																	),
+																		console.log(
+																			'📅 [DATA TABLE FILTERS] Creando estructura del input readonly...',
+																		);
+																	const ue = document.createElement('div');
+																	(ue.className = 'ubits-input'), (ue.style.position = 'relative');
+																	const ne = document.createElement('label');
+																	(ne.className = 'ubits-input__label'),
+																		(ne.textContent = g.label),
+																		console.log('📅 [DATA TABLE FILTERS] Label creado:', g.label);
+																	const X = document.createElement('div');
+																	X.className = 'ubits-input__wrapper';
+																	const te = document.createElement('input');
+																	(te.type = 'text'),
+																		(te.readOnly = !0),
+																		(te.value = q),
+																		(te.placeholder = `Filtrar por ${g.label.toLowerCase()}...`),
+																		(te.className = 'ubits-input__input'),
+																		(te.style.cursor = 'pointer'),
+																		console.log(
+																			'📅 [DATA TABLE FILTERS] Input readonly creado con valor:',
+																			q,
+																		);
+																	const D = document.createElement('div');
+																	(D.className = 'ubits-input-icon-right'),
+																		(D.innerHTML = '<i class="far fa-calendar"></i>'),
+																		console.log(
+																			'📅 [DATA TABLE FILTERS] Icono de calendario agregado (far fa-calendar)',
+																		),
+																		X.appendChild(te),
+																		X.appendChild(D),
+																		ue.appendChild(ne),
+																		ue.appendChild(X);
+																	let P = null,
+																		$ = null,
+																		j = null,
+																		R = null;
+																	const oe = () => {
+																			$ &&
+																				(($.style.display = 'none'),
+																				$.parentElement && $.remove(),
+																				($ = null)),
+																				j && (document.removeEventListener('click', j), (j = null)),
+																				R &&
+																					(document.removeEventListener('keydown', R), (R = null));
+																		},
+																		pe = async () => {
+																			if ($ && $.style.display !== 'none') {
+																				oe();
+																				return;
+																			}
+																			if (P && $) {
+																				const be = X.getBoundingClientRect();
+																				($.style.top = `${be.bottom + 4}px`),
+																					($.style.left = `${be.left}px`),
+																					($.style.display = 'block');
+																				return;
+																			}
+																			try {
+																				const be = o(q),
+																					Y = be || new Date();
+																				console.log('📅 [DATA TABLE FILTERS] Fecha parseada:', be),
+																					console.log('📅 [DATA TABLE FILTERS] Fecha inicial:', Y),
+																					console.log(
+																						'📅 [DATA TABLE FILTERS] Creando instancia del Calendar...',
+																					),
+																					(P = V({
+																						mode: 'single',
+																						selectedDate: be,
+																						initialDate: Y,
+																						onDateSelect: (N) => {
+																							console.log(
+																								'📅 [DATA TABLE FILTERS] Fecha seleccionada:',
+																								N,
+																							);
+																							const ge = _(N);
+																							console.log(
+																								'📅 [DATA TABLE FILTERS] Fecha formateada:',
+																								ge,
+																							),
+																								(te.value = ge),
+																								(T[g.id] = ge),
+																								oe(),
+																								console.log(
+																									'📅 [DATA TABLE FILTERS] Actualizando filtros y re-renderizando...',
+																								),
+																								O();
+																						},
+																					})),
+																					console.log(
+																						'✅ [DATA TABLE FILTERS] Instancia del Calendar creada:',
+																						P,
+																					),
+																					($ = document.createElement('div')),
+																					($.className = 'ubits-calendar-container');
+																				const Q = X.getBoundingClientRect();
+																				($.style.cssText = `
 																	position: fixed;
-																	top: ${Q.bottom+4}px;
+																	top: ${Q.bottom + 4}px;
 																	left: ${Q.left}px;
 																	z-index: 10000;
 																	display: block;
@@ -659,14 +6466,538 @@
 																	border: 1px solid var(--modifiers-normal-color-light-border-1);
 																	border-radius: var(--ubits-border-radius-md);
 																	box-shadow: var(--ubits-shadow-lg);
-																`,$.appendChild(P.element),document.body.appendChild($),j=N=>{$&&$.style.display!=="none"&&!ue.contains(N.target)&&!$.contains(N.target)&&oe()},R=N=>{N.key==="Escape"&&$&&$.style.display!=="none"&&oe()},document.addEventListener("click",j),document.addEventListener("keydown",R)}catch(be){console.error("❌ [DATA TABLE FILTERS] Error al mostrar Calendar:",be)}};te.addEventListener("click",be=>{be.preventDefault(),be.stopPropagation(),pe()}),D.addEventListener("click",be=>{be.preventDefault(),be.stopPropagation(),pe()}),console.log("📅 [DATA TABLE FILTERS] Agregando elementos al contenedor..."),W.appendChild(ue),console.log(`✅ [DATA TABLE FILTERS] Calendar implementado correctamente para filtro ${g.id}`)}catch(V){console.error("❌ [DATA TABLE FILTERS] Error al crear Calendar para filtro:",V),console.error("❌ [DATA TABLE FILTERS] Stack trace:",V instanceof Error?V.stack:"N/A"),W.innerHTML=`<div style="padding: var(--ubits-spacing-lg, 16px); background: var(--ubits-bg-1); border: 1px solid var(--ubits-border-1); border-radius: var(--ubits-border-radius-lg, 8px); color: var(--ubits-fg-1-high);">Error al cargar el calendario: ${V instanceof Error?V.message:String(V)}</div>`}})();else if(g.type==="select"&&g.options){console.log(`🔵 [DATA TABLE FILTERS] Filtro ${g.id} es de tipo SELECT, usando createInput`);let V={containerId:I,label:g.label,value:q,placeholder:`Seleccionar ${g.label.toLowerCase()}...`,size:"md",type:"select",selectOptions:g.options.map(ue=>({value:ue.value,text:ue.label||ue.value}))};at(V)}else{console.log(`🔵 [DATA TABLE FILTERS] Filtro ${g.id} es de tipo ${g.type}, usando createInput`);let V={containerId:I,label:g.label,value:q,placeholder:`Filtrar por ${g.label.toLowerCase()}...`,size:"md",type:g.type};console.log("🔵 [DATA TABLE FILTERS] Creando input con opciones:",V),at(V),console.log(`✅ [DATA TABLE FILTERS] Input creado para filtro ${g.id}`)}}console.log("🔵 [DATA TABLE FILTERS] ========== FIN creación de inputs ==========")},300))})}if(e.header.columnSelectorButton&&e.header.showColumnSelectorButton!==!1){const x=S.querySelector(".ubits-data-table__header-column-selector-button");if(x){let h=null,v=!1;const k=()=>(h&&h.parentElement||(h=document.createElement("div"),h.className="ubits-data-table__column-selector-dropdown",h.style.display="none",document.body.appendChild(h)),h),_=()=>{if(!h||!x)return;const g=x.getBoundingClientRect(),I=h.offsetWidth||200;h.style.position="fixed",h.style.top=`${g.bottom+4}px`;const W=g.right-I;W<0?h.style.left="0px":h.style.left=`${W}px`,h.style.right="auto"};let o=null,f=null;const m=()=>{h&&(h.style.display="none",v=!1,f&&(document.removeEventListener("click",f),f=null),o&&(window.removeEventListener("scroll",o,!0),window.removeEventListener("resize",o),o=null))};x.addEventListener("click",g=>{if(g.preventDefault(),g.stopPropagation(),v){m();return}const I=k();for(;I.firstChild;)I.removeChild(I.firstChild);I.innerHTML="";const W=I.children.length,q=I.innerHTML.length;(W>0||q>0)&&(console.error("🔍 [COLUMN SELECTOR] ❌ ERROR: Dropdown no está completamente limpio!"),I.innerHTML="",requestAnimationFrame(()=>{(I.children.length>0||I.innerHTML.length>0)&&console.error("🔍 [COLUMN SELECTOR] ❌ ERROR: Dropdown sigue sin estar limpio después de limpieza adicional!")}));const V="ubits-data-table-column-selector-list",ue=document.getElementById(V);ue&&ue.remove();const ne=document.createElement("div");if(ne.id=V,I.appendChild(ne),ne){const D=s(e.columns);D.length!==e.columns.length&&(e.columns=D);const P=D.filter(Y=>{const Q=["drag-handle","expand"],N=["checkbox","checkbox-2"];return!Q.includes(Y.type||"")&&!N.includes(Y.id)&&Y.id!=="checkbox"}),$=new Set,j=P.filter(Y=>$.has(Y.id)?!1:($.add(Y.id),!0)),R=j.filter(Y=>Y.visible!==!1).length,oe=j.map(Y=>{const Q=Y.visible!==!1,N=Q&&R===1;return{label:Ae({label:Y.title,checked:Q,size:"sm",disabled:N,className:"ubits-data-table__column-selector-checkbox"}).replace("<input",`<input data-column-selector-id="${Y.id}"`),value:Y.id,state:"default",selected:!1}}),pe=new Set,be=oe.filter(Y=>pe.has(Y.value)?!1:(pe.add(Y.value),!0));try{Re({containerId:V,items:be,size:"sm",maxHeight:"400px",className:"ubits-data-table__column-selector-list"});const Y=document.getElementById(V);if(Y){const N=Y.querySelector(".ubits-list")?.querySelectorAll(".ubits-list-item")||[]}else console.error("🔍 [COLUMN SELECTOR] ❌ Lista no encontrada después de createList")}catch(Y){console.error("🔍 [COLUMN SELECTOR] ❌ Error en createList:",Y),ne.innerHTML=Ne({containerId:V,items:be,size:"sm",maxHeight:"400px",className:"ubits-data-table__column-selector-list"})}}else console.error("🔍 [COLUMN SELECTOR] ❌ listContainer no existe");const X=()=>{const D="ubits-data-table-column-selector-list";let P=I.querySelector(`#${D}`);(!P||!v)&&(I.innerHTML="",P=document.createElement("div"),P.id=D,I.appendChild(P));const $=s(e.columns);$.length!==e.columns.length&&(e.columns=$);const j=$.filter(N=>{const ge=["drag-handle","expand"],ie=["checkbox","checkbox-2"];return!ge.includes(N.type||"")&&!ie.includes(N.id)&&N.id!=="checkbox"}),R=new Set,oe=j.filter(N=>R.has(N.id)?!1:(R.add(N.id),!0)),pe=oe.filter(N=>N.visible!==!1).length,be=oe.map(N=>{const ge=N.visible!==!1,ie=ge&&pe===1;return{label:Ae({label:N.title,checked:ge,size:"sm",disabled:ie,className:"ubits-data-table__column-selector-checkbox"}).replace("<input",`<input data-column-selector-id="${N.id}"`),value:N.id,state:"default",selected:!1}}),Y=new Set,Q=be.filter(N=>Y.has(N.value)?!1:(Y.add(N.value),!0));P.innerHTML="";try{Re({containerId:D,items:Q,size:"sm",maxHeight:"400px",className:"ubits-data-table__column-selector-list"});const N=document.getElementById(D);if(N){const ie=N.querySelector(".ubits-list")?.querySelectorAll(".ubits-list-item")||[]}else console.error("🔍 [COLUMN SELECTOR UPDATE] ❌ Lista no encontrada")}catch(N){console.error("🔍 [COLUMN SELECTOR UPDATE] ❌ Error en createList:",N),P.innerHTML=Ne({containerId:D,items:Q,size:"sm",maxHeight:"400px",className:"ubits-data-table__column-selector-list"})}setTimeout(()=>{te()},50)},te=()=>{I.querySelectorAll("input[data-column-selector-id]").forEach(P=>{const $=P,j=$.getAttribute("data-column-selector-id"),R=$.cloneNode(!0);$.parentNode?.replaceChild(R,$),R.addEventListener("change",oe=>{if(oe.stopPropagation(),oe.preventDefault(),R.disabled)return;const pe=R.checked,be=e.columns.find(Y=>Y.id===j);if(be){if(!pe){const Q=e.columns.filter(me=>{const we=["drag-handle","expand"],Se=["checkbox","checkbox-2"];return!we.includes(me.type||"")&&!Se.includes(me.id)&&me.id!=="checkbox"}),N=new Set;if(Q.filter(me=>N.has(me.id)?!1:(N.add(me.id),!0)).filter(me=>me.id===j?!1:me.visible!==!1).length===0){R.checked=!0,console.warn("⚠️ No se pueden ocultar todas las columnas. Debe quedar al menos una columna visible.");return}}const Y=e.columns.filter(Q=>Q.id===j);if(be.visible=pe,Y.length>1&&Y.forEach((Q,N)=>{Q.id===j&&(Q.visible=pe)}),e.onColumnVisibilityChange){const Q=e.columns.filter(N=>N.visible!==!1).map(N=>N.id);console.log("🔵 [DATA TABLE] Llamando onColumnVisibilityChange con columnas:",Q),e.onColumnVisibilityChange(Q)}else console.warn("⚠️ [DATA TABLE] onColumnVisibilityChange no está definido");X(),O()}})})};setTimeout(()=>{te()},100),I.style.display="block",requestAnimationFrame(()=>{_(),setTimeout(()=>{_()},10)}),v=!0,o=()=>{v&&h&&_()},window.addEventListener("scroll",o,!0),window.addEventListener("resize",o),f=D=>{I&&!I.contains(D.target)&&!x.contains(D.target)&&(o&&(window.removeEventListener("scroll",o,!0),window.removeEventListener("resize",o)),m())},setTimeout(()=>{document.addEventListener("click",f)},0),e.header.columnSelectorButton.onClick&&e.header.columnSelectorButton.onClick(g)})}}}}try{const S=n.querySelector(".ubits-data-table__empty-state");if(S&&e.emptyState){const x=e.rows.length===0,h=C&&C.trim()!=="",v=Object.keys(T).length>0;let k;if(x&&e.emptyState.noData?k=e.emptyState.noData:h&&e.emptyState.noSearchResults?k=e.emptyState.noSearchResults:v&&e.emptyState.noFilterResults&&(k=e.emptyState.noFilterResults),k){if(k.onAction){const _=S.querySelector('[data-action="primary"]');_&&_.addEventListener("click",o=>{o.preventDefault(),o.stopPropagation(),k.onAction?.()})}if(k.onSecondaryAction){const _=S.querySelector('[data-action="secondary"]');_&&_.addEventListener("click",o=>{o.preventDefault(),o.stopPropagation(),k.onSecondaryAction?.()})}}}}catch(S){console.error("📎 [ATTACH] ❌ Error agregando listeners de empty state:",S)}}catch(M){console.error("📎 [ATTACH] ❌ Error en attachEventListeners:",M)}};return O(),{element:n,destroy:()=>{if(A){try{A.destroy()}catch{}A=null}if(B){const M=n.querySelector(".ubits-data-table__scrollable-container")||n.querySelector(".ubits-data-table")||n;M&&M.removeEventListener("scroll",B),window.removeEventListener("scroll",B,!0),B=null}n&&n.parentNode&&n.parentNode.removeChild(n)},update:M=>{const Z=e.showPagination;if(e={...e,...M},M.columns)e.columns=s(M.columns);else if(e.columns){const re=e.columns.length;e.columns=s(e.columns),e.columns.length}if(M.showPagination!==void 0&&M.showPagination!==Z)if(M.showPagination){if(B){const re=n.querySelector(".ubits-data-table__scrollable-container")||n.querySelector(".ubits-data-table")||n;re&&re.removeEventListener("scroll",B),window.removeEventListener("scroll",B,!0),B=null}U=K}else U=K;M.columns&&(p=M.columns.filter(re=>re.visible!==!1).map(re=>re.id)),M.rows&&(w=M.rows.map(re=>re.id),U=K),O()}}}typeof window<"u"&&(window.UBITSDataTable={renderDataTable:ze,createDataTable:Ge},window.renderDataTable=ze,window.createDataTable=Ge);const Fe=["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"],Vt=["Dom","Lun","Mar","Mié","Jue","Vie","Sáb"];function Ut(t){const l=String(t.getDate()).padStart(2,"0"),u=String(t.getMonth()+1).padStart(2,"0"),d=t.getFullYear();return`${l}/${u}/${d}`}function qe(t,l){const u=new Date(t.getFullYear(),t.getMonth(),t.getDate()),d=new Date(l.getFullYear(),l.getMonth(),l.getDate());return u.getTime()-d.getTime()}function We(t,l){return qe(t,l)===0}function Xt(t,l,u){const d=qe(t,l),c=qe(u,t);return d>=0&&c>=0}function it(t,l){const u=document.createElement("div");u.style.cssText="position: relative; width: 100%;";const d=`calendar-list-container-${Date.now()}`,c=`calendar-list-${Date.now()}`,r=`calendar-scrollbar-${Date.now()}`;let a=`
+																`),
+																					$.appendChild(P.element),
+																					document.body.appendChild($),
+																					(j = (N) => {
+																						$ &&
+																							$.style.display !== 'none' &&
+																							!ue.contains(N.target) &&
+																							!$.contains(N.target) &&
+																							oe();
+																					}),
+																					(R = (N) => {
+																						N.key === 'Escape' &&
+																							$ &&
+																							$.style.display !== 'none' &&
+																							oe();
+																					}),
+																					document.addEventListener('click', j),
+																					document.addEventListener('keydown', R);
+																			} catch (be) {
+																				console.error(
+																					'❌ [DATA TABLE FILTERS] Error al mostrar Calendar:',
+																					be,
+																				);
+																			}
+																		};
+																	te.addEventListener('click', (be) => {
+																		be.preventDefault(), be.stopPropagation(), pe();
+																	}),
+																		D.addEventListener('click', (be) => {
+																			be.preventDefault(), be.stopPropagation(), pe();
+																		}),
+																		console.log(
+																			'📅 [DATA TABLE FILTERS] Agregando elementos al contenedor...',
+																		),
+																		W.appendChild(ue),
+																		console.log(
+																			`✅ [DATA TABLE FILTERS] Calendar implementado correctamente para filtro ${g.id}`,
+																		);
+																} catch (V) {
+																	console.error(
+																		'❌ [DATA TABLE FILTERS] Error al crear Calendar para filtro:',
+																		V,
+																	),
+																		console.error(
+																			'❌ [DATA TABLE FILTERS] Stack trace:',
+																			V instanceof Error ? V.stack : 'N/A',
+																		),
+																		(W.innerHTML = `<div style="padding: var(--ubits-spacing-lg, 16px); background: var(--ubits-bg-1); border: 1px solid var(--ubits-border-1); border-radius: var(--ubits-border-radius-lg, 8px); color: var(--ubits-fg-1-high);">Error al cargar el calendario: ${V instanceof Error ? V.message : String(V)}</div>`);
+																}
+															})();
+													else if (g.type === 'select' && g.options) {
+														console.log(
+															`🔵 [DATA TABLE FILTERS] Filtro ${g.id} es de tipo SELECT, usando createInput`,
+														);
+														let V = {
+															containerId: I,
+															label: g.label,
+															value: q,
+															placeholder: `Seleccionar ${g.label.toLowerCase()}...`,
+															size: 'md',
+															type: 'select',
+															selectOptions: g.options.map((ue) => ({
+																value: ue.value,
+																text: ue.label || ue.value,
+															})),
+														};
+														at(V);
+													} else {
+														console.log(
+															`🔵 [DATA TABLE FILTERS] Filtro ${g.id} es de tipo ${g.type}, usando createInput`,
+														);
+														let V = {
+															containerId: I,
+															label: g.label,
+															value: q,
+															placeholder: `Filtrar por ${g.label.toLowerCase()}...`,
+															size: 'md',
+															type: g.type,
+														};
+														console.log('🔵 [DATA TABLE FILTERS] Creando input con opciones:', V),
+															at(V),
+															console.log(
+																`✅ [DATA TABLE FILTERS] Input creado para filtro ${g.id}`,
+															);
+													}
+												}
+												console.log(
+													'🔵 [DATA TABLE FILTERS] ========== FIN creación de inputs ==========',
+												);
+											}, 300));
+									});
+							}
+							if (e.header.columnSelectorButton && e.header.showColumnSelectorButton !== !1) {
+								const x = S.querySelector('.ubits-data-table__header-column-selector-button');
+								if (x) {
+									let h = null,
+										v = !1;
+									const k = () => (
+											(h && h.parentElement) ||
+												((h = document.createElement('div')),
+												(h.className = 'ubits-data-table__column-selector-dropdown'),
+												(h.style.display = 'none'),
+												document.body.appendChild(h)),
+											h
+										),
+										_ = () => {
+											if (!h || !x) return;
+											const g = x.getBoundingClientRect(),
+												I = h.offsetWidth || 200;
+											(h.style.position = 'fixed'), (h.style.top = `${g.bottom + 4}px`);
+											const W = g.right - I;
+											W < 0 ? (h.style.left = '0px') : (h.style.left = `${W}px`),
+												(h.style.right = 'auto');
+										};
+									let o = null,
+										f = null;
+									const m = () => {
+										h &&
+											((h.style.display = 'none'),
+											(v = !1),
+											f && (document.removeEventListener('click', f), (f = null)),
+											o &&
+												(window.removeEventListener('scroll', o, !0),
+												window.removeEventListener('resize', o),
+												(o = null)));
+									};
+									x.addEventListener('click', (g) => {
+										if ((g.preventDefault(), g.stopPropagation(), v)) {
+											m();
+											return;
+										}
+										const I = k();
+										for (; I.firstChild; ) I.removeChild(I.firstChild);
+										I.innerHTML = '';
+										const W = I.children.length,
+											q = I.innerHTML.length;
+										(W > 0 || q > 0) &&
+											(console.error(
+												'🔍 [COLUMN SELECTOR] ❌ ERROR: Dropdown no está completamente limpio!',
+											),
+											(I.innerHTML = ''),
+											requestAnimationFrame(() => {
+												(I.children.length > 0 || I.innerHTML.length > 0) &&
+													console.error(
+														'🔍 [COLUMN SELECTOR] ❌ ERROR: Dropdown sigue sin estar limpio después de limpieza adicional!',
+													);
+											}));
+										const V = 'ubits-data-table-column-selector-list',
+											ue = document.getElementById(V);
+										ue && ue.remove();
+										const ne = document.createElement('div');
+										if (((ne.id = V), I.appendChild(ne), ne)) {
+											const D = s(e.columns);
+											D.length !== e.columns.length && (e.columns = D);
+											const P = D.filter((Y) => {
+													const Q = ['drag-handle', 'expand'],
+														N = ['checkbox', 'checkbox-2'];
+													return (
+														!Q.includes(Y.type || '') && !N.includes(Y.id) && Y.id !== 'checkbox'
+													);
+												}),
+												$ = new Set(),
+												j = P.filter((Y) => ($.has(Y.id) ? !1 : ($.add(Y.id), !0))),
+												R = j.filter((Y) => Y.visible !== !1).length,
+												oe = j.map((Y) => {
+													const Q = Y.visible !== !1,
+														N = Q && R === 1;
+													return {
+														label: Ae({
+															label: Y.title,
+															checked: Q,
+															size: 'sm',
+															disabled: N,
+															className: 'ubits-data-table__column-selector-checkbox',
+														}).replace('<input', `<input data-column-selector-id="${Y.id}"`),
+														value: Y.id,
+														state: 'default',
+														selected: !1,
+													};
+												}),
+												pe = new Set(),
+												be = oe.filter((Y) => (pe.has(Y.value) ? !1 : (pe.add(Y.value), !0)));
+											try {
+												Re({
+													containerId: V,
+													items: be,
+													size: 'sm',
+													maxHeight: '400px',
+													className: 'ubits-data-table__column-selector-list',
+												});
+												const Y = document.getElementById(V);
+												if (Y) {
+													const N =
+														Y.querySelector('.ubits-list')?.querySelectorAll('.ubits-list-item') ||
+														[];
+												} else
+													console.error(
+														'🔍 [COLUMN SELECTOR] ❌ Lista no encontrada después de createList',
+													);
+											} catch (Y) {
+												console.error('🔍 [COLUMN SELECTOR] ❌ Error en createList:', Y),
+													(ne.innerHTML = Ne({
+														containerId: V,
+														items: be,
+														size: 'sm',
+														maxHeight: '400px',
+														className: 'ubits-data-table__column-selector-list',
+													}));
+											}
+										} else console.error('🔍 [COLUMN SELECTOR] ❌ listContainer no existe');
+										const X = () => {
+												const D = 'ubits-data-table-column-selector-list';
+												let P = I.querySelector(`#${D}`);
+												(!P || !v) &&
+													((I.innerHTML = ''),
+													(P = document.createElement('div')),
+													(P.id = D),
+													I.appendChild(P));
+												const $ = s(e.columns);
+												$.length !== e.columns.length && (e.columns = $);
+												const j = $.filter((N) => {
+														const ge = ['drag-handle', 'expand'],
+															ie = ['checkbox', 'checkbox-2'];
+														return (
+															!ge.includes(N.type || '') &&
+															!ie.includes(N.id) &&
+															N.id !== 'checkbox'
+														);
+													}),
+													R = new Set(),
+													oe = j.filter((N) => (R.has(N.id) ? !1 : (R.add(N.id), !0))),
+													pe = oe.filter((N) => N.visible !== !1).length,
+													be = oe.map((N) => {
+														const ge = N.visible !== !1,
+															ie = ge && pe === 1;
+														return {
+															label: Ae({
+																label: N.title,
+																checked: ge,
+																size: 'sm',
+																disabled: ie,
+																className: 'ubits-data-table__column-selector-checkbox',
+															}).replace('<input', `<input data-column-selector-id="${N.id}"`),
+															value: N.id,
+															state: 'default',
+															selected: !1,
+														};
+													}),
+													Y = new Set(),
+													Q = be.filter((N) => (Y.has(N.value) ? !1 : (Y.add(N.value), !0)));
+												P.innerHTML = '';
+												try {
+													Re({
+														containerId: D,
+														items: Q,
+														size: 'sm',
+														maxHeight: '400px',
+														className: 'ubits-data-table__column-selector-list',
+													});
+													const N = document.getElementById(D);
+													if (N) {
+														const ie =
+															N.querySelector('.ubits-list')?.querySelectorAll(
+																'.ubits-list-item',
+															) || [];
+													} else
+														console.error('🔍 [COLUMN SELECTOR UPDATE] ❌ Lista no encontrada');
+												} catch (N) {
+													console.error('🔍 [COLUMN SELECTOR UPDATE] ❌ Error en createList:', N),
+														(P.innerHTML = Ne({
+															containerId: D,
+															items: Q,
+															size: 'sm',
+															maxHeight: '400px',
+															className: 'ubits-data-table__column-selector-list',
+														}));
+												}
+												setTimeout(() => {
+													te();
+												}, 50);
+											},
+											te = () => {
+												I.querySelectorAll('input[data-column-selector-id]').forEach((P) => {
+													const $ = P,
+														j = $.getAttribute('data-column-selector-id'),
+														R = $.cloneNode(!0);
+													$.parentNode?.replaceChild(R, $),
+														R.addEventListener('change', (oe) => {
+															if ((oe.stopPropagation(), oe.preventDefault(), R.disabled)) return;
+															const pe = R.checked,
+																be = e.columns.find((Y) => Y.id === j);
+															if (be) {
+																if (!pe) {
+																	const Q = e.columns.filter((me) => {
+																			const we = ['drag-handle', 'expand'],
+																				Se = ['checkbox', 'checkbox-2'];
+																			return (
+																				!we.includes(me.type || '') &&
+																				!Se.includes(me.id) &&
+																				me.id !== 'checkbox'
+																			);
+																		}),
+																		N = new Set();
+																	if (
+																		Q.filter((me) =>
+																			N.has(me.id) ? !1 : (N.add(me.id), !0),
+																		).filter((me) => (me.id === j ? !1 : me.visible !== !1))
+																			.length === 0
+																	) {
+																		(R.checked = !0),
+																			console.warn(
+																				'⚠️ No se pueden ocultar todas las columnas. Debe quedar al menos una columna visible.',
+																			);
+																		return;
+																	}
+																}
+																const Y = e.columns.filter((Q) => Q.id === j);
+																if (
+																	((be.visible = pe),
+																	Y.length > 1 &&
+																		Y.forEach((Q, N) => {
+																			Q.id === j && (Q.visible = pe);
+																		}),
+																	e.onColumnVisibilityChange)
+																) {
+																	const Q = e.columns
+																		.filter((N) => N.visible !== !1)
+																		.map((N) => N.id);
+																	console.log(
+																		'🔵 [DATA TABLE] Llamando onColumnVisibilityChange con columnas:',
+																		Q,
+																	),
+																		e.onColumnVisibilityChange(Q);
+																} else
+																	console.warn(
+																		'⚠️ [DATA TABLE] onColumnVisibilityChange no está definido',
+																	);
+																X(), O();
+															}
+														});
+												});
+											};
+										setTimeout(() => {
+											te();
+										}, 100),
+											(I.style.display = 'block'),
+											requestAnimationFrame(() => {
+												_(),
+													setTimeout(() => {
+														_();
+													}, 10);
+											}),
+											(v = !0),
+											(o = () => {
+												v && h && _();
+											}),
+											window.addEventListener('scroll', o, !0),
+											window.addEventListener('resize', o),
+											(f = (D) => {
+												I &&
+													!I.contains(D.target) &&
+													!x.contains(D.target) &&
+													(o &&
+														(window.removeEventListener('scroll', o, !0),
+														window.removeEventListener('resize', o)),
+													m());
+											}),
+											setTimeout(() => {
+												document.addEventListener('click', f);
+											}, 0),
+											e.header.columnSelectorButton.onClick &&
+												e.header.columnSelectorButton.onClick(g);
+									});
+								}
+							}
+						}
+					}
+					try {
+						const S = n.querySelector('.ubits-data-table__empty-state');
+						if (S && e.emptyState) {
+							const x = e.rows.length === 0,
+								h = C && C.trim() !== '',
+								v = Object.keys(T).length > 0;
+							let k;
+							if (
+								(x && e.emptyState.noData
+									? (k = e.emptyState.noData)
+									: h && e.emptyState.noSearchResults
+										? (k = e.emptyState.noSearchResults)
+										: v && e.emptyState.noFilterResults && (k = e.emptyState.noFilterResults),
+								k)
+							) {
+								if (k.onAction) {
+									const _ = S.querySelector('[data-action="primary"]');
+									_ &&
+										_.addEventListener('click', (o) => {
+											o.preventDefault(), o.stopPropagation(), k.onAction?.();
+										});
+								}
+								if (k.onSecondaryAction) {
+									const _ = S.querySelector('[data-action="secondary"]');
+									_ &&
+										_.addEventListener('click', (o) => {
+											o.preventDefault(), o.stopPropagation(), k.onSecondaryAction?.();
+										});
+								}
+							}
+						}
+					} catch (S) {
+						console.error('📎 [ATTACH] ❌ Error agregando listeners de empty state:', S);
+					}
+				} catch (M) {
+					console.error('📎 [ATTACH] ❌ Error en attachEventListeners:', M);
+				}
+			};
+		return (
+			O(),
+			{
+				element: n,
+				destroy: () => {
+					if (A) {
+						try {
+							A.destroy();
+						} catch {}
+						A = null;
+					}
+					if (B) {
+						const M =
+							n.querySelector('.ubits-data-table__scrollable-container') ||
+							n.querySelector('.ubits-data-table') ||
+							n;
+						M && M.removeEventListener('scroll', B),
+							window.removeEventListener('scroll', B, !0),
+							(B = null);
+					}
+					n && n.parentNode && n.parentNode.removeChild(n);
+				},
+				update: (M) => {
+					const Z = e.showPagination;
+					if (((e = { ...e, ...M }), M.columns)) e.columns = s(M.columns);
+					else if (e.columns) {
+						const re = e.columns.length;
+						(e.columns = s(e.columns)), e.columns.length;
+					}
+					if (M.showPagination !== void 0 && M.showPagination !== Z)
+						if (M.showPagination) {
+							if (B) {
+								const re =
+									n.querySelector('.ubits-data-table__scrollable-container') ||
+									n.querySelector('.ubits-data-table') ||
+									n;
+								re && re.removeEventListener('scroll', B),
+									window.removeEventListener('scroll', B, !0),
+									(B = null);
+							}
+							U = K;
+						} else U = K;
+					M.columns && (p = M.columns.filter((re) => re.visible !== !1).map((re) => re.id)),
+						M.rows && ((w = M.rows.map((re) => re.id)), (U = K)),
+						O();
+				},
+			}
+		);
+	}
+	typeof window < 'u' &&
+		((window.UBITSDataTable = { renderDataTable: ze, createDataTable: Ge }),
+		(window.renderDataTable = ze),
+		(window.createDataTable = Ge));
+	const Fe = [
+			'Enero',
+			'Febrero',
+			'Marzo',
+			'Abril',
+			'Mayo',
+			'Junio',
+			'Julio',
+			'Agosto',
+			'Septiembre',
+			'Octubre',
+			'Noviembre',
+			'Diciembre',
+		],
+		Vt = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+	function Ut(t) {
+		const l = String(t.getDate()).padStart(2, '0'),
+			u = String(t.getMonth() + 1).padStart(2, '0'),
+			d = t.getFullYear();
+		return `${l}/${u}/${d}`;
+	}
+	function qe(t, l) {
+		const u = new Date(t.getFullYear(), t.getMonth(), t.getDate()),
+			d = new Date(l.getFullYear(), l.getMonth(), l.getDate());
+		return u.getTime() - d.getTime();
+	}
+	function We(t, l) {
+		return qe(t, l) === 0;
+	}
+	function Xt(t, l, u) {
+		const d = qe(t, l),
+			c = qe(u, t);
+		return d >= 0 && c >= 0;
+	}
+	function it(t, l) {
+		const u = document.createElement('div');
+		u.style.cssText = 'position: relative; width: 100%;';
+		const d = `calendar-list-container-${Date.now()}`,
+			c = `calendar-list-${Date.now()}`,
+			r = `calendar-scrollbar-${Date.now()}`;
+		let a = `
     <div id="${d}" style="position: relative; width: 100%; max-height: 200px; overflow: hidden;">
       <div id="${c}" class="ubits-list" role="list" style="max-height: 200px; overflow-y: auto; overflow-x: hidden; -ms-overflow-style: none; scrollbar-width: none; padding-right: 0; background: var(--ubits-bg-1); border: 1px solid var(--ubits-border-1); border-radius: 6px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);">
-  `;t.forEach(s=>{const e=s.selected?"active":"default",p=["ubits-list-item","ubits-list-item--sm",e!=="default"?`ubits-list-item--${e}`:""].filter(Boolean).join(" "),w=[];e==="active"&&w.push('aria-selected="true"'),w.push('tabindex="0"'),w.push(`data-value="${s.value}"`),a+=`
-      <div class="${p}" role="listitem" ${w.join(" ")} style="cursor: pointer;">
+  `;
+		t.forEach((s) => {
+			const e = s.selected ? 'active' : 'default',
+				p = [
+					'ubits-list-item',
+					'ubits-list-item--sm',
+					e !== 'default' ? `ubits-list-item--${e}` : '',
+				]
+					.filter(Boolean)
+					.join(' '),
+				w = [];
+			e === 'active' && w.push('aria-selected="true"'),
+				w.push('tabindex="0"'),
+				w.push(`data-value="${s.value}"`),
+				(a += `
+      <div class="${p}" role="listitem" ${w.join(' ')} style="cursor: pointer;">
         ${s.label}
       </div>
-    `}),a+=`
+    `);
+		}),
+			(a += `
       </div>
       <div id="${r}" style="position: absolute; top: 0; right: 0; width: 8px; height: 100%; max-height: 200px; overflow: hidden; pointer-events: auto; z-index: 10;"></div>
     </div>
@@ -692,7 +7023,83 @@
         -ms-overflow-style: none !important;
       }
     </style>
-  `,u.innerHTML=a;const b=async()=>{const s=document.getElementById(c),e=document.getElementById(r);if(!(!s||!e)&&!(s.scrollHeight<=s.clientHeight))try{const p=window.createScrollbarLocal;if(typeof p=="function"){const i=p(s,e,"vertical");if(i){u._scrollbarInstance=i;return}}const{createScrollbar:w}=await Promise.resolve().then(()=>xt),y=w({orientation:"vertical",targetId:c,containerId:r});y&&(u._scrollbarInstance=y)}catch(p){console.error("📜 [SCROLLBAR] ❌ Error inicializando scrollbar:",p)}},n=()=>{u.isConnected&&requestAnimationFrame(()=>{b()})};if(u.parentElement)n();else{const s=new MutationObserver(()=>{u.isConnected&&(s.disconnect(),n())});s.observe(document.body,{childList:!0,subtree:!0}),setTimeout(()=>{u.isConnected&&(s.disconnect(),n())},1e3)}return setTimeout(()=>{const s=document.getElementById(c);s&&s.querySelectorAll(".ubits-list-item").forEach(e=>{e.addEventListener("click",p=>{p.preventDefault(),p.stopPropagation();const w=parseInt(p.currentTarget.dataset.value||"0"),y=u._scrollbarInstance;y&&y.destroy&&y.destroy(),l(w)})})},100),u}function Ve(t){const{mode:l="single",selectedDate:u,endDate:d,minDate:c,maxDate:r,initialDate:a=new Date,className:b="",style:n=""}=t,s=a,e=s.getFullYear(),p=s.getMonth(),w=new Date(e,p,1),i=new Date(e,p+1,0).getDate(),L=w.getDay(),C=new Date().toDateString(),H=["ubits-calendar",l==="range"?"ubits-calendar--range":"ubits-calendar--single",b].filter(Boolean).join(" "),A=n?` style="${n}"`:"",z=`
+  `),
+			(u.innerHTML = a);
+		const b = async () => {
+				const s = document.getElementById(c),
+					e = document.getElementById(r);
+				if (!(!s || !e) && !(s.scrollHeight <= s.clientHeight))
+					try {
+						const p = window.createScrollbarLocal;
+						if (typeof p == 'function') {
+							const i = p(s, e, 'vertical');
+							if (i) {
+								u._scrollbarInstance = i;
+								return;
+							}
+						}
+						const { createScrollbar: w } = await Promise.resolve().then(() => xt),
+							y = w({ orientation: 'vertical', targetId: c, containerId: r });
+						y && (u._scrollbarInstance = y);
+					} catch (p) {
+						console.error('📜 [SCROLLBAR] ❌ Error inicializando scrollbar:', p);
+					}
+			},
+			n = () => {
+				u.isConnected &&
+					requestAnimationFrame(() => {
+						b();
+					});
+			};
+		if (u.parentElement) n();
+		else {
+			const s = new MutationObserver(() => {
+				u.isConnected && (s.disconnect(), n());
+			});
+			s.observe(document.body, { childList: !0, subtree: !0 }),
+				setTimeout(() => {
+					u.isConnected && (s.disconnect(), n());
+				}, 1e3);
+		}
+		return (
+			setTimeout(() => {
+				const s = document.getElementById(c);
+				s &&
+					s.querySelectorAll('.ubits-list-item').forEach((e) => {
+						e.addEventListener('click', (p) => {
+							p.preventDefault(), p.stopPropagation();
+							const w = parseInt(p.currentTarget.dataset.value || '0'),
+								y = u._scrollbarInstance;
+							y && y.destroy && y.destroy(), l(w);
+						});
+					});
+			}, 100),
+			u
+		);
+	}
+	function Ve(t) {
+		const {
+				mode: l = 'single',
+				selectedDate: u,
+				endDate: d,
+				minDate: c,
+				maxDate: r,
+				initialDate: a = new Date(),
+				className: b = '',
+				style: n = '',
+			} = t,
+			s = a,
+			e = s.getFullYear(),
+			p = s.getMonth(),
+			w = new Date(e, p, 1),
+			i = new Date(e, p + 1, 0).getDate(),
+			L = w.getDay(),
+			C = new Date().toDateString(),
+			H = ['ubits-calendar', l === 'range' ? 'ubits-calendar--range' : 'ubits-calendar--single', b]
+				.filter(Boolean)
+				.join(' '),
+			A = n ? ` style="${n}"` : '',
+			z = `
     <div class="ubits-calendar__header">
       <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-calendar__nav-button ubits-calendar__nav-button--prev" aria-label="Mes anterior">
         <i class="far fa-chevron-left"></i>
@@ -713,14 +7120,210 @@
         <i class="far fa-chevron-right"></i>
       </button>
     </div>
-  `,F=`
+  `,
+			F = `
     <div class="ubits-calendar__weekdays">
-      ${Vt.map(G=>`<div class="ubits-calendar__weekday">${G}</div>`).join("")}
+      ${Vt.map((G) => `<div class="ubits-calendar__weekday">${G}</div>`).join('')}
     </div>
-  `;let J='<div class="ubits-calendar__days">';for(let G=0;G<L;G++)J+='<div class="ubits-calendar__day ubits-calendar__day--empty"></div>';for(let G=1;G<=i;G++){const K=new Date(e,p,G),B=K.toDateString()===C;let ae=["ubits-calendar__day"];l==="single"&&u&&We(K,u)&&ae.push("ubits-calendar__day--selected"),l==="range"&&u&&(d?We(K,u)?ae.push("ubits-calendar__day--range-start"):We(K,d)?ae.push("ubits-calendar__day--range-end"):Xt(K,u,d)&&ae.push("ubits-calendar__day--in-range"):We(K,u)&&ae.push("ubits-calendar__day--range-start")),B&&ae.push("ubits-calendar__day--today");let ce=!1;c&&qe(K,c)<0&&(ce=!0,ae.push("ubits-calendar__day--disabled")),r&&qe(K,r)>0&&(ce=!0,ae.push("ubits-calendar__day--disabled"));const O=ce?" disabled":"",fe=Ut(K);J+=`<button type="button" class="${ae.join(" ")}" data-date="${fe}"${O}>${G}</button>`}return J+="</div>",`
+  `;
+		let J = '<div class="ubits-calendar__days">';
+		for (let G = 0; G < L; G++)
+			J += '<div class="ubits-calendar__day ubits-calendar__day--empty"></div>';
+		for (let G = 1; G <= i; G++) {
+			const K = new Date(e, p, G),
+				B = K.toDateString() === C;
+			let ae = ['ubits-calendar__day'];
+			l === 'single' && u && We(K, u) && ae.push('ubits-calendar__day--selected'),
+				l === 'range' &&
+					u &&
+					(d
+						? We(K, u)
+							? ae.push('ubits-calendar__day--range-start')
+							: We(K, d)
+								? ae.push('ubits-calendar__day--range-end')
+								: Xt(K, u, d) && ae.push('ubits-calendar__day--in-range')
+						: We(K, u) && ae.push('ubits-calendar__day--range-start')),
+				B && ae.push('ubits-calendar__day--today');
+			let ce = !1;
+			c && qe(K, c) < 0 && ((ce = !0), ae.push('ubits-calendar__day--disabled')),
+				r && qe(K, r) > 0 && ((ce = !0), ae.push('ubits-calendar__day--disabled'));
+			const O = ce ? ' disabled' : '',
+				fe = Ut(K);
+			J += `<button type="button" class="${ae.join(' ')}" data-date="${fe}"${O}>${G}</button>`;
+		}
+		return (
+			(J += '</div>'),
+			`
     <div class="${H}"${A}>
       ${z}
       ${F}
       ${J}
     </div>
-  `.trim()}function rt(t){const{mode:l="single",selectedDate:u,endDate:d,minDate:c,maxDate:r,initialDate:a=new Date,onDateSelect:b,onRangeSelect:n}=t,s=document.createElement("div");s.innerHTML=Ve(t);const e=s.firstElementChild;if(!e)throw new Error("No se pudo crear el calendario");let p=new Date(a),w=u?new Date(u):null,y=d?new Date(d):null,i=!1;const L=()=>{i||(i=!0,e.innerHTML=Ve({...t,mode:l,selectedDate:w,endDate:y,minDate:c,maxDate:r,initialDate:p}),E(),setTimeout(()=>{i=!1},100))},E=()=>{const A=e.querySelector(".ubits-calendar__nav-button--prev"),T=e.querySelector(".ubits-calendar__nav-button--next"),z=e.querySelector(".ubits-calendar__month-input"),F=e.querySelector(".ubits-calendar__year-input"),J=e.querySelector(".ubits-calendar__month-dropdown"),G=e.querySelector(".ubits-calendar__year-dropdown");A?.addEventListener("click",U=>{U.preventDefault(),U.stopPropagation(),p.setMonth(p.getMonth()-1),z&&(z.value=Fe[p.getMonth()]),F&&(F.value=String(p.getFullYear())),L()}),T?.addEventListener("click",U=>{U.preventDefault(),U.stopPropagation(),p.setMonth(p.getMonth()+1),z&&(z.value=Fe[p.getMonth()]),F&&(F.value=String(p.getFullYear())),L()}),z?.addEventListener("click",U=>{if(U.preventDefault(),U.stopPropagation(),J){const B=J;if(B.style.display==="block")B.style.display="none";else{G&&(G.style.display="none");const ce=Fe.map((fe,se)=>({label:fe,value:se,selected:se===p.getMonth()}));B.innerHTML="";const O=it(ce,fe=>{p.setMonth(fe),B.style.display="none",z&&(z.value=Fe[fe]),L()});B.appendChild(O),B.style.display="block"}}}),F?.addEventListener("click",U=>{if(U.preventDefault(),U.stopPropagation(),G){const B=G;if(B.style.display==="block")B.style.display="none";else{J&&(J.style.display="none");const ce=p.getFullYear(),O=Array.from({length:100},(se,de)=>{const M=ce-50+de;return{label:String(M),value:M,selected:M===ce}});B.innerHTML="";const fe=it(O,se=>{p.setFullYear(se),B.style.display="none",F&&(F.value=String(se)),L()});B.appendChild(fe),B.style.display="block"}}}),e.querySelectorAll(".ubits-calendar__day:not(.ubits-calendar__day--empty):not(.ubits-calendar__day--disabled)").forEach(U=>{U.addEventListener("click",B=>{B.preventDefault(),B.stopPropagation();const ae=U.dataset.date||"",[ce,O,fe]=ae.split("/"),se=new Date(parseInt(fe),parseInt(O)-1,parseInt(ce));l==="single"?(w=se,L(),b&&b(se)):l==="range"&&(!w||w&&y?(w=se,y=null,L()):w&&!y&&(qe(se,w)<0?(y=w,w=se):y=se,L(),n&&w&&y&&n(w,y)))})})};return L(),{element:e,update:A=>{A.selectedDate!==void 0&&(w=A.selectedDate?new Date(A.selectedDate):null),A.endDate!==void 0&&(y=A.endDate?new Date(A.endDate):null),A.initialDate&&(p=new Date(A.initialDate)),Object.assign(t,A),L()},destroy:()=>{const A=e.querySelector(".ubits-calendar__month-dropdown"),T=e.querySelector(".ubits-calendar__year-dropdown");if(A){const z=A._scrollbarInstance;z&&z.destroy&&z.destroy()}if(T){const z=T._scrollbarInstance;z&&z.destroy&&z.destroy()}e.parentElement&&e.parentElement.removeChild(e)}}}const Yt=Object.freeze(Object.defineProperty({__proto__:null,createCalendar:rt,renderCalendar:Ve},Symbol.toStringTag,{value:"Module"})),lt=Object.freeze(Object.defineProperty({__proto__:null,createCalendar:rt,renderCalendar:Ve},Symbol.toStringTag,{value:"Module"}));He.createDataTable=Ge,He.renderDataTable=ze,Object.defineProperty(He,Symbol.toStringTag,{value:"Module"})}));
+  `.trim()
+		);
+	}
+	function rt(t) {
+		const {
+				mode: l = 'single',
+				selectedDate: u,
+				endDate: d,
+				minDate: c,
+				maxDate: r,
+				initialDate: a = new Date(),
+				onDateSelect: b,
+				onRangeSelect: n,
+			} = t,
+			s = document.createElement('div');
+		s.innerHTML = Ve(t);
+		const e = s.firstElementChild;
+		if (!e) throw new Error('No se pudo crear el calendario');
+		let p = new Date(a),
+			w = u ? new Date(u) : null,
+			y = d ? new Date(d) : null,
+			i = !1;
+		const L = () => {
+				i ||
+					((i = !0),
+					(e.innerHTML = Ve({
+						...t,
+						mode: l,
+						selectedDate: w,
+						endDate: y,
+						minDate: c,
+						maxDate: r,
+						initialDate: p,
+					})),
+					E(),
+					setTimeout(() => {
+						i = !1;
+					}, 100));
+			},
+			E = () => {
+				const A = e.querySelector('.ubits-calendar__nav-button--prev'),
+					T = e.querySelector('.ubits-calendar__nav-button--next'),
+					z = e.querySelector('.ubits-calendar__month-input'),
+					F = e.querySelector('.ubits-calendar__year-input'),
+					J = e.querySelector('.ubits-calendar__month-dropdown'),
+					G = e.querySelector('.ubits-calendar__year-dropdown');
+				A?.addEventListener('click', (U) => {
+					U.preventDefault(),
+						U.stopPropagation(),
+						p.setMonth(p.getMonth() - 1),
+						z && (z.value = Fe[p.getMonth()]),
+						F && (F.value = String(p.getFullYear())),
+						L();
+				}),
+					T?.addEventListener('click', (U) => {
+						U.preventDefault(),
+							U.stopPropagation(),
+							p.setMonth(p.getMonth() + 1),
+							z && (z.value = Fe[p.getMonth()]),
+							F && (F.value = String(p.getFullYear())),
+							L();
+					}),
+					z?.addEventListener('click', (U) => {
+						if ((U.preventDefault(), U.stopPropagation(), J)) {
+							const B = J;
+							if (B.style.display === 'block') B.style.display = 'none';
+							else {
+								G && (G.style.display = 'none');
+								const ce = Fe.map((fe, se) => ({
+									label: fe,
+									value: se,
+									selected: se === p.getMonth(),
+								}));
+								B.innerHTML = '';
+								const O = it(ce, (fe) => {
+									p.setMonth(fe), (B.style.display = 'none'), z && (z.value = Fe[fe]), L();
+								});
+								B.appendChild(O), (B.style.display = 'block');
+							}
+						}
+					}),
+					F?.addEventListener('click', (U) => {
+						if ((U.preventDefault(), U.stopPropagation(), G)) {
+							const B = G;
+							if (B.style.display === 'block') B.style.display = 'none';
+							else {
+								J && (J.style.display = 'none');
+								const ce = p.getFullYear(),
+									O = Array.from({ length: 100 }, (se, de) => {
+										const M = ce - 50 + de;
+										return { label: String(M), value: M, selected: M === ce };
+									});
+								B.innerHTML = '';
+								const fe = it(O, (se) => {
+									p.setFullYear(se), (B.style.display = 'none'), F && (F.value = String(se)), L();
+								});
+								B.appendChild(fe), (B.style.display = 'block');
+							}
+						}
+					}),
+					e
+						.querySelectorAll(
+							'.ubits-calendar__day:not(.ubits-calendar__day--empty):not(.ubits-calendar__day--disabled)',
+						)
+						.forEach((U) => {
+							U.addEventListener('click', (B) => {
+								B.preventDefault(), B.stopPropagation();
+								const ae = U.dataset.date || '',
+									[ce, O, fe] = ae.split('/'),
+									se = new Date(parseInt(fe), parseInt(O) - 1, parseInt(ce));
+								l === 'single'
+									? ((w = se), L(), b && b(se))
+									: l === 'range' &&
+										(!w || (w && y)
+											? ((w = se), (y = null), L())
+											: w &&
+												!y &&
+												(qe(se, w) < 0 ? ((y = w), (w = se)) : (y = se),
+												L(),
+												n && w && y && n(w, y)));
+							});
+						});
+			};
+		return (
+			L(),
+			{
+				element: e,
+				update: (A) => {
+					A.selectedDate !== void 0 && (w = A.selectedDate ? new Date(A.selectedDate) : null),
+						A.endDate !== void 0 && (y = A.endDate ? new Date(A.endDate) : null),
+						A.initialDate && (p = new Date(A.initialDate)),
+						Object.assign(t, A),
+						L();
+				},
+				destroy: () => {
+					const A = e.querySelector('.ubits-calendar__month-dropdown'),
+						T = e.querySelector('.ubits-calendar__year-dropdown');
+					if (A) {
+						const z = A._scrollbarInstance;
+						z && z.destroy && z.destroy();
+					}
+					if (T) {
+						const z = T._scrollbarInstance;
+						z && z.destroy && z.destroy();
+					}
+					e.parentElement && e.parentElement.removeChild(e);
+				},
+			}
+		);
+	}
+	const Yt = Object.freeze(
+			Object.defineProperty(
+				{ __proto__: null, createCalendar: rt, renderCalendar: Ve },
+				Symbol.toStringTag,
+				{ value: 'Module' },
+			),
+		),
+		lt = Object.freeze(
+			Object.defineProperty(
+				{ __proto__: null, createCalendar: rt, renderCalendar: Ve },
+				Symbol.toStringTag,
+				{ value: 'Module' },
+			),
+		);
+	(He.createDataTable = Ge),
+		(He.renderDataTable = ze),
+		Object.defineProperty(He, Symbol.toStringTag, { value: 'Module' });
+});

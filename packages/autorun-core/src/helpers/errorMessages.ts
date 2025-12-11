@@ -1,6 +1,6 @@
 /**
  * Error Messages Helper
- * 
+ *
  * Sistema para generar mensajes de error más claros y accionables
  */
 
@@ -24,7 +24,7 @@ export function generateClearErrorMessage(
 		missingSteps?: string[];
 		checklist?: any;
 		similarProblems?: any[];
-	}
+	},
 ): ErrorMessage {
 	const messages: Record<string, (ctx: typeof context) => ErrorMessage> = {
 		'checklist-incomplete': (ctx) => ({
@@ -51,7 +51,8 @@ export function generateClearErrorMessage(
 
 		'image-trigger-detected': () => ({
 			title: '❌ Bloqueo: Imagen Detectada sin Análisis',
-			description: 'Se detectó una imagen o solicitud de creación desde imagen, pero no se completó el análisis obligatorio.',
+			description:
+				'Se detectó una imagen o solicitud de creación desde imagen, pero no se completó el análisis obligatorio.',
 			actionableSteps: [
 				'1. Lee .cursor/rules/01-deteccion-imagen.md',
 				'2. Lee .cursor/rules/02-bloqueo-imagen.md',
@@ -106,9 +107,7 @@ export function generateClearErrorMessage(
 				'Completa TODO el checklist antes de continuar',
 				'Ver: docs/guias/implementacion/GUIA-IMPLEMENTACION-POR-HISTORIAS-STORYBOOK.md',
 			],
-			relatedDocs: [
-				'docs/guias/implementacion/GUIA-IMPLEMENTACION-POR-HISTORIAS-STORYBOOK.md',
-			],
+			relatedDocs: ['docs/guias/implementacion/GUIA-IMPLEMENTACION-POR-HISTORIAS-STORYBOOK.md'],
 			severity: 'error',
 		}),
 	};
@@ -171,7 +170,7 @@ export async function generateContextualErrorMessage(
 		componentName?: string;
 		problemDescription?: string;
 		problemTracker?: any;
-	}
+	},
 ): Promise<string> {
 	const baseMessage = generateClearErrorMessage(errorType, context);
 	let formatted = formatErrorMessage(baseMessage);
@@ -181,7 +180,7 @@ export async function generateContextualErrorMessage(
 		try {
 			const similar = await context.problemTracker.searchSimilarProblems(
 				context.problemDescription,
-				context.componentName?.toLowerCase()
+				context.componentName?.toLowerCase(),
 			);
 
 			if (similar.length > 0) {
@@ -190,7 +189,7 @@ export async function generateContextualErrorMessage(
 				for (let index = 0; index < Math.min(3, similar.length); index++) {
 					const problem = similar[index];
 					formatted += `   ${index + 1}. ${problem.titulo || problem.descripcion.substring(0, 50)}\n`;
-					
+
 					// Buscar soluciones
 					const solutions = await context.problemTracker.searchSolutions(problem.id);
 					if (solutions.length > 0) {
@@ -207,3 +206,6 @@ export async function generateContextualErrorMessage(
 
 	return formatted;
 }
+
+
+

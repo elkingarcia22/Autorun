@@ -42,6 +42,14 @@
     },
     "supabase": {
       "url": "https://mcp.supabase.com/mcp"
+    },
+    "mcp-gsheets": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-gsheets@latest"
+      ],
+      "env": {}
     }
   }
 }

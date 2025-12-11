@@ -24,10 +24,13 @@ export class GitHubAddon implements IFunctionalAddon {
 	private useMCP = false;
 
 	async initialize(context: AutorunContext): Promise<void> {
+		console.log(`🔍 [GitHub Add-on] initialize() llamado`);
 		this.context = context;
 
 		// Obtener configuración
 		const addonConfig = context.config.autorun?.addons?.config?.github || {};
+		console.log(`🔍 [GitHub Add-on] Configuración obtenida:`, JSON.stringify(addonConfig, null, 2));
+
 		this.config = {
 			repositoryUrl: addonConfig.repositoryUrl,
 			branch: addonConfig.branch || 'main',
@@ -37,12 +40,19 @@ export class GitHubAddon implements IFunctionalAddon {
 			pushOnCommit: addonConfig.pushOnCommit || false,
 		};
 
+		console.log(`🔍 [GitHub Add-on] Configuración final:`, JSON.stringify(this.config, null, 2));
+
 		// Si hay repositoryUrl, inicializar servicio
 		if (this.config.repositoryUrl || this.shouldAutoConnect()) {
+			console.log(`🔍 [GitHub Add-on] Inicializando servicio...`);
 			await this.setupService();
 
 			// Detectar y ofrecer MCP si está disponible
 			await this.offerMCPIntegration();
+		} else {
+			console.warn(
+				`⚠️ [GitHub Add-on] No hay repositoryUrl configurado y shouldAutoConnect() retornó false`,
+			);
 		}
 	}
 
@@ -101,36 +111,60 @@ export class GitHubAddon implements IFunctionalAddon {
 	 * Configura el servicio de GitHub
 	 */
 	private async setupService(): Promise<void> {
+		console.log(`🔍 [GitHub Add-on] setupService() llamado`);
+
 		// Obtener repositoryUrl de la configuración del proyecto si no está en addon config
 		const repositoryUrl = this.config.repositoryUrl || this.context?.config.repositoryUrl;
+		console.log(`🔍 [GitHub Add-on] repositoryUrl: ${repositoryUrl || 'NO CONFIGURADO'}`);
 
 		if (repositoryUrl) {
 			this.config.repositoryUrl = repositoryUrl;
+		} else {
+			console.warn(
+				`⚠️ [GitHub Add-on] No se encontró repositoryUrl. El servicio no podrá funcionar correctamente.`,
+			);
 		}
 
 		this.service = new GitHubService(this.config);
 
 		try {
+			console.log(`🔍 [GitHub Add-on] Inicializando servicio de GitHub...`);
 			await this.service.initialize();
-			console.log('✅ GitHub Add-on: Conectado al repositorio');
-		} catch (error) {
-			console.warn(`⚠️  GitHub Add-on: ${error}`);
+			console.log('✅ [GitHub Add-on] Conectado al repositorio exitosamente');
+		} catch (error: any) {
+			console.warn(`⚠️ [GitHub Add-on] Error al inicializar servicio: ${error.message}`);
+			console.warn(`⚠️ [GitHub Add-on] Stack:`, error.stack);
 			// No lanzar error, permitir que el add-on funcione sin conexión inicial
 		}
 	}
 
 	async activate(): Promise<void> {
+		console.log(`🔍 [GitHub Add-on] activate() llamado`);
+		console.log(
+			`🔍 [GitHub Add-on] Config - autoCommit: ${this.config.autoCommit}, repositoryUrl: ${this.config.repositoryUrl}`,
+		);
+
 		if (this.config.autoCommit === false) {
+			console.warn(`⚠️ [GitHub Add-on] Auto-commit está deshabilitado en la configuración`);
 			return;
 		}
 
 		// Si no hay servicio y debería conectarse, configurarlo
 		if (!this.service && this.shouldAutoConnect()) {
+			console.log(`🔍 [GitHub Add-on] Configurando servicio...`);
 			await this.setupService();
 		}
 
+		if (!this.service) {
+			console.warn(
+				`⚠️ [GitHub Add-on] No se pudo inicializar el servicio. Verifica repositoryUrl en la configuración.`,
+			);
+		}
+
 		this.active = true;
-		console.log('✅ GitHub Add-on: Auto-commit activado');
+		console.log(
+			`✅ [GitHub Add-on] Auto-commit activado - active: ${this.active}, service: ${!!this.service}`,
+		);
 	}
 
 	async deactivate(): Promise<void> {
@@ -140,10 +174,20 @@ export class GitHubAddon implements IFunctionalAddon {
 	}
 
 	async onFileChange(filePath: string): Promise<void> {
-		if (!this.active || !this.service) {
+		console.log(`🔍 [GitHub Add-on] onFileChange llamado con: ${filePath}`);
+		console.log(`🔍 [GitHub Add-on] Estado - active: ${this.active}, service: ${!!this.service}`);
+
+		if (!this.active) {
+			console.warn(`⚠️ [GitHub Add-on] Add-on no está activo. Actívalo primero.`);
 			return;
 		}
 
+		if (!this.service) {
+			console.warn(`⚠️ [GitHub Add-on] Servicio no está inicializado. Verifica la configuración.`);
+			return;
+		}
+
+		console.log(`✅ [GitHub Add-on] Procesando cambio de archivo: ${filePath}`);
 		await this.service.handleFileChange(filePath);
 	}
 

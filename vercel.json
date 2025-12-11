@@ -1,6 +1,30 @@
 {
-	"buildCommand": "npm run build:tokens && cd packages/docs-site && npm run build-storybook",
-	"outputDirectory": "packages/docs-site/storybook-static",
+	"version": 2,
+	"buildCommand": null,
+	"outputDirectory": "public",
 	"framework": null,
-	"installCommand": "npm install"
+	"installCommand": null,
+	"cleanUrls": true,
+	"trailingSlash": false,
+	"rewrites": [
+		{
+			"source": "/(.*)",
+			"destination": "/index.html"
+		}
+	],
+	"headers": [
+		{
+			"source": "/(.*)",
+			"headers": [
+				{
+					"key": "Content-Type",
+					"value": "text/html; charset=utf-8"
+				},
+				{
+					"key": "Cache-Control",
+					"value": "public, max-age=0, must-revalidate"
+				}
+			]
+		}
+	]
 }

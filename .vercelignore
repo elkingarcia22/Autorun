@@ -1,0 +1,13 @@
+node_modules
+packages
+vendor
+.git
+.vercel
+*.log
+.DS_Store
+prototypes
+scripts
+docs
+
+
+

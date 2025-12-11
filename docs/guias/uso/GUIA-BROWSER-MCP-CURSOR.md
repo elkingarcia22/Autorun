@@ -357,3 +357,7 @@ El agente pega la instrucción y Cursor implementa el cambio.
 
 
 
+
+
+
+

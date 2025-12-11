@@ -6,9 +6,9 @@
 
 ### 📊 Estadísticas
 
-- **Total de add-ons implementados**: 13
-- **Add-ons compilados**: 13/13 (100%)
-- **Add-ons documentados**: 13/13 (100%)
+- **Total de add-ons implementados**: 15
+- **Add-ons compilados**: 15/15 (100%)
+- **Add-ons documentados**: 15/15 (100%)
 - **Estado**: ✅ **TODOS LISTOS PARA PRODUCCIÓN**
 
 ---
@@ -92,6 +92,18 @@
 - **Ubicación**: `packages/addons/functional/docusaurus/`
 - **Estado**: Implementado y compilado
 - **Funcionalidad**: Generación y gestión de documentación
+
+### 14. **n8n** ✅
+- **ID**: `n8n`
+- **Ubicación**: `packages/addons/functional/n8n/`
+- **Estado**: Implementado y compilado
+- **Funcionalidad**: Automatización de workflows con n8n y MCP - Acceso a 525+ nodos
+
+### 15. **Google Sheets** ✅
+- **ID**: `google-sheets`
+- **Ubicación**: `packages/addons/functional/google-sheets/`
+- **Estado**: Implementado y compilado
+- **Funcionalidad**: Creación y gestión de hojas de cálculo con Google Sheets y MCP
 
 ---
 
@@ -214,11 +226,12 @@ trackEvent('deployment_completed', { environment: 'production' });
 
 ## ✨ Logros
 
-✅ **13 add-ons funcionales** completamente implementados  
+✅ **15 add-ons funcionales** completamente implementados  
 ✅ **Arquitectura consistente** en todos los add-ons  
 ✅ **100% documentados** con README completo  
 ✅ **Integración completa** con el Hub de Autoframe  
 ✅ **Listos para producción** con manejo de errores robusto  
+✅ **Integración MCP** en add-ons que lo soportan (GitHub, Vercel, Clarity, Figma, Storybook, Supabase, n8n, Google Sheets)
 
 ---
 

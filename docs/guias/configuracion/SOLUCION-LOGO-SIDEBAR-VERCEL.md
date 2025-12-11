@@ -184,3 +184,7 @@ curl -I "https://ubits-storybook10.vercel.app/templates/assets/images/[NOMBRE-IM
 - [ ] Avatar se muestra en el sidebar (verificado en navegador)
 - [ ] No hay errores 404 en la consola del navegador
 - [ ] Mensajes de ajuste de rutas aparecen en la consola
+
+
+
+

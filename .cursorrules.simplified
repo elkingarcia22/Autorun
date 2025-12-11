@@ -234,3 +234,7 @@ setTimeout(async () => { await mcp_cursor-ide-browser_browser_snapshot(); }, 100
 **Este archivo es el índice principal. Para detalles completos, consulta los módulos en `.cursor/rules/` y `QUICK-REFERENCE.md`**
 
 **Última actualización:** 2025-01-03
+
+
+
+

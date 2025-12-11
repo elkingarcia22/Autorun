@@ -48,7 +48,6 @@
     <link rel="stylesheet" href="../components/stepper/src/styles/stepper.css" />
     <link rel="stylesheet" href="../components/participants-menu/src/styles/participants-menu.css" />
     <link rel="stylesheet" href="../components/metric-card/src/styles/metric-card.css" />
-    <link rel="stylesheet" href="../components/header-section/src/styles/header-section.css" />
     
     <style>
         /* ========================================
@@ -212,33 +211,6 @@
             gap: 0;
         }
 
-        /* ========================================
-           HEADER SECTION CONTAINER
-           ======================================== */
-        
-        #header-section-container {
-            width: 100%;
-            background: transparent;
-            padding: 0;
-            margin-top: 0;
-            margin-bottom: 0;
-            box-sizing: border-box;
-        }
-
-        /* Ajustes responsive para header-section-container */
-        @media (max-width: 1023px) {
-            #header-section-container {
-                padding: 0;
-                margin-top: 0;
-            }
-        }
-
-        @media (max-width: 479px) {
-            #header-section-container {
-                margin-top: 0;
-            }
-        }
-
         .content-area.no-background {
             background-color: transparent !important;
             border: none !important;
@@ -246,131 +218,6 @@
             padding: 0 var(--ubits-spacing-6xl, 40px) !important;
         }
 
-        /* ========================================
-           CONTENT SECTIONS (Sistema de Widgets)
-           ======================================== */
-        
-        .content-sections {
-            display: flex;
-            flex-direction: column;
-            gap: var(--ubits-spacing-lg, 16px);
-            flex: 1;
-            min-width: 0;
-            width: 100%; /* Ocupar el 100% del ancho del content-area */
-            max-width: 100%; /* No exceder el ancho del content-area */
-            overflow: visible;
-            max-height: none;
-            box-sizing: border-box;
-        }
-
-        .content-sections > *:not(:last-child):not(.section-dual):not(.section-single):not(.section-triple):not(.section-quad) {
-            margin-bottom: var(--ubits-spacing-lg, 16px);
-        }
-
-        .content-sections::after {
-            content: '';
-            height: 0px;
-            flex-shrink: 0;
-        }
-
-        .content-sections > *:last-child {
-            margin-bottom: 0;
-        }
-
-        /* ========================================
-           SECTION TYPES
-           ======================================== */
-        
-        /* Secciones de widgets - igual que el proyecto UBITS original */
-        .section-single {
-            display: flex;
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-        .section-dual {
-            display: flex;
-            gap: var(--ubits-spacing-xl, 20px);
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-        .section-triple {
-            display: flex;
-            gap: var(--ubits-spacing-xl, 20px);
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-        .section-quad {
-            display: flex;
-            gap: var(--ubits-spacing-xl, 20px);
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-        /* ========================================
-           WIDGETS
-           ======================================== */
-        
-        /* Widgets en secciones - igual que el proyecto UBITS original */
-        .section-single > div,
-        .section-dual > div,
-        .section-triple > div,
-        .section-quad > div {
-            background-color: var(--ubits-bg-1);
-            border: none;
-            border-radius: var(--ubits-border-radius-sm, 8px);
-            padding: var(--ubits-spacing-lg, 16px) !important; /* !important para sobrescribir el reset */
-            width: 100%; /* Ocupar el 100% del ancho de la sección */
-            box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-            min-width: 0; /* Permitir que se reduzca si es necesario */
-        }
-
-        /* Distribución de anchos - igual que el proyecto UBITS original */
-        .section-single > div {
-            flex: 1;
-        }
-
-        .section-dual > div {
-            flex: 1;
-        }
-
-        .section-triple > div {
-            flex: 1;
-        }
-
-        .section-quad > div {
-            flex: 1;
-        }
-
-        /* ========================================
-           RESPONSIVE
-           ======================================== */
-        
-        @media (max-width: 1023px) {
-            .content-sections {
-                padding-bottom: 0;
-            }
-            
-            .section-dual,
-            .section-triple,
-            .section-quad {
-                flex-direction: column;
-                gap: var(--ubits-spacing-lg, 16px);
-            }
-        }
-
-        @media (max-width: 480px) {
-            .section-single > div,
-            .section-dual > div,
-            .section-triple > div,
-            .section-quad > div {
-                padding: var(--ubits-spacing-md, 12px) !important;
-            }
-        }
 
         /* ========================================
            DARK MODE
@@ -428,16 +275,8 @@
             
             <!-- Content Area -->
             <div class="content-area">
-                <!-- Content wrapper con secciones de widgets -->
-                <div class="content-sections">
-                    <!-- Sección contenido principal -->
-                    <div class="section-single">
-                        <div class="widget-contenido-principal">
-                            <p class="ubits-body-md-regular">Contenido principal</p>
-                            <br><br><br><br><br><br><br><br><br><br><br>
-                        </div>
-                    </div>
-                </div>
+                <!-- Tabs Container -->
+                <div id="tabs-container"></div>
             </div>
         </main>
     </div>
@@ -455,6 +294,210 @@
     
     <!-- UBITS Components System -->
     <!-- Los componentes se cargan dinámicamente a través de components-loader.js -->
+    
+    <script>
+        // ========================================
+        // INTERCEPTAR ContentManager.updateContent
+        // Para eliminar HeaderSection y content-sections dinámicamente
+        // ⚠️ CRÍTICO: Interceptar INMEDIATAMENTE después de cargar content-manager.js
+        // ========================================
+        (function() {
+            function interceptContentManagerImmediately() {
+                if (!window.UBITS_ContentManager) {
+                    setTimeout(interceptContentManagerImmediately, 50);
+                    return;
+                }
+                
+                // Verificar si ya está interceptado (evitar múltiples interceptaciones)
+                if (window._UBITS_ContentManager_HeaderSection_Intercepted) {
+                    return;
+                }
+                
+                // Guardar referencia al método original
+                const originalUpdateContent = window.UBITS_ContentManager.updateContent;
+                if (!originalUpdateContent) {
+                    setTimeout(interceptContentManagerImmediately, 50);
+                    return;
+                }
+                
+                // Interceptar el método
+                window.UBITS_ContentManager.updateContent = function(section, subSection) {
+                    console.log('🔵 [Template Admin] updateContent interceptado para sección:', section);
+                    
+                    // Llamar al método original (que limpia el content-area y crea HeaderSection)
+                    const result = originalUpdateContent.call(this, section, subSection);
+                    
+                    // ⚠️ CRÍTICO: Usar requestAnimationFrame para timing correcto
+                    requestAnimationFrame(() => {
+                        const contentArea = document.querySelector('.content-area');
+                        if (!contentArea) {
+                            return;
+                        }
+                        
+                        // Eliminar TODOS los elementos relacionados
+                        const headerContainer = contentArea.querySelector('#header-section-container');
+                        if (headerContainer) {
+                            console.log('🔵 [Template Admin] Eliminando HeaderSection');
+                            headerContainer.remove();
+                        }
+                        
+                        const headerSection = contentArea.querySelector('.ubits-header-section');
+                        if (headerSection) {
+                            console.log('🔵 [Template Admin] Eliminando .ubits-header-section');
+                            const container = headerSection.closest('#header-section-container');
+                            if (container) {
+                                container.remove();
+                            } else {
+                                headerSection.remove();
+                            }
+                        }
+                        
+                        const contentSections = contentArea.querySelector('.content-sections');
+                        if (contentSections) {
+                            console.log('🔵 [Template Admin] Eliminando .content-sections');
+                            contentSections.remove();
+                        }
+                        
+                        const widgetPrincipal = contentArea.querySelector('.widget-contenido-principal');
+                        if (widgetPrincipal) {
+                            console.log('🔵 [Template Admin] Eliminando .widget-contenido-principal');
+                            widgetPrincipal.closest('.section-single')?.remove() || widgetPrincipal.remove();
+                        }
+                        
+                        // Crear tabs después de eliminar HeaderSection y content-sections
+                        createTabsIfNeeded();
+                    });
+                    
+                    return result;
+                };
+                
+                // Marcar como interceptado
+                window._UBITS_ContentManager_HeaderSection_Intercepted = true;
+                console.log('✅ [Template Admin] ContentManager.updateContent interceptado INMEDIATAMENTE');
+            }
+            
+            // ⚠️ CRÍTICO: Ejecutar inmediatamente y con múltiples intentos
+            interceptContentManagerImmediately();
+            setTimeout(interceptContentManagerImmediately, 100);
+            setTimeout(interceptContentManagerImmediately, 500);
+            
+            // También interceptar cuando ContentManager se carga después
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', interceptContentManagerImmediately);
+            }
+        })();
+        
+        // ========================================
+        // MUTATION OBSERVER para eliminar HeaderSection si se crea dinámicamente
+        // ========================================
+        function setupHeaderSectionObserver() {
+            const contentArea = document.querySelector('.content-area');
+            if (!contentArea) {
+                setTimeout(setupHeaderSectionObserver, 100);
+                return;
+            }
+            
+            const observer = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    mutation.addedNodes.forEach((node) => {
+                        if (node.nodeType === 1) { // Element node
+                            // Verificar si es el contenedor del HeaderSection
+                            if (node.id === 'header-section-container' ||
+                                node.classList?.contains('ubits-header-section') ||
+                                node.querySelector?.('#header-section-container') ||
+                                node.querySelector?.('.ubits-header-section')) {
+                                console.log('🔵 [Template Admin] HeaderSection detectado en MutationObserver, eliminando...');
+                                
+                                requestAnimationFrame(() => {
+                                    const headerContainer = document.getElementById('header-section-container');
+                                    if (headerContainer) {
+                                        console.log('🔵 [Template Admin] ✅ HeaderSection eliminado por MutationObserver');
+                                        headerContainer.remove();
+                                    }
+                                    
+                                    const headerSection = document.querySelector('.ubits-header-section');
+                                    if (headerSection) {
+                                        headerSection.closest('#header-section-container')?.remove() || headerSection.remove();
+                                    }
+                                    
+                                    const contentSections = document.querySelector('.content-sections');
+                                    if (contentSections) {
+                                        contentSections.remove();
+                                    }
+                                    
+                                    // Crear tabs después de eliminar
+                                    createTabsIfNeeded();
+                                });
+                            }
+                        }
+                    });
+                });
+            });
+            
+            observer.observe(contentArea, {
+                childList: true,
+                subtree: true
+            });
+            
+            console.log('✅ [Template Admin] MutationObserver configurado para eliminar HeaderSection');
+        }
+        
+        // Configurar observer cuando el DOM esté listo
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', setupHeaderSectionObserver);
+        } else {
+            setupHeaderSectionObserver();
+        }
+        
+        // También intentar después de un delay por si acaso
+        setTimeout(setupHeaderSectionObserver, 500);
+        setTimeout(setupHeaderSectionObserver, 1000);
+        
+        // Función para crear tabs
+        function createTabsIfNeeded() {
+            const tabsContainer = document.getElementById('tabs-container');
+            if (!tabsContainer) {
+                return;
+            }
+            
+            // Verificar si los tabs ya existen
+            if (tabsContainer.querySelector('.ubits-tabs')) {
+                return;
+            }
+            
+            // Verificar que createTabs esté disponible
+            if (!window.createTabs) {
+                console.warn('⚠️ [Template Admin] window.createTabs no está disponible aún');
+                setTimeout(createTabsIfNeeded, 100);
+                return;
+            }
+            
+            console.log('🔵 [Template Admin] Creando tabs...');
+            window.createTabs({
+                tabs: [
+                    { 
+                        id: 'encuestas', 
+                        label: 'Encuestas', 
+                        icon: 'clipboard-list'
+                    },
+                    { 
+                        id: 'datos-demograficos', 
+                        label: 'Datos demográficos', 
+                        icon: 'users'
+                    }
+                ],
+                activeTabId: 'encuestas',
+                onTabChange: (tabId, tabElement) => {
+                    console.log('Tab cambiado:', tabId);
+                    // Aquí puedes agregar lógica para cambiar el contenido según el tab
+                }
+            }, 'tabs-container');
+        }
+        
+        // ========================================
+        // INITIALIZATION
+        // ========================================
+    </script>
     
     <script>
         // ========================================
@@ -680,6 +723,11 @@
                                     }
                                 }
                                 
+                                
+                                // Crear tabs después de que ContentManager haya actualizado el contenido
+                                setTimeout(() => {
+                                    createTabsIfNeeded();
+                                }, 300);
                                 
                                 // ⚠️ LOGS ESPECÍFICOS PARA DEBUG DEL LAYOUT
                                 debugLayout();

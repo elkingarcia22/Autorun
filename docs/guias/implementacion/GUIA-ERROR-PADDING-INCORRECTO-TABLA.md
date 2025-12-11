@@ -231,3 +231,7 @@ Al implementar el padding correcto:
 
 
 
+
+
+
+

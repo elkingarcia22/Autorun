@@ -64,10 +64,12 @@ export VERCEL_TEAM_ID="tu-team-id-opcional"
 | `teamId` | `string` | ID del equipo (opcional) | - |
 | `autoDeploy` | `boolean` | Deploy automático después de commits | `true` |
 | `projectName` | `string` | Nombre del proyecto | Nombre del proyecto |
-| `framework` | `string` | Framework usado (nextjs, react, vue, etc.) | - |
-| `buildCommand` | `string` | Comando de build | - |
-| `outputDirectory` | `string` | Directorio de salida | - |
-| `installCommand` | `string` | Comando de instalación | `npm install` |
+| `framework` | `string` | Framework usado (nextjs, react, vue, etc.) | `null` para archivos estáticos |
+| `buildCommand` | `string` | Comando de build | `null` para archivos estáticos |
+| `outputDirectory` | `string` | Directorio de salida | `.` para archivos estáticos |
+| `installCommand` | `string` | Comando de instalación | `null` para archivos estáticos |
+| `useCLI` | `boolean` | Usar CLI de Vercel en lugar de API REST (mejor para archivos estáticos) | `true` |
+| `vercelJson` | `object` | Configuración de vercel.json a incluir en el deploy | - |
 
 ## 🚀 Uso
 
@@ -102,6 +104,7 @@ console.log('Deploy URL:', deployment.url);
 ```typescript
 const deploy = hub.getService('vercel', 'deploy');
 
+// Deploy simple con archivos
 const deployment = await deploy({
   files: {
     'index.html': '<html>...</html>',
@@ -111,6 +114,51 @@ const deployment = await deploy({
   target: 'production'
 });
 ```
+
+### Deploy de Archivos Estáticos con vercel.json
+
+Para archivos estáticos (como el index.html que desplegamos manualmente), puedes incluir la configuración de `vercel.json`:
+
+```typescript
+const deploy = hub.getService('vercel', 'deploy');
+
+// Deploy de archivo estático con configuración
+const deployment = await deploy({
+  projectName: 'mi-proyecto-estatico',
+  files: {
+    'index.html': '<html>...</html>'
+  },
+  vercelJson: {
+    version: 2,
+    buildCommand: null,
+    outputDirectory: '.',
+    framework: null,
+    installCommand: null,
+    cleanUrls: true,
+    trailingSlash: false,
+    rewrites: [
+      {
+        source: '/(.*)',
+        destination: '/index.html'
+      }
+    ],
+    headers: [
+      {
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'Content-Type',
+            value: 'text/html; charset=utf-8'
+          }
+        ]
+      }
+    ]
+  },
+  target: 'production'
+});
+```
+
+**Nota:** El add-on usa el CLI de Vercel por defecto (`useCLI: true`) para archivos estáticos, lo que es más simple y confiable que usar la API REST.
 
 ### Gestión de Proyectos
 

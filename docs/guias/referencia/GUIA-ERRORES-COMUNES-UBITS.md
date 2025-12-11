@@ -4130,6 +4130,237 @@ if (viewSelectedBtn) {
 
 ## ⚠️ ERROR CRÍTICO #45: Barra de Acciones DataTable - No Implementar Funcionalidad de "Ver Seleccionados"
 
+---
+
+## ⚠️ ERROR CRÍTICO #49: SearchButton - Botón de Cerrar Fuera del Input y Sin Estilos
+
+### ❌ **ERROR COMÚN:**
+
+El botón de cerrar (X) del SearchButton en el DataTable header aparece **sin estilo y por fuera del input**, causando:
+
+1. **Botón de cerrar fuera del input-wrapper:** El botón X aparece fuera del contenedor del input
+2. **Sin estilos aplicados:** El botón no tiene los estilos correctos (tamaño, posición, colores)
+3. **Alineación incorrecta:** El botón no está alineado horizontalmente con el input
+4. **Experiencia de usuario deficiente:** El botón no se ve correctamente y puede no funcionar
+5. **Altura incorrecta:** El input-wrapper tiene altura de 40px en lugar de 32px (igual que botones sm del header)
+
+### ✅ **SOLUCIÓN:**
+
+#### **PASO 1: Agregar Estilos CSS (OBLIGATORIO)**
+
+**📍 Dónde agregar:** En el `<style>` del template, DESPUÉS de los estilos del DataTable y ANTES de los estilos de Dark Mode.
+
+**⚠️ IMPORTANTE:** Reemplazar `#encuestas-table-container` con el ID de tu contenedor del DataTable.
+
+```css
+/* ========================================
+   SEARCHBUTTON - Estilos y Corrección de Estructura
+   ⚠️ CRÍTICO: Prevenir botón de cerrar fuera del input
+   ======================================== */
+
+/* ⚠️ CRÍTICO: Asegurar que el SearchButton activo tenga la estructura correcta */
+#encuestas-table-container .ubits-data-table__header-search-button.ubits-search-button--active {
+    display: inline-flex !important;
+    align-items: center !important;
+    position: relative !important;
+}
+
+/* ⚠️ CRÍTICO: Asegurar que el input-wrapper tenga los estilos correctos del Storybook */
+/* ⚠️ CRÍTICO: La altura DEBE ser 32px (igual que botones sm del header), NO 40px */
+#encuestas-table-container .ubits-data-table__header-search-button .ubits-search-button__input-wrapper {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: var(--ubits-spacing-sm) !important;
+    padding: var(--ubits-spacing-sm) !important;
+    padding-left: var(--ubits-spacing-md) !important;
+    padding-right: var(--ubits-spacing-md) !important;
+    border: 1px solid var(--modifiers-normal-color-light-accent-brand) !important;
+    border-radius: var(--ubits-border-radius-sm) !important;
+    background-color: var(--modifiers-normal-color-light-bg-1) !important;
+    height: 32px !important; /* ✅ CORRECTO: 32px igual que botones sm del header (NO 40px) */
+    min-height: 32px !important;
+    max-height: 32px !important;
+    box-sizing: border-box !important;
+    position: relative !important;
+}
+
+/* Asegurar que el input tenga los estilos correctos y padding-right para el botón de cerrar */
+#encuestas-table-container .ubits-data-table__header-search-button .ubits-search-button__input {
+    flex: 1 !important;
+    min-width: 0 !important;
+    border: none !important;
+    border-radius: 0 !important;
+    outline: none !important;
+    background: transparent !important;
+    font-family: var(--font-family-noto-sans-font-family) !important;
+    font-size: var(--modifiers-normal-body-md-regular-fontsize) !important;
+    font-weight: var(--weight-regular) !important;
+    line-height: var(--modifiers-normal-body-md-regular-lineheight) !important;
+    color: var(--modifiers-normal-color-light-fg-1-high) !important;
+    padding: var(--ubits-spacing-none) !important;
+    padding-right: var(--ubits-spacing-md) !important; /* Espacio para el botón de cerrar */
+    box-shadow: none !important;
+}
+
+/* ⚠️ CRÍTICO: Asegurar que el botón de cerrar esté dentro del input-wrapper, alineado correctamente */
+/* ⚠️ CRÍTICO: position: relative (NO absolute) para estar en el flujo flexbox */
+#encuestas-table-container .ubits-data-table__header-search-button .ubits-search-button__clear {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    position: relative !important; /* ✅ CRÍTICO: relative NO absolute para estar en el flujo flexbox */
+    flex-shrink: 0 !important;
+    width: 16px !important;
+    height: 16px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    cursor: pointer !important;
+    color: var(--modifiers-normal-color-light-fg-1-medium) !important;
+    transition: all 0.2s ease !important;
+}
+
+/* Hover del botón de cerrar */
+#encuestas-table-container .ubits-data-table__header-search-button .ubits-search-button__clear:hover {
+    color: var(--modifiers-normal-color-light-fg-1-high) !important;
+    transform: scale(1.1) !important;
+}
+
+/* Focus del input-wrapper (borde azul cuando está activo) */
+#encuestas-table-container .ubits-data-table__header-search-button .ubits-search-button__input-wrapper:focus-within {
+    outline: none !important;
+    box-shadow: 0px 0px 0px 4px var(--modifiers-normal-focus-color) !important;
+}
+
+/* Placeholder del input */
+#encuestas-table-container .ubits-data-table__header-search-button .ubits-search-button__input::placeholder {
+    color: var(--modifiers-normal-color-light-fg-1-medium) !important;
+}
+```
+
+#### **PASO 2: Agregar Función de Verificación y Corrección (OBLIGATORIO)**
+
+**📍 Dónde agregar:** En el JavaScript, DESPUÉS de crear el DataTable y ANTES del MutationObserver del checkbox header.
+
+```javascript
+// ========================================
+// VERIFICACIÓN Y CORRECCIÓN DEL SEARCHBUTTON
+// ⚠️ CRÍTICO: Prevenir botón de cerrar fuera del input
+// ========================================
+
+function verifyAndFixSearchButtonStructure(container) {
+  console.log('🔍 [DataTable] Verificando estructura del SearchButton...');
+  const searchButton = container.querySelector('.ubits-data-table__header-search-button');
+  if (!searchButton) {
+    console.log('   ⚠️ SearchButton no encontrado aún, se verificará después');
+    setTimeout(() => verifyAndFixSearchButtonStructure(container), 200);
+    return;
+  }
+  
+  console.log('   ✅ SearchButton encontrado');
+  
+  // Verificar estructura del input-wrapper
+  const inputWrapper = searchButton.querySelector('.ubits-search-button__input-wrapper');
+  if (!inputWrapper) {
+    console.warn('   ⚠️ input-wrapper no encontrado');
+    return;
+  }
+  
+  console.log('   ✅ input-wrapper encontrado');
+  
+  // Verificar input
+  const input = inputWrapper.querySelector('.ubits-search-button__input');
+  if (input) {
+    console.log('   ✅ Input encontrado dentro del input-wrapper');
+  } else {
+    console.warn('   ⚠️ Input NO encontrado dentro del input-wrapper');
+  }
+  
+  // Verificar botón de cerrar (X)
+  const clearButton = inputWrapper.querySelector('.ubits-search-button__clear');
+  if (clearButton) {
+    console.log('   ✅ Botón de cerrar (X) encontrado dentro del input-wrapper');
+    
+    // Verificar si está correctamente dentro del input-wrapper
+    if (!inputWrapper.contains(clearButton)) {
+      console.error('   ❌ PROBLEMA: Botón de cerrar NO está dentro del input-wrapper');
+      console.log('   🔧 Moviendo botón de cerrar dentro del input-wrapper...');
+      inputWrapper.appendChild(clearButton);
+      console.log('   ✅ Botón de cerrar movido dentro del input-wrapper');
+    } else {
+      console.log('   ✅ Botón de cerrar está correctamente dentro del input-wrapper');
+    }
+    
+    // Verificar estilos del botón de cerrar
+    const computedStyle = window.getComputedStyle(clearButton);
+    if (computedStyle.position === 'absolute') {
+      console.warn('   ⚠️ Botón de cerrar tiene position: absolute (debe ser relative)');
+      clearButton.style.position = 'relative';
+      console.log('   ✅ Position corregido a relative');
+    }
+  } else {
+    console.warn('   ⚠️ Botón de cerrar (X) NO encontrado dentro del input-wrapper');
+    
+    // Buscar si está fuera
+    const clearButtonOutside = searchButton.querySelector('.ubits-search-button__clear');
+    if (clearButtonOutside && !inputWrapper.contains(clearButtonOutside)) {
+      console.error('   ❌ PROBLEMA: Botón de cerrar encontrado FUERA del input-wrapper');
+      console.log('   🔧 Moviendo botón de cerrar dentro del input-wrapper...');
+      inputWrapper.appendChild(clearButtonOutside);
+      console.log('   ✅ Botón de cerrar movido dentro del input-wrapper');
+    }
+  }
+  
+  // Verificar altura del input-wrapper
+  const wrapperHeight = window.getComputedStyle(inputWrapper).height;
+  if (wrapperHeight !== '32px') {
+    console.warn(`   ⚠️ Altura del input-wrapper es ${wrapperHeight} (debe ser 32px)`);
+    inputWrapper.style.height = '32px';
+    inputWrapper.style.minHeight = '32px';
+    inputWrapper.style.maxHeight = '32px';
+    console.log('   ✅ Altura corregida a 32px');
+  }
+  
+  console.log('🔍 [DataTable] ✅ Verificación del SearchButton completada');
+}
+
+// Llamar después de crear el DataTable
+setTimeout(() => {
+  verifyAndFixSearchButtonStructure(container);
+}, 100);
+```
+
+### 🔍 **¿Por qué ocurre?**
+
+1. **Estructura HTML Incorrecta:** El `renderInput()` genera un wrapper div con `position: relative`, pero el SearchButton puede extraer el contenido del input de manera incorrecta
+2. **Estilos CSS No Se Aplican Correctamente:** Los estilos del SearchButton pueden no aplicarse correctamente en el contexto del DataTable
+3. **Altura Incorrecta:** Se configura `height: 40px` en el input-wrapper, pero los botones del header usan `size: 'sm'` (32px)
+
+### 📝 **Reglas de Oro:**
+
+1. **SIEMPRE agregar estilos CSS específicos** para el SearchButton cuando se usa en DataTable
+2. **SIEMPRE usar `position: relative`** (NO `absolute`) para el botón de cerrar
+3. **SIEMPRE usar `height: 32px`** (NO 40px) para el input-wrapper
+4. **SIEMPRE agregar función de verificación** después de crear el DataTable
+5. **SIEMPRE verificar estructura del DOM** para asegurar que el botón de cerrar esté dentro del input-wrapper
+
+### 🚨 **Errores Comunes a Evitar:**
+
+- ❌ **NO usar `position: absolute`** para el botón de cerrar (saca el botón del flujo flexbox)
+- ❌ **NO usar `height: 40px`** para el input-wrapper (debe ser 32px igual que botones sm)
+- ❌ **NO omitir los estilos CSS** (el SearchButton necesita estilos específicos en el contexto del DataTable)
+- ❌ **NO omitir la función de verificación** (puede haber problemas de estructura del DOM)
+
+### 🔗 **Referencias:**
+
+- **Guía completa:** `docs/guias/implementacion/GUIA-ERROR-SEARCHBUTTON-BOTON-CERRAR-FUERA-INPUT.md` ⭐ **OBLIGATORIO LEER**
+- **Análisis detallado:** `docs/guias/analisis/ANALISIS-ERROR-SEARCHBUTTON-ESTILOS-INCORRECTOS.md`
+- **Checklist:** `docs/guias/implementacion/CHECKLIST-ANTES-IMPLEMENTAR-COMPONENTE.md` (Error #SearchButton)
+
+---
+
 ### ❌ **ERROR COMÚN:**
 ```javascript
 // ❌ INCORRECTO: Solo agregar TODO sin implementar funcionalidad
@@ -5599,6 +5830,928 @@ actionBarObserver.observe(container, { childList: true, subtree: true });
 
 ---
 
-**Última actualización:** Diciembre 2024  
-**Versión:** 2.2.0
+## ⚠️ ERROR CRÍTICO #50: Action Bar No Aparece con Selección Única (Solo con Múltiple)
+
+### ❌ **ERROR COMÚN:**
+
+La Action Bar del DataTable **solo aparece cuando se seleccionan múltiples items desde el header checkbox**, pero **NO aparece cuando se selecciona un solo item desde las filas**, causando:
+
+1. **Action Bar no visible con selección única:** La barra no aparece cuando se selecciona 1 fila desde el checkbox de la fila
+2. **Solo funciona con selección múltiple:** La barra solo aparece cuando se seleccionan múltiples items desde el header checkbox
+3. **Experiencia de usuario inconsistente:** Los usuarios no pueden realizar acciones sobre una sola fila seleccionada
+
+### ✅ **SOLUCIÓN:**
+
+#### **PASO 1: Verificar Firma Correcta del Callback `onRowSelect`**
+
+**⚠️ CRÍTICO:** El callback `onRowSelect` tiene la firma `(rowId, selected)`, **NO** `(rowId, rowData, selected)`.
+
+**❌ INCORRECTO:**
+```javascript
+onRowSelect: (rowId, rowData, selected) => {
+  // ❌ rowData recibe el valor de selected (true/false)
+  // ❌ selected es undefined
+  if (selected) { // ❌ Siempre es undefined, nunca se ejecuta
+    selectionState.selectedRowIds.add(rowId);
+  }
+  renderActionBar(container);
+}
+```
+
+**✅ CORRECTO:**
+```javascript
+onRowSelect: (rowId, selected) => {
+  // ✅ selected recibe true/false correctamente
+  console.log('📊 [DataTable] onRowSelect llamado:', { rowId, selected, tipo: typeof selected });
+  if (selected) {
+    selectionState.selectedRowIds.add(rowId);
+    console.log('📊 [DataTable] ✅ Fila agregada a selección. Total seleccionadas:', selectionState.selectedRowIds.size);
+  } else {
+    selectionState.selectedRowIds.delete(rowId);
+    console.log('📊 [DataTable] ✅ Fila eliminada de selección. Total seleccionadas:', selectionState.selectedRowIds.size);
+  }
+  // ⚠️ CRÍTICO: Renderizar Action Bar SIEMPRE después de cambiar la selección
+  renderActionBar(container);
+  console.log('📊 [DataTable] ✅ Action Bar renderizado. Selecciones:', Array.from(selectionState.selectedRowIds));
+}
+```
+
+#### **PASO 2: Verificar que `renderActionBar` Muestra la Barra con 1 o Más Selecciones**
+
+**⚠️ CRÍTICO:** La función `renderActionBar` debe mostrar la barra cuando `selectedCount >= 1`, no solo cuando `selectedCount > 1`.
+
+**❌ INCORRECTO:**
+```javascript
+const renderActionBar = (container) => {
+  const selectedCount = selectionState.selectedRowIds.size;
+  
+  // ❌ Solo muestra cuando hay más de 1 selección
+  if (selectedCount <= 1) {
+    actionBar.style.display = 'none';
+    return;
+  }
+  
+  actionBar.style.display = 'flex';
+  // ...
+}
+```
+
+**✅ CORRECTO:**
+```javascript
+const renderActionBar = (container) => {
+  const selectedCount = selectionState.selectedRowIds.size;
+  
+  // ✅ Ocultar solo cuando NO hay selecciones (0)
+  if (selectedCount === 0) {
+    actionBar.style.display = 'none';
+    return;
+  }
+  
+  // ✅ Mostrar cuando hay 1 o más selecciones
+  actionBar.style.display = 'flex';
+  
+  // Determinar si es selección única o múltiple
+  const isMultipleSelection = selectedCount > 1;
+  
+  // Renderizar botones según el tipo de selección
+  if (isMultipleSelection) {
+    // Botones para selección múltiple
+  } else {
+    // Botones para selección única (1 fila)
+  }
+}
+```
+
+#### **PASO 3: Agregar Logs de Depuración**
+
+**⚠️ CRÍTICO:** Agregar logs para verificar que el callback se ejecuta correctamente:
+
+```javascript
+onRowSelect: (rowId, selected) => {
+  console.log('📊 [DataTable] onRowSelect llamado:', { 
+    rowId, 
+    selected, 
+    tipo: typeof selected,
+    esTrue: selected === true,
+    esFalse: selected === false
+  });
+  
+  if (selected) {
+    selectionState.selectedRowIds.add(rowId);
+    console.log('📊 [DataTable] ✅ Fila agregada. Total:', selectionState.selectedRowIds.size);
+  } else {
+    selectionState.selectedRowIds.delete(rowId);
+    console.log('📊 [DataTable] ✅ Fila eliminada. Total:', selectionState.selectedRowIds.size);
+  }
+  
+  renderActionBar(container);
+  console.log('📊 [DataTable] ✅ Action Bar renderizado. Selecciones:', Array.from(selectionState.selectedRowIds));
+}
+```
+
+### 🔍 **¿Por qué ocurre?**
+
+1. **Firma Incorrecta del Callback:** El callback `onRowSelect` se define con 3 parámetros `(rowId, rowData, selected)` cuando en realidad solo recibe 2 `(rowId, selected)`
+2. **Parámetro `selected` Siempre Undefined:** Cuando se usa la firma incorrecta, el parámetro `selected` siempre es `undefined`, por lo que `if (selected)` nunca se ejecuta
+3. **Estado de Selección No Se Actualiza:** Como `selected` es `undefined`, nunca se agregan items al `selectionState.selectedRowIds`
+4. **Action Bar No Se Muestra:** Como el estado no se actualiza, `selectedCount` siempre es 0, y la barra nunca se muestra
+
+### 📝 **Reglas de Oro:**
+
+1. **SIEMPRE usar la firma correcta:** `onRowSelect: (rowId, selected) => { ... }`
+2. **SIEMPRE verificar que `selected` es boolean:** `typeof selected === 'boolean'`
+3. **SIEMPRE renderizar Action Bar después de cambiar selección:** Llamar `renderActionBar(container)` después de actualizar `selectionState`
+4. **SIEMPRE mostrar Action Bar con 1 o más selecciones:** `if (selectedCount === 0)` para ocultar, `if (selectedCount >= 1)` para mostrar
+5. **SIEMPRE agregar logs de depuración:** Para verificar que el callback se ejecuta correctamente
+
+### 🚨 **Errores Comunes a Evitar:**
+
+- ❌ **NO usar firma con 3 parámetros:** `(rowId, rowData, selected)` - El segundo parámetro es `selected`, no `rowData`
+- ❌ **NO asumir que `selected` siempre existe:** Verificar que `selected` es `true` o `false` antes de usarlo
+- ❌ **NO olvidar renderizar Action Bar:** Llamar `renderActionBar(container)` después de cada cambio en `selectionState`
+- ❌ **NO ocultar Action Bar con 1 selección:** Mostrar la barra cuando `selectedCount >= 1`, no solo cuando `selectedCount > 1`
+
+### 🔗 **Referencias:**
+
+- **Guía completa Action Bar:** `docs/guias/implementacion/GUIA-ACTION-BAR-DATATABLE.md` ⭐ **OBLIGATORIO LEER**
+- **Guía de error Action Bar:** `docs/guias/implementacion/GUIA-ERROR-ACTION-BAR-NO-SE-MUESTRA-DATATABLE.md`
+- **Código del DataTable:** `vendor/ubits/packages/components/data-table/src/DataTableProvider.ts` (línea 3706)
+- **Ejemplo en Storybook:** `vendor/ubits/packages/storybook/stories/DataTable.stories.ts` (línea 2133)
+
+---
+
+## ⚠️ ERROR CRÍTICO #51: Botón "Ver Seleccionados" - Estilos Incorrectos en Modo Activo
+
+### ❌ **ERROR COMÚN:**
+
+El botón "Ver seleccionados" en el Action Bar del DataTable **no tiene los estilos correctos cuando está en modo activo**, causando:
+
+1. **Estilos incorrectos en modo activo:** El botón no muestra el fondo azul claro (`--modifiers-normal-color-light-bg-active`) cuando está activo
+2. **Color de texto incorrecto:** El texto y el icono no tienen el color azul de marca (`--modifiers-normal-color-light-accent-brand`) cuando está activo
+3. **Falta el overlay azul:** No se muestra el `::before` con el fondo azul claro que debería tener cuando está activo
+4. **Experiencia de usuario inconsistente:** El botón no se ve como debería cuando está activo
+
+### ✅ **SOLUCIÓN:**
+
+#### **PASO 1: Agregar el ID Correcto al Botón**
+
+**⚠️ CRÍTICO:** El botón "Ver seleccionados" **DEBE tener el atributo `id: 'action-btn-view-selected'`** para que los estilos CSS se apliquen correctamente.
+
+**❌ INCORRECTO:**
+```javascript
+${renderBtn({
+  variant: 'secondary',
+  size: 'sm',
+  text: viewSelectedText,
+  icon: viewSelectedIcon,
+  iconStyle: 'regular',
+  active: isViewSelectedActive,
+  onClick: () => toggleViewSelected(container)
+  // ❌ Falta el atributo id
+})}
+```
+
+**✅ CORRECTO:**
+```javascript
+${renderBtn({
+  variant: 'secondary',
+  size: 'sm',
+  text: viewSelectedText,
+  icon: viewSelectedIcon,
+  iconStyle: 'regular',
+  active: isViewSelectedActive,
+  attributes: { id: 'action-btn-view-selected' }, // ✅ CRÍTICO: ID necesario para estilos activos
+  onClick: () => toggleViewSelected(container)
+})}
+```
+
+#### **PASO 2: Verificar Estilos CSS Aplicados**
+
+**⚠️ CRÍTICO:** Los estilos CSS para el botón activo están en `vendor/ubits/packages/components/button/src/styles/button.css`:
+
+```css
+.ubits-button--secondary.ubits-button--active {
+  position: relative;
+  background-color: transparent !important;
+  color: var(--modifiers-normal-color-light-accent-brand) !important;
+  border: none !important;
+}
+
+.ubits-button--secondary.ubits-button--active::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--modifiers-normal-color-light-bg-active) !important;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.ubits-button--secondary.ubits-button--active i,
+.ubits-button--secondary.ubits-button--active span {
+  position: relative;
+  z-index: 1;
+  color: var(--modifiers-normal-color-light-accent-brand) !important;
+}
+```
+
+**Estos estilos se aplican automáticamente cuando:**
+- El botón tiene la clase `.ubits-button--secondary`
+- El botón tiene la clase `.ubits-button--active`
+- El botón tiene el atributo `id="action-btn-view-selected"` (para estilos específicos en dark mode)
+
+### 🔍 **¿Por qué ocurre?**
+
+1. **Falta el ID:** El botón no tiene el atributo `id: 'action-btn-view-selected'`, por lo que los estilos CSS específicos no se aplican
+2. **Estilos CSS no se aplican:** Sin el ID, los estilos específicos para el botón activo no se aplican correctamente
+3. **Clase --active no se agrega:** Si el botón no tiene el ID, puede que la clase `--active` no se agregue correctamente
+
+### 📝 **Reglas de Oro:**
+
+1. **SIEMPRE agregar el ID:** `attributes: { id: 'action-btn-view-selected' }` al botón "Ver seleccionados"
+2. **SIEMPRE verificar que la clase --active se agrega:** El botón debe tener la clase `.ubits-button--active` cuando `isViewSelectedActive === true`
+3. **SIEMPRE verificar estilos en modo activo:** El botón debe tener fondo azul claro y texto/icono azul cuando está activo
+4. **SIEMPRE aplicar en ambos casos:** Tanto para selección única como múltiple, el botón debe tener el mismo ID
+
+#### **PASO 3: Adjuntar Event Listeners Después de Insertar HTML**
+
+**⚠️ CRÍTICO:** `renderBtn` devuelve HTML string, **NO adjunta event listeners automáticamente**. Debes adjuntarlos manualmente después de insertar el HTML:
+
+```javascript
+actionBar.innerHTML = buttonsHTML;
+
+// ⚠️ CRÍTICO: Adjuntar event listeners después de insertar HTML
+const viewSelectedBtn = actionBar.querySelector('#action-btn-view-selected');
+if (viewSelectedBtn) {
+  // Remover listeners anteriores para evitar duplicados
+  const newBtn = viewSelectedBtn.cloneNode(true);
+  viewSelectedBtn.parentNode.replaceChild(newBtn, viewSelectedBtn);
+  
+  // Adjuntar el listener al nuevo botón
+  newBtn.addEventListener('click', () => {
+    toggleViewSelected(container);
+  });
+  
+  // ⚠️ CRÍTICO: Verificar y agregar clase active si es necesario
+  if (isViewSelectedActive && !newBtn.classList.contains('ubits-button--active')) {
+    newBtn.classList.add('ubits-button--active');
+  }
+}
+```
+
+#### **PASO 4: Verificar que la Clase Active se Agrega Correctamente**
+
+**⚠️ CRÍTICO:** Agregar verificación para asegurar que el botón tenga la clase `ubits-button--active` cuando `isViewSelectedActive === true`:
+
+```javascript
+setTimeout(() => {
+  const hasActiveClass = newBtn.classList.contains('ubits-button--active');
+  if (isViewSelectedActive && !hasActiveClass) {
+    console.warn('⚠️ Botón debería estar activo pero no tiene la clase, agregándola manualmente...');
+    newBtn.classList.add('ubits-button--active');
+  }
+}, 50);
+```
+
+### 🚨 **Errores Comunes a Evitar:**
+
+- ❌ **NO olvidar agregar el ID:** El atributo `id: 'action-btn-view-selected'` es obligatorio
+- ❌ **NO usar otro ID:** El ID debe ser exactamente `'action-btn-view-selected'`
+- ❌ **NO omitir el atributo attributes:** Debe pasarse como `attributes: { id: 'action-btn-view-selected' }`
+- ❌ **NO asumir que los estilos se aplican automáticamente:** Sin el ID, los estilos específicos no se aplican
+- ❌ **NO olvidar adjuntar event listeners:** `renderBtn` devuelve HTML string, NO adjunta listeners automáticamente
+- ❌ **NO asumir que la clase active se agrega automáticamente:** Verificar y agregar manualmente si es necesario
+
+### 🔗 **Referencias:**
+
+- **Guía de implementación Action Bar:** `docs/guias/implementacion/GUIA-ACTION-BAR-DATATABLE.md` ⭐ **OBLIGATORIO LEER**
+- **Estilos CSS del botón:** `vendor/ubits/packages/components/button/src/styles/button.css` (líneas 399-453)
+- **Storybook DataTable:** `vendor/ubits/packages/storybook/stories/DataTable.stories.ts` (líneas 1716-1724, 1762-1770)
+
+---
+
+## ⚠️ ERROR CRÍTICO #52: Ciclo Vicioso - Arreglar una Cosa y Dañar Otra (ActionBar + Checkboxes)
+
+### ❌ **ERROR COMÚN:**
+
+**Problema:** Cuando se implementa el ActionBar del DataTable, se crea un ciclo vicioso donde:
+- Al arreglar el botón "Ver seleccionados", se dañan los checkboxes
+- Al arreglar los checkboxes, el botón "Ver seleccionados" deja de funcionar
+
+**Causa Raíz:**
+```javascript
+// ❌ INCORRECTO: Usar innerHTML cada vez que se renderiza el ActionBar
+function renderActionBar(container) {
+  const actionBar = container.querySelector('.ubits-data-table__action-bar');
+  
+  // ❌ PROBLEMA: Esto reemplaza TODO el contenido, afectando los checkboxes del DataTable
+  actionBar.innerHTML = buttonsHTML;
+  
+  // Adjuntar listeners...
+}
+```
+
+**¿Por qué se daña?**
+- `innerHTML` reemplaza **TODO** el contenido del ActionBar
+- Si el ActionBar está dentro o cerca del contenedor del DataTable, puede afectar el DOM
+- Los checkboxes del DataTable pueden perder sus event listeners
+- El DataTable puede perder referencias internas
+
+### ✅ **SOLUCIÓN CORRECTA:**
+
+**⚠️ CRÍTICO: NUNCA usar `innerHTML` si el ActionBar ya tiene contenido**
+
+```javascript
+function renderActionBar(container) {
+  const actionBar = container.querySelector('.ubits-data-table__action-bar');
+  
+  // ⚠️ CRÍTICO: Verificar si el ActionBar ya tiene contenido
+  const hasExistingContent = actionBar.children.length > 0;
+  const existingBtn = actionBar.querySelector('#action-btn-view-selected');
+  
+  // ✅ CASO 1: Si el botón ya existe, solo actualizarlo sin tocar nada más
+  if (existingBtn) {
+    // Actualizar solo el botón existente
+    const iconEl = existingBtn.querySelector('i');
+    const textEl = existingBtn.querySelector('span');
+    
+    if (iconEl) iconEl.className = `far fa-${viewSelectedIcon}`;
+    if (textEl) textEl.textContent = viewSelectedText;
+    
+    // Actualizar clase active
+    if (isViewSelectedActive) {
+      existingBtn.classList.add('ubits-button--active');
+    } else {
+      existingBtn.classList.remove('ubits-button--active');
+    }
+    
+    // Remover y re-agregar listener
+    if (existingBtn._actionBarClickHandler) {
+      existingBtn.removeEventListener('click', existingBtn._actionBarClickHandler);
+    }
+    
+    const clickHandler = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      toggleViewSelected(container);
+    };
+    existingBtn.addEventListener('click', clickHandler);
+    existingBtn._actionBarClickHandler = clickHandler;
+    
+    return; // ⚠️ CRÍTICO: Salir temprano para no usar innerHTML
+  }
+  
+  // ✅ CASO 2: Si el ActionBar tiene contenido pero no tiene el botón, agregarlo sin innerHTML
+  if (hasExistingContent) {
+    // Crear el botón usando manipulación directa del DOM
+    const btn = document.createElement('button');
+    btn.id = 'action-btn-view-selected';
+    btn.className = `ubits-button ubits-button--secondary ubits-button--sm${isViewSelectedActive ? ' ubits-button--active' : ''}`;
+    
+    const icon = document.createElement('i');
+    icon.className = `far fa-${viewSelectedIcon}`;
+    btn.appendChild(icon);
+    
+    const span = document.createElement('span');
+    span.textContent = viewSelectedText;
+    btn.appendChild(span);
+    
+    // Agregar listener
+    const clickHandler = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      toggleViewSelected(container);
+    };
+    btn.addEventListener('click', clickHandler);
+    btn._actionBarClickHandler = clickHandler;
+    
+    // Insertar al inicio del ActionBar
+    actionBar.insertBefore(btn, actionBar.firstChild);
+    
+    return; // ⚠️ CRÍTICO: Salir temprano para no usar innerHTML
+  }
+  
+  // ✅ CASO 3: Solo usar innerHTML si el ActionBar está completamente vacío (primera vez)
+  actionBar.innerHTML = buttonsHTML;
+  
+  // Adjuntar listeners después de innerHTML...
+}
+```
+
+### 🚨 **Reglas Críticas:**
+
+1. **✅ SIEMPRE verificar si el botón ya existe antes de usar `innerHTML`**
+2. **✅ SIEMPRE actualizar solo el botón existente si ya existe**
+3. **✅ SIEMPRE usar manipulación directa del DOM si el ActionBar tiene contenido pero no tiene el botón**
+4. **✅ SOLO usar `innerHTML` cuando el ActionBar está completamente vacío (primera vez)**
+5. **❌ NUNCA usar `innerHTML` si el ActionBar ya tiene contenido**
+
+### 🔗 **Referencias:**
+
+- **Guía de implementación Action Bar:** `docs/guias/implementacion/GUIA-ACTION-BAR-DATATABLE.md`
+- **Problema reportado:** Ciclo vicioso donde arreglar una cosa daña otra
+
+---
+
+## ⚠️ ERROR CRÍTICO #53: Filtrado de Filas No Funciona - "Ver Seleccionados" No Filtra
+
+### ❌ **ERROR COMÚN:**
+
+**Problema:** El botón "Ver seleccionados" no filtra las filas del DataTable, solo cambia el texto del botón.
+
+**Causa Raíz:**
+```javascript
+// ❌ INCORRECTO: No guardar la instancia completa del DataTable
+window.createDataTable({ /* opciones */ });
+
+// Guardar solo el elemento DOM (NO tiene método update)
+window._encuestasDataTableInstance = container.querySelector('.ubits-data-table');
+
+// ❌ INCORRECTO: No implementar el filtrado
+function toggleViewSelected(container) {
+  selectionState.viewSelectedActive = !selectionState.viewSelectedActive;
+  renderActionBar(container);
+  
+  // TODO: Implementar filtrado de filas  // ❌ NUNCA se implementa
+}
+```
+
+**¿Por qué no funciona?**
+- No se guarda la instancia completa del DataTable (que tiene el método `update()`)
+- El filtrado nunca se implementa (solo hay un `TODO`)
+- No se guardan los datos originales para restaurar después
+
+### ✅ **SOLUCIÓN CORRECTA:**
+
+**⚠️ CRÍTICO: Guardar la instancia completa del DataTable y los datos originales**
+
+```javascript
+// ⚠️ CRÍTICO: Mantener referencia a datos originales
+let encuestasDataOriginal = [];
+
+// Crear DataTable
+try {
+  // ⚠️ CRÍTICO: Guardar la instancia completa (tiene método update())
+  const dataTableInstance = window.createDataTable({
+    containerId: 'encuestas-table-container',
+    columns: [ /* ... */ ],
+    rows: rows,
+    // ... otras opciones
+  });
+  
+  // ⚠️ CRÍTICO: Guardar datos originales ANTES de cualquier filtrado
+  encuestasDataOriginal = rows;
+  
+  // ⚠️ CRÍTICO: Guardar instancia completa del DataTable (con método update)
+  window._encuestasDataTableInstance = dataTableInstance;
+  window._encuestasDataTableInitialized = true;
+  
+} catch (error) {
+  console.error('❌ Error al crear DataTable:', error);
+}
+
+// ⚠️ CRÍTICO: Implementar filtrado en toggleViewSelected
+function toggleViewSelected(container) {
+  // Prevenir múltiples llamadas simultáneas
+  if (isToggling) {
+    console.warn('⚠️ toggleViewSelected ya está en ejecución, ignorando llamada duplicada');
+    return;
+  }
+  
+  isToggling = true;
+  selectionState.viewSelectedActive = !selectionState.viewSelectedActive;
+  
+  // ⚠️ CRÍTICO: Filtrar filas basándose en el estado
+  const dataTableInstance = window._encuestasDataTableInstance;
+  if (dataTableInstance && dataTableInstance.update && encuestasDataOriginal) {
+    if (selectionState.viewSelectedActive) {
+      // Filtrar solo las filas seleccionadas
+      const filteredRows = encuestasDataOriginal.filter((row) => 
+        selectionState.selectedRowIds.has(row.id)
+      );
+      console.log('📊 [ActionBar] Filtrando filas. Mostrando solo seleccionadas:', filteredRows.length);
+      dataTableInstance.update({ rows: filteredRows });
+    } else {
+      // Restaurar todas las filas originales
+      console.log('📊 [ActionBar] Restaurando todas las filas:', encuestasDataOriginal.length);
+      dataTableInstance.update({ rows: encuestasDataOriginal });
+    }
+  } else {
+    console.warn('⚠️ DataTable instance no disponible para filtrar');
+  }
+  
+  renderActionBar(container);
+  
+  // Liberar el flag después de un breve delay
+  setTimeout(() => {
+    isToggling = false;
+  }, 100);
+}
+```
+
+### 🚨 **Reglas Críticas:**
+
+1. **✅ SIEMPRE guardar la instancia completa del DataTable:** `const dataTableInstance = window.createDataTable({...})`
+2. **✅ SIEMPRE guardar los datos originales:** `encuestasDataOriginal = rows` (antes de cualquier filtrado)
+3. **✅ SIEMPRE usar `dataTableInstance.update({ rows: filteredRows })` para filtrar**
+4. **✅ SIEMPRE restaurar los datos originales cuando se desactiva el filtro:** `dataTableInstance.update({ rows: encuestasDataOriginal })`
+5. **✅ SIEMPRE verificar que la instancia existe antes de usar `update()`**
+6. **❌ NUNCA guardar solo el elemento DOM:** `container.querySelector('.ubits-data-table')` NO tiene método `update()`
+7. **❌ NUNCA dejar el filtrado como `TODO`:** Debe implementarse completamente
+
+### 🔗 **Referencias:**
+
+- **Guía de implementación Action Bar:** `docs/guias/implementacion/GUIA-ACTION-BAR-DATATABLE.md` (líneas 300-342)
+- **Método update del DataTable:** `vendor/ubits/packages/components/data-table/src/DataTableProvider.ts` (línea 1708)
+
+---
+
+## ⚠️ ERROR CRÍTICO #54: Múltiples Llamadas Simultáneas a toggleViewSelected
+
+### ❌ **ERROR COMÚN:**
+
+**Problema:** El botón "Ver seleccionados" se puede hacer clic múltiples veces rápidamente, causando:
+- Múltiples llamadas a `toggleViewSelected` casi simultáneamente
+- Estado inconsistente
+- Filtrado que se activa y desactiva rápidamente
+
+**Causa Raíz:**
+```javascript
+// ❌ INCORRECTO: No prevenir múltiples llamadas simultáneas
+function toggleViewSelected(container) {
+  selectionState.viewSelectedActive = !selectionState.viewSelectedActive;
+  // Filtrar filas...
+  renderActionBar(container);
+}
+```
+
+### ✅ **SOLUCIÓN CORRECTA:**
+
+**⚠️ CRÍTICO: Usar flag para prevenir múltiples llamadas simultáneas**
+
+```javascript
+// ⚠️ CRÍTICO: Flag para prevenir múltiples llamadas simultáneas
+let isToggling = false;
+
+function toggleViewSelected(container) {
+  // ⚠️ CRÍTICO: Prevenir múltiples llamadas simultáneas
+  if (isToggling) {
+    console.warn('⚠️ toggleViewSelected ya está en ejecución, ignorando llamada duplicada');
+    return;
+  }
+  
+  isToggling = true;
+  
+  // Cambiar estado
+  selectionState.viewSelectedActive = !selectionState.viewSelectedActive;
+  
+  // Filtrar filas...
+  const dataTableInstance = window._encuestasDataTableInstance;
+  if (dataTableInstance && dataTableInstance.update && encuestasDataOriginal) {
+    if (selectionState.viewSelectedActive) {
+      const filteredRows = encuestasDataOriginal.filter((row) => 
+        selectionState.selectedRowIds.has(row.id)
+      );
+      dataTableInstance.update({ rows: filteredRows });
+    } else {
+      dataTableInstance.update({ rows: encuestasDataOriginal });
+    }
+  }
+  
+  renderActionBar(container);
+  
+  // ⚠️ CRÍTICO: Liberar el flag después de un breve delay para permitir que el DOM se actualice
+  setTimeout(() => {
+    isToggling = false;
+  }, 100);
+}
+```
+
+### 🚨 **Reglas Críticas:**
+
+1. **✅ SIEMPRE usar un flag (`isToggling`) para prevenir múltiples llamadas simultáneas**
+2. **✅ SIEMPRE verificar el flag al inicio de la función**
+3. **✅ SIEMPRE liberar el flag después de completar la operación (con un pequeño delay)**
+4. **❌ NUNCA omitir la protección contra múltiples llamadas simultáneas**
+
+---
+
+## 📋 **Resumen de Errores Críticos del ActionBar del DataTable**
+
+### **Errores Documentados:**
+
+1. **ERROR #49:** SearchButton - Botón de Cerrar Fuera del Input y Sin Estilos
+2. **ERROR #50:** Action Bar No Aparece con Selección Única (Solo con Múltiple)
+3. **ERROR #51:** Botón "Ver Seleccionados" - Estilos Incorrectos en Modo Activo
+4. **ERROR #52:** Ciclo Vicioso - Arreglar una Cosa y Dañar Otra (ActionBar + Checkboxes) ⭐ **NUEVO**
+5. **ERROR #53:** Filtrado de Filas No Funciona - "Ver Seleccionados" No Filtra ⭐ **NUEVO**
+6. **ERROR #54:** Múltiples Llamadas Simultáneas a toggleViewSelected ⭐ **NUEVO**
+
+### **Checklist Obligatorio para Implementar ActionBar:**
+
+- [ ] ✅ Guardar instancia completa del DataTable: `const dataTableInstance = window.createDataTable({...})`
+- [ ] ✅ Guardar datos originales: `encuestasDataOriginal = rows` (antes de cualquier filtrado)
+- [ ] ✅ Implementar filtrado completo en `toggleViewSelected` usando `dataTableInstance.update()`
+- [ ] ✅ Prevenir múltiples llamadas simultáneas con flag `isToggling`
+- [ ] ✅ NUNCA usar `innerHTML` si el ActionBar ya tiene contenido
+- [ ] ✅ Actualizar solo el botón existente si ya existe (sin usar `innerHTML`)
+- [ ] ✅ Usar manipulación directa del DOM si el ActionBar tiene contenido pero no tiene el botón
+- [ ] ✅ SOLO usar `innerHTML` cuando el ActionBar está completamente vacío (primera vez)
+- [ ] ✅ Agregar ID al botón: `attributes: { id: 'action-btn-view-selected' }`
+- [ ] ✅ Agregar estilos CSS específicos para el botón activo
+- [ ] ✅ Adjuntar event listeners después de insertar HTML
+- [ ] ✅ Verificar y agregar clase `ubits-button--active` manualmente si es necesario
+
+---
+
+## ⚠️ ERROR CRÍTICO #55: Filtros "Quemados" y Conflictos de Estilos con Drawer Navigation
+
+### ❌ **ERROR COMÚN:**
+
+**Problema:** Los filtros del DataTable están implementados de forma "quemada" (hardcoded) y tienen conflictos de estilos con el drawer navigation, causando que los inputs se dañen.
+
+**Causa Raíz:**
+```javascript
+// ❌ INCORRECTO: Usar filterButton: true sin configurar filters
+header: {
+  filterButton: true // ❌ Esto crea un filtro de prueba "quemado"
+}
+```
+
+**¿Por qué se daña?**
+- El DataTable crea un filtro de prueba automáticamente cuando no hay `filters` configurado
+- Los inputs se crean antes de que el drawer esté completamente renderizado
+- Los estilos del drawer navigation se aplican a los inputs
+- El orden de creación no es el correcto
+
+### ✅ **SOLUCIÓN CORRECTA:**
+
+**⚠️ CRÍTICO: Configurar filters explícitamente y asegurar orden correcto de creación**
+
+```javascript
+header: {
+  filterButton: {
+    // ⚠️ CRÍTICO: Configurar filters explícitamente (NO usar filterButton: true solo)
+    filters: [
+      {
+        id: 'filtro-nombre',
+        label: 'Nombre de la encuesta',
+        columnId: 'nombre',
+        type: 'text',
+        value: ''
+      },
+      {
+        id: 'filtro-tipo',
+        label: 'Tipo',
+        columnId: 'tipo',
+        type: 'select',
+        options: [
+          { value: 'Cultura', label: 'Cultura' },
+          { value: 'Satisfacción', label: 'Satisfacción' }
+        ],
+        value: ''
+      },
+      {
+        id: 'filtro-fecha',
+        label: 'Fecha',
+        columnId: 'fecha-inicio',
+        type: 'calendar', // ⚠️ CRÍTICO: Usar 'calendar' para fechas (NO 'date')
+        value: ''
+      }
+    ],
+    onApplyFilters: (filters) => {
+      // Implementar lógica de filtrado
+      const filteredRows = encuestasDataOriginal.filter((row) => {
+        // Lógica de filtrado...
+      });
+      if (window._encuestasDataTableInstance && window._encuestasDataTableInstance.update) {
+        window._encuestasDataTableInstance.update({ rows: filteredRows });
+      }
+    },
+    onClearFilters: () => {
+      // Restaurar todas las filas originales
+      if (window._encuestasDataTableInstance && window._encuestasDataTableInstance.update) {
+        window._encuestasDataTableInstance.update({ rows: encuestasDataOriginal });
+      }
+    }
+  }
+}
+```
+
+**⚠️ CRÍTICO: El DataTable crea el drawer y los inputs en este orden (automático):**
+1. **Primero:** Crear drawer navigation
+2. **Esperar:** 200ms para que el drawer esté completamente renderizado
+3. **Después:** Crear inputs dentro del drawer
+
+**Si hay conflictos de estilos, agregar CSS específico:**
+
+```css
+/* ⚠️ CRÍTICO: Solo agregar si hay conflictos reales */
+.ubits-drawer__body #filters-container {
+  padding: 0; /* El drawer ya tiene padding */
+}
+
+.ubits-drawer__body #filters-container > div {
+  margin-bottom: var(--ubits-spacing-md, 12px);
+}
+
+.ubits-drawer__body #filters-container > div:last-child {
+  margin-bottom: 0;
+}
+
+/* ⚠️ CRÍTICO: Asegurar que los inputs NO hereden estilos del drawer navigation */
+.ubits-drawer__body .ubits-input {
+  width: 100%;
+  box-sizing: border-box;
+}
+```
+
+### 🚨 **Reglas Críticas:**
+
+1. **✅ SIEMPRE configurar `filterButton.filters` explícitamente:** NO usar `filterButton: true` solo
+2. **✅ SIEMPRE usar `type: 'calendar'` para fechas:** NO usar `type: 'date'`
+3. **✅ SIEMPRE implementar `onApplyFilters` y `onClearFilters`:** NO dejar como `TODO`
+4. **✅ SIEMPRE dejar que el drawer maneje el spacing:** NO agregar padding/margin manual sin necesidad
+5. **✅ SIEMPRE verificar que los inputs se crean después del drawer:** El DataTable ya lo hace automáticamente (200ms)
+6. **❌ NUNCA usar `filterButton: true` sin configurar `filters`:** Esto crea un filtro de prueba "quemado"
+7. **❌ NUNCA agregar estilos CSS que afecten los inputs del drawer:** A menos que haya conflictos reales
+8. **❌ NUNCA modificar los estilos del drawer navigation:** El drawer ya tiene sus propios estilos
+
+### 🔗 **Referencias:**
+
+- **Guía completa de filtros:** `docs/guias/implementacion/GUIA-FILTROS-DATATABLE-SIN-CONFLICTOS-ESTILOS.md` ⭐ **OBLIGATORIO LEER**
+- **Código fuente del DataTable:** `vendor/ubits/packages/components/data-table/src/DataTableProvider.ts` (líneas 5793-5900)
+- **Tipos de DataTableOptions:** `vendor/ubits/packages/components/data-table/src/types/DataTableOptions.ts` (líneas 397-442)
+
+---
+
+## ⚠️ ERROR CRÍTICO #56: Columnas Fijadas - Headers Pasan Por Encima En Lugar de Por Debajo
+
+### ❌ **ERROR COMÚN:**
+
+**Problema:** Cuando se fija una columna en el DataTable, los otros headers pasan por encima (encima) de la columna fijada en lugar de pasar por debajo, causando que la columna fijada quede oculta.
+
+**Causa Raíz:**
+```css
+/* ❌ INCORRECTO: thead tiene z-index: 10 */
+#encuestas-table-container .ubits-data-table thead {
+    position: sticky;
+    top: 0;
+    z-index: 10; /* ❌ Mismo z-index que headers fijados */
+    background-color: var(--ubits-bg-1);
+}
+
+/* ❌ PROBLEMA: Headers fijados tienen z-index: 10 (igual que thead) */
+.ubits-data-table__column-header--pinned {
+    z-index: 10 !important; /* ❌ Igual que thead, causa conflicto */
+}
+```
+
+**¿Por qué se daña?**
+- El `thead` tiene `z-index: 10`
+- Los headers fijados también tienen `z-index: 10` (o `z-index: 13` según el código)
+- Cuando hay conflicto, los headers no fijados pueden quedar por encima de los fijados
+- El orden de apilamiento (stacking order) no es correcto
+
+### ✅ **SOLUCIÓN CORRECTA:**
+
+**⚠️ CRÍTICO: Headers fijados deben tener z-index mayor que el thead. Usar JavaScript para sobrescribir estilos inline.**
+
+**PASO 1: Agregar estilos CSS base**
+
+```css
+/* ✅ CORRECTO: thead con z-index: 10 */
+#encuestas-table-container .ubits-data-table thead {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: var(--ubits-bg-1);
+}
+
+/* ⚠️ CRÍTICO: Headers NO fijados deben tener z-index menor */
+#encuestas-table-container .ubits-data-table thead th:not(.ubits-data-table__column-header--pinned) {
+    z-index: 1 !important; /* Menor que thead (10) y que headers fijados */
+    position: relative; /* Necesario para que z-index funcione */
+}
+
+/* ⚠️ CRÍTICO: Headers fijados deben tener z-index mayor que el thead */
+#encuestas-table-container .ubits-data-table__column-header--pinned {
+    z-index: 20 !important; /* Mayor que thead (10) y que headers normales (1) */
+    position: sticky !important;
+    background-color: var(--ubits-bg-1) !important;
+}
+
+/* ⚠️ CRÍTICO: Celdas NO fijadas deben tener z-index menor */
+#encuestas-table-container .ubits-data-table tbody td:not(.ubits-data-table__cell--pinned) {
+    z-index: 0 !important; /* Menor que celdas fijadas */
+    position: relative; /* Necesario para que z-index funcione */
+}
+
+/* ⚠️ CRÍTICO: Celdas fijadas deben tener z-index mayor que las celdas normales */
+#encuestas-table-container .ubits-data-table__cell--pinned {
+    z-index: 19 !important; /* Mayor que celdas normales (0), pero menor que headers fijados (20) */
+    position: sticky !important;
+    background-color: var(--ubits-bg-1) !important;
+}
+```
+
+**PASO 2: Agregar función JavaScript para sobrescribir estilos inline**
+
+```javascript
+function fixPinnedColumnsZIndex(container) {
+  // ⚠️ CRÍTICO: Corregir z-index de headers fijados (sobrescribir estilos inline)
+  const pinnedHeaders = container.querySelectorAll('.ubits-data-table__column-header--pinned');
+  pinnedHeaders.forEach((header) => {
+    const headerEl = header;
+    headerEl.style.setProperty('z-index', '20', 'important');
+    headerEl.style.setProperty('position', 'sticky', 'important');
+    headerEl.style.setProperty('background-color', 'var(--ubits-bg-1)', 'important');
+  });
+  
+  // ⚠️ CRÍTICO: Corregir z-index de headers NO fijados
+  const normalHeaders = container.querySelectorAll('thead th:not(.ubits-data-table__column-header--pinned)');
+  normalHeaders.forEach((header) => {
+    const headerEl = header;
+    headerEl.style.setProperty('z-index', '1', 'important');
+  });
+  
+  // ⚠️ CRÍTICO: Corregir z-index de celdas fijadas
+  const pinnedCells = container.querySelectorAll('.ubits-data-table__cell--pinned');
+  pinnedCells.forEach((cell) => {
+    const cellEl = cell;
+    cellEl.style.setProperty('z-index', '19', 'important');
+    cellEl.style.setProperty('position', 'sticky', 'important');
+    cellEl.style.setProperty('background-color', 'var(--ubits-bg-1)', 'important');
+  });
+  
+  // ⚠️ CRÍTICO: Corregir z-index de celdas NO fijadas
+  const normalCells = container.querySelectorAll('tbody td:not(.ubits-data-table__cell--pinned)');
+  normalCells.forEach((cell) => {
+    const cellEl = cell;
+    cellEl.style.setProperty('z-index', '0', 'important');
+  });
+}
+```
+
+**PASO 3: Llamar la función después de crear el DataTable y en callbacks**
+
+```javascript
+// Después de crear el DataTable
+setTimeout(() => {
+  fixPinnedColumnsZIndex(container);
+}, 100);
+
+// Interceptar método update
+const originalUpdate = dataTableInstance.update;
+dataTableInstance.update = function(newOptions) {
+  const result = originalUpdate.call(this, newOptions);
+  setTimeout(() => {
+    fixPinnedColumnsZIndex(container);
+  }, 50);
+  return result;
+};
+
+// Agregar callback onColumnPin
+onColumnPin: (columnId, pinned) => {
+  setTimeout(() => {
+    fixPinnedColumnsZIndex(container);
+  }, 100);
+}
+```
+
+**Jerarquía de z-index correcta:**
+- `headers fijados`: `z-index: 20` (mayor que todo, para quedar por encima)
+- `celdas fijadas`: `z-index: 19` (mayor que celdas normales)
+- `thead`: `z-index: 10` (base)
+- `headers normales`: `z-index: 1` (menor que thead)
+- `celdas normales`: `z-index: 0` (menor que todo)
+
+### 🚨 **Reglas Críticas:**
+
+1. **✅ SIEMPRE usar JavaScript para sobrescribir estilos inline:** Los estilos inline del DataTable tienen mayor especificidad que CSS
+2. **✅ SIEMPRE asegurar que headers fijados tengan z-index mayor que el thead:** `z-index: 20` o mayor
+3. **✅ SIEMPRE asegurar que headers NO fijados tengan z-index menor:** `z-index: 1` (menor que thead)
+4. **✅ SIEMPRE asegurar que celdas fijadas tengan z-index mayor que celdas normales:** `z-index: 19` o mayor
+5. **✅ SIEMPRE asegurar que celdas NO fijadas tengan z-index menor:** `z-index: 0`
+6. **✅ SIEMPRE usar `setProperty` con `'important'` en JavaScript:** Para sobrescribir estilos inline
+7. **✅ SIEMPRE llamar `fixPinnedColumnsZIndex` después de crear el DataTable:** En `setTimeout` de 100ms
+8. **✅ SIEMPRE interceptar método `update` del DataTable:** Para corregir z-index después de cada actualización
+9. **✅ SIEMPRE agregar callback `onColumnPin`:** Para corregir z-index cuando se fija/desfija una columna
+10. **✅ SIEMPRE mantener la jerarquía:** Headers fijados (20) > Celdas fijadas (19) > Thead (10) > Headers normales (1) > Celdas normales (0)
+11. **❌ NUNCA usar solo CSS sin JavaScript:** Los estilos inline del DataTable sobrescriben el CSS
+12. **❌ NUNCA usar el mismo z-index para thead y headers fijados:** Causa conflictos de apilamiento
+13. **❌ NUNCA omitir el z-index en columnas fijadas:** Deben tener z-index explícito
+
+### 🔗 **Referencias:**
+
+- **Estilos del DataTable:** `vendor/ubits/packages/components/data-table/src/styles/data-table.css` (líneas 1470-1553)
+- **Código de renderizado:** `vendor/ubits/packages/components/data-table/src/DataTableProvider.ts` (líneas 674-875)
+
+---
+
+**Última actualización:** Enero 2025  
+**Versión:** 2.7.0
 

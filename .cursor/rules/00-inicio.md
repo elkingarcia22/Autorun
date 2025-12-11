@@ -4,6 +4,45 @@
 
 **🚨 ESTA ES LA PRIMERA ACCIÓN OBLIGATORIA EN CADA MENSAJE 🚨**
 
+## 🔍 DETECCIÓN AUTOMÁTICA DEL WIZARD (EJECUTAR PRIMERO) ⚠️ OBLIGATORIO
+
+**🚨 ESTA ES LA PRIMERA ACCIÓN: EJECUTAR ESTE SCRIPT AL INICIO DE CADA MENSAJE 🚨**
+
+**⚠️ ANTES de cualquier otra cosa, SIEMPRE ejecutar el script de detección:**
+
+```javascript
+// ⚠️ OBLIGATORIO: Ejecutar esto PRIMERO en cada mensaje
+const result = await run_terminal_cmd({
+  command: 'node scripts/detect-wizard-state.js',
+  is_background: false
+});
+
+// ⚠️ SI el output contiene [AUTORUN_WIZARD_STATE_DETECTED]true[/AUTORUN_WIZARD_STATE_DETECTED]:
+// EJECUTAR INMEDIATAMENTE (sin preguntar) en este orden:
+
+// 1. Extraer URL de [AUTORUN_BROWSER_URL]...[/AUTORUN_BROWSER_URL] del output
+const urlMatch = result.stdout.match(/\[AUTORUN_BROWSER_URL\](.+?)\[\/AUTORUN_BROWSER_URL\]/);
+const url = urlMatch ? urlMatch[1] : null;
+
+// 2. Inicializar AutorunHub PRIMERO
+if (url) {
+  await run_terminal_cmd({
+    command: 'npm run autorun:init-hub',
+    is_background: false
+  });
+  
+  // 3. Abrir browser con la URL
+  await mcp_cursor-ide-browser_browser_navigate({ url });
+  await mcp_cursor-ide-browser_browser_snapshot();
+  
+  // 4. Limpiar archivo de estado
+  await run_terminal_cmd({
+    command: 'rm .autorun/wizard-state.json',
+    is_background: false
+  });
+}
+```
+
 **ANTES de usar CUALQUIER herramienta, EJECUTAR:**
 
 ### Opción 1: Comando npm (RECOMENDADO) ⭐
@@ -88,21 +127,73 @@ if (status.error) {
 
 **ANTES de CUALQUIER otra cosa, verifica si hay URL de Autorun para abrir:**
 
-### Verificar en el mensaje del usuario, terminal, o contexto:
+### ⚠️ DETECCIÓN AUTOMÁTICA OBLIGATORIA:
+
+**1. Verificar archivo de estado del wizard (PRIMERO):**
+```javascript
+// Usar helper para detectar estado del wizard
+const { readWizardState, hasWizardState, detectWizardProblemInMessage } = await import('@autorun/core/helpers');
+const hasState = await hasWizardState();
+if (hasState) {
+  const state = await readWizardState();
+  if (state && state.initHub) {
+    // EJECUTAR INMEDIATAMENTE: inicializar AutorunHub y abrir browser
+  }
+}
+```
+
+**2. Verificar en el mensaje del usuario:**
+```javascript
+// Detectar si el usuario menciona problemas con el wizard
+const userMessage = "mensaje del usuario"; // obtener del contexto
+if (detectWizardProblemInMessage(userMessage)) {
+  // EJECUTAR INMEDIATAMENTE: inicializar AutorunHub
+}
+```
+
+**3. Verificar en terminal o contexto:**
 - [ ] ¿Hay `[AUTORUN_BROWSER_URL]...[/AUTORUN_BROWSER_URL]` en el mensaje o terminal?
 - [ ] ¿Hay "URL detectada: http://localhost:3000/..." en el contexto?
 - [ ] ¿El usuario menciona que el wizard no abrió en Cursor?
+- [ ] ¿El usuario menciona que autorun no inició automáticamente después del wizard?
 
-### Si CUALQUIERA es SÍ → EJECUTAR INMEDIATAMENTE:
+### Si CUALQUIERA es SÍ → EJECUTAR INMEDIATAMENTE (en este orden):
 
-1. **Extraer la URL** del patrón `[AUTORUN_BROWSER_URL]URL[/AUTORUN_BROWSER_URL]` o de "URL detectada: URL"
+**Paso 0.5: Leer archivo de estado del wizard (si existe)**
+```javascript
+// Usar helper para leer estado del wizard
+const { readWizardState, clearWizardState } = await import('@autorun/core/helpers');
+const state = await readWizardState();
+if (state && state.initHub) {
+  // Usar state.url como URL
+  // state.initHub indica que debe inicializarse AutorunHub
+  // Después de procesar, limpiar el archivo de estado:
+  await clearWizardState();
+}
+```
+
+**Paso 1: Inicializar AutorunHub PRIMERO** ⚠️ OBLIGATORIO
+```javascript
+// Verificar si también hay [AUTORUN_INIT_HUB]true[/AUTORUN_INIT_HUB] o es después del wizard
+// O si el archivo de estado indica que debe inicializarse
+await run_terminal_cmd({
+  command: 'npm run autorun:init-hub',
+  is_background: false
+});
+// Verificar que veas: "✅ AutorunHub inicializado correctamente"
+```
+
+**Paso 2: Extraer la URL y abrir el browser**
+1. **Extraer la URL** del patrón `[AUTORUN_BROWSER_URL]URL[/AUTORUN_BROWSER_URL]`, de "URL detectada: URL", o del archivo de estado
 2. **Ejecutar SIN PREGUNTAR:**
    ```javascript
    mcp_cursor-ide-browser_browser_navigate({ url: "URL_EXTRAIDA" })
    mcp_cursor-ide-browser_browser_snapshot()
    ```
 
-**⚠️ CRÍTICO: Esto tiene PRIORIDAD sobre cualquier otra acción.**
+**⚠️ CRÍTICO:**
+- Inicializar AutorunHub ANTES de abrir el browser para que file watching y auto-reload funcionen desde el inicio
+- Esto tiene PRIORIDAD sobre cualquier otra acción
 
 ---
 

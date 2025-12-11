@@ -153,3 +153,7 @@ Antes de analizar una imagen con tabs:
 
 
 
+
+
+
+

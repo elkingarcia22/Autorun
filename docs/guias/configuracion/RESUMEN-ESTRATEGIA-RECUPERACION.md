@@ -135,3 +135,7 @@ Después de seguir estos pasos:
 - ✅ Todo cargando desde Vercel (incluyendo DataTable)
 - ✅ Sin dependencias locales (excepto templates HTML)
 - ✅ Flujo normal restaurado
+
+
+
+

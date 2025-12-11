@@ -8,7 +8,46 @@
 
 **🚨 ESTA ES LA PRIMERA ACCIÓN OBLIGATORIA EN CADA SESIÓN 🚨**
 
-### Comando Obligatorio:
+## 🔍 DETECCIÓN AUTOMÁTICA DEL WIZARD (EJECUTAR PRIMERO) ⚠️ OBLIGATORIO
+
+**🚨 ESTA ES LA PRIMERA ACCIÓN: EJECUTAR ESTE SCRIPT AL INICIO DE CADA MENSAJE 🚨**
+
+**⚠️ ANTES de cualquier otra cosa, SIEMPRE ejecutar el script de detección:**
+
+```javascript
+// ⚠️ OBLIGATORIO: Ejecutar esto PRIMERO en cada mensaje
+const result = await run_terminal_cmd({
+  command: 'node scripts/detect-wizard-state.js',
+  is_background: false
+});
+
+// ⚠️ SI el output contiene [AUTORUN_WIZARD_STATE_DETECTED]true[/AUTORUN_WIZARD_STATE_DETECTED]:
+// EJECUTAR INMEDIATAMENTE (sin preguntar) en este orden:
+
+// 1. Extraer URL de [AUTORUN_BROWSER_URL]...[/AUTORUN_BROWSER_URL] del output
+const urlMatch = result.stdout.match(/\[AUTORUN_BROWSER_URL\](.+?)\[\/AUTORUN_BROWSER_URL\]/);
+const url = urlMatch ? urlMatch[1] : null;
+
+// 2. Inicializar AutorunHub PRIMERO
+if (url) {
+  await run_terminal_cmd({
+    command: 'npm run autorun:init-hub',
+    is_background: false
+  });
+  
+  // 3. Abrir browser con la URL
+  await mcp_cursor-ide-browser_browser_navigate({ url });
+  await mcp_cursor-ide-browser_browser_snapshot();
+  
+  // 4. Limpiar archivo de estado
+  await run_terminal_cmd({
+    command: 'rm .autorun/wizard-state.json',
+    is_background: false
+  });
+}
+```
+
+### Comando Obligatorio (si no hay archivo de estado):
 ```bash
 npm run autorun:init-hub
 ```
@@ -49,17 +88,105 @@ await run_terminal_cmd({
 
 ---
 
-## 🚨🚨🚨 BLOQUEO TÉCNICO - VERIFICACIÓN OBLIGATORIA ANTES DE ESCRIBIR 🚨🚨🚨
+## 🚨🚨🚨 BLOQUEO TÉCNICO - FLUJO AUTOMÁTICO DE IMPLEMENTACIÓN 🚨🚨🚨
 
 **⚠️ CRÍTICO: ANTES de usar `write()` o `search_replace()` para implementar un componente UBITS, DEBES:**
 
-### Verificar Checklist Obligatorio:
+### ⚠️ OBLIGATORIO: Usar Interceptores Automáticos
+
+**ANTES de usar `write()` o `search_replace()`, SIEMPRE ejecutar:**
+
 ```typescript
-import { ensureImplementationReady } from '@autorun/core/helpers/implementationHelpers';
-const componentName = 'DataTable'; // o el componente que vayas a implementar
-await ensureImplementationReady(componentName);
-// ⚠️ SI ESTA FUNCIÓN LANZA ERROR: NO puedes usar write() o search_replace() hasta completar los pasos faltantes
+// 1. Importar los interceptores
+import { interceptedWrite, interceptedSearchReplace } from '@autorun/core/interceptors/toolInterceptors';
+
+// 2. Usar interceptedWrite() en lugar de write()
+try {
+  await interceptedWrite(
+    filePath,
+    content,
+    {
+      componentName: 'Tabs', // si lo conoces
+      userMessage: userMessage // mensaje del usuario si está disponible
+    }
+  );
+  // Si no lanza error, proceder con write() normalmente
+  // await write(filePath, content);
+} catch (error) {
+  // ❌ NO usar write() - está bloqueado
+  // El interceptor ya navegó a Storybook y mostró el plan
+  throw error;
+}
+
+// O para search_replace():
+try {
+  await interceptedSearchReplace(
+    filePath,
+    oldString,
+    newString,
+    {
+      componentName: 'Tabs',
+      userMessage: userMessage
+    }
+  );
+  // Si no lanza error, proceder con search_replace() normalmente
+  // await search_replace(filePath, oldString, newString);
+} catch (error) {
+  // ❌ NO usar search_replace() - está bloqueado
+  throw error;
+}
+
+// 3. Verificar si se puede escribir
+if (!flow.canWrite) {
+  // ❌ NO usar write() o search_replace()
+  // 📚 Navegar automáticamente a Storybook
+  if (flow.storybookUrl) {
+    // Guardar URL actual del template
+    const currentSnapshot = await mcp_cursor-ide-browser_browser_snapshot();
+    const templateUrl = currentSnapshot?.url;
+    
+    // Navegar a Storybook
+    await mcp_cursor-ide-browser_browser_navigate({ url: flow.storybookUrl });
+    await mcp_cursor-ide-browser_browser_snapshot();
+    
+    // ⚠️ CRÍTICO: Volver automáticamente al template después de consultar
+    if (templateUrl) {
+      // Esperar un momento para que el usuario vea Storybook
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      await mcp_cursor-ide-browser_browser_navigate({ url: templateUrl });
+      await mcp_cursor-ide-browser_browser_snapshot();
+    }
+  }
+  
+  // 📋 Mostrar plan si está disponible
+  if (flow.plan) {
+    console.log('📋 Plan de implementación:', flow.plan);
+  }
+  
+  // ❌ LANZAR ERROR para bloquear la escritura
+  throw new Error(`❌ IMPLEMENTACIÓN BLOQUEADA: ${flow.reason}`);
+}
+
+// 4. Si flow.canWrite === true, usar write() o search_replace() normalmente
+// 5. Después de escribir, si flow.autoReload === true, recargar automáticamente
+if (flow.autoReload) {
+  const snapshot = await mcp_cursor-ide-browser_browser_snapshot();
+  const currentUrl = snapshot?.url || getTemplateUrlFromPath(filePath);
+  await mcp_cursor-ide-browser_browser_navigate({ url: currentUrl });
+  setTimeout(async () => {
+    await mcp_cursor-ide-browser_browser_snapshot();
+  }, 1000);
+}
 ```
+
+**⚠️ REGLAS CRÍTICAS:**
+- ❌ **NUNCA usar write() o search_replace() sin ejecutar interceptedWrite() o interceptedSearchReplace() primero**
+- ✅ **SIEMPRE navegar a Storybook automáticamente si está bloqueado**
+- ✅ **SIEMPRE volver al template después de consultar Storybook**
+- ✅ **SIEMPRE recargar automáticamente después de escribir si autoReload está activo**
+- ✅ **SIEMPRE interceptar mensajes [AUTORUN_AUTO_RELOAD] y recargar automáticamente**
+- ✅ **SIEMPRE interceptar mensajes [AUTORUN_STORYBOOK_MCP] y consultar Storybook MCP**
+- ❌ **NO preguntar al usuario** - ejecutar automáticamente
 
 ### Verificar Antes de Escribir:
 ```typescript
@@ -119,24 +246,40 @@ if (!validation.valid) {
 
 ### ⚠️ REGLA CRÍTICA: SIEMPRE USAR MCPs DISPONIBLES Y VERIFICAR STORYBOOK EN VERCEL
 
+**ANTES de buscar cualquier componente en Storybook, DEBES:**
+
+1. **⚠️ CRÍTICO: Consultar catálogo PRIMERO:** ⚠️ OBLIGATORIO
+   - ✅ **Leer:** `docs/referencia/CATALOGO-COMPONENTES-UBITS.md`
+   - ✅ **Buscar componente por nombre o descripción**
+   - ✅ **Obtener ID de Storybook sugerido**
+
+2. **⚠️ CRÍTICO: Usar descubrimiento automático:** ⚠️ OBLIGATORIO
+   - ✅ **Usar:** `getCorrectStorybookId()` o `mapAndValidateComponentNameToStorybookId()`
+   - ✅ **Validar que el ID existe antes de usarlo**
+   - ✅ **Construir URL con ID descubierto (NO hardcodeada)**
+   - ❌ **NUNCA buscar directamente en Storybook sin descubrimiento automático**
+
 **ANTES de implementar cualquier componente UBITS, DEBES:**
 
 1. **⚠️ CRÍTICO: Consultar Storybook en Vercel (versión más reciente):** ⚠️ PRIMERO
    - ✅ **URL PRINCIPAL:** `https://ubits-storybook10.vercel.app/` - ⚠️ **SIEMPRE apunta al deployment más reciente**
+   - ✅ **Construir URL con ID descubierto:** `?path=/story/${componentId}--default`
    - ✅ **Guardar URL del template ANTES de navegar** (para volver después)
    - ✅ **Revisar pestaña "Code" y "Controls"**
    - ✅ **⚠️ OBLIGATORIO: Volver automáticamente al template DESPUÉS de consultar**
 
-2. **Consultar Storybook MCP:**
+2. **Consultar Storybook MCP (con ID descubierto):**
    - ✅ Usar `mcp_storybook_getComponentList` para listar componentes
-   - ✅ Usar `mcp_storybook_getComponentsProps` para obtener props exactas
+   - ✅ Usar `mcp_storybook_getComponentsProps` con ID descubierto para obtener props exactas
 
 3. **Usar información exacta:**
    - ✅ Implementar con props exactas obtenidas del Storybook en Vercel
    - ✅ Usar tokens exactos obtenidos del Storybook
    - ✅ Seguir estructura exacta del componente
 
-**Ver guía completa:** `docs/guias/implementacion/GUIA-USO-MCP-EN-IMPLEMENTACION.md` - ⚠️ **OBLIGATORIO**
+**Ver guías completas:**
+- `docs/guias/implementacion/GUIA-USO-MCP-EN-IMPLEMENTACION.md` - ⚠️ **OBLIGATORIO**
+- `docs/guias/implementacion/GUIA-BUSQUEDA-COMPONENTES-STORYBOOK-CORRECTA.md` - ⚠️ **OBLIGATORIO**
 
 ### MCPs Disponibles:
 - **Storybook MCP** ⭐ - Consultar componentes UBITS (props, tokens, estructura)
@@ -146,6 +289,52 @@ if (!validation.valid) {
 - **Vercel MCP** - Consultar deployments y proyectos
 
 **NO implementar componentes sin consultar MCPs primero.**
+
+---
+
+## ⚠️⚠️⚠️ REGLA CRÍTICA: LECTURA AUTOMÁTICA DE GUIAS ⚠️⚠️⚠️
+
+**✅ SISTEMA IMPLEMENTADO Y FUNCIONANDO AUTOMÁTICAMENTE**
+
+**El sistema carga automáticamente las guías necesarias antes de permitir cualquier implementación.**
+
+### **Guías que se Cargarán Automáticamente:**
+
+**Guías Generales (SIEMPRE):**
+- ✅ `docs/guias/FLUJO-COMPLETO-ANALISIS-PLAN-IMPLEMENTACION.md`
+- ✅ `docs/guias/implementacion/ESTRATEGIA-IMPLEMENTACION-SIN-ERRORES.md`
+- ✅ `docs/guias/implementacion/CHECKLIST-ANTES-IMPLEMENTAR-COMPONENTE.md`
+- ✅ `docs/guias/implementacion/GUIA-USO-MCP-EN-IMPLEMENTACION.md`
+- ✅ `docs/guias/referencia/GUIA-ERRORES-COMUNES-UBITS.md`
+
+**Guías Específicas (por componente):**
+- ✅ Se cargan automáticamente según el componente detectado
+
+### **Cómo Funciona:**
+
+1. **Detección automática:** El sistema detecta cuando se va a implementar un componente
+2. **Carga automática:** Carga todas las guías necesarias (generales + específicas)
+3. **Verificación:** Verifica que se cargaron correctamente
+4. **Bloqueo:** Bloquea la implementación si las guías obligatorias no se pudieron cargar
+
+### **Flujo Obligatorio (se verifica automáticamente):**
+```
+🔍 ANÁLISIS → 📋 PLAN → ✅ CHECKLIST → 🛠️ IMPLEMENTACIÓN
+```
+
+### **Consultar Storybook (OBLIGATORIO):**
+- ✅ Storybook en Vercel PRIMERO: `https://ubits-storybook10.vercel.app/`
+- ✅ Storybook MCP: `mcp_storybook_getComponentsProps(['component-id'])`
+- ✅ **Usar descubrimiento automático de IDs:** `mapAndValidateComponentNameToStorybookId()` (descubre automáticamente el ID correcto)
+
+### **Sistema de Descubrimiento Automático de IDs:**
+- ✅ **SIEMPRE usar:** `await mapAndValidateComponentNameToStorybookId(componentName)` en lugar de mapeo directo
+- ✅ **Verificar IDs:** El sistema descubre automáticamente los IDs correctos desde Storybook
+- ✅ **Generar inventario:** `npm run generate-storybook-inventory` para ver todos los componentes disponibles
+
+**Ver:** 
+- `docs/guias/implementacion/GUIA-SISTEMA-LECTURA-AUTOMATICA-IMPLEMENTADO.md` - ⚠️ **OBLIGATORIO**
+- `docs/guias/implementacion/GUIA-ERROR-IDS-STORYBOOK-INEXISTENTES.md` - ⚠️ **OBLIGATORIO** (previene errores de IDs inexistentes)
 
 ---
 
@@ -195,17 +384,79 @@ if (!validation.valid) {
 
 ## 🔌 Auto-Apertura y Recarga en Browser MCP de Cursor ⚠️ OBLIGATORIO
 
-### **1. Auto-Apertura de URLs del Wizard**
-**Cuando veas:** `[AUTORUN_BROWSER_URL]http://localhost:3000/...[/AUTORUN_BROWSER_URL]`
-**DEBES ejecutar automáticamente (SIN preguntar):**
+### **1. Auto-Apertura de URLs del Wizard + Inicialización de AutorunHub** ⚠️ OBLIGATORIO
+
+**Detección automática - verificar en este orden:**
+1. **Archivo de estado del wizard:** ¿Existe `.autorun/wizard-state.json`? (leer y usar)
+2. **Mensajes en terminal:** ¿Hay `[AUTORUN_BROWSER_URL]...[/AUTORUN_BROWSER_URL]`?
+3. **Mensaje del usuario:** ¿Menciona que el wizard no inició automáticamente o que autorun no funciona?
+
+**Si CUALQUIERA es SÍ → EJECUTAR automáticamente (SIN preguntar) en este orden:**
+
+**Paso 0.5: Leer archivo de estado (si existe)**
 ```javascript
+// Leer .autorun/wizard-state.json si existe
+const fs = await import('fs/promises');
+const path = await import('path');
+try {
+  const statePath = path.join(process.cwd(), '.autorun', 'wizard-state.json');
+  const stateContent = await fs.readFile(statePath, 'utf-8');
+  const state = JSON.parse(stateContent);
+  // Usar state.url y state.initHub
+} catch (error) {
+  // Continuar con otros métodos de detección
+}
+```
+
+**Paso 1: Inicializar AutorunHub PRIMERO** ⚠️ OBLIGATORIO
+```javascript
+// Si también ves [AUTORUN_INIT_HUB]true[/AUTORUN_INIT_HUB] o es la primera vez después del wizard
+// O si el archivo de estado indica que debe inicializarse
+await run_terminal_cmd({
+  command: 'npm run autorun:init-hub',
+  is_background: false
+});
+// Verificar que veas: "✅ AutorunHub inicializado correctamente"
+```
+
+**Paso 2: Abrir el browser**
+```javascript
+// Extraer URL de: archivo de estado, [AUTORUN_BROWSER_URL], o "URL detectada:"
 mcp_cursor-ide-browser_browser_navigate({ url: "URL_EXTRAIDA" })
 mcp_cursor-ide-browser_browser_snapshot()
 ```
 
+**⚠️ IMPORTANTE:** Siempre inicializar AutorunHub ANTES de abrir el browser para que file watching y auto-reload funcionen desde el inicio.
+
 ### **2. Auto-Recarga de Página cuando hay Cambios**
+
+**⚠️ OBLIGATORIO: Interceptar mensajes [AUTORUN_AUTO_RELOAD] automáticamente**
+
+**CUANDO VEAS EN LOS LOGS:**
+```
+[AUTORUN_AUTO_RELOAD]/path/to/file[/AUTORUN_AUTO_RELOAD]
+```
+
+**DEBES ejecutar automáticamente (SIN preguntar):**
+```javascript
+// 1. Extraer ruta del archivo del mensaje
+const filePath = '/path/to/file'; // extraer del mensaje
+
+// 2. Obtener URL actual del navegador
+const snapshot = await mcp_cursor-ide-browser_browser_snapshot();
+const currentUrl = snapshot?.url || `http://localhost:3000/${path.basename(filePath)}`;
+
+// 3. Recargar automáticamente
+await mcp_cursor-ide-browser_browser_navigate({ url: currentUrl });
+
+// 4. Esperar y verificar
+setTimeout(async () => {
+  await mcp_cursor-ide-browser_browser_snapshot();
+}, 1000);
+```
+
 **CUANDO USES `write()` o `search_replace()` EN ARCHIVOS DE `prototypes/`:**
-**DEBES recargar automáticamente la página (SIN preguntar):**
+**El flujo automático ya maneja esto, pero si no usas el flujo, DEBES recargar manualmente:**
 ```javascript
 const snapshot = await mcp_cursor-ide-browser_browser_snapshot();
 const currentUrl = snapshot?.url || `http://localhost:3000/${path.basename(filePath)}`;

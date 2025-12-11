@@ -1,6 +1,6 @@
 /**
  * Implementation Dashboard
- * 
+ *
  * Dashboard visual de progreso para implementación por historias
  */
 
@@ -44,14 +44,17 @@ export class ImplementationDashboard {
 			checklistCompleted?: number;
 			checklistTotal?: number;
 			errors?: string[];
-		}
+		},
 	): Promise<void> {
 		if (!this.progress) {
 			throw new Error('Dashboard no iniciado. Llama a start() primero.');
 		}
 
 		// Guardar snapshot antes de actualizar (si está empezando)
-		if (updates.status === 'in-progress' && !this.progress.stories.find(s => s.storyId === storyId)) {
+		if (
+			updates.status === 'in-progress' &&
+			!this.progress.stories.find((s) => s.storyId === storyId)
+		) {
 			const snapshotPath = await saveStateSnapshot(this.filePath, storyId);
 			if (snapshotPath) {
 				this.progress.stateSnapshot = snapshotPath;
@@ -78,37 +81,44 @@ export class ImplementationDashboard {
 		}
 
 		const dashboard = generateProgressDashboard(this.progress);
-		
+
 		if (!dashboard.canRollback || !dashboard.lastSuccessfulStory) {
 			console.error('❌ No se puede hacer rollback: No hay historias exitosas anteriores');
 			return false;
 		}
 
-		const lastStory = this.progress.stories.find(s => s.storyId === dashboard.lastSuccessfulStory);
+		const lastStory = this.progress.stories.find(
+			(s) => s.storyId === dashboard.lastSuccessfulStory,
+		);
 		if (!lastStory) {
 			console.error('❌ No se puede hacer rollback: Historia exitosa no encontrada');
 			return false;
 		}
 
 		// Buscar snapshot de la última historia exitosa
-		const snapshotPath = this.filePath.replace(/\.html$/, `.snapshot.${dashboard.lastSuccessfulStory}.html`);
-		
+		const snapshotPath = this.filePath.replace(
+			/\.html$/,
+			`.snapshot.${dashboard.lastSuccessfulStory}.html`,
+		);
+
 		console.log(`\n🔄 Haciendo rollback a: ${lastStory.storyName}`);
 		const restored = await restoreStateSnapshot(this.filePath, snapshotPath);
-		
+
 		if (restored) {
 			// Actualizar progreso para marcar historias después como pendientes
-			const lastStoryIndex = this.progress.stories.findIndex(s => s.storyId === dashboard.lastSuccessfulStory);
+			const lastStoryIndex = this.progress.stories.findIndex(
+				(s) => s.storyId === dashboard.lastSuccessfulStory,
+			);
 			if (lastStoryIndex >= 0) {
 				for (let i = lastStoryIndex + 1; i < this.progress.stories.length; i++) {
 					this.progress.stories[i].status = 'pending';
 					this.progress.stories[i].checklistCompleted = 0;
 				}
 			}
-			
+
 			this.progress.completedStories = lastStoryIndex + 1;
 			this.progress.currentStoryIndex = lastStoryIndex + 1;
-			
+
 			console.log(`✅ Rollback completado. Continuando desde: ${lastStory.storyName}`);
 			return true;
 		}
@@ -142,10 +152,15 @@ export class ImplementationDashboard {
 			const summary = generateProgressSummary(dashboard);
 			console.log(`\n${summary}`);
 			console.log(`\n✅ Implementación completada: ${this.progress.componentName}`);
-			console.log(`   Historias completadas: ${this.progress.completedStories}/${this.progress.totalStories}`);
-			
+			console.log(
+				`   Historias completadas: ${this.progress.completedStories}/${this.progress.totalStories}`,
+			);
+
 			// Limpiar snapshots antiguos
 			await this.cleanup();
 		}
 	}
 }
+
+
+

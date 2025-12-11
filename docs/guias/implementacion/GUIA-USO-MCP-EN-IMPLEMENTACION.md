@@ -8,11 +8,21 @@
 
 **ANTES de implementar cualquier componente, SIEMPRE:**
 
-1. **Consultar Storybook en Vercel (versión más reciente):**
+1. **Consultar catálogo PRIMERO:**
+   - Leer: `docs/referencia/CATALOGO-COMPONENTES-UBITS.md`
+   - Buscar el componente por nombre o descripción
+
+2. **Usar descubrimiento automático:**
+   - Usar `getCorrectStorybookId()` o `mapAndValidateComponentNameToStorybookId()`
+   - Obtener ID correcto validado
+
+3. **Consultar Storybook en Vercel (versión más reciente):**
    - URL: `https://ubits-storybook10.vercel.app/`
-   - Buscar el componente específico (ej: `data-data-table`)
+   - Construir URL con ID descubierto: `?path=/story/${componentId}--default`
    - Revisar la pestaña "Code" para ver el código actualizado
    - Revisar la pestaña "Controls" para ver todas las opciones disponibles
+
+**⚠️ CRÍTICO: NO buscar directamente en Storybook sin usar descubrimiento automático**
 
 2. **Comparar con el código local:**
    - Verificar que los tipos de columnas coincidan
@@ -89,9 +99,43 @@
 
 ## 📋 PROCESO OBLIGATORIO: Implementar Componente UBITS
 
-### **PASO 1: CONSULTAR COMPONENTE EN STORYBOOK MCP** ⚠️ OBLIGATORIO
+### **PASO 1: CONSULTAR CATÁLOGO PRIMERO** ⚠️ OBLIGATORIO
 
-**ANTES de implementar cualquier componente UBITS, DEBES:**
+**ANTES de buscar en Storybook, SIEMPRE:**
+
+1. **Consultar el catálogo de componentes:**
+   ```
+   Leer: docs/referencia/CATALOGO-COMPONENTES-UBITS.md
+   ```
+   - Buscar el componente por nombre o descripción visual
+   - Verificar si existe antes de buscar
+   - Obtener ID de Storybook sugerido
+
+2. **Usar sistema de descubrimiento automático:**
+   ```typescript
+   // ✅ CORRECTO - Usar descubrimiento automático
+   import { getCorrectStorybookId } from '@autorun/core/helpers/storybookIdDiscovery';
+   
+   const { componentId, found, title, availableStories } = 
+     await getCorrectStorybookId('ComponentName', 'fallback-id');
+   
+   if (found) {
+     // Usar componentId para construir URL
+   }
+   ```
+
+3. **Validar ID antes de usar:**
+   ```typescript
+   // ✅ CORRECTO - Validar ID automáticamente
+   import { mapAndValidateComponentNameToStorybookId } from '@autorun/core/helpers/storybookStories';
+   
+   const componentId = await mapAndValidateComponentNameToStorybookId('ComponentName');
+   // Automáticamente descubre y valida el ID correcto
+   ```
+
+### **PASO 2: CONSULTAR COMPONENTE EN STORYBOOK MCP** ⚠️ OBLIGATORIO
+
+**DESPUÉS de consultar el catálogo y descubrir el ID, DEBES:**
 
 1. **Listar componentes disponibles:**
    ```
@@ -100,24 +144,25 @@
    - Verificar que el componente existe
    - Verificar el nombre exacto del componente
 
-2. **Obtener props detallados:**
+2. **Obtener props detallados (usando ID descubierto):**
    ```
-   Usar: mcp_storybook_getComponentsProps con el nombre del componente
+   Usar: mcp_storybook_getComponentsProps con el ID descubierto
    ```
    - Obtener todas las props disponibles
    - Verificar tipos de datos
    - Verificar valores por defecto
    - Verificar props requeridas vs opcionales
 
-3. **Consultar Storybook directamente (si MCP no tiene toda la info):**
-   - Abrir Storybook en navegador: `http://localhost:6006`
-   - Buscar el componente
+3. **Consultar Storybook directamente (usando ID descubierto):**
+   - Construir URL con ID descubierto: `https://ubits-storybook10.vercel.app/?path=/story/${componentId}--default`
    - Revisar:
      - **Controls:** Todas las opciones configurables
      - **Tokens:** Tokens de diseño usados
      - **Variantes:** Todas las variantes disponibles
      - **Ejemplos:** Ejemplos de código
      - **Estructura:** Estructura HTML/CSS
+
+**⚠️ CRÍTICO: NO buscar directamente en Storybook sin usar descubrimiento automático**
 
 ---
 
@@ -301,6 +346,34 @@
 
 ## ✅ CHECKLIST OBLIGATORIO
 
+**Antes de buscar cualquier componente en Storybook:**
+
+- [ ] ✅ Consulté `docs/referencia/CATALOGO-COMPONENTES-UBITS.md` primero
+- [ ] ✅ Usé `getCorrectStorybookId()` o `mapAndValidateComponentNameToStorybookId()` para descubrir el ID
+- [ ] ✅ Validé que el ID existe antes de usarlo
+- [ ] ✅ Construí la URL con el ID descubierto (no hardcodeada)
+- [ ] ✅ Verifiqué que la historia existe (si es específica)
+- [ ] ❌ NO busqué directamente en Storybook sin descubrimiento automático
+- [ ] ❌ NO inventé IDs
+- [ ] ❌ NO usé URLs hardcodeadas
+
+**Antes de implementar cualquier componente UBITS:**
+
+- [ ] ✅ Consulté el catálogo de componentes
+- [ ] ✅ Usé descubrimiento automático para obtener ID correcto
+- [ ] ✅ Consulté Storybook MCP con el ID descubierto
+- [ ] ✅ Obtuve props detallados del componente
+- [ ] ✅ Consulté Storybook en Vercel con URL construida con ID descubierto
+- [ ] ✅ Revisé la pestaña "Code" para ver código actualizado
+- [ ] ✅ Revisé la pestaña "Controls" para ver todas las opciones
+- [ ] ✅ Verifiqué tokens de diseño usados
+- [ ] ✅ Verifiqué variantes disponibles
+- [ ] ✅ Implementé con información exacta del Storybook
+
+---
+
+## ✅ CHECKLIST OBLIGATORIO (Versión Anterior)
+
 **ANTES de implementar cualquier componente UBITS:**
 
 - [ ] **Consultar Storybook MCP:**
@@ -387,15 +460,57 @@ margin-top: var(--ubits-spacing-lg); /* ✅ Token exacto del Storybook */
 
 ---
 
+## 🔍 SISTEMA DE DESCUBRIMIENTO AUTOMÁTICO DE COMPONENTES
+
+### **⚠️ CRÍTICO: SIEMPRE usar descubrimiento automático antes de buscar en Storybook**
+
+**El sistema de descubrimiento automático:**
+- ✅ Consulta `index.json` de Storybook para obtener todos los componentes
+- ✅ Descubre automáticamente los IDs correctos
+- ✅ Busca por nombre, ID, o título
+- ✅ Valida que el ID existe antes de retornarlo
+
+### **Cómo usar:**
+
+```typescript
+// ✅ CORRECTO - Descubrimiento automático
+import { getCorrectStorybookId } from '@autorun/core/helpers/storybookIdDiscovery';
+
+const { componentId, found, title, availableStories } = 
+  await getCorrectStorybookId('DataTable', 'components-datatable');
+
+if (found) {
+  // Usar componentId para construir URL
+  const url = `https://ubits-storybook10.vercel.app/?path=/story/${componentId}--default`;
+}
+```
+
+### **O usar validación automática:**
+
+```typescript
+// ✅ CORRECTO - Validación automática
+import { mapAndValidateComponentNameToStorybookId } from '@autorun/core/helpers/storybookStories';
+
+const componentId = await mapAndValidateComponentNameToStorybookId('DataTable');
+// Automáticamente descubre y valida el ID correcto
+```
+
+**⚠️ CRÍTICO: NO buscar directamente en Storybook sin usar descubrimiento automático**
+
+**Ver guía completa:** `docs/guias/implementacion/GUIA-BUSQUEDA-COMPONENTES-STORYBOOK-CORRECTA.md`
+
+---
+
 ## 📚 Referencias
 
 - **Storybook MCP:** `docs/guias/configuracion/GUIA-CONFIGURACION-STORYBOOK-MCP.md`
 - **MCPs disponibles:** `docs/guias/configuracion/GUIA-INSTALACION-MCP-ADDONS.md`
-- **Catálogo componentes:** `CATALOGO-COMPONENTES-UBITS.md`
+- **Catálogo componentes:** `docs/referencia/CATALOGO-COMPONENTES-UBITS.md`
+- **Búsqueda correcta:** `docs/guias/implementacion/GUIA-BUSQUEDA-COMPONENTES-STORYBOOK-CORRECTA.md`
 - **Uso componentes:** `docs/guias/referencia/GUIA-USO-COMPONENTES-UBITS.md`
 
 ---
 
-**Última actualización:** Diciembre 2024  
-**Versión:** 1.0.0
+**Última actualización:** Enero 2025  
+**Versión:** 1.1.0
 

@@ -2,13 +2,13 @@
 
 /**
  * Script helper para abrir templates en el browser de Cursor
- * 
+ *
  * Este script está diseñado para ser usado por el agente de Cursor
  * para abrir templates en el browser integrado de Cursor usando MCP.
- * 
+ *
  * Uso:
  *   node scripts/open-in-cursor-browser.js <template-file>
- * 
+ *
  * Ejemplo:
  *   node scripts/open-in-cursor-browser.js prototypes/canvas-encuestas.html
  */
@@ -24,7 +24,7 @@ const projectRoot = join(__dirname, '..');
 
 async function main() {
 	const args = process.argv.slice(2);
-	
+
 	if (args.length === 0) {
 		console.error('❌ Error: Debes proporcionar la ruta del template');
 		console.log('\nUso:');
@@ -36,7 +36,7 @@ async function main() {
 
 	const templatePath = args[0];
 	const templateName = basename(templatePath);
-	
+
 	// Detectar si estamos en el directorio prototypes/ o necesitamos la ruta completa
 	let fullPath = templatePath;
 	if (!templatePath.startsWith(projectRoot)) {
@@ -53,20 +53,22 @@ async function main() {
 	console.log(`   📁 Ruta: ${fullPath}`);
 	console.log(`   🌐 URL Local: ${httpUrl}`);
 	console.log(`   🔌 Puerto: ${port}`);
-	
+
 	console.log('\n💡 Instrucciones para el Agente de Cursor:');
 	console.log('   1. Verifica que el servidor local esté corriendo en el puerto', port);
 	console.log('   2. Usa el browser MCP de Cursor para navegar a:', httpUrl);
-	console.log('   3. Usa las herramientas de inspección (VisBug, DevTools) para analizar elementos');
+	console.log(
+		'   3. Usa las herramientas de inspección (VisBug, DevTools) para analizar elementos',
+	);
 	console.log('\n🔧 Comandos MCP sugeridos:');
 	console.log(`   - mcp_cursor-ide-browser_browser_navigate({ url: "${httpUrl}" })`);
 	console.log('   - mcp_cursor-ide-browser_browser_snapshot()');
 	console.log('   - mcp_cursor-ide-browser_browser_take_screenshot()');
-	
+
 	console.log('\n📚 Recursos:');
 	console.log('   - Guía VisBug: docs/guias/uso/GUIA-USO-VISBUG-AUTORUN.md');
 	console.log('   - Análisis herramientas: ANALISIS-HERRAMIENTAS-SELECCION-ELEMENTOS.md');
-	
+
 	// Retornar información estructurada para el agente
 	return {
 		templateName,
@@ -78,7 +80,7 @@ async function main() {
 			navigate: `Navegar a ${httpUrl} usando browser MCP`,
 			snapshot: 'Tomar snapshot de accesibilidad de la página',
 			screenshot: 'Tomar screenshot para análisis visual',
-		}
+		},
 	};
 }
 
@@ -95,7 +97,6 @@ main()
 		console.error('❌ Error:', error.message);
 		process.exit(1);
 	});
-
 
 
 

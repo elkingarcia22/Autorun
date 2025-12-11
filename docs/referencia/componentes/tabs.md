@@ -10,7 +10,7 @@ Componente Tabs UBITS de navegación horizontal con soporte para iconos opcional
 
 ## 🔗 Enlaces Rápidos
 
-- **Storybook en Vercel:** https://ubits-storybook10.vercel.app/?path=/story/navegacion-tabs--default
+- **Storybook en Vercel:** https://ubits-storybook10.vercel.app/?path=/story/navegación-tabs--default
 - **Código fuente:** `vendor/ubits/packages/components/tabs/`
 - **Tipos TypeScript:** `vendor/ubits/packages/components/tabs/src/types/TabsOptions.ts`
 - **Stories:** `vendor/ubits/packages/storybook/stories/Tabs.stories.ts`
@@ -21,8 +21,8 @@ Componente Tabs UBITS de navegación horizontal con soporte para iconos opcional
 
 ### Historia: Default
 
-**ID en Storybook:** `navegacion-tabs--default`  
-**URL:** https://ubits-storybook10.vercel.app/?path=/story/navegacion-tabs--default
+**ID en Storybook:** `navegación-tabs--default`  
+**URL:** https://ubits-storybook10.vercel.app/?path=/story/navegación-tabs--default
 
 **Descripción:**
 Tabs con controles interactivos para configurar número de tabs, iconos y tab activo. Muestra panel de información con el estado actual.

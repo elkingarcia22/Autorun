@@ -2,9 +2,9 @@
 
 /**
  * Browser Helper para Autorun
- * 
+ *
  * Helper para facilitar el uso del browser MCP de Cursor con templates Autorun
- * 
+ *
  * Uso desde el agente de Cursor:
  *   - Leer este archivo para obtener información del template
  *   - Usar browser MCP para navegar y analizar
@@ -25,7 +25,7 @@ const projectRoot = join(__dirname, '../..');
 export async function getTemplateInfo(templatePath) {
 	const templateName = basename(templatePath);
 	const fullPath = join(projectRoot, templatePath);
-	
+
 	if (!existsSync(fullPath)) {
 		throw new Error(`Template no encontrado: ${fullPath}`);
 	}
@@ -43,24 +43,24 @@ export async function getTemplateInfo(templatePath) {
 		mcpCommands: {
 			navigate: {
 				tool: 'mcp_cursor-ide-browser_browser_navigate',
-				args: { url: httpUrl }
+				args: { url: httpUrl },
 			},
 			snapshot: {
 				tool: 'mcp_cursor-ide-browser_browser_snapshot',
-				args: {}
+				args: {},
 			},
 			screenshot: {
 				tool: 'mcp_cursor-ide-browser_browser_take_screenshot',
-				args: { fullPage: true }
-			}
+				args: { fullPage: true },
+			},
 		},
 		instructions: {
 			step1: `Navegar a ${httpUrl} usando browser MCP`,
 			step2: 'Tomar snapshot de accesibilidad de la página',
 			step3: 'Activar VisBug para inspeccionar elementos visualmente',
 			step4: 'Usar DevTools para valores exactos (F12)',
-			step5: 'Generar instrucción precisa para implementar cambios'
-		}
+			step5: 'Generar instrucción precisa para implementar cambios',
+		},
 	};
 }
 
@@ -68,42 +68,34 @@ export async function getTemplateInfo(templatePath) {
  * Genera instrucción para Cursor basada en análisis visual
  */
 export function generateCursorInstruction(analysis) {
-	const {
-		component,
-		file,
-		line,
-		property,
-		currentValue,
-		newValue,
-		token
-	} = analysis;
+	const { component, file, line, property, currentValue, newValue, token } = analysis;
 
 	let instruction = `En el componente ${component}`;
-	
+
 	if (file) {
 		instruction += ` del archivo ${file}`;
 	}
-	
+
 	if (line) {
 		instruction += ` (línea ${line})`;
 	}
-	
+
 	if (property && currentValue && newValue) {
 		instruction += `, cambia ${property} de ${currentValue}`;
-		
+
 		if (token) {
 			instruction += ` (${token})`;
 		}
-		
+
 		instruction += ` a ${newValue}`;
-		
+
 		if (token) {
 			instruction += ` usando el token ${token}`;
 		}
 	}
-	
+
 	instruction += '.';
-	
+
 	return instruction;
 }
 
@@ -112,20 +104,20 @@ export function generateCursorInstruction(analysis) {
  */
 export async function listTemplates() {
 	const prototypesDir = join(projectRoot, 'prototypes');
-	
+
 	if (!existsSync(prototypesDir)) {
 		return [];
 	}
 
 	const { readdir } = await import('fs/promises');
 	const files = await readdir(prototypesDir);
-	
+
 	return files
-		.filter(file => file.endsWith('.html'))
-		.map(file => ({
+		.filter((file) => file.endsWith('.html'))
+		.map((file) => ({
 			name: file,
 			path: join('prototypes', file),
-			url: `http://localhost:${process.env.AUTORUN_PORT || 3000}/${file}`
+			url: `http://localhost:${process.env.AUTORUN_PORT || 3000}/${file}`,
 		}));
 }
 
@@ -140,7 +132,6 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 	console.log('  3. Usar browser MCP para navegar y analizar');
 	console.log('  4. Usar generateCursorInstruction() para crear instrucciones\n');
 }
-
 
 
 

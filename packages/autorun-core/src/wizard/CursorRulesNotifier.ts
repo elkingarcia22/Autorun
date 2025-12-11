@@ -1,6 +1,6 @@
 /**
  * CursorRulesNotifier
- * 
+ *
  * Genera notificaciones y archivos para que Cursor AI tenga contexto completo
  * de las reglas y documentación después de ejecutar el wizard.
  */
@@ -218,4 +218,3 @@ export class CursorRulesNotifier {
 `;
 	}
 }
-

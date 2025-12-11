@@ -1,6 +1,6 @@
 /**
  * Implementation Progress Dashboard
- * 
+ *
  * Sistema de dashboard de progreso y rollback para implementación por historias
  */
 
@@ -40,7 +40,7 @@ export interface ProgressDashboard {
  */
 export function createProgressDashboard(
 	componentName: string,
-	totalStories: number
+	totalStories: number,
 ): ImplementationProgress {
 	return {
 		componentName,
@@ -58,10 +58,10 @@ export function createProgressDashboard(
 export function updateStoryProgress(
 	progress: ImplementationProgress,
 	storyId: string,
-	updates: Partial<StoryProgress>
+	updates: Partial<StoryProgress>,
 ): ImplementationProgress {
-	const storyIndex = progress.stories.findIndex(s => s.storyId === storyId);
-	
+	const storyIndex = progress.stories.findIndex((s) => s.storyId === storyId);
+
 	if (storyIndex === -1) {
 		// Nueva historia
 		progress.stories.push({
@@ -81,8 +81,8 @@ export function updateStoryProgress(
 	}
 
 	// Actualizar contadores
-	progress.completedStories = progress.stories.filter(s => s.status === 'completed').length;
-	progress.currentStoryIndex = progress.stories.findIndex(s => s.status === 'in-progress');
+	progress.completedStories = progress.stories.filter((s) => s.status === 'completed').length;
+	progress.currentStoryIndex = progress.stories.findIndex((s) => s.status === 'in-progress');
 
 	return progress;
 }
@@ -90,12 +90,11 @@ export function updateStoryProgress(
 /**
  * Genera un dashboard visual del progreso
  */
-export function generateProgressDashboard(
-	progress: ImplementationProgress
-): ProgressDashboard {
-	const percentage = progress.totalStories > 0
-		? Math.round((progress.completedStories / progress.totalStories) * 100)
-		: 0;
+export function generateProgressDashboard(progress: ImplementationProgress): ProgressDashboard {
+	const percentage =
+		progress.totalStories > 0
+			? Math.round((progress.completedStories / progress.totalStories) * 100)
+			: 0;
 
 	const timeElapsed = Date.now() - progress.startedAt;
 	const timeElapsedMinutes = Math.floor(timeElapsed / 60000);
@@ -110,12 +109,12 @@ export function generateProgressDashboard(
 
 	// Encontrar última historia exitosa
 	const lastSuccessfulStory = progress.stories
-		.filter(s => s.status === 'completed')
+		.filter((s) => s.status === 'completed')
 		.sort((a, b) => (b.completedAt || 0) - (a.completedAt || 0))[0]?.storyId;
 
 	// Verificar si se puede hacer rollback
-	const canRollback = progress.stories.some(s => s.status === 'failed') && 
-	                   lastSuccessfulStory !== undefined;
+	const canRollback =
+		progress.stories.some((s) => s.status === 'failed') && lastSuccessfulStory !== undefined;
 
 	return {
 		progress,
@@ -156,24 +155,24 @@ export function generateProgressSummary(dashboard: ProgressDashboard): string {
 	summary += `📋 Estado de Historias:\n`;
 	progress.stories.forEach((story, index) => {
 		const statusIcon = {
-			'pending': '⏳',
+			pending: '⏳',
 			'in-progress': '🔄',
-			'completed': '✅',
-			'failed': '❌',
+			completed: '✅',
+			failed: '❌',
 		}[story.status];
 
 		summary += `   ${statusIcon} ${index + 1}. ${story.storyName}\n`;
 		summary += `      Estado: ${story.status}\n`;
 		summary += `      Checklist: ${story.checklistCompleted}/${story.checklistTotal} items\n`;
-		
+
 		if (story.status === 'in-progress') {
 			summary += `      ⚠️ EN PROGRESO - Completar checklist antes de continuar\n`;
 		}
-		
+
 		if (story.status === 'failed' && story.errors) {
 			summary += `      Errores: ${story.errors.join(', ')}\n`;
 		}
-		
+
 		summary += `\n`;
 	});
 
@@ -200,18 +199,15 @@ export function generateProgressSummary(dashboard: ProgressDashboard): string {
 /**
  * Guarda un snapshot del estado antes de implementar una historia
  */
-export async function saveStateSnapshot(
-	filePath: string,
-	storyId: string
-): Promise<string> {
+export async function saveStateSnapshot(filePath: string, storyId: string): Promise<string> {
 	try {
 		const fs = await import('fs/promises');
 		const content = await fs.readFile(filePath, 'utf-8');
-		
+
 		// Guardar snapshot en un archivo temporal
 		const snapshotPath = filePath.replace(/\.html$/, `.snapshot.${storyId}.html`);
 		await fs.writeFile(snapshotPath, content, 'utf-8');
-		
+
 		return snapshotPath;
 	} catch (error) {
 		console.warn(`⚠️ No se pudo guardar snapshot para ${storyId}:`, error);
@@ -224,13 +220,13 @@ export async function saveStateSnapshot(
  */
 export async function restoreStateSnapshot(
 	filePath: string,
-	snapshotPath: string
+	snapshotPath: string,
 ): Promise<boolean> {
 	try {
 		const fs = await import('fs/promises');
 		const snapshotContent = await fs.readFile(snapshotPath, 'utf-8');
 		await fs.writeFile(filePath, snapshotContent, 'utf-8');
-		
+
 		console.log(`✅ Estado restaurado desde snapshot: ${snapshotPath}`);
 		return true;
 	} catch (error) {
@@ -242,21 +238,18 @@ export async function restoreStateSnapshot(
 /**
  * Limpia snapshots antiguos (mantener solo los últimos N)
  */
-export async function cleanupSnapshots(
-	filePath: string,
-	keepLast: number = 3
-): Promise<void> {
+export async function cleanupSnapshots(filePath: string, keepLast: number = 3): Promise<void> {
 	try {
 		const fs = await import('fs/promises');
 		const path = await import('path');
-		
+
 		const dir = path.dirname(filePath);
 		const baseName = path.basename(filePath, '.html');
-		
+
 		const files = await fs.readdir(dir);
 		const snapshots = files
-			.filter(f => f.startsWith(`${baseName}.snapshot.`) && f.endsWith('.html'))
-			.map(f => ({
+			.filter((f) => f.startsWith(`${baseName}.snapshot.`) && f.endsWith('.html'))
+			.map((f) => ({
 				name: f,
 				path: path.join(dir, f),
 			}))
@@ -277,3 +270,6 @@ export async function cleanupSnapshots(
 		console.warn(`⚠️ Error limpiando snapshots:`, error);
 	}
 }
+
+
+

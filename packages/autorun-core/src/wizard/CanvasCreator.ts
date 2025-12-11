@@ -78,13 +78,13 @@ export class CanvasCreator {
 			let templateContent = await this.fetchFromVercel(templateUrl);
 			console.log(`   ✅ Template cargado desde Vercel (${templateContent.length} bytes)`);
 
-		// ⚠️ NUEVO: Usamos URLs directas de Vercel con bypass token en query string
-		// Esto permite abrir el HTML directamente sin necesidad de servidor con proxy
-		// El bypass token se pasa como query parameter, no como header
-		const vercelBaseUrl = UBITS_PRESET.storybook.url;
+			// ⚠️ NUEVO: Usamos URLs directas de Vercel con bypass token en query string
+			// Esto permite abrir el HTML directamente sin necesidad de servidor con proxy
+			// El bypass token se pasa como query parameter, no como header
+			const vercelBaseUrl = UBITS_PRESET.storybook.url;
 
-		// Ajustar rutas del template a URLs directas de Vercel con bypass token
-		templateContent = await this.adjustTemplatePaths(templateContent, vercelBaseUrl);
+			// Ajustar rutas del template a URLs directas de Vercel con bypass token
+			templateContent = await this.adjustTemplatePaths(templateContent, vercelBaseUrl);
 
 			// Agregar carga del UMD de data-table usando proxy
 			templateContent = this.addDataTableUMD(templateContent, vercelBaseUrl);
@@ -431,7 +431,8 @@ export class CanvasCreator {
 		let dataTableScript: string;
 		if (isVercelUrl) {
 			// Usar URL directa de Vercel con bypass token para data-table.umd.js
-			const dataTableUrl = UBITS_PRESET.storybook.getUrl?.('/components/data-table/dist/data-table.umd.js') || 
+			const dataTableUrl =
+				UBITS_PRESET.storybook.getUrl?.('/components/data-table/dist/data-table.umd.js') ||
 				`${basePath.replace(/\/$/, '')}/components/data-table/dist/data-table.umd.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=${UBITS_PRESET.storybook.bypassToken}`;
 			dataTableScript = `<script src="${dataTableUrl}"></script>`;
 		} else {
@@ -491,7 +492,8 @@ export class CanvasCreator {
 			if (isVercelUrl) {
 				// Usar URL directa de Vercel con bypass token en query string
 				// Esto permite abrir el HTML directamente sin necesidad de servidor con proxy
-				const vercelUrl = UBITS_PRESET.storybook.getUrl?.(`/${path}`) || 
+				const vercelUrl =
+					UBITS_PRESET.storybook.getUrl?.(`/${path}`) ||
 					`${basePath.replace(/\/$/, '')}/${path}?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=${UBITS_PRESET.storybook.bypassToken}`;
 				return `href="${vercelUrl}"`;
 			}
@@ -511,7 +513,8 @@ export class CanvasCreator {
 			if (isVercelUrl) {
 				// Usar URL directa de Vercel con bypass token en query string
 				// Esto permite abrir el HTML directamente sin necesidad de servidor con proxy
-				const vercelUrl = UBITS_PRESET.storybook.getUrl?.(`/${path}`) || 
+				const vercelUrl =
+					UBITS_PRESET.storybook.getUrl?.(`/${path}`) ||
 					`${basePath.replace(/\/$/, '')}/${path}?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=${UBITS_PRESET.storybook.bypassToken}`;
 				return `src="${vercelUrl}"`;
 			}
@@ -526,7 +529,8 @@ export class CanvasCreator {
 			(match, fullMatch, tokensPath) => {
 				// Si es URL directa de Vercel, usar URL directa también para figma-tokens
 				if (tokensPath.includes('ubits-storybook10.vercel.app')) {
-					const figmaTokensUrl = UBITS_PRESET.storybook.getUrl?.('/tokens/dist/figma-tokens.css') || 
+					const figmaTokensUrl =
+						UBITS_PRESET.storybook.getUrl?.('/tokens/dist/figma-tokens.css') ||
 						`${UBITS_PRESET.storybook.url}/tokens/dist/figma-tokens.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=${UBITS_PRESET.storybook.bypassToken}`;
 					return `${fullMatch}\n    <link rel="stylesheet" href="${figmaTokensUrl}" />`;
 				}
@@ -574,12 +578,14 @@ export class CanvasCreator {
 		if (isVercelUrl) {
 			// Usar URL directa de Vercel para assets con bypass token
 			content = content.replace(/href="assets\/([^"]+)"/g, (match, assetPath) => {
-				const vercelUrl = UBITS_PRESET.storybook.getUrl?.(`/templates/assets/${assetPath}`) || 
+				const vercelUrl =
+					UBITS_PRESET.storybook.getUrl?.(`/templates/assets/${assetPath}`) ||
 					`${basePath.replace(/\/$/, '')}/templates/assets/${assetPath}?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=${UBITS_PRESET.storybook.bypassToken}`;
 				return `href="${vercelUrl}"`;
 			});
 			content = content.replace(/src="assets\/([^"]+)"/g, (match, assetPath) => {
-				const vercelUrl = UBITS_PRESET.storybook.getUrl?.(`/templates/assets/${assetPath}`) || 
+				const vercelUrl =
+					UBITS_PRESET.storybook.getUrl?.(`/templates/assets/${assetPath}`) ||
 					`${basePath.replace(/\/$/, '')}/templates/assets/${assetPath}?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=${UBITS_PRESET.storybook.bypassToken}`;
 				return `src="${vercelUrl}"`;
 			});
@@ -597,21 +603,21 @@ export class CanvasCreator {
 		// components-loader.js -> URL directa de Vercel o ruta relativa/absoluta
 		if (isVercelUrl) {
 			// Usar URL directa de Vercel para scripts con bypass token
-			content = content.replace(
-				/src="components-loader\.js"/g,
-				() => {
-					const vercelUrl = UBITS_PRESET.storybook.getUrl?.('/templates/components-loader.js') || 
-						`${basePath.replace(/\/$/, '')}/templates/components-loader.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=${UBITS_PRESET.storybook.bypassToken}`;
-					return `src="${vercelUrl}"`;
-				},
-			);
+			content = content.replace(/src="components-loader\.js"/g, () => {
+				const vercelUrl =
+					UBITS_PRESET.storybook.getUrl?.('/templates/components-loader.js') ||
+					`${basePath.replace(/\/$/, '')}/templates/components-loader.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=${UBITS_PRESET.storybook.bypassToken}`;
+				return `src="${vercelUrl}"`;
+			});
 			content = content.replace(/src="config\/([^"]+)"/g, (match, configPath) => {
-				const vercelUrl = UBITS_PRESET.storybook.getUrl?.(`/templates/config/${configPath}`) || 
+				const vercelUrl =
+					UBITS_PRESET.storybook.getUrl?.(`/templates/config/${configPath}`) ||
 					`${basePath.replace(/\/$/, '')}/templates/config/${configPath}?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=${UBITS_PRESET.storybook.bypassToken}`;
 				return `src="${vercelUrl}"`;
 			});
 			content = content.replace(/src="engine\/([^"]+)"/g, (match, enginePath) => {
-				const vercelUrl = UBITS_PRESET.storybook.getUrl?.(`/templates/engine/${enginePath}`) || 
+				const vercelUrl =
+					UBITS_PRESET.storybook.getUrl?.(`/templates/engine/${enginePath}`) ||
 					`${basePath.replace(/\/$/, '')}/templates/engine/${enginePath}?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=${UBITS_PRESET.storybook.bypassToken}`;
 				return `src="${vercelUrl}"`;
 			});

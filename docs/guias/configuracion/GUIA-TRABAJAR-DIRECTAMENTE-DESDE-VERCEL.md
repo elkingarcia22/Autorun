@@ -241,3 +241,7 @@ open prototypes/canvas-administrador-encuestas-2025-12-09.html
 - El DataTable también está disponible en Vercel
 
 **¡Es la solución más simple y recomendada!** 🎉
+
+
+
+

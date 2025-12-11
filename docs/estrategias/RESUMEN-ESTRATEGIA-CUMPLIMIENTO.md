@@ -198,3 +198,7 @@ if (!check.allowed) {
 ---
 
 **Ver documento completo:** `docs/estrategias/ESTRATEGIA-GARANTIZAR-CUMPLIMIENTO-LINEAMIENTOS.md`
+
+
+
+

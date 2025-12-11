@@ -431,35 +431,74 @@ Estos add-ons están **mencionados en documentación o scripts** pero **NO exist
 
 ### 13. **Figma Sync** - Sincronización con Figma ⚠️
 
-**Estado**: ⚠️ **REFERENCIADO PERO NO IMPLEMENTADO**
+**Estado**: ✅ **IMPLEMENTADO Y COMPILADO**
 
 **Descripción**: Sincronización automática de tokens y componentes desde Figma.
 
-**Funcionalidades Esperadas**:
-- Sincronización de tokens
-- Importación de componentes
-- Actualización automática
-- Integración con Figma API
-- Mapeo de tokens
+**Características**:
+- ✅ Sincronización de tokens
+- ✅ Importación de componentes
+- ✅ Actualización automática
+- ✅ Integración con Figma API
+- ✅ Mapeo de tokens
+- ✅ Integración con MCP
 
-**Referencias**:
-- Mencionado en `ESTADO-GENERAL-AUTOFRAME-HUB.md`
-- Scripts de comparación de tokens Figma existentes
+**Ubicación**: `packages/addons/functional/figma-sync/`
 
-**Ubicación Esperada**: `packages/addons/functional/figma-sync/`
+---
+
+### 14. **n8n** - Automatización de Workflows ✅
+
+**Ubicación**: `packages/addons/functional/n8n/`
+
+**Estado**: ✅ **IMPLEMENTADO Y COMPILADO**
+
+**Descripción**: Automatización de workflows con n8n y MCP. Acceso a 525+ nodos de n8n con 99% de cobertura de propiedades.
+
+**Características**:
+- ✅ Acceso a 525+ nodos de n8n con documentación completa
+- ✅ Creación y gestión de workflows
+- ✅ Ejecución de workflows desde Autorun
+- ✅ Validación automática de configuración
+- ✅ Integración con MCP para mejor experiencia
+- ✅ Búsqueda inteligente de nodos
+- ✅ Actualizaciones inteligentes basadas en diff
+
+**Más información**: `packages/addons/functional/n8n/README.md`
+
+---
+
+### 15. **Google Sheets** - Gestión de Hojas de Cálculo ✅
+
+**Ubicación**: `packages/addons/functional/google-sheets/`
+
+**Estado**: ✅ **IMPLEMENTADO Y COMPILADO**
+
+**Descripción**: Creación y gestión de hojas de cálculo de Google Sheets con MCP. API completamente gratuita.
+
+**Características**:
+- ✅ Crear hojas de cálculo nuevas con múltiples pestañas
+- ✅ Leer y escribir datos en celdas y rangos
+- ✅ Formatear celdas (colores, fuentes, bordes, alineación)
+- ✅ Crear gráficos y aplicar formato condicional
+- ✅ Operaciones batch para mejor rendimiento
+- ✅ Integración con MCP para mejor experiencia
+- ✅ API completamente gratuita (300 requests/min por proyecto)
+
+**Más información**: `packages/addons/functional/google-sheets/README.md`
 
 ---
 
 ## 📊 Estadísticas
 
 ### Implementados Físicamente
-- ✅ **13 add-ons funcionales**: GitHub, Clarity, Vercel, Storybook, Lighthouse, i18n, JEST, Figma Sync, Supabase, AI Assistant, ESLint, Prettier, Docusaurus
+- ✅ **15 add-ons funcionales**: GitHub, Clarity, Vercel, Storybook, Lighthouse, i18n, JEST, Figma Sync, Supabase, AI Assistant, ESLint, Prettier, Docusaurus, n8n, Google Sheets
 
 ### Referenciados pero No Implementados
 - ✅ **0 add-ons funcionales** - Todos los add-ons están implementados
 
 ### Total Implementados
-- ✅ **13 add-ons funcionales** - 100% completados
+- ✅ **15 add-ons funcionales** - 100% completados
 
 ---
 
@@ -566,11 +605,12 @@ Si decides implementar los add-ons referenciados, aquí están las prioridades s
 
 ## 📝 Notas Importantes
 
-1. **GitHub, Clarity y Vercel son los únicos add-ons funcionales implementados** y están completamente funcionales
-2. **Los demás add-ons están solo referenciados** en documentación pero no existen físicamente
-3. **El sistema está preparado** para agregar nuevos add-ons siguiendo el patrón de GitHub/Clarity/Vercel
+1. **15 add-ons funcionales están implementados** y están completamente funcionales
+2. **Todos los add-ons siguen el mismo patrón** arquitectónico y están compilados
+3. **El sistema está preparado** para agregar nuevos add-ons siguiendo el patrón establecido
 4. **Todos los add-ons deben implementar** la interfaz `IFunctionalAddon`
 5. **Los add-ons pueden proporcionar servicios** a través del método `getServices()`
+6. **Varios add-ons tienen integración MCP** (GitHub, Vercel, Clarity, Figma, Storybook, Supabase, n8n, Google Sheets)
 
 ---
 
@@ -583,5 +623,9 @@ Si decides implementar los add-ons referenciados, aquí están las prioridades s
 
 ---
 
-**Última actualización**: Noviembre 2024
+**Última actualización**: Diciembre 2024
+
+**Add-ons recientemente agregados**:
+- ✅ **n8n** - Automatización de workflows (Diciembre 2024)
+- ✅ **Google Sheets** - Gestión de hojas de cálculo (Diciembre 2024)
 

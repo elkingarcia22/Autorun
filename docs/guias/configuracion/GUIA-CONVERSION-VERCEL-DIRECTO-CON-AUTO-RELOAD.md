@@ -226,3 +226,7 @@ Después de convertir, verificar:
 - ✅ Más simple (no necesitas proxy complejo)
 - ✅ Más confiable (no se cae al reiniciar)
 - ✅ Más rápido (CDN de Vercel)
+
+
+
+

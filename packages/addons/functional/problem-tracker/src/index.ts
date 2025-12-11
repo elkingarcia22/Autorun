@@ -1,6 +1,6 @@
 /**
  * Problem Tracker Add-on
- * 
+ *
  * Sistema automático de captura y tracking de problemas y soluciones
  */
 

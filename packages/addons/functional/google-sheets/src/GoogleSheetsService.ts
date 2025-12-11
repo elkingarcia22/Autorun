@@ -57,10 +57,16 @@ export class GoogleSheetsService {
 	 */
 	async initialize(): Promise<void> {
 		console.log(`🔍 [Google Sheets Service] initialize() llamado`);
-		console.log(`🔍 [Google Sheets Service] Project ID: ${this.config.googleProjectId || 'No configurado'}`);
+		console.log(
+			`🔍 [Google Sheets Service] Project ID: ${this.config.googleProjectId || 'No configurado'}`,
+		);
 
 		// Verificar que hay configuración mínima
-		if (!this.config.googleProjectId && !this.config.googleServiceAccountKey && !this.config.googlePrivateKey) {
+		if (
+			!this.config.googleProjectId &&
+			!this.config.googleServiceAccountKey &&
+			!this.config.googlePrivateKey
+		) {
 			console.log(`ℹ️  [Google Sheets Service] Modo solo documentación (sin credenciales)`);
 		} else {
 			try {
@@ -179,3 +185,6 @@ export class GoogleSheetsService {
 		return { ...this.config };
 	}
 }
+
+
+

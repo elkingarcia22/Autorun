@@ -64,7 +64,7 @@ export class ProblemTrackerAddon implements IFunctionalAddon {
 		try {
 			await this.service.initialize();
 			console.log('✅ Problem Tracker Add-on: Inicializado correctamente');
-			
+
 			// ⭐ NUEVO: Inicializar generador de guías de errores
 			if (this.config.autoUpdateGuides) {
 				try {
@@ -90,10 +90,10 @@ export class ProblemTrackerAddon implements IFunctionalAddon {
 
 		this.service.setEnabled(true);
 		this.active = true;
-		
+
 		// ⚠️ CRÍTICO: Configurar captura automática de errores
 		this.setupAutomaticErrorCapture();
-		
+
 		console.log('✅ Problem Tracker Add-on: Activado con captura automática');
 	}
 
@@ -105,23 +105,25 @@ export class ProblemTrackerAddon implements IFunctionalAddon {
 		if (typeof console !== 'undefined') {
 			const originalError = console.error;
 			const self = this;
-			
-			console.error = function(...args: any[]) {
+
+			console.error = function (...args: any[]) {
 				// Llamar al error original
 				originalError.apply(console, args);
-				
+
 				// Capturar error si el servicio está activo
 				if (self.active && self.service) {
-					const errorMessage = args.map(arg => 
-						typeof arg === 'string' ? arg : JSON.stringify(arg)
-					).join(' ');
-					
+					const errorMessage = args
+						.map((arg) => (typeof arg === 'string' ? arg : JSON.stringify(arg)))
+						.join(' ');
+
 					// Detectar problemas automáticamente
-					self.service.detectProblem(errorMessage, {
-						logs: [errorMessage],
-					}).catch(err => {
-						// Ignorar errores de detección para no crear bucles
-					});
+					self.service
+						.detectProblem(errorMessage, {
+							logs: [errorMessage],
+						})
+						.catch((err) => {
+							// Ignorar errores de detección para no crear bucles
+						});
 				}
 			};
 		}
@@ -185,10 +187,10 @@ export class ProblemTrackerAddon implements IFunctionalAddon {
 		try {
 			const fs = await import('fs/promises');
 			const content = await fs.readFile(filePath, 'utf-8');
-			
+
 			// Analizar contenido para detectar problemas comunes
 			await this.analyzeFileForProblems(filePath, content);
-			
+
 			console.log(`🔍 Problem Tracker: Archivo analizado - ${filePath}`);
 		} catch (error) {
 			// Ignorar errores de lectura (archivo puede no existir aún)
@@ -206,32 +208,40 @@ export class ProblemTrackerAddon implements IFunctionalAddon {
 		const problems: string[] = [];
 
 		// 1. Detectar ContentManager.innerHTML = '' sin preservación
-		if (content.includes('contentArea.innerHTML') && 
-		    !content.includes('preservar') && 
-		    !content.includes('insertAdjacentHTML') &&
-		    !content.includes('updateContent.*intercept')) {
+		if (
+			content.includes('contentArea.innerHTML') &&
+			!content.includes('preservar') &&
+			!content.includes('insertAdjacentHTML') &&
+			!content.includes('updateContent.*intercept')
+		) {
 			problems.push('ContentManager puede eliminar elementos personalizados sin preservación');
 		}
 
 		// 2. Detectar spacing incorrecto
-		if (content.includes('var(--ubits-spacing-xl') && 
-		    (content.includes('gap') || content.includes('margin-top'))) {
+		if (
+			content.includes('var(--ubits-spacing-xl') &&
+			(content.includes('gap') || content.includes('margin-top'))
+		) {
 			problems.push('Uso de spacing-xl (20px) cuando puede requerir spacing-lg (16px)');
 		}
 
 		// 3. Detectar insertAdjacentHTML sin reinicialización
-		if (content.includes('insertAdjacentHTML') && 
-		    !content.includes('initEncuestas') && 
-		    !content.includes('reinicializar') &&
-		    !content.includes('addEventListener')) {
+		if (
+			content.includes('insertAdjacentHTML') &&
+			!content.includes('initEncuestas') &&
+			!content.includes('reinicializar') &&
+			!content.includes('addEventListener')
+		) {
 			problems.push('Restaurar elementos desde HTML puede perder event listeners');
 		}
 
 		// 4. Detectar MutationObserver sin cooldown
-		if (content.includes('MutationObserver') && 
-		    !content.includes('cooldown') && 
-		    !content.includes('isReinitializing') &&
-		    !content.includes('lastReinitTime')) {
+		if (
+			content.includes('MutationObserver') &&
+			!content.includes('cooldown') &&
+			!content.includes('isReinitializing') &&
+			!content.includes('lastReinitTime')
+		) {
 			problems.push('MutationObserver puede entrar en bucle infinito sin cooldown');
 		}
 
@@ -356,7 +366,9 @@ export class ProblemTrackerAddon implements IFunctionalAddon {
 			// ⭐ NUEVO: Generar guía de errores automáticamente
 			generateErrorGuide: async () => {
 				if (!this.errorGuideGenerator) {
-					throw new Error('Error Guide Generator no está inicializado. Activa autoUpdateGuides en la configuración.');
+					throw new Error(
+						'Error Guide Generator no está inicializado. Activa autoUpdateGuides en la configuración.',
+					);
 				}
 				return this.errorGuideGenerator.generateErrorGuide();
 			},
@@ -365,14 +377,16 @@ export class ProblemTrackerAddon implements IFunctionalAddon {
 			suggestSolutionsFromHistory: async (problemDescription: string, category?: string) => {
 				if (!this.errorGuideGenerator) {
 					// Fallback a búsqueda básica
-					return this.service?.suggestSolutions({
-						id: 'temp',
-						titulo: problemDescription,
-						descripcion: problemDescription,
-						categoria: category || 'otros',
-						fecha_deteccion: new Date().toISOString().split('T')[0],
-						estado: 'pendiente',
-					} as any) || [];
+					return (
+						this.service?.suggestSolutions({
+							id: 'temp',
+							titulo: problemDescription,
+							descripcion: problemDescription,
+							categoria: category || 'otros',
+							fecha_deteccion: new Date().toISOString().split('T')[0],
+							estado: 'pendiente',
+						} as any) || []
+					);
 				}
 				return this.errorGuideGenerator.suggestSolutions(problemDescription, category);
 			},

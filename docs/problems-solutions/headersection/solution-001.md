@@ -141,3 +141,7 @@ Ver guía completa: `docs/guias/implementacion/GUIA-ELIMINAR-HEADERSECTION.md`
 
 
 
+
+
+
+

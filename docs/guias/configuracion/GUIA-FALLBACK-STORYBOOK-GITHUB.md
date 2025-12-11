@@ -223,3 +223,7 @@ El sistema registra cuando usa el fallback:
 **Última actualización:** 2025-01-XX
 
 
+
+
+
+

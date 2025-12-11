@@ -62,7 +62,7 @@ export class InitializationWizard {
 		// Verificar si hay AUTORUN_ANSWERS (modo automático con preguntas visibles)
 		// Si hay AUTORUN_ANSWERS, SIEMPRE mostrar preguntas (igual que terminal)
 		const hasAutoAnswers = !!process.env.AUTORUN_ANSWERS;
-		
+
 		// Intentar obtener respuestas automáticas primero (solo si NO hay AUTORUN_ANSWERS)
 		// Si hay AUTORUN_ANSWERS, forzar modo interactivo para mostrar preguntas
 		const autoAnswers = hasAutoAnswers ? null : this.getAutoAnswers(options?.autoSelect);
@@ -367,6 +367,8 @@ export class InitializationWizard {
 			github: '🐙 Integración con GitHub',
 			codecov: '📈 Cobertura de código',
 			feedback: '💬 Sistema de feedback automatizado',
+			n8n: '🔄 Automatización de workflows con n8n y MCP',
+			'google-sheets': '📊 Creación y gestión de hojas de cálculo con Google Sheets',
 		};
 
 		// Obtener todos los add-ons disponibles
@@ -374,7 +376,7 @@ export class InitializationWizard {
 
 		// Mostrar resumen de add-ons por defecto con número de opción del wizard
 		console.log('\n🔌 Add-ons que se instalarán por defecto:\n');
-		
+
 		// Mapeo de add-on ID a número de opción en el wizard
 		const addonToWizardNumber: Record<string, number> = {
 			storybook: 1,
@@ -395,8 +397,10 @@ export class InitializationWizard {
 			github: 16,
 			codecov: 17,
 			feedback: 18,
+			n8n: 22,
+			'google-sheets': 23,
 		};
-		
+
 		defaultAddons.forEach((addonId) => {
 			const description =
 				addonDescriptions[addonId] ||
@@ -408,7 +412,7 @@ export class InitializationWizard {
 
 		// Verificar si estamos en modo automático (con respuestas disponibles)
 		const isAuto = this.prompt.isAuto();
-		
+
 		// DEBUG: Log para entender qué está pasando
 		console.log(
 			'[DEBUG askAddons] isAuto:',
@@ -420,11 +424,11 @@ export class InitializationWizard {
 			'autoAnswers.length:',
 			(this.prompt as any).autoAnswers.length,
 		);
-		
+
 		// IMPORTANTE: Si NO estamos en modo automático (isAuto() retorna false),
 		// significa que se agotaron las respuestas automáticas y volvimos a modo interactivo.
 		// En ese caso, SIEMPRE preguntar al usuario.
-		
+
 		// Si NO estamos en modo automático, SIEMPRE preguntar al usuario
 		// (no usar defaults automáticamente)
 		if (!isAuto) {
@@ -655,7 +659,7 @@ export class InitializationWizard {
 		if (githubUrl) {
 			console.log(`   🐙 GitHub: ${githubUrl}`);
 		}
-		
+
 		// Mostrar información del servidor
 		if (this.localServer && this.localServer.isServerRunning()) {
 			const serverUrl = this.localServer.getUrl();
@@ -676,7 +680,7 @@ export class InitializationWizard {
 
 		// Mostrar mensaje sobre reglas de Cursor
 		console.log(rulesNotifier.getFinalMessage());
-		
+
 		console.log('\n🚀 Ya puedes empezar a trabajar. ¡Éxito con tu proyecto!\n');
 
 		return {
@@ -771,7 +775,7 @@ export class InitializationWizard {
 
 			// Paso 1: Abrir en navegador externo primero
 			console.log(`\n   🌐 Abriendo en navegador externo...`);
-			
+
 			try {
 				const { exec } = await import('child_process');
 				const { promisify } = await import('util');
@@ -794,45 +798,62 @@ export class InitializationWizard {
 
 				await execAsync(command);
 				console.log(`   ✅ Navegador externo abierto`);
-				
+
 				// Paso 2: Esperar un momento para que el navegador se abra
-				await new Promise(resolve => setTimeout(resolve, 1000));
-				
+				await new Promise((resolve) => setTimeout(resolve, 1000));
+
 				// Paso 3: Detectar URL y mostrar para que el agente la abra automáticamente en Cursor
 				console.log(`\n   🔌 URL detectada: ${httpUrl}`);
 				console.log(`   📋 El agente de Cursor debe abrir automáticamente en browser MCP:`);
 				console.log(`      [AUTORUN_BROWSER_URL]${httpUrl}[/AUTORUN_BROWSER_URL]`);
 				console.log(`   📚 Guía completa: docs/guias/uso/GUIA-USO-VISBUG-AUTORUN.md`);
-				
+
+				// Paso 4: Instruir al agente para inicializar AutorunHub automáticamente
+				console.log(`\n   🚀 El agente de Cursor debe inicializar AutorunHub automáticamente:`);
+				console.log(`      [AUTORUN_INIT_HUB]true[/AUTORUN_INIT_HUB]`);
+				console.log(`   💡 Esto activa file watching y auto-reload automático`);
+
+				// Paso 5: Escribir archivo de estado para detección automática
+				await this.writeWizardStateFile(httpUrl);
 			} catch (error: any) {
 				console.warn(`   ⚠️  No se pudo abrir navegador externo: ${error.message || error}`);
 				console.log(`   💡 Abre manualmente: ${httpUrl}`);
 				console.log(`   📋 El agente de Cursor debe abrir automáticamente en browser MCP:`);
 				console.log(`      [AUTORUN_BROWSER_URL]${httpUrl}[/AUTORUN_BROWSER_URL]`);
+
+				// Instruir al agente para inicializar AutorunHub automáticamente
+				console.log(`\n   🚀 El agente de Cursor debe inicializar AutorunHub automáticamente:`);
+				console.log(`      [AUTORUN_INIT_HUB]true[/AUTORUN_INIT_HUB]`);
+				console.log(`   💡 Esto activa file watching y auto-reload automático`);
+
+				// Escribir archivo de estado para detección automática
+				await this.writeWizardStateFile(httpUrl);
 			}
-			
+
 			// Marcar como abierto
 			this.templateOpened = true;
-			
+
 			// Identificar tipo de template desde el nombre del archivo
 			const templateType = fileName.includes('administrador')
 				? 'Administrador'
 				: fileName.includes('colaborador')
 					? 'Colaborador'
 					: 'Template';
-			
+
 			console.log(`\n   ✅ Template ${templateType} listo`);
 			console.log(`   📄 Archivo: ${fileName}`);
 			console.log(`   🌐 URL: ${httpUrl}`);
 			console.log(`   💡 El servidor HTTP local seguirá corriendo en ${serverUrl}`);
 			console.log(`   💡 Para detenerlo, presiona Ctrl+C o cierra esta terminal`);
-			
+
 			return httpUrl;
 		} catch (error: any) {
 			console.warn('   ⚠️  Error al preparar template:', error.message || error);
 			if (httpUrl) {
 				console.warn(`   💡 Abre manualmente: ${httpUrl}`);
-				console.warn(`   💡 O usa el browser MCP de Cursor: mcp_cursor-ide-browser_browser_navigate({ url: "${httpUrl}" })`);
+				console.warn(
+					`   💡 O usa el browser MCP de Cursor: mcp_cursor-ide-browser_browser_navigate({ url: "${httpUrl}" })`,
+				);
 				return httpUrl;
 			} else {
 				console.warn(`   💡 Abre manualmente: ${filePath}`);
@@ -870,6 +891,8 @@ export class InitializationWizard {
 			github: '🐙 Integración con GitHub',
 			codecov: '📈 Cobertura de código',
 			feedback: '💬 Sistema de feedback automatizado',
+			n8n: '🔄 Automatización de workflows con n8n y MCP',
+			'google-sheets': '📊 Creación y gestión de hojas de cálculo con Google Sheets',
 		};
 
 		// Mostrar add-ons por defecto
@@ -1003,6 +1026,8 @@ export class InitializationWizard {
 			github: '🐙 Integración con GitHub',
 			codecov: '📈 Cobertura de código',
 			feedback: '💬 Sistema de feedback automatizado',
+			n8n: '🔄 Automatización de workflows con n8n y MCP',
+			'google-sheets': '📊 Creación y gestión de hojas de cálculo con Google Sheets',
 		};
 
 		const fs = await import('fs/promises');
@@ -1247,10 +1272,10 @@ export class InitializationWizard {
 		const getStorybookUrl =
 			UBITS_PRESET.storybook.getUrl ||
 			((path: string) => {
-			const baseUrl = UBITS_PRESET.storybook.url.replace(/\/$/, '');
-			return `${baseUrl}${path.startsWith('/') ? path : `/${path}`}`;
-		});
-		
+				const baseUrl = UBITS_PRESET.storybook.url.replace(/\/$/, '');
+				return `${baseUrl}${path.startsWith('/') ? path : `/${path}`}`;
+			});
+
 		for (const component of UBITS_PRESET.components) {
 			try {
 				const manifestUrl = getStorybookUrl(`/components/${component}/manifest.json`);
@@ -1826,7 +1851,7 @@ export class InitializationWizard {
 		// Si había respuestas pero se agotaron, usar default (NO configurar)
 		const hadAutoAnswers = this.prompt.hasAutoAnswers();
 		const hasMoreAnswers = this.prompt.isAuto();
-		
+
 		if (hadAutoAnswers && !hasMoreAnswers) {
 			// Se agotaron las respuestas automáticas, usar default (NO)
 			console.log(
@@ -2157,6 +2182,60 @@ export class InitializationWizard {
 					return accessToken && projectRef ? { accessToken, projectRef } : null;
 				},
 			},
+			n8n: {
+				name: 'n8n',
+				mcpNames: ['n8n-mcp'],
+				getCredentials: async () => {
+					const configManager = (this.hub as any).configManager;
+					if (!configManager) return null;
+					const config = await configManager.load();
+					const n8nConfig = config?.autorun?.addons?.config?.n8n;
+					const n8nApiUrl = n8nConfig?.n8nApiUrl || process.env.N8N_API_URL;
+					const n8nApiKey = n8nConfig?.n8nApiKey || process.env.N8N_API_KEY;
+					const mode = n8nConfig?.mode || 'stdio';
+					const logLevel = n8nConfig?.logLevel || 'error';
+					const disableConsoleOutput = n8nConfig?.disableConsoleOutput !== false;
+					// Retornar configuración incluso si no hay API URL/Key (el MCP funciona sin ellas)
+					return {
+						n8nApiUrl: n8nApiUrl || '',
+						n8nApiKey: n8nApiKey || '',
+						mode,
+						logLevel,
+						disableConsoleOutput,
+					};
+				},
+			},
+			'google-sheets': {
+				name: 'Google Sheets',
+				mcpNames: ['google-sheets', 'mcp-gsheets'],
+				getCredentials: async () => {
+					const configManager = (this.hub as any).configManager;
+					if (!configManager) return null;
+					const config = await configManager.load();
+					const googleSheetsConfig = config?.autorun?.addons?.config?.['google-sheets'];
+					const googleProjectId =
+						googleSheetsConfig?.googleProjectId ||
+						process.env.GOOGLE_PROJECT_ID ||
+						process.env.GOOGLE_CLOUD_PROJECT;
+					const googleApplicationCredentials =
+						googleSheetsConfig?.googleApplicationCredentials ||
+						process.env.GOOGLE_APPLICATION_CREDENTIALS;
+					const googleServiceAccountKey =
+						googleSheetsConfig?.googleServiceAccountKey || process.env.GOOGLE_SERVICE_ACCOUNT_KEY;
+					const googlePrivateKey =
+						googleSheetsConfig?.googlePrivateKey || process.env.GOOGLE_PRIVATE_KEY;
+					const googleClientEmail =
+						googleSheetsConfig?.googleClientEmail || process.env.GOOGLE_CLIENT_EMAIL;
+					// Retornar configuración (puede estar vacía, el usuario la configurará después)
+					return {
+						googleProjectId: googleProjectId || '',
+						googleApplicationCredentials: googleApplicationCredentials || '',
+						googleServiceAccountKey: googleServiceAccountKey || '',
+						googlePrivateKey: googlePrivateKey || '',
+						googleClientEmail: googleClientEmail || '',
+					};
+				},
+			},
 		};
 
 		// Filtrar add-ons que tienen soporte MCP
@@ -2173,7 +2252,7 @@ export class InitializationWizard {
 			console.log(`   ℹ️  Ningún add-on instalado requiere configuración MCP`);
 			console.log(`   💡 Add-ons con soporte MCP disponibles: ${supportedIds}`);
 			console.log(
-				`   💡 Para configurar MCP, instala uno de estos add-ons: github, vercel, clarity, figma-sync, storybook, supabase`,
+				`   💡 Para configurar MCP, instala uno de estos add-ons: github, vercel, clarity, figma-sync, storybook, supabase, n8n, google-sheets`,
 			);
 			return;
 		}
@@ -2321,6 +2400,26 @@ export class InitializationWizard {
 									);
 									console.log(`   💡 Ver: https://supabase.com/docs/guides/getting-started/mcp`);
 									break;
+								case 'n8n-mcp':
+									console.log(
+										`   💡 n8n MCP proporciona acceso a 525+ nodos con documentación completa`,
+									);
+									console.log(
+										`   💡 N8N_API_URL y N8N_API_KEY son opcionales - configúralos para gestión completa de workflows`,
+									);
+									console.log(`   💡 Ver: https://www.n8n-mcp.com/`);
+									break;
+								case 'google-sheets':
+								case 'mcp-gsheets':
+									console.log(
+										`   💡 Google Sheets MCP permite crear, leer y escribir hojas de cálculo`,
+									);
+									console.log(`   💡 Requiere GOOGLE_PROJECT_ID y credenciales de Service Account`);
+									console.log(
+										`   💡 La API es gratuita: 300 requests/min por proyecto, 60 por usuario`,
+									);
+									console.log(`   💡 Ver: https://github.com/freema/mcp-gsheets`);
+									break;
 								case 'storybook':
 									console.log(
 										`   💡 Storybook MCP requiere que Storybook esté corriendo en http://localhost:6006`,
@@ -2377,5 +2476,69 @@ export class InitializationWizard {
 			projectType: 'independent',
 			addons,
 		};
+	}
+
+	/**
+	 * Escribe un archivo de estado cuando el wizard termina
+	 * Esto permite que el agente detecte automáticamente que debe inicializar AutorunHub
+	 * También intenta ejecutar el script de detección automáticamente
+	 */
+	private async writeWizardStateFile(url: string): Promise<void> {
+		console.log(`\n[WIZARD] 📝 Escribiendo archivo de estado del wizard...`);
+		console.log(`[WIZARD] URL del template: ${url}`);
+
+		try {
+			const fs = await import('fs/promises');
+			const statePath = path.join(process.cwd(), '.autorun', 'wizard-state.json');
+			console.log(`[WIZARD] Ruta del archivo de estado: ${statePath}`);
+
+			// Crear directorio si no existe
+			const stateDir = path.dirname(statePath);
+			console.log(`[WIZARD] Creando directorio si no existe: ${stateDir}`);
+			await fs.mkdir(stateDir, { recursive: true });
+			console.log(`[WIZARD] ✅ Directorio creado/verificado`);
+
+			// Escribir estado
+			const state = {
+				url,
+				initHub: true,
+				timestamp: new Date().toISOString(),
+				message: 'El agente debe inicializar AutorunHub y abrir el browser automáticamente',
+			};
+			console.log(`[WIZARD] Estado a escribir:`, JSON.stringify(state, null, 2));
+
+			await fs.writeFile(statePath, JSON.stringify(state, null, 2), 'utf-8');
+			console.log(`[WIZARD] ✅ Estado del wizard guardado en: ${statePath}`);
+
+			// Intentar ejecutar el script de detección automáticamente (para que el agente lo vea)
+			try {
+				console.log(`[WIZARD] 🚀 Ejecutando script de detección automática...`);
+				const { exec } = await import('child_process');
+				const { promisify } = await import('util');
+				const execAsync = promisify(exec);
+
+				// Ejecutar el script de detección (esto mostrará los mensajes especiales)
+				const scriptPath = path.join(process.cwd(), 'scripts', 'detect-wizard-state.js');
+				console.log(`[WIZARD] Ruta del script: ${scriptPath}`);
+				console.log(`[WIZARD] Ejecutando: node "${scriptPath}"`);
+
+				const { stdout, stderr } = await execAsync(`node "${scriptPath}"`);
+				console.log(`[WIZARD] ✅ Script de detección ejecutado`);
+				console.log(`[WIZARD] Salida del script:`);
+				console.log(stdout);
+				if (stderr) {
+					console.log(`[WIZARD] Errores del script:`);
+					console.log(stderr);
+				}
+			} catch (error: any) {
+				// No es crítico si falla, el agente puede ejecutarlo manualmente
+				console.log(`[WIZARD] ⚠️  No se pudo ejecutar el script de detección: ${error.message}`);
+				console.log(`[WIZARD] 💡 El agente puede ejecutar: node scripts/detect-wizard-state.js`);
+			}
+		} catch (error: any) {
+			// No es crítico si falla, solo mostrar warning
+			console.warn(`[WIZARD] ⚠️  No se pudo guardar estado del wizard: ${error.message || error}`);
+			console.warn(`[WIZARD] Stack:`, error.stack);
+		}
 	}
 }

@@ -504,14 +504,12 @@ function V(l, o, s, a, p, d, e = 'md') {
 			setTimeout(() => {
 				const m = t * n,
 					g = Math.min(m + n, s.length),
-					h = s
-						.slice(m, g)
-						.map((u) => ({
-							label: u.text,
-							state: a === u.value ? 'active' : 'default',
-							value: u.value,
-							selected: a === u.value,
-						}));
+					h = s.slice(m, g).map((u) => ({
+						label: u.text,
+						state: a === u.value ? 'active' : 'default',
+						value: u.value,
+						selected: a === u.value,
+					}));
 				t === 0 ? (r = h) : (r = [...r, ...h]);
 				const x = `ubits-select-list-${l.id}`;
 				(b.id = x), (b.innerHTML = '');

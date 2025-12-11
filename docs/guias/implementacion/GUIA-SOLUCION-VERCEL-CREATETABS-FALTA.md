@@ -275,3 +275,7 @@ console.log('Usando window.createTabs:', !!tabs && typeof window.createTabs === 
 
 **Última actualización:** 2025-12-10  
 **Estado:** ✅ Solución implementada - Funciona con fallback automático a local
+
+
+
+

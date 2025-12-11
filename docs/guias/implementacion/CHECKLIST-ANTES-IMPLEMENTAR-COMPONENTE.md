@@ -89,6 +89,105 @@
   - ❌ NO aplicar padding al contenedor INTERNO (el que crea el componente)
 - [ ] **Regla:** Solo algunos componentes necesitan contenedor con padding (ej: DataTable), NO todos
 
+#### 2.6. **Error #SearchButton: Botón de Cerrar Fuera del Input** ⚠️ CRÍTICO (Solo para DataTable con searchButton)
+- [ ] **Si el DataTable tiene `searchButton: true`, OBLIGATORIO agregar estilos CSS:**
+  - ✅ Agregar estilos CSS específicos para `.ubits-search-button__clear` con `position: relative` (NO `absolute`)
+  - ✅ Agregar estilos para `.ubits-search-button__input-wrapper` con `height: 32px` (NO 40px)
+  - ✅ Agregar función `verifyAndFixSearchButtonStructure()` después de crear el DataTable
+  - ❌ NO usar `position: absolute` para el botón de cerrar
+  - ❌ NO usar `height: 40px` para el input-wrapper
+- [ ] **Ver guía completa:** `docs/guias/implementacion/GUIA-ERROR-SEARCHBUTTON-BOTON-CERRAR-FUERA-INPUT.md`
+- [ ] **Regla:** El botón de cerrar debe estar dentro del `input-wrapper` con `position: relative` para estar en el flujo flexbox
+
+#### 2.7. **Error #ActionBar: No Aparece con Selección Única** ⚠️ CRÍTICO (Solo para DataTable con showCheckbox)
+- [ ] **Si el DataTable tiene `showCheckbox: true`, OBLIGATORIO verificar callback `onRowSelect`:**
+  - ✅ Usar firma correcta: `onRowSelect: (rowId, selected) => { ... }` (NO `(rowId, rowData, selected)`)
+  - ✅ Verificar que `selected` es boolean antes de usarlo: `if (selected === true)`
+  - ✅ Llamar `renderActionBar(container)` después de actualizar `selectionState`
+  - ✅ Mostrar Action Bar cuando `selectedCount >= 1` (NO solo cuando `selectedCount > 1`)
+  - ✅ Agregar logs de depuración para verificar que el callback se ejecuta
+  - ❌ NO usar firma con 3 parámetros: `(rowId, rowData, selected)`
+  - ❌ NO asumir que `selected` siempre existe sin verificar
+  - ❌ NO olvidar renderizar Action Bar después de cambiar selección
+- [ ] **Ver guía completa:** `docs/guias/referencia/GUIA-ERRORES-COMUNES-UBITS.md` (ERROR CRÍTICO #50)
+- [ ] **Regla:** El callback `onRowSelect` recibe `(rowId, selected)`, donde `selected` es `true` o `false`
+
+#### 2.8. **Error #ActionBar: Estilos Incorrectos Botón "Ver Seleccionados" Activo** ⚠️ CRÍTICO (Solo para DataTable con showCheckbox)
+- [ ] **Si el DataTable tiene `showCheckbox: true`, OBLIGATORIO agregar ID al botón "Ver seleccionados":**
+  - ✅ Agregar `attributes: { id: 'action-btn-view-selected' }` al botón "Ver seleccionados"
+  - ✅ Verificar que el botón tiene la clase `.ubits-button--active` cuando está activo
+  - ✅ Verificar que el botón muestra fondo azul claro y texto/icono azul cuando está activo
+  - ✅ Aplicar el mismo ID tanto para selección única como múltiple
+  - ❌ NO olvidar agregar el ID al botón
+  - ❌ NO usar otro ID diferente a `'action-btn-view-selected'`
+  - ❌ NO omitir el atributo `attributes` al renderizar el botón
+- [ ] **Ver guía completa:** `docs/guias/referencia/GUIA-ERRORES-COMUNES-UBITS.md` (ERROR CRÍTICO #51)
+- [ ] **Regla:** El botón "Ver seleccionados" DEBE tener `id: 'action-btn-view-selected'` para que los estilos activos se apliquen correctamente
+
+#### 2.9. **Error #52: Ciclo Vicioso - Arreglar una Cosa y Dañar Otra (ActionBar + Checkboxes)** ⚠️ CRÍTICO (Solo para DataTable con showCheckbox)
+- [ ] **Si el DataTable tiene `showCheckbox: true` y ActionBar, OBLIGATORIO evitar usar `innerHTML` innecesariamente:**
+  - ✅ SIEMPRE verificar si el botón ya existe antes de usar `innerHTML`
+  - ✅ SIEMPRE actualizar solo el botón existente si ya existe (sin usar `innerHTML`)
+  - ✅ SIEMPRE usar manipulación directa del DOM si el ActionBar tiene contenido pero no tiene el botón
+  - ✅ SOLO usar `innerHTML` cuando el ActionBar está completamente vacío (primera vez)
+  - ❌ NUNCA usar `innerHTML` si el ActionBar ya tiene contenido
+  - ❌ NUNCA reemplazar todo el ActionBar cuando solo necesitas actualizar un botón
+- [ ] **Ver guía completa:** `docs/guias/referencia/GUIA-ERRORES-COMUNES-UBITS.md` (ERROR CRÍTICO #52)
+- [ ] **Regla:** El ActionBar debe actualizarse de forma incremental, NO reemplazando todo el contenido cada vez
+
+#### 2.10. **Error #53: Filtrado de Filas No Funciona - "Ver Seleccionados" No Filtra** ⚠️ CRÍTICO (Solo para DataTable con showCheckbox)
+- [ ] **Si el DataTable tiene `showCheckbox: true` y botón "Ver seleccionados", OBLIGATORIO implementar filtrado:**
+  - ✅ SIEMPRE guardar la instancia completa del DataTable: `const dataTableInstance = window.createDataTable({...})`
+  - ✅ SIEMPRE guardar los datos originales: `encuestasDataOriginal = rows` (antes de cualquier filtrado)
+  - ✅ SIEMPRE implementar filtrado completo en `toggleViewSelected` usando `dataTableInstance.update()`
+  - ✅ SIEMPRE filtrar filas cuando `viewSelectedActive === true`: `dataTableInstance.update({ rows: filteredRows })`
+  - ✅ SIEMPRE restaurar datos originales cuando `viewSelectedActive === false`: `dataTableInstance.update({ rows: encuestasDataOriginal })`
+  - ❌ NUNCA guardar solo el elemento DOM: `container.querySelector('.ubits-data-table')` NO tiene método `update()`
+  - ❌ NUNCA dejar el filtrado como `TODO`: Debe implementarse completamente
+- [ ] **Ver guía completa:** `docs/guias/referencia/GUIA-ERRORES-COMUNES-UBITS.md` (ERROR CRÍTICO #53)
+- [ ] **Regla:** El filtrado DEBE usar `dataTableInstance.update({ rows: filteredRows })` para funcionar correctamente
+
+#### 2.11. **Error #54: Múltiples Llamadas Simultáneas a toggleViewSelected** ⚠️ CRÍTICO (Solo para DataTable con showCheckbox)
+- [ ] **Si el DataTable tiene `showCheckbox: true` y botón "Ver seleccionados", OBLIGATORIO prevenir múltiples llamadas:**
+  - ✅ SIEMPRE usar un flag (`isToggling`) para prevenir múltiples llamadas simultáneas
+  - ✅ SIEMPRE verificar el flag al inicio de `toggleViewSelected`
+  - ✅ SIEMPRE liberar el flag después de completar la operación (con un pequeño delay)
+  - ❌ NUNCA omitir la protección contra múltiples llamadas simultáneas
+- [ ] **Ver guía completa:** `docs/guias/referencia/GUIA-ERRORES-COMUNES-UBITS.md` (ERROR CRÍTICO #54)
+- [ ] **Regla:** `toggleViewSelected` DEBE tener protección contra múltiples llamadas simultáneas
+
+#### 2.12. **Error #55: Filtros "Quemados" y Conflictos de Estilos con Drawer Navigation** ⚠️ CRÍTICO (Solo para DataTable con filterButton)
+- [ ] **Si el DataTable tiene `filterButton: true`, OBLIGATORIO configurar filters explícitamente:**
+  - ✅ SIEMPRE configurar `filterButton.filters` explícitamente (NO usar `filterButton: true` solo)
+  - ✅ SIEMPRE usar `type: 'calendar'` para fechas (NO `type: 'date'`)
+  - ✅ SIEMPRE implementar `onApplyFilters` con lógica de filtrado completa
+  - ✅ SIEMPRE implementar `onClearFilters` con lógica de limpieza completa
+  - ✅ SIEMPRE dejar que el drawer maneje el spacing (NO agregar padding/margin manual sin necesidad)
+  - ❌ NUNCA usar `filterButton: true` sin configurar `filters` (esto crea un filtro de prueba "quemado")
+  - ❌ NUNCA agregar estilos CSS que afecten los inputs del drawer (a menos que haya conflictos reales)
+  - ❌ NUNCA modificar los estilos del drawer navigation (el drawer ya tiene sus propios estilos)
+- [ ] **Ver guía completa:** `docs/guias/referencia/GUIA-ERRORES-COMUNES-UBITS.md` (ERROR CRÍTICO #55)
+- [ ] **Ver guía de implementación:** `docs/guias/implementacion/GUIA-FILTROS-DATATABLE-SIN-CONFLICTOS-ESTILOS.md` ⭐ **OBLIGATORIO LEER**
+- [ ] **Regla:** El drawer se crea primero (automático), luego los inputs se crean después de 200ms (automático). NO modificar este orden.
+
+#### 2.13. **Error #56: Columnas Fijadas - Headers Pasan Por Encima En Lugar de Por Debajo** ⚠️ CRÍTICO (Solo para DataTable con column pinning)
+- [ ] **Si el DataTable tiene columnas fijadas (pinned), OBLIGATORIO configurar z-index correctamente:**
+  - ✅ SIEMPRE usar JavaScript para sobrescribir estilos inline (los estilos inline del DataTable tienen mayor especificidad)
+  - ✅ SIEMPRE crear función `fixPinnedColumnsZIndex` que use `setProperty` con `'important'`
+  - ✅ SIEMPRE asegurar que headers fijados tengan `z-index: 20` o mayor (mayor que thead que tiene `z-index: 10`)
+  - ✅ SIEMPRE asegurar que headers NO fijados tengan `z-index: 1` (menor que thead)
+  - ✅ SIEMPRE asegurar que celdas fijadas tengan `z-index: 19` o mayor (mayor que celdas normales)
+  - ✅ SIEMPRE asegurar que celdas NO fijadas tengan `z-index: 0` (menor que celdas fijadas)
+  - ✅ SIEMPRE llamar `fixPinnedColumnsZIndex` después de crear el DataTable (en `setTimeout` de 100ms)
+  - ✅ SIEMPRE interceptar método `update` del DataTable para corregir z-index después de cada actualización
+  - ✅ SIEMPRE agregar callback `onColumnPin` para corregir z-index cuando se fija/desfija una columna
+  - ✅ SIEMPRE mantener la jerarquía: Headers fijados (20) > Celdas fijadas (19) > Thead (10) > Headers normales (1) > Celdas normales (0)
+  - ❌ NUNCA usar solo CSS sin JavaScript (los estilos inline sobrescriben el CSS)
+  - ❌ NUNCA usar el mismo z-index para thead y headers fijados (causa conflictos)
+  - ❌ NUNCA omitir el z-index en columnas fijadas (deben tener z-index explícito)
+- [ ] **Ver guía completa:** `docs/guias/referencia/GUIA-ERRORES-COMUNES-UBITS.md` (ERROR CRÍTICO #56)
+- [ ] **Regla:** Los headers fijados DEBEN tener z-index mayor que el thead. Usar JavaScript para sobrescribir estilos inline del DataTable.
+
 ---
 
 ### **FASE 3: IMPLEMENTACIÓN** ⚠️ OBLIGATORIO

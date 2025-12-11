@@ -1,6 +1,6 @@
 /**
  * Proactive Detection System
- * 
+ *
  * Sistema mejorado de detección proactiva que analiza el mensaje del usuario
  * ANTES de escribir código para detectar intención de implementar componentes.
  */
@@ -21,7 +21,7 @@ export interface DetectionResult {
 
 /**
  * Detecta componentes del mensaje del usuario de forma proactiva
- * 
+ *
  * @param userMessage Mensaje completo del usuario
  * @returns Resultado de detección con componentes encontrados
  */
@@ -40,7 +40,7 @@ export function detectComponentsProactively(userMessage: string): DetectionResul
 		/implementar desde imagen/i,
 	];
 
-	hasImage = imagePatterns.some(pattern => pattern.test(userMessage));
+	hasImage = imagePatterns.some((pattern) => pattern.test(userMessage));
 	if (hasImage) {
 		requiresAnalysis = true;
 	}
@@ -134,8 +134,8 @@ export function detectComponentsProactively(userMessage: string): DetectionResul
 		}
 
 		// Verificar keywords de contexto para aumentar confianza
-		const contextMatches = component.contextKeywords.filter(keyword =>
-			new RegExp(keyword, 'i').test(userMessage)
+		const contextMatches = component.contextKeywords.filter((keyword) =>
+			new RegExp(keyword, 'i').test(userMessage),
 		);
 
 		if (matchedPatterns.length > 0 || contextMatches.length > 0) {
@@ -155,7 +155,7 @@ export function detectComponentsProactively(userMessage: string): DetectionResul
 		/crear.*interfaz|hacer.*interfaz/i,
 	];
 
-	const hasCreationRequest = creationPatterns.some(pattern => pattern.test(userMessage));
+	const hasCreationRequest = creationPatterns.some((pattern) => pattern.test(userMessage));
 	if (hasCreationRequest && !hasImage && detectedComponents.length === 0) {
 		requiresAnalysis = true; // Requiere análisis de imagen
 	}
@@ -170,7 +170,7 @@ export function detectComponentsProactively(userMessage: string): DetectionResul
 
 /**
  * Obtiene checklist contextual para un componente específico
- * 
+ *
  * @param componentName Nombre del componente
  * @param context Contexto adicional (imagen, historias, etc.)
  * @returns Checklist contextual con solo items relevantes
@@ -181,7 +181,7 @@ export function getContextualChecklist(
 		hasImage?: boolean;
 		hasStories?: boolean;
 		complexity?: 'simple' | 'medium' | 'complex';
-	}
+	},
 ): string[] {
 	const baseChecklist = [
 		'Consultar Storybook en Vercel (versión más reciente)',
@@ -246,7 +246,7 @@ export function getContextualChecklist(
 
 /**
  * Sugiere siguiente paso basado en contexto
- * 
+ *
  * @param componentName Nombre del componente
  * @param completedSteps Pasos ya completados
  * @param context Contexto adicional
@@ -258,7 +258,7 @@ export function suggestNextStep(
 	context?: {
 		hasImage?: boolean;
 		hasStories?: boolean;
-	}
+	},
 ): {
 	step: string;
 	priority: 'high' | 'medium' | 'low';
@@ -269,7 +269,8 @@ export function suggestNextStep(
 		return {
 			step: 'Analizar imagen detalladamente',
 			priority: 'high',
-			instructions: 'Leer .cursor/rules/02-bloqueo-imagen.md y analizar la imagen antes de continuar',
+			instructions:
+				'Leer .cursor/rules/02-bloqueo-imagen.md y analizar la imagen antes de continuar',
 		};
 	}
 
@@ -311,3 +312,6 @@ export function suggestNextStep(
 
 	return null; // Todos los pasos completados
 }
+
+
+

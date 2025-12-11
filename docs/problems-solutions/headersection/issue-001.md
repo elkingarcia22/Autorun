@@ -14,6 +14,11 @@ ContentManager crea automáticamente un HeaderSection en `updateContent()`, pero
 
 **Síntoma:** HeaderSection aparece después de que ContentManager actualiza el contenido, incluso si se elimina del HTML estático.
 
+**⚠️ DETECCIÓN AUTOMÁTICA:**
+- **Cuándo aplicar:** Cuando se crea o modifica un archivo HTML en `prototypes/` con `data-module="encuestas"`
+- **Verificación automática:** El sistema debe verificar si el archivo incluye la interceptación de ContentManager
+- **Si falta:** El Pre-Implementation Check o Problem Tracker deben alertar automáticamente
+
 ---
 
 ## 🔍 Contexto
@@ -111,6 +116,15 @@ if (section !== 'admin') {
 3. Usar MutationObserver para eliminar si se crea dinámicamente después
 4. Solo actuar en el módulo específico (verificar `data-module`)
 
+### **⚠️ REGLA AUTOMÁTICA:**
+**Cuando se crea un archivo HTML con `data-module="encuestas"`:**
+- ✅ **DEBE incluir** la interceptación de ContentManager (ver guía)
+- ✅ **DEBE eliminar** CSS de `#header-section-container` y `.content-sections`
+- ✅ **DEBE eliminar** HTML estático de HeaderSection y content-sections
+- ✅ **DEBE incluir** MutationObserver para limpieza agresiva
+
+**Si falta alguno de estos elementos, el sistema debe alertar automáticamente.**
+
 ---
 
 ## 🔗 Referencias
@@ -121,8 +135,21 @@ if (section !== 'admin') {
 
 ---
 
-**Última actualización:** 2025-12-05
+## 🔄 Mejoras del Sistema (2025-12-10)
 
+### **Problema Detectado:**
+El sistema no detectó automáticamente que el archivo `canvas-administrador-encuestas-2025-12-10.html` necesitaba la interceptación de ContentManager.
 
+### **Causa:**
+1. El Pre-Implementation Check solo detecta componentes específicos (DataTable, Tabs, etc.)
+2. El Problem Tracker solo se activa cuando se llama explícitamente a `detectProblem()`
+3. No hay verificación automática al crear archivos HTML para módulo "encuestas"
 
+### **Solución Implementada:**
+1. ✅ Documentación actualizada con regla automática
+2. ⚠️ **PENDIENTE:** Mejorar Pre-Implementation Check para detectar archivos HTML de módulo "encuestas"
+3. ⚠️ **PENDIENTE:** Agregar verificación automática en FileWatcher cuando detecta archivos HTML con `data-module="encuestas"`
 
+---
+
+**Última actualización:** 2025-12-10

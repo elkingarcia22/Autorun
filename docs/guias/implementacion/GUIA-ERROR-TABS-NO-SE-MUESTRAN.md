@@ -476,3 +476,7 @@ console.log('createTabs disponible:', typeof window.createTabs === 'function');
 **Última actualización:** 2025-12-10  
 **Estado:** ✅ Error corregido y documentado con fallback implementado  
 **Nota:** Si los tabs y sidebar no se ven, verificar viewport (móvil vs desktop) y hacer hard refresh del navegador
+
+
+
+

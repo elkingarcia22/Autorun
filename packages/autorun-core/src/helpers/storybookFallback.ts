@@ -1,6 +1,6 @@
 /**
  * Storybook Fallback Helper
- * 
+ *
  * Sistema de fallback para Storybook: intenta Vercel primero,
  * si falla, usa GitHub como respaldo.
  */
@@ -14,13 +14,13 @@ async function isUrlAvailable(url: string, timeout: number = 5000): Promise<bool
 	try {
 		const controller = new AbortController();
 		const timeoutId = setTimeout(() => controller.abort(), timeout);
-		
+
 		const response = await fetch(url, {
 			method: 'HEAD',
 			signal: controller.signal,
 			mode: 'no-cors', // Para evitar CORS en verificación
 		});
-		
+
 		clearTimeout(timeoutId);
 		return true; // Si no hay error, asumimos que está disponible
 	} catch (error) {
@@ -31,7 +31,7 @@ async function isUrlAvailable(url: string, timeout: number = 5000): Promise<bool
 /**
  * Obtiene la URL de Storybook con fallback automático
  * Intenta Vercel primero, si falla, usa GitHub
- * 
+ *
  * @param path - Ruta adicional (ej: '/index.json', '/components/button/manifest.json')
  * @param options - Opciones de fallback
  * @returns URL disponible (Vercel o GitHub)
@@ -42,17 +42,14 @@ export async function getStorybookUrlWithFallback(
 		checkAvailability?: boolean;
 		timeout?: number;
 		forceFallback?: boolean;
-	} = {}
+	} = {},
 ): Promise<{ url: string; source: 'vercel' | 'github'; usedFallback: boolean }> {
-	const {
-		checkAvailability = true,
-		timeout = 5000,
-		forceFallback = false,
-	} = options;
+	const { checkAvailability = true, timeout = 5000, forceFallback = false } = options;
 
 	// Si se fuerza el fallback, usar GitHub directamente
 	if (forceFallback) {
-		const fallbackUrl = UBITS_PRESET.storybook.getFallbackUrl?.(path) || 
+		const fallbackUrl =
+			UBITS_PRESET.storybook.getFallbackUrl?.(path) ||
 			`https://raw.githubusercontent.com/elkingarcia22/UBITS/main${path.startsWith('/') ? path : `/${path}`}`;
 		return {
 			url: fallbackUrl,
@@ -62,7 +59,8 @@ export async function getStorybookUrlWithFallback(
 	}
 
 	// Intentar Vercel primero
-	const vercelUrl = UBITS_PRESET.storybook.getUrl?.(path) || 
+	const vercelUrl =
+		UBITS_PRESET.storybook.getUrl?.(path) ||
 		`${UBITS_PRESET.storybook.url}${path.startsWith('/') ? path : `/${path}`}`;
 
 	// Si no se requiere verificación, usar Vercel directamente
@@ -87,8 +85,9 @@ export async function getStorybookUrlWithFallback(
 
 	// Vercel no está disponible, usar GitHub como fallback
 	console.warn(`⚠️ [Storybook Fallback] Vercel no disponible, usando GitHub como fallback`);
-	
-	const fallbackUrl = UBITS_PRESET.storybook.getFallbackUrl?.(path) || 
+
+	const fallbackUrl =
+		UBITS_PRESET.storybook.getFallbackUrl?.(path) ||
 		`https://raw.githubusercontent.com/elkingarcia22/UBITS/main${path.startsWith('/') ? path : `/${path}`}`;
 
 	return {
@@ -101,41 +100,43 @@ export async function getStorybookUrlWithFallback(
 /**
  * Fetch con fallback automático
  * Intenta Vercel primero, si falla, intenta GitHub
- * 
+ *
  * @param path - Ruta adicional (ej: '/index.json', '/components/button/manifest.json')
  * @param options - Opciones de fetch
  * @returns Response del fetch
  */
 export async function fetchStorybookWithFallback(
 	path: string = '',
-	options: RequestInit = {}
+	options: RequestInit = {},
 ): Promise<Response> {
 	try {
 		// Intentar Vercel primero
-		const vercelUrl = UBITS_PRESET.storybook.getUrl?.(path) || 
+		const vercelUrl =
+			UBITS_PRESET.storybook.getUrl?.(path) ||
 			`${UBITS_PRESET.storybook.url}${path.startsWith('/') ? path : `/${path}`}`;
-		
+
 		const vercelResponse = await fetch(vercelUrl, options);
-		
+
 		if (vercelResponse.ok) {
 			return vercelResponse;
 		}
-		
+
 		// Si Vercel responde con error, intentar GitHub
 		throw new Error(`Vercel responded with ${vercelResponse.status}`);
 	} catch (error) {
 		// Vercel falló, usar GitHub como fallback
 		console.warn(`⚠️ [Storybook Fallback] Vercel falló, usando GitHub como fallback:`, error);
-		
-		const fallbackUrl = UBITS_PRESET.storybook.getFallbackUrl?.(path) || 
+
+		const fallbackUrl =
+			UBITS_PRESET.storybook.getFallbackUrl?.(path) ||
 			`https://raw.githubusercontent.com/elkingarcia22/UBITS/main${path.startsWith('/') ? path : `/${path}`}`;
-		
+
 		const fallbackResponse = await fetch(fallbackUrl, options);
-		
+
 		if (!fallbackResponse.ok) {
 			throw new Error(`GitHub fallback also failed: ${fallbackResponse.status}`);
 		}
-		
+
 		return fallbackResponse;
 	}
 }
@@ -158,13 +159,14 @@ export function getStorybookBaseUrlWithFallback(): { url: string; source: 'verce
  */
 export async function getComponentStorybookUrlWithFallback(
 	componentName: string,
-	storyName: string = 'default'
+	storyName: string = 'default',
 ): Promise<{ url: string; source: 'vercel' | 'github'; usedFallback: boolean }> {
 	// Mapear nombre de componente a nombre en Storybook
 	const storybookName = componentName.toLowerCase().replace(/\s+/g, '-');
 	const path = `?path=/story/${storybookName}--${storyName}`;
-	
+
 	return getStorybookUrlWithFallback(path, { checkAvailability: false });
 }
+
 
 

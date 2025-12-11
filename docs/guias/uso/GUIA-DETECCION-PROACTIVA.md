@@ -128,3 +128,7 @@ El sistema detecta componentes usando:
 ---
 
 **Última actualización:** 2025-01-03
+
+
+
+

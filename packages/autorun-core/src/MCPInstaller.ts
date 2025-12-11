@@ -307,27 +307,27 @@ export class MCPInstaller {
 				// Soporta múltiples métodos de autenticación
 				// Requiere GOOGLE_PROJECT_ID y credenciales (Service Account)
 				const env: Record<string, string> = {};
-				
+
 				if (credentials?.googleProjectId) {
 					env.GOOGLE_PROJECT_ID = credentials.googleProjectId;
 				}
-				
+
 				// Método 1: Archivo de credenciales
 				if (credentials?.googleApplicationCredentials) {
 					env.GOOGLE_APPLICATION_CREDENTIALS = credentials.googleApplicationCredentials;
 				}
-				
+
 				// Método 2: JSON string completo
 				if (credentials?.googleServiceAccountKey) {
 					env.GOOGLE_SERVICE_ACCOUNT_KEY = credentials.googleServiceAccountKey;
 				}
-				
+
 				// Método 3: Private Key + Email (más simple)
 				if (credentials?.googlePrivateKey && credentials?.googleClientEmail) {
 					env.GOOGLE_PRIVATE_KEY = credentials.googlePrivateKey;
 					env.GOOGLE_CLIENT_EMAIL = credentials.googleClientEmail;
 				}
-				
+
 				return {
 					command: 'npx',
 					args: ['-y', 'mcp-gsheets@latest'],

@@ -207,3 +207,7 @@
 2. **Actualizar el HTML** con URLs directas
 3. **Probar que todo funciona** sin servidor local
 4. **Documentar el nuevo flujo** (más simple)
+
+
+
+

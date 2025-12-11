@@ -43,7 +43,25 @@ El Storybook desplegado en Vercel está protegido con autenticación. Para usarl
 
 **URL Vercel:** `https://ubits-storybook10-q59fh1csi-elkin-garcias-projects-a0b1beb6.vercel.app/index.json`
 
-## 🔧 Configuración del MCP en Cursor
+## ⚡ Configuración Automática (Recomendado)
+
+### **Usar el Script Automático** ⭐
+
+```bash
+npm run setup-storybook-mcp
+```
+
+**El script:**
+- ✅ Detecta automáticamente si Storybook local está corriendo
+- ✅ Usa Vercel con token de bypass si Storybook local no está disponible
+- ✅ Escribe la configuración automáticamente en Cursor
+- ✅ Muestra instrucciones claras
+
+**Ver guía completa:** `docs/guias/configuracion/GUIA-CONFIGURACION-STORYBOOK-MCP-AUTOMATICA.md`
+
+---
+
+## 🔧 Configuración Manual del MCP en Cursor
 
 ### Paso 1: Localizar Archivo de Configuración MCP
 

@@ -1,118 +1,138 @@
 {
-  "version": "1.0.0",
-  "ultima_actualizacion": "2025-01-27",
-  "problemas": [
-    {
-      "id": "headersection-issue-001",
-      "categoria": "ContentManager",
-      "titulo": "HeaderSection Aparece Cuando No Debería",
-      "fecha_deteccion": "2025-12-05",
-      "fecha_solucion": "2025-12-05",
-      "solucion_id": "headersection-solution-001",
-      "archivo": "docs/problems-solutions/headersection/issue-001.md",
-      "guia": "docs/guias/implementacion/GUIA-ELIMINAR-HEADERSECTION.md",
-      "tags": ["HeaderSection", "ContentManager", "updateContent", "interceptacion"]
-    },
-    {
-      "id": "spacing-issue-002",
-      "categoria": "componentes",
-      "titulo": "Spacing Incorrecto Entre Elementos",
-      "fecha_deteccion": "2025-01-27",
-      "fecha_solucion": "2025-01-27",
-      "solucion_id": "spacing-solution-002",
-      "archivo": "docs/problems-solutions/spacing/issue-002.md",
-      "guia": "docs/guias/analisis/GUIA-ANALISIS-ESTRUCTURA-SPACING.md",
-      "tags": ["spacing", "gap", "margin", "tokens", "ubits-spacing-lg", "ubits-spacing-xl"]
-    },
-    {
-      "id": "event-listeners-issue-003",
-      "categoria": "componentes",
-      "titulo": "Event Listeners Perdidos al Restaurar Tabs desde HTML",
-      "fecha_deteccion": "2025-01-27",
-      "fecha_solucion": "2025-01-27",
-      "solucion_id": "event-listeners-solution-003",
-      "archivo": "docs/problems-solutions/event-listeners/issue-003.md",
-      "guia": "docs/guias/referencia/GUIA-ERRORES-COMUNES-UBITS.md",
-      "tags": ["event-listeners", "tabs", "insertAdjacentHTML", "outerHTML", "ContentManager"]
-    },
-    {
-      "id": "mutation-observer-issue-004",
-      "categoria": "componentes",
-      "titulo": "MutationObserver en Bucle Infinito",
-      "fecha_deteccion": "2025-01-27",
-      "fecha_solucion": "2025-01-27",
-      "solucion_id": "mutation-observer-solution-004",
-      "archivo": "docs/problems-solutions/mutation-observer/issue-004.md",
-      "guia": "docs/guias/referencia/GUIA-ERRORES-COMUNES-UBITS.md",
-      "tags": ["MutationObserver", "bucle-infinito", "cooldown", "rendimiento"]
-    },
-    {
-      "id": "datatable-checkbox-actionbar-issue-005",
-      "categoria": "componentes",
-      "titulo": "Checkboxes del DataTable no funcionan con Action Bar",
-      "fecha_deteccion": "2025-12-05",
-      "fecha_solucion": "2025-12-05",
-      "solucion_id": "datatable-checkbox-actionbar-solution-005",
-      "archivo": "docs/problems-solutions/datatable-checkbox-actionbar/issue-005.md",
-      "guia": "docs/guias/implementacion/GUIA-ACTION-BAR-DATATABLE.md",
-      "tags": ["DataTable", "checkbox", "Action Bar", "estado global", "header"]
-    }
-  ],
-  "soluciones": [
-    {
-      "id": "headersection-solution-001",
-      "problema_id": "headersection-issue-001",
-      "categoria": "ContentManager",
-      "titulo": "Interceptar ContentManager.updateContent para Eliminar HeaderSection",
-      "fecha_implementacion": "2025-12-05",
-      "archivo": "docs/problems-solutions/headersection/solution-001.md",
-      "guia": "docs/guias/implementacion/GUIA-ELIMINAR-HEADERSECTION.md",
-      "verificado": true,
-      "tags": ["HeaderSection", "ContentManager", "updateContent", "interceptacion", "MutationObserver"]
-    },
-    {
-      "id": "spacing-solution-002",
-      "problema_id": "spacing-issue-002",
-      "categoria": "componentes",
-      "titulo": "Corregir Spacing Eliminando Gap y Aplicando Directamente en Contenedores",
-      "fecha_implementacion": "2025-01-27",
-      "archivo": "docs/problems-solutions/spacing/solution-002.md",
-      "guia": "docs/guias/analisis/GUIA-ANALISIS-ESTRUCTURA-SPACING.md",
-      "verificado": true,
-      "tags": ["spacing", "gap", "margin", "tokens", "ubits-spacing-lg"]
-    },
-    {
-      "id": "event-listeners-solution-003",
-      "problema_id": "event-listeners-issue-003",
-      "categoria": "componentes",
-      "titulo": "Reinicializar Tabs Después de Restaurar desde HTML",
-      "fecha_implementacion": "2025-01-27",
-      "archivo": "docs/problems-solutions/event-listeners/solution-003.md",
-      "guia": "docs/guias/referencia/GUIA-ERRORES-COMUNES-UBITS.md",
-      "verificado": true,
-      "tags": ["event-listeners", "tabs", "reinicializar", "insertAdjacentHTML"]
-    },
-    {
-      "id": "mutation-observer-solution-004",
-      "problema_id": "mutation-observer-issue-004",
-      "categoria": "componentes",
-      "titulo": "Agregar Protección Contra Bucles en MutationObserver",
-      "fecha_implementacion": "2025-01-27",
-      "archivo": "docs/problems-solutions/mutation-observer/solution-004.md",
-      "guia": "docs/guias/referencia/GUIA-ERRORES-COMUNES-UBITS.md",
-      "verificado": true,
-      "tags": ["MutationObserver", "cooldown", "bucle-infinito", "protección"]
-    },
-    {
-      "id": "datatable-checkbox-actionbar-solution-005",
-      "problema_id": "datatable-checkbox-actionbar-issue-005",
-      "categoria": "componentes",
-      "titulo": "Implementar Checkboxes del DataTable con Action Bar usando Estado Global",
-      "fecha_implementacion": "2025-12-05",
-      "archivo": "docs/problems-solutions/datatable-checkbox-actionbar/solution-005.md",
-      "guia": "docs/guias/implementacion/GUIA-ACTION-BAR-DATATABLE.md",
-      "verificado": true,
-      "tags": ["DataTable", "checkbox", "Action Bar", "estado global", "header", "scrollable container"]
-    }
-  ]
+	"version": "1.0.0",
+	"ultima_actualizacion": "2025-01-27",
+	"problemas": [
+		{
+			"id": "headersection-issue-001",
+			"categoria": "ContentManager",
+			"titulo": "HeaderSection Aparece Cuando No Debería",
+			"fecha_deteccion": "2025-12-05",
+			"fecha_solucion": "2025-12-05",
+			"solucion_id": "headersection-solution-001",
+			"archivo": "docs/problems-solutions/headersection/issue-001.md",
+			"guia": "docs/guias/implementacion/GUIA-ELIMINAR-HEADERSECTION.md",
+			"guia_deteccion": "docs/guias/implementacion/GUIA-DETECCION-AUTOMATICA-HEADERSECTION.md",
+			"tags": [
+				"HeaderSection",
+				"ContentManager",
+				"updateContent",
+				"interceptacion",
+				"deteccion-automatica"
+			]
+		},
+		{
+			"id": "spacing-issue-002",
+			"categoria": "componentes",
+			"titulo": "Spacing Incorrecto Entre Elementos",
+			"fecha_deteccion": "2025-01-27",
+			"fecha_solucion": "2025-01-27",
+			"solucion_id": "spacing-solution-002",
+			"archivo": "docs/problems-solutions/spacing/issue-002.md",
+			"guia": "docs/guias/analisis/GUIA-ANALISIS-ESTRUCTURA-SPACING.md",
+			"tags": ["spacing", "gap", "margin", "tokens", "ubits-spacing-lg", "ubits-spacing-xl"]
+		},
+		{
+			"id": "event-listeners-issue-003",
+			"categoria": "componentes",
+			"titulo": "Event Listeners Perdidos al Restaurar Tabs desde HTML",
+			"fecha_deteccion": "2025-01-27",
+			"fecha_solucion": "2025-01-27",
+			"solucion_id": "event-listeners-solution-003",
+			"archivo": "docs/problems-solutions/event-listeners/issue-003.md",
+			"guia": "docs/guias/referencia/GUIA-ERRORES-COMUNES-UBITS.md",
+			"tags": ["event-listeners", "tabs", "insertAdjacentHTML", "outerHTML", "ContentManager"]
+		},
+		{
+			"id": "mutation-observer-issue-004",
+			"categoria": "componentes",
+			"titulo": "MutationObserver en Bucle Infinito",
+			"fecha_deteccion": "2025-01-27",
+			"fecha_solucion": "2025-01-27",
+			"solucion_id": "mutation-observer-solution-004",
+			"archivo": "docs/problems-solutions/mutation-observer/issue-004.md",
+			"guia": "docs/guias/referencia/GUIA-ERRORES-COMUNES-UBITS.md",
+			"tags": ["MutationObserver", "bucle-infinito", "cooldown", "rendimiento"]
+		},
+		{
+			"id": "datatable-checkbox-actionbar-issue-005",
+			"categoria": "componentes",
+			"titulo": "Checkboxes del DataTable no funcionan con Action Bar",
+			"fecha_deteccion": "2025-12-05",
+			"fecha_solucion": "2025-12-05",
+			"solucion_id": "datatable-checkbox-actionbar-solution-005",
+			"archivo": "docs/problems-solutions/datatable-checkbox-actionbar/issue-005.md",
+			"guia": "docs/guias/implementacion/GUIA-ACTION-BAR-DATATABLE.md",
+			"tags": ["DataTable", "checkbox", "Action Bar", "estado global", "header"]
+		}
+	],
+	"soluciones": [
+		{
+			"id": "headersection-solution-001",
+			"problema_id": "headersection-issue-001",
+			"categoria": "ContentManager",
+			"titulo": "Interceptar ContentManager.updateContent para Eliminar HeaderSection",
+			"fecha_implementacion": "2025-12-05",
+			"archivo": "docs/problems-solutions/headersection/solution-001.md",
+			"guia": "docs/guias/implementacion/GUIA-ELIMINAR-HEADERSECTION.md",
+			"verificado": true,
+			"tags": [
+				"HeaderSection",
+				"ContentManager",
+				"updateContent",
+				"interceptacion",
+				"MutationObserver"
+			]
+		},
+		{
+			"id": "spacing-solution-002",
+			"problema_id": "spacing-issue-002",
+			"categoria": "componentes",
+			"titulo": "Corregir Spacing Eliminando Gap y Aplicando Directamente en Contenedores",
+			"fecha_implementacion": "2025-01-27",
+			"archivo": "docs/problems-solutions/spacing/solution-002.md",
+			"guia": "docs/guias/analisis/GUIA-ANALISIS-ESTRUCTURA-SPACING.md",
+			"verificado": true,
+			"tags": ["spacing", "gap", "margin", "tokens", "ubits-spacing-lg"]
+		},
+		{
+			"id": "event-listeners-solution-003",
+			"problema_id": "event-listeners-issue-003",
+			"categoria": "componentes",
+			"titulo": "Reinicializar Tabs Después de Restaurar desde HTML",
+			"fecha_implementacion": "2025-01-27",
+			"archivo": "docs/problems-solutions/event-listeners/solution-003.md",
+			"guia": "docs/guias/referencia/GUIA-ERRORES-COMUNES-UBITS.md",
+			"verificado": true,
+			"tags": ["event-listeners", "tabs", "reinicializar", "insertAdjacentHTML"]
+		},
+		{
+			"id": "mutation-observer-solution-004",
+			"problema_id": "mutation-observer-issue-004",
+			"categoria": "componentes",
+			"titulo": "Agregar Protección Contra Bucles en MutationObserver",
+			"fecha_implementacion": "2025-01-27",
+			"archivo": "docs/problems-solutions/mutation-observer/solution-004.md",
+			"guia": "docs/guias/referencia/GUIA-ERRORES-COMUNES-UBITS.md",
+			"verificado": true,
+			"tags": ["MutationObserver", "cooldown", "bucle-infinito", "protección"]
+		},
+		{
+			"id": "datatable-checkbox-actionbar-solution-005",
+			"problema_id": "datatable-checkbox-actionbar-issue-005",
+			"categoria": "componentes",
+			"titulo": "Implementar Checkboxes del DataTable con Action Bar usando Estado Global",
+			"fecha_implementacion": "2025-12-05",
+			"archivo": "docs/problems-solutions/datatable-checkbox-actionbar/solution-005.md",
+			"guia": "docs/guias/implementacion/GUIA-ACTION-BAR-DATATABLE.md",
+			"verificado": true,
+			"tags": [
+				"DataTable",
+				"checkbox",
+				"Action Bar",
+				"estado global",
+				"header",
+				"scrollable container"
+			]
+		}
+	]
 }

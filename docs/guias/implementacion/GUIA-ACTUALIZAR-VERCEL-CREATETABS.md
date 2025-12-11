@@ -348,3 +348,7 @@ Si tienes acceso al GitHub MCP, puedo actualizar el archivo directamente:
 
 **Última actualización:** 2025-12-10  
 **Estado:** ⚠️ Pendiente de actualizar en GitHub
+
+
+
+

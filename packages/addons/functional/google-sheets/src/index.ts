@@ -74,3 +74,6 @@ export type {
 
 // Export default para que AddonLoader pueda cargarlo
 export { GoogleSheetsAddon as default } from './GoogleSheetsAddon';
+
+
+

@@ -84,16 +84,17 @@ export const UBITS_PRESET: UBITSConfig = {
 		 * @param path - Ruta adicional (ej: '/index.json', '/components/button/manifest.json')
 		 */
 		getFallbackUrl: (path: string = '') => {
-			const fallbackBase = UBITS_PRESET.storybook.fallbackUrl || 'https://github.com/elkingarcia22/UBITS';
+			const fallbackBase =
+				UBITS_PRESET.storybook.fallbackUrl || 'https://github.com/elkingarcia22/UBITS';
 			const cleanPath = path.startsWith('/') ? path : `/${path}`;
-			
+
 			// Intentar GitHub Pages primero (si está configurado)
 			// Si no funciona, usar raw GitHub para archivos específicos
 			if (path.includes('.json') || path.includes('.js') || path.includes('.css')) {
 				// Para archivos, usar raw GitHub
 				return `https://raw.githubusercontent.com/elkingarcia22/UBITS/main${cleanPath}`;
 			}
-			
+
 			// Para URLs de navegación, usar GitHub Pages o el repositorio
 			// Intentar GitHub Pages primero
 			const githubPagesUrl = `https://elkingarcia22.github.io/UBITS${cleanPath}`;
@@ -136,6 +137,12 @@ export const UBITS_PRESET: UBITSConfig = {
 
 		// 21. Pre-Implementation Check
 		'pre-implementation-check', // ✅ Verifica automáticamente que se sigan todos los pasos obligatorios antes de implementar componentes
+
+		// 22. n8n Integration
+		'n8n', // 🔄 Automatización de workflows con n8n y MCP - Acceso a 525+ nodos
+
+		// 23. Google Sheets Integration
+		'google-sheets', // 📊 Creación y gestión de hojas de cálculo con Google Sheets y MCP
 	],
 	components: ['welcome', 'button-feedback', 'alert', 'mask', 'button'],
 	templates: {
@@ -380,13 +387,7 @@ export const UBITS_ADDONS_CONFIG = {
 		autoDetectProblems: true,
 		autoSuggestSolutions: true,
 		autoUpdateGuides: false,
-		categories: [
-			'headersection',
-			'contentmanager',
-			'datatable',
-			'componentes',
-			'otros',
-		],
+		categories: ['headersection', 'contentmanager', 'datatable', 'componentes', 'otros'],
 	},
 	'auto-reload': {
 		enabled: true,
@@ -520,5 +521,19 @@ export const UBITS_ADDONS_CONFIG = {
 		token: '', // Se configurará después
 		syncTokens: true,
 		syncComponents: false, // Solo tokens por ahora
+	},
+	n8n: {
+		mode: 'stdio',
+		logLevel: 'error',
+		disableConsoleOutput: true,
+		n8nApiUrl: '', // Se configurará después (opcional)
+		n8nApiKey: '', // Se configurará después (opcional)
+	},
+	'google-sheets': {
+		googleProjectId: '', // Se configurará después
+		googleApplicationCredentials: '', // Se configurará después (ruta al JSON key)
+		googleServiceAccountKey: '', // Se configurará después (JSON string opcional)
+		googlePrivateKey: '', // Se configurará después (opcional)
+		googleClientEmail: '', // Se configurará después (opcional)
 	},
 };

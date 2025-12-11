@@ -18,6 +18,8 @@ export interface VercelConfig {
 	buildCommand?: string;
 	outputDirectory?: string;
 	installCommand?: string;
+	useCLI?: boolean; // Usar CLI de Vercel en lugar de API REST (mejor para archivos estáticos)
+	vercelJson?: Record<string, any>; // Configuración de vercel.json a incluir en el deploy
 }
 
 export interface VercelProject {
@@ -71,6 +73,7 @@ export class VercelService {
 	constructor(config: VercelConfig) {
 		this.config = {
 			autoDeploy: false,
+			useCLI: true, // Por defecto usar CLI para mejor compatibilidad con archivos estáticos
 			...config,
 		};
 	}
@@ -197,11 +200,40 @@ export class VercelService {
 		files: Record<string, string>,
 		target: 'production' | 'staging' = 'production',
 	): Promise<VercelDeployment> {
+		// Si useCLI está habilitado, usar CLI de Vercel (mejor para archivos estáticos)
+		if (this.config.useCLI) {
+			return await this.deployWithCLI(projectId, files, target);
+		}
+
 		// Preparar archivos para el deploy
 		const fileEntries = Object.entries(files).map(([path, content]) => ({
 			file: path,
 			data: content,
 		}));
+
+		// Incluir vercel.json si está configurado
+		if (this.config.vercelJson) {
+			fileEntries.push({
+				file: 'vercel.json',
+				data: JSON.stringify(this.config.vercelJson, null, 2),
+			});
+		}
+
+		const projectSettings: any = {};
+
+		// Solo incluir settings si no son null (para archivos estáticos sin build)
+		if (this.config.framework !== null && this.config.framework !== undefined) {
+			projectSettings.framework = this.config.framework;
+		}
+		if (this.config.buildCommand !== null && this.config.buildCommand !== undefined) {
+			projectSettings.buildCommand = this.config.buildCommand;
+		}
+		if (this.config.outputDirectory !== null && this.config.outputDirectory !== undefined) {
+			projectSettings.outputDirectory = this.config.outputDirectory;
+		}
+		if (this.config.installCommand !== null && this.config.installCommand !== undefined) {
+			projectSettings.installCommand = this.config.installCommand;
+		}
 
 		const response = await this.apiRequest(
 			'POST',
@@ -210,12 +242,7 @@ export class VercelService {
 				name: projectId,
 				files: fileEntries,
 				target: target || 'production',
-				projectSettings: {
-					framework: this.config.framework,
-					buildCommand: this.config.buildCommand,
-					outputDirectory: this.config.outputDirectory,
-					installCommand: this.config.installCommand,
-				},
+				...(Object.keys(projectSettings).length > 0 && { projectSettings }),
 			},
 			{
 				teamId: this.config.teamId,
@@ -223,6 +250,86 @@ export class VercelService {
 		);
 
 		return response;
+	}
+
+	/**
+	 * Hace deploy usando CLI de Vercel (mejor para archivos estáticos)
+	 */
+	private async deployWithCLI(
+		projectId: string,
+		files: Record<string, string>,
+		target: 'production' | 'staging' = 'production',
+	): Promise<VercelDeployment> {
+		const { execSync } = await import('child_process');
+		const { writeFileSync, mkdirSync, existsSync } = await import('fs');
+		const { join } = await import('path');
+		const { tmpdir } = await import('os');
+
+		// Crear directorio temporal
+		const tempDir = join(tmpdir(), `vercel-deploy-${Date.now()}`);
+		mkdirSync(tempDir, { recursive: true });
+
+		try {
+			// Escribir todos los archivos
+			for (const [filePath, content] of Object.entries(files)) {
+				const fullPath = join(tempDir, filePath);
+				const dir = fullPath.substring(0, fullPath.lastIndexOf('/'));
+				if (dir && !existsSync(dir)) {
+					mkdirSync(dir, { recursive: true });
+				}
+				writeFileSync(fullPath, content, 'utf-8');
+			}
+
+			// Escribir vercel.json si está configurado
+			if (this.config.vercelJson) {
+				writeFileSync(
+					join(tempDir, 'vercel.json'),
+					JSON.stringify(this.config.vercelJson, null, 2),
+					'utf-8',
+				);
+			}
+
+			// Ejecutar CLI de Vercel
+			const env: Record<string, string> = {
+				...process.env,
+				VERCEL_TOKEN: this.config.token,
+			};
+
+			if (this.config.teamId) {
+				env.VERCEL_TEAM_ID = this.config.teamId;
+			}
+
+			const command = target === 'production' ? '--prod --yes' : '--yes';
+			const output = execSync(`npx vercel ${command}`, {
+				cwd: tempDir,
+				env,
+				encoding: 'utf-8',
+			});
+
+			// Extraer URL del output
+			const urlMatch = output.match(/https:\/\/[^\s]+\.vercel\.app/);
+			if (!urlMatch) {
+				throw new Error('No se pudo obtener la URL del deployment');
+			}
+
+			// Retornar deployment info (simulado, ya que CLI no retorna JSON completo)
+			return {
+				uid: projectId,
+				name: projectId,
+				url: urlMatch[0],
+				state: 'READY',
+				type: 'LAMBDAS',
+				created: Date.now(),
+				createdAt: Date.now(),
+				readyAt: Date.now(),
+				target: target,
+				projectId: projectId,
+			} as VercelDeployment;
+		} finally {
+			// Limpiar directorio temporal
+			const { rmSync } = await import('fs');
+			rmSync(tempDir, { recursive: true, force: true });
+		}
 	}
 
 	/**

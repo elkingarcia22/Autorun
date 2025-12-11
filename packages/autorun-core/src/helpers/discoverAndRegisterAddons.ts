@@ -1,9 +1,9 @@
 /**
  * Helper para descubrir y registrar add-ons automáticamente
- * 
+ *
  * Este helper busca add-ons en packages/addons/functional/ y los registra
  * automáticamente en AutorunHub antes de activarlos.
- * 
+ *
  * ⭐ MEJORADO: Ahora detecta add-ons en runtime sin necesidad de compilar
  */
 
@@ -64,7 +64,7 @@ export async function discoverAvailableAddons(): Promise<
 
 /**
  * Registra automáticamente todos los add-ons disponibles en AutorunHub
- * 
+ *
  * @param hub Instancia de AutorunHub donde registrar los add-ons
  * @returns Número de add-ons registrados
  */
@@ -83,9 +83,9 @@ export async function registerAvailableAddons(hub: AutorunHub): Promise<number> 
 			// (detectar en runtime desde src/)
 			const distPath = path.join(addon.path, 'dist');
 			const srcPath = path.join(addon.path, 'src');
-			
+
 			let canRegister = false;
-			
+
 			// Opción 1: Tiene dist/ compilado (preferido)
 			try {
 				await fs.access(distPath);
@@ -106,14 +106,17 @@ export async function registerAvailableAddons(hub: AutorunHub): Promise<number> 
 			} catch {
 				// No tiene dist/, intentar src/
 			}
-			
+
 			// Opción 2: Tiene src/ (runtime detection)
 			if (!canRegister) {
 				try {
 					await fs.access(srcPath);
 					const srcIndexPath = path.join(srcPath, 'index.ts');
-					const srcAddonPath = path.join(srcPath, `${addon.id.charAt(0).toUpperCase() + addon.id.slice(1)}Addon.ts`);
-					
+					const srcAddonPath = path.join(
+						srcPath,
+						`${addon.id.charAt(0).toUpperCase() + addon.id.slice(1)}Addon.ts`,
+					);
+
 					// Verificar que tenga archivo principal
 					try {
 						await fs.access(srcIndexPath);
@@ -150,7 +153,3 @@ export async function registerAvailableAddons(hub: AutorunHub): Promise<number> 
 
 	return registeredCount;
 }
-
-
-
-

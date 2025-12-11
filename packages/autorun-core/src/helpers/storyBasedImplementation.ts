@@ -1,16 +1,16 @@
 /**
  * Story-Based Implementation System
- * 
+ *
  * Sistema para implementar componentes dividiendo por historias de Storybook
  * Consulta cada historia antes de implementarla
  */
 
-import { 
-	getComponentStories, 
+import {
+	getComponentStories,
 	generateImplementationPlanFromStories,
 	getStoryDetailsInstructions,
 	type ComponentStories,
-	type StorybookStory
+	type StorybookStory,
 } from './storybookStories';
 import { ImplementationStep, ComponentImplementationPlan } from './stepByStepImplementation';
 
@@ -35,14 +35,14 @@ export interface StoryBasedImplementationPlan extends ComponentImplementationPla
 
 /**
  * Crea un plan de implementación basado en historias de Storybook
- * 
+ *
  * @param componentName - Nombre del componente (ej: "DataTable")
  * @param componentId - ID del componente en Storybook (opcional)
  * @returns Plan de implementación basado en historias
  */
 export async function createStoryBasedImplementationPlan(
 	componentName: string,
-	componentId?: string
+	componentId?: string,
 ): Promise<StoryBasedImplementationPlan> {
 	console.log(`📚 [Story-Based Implementation] Obteniendo historias de ${componentName}...`);
 
@@ -53,7 +53,9 @@ export async function createStoryBasedImplementationPlan(
 		throw new Error(`No se encontraron historias para el componente ${componentName}`);
 	}
 
-	console.log(`✅ [Story-Based Implementation] Encontradas ${componentStories.totalStories} historias:`);
+	console.log(
+		`✅ [Story-Based Implementation] Encontradas ${componentStories.totalStories} historias:`,
+	);
 	componentStories.stories.forEach((story, index) => {
 		console.log(`   ${index + 1}. ${story.name} (${story.id})`);
 	});
@@ -62,7 +64,9 @@ export async function createStoryBasedImplementationPlan(
 	const plan = generateImplementationPlanFromStories(componentStories);
 
 	// 3. Crear checklist para cada historia
-	const storySteps: Array<ImplementationStep & { story: StorybookStory; checklist: StoryChecklist }> = plan.steps.map(step => {
+	const storySteps: Array<
+		ImplementationStep & { story: StorybookStory; checklist: StoryChecklist }
+	> = plan.steps.map((step) => {
 		const checklist = createStoryChecklist(step.story);
 		return {
 			id: step.id,
@@ -74,10 +78,14 @@ export async function createStoryBasedImplementationPlan(
 			checklist,
 		};
 	});
-	
-	console.log(`\n📋 [Story-Based Implementation] Checklists creados para ${storySteps.length} historias`);
+
+	console.log(
+		`\n📋 [Story-Based Implementation] Checklists creados para ${storySteps.length} historias`,
+	);
 	storySteps.forEach((step, index) => {
-		console.log(`   ${index + 1}. ${step.story.name}: ${step.checklist.items.length} items en checklist`);
+		console.log(
+			`   ${index + 1}. ${step.story.name}: ${step.checklist.items.length} items en checklist`,
+		);
 	});
 
 	return {
@@ -92,7 +100,7 @@ export async function createStoryBasedImplementationPlan(
 
 /**
  * Obtiene las instrucciones para consultar una historia antes de implementarla
- * 
+ *
  * @param story - Historia a consultar
  * @returns Instrucciones detalladas
  */
@@ -136,7 +144,7 @@ export function generateStoryBasedPlanSummary(plan: StoryBasedImplementationPlan
 		if (step.dependencies && step.dependencies.length > 0) {
 			summary += `   Dependencias: ${step.dependencies.join(', ')}\n`;
 		}
-		summary += `   \n   📋 Checklist (${step.checklist.items.filter(i => i.completed).length}/${step.checklist.items.length} completados):\n`;
+		summary += `   \n   📋 Checklist (${step.checklist.items.filter((i) => i.completed).length}/${step.checklist.items.length} completados):\n`;
 		step.checklist.items.forEach((item, itemIndex) => {
 			const status = item.completed ? '✅' : '⏳';
 			summary += `      ${status} ${itemIndex + 1}. ${item.description}\n`;
@@ -196,7 +204,7 @@ function createStoryChecklist(story: StorybookStory): StoryChecklist {
 
 	// Agregar items específicos según el tipo de historia
 	const storyName = story.name.toLowerCase();
-	
+
 	if (storyName.includes('reordenable') || storyName.includes('reorden')) {
 		baseChecklist.push({
 			id: 'test-drag-drop',
@@ -205,7 +213,7 @@ function createStoryChecklist(story: StorybookStory): StoryChecklist {
 			verification: 'Drag & drop probado y funcionando',
 		});
 	}
-	
+
 	if (storyName.includes('expandible') || storyName.includes('expand')) {
 		baseChecklist.push({
 			id: 'test-expand-collapse',
@@ -214,7 +222,7 @@ function createStoryChecklist(story: StorybookStory): StoryChecklist {
 			verification: 'Expandir/colapsar probado y funcionando',
 		});
 	}
-	
+
 	if (storyName.includes('ordenamiento') || storyName.includes('sort')) {
 		baseChecklist.push({
 			id: 'test-sorting',
@@ -223,7 +231,7 @@ function createStoryChecklist(story: StorybookStory): StoryChecklist {
 			verification: 'Ordenamiento probado y funcionando',
 		});
 	}
-	
+
 	if (storyName.includes('seleccion') || storyName.includes('checkbox')) {
 		baseChecklist.push({
 			id: 'test-selection',
@@ -232,7 +240,7 @@ function createStoryChecklist(story: StorybookStory): StoryChecklist {
 			verification: 'Selección múltiple y Action Bar probados',
 		});
 	}
-	
+
 	if (storyName.includes('paginacion') || storyName.includes('pagination')) {
 		baseChecklist.push({
 			id: 'test-pagination',
@@ -241,8 +249,13 @@ function createStoryChecklist(story: StorybookStory): StoryChecklist {
 			verification: 'Paginación probada y funcionando',
 		});
 	}
-	
-	if (storyName.includes('busqueda') || storyName.includes('filtro') || storyName.includes('search') || storyName.includes('filter')) {
+
+	if (
+		storyName.includes('busqueda') ||
+		storyName.includes('filtro') ||
+		storyName.includes('search') ||
+		storyName.includes('filter')
+	) {
 		baseChecklist.push({
 			id: 'test-search-filters',
 			description: 'Probar que búsqueda y filtros funcionan correctamente',
@@ -250,7 +263,7 @@ function createStoryChecklist(story: StorybookStory): StoryChecklist {
 			verification: 'Búsqueda y filtros probados y funcionando',
 		});
 	}
-	
+
 	if (storyName.includes('sticky') || storyName.includes('fija')) {
 		baseChecklist.push({
 			id: 'test-sticky',
@@ -274,25 +287,25 @@ function createStoryChecklist(story: StorybookStory): StoryChecklist {
 export function completeChecklistItem(
 	plan: StoryBasedImplementationPlan,
 	storyId: string,
-	itemId: string
+	itemId: string,
 ): StoryBasedImplementationPlan {
-	const storyStep = plan.storySteps.find(step => step.story.id === storyId);
+	const storyStep = plan.storySteps.find((step) => step.story.id === storyId);
 	if (!storyStep) {
 		console.warn(`⚠️ [Story Checklist] Historia ${storyId} no encontrada`);
 		return plan;
 	}
 
-	const item = storyStep.checklist.items.find(item => item.id === itemId);
+	const item = storyStep.checklist.items.find((item) => item.id === itemId);
 	if (!item) {
 		console.warn(`⚠️ [Story Checklist] Item ${itemId} no encontrado en historia ${storyId}`);
 		return plan;
 	}
 
 	item.completed = true;
-	
+
 	// Verificar si todos los items están completos
-	storyStep.checklist.allCompleted = storyStep.checklist.items.every(item => item.completed);
-	
+	storyStep.checklist.allCompleted = storyStep.checklist.items.every((item) => item.completed);
+
 	if (storyStep.checklist.allCompleted) {
 		console.log(`✅ [Story Checklist] Checklist completado para historia: ${storyStep.story.name}`);
 	}
@@ -305,10 +318,11 @@ export function completeChecklistItem(
  */
 export function getStoryChecklist(
 	plan: StoryBasedImplementationPlan,
-	storyId: string
+	storyId: string,
 ): StoryChecklist | null {
-	const storyStep = plan.storySteps.find(step => step.story.id === storyId);
+	const storyStep = plan.storySteps.find((step) => step.story.id === storyId);
 	return storyStep?.checklist || null;
 }
+
 
 

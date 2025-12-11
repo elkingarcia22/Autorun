@@ -72,6 +72,22 @@ export class ProblemTrackerService {
 				description: 'HeaderSection aparece cuando no debería',
 				suggestedSolution: 'Interceptar ContentManager.updateContent',
 			},
+			// ⭐ NUEVO: Detectar archivos HTML de módulo "encuestas" sin interceptación
+			{
+				pattern:
+					/data-module\s*=\s*["']encuestas["'][\s\S]*?(?!ContentManager\.updateContent.*_encuestasIntercepted|interceptContentManagerImmediately)/i,
+				category: 'ContentManager',
+				severity: 'high',
+				description: 'Archivo HTML de módulo "encuestas" sin interceptación de ContentManager',
+				suggestedSolution: 'headersection-solution-001',
+			},
+			{
+				pattern: /Archivo HTML de módulo.*encuestas.*sin interceptación/i,
+				category: 'ContentManager',
+				severity: 'high',
+				description: 'Archivo HTML de módulo "encuestas" sin interceptación de ContentManager',
+				suggestedSolution: 'headersection-solution-001',
+			},
 			{
 				pattern: /ContentManager.*elimina.*elementos/i,
 				category: 'ContentManager',
@@ -215,9 +231,7 @@ export class ProblemTrackerService {
 		// Buscar patrones conocidos
 		for (const pattern of this.problemPatterns) {
 			const regex =
-				typeof pattern.pattern === 'string'
-					? new RegExp(pattern.pattern, 'i')
-					: pattern.pattern;
+				typeof pattern.pattern === 'string' ? new RegExp(pattern.pattern, 'i') : pattern.pattern;
 
 			if (regex.test(description)) {
 				// Problema conocido detectado
@@ -299,7 +313,8 @@ export class ProblemTrackerService {
 	searchSimilarProblems(query: string, category?: string): Problem[] {
 		const searchTerm = query.toLowerCase();
 		return this.index.problemas.filter((problem) => {
-			const matchesCategory = !category || problem.categoria.toLowerCase() === category.toLowerCase();
+			const matchesCategory =
+				!category || problem.categoria.toLowerCase() === category.toLowerCase();
 			const matchesQuery =
 				problem.titulo.toLowerCase().includes(searchTerm) ||
 				problem.descripcion.toLowerCase().includes(searchTerm) ||
@@ -331,9 +346,7 @@ export class ProblemTrackerService {
 
 		for (const similarProblem of similarProblems) {
 			if (similarProblem.solucion_id) {
-				const solution = this.index.soluciones.find(
-					(s) => s.id === similarProblem.solucion_id,
-				);
+				const solution = this.index.soluciones.find((s) => s.id === similarProblem.solucion_id);
 				if (solution) {
 					suggestions.push({
 						problemId: problem.id,
@@ -414,8 +427,14 @@ export class ProblemTrackerService {
 	 * Genera Markdown para un problema
 	 */
 	private generateProblemMarkdown(problem: Problem): string {
-		const estadoEmoji = problem.estado === 'resuelto' ? '✅' : problem.estado === 'en_proceso' ? '🔄' : '🐛';
-		const estadoTexto = problem.estado === 'resuelto' ? 'Resuelto' : problem.estado === 'en_proceso' ? 'En Proceso' : 'Pendiente';
+		const estadoEmoji =
+			problem.estado === 'resuelto' ? '✅' : problem.estado === 'en_proceso' ? '🔄' : '🐛';
+		const estadoTexto =
+			problem.estado === 'resuelto'
+				? 'Resuelto'
+				: problem.estado === 'en_proceso'
+					? 'En Proceso'
+					: 'Pendiente';
 
 		return `# ${estadoEmoji} Problema: ${problem.titulo}
 
@@ -430,45 +449,81 @@ ${problem.fecha_solucion ? `**Fecha Solución:** ${problem.fecha_solucion}  \n` 
 
 ${problem.descripcion}
 
-${problem.contexto ? `---
+${
+	problem.contexto
+		? `---
 
 ## 🔍 Contexto
 
-${problem.contexto.donde_ocurre ? `### **Dónde Ocurre:**
+${
+	problem.contexto.donde_ocurre
+		? `### **Dónde Ocurre:**
 ${problem.contexto.donde_ocurre}
-` : ''}${problem.contexto.cuando_ocurre ? `### **Cuándo Ocurre:**
+`
+		: ''
+}${
+	problem.contexto.cuando_ocurre
+		? `### **Cuándo Ocurre:**
 ${problem.contexto.cuando_ocurre}
-` : ''}${problem.contexto.que_causa ? `### **Qué Causa el Problema:**
+`
+		: ''
+}${
+	problem.contexto.que_causa
+		? `### **Qué Causa el Problema:**
 ${problem.contexto.que_causa}
-` : ''}` : ''}${problem.codigo_problematico ? `---
+`
+		: ''
+}`
+		: ''
+}${
+	problem.codigo_problematico
+		? `---
 
 ## 💻 Código Problemático
 
 \`\`\`javascript
 ${problem.codigo_problematico}
 \`\`\`
-` : ''}${problem.logs_errores && problem.logs_errores.length > 0 ? `---
+`
+		: ''
+}${
+	problem.logs_errores && problem.logs_errores.length > 0
+		? `---
 
 ## 📝 Logs/Errores
 
 ${problem.logs_errores.map((log) => `- ${log}`).join('\n')}
-` : ''}${problem.solucion_id ? `---
+`
+		: ''
+}${
+	problem.solucion_id
+		? `---
 
 ## ✅ Solución Aplicada
 
 **Solución ID:** \`${problem.solucion_id}\`  
 **Ver:** \`docs/problems-solutions/${problem.categoria.toLowerCase()}/solution-${problem.solucion_id.split('-').pop()}.md\`
-` : ''}${problem.guia ? `---
+`
+		: ''
+}${
+	problem.guia
+		? `---
 
 ## 🔗 Referencias
 
 - **Guía:** ${problem.guia}
-` : ''}${problem.tags && problem.tags.length > 0 ? `---
+`
+		: ''
+}${
+	problem.tags && problem.tags.length > 0
+		? `---
 
 ## 🏷️ Tags
 
 ${problem.tags.map((tag) => `- \`${tag}\``).join('\n')}
-` : ''}
+`
+		: ''
+}
 
 ---
 
@@ -494,41 +549,73 @@ ${problem.tags.map((tag) => `- \`${tag}\``).join('\n')}
 
 ${solution.descripcion}
 
-${solution.codigo_antes || solution.codigo_despues ? `---
+${
+	solution.codigo_antes || solution.codigo_despues
+		? `---
 
 ## 📊 Código Antes vs Después
 
-${solution.codigo_antes ? `### **Antes:**
+${
+	solution.codigo_antes
+		? `### **Antes:**
 \`\`\`javascript
 ${solution.codigo_antes}
 \`\`\`
-` : ''}${solution.codigo_despues ? `### **Después:**
+`
+		: ''
+}${
+	solution.codigo_despues
+		? `### **Después:**
 \`\`\`javascript
 ${solution.codigo_despues}
 \`\`\`
-` : ''}` : ''}${solution.archivos_modificados && solution.archivos_modificados.length > 0 ? `---
+`
+		: ''
+}`
+		: ''
+}${
+	solution.archivos_modificados && solution.archivos_modificados.length > 0
+		? `---
 
 ## 🔍 Archivos Modificados
 
 ${solution.archivos_modificados.map((file) => `- \`${file}\``).join('\n')}
-` : ''}${solution.guia ? `---
+`
+		: ''
+}${
+	solution.guia
+		? `---
 
 ## 📚 Guía Creada/Actualizada
 
 - ${solution.guia}
 ${solution.guias_actualizadas && solution.guias_actualizadas.length > 0 ? solution.guias_actualizadas.map((guide) => `- ${guide}`).join('\n') : ''}
-` : ''}${solution.tags && solution.tags.length > 0 ? `---
+`
+		: ''
+}${
+	solution.tags && solution.tags.length > 0
+		? `---
 
 ## 🏷️ Tags
 
 ${solution.tags.map((tag) => `- \`${tag}\``).join('\n')}
-` : ''}${solution.problema_id ? `---
+`
+		: ''
+}${
+	solution.problema_id
+		? `---
 
 ## 🔗 Referencias
 
 - **Problema relacionado:** \`docs/problems-solutions/${solution.categoria.toLowerCase()}/issue-${solution.problema_id.split('-').pop()}.md\`
-` : ''}${solution.guia ? `- **Guía completa:** ${solution.guia}
-` : ''}
+`
+		: ''
+}${
+	solution.guia
+		? `- **Guía completa:** ${solution.guia}
+`
+		: ''
+}
 
 ---
 

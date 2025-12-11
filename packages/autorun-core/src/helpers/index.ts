@@ -1,6 +1,6 @@
 /**
  * Helpers Index
- * 
+ *
  * Exporta todos los helpers para uso fácil
  */
 
@@ -37,3 +37,12 @@ export {
 	generateContextualErrorMessage,
 	type ErrorMessage,
 } from './errorMessages';
+
+// Detección de estado del wizard
+export {
+	readWizardState,
+	hasWizardState,
+	clearWizardState,
+	detectWizardProblemInMessage,
+	type WizardState,
+} from './wizardStateDetector';

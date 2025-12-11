@@ -1,6 +1,6 @@
 /**
  * Error Guide Generator
- * 
+ *
  * Genera y actualiza automáticamente guías de errores comunes desde
  * los problemas capturados por Problem Tracker
  */
@@ -30,7 +30,10 @@ export class ErrorGuideGenerator {
 	private problemTracker: ProblemTrackerService;
 	private guidesDirectory: string;
 
-	constructor(problemTracker: ProblemTrackerService, guidesDirectory: string = 'docs/guias/referencia') {
+	constructor(
+		problemTracker: ProblemTrackerService,
+		guidesDirectory: string = 'docs/guias/referencia',
+	) {
 		this.problemTracker = problemTracker;
 		this.guidesDirectory = guidesDirectory;
 	}
@@ -86,7 +89,7 @@ export class ErrorGuideGenerator {
 
 				if (entry.relatedProblems.length > 0) {
 					guideContent += `**Problemas relacionados:**\n`;
-					entry.relatedProblems.forEach(relatedId => {
+					entry.relatedProblems.forEach((relatedId) => {
 						guideContent += `- Error #${relatedId}\n`;
 					});
 					guideContent += `\n`;
@@ -97,7 +100,11 @@ export class ErrorGuideGenerator {
 		}
 
 		// Guardar guía
-		const guidePath = path.join(process.cwd(), this.guidesDirectory, 'GUIA-ERRORES-COMUNES-UBITS.md');
+		const guidePath = path.join(
+			process.cwd(),
+			this.guidesDirectory,
+			'GUIA-ERRORES-COMUNES-UBITS.md',
+		);
 		await fs.mkdir(path.dirname(guidePath), { recursive: true });
 		await fs.writeFile(guidePath, guideContent, 'utf-8');
 
@@ -144,7 +151,7 @@ export class ErrorGuideGenerator {
 	 * Crea una entrada de guía de errores desde un problema y sus soluciones
 	 */
 	private createErrorGuideEntry(problem: Problem, solutions: Solution[]): ErrorGuideEntry {
-		const bestSolution = solutions.find(s => s.verificada) || solutions[0];
+		const bestSolution = solutions.find((s) => s.verificada) || solutions[0];
 
 		return {
 			id: problem.id,
@@ -153,10 +160,13 @@ export class ErrorGuideGenerator {
 			category: problem.categoria || 'otros',
 			severity: problem.severidad || 'medium',
 			solution: bestSolution?.descripcion || 'Solución pendiente',
-			examples: bestSolution?.codigo_antes && bestSolution?.codigo_despues ? {
-				incorrect: bestSolution.codigo_antes,
-				correct: bestSolution.codigo_despues,
-			} : undefined,
+			examples:
+				bestSolution?.codigo_antes && bestSolution?.codigo_despues
+					? {
+							incorrect: bestSolution.codigo_antes,
+							correct: bestSolution.codigo_despues,
+						}
+					: undefined,
 			relatedProblems: problem.problemas_relacionados || [],
 			occurrenceCount: problem.ocurrencias || 1,
 			lastOccurrence: problem.fecha_deteccion || new Date().toISOString().split('T')[0],
@@ -174,11 +184,17 @@ export class ErrorGuideGenerator {
 	/**
 	 * Sugiere soluciones basadas en problemas similares anteriores
 	 */
-	async suggestSolutions(problemDescription: string, category?: string): Promise<{
+	async suggestSolutions(
+		problemDescription: string,
+		category?: string,
+	): Promise<{
 		similarProblems: Problem[];
 		suggestedSolutions: Solution[];
 	}> {
-		const similarProblems = await this.problemTracker.searchSimilarProblems(problemDescription, category);
+		const similarProblems = await this.problemTracker.searchSimilarProblems(
+			problemDescription,
+			category,
+		);
 		const suggestedSolutions: Solution[] = [];
 
 		for (const problem of similarProblems) {
@@ -188,9 +204,12 @@ export class ErrorGuideGenerator {
 
 		return {
 			similarProblems,
-			suggestedSolutions: suggestedSolutions.filter((s, index, self) =>
-				index === self.findIndex(t => t.id === s.id)
+			suggestedSolutions: suggestedSolutions.filter(
+				(s, index, self) => index === self.findIndex((t) => t.id === s.id),
 			),
 		};
 	}
 }
+
+
+

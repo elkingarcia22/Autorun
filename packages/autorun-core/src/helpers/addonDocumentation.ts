@@ -1,6 +1,6 @@
 /**
  * Add-on Documentation Generator
- * 
+ *
  * Genera documentación automática de add-ons desde manifest.json
  */
 
@@ -20,7 +20,9 @@ export interface AddonDocumentation {
 /**
  * Genera documentación automática de un add-on desde su manifest.json
  */
-export async function generateAddonDocumentation(addonPath: string): Promise<AddonDocumentation | null> {
+export async function generateAddonDocumentation(
+	addonPath: string,
+): Promise<AddonDocumentation | null> {
 	try {
 		const manifestPath = path.join(addonPath, 'manifest.json');
 		const manifestContent = await fs.readFile(manifestPath, 'utf-8');
@@ -48,19 +50,22 @@ export async function generateAddonDocumentation(addonPath: string): Promise<Add
  */
 async function extractServicesFromAddon(addonPath: string, addonId: string): Promise<string[]> {
 	const services: string[] = [];
-	
+
 	try {
 		const srcPath = path.join(addonPath, 'src');
-		const addonFile = path.join(srcPath, `${addonId.charAt(0).toUpperCase() + addonId.slice(1)}Addon.ts`);
-		
+		const addonFile = path.join(
+			srcPath,
+			`${addonId.charAt(0).toUpperCase() + addonId.slice(1)}Addon.ts`,
+		);
+
 		try {
 			const content = await fs.readFile(addonFile, 'utf-8');
-			
+
 			// Buscar método getServices()
 			const getServicesMatch = content.match(/getServices\(\)[^{]*\{([^}]+)\}/s);
 			if (getServicesMatch) {
 				const servicesContent = getServicesMatch[1];
-				
+
 				// Extraer nombres de servicios (patrón: serviceName:)
 				const serviceMatches = servicesContent.matchAll(/(\w+):\s*(?:async\s*)?\(/g);
 				for (const match of serviceMatches) {
@@ -80,33 +85,36 @@ async function extractServicesFromAddon(addonPath: string, addonId: string): Pro
 /**
  * Genera README automático para un add-on
  */
-export async function generateAddonREADME(doc: AddonDocumentation, addonPath: string): Promise<string> {
+export async function generateAddonREADME(
+	doc: AddonDocumentation,
+	addonPath: string,
+): Promise<string> {
 	let readme = `# ${doc.name}\n\n`;
 	readme += `${doc.description}\n\n`;
 	readme += `---\n\n`;
-	
+
 	readme += `## 📋 Información\n\n`;
 	readme += `- **ID:** \`${doc.id}\`\n`;
 	readme += `- **Versión:** ${doc.version}\n`;
 	readme += `- **Tipo:** Functional Add-on\n\n`;
-	
+
 	if (doc.services.length > 0) {
 		readme += `## 🔌 Servicios Disponibles\n\n`;
-		doc.services.forEach(service => {
+		doc.services.forEach((service) => {
 			readme += `### \`${service}\`\n\n`;
 			readme += `_Descripción pendiente_\n\n`;
 		});
 	}
-	
+
 	if (doc.configuration && Object.keys(doc.configuration).length > 0) {
 		readme += `## ⚙️ Configuración\n\n`;
 		readme += `\`\`\`json\n${JSON.stringify(doc.configuration, null, 2)}\n\`\`\`\n\n`;
 	}
-	
+
 	readme += `---\n\n`;
 	readme += `**Última actualización:** ${new Date().toISOString().split('T')[0]}\n`;
 	readme += `**Generado automáticamente**\n`;
-	
+
 	return readme;
 }
 
@@ -116,15 +124,15 @@ export async function generateAddonREADME(doc: AddonDocumentation, addonPath: st
 export async function generateAllAddonsDocumentation(): Promise<void> {
 	const { discoverAvailableAddons } = await import('./discoverAndRegisterAddons');
 	const addons = await discoverAvailableAddons();
-	
+
 	console.log(`\n📚 Generando documentación para ${addons.length} add-ons...\n`);
-	
+
 	for (const addon of addons) {
 		const doc = await generateAddonDocumentation(addon.path);
 		if (doc) {
 			const readme = await generateAddonREADME(doc, addon.path);
 			const readmePath = path.join(addon.path, 'README.md');
-			
+
 			// Solo generar si no existe o está desactualizado
 			try {
 				const existingReadme = await fs.readFile(readmePath, 'utf-8');
@@ -141,6 +149,9 @@ export async function generateAllAddonsDocumentation(): Promise<void> {
 			}
 		}
 	}
-	
+
 	console.log(`\n✅ Documentación generada para todos los add-ons\n`);
 }
+
+
+

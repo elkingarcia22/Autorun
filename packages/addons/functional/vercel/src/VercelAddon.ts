@@ -83,6 +83,8 @@ export class VercelAddon implements IFunctionalAddon {
 			buildCommand: addonConfig.buildCommand,
 			outputDirectory: addonConfig.outputDirectory,
 			installCommand: addonConfig.installCommand,
+			useCLI: addonConfig.useCLI !== false, // Por defecto usar CLI para mejor compatibilidad
+			vercelJson: addonConfig.vercelJson,
 		};
 
 		// Validar que hay token
@@ -150,10 +152,12 @@ export class VercelAddon implements IFunctionalAddon {
 		if (config.teamId !== undefined) vercelConfig.teamId = config.teamId;
 		if (config.autoDeploy !== undefined) vercelConfig.autoDeploy = config.autoDeploy;
 		if (config.projectName) vercelConfig.projectName = config.projectName;
-		if (config.framework) vercelConfig.framework = config.framework;
-		if (config.buildCommand) vercelConfig.buildCommand = config.buildCommand;
-		if (config.outputDirectory) vercelConfig.outputDirectory = config.outputDirectory;
-		if (config.installCommand) vercelConfig.installCommand = config.installCommand;
+		if (config.framework !== undefined) vercelConfig.framework = config.framework;
+		if (config.buildCommand !== undefined) vercelConfig.buildCommand = config.buildCommand;
+		if (config.outputDirectory !== undefined) vercelConfig.outputDirectory = config.outputDirectory;
+		if (config.installCommand !== undefined) vercelConfig.installCommand = config.installCommand;
+		if (config.useCLI !== undefined) vercelConfig.useCLI = config.useCLI;
+		if (config.vercelJson) vercelConfig.vercelJson = config.vercelJson;
 
 		this.config = { ...this.config, ...vercelConfig };
 
@@ -227,10 +231,30 @@ export class VercelAddon implements IFunctionalAddon {
 				projectName?: string;
 				files?: Record<string, string>;
 				target?: 'production' | 'staging';
+				vercelJson?: Record<string, any>; // Configuración de vercel.json
 			}) => {
 				if (!this.service) {
 					throw new Error('Vercel service no está inicializado');
 				}
+
+				// Si se proporciona vercelJson en options, usarlo temporalmente
+				if (options?.vercelJson) {
+					const originalVercelJson = this.config.vercelJson;
+					this.config.vercelJson = options.vercelJson;
+					this.service.updateConfig({ vercelJson: options.vercelJson });
+
+					try {
+						await this.onBeforeDeploy();
+						const deployment = await this.service.deploy(options);
+						await this.onAfterDeploy(deployment.url);
+						return deployment;
+					} finally {
+						// Restaurar configuración original
+						this.config.vercelJson = originalVercelJson;
+						this.service.updateConfig({ vercelJson: originalVercelJson });
+					}
+				}
+
 				await this.onBeforeDeploy();
 				const deployment = await this.service.deploy(options);
 				await this.onAfterDeploy(deployment.url);

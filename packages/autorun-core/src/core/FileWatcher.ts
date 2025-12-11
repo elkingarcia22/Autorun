@@ -1,6 +1,6 @@
 /**
  * FileWatcher
- * 
+ *
  * Servicio que observa cambios en archivos y emite eventos a AutorunHub
  */
 
@@ -60,7 +60,9 @@ export class FileWatcher {
 					}
 
 					const fullPath = path.join(watchPath, filename);
-					console.log(`🔍 FileWatcher: Evento detectado - tipo: ${eventType}, archivo: ${fullPath}`);
+					console.log(
+						`🔍 FileWatcher: Evento detectado - tipo: ${eventType}, archivo: ${fullPath}`,
+					);
 
 					// Verificar si el archivo debe ser ignorado
 					if (this.shouldIgnore(fullPath)) {
@@ -75,7 +77,7 @@ export class FileWatcher {
 					} else {
 						console.log(`⏭️ FileWatcher: Evento ignorado (tipo: ${eventType}): ${fullPath}`);
 					}
-				}
+				},
 			);
 
 			this.watchers.set(watchPath, watcher);
@@ -90,7 +92,7 @@ export class FileWatcher {
 	 */
 	private handleFileChange(filePath: string): void {
 		console.log(`⏱️ FileWatcher: handleFileChange llamado para: ${filePath}`);
-		
+
 		// Limpiar timer anterior si existe
 		const existingTimer = this.debounceTimers.get(filePath);
 		if (existingTimer) {
@@ -101,7 +103,7 @@ export class FileWatcher {
 		// Crear nuevo timer con debounce
 		const timer = setTimeout(() => {
 			console.log(`⏰ FileWatcher: Timer expirado, verificando archivo: ${filePath}`);
-			
+
 			// Verificar que el archivo existe (puede haber sido eliminado)
 			if (fs.existsSync(filePath)) {
 				// Verificar que es un archivo (no directorio)
@@ -109,7 +111,7 @@ export class FileWatcher {
 				if (stats.isFile()) {
 					console.log(`📝 FileWatcher: Cambio detectado en: ${filePath}`);
 					console.log(`📊 FileWatcher: Tamaño del archivo: ${stats.size} bytes`);
-					
+
 					if (this.onChangeCallback) {
 						console.log(`📤 FileWatcher: Llamando onChangeCallback para: ${filePath}`);
 						this.onChangeCallback(filePath);
@@ -167,7 +169,6 @@ export class FileWatcher {
 		this.onChangeCallback = undefined;
 	}
 }
-
 
 
 

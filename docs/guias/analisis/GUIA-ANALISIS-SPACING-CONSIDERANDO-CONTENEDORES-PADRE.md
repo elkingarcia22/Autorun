@@ -222,3 +222,7 @@ El gap del `.main-content` proporciona 20px, pero necesitamos 24px total, así q
 
 
 
+
+
+
+

@@ -318,3 +318,7 @@ Para DataTable:
 
 **Última actualización:** 2025-12-10  
 **Estado:** ⚠️ Requiere corrección del proceso
+
+
+
+

@@ -953,9 +953,7 @@ function renderRow(
 /**
  * Renderiza el header del DataTable con título, contador y botones
  */
-function renderDataTableHeader(
-	options: DataTableOptions,
-): string {
+function renderDataTableHeader(options: DataTableOptions): string {
 	const { header, rows } = options;
 
 	// Si no hay configuración de header, no renderizar nada
@@ -1675,7 +1673,7 @@ export function renderDataTable(
 	}
 
 	// Renderizar el header del DataTable
-		const headerHTML = renderDataTableHeader(options);
+	const headerHTML = renderDataTableHeader(options);
 
 	// Agregar el paginador FUERA del contenedor de la tabla, siempre debajo
 	let html: string;
@@ -1829,7 +1827,6 @@ export function createDataTable(options: DataTableOptions): {
 		update: (newOptions: Partial<SearchButtonOptions>) => void;
 	} | null = null;
 
-
 	// Función para filtrar filas basándose en el término de búsqueda
 	const filterRowsBySearch = (
 		rows: TableRow[],
@@ -1855,7 +1852,6 @@ export function createDataTable(options: DataTableOptions): {
 			});
 		});
 	};
-
 
 	// Estado de lazy load
 	const isLazyLoadEnabled = currentOptions.showPagination
@@ -2127,8 +2123,7 @@ export function createDataTable(options: DataTableOptions): {
 						...currentOptions.header,
 						// Solo actualizar displayedItems si no está definido explícitamente o si hay búsqueda activa
 						displayedItems:
-							currentOptions.header.displayedItems !== undefined &&
-							!searchTerm
+							currentOptions.header.displayedItems !== undefined && !searchTerm
 								? currentOptions.header.displayedItems
 								: filteredRows.length,
 						// Pasar el estado activo del SearchButton y el término de búsqueda a través de las opciones
@@ -2507,15 +2502,21 @@ export function createDataTable(options: DataTableOptions): {
 	const attachEventListeners = () => {
 		console.log('🔵 [DATA TABLE ATTACH] ========== INICIO attachEventListeners ==========');
 		console.log('🔵 [DATA TABLE ATTACH] currentOptions existe:', !!currentOptions);
-		console.log('🔵 [DATA TABLE ATTACH] currentOptions.onRowSelect existe:', !!currentOptions?.onRowSelect);
+		console.log(
+			'🔵 [DATA TABLE ATTACH] currentOptions.onRowSelect existe:',
+			!!currentOptions?.onRowSelect,
+		);
 		console.log('🔵 [DATA TABLE ATTACH] Tipo de onRowSelect:', typeof currentOptions?.onRowSelect);
 		console.log('🔵 [DATA TABLE ATTACH] currentOptions keys:', Object.keys(currentOptions || {}));
 		if (currentOptions?.header) {
 			console.log('🔵 [DATA TABLE ATTACH] currentOptions.header existe');
-			console.log('🔵 [DATA TABLE ATTACH] currentOptions.header.searchButton existe:', !!currentOptions.header.searchButton);
+			console.log(
+				'🔵 [DATA TABLE ATTACH] currentOptions.header.searchButton existe:',
+				!!currentOptions.header.searchButton,
+			);
 		}
 		console.log('🔵 [DATA TABLE ATTACH] ========== FIN VERIFICACIÓN INICIAL ==========');
-		
+
 		// Detectar si estamos en la web (no en Storybook)
 		const isWeb =
 			typeof window !== 'undefined' &&
@@ -3251,16 +3252,27 @@ export function createDataTable(options: DataTableOptions): {
 				// IMPORTANTE: Usar { capture: false } para que este listener se ejecute DESPUÉS del listener del "select all"
 				// El listener del "select all" se ejecuta primero (se adjunta primero) y detiene la propagación
 				const checkboxIndividualHandler = (e: Event) => {
-					console.log('🔵 [DATA TABLE CHECKBOX HANDLER] ========== CHECKBOX CHANGE EVENT ==========');
+					console.log(
+						'🔵 [DATA TABLE CHECKBOX HANDLER] ========== CHECKBOX CHANGE EVENT ==========',
+					);
 					console.log('🔵 [DATA TABLE CHECKBOX HANDLER] Event type:', e.type);
 					console.log('🔵 [DATA TABLE CHECKBOX HANDLER] Event target:', e.target);
-					
+
 					const input = e.target as HTMLInputElement;
 					console.log('🔵 [DATA TABLE CHECKBOX HANDLER] Input element:', input);
 					console.log('🔵 [DATA TABLE CHECKBOX HANDLER] Input checked:', input?.checked);
-					console.log('🔵 [DATA TABLE CHECKBOX HANDLER] Input data-row-id:', input?.getAttribute('data-row-id'));
-					console.log('🔵 [DATA TABLE CHECKBOX HANDLER] Input data-column-id:', input?.getAttribute('data-column-id'));
-					console.log('🔵 [DATA TABLE CHECKBOX HANDLER] Input has data-column-checkbox-header:', input?.hasAttribute('data-column-checkbox-header'));
+					console.log(
+						'🔵 [DATA TABLE CHECKBOX HANDLER] Input data-row-id:',
+						input?.getAttribute('data-row-id'),
+					);
+					console.log(
+						'🔵 [DATA TABLE CHECKBOX HANDLER] Input data-column-id:',
+						input?.getAttribute('data-column-id'),
+					);
+					console.log(
+						'🔵 [DATA TABLE CHECKBOX HANDLER] Input has data-column-checkbox-header:',
+						input?.hasAttribute('data-column-checkbox-header'),
+					);
 
 					// CRÍTICO: Verificar PRIMERO si es un checkbox del header ANTES de cualquier log
 					// Esto debe ser lo primero que se verifica para evitar procesar el header checkbox
@@ -3287,7 +3299,9 @@ export function createDataTable(options: DataTableOptions): {
 
 					// Validar que tiene data-row-id (los checkboxes del header no lo tienen)
 					if (!currentRowIdStr || !currentColumnId) {
-						console.warn('⚠️ [DATA TABLE CHECKBOX HANDLER] No tiene data-row-id o data-column-id, ignorando...');
+						console.warn(
+							'⚠️ [DATA TABLE CHECKBOX HANDLER] No tiene data-row-id o data-column-id, ignorando...',
+						);
 						return;
 					}
 
@@ -3595,36 +3609,38 @@ export function createDataTable(options: DataTableOptions): {
 								// Forzar reflow para que el navegador procese el cambio
 								void rowElement.offsetHeight;
 
-							// Ahora aplicar los estilos
-							// Detectar tema actual (light o dark)
-							const currentTheme = document.body.getAttribute('data-theme') || 
-							                     document.documentElement.getAttribute('data-theme') || 
-							                     'light';
-							
-							// Obtener token correcto según el tema
-							const bgTokenName = currentTheme === 'dark' 
-								? '--modifiers-normal-color-dark-bg-1'
-								: '--modifiers-normal-color-light-bg-1';
-							
-							// Obtener valor del token UBITS (sin fallback hardcodeado para cumplir validación)
-							const bg1Value = getComputedStyle(document.documentElement)
-								.getPropertyValue(bgTokenName)
-								.trim();
+								// Ahora aplicar los estilos
+								// Detectar tema actual (light o dark)
+								const currentTheme =
+									document.body.getAttribute('data-theme') ||
+									document.documentElement.getAttribute('data-theme') ||
+									'light';
 
-							// Agregar clase para forzar limpieza del hover inmediatamente
-							rowElement.classList.add('ubits-data-table__row--clear-hover');
+								// Obtener token correcto según el tema
+								const bgTokenName =
+									currentTheme === 'dark'
+										? '--modifiers-normal-color-dark-bg-1'
+										: '--modifiers-normal-color-light-bg-1';
 
-							// Aplicar también inline style como respaldo para forzar el cambio
-							rowElement.style.setProperty('background-color', bg1Value, 'important');
+								// Obtener valor del token UBITS (sin fallback hardcodeado para cumplir validación)
+								const bg1Value = getComputedStyle(document.documentElement)
+									.getPropertyValue(bgTokenName)
+									.trim();
 
-							// Aplicar también a todas las celdas
-							cells.forEach((cell, index) => {
-								(cell as HTMLElement).style.setProperty(
-									'background-color',
-									bg1Value,
-									'important',
-								);
-							});
+								// Agregar clase para forzar limpieza del hover inmediatamente
+								rowElement.classList.add('ubits-data-table__row--clear-hover');
+
+								// Aplicar también inline style como respaldo para forzar el cambio
+								rowElement.style.setProperty('background-color', bg1Value, 'important');
+
+								// Aplicar también a todas las celdas
+								cells.forEach((cell, index) => {
+									(cell as HTMLElement).style.setProperty(
+										'background-color',
+										bg1Value,
+										'important',
+									);
+								});
 
 								// Forzar otro reflow después de aplicar estilos
 								void rowElement.offsetHeight;
@@ -3664,15 +3680,28 @@ export function createDataTable(options: DataTableOptions): {
 							}
 
 							// Llamar a onRowSelect callback
-							console.log('🔵 [DATA TABLE CHECKBOX] ========== VERIFICACIÓN ANTES DE LLAMAR CALLBACK ==========');
+							console.log(
+								'🔵 [DATA TABLE CHECKBOX] ========== VERIFICACIÓN ANTES DE LLAMAR CALLBACK ==========',
+							);
 							console.log('🔵 [DATA TABLE CHECKBOX] rowId:', rowId);
 							console.log('🔵 [DATA TABLE CHECKBOX] isChecked:', isChecked);
 							console.log('🔵 [DATA TABLE CHECKBOX] currentOptions existe:', !!currentOptions);
-							console.log('🔵 [DATA TABLE CHECKBOX] currentOptions.onRowSelect existe:', !!currentOptions?.onRowSelect);
-							console.log('🔵 [DATA TABLE CHECKBOX] Tipo de onRowSelect:', typeof currentOptions?.onRowSelect);
-							
+							console.log(
+								'🔵 [DATA TABLE CHECKBOX] currentOptions.onRowSelect existe:',
+								!!currentOptions?.onRowSelect,
+							);
+							console.log(
+								'🔵 [DATA TABLE CHECKBOX] Tipo de onRowSelect:',
+								typeof currentOptions?.onRowSelect,
+							);
+
 							if (currentOptions.onRowSelect) {
-								console.log('🔵 [DATA TABLE] ✅ Llamando onRowSelect con rowId:', rowId, 'isChecked:', isChecked);
+								console.log(
+									'🔵 [DATA TABLE] ✅ Llamando onRowSelect con rowId:',
+									rowId,
+									'isChecked:',
+									isChecked,
+								);
 								try {
 									currentOptions.onRowSelect(rowId, isChecked);
 									console.log('🔵 [DATA TABLE] ✅ onRowSelect ejecutado correctamente');
@@ -3681,7 +3710,10 @@ export function createDataTable(options: DataTableOptions): {
 								}
 							} else {
 								console.warn('⚠️ [DATA TABLE] onRowSelect no está definido en currentOptions');
-								console.warn('⚠️ [DATA TABLE] currentOptions keys:', Object.keys(currentOptions || {}));
+								console.warn(
+									'⚠️ [DATA TABLE] currentOptions keys:',
+									Object.keys(currentOptions || {}),
+								);
 							}
 							console.log('🔵 [DATA TABLE CHECKBOX] ========== FIN VERIFICACIÓN ==========');
 
@@ -3772,7 +3804,12 @@ export function createDataTable(options: DataTableOptions): {
 					}
 
 					if (currentOptions.onSort) {
-						console.log('🔵 [DATA TABLE] Llamando onSort con columnId:', columnId, 'direction:', sortDirection);
+						console.log(
+							'🔵 [DATA TABLE] Llamando onSort con columnId:',
+							columnId,
+							'direction:',
+							sortDirection,
+						);
 						currentOptions.onSort(columnId, sortDirection!);
 					} else {
 						console.warn('⚠️ [DATA TABLE] onSort no está definido');
@@ -3964,7 +4001,12 @@ export function createDataTable(options: DataTableOptions): {
 
 										// Llamar callback si existe
 										if (currentOptions.onColumnPin) {
-											console.log('🔵 [DATA TABLE] Llamando onColumnPin con columnId:', columnId, 'pinned:', column.pinned);
+											console.log(
+												'🔵 [DATA TABLE] Llamando onColumnPin con columnId:',
+												columnId,
+												'pinned:',
+												column.pinned,
+											);
 											currentOptions.onColumnPin(columnId, column.pinned);
 										} else {
 											console.warn('⚠️ [DATA TABLE] onColumnPin no está definido');
@@ -5784,7 +5826,9 @@ export function createDataTable(options: DataTableOptions): {
 												e.preventDefault();
 												// Recopilar valores de filtros
 												const filters: Record<string, string> = {};
-												const inputs = drawer.element.querySelectorAll('#filters-container .ubits-input');
+												const inputs = drawer.element.querySelectorAll(
+													'#filters-container .ubits-input',
+												);
 												inputs.forEach((input) => {
 													const htmlInput = input as HTMLInputElement;
 													if (htmlInput.value) {
@@ -5811,12 +5855,14 @@ export function createDataTable(options: DataTableOptions): {
 
 								// Crear inputs después de que el drawer esté renderizado
 								setTimeout(() => {
-									const container = drawer.element?.querySelector('#filters-container') as HTMLElement;
+									const container = drawer.element?.querySelector(
+										'#filters-container',
+									) as HTMLElement;
 									if (!container) return;
 
 									// Si hay filtros configurados, usarlos
 									const filters = currentOptions.header.filterButton?.filters || [];
-									
+
 									if (filters.length > 0) {
 										filters.forEach((filter) => {
 											const filterDiv = document.createElement('div');
@@ -6304,7 +6350,10 @@ export function createDataTable(options: DataTableOptions): {
 													const visibleColumns = currentOptions.columns
 														.filter((col) => col.visible !== false)
 														.map((col) => col.id);
-													console.log('🔵 [DATA TABLE] Llamando onColumnVisibilityChange con columnas:', visibleColumns);
+													console.log(
+														'🔵 [DATA TABLE] Llamando onColumnVisibilityChange con columnas:',
+														visibleColumns,
+													);
 													currentOptions.onColumnVisibilityChange(visibleColumns);
 												} else {
 													console.warn('⚠️ [DATA TABLE] onColumnVisibilityChange no está definido');

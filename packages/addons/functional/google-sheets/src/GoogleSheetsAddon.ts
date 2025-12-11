@@ -29,7 +29,10 @@ export class GoogleSheetsAddon implements IFunctionalAddon {
 
 		// Obtener configuración
 		const addonConfig = context.config.autorun?.addons?.config?.['google-sheets'] || {};
-		console.log(`🔍 [Google Sheets Add-on] Configuración obtenida:`, JSON.stringify(addonConfig, null, 2));
+		console.log(
+			`🔍 [Google Sheets Add-on] Configuración obtenida:`,
+			JSON.stringify(addonConfig, null, 2),
+		);
 
 		this.config = {
 			googleProjectId:
@@ -38,12 +41,16 @@ export class GoogleSheetsAddon implements IFunctionalAddon {
 				process.env.GOOGLE_CLOUD_PROJECT,
 			googleApplicationCredentials:
 				addonConfig.googleApplicationCredentials || process.env.GOOGLE_APPLICATION_CREDENTIALS,
-			googleServiceAccountKey: addonConfig.googleServiceAccountKey || process.env.GOOGLE_SERVICE_ACCOUNT_KEY,
+			googleServiceAccountKey:
+				addonConfig.googleServiceAccountKey || process.env.GOOGLE_SERVICE_ACCOUNT_KEY,
 			googlePrivateKey: addonConfig.googlePrivateKey || process.env.GOOGLE_PRIVATE_KEY,
 			googleClientEmail: addonConfig.googleClientEmail || process.env.GOOGLE_CLIENT_EMAIL,
 		};
 
-		console.log(`🔍 [Google Sheets Add-on] Configuración final:`, JSON.stringify(this.config, null, 2));
+		console.log(
+			`🔍 [Google Sheets Add-on] Configuración final:`,
+			JSON.stringify(this.config, null, 2),
+		);
 
 		// Inicializar servicio
 		await this.setupService();
@@ -247,3 +254,6 @@ export class GoogleSheetsAddon implements IFunctionalAddon {
 		};
 	}
 }
+
+
+

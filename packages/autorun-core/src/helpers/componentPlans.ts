@@ -1,6 +1,6 @@
 /**
  * Component Implementation Plans
- * 
+ *
  * Planes de implementación por pasos para componentes complejos
  */
 
@@ -122,13 +122,12 @@ export const TABS_IMPLEMENTATION_PLAN: ComponentImplementationPlan = {
  */
 export function registerAllPlans(): void {
 	const { stepByStepImplementation } = require('./stepByStepImplementation');
-	
+
 	stepByStepImplementation.registerPlan(DATATABLE_IMPLEMENTATION_PLAN);
 	stepByStepImplementation.registerPlan(TABS_IMPLEMENTATION_PLAN);
-	
+
 	console.log('✅ Component Plans: Todos los planes registrados');
 }
-
 
 
 
