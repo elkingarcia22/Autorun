@@ -282,7 +282,7 @@ async function getStoriesFromBrowser(
 export function mapComponentNameToStorybookId(componentName: string): string {
   const mapping: Record<string, string> = {
     DataTable: 'data-data-table',
-    Tabs: 'navegacion-tabs',
+    Tabs: 'navegación-tabs',
     Button: 'bsicos-button',
     Modal: 'feedback-modal',
     Sidebar: 'navegacion-sidebar',
