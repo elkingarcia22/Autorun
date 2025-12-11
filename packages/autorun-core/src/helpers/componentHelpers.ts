@@ -96,7 +96,7 @@ function mapComponentNameToStorybookURLSync(componentName: string): string {
 export function mapComponentNameToDocFile(componentName: string): string {
   const mapping: Record<string, string> = {
     DataTable: 'data-data-table',
-    Tabs: 'navegacin-tabs',
+    Tabs: 'navegación-tabs',
     Button: 'bsicos-button',
     Modal: 'feedback-modal',
     Sidebar: 'navegacion-sidebar',
