@@ -1242,6 +1242,14 @@
                             // Checkboxes (después del header)
                             showCheckbox: true,
                             
+                            // Callbacks para Action Bar
+                            onRowSelect: (rowId, rowData, selected) => {
+                                updateActionBar('encuestas-table-container', encuestasData);
+                            },
+                            onSelectAll: (selected) => {
+                                updateActionBar('encuestas-table-container', encuestasData);
+                            },
+                            
                             // Configuración básica (sin funcionalidades avanzadas todavía)
                             columnSortable: false, // Se agregará después
                             rowExpandable: false, // Se agregará después
@@ -1250,6 +1258,11 @@
                             showColumnMenu: false, // Se agregará después
                             showContextMenu: false // Se agregará después
                         });
+                        
+                        // Inicializar Action Bar después de crear la tabla
+                        setTimeout(() => {
+                            updateActionBar('encuestas-table-container', encuestasData);
+                        }, 500);
                         
                         console.log('✅ [Encuestas] DataTable básico inicializado correctamente');
                         
