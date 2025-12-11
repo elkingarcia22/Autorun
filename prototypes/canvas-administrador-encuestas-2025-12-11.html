@@ -1250,13 +1250,22 @@
                                 updateActionBar('encuestas-table-container', encuestasData);
                             },
                             
-                            // Configuración básica (sin funcionalidades avanzadas todavía)
-                            columnSortable: false, // Se agregará después
-                            rowExpandable: false, // Se agregará después
-                            columnReorderable: false, // Se agregará después
-                            rowReorderable: false, // Se agregará después
-                            showColumnMenu: false, // Se agregará después
-                            showContextMenu: false // Se agregará después
+                            // Funcionalidades principales
+                            columnSortable: true,
+                            rowExpandable: true,
+                            columnReorderable: true,
+                            rowReorderable: true,
+                            showColumnMenu: true,
+                            showContextMenu: true,
+                            
+                            // Paginación (al final)
+                            pagination: {
+                                show: true,
+                                currentPage: 1,
+                                itemsPerPage: 10,
+                                variant: 'default',
+                                size: 'md'
+                            }
                         });
                         
                         // Inicializar Action Bar después de crear la tabla
