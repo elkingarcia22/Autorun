@@ -240,6 +240,16 @@
         }
 
         /* ========================================
+           TABS CONTAINER
+           ======================================== */
+        
+        #encuestas-tabs-container {
+            width: 100%;
+            box-sizing: border-box;
+            /* ⚠️ CRÍTICO: NO agregar margin-top - el spacing viene del gap del contenedor padre (.main-content) */
+        }
+
+        /* ========================================
            SECTION TYPES
            ======================================== */
         
@@ -1097,6 +1107,41 @@
                     subnav: 'top-nav-container',
                     tabbar: 'tab-bar-container'
                 });
+                
+                // ========================================
+                // INICIALIZAR TABS DE ENCUESTAS
+                // ========================================
+                setTimeout(() => {
+                    const tabsContainer = document.getElementById('encuestas-tabs-container');
+                    if (tabsContainer && window.createTabs) {
+                        console.log('🔵 [Encuestas] Inicializando Tabs...');
+                        window.createTabs({
+                            tabs: [
+                                { 
+                                    id: 'encuestas', 
+                                    label: 'Encuestas', 
+                                    icon: 'list-ul' 
+                                },
+                                { 
+                                    id: 'datos-demograficos', 
+                                    label: 'Datos demográficos', 
+                                    icon: 'users' 
+                                }
+                            ],
+                            activeTabId: 'encuestas',
+                            onTabChange: (tabId, tabElement) => {
+                                console.log('🔵 [Encuestas] Tab cambiado:', tabId);
+                                // Aquí se puede agregar lógica para cambiar el contenido según el tab activo
+                            }
+                        }, 'encuestas-tabs-container');
+                        console.log('✅ [Encuestas] Tabs inicializados correctamente');
+                    } else {
+                        console.warn('⚠️ [Encuestas] No se pudo inicializar Tabs:', {
+                            container: !!tabsContainer,
+                            createTabs: !!window.createTabs
+                        });
+                    }
+                }, 500);
                 
                 // Inicializar responsive DESPUÉS de que los componentes se hayan cargado
                 // Esto asegura que adaptComponents() encuentre los componentes
