@@ -2465,7 +2465,10 @@
     // TODO: La implementación de DataTable se realizará siguiendo el plan predefinido
     // Ver: packages/autorun-core/src/helpers/componentPlans.ts (DATATABLE_IMPLEMENTATION_PLAN)
     // y el plan automático obtenido del add-on Pre-Implementation Check basado en Storybook
-      const selectedIds = Array.from(selectionState.selectedRowIds);
+  </script>
+  
+  <script>
+    if (!originalHandleSectionChange) {
 
       if (selectedCount === 0) {
         actionBar.style.display = 'none';
