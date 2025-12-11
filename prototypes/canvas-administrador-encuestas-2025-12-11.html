@@ -257,6 +257,21 @@
             width: 100%;
             box-sizing: border-box;
             /* ⚠️ CRÍTICO: NO agregar margin-top - el spacing viene del gap del contenedor padre (.main-content) */
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ✅ CRÍTICO: Sobrescribir el CSS del DataTable para altura dinámica */
+        #encuestas-table-container .ubits-data-table__scrollable-container--vertical {
+            /* ⚠️ CRÍTICO: Sobrescribir el max-height: 400px del CSS del DataTable */
+            max-height: none !important; /* Permitir que JavaScript lo establezca */
+            transition: max-height 0.3s ease;
+            /* ✅ EVITAR DESBORDAMIENTO: Asegurar que el scrollable container tenga overflow-y: auto */
+            overflow-y: auto !important;
+            overflow-x: visible !important;
+            flex: 1;
+            min-height: 0;
         }
 
         /* ========================================
@@ -1153,6 +1168,67 @@
                         });
                     }
                 }, 500);
+                
+                // ========================================
+                // INICIALIZAR DATATABLE DE ENCUESTAS (BÁSICO)
+                // ========================================
+                setTimeout(() => {
+                    const tableContainer = document.getElementById('encuestas-table-container');
+                    if (tableContainer && window.createDataTable) {
+                        console.log('🔵 [Encuestas] Inicializando DataTable básico...');
+                        
+                        // Generar datos de ejemplo
+                        function generateEncuestasData() {
+                            const estados = ['activa', 'cerrada', 'borrador', 'programada'];
+                            const encuestas = [];
+                            
+                            for (let i = 1; i <= 20; i++) {
+                                encuestas.push({
+                                    id: i,
+                                    data: {
+                                        nombre: `Encuesta ${i}`,
+                                        estado: estados[Math.floor(Math.random() * estados.length)],
+                                        fechaInicio: new Date(2024, 0, i).toISOString().split('T')[0],
+                                        fechaCierre: new Date(2024, 1, i + 15).toISOString().split('T')[0],
+                                        participantes: Math.floor(Math.random() * 500) + 50,
+                                        avance: Math.floor(Math.random() * 100)
+                                    }
+                                });
+                            }
+                            
+                            return encuestas;
+                        }
+                        
+                        window.createDataTable({
+                            containerId: 'encuestas-table-container',
+                            columns: [
+                                { id: 'nombre', title: 'Nombre', type: 'nombre' },
+                                { id: 'estado', title: 'Estado', type: 'estado' },
+                                { id: 'fechaInicio', title: 'Fecha de inicio', type: 'fecha' },
+                                { id: 'fechaCierre', title: 'Fecha de cierre', type: 'fecha' },
+                                { id: 'participantes', title: 'Participantes', type: 'nombre' },
+                                { id: 'avance', title: 'Avance', type: 'progreso' }
+                            ],
+                            rows: generateEncuestasData(),
+                            
+                            // Configuración básica (sin funcionalidades avanzadas todavía)
+                            showCheckbox: false, // Se agregará después del header
+                            columnSortable: false, // Se agregará después
+                            rowExpandable: false, // Se agregará después
+                            columnReorderable: false, // Se agregará después
+                            rowReorderable: false, // Se agregará después
+                            showColumnMenu: false, // Se agregará después
+                            showContextMenu: false // Se agregará después
+                        });
+                        
+                        console.log('✅ [Encuestas] DataTable básico inicializado correctamente');
+                    } else {
+                        console.warn('⚠️ [Encuestas] No se pudo inicializar DataTable:', {
+                            container: !!tableContainer,
+                            createDataTable: !!window.createDataTable
+                        });
+                    }
+                }, 1000);
                 
                 // Inicializar responsive DESPUÉS de que los componentes se hayan cargado
                 // Esto asegura que adaptComponents() encuentre los componentes
