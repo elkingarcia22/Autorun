@@ -2441,8 +2441,125 @@
   
   <script>
     if (!originalHandleSectionChange) {
-
-      if (selectedCount === 0) {
+      // Si ContentManager aún no existe, interceptarlo cuando se cree
+      Object.defineProperty(window, 'UBITS_ContentManager', {
+        set: function(value) {
+          console.log('🔍 [Wizard] UBITS_ContentManager definido');
+          if (value && value.handleSectionChange) {
+            const original = value.handleSectionChange;
+            value.handleSectionChange = function(section, activeTabId) {
+              console.log('🔍 [Wizard] ════════════════════════════════════════');
+              console.log('🔍 [Wizard] 🔄 handleSectionChange INTERCEPTADO (desde setter)');
+              console.log('🔍 [Wizard] section:', section);
+              console.log('🔍 [Wizard] activeTabId:', activeTabId);
+              console.log('🔍 [Wizard] currentSection antes:', this.currentSection);
+              return original.call(this, section, activeTabId);
+            };
+          }
+          Object.defineProperty(window, 'UBITS_ContentManager', { value, writable: true, configurable: true });
+        },
+        get: function() {
+          return window._UBITS_ContentManager;
+        },
+        configurable: true
+      });
+    }
+  </script>
+  
+  <script>
+    // Desactivar navegación de otros módulos en el sidebar
+    (function() {
+      const currentModule = 'encuestas';
+      
+      function disableOtherModules() {
+        const sidebar = document.querySelector('.ubits-sidebar');
+        if (!sidebar) {
+          // Si el sidebar aún no está cargado, reintentar
+          setTimeout(disableOtherModules, 100);
+          return;
+        }
+        
+        // Buscar todos los botones del sidebar
+        const allButtons = sidebar.querySelectorAll('.ubits-sidebar-nav-button');
+        let disabledCount = 0;
+        
+        allButtons.forEach(button => {
+          const buttonModule = button.getAttribute('data-section');
+          
+          // Si el botón NO es del módulo actual, deshabilitarlo
+          if (buttonModule && buttonModule !== currentModule) {
+            // Remover el atributo data-section para que no funcione el click
+            button.removeAttribute('data-section');
+            
+            // Deshabilitar el botón visualmente
+            button.style.opacity = '0.5';
+            button.style.cursor = 'not-allowed';
+            button.style.pointerEvents = 'none';
+            
+            // Prevenir cualquier click
+            button.addEventListener('click', function(e) {
+              e.preventDefault();
+              e.stopPropagation();
+              return false;
+            }, true);
+            
+            disabledCount++;
+          }
+        });
+        
+        // Desactivar el logo de UBITS que lleva al inicio
+        const logoElements = sidebar.querySelectorAll('a[href*="inicio"], .ubits-sidebar-logo, .ubits-logo, [data-section="inicio"]');
+        logoElements.forEach(logo => {
+          // Remover atributos de navegación
+          logo.removeAttribute('href');
+          logo.removeAttribute('data-section');
+          
+          // Deshabilitar visualmente
+          logo.style.opacity = '0.5';
+          logo.style.cursor = 'not-allowed';
+          logo.style.pointerEvents = 'none';
+          
+          // Prevenir cualquier click
+          logo.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+          }, true);
+          
+          disabledCount++;
+        });
+        
+        // También buscar el logo por su posición común (primer elemento del sidebar)
+        const firstChild = sidebar.firstElementChild;
+        if (firstChild && (firstChild.tagName === 'A' || firstChild.querySelector('a'))) {
+          const logoLink = firstChild.tagName === 'A' ? firstChild : firstChild.querySelector('a');
+          if (logoLink) {
+            logoLink.removeAttribute('href');
+            logoLink.removeAttribute('data-section');
+            logoLink.style.opacity = '0.5';
+            logoLink.style.cursor = 'not-allowed';
+            logoLink.style.pointerEvents = 'none';
+            logoLink.addEventListener('click', function(e) {
+              e.preventDefault();
+              e.stopPropagation();
+              return false;
+            }, true);
+          }
+        }
+        
+        if (disabledCount > 0) {
+          console.log(`✅ [Wizard] ${disabledCount} elementos del sidebar deshabilitados para el módulo '${currentModule}'`);
+        }
+      }
+      
+      // Ejecutar cuando el DOM esté listo
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', disableOtherModules);
+      } else {
+        disableOtherModules();
+      }
+    })();
+  </script>
         actionBar.style.display = 'none';
         return;
       }
