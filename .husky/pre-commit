@@ -1,6 +1,30 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-# Pre-commit hook para Autoframe
-# Ejecuta linting y formateo antes de commit
+# Pre-commit hook para Autorun
+# Ejecuta linting, formateo y verificación de Autorun antes de commit
+
+echo "🔍 [Pre-commit] Ejecutando verificaciones..."
+
+# 1. Linting y formateo
+echo "📋 [Pre-commit] Ejecutando lint y format..."
 npm run lint && npm run format
+
+if [ $? -ne 0 ]; then
+  echo "❌ [Pre-commit] Lint o format falló"
+  exit 1
+fi
+
+# 2. Verificación de Autorun (solo archivos en prototypes/)
+echo "✅ [Pre-commit] Verificando archivos modificados con autorun.verify()..."
+npm run autorun:verify -- --diff
+
+if [ $? -ne 0 ]; then
+  echo "❌ [Pre-commit] autorun.verify() falló"
+  echo "   Los archivos en prototypes/ deben tener marca AUTORUN y pasar todas las validaciones"
+  echo "   Usa 'npm run autorun:apply' para implementar componentes correctamente"
+  exit 1
+fi
+
+echo "✅ [Pre-commit] Todas las verificaciones pasaron"
+exit 0

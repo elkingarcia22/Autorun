@@ -15,6 +15,11 @@ import {
 import { ComponentImplementationValidator } from '../helpers/componentImplementationValidator';
 import { PhaseValidator } from '../validation/PhaseValidator';
 import { ActiveStepGuide } from '../helpers/activeStepGuide';
+import { guardWrite } from '../helpers/writeGuard';
+import {
+  shouldAutoReload,
+  getTemplateUrlFromPath,
+} from '../helpers/autoReloadHelper';
 import * as path from 'path';
 
 // ⚠️ CRÍTICO: Estado global para rastrear si se ejecutó handleUserMessage()
@@ -58,6 +63,55 @@ export async function interceptedWrite(
   );
   console.log('🛡️ [Tool Interceptor] Interceptando write()...');
   console.log(`🛡️ [Tool Interceptor] Archivo: ${filePath}`);
+
+  // ⚠️ CRÍTICO: Ejecutar guardWrite() automáticamente ANTES de continuar
+  console.log(
+    '🛡️ [Tool Interceptor] Ejecutando guardWrite() automáticamente...'
+  );
+  try {
+    const guardResult = await guardWrite(
+      filePath,
+      contents,
+      context?.userMessage
+    );
+
+    if (!guardResult.allowed) {
+      console.error(
+        `❌ [Tool Interceptor] guardWrite() BLOQUEÓ write(): ${guardResult.reason}`
+      );
+      console.error(
+        `❌ [Tool Interceptor] Debes usar autorun.apply() o interceptedWrite() con el flujo completo`
+      );
+      throw new Error(`❌ IMPLEMENTACIÓN BLOQUEADA: ${guardResult.reason}`);
+    }
+
+    if (guardResult.componentName) {
+      console.log(
+        `✅ [Tool Interceptor] guardWrite() permitió write() para componente: ${guardResult.componentName}`
+      );
+      // Actualizar context con componente detectado
+      if (!context) {
+        context = {};
+      }
+      context.componentName = guardResult.componentName;
+    } else {
+      console.log(
+        '✅ [Tool Interceptor] guardWrite() permitió write() (sin componentes detectados)'
+      );
+    }
+  } catch (error: any) {
+    // Si guardWrite lanza error, bloquear la escritura
+    if (error.message.includes('IMPLEMENTACIÓN BLOQUEADA')) {
+      throw error;
+    }
+    // Si hay otro error, continuar con advertencia
+    console.warn(
+      `⚠️ [Tool Interceptor] Error en guardWrite(): ${error.message}`
+    );
+    console.warn(
+      `⚠️ [Tool Interceptor] Continuando sin guardWrite() (puede haber errores)`
+    );
+  }
 
   // ⚠️ CRÍTICO: Ejecutar executeOnMessageStart() automáticamente si no se ha ejecutado
   if (!messageStartExecuted && context?.userMessage) {
@@ -235,6 +289,71 @@ export async function interceptedWrite(
     });
   }
 
+  // ⭐ NUEVO: Validar estructura antes de escribir (MITIGACIÓN DE ERRORES)
+  if (context?.componentName) {
+    try {
+      const { validateStructureBeforeWrite } = await import(
+        '../helpers/storybookStructureValidator'
+      );
+      const { mapAndValidateComponentNameToStorybookId } = await import(
+        '../helpers/storybookStories'
+      );
+
+      const componentId = await mapAndValidateComponentNameToStorybookId(
+        context.componentName
+      );
+
+      console.log(
+        `🔍 [Tool Interceptor] Validando estructura antes de escribir: ${componentId}`
+      );
+
+      const structureValidation = await validateStructureBeforeWrite(
+        componentId,
+        contents,
+        context.componentName
+      );
+
+      if (!structureValidation.valid) {
+        console.error(`❌ [Tool Interceptor] Validación de estructura falló:`);
+        structureValidation.errors.forEach((error) => {
+          console.error(`   ${error}`);
+        });
+
+        if (structureValidation.warnings.length > 0) {
+          console.warn(`⚠️ [Tool Interceptor] Advertencias:`);
+          structureValidation.warnings.forEach((warning) => {
+            console.warn(`   ${warning}`);
+          });
+        }
+
+        throw new Error(
+          `❌ IMPLEMENTACIÓN BLOQUEADA: Errores de estructura detectados:\n${structureValidation.errors.join('\n')}`
+        );
+      }
+
+      if (structureValidation.warnings.length > 0) {
+        console.warn(`⚠️ [Tool Interceptor] Advertencias de estructura:`);
+        structureValidation.warnings.forEach((warning) => {
+          console.warn(`   ${warning}`);
+        });
+      }
+
+      console.log(`✅ [Tool Interceptor] Validación de estructura pasó`);
+    } catch (error: any) {
+      // Si la validación falla, bloquear la escritura
+      if (error.message.includes('IMPLEMENTACIÓN BLOQUEADA')) {
+        throw error;
+      }
+      // Si hay otro error (ej: no se pudo consultar Storybook), continuar con advertencia
+      console.warn(
+        `⚠️ [Tool Interceptor] Error en validación de estructura: ${error.message}`
+      );
+      console.warn(
+        `⚠️ [Tool Interceptor] Continuando sin validación (puede haber errores)`
+      );
+    }
+  }
+
   // Ejecutar flujo automático ANTES de escribir
   const flow = await autoImplementationFlow(
     filePath,
@@ -271,15 +390,59 @@ export async function interceptedWrite(
     throw new Error(`❌ IMPLEMENTACIÓN BLOQUEADA: ${flow.reason}`);
   }
 
-  console.log('✅ [Tool Interceptor] write() permitido');
-  console.log('✅ [Tool Interceptor] Proceder con write() normalmente');
+  // ⚠️ CRÍTICO: ESCRIBIR el archivo realmente (SOLUCIÓN DEFINITIVA)
+  console.log('✅ [Tool Interceptor] Escribiendo archivo directamente...');
+  try {
+    const fs = await import('fs/promises');
+    const dir = path.dirname(filePath);
+    await fs.mkdir(dir, { recursive: true });
+    await fs.writeFile(filePath, contents, 'utf-8');
+    console.log(`✅ [Tool Interceptor] Archivo escrito: ${filePath}`);
+  } catch (error: any) {
+    console.error(
+      `❌ [Tool Interceptor] Error escribiendo archivo: ${error.message}`
+    );
+    throw new Error(`❌ Error escribiendo archivo: ${error.message}`);
+  }
+
+  console.log('✅ [Tool Interceptor] write() completado');
+  console.log(
+    '✅ [Tool Interceptor] NO necesitas llamar write() después - ya está escrito'
+  );
   console.log(
     '🛡️ [Tool Interceptor] ========================================\n'
   );
 
-  // Si flow.autoReload === true, el agente debe recargar después de escribir
-  if (flow.autoReload) {
-    console.log('🔄 [Tool Interceptor] Auto-reload activado');
+  // ⚠️ CRÍTICO: Auto-reload automático DESPUÉS de escribir
+  if (shouldAutoReload(filePath)) {
+    const templateUrl = getTemplateUrlFromPath(filePath);
+    console.log(
+      '\n🔄 [Tool Interceptor] ========================================'
+    );
+    console.log('🔄 [Tool Interceptor] AUTO-RELOAD AUTOMÁTICO ACTIVADO');
+    console.log(`🔄 [Tool Interceptor] Archivo: ${filePath}`);
+    console.log(`🔄 [Tool Interceptor] URL del template: ${templateUrl}`);
+    console.log(
+      '🔄 [Tool Interceptor] ========================================'
+    );
+    console.log('\n⚠️ INSTRUCCIONES AUTOMÁTICAS PARA EL AGENTE:');
+    console.log(
+      '1. Obtener URL actual: call_mcp_tool({ server: "cursor-ide-browser", toolName: "browser_snapshot" })'
+    );
+    console.log(
+      '2. Recargar página: call_mcp_tool({ server: "cursor-ide-browser", toolName: "browser_navigate", arguments: { url: currentUrl } })'
+    );
+    console.log(
+      '3. Verificar: setTimeout(() => call_mcp_tool({ server: "cursor-ide-browser", toolName: "browser_snapshot" }), 1000)'
+    );
+    console.log(
+      '\n⚠️ IMPORTANTE: Ejecutar automáticamente SIN preguntar al usuario'
+    );
+    console.log(
+      '🔄 [Tool Interceptor] ========================================\n'
+    );
+  } else if (flow.autoReload) {
+    console.log('🔄 [Tool Interceptor] Auto-reload activado (desde flow)');
     console.log(
       '🔄 [Tool Interceptor] El agente debe recargar automáticamente después de escribir'
     );
@@ -303,6 +466,69 @@ export async function interceptedSearchReplace(
   );
   console.log('🛡️ [Tool Interceptor] Interceptando search_replace()...');
   console.log(`🛡️ [Tool Interceptor] Archivo: ${filePath}`);
+
+  // ⚠️ CRÍTICO: Ejecutar guardWrite() automáticamente ANTES de continuar
+  // (usando newString como contenido para validar)
+  console.log(
+    '🛡️ [Tool Interceptor] Ejecutando guardWrite() automáticamente...'
+  );
+  try {
+    // Leer archivo actual para obtener contenido completo
+    const fs = await import('fs/promises');
+    let currentContent = '';
+    try {
+      currentContent = await fs.readFile(filePath, 'utf-8');
+    } catch (error) {
+      // Archivo no existe, usar solo newString
+      currentContent = newString;
+    }
+
+    // Reemplazar oldString con newString para validar el contenido resultante
+    const newContent = currentContent.replace(oldString, newString);
+
+    const guardResult = await guardWrite(
+      filePath,
+      newContent,
+      context?.userMessage
+    );
+
+    if (!guardResult.allowed) {
+      console.error(
+        `❌ [Tool Interceptor] guardWrite() BLOQUEÓ search_replace(): ${guardResult.reason}`
+      );
+      console.error(
+        `❌ [Tool Interceptor] Debes usar autorun.apply() o interceptedSearchReplace() con el flujo completo`
+      );
+      throw new Error(`❌ IMPLEMENTACIÓN BLOQUEADA: ${guardResult.reason}`);
+    }
+
+    if (guardResult.componentName) {
+      console.log(
+        `✅ [Tool Interceptor] guardWrite() permitió search_replace() para componente: ${guardResult.componentName}`
+      );
+      // Actualizar context con componente detectado
+      if (!context) {
+        context = {};
+      }
+      context.componentName = guardResult.componentName;
+    } else {
+      console.log(
+        '✅ [Tool Interceptor] guardWrite() permitió search_replace() (sin componentes detectados)'
+      );
+    }
+  } catch (error: any) {
+    // Si guardWrite lanza error, bloquear la escritura
+    if (error.message.includes('IMPLEMENTACIÓN BLOQUEADA')) {
+      throw error;
+    }
+    // Si hay otro error, continuar con advertencia
+    console.warn(
+      `⚠️ [Tool Interceptor] Error en guardWrite(): ${error.message}`
+    );
+    console.warn(
+      `⚠️ [Tool Interceptor] Continuando sin guardWrite() (puede haber errores)`
+    );
+  }
 
   // ⚠️ CRÍTICO: Ejecutar handleUserMessage() automáticamente si no se ha ejecutado
   if (!messageStartExecuted && context?.userMessage) {
@@ -413,17 +639,71 @@ export async function interceptedSearchReplace(
     throw new Error(`❌ IMPLEMENTACIÓN BLOQUEADA: ${flow.reason}`);
   }
 
-  console.log('✅ [Tool Interceptor] search_replace() permitido');
+  // ⚠️ CRÍTICO: ESCRIBIR el archivo realmente (SOLUCIÓN DEFINITIVA)
+  console.log('✅ [Tool Interceptor] Escribiendo archivo directamente...');
+  try {
+    const fs = await import('fs/promises');
+    let currentContent = '';
+    try {
+      currentContent = await fs.readFile(filePath, 'utf-8');
+    } catch (error) {
+      // Archivo no existe, usar solo newString
+      currentContent = newString;
+    }
+
+    // Reemplazar oldString con newString
+    const newContent = currentContent.replace(oldString, newString);
+
+    // Escribir archivo
+    const dir = path.dirname(filePath);
+    await fs.mkdir(dir, { recursive: true });
+    await fs.writeFile(filePath, newContent, 'utf-8');
+    console.log(`✅ [Tool Interceptor] Archivo escrito: ${filePath}`);
+  } catch (error: any) {
+    console.error(
+      `❌ [Tool Interceptor] Error escribiendo archivo: ${error.message}`
+    );
+    throw new Error(`❌ Error escribiendo archivo: ${error.message}`);
+  }
+
+  console.log('✅ [Tool Interceptor] search_replace() completado');
   console.log(
-    '✅ [Tool Interceptor] Proceder con search_replace() normalmente'
+    '✅ [Tool Interceptor] NO necesitas llamar search_replace() después - ya está escrito'
   );
   console.log(
     '🛡️ [Tool Interceptor] ========================================\n'
   );
 
-  // Si flow.autoReload === true, el agente debe recargar después de escribir
-  if (flow.autoReload) {
-    console.log('🔄 [Tool Interceptor] Auto-reload activado');
+  // ⚠️ CRÍTICO: Auto-reload automático DESPUÉS de escribir
+  if (shouldAutoReload(filePath)) {
+    const templateUrl = getTemplateUrlFromPath(filePath);
+    console.log(
+      '\n🔄 [Tool Interceptor] ========================================'
+    );
+    console.log('🔄 [Tool Interceptor] AUTO-RELOAD AUTOMÁTICO ACTIVADO');
+    console.log(`🔄 [Tool Interceptor] Archivo: ${filePath}`);
+    console.log(`🔄 [Tool Interceptor] URL del template: ${templateUrl}`);
+    console.log(
+      '🔄 [Tool Interceptor] ========================================'
+    );
+    console.log('\n⚠️ INSTRUCCIONES AUTOMÁTICAS PARA EL AGENTE:');
+    console.log(
+      '1. Obtener URL actual: call_mcp_tool({ server: "cursor-ide-browser", toolName: "browser_snapshot" })'
+    );
+    console.log(
+      '2. Recargar página: call_mcp_tool({ server: "cursor-ide-browser", toolName: "browser_navigate", arguments: { url: currentUrl } })'
+    );
+    console.log(
+      '3. Verificar: setTimeout(() => call_mcp_tool({ server: "cursor-ide-browser", toolName: "browser_snapshot" }), 1000)'
+    );
+    console.log(
+      '\n⚠️ IMPORTANTE: Ejecutar automáticamente SIN preguntar al usuario'
+    );
+    console.log(
+      '🔄 [Tool Interceptor] ========================================\n'
+    );
+  } else if (flow.autoReload) {
+    console.log('🔄 [Tool Interceptor] Auto-reload activado (desde flow)');
     console.log(
       '🔄 [Tool Interceptor] El agente debe recargar automáticamente después de escribir'
     );

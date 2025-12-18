@@ -190,33 +190,81 @@ export async function autoImplementationFlow(
         );
       }
 
-      // 2.4 ⭐ NUEVO: Intentar obtener código de ejemplo desde Storybook
+      // 2.4 ⭐ NUEVO: Consultar Storybook completo en paralelo (OPTIMIZACIÓN)
       let exampleCode: string | undefined;
+      let storybookInfo: any = undefined;
       try {
         const componentId =
           await mapAndValidateComponentNameToStorybookId(componentName);
         console.log(
-          `🔍 [Auto Implementation Flow] Obteniendo código de ejemplo desde Storybook...`
+          `🚀 [Auto Implementation Flow] Consultando Storybook completo en paralelo...`
         );
-        const exampleCodeResult = await getExampleCodeFromStorybook(
+
+        // ⭐ NUEVO: Usar consulta paralela optimizada
+        const { consultStorybookCompleto } = await import(
+          './storybookParallelConsult'
+        );
+        const consultResult = await consultStorybookCompleto(
           componentId,
-          'default'
+          componentName
         );
-        exampleCode = exampleCodeResult || undefined;
-        if (exampleCode) {
-          console.log(
-            `✅ [Auto Implementation Flow] Código de ejemplo obtenido (${exampleCode.length} caracteres)`
-          );
+
+        if (consultResult.success) {
+          storybookInfo = consultResult.info;
+          exampleCode = consultResult.info.exactCode?.html || undefined;
+
+          if (exampleCode) {
+            console.log(
+              `✅ [Auto Implementation Flow] Código de ejemplo obtenido (${exampleCode.length} caracteres)`
+            );
+          }
+
+          if (consultResult.fromCache) {
+            console.log(
+              `✅ [Auto Implementation Flow] Información obtenida desde caché (muy rápido)`
+            );
+          } else {
+            console.log(
+              `✅ [Auto Implementation Flow] Información obtenida consultando Storybook en paralelo`
+            );
+          }
+
+          if (consultResult.warnings.length > 0) {
+            console.warn(
+              `⚠️ [Auto Implementation Flow] Advertencias: ${consultResult.warnings.join(', ')}`
+            );
+          }
         } else {
-          console.log(
-            `⚠️ [Auto Implementation Flow] No se pudo obtener código de ejemplo`
+          console.warn(
+            `⚠️ [Auto Implementation Flow] Error consultando Storybook: ${consultResult.errors.join(', ')}`
           );
+          // Fallback: intentar método tradicional
+          const exampleCodeResult = await getExampleCodeFromStorybook(
+            componentId,
+            'default'
+          );
+          exampleCode = exampleCodeResult || undefined;
         }
       } catch (error) {
         console.warn(
-          `⚠️ [Auto Implementation Flow] Error obteniendo código de ejemplo:`,
+          `⚠️ [Auto Implementation Flow] Error consultando Storybook completo:`,
           error
         );
+        // Fallback: intentar método tradicional
+        try {
+          const componentId =
+            await mapAndValidateComponentNameToStorybookId(componentName);
+          const exampleCodeResult = await getExampleCodeFromStorybook(
+            componentId,
+            'default'
+          );
+          exampleCode = exampleCodeResult || undefined;
+        } catch (fallbackError) {
+          console.warn(
+            `⚠️ [Auto Implementation Flow] Fallback también falló:`,
+            fallbackError
+          );
+        }
       }
 
       // 2.5. ⭐ NUEVO: Verificación pre-implementación completa (Mejora 5)

@@ -52,30 +52,48 @@
 
 ---
 
-## 🔌 USO OBLIGATORIO DE MCPs
+## 🔌 USO OBLIGATORIO DE AUTORUN.APPLY()
 
-**⚠️ CRÍTICO:** Antes de implementar cualquier componente UBITS, DEBES consultar los MCPs disponibles para obtener información exacta.
+**⚠️ CRÍTICO:** Para implementar cualquier componente UBITS, DEBES usar `autorun.apply()` vía MCP.
 
-**Ver guía completa:** `docs/guias/implementacion/GUIA-USO-MCP-EN-IMPLEMENTACION.md` - ⚠️ **OBLIGATORIO**
+**❌ PROHIBIDO:**
+- Usar `write()` o `search_replace()` directo en `prototypes/`
+- Usar `interceptedWrite()` o `interceptedSearchReplace()` (deprecado)
+- Inventar HTML/CSS sin consultar Storybook
 
-### Proceso Obligatorio:
+**✅ OBLIGATORIO:**
+```typescript
+// 1. Llamar autorun.apply() (ejecuta TODO automáticamente)
+await call_mcp_tool({
+  server: 'autorun',
+  toolName: 'autorun.apply',
+  arguments: {
+    message: userMessage,
+    targetFiles: [filePath] // Opcional
+  }
+});
 
-1. **Consultar Storybook MCP:**
-   - Usar `mcp_storybook_getComponentList` para listar componentes
-   - Usar `mcp_storybook_getComponentsProps` para obtener props exactas
-   - Verificar estructura, tokens, controles y variantes
+// 2. Verificar implementación
+await call_mcp_tool({
+  server: 'autorun',
+  toolName: 'autorun.verify',
+  arguments: {
+    targetFiles: 'diff' // Verifica todos los cambios
+  }
+});
+```
 
-2. **Consultar Storybook directamente:**
-   - Abrir `http://localhost:6006` en navegador
-   - Revisar Controls, Tokens, Ejemplos y Variantes
-   - Obtener código exacto del componente
+**autorun.apply() ejecuta automáticamente:**
+1. Detección de componentes
+2. Consulta Storybook MCP (OBLIGATORIO, fail-closed)
+3. Extracción código exacto desde Storybook
+4. Validación pre-implementación
+5. Escritura con watermark
+6. Post-procesamiento (Prettier, ESLint, Auto-Reload)
 
-3. **Implementar con información exacta:**
-   - Usar props exactas obtenidas del MCP
-   - Usar tokens exactos obtenidos del Storybook
-   - Seguir estructura exacta del componente
+**Si Storybook MCP falla → autorun.apply() NO escribe nada (fail-closed)**
 
-**NO implementar componentes sin consultar MCPs primero.**
+**Ver guía completa:** `.cursor/rules/00-autorun-enforcement.md` - ⚠️ **OBLIGATORIO**
 
 ### ⚠️ REGLA CRÍTICA: USAR PRE-IMPLEMENTATION CHECK ADD-ON
 

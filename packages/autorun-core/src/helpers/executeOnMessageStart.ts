@@ -10,6 +10,7 @@
 import { executeAutoDetectionOnMessage } from './autoComponentDetection.js';
 import { getAutorunHub } from '../AutorunAgent.js';
 import { KeywordTriggerSystem } from './keywordTriggerSystem.js';
+import { autoDetectWizardState } from './autoWizardDetection.js';
 
 export interface MessageStartResult {
   detected: boolean;
@@ -43,7 +44,26 @@ export async function executeOnMessageStart(
     `🚀 [Execute On Message Start] Mensaje: ${userMessage.substring(0, 100)}...`
   );
 
-  // 0. Detectar triggers de palabras clave PRIMERO
+  // 0. ⚠️ CRÍTICO: Detectar wizard state PRIMERO (ANTES de todo)
+  console.log(`🔍 [Execute On Message Start] Detectando estado del wizard...`);
+  try {
+    const wizardDetection = await autoDetectWizardState();
+    if (wizardDetection.detected && wizardDetection.url) {
+      console.log(
+        `✅ [Execute On Message Start] Wizard state detectado y mensajes emitidos`
+      );
+      console.log(
+        `📋 [Execute On Message Start] El agente debe procesar automáticamente los mensajes emitidos`
+      );
+    }
+  } catch (error: any) {
+    // No bloquear si falla la detección del wizard
+    console.warn(
+      `⚠️ [Execute On Message Start] Error detectando wizard state: ${error.message}`
+    );
+  }
+
+  // 1. Detectar triggers de palabras clave
   console.log(
     `🔍 [Execute On Message Start] Detectando triggers de palabras clave...`
   );
@@ -114,9 +134,9 @@ export async function executeOnMessageStart(
       const manager = StorybookManager.getInstance();
       const activeConfig = await manager.getActiveConfig();
 
-      let mcpServer = 'storybook-ubits'; // Default
+      let mcpServer = 'storybook'; // Default
       if (activeConfig) {
-        mcpServer = 'storybook-ubits'; // Mismo servidor, pero URL diferente en configuración
+        mcpServer = 'storybook'; // Servidor unificado
         console.log(
           `📚 [Execute On Message Start] Storybook activo: ${activeConfig.name} (${activeConfig.url})`
         );
@@ -127,7 +147,7 @@ export async function executeOnMessageStart(
       console.log(`     server: "${mcpServer}",`);
     } catch (error) {
       // Si no se puede obtener Storybook activo, usar default
-      console.log(`     server: "storybook-ubits",`);
+      console.log(`     server: "storybook",`);
     }
     console.log(`     toolName: "mcp_storybook_getComponentsProps",`);
     console.log(`     arguments: { componentIds: ["${storybookId}"] }`);

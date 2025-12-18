@@ -107,7 +107,7 @@ function getMCPServerForStorybook(config: any): string {
   };
 
   const baseUrl = config.url.replace(/\/$/, '');
-  return urlToServer[baseUrl] || 'storybook-ubits-mcp'; // Fallback
+  return urlToServer[baseUrl] || 'storybook'; // Servidor unificado
 }
 
 /**

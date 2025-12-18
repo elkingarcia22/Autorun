@@ -6,7 +6,11 @@
  */
 
 import { AutorunVerifyInput, AutorunVerifyOutput } from '../types.js';
-import { hasAutorunMark, parseAutorunMarks, validateAutorunMark } from '../helpers/codeMarkGenerator.js';
+import {
+  hasAutorunMark,
+  parseAutorunMarks,
+  validateAutorunMark,
+} from '../helpers/codeMarkGenerator.js';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import { exec } from 'child_process';
@@ -21,7 +25,9 @@ export async function autorunVerify(
   input: AutorunVerifyInput
 ): Promise<AutorunVerifyOutput> {
   console.log(`\n✅ [Autorun MCP] autorun.verify() llamado`);
-  console.log(`   Archivos: ${input.targetFiles === 'diff' ? 'diff (git)' : input.targetFiles.join(', ')}`);
+  console.log(
+    `   Archivos: ${input.targetFiles === 'diff' ? 'diff (git)' : input.targetFiles.join(', ')}`
+  );
 
   const errors: string[] = [];
   const warnings: string[] = [];
@@ -39,10 +45,16 @@ export async function autorunVerify(
         const modifiedFiles = stdout
           .split('\n')
           .filter((f) => f.trim().length > 0)
-          .filter((f) => f.includes('prototypes/') && (f.endsWith('.html') || f.endsWith('.js') || f.endsWith('.css')));
+          .filter(
+            (f) =>
+              f.includes('prototypes/') &&
+              (f.endsWith('.html') || f.endsWith('.js') || f.endsWith('.css'))
+          );
 
         filesToVerify = modifiedFiles.map((f) => path.join(process.cwd(), f));
-        console.log(`   ✅ ${filesToVerify.length} archivo(s) modificado(s) encontrado(s)`);
+        console.log(
+          `   ✅ ${filesToVerify.length} archivo(s) modificado(s) encontrado(s)`
+        );
       } catch (error: any) {
         const errorMsg = `Error obteniendo diff de git: ${error.message}`;
         console.error(`   ❌ ${errorMsg}`);
@@ -90,14 +102,25 @@ export async function autorunVerify(
             if (input.options?.strict) {
               errors.push(`${filePath}: No fue generado por Autorun`);
             } else {
-              warnings.push(`${filePath}: No tiene marca Autorun (puede ser manual)`);
+              warnings.push(
+                `${filePath}: No tiene marca Autorun (puede ser manual)`
+              );
             }
           } else {
             // Validar marca
             const markValidation = validateAutorunMark(content);
             if (!markValidation.valid) {
-              fileIssues.push(`Marca Autorun inválida: ${markValidation.reason}`);
+              fileIssues.push(
+                `Marca Autorun inválida: ${markValidation.reason}`
+              );
               isValid = false;
+
+              // ⚠️ CRÍTICO: Si el hash no coincide, el código fue modificado manualmente
+              if (markValidation.reason?.includes('Hash')) {
+                errors.push(
+                  `${filePath}: Código fue modificado manualmente (hash no coincide)`
+                );
+              }
               if (input.options?.strict) {
                 errors.push(`${filePath}: ${markValidation.reason}`);
               } else {
@@ -105,14 +128,19 @@ export async function autorunVerify(
               }
             } else {
               metadata = markValidation.metadata;
-              console.log(`   ✅ ${path.basename(filePath)}: Marca Autorun válida`);
+              console.log(
+                `   ✅ ${path.basename(filePath)}: Marca Autorun válida`
+              );
             }
           }
         }
 
         // Verificar estructura básica (si está habilitado)
         if (input.options?.checkStructure && hasAutorunMarkValue) {
-          const structureIssues = await validateFileStructure(content, filePath);
+          const structureIssues = await validateFileStructure(
+            content,
+            filePath
+          );
           if (structureIssues.length > 0) {
             fileIssues.push(...structureIssues);
             isValid = false;
@@ -127,6 +155,12 @@ export async function autorunVerify(
             fileIssues.push(...a11yIssues);
             warnings.push(`${filePath}: Problemas de accesibilidad detectados`);
           }
+        }
+
+        // Verificar marca de cierre
+        if (hasAutorunMarkValue && !/<!--\s*\/AUTORUN\s*-->/i.test(content)) {
+          fileIssues.push('Falta marca de cierre </AUTORUN>');
+          warnings.push(`${filePath}: Falta marca de cierre Autorun`);
         }
 
         files.push({
@@ -166,9 +200,13 @@ export async function autorunVerify(
     }
 
     const valid = errors.length === 0;
-    console.log(`   ${valid ? '✅' : '❌'} Verificación completada: ${valid ? 'VÁLIDO' : 'INVÁLIDO'}`);
+    console.log(
+      `   ${valid ? '✅' : '❌'} Verificación completada: ${valid ? 'VÁLIDO' : 'INVÁLIDO'}`
+    );
     console.log(`   - Archivos verificados: ${files.length}`);
-    console.log(`   - Con marca Autorun: ${files.filter((f) => f.hasAutorunMark).length}`);
+    console.log(
+      `   - Con marca Autorun: ${files.filter((f) => f.hasAutorunMark).length}`
+    );
     console.log(`   - Válidos: ${files.filter((f) => f.isValid).length}`);
     console.log(`   - Errores: ${errors.length}`);
     console.log(`   - Advertencias: ${warnings.length}`);
@@ -195,7 +233,10 @@ export async function autorunVerify(
 /**
  * Valida estructura básica del archivo
  */
-async function validateFileStructure(content: string, filePath: string): Promise<string[]> {
+async function validateFileStructure(
+  content: string,
+  filePath: string
+): Promise<string[]> {
   const issues: string[] = [];
 
   // Verificar que es HTML válido
@@ -229,7 +270,9 @@ async function validateAccessibility(content: string): Promise<string[]> {
   for (const match of buttonMatches) {
     const buttonHtml = match[0];
     const hasAriaLabel = /aria-label\s*=/i.test(buttonHtml);
-    const hasText = />[^<]+</.test(content.substring(match.index || 0, (match.index || 0) + 200));
+    const hasText = />[^<]+</.test(
+      content.substring(match.index || 0, (match.index || 0) + 200)
+    );
 
     if (!hasAriaLabel && !hasText) {
       issues.push('Botón sin aria-label ni texto visible');

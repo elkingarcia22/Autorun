@@ -61,6 +61,14 @@
       "env": {
         "NODE_ENV": "production"
       }
+    },
+    "google-sheets": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-gsheets@latest"
+      ],
+      "env": {}
     }
   }
 }

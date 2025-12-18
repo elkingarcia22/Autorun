@@ -13,9 +13,9 @@
 **🚨 ESTA ES LA QUINTA ACCIÓN: EJECUTAR handleUserMessage() SIEMPRE (OBLIGATORIO) 🚨**
 
 **⚠️ ORDEN DE EJECUCIÓN:**
-1. **PASO 1:** Detectar wizard
-2. **PASO 2:** Inicializar AutorunHub
-3. **PASO 3:** Abrir browser (si hay wizard)
+1. **PASO 1:** Detectar wizard state (usar `processWizardStateForAgent()`) ← **PRIMERO**
+2. **PASO 2:** Inicializar AutorunHub (si hay wizard o no está inicializado)
+3. **PASO 3:** Abrir browser interno de Cursor (si hay wizard)
 4. **PASO 4:** Verificar estado
 5. **PASO 5:** Ejecutar handleUserMessage() ← **ESTE PASO** (SIEMPRE OBLIGATORIO)
 
@@ -29,7 +29,31 @@
 - ✅ Bloqueo si faltan pasos o fases
 - ✅ Preparación automática de mensajes MCP para todos los componentes detectados
 
-**⚠️ DESPUÉS de inicializar AutorunHub, SIEMPRE ejecutar:**
+**⚠️ ANTES de handleUserMessage(), SIEMPRE verificar wizard state:**
+
+```typescript
+// ⚠️ OBLIGATORIO: Ejecutar esto PRIMERO en cada mensaje (ANTES de handleUserMessage)
+import { processWizardStateForAgent } from '@autorun/core';
+
+const wizardResult = await processWizardStateForAgent();
+if (wizardResult.success && wizardResult.url) {
+  // 1. Inicializar AutorunHub (ya se hizo en processWizardStateForAgent)
+  // 2. Abrir browser interno de Cursor
+  await call_mcp_tool({
+    server: 'cursor-ide-browser',
+    toolName: 'browser_navigate',
+    arguments: { url: wizardResult.url }
+  });
+  await call_mcp_tool({
+    server: 'cursor-ide-browser',
+    toolName: 'browser_snapshot'
+  });
+  // 3. Limpiar archivo de estado
+  await run_terminal_cmd({ command: 'rm -f .autorun/wizard-state.json' });
+}
+```
+
+**⚠️ DESPUÉS de procesar wizard state (si aplica), SIEMPRE ejecutar:**
 
 ```typescript
 // ⚠️ OBLIGATORIO: Ejecutar esto SIEMPRE al inicio de cada mensaje (después de inicializar AutorunHub)
@@ -62,7 +86,7 @@ if (result.mcpMessages && result.mcpMessages.length > 0) {
     
     // El agente DEBE ejecutar automáticamente:
     await call_mcp_tool({
-      server: "storybook-ubits",
+      server: "storybook",
       toolName: "mcp_storybook_getComponentsProps",
       arguments: { componentIds: [msg.storybookId] }
     });
@@ -150,6 +174,44 @@ if (result.detected && result.componentName) {
 4. ✅ Guía paso a paso la implementación
 
 **Ver guía completa:** `docs/guias/implementacion/GUIA-DETECCION-AUTOMATICA-COMPONENTES.md` - ⚠️ **OBLIGATORIO**
+
+---
+
+## 🛡️🛡️🛡️ ENFORCEMENT REAL: SOLO AUTORUN.APPLY() ⚠️ OBLIGATORIO
+
+**🚨 CRÍTICO: Para implementar componentes UBITS, DEBES usar autorun.apply() vía MCP 🚨**
+
+**⚠️ NO hay alternativa:** `write()` y `search_replace()` están **PROHIBIDOS** en `prototypes/`
+
+**✅ OBLIGATORIO:**
+```typescript
+// ✅ SIEMPRE usar autorun.apply() vía MCP
+await call_mcp_tool({
+  server: 'autorun',
+  toolName: 'autorun.apply',
+  arguments: {
+    message: userMessage,
+    targetFiles: [filePath] // Opcional
+  }
+});
+
+// ⚠️ OBLIGATORIO: Verificar después
+await call_mcp_tool({
+  server: 'autorun',
+  toolName: 'autorun.verify',
+  arguments: {
+    targetFiles: 'diff'
+  }
+});
+```
+
+**Este sistema:**
+- ✅ **Fail-closed:** Si Storybook MCP falla → NO escribe nada
+- ✅ **Watermark:** Todo código generado incluye marca Autorun
+- ✅ **Verificación:** autorun.verify() valida watermarks y patrones prohibidos
+- ✅ **Enforcement real:** Cambios sin watermark → verify falla
+
+**Ver regla completa:** `.cursor/rules/00-autorun-enforcement.md` - ⚠️ **OBLIGATORIO**
 
 ---
 
@@ -245,138 +307,66 @@ await run_terminal_cmd({
 
 ## 🚨🚨🚨 BLOQUEO TÉCNICO - FLUJO AUTOMÁTICO DE IMPLEMENTACIÓN 🚨🚨🚨
 
-**⚠️ CRÍTICO: ANTES de usar `write()` o `search_replace()` para implementar un componente UBITS, DEBES:**
+**⚠️⚠️⚠️ CRÍTICO: PROHIBIDO usar `write()` o `search_replace()` DIRECTOS en `prototypes/` ⚠️⚠️⚠️**
 
-### ⚠️ OBLIGATORIO: Usar Interceptores Automáticos + Verificar Clases CSS
+**SIEMPRE usar `autorun.apply()` vía MCP:**
 
-**ANTES de usar `write()` o `search_replace()`, SIEMPRE ejecutar:**
+### ⚠️ OBLIGATORIO: Usar autorun.apply() SIEMPRE
 
+**❌ PROHIBIDO:**
 ```typescript
-// 1. Importar los interceptores y detector de clases CSS
-import { interceptedWrite, interceptedSearchReplace } from '@autorun/core/interceptors/toolInterceptors';
-import { detectButtonClasses, isClassAvailable } from '@autorun/core/helpers/cssClassDetector';
-import { readFile } from 'fs/promises';
-
-// 2. Verificar clases CSS correctas (si es un componente con clases CSS)
-if (filePath.includes('prototypes/') && content.includes('button') || content.includes('modal')) {
-  const templateContent = await readFile(filePath, 'utf-8');
-  const buttonClasses = detectButtonClasses(templateContent);
-  
-  // Verificar que las clases usadas en content sean correctas
-  if (content.includes('class="button') && !content.includes('ubits-button')) {
-    console.warn('⚠️ Clases CSS incorrectas detectadas. Debe usar:', buttonClasses);
-    // Corregir automáticamente
-    content = content.replace(/class="button/g, `class="${buttonClasses.baseClass}`);
-  }
-}
-
-// 3. Usar interceptedWrite() en lugar de write()
-try {
-  await interceptedWrite(
-    filePath,
-    content,
-    {
-      componentName: 'Tabs', // si lo conoces
-      userMessage: userMessage // mensaje del usuario si está disponible
-    }
-  );
-  // Si no lanza error, proceder con write() normalmente
-  // await write(filePath, content);
-} catch (error) {
-  // ❌ NO usar write() - está bloqueado
-  // El interceptor ya navegó a Storybook y mostró el plan
-  throw error;
-}
-
-// O para search_replace():
-try {
-  await interceptedSearchReplace(
-    filePath,
-    oldString,
-    newString,
-    {
-      componentName: 'Tabs',
-      userMessage: userMessage
-    }
-  );
-  // Si no lanza error, proceder con search_replace() normalmente
-  // await search_replace(filePath, oldString, newString);
-} catch (error) {
-  // ❌ NO usar search_replace() - está bloqueado
-  throw error;
-}
-
-// 3. Verificar si se puede escribir
-if (!flow.canWrite) {
-  // ❌ NO usar write() o search_replace()
-  // 📚 Navegar automáticamente a Storybook
-  if (flow.storybookUrl) {
-    // Guardar URL actual del template
-    const currentSnapshot = await mcp_cursor-ide-browser_browser_snapshot();
-    const templateUrl = currentSnapshot?.url;
-    
-    // Navegar a Storybook
-    await mcp_cursor-ide-browser_browser_navigate({ url: flow.storybookUrl });
-    await mcp_cursor-ide-browser_browser_snapshot();
-    
-    // ⚠️ CRÍTICO: Volver automáticamente al template después de consultar
-    if (templateUrl) {
-      // Esperar un momento para que el usuario vea Storybook
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      await mcp_cursor-ide-browser_browser_navigate({ url: templateUrl });
-      await mcp_cursor-ide-browser_browser_snapshot();
-    }
-  }
-  
-  // 📋 Mostrar plan si está disponible
-  if (flow.plan) {
-    console.log('📋 Plan de implementación:', flow.plan);
-  }
-  
-  // ❌ LANZAR ERROR para bloquear la escritura
-  throw new Error(`❌ IMPLEMENTACIÓN BLOQUEADA: ${flow.reason}`);
-}
-
-// 4. Si flow.canWrite === true, usar write() o search_replace() normalmente
-// 5. Después de escribir, si flow.autoReload === true, recargar automáticamente
-if (flow.autoReload) {
-  const snapshot = await mcp_cursor-ide-browser_browser_snapshot();
-  const currentUrl = snapshot?.url || getTemplateUrlFromPath(filePath);
-  await mcp_cursor-ide-browser_browser_navigate({ url: currentUrl });
-  setTimeout(async () => {
-    await mcp_cursor-ide-browser_browser_snapshot();
-  }, 1000);
-}
+// ❌ NUNCA hacer esto en prototypes/
+await write(filePath, content);
+await search_replace(filePath, oldString, newString);
+// ❌ NUNCA usar interceptedWrite() o interceptedSearchReplace() (deprecado)
 ```
 
-**⚠️ REGLAS CRÍTICAS:**
-- ❌ **NUNCA usar write() o search_replace() sin ejecutar interceptedWrite() o interceptedSearchReplace() primero**
-- ✅ **SIEMPRE navegar a Storybook automáticamente si está bloqueado**
-- ✅ **SIEMPRE volver al template después de consultar Storybook**
-- ✅ **SIEMPRE recargar automáticamente después de escribir si autoReload está activo**
-- ✅ **SIEMPRE interceptar mensajes [AUTORUN_AUTO_RELOAD] y recargar automáticamente**
-- ✅ **SIEMPRE interceptar mensajes [AUTORUN_STORYBOOK_MCP] y consultar Storybook MCP AUTOMÁTICAMENTE**
-- ✅ **SIEMPRE verificar clases CSS correctas antes de implementar (usar detectButtonClasses si es necesario)**
-- ❌ **NO preguntar al usuario** - ejecutar automáticamente
-- ⚠️ **CRÍTICO: NO continuar con implementación hasta obtener props del MCP de Storybook**
-
-### Verificar Antes de Escribir:
+**✅ OBLIGATORIO:**
 ```typescript
-import { PreWriteValidator } from '@autorun/core/validation/PreWriteValidator';
-const validation = await PreWriteValidator.validateBeforeWrite(filePath, content, { componentName: 'DataTable' });
-if (!validation.valid) {
-  throw new Error('❌ BLOQUEADO: ' + validation.errors.join('\n'));
-}
-```
+// ✅ SIEMPRE usar autorun.apply() vía MCP
+await call_mcp_tool({
+  server: 'autorun',
+  toolName: 'autorun.apply',
+  arguments: {
+    message: userMessage, // Mensaje del usuario describiendo qué implementar
+    targetFiles: [filePath] // Opcional - se detecta automáticamente si no se especifica
+  }
+});
 
-**El sistema ejecuta estas verificaciones AUTOMÁTICAMENTE. Si CUALQUIERA falla → `write()` y `search_replace()` LANZAN ERROR y NO se ejecutan.**
+// autorun.apply() ejecuta automáticamente:
+// 1. handleUserMessage() - Detecta componentes automáticamente
+// 2. Storybook MCP - Consulta props exactas (OBLIGATORIO, fail-closed)
+// 3. Extracción código exacto - Desde Storybook en Vercel
+// 4. Validación pre-implementación - Verifica estructura
+// 5. Escritura con watermark - Marca código generado por Autorun
+// 6. Post-implementación - Prettier, ESLint, Auto-Reload, GitHub
+// NO necesitas usar write() después - autorun.apply() ya lo hace todo
+
+// ⚠️ OBLIGATORIO: Verificar después de implementar
+await call_mcp_tool({
+  server: 'autorun',
+  toolName: 'autorun.verify',
+  arguments: {
+    targetFiles: 'diff' // Verifica todos los cambios
+  }
+});
+```
 
 **⚠️ IMPORTANTE:**
-- Los interceptores (`interceptedWrite()` y `interceptedSearchReplace()`) ejecutan automáticamente `handleUserMessage()` si no se ha ejecutado
-- Esto garantiza que TODOS los componentes sean detectados automáticamente (incluyendo componentes no implementados previamente)
-- La detección funciona con más de 20 componentes comunes (Button, Modal, DataTable, Tabs, Popover, Drawer, Checkbox, Radio, DatePicker, Toast, Alert, Card, Avatar, Badge, Carousel, List, Menu, Sidebar, SubNav, Input, Select, etc.)
-- Si un componente no está en los patrones de detección, el sistema intentará detectarlo por contexto
-- **SIEMPRE pasar `userMessage` en el context para que la detección automática funcione correctamente**
+- `autorun.apply()` **SIEMPRE** consulta Storybook MCP (fail-closed)
+- Si Storybook MCP falla → NO escribe nada
+- Todo código generado incluye watermark para verificación
+- Auto-reload se ejecuta automáticamente después de escribir
+- ⚠️ **CRÍTICO:** NO uses `write()` o `search_replace()` - solo `autorun.apply()`
+
+**⚠️ REGLAS CRÍTICAS:**
+- ❌ **NUNCA usar write() o search_replace() directos en prototypes/**
+- ✅ **SIEMPRE usar autorun.apply() vía MCP para implementar componentes**
+- ✅ **SIEMPRE verificar con autorun.verify() después de implementar**
+- ✅ **SI autorun.apply() falla → NO usar write() como fallback**
+- ✅ **SI Storybook MCP no está disponible → NO implementar, solo reportar error**
+
+**Ver regla completa:** `.cursor/rules/00-autorun-enforcement.md` - ⚠️ **OBLIGATORIO**
 
 **Ver detalles completos:** `.cursor/rules/04-implementacion.md`
 
@@ -442,9 +432,9 @@ if (!validation.valid) {
 
 **DEBES ejecutar automáticamente (SIN preguntar):**
 ```typescript
-// 1. Consultar Storybook MCP
+// 1. Consultar Storybook MCP (OBLIGATORIO antes de autorun.apply())
 const mcpResult = await call_mcp_tool({
-    server: "storybook-ubits",
+    server: "storybook", // ⚠️ Servidor unificado
     toolName: "mcp_storybook_getComponentsProps",
     arguments: { componentIds: [storybookId] }
 });
@@ -457,15 +447,27 @@ await browser_snapshot();
 
 // 3. Revisar pestaña "Code" para estructura HTML exacta
 // 4. Revisar pestaña "Controls" para props disponibles
+
+// 5. ⚠️ CRÍTICO: Después de consultar Storybook MCP, usar autorun.apply()
+await call_mcp_tool({
+  server: 'autorun',
+  toolName: 'autorun.apply',
+  arguments: {
+    message: userMessage,
+    targetFiles: [filePath]
+  }
+});
 ```
 
 **⚠️ REGLAS CRÍTICAS:**
 - ✅ **SIEMPRE consultar Storybook MCP** cuando veas el mensaje
 - ✅ **SIEMPRE consultar Storybook en Vercel** después del MCP
+- ✅ **SIEMPRE usar autorun.apply()** después de consultar Storybook
+- ✅ **NO usar write() o search_replace()** - solo autorun.apply()
 - ✅ **NO preguntar al usuario** - ejecutar automáticamente
 - ✅ **NO continuar con la implementación** hasta consultar ambos
 
-**Ver guía completa:** `docs/guias/implementacion/GUIA-USO-AUTOMATICO-STORYBOOK-MCP.md` - ⚠️ **OBLIGATORIO**
+**Ver guía completa:** `.cursor/rules/00-autorun-enforcement.md` - ⚠️ **OBLIGATORIO**
 
 ---
 
@@ -494,8 +496,8 @@ await browser_snapshot();
    - ✅ **⚠️ OBLIGATORIO: Volver automáticamente al template DESPUÉS de consultar**
 
 2. **Consultar Storybook MCP (con ID descubierto):**
-   - ✅ Usar `mcp_storybook_getComponentList` para listar componentes
-   - ✅ Usar `mcp_storybook_getComponentsProps` con ID descubierto para obtener props exactas
+   - ✅ Usar `mcp_storybook_getComponentList` para listar componentes (server: "storybook")
+   - ✅ Usar `mcp_storybook_getComponentsProps` con ID descubierto para obtener props exactas (server: "storybook")
 
 3. **Usar información exacta:**
    - ✅ Implementar con props exactas obtenidas del Storybook en Vercel
@@ -567,8 +569,9 @@ await browser_snapshot();
 
 ### **Consultar Storybook (OBLIGATORIO):**
 - ✅ Storybook en Vercel PRIMERO: `https://ubits-storybook10.vercel.app/`
-- ✅ Storybook MCP: `mcp_storybook_getComponentsProps(['component-id'])`
+- ✅ Storybook MCP (server: "storybook"): `mcp_storybook_getComponentsProps(['component-id'])`
 - ✅ **Usar descubrimiento automático de IDs:** `mapAndValidateComponentNameToStorybookId()` (descubre automáticamente el ID correcto)
+- ✅ **Después de consultar:** Usar `autorun.apply()` vía MCP (server: "autorun")
 
 ### **Sistema de Descubrimiento Automático de IDs:**
 - ✅ **SIEMPRE usar:** `await mapAndValidateComponentNameToStorybookId(componentName)` en lugar de mapeo directo
@@ -724,37 +727,47 @@ setTimeout(async () => {
 }, 1000);
 ```
 
-**⚠️⚠️⚠️ OBLIGATORIO: Recargar automáticamente después de `write()` o `search_replace()` en `prototypes/`** ⚠️⚠️⚠️
+**⚠️⚠️⚠️ AUTO-RELOAD AUTOMÁTICO: Ya está integrado en interceptedWrite() y interceptedSearchReplace()** ⚠️⚠️⚠️
 
-**CUANDO USES `write()` o `search_replace()` EN ARCHIVOS DE `prototypes/`:**
-**DEBES recargar automáticamente (SIN preguntar al usuario):**
+**✅ BUENAS NOTICIAS:** Si usas `interceptedWrite()` o `interceptedSearchReplace()`, el auto-reload se ejecuta automáticamente.
 
-**⚠️ CRÍTICO:** Esta es una regla OBLIGATORIA. NO preguntes, NO esperes confirmación. Ejecuta inmediatamente después de escribir.
+**Si ves en los logs después de `interceptedWrite()` o `interceptedSearchReplace()`:**
+```
+🔄 [Tool Interceptor] AUTO-RELOAD AUTOMÁTICO ACTIVADO
+⚠️ INSTRUCCIONES AUTOMÁTICAS PARA EL AGENTE:
+1. Obtener URL actual: call_mcp_tool({ server: "cursor-ide-browser", toolName: "browser_snapshot" })
+2. Recargar página: call_mcp_tool({ server: "cursor-ide-browser", toolName: "browser_navigate", arguments: { url: currentUrl } })
+3. Verificar: setTimeout(() => call_mcp_tool({ server: "cursor-ide-browser", toolName: "browser_snapshot" }), 1000)
+```
 
+**DEBES ejecutar automáticamente (SIN preguntar al usuario):**
 ```javascript
-// ⚠️ OBLIGATORIO: Después de write() o search_replace() en prototypes/
-import { shouldAutoReload, getTemplateUrlFromPath } from '@autorun/core/helpers/autoReloadHelper';
+// ⚠️ OBLIGATORIO: Ejecutar automáticamente cuando veas el mensaje de auto-reload
+const snapshot = await call_mcp_tool({
+  server: 'cursor-ide-browser',
+  toolName: 'browser_snapshot'
+});
+const currentUrl = snapshot?.url || `http://localhost:3000/${path.basename(filePath)}`;
 
-// 1. Verificar si debe recargarse
-if (shouldAutoReload(filePath)) {
-  // 2. Obtener URL actual del navegador
-  const snapshot = await mcp_cursor-ide-browser_browser_snapshot();
-  const currentUrl = snapshot?.url || getTemplateUrlFromPath(filePath);
-  
-  // 3. Recargar automáticamente (SIN preguntar)
-  await mcp_cursor-ide-browser_browser_navigate({ url: currentUrl });
-  
-  // 4. Esperar y verificar
-  setTimeout(async () => {
-    await mcp_cursor-ide-browser_browser_snapshot();
-  }, 1000);
-}
+await call_mcp_tool({
+  server: 'cursor-ide-browser',
+  toolName: 'browser_navigate',
+  arguments: { url: currentUrl }
+});
+
+setTimeout(async () => {
+  await call_mcp_tool({
+    server: 'cursor-ide-browser',
+    toolName: 'browser_snapshot'
+  });
+}, 1000);
 ```
 
 **⚠️ REGLAS CRÍTICAS:**
-- ✅ **SIEMPRE recargar automáticamente** después de write() o search_replace() en prototypes/
+- ✅ **SIEMPRE usar interceptedWrite() o interceptedSearchReplace()** en lugar de write() o search_replace() directos
+- ✅ **Auto-reload se ejecuta automáticamente** cuando usas los interceptores
 - ✅ **NO preguntar al usuario** si debe recargarse
-- ✅ **NO esperar confirmación** - ejecutar inmediatamente
+- ✅ **NO esperar confirmación** - ejecutar inmediatamente cuando veas el mensaje
 - ✅ **Solo recargar** si el archivo es .html, .js o .css en prototypes/
 
 ### **3. Auto-Retorno al Template después de Consultar Storybook**

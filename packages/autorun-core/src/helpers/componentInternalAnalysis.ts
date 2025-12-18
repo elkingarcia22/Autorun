@@ -7,6 +7,10 @@
 
 import { getSourceCode } from './storybookExactCodeExtractor.js';
 import { extractExactCodeFromStorybookWithBrowser } from './storybookExactCodeExtractorWithBrowser.js';
+import {
+  extractMetadataFromStory,
+  normalizeComponentId,
+} from './storybookMetadataExtractor.js';
 
 export interface InternalComponent {
   name: string;
@@ -26,6 +30,11 @@ export interface ComponentAnalysis {
   };
   internalComponents: InternalComponent[];
   dependencies: string[]; // IDs de otros componentes necesarios
+  dependsOn: {
+    required: string[]; // Componentes que el consumidor DEBE componer (Button, Input, etc.)
+    optional: string[]; // Componentes opcionales que el consumidor puede componer
+  };
+  internals: string[]; // Componentes privados que existen dentro pero NO debes re-implementar
   implementationPlan: ImplementationStep[];
 }
 
@@ -65,15 +74,34 @@ export async function analyzeComponentInternals(
     componentId
   );
 
-  // 5. Detectar dependencias
+  // 5. Detectar dependencias (mejorado: separa dependsOn vs internals)
   const dependencies = detectDependencies(internalComponents, exactCode.html);
+  
+  // 5.1 Nivel A: Intentar extraer metadata declarativa desde la story
+  let declarativeMetadata = null;
+  try {
+    declarativeMetadata = await extractMetadataFromStory(componentId, storyName);
+  } catch (error: any) {
+    console.warn(
+      `   ⚠️ Error extrayendo metadata declarativa: ${error.message}`
+    );
+  }
+  
+  const { dependsOn, internals } = detectDependsOnAndInternals(
+    exactCode.html,
+    sourceCode,
+    componentId,
+    dependencies,
+    declarativeMetadata
+  );
 
   // 6. Crear plan de implementación
   const implementationPlan = createImplementationPlan(
     componentId,
     mainComponent,
     internalComponents,
-    dependencies
+    dependencies,
+    dependsOn
   );
 
   return {
@@ -81,6 +109,8 @@ export async function analyzeComponentInternals(
     mainComponent,
     internalComponents,
     dependencies,
+    dependsOn,
+    internals,
     implementationPlan,
   };
 }
@@ -313,15 +343,214 @@ function detectDependencies(
 }
 
 /**
+ * Detecta dependsOn (requeridos/opcionales) vs internals (privados)
+ *
+ * Nivel A: Metadata declarativa (si existe en story) ⭐ IMPLEMENTADO
+ * Nivel B: Parse del snippet (window.UBITS.X.create, <ubits-x>)
+ * Nivel C: DOM scan (data-ubits-id, <ubits-*>)
+ */
+function detectDependsOnAndInternals(
+  html: string,
+  sourceCode: string | null,
+  componentId: string,
+  allDependencies: string[],
+  declarativeMetadata?: {
+    componentId?: string;
+    dependsOn?: { required: string[]; optional: string[] };
+    internals?: string[];
+  } | null
+): {
+  dependsOn: { required: string[]; optional: string[] };
+  internals: string[];
+} {
+  const dependsOnRequired: string[] = [];
+  const dependsOnOptional: string[] = [];
+  const internals: string[] = [];
+
+  // ⭐ Nivel A: Metadata declarativa (si existe, tiene prioridad)
+  if (declarativeMetadata) {
+    console.log(
+      `   📋 [Nivel A] Metadata declarativa encontrada en story`
+    );
+    
+    if (declarativeMetadata.dependsOn) {
+      // Normalizar IDs y agregar a dependsOn
+      declarativeMetadata.dependsOn.required.forEach((id) => {
+        const normalized = normalizeComponentId(id);
+        if (!dependsOnRequired.includes(normalized)) {
+          dependsOnRequired.push(normalized);
+        }
+      });
+      declarativeMetadata.dependsOn.optional.forEach((id) => {
+        const normalized = normalizeComponentId(id);
+        if (!dependsOnOptional.includes(normalized)) {
+          dependsOnOptional.push(normalized);
+        }
+      });
+    }
+    
+    if (declarativeMetadata.internals) {
+      declarativeMetadata.internals.forEach((id) => {
+        const normalized = normalizeComponentId(id);
+        if (!internals.includes(normalized)) {
+          internals.push(normalized);
+        }
+      });
+    }
+    
+    // Si encontramos metadata declarativa, retornar directamente (tiene prioridad)
+    if (dependsOnRequired.length > 0 || dependsOnOptional.length > 0 || internals.length > 0) {
+      console.log(
+        `   ✅ [Nivel A] Usando metadata declarativa: ${dependsOnRequired.length} requeridos, ${dependsOnOptional.length} opcionales, ${internals.length} internos`
+      );
+      return {
+        dependsOn: {
+          required: dependsOnRequired,
+          optional: dependsOnOptional,
+        },
+        internals,
+      };
+    }
+  }
+  
+  // Si no hay metadata declarativa, continuar con Niveles B y C
+  console.log(`   📋 [Nivel A] No hay metadata declarativa, usando Niveles B y C`);
+
+  // Nivel B: Parse del snippet para detectar window.UBITS.X.create()
+  const ubitsCreatePattern = /window\.UBITS\.(\w+)\.create\(/gi;
+  const createMatches = Array.from(html.matchAll(ubitsCreatePattern));
+  createMatches.forEach((match) => {
+    const componentName = match[1].toLowerCase();
+    // Si es un componente que se crea explícitamente, es dependsOn
+    if (!dependsOnRequired.includes(componentName)) {
+      dependsOnRequired.push(componentName);
+    }
+  });
+
+  // Nivel B: Parse del snippet para detectar <ubits-x>
+  const ubitsTagPattern = /<ubits-(\w+)[\s>]/gi;
+  const tagMatches = Array.from(html.matchAll(ubitsTagPattern));
+  tagMatches.forEach((match) => {
+    const componentName = match[1].toLowerCase();
+    // Si es un tag explícito, es dependsOn
+    if (!dependsOnRequired.includes(componentName)) {
+      dependsOnRequired.push(componentName);
+    }
+  });
+
+  // Nivel C: DOM scan - buscar data-ubits-id
+  const dataUbitsIdPattern = /data-ubits-id=["']([^"']+)["']/gi;
+  const idMatches = Array.from(html.matchAll(dataUbitsIdPattern));
+  idMatches.forEach((match) => {
+    const id = match[1];
+    // Extraer nombre del componente del ID
+    const componentMatch = id.match(/🧩-ux-(\w+)|⚙️-functional-(\w+)/);
+    if (componentMatch) {
+      const componentName = (
+        componentMatch[1] || componentMatch[2]
+      ).toLowerCase();
+      if (
+        !dependsOnRequired.includes(componentName) &&
+        !dependsOnOptional.includes(componentName)
+      ) {
+        // Por defecto, si tiene data-ubits-id, es dependsOn (puede ser requerido u opcional)
+        dependsOnOptional.push(componentName);
+      }
+    }
+  });
+
+  // Nivel C: DOM scan - buscar clases ubits-* que no sean del componente principal
+  const componentPrefix = getComponentPrefix(componentId);
+  const allUbitsClasses = html.matchAll(/ubits-(\w+)/gi);
+  const foundComponents = new Set<string>();
+
+  for (const match of allUbitsClasses) {
+    const className = match[1].toLowerCase();
+    // Si no es parte del componente principal, es una dependencia
+    if (!className.startsWith(componentPrefix.replace('ubits-', ''))) {
+      foundComponents.add(className);
+    }
+  }
+
+  // Separar en dependsOn vs internals basado en patrones conocidos
+  foundComponents.forEach((compName) => {
+    // Componentes que típicamente son dependsOn (el consumidor los compone)
+    const dependsOnComponents = [
+      'button',
+      'input',
+      'select',
+      'checkbox',
+      'radio-button',
+      'icon',
+      'badge',
+      'avatar',
+    ];
+    // Componentes que típicamente son internals (privados del componente)
+    const internalComponents = [
+      'scroll',
+      'scrollbar',
+      'overlay',
+      'mask',
+      'progress',
+    ];
+
+    if (dependsOnComponents.includes(compName)) {
+      if (
+        !dependsOnRequired.includes(compName) &&
+        !dependsOnOptional.includes(compName)
+      ) {
+        // Por defecto, si aparece explícitamente, es required
+        dependsOnRequired.push(compName);
+      }
+    } else if (internalComponents.includes(compName)) {
+      if (!internals.includes(compName)) {
+        internals.push(compName);
+      }
+    } else {
+      // Componentes desconocidos: por defecto son dependsOn optional
+      if (
+        !dependsOnRequired.includes(compName) &&
+        !dependsOnOptional.includes(compName)
+      ) {
+        dependsOnOptional.push(compName);
+      }
+    }
+  });
+
+  // Nivel A: Si hay metadata en sourceCode, usarla (futuro)
+  // Por ahora, usamos los niveles B y C
+
+  return {
+    dependsOn: {
+      required: [...new Set(dependsOnRequired)],
+      optional: [...new Set(dependsOnOptional)],
+    },
+    internals: [...new Set(internals)],
+  };
+}
+
+/**
  * Crea plan de implementación paso a paso
  */
 function createImplementationPlan(
   componentId: string,
   mainComponent: ComponentAnalysis['mainComponent'],
   internalComponents: InternalComponent[],
-  dependencies: string[]
+  dependencies: string[],
+  dependsOn: { required: string[]; optional: string[] }
 ): ImplementationStep[] {
   const plan: ImplementationStep[] = [];
+
+  // Paso 0: Obtener snippets de componentes dependsOn.required
+  if (dependsOn.required.length > 0) {
+    plan.push({
+      step: 0,
+      component: 'dependencies',
+      description: `Obtener snippets de componentes requeridos: ${dependsOn.required.join(', ')}`,
+      code: `// Consultar Storybook MCP para: ${dependsOn.required.join(', ')}`,
+      dependencies: dependsOn.required,
+    });
+  }
 
   // Paso 1: Estructura principal
   plan.push({
@@ -329,7 +558,7 @@ function createImplementationPlan(
     component: 'main',
     description: `Crear estructura principal de ${componentId}`,
     code: mainComponent.structure,
-    dependencies: [],
+    dependencies: dependsOn.required,
   });
 
   // Paso 2: Componentes internos requeridos

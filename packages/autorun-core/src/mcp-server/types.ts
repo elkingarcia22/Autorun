@@ -315,4 +315,9 @@ export interface AutorunMarkMetadata {
   hash: string;
   timestamp: string;
   version?: string;
+  dependsOn?: {
+    required: string[];
+    optional: string[];
+  };
+  internals?: string[];
 }

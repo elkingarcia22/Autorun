@@ -91,7 +91,7 @@ export async function autoCallStorybookMCP(
       // ⚠️ CRÍTICO: NO usar hardcodeado "storybook-ubits"
       // El servidor MCP puede ser diferente según el Storybook activo
       // Por ahora, el servidor MCP es el mismo pero la URL debe ser la del Storybook activo
-      let mcpServer = 'storybook-ubits'; // Default (puede cambiar según configuración)
+      let mcpServer = 'storybook'; // Default (servidor unificado)
 
       // Si el Storybook activo es Libraries UI, usar el mismo servidor pero con URL de Libraries UI
       // El servidor MCP debe estar configurado con la URL del Storybook activo
@@ -100,7 +100,7 @@ export async function autoCallStorybookMCP(
           `📚 [Storybook MCP Auto Caller] Storybook activo es Libraries UI - usando servidor MCP con URL de Libraries UI`
         );
         // El servidor MCP debe estar configurado con STORYBOOK_URL apuntando a Libraries UI
-        mcpServer = 'storybook-ubits'; // Mismo servidor, pero URL diferente en configuración
+        mcpServer = 'storybook'; // Servidor unificado
       }
 
       // 4. Emitir mensaje para que el agente ejecute MCP automáticamente
@@ -171,7 +171,7 @@ CUANDO se detecten componentes, DEBES:
 2. Verificar Storybook activo en los logs para determinar servidor MCP correcto
 3. Ejecutar automáticamente (SIN preguntar):
    call_mcp_tool({
-     server: "storybook-ubits", // O el servidor indicado en los logs
+     server: "storybook", // Servidor unificado
      toolName: "mcp_storybook_getComponentsProps",
      arguments: { componentIds: [storybookId] }
    })

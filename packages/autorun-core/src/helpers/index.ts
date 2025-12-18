@@ -47,6 +47,19 @@ export {
   type WizardState,
 } from './wizardStateDetector';
 
+// ⭐ NUEVO: Detección automática del wizard state
+export {
+  autoDetectWizardState,
+  processWizardState,
+  type WizardDetectionResult,
+} from './autoWizardDetection';
+
+// ⭐ NUEVO: Procesar wizard state para el agente
+export {
+  processWizardStateForAgent,
+  type ProcessWizardStateResult,
+} from './processWizardStateForAgent';
+
 // Detección automática de componentes ⭐ NUEVO
 export {
   autoDetectComponent,
@@ -173,6 +186,43 @@ export {
 
 // ⭐ NUEVO: Test implementation mejorado
 export { testButtonModalImplementation } from './testImplementationFromStorybook';
+
+// ⭐ NUEVO: Storybook Cache
+export {
+  getStorybookInfoCached,
+  setStorybookInfoCached,
+  hasStorybookInfoCached,
+  invalidateStorybookCache,
+  clearStorybookCache,
+  getCacheStats,
+  type CachedStorybookInfo,
+  type StorybookInfo,
+  type InteractionInfo,
+} from './storybookCache';
+
+// ⭐ NUEVO: Storybook Parallel Consult
+export {
+  consultStorybookCompleto,
+  type ParallelConsultResult,
+} from './storybookParallelConsult';
+
+// ⭐ NUEVO: Storybook Interaction Extractor
+export { extractInteractionInfo } from './storybookInteractionExtractor';
+
+// ⭐ NUEVO: Storybook Structure Validator
+export {
+  validateStructureBeforeWrite,
+  type StructureValidationResult,
+} from './storybookStructureValidator';
+
+// ⭐ NUEVO: Auto Write Interceptor
+export {
+  autoInterceptWrite,
+  type AutoWriteInterceptorResult,
+} from './autoWriteInterceptor';
+
+// ⭐ NUEVO: Write Guard
+export { guardWrite } from './writeGuard';
 
 // ⭐ NUEVO: Detección automática de templates
 export {

@@ -33,7 +33,9 @@ export async function autorunApply(
 ): Promise<AutorunApplyOutput> {
   console.log(`\n🚀 [Autorun MCP] autorun.apply() llamado`);
   console.log(`   Mensaje: ${input.message.substring(0, 100)}...`);
-  console.log(`   Archivos objetivo: ${input.targetFiles?.join(', ') || 'auto-detect'}`);
+  console.log(
+    `   Archivos objetivo: ${input.targetFiles?.join(', ') || 'auto-detect'}`
+  );
   console.log(`   Opciones:`, input.options || {});
 
   const errors: string[] = [];
@@ -94,7 +96,9 @@ export async function autorunApply(
     console.log(`   [1.2] Obteniendo ID de Storybook...`);
     let componentId: string;
     try {
-      componentId = await mapAndValidateComponentNameToStorybookId(result.componentName);
+      componentId = await mapAndValidateComponentNameToStorybookId(
+        result.componentName
+      );
       console.log(`   ✅ ID de Storybook: ${componentId}`);
     } catch (error: any) {
       const errorMsg = `No se pudo obtener ID de Storybook para ${result.componentName}: ${error.message}`;
@@ -147,35 +151,65 @@ export async function autorunApply(
     // ========================================
     console.log(`\n🔧 [Autorun MCP] FASE 2: IMPLEMENTACIÓN`);
 
-    // 2.1 Consultar Storybook MCP (OBLIGATORIO)
-    console.log(`   [2.1] Consultando Storybook MCP...`);
-    if (result.mcpMessages && result.mcpMessages.length > 0) {
-      for (const msg of result.mcpMessages) {
-        console.log(
-          `   📚 Componente: ${msg.componentName} (${msg.storybookId})`
-        );
-        // ⚠️ NOTA: La consulta real a Storybook MCP debe hacerse desde el agente
-        // Por ahora, solo verificamos que los mensajes estén preparados
-        // TODO: Implementar consulta real cuando tengamos acceso a call_mcp_tool desde Node.js
-      }
-      console.log(
-        `   ⚠️ NOTA: El agente debe consultar Storybook MCP para obtener props exactas`
-      );
-    } else {
-      console.warn(`   ⚠️ No hay mensajes MCP preparados`);
+    // 2.1 Consultar Storybook MCP (OBLIGATORIO - FAIL-CLOSED)
+    console.log(`   [2.1] Consultando Storybook MCP (OBLIGATORIO)...`);
+
+    if (!result.mcpMessages || result.mcpMessages.length === 0) {
+      const errorMsg =
+        'No se prepararon mensajes MCP para consultar Storybook. Esto es OBLIGATORIO.';
+      console.error(`   ❌ ${errorMsg}`);
+      return {
+        success: false,
+        filesWritten: [],
+        verification: {
+          preImplementation: false,
+          postImplementation: false,
+          errors: [errorMsg],
+          warnings: [],
+        },
+        components: [],
+        errors: [errorMsg],
+      };
     }
+
+    // ⚠️ CRÍTICO: El agente DEBE consultar Storybook MCP ANTES de continuar
+    console.log(
+      `   ⚠️ FAIL-CLOSED: El agente DEBE consultar Storybook MCP para cada componente:`
+    );
+    for (const msg of result.mcpMessages) {
+      console.log(
+        `   📚 Componente: ${msg.componentName} (${msg.storybookId})`
+      );
+      console.log(`   ⚠️ OBLIGATORIO ejecutar:`);
+      console.log(`      call_mcp_tool({`);
+      console.log(`        server: "storybook",`);
+      console.log(`        toolName: "mcp_storybook_getComponentsProps",`);
+      console.log(
+        `        arguments: { componentIds: ["${msg.storybookId}"] }`
+      );
+      console.log(`      })`);
+      console.log(
+        `   ⚠️ Si esta consulta falla, autorun.apply() NO continuará`
+      );
+    }
+
+    // ⚠️ NOTA: Como autorun.apply() se ejecuta desde Node.js y no puede llamar MCP directamente,
+    // el agente DEBE consultar Storybook MCP ANTES de llamar autorun.apply().
+    // Si el agente no consulta Storybook MCP, el siguiente paso (extracción) puede fallar
+    // y autorun.apply() retornará error (fail-closed).
 
     // 2.2 Extraer código exacto desde Storybook (OBLIGATORIO)
     console.log(`   [2.2] Extrayendo código exacto desde Storybook...`);
     let exactCode;
     try {
-      exactCode = await extractExactCodeFromStorybookWithBrowser(componentId, 'default');
+      exactCode = await extractExactCodeFromStorybookWithBrowser(
+        componentId,
+        'default'
+      );
       if (!exactCode || !exactCode.html) {
         throw new Error('No se pudo extraer código desde Storybook');
       }
-      console.log(
-        `   ✅ Código extraído: ${exactCode.html.length} caracteres`
-      );
+      console.log(`   ✅ Código extraído: ${exactCode.html.length} caracteres`);
     } catch (error: any) {
       const errorMsg = `Error extrayendo código desde Storybook: ${error.message}`;
       console.error(`   ❌ ${errorMsg}`);
@@ -229,7 +263,9 @@ export async function autorunApply(
         console.log(`   ✅ Validación pre-implementación pasada`);
         if (verificationResult.warnings.length > 0) {
           warnings.push(...verificationResult.warnings);
-          console.warn(`   ⚠️ Advertencias: ${verificationResult.warnings.join(', ')}`);
+          console.warn(
+            `   ⚠️ Advertencias: ${verificationResult.warnings.join(', ')}`
+          );
         }
       } catch (error: any) {
         const errorMsg = `Error en verificación pre-implementación: ${error.message}`;
@@ -249,19 +285,53 @@ export async function autorunApply(
         };
       }
     } else {
-      console.log(`   ⚠️ Verificación pre-implementación saltada (skipVerification=true)`);
+      console.log(
+        `   ⚠️ Verificación pre-implementación saltada (skipVerification=true)`
+      );
     }
 
-    // 2.4 Analizar componentes internos (OBLIGATORIO)
-    console.log(`   [2.4] Analizando componentes internos...`);
+    // 2.4 Analizar componentes internos y dependencias (OBLIGATORIO)
+    console.log(`   [2.4] Analizando componentes internos y dependencias...`);
     let internalAnalysis;
     try {
-      internalAnalysis = await analyzeComponentInternals(componentId, 'default');
+      internalAnalysis = await analyzeComponentInternals(
+        componentId,
+        'default'
+      );
       console.log(
         `   ✅ Análisis completado: ${internalAnalysis.internalComponents.length} componente(s) interno(s)`
       );
+
+      // Mostrar dependsOn (requeridos y opcionales)
+      if (internalAnalysis.dependsOn.required.length > 0) {
+        console.log(
+          `   📦 Dependencias requeridas (dependsOn.required): ${internalAnalysis.dependsOn.required.join(', ')}`
+        );
+        console.log(
+          `   ⚠️ CRÍTICO: Debes obtener snippets de estos componentes desde Storybook MCP ANTES de implementar`
+        );
+      }
+      if (internalAnalysis.dependsOn.optional.length > 0) {
+        console.log(
+          `   📦 Dependencias opcionales (dependsOn.optional): ${internalAnalysis.dependsOn.optional.join(', ')}`
+        );
+      }
+
+      // Mostrar internals (privados)
+      if (internalAnalysis.internals.length > 0) {
+        console.log(
+          `   🔒 Componentes internos (privados): ${internalAnalysis.internals.join(', ')}`
+        );
+        console.log(
+          `   ℹ️ Estos componentes son privados y NO debes re-implementarlos`
+        );
+      }
+
+      // Mostrar dependencias totales (legacy)
       if (internalAnalysis.dependencies.length > 0) {
-        console.log(`   📦 Dependencias: ${internalAnalysis.dependencies.join(', ')}`);
+        console.log(
+          `   📦 Dependencias totales: ${internalAnalysis.dependencies.join(', ')}`
+        );
       }
     } catch (error: any) {
       console.warn(`   ⚠️ Error en análisis interno: ${error.message}`);
@@ -280,7 +350,8 @@ export async function autorunApply(
       if (targetFile) {
         console.log(`   ✅ Archivo objetivo detectado: ${targetFile}`);
       } else {
-        const errorMsg = 'No se pudo determinar archivo objetivo. Especifica targetFiles en el input.';
+        const errorMsg =
+          'No se pudo determinar archivo objetivo. Especifica targetFiles en el input.';
         console.error(`   ❌ ${errorMsg}`);
         return {
           success: false,
@@ -318,19 +389,72 @@ export async function autorunApply(
       };
     }
 
-    // 2.6 Generar código con marcas Autorun
-    console.log(`   [2.6] Generando código con marcas Autorun...`);
+    // 2.6 Resolver dependencias dependsOn.required (OBLIGATORIO)
+    console.log(`   [2.6] Resolviendo dependencias dependsOn.required...`);
+    let resolvedDependencies: Record<string, any> = {};
+
+    if (internalAnalysis && internalAnalysis.dependsOn.required.length > 0) {
+      console.log(
+        `   📦 Resolviendo ${internalAnalysis.dependsOn.required.length} dependencia(s) requerida(s)...`
+      );
+
+      // ⚠️ CRÍTICO: El agente DEBE consultar Storybook MCP para cada dependencia requerida
+      for (const depComponentName of internalAnalysis.dependsOn.required) {
+        console.log(`   📚 Dependencia requerida: ${depComponentName}`);
+        console.log(
+          `   ⚠️ OBLIGATORIO: El agente DEBE consultar Storybook MCP para obtener snippet de ${depComponentName}`
+        );
+        console.log(`      call_mcp_tool({`);
+        console.log(`        server: "storybook",`);
+        console.log(`        toolName: "mcp_storybook_getComponentsProps",`);
+        console.log(
+          `        arguments: { componentIds: ["${depComponentName}"] }`
+        );
+        console.log(`      })`);
+
+        // Por ahora, marcamos como pendiente
+        // TODO: Cuando tengamos acceso a MCP desde Node.js, resolver automáticamente
+        resolvedDependencies[depComponentName] = {
+          status: 'pending',
+          message:
+            'El agente debe consultar Storybook MCP para obtener snippet',
+        };
+      }
+
+      console.log(
+        `   ⚠️ NOTA: Los snippets de dependencias deben obtenerse ANTES de generar el código final`
+      );
+    } else {
+      console.log(`   ✅ No hay dependencias requeridas`);
+    }
+
+    // 2.7 Generar código con marcas Autorun (incluyendo metadata de dependencias)
+    console.log(`   [2.7] Generando código con marcas Autorun...`);
+
+    // Incluir información de dependencias en el watermark
+    const watermarkMetadata = {
+      component: result.componentName,
+      storybookId: componentId,
+      story: 'default',
+      dependsOn: internalAnalysis?.dependsOn || { required: [], optional: [] },
+      internals: internalAnalysis?.internals || [],
+    };
+
     const codeWithMarks = generateCodeWithAutorunMarks(
       exactCode.html,
       result.componentName,
       componentId,
-      'default'
+      'default',
+      undefined,
+      watermarkMetadata
     );
-    console.log(`   ✅ Código generado con marcas Autorun`);
+    console.log(
+      `   ✅ Código generado con marcas Autorun (incluye metadata de dependencias)`
+    );
 
-    // 2.7 SOLO AHORA escribir (si no es dry-run)
+    // 2.8 SOLO AHORA escribir (si no es dry-run)
     if (!input.options?.dryRun) {
-      console.log(`   [2.7] Escribiendo archivo...`);
+      console.log(`   [2.8] Escribiendo archivo...`);
       try {
         await fs.writeFile(targetFile, codeWithMarks, 'utf-8');
         filesWritten.push(targetFile);
@@ -362,12 +486,15 @@ export async function autorunApply(
 
     let postImplementationResult;
     if (!input.options?.dryRun && filesWritten.length > 0) {
-      postImplementationResult = await orchestrator.executePostImplementationPhase(
-        filesWritten,
-        result.componentName
-      );
+      postImplementationResult =
+        await orchestrator.executePostImplementationPhase(
+          filesWritten,
+          result.componentName
+        );
     } else {
-      console.log(`   ⚠️ Saltando fase post-implementación (dry-run o sin archivos)`);
+      console.log(
+        `   ⚠️ Saltando fase post-implementación (dry-run o sin archivos)`
+      );
       postImplementationResult = {
         prettier: { executed: false, formatted: 0 },
         eslint: { executed: false, errors: 0, warnings: 0, fixed: 0 },
@@ -450,22 +577,28 @@ export async function autorunApply(
       warnings: warnings.length > 0 ? warnings : undefined,
     };
   } catch (error: any) {
-    console.error(`\n❌ [Autorun MCP] Error en autorun.apply(): ${error.message}`);
+    console.error(
+      `\n❌ [Autorun MCP] Error en autorun.apply(): ${error.message}`
+    );
     console.error(error.stack);
 
     // Registrar en Problem Tracker si está disponible
     try {
-      const problemTrackerAddon = await orchestrator.getAddon('problem-tracker');
+      const problemTrackerAddon =
+        await orchestrator.getAddon('problem-tracker');
       if (problemTrackerAddon && problemTrackerAddon.isActive()) {
         const services = problemTrackerAddon.getServices();
         if (services && services.detectProblem) {
-          await services.detectProblem(`Error en autorun.apply(): ${error.message}`, {
-            category: 'implementacion',
-            severity: 'high',
-            message: input.message,
-            error: error.message,
-            stack: error.stack,
-          });
+          await services.detectProblem(
+            `Error en autorun.apply(): ${error.message}`,
+            {
+              category: 'implementacion',
+              severity: 'high',
+              message: input.message,
+              error: error.message,
+              stack: error.stack,
+            }
+          );
         }
       }
     } catch (trackerError) {
@@ -491,7 +624,9 @@ export async function autorunApply(
 /**
  * Detecta archivo objetivo automáticamente
  */
-async function detectTargetFile(componentName?: string): Promise<string | null> {
+async function detectTargetFile(
+  componentName?: string
+): Promise<string | null> {
   try {
     // Buscar archivos HTML en prototypes/
     const prototypesDir = path.join(process.cwd(), 'prototypes');

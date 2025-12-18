@@ -106,7 +106,7 @@ export async function getFullMCPConfig(): Promise<{
 
   return {
     mcpServers: {
-      'storybook-ubits': info.config,
+      storybook: info.config,
     },
   };
 }
