@@ -1,40 +1,64 @@
 {
-	"mcpServers": {
-		"storybook": {
-			"command": "npx",
-			"args": ["-y", "storybook-mcp@latest"],
-			"env": {
-				"STORYBOOK_URL": "http://localhost:6006/index.json"
-			}
-		},
-		"figma": {
-			"url": "https://mcp.figma.com/mcp"
-		},
-		"talk-to-figma": {
-			"command": "npx",
-			"args": ["-y", "cursor-talk-to-figma-mcp"],
-			"env": {}
-		},
-		"clarity": {
-			"command": "npx",
-			"args": ["-y", "@microsoft/clarity-mcp-server"],
-			"env": {}
-		},
-		"vercel": {
-			"url": "https://mcp.vercel.com"
-		},
-		"github": {
-			"command": "npx",
-			"args": ["-y", "@modelcontextprotocol/server-github"],
-			"env": {}
-		},
-		"supabase": {
-			"url": "https://mcp.supabase.com/mcp"
-		},
-		"mcp-gsheets": {
-			"command": "npx",
-			"args": ["-y", "mcp-gsheets@latest"],
-			"env": {}
-		}
-	}
+  "mcpServers": {
+    "storybook": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "storybook-mcp@latest"
+      ],
+      "env": {
+        "STORYBOOK_URL": "http://localhost:6006/index.json"
+      }
+    },
+    "figma": {
+      "url": "https://mcp.figma.com/mcp"
+    },
+    "talk-to-figma": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "cursor-talk-to-figma-mcp"
+      ],
+      "env": {}
+    },
+    "clarity": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@microsoft/clarity-mcp-server"
+      ],
+      "env": {}
+    },
+    "vercel": {
+      "url": "https://mcp.vercel.com"
+    },
+    "github": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-github"
+      ],
+      "env": {}
+    },
+    "supabase": {
+      "url": "https://mcp.supabase.com/mcp"
+    },
+    "mcp-gsheets": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-gsheets@latest"
+      ],
+      "env": {}
+    },
+    "autorun": {
+      "command": "node",
+      "args": [
+        "/Users/elkinmac/Desktop/Autorun/packages/autorun-core/dist/cli/autorun-mcp-server.js"
+      ],
+      "env": {
+        "NODE_ENV": "production"
+      }
+    }
+  }
 }

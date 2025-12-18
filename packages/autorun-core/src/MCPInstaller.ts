@@ -44,7 +44,7 @@ export class MCPInstaller {
 			const config = await this.loadOrCreateConfig(configPath);
 
 			// Configurar servidor según el servicio
-			const serverConfig = this.getServerConfig(serviceName, credentials);
+			const serverConfig = await this.getServerConfig(serviceName, credentials);
 
 			// Agregar servidor a la configuración
 			if (!config.servers) {
@@ -354,7 +354,7 @@ export class MCPInstaller {
 				}
 
 				if (useCompiled) {
-					// Usar archivo compilado
+					// Usar archivo compilado (ruta absoluta)
 					return {
 						command: 'node',
 						args: [autorunServerPath],
@@ -365,9 +365,10 @@ export class MCPInstaller {
 				} else {
 					// Usar tsx para ejecutar directamente desde TypeScript
 					// Usar ruta relativa desde la raíz del proyecto
+					const relativeSourcePath = path.relative(process.cwd(), autorunServerSourcePath);
 					return {
 						command: 'npx',
-						args: ['-y', 'tsx', autorunServerSourcePath],
+						args: ['-y', 'tsx', relativeSourcePath],
 						env: {
 							NODE_ENV: 'production',
 						},

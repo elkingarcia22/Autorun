@@ -188,8 +188,13 @@ export class MCPDetector {
 					// Verificar si el servidor está en la configuración
 					// Cursor usa "mcpServers", estándar puede usar "servers" o "mcpServers"
 					const servers = config.mcpServers || config.servers || {};
-					if (servers[serviceName.toLowerCase()]) {
-						return true;
+					const serverConfig = servers[serviceName.toLowerCase()];
+					if (serverConfig) {
+						// Verificar que la configuración no esté vacía
+						// Debe tener al menos 'command' o 'url' (campos mínimos requeridos)
+						if (Object.keys(serverConfig).length > 0 && (serverConfig.command || serverConfig.url)) {
+							return true;
+						}
 					}
 				} catch {
 					// Continuar con la siguiente ruta
