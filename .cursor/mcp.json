@@ -52,9 +52,11 @@
       "env": {}
     },
     "autorun": {
-      "command": "node",
+      "command": "npx",
       "args": [
-        "/Users/elkinmac/Desktop/Autorun/packages/autorun-core/dist/cli/autorun-mcp-server.js"
+        "-y",
+        "tsx",
+        "packages/autorun-core/src/cli/autorun-mcp-server.ts"
       ],
       "env": {
         "NODE_ENV": "production"
