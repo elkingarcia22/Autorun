@@ -95,6 +95,109 @@ async function main() {
       '   📋 Ver reglas en .cursorrules - Sección "Auto-Apertura y Recarga"'
     );
 
+    // ⚠️ NUEVO: Detectar template más reciente y navegar automáticamente
+    console.log('\n🔍 Detectando templates disponibles...');
+    try {
+      const { detectTemplateToOpen } = await import(
+        '../helpers/templateDetector.js'
+      );
+      const templateInfo = await detectTemplateToOpen();
+
+      if (templateInfo.url) {
+        console.log(`\n📋 Template detectado: ${templateInfo.url}`);
+        console.log(`   Fuente: ${templateInfo.source}`);
+        console.log(`\n🌐 El agente debe navegar automáticamente a:`);
+        console.log(
+          `   [AUTORUN_BROWSER_URL]${templateInfo.url}[/AUTORUN_BROWSER_URL]`
+        );
+        console.log(
+          `   [AUTORUN_TEMPLATE_DETECTED]true[/AUTORUN_TEMPLATE_DETECTED]`
+        );
+        console.log(
+          `   [AUTORUN_EXECUTE_HANDLE_USER_MESSAGE]true[/AUTORUN_EXECUTE_HANDLE_USER_MESSAGE]`
+        );
+        console.log(`\n💡 Instrucciones para el agente:`);
+        console.log(`   1. Navegar a: ${templateInfo.url}`);
+        console.log(
+          `   2. Tomar snapshot para verificar que cargó correctamente`
+        );
+        console.log(
+          `   3. Ejecutar handleUserMessage() automáticamente para completar el flujo`
+        );
+        console.log(
+          `\n💡 RECOMENDACIÓN: El agente debe ejecutar automáticamente:`
+        );
+        console.log(
+          `   - call_mcp_tool({ server: "cursor-ide-browser", toolName: "browser_navigate", arguments: { url: "${templateInfo.url}" } })`
+        );
+        console.log(
+          `   - call_mcp_tool({ server: "cursor-ide-browser", toolName: "browser_snapshot" })`
+        );
+        console.log(
+          `   - handleUserMessage(userMessage) para completar el flujo automático`
+        );
+
+        // Limpiar archivo de estado si viene del wizard
+        if (templateInfo.source === 'wizard-state') {
+          try {
+            const fs = await import('fs/promises');
+            const path = await import('path');
+            const statePath = path.join(
+              process.cwd(),
+              '.autorun',
+              'wizard-state.json'
+            );
+            await fs.unlink(statePath);
+            console.log(
+              `\n✅ Archivo de estado del wizard limpiado automáticamente`
+            );
+          } catch (error: any) {
+            console.warn(
+              `\n⚠️  No se pudo limpiar archivo de estado: ${error.message}`
+            );
+          }
+        }
+      } else {
+        console.log('   ℹ️  No se detectaron templates en prototypes/');
+        console.log(
+          '   💡 Crea un template con el wizard o coloca un archivo HTML en prototypes/'
+        );
+      }
+    } catch (error: any) {
+      console.warn(`   ⚠️  Error detectando templates: ${error.message}`);
+    }
+
+    // ⭐ NUEVO: Ejecutar pruebas de Storybook Implementation
+    console.log('\n🧪 Probando funcionalidades de Storybook Implementation...');
+    try {
+      const testerModule = await import(
+        '../helpers/storybookImplementationTester.js'
+      );
+      const runQuickTest = testerModule.runQuickTest;
+      if (typeof runQuickTest === 'function') {
+        const testPassed = await runQuickTest('data-data-table');
+        if (testPassed) {
+          console.log('   ✅ Pruebas de Storybook Implementation: OK');
+          console.log('   📚 Todas las funcionalidades están operativas');
+        } else {
+          console.warn(
+            '   ⚠️  Algunas pruebas de Storybook Implementation fallaron'
+          );
+          console.warn(
+            '   💡 Esto puede ser normal si el componente no está disponible en Storybook'
+          );
+        }
+      } else {
+        console.warn('   ⚠️  runQuickTest no está disponible en el módulo');
+      }
+    } catch (error: any) {
+      // No bloquear si falla
+      console.warn(`   ⚠️  No se pudieron ejecutar pruebas: ${error.message}`);
+      console.warn(
+        '   💡 Esto puede ser normal si Storybook no está disponible'
+      );
+    }
+
     process.exit(0);
   } catch (error: any) {
     // Si el error es sobre configuración faltante, dar instrucciones claras

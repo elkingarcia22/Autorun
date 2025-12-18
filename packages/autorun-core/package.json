@@ -12,7 +12,11 @@
 		"format": "biome format . --write",
 		"test": "vitest run",
 		"test:watch": "vitest",
-		"test:coverage": "vitest run --coverage"
+		"test:coverage": "vitest run --coverage",
+		"mcp-server": "node dist/cli/autorun-mcp-server.js"
+	},
+	"dependencies": {
+		"@modelcontextprotocol/sdk": "^1.0.0"
 	},
 	"devDependencies": {
 		"@vitest/coverage-v8": "^4.0.15",

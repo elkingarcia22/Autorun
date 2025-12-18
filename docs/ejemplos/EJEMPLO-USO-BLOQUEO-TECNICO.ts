@@ -216,6 +216,3 @@ export async function ejemplo5_FlujoCompleto() {
 	console.log('✅ Todas las verificaciones pasadas, procediendo con implementación');
 	// await write(filePath, content);
 }
-
-
-

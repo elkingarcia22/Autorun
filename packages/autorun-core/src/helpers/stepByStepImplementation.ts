@@ -218,6 +218,3 @@ export class StepByStepImplementation {
 
 // Instancia global del sistema
 export const stepByStepImplementation = new StepByStepImplementation();
-
-
-

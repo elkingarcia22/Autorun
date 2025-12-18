@@ -81,6 +81,62 @@ export async function executeOnMessageStart(
     `✅ [Execute On Message Start] Componente detectado: ${detection.componentName}`
   );
 
+  // 1.5. ⚠️ CRÍTICO: Emitir mensaje para consultar Storybook MCP automáticamente
+  // El agente debe interceptar este mensaje y consultar Storybook MCP
+  if (detection.componentName) {
+    const { mapComponentNameToStorybookId } = await import(
+      './storybookStories'
+    );
+    const storybookId = await mapComponentNameToStorybookId(
+      detection.componentName
+    );
+
+    console.log(
+      '\n📚 [Execute On Message Start] ========================================'
+    );
+    console.log(
+      '📚 [Execute On Message Start] ⚠️ OBLIGATORIO: Consultar Storybook MCP'
+    );
+    console.log(
+      `📚 [Execute On Message Start] Componente: ${detection.componentName}`
+    );
+    console.log(`📚 [Execute On Message Start] ID Storybook: ${storybookId}`);
+    console.log(
+      `[AUTORUN_STORYBOOK_MCP]${detection.componentName}:${storybookId}[/AUTORUN_STORYBOOK_MCP]`
+    );
+    console.log(
+      '📚 [Execute On Message Start] El agente DEBE ejecutar automáticamente:'
+    );
+    console.log(`   call_mcp_tool({`);
+    // Obtener Storybook activo para determinar servidor MCP
+    try {
+      const { StorybookManager } = await import('./storybookManager');
+      const manager = StorybookManager.getInstance();
+      const activeConfig = await manager.getActiveConfig();
+
+      let mcpServer = 'storybook-ubits'; // Default
+      if (activeConfig) {
+        mcpServer = 'storybook-ubits'; // Mismo servidor, pero URL diferente en configuración
+        console.log(
+          `📚 [Execute On Message Start] Storybook activo: ${activeConfig.name} (${activeConfig.url})`
+        );
+        console.log(
+          `📚 [Execute On Message Start] ⚠️ IMPORTANTE: El servidor MCP debe estar configurado con STORYBOOK_URL=${activeConfig.url}/index.json`
+        );
+      }
+      console.log(`     server: "${mcpServer}",`);
+    } catch (error) {
+      // Si no se puede obtener Storybook activo, usar default
+      console.log(`     server: "storybook-ubits",`);
+    }
+    console.log(`     toolName: "mcp_storybook_getComponentsProps",`);
+    console.log(`     arguments: { componentIds: ["${storybookId}"] }`);
+    console.log(`   })`);
+    console.log(
+      '📚 [Execute On Message Start] ========================================\n'
+    );
+  }
+
   // 2. Verificar con Pre-Implementation Check add-on
   let blocked = false;
   let reason: string | undefined = undefined;

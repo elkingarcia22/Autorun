@@ -6,279 +6,265 @@
  */
 
 import { IFunctionalAddon, AutorunContext } from '@autorun/core';
-import {
-  StorybookService,
-  StorybookConfig,
-  StorybookProcess,
-} from './StorybookService';
+import { StorybookService, StorybookConfig, StorybookProcess } from './StorybookService';
 
 export class StorybookAddon implements IFunctionalAddon {
-  readonly id = 'storybook';
-  readonly name = 'Storybook Development';
-  readonly version = '1.0.0';
-  readonly type = 'functional';
-  readonly description =
-    'Desarrollo y documentación de componentes con Storybook';
+	readonly id = 'storybook';
+	readonly name = 'Storybook Development';
+	readonly version = '1.0.0';
+	readonly type = 'functional';
+	readonly description = 'Desarrollo y documentación de componentes con Storybook';
 
-  private service?: StorybookService;
-  private active = false;
-  private config: StorybookConfig = {
-    port: 6006,
-    host: 'localhost',
-    buildDir: 'storybook-static',
-    configDir: '.storybook',
-    storiesDir: 'stories',
-    autoStart: false,
-    framework: 'react',
-  };
-  private context?: AutorunContext;
+	private service?: StorybookService;
+	private active = false;
+	private config: StorybookConfig = {
+		port: 6006,
+		host: 'localhost',
+		buildDir: 'storybook-static',
+		configDir: '.storybook',
+		storiesDir: 'stories',
+		autoStart: false,
+		framework: 'react',
+	};
+	private context?: AutorunContext;
 
-  async initialize(context: AutorunContext): Promise<void> {
-    this.context = context;
+	async initialize(context: AutorunContext): Promise<void> {
+		this.context = context;
 
-    // Obtener configuración
-    const addonConfig = context.config.autorun?.addons?.config?.storybook || {};
-    this.config = {
-      port: addonConfig.port || 6006,
-      host: addonConfig.host || 'localhost',
-      buildDir: addonConfig.buildDir || 'storybook-static',
-      configDir: addonConfig.configDir || '.storybook',
-      storiesDir: addonConfig.storiesDir || 'stories',
-      autoStart: addonConfig.autoStart || false,
-      framework: addonConfig.framework || 'react',
-      staticDirs: addonConfig.staticDirs || [],
-      addons: addonConfig.addons || [],
-    };
+		// Obtener configuración
+		const addonConfig = context.config.autorun?.addons?.config?.storybook || {};
+		this.config = {
+			port: addonConfig.port || 6006,
+			host: addonConfig.host || 'localhost',
+			buildDir: addonConfig.buildDir || 'storybook-static',
+			configDir: addonConfig.configDir || '.storybook',
+			storiesDir: addonConfig.storiesDir || 'stories',
+			autoStart: addonConfig.autoStart || false,
+			framework: addonConfig.framework || 'react',
+			staticDirs: addonConfig.staticDirs || [],
+			addons: addonConfig.addons || [],
+		};
 
-    // Inicializar servicio
-    this.service = new StorybookService(this.config, process.cwd());
+		// Inicializar servicio
+		this.service = new StorybookService(this.config, process.cwd());
 
-    try {
-      await this.service.initialize();
-      // Solo mostrar mensaje si Storybook está instalado y configurado
-      const status = this.service.getStatus();
-      if (status.initialized) {
-        console.log('✅ Storybook Add-on: Inicializado correctamente');
+		try {
+			await this.service.initialize();
+			// Solo mostrar mensaje si Storybook está instalado y configurado
+			const status = this.service.getStatus();
+			if (status.initialized) {
+				console.log('✅ Storybook Add-on: Inicializado correctamente');
 
-        // Auto-start si está configurado
-        if (this.config.autoStart) {
-          await this.activate();
-        }
-      }
-    } catch (error) {
-      console.error(`❌ Storybook Add-on: Error al inicializar - ${error}`);
-      // No lanzar error, permitir que el add-on funcione sin inicialización completa
-    }
-  }
+				// Auto-start si está configurado
+				if (this.config.autoStart) {
+					await this.activate();
+				}
+			}
+		} catch (error) {
+			console.error(`❌ Storybook Add-on: Error al inicializar - ${error}`);
+			// No lanzar error, permitir que el add-on funcione sin inicialización completa
+		}
+	}
 
-  async activate(): Promise<void> {
-    if (!this.service) {
-      this.service = new StorybookService(this.config, process.cwd());
-      await this.service.initialize();
-    }
+	async activate(): Promise<void> {
+		if (!this.service) {
+			this.service = new StorybookService(this.config, process.cwd());
+			await this.service.initialize();
+		}
 
-    // Solo intentar iniciar si Storybook está instalado y configurado
-    const status = this.service.getStatus();
-    if (!status.running && status.initialized) {
-      try {
-        const process = await this.service.start();
-        console.log(`✅ Storybook Add-on: Servidor iniciado en ${process.url}`);
-      } catch (error) {
-        // No mostrar error si Storybook no está instalado o configurado
-        // Solo mostrar si es un error real de inicio
-        const errorMessage =
-          error instanceof Error ? error.message : String(error);
-        if (
-          !errorMessage.includes('no está instalado') &&
-          !errorMessage.includes('no está configurado')
-        ) {
-          console.error(
-            `❌ Storybook Add-on: Error al iniciar servidor - ${error}`
-          );
-        }
-      }
-    }
+		// Solo intentar iniciar si Storybook está instalado y configurado
+		const status = this.service.getStatus();
+		if (!status.running && status.initialized) {
+			try {
+				const process = await this.service.start();
+				console.log(`✅ Storybook Add-on: Servidor iniciado en ${process.url}`);
+			} catch (error) {
+				// No mostrar error si Storybook no está instalado o configurado
+				// Solo mostrar si es un error real de inicio
+				const errorMessage = error instanceof Error ? error.message : String(error);
+				if (
+					!errorMessage.includes('no está instalado') &&
+					!errorMessage.includes('no está configurado')
+				) {
+					console.error(`❌ Storybook Add-on: Error al iniciar servidor - ${error}`);
+				}
+			}
+		}
 
-    this.active = true;
-    console.log('✅ Storybook Add-on: Activado');
-  }
+		this.active = true;
+		console.log('✅ Storybook Add-on: Activado');
+	}
 
-  async deactivate(): Promise<void> {
-    this.active = false;
-    this.service?.stop();
-    console.log('🔌 Storybook Add-on: Desactivado');
-  }
+	async deactivate(): Promise<void> {
+		this.active = false;
+		this.service?.stop();
+		console.log('🔌 Storybook Add-on: Desactivado');
+	}
 
-  isActive(): boolean {
-    return this.active;
-  }
+	isActive(): boolean {
+		return this.active;
+	}
 
-  getStatus(): 'active' | 'inactive' {
-    return this.active ? 'active' : 'inactive';
-  }
+	getStatus(): 'active' | 'inactive' {
+		return this.active ? 'active' : 'inactive';
+	}
 
-  destroy(): void {
-    this.service?.stop();
-    this.active = false;
-    this.service = undefined;
-  }
+	destroy(): void {
+		this.service?.stop();
+		this.active = false;
+		this.service = undefined;
+	}
 
-  async configure(config: Record<string, any>): Promise<void> {
-    const storybookConfig: Partial<StorybookConfig> = {};
+	async configure(config: Record<string, any>): Promise<void> {
+		const storybookConfig: Partial<StorybookConfig> = {};
 
-    if (config.port !== undefined) storybookConfig.port = config.port;
-    if (config.host) storybookConfig.host = config.host;
-    if (config.buildDir) storybookConfig.buildDir = config.buildDir;
-    if (config.configDir) storybookConfig.configDir = config.configDir;
-    if (config.storiesDir) storybookConfig.storiesDir = config.storiesDir;
-    if (config.autoStart !== undefined)
-      storybookConfig.autoStart = config.autoStart;
-    if (config.framework) storybookConfig.framework = config.framework;
-    if (config.staticDirs) storybookConfig.staticDirs = config.staticDirs;
-    if (config.addons) storybookConfig.addons = config.addons;
+		if (config.port !== undefined) storybookConfig.port = config.port;
+		if (config.host) storybookConfig.host = config.host;
+		if (config.buildDir) storybookConfig.buildDir = config.buildDir;
+		if (config.configDir) storybookConfig.configDir = config.configDir;
+		if (config.storiesDir) storybookConfig.storiesDir = config.storiesDir;
+		if (config.autoStart !== undefined) storybookConfig.autoStart = config.autoStart;
+		if (config.framework) storybookConfig.framework = config.framework;
+		if (config.staticDirs) storybookConfig.staticDirs = config.staticDirs;
+		if (config.addons) storybookConfig.addons = config.addons;
 
-    this.config = { ...this.config, ...storybookConfig };
+		this.config = { ...this.config, ...storybookConfig };
 
-    if (this.service) {
-      this.service.updateConfig(storybookConfig);
-    } else {
-      this.service = new StorybookService(this.config, process.cwd());
-      await this.service.initialize();
-    }
-  }
+		if (this.service) {
+			this.service.updateConfig(storybookConfig);
+		} else {
+			this.service = new StorybookService(this.config, process.cwd());
+			await this.service.initialize();
+		}
+	}
 
-  /**
-   * Hook llamado cuando un archivo cambia
-   */
-  async onFileChange(filePath: string): Promise<void> {
-    if (!this.active || !this.service) {
-      return;
-    }
+	/**
+	 * Hook llamado cuando un archivo cambia
+	 */
+	async onFileChange(filePath: string): Promise<void> {
+		if (!this.active || !this.service) {
+			return;
+		}
 
-    // Storybook tiene hot reload automático, no necesitamos hacer nada
-    // pero podemos trackear cambios si Clarity está disponible
-    if (this.context) {
-      const clarityService = this.context.hub?.getService?.(
-        'clarity',
-        'trackEvent'
-      );
-      if (clarityService && filePath.includes('stories')) {
-        clarityService('storybook_story_changed', {
-          filePath,
-          timestamp: new Date().toISOString(),
-        });
-      }
-    }
-  }
+		// Storybook tiene hot reload automático, no necesitamos hacer nada
+		// pero podemos trackear cambios si Clarity está disponible
+		if (this.context) {
+			const clarityService = this.context.hub?.getService?.('clarity', 'trackEvent');
+			if (clarityService && filePath.includes('stories')) {
+				clarityService('storybook_story_changed', {
+					filePath,
+					timestamp: new Date().toISOString(),
+				});
+			}
+		}
+	}
 
-  /**
-   * Hook llamado antes de hacer deploy
-   */
-  async onBeforeDeploy(): Promise<void> {
-    if (!this.active || !this.service) {
-      return;
-    }
+	/**
+	 * Hook llamado antes de hacer deploy
+	 */
+	async onBeforeDeploy(): Promise<void> {
+		if (!this.active || !this.service) {
+			return;
+		}
 
-    // Build de Storybook antes de deploy
-    // Nota: Si Standalone Mode está activo, dejar que maneje la optimización
-    try {
-      const standaloneActive = this.context?.hub?.isAddonActive?.('standalone');
+		// Build de Storybook antes de deploy
+		// Nota: Si Standalone Mode está activo, dejar que maneje la optimización
+		try {
+			const standaloneActive = this.context?.hub?.isAddonActive?.('standalone');
 
-      if (!standaloneActive) {
-        // Si Standalone no está activo, hacer build básico
-        console.log('📦 Storybook Add-on: Haciendo build antes de deploy...');
-        await this.service.build();
-      } else {
-        // Si Standalone está activo, solo hacer build básico
-        // Standalone se encargará de la optimización
-        console.log(
-          '📦 Storybook Add-on: Build básico (Standalone Mode optimizará)...'
-        );
-        await this.service.build();
-      }
-    } catch (error) {
-      console.error('❌ Storybook Add-on: Error al hacer build:', error);
-    }
-  }
+			if (!standaloneActive) {
+				// Si Standalone no está activo, hacer build básico
+				console.log('📦 Storybook Add-on: Haciendo build antes de deploy...');
+				await this.service.build();
+			} else {
+				// Si Standalone está activo, solo hacer build básico
+				// Standalone se encargará de la optimización
+				console.log('📦 Storybook Add-on: Build básico (Standalone Mode optimizará)...');
+				await this.service.build();
+			}
+		} catch (error) {
+			console.error('❌ Storybook Add-on: Error al hacer build:', error);
+		}
+	}
 
-  /**
-   * Obtiene los servicios que este add-on proporciona
-   */
-  getServices() {
-    return {
-      // Iniciar servidor de desarrollo
-      start: async () => {
-        if (!this.service) {
-          throw new Error('Storybook service no está inicializado');
-        }
-        return await this.service.start();
-      },
+	/**
+	 * Obtiene los servicios que este add-on proporciona
+	 */
+	getServices() {
+		return {
+			// Iniciar servidor de desarrollo
+			start: async () => {
+				if (!this.service) {
+					throw new Error('Storybook service no está inicializado');
+				}
+				return await this.service.start();
+			},
 
-      // Detener servidor
-      stop: () => {
-        if (!this.service) {
-          throw new Error('Storybook service no está inicializado');
-        }
-        return this.service.stop();
-      },
+			// Detener servidor
+			stop: () => {
+				if (!this.service) {
+					throw new Error('Storybook service no está inicializado');
+				}
+				return this.service.stop();
+			},
 
-      // Build estático
-      build: async () => {
-        if (!this.service) {
-          throw new Error('Storybook service no está inicializado');
-        }
-        return await this.service.build();
-      },
+			// Build estático
+			build: async () => {
+				if (!this.service) {
+					throw new Error('Storybook service no está inicializado');
+				}
+				return await this.service.build();
+			},
 
-      // Generar story
-      generateStory: async (
-        componentName: string,
-        options?: {
-          componentPath?: string;
-          category?: string;
-          args?: Record<string, any>;
-        }
-      ) => {
-        if (!this.service) {
-          throw new Error('Storybook service no está inicializado');
-        }
-        return await this.service.generateStory(componentName, options);
-      },
+			// Generar story
+			generateStory: async (
+				componentName: string,
+				options?: {
+					componentPath?: string;
+					category?: string;
+					args?: Record<string, any>;
+				},
+			) => {
+				if (!this.service) {
+					throw new Error('Storybook service no está inicializado');
+				}
+				return await this.service.generateStory(componentName, options);
+			},
 
-      // Generar configuración
-      generateConfig: async () => {
-        if (!this.service) {
-          throw new Error('Storybook service no está inicializado');
-        }
-        return await this.service.generateConfig();
-      },
+			// Generar configuración
+			generateConfig: async () => {
+				if (!this.service) {
+					throw new Error('Storybook service no está inicializado');
+				}
+				return await this.service.generateConfig();
+			},
 
-      // Obtener estado
-      getStatus: () => {
-        if (!this.service) {
-          return {
-            initialized: false,
-            running: false,
-          };
-        }
-        return this.service.getStatus();
-      },
+			// Obtener estado
+			getStatus: () => {
+				if (!this.service) {
+					return {
+						initialized: false,
+						running: false,
+					};
+				}
+				return this.service.getStatus();
+			},
 
-      // Obtener configuración
-      getConfig: () => {
-        if (!this.service) {
-          return this.config;
-        }
-        return this.service.getConfig();
-      },
+			// Obtener configuración
+			getConfig: () => {
+				if (!this.service) {
+					return this.config;
+				}
+				return this.service.getConfig();
+			},
 
-      // Actualizar configuración
-      updateConfig: (config: Partial<StorybookConfig>) => {
-        if (!this.service) {
-          throw new Error('Storybook service no está inicializado');
-        }
-        return this.service.updateConfig(config);
-      },
-    };
-  }
+			// Actualizar configuración
+			updateConfig: (config: Partial<StorybookConfig>) => {
+				if (!this.service) {
+					throw new Error('Storybook service no está inicializado');
+				}
+				return this.service.updateConfig(config);
+			},
+		};
+	}
 }

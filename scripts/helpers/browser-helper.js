@@ -132,6 +132,3 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 	console.log('  3. Usar browser MCP para navegar y analizar');
 	console.log('  4. Usar generateCursorInstruction() para crear instrucciones\n');
 }
-
-
-

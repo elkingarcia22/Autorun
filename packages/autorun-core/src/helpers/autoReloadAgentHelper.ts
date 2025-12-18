@@ -50,46 +50,36 @@ Esto permite ver los cambios inmediatamente sin recargar manualmente.
  * }
  */
 export async function autoReloadBrowser(filePath: string): Promise<void> {
-  // Verificar si debe recargarse
-  if (!shouldAutoReload(filePath)) {
-    return;
-  }
+	// Verificar si debe recargarse
+	if (!shouldAutoReload(filePath)) {
+		return;
+	}
 
-  console.log(
-    '\n🔄 [Auto-Reload Helper] ========================================'
-  );
-  console.log(
-    `🔄 [Auto-Reload Helper] Recargando navegador automáticamente...`
-  );
-  console.log(`🔄 [Auto-Reload Helper] Archivo: ${filePath}`);
+	console.log('\n🔄 [Auto-Reload Helper] ========================================');
+	console.log(`🔄 [Auto-Reload Helper] Recargando navegador automáticamente...`);
+	console.log(`🔄 [Auto-Reload Helper] Archivo: ${filePath}`);
 
-  try {
-    // ⚠️ NOTA: El agente debe ejecutar estas herramientas MCP directamente
-    // Estas son las instrucciones que el agente debe seguir:
+	try {
+		// ⚠️ NOTA: El agente debe ejecutar estas herramientas MCP directamente
+		// Estas son las instrucciones que el agente debe seguir:
 
-    console.log(`🔄 [Auto-Reload Helper] Instrucciones para el agente:`);
-    console.log(`   1. mcp_cursor-ide-browser_browser_snapshot()`);
-    console.log(`   2. Obtener URL actual del snapshot`);
-    console.log(
-      `   3. mcp_cursor-ide-browser_browser_navigate({ url: currentUrl })`
-    );
-    console.log(
-      `   4. setTimeout(() => mcp_cursor-ide-browser_browser_snapshot(), 1000)`
-    );
+		console.log(`🔄 [Auto-Reload Helper] Instrucciones para el agente:`);
+		console.log(`   1. mcp_cursor-ide-browser_browser_snapshot()`);
+		console.log(`   2. Obtener URL actual del snapshot`);
+		console.log(`   3. mcp_cursor-ide-browser_browser_navigate({ url: currentUrl })`);
+		console.log(`   4. setTimeout(() => mcp_cursor-ide-browser_browser_snapshot(), 1000)`);
 
-    // Obtener URL del template como fallback
-    const templateUrl = getTemplateUrlFromPath(filePath);
-    console.log(`🔄 [Auto-Reload Helper] URL del template: ${templateUrl}`);
+		// Obtener URL del template como fallback
+		const templateUrl = getTemplateUrlFromPath(filePath);
+		console.log(`🔄 [Auto-Reload Helper] URL del template: ${templateUrl}`);
 
-    console.log(
-      `🔄 [Auto-Reload Helper] ========================================\n`
-    );
+		console.log(`🔄 [Auto-Reload Helper] ========================================\n`);
 
-    // ⚠️ IMPORTANTE: El agente debe ejecutar las herramientas MCP aquí
-    // No podemos ejecutarlas desde TypeScript, solo proporcionamos las instrucciones
-  } catch (error) {
-    console.error(`❌ [Auto-Reload Helper] Error:`, error);
-  }
+		// ⚠️ IMPORTANTE: El agente debe ejecutar las herramientas MCP aquí
+		// No podemos ejecutarlas desde TypeScript, solo proporcionamos las instrucciones
+	} catch (error) {
+		console.error(`❌ [Auto-Reload Helper] Error:`, error);
+	}
 }
 
 /**
@@ -99,20 +89,26 @@ export async function autoReloadBrowser(filePath: string): Promise<void> {
  * @returns Objeto con información sobre si debe recargarse y cómo hacerlo
  */
 export function getAutoReloadInfo(filePath: string): {
-  shouldReload: boolean;
-  templateUrl: string;
-  instructions: string;
+	shouldReload: boolean;
+	templateUrl: string;
+	instructions: string;
 } {
-  const shouldReload = shouldAutoReload(filePath);
-  const templateUrl = getTemplateUrlFromPath(filePath);
+	const shouldReload = shouldAutoReload(filePath);
+	const templateUrl = getTemplateUrlFromPath(filePath);
 
-  const instructions = shouldReload
-    ? `Ejecutar automáticamente: await autoReloadBrowser("${filePath}")`
-    : `No se requiere recarga (archivo no es HTML/JS/CSS en prototypes/)`;
+	const instructions = shouldReload
+		? `Ejecutar automáticamente: await autoReloadBrowser("${filePath}")`
+		: `No se requiere recarga (archivo no es HTML/JS/CSS en prototypes/)`;
 
-  return {
-    shouldReload,
-    templateUrl,
-    instructions,
-  };
+	return {
+		shouldReload,
+		templateUrl,
+		instructions,
+	};
 }
+
+
+
+
+
+

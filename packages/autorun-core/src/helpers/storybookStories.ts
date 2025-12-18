@@ -40,7 +40,7 @@ export async function getComponentStories(
   try {
     // Si no se proporciona componentId, intentar mapearlo
     if (!componentId) {
-      componentId = mapComponentNameToStorybookId(componentName);
+      componentId = await mapComponentNameToStorybookId(componentName);
     }
 
     // Obtener URL base de Storybook con fallback
@@ -227,12 +227,14 @@ async function createFunctionalStories(
     verifiedStories?.availableStories.some((s) => s.name === 'default') ??
     false;
 
-  const baseUrl = 'https://ubits-storybook10.vercel.app';
+  // ⚠️ CRÍTICO: NO usar baseUrl hardcodeado de UBITS
+  // Usar SOLO el Storybook activo del StorybookManager
   const storyName = defaultExists
     ? 'default'
     : verifiedStories?.availableStories[0]?.kebabName || 'default';
 
   // ⚠️ CRÍTICO: Construir URLs usando buildSafeStorybookUrl para verificar que existen
+  // buildSafeStorybookUrl usa el Storybook activo automáticamente
   const stories: StorybookStory[] = [];
   for (const [key, story] of Object.entries(componentStories)) {
     // Verificar que la historia base existe antes de construir URL
@@ -279,29 +281,105 @@ async function getStoriesFromBrowser(
  *
  * Para validar que un ID existe, usar buildSafeStorybookUrl() después de mapear.
  */
-export function mapComponentNameToStorybookId(componentName: string): string {
-  const mapping: Record<string, string> = {
-    DataTable: 'data-data-table',
-    Tabs: 'navegación-tabs',
-    Button: 'bsicos-button',
-    Modal: 'feedback-modal',
-    Sidebar: 'navegacion-sidebar',
-    SubNav: 'navegacion-sub-nav',
-    TabBar: 'navegacion-tab-bar',
-    Input: 'formularios-input',
-    Checkbox: 'formularios-checkbox',
-    Radio: 'formularios-radio-button',
-    Select: 'formularios-select',
-    Alert: 'feedback-alert',
-    Toast: 'feedback-toast',
-    Drawer: 'feedback-drawer-navigation', // ⚠️ CORREGIDO: era 'feedback-drawer'
-    Popover: 'feedback-popover',
-    Tooltip: 'feedback-tooltip',
-    Chip: 'básicos-chip',
-  };
+/**
+ * Mapea nombre de componente a ID de Storybook
+ * ⚠️ NUEVO: Usa StorybookManager para obtener mapeo dinámico del Storybook activo
+ */
+export async function mapComponentNameToStorybookId(
+  componentName: string
+): Promise<string> {
+  try {
+    // Intentar usar StorybookManager si está disponible
+    const { StorybookManager } = await import('./storybookManager');
+    const manager = StorybookManager.getInstance();
+    const mappedId = await manager.mapComponentToStorybookId(componentName);
 
-  return (
-    mapping[componentName] || componentName.toLowerCase().replace(/\s+/g, '-')
+    if (mappedId) {
+      // ⚠️ NUEVO: Validar el ID antes de retornarlo
+      try {
+        const {
+          validateAndCorrectStorybookId,
+          getCorrectStorybookIdWithRetry,
+        } = await import('./storybookIdValidator');
+
+        const validation = await validateAndCorrectStorybookId(
+          componentName,
+          mappedId
+        );
+
+        if (validation.valid) {
+          if (validation.corrected) {
+            console.log(
+              `✅ [Storybook Stories] ID corregido: ${mappedId} → ${validation.componentId}`
+            );
+          }
+          return validation.componentId; // Retornar ID validado/corregido
+        }
+
+        // Si la validación falló, intentar con retry
+        console.warn(
+          `⚠️ [Storybook Stories] Validación falló, intentando con retry...`
+        );
+        const retryResult = await getCorrectStorybookIdWithRetry(
+          componentName,
+          mappedId
+        );
+
+        if (retryResult.found) {
+          console.log(
+            `✅ [Storybook Stories] ID encontrado con retry: ${retryResult.componentId}`
+          );
+          return retryResult.componentId;
+        }
+
+        console.warn(
+          `⚠️ [Storybook Stories] ID no válido después de retry: ${mappedId}`
+        );
+      } catch (validationError: any) {
+        console.warn(
+          `⚠️ [Storybook Stories] Error validando ID, usando mapeo directo:`,
+          validationError.message
+        );
+      }
+
+      return mappedId; // Fallback al ID mapeado
+    }
+  } catch (error) {
+    // Si StorybookManager no está disponible, usar descubrimiento automático
+    console.warn(
+      `⚠️ [Storybook Stories] StorybookManager no disponible, usando descubrimiento automático`
+    );
+  }
+
+  // ⚠️ CRÍTICO: NO usar mapeo estático de UBITS como fallback
+  // En su lugar, usar el sistema de descubrimiento automático
+  try {
+    const { getCorrectStorybookId } = await import('./storybookIdDiscovery');
+    const discoveryResult = await getCorrectStorybookId(
+      componentName,
+      undefined
+    );
+
+    if (discoveryResult.found) {
+      console.log(
+        `✅ [Storybook Stories] ID descubierto automáticamente: ${componentName} → ${discoveryResult.componentId}`
+      );
+      return discoveryResult.componentId;
+    }
+  } catch (discoveryError: any) {
+    console.warn(
+      `⚠️ [Storybook Stories] Error en descubrimiento automático:`,
+      discoveryError.message
+    );
+  }
+
+  // ⚠️ CRÍTICO: NO usar fallback genérico
+  // Si no se encuentra el ID, lanzar error en lugar de usar fallback
+  console.error(
+    `❌ [Storybook Stories] No se pudo encontrar ID para ${componentName} en el Storybook activo`
+  );
+  throw new Error(
+    `❌ No se pudo encontrar el componente "${componentName}" en el Storybook activo. Verifica que el componente exista y que el Storybook esté correctamente configurado.`
   );
 }
 
@@ -318,7 +396,7 @@ export async function mapAndValidateComponentNameToStorybookId(
   componentName: string
 ): Promise<string> {
   // Obtener ID mapeado
-  const mappedId = mapComponentNameToStorybookId(componentName);
+  const mappedId = await mapComponentNameToStorybookId(componentName);
 
   try {
     // ⭐ NUEVO: Intentar descubrir el ID correcto automáticamente
@@ -353,11 +431,14 @@ export async function mapAndValidateComponentNameToStorybookId(
 
     // Extraer el ID real usado de la URL
     const urlMatch = urlResult.url.match(/\/story\/([^--]+)--/);
-    if (urlMatch && urlMatch[1] !== mappedId) {
-      console.log(
-        `🔄 [Map & Validate] ID corregido para ${componentName}: ${mappedId} → ${urlMatch[1]}`
-      );
-      return urlMatch[1];
+    if (urlMatch) {
+      const actualId = urlMatch[1];
+      if (actualId !== mappedId) {
+        console.log(
+          `🔄 [Map & Validate] ID corregido para ${componentName}: ${mappedId} → ${actualId}`
+        );
+        return actualId;
+      }
     }
 
     return mappedId;

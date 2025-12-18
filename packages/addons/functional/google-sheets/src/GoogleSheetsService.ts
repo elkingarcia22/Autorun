@@ -185,6 +185,3 @@ export class GoogleSheetsService {
 		return { ...this.config };
 	}
 }
-
-
-

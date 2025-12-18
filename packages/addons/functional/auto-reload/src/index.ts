@@ -8,6 +8,3 @@ export { AutoReloadAddon } from './AutoReloadAddon';
 
 // Export default para que AddonLoader pueda cargarlo
 export { AutoReloadAddon as default } from './AutoReloadAddon';
-
-
-

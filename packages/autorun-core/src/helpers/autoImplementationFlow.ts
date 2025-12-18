@@ -20,6 +20,11 @@ import {
   mapAndValidateComponentNameToStorybookId,
 } from './storybookStories';
 import { loadRequiredGuides, getGuidesSummary } from './guidesLoader';
+import {
+  implementComponentFromStorybook,
+  getExampleCodeFromStorybook,
+  getPropsFromStorybook,
+} from './storybookImplementationHelper';
 import * as path from 'path';
 
 /**
@@ -41,6 +46,10 @@ export async function autoImplementationFlow(
   reason?: string;
   storybookUrl?: string;
   plan?: any;
+  exampleCode?: string; // ⭐ NUEVO: Código de ejemplo desde Storybook
+  props?: Record<string, any>; // ⭐ NUEVO: Props desde Storybook
+  internalAnalysis?: any; // ⭐ NUEVO: Análisis de componentes internos
+  verificationResult?: any; // ⭐ NUEVO: Resultado de verificación pre-implementación
   autoReload?: boolean;
 }> {
   console.log(
@@ -181,11 +190,116 @@ export async function autoImplementationFlow(
         );
       }
 
+      // 2.4 ⭐ NUEVO: Intentar obtener código de ejemplo desde Storybook
+      let exampleCode: string | undefined;
+      try {
+        const componentId =
+          await mapAndValidateComponentNameToStorybookId(componentName);
+        console.log(
+          `🔍 [Auto Implementation Flow] Obteniendo código de ejemplo desde Storybook...`
+        );
+        const exampleCodeResult = await getExampleCodeFromStorybook(
+          componentId,
+          'default'
+        );
+        exampleCode = exampleCodeResult || undefined;
+        if (exampleCode) {
+          console.log(
+            `✅ [Auto Implementation Flow] Código de ejemplo obtenido (${exampleCode.length} caracteres)`
+          );
+        } else {
+          console.log(
+            `⚠️ [Auto Implementation Flow] No se pudo obtener código de ejemplo`
+          );
+        }
+      } catch (error) {
+        console.warn(
+          `⚠️ [Auto Implementation Flow] Error obteniendo código de ejemplo:`,
+          error
+        );
+      }
+
+      // 2.5. ⭐ NUEVO: Verificación pre-implementación completa (Mejora 5)
+      let verificationResult: any = null;
+      try {
+        const { verifyBeforeImplementation } = await import(
+          './preImplementationVerification'
+        );
+        const { extractExactCodeFromStorybookWithBrowser } = await import(
+          './storybookExactCodeExtractorWithBrowser'
+        );
+        const componentId =
+          await mapAndValidateComponentNameToStorybookId(componentName);
+        const exactCode = await extractExactCodeFromStorybookWithBrowser(
+          componentId,
+          'default'
+        ).catch(() => null);
+
+        if (exactCode && exactCode.html) {
+          verificationResult = await verifyBeforeImplementation(
+            componentId,
+            exactCode.html,
+            'default'
+          );
+          if (!verificationResult.valid) {
+            console.error(
+              `❌ [Auto Implementation Flow] Verificación pre-implementación falló`
+            );
+            console.error(
+              `   Errores: ${verificationResult.errors.join(', ')}`
+            );
+            if (verificationResult.suggestions.length > 0) {
+              console.log(
+                `   Sugerencias: ${verificationResult.suggestions.join('; ')}`
+              );
+            }
+          }
+        }
+      } catch (error) {
+        console.warn(
+          `⚠️ [Auto Implementation Flow] Error en verificación:`,
+          error
+        );
+      }
+
+      // 2.6. ⭐ NUEVO: Análisis de componentes internos
+      let internalAnalysis: any = null;
+      try {
+        const { analyzeComponentInternals } = await import(
+          './componentInternalAnalysis'
+        );
+        const componentId =
+          await mapAndValidateComponentNameToStorybookId(componentName);
+        internalAnalysis = await analyzeComponentInternals(
+          componentId,
+          'default'
+        );
+        console.log(
+          `✅ [Auto Implementation Flow] Análisis de componentes internos completado`
+        );
+        console.log(
+          `   Componentes internos detectados: ${internalAnalysis.internalComponents.length}`
+        );
+        console.log(
+          `   Dependencias: ${internalAnalysis.dependencies.join(', ') || 'ninguna'}`
+        );
+        console.log(
+          `   Plan de implementación: ${internalAnalysis.implementationPlan.length} pasos`
+        );
+      } catch (error) {
+        console.warn(
+          `⚠️ [Auto Implementation Flow] Error en análisis interno:`,
+          error
+        );
+      }
+
       return {
         canWrite: false,
         reason: validation.errors.join('\n'),
         storybookUrl,
-        plan,
+        plan: internalAnalysis?.implementationPlan || plan,
+        internalAnalysis,
+        verificationResult,
         autoReload: false,
       };
     }

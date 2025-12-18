@@ -5539,7 +5539,7 @@
             </div>
             <div class="step-content">
               <p class="step-description">
-                Clona el repositorio Autorun, instala las dependencias del proyecto y las dependencias de Storybook. El sistema funciona con <strong>arquitectura dual</strong>: carga componentes desde <code style="background: rgba(0,255,255,0.1); padding: 2px 6px; border-radius: 3px;">Vercel</code> (principal, requiere internet) y usa <code style="background: rgba(255,255,0,0.1); padding: 2px 6px; border-radius: 3px;">vendor/ubits/packages/</code> como fallback (funciona offline). El wizard configurará automáticamente el MCP de Storybook usando el paquete standalone <code style="background: rgba(0,255,255,0.1); padding: 2px 6px; border-radius: 3px;">storybook-mcp@latest</code>.
+                Clona el repositorio Autorun, instala las dependencias del proyecto y las dependencias de Storybook. El sistema funciona con <strong>arquitectura dual</strong>: carga componentes desde <code style="background: rgba(0,255,255,0.1); padding: 2px 6px; border-radius: 3px;">Vercel</code> (principal, requiere internet) y usa <code style="background: rgba(255,255,0,0.1); padding: 2px 6px; border-radius: 3px;">vendor/ubits/packages/</code> como fallback (funciona offline). El wizard configurará automáticamente el MCP de Storybook usando el paquete standalone <code style="background: rgba(0,255,255,0.1); padding: 2px 6px; border-radius: 3px;">storybook-mcp@latest</code>. El <strong>Autorun MCP Server</strong> se instala automáticamente después de <code style="background: rgba(0,255,255,0.1); padding: 2px 6px; border-radius: 3px;">npm install</code> para forzar el flujo completo de implementación.
               </p>
               <div class="code-block">
                 <pre><code># 1. Clonar el repositorio Autorun
@@ -5551,7 +5551,11 @@ npm install
 
 # 3. Instalar dependencias de Storybook
 cd vendor/ubits/packages/storybook
-npm install</code></pre>
+npm install
+cd ../../../../
+
+# 4. Instalar Autorun MCP Server (configuración automática en Cursor)
+npm run autorun:install-mcp</code></pre>
               </div>
             </div>
           </div>

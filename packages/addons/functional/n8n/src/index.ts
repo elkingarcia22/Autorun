@@ -61,6 +61,3 @@ export type { N8nConfig, WorkflowInfo } from './N8nService';
 
 // Export default para que AddonLoader pueda cargarlo
 export { N8nAddon as default } from './N8nAddon';
-
-
-

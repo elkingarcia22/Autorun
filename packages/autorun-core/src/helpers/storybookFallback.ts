@@ -1,100 +1,131 @@
 /**
  * Storybook Fallback Helper
  *
- * Sistema de fallback para Storybook: intenta Vercel primero,
- * si falla, usa GitHub como respaldo.
+ * ⚠️ CRÍTICO: Este módulo NO usa fallbacks de UBITS.
+ * Usa SOLO el Storybook activo del StorybookManager.
+ * Si el Storybook activo no está disponible, lanza error en lugar de usar fallback.
  */
-
-import { UBITS_PRESET } from '../wizard/UBITSPreset';
 
 /**
  * Verifica si una URL está disponible
  */
-async function isUrlAvailable(url: string, timeout: number = 5000): Promise<boolean> {
-	try {
-		const controller = new AbortController();
-		const timeoutId = setTimeout(() => controller.abort(), timeout);
+async function isUrlAvailable(
+  url: string,
+  timeout: number = 5000
+): Promise<boolean> {
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeout);
 
-		const response = await fetch(url, {
-			method: 'HEAD',
-			signal: controller.signal,
-			mode: 'no-cors', // Para evitar CORS en verificación
-		});
+    const response = await fetch(url, {
+      method: 'HEAD',
+      signal: controller.signal,
+      mode: 'no-cors', // Para evitar CORS en verificación
+    });
 
-		clearTimeout(timeoutId);
-		return true; // Si no hay error, asumimos que está disponible
-	} catch (error) {
-		return false;
-	}
+    clearTimeout(timeoutId);
+    return true; // Si no hay error, asumimos que está disponible
+  } catch (error) {
+    return false;
+  }
 }
 
 /**
- * Obtiene la URL de Storybook con fallback automático
- * Intenta Vercel primero, si falla, usa GitHub
+ * Obtiene la URL de Storybook usando SOLO el Storybook activo
+ *
+ * ⚠️ CRÍTICO: NO usa fallback de UBITS. Usa SOLO el Storybook activo del StorybookManager.
+ * Si el Storybook activo no está disponible, lanza error en lugar de usar fallback.
  *
  * @param path - Ruta adicional (ej: '/index.json', '/components/button/manifest.json')
- * @param options - Opciones de fallback
- * @returns URL disponible (Vercel o GitHub)
+ * @param options - Opciones
+ * @returns URL del Storybook activo
+ * @throws Error si no hay Storybook activo configurado o no está disponible
  */
 export async function getStorybookUrlWithFallback(
-	path: string = '',
-	options: {
-		checkAvailability?: boolean;
-		timeout?: number;
-		forceFallback?: boolean;
-	} = {},
-): Promise<{ url: string; source: 'vercel' | 'github'; usedFallback: boolean }> {
-	const { checkAvailability = true, timeout = 5000, forceFallback = false } = options;
+  path: string = '',
+  options: {
+    checkAvailability?: boolean;
+    timeout?: number;
+    forceFallback?: boolean;
+  } = {}
+): Promise<{
+  url: string;
+  source: 'vercel' | 'github' | 'custom';
+  usedFallback: boolean;
+}> {
+  const {
+    checkAvailability = true,
+    timeout = 5000,
+    forceFallback = false,
+  } = options;
 
-	// Si se fuerza el fallback, usar GitHub directamente
-	if (forceFallback) {
-		const fallbackUrl =
-			UBITS_PRESET.storybook.getFallbackUrl?.(path) ||
-			`https://raw.githubusercontent.com/elkingarcia22/UBITS/main${path.startsWith('/') ? path : `/${path}`}`;
-		return {
-			url: fallbackUrl,
-			source: 'github',
-			usedFallback: true,
-		};
-	}
+  // ⭐ NUEVO: Intentar usar StorybookManager primero (Storybook dinámico)
+  try {
+    const { StorybookManager } = await import('./storybookManager');
+    const manager = StorybookManager.getInstance();
+    const activeConfig = await manager.getActiveConfig();
 
-	// Intentar Vercel primero
-	const vercelUrl =
-		UBITS_PRESET.storybook.getUrl?.(path) ||
-		`${UBITS_PRESET.storybook.url}${path.startsWith('/') ? path : `/${path}`}`;
+    if (activeConfig) {
+      // Usar Storybook activo del manager
+      const url = await manager.buildStorybookUrl(path);
 
-	// Si no se requiere verificación, usar Vercel directamente
-	if (!checkAvailability) {
-		return {
-			url: vercelUrl,
-			source: 'vercel',
-			usedFallback: false,
-		};
-	}
+      if (!checkAvailability) {
+        return {
+          url,
+          source: 'custom',
+          usedFallback: false,
+        };
+      }
 
-	// Verificar disponibilidad de Vercel
-	const isVercelAvailable = await isUrlAvailable(vercelUrl, timeout);
+      // Verificar disponibilidad
+      const isAvailable = await isUrlAvailable(url, timeout);
+      if (isAvailable) {
+        return {
+          url,
+          source: 'custom',
+          usedFallback: false,
+        };
+      }
 
-	if (isVercelAvailable) {
-		return {
-			url: vercelUrl,
-			source: 'vercel',
-			usedFallback: false,
-		};
-	}
+      // ⚠️ CRÍTICO: NO usar fallback de UBITS
+      // Si el Storybook activo no está disponible, lanzar error
+      // Solo usar fallback si el Storybook activo tiene un fallback configurado específicamente
+      if (activeConfig.fallbackUrl && activeConfig.getFallbackUrl) {
+        // Este fallback es del Storybook activo mismo, no de UBITS
+        const fallbackUrl = activeConfig.getFallbackUrl(path);
+        console.warn(
+          `⚠️ [Storybook Fallback] Storybook activo no disponible, usando fallback del Storybook activo: ${fallbackUrl}`
+        );
+        return {
+          url: fallbackUrl,
+          source: 'custom',
+          usedFallback: true,
+        };
+      }
 
-	// Vercel no está disponible, usar GitHub como fallback
-	console.warn(`⚠️ [Storybook Fallback] Vercel no disponible, usando GitHub como fallback`);
+      // Si no hay fallback configurado en el Storybook activo, lanzar error
+      throw new Error(
+        `❌ El Storybook activo (${activeConfig.name}) no está disponible en: ${activeConfig.url}`
+      );
+    }
+  } catch (error) {
+    // ⚠️ CRÍTICO: NO usar fallback de UBITS si StorybookManager no está disponible
+    // En su lugar, lanzar error para que el usuario sepa que debe configurar el Storybook
+    console.error(
+      `❌ [Storybook Fallback] StorybookManager no disponible y NO se usará fallback de UBITS`
+    );
+    throw new Error(
+      `❌ No hay Storybook configurado. Por favor, conecta un Storybook usando: npm run storybook:connect`
+    );
+  }
 
-	const fallbackUrl =
-		UBITS_PRESET.storybook.getFallbackUrl?.(path) ||
-		`https://raw.githubusercontent.com/elkingarcia22/UBITS/main${path.startsWith('/') ? path : `/${path}`}`;
-
-	return {
-		url: fallbackUrl,
-		source: 'github',
-		usedFallback: true,
-	};
+  // ⚠️ CRÍTICO: NO usar fallback de UBITS
+  // Si llegamos aquí, significa que activeConfig es null o undefined
+  // Esta línea nunca debería ejecutarse porque el catch anterior ya lanza error
+  // Pero la dejamos como seguridad adicional
+  throw new Error(
+    `❌ No hay Storybook configurado. Por favor, conecta un Storybook usando: npm run storybook:connect`
+  );
 }
 
 /**
@@ -106,67 +137,127 @@ export async function getStorybookUrlWithFallback(
  * @returns Response del fetch
  */
 export async function fetchStorybookWithFallback(
-	path: string = '',
-	options: RequestInit = {},
+  path: string = '',
+  options: RequestInit = {}
 ): Promise<Response> {
-	try {
-		// Intentar Vercel primero
-		const vercelUrl =
-			UBITS_PRESET.storybook.getUrl?.(path) ||
-			`${UBITS_PRESET.storybook.url}${path.startsWith('/') ? path : `/${path}`}`;
+  // ⚠️ CRÍTICO: NO usar fallback de UBITS
+  // Usar SOLO el Storybook activo del StorybookManager
+  try {
+    const { StorybookManager } = await import('./storybookManager');
+    const manager = StorybookManager.getInstance();
+    const activeConfig = await manager.getActiveConfig();
 
-		const vercelResponse = await fetch(vercelUrl, options);
+    if (!activeConfig) {
+      throw new Error(
+        `❌ No hay Storybook activo configurado. Por favor, conecta un Storybook usando: npm run storybook:connect`
+      );
+    }
 
-		if (vercelResponse.ok) {
-			return vercelResponse;
-		}
+    // Usar URL del Storybook activo
+    const url = await manager.buildStorybookUrl(path);
+    const response = await fetch(url, options);
 
-		// Si Vercel responde con error, intentar GitHub
-		throw new Error(`Vercel responded with ${vercelResponse.status}`);
-	} catch (error) {
-		// Vercel falló, usar GitHub como fallback
-		console.warn(`⚠️ [Storybook Fallback] Vercel falló, usando GitHub como fallback:`, error);
+    if (!response.ok) {
+      throw new Error(
+        `❌ El Storybook activo (${activeConfig.name}) no está disponible. Verifica que esté accesible en: ${activeConfig.url}`
+      );
+    }
 
-		const fallbackUrl =
-			UBITS_PRESET.storybook.getFallbackUrl?.(path) ||
-			`https://raw.githubusercontent.com/elkingarcia22/UBITS/main${path.startsWith('/') ? path : `/${path}`}`;
-
-		const fallbackResponse = await fetch(fallbackUrl, options);
-
-		if (!fallbackResponse.ok) {
-			throw new Error(`GitHub fallback also failed: ${fallbackResponse.status}`);
-		}
-
-		return fallbackResponse;
-	}
+    return response;
+  } catch (error: any) {
+    // ⚠️ CRÍTICO: NO usar fallback de UBITS
+    // Lanzar error en lugar de usar fallback
+    console.error(
+      `❌ [Storybook Fallback] Error accediendo al Storybook activo:`,
+      error.message
+    );
+    throw new Error(
+      `❌ No se pudo acceder al Storybook activo. ${error.message}`
+    );
+  }
 }
 
 /**
- * Obtiene la URL base de Storybook con fallback
- * Útil para navegación en el navegador
+ * Obtiene la URL base del Storybook activo
+ *
+ * ⚠️ CRÍTICO: NO usa fallback de UBITS. Usa SOLO el Storybook activo del StorybookManager.
+ * Útil para navegación en el navegador.
+ *
+ * @returns URL base del Storybook activo
+ * @throws Error si no hay Storybook activo configurado
  */
-export function getStorybookBaseUrlWithFallback(): { url: string; source: 'vercel' | 'github' } {
-	// Por defecto, usar Vercel
-	// El fallback se manejará automáticamente cuando se intente acceder
-	return {
-		url: UBITS_PRESET.storybook.url,
-		source: 'vercel',
-	};
+export function getStorybookBaseUrlWithFallback(): {
+  url: string;
+  source: 'vercel' | 'github' | 'custom';
+} {
+  // ⚠️ CRÍTICO: NO usar fallback de UBITS
+  // Usar SOLO el Storybook activo del StorybookManager
+  try {
+    const { StorybookManager } = require('./storybookManager');
+    const manager = StorybookManager.getInstance();
+    const activeConfig = manager.getActiveConfigSync?.();
+
+    if (activeConfig) {
+      return {
+        url: activeConfig.url,
+        source: 'custom',
+      };
+    }
+  } catch (error) {
+    // Si no se puede obtener, lanzar error
+  }
+
+  throw new Error(
+    `❌ No hay Storybook activo configurado. Por favor, conecta un Storybook usando: npm run storybook:connect`
+  );
 }
 
 /**
  * Mapea nombre de componente a URL de Storybook con fallback
+ *
+ * ⚠️ CRÍTICO: NO usa fallback de UBITS. Usa SOLO el Storybook activo.
  */
 export async function getComponentStorybookUrlWithFallback(
-	componentName: string,
-	storyName: string = 'default',
-): Promise<{ url: string; source: 'vercel' | 'github'; usedFallback: boolean }> {
-	// Mapear nombre de componente a nombre en Storybook
-	const storybookName = componentName.toLowerCase().replace(/\s+/g, '-');
-	const path = `?path=/story/${storybookName}--${storyName}`;
+  componentName: string,
+  storyName: string = 'default'
+): Promise<{
+  url: string;
+  source: 'vercel' | 'github' | 'custom';
+  usedFallback: boolean;
+}> {
+  // ⚠️ CRÍTICO: NO usar fallback de UBITS
+  // Usar SOLO el Storybook activo del StorybookManager
+  try {
+    const { StorybookManager } = await import('./storybookManager');
+    const { mapComponentNameToStorybookId } = await import(
+      './storybookStories'
+    );
+    const manager = StorybookManager.getInstance();
+    const activeConfig = await manager.getActiveConfig();
 
-	return getStorybookUrlWithFallback(path, { checkAvailability: false });
+    if (!activeConfig) {
+      throw new Error(
+        `❌ No hay Storybook activo configurado. Por favor, conecta un Storybook usando: npm run storybook:connect`
+      );
+    }
+
+    // Obtener ID del componente desde el Storybook activo
+    const componentId = await mapComponentNameToStorybookId(componentName);
+
+    // Construir URL usando el Storybook activo (priorizando /docs/)
+    const path = `?path=/docs/${componentId}--docs`;
+    const url = await manager.buildStorybookUrl(path);
+
+    return {
+      url,
+      source: 'custom',
+      usedFallback: false,
+    };
+  } catch (error: any) {
+    // ⚠️ CRÍTICO: NO usar fallback de UBITS
+    // Lanzar error en lugar de usar fallback
+    throw new Error(
+      `❌ No se pudo obtener URL del componente ${componentName} desde el Storybook activo. ${error.message}`
+    );
+  }
 }
-
-
-

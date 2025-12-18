@@ -220,18 +220,12 @@ export class KeywordTriggerSystem {
     switch (triggerResult.action) {
       case 'activate-step-by-step':
         // Activar flujo paso a paso
-        if (triggerResult.componentName) {
-          const result = await executeOnMessageStart(
-            `implementar ${triggerResult.componentName}`
-          );
-          return {
-            executed: true,
-            result,
-            blocked: result.blocked,
-            reason: result.reason,
-          };
-        }
-        break;
+        // ⚠️ CRÍTICO: NO llamar a executeOnMessageStart() aquí para evitar bucle infinito
+        // Solo marcar que el flujo debe activarse - executeOnMessageStart() ya se ejecutará después
+        return {
+          executed: true,
+          blocked: false,
+        };
 
       case 'verify-checklist':
         // Verificar checklist

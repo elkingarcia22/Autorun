@@ -11,8 +11,17 @@
 git clone https://github.com/elkingarcia22/Autorun.git
 cd Autorun
 
-# Instalar dependencias (verificación automática incluida)
+# Instalar dependencias del proyecto (verificación automática incluida)
 npm install
+
+# Instalar dependencias de Storybook
+cd vendor/ubits/packages/storybook
+npm install
+cd ../../../../
+
+# Instalar Autorun MCP Server (se ejecuta automáticamente después de npm install)
+# Si no se instaló automáticamente, ejecuta:
+npm run autorun:install-mcp
 ```
 
 **✅ Verificación automática:** Después de `npm install`, se ejecuta automáticamente una verificación que comprueba:
@@ -20,8 +29,11 @@ npm install
 - Scripts configurados
 - Dependencias necesarias
 - Archivos del wizard
+- **Instalación automática del Autorun MCP Server** (se configura en `.cursor/mcp.json`)
 
 Si todo está correcto, verás: `✅ ¡Todo está listo! Puedes ejecutar: npm run init`
+
+**⚠️ IMPORTANTE:** Después de la instalación, **reinicia Cursor** para que cargue el Autorun MCP Server.
 
 ---
 

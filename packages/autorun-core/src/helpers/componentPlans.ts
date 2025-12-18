@@ -128,6 +128,3 @@ export function registerAllPlans(): void {
 
 	console.log('✅ Component Plans: Todos los planes registrados');
 }
-
-
-

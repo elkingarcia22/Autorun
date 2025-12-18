@@ -75,6 +75,3 @@ export interface SolutionSuggestion {
 	confidence: number;
 	reason: string;
 }
-
-
-

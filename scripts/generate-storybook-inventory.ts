@@ -14,25 +14,25 @@ import * as fs from 'fs/promises';
 import * as path from 'path';
 
 async function main() {
-  console.log('📚 Generando inventario de componentes de Storybook...\n');
+	console.log('📚 Generando inventario de componentes de Storybook...\n');
 
-  try {
-    // Generar inventario
-    const inventory = await generateComponentInventory();
+	try {
+		// Generar inventario
+		const inventory = await generateComponentInventory();
 
-    // Guardar en archivo
-    const outputPath = path.join(
-      process.cwd(),
-      'docs/referencia/INVENTARIO-COMPONENTES-STORYBOOK.md'
-    );
-    await fs.writeFile(outputPath, inventory, 'utf-8');
+		// Guardar en archivo
+		const outputPath = path.join(
+			process.cwd(),
+			'docs/referencia/INVENTARIO-COMPONENTES-STORYBOOK.md',
+		);
+		await fs.writeFile(outputPath, inventory, 'utf-8');
 
-    console.log(`✅ Inventario generado: ${outputPath}`);
-    console.log(`\n${inventory}`);
-  } catch (error: any) {
-    console.error('❌ Error generando inventario:', error);
-    process.exit(1);
-  }
+		console.log(`✅ Inventario generado: ${outputPath}`);
+		console.log(`\n${inventory}`);
+	} catch (error: any) {
+		console.error('❌ Error generando inventario:', error);
+		process.exit(1);
+	}
 }
 
 main();

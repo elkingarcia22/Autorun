@@ -6,6 +6,7 @@
 
 import * as fs from 'fs/promises';
 import * as path from 'path';
+import { fileURLToPath } from 'url';
 import { MCPDetector, MCPServerInfo } from './MCPDetector';
 
 export interface MCPInstallOptions {
@@ -208,7 +209,7 @@ export class MCPInstaller {
 	/**
 	 * Obtiene configuración específica para cada servidor MCP
 	 */
-	private static getServerConfig(serviceName: string, credentials?: Record<string, any>): any {
+	private static async getServerConfig(serviceName: string, credentials?: Record<string, any>): Promise<any> {
 		const service = serviceName.toLowerCase();
 
 		switch (service) {
@@ -333,6 +334,45 @@ export class MCPInstaller {
 					args: ['-y', 'mcp-gsheets@latest'],
 					env,
 				};
+
+			case 'autorun':
+				// Autorun MCP Server - Servidor propio de Autorun
+				// Usa el CLI compilado del paquete @autorun/core
+				// Intentar usar la ruta compilada primero, luego fallback a tsx
+				const autorunCorePath = path.resolve(process.cwd(), 'packages', 'autorun-core');
+				const autorunServerPath = path.join(autorunCorePath, 'dist', 'cli', 'autorun-mcp-server.js');
+				const autorunServerSourcePath = path.join(autorunCorePath, 'src', 'cli', 'autorun-mcp-server.ts');
+				
+				// Verificar que el archivo compilado existe
+				let useCompiled = false;
+				try {
+					await fs.access(autorunServerPath);
+					useCompiled = true;
+				} catch {
+					// Archivo compilado no existe, usar tsx
+					useCompiled = false;
+				}
+
+				if (useCompiled) {
+					// Usar archivo compilado
+					return {
+						command: 'node',
+						args: [autorunServerPath],
+						env: {
+							NODE_ENV: 'production',
+						},
+					};
+				} else {
+					// Usar tsx para ejecutar directamente desde TypeScript
+					// Usar ruta relativa desde la raíz del proyecto
+					return {
+						command: 'npx',
+						args: ['-y', 'tsx', autorunServerSourcePath],
+						env: {
+							NODE_ENV: 'production',
+						},
+					};
+				}
 
 			default:
 				return {

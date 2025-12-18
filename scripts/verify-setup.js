@@ -7,6 +7,7 @@
 import { existsSync, readFileSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
+import { execSync } from 'node:child_process';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -185,6 +186,41 @@ if (checks.warnings.length > 0) {
 		console.log(`   - ${name}: ${message}`);
 	});
 	console.log('\n');
+}
+
+// 7. Instalar Autorun MCP Server automáticamente
+console.log('🔧 Instalando Autorun MCP Server...');
+const mcpConfigPath = join(rootDir, '.cursor', 'mcp.json');
+
+try {
+	// Verificar si ya está instalado
+	let alreadyInstalled = false;
+	if (existsSync(mcpConfigPath)) {
+		try {
+			const mcpConfig = JSON.parse(readFileSync(mcpConfigPath, 'utf-8'));
+			if (mcpConfig.mcpServers && mcpConfig.mcpServers.autorun) {
+				alreadyInstalled = true;
+				console.log('✅ Autorun MCP Server ya está configurado');
+			}
+		} catch (error) {
+			// Si hay error leyendo el archivo, continuar con la instalación
+		}
+	}
+
+	if (!alreadyInstalled) {
+		console.log('📦 Configurando Autorun MCP Server en Cursor...');
+		execSync('npm run autorun:install-mcp', {
+			cwd: rootDir,
+			stdio: 'inherit',
+		});
+		console.log('✅ Autorun MCP Server instalado correctamente');
+		console.log('   ⚠️  IMPORTANTE: Reinicia Cursor para que cargue el servidor MCP\n');
+	}
+} catch (error) {
+	warn(
+		'Instalación MCP Server',
+		`No se pudo instalar automáticamente: ${error.message}. Puedes instalarlo manualmente con: npm run autorun:install-mcp`,
+	);
 }
 
 console.log('✅ ¡Todo está listo! Puedes ejecutar:');

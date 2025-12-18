@@ -58,35 +58,50 @@ async function mapComponentNameToStorybookURL(
 
 /**
  * Mapea nombre de componente a URL de Storybook (versión síncrona para compatibilidad)
- * Usa Vercel por defecto, el fallback se manejará automáticamente en fetch
+ *
+ * ⚠️ CRÍTICO: Esta función está DEPRECADA y NO debería usarse.
+ * Usa buildSafeStorybookUrl() o getComponentStorybookUrlWithFallback() en su lugar.
+ *
  * ⚠️ NOTA: Esta función es síncrona, pero debería usarse buildSafeStorybookUrl() cuando sea posible
+ * Esta función NO puede usar el Storybook activo porque es síncrona.
+ *
+ * @deprecated Usar buildSafeStorybookUrl() o getComponentStorybookUrlWithFallback() en su lugar
  */
 function mapComponentNameToStorybookURLSync(componentName: string): string {
-  const storybookName = mapComponentNameToStorybook(componentName);
-  // ⚠️ CRÍTICO: Usar URL principal (siempre apunta al deployment más reciente)
-  // NO usar URLs de deployments específicos (pueden estar desactualizados)
-  // El fallback a GitHub se manejará automáticamente si Vercel falla
-  // ⚠️ NOTA: Esta función siempre usa 'default' porque es síncrona
-  // Para verificación de historias, usar buildSafeStorybookUrl() (async)
-  const baseURL = 'https://ubits-storybook10.vercel.app/';
+  // ⚠️ CRÍTICO: Esta función está DEPRECADA
+  // NO puede usar el Storybook activo porque es síncrona
+  // Debería usarse buildSafeStorybookUrl() o getComponentStorybookUrlWithFallback() en su lugar
+  console.warn(
+    `⚠️ [Component Helpers] mapComponentNameToStorybookURLSync() está DEPRECADA. Usa buildSafeStorybookUrl() o getComponentStorybookUrlWithFallback() en su lugar.`
+  );
 
-  const urlMapping: Record<string, string> = {
-    Tabs: `${baseURL}?path=/story/navegación-tabs--default`,
-    DataTable: `${baseURL}?path=/story/data-data-table--default`,
-    Button: `${baseURL}?path=/story/bsicos-button--default`,
-    Modal: `${baseURL}?path=/story/feedback-modal--default`,
-    Sidebar: `${baseURL}?path=/story/navegacion-sidebar--default`,
-    SubNav: `${baseURL}?path=/story/navegacion-sub-nav--default`,
-    TabBar: `${baseURL}?path=/story/navegacion-tab-bar--default`,
-    Input: `${baseURL}?path=/story/formularios-input--default`, // ⚠️ CRÍTICO: Usar ID correcto
-    'Formularios/Input': `${baseURL}?path=/story/formularios-input--default`,
-    'entrada-input': `${baseURL}?path=/story/formularios-input--default`, // ⚠️ Alias común pero incorrecto
-    'Entrada/Input': `${baseURL}?path=/story/formularios-input--default`, // ⚠️ Alias común pero incorrecto
-  };
+  // ⚠️ CRÍTICO: NO usar URL hardcodeada de UBITS
+  // Intentar obtener URL del Storybook activo de forma síncrona (si es posible)
+  try {
+    const { StorybookManager } = require('./storybookManager');
+    const manager = StorybookManager.getInstance();
+    const activeConfig = manager.getActiveConfigSync?.();
 
-  return (
-    urlMapping[componentName] ||
-    `${baseURL}?path=/story/${storybookName}--default`
+    if (activeConfig) {
+      const storybookName = mapComponentNameToStorybook(componentName);
+      // Construir URL usando el Storybook activo
+      // NOTA: Esto es una aproximación porque no podemos hacer async aquí
+      const baseURL = activeConfig.url.endsWith('/')
+        ? activeConfig.url
+        : `${activeConfig.url}/`;
+      return `${baseURL}?path=/story/${storybookName}--default`;
+    }
+  } catch (error) {
+    // Si no se puede obtener Storybook activo, lanzar error
+    console.error(
+      `❌ [Component Helpers] No se puede usar mapComponentNameToStorybookURLSync() sin Storybook activo. Usa buildSafeStorybookUrl() en su lugar.`
+    );
+  }
+
+  // ⚠️ CRÍTICO: NO usar fallback de UBITS
+  // Lanzar error en lugar de usar fallback
+  throw new Error(
+    `❌ No se puede usar mapComponentNameToStorybookURLSync() sin Storybook activo. Usa buildSafeStorybookUrl() o getComponentStorybookUrlWithFallback() en su lugar.`
   );
 }
 

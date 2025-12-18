@@ -8,18 +8,38 @@
 
 **🚨 ESTA ES LA PRIMERA ACCIÓN OBLIGATORIA EN CADA SESIÓN 🚨**
 
-## 🔍🔍🔍 EJECUCIÓN AUTOMÁTICA AL INICIO (EJECUTAR PRIMERO) ⚠️ OBLIGATORIO ⭐ NUEVO
+## 🔍🔍🔍 EJECUCIÓN AUTOMÁTICA AL INICIO (PASO 5 - OBLIGATORIO) ⚠️ OBLIGATORIO ⭐ NUEVO
 
-**🚨 ESTA ES LA PRIMERA ACCIÓN: EJECUTAR executeOnMessageStart() 🚨**
+**🚨 ESTA ES LA QUINTA ACCIÓN: EJECUTAR handleUserMessage() SIEMPRE (OBLIGATORIO) 🚨**
 
-**⚠️ ANTES de cualquier otra cosa, SIEMPRE ejecutar executeOnMessageStart() al inicio de cada mensaje:**
+**⚠️ ORDEN DE EJECUCIÓN:**
+1. **PASO 1:** Detectar wizard
+2. **PASO 2:** Inicializar AutorunHub
+3. **PASO 3:** Abrir browser (si hay wizard)
+4. **PASO 4:** Verificar estado
+5. **PASO 5:** Ejecutar handleUserMessage() ← **ESTE PASO** (SIEMPRE OBLIGATORIO)
+
+**Ver orden completo:** `docs/guias/configuracion/ORDEN-EJECUCION-INICIO-SESION.md` - ⚠️ **OBLIGATORIO**
+
+**⚠️ CRÍTICO:** Este paso DEBE ejecutarse SIEMPRE al inicio de cada mensaje, sin excepción. No importa si hay palabras clave de implementación o no. Esto garantiza:
+- ✅ Detección automática de componentes (incluyendo múltiples componentes)
+- ✅ Verificación de triggers de palabras clave
+- ✅ Verificación con Pre-Implementation Check
+- ✅ Obtención de plan basado en historias (si aplica)
+- ✅ Bloqueo si faltan pasos o fases
+- ✅ Preparación automática de mensajes MCP para todos los componentes detectados
+
+**⚠️ DESPUÉS de inicializar AutorunHub, SIEMPRE ejecutar:**
 
 ```typescript
-// ⚠️ OBLIGATORIO: Ejecutar esto PRIMERO en cada mensaje (después de inicializar AutorunHub)
-import { executeOnMessageStart, ActiveStepGuide, PhaseValidator } from '@autorun/core';
+// ⚠️ OBLIGATORIO: Ejecutar esto SIEMPRE al inicio de cada mensaje (después de inicializar AutorunHub)
+// ⚠️ CRÍTICO: NO preguntar, NO verificar palabras clave - EJECUTAR SIEMPRE
+import { handleUserMessage } from '@autorun/core/helpers/autoMessageHandler';
 
-const result = await executeOnMessageStart(userMessage);
+// EJECUTAR SIEMPRE - No importa el contenido del mensaje
+const result = await handleUserMessage(userMessage);
 
+// Verificar resultado
 if (result.blocked) {
   // ❌ NO continuar con la implementación
   console.error(`❌ IMPLEMENTACIÓN BLOQUEADA: ${result.reason}`);
@@ -29,26 +49,29 @@ if (result.blocked) {
     console.log(`📚 Plan basado en historias disponible: ${result.plan.totalSteps} historias`);
   }
   
-  // Obtener paso activo actual para mostrar al usuario
-  if (result.componentName) {
-    const activeStep = await ActiveStepGuide.getCurrentStep(result.componentName);
-    if (activeStep.currentStep) {
-      console.error(`📋 Paso activo requerido: ${activeStep.currentStep.description}`);
-      console.error(`📋 Acciones requeridas: ${activeStep.currentStep.requiredActions.join('; ')}`);
-      if (activeStep.currentStep.storybookUrl) {
-        console.log(`📚 URL de Storybook: ${activeStep.currentStep.storybookUrl}`);
-      }
-      if (activeStep.currentStep.guides) {
-        console.log(`📖 Guías requeridas: ${activeStep.currentStep.guides.join(', ')}`);
-      }
-    }
-  }
-  
-  // Mostrar razón y plan al usuario
-  // Completar pasos faltantes antes de continuar
   throw new Error(`❌ BLOQUEADO: ${result.reason}`);
 }
 
+// ⚠️ CRÍTICO: Si hay mensajes MCP, consultar automáticamente para TODOS los componentes
+if (result.mcpMessages && result.mcpMessages.length > 0) {
+  console.log(`📚 [Auto Message Handler] ${result.mcpMessages.length} componente(s) detectado(s) - Consultando Storybook MCP automáticamente...`);
+  
+  for (const msg of result.mcpMessages) {
+    // ⚠️ OBLIGATORIO: Consultar Storybook MCP automáticamente (SIN preguntar al usuario)
+    console.log(`📚 [Auto Message Handler] Consultando MCP para: ${msg.componentName} (ID: ${msg.storybookId})`);
+    
+    // El agente DEBE ejecutar automáticamente:
+    await call_mcp_tool({
+      server: "storybook-ubits",
+      toolName: "mcp_storybook_getComponentsProps",
+      arguments: { componentIds: [msg.storybookId] }
+    });
+  }
+  
+  console.log(`✅ [Auto Message Handler] Consultas MCP completadas`);
+}
+
+// Si se detectó un componente
 if (result.detected && result.componentName) {
   console.log(`✅ Componente detectado: ${result.componentName}`);
   console.log(`   Fase actual: ${result.currentPhase || 'Ninguna'}`);
@@ -72,6 +95,9 @@ if (result.detected && result.componentName) {
   }
   
   // ✅ Continuar con la implementación siguiendo el plan
+} else {
+  // Si no se detectó componente, continuar normalmente
+  console.log(`✅ [Execute On Message Start] No se detectó componente, continuando normalmente`);
 }
 ```
 
@@ -89,13 +115,33 @@ if (result.detected && result.componentName) {
 - `docs/guias/implementacion/GUIA-SISTEMA-TRIGGERS-AUTOMATICOS.md` - ⚠️ **OBLIGATORIO**
 - `docs/analisis/RESUMEN-COMPLETO-SISTEMA-BLINDADO-AUTORUN.md` - ⚠️ **OBLIGATORIO**
 
-**Este sistema detecta automáticamente:**
-- ✅ "tabla" → DataTable
-- ✅ "data table" → DataTable
-- ✅ "data-table" → DataTable
-- ✅ "tabs" → Tabs
-- ✅ "modal" → Modal
-- ✅ Y otros componentes UBITS
+**Este sistema detecta automáticamente MÁS DE 80 COMPONENTES de ambos Storybooks:**
+
+### Componentes Básicos:
+- ✅ Button, ButtonAI, ButtonGroup, Avatar, Badge, Chip, Skeleton, Spinner, StatusTag, Tag, Scrollbar
+
+### Componentes de Feedback:
+- ✅ Modal, Popover, Drawer, Toast, Alert, Tooltip, EmptyState, Mask, ButtonFeedback, Tour
+
+### Componentes de Formularios:
+- ✅ Input, Select, Checkbox, Radio, DatePicker, Calendar, FileUpload, Toggle, Switch, Slider, SearchButton, Label, ExpandingInputButton, RichTextEditor
+
+### Componentes de Datos:
+- ✅ DataTable, Table, List, Pagination, DataView
+
+### Componentes de Navegación:
+- ✅ Tabs, Sidebar, SubNav, TabBar, Menu, Breadcrumb, TreeMenu, SegmentControl, MenuParticipantes, ContextMenu, Dropdown
+
+### Componentes de Layout:
+- ✅ Card, SimpleCard, SelectionCard, CardContent, Accordion, Carousel, Gallery, Stepper, Timeline, HeaderSection, Contenedor, Heading, Display
+
+### Componentes de Charts/Metrics (UBITS):
+- ✅ BarMetricCard, CircleMetricCard, CSATMetricCard, NPSCard, ProgressBar, ScoreCardMetrics, TextMetricCard
+
+### Componentes Adicionales:
+- ✅ Rating, QRCode, Floating, TextUtilities
+
+**Total:** 80+ componentes detectables automáticamente de ambos Storybooks (UBITS + Libraries UI)
 
 **Cuando detecta un componente:**
 1. ✅ Obtiene automáticamente el plan basado en historias de Storybook
@@ -107,9 +153,18 @@ if (result.detected && result.componentName) {
 
 ---
 
-## 🔍 DETECCIÓN AUTOMÁTICA DEL WIZARD (EJECUTAR SEGUNDO) ⚠️ OBLIGATORIO
+## 🔍 DETECCIÓN AUTOMÁTICA DEL WIZARD (PASO 1) ⚠️ OBLIGATORIO
 
 **🚨 ESTA ES LA PRIMERA ACCIÓN: EJECUTAR ESTE SCRIPT AL INICIO DE CADA MENSAJE 🚨**
+
+**⚠️ ORDEN DE EJECUCIÓN:**
+1. **PASO 1:** Detectar wizard (este paso)
+2. **PASO 2:** Inicializar AutorunHub (si hay wizard o no está inicializado)
+3. **PASO 3:** Abrir browser (si hay wizard)
+4. **PASO 4:** Verificar estado
+5. **PASO 5:** Ejecutar executeOnMessageStart() (solo si hay palabras clave de implementación)
+
+**Ver orden completo:** `docs/guias/configuracion/ORDEN-EJECUCION-INICIO-SESION.md` - ⚠️ **OBLIGATORIO**
 
 **⚠️ ANTES de cualquier otra cosa, SIEMPRE ejecutar el script de detección:**
 
@@ -121,6 +176,7 @@ const result = await run_terminal_cmd({
 });
 
 // ⚠️ SI el output contiene [AUTORUN_WIZARD_STATE_DETECTED]true[/AUTORUN_WIZARD_STATE_DETECTED]:
+// O si contiene [AUTORUN_TEMPLATE_DETECTED]true[/AUTORUN_TEMPLATE_DETECTED]:
 // EJECUTAR INMEDIATAMENTE (sin preguntar) en este orden:
 
 // 1. Extraer URL de [AUTORUN_BROWSER_URL]...[/AUTORUN_BROWSER_URL] del output
@@ -138,9 +194,9 @@ if (url) {
   await mcp_cursor-ide-browser_browser_navigate({ url });
   await mcp_cursor-ide-browser_browser_snapshot();
   
-  // 4. Limpiar archivo de estado
+ // 4. Limpiar archivo de estado (solo si existe)
   await run_terminal_cmd({
-    command: 'rm .autorun/wizard-state.json',
+ command: 'rm -f .autorun/wizard-state.json',
     is_background: false
   });
 }
@@ -191,15 +247,30 @@ await run_terminal_cmd({
 
 **⚠️ CRÍTICO: ANTES de usar `write()` o `search_replace()` para implementar un componente UBITS, DEBES:**
 
-### ⚠️ OBLIGATORIO: Usar Interceptores Automáticos
+### ⚠️ OBLIGATORIO: Usar Interceptores Automáticos + Verificar Clases CSS
 
 **ANTES de usar `write()` o `search_replace()`, SIEMPRE ejecutar:**
 
 ```typescript
-// 1. Importar los interceptores
+// 1. Importar los interceptores y detector de clases CSS
 import { interceptedWrite, interceptedSearchReplace } from '@autorun/core/interceptors/toolInterceptors';
+import { detectButtonClasses, isClassAvailable } from '@autorun/core/helpers/cssClassDetector';
+import { readFile } from 'fs/promises';
 
-// 2. Usar interceptedWrite() en lugar de write()
+// 2. Verificar clases CSS correctas (si es un componente con clases CSS)
+if (filePath.includes('prototypes/') && content.includes('button') || content.includes('modal')) {
+  const templateContent = await readFile(filePath, 'utf-8');
+  const buttonClasses = detectButtonClasses(templateContent);
+  
+  // Verificar que las clases usadas en content sean correctas
+  if (content.includes('class="button') && !content.includes('ubits-button')) {
+    console.warn('⚠️ Clases CSS incorrectas detectadas. Debe usar:', buttonClasses);
+    // Corregir automáticamente
+    content = content.replace(/class="button/g, `class="${buttonClasses.baseClass}`);
+  }
+}
+
+// 3. Usar interceptedWrite() en lugar de write()
 try {
   await interceptedWrite(
     filePath,
@@ -284,8 +355,10 @@ if (flow.autoReload) {
 - ✅ **SIEMPRE volver al template después de consultar Storybook**
 - ✅ **SIEMPRE recargar automáticamente después de escribir si autoReload está activo**
 - ✅ **SIEMPRE interceptar mensajes [AUTORUN_AUTO_RELOAD] y recargar automáticamente**
-- ✅ **SIEMPRE interceptar mensajes [AUTORUN_STORYBOOK_MCP] y consultar Storybook MCP**
+- ✅ **SIEMPRE interceptar mensajes [AUTORUN_STORYBOOK_MCP] y consultar Storybook MCP AUTOMÁTICAMENTE**
+- ✅ **SIEMPRE verificar clases CSS correctas antes de implementar (usar detectButtonClasses si es necesario)**
 - ❌ **NO preguntar al usuario** - ejecutar automáticamente
+- ⚠️ **CRÍTICO: NO continuar con implementación hasta obtener props del MCP de Storybook**
 
 ### Verificar Antes de Escribir:
 ```typescript
@@ -297,6 +370,13 @@ if (!validation.valid) {
 ```
 
 **El sistema ejecuta estas verificaciones AUTOMÁTICAMENTE. Si CUALQUIERA falla → `write()` y `search_replace()` LANZAN ERROR y NO se ejecutan.**
+
+**⚠️ IMPORTANTE:**
+- Los interceptores (`interceptedWrite()` y `interceptedSearchReplace()`) ejecutan automáticamente `handleUserMessage()` si no se ha ejecutado
+- Esto garantiza que TODOS los componentes sean detectados automáticamente (incluyendo componentes no implementados previamente)
+- La detección funciona con más de 20 componentes comunes (Button, Modal, DataTable, Tabs, Popover, Drawer, Checkbox, Radio, DatePicker, Toast, Alert, Card, Avatar, Badge, Carousel, List, Menu, Sidebar, SubNav, Input, Select, etc.)
+- Si un componente no está en los patrones de detección, el sistema intentará detectarlo por contexto
+- **SIEMPRE pasar `userMessage` en el context para que la detección automática funcione correctamente**
 
 **Ver detalles completos:** `.cursor/rules/04-implementacion.md`
 
@@ -352,6 +432,42 @@ if (!validation.valid) {
 ---
 
 ## 🔌 USO OBLIGATORIO DE MCPs Y ADD-ONS
+
+### ⚠️⚠️⚠️ REGLA CRÍTICA: CONSULTAR STORYBOOK MCP AUTOMÁTICAMENTE ⚠️⚠️⚠️
+
+**CUANDO VEAS EN LOS LOGS:**
+```
+[AUTORUN_STORYBOOK_MCP]ComponentName:storybookId[/AUTORUN_STORYBOOK_MCP]
+```
+
+**DEBES ejecutar automáticamente (SIN preguntar):**
+```typescript
+// 1. Consultar Storybook MCP
+const mcpResult = await call_mcp_tool({
+    server: "storybook-ubits",
+    toolName: "mcp_storybook_getComponentsProps",
+    arguments: { componentIds: [storybookId] }
+});
+
+// 2. Consultar Storybook en Vercel
+await browser_navigate({ 
+    url: `https://ubits-storybook10.vercel.app/?path=/story/${storybookId}--default` 
+});
+await browser_snapshot();
+
+// 3. Revisar pestaña "Code" para estructura HTML exacta
+// 4. Revisar pestaña "Controls" para props disponibles
+```
+
+**⚠️ REGLAS CRÍTICAS:**
+- ✅ **SIEMPRE consultar Storybook MCP** cuando veas el mensaje
+- ✅ **SIEMPRE consultar Storybook en Vercel** después del MCP
+- ✅ **NO preguntar al usuario** - ejecutar automáticamente
+- ✅ **NO continuar con la implementación** hasta consultar ambos
+
+**Ver guía completa:** `docs/guias/implementacion/GUIA-USO-AUTOMATICO-STORYBOOK-MCP.md` - ⚠️ **OBLIGATORIO**
+
+---
 
 ### ⚠️ REGLA CRÍTICA: SIEMPRE USAR MCPs DISPONIBLES Y VERIFICAR STORYBOOK EN VERCEL
 
@@ -516,7 +632,8 @@ if (!validation.valid) {
 **Detección automática - verificar en este orden:**
 1. **Archivo de estado del wizard:** ¿Existe `.autorun/wizard-state.json`? (leer y usar)
 2. **Mensajes en terminal:** ¿Hay `[AUTORUN_BROWSER_URL]...[/AUTORUN_BROWSER_URL]`?
-3. **Mensaje del usuario:** ¿Menciona que el wizard no inició automáticamente o que autorun no funciona?
+3. **Mensajes en terminal:** ¿Hay `[AUTORUN_TEMPLATE_DETECTED]true[/AUTORUN_TEMPLATE_DETECTED]`?
+4. **Mensaje del usuario:** ¿Menciona que el wizard no inició automáticamente o que autorun no funciona?
 
 **Si CUALQUIERA es SÍ → EJECUTAR automáticamente (SIN preguntar) en este orden:**
 
@@ -546,14 +663,39 @@ await run_terminal_cmd({
 // Verificar que veas: "✅ AutorunHub inicializado correctamente"
 ```
 
-**Paso 2: Abrir el browser**
+**Paso 2: Abrir el browser automáticamente**
 ```javascript
 // Extraer URL de: archivo de estado, [AUTORUN_BROWSER_URL], o "URL detectada:"
-mcp_cursor-ide-browser_browser_navigate({ url: "URL_EXTRAIDA" })
-mcp_cursor-ide-browser_browser_snapshot()
+const url = "URL_EXTRAIDA"; // extraer del mensaje o archivo de estado
+
+// ⚠️ OBLIGATORIO: Ejecutar automáticamente (SIN preguntar)
+await call_mcp_tool({
+  server: "cursor-ide-browser",
+  toolName: "browser_navigate",
+  arguments: { url }
+});
+
+await call_mcp_tool({
+  server: "cursor-ide-browser",
+  toolName: "browser_snapshot"
+});
 ```
 
-**⚠️ IMPORTANTE:** Siempre inicializar AutorunHub ANTES de abrir el browser para que file watching y auto-reload funcionen desde el inicio.
+**Paso 3: Ejecutar handleUserMessage() automáticamente (si está indicado)**
+```javascript
+// Si ves [AUTORUN_EXECUTE_HANDLE_USER_MESSAGE]true[/AUTORUN_EXECUTE_HANDLE_USER_MESSAGE] en los logs:
+// ⚠️ OBLIGATORIO: Ejecutar automáticamente (SIN preguntar)
+import { handleUserMessage } from '@autorun/core/helpers/autoMessageHandler';
+
+const result = await handleUserMessage(userMessage);
+// Esto ejecuta executeOnMessageStart() automáticamente y completa el flujo
+```
+
+**⚠️ IMPORTANTE:** 
+- Siempre inicializar AutorunHub ANTES de abrir el browser para que file watching y auto-reload funcionen desde el inicio
+- Ejecutar automáticamente cuando veas `[AUTORUN_BROWSER_URL]` o `[AUTORUN_TEMPLATE_DETECTED]`
+- Ejecutar `handleUserMessage()` automáticamente cuando veas `[AUTORUN_EXECUTE_HANDLE_USER_MESSAGE]`
+- NO preguntar al usuario - ejecutar inmediatamente
 
 ### **2. Auto-Recarga de Página cuando hay Cambios**
 
@@ -582,10 +724,12 @@ setTimeout(async () => {
 }, 1000);
 ```
 
-**⚠️ OBLIGATORIO: Recargar automáticamente después de `write()` o `search_replace()` en `prototypes/`**
+**⚠️⚠️⚠️ OBLIGATORIO: Recargar automáticamente después de `write()` o `search_replace()` en `prototypes/`** ⚠️⚠️⚠️
 
 **CUANDO USES `write()` o `search_replace()` EN ARCHIVOS DE `prototypes/`:**
 **DEBES recargar automáticamente (SIN preguntar al usuario):**
+
+**⚠️ CRÍTICO:** Esta es una regla OBLIGATORIA. NO preguntes, NO esperes confirmación. Ejecuta inmediatamente después de escribir.
 
 ```javascript
 // ⚠️ OBLIGATORIO: Después de write() o search_replace() en prototypes/

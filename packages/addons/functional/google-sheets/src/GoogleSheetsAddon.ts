@@ -254,6 +254,3 @@ export class GoogleSheetsAddon implements IFunctionalAddon {
 		};
 	}
 }
-
-
-

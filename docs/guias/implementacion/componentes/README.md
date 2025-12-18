@@ -11,8 +11,8 @@ Cada archivo sigue el formato:
 
 **Ejemplos:**
 - `ESTRATEGIA-TOOLTIP-POPOVER.md` - Estrategia para Tooltip y Popover
+- `ESTRATEGIA-MODAL.md` - Estrategia para Modal ⚠️ **OBLIGATORIO**
 - `ESTRATEGIA-DATATABLE.md` - Estrategia para DataTable (cuando se cree)
-- `ESTRATEGIA-MODAL.md` - Estrategia para Modal (cuando se cree)
 
 ---
 
@@ -37,6 +37,17 @@ Cada archivo sigue el formato:
   - Cálculo de posición óptima
   - Entender `tailPosition` correctamente
   - Validación de valores NaN
+
+### **Modal** ⚠️ **OBLIGATORIO**
+- **Archivo:** `ESTRATEGIA-MODAL.md`
+- **Cuándo usar:** Al implementar Modal
+- **Temas cubiertos:**
+  - Verificar múltiples namespaces para `createModal`
+  - Implementar fallback HTML exacto (estructura de ModalProvider.ts)
+  - Inicialización independiente de otros componentes
+  - Inicialización con reintentos para el botón
+  - Limpiar instancias anteriores antes de crear nuevas
+  - Manejo correcto de event listeners
 
 ---
 

@@ -77,6 +77,29 @@ export class AutorunHub {
 			this.startFileWatching(config.autorun?.fileWatching);
 		}
 
+		// ⭐ NUEVO: Ejecutar pruebas de Storybook Implementation (opcional, no bloquea)
+		if (config.autorun?.testStorybookImplementation !== false) {
+			try {
+				const { runQuickTest } = await import('./helpers/storybookImplementationTester');
+				// Ejecutar en background para no bloquear inicialización
+				setTimeout(async () => {
+					const testPassed = await runQuickTest();
+					if (testPassed) {
+						console.log('✅ [AutorunHub] Pruebas de Storybook Implementation: OK');
+					} else {
+						console.warn(
+							'⚠️ [AutorunHub] Pruebas de Storybook Implementation: Algunas fallaron (ver logs arriba)',
+						);
+					}
+				}, 1000); // Esperar 1 segundo para no bloquear
+			} catch (error: any) {
+				// No bloquear si falla
+				console.warn(
+					`⚠️ [AutorunHub] No se pudieron ejecutar pruebas de Storybook Implementation: ${error.message}`,
+				);
+			}
+		}
+
 		this.initialized = true;
 	}
 

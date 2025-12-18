@@ -76,6 +76,3 @@ export function detectWizardProblemInMessage(message: string): boolean {
 
 	return keywords.some((keyword) => lowerMessage.includes(keyword));
 }
-
-
-

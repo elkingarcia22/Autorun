@@ -115,10 +115,11 @@ export class ActiveStepGuide {
           verification: async () => {
             // Verificar en contexto del navegador (si está disponible)
             if (typeof window !== 'undefined') {
+              const win = window as any;
               return (
-                typeof window.createDataTable === 'function' ||
-                (window.UBITSDataTable &&
-                  typeof window.UBITSDataTable.createDataTable === 'function')
+                typeof win.createDataTable === 'function' ||
+                (win.UBITSDataTable &&
+                  typeof win.UBITSDataTable.createDataTable === 'function')
               );
             }
             // Si no está en contexto del navegador, retornar false para forzar verificación
@@ -131,19 +132,23 @@ export class ActiveStepGuide {
 
       case 'FASE_0.1_REVISAR_COMPONENTE':
         const componentId = await this.getStorybookId(componentName);
+        // ⚠️ CRÍTICO: NO usar URL hardcodeada de UBITS
+        // Usar SOLO el Storybook activo del StorybookManager
+        const storybookUrl =
+          await this.getStorybookUrlForComponent(componentId);
         return {
           phase,
           step: 'Revisar Componente',
           description: phaseDescription,
           requiredActions: [
-            'Consultar Storybook en Vercel: https://ubits-storybook10.vercel.app/',
+            `Consultar Storybook activo: ${storybookUrl}`,
             `Buscar componente: ${componentId}`,
             'Revisar pestaña "Code" para ver estructura exacta',
             'Revisar pestaña "Controls" para ver todas las opciones',
             'Consultar Storybook MCP: mcp_storybook_getComponentsProps',
             'Consultar documentación: docs/referencia/componentes/',
           ],
-          storybookUrl: `https://ubits-storybook10.vercel.app/?path=/story/${componentId}--default`,
+          storybookUrl,
           guides: [
             'docs/guias/implementacion/CHECKLIST-ANTES-IMPLEMENTAR-COMPONENTE.md',
             `docs/referencia/componentes/${this.getDocFileName(componentName)}`,
@@ -278,6 +283,36 @@ export class ActiveStepGuide {
       // Ignorar error
     }
     return componentName.toLowerCase();
+  }
+
+  /**
+   * Obtener URL del Storybook activo para un componente
+   * ⚠️ CRÍTICO: Usa SOLO el Storybook activo del StorybookManager
+   */
+  private static async getStorybookUrlForComponent(
+    componentId: string
+  ): Promise<string> {
+    try {
+      const { StorybookManager } = await import('./storybookManager');
+      const manager = StorybookManager.getInstance();
+      const activeConfig = await manager.getActiveConfig();
+
+      if (!activeConfig) {
+        throw new Error(
+          `❌ No hay Storybook activo configurado. Por favor, conecta un Storybook usando: npm run storybook:connect`
+        );
+      }
+
+      // Construir URL usando el Storybook activo (priorizando /docs/)
+      const path = `?path=/docs/${componentId}--docs`;
+      return await manager.buildStorybookUrl(path);
+    } catch (error: any) {
+      // ⚠️ CRÍTICO: NO usar fallback de UBITS
+      // Lanzar error en lugar de usar fallback
+      throw new Error(
+        `❌ No se pudo obtener URL del Storybook activo para ${componentId}. ${error.message}`
+      );
+    }
   }
 
   /**

@@ -270,6 +270,3 @@ export async function cleanupSnapshots(filePath: string, keepLast: number = 3): 
 		console.warn(`⚠️ Error limpiando snapshots:`, error);
 	}
 }
-
-
-

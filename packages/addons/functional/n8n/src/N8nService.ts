@@ -168,6 +168,3 @@ export class N8nService {
 		return { ...this.config };
 	}
 }
-
-
-

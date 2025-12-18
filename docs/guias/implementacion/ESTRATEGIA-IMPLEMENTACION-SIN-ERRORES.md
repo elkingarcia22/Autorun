@@ -371,6 +371,22 @@ await interceptedWrite(filePath, content, { componentName: 'Component' });
 - ❌ Asumir que `components-loader.js` carga todo
 - ✅ Implementar manualmente si no está disponible
 
+### **Error: Modal No Se Abre** ⚠️ CRÍTICO (Específico de Modal)
+- ❌ Asumir que `window.createModal` está disponible
+- ❌ Depender de otro componente para inicializar el modal
+- ❌ No implementar fallback HTML si las APIs no están disponibles
+- ❌ No verificar múltiples namespaces donde puede estar `createModal`
+
+**✅ SOLUCIÓN OBLIGATORIA:**
+> **📚 Ver estrategia específica completa:** `docs/guias/implementacion/componentes/ESTRATEGIA-MODAL.md`
+
+**Resumen de puntos críticos:**
+1. **Verificar múltiples namespaces:** `window.createModal`, `window.UBITS.Modal.create`, `window.UBITSModal.createModal`
+2. **Implementar fallback HTML:** Si las APIs no están disponibles, crear modal manualmente con estructura exacta de `ModalProvider.ts`
+3. **Inicialización independiente:** El modal DEBE inicializarse independientemente de otros componentes
+4. **Inicialización con reintentos:** El botón debe buscarse con reintentos (máximo 5 segundos)
+5. **Limpiar instancias anteriores:** Cerrar y limpiar modal anterior antes de crear uno nuevo
+
 ### **Error: Valores NaN en Cálculos** ⚠️ CRÍTICO
 - ❌ Usar valores `NaN` directamente en cálculos
 - ✅ Validar con `isNaN()` y tener fallback seguro
@@ -449,6 +465,13 @@ const viewport = containerRect || {
   - Ajuste dinámico de ancho
   - Cálculo de posición óptima
   - Entender `tailPosition` correctamente
+
+- **Modal:** `docs/guias/implementacion/componentes/ESTRATEGIA-MODAL.md` ⚠️ **OBLIGATORIO**
+  - Verificar múltiples namespaces para `createModal`
+  - Implementar fallback HTML exacto (estructura de ModalProvider.ts)
+  - Inicialización independiente de otros componentes
+  - Inicialización con reintentos para el botón
+  - Limpiar instancias anteriores antes de crear nuevas
 
 **Ver índice completo:** `docs/guias/implementacion/componentes/README.md`
 

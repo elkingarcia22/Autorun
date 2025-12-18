@@ -9,11 +9,21 @@ Este documento contiene las instrucciones para inicializar un proyecto Autorun d
 git clone https://github.com/elkingarcia22/Autorun.git
 cd Autorun
 
-# Instalar dependencias
+# Instalar dependencias del proyecto
 npm install
+
+# Instalar dependencias de Storybook
+cd vendor/ubits/packages/storybook
+npm install
+cd ../../../../
+
+# Instalar Autorun MCP Server (configuración automática en Cursor)
+npm run autorun:install-mcp
 ```
 
 **Verificación:** Si ves `✅ ¡Todo está listo! Puedes ejecutar: npm run init`, todo está correcto.
+
+**Nota:** El Autorun MCP Server se instala automáticamente y se configura en `.cursor/mcp.json`. Reinicia Cursor después de la instalación para que cargue el servidor MCP.
 
 ---
 

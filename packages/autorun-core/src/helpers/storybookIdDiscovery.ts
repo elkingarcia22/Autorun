@@ -8,6 +8,7 @@
  */
 
 import { getStorybookUrlWithFallback } from './storybookFallback';
+import { StorybookManager } from './storybookManager';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 
@@ -126,20 +127,37 @@ export async function discoverStorybookComponents(): Promise<DiscoveryResult> {
   };
 
   try {
-    // Obtener URL base de Storybook
-    const baseUrlResult = await getStorybookUrlWithFallback('', {
-      checkAvailability: false,
-    });
-    let baseUrl = baseUrlResult.url.replace(/\/$/, '');
+    // ⚠️ CRÍTICO: Usar Storybook activo del StorybookManager
+    let indexUrl: string;
+    try {
+      const manager = StorybookManager.getInstance();
+      const activeConfig = await manager.getActiveConfig();
+      if (activeConfig && activeConfig.indexJsonUrl) {
+        indexUrl = activeConfig.indexJsonUrl;
+        console.log(
+          `🔍 [Storybook ID Discovery] Usando Storybook activo: ${activeConfig.name || activeConfig.id}`
+        );
+      } else {
+        // Fallback al método anterior
+        const baseUrlResult = await getStorybookUrlWithFallback('', {
+          checkAvailability: false,
+        });
+        let baseUrl = baseUrlResult.url.replace(/\/$/, '');
+        const urlObj = new URL(baseUrl);
+        baseUrl = `${urlObj.protocol}//${urlObj.host}`;
+        indexUrl = `${baseUrl}/index.json`;
+      }
+    } catch (error: any) {
+      // Fallback al método anterior si hay error
+      const baseUrlResult = await getStorybookUrlWithFallback('', {
+        checkAvailability: false,
+      });
+      let baseUrl = baseUrlResult.url.replace(/\/$/, '');
+      const urlObj = new URL(baseUrl);
+      baseUrl = `${urlObj.protocol}//${urlObj.host}`;
+      indexUrl = `${baseUrl}/index.json`;
+    }
 
-    // ⚠️ CRÍTICO: Remover parámetros de bypass de la URL base para index.json
-    // La URL base puede tener parámetros como ?x-vercel-set-bypass-cookie=...
-    // Necesitamos solo el dominio para index.json
-    const urlObj = new URL(baseUrl);
-    baseUrl = `${urlObj.protocol}//${urlObj.host}`;
-
-    // Intentar obtener index.json
-    const indexUrl = `${baseUrl}/index.json`;
     console.log(`🔍 [Storybook ID Discovery] Consultando: ${indexUrl}`);
 
     let indexData: any;

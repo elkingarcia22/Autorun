@@ -18,6 +18,7 @@ import {
   verifyGuidesLoaded,
   getGuidesSummary,
 } from '../helpers/guidesLoader';
+import { validateCSSClassesSimple } from '../helpers/cssClassValidator';
 
 export interface ValidationResult {
   valid: boolean;
@@ -147,6 +148,33 @@ export class PreWriteValidator {
       console.log(`🔍 [PreWriteValidator] Resultado documentación:`, docResult);
       if (!docResult.valid) {
         errors.push(...docResult.errors);
+      }
+
+      // 4.5. ⭐ NUEVO: Validar clases CSS del contenido
+      console.log(
+        `🔍 [PreWriteValidator] Validando clases CSS para: ${componentName}`
+      );
+      try {
+        const cssValidation = await validateCSSClassesSimple(
+          content,
+          componentName
+        );
+        if (!cssValidation.valid) {
+          errors.push(
+            `❌ Clases CSS incorrectas: ${cssValidation.errors.join(', ')}`
+          );
+          if (cssValidation.suggestions.length > 0) {
+            warnings.push(
+              `💡 Sugerencias de clases: ${cssValidation.suggestions.join('; ')}`
+            );
+          }
+        } else {
+          console.log(
+            `✅ [PreWriteValidator] Clases CSS validadas correctamente`
+          );
+        }
+      } catch (error: any) {
+        warnings.push(`⚠️ No se pudo validar clases CSS: ${error.message}`);
       }
     } else {
       console.log(

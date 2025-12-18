@@ -152,6 +152,3 @@ export async function generateAllAddonsDocumentation(): Promise<void> {
 
 	console.log(`\n✅ Documentación generada para todos los add-ons\n`);
 }
-
-
-

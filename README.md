@@ -17,8 +17,17 @@ Sistema modular para crear prototipos de alta calidad con componentes UBITS, add
 git clone https://github.com/elkingarcia22/Autorun.git
 cd Autorun
 
-# Instalar dependencias (ejecuta verificación automática)
+# Instalar dependencias del proyecto (ejecuta verificación automática)
 npm install
+
+# Instalar dependencias de Storybook
+cd vendor/ubits/packages/storybook
+npm install
+cd ../../../../
+
+# Instalar Autorun MCP Server (se ejecuta automáticamente después de npm install)
+# Si no se instaló automáticamente, ejecuta:
+npm run autorun:install-mcp
 ```
 
 ### 🛠️ Herramientas de Inspección (Opcional pero Recomendado)

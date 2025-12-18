@@ -97,7 +97,24 @@
   - ❌ NO aplicar padding al contenedor INTERNO (el que crea el componente)
 - [ ] **Regla:** Solo algunos componentes necesitan contenedor con padding (ej: DataTable), NO todos
 
-#### 2.6. **Error #SearchButton: Botón de Cerrar Fuera del Input** ⚠️ CRÍTICO (Solo para DataTable con searchButton)
+#### 2.6. **Error: Modal No Se Abre** ⚠️ CRÍTICO (Solo para Modal)
+- [ ] **Verificar múltiples namespaces para `createModal`:**
+  - ✅ Verificar `window.createModal`
+  - ✅ Verificar `window.UBITS.Modal.create`
+  - ✅ Verificar `window.UBITSModal.createModal`
+- [ ] **Implementar fallback HTML si APIs no están disponibles:**
+  - ✅ Usar estructura exacta de `ModalProvider.ts`
+  - ✅ Incluir overlay, header, body, footer
+  - ✅ Configurar event listeners correctamente
+- [ ] **Inicialización independiente:**
+  - ✅ El modal DEBE inicializarse independientemente de otros componentes
+  - ❌ NO depender de que otro componente (ej: HeaderSection) se inicialice primero
+- [ ] **Inicialización con reintentos:**
+  - ✅ El botón debe buscarse con reintentos (máximo 5 segundos)
+  - ✅ Limpiar instancias anteriores antes de crear nuevas
+- [ ] **Ver guía completa:** `docs/guias/implementacion/componentes/ESTRATEGIA-MODAL.md` - ⚠️ **OBLIGATORIO**
+
+#### 2.7. **Error #SearchButton: Botón de Cerrar Fuera del Input** ⚠️ CRÍTICO (Solo para DataTable con searchButton)
 - [ ] **Si el DataTable tiene `searchButton: true`, OBLIGATORIO agregar estilos CSS:**
   - ✅ Agregar estilos CSS específicos para `.ubits-search-button__clear` con `position: relative` (NO `absolute`)
   - ✅ Agregar estilos para `.ubits-search-button__input-wrapper` con `height: 32px` (NO 40px)

@@ -67,7 +67,11 @@ export class InitializationWizard {
 		// Si hay AUTORUN_ANSWERS, forzar modo interactivo para mostrar preguntas
 		const autoAnswers = hasAutoAnswers ? null : this.getAutoAnswers(options?.autoSelect);
 
-		let answers: { template: 'administrador' | 'colaborador'; module: string; product?: string };
+		let answers: {
+			template: 'administrador' | 'colaborador';
+			module: string;
+			product?: string;
+		};
 		let selectedAddons: string[];
 		let disableOtherModulesNavigation: boolean = false;
 
@@ -1152,7 +1156,9 @@ export class InitializationWizard {
 			const functionalPath = path.resolve(process.cwd(), addonsPath);
 
 			try {
-				const entries = await fs.readdir(functionalPath, { withFileTypes: true });
+				const entries = await fs.readdir(functionalPath, {
+					withFileTypes: true,
+				});
 
 				for (const entry of entries) {
 					if (entry.isDirectory()) {
@@ -1286,6 +1292,21 @@ export class InitializationWizard {
 			}
 		}
 		console.log(`   ✅ ${UBITS_PRESET.components.length} componentes cargados`);
+
+		// ⭐ NUEVO: Ejecutar prueba rápida de Storybook Implementation
+		try {
+			const { runQuickTest } = await import('../helpers/storybookImplementationTester');
+			console.log('   🧪 Probando funcionalidades de Storybook Implementation...');
+			const testPassed = await runQuickTest('data-data-table');
+			if (testPassed) {
+				console.log('   ✅ Pruebas de Storybook Implementation: OK');
+			} else {
+				console.warn('   ⚠️  Algunas pruebas de Storybook Implementation fallaron');
+			}
+		} catch (error: any) {
+			// No bloquear si falla
+			console.warn(`   ⚠️  No se pudieron ejecutar pruebas: ${error.message}`);
+		}
 	}
 
 	/**
@@ -2140,11 +2161,17 @@ export class InitializationWizard {
 								await fs.access(possiblePath);
 								// Si existe .storybook/main.js o main.ts, construir URL local
 								if (possiblePath.includes('.storybook')) {
-									return { storybookUrl: 'http://localhost:6006/index.json', customTools };
+									return {
+										storybookUrl: 'http://localhost:6006/index.json',
+										customTools,
+									};
 								}
 								// Si existe storybook-static, usar esa ruta
 								if (possiblePath.includes('storybook-static')) {
-									return { storybookUrl: `file://${possiblePath}`, customTools };
+									return {
+										storybookUrl: `file://${possiblePath}`,
+										customTools,
+									};
 								}
 							} catch {
 								// Continuar
@@ -2159,12 +2186,18 @@ export class InitializationWizard {
 							const storybookPreset = (config as any)?.storybook;
 							if (storybookPreset?.url) {
 								// Usar URL del preset UBITS
-								return { storybookUrl: `${storybookPreset.url}/index.json`, customTools };
+								return {
+									storybookUrl: `${storybookPreset.url}/index.json`,
+									customTools,
+								};
 							}
 						}
 
 						// Último fallback: URL local
-						return { storybookUrl: 'http://localhost:6006/index.json', customTools };
+						return {
+							storybookUrl: 'http://localhost:6006/index.json',
+							customTools,
+						};
 					}
 					return storybookUrl ? { storybookUrl, customTools } : null;
 				},

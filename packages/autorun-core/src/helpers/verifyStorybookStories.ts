@@ -289,26 +289,47 @@ export async function buildSafeStorybookUrl(
   const storyInfo = await verifyAvailableStories(normalizedIdentifier);
 
   if (!storyInfo) {
-    // Fallback: construir URL con 'default' usando el mapeo de títulos a IDs
-    const componentId =
-      COMPONENT_TITLE_TO_ID_MAP[componentIdentifier] ||
-      COMPONENT_TITLE_TO_ID_MAP[normalizedIdentifier] ||
-      componentIdentifier
-        .toLowerCase()
-        .replace(/\s+/g, '-')
-        .replace(/\//g, '-');
-    const url = `https://ubits-storybook10.vercel.app/?path=/story/${componentId}--default`;
+    // ⚠️ CRÍTICO: NO usar fallback de UBITS
+    // Usar SOLO el Storybook activo del StorybookManager
+    try {
+      const { StorybookManager } = await import('./storybookManager');
+      const { mapComponentNameToStorybookId } = await import(
+        './storybookStories'
+      );
+      const manager = StorybookManager.getInstance();
+      const activeConfig = await manager.getActiveConfig();
 
-    console.warn(
-      `⚠️ [Build Safe URL] No se pudo verificar historias para ${componentIdentifier}. Usando 'default'.`
-    );
+      if (!activeConfig) {
+        throw new Error(
+          `❌ No hay Storybook activo configurado. Por favor, conecta un Storybook usando: npm run storybook:connect`
+        );
+      }
 
-    return {
-      url,
-      storyUsed: 'default',
-      storyExists: false,
-      warning: `No se pudo verificar historias. Usando 'default' como fallback.`,
-    };
+      // Obtener ID del componente desde el Storybook activo
+      const componentId =
+        await mapComponentNameToStorybookId(componentIdentifier);
+
+      // Construir URL usando el Storybook activo (priorizando /docs/)
+      const path = `?path=/docs/${componentId}--docs`;
+      const url = await manager.buildStorybookUrl(path);
+
+      console.warn(
+        `⚠️ [Build Safe URL] No se pudo verificar historias para ${componentIdentifier}. Usando /docs/ del Storybook activo.`
+      );
+
+      return {
+        url,
+        storyUsed: 'docs',
+        storyExists: false,
+        warning: `No se pudo verificar historias. Usando /docs/ del Storybook activo.`,
+      };
+    } catch (error: any) {
+      // ⚠️ CRÍTICO: NO usar fallback de UBITS
+      // Lanzar error en lugar de usar fallback
+      throw new Error(
+        `❌ No se pudo construir URL para ${componentIdentifier} desde el Storybook activo. ${error.message}`
+      );
+    }
   }
 
   // Normalizar nombre de historia (convertir a kebab-case si es necesario)
@@ -322,22 +343,43 @@ export async function buildSafeStorybookUrl(
   // Usar la historia deseada si existe, sino usar 'default'
   const safeStoryName = storyExists ? normalizedStoryName : 'default';
 
-  // ⚠️ CRÍTICO: Codificar el componentId para manejar caracteres especiales (acentos, etc.)
-  const encodedComponentId = encodeURIComponent(storyInfo.componentId);
-  const url = `https://ubits-storybook10.vercel.app/?path=/story/${encodedComponentId}--${safeStoryName}`;
+  // ⚠️ CRÍTICO: NO usar URL hardcodeada de UBITS
+  // Usar SOLO el Storybook activo del StorybookManager
+  try {
+    const { StorybookManager } = await import('./storybookManager');
+    const manager = StorybookManager.getInstance();
+    const activeConfig = await manager.getActiveConfig();
 
-  let warning: string | undefined;
-  if (!storyExists && storyName !== 'default') {
-    warning = `Historia '${storyName}' no existe para ${componentIdentifier}. Usando 'default' en su lugar. Historias disponibles: ${storyInfo.availableStories.map((s) => s.name).join(', ')}`;
-    console.warn(`⚠️ [Build Safe URL] ${warning}`);
+    if (!activeConfig) {
+      throw new Error(
+        `❌ No hay Storybook activo configurado. Por favor, conecta un Storybook usando: npm run storybook:connect`
+      );
+    }
+
+    // Construir URL usando el Storybook activo
+    const encodedComponentId = encodeURIComponent(storyInfo.componentId);
+    const path = `?path=/story/${encodedComponentId}--${safeStoryName}`;
+    const url = await manager.buildStorybookUrl(path);
+
+    let warning: string | undefined;
+    if (!storyExists && storyName !== 'default') {
+      warning = `Historia '${storyName}' no existe para ${componentIdentifier}. Usando 'default' en su lugar. Historias disponibles: ${storyInfo.availableStories.map((s) => s.name).join(', ')}`;
+      console.warn(`⚠️ [Build Safe URL] ${warning}`);
+    }
+
+    return {
+      url,
+      storyUsed: safeStoryName,
+      storyExists,
+      warning,
+    };
+  } catch (error: any) {
+    // ⚠️ CRÍTICO: NO usar fallback de UBITS
+    // Lanzar error en lugar de usar fallback
+    throw new Error(
+      `❌ No se pudo construir URL para ${componentIdentifier} desde el Storybook activo. ${error.message}`
+    );
   }
-
-  return {
-    url,
-    storyUsed: safeStoryName,
-    storyExists,
-    warning,
-  };
 }
 
 /**

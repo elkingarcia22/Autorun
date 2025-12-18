@@ -46,7 +46,10 @@ const COMPONENT_SPECIFIC_GUIDES: Record<string, string[]> = {
     'docs/referencia/componentes/navegacin-tabs.md',
   ],
   DataTable: ['docs/referencia/componentes/data-table.md'],
-  Modal: ['docs/referencia/componentes/modal.md'],
+  Modal: [
+    'docs/referencia/componentes/modal.md',
+    'docs/referencia/componentes/feedback-modal.md',
+  ],
   Button: ['docs/referencia/componentes/button.md'],
   // Agregar más componentes según sea necesario
 };
@@ -61,6 +64,7 @@ const COMPONENT_STRATEGIES: Record<string, string[]> = {
   Popover: [
     'docs/guias/implementacion/componentes/ESTRATEGIA-TOOLTIP-POPOVER.md',
   ],
+  Modal: ['docs/guias/implementacion/componentes/ESTRATEGIA-MODAL.md'],
   // Agregar más estrategias según sea necesario
 };
 

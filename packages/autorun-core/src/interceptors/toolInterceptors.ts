@@ -17,6 +17,24 @@ import { PhaseValidator } from '../validation/PhaseValidator';
 import { ActiveStepGuide } from '../helpers/activeStepGuide';
 import * as path from 'path';
 
+// ⚠️ CRÍTICO: Estado global para rastrear si se ejecutó handleUserMessage()
+let messageStartExecuted = false;
+let messageStartResult: any = null;
+
+/**
+ * ⚠️ CRÍTICO: Resetear estado al inicio de un nuevo mensaje
+ *
+ * Esta función debe ser llamada cuando el agente recibe un nuevo mensaje del usuario
+ * para resetear el estado y permitir que se ejecute handleUserMessage() nuevamente.
+ */
+export function resetMessageStartState() {
+  messageStartExecuted = false;
+  messageStartResult = null;
+  console.log(
+    '🔄 [Tool Interceptor] Estado de messageStart reseteado para nuevo mensaje'
+  );
+}
+
 /**
  * ⚠️ CRÍTICO: Interceptar write() automáticamente
  *
@@ -26,6 +44,7 @@ import * as path from 'path';
  * directamente desde TypeScript. Este archivo proporciona la lógica que el agente DEBE
  * ejecutar manualmente antes de usar write() o search_replace().
  */
+
 export async function interceptedWrite(
   filePath: string,
   contents: string,
@@ -39,6 +58,79 @@ export async function interceptedWrite(
   );
   console.log('🛡️ [Tool Interceptor] Interceptando write()...');
   console.log(`🛡️ [Tool Interceptor] Archivo: ${filePath}`);
+
+  // ⚠️ CRÍTICO: Ejecutar executeOnMessageStart() automáticamente si no se ha ejecutado
+  if (!messageStartExecuted && context?.userMessage) {
+    console.log(
+      '⚠️ [Tool Interceptor] executeOnMessageStart() NO se ejecutó, ejecutando automáticamente...'
+    );
+
+    try {
+      const { handleUserMessage } = await import(
+        '../helpers/autoMessageHandler'
+      );
+      messageStartResult = await handleUserMessage(context.userMessage);
+      messageStartExecuted = true;
+
+      console.log(`✅ [Tool Interceptor] executeOnMessageStart() ejecutado`);
+      console.log(
+        `✅ [Tool Interceptor] Componente detectado: ${messageStartResult.componentName || 'NINGUNO'}`
+      );
+      console.log(
+        `✅ [Tool Interceptor] Bloqueado: ${messageStartResult.blocked ? 'SÍ' : 'NO'}`
+      );
+
+      if (messageStartResult.blocked) {
+        console.error(
+          `❌ [Tool Interceptor] IMPLEMENTACIÓN BLOQUEADA: ${messageStartResult.reason}`
+        );
+        throw new Error(
+          `❌ IMPLEMENTACIÓN BLOQUEADA: ${messageStartResult.reason}`
+        );
+      }
+
+      // Si hay mensajes MCP, el agente debe consultarlos automáticamente
+      if (
+        messageStartResult.mcpMessages &&
+        messageStartResult.mcpMessages.length > 0
+      ) {
+        console.log(
+          '📚 [Tool Interceptor] Mensajes MCP pendientes, el agente debe consultarlos automáticamente'
+        );
+        for (const mcpMsg of messageStartResult.mcpMessages) {
+          console.log(
+            `📚 [Tool Interceptor] [AUTORUN_STORYBOOK_MCP]${mcpMsg.componentName}:${mcpMsg.storybookId}[/AUTORUN_STORYBOOK_MCP]`
+          );
+        }
+      }
+
+      // Actualizar context con componente detectado si no estaba presente
+      if (!context.componentName && messageStartResult.componentName) {
+        context = {
+          ...context,
+          componentName: messageStartResult.componentName,
+        };
+      }
+
+      // ⭐ NUEVO: Si hay múltiples componentes detectados (en mcpMessages),
+      // actualizar context para que autoImplementationFlow los procese todos
+      if (
+        messageStartResult.mcpMessages &&
+        messageStartResult.mcpMessages.length > 1
+      ) {
+        console.log(
+          `📚 [Tool Interceptor] Múltiples componentes detectados: ${messageStartResult.mcpMessages.map((m: { componentName: string }) => m.componentName).join(', ')}`
+        );
+        // El componente principal ya está en context.componentName
+        // Los adicionales se procesarán en autoImplementationFlow a través de mcpMessages
+      }
+    } catch (error: any) {
+      console.error(
+        `❌ [Tool Interceptor] Error ejecutando executeOnMessageStart(): ${error.message}`
+      );
+      // Continuar de todas formas, pero registrar el error
+    }
+  }
 
   // ⭐ NUEVO: Validar fase actual ANTES de continuar
   if (context?.componentName) {
@@ -211,6 +303,79 @@ export async function interceptedSearchReplace(
   );
   console.log('🛡️ [Tool Interceptor] Interceptando search_replace()...');
   console.log(`🛡️ [Tool Interceptor] Archivo: ${filePath}`);
+
+  // ⚠️ CRÍTICO: Ejecutar handleUserMessage() automáticamente si no se ha ejecutado
+  if (!messageStartExecuted && context?.userMessage) {
+    console.log(
+      '⚠️ [Tool Interceptor] handleUserMessage() NO se ejecutó, ejecutando automáticamente...'
+    );
+
+    try {
+      const { handleUserMessage } = await import(
+        '../helpers/autoMessageHandler'
+      );
+      messageStartResult = await handleUserMessage(context.userMessage);
+      messageStartExecuted = true;
+
+      console.log(`✅ [Tool Interceptor] handleUserMessage() ejecutado`);
+      console.log(
+        `✅ [Tool Interceptor] Componente detectado: ${messageStartResult.componentName || 'NINGUNO'}`
+      );
+      console.log(
+        `✅ [Tool Interceptor] Bloqueado: ${messageStartResult.blocked ? 'SÍ' : 'NO'}`
+      );
+
+      if (messageStartResult.blocked) {
+        console.error(
+          `❌ [Tool Interceptor] IMPLEMENTACIÓN BLOQUEADA: ${messageStartResult.reason}`
+        );
+        throw new Error(
+          `❌ IMPLEMENTACIÓN BLOQUEADA: ${messageStartResult.reason}`
+        );
+      }
+
+      // Si hay mensajes MCP, el agente debe consultarlos automáticamente
+      if (
+        messageStartResult.mcpMessages &&
+        messageStartResult.mcpMessages.length > 0
+      ) {
+        console.log(
+          '📚 [Tool Interceptor] Mensajes MCP pendientes, el agente debe consultarlos automáticamente'
+        );
+        for (const mcpMsg of messageStartResult.mcpMessages) {
+          console.log(
+            `📚 [Tool Interceptor] [AUTORUN_STORYBOOK_MCP]${mcpMsg.componentName}:${mcpMsg.storybookId}[/AUTORUN_STORYBOOK_MCP]`
+          );
+        }
+      }
+
+      // Actualizar context con componente detectado si no estaba presente
+      if (!context.componentName && messageStartResult.componentName) {
+        context = {
+          ...context,
+          componentName: messageStartResult.componentName,
+        };
+      }
+
+      // ⭐ NUEVO: Si hay múltiples componentes detectados (en mcpMessages),
+      // actualizar context para que autoImplementationFlow los procese todos
+      if (
+        messageStartResult.mcpMessages &&
+        messageStartResult.mcpMessages.length > 1
+      ) {
+        console.log(
+          `📚 [Tool Interceptor] Múltiples componentes detectados: ${messageStartResult.mcpMessages.map((m: { componentName: string }) => m.componentName).join(', ')}`
+        );
+        // El componente principal ya está en context.componentName
+        // Los adicionales se procesarán en autoImplementationFlow a través de mcpMessages
+      }
+    } catch (error: any) {
+      console.error(
+        `❌ [Tool Interceptor] Error ejecutando handleUserMessage(): ${error.message}`
+      );
+      // Continuar de todas formas, pero registrar el error
+    }
+  }
 
   // Ejecutar flujo automático ANTES de reemplazar
   const flow = await autoImplementationFlow(

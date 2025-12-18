@@ -169,6 +169,3 @@ export class FileWatcher {
 		this.onChangeCallback = undefined;
 	}
 }
-
-
-

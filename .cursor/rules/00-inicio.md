@@ -4,9 +4,18 @@
 
 **🚨 ESTA ES LA PRIMERA ACCIÓN OBLIGATORIA EN CADA MENSAJE 🚨**
 
-## 🔍 DETECCIÓN AUTOMÁTICA DEL WIZARD (EJECUTAR PRIMERO) ⚠️ OBLIGATORIO
+## 🔍 DETECCIÓN AUTOMÁTICA DEL WIZARD (PASO 1) ⚠️ OBLIGATORIO
 
 **🚨 ESTA ES LA PRIMERA ACCIÓN: EJECUTAR ESTE SCRIPT AL INICIO DE CADA MENSAJE 🚨**
+
+**⚠️ ORDEN DE EJECUCIÓN:**
+1. **PASO 1:** Detectar wizard (este paso) ← **AQUÍ ESTÁS**
+2. **PASO 2:** Inicializar AutorunHub (si hay wizard o no está inicializado)
+3. **PASO 3:** Abrir browser (si hay wizard)
+4. **PASO 4:** Verificar estado
+5. **PASO 5:** Ejecutar executeOnMessageStart() (solo si hay palabras clave de implementación)
+
+**Ver orden completo:** `docs/guias/configuracion/ORDEN-EJECUCION-INICIO-SESION.md` - ⚠️ **OBLIGATORIO**
 
 **⚠️ ANTES de cualquier otra cosa, SIEMPRE ejecutar el script de detección:**
 
@@ -214,39 +223,51 @@ await run_terminal_cmd({
 
 ---
 
-## 📋 PASO 2: DETECCIÓN AUTOMÁTICA DE COMPONENTES ⭐ NUEVO
+## 📋 PASO 2: EJECUTAR executeOnMessageStart() (OBLIGATORIO) ⭐ NUEVO
 
-**⚠️ OBLIGATORIO: Ejecutar detección automática de componentes (después de inicializar AutorunHub):**
+**⚠️ OBLIGATORIO: Ejecutar executeOnMessageStart() SIEMPRE al inicio de cada mensaje (después de inicializar AutorunHub):**
 
 ```typescript
-// ⚠️ OBLIGATORIO: Ejecutar esto PRIMERO en cada mensaje
-import { executeAutoDetectionOnMessage } from '@autorun/core/helpers/autoComponentDetection';
+// ⚠️ OBLIGATORIO: Ejecutar esto SIEMPRE al inicio de cada mensaje
+// ⚠️ CRÍTICO: NO preguntar, NO verificar palabras clave - EJECUTAR SIEMPRE
+import { executeOnMessageStart } from '@autorun/core';
 
-const detectionResult = await executeAutoDetectionOnMessage(userMessage);
+// EJECUTAR SIEMPRE - No importa el contenido del mensaje
+const result = await executeOnMessageStart(userMessage);
 
-if (detectionResult.detected && detectionResult.componentName) {
-  console.log(`✅ Componente detectado: ${detectionResult.componentName}`);
-  console.log(`   Confianza: ${detectionResult.confidence}`);
-  
-  if (detectionResult.plan) {
-    console.log(`📋 Plan basado en historias: ${detectionResult.plan.totalSteps} historias`);
-    // ⚠️ CRÍTICO: Mostrar plan al usuario y pedir aprobación antes de implementar
-  }
-  
-  if (detectionResult.verification?.blocked) {
-    console.error(`❌ Implementación bloqueada: ${detectionResult.verification.reason}`);
-    // Completar pasos faltantes antes de continuar
-  }
+// Verificar resultado
+if (result.blocked) {
+  // ❌ NO continuar
+  throw new Error(`❌ BLOQUEADO: ${result.reason}`);
+}
+
+// Si se detectó un componente
+if (result.detected && result.componentName) {
+  console.log(`✅ Componente detectado: ${result.componentName}`);
+  console.log(`📋 Plan disponible: ${result.plan?.totalSteps || 0} historias`);
+} else {
+  // Si no se detectó componente, continuar normalmente
+  console.log(`✅ [Execute On Message Start] No se detectó componente, continuando normalmente`);
 }
 ```
+
+**Este sistema ejecuta automáticamente:**
+- ✅ Detección automática de componentes
+- ✅ Verificación de triggers de palabras clave
+- ✅ Verificación con Pre-Implementation Check
+- ✅ Obtención de plan basado en historias (si aplica)
+- ✅ Bloqueo si faltan pasos o fases
 
 **Este sistema detecta automáticamente:**
 - ✅ "tabla" → DataTable
 - ✅ "data table" → DataTable
 - ✅ "tabs" → Tabs
+- ✅ "modal" → Modal
 - ✅ Y otros componentes UBITS
 
-**Ver guía completa:** `docs/guias/implementacion/GUIA-DETECCION-AUTOMATICA-COMPONENTES.md` - ⚠️ **OBLIGATORIO**
+**Ver guía completa:** 
+- `docs/guias/implementacion/GUIA-DETECCION-AUTOMATICA-COMPONENTES.md` - ⚠️ **OBLIGATORIO**
+- `docs/guias/implementacion/GUIA-SISTEMA-PASO-A-PASO-AUTOMATICO.md` - ⚠️ **OBLIGATORIO**
 
 ---
 

@@ -83,6 +83,3 @@ Cuando guardes un archivo en prototypes/ (HTML, JS o CSS), DEBES:
 - Ejecuta automáticamente después de guardar archivos en prototypes/
 - Esto permite ver los cambios inmediatamente sin recargar manualmente
 `;
-
-
-

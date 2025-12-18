@@ -56,6 +56,7 @@ export async function autoDetectComponent(
   let componentName: string | undefined = undefined;
   let confidence: 'high' | 'medium' | 'low' | undefined = undefined;
 
+  // ⚠️ MEJORADO: Priorizar detección básica, pero también considerar proactiva
   if (basicDetection) {
     componentName = basicDetection;
     confidence = 'high';
@@ -67,6 +68,20 @@ export async function autoDetectComponent(
     });
     componentName = sortedComponents[0].name;
     confidence = sortedComponents[0].confidence;
+  }
+
+  // ⚠️ NUEVO: Si detectamos Button pero el mensaje también menciona Modal,
+  // priorizar Button (porque es el que "abre" el modal)
+  if (componentName === 'Modal' && /\bbot[oó]n\b/i.test(userMessage)) {
+    // Verificar si hay Button en la detección proactiva
+    const buttonComponent = proactiveDetection.components.find(
+      (c) => c.name === 'Button'
+    );
+    if (buttonComponent) {
+      // Button tiene prioridad porque es el que "abre" el modal
+      componentName = 'Button';
+      confidence = buttonComponent.confidence || 'high';
+    }
   }
 
   if (!componentName) {

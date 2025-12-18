@@ -323,6 +323,3 @@ export function getStoryChecklist(
 	const storyStep = plan.storySteps.find((step) => step.story.id === storyId);
 	return storyStep?.checklist || null;
 }
-
-
-
