@@ -4,8 +4,8 @@
  * Lista problemas detectados por Problem Tracker
  */
 
-import { AutorunProblemsListInput, AutorunProblemsListOutput } from '../types';
-import { AddonOrchestrator } from '../helpers/addonOrchestrator';
+import { AutorunProblemsListInput, AutorunProblemsListOutput } from '../types.js';
+import { AddonOrchestrator } from '../helpers/addonOrchestrator.js';
 
 /**
  * Lista problemas detectados

@@ -5,8 +5,8 @@
  * Crea plan de implementación según el análisis de componentes internos
  */
 
-import { getSourceCode } from './storybookExactCodeExtractor';
-import { extractExactCodeFromStorybookWithBrowser } from './storybookExactCodeExtractorWithBrowser';
+import { getSourceCode } from './storybookExactCodeExtractor.js';
+import { extractExactCodeFromStorybookWithBrowser } from './storybookExactCodeExtractorWithBrowser.js';
 
 export interface InternalComponent {
   name: string;

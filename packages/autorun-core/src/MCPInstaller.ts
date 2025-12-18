@@ -353,27 +353,16 @@ export class MCPInstaller {
 					useCompiled = false;
 				}
 
-				if (useCompiled) {
-					// Usar archivo compilado (ruta absoluta)
-					return {
-						command: 'node',
-						args: [autorunServerPath],
-						env: {
-							NODE_ENV: 'production',
-						},
-					};
-				} else {
-					// Usar tsx para ejecutar directamente desde TypeScript
-					// Usar ruta relativa desde la raíz del proyecto
-					const relativeSourcePath = path.relative(process.cwd(), autorunServerSourcePath);
-					return {
-						command: 'npx',
-						args: ['-y', 'tsx', relativeSourcePath],
-						env: {
-							NODE_ENV: 'production',
-						},
-					};
-				}
+				// Siempre usar tsx para ejecutar directamente desde TypeScript
+				// Esto evita problemas con imports sin extensiones .js
+				const relativeSourcePath = path.relative(process.cwd(), autorunServerSourcePath);
+				return {
+					command: 'npx',
+					args: ['-y', 'tsx', relativeSourcePath],
+					env: {
+						NODE_ENV: 'production',
+					},
+				};
 
 			default:
 				return {

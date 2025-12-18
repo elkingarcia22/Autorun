@@ -6,8 +6,8 @@
  * BLOQUEA la implementación si falla cualquier verificación crítica
  */
 
-import { validateCSSClassesSimple } from './cssClassValidator';
-import { getSourceCode } from './storybookExactCodeExtractor';
+import { validateCSSClassesSimple } from './cssClassValidator.js';
+import { getSourceCode } from './storybookExactCodeExtractor.js';
 
 export interface CheckResult {
   name: string;

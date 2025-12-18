@@ -4,8 +4,8 @@
  * Ejecuta ESLint en archivos
  */
 
-import { AutorunLintInput, AutorunLintOutput } from '../types';
-import { AddonOrchestrator } from '../helpers/addonOrchestrator';
+import { AutorunLintInput, AutorunLintOutput } from '../types.js';
+import { AddonOrchestrator } from '../helpers/addonOrchestrator.js';
 
 /**
  * Ejecuta ESLint

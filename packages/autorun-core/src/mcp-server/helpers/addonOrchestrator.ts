@@ -6,7 +6,7 @@
  */
 
 import { getAutorunHub } from '@autorun/core';
-import { getTemplateUrlFromPath } from '../../helpers/autoReloadHelper';
+import { getTemplateUrlFromPath } from '../../helpers/autoReloadHelper.js';
 import * as path from 'path';
 
 /**

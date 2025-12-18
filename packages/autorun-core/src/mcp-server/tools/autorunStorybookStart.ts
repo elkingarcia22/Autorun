@@ -4,8 +4,8 @@
  * Inicia servidor de Storybook local
  */
 
-import { AutorunStorybookStartInput, AutorunStorybookStartOutput } from '../types';
-import { AddonOrchestrator } from '../helpers/addonOrchestrator';
+import { AutorunStorybookStartInput, AutorunStorybookStartOutput } from '../types.js';
+import { AddonOrchestrator } from '../helpers/addonOrchestrator.js';
 
 /**
  * Inicia servidor de Storybook

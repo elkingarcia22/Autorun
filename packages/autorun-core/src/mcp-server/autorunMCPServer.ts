@@ -14,16 +14,16 @@ import {
   ErrorCode,
   McpError,
 } from '@modelcontextprotocol/sdk/types.js';
-import { autorunPlan } from './tools/autorunPlan';
-import { autorunApply } from './tools/autorunApply';
-import { autorunVerify } from './tools/autorunVerify';
-import { autorunChecklist } from './tools/autorunChecklist';
-import { autorunStorybookStart } from './tools/autorunStorybookStart';
-import { autorunStorybookBuild } from './tools/autorunStorybookBuild';
-import { autorunProblemsList } from './tools/autorunProblemsList';
-import { autorunGitHubCommit } from './tools/autorunGitHubCommit';
-import { autorunLint } from './tools/autorunLint';
-import { autorunVisualTest } from './tools/autorunVisualTest';
+import { autorunPlan } from './tools/autorunPlan.js';
+import { autorunApply } from './tools/autorunApply.js';
+import { autorunVerify } from './tools/autorunVerify.js';
+import { autorunChecklist } from './tools/autorunChecklist.js';
+import { autorunStorybookStart } from './tools/autorunStorybookStart.js';
+import { autorunStorybookBuild } from './tools/autorunStorybookBuild.js';
+import { autorunProblemsList } from './tools/autorunProblemsList.js';
+import { autorunGitHubCommit } from './tools/autorunGitHubCommit.js';
+import { autorunLint } from './tools/autorunLint.js';
+import { autorunVisualTest } from './tools/autorunVisualTest.js';
 
 /**
  * Inicia el servidor MCP de Autorun

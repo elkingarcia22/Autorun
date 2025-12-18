@@ -4,8 +4,8 @@
  * Hace commit manual de archivos en GitHub
  */
 
-import { AutorunGitHubCommitInput, AutorunGitHubCommitOutput } from '../types';
-import { AddonOrchestrator } from '../helpers/addonOrchestrator';
+import { AutorunGitHubCommitInput, AutorunGitHubCommitOutput } from '../types.js';
+import { AddonOrchestrator } from '../helpers/addonOrchestrator.js';
 
 /**
  * Hace commit manual

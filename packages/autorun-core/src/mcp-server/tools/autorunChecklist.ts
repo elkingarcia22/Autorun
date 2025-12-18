@@ -4,8 +4,8 @@
  * Obtiene checklist de implementación para un componente específico
  */
 
-import { AutorunChecklistInput, AutorunChecklistOutput } from '../types';
-import { AddonOrchestrator } from '../helpers/addonOrchestrator';
+import { AutorunChecklistInput, AutorunChecklistOutput } from '../types.js';
+import { AddonOrchestrator } from '../helpers/addonOrchestrator.js';
 
 /**
  * Obtiene checklist de implementación

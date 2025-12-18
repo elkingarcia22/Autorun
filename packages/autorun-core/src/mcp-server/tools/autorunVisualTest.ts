@@ -4,8 +4,8 @@
  * Ejecuta tests visuales con Chromatic
  */
 
-import { AutorunVisualTestInput, AutorunVisualTestOutput } from '../types';
-import { AddonOrchestrator } from '../helpers/addonOrchestrator';
+import { AutorunVisualTestInput, AutorunVisualTestOutput } from '../types.js';
+import { AddonOrchestrator } from '../helpers/addonOrchestrator.js';
 
 /**
  * Ejecuta tests visuales

@@ -5,8 +5,8 @@
  * y que cumplen con todas las validaciones.
  */
 
-import { AutorunVerifyInput, AutorunVerifyOutput } from '../types';
-import { hasAutorunMark, parseAutorunMarks, validateAutorunMark } from '../helpers/codeMarkGenerator';
+import { AutorunVerifyInput, AutorunVerifyOutput } from '../types.js';
+import { hasAutorunMark, parseAutorunMarks, validateAutorunMark } from '../helpers/codeMarkGenerator.js';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import { exec } from 'child_process';

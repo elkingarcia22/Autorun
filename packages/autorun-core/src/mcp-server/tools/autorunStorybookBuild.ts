@@ -4,8 +4,8 @@
  * Construye Storybook estático
  */
 
-import { AutorunStorybookBuildInput, AutorunStorybookBuildOutput } from '../types';
-import { AddonOrchestrator } from '../helpers/addonOrchestrator';
+import { AutorunStorybookBuildInput, AutorunStorybookBuildOutput } from '../types.js';
+import { AddonOrchestrator } from '../helpers/addonOrchestrator.js';
 
 /**
  * Construye Storybook estático

@@ -7,9 +7,9 @@
  * Este sistema DEBE ejecutarse al inicio de cada mensaje del usuario.
  */
 
-import { executeAutoDetectionOnMessage } from './autoComponentDetection';
-import { getAutorunHub } from '../AutorunAgent';
-import { KeywordTriggerSystem } from './keywordTriggerSystem';
+import { executeAutoDetectionOnMessage } from './autoComponentDetection.js';
+import { getAutorunHub } from '../AutorunAgent.js';
+import { KeywordTriggerSystem } from './keywordTriggerSystem.js';
 
 export interface MessageStartResult {
   detected: boolean;

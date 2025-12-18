@@ -14,14 +14,14 @@
  * 7. Post-implementación (Prettier, ESLint, Auto-Reload, GitHub)
  */
 
-import { handleUserMessage } from '../../helpers/autoMessageHandler';
-import { extractExactCodeFromStorybookWithBrowser } from '../../helpers/storybookExactCodeExtractorWithBrowser';
-import { verifyBeforeImplementation } from '../../helpers/preImplementationVerification';
-import { analyzeComponentInternals } from '../../helpers/componentInternalAnalysis';
-import { mapAndValidateComponentNameToStorybookId } from '../../helpers/storybookStories';
-import { AddonOrchestrator } from '../helpers/addonOrchestrator';
-import { generateCodeWithAutorunMarks } from '../helpers/codeMarkGenerator';
-import { AutorunApplyInput, AutorunApplyOutput } from '../types';
+import { handleUserMessage } from '../../helpers/autoMessageHandler.js';
+import { extractExactCodeFromStorybookWithBrowser } from '../../helpers/storybookExactCodeExtractorWithBrowser.js';
+import { verifyBeforeImplementation } from '../../helpers/preImplementationVerification.js';
+import { analyzeComponentInternals } from '../../helpers/componentInternalAnalysis.js';
+import { mapAndValidateComponentNameToStorybookId } from '../../helpers/storybookStories.js';
+import { AddonOrchestrator } from '../helpers/addonOrchestrator.js';
+import { generateCodeWithAutorunMarks } from '../helpers/codeMarkGenerator.js';
+import { AutorunApplyInput, AutorunApplyOutput } from '../types.js';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 

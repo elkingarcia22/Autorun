@@ -10,8 +10,8 @@
 import {
   executeOnMessageStart,
   MessageStartResult,
-} from './executeOnMessageStart';
-import { mapComponentNameToStorybookId } from './storybookStories';
+} from './executeOnMessageStart.js';
+import { mapComponentNameToStorybookId } from './storybookStories.js';
 
 /**
  * ⚠️ CRÍTICO: Manejar mensaje del usuario automáticamente

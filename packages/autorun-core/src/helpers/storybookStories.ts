@@ -5,11 +5,11 @@
  * y dividir la implementación por historias
  */
 
-import { getStorybookUrlWithFallback } from './storybookFallback';
+import { getStorybookUrlWithFallback } from './storybookFallback.js';
 import {
   buildSafeStorybookUrl,
   verifyAvailableStories,
-} from './verifyStorybookStories';
+} from './verifyStorybookStories.js';
 
 export interface StorybookStory {
   id: string; // ID completo (ej: "data-data-table--default")

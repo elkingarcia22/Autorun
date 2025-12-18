@@ -5,10 +5,10 @@
  * sin ejecutar la implementación. Útil para previsualizar qué se va a hacer.
  */
 
-import { handleUserMessage } from '../../helpers/autoMessageHandler';
-import { mapComponentNameToStorybookId } from '../../helpers/storybookStories';
-import { buildSafeStorybookUrl } from '../../helpers/verifyStorybookStories';
-import { AutorunPlanInput, AutorunPlanOutput } from '../types';
+import { handleUserMessage } from '../../helpers/autoMessageHandler.js';
+import { mapComponentNameToStorybookId } from '../../helpers/storybookStories.js';
+import { buildSafeStorybookUrl } from '../../helpers/verifyStorybookStories.js';
+import { AutorunPlanInput, AutorunPlanOutput } from '../types.js';
 
 /**
  * Genera plan de implementación
