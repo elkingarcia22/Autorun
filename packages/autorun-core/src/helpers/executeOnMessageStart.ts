@@ -13,15 +13,15 @@ import { KeywordTriggerSystem } from './keywordTriggerSystem.js';
 import { autoDetectWizardState } from './autoWizardDetection.js';
 
 export interface MessageStartResult {
-  detected: boolean;
-  componentName?: string;
-  currentPhase?: string;
-  nextPhase?: string;
-  blocked: boolean;
-  reason?: string;
-  plan?: any;
-  verification?: any;
-  shouldExecuteFlow: boolean;
+	detected: boolean;
+	componentName?: string;
+	currentPhase?: string;
+	nextPhase?: string;
+	blocked: boolean;
+	reason?: string;
+	plan?: any;
+	verification?: any;
+	shouldExecuteFlow: boolean;
 }
 
 /**
@@ -33,196 +33,155 @@ export interface MessageStartResult {
  * @param userMessage Mensaje completo del usuario
  * @returns Resultado con información de detección y bloqueo
  */
-export async function executeOnMessageStart(
-  userMessage: string
-): Promise<MessageStartResult> {
-  console.log(
-    '\n🚀 [Execute On Message Start] ========================================'
-  );
-  console.log('🚀 [Execute On Message Start] Ejecutando al inicio del mensaje');
-  console.log(
-    `🚀 [Execute On Message Start] Mensaje: ${userMessage.substring(0, 100)}...`
-  );
+export async function executeOnMessageStart(userMessage: string): Promise<MessageStartResult> {
+	console.log('\n🚀 [Execute On Message Start] ========================================');
+	console.log('🚀 [Execute On Message Start] Ejecutando al inicio del mensaje');
+	console.log(`🚀 [Execute On Message Start] Mensaje: ${userMessage.substring(0, 100)}...`);
 
-  // 0. ⚠️ CRÍTICO: Detectar wizard state PRIMERO (ANTES de todo)
-  console.log(`🔍 [Execute On Message Start] Detectando estado del wizard...`);
-  try {
-    const wizardDetection = await autoDetectWizardState();
-    if (wizardDetection.detected && wizardDetection.url) {
-      console.log(
-        `✅ [Execute On Message Start] Wizard state detectado y mensajes emitidos`
-      );
-      console.log(
-        `📋 [Execute On Message Start] El agente debe procesar automáticamente los mensajes emitidos`
-      );
-    }
-  } catch (error: any) {
-    // No bloquear si falla la detección del wizard
-    console.warn(
-      `⚠️ [Execute On Message Start] Error detectando wizard state: ${error.message}`
-    );
-  }
+	// 0. ⚠️ CRÍTICO: Detectar wizard state PRIMERO (ANTES de todo)
+	console.log(`🔍 [Execute On Message Start] Detectando estado del wizard...`);
+	try {
+		const wizardDetection = await autoDetectWizardState();
+		if (wizardDetection.detected && wizardDetection.url) {
+			console.log(`✅ [Execute On Message Start] Wizard state detectado y mensajes emitidos`);
+			console.log(
+				`📋 [Execute On Message Start] El agente debe procesar automáticamente los mensajes emitidos`,
+			);
+		}
+	} catch (error: any) {
+		// No bloquear si falla la detección del wizard
+		console.warn(`⚠️ [Execute On Message Start] Error detectando wizard state: ${error.message}`);
+	}
 
-  // 1. Detectar triggers de palabras clave
-  console.log(
-    `🔍 [Execute On Message Start] Detectando triggers de palabras clave...`
-  );
-  const triggerResult =
-    await KeywordTriggerSystem.executeTriggerSystem(userMessage);
+	// 1. Detectar triggers de palabras clave
+	console.log(`🔍 [Execute On Message Start] Detectando triggers de palabras clave...`);
+	const triggerResult = await KeywordTriggerSystem.executeTriggerSystem(userMessage);
 
-  if (triggerResult.triggered && triggerResult.blocked) {
-    console.error(
-      `❌ [Execute On Message Start] BLOQUEADO por trigger: ${triggerResult.reason}`
-    );
-    return {
-      detected: triggerResult.componentName !== undefined,
-      componentName: triggerResult.componentName,
-      blocked: true,
-      reason: triggerResult.reason,
-      shouldExecuteFlow: false,
-    };
-  }
+	if (triggerResult.triggered && triggerResult.blocked) {
+		console.error(`❌ [Execute On Message Start] BLOQUEADO por trigger: ${triggerResult.reason}`);
+		return {
+			detected: triggerResult.componentName !== undefined,
+			componentName: triggerResult.componentName,
+			blocked: true,
+			reason: triggerResult.reason,
+			shouldExecuteFlow: false,
+		};
+	}
 
-  // 1. Detección automática
-  const detection = await executeAutoDetectionOnMessage(userMessage);
+	// 1. Detección automática
+	const detection = await executeAutoDetectionOnMessage(userMessage);
 
-  if (!detection.detected) {
-    console.log(
-      '✅ [Execute On Message Start] No se detectó componente, continuando normalmente'
-    );
-    return {
-      detected: false,
-      blocked: false,
-      shouldExecuteFlow: false,
-    };
-  }
+	if (!detection.detected) {
+		console.log('✅ [Execute On Message Start] No se detectó componente, continuando normalmente');
+		return {
+			detected: false,
+			blocked: false,
+			shouldExecuteFlow: false,
+		};
+	}
 
-  console.log(
-    `✅ [Execute On Message Start] Componente detectado: ${detection.componentName}`
-  );
+	console.log(`✅ [Execute On Message Start] Componente detectado: ${detection.componentName}`);
 
-  // 1.5. ⚠️ CRÍTICO: Emitir mensaje para consultar Storybook MCP automáticamente
-  // El agente debe interceptar este mensaje y consultar Storybook MCP
-  if (detection.componentName) {
-    const { mapComponentNameToStorybookId } = await import(
-      './storybookStories'
-    );
-    const storybookId = await mapComponentNameToStorybookId(
-      detection.componentName
-    );
+	// 1.5. ⚠️ CRÍTICO: Emitir mensaje para consultar Storybook MCP automáticamente
+	// El agente debe interceptar este mensaje y consultar Storybook MCP
+	if (detection.componentName) {
+		const { mapComponentNameToStorybookId } = await import('./storybookStories');
+		const storybookId = await mapComponentNameToStorybookId(detection.componentName);
 
-    console.log(
-      '\n📚 [Execute On Message Start] ========================================'
-    );
-    console.log(
-      '📚 [Execute On Message Start] ⚠️ OBLIGATORIO: Consultar Storybook MCP'
-    );
-    console.log(
-      `📚 [Execute On Message Start] Componente: ${detection.componentName}`
-    );
-    console.log(`📚 [Execute On Message Start] ID Storybook: ${storybookId}`);
-    console.log(
-      `[AUTORUN_STORYBOOK_MCP]${detection.componentName}:${storybookId}[/AUTORUN_STORYBOOK_MCP]`
-    );
-    console.log(
-      '📚 [Execute On Message Start] El agente DEBE ejecutar automáticamente:'
-    );
-    console.log(`   call_mcp_tool({`);
-    // Obtener Storybook activo para determinar servidor MCP
-    try {
-      const { StorybookManager } = await import('./storybookManager');
-      const manager = StorybookManager.getInstance();
-      const activeConfig = await manager.getActiveConfig();
+		console.log('\n📚 [Execute On Message Start] ========================================');
+		console.log('📚 [Execute On Message Start] ⚠️ OBLIGATORIO: Consultar Storybook MCP');
+		console.log(`📚 [Execute On Message Start] Componente: ${detection.componentName}`);
+		console.log(`📚 [Execute On Message Start] ID Storybook: ${storybookId}`);
+		console.log(
+			`[AUTORUN_STORYBOOK_MCP]${detection.componentName}:${storybookId}[/AUTORUN_STORYBOOK_MCP]`,
+		);
+		console.log('📚 [Execute On Message Start] El agente DEBE ejecutar automáticamente:');
+		console.log(`   call_mcp_tool({`);
+		// Obtener Storybook activo para determinar servidor MCP
+		try {
+			const { StorybookManager } = await import('./storybookManager');
+			const manager = StorybookManager.getInstance();
+			const activeConfig = await manager.getActiveConfig();
 
-      let mcpServer = 'storybook'; // Default
-      if (activeConfig) {
-        mcpServer = 'storybook'; // Servidor unificado
-        console.log(
-          `📚 [Execute On Message Start] Storybook activo: ${activeConfig.name} (${activeConfig.url})`
-        );
-        console.log(
-          `📚 [Execute On Message Start] ⚠️ IMPORTANTE: El servidor MCP debe estar configurado con STORYBOOK_URL=${activeConfig.url}/index.json`
-        );
-      }
-      console.log(`     server: "${mcpServer}",`);
-    } catch (error) {
-      // Si no se puede obtener Storybook activo, usar default
-      console.log(`     server: "storybook",`);
-    }
-    console.log(`     toolName: "mcp_storybook_getComponentsProps",`);
-    console.log(`     arguments: { componentIds: ["${storybookId}"] }`);
-    console.log(`   })`);
-    console.log(
-      '📚 [Execute On Message Start] ========================================\n'
-    );
-  }
+			let mcpServer = 'storybook'; // Default
+			if (activeConfig) {
+				mcpServer = 'storybook'; // Servidor unificado
+				console.log(
+					`📚 [Execute On Message Start] Storybook activo: ${activeConfig.name} (${activeConfig.url})`,
+				);
+				console.log(
+					`📚 [Execute On Message Start] ⚠️ IMPORTANTE: El servidor MCP debe estar configurado con STORYBOOK_URL=${activeConfig.url}/index.json`,
+				);
+			}
+			console.log(`     server: "${mcpServer}",`);
+		} catch (error) {
+			// Si no se puede obtener Storybook activo, usar default
+			console.log(`     server: "storybook",`);
+		}
+		console.log(`     toolName: "mcp_storybook_getComponentsProps",`);
+		console.log(`     arguments: { componentIds: ["${storybookId}"] }`);
+		console.log(`   })`);
+		console.log('📚 [Execute On Message Start] ========================================\n');
+	}
 
-  // 2. Verificar con Pre-Implementation Check add-on
-  let blocked = false;
-  let reason: string | undefined = undefined;
-  let currentPhase: string | undefined = undefined;
-  let nextPhase: string | undefined = undefined;
+	// 2. Verificar con Pre-Implementation Check add-on
+	let blocked = false;
+	let reason: string | undefined = undefined;
+	let currentPhase: string | undefined = undefined;
+	let nextPhase: string | undefined = undefined;
 
-  try {
-    const hub = await getAutorunHub();
-    if (hub) {
-      const preCheckAddon = hub.getAddon('pre-implementation-check');
-      if (preCheckAddon) {
-        console.log(
-          `🔍 [Execute On Message Start] Verificando con Pre-Implementation Check...`
-        );
-        const verification = await (preCheckAddon as any).verifyOnDetection?.(
-          detection.componentName!
-        );
+	try {
+		const hub = await getAutorunHub();
+		if (hub) {
+			const preCheckAddon = hub.getAddon('pre-implementation-check');
+			if (preCheckAddon) {
+				console.log(`🔍 [Execute On Message Start] Verificando con Pre-Implementation Check...`);
+				const verification = await (preCheckAddon as any).verifyOnDetection?.(
+					detection.componentName!,
+				);
 
-        if (verification?.blocked) {
-          blocked = true;
-          reason = verification.reason;
-          console.error(
-            `❌ [Execute On Message Start] IMPLEMENTACIÓN BLOQUEADA: ${reason}`
-          );
-        } else {
-          console.log(
-            `✅ [Execute On Message Start] Verificación pasada, continuando...`
-          );
-        }
-      } else {
-        console.warn(
-          `⚠️ [Execute On Message Start] Pre-Implementation Check add-on no está disponible`
-        );
-      }
-    } else {
-      console.warn(
-        `⚠️ [Execute On Message Start] AutorunHub no está inicializado`
-      );
-    }
-  } catch (error) {
-    console.error(`❌ [Execute On Message Start] Error verificando:`, error);
-  }
+				if (verification?.blocked) {
+					blocked = true;
+					reason = verification.reason;
+					console.error(`❌ [Execute On Message Start] IMPLEMENTACIÓN BLOQUEADA: ${reason}`);
+				} else {
+					console.log(`✅ [Execute On Message Start] Verificación pasada, continuando...`);
+				}
+			} else {
+				console.warn(
+					`⚠️ [Execute On Message Start] Pre-Implementation Check add-on no está disponible`,
+				);
+			}
+		} else {
+			console.warn(`⚠️ [Execute On Message Start] AutorunHub no está inicializado`);
+		}
+	} catch (error) {
+		console.error(`❌ [Execute On Message Start] Error verificando:`, error);
+	}
 
-  // 3. Verificar fase actual (si hay plan)
-  if (detection.plan && !blocked) {
-    // TODO: Implementar verificación de fases cuando PhaseValidator esté listo
-    // const phaseCheck = await PhaseValidator.checkCurrentPhase(detection.componentName!);
-    // if (phaseCheck.blocked) {
-    //   blocked = true;
-    //   reason = phaseCheck.reason;
-    //   currentPhase = phaseCheck.currentPhase;
-    //   nextPhase = phaseCheck.nextPhase;
-    // }
-  }
+	// 3. Verificar fase actual (si hay plan)
+	if (detection.plan && !blocked) {
+		// TODO: Implementar verificación de fases cuando PhaseValidator esté listo
+		// const phaseCheck = await PhaseValidator.checkCurrentPhase(detection.componentName!);
+		// if (phaseCheck.blocked) {
+		//   blocked = true;
+		//   reason = phaseCheck.reason;
+		//   currentPhase = phaseCheck.currentPhase;
+		//   nextPhase = phaseCheck.nextPhase;
+		// }
+	}
 
-  return {
-    detected: true,
-    componentName: detection.componentName,
-    currentPhase,
-    nextPhase,
-    blocked,
-    reason,
-    plan: detection.plan,
-    verification: detection.verification,
-    shouldExecuteFlow: detection.shouldExecuteFlow && !blocked,
-  };
+	return {
+		detected: true,
+		componentName: detection.componentName,
+		currentPhase,
+		nextPhase,
+		blocked,
+		reason,
+		plan: detection.plan,
+		verification: detection.verification,
+		shouldExecuteFlow: detection.shouldExecuteFlow && !blocked,
+	};
 }
 
 /**

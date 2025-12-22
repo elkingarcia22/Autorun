@@ -10,20 +10,17 @@
 
 import { getAutorunHub } from '@autorun/core';
 import { PreWriteValidator } from '../validation/PreWriteValidator';
-import {
-  detectComponentFromContent,
-  detectComponentFromMessage,
-} from './implementationHelpers';
+import { detectComponentFromContent, detectComponentFromMessage } from './implementationHelpers';
 import { buildSafeStorybookUrl } from './verifyStorybookStories';
 import {
-  mapComponentNameToStorybookId,
-  mapAndValidateComponentNameToStorybookId,
+	mapComponentNameToStorybookId,
+	mapAndValidateComponentNameToStorybookId,
 } from './storybookStories';
 import { loadRequiredGuides, getGuidesSummary } from './guidesLoader';
 import {
-  implementComponentFromStorybook,
-  getExampleCodeFromStorybook,
-  getPropsFromStorybook,
+	implementComponentFromStorybook,
+	getExampleCodeFromStorybook,
+	getPropsFromStorybook,
 } from './storybookImplementationHelper';
 import * as path from 'path';
 
@@ -34,346 +31,256 @@ import * as path from 'path';
  * para ejecutar todas las validaciones y acciones automáticas.
  */
 export async function autoImplementationFlow(
-  filePath: string,
-  content: string,
-  oldString?: string,
-  context?: {
-    componentName?: string;
-    userMessage?: string;
-  }
+	filePath: string,
+	content: string,
+	oldString?: string,
+	context?: {
+		componentName?: string;
+		userMessage?: string;
+	},
 ): Promise<{
-  canWrite: boolean;
-  reason?: string;
-  storybookUrl?: string;
-  plan?: any;
-  exampleCode?: string; // ⭐ NUEVO: Código de ejemplo desde Storybook
-  props?: Record<string, any>; // ⭐ NUEVO: Props desde Storybook
-  internalAnalysis?: any; // ⭐ NUEVO: Análisis de componentes internos
-  verificationResult?: any; // ⭐ NUEVO: Resultado de verificación pre-implementación
-  autoReload?: boolean;
+	canWrite: boolean;
+	reason?: string;
+	storybookUrl?: string;
+	plan?: any;
+	exampleCode?: string; // ⭐ NUEVO: Código de ejemplo desde Storybook
+	props?: Record<string, any>; // ⭐ NUEVO: Props desde Storybook
+	internalAnalysis?: any; // ⭐ NUEVO: Análisis de componentes internos
+	verificationResult?: any; // ⭐ NUEVO: Resultado de verificación pre-implementación
+	autoReload?: boolean;
 }> {
-  console.log(
-    '\n🚀 [Auto Implementation Flow] ========================================'
-  );
-  console.log('🚀 [Auto Implementation Flow] Iniciando flujo automático');
-  console.log(`🚀 [Auto Implementation Flow] Archivo: ${filePath}`);
-  console.log(`🚀 [Auto Implementation Flow] Contexto:`, context);
+	console.log('\n🚀 [Auto Implementation Flow] ========================================');
+	console.log('🚀 [Auto Implementation Flow] Iniciando flujo automático');
+	console.log(`🚀 [Auto Implementation Flow] Archivo: ${filePath}`);
+	console.log(`🚀 [Auto Implementation Flow] Contexto:`, context);
 
-  // 1. Detectar componente
-  let componentName = context?.componentName;
-  if (!componentName) {
-    componentName = detectComponentFromContent(content) || undefined;
-  }
-  if (!componentName && context?.userMessage) {
-    componentName =
-      detectComponentFromMessage(context.userMessage) || undefined;
-  }
+	// 1. Detectar componente
+	let componentName = context?.componentName;
+	if (!componentName) {
+		componentName = detectComponentFromContent(content) || undefined;
+	}
+	if (!componentName && context?.userMessage) {
+		componentName = detectComponentFromMessage(context.userMessage) || undefined;
+	}
 
-  console.log(
-    `🚀 [Auto Implementation Flow] Componente detectado: ${componentName || 'NINGUNO'}`
-  );
+	console.log(`🚀 [Auto Implementation Flow] Componente detectado: ${componentName || 'NINGUNO'}`);
 
-  // 2. Si hay componente, ejecutar flujo completo
-  if (componentName) {
-    console.log(
-      `🚀 [Auto Implementation Flow] Ejecutando flujo para componente: ${componentName}`
-    );
+	// 2. Si hay componente, ejecutar flujo completo
+	if (componentName) {
+		console.log(`🚀 [Auto Implementation Flow] Ejecutando flujo para componente: ${componentName}`);
 
-    // 2.0 Cargar guías automáticamente PRIMERO
-    console.log(
-      `🚀 [Auto Implementation Flow] Cargando guías automáticamente...`
-    );
-    const guidesResult = await loadRequiredGuides(componentName);
-    if (guidesResult.allLoaded) {
-      console.log(`✅ [Auto Implementation Flow] Guías cargadas correctamente`);
-      console.log(getGuidesSummary(guidesResult));
-    } else {
-      console.warn(
-        `⚠️ [Auto Implementation Flow] Algunas guías no se pudieron cargar`
-      );
-      guidesResult.errors.forEach((error) => {
-        console.warn(`  ${error}`);
-      });
-    }
+		// 2.0 Cargar guías automáticamente PRIMERO
+		console.log(`🚀 [Auto Implementation Flow] Cargando guías automáticamente...`);
+		const guidesResult = await loadRequiredGuides(componentName);
+		if (guidesResult.allLoaded) {
+			console.log(`✅ [Auto Implementation Flow] Guías cargadas correctamente`);
+			console.log(getGuidesSummary(guidesResult));
+		} else {
+			console.warn(`⚠️ [Auto Implementation Flow] Algunas guías no se pudieron cargar`);
+			guidesResult.errors.forEach((error) => {
+				console.warn(`  ${error}`);
+			});
+		}
 
-    // 2.1 Validar con PreWriteValidator (que también verifica guías)
-    console.log(
-      `🚀 [Auto Implementation Flow] Validando con PreWriteValidator...`
-    );
-    const validation = await PreWriteValidator.validateBeforeWrite(
-      filePath,
-      content,
-      {
-        componentName,
-        userMessage: context?.userMessage,
-      }
-    );
+		// 2.1 Validar con PreWriteValidator (que también verifica guías)
+		console.log(`🚀 [Auto Implementation Flow] Validando con PreWriteValidator...`);
+		const validation = await PreWriteValidator.validateBeforeWrite(filePath, content, {
+			componentName,
+			userMessage: context?.userMessage,
+		});
 
-    if (!validation.valid) {
-      console.error(`❌ [Auto Implementation Flow] Validación falló`);
-      console.error(
-        `❌ [Auto Implementation Flow] Errores:`,
-        validation.errors
-      );
+		if (!validation.valid) {
+			console.error(`❌ [Auto Implementation Flow] Validación falló`);
+			console.error(`❌ [Auto Implementation Flow] Errores:`, validation.errors);
 
-      // 2.2 Obtener URL de Storybook para navegar automáticamente
-      // ⚠️ CRÍTICO: Usar descubrimiento automático para encontrar ID correcto
-      let storybookUrl: string | undefined;
-      try {
-        // ⭐ NUEVO: Usar descubrimiento automático para encontrar ID correcto
-        const { getCorrectStorybookId } = await import(
-          './storybookIdDiscovery'
-        );
-        const discoveryResult = await getCorrectStorybookId(componentName);
+			// 2.2 Obtener URL de Storybook para navegar automáticamente
+			// ⚠️ CRÍTICO: Usar descubrimiento automático para encontrar ID correcto
+			let storybookUrl: string | undefined;
+			try {
+				// ⭐ NUEVO: Usar descubrimiento automático para encontrar ID correcto
+				const { getCorrectStorybookId } = await import('./storybookIdDiscovery');
+				const discoveryResult = await getCorrectStorybookId(componentName);
 
-        const validatedComponentId = discoveryResult.found
-          ? discoveryResult.componentId
-          : await mapAndValidateComponentNameToStorybookId(componentName);
+				const validatedComponentId = discoveryResult.found
+					? discoveryResult.componentId
+					: await mapAndValidateComponentNameToStorybookId(componentName);
 
-        console.log(
-          `✅ [Auto Implementation Flow] ID ${discoveryResult.found ? 'descubierto' : 'validado'} para ${componentName}: ${validatedComponentId}`
-        );
+				console.log(
+					`✅ [Auto Implementation Flow] ID ${discoveryResult.found ? 'descubierto' : 'validado'} para ${componentName}: ${validatedComponentId}`,
+				);
 
-        if (discoveryResult.found && discoveryResult.availableStories) {
-          console.log(
-            `📚 [Auto Implementation Flow] Historias disponibles: ${discoveryResult.availableStories.join(', ')}`
-          );
-        }
+				if (discoveryResult.found && discoveryResult.availableStories) {
+					console.log(
+						`📚 [Auto Implementation Flow] Historias disponibles: ${discoveryResult.availableStories.join(', ')}`,
+					);
+				}
 
-        // Construir URL usando el ID validado/descubierto
-        const urlResult = await buildSafeStorybookUrl(
-          validatedComponentId,
-          'default'
-        );
-        storybookUrl = urlResult.url;
+				// Construir URL usando el ID validado/descubierto
+				const urlResult = await buildSafeStorybookUrl(validatedComponentId, 'default');
+				storybookUrl = urlResult.url;
 
-        if (urlResult.warning) {
-          console.warn(
-            `⚠️ [Auto Implementation Flow] Advertencia al construir URL: ${urlResult.warning}`
-          );
-        }
+				if (urlResult.warning) {
+					console.warn(
+						`⚠️ [Auto Implementation Flow] Advertencia al construir URL: ${urlResult.warning}`,
+					);
+				}
 
-        console.log(
-          `📚 [Auto Implementation Flow] URL de Storybook: ${storybookUrl}`
-        );
-      } catch (error) {
-        console.error(
-          `❌ [Auto Implementation Flow] Error obteniendo URL de Storybook:`,
-          error
-        );
-      }
+				console.log(`📚 [Auto Implementation Flow] URL de Storybook: ${storybookUrl}`);
+			} catch (error) {
+				console.error(`❌ [Auto Implementation Flow] Error obteniendo URL de Storybook:`, error);
+			}
 
-      // 2.3 Obtener plan de implementación
-      let plan: any = undefined;
-      try {
-        const hub = await getAutorunHub();
-        const preCheckAddon = hub?.getAddon('pre-implementation-check');
-        if (preCheckAddon) {
-          // ⚠️ CRÍTICO: Validar ID antes de usarlo
-          const componentId =
-            await mapAndValidateComponentNameToStorybookId(componentName);
-          console.log(
-            `✅ [Auto Implementation Flow] ID validado para plan: ${componentId}`
-          );
-          plan = await (preCheckAddon as any).getOrCreateStoryBasedPlan?.(
-            componentName,
-            componentId
-          );
-          console.log(
-            `📋 [Auto Implementation Flow] Plan obtenido: ${plan ? 'SÍ' : 'NO'}`
-          );
-        }
-      } catch (error) {
-        console.error(
-          `❌ [Auto Implementation Flow] Error obteniendo plan:`,
-          error
-        );
-      }
+			// 2.3 Obtener plan de implementación
+			let plan: any = undefined;
+			try {
+				const hub = await getAutorunHub();
+				const preCheckAddon = hub?.getAddon('pre-implementation-check');
+				if (preCheckAddon) {
+					// ⚠️ CRÍTICO: Validar ID antes de usarlo
+					const componentId = await mapAndValidateComponentNameToStorybookId(componentName);
+					console.log(`✅ [Auto Implementation Flow] ID validado para plan: ${componentId}`);
+					plan = await (preCheckAddon as any).getOrCreateStoryBasedPlan?.(
+						componentName,
+						componentId,
+					);
+					console.log(`📋 [Auto Implementation Flow] Plan obtenido: ${plan ? 'SÍ' : 'NO'}`);
+				}
+			} catch (error) {
+				console.error(`❌ [Auto Implementation Flow] Error obteniendo plan:`, error);
+			}
 
-      // 2.4 ⭐ NUEVO: Consultar Storybook completo en paralelo (OPTIMIZACIÓN)
-      let exampleCode: string | undefined;
-      let storybookInfo: any = undefined;
-      try {
-        const componentId =
-          await mapAndValidateComponentNameToStorybookId(componentName);
-        console.log(
-          `🚀 [Auto Implementation Flow] Consultando Storybook completo en paralelo...`
-        );
+			// 2.4 ⭐ NUEVO: Consultar Storybook completo en paralelo (OPTIMIZACIÓN)
+			let exampleCode: string | undefined;
+			let storybookInfo: any = undefined;
+			try {
+				const componentId = await mapAndValidateComponentNameToStorybookId(componentName);
+				console.log(`🚀 [Auto Implementation Flow] Consultando Storybook completo en paralelo...`);
 
-        // ⭐ NUEVO: Usar consulta paralela optimizada
-        const { consultStorybookCompleto } = await import(
-          './storybookParallelConsult'
-        );
-        const consultResult = await consultStorybookCompleto(
-          componentId,
-          componentName
-        );
+				// ⭐ NUEVO: Usar consulta paralela optimizada
+				const { consultStorybookCompleto } = await import('./storybookParallelConsult');
+				const consultResult = await consultStorybookCompleto(componentId, componentName);
 
-        if (consultResult.success) {
-          storybookInfo = consultResult.info;
-          exampleCode = consultResult.info.exactCode?.html || undefined;
+				if (consultResult.success) {
+					storybookInfo = consultResult.info;
+					exampleCode = consultResult.info.exactCode?.html || undefined;
 
-          if (exampleCode) {
-            console.log(
-              `✅ [Auto Implementation Flow] Código de ejemplo obtenido (${exampleCode.length} caracteres)`
-            );
-          }
+					if (exampleCode) {
+						console.log(
+							`✅ [Auto Implementation Flow] Código de ejemplo obtenido (${exampleCode.length} caracteres)`,
+						);
+					}
 
-          if (consultResult.fromCache) {
-            console.log(
-              `✅ [Auto Implementation Flow] Información obtenida desde caché (muy rápido)`
-            );
-          } else {
-            console.log(
-              `✅ [Auto Implementation Flow] Información obtenida consultando Storybook en paralelo`
-            );
-          }
+					if (consultResult.fromCache) {
+						console.log(
+							`✅ [Auto Implementation Flow] Información obtenida desde caché (muy rápido)`,
+						);
+					} else {
+						console.log(
+							`✅ [Auto Implementation Flow] Información obtenida consultando Storybook en paralelo`,
+						);
+					}
 
-          if (consultResult.warnings.length > 0) {
-            console.warn(
-              `⚠️ [Auto Implementation Flow] Advertencias: ${consultResult.warnings.join(', ')}`
-            );
-          }
-        } else {
-          console.warn(
-            `⚠️ [Auto Implementation Flow] Error consultando Storybook: ${consultResult.errors.join(', ')}`
-          );
-          // Fallback: intentar método tradicional
-          const exampleCodeResult = await getExampleCodeFromStorybook(
-            componentId,
-            'default'
-          );
-          exampleCode = exampleCodeResult || undefined;
-        }
-      } catch (error) {
-        console.warn(
-          `⚠️ [Auto Implementation Flow] Error consultando Storybook completo:`,
-          error
-        );
-        // Fallback: intentar método tradicional
-        try {
-          const componentId =
-            await mapAndValidateComponentNameToStorybookId(componentName);
-          const exampleCodeResult = await getExampleCodeFromStorybook(
-            componentId,
-            'default'
-          );
-          exampleCode = exampleCodeResult || undefined;
-        } catch (fallbackError) {
-          console.warn(
-            `⚠️ [Auto Implementation Flow] Fallback también falló:`,
-            fallbackError
-          );
-        }
-      }
+					if (consultResult.warnings.length > 0) {
+						console.warn(
+							`⚠️ [Auto Implementation Flow] Advertencias: ${consultResult.warnings.join(', ')}`,
+						);
+					}
+				} else {
+					console.warn(
+						`⚠️ [Auto Implementation Flow] Error consultando Storybook: ${consultResult.errors.join(', ')}`,
+					);
+					// Fallback: intentar método tradicional
+					const exampleCodeResult = await getExampleCodeFromStorybook(componentId, 'default');
+					exampleCode = exampleCodeResult || undefined;
+				}
+			} catch (error) {
+				console.warn(`⚠️ [Auto Implementation Flow] Error consultando Storybook completo:`, error);
+				// Fallback: intentar método tradicional
+				try {
+					const componentId = await mapAndValidateComponentNameToStorybookId(componentName);
+					const exampleCodeResult = await getExampleCodeFromStorybook(componentId, 'default');
+					exampleCode = exampleCodeResult || undefined;
+				} catch (fallbackError) {
+					console.warn(`⚠️ [Auto Implementation Flow] Fallback también falló:`, fallbackError);
+				}
+			}
 
-      // 2.5. ⭐ NUEVO: Verificación pre-implementación completa (Mejora 5)
-      let verificationResult: any = null;
-      try {
-        const { verifyBeforeImplementation } = await import(
-          './preImplementationVerification'
-        );
-        const { extractExactCodeFromStorybookWithBrowser } = await import(
-          './storybookExactCodeExtractorWithBrowser'
-        );
-        const componentId =
-          await mapAndValidateComponentNameToStorybookId(componentName);
-        const exactCode = await extractExactCodeFromStorybookWithBrowser(
-          componentId,
-          'default'
-        ).catch(() => null);
+			// 2.5. ⭐ NUEVO: Verificación pre-implementación completa (Mejora 5)
+			let verificationResult: any = null;
+			try {
+				const { verifyBeforeImplementation } = await import('./preImplementationVerification');
+				const { extractExactCodeFromStorybookWithBrowser } = await import(
+					'./storybookExactCodeExtractorWithBrowser'
+				);
+				const componentId = await mapAndValidateComponentNameToStorybookId(componentName);
+				const exactCode = await extractExactCodeFromStorybookWithBrowser(
+					componentId,
+					'default',
+				).catch(() => null);
 
-        if (exactCode && exactCode.html) {
-          verificationResult = await verifyBeforeImplementation(
-            componentId,
-            exactCode.html,
-            'default'
-          );
-          if (!verificationResult.valid) {
-            console.error(
-              `❌ [Auto Implementation Flow] Verificación pre-implementación falló`
-            );
-            console.error(
-              `   Errores: ${verificationResult.errors.join(', ')}`
-            );
-            if (verificationResult.suggestions.length > 0) {
-              console.log(
-                `   Sugerencias: ${verificationResult.suggestions.join('; ')}`
-              );
-            }
-          }
-        }
-      } catch (error) {
-        console.warn(
-          `⚠️ [Auto Implementation Flow] Error en verificación:`,
-          error
-        );
-      }
+				if (exactCode && exactCode.html) {
+					verificationResult = await verifyBeforeImplementation(
+						componentId,
+						exactCode.html,
+						'default',
+					);
+					if (!verificationResult.valid) {
+						console.error(`❌ [Auto Implementation Flow] Verificación pre-implementación falló`);
+						console.error(`   Errores: ${verificationResult.errors.join(', ')}`);
+						if (verificationResult.suggestions.length > 0) {
+							console.log(`   Sugerencias: ${verificationResult.suggestions.join('; ')}`);
+						}
+					}
+				}
+			} catch (error) {
+				console.warn(`⚠️ [Auto Implementation Flow] Error en verificación:`, error);
+			}
 
-      // 2.6. ⭐ NUEVO: Análisis de componentes internos
-      let internalAnalysis: any = null;
-      try {
-        const { analyzeComponentInternals } = await import(
-          './componentInternalAnalysis'
-        );
-        const componentId =
-          await mapAndValidateComponentNameToStorybookId(componentName);
-        internalAnalysis = await analyzeComponentInternals(
-          componentId,
-          'default'
-        );
-        console.log(
-          `✅ [Auto Implementation Flow] Análisis de componentes internos completado`
-        );
-        console.log(
-          `   Componentes internos detectados: ${internalAnalysis.internalComponents.length}`
-        );
-        console.log(
-          `   Dependencias: ${internalAnalysis.dependencies.join(', ') || 'ninguna'}`
-        );
-        console.log(
-          `   Plan de implementación: ${internalAnalysis.implementationPlan.length} pasos`
-        );
-      } catch (error) {
-        console.warn(
-          `⚠️ [Auto Implementation Flow] Error en análisis interno:`,
-          error
-        );
-      }
+			// 2.6. ⭐ NUEVO: Análisis de componentes internos
+			let internalAnalysis: any = null;
+			try {
+				const { analyzeComponentInternals } = await import('./componentInternalAnalysis');
+				const componentId = await mapAndValidateComponentNameToStorybookId(componentName);
+				internalAnalysis = await analyzeComponentInternals(componentId, 'default');
+				console.log(`✅ [Auto Implementation Flow] Análisis de componentes internos completado`);
+				console.log(
+					`   Componentes internos detectados: ${internalAnalysis.internalComponents.length}`,
+				);
+				console.log(`   Dependencias: ${internalAnalysis.dependencies.join(', ') || 'ninguna'}`);
+				console.log(
+					`   Plan de implementación: ${internalAnalysis.implementationPlan.length} pasos`,
+				);
+			} catch (error) {
+				console.warn(`⚠️ [Auto Implementation Flow] Error en análisis interno:`, error);
+			}
 
-      return {
-        canWrite: false,
-        reason: validation.errors.join('\n'),
-        storybookUrl,
-        plan: internalAnalysis?.implementationPlan || plan,
-        internalAnalysis,
-        verificationResult,
-        autoReload: false,
-      };
-    }
+			return {
+				canWrite: false,
+				reason: validation.errors.join('\n'),
+				storybookUrl,
+				plan: internalAnalysis?.implementationPlan || plan,
+				internalAnalysis,
+				verificationResult,
+				autoReload: false,
+			};
+		}
 
-    console.log(`✅ [Auto Implementation Flow] Validación pasada`);
-  } else {
-    console.log(
-      `ℹ️ [Auto Implementation Flow] No se detectó componente, saltando validaciones`
-    );
-  }
+		console.log(`✅ [Auto Implementation Flow] Validación pasada`);
+	} else {
+		console.log(`ℹ️ [Auto Implementation Flow] No se detectó componente, saltando validaciones`);
+	}
 
-  // 3. Verificar si debe recargarse automáticamente
-  const shouldReload =
-    filePath.includes('prototypes/') &&
-    (filePath.endsWith('.html') ||
-      filePath.endsWith('.js') ||
-      filePath.endsWith('.css'));
+	// 3. Verificar si debe recargarse automáticamente
+	const shouldReload =
+		filePath.includes('prototypes/') &&
+		(filePath.endsWith('.html') || filePath.endsWith('.js') || filePath.endsWith('.css'));
 
-  console.log(
-    `🔄 [Auto Implementation Flow] ¿Debe recargarse?: ${shouldReload}`
-  );
+	console.log(`🔄 [Auto Implementation Flow] ¿Debe recargarse?: ${shouldReload}`);
 
-  return {
-    canWrite: true,
-    autoReload: shouldReload,
-  };
+	return {
+		canWrite: true,
+		autoReload: shouldReload,
+	};
 }
 
 /**
@@ -383,8 +290,8 @@ export async function autoImplementationFlow(
  * Se mantiene aquí para compatibilidad, pero se recomienda usar la de autoReloadHelper
  */
 export function getTemplateUrlFromPathForFlow(filePath: string): string {
-  const fileName = path.basename(filePath);
-  return `http://localhost:3000/${fileName}`;
+	const fileName = path.basename(filePath);
+	return `http://localhost:3000/${fileName}`;
 }
 
 /**

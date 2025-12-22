@@ -185,5 +185,23 @@ export type {
 // Exportar MCP Server
 export * from './mcp-server';
 
+// Exportar tipos de MCP (sin duplicar AutorunMode)
+export type { AutorunApplyInput, AutorunApplyOutput } from './mcp-server/types';
+
+// Exportar tokens (Mode B)
+export * from './tokens';
+
+// Exportar fallback (Mode B)
+export * from './fallback';
+
+// Exportar verify (Mode B)
+export * from './verify';
+
+// Exportar ubits (Mode B)
+export * from './ubits';
+
+// Exportar design (Mode B - Design Intake)
+export * from './design';
+
 // Placeholder - estructura base creada
 export const VERSION = '1.0.0';

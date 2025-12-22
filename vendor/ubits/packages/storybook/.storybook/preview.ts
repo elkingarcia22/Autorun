@@ -198,6 +198,14 @@ const preview: Preview = {
 				],
 			},
 		},
+		// Metadata global UBITS para Autorun
+		ubits: {
+			// Configuración global (puede ser sobrescrita por componente)
+			rules: {
+				forbidHardcodedColors: true,
+				forbiddenPatterns: ['rgb(', 'rgba(', 'hsl(', 'hsla(', '#'],
+			},
+		},
 	},
 	globalTypes: {
 		theme: {

@@ -192,7 +192,10 @@ export class MCPDetector {
 					if (serverConfig) {
 						// Verificar que la configuración no esté vacía
 						// Debe tener al menos 'command' o 'url' (campos mínimos requeridos)
-						if (Object.keys(serverConfig).length > 0 && (serverConfig.command || serverConfig.url)) {
+						if (
+							Object.keys(serverConfig).length > 0 &&
+							(serverConfig.command || serverConfig.url)
+						) {
 							return true;
 						}
 					}

@@ -20,6 +20,7 @@
 		"autorun:install-mcp": "tsx packages/autorun-core/src/cli/install-autorun-mcp.ts",
 		"autorun:mcp-server": "tsx packages/autorun-core/src/cli/autorun-mcp-server.ts",
 		"autorun:verify": "tsx packages/autorun-core/src/cli/autorun-verify.ts",
+		"prototypes:verify": "tsx packages/autorun-core/src/verify/verifyDiffRunner.ts",
 		"storybook:connect": "tsx packages/autorun-core/src/cli/storybook-connect.ts connect",
 		"storybook:disconnect": "tsx packages/autorun-core/src/cli/storybook-connect.ts disconnect",
 		"storybook:list": "tsx packages/autorun-core/src/cli/storybook-connect.ts list",

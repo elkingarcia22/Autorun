@@ -144,5 +144,5 @@
 ---
 
 **Última actualización:** Generado automáticamente por el wizard  
-**Fecha:** 2025-12-18
+**Fecha:** 2025-12-22
 

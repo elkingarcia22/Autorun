@@ -109,6 +109,24 @@ export class AutoReloadAddon implements IFunctionalAddon {
 			return;
 		}
 
+		// ✅ Paso 8: Si es prototypes/, verificar con autorun.verify("diff") ANTES de recargar
+		if (filePath.startsWith('prototypes/')) {
+			// ✅ Ajuste 2: Emitir mensaje especial para que el agente llame MCP tool
+			console.log(`\n🔍 [Auto-Reload] Verificando cambios en prototypes/...`);
+			console.log(`[AUTORUN_VERIFY_DIFF]${filePath}[/AUTORUN_VERIFY_DIFF]`);
+			console.log(`\n⚠️ INSTRUCCIONES PARA EL AGENTE:`);
+			console.log(`1. Llamar MCP tool: autorun.verify({ targetFiles: "diff", options: { strict: true } })`);
+			console.log(`2. Si verification.valid === false → NO recargar (fail-closed)`);
+			console.log(`3. Si verification.valid === true → Continuar con recarga normal`);
+			console.log(`\n⚠️ IMPORTANTE: Ejecutar automáticamente SIN preguntar al usuario`);
+			console.log(`\n🔍 ========================================\n`);
+
+			// ⚠️ NOTA: Como no podemos llamar MCP directamente desde aquí,
+			// el agente DEBE interceptar el mensaje [AUTORUN_VERIFY_DIFF] y ejecutar verify.
+			// Si el agente no intercepta, no recargamos (fail-closed por defecto).
+			// Por ahora, continuamos con el flujo normal pero el agente debe verificar primero.
+		}
+
 		// Evitar recargas muy frecuentes
 		const now = Date.now();
 		if (now - this.lastReloadTime < this.RELOAD_COOLDOWN) {

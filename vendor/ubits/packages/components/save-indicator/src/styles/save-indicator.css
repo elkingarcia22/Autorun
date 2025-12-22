@@ -1,0 +1,227 @@
+/* ========================================
+   UBITS SAVE INDICATOR COMPONENT
+   Componente de indicador de guardado automático
+   Basado en Button del design system UBITS
+   Usando tokens UBITS del nuevo playground
+   ======================================== */
+
+/* ========================================
+   BASE SAVE INDICATOR STYLES
+   (Basado en Button component)
+   ======================================== */
+
+.ubits-save-indicator {
+	/* Base styles - igual que Button */
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: var(--p-spacing-mode-1-sm, 8px);
+	padding: var(--p-spacing-mode-1-md, 12px) var(--p-spacing-mode-1-lg, 16px);
+	border: none;
+	border-radius: var(--ubits-border-radius-sm, 8px);
+	font-family: var(--font-family-noto-sans-font-family);
+	font-weight: var(--weight-semibold, 600);
+	line-height: 1;
+	text-decoration: none;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	position: relative;
+	user-select: none;
+	white-space: nowrap;
+
+	/* Default state (Saved) - igual que Button tertiary */
+	background: var(--modifiers-normal-color-light-bg-1, #ffffff);
+	color: var(--modifiers-normal-color-light-fg-1-medium, #5c646f);
+	border: 1px solid transparent;
+
+	/* Medium (default) height - igual que Button */
+	height: 40px;
+}
+
+/* Tipografía Medium (default) - usa tokens de typography igual que Button */
+.ubits-save-indicator__text {
+	font-family: var(--font-family-noto-sans-font-family);
+	font-size: var(--modifiers-normal-body-md-semibold-fontsize);
+	font-weight: var(--weight-semibold, 600);
+	line-height: var(--modifiers-normal-body-md-semibold-lineheight);
+	color: var(--modifiers-normal-color-light-fg-1-medium, #5c646f);
+}
+
+/* Iconos - tamaño igual que Button */
+.ubits-save-indicator i {
+	font-size: 16px;
+	color: var(--modifiers-normal-color-light-fg-1-medium, #5c646f);
+	transition: color 0.2s ease;
+}
+
+/* Wrapper para iconos con overlay */
+.ubits-save-indicator__icon-wrapper {
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 16px;
+	height: 16px;
+}
+
+/* Icono principal (cloud) - soporta tanto wrapper como directo */
+.ubits-save-indicator__icon-wrapper > i:first-child,
+.ubits-save-indicator > i:first-of-type {
+	font-size: 16px;
+	color: var(--modifiers-normal-color-light-fg-1-medium, #5c646f);
+	transition: color 0.2s ease;
+	position: relative;
+}
+
+/* Iconos superpuestos (check, exclamation) - soporta tanto wrapper como inline */
+.ubits-save-indicator__overlay-icon,
+.ubits-save-indicator i[style*="position: absolute"] {
+	position: absolute;
+	font-size: 10px;
+	bottom: -2px;
+	right: -2px;
+	color: var(--modifiers-normal-color-light-fg-1-medium, #5c646f);
+	background: var(--modifiers-normal-color-light-bg-1, #ffffff);
+	border-radius: 50%;
+	width: 12px;
+	height: 12px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	line-height: 1;
+	box-shadow: 0 0 0 1px var(--modifiers-normal-color-light-bg-1, #ffffff);
+}
+
+.ubits-save-indicator__overlay-icon--error,
+.ubits-save-indicator i[style*="color: var(--modifiers-normal-color-light-feedback-fg-error"] {
+	color: var(--modifiers-normal-color-light-feedback-fg-error, #d32f2f) !important;
+}
+
+/* Spinner dentro del indicador */
+.ubits-save-indicator__spinner {
+	margin: 0;
+}
+
+/* ========================================
+   SAVE INDICATOR STATES
+   ======================================== */
+
+/* Saved State (default) */
+.ubits-save-indicator--saved {
+	background: var(--modifiers-normal-color-light-bg-1, #ffffff);
+	color: var(--modifiers-normal-color-light-fg-1-medium, #5c646f);
+	border: 1px solid transparent;
+}
+
+.ubits-save-indicator--saved i {
+	color: var(--modifiers-normal-color-light-fg-1-medium, #5c646f);
+}
+
+/* Hover State - icono más oscuro (igual que Button hover) */
+.ubits-save-indicator--saved:hover:not(:disabled),
+.ubits-save-indicator--recently-saved:hover:not(:disabled) {
+	background: var(--modifiers-normal-color-light-bg-2, #f5f5f5);
+}
+
+.ubits-save-indicator--saved:hover:not(:disabled) i:first-of-type,
+.ubits-save-indicator--recently-saved:hover:not(:disabled) i:first-of-type {
+	color: var(--modifiers-normal-color-light-fg-1-high, #212f70);
+}
+
+/* Focus State - igual que Button focus (purple ring) */
+.ubits-save-indicator:focus-visible {
+	outline: none;
+	box-shadow: 0 0 0 4px var(--modifiers-normal-focus-color, #6a7bf766);
+}
+
+/* Saving State - spinner + texto */
+.ubits-save-indicator--saving {
+	background: var(--modifiers-normal-color-light-bg-1, #ffffff);
+	color: var(--modifiers-normal-color-light-fg-1-medium, #5c646f);
+	border: 1px solid transparent;
+	cursor: wait;
+}
+
+.ubits-save-indicator--saving .ubits-save-indicator__text {
+	color: var(--modifiers-normal-color-light-fg-1-medium, #5c646f);
+}
+
+/* Failed State - icono de error */
+.ubits-save-indicator--failed {
+	background: var(--modifiers-normal-color-light-bg-1, #ffffff);
+	color: var(--modifiers-normal-color-light-fg-1-medium, #5c646f);
+	border: 1px solid transparent;
+}
+
+.ubits-save-indicator--failed i {
+	color: var(--modifiers-normal-color-light-feedback-fg-error, #d32f2f);
+}
+
+/* Recently Saved State - icono + texto */
+.ubits-save-indicator--recently-saved {
+	background: var(--modifiers-normal-color-light-bg-1, #ffffff);
+	color: var(--modifiers-normal-color-light-fg-1-medium, #5c646f);
+	border: 1px solid transparent;
+}
+
+.ubits-save-indicator--recently-saved i:first-of-type {
+	color: var(--modifiers-normal-color-light-fg-1-medium, #5c646f);
+}
+
+.ubits-save-indicator--recently-saved .ubits-save-indicator__text {
+	color: var(--modifiers-normal-color-light-fg-1-medium, #5c646f);
+}
+
+/* ========================================
+   DISABLED STATE
+   ======================================== */
+
+.ubits-save-indicator:disabled,
+.ubits-save-indicator[aria-disabled="true"] {
+	background: var(--modifiers-normal-color-light-bg-disabled) !important;
+	color: var(--modifiers-normal-color-light-fg-on-disabled) !important;
+	border-color: var(--modifiers-normal-color-light-border-disabled) !important;
+	cursor: not-allowed;
+	pointer-events: none;
+	opacity: 0.5;
+}
+
+/* ========================================
+   DARK MODE SUPPORT
+   ======================================== */
+
+[data-theme="dark"] .ubits-save-indicator {
+	background: var(--modifiers-normal-color-dark-bg-1, #1a1a1a);
+	color: var(--modifiers-normal-color-dark-fg-1-medium, #b0b0b0);
+}
+
+[data-theme="dark"] .ubits-save-indicator__text {
+	color: var(--modifiers-normal-color-dark-fg-1-medium, #b0b0b0);
+}
+
+[data-theme="dark"] .ubits-save-indicator i {
+	color: var(--modifiers-normal-color-dark-fg-1-medium, #b0b0b0);
+}
+
+[data-theme="dark"] .ubits-save-indicator--saved:hover:not(:disabled),
+[data-theme="dark"] .ubits-save-indicator--recently-saved:hover:not(:disabled) {
+	background: var(--modifiers-normal-color-dark-bg-2, #2a2a2a);
+}
+
+[data-theme="dark"] .ubits-save-indicator--saved:hover:not(:disabled) i:first-of-type,
+[data-theme="dark"] .ubits-save-indicator--recently-saved:hover:not(:disabled) i:first-of-type {
+	color: var(--modifiers-normal-color-dark-fg-1-high, #ffffff);
+}
+
+[data-theme="dark"] .ubits-save-indicator:focus-visible {
+	box-shadow: 0 0 0 4px var(--modifiers-normal-focus-color, #6a7bf766);
+}
+
+[data-theme="dark"] .ubits-save-indicator--failed i:first-of-type {
+	color: var(--modifiers-normal-color-dark-fg-1-medium, #b0b0b0);
+}
+
+[data-theme="dark"] .ubits-save-indicator--failed i[style*="exclamation-triangle"],
+[data-theme="dark"] .ubits-save-indicator--failed i[style*="feedback-fg-error"] {
+	color: var(--modifiers-normal-color-dark-feedback-fg-error, #ff6b6b) !important;
+}

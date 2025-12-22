@@ -16,13 +16,13 @@ if [ $? -ne 0 ]; then
 fi
 
 # 2. Verificación de Autorun (solo archivos en prototypes/)
-echo "✅ [Pre-commit] Verificando archivos modificados con autorun.verify()..."
-npm run autorun:verify -- --diff
+echo "✅ [Pre-commit] Verificando cambios en prototypes/ con verifyDiff..."
+npm run prototypes:verify -- --staged
 
 if [ $? -ne 0 ]; then
-  echo "❌ [Pre-commit] autorun.verify() falló"
-  echo "   Los archivos en prototypes/ deben tener marca AUTORUN y pasar todas las validaciones"
-  echo "   Usa 'npm run autorun:apply' para implementar componentes correctamente"
+  echo "❌ [Pre-commit] Verificación de prototypes falló"
+  echo "   Los archivos en prototypes/ deben tener watermark AUTORUN y pasar todas las validaciones"
+  echo "   Usa 'autorun.apply()' para implementar componentes correctamente"
   exit 1
 fi
 

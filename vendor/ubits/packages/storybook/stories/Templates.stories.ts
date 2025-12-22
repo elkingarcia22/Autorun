@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/html';
+import { createUBITSContract } from './_shared/ubitsContract';
 
 const meta: Meta<{
 	template: 'admin' | 'colaborador';
@@ -13,6 +14,51 @@ const meta: Meta<{
 			},
 		},
 		layout: 'fullscreen',
+		// ⭐ CONTRATO UBITS PARA AUTORUN (TEMPLATE)
+		ubits: createUBITSContract({
+			componentId: '📄-template-ubits-desktop',
+			api: {
+				apply: 'loadUBITSDesktopTemplate', // Función para aplicar el template
+				templatePath: '/templates/template-{variant}.html', // Ruta al archivo HTML del template ({variant} = admin | colaborador)
+			},
+			dependsOn: {
+				required: [
+					'🧩-ux-sidebar', // Sidebar usado en el template
+					'🧩-ux-tab-bar', // TabBar usado en el template
+					'🧩-ux-sub-nav', // SubNav usado en el template
+					'🧩-ux-header-section', // HeaderSection usado en el template
+				],
+				optional: [],
+			},
+			internals: [],
+			slots: {},
+			tokensUsed: [
+				'--modifiers-normal-color-light-bg-1',
+				'--modifiers-normal-color-light-bg-2',
+				'--modifiers-normal-color-light-fg-1-high',
+				'--modifiers-normal-color-light-fg-1-medium',
+				'--ubits-spacing-xs',
+				'--ubits-spacing-sm',
+				'--ubits-spacing-md',
+				'--ubits-spacing-lg',
+				'--ubits-spacing-xl',
+				'--ubits-spacing-2xl',
+				'--ubits-spacing-6xl',
+				'--font-family-noto-sans-font-family',
+			],
+			rules: {
+				forbidHardcodedColors: true,
+				forbiddenPatterns: ['rgb(', 'hsl(', '#'],
+				requiredProps: ['template'], // template es requerido: 'admin' | 'colaborador'
+			},
+			isTemplate: true, // Indica que es un template, no un componente individual
+			templateComponents: [
+				'🧩-ux-sidebar', // Componentes UBITS que el template usa internamente
+				'🧩-ux-tab-bar',
+				'🧩-ux-sub-nav',
+				'🧩-ux-header-section',
+			],
+		}),
 	},
 	argTypes: {
 		template: {
@@ -208,6 +254,8 @@ export const Default: Story = {
 
 		// Agregar atributo para tracking
 		container.setAttribute('data-template', args.template);
+		container.setAttribute('data-ubits-component', 'TemplatesUBITSDesktop');
+		container.setAttribute('data-ubits-id', `ubits-desktop-template-${instanceId}`);
 
 		// Agregar iframe al contenedor
 		container.appendChild(iframe);
@@ -222,5 +270,89 @@ export const Default: Story = {
 		};
 
 		return container;
+	},
+};
+
+export const Implementation: Story = {
+	name: 'Implementation (Copy/Paste)',
+	args: {
+		template: 'colaborador',
+	} as { template: 'admin' | 'colaborador' },
+	render: (args) => {
+		// Misma implementación que Default pero con snippet para aplicar el template
+		return Default.render!(args);
+	},
+	parameters: {
+		docs: {
+			source: {
+				code: `
+// Función para aplicar el template UBITS Desktop
+function loadUBITSDesktopTemplate(options) {
+  const { template = 'colaborador' } = options; // 'admin' | 'colaborador'
+  
+  // 1. Determinar la ruta del template según la variante
+  const templatePath = template === 'admin' 
+    ? '/templates/template-admin.html'
+    : '/templates/template-colaborador.html';
+  
+  // 2. Cargar el template HTML desde la ruta
+  // El template es un archivo HTML completo que incluye:
+  // - Estilos UBITS (tokens, typography, component styles)
+  // - Estructura HTML del template (Sidebar, TabBar, SubNav, HeaderSection)
+  // - JavaScript para inicialización de componentes
+  
+  // 3. Opción A: Cargar en iframe (recomendado para Storybook)
+  const iframe = document.createElement('iframe');
+  iframe.src = templatePath;
+  iframe.style.cssText = 'width: 100%; height: 100vh; border: none;';
+  iframe.setAttribute('sandbox', 'allow-same-origin allow-scripts allow-forms allow-popups allow-modals');
+  
+  const container = document.getElementById('template-container') || document.body;
+  container.appendChild(iframe);
+  
+  // 4. Sincronizar tema con Storybook (opcional)
+  iframe.onload = () => {
+    try {
+      const iframeWindow = iframe.contentWindow;
+      const iframeDoc = iframeWindow?.document;
+      if (iframeDoc) {
+        const currentTheme = document.body.getAttribute('data-theme') || 'light';
+        iframeDoc.body.setAttribute('data-theme', currentTheme);
+        iframeDoc.documentElement.setAttribute('data-theme', currentTheme);
+      }
+    } catch (e) {
+      // Ignorar errores de CORS
+    }
+  };
+  
+  // 5. Opción B: Cargar HTML directamente (si no usas iframe)
+  // fetch(templatePath)
+  //   .then(response => response.text())
+  //   .then(html => {
+  //     const container = document.getElementById('template-container');
+  //     container.innerHTML = html;
+  //     // Inicializar componentes UBITS después de cargar
+  //     // - Sidebar se inicializa automáticamente en el template
+  //     // - TabBar se inicializa automáticamente en el template
+  //     // - SubNav se inicializa automáticamente en el template
+  //     // - HeaderSection se crea dinámicamente cuando se necesita
+  //   });
+}
+
+// Nota: Este template usa internamente:
+// - 🧩-ux-sidebar (Sidebar component)
+// - 🧩-ux-tab-bar (TabBar component)
+// - 🧩-ux-sub-nav (SubNav component)
+// - 🧩-ux-header-section (HeaderSection component)
+// - Tokens UBITS para colores, tipografía y espaciado
+// - Estilos personalizados del template
+
+// Ejemplo de uso:
+loadUBITSDesktopTemplate({
+  template: 'colaborador' // o 'admin'
+});
+				`,
+			},
+		},
 	},
 };

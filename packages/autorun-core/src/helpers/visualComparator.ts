@@ -116,4 +116,3 @@ function extractComponentClasses(html: string, componentId: string): string[] {
 
 	return classes;
 }
-

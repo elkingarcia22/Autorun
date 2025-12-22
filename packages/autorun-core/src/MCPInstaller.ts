@@ -209,7 +209,10 @@ export class MCPInstaller {
 	/**
 	 * Obtiene configuración específica para cada servidor MCP
 	 */
-	private static async getServerConfig(serviceName: string, credentials?: Record<string, any>): Promise<any> {
+	private static async getServerConfig(
+		serviceName: string,
+		credentials?: Record<string, any>,
+	): Promise<any> {
 		const service = serviceName.toLowerCase();
 
 		switch (service) {
@@ -340,9 +343,19 @@ export class MCPInstaller {
 				// Usa el CLI compilado del paquete @autorun/core
 				// Intentar usar la ruta compilada primero, luego fallback a tsx
 				const autorunCorePath = path.resolve(process.cwd(), 'packages', 'autorun-core');
-				const autorunServerPath = path.join(autorunCorePath, 'dist', 'cli', 'autorun-mcp-server.js');
-				const autorunServerSourcePath = path.join(autorunCorePath, 'src', 'cli', 'autorun-mcp-server.ts');
-				
+				const autorunServerPath = path.join(
+					autorunCorePath,
+					'dist',
+					'cli',
+					'autorun-mcp-server.js',
+				);
+				const autorunServerSourcePath = path.join(
+					autorunCorePath,
+					'src',
+					'cli',
+					'autorun-mcp-server.ts',
+				);
+
 				// Verificar que el archivo compilado existe
 				let useCompiled = false;
 				try {
