@@ -2239,6 +2239,61 @@
       setTimeout(disableOtherModules, 1000);
       setTimeout(disableOtherModules, 2000);
       
+      // ========================================
+      // ⚠️ IMPLEMENTADO CON AUTORUN: Botón "Crear Encuesta"
+      // ========================================
+      // Consultado Storybook: docs/referencia/componentes/button.md
+      // Storybook ID: 🧩-ux-button (Libraries UI)
+      // API: window.UBITS.Button.create()
+      // ========================================
+      function initCrearEncuestaButton() {
+        const container = document.getElementById('crear-encuesta-button-root');
+        if (!container) {
+          console.warn('⚠️ [Crear Encuesta Button] Contenedor no encontrado');
+          return;
+        }
+        
+        // Verificar que UBITS.Button esté disponible
+        if (!window.UBITS || !window.UBITS.Button || !window.UBITS.Button.create) {
+          console.warn('⚠️ [Crear Encuesta Button] UBITS.Button.create no está disponible, reintentando...');
+          setTimeout(initCrearEncuestaButton, 500);
+          return;
+        }
+        
+        try {
+          // Crear botón usando la API de Storybook
+          // Según documentación: variant: 'primary', size: 'md', text: 'Crear Encuesta', icon: 'plus', iconStyle: 'regular', iconPosition: 'left'
+          const button = window.UBITS.Button.create({
+            variant: 'primary',
+            size: 'md',
+            text: 'Crear Encuesta',
+            icon: 'plus',
+            iconStyle: 'regular',
+            iconPosition: 'left'
+          });
+          
+          // Agregar al contenedor
+          container.innerHTML = '';
+          container.appendChild(button);
+          
+          console.log('✅ [Crear Encuesta Button] Botón creado correctamente usando window.UBITS.Button.create()');
+        } catch (error) {
+          console.error('❌ [Crear Encuesta Button] Error al crear botón:', error);
+        }
+      }
+      
+      // Inicializar cuando el DOM esté listo
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initCrearEncuestaButton);
+      } else {
+        initCrearEncuestaButton();
+      }
+      
+      // También intentar después de que UBITS se cargue
+      setTimeout(initCrearEncuestaButton, 500);
+      setTimeout(initCrearEncuestaButton, 1000);
+      setTimeout(initCrearEncuestaButton, 2000);
+      
       // Observar cambios en el DOM para cuando el sidebar se cargue
       const observer = new MutationObserver((mutations) => {
         let shouldDisable = false;
