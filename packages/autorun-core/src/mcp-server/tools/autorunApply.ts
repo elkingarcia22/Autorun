@@ -1037,6 +1037,7 @@ async function autorunApplyModeB(
     console.log(`   [8] Insertando código con watermark v2...`);
     const adapter = new HtmlPrototypeAdapter();
 
+    // ✅ MEJORA 5: Mejorar metadata del watermark (tokens esperados, storybookId)
     const { wrappedContent } = emitWatermark(
       {
         v: 2,
@@ -1044,7 +1045,11 @@ async function autorunApplyModeB(
         components: componentExists ? [componentId] : [],
         widgets: componentExists ? [] : [componentId],
         deps: resolvedDeps.publicDeps || [],
-      },
+        // ✅ NUEVO: Incluir tokens esperados del contrato
+        tokens: contractTokens.length > 0 ? contractTokens : undefined,
+        // ✅ NUEVO: Incluir storybookId siempre
+        storybookId: componentId,
+      } as any, // Temporal: extender WatermarkMeta para incluir tokens y storybookId
       codeToInsert
     );
 
