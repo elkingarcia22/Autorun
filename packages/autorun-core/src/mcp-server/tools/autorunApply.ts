@@ -228,33 +228,74 @@ async function autorunApplyStrict(
       };
     }
 
-    // ✅ MEJORA 1: Intentar obtener props automáticamente con fallback
+    // ✅ MEJORA 1: Intentar obtener props automáticamente con MCP Client interno
     let componentProps: any = null;
-    const { getComponentPropsWithFallback } = await import(
-      '../../helpers/mcpWithFallback.js'
-    );
 
+    // Intentar primero con MCP Client interno (llamada directa)
     try {
-      const propsResult = await getComponentPropsWithFallback(componentId);
-      if (propsResult.success && propsResult.props) {
-        componentProps = propsResult.props;
-        console.log(`   ✅ Props obtenidas: ${componentProps.length} props`);
-        if (propsResult.fallbackUsed) {
-          warnings.push(
-            'Props obtenidas mediante fallback visual (MCP no disponible)'
-          );
+      const { callStorybookMCPTool } = await import(
+        '../../helpers/mcpClient.js'
+      );
+      console.log(
+        `   [2.1.1] Intentando consultar Storybook MCP directamente...`
+      );
+
+      const mcpResult = await callStorybookMCPTool(
+        'mcp_storybook_getComponentsProps',
+        {
+          componentIds: [componentId],
         }
-      } else {
-        console.warn(
-          `   ⚠️ No se pudieron obtener props: ${propsResult.error}`
-        );
-        warnings.push(
-          `No se pudieron obtener props desde Storybook: ${propsResult.error}`
+      );
+
+      if (
+        mcpResult &&
+        mcpResult.components &&
+        mcpResult.components.length > 0
+      ) {
+        componentProps = mcpResult.components[0].props || [];
+        console.log(
+          `   ✅ Props obtenidas desde MCP: ${componentProps.length} props`
         );
       }
     } catch (error: any) {
-      console.warn(`   ⚠️ Error obteniendo props: ${error.message}`);
-      warnings.push(`Error obteniendo props: ${error.message}`);
+      console.warn(`   ⚠️ MCP Client interno falló: ${error.message}`);
+      console.log(`   [2.1.2] Usando fallback visual...`);
+
+      // Fallback: usar extracción visual
+      const { getComponentPropsWithFallback } = await import(
+        '../../helpers/mcpWithFallback.js'
+      );
+      try {
+        const propsResult = await getComponentPropsWithFallback(componentId);
+        if (propsResult.success && propsResult.props) {
+          componentProps = propsResult.props;
+          console.log(
+            `   ✅ Props obtenidas mediante fallback visual: ${componentProps.length} props`
+          );
+          warnings.push(
+            'Props obtenidas mediante fallback visual (MCP no disponible)'
+          );
+        } else {
+          console.warn(
+            `   ⚠️ No se pudieron obtener props: ${propsResult.error}`
+          );
+          warnings.push(
+            `No se pudieron obtener props desde Storybook: ${propsResult.error}`
+          );
+        }
+      } catch (fallbackError: any) {
+        console.warn(`   ⚠️ Error en fallback: ${fallbackError.message}`);
+        warnings.push(`Error obteniendo props: ${fallbackError.message}`);
+      }
+    }
+
+    // ✅ Validar props obtenidas (fail-closed si no hay props y es crítico)
+    if (!componentProps || componentProps.length === 0) {
+      const errorMsg =
+        'No se pudieron obtener props desde Storybook MCP ni mediante fallback. Esto es crítico para validar la estructura del código.';
+      console.error(`   ❌ ${errorMsg}`);
+      // No bloquear, solo advertir (el código puede extraerse de todas formas)
+      warnings.push(errorMsg);
     }
 
     // ⚠️ CRÍTICO: El agente DEBE consultar Storybook MCP ANTES de continuar
