@@ -842,7 +842,47 @@ async function autorunApplyModeB(
     const dependencyResolver = new DependencyResolver(contractStore);
 
     let resolvedDeps;
+    let contract = null;
+    let contractTokens: string[] = [];
     try {
+      // Obtener contrato del componente
+      contract = await contractStore.getById(componentId);
+      if (contract) {
+        console.log(`   ✅ Contrato encontrado para ${componentName}`);
+        console.log(
+          `   - Dependencias requeridas: ${contract.dependsOn?.required?.length || 0}`
+        );
+        console.log(
+          `   - Dependencias opcionales: ${contract.dependsOn?.optional?.length || 0}`
+        );
+        console.log(
+          `   - Tokens esperados: ${contract.tokensUsed?.length || 0}`
+        );
+
+        // ✅ MEJORA 3: Validar tokens del contrato contra GlobalTokenRegistry
+        if (contract.tokensUsed && contract.tokensUsed.length > 0) {
+          contractTokens = contract.tokensUsed;
+          console.log(`   [4.1] Validando tokens del contrato...`);
+          const invalidTokens: string[] = [];
+          for (const token of contractTokens) {
+            if (!tokenRegistry.has(token)) {
+              invalidTokens.push(token);
+            }
+          }
+
+          if (invalidTokens.length > 0) {
+            const errorMsg = `Tokens del contrato no encontrados en GlobalTokenRegistry: ${invalidTokens.join(', ')}`;
+            console.error(`   ❌ ${errorMsg}`);
+            errors.push(errorMsg);
+            // No bloquear, solo advertir
+          } else {
+            console.log(`   ✅ Todos los tokens del contrato son válidos`);
+          }
+        }
+      } else {
+        console.warn(`   ⚠️ No se encontró contrato para ${componentId}`);
+      }
+
       resolvedDeps = await dependencyResolver.resolveGraph(componentId);
       console.log(
         `   ✅ Dependencias: ${resolvedDeps.publicDeps.length} públicas`
@@ -850,6 +890,31 @@ async function autorunApplyModeB(
       console.log(
         `   ✅ Internals: ${resolvedDeps.internals.length} (no se implementan)`
       );
+
+      // ✅ MEJORA 3: Validar que todas las dependencias resueltas estén disponibles
+      if (resolvedDeps.publicDeps.length > 0) {
+        console.log(
+          `   [4.2] Validando que dependencias resueltas estén disponibles...`
+        );
+        const missingDeps: string[] = [];
+        for (const dep of resolvedDeps.publicDeps) {
+          const depContract = await contractStore.getById(dep);
+          if (!depContract) {
+            missingDeps.push(dep);
+          }
+        }
+
+        if (missingDeps.length > 0) {
+          const errorMsg = `Dependencias resueltas no encontradas: ${missingDeps.join(', ')}`;
+          console.error(`   ❌ ${errorMsg}`);
+          errors.push(errorMsg);
+          // No bloquear, solo advertir
+        } else {
+          console.log(
+            `   ✅ Todas las dependencias resueltas están disponibles`
+          );
+        }
+      }
     } catch (error: any) {
       console.warn(`   ⚠️ Error resolviendo dependencias: ${error.message}`);
       resolvedDeps = {
