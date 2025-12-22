@@ -21,7 +21,11 @@ import { analyzeComponentInternals } from '../../helpers/componentInternalAnalys
 import { mapAndValidateComponentNameToStorybookId } from '../../helpers/storybookStories.js';
 import { AddonOrchestrator } from '../helpers/addonOrchestrator.js';
 import { generateCodeWithAutorunMarks } from '../helpers/codeMarkGenerator.js';
-import { AutorunApplyInput, AutorunApplyOutput, AutorunMode } from '../types.js';
+import {
+  AutorunApplyInput,
+  AutorunApplyOutput,
+  AutorunMode,
+} from '../types.js';
 // ✅ Paso 7: Imports para Mode B
 import { getGlobalTokenRegistry } from '../../tokens/GlobalTokenRegistry.js';
 import { PrototypeTokenKit } from '../../fallback/PrototypeTokenKit.js';
@@ -33,600 +37,680 @@ import { CompositionPlanner } from '../../ubits/CompositionPlanner.js';
 // ✅ Design Intake
 import { FigmaIngestor } from '../../design/figma/FigmaIngestor.js';
 import { ImageIngestor } from '../../design/image/ImageIngestor.js';
-import { blueprintFromFigma, blueprintFromImage } from '../../design/BlueprintFromDesign.js';
+import {
+  blueprintFromFigma,
+  blueprintFromImage,
+} from '../../design/BlueprintFromDesign.js';
 import { BlueprintMapper } from '../../design/BlueprintMapper.js';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 
 /**
  * Ejecuta TODO el flujo de implementación
- * 
+ *
  * ✅ Paso 7: Detecta modo automáticamente o usa el especificado
  * - Si targetFile está en prototypes/ → mode = "prototypeTokens"
  * - Si no → mode = "strict" (flujo actual)
  */
-export async function autorunApply(input: AutorunApplyInput): Promise<AutorunApplyOutput> {
-	console.log(`\n🚀 [Autorun MCP] autorun.apply() llamado`);
-	console.log(`   Mensaje: ${input.message.substring(0, 100)}...`);
-	console.log(`   Archivos objetivo: ${input.targetFiles?.join(', ') || 'auto-detect'}`);
-	console.log(`   Opciones:`, input.options || {});
+export async function autorunApply(
+  input: AutorunApplyInput
+): Promise<AutorunApplyOutput> {
+  console.log(`\n🚀 [Autorun MCP] autorun.apply() llamado`);
+  console.log(`   Mensaje: ${input.message.substring(0, 100)}...`);
+  console.log(
+    `   Archivos objetivo: ${input.targetFiles?.join(', ') || 'auto-detect'}`
+  );
+  console.log(`   Opciones:`, input.options || {});
 
-	// ✅ Paso 7: Detección automática de modo (MANTENER strict)
-	let targetFile: string | null = null;
-	if (input.targetFiles && input.targetFiles.length > 0) {
-		targetFile = input.targetFiles[0];
-	} else {
-		// Intentar detectar automáticamente
-		targetFile = await detectTargetFile();
-	}
+  // ✅ Paso 7: Detección automática de modo (MANTENER strict)
+  let targetFile: string | null = null;
+  if (input.targetFiles && input.targetFiles.length > 0) {
+    targetFile = input.targetFiles[0];
+  } else {
+    // Intentar detectar automáticamente
+    targetFile = await detectTargetFile();
+  }
 
-	const mode: AutorunMode = input.options?.mode || 
-		(targetFile && targetFile.startsWith('prototypes/') ? 'prototypeTokens' : 'strict');
+  const mode: AutorunMode =
+    input.options?.mode ||
+    (targetFile && targetFile.startsWith('prototypes/')
+      ? 'prototypeTokens'
+      : 'strict');
 
-	console.log(`   ✅ Modo detectado: ${mode}`);
-	console.log(`   📁 Archivo objetivo: ${targetFile || 'auto-detect'}`);
+  console.log(`   ✅ Modo detectado: ${mode}`);
+  console.log(`   📁 Archivo objetivo: ${targetFile || 'auto-detect'}`);
 
-	// ✅ Flujo según modo
-	if (mode === 'strict') {
-		return await autorunApplyStrict(input); // ✅ Flujo actual sin cambios
-	} else {
-		return await autorunApplyModeB(input, targetFile); // ✅ Nuevo flujo
-	}
+  // ✅ Flujo según modo
+  if (mode === 'strict') {
+    return await autorunApplyStrict(input); // ✅ Flujo actual sin cambios
+  } else {
+    return await autorunApplyModeB(input, targetFile); // ✅ Nuevo flujo
+  }
 }
 
 /**
  * ✅ MANTENER función existente (sin cambios) - Flujo strict
  */
-async function autorunApplyStrict(input: AutorunApplyInput): Promise<AutorunApplyOutput> {
+async function autorunApplyStrict(
+  input: AutorunApplyInput
+): Promise<AutorunApplyOutput> {
+  const errors: string[] = [];
+  const warnings: string[] = [];
+  const filesWritten: string[] = [];
+  const orchestrator = new AddonOrchestrator();
 
-	const errors: string[] = [];
-	const warnings: string[] = [];
-	const filesWritten: string[] = [];
-	const orchestrator = new AddonOrchestrator();
+  try {
+    // ========================================
+    // FASE 1: PREPARACIÓN (Add-ons de validación)
+    // ========================================
+    console.log(`\n📋 [Autorun MCP] FASE 1: PREPARACIÓN`);
 
-	try {
-		// ========================================
-		// FASE 1: PREPARACIÓN (Add-ons de validación)
-		// ========================================
-		console.log(`\n📋 [Autorun MCP] FASE 1: PREPARACIÓN`);
+    // 1.1 Ejecutar handleUserMessage() (OBLIGATORIO)
+    console.log(`   [1.1] Ejecutando handleUserMessage()...`);
+    const result = await handleUserMessage(input.message);
 
-		// 1.1 Ejecutar handleUserMessage() (OBLIGATORIO)
-		console.log(`   [1.1] Ejecutando handleUserMessage()...`);
-		const result = await handleUserMessage(input.message);
+    if (result.blocked) {
+      console.error(`   ❌ Implementación bloqueada: ${result.reason}`);
+      return {
+        success: false,
+        filesWritten: [],
+        verification: {
+          preImplementation: false,
+          postImplementation: false,
+          errors: [result.reason || 'Implementación bloqueada'],
+          warnings: [],
+        },
+        components: [],
+        errors: [result.reason || 'Implementación bloqueada'],
+      };
+    }
 
-		if (result.blocked) {
-			console.error(`   ❌ Implementación bloqueada: ${result.reason}`);
-			return {
-				success: false,
-				filesWritten: [],
-				verification: {
-					preImplementation: false,
-					postImplementation: false,
-					errors: [result.reason || 'Implementación bloqueada'],
-					warnings: [],
-				},
-				components: [],
-				errors: [result.reason || 'Implementación bloqueada'],
-			};
-		}
+    if (!result.componentName) {
+      console.warn(`   ⚠️ No se detectó componente en el mensaje`);
+      return {
+        success: false,
+        filesWritten: [],
+        verification: {
+          preImplementation: false,
+          postImplementation: false,
+          errors: ['No se detectó ningún componente en el mensaje'],
+          warnings: [],
+        },
+        components: [],
+        errors: ['No se detectó ningún componente en el mensaje'],
+      };
+    }
 
-		if (!result.componentName) {
-			console.warn(`   ⚠️ No se detectó componente en el mensaje`);
-			return {
-				success: false,
-				filesWritten: [],
-				verification: {
-					preImplementation: false,
-					postImplementation: false,
-					errors: ['No se detectó ningún componente en el mensaje'],
-					warnings: [],
-				},
-				components: [],
-				errors: ['No se detectó ningún componente en el mensaje'],
-			};
-		}
+    console.log(`   ✅ Componente detectado: ${result.componentName}`);
+    if (result.mcpMessages && result.mcpMessages.length > 0) {
+      console.log(
+        `   ✅ Componentes adicionales: ${result.mcpMessages.map((m) => m.componentName).join(', ')}`
+      );
+    }
 
-		console.log(`   ✅ Componente detectado: ${result.componentName}`);
-		if (result.mcpMessages && result.mcpMessages.length > 0) {
-			console.log(
-				`   ✅ Componentes adicionales: ${result.mcpMessages.map((m) => m.componentName).join(', ')}`,
-			);
-		}
+    // 1.2 Obtener ID de Storybook
+    console.log(`   [1.2] Obteniendo ID de Storybook...`);
+    let componentId: string;
+    try {
+      componentId = await mapAndValidateComponentNameToStorybookId(
+        result.componentName
+      );
+      console.log(`   ✅ ID de Storybook: ${componentId}`);
+    } catch (error: any) {
+      const errorMsg = `No se pudo obtener ID de Storybook para ${result.componentName}: ${error.message}`;
+      console.error(`   ❌ ${errorMsg}`);
+      return {
+        success: false,
+        filesWritten: [],
+        verification: {
+          preImplementation: false,
+          postImplementation: false,
+          errors: [errorMsg],
+          warnings: [],
+        },
+        components: [],
+        errors: [errorMsg],
+      };
+    }
 
-		// 1.2 Obtener ID de Storybook
-		console.log(`   [1.2] Obteniendo ID de Storybook...`);
-		let componentId: string;
-		try {
-			componentId = await mapAndValidateComponentNameToStorybookId(result.componentName);
-			console.log(`   ✅ ID de Storybook: ${componentId}`);
-		} catch (error: any) {
-			const errorMsg = `No se pudo obtener ID de Storybook para ${result.componentName}: ${error.message}`;
-			console.error(`   ❌ ${errorMsg}`);
-			return {
-				success: false,
-				filesWritten: [],
-				verification: {
-					preImplementation: false,
-					postImplementation: false,
-					errors: [errorMsg],
-					warnings: [],
-				},
-				components: [],
-				errors: [errorMsg],
-			};
-		}
+    // 1.3 Ejecutar fase de preparación (Pre-Implementation Check, Storybook)
+    console.log(`   [1.3] Ejecutando fase de preparación con add-ons...`);
+    const preparationResult = await orchestrator.executePreparationPhase(
+      result.componentName,
+      componentId
+    );
 
-		// 1.3 Ejecutar fase de preparación (Pre-Implementation Check, Storybook)
-		console.log(`   [1.3] Ejecutando fase de preparación con add-ons...`);
-		const preparationResult = await orchestrator.executePreparationPhase(
-			result.componentName,
-			componentId,
-		);
+    if (!preparationResult.canImplement.allowed) {
+      const errorMsg =
+        preparationResult.canImplement.reason ||
+        'Implementación bloqueada por Pre-Implementation Check';
+      console.error(`   ❌ ${errorMsg}`);
+      return {
+        success: false,
+        filesWritten: [],
+        verification: {
+          preImplementation: false,
+          postImplementation: false,
+          errors: [errorMsg],
+          warnings: preparationResult.canImplement.missingSteps || [],
+        },
+        components: [],
+        errors: [errorMsg],
+        plan: preparationResult.plan,
+      };
+    }
 
-		if (!preparationResult.canImplement.allowed) {
-			const errorMsg =
-				preparationResult.canImplement.reason ||
-				'Implementación bloqueada por Pre-Implementation Check';
-			console.error(`   ❌ ${errorMsg}`);
-			return {
-				success: false,
-				filesWritten: [],
-				verification: {
-					preImplementation: false,
-					postImplementation: false,
-					errors: [errorMsg],
-					warnings: preparationResult.canImplement.missingSteps || [],
-				},
-				components: [],
-				errors: [errorMsg],
-				plan: preparationResult.plan,
-			};
-		}
+    console.log(`   ✅ Fase de preparación completada`);
 
-		console.log(`   ✅ Fase de preparación completada`);
+    // ========================================
+    // FASE 2: IMPLEMENTACIÓN (Flujo principal)
+    // ========================================
+    console.log(`\n🔧 [Autorun MCP] FASE 2: IMPLEMENTACIÓN`);
 
-		// ========================================
-		// FASE 2: IMPLEMENTACIÓN (Flujo principal)
-		// ========================================
-		console.log(`\n🔧 [Autorun MCP] FASE 2: IMPLEMENTACIÓN`);
+    // 2.1 Consultar Storybook MCP (OBLIGATORIO - FAIL-CLOSED)
+    console.log(`   [2.1] Consultando Storybook MCP (OBLIGATORIO)...`);
 
-		// 2.1 Consultar Storybook MCP (OBLIGATORIO - FAIL-CLOSED)
-		console.log(`   [2.1] Consultando Storybook MCP (OBLIGATORIO)...`);
+    if (!result.mcpMessages || result.mcpMessages.length === 0) {
+      const errorMsg =
+        'No se prepararon mensajes MCP para consultar Storybook. Esto es OBLIGATORIO.';
+      console.error(`   ❌ ${errorMsg}`);
+      return {
+        success: false,
+        filesWritten: [],
+        verification: {
+          preImplementation: false,
+          postImplementation: false,
+          errors: [errorMsg],
+          warnings: [],
+        },
+        components: [],
+        errors: [errorMsg],
+      };
+    }
 
-		if (!result.mcpMessages || result.mcpMessages.length === 0) {
-			const errorMsg =
-				'No se prepararon mensajes MCP para consultar Storybook. Esto es OBLIGATORIO.';
-			console.error(`   ❌ ${errorMsg}`);
-			return {
-				success: false,
-				filesWritten: [],
-				verification: {
-					preImplementation: false,
-					postImplementation: false,
-					errors: [errorMsg],
-					warnings: [],
-				},
-				components: [],
-				errors: [errorMsg],
-			};
-		}
+    // ✅ MEJORA 1: Intentar obtener props automáticamente con fallback
+    let componentProps: any = null;
+    const { getComponentPropsWithFallback } = await import(
+      '../../helpers/mcpWithFallback.js'
+    );
 
-		// ⚠️ CRÍTICO: El agente DEBE consultar Storybook MCP ANTES de continuar
-		console.log(`   ⚠️ FAIL-CLOSED: El agente DEBE consultar Storybook MCP para cada componente:`);
-		for (const msg of result.mcpMessages) {
-			console.log(`   📚 Componente: ${msg.componentName} (${msg.storybookId})`);
-			console.log(`   ⚠️ OBLIGATORIO ejecutar:`);
-			console.log(`      call_mcp_tool({`);
-			console.log(`        server: "storybook",`);
-			console.log(`        toolName: "mcp_storybook_getComponentsProps",`);
-			console.log(`        arguments: { componentIds: ["${msg.storybookId}"] }`);
-			console.log(`      })`);
-			console.log(`   ⚠️ Si esta consulta falla, autorun.apply() NO continuará`);
-		}
+    try {
+      const propsResult = await getComponentPropsWithFallback(componentId);
+      if (propsResult.success && propsResult.props) {
+        componentProps = propsResult.props;
+        console.log(`   ✅ Props obtenidas: ${componentProps.length} props`);
+        if (propsResult.fallbackUsed) {
+          warnings.push(
+            'Props obtenidas mediante fallback visual (MCP no disponible)'
+          );
+        }
+      } else {
+        console.warn(
+          `   ⚠️ No se pudieron obtener props: ${propsResult.error}`
+        );
+        warnings.push(
+          `No se pudieron obtener props desde Storybook: ${propsResult.error}`
+        );
+      }
+    } catch (error: any) {
+      console.warn(`   ⚠️ Error obteniendo props: ${error.message}`);
+      warnings.push(`Error obteniendo props: ${error.message}`);
+    }
 
-		// ⚠️ NOTA: Como autorun.apply() se ejecuta desde Node.js y no puede llamar MCP directamente,
-		// el agente DEBE consultar Storybook MCP ANTES de llamar autorun.apply().
-		// Si el agente no consulta Storybook MCP, el siguiente paso (extracción) puede fallar
-		// y autorun.apply() retornará error (fail-closed).
+    // ⚠️ CRÍTICO: El agente DEBE consultar Storybook MCP ANTES de continuar
+    // (Aunque usamos fallback, el MCP es la fuente de verdad)
+    console.log(
+      `   ⚠️ FAIL-CLOSED: El agente DEBE consultar Storybook MCP para cada componente:`
+    );
+    for (const msg of result.mcpMessages) {
+      console.log(
+        `   📚 Componente: ${msg.componentName} (${msg.storybookId})`
+      );
+      console.log(`   ⚠️ OBLIGATORIO ejecutar:`);
+      console.log(`      call_mcp_tool({`);
+      console.log(`        server: "storybook",`);
+      console.log(`        toolName: "mcp_storybook_getComponentsProps",`);
+      console.log(
+        `        arguments: { componentIds: ["${msg.storybookId}"] }`
+      );
+      console.log(`      })`);
+      console.log(
+        `   ⚠️ Si esta consulta falla, autorun.apply() NO continuará`
+      );
+    }
 
-		// 2.2 Extraer código exacto desde Storybook (OBLIGATORIO)
-		console.log(`   [2.2] Extrayendo código exacto desde Storybook...`);
-		let exactCode;
-		try {
-			exactCode = await extractExactCodeFromStorybookWithBrowser(componentId, 'default');
-			if (!exactCode || !exactCode.html) {
-				throw new Error('No se pudo extraer código desde Storybook');
-			}
-			console.log(`   ✅ Código extraído: ${exactCode.html.length} caracteres`);
-		} catch (error: any) {
-			const errorMsg = `Error extrayendo código desde Storybook: ${error.message}`;
-			console.error(`   ❌ ${errorMsg}`);
-			errors.push(errorMsg);
-			return {
-				success: false,
-				filesWritten: [],
-				verification: {
-					preImplementation: false,
-					postImplementation: false,
-					errors,
-					warnings,
-				},
-				components: [],
-				errors,
-			};
-		}
+    // ⚠️ NOTA: Como autorun.apply() se ejecuta desde Node.js y no puede llamar MCP directamente,
+    // el agente DEBE consultar Storybook MCP ANTES de llamar autorun.apply().
+    // Si el agente no consulta Storybook MCP, el siguiente paso (extracción) puede fallar
+    // y autorun.apply() retornará error (fail-closed).
+    // ✅ MEJORA: Ahora también intentamos obtener props con fallback visual como respaldo
 
-		// 2.3 Verificar pre-implementación (OBLIGATORIO)
-		console.log(`   [2.3] Verificando pre-implementación...`);
-		if (!input.options?.skipVerification) {
-			let verificationResult;
-			try {
-				verificationResult = await verifyBeforeImplementation(
-					componentId,
-					exactCode.html,
-					'default',
-				);
+    // 2.2 Extraer código exacto desde Storybook (OBLIGATORIO)
+    console.log(`   [2.2] Extrayendo código exacto desde Storybook...`);
+    let exactCode;
+    try {
+      exactCode = await extractExactCodeFromStorybookWithBrowser(
+        componentId,
+        'default'
+      );
+      if (!exactCode || !exactCode.html) {
+        throw new Error('No se pudo extraer código desde Storybook');
+      }
+      console.log(`   ✅ Código extraído: ${exactCode.html.length} caracteres`);
+    } catch (error: any) {
+      const errorMsg = `Error extrayendo código desde Storybook: ${error.message}`;
+      console.error(`   ❌ ${errorMsg}`);
+      errors.push(errorMsg);
+      return {
+        success: false,
+        filesWritten: [],
+        verification: {
+          preImplementation: false,
+          postImplementation: false,
+          errors,
+          warnings,
+        },
+        components: [],
+        errors,
+      };
+    }
 
-				if (!verificationResult.valid) {
-					const errorMsg = `Validación pre-implementación falló: ${verificationResult.errors.join(', ')}`;
-					console.error(`   ❌ ${errorMsg}`);
-					errors.push(...verificationResult.errors);
-					warnings.push(...verificationResult.warnings);
+    // 2.3 Verificar pre-implementación (OBLIGATORIO)
+    console.log(`   [2.3] Verificando pre-implementación...`);
+    if (!input.options?.skipVerification) {
+      let verificationResult;
+      try {
+        verificationResult = await verifyBeforeImplementation(
+          componentId,
+          exactCode.html,
+          'default'
+        );
 
-					return {
-						success: false,
-						filesWritten: [],
-						verification: {
-							preImplementation: false,
-							postImplementation: false,
-							errors,
-							warnings,
-						},
-						components: [],
-						errors,
-						warnings,
-					};
-				}
+        if (!verificationResult.valid) {
+          const errorMsg = `Validación pre-implementación falló: ${verificationResult.errors.join(', ')}`;
+          console.error(`   ❌ ${errorMsg}`);
+          errors.push(...verificationResult.errors);
+          warnings.push(...verificationResult.warnings);
 
-				console.log(`   ✅ Validación pre-implementación pasada`);
-				if (verificationResult.warnings.length > 0) {
-					warnings.push(...verificationResult.warnings);
-					console.warn(`   ⚠️ Advertencias: ${verificationResult.warnings.join(', ')}`);
-				}
-			} catch (error: any) {
-				const errorMsg = `Error en verificación pre-implementación: ${error.message}`;
-				console.error(`   ❌ ${errorMsg}`);
-				errors.push(errorMsg);
-				return {
-					success: false,
-					filesWritten: [],
-					verification: {
-						preImplementation: false,
-						postImplementation: false,
-						errors,
-						warnings,
-					},
-					components: [],
-					errors,
-				};
-			}
-		} else {
-			console.log(`   ⚠️ Verificación pre-implementación saltada (skipVerification=true)`);
-		}
+          return {
+            success: false,
+            filesWritten: [],
+            verification: {
+              preImplementation: false,
+              postImplementation: false,
+              errors,
+              warnings,
+            },
+            components: [],
+            errors,
+            warnings,
+          };
+        }
 
-		// 2.4 Analizar componentes internos y dependencias (OBLIGATORIO)
-		console.log(`   [2.4] Analizando componentes internos y dependencias...`);
-		let internalAnalysis;
-		try {
-			internalAnalysis = await analyzeComponentInternals(componentId, 'default');
-			console.log(
-				`   ✅ Análisis completado: ${internalAnalysis.internalComponents.length} componente(s) interno(s)`,
-			);
+        console.log(`   ✅ Validación pre-implementación pasada`);
+        if (verificationResult.warnings.length > 0) {
+          warnings.push(...verificationResult.warnings);
+          console.warn(
+            `   ⚠️ Advertencias: ${verificationResult.warnings.join(', ')}`
+          );
+        }
+      } catch (error: any) {
+        const errorMsg = `Error en verificación pre-implementación: ${error.message}`;
+        console.error(`   ❌ ${errorMsg}`);
+        errors.push(errorMsg);
+        return {
+          success: false,
+          filesWritten: [],
+          verification: {
+            preImplementation: false,
+            postImplementation: false,
+            errors,
+            warnings,
+          },
+          components: [],
+          errors,
+        };
+      }
+    } else {
+      console.log(
+        `   ⚠️ Verificación pre-implementación saltada (skipVerification=true)`
+      );
+    }
 
-			// Mostrar dependsOn (requeridos y opcionales)
-			if (internalAnalysis.dependsOn.required.length > 0) {
-				console.log(
-					`   📦 Dependencias requeridas (dependsOn.required): ${internalAnalysis.dependsOn.required.join(', ')}`,
-				);
-				console.log(
-					`   ⚠️ CRÍTICO: Debes obtener snippets de estos componentes desde Storybook MCP ANTES de implementar`,
-				);
-			}
-			if (internalAnalysis.dependsOn.optional.length > 0) {
-				console.log(
-					`   📦 Dependencias opcionales (dependsOn.optional): ${internalAnalysis.dependsOn.optional.join(', ')}`,
-				);
-			}
+    // 2.4 Analizar componentes internos y dependencias (OBLIGATORIO)
+    console.log(`   [2.4] Analizando componentes internos y dependencias...`);
+    let internalAnalysis;
+    try {
+      internalAnalysis = await analyzeComponentInternals(
+        componentId,
+        'default'
+      );
+      console.log(
+        `   ✅ Análisis completado: ${internalAnalysis.internalComponents.length} componente(s) interno(s)`
+      );
 
-			// Mostrar internals (privados)
-			if (internalAnalysis.internals.length > 0) {
-				console.log(
-					`   🔒 Componentes internos (privados): ${internalAnalysis.internals.join(', ')}`,
-				);
-				console.log(`   ℹ️ Estos componentes son privados y NO debes re-implementarlos`);
-			}
+      // Mostrar dependsOn (requeridos y opcionales)
+      if (internalAnalysis.dependsOn.required.length > 0) {
+        console.log(
+          `   📦 Dependencias requeridas (dependsOn.required): ${internalAnalysis.dependsOn.required.join(', ')}`
+        );
+        console.log(
+          `   ⚠️ CRÍTICO: Debes obtener snippets de estos componentes desde Storybook MCP ANTES de implementar`
+        );
+      }
+      if (internalAnalysis.dependsOn.optional.length > 0) {
+        console.log(
+          `   📦 Dependencias opcionales (dependsOn.optional): ${internalAnalysis.dependsOn.optional.join(', ')}`
+        );
+      }
 
-			// Mostrar dependencias totales (legacy)
-			if (internalAnalysis.dependencies.length > 0) {
-				console.log(`   📦 Dependencias totales: ${internalAnalysis.dependencies.join(', ')}`);
-			}
-		} catch (error: any) {
-			console.warn(`   ⚠️ Error en análisis interno: ${error.message}`);
-			// No bloquear, solo registrar
-		}
+      // Mostrar internals (privados)
+      if (internalAnalysis.internals.length > 0) {
+        console.log(
+          `   🔒 Componentes internos (privados): ${internalAnalysis.internals.join(', ')}`
+        );
+        console.log(
+          `   ℹ️ Estos componentes son privados y NO debes re-implementarlos`
+        );
+      }
 
-		// 2.5 Detectar archivo objetivo
-		console.log(`   [2.5] Detectando archivo objetivo...`);
-		let targetFile: string | null = null;
-		if (input.targetFiles && input.targetFiles.length > 0) {
-			targetFile = input.targetFiles[0];
-			console.log(`   ✅ Archivo objetivo especificado: ${targetFile}`);
-		} else {
-			// Intentar detectar automáticamente
-			targetFile = await detectTargetFile(result.componentName);
-			if (targetFile) {
-				console.log(`   ✅ Archivo objetivo detectado: ${targetFile}`);
-			} else {
-				const errorMsg =
-					'No se pudo determinar archivo objetivo. Especifica targetFiles en el input.';
-				console.error(`   ❌ ${errorMsg}`);
-				return {
-					success: false,
-					filesWritten: [],
-					verification: {
-						preImplementation: true,
-						postImplementation: false,
-						errors: [errorMsg],
-						warnings: [],
-					},
-					components: [],
-					errors: [errorMsg],
-				};
-			}
-		}
+      // Mostrar dependencias totales (legacy)
+      if (internalAnalysis.dependencies.length > 0) {
+        console.log(
+          `   📦 Dependencias totales: ${internalAnalysis.dependencies.join(', ')}`
+        );
+      }
+    } catch (error: any) {
+      console.warn(`   ⚠️ Error en análisis interno: ${error.message}`);
+      // No bloquear, solo registrar
+    }
 
-		// Verificar que el archivo existe o puede crearse
-		try {
-			const dir = path.dirname(targetFile);
-			await fs.mkdir(dir, { recursive: true });
-		} catch (error: any) {
-			const errorMsg = `Error creando directorio para ${targetFile}: ${error.message}`;
-			console.error(`   ❌ ${errorMsg}`);
-			return {
-				success: false,
-				filesWritten: [],
-				verification: {
-					preImplementation: true,
-					postImplementation: false,
-					errors: [errorMsg],
-					warnings: [],
-				},
-				components: [],
-				errors: [errorMsg],
-			};
-		}
+    // 2.5 Detectar archivo objetivo
+    console.log(`   [2.5] Detectando archivo objetivo...`);
+    let targetFile: string | null = null;
+    if (input.targetFiles && input.targetFiles.length > 0) {
+      targetFile = input.targetFiles[0];
+      console.log(`   ✅ Archivo objetivo especificado: ${targetFile}`);
+    } else {
+      // Intentar detectar automáticamente
+      targetFile = await detectTargetFile(result.componentName);
+      if (targetFile) {
+        console.log(`   ✅ Archivo objetivo detectado: ${targetFile}`);
+      } else {
+        const errorMsg =
+          'No se pudo determinar archivo objetivo. Especifica targetFiles en el input.';
+        console.error(`   ❌ ${errorMsg}`);
+        return {
+          success: false,
+          filesWritten: [],
+          verification: {
+            preImplementation: true,
+            postImplementation: false,
+            errors: [errorMsg],
+            warnings: [],
+          },
+          components: [],
+          errors: [errorMsg],
+        };
+      }
+    }
 
-		// 2.6 Resolver dependencias dependsOn.required (OBLIGATORIO)
-		console.log(`   [2.6] Resolviendo dependencias dependsOn.required...`);
-		let resolvedDependencies: Record<string, any> = {};
+    // Verificar que el archivo existe o puede crearse
+    try {
+      const dir = path.dirname(targetFile);
+      await fs.mkdir(dir, { recursive: true });
+    } catch (error: any) {
+      const errorMsg = `Error creando directorio para ${targetFile}: ${error.message}`;
+      console.error(`   ❌ ${errorMsg}`);
+      return {
+        success: false,
+        filesWritten: [],
+        verification: {
+          preImplementation: true,
+          postImplementation: false,
+          errors: [errorMsg],
+          warnings: [],
+        },
+        components: [],
+        errors: [errorMsg],
+      };
+    }
 
-		if (internalAnalysis && internalAnalysis.dependsOn.required.length > 0) {
-			console.log(
-				`   📦 Resolviendo ${internalAnalysis.dependsOn.required.length} dependencia(s) requerida(s)...`,
-			);
+    // 2.6 Resolver dependencias dependsOn.required (OBLIGATORIO)
+    console.log(`   [2.6] Resolviendo dependencias dependsOn.required...`);
+    let resolvedDependencies: Record<string, any> = {};
 
-			// ⚠️ CRÍTICO: El agente DEBE consultar Storybook MCP para cada dependencia requerida
-			for (const depComponentName of internalAnalysis.dependsOn.required) {
-				console.log(`   📚 Dependencia requerida: ${depComponentName}`);
-				console.log(
-					`   ⚠️ OBLIGATORIO: El agente DEBE consultar Storybook MCP para obtener snippet de ${depComponentName}`,
-				);
-				console.log(`      call_mcp_tool({`);
-				console.log(`        server: "storybook",`);
-				console.log(`        toolName: "mcp_storybook_getComponentsProps",`);
-				console.log(`        arguments: { componentIds: ["${depComponentName}"] }`);
-				console.log(`      })`);
+    if (internalAnalysis && internalAnalysis.dependsOn.required.length > 0) {
+      console.log(
+        `   📦 Resolviendo ${internalAnalysis.dependsOn.required.length} dependencia(s) requerida(s)...`
+      );
 
-				// Por ahora, marcamos como pendiente
-				// TODO: Cuando tengamos acceso a MCP desde Node.js, resolver automáticamente
-				resolvedDependencies[depComponentName] = {
-					status: 'pending',
-					message: 'El agente debe consultar Storybook MCP para obtener snippet',
-				};
-			}
+      // ⚠️ CRÍTICO: El agente DEBE consultar Storybook MCP para cada dependencia requerida
+      for (const depComponentName of internalAnalysis.dependsOn.required) {
+        console.log(`   📚 Dependencia requerida: ${depComponentName}`);
+        console.log(
+          `   ⚠️ OBLIGATORIO: El agente DEBE consultar Storybook MCP para obtener snippet de ${depComponentName}`
+        );
+        console.log(`      call_mcp_tool({`);
+        console.log(`        server: "storybook",`);
+        console.log(`        toolName: "mcp_storybook_getComponentsProps",`);
+        console.log(
+          `        arguments: { componentIds: ["${depComponentName}"] }`
+        );
+        console.log(`      })`);
 
-			console.log(
-				`   ⚠️ NOTA: Los snippets de dependencias deben obtenerse ANTES de generar el código final`,
-			);
-		} else {
-			console.log(`   ✅ No hay dependencias requeridas`);
-		}
+        // Por ahora, marcamos como pendiente
+        // TODO: Cuando tengamos acceso a MCP desde Node.js, resolver automáticamente
+        resolvedDependencies[depComponentName] = {
+          status: 'pending',
+          message:
+            'El agente debe consultar Storybook MCP para obtener snippet',
+        };
+      }
 
-		// 2.7 Generar código con marcas Autorun (incluyendo metadata de dependencias)
-		console.log(`   [2.7] Generando código con marcas Autorun...`);
+      console.log(
+        `   ⚠️ NOTA: Los snippets de dependencias deben obtenerse ANTES de generar el código final`
+      );
+    } else {
+      console.log(`   ✅ No hay dependencias requeridas`);
+    }
 
-		// Incluir información de dependencias en el watermark
-		const watermarkMetadata = {
-			component: result.componentName,
-			storybookId: componentId,
-			story: 'default',
-			dependsOn: internalAnalysis?.dependsOn || { required: [], optional: [] },
-			internals: internalAnalysis?.internals || [],
-		};
+    // 2.7 Generar código con marcas Autorun (incluyendo metadata de dependencias)
+    console.log(`   [2.7] Generando código con marcas Autorun...`);
 
-		const codeWithMarks = generateCodeWithAutorunMarks(
-			exactCode.html,
-			result.componentName,
-			componentId,
-			'default',
-			undefined,
-			watermarkMetadata,
-		);
-		console.log(`   ✅ Código generado con marcas Autorun (incluye metadata de dependencias)`);
+    // Incluir información de dependencias en el watermark
+    const watermarkMetadata = {
+      component: result.componentName,
+      storybookId: componentId,
+      story: 'default',
+      dependsOn: internalAnalysis?.dependsOn || { required: [], optional: [] },
+      internals: internalAnalysis?.internals || [],
+    };
 
-		// 2.8 SOLO AHORA escribir (si no es dry-run)
-		if (!input.options?.dryRun) {
-			console.log(`   [2.8] Escribiendo archivo...`);
-			try {
-				await fs.writeFile(targetFile, codeWithMarks, 'utf-8');
-				filesWritten.push(targetFile);
-				console.log(`   ✅ Archivo escrito: ${targetFile}`);
-			} catch (error: any) {
-				const errorMsg = `Error escribiendo archivo: ${error.message}`;
-				console.error(`   ❌ ${errorMsg}`);
-				return {
-					success: false,
-					filesWritten: [],
-					verification: {
-						preImplementation: true,
-						postImplementation: false,
-						errors: [errorMsg],
-						warnings: [],
-					},
-					components: [],
-					errors: [errorMsg],
-				};
-			}
-		} else {
-			console.log(`   ⚠️ DRY-RUN: No se escribió el archivo`);
-		}
+    const codeWithMarks = generateCodeWithAutorunMarks(
+      exactCode.html,
+      result.componentName,
+      componentId,
+      'default',
+      undefined,
+      watermarkMetadata
+    );
+    console.log(
+      `   ✅ Código generado con marcas Autorun (incluye metadata de dependencias)`
+    );
 
-		// ========================================
-		// FASE 3: POST-IMPLEMENTACIÓN (Add-ons de calidad)
-		// ========================================
-		console.log(`\n✨ [Autorun MCP] FASE 3: POST-IMPLEMENTACIÓN`);
+    // 2.8 SOLO AHORA escribir (si no es dry-run)
+    if (!input.options?.dryRun) {
+      console.log(`   [2.8] Escribiendo archivo...`);
+      try {
+        await fs.writeFile(targetFile, codeWithMarks, 'utf-8');
+        filesWritten.push(targetFile);
+        console.log(`   ✅ Archivo escrito: ${targetFile}`);
+      } catch (error: any) {
+        const errorMsg = `Error escribiendo archivo: ${error.message}`;
+        console.error(`   ❌ ${errorMsg}`);
+        return {
+          success: false,
+          filesWritten: [],
+          verification: {
+            preImplementation: true,
+            postImplementation: false,
+            errors: [errorMsg],
+            warnings: [],
+          },
+          components: [],
+          errors: [errorMsg],
+        };
+      }
+    } else {
+      console.log(`   ⚠️ DRY-RUN: No se escribió el archivo`);
+    }
 
-		let postImplementationResult;
-		if (!input.options?.dryRun && filesWritten.length > 0) {
-			postImplementationResult = await orchestrator.executePostImplementationPhase(
-				filesWritten,
-				result.componentName,
-			);
-		} else {
-			console.log(`   ⚠️ Saltando fase post-implementación (dry-run o sin archivos)`);
-			postImplementationResult = {
-				prettier: { executed: false, formatted: 0 },
-				eslint: { executed: false, errors: 0, warnings: 0, fixed: 0 },
-				autoReload: { executed: false, reloaded: false },
-				github: { executed: false, committed: false, pushed: false },
-				problemTracker: { executed: false, problemsDetected: 0 },
-			};
-		}
+    // ========================================
+    // FASE 3: POST-IMPLEMENTACIÓN (Add-ons de calidad)
+    // ========================================
+    console.log(`\n✨ [Autorun MCP] FASE 3: POST-IMPLEMENTACIÓN`);
 
-		// ========================================
-		// FASE 4: VERIFICACIÓN (Tests visuales opcionales)
-		// ========================================
-		console.log(`\n✅ [Autorun MCP] FASE 4: VERIFICACIÓN`);
+    let postImplementationResult;
+    if (!input.options?.dryRun && filesWritten.length > 0) {
+      postImplementationResult =
+        await orchestrator.executePostImplementationPhase(
+          filesWritten,
+          result.componentName
+        );
+    } else {
+      console.log(
+        `   ⚠️ Saltando fase post-implementación (dry-run o sin archivos)`
+      );
+      postImplementationResult = {
+        prettier: { executed: false, formatted: 0 },
+        eslint: { executed: false, errors: 0, warnings: 0, fixed: 0 },
+        autoReload: { executed: false, reloaded: false },
+        github: { executed: false, committed: false, pushed: false },
+        problemTracker: { executed: false, problemsDetected: 0 },
+      };
+    }
 
-		let visualTestResult;
-		if (input.options?.runVisualTests) {
-			console.log(`   [4.1] Ejecutando tests visuales...`);
-			// TODO: Implementar tests visuales con Chromatic
-			visualTestResult = {
-				passed: 0,
-				failed: 0,
-				new: 0,
-			};
-			console.log(`   ⚠️ Tests visuales aún no implementados`);
-		} else {
-			console.log(`   ⚠️ Tests visuales saltados (runVisualTests=false)`);
-		}
+    // ========================================
+    // FASE 4: VERIFICACIÓN (Tests visuales opcionales)
+    // ========================================
+    console.log(`\n✅ [Autorun MCP] FASE 4: VERIFICACIÓN`);
 
-		// ========================================
-		// RESULTADO FINAL
-		// ========================================
-		console.log(`\n✅ [Autorun MCP] Implementación completada exitosamente`);
+    let visualTestResult;
+    if (input.options?.runVisualTests) {
+      console.log(`   [4.1] Ejecutando tests visuales...`);
+      // TODO: Implementar tests visuales con Chromatic
+      visualTestResult = {
+        passed: 0,
+        failed: 0,
+        new: 0,
+      };
+      console.log(`   ⚠️ Tests visuales aún no implementados`);
+    } else {
+      console.log(`   ⚠️ Tests visuales saltados (runVisualTests=false)`);
+    }
 
-		const components = result.mcpMessages?.map((msg) => ({
-			name: msg.componentName,
-			storybookId: msg.storybookId,
-			implemented: true,
-		})) || [
-			{
-				name: result.componentName,
-				storybookId: componentId,
-				implemented: true,
-			},
-		];
+    // ========================================
+    // RESULTADO FINAL
+    // ========================================
+    console.log(`\n✅ [Autorun MCP] Implementación completada exitosamente`);
 
-		return {
-			success: true,
-			filesWritten,
-			verification: {
-				preImplementation: true,
-				postImplementation: true,
-				prettier: postImplementationResult.prettier.executed,
-				eslint: postImplementationResult.eslint.executed
-					? {
-							errors: postImplementationResult.eslint.errors,
-							fixed: postImplementationResult.eslint.fixed,
-							warnings: postImplementationResult.eslint.warnings,
-						}
-					: undefined,
-				autoReload: postImplementationResult.autoReload.reloaded,
-				github: postImplementationResult.github.committed
-					? {
-							committed: true,
-							pushed: postImplementationResult.github.pushed,
-							commitHash: postImplementationResult.github.commitHash,
-						}
-					: undefined,
-				visual: visualTestResult
-					? {
-							passed: visualTestResult.passed,
-							failed: visualTestResult.failed,
-							new: visualTestResult.new,
-						}
-					: undefined,
-				errors: [],
-				warnings: warnings.length > 0 ? warnings : [],
-			},
-			components,
-			plan: preparationResult.plan,
-			warnings: warnings.length > 0 ? warnings : undefined,
-		};
-	} catch (error: any) {
-		console.error(`\n❌ [Autorun MCP] Error en autorun.apply(): ${error.message}`);
-		console.error(error.stack);
+    const components = result.mcpMessages?.map((msg) => ({
+      name: msg.componentName,
+      storybookId: msg.storybookId,
+      implemented: true,
+    })) || [
+      {
+        name: result.componentName,
+        storybookId: componentId,
+        implemented: true,
+      },
+    ];
 
-		// Registrar en Problem Tracker si está disponible
-		try {
-			const problemTrackerAddon = await orchestrator.getAddon('problem-tracker');
-			if (problemTrackerAddon && problemTrackerAddon.isActive()) {
-				const services = problemTrackerAddon.getServices();
-				if (services && services.detectProblem) {
-					await services.detectProblem(`Error en autorun.apply(): ${error.message}`, {
-						category: 'implementacion',
-						severity: 'high',
-						message: input.message,
-						error: error.message,
-						stack: error.stack,
-					});
-				}
-			}
-		} catch (trackerError) {
-			// Ignorar errores del Problem Tracker
-		}
+    return {
+      success: true,
+      filesWritten,
+      verification: {
+        preImplementation: true,
+        postImplementation: true,
+        prettier: postImplementationResult.prettier.executed,
+        eslint: postImplementationResult.eslint.executed
+          ? {
+              errors: postImplementationResult.eslint.errors,
+              fixed: postImplementationResult.eslint.fixed,
+              warnings: postImplementationResult.eslint.warnings,
+            }
+          : undefined,
+        autoReload: postImplementationResult.autoReload.reloaded,
+        github: postImplementationResult.github.committed
+          ? {
+              committed: true,
+              pushed: postImplementationResult.github.pushed,
+              commitHash: postImplementationResult.github.commitHash,
+            }
+          : undefined,
+        visual: visualTestResult
+          ? {
+              passed: visualTestResult.passed,
+              failed: visualTestResult.failed,
+              new: visualTestResult.new,
+            }
+          : undefined,
+        errors: [],
+        warnings: warnings.length > 0 ? warnings : [],
+      },
+      components,
+      plan: preparationResult.plan,
+      warnings: warnings.length > 0 ? warnings : undefined,
+    };
+  } catch (error: any) {
+    console.error(
+      `\n❌ [Autorun MCP] Error en autorun.apply(): ${error.message}`
+    );
+    console.error(error.stack);
 
-		return {
-			success: false,
-			filesWritten,
-			verification: {
-				preImplementation: false,
-				postImplementation: false,
-				errors: [error.message],
-				warnings,
-			},
-			components: [],
-			errors: [error.message],
-			warnings: warnings.length > 0 ? warnings : undefined,
-		};
-	}
+    // Registrar en Problem Tracker si está disponible
+    try {
+      const problemTrackerAddon =
+        await orchestrator.getAddon('problem-tracker');
+      if (problemTrackerAddon && problemTrackerAddon.isActive()) {
+        const services = problemTrackerAddon.getServices();
+        if (services && services.detectProblem) {
+          await services.detectProblem(
+            `Error en autorun.apply(): ${error.message}`,
+            {
+              category: 'implementacion',
+              severity: 'high',
+              message: input.message,
+              error: error.message,
+              stack: error.stack,
+            }
+          );
+        }
+      }
+    } catch (trackerError) {
+      // Ignorar errores del Problem Tracker
+    }
+
+    return {
+      success: false,
+      filesWritten,
+      verification: {
+        preImplementation: false,
+        postImplementation: false,
+        errors: [error.message],
+        warnings,
+      },
+      components: [],
+      errors: [error.message],
+      warnings: warnings.length > 0 ? warnings : undefined,
+    };
+  }
 }
 
 /**
  * ✅ NUEVO: Flujo Mode B (prototypeTokens)
- * 
+ *
  * Usa:
  * - GlobalTokenRegistry para tokens
  * - PrototypeTokenKit para widgets tokenizados
@@ -634,214 +718,302 @@ async function autorunApplyStrict(input: AutorunApplyInput): Promise<AutorunAppl
  * - Watermark v2 para enforcement
  */
 async function autorunApplyModeB(
-	input: AutorunApplyInput,
-	targetFile: string | null
+  input: AutorunApplyInput,
+  targetFile: string | null
 ): Promise<AutorunApplyOutput> {
-	console.log(`\n🚀 [Autorun MCP] autorun.apply() Mode B (prototypeTokens)`);
+  console.log(`\n🚀 [Autorun MCP] autorun.apply() Mode B (prototypeTokens)`);
 
-	const errors: string[] = [];
-	const warnings: string[] = [];
-	const filesWritten: string[] = [];
+  const errors: string[] = [];
+  const warnings: string[] = [];
+  const filesWritten: string[] = [];
 
-	try {
-		// ✅ 0. Design Intake (si está presente)
-		let blueprint: { sections: any[] } | null = null;
-		let mappedBlueprint: { sections: any[] } | null = null;
+  try {
+    // ✅ 0. Design Intake (si está presente)
+    let blueprint: { sections: any[] } | null = null;
+    let mappedBlueprint: { sections: any[] } | null = null;
 
-		if (input.design) {
-			console.log(`   [0] Procesando design intake...`);
-			const contractStoreForDesign = new ContractStore();
-			const blueprintMapper = new BlueprintMapper(contractStoreForDesign);
+    if (input.design) {
+      console.log(`   [0] Procesando design intake...`);
+      const contractStoreForDesign = new ContractStore();
+      const blueprintMapper = new BlueprintMapper(contractStoreForDesign);
 
-			if (input.design.figma) {
-				console.log(`   [0.1] Extrayendo desde Figma...`);
-				const figmaIngestor = new FigmaIngestor();
-				const designModel = await figmaIngestor.ingest({
-					url: input.design.figma.url,
-					frameNodeId: input.design.figma.frameNodeId,
-				});
-				blueprint = blueprintFromFigma(designModel);
-				if (blueprint) {
-					mappedBlueprint = await blueprintMapper.map(blueprint, 'figma');
-					console.log(`   ✅ Blueprint desde Figma: ${blueprint.sections.length} secciones`);
-				}
-			} else if (input.design.image) {
-				console.log(`   [0.1] Procesando imagen...`);
-				const imageIngestor = new ImageIngestor();
-				const layoutModel = await imageIngestor.ingest({
-					kind: input.design.image.kind,
-					value: input.design.image.value,
-				});
-				blueprint = blueprintFromImage(layoutModel);
-				if (blueprint) {
-					mappedBlueprint = await blueprintMapper.map(blueprint, 'image');
-					console.log(`   ✅ Blueprint desde imagen: ${blueprint.sections.length} secciones`);
-				}
-			}
-		}
+      if (input.design.figma) {
+        console.log(`   [0.1] Extrayendo desde Figma...`);
+        const figmaIngestor = new FigmaIngestor();
+        const designModel = await figmaIngestor.ingest({
+          url: input.design.figma.url,
+          frameNodeId: input.design.figma.frameNodeId,
+        });
+        blueprint = blueprintFromFigma(designModel);
+        if (blueprint) {
+          mappedBlueprint = await blueprintMapper.map(blueprint, 'figma');
+          console.log(
+            `   ✅ Blueprint desde Figma: ${blueprint.sections.length} secciones`
+          );
+        }
+      } else if (input.design.image) {
+        console.log(`   [0.1] Procesando imagen...`);
+        const imageIngestor = new ImageIngestor();
+        const layoutModel = await imageIngestor.ingest({
+          kind: input.design.image.kind,
+          value: input.design.image.value,
+        });
+        blueprint = blueprintFromImage(layoutModel);
+        if (blueprint) {
+          mappedBlueprint = await blueprintMapper.map(blueprint, 'image');
+          console.log(
+            `   ✅ Blueprint desde imagen: ${blueprint.sections.length} secciones`
+          );
+        }
+      }
+    }
 
-		// ✅ 1. Detectar componente del mensaje (o usar blueprint si está disponible)
-		let result;
-		if (mappedBlueprint && mappedBlueprint.sections.length > 0) {
-			// Usar primer componente del blueprint
-			const firstComponent = mappedBlueprint.sections[0]?.components[0];
-			if (firstComponent) {
-				result = {
-					blocked: false,
-					componentName: firstComponent.componentName,
-					reason: null,
-					mcpMessages: [],
-				};
-				console.log(`   ✅ Componente desde blueprint: ${firstComponent.componentName}`);
-			} else {
-				result = await handleUserMessage(input.message);
-			}
-		} else {
-			result = await handleUserMessage(input.message);
-		}
+    // ✅ 1. Detectar componente del mensaje (o usar blueprint si está disponible)
+    let result;
+    if (mappedBlueprint && mappedBlueprint.sections.length > 0) {
+      // Usar primer componente del blueprint
+      const firstComponent = mappedBlueprint.sections[0]?.components[0];
+      if (firstComponent) {
+        result = {
+          blocked: false,
+          componentName: firstComponent.componentName,
+          reason: null,
+          mcpMessages: [],
+        };
+        console.log(
+          `   ✅ Componente desde blueprint: ${firstComponent.componentName}`
+        );
+      } else {
+        result = await handleUserMessage(input.message);
+      }
+    } else {
+      result = await handleUserMessage(input.message);
+    }
 
-		if (result.blocked || !result.componentName) {
-			return {
-				success: false,
-				filesWritten: [],
-				verification: {
-					preImplementation: false,
-					postImplementation: false,
-					errors: [result.reason || 'No se detectó componente'],
-					warnings: [],
-				},
-				components: [],
-				errors: [result.reason || 'No se detectó componente'],
-			};
-		}
+    if (result.blocked || !result.componentName) {
+      return {
+        success: false,
+        filesWritten: [],
+        verification: {
+          preImplementation: false,
+          postImplementation: false,
+          errors: [result.reason || 'No se detectó componente'],
+          warnings: [],
+        },
+        components: [],
+        errors: [result.reason || 'No se detectó componente'],
+      };
+    }
 
-		const componentName = result.componentName;
-		console.log(`   ✅ Componente detectado: ${componentName}`);
+    const componentName = result.componentName;
+    console.log(`   ✅ Componente detectado: ${componentName}`);
 
-		// ✅ 2. Obtener ID de Storybook
-		let componentId: string;
-		try {
-			componentId = await mapAndValidateComponentNameToStorybookId(componentName);
-			console.log(`   ✅ ID de Storybook: ${componentId}`);
-		} catch (error: any) {
-			const errorMsg = `No se pudo obtener ID de Storybook: ${error.message}`;
-			console.error(`   ❌ ${errorMsg}`);
-			return {
-				success: false,
-				filesWritten: [],
-				verification: {
-					preImplementation: false,
-					postImplementation: false,
-					errors: [errorMsg],
-					warnings: [],
-				},
-				components: [],
-				errors: [errorMsg],
-			};
-		}
+    // ✅ 2. Obtener ID de Storybook
+    let componentId: string;
+    try {
+      componentId =
+        await mapAndValidateComponentNameToStorybookId(componentName);
+      console.log(`   ✅ ID de Storybook: ${componentId}`);
+    } catch (error: any) {
+      const errorMsg = `No se pudo obtener ID de Storybook: ${error.message}`;
+      console.error(`   ❌ ${errorMsg}`);
+      return {
+        success: false,
+        filesWritten: [],
+        verification: {
+          preImplementation: false,
+          postImplementation: false,
+          errors: [errorMsg],
+          warnings: [],
+        },
+        components: [],
+        errors: [errorMsg],
+      };
+    }
 
-		// ✅ 3. Cargar GlobalTokenRegistry
-		console.log(`   [3] Cargando GlobalTokenRegistry...`);
-		const tokenRegistry = await getGlobalTokenRegistry();
-		console.log(`   ✅ ${tokenRegistry.getAll().length} tokens cargados`);
+    // ✅ 3. Cargar GlobalTokenRegistry
+    console.log(`   [3] Cargando GlobalTokenRegistry...`);
+    const tokenRegistry = await getGlobalTokenRegistry();
+    console.log(`   ✅ ${tokenRegistry.getAll().length} tokens cargados`);
 
-		// ✅ 4. Resolver dependencias desde contratos (NO desde Storybook MCP)
-		console.log(`   [4] Resolviendo dependencias desde contratos...`);
-		const contractStore = new ContractStore();
-		const dependencyResolver = new DependencyResolver(contractStore);
-		
-		let resolvedDeps;
-		try {
-			resolvedDeps = await dependencyResolver.resolveGraph(componentId);
-			console.log(`   ✅ Dependencias: ${resolvedDeps.publicDeps.length} públicas`);
-			console.log(`   ✅ Internals: ${resolvedDeps.internals.length} (no se implementan)`);
-		} catch (error: any) {
-			console.warn(`   ⚠️ Error resolviendo dependencias: ${error.message}`);
-			resolvedDeps = {
-				root: componentId,
-				publicDeps: [],
-				internals: [],
-				slotPlan: {},
-			};
-		}
+    // ✅ 4. Resolver dependencias desde contratos (NO desde Storybook MCP)
+    console.log(`   [4] Resolviendo dependencias desde contratos...`);
+    const contractStore = new ContractStore();
+    const dependencyResolver = new DependencyResolver(contractStore);
 
-		// ✅ 4.5 Planificar composición con CompositionPlanner (profundidad real)
-		console.log(`   [4.5] Planificando composición...`);
-		const compositionPlanner = new CompositionPlanner(contractStore, dependencyResolver);
-		let compositionPlan;
-		try {
-			compositionPlan = await compositionPlanner.planComposition(componentId, input.message, 3);
-			console.log(`   ✅ Composición planificada: ${Object.keys(compositionPlan.slots).length} slots`);
-		} catch (error: any) {
-			console.warn(`   ⚠️ Error planificando composición: ${error.message}`);
-			compositionPlan = {
-				root: componentId,
-				slots: {},
-				deps: resolvedDeps.publicDeps,
-			};
-		}
+    let resolvedDeps;
+    try {
+      resolvedDeps = await dependencyResolver.resolveGraph(componentId);
+      console.log(
+        `   ✅ Dependencias: ${resolvedDeps.publicDeps.length} públicas`
+      );
+      console.log(
+        `   ✅ Internals: ${resolvedDeps.internals.length} (no se implementan)`
+      );
+    } catch (error: any) {
+      console.warn(`   ⚠️ Error resolviendo dependencias: ${error.message}`);
+      resolvedDeps = {
+        root: componentId,
+        publicDeps: [],
+        internals: [],
+        slotPlan: {},
+      };
+    }
 
-		// ✅ 5. Intentar extraer código desde Storybook
-		console.log(`   [5] Intentando extraer código desde Storybook...`);
-		let codeToInsert = '';
-		let componentExists = false;
+    // ✅ 4.5 Planificar composición con CompositionPlanner (profundidad real)
+    console.log(`   [4.5] Planificando composición...`);
+    const compositionPlanner = new CompositionPlanner(
+      contractStore,
+      dependencyResolver
+    );
+    let compositionPlan;
+    try {
+      compositionPlan = await compositionPlanner.planComposition(
+        componentId,
+        input.message,
+        3
+      );
+      console.log(
+        `   ✅ Composición planificada: ${Object.keys(compositionPlan.slots).length} slots`
+      );
+    } catch (error: any) {
+      console.warn(`   ⚠️ Error planificando composición: ${error.message}`);
+      compositionPlan = {
+        root: componentId,
+        slots: {},
+        deps: resolvedDeps.publicDeps,
+      };
+    }
 
-		try {
-			const exactCode = await extractExactCodeFromStorybookWithBrowser(componentId, 'default');
-			if (exactCode && exactCode.html) {
-				codeToInsert = exactCode.html;
-				componentExists = true;
-				console.log(`   ✅ Código UBITS extraído: ${codeToInsert.length} caracteres`);
-			}
-		} catch (error: any) {
-			console.warn(`   ⚠️ No se pudo extraer desde Storybook: ${error.message}`);
-			console.log(`   📦 Usando PrototypeTokenKit como fallback...`);
-		}
+    // ✅ 5. Intentar extraer código desde Storybook
+    console.log(`   [5] Intentando extraer código desde Storybook...`);
+    let codeToInsert = '';
+    let componentExists = false;
 
-		// ✅ 6. Si no existe, generar widget tokenizado
-		if (!componentExists) {
-			const tokenKit = new PrototypeTokenKit(tokenRegistry);
-			
-			// Detectar tipo de widget según el mensaje
-			if (input.message.toLowerCase().includes('kpi') || input.message.toLowerCase().includes('card')) {
-				codeToInsert = tokenKit.generateKpiCard({
-					title: componentName,
-					value: '0',
-				});
-			} else if (input.message.toLowerCase().includes('filter') || input.message.toLowerCase().includes('filtro')) {
-				codeToInsert = tokenKit.generateFiltersRow({
-					filters: [{ label: 'Filtro 1', type: 'text' }],
-				});
-			} else if (input.message.toLowerCase().includes('empty') || input.message.toLowerCase().includes('vacío')) {
-				codeToInsert = tokenKit.generateEmptyState({
-					title: `No hay ${componentName}`,
-					description: 'No se encontraron datos',
-				});
-			} else {
-				// Default: Simple Card
-				codeToInsert = tokenKit.generateSimpleCard({
-					title: componentName,
-					content: `<p>Contenido de ${componentName}</p>`,
-				});
-			}
-			console.log(`   ✅ Widget tokenizado generado`);
-		}
+    try {
+      const exactCode = await extractExactCodeFromStorybookWithBrowser(
+        componentId,
+        'default'
+      );
+      if (exactCode && exactCode.html) {
+        codeToInsert = exactCode.html;
+        componentExists = true;
+        console.log(
+          `   ✅ Código UBITS extraído: ${codeToInsert.length} caracteres`
+        );
 
-		// ✅ 7. Determinar archivo objetivo
-		if (!targetFile) {
-			targetFile = await detectTargetFile();
-			if (!targetFile) {
-				targetFile = path.join(process.cwd(), 'prototypes', 'canvas-default.html');
-				// Asegurar que existe
-				const dir = path.dirname(targetFile);
-				await fs.mkdir(dir, { recursive: true });
-				// Crear archivo básico si no existe
-				try {
-					await fs.access(targetFile);
-				} catch {
-					await fs.writeFile(
-						targetFile,
-						`<!DOCTYPE html>
+        // ✅ MEJORA 2: Sanitizar código extraído para hardcoded colors
+        console.log(`   [5.1] Sanitizando código extraído...`);
+        const { sanitizeCodeFromStorybook } = await import(
+          '../../helpers/codeSanitizer.js'
+        );
+        const sanitizeResult = await sanitizeCodeFromStorybook(
+          codeToInsert,
+          tokenRegistry
+        );
+
+        if (sanitizeResult.replaced > 0) {
+          console.log(
+            `   ✅ Sanitizado: ${sanitizeResult.replaced} colores reemplazados con tokens`
+          );
+          codeToInsert = sanitizeResult.sanitized;
+        }
+
+        if (sanitizeResult.errors.length > 0) {
+          console.error(
+            `   ❌ Errores en sanitización: ${sanitizeResult.errors.join(', ')}`
+          );
+          errors.push(...sanitizeResult.errors);
+          // ⚠️ CRÍTICO: Si hay colores hardcodeados que no se pudieron reemplazar, fallar
+          if (
+            sanitizeResult.errors.some((e) => e.includes('no reemplazable'))
+          ) {
+            const errorMsg =
+              'Código extraído contiene colores hardcodeados que no se pudieron reemplazar. Requiere revisión manual.';
+            console.error(`   ❌ ${errorMsg}`);
+            return {
+              success: false,
+              filesWritten: [],
+              verification: {
+                preImplementation: false,
+                postImplementation: false,
+                errors: [errorMsg, ...sanitizeResult.errors],
+                warnings: sanitizeResult.warnings,
+              },
+              components: [],
+              errors: [errorMsg, ...sanitizeResult.errors],
+            };
+          }
+        }
+
+        if (sanitizeResult.warnings.length > 0) {
+          warnings.push(...sanitizeResult.warnings);
+        }
+      }
+    } catch (error: any) {
+      console.warn(
+        `   ⚠️ No se pudo extraer desde Storybook: ${error.message}`
+      );
+      console.log(`   📦 Usando PrototypeTokenKit como fallback...`);
+    }
+
+    // ✅ 6. Si no existe, generar widget tokenizado
+    if (!componentExists) {
+      const tokenKit = new PrototypeTokenKit(tokenRegistry);
+
+      // Detectar tipo de widget según el mensaje
+      if (
+        input.message.toLowerCase().includes('kpi') ||
+        input.message.toLowerCase().includes('card')
+      ) {
+        codeToInsert = tokenKit.generateKpiCard({
+          title: componentName,
+          value: '0',
+        });
+      } else if (
+        input.message.toLowerCase().includes('filter') ||
+        input.message.toLowerCase().includes('filtro')
+      ) {
+        codeToInsert = tokenKit.generateFiltersRow({
+          filters: [{ label: 'Filtro 1', type: 'text' }],
+        });
+      } else if (
+        input.message.toLowerCase().includes('empty') ||
+        input.message.toLowerCase().includes('vacío')
+      ) {
+        codeToInsert = tokenKit.generateEmptyState({
+          title: `No hay ${componentName}`,
+          description: 'No se encontraron datos',
+        });
+      } else {
+        // Default: Simple Card
+        codeToInsert = tokenKit.generateSimpleCard({
+          title: componentName,
+          content: `<p>Contenido de ${componentName}</p>`,
+        });
+      }
+      console.log(`   ✅ Widget tokenizado generado`);
+    }
+
+    // ✅ 7. Determinar archivo objetivo
+    if (!targetFile) {
+      targetFile = await detectTargetFile();
+      if (!targetFile) {
+        targetFile = path.join(
+          process.cwd(),
+          'prototypes',
+          'canvas-default.html'
+        );
+        // Asegurar que existe
+        const dir = path.dirname(targetFile);
+        await fs.mkdir(dir, { recursive: true });
+        // Crear archivo básico si no existe
+        try {
+          await fs.access(targetFile);
+        } catch {
+          await fs.writeFile(
+            targetFile,
+            `<!DOCTYPE html>
 <html>
 <head>
   <title>Prototype</title>
@@ -854,108 +1026,114 @@ async function autorunApplyModeB(
   <!-- AUTORUN:ANCHOR:SCRIPTS -->
 </body>
 </html>`,
-						'utf-8'
-					);
-				}
-			}
-		}
-		console.log(`   ✅ Archivo objetivo: ${targetFile}`);
+            'utf-8'
+          );
+        }
+      }
+    }
+    console.log(`   ✅ Archivo objetivo: ${targetFile}`);
 
-		// ✅ 8. Insertar con watermark v2 usando HtmlPrototypeAdapter
-		console.log(`   [8] Insertando código con watermark v2...`);
-		const adapter = new HtmlPrototypeAdapter();
+    // ✅ 8. Insertar con watermark v2 usando HtmlPrototypeAdapter
+    console.log(`   [8] Insertando código con watermark v2...`);
+    const adapter = new HtmlPrototypeAdapter();
 
-		const { wrappedContent } = emitWatermark(
-			{
-				v: 2,
-				mode: 'prototypeTokens',
-				components: componentExists ? [componentId] : [],
-				widgets: componentExists ? [] : [componentId],
-				deps: resolvedDeps.publicDeps || [],
-			},
-			codeToInsert
-		);
+    const { wrappedContent } = emitWatermark(
+      {
+        v: 2,
+        mode: 'prototypeTokens',
+        components: componentExists ? [componentId] : [],
+        widgets: componentExists ? [] : [componentId],
+        deps: resolvedDeps.publicDeps || [],
+      },
+      codeToInsert
+    );
 
-		if (!input.options?.dryRun) {
-			await adapter.insertContentBlock(targetFile, wrappedContent);
-			filesWritten.push(targetFile);
-			console.log(`   ✅ Código insertado con watermark v2`);
-		} else {
-			console.log(`   ⚠️ DRY-RUN: No se insertó el código`);
-		}
+    if (!input.options?.dryRun) {
+      await adapter.insertContentBlock(targetFile, wrappedContent);
+      filesWritten.push(targetFile);
+      console.log(`   ✅ Código insertado con watermark v2`);
+    } else {
+      console.log(`   ⚠️ DRY-RUN: No se insertó el código`);
+    }
 
-		// ✅ 9. Recomendar verify("diff")
-		warnings.push('Ejecuta autorun.verify({ targetFiles: "diff" }) para validar cambios');
+    // ✅ 9. Recomendar verify("diff")
+    warnings.push(
+      'Ejecuta autorun.verify({ targetFiles: "diff" }) para validar cambios'
+    );
 
-		return {
-			success: true,
-			filesWritten,
-			verification: {
-				preImplementation: true,
-				postImplementation: true,
-				errors: [],
-				warnings: warnings.length > 0 ? warnings : [],
-			},
-			components: [
-				{
-					name: componentName,
-					storybookId: componentId,
-					implemented: true,
-				},
-			],
-			errors: [],
-			warnings: warnings.length > 0 ? warnings : undefined,
-		};
-	} catch (error: any) {
-		console.error(`\n❌ [Autorun MCP] Error en autorunApplyModeB(): ${error.message}`);
-		console.error(error.stack);
+    return {
+      success: true,
+      filesWritten,
+      verification: {
+        preImplementation: true,
+        postImplementation: true,
+        errors: [],
+        warnings: warnings.length > 0 ? warnings : [],
+      },
+      components: [
+        {
+          name: componentName,
+          storybookId: componentId,
+          implemented: true,
+        },
+      ],
+      errors: [],
+      warnings: warnings.length > 0 ? warnings : undefined,
+    };
+  } catch (error: any) {
+    console.error(
+      `\n❌ [Autorun MCP] Error en autorunApplyModeB(): ${error.message}`
+    );
+    console.error(error.stack);
 
-		return {
-			success: false,
-			filesWritten: [],
-			verification: {
-				preImplementation: false,
-				postImplementation: false,
-				errors: [error.message],
-				warnings: [],
-			},
-			components: [],
-			errors: [error.message],
-		};
-	}
+    return {
+      success: false,
+      filesWritten: [],
+      verification: {
+        preImplementation: false,
+        postImplementation: false,
+        errors: [error.message],
+        warnings: [],
+      },
+      components: [],
+      errors: [error.message],
+    };
+  }
 }
 
 /**
  * Detecta archivo objetivo automáticamente
  */
-async function detectTargetFile(componentName?: string): Promise<string | null> {
-	try {
-		// Buscar archivos HTML en prototypes/
-		const prototypesDir = path.join(process.cwd(), 'prototypes');
-		const files = await fs.readdir(prototypesDir);
-		const htmlFiles = files.filter((f) => f.endsWith('.html'));
+async function detectTargetFile(
+  componentName?: string
+): Promise<string | null> {
+  try {
+    // Buscar archivos HTML en prototypes/
+    const prototypesDir = path.join(process.cwd(), 'prototypes');
+    const files = await fs.readdir(prototypesDir);
+    const htmlFiles = files.filter((f) => f.endsWith('.html'));
 
-		if (htmlFiles.length === 0) {
-			return null;
-		}
+    if (htmlFiles.length === 0) {
+      return null;
+    }
 
-		// Si hay solo un archivo, usarlo
-		if (htmlFiles.length === 1) {
-			return path.join(prototypesDir, htmlFiles[0]);
-		}
+    // Si hay solo un archivo, usarlo
+    if (htmlFiles.length === 1) {
+      return path.join(prototypesDir, htmlFiles[0]);
+    }
 
-		// Si hay múltiples, usar el más reciente
-		let mostRecent: { file: string; mtime: Date } | null = null;
-		for (const file of htmlFiles) {
-			const filePath = path.join(prototypesDir, file);
-			const stats = await fs.stat(filePath);
-			if (!mostRecent || stats.mtime > mostRecent.mtime) {
-				mostRecent = { file: filePath, mtime: stats.mtime };
-			}
-		}
+    // Si hay múltiples, usar el más reciente
+    let mostRecent: { file: string; mtime: Date } | null = null;
+    for (const file of htmlFiles) {
+      const filePath = path.join(prototypesDir, file);
+      const stats = await fs.stat(filePath);
+      if (!mostRecent || stats.mtime > mostRecent.mtime) {
+        mostRecent = { file: filePath, mtime: stats.mtime };
+      }
+    }
 
-		return mostRecent ? mostRecent.file : null;
-	} catch (error) {
-		return null;
-	}
+    return mostRecent ? mostRecent.file : null;
+  } catch (error) {
+    return null;
+  }
 }
