@@ -196,20 +196,23 @@ function detectHardcodedColorsInCode(code: string): Array<{
 }
 
 /**
- * ✅ Sugiere un token similar para un color dado
+ * ✅ MEJORA: Sugiere un token similar para un color dado usando mapeo inteligente
  */
 async function suggestTokenForColor(
   color: string,
   registry: GlobalTokenRegistry
 ): Promise<string | null> {
-  // Normalizar color a formato comparable
-  const normalizedColor = normalizeColor(color);
+  // Normalizar color a formato RGB comparable
+  const normalizedRGB = normalizeColorToRGB(color);
 
-  if (!normalizedColor) {
+  if (!normalizedRGB) {
     return null;
   }
 
-  // Buscar tokens de color en el registro
+  // Obtener valores de tokens desde CSS
+  const tokenValues = await registry.getTokenValues();
+
+  // Buscar tokens de color
   const allTokens = registry.getAll();
   const colorTokens = allTokens.filter((token) => {
     // Buscar tokens relacionados con colores
@@ -222,11 +225,159 @@ async function suggestTokenForColor(
     );
   });
 
-  // Por ahora, retornar null (no hay mapeo de colores a tokens)
-  // TODO: Implementar mapeo inteligente de colores a tokens
-  // Esto requeriría conocer los valores de los tokens para comparar
+  // Calcular distancia de color para cada token
+  const candidates: Array<{ token: string; distance: number }> = [];
+
+  for (const token of colorTokens) {
+    const tokenValue = tokenValues.get(token);
+    if (!tokenValue) continue;
+
+    // Normalizar valor del token a RGB
+    const tokenRGB = normalizeColorToRGB(tokenValue);
+    if (!tokenRGB) continue;
+
+    // Calcular distancia euclidiana en espacio RGB
+    const distance = colorDistance(normalizedRGB, tokenRGB);
+    candidates.push({ token, distance });
+  }
+
+  // Ordenar por distancia (más cercano primero)
+  candidates.sort((a, b) => a.distance - b.distance);
+
+  // Retornar el token más cercano si la distancia es razonable (< 50 en espacio RGB)
+  if (candidates.length > 0 && candidates[0].distance < 50) {
+    return candidates[0].token;
+  }
 
   return null;
+}
+
+/**
+ * ✅ Normaliza un color a RGB para comparación
+ */
+function normalizeColorToRGB(
+  color: string
+): { r: number; g: number; b: number } | null {
+  // Hex
+  const hexMatch = color.match(/^#([0-9a-fA-F]{3,8})$/);
+  if (hexMatch) {
+    const hex = hexMatch[1];
+    if (hex.length === 3) {
+      // #RGB -> #RRGGBB
+      const r = parseInt(hex[0] + hex[0], 16);
+      const g = parseInt(hex[1] + hex[1], 16);
+      const b = parseInt(hex[2] + hex[2], 16);
+      return { r, g, b };
+    } else if (hex.length === 6) {
+      const r = parseInt(hex.substring(0, 2), 16);
+      const g = parseInt(hex.substring(2, 4), 16);
+      const b = parseInt(hex.substring(4, 6), 16);
+      return { r, g, b };
+    }
+  }
+
+  // RGB/RGBA
+  const rgbMatch = color.match(/rgba?\(([^)]+)\)/i);
+  if (rgbMatch) {
+    const values = rgbMatch[1].split(',').map((v) => parseFloat(v.trim()));
+    if (values.length >= 3) {
+      return {
+        r: Math.round(values[0]),
+        g: Math.round(values[1]),
+        b: Math.round(values[2]),
+      };
+    }
+  }
+
+  // HSL/HSLA (convertir a RGB)
+  const hslMatch = color.match(/hsla?\(([^)]+)\)/i);
+  if (hslMatch) {
+    const values = hslMatch[1].split(',').map((v) => parseFloat(v.trim()));
+    if (values.length >= 3) {
+      return hslToRgb(values[0], values[1], values[2]);
+    }
+  }
+
+  // Keywords conocidos
+  const keywordColors: Record<string, { r: number; g: number; b: number }> = {
+    white: { r: 255, g: 255, b: 255 },
+    black: { r: 0, g: 0, b: 0 },
+    red: { r: 255, g: 0, b: 0 },
+    green: { r: 0, g: 128, b: 0 },
+    blue: { r: 0, g: 0, b: 255 },
+  };
+
+  const lowerColor = color.toLowerCase();
+  if (keywordColors[lowerColor]) {
+    return keywordColors[lowerColor];
+  }
+
+  return null;
+}
+
+/**
+ * ✅ Convierte HSL a RGB
+ */
+function hslToRgb(
+  h: number,
+  s: number,
+  l: number
+): { r: number; g: number; b: number } {
+  s /= 100;
+  l /= 100;
+
+  const c = (1 - Math.abs(2 * l - 1)) * s;
+  const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
+  const m = l - c / 2;
+
+  let r = 0,
+    g = 0,
+    b = 0;
+
+  if (h >= 0 && h < 60) {
+    r = c;
+    g = x;
+    b = 0;
+  } else if (h >= 60 && h < 120) {
+    r = x;
+    g = c;
+    b = 0;
+  } else if (h >= 120 && h < 180) {
+    r = 0;
+    g = c;
+    b = x;
+  } else if (h >= 180 && h < 240) {
+    r = 0;
+    g = x;
+    b = c;
+  } else if (h >= 240 && h < 300) {
+    r = x;
+    g = 0;
+    b = c;
+  } else if (h >= 300 && h < 360) {
+    r = c;
+    g = 0;
+    b = x;
+  }
+
+  return {
+    r: Math.round((r + m) * 255),
+    g: Math.round((g + m) * 255),
+    b: Math.round((b + m) * 255),
+  };
+}
+
+/**
+ * ✅ Calcula distancia euclidiana entre dos colores RGB
+ */
+function colorDistance(
+  color1: { r: number; g: number; b: number },
+  color2: { r: number; g: number; b: number }
+): number {
+  const dr = color1.r - color2.r;
+  const dg = color1.g - color2.g;
+  const db = color1.b - color2.b;
+  return Math.sqrt(dr * dr + dg * dg + db * db);
 }
 
 /**
