@@ -393,10 +393,26 @@ export class PrototypeTokenKit {
     // this.registry.assertExists('--ubits-accent-success'); // Puede no existir
     // this.registry.assertExists('--ubits-accent-error'); // Puede no existir
 
+    // Usar tokens disponibles (success/error pueden no existir)
+    const getTrendColor = (trend: 'up' | 'down' | 'neutral') => {
+      if (trend === 'up') {
+        // Intentar usar success, si no existe usar brand
+        return this.registry.has('--ubits-accent-success')
+          ? 'var(--ubits-accent-success)'
+          : 'var(--ubits-accent-brand)';
+      } else if (trend === 'down') {
+        // Intentar usar error, si no existe usar fg-medium
+        return this.registry.has('--ubits-accent-error')
+          ? 'var(--ubits-accent-error)'
+          : 'var(--ubits-fg-1-medium)';
+      }
+      return 'var(--ubits-fg-1-medium)';
+    };
+
     const changeHtml = props.change
       ? `
 <div class="ubits-metric-card__change" style="
-  color: ${props.change.trend === 'up' ? 'var(--ubits-accent-success)' : props.change.trend === 'down' ? 'var(--ubits-accent-error)' : 'var(--ubits-fg-1-medium)'};
+  color: ${getTrendColor(props.change.trend)};
   font-size: 12px;
   margin-top: var(--ubits-spacing-xs);
 ">
