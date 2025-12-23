@@ -2258,6 +2258,21 @@
           // Restaurar componentes después
           setTimeout(() => {
             window.AUTORUN_PRESERVE_COMPONENTS.restoreAll();
+            
+            // ⚠️ CRÍTICO: Re-inicializar botón y modal después de restaurar contenido
+            // Esto asegura que el botón se cree incluso si ContentManager lo eliminó
+            setTimeout(() => {
+              if (typeof initButtonAndModal === 'function') {
+                // Resetear contadores para permitir reintentos
+                if (initButtonAndModal.containerAttempts !== undefined) {
+                  initButtonAndModal.containerAttempts = 0;
+                }
+                if (initButtonAndModal.buttonAttempts !== undefined) {
+                  initButtonAndModal.buttonAttempts = 0;
+                }
+                initButtonAndModal();
+              }
+            }, 200);
           }, 500);
           
           return result;
@@ -2575,12 +2590,36 @@
         console.log('✅ [Prueba Button+Modal] Modal HTML manual creado');
       }
 
-      // Inicializar cuando el DOM esté listo
+      // Inicializar cuando el DOM esté listo Y después de que ContentManager cargue el contenido
+      function waitForContentManager() {
+        // Verificar que ContentManager haya cargado el contenido inicial
+        const contentArea = document.querySelector('.content-area');
+        const container = document.getElementById('button-open-modal-container');
+        
+        if (!contentArea) {
+          setTimeout(waitForContentManager, 100);
+          return;
+        }
+        
+        // Esperar a que ContentManager.updateContent() termine de cargar el contenido inicial
+        if (window.UBITS_ContentManager && window.UBITS_ContentManager.currentSection) {
+          // ContentManager está listo, esperar un poco más para que el contenido se renderice
+          setTimeout(() => {
+            initButtonAndModal();
+          }, 1000);
+        } else {
+          // ContentManager aún no está listo
+          setTimeout(waitForContentManager, 100);
+        }
+      }
+
       if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initButtonAndModal);
+        document.addEventListener('DOMContentLoaded', () => {
+          setTimeout(waitForContentManager, 500);
+        });
       } else {
-        // Esperar un poco para que los componentes UBITS se carguen
-        setTimeout(initButtonAndModal, 500);
+        // Esperar a que ContentManager cargue el contenido inicial
+        setTimeout(waitForContentManager, 1000);
       }
     })();
   </script>
