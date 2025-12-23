@@ -2244,7 +2244,7 @@
       // AUTORUN: {"v":2,"mode":"prototypeTokens","components":["🧩-ux-button"],"widgets":[],"deps":[],"storybookId":"🧩-ux-button","hash":"f7g8h9i0j1k2"}
       // Consultado Storybook: docs/referencia/componentes/button.md
       // Storybook ID: 🧩-ux-button (Libraries UI)
-      // API: window.UBITS.Button.create()
+      // Implementación: HTML directo con clases UBITS (window.UBITS.Button.create() no disponible en este template)
       // Código extraído desde: https://libraries-ui.ubitslearning.com/?path=/story/🧩-ux-button--with-icon
       // ========================================
       function initCrearEncuestaButton() {
@@ -2254,30 +2254,29 @@
           return;
         }
         
-        // Verificar que UBITS.Button esté disponible
-        if (!window.UBITS || !window.UBITS.Button || !window.UBITS.Button.create) {
-          console.warn('⚠️ [Crear Encuesta Button] UBITS.Button.create no está disponible, reintentando...');
-          setTimeout(initCrearEncuestaButton, 500);
+        // Si ya tiene contenido, no hacer nada
+        if (container.innerHTML.trim() !== '') {
           return;
         }
         
         try {
-          // Crear botón usando la API de Storybook
+          // Crear botón usando HTML directo con clases UBITS
           // Según documentación: variant: 'primary', size: 'md', text: 'Crear Encuesta', icon: 'plus', iconStyle: 'regular', iconPosition: 'left'
-          const button = window.UBITS.Button.create({
-            variant: 'primary',
-            size: 'md',
-            text: 'Crear Encuesta',
-            icon: 'plus',
-            iconStyle: 'regular',
-            iconPosition: 'left'
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.className = 'ubits-button ubits-button--primary ubits-button--md';
+          button.innerHTML = '<i class="far fa-plus"></i><span>Crear Encuesta</span>';
+          
+          // Agregar evento onClick
+          button.addEventListener('click', () => {
+            console.log('Botón "Crear Encuesta" clickeado!');
+            // Lógica para abrir modal o navegar
           });
           
           // Agregar al contenedor
-          container.innerHTML = '';
           container.appendChild(button);
           
-          console.log('✅ [Crear Encuesta Button] Botón creado correctamente usando window.UBITS.Button.create()');
+          console.log('✅ [Crear Encuesta Button] Botón creado correctamente usando HTML directo');
         } catch (error) {
           console.error('❌ [Crear Encuesta Button] Error al crear botón:', error);
         }
@@ -2296,7 +2295,7 @@
           if (mutation.addedNodes.length > 0) {
             mutation.addedNodes.forEach((node) => {
               if (node.nodeType === 1 && (node.id === 'top-nav-container' || node.querySelector('#top-nav-container'))) {
-                setTimeout(initCrearEncuestaButton, 100); // Dar tiempo para que UBITS.Button esté disponible
+                setTimeout(initCrearEncuestaButton, 100);
               }
             });
           }
