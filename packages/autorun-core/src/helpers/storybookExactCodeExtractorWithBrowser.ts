@@ -186,7 +186,7 @@ export async function extractExactCodeFromStorybookWithBrowser(
  * Extrae código desde snapshot del Browser MCP
  *
  * ⚠️ Esta función debe ser llamada DESPUÉS de que el agente navegue a Docs
- * y el código se haya cargado dinámicamente
+ * y el código se haya cargado dinámicamente (o después de hacer clic en "Show code")
  */
 export async function extractCodeFromBrowserSnapshot(
   snapshot: any
@@ -199,10 +199,15 @@ export async function extractCodeFromBrowserSnapshot(
 
   if (result.found) {
     console.log(`   ✅ Código extraído desde snapshot`);
+    console.log(`   📋 Código HTML: ${result.html.length} caracteres`);
+    if (result.js) {
+      console.log(`   📋 Código JS: ${result.js.length} caracteres`);
+    }
     return { html: result.html, js: result.js };
   }
 
   console.warn(`   ⚠️ No se encontró código en el snapshot`);
+  console.log(`   💡 Sugerencia: Asegúrate de que el código esté visible (hacer clic en "Show code" si es necesario)`);
   return { html: '' };
 }
 
