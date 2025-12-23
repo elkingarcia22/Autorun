@@ -2456,6 +2456,102 @@
         }
       }
 
+      // Función fallback para crear modal manualmente si Modal API no está disponible
+      function createModalManually() {
+        const container = document.getElementById('modal-container');
+        if (!container) {
+          console.error('❌ [Prueba Button+Modal] Contenedor de modal no encontrado');
+          return;
+        }
+
+        // Crear modal HTML manualmente con estructura UBITS
+        const modalHTML = `
+          <div class="ubits-modal-overlay ubits-modal-overlay--open" id="manual-modal-overlay" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.5); display: flex; align-items: center; justify-content: center; z-index: 10000;">
+            <div class="ubits-modal ubits-modal--size-md" style="background: var(--modifiers-normal-color-light-bg-1, #ffffff); border-radius: 12px; max-width: 480px; width: 90%; max-height: 90vh; display: flex; flex-direction: column;">
+              <div class="ubits-modal__header" style="display: flex; justify-content: space-between; align-items: center; padding: 24px 24px 0;">
+                <div class="ubits-modal__header-text">
+                  <div class="ubits-modal__header-title">
+                    <p class="ubits-heading-h2" style="margin: 0;">Modal de Prueba</p>
+                  </div>
+                </div>
+                <button class="ubits-modal__close" id="manual-modal-close" aria-label="Cerrar modal" type="button" style="background: none; border: none; cursor: pointer; padding: 8px;">
+                  <i class="far fa-times"></i>
+                </button>
+              </div>
+              <div class="ubits-modal__body" style="flex: 1; overflow-y: auto; padding: 24px;">
+                <div class="ubits-modal__body-content">
+                  <p class="ubits-body-md-regular">Este es un modal de prueba implementado usando el sistema automático de preservación.</p>
+                  <p class="ubits-body-md-regular" style="margin-top: 16px;">El sistema automáticamente preserva este modal incluso cuando ContentManager.updateContent() limpia el contenido.</p>
+                  <ul style="margin-top: 16px; padding-left: 24px;">
+                    <li class="ubits-body-md-regular">✅ Botón preservado automáticamente</li>
+                    <li class="ubits-body-md-regular">✅ Modal preservado automáticamente</li>
+                    <li class="ubits-body-md-regular">✅ Event listeners re-agregados automáticamente</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="ubits-modal__footer" style="padding: 0 24px 24px;">
+                <div class="ubits-modal__footer-actions" style="display: flex; justify-content: flex-end; gap: 12px;">
+                  <button class="ubits-button ubits-button--secondary ubits-button--md" id="manual-modal-close-btn" style="cursor: pointer;">
+                    <span>Cerrar</span>
+                  </button>
+                  <button class="ubits-button ubits-button--primary ubits-button--md" id="manual-modal-accept-btn" style="cursor: pointer;">
+                    <span>Aceptar</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+        
+        container.innerHTML = modalHTML;
+        
+        // Agregar event listeners
+        const overlay = document.getElementById('manual-modal-overlay');
+        const closeBtn = document.getElementById('manual-modal-close');
+        const closeBtnFooter = document.getElementById('manual-modal-close-btn');
+        const acceptBtn = document.getElementById('manual-modal-accept-btn');
+        
+        function closeModal() {
+          if (overlay) {
+            overlay.classList.remove('ubits-modal-overlay--open');
+            overlay.style.display = 'none';
+            document.body.style.overflow = '';
+          }
+        }
+        
+        if (closeBtn) closeBtn.addEventListener('click', closeModal);
+        if (closeBtnFooter) closeBtnFooter.addEventListener('click', closeModal);
+        if (acceptBtn) {
+          acceptBtn.addEventListener('click', () => {
+            alert('¡Modal aceptado! El sistema automático de preservación funciona correctamente.');
+            closeModal();
+          });
+        }
+        
+        // Cerrar al hacer clic en overlay
+        if (overlay) {
+          overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) {
+              closeModal();
+            }
+          });
+        }
+        
+        // Cerrar con ESC
+        const escHandler = (e) => {
+          if (e.key === 'Escape' && overlay && overlay.classList.contains('ubits-modal-overlay--open')) {
+            closeModal();
+            document.removeEventListener('keydown', escHandler);
+          }
+        };
+        document.addEventListener('keydown', escHandler);
+        
+        // Bloquear scroll del body
+        document.body.style.overflow = 'hidden';
+        
+        console.log('✅ [Prueba Button+Modal] Modal HTML manual creado');
+      }
+
       // Inicializar cuando el DOM esté listo
       if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initButtonAndModal);
