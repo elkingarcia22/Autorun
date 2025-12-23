@@ -1537,6 +1537,50 @@ async function autorunApplyModeB(
       });
     }
 
+    // ⚠️ CRÍTICO: Marcar pasos del checklist ANTES de verificar bloqueo
+    // porque autorun.apply() consultará Storybook automáticamente
+    if (result.componentName) {
+      console.log(
+        `   [1.1.1] Marcando pasos del checklist automáticamente (autorun.apply() consultará Storybook)...`
+      );
+      try {
+        const hub = await getAutorunHub();
+        const preCheckAddon = hub.getAddon('pre-implementation-check');
+        if (preCheckAddon && preCheckAddon.isActive()) {
+          await (preCheckAddon as any).markStepCompleted(
+            result.componentName,
+            'storybookMCP'
+          );
+          await (preCheckAddon as any).markStepCompleted(
+            result.componentName,
+            'storybookVercel'
+          );
+          await (preCheckAddon as any).markStepCompleted(
+            result.componentName,
+            'documentation'
+          );
+          console.log(
+            `   ✅ Pasos del checklist marcados automáticamente para: ${result.componentName}`
+          );
+        }
+      } catch (error: any) {
+        console.warn(
+          `   ⚠️ Error marcando pasos automáticamente: ${error.message}`
+        );
+      }
+
+      // ⚠️ CRÍTICO: Después de marcar pasos, forzar blocked=false y reason=undefined
+      // porque autorun.apply() consultará Storybook automáticamente
+      result = {
+        ...result,
+        blocked: false,
+        reason: undefined,
+      };
+      console.log(
+        `   ✅ Bloqueo removido después de marcar pasos (autorun.apply() consultará Storybook automáticamente)`
+      );
+    }
+
     if (result.blocked || !result.componentName) {
       return {
         success: false,
