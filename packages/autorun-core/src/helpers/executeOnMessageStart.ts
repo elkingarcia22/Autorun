@@ -273,9 +273,19 @@ export async function executeOnMessageStart(
           `🔍 [Execute On Message Start] Verificando con Pre-Implementation Check...`
         );
         // ✅ MEJORA: Pasar skipCheck=true cuando estamos en modo autorun.apply()
+        console.log(
+          `   🔍 [Execute On Message Start] isAutorunApplyMode=${isAutorunApplyMode}`
+        );
         const verification = await (preCheckAddon as any).verifyOnDetection?.(
           detection.componentName!,
           isAutorunApplyMode ? { skipCheck: true } : undefined
+        );
+        console.log(
+          `   🔍 [Execute On Message Start] Resultado de verifyOnDetection:`,
+          {
+            blocked: verification?.blocked,
+            reason: verification?.reason,
+          }
         );
 
         if (verification?.blocked) {
