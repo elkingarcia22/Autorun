@@ -115,6 +115,24 @@ const COMPONENT_NAME_TO_STORYBOOK_ID: Record<string, string> =
     ])
   );
 
+// ⚠️ Mapeos adicionales para nombres de componentes sin categoría
+// Estos se usan cuando el componente se detecta como "RadioButton" en lugar de "Formularios/Radio Button"
+const ADDITIONAL_COMPONENT_NAME_MAPPINGS: Record<string, string> = {
+  'RadioButton': 'Formularios/Radio Button',
+  'Radio': 'Formularios/Radio Button',
+  'Button': 'Básicos/Button',
+  'Input': 'Formularios/Input',
+  'Checkbox': 'Formularios/Checkbox',
+  'Select': 'Formularios/Select',
+  'Modal': 'Feedback/Modal',
+  'Drawer': 'Feedback/Drawer Navigation',
+  'DataTable': 'Data/Data Table',
+  'Tabs': 'Navegación/Tabs',
+  'Sidebar': 'Navegación/Sidebar',
+  'SubNav': 'Navegación/SubNav',
+  'TabBar': 'Navegación/TabBar',
+};
+
 /**
  * Convierte un nombre de componente a ID de Storybook
  */
@@ -126,5 +144,13 @@ export function componentNameToStorybookId(
     return componentName;
   }
 
+  // ⚠️ NUEVO: Primero intentar mapeo adicional (RadioButton → Formularios/Radio Button)
+  const mappedName = ADDITIONAL_COMPONENT_NAME_MAPPINGS[componentName];
+  if (mappedName) {
+    // Luego convertir el nombre completo a ID
+    return COMPONENT_NAME_TO_STORYBOOK_ID[mappedName] || null;
+  }
+
+  // Si no hay mapeo adicional, buscar directamente
   return COMPONENT_NAME_TO_STORYBOOK_ID[componentName] || null;
 }
