@@ -1783,6 +1783,35 @@ async function autorunApplyModeB(
       storyName = 'default';
     }
 
+    // ✅ CORRECCIÓN #1.5: Consultar Storybook MCP primero para obtener información completa
+    console.log(
+      `   [5.0] Consultando Storybook MCP para obtener información completa...`
+    );
+    let mcpInfo: any = null;
+    try {
+      const { callStorybookMCPTool } = await import(
+        '../../helpers/mcpClient.js'
+      );
+      const { storybookIdToComponentName } = await import(
+        '../../helpers/storybookMCPNameMapper.js'
+      );
+      const componentName =
+        storybookIdToComponentName(componentId) || componentId;
+
+      mcpInfo = await callStorybookMCPTool('getComponentsProps', {
+        componentNames: [componentName],
+      });
+
+      if (mcpInfo && mcpInfo.components && mcpInfo.components.length > 0) {
+        console.log(`   ✅ Información obtenida desde Storybook MCP`);
+        console.log(
+          `   📋 Props disponibles: ${mcpInfo.components[0].props?.length || 0}`
+        );
+      }
+    } catch (mcpError: any) {
+      console.warn(`   ⚠️ Storybook MCP no disponible: ${mcpError.message}`);
+    }
+
     try {
       const exactCode = await extractExactCodeFromStorybookWithBrowser(
         componentId,
