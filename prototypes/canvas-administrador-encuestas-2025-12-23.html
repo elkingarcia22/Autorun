@@ -2276,10 +2276,27 @@
       function handleOpenModal() {
         console.log('🔘 [Prueba Button+Modal] Botón clickeado, abriendo modal...');
         
-        // Verificar que Modal esté disponible
-        if (!window.UBITS || !window.UBITS.Modal || !window.UBITS.Modal.create) {
-          console.error('❌ [Prueba Button+Modal] Modal no disponible');
-          setTimeout(handleOpenModal, 100);
+        // Intentar múltiples formas de acceso a Modal
+        let ModalAPI = null;
+        
+        if (window.UBITS && window.UBITS.Modal && window.UBITS.Modal.create) {
+          ModalAPI = window.UBITS.Modal;
+        } else if (window.createModal) {
+          ModalAPI = { create: window.createModal };
+        } else if (window.AUTORUN && window.AUTORUN.Components) {
+          const modalComponent = window.AUTORUN.Components.getComponent('modal');
+          if (modalComponent && modalComponent.create) {
+            ModalAPI = modalComponent;
+          }
+        }
+        
+        if (!ModalAPI || !ModalAPI.create) {
+          console.error('❌ [Prueba Button+Modal] Modal no disponible. Creando modal HTML manualmente...', {
+            'window.UBITS': !!window.UBITS,
+            'window.UBITS.Modal': !!(window.UBITS && window.UBITS.Modal),
+            'window.createModal': !!window.createModal
+          });
+          createModalManually();
           return;
         }
 
