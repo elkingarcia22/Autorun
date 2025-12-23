@@ -32,15 +32,9 @@ export interface MessageStartResult {
  * Detecta componentes, verifica fases y bloquea si es necesario.
  *
  * @param userMessage Mensaje completo del usuario
+ * @param options Opciones opcionales, incluyendo skipPreCheck para saltar verificación
  * @returns Resultado con información de detección y bloqueo
  */
-// ⚠️ Flag global para indicar que estamos en modo autorun.apply()
-let isAutorunApplyMode = false;
-
-export function setAutorunApplyMode(enabled: boolean) {
-  isAutorunApplyMode = enabled;
-}
-
 export async function executeOnMessageStart(
   userMessage: string,
   options?: { skipPreCheck?: boolean }
@@ -273,14 +267,10 @@ export async function executeOnMessageStart(
         console.log(
           `🔍 [Execute On Message Start] Verificando con Pre-Implementation Check...`
         );
-        // ✅ MEJORA: Pasar skipCheck=true cuando estamos en modo autorun.apply()
-        const currentMode = getAutorunApplyMode();
-        const skipCheck = options?.skipPreCheck || currentMode;
+        // ✅ MEJORA: Pasar skipCheck=true cuando skipPreCheck está presente
+        const skipCheck = options?.skipPreCheck === true;
         console.log(
-          `   🔍 [Execute On Message Start] isAutorunApplyMode=${currentMode}, skipPreCheck=${options?.skipPreCheck}, skipCheck=${skipCheck}`
-        );
-        console.log(
-          `   🔍 [Execute On Message Start] Estado completo: ${JSON.stringify(autorunApplyState)}`
+          `   🔍 [Execute On Message Start] skipPreCheck=${options?.skipPreCheck}, skipCheck=${skipCheck}`
         );
         const verification = await (preCheckAddon as any).verifyOnDetection?.(
           detection.componentName!,
