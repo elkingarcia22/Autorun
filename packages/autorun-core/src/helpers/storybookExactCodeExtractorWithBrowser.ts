@@ -75,6 +75,9 @@ export async function extractExactCodeFromStorybookWithBrowser(
 
   let codeFromTab: { html: string; js?: string } | null = null;
 
+  // Definir storyUrl aquí para usarlo en el error si es necesario
+  const storyUrl = `${activeConfig.url}/?path=/story/${componentId}--${finalStoryName}`;
+
   // INTENTO 1: Extraer desde código fuente local (MÁS CONFIABLE)
   console.log(`   📋 Intentando extraer desde código fuente local...`);
   try {
@@ -99,7 +102,6 @@ export async function extractExactCodeFromStorybookWithBrowser(
 
   // INTENTO 2: Extraer desde URL de la historia directamente (si código fuente falló)
   if (!codeFromTab || !codeFromTab.html) {
-    const storyUrl = `${activeConfig.url}/?path=/story/${componentId}--${finalStoryName}`;
     console.log(`   📚 Intentando extraer desde URL de historia: ${storyUrl}`);
 
     try {
