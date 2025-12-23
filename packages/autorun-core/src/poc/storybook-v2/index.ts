@@ -15,6 +15,14 @@ export {
 export { parseStoryCode, type ParsedStory } from './codeParser.js';
 
 export {
+  parseStorybookFile,
+  type ParsedStorybook,
+  type UBITSContract,
+  type PropInfo,
+  type StoryInfo,
+} from './storybookParser.js';
+
+export {
   generateHTMLFromStory,
   generateHTMLFromComponentFiles,
   type GeneratedHTML,
