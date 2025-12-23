@@ -141,9 +141,18 @@ export class AddonOrchestrator {
 
       // ⚠️ CRÍTICO: Si autoMarkSteps=true, saltar verificación completamente ANTES de cualquier otra cosa
       // Esto garantiza que autorun.apply() siempre pueda continuar cuando autoMarkSteps=true
-      if (autoMarkSteps === true) {
+      // ⚠️ CRÍTICO: También verificar modo autorun.apply() usando variable global como doble seguridad
+      const isAutorunApplyMode =
+        (typeof globalThis !== 'undefined' &&
+          (globalThis as any).__AUTORUN_APPLY_MODE__ === true) ||
+        (typeof global !== 'undefined' &&
+          (global as any).__AUTORUN_APPLY_MODE__ === true) ||
+        (typeof window !== 'undefined' &&
+          (window as any).__AUTORUN_APPLY_MODE__ === true);
+
+      if (autoMarkSteps === true || isAutorunApplyMode) {
         console.log(
-          `   ✅ [executePreparationPhase] autoMarkSteps=true, retornando allowed=true inmediatamente`
+          `   ✅ [executePreparationPhase] autoMarkSteps=${autoMarkSteps} o modo autorun.apply()=${isAutorunApplyMode}, retornando allowed=true inmediatamente`
         );
         // Retornar inmediatamente con allowed=true sin ninguna verificación
         result.canImplement = {
@@ -155,6 +164,7 @@ export class AddonOrchestrator {
             comparison: false,
           },
           missingSteps: [],
+          reason: undefined,
         };
 
         // Marcar pasos automáticamente (pero no verificar)
@@ -206,7 +216,7 @@ export class AddonOrchestrator {
         }
 
         console.log(
-          `   ✅ Pre-Implementation Check: Permitido directamente (autoMarkSteps=true)`
+          `   ✅ Pre-Implementation Check: Permitido directamente (autoMarkSteps=${autoMarkSteps} o modo autorun.apply()=${isAutorunApplyMode})`
         );
         return result; // ⚠️ RETORNAR INMEDIATAMENTE sin más verificaciones
       } else {
