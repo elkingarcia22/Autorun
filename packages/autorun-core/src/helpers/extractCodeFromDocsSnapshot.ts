@@ -179,26 +179,78 @@ function parseCodeFromText(text: string): {
     .replace(/^Copy\s*/i, '')
     .replace(/^Hide code\s*/i, '')
     .replace(/^Show code\s*/i, '')
+    .replace(/^Implementation\s*/i, '')
+    .replace(/^Default\s*/i, '')
     .trim();
 
-  // Si es código JavaScript puro
-  if (cleaned.includes('window.UBITS') || cleaned.includes('create(')) {
-    // Extraer código JS
-    const jsMatch = cleaned.match(/(\{[\s\S]*\})/);
+  // ⚠️ MEJORADO: Buscar código JavaScript completo (window.UBITS.X.create o window.createX)
+  if (
+    cleaned.includes('window.UBITS') ||
+    cleaned.includes('create(') ||
+    cleaned.includes('createRadioButton')
+  ) {
+    // Buscar bloque completo de código JS
+    // Patrón 1: window.UBITS.X.create({ ... })
+    const ubitsMatch = cleaned.match(
+      /window\.UBITS\.\w+\.create\s*\(\s*\{[\s\S]*?\}\s*\)/
+    );
+    if (ubitsMatch) {
+      // Extraer solo el objeto de configuración
+      const configMatch = ubitsMatch[0].match(/\{[\s\S]*\}/);
+      if (configMatch) {
+        return { html: '', js: configMatch[0], found: true };
+      }
+      return { html: '', js: ubitsMatch[0], found: true };
+    }
+
+    // Patrón 2: window.createX({ ... })
+    const createMatch = cleaned.match(
+      /window\.create\w+\s*\(\s*\{[\s\S]*?\}\s*\)/
+    );
+    if (createMatch) {
+      const configMatch = createMatch[0].match(/\{[\s\S]*\}/);
+      if (configMatch) {
+        return { html: '', js: configMatch[0], found: true };
+      }
+      return { html: '', js: createMatch[0], found: true };
+    }
+
+    // Patrón 3: Solo el objeto de configuración { ... }
+    const configOnlyMatch = cleaned.match(/\{[\s\S]*containerId[\s\S]*\}/);
+    if (configOnlyMatch) {
+      return { html: '', js: configOnlyMatch[0], found: true };
+    }
+
+    // Fallback: extraer cualquier bloque que parezca código JS
+    const jsMatch = cleaned.match(/(\{[\s\S]{20,}\})/);
     if (jsMatch) {
       return { html: '', js: jsMatch[1], found: true };
     }
+
     return { html: '', js: cleaned, found: true };
   }
 
   // Si es código HTML
   if (cleaned.includes('<') && cleaned.includes('>')) {
-    // Extraer HTML
-    const htmlMatch = cleaned.match(/(<[\s\S]*>)/);
+    // Extraer HTML completo
+    const htmlMatch = cleaned.match(/(<[\s\S]{20,}>)/);
     if (htmlMatch) {
       return { html: htmlMatch[1], found: true };
     }
     return { html: cleaned, found: true };
+  }
+
+  // ⚠️ NUEVO: Si contiene propiedades de componente (containerId, label, etc.), es código JS
+  if (
+    cleaned.includes('containerId') ||
+    (cleaned.includes('label') && cleaned.includes('value'))
+  ) {
+    // Intentar construir código JS completo
+    const jsCode =
+      cleaned.includes('window.UBITS') || cleaned.includes('create(')
+        ? cleaned
+        : `window.UBITS.RadioButton.create(${cleaned})`;
+    return { html: '', js: jsCode, found: true };
   }
 
   return { html: '', found: false };
