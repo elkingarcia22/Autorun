@@ -132,12 +132,16 @@ export class AddonOrchestrator {
           if (services && services.canImplement) {
             // ✅ MEJORA: Si autoMarkSteps=true, pasar skipCheck=true para permitir automáticamente
             // (canImplement() marcará los pasos automáticamente cuando skipCheck=true)
+            const skipCheckValue = autoMarkSteps === true;
+            const optionsToPass = skipCheckValue
+              ? { skipCheck: true }
+              : undefined;
             console.log(
-              `   🔍 [executePreparationPhase] autoMarkSteps=${autoMarkSteps}, llamando canImplement con skipCheck=${autoMarkSteps}`
+              `   🔍 [executePreparationPhase] autoMarkSteps=${autoMarkSteps} (tipo: ${typeof autoMarkSteps}), skipCheckValue=${skipCheckValue}, optionsToPass=${JSON.stringify(optionsToPass)}`
             );
             const canImplement = await services.canImplement(
               componentName,
-              autoMarkSteps ? { skipCheck: true } : undefined
+              optionsToPass
             );
             console.log(
               `   🔍 [executePreparationPhase] Resultado de canImplement:`,
