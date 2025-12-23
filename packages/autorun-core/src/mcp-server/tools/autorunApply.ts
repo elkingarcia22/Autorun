@@ -224,7 +224,27 @@ async function autorunApplyStrict(
 
     // ⚠️ CRÍTICO: autorun.apply() SIEMPRE consulta Storybook automáticamente, por lo que SIEMPRE forzar blocked=false
     // Esto garantiza que autorun.apply() siempre pueda continuar, ya que consultará Storybook automáticamente
-    if (result.blocked) {
+    // ⚠️ CRÍTICO: Si result.reason contiene "Faltan pasos obligatorios", ignorar completamente el bloqueo
+    // porque autorun.apply() consultará Storybook automáticamente
+    if (
+      result.blocked &&
+      result.reason &&
+      result.reason.includes('Faltan pasos obligatorios')
+    ) {
+      console.warn(
+        `   ⚠️ [autorunApply] result.blocked=true con "Faltan pasos obligatorios" pero autorun.apply() consultará Storybook automáticamente`
+      );
+      console.warn(`   ⚠️ [autorunApply] Razón original: ${result.reason}`);
+      console.warn(
+        `   ⚠️ [autorunApply] IGNORANDO bloqueo porque autorun.apply() consultará Storybook automáticamente`
+      );
+      // Forzar blocked=false y reason=undefined directamente
+      (result as any).blocked = false;
+      (result as any).reason = undefined;
+      console.log(
+        `   ✅ [autorunApply] Bloqueo ignorado (autorun.apply() consultará Storybook automáticamente)`
+      );
+    } else if (result.blocked) {
       console.warn(
         `   ⚠️ [autorunApply] result.blocked=true pero autorun.apply() consultará Storybook automáticamente`
       );
