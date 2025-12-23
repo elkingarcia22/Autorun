@@ -510,7 +510,7 @@ ${storyBasedPlan ? `\n📖 Plan basado en historias disponible. Implementar UNA 
     // Esto garantiza que autorun.apply() nunca se bloquee
     if (isAutorunApplyModeFinal) {
       console.log(
-        `   ✅ [canImplement] Modo autorun.apply() detectado, permitiendo implementación automáticamente`
+        `   ✅ [canImplement] Modo autorun.apply() detectado, permitiendo implementación automáticamente - RETORNANDO INMEDIATAMENTE`
       );
       // Marcar pasos automáticamente
       await this.markStepCompleted(componentName, 'storybookMCP');
@@ -527,10 +527,12 @@ ${storyBasedPlan ? `\n📖 Plan basado en historias disponible. Implementar UNA 
           documentation: finalChecklist.documentation,
         }
       );
+      // ⚠️ CRÍTICO: Retornar INMEDIATAMENTE sin continuar con ninguna verificación
       return {
         allowed: true,
         checklist: finalChecklist,
         missingSteps: [],
+        reason: undefined, // ⚠️ CRÍTICO: NO incluir reason para evitar que se use en el objeto final
       };
     }
 
@@ -546,13 +548,14 @@ ${storyBasedPlan ? `\n📖 Plan basado en historias disponible. Implementar UNA 
     }
 
     // ✅ MEJORA: Si skipCheck=true (desde autorun.apply()), permitir automáticamente
+    // ⚠️ CRÍTICO: Verificar skipCheck ANTES de cualquier otra cosa para evitar bloqueos
     const skipCheckValue = options?.skipCheck === true;
     console.log(
-      `   🔍 [canImplement] Verificando skipCheck: options=${JSON.stringify(options)}, options?.skipCheck=${options?.skipCheck}, skipCheckValue=${skipCheckValue}`
+      `   🔍 [canImplement] Verificando skipCheck: options=${JSON.stringify(options)}, options?.skipCheck=${options?.skipCheck}, skipCheckValue=${skipCheckValue}, typeof=${typeof options?.skipCheck}`
     );
     if (skipCheckValue) {
       console.log(
-        `   ✅ [canImplement] skipCheck=true, permitiendo implementación automáticamente`
+        `   ✅ [canImplement] skipCheck=true, permitiendo implementación automáticamente - RETORNANDO INMEDIATAMENTE`
       );
       // Marcar pasos automáticamente
       await this.markStepCompleted(componentName, 'storybookMCP');
@@ -569,10 +572,12 @@ ${storyBasedPlan ? `\n📖 Plan basado en historias disponible. Implementar UNA 
           documentation: finalChecklist.documentation,
         }
       );
+      // ⚠️ CRÍTICO: Retornar INMEDIATAMENTE sin continuar con ninguna verificación
       return {
         allowed: true,
         checklist: finalChecklist,
         missingSteps: [],
+        reason: undefined, // ⚠️ CRÍTICO: NO incluir reason para evitar que se use en el objeto final
       };
     }
     console.log(
