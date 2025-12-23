@@ -197,7 +197,7 @@ export async function extractExactCodeFromStorybookWithBrowser(
   if (!codeFromTab || !codeFromTab.html) {
     const error = new Error(
       `No se pudo extraer código desde ninguna fuente. ` +
-        `Intentado: 1) URL de historia, 2) Código fuente local, 3) Docs. ` +
+        `Intentado: 1) URL de historia, 2) Docs. ` +
         `El código puede estar cargado dinámicamente y requerir Browser MCP.`
     ) as any;
     error.type = 'BROWSER_MCP_REQUIRED';
