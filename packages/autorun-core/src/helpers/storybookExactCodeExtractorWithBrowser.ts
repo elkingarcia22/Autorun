@@ -83,13 +83,36 @@ export async function extractExactCodeFromStorybookWithBrowser(
     const html = await fetchStorybookPage(storyUrl);
     try {
       // Intentar extraer desde pestaña "Code" de la historia
-      const { extractCodeFromCodeTab } = await import(
-        './storybookExactCodeExtractor.js'
-      );
-      codeFromTab = await extractCodeFromCodeTab(html);
-      console.log(
-        `   ✅ Código extraído desde historia: ${codeFromTab.html.length} caracteres`
-      );
+      // Buscar bloques de código en el HTML
+      const codeBlockRegex =
+        /<pre[^>]*class="[^"]*sb-code[^"]*"[^>]*>([\s\S]*?)<\/pre>/gi;
+      const matches = Array.from(html.matchAll(codeBlockRegex));
+
+      if (matches.length > 0) {
+        const primaryCode = decodeHtmlEntities(matches[0][1]);
+        const htmlMatch = primaryCode.match(/<[^>]+>[\s\S]*?<\/[^>]+>/);
+        const jsMatch = primaryCode.match(/<script[^>]*>([\s\S]*?)<\/script>/i);
+
+        codeFromTab = {
+          html: htmlMatch ? htmlMatch[0] : primaryCode,
+          js: jsMatch ? jsMatch[1] : undefined,
+        };
+        console.log(
+          `   ✅ Código extraído desde historia: ${codeFromTab.html.length} caracteres`
+        );
+      } else {
+        // Fallback: buscar en otros formatos
+        const alternativeRegex = /<code[^>]*>([\s\S]*?)<\/code>/gi;
+        const altMatches = Array.from(html.matchAll(alternativeRegex));
+        if (altMatches.length > 0) {
+          codeFromTab = { html: decodeHtmlEntities(altMatches[0][1]) };
+          console.log(
+            `   ✅ Código extraído desde historia (formato alternativo): ${codeFromTab.html.length} caracteres`
+          );
+        } else {
+          throw new Error('No se encontró código en la URL de la historia');
+        }
+      }
     } catch (extractError: any) {
       console.warn(
         `   ⚠️ No se pudo extraer desde historia: ${extractError.message}`
