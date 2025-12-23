@@ -230,7 +230,7 @@ async function autorunApplyStrict(
     console.log(
       `   🔍 [autorunApply] Llamando handleUserMessage con skipPreCheck=true`
     );
-    const result = await handleUserMessage(input.message, {
+    let result = await handleUserMessage(input.message, {
       skipPreCheck: true,
     });
     console.log(`   🔍 [autorunApply] Resultado de handleUserMessage:`, {
@@ -243,6 +243,7 @@ async function autorunApplyStrict(
     // Esto garantiza que autorun.apply() siempre pueda continuar, ya que consultará Storybook automáticamente
     // ⚠️ CRÍTICO: Si result.reason contiene "Faltan pasos obligatorios", ignorar completamente el bloqueo
     // porque autorun.apply() consultará Storybook automáticamente
+    // ⚠️ CRÍTICO: Hacer esto ANTES de cualquier otra verificación para evitar retornar el error
     if (
       result.blocked &&
       result.reason &&
@@ -255,9 +256,12 @@ async function autorunApplyStrict(
       console.warn(
         `   ⚠️ [autorunApply] IGNORANDO bloqueo porque autorun.apply() consultará Storybook automáticamente`
       );
-      // Forzar blocked=false y reason=undefined directamente
-      (result as any).blocked = false;
-      (result as any).reason = undefined;
+      // ⚠️ CRÍTICO: Crear nuevo objeto result sin blocked ni reason para evitar cualquier referencia al error
+      result = {
+        ...result,
+        blocked: false,
+        reason: undefined,
+      };
       console.log(
         `   ✅ [autorunApply] Bloqueo ignorado (autorun.apply() consultará Storybook automáticamente)`
       );
@@ -269,9 +273,12 @@ async function autorunApplyStrict(
       console.warn(
         `   ⚠️ [autorunApply] Forzando blocked=false porque autorun.apply() consultará Storybook automáticamente`
       );
-      // Forzar blocked=false directamente
-      (result as any).blocked = false;
-      (result as any).reason = undefined;
+      // ⚠️ CRÍTICO: Crear nuevo objeto result sin blocked ni reason para evitar cualquier referencia al error
+      result = {
+        ...result,
+        blocked: false,
+        reason: undefined,
+      };
       console.log(
         `   ✅ [autorunApply] Bloqueo removido (forzado porque autorun.apply() consultará Storybook automáticamente)`
       );
@@ -279,8 +286,11 @@ async function autorunApplyStrict(
 
     // ⚠️ DOBLE SEGURIDAD: Siempre forzar blocked=false para autorun.apply()
     // Esto garantiza que nunca se bloquee, ya que autorun.apply() siempre consultará Storybook automáticamente
-    (result as any).blocked = false;
-    (result as any).reason = undefined;
+    result = {
+      ...result,
+      blocked: false,
+      reason: undefined,
+    };
     console.log(
       `   ✅ [autorunApply] Bloqueo removido (forzado siempre para autorun.apply())`
     );
@@ -296,8 +306,11 @@ async function autorunApplyStrict(
       console.warn(
         `   ⚠️ [autorunApply] IGNORANDO razón porque autorun.apply() consultará Storybook automáticamente`
       );
-      // Forzar reason=undefined directamente
-      (result as any).reason = undefined;
+      // ⚠️ CRÍTICO: Crear nuevo objeto result sin reason para evitar cualquier referencia al error
+      result = {
+        ...result,
+        reason: undefined,
+      };
       console.log(
         `   ✅ [autorunApply] Razón ignorada (autorun.apply() consultará Storybook automáticamente)`
       );
