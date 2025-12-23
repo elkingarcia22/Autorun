@@ -188,21 +188,61 @@ async function autorunApplyStrict(
       step: 'storybookVercel' | 'storybookMCP' | 'documentation' | 'comparison'
     ) => {
       try {
+        console.log(
+          `   🔍 [markChecklistStep] Intentando marcar paso "${step}" para "${result.componentName}"...`
+        );
         const hub = await getAutorunHub();
+        console.log(
+          `   🔍 [markChecklistStep] Hub obtenido: ${hub ? 'SÍ' : 'NO'}`
+        );
+
+        if (!hub) {
+          console.warn(`   ⚠️ Hub no disponible`);
+          return;
+        }
+
         const preCheckAddon = hub.getAddon('pre-implementation-check');
+        console.log(
+          `   🔍 [markChecklistStep] Add-on obtenido: ${preCheckAddon ? 'SÍ' : 'NO'}`
+        );
+        console.log(
+          `   🔍 [markChecklistStep] Add-on activo: ${preCheckAddon?.isActive ? 'SÍ' : 'NO'}`
+        );
+        console.log(
+          `   🔍 [markChecklistStep] Componente: ${result.componentName}`
+        );
+
         if (preCheckAddon && result.componentName) {
           await (preCheckAddon as any).markStepCompleted(
             result.componentName,
             step
           );
           console.log(
-            `   ✅ Checklist: Paso "${step}" marcado como completado automáticamente`
+            `   ✅ Checklist: Paso "${step}" marcado como completado automáticamente para "${result.componentName}"`
+          );
+
+          // Verificar que se marcó correctamente
+          const services = preCheckAddon.getServices();
+          if (services && services.canImplement) {
+            const check = await services.canImplement(result.componentName);
+            console.log(
+              `   🔍 [markChecklistStep] Verificación después de marcar:`,
+              {
+                allowed: check.allowed,
+                storybookVercel: check.checklist.storybookVercel,
+                storybookMCP: check.checklist.storybookMCP,
+                documentation: check.checklist.documentation,
+              }
+            );
+          }
+        } else {
+          console.warn(
+            `   ⚠️ No se pudo marcar: add-on=${!!preCheckAddon}, componentName=${!!result.componentName}`
           );
         }
       } catch (error: any) {
-        console.warn(
-          `   ⚠️ No se pudo marcar paso "${step}" del checklist: ${error.message}`
-        );
+        console.error(`   ❌ Error marcando paso "${step}": ${error.message}`);
+        console.error(`   ❌ Stack: ${error.stack}`);
       }
     };
 
