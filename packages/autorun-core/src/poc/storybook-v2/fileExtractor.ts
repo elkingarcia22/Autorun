@@ -124,7 +124,10 @@ function capitalizeFirst(str: string): string {
 /**
  * Determina el tipo de archivo según su ruta
  */
-function getFileType(filePath: string): 'provider' | 'readme' | 'component' {
+function getFileType(filePath: string): StoryFile['type'] {
+  if (filePath.includes('.stories.ts')) return 'stories'; // ⭐ PRIORIDAD
+  if (filePath.includes('Options.ts') || filePath.includes('Options.js'))
+    return 'options';
   if (filePath.includes('README.md')) return 'readme';
   if (filePath.includes('Provider.ts') || filePath.includes('Provider.js'))
     return 'provider';
