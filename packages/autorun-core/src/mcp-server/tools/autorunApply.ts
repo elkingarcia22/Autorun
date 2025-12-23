@@ -1844,8 +1844,15 @@ async function autorunApplyModeB(
         }
       }
     } catch (error: any) {
-      console.warn(
-        `   ⚠️ No se pudo extraer desde Storybook: ${error.message}`
+      console.error(
+        `   ❌ Error extrayendo código desde Storybook: ${error.message}`
+      );
+      console.error(`   📋 Stack trace: ${error.stack}`);
+      console.error(
+        `   ⚠️ CAUSA PROBABLE: Storybook carga el código dinámicamente con JavaScript, por lo que fetch() no puede obtenerlo`
+      );
+      console.error(
+        `   💡 SOLUCIÓN: Necesitamos usar Browser MCP para navegar y extraer desde el snapshot`
       );
       console.log(`   📦 Usando PrototypeTokenKit como fallback...`);
     }
