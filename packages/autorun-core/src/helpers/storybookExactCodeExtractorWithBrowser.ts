@@ -42,7 +42,7 @@ export async function extractExactCodeFromStorybookWithBrowser(
       const { findCodeStory, findImplementationStory } = await import(
         './codePropsCombiner.js'
       );
-      
+
       // ⚠️ NUEVO: Priorizar historia "code" (sugerencia del usuario)
       const codeStoryName = await findCodeStory(componentId);
       if (codeStoryName) {
@@ -89,14 +89,16 @@ export async function extractExactCodeFromStorybookWithBrowser(
 
   // ✅ IMPLEMENTADO: Intentar fetch primero, luego Browser MCP si falla
   let codeFromTab: { html: string; js?: string } | null = null;
-  
+
   try {
     // Intento 1: Fetch HTML (rápido pero puede fallar si el código es dinámico)
     const html = await fetchStorybookPage(docsUrl);
     try {
       // ✅ CAMBIO: Extraer código desde Docs en lugar de pestaña "Code"
       codeFromTab = await extractCodeFromDocs(html, finalStoryName);
-      console.log(`   ✅ Código extraído desde HTML: ${codeFromTab.html.length} caracteres`);
+      console.log(
+        `   ✅ Código extraído desde HTML: ${codeFromTab.html.length} caracteres`
+      );
     } catch (extractError: any) {
       console.warn(
         `   ⚠️ No se pudo extraer código desde HTML: ${extractError.message}`
@@ -111,7 +113,7 @@ export async function extractExactCodeFromStorybookWithBrowser(
   // Intento 2: Browser MCP (si fetch falló o no encontró código)
   if (!codeFromTab || !codeFromTab.html) {
     console.log(`   📋 Intentando extraer código usando Browser MCP...`);
-    
+
     // ⚠️ NUEVO: Intentar obtener código fuente como fallback primero
     try {
       const { getSourceCode } = await import('./storybookExactCodeExtractor');
@@ -140,51 +142,41 @@ export async function extractExactCodeFromStorybookWithBrowser(
     if (!codeFromTab || !codeFromTab.html) {
       const { extractCodeWithBrowserMCP, generateBrowserMCPInstructions } =
         await import('./browserMCPAutoExtractor.js');
-      
+
       console.log(generateBrowserMCPInstructions(docsUrl, finalStoryName));
-      
+
       // Lanzar error especial que el agente puede detectar
       throw await extractCodeWithBrowserMCP(docsUrl, finalStoryName);
     }
   }
 
-    // 4. Extraer CSS requerido
-    const cssUrls = await extractCSSUrls(componentId, activeConfig.url);
+  // 4. Extraer CSS requerido
+  const cssUrls = await extractCSSUrls(componentId, activeConfig.url);
 
-    // 5. Extraer estructura HTML
-    const structure = await extractHTMLStructure(codeFromTab.html, componentId);
+  // 5. Extraer estructura HTML
+  const structure = await extractHTMLStructure(codeFromTab.html, componentId);
 
-    // 6. Consultar código fuente y comparar
-    const { getSourceCode } = await import('./storybookExactCodeExtractor');
-    const sourceCode = await getSourceCode(componentId);
-    const sourceCodeMatch = compareStructureWithSource(structure, sourceCode);
+  // 6. Consultar código fuente y comparar
+  const { getSourceCode } = await import('./storybookExactCodeExtractor');
+  const sourceCode = await getSourceCode(componentId);
+  const sourceCodeMatch = compareStructureWithSource(structure, sourceCode);
 
-    if (!sourceCodeMatch) {
-      console.warn(
-        `   ⚠️  Estructura no coincide exactamente con código fuente`
-      );
-    }
-
-    console.log(
-      `✅ [Exact Code Extractor with Browser] Código extraído: ${codeFromTab.html.length} caracteres`
-    );
-
-    return {
-      html: codeFromTab.html,
-      css: cssUrls,
-      js: codeFromTab.js || '',
-      structure,
-      sourceCodeMatch,
-      cssUrls,
-    };
-  } catch (error: any) {
-    console.error(
-      `❌ [Exact Code Extractor with Browser] Error: ${error.message}`
-    );
-    throw new Error(
-      `No se pudo extraer código exacto desde Storybook: ${error.message}`
-    );
+  if (!sourceCodeMatch) {
+    console.warn(`   ⚠️  Estructura no coincide exactamente con código fuente`);
   }
+
+  console.log(
+    `✅ [Exact Code Extractor with Browser] Código extraído: ${codeFromTab.html.length} caracteres`
+  );
+
+  return {
+    html: codeFromTab.html,
+    css: cssUrls,
+    js: codeFromTab.js || '',
+    structure,
+    sourceCodeMatch,
+    cssUrls,
+  };
 }
 
 /**
@@ -212,7 +204,9 @@ export async function extractCodeFromBrowserSnapshot(
   }
 
   console.warn(`   ⚠️ No se encontró código en el snapshot`);
-  console.log(`   💡 Sugerencia: Asegúrate de que el código esté visible (hacer clic en "Show code" si es necesario)`);
+  console.log(
+    `   💡 Sugerencia: Asegúrate de que el código esté visible (hacer clic en "Show code" si es necesario)`
+  );
   return { html: '' };
 }
 
