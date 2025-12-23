@@ -1873,17 +1873,45 @@ async function autorunApplyModeB(
         }
       }
     } catch (error: any) {
-      console.error(
-        `   ❌ Error extrayendo código desde Storybook: ${error.message}`
+      // ⚠️ NUEVO: Detectar si el error requiere Browser MCP
+      const { isBrowserMCPRequiredError } = await import(
+        '../../helpers/browserMCPAutoExtractor.js'
       );
-      console.error(`   📋 Stack trace: ${error.stack}`);
-      console.error(
-        `   ⚠️ CAUSA PROBABLE: Storybook carga el código dinámicamente con JavaScript, por lo que fetch() no puede obtenerlo`
-      );
-      console.error(
-        `   💡 SOLUCIÓN: Necesitamos usar Browser MCP para navegar y extraer desde el snapshot`
-      );
-      console.log(`   📦 Usando PrototypeTokenKit como fallback...`);
+
+      if (isBrowserMCPRequiredError(error)) {
+        console.error(
+          `   ❌ Error extrayendo código desde Storybook: ${error.message}`
+        );
+        console.error(
+          `   ⚠️ CAUSA: Storybook carga el código dinámicamente con JavaScript`
+        );
+        console.error(
+          `   💡 SOLUCIÓN: Necesitamos usar Browser MCP para navegar y extraer desde el snapshot`
+        );
+        console.error(`   📋 URL: ${error.docsUrl}`);
+        console.error(`   📋 Historia: ${error.storyName}`);
+        console.error(
+          `   ⚠️ CRÍTICO: El agente DEBE ejecutar Browser MCP para extraer el código`
+        );
+        console.error(
+          `   📦 Usando PrototypeTokenKit como fallback temporal...`
+        );
+        console.error(
+          `   ⚠️ ADVERTENCIA: El código generado será genérico, no el código real del componente`
+        );
+      } else {
+        console.error(
+          `   ❌ Error extrayendo código desde Storybook: ${error.message}`
+        );
+        console.error(`   📋 Stack trace: ${error.stack}`);
+        console.error(
+          `   ⚠️ CAUSA PROBABLE: Storybook carga el código dinámicamente con JavaScript, por lo que fetch() no puede obtenerlo`
+        );
+        console.error(
+          `   💡 SOLUCIÓN: Necesitamos usar Browser MCP para navegar y extraer desde el snapshot`
+        );
+        console.log(`   📦 Usando PrototypeTokenKit como fallback...`);
+      }
     }
 
     // ✅ 6. Si no existe, generar widget tokenizado
