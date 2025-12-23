@@ -825,6 +825,103 @@
     <!-- UBITS Components System -->
     <!-- Los componentes se cargan dinámicamente a través de components-loader.js -->
     
+    <!-- ⭐ POC: RadioButton Script (código exacto desde Storybook Implementation) -->
+    <script>
+        // ⭐ POC STORYBOOK V2: Implementación de RadioButton usando código exacto del Storybook
+        // Código extraído desde: vendor/ubits/packages/storybook/stories/components/RadioButton/RadioButton.stories.ts
+        // Story: Implementation (Copy/Paste)
+        
+        (function() {
+            // Esperar a que UBITS esté disponible
+            function initRadioButtons() {
+                if (!window.UBITS || !window.UBITS.RadioButton) {
+                    console.log('⏳ [POC RadioButton] Esperando UBITS.RadioButton...');
+                    setTimeout(initRadioButtons, 100);
+                    return;
+                }
+                
+                console.log('✅ [POC RadioButton] UBITS.RadioButton disponible, creando RadioButtons...');
+                
+                const container = document.getElementById('radiobutton-group-tipo');
+                if (!container) {
+                    console.error('❌ [POC RadioButton] Contenedor no encontrado');
+                    return;
+                }
+                
+                // Grupo de RadioButtons: Tipo de Encuesta
+                const radioOptions = [
+                    {
+                        label: 'Encuesta de Satisfacción',
+                        complementaryText: 'Mide el nivel de satisfacción de los usuarios',
+                        value: 'satisfaccion',
+                        name: 'tipo-encuesta',
+                        checked: true,
+                        size: 'md',
+                        state: 'default',
+                        disabled: false
+                    },
+                    {
+                        label: 'Encuesta de Evaluación',
+                        complementaryText: 'Evalúa el desempeño y competencias',
+                        value: 'evaluacion',
+                        name: 'tipo-encuesta',
+                        checked: false,
+                        size: 'md',
+                        state: 'default',
+                        disabled: false
+                    },
+                    {
+                        label: 'Encuesta de Feedback',
+                        complementaryText: 'Recopila comentarios y sugerencias',
+                        value: 'feedback',
+                        name: 'tipo-encuesta',
+                        checked: false,
+                        size: 'md',
+                        state: 'default',
+                        disabled: false
+                    }
+                ];
+                
+                // Crear cada RadioButton usando el código exacto del Storybook
+                radioOptions.forEach((options, index) => {
+                    // Crear contenedor individual para cada RadioButton
+                    const radioContainer = document.createElement('div');
+                    radioContainer.id = `radiobutton-container-${index}`;
+                    container.appendChild(radioContainer);
+                    
+                    // ⭐ CÓDIGO EXACTO desde Implementation story
+                    try {
+                        window.UBITS.RadioButton.create({
+                            containerId: radioContainer.id,
+                            label: options.label,
+                            complementaryText: options.complementaryText,
+                            value: options.value,
+                            name: options.name,
+                            checked: options.checked,
+                            size: options.size,
+                            state: options.state,
+                            disabled: options.disabled
+                        });
+                        
+                        console.log(`✅ [POC RadioButton] RadioButton "${options.label}" creado`);
+                    } catch (error) {
+                        console.error(`❌ [POC RadioButton] Error creando RadioButton "${options.label}":`, error);
+                    }
+                });
+                
+                console.log('✅ [POC RadioButton] Todos los RadioButtons creados exitosamente');
+            }
+            
+            // Inicializar cuando el DOM esté listo
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initRadioButtons);
+            } else {
+                // Esperar un poco para que los componentes se carguen
+                setTimeout(initRadioButtons, 500);
+            }
+        })();
+    </script>
+    
     <script>
         // ========================================
         // INITIALIZATION
