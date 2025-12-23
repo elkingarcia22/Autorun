@@ -147,6 +147,20 @@ export class AddonOrchestrator {
               'documentation'
             );
             console.log(`   ✅ Pasos del checklist marcados automáticamente`);
+
+            // ⚠️ CRÍTICO: Esperar un momento para asegurar que los cambios se guarden en el Map
+            await new Promise((resolve) => setTimeout(resolve, 100));
+
+            // Verificar que se marcaron correctamente
+            const checkAfterMark = await (preCheckAddon as any).canImplement(
+              componentName
+            );
+            console.log(`   🔍 [Verificación] Checklist después de marcar:`, {
+              allowed: checkAfterMark.allowed,
+              storybookVercel: checkAfterMark.checklist.storybookVercel,
+              storybookMCP: checkAfterMark.checklist.storybookMCP,
+              documentation: checkAfterMark.checklist.documentation,
+            });
           } catch (markError: any) {
             console.warn(
               `   ⚠️ Error marcando pasos automáticamente: ${markError.message}`
