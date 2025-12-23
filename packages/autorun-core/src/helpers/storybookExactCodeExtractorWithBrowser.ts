@@ -97,53 +97,96 @@ export async function extractExactCodeFromStorybookWithBrowser(
     );
   }
 
-  // INTENTO 2: Extraer desde URL de la historia directamente
-  const storyUrl = `${activeConfig.url}/?path=/story/${componentId}--${finalStoryName}`;
-  console.log(`   📚 Intentando extraer desde URL de historia: ${storyUrl}`);
+  // INTENTO 2: Extraer desde URL de la historia directamente (si código fuente falló)
+  if (!codeFromTab || !codeFromTab.html) {
+    const storyUrl = `${activeConfig.url}/?path=/story/${componentId}--${finalStoryName}`;
+    console.log(`   📚 Intentando extraer desde URL de historia: ${storyUrl}`);
 
-  try {
-    const html = await fetchStorybookPage(storyUrl);
     try {
-      // Intentar extraer desde pestaña "Code" de la historia
-      // Buscar bloques de código en el HTML
-      const codeBlockRegex =
-        /<pre[^>]*class="[^"]*sb-code[^"]*"[^>]*>([\s\S]*?)<\/pre>/gi;
-      const matches = Array.from(html.matchAll(codeBlockRegex));
+      const html = await fetchStorybookPage(storyUrl);
+      try {
+        // ⚠️ MEJORADO: Buscar código en múltiples formatos y ubicaciones
+        // Formato 1: Bloques <pre><code> con clase sb-code
+        const codeBlockRegex =
+          /<pre[^>]*class="[^"]*sb-code[^"]*"[^>]*>([\s\S]*?)<\/pre>/gi;
+        const matches = Array.from(html.matchAll(codeBlockRegex));
 
-      if (matches.length > 0) {
-        const primaryCode = decodeHtmlEntities(matches[0][1]);
-        const htmlMatch = primaryCode.match(/<[^>]+>[\s\S]*?<\/[^>]+>/);
-        const jsMatch = primaryCode.match(/<script[^>]*>([\s\S]*?)<\/script>/i);
+        // Formato 2: Bloques <pre><code> estándar
+        const standardCodeRegex =
+          /<pre[^>]*>\s*<code[^>]*>([\s\S]*?)<\/code>\s*<\/pre>/gi;
+        const standardMatches = Array.from(html.matchAll(standardCodeRegex));
 
-        codeFromTab = {
-          html: htmlMatch ? htmlMatch[0] : primaryCode,
-          js: jsMatch ? jsMatch[1] : undefined,
-        };
-        console.log(
-          `   ✅ Código extraído desde historia: ${codeFromTab.html.length} caracteres`
-        );
-      } else {
-        // Fallback: buscar en otros formatos
-        const alternativeRegex = /<code[^>]*>([\s\S]*?)<\/code>/gi;
-        const altMatches = Array.from(html.matchAll(alternativeRegex));
-        if (altMatches.length > 0) {
-          codeFromTab = { html: decodeHtmlEntities(altMatches[0][1]) };
+        // Formato 3: Bloques <code> sin <pre>
+        const codeOnlyRegex =
+          /<code[^>]*class="[^"]*language-[^"]*"[^>]*>([\s\S]*?)<\/code>/gi;
+        const codeOnlyMatches = Array.from(html.matchAll(codeOnlyRegex));
+
+        // Formato 4: Buscar código JavaScript directamente en el HTML (window.UBITS, create, etc.)
+        const jsCodeRegex =
+          /(window\.UBITS\.[\s\S]*?create\([\s\S]*?\{[\s\S]*?\}[\s\S]*?\))/gi;
+        const jsMatches = Array.from(html.matchAll(jsCodeRegex));
+
+        // Formato 5: Buscar código en scripts inline
+        const scriptRegex =
+          /<script[^>]*>([\s\S]*?window\.UBITS[\s\S]*?)<\/script>/gi;
+        const scriptMatches = Array.from(html.matchAll(scriptRegex));
+
+        // Priorizar: sb-code > standard > code-only > js-code > script
+        let extractedCode: string | null = null;
+
+        if (matches.length > 0) {
+          extractedCode = decodeHtmlEntities(matches[0][1]);
+          console.log(`   📋 Código encontrado en formato sb-code`);
+        } else if (standardMatches.length > 0) {
+          extractedCode = decodeHtmlEntities(standardMatches[0][1]);
+          console.log(`   📋 Código encontrado en formato estándar`);
+        } else if (codeOnlyMatches.length > 0) {
+          extractedCode = decodeHtmlEntities(codeOnlyMatches[0][1]);
+          console.log(`   📋 Código encontrado en formato code-only`);
+        } else if (jsMatches.length > 0) {
+          extractedCode = jsMatches[0][1];
+          console.log(`   📋 Código encontrado como JavaScript directo`);
+        } else if (scriptMatches.length > 0) {
+          extractedCode = scriptMatches[0][1];
+          console.log(`   📋 Código encontrado en script inline`);
+        }
+
+        if (extractedCode) {
+          // Separar HTML y JS
+          const htmlMatch = extractedCode.match(/<[^>]+>[\s\S]*?<\/[^>]+>/);
+          const jsMatch = extractedCode.match(
+            /window\.UBITS\.[\s\S]*?create\([\s\S]*?\{[\s\S]*?\}[\s\S]*?\)/
+          );
+
+          codeFromTab = {
+            html: htmlMatch
+              ? htmlMatch[0]
+              : extractedCode.includes('<')
+                ? extractedCode
+                : '',
+            js: jsMatch
+              ? jsMatch[0]
+              : extractedCode.includes('window.UBITS')
+                ? extractedCode
+                : undefined,
+          };
+
           console.log(
-            `   ✅ Código extraído desde historia (formato alternativo): ${codeFromTab.html.length} caracteres`
+            `   ✅ Código extraído desde URL de historia: ${codeFromTab.html.length} caracteres HTML, ${codeFromTab.js?.length || 0} caracteres JS`
           );
         } else {
           throw new Error('No se encontró código en la URL de la historia');
         }
+      } catch (extractError: any) {
+        console.warn(
+          `   ⚠️ No se pudo extraer desde URL de historia: ${extractError.message}`
+        );
       }
-    } catch (extractError: any) {
+    } catch (fetchError: any) {
       console.warn(
-        `   ⚠️ No se pudo extraer desde historia: ${extractError.message}`
+        `   ⚠️ Error obteniendo HTML de historia: ${fetchError.message}`
       );
     }
-  } catch (fetchError: any) {
-    console.warn(
-      `   ⚠️ Error obteniendo HTML de historia: ${fetchError.message}`
-    );
   }
 
   // INTENTO 3: Intentar desde Docs (último recurso, puede requerir Browser MCP)
