@@ -1374,7 +1374,20 @@
                             const script = document.querySelector('script[src*="data-view.umd.js"]');
                             if (script) {
                                 console.log('   - Script encontrado:', script.src);
-                                console.log('   - Script loaded:', script.complete || script.readyState === 'complete');
+                                console.log('   - Script complete:', script.complete);
+                                console.log('   - Script readyState:', script.readyState);
+                                console.log('   - Script loaded:', script.complete || script.readyState === 'complete' || script.readyState === 'loaded');
+                                
+                                // Verificar errores de red
+                                script.onerror = function() {
+                                    console.error('   - ❌ Error al cargar el script (onerror disparado)');
+                                };
+                                
+                                // Verificar si hay errores en la consola de red
+                                if (script.complete && !window.UBITSDataView) {
+                                    console.warn('   - ⚠️ Script marcado como completo pero window.UBITSDataView no disponible');
+                                    console.warn('   - Posible error de ejecución del script o estructura incorrecta del bundle');
+                                }
                             } else {
                                 console.warn('   - ⚠️ Script data-view.umd.js no encontrado en el DOM');
                             }
