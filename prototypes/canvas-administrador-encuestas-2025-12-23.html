@@ -2445,11 +2445,20 @@
       
       console.log('✅ Drawer creado correctamente:', drawerInstance);
       
-      // ⚠️ CRÍTICO: Crear componentes Input de UBITS después de que el drawer se abra
-      // Esperar a que el drawer se renderice completamente
+      // ⚠️ CRÍTICO: Crear componentes Input de UBITS después de que el drawer se abra completamente
+      // Esperar a que el drawer se renderice completamente y esté visible
       setTimeout(function() {
-        createFilterInputs();
-      }, 300);
+        // Verificar que el drawer esté visible antes de crear inputs
+        const drawer = document.querySelector('.ubits-drawer');
+        if (drawer && drawer.offsetParent !== null) {
+          createFilterInputs();
+        } else {
+          console.warn('⚠️ Drawer aún no está visible, esperando más tiempo...');
+          setTimeout(function() {
+            createFilterInputs();
+          }, 500);
+        }
+      }, 500);
     } catch (error) {
       console.error('❌ Error al crear drawer:', error);
       console.log('🔄 Intentando crear drawer manualmente...');
