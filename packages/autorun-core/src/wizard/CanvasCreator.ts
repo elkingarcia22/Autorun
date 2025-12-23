@@ -18,8 +18,8 @@ export class CanvasCreator {
   }
 
   /**
-   * Crea un lienzo/template nuevo usando template básico (sin ContentManager)
-   * Ideal para backend - frontend listo para usar
+   * Crea un lienzo/template nuevo cargando el template desde Storybook
+   * Template completo con sidebar, navbar, responsive - pero simplificado para implementación
    */
   async create(
     template: 'administrador' | 'colaborador',
@@ -34,15 +34,24 @@ export class CanvasCreator {
     // Crear directorio si no existe
     await fs.mkdir(path.dirname(filePath), { recursive: true });
 
-    // ⭐ NUEVO: Generar template básico (sin ContentManager)
-    const content = await this.createBasicTemplate(template, module, product);
+    // Cargar template completo desde Storybook
+    const content = await this.loadTemplateFromStorybook(
+      template,
+      module,
+      product,
+      disableOtherModulesNavigation
+    );
+
+    // ⭐ NUEVO: Simplificar template para implementación más fácil
+    const simplifiedContent =
+      await this.simplifyTemplateForImplementation(content);
 
     // Escribir archivo
-    await fs.writeFile(filePath, content, 'utf-8');
+    await fs.writeFile(filePath, simplifiedContent, 'utf-8');
 
-    console.log(`✅ Lienzo básico creado: ${filePath}`);
+    console.log(`✅ Lienzo creado: ${filePath}`);
     console.log(
-      `   📝 Template simplificado sin ContentManager (listo para backend)`
+      `   📝 Template completo simplificado para implementación fácil`
     );
 
     return filePath;
