@@ -487,10 +487,11 @@ function extractStoryCodeFromSource(
   // ⚠️ NUEVO: Priorizar extracción desde parameters.docs.source.code (más confiable)
   // Buscar específicamente para historias "Implementation" o "implementation"
   if (storyName.toLowerCase().includes('implementation')) {
-    // Buscar la historia específica primero
+    // Buscar la historia específica primero - usar regex más específico
+    // Buscar: export const Implementation ... code: `...`
     const storySection = sourceCode.match(
       new RegExp(
-        `export\\s+const\\s+${storyName}[\\s\\S]*?code:\\s*\`([\\s\\S]*?)\``,
+        `export\\s+const\\s+${storyName}[\\s\\S]*?code:\\s*\`([\\s\\S]*?)\`;?`,
         'i'
       )
     );
@@ -512,20 +513,32 @@ function extractStoryCodeFromSource(
     }
 
     // Fallback: buscar cualquier code: `...` en el archivo (puede estar en cualquier historia)
-    const anyCodeMatch = sourceCode.match(/code:\s*`([\s\S]*?)`/);
-    if (anyCodeMatch && anyCodeMatch[1]) {
-      const code = anyCodeMatch[1]
-        .replace(/\\n/g, '\n')
-        .replace(/\\`/g, '`')
-        .replace(/\\'/g, "'")
-        .replace(/\\"/g, '"')
-        .trim();
+    // ⚠️ MEJORADO: Buscar el más largo (probablemente el correcto)
+    const allCodeMatches = Array.from(
+      sourceCode.matchAll(/code:\s*`([\s\S]*?)`/g)
+    );
+    if (allCodeMatches.length > 0) {
+      // Seleccionar el match más largo (probablemente el correcto)
+      const longestMatch = allCodeMatches.reduce((longest, current) =>
+        (current[1]?.length || 0) > (longest[1]?.length || 0)
+          ? current
+          : longest
+      );
 
-      if (code.length > 20) {
-        console.log(
-          `   ✅ Código extraído desde code: (${code.length} caracteres)`
-        );
-        return code;
+      if (longestMatch && longestMatch[1]) {
+        const code = longestMatch[1]
+          .replace(/\\n/g, '\n')
+          .replace(/\\`/g, '`')
+          .replace(/\\'/g, "'")
+          .replace(/\\"/g, '"')
+          .trim();
+
+        if (code.length > 20) {
+          console.log(
+            `   ✅ Código extraído desde code: (${code.length} caracteres)`
+          );
+          return code;
+        }
       }
     }
   }
