@@ -1771,10 +1771,22 @@ async function autorunApplyModeB(
     let codeToInsert = '';
     let componentExists = false;
 
+    // ✅ CORRECCIÓN #1: Buscar historia "implementation" primero (igual que Mode Strict)
+    let storyName = 'default';
+    try {
+      storyName = await findImplementationStory(componentId);
+      console.log(`   ✅ Historia seleccionada: ${storyName}`);
+    } catch (error: any) {
+      console.warn(
+        `   ⚠️ Error buscando historia "implementation": ${error.message}, usando "default"`
+      );
+      storyName = 'default';
+    }
+
     try {
       const exactCode = await extractExactCodeFromStorybookWithBrowser(
         componentId,
-        'default'
+        storyName
       );
       if (exactCode && exactCode.html) {
         codeToInsert = exactCode.html;
