@@ -1017,6 +1017,96 @@
                     window.UBITS_ResponsiveManager.adaptComponents();
                     
                     // ========================================
+                    // CREAR RADIO BUTTON
+                    // ========================================
+                    setTimeout(() => {
+                        const radioContainer = document.getElementById('radio-button-container-1');
+                        if (radioContainer) {
+                            // Intentar usar window.createRadioButton primero
+                            if (window.createRadioButton) {
+                                try {
+                                    window.createRadioButton({
+                                        containerId: 'radio-button-container-1',
+                                        label: 'Opción 1',
+                                        value: 'opcion1',
+                                        name: 'tipo-opcion',
+                                        checked: false,
+                                        size: 'md',
+                                        state: 'default',
+                                        disabled: false,
+                                        onChange: (event) => {
+                                            console.log('Radio cambiado:', event.target.value);
+                                        }
+                                    });
+                                    console.log('✅ Radio Button creado con window.createRadioButton');
+                                } catch (error) {
+                                    console.error('❌ Error creando Radio Button:', error);
+                                }
+                            }
+                            // Fallback a window.UBITS.RadioButton.create
+                            else if (window.UBITS && window.UBITS.RadioButton && window.UBITS.RadioButton.create) {
+                                try {
+                                    const radioButton = window.UBITS.RadioButton.create({
+                                        label: 'Opción 1',
+                                        value: 'opcion1',
+                                        name: 'tipo-opcion',
+                                        size: 'md',
+                                        state: 'default',
+                                        checked: false,
+                                        disabled: false
+                                    });
+                                    if (radioButton && radioButton.element) {
+                                        radioContainer.appendChild(radioButton.element);
+                                        console.log('✅ Radio Button creado con window.UBITS.RadioButton.create');
+                                    }
+                                } catch (error) {
+                                    console.error('❌ Error creando Radio Button:', error);
+                                }
+                            } else {
+                                console.warn('⚠️ Radio Button API no disponible aún, reintentando...');
+                                // Reintentar después de 1 segundo
+                                setTimeout(() => {
+                                    if (window.createRadioButton) {
+                                        try {
+                                            window.createRadioButton({
+                                                containerId: 'radio-button-container-1',
+                                                label: 'Opción 1',
+                                                value: 'opcion1',
+                                                name: 'tipo-opcion',
+                                                checked: false,
+                                                size: 'md',
+                                                state: 'default',
+                                                disabled: false
+                                            });
+                                            console.log('✅ Radio Button creado (reintento)');
+                                        } catch (error) {
+                                            console.error('❌ Error creando Radio Button (reintento):', error);
+                                        }
+                                    } else if (window.UBITS && window.UBITS.RadioButton && window.UBITS.RadioButton.create) {
+                                        try {
+                                            const radioButton = window.UBITS.RadioButton.create({
+                                                label: 'Opción 1',
+                                                value: 'opcion1',
+                                                name: 'tipo-opcion',
+                                                size: 'md',
+                                                state: 'default',
+                                                checked: false,
+                                                disabled: false
+                                            });
+                                            if (radioButton && radioButton.element) {
+                                                radioContainer.appendChild(radioButton.element);
+                                                console.log('✅ Radio Button creado (reintento)');
+                                            }
+                                        } catch (error) {
+                                            console.error('❌ Error creando Radio Button (reintento):', error);
+                                        }
+                                    }
+                                }, 1000);
+                            }
+                        }
+                    }, 500);
+                    
+                    // ========================================
                     // DIAGNÓSTICO: Línea divisoria del footer
                     // ========================================
                     setTimeout(() => {
