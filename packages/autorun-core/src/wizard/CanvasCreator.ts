@@ -11,681 +11,810 @@ import { URL } from 'url';
 import { UBITS_PRESET, UBITS_MODULES_CONFIG } from './UBITSPreset';
 
 export class CanvasCreator {
-	private projectPath: string;
-
-	constructor(projectPath: string = process.cwd()) {
-		this.projectPath = projectPath;
-	}
-
-	/**
-	 * Crea un lienzo/template nuevo cargando el template desde Storybook
-	 */
-	async create(
-		template: 'administrador' | 'colaborador',
-		module: string,
-		product?: string,
-		disableOtherModulesNavigation?: boolean,
-	): Promise<string> {
-		const templateConfig = UBITS_PRESET.templates[template];
-		const fileName = this.generateFileName(template, module, product);
-		const filePath = path.join(this.projectPath, 'prototypes', fileName);
-
-		// Crear directorio si no existe
-		await fs.mkdir(path.dirname(filePath), { recursive: true });
-
-		// Cargar template desde Storybook
-		const content = await this.loadTemplateFromStorybook(
-			template,
-			module,
-			product,
-			disableOtherModulesNavigation,
-		);
-
-		// Escribir archivo
-		await fs.writeFile(filePath, content, 'utf-8');
-
-		console.log(`✅ Lienzo creado: ${filePath}`);
-
-		return filePath;
-	}
-
-	/**
-	 * Carga el template completo desde la carpeta UBITS local en el escritorio
-	 * Copia el template tal cual y solo ajusta las rutas para que funcionen
-	 */
-	private async loadTemplateFromStorybook(
-		template: 'administrador' | 'colaborador',
-		module: string,
-		product?: string,
-		disableOtherModulesNavigation?: boolean,
-	): Promise<string> {
-		const templateConfig = UBITS_PRESET.templates[template];
-		const templateFileName =
-			template === 'administrador' ? 'template-admin.html' : 'template-colaborador.html';
-
-		// PRIORIDAD 1: Intentar cargar desde Vercel Storybook
-		try {
-			// Usar URL con query parameters directamente (más confiable)
-			const templateUrl =
-				UBITS_PRESET.storybook.getUrl?.(`/templates/${templateFileName}`) ||
-				`${UBITS_PRESET.storybook.url}/templates/${templateFileName}`;
-
-			console.log(
-				`   📄 Intentando cargar template desde Vercel: ${templateUrl.replace(/\?.*/, '?***')}`,
-			);
-
-			// Usar fetchFromVercel que usa https nativo (más confiable que fetch)
-			let templateContent = await this.fetchFromVercel(templateUrl);
-			console.log(`   ✅ Template cargado desde Vercel (${templateContent.length} bytes)`);
-
-			// ⚠️ NUEVO: Usamos URLs directas de Vercel con bypass token en query string
-			// Esto permite abrir el HTML directamente sin necesidad de servidor con proxy
-			// El bypass token se pasa como query parameter, no como header
-			const vercelBaseUrl = UBITS_PRESET.storybook.url;
-
-			// Ajustar rutas del template a URLs directas de Vercel con bypass token
-			templateContent = await this.adjustTemplatePaths(templateContent, vercelBaseUrl);
-
-			// Agregar carga del UMD de data-table usando proxy
-			templateContent = this.addDataTableUMD(templateContent, vercelBaseUrl);
-
-			// Personalizar el template con el módulo y producto seleccionados
-			// Para customizeTemplate, pasamos una ruta relativa vacía ya que todo usa proxy
-			templateContent = this.customizeTemplate(
-				templateContent,
-				template,
-				module,
-				product,
-				'../vendor/ubits/packages/', // Solo para compatibilidad, no se usa si todo es proxy
-				disableOtherModulesNavigation,
-			);
-
-			return templateContent;
-		} catch (vercelError: any) {
-			console.warn(`   ⚠️  No se pudo cargar desde Vercel: ${vercelError.message}`);
-			console.log(`   📄 Intentando fallback a vendor/ubits/...`);
-		}
-
-		// PRIORIDAD 2: Fallback a vendor/ubits/ (portable)
-		const vendorUbitsPath = path.join(
-			this.projectPath,
-			'vendor',
-			'ubits',
-			'packages',
-			'templates',
-			templateFileName,
-		);
-		const vendorUbitsPackagesPath = path.join(this.projectPath, 'vendor', 'ubits', 'packages');
-
-		try {
-			await fs.access(vendorUbitsPath);
-
-			console.log(`   📄 Cargando template desde vendor/ubits/ (portable): ${vendorUbitsPath}`);
-			let templateContent = await fs.readFile(vendorUbitsPath, 'utf-8');
-
-			// Usar rutas relativas desde prototypes/ hacia vendor/ubits/packages/
-			const relativePath = '../vendor/ubits/packages/';
-
-			// Validar que los archivos críticos existen
-			await this.validateUBITSFiles(vendorUbitsPackagesPath);
-
-			// Ajustar rutas del template a rutas relativas
-			templateContent = await this.adjustTemplatePaths(templateContent, relativePath);
-
-			// Agregar carga del UMD de data-table
-			templateContent = this.addDataTableUMD(templateContent, relativePath);
-
-			// Personalizar el template
-			templateContent = this.customizeTemplate(
-				templateContent,
-				template,
-				module,
-				product,
-				relativePath,
-				disableOtherModulesNavigation,
-			);
-
-			return templateContent;
-		} catch (vendorError) {
-			// PRIORIDAD 3: Fallback a Desktop/UBITS/ (legacy)
-			const os = await import('os');
-			const ubitsDesktopPath = path.join(
-				os.homedir(),
-				'Desktop',
-				'UBITS',
-				'packages',
-				'templates',
-				templateFileName,
-			);
-
-			try {
-				await fs.access(ubitsDesktopPath);
-
-				console.log(`   📄 Cargando template desde Desktop/UBITS/ (legacy): ${ubitsDesktopPath}`);
-				let templateContent = await fs.readFile(ubitsDesktopPath, 'utf-8');
-
-				// Usar rutas absolutas file:// para compatibilidad legacy
-				const ubitsPackagesPath = path.join(os.homedir(), 'Desktop', 'UBITS', 'packages');
-				const absolutePath = `file://${ubitsPackagesPath}`.replace(/\\/g, '/');
-
-				// Validar que los archivos críticos existen
-				await this.validateUBITSFiles(ubitsPackagesPath);
-
-				// Ajustar rutas del template a rutas absolutas file://
-				templateContent = await this.adjustTemplatePaths(templateContent, absolutePath);
-
-				// Agregar carga del UMD de data-table
-				templateContent = this.addDataTableUMD(templateContent, absolutePath);
-
-				// Personalizar el template
-				templateContent = this.customizeTemplate(
-					templateContent,
-					template,
-					module,
-					product,
-					absolutePath,
-					disableOtherModulesNavigation,
-				);
-
-				return templateContent;
-			} catch (localError) {
-				console.warn('⚠️  No se pudo cargar template desde ninguna fuente:', localError);
-				console.warn(`   💡 Verifica conexión a internet o que existe vendor/ubits/packages/`);
-				// Fallback a template generado localmente
-				return this.generateCanvasContent(template, module, templateConfig, product);
-			}
-		}
-	}
-
-	/**
-	 * Valida que los archivos críticos de UBITS existen
-	 */
-	private async validateUBITSFiles(ubitsPackagesPath: string): Promise<void> {
-		const fs = await import('fs/promises');
-		const path = await import('path');
-
-		const criticalFiles = [
-			'tokens/dist/tokens.css',
-			'templates/components-loader.js',
-			'templates/config/products.js',
-			'templates/config/theme-manager.js',
-			'templates/engine/template-loader.js',
-			'components/sidebar/src/styles/sidebar.css',
-			'components/subnav/src/styles/subnav.css',
-		];
-
-		const missingFiles: string[] = [];
-
-		for (const file of criticalFiles) {
-			const filePath = path.join(ubitsPackagesPath, file);
-			try {
-				await fs.access(filePath);
-			} catch {
-				missingFiles.push(file);
-			}
-		}
-
-		if (missingFiles.length > 0) {
-			console.warn('   ⚠️  Archivos críticos de UBITS no encontrados:');
-			missingFiles.forEach((file) => console.warn(`      - ${file}`));
-			console.warn(
-				'   💡 Asegúrate de que UBITS está en vendor/ubits/packages/ o Desktop/UBITS/packages/',
-			);
-		} else {
-			console.log('   ✅ Todos los archivos críticos de UBITS encontrados');
-		}
-	}
-
-	/**
-	 * Fetch desde Vercel usando https nativo de Node.js (más confiable que fetch)
-	 */
-	private async fetchFromVercel(url: string): Promise<string> {
-		return new Promise((resolve, reject) => {
-			const urlObj = new URL(url);
-			const options = {
-				hostname: urlObj.hostname,
-				path: urlObj.pathname + urlObj.search,
-				method: 'GET',
-				headers: {} as Record<string, string>,
-			};
-
-			// Agregar headers de bypass token
-			if (UBITS_PRESET.storybook.bypassToken) {
-				options.headers['x-vercel-set-bypass-cookie'] = 'true';
-				options.headers['x-vercel-protection-bypass'] = UBITS_PRESET.storybook.bypassToken;
-			}
-
-			const req = https.request(options, (res) => {
-				// Extraer cookie primero (puede venir en cualquier respuesta)
-				const setCookie = res.headers['set-cookie'];
-				let cookieHeader = '';
-				if (setCookie) {
-					const cookieString = Array.isArray(setCookie) ? setCookie.join('; ') : String(setCookie);
-					const cookieMatch = cookieString.match(/_vercel_jwt=([^;]+)/);
-					if (cookieMatch) {
-						cookieHeader = `_vercel_jwt=${cookieMatch[1]}`;
-					}
-				}
-
-				// Si hay redirect (307), seguir la nueva ubicación con la cookie
-				if (res.statusCode === 307 || res.statusCode === 302 || res.statusCode === 301) {
-					const location = res.headers.location;
-					if (location) {
-						// Consumir la respuesta para evitar memory leak
-						res.resume();
-						const redirectUrl = location.startsWith('http')
-							? location
-							: `https://${urlObj.hostname}${location}`;
-
-						// Si tenemos cookie, hacer la siguiente request con ella
-						if (cookieHeader) {
-							const redirectUrlObj = new URL(redirectUrl);
-							const redirectOptions = {
-								hostname: redirectUrlObj.hostname,
-								path: redirectUrlObj.pathname + redirectUrlObj.search,
-								method: 'GET',
-								headers: {
-									Cookie: cookieHeader,
-								} as Record<string, string>,
-							};
-
-							const reqRedirect = https.request(redirectOptions, (resRedirect) => {
-								let dataRedirect = '';
-								resRedirect.on('data', (chunk) => {
-									dataRedirect += chunk;
-								});
-								resRedirect.on('end', () => {
-									if (resRedirect.statusCode === 200) {
-										resolve(dataRedirect);
-									} else {
-										reject(
-											new Error(`HTTP ${resRedirect.statusCode}: ${resRedirect.statusMessage}`),
-										);
-									}
-								});
-							});
-							reqRedirect.on('error', reject);
-							reqRedirect.setTimeout(10000, () => {
-								reqRedirect.destroy();
-								reject(new Error('Timeout al conectar con Vercel'));
-							});
-							reqRedirect.end();
-							return;
-						}
-
-						// Si no hay cookie, intentar recursivamente
-						return resolve(this.fetchFromVercel(redirectUrl));
-					}
-				}
-
-				// Si no es OK y tenemos cookie, intentar con cookie
-				if (res.statusCode !== 200) {
-					if (cookieHeader) {
-						// Consumir la respuesta actual
-						res.resume();
-						// Hacer nueva request con la cookie en la misma URL
-						const optionsWithCookie = { ...options };
-						optionsWithCookie.headers['Cookie'] = cookieHeader;
-						const req2 = https.request(optionsWithCookie, (res2) => {
-							let data2 = '';
-							res2.on('data', (chunk) => {
-								data2 += chunk;
-							});
-							res2.on('end', () => {
-								if (res2.statusCode === 200) {
-									resolve(data2);
-								} else if (res2.statusCode === 307 || res2.statusCode === 302) {
-									// Si aún hay redirect, seguir con cookie
-									const location2 = res2.headers.location;
-									if (location2) {
-										res2.resume();
-										const redirectUrl2 = location2.startsWith('http')
-											? location2
-											: `https://${urlObj.hostname}${location2}`;
-										const redirectUrlObj2 = new URL(redirectUrl2);
-										const redirectOptions2 = {
-											hostname: redirectUrlObj2.hostname,
-											path: redirectUrlObj2.pathname + redirectUrlObj2.search,
-											method: 'GET',
-											headers: {
-												Cookie: cookieHeader,
-											} as Record<string, string>,
-										};
-										const reqRedirect2 = https.request(redirectOptions2, (resRedirect2) => {
-											let dataRedirect2 = '';
-											resRedirect2.on('data', (chunk) => {
-												dataRedirect2 += chunk;
-											});
-											resRedirect2.on('end', () => {
-												if (resRedirect2.statusCode === 200) {
-													resolve(dataRedirect2);
-												} else {
-													reject(
-														new Error(
-															`HTTP ${resRedirect2.statusCode}: ${resRedirect2.statusMessage}`,
-														),
-													);
-												}
-											});
-										});
-										reqRedirect2.on('error', reject);
-										reqRedirect2.setTimeout(10000, () => {
-											reqRedirect2.destroy();
-											reject(new Error('Timeout al conectar con Vercel'));
-										});
-										reqRedirect2.end();
-										return;
-									}
-									reject(new Error(`HTTP ${res2.statusCode}: Redirect sin location`));
-								} else {
-									reject(new Error(`HTTP ${res2.statusCode}: ${res2.statusMessage}`));
-								}
-							});
-						});
-						req2.on('error', reject);
-						req2.setTimeout(10000, () => {
-							req2.destroy();
-							reject(new Error('Timeout al conectar con Vercel'));
-						});
-						req2.end();
-						return;
-					}
-					// Consumir la respuesta antes de rechazar
-					res.resume();
-					reject(new Error(`HTTP ${res.statusCode}: ${res.statusMessage}`));
-					return;
-				}
-
-				// Leer el contenido
-				let data = '';
-				res.on('data', (chunk) => {
-					data += chunk;
-				});
-
-				res.on('end', () => {
-					resolve(data);
-				});
-			});
-
-			req.on('error', (error) => {
-				reject(error);
-			});
-
-			req.setTimeout(10000, () => {
-				req.destroy();
-				reject(new Error('Timeout al conectar con Vercel'));
-			});
-
-			req.end();
-		});
-	}
-
-	/**
-	 * Agrega la carga del UMD de data-table a los templates
-	 */
-	private addDataTableUMD(content: string, basePath: string): string {
-		// Detectar si es URL de Vercel
-		const isVercelUrl = basePath.startsWith('https://') || basePath.startsWith('http://');
-
-		// Construir URL del script de data-table
-		let dataTableScript: string;
-		if (isVercelUrl) {
-			// Usar URL directa de Vercel con bypass token para data-table.umd.js
-			const dataTableUrl =
-				UBITS_PRESET.storybook.getUrl?.('/components/data-table/dist/data-table.umd.js') ||
-				`${basePath.replace(/\/$/, '')}/components/data-table/dist/data-table.umd.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=${UBITS_PRESET.storybook.bypassToken}`;
-			dataTableScript = `<script src="${dataTableUrl}"></script>`;
-		} else {
-			dataTableScript = `<script src="${basePath}components/data-table/dist/data-table.umd.js"></script>`;
-		}
-
-		// Agregar después de components-loader.js
-		if (content.includes('components-loader.js')) {
-			// Buscar el script de components-loader.js (puede ser URL de Vercel o ruta local)
-			content = content.replace(
-				/(<script[^>]*src="[^"]*components-loader\.js"[^>]*><\/script>)/i,
-				`$1\n    ${dataTableScript}`,
-			);
-		} else {
-			// Si no encuentra components-loader.js, agregar antes del cierre de </body>
-			content = content.replace(/(<\/body>)/i, `    ${dataTableScript}\n$1`);
-		}
-
-		return content;
-	}
-
-	/**
-	 * Ajusta las rutas del template para que funcionen con rutas relativas, absolutas o URLs de Vercel
-	 * Las rutas originales son relativas a packages/templates/ (../tokens/...)
-	 * Las convertimos a:
-	 * - URLs de Vercel si basePathToUBITS es una URL (https://...)
-	 * - Rutas relativas desde prototypes/ hacia vendor/ubits/packages/ (../vendor/ubits/packages/...)
-	 * - Rutas absolutas file:// si es legacy (Desktop/UBITS/)
-	 */
-	private async adjustTemplatePaths(content: string, basePathToUBITS: string): Promise<string> {
-		// Las rutas originales son: ../tokens/dist/tokens.css
-		// Necesitamos:
-		// - URL Vercel: https://ubits-storybook.vercel.app/tokens/dist/tokens.css
-		// - Relativo: ../vendor/ubits/packages/tokens/dist/tokens.css
-		// - Absoluto legacy: file:///Users/.../UBITS/packages/tokens/dist/tokens.css
-
-		// Detectar si es URL de Vercel
-		const isVercelUrl =
-			basePathToUBITS.startsWith('https://') || basePathToUBITS.startsWith('http://');
-
-		// ⚠️ IMPORTANTE: Asegurar que la ruta termine con / para evitar problemas
-		const basePath = basePathToUBITS.endsWith('/') ? basePathToUBITS : `${basePathToUBITS}/`;
-
-		// 1. Reemplazar rutas relativas ../ por la ruta base (CSS y JS)
-		// ⚠️ NUEVO: Si es URL de Vercel, usar URLs directas con bypass token (más simple, funciona sin servidor proxy)
-		content = content.replace(/href="(\.\.\/)+([^"]+)"/g, (match, dots, path) => {
-			// Si ya tiene vendor/ubits/packages/, file:// o https://, no reemplazar
-			if (
-				match.includes('vendor/ubits/packages/') ||
-				match.includes('file://') ||
-				match.includes('https://') ||
-				match.includes('http://')
-			) {
-				return match;
-			}
-			// Si es URL de Vercel, usar URL directa con bypass token (funciona sin servidor proxy)
-			if (isVercelUrl) {
-				// Usar URL directa de Vercel con bypass token en query string
-				// Esto permite abrir el HTML directamente sin necesidad de servidor con proxy
-				const vercelUrl =
-					UBITS_PRESET.storybook.getUrl?.(`/${path}`) ||
-					`${basePath.replace(/\/$/, '')}/${path}?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=${UBITS_PRESET.storybook.bypassToken}`;
-				return `href="${vercelUrl}"`;
-			}
-			return `href="${basePath}${path}"`;
-		});
-		content = content.replace(/src="(\.\.\/)+([^"]+)"/g, (match, dots, path) => {
-			// Si ya tiene vendor/ubits/packages/, file:// o https://, no reemplazar
-			if (
-				match.includes('vendor/ubits/packages/') ||
-				match.includes('file://') ||
-				match.includes('https://') ||
-				match.includes('http://')
-			) {
-				return match;
-			}
-			// Si es URL de Vercel, usar URL directa con bypass token (funciona sin servidor proxy)
-			if (isVercelUrl) {
-				// Usar URL directa de Vercel con bypass token en query string
-				// Esto permite abrir el HTML directamente sin necesidad de servidor con proxy
-				const vercelUrl =
-					UBITS_PRESET.storybook.getUrl?.(`/${path}`) ||
-					`${basePath.replace(/\/$/, '')}/${path}?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=${UBITS_PRESET.storybook.bypassToken}`;
-				return `src="${vercelUrl}"`;
-			}
-			return `src="${basePath}${path}"`;
-		});
-
-		// 1.1. Agregar carga de figma-tokens.css después de tokens.css (necesario para tokens de modifiers)
-		// Esto asegura que tokens como --modifiers-normal-color-dark-accent-blue estén disponibles
-		// Extraer la ruta base del tokens.css ya procesado para evitar duplicación
-		content = content.replace(
-			/(<link rel="stylesheet" href="([^"]*tokens\/dist\/)tokens\.css[^"]*"[^>]*\/>)/,
-			(match, fullMatch, tokensPath) => {
-				// Si es URL directa de Vercel, usar URL directa también para figma-tokens
-				if (tokensPath.includes('ubits-storybook10.vercel.app')) {
-					const figmaTokensUrl =
-						UBITS_PRESET.storybook.getUrl?.('/tokens/dist/figma-tokens.css') ||
-						`${UBITS_PRESET.storybook.url}/tokens/dist/figma-tokens.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=${UBITS_PRESET.storybook.bypassToken}`;
-					return `${fullMatch}\n    <link rel="stylesheet" href="${figmaTokensUrl}" />`;
-				}
-				// Si es proxy de Vercel (legacy), usar proxy también para figma-tokens
-				if (tokensPath.startsWith('/vercel-proxy/')) {
-					return `${fullMatch}\n    <link rel="stylesheet" href="/vercel-proxy/tokens/dist/figma-tokens.css" />`;
-				}
-				// Usar la misma ruta base que ya tiene tokens.css
-				return `${fullMatch}\n    <link rel="stylesheet" href="${tokensPath}figma-tokens.css" />`;
-			},
-		);
-
-		// 2. Asegurar que URLs directas de Vercel tengan bypass token (para scripts y assets que ya vienen con URLs)
-		if (isVercelUrl) {
-			const vercelBaseUrl = basePath.replace(/\/$/, '');
-			// Si ya tienen bypass token, no cambiar. Si no, agregarlo
-			content = content.replace(
-				new RegExp(`href="${vercelBaseUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}([^"]+)"`, 'g'),
-				(match, path) => {
-					// Si ya tiene bypass token, no cambiar
-					if (path.includes('x-vercel-protection-bypass')) {
-						return match;
-					}
-					// Agregar bypass token si no lo tiene
-					const separator = path.includes('?') ? '&' : '?';
-					return `href="${vercelBaseUrl}${path}${separator}x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=${UBITS_PRESET.storybook.bypassToken}"`;
-				},
-			);
-			content = content.replace(
-				new RegExp(`src="${vercelBaseUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}([^"]+)"`, 'g'),
-				(match, path) => {
-					// Si ya tiene bypass token, no cambiar
-					if (path.includes('x-vercel-protection-bypass')) {
-						return match;
-					}
-					// Agregar bypass token si no lo tiene
-					const separator = path.includes('?') ? '&' : '?';
-					return `src="${vercelBaseUrl}${path}${separator}x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=${UBITS_PRESET.storybook.bypassToken}"`;
-				},
-			);
-		}
-
-		// 3. Ajustar rutas de assets que son relativas al mismo directorio (templates/assets/)
-		// assets/fontawesome/... -> URL directa de Vercel o ruta relativa/absoluta
-		if (isVercelUrl) {
-			// Usar URL directa de Vercel para assets con bypass token
-			content = content.replace(/href="assets\/([^"]+)"/g, (match, assetPath) => {
-				const vercelUrl =
-					UBITS_PRESET.storybook.getUrl?.(`/templates/assets/${assetPath}`) ||
-					`${basePath.replace(/\/$/, '')}/templates/assets/${assetPath}?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=${UBITS_PRESET.storybook.bypassToken}`;
-				return `href="${vercelUrl}"`;
-			});
-			content = content.replace(/src="assets\/([^"]+)"/g, (match, assetPath) => {
-				const vercelUrl =
-					UBITS_PRESET.storybook.getUrl?.(`/templates/assets/${assetPath}`) ||
-					`${basePath.replace(/\/$/, '')}/templates/assets/${assetPath}?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=${UBITS_PRESET.storybook.bypassToken}`;
-				return `src="${vercelUrl}"`;
-			});
-		} else {
-			content = content.replace(/href="assets\//g, `href="${basePath}templates/assets/`);
-			content = content.replace(/src="assets\//g, `src="${basePath}templates/assets/`);
-		}
-
-		// 3. Ajustar rutas de imágenes en JavaScript (products.js)
-		// 'assets/images/Profile-image.jpg' -> 'file:///Users/.../templates/assets/images/Profile-image.jpg'
-		content = content.replace(/'assets\/images\//g, `'${basePath}templates/assets/images/`);
-		content = content.replace(/"assets\/images\//g, `"${basePath}templates/assets/images/`);
-
-		// 4. Ajustar rutas de scripts que son relativas al mismo directorio
-		// components-loader.js -> URL directa de Vercel o ruta relativa/absoluta
-		if (isVercelUrl) {
-			// Usar URL directa de Vercel para scripts con bypass token
-			content = content.replace(/src="components-loader\.js"/g, () => {
-				const vercelUrl =
-					UBITS_PRESET.storybook.getUrl?.('/templates/components-loader.js') ||
-					`${basePath.replace(/\/$/, '')}/templates/components-loader.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=${UBITS_PRESET.storybook.bypassToken}`;
-				return `src="${vercelUrl}"`;
-			});
-			content = content.replace(/src="config\/([^"]+)"/g, (match, configPath) => {
-				const vercelUrl =
-					UBITS_PRESET.storybook.getUrl?.(`/templates/config/${configPath}`) ||
-					`${basePath.replace(/\/$/, '')}/templates/config/${configPath}?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=${UBITS_PRESET.storybook.bypassToken}`;
-				return `src="${vercelUrl}"`;
-			});
-			content = content.replace(/src="engine\/([^"]+)"/g, (match, enginePath) => {
-				const vercelUrl =
-					UBITS_PRESET.storybook.getUrl?.(`/templates/engine/${enginePath}`) ||
-					`${basePath.replace(/\/$/, '')}/templates/engine/${enginePath}?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=${UBITS_PRESET.storybook.bypassToken}`;
-				return `src="${vercelUrl}"`;
-			});
-		} else {
-			content = content.replace(
-				/src="components-loader\.js"/g,
-				`src="${basePath}templates/components-loader.js"`,
-			);
-			content = content.replace(/src="config\//g, `src="${basePath}templates/config/`);
-			content = content.replace(/src="engine\//g, `src="${basePath}templates/engine/`);
-		}
-
-		// 5. Ajustar rutas en template strings de JavaScript (backticks)
-		// `../tokens/...` -> `../vendor/ubits/packages/tokens/...`
-		// Solo reemplazar si NO tiene ya vendor/ubits/packages/ o file://
-		content = content.replace(/`(\.\.\/)+([^`]+)`/g, (match, dots, path) => {
-			if (match.includes('vendor/ubits/packages/') || match.includes('file://')) {
-				return match;
-			}
-			return `\`${basePath}${path}\``;
-		});
-
-		// 6. Ajustar rutas en strings de JavaScript (comillas simples y dobles)
-		// '../tokens/...' -> '../vendor/ubits/packages/tokens/...'
-		// Solo reemplazar si NO tiene ya vendor/ubits/packages/ o file://
-		content = content.replace(/'((\.\.\/)+)([^']+)'/g, (match, dots, dots2, path) => {
-			if (match.includes('vendor/ubits/packages/') || match.includes('file://')) {
-				return match;
-			}
-			return `'${basePath}${path}'`;
-		});
-		content = content.replace(/"((\.\.\/)+)([^"]+)"/g, (match, dots, dots2, path) => {
-			if (match.includes('vendor/ubits/packages/') || match.includes('file://')) {
-				return match;
-			}
-			return `"${basePath}${path}"`;
-		});
-
-		// 7. Remover cualquier intento de cargar desde Storybook en el template generado
-		// Esto asegura que solo se usen componentes locales
-		content = content.replace(
-			/window\.AUTORUN\.Components\.loadFromStorybook/g,
-			'// window.AUTORUN.Components.loadFromStorybook // DESHABILITADO: Usar solo componentes locales',
-		);
-
-		return content;
-	}
-
-	/**
-	 * Genera HTML que carga el template desde Storybook
-	 */
-	private generateStorybookTemplateHTML(
-		storybookUrl: string,
-		template: 'administrador' | 'colaborador',
-		module: string,
-		product: string | undefined,
-		templateConfig: any,
-	): string {
-		const moduleConfig = UBITS_MODULES_CONFIG[module];
-		const productName = product
-			? moduleConfig?.products.find((p) => p.id === product)?.name || product
-			: '';
-		const moduleName = moduleConfig?.name || this.formatModuleName(module);
-
-		// Generar subnav HTML
-		const subnavHTML = moduleConfig ? this.generateSubNavHTML(moduleConfig, product) : '';
-
-		return `<!DOCTYPE html>
+  private projectPath: string;
+
+  constructor(projectPath: string = process.cwd()) {
+    this.projectPath = projectPath;
+  }
+
+  /**
+   * Crea un lienzo/template nuevo usando template básico (sin ContentManager)
+   * Ideal para backend - frontend listo para usar
+   */
+  async create(
+    template: 'administrador' | 'colaborador',
+    module: string,
+    product?: string,
+    disableOtherModulesNavigation?: boolean
+  ): Promise<string> {
+    const templateConfig = UBITS_PRESET.templates[template];
+    const fileName = this.generateFileName(template, module, product);
+    const filePath = path.join(this.projectPath, 'prototypes', fileName);
+
+    // Crear directorio si no existe
+    await fs.mkdir(path.dirname(filePath), { recursive: true });
+
+    // ⭐ NUEVO: Generar template básico (sin ContentManager)
+    const content = await this.createBasicTemplate(template, module, product);
+
+    // Escribir archivo
+    await fs.writeFile(filePath, content, 'utf-8');
+
+    console.log(`✅ Lienzo básico creado: ${filePath}`);
+    console.log(
+      `   📝 Template simplificado sin ContentManager (listo para backend)`
+    );
+
+    return filePath;
+  }
+
+  /**
+   * Carga el template completo desde la carpeta UBITS local en el escritorio
+   * Copia el template tal cual y solo ajusta las rutas para que funcionen
+   */
+  private async loadTemplateFromStorybook(
+    template: 'administrador' | 'colaborador',
+    module: string,
+    product?: string,
+    disableOtherModulesNavigation?: boolean
+  ): Promise<string> {
+    const templateConfig = UBITS_PRESET.templates[template];
+    const templateFileName =
+      template === 'administrador'
+        ? 'template-admin.html'
+        : 'template-colaborador.html';
+
+    // PRIORIDAD 1: Intentar cargar desde Vercel Storybook
+    try {
+      // Usar URL con query parameters directamente (más confiable)
+      const templateUrl =
+        UBITS_PRESET.storybook.getUrl?.(`/templates/${templateFileName}`) ||
+        `${UBITS_PRESET.storybook.url}/templates/${templateFileName}`;
+
+      console.log(
+        `   📄 Intentando cargar template desde Vercel: ${templateUrl.replace(/\?.*/, '?***')}`
+      );
+
+      // Usar fetchFromVercel que usa https nativo (más confiable que fetch)
+      let templateContent = await this.fetchFromVercel(templateUrl);
+      console.log(
+        `   ✅ Template cargado desde Vercel (${templateContent.length} bytes)`
+      );
+
+      // ⚠️ NUEVO: Usamos URLs directas de Vercel con bypass token en query string
+      // Esto permite abrir el HTML directamente sin necesidad de servidor con proxy
+      // El bypass token se pasa como query parameter, no como header
+      const vercelBaseUrl = UBITS_PRESET.storybook.url;
+
+      // Ajustar rutas del template a URLs directas de Vercel con bypass token
+      templateContent = await this.adjustTemplatePaths(
+        templateContent,
+        vercelBaseUrl
+      );
+
+      // Agregar carga del UMD de data-table usando proxy
+      templateContent = this.addDataTableUMD(templateContent, vercelBaseUrl);
+
+      // Personalizar el template con el módulo y producto seleccionados
+      // Para customizeTemplate, pasamos una ruta relativa vacía ya que todo usa proxy
+      templateContent = this.customizeTemplate(
+        templateContent,
+        template,
+        module,
+        product,
+        '../vendor/ubits/packages/', // Solo para compatibilidad, no se usa si todo es proxy
+        disableOtherModulesNavigation
+      );
+
+      return templateContent;
+    } catch (vercelError: any) {
+      console.warn(
+        `   ⚠️  No se pudo cargar desde Vercel: ${vercelError.message}`
+      );
+      console.log(`   📄 Intentando fallback a vendor/ubits/...`);
+    }
+
+    // PRIORIDAD 2: Fallback a vendor/ubits/ (portable)
+    const vendorUbitsPath = path.join(
+      this.projectPath,
+      'vendor',
+      'ubits',
+      'packages',
+      'templates',
+      templateFileName
+    );
+    const vendorUbitsPackagesPath = path.join(
+      this.projectPath,
+      'vendor',
+      'ubits',
+      'packages'
+    );
+
+    try {
+      await fs.access(vendorUbitsPath);
+
+      console.log(
+        `   📄 Cargando template desde vendor/ubits/ (portable): ${vendorUbitsPath}`
+      );
+      let templateContent = await fs.readFile(vendorUbitsPath, 'utf-8');
+
+      // Usar rutas relativas desde prototypes/ hacia vendor/ubits/packages/
+      const relativePath = '../vendor/ubits/packages/';
+
+      // Validar que los archivos críticos existen
+      await this.validateUBITSFiles(vendorUbitsPackagesPath);
+
+      // Ajustar rutas del template a rutas relativas
+      templateContent = await this.adjustTemplatePaths(
+        templateContent,
+        relativePath
+      );
+
+      // Agregar carga del UMD de data-table
+      templateContent = this.addDataTableUMD(templateContent, relativePath);
+
+      // Personalizar el template
+      templateContent = this.customizeTemplate(
+        templateContent,
+        template,
+        module,
+        product,
+        relativePath,
+        disableOtherModulesNavigation
+      );
+
+      return templateContent;
+    } catch (vendorError) {
+      // PRIORIDAD 3: Fallback a Desktop/UBITS/ (legacy)
+      const os = await import('os');
+      const ubitsDesktopPath = path.join(
+        os.homedir(),
+        'Desktop',
+        'UBITS',
+        'packages',
+        'templates',
+        templateFileName
+      );
+
+      try {
+        await fs.access(ubitsDesktopPath);
+
+        console.log(
+          `   📄 Cargando template desde Desktop/UBITS/ (legacy): ${ubitsDesktopPath}`
+        );
+        let templateContent = await fs.readFile(ubitsDesktopPath, 'utf-8');
+
+        // Usar rutas absolutas file:// para compatibilidad legacy
+        const ubitsPackagesPath = path.join(
+          os.homedir(),
+          'Desktop',
+          'UBITS',
+          'packages'
+        );
+        const absolutePath = `file://${ubitsPackagesPath}`.replace(/\\/g, '/');
+
+        // Validar que los archivos críticos existen
+        await this.validateUBITSFiles(ubitsPackagesPath);
+
+        // Ajustar rutas del template a rutas absolutas file://
+        templateContent = await this.adjustTemplatePaths(
+          templateContent,
+          absolutePath
+        );
+
+        // Agregar carga del UMD de data-table
+        templateContent = this.addDataTableUMD(templateContent, absolutePath);
+
+        // Personalizar el template
+        templateContent = this.customizeTemplate(
+          templateContent,
+          template,
+          module,
+          product,
+          absolutePath,
+          disableOtherModulesNavigation
+        );
+
+        return templateContent;
+      } catch (localError) {
+        console.warn(
+          '⚠️  No se pudo cargar template desde ninguna fuente:',
+          localError
+        );
+        console.warn(
+          `   💡 Verifica conexión a internet o que existe vendor/ubits/packages/`
+        );
+        // Fallback a template generado localmente
+        return this.generateCanvasContent(
+          template,
+          module,
+          templateConfig,
+          product
+        );
+      }
+    }
+  }
+
+  /**
+   * Valida que los archivos críticos de UBITS existen
+   */
+  private async validateUBITSFiles(ubitsPackagesPath: string): Promise<void> {
+    const fs = await import('fs/promises');
+    const path = await import('path');
+
+    const criticalFiles = [
+      'tokens/dist/tokens.css',
+      'templates/components-loader.js',
+      'templates/config/products.js',
+      'templates/config/theme-manager.js',
+      'templates/engine/template-loader.js',
+      'components/sidebar/src/styles/sidebar.css',
+      'components/subnav/src/styles/subnav.css',
+    ];
+
+    const missingFiles: string[] = [];
+
+    for (const file of criticalFiles) {
+      const filePath = path.join(ubitsPackagesPath, file);
+      try {
+        await fs.access(filePath);
+      } catch {
+        missingFiles.push(file);
+      }
+    }
+
+    if (missingFiles.length > 0) {
+      console.warn('   ⚠️  Archivos críticos de UBITS no encontrados:');
+      missingFiles.forEach((file) => console.warn(`      - ${file}`));
+      console.warn(
+        '   💡 Asegúrate de que UBITS está en vendor/ubits/packages/ o Desktop/UBITS/packages/'
+      );
+    } else {
+      console.log('   ✅ Todos los archivos críticos de UBITS encontrados');
+    }
+  }
+
+  /**
+   * Fetch desde Vercel usando https nativo de Node.js (más confiable que fetch)
+   */
+  private async fetchFromVercel(url: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const urlObj = new URL(url);
+      const options = {
+        hostname: urlObj.hostname,
+        path: urlObj.pathname + urlObj.search,
+        method: 'GET',
+        headers: {} as Record<string, string>,
+      };
+
+      // Agregar headers de bypass token
+      if (UBITS_PRESET.storybook.bypassToken) {
+        options.headers['x-vercel-set-bypass-cookie'] = 'true';
+        options.headers['x-vercel-protection-bypass'] =
+          UBITS_PRESET.storybook.bypassToken;
+      }
+
+      const req = https.request(options, (res) => {
+        // Extraer cookie primero (puede venir en cualquier respuesta)
+        const setCookie = res.headers['set-cookie'];
+        let cookieHeader = '';
+        if (setCookie) {
+          const cookieString = Array.isArray(setCookie)
+            ? setCookie.join('; ')
+            : String(setCookie);
+          const cookieMatch = cookieString.match(/_vercel_jwt=([^;]+)/);
+          if (cookieMatch) {
+            cookieHeader = `_vercel_jwt=${cookieMatch[1]}`;
+          }
+        }
+
+        // Si hay redirect (307), seguir la nueva ubicación con la cookie
+        if (
+          res.statusCode === 307 ||
+          res.statusCode === 302 ||
+          res.statusCode === 301
+        ) {
+          const location = res.headers.location;
+          if (location) {
+            // Consumir la respuesta para evitar memory leak
+            res.resume();
+            const redirectUrl = location.startsWith('http')
+              ? location
+              : `https://${urlObj.hostname}${location}`;
+
+            // Si tenemos cookie, hacer la siguiente request con ella
+            if (cookieHeader) {
+              const redirectUrlObj = new URL(redirectUrl);
+              const redirectOptions = {
+                hostname: redirectUrlObj.hostname,
+                path: redirectUrlObj.pathname + redirectUrlObj.search,
+                method: 'GET',
+                headers: {
+                  Cookie: cookieHeader,
+                } as Record<string, string>,
+              };
+
+              const reqRedirect = https.request(
+                redirectOptions,
+                (resRedirect) => {
+                  let dataRedirect = '';
+                  resRedirect.on('data', (chunk) => {
+                    dataRedirect += chunk;
+                  });
+                  resRedirect.on('end', () => {
+                    if (resRedirect.statusCode === 200) {
+                      resolve(dataRedirect);
+                    } else {
+                      reject(
+                        new Error(
+                          `HTTP ${resRedirect.statusCode}: ${resRedirect.statusMessage}`
+                        )
+                      );
+                    }
+                  });
+                }
+              );
+              reqRedirect.on('error', reject);
+              reqRedirect.setTimeout(10000, () => {
+                reqRedirect.destroy();
+                reject(new Error('Timeout al conectar con Vercel'));
+              });
+              reqRedirect.end();
+              return;
+            }
+
+            // Si no hay cookie, intentar recursivamente
+            return resolve(this.fetchFromVercel(redirectUrl));
+          }
+        }
+
+        // Si no es OK y tenemos cookie, intentar con cookie
+        if (res.statusCode !== 200) {
+          if (cookieHeader) {
+            // Consumir la respuesta actual
+            res.resume();
+            // Hacer nueva request con la cookie en la misma URL
+            const optionsWithCookie = { ...options };
+            optionsWithCookie.headers['Cookie'] = cookieHeader;
+            const req2 = https.request(optionsWithCookie, (res2) => {
+              let data2 = '';
+              res2.on('data', (chunk) => {
+                data2 += chunk;
+              });
+              res2.on('end', () => {
+                if (res2.statusCode === 200) {
+                  resolve(data2);
+                } else if (res2.statusCode === 307 || res2.statusCode === 302) {
+                  // Si aún hay redirect, seguir con cookie
+                  const location2 = res2.headers.location;
+                  if (location2) {
+                    res2.resume();
+                    const redirectUrl2 = location2.startsWith('http')
+                      ? location2
+                      : `https://${urlObj.hostname}${location2}`;
+                    const redirectUrlObj2 = new URL(redirectUrl2);
+                    const redirectOptions2 = {
+                      hostname: redirectUrlObj2.hostname,
+                      path: redirectUrlObj2.pathname + redirectUrlObj2.search,
+                      method: 'GET',
+                      headers: {
+                        Cookie: cookieHeader,
+                      } as Record<string, string>,
+                    };
+                    const reqRedirect2 = https.request(
+                      redirectOptions2,
+                      (resRedirect2) => {
+                        let dataRedirect2 = '';
+                        resRedirect2.on('data', (chunk) => {
+                          dataRedirect2 += chunk;
+                        });
+                        resRedirect2.on('end', () => {
+                          if (resRedirect2.statusCode === 200) {
+                            resolve(dataRedirect2);
+                          } else {
+                            reject(
+                              new Error(
+                                `HTTP ${resRedirect2.statusCode}: ${resRedirect2.statusMessage}`
+                              )
+                            );
+                          }
+                        });
+                      }
+                    );
+                    reqRedirect2.on('error', reject);
+                    reqRedirect2.setTimeout(10000, () => {
+                      reqRedirect2.destroy();
+                      reject(new Error('Timeout al conectar con Vercel'));
+                    });
+                    reqRedirect2.end();
+                    return;
+                  }
+                  reject(
+                    new Error(`HTTP ${res2.statusCode}: Redirect sin location`)
+                  );
+                } else {
+                  reject(
+                    new Error(`HTTP ${res2.statusCode}: ${res2.statusMessage}`)
+                  );
+                }
+              });
+            });
+            req2.on('error', reject);
+            req2.setTimeout(10000, () => {
+              req2.destroy();
+              reject(new Error('Timeout al conectar con Vercel'));
+            });
+            req2.end();
+            return;
+          }
+          // Consumir la respuesta antes de rechazar
+          res.resume();
+          reject(new Error(`HTTP ${res.statusCode}: ${res.statusMessage}`));
+          return;
+        }
+
+        // Leer el contenido
+        let data = '';
+        res.on('data', (chunk) => {
+          data += chunk;
+        });
+
+        res.on('end', () => {
+          resolve(data);
+        });
+      });
+
+      req.on('error', (error) => {
+        reject(error);
+      });
+
+      req.setTimeout(10000, () => {
+        req.destroy();
+        reject(new Error('Timeout al conectar con Vercel'));
+      });
+
+      req.end();
+    });
+  }
+
+  /**
+   * Agrega la carga del UMD de data-table a los templates
+   */
+  private addDataTableUMD(content: string, basePath: string): string {
+    // Detectar si es URL de Vercel
+    const isVercelUrl =
+      basePath.startsWith('https://') || basePath.startsWith('http://');
+
+    // Construir URL del script de data-table
+    let dataTableScript: string;
+    if (isVercelUrl) {
+      // Usar URL directa de Vercel con bypass token para data-table.umd.js
+      const dataTableUrl =
+        UBITS_PRESET.storybook.getUrl?.(
+          '/components/data-table/dist/data-table.umd.js'
+        ) ||
+        `${basePath.replace(/\/$/, '')}/components/data-table/dist/data-table.umd.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=${UBITS_PRESET.storybook.bypassToken}`;
+      dataTableScript = `<script src="${dataTableUrl}"></script>`;
+    } else {
+      dataTableScript = `<script src="${basePath}components/data-table/dist/data-table.umd.js"></script>`;
+    }
+
+    // Agregar después de components-loader.js
+    if (content.includes('components-loader.js')) {
+      // Buscar el script de components-loader.js (puede ser URL de Vercel o ruta local)
+      content = content.replace(
+        /(<script[^>]*src="[^"]*components-loader\.js"[^>]*><\/script>)/i,
+        `$1\n    ${dataTableScript}`
+      );
+    } else {
+      // Si no encuentra components-loader.js, agregar antes del cierre de </body>
+      content = content.replace(/(<\/body>)/i, `    ${dataTableScript}\n$1`);
+    }
+
+    return content;
+  }
+
+  /**
+   * Ajusta las rutas del template para que funcionen con rutas relativas, absolutas o URLs de Vercel
+   * Las rutas originales son relativas a packages/templates/ (../tokens/...)
+   * Las convertimos a:
+   * - URLs de Vercel si basePathToUBITS es una URL (https://...)
+   * - Rutas relativas desde prototypes/ hacia vendor/ubits/packages/ (../vendor/ubits/packages/...)
+   * - Rutas absolutas file:// si es legacy (Desktop/UBITS/)
+   */
+  private async adjustTemplatePaths(
+    content: string,
+    basePathToUBITS: string
+  ): Promise<string> {
+    // Las rutas originales son: ../tokens/dist/tokens.css
+    // Necesitamos:
+    // - URL Vercel: https://ubits-storybook.vercel.app/tokens/dist/tokens.css
+    // - Relativo: ../vendor/ubits/packages/tokens/dist/tokens.css
+    // - Absoluto legacy: file:///Users/.../UBITS/packages/tokens/dist/tokens.css
+
+    // Detectar si es URL de Vercel
+    const isVercelUrl =
+      basePathToUBITS.startsWith('https://') ||
+      basePathToUBITS.startsWith('http://');
+
+    // ⚠️ IMPORTANTE: Asegurar que la ruta termine con / para evitar problemas
+    const basePath = basePathToUBITS.endsWith('/')
+      ? basePathToUBITS
+      : `${basePathToUBITS}/`;
+
+    // 1. Reemplazar rutas relativas ../ por la ruta base (CSS y JS)
+    // ⚠️ NUEVO: Si es URL de Vercel, usar URLs directas con bypass token (más simple, funciona sin servidor proxy)
+    content = content.replace(
+      /href="(\.\.\/)+([^"]+)"/g,
+      (match, dots, path) => {
+        // Si ya tiene vendor/ubits/packages/, file:// o https://, no reemplazar
+        if (
+          match.includes('vendor/ubits/packages/') ||
+          match.includes('file://') ||
+          match.includes('https://') ||
+          match.includes('http://')
+        ) {
+          return match;
+        }
+        // Si es URL de Vercel, usar URL directa con bypass token (funciona sin servidor proxy)
+        if (isVercelUrl) {
+          // Usar URL directa de Vercel con bypass token en query string
+          // Esto permite abrir el HTML directamente sin necesidad de servidor con proxy
+          const vercelUrl =
+            UBITS_PRESET.storybook.getUrl?.(`/${path}`) ||
+            `${basePath.replace(/\/$/, '')}/${path}?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=${UBITS_PRESET.storybook.bypassToken}`;
+          return `href="${vercelUrl}"`;
+        }
+        return `href="${basePath}${path}"`;
+      }
+    );
+    content = content.replace(
+      /src="(\.\.\/)+([^"]+)"/g,
+      (match, dots, path) => {
+        // Si ya tiene vendor/ubits/packages/, file:// o https://, no reemplazar
+        if (
+          match.includes('vendor/ubits/packages/') ||
+          match.includes('file://') ||
+          match.includes('https://') ||
+          match.includes('http://')
+        ) {
+          return match;
+        }
+        // Si es URL de Vercel, usar URL directa con bypass token (funciona sin servidor proxy)
+        if (isVercelUrl) {
+          // Usar URL directa de Vercel con bypass token en query string
+          // Esto permite abrir el HTML directamente sin necesidad de servidor con proxy
+          const vercelUrl =
+            UBITS_PRESET.storybook.getUrl?.(`/${path}`) ||
+            `${basePath.replace(/\/$/, '')}/${path}?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=${UBITS_PRESET.storybook.bypassToken}`;
+          return `src="${vercelUrl}"`;
+        }
+        return `src="${basePath}${path}"`;
+      }
+    );
+
+    // 1.1. Agregar carga de figma-tokens.css después de tokens.css (necesario para tokens de modifiers)
+    // Esto asegura que tokens como --modifiers-normal-color-dark-accent-blue estén disponibles
+    // Extraer la ruta base del tokens.css ya procesado para evitar duplicación
+    content = content.replace(
+      /(<link rel="stylesheet" href="([^"]*tokens\/dist\/)tokens\.css[^"]*"[^>]*\/>)/,
+      (match, fullMatch, tokensPath) => {
+        // Si es URL directa de Vercel, usar URL directa también para figma-tokens
+        if (tokensPath.includes('ubits-storybook10.vercel.app')) {
+          const figmaTokensUrl =
+            UBITS_PRESET.storybook.getUrl?.('/tokens/dist/figma-tokens.css') ||
+            `${UBITS_PRESET.storybook.url}/tokens/dist/figma-tokens.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=${UBITS_PRESET.storybook.bypassToken}`;
+          return `${fullMatch}\n    <link rel="stylesheet" href="${figmaTokensUrl}" />`;
+        }
+        // Si es proxy de Vercel (legacy), usar proxy también para figma-tokens
+        if (tokensPath.startsWith('/vercel-proxy/')) {
+          return `${fullMatch}\n    <link rel="stylesheet" href="/vercel-proxy/tokens/dist/figma-tokens.css" />`;
+        }
+        // Usar la misma ruta base que ya tiene tokens.css
+        return `${fullMatch}\n    <link rel="stylesheet" href="${tokensPath}figma-tokens.css" />`;
+      }
+    );
+
+    // 2. Asegurar que URLs directas de Vercel tengan bypass token (para scripts y assets que ya vienen con URLs)
+    if (isVercelUrl) {
+      const vercelBaseUrl = basePath.replace(/\/$/, '');
+      // Si ya tienen bypass token, no cambiar. Si no, agregarlo
+      content = content.replace(
+        new RegExp(
+          `href="${vercelBaseUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}([^"]+)"`,
+          'g'
+        ),
+        (match, path) => {
+          // Si ya tiene bypass token, no cambiar
+          if (path.includes('x-vercel-protection-bypass')) {
+            return match;
+          }
+          // Agregar bypass token si no lo tiene
+          const separator = path.includes('?') ? '&' : '?';
+          return `href="${vercelBaseUrl}${path}${separator}x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=${UBITS_PRESET.storybook.bypassToken}"`;
+        }
+      );
+      content = content.replace(
+        new RegExp(
+          `src="${vercelBaseUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}([^"]+)"`,
+          'g'
+        ),
+        (match, path) => {
+          // Si ya tiene bypass token, no cambiar
+          if (path.includes('x-vercel-protection-bypass')) {
+            return match;
+          }
+          // Agregar bypass token si no lo tiene
+          const separator = path.includes('?') ? '&' : '?';
+          return `src="${vercelBaseUrl}${path}${separator}x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=${UBITS_PRESET.storybook.bypassToken}"`;
+        }
+      );
+    }
+
+    // 3. Ajustar rutas de assets que son relativas al mismo directorio (templates/assets/)
+    // assets/fontawesome/... -> URL directa de Vercel o ruta relativa/absoluta
+    if (isVercelUrl) {
+      // Usar URL directa de Vercel para assets con bypass token
+      content = content.replace(
+        /href="assets\/([^"]+)"/g,
+        (match, assetPath) => {
+          const vercelUrl =
+            UBITS_PRESET.storybook.getUrl?.(`/templates/assets/${assetPath}`) ||
+            `${basePath.replace(/\/$/, '')}/templates/assets/${assetPath}?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=${UBITS_PRESET.storybook.bypassToken}`;
+          return `href="${vercelUrl}"`;
+        }
+      );
+      content = content.replace(
+        /src="assets\/([^"]+)"/g,
+        (match, assetPath) => {
+          const vercelUrl =
+            UBITS_PRESET.storybook.getUrl?.(`/templates/assets/${assetPath}`) ||
+            `${basePath.replace(/\/$/, '')}/templates/assets/${assetPath}?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=${UBITS_PRESET.storybook.bypassToken}`;
+          return `src="${vercelUrl}"`;
+        }
+      );
+    } else {
+      content = content.replace(
+        /href="assets\//g,
+        `href="${basePath}templates/assets/`
+      );
+      content = content.replace(
+        /src="assets\//g,
+        `src="${basePath}templates/assets/`
+      );
+    }
+
+    // 3. Ajustar rutas de imágenes en JavaScript (products.js)
+    // 'assets/images/Profile-image.jpg' -> 'file:///Users/.../templates/assets/images/Profile-image.jpg'
+    content = content.replace(
+      /'assets\/images\//g,
+      `'${basePath}templates/assets/images/`
+    );
+    content = content.replace(
+      /"assets\/images\//g,
+      `"${basePath}templates/assets/images/`
+    );
+
+    // 4. Ajustar rutas de scripts que son relativas al mismo directorio
+    // components-loader.js -> URL directa de Vercel o ruta relativa/absoluta
+    if (isVercelUrl) {
+      // Usar URL directa de Vercel para scripts con bypass token
+      content = content.replace(/src="components-loader\.js"/g, () => {
+        const vercelUrl =
+          UBITS_PRESET.storybook.getUrl?.('/templates/components-loader.js') ||
+          `${basePath.replace(/\/$/, '')}/templates/components-loader.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=${UBITS_PRESET.storybook.bypassToken}`;
+        return `src="${vercelUrl}"`;
+      });
+      content = content.replace(
+        /src="config\/([^"]+)"/g,
+        (match, configPath) => {
+          const vercelUrl =
+            UBITS_PRESET.storybook.getUrl?.(
+              `/templates/config/${configPath}`
+            ) ||
+            `${basePath.replace(/\/$/, '')}/templates/config/${configPath}?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=${UBITS_PRESET.storybook.bypassToken}`;
+          return `src="${vercelUrl}"`;
+        }
+      );
+      content = content.replace(
+        /src="engine\/([^"]+)"/g,
+        (match, enginePath) => {
+          const vercelUrl =
+            UBITS_PRESET.storybook.getUrl?.(
+              `/templates/engine/${enginePath}`
+            ) ||
+            `${basePath.replace(/\/$/, '')}/templates/engine/${enginePath}?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=${UBITS_PRESET.storybook.bypassToken}`;
+          return `src="${vercelUrl}"`;
+        }
+      );
+    } else {
+      content = content.replace(
+        /src="components-loader\.js"/g,
+        `src="${basePath}templates/components-loader.js"`
+      );
+      content = content.replace(
+        /src="config\//g,
+        `src="${basePath}templates/config/`
+      );
+      content = content.replace(
+        /src="engine\//g,
+        `src="${basePath}templates/engine/`
+      );
+    }
+
+    // 5. Ajustar rutas en template strings de JavaScript (backticks)
+    // `../tokens/...` -> `../vendor/ubits/packages/tokens/...`
+    // Solo reemplazar si NO tiene ya vendor/ubits/packages/ o file://
+    content = content.replace(/`(\.\.\/)+([^`]+)`/g, (match, dots, path) => {
+      if (
+        match.includes('vendor/ubits/packages/') ||
+        match.includes('file://')
+      ) {
+        return match;
+      }
+      return `\`${basePath}${path}\``;
+    });
+
+    // 6. Ajustar rutas en strings de JavaScript (comillas simples y dobles)
+    // '../tokens/...' -> '../vendor/ubits/packages/tokens/...'
+    // Solo reemplazar si NO tiene ya vendor/ubits/packages/ o file://
+    content = content.replace(
+      /'((\.\.\/)+)([^']+)'/g,
+      (match, dots, dots2, path) => {
+        if (
+          match.includes('vendor/ubits/packages/') ||
+          match.includes('file://')
+        ) {
+          return match;
+        }
+        return `'${basePath}${path}'`;
+      }
+    );
+    content = content.replace(
+      /"((\.\.\/)+)([^"]+)"/g,
+      (match, dots, dots2, path) => {
+        if (
+          match.includes('vendor/ubits/packages/') ||
+          match.includes('file://')
+        ) {
+          return match;
+        }
+        return `"${basePath}${path}"`;
+      }
+    );
+
+    // 7. Remover cualquier intento de cargar desde Storybook en el template generado
+    // Esto asegura que solo se usen componentes locales
+    content = content.replace(
+      /window\.AUTORUN\.Components\.loadFromStorybook/g,
+      '// window.AUTORUN.Components.loadFromStorybook // DESHABILITADO: Usar solo componentes locales'
+    );
+
+    return content;
+  }
+
+  /**
+   * Genera HTML que carga el template desde Storybook
+   */
+  private generateStorybookTemplateHTML(
+    storybookUrl: string,
+    template: 'administrador' | 'colaborador',
+    module: string,
+    product: string | undefined,
+    templateConfig: any
+  ): string {
+    const moduleConfig = UBITS_MODULES_CONFIG[module];
+    const productName = product
+      ? moduleConfig?.products.find((p) => p.id === product)?.name || product
+      : '';
+    const moduleName = moduleConfig?.name || this.formatModuleName(module);
+
+    // Generar subnav HTML
+    const subnavHTML = moduleConfig
+      ? this.generateSubNavHTML(moduleConfig, product)
+      : '';
+
+    return `<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
@@ -892,17 +1021,17 @@ export class CanvasCreator {
         <h2 class="sidebar-title">UBITS</h2>
         <ul class="sidebar-menu">
           ${templateConfig.modules
-						.map(
-							(m: string) => `
+            .map(
+              (m: string) => `
             <li class="sidebar-item ${m === module ? 'active' : ''}" data-module="${m}">
               <a href="#${m}" class="sidebar-link">
                 <span class="sidebar-icon">📦</span>
                 <span class="sidebar-label">${this.formatModuleName(m)}</span>
               </a>
             </li>
-          `,
-						)
-						.join('')}
+          `
+            )
+            .join('')}
         </ul>
       </nav>
     </aside>
@@ -951,42 +1080,42 @@ export class CanvasCreator {
   </script>
 </body>
 </html>`;
-	}
+  }
 
-	/**
-	 * Personaliza el template cargado desde Storybook con el módulo y producto seleccionados
-	 */
-	private customizeTemplate(
-		templateHtml: string,
-		template: 'administrador' | 'colaborador',
-		module: string,
-		product?: string,
-		absolutePathToUBITS?: string,
-		disableOtherModulesNavigation?: boolean,
-	): string {
-		const moduleConfig = UBITS_MODULES_CONFIG[module];
-		const productName = product
-			? moduleConfig?.products.find((p) => p.id === product)?.name || product
-			: '';
-		const moduleName = moduleConfig?.name || this.formatModuleName(module);
+  /**
+   * Personaliza el template cargado desde Storybook con el módulo y producto seleccionados
+   */
+  private customizeTemplate(
+    templateHtml: string,
+    template: 'administrador' | 'colaborador',
+    module: string,
+    product?: string,
+    absolutePathToUBITS?: string,
+    disableOtherModulesNavigation?: boolean
+  ): string {
+    const moduleConfig = UBITS_MODULES_CONFIG[module];
+    const productName = product
+      ? moduleConfig?.products.find((p) => p.id === product)?.name || product
+      : '';
+    const moduleName = moduleConfig?.name || this.formatModuleName(module);
 
-		// Actualizar el título
-		templateHtml = templateHtml.replace(
-			/<title>.*?<\/title>/i,
-			`<title>UBITS - ${moduleName}${productName ? ` - ${productName}` : ''} - ${template}</title>`,
-		);
+    // Actualizar el título
+    templateHtml = templateHtml.replace(
+      /<title>.*?<\/title>/i,
+      `<title>UBITS - ${moduleName}${productName ? ` - ${productName}` : ''} - ${template}</title>`
+    );
 
-		// Agregar configuración del módulo y producto como atributos data
-		const bodyMatch = templateHtml.match(/<body[^>]*>/i);
-		if (bodyMatch) {
-			templateHtml = templateHtml.replace(
-				/<body[^>]*>/i,
-				`<body data-template="${template}" data-module="${module}" data-product="${product || ''}">`,
-			);
-		}
+    // Agregar configuración del módulo y producto como atributos data
+    const bodyMatch = templateHtml.match(/<body[^>]*>/i);
+    if (bodyMatch) {
+      templateHtml = templateHtml.replace(
+        /<body[^>]*>/i,
+        `<body data-template="${template}" data-module="${module}" data-product="${product || ''}">`
+      );
+    }
 
-		// Agregar estilos CSS para corregir problemas de dark mode y subnav
-		const darkModeFixStyles = `
+    // Agregar estilos CSS para corregir problemas de dark mode y subnav
+    const darkModeFixStyles = `
   <style>
     /* Fix: Asegurar que el botón activo del sidebar sea visible en dark mode */
     body[data-theme="dark"] .ubits-sidebar-nav-button.active,
@@ -1042,9 +1171,9 @@ export class CanvasCreator {
     }
   </style>`;
 
-		// Agregar script para configurar el módulo y producto activos
-		// Este script debe ejecutarse ANTES de que el template se inicialice
-		const scriptTag = `
+    // Agregar script para configurar el módulo y producto activos
+    // Este script debe ejecutarse ANTES de que el template se inicialice
+    const scriptTag = `
   <script>
     // Configuración del módulo y producto activos
     window.UBITS_CONFIG = {
@@ -1876,23 +2005,29 @@ export class CanvasCreator {
     }
   </script>`;
 
-		// Insertar estilos CSS en el <head> si existe, sino antes de </body>
-		if (templateHtml.includes('</head>')) {
-			templateHtml = templateHtml.replace('</head>', `${darkModeFixStyles}\n</head>`);
-		} else if (templateHtml.includes('<head>')) {
-			templateHtml = templateHtml.replace('<head>', `<head>${darkModeFixStyles}`);
-		}
+    // Insertar estilos CSS en el <head> si existe, sino antes de </body>
+    if (templateHtml.includes('</head>')) {
+      templateHtml = templateHtml.replace(
+        '</head>',
+        `${darkModeFixStyles}\n</head>`
+      );
+    } else if (templateHtml.includes('<head>')) {
+      templateHtml = templateHtml.replace(
+        '<head>',
+        `<head>${darkModeFixStyles}`
+      );
+    }
 
-		// Insertar script antes de </body>
-		if (templateHtml.includes('</body>')) {
-			templateHtml = templateHtml.replace('</body>', `${scriptTag}\n</body>`);
-		} else {
-			templateHtml += scriptTag;
-		}
+    // Insertar script antes de </body>
+    if (templateHtml.includes('</body>')) {
+      templateHtml = templateHtml.replace('</body>', `${scriptTag}\n</body>`);
+    } else {
+      templateHtml += scriptTag;
+    }
 
-		// Si se desactiva la navegación de otros módulos, agregar script para quitar enlaces
-		if (disableOtherModulesNavigation) {
-			const disableNavigationScript = `
+    // Si se desactiva la navegación de otros módulos, agregar script para quitar enlaces
+    if (disableOtherModulesNavigation) {
+      const disableNavigationScript = `
   <script>
     // Desactivar navegación de otros módulos en el sidebar
     (function() {
@@ -2023,49 +2158,54 @@ export class CanvasCreator {
     })();
   </script>`;
 
-			// Insertar script antes de </body>
-			if (templateHtml.includes('</body>')) {
-				templateHtml = templateHtml.replace('</body>', `${disableNavigationScript}\n</body>`);
-			} else {
-				templateHtml += disableNavigationScript;
-			}
-		}
+      // Insertar script antes de </body>
+      if (templateHtml.includes('</body>')) {
+        templateHtml = templateHtml.replace(
+          '</body>',
+          `${disableNavigationScript}\n</body>`
+        );
+      } else {
+        templateHtml += disableNavigationScript;
+      }
+    }
 
-		return templateHtml;
-	}
+    return templateHtml;
+  }
 
-	/**
-	 * Genera nombre de archivo para el lienzo
-	 */
-	private generateFileName(
-		template: 'administrador' | 'colaborador',
-		module: string,
-		product?: string,
-	): string {
-		const timestamp = new Date().toISOString().split('T')[0];
-		const productSuffix = product ? `-${product}` : '';
-		return `canvas-${template}-${module}${productSuffix}-${timestamp}.html`;
-	}
+  /**
+   * Genera nombre de archivo para el lienzo
+   */
+  private generateFileName(
+    template: 'administrador' | 'colaborador',
+    module: string,
+    product?: string
+  ): string {
+    const timestamp = new Date().toISOString().split('T')[0];
+    const productSuffix = product ? `-${product}` : '';
+    return `canvas-${template}-${module}${productSuffix}-${timestamp}.html`;
+  }
 
-	/**
-	 * Genera contenido del lienzo (fallback cuando no se puede cargar desde Storybook)
-	 */
-	private generateCanvasContent(
-		template: 'administrador' | 'colaborador',
-		module: string,
-		templateConfig: any,
-		product?: string,
-	): string {
-		const moduleConfig = UBITS_MODULES_CONFIG[module];
-		const productName = product
-			? moduleConfig?.products.find((p) => p.id === product)?.name || product
-			: '';
-		const moduleName = moduleConfig?.name || this.formatModuleName(module);
+  /**
+   * Genera contenido del lienzo (fallback cuando no se puede cargar desde Storybook)
+   */
+  private generateCanvasContent(
+    template: 'administrador' | 'colaborador',
+    module: string,
+    templateConfig: any,
+    product?: string
+  ): string {
+    const moduleConfig = UBITS_MODULES_CONFIG[module];
+    const productName = product
+      ? moduleConfig?.products.find((p) => p.id === product)?.name || product
+      : '';
+    const moduleName = moduleConfig?.name || this.formatModuleName(module);
 
-		// Generar subnav HTML
-		const subnavHTML = moduleConfig ? this.generateSubNavHTML(moduleConfig, product) : '';
+    // Generar subnav HTML
+    const subnavHTML = moduleConfig
+      ? this.generateSubNavHTML(moduleConfig, product)
+      : '';
 
-		return `<!DOCTYPE html>
+    return `<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
@@ -2218,17 +2358,17 @@ export class CanvasCreator {
         <h2 class="sidebar-title">UBITS</h2>
         <ul class="sidebar-menu">
           ${templateConfig.modules
-						.map(
-							(m: string) => `
+            .map(
+              (m: string) => `
             <li class="sidebar-item ${m === module ? 'active' : ''}" data-module="${m}">
               <a href="#${m}" class="sidebar-link">
                 <span class="sidebar-icon">📦</span>
                 <span class="sidebar-label">${this.formatModuleName(m)}</span>
               </a>
             </li>
-          `,
-						)
-						.join('')}
+          `
+            )
+            .join('')}
         </ul>
       </nav>
     </aside>
@@ -2271,19 +2411,22 @@ export class CanvasCreator {
   </script>
 </body>
 </html>`;
-	}
+  }
 
-	/**
-	 * Genera HTML del subnav
-	 */
-	private generateSubNavHTML(moduleConfig: any, activeProductId?: string): string {
-		if (!moduleConfig?.products || moduleConfig.products.length === 0) {
-			return '';
-		}
+  /**
+   * Genera HTML del subnav
+   */
+  private generateSubNavHTML(
+    moduleConfig: any,
+    activeProductId?: string
+  ): string {
+    if (!moduleConfig?.products || moduleConfig.products.length === 0) {
+      return '';
+    }
 
-		const tabs = moduleConfig.products
-			.map(
-				(product: any) => `
+    const tabs = moduleConfig.products
+      .map(
+        (product: any) => `
       <button 
         class="nav-tab ${product.id === activeProductId ? 'active' : ''}" 
         data-tab="${product.id}"
@@ -2292,26 +2435,26 @@ export class CanvasCreator {
         ${product.icon ? `<i class="${product.icon}"></i>` : ''}
         <span>${product.name}</span>
       </button>
-    `,
-			)
-			.join('');
+    `
+      )
+      .join('');
 
-		return `
+    return `
     <nav class="sub-nav" data-variant="${moduleConfig.subnavVariant}" data-module="${moduleConfig.id}">
       <div class="nav-tabs">
         ${tabs}
       </div>
     </nav>
     `;
-	}
+  }
 
-	/**
-	 * Formatea el nombre del módulo
-	 */
-	private formatModuleName(module: string): string {
-		return module
-			.split('-')
-			.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-			.join(' ');
-	}
+  /**
+   * Formatea el nombre del módulo
+   */
+  private formatModuleName(module: string): string {
+    return module
+      .split('-')
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  }
 }
