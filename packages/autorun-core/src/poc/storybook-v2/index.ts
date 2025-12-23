@@ -33,3 +33,13 @@ export {
   generateComponentHTML,
   type ImplementationResult,
 } from './simpleImplementation.js';
+
+export { default as ComponentPreserver } from './componentPreserver.js';
+export { default as EventListenerManager } from './eventListenerManager.js';
+export { default as DependencyChecker } from './dependencyChecker.js';
+
+export {
+  autoPreserveComponent,
+  autoPreserveRadioButton,
+  type AutoPreserveOptions,
+} from './autoPreserveHelper.js';
