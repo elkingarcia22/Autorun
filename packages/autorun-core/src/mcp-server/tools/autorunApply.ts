@@ -112,8 +112,12 @@ async function autorunApplyStrict(
     console.log(`\n📋 [Autorun MCP] FASE 1: PREPARACIÓN`);
 
     // 1.1 Ejecutar handleUserMessage() (OBLIGATORIO)
+    // ✅ MEJORA: Establecer flag para indicar que estamos en modo autorun.apply()
     console.log(`   [1.1] Ejecutando handleUserMessage()...`);
-    const result = await handleUserMessage(input.message);
+    const { setAutorunApplyMode } = await import('../../helpers/executeOnMessageStart.js');
+    setAutorunApplyMode(true);
+    try {
+      const result = await handleUserMessage(input.message);
 
     if (result.blocked) {
       console.error(`   ❌ Implementación bloqueada: ${result.reason}`);
