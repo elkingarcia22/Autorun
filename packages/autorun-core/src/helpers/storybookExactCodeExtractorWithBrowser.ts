@@ -405,6 +405,48 @@ function compareStructureWithSource(
 }
 
 /**
+ * Extrae código de una historia específica desde el código fuente
+ */
+function extractStoryCodeFromSource(
+  sourceCode: string,
+  storyName: string
+): string | null {
+  // Buscar la historia específica en el código fuente
+  const storyRegex = new RegExp(
+    `export\\s+const\\s+${storyName}\\s*[:=]\\s*([\\s\\S]*?)(?:export|const|function|\\/\\*|$)`,
+    'i'
+  );
+  const match = sourceCode.match(storyRegex);
+  
+  if (match) {
+    // Extraer el código de la historia
+    let storyCode = match[1].trim();
+    
+    // Limpiar el código (remover comentarios, etc.)
+    storyCode = storyCode
+      .replace(/\/\*[\s\S]*?\*\//g, '') // Remover comentarios multi-línea
+      .replace(/\/\/.*$/gm, '') // Remover comentarios de línea
+      .trim();
+    
+    // Intentar extraer el código HTML/JS del return o del objeto
+    const returnMatch = storyCode.match(/return\s*\(?([\s\S]*?)\)?\s*;?$/);
+    if (returnMatch) {
+      return returnMatch[1].trim();
+    }
+    
+    // Si no hay return, buscar template o render
+    const templateMatch = storyCode.match(/template:\s*['"`]([\s\S]*?)['"`]/);
+    if (templateMatch) {
+      return templateMatch[1].trim();
+    }
+    
+    return storyCode;
+  }
+  
+  return null;
+}
+
+/**
  * Decodifica entidades HTML
  */
 function decodeHtmlEntities(text: string): string {
