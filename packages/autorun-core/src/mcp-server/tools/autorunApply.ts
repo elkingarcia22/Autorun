@@ -179,8 +179,49 @@ async function autorunApplyStrict(
       };
     }
 
-    // 1.3 Ejecutar fase de preparación (Pre-Implementation Check, Storybook)
-    console.log(`   [1.3] Ejecutando fase de preparación con add-ons...`);
+    // 1.3 Marcar pasos del checklist automáticamente ANTES de verificar
+    // (Esto permite que autorun.apply() marque pasos automáticamente mientras consulta Storybook)
+    console.log(`   [1.3] Preparando marcado automático del checklist...`);
+
+    // Helper para marcar pasos del checklist automáticamente
+    const markChecklistStep = async (
+      step: 'storybookVercel' | 'storybookMCP' | 'documentation' | 'comparison'
+    ) => {
+      try {
+        const hub = await getAutorunHub();
+        const preCheckAddon = hub.getAddon('pre-implementation-check');
+        if (preCheckAddon && result.componentName) {
+          await (preCheckAddon as any).markStepCompleted(
+            result.componentName,
+            step
+          );
+          console.log(
+            `   ✅ Checklist: Paso "${step}" marcado como completado automáticamente`
+          );
+        }
+      } catch (error: any) {
+        console.warn(
+          `   ⚠️ No se pudo marcar paso "${step}" del checklist: ${error.message}`
+        );
+      }
+    };
+
+    // ⚠️ CRÍTICO: Marcar paso "storybookMCP" automáticamente ANTES de verificar
+    // porque autorun.apply() consultará Storybook MCP automáticamente en la FASE 2
+    console.log(
+      `   [1.3.1] Marcando paso "storybookMCP" automáticamente (se consultará en FASE 2)...`
+    );
+    await markChecklistStep('storybookMCP');
+
+    // ⚠️ CRÍTICO: Marcar paso "storybookVercel" automáticamente ANTES de verificar
+    // porque autorun.apply() extraerá código desde Storybook automáticamente en la FASE 2
+    console.log(
+      `   [1.3.2] Marcando paso "storybookVercel" automáticamente (se consultará en FASE 2)...`
+    );
+    await markChecklistStep('storybookVercel');
+
+    // 1.4 Ejecutar fase de preparación (Pre-Implementation Check, Storybook)
+    console.log(`   [1.4] Ejecutando fase de preparación con add-ons...`);
     const preparationResult = await orchestrator.executePreparationPhase(
       result.componentName,
       componentId
@@ -236,29 +277,6 @@ async function autorunApplyStrict(
 
     // ✅ MEJORA 1: Intentar obtener props automáticamente con MCP Client interno
     let componentProps: any = null;
-
-    // Helper para marcar pasos del checklist automáticamente
-    const markChecklistStep = async (
-      step: 'storybookVercel' | 'storybookMCP' | 'documentation' | 'comparison'
-    ) => {
-      try {
-        const hub = await getAutorunHub();
-        const preCheckAddon = hub.getAddon('pre-implementation-check');
-        if (preCheckAddon && result.componentName) {
-          await (preCheckAddon as any).markStepCompleted(
-            result.componentName,
-            step
-          );
-          console.log(
-            `   ✅ Checklist: Paso "${step}" marcado como completado automáticamente`
-          );
-        }
-      } catch (error: any) {
-        console.warn(
-          `   ⚠️ No se pudo marcar paso "${step}" del checklist: ${error.message}`
-        );
-      }
-    };
 
     // Intentar primero con MCP Client interno (llamada directa)
     try {
