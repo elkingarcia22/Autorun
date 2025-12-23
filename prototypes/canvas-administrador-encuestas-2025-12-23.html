@@ -1314,8 +1314,13 @@
                                 
                                 // Función para inicializar la DataTable de encuestas
                                 function initializeEncuestasDataTable() {
+                                    console.log('🔵 [Encuestas DataTable] Iniciando inicialización...');
                                     const listaContent = document.getElementById('lista-encuestas-content');
                                     const container = document.getElementById('encuestas-datatable-container');
+                                    
+                                    console.log('🔵 [Encuestas DataTable] listaContent:', listaContent);
+                                    console.log('🔵 [Encuestas DataTable] container:', container);
+                                    console.log('🔵 [Encuestas DataTable] listaContent.style.display:', listaContent?.style.display);
                                     
                                     // Verificar que el contenedor padre esté visible
                                     if (!listaContent || listaContent.style.display === 'none') {
@@ -1335,6 +1340,9 @@
                                     }
                                     
                                     // Verificar que createDataTable esté disponible
+                                    console.log('🔵 [Encuestas DataTable] typeof window.createDataTable:', typeof window.createDataTable);
+                                    console.log('🔵 [Encuestas DataTable] window.UBITSDataTable:', window.UBITSDataTable);
+                                    
                                     if (typeof window.createDataTable !== 'function') {
                                         // Intentar obtener desde UBITSDataTable si está disponible
                                         if (window.UBITSDataTable && typeof window.UBITSDataTable.createDataTable === 'function') {
@@ -1346,6 +1354,8 @@
                                             return;
                                         }
                                     }
+                                    
+                                    console.log('🔵 [Encuestas DataTable] Creando DataTable...');
                                     
                                     // Crear DataTable con columnas y datos de encuestas
                                     window.createDataTable({
