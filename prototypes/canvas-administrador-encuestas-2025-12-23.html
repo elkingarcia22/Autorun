@@ -1140,27 +1140,35 @@
                         radioElement.style.cursor = 'pointer';
                         radioElement.style.userSelect = 'none';
                         
-                        // ⚠️ CRÍTICO: Agregar event listener adicional al label para asegurar que funcione
+                        // ⚠️ CRÍTICO: Agregar event listeners para manejar clics correctamente
                         const inputElement = radioElement.querySelector('.ubits-radio-button__input');
                         if (inputElement) {
-                            // Agregar listener al input
+                            // Listener para cambio de estado
                             inputElement.addEventListener('change', handleRadioButtonChange);
+                            
+                            // Listener para clic en el input (asegurar que se active)
                             inputElement.addEventListener('click', function(e) {
-                                // Asegurar que el input se marque cuando se hace clic en el label
+                                e.stopPropagation();
                                 if (!this.checked) {
                                     this.checked = true;
                                     handleRadioButtonChange(e);
                                 }
                             });
                             
-                            // Agregar listener al label también
+                            // Listener para clic en el label (activar el input)
+                            // NO usar preventDefault aquí - dejar que el comportamiento nativo del label funcione
                             radioElement.addEventListener('click', function(e) {
-                                // Si se hace clic en el label, activar el input
-                                if (inputElement && !inputElement.disabled) {
-                                    inputElement.checked = true;
-                                    inputElement.dispatchEvent(new Event('change', { bubbles: true }));
-                                }
+                                // El label nativo ya activa el input, solo necesitamos manejar el cambio visual
+                                // Esperar un momento para que el input se actualice
+                                setTimeout(() => {
+                                    if (inputElement && inputElement.checked) {
+                                        handleRadioButtonChange({ target: inputElement });
+                                    }
+                                }, 10);
                             });
+                            
+                            // Asegurar que el label tenga pointer-events habilitados
+                            radioElement.style.pointerEvents = 'auto';
                         }
                         
                         console.log(`🔍 [POC RadioButton] Estilos inline aplicados`);
