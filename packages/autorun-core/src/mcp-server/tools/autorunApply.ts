@@ -387,11 +387,19 @@ async function autorunApplyStrict(
     console.log(
       `   [1.4] Ejecutando fase de preparación con add-ons (autoMarkSteps=true)...`
     );
+    console.log(
+      `   🔍 [autorunApply] Llamando executePreparationPhase con autoMarkSteps=true`
+    );
     const preparationResult = await orchestrator.executePreparationPhase(
       result.componentName,
       componentId,
       true // autoMarkSteps: autorun.apply() consultará Storybook automáticamente
     );
+    console.log(`   🔍 [autorunApply] Resultado de executePreparationPhase:`, {
+      allowed: preparationResult.canImplement.allowed,
+      reason: preparationResult.canImplement.reason,
+      missingSteps: preparationResult.canImplement.missingSteps,
+    });
 
     // ⚠️ CRÍTICO: Si autoMarkSteps=true fue pasado, forzar allowed=true sin importar el resultado
     // Esto garantiza que autorun.apply() siempre pueda continuar cuando autoMarkSteps=true
@@ -400,11 +408,15 @@ async function autorunApplyStrict(
         `   ⚠️ [autorunApply] preparationResult.canImplement.allowed=false pero autoMarkSteps=true fue pasado`
       );
       console.warn(
+        `   ⚠️ [autorunApply] Razón original: ${preparationResult.canImplement.reason}`
+      );
+      console.warn(
         `   ⚠️ [autorunApply] Forzando allowed=true porque autorun.apply() consultará Storybook automáticamente`
       );
       // Forzar allowed=true directamente
       preparationResult.canImplement.allowed = true;
       preparationResult.canImplement.missingSteps = [];
+      preparationResult.canImplement.reason = undefined;
       console.log(
         `   ✅ [autorunApply] Pre-Implementation Check: Permitido (forzado por autoMarkSteps=true)`
       );
