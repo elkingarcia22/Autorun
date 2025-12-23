@@ -2335,13 +2335,20 @@
           const radioContainer = document.createElement('label');
           // Clases exactas según Storybook: base + tamaño + estado
           radioContainer.className = 'ubits-radio-button ubits-radio-button--md ubits-radio-button--default';
+          // ⚠️ CRÍTICO: Agregar for para accesibilidad y funcionalidad clickeable
+          const radioInputId = 'radio-estado-encuesta-activo';
+          radioContainer.setAttribute('for', radioInputId);
 
           const radioInput = document.createElement('input');
           radioInput.type = 'radio';
           radioInput.name = 'estado-encuesta';
           radioInput.value = 'activo';
-          radioInput.id = 'radio-estado-encuesta-activo'; // Patrón: radio-${name}-${value}
+          radioInput.id = radioInputId; // Patrón: radio-${name}-${value}
           radioInput.className = 'ubits-radio-button__input';
+          // ⚠️ CRÍTICO: Asegurar que el input sea clickeable (aunque esté invisible)
+          radioInput.style.pointerEvents = 'auto';
+          radioInput.style.zIndex = '1';
+          radioInput.style.position = 'absolute';
 
           // Circle con aria-hidden (accesibilidad)
           const radioCircle = document.createElement('span');
