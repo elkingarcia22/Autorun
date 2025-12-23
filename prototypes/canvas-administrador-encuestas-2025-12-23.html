@@ -1207,34 +1207,63 @@
 
                 // Interceptar updateContent
                 window.UBITS_ContentManager.updateContent = function(section, subSection) {
-                    // Guardar los RadioButtons antes de que se eliminen
+                    // Guardar el HTML completo del bloque de RadioButtons antes de que se elimine
                     const container = document.getElementById('radiobutton-group-tipo');
-                    let savedRadioButtons = null;
-                    if (container && container.children.length > 0) {
-                        savedRadioButtons = container.innerHTML;
-                        console.log('🔵 [POC RadioButton] Guardando RadioButtons antes de updateContent');
+                    const pocBlock = container ? container.closest('div[style*="margin-top: 40px"]') : null;
+                    let savedPocBlockHTML = null;
+                    
+                    if (pocBlock) {
+                        savedPocBlockHTML = pocBlock.outerHTML;
+                        console.log('🔵 [POC RadioButton] Guardando bloque completo antes de updateContent');
                     }
 
                     // Llamar al método original
                     const result = originalUpdateContent.call(this, section, subSection);
 
-                    // Restaurar RadioButtons después de updateContent
+                    // Recrear el bloque completo después de updateContent
                     setTimeout(() => {
-                        const newContainer = document.getElementById('radiobutton-group-tipo');
-                        if (newContainer) {
-                            if (savedRadioButtons && !newContainer.children.length) {
-                                console.log('🔵 [POC RadioButton] Restaurando RadioButtons después de updateContent');
-                                newContainer.innerHTML = savedRadioButtons;
-                            }
-                            
-                            // SIEMPRE re-inicializar los RadioButtons después de updateContent
-                            // Esto asegura que se creen correctamente con todos los estilos
-                            console.log('🔄 [POC RadioButton] Re-inicializando RadioButtons después de updateContent');
-                            initRadioButtons();
-                        } else {
-                            console.warn('⚠️ [POC RadioButton] Contenedor no encontrado después de updateContent');
+                        const contentArea = document.querySelector('.content-area');
+                        if (!contentArea) {
+                            console.warn('⚠️ [POC RadioButton] .content-area no encontrado después de updateContent');
+                            return;
                         }
-                    }, 200);
+
+                        // Verificar si el bloque ya existe
+                        let newContainer = document.getElementById('radiobutton-group-tipo');
+                        
+                        if (!newContainer) {
+                            // Recrear el bloque completo si no existe
+                            console.log('🔄 [POC RadioButton] Recreando bloque completo después de updateContent');
+                            
+                            // Buscar el widget-contenido-principal dentro del content-area
+                            const widgetContent = contentArea.querySelector('.widget-contenido-principal');
+                            if (widgetContent) {
+                                // Recrear el bloque completo
+                                widgetContent.insertAdjacentHTML('beforeend', savedPocBlockHTML || `
+                                    <div style="margin-top: 40px; padding: 24px; background: var(--modifiers-normal-color-light-bg-1, #ffffff); border-radius: 8px; border: 2px solid var(--ubits-border-color, #e0e0e0); min-height: 200px;">
+                                        <h3 class="ubits-heading-h3" style="margin-bottom: 24px; color: var(--ubits-fg-1-high, #000000);">Ejemplo: RadioButton (POC Storybook V2)</h3>
+                                        <div id="radiobutton-group-tipo" style="display: flex; flex-direction: column; gap: 16px; min-height: 100px; width: 100%;"></div>
+                                        <div id="radiobutton-debug" style="margin-top: 20px; padding: 12px; background: #f5f5f5; border-radius: 4px; font-size: 12px; color: #666;">
+                                            <strong>Debug:</strong> <span id="radiobutton-debug-text">Esperando inicialización...</span>
+                                        </div>
+                                    </div>
+                                `);
+                                
+                                // Obtener el nuevo contenedor
+                                newContainer = document.getElementById('radiobutton-group-tipo');
+                            }
+                        }
+                        
+                        if (newContainer) {
+                            // SIEMPRE re-inicializar los RadioButtons después de updateContent
+                            console.log('🔄 [POC RadioButton] Re-inicializando RadioButtons después de updateContent');
+                            setTimeout(() => {
+                                initRadioButtons();
+                            }, 100);
+                        } else {
+                            console.warn('⚠️ [POC RadioButton] No se pudo recrear el contenedor después de updateContent');
+                        }
+                    }, 300);
 
                     return result;
                 };
