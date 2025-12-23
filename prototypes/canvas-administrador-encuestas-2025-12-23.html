@@ -1277,6 +1277,33 @@
                         attempts++;
                         console.log(`🔄 [DataView] Intento ${attempts}/${maxAttempts}...`);
                         
+                        // Diagnóstico detallado en cada intento
+                        if (attempts === 1 || attempts % 3 === 0) {
+                            console.log('🔍 [DataView] Diagnóstico de APIs disponibles:');
+                            console.log('   - window.UBITSDataView:', window.UBITSDataView);
+                            console.log('   - typeof window.UBITSDataView:', typeof window.UBITSDataView);
+                            if (window.UBITSDataView) {
+                                console.log('   - window.UBITSDataView keys:', Object.keys(window.UBITSDataView));
+                                console.log('   - window.UBITSDataView.createDataView:', typeof window.UBITSDataView.createDataView);
+                                console.log('   - window.UBITSDataView.renderDataView:', typeof window.UBITSDataView.renderDataView);
+                            }
+                            console.log('   - window.createDataView:', typeof window.createDataView);
+                            console.log('   - window.UBITS:', window.UBITS);
+                            if (window.UBITS) {
+                                console.log('   - window.UBITS keys:', Object.keys(window.UBITS));
+                                console.log('   - window.UBITS.DataView:', window.UBITS.DataView);
+                            }
+                            
+                            // Verificar si el script se cargó correctamente
+                            const script = document.querySelector('script[src*="data-view.umd.js"]');
+                            if (script) {
+                                console.log('   - Script encontrado:', script.src);
+                                console.log('   - Script loaded:', script.complete || script.readyState === 'complete');
+                            } else {
+                                console.warn('   - ⚠️ Script data-view.umd.js no encontrado en el DOM');
+                            }
+                        }
+                        
                         if (createDataViewComponent()) {
                             console.log('✅ [DataView] DataView creado exitosamente');
                             return;
@@ -1287,14 +1314,22 @@
                             setTimeout(tryCreateDataView, attemptInterval);
                         } else {
                             console.error('❌ [DataView] No se pudo crear DataView después de', maxAttempts, 'intentos');
-                            console.log('🔍 [DataView] Verificando APIs disponibles:');
-                            console.log('   - window.UBITSDataView:', !!window.UBITSDataView);
+                            console.log('🔍 [DataView] Verificación final de APIs disponibles:');
+                            console.log('   - window.UBITSDataView:', window.UBITSDataView);
                             console.log('   - window.UBITSDataView.createDataView:', !!(window.UBITSDataView && window.UBITSDataView.createDataView));
                             console.log('   - window.UBITSDataView.renderDataView:', !!(window.UBITSDataView && window.UBITSDataView.renderDataView));
                             console.log('   - window.createDataView:', typeof window.createDataView);
                             console.log('   - window.UBITS:', !!window.UBITS);
                             console.log('   - window.UBITS.DataView:', !!(window.UBITS && window.UBITS.DataView));
                             console.log('   - window.UBITS.DataView.create:', !!(window.UBITS && window.UBITS.DataView && window.UBITS.DataView.create));
+                            
+                            // Verificar errores de carga del script
+                            const script = document.querySelector('script[src*="data-view.umd.js"]');
+                            if (script) {
+                                script.onerror = function() {
+                                    console.error('❌ [DataView] Error al cargar el script data-view.umd.js');
+                                };
+                            }
                         }
                     }
 
