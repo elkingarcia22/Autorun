@@ -1396,7 +1396,7 @@ Problema: Falta interceptación de ContentManager para eliminar HeaderSection
    */
   getServices(): Record<string, (...args: any[]) => any> {
     return {
-      canImplement: (
+      canImplement: async (
         componentName: string,
         options?: { skipCheck?: boolean }
       ) => {
@@ -1406,13 +1406,12 @@ Problema: Falta interceptación de ContentManager para eliminar HeaderSection
         console.log(
           `   🔍 [getServices.canImplement] options?.skipCheck=${options?.skipCheck}`
         );
-        const result = this.canImplement(componentName, options);
-        const resolvedResult = await result;
+        const result = await this.canImplement(componentName, options);
         console.log(`   🔍 [getServices.canImplement] Resultado:`, {
-          allowed: resolvedResult.allowed,
-          reason: resolvedResult.reason,
+          allowed: result.allowed,
+          reason: result.reason,
         });
-        return resolvedResult;
+        return result;
       },
       markStepCompleted: (componentName: string, step: string) =>
         this.markStepCompleted(componentName, step as any),
