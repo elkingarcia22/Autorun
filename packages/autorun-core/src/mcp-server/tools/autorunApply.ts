@@ -26,6 +26,7 @@ import {
 } from '../../helpers/codePropsCombiner.js';
 import { AddonOrchestrator } from '../helpers/addonOrchestrator.js';
 import { generateCodeWithAutorunMarks } from '../helpers/codeMarkGenerator.js';
+import { getAutorunHub } from '../../AutorunAgent.js';
 import {
   AutorunApplyInput,
   AutorunApplyOutput,
@@ -268,6 +269,9 @@ async function autorunApplyStrict(
         console.log(
           `   ✅ Props obtenidas desde MCP: ${componentProps.length} props`
         );
+        
+        // ✅ MEJORA: Marcar paso del checklist como completado automáticamente
+        await markChecklistStep('storybookMCP');
       }
     } catch (error: any) {
       console.warn(`   ⚠️ MCP Client interno falló: ${error.message}`);
@@ -366,6 +370,10 @@ async function autorunApplyStrict(
         throw new Error('No se pudo extraer código desde Storybook');
       }
       console.log(`   ✅ Código extraído: ${exactCode.html.length} caracteres`);
+      
+      // ✅ MEJORA: Marcar paso del checklist como completado automáticamente
+      // (extraer código implica navegar a Storybook en Vercel)
+      await markChecklistStep('storybookVercel');
     } catch (error: any) {
       const errorMsg = `Error extrayendo código desde Storybook: ${error.message}`;
       console.error(`   ❌ ${errorMsg}`);
