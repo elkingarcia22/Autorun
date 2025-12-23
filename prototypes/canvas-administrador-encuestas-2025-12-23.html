@@ -1409,14 +1409,74 @@
                         }
                     }
 
+                    // Verificar y cargar el script si es necesario
+                    function ensureDataViewScriptLoaded() {
+                        const script = document.querySelector('script[src*="data-view.umd.js"]');
+                        if (!script) {
+                            console.warn('⚠️ [DataView] Script data-view.umd.js no encontrado, cargándolo dinámicamente...');
+                            const newScript = document.createElement('script');
+                            newScript.src = 'https://ubits-storybook10.vercel.app/components/data-view/dist/data-view.umd.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT';
+                            newScript.async = true;
+                            newScript.onload = function() {
+                                console.log('✅ [DataView] Script cargado dinámicamente, verificando API...');
+                                setTimeout(() => {
+                                    if (window.UBITSDataView) {
+                                        console.log('✅ [DataView] window.UBITSDataView disponible después de carga dinámica');
+                                        attempts = 0; // Resetear intentos
+                                        tryCreateDataView();
+                                    } else {
+                                        console.error('❌ [DataView] Script cargado pero window.UBITSDataView aún no disponible');
+                                    }
+                                }, 100);
+                            };
+                            newScript.onerror = function() {
+                                console.error('❌ [DataView] Error al cargar el script data-view.umd.js dinámicamente');
+                            };
+                            document.head.appendChild(newScript);
+                            return;
+                        }
+                        
+                        // Si el script existe pero no se ha cargado, agregar listeners
+                        if (script && !script.complete && script.readyState !== 'complete') {
+                            console.log('⏳ [DataView] Script encontrado pero aún no cargado, agregando listeners...');
+                            script.onload = function() {
+                                console.log('✅ [DataView] Script cargado, verificando API...');
+                                setTimeout(() => {
+                                    if (window.UBITSDataView) {
+                                        console.log('✅ [DataView] window.UBITSDataView disponible');
+                                        attempts = 0; // Resetear intentos
+                                        tryCreateDataView();
+                                    }
+                                }, 100);
+                            };
+                            script.onerror = function() {
+                                console.error('❌ [DataView] Error al cargar el script data-view.umd.js');
+                            };
+                        } else if (script && (script.complete || script.readyState === 'complete')) {
+                            // Script ya cargado, verificar si la API está disponible
+                            console.log('✅ [DataView] Script ya cargado, verificando API...');
+                            if (window.UBITSDataView) {
+                                console.log('✅ [DataView] window.UBITSDataView disponible');
+                                attempts = 0; // Resetear intentos
+                                tryCreateDataView();
+                            } else {
+                                console.warn('⚠️ [DataView] Script cargado pero window.UBITSDataView no disponible');
+                            }
+                        }
+                    }
+                    
                     // Iniciar después de 2.5 segundos
-                    setTimeout(tryCreateDataView, 2500);
+                    setTimeout(() => {
+                        ensureDataViewScriptLoaded();
+                        setTimeout(tryCreateDataView, 500);
+                    }, 2500);
                     
                     // También escuchar evento para recrear DataView después de que ContentManager actualice el contenido
                     window.addEventListener('autorun:recreate-dataview', function() {
                         console.log('🔄 [DataView] Evento autorun:recreate-dataview recibido, recreando DataView...');
                         attempts = 0; // Resetear intentos
-                        tryCreateDataView();
+                        ensureDataViewScriptLoaded();
+                        setTimeout(tryCreateDataView, 500);
                     });
                     
                     // ========================================
