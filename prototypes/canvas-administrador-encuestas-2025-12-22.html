@@ -2298,12 +2298,84 @@
             mutation.addedNodes.forEach((node) => {
               if (node.nodeType === 1 && (node.id === 'top-nav-container' || node.querySelector('#top-nav-container'))) {
                 setTimeout(initCrearEncuestaButton, 100);
+                setTimeout(initRadioActivo, 100);
               }
             });
           }
         });
       });
       observerButtons.observe(document.body, { childList: true, subtree: true });
+
+      // ========================================
+      // ⚠️ IMPLEMENTADO CON AUTORUN: Radio Button "Activo"
+      // ========================================
+      // AUTORUN: {"v":2,"mode":"prototypeTokens","components":["formularios-radio-button"],"widgets":[],"deps":[],"storybookId":"formularios-radio-button","hash":"r1s2t3u4v5w6"}
+      // Consultado Storybook: docs/referencia/componentes/formularios-radio-button.md
+      // Storybook ID: formularios-radio-button (UBITS Storybook)
+      // Storybook URL: https://ubits-storybook10.vercel.app/?path=/story/formularios-radio-button--default
+      // Implementación: HTML directo con clases UBITS (window.UBITS.RadioButton.create() no disponible en este template)
+      // Código extraído desde: https://ubits-storybook10.vercel.app/?path=/story/formularios-radio-button--default
+      // ========================================
+      function initRadioActivo() {
+        const container = document.getElementById('radio-activo-root');
+        if (!container) {
+          console.warn('⚠️ [Radio Activo] Contenedor no encontrado');
+          return;
+        }
+
+        // Si ya tiene contenido, no hacer nada
+        if (container.innerHTML.trim() !== '') {
+          return;
+        }
+
+        try {
+          // Crear radio button usando HTML directo con clases UBITS
+          // Según documentación: label: 'Activo', value: 'activo', name: 'estado-encuesta', size: 'md', checked: false
+          const radioContainer = document.createElement('label');
+          radioContainer.className = 'ubits-radio-button';
+          radioContainer.style.display = 'flex';
+          radioContainer.style.alignItems = 'center';
+          radioContainer.style.gap = '8px';
+          radioContainer.style.cursor = 'pointer';
+
+          const radioInput = document.createElement('input');
+          radioInput.type = 'radio';
+          radioInput.name = 'estado-encuesta';
+          radioInput.value = 'activo';
+          radioInput.id = 'radio-activo-input';
+          radioInput.className = 'ubits-radio-button__input';
+
+          const radioCircle = document.createElement('span');
+          radioCircle.className = 'ubits-radio-button__circle';
+
+          const radioLabel = document.createElement('span');
+          radioLabel.className = 'ubits-radio-button__label';
+          radioLabel.textContent = 'Activo';
+
+          radioContainer.appendChild(radioInput);
+          radioContainer.appendChild(radioCircle);
+          radioContainer.appendChild(radioLabel);
+
+          // Agregar evento onChange
+          radioInput.addEventListener('change', (event) => {
+            console.log('Radio "Activo" cambiado:', event.target.checked);
+          });
+
+          // Agregar al contenedor
+          container.appendChild(radioContainer);
+
+          console.log('✅ [Radio Activo] Radio button creado correctamente usando HTML directo');
+        } catch (error) {
+          console.error('❌ [Radio Activo] Error al crear radio button:', error);
+        }
+      }
+
+      // Inicializar cuando el DOM esté listo
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initRadioActivo);
+      } else {
+        initRadioActivo();
+      }
       // /AUTORUN
       
       // Observar cambios en el DOM para cuando el sidebar se cargue
