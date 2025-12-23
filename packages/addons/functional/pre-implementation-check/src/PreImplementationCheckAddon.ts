@@ -163,6 +163,13 @@ export class PreImplementationCheckAddon implements IFunctionalAddon {
     missingSteps?: string[];
     storyBasedPlan?: any; // ⭐ NUEVO: Plan basado en historias
   }> {
+    console.log(
+      `\n🔍 [verifyOnDetection] ========================================`
+    );
+    console.log(`🔍 [verifyOnDetection] Componente: ${componentName}`);
+    console.log(`🔍 [verifyOnDetection] Opciones:`, options);
+    console.log(`🔍 [verifyOnDetection] Add-on activo: ${this.active}`);
+
     if (!this.active) {
       return { blocked: false };
     }
@@ -176,6 +183,9 @@ export class PreImplementationCheckAddon implements IFunctionalAddon {
       await this.markStepCompleted(componentName, 'storybookMCP');
       await this.markStepCompleted(componentName, 'storybookVercel');
       await this.markStepCompleted(componentName, 'documentation');
+      console.log(
+        `🔍 [verifyOnDetection] ========================================\n`
+      );
       return { blocked: false };
     }
 
