@@ -2335,6 +2335,10 @@
           // Restaurar componentes después
           setTimeout(() => {
             window.AUTORUN_PRESERVE_COMPONENTS.restoreAll();
+            // ⚠️ CRÍTICO: Reinicializar botón de filtro después de restaurar contenido
+            setTimeout(() => {
+              initFilterButton();
+            }, 100);
           }, 500);
           
           return result;
