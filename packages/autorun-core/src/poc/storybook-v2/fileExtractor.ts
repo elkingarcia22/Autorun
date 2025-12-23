@@ -13,12 +13,14 @@ export interface StoryFile {
   filePath: string;
   content: string;
   found: boolean;
-  type: 'provider' | 'readme' | 'component';
+  type: 'stories' | 'provider' | 'options' | 'readme' | 'component';
 }
 
 export interface ComponentFiles {
   componentId: string;
+  stories?: StoryFile; // ⭐ PRIORIDAD: Archivo .stories.ts
   provider?: StoryFile;
+  options?: StoryFile; // Tipos TypeScript
   readme?: StoryFile;
   component?: StoryFile;
 }
@@ -50,19 +52,44 @@ function normalizeComponentId(componentId: string): string[] {
 
 /**
  * Genera rutas posibles para buscar archivos del componente
- * Busca Provider, Component y README
+ * Busca: Storybook stories, Provider, Options types, README
  */
 function generatePossiblePaths(componentId: string): string[] {
   const normalized = normalizeComponentId(componentId);
   const paths: string[] = [];
 
+  // Normalizar para Storybook (ej: "data-data-table" -> "DataTable")
+  const storybookName = normalized
+    .split('-')
+    .map((w) => capitalizeFirst(w))
+    .join('');
+
   for (const id of normalized) {
+    // ⭐ PRIORIDAD 1: Archivo .stories.ts (más completo)
+    paths.push(
+      `vendor/ubits/packages/storybook/stories/components/${storybookName}/${storybookName}.stories.ts`
+    );
+    paths.push(
+      `vendor/ubits/packages/storybook/stories/components/${capitalizeFirst(id)}/${capitalizeFirst(id)}.stories.ts`
+    );
+    paths.push(
+      `vendor/ubits/packages/storybook/stories/components/${id}/${id}.stories.ts`
+    );
+
     // Rutas en vendor/ubits/packages/components/
     // Provider (función de renderizado)
     paths.push(
       `vendor/ubits/packages/components/${id}/src/${capitalizeFirst(id)}Provider.ts`
     );
     paths.push(`vendor/ubits/packages/components/${id}/src/${id}Provider.ts`);
+
+    // Options types (tipos TypeScript)
+    paths.push(
+      `vendor/ubits/packages/components/${id}/src/types/${capitalizeFirst(id)}Options.ts`
+    );
+    paths.push(
+      `vendor/ubits/packages/components/${id}/src/types/${id}Options.ts`
+    );
 
     // README (documentación con ejemplos)
     paths.push(`vendor/ubits/packages/components/${id}/README.md`);
@@ -136,8 +163,12 @@ export async function findComponentFiles(
 
         console.log(`   ✅ ${fileType} encontrado: ${relativePath}`);
 
-        // Guardar según tipo
-        if (fileType === 'provider' && !result.provider) {
+        // Guardar según tipo (prioridad: stories > options > provider > readme > component)
+        if (fileType === 'stories' && !result.stories) {
+          result.stories = file;
+        } else if (fileType === 'options' && !result.options) {
+          result.options = file;
+        } else if (fileType === 'provider' && !result.provider) {
           result.provider = file;
         } else if (fileType === 'readme' && !result.readme) {
           result.readme = file;
@@ -163,12 +194,13 @@ export async function findComponentFiles(
 
 /**
  * Busca archivo específico (mantiene compatibilidad)
+ * Prioridad: stories > provider > readme
  */
 export async function findStoryFile(
   componentId: string
 ): Promise<StoryFile | null> {
   const files = await findComponentFiles(componentId);
-  return files.provider || files.readme || null;
+  return files.stories || files.provider || files.readme || null;
 }
 
 /**
