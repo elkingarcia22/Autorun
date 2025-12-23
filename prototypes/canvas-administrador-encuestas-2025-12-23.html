@@ -1071,56 +1071,54 @@
                         const components = await waitForComponents(20, 500);
                         console.log('✅ [DataTable Debug] Componentes obtenidos:', components);
                     
-                    // Verificar contenedores
-                    console.log('🔍 [DataTable Debug] Verificando contenedores...');
-                    const headerContainer = document.getElementById('header-section-container');
-                    const datatableContainer = document.getElementById('datatable-encuestas-container');
-                    console.log('   - header-section-container existe:', headerContainer !== null);
-                    console.log('   - datatable-encuestas-container existe:', datatableContainer !== null);
-                    
-                    if (headerContainer) {
-                        console.log('   - header-section-container HTML:', headerContainer.outerHTML.substring(0, 200));
-                    }
-                    if (datatableContainer) {
-                        console.log('   - datatable-encuestas-container HTML:', datatableContainer.outerHTML.substring(0, 200));
-                    }
-                    
-                    // Crear HeaderSection
-                    console.log('🔍 [DataTable Debug] Intentando crear HeaderSection...');
-                    if (window.UBITS && window.UBITS.HeaderSection) {
-                        if (headerContainer) {
-                            try {
-                                console.log('   - Llamando window.UBITS.HeaderSection.create()...');
-                                const headerConfig = {
-                                    title: 'Encuestas',
-                                    showCounter: true,
-                                    counter: { displayed: 15, total: 15 },
-                                    showPrimaryButton: true,
-                                    primaryButtonText: 'Nueva encuesta',
-                                    showSecondaryButtons: true,
-                                    showSearchButton: true,
-                                    showColumnSelectorButton: true
-                                };
-                                console.log('   - Config HeaderSection:', JSON.stringify(headerConfig, null, 2));
-                                const headerResult = window.UBITS.HeaderSection.create(headerConfig, 'header-section-container');
-                                console.log('   - Resultado HeaderSection.create():', headerResult);
-                                console.log('   - header-section-container después de create:', headerContainer.innerHTML.substring(0, 300));
-                            } catch (error) {
-                                console.error('❌ [DataTable Debug] Error al crear HeaderSection:', error);
-                                console.error('   - Stack:', error.stack);
+                        // Verificar contenedores
+                        console.log('🔍 [DataTable Debug] Verificando contenedores...');
+                        let headerContainer = document.getElementById('header-section-container');
+                        let datatableContainer = document.getElementById('datatable-encuestas-container');
+                        console.log('   - header-section-container existe:', headerContainer !== null);
+                        console.log('   - datatable-encuestas-container existe:', datatableContainer !== null);
+                        
+                        // Si el contenedor no existe, crearlo en el content-area
+                        if (!datatableContainer) {
+                            console.log('⚠️ [DataTable Debug] datatable-encuestas-container NO existe, creándolo...');
+                            const contentArea = document.querySelector('.content-area');
+                            if (contentArea) {
+                                datatableContainer = document.createElement('div');
+                                datatableContainer.id = 'datatable-encuestas-container';
+                                // Insertar después del header-section-container si existe
+                                if (headerContainer && headerContainer.nextSibling) {
+                                    contentArea.insertBefore(datatableContainer, headerContainer.nextSibling);
+                                } else {
+                                    contentArea.appendChild(datatableContainer);
+                                }
+                                console.log('✅ [DataTable Debug] Contenedor creado');
+                            } else {
+                                console.error('❌ [DataTable Debug] .content-area NO encontrado');
                             }
-                        } else {
-                            console.error('❌ [DataTable Debug] header-section-container NO encontrado');
                         }
-                    } else {
-                        console.error('❌ [DataTable Debug] window.UBITS.HeaderSection NO disponible');
-                    }
-                    
-                    // Crear DataTable con lista de encuestas simuladas
-                    console.log('🔍 [DataTable Debug] Intentando crear DataTable...');
-                    if (window.UBITS && window.UBITS.DataTable) {
+                        
+                        if (headerContainer) {
+                            console.log('   - header-section-container HTML:', headerContainer.outerHTML.substring(0, 200));
+                        }
+                        if (datatableContainer) {
+                            console.log('   - datatable-encuestas-container HTML:', datatableContainer.outerHTML.substring(0, 200));
+                        }
+                        
+                        // Crear DataTable con lista de encuestas simuladas
+                        console.log('🔍 [DataTable Debug] Intentando crear DataTable...');
                         if (datatableContainer) {
                             try {
+                                // Determinar qué función usar para crear DataTable
+                                const createDataTableFn = components.createDataTable || 
+                                    (components.UBITSDataTable && components.UBITSDataTable.create) ||
+                                    null;
+                                
+                                if (!createDataTableFn) {
+                                    throw new Error('No se encontró función para crear DataTable');
+                                }
+                                
+                                console.log('   - Usando función:', createDataTableFn.name || 'createDataTable');
+                                
                                 // Datos simulados de encuestas
                                 const encuestasData = {
                                     columns: [
@@ -1276,10 +1274,11 @@
                                     showColumnSelectorButton: true
                                 };
                                 
-                                console.log('   - Llamando window.UBITS.DataTable.create()...');
+                                console.log('   - Llamando función de creación de DataTable...');
                                 console.log('   - Config DataTable:', JSON.stringify(datatableConfig, null, 2));
                                 
-                                const datatableResult = window.UBITS.DataTable.create(datatableConfig, 'datatable-encuestas-container');
+                                // Llamar a la función de creación
+                                const datatableResult = createDataTableFn(datatableConfig, 'datatable-encuestas-container');
                                 
                                 console.log('   - Resultado DataTable.create():', datatableResult);
                                 console.log('   - datatable-encuestas-container después de create:', datatableContainer.innerHTML.substring(0, 500));
