@@ -112,10 +112,17 @@ async function autorunApplyStrict(
 
   // ⚠️ CRÍTICO: Activar modo autorun.apply() globalmente
   // Esto permite que canImplement() y verifyOnDetection() siempre permitan cuando viene de autorun.apply()
+  // Activar en múltiples lugares para asegurar compatibilidad con Node.js
   if (typeof globalThis !== 'undefined') {
-    globalThis.__AUTORUN_APPLY_MODE__ = true;
+    (globalThis as any).__AUTORUN_APPLY_MODE__ = true;
     console.log(
-      `   ✅ [autorunApply] Modo autorun.apply() activado globalmente (__AUTORUN_APPLY_MODE__=${globalThis.__AUTORUN_APPLY_MODE__})`
+      `   ✅ [autorunApply] Modo autorun.apply() activado en globalThis (__AUTORUN_APPLY_MODE__=${(globalThis as any).__AUTORUN_APPLY_MODE__})`
+    );
+  }
+  if (typeof global !== 'undefined') {
+    (global as any).__AUTORUN_APPLY_MODE__ = true;
+    console.log(
+      `   ✅ [autorunApply] Modo autorun.apply() activado en global (__AUTORUN_APPLY_MODE__=${(global as any).__AUTORUN_APPLY_MODE__})`
     );
   }
 
@@ -1114,9 +1121,15 @@ async function autorunApplyStrict(
 
     // ⚠️ CRÍTICO: Desactivar modo autorun.apply() y reactivar Pre-Implementation Check antes de retornar éxito
     if (typeof globalThis !== 'undefined') {
-      globalThis.__AUTORUN_APPLY_MODE__ = false;
+      (globalThis as any).__AUTORUN_APPLY_MODE__ = false;
       console.log(
-        `   🔧 [autorunApply] Modo autorun.apply() desactivado globalmente`
+        `   🔧 [autorunApply] Modo autorun.apply() desactivado en globalThis`
+      );
+    }
+    if (typeof global !== 'undefined') {
+      (global as any).__AUTORUN_APPLY_MODE__ = false;
+      console.log(
+        `   🔧 [autorunApply] Modo autorun.apply() desactivado en global`
       );
     }
 
@@ -1179,9 +1192,15 @@ async function autorunApplyStrict(
   } catch (error: any) {
     // ⚠️ CRÍTICO: Desactivar modo autorun.apply() y reactivar Pre-Implementation Check antes de retornar error
     if (typeof globalThis !== 'undefined') {
-      globalThis.__AUTORUN_APPLY_MODE__ = false;
+      (globalThis as any).__AUTORUN_APPLY_MODE__ = false;
       console.log(
-        `   🔧 [autorunApply] Modo autorun.apply() desactivado globalmente (después de error)`
+        `   🔧 [autorunApply] Modo autorun.apply() desactivado en globalThis (después de error)`
+      );
+    }
+    if (typeof global !== 'undefined') {
+      (global as any).__AUTORUN_APPLY_MODE__ = false;
+      console.log(
+        `   🔧 [autorunApply] Modo autorun.apply() desactivado en global (después de error)`
       );
     }
 
