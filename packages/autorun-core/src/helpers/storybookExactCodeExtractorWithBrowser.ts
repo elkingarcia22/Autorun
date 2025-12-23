@@ -162,13 +162,27 @@ async function extractCodeFromCodeTab(html: string): Promise<{
   const matches = Array.from(html.matchAll(codeBlockRegex));
 
   if (matches.length === 0) {
-    // Fallback: buscar en otros formatos
+    // Fallback 1: buscar en otros formatos de Storybook
     const alternativeRegex = /<code[^>]*>([\s\S]*?)<\/code>/gi;
     const altMatches = Array.from(html.matchAll(alternativeRegex));
     if (altMatches.length > 0) {
       return { html: decodeHtmlEntities(altMatches[0][1]) };
     }
-    throw new Error('No se encontró código en la pestaña "Code"');
+
+    // Fallback 2: buscar en elementos con data-testid o data-code
+    const dataCodeRegex = /<div[^>]*data-code[^>]*>([\s\S]*?)<\/div>/gi;
+    const dataMatches = Array.from(html.matchAll(dataCodeRegex));
+    if (dataMatches.length > 0) {
+      return { html: decodeHtmlEntities(dataMatches[0][1]) };
+    }
+
+    // ⚠️ CRÍTICO: Storybook carga el código dinámicamente con JavaScript
+    // El HTML inicial no contiene el código de la pestaña "Code"
+    // Necesitamos usar Browser MCP para navegar y extraer desde el snapshot
+    throw new Error(
+      'No se encontró código en la pestaña "Code". Storybook carga el código dinámicamente con JavaScript. ' +
+        'Necesitamos usar Browser MCP para navegar a Storybook y extraer desde el snapshot después de que se cargue.'
+    );
   }
 
   // Extraer el código principal (generalmente el primero)
