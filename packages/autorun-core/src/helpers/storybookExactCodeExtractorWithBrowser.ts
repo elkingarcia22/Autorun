@@ -100,15 +100,8 @@ export async function extractExactCodeFromStorybookWithBrowser(
   // Intento 2: Browser MCP (si fetch falló o no encontró código)
   if (!codeFromTab || !codeFromTab.html) {
     console.log(`   📋 Intentando extraer código usando Browser MCP...`);
-    console.log(`   ⚠️ IMPORTANTE: El agente DEBE ejecutar Browser MCP:`);
-    console.log(`      1. Navegar a: ${docsUrl}`);
-    console.log(`      2. Esperar 2 segundos para que se cargue el código`);
-    console.log(`      3. Buscar botón "Show code" o "Copy" y hacer clic si es necesario`);
-    console.log(`      4. Tomar snapshot`);
-    console.log(`      5. Extraer código desde el snapshot`);
     
-    // ⚠️ NOTA: Esta función requiere que el agente ejecute Browser MCP
-    // Por ahora, intentar obtener código fuente como fallback
+    // ⚠️ NUEVO: Intentar obtener código fuente como fallback primero
     try {
       const { getSourceCode } = await import('./storybookExactCodeExtractor');
       const sourceCode = await getSourceCode(componentId);
@@ -124,22 +117,23 @@ export async function extractExactCodeFromStorybookWithBrowser(
           console.log(
             `   ✅ Código obtenido desde código fuente: ${storyCode.length} caracteres`
           );
-        } else {
-          throw new Error(
-            `No se encontró código para la historia "${finalStoryName}" en el código fuente`
-          );
         }
-      } else {
-        throw new Error(
-          'No se pudo obtener código desde HTML ni desde código fuente. ' +
-          'El agente DEBE usar Browser MCP para navegar a Docs y extraer desde el snapshot.'
-        );
       }
     } catch (sourceError: any) {
-      throw new Error(
-        `No se pudo extraer código desde Docs. ${sourceError.message} ` +
-        'El agente DEBE usar Browser MCP para navegar a Docs y extraer desde el snapshot.'
+      console.warn(
+        `   ⚠️ No se pudo obtener código desde código fuente: ${sourceError.message}`
       );
+    }
+
+    // Si aún no tenemos código, lanzar error especial para Browser MCP
+    if (!codeFromTab || !codeFromTab.html) {
+      const { extractCodeWithBrowserMCP, generateBrowserMCPInstructions } =
+        await import('./browserMCPAutoExtractor.js');
+      
+      console.log(generateBrowserMCPInstructions(docsUrl, finalStoryName));
+      
+      // Lanzar error especial que el agente puede detectar
+      throw await extractCodeWithBrowserMCP(docsUrl, finalStoryName);
     }
   }
 
