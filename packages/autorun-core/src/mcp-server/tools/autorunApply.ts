@@ -220,6 +220,13 @@ async function autorunApplyStrict(
     );
     await markChecklistStep('storybookVercel');
 
+    // ⚠️ CRÍTICO: Marcar paso "documentation" automáticamente ANTES de verificar
+    // porque autorun.apply() usa información de Storybook que incluye documentación
+    console.log(
+      `   [1.3.3] Marcando paso "documentation" automáticamente (información incluida en Storybook)...`
+    );
+    await markChecklistStep('documentation');
+
     // 1.4 Ejecutar fase de preparación (Pre-Implementation Check, Storybook)
     console.log(`   [1.4] Ejecutando fase de preparación con add-ons...`);
     const preparationResult = await orchestrator.executePreparationPhase(
