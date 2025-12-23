@@ -232,12 +232,22 @@ export async function getSourceCode(
     const normalizedId = componentId
       .replace('feedback-', '')
       .replace('data-', '')
-      .replace('formularios-', '');
+      .replace('formularios-', '')
+      .replace('metricas-', '')
+      .replace('charts-', '');
 
     // Convertir a PascalCase para nombres de archivos (ej: "radio-button" -> "RadioButton")
+    // ⚠️ MEJORADO: Manejar acrónimos como "nps" -> "NPS" (no "Nps")
     const pascalCase = normalizedId
       .split('-')
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .map((word) => {
+        // Si la palabra es un acrónimo común (nps, api, etc.), mantenerlo en mayúsculas
+        const acronyms = ['nps', 'api', 'ui', 'ux', 'id', 'url'];
+        if (acronyms.includes(word.toLowerCase())) {
+          return word.toUpperCase();
+        }
+        return word.charAt(0).toUpperCase() + word.slice(1);
+      })
       .join('');
 
     // Buscar en diferentes ubicaciones posibles
