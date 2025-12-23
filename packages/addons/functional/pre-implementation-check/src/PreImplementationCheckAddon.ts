@@ -175,10 +175,11 @@ export class PreImplementationCheckAddon implements IFunctionalAddon {
     }
 
     // ✅ MEJORA: Si skipCheck=true (desde autorun.apply()), permitir automáticamente
+    const skipCheckValue = options?.skipCheck === true;
     console.log(
-      `   🔍 [verifyOnDetection] Verificando skipCheck: options=${JSON.stringify(options)}, options?.skipCheck=${options?.skipCheck}`
+      `   🔍 [verifyOnDetection] Verificando skipCheck: options=${JSON.stringify(options)}, options?.skipCheck=${options?.skipCheck}, skipCheckValue=${skipCheckValue}`
     );
-    if (options?.skipCheck) {
+    if (skipCheckValue) {
       console.log(
         `   ✅ [verifyOnDetection] skipCheck=true, permitiendo automáticamente`
       );
@@ -426,10 +427,11 @@ ${storyBasedPlan ? `\n📖 Plan basado en historias disponible. Implementar UNA 
     }
 
     // ✅ MEJORA: Si skipCheck=true (desde autorun.apply()), permitir automáticamente
+    const skipCheckValue = options?.skipCheck === true;
     console.log(
-      `   🔍 [canImplement] Verificando skipCheck: options=${JSON.stringify(options)}, options?.skipCheck=${options?.skipCheck}`
+      `   🔍 [canImplement] Verificando skipCheck: options=${JSON.stringify(options)}, options?.skipCheck=${options?.skipCheck}, skipCheckValue=${skipCheckValue}`
     );
-    if (options?.skipCheck) {
+    if (skipCheckValue) {
       console.log(
         `   ✅ [canImplement] skipCheck=true, permitiendo implementación automáticamente`
       );
