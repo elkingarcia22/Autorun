@@ -1285,6 +1285,9 @@
                         } else {
                             console.error('❌ [DataView] No se pudo crear DataView después de', maxAttempts, 'intentos');
                             console.log('🔍 [DataView] Verificando APIs disponibles:');
+                            console.log('   - window.UBITSDataView:', !!window.UBITSDataView);
+                            console.log('   - window.UBITSDataView.createDataView:', !!(window.UBITSDataView && window.UBITSDataView.createDataView));
+                            console.log('   - window.UBITSDataView.renderDataView:', !!(window.UBITSDataView && window.UBITSDataView.renderDataView));
                             console.log('   - window.createDataView:', typeof window.createDataView);
                             console.log('   - window.UBITS:', !!window.UBITS);
                             console.log('   - window.UBITS.DataView:', !!(window.UBITS && window.UBITS.DataView));
