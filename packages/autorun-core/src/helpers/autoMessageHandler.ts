@@ -22,7 +22,10 @@ import { mapComponentNameToStorybookId } from './storybookStories.js';
  * @param userMessage Mensaje completo del usuario
  * @returns Resultado con información de detección y bloqueo
  */
-export async function handleUserMessage(userMessage: string): Promise<
+export async function handleUserMessage(
+  userMessage: string,
+  options?: { skipPreCheck?: boolean }
+): Promise<
   MessageStartResult & {
     mcpMessages?: Array<{ componentName: string; storybookId: string }>;
   }
@@ -36,12 +39,13 @@ export async function handleUserMessage(userMessage: string): Promise<
   console.log(
     `🚀 [Auto Message Handler] Mensaje: ${userMessage.substring(0, 100)}...`
   );
+  console.log(`🚀 [Auto Message Handler] Opciones: ${JSON.stringify(options)}`);
 
   // PASO 1: SIEMPRE ejecutar executeOnMessageStart()
   console.log(
     '🚀 [Auto Message Handler] PASO 1: Ejecutando executeOnMessageStart()...'
   );
-  const result = await executeOnMessageStart(userMessage);
+  const result = await executeOnMessageStart(userMessage, options);
 
   // PASO 2: Si detectó componente(s), preparar mensajes MCP y CONSULTAR AUTOMÁTICAMENTE
   const mcpMessages: Array<{ componentName: string; storybookId: string }> = [];
@@ -74,22 +78,36 @@ export async function handleUserMessage(userMessage: string): Promise<
           const manager = StorybookManager.getInstance();
           const activeConfig = await manager.getActiveConfig();
 
-          let mcpServer = 'storybook'; // Default
+          let mcpServer = 'storybook-ubits'; // ⚠️ CORREGIDO: Usar el nombre real del servidor configurado
           if (activeConfig) {
             console.log(
               `📚 [Auto Message Handler] Storybook activo: ${activeConfig.name} (${activeConfig.url})`
             );
             // El servidor MCP debe estar configurado con la URL del Storybook activo
-            mcpServer = 'storybook'; // Servidor unificado
+            // Si el Storybook activo es UBITS, usar 'storybook-ubits'
+            if (activeConfig.id === 'ubits-storybook10-vercel-app') {
+              mcpServer = 'storybook-ubits';
+            } else {
+              mcpServer = 'storybook'; // Fallback para otros Storybooks
+            }
           }
+
+          // ⚠️ NUEVO MCP: Convertir storybookId a nombre de componente
+          const { storybookIdToComponentName } = await import(
+            './storybookMCPNameMapper.js'
+          );
+          const componentName =
+            storybookIdToComponentName(storybookId) || result.componentName;
 
           console.log(
             `📚 [Auto Message Handler] ⚠️ OBLIGATORIO: El agente DEBE ejecutar automáticamente:`
           );
           console.log(`   call_mcp_tool({`);
           console.log(`     server: "${mcpServer}",`);
-          console.log(`     toolName: "mcp_storybook_getComponentsProps",`);
-          console.log(`     arguments: { componentIds: ["${storybookId}"] }`);
+          console.log(`     toolName: "getComponentsProps",`); // ⚠️ NUEVO MCP: Sin prefijo mcp_storybook_
+          console.log(
+            `     arguments: { componentNames: ["${componentName}"] }`
+          ); // ⚠️ NUEVO MCP: Usar componentNames
           console.log(`   })`);
           console.log(
             `📚 [Auto Message Handler] ⚠️ CRÍTICO: NO continuar con implementación hasta obtener props`
@@ -106,7 +124,7 @@ export async function handleUserMessage(userMessage: string): Promise<
           );
           console.log(`   call_mcp_tool({`);
           console.log(`     server: "storybook-ubits",`);
-          console.log(`     toolName: "mcp_storybook_getComponentsProps",`);
+          console.log(`     toolName: "getComponentsProps",`); // ⚠️ NUEVO MCP: Sin prefijo mcp_storybook_
           console.log(`     arguments: { componentIds: ["${storybookId}"] }`);
           console.log(`   })`);
           console.log(
@@ -170,7 +188,7 @@ export async function handleUserMessage(userMessage: string): Promise<
               );
               console.log(`   call_mcp_tool({`);
               console.log(`     server: "${mcpServer}",`);
-              console.log(`     toolName: "mcp_storybook_getComponentsProps",`);
+              console.log(`     toolName: "getComponentsProps",`); // ⚠️ NUEVO MCP: Sin prefijo mcp_storybook_
               console.log(
                 `     arguments: { componentIds: ["${storybookId}"] }`
               );
@@ -187,7 +205,7 @@ export async function handleUserMessage(userMessage: string): Promise<
               );
               console.log(`   call_mcp_tool({`);
               console.log(`     server: "storybook-ubits",`);
-              console.log(`     toolName: "mcp_storybook_getComponentsProps",`);
+              console.log(`     toolName: "getComponentsProps",`); // ⚠️ NUEVO MCP: Sin prefijo mcp_storybook_
               console.log(
                 `     arguments: { componentIds: ["${storybookId}"] }`
               );
@@ -732,7 +750,7 @@ AL INICIO de cada mensaje del usuario, DEBES:
    - Para cada mensaje en result.mcpMessages:
      call_mcp_tool({
        server: "storybook-ubits",
-       toolName: "mcp_storybook_getComponentsProps",
+       toolName: "getComponentsProps", // ⚠️ NUEVO MCP: Sin prefijo mcp_storybook_
        arguments: { componentIds: [message.storybookId] }
      })
    - ❌ NO preguntar al usuario
