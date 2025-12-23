@@ -2407,7 +2407,189 @@
       console.log('✅ Drawer creado correctamente:', drawerInstance);
     } catch (error) {
       console.error('❌ Error al crear drawer:', error);
+      console.log('🔄 Intentando crear drawer manualmente...');
+      createDrawerManually();
     }
+  }
+
+  // Función para crear drawer manualmente usando HTML
+  function createDrawerManually() {
+    console.log('🔧 Creando drawer manualmente...');
+    
+    // Crear overlay
+    const overlay = document.createElement('div');
+    overlay.className = 'ubits-drawer-overlay';
+    overlay.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 9998;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    `;
+    
+    // Crear drawer
+    const drawer = document.createElement('div');
+    drawer.className = 'ubits-drawer';
+    drawer.style.cssText = `
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 40%;
+      max-width: 600px;
+      background: var(--ubits-bg-1);
+      box-shadow: -2px 0 8px rgba(0, 0, 0, 0.15);
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      transform: translateX(100%);
+      transition: transform 0.3s ease;
+    `;
+    
+    // Header
+    const header = document.createElement('div');
+    header.className = 'ubits-drawer-header';
+    header.style.cssText = `
+      padding: var(--ubits-spacing-lg);
+      border-bottom: 1px solid var(--ubits-border-1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    `;
+    
+    const title = document.createElement('h2');
+    title.textContent = 'Filtros';
+    title.style.cssText = `
+      margin: 0;
+      font-size: var(--ubits-font-size-lg);
+      font-weight: var(--ubits-font-weight-semibold);
+      color: var(--ubits-fg-1-high);
+    `;
+    
+    const closeBtn = document.createElement('button');
+    closeBtn.innerHTML = '<i class="far fa-times"></i>';
+    closeBtn.className = 'ubits-button ubits-button--tertiary';
+    closeBtn.style.cssText = `
+      width: 32px;
+      height: 32px;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    `;
+    closeBtn.onclick = function() {
+      closeDrawer();
+    };
+    
+    header.appendChild(title);
+    header.appendChild(closeBtn);
+    
+    // Body
+    const body = document.createElement('div');
+    body.className = 'ubits-drawer-body';
+    body.style.cssText = `
+      flex: 1;
+      overflow-y: auto;
+      padding: var(--ubits-spacing-lg);
+    `;
+    body.innerHTML = `
+      <div style="display: flex; flex-direction: column; gap: var(--ubits-spacing-md);">
+        <div style="display: flex; flex-direction: column; gap: var(--ubits-spacing-xs);">
+          <label style="color: var(--ubits-fg-1-medium); font-size: 12px;">Filtro 1</label>
+          <input type="text" placeholder="Buscar..." style="
+            padding: var(--ubits-spacing-sm);
+            border: 1px solid var(--ubits-border-1);
+            border-radius: var(--ubits-border-radius-sm);
+            font-size: 14px;
+            width: 100%;
+            box-sizing: border-box;
+          " />
+        </div>
+        <div style="display: flex; flex-direction: column; gap: var(--ubits-spacing-xs);">
+          <label style="color: var(--ubits-fg-1-medium); font-size: 12px;">Filtro 2</label>
+          <input type="text" placeholder="Buscar..." style="
+            padding: var(--ubits-spacing-sm);
+            border: 1px solid var(--ubits-border-1);
+            border-radius: var(--ubits-border-radius-sm);
+            font-size: 14px;
+            width: 100%;
+            box-sizing: border-box;
+          " />
+        </div>
+      </div>
+    `;
+    
+    // Footer
+    const footer = document.createElement('div');
+    footer.className = 'ubits-drawer-footer';
+    footer.style.cssText = `
+      padding: var(--ubits-spacing-lg);
+      border-top: 1px solid var(--ubits-border-1);
+      display: flex;
+      gap: var(--ubits-spacing-md);
+      justify-content: flex-end;
+    `;
+    
+    const clearBtn = document.createElement('button');
+    clearBtn.textContent = 'Limpiar';
+    clearBtn.className = 'ubits-button ubits-button--secondary';
+    clearBtn.onclick = function() {
+      const inputs = body.querySelectorAll('input');
+      inputs.forEach(input => input.value = '');
+      console.log('🧹 Filtros limpiados');
+    };
+    
+    const applyBtn = document.createElement('button');
+    applyBtn.textContent = 'Aplicar';
+    applyBtn.className = 'ubits-button ubits-button--primary';
+    applyBtn.onclick = function() {
+      console.log('✅ Filtros aplicados');
+      closeDrawer();
+    };
+    
+    footer.appendChild(clearBtn);
+    footer.appendChild(applyBtn);
+    
+    drawer.appendChild(header);
+    drawer.appendChild(body);
+    drawer.appendChild(footer);
+    
+    document.body.appendChild(overlay);
+    document.body.appendChild(drawer);
+    
+    // Animar entrada
+    setTimeout(function() {
+      overlay.style.opacity = '1';
+      drawer.style.transform = 'translateX(0)';
+    }, 10);
+    
+    // Cerrar al hacer click en overlay
+    overlay.onclick = function() {
+      closeDrawer();
+    };
+    
+    // Guardar referencia para poder cerrarlo
+    window.currentDrawer = {
+      overlay: overlay,
+      drawer: drawer,
+      close: closeDrawer
+    };
+    
+    function closeDrawer() {
+      overlay.style.opacity = '0';
+      drawer.style.transform = 'translateX(100%)';
+      setTimeout(function() {
+        if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
+        if (drawer.parentNode) drawer.parentNode.removeChild(drawer);
+        window.currentDrawer = null;
+      }, 300);
+    }
+    
+    console.log('✅ Drawer creado manualmente');
   }
 
   // Inicializar cuando el DOM esté listo
