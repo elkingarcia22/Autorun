@@ -169,7 +169,11 @@ export class AddonOrchestrator {
 
           const services = preCheckAddon.getServices();
           if (services && services.canImplement) {
-            const canImplement = await services.canImplement(componentName);
+            // ✅ MEJORA: Si autoMarkSteps=true, pasar skipCheck=true para permitir automáticamente
+            const canImplement = await services.canImplement(
+              componentName,
+              autoMarkSteps ? { skipCheck: true } : undefined
+            );
             result.canImplement = canImplement;
 
             if (!canImplement.allowed) {
