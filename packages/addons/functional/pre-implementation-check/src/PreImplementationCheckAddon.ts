@@ -1336,7 +1336,10 @@ Problema: Falta interceptación de ContentManager para eliminar HeaderSection
    */
   getServices(): Record<string, (...args: any[]) => any> {
     return {
-      canImplement: (componentName: string) => this.canImplement(componentName),
+      canImplement: (
+        componentName: string,
+        options?: { skipCheck?: boolean }
+      ) => this.canImplement(componentName, options),
       markStepCompleted: (componentName: string, step: string) =>
         this.markStepCompleted(componentName, step as any),
       getChecklist: (componentName: string) => this.getChecklist(componentName),
