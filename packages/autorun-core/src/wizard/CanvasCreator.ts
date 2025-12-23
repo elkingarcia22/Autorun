@@ -2186,6 +2186,170 @@ export class CanvasCreator {
   }
 
   /**
+   * Crea template básico sin ContentManager (ideal para backend)
+   */
+  private async createBasicTemplate(
+    template: 'administrador' | 'colaborador',
+    module: string,
+    product?: string
+  ): Promise<string> {
+    const moduleConfig = UBITS_MODULES_CONFIG[module];
+    const moduleName = moduleConfig?.name || module;
+    const productName = product
+      ? moduleConfig?.products?.find((p: any) => p.id === product)?.name ||
+        product
+      : null;
+
+    // Determinar ruta base a vendor/ubits/packages/
+    const relativePath = '../vendor/ubits/packages/';
+
+    // Verificar que existe vendor/ubits/packages/
+    const vendorUbitsPath = path.join(
+      this.projectPath,
+      'vendor',
+      'ubits',
+      'packages'
+    );
+    try {
+      await fs.access(vendorUbitsPath);
+    } catch (error) {
+      console.warn(
+        '⚠️  vendor/ubits/packages/ no encontrado. El template básico puede no funcionar correctamente.'
+      );
+    }
+
+    const title = productName
+      ? `${moduleName} - ${productName}`
+      : `${moduleName}`;
+
+    return `<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${title} - Template Básico UBITS</title>
+  
+  <!-- CSS Tokens UBITS -->
+  <link rel="stylesheet" href="${relativePath}tokens/dist/tokens.css">
+  
+  <style>
+    /* Estilos básicos para el template */
+    * {
+      box-sizing: border-box;
+    }
+    
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background-color: var(--modifiers-normal-color-light-bg-1, #ffffff);
+      color: var(--ubits-fg-1-high, #000000);
+      line-height: 1.5;
+    }
+    
+    .content-area {
+      padding: 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    h1 {
+      margin-top: 0;
+      margin-bottom: 16px;
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--ubits-fg-1-high, #000000);
+    }
+    
+    h2 {
+      margin-top: 32px;
+      margin-bottom: 16px;
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--ubits-fg-1-high, #000000);
+    }
+    
+    p {
+      margin-bottom: 16px;
+    }
+    
+    .info-box {
+      padding: 16px;
+      background: #e3f2fd;
+      border-left: 4px solid #2196f3;
+      border-radius: 4px;
+      margin: 16px 0;
+    }
+    
+    .warning-box {
+      padding: 16px;
+      background: #fff3e0;
+      border-left: 4px solid #ff9800;
+      border-radius: 4px;
+      margin: 16px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="content-area">
+    <h1>${title}</h1>
+    <p>Template básico UBITS - Listo para backend</p>
+    
+    <div class="info-box">
+      <strong>ℹ️ Información:</strong> Este template es simplificado y no usa ContentManager dinámico. Los componentes se inicializan directamente sin interceptaciones.
+    </div>
+    
+    <div class="warning-box">
+      <strong>⚠️ Nota:</strong> Para usar componentes UBITS:
+      <ol style="margin-top: 8px; padding-left: 20px;">
+        <li>Agrega el CSS del componente en el <code>&lt;head&gt;</code></li>
+        <li>Agrega el JS del componente antes de <code>&lt;/body&gt;</code></li>
+        <li>Inicializa el componente con JavaScript</li>
+      </ol>
+    </div>
+    
+    <!-- Contenedor principal para componentes -->
+    <div id="main-content" style="margin-top: 24px;">
+      <!-- Agregar componentes aquí -->
+    </div>
+  </div>
+
+  <!-- Scripts de componentes UBITS -->
+  <!-- Ejemplo: RadioButton -->
+  <!-- 
+  <script src="${relativePath}components/radio-button/src/RadioButtonProvider.ts"></script>
+  <script>
+    // Inicialización de ejemplo
+    (function() {
+      function init() {
+        if (!window.UBITS || !window.UBITS.RadioButton) {
+          setTimeout(init, 100);
+          return;
+        }
+        
+        // Crear RadioButton de ejemplo
+        window.UBITS.RadioButton.create({
+          containerId: 'main-content',
+          label: 'Opción de ejemplo',
+          value: 'ejemplo',
+          name: 'grupo-ejemplo',
+          checked: true
+        });
+      }
+      
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+      } else {
+        init();
+      }
+    })();
+  </script>
+  -->
+</body>
+</html>`;
+  }
+
+  /**
    * Genera contenido del lienzo (fallback cuando no se puede cargar desde Storybook)
    */
   private generateCanvasContent(
