@@ -532,6 +532,8 @@ function extractStoryCodeFromSource(
   if (storyName.toLowerCase().includes('implementation')) {
     // Buscar la historia específica primero - usar regex más específico
     // Buscar: export const Implementation ... code: `...`
+    // ⚠️ OPTIMIZADO: Usar non-greedy para código extenso (más eficiente)
+    // El `;?` al final permite que el código termine con o sin punto y coma
     const storySection = sourceCode.match(
       new RegExp(
         `export\\s+const\\s+${storyName}[\\s\\S]*?code:\\s*\`([\\s\\S]*?)\`;?`,
