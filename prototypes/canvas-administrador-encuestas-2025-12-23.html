@@ -2285,7 +2285,7 @@
 
         // Crear modal si no existe
         if (!modalInstance) {
-          modalInstance = window.UBITS.Modal.create({
+          modalInstance = ModalAPI.create({
             containerId: 'modal-container',
             title: 'Modal de Prueba',
             bodyContent: `
@@ -2337,13 +2337,50 @@
 
       function initButtonAndModal() {
         // Verificar que Button esté disponible
-        if (!window.UBITS || !window.UBITS.Button || !window.UBITS.Button.create) {
-          console.log('⏳ [Prueba Button+Modal] Esperando Button...');
+        // Intentar múltiples formas de acceso a Button
+        let ButtonAPI = null;
+        
+        if (window.UBITS && window.UBITS.Button && window.UBITS.Button.create) {
+          ButtonAPI = window.UBITS.Button;
+        } else if (window.createButton) {
+          // Fallback: usar createButton directamente
+          ButtonAPI = { create: window.createButton };
+        } else if (window.AUTORUN && window.AUTORUN.Components) {
+          // Intentar obtener desde AUTORUN.Components
+          const buttonComponent = window.AUTORUN.Components.getComponent('button');
+          if (buttonComponent && buttonComponent.create) {
+            ButtonAPI = buttonComponent;
+          }
+        }
+
+        if (!ButtonAPI || !ButtonAPI.create) {
+          console.log('⏳ [Prueba Button+Modal] Esperando Button...', {
+            'window.UBITS': !!window.UBITS,
+            'window.UBITS.Button': !!(window.UBITS && window.UBITS.Button),
+            'window.createButton': !!window.createButton,
+            'window.AUTORUN': !!window.AUTORUN
+          });
+          
+          // Limitar intentos a 50 (5 segundos máximo)
+          if (!initButtonAndModal.attempts) {
+            initButtonAndModal.attempts = 0;
+          }
+          initButtonAndModal.attempts++;
+          
+          if (initButtonAndModal.attempts > 50) {
+            console.error('❌ [Prueba Button+Modal] Timeout esperando Button. Creando botón HTML manualmente...');
+            createButtonManually();
+            return;
+          }
+          
           setTimeout(initButtonAndModal, 100);
           return;
         }
 
-        console.log('🚀 [Prueba Button+Modal] Inicializando botón y modal...');
+        console.log('🚀 [Prueba Button+Modal] Inicializando botón y modal...', {
+          ButtonAPI: ButtonAPI,
+          'window.UBITS': window.UBITS
+        });
 
         // 1. Registrar componentes para preservación automática
         window.AUTORUN_PRESERVE_COMPONENTS.register('button', 'button-open-modal-container', {
@@ -2356,7 +2393,7 @@
 
         // 2. Crear el botón
         try {
-          const buttonResult = window.UBITS.Button.create({
+          const buttonResult = ButtonAPI.create({
             containerId: 'button-open-modal-container',
             variant: 'primary',
             size: 'md',
@@ -2369,6 +2406,36 @@
           console.log('✅ [Prueba Button+Modal] Botón creado:', buttonResult);
         } catch (error) {
           console.error('❌ [Prueba Button+Modal] Error al crear botón:', error);
+          console.log('⚠️ [Prueba Button+Modal] Intentando crear botón HTML manualmente...');
+          createButtonManually();
+        }
+      }
+
+      // Función fallback para crear botón manualmente si Button API no está disponible
+      function createButtonManually() {
+        const container = document.getElementById('button-open-modal-container');
+        if (!container) {
+          console.error('❌ [Prueba Button+Modal] Contenedor no encontrado');
+          return;
+        }
+
+        // Crear botón HTML manualmente con estilos UBITS
+        const buttonHTML = `
+          <button class="ubits-button ubits-button--primary ubits-button--md" 
+                  id="manual-open-modal-button"
+                  style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+            <i class="far fa-plus"></i>
+            <span>Abrir Modal</span>
+          </button>
+        `;
+        
+        container.innerHTML = buttonHTML;
+        
+        // Agregar event listener
+        const button = document.getElementById('manual-open-modal-button');
+        if (button) {
+          button.addEventListener('click', handleOpenModal);
+          console.log('✅ [Prueba Button+Modal] Botón HTML manual creado');
         }
       }
 
