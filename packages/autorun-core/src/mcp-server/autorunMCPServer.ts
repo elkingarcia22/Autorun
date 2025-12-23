@@ -398,6 +398,10 @@ export async function startAutorunMCPServer() {
           result = await autorunStorybookBuild(args as any);
           break;
 
+        case 'autorun.storybook.extract':
+          result = await autorunStorybookExtract(args as any);
+          break;
+
         case 'autorun.problems.list':
           result = await autorunProblemsList(args as any);
           break;
