@@ -616,7 +616,19 @@ ${storyBasedPlan ? `\n📖 Plan basado en historias disponible. Implementar UNA 
       console.log(`🔍 [canImplement] Pasos faltantes:`, missingSteps);
     }
 
-    const allowed = missingSteps.length === 0;
+    // ⚠️ CRÍTICO: Si estamos en modo autorun.apply() o skipCheck=true, SIEMPRE permitir
+    // incluso si hay pasos faltantes, porque autorun.apply() consultará Storybook automáticamente
+    let allowed = missingSteps.length === 0;
+
+    // ⚠️ DOBLE VERIFICACIÓN: Si skipCheck=true o estamos en modo autorun.apply(), forzar allowed=true
+    if (options?.skipCheck === true || isAutorunApplyModeFinal) {
+      console.warn(
+        `   ⚠️ [canImplement] skipCheck=true o modo autorun.apply() detectado, forzando allowed=true incluso con pasos faltantes`
+      );
+      allowed = true;
+      missingSteps = []; // Limpiar missingSteps también
+    }
+
     console.log(`🔍 [canImplement] ¿Permitido?: ${allowed}`);
 
     // Registrar intento
