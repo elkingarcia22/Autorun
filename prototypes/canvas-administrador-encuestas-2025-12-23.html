@@ -1301,6 +1301,13 @@
                     // Iniciar después de 2.5 segundos
                     setTimeout(tryCreateDataView, 2500);
                     
+                    // También escuchar evento para recrear DataView después de que ContentManager actualice el contenido
+                    window.addEventListener('autorun:recreate-dataview', function() {
+                        console.log('🔄 [DataView] Evento autorun:recreate-dataview recibido, recreando DataView...');
+                        attempts = 0; // Resetear intentos
+                        tryCreateDataView();
+                    });
+                    
                     // ========================================
                     // DIAGNÓSTICO: Línea divisoria del footer
                     // ========================================
