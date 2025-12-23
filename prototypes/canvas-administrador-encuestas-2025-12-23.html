@@ -831,23 +831,170 @@
         // Código extraído desde: vendor/ubits/packages/storybook/stories/components/RadioButton/RadioButton.stories.ts
         // Story: Implementation (Copy/Paste)
         
+        // ⭐ REGISTRAR RadioButton en window.UBITS (ya que no está en components-loader.js)
         (function() {
-            // Esperar a que UBITS esté disponible
-            function initRadioButtons() {
-                if (!window.UBITS || !window.UBITS.RadioButton) {
-                    console.log('⏳ [POC RadioButton] Esperando UBITS.RadioButton...');
-                    setTimeout(initRadioButtons, 100);
-                    return;
+            // Código del Provider extraído directamente desde RadioButtonProvider.ts
+            function renderRadioButton(options) {
+                const {
+                    label,
+                    complementaryText,
+                    value,
+                    name,
+                    checked = false,
+                    size = 'md',
+                    state = 'default',
+                    disabled = false,
+                    className = '',
+                } = options;
+
+                const isDisabled = disabled || state === 'disabled';
+
+                // Construir clases
+                const classes = [
+                    'ubits-radio-button',
+                    `ubits-radio-button--${size}`,
+                    state !== 'default' ? `ubits-radio-button--${state}` : '',
+                    checked ? 'ubits-radio-button--checked' : '',
+                    isDisabled ? 'ubits-radio-button--disabled' : '',
+                    className,
+                ]
+                    .filter(Boolean)
+                    .join(' ');
+
+                // Radio input
+                const radioInput = `
+                    <input
+                      type="radio"
+                      id="radio-${name}-${value}"
+                      name="${name}"
+                      value="${value}"
+                      ${checked ? 'checked' : ''}
+                      ${isDisabled ? 'disabled' : ''}
+                      class="ubits-radio-button__input"
+                    />
+                  `;
+
+                // Radio circle (visual)
+                const radioCircle = `
+                    <span class="ubits-radio-button__circle" aria-hidden="true">
+                      ${checked || (state === 'active' && !checked) ? '<span class="ubits-radio-button__dot"></span>' : ''}
+                    </span>
+                  `;
+
+                // Label text
+                const labelHTML = `
+                    <span class="ubits-radio-button__label">${label}</span>
+                  `;
+
+                // Complementary text
+                const complementaryTextHTML = complementaryText
+                    ? `<span class="ubits-radio-button__complementary-text">${complementaryText}</span>`
+                    : '';
+
+                // Text content wrapper
+                const textContentHTML = `
+                    <div class="ubits-radio-button__text-content">
+                      ${labelHTML}
+                      ${complementaryTextHTML}
+                    </div>
+                  `;
+
+                return `
+                    <label class="${classes}">
+                      ${radioInput}
+                      ${radioCircle}
+                      ${textContentHTML}
+                    </label>
+                  `.trim();
+            }
+
+            function createRadioButton(options) {
+                const { containerId, onChange } = options;
+
+                // Crear elemento
+                const wrapper = document.createElement('div');
+                wrapper.innerHTML = renderRadioButton(options);
+                const radioButton = wrapper.firstElementChild;
+
+                if (!radioButton) {
+                    throw new Error('No se pudo crear el radio button');
                 }
-                
-                console.log('✅ [POC RadioButton] UBITS.RadioButton disponible, creando RadioButtons...');
-                
+
+                // Event listener para cambio
+                const inputElement = radioButton.querySelector('.ubits-radio-button__input');
+                if (inputElement && onChange) {
+                    inputElement.addEventListener('change', onChange);
+                }
+
+                // Agregar al DOM
+                let container;
+                if (containerId) {
+                    container = document.getElementById(containerId) || document.body;
+                } else {
+                    container = document.body;
+                }
+
+                container.appendChild(radioButton);
+
+                // Métodos
+                const destroy = () => {
+                    if (radioButton.parentElement) {
+                        radioButton.parentElement.removeChild(radioButton);
+                    }
+                };
+
+                const update = (newOptions) => {
+                    const updatedOptions = { ...options, ...newOptions };
+                    const wrapper = document.createElement('div');
+                    wrapper.innerHTML = renderRadioButton(updatedOptions);
+                    const newRadioButton = wrapper.firstElementChild;
+
+                    if (newRadioButton && radioButton.parentElement) {
+                        // Copiar event listener
+                        const newInputElement = newRadioButton.querySelector('.ubits-radio-button__input');
+                        if (newInputElement && updatedOptions.onChange) {
+                            newInputElement.addEventListener('change', updatedOptions.onChange);
+                        }
+
+                        radioButton.parentElement.replaceChild(newRadioButton, radioButton);
+                        return newRadioButton;
+                    }
+                };
+
+                return {
+                    element: radioButton,
+                    destroy,
+                    update,
+                };
+            }
+
+            // Registrar en window.UBITS
+            window.UBITS = window.UBITS || {};
+            window.UBITS.RadioButton = {
+                render: renderRadioButton,
+                create: createRadioButton,
+            };
+
+            console.log('✅ [POC RadioButton] RadioButton registrado en window.UBITS');
+        })();
+
+        // ⭐ INICIALIZAR RadioButtons
+        (function() {
+            function initRadioButtons() {
                 const container = document.getElementById('radiobutton-group-tipo');
                 if (!container) {
                     console.error('❌ [POC RadioButton] Contenedor no encontrado');
                     return;
                 }
-                
+
+                if (!window.UBITS || !window.UBITS.RadioButton) {
+                    console.log('⏳ [POC RadioButton] Esperando UBITS.RadioButton...');
+                    setTimeout(initRadioButtons, 100);
+                    return;
+                }
+
+                console.log('✅ [POC RadioButton] UBITS.RadioButton disponible, creando RadioButtons...');
+
                 // Grupo de RadioButtons: Tipo de Encuesta
                 const radioOptions = [
                     {
@@ -881,14 +1028,14 @@
                         disabled: false
                     }
                 ];
-                
+
                 // Crear cada RadioButton usando el código exacto del Storybook
                 radioOptions.forEach((options, index) => {
                     // Crear contenedor individual para cada RadioButton
                     const radioContainer = document.createElement('div');
                     radioContainer.id = `radiobutton-container-${index}`;
                     container.appendChild(radioContainer);
-                    
+
                     // ⭐ CÓDIGO EXACTO desde Implementation story
                     try {
                         window.UBITS.RadioButton.create({
@@ -902,22 +1049,22 @@
                             state: options.state,
                             disabled: options.disabled
                         });
-                        
+
                         console.log(`✅ [POC RadioButton] RadioButton "${options.label}" creado`);
                     } catch (error) {
                         console.error(`❌ [POC RadioButton] Error creando RadioButton "${options.label}":`, error);
                     }
                 });
-                
+
                 console.log('✅ [POC RadioButton] Todos los RadioButtons creados exitosamente');
             }
-            
+
             // Inicializar cuando el DOM esté listo
             if (document.readyState === 'loading') {
                 document.addEventListener('DOMContentLoaded', initRadioButtons);
             } else {
-                // Esperar un poco para que los componentes se carguen
-                setTimeout(initRadioButtons, 500);
+                // Esperar un poco para que el DOM esté listo
+                setTimeout(initRadioButtons, 100);
             }
         })();
     </script>
