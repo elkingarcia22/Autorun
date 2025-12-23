@@ -268,10 +268,14 @@ async function autorunApplyStrict(
     await markChecklistStep('documentation');
 
     // 1.4 Ejecutar fase de preparación (Pre-Implementation Check, Storybook)
-    console.log(`   [1.4] Ejecutando fase de preparación con add-ons...`);
+    // ⚠️ CRÍTICO: Pasar autoMarkSteps=true porque autorun.apply() consultará Storybook automáticamente
+    console.log(
+      `   [1.4] Ejecutando fase de preparación con add-ons (autoMarkSteps=true)...`
+    );
     const preparationResult = await orchestrator.executePreparationPhase(
       result.componentName,
-      componentId
+      componentId,
+      true // autoMarkSteps: autorun.apply() consultará Storybook automáticamente
     );
 
     if (!preparationResult.canImplement.allowed) {
