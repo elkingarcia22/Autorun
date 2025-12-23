@@ -237,6 +237,29 @@ async function autorunApplyStrict(
     // ✅ MEJORA 1: Intentar obtener props automáticamente con MCP Client interno
     let componentProps: any = null;
 
+    // Helper para marcar pasos del checklist automáticamente
+    const markChecklistStep = async (
+      step: 'storybookVercel' | 'storybookMCP' | 'documentation' | 'comparison'
+    ) => {
+      try {
+        const hub = await getAutorunHub();
+        const preCheckAddon = hub.getAddon('pre-implementation-check');
+        if (preCheckAddon && result.componentName) {
+          await (preCheckAddon as any).markStepCompleted(
+            result.componentName,
+            step
+          );
+          console.log(
+            `   ✅ Checklist: Paso "${step}" marcado como completado automáticamente`
+          );
+        }
+      } catch (error: any) {
+        console.warn(
+          `   ⚠️ No se pudo marcar paso "${step}" del checklist: ${error.message}`
+        );
+      }
+    };
+
     // Intentar primero con MCP Client interno (llamada directa)
     try {
       const { callStorybookMCPTool } = await import(
