@@ -126,26 +126,36 @@ async function extractStoriesFromIndex(
   }
 
   // ⚠️ FILTRAR historia "default" - tiene todo mezclado, no usar
-  // ⚠️ PERO: Incluir "implementation" siempre que exista (tiene todos los componentes con props)
-  const filteredStories = stories.filter(
-    (story) => story.name !== 'default' || story.name === 'implementation'
+  // ⚠️ PERO: Incluir TODAS las historias (incluyendo "implementation" y otras específicas)
+  // Solo filtrar "default" si hay otras historias disponibles
+  const hasImplementation = stories.some((s) => s.name === 'implementation');
+  const hasOtherStories = stories.some(
+    (s) => s.name !== 'default' && s.name !== 'implementation'
   );
 
+  let filteredStories: StorybookStory[];
+
+  if (hasOtherStories || hasImplementation) {
+    // Si hay otras historias o "implementation", filtrar "default"
+    filteredStories = stories.filter((story) => story.name !== 'default');
+    console.log(
+      `   ✅ Filtrando "default" porque hay ${filteredStories.length} otras historias disponibles`
+    );
+  } else {
+    // Si solo hay "default", incluirla (mejor que nada)
+    filteredStories = stories;
+    console.log(`   ⚠️ Solo hay historia "default" disponible, incluyéndola`);
+  }
+
   // ⚠️ CRÍTICO: Si hay historia "implementation", priorizarla
-  const hasImplementation = filteredStories.some(
-    (s) => s.name === 'implementation'
-  );
   if (hasImplementation) {
     console.log(
       `   ✅ Historia "implementation" encontrada en index.json, será priorizada`
     );
   }
 
-  // Si no hay historias específicas (excepto "implementation"), crear historias basadas en funcionalidades
-  if (
-    filteredStories.length === 0 ||
-    (filteredStories.length === 1 && filteredStories[0].name === 'default')
-  ) {
+  // Si no hay historias específicas, crear historias basadas en funcionalidades
+  if (filteredStories.length === 0) {
     return await createFunctionalStories(componentId);
   }
 
