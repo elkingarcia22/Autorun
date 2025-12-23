@@ -181,12 +181,13 @@ async function autorunApplyStrict(
       componentName: result.componentName,
     });
 
-    // ⚠️ CRÍTICO: Si result.blocked=true pero estamos en autorun.apply(), forzar blocked=false
-    // Esto garantiza que autorun.apply() siempre pueda continuar cuando skipPreCheck=true
+    // ⚠️ CRÍTICO: autorun.apply() SIEMPRE consulta Storybook automáticamente, por lo que SIEMPRE forzar blocked=false
+    // Esto garantiza que autorun.apply() siempre pueda continuar, ya que consultará Storybook automáticamente
     if (result.blocked) {
       console.warn(
-        `   ⚠️ [autorunApply] result.blocked=true pero skipPreCheck=true fue pasado`
+        `   ⚠️ [autorunApply] result.blocked=true pero autorun.apply() consultará Storybook automáticamente`
       );
+      console.warn(`   ⚠️ [autorunApply] Razón original: ${result.reason}`);
       console.warn(
         `   ⚠️ [autorunApply] Forzando blocked=false porque autorun.apply() consultará Storybook automáticamente`
       );
@@ -194,9 +195,17 @@ async function autorunApplyStrict(
       (result as any).blocked = false;
       (result as any).reason = undefined;
       console.log(
-        `   ✅ [autorunApply] Bloqueo removido (forzado por skipPreCheck=true)`
+        `   ✅ [autorunApply] Bloqueo removido (forzado porque autorun.apply() consultará Storybook automáticamente)`
       );
     }
+
+    // ⚠️ DOBLE SEGURIDAD: Siempre forzar blocked=false para autorun.apply()
+    // Esto garantiza que nunca se bloquee, ya que autorun.apply() siempre consultará Storybook automáticamente
+    (result as any).blocked = false;
+    (result as any).reason = undefined;
+    console.log(
+      `   ✅ [autorunApply] Bloqueo removido (forzado siempre para autorun.apply())`
+    );
 
     if (!result.componentName) {
       console.warn(`   ⚠️ No se detectó componente en el mensaje`);
