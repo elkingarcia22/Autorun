@@ -115,6 +115,9 @@ export class AddonOrchestrator {
   ): Promise<PreparationPhaseResult> {
     console.log(`\n🔧 [Addon Orchestrator] Ejecutando fase de preparación...`);
     console.log(`   Componente: ${componentName} (${componentId})`);
+    console.log(
+      `   🔍 [executePreparationPhase] autoMarkSteps=${autoMarkSteps} (tipo: ${typeof autoMarkSteps}, valor booleano: ${Boolean(autoMarkSteps)})`
+    );
 
     const result: PreparationPhaseResult = {
       canImplement: { allowed: true },
@@ -123,19 +126,13 @@ export class AddonOrchestrator {
     try {
       const hub = await this.getHub();
 
-      // 1. Pre-Implementation Check
-      console.log(`   [1/2] Verificando con Pre-Implementation Check...`);
-      console.log(
-        `   🔍 [executePreparationPhase] autoMarkSteps=${autoMarkSteps} (tipo: ${typeof autoMarkSteps}, valor booleano: ${Boolean(autoMarkSteps)})`
-      );
-      
-      // ⚠️ CRÍTICO: Si autoMarkSteps=true, saltar verificación completamente ANTES de obtener el add-on
+      // ⚠️ CRÍTICO: Si autoMarkSteps=true, saltar verificación completamente ANTES de cualquier otra cosa
       // Esto garantiza que autorun.apply() siempre pueda continuar cuando autoMarkSteps=true
       if (autoMarkSteps === true) {
         console.log(
           `   ✅ [executePreparationPhase] autoMarkSteps=true detectado, saltando Pre-Implementation Check completamente`
         );
-        
+
         const preCheckAddon = hub.getAddon('pre-implementation-check');
         if (preCheckAddon) {
           // Marcar pasos automáticamente
@@ -161,7 +158,7 @@ export class AddonOrchestrator {
             );
           }
         }
-        
+
         // Permitir implementación directamente SIN verificar canImplement
         result.canImplement = {
           allowed: true,
@@ -178,6 +175,7 @@ export class AddonOrchestrator {
         );
       } else {
         // Verificación normal cuando autoMarkSteps=false o undefined
+        console.log(`   [1/2] Verificando con Pre-Implementation Check...`);
         const preCheckAddon = hub.getAddon('pre-implementation-check');
         if (preCheckAddon && preCheckAddon.isActive()) {
           try {
@@ -210,40 +208,36 @@ export class AddonOrchestrator {
               `   ⚠️ Error en Pre-Implementation Check: ${error.message}`
             );
           }
+        } else {
+          console.log(
+            `   ⚠️ Pre-Implementation Check no está activo, saltando verificación`
+          );
         }
       }
 
-          // Obtener plan basado en historias (solo si está permitido)
-          if (result.canImplement.allowed) {
-            const services = preCheckAddon.getServices();
-            if (services && services.getOrCreateStoryBasedPlan) {
-              try {
-                result.plan = await services.getOrCreateStoryBasedPlan(
-                  componentName,
-                  componentId
-                );
-                if (result.plan) {
-                  console.log(
-                    `   ✅ Plan basado en historias obtenido: ${result.plan.totalSteps} historias`
-                  );
-                }
-              } catch (error: any) {
-                console.warn(
-                  `   ⚠️ No se pudo obtener plan basado en historias: ${error.message}`
+      // Obtener plan basado en historias (solo si está permitido)
+      if (result.canImplement.allowed) {
+        const preCheckAddon = hub.getAddon('pre-implementation-check');
+        if (preCheckAddon) {
+          const services = preCheckAddon.getServices();
+          if (services && services.getOrCreateStoryBasedPlan) {
+            try {
+              result.plan = await services.getOrCreateStoryBasedPlan(
+                componentName,
+                componentId
+              );
+              if (result.plan) {
+                console.log(
+                  `   ✅ Plan basado en historias obtenido: ${result.plan.totalSteps} historias`
                 );
               }
+            } catch (error: any) {
+              console.warn(
+                `   ⚠️ No se pudo obtener plan basado en historias: ${error.message}`
+              );
             }
           }
-        } catch (error: any) {
-          console.error(
-            `   ❌ Error en Pre-Implementation Check: ${error.message}`
-          );
-          // No bloquear si hay error, pero registrar
         }
-      } else {
-        console.log(
-          `   ⚠️ Pre-Implementation Check no está activo, saltando verificación`
-        );
       }
 
       // 2. Storybook Add-on
