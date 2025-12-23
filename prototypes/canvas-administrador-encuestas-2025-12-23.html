@@ -1351,6 +1351,8 @@
                         if (newContainer) {
                             // SIEMPRE re-inicializar los RadioButtons después de updateContent
                             console.log('🔄 [POC RadioButton] Re-inicializando RadioButtons después de updateContent');
+                            // Limpiar contenedor antes de recrear
+                            newContainer.innerHTML = '';
                             setTimeout(() => {
                                 initRadioButtons();
                             }, 200);
