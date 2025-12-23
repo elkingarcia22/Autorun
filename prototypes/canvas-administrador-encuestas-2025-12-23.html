@@ -2301,23 +2301,30 @@
   function openFilterDrawer() {
     console.log('🔍 Abriendo drawer de filtros...');
     
-    // Verificar que createDrawer esté disponible
-    if (!window.createDrawer) {
-      console.error('❌ window.createDrawer no está disponible');
+    // Verificar que createDrawer esté disponible (puede estar en window.createDrawer o window.UBITS.Drawer.create)
+    let createDrawerFn = window.createDrawer;
+    if (!createDrawerFn && window.UBITS && window.UBITS.Drawer && window.UBITS.Drawer.create) {
+      createDrawerFn = window.UBITS.Drawer.create;
+    }
+    
+    if (!createDrawerFn) {
+      console.error('❌ createDrawer no está disponible');
+      console.log('🔍 Verificando APIs disponibles:', {
+        'window.createDrawer': typeof window.createDrawer,
+        'window.UBITS': typeof window.UBITS,
+        'window.UBITS.Drawer': window.UBITS ? typeof window.UBITS.Drawer : 'N/A'
+      });
       // Intentar esperar un poco más
       setTimeout(function() {
-        if (window.createDrawer) {
-          openFilterDrawer();
-        } else {
-          console.error('❌ window.createDrawer aún no está disponible después de esperar');
-        }
-      }, 500);
+        openFilterDrawer();
+      }, 1000);
       return;
     }
 
     // Crear drawer con filtros
     try {
-      const drawerInstance = window.createDrawer({
+      console.log('✅ Creando drawer con createDrawer...');
+      const drawerInstance = createDrawerFn({
         title: 'Filtros',
         width: 40,
         bodyContent: `
