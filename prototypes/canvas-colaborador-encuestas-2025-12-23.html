@@ -2375,16 +2375,63 @@
               if (target) {
                 target.insertAdjacentHTML('beforeend', comp.html);
                 
-                // Re-agregar event listeners
+                // Re-agregar event listeners con selectores específicos por componente
                 setTimeout(() => {
                   const restored = document.getElementById(comp.containerId);
                   if (restored && comp.handlers) {
-                    Object.keys(comp.handlers).forEach(eventName => {
-                      const elements = restored.querySelectorAll('[data-component="' + comp.componentId + '"]');
-                      elements.forEach(el => {
-                        el.addEventListener(eventName, comp.handlers[eventName]);
+                    // Manejar componentes específicos
+                    if (comp.componentId === 'radio-button') {
+                      // RadioButton: listeners en .ubits-radio-button__input
+                      const inputs = restored.querySelectorAll('.ubits-radio-button__input');
+                      inputs.forEach(input => {
+                        if (comp.handlers.onChange || comp.handlers.change) {
+                          input.addEventListener('change', comp.handlers.onChange || comp.handlers.change);
+                        }
+                        if (comp.handlers.onClick || comp.handlers.click) {
+                          input.addEventListener('click', comp.handlers.onClick || comp.handlers.click);
+                        }
                       });
-                    });
+                      // También agregar listeners a los labels
+                      const labels = restored.querySelectorAll('.ubits-radio-button');
+                      labels.forEach(label => {
+                        if (comp.handlers.onLabelClick || comp.handlers.labelClick) {
+                          label.addEventListener('click', comp.handlers.onLabelClick || comp.handlers.labelClick);
+                        }
+                      });
+                    } else if (comp.componentId === 'button') {
+                      // Button: listeners en .ubits-button
+                      const buttons = restored.querySelectorAll('.ubits-button');
+                      buttons.forEach(button => {
+                        if (comp.handlers.onClick || comp.handlers.click) {
+                          button.addEventListener('click', comp.handlers.onClick || comp.handlers.click);
+                        }
+                      });
+                    } else if (comp.componentId === 'checkbox') {
+                      // Checkbox: listeners en .ubits-checkbox__input
+                      const inputs = restored.querySelectorAll('.ubits-checkbox__input');
+                      inputs.forEach(input => {
+                        if (comp.handlers.onChange || comp.handlers.change) {
+                          input.addEventListener('change', comp.handlers.onChange || comp.handlers.change);
+                        }
+                      });
+                    } else {
+                      // Lógica genérica para otros componentes
+                      Object.keys(comp.handlers).forEach(eventName => {
+                        const normalizedEventName = eventName.replace(/^on/, '').toLowerCase();
+                        const elements = restored.querySelectorAll('[data-component="' + comp.componentId + '"]');
+                        if (elements.length === 0) {
+                          // Si no hay elementos con data-component, buscar en todo el contenedor
+                          const allElements = restored.querySelectorAll('*');
+                          allElements.forEach(el => {
+                            el.addEventListener(normalizedEventName, comp.handlers[eventName]);
+                          });
+                        } else {
+                          elements.forEach(el => {
+                            el.addEventListener(normalizedEventName, comp.handlers[eventName]);
+                          });
+                        }
+                      });
+                    }
                   }
                 }, 100);
               }
