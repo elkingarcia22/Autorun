@@ -2493,12 +2493,18 @@
     }
     
     // ⚠️ CRÍTICO: Buscar contenedores DENTRO del drawer específicamente
+    // Usar IDs únicos con timestamp para evitar conflictos
+    const uniqueId1 = 'filter-input-1-container-' + Date.now();
+    const uniqueId2 = 'filter-input-2-container-' + Date.now();
+    
     const container1 = drawer.querySelector('#filter-input-1-container');
     if (container1 && container1.children.length === 0) {
+      // ⚠️ CRÍTICO: Cambiar el ID del contenedor a uno único antes de crear el input
+      container1.id = uniqueId1;
       try {
-        console.log('🔍 Creando Input 1 en contenedor dentro del drawer...');
+        console.log('🔍 Creando Input 1 en contenedor dentro del drawer (ID único:', uniqueId1 + ')...');
         createInputFn({
-          containerId: 'filter-input-1-container',
+          containerId: uniqueId1,
           label: 'Filtro 1',
           placeholder: 'Buscar...',
           type: 'text',
@@ -2509,6 +2515,8 @@
         console.log('✅ Input 1 creado correctamente');
       } catch (error) {
         console.error('❌ Error creando Input 1:', error);
+        // Restaurar ID original en caso de error
+        container1.id = 'filter-input-1-container';
       }
     } else if (!container1) {
       console.warn('⚠️ Contenedor filter-input-1-container no encontrado dentro del drawer');
@@ -2519,10 +2527,12 @@
     // Crear Input 2
     const container2 = drawer.querySelector('#filter-input-2-container');
     if (container2 && container2.children.length === 0) {
+      // ⚠️ CRÍTICO: Cambiar el ID del contenedor a uno único antes de crear el input
+      container2.id = uniqueId2;
       try {
-        console.log('🔍 Creando Input 2 en contenedor dentro del drawer...');
+        console.log('🔍 Creando Input 2 en contenedor dentro del drawer (ID único:', uniqueId2 + ')...');
         createInputFn({
-          containerId: 'filter-input-2-container',
+          containerId: uniqueId2,
           label: 'Filtro 2',
           placeholder: 'Buscar...',
           type: 'text',
@@ -2533,6 +2543,8 @@
         console.log('✅ Input 2 creado correctamente');
       } catch (error) {
         console.error('❌ Error creando Input 2:', error);
+        // Restaurar ID original en caso de error
+        container2.id = 'filter-input-2-container';
       }
     } else if (!container2) {
       console.warn('⚠️ Contenedor filter-input-2-container no encontrado dentro del drawer');
