@@ -69,13 +69,35 @@ export async function extractExactCodeFromStorybookWithBrowser(
   }
 
   // 2. ⚠️ NUEVO: Intentar múltiples fuentes en orden de prioridad
-  // Prioridad 1: URL de la historia directamente (más confiable)
-  // Prioridad 2: Código fuente local
+  // Prioridad 1: Código fuente local (MÁS CONFIABLE - no requiere fetch)
+  // Prioridad 2: URL de la historia directamente
   // Prioridad 3: Docs (requiere Browser MCP)
 
   let codeFromTab: { html: string; js?: string } | null = null;
 
-  // INTENTO 1: Extraer desde URL de la historia directamente
+  // INTENTO 1: Extraer desde código fuente local (MÁS CONFIABLE)
+  console.log(`   📋 Intentando extraer desde código fuente local...`);
+  try {
+    const { getSourceCode } = await import('./storybookExactCodeExtractor.js');
+    const sourceCode = await getSourceCode(componentId);
+
+    if (sourceCode) {
+      // Extraer código de la historia específica desde el código fuente
+      const storyCode = extractStoryCodeFromSource(sourceCode, finalStoryName);
+      if (storyCode) {
+        codeFromTab = { html: storyCode, js: undefined };
+        console.log(
+          `   ✅ Código obtenido desde código fuente: ${storyCode.length} caracteres`
+        );
+      }
+    }
+  } catch (sourceError: any) {
+    console.warn(
+      `   ⚠️ No se pudo obtener código desde código fuente: ${sourceError.message}`
+    );
+  }
+
+  // INTENTO 2: Extraer desde URL de la historia directamente
   const storyUrl = `${activeConfig.url}/?path=/story/${componentId}--${finalStoryName}`;
   console.log(`   📚 Intentando extraer desde URL de historia: ${storyUrl}`);
 
@@ -122,35 +144,6 @@ export async function extractExactCodeFromStorybookWithBrowser(
     console.warn(
       `   ⚠️ Error obteniendo HTML de historia: ${fetchError.message}`
     );
-  }
-
-  // INTENTO 2: Extraer desde código fuente local (más confiable)
-  if (!codeFromTab || !codeFromTab.html) {
-    console.log(`   📋 Intentando extraer desde código fuente local...`);
-    try {
-      const { getSourceCode } = await import(
-        './storybookExactCodeExtractor.js'
-      );
-      const sourceCode = await getSourceCode(componentId);
-
-      if (sourceCode) {
-        // Extraer código de la historia específica desde el código fuente
-        const storyCode = extractStoryCodeFromSource(
-          sourceCode,
-          finalStoryName
-        );
-        if (storyCode) {
-          codeFromTab = { html: storyCode, js: undefined };
-          console.log(
-            `   ✅ Código obtenido desde código fuente: ${storyCode.length} caracteres`
-          );
-        }
-      }
-    } catch (sourceError: any) {
-      console.warn(
-        `   ⚠️ No se pudo obtener código desde código fuente: ${sourceError.message}`
-      );
-    }
   }
 
   // INTENTO 3: Intentar desde Docs (último recurso, puede requerir Browser MCP)
