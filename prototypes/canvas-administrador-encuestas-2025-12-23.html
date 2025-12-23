@@ -846,24 +846,6 @@
   background: var(--ubits-bg-2);
   border-radius: var(--ubits-border-radius-md);
 ">
-  <button 
-    id="filter-button"
-    class="ubits-button ubits-button--secondary ubits-button--md"
-    type="button"
-    aria-label="Abrir filtros"
-    title="Filtros"
-    style="
-      width: 40px;
-      height: 40px;
-      min-width: 40px;
-      padding: 0;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-    "
-  >
-    <i class="far fa-filter"></i>
-  </button>
 </div>
 <!-- /AUTORUN -->
 
@@ -899,9 +881,6 @@
     
     <!-- UBITS Components System -->
     <!-- Los componentes se cargan dinámicamente a través de components-loader.js -->
-    <!-- ⚠️ CRÍTICO: Cargar scripts de Input y Drawer explícitamente -->
-    <script src="https://ubits-storybook10.vercel.app/components/input/dist/input.umd.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
-    <script src="https://ubits-storybook10.vercel.app/components/drawer/dist/drawer.umd.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
     
     <script>
         // ========================================
@@ -2335,10 +2314,6 @@
           // Restaurar componentes después
           setTimeout(() => {
             window.AUTORUN_PRESERVE_COMPONENTS.restoreAll();
-            // ⚠️ CRÍTICO: Reinicializar botón de filtro después de restaurar contenido
-            setTimeout(() => {
-              initFilterButton();
-            }, 100);
           }, 500);
           
           return result;
