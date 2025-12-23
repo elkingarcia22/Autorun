@@ -2266,5 +2266,120 @@
       }
     })();
   </script>
+
+  <!-- ⭐ PRUEBA: Implementación de Botón + Modal usando sistema automático -->
+  <script>
+    (function() {
+      let modalInstance = null;
+
+      // Handler para abrir el modal
+      function handleOpenModal() {
+        console.log('🔘 [Prueba Button+Modal] Botón clickeado, abriendo modal...');
+        
+        // Verificar que Modal esté disponible
+        if (!window.UBITS || !window.UBITS.Modal || !window.UBITS.Modal.create) {
+          console.error('❌ [Prueba Button+Modal] Modal no disponible');
+          setTimeout(handleOpenModal, 100);
+          return;
+        }
+
+        // Crear modal si no existe
+        if (!modalInstance) {
+          modalInstance = window.UBITS.Modal.create({
+            containerId: 'modal-container',
+            title: 'Modal de Prueba',
+            bodyContent: `
+              <p class="ubits-body-md-regular">Este es un modal de prueba implementado usando el sistema automático de preservación.</p>
+              <p class="ubits-body-md-regular" style="margin-top: 16px;">El sistema automáticamente preserva este modal incluso cuando ContentManager.updateContent() limpia el contenido.</p>
+              <ul style="margin-top: 16px; padding-left: 24px;">
+                <li class="ubits-body-md-regular">✅ Botón preservado automáticamente</li>
+                <li class="ubits-body-md-regular">✅ Modal preservado automáticamente</li>
+                <li class="ubits-body-md-regular">✅ Event listeners re-agregados automáticamente</li>
+              </ul>
+            `,
+            size: 'md',
+            footerButtons: {
+              secondary: {
+                label: 'Cerrar',
+                onClick: function() {
+                  console.log('🔘 [Prueba Button+Modal] Modal cerrado desde botón');
+                  if (modalInstance && modalInstance.close) {
+                    modalInstance.close();
+                  }
+                }
+              },
+              primary: {
+                label: 'Aceptar',
+                onClick: function() {
+                  console.log('🔘 [Prueba Button+Modal] Modal aceptado');
+                  alert('¡Modal aceptado! El sistema automático de preservación funciona correctamente.');
+                  if (modalInstance && modalInstance.close) {
+                    modalInstance.close();
+                  }
+                }
+              }
+            },
+            onClose: function() {
+              console.log('🔘 [Prueba Button+Modal] Modal cerrado');
+            },
+            closeOnOverlayClick: true
+          });
+        }
+
+        // Abrir el modal
+        if (modalInstance && modalInstance.open) {
+          modalInstance.open();
+          console.log('✅ [Prueba Button+Modal] Modal abierto');
+        } else {
+          console.error('❌ [Prueba Button+Modal] No se pudo abrir el modal');
+        }
+      }
+
+      function initButtonAndModal() {
+        // Verificar que Button esté disponible
+        if (!window.UBITS || !window.UBITS.Button || !window.UBITS.Button.create) {
+          console.log('⏳ [Prueba Button+Modal] Esperando Button...');
+          setTimeout(initButtonAndModal, 100);
+          return;
+        }
+
+        console.log('🚀 [Prueba Button+Modal] Inicializando botón y modal...');
+
+        // 1. Registrar componentes para preservación automática
+        window.AUTORUN_PRESERVE_COMPONENTS.register('button', 'button-open-modal-container', {
+          onClick: handleOpenModal
+        });
+
+        window.AUTORUN_PRESERVE_COMPONENTS.register('modal', 'modal-container', {
+          // Los handlers del modal se manejan internamente por el componente
+        });
+
+        // 2. Crear el botón
+        try {
+          const buttonResult = window.UBITS.Button.create({
+            containerId: 'button-open-modal-container',
+            variant: 'primary',
+            size: 'md',
+            text: 'Abrir Modal',
+            icon: 'plus',
+            iconPosition: 'left',
+            onClick: handleOpenModal
+          });
+
+          console.log('✅ [Prueba Button+Modal] Botón creado:', buttonResult);
+        } catch (error) {
+          console.error('❌ [Prueba Button+Modal] Error al crear botón:', error);
+        }
+      }
+
+      // Inicializar cuando el DOM esté listo
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initButtonAndModal);
+      } else {
+        // Esperar un poco para que los componentes UBITS se carguen
+        setTimeout(initButtonAndModal, 500);
+      }
+    })();
+  </script>
 </body>
 </html>
