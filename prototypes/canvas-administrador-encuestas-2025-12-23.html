@@ -2303,5 +2303,80 @@
     })();
   </script>
 <!-- AUTORUN:ANCHOR:SCRIPTS -->
+<script>
+  // Botón de filtro que abre drawer
+  document.addEventListener('DOMContentLoaded', function() {
+    const filterButton = document.getElementById('filter-button');
+    if (filterButton) {
+      filterButton.addEventListener('click', function() {
+        if (window.createDrawer) {
+          window.createDrawer({
+            title: 'Filtros',
+            width: 40,
+            bodyContent: `
+              <div style="padding: var(--ubits-spacing-lg);">
+                <div style="display: flex; flex-direction: column; gap: var(--ubits-spacing-md);">
+                  <div style="display: flex; flex-direction: column; gap: var(--ubits-spacing-xs);">
+                    <label style="color: var(--ubits-fg-1-medium); font-size: 12px;">Filtro 1</label>
+                    <input type="text" placeholder="Buscar..." style="
+                      padding: var(--ubits-spacing-sm);
+                      border: 1px solid var(--ubits-border-1);
+                      border-radius: var(--ubits-border-radius-sm);
+                      font-size: 14px;
+                    " />
+                  </div>
+                  <div style="display: flex; flex-direction: column; gap: var(--ubits-spacing-xs);">
+                    <label style="color: var(--ubits-fg-1-medium); font-size: 12px;">Filtro 2</label>
+                    <input type="text" placeholder="Buscar..." style="
+                      padding: var(--ubits-spacing-sm);
+                      border: 1px solid var(--ubits-border-1);
+                      border-radius: var(--ubits-border-radius-sm);
+                      font-size: 14px;
+                    " />
+                  </div>
+                </div>
+              </div>
+            `,
+            footerButtons: {
+              primary: {
+                enabled: true,
+                label: 'Aplicar',
+                onClick: function() {
+                  console.log('Filtros aplicados');
+                  // Cerrar drawer después de aplicar
+                  if (window.createDrawer) {
+                    const drawerInstance = window.createDrawer.getLastInstance?.();
+                    if (drawerInstance && drawerInstance.close) {
+                      drawerInstance.close();
+                    }
+                  }
+                }
+              },
+              secondary: {
+                enabled: true,
+                label: 'Limpiar',
+                onClick: function() {
+                  console.log('Filtros limpiados');
+                  // Limpiar inputs
+                  const drawer = document.querySelector('.ubits-drawer');
+                  if (drawer) {
+                    const inputs = drawer.querySelectorAll('input');
+                    inputs.forEach(input => input.value = '');
+                  }
+                }
+              }
+            },
+            closeOnOverlayClick: true,
+            onClose: function() {
+              console.log('Drawer de filtros cerrado');
+            }
+          });
+        } else {
+          console.warn('⚠️ window.createDrawer no está disponible');
+        }
+      });
+    }
+  });
+</script>
 </body>
 </html>
