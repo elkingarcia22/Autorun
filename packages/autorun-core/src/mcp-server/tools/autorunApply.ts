@@ -100,52 +100,53 @@ export async function autorunApply(
 async function autorunApplyStrict(
   input: AutorunApplyInput
 ): Promise<AutorunApplyOutput> {
+  // ========================================
+  // FASE 0: DESACTIVAR TEMPORALMENTE PRE-IMPLEMENTATION CHECK PARA autorun.apply()
+  // ⚠️ CRÍTICO: Hacer esto ANTES de cualquier otra cosa para evitar bloqueos
+  // ========================================
+  // ⚠️ CRÍTICO: autorun.apply() SIEMPRE consulta Storybook automáticamente,
+  // por lo que NO debe ser bloqueado por Pre-Implementation Check
+  console.log(
+    `\n🔧 [Autorun MCP] FASE 0: DESACTIVANDO PRE-IMPLEMENTATION CHECK (ANTES DE TODO)`
+  );
+  let preCheckAddonOriginalState: boolean | null = null;
+  let preCheckAddon: any = null;
+  try {
+    const hub = await getAutorunHub();
+    preCheckAddon = hub.getAddon('pre-implementation-check');
+    if (preCheckAddon) {
+      preCheckAddonOriginalState = preCheckAddon.isActive();
+      // Desactivar temporalmente el add-on usando el método oficial
+      if (preCheckAddonOriginalState) {
+        console.log(
+          `   ⚠️ [autorunApply] Desactivando Pre-Implementation Check temporalmente (estado original: activo)`
+        );
+        await preCheckAddon.deactivate();
+        console.log(
+          `   ✅ [autorunApply] Pre-Implementation Check desactivado temporalmente (isActive=${preCheckAddon.isActive()})`
+        );
+      } else {
+        console.log(
+          `   ℹ️ [autorunApply] Pre-Implementation Check ya estaba desactivado`
+        );
+      }
+    } else {
+      console.log(
+        `   ℹ️ [autorunApply] Pre-Implementation Check add-on no encontrado`
+      );
+    }
+  } catch (error: any) {
+    console.warn(
+      `   ⚠️ Error desactivando Pre-Implementation Check: ${error.message}`
+    );
+  }
+
   const errors: string[] = [];
   const warnings: string[] = [];
   const filesWritten: string[] = [];
   const orchestrator = new AddonOrchestrator();
 
   try {
-    // ========================================
-    // FASE 0: DESACTIVAR TEMPORALMENTE PRE-IMPLEMENTATION CHECK PARA autorun.apply()
-    // ========================================
-    // ⚠️ CRÍTICO: autorun.apply() SIEMPRE consulta Storybook automáticamente,
-    // por lo que NO debe ser bloqueado por Pre-Implementation Check
-    console.log(
-      `\n🔧 [Autorun MCP] FASE 0: DESACTIVANDO PRE-IMPLEMENTATION CHECK`
-    );
-    let preCheckAddonOriginalState: boolean | null = null;
-    let preCheckAddon: any = null;
-    try {
-      const hub = await getAutorunHub();
-      preCheckAddon = hub.getAddon('pre-implementation-check');
-      if (preCheckAddon) {
-        preCheckAddonOriginalState = preCheckAddon.isActive();
-        // Desactivar temporalmente el add-on usando el método oficial
-        if (preCheckAddonOriginalState) {
-          console.log(
-            `   ⚠️ [autorunApply] Desactivando Pre-Implementation Check temporalmente (estado original: activo)`
-          );
-          await preCheckAddon.deactivate();
-          console.log(
-            `   ✅ [autorunApply] Pre-Implementation Check desactivado temporalmente (isActive=${preCheckAddon.isActive()})`
-          );
-        } else {
-          console.log(
-            `   ℹ️ [autorunApply] Pre-Implementation Check ya estaba desactivado`
-          );
-        }
-      } else {
-        console.log(
-          `   ℹ️ [autorunApply] Pre-Implementation Check add-on no encontrado`
-        );
-      }
-    } catch (error: any) {
-      console.warn(
-        `   ⚠️ Error desactivando Pre-Implementation Check: ${error.message}`
-      );
-    }
-
     // ========================================
     // FASE 1: PREPARACIÓN (Add-ons de validación)
     // ========================================
