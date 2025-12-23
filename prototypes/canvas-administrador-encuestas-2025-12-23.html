@@ -2353,6 +2353,26 @@
       }
 
       function initButtonAndModal() {
+        // ⚠️ CRÍTICO: Verificar que el contenedor existe ANTES de intentar crear el botón
+        const container = document.getElementById('button-open-modal-container');
+        if (!container) {
+          console.log('⏳ [Prueba Button+Modal] Esperando contenedor...');
+          
+          // Limitar intentos a 100 (10 segundos máximo)
+          if (!initButtonAndModal.containerAttempts) {
+            initButtonAndModal.containerAttempts = 0;
+          }
+          initButtonAndModal.containerAttempts++;
+          
+          if (initButtonAndModal.containerAttempts > 100) {
+            console.error('❌ [Prueba Button+Modal] Timeout esperando contenedor. El contenedor puede haber sido eliminado por ContentManager.');
+            return;
+          }
+          
+          setTimeout(initButtonAndModal, 100);
+          return;
+        }
+
         // Verificar que Button esté disponible
         // Intentar múltiples formas de acceso a Button
         let ButtonAPI = null;
@@ -2379,13 +2399,13 @@
           });
           
           // Limitar intentos a 50 (5 segundos máximo)
-          if (!initButtonAndModal.attempts) {
-            initButtonAndModal.attempts = 0;
+          if (!initButtonAndModal.buttonAttempts) {
+            initButtonAndModal.buttonAttempts = 0;
           }
-          initButtonAndModal.attempts++;
+          initButtonAndModal.buttonAttempts++;
           
-          if (initButtonAndModal.attempts > 50) {
-            console.error('❌ [Prueba Button+Modal] Timeout esperando Button. Creando botón HTML manualmente...');
+          if (initButtonAndModal.buttonAttempts > 50) {
+            console.log('⚠️ [Prueba Button+Modal] Timeout esperando Button. Creando botón HTML manualmente...');
             createButtonManually();
             return;
           }
@@ -2396,17 +2416,20 @@
 
         console.log('🚀 [Prueba Button+Modal] Inicializando botón y modal...', {
           ButtonAPI: ButtonAPI,
-          'window.UBITS': window.UBITS
+          'window.UBITS': window.UBITS,
+          'containerExists': !!container
         });
 
         // 1. Registrar componentes para preservación automática
-        window.AUTORUN_PRESERVE_COMPONENTS.register('button', 'button-open-modal-container', {
-          onClick: handleOpenModal
-        });
+        if (window.AUTORUN_PRESERVE_COMPONENTS) {
+          window.AUTORUN_PRESERVE_COMPONENTS.register('button', 'button-open-modal-container', {
+            onClick: handleOpenModal
+          });
 
-        window.AUTORUN_PRESERVE_COMPONENTS.register('modal', 'modal-container', {
-          // Los handlers del modal se manejan internamente por el componente
-        });
+          window.AUTORUN_PRESERVE_COMPONENTS.register('modal', 'modal-container', {
+            // Los handlers del modal se manejan internamente por el componente
+          });
+        }
 
         // 2. Crear el botón
         try {
