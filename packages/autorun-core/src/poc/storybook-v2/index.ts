@@ -14,6 +14,14 @@ export {
 
 export { parseStoryCode, type ParsedStory } from './codeParser.js';
 
-// TODO: Exportar cuando estén implementados
-// export { generateHTMLFromStory, type GeneratedHTML } from './htmlGenerator.js';
-// export { implementComponentSimple, type ImplementationResult } from './simpleImplementation.js';
+export {
+  generateHTMLFromStory,
+  generateHTMLFromComponentFiles,
+  type GeneratedHTML,
+} from './htmlGenerator.js';
+
+export {
+  implementComponentSimple,
+  generateComponentHTML,
+  type ImplementationResult,
+} from './simpleImplementation.js';

@@ -95,30 +95,55 @@ function capitalizeFirst(str: string): string {
 }
 
 /**
- * Busca archivo .stories.ts para un componente
+ * Determina el tipo de archivo según su ruta
  */
-export async function findStoryFile(
+function getFileType(filePath: string): 'provider' | 'readme' | 'component' {
+  if (filePath.includes('README.md')) return 'readme';
+  if (filePath.includes('Provider.ts') || filePath.includes('Provider.js'))
+    return 'provider';
+  if (filePath.includes('Component.ts') || filePath.includes('Component.js'))
+    return 'component';
+  return 'provider'; // Default
+}
+
+/**
+ * Busca archivos del componente (Provider, README, Component)
+ */
+export async function findComponentFiles(
   componentId: string
-): Promise<StoryFile | null> {
-  console.log(`🔍 [File Extractor] Buscando archivo para: ${componentId}`);
+): Promise<ComponentFiles> {
+  console.log(`🔍 [File Extractor] Buscando archivos para: ${componentId}`);
 
   const possiblePaths = generatePossiblePaths(componentId);
   const projectRoot = process.cwd();
+  const result: ComponentFiles = { componentId };
 
   for (const relativePath of possiblePaths) {
     const fullPath = resolve(projectRoot, relativePath);
 
     try {
       if (existsSync(fullPath)) {
-        console.log(`   ✅ Archivo encontrado: ${relativePath}`);
+        const fileType = getFileType(relativePath);
         const content = await readFile(fullPath, 'utf-8');
 
-        return {
+        const file: StoryFile = {
           componentId,
           filePath: fullPath,
           content,
           found: true,
+          type: fileType,
         };
+
+        console.log(`   ✅ ${fileType} encontrado: ${relativePath}`);
+
+        // Guardar según tipo
+        if (fileType === 'provider' && !result.provider) {
+          result.provider = file;
+        } else if (fileType === 'readme' && !result.readme) {
+          result.readme = file;
+        } else if (fileType === 'component' && !result.component) {
+          result.component = file;
+        }
       }
     } catch (error: any) {
       // Continuar con siguiente ruta
@@ -126,10 +151,24 @@ export async function findStoryFile(
     }
   }
 
-  console.warn(`   ⚠️ Archivo no encontrado para: ${componentId}`);
-  console.warn(`   Rutas probadas: ${possiblePaths.slice(0, 5).join(', ')}...`);
+  if (!result.provider && !result.readme) {
+    console.warn(`   ⚠️ Archivos no encontrados para: ${componentId}`);
+    console.warn(
+      `   Rutas probadas: ${possiblePaths.slice(0, 5).join(', ')}...`
+    );
+  }
 
-  return null;
+  return result;
+}
+
+/**
+ * Busca archivo específico (mantiene compatibilidad)
+ */
+export async function findStoryFile(
+  componentId: string
+): Promise<StoryFile | null> {
+  const files = await findComponentFiles(componentId);
+  return files.provider || files.readme || null;
 }
 
 /**

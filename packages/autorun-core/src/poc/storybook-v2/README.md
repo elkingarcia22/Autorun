@@ -101,21 +101,39 @@ const result = await implementComponentSimple(
 
 ```bash
 # Ejecutar pruebas
-npm run test:poc-storybook-v2
+tsx scripts/test-poc-storybook-v2.ts
 
-# Probar componente específico
-npm run test:poc-storybook-v2 -- --component basicos-button
+# El script prueba:
+# - Button
+# - DataTable
+# - Modal
 ```
+
+**Salida esperada:**
+
+- ✅ Búsqueda de archivos (Provider, README)
+- ✅ Generación de HTML
+- ✅ Creación de archivos en `test-output/`
 
 ---
 
 ## 📊 Estado Actual
 
-- ✅ Estructura creada
-- 🚧 Extractor de archivos (en desarrollo)
-- 🚧 Parser de código (pendiente)
-- 🚧 Generador de HTML (pendiente)
-- 🚧 Integración (pendiente)
+- ✅ **Extractor de archivos** - Implementado
+  - Busca `*Provider.ts` (funciones de renderizado)
+  - Busca `README.md` (documentación con ejemplos)
+  - Busca `*Component.ts` (Web Components)
+- ✅ **Parser de código** - Implementado
+  - Parsea código de historias (para compatibilidad futura)
+  - Extrae props y imports
+- ✅ **Generador de HTML** - Implementado
+  - Genera HTML desde README (ejemplos)
+  - Genera HTML desde Provider (funciones de renderizado)
+  - Incluye dependencias (CSS, scripts)
+  - Genera HTML completo listo para usar
+- ✅ **Integración Simple** - Implementado
+  - `implementComponentSimple()` - Implementa componente completo
+  - `generateComponentHTML()` - Solo genera HTML sin escribir archivo
 
 ---
 
