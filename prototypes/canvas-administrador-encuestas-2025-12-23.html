@@ -1235,11 +1235,26 @@
                             // Recrear el bloque completo si no existe
                             console.log('🔄 [POC RadioButton] Recreando bloque completo después de updateContent');
                             
-                            // Buscar el widget-contenido-principal dentro del content-area
-                            const widgetContent = contentArea.querySelector('.widget-contenido-principal');
-                            if (widgetContent) {
+                            // Buscar cualquier contenedor dentro de content-area donde podamos agregar el bloque
+                            // Primero intentar .widget-contenido-principal, luego cualquier div dentro de content-area
+                            let targetContainer = contentArea.querySelector('.widget-contenido-principal');
+                            if (!targetContainer) {
+                                // Si no existe, buscar cualquier sección o div dentro de content-area
+                                targetContainer = contentArea.querySelector('.section-single') || 
+                                                 contentArea.querySelector('div[class*="widget"]') ||
+                                                 contentArea.querySelector('div:not(.header-section)');
+                            }
+                            
+                            // Si aún no encontramos nada, usar el content-area directamente
+                            if (!targetContainer) {
+                                targetContainer = contentArea;
+                            }
+                            
+                            if (targetContainer) {
+                                console.log('✅ [POC RadioButton] Contenedor objetivo encontrado:', targetContainer.className || targetContainer.tagName);
+                                
                                 // Recrear el bloque completo
-                                widgetContent.insertAdjacentHTML('beforeend', savedPocBlockHTML || `
+                                const pocBlockHTML = savedPocBlockHTML || `
                                     <div style="margin-top: 40px; padding: 24px; background: var(--modifiers-normal-color-light-bg-1, #ffffff); border-radius: 8px; border: 2px solid var(--ubits-border-color, #e0e0e0); min-height: 200px;">
                                         <h3 class="ubits-heading-h3" style="margin-bottom: 24px; color: var(--ubits-fg-1-high, #000000);">Ejemplo: RadioButton (POC Storybook V2)</h3>
                                         <div id="radiobutton-group-tipo" style="display: flex; flex-direction: column; gap: 16px; min-height: 100px; width: 100%;"></div>
@@ -1247,10 +1262,15 @@
                                             <strong>Debug:</strong> <span id="radiobutton-debug-text">Esperando inicialización...</span>
                                         </div>
                                     </div>
-                                `);
+                                `;
+                                
+                                targetContainer.insertAdjacentHTML('beforeend', pocBlockHTML);
                                 
                                 // Obtener el nuevo contenedor
                                 newContainer = document.getElementById('radiobutton-group-tipo');
+                                console.log('✅ [POC RadioButton] Bloque recreado, contenedor encontrado:', !!newContainer);
+                            } else {
+                                console.warn('⚠️ [POC RadioButton] No se encontró ningún contenedor objetivo dentro de .content-area');
                             }
                         }
                         
