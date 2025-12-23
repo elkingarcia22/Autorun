@@ -115,19 +115,20 @@ async function autorunApplyStrict(
       `\n🔧 [Autorun MCP] FASE 0: DESACTIVANDO PRE-IMPLEMENTATION CHECK`
     );
     let preCheckAddonOriginalState: boolean | null = null;
+    let preCheckAddon: any = null;
     try {
       const hub = await getAutorunHub();
-      const preCheckAddon = hub.getAddon('pre-implementation-check');
+      preCheckAddon = hub.getAddon('pre-implementation-check');
       if (preCheckAddon) {
         preCheckAddonOriginalState = preCheckAddon.isActive();
-        // Desactivar temporalmente el add-on
+        // Desactivar temporalmente el add-on usando el método oficial
         if (preCheckAddonOriginalState) {
           console.log(
             `   ⚠️ [autorunApply] Desactivando Pre-Implementation Check temporalmente (estado original: activo)`
           );
-          (preCheckAddon as any).active = false;
+          await preCheckAddon.deactivate();
           console.log(
-            `   ✅ [autorunApply] Pre-Implementation Check desactivado temporalmente`
+            `   ✅ [autorunApply] Pre-Implementation Check desactivado temporalmente (isActive=${preCheckAddon.isActive()})`
           );
         } else {
           console.log(
@@ -1063,19 +1064,15 @@ async function autorunApplyStrict(
     ];
 
     // ⚠️ CRÍTICO: Reactivar Pre-Implementation Check antes de retornar éxito
-    if (preCheckAddonOriginalState !== null) {
+    if (preCheckAddon && preCheckAddonOriginalState !== null && preCheckAddonOriginalState) {
       try {
-        const hub = await getAutorunHub();
-        const preCheckAddon = hub.getAddon('pre-implementation-check');
-        if (preCheckAddon && preCheckAddonOriginalState) {
-          console.log(
-            `   🔧 [autorunApply] Reactivando Pre-Implementation Check (estado original: activo)`
-          );
-          (preCheckAddon as any).active = true;
-          console.log(
-            `   ✅ [autorunApply] Pre-Implementation Check reactivado`
-          );
-        }
+        console.log(
+          `   🔧 [autorunApply] Reactivando Pre-Implementation Check (estado original: activo)`
+        );
+        await preCheckAddon.activate();
+        console.log(
+          `   ✅ [autorunApply] Pre-Implementation Check reactivado (isActive=${preCheckAddon.isActive()})`
+        );
       } catch (error: any) {
         console.warn(
           `   ⚠️ Error reactivando Pre-Implementation Check: ${error.message}`
@@ -1121,19 +1118,15 @@ async function autorunApplyStrict(
     };
   } catch (error: any) {
     // ⚠️ CRÍTICO: Reactivar Pre-Implementation Check antes de retornar error
-    if (preCheckAddonOriginalState !== null) {
+    if (preCheckAddon && preCheckAddonOriginalState !== null && preCheckAddonOriginalState) {
       try {
-        const hub = await getAutorunHub();
-        const preCheckAddon = hub.getAddon('pre-implementation-check');
-        if (preCheckAddon && preCheckAddonOriginalState) {
-          console.log(
-            `   🔧 [autorunApply] Reactivando Pre-Implementation Check después de error (estado original: activo)`
-          );
-          (preCheckAddon as any).active = true;
-          console.log(
-            `   ✅ [autorunApply] Pre-Implementation Check reactivado`
-          );
-        }
+        console.log(
+          `   🔧 [autorunApply] Reactivando Pre-Implementation Check después de error (estado original: activo)`
+        );
+        await preCheckAddon.activate();
+        console.log(
+          `   ✅ [autorunApply] Pre-Implementation Check reactivado (isActive=${preCheckAddon.isActive()})`
+        );
       } catch (reactivateError: any) {
         console.warn(
           `   ⚠️ Error reactivando Pre-Implementation Check: ${reactivateError.message}`
