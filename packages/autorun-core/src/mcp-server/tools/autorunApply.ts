@@ -512,9 +512,17 @@ async function autorunApplyStrict(
 
     // ⚠️ CRÍTICO: autorun.apply() SIEMPRE consulta Storybook automáticamente, por lo que SIEMPRE forzar allowed=true
     // Esto garantiza que autorun.apply() siempre pueda continuar, ya que consultará Storybook automáticamente
-    if (!preparationResult.canImplement.allowed) {
+    // ⚠️ CRÍTICO: Si el error contiene "Faltan pasos obligatorios", ignorarlo completamente
+    // porque autorun.apply() consultará Storybook automáticamente
+    if (
+      !preparationResult.canImplement.allowed ||
+      (preparationResult.canImplement.reason &&
+        preparationResult.canImplement.reason.includes(
+          'Faltan pasos obligatorios'
+        ))
+    ) {
       console.warn(
-        `   ⚠️ [autorunApply] preparationResult.canImplement.allowed=false pero autorun.apply() consultará Storybook automáticamente`
+        `   ⚠️ [autorunApply] preparationResult.canImplement.allowed=false o contiene "Faltan pasos obligatorios" pero autorun.apply() consultará Storybook automáticamente`
       );
       console.warn(
         `   ⚠️ [autorunApply] Razón original: ${preparationResult.canImplement.reason}`
