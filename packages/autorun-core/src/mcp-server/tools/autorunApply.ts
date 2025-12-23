@@ -112,19 +112,13 @@ async function autorunApplyStrict(
     console.log(`\n📋 [Autorun MCP] FASE 1: PREPARACIÓN`);
 
     // 1.1 Ejecutar handleUserMessage() (OBLIGATORIO)
-    // ✅ MEJORA: Establecer flag para indicar que estamos en modo autorun.apply()
-    console.log(`   [1.1] Ejecutando handleUserMessage()...`);
-    const { setAutorunApplyMode } = await import(
-      '../../helpers/executeOnMessageStart.js'
+    // ✅ MEJORA: Pasar skipPreCheck=true directamente para evitar problemas de módulo caching
+    console.log(
+      `   [1.1] Ejecutando handleUserMessage() con skipPreCheck=true...`
     );
-    setAutorunApplyMode(true);
-    let result;
-    try {
-      result = await handleUserMessage(input.message);
-    } finally {
-      // ✅ MEJORA: Restaurar flag después de usar handleUserMessage()
-      setAutorunApplyMode(false);
-    }
+    const result = await handleUserMessage(input.message, {
+      skipPreCheck: true,
+    });
 
     if (result.blocked) {
       console.error(`   ❌ Implementación bloqueada: ${result.reason}`);
