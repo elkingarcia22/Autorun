@@ -2596,8 +2596,11 @@
     clearBtn.textContent = 'Limpiar';
     clearBtn.className = 'ubits-button ubits-button--secondary';
     clearBtn.onclick = function() {
-      const inputs = body.querySelectorAll('input');
-      inputs.forEach(input => input.value = '');
+      // Limpiar inputs de UBITS
+      const input1 = document.querySelector('#filter-input-1-container .ubits-input__input');
+      const input2 = document.querySelector('#filter-input-2-container .ubits-input__input');
+      if (input1) input1.value = '';
+      if (input2) input2.value = '';
       console.log('🧹 Filtros limpiados');
     };
     
