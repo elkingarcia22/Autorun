@@ -157,17 +157,24 @@ export async function extractExactCodeFromStorybookWithBrowser(
 /**
  * Extrae código desde snapshot del Browser MCP
  *
- * ⚠️ Esta función debe ser llamada DESPUÉS de que el agente navegue a Storybook
- * y haga clic en la pestaña "Code"
+ * ⚠️ Esta función debe ser llamada DESPUÉS de que el agente navegue a Docs
+ * y el código se haya cargado dinámicamente
  */
 export async function extractCodeFromBrowserSnapshot(
   snapshot: any
 ): Promise<{ html: string; js?: string }> {
-  // Buscar código en el snapshot
-  // El snapshot contiene la estructura del DOM renderizado
+  // ✅ IMPLEMENTADO: Extraer código desde snapshot
+  const { extractCodeFromDocsSnapshot } = await import(
+    './extractCodeFromDocsSnapshot'
+  );
+  const result = extractCodeFromDocsSnapshot(snapshot);
 
-  // Por ahora, retornar código vacío (se implementará cuando tengamos acceso al snapshot)
-  console.warn(`   ⚠️ Extracción desde snapshot no implementada aún`);
+  if (result.found) {
+    console.log(`   ✅ Código extraído desde snapshot`);
+    return { html: result.html, js: result.js };
+  }
+
+  console.warn(`   ⚠️ No se encontró código en el snapshot`);
   return { html: '' };
 }
 
