@@ -280,21 +280,68 @@ export async function findImplementationStory(
       `   📚 Historias disponibles: ${stories.map((s) => s.name).join(', ')}`
     );
 
-    // Buscar historia "implementation" específicamente
-    const implementationStory = stories.find(
-      (s) =>
-        s.name === 'implementation' ||
-        s.name === 'implementation-copy-paste' ||
-        (s.name.toLowerCase().includes('implementation') &&
-          s.name.toLowerCase().includes('copy'))
-    );
+    // ⚠️ CRÍTICO: Buscar historia "implementation" específicamente
+    // Prioridad 1: Nombre exacto "implementation"
+    let implementationStory = stories.find((s) => s.name === 'implementation');
+
+    // Prioridad 2: Nombres que contengan "implementation"
+    if (!implementationStory) {
+      implementationStory = stories.find(
+        (s) =>
+          s.name.toLowerCase().includes('implementation') ||
+          s.name.toLowerCase().includes('copy-paste') ||
+          s.name.toLowerCase().includes('copy-paste')
+      );
+    }
+
+    // Prioridad 3: Buscar por ID completo (ej: "básicos-button--implementation")
+    if (!implementationStory) {
+      implementationStory = stories.find(
+        (s) => s.id === `${componentId}--implementation`
+      );
+    }
 
     if (implementationStory) {
       console.log(
-        `   ✅ Historia "implementation" encontrada: ${implementationStory.name}`
+        `   ✅ Historia "implementation" encontrada: ${implementationStory.name} (ID: ${implementationStory.id})`
       );
       return implementationStory.name;
     } else {
+      console.log(
+        `   ⚠️ Historia "implementation" no encontrada en ${stories.length} historias disponibles`
+      );
+      console.log(
+        `   📋 Intentando verificar directamente en Storybook si existe ${componentId}--implementation...`
+      );
+
+      // ⚠️ ÚLTIMO INTENTO: Verificar directamente si existe la historia "implementation"
+      // Construir URL y verificar si existe
+      try {
+        const { StorybookManager } = await import('./storybookManager.js');
+        const manager = StorybookManager.getInstance();
+        const activeConfig = await manager.getActiveConfig();
+
+        if (activeConfig) {
+          const implementationUrl = `${activeConfig.url}/?path=/story/${componentId}--implementation`;
+          console.log(`   🔍 Verificando URL: ${implementationUrl}`);
+
+          // Intentar fetch para verificar si existe
+          try {
+            const response = await fetch(implementationUrl, { method: 'HEAD' });
+            if (response.ok || response.status === 200) {
+              console.log(
+                `   ✅ URL de historia "implementation" existe, usando "implementation"`
+              );
+              return 'implementation';
+            }
+          } catch (fetchError) {
+            // Ignorar error de fetch, continuar con default
+          }
+        }
+      } catch (verifyError) {
+        // Ignorar error de verificación, continuar con default
+      }
+
       console.log(
         `   ⚠️ Historia "implementation" no encontrada, usando "default"`
       );
