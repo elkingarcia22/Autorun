@@ -1160,21 +1160,22 @@
                     const result = originalUpdateContent.call(this, section, subSection);
 
                     // Restaurar RadioButtons después de updateContent
-                    if (savedRadioButtons) {
-                        setTimeout(() => {
-                            const newContainer = document.getElementById('radiobutton-group-tipo');
-                            if (newContainer && !newContainer.children.length) {
+                    setTimeout(() => {
+                        const newContainer = document.getElementById('radiobutton-group-tipo');
+                        if (newContainer) {
+                            if (savedRadioButtons && !newContainer.children.length) {
                                 console.log('🔵 [POC RadioButton] Restaurando RadioButtons después de updateContent');
                                 newContainer.innerHTML = savedRadioButtons;
-                                
-                                // Re-inicializar los RadioButtons si es necesario
-                                setTimeout(initRadioButtons, 100);
                             }
-                        }, 100);
-                    } else {
-                        // Si no había RadioButtons guardados, inicializar después de updateContent
-                        setTimeout(initRadioButtons, 100);
-                    }
+                            
+                            // SIEMPRE re-inicializar los RadioButtons después de updateContent
+                            // Esto asegura que se creen correctamente con todos los estilos
+                            console.log('🔄 [POC RadioButton] Re-inicializando RadioButtons después de updateContent');
+                            initRadioButtons();
+                        } else {
+                            console.warn('⚠️ [POC RadioButton] Contenedor no encontrado después de updateContent');
+                        }
+                    }, 200);
 
                     return result;
                 };
