@@ -1713,11 +1713,8 @@
                         }
                     }
                     
-                    // Iniciar después de 2.5 segundos
-                    setTimeout(() => {
-                        ensureDataViewScriptLoaded();
-                        setTimeout(tryCreateDataView, 500);
-                    }, 2500);
+                    // Iniciar inmediatamente (las funciones ya están implementadas directamente en el HTML)
+                    setTimeout(tryCreateDataView, 100);
                     
                     // También escuchar evento para recrear DataView después de que ContentManager actualice el contenido
                     window.addEventListener('autorun:recreate-dataview', function() {
