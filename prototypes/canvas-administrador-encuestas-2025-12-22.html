@@ -2331,30 +2331,40 @@
         try {
           // Crear radio button usando HTML directo con clases UBITS
           // Según documentación: label: 'Activo', value: 'activo', name: 'estado-encuesta', size: 'md', checked: false
+          // ⚠️ ESTRUCTURA EXACTA DE STORYBOOK (RadioButtonProvider.ts)
           const radioContainer = document.createElement('label');
-          radioContainer.className = 'ubits-radio-button';
-          radioContainer.style.display = 'flex';
-          radioContainer.style.alignItems = 'center';
-          radioContainer.style.gap = '8px';
-          radioContainer.style.cursor = 'pointer';
+          // Clases exactas según Storybook: base + tamaño + estado
+          radioContainer.className = 'ubits-radio-button ubits-radio-button--md ubits-radio-button--default';
 
           const radioInput = document.createElement('input');
           radioInput.type = 'radio';
           radioInput.name = 'estado-encuesta';
           radioInput.value = 'activo';
-          radioInput.id = 'radio-activo-input';
+          radioInput.id = 'radio-estado-encuesta-activo'; // Patrón: radio-${name}-${value}
           radioInput.className = 'ubits-radio-button__input';
 
+          // Circle con aria-hidden (accesibilidad)
           const radioCircle = document.createElement('span');
           radioCircle.className = 'ubits-radio-button__circle';
+          radioCircle.setAttribute('aria-hidden', 'true');
+          // Dot interno (solo se muestra cuando está checked, pero lo creamos para estructura completa)
+          const radioDot = document.createElement('span');
+          radioDot.className = 'ubits-radio-button__dot';
+          radioCircle.appendChild(radioDot);
+
+          // Text content wrapper (estructura exacta de Storybook)
+          const textContent = document.createElement('div');
+          textContent.className = 'ubits-radio-button__text-content';
 
           const radioLabel = document.createElement('span');
           radioLabel.className = 'ubits-radio-button__label';
           radioLabel.textContent = 'Activo';
 
+          // Estructura exacta: input → circle → text-content (con label dentro)
+          textContent.appendChild(radioLabel);
           radioContainer.appendChild(radioInput);
           radioContainer.appendChild(radioCircle);
-          radioContainer.appendChild(radioLabel);
+          radioContainer.appendChild(textContent);
 
           // Agregar evento onChange
           radioInput.addEventListener('change', (event) => {
