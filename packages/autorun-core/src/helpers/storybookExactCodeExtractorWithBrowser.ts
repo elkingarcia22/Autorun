@@ -519,9 +519,8 @@ function extractStoryCodeFromSource(
     let storyCode = match[1].trim();
 
     // ⚠️ NUEVO: Buscar parameters.docs.source.code dentro de la historia
-    const sourceCodeInStory = storyCode.match(
-      /source:\s*\{[\s\S]*?code:\s*[`'"]([\s\S]*?)[`'"]/i
-    );
+    // Buscar específicamente code: `...` (template string con backticks)
+    const sourceCodeInStory = storyCode.match(/code:\s*`([\s\S]*?)`/);
     if (sourceCodeInStory && sourceCodeInStory[1]) {
       const code = sourceCodeInStory[1]
         .replace(/\\n/g, '\n')
@@ -532,7 +531,7 @@ function extractStoryCodeFromSource(
 
       if (code.length > 20) {
         console.log(
-          `   ✅ Código extraído desde parameters.docs.source.code dentro de la historia`
+          `   ✅ Código extraído desde parameters.docs.source.code dentro de la historia (${code.length} caracteres)`
         );
         return code;
       }
