@@ -1143,32 +1143,48 @@
                         // ⚠️ CRÍTICO: Agregar event listeners para manejar clics correctamente
                         const inputElement = radioElement.querySelector('.ubits-radio-button__input');
                         if (inputElement) {
-                            // Listener para cambio de estado
-                            inputElement.addEventListener('change', handleRadioButtonChange);
+                            console.log(`🔧 [POC RadioButton] Configurando event listeners para: ${options.label}`);
                             
-                            // Listener para clic en el input (asegurar que se active)
-                            inputElement.addEventListener('click', function(e) {
-                                e.stopPropagation();
-                                if (!this.checked) {
-                                    this.checked = true;
-                                    handleRadioButtonChange(e);
-                                }
+                            // Listener para cambio de estado (evento nativo del input)
+                            inputElement.addEventListener('change', function(e) {
+                                console.log(`🔄 [POC RadioButton] Evento 'change' disparado para: ${options.label}`);
+                                handleRadioButtonChange(e);
                             });
                             
-                            // Listener para clic en el label (activar el input)
-                            // NO usar preventDefault aquí - dejar que el comportamiento nativo del label funcione
+                            // Listener para clic en el input directamente
+                            inputElement.addEventListener('click', function(e) {
+                                console.log(`🖱️ [POC RadioButton] Click en input de: ${options.label}`);
+                                // El comportamiento nativo del input ya maneja el checked
+                                // Solo necesitamos actualizar visualmente
+                                setTimeout(() => {
+                                    handleRadioButtonChange({ target: this });
+                                }, 0);
+                            });
+                            
+                            // Listener para clic en el label (el label nativo activa el input automáticamente)
                             radioElement.addEventListener('click', function(e) {
-                                // El label nativo ya activa el input, solo necesitamos manejar el cambio visual
-                                // Esperar un momento para que el input se actualice
+                                console.log(`🖱️ [POC RadioButton] Click en label de: ${options.label}`);
+                                // El label nativo ya activa el input, esperar a que se actualice
                                 setTimeout(() => {
                                     if (inputElement && inputElement.checked) {
+                                        console.log(`✅ [POC RadioButton] Input marcado después del click: ${options.label}`);
                                         handleRadioButtonChange({ target: inputElement });
+                                    } else {
+                                        console.log(`⚠️ [POC RadioButton] Input NO marcado después del click: ${options.label}`);
                                     }
                                 }, 10);
                             });
                             
                             // Asegurar que el label tenga pointer-events habilitados
                             radioElement.style.pointerEvents = 'auto';
+                            radioElement.style.cursor = 'pointer';
+                            
+                            // Asegurar que el input también sea clickeable
+                            inputElement.style.cursor = 'pointer';
+                            
+                            console.log(`✅ [POC RadioButton] Event listeners configurados para: ${options.label}`);
+                        } else {
+                            console.warn(`⚠️ [POC RadioButton] Input NO encontrado para: ${options.label}`);
                         }
                         
                         console.log(`🔍 [POC RadioButton] Estilos inline aplicados`);
