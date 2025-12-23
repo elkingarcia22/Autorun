@@ -467,13 +467,23 @@ ${storyBasedPlan ? `\n📖 Plan basado en historias disponible. Implementar UNA 
         (global as any).__AUTORUN_APPLY_MODE__ === true) ||
       (typeof window !== 'undefined' &&
         (window as any).__AUTORUN_APPLY_MODE__ === true);
+
+    // ⚠️ CRÍTICO: También verificar stack trace para detectar llamadas desde autorun.apply()
+    const stackTrace = new Error().stack || '';
+    const isCalledFromAutorunApply =
+      stackTrace.includes('autorunApply') ||
+      stackTrace.includes('autorun.apply');
+
+    const isAutorunApplyModeFinal =
+      isAutorunApplyMode || isCalledFromAutorunApply;
+
     console.log(
-      `   🔍 [canImplement] Modo autorun.apply(): ${isAutorunApplyMode} (globalThis=${typeof globalThis !== 'undefined' ? (globalThis as any).__AUTORUN_APPLY_MODE__ : 'undefined'}, global=${typeof global !== 'undefined' ? (global as any).__AUTORUN_APPLY_MODE__ : 'undefined'})`
+      `   🔍 [canImplement] Modo autorun.apply(): ${isAutorunApplyModeFinal} (globalThis=${typeof globalThis !== 'undefined' ? (globalThis as any).__AUTORUN_APPLY_MODE__ : 'undefined'}, global=${typeof global !== 'undefined' ? (global as any).__AUTORUN_APPLY_MODE__ : 'undefined'}, stackTrace=${isCalledFromAutorunApply})`
     );
 
     // ⚠️ CRÍTICO: Si estamos en modo autorun.apply(), SIEMPRE permitir automáticamente
     // Esto garantiza que autorun.apply() nunca se bloquee
-    if (isAutorunApplyMode) {
+    if (isAutorunApplyModeFinal) {
       console.log(
         `   ✅ [canImplement] Modo autorun.apply() detectado, permitiendo implementación automáticamente`
       );
