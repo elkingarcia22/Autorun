@@ -1001,6 +1001,182 @@
                     tabbar: 'tab-bar-container'
                 });
                 
+                // Crear HeaderSection y DataTable después de que los componentes estén cargados
+                setTimeout(() => {
+                    // Crear HeaderSection
+                    if (window.UBITS && window.UBITS.HeaderSection) {
+                        const headerContainer = document.getElementById('header-section-container');
+                        if (headerContainer) {
+                            window.UBITS.HeaderSection.create({
+                                title: 'Encuestas',
+                                showCounter: true,
+                                counter: { displayed: 15, total: 15 },
+                                showPrimaryButton: true,
+                                primaryButtonText: 'Nueva encuesta',
+                                showSecondaryButtons: true,
+                                showSearchButton: true,
+                                showColumnSelectorButton: true
+                            }, 'header-section-container');
+                        }
+                    }
+                    
+                    // Crear DataTable con lista de encuestas simuladas
+                    if (window.UBITS && window.UBITS.DataTable) {
+                        const datatableContainer = document.getElementById('datatable-encuestas-container');
+                        if (datatableContainer) {
+                            // Datos simulados de encuestas
+                            const encuestasData = {
+                                columns: [
+                                    { id: 'nombre', label: 'Nombre de la encuesta', type: 'nombre' },
+                                    { id: 'fechaCreacion', label: 'Fecha de creación', type: 'fecha' },
+                                    { id: 'estado', label: 'Estado', type: 'estado' },
+                                    { id: 'respuestas', label: 'Respuestas', type: 'nombre' },
+                                    { id: 'fechaCierre', label: 'Fecha de cierre', type: 'fecha' }
+                                ],
+                                rows: [
+                                    {
+                                        id: '1',
+                                        nombre: 'Satisfacción del Cliente Q4 2024',
+                                        fechaCreacion: '2024-10-15',
+                                        estado: 'Activa',
+                                        respuestas: '245',
+                                        fechaCierre: '2024-12-31'
+                                    },
+                                    {
+                                        id: '2',
+                                        nombre: 'Evaluación de Desempeño Anual',
+                                        fechaCreacion: '2024-11-01',
+                                        estado: 'Activa',
+                                        respuestas: '180',
+                                        fechaCierre: '2025-01-15'
+                                    },
+                                    {
+                                        id: '3',
+                                        nombre: 'Encuesta de Clima Laboral',
+                                        fechaCreacion: '2024-09-20',
+                                        estado: 'Cerrada',
+                                        respuestas: '320',
+                                        fechaCierre: '2024-11-30'
+                                    },
+                                    {
+                                        id: '4',
+                                        nombre: 'Feedback de Producto Nuevo',
+                                        fechaCreacion: '2024-12-01',
+                                        estado: 'Activa',
+                                        respuestas: '95',
+                                        fechaCierre: '2025-01-31'
+                                    },
+                                    {
+                                        id: '5',
+                                        nombre: 'Encuesta de Capacitación',
+                                        fechaCreacion: '2024-08-15',
+                                        estado: 'Cerrada',
+                                        respuestas: '156',
+                                        fechaCierre: '2024-10-15'
+                                    },
+                                    {
+                                        id: '6',
+                                        nombre: 'Satisfacción con Beneficios',
+                                        fechaCreacion: '2024-12-10',
+                                        estado: 'Activa',
+                                        respuestas: '78',
+                                        fechaCierre: '2025-02-28'
+                                    },
+                                    {
+                                        id: '7',
+                                        nombre: 'Encuesta de Innovación',
+                                        fechaCreacion: '2024-11-20',
+                                        estado: 'Activa',
+                                        respuestas: '142',
+                                        fechaCierre: '2025-01-20'
+                                    },
+                                    {
+                                        id: '8',
+                                        nombre: 'Evaluación de Liderazgo',
+                                        fechaCreacion: '2024-07-10',
+                                        estado: 'Cerrada',
+                                        respuestas: '289',
+                                        fechaCierre: '2024-09-10'
+                                    },
+                                    {
+                                        id: '9',
+                                        nombre: 'Encuesta de Retención',
+                                        fechaCreacion: '2024-12-05',
+                                        estado: 'Activa',
+                                        respuestas: '203',
+                                        fechaCierre: '2025-03-31'
+                                    },
+                                    {
+                                        id: '10',
+                                        nombre: 'Feedback de Procesos Internos',
+                                        fechaCreacion: '2024-10-30',
+                                        estado: 'Activa',
+                                        respuestas: '167',
+                                        fechaCierre: '2025-01-30'
+                                    },
+                                    {
+                                        id: '11',
+                                        nombre: 'Encuesta de Diversidad e Inclusión',
+                                        fechaCreacion: '2024-09-05',
+                                        estado: 'Cerrada',
+                                        respuestas: '234',
+                                        fechaCierre: '2024-11-05'
+                                    },
+                                    {
+                                        id: '12',
+                                        nombre: 'Satisfacción con Herramientas',
+                                        fechaCreacion: '2024-12-15',
+                                        estado: 'Activa',
+                                        respuestas: '89',
+                                        fechaCierre: '2025-02-15'
+                                    },
+                                    {
+                                        id: '13',
+                                        nombre: 'Encuesta de Bienestar',
+                                        fechaCreacion: '2024-11-25',
+                                        estado: 'Activa',
+                                        respuestas: '198',
+                                        fechaCierre: '2025-01-25'
+                                    },
+                                    {
+                                        id: '14',
+                                        nombre: 'Evaluación de Comunicación',
+                                        fechaCreacion: '2024-08-25',
+                                        estado: 'Cerrada',
+                                        respuestas: '276',
+                                        fechaCierre: '2024-10-25'
+                                    },
+                                    {
+                                        id: '15',
+                                        nombre: 'Encuesta de Valores Corporativos',
+                                        fechaCreacion: '2024-12-20',
+                                        estado: 'Activa',
+                                        respuestas: '112',
+                                        fechaCierre: '2025-03-20'
+                                    }
+                                ]
+                            };
+                            
+                            window.UBITS.DataTable.create({
+                                containerId: 'datatable-encuestas-container',
+                                columns: encuestasData.columns,
+                                rows: encuestasData.rows,
+                                showCheckbox: true,
+                                columnSortable: true,
+                                rowExpandable: false,
+                                showHeaderTitle: true,
+                                headerTitle: 'Lista de Encuestas',
+                                showCounter: true,
+                                counter: { displayed: encuestasData.rows.length, total: encuestasData.rows.length },
+                                showPrimaryButton: true,
+                                primaryButtonText: 'Nueva encuesta',
+                                showSearchButton: true,
+                                showColumnSelectorButton: true
+                            }, 'datatable-encuestas-container');
+                        }
+                    }
+                }, 1500);
+                
                 // Inicializar responsive DESPUÉS de que los componentes se hayan cargado
                 // Esto asegura que adaptComponents() encuentre los componentes
                 setTimeout(() => {
