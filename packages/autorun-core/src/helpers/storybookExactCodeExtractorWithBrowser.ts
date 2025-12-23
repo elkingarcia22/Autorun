@@ -169,7 +169,7 @@ export async function extractExactCodeFromStorybookWithBrowser(
     }
   }
 
-  // INTENTO 3: Intentar desde Docs (último recurso, puede requerir Browser MCP)
+  // INTENTO 2: Intentar desde Docs (último recurso, puede requerir Browser MCP)
   if (!codeFromTab || !codeFromTab.html) {
     console.log(`   📋 Intentando extraer desde Docs...`);
     const docsUrl = `${activeConfig.url}/?path=/docs/${componentId}--docs`;
