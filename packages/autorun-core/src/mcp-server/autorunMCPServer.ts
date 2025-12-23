@@ -202,6 +202,31 @@ export async function startAutorunMCPServer() {
           },
         },
         {
+          name: 'autorun.storybook.extract',
+          description:
+            'Extrae código HTML/JS directamente desde Storybook usando Browser MCP internamente. Evita tener que modificar Storybook para crear historias "code".',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              componentId: {
+                type: 'string',
+                description:
+                  'ID del componente en Storybook (ej: "formularios-radio-button")',
+              },
+              componentName: {
+                type: 'string',
+                description:
+                  'Nombre del componente (ej: "RadioButton") - se mapea automáticamente a componentId',
+              },
+              storyName: {
+                type: 'string',
+                description:
+                  'Nombre de la historia a extraer (default: "auto" - busca "code" primero, luego "implementation")',
+              },
+            },
+          },
+        },
+        {
           name: 'autorun.problems.list',
           description: 'Lista problemas detectados por Problem Tracker',
           inputSchema: {
