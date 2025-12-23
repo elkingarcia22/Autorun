@@ -35,24 +35,35 @@ export async function extractExactCodeFromStorybookWithBrowser(
     );
   }
 
-  // ⚠️ CRÍTICO: Si storyName es "default", intentar primero buscar "implementation"
+  // ⚠️ CRÍTICO: Si storyName es "default", buscar "code" primero, luego "implementation"
   let finalStoryName = storyName;
   if (storyName === 'default') {
     try {
-      const { findImplementationStory } = await import(
+      const { findCodeStory, findImplementationStory } = await import(
         './codePropsCombiner.js'
       );
-      const implementationStoryName =
-        await findImplementationStory(componentId);
-      if (implementationStoryName !== 'default') {
-        finalStoryName = implementationStoryName;
+      
+      // ⚠️ NUEVO: Priorizar historia "code" (sugerencia del usuario)
+      const codeStoryName = await findCodeStory(componentId);
+      if (codeStoryName) {
+        finalStoryName = codeStoryName;
         console.log(
-          `   ✅ Usando historia "implementation" encontrada: ${finalStoryName}`
+          `   ✅ Usando historia "code" encontrada: ${finalStoryName}`
         );
+      } else {
+        // Fallback a "implementation"
+        const implementationStoryName =
+          await findImplementationStory(componentId);
+        if (implementationStoryName !== 'default') {
+          finalStoryName = implementationStoryName;
+          console.log(
+            `   ✅ Usando historia "implementation" encontrada: ${finalStoryName}`
+          );
+        }
       }
     } catch (error: any) {
       console.warn(
-        `   ⚠️ Error buscando historia "implementation": ${error.message}, usando "default"`
+        `   ⚠️ Error buscando historias: ${error.message}, usando "default"`
       );
     }
   }
