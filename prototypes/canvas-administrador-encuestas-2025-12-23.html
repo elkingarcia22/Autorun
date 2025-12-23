@@ -2372,34 +2372,17 @@
       const drawerInstance = createDrawerFn({
         title: 'Filtros',
         width: 40,
-        bodyContent: `
-          <div style="padding: var(--ubits-spacing-lg);">
-            <div style="display: flex; flex-direction: column; gap: var(--ubits-spacing-md);">
-              <div style="display: flex; flex-direction: column; gap: var(--ubits-spacing-xs);">
-                <label style="color: var(--ubits-fg-1-medium); font-size: 12px;">Filtro 1</label>
-                <input type="text" placeholder="Buscar..." style="
-                  padding: var(--ubits-spacing-sm);
-                  border: 1px solid var(--ubits-border-1);
-                  border-radius: var(--ubits-border-radius-sm);
-                  font-size: 14px;
-                  width: 100%;
-                  box-sizing: border-box;
-                " />
-              </div>
-              <div style="display: flex; flex-direction: column; gap: var(--ubits-spacing-xs);">
-                <label style="color: var(--ubits-fg-1-medium); font-size: 12px;">Filtro 2</label>
-                <input type="text" placeholder="Buscar..." style="
-                  padding: var(--ubits-spacing-sm);
-                  border: 1px solid var(--ubits-border-1);
-                  border-radius: var(--ubits-border-radius-sm);
-                  font-size: 14px;
-                  width: 100%;
-                  box-sizing: border-box;
-                " />
+        bodyContent: function() {
+          // Retornar HTML con contenedores para los inputs
+          return `
+            <div style="padding: var(--ubits-spacing-lg);">
+              <div style="display: flex; flex-direction: column; gap: var(--ubits-spacing-md);">
+                <div id="filter-input-1-container"></div>
+                <div id="filter-input-2-container"></div>
               </div>
             </div>
-          </div>
-        `,
+          `;
+        },
         footerButtons: {
           primary: {
             enabled: true,
