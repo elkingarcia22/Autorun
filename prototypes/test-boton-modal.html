@@ -5,7 +5,57 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Botón que Abre Modal - Test</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../vendor/ubits/packages/tokens/dist/tokens.css">
     <style>
+        /* ✅ Estilos CSS completos de Button y Modal - Extraídos desde Storybook */
+        
+        /* ========================================
+           TOKENS BÁSICOS (fallbacks si no se cargan)
+           ======================================== */
+        :root {
+            --p-spacing-mode-1-sm: 8px;
+            --p-spacing-mode-1-md: 12px;
+            --p-spacing-mode-1-lg: 16px;
+            --p-spacing-mode-1-xl: 20px;
+            --ubits-border-radius-sm: 8px;
+            --ubits-border-radius-md: 8px;
+            --font-family-noto-sans-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            --weight-semibold: 600;
+            --modifiers-normal-button-color-light-brand-primary-bg-default: #0c5bef;
+            --modifiers-normal-button-color-light-brand-primary-bg-hover: #223a91;
+            --modifiers-normal-button-color-light-brand-primary-bg-pressed: #1e4abf;
+            --modifiers-normal-color-light-fg-bold: #ffffff;
+            --modifiers-normal-color-light-bg-disabled: #e5e5e5;
+            --modifiers-normal-color-light-fg-on-disabled: #a2a6ad;
+            --modifiers-normal-color-light-border-disabled: #d0d2d5;
+            --modifiers-normal-button-color-light-brand-tertiary-fg: #0c5bef;
+            --modifiers-normal-button-color-light-brand-tertiary-bg-hover: rgba(12, 91, 239, 0.1);
+            --modifiers-normal-button-color-light-brand-tertiary-bg-pressed: rgba(12, 91, 239, 0.15);
+            --modifiers-normal-focus-color: rgba(12, 91, 239, 0.2);
+            --modifiers-normal-body-md-semibold-fontsize: 16px;
+            --modifiers-normal-body-md-semibold-lineheight: 24px;
+            --modifiers-normal-body-md-regular-fontsize: 16px;
+            --modifiers-normal-body-md-regular-lineheight: 24px;
+            --modifiers-normal-body-sm-regular-fontsize: 14px;
+            --modifiers-normal-color-light-bg-1: #ffffff;
+            --modifiers-normal-color-light-bg-2: #F3F3F4;
+            --modifiers-normal-color-light-bg-3: #e7e8ea;
+            --modifiers-normal-color-light-fg-1-high: #303a47;
+            --modifiers-normal-color-light-fg-1-medium: #5c646f;
+            --modifiers-normal-color-light-border-1: #e5e5e5;
+            --modifiers-normal-color-light-border-2: #d0d2d5;
+            --modifiers-normal-color-light-border-3: #b8bcc0;
+            --modifiers-normal-color-light-bg-dim: rgba(0, 0, 0, 0.5);
+            --ubits-spacing-xs: 8px;
+            --ubits-spacing-sm: 12px;
+            --ubits-spacing-md: 16px;
+            --ubits-spacing-lg: 24px;
+            --ubits-spacing-8: 64px;
+            --ubits-spacing-6: 48px;
+            --ubits-spacing-10: 80px;
+            --ubits-spacing-12: 48px;
+        }
+        
         * {
             margin: 0;
             padding: 0;
@@ -13,7 +63,7 @@
         }
         
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-family: var(--font-family-noto-sans-font-family);
             padding: 40px;
             background: #f5f5f5;
         }
@@ -35,6 +85,247 @@
         #button-container {
             margin: 20px 0;
         }
+        
+        /* ========================================
+           BUTTON STYLES (completos desde Storybook)
+           ======================================== */
+        .ubits-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--p-spacing-mode-1-sm, 8px);
+            padding: var(--p-spacing-mode-1-md, 12px) var(--p-spacing-mode-1-lg, 16px);
+            border: none;
+            border-radius: var(--ubits-border-radius-sm, 8px);
+            font-family: var(--font-family-noto-sans-font-family);
+            font-weight: var(--weight-semibold, 600);
+            line-height: 1;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            user-select: none;
+            white-space: nowrap;
+            background: var(--modifiers-normal-button-color-light-brand-primary-bg-default, #0c5bef);
+            color: var(--modifiers-normal-color-light-fg-bold, #ffffff);
+            border: 1px solid var(--modifiers-normal-button-color-light-brand-primary-bg-default, #0c5bef);
+            height: 40px;
+        }
+        
+        .ubits-button span {
+            font-family: var(--font-family-noto-sans-font-family);
+            font-size: var(--modifiers-normal-body-md-semibold-fontsize, 16px);
+            font-weight: var(--weight-semibold, 600);
+            line-height: var(--modifiers-normal-body-md-semibold-lineheight, 24px);
+        }
+        
+        .ubits-button:hover:not(:disabled):not(.ubits-button--loading) {
+            background: var(--modifiers-normal-button-color-light-brand-primary-bg-hover, #223a91) !important;
+            border-color: var(--modifiers-normal-button-color-light-brand-primary-bg-hover, #223a91) !important;
+        }
+        
+        .ubits-button:active:not(:disabled):not(.ubits-button--loading) {
+            background: var(--modifiers-normal-button-color-light-brand-primary-bg-pressed, #1e4abf) !important;
+            border-color: var(--modifiers-normal-button-color-light-brand-primary-bg-pressed, #1e4abf) !important;
+            transform: translateY(1px);
+        }
+        
+        .ubits-button:focus-visible {
+            outline: none;
+            box-shadow: 0 0 0 4px var(--modifiers-normal-focus-color, rgba(12, 91, 239, 0.2));
+        }
+        
+        .ubits-button--primary {
+            background: var(--modifiers-normal-button-color-light-brand-primary-bg-default, #0c5bef) !important;
+            color: var(--modifiers-normal-color-light-fg-bold, #ffffff) !important;
+            border: 1px solid var(--modifiers-normal-button-color-light-brand-primary-bg-default, #0c5bef) !important;
+        }
+        
+        .ubits-button--tertiary {
+            background: transparent;
+            color: var(--modifiers-normal-button-color-light-brand-tertiary-fg, #0c5bef);
+            border: 1px solid transparent;
+        }
+        
+        .ubits-button--tertiary:hover:not(:disabled):not(.ubits-button--loading) {
+            background: var(--modifiers-normal-button-color-light-brand-tertiary-bg-hover, rgba(12, 91, 239, 0.1)) !important;
+            color: var(--modifiers-normal-button-color-light-brand-tertiary-fg, #0c5bef) !important;
+            border: 1px solid transparent !important;
+        }
+        
+        .ubits-button--tertiary:active:not(:disabled):not(.ubits-button--loading) {
+            background: var(--modifiers-normal-button-color-light-brand-tertiary-bg-pressed, rgba(12, 91, 239, 0.15));
+            color: var(--modifiers-normal-button-color-light-brand-tertiary-fg, #0c5bef);
+            border: 1px solid transparent;
+            transform: translateY(1px);
+        }
+        
+        /* ========================================
+           MODAL STYLES (completos desde Storybook)
+           ======================================== */
+        .ubits-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--modifiers-normal-color-light-bg-dim, rgba(0, 0, 0, 0.5));
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--ubits-spacing-lg, 24px);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        
+        .ubits-modal-overlay--open {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .ubits-modal {
+            position: relative;
+            background-color: var(--modifiers-normal-color-light-bg-1, #ffffff);
+            display: flex;
+            flex-direction: column;
+            border-radius: var(--ubits-border-radius-md, 8px);
+            overflow: hidden;
+            box-shadow: 0px 14px 28.8px 0px rgba(0, 0, 0, 0.24), 0px 0px 8px 0px rgba(0, 0, 0, 0.2);
+            max-height: calc(100vh - var(--ubits-spacing-8, 64px));
+            width: 100%;
+            min-height: 0;
+            height: auto;
+            transform: scale(0.95);
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        
+        .ubits-modal-overlay--open .ubits-modal {
+            transform: scale(1);
+            opacity: 1;
+        }
+        
+        .ubits-modal--size-md {
+            max-width: calc(var(--ubits-spacing-12, 48px) * 6);
+        }
+        
+        .ubits-modal__header {
+            display: flex;
+            align-items: center;
+            gap: var(--ubits-spacing-md, 16px);
+            padding: var(--ubits-spacing-lg, 24px);
+            border-bottom: 1px solid var(--modifiers-normal-color-light-border-1, #e5e5e5);
+            flex-shrink: 0;
+        }
+        
+        .ubits-modal__header-text {
+            flex: 1 1 0;
+            min-width: 0;
+        }
+        
+        .ubits-modal__header-title {
+            display: flex;
+            align-items: center;
+            gap: var(--ubits-spacing-md, 16px);
+            width: 100%;
+        }
+        
+        .ubits-modal__header-title p,
+        .ubits-modal__header-title h2 {
+            flex: 1 1 0;
+            margin: 0;
+            color: var(--modifiers-normal-color-light-fg-1-high, #303a47);
+            font-family: var(--font-family-noto-sans-font-family);
+            font-weight: 600 !important;
+            font-size: var(--modifiers-normal-body-md-regular-fontsize, 16px) !important;
+            line-height: var(--modifiers-normal-body-md-regular-lineheight, 24px) !important;
+        }
+        
+        .ubits-modal__close {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: calc(var(--ubits-spacing-sm, 12px) + 1.5px);
+            border: 1px solid var(--modifiers-normal-color-light-border-1, #e5e5e5);
+            border-radius: var(--ubits-border-radius-sm, 8px);
+            background-color: var(--modifiers-normal-color-light-bg-1, #ffffff);
+            color: var(--modifiers-normal-color-light-fg-1-high, #303a47);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+            width: calc((var(--ubits-spacing-sm, 12px) + 1.5px) * 2 + var(--modifiers-normal-body-sm-regular-fontsize, 14px));
+            height: calc((var(--ubits-spacing-sm, 12px) + 1.5px) * 2 + var(--modifiers-normal-body-sm-regular-fontsize, 14px));
+            min-width: calc((var(--ubits-spacing-sm, 12px) + 1.5px) * 2 + var(--modifiers-normal-body-sm-regular-fontsize, 14px));
+            min-height: calc((var(--ubits-spacing-sm, 12px) + 1.5px) * 2 + var(--modifiers-normal-body-sm-regular-fontsize, 14px));
+            box-sizing: border-box;
+        }
+        
+        .ubits-modal__close:hover {
+            background-color: var(--modifiers-normal-color-light-bg-2, #F3F3F4);
+            border-color: var(--modifiers-normal-color-light-border-2, #d0d2d5);
+        }
+        
+        .ubits-modal__close:active {
+            background-color: var(--modifiers-normal-color-light-bg-3, #e7e8ea);
+            border-color: var(--modifiers-normal-color-light-border-3, #b8bcc0);
+            transform: translateY(1px);
+        }
+        
+        .ubits-modal__close i {
+            font-size: var(--modifiers-normal-body-sm-regular-fontsize, 14px);
+            width: var(--modifiers-normal-body-sm-regular-fontsize, 14px);
+            height: var(--modifiers-normal-body-sm-regular-fontsize, 14px);
+            line-height: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .ubits-modal__body {
+            flex: 1 1 auto;
+            display: flex;
+            overflow: hidden;
+            position: relative;
+            min-height: 100px;
+            max-height: 100%;
+        }
+        
+        .ubits-modal__body-content {
+            flex: 1 1 auto;
+            overflow-y: auto;
+            padding: var(--ubits-spacing-lg, 24px);
+            min-height: 100px;
+            height: auto;
+            color: var(--modifiers-normal-color-light-fg-1-high, #303a47);
+            font-size: var(--modifiers-normal-body-md-regular-fontsize, 16px);
+            line-height: var(--modifiers-normal-body-md-regular-lineheight, 24px);
+        }
+        
+        .ubits-modal__body-content p {
+            margin: 0 0 var(--p-spacing-mode-1-md, 16px) 0;
+            line-height: var(--modifiers-normal-body-md-regular-lineheight, 24px);
+        }
+        
+        .ubits-modal__body-content p:last-child {
+            margin-bottom: 0;
+        }
+        
+        .ubits-modal__footer {
+            padding: var(--ubits-spacing-lg, 24px);
+            border-top: 1px solid var(--modifiers-normal-color-light-border-1, #e5e5e5);
+            flex-shrink: 0;
+        }
+        
+        .ubits-modal__footer-actions {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: var(--ubits-spacing-md, 16px);
+        }
     </style>
 </head>
 <body>
@@ -45,7 +336,7 @@
     </div>
 
     <script>
-        // ✅ Implementación generada por Autorun
+        // ✅ Implementación generada por Autorun con estilos completos
         // Componentes: Button, Modal
         
         function initButton() {
@@ -60,11 +351,14 @@
             }
             
             try {
-                // Crear botón usando estructura exacta de Storybook
+                // ✅ Estructura exacta de Storybook: <button><span>Texto</span></button>
                 const button = document.createElement('button');
                 button.className = 'ubits-button ubits-button--md ubits-button--primary';
                 button.type = 'button';
-                button.textContent = 'Abrir Modal';
+                
+                const span = document.createElement('span');
+                span.textContent = 'Abrir Modal';
+                button.appendChild(span);
                 
                 // Agregar evento para abrir modal
                 button.addEventListener('click', () => {
@@ -72,7 +366,7 @@
                 });
                 
                 container.appendChild(button);
-                console.log('✅ [Button] Botón creado correctamente');
+                console.log('✅ [Button] Botón creado correctamente con estilos completos');
             } catch (error) {
                 console.error('❌ [Button] Error al crear botón:', error);
             }
@@ -92,84 +386,100 @@
             }
             
             try {
-                // Crear estructura del modal según Storybook
-                const modalWrapper = document.createElement('div');
-                modalWrapper.className = 'ubits-modal-wrapper';
-                modalWrapper.style.display = 'none';
-                modalWrapper.id = 'modal-wrapper';
-                
-                // Overlay
+                // ✅ Estructura exacta de Storybook
                 const overlay = document.createElement('div');
                 overlay.className = 'ubits-modal-overlay';
-                overlay.addEventListener('click', () => {
-                    closeModal();
+                overlay.id = 'modal-overlay';
+                overlay.addEventListener('click', (e) => {
+                    if (e.target === overlay) {
+                        closeModal();
+                    }
                 });
                 
                 // Modal
                 const modal = document.createElement('div');
-                modal.className = 'ubits-modal ubits-modal--md';
+                modal.className = 'ubits-modal ubits-modal--size-md';
                 modal.setAttribute('role', 'dialog');
                 modal.setAttribute('aria-labelledby', 'modal-title');
                 modal.setAttribute('aria-modal', 'true');
                 
                 // Header
                 const header = document.createElement('div');
-                header.className = 'ubits-modal-header';
+                header.className = 'ubits-modal__header';
+                
+                const headerText = document.createElement('div');
+                headerText.className = 'ubits-modal__header-text';
+                
+                const headerTitle = document.createElement('div');
+                headerTitle.className = 'ubits-modal__header-title';
                 
                 const title = document.createElement('h2');
-                title.className = 'ubits-modal-title';
                 title.id = 'modal-title';
                 title.textContent = 'Confirmar acción';
                 
+                headerTitle.appendChild(title);
+                headerText.appendChild(headerTitle);
+                header.appendChild(headerText);
+                
                 const closeButton = document.createElement('button');
-                closeButton.className = 'ubits-modal-close';
+                closeButton.className = 'ubits-modal__close';
                 closeButton.setAttribute('aria-label', 'Cerrar');
                 closeButton.innerHTML = '<i class="fas fa-times"></i>';
                 closeButton.addEventListener('click', () => {
                     closeModal();
                 });
                 
-                header.appendChild(title);
                 header.appendChild(closeButton);
                 
                 // Body
                 const body = document.createElement('div');
-                body.className = 'ubits-modal-body';
-                body.innerHTML = '<p>¿Estás seguro de que deseas continuar?</p>';
+                body.className = 'ubits-modal__body';
+                
+                const bodyContent = document.createElement('div');
+                bodyContent.className = 'ubits-modal__body-content';
+                bodyContent.innerHTML = '<p>¿Estás seguro de que deseas continuar?</p>';
+                
+                body.appendChild(bodyContent);
                 
                 // Footer
                 const footer = document.createElement('div');
-                footer.className = 'ubits-modal-footer';
+                footer.className = 'ubits-modal__footer';
+                
+                const footerActions = document.createElement('div');
+                footerActions.className = 'ubits-modal__footer-actions';
                 
                 const cancelButton = document.createElement('button');
                 cancelButton.className = 'ubits-button ubits-button--md ubits-button--tertiary';
-                cancelButton.textContent = 'Cancelar';
+                const cancelSpan = document.createElement('span');
+                cancelSpan.textContent = 'Cancelar';
+                cancelButton.appendChild(cancelSpan);
                 cancelButton.addEventListener('click', () => {
                     closeModal();
                 });
                 
                 const confirmButton = document.createElement('button');
                 confirmButton.className = 'ubits-button ubits-button--md ubits-button--primary';
-                confirmButton.textContent = 'Confirmar';
+                const confirmSpan = document.createElement('span');
+                confirmSpan.textContent = 'Confirmar';
+                confirmButton.appendChild(confirmSpan);
                 confirmButton.addEventListener('click', () => {
                     alert('Acción confirmada!');
                     closeModal();
                 });
                 
-                footer.appendChild(cancelButton);
-                footer.appendChild(confirmButton);
+                footerActions.appendChild(cancelButton);
+                footerActions.appendChild(confirmButton);
+                footer.appendChild(footerActions);
                 
                 modal.appendChild(header);
                 modal.appendChild(body);
                 modal.appendChild(footer);
                 
-                modalWrapper.appendChild(overlay);
-                modalWrapper.appendChild(modal);
+                overlay.appendChild(modal);
+                container.appendChild(overlay);
+                modalInstance = overlay;
                 
-                container.appendChild(modalWrapper);
-                modalInstance = modalWrapper;
-                
-                console.log('✅ [Modal] Modal creado correctamente');
+                console.log('✅ [Modal] Modal creado correctamente con estilos completos');
             } catch (error) {
                 console.error('❌ [Modal] Error al crear modal:', error);
             }
@@ -177,7 +487,7 @@
         
         function openModal() {
             if (modalInstance) {
-                modalInstance.style.display = 'block';
+                modalInstance.classList.add('ubits-modal-overlay--open');
                 document.body.style.overflow = 'hidden';
                 console.log('✅ [Modal] Modal abierto');
             }
@@ -185,11 +495,18 @@
         
         function closeModal() {
             if (modalInstance) {
-                modalInstance.style.display = 'none';
+                modalInstance.classList.remove('ubits-modal-overlay--open');
                 document.body.style.overflow = '';
                 console.log('✅ [Modal] Modal cerrado');
             }
         }
+        
+        // Manejar tecla Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modalInstance && modalInstance.classList.contains('ubits-modal-overlay--open')) {
+                closeModal();
+            }
+        });
         
         // Inicializar cuando el DOM esté listo
         if (document.readyState === 'loading') {
@@ -204,4 +521,3 @@
     </script>
 </body>
 </html>
-
