@@ -49,7 +49,7 @@
     <link rel="stylesheet" href="https://ubits-storybook10.vercel.app/components/stepper/src/styles/stepper.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
     <link rel="stylesheet" href="https://ubits-storybook10.vercel.app/components/participants-menu/src/styles/participants-menu.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
     <link rel="stylesheet" href="https://ubits-storybook10.vercel.app/components/metric-card/src/styles/metric-card.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
-    <!-- ❌ ELIMINADO: CSS de HeaderSection (no se usa en módulo encuestas) -->
+    <link rel="stylesheet" href="https://ubits-storybook10.vercel.app/components/header-section/src/styles/header-section.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
     
     <style>
         /* ========================================
@@ -237,7 +237,28 @@
            HEADER SECTION CONTAINER
            ======================================== */
         
-        /* ❌ ELIMINADO: Estilos de header-section-container (no se usa en módulo encuestas) */
+        #header-section-container {
+            width: 100%;
+            background: transparent;
+            padding: 0;
+            margin-top: 0;
+            margin-bottom: 0;
+            box-sizing: border-box;
+        }
+
+        /* Ajustes responsive para header-section-container */
+        @media (max-width: 1023px) {
+            #header-section-container {
+                padding: 0;
+                margin-top: 0;
+            }
+        }
+
+        @media (max-width: 479px) {
+            #header-section-container {
+                margin-top: 0;
+            }
+        }
 
         .content-area.no-background {
             background-color: transparent !important;
@@ -762,19 +783,23 @@
             <!-- Top Navigation -->
             <div id="top-nav-container"></div>
             
-            <!-- Tabs Container (16px desde SubNav) -->
-            <div id="encuestas-tabs-container" style="margin-top: var(--ubits-spacing-lg, 16px);"></div>
-            
             <!-- Content Area -->
             <div class="content-area">
-                <!-- Contenedor para DataTable de Lista de Encuestas -->
-                <div id="lista-encuestas-content" style="display: none;">
-                    <div id="encuestas-datatable-container"></div>
-                </div>
+                <!-- Header Section Container -->
+                <div id="header-section-container"></div>
                 
-                <!-- Contenedor para Datos Demográficos -->
-                <div id="datos-demograficos-content" style="display: none;">
-                    <p>Contenido de datos demográficos (pendiente de implementar)</p>
+                <!-- DataTable Container -->
+                <div id="datatable-encuestas-container"></div>
+                
+                <!-- Content wrapper con secciones de widgets -->
+                <div class="content-sections">
+                    <!-- Sección contenido principal -->
+                    <div class="section-single">
+                        <div class="widget-contenido-principal">
+                            <p class="ubits-body-md-regular">Contenido principal</p>
+                            <br><br><br><br><br><br><br><br><br><br><br>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>
@@ -785,202 +810,11 @@
 
     <!-- System Loaders -->
     <script src="https://ubits-storybook10.vercel.app/templates/components-loader.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
-    <!-- Script UMD de DataTable (requerido para window.createDataTable) -->
-    <script src="https://ubits-storybook10.vercel.app/components/data-table/dist/data-table.umd.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
     <script src="https://ubits-storybook10.vercel.app/templates/config/products.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
     <script src="https://ubits-storybook10.vercel.app/templates/config/theme-manager.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
     <script src="https://ubits-storybook10.vercel.app/templates/config/responsive-manager.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
     <script src="https://ubits-storybook10.vercel.app/templates/engine/template-loader.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
     <script src="https://ubits-storybook10.vercel.app/templates/engine/content-manager.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
-    
-    <!-- ========================================
-         INTERCEPTAR ContentManager.updateContent
-         Para eliminar HeaderSection y content-sections dinámicamente
-         ⚠️ CRÍTICO: Interceptar INMEDIATAMENTE después de cargar content-manager.js
-         ======================================== -->
-    <script>
-        (function() {
-            const currentModule = document.body.getAttribute('data-module');
-            if (currentModule !== 'encuestas') {
-                return; // Solo interceptar en módulo encuestas
-            }
-            
-            function interceptContentManagerImmediately() {
-                if (!window.UBITS_ContentManager) {
-                    // Si ContentManager aún no existe, esperar
-                    setTimeout(interceptContentManagerImmediately, 50);
-                    return;
-                }
-                
-                // Verificar si ya está interceptado (evitar múltiples interceptaciones)
-                if (window.UBITS_ContentManager.updateContent._encuestasIntercepted) {
-                    return;
-                }
-                
-                // Guardar referencia al método original
-                const originalUpdateContent = window.UBITS_ContentManager.updateContent;
-                if (!originalUpdateContent) {
-                    setTimeout(interceptContentManagerImmediately, 50);
-                    return;
-                }
-                
-                // Interceptar el método
-                window.UBITS_ContentManager.updateContent = function(section, subSection) {
-                    // ⚠️ CRÍTICO: Solo interceptar si estamos en módulo encuestas
-                    const currentModule = document.body.getAttribute('data-module');
-                    if (currentModule !== 'encuestas') {
-                        return originalUpdateContent.call(this, section, subSection);
-                    }
-                    
-                    console.log('🔵 [Encuestas] updateContent interceptado para sección:', section);
-                    
-                    // ⚠️ CRÍTICO: Guardar los elementos antes de que ContentManager los elimine
-                    const contentArea = document.querySelector('.content-area');
-                    let listaContentHTML = null;
-                    let datosContentHTML = null;
-                    
-                    if (contentArea) {
-                        const listaContent = contentArea.querySelector('#lista-encuestas-content');
-                        const datosContent = contentArea.querySelector('#datos-demograficos-content');
-                        
-                        if (listaContent) {
-                            listaContentHTML = listaContent.outerHTML;
-                            console.log('🔵 [Encuestas] Guardando lista-encuestas-content');
-                        }
-                        if (datosContent) {
-                            datosContentHTML = datosContent.outerHTML;
-                            console.log('🔵 [Encuestas] Guardando datos-demograficos-content');
-                        }
-                    }
-                    
-                    // Llamar al método original (que limpia el content-area y crea HeaderSection)
-                    const result = originalUpdateContent.call(this, section, subSection);
-                    
-                    // ⚠️ CRÍTICO: Usar requestAnimationFrame para timing correcto
-                    requestAnimationFrame(() => {
-                        const contentArea = document.querySelector('.content-area');
-                        if (!contentArea) {
-                            return;
-                        }
-                        
-                        // Eliminar TODOS los elementos relacionados
-                        const headerContainer = contentArea.querySelector('#header-section-container');
-                        if (headerContainer) {
-                            console.log('🔵 [Encuestas] Eliminando HeaderSection');
-                            headerContainer.remove();
-                        }
-                        
-                        const headerSection = contentArea.querySelector('.ubits-header-section');
-                        if (headerSection) {
-                            console.log('🔵 [Encuestas] Eliminando .ubits-header-section');
-                            const container = headerSection.closest('#header-section-container');
-                            if (container) {
-                                container.remove();
-                            } else {
-                                headerSection.remove();
-                            }
-                        }
-                        
-                        const contentSections = contentArea.querySelector('.content-sections');
-                        if (contentSections) {
-                            console.log('🔵 [Encuestas] Eliminando .content-sections');
-                            contentSections.remove();
-                        }
-                        
-                        const widgetPrincipal = contentArea.querySelector('.widget-contenido-principal');
-                        if (widgetPrincipal) {
-                            console.log('🔵 [Encuestas] Eliminando .widget-contenido-principal');
-                            widgetPrincipal.closest('.section-single')?.remove() || widgetPrincipal.remove();
-                        }
-                        
-                        // ⚠️ CRÍTICO: Restaurar los elementos que ContentManager eliminó
-                        if (listaContentHTML && !contentArea.querySelector('#lista-encuestas-content')) {
-                            console.log('🔵 [Encuestas] Restaurando lista-encuestas-content');
-                            contentArea.insertAdjacentHTML('beforeend', listaContentHTML);
-                        }
-                        
-                        if (datosContentHTML && !contentArea.querySelector('#datos-demograficos-content')) {
-                            console.log('🔵 [Encuestas] Restaurando datos-demograficos-content');
-                            contentArea.insertAdjacentHTML('beforeend', datosContentHTML);
-                        }
-                    });
-                    
-                    return result;
-                };
-                
-                // Marcar como interceptado
-                window.UBITS_ContentManager.updateContent._encuestasIntercepted = true;
-                console.log('✅ [Encuestas] ContentManager.updateContent interceptado INMEDIATAMENTE');
-            }
-            
-            // ⚠️ CRÍTICO: Ejecutar inmediatamente y con múltiples intentos
-            interceptContentManagerImmediately();
-            setTimeout(interceptContentManagerImmediately, 100);
-            setTimeout(interceptContentManagerImmediately, 500);
-            
-            // ⚠️ CRÍTICO: MutationObserver para eliminar elementos que se crean dinámicamente
-            function setupAggressiveObserver() {
-                const contentArea = document.querySelector('.content-area');
-                if (!contentArea) {
-                    setTimeout(setupAggressiveObserver, 50);
-                    return;
-                }
-                
-                const observer = new MutationObserver((mutations) => {
-                    mutations.forEach((mutation) => {
-                        if (mutation.type === 'childList') {
-                            mutation.addedNodes.forEach((node) => {
-                                if (node.nodeType === 1) {
-                                    // Eliminar HeaderSection
-                                    if (node.id === 'header-section-container' || 
-                                        node.classList?.contains('ubits-header-section') ||
-                                        node.querySelector?.('#header-section-container') ||
-                                        node.querySelector?.('.ubits-header-section')) {
-                                        const headerContainer = document.getElementById('header-section-container');
-                                        if (headerContainer) headerContainer.remove();
-                                        
-                                        const headerSection = document.querySelector('.ubits-header-section');
-                                        if (headerSection) {
-                                            const container = headerSection.closest('#header-section-container');
-                                            if (container) {
-                                                container.remove();
-                                            } else {
-                                                headerSection.remove();
-                                            }
-                                        }
-                                    }
-                                    
-                                    // Eliminar content-sections
-                                    if (node.classList?.contains('content-sections') ||
-                                        node.querySelector?.('.content-sections')) {
-                                        const contentSections = document.querySelector('.content-sections');
-                                        if (contentSections) contentSections.remove();
-                                    }
-                                }
-                            });
-                        }
-                    });
-                });
-                
-                observer.observe(contentArea, {
-                    childList: true,
-                    subtree: true
-                });
-                
-                console.log('✅ [Encuestas] MutationObserver agresivo configurado');
-            }
-            
-            // Configurar observer
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', setupAggressiveObserver);
-            } else {
-                setupAggressiveObserver();
-            }
-            
-            setTimeout(setupAggressiveObserver, 100);
-            setTimeout(setupAggressiveObserver, 500);
-        })();
-    </script>
     
     <!-- UBITS Components System -->
     <!-- Los componentes se cargan dinámicamente a través de components-loader.js -->
@@ -1273,241 +1107,6 @@
                                         debugLayout();
                                     }, 300);
                                 });
-                                
-                                // ========================================
-                                // INICIALIZAR TABS DE ENCUESTAS
-                                // ========================================
-                                function initializeEncuestasTabs() {
-                                    const tabsContainer = document.getElementById('encuestas-tabs-container');
-                                    if (!tabsContainer) {
-                                        console.warn('⚠️ [Encuestas Tabs] Contenedor no encontrado');
-                                        return;
-                                    }
-                                    
-                                    // Verificar que createTabs esté disponible
-                                    if (typeof window.createTabs !== 'function') {
-                                        console.warn('⚠️ [Encuestas Tabs] window.createTabs no está disponible, reintentando...');
-                                        setTimeout(initializeEncuestasTabs, 100);
-                                        return;
-                                    }
-                                    
-                                    // Crear tabs con iconos
-                                    window.createTabs({
-                                        tabs: [
-                                            {
-                                                id: 'lista-encuestas',
-                                                label: 'Lista de encuestas',
-                                                icon: 'clipboard-list'
-                                            },
-                                            {
-                                                id: 'datos-demograficos',
-                                                label: 'Datos demográficos',
-                                                icon: 'chart-bar'
-                                            }
-                                        ],
-                                        activeTabId: 'lista-encuestas',
-                                        onTabChange: (tabId, tabElement) => {
-                                            console.log('🔵 [Encuestas Tabs] Tab cambiado:', tabId);
-                                            
-                                            // Ocultar todos los contenidos
-                                            const listaContent = document.getElementById('lista-encuestas-content');
-                                            const datosContent = document.getElementById('datos-demograficos-content');
-                                            
-                                            if (listaContent) listaContent.style.display = 'none';
-                                            if (datosContent) datosContent.style.display = 'none';
-                                            
-                                            // Mostrar el contenido correspondiente
-                                            if (tabId === 'lista-encuestas' && listaContent) {
-                                                listaContent.style.display = 'block';
-                                                // Inicializar DataTable después de que el contenido esté visible
-                                                setTimeout(() => {
-                                                    initializeEncuestasDataTable();
-                                                }, 100);
-                                            } else if (tabId === 'datos-demograficos' && datosContent) {
-                                                datosContent.style.display = 'block';
-                                            }
-                                        }
-                                    }, 'encuestas-tabs-container');
-                                    
-                                    console.log('✅ [Encuestas Tabs] Tabs inicializados correctamente');
-                                    
-                                    // Mostrar el contenido inicial del tab activo
-                                    const listaContent = document.getElementById('lista-encuestas-content');
-                                    if (listaContent) {
-                                        console.log('🔵 [Encuestas Tabs] Mostrando contenido inicial de lista-encuestas');
-                                        listaContent.style.display = 'block';
-                                        // Inicializar DataTable después de que el contenido esté visible
-                                        setTimeout(() => {
-                                            console.log('🔵 [Encuestas Tabs] Llamando initializeEncuestasDataTable()...');
-                                            initializeEncuestasDataTable();
-                                        }, 100);
-                                    } else {
-                                        console.warn('⚠️ [Encuestas Tabs] listaContent no encontrado');
-                                    }
-                                }
-                                
-                                // Función para inicializar la DataTable de encuestas
-                                function initializeEncuestasDataTable() {
-                                    console.log('🔵 [Encuestas DataTable] ========== INICIANDO INICIALIZACIÓN ==========');
-                                    console.log('🔵 [Encuestas DataTable] Función llamada correctamente');
-                                    const listaContent = document.getElementById('lista-encuestas-content');
-                                    const container = document.getElementById('encuestas-datatable-container');
-                                    
-                                    console.log('🔵 [Encuestas DataTable] listaContent:', listaContent);
-                                    console.log('🔵 [Encuestas DataTable] container:', container);
-                                    console.log('🔵 [Encuestas DataTable] listaContent.style.display:', listaContent?.style.display);
-                                    
-                                    // Verificar que el contenedor padre esté visible
-                                    if (!listaContent || listaContent.style.display === 'none') {
-                                        console.warn('⚠️ [Encuestas DataTable] Contenedor padre no está visible');
-                                        return;
-                                    }
-                                    
-                                    if (!container) {
-                                        console.warn('⚠️ [Encuestas DataTable] Contenedor no encontrado');
-                                        return;
-                                    }
-                                    
-                                    // Verificar si ya está inicializada
-                                    if (container.querySelector('.ubits-data-table')) {
-                                        console.log('✅ [Encuestas DataTable] Ya está inicializada');
-                                        return;
-                                    }
-                                    
-                                    // Verificar que createDataTable esté disponible
-                                    console.log('🔵 [Encuestas DataTable] typeof window.createDataTable:', typeof window.createDataTable);
-                                    console.log('🔵 [Encuestas DataTable] window.UBITSDataTable:', window.UBITSDataTable);
-                                    
-                                    if (typeof window.createDataTable !== 'function') {
-                                        // Intentar obtener desde UBITSDataTable si está disponible
-                                        if (window.UBITSDataTable && typeof window.UBITSDataTable.createDataTable === 'function') {
-                                            window.createDataTable = window.UBITSDataTable.createDataTable;
-                                            console.log('✅ [Encuestas DataTable] window.createDataTable asignado desde UBITSDataTable');
-                                        } else {
-                                            console.warn('⚠️ [Encuestas DataTable] window.createDataTable no está disponible, reintentando...');
-                                            setTimeout(initializeEncuestasDataTable, 100);
-                                            return;
-                                        }
-                                    }
-                                    
-                                    console.log('🔵 [Encuestas DataTable] Creando DataTable...');
-                                    
-                                    // Crear DataTable con columnas y datos de encuestas
-                                    window.createDataTable({
-                                        containerId: 'encuestas-datatable-container',
-                                        columns: [
-                                            { id: 'nombre', title: 'Nombre de la encuesta', type: 'nombre' },
-                                            { id: 'fecha-creacion', title: 'Fecha de creación', type: 'fecha' },
-                                            { id: 'fecha-cierre', title: 'Fecha de cierre', type: 'fecha' },
-                                            { id: 'participantes', title: 'Participantes', type: 'nombre' },
-                                            { id: 'estado', title: 'Estado', type: 'estado' },
-                                            { id: 'progreso', title: 'Progreso', type: 'progreso' }
-                                        ],
-                                        rows: [
-                                            {
-                                                id: 1,
-                                                data: {
-                                                    nombre: 'Encuesta de Satisfacción 2024',
-                                                    'fecha-creacion': '2024-01-15',
-                                                    'fecha-cierre': '2024-02-15',
-                                                    participantes: '150/200',
-                                                    estado: 'activo',
-                                                    progreso: 75
-                                                }
-                                            },
-                                            {
-                                                id: 2,
-                                                data: {
-                                                    nombre: 'Evaluación de Desempeño Q1',
-                                                    'fecha-creacion': '2024-03-01',
-                                                    'fecha-cierre': '2024-03-31',
-                                                    participantes: '200/200',
-                                                    estado: 'completado',
-                                                    progreso: 100
-                                                }
-                                            },
-                                            {
-                                                id: 3,
-                                                data: {
-                                                    nombre: 'Encuesta de Clima Laboral',
-                                                    'fecha-creacion': '2024-04-10',
-                                                    'fecha-cierre': '2024-05-10',
-                                                    participantes: '85/150',
-                                                    estado: 'activo',
-                                                    progreso: 57
-                                                }
-                                            },
-                                            {
-                                                id: 4,
-                                                data: {
-                                                    nombre: 'Feedback de Capacitación',
-                                                    'fecha-creacion': '2024-05-20',
-                                                    'fecha-cierre': '2024-06-20',
-                                                    participantes: '0/100',
-                                                    estado: 'pendiente',
-                                                    progreso: 0
-                                                }
-                                            },
-                                            {
-                                                id: 5,
-                                                data: {
-                                                    nombre: 'Encuesta de Bienestar',
-                                                    'fecha-creacion': '2024-06-01',
-                                                    'fecha-cierre': '2024-07-01',
-                                                    participantes: '120/180',
-                                                    estado: 'activo',
-                                                    progreso: 67
-                                                }
-                                            }
-                                        ],
-                                        columnReorderable: true,
-                                        rowReorderable: false,
-                                        rowExpandable: true,
-                                        columnSortable: true,
-                                        showCheckbox: true,
-                                        showColumnMenu: true,
-                                        showContextMenu: true,
-                                        lazyLoad: false, // Desactivar lazy load para mostrar todos los items
-                                        header: {
-                                            title: 'Lista de encuestas',
-                                            counter: true,
-                                            displayedItems: 5,
-                                            totalItems: 5,
-                                            primaryButton: {
-                                                text: 'Nueva encuesta',
-                                                icon: 'plus',
-                                                onClick: () => {
-                                                    console.log('🔵 [Encuestas] Crear nueva encuesta');
-                                                }
-                                            },
-                                            searchButton: {
-                                                placeholder: 'Buscar encuestas...',
-                                                onChange: (value) => {
-                                                    console.log('🔵 [Encuestas] Buscar:', value);
-                                                }
-                                            },
-                                            filterButton: {
-                                                onClick: () => {
-                                                    console.log('🔵 [Encuestas] Abrir filtros');
-                                                }
-                                            },
-                                            columnSelectorButton: {
-                                                onClick: () => {
-                                                    console.log('🔵 [Encuestas] Seleccionar columnas');
-                                                }
-                                            }
-                                        }
-                                    });
-                                    
-                                    console.log('✅ [Encuestas DataTable] DataTable inicializada correctamente');
-                                }
-                                
-                                // Inicializar tabs después de un pequeño delay para asegurar que los componentes estén listos
-                                setTimeout(() => {
-                                    console.log('🔵 [Encuestas] Iniciando inicialización de tabs...');
-                                    initializeEncuestasTabs();
-                                    // La DataTable se inicializará automáticamente cuando se muestre el contenido del tab
-                                }, 300);
                             }, 200); // Delay mínimo solo para asegurar que el DOM esté listo
                         });
                     }
