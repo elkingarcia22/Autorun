@@ -816,26 +816,10 @@
     <!-- UBITS Components System -->
     <!-- Los componentes se cargan dinámicamente a través de components-loader.js -->
     
-    <!-- ⚠️ CRÍTICO: Cargar componentes Button y Modal directamente desde vendor/ubits -->
-    <script type="module">
-      // Cargar ButtonProvider y ModalProvider directamente desde vendor/ubits
-      // Esto asegura que los componentes se rendericen exactamente como en Storybook
-      import { createButton, renderButton } from '../vendor/ubits/packages/components/button/src/ButtonProvider.js';
-      import { createModal, renderModal } from '../vendor/ubits/packages/components/modal/src/ModalProvider.js';
-      
-      // Exponer globalmente para uso en scripts no-module
-      window.UBITS = window.UBITS || {};
-      window.UBITS.Button = window.UBITS.Button || {
-        create: createButton,
-        render: renderButton
-      };
-      window.UBITS.Modal = window.UBITS.Modal || {
-        create: createModal,
-        render: renderModal
-      };
-      
-      console.log('✅ [Componentes UBITS] Button y Modal cargados directamente desde vendor/ubits');
-    </script>
+    <!-- ⚠️ CRÍTICO: Cargar componentes Button y Modal directamente desde Storybook -->
+    <!-- Esto asegura que los componentes se rendericen exactamente como en Storybook -->
+    <script src="https://ubits-storybook10.vercel.app/components/button/src/ButtonProvider.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
+    <script src="https://ubits-storybook10.vercel.app/components/modal/src/ModalProvider.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
     
     <script>
         // ========================================
