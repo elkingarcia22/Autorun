@@ -272,28 +272,44 @@ export async function executeOnMessageStart(
         console.log(
           `   🔍 [Execute On Message Start] skipPreCheck=${options?.skipPreCheck}, skipCheck=${skipCheck}`
         );
-        const verification = await (preCheckAddon as any).verifyOnDetection?.(
-          detection.componentName!,
-          skipCheck ? { skipCheck: true } : undefined
-        );
+
+        // ⚠️ CRÍTICO: Si el add-on está desactivado, ignorar completamente cualquier bloqueo
+        // Esto garantiza que autorun.apply() nunca se bloquee cuando el add-on está desactivado
+        const isAddonActive = preCheckAddon.isActive();
         console.log(
-          `   🔍 [Execute On Message Start] Resultado de verifyOnDetection:`,
-          {
-            blocked: verification?.blocked,
-            reason: verification?.reason,
-          }
+          `   🔍 [Execute On Message Start] Pre-Implementation Check add-on activo: ${isAddonActive}`
         );
 
-        if (verification?.blocked) {
-          blocked = true;
-          reason = verification.reason;
-          console.error(
-            `❌ [Execute On Message Start] IMPLEMENTACIÓN BLOQUEADA: ${reason}`
-          );
-        } else {
+        if (!isAddonActive) {
           console.log(
-            `✅ [Execute On Message Start] Verificación pasada, continuando...`
+            `   ✅ [Execute On Message Start] Add-on desactivado, ignorando verificación (blocked=false)`
           );
+          blocked = false;
+          reason = undefined;
+        } else {
+          const verification = await (preCheckAddon as any).verifyOnDetection?.(
+            detection.componentName!,
+            skipCheck ? { skipCheck: true } : undefined
+          );
+          console.log(
+            `   🔍 [Execute On Message Start] Resultado de verifyOnDetection:`,
+            {
+              blocked: verification?.blocked,
+              reason: verification?.reason,
+            }
+          );
+
+          if (verification?.blocked) {
+            blocked = true;
+            reason = verification.reason;
+            console.error(
+              `❌ [Execute On Message Start] IMPLEMENTACIÓN BLOQUEADA: ${reason}`
+            );
+          } else {
+            console.log(
+              `✅ [Execute On Message Start] Verificación pasada, continuando...`
+            );
+          }
         }
       } else {
         console.warn(
