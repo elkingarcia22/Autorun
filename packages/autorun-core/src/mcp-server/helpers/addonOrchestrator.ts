@@ -106,10 +106,12 @@ export class AddonOrchestrator {
 
   /**
    * Ejecuta la fase de preparación antes de implementar
+   * @param autoMarkSteps Si es true, marca los pasos del checklist automáticamente (para autorun.apply())
    */
   async executePreparationPhase(
     componentName: string,
-    componentId: string
+    componentId: string,
+    autoMarkSteps: boolean = false
   ): Promise<PreparationPhaseResult> {
     console.log(`\n🔧 [Addon Orchestrator] Ejecutando fase de preparación...`);
     console.log(`   Componente: ${componentName} (${componentId})`);
