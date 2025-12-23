@@ -234,10 +234,20 @@ export class PreImplementationCheckAddon implements IFunctionalAddon {
     }
 
     // ✅ MEJORA: Pasar skipCheck si viene de autorun.apply()
+    // ⚠️ CRÍTICO: Si ya marcamos los pasos arriba cuando skipCheck=true, no deberíamos llegar aquí
+    // Pero por si acaso, también pasar skipCheck a canImplement()
+    console.log(
+      `   🔍 [verifyOnDetection] Llamando canImplement con options?.skipCheck=${options?.skipCheck}`
+    );
     const check = await this.canImplement(
       componentName,
       options?.skipCheck ? { skipCheck: true } : undefined
     );
+    console.log(`   🔍 [verifyOnDetection] Resultado de canImplement:`, {
+      allowed: check.allowed,
+      reason: check.reason,
+      missingSteps: check.missingSteps,
+    });
 
     if (!check.allowed) {
       const errorMessage = `
