@@ -242,6 +242,10 @@ export async function getSourceCode(
 
     // Buscar en diferentes ubicaciones posibles
     const possiblePaths = [
+      // ⚠️ NUEVO: Buscar en archivos de stories primero (más confiable para extraer código de historias)
+      `vendor/ubits/packages/storybook/stories/components/${pascalCase}/${pascalCase}.stories.ts`,
+      `vendor/ubits/packages/storybook/stories/components/${pascalCase}/RadioButton.stories.ts`, // Caso especial para RadioButton
+      `vendor/ubits/packages/storybook/stories/components/${normalizedId}/${normalizedId}.stories.ts`,
       // Con PascalCase (ej: RadioButtonProvider.ts)
       `vendor/ubits/packages/components/${normalizedId}/src/${pascalCase}Provider.ts`,
       `vendor/ubits/packages/components/${normalizedId}/src/${pascalCase}Provider.js`,
