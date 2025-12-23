@@ -596,19 +596,26 @@ ${storyBasedPlan ? `\n📖 Plan basado en historias disponible. Implementar UNA 
       comparison: checklist.comparison,
     });
 
-    // Verificar pasos obligatorios
+    // ⚠️ CRÍTICO: Si skipCheck=true o estamos en modo autorun.apply(), NO calcular missingSteps
+    // porque autorun.apply() consultará Storybook automáticamente
+    const shouldSkipVerification =
+      options?.skipCheck === true || isAutorunApplyModeFinal;
+
+    // Verificar pasos obligatorios (solo si NO estamos en modo autorun.apply())
     const missingSteps: string[] = [];
 
-    if (!checklist.storybookVercel) {
-      missingSteps.push('Consultar Storybook en Vercel (PRIMERO)');
-    }
+    if (!shouldSkipVerification) {
+      if (!checklist.storybookVercel) {
+        missingSteps.push('Consultar Storybook en Vercel (PRIMERO)');
+      }
 
-    if (!checklist.storybookMCP) {
-      missingSteps.push('Consultar Storybook MCP');
-    }
+      if (!checklist.storybookMCP) {
+        missingSteps.push('Consultar Storybook MCP');
+      }
 
-    if (!checklist.documentation) {
-      missingSteps.push('Consultar documentación específica');
+      if (!checklist.documentation) {
+        missingSteps.push('Consultar documentación específica');
+      }
     }
 
     console.log(`🔍 [canImplement] Pasos faltantes: ${missingSteps.length}`);
@@ -616,17 +623,17 @@ ${storyBasedPlan ? `\n📖 Plan basado en historias disponible. Implementar UNA 
       console.log(`🔍 [canImplement] Pasos faltantes:`, missingSteps);
     }
 
-    // ⚠️ CRÍTICO: Si estamos en modo autorun.apply() o skipCheck=true, SIEMPRE permitir
+    // ⚠️ CRÍTICO: Si skipCheck=true o estamos en modo autorun.apply(), SIEMPRE permitir
     // incluso si hay pasos faltantes, porque autorun.apply() consultará Storybook automáticamente
     let allowed = missingSteps.length === 0;
 
     // ⚠️ DOBLE VERIFICACIÓN: Si skipCheck=true o estamos en modo autorun.apply(), forzar allowed=true
-    if (options?.skipCheck === true || isAutorunApplyModeFinal) {
+    if (shouldSkipVerification) {
       console.warn(
-        `   ⚠️ [canImplement] skipCheck=true o modo autorun.apply() detectado, forzando allowed=true incluso con pasos faltantes`
+        `   ⚠️ [canImplement] skipCheck=true o modo autorun.apply() detectado, forzando allowed=true`
       );
       allowed = true;
-      missingSteps = []; // Limpiar missingSteps también
+      // NO limpiar missingSteps aquí porque ya no se calcularon si shouldSkipVerification=true
     }
 
     console.log(`🔍 [canImplement] ¿Permitido?: ${allowed}`);
