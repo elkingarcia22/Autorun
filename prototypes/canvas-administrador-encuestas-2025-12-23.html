@@ -2722,10 +2722,20 @@
       overlay.style.opacity = '1';
       drawer.style.transform = 'translateX(0)';
       
-      // ⚠️ CRÍTICO: Crear componentes Input de UBITS después de que el drawer se abra
+      // ⚠️ CRÍTICO: Crear componentes Input de UBITS después de que el drawer se abra completamente
+      // Resetear contador de reintentos cuando se abre el drawer
+      createFilterInputsRetries = 0;
       setTimeout(function() {
-        createFilterInputs();
-      }, 300);
+        // Verificar que el drawer esté visible antes de crear inputs
+        if (drawer.offsetParent !== null) {
+          createFilterInputs();
+        } else {
+          console.warn('⚠️ Drawer aún no está visible, esperando más tiempo...');
+          setTimeout(function() {
+            createFilterInputs();
+          }, 500);
+        }
+      }, 500);
     }, 10);
     
     // Cerrar al hacer click en overlay
