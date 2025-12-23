@@ -2290,10 +2290,20 @@
         initCrearEncuestaButton();
       }
       
-      // También intentar después de que UBITS se cargue
-      setTimeout(initCrearEncuestaButton, 500);
-      setTimeout(initCrearEncuestaButton, 1000);
-      setTimeout(initCrearEncuestaButton, 2000);
+      // También observar cambios en el DOM para cuando el SubNav se cargue dinámicamente
+      const observerButtons = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          if (mutation.addedNodes.length > 0) {
+            mutation.addedNodes.forEach((node) => {
+              if (node.nodeType === 1 && (node.id === 'top-nav-container' || node.querySelector('#top-nav-container'))) {
+                setTimeout(initCrearEncuestaButton, 100); // Dar tiempo para que UBITS.Button esté disponible
+              }
+            });
+          }
+        });
+      });
+      observerButtons.observe(document.body, { childList: true, subtree: true });
+      // /AUTORUN
       
       // Observar cambios en el DOM para cuando el sidebar se cargue
       const observer = new MutationObserver((mutations) => {
