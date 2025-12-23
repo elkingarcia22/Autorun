@@ -1118,16 +1118,48 @@
                         });
                     } else {
                         allRadioButtons.forEach((rb, idx) => {
+                            const computedStyle = window.getComputedStyle(rb);
+                            const isVisible = rb.offsetParent !== null;
+                            const display = computedStyle.display;
+                            const visibility = computedStyle.visibility;
+                            const opacity = computedStyle.opacity;
+                            
                             console.log(`🔍 [POC RadioButton] RadioButton ${idx + 1}:`, {
-                                visible: rb.offsetParent !== null,
-                                display: window.getComputedStyle(rb).display,
+                                visible: isVisible,
+                                display: display || '(vacío)',
+                                visibility: visibility,
+                                opacity: opacity,
                                 position: rb.getBoundingClientRect(),
                                 html: rb.outerHTML.substring(0, 150)
                             });
+                            
+                            // Si no es visible, intentar forzar visibilidad
+                            if (!isVisible || !display || display === 'none') {
+                                console.warn(`⚠️ [POC RadioButton] RadioButton ${idx + 1} no visible, forzando estilos...`);
+                                rb.style.display = 'flex';
+                                rb.style.visibility = 'visible';
+                                rb.style.opacity = '1';
+                                
+                                // Verificar CSS cargado
+                                const radioButtonCSS = Array.from(document.styleSheets).find(sheet => {
+                                    try {
+                                        return sheet.href && sheet.href.includes('radio-button.css');
+                                    } catch (e) {
+                                        return false;
+                                    }
+                                });
+                                
+                                if (radioButtonCSS) {
+                                    console.log(`✅ [POC RadioButton] CSS de radio-button encontrado: ${radioButtonCSS.href}`);
+                                } else {
+                                    console.error(`❌ [POC RadioButton] CSS de radio-button NO encontrado`);
+                                }
+                            }
                         });
                         
                         if (debugEl) {
-                            debugEl.textContent = `${allRadioButtons.length} RadioButtons visibles en DOM`;
+                            const visibleCount = Array.from(allRadioButtons).filter(rb => rb.offsetParent !== null).length;
+                            debugEl.textContent = `${allRadioButtons.length} RadioButtons en DOM, ${visibleCount} visibles`;
                         }
                     }
                 }, 500);
