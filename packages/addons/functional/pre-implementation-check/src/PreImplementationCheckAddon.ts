@@ -1399,7 +1399,19 @@ Problema: Falta interceptación de ContentManager para eliminar HeaderSection
       canImplement: (
         componentName: string,
         options?: { skipCheck?: boolean }
-      ) => this.canImplement(componentName, options),
+      ) => {
+        console.log(
+          `   🔍 [getServices.canImplement] Llamando con: componentName=${componentName}, options=${JSON.stringify(options)}`
+        );
+        console.log(
+          `   🔍 [getServices.canImplement] options?.skipCheck=${options?.skipCheck}`
+        );
+        const result = this.canImplement(componentName, options);
+        console.log(`   🔍 [getServices.canImplement] Resultado:`, {
+          allowed: result.then ? 'PROMISE' : (result as any).allowed,
+        });
+        return result;
+      },
       markStepCompleted: (componentName: string, step: string) =>
         this.markStepCompleted(componentName, step as any),
       getChecklist: (componentName: string) => this.getChecklist(componentName),
