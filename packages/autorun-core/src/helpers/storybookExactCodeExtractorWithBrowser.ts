@@ -68,55 +68,46 @@ export async function extractExactCodeFromStorybookWithBrowser(
     }
   }
 
-  // 2. ✅ CAMBIO: Usar Docs en lugar de Story (código visible con botones "Show code")
-  const docsUrl = `${activeConfig.url}/?path=/docs/${componentId}--docs`;
-  console.log(`   📚 URL de Docs: ${docsUrl}`);
-  console.log(`   📋 Historia final: ${finalStoryName}`);
+  // 2. ⚠️ NUEVO: Intentar múltiples fuentes en orden de prioridad
+  // Prioridad 1: URL de la historia directamente (más confiable)
+  // Prioridad 2: Código fuente local
+  // Prioridad 3: Docs (requiere Browser MCP)
 
-  // 3. ⚠️ CRÍTICO: Esta función requiere que el agente ejecute Browser MCP
-  // Docs muestra código directamente con botones "Show code", más fácil de extraer
-  console.log(
-    `   ⚠️ IMPORTANTE: El agente DEBE navegar a Docs (código visible con botones "Show code")`
-  );
-  console.log(`   📋 Instrucciones para el agente:`);
-  console.log(`      1. Navegar a: ${docsUrl}`);
-  console.log(
-    `      2. El código está visible con botones "Show code"/"Hide code"`
-  );
-  console.log(
-    `      3. Extraer código desde el snapshot (buscar código de historia "${finalStoryName}")`
-  );
-
-  // ✅ IMPLEMENTADO: Intentar fetch primero, luego Browser MCP si falla
   let codeFromTab: { html: string; js?: string } | null = null;
 
+  // INTENTO 1: Extraer desde URL de la historia directamente
+  const storyUrl = `${activeConfig.url}/?path=/story/${componentId}--${finalStoryName}`;
+  console.log(`   📚 Intentando extraer desde URL de historia: ${storyUrl}`);
+
   try {
-    // Intento 1: Fetch HTML (rápido pero puede fallar si el código es dinámico)
-    const html = await fetchStorybookPage(docsUrl);
+    const html = await fetchStorybookPage(storyUrl);
     try {
-      // ✅ CAMBIO: Extraer código desde Docs en lugar de pestaña "Code"
-      codeFromTab = await extractCodeFromDocs(html, finalStoryName);
+      // Intentar extraer desde pestaña "Code" de la historia
+      const { extractCodeFromCodeTab } = await import(
+        './storybookExactCodeExtractor.js'
+      );
+      codeFromTab = await extractCodeFromCodeTab(html);
       console.log(
-        `   ✅ Código extraído desde HTML: ${codeFromTab.html.length} caracteres`
+        `   ✅ Código extraído desde historia: ${codeFromTab.html.length} caracteres`
       );
     } catch (extractError: any) {
       console.warn(
-        `   ⚠️ No se pudo extraer código desde HTML: ${extractError.message}`
+        `   ⚠️ No se pudo extraer desde historia: ${extractError.message}`
       );
-      // Continuar con Browser MCP
     }
   } catch (fetchError: any) {
-    console.warn(`   ⚠️ Error obteniendo HTML: ${fetchError.message}`);
-    // Continuar con Browser MCP
+    console.warn(
+      `   ⚠️ Error obteniendo HTML de historia: ${fetchError.message}`
+    );
   }
 
-  // Intento 2: Browser MCP (si fetch falló o no encontró código)
+  // INTENTO 2: Extraer desde código fuente local (más confiable)
   if (!codeFromTab || !codeFromTab.html) {
-    console.log(`   📋 Intentando extraer código usando Browser MCP...`);
-
-    // ⚠️ NUEVO: Intentar obtener código fuente como fallback primero
+    console.log(`   📋 Intentando extraer desde código fuente local...`);
     try {
-      const { getSourceCode } = await import('./storybookExactCodeExtractor');
+      const { getSourceCode } = await import(
+        './storybookExactCodeExtractor.js'
+      );
       const sourceCode = await getSourceCode(componentId);
 
       if (sourceCode) {
@@ -137,17 +128,44 @@ export async function extractExactCodeFromStorybookWithBrowser(
         `   ⚠️ No se pudo obtener código desde código fuente: ${sourceError.message}`
       );
     }
+  }
 
-    // Si aún no tenemos código, lanzar error especial para Browser MCP
-    if (!codeFromTab || !codeFromTab.html) {
-      const { extractCodeWithBrowserMCP, generateBrowserMCPInstructions } =
-        await import('./browserMCPAutoExtractor.js');
+  // INTENTO 3: Intentar desde Docs (último recurso, puede requerir Browser MCP)
+  if (!codeFromTab || !codeFromTab.html) {
+    console.log(`   📋 Intentando extraer desde Docs...`);
+    const docsUrl = `${activeConfig.url}/?path=/docs/${componentId}--docs`;
 
-      console.log(generateBrowserMCPInstructions(docsUrl, finalStoryName));
-
-      // Lanzar error especial que el agente puede detectar
-      throw await extractCodeWithBrowserMCP(docsUrl, finalStoryName);
+    try {
+      const html = await fetchStorybookPage(docsUrl);
+      try {
+        codeFromTab = await extractCodeFromDocs(html, finalStoryName);
+        console.log(
+          `   ✅ Código extraído desde Docs: ${codeFromTab.html.length} caracteres`
+        );
+      } catch (extractError: any) {
+        console.warn(
+          `   ⚠️ No se pudo extraer código desde Docs: ${extractError.message}`
+        );
+      }
+    } catch (fetchError: any) {
+      console.warn(
+        `   ⚠️ Error obteniendo HTML de Docs: ${fetchError.message}`
+      );
     }
+  }
+
+  // Si aún no tenemos código, lanzar error
+  if (!codeFromTab || !codeFromTab.html) {
+    const error = new Error(
+      `No se pudo extraer código desde ninguna fuente. ` +
+        `Intentado: 1) URL de historia, 2) Código fuente local, 3) Docs. ` +
+        `El código puede estar cargado dinámicamente y requerir Browser MCP.`
+    ) as any;
+    error.type = 'BROWSER_MCP_REQUIRED';
+    error.docsUrl = `${activeConfig.url}/?path=/docs/${componentId}--docs`;
+    error.storyUrl = storyUrl;
+    error.storyName = finalStoryName;
+    throw error;
   }
 
   // 4. Extraer CSS requerido
