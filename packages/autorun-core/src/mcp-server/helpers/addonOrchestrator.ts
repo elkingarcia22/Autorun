@@ -116,11 +116,24 @@ export class AddonOrchestrator {
     console.log(`\n🔧 [Addon Orchestrator] Ejecutando fase de preparación...`);
     console.log(`   Componente: ${componentName} (${componentId})`);
     console.log(
-      `   🔍 [executePreparationPhase] autoMarkSteps=${autoMarkSteps} (tipo: ${typeof autoMarkSteps}, valor booleano: ${Boolean(autoMarkSteps)})`
+      `   🔍 [executePreparationPhase] autoMarkSteps=${autoMarkSteps} (tipo: ${typeof autoMarkSteps}, valor booleano: ${Boolean(autoMarkSteps)}, === true: ${autoMarkSteps === true})`
     );
 
+    // ⚠️ CRÍTICO: Si autoMarkSteps=true, inicializar result con allowed=true INMEDIATAMENTE
     const result: PreparationPhaseResult = {
-      canImplement: { allowed: true },
+      canImplement:
+        autoMarkSteps === true
+          ? {
+              allowed: true,
+              checklist: {
+                storybookVercel: true,
+                storybookMCP: true,
+                documentation: true,
+                comparison: false,
+              },
+              missingSteps: [],
+            }
+          : { allowed: true },
     };
 
     try {
