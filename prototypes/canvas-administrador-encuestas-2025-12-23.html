@@ -2734,8 +2734,44 @@
         console.log('✅ [Prueba Button+Modal] Modal HTML manual creado');
       }
 
+      // ⚠️ CRÍTICO: Usar código exacto de ButtonProvider.ts y ModalProvider.ts
+      // Cargar directamente desde Storybook para garantizar código idéntico
+      async function loadUBITSComponents() {
+        try {
+          // Cargar ButtonProvider.js desde Storybook
+          const buttonScript = document.createElement('script');
+          buttonScript.src = 'https://ubits-storybook10.vercel.app/components/button/src/ButtonProvider.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT';
+          buttonScript.type = 'module';
+          
+          // Cargar ModalProvider.js desde Storybook
+          const modalScript = document.createElement('script');
+          modalScript.src = 'https://ubits-storybook10.vercel.app/components/modal/src/ModalProvider.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT';
+          modalScript.type = 'module';
+          
+          // Esperar a que ambos scripts se carguen
+          await Promise.all([
+            new Promise((resolve, reject) => {
+              buttonScript.onload = resolve;
+              buttonScript.onerror = reject;
+              document.head.appendChild(buttonScript);
+            }),
+            new Promise((resolve, reject) => {
+              modalScript.onload = resolve;
+              modalScript.onerror = reject;
+              document.head.appendChild(modalScript);
+            })
+          ]);
+          
+          console.log('✅ [Prueba Button+Modal] Componentes UBITS cargados desde Storybook');
+          return true;
+        } catch (error) {
+          console.error('❌ [Prueba Button+Modal] Error cargando componentes:', error);
+          return false;
+        }
+      }
+      
       // Inicializar cuando el DOM esté listo Y después de que ContentManager cargue el contenido
-      function waitForContentManager() {
+      async function waitForContentManager() {
         // Verificar que ContentManager haya cargado el contenido inicial
         const contentArea = document.querySelector('.content-area');
         const container = document.getElementById('button-open-modal-container');
@@ -2747,10 +2783,19 @@
         
         // Esperar a que ContentManager.updateContent() termine de cargar el contenido inicial
         if (window.UBITS_ContentManager && window.UBITS_ContentManager.currentSection) {
-          // ContentManager está listo, esperar un poco más para que el contenido se renderice
-          setTimeout(() => {
-            initButtonAndModal();
-          }, 1000);
+          // ContentManager está listo, cargar componentes UBITS primero
+          const componentsLoaded = await loadUBITSComponents();
+          if (componentsLoaded) {
+            // Esperar un poco más para que los componentes se registren
+            setTimeout(() => {
+              initButtonAndModal();
+            }, 500);
+          } else {
+            // Fallback: intentar de todas formas
+            setTimeout(() => {
+              initButtonAndModal();
+            }, 1000);
+          }
         } else {
           // ContentManager aún no está listo
           setTimeout(waitForContentManager, 100);
