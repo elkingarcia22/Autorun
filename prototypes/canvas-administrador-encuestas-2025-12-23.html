@@ -2623,6 +2623,11 @@
     setTimeout(function() {
       overlay.style.opacity = '1';
       drawer.style.transform = 'translateX(0)';
+      
+      // ⚠️ CRÍTICO: Crear componentes Input de UBITS después de que el drawer se abra
+      setTimeout(function() {
+        createFilterInputs();
+      }, 300);
     }, 10);
     
     // Cerrar al hacer click en overlay
