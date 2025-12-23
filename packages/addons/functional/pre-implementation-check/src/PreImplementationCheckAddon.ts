@@ -177,11 +177,16 @@ export class PreImplementationCheckAddon implements IFunctionalAddon {
     console.log(`🔍 [verifyOnDetection] Add-on activo: ${this.active}`);
 
     // ⚠️ CRÍTICO: Verificar si estamos en modo autorun.apply() usando variable global
+    // Verificar en múltiples lugares para asegurar compatibilidad con Node.js
     const isAutorunApplyMode =
-      typeof globalThis !== 'undefined' &&
-      globalThis.__AUTORUN_APPLY_MODE__ === true;
+      (typeof globalThis !== 'undefined' &&
+        (globalThis as any).__AUTORUN_APPLY_MODE__ === true) ||
+      (typeof global !== 'undefined' &&
+        (global as any).__AUTORUN_APPLY_MODE__ === true) ||
+      (typeof window !== 'undefined' &&
+        (window as any).__AUTORUN_APPLY_MODE__ === true);
     console.log(
-      `   🔍 [verifyOnDetection] Modo autorun.apply(): ${isAutorunApplyMode}`
+      `   🔍 [verifyOnDetection] Modo autorun.apply(): ${isAutorunApplyMode} (globalThis=${typeof globalThis !== 'undefined' ? (globalThis as any).__AUTORUN_APPLY_MODE__ : 'undefined'}, global=${typeof global !== 'undefined' ? (global as any).__AUTORUN_APPLY_MODE__ : 'undefined'})`
     );
 
     // ⚠️ CRÍTICO: Si estamos en modo autorun.apply(), SIEMPRE permitir automáticamente
@@ -454,11 +459,16 @@ ${storyBasedPlan ? `\n📖 Plan basado en historias disponible. Implementar UNA 
     console.log(`🔍 [canImplement] Opciones:`, options);
 
     // ⚠️ CRÍTICO: Verificar si estamos en modo autorun.apply() usando variable global
+    // Verificar en múltiples lugares para asegurar compatibilidad con Node.js
     const isAutorunApplyMode =
-      typeof globalThis !== 'undefined' &&
-      globalThis.__AUTORUN_APPLY_MODE__ === true;
+      (typeof globalThis !== 'undefined' &&
+        (globalThis as any).__AUTORUN_APPLY_MODE__ === true) ||
+      (typeof global !== 'undefined' &&
+        (global as any).__AUTORUN_APPLY_MODE__ === true) ||
+      (typeof window !== 'undefined' &&
+        (window as any).__AUTORUN_APPLY_MODE__ === true);
     console.log(
-      `   🔍 [canImplement] Modo autorun.apply(): ${isAutorunApplyMode}`
+      `   🔍 [canImplement] Modo autorun.apply(): ${isAutorunApplyMode} (globalThis=${typeof globalThis !== 'undefined' ? (globalThis as any).__AUTORUN_APPLY_MODE__ : 'undefined'}, global=${typeof global !== 'undefined' ? (global as any).__AUTORUN_APPLY_MODE__ : 'undefined'})`
     );
 
     // ⚠️ CRÍTICO: Si estamos en modo autorun.apply(), SIEMPRE permitir automáticamente
