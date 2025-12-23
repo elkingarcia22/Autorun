@@ -1133,12 +1133,64 @@
                 }, 500);
             }
 
+            // ⚠️ CRÍTICO: Interceptar ContentManager.updateContent para preservar RadioButtons
+            function interceptContentManager() {
+                if (!window.UBITS_ContentManager) {
+                    setTimeout(interceptContentManager, 100);
+                    return;
+                }
+
+                const originalUpdateContent = window.UBITS_ContentManager.updateContent;
+                if (!originalUpdateContent) {
+                    setTimeout(interceptContentManager, 100);
+                    return;
+                }
+
+                // Interceptar updateContent
+                window.UBITS_ContentManager.updateContent = function(section, subSection) {
+                    // Guardar los RadioButtons antes de que se eliminen
+                    const container = document.getElementById('radiobutton-group-tipo');
+                    let savedRadioButtons = null;
+                    if (container && container.children.length > 0) {
+                        savedRadioButtons = container.innerHTML;
+                        console.log('🔵 [POC RadioButton] Guardando RadioButtons antes de updateContent');
+                    }
+
+                    // Llamar al método original
+                    const result = originalUpdateContent.call(this, section, subSection);
+
+                    // Restaurar RadioButtons después de updateContent
+                    if (savedRadioButtons) {
+                        setTimeout(() => {
+                            const newContainer = document.getElementById('radiobutton-group-tipo');
+                            if (newContainer && !newContainer.children.length) {
+                                console.log('🔵 [POC RadioButton] Restaurando RadioButtons después de updateContent');
+                                newContainer.innerHTML = savedRadioButtons;
+                                
+                                // Re-inicializar los RadioButtons si es necesario
+                                setTimeout(initRadioButtons, 100);
+                            }
+                        }, 100);
+                    } else {
+                        // Si no había RadioButtons guardados, inicializar después de updateContent
+                        setTimeout(initRadioButtons, 100);
+                    }
+
+                    return result;
+                };
+
+                console.log('✅ [POC RadioButton] ContentManager.updateContent interceptado');
+            }
+
+            // Interceptar ContentManager
+            interceptContentManager();
+
             // Inicializar cuando el DOM esté listo
             if (document.readyState === 'loading') {
                 document.addEventListener('DOMContentLoaded', initRadioButtons);
             } else {
-                // Esperar un poco para que el DOM esté listo
-                setTimeout(initRadioButtons, 100);
+                // Esperar un poco para que el DOM esté listo y después de que ContentManager haya cargado
+                setTimeout(initRadioButtons, 1000);
             }
         })();
     </script>
