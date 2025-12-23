@@ -13,6 +13,14 @@ export interface StoryFile {
   filePath: string;
   content: string;
   found: boolean;
+  type: 'provider' | 'readme' | 'component';
+}
+
+export interface ComponentFiles {
+  componentId: string;
+  provider?: StoryFile;
+  readme?: StoryFile;
+  component?: StoryFile;
 }
 
 /**
@@ -41,7 +49,8 @@ function normalizeComponentId(componentId: string): string[] {
 }
 
 /**
- * Genera rutas posibles para buscar archivo .stories.ts
+ * Genera rutas posibles para buscar archivos del componente
+ * Busca Provider, Component y README
  */
 function generatePossiblePaths(componentId: string): string[] {
   const normalized = normalizeComponentId(componentId);
@@ -49,23 +58,40 @@ function generatePossiblePaths(componentId: string): string[] {
 
   for (const id of normalized) {
     // Rutas en vendor/ubits/packages/components/
-    paths.push(`vendor/ubits/packages/components/${id}/src/${id}.stories.ts`);
-    paths.push(`vendor/ubits/packages/components/${id}/src/${id}.stories.tsx`);
+    // Provider (función de renderizado)
+    paths.push(
+      `vendor/ubits/packages/components/${id}/src/${capitalizeFirst(id)}Provider.ts`
+    );
+    paths.push(`vendor/ubits/packages/components/${id}/src/${id}Provider.ts`);
+
+    // README (documentación con ejemplos)
+    paths.push(`vendor/ubits/packages/components/${id}/README.md`);
 
     // Rutas en vendor/ubits/packages/addons/
-    paths.push(`vendor/ubits/packages/addons/${id}/src/${id}.stories.ts`);
-    paths.push(`vendor/ubits/packages/addons/${id}/src/${id}.stories.tsx`);
+    paths.push(
+      `vendor/ubits/packages/addons/${id}/src/${capitalizeFirst(id)}Provider.ts`
+    );
+    paths.push(`vendor/ubits/packages/addons/${id}/src/${id}Provider.ts`);
+    paths.push(`vendor/ubits/packages/addons/${id}/README.md`);
 
     // Rutas con ID original
     paths.push(
-      `vendor/ubits/packages/components/${componentId}/src/${componentId}.stories.ts`
+      `vendor/ubits/packages/components/${componentId}/src/${capitalizeFirst(componentId)}Provider.ts`
     );
     paths.push(
-      `vendor/ubits/packages/components/${componentId}/src/${componentId}.stories.tsx`
+      `vendor/ubits/packages/components/${componentId}/src/${componentId}Provider.ts`
     );
+    paths.push(`vendor/ubits/packages/components/${componentId}/README.md`);
   }
 
   return paths;
+}
+
+/**
+ * Capitaliza la primera letra
+ */
+function capitalizeFirst(str: string): string {
+  return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
 /**
