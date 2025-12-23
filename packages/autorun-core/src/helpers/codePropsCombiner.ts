@@ -260,7 +260,49 @@ export async function validateCompleteStructure(
 }
 
 /**
+ * Busca la historia "code" en el componente
+ *
+ * ⚠️ NUEVO: Priorizar historia "code" que muestra código directamente sin botones
+ * (Sugerencia del usuario)
+ */
+export async function findCodeStory(
+  componentId: string
+): Promise<string | null> {
+  console.log(
+    `🔍 [Story Finder] Buscando historia "code" para: ${componentId}`
+  );
+
+  try {
+    // Importar función para obtener historias
+    const { getComponentStories } = await import('./storybookStories.js');
+
+    const storiesResult = await getComponentStories('', componentId);
+    const stories = storiesResult.stories;
+
+    // Buscar historia "code" específicamente
+    const codeStory = stories.find((s) => s.name === 'code');
+
+    if (codeStory) {
+      console.log(
+        `   ✅ Historia "code" encontrada: ${codeStory.name} (ID: ${codeStory.id})`
+      );
+      return codeStory.name;
+    } else {
+      console.log(
+        `   ⚠️ Historia "code" no encontrada en ${stories.length} historias disponibles`
+      );
+      return null;
+    }
+  } catch (error: any) {
+    console.warn(`   ⚠️ Error buscando historia "code": ${error.message}`);
+    return null;
+  }
+}
+
+/**
  * Busca historia "implementation" automáticamente
+ *
+ * ⚠️ MEJORADO: Ahora busca "code" primero antes de buscar "implementation"
  */
 export async function findImplementationStory(
   componentId: string
@@ -270,6 +312,13 @@ export async function findImplementationStory(
   );
 
   try {
+    // ⚠️ NUEVO: Buscar historia "code" primero (sugerencia del usuario)
+    const codeStory = await findCodeStory(componentId);
+    if (codeStory) {
+      console.log(`   ✅ Usando historia "code" encontrada: ${codeStory}`);
+      return codeStory;
+    }
+
     // Importar función para obtener historias
     const { getComponentStories } = await import('./storybookStories.js');
 
