@@ -1276,15 +1276,158 @@
                                         activeTabId: 'lista-encuestas',
                                         onTabChange: (tabId, tabElement) => {
                                             console.log('🔵 [Encuestas Tabs] Tab cambiado:', tabId);
-                                            // Aquí puedes agregar lógica para cambiar el contenido según el tab activo
+                                            
+                                            // Ocultar todos los contenidos
+                                            const listaContent = document.getElementById('lista-encuestas-content');
+                                            const datosContent = document.getElementById('datos-demograficos-content');
+                                            
+                                            if (listaContent) listaContent.style.display = 'none';
+                                            if (datosContent) datosContent.style.display = 'none';
+                                            
+                                            // Mostrar el contenido correspondiente
+                                            if (tabId === 'lista-encuestas' && listaContent) {
+                                                listaContent.style.display = 'block';
+                                                // Inicializar DataTable si aún no está inicializada
+                                                initializeEncuestasDataTable();
+                                            } else if (tabId === 'datos-demograficos' && datosContent) {
+                                                datosContent.style.display = 'block';
+                                            }
                                         }
                                     }, 'encuestas-tabs-container');
                                     
                                     console.log('✅ [Encuestas Tabs] Tabs inicializados correctamente');
+                                    
+                                    // Mostrar el contenido inicial del tab activo
+                                    const listaContent = document.getElementById('lista-encuestas-content');
+                                    if (listaContent) {
+                                        listaContent.style.display = 'block';
+                                    }
+                                }
+                                
+                                // Función para inicializar la DataTable de encuestas
+                                function initializeEncuestasDataTable() {
+                                    const container = document.getElementById('encuestas-datatable-container');
+                                    if (!container) {
+                                        console.warn('⚠️ [Encuestas DataTable] Contenedor no encontrado');
+                                        return;
+                                    }
+                                    
+                                    // Verificar si ya está inicializada
+                                    if (container.querySelector('.ubits-data-table')) {
+                                        console.log('✅ [Encuestas DataTable] Ya está inicializada');
+                                        return;
+                                    }
+                                    
+                                    // Verificar que createDataTable esté disponible
+                                    if (typeof window.createDataTable !== 'function') {
+                                        console.warn('⚠️ [Encuestas DataTable] window.createDataTable no está disponible, reintentando...');
+                                        setTimeout(initializeEncuestasDataTable, 100);
+                                        return;
+                                    }
+                                    
+                                    // Crear DataTable con columnas y datos de encuestas
+                                    window.createDataTable({
+                                        containerId: 'encuestas-datatable-container',
+                                        columns: [
+                                            { id: 'nombre', title: 'Nombre de la encuesta', type: 'nombre' },
+                                            { id: 'fecha-creacion', title: 'Fecha de creación', type: 'fecha' },
+                                            { id: 'fecha-cierre', title: 'Fecha de cierre', type: 'fecha' },
+                                            { id: 'participantes', title: 'Participantes', type: 'nombre' },
+                                            { id: 'estado', title: 'Estado', type: 'estado' },
+                                            { id: 'progreso', title: 'Progreso', type: 'progreso' }
+                                        ],
+                                        rows: [
+                                            {
+                                                id: 1,
+                                                data: {
+                                                    nombre: 'Encuesta de Satisfacción 2024',
+                                                    'fecha-creacion': '2024-01-15',
+                                                    'fecha-cierre': '2024-02-15',
+                                                    participantes: '150/200',
+                                                    estado: 'activo',
+                                                    progreso: 75
+                                                }
+                                            },
+                                            {
+                                                id: 2,
+                                                data: {
+                                                    nombre: 'Evaluación de Desempeño Q1',
+                                                    'fecha-creacion': '2024-03-01',
+                                                    'fecha-cierre': '2024-03-31',
+                                                    participantes: '200/200',
+                                                    estado: 'completado',
+                                                    progreso: 100
+                                                }
+                                            },
+                                            {
+                                                id: 3,
+                                                data: {
+                                                    nombre: 'Encuesta de Clima Laboral',
+                                                    'fecha-creacion': '2024-04-10',
+                                                    'fecha-cierre': '2024-05-10',
+                                                    participantes: '85/150',
+                                                    estado: 'activo',
+                                                    progreso: 57
+                                                }
+                                            },
+                                            {
+                                                id: 4,
+                                                data: {
+                                                    nombre: 'Feedback de Capacitación',
+                                                    'fecha-creacion': '2024-05-20',
+                                                    'fecha-cierre': '2024-06-20',
+                                                    participantes: '0/100',
+                                                    estado: 'pendiente',
+                                                    progreso: 0
+                                                }
+                                            },
+                                            {
+                                                id: 5,
+                                                data: {
+                                                    nombre: 'Encuesta de Bienestar',
+                                                    'fecha-creacion': '2024-06-01',
+                                                    'fecha-cierre': '2024-07-01',
+                                                    participantes: '120/180',
+                                                    estado: 'activo',
+                                                    progreso: 67
+                                                }
+                                            }
+                                        ],
+                                        columnReorderable: true,
+                                        rowReorderable: false,
+                                        rowExpandable: true,
+                                        columnSortable: true,
+                                        showCheckbox: true,
+                                        showColumnMenu: true,
+                                        showContextMenu: true,
+                                        header: {
+                                            title: 'Lista de encuestas',
+                                            counter: true,
+                                            displayedItems: 5,
+                                            totalItems: 5,
+                                            primaryButton: {
+                                                text: 'Nueva encuesta',
+                                                onClick: () => {
+                                                    console.log('🔵 [Encuestas] Crear nueva encuesta');
+                                                }
+                                            },
+                                            secondaryButtons: {
+                                                search: true,
+                                                filter: true,
+                                                columnSelector: true
+                                            }
+                                        }
+                                    });
+                                    
+                                    console.log('✅ [Encuestas DataTable] DataTable inicializada correctamente');
                                 }
                                 
                                 // Inicializar tabs después de un pequeño delay para asegurar que los componentes estén listos
-                                setTimeout(initializeEncuestasTabs, 300);
+                                setTimeout(() => {
+                                    initializeEncuestasTabs();
+                                    // Inicializar DataTable después de que los tabs estén listos
+                                    setTimeout(initializeEncuestasDataTable, 500);
+                                }, 300);
                             }, 200); // Delay mínimo solo para asegurar que el DOM esté listo
                         });
                     }
