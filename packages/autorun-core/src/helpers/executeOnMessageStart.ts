@@ -42,7 +42,8 @@ export function setAutorunApplyMode(enabled: boolean) {
 }
 
 export async function executeOnMessageStart(
-  userMessage: string
+  userMessage: string,
+  options?: { skipPreCheck?: boolean }
 ): Promise<MessageStartResult> {
   console.log(
     '\n🚀 [Execute On Message Start] ========================================'
@@ -274,15 +275,16 @@ export async function executeOnMessageStart(
         );
         // ✅ MEJORA: Pasar skipCheck=true cuando estamos en modo autorun.apply()
         const currentMode = getAutorunApplyMode();
+        const skipCheck = options?.skipPreCheck || currentMode;
         console.log(
-          `   🔍 [Execute On Message Start] isAutorunApplyMode=${currentMode}`
+          `   🔍 [Execute On Message Start] isAutorunApplyMode=${currentMode}, skipPreCheck=${options?.skipPreCheck}, skipCheck=${skipCheck}`
         );
         console.log(
           `   🔍 [Execute On Message Start] Estado completo: ${JSON.stringify(autorunApplyState)}`
         );
         const verification = await (preCheckAddon as any).verifyOnDetection?.(
           detection.componentName!,
-          currentMode ? { skipCheck: true } : undefined
+          skipCheck ? { skipCheck: true } : undefined
         );
         console.log(
           `   🔍 [Execute On Message Start] Resultado de verifyOnDetection:`,
