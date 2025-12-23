@@ -88,10 +88,9 @@ export async function autoCallStorybookMCP(
       );
 
       // 3. Determinar servidor MCP dinámicamente según el Storybook activo
-      // ⚠️ CRÍTICO: NO usar hardcodeado "storybook-ubits"
-      // El servidor MCP puede ser diferente según el Storybook activo
-      // Por ahora, el servidor MCP es el mismo pero la URL debe ser la del Storybook activo
-      let mcpServer = 'storybook'; // Default (servidor unificado)
+      // ⚠️ CRÍTICO: Usar el nombre real del servidor configurado en Cursor
+      // El servidor MCP está configurado como "storybook-ubits" en Cursor
+      let mcpServer = 'storybook-ubits'; // ⚠️ CORREGIDO: Usar el nombre real del servidor configurado
 
       // ⚠️ TEMPORALMENTE DESHABILITADO: Solo usando UBITS Storybook
       // Si el Storybook activo es Libraries UI, usar el mismo servidor pero con URL de Libraries UI
@@ -120,11 +119,20 @@ export async function autoCallStorybookMCP(
       console.log(
         `[AUTORUN_STORYBOOK_MCP]${componentName}:${storybookId}[/AUTORUN_STORYBOOK_MCP]`
       );
+      // ⚠️ NUEVO MCP: Convertir storybookId a nombre de componente
+      const { storybookIdToComponentName } = await import(
+        './storybookMCPNameMapper.js'
+      );
+      const mcpComponentName =
+        storybookIdToComponentName(storybookId) || componentName;
+
       console.log(`📚 [Storybook MCP Auto Caller] El agente DEBE ejecutar:`);
       console.log(`   call_mcp_tool({`);
       console.log(`     server: "${mcpServer}",`);
-      console.log(`     toolName: "mcp_storybook_getComponentsProps",`);
-      console.log(`     arguments: { componentIds: ["${storybookId}"] }`);
+      console.log(`     toolName: "getComponentsProps",`); // ⚠️ NUEVO MCP: Sin prefijo mcp_storybook_
+      console.log(
+        `     arguments: { componentNames: ["${mcpComponentName}"] }`
+      ); // ⚠️ NUEVO MCP: Usar componentNames
       console.log(`   })`);
       console.log(
         `📚 [Storybook MCP Auto Caller] ⚠️ CRÍTICO: NO continuar con implementación hasta obtener props`
@@ -173,7 +181,7 @@ CUANDO se detecten componentes, DEBES:
 3. Ejecutar automáticamente (SIN preguntar):
    call_mcp_tool({
      server: "storybook", // Servidor unificado
-     toolName: "mcp_storybook_getComponentsProps",
+     toolName: "getComponentsProps", // ⚠️ NUEVO MCP: Sin prefijo mcp_storybook_
      arguments: { componentIds: [storybookId] }
    })
    ⚠️ IMPORTANTE: El servidor MCP debe estar configurado con la URL del Storybook activo
