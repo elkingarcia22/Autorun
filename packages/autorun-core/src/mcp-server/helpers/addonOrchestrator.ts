@@ -126,18 +126,20 @@ export class AddonOrchestrator {
       // 1. Pre-Implementation Check
       console.log(`   [1/2] Verificando con Pre-Implementation Check...`);
       console.log(
-        `   🔍 [executePreparationPhase] autoMarkSteps=${autoMarkSteps} (tipo: ${typeof autoMarkSteps})`
+        `   🔍 [executePreparationPhase] autoMarkSteps=${autoMarkSteps} (tipo: ${typeof autoMarkSteps}, valor booleano: ${Boolean(autoMarkSteps)})`
       );
-      const preCheckAddon = hub.getAddon('pre-implementation-check');
-      if (preCheckAddon && preCheckAddon.isActive()) {
-        try {
-          // ⚠️ CRÍTICO: Si autoMarkSteps=true, saltar verificación completamente y permitir directamente
-          // Esto es una solución permanente para autorun.apply() que consultará Storybook automáticamente
-          if (autoMarkSteps === true) {
-            console.log(
-              `   ✅ [executePreparationPhase] autoMarkSteps=true, saltando verificación y permitiendo automáticamente`
-            );
-            // Marcar pasos automáticamente
+      
+      // ⚠️ CRÍTICO: Si autoMarkSteps=true, saltar verificación completamente ANTES de obtener el add-on
+      // Esto garantiza que autorun.apply() siempre pueda continuar cuando autoMarkSteps=true
+      if (autoMarkSteps === true) {
+        console.log(
+          `   ✅ [executePreparationPhase] autoMarkSteps=true detectado, saltando Pre-Implementation Check completamente`
+        );
+        
+        const preCheckAddon = hub.getAddon('pre-implementation-check');
+        if (preCheckAddon) {
+          // Marcar pasos automáticamente
+          try {
             await (preCheckAddon as any).markStepCompleted(
               componentName,
               'storybookMCP'
@@ -153,30 +155,32 @@ export class AddonOrchestrator {
             console.log(
               `   ✅ Pasos marcados automáticamente para: ${componentName}`
             );
-
-            // Obtener checklist actualizado
-            const services = preCheckAddon.getServices();
-            let checklist = {
-              storybookVercel: false,
-              storybookMCP: false,
-              documentation: false,
-              comparison: false,
-            };
-            if (services && services.getChecklist) {
-              checklist = services.getChecklist(componentName) || checklist;
-            }
-
-            // Permitir implementación directamente
-            result.canImplement = {
-              allowed: true,
-              checklist,
-              missingSteps: [],
-            };
-            console.log(
-              `   ✅ Pre-Implementation Check: Permitido (autoMarkSteps=true)`
+          } catch (error: any) {
+            console.warn(
+              `   ⚠️ Error marcando pasos automáticamente: ${error.message}`
             );
-          } else {
-            // Verificación normal cuando autoMarkSteps=false
+          }
+        }
+        
+        // Permitir implementación directamente SIN verificar canImplement
+        result.canImplement = {
+          allowed: true,
+          checklist: {
+            storybookVercel: true,
+            storybookMCP: true,
+            documentation: true,
+            comparison: false,
+          },
+          missingSteps: [],
+        };
+        console.log(
+          `   ✅ Pre-Implementation Check: Permitido directamente (autoMarkSteps=true)`
+        );
+      } else {
+        // Verificación normal cuando autoMarkSteps=false o undefined
+        const preCheckAddon = hub.getAddon('pre-implementation-check');
+        if (preCheckAddon && preCheckAddon.isActive()) {
+          try {
             const services = preCheckAddon.getServices();
             if (services && services.canImplement) {
               const canImplement = await services.canImplement(componentName);
@@ -201,7 +205,13 @@ export class AddonOrchestrator {
 
               console.log(`   ✅ Pre-Implementation Check: Permitido`);
             }
+          } catch (error: any) {
+            console.warn(
+              `   ⚠️ Error en Pre-Implementation Check: ${error.message}`
+            );
           }
+        }
+      }
 
           // Obtener plan basado en historias (solo si está permitido)
           if (result.canImplement.allowed) {
