@@ -2416,10 +2416,77 @@
       });
       
       console.log('✅ Drawer creado correctamente:', drawerInstance);
+      
+      // ⚠️ CRÍTICO: Crear componentes Input de UBITS después de que el drawer se abra
+      // Esperar a que el drawer se renderice completamente
+      setTimeout(function() {
+        createFilterInputs();
+      }, 300);
     } catch (error) {
       console.error('❌ Error al crear drawer:', error);
       console.log('🔄 Intentando crear drawer manualmente...');
       createDrawerManually();
+    }
+  }
+
+  // Función para crear inputs de filtro usando componentes UBITS Input
+  function createFilterInputs() {
+    console.log('🔍 Creando inputs de filtro con componentes UBITS...');
+    
+    // Verificar que window.createInput esté disponible
+    let createInputFn = null;
+    if (typeof window.createInput === 'function') {
+      createInputFn = window.createInput;
+    } else if (window.UBITS && window.UBITS.Input && typeof window.UBITS.Input.create === 'function') {
+      createInputFn = window.UBITS.Input.create;
+    }
+    
+    if (!createInputFn) {
+      console.warn('⚠️ window.createInput no está disponible, reintentando...');
+      setTimeout(createFilterInputs, 500);
+      return;
+    }
+    
+    // Crear Input 1
+    const container1 = document.getElementById('filter-input-1-container');
+    if (container1) {
+      try {
+        createInputFn({
+          containerId: 'filter-input-1-container',
+          label: 'Filtro 1',
+          placeholder: 'Buscar...',
+          type: 'text',
+          size: 'md',
+          state: 'default',
+          showLabel: true
+        });
+        console.log('✅ Input 1 creado correctamente');
+      } catch (error) {
+        console.error('❌ Error creando Input 1:', error);
+      }
+    } else {
+      console.warn('⚠️ Contenedor filter-input-1-container no encontrado');
+    }
+    
+    // Crear Input 2
+    const container2 = document.getElementById('filter-input-2-container');
+    if (container2) {
+      try {
+        createInputFn({
+          containerId: 'filter-input-2-container',
+          label: 'Filtro 2',
+          placeholder: 'Buscar...',
+          type: 'text',
+          size: 'md',
+          state: 'default',
+          showLabel: true
+        });
+        console.log('✅ Input 2 creado correctamente');
+      } catch (error) {
+        console.error('❌ Error creando Input 2:', error);
+      }
+    } else {
+      console.warn('⚠️ Contenedor filter-input-2-container no encontrado');
     }
   }
 
