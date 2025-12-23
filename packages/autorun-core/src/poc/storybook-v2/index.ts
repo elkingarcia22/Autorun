@@ -6,8 +6,10 @@
 
 export {
   findStoryFile,
+  findComponentFiles,
   mapComponentNameToId,
   type StoryFile,
+  type ComponentFiles,
 } from './fileExtractor.js';
 
 export { parseStoryCode, type ParsedStory } from './codeParser.js';
