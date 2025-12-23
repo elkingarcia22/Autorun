@@ -1041,11 +1041,28 @@
                     }
                 ];
 
+                // Verificar que el CSS esté cargado
+                const radioButtonCSS = Array.from(document.styleSheets).find(sheet => {
+                    try {
+                        return sheet.href && sheet.href.includes('radio-button.css');
+                    } catch (e) {
+                        return false;
+                    }
+                });
+                
+                if (radioButtonCSS) {
+                    console.log(`✅ [POC RadioButton] CSS de radio-button encontrado: ${radioButtonCSS.href}`);
+                } else {
+                    console.warn(`⚠️ [POC RadioButton] CSS de radio-button NO encontrado - los estilos pueden no aplicarse`);
+                }
+
                 // Crear cada RadioButton usando el código exacto del Storybook
                 radioOptions.forEach((options, index) => {
                     // Crear contenedor individual para cada RadioButton
                     const radioContainer = document.createElement('div');
                     radioContainer.id = `radiobutton-container-${index}`;
+                    radioContainer.style.display = 'block';
+                    radioContainer.style.width = '100%';
                     container.appendChild(radioContainer);
 
                     // ⭐ CÓDIGO EXACTO desde Implementation story
@@ -1064,8 +1081,18 @@
 
                         console.log(`✅ [POC RadioButton] RadioButton "${options.label}" creado`);
                         console.log(`🔍 [POC RadioButton] Elemento creado:`, result.element);
-                        console.log(`🔍 [POC RadioButton] Elemento visible:`, result.element.offsetParent !== null);
-                        console.log(`🔍 [POC RadioButton] Elemento HTML:`, result.element.outerHTML.substring(0, 200));
+                        
+                        // Forzar estilos inline para asegurar visibilidad
+                        const radioElement = result.element;
+                        radioElement.style.display = 'flex';
+                        radioElement.style.alignItems = 'center';
+                        radioElement.style.gap = '8px';
+                        radioElement.style.cursor = 'pointer';
+                        radioElement.style.userSelect = 'none';
+                        
+                        console.log(`🔍 [POC RadioButton] Estilos inline aplicados`);
+                        console.log(`🔍 [POC RadioButton] Elemento visible:`, radioElement.offsetParent !== null);
+                        console.log(`🔍 [POC RadioButton] Elemento HTML:`, radioElement.outerHTML.substring(0, 200));
                         
                         // Verificar que el elemento esté en el DOM
                         const checkElement = document.getElementById(`radio-${options.name}-${options.value}`);
