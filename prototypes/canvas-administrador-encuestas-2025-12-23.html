@@ -1414,6 +1414,7 @@
                                         showCheckbox: true,
                                         showColumnMenu: true,
                                         showContextMenu: true,
+                                        lazyLoad: false, // Desactivar lazy load para mostrar todos los items
                                         header: {
                                             title: 'Lista de encuestas',
                                             counter: true,
@@ -1421,14 +1422,26 @@
                                             totalItems: 5,
                                             primaryButton: {
                                                 text: 'Nueva encuesta',
+                                                icon: 'plus',
                                                 onClick: () => {
                                                     console.log('🔵 [Encuestas] Crear nueva encuesta');
                                                 }
                                             },
-                                            secondaryButtons: {
-                                                search: true,
-                                                filter: true,
-                                                columnSelector: true
+                                            searchButton: {
+                                                placeholder: 'Buscar encuestas...',
+                                                onChange: (value) => {
+                                                    console.log('🔵 [Encuestas] Buscar:', value);
+                                                }
+                                            },
+                                            filterButton: {
+                                                onClick: () => {
+                                                    console.log('🔵 [Encuestas] Abrir filtros');
+                                                }
+                                            },
+                                            columnSelectorButton: {
+                                                onClick: () => {
+                                                    console.log('🔵 [Encuestas] Seleccionar columnas');
+                                                }
                                             }
                                         }
                                     });
