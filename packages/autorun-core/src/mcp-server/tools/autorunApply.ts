@@ -269,7 +269,7 @@ async function autorunApplyStrict(
         console.log(
           `   ✅ Props obtenidas desde MCP: ${componentProps.length} props`
         );
-        
+
         // ✅ MEJORA: Marcar paso del checklist como completado automáticamente
         await markChecklistStep('storybookMCP');
       }
@@ -370,7 +370,7 @@ async function autorunApplyStrict(
         throw new Error('No se pudo extraer código desde Storybook');
       }
       console.log(`   ✅ Código extraído: ${exactCode.html.length} caracteres`);
-      
+
       // ✅ MEJORA: Marcar paso del checklist como completado automáticamente
       // (extraer código implica navegar a Storybook en Vercel)
       await markChecklistStep('storybookVercel');
