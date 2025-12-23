@@ -709,17 +709,23 @@ ${missingSteps.map((step) => `  - ${step}`).join('\n')}
       }
     }
 
+    // ⚠️ CRÍTICO: Si estamos en modo autorun.apply() o skipCheck=true, NO incluir reason
+    // para evitar que se use en el objeto final de autorun.apply()
+    const shouldOmitReason =
+      isAutorunApplyModeFinal || options?.skipCheck === true || allowed; // Si está permitido, no incluir reason
+
     const result = {
       allowed,
       checklist,
       missingSteps,
-      reason: attempt.reason,
+      reason: shouldOmitReason ? undefined : attempt.reason,
     };
 
     console.log(`🔍 [canImplement] Resultado final:`, {
       allowed: result.allowed,
       missingStepsCount: result.missingSteps.length,
       reason: result.reason || 'N/A',
+      shouldOmitReason,
     });
     console.log(`🔍 [canImplement] ========================================\n`);
 
