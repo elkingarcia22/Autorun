@@ -1233,6 +1233,50 @@
                                         debugLayout();
                                     }, 300);
                                 });
+                                
+                                // ========================================
+                                // INICIALIZAR TABS DE ENCUESTAS
+                                // ========================================
+                                function initializeEncuestasTabs() {
+                                    const tabsContainer = document.getElementById('encuestas-tabs-container');
+                                    if (!tabsContainer) {
+                                        console.warn('⚠️ [Encuestas Tabs] Contenedor no encontrado');
+                                        return;
+                                    }
+                                    
+                                    // Verificar que createTabs esté disponible
+                                    if (typeof window.createTabs !== 'function') {
+                                        console.warn('⚠️ [Encuestas Tabs] window.createTabs no está disponible, reintentando...');
+                                        setTimeout(initializeEncuestasTabs, 100);
+                                        return;
+                                    }
+                                    
+                                    // Crear tabs con iconos
+                                    window.createTabs({
+                                        tabs: [
+                                            {
+                                                id: 'lista-encuestas',
+                                                label: 'Lista de encuestas',
+                                                icon: 'clipboard-list'
+                                            },
+                                            {
+                                                id: 'datos-demograficos',
+                                                label: 'Datos demográficos',
+                                                icon: 'chart-bar'
+                                            }
+                                        ],
+                                        activeTabId: 'lista-encuestas',
+                                        onTabChange: (tabId, tabElement) => {
+                                            console.log('🔵 [Encuestas Tabs] Tab cambiado:', tabId);
+                                            // Aquí puedes agregar lógica para cambiar el contenido según el tab activo
+                                        }
+                                    }, 'encuestas-tabs-container');
+                                    
+                                    console.log('✅ [Encuestas Tabs] Tabs inicializados correctamente');
+                                }
+                                
+                                // Inicializar tabs después de un pequeño delay para asegurar que los componentes estén listos
+                                setTimeout(initializeEncuestasTabs, 300);
                             }, 200); // Delay mínimo solo para asegurar que el DOM esté listo
                         });
                     }
