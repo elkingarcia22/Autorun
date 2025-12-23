@@ -1527,10 +1527,14 @@ async function autorunApplyModeB(
           `   ✅ Componente desde blueprint: ${firstComponent.componentName}`
         );
       } else {
-        result = await handleUserMessage(input.message);
+        result = await handleUserMessage(input.message, {
+          skipPreCheck: true, // ⚠️ CRÍTICO: autorun.apply() consultará Storybook automáticamente
+        });
       }
     } else {
-      result = await handleUserMessage(input.message);
+      result = await handleUserMessage(input.message, {
+        skipPreCheck: true, // ⚠️ CRÍTICO: autorun.apply() consultará Storybook automáticamente
+      });
     }
 
     if (result.blocked || !result.componentName) {
