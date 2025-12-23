@@ -76,7 +76,39 @@ export async function extractExactCodeFromStorybookWithBrowser(
   // TODO: Implementar extracción desde Browser MCP snapshot
   try {
     const html = await fetchStorybookPage(storyUrl);
-    const codeFromTab = await extractCodeFromCodeTab(html);
+    let codeFromTab;
+    try {
+      codeFromTab = await extractCodeFromCodeTab(html);
+    } catch (extractError: any) {
+      // ⚠️ FALLBACK: Si no se puede extraer desde HTML, intentar obtener código fuente directamente
+      console.warn(
+        `   ⚠️ No se pudo extraer código desde HTML: ${extractError.message}`
+      );
+      console.log(`   📋 Intentando obtener código fuente directamente...`);
+
+      const { getSourceCode } = await import('./storybookExactCodeExtractor');
+      const sourceCode = await getSourceCode(componentId);
+
+      if (sourceCode) {
+        // Extraer código de la historia específica desde el código fuente
+        const storyCode = extractStoryCodeFromSource(
+          sourceCode,
+          finalStoryName
+        );
+        if (storyCode) {
+          codeFromTab = { html: storyCode, js: undefined };
+          console.log(
+            `   ✅ Código obtenido desde código fuente: ${storyCode.length} caracteres`
+          );
+        } else {
+          throw new Error(
+            `No se encontró código para la historia "${finalStoryName}" en el código fuente`
+          );
+        }
+      } else {
+        throw extractError; // Re-lanzar error original si no hay código fuente
+      }
+    }
 
     // 4. Extraer CSS requerido
     const cssUrls = await extractCSSUrls(componentId, activeConfig.url);
