@@ -224,6 +224,7 @@ export class PreImplementationCheckAddon implements IFunctionalAddon {
     }
 
     // ✅ MEJORA: Si skipCheck=true (desde autorun.apply()), permitir automáticamente
+    // ⚠️ CRÍTICO: Verificar skipCheck ANTES de cualquier otra cosa para evitar bloqueos
     const skipCheckValue = options?.skipCheck === true;
     console.log(
       `   🔍 [verifyOnDetection] Verificando skipCheck: options=${JSON.stringify(options)}, options?.skipCheck=${options?.skipCheck}, skipCheckValue=${skipCheckValue}, typeof=${typeof options?.skipCheck}`
@@ -243,6 +244,7 @@ export class PreImplementationCheckAddon implements IFunctionalAddon {
         `🔍 [verifyOnDetection] ========================================\n`
       );
       // ⚠️ CRÍTICO: Retornar INMEDIATAMENTE sin continuar con ninguna verificación
+      // NO llamar a canImplement() cuando skipCheck=true
       return { blocked: false };
     }
     console.log(
@@ -288,20 +290,33 @@ export class PreImplementationCheckAddon implements IFunctionalAddon {
     }
 
     // ✅ MEJORA: Pasar skipCheck si viene de autorun.apply()
-    // ⚠️ CRÍTICO: Si ya marcamos los pasos arriba cuando skipCheck=true, no deberíamos llegar aquí
-    // Pero por si acaso, también pasar skipCheck a canImplement()
+    // ⚠️ CRÍTICO: Si skipCheck=true, NO deberíamos llegar aquí porque ya retornamos arriba
+    // Pero por si acaso, también pasar skipCheck a canImplement() y verificar ANTES de bloquear
     console.log(
       `   🔍 [verifyOnDetection] Llamando canImplement con options?.skipCheck=${options?.skipCheck}`
     );
+
+    // ⚠️ DOBLE VERIFICACIÓN: Si skipCheck=true, NO bloquear incluso si canImplement() retorna false
+    const skipCheckFinal = options?.skipCheck === true;
+
     const check = await this.canImplement(
       componentName,
-      options?.skipCheck ? { skipCheck: true } : undefined
+      skipCheckFinal ? { skipCheck: true } : undefined
     );
     console.log(`   🔍 [verifyOnDetection] Resultado de canImplement:`, {
       allowed: check.allowed,
       reason: check.reason,
       missingSteps: check.missingSteps,
+      skipCheckFinal,
     });
+
+    // ⚠️ CRÍTICO: Si skipCheck=true, SIEMPRE permitir incluso si canImplement() retorna false
+    if (skipCheckFinal) {
+      console.log(
+        `   ✅ [verifyOnDetection] skipCheck=true detectado después de canImplement(), permitiendo automáticamente`
+      );
+      return { blocked: false };
+    }
 
     if (!check.allowed) {
       const errorMessage = `
