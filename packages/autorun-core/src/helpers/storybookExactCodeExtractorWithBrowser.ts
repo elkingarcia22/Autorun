@@ -487,13 +487,16 @@ function extractStoryCodeFromSource(
   // ⚠️ NUEVO: Priorizar extracción desde parameters.docs.source.code (más confiable)
   // Buscar específicamente para historias "Implementation" o "implementation"
   if (storyName.toLowerCase().includes('implementation')) {
-    // Buscar parameters.docs.source.code
-    const sourceCodeRegex =
-      /parameters:\s*\{[\s\S]*?docs:\s*\{[\s\S]*?source:\s*\{[\s\S]*?code:\s*[`'"]([\s\S]*?)[`'"]/i;
-    const sourceMatch = sourceCode.match(sourceCodeRegex);
+    // Buscar la historia específica primero
+    const storySection = sourceCode.match(
+      new RegExp(
+        `export\\s+const\\s+${storyName}[\\s\\S]*?code:\\s*\`([\\s\\S]*?)\``,
+        'i'
+      )
+    );
 
-    if (sourceMatch && sourceMatch[1]) {
-      const code = sourceMatch[1]
+    if (storySection && storySection[1]) {
+      const code = storySection[1]
         .replace(/\\n/g, '\n')
         .replace(/\\`/g, '`')
         .replace(/\\'/g, "'")
@@ -501,7 +504,27 @@ function extractStoryCodeFromSource(
         .trim();
 
       if (code.length > 20) {
-        console.log(`   ✅ Código extraído desde parameters.docs.source.code`);
+        console.log(
+          `   ✅ Código extraído desde parameters.docs.source.code (${code.length} caracteres)`
+        );
+        return code;
+      }
+    }
+
+    // Fallback: buscar cualquier code: `...` en el archivo (puede estar en cualquier historia)
+    const anyCodeMatch = sourceCode.match(/code:\s*`([\s\S]*?)`/);
+    if (anyCodeMatch && anyCodeMatch[1]) {
+      const code = anyCodeMatch[1]
+        .replace(/\\n/g, '\n')
+        .replace(/\\`/g, '`')
+        .replace(/\\'/g, "'")
+        .replace(/\\"/g, '"')
+        .trim();
+
+      if (code.length > 20) {
+        console.log(
+          `   ✅ Código extraído desde code: (${code.length} caracteres)`
+        );
         return code;
       }
     }
