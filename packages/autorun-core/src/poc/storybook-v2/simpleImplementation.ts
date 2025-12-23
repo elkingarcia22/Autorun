@@ -19,7 +19,9 @@ export interface ImplementationResult {
   error?: string;
   warnings?: string[];
   files?: {
+    stories?: string;
     provider?: string;
+    options?: string;
     readme?: string;
   };
 }
@@ -39,13 +41,13 @@ export async function implementComponentSimple(
     // 1. Buscar archivos del componente
     const files = await findComponentFiles(componentId);
 
-    if (!files.provider && !files.readme) {
+    if (!files.stories && !files.provider && !files.readme) {
       return {
         success: false,
         error: `No se encontraron archivos para el componente ${componentId}`,
         warnings: [
-          'No se encontró Provider ni README',
-          'Verifica que el componente existe en vendor/ubits/packages/components/',
+          'No se encontró .stories.ts, Provider ni README',
+          'Verifica que el componente existe en vendor/ubits/packages/storybook/stories/components/',
         ],
       };
     }
@@ -75,6 +77,11 @@ export async function implementComponentSimple(
     console.log(`   📊 Tamaño: ${generated.complete.length} caracteres`);
 
     const warnings: string[] = [];
+    if (!files.stories) {
+      warnings.push(
+        'No se encontró .stories.ts - usando Provider/README como fallback'
+      );
+    }
     if (!files.provider) {
       warnings.push('No se encontró Provider.ts - usando solo README');
     }
@@ -87,7 +94,9 @@ export async function implementComponentSimple(
       html: generated.complete,
       warnings: warnings.length > 0 ? warnings : undefined,
       files: {
+        stories: files.stories?.filePath,
         provider: files.provider?.filePath,
+        options: files.options?.filePath,
         readme: files.readme?.filePath,
       },
     };
@@ -137,4 +146,5 @@ export async function generateComponentHTML(
       error: error.message,
     };
   }
+}
 }
