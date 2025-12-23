@@ -434,17 +434,175 @@ async function extractCSSUrls(
 ): Promise<string[]> {
   const cssUrls: string[] = [];
 
-  // CSS principal del componente
-  cssUrls.push(
-    `${storybookBaseUrl}/components/${componentId}/src/styles/${componentId}.css`
-  );
+  // Normalizar componentId (remover prefijos)
+  const normalizedId = componentId
+    .replace('feedback-', '')
+    .replace('data-', '')
+    .replace('formularios-', '')
+    .replace('metricas-', '')
+    .replace('charts-', '')
+    .toLowerCase();
 
-  // CSS de dependencias comunes (button, etc.)
-  if (componentId.includes('modal')) {
+  // CSS principal del componente - Intentar múltiples rutas
+  const possibleCSSPaths = [
+    `${storybookBaseUrl}/components/${normalizedId}/src/styles/${normalizedId}.css`,
+    `${storybookBaseUrl}/components/${normalizedId}/dist/${normalizedId}.css`,
+    `${storybookBaseUrl}/components/${componentId}/src/styles/${componentId}.css`,
+    `${storybookBaseUrl}/components/${componentId}/dist/${componentId}.css`,
+  ];
+
+  // Verificar cuál existe (usar HEAD request)
+  for (const cssUrl of possibleCSSPaths) {
+    try {
+      const response = await fetch(cssUrl, { method: 'HEAD' });
+      if (response.ok) {
+        cssUrls.push(cssUrl);
+        console.log(`   ✅ CSS encontrado: ${cssUrl}`);
+        break; // Usar el primero que existe
+      }
+    } catch (error) {
+      // Continuar con siguiente
+    }
+  }
+
+  // Si no se encontró, agregar la ruta más común (se intentará cargar)
+  if (cssUrls.length === 0) {
+    cssUrls.push(
+      `${storybookBaseUrl}/components/${normalizedId}/src/styles/${normalizedId}.css`
+    );
+    console.warn(
+      `   ⚠️ CSS no verificado, usando ruta estándar: ${cssUrls[0]}`
+    );
+  }
+
+  // CSS de dependencias comunes
+  if (componentId.includes('modal') || normalizedId.includes('modal')) {
     cssUrls.push(`${storybookBaseUrl}/components/button/src/styles/button.css`);
   }
 
   return cssUrls;
+}
+
+/**
+ * Detecta y extrae la URL del bundle UMD de un componente
+ */
+export async function extractUMDBundleUrl(
+  componentId: string,
+  storybookBaseUrl: string
+): Promise<string | null> {
+  // Normalizar componentId
+  const normalizedId = componentId
+    .replace('feedback-', '')
+    .replace('data-', '')
+    .replace('formularios-', '')
+    .replace('metricas-', '')
+    .replace('charts-', '')
+    .toLowerCase();
+
+  // Patrones posibles para bundles UMD
+  const possiblePaths = [
+    `${storybookBaseUrl}/components/${normalizedId}/dist/${normalizedId}.umd.js`,
+    `${storybookBaseUrl}/components/${normalizedId}/dist/index.umd.js`,
+    `${storybookBaseUrl}/components/${normalizedId}/dist/${normalizedId}.js`,
+    `${storybookBaseUrl}/components/${componentId}/dist/${componentId}.umd.js`,
+    `${storybookBaseUrl}/components/${componentId}/dist/index.umd.js`,
+    `${storybookBaseUrl}/components/${componentId}/dist/${componentId}.js`,
+  ];
+
+  // Verificar cuál existe
+  for (const url of possiblePaths) {
+    try {
+      const response = await fetch(url, { method: 'HEAD' });
+      if (response.ok) {
+        console.log(`   ✅ Bundle UMD encontrado: ${url}`);
+        return url;
+      }
+    } catch (error) {
+      // Continuar con siguiente
+    }
+  }
+
+  console.warn(`   ⚠️ No se encontró bundle UMD para ${componentId}`);
+  return null;
+}
+
+/**
+ * Extrae código de inicialización desde el HTML extraído
+ */
+export function extractInitializationCode(
+  html: string,
+  componentId: string
+): string | null {
+  // Normalizar componentId para buscar patrones
+  const normalizedId = componentId
+    .replace('feedback-', '')
+    .replace('data-', '')
+    .replace('formularios-', '')
+    .replace('metricas-', '')
+    .replace('charts-', '')
+    .toLowerCase();
+
+  // Convertir a PascalCase para nombres de funciones
+  const pascalCase = normalizedId
+    .split('-')
+    .map((word) => {
+      const acronyms = ['nps', 'api', 'ui', 'ux', 'id', 'url'];
+      if (acronyms.includes(word.toLowerCase())) {
+        return word.toUpperCase();
+      }
+      return word.charAt(0).toUpperCase() + word.slice(1);
+    })
+    .join('');
+
+  // Buscar patrones comunes de inicialización:
+  // 1. window.createDataView, window.createButton, etc.
+  const createPattern = new RegExp(
+    `window\\.create${pascalCase}\\s*\\([\\s\\S]*?\\);?`,
+    'i'
+  );
+
+  // 2. window.UBITS.DataView.create, etc.
+  const ubitsCreatePattern = new RegExp(
+    `window\\.UBITS\\.${pascalCase}\\.create\\s*\\([\\s\\S]*?\\);?`,
+    'i'
+  );
+
+  // 3. window.UBITSDataView.createDataView, etc.
+  const ubitsGlobalPattern = new RegExp(
+    `window\\.UBITS${pascalCase}\\.create${pascalCase}\\s*\\([\\s\\S]*?\\);?`,
+    'i'
+  );
+
+  // 4. Patrón genérico: window.UBITS.*.create(...)
+  const genericUBITSPattern =
+    /window\.UBITS\.[\s\S]*?\.create\s*\([\s\S]*?\);?/i;
+
+  // 5. Patrón genérico: window.create*(...)
+  const genericCreatePattern = /window\.create\w+\s*\([\s\S]*?\);?/i;
+
+  // Priorizar: específico > genérico
+  const patterns = [
+    createPattern,
+    ubitsCreatePattern,
+    ubitsGlobalPattern,
+    genericUBITSPattern,
+    genericCreatePattern,
+  ];
+
+  for (const pattern of patterns) {
+    const match = html.match(pattern);
+    if (match) {
+      console.log(
+        `   ✅ Código de inicialización encontrado: ${match[0].substring(0, 50)}...`
+      );
+      return match[0].trim();
+    }
+  }
+
+  console.warn(
+    `   ⚠️ No se encontró código de inicialización para ${componentId}`
+  );
+  return null;
 }
 
 /**
