@@ -1287,8 +1287,10 @@
                                             // Mostrar el contenido correspondiente
                                             if (tabId === 'lista-encuestas' && listaContent) {
                                                 listaContent.style.display = 'block';
-                                                // Inicializar DataTable si aún no está inicializada
-                                                initializeEncuestasDataTable();
+                                                // Inicializar DataTable después de que el contenido esté visible
+                                                setTimeout(() => {
+                                                    initializeEncuestasDataTable();
+                                                }, 100);
                                             } else if (tabId === 'datos-demograficos' && datosContent) {
                                                 datosContent.style.display = 'block';
                                             }
@@ -1301,12 +1303,24 @@
                                     const listaContent = document.getElementById('lista-encuestas-content');
                                     if (listaContent) {
                                         listaContent.style.display = 'block';
+                                        // Inicializar DataTable después de que el contenido esté visible
+                                        setTimeout(() => {
+                                            initializeEncuestasDataTable();
+                                        }, 100);
                                     }
                                 }
                                 
                                 // Función para inicializar la DataTable de encuestas
                                 function initializeEncuestasDataTable() {
+                                    const listaContent = document.getElementById('lista-encuestas-content');
                                     const container = document.getElementById('encuestas-datatable-container');
+                                    
+                                    // Verificar que el contenedor padre esté visible
+                                    if (!listaContent || listaContent.style.display === 'none') {
+                                        console.warn('⚠️ [Encuestas DataTable] Contenedor padre no está visible');
+                                        return;
+                                    }
+                                    
                                     if (!container) {
                                         console.warn('⚠️ [Encuestas DataTable] Contenedor no encontrado');
                                         return;
@@ -1425,8 +1439,7 @@
                                 // Inicializar tabs después de un pequeño delay para asegurar que los componentes estén listos
                                 setTimeout(() => {
                                     initializeEncuestasTabs();
-                                    // Inicializar DataTable después de que los tabs estén listos
-                                    setTimeout(initializeEncuestasDataTable, 500);
+                                    // La DataTable se inicializará automáticamente cuando se muestre el contenido del tab
                                 }, 300);
                             }, 200); // Delay mínimo solo para asegurar que el DOM esté listo
                         });
