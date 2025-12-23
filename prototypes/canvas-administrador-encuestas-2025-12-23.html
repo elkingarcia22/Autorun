@@ -1099,6 +1099,257 @@
                     }, 500);
                     
                     // ========================================
+                    // CREAR DATA VIEW
+                    // ========================================
+                    setTimeout(() => {
+                        const dataViewContainer = document.getElementById('data-view-container');
+                        if (dataViewContainer) {
+                            // Intentar usar window.createDataView primero
+                            if (window.createDataView) {
+                                try {
+                                    window.createDataView({
+                                        containerId: 'data-view-container',
+                                        products: [
+                                            {
+                                                id: '1',
+                                                image: '/images/cards-learn/administracion-efectiva-del-tiempo.jpg',
+                                                imageAlt: 'Bamboo Watch',
+                                                category: 'Accessories',
+                                                name: 'Bamboo Watch',
+                                                rating: 5,
+                                                price: 65,
+                                                stockStatus: 'INSTOCK',
+                                                inWishlist: false
+                                            },
+                                            {
+                                                id: '2',
+                                                image: '/images/cards-learn/segmenta-la-experiencia-del-cliente.jpg',
+                                                imageAlt: 'Black Watch',
+                                                category: 'Accessories',
+                                                name: 'Black Watch',
+                                                rating: 4,
+                                                price: 72,
+                                                stockStatus: 'INSTOCK',
+                                                inWishlist: false
+                                            },
+                                            {
+                                                id: '3',
+                                                image: '/images/cards-learn/introduccion-al-backend-node-js.jpeg',
+                                                imageAlt: 'Blue Band',
+                                                category: 'Fitness',
+                                                name: 'Blue Band',
+                                                rating: 3,
+                                                price: 79,
+                                                stockStatus: 'LOWSTOCK',
+                                                inWishlist: false
+                                            }
+                                        ],
+                                        size: 'md',
+                                        showCategory: true,
+                                        showRating: true,
+                                        showPrice: true,
+                                        showWishlist: true,
+                                        showBuyButton: true,
+                                        buyButtonText: 'Buy Now',
+                                        buyButtonIcon: 'shopping-cart',
+                                        wishlistIcon: 'heart',
+                                        onProductClick: (product, index, element) => {
+                                            console.log('Producto clickeado:', product);
+                                        },
+                                        onBuyClick: (product, index, element) => {
+                                            console.log('Comprar:', product);
+                                        },
+                                        onWishlistClick: (product, index, element) => {
+                                            product.inWishlist = !product.inWishlist;
+                                            console.log('Wishlist actualizado:', product);
+                                        }
+                                    });
+                                    console.log('✅ DataView creado con window.createDataView');
+                                } catch (error) {
+                                    console.error('❌ Error creando DataView:', error);
+                                }
+                            }
+                            // Fallback a window.UBITS.DataView.create
+                            else if (window.UBITS && window.UBITS.DataView && window.UBITS.DataView.create) {
+                                try {
+                                    const dataViewElement = window.UBITS.DataView.create({
+                                        products: [
+                                            {
+                                                id: '1',
+                                                image: '/images/cards-learn/administracion-efectiva-del-tiempo.jpg',
+                                                imageAlt: 'Bamboo Watch',
+                                                category: 'Accessories',
+                                                name: 'Bamboo Watch',
+                                                rating: 5,
+                                                price: 65,
+                                                stockStatus: 'INSTOCK',
+                                                inWishlist: false
+                                            },
+                                            {
+                                                id: '2',
+                                                image: '/images/cards-learn/segmenta-la-experiencia-del-cliente.jpg',
+                                                imageAlt: 'Black Watch',
+                                                category: 'Accessories',
+                                                name: 'Black Watch',
+                                                rating: 4,
+                                                price: 72,
+                                                stockStatus: 'INSTOCK',
+                                                inWishlist: false
+                                            },
+                                            {
+                                                id: '3',
+                                                image: '/images/cards-learn/introduccion-al-backend-node-js.jpeg',
+                                                imageAlt: 'Blue Band',
+                                                category: 'Fitness',
+                                                name: 'Blue Band',
+                                                rating: 3,
+                                                price: 79,
+                                                stockStatus: 'LOWSTOCK',
+                                                inWishlist: false
+                                            }
+                                        ],
+                                        size: 'md',
+                                        showCategory: true,
+                                        showRating: true,
+                                        showPrice: true,
+                                        showWishlist: true,
+                                        showBuyButton: true,
+                                        buyButtonText: 'Buy Now',
+                                        buyButtonIcon: 'shopping-cart',
+                                        wishlistIcon: 'heart',
+                                        onProductClick: (product, index, element) => {
+                                            console.log('Producto clickeado:', product);
+                                        },
+                                        onBuyClick: (product, index, element) => {
+                                            console.log('Comprar:', product);
+                                        },
+                                        onWishlistClick: (product, index, element) => {
+                                            product.inWishlist = !product.inWishlist;
+                                            console.log('Wishlist actualizado:', product);
+                                        }
+                                    });
+                                    dataViewContainer.appendChild(dataViewElement);
+                                    console.log('✅ DataView creado y agregado al DOM.');
+                                } catch (error) {
+                                    console.error('❌ Error creando DataView:', error);
+                                }
+                            } else {
+                                console.warn('⚠️ DataView API no disponible aún, reintentando...');
+                                // Reintentar después de 1 segundo
+                                setTimeout(() => {
+                                    if (window.createDataView) {
+                                        try {
+                                            window.createDataView({
+                                                containerId: 'data-view-container',
+                                                products: [
+                                                    {
+                                                        id: '1',
+                                                        image: '/images/cards-learn/administracion-efectiva-del-tiempo.jpg',
+                                                        imageAlt: 'Bamboo Watch',
+                                                        category: 'Accessories',
+                                                        name: 'Bamboo Watch',
+                                                        rating: 5,
+                                                        price: 65,
+                                                        stockStatus: 'INSTOCK',
+                                                        inWishlist: false
+                                                    },
+                                                    {
+                                                        id: '2',
+                                                        image: '/images/cards-learn/segmenta-la-experiencia-del-cliente.jpg',
+                                                        imageAlt: 'Black Watch',
+                                                        category: 'Accessories',
+                                                        name: 'Black Watch',
+                                                        rating: 4,
+                                                        price: 72,
+                                                        stockStatus: 'INSTOCK',
+                                                        inWishlist: false
+                                                    },
+                                                    {
+                                                        id: '3',
+                                                        image: '/images/cards-learn/introduccion-al-backend-node-js.jpeg',
+                                                        imageAlt: 'Blue Band',
+                                                        category: 'Fitness',
+                                                        name: 'Blue Band',
+                                                        rating: 3,
+                                                        price: 79,
+                                                        stockStatus: 'LOWSTOCK',
+                                                        inWishlist: false
+                                                    }
+                                                ],
+                                                size: 'md',
+                                                showCategory: true,
+                                                showRating: true,
+                                                showPrice: true,
+                                                showWishlist: true,
+                                                showBuyButton: true,
+                                                buyButtonText: 'Buy Now',
+                                                buyButtonIcon: 'shopping-cart',
+                                                wishlistIcon: 'heart'
+                                            });
+                                            console.log('✅ DataView creado (reintento)');
+                                        } catch (error) {
+                                            console.error('❌ Error creando DataView (reintento):', error);
+                                        }
+                                    } else if (window.UBITS && window.UBITS.DataView && window.UBITS.DataView.create) {
+                                        try {
+                                            const dataViewElement = window.UBITS.DataView.create({
+                                                products: [
+                                                    {
+                                                        id: '1',
+                                                        image: '/images/cards-learn/administracion-efectiva-del-tiempo.jpg',
+                                                        imageAlt: 'Bamboo Watch',
+                                                        category: 'Accessories',
+                                                        name: 'Bamboo Watch',
+                                                        rating: 5,
+                                                        price: 65,
+                                                        stockStatus: 'INSTOCK',
+                                                        inWishlist: false
+                                                    },
+                                                    {
+                                                        id: '2',
+                                                        image: '/images/cards-learn/segmenta-la-experiencia-del-cliente.jpg',
+                                                        imageAlt: 'Black Watch',
+                                                        category: 'Accessories',
+                                                        name: 'Black Watch',
+                                                        rating: 4,
+                                                        price: 72,
+                                                        stockStatus: 'INSTOCK',
+                                                        inWishlist: false
+                                                    },
+                                                    {
+                                                        id: '3',
+                                                        image: '/images/cards-learn/introduccion-al-backend-node-js.jpeg',
+                                                        imageAlt: 'Blue Band',
+                                                        category: 'Fitness',
+                                                        name: 'Blue Band',
+                                                        rating: 3,
+                                                        price: 79,
+                                                        stockStatus: 'LOWSTOCK',
+                                                        inWishlist: false
+                                                    }
+                                                ],
+                                                size: 'md',
+                                                showCategory: true,
+                                                showRating: true,
+                                                showPrice: true,
+                                                showWishlist: true,
+                                                showBuyButton: true,
+                                                buyButtonText: 'Buy Now',
+                                                buyButtonIcon: 'shopping-cart',
+                                                wishlistIcon: 'heart'
+                                            });
+                                            dataViewContainer.appendChild(dataViewElement);
+                                            console.log('✅ DataView creado (reintento)');
+                                        } catch (error) {
+                                            console.error('❌ Error creando DataView (reintento):', error);
+                                        }
+                                    }
+                                }, 1000);
+                            }
+                        }
+                    }, 2500);
+                    
+                    // ========================================
                     // DIAGNÓSTICO: Línea divisoria del footer
                     // ========================================
                     setTimeout(() => {
