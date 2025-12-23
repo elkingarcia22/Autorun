@@ -785,6 +785,8 @@
 
     <!-- System Loaders -->
     <script src="https://ubits-storybook10.vercel.app/templates/components-loader.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
+    <!-- Script UMD de DataTable (requerido para window.createDataTable) -->
+    <script src="https://ubits-storybook10.vercel.app/components/data-table/dist/data-table.umd.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
     <script src="https://ubits-storybook10.vercel.app/templates/config/products.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
     <script src="https://ubits-storybook10.vercel.app/templates/config/theme-manager.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
     <script src="https://ubits-storybook10.vercel.app/templates/config/responsive-manager.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
@@ -1334,9 +1336,15 @@
                                     
                                     // Verificar que createDataTable esté disponible
                                     if (typeof window.createDataTable !== 'function') {
-                                        console.warn('⚠️ [Encuestas DataTable] window.createDataTable no está disponible, reintentando...');
-                                        setTimeout(initializeEncuestasDataTable, 100);
-                                        return;
+                                        // Intentar obtener desde UBITSDataTable si está disponible
+                                        if (window.UBITSDataTable && typeof window.UBITSDataTable.createDataTable === 'function') {
+                                            window.createDataTable = window.UBITSDataTable.createDataTable;
+                                            console.log('✅ [Encuestas DataTable] window.createDataTable asignado desde UBITSDataTable');
+                                        } else {
+                                            console.warn('⚠️ [Encuestas DataTable] window.createDataTable no está disponible, reintentando...');
+                                            setTimeout(initializeEncuestasDataTable, 100);
+                                            return;
+                                        }
                                     }
                                     
                                     // Crear DataTable con columnas y datos de encuestas
