@@ -20,6 +20,7 @@ import { autorunVerify } from './tools/autorunVerify.js';
 import { autorunChecklist } from './tools/autorunChecklist.js';
 import { autorunStorybookStart } from './tools/autorunStorybookStart.js';
 import { autorunStorybookBuild } from './tools/autorunStorybookBuild.js';
+import { autorunStorybookExtract } from './tools/autorunStorybookExtract.js';
 import { autorunProblemsList } from './tools/autorunProblemsList.js';
 import { autorunGitHubCommit } from './tools/autorunGitHubCommit.js';
 import { autorunLint } from './tools/autorunLint.js';
