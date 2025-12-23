@@ -130,12 +130,23 @@ export class AddonOrchestrator {
       // Esto garantiza que autorun.apply() siempre pueda continuar cuando autoMarkSteps=true
       if (autoMarkSteps === true) {
         console.log(
-          `   ✅ [executePreparationPhase] autoMarkSteps=true detectado, saltando Pre-Implementation Check completamente`
+          `   ✅ [executePreparationPhase] autoMarkSteps=true, retornando allowed=true inmediatamente`
         );
+        // Retornar inmediatamente con allowed=true sin ninguna verificación
+        result.canImplement = {
+          allowed: true,
+          checklist: {
+            storybookVercel: true,
+            storybookMCP: true,
+            documentation: true,
+            comparison: false,
+          },
+          missingSteps: [],
+        };
 
+        // Marcar pasos automáticamente (pero no verificar)
         const preCheckAddon = hub.getAddon('pre-implementation-check');
         if (preCheckAddon) {
-          // Marcar pasos automáticamente
           try {
             await (preCheckAddon as any).markStepCompleted(
               componentName,
@@ -159,20 +170,32 @@ export class AddonOrchestrator {
           }
         }
 
-        // Permitir implementación directamente SIN verificar canImplement
-        result.canImplement = {
-          allowed: true,
-          checklist: {
-            storybookVercel: true,
-            storybookMCP: true,
-            documentation: true,
-            comparison: false,
-          },
-          missingSteps: [],
-        };
+        // Obtener plan basado en historias (solo si está permitido)
+        if (preCheckAddon) {
+          const services = preCheckAddon.getServices();
+          if (services && services.getOrCreateStoryBasedPlan) {
+            try {
+              result.plan = await services.getOrCreateStoryBasedPlan(
+                componentName,
+                componentId
+              );
+              if (result.plan) {
+                console.log(
+                  `   ✅ Plan basado en historias obtenido: ${result.plan.totalSteps} historias`
+                );
+              }
+            } catch (error: any) {
+              console.warn(
+                `   ⚠️ No se pudo obtener plan basado en historias: ${error.message}`
+              );
+            }
+          }
+        }
+
         console.log(
           `   ✅ Pre-Implementation Check: Permitido directamente (autoMarkSteps=true)`
         );
+        return result; // ⚠️ RETORNAR INMEDIATAMENTE sin más verificaciones
       } else {
         // Verificación normal cuando autoMarkSteps=false o undefined
         console.log(`   [1/2] Verificando con Pre-Implementation Check...`);
