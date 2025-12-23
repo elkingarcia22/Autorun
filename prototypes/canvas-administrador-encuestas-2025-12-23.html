@@ -790,7 +790,15 @@
   background: var(--ubits-bg-2);
   border-radius: var(--ubits-border-radius-md);
 ">
-  <div id="filter-button-container"></div>
+  <button 
+    id="filter-button"
+    class="ubits-button ubits-button--secondary ubits-button--md"
+    type="button"
+    aria-label="Abrir filtros"
+    title="Filtros"
+  >
+    <i class="far fa-filter"></i>
+  </button>
 </div>
 <!-- /AUTORUN -->
 
@@ -2271,39 +2279,22 @@
 <script>
   // Botón de filtro que abre drawer
   function initFilterButton() {
-    const container = document.getElementById('filter-button-container');
-    if (!container) {
-      console.warn('⚠️ filter-button-container no encontrado');
-      return;
-    }
-
-    // Verificar que UBITS.Button esté disponible
-    if (!window.UBITS || !window.UBITS.Button) {
-      console.warn('⚠️ window.UBITS.Button no está disponible, reintentando...');
+    const filterButton = document.getElementById('filter-button');
+    if (!filterButton) {
+      console.warn('⚠️ filter-button no encontrado');
       setTimeout(initFilterButton, 500);
       return;
     }
 
-    // Crear botón secundario con icono de filtro usando la API de UBITS
-    const buttonElement = window.UBITS.Button.create({
-      variant: 'secondary',
-      size: 'md',
-      icon: 'filter',
-      iconStyle: 'regular',
-      iconOnly: true,
-      onClick: function() {
-        console.log('🔍 Botón de filtro clickeado');
-        openFilterDrawer();
-      }
+    // Agregar event listener al botón
+    filterButton.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      console.log('🔍 Botón de filtro clickeado');
+      openFilterDrawer();
     });
 
-    // Agregar el botón al contenedor
-    if (buttonElement) {
-      container.appendChild(buttonElement);
-      console.log('✅ Botón de filtro creado correctamente');
-    } else {
-      console.error('❌ No se pudo crear el botón');
-    }
+    console.log('✅ Botón de filtro inicializado correctamente');
   }
 
   // Función para abrir el drawer de filtros
