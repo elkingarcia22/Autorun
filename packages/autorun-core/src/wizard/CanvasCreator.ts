@@ -2182,6 +2182,123 @@ export class CanvasCreator {
   }
 
   /**
+   * Simplifica el template completo para hacer la implementación más fácil
+   * Mantiene todas las funcionalidades (sidebar, navbar, responsive) pero facilita agregar componentes
+   */
+  private async simplifyTemplateForImplementation(
+    templateContent: string
+  ): Promise<string> {
+    // Agregar script de ayuda para preservación automática de componentes
+    const autoPreserveScript = `
+  <script>
+    // ⭐ SISTEMA AUTOMÁTICO DE PRESERVACIÓN DE COMPONENTES
+    // Este script facilita agregar componentes sin que desaparezcan con ContentManager
+    // Mantiene todas las funcionalidades del template (sidebar, navbar, responsive)
+    
+    (function() {
+      // Sistema simple de preservación automática
+      window.AUTORUN_PRESERVE_COMPONENTS = window.AUTORUN_PRESERVE_COMPONENTS || {
+        components: new Map(),
+        
+        // Registrar un componente para preservación automática
+        register: function(componentId, containerId, handlers) {
+          const key = componentId + '-' + containerId;
+          this.components.set(key, {
+            componentId,
+            containerId,
+            handlers: handlers || {},
+            html: null
+          });
+          console.log('🔒 [AutoPreserve] Componente registrado:', componentId, 'en', containerId);
+        },
+        
+        // Guardar HTML antes de que ContentManager lo limpie
+        saveAll: function() {
+          this.components.forEach((comp, key) => {
+            const container = document.getElementById(comp.containerId);
+            if (container) {
+              const block = container.closest('div[style*="margin-top"]') || 
+                           container.closest('div[style*="padding"]') ||
+                           container.parentElement ||
+                           container;
+              if (block) {
+                comp.html = block.outerHTML;
+              }
+            }
+          });
+        },
+        
+        // Restaurar componentes después de ContentManager.updateContent
+        restoreAll: function() {
+          const contentArea = document.querySelector('.content-area');
+          if (!contentArea) return;
+          
+          this.components.forEach((comp, key) => {
+            const existing = document.getElementById(comp.containerId);
+            if (!existing && comp.html) {
+              // Buscar contenedor objetivo
+              let target = contentArea.querySelector('.widget-contenido-principal') ||
+                          contentArea.querySelector('.section-single') ||
+                          contentArea.querySelector('div[class*="widget"]') ||
+                          contentArea;
+              
+              if (target) {
+                target.insertAdjacentHTML('beforeend', comp.html);
+                
+                // Re-agregar event listeners
+                setTimeout(() => {
+                  const restored = document.getElementById(comp.containerId);
+                  if (restored && comp.handlers) {
+                    Object.keys(comp.handlers).forEach(eventName => {
+                      const elements = restored.querySelectorAll('[data-component="' + comp.componentId + '"]');
+                      elements.forEach(el => {
+                        el.addEventListener(eventName, comp.handlers[eventName]);
+                      });
+                    });
+                  }
+                }, 100);
+              }
+            }
+          });
+        }
+      };
+      
+      // Interceptar ContentManager.updateContent automáticamente
+      if (window.UBITS_ContentManager && window.UBITS_ContentManager.updateContent) {
+        const originalUpdateContent = window.UBITS_ContentManager.updateContent;
+        window.UBITS_ContentManager.updateContent = function(section, subSection) {
+          // Guardar componentes antes de limpiar
+          window.AUTORUN_PRESERVE_COMPONENTS.saveAll();
+          
+          // Llamar método original
+          const result = originalUpdateContent.call(this, section, subSection);
+          
+          // Restaurar componentes después
+          setTimeout(() => {
+            window.AUTORUN_PRESERVE_COMPONENTS.restoreAll();
+          }, 500);
+          
+          return result;
+        };
+        console.log('✅ [AutoPreserve] ContentManager.updateContent interceptado automáticamente');
+      }
+    })();
+  </script>`;
+
+    // Insertar el script antes de </body>
+    if (templateContent.includes('</body>')) {
+      templateContent = templateContent.replace(
+        '</body>',
+        `${autoPreserveScript}\n</body>`
+      );
+    } else {
+      templateContent += autoPreserveScript;
+    }
+
+    return templateContent;
+  }
+
+  /**
    * Genera nombre de archivo para el lienzo
    */
   private generateFileName(
