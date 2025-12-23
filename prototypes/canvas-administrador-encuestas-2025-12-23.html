@@ -1152,6 +1152,61 @@
                                         debugLayout();
                                     }, 300);
                                 });
+                                
+                                // ========================================
+                                // CREAR RADIO BUTTON
+                                // ========================================
+                                setTimeout(() => {
+                                    const radioContainer = document.getElementById('radio-button-container-1');
+                                    if (radioContainer && window.UBITS && window.UBITS.RadioButton && window.UBITS.RadioButton.create) {
+                                        try {
+                                            const radioButton = window.UBITS.RadioButton.create({
+                                                label: 'Opción 1',
+                                                value: 'opcion1',
+                                                name: 'tipo-opcion',
+                                                size: 'md',
+                                                state: 'default',
+                                                checked: false,
+                                                disabled: false
+                                            });
+                                            
+                                            if (radioButton && radioButton.element) {
+                                                radioContainer.appendChild(radioButton.element);
+                                                console.log('✅ Radio Button creado exitosamente');
+                                            } else {
+                                                console.error('❌ Radio Button no retornó elemento válido');
+                                            }
+                                        } catch (error) {
+                                            console.error('❌ Error creando Radio Button:', error);
+                                        }
+                                    } else {
+                                        console.warn('⚠️ Radio Button API no disponible aún, reintentando...');
+                                        // Reintentar después de 1 segundo
+                                        setTimeout(() => {
+                                            const retryContainer = document.getElementById('radio-button-container-1');
+                                            if (retryContainer && window.UBITS && window.UBITS.RadioButton && window.UBITS.RadioButton.create) {
+                                                try {
+                                                    const radioButton = window.UBITS.RadioButton.create({
+                                                        label: 'Opción 1',
+                                                        value: 'opcion1',
+                                                        name: 'tipo-opcion',
+                                                        size: 'md',
+                                                        state: 'default',
+                                                        checked: false,
+                                                        disabled: false
+                                                    });
+                                                    
+                                                    if (radioButton && radioButton.element) {
+                                                        retryContainer.appendChild(radioButton.element);
+                                                        console.log('✅ Radio Button creado exitosamente (reintento)');
+                                                    }
+                                                } catch (error) {
+                                                    console.error('❌ Error creando Radio Button (reintento):', error);
+                                                }
+                                            }
+                                        }, 1000);
+                                    }
+                                }, 500);
                             }, 200); // Delay mínimo solo para asegurar que el DOM esté listo
                         });
                     }
