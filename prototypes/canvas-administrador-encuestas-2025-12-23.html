@@ -2358,8 +2358,47 @@
       }
 
       function initButtonAndModal() {
-        // ⚠️ CRÍTICO: Verificar que el contenedor existe ANTES de intentar crear el botón
-        const container = document.getElementById('button-open-modal-container');
+        // ⚠️ CRÍTICO: Crear contenedores dinámicamente si no existen
+        // Esto asegura que funcionen incluso después de que ContentManager limpie el contenido
+        let container = document.getElementById('button-open-modal-container');
+        let modalContainer = document.getElementById('modal-container');
+        
+        // Buscar el contenedor objetivo (.widget-contenido-principal o .content-area)
+        const contentArea = document.querySelector('.content-area');
+        if (!contentArea) {
+          console.log('⏳ [Prueba Button+Modal] Esperando content-area...');
+          setTimeout(initButtonAndModal, 100);
+          return;
+        }
+        
+        const widgetContainer = contentArea.querySelector('.widget-contenido-principal') ||
+                               contentArea.querySelector('.section-single') ||
+                               contentArea.querySelector('div[class*="widget"]') ||
+                               contentArea;
+        
+        // Crear contenedores si no existen
+        if (!container && widgetContainer) {
+          // Crear el bloque completo con los contenedores
+          const blockHTML = `
+            <div style="margin-top: 24px; padding: 24px; background: var(--modifiers-normal-color-light-bg-1, #ffffff); border-radius: 8px; border: 1px solid var(--ubits-border-color, #e0e0e0);">
+              <h2 class="ubits-heading-h3" style="margin-bottom: 16px;">Prueba: Botón + Modal</h2>
+              <p class="ubits-body-md-regular" style="margin-bottom: 16px;">Este ejemplo usa el sistema automático de preservación para mantener los componentes después de ContentManager.updateContent()</p>
+              
+              <!-- Contenedor para el botón -->
+              <div id="button-open-modal-container" style="margin-bottom: 16px;"></div>
+              
+              <!-- Contenedor para el modal (se crea dinámicamente) -->
+              <div id="modal-container"></div>
+            </div>
+          `;
+          
+          widgetContainer.insertAdjacentHTML('beforeend', blockHTML);
+          container = document.getElementById('button-open-modal-container');
+          modalContainer = document.getElementById('modal-container');
+          
+          console.log('✅ [Prueba Button+Modal] Contenedores creados dinámicamente');
+        }
+        
         if (!container) {
           console.log('⏳ [Prueba Button+Modal] Esperando contenedor...');
           
@@ -2370,7 +2409,7 @@
           initButtonAndModal.containerAttempts++;
           
           if (initButtonAndModal.containerAttempts > 100) {
-            console.error('❌ [Prueba Button+Modal] Timeout esperando contenedor. El contenedor puede haber sido eliminado por ContentManager.');
+            console.error('❌ [Prueba Button+Modal] Timeout esperando contenedor.');
             return;
           }
           
