@@ -1304,11 +1304,15 @@
                                     // Mostrar el contenido inicial del tab activo
                                     const listaContent = document.getElementById('lista-encuestas-content');
                                     if (listaContent) {
+                                        console.log('🔵 [Encuestas Tabs] Mostrando contenido inicial de lista-encuestas');
                                         listaContent.style.display = 'block';
                                         // Inicializar DataTable después de que el contenido esté visible
                                         setTimeout(() => {
+                                            console.log('🔵 [Encuestas Tabs] Llamando initializeEncuestasDataTable()...');
                                             initializeEncuestasDataTable();
                                         }, 100);
+                                    } else {
+                                        console.warn('⚠️ [Encuestas Tabs] listaContent no encontrado');
                                     }
                                 }
                                 
