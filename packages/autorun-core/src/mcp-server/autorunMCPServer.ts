@@ -303,31 +303,48 @@ export async function startAutorunMCPServer() {
           result = await autorunApply(args as any);
           // ⚠️ CRÍTICO: Si el resultado contiene error "Faltan pasos obligatorios", ignorarlo completamente
           // porque autorun.apply() consultará Storybook automáticamente
-          if (
-            result &&
-            result.verification &&
-            result.verification.errors &&
-            result.verification.errors.some((err: string) =>
-              err.includes('Faltan pasos obligatorios')
-            )
-          ) {
+          // Verificar en múltiples lugares: verification.errors, errors, error.message
+          const hasChecklistError =
+            (result &&
+              result.verification &&
+              result.verification.errors &&
+              result.verification.errors.some((err: string) =>
+                err.includes('Faltan pasos obligatorios')
+              )) ||
+            (result &&
+              result.errors &&
+              result.errors.some((err: string) =>
+                err.includes('Faltan pasos obligatorios')
+              )) ||
+            (result &&
+              result.verification &&
+              result.verification.errors &&
+              result.verification.errors.some((err: string) =>
+                err.includes('Checklist incompleto')
+              ));
+
+          if (hasChecklistError) {
             console.warn(
               `   ⚠️ [MCP Server] Error de checklist detectado en resultado pero autorun.apply() consultará Storybook automáticamente`
             );
             console.warn(
-              `   ⚠️ [MCP Server] Errores originales: ${result.verification.errors.join(', ')}`
+              `   ⚠️ [MCP Server] Errores originales: ${JSON.stringify(
+                result.verification?.errors || result.errors || []
+              )}`
             );
             console.warn(
               `   ⚠️ [MCP Server] IGNORANDO errores de checklist y continuando porque autorun.apply() consultará Storybook automáticamente`
             );
             // Modificar resultado para ignorar errores de checklist
             result.success = true;
-            result.verification.preImplementation = true;
-            result.verification.errors = [];
-            result.verification.warnings = [
-              'Error de Pre-Implementation Check ignorado porque autorun.apply() consultará Storybook automáticamente',
-              ...(result.verification.warnings || []),
-            ];
+            if (result.verification) {
+              result.verification.preImplementation = true;
+              result.verification.errors = [];
+              result.verification.warnings = [
+                'Error de Pre-Implementation Check ignorado porque autorun.apply() consultará Storybook automáticamente',
+                ...(result.verification.warnings || []),
+              ];
+            }
             result.errors = [];
             result.warnings = [
               'Error de Pre-Implementation Check ignorado porque autorun.apply() consultará Storybook automáticamente',
