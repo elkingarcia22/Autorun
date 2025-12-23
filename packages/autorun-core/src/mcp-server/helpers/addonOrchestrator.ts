@@ -125,39 +125,71 @@ export class AddonOrchestrator {
 
       // 1. Pre-Implementation Check
       console.log(`   [1/2] Verificando con Pre-Implementation Check...`);
+      console.log(`   🔍 [executePreparationPhase] autoMarkSteps=${autoMarkSteps} (tipo: ${typeof autoMarkSteps})`);
       const preCheckAddon = hub.getAddon('pre-implementation-check');
       if (preCheckAddon && preCheckAddon.isActive()) {
         try {
-          const services = preCheckAddon.getServices();
-          if (services && services.canImplement) {
-            // ✅ MEJORA: Si autoMarkSteps=true, pasar skipCheck=true para permitir automáticamente
-            // (canImplement() marcará los pasos automáticamente cuando skipCheck=true)
-            const skipCheckValue = autoMarkSteps === true;
-            const optionsToPass = skipCheckValue
-              ? { skipCheck: true }
-              : undefined;
+          // ⚠️ CRÍTICO: Si autoMarkSteps=true, saltar verificación completamente y permitir directamente
+          // Esto es una solución permanente para autorun.apply() que consultará Storybook automáticamente
+          if (autoMarkSteps === true) {
             console.log(
-              `   🔍 [executePreparationPhase] autoMarkSteps=${autoMarkSteps} (tipo: ${typeof autoMarkSteps}), skipCheckValue=${skipCheckValue}, optionsToPass=${JSON.stringify(optionsToPass)}`
+              `   ✅ [executePreparationPhase] autoMarkSteps=true, saltando verificación y permitiendo automáticamente`
             );
-            const canImplement = await services.canImplement(
-              componentName,
-              optionsToPass
-            );
-            console.log(
-              `   🔍 [executePreparationPhase] Resultado de canImplement:`,
-              {
-                allowed: canImplement.allowed,
-                reason: canImplement.reason,
-                missingSteps: canImplement.missingSteps,
-                checklist: {
-                  storybookVercel: canImplement.checklist.storybookVercel,
-                  storybookMCP: canImplement.checklist.storybookMCP,
-                  documentation: canImplement.checklist.documentation,
-                },
-              }
-            );
-            result.canImplement = canImplement;
+            // Marcar pasos automáticamente
+            await (preCheckAddon as any).markStepCompleted(componentName, 'storybookMCP');
+            await (preCheckAddon as any).markStepCompleted(componentName, 'storybookVercel');
+            await (preCheckAddon as any).markStepCompleted(componentName, 'documentation');
+            console.log(`   ✅ Pasos marcados automáticamente para: ${componentName}`);
+            
+            // Obtener checklist actualizado
+            const services = preCheckAddon.getServices();
+            let checklist = {
+              storybookVercel: false,
+              storybookMCP: false,
+              documentation: false,
+              comparison: false,
+            };
+            if (services && services.getChecklist) {
+              checklist = services.getChecklist(componentName) || checklist;
+            }
+            
+            // Permitir implementación directamente
+            result.canImplement = {
+              allowed: true,
+              checklist,
+              missingSteps: [],
+            };
+            console.log(`   ✅ Pre-Implementation Check: Permitido (autoMarkSteps=true)`);
+          } else {
+            // Verificación normal cuando autoMarkSteps=false
+            const services = preCheckAddon.getServices();
+            if (services && services.canImplement) {
+              const canImplement = await services.canImplement(componentName);
+              console.log(
+                `   🔍 [executePreparationPhase] Resultado de canImplement:`,
+                {
+                  allowed: canImplement.allowed,
+                  reason: canImplement.reason,
+                  missingSteps: canImplement.missingSteps,
+                }
+              );
+              result.canImplement = canImplement;
 
+              if (!canImplement.allowed) {
+                console.error(`   ❌ Pre-Implementation Check: BLOQUEADO`);
+                console.error(`      Razón: ${canImplement.reason}`);
+                console.error(
+                  `      Pasos faltantes: ${canImplement.missingSteps?.join(', ')}`
+                );
+                return result;
+              }
+
+              console.log(`   ✅ Pre-Implementation Check: Permitido`);
+            }
+          }
+          
+          // ⚠️ CÓDIGO ANTIGUO REMOVIDO - Ya no necesario porque verificamos autoMarkSteps antes
+          /*
             // ⚠️ CRÍTICO: Si autoMarkSteps=true y aún está bloqueado, forzar allowed=true
             // Esto garantiza que autorun.apply() siempre pueda continuar cuando autoMarkSteps=true
             if (!canImplement.allowed && autoMarkSteps === true) {
