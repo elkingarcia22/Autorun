@@ -1056,6 +1056,54 @@
                     console.warn(`⚠️ [POC RadioButton] CSS de radio-button NO encontrado - los estilos pueden no aplicarse`);
                 }
 
+                // ⚠️ CRÍTICO: Función para manejar el cambio de estado de los RadioButtons
+                function handleRadioButtonChange(event) {
+                    const clickedInput = event.target;
+                    const clickedValue = clickedInput.value;
+                    const groupName = clickedInput.name;
+                    
+                    console.log(`🔄 [POC RadioButton] RadioButton cambiado: ${groupName} = ${clickedValue}`);
+                    
+                    // Encontrar todos los radio buttons del mismo grupo
+                    const allRadios = document.querySelectorAll(`input[type="radio"][name="${groupName}"]`);
+                    
+                    allRadios.forEach(radio => {
+                        const radioLabel = radio.closest('.ubits-radio-button');
+                        if (radioLabel) {
+                            if (radio === clickedInput) {
+                                // Marcar como checked
+                                radio.checked = true;
+                                radioLabel.classList.add('ubits-radio-button--checked');
+                                radioLabel.classList.remove('ubits-radio-button--unchecked');
+                                
+                                // Actualizar el círculo visual
+                                const circle = radioLabel.querySelector('.ubits-radio-button__circle');
+                                if (circle) {
+                                    if (!circle.querySelector('.ubits-radio-button__dot')) {
+                                        const dot = document.createElement('span');
+                                        dot.className = 'ubits-radio-button__dot';
+                                        circle.appendChild(dot);
+                                    }
+                                }
+                            } else {
+                                // Desmarcar otros
+                                radio.checked = false;
+                                radioLabel.classList.remove('ubits-radio-button--checked');
+                                radioLabel.classList.add('ubits-radio-button--unchecked');
+                                
+                                // Remover el círculo visual
+                                const circle = radioLabel.querySelector('.ubits-radio-button__circle');
+                                if (circle) {
+                                    const dot = circle.querySelector('.ubits-radio-button__dot');
+                                    if (dot) {
+                                        dot.remove();
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+
                 // Crear cada RadioButton usando el código exacto del Storybook
                 radioOptions.forEach((options, index) => {
                     // Crear contenedor individual para cada RadioButton
@@ -1076,7 +1124,9 @@
                             checked: options.checked,
                             size: options.size,
                             state: options.state,
-                            disabled: options.disabled
+                            disabled: options.disabled,
+                            // ⚠️ CRÍTICO: Agregar onChange handler
+                            onChange: handleRadioButtonChange
                         });
 
                         console.log(`✅ [POC RadioButton] RadioButton "${options.label}" creado`);
@@ -1089,6 +1139,29 @@
                         radioElement.style.gap = '8px';
                         radioElement.style.cursor = 'pointer';
                         radioElement.style.userSelect = 'none';
+                        
+                        // ⚠️ CRÍTICO: Agregar event listener adicional al label para asegurar que funcione
+                        const inputElement = radioElement.querySelector('.ubits-radio-button__input');
+                        if (inputElement) {
+                            // Agregar listener al input
+                            inputElement.addEventListener('change', handleRadioButtonChange);
+                            inputElement.addEventListener('click', function(e) {
+                                // Asegurar que el input se marque cuando se hace clic en el label
+                                if (!this.checked) {
+                                    this.checked = true;
+                                    handleRadioButtonChange(e);
+                                }
+                            });
+                            
+                            // Agregar listener al label también
+                            radioElement.addEventListener('click', function(e) {
+                                // Si se hace clic en el label, activar el input
+                                if (inputElement && !inputElement.disabled) {
+                                    inputElement.checked = true;
+                                    inputElement.dispatchEvent(new Event('change', { bubbles: true }));
+                                }
+                            });
+                        }
                         
                         console.log(`🔍 [POC RadioButton] Estilos inline aplicados`);
                         console.log(`🔍 [POC RadioButton] Elemento visible:`, radioElement.offsetParent !== null);
