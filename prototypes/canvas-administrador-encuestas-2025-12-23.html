@@ -972,14 +972,8 @@
             
             // Esperar a que todos los sistemas estén listos
             setTimeout(() => {
-                console.log('🔍 [DataTable Debug] Verificando sistemas...');
-                console.log('   - UBITS_ThemeManager:', typeof window.UBITS_ThemeManager !== 'undefined');
-                console.log('   - UBITS_ResponsiveManager:', typeof window.UBITS_ResponsiveManager !== 'undefined');
-                console.log('   - UBITS_TemplateLoader:', typeof window.UBITS_TemplateLoader !== 'undefined');
-                
                 // Verificar que todos los sistemas estén cargados
                 if (!window.UBITS_ThemeManager || !window.UBITS_ResponsiveManager || !window.UBITS_TemplateLoader) {
-                    console.error('❌ [DataTable Debug] Sistemas no listos, reintentando...');
                     return;
                 }
                 
