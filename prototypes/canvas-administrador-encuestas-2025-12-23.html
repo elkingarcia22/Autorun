@@ -1417,79 +1417,68 @@
                             }
                         };
 
-                        // Intentar usar window.UBITSDataView (nombre del bundle UMD)
-                        // Verificar diferentes formas de acceso
-                        let UBITSDataViewAPI = null;
-                        if (window.UBITSDataView) {
-                            UBITSDataViewAPI = window.UBITSDataView;
-                        } else if (window.UBITS && window.UBITS.DataView) {
-                            UBITSDataViewAPI = window.UBITS.DataView;
+                        // Usar las funciones implementadas directamente (ya están disponibles en window.UBITSDataView)
+                        if (window.UBITSDataView && typeof window.UBITSDataView.createDataView === 'function') {
+                            try {
+                                const element = window.UBITSDataView.createDataView(options);
+                                if (element && element.nodeType === 1) {
+                                    // Si retorna un elemento, limpiar contenedor y agregar
+                                    dataViewContainer.innerHTML = '';
+                                    dataViewContainer.appendChild(element);
+                                    console.log('✅ DataView creado con window.UBITSDataView.createDataView');
+                                    return true;
+                                }
+                            } catch (error) {
+                                console.error('❌ Error con window.UBITSDataView.createDataView:', error);
+                            }
                         }
                         
-                        if (UBITSDataViewAPI) {
-                            // Intentar createDataView
-                            if (typeof UBITSDataViewAPI.createDataView === 'function') {
-                                try {
-                                    const element = UBITSDataViewAPI.createDataView(options);
-                                    if (element && element.nodeType === 1) {
-                                        // Si retorna un elemento, limpiar contenedor y agregar
-                                        dataViewContainer.innerHTML = '';
-                                        dataViewContainer.appendChild(element);
-                                        console.log('✅ DataView creado con UBITSDataViewAPI.createDataView');
-                                        return true;
-                                    }
-                                } catch (error) {
-                                    console.error('❌ Error con UBITSDataViewAPI.createDataView:', error);
+                        // Fallback: usar renderDataView
+                        if (window.UBITSDataView && typeof window.UBITSDataView.renderDataView === 'function') {
+                            try {
+                                const html = window.UBITSDataView.renderDataView(options);
+                                if (html) {
+                                    dataViewContainer.innerHTML = html;
+                                    // Agregar event listeners manualmente después de renderizar
+                                    const items = dataViewContainer.querySelectorAll('.ubits-data-view__item');
+                                    items.forEach((item, index) => {
+                                        const product = options.products[index];
+                                        if (!product) return;
+
+                                        // Click en el producto
+                                        if (options.onProductClick) {
+                                            item.addEventListener('click', (e) => {
+                                                const target = e.target;
+                                                if (!target.closest('button')) {
+                                                    options.onProductClick(product, index, item);
+                                                }
+                                            });
+                                        }
+
+                                        // Click en botón de compra
+                                        const buyButton = item.querySelector('[data-action="buy"]');
+                                        if (buyButton && options.onBuyClick) {
+                                            buyButton.addEventListener('click', (e) => {
+                                                e.stopPropagation();
+                                                options.onBuyClick(product, index, item);
+                                            });
+                                        }
+
+                                        // Click en botón de wishlist
+                                        const wishlistButton = item.querySelector('[data-action="wishlist"]');
+                                        if (wishlistButton && options.onWishlistClick) {
+                                            wishlistButton.addEventListener('click', (e) => {
+                                                e.stopPropagation();
+                                                product.inWishlist = !product.inWishlist;
+                                                options.onWishlistClick(product, index, item);
+                                            });
+                                        }
+                                    });
+                                    console.log('✅ DataView renderizado con window.UBITSDataView.renderDataView');
+                                    return true;
                                 }
-                            }
-                            
-                            // Intentar renderDataView
-                            if (typeof UBITSDataViewAPI.renderDataView === 'function') {
-                                try {
-                                    const html = UBITSDataViewAPI.renderDataView(options);
-                                    if (html) {
-                                        dataViewContainer.innerHTML = html;
-                                        // Agregar event listeners manualmente después de renderizar
-                                        const items = dataViewContainer.querySelectorAll('.ubits-data-view__item');
-                                        items.forEach((item, index) => {
-                                            const product = options.products[index];
-                                            if (!product) return;
-
-                                            // Click en el producto
-                                            if (options.onProductClick) {
-                                                item.addEventListener('click', (e) => {
-                                                    const target = e.target;
-                                                    if (!target.closest('button')) {
-                                                        options.onProductClick(product, index, item);
-                                                    }
-                                                });
-                                            }
-
-                                            // Click en botón de compra
-                                            const buyButton = item.querySelector('[data-action="buy"]');
-                                            if (buyButton && options.onBuyClick) {
-                                                buyButton.addEventListener('click', (e) => {
-                                                    e.stopPropagation();
-                                                    options.onBuyClick(product, index, item);
-                                                });
-                                            }
-
-                                            // Click en botón de wishlist
-                                            const wishlistButton = item.querySelector('[data-action="wishlist"]');
-                                            if (wishlistButton && options.onWishlistClick) {
-                                                wishlistButton.addEventListener('click', (e) => {
-                                                    e.stopPropagation();
-                                                    product.inWishlist = !product.inWishlist;
-                                                    options.onWishlistClick(product, index, item);
-                                                });
-                                            }
-                                        });
-                                        console.log('✅ DataView renderizado con UBITSDataViewAPI.renderDataView');
-                                        return true;
-                                    }
-                                } catch (error) {
-                                    console.error('❌ Error con UBITSDataViewAPI.renderDataView:', error);
-                                }
+                            } catch (error) {
+                                console.error('❌ Error con window.UBITSDataView.renderDataView:', error);
                             }
                         }
                         
