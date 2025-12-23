@@ -169,8 +169,16 @@ async function autorunApplyStrict(
 
     // 1.1 Ejecutar handleUserMessage() (OBLIGATORIO)
     console.log(`   [1.1] Ejecutando handleUserMessage()...`);
+    console.log(
+      `   🔍 [autorunApply] Llamando handleUserMessage con skipPreCheck=true`
+    );
     const result = await handleUserMessage(input.message, {
       skipPreCheck: true,
+    });
+    console.log(`   🔍 [autorunApply] Resultado de handleUserMessage:`, {
+      blocked: result.blocked,
+      reason: result.reason,
+      componentName: result.componentName,
     });
 
     // ⚠️ CRÍTICO: Si result.blocked=true pero estamos en autorun.apply(), forzar blocked=false
