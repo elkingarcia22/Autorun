@@ -114,10 +114,17 @@ async function autorunApplyStrict(
     // 1.1 Ejecutar handleUserMessage() (OBLIGATORIO)
     // ✅ MEJORA: Establecer flag para indicar que estamos en modo autorun.apply()
     console.log(`   [1.1] Ejecutando handleUserMessage()...`);
-    const { setAutorunApplyMode } = await import('../../helpers/executeOnMessageStart.js');
+    const { setAutorunApplyMode } = await import(
+      '../../helpers/executeOnMessageStart.js'
+    );
     setAutorunApplyMode(true);
+    let result;
     try {
-      const result = await handleUserMessage(input.message);
+      result = await handleUserMessage(input.message);
+    } finally {
+      // ✅ MEJORA: Restaurar flag después de usar handleUserMessage()
+      setAutorunApplyMode(false);
+    }
 
     if (result.blocked) {
       console.error(`   ❌ Implementación bloqueada: ${result.reason}`);
