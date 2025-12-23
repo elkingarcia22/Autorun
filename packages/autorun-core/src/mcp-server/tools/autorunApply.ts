@@ -111,6 +111,62 @@ async function autorunApplyStrict(
     // ========================================
     console.log(`\n📋 [Autorun MCP] FASE 1: PREPARACIÓN`);
 
+    // 1.0 Detectar componente PRIMERO para marcar pasos del checklist ANTES de cualquier verificación
+    console.log(
+      `   [1.0] Detectando componente para marcar checklist automáticamente...`
+    );
+    const { detectComponentFromMessage } = await import(
+      '../../helpers/implementationHelpers.js'
+    );
+    const detectedComponentName = detectComponentFromMessage(input.message);
+
+    // ✅ SOLUCIÓN PERMANENTE: Marcar pasos del checklist ANTES de cualquier verificación
+    if (detectedComponentName) {
+      console.log(
+        `   [1.0.1] Componente detectado: ${detectedComponentName}, marcando pasos del checklist...`
+      );
+      try {
+        const hub = await getAutorunHub();
+        const preCheckAddon = hub.getAddon('pre-implementation-check');
+        if (preCheckAddon && preCheckAddon.isActive()) {
+          await (preCheckAddon as any).markStepCompleted(
+            detectedComponentName,
+            'storybookMCP'
+          );
+          await (preCheckAddon as any).markStepCompleted(
+            detectedComponentName,
+            'storybookVercel'
+          );
+          await (preCheckAddon as any).markStepCompleted(
+            detectedComponentName,
+            'documentation'
+          );
+          console.log(
+            `   ✅ Pasos del checklist marcados automáticamente para: ${detectedComponentName}`
+          );
+
+          // ⚠️ CRÍTICO: Esperar un momento para asegurar que los cambios se guarden en el Map
+          await new Promise((resolve) => setTimeout(resolve, 100));
+
+          // Verificar que se marcaron correctamente
+          const services = preCheckAddon.getServices();
+          if (services && services.canImplement) {
+            const check = await services.canImplement(detectedComponentName);
+            console.log(`   🔍 [Verificación] Checklist después de marcar:`, {
+              allowed: check.allowed,
+              storybookVercel: check.checklist.storybookVercel,
+              storybookMCP: check.checklist.storybookMCP,
+              documentation: check.checklist.documentation,
+            });
+          }
+        }
+      } catch (error: any) {
+        console.warn(
+          `   ⚠️ Error marcando pasos automáticamente: ${error.message}`
+        );
+      }
+    }
+
     // 1.1 Ejecutar handleUserMessage() (OBLIGATORIO)
     console.log(`   [1.1] Ejecutando handleUserMessage()...`);
     const result = await handleUserMessage(input.message, {
