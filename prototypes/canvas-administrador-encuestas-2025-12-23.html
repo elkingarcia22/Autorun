@@ -816,10 +816,51 @@
     <!-- UBITS Components System -->
     <!-- Los componentes se cargan dinámicamente a través de components-loader.js -->
     
-    <!-- ⚠️ CRÍTICO: Cargar componentes Button y Modal directamente desde Storybook -->
+    <!-- ⚠️ CRÍTICO: Cargar componentes Button y Modal directamente desde archivos locales -->
     <!-- Esto asegura que los componentes se rendericen exactamente como en Storybook -->
-    <script src="https://ubits-storybook10.vercel.app/components/button/src/ButtonProvider.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
-    <script src="https://ubits-storybook10.vercel.app/components/modal/src/ModalProvider.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
+    <script src="../vendor/ubits/packages/components/button/src/ButtonProvider.js"></script>
+    <script src="../vendor/ubits/packages/components/modal/src/ModalProvider.js"></script>
+    
+    <script>
+      // ⚠️ CRÍTICO: Exponer funciones globalmente después de cargar los scripts
+      // Los archivos ButtonProvider.js y ModalProvider.js exportan las funciones,
+      // pero necesitamos exponerlas globalmente para uso en scripts no-module
+      (function() {
+        // Esperar a que los scripts se carguen
+        function exposeUBITSComponents() {
+          // Verificar si las funciones están disponibles (depende de cómo se exporten)
+          // Si ButtonProvider.js usa exports, necesitamos acceder a ellos
+          // Por ahora, verificamos si window.UBITS ya existe (de components-loader.js)
+          
+          // Si no existe, intentar cargar desde módulos
+          if (typeof window !== 'undefined') {
+            // Los scripts ya deberían haber expuesto las funciones si están en formato UMD/IIFE
+            // Si no, intentar acceder a exports si están disponibles
+            if (typeof exports !== 'undefined' && exports.createButton) {
+              window.UBITS = window.UBITS || {};
+              window.UBITS.Button = window.UBITS.Button || {
+                create: exports.createButton,
+                render: exports.renderButton
+              };
+            }
+            if (typeof exports !== 'undefined' && exports.createModal) {
+              window.UBITS = window.UBITS || {};
+              window.UBITS.Modal = window.UBITS.Modal || {
+                create: exports.createModal,
+                render: exports.renderModal
+              };
+            }
+          }
+        }
+        
+        // Ejecutar después de que los scripts se carguen
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', exposeUBITSComponents);
+        } else {
+          setTimeout(exposeUBITSComponents, 100);
+        }
+      })();
+    </script>
     
     <script>
         // ========================================
