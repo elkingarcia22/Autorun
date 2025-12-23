@@ -109,7 +109,7 @@ async function autorunApplyStrict(
   console.log(
     `\n🔧 [Autorun MCP] FASE 0: ACTIVANDO MODO autorun.apply() GLOBALMENTE (ANTES DE TODO)`
   );
-  
+
   // ⚠️ CRÍTICO: Activar modo autorun.apply() globalmente
   // Esto permite que canImplement() y verifyOnDetection() siempre permitan cuando viene de autorun.apply()
   if (typeof globalThis !== 'undefined') {
@@ -118,7 +118,7 @@ async function autorunApplyStrict(
       `   ✅ [autorunApply] Modo autorun.apply() activado globalmente (__AUTORUN_APPLY_MODE__=${globalThis.__AUTORUN_APPLY_MODE__})`
     );
   }
-  
+
   let preCheckAddonOriginalState: boolean | null = null;
   let preCheckAddon: any = null;
   try {
@@ -1119,7 +1119,7 @@ async function autorunApplyStrict(
         `   🔧 [autorunApply] Modo autorun.apply() desactivado globalmente`
       );
     }
-    
+
     if (
       preCheckAddon &&
       preCheckAddonOriginalState !== null &&
@@ -1184,7 +1184,7 @@ async function autorunApplyStrict(
         `   🔧 [autorunApply] Modo autorun.apply() desactivado globalmente (después de error)`
       );
     }
-    
+
     if (
       preCheckAddon &&
       preCheckAddonOriginalState !== null &&
