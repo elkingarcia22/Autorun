@@ -388,12 +388,16 @@ async function autorunApplyStrict(
       `   [1.4] Ejecutando fase de preparación con add-ons (autoMarkSteps=true)...`
     );
     console.log(
-      `   🔍 [autorunApply] Llamando executePreparationPhase con autoMarkSteps=true`
+      `   🔍 [autorunApply] Llamando executePreparationPhase con autoMarkSteps=true (tipo: ${typeof true}, valor: ${true})`
+    );
+    const autoMarkStepsValue = true; // ⚠️ CRÍTICO: Asegurar que sea boolean true
+    console.log(
+      `   🔍 [autorunApply] autoMarkStepsValue=${autoMarkStepsValue} (tipo: ${typeof autoMarkStepsValue}, === true: ${autoMarkStepsValue === true})`
     );
     const preparationResult = await orchestrator.executePreparationPhase(
       result.componentName,
       componentId,
-      true // autoMarkSteps: autorun.apply() consultará Storybook automáticamente
+      autoMarkStepsValue // autoMarkSteps: autorun.apply() consultará Storybook automáticamente
     );
     console.log(`   🔍 [autorunApply] Resultado de executePreparationPhase:`, {
       allowed: preparationResult.canImplement.allowed,
