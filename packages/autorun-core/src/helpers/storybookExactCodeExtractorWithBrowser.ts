@@ -76,21 +76,40 @@ export async function extractExactCodeFromStorybookWithBrowser(
     `      3. Extraer código desde el snapshot (buscar código de historia "${finalStoryName}")`
   );
 
-  // Por ahora, usar método tradicional (fetch)
-  // TODO: Implementar extracción desde Browser MCP snapshot
+  // ✅ IMPLEMENTADO: Intentar fetch primero, luego Browser MCP si falla
+  let codeFromTab: { html: string; js?: string } | null = null;
+  
   try {
+    // Intento 1: Fetch HTML (rápido pero puede fallar si el código es dinámico)
     const html = await fetchStorybookPage(docsUrl);
-    let codeFromTab;
     try {
       // ✅ CAMBIO: Extraer código desde Docs en lugar de pestaña "Code"
       codeFromTab = await extractCodeFromDocs(html, finalStoryName);
+      console.log(`   ✅ Código extraído desde HTML: ${codeFromTab.html.length} caracteres`);
     } catch (extractError: any) {
-      // ⚠️ FALLBACK: Si no se puede extraer desde HTML, intentar obtener código fuente directamente
       console.warn(
         `   ⚠️ No se pudo extraer código desde HTML: ${extractError.message}`
       );
-      console.log(`   📋 Intentando obtener código fuente directamente...`);
+      // Continuar con Browser MCP
+    }
+  } catch (fetchError: any) {
+    console.warn(`   ⚠️ Error obteniendo HTML: ${fetchError.message}`);
+    // Continuar con Browser MCP
+  }
 
+  // Intento 2: Browser MCP (si fetch falló o no encontró código)
+  if (!codeFromTab || !codeFromTab.html) {
+    console.log(`   📋 Intentando extraer código usando Browser MCP...`);
+    console.log(`   ⚠️ IMPORTANTE: El agente DEBE ejecutar Browser MCP:`);
+    console.log(`      1. Navegar a: ${docsUrl}`);
+    console.log(`      2. Esperar 2 segundos para que se cargue el código`);
+    console.log(`      3. Buscar botón "Show code" o "Copy" y hacer clic si es necesario`);
+    console.log(`      4. Tomar snapshot`);
+    console.log(`      5. Extraer código desde el snapshot`);
+    
+    // ⚠️ NOTA: Esta función requiere que el agente ejecute Browser MCP
+    // Por ahora, intentar obtener código fuente como fallback
+    try {
       const { getSourceCode } = await import('./storybookExactCodeExtractor');
       const sourceCode = await getSourceCode(componentId);
 
@@ -111,9 +130,18 @@ export async function extractExactCodeFromStorybookWithBrowser(
           );
         }
       } else {
-        throw extractError; // Re-lanzar error original si no hay código fuente
+        throw new Error(
+          'No se pudo obtener código desde HTML ni desde código fuente. ' +
+          'El agente DEBE usar Browser MCP para navegar a Docs y extraer desde el snapshot.'
+        );
       }
+    } catch (sourceError: any) {
+      throw new Error(
+        `No se pudo extraer código desde Docs. ${sourceError.message} ` +
+        'El agente DEBE usar Browser MCP para navegar a Docs y extraer desde el snapshot.'
+      );
     }
+  }
 
     // 4. Extraer CSS requerido
     const cssUrls = await extractCSSUrls(componentId, activeConfig.url);
