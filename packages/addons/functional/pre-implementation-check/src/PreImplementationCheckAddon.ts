@@ -177,19 +177,23 @@ export class PreImplementationCheckAddon implements IFunctionalAddon {
     // ✅ MEJORA: Si skipCheck=true (desde autorun.apply()), permitir automáticamente
     const skipCheckValue = options?.skipCheck === true;
     console.log(
-      `   🔍 [verifyOnDetection] Verificando skipCheck: options=${JSON.stringify(options)}, options?.skipCheck=${options?.skipCheck}, skipCheckValue=${skipCheckValue}`
+      `   🔍 [verifyOnDetection] Verificando skipCheck: options=${JSON.stringify(options)}, options?.skipCheck=${options?.skipCheck}, skipCheckValue=${skipCheckValue}, typeof=${typeof options?.skipCheck}`
     );
     if (skipCheckValue) {
       console.log(
-        `   ✅ [verifyOnDetection] skipCheck=true, permitiendo automáticamente`
+        `   ✅ [verifyOnDetection] skipCheck=true, permitiendo automáticamente - RETORNANDO INMEDIATAMENTE`
       );
       // Marcar pasos automáticamente
       await this.markStepCompleted(componentName, 'storybookMCP');
       await this.markStepCompleted(componentName, 'storybookVercel');
       await this.markStepCompleted(componentName, 'documentation');
       console.log(
+        `   ✅ [verifyOnDetection] Pasos marcados, retornando { blocked: false }`
+      );
+      console.log(
         `🔍 [verifyOnDetection] ========================================\n`
       );
+      // ⚠️ CRÍTICO: Retornar INMEDIATAMENTE sin continuar con ninguna verificación
       return { blocked: false };
     }
     console.log(
