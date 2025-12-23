@@ -175,6 +175,9 @@ export class PreImplementationCheckAddon implements IFunctionalAddon {
     }
 
     // ✅ MEJORA: Si skipCheck=true (desde autorun.apply()), permitir automáticamente
+    console.log(
+      `   🔍 [verifyOnDetection] Verificando skipCheck: options=${JSON.stringify(options)}, options?.skipCheck=${options?.skipCheck}`
+    );
     if (options?.skipCheck) {
       console.log(
         `   ✅ [verifyOnDetection] skipCheck=true, permitiendo automáticamente`
@@ -188,6 +191,9 @@ export class PreImplementationCheckAddon implements IFunctionalAddon {
       );
       return { blocked: false };
     }
+    console.log(
+      `   ⚠️ [verifyOnDetection] skipCheck=false o undefined, continuando con verificación normal`
+    );
 
     // ⭐ NUEVO: Obtener automáticamente plan basado en historias de Storybook
     let storyBasedPlan = null;
@@ -410,6 +416,9 @@ ${storyBasedPlan ? `\n📖 Plan basado en historias disponible. Implementar UNA 
     }
 
     // ✅ MEJORA: Si skipCheck=true (desde autorun.apply()), permitir automáticamente
+    console.log(
+      `   🔍 [canImplement] Verificando skipCheck: options=${JSON.stringify(options)}, options?.skipCheck=${options?.skipCheck}`
+    );
     if (options?.skipCheck) {
       console.log(
         `   ✅ [canImplement] skipCheck=true, permitiendo implementación automáticamente`
@@ -418,14 +427,26 @@ ${storyBasedPlan ? `\n📖 Plan basado en historias disponible. Implementar UNA 
       await this.markStepCompleted(componentName, 'storybookMCP');
       await this.markStepCompleted(componentName, 'storybookVercel');
       await this.markStepCompleted(componentName, 'documentation');
+      const finalChecklist =
+        this.checklists.get(componentName) ||
+        this.createEmptyChecklist(componentName);
+      console.log(
+        `   ✅ [canImplement] Pasos marcados, retornando allowed=true con checklist:`,
+        {
+          storybookVercel: finalChecklist.storybookVercel,
+          storybookMCP: finalChecklist.storybookMCP,
+          documentation: finalChecklist.documentation,
+        }
+      );
       return {
         allowed: true,
-        checklist:
-          this.checklists.get(componentName) ||
-          this.createEmptyChecklist(componentName),
+        checklist: finalChecklist,
         missingSteps: [],
       };
     }
+    console.log(
+      `   ⚠️ [canImplement] skipCheck=false o undefined, continuando con verificación normal`
+    );
 
     // Obtener o crear checklist
     const checklist =
