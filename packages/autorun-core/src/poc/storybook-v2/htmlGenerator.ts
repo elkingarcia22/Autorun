@@ -6,6 +6,7 @@
 
 import type { ParsedStory } from './codeParser.js';
 import type { ComponentFiles } from './fileExtractor.js';
+import type { ParsedStorybook } from './storybookParser.js';
 
 export interface GeneratedHTML {
   html: string;
