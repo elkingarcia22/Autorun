@@ -68,39 +68,17 @@ export async function extractExactCodeFromStorybookWithBrowser(
     }
   }
 
-  // 2. ⚠️ NUEVO: Intentar múltiples fuentes en orden de prioridad
-  // Prioridad 1: Código fuente local (MÁS CONFIABLE - no requiere fetch)
-  // Prioridad 2: URL de la historia directamente
-  // Prioridad 3: Docs (requiere Browser MCP)
+  // 2. ⚠️ MODIFICADO: Intentar múltiples fuentes en orden de prioridad (SOLO URL por ahora)
+  // Prioridad 1: URL de la historia directamente
+  // Prioridad 2: Docs (requiere Browser MCP)
+  // ⚠️ NOTA: Código fuente local deshabilitado temporalmente para probar solo con URL
 
   let codeFromTab: { html: string; js?: string } | null = null;
 
   // Definir storyUrl aquí para usarlo en el error si es necesario
   const storyUrl = `${activeConfig.url}/?path=/story/${componentId}--${finalStoryName}`;
 
-  // INTENTO 1: Extraer desde código fuente local (MÁS CONFIABLE)
-  console.log(`   📋 Intentando extraer desde código fuente local...`);
-  try {
-    const { getSourceCode } = await import('./storybookExactCodeExtractor.js');
-    const sourceCode = await getSourceCode(componentId);
-
-    if (sourceCode) {
-      // Extraer código de la historia específica desde el código fuente
-      const storyCode = extractStoryCodeFromSource(sourceCode, finalStoryName);
-      if (storyCode) {
-        codeFromTab = { html: storyCode, js: undefined };
-        console.log(
-          `   ✅ Código obtenido desde código fuente: ${storyCode.length} caracteres`
-        );
-      }
-    }
-  } catch (sourceError: any) {
-    console.warn(
-      `   ⚠️ No se pudo obtener código desde código fuente: ${sourceError.message}`
-    );
-  }
-
-  // INTENTO 2: Extraer desde URL de la historia directamente (si código fuente falló)
+  // INTENTO 1: Extraer desde URL de la historia directamente
   if (!codeFromTab || !codeFromTab.html) {
     console.log(`   📚 Intentando extraer desde URL de historia: ${storyUrl}`);
 

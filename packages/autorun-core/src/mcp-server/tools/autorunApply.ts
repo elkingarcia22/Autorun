@@ -1871,6 +1871,111 @@ async function autorunApplyModeB(
         if (sanitizeResult.warnings.length > 0) {
           warnings.push(...sanitizeResult.warnings);
         }
+
+        // ✅ NUEVO: Insertar CSS automáticamente
+        console.log(`   [5.2] Insertando CSS automáticamente...`);
+        if (exactCode.cssUrls && exactCode.cssUrls.length > 0) {
+          const { StorybookManager } = await import(
+            '../../helpers/storybookManager.js'
+          );
+          const manager = StorybookManager.getInstance();
+          const activeConfig = await manager.getActiveConfig();
+          const bypassToken =
+            activeConfig?.bypassToken || 'dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT';
+
+          const cssLinks = exactCode.cssUrls
+            .map((url) => {
+              // Agregar parámetros de bypass si es URL de Vercel
+              const separator = url.includes('?') ? '&' : '?';
+              const bypassParams = `x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=${bypassToken}`;
+              return `    <link rel="stylesheet" href="${url}${separator}${bypassParams}">`;
+            })
+            .join('\n');
+
+          // Insertar CSS antes del contenido
+          codeToInsert = `${cssLinks}\n    ${codeToInsert}`;
+          console.log(
+            `   ✅ CSS agregado automáticamente: ${exactCode.cssUrls.length} archivo(s)`
+          );
+        } else {
+          console.warn(`   ⚠️ No se encontraron URLs de CSS para insertar`);
+        }
+
+        // ✅ NUEVO: Insertar bundle UMD automáticamente
+        console.log(`   [5.3] Insertando bundle UMD automáticamente...`);
+        try {
+          const { StorybookManager } = await import(
+            '../../helpers/storybookManager.js'
+          );
+          const manager = StorybookManager.getInstance();
+          const activeConfig = await manager.getActiveConfig();
+
+          if (activeConfig) {
+            const { extractUMDBundleUrl } = await import(
+              '../../helpers/storybookExactCodeExtractorWithBrowser.js'
+            );
+            const umdUrl = await extractUMDBundleUrl(
+              componentId,
+              activeConfig.url
+            );
+
+            if (umdUrl) {
+              const separator = umdUrl.includes('?') ? '&' : '?';
+              const bypassToken =
+                activeConfig.bypassToken || 'dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT';
+              const bypassParams = `x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=${bypassToken}`;
+              const scriptTag = `    <script src="${umdUrl}${separator}${bypassParams}"></script>`;
+
+              // Insertar script después del contenido
+              codeToInsert = `${codeToInsert}\n${scriptTag}`;
+              console.log(
+                `   ✅ Bundle UMD agregado automáticamente: ${umdUrl}`
+              );
+            } else {
+              console.warn(
+                `   ⚠️ No se encontró bundle UMD para ${componentId}`
+              );
+            }
+          }
+        } catch (umdError: any) {
+          console.warn(
+            `   ⚠️ Error obteniendo bundle UMD: ${umdError.message}`
+          );
+          // No bloquear, solo advertir
+        }
+
+        // ✅ NUEVO: Insertar código de inicialización automáticamente
+        console.log(
+          `   [5.4] Insertando código de inicialización automáticamente...`
+        );
+        try {
+          const { extractInitializationCode } = await import(
+            '../../helpers/storybookExactCodeExtractorWithBrowser.js'
+          );
+          const initCode = extractInitializationCode(
+            exactCode.html,
+            componentId
+          );
+
+          if (initCode) {
+            // Generar código de inicialización completo
+            // Por ahora, usar el código extraído directamente
+            const scriptInit = `    <script>\n      ${initCode}\n    </script>`;
+            codeToInsert = `${codeToInsert}\n${scriptInit}`;
+            console.log(
+              `   ✅ Código de inicialización agregado automáticamente`
+            );
+          } else {
+            console.warn(
+              `   ⚠️ No se encontró código de inicialización para ${componentId}`
+            );
+          }
+        } catch (initError: any) {
+          console.warn(
+            `   ⚠️ Error extrayendo código de inicialización: ${initError.message}`
+          );
+          // No bloquear, solo advertir
+        }
       }
     } catch (error: any) {
       // ⚠️ NUEVO: Detectar si el error requiere Browser MCP
