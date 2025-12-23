@@ -2461,6 +2461,14 @@
   function createFilterInputs() {
     console.log('🔍 Creando inputs de filtro con componentes UBITS...');
     
+    // ⚠️ CRÍTICO: Buscar el drawer primero para asegurar que los contenedores estén dentro
+    const drawer = document.querySelector('.ubits-drawer');
+    if (!drawer) {
+      console.warn('⚠️ Drawer no encontrado, reintentando...');
+      setTimeout(createFilterInputs, 300);
+      return;
+    }
+    
     // Verificar que window.createInput esté disponible
     let createInputFn = null;
     if (typeof window.createInput === 'function') {
@@ -2475,10 +2483,11 @@
       return;
     }
     
-    // Crear Input 1
-    const container1 = document.getElementById('filter-input-1-container');
-    if (container1) {
+    // ⚠️ CRÍTICO: Buscar contenedores DENTRO del drawer específicamente
+    const container1 = drawer.querySelector('#filter-input-1-container');
+    if (container1 && container1.children.length === 0) {
       try {
+        console.log('🔍 Creando Input 1 en contenedor dentro del drawer...');
         createInputFn({
           containerId: 'filter-input-1-container',
           label: 'Filtro 1',
@@ -2492,14 +2501,17 @@
       } catch (error) {
         console.error('❌ Error creando Input 1:', error);
       }
+    } else if (!container1) {
+      console.warn('⚠️ Contenedor filter-input-1-container no encontrado dentro del drawer');
     } else {
-      console.warn('⚠️ Contenedor filter-input-1-container no encontrado');
+      console.log('⚠️ Contenedor filter-input-1-container ya tiene contenido');
     }
     
     // Crear Input 2
-    const container2 = document.getElementById('filter-input-2-container');
-    if (container2) {
+    const container2 = drawer.querySelector('#filter-input-2-container');
+    if (container2 && container2.children.length === 0) {
       try {
+        console.log('🔍 Creando Input 2 en contenedor dentro del drawer...');
         createInputFn({
           containerId: 'filter-input-2-container',
           label: 'Filtro 2',
@@ -2513,8 +2525,10 @@
       } catch (error) {
         console.error('❌ Error creando Input 2:', error);
       }
+    } else if (!container2) {
+      console.warn('⚠️ Contenedor filter-input-2-container no encontrado dentro del drawer');
     } else {
-      console.warn('⚠️ Contenedor filter-input-2-container no encontrado');
+      console.log('⚠️ Contenedor filter-input-2-container ya tiene contenido');
     }
   }
 
