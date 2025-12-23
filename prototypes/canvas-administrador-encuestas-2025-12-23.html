@@ -834,6 +834,25 @@
                     
                     console.log('🔵 [Encuestas] updateContent interceptado para sección:', section);
                     
+                    // ⚠️ CRÍTICO: Guardar los elementos antes de que ContentManager los elimine
+                    const contentArea = document.querySelector('.content-area');
+                    let listaContentHTML = null;
+                    let datosContentHTML = null;
+                    
+                    if (contentArea) {
+                        const listaContent = contentArea.querySelector('#lista-encuestas-content');
+                        const datosContent = contentArea.querySelector('#datos-demograficos-content');
+                        
+                        if (listaContent) {
+                            listaContentHTML = listaContent.outerHTML;
+                            console.log('🔵 [Encuestas] Guardando lista-encuestas-content');
+                        }
+                        if (datosContent) {
+                            datosContentHTML = datosContent.outerHTML;
+                            console.log('🔵 [Encuestas] Guardando datos-demograficos-content');
+                        }
+                    }
+                    
                     // Llamar al método original (que limpia el content-area y crea HeaderSection)
                     const result = originalUpdateContent.call(this, section, subSection);
                     
@@ -872,6 +891,17 @@
                         if (widgetPrincipal) {
                             console.log('🔵 [Encuestas] Eliminando .widget-contenido-principal');
                             widgetPrincipal.closest('.section-single')?.remove() || widgetPrincipal.remove();
+                        }
+                        
+                        // ⚠️ CRÍTICO: Restaurar los elementos que ContentManager eliminó
+                        if (listaContentHTML && !contentArea.querySelector('#lista-encuestas-content')) {
+                            console.log('🔵 [Encuestas] Restaurando lista-encuestas-content');
+                            contentArea.insertAdjacentHTML('beforeend', listaContentHTML);
+                        }
+                        
+                        if (datosContentHTML && !contentArea.querySelector('#datos-demograficos-content')) {
+                            console.log('🔵 [Encuestas] Restaurando datos-demograficos-content');
+                            contentArea.insertAdjacentHTML('beforeend', datosContentHTML);
                         }
                     });
                     
