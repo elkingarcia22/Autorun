@@ -29,63 +29,76 @@ export function extractCodeFromDocsSnapshot(
   // Función recursiva para buscar código
   function findCodeInNode(node: SnapshotNode, depth: number = 0): void {
     // Limitar profundidad para evitar bucles infinitos
-    if (depth > 20) return;
+    if (depth > 30) return;
 
-    // Buscar en elementos con role="text" que contengan código
+    // ⚠️ MEJORADO: Buscar en todos los campos posibles
+    const allText = [
+      node.text,
+      node.value,
+      node.name,
+      // También buscar en atributos si existen
+      (node as any).description,
+      (node as any).label,
+    ]
+      .filter(Boolean)
+      .join(' ');
+
+    // ⚠️ MEJORADO: Buscar código con patrones más amplios
+    const codePatterns = [
+      /window\.UBITS\.\w+\.create/,
+      /window\.create\w+/,
+      /containerId\s*:/,
+      /label\s*:/,
+      /value\s*:/,
+      /name\s*:/,
+      /checked\s*:/,
+      /size\s*:/,
+      /state\s*:/,
+      /disabled\s*:/,
+      /onChange\s*:/,
+      /<div[^>]*id="[^"]*container[^"]*"/,
+      /<div[^>]*id="[^"]*radio[^"]*"/,
+      /RadioButton/,
+      /createRadioButton/,
+    ];
+
+    const hasCode = codePatterns.some((pattern) => pattern.test(allText));
+
+    if (hasCode && allText.trim().length > 20) {
+      // ⚠️ MEJORADO: Extraer bloques de código completos
+      // Buscar bloques que contengan múltiples propiedades
+      const codeBlock = allText.trim();
+
+      // Verificar que sea un bloque de código válido (no solo un fragmento)
+      const isCompleteCodeBlock =
+        codeBlock.includes('containerId') ||
+        codeBlock.includes('window.UBITS') ||
+        codeBlock.includes('create(') ||
+        (codeBlock.includes('label') && codeBlock.includes('value'));
+
+      if (isCompleteCodeBlock && !codeBlocks.includes(codeBlock)) {
+        codeBlocks.push(codeBlock);
+      }
+    }
+
+    // Buscar en elementos con role="text" o "code" específicamente
     if (node.role === 'text' || node.role === 'code') {
       const text = node.text || node.value || node.name || '';
 
       // Verificar si contiene código (HTML, JS, etc.)
       if (
-        text.includes('<') ||
         text.includes('window.UBITS') ||
         text.includes('create(') ||
-        text.includes('Button') ||
-        text.includes('Drawer') ||
-        text.includes('Input') ||
-        text.includes('variant:') ||
-        text.includes('size:') ||
-        text.includes('text:')
+        text.includes('containerId') ||
+        text.includes('RadioButton') ||
+        (text.includes('label') && text.includes('value'))
       ) {
-        // Limpiar el texto (remover espacios extra, etc.)
         const cleaned = text.trim();
-        if (cleaned.length > 10) {
+        if (cleaned.length > 20) {
           // Evitar duplicados
           if (!codeBlocks.includes(cleaned)) {
             codeBlocks.push(cleaned);
           }
-        }
-      }
-    }
-
-    // Buscar en name también (puede contener código)
-    if (node.name) {
-      const name = node.name;
-      // Buscar código JavaScript (window.UBITS.Button.create)
-      if (
-        name.includes('window.UBITS') ||
-        name.includes('create(') ||
-        (name.includes('<') && name.includes('>')) ||
-        (name.includes('{') && name.includes('variant'))
-      ) {
-        const cleaned = name.trim();
-        if (cleaned.length > 10 && !codeBlocks.includes(cleaned)) {
-          codeBlocks.push(cleaned);
-        }
-      }
-    }
-
-    // Buscar en value también
-    if (node.value) {
-      const value = node.value;
-      if (
-        value.includes('window.UBITS') ||
-        value.includes('create(') ||
-        (value.includes('<') && value.includes('>'))
-      ) {
-        const cleaned = value.trim();
-        if (cleaned.length > 10 && !codeBlocks.includes(cleaned)) {
-          codeBlocks.push(cleaned);
         }
       }
     }
@@ -105,18 +118,39 @@ export function extractCodeFromDocsSnapshot(
       `   📋 Encontrados ${codeBlocks.length} bloque(s) de código en el snapshot`
     );
 
-    // Priorizar código que contenga "implementation" o "window.UBITS"
+    // ⚠️ MEJORADO: Priorizar código más completo y específico
+    // 1. Código que contenga "implementation" y "window.UBITS"
     const implementationCode = codeBlocks.find(
-      (code) => code.includes('implementation') || code.includes('window.UBITS')
+      (code) =>
+        (code.includes('implementation') || code.includes('Implementation')) &&
+        code.includes('window.UBITS')
     );
 
-    // Si no hay código de implementation, buscar código más completo
+    // 2. Código que contenga "window.UBITS" y múltiples props
+    const completeCode = codeBlocks.find(
+      (code) =>
+        code.includes('window.UBITS') &&
+        (code.includes('containerId') ||
+          code.includes('label') ||
+          code.includes('value'))
+    );
+
+    // 3. Código que contenga "containerId" (indica código completo)
+    const containerIdCode = codeBlocks.find((code) =>
+      code.includes('containerId')
+    );
+
+    // 4. Código más largo (probablemente más completo)
+    const longestCode = codeBlocks.reduce((longest, current) =>
+      current.length > longest.length ? current : longest
+    );
+
+    // Priorizar: implementation > complete > containerId > longest
     const bestCode =
       implementationCode ||
-      codeBlocks.find(
-        (code) => code.includes('window.UBITS') || code.includes('create(')
-      ) ||
-      codeBlocks.find((code) => code.length > 50) ||
+      completeCode ||
+      containerIdCode ||
+      longestCode ||
       codeBlocks[0];
 
     console.log(`   📋 Usando código de ${bestCode.length} caracteres`);
