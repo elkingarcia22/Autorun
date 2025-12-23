@@ -2354,8 +2354,12 @@
       return;
     }
 
-    // Agregar event listener al botón
-    filterButton.addEventListener('click', function(e) {
+    // ⚠️ CRÍTICO: Remover event listeners anteriores para evitar duplicados
+    const newButton = filterButton.cloneNode(true);
+    filterButton.parentNode.replaceChild(newButton, filterButton);
+    
+    // Agregar event listener al botón nuevo
+    newButton.addEventListener('click', function(e) {
       e.preventDefault();
       e.stopPropagation();
       console.log('🔍 Botón de filtro clickeado');
@@ -2363,6 +2367,9 @@
     });
 
     console.log('✅ Botón de filtro inicializado correctamente');
+    console.log('🔍 Botón encontrado:', newButton);
+    console.log('🔍 Botón visible:', newButton.offsetParent !== null);
+    console.log('🔍 Botón display:', window.getComputedStyle(newButton).display);
   }
 
   // Función para abrir el drawer de filtros
