@@ -2530,8 +2530,45 @@
           // Guardar componentes antes de limpiar
           window.AUTORUN_PRESERVE_COMPONENTS.saveAll();
           
+          // ⚠️ CRÍTICO: Preservar data-view-container antes de que ContentManager limpie el content-area
+          const dataViewContainer = document.getElementById('data-view-container');
+          let dataViewContainerHTML = null;
+          if (dataViewContainer) {
+            dataViewContainerHTML = dataViewContainer.outerHTML;
+            console.log('🔵 [AutoPreserve] Preservando data-view-container antes de updateContent');
+          }
+          
           // Llamar método original
           const result = originalUpdateContent.call(this, section, subSection);
+          
+          // Restaurar data-view-container después de que ContentManager actualice el contenido
+          if (dataViewContainerHTML) {
+            setTimeout(() => {
+              const contentArea = document.querySelector('.content-area');
+              if (contentArea) {
+                // Verificar si el contenedor ya existe (puede que no se haya eliminado)
+                let existingContainer = document.getElementById('data-view-container');
+                if (!existingContainer) {
+                  // Insertar el contenedor preservado al final del content-area
+                  contentArea.insertAdjacentHTML('beforeend', dataViewContainerHTML);
+                  console.log('✅ [AutoPreserve] data-view-container restaurado');
+                  
+                  // Recrear el DataView después de restaurar el contenedor
+                  setTimeout(() => {
+                    const restoredContainer = document.getElementById('data-view-container');
+                    if (restoredContainer && restoredContainer.children.length === 0) {
+                      // El contenedor está vacío, recrear el DataView
+                      console.log('🔄 [AutoPreserve] Recreando DataView después de restaurar contenedor');
+                      // Disparar evento personalizado para que el código de creación de DataView se ejecute
+                      window.dispatchEvent(new CustomEvent('autorun:recreate-dataview'));
+                    }
+                  }, 100);
+                } else {
+                  console.log('✅ [AutoPreserve] data-view-container ya existe, no es necesario restaurar');
+                }
+              }
+            }, 100);
+          }
           
           // Restaurar componentes después
           setTimeout(() => {
