@@ -270,11 +270,20 @@ function detectAdditionalComponents(
   // Total: ~66 componentes detectables
   const componentPatterns: Record<string, RegExp[]> = {
     // ========== COMPONENTES BÁSICOS ==========
+    // ⚠️ CRÍTICO: RadioButton DEBE estar ANTES de Button para evitar falsos positivos
+    RadioButton: [
+      /\bradio\s*button\b/i, // "radio button" o "radiobutton"
+      /\bradio\s*bot[oó]n\b/i, // "radio botón"
+      /\bradiobutton\b/i, // "radiobutton" (sin espacio)
+      /(?:implementar|crear|agregar|poner|hacer).*radio.*button/i,
+      /(?:implementar|crear|agregar|poner|hacer).*radio.*bot[oó]n/i,
+      /\bradio\b/i, // "radio" solo (pero con menor prioridad)
+    ],
     Button: [
-      /\bbot[oó]n\b/i,
-      /\bbutton\b/i,
-      /\bbotones?\b/i,
-      /(?:implementar|crear|agregar|poner|hacer).*(?:bot[oó]n|button)/i,
+      /\bbot[oó]n\b(?!\s*radio)/i, // "botón" pero NO "botón radio"
+      /\bbutton\b(?!\s*radio)/i, // "button" pero NO "button radio"
+      /\bbotones?\b(?!.*radio)/i, // "botones" pero NO si contiene "radio"
+      /(?:implementar|crear|agregar|poner|hacer).*(?:bot[oó]n|button)(?!.*radio)/i,
     ],
     ButtonAI: [
       /\bbuttonai\b/i,
