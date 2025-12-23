@@ -2470,8 +2470,24 @@
   }
 
   // Función para crear inputs de filtro usando componentes UBITS Input
+  let createFilterInputsRetries = 0;
+  const MAX_RETRIES = 10; // Limitar reintentos para evitar loop infinito
+  
   function createFilterInputs() {
-    console.log('🔍 Creando inputs de filtro con componentes UBITS...');
+    console.log('🔍 Creando inputs de filtro con componentes UBITS... (intento ' + (createFilterInputsRetries + 1) + '/' + MAX_RETRIES + ')');
+    
+    // ⚠️ CRÍTICO: Limitar reintentos para evitar loop infinito
+    if (createFilterInputsRetries >= MAX_RETRIES) {
+      console.error('❌ Máximo de reintentos alcanzado. No se pudieron crear los inputs.');
+      console.error('🔍 APIs disponibles:', {
+        'window.createInput': typeof window.createInput,
+        'window.UBITS': typeof window.UBITS,
+        'window.UBITS.Input': window.UBITS && window.UBITS.Input ? typeof window.UBITS.Input : 'N/A',
+        'window.UBITS.Input.create': window.UBITS && window.UBITS.Input && window.UBITS.Input.create ? typeof window.UBITS.Input.create : 'N/A'
+      });
+      return;
+    }
+    createFilterInputsRetries++;
     
     // ⚠️ CRÍTICO: Buscar el drawer primero para asegurar que los contenedores estén dentro
     const drawer = document.querySelector('.ubits-drawer');
@@ -2485,15 +2501,28 @@
     let createInputFn = null;
     if (typeof window.createInput === 'function') {
       createInputFn = window.createInput;
+      console.log('✅ window.createInput encontrado');
     } else if (window.UBITS && window.UBITS.Input && typeof window.UBITS.Input.create === 'function') {
       createInputFn = window.UBITS.Input.create;
+      console.log('✅ window.UBITS.Input.create encontrado');
+    } else if (window.UBITS && window.UBITS.Input) {
+      console.warn('⚠️ window.UBITS.Input existe pero no tiene método create:', window.UBITS.Input);
     }
     
     if (!createInputFn) {
       console.warn('⚠️ window.createInput no está disponible, reintentando...');
+      console.log('🔍 APIs disponibles:', {
+        'window.createInput': typeof window.createInput,
+        'window.UBITS': typeof window.UBITS,
+        'window.UBITS.Input': window.UBITS && window.UBITS.Input ? typeof window.UBITS.Input : 'N/A',
+        'window.UBITS.Input.create': window.UBITS && window.UBITS.Input && window.UBITS.Input.create ? typeof window.UBITS.Input.create : 'N/A'
+      });
       setTimeout(createFilterInputs, 500);
       return;
     }
+    
+    // Resetear contador de reintentos si encontramos la función
+    createFilterInputsRetries = 0;
     
     // ⚠️ CRÍTICO: Buscar contenedores DENTRO del drawer específicamente
     // Usar IDs únicos con timestamp para evitar conflictos
