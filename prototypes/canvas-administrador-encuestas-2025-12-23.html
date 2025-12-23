@@ -796,11 +796,16 @@
                             <p class="ubits-body-md-regular">Contenido principal</p>
                             
                             <!-- ⭐ POC: RadioButton Implementation -->
-                            <div style="margin-top: 40px; padding: 24px; background: var(--modifiers-normal-color-light-bg-1); border-radius: 8px;">
-                                <h3 class="ubits-heading-h3" style="margin-bottom: 24px;">Ejemplo: RadioButton (POC Storybook V2)</h3>
+                            <div style="margin-top: 40px; padding: 24px; background: var(--modifiers-normal-color-light-bg-1, #ffffff); border-radius: 8px; border: 2px solid var(--ubits-border-color, #e0e0e0); min-height: 200px;">
+                                <h3 class="ubits-heading-h3" style="margin-bottom: 24px; color: var(--ubits-fg-1-high, #000000);">Ejemplo: RadioButton (POC Storybook V2)</h3>
                                 
                                 <!-- Contenedores para RadioButtons -->
-                                <div id="radiobutton-group-tipo" style="display: flex; flex-direction: column; gap: 16px;"></div>
+                                <div id="radiobutton-group-tipo" style="display: flex; flex-direction: column; gap: 16px; min-height: 100px; width: 100%;"></div>
+                                
+                                <!-- Debug info -->
+                                <div id="radiobutton-debug" style="margin-top: 20px; padding: 12px; background: #f5f5f5; border-radius: 4px; font-size: 12px; color: #666;">
+                                    <strong>Debug:</strong> <span id="radiobutton-debug-text">Esperando inicialización...</span>
+                                </div>
                             </div>
                             
                             <br><br><br><br><br><br><br><br><br><br><br>
@@ -1077,18 +1082,54 @@
 
                 console.log('✅ [POC RadioButton] Todos los RadioButtons creados exitosamente');
                 
+                // Actualizar debug info
+                const debugEl = document.getElementById('radiobutton-debug-text');
+                if (debugEl) {
+                    debugEl.textContent = `${radioOptions.length} RadioButtons creados`;
+                }
+                
                 // Verificación final
                 setTimeout(() => {
                     const allRadioButtons = container.querySelectorAll('.ubits-radio-button');
                     console.log(`🔍 [POC RadioButton] Total RadioButtons encontrados en DOM: ${allRadioButtons.length}`);
-                    allRadioButtons.forEach((rb, idx) => {
-                        console.log(`🔍 [POC RadioButton] RadioButton ${idx + 1}:`, {
-                            visible: rb.offsetParent !== null,
-                            display: window.getComputedStyle(rb).display,
-                            position: rb.getBoundingClientRect(),
-                            html: rb.outerHTML.substring(0, 150)
+                    
+                    if (allRadioButtons.length === 0) {
+                        console.error('❌ [POC RadioButton] NO se encontraron RadioButtons en el DOM');
+                        console.error('❌ [POC RadioButton] Contenedor HTML:', container.innerHTML);
+                        
+                        // Intentar renderizar directamente
+                        console.log('🔄 [POC RadioButton] Intentando renderizar directamente...');
+                        radioOptions.forEach((options, index) => {
+                            const radioContainer = document.getElementById(`radiobutton-container-${index}`);
+                            if (radioContainer) {
+                                const html = window.UBITS.RadioButton.render({
+                                    label: options.label,
+                                    complementaryText: options.complementaryText,
+                                    value: options.value,
+                                    name: options.name,
+                                    checked: options.checked,
+                                    size: options.size,
+                                    state: options.state,
+                                    disabled: options.disabled
+                                });
+                                radioContainer.innerHTML = html;
+                                console.log(`✅ [POC RadioButton] RadioButton "${options.label}" renderizado directamente`);
+                            }
                         });
-                    });
+                    } else {
+                        allRadioButtons.forEach((rb, idx) => {
+                            console.log(`🔍 [POC RadioButton] RadioButton ${idx + 1}:`, {
+                                visible: rb.offsetParent !== null,
+                                display: window.getComputedStyle(rb).display,
+                                position: rb.getBoundingClientRect(),
+                                html: rb.outerHTML.substring(0, 150)
+                            });
+                        });
+                        
+                        if (debugEl) {
+                            debugEl.textContent = `${allRadioButtons.length} RadioButtons visibles en DOM`;
+                        }
+                    }
                 }, 500);
             }
 
