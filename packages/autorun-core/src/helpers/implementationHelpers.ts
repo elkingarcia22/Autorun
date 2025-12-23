@@ -242,18 +242,8 @@ export function detectComponentFromMessage(message: string): string | null {
       component: 'Checkbox',
       priority: 6,
     },
-    // ⚠️ NUEVO: Detección de Radio
-    {
-      pattern:
-        /(?:implementar|crear|agregar|poner|hacer).*(?:radio|bot[oó]n\s+de\s+opci[oó]n)/i,
-      component: 'Radio',
-      priority: 7,
-    },
-    {
-      pattern: /\bradio\s+button\b/i,
-      component: 'Radio',
-      priority: 6,
-    },
+    // ⚠️ RadioButton ya está definido arriba con mayor prioridad
+    // Radio está deprecado, usar RadioButton en su lugar
     // ⚠️ NUEVO: Detección de DatePicker
     {
       pattern:
