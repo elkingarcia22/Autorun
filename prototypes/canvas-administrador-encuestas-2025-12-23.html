@@ -796,6 +796,15 @@
     type="button"
     aria-label="Abrir filtros"
     title="Filtros"
+    style="
+      width: 40px;
+      height: 40px;
+      min-width: 40px;
+      padding: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    "
   >
     <i class="far fa-filter"></i>
   </button>
@@ -2301,29 +2310,37 @@
   function openFilterDrawer() {
     console.log('🔍 Abriendo drawer de filtros...');
     
-    // Verificar que createDrawer esté disponible (puede estar en window.createDrawer o window.UBITS.Drawer.create)
-    let createDrawerFn = window.createDrawer;
-    if (!createDrawerFn && window.UBITS && window.UBITS.Drawer && window.UBITS.Drawer.create) {
-      createDrawerFn = window.UBITS.Drawer.create;
-    }
+    // Verificar múltiples formas de acceder a createDrawer
+    let createDrawerFn = null;
     
-    if (!createDrawerFn) {
-      console.error('❌ createDrawer no está disponible');
-      console.log('🔍 Verificando APIs disponibles:', {
+    // Intentar window.createDrawer primero
+    if (typeof window.createDrawer === 'function') {
+      createDrawerFn = window.createDrawer;
+      console.log('✅ Usando window.createDrawer');
+    }
+    // Intentar window.UBITS.Drawer.create
+    else if (window.UBITS && window.UBITS.Drawer && typeof window.UBITS.Drawer.create === 'function') {
+      createDrawerFn = window.UBITS.Drawer.create;
+      console.log('✅ Usando window.UBITS.Drawer.create');
+    }
+    // Intentar crear el drawer directamente con el componente HTML
+    else {
+      console.warn('⚠️ createDrawer no está disponible, intentando crear drawer manualmente...');
+      console.log('🔍 APIs disponibles:', {
         'window.createDrawer': typeof window.createDrawer,
         'window.UBITS': typeof window.UBITS,
-        'window.UBITS.Drawer': window.UBITS ? typeof window.UBITS.Drawer : 'N/A'
+        'window.UBITS.Drawer': window.UBITS && window.UBITS.Drawer ? typeof window.UBITS.Drawer : 'N/A',
+        'window.UBITS.Drawer.create': window.UBITS && window.UBITS.Drawer && window.UBITS.Drawer.create ? typeof window.UBITS.Drawer.create : 'N/A'
       });
-      // Intentar esperar un poco más
-      setTimeout(function() {
-        openFilterDrawer();
-      }, 1000);
+      
+      // Crear drawer manualmente usando el componente HTML
+      createDrawerManually();
       return;
     }
 
-    // Crear drawer con filtros
+    // Crear drawer con filtros usando la API
     try {
-      console.log('✅ Creando drawer con createDrawer...');
+      console.log('✅ Creando drawer con API...');
       const drawerInstance = createDrawerFn({
         title: 'Filtros',
         width: 40,
