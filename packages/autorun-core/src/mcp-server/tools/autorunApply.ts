@@ -19,6 +19,11 @@ import { extractExactCodeFromStorybookWithBrowser } from '../../helpers/storyboo
 import { verifyBeforeImplementation } from '../../helpers/preImplementationVerification.js';
 import { analyzeComponentInternals } from '../../helpers/componentInternalAnalysis.js';
 import { mapAndValidateComponentNameToStorybookId } from '../../helpers/storybookStories.js';
+import {
+  combineCodeWithProps,
+  validateCompleteStructure,
+  findImplementationStory,
+} from '../../helpers/codePropsCombiner.js';
 import { AddonOrchestrator } from '../helpers/addonOrchestrator.js';
 import { generateCodeWithAutorunMarks } from '../helpers/codeMarkGenerator.js';
 import {
@@ -240,10 +245,17 @@ async function autorunApplyStrict(
         `   [2.1.1] Intentando consultar Storybook MCP directamente...`
       );
 
+      // ⚠️ NUEVO MCP: Usar getComponentsProps con componentNames
+      const { storybookIdToComponentName } = await import(
+        '../../helpers/storybookMCPNameMapper.js'
+      );
+      const componentName =
+        storybookIdToComponentName(componentId) || componentId;
+
       const mcpResult = await callStorybookMCPTool(
-        'mcp_storybook_getComponentsProps',
+        'getComponentsProps', // ⚠️ NUEVO MCP: Sin prefijo mcp_storybook_
         {
-          componentIds: [componentId],
+          componentNames: [componentName], // ⚠️ NUEVO MCP: Usar componentNames
         }
       );
 
@@ -310,7 +322,7 @@ async function autorunApplyStrict(
       console.log(`   ⚠️ OBLIGATORIO ejecutar:`);
       console.log(`      call_mcp_tool({`);
       console.log(`        server: "storybook",`);
-      console.log(`        toolName: "mcp_storybook_getComponentsProps",`);
+      console.log(`        toolName: "getComponentsProps",`); // ⚠️ NUEVO MCP: Sin prefijo mcp_storybook_
       console.log(
         `        arguments: { componentIds: ["${msg.storybookId}"] }`
       );
@@ -326,13 +338,29 @@ async function autorunApplyStrict(
     // y autorun.apply() retornará error (fail-closed).
     // ✅ MEJORA: Ahora también intentamos obtener props con fallback visual como respaldo
 
-    // 2.2 Extraer código exacto desde Storybook (OBLIGATORIO)
-    console.log(`   [2.2] Extrayendo código exacto desde Storybook...`);
+    // 2.2 Buscar historia "implementation" y extraer código exacto desde Storybook (OBLIGATORIO)
+    console.log(
+      `   [2.2] Buscando historia "implementation" y extrayendo código exacto...`
+    );
+
+    // 2.2.1 Buscar historia "implementation" automáticamente
+    let storyName = 'default';
+    try {
+      storyName = await findImplementationStory(componentId);
+      console.log(`   ✅ Historia seleccionada: ${storyName}`);
+    } catch (error: any) {
+      console.warn(
+        `   ⚠️ Error buscando historia "implementation": ${error.message}, usando "default"`
+      );
+      storyName = 'default';
+    }
+
+    // 2.2.2 Extraer código exacto desde Storybook
     let exactCode;
     try {
       exactCode = await extractExactCodeFromStorybookWithBrowser(
         componentId,
-        'default'
+        storyName
       );
       if (!exactCode || !exactCode.html) {
         throw new Error('No se pudo extraer código desde Storybook');
@@ -356,6 +384,87 @@ async function autorunApplyStrict(
       };
     }
 
+    // 2.2.3 Combinar código con props (si están disponibles)
+    let combinedCode = exactCode.html;
+    if (componentProps && componentProps.length > 0) {
+      try {
+        // Convertir props del MCP a formato de objeto
+        const propsObject: Record<string, any> = {};
+        componentProps.forEach((prop: any) => {
+          if (prop.name) {
+            propsObject[prop.name] =
+              prop.defaultValue !== undefined ? prop.defaultValue : prop.value;
+          }
+        });
+
+        // Combinar código con props
+        combinedCode = combineCodeWithProps(
+          exactCode.html,
+          propsObject,
+          input.options?.customProps
+        );
+        console.log(
+          `   ✅ Código combinado con props: ${combinedCode.length} caracteres`
+        );
+
+        // Actualizar exactCode.html con código combinado
+        exactCode.html = combinedCode;
+      } catch (error: any) {
+        console.warn(
+          `   ⚠️ Error combinando código con props: ${error.message}, usando código original`
+        );
+        // Continuar con código original si falla la combinación
+      }
+    } else {
+      console.log(
+        `   ⚠️ No hay props disponibles para combinar, usando código original`
+      );
+    }
+
+    // 2.2.4 Validar estructura completa (si hay props disponibles)
+    if (
+      componentProps &&
+      componentProps.length > 0 &&
+      !input.options?.skipVerification
+    ) {
+      try {
+        const propsObject: Record<string, any> = {};
+        componentProps.forEach((prop: any) => {
+          if (prop.name) {
+            propsObject[prop.name] =
+              prop.defaultValue !== undefined ? prop.defaultValue : prop.value;
+          }
+        });
+
+        const structureValidation = await validateCompleteStructure(
+          combinedCode,
+          componentId,
+          propsObject
+        );
+
+        if (!structureValidation.valid) {
+          const errorMsg = `Validación de estructura falló: ${structureValidation.errors.join(', ')}`;
+          console.error(`   ❌ ${errorMsg}`);
+          errors.push(...structureValidation.errors);
+          warnings.push(...structureValidation.warnings);
+
+          // No bloquear completamente, solo advertir (el código puede funcionar de todas formas)
+          console.warn(
+            `   ⚠️ Continuando con advertencias, pero el código puede tener problemas`
+          );
+        } else {
+          console.log(`   ✅ Validación de estructura completa exitosa`);
+          if (structureValidation.warnings.length > 0) {
+            warnings.push(...structureValidation.warnings);
+          }
+        }
+      } catch (error: any) {
+        console.warn(
+          `   ⚠️ Error validando estructura: ${error.message}, continuando sin validación completa`
+        );
+      }
+    }
+
     // 2.3 Verificar pre-implementación (OBLIGATORIO)
     console.log(`   [2.3] Verificando pre-implementación...`);
     if (!input.options?.skipVerification) {
@@ -364,7 +473,7 @@ async function autorunApplyStrict(
         verificationResult = await verifyBeforeImplementation(
           componentId,
           exactCode.html,
-          'default'
+          storyName
         );
 
         if (!verificationResult.valid) {
@@ -534,7 +643,7 @@ async function autorunApplyStrict(
         );
         console.log(`      call_mcp_tool({`);
         console.log(`        server: "storybook",`);
-        console.log(`        toolName: "mcp_storybook_getComponentsProps",`);
+        console.log(`        toolName: "getComponentsProps",`); // ⚠️ NUEVO MCP: Sin prefijo mcp_storybook_
         console.log(
           `        arguments: { componentIds: ["${depComponentName}"] }`
         );
