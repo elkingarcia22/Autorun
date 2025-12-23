@@ -300,15 +300,38 @@ export async function executeOnMessageStart(
           );
 
           if (verification?.blocked) {
-            blocked = true;
-            reason = verification.reason;
-            console.error(
-              `❌ [Execute On Message Start] IMPLEMENTACIÓN BLOQUEADA: ${reason}`
-            );
+            // ⚠️ CRÍTICO: Si skipCheck=true, ignorar bloqueo completamente
+            // porque autorun.apply() consultará Storybook automáticamente
+            if (skipCheck) {
+              console.warn(
+                `   ⚠️ [Execute On Message Start] verifyOnDetection retornó blocked=true pero skipCheck=true, ignorando bloqueo`
+              );
+              console.warn(
+                `   ⚠️ [Execute On Message Start] Razón original: ${verification.reason}`
+              );
+              blocked = false;
+              reason = undefined; // ⚠️ CRÍTICO: Limpiar reason cuando skipCheck=true
+              console.log(
+                `   ✅ [Execute On Message Start] Bloqueo ignorado (skipCheck=true)`
+              );
+            } else {
+              blocked = true;
+              reason = verification.reason;
+              console.error(
+                `❌ [Execute On Message Start] IMPLEMENTACIÓN BLOQUEADA: ${reason}`
+              );
+            }
           } else {
             console.log(
               `✅ [Execute On Message Start] Verificación pasada, continuando...`
             );
+            // ⚠️ CRÍTICO: Si skipCheck=true, asegurar que reason esté limpio
+            if (skipCheck && verification?.reason) {
+              console.warn(
+                `   ⚠️ [Execute On Message Start] verifyOnDetection retornó blocked=false pero reason existe, limpiando reason`
+              );
+              reason = undefined;
+            }
           }
         }
       } else {
