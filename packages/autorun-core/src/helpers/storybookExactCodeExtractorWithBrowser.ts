@@ -484,6 +484,29 @@ function extractStoryCodeFromSource(
   sourceCode: string,
   storyName: string
 ): string | null {
+  // ⚠️ NUEVO: Priorizar extracción desde parameters.docs.source.code (más confiable)
+  // Buscar específicamente para historias "Implementation" o "implementation"
+  if (storyName.toLowerCase().includes('implementation')) {
+    // Buscar parameters.docs.source.code
+    const sourceCodeRegex =
+      /parameters:\s*\{[\s\S]*?docs:\s*\{[\s\S]*?source:\s*\{[\s\S]*?code:\s*[`'"]([\s\S]*?)[`'"]/i;
+    const sourceMatch = sourceCode.match(sourceCodeRegex);
+
+    if (sourceMatch && sourceMatch[1]) {
+      const code = sourceMatch[1]
+        .replace(/\\n/g, '\n')
+        .replace(/\\`/g, '`')
+        .replace(/\\'/g, "'")
+        .replace(/\\"/g, '"')
+        .trim();
+
+      if (code.length > 20) {
+        console.log(`   ✅ Código extraído desde parameters.docs.source.code`);
+        return code;
+      }
+    }
+  }
+
   // Buscar la historia específica en el código fuente
   const storyRegex = new RegExp(
     `export\\s+const\\s+${storyName}\\s*[:=]\\s*([\\s\\S]*?)(?:export|const|function|\\/\\*|$)`,
@@ -494,6 +517,26 @@ function extractStoryCodeFromSource(
   if (match) {
     // Extraer el código de la historia
     let storyCode = match[1].trim();
+
+    // ⚠️ NUEVO: Buscar parameters.docs.source.code dentro de la historia
+    const sourceCodeInStory = storyCode.match(
+      /source:\s*\{[\s\S]*?code:\s*[`'"]([\s\S]*?)[`'"]/i
+    );
+    if (sourceCodeInStory && sourceCodeInStory[1]) {
+      const code = sourceCodeInStory[1]
+        .replace(/\\n/g, '\n')
+        .replace(/\\`/g, '`')
+        .replace(/\\'/g, "'")
+        .replace(/\\"/g, '"')
+        .trim();
+
+      if (code.length > 20) {
+        console.log(
+          `   ✅ Código extraído desde parameters.docs.source.code dentro de la historia`
+        );
+        return code;
+      }
+    }
 
     // Limpiar el código (remover comentarios, etc.)
     storyCode = storyCode
