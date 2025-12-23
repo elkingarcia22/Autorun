@@ -101,14 +101,24 @@ async function autorunApplyStrict(
   input: AutorunApplyInput
 ): Promise<AutorunApplyOutput> {
   // ========================================
-  // FASE 0: DESACTIVAR TEMPORALMENTE PRE-IMPLEMENTATION CHECK PARA autorun.apply()
+  // FASE 0: ACTIVAR MODO autorun.apply() GLOBALMENTE
   // ⚠️ CRÍTICO: Hacer esto ANTES de cualquier otra cosa para evitar bloqueos
   // ========================================
   // ⚠️ CRÍTICO: autorun.apply() SIEMPRE consulta Storybook automáticamente,
   // por lo que NO debe ser bloqueado por Pre-Implementation Check
   console.log(
-    `\n🔧 [Autorun MCP] FASE 0: DESACTIVANDO PRE-IMPLEMENTATION CHECK (ANTES DE TODO)`
+    `\n🔧 [Autorun MCP] FASE 0: ACTIVANDO MODO autorun.apply() GLOBALMENTE (ANTES DE TODO)`
   );
+  
+  // ⚠️ CRÍTICO: Activar modo autorun.apply() globalmente
+  // Esto permite que canImplement() y verifyOnDetection() siempre permitan cuando viene de autorun.apply()
+  if (typeof globalThis !== 'undefined') {
+    globalThis.__AUTORUN_APPLY_MODE__ = true;
+    console.log(
+      `   ✅ [autorunApply] Modo autorun.apply() activado globalmente (__AUTORUN_APPLY_MODE__=${globalThis.__AUTORUN_APPLY_MODE__})`
+    );
+  }
+  
   let preCheckAddonOriginalState: boolean | null = null;
   let preCheckAddon: any = null;
   try {
@@ -116,7 +126,7 @@ async function autorunApplyStrict(
     preCheckAddon = hub.getAddon('pre-implementation-check');
     if (preCheckAddon) {
       preCheckAddonOriginalState = preCheckAddon.isActive();
-      // Desactivar temporalmente el add-on usando el método oficial
+      // Desactivar temporalmente el add-on usando el método oficial (doble seguridad)
       if (preCheckAddonOriginalState) {
         console.log(
           `   ⚠️ [autorunApply] Desactivando Pre-Implementation Check temporalmente (estado original: activo)`
@@ -1102,7 +1112,14 @@ async function autorunApplyStrict(
       },
     ];
 
-    // ⚠️ CRÍTICO: Reactivar Pre-Implementation Check antes de retornar éxito
+    // ⚠️ CRÍTICO: Desactivar modo autorun.apply() y reactivar Pre-Implementation Check antes de retornar éxito
+    if (typeof globalThis !== 'undefined') {
+      globalThis.__AUTORUN_APPLY_MODE__ = false;
+      console.log(
+        `   🔧 [autorunApply] Modo autorun.apply() desactivado globalmente`
+      );
+    }
+    
     if (
       preCheckAddon &&
       preCheckAddonOriginalState !== null &&
@@ -1160,7 +1177,14 @@ async function autorunApplyStrict(
       warnings: warnings.length > 0 ? warnings : undefined,
     };
   } catch (error: any) {
-    // ⚠️ CRÍTICO: Reactivar Pre-Implementation Check antes de retornar error
+    // ⚠️ CRÍTICO: Desactivar modo autorun.apply() y reactivar Pre-Implementation Check antes de retornar error
+    if (typeof globalThis !== 'undefined') {
+      globalThis.__AUTORUN_APPLY_MODE__ = false;
+      console.log(
+        `   🔧 [autorunApply] Modo autorun.apply() desactivado globalmente (después de error)`
+      );
+    }
+    
     if (
       preCheckAddon &&
       preCheckAddonOriginalState !== null &&
