@@ -255,6 +255,7 @@ export async function getSourceCode(
       // ⚠️ NUEVO: Buscar en archivos de stories primero (más confiable para extraer código de historias)
       `vendor/ubits/packages/storybook/stories/components/${pascalCase}/${pascalCase}.stories.ts`,
       `vendor/ubits/packages/storybook/stories/components/${pascalCase}/RadioButton.stories.ts`, // Caso especial para RadioButton
+      `vendor/ubits/packages/storybook/stories/components/${pascalCase}/NPSCard.stories.ts`, // Caso especial para NPSCard
       `vendor/ubits/packages/storybook/stories/components/${normalizedId}/${normalizedId}.stories.ts`,
       // Con PascalCase (ej: RadioButtonProvider.ts)
       `vendor/ubits/packages/components/${normalizedId}/src/${pascalCase}Provider.ts`,
