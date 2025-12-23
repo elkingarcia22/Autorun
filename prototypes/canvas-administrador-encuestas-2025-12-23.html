@@ -987,6 +987,13 @@
                     return;
                 }
 
+                // Verificar visibilidad del contenedor
+                console.log('🔍 [POC RadioButton] Contenedor encontrado:', container);
+                console.log('🔍 [POC RadioButton] Contenedor visible:', container.offsetParent !== null);
+                console.log('🔍 [POC RadioButton] Contenedor display:', window.getComputedStyle(container).display);
+                console.log('🔍 [POC RadioButton] Contenedor visibility:', window.getComputedStyle(container).visibility);
+                console.log('🔍 [POC RadioButton] Contenedor position:', container.getBoundingClientRect());
+
                 if (!window.UBITS || !window.UBITS.RadioButton) {
                     console.log('⏳ [POC RadioButton] Esperando UBITS.RadioButton...');
                     setTimeout(initRadioButtons, 100);
@@ -1038,7 +1045,7 @@
 
                     // ⭐ CÓDIGO EXACTO desde Implementation story
                     try {
-                        window.UBITS.RadioButton.create({
+                        const result = window.UBITS.RadioButton.create({
                             containerId: radioContainer.id,
                             label: options.label,
                             complementaryText: options.complementaryText,
@@ -1051,12 +1058,38 @@
                         });
 
                         console.log(`✅ [POC RadioButton] RadioButton "${options.label}" creado`);
+                        console.log(`🔍 [POC RadioButton] Elemento creado:`, result.element);
+                        console.log(`🔍 [POC RadioButton] Elemento visible:`, result.element.offsetParent !== null);
+                        console.log(`🔍 [POC RadioButton] Elemento HTML:`, result.element.outerHTML.substring(0, 200));
+                        
+                        // Verificar que el elemento esté en el DOM
+                        const checkElement = document.getElementById(`radio-${options.name}-${options.value}`);
+                        if (checkElement) {
+                            console.log(`✅ [POC RadioButton] Input encontrado en DOM:`, checkElement);
+                        } else {
+                            console.warn(`⚠️ [POC RadioButton] Input NO encontrado en DOM`);
+                        }
                     } catch (error) {
                         console.error(`❌ [POC RadioButton] Error creando RadioButton "${options.label}":`, error);
+                        console.error(`❌ [POC RadioButton] Stack:`, error.stack);
                     }
                 });
 
                 console.log('✅ [POC RadioButton] Todos los RadioButtons creados exitosamente');
+                
+                // Verificación final
+                setTimeout(() => {
+                    const allRadioButtons = container.querySelectorAll('.ubits-radio-button');
+                    console.log(`🔍 [POC RadioButton] Total RadioButtons encontrados en DOM: ${allRadioButtons.length}`);
+                    allRadioButtons.forEach((rb, idx) => {
+                        console.log(`🔍 [POC RadioButton] RadioButton ${idx + 1}:`, {
+                            visible: rb.offsetParent !== null,
+                            display: window.getComputedStyle(rb).display,
+                            position: rb.getBoundingClientRect(),
+                            html: rb.outerHTML.substring(0, 150)
+                        });
+                    });
+                }, 500);
             }
 
             // Inicializar cuando el DOM esté listo
