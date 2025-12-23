@@ -975,8 +975,14 @@
             
             // Esperar a que todos los sistemas estén listos
             setTimeout(() => {
+                console.log('🔍 [DataTable Debug] Verificando sistemas...');
+                console.log('   - UBITS_ThemeManager:', typeof window.UBITS_ThemeManager !== 'undefined');
+                console.log('   - UBITS_ResponsiveManager:', typeof window.UBITS_ResponsiveManager !== 'undefined');
+                console.log('   - UBITS_TemplateLoader:', typeof window.UBITS_TemplateLoader !== 'undefined');
+                
                 // Verificar que todos los sistemas estén cargados
                 if (!window.UBITS_ThemeManager || !window.UBITS_ResponsiveManager || !window.UBITS_TemplateLoader) {
+                    console.error('❌ [DataTable Debug] Sistemas no listos, reintentando...');
                     return;
                 }
                 
@@ -1002,7 +1008,9 @@
                 });
                 
                 // Crear HeaderSection y DataTable después de que los componentes estén cargados
+                // Esperar más tiempo para que ContentManager termine de crear el HeaderSection
                 setTimeout(() => {
+                    console.log('🔍 [DataTable Debug] ⏰ setTimeout ejecutado (3000ms después de loadProduct)');
                     console.log('🔍 [DataTable Debug] ════════════════════════════════════════');
                     console.log('🔍 [DataTable Debug] Iniciando creación de HeaderSection y DataTable');
                     console.log('🔍 [DataTable Debug] ════════════════════════════════════════');
@@ -1271,7 +1279,7 @@
                     console.log('🔍 [DataTable Debug] ════════════════════════════════════════');
                     console.log('🔍 [DataTable Debug] Fin del proceso de creación');
                     console.log('🔍 [DataTable Debug] ════════════════════════════════════════');
-                }, 1500);
+                }, 3000); // Aumentado a 3000ms para dar tiempo a que ContentManager termine
                 
                 // Inicializar responsive DESPUÉS de que los componentes se hayan cargado
                 // Esto asegura que adaptComponents() encuentre los componentes
