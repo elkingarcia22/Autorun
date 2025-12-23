@@ -128,48 +128,10 @@ export class AddonOrchestrator {
       const preCheckAddon = hub.getAddon('pre-implementation-check');
       if (preCheckAddon && preCheckAddon.isActive()) {
         try {
-          // ✅ MEJORA: Marcar pasos automáticamente cuando se llama desde autorun.apply()
-          // porque autorun.apply() consultará Storybook automáticamente
-          console.log(
-            `   [1/2.1] Marcando pasos del checklist automáticamente (autorun.apply() consultará Storybook)...`
-          );
-          try {
-            await (preCheckAddon as any).markStepCompleted(
-              componentName,
-              'storybookMCP'
-            );
-            await (preCheckAddon as any).markStepCompleted(
-              componentName,
-              'storybookVercel'
-            );
-            await (preCheckAddon as any).markStepCompleted(
-              componentName,
-              'documentation'
-            );
-            console.log(`   ✅ Pasos del checklist marcados automáticamente`);
-
-            // ⚠️ CRÍTICO: Esperar un momento para asegurar que los cambios se guarden en el Map
-            await new Promise((resolve) => setTimeout(resolve, 100));
-
-            // Verificar que se marcaron correctamente
-            const checkAfterMark = await (preCheckAddon as any).canImplement(
-              componentName
-            );
-            console.log(`   🔍 [Verificación] Checklist después de marcar:`, {
-              allowed: checkAfterMark.allowed,
-              storybookVercel: checkAfterMark.checklist.storybookVercel,
-              storybookMCP: checkAfterMark.checklist.storybookMCP,
-              documentation: checkAfterMark.checklist.documentation,
-            });
-          } catch (markError: any) {
-            console.warn(
-              `   ⚠️ Error marcando pasos automáticamente: ${markError.message}`
-            );
-          }
-
           const services = preCheckAddon.getServices();
           if (services && services.canImplement) {
             // ✅ MEJORA: Si autoMarkSteps=true, pasar skipCheck=true para permitir automáticamente
+            // (canImplement() marcará los pasos automáticamente cuando skipCheck=true)
             console.log(
               `   🔍 [executePreparationPhase] autoMarkSteps=${autoMarkSteps}, llamando canImplement con skipCheck=${autoMarkSteps}`
             );
@@ -183,6 +145,11 @@ export class AddonOrchestrator {
                 allowed: canImplement.allowed,
                 reason: canImplement.reason,
                 missingSteps: canImplement.missingSteps,
+                checklist: {
+                  storybookVercel: canImplement.checklist.storybookVercel,
+                  storybookMCP: canImplement.checklist.storybookMCP,
+                  documentation: canImplement.checklist.documentation,
+                },
               }
             );
             result.canImplement = canImplement;
