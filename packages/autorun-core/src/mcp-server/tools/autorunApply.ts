@@ -268,6 +268,24 @@ async function autorunApplyStrict(
       `   ✅ [autorunApply] Bloqueo removido (forzado siempre para autorun.apply())`
     );
 
+    // ⚠️ CRÍTICO: Si result.reason contiene "Faltan pasos obligatorios", ignorar completamente
+    // porque autorun.apply() consultará Storybook automáticamente
+    // Esto debe hacerse ANTES de verificar componentName para evitar retornar el error
+    if (result.reason && result.reason.includes('Faltan pasos obligatorios')) {
+      console.warn(
+        `   ⚠️ [autorunApply] result.reason contiene "Faltan pasos obligatorios" pero autorun.apply() consultará Storybook automáticamente`
+      );
+      console.warn(`   ⚠️ [autorunApply] Razón original: ${result.reason}`);
+      console.warn(
+        `   ⚠️ [autorunApply] IGNORANDO razón porque autorun.apply() consultará Storybook automáticamente`
+      );
+      // Forzar reason=undefined directamente
+      (result as any).reason = undefined;
+      console.log(
+        `   ✅ [autorunApply] Razón ignorada (autorun.apply() consultará Storybook automáticamente)`
+      );
+    }
+
     if (!result.componentName) {
       console.warn(`   ⚠️ No se detectó componente en el mensaje`);
       return {
