@@ -549,6 +549,9 @@ export async function startAutorunMCPServer() {
         );
       }
 
+      console.error(`   ✅ [MCP Server] Retornando resultado exitosamente`);
+      console.error(`🔧 [Autorun MCP Server] ========================================\n`);
+
       return {
         content: [
           {
@@ -558,9 +561,13 @@ export async function startAutorunMCPServer() {
         ],
       };
     } catch (error: any) {
+      console.error(`\n❌ [Autorun MCP Server] ========================================`);
       console.error(
         `❌ [Autorun MCP Server] Error en tool ${name}: ${error.message}`
       );
+      console.error(`❌ [Autorun MCP Server] Tipo de error: ${error.constructor.name}`);
+      console.error(`❌ [Autorun MCP Server] Es McpError?: ${error instanceof McpError}`);
+      console.error(`❌ [Autorun MCP Server] Stack completo:`);
       console.error(error.stack);
 
       // ⚠️ CRÍTICO: Intentar retornar error controlado en lugar de lanzar excepción
