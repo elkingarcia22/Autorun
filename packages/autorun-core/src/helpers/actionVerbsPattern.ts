@@ -13,38 +13,60 @@
 
 export const ACTION_VERBS_PATTERN =
   '(?:' +
+  // ========== ESPAÑOL ==========
   // Implementar
   'implementar|implementa|implemento|implementé|implementando|' +
   // Crear
   'crear|crea|creo|creé|creando|' +
   // Agregar
-  'agregar|agrega|agregó|agregando|' +
+  'agregar|agrega|agregó|agregando|agregué|agregamos|' +
   // Añadir
-  'añadir|añade|añadió|añadiendo|' +
+  'añadir|añade|añadió|añadiendo|añadí|añadimos|' +
   // Poner
-  'poner|pon|pongo|puse|poniendo|' +
+  'poner|pon|pongo|puse|poniendo|ponemos|pusimos|' +
   // Hacer
-  'hacer|hace|hago|hice|haciendo|' +
+  'hacer|hace|hago|hice|haciendo|haz|hacemos|hicimos|' +
   // Colocar
-  'colocar|coloca|coloco|coloqué|colocando|' +
+  'colocar|coloca|coloco|coloqué|colocando|colocamos|' +
   // Instalar
-  'instalar|instala|instalo|instalé|instalando|' +
+  'instalar|instala|instalo|instalé|instalando|instalamos|' +
   // Insertar
-  'insertar|inserta|inserto|inserté|insertando|' +
+  'insertar|inserta|inserto|inserté|insertando|insertamos|' +
   // Necesitar
   'necesito|necesita|necesitamos|necesitan|' +
   // Querer
   'quiero|quiere|queremos|quieren|' +
   // Deber
   'debe|deben|debería|deberían|' +
-  // Agregar más variantes comunes
-  'agrega|agregué|agregamos|' +
-  'añade|añadí|añadimos|' +
-  'pon|ponemos|pusimos|' +
-  'haz|hacemos|hicimos|' +
-  'coloca|colocamos|colocamos|' +
-  'instala|instalamos|instalamos|' +
-  'inserta|insertamos|insertamos' +
+  // ========== INGLÉS ==========
+  // Implement
+  'implement|implements|implementing|implemented|' +
+  // Create
+  'create|creates|creating|created|' +
+  // Add
+  'add|adds|adding|added|' +
+  // Insert
+  'insert|inserts|inserting|inserted|' +
+  // Place
+  'place|places|placing|placed|' +
+  // Make
+  'make|makes|making|made|' +
+  // Install
+  'install|installs|installing|installed|' +
+  // Need
+  'need|needs|needing|needed|' +
+  // Want
+  'want|wants|wanting|wanted|' +
+  // Should/Must
+  'should|must|shall|' +
+  // Build
+  'build|builds|building|built|' +
+  // Set up
+  'set\\s+up|sets\\s+up|setting\\s+up|setted\\s+up|' +
+  // Put
+  'put|puts|putting|' +
+  // Do
+  'do|does|doing|did|done' +
   ')';
 
 /**
