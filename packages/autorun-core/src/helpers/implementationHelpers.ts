@@ -210,7 +210,7 @@ export function detectComponentFromMessage(message: string): string | null {
     // ⚠️ MEJORADO: Detección de Button con más patrones (excluyendo radio button)
     {
       pattern:
-        /(?:implementar|crear|agregar|poner|hacer).*(?:bot[oó]n|button)(?!.*radio)/i,
+        new RegExp(`${ACTION_VERBS_PATTERN}.*(?:bot[oó]n|button)(?!.*radio)`, 'i'),
       component: 'Button',
       priority: 7,
     },
@@ -227,7 +227,7 @@ export function detectComponentFromMessage(message: string): string | null {
     // ⚠️ MEJORADO: Detección de Modal con más patrones
     {
       pattern:
-        /(?:implementar|crear|agregar|poner|hacer).*(?:modal|ventana\s+emergente|dialogo)/i,
+        new RegExp(`${ACTION_VERBS_PATTERN}.*(?:modal|ventana\\s+emergente|dialogo)`, 'i'),
       component: 'Modal',
       priority: 7,
     },
