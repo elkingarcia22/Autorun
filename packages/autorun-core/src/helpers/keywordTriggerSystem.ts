@@ -49,8 +49,12 @@ export class KeywordTriggerSystem {
       action: 'activate-step-by-step',
     },
     {
-      keywords: ['implementar', 'crear', 'agregar'],
-      patterns: [/implementar.*tabs?/i, /crear.*tabs?/i, /agregar.*tabs?/i],
+      keywords: ['implementar', 'implementa', 'crear', 'agregar'],
+      patterns: [
+        /(?:implementar|implementa).*tabs?/i,
+        /crear.*tabs?/i,
+        /agregar.*tabs?/i,
+      ],
       componentName: 'Tabs',
       priority: 'high',
       action: 'activate-step-by-step',
