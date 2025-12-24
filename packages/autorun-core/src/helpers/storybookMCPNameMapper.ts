@@ -18,6 +18,7 @@ const STORYBOOK_ID_TO_COMPONENT_NAME: Record<string, string> = {
   'basicos-avatar': 'Básicos/Avatar',
   'basicos-badge': 'Básicos/Badge',
   'basicos-chip': 'Básicos/Chip',
+  'basicos-scrollbar': 'Básicos/Scrollbar',
   'basicos-skeleton': 'Básicos/Skeleton',
   'basicos-spinner': 'Básicos/Spinner',
   'basicos-status-tag': 'Básicos/Status Tag',
@@ -36,6 +37,7 @@ const STORYBOOK_ID_TO_COMPONENT_NAME: Record<string, string> = {
   // Feedback
   'feedback-modal': 'Feedback/Modal',
   'feedback-drawer': 'Feedback/Drawer Navigation',
+  'feedback-drawer-navigation': 'Feedback/Drawer Navigation',
   'feedback-popover': 'Feedback/Popover',
   'feedback-alert': 'Feedback/Alert',
   'feedback-toast': 'Feedback/Toast',
@@ -46,6 +48,7 @@ const STORYBOOK_ID_TO_COMPONENT_NAME: Record<string, string> = {
 
   // Data
   'data-data-table': 'Data/Data Table',
+  'data-dataview': 'Data/DataView',
   'data-pagination': 'Data/Pagination',
   'data-list': 'Data/List',
 
@@ -62,6 +65,7 @@ const STORYBOOK_ID_TO_COMPONENT_NAME: Record<string, string> = {
 
   // Layout
   'layout-card': 'Layout/Card Content',
+  'layout-card-content': 'Layout/Card Content',
   'layout-accordion': 'Layout/Accordion',
   'layout-carousel': 'Layout/Carousel',
   'layout-stepper': 'Layout/Stepper',
