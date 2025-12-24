@@ -280,8 +280,10 @@ export function detectComponentFromMessage(message: string): string | null {
     // Radio está deprecado, usar RadioButton en su lugar
     // ⚠️ NUEVO: Detección de DatePicker
     {
-      pattern:
-        new RegExp(`${ACTION_VERBS_PATTERN}.*(?:datepicker|date-picker|selector\\s+de\\s+fecha|calendario)`, 'i'),
+      pattern: new RegExp(
+        `${ACTION_VERBS_PATTERN}.*(?:datepicker|date-picker|selector\\s+de\\s+fecha|calendario)`,
+        'i'
+      ),
       component: 'DatePicker',
       priority: 7,
     },
@@ -292,8 +294,10 @@ export function detectComponentFromMessage(message: string): string | null {
     },
     // ⚠️ NUEVO: Detección de Toast
     {
-      pattern:
-        new RegExp(`${ACTION_VERBS_PATTERN}.*(?:toast|notificaci[oó]n|aviso\\s+temporal)`, 'i'),
+      pattern: new RegExp(
+        `${ACTION_VERBS_PATTERN}.*(?:toast|notificaci[oó]n|aviso\\s+temporal)`,
+        'i'
+      ),
       component: 'Toast',
       priority: 7,
     },
@@ -360,8 +364,10 @@ export function detectComponentFromMessage(message: string): string | null {
     },
     // ⚠️ NUEVO: Detección de Pagination
     {
-      pattern:
-        new RegExp(`${ACTION_VERBS_PATTERN}.*(?:pagination|paginaci[oó]n)`, 'i'),
+      pattern: new RegExp(
+        `${ACTION_VERBS_PATTERN}.*(?:pagination|paginaci[oó]n)`,
+        'i'
+      ),
       component: 'Pagination',
       priority: 7,
     },
