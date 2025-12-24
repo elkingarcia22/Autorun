@@ -1302,7 +1302,26 @@
                     activeTabId: 'lista-encuestas',
                     onTabChange: (tabId, tabElement) => {
                         console.log('🔵 [Encuestas Tabs] Tab cambiado:', tabId);
-                        // Aquí puedes agregar lógica para cambiar el contenido según el tab activo
+                        
+                        // Ocultar todos los contenidos de tabs
+                        const listaContent = document.getElementById('lista-encuestas-content');
+                        const datosContent = document.getElementById('datos-demograficos-content');
+                        
+                        if (listaContent) listaContent.style.display = 'none';
+                        if (datosContent) datosContent.style.display = 'none';
+                        
+                        // Mostrar el contenido del tab activo
+                        if (tabId === 'lista-encuestas') {
+                            if (listaContent) {
+                                listaContent.style.display = 'block';
+                                // Inicializar SelectionCard si aún no está inicializado
+                                initSelectionCard();
+                            }
+                        } else if (tabId === 'datos-demograficos') {
+                            if (datosContent) {
+                                datosContent.style.display = 'block';
+                            }
+                        }
                     }
                 }, 'encuestas-tabs-container');
                 
