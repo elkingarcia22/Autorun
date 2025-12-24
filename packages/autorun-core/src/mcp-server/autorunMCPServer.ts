@@ -315,7 +315,19 @@ export async function startAutorunMCPServer() {
   server.setRequestHandler(CallToolRequestSchema, async (request) => {
     const { name, arguments: args } = request.params;
 
+    console.error(
+      `\n🔧 [Autorun MCP Server] ========================================`
+    );
     console.error(`🔧 [Autorun MCP Server] Tool llamado: ${name}`);
+    console.error(
+      `🔧 [Autorun MCP Server] Timestamp: ${new Date().toISOString()}`
+    );
+    console.error(
+      `🔧 [Autorun MCP Server] Args recibidos: ${JSON.stringify(args, null, 2)}`
+    );
+    console.error(
+      `🔧 [Autorun MCP Server] ========================================`
+    );
 
     // ⚠️ CRÍTICO: Validar inputs antes de procesar
     try {
@@ -493,16 +505,32 @@ export async function startAutorunMCPServer() {
       }
 
       console.error(
-        `✅ [Autorun MCP Server] Tool ${name} completado exitosamente`
+        `\n✅ [Autorun MCP Server] Tool ${name} completado exitosamente`
+      );
+      console.error(
+        `✅ [Autorun MCP Server] Tipo de resultado: ${typeof result}`
+      );
+      console.error(
+        `✅ [Autorun MCP Server] Result tiene success?: ${'success' in (result || {})}`
+      );
+      console.error(
+        `✅ [Autorun MCP Server] Result tiene errors?: ${'errors' in (result || {})}`
       );
 
       // ⚠️ CRÍTICO: Validar que el resultado sea serializable antes de retornar
       let resultText: string;
       try {
+        console.error(`   🔍 [MCP Server] Intentando serializar resultado...`);
         resultText = JSON.stringify(result, null, 2);
+        console.error(
+          `   ✅ [MCP Server] Resultado serializado exitosamente (${resultText.length} caracteres)`
+        );
       } catch (serializeError: any) {
         console.error(
           `   ⚠️ [MCP Server] Error serializando resultado: ${serializeError.message}`
+        );
+        console.error(
+          `   ⚠️ [MCP Server] Stack del error: ${serializeError.stack}`
         );
         // Si hay error de serialización, crear un resultado de error controlado
         resultText = JSON.stringify(
