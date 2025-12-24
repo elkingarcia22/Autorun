@@ -1407,8 +1407,14 @@ async function autorunApplyStrict(
     // ⚠️ CRÍTICO: Si el error contiene "Faltan pasos obligatorios", ignorarlo completamente
     // porque autorun.apply() consultará Storybook automáticamente
     // Verificar en error.message, error.stack, y cualquier otro lugar donde pueda estar el error
-    const errorMessage = error.message || '';
-    const errorStack = error.stack || '';
+    // ⚠️ CRÍTICO: Asegurar que el error retornado sea serializable
+    // Extraer solo información serializable del error
+    const errorMessage = error?.message
+      ? String(error.message)
+      : error
+        ? String(error)
+        : 'Error desconocido';
+    const errorStack = error?.stack ? String(error.stack) : '';
     const fullError = `${errorMessage} ${errorStack}`;
     const hasChecklistError =
       errorMessage.includes('Faltan pasos obligatorios') ||
@@ -1445,13 +1451,7 @@ async function autorunApplyStrict(
       };
     }
 
-    // ⚠️ CRÍTICO: Asegurar que el error retornado sea serializable
-    // Extraer solo información serializable del error
-    const errorMessage = error?.message
-      ? String(error.message)
-      : error
-        ? String(error)
-        : 'Error desconocido';
+    // errorMessage ya está declarado arriba, solo necesitamos safeWarnings
     const safeWarnings = Array.isArray(warnings)
       ? warnings.map((w) => (typeof w === 'string' ? w : String(w)))
       : [];
