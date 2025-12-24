@@ -56,15 +56,32 @@ export async function autorunVerify(
   }
 
   console.log(`\n✅ [Autorun MCP] autorun.verify() llamado`);
-  console.log(
-    `   🔍 [DEBUG] input.targetFiles tipo original: ${typeof input?.targetFiles}`
-  );
-  console.log(
-    `   🔍 [DEBUG] input.targetFiles valor original: ${JSON.stringify(input?.targetFiles)}`
-  );
-  console.log(
-    `   Archivos normalizados: ${targetFiles === 'diff' ? 'diff (git)' : Array.isArray(targetFiles) ? targetFiles.join(', ') : String(targetFiles)}`
-  );
+
+  // ⚠️ CRÍTICO: Proteger console.log para evitar errores con tipos inesperados
+  try {
+    const inputType = typeof input?.targetFiles;
+    const inputValue =
+      input?.targetFiles !== undefined
+        ? Array.isArray(input.targetFiles)
+          ? `[${input.targetFiles.join(', ')}]`
+          : String(input.targetFiles)
+        : 'undefined';
+
+    console.log(`   🔍 [DEBUG] input.targetFiles tipo original: ${inputType}`);
+    console.log(
+      `   🔍 [DEBUG] input.targetFiles valor original: ${inputValue}`
+    );
+  } catch (logError: any) {
+    console.log(`   ⚠️ [DEBUG] Error en log de debug: ${logError.message}`);
+  }
+
+  const normalizedDisplay =
+    targetFiles === 'diff'
+      ? 'diff (git)'
+      : Array.isArray(targetFiles)
+        ? targetFiles.join(', ')
+        : String(targetFiles);
+  console.log(`   Archivos normalizados: ${normalizedDisplay}`);
 
   const errors: string[] = [];
   const warnings: string[] = [];
