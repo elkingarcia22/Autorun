@@ -426,8 +426,10 @@ export function detectComponentFromMessage(message: string): string | null {
     },
     // ⚠️ NUEVO: Detección de Chip
     {
-      pattern:
-        /(?:implementar|crear|agregar|poner|hacer).*(?:chip|etiqueta\s+peque[ñn]a)/i,
+      pattern: new RegExp(
+        `${ACTION_VERBS_PATTERN}.*(?:chip|etiqueta\\s+peque[ñn]a)`,
+        'i'
+      ),
       component: 'Chip',
       priority: 7,
     },
