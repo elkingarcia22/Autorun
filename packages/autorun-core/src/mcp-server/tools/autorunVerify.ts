@@ -25,21 +25,17 @@ const execAsync = promisify(exec);
 export async function autorunVerify(
   input: AutorunVerifyInput | any
 ): Promise<AutorunVerifyOutput> {
-  console.log(`\n✅ [Autorun MCP] autorun.verify() llamado`);
-  console.log(
-    `   🔍 [DEBUG] input.targetFiles tipo: ${typeof input.targetFiles}`
-  );
-  console.log(
-    `   🔍 [DEBUG] input.targetFiles valor: ${JSON.stringify(input.targetFiles)}`
-  );
-  console.log(`   🔍 [DEBUG] Es array?: ${Array.isArray(input.targetFiles)}`);
-
+  // ⚠️ CRÍTICO: Normalizar targetFiles PRIMERO, antes de cualquier console.log que lo use
   // ⚠️ FIX: Manejar caso donde targetFiles viene como array ['diff'] en lugar de string 'diff'
-  // También manejar caso donde viene directamente como string 'diff'
   let targetFiles: string[] | 'diff';
 
   try {
-    if (typeof input.targetFiles === 'string' && input.targetFiles === 'diff') {
+    if (!input || !input.targetFiles) {
+      targetFiles = [];
+    } else if (
+      typeof input.targetFiles === 'string' &&
+      input.targetFiles === 'diff'
+    ) {
       targetFiles = 'diff';
     } else if (Array.isArray(input.targetFiles)) {
       if (input.targetFiles.length === 1 && input.targetFiles[0] === 'diff') {
@@ -55,12 +51,19 @@ export async function autorunVerify(
     console.error(
       `   ❌ [DEBUG] Error procesando targetFiles: ${error.message}`
     );
-    // Si hay error, intentar usar directamente
-    targetFiles = input.targetFiles || [];
+    // Si hay error, usar array vacío como fallback seguro
+    targetFiles = [];
   }
 
+  console.log(`\n✅ [Autorun MCP] autorun.verify() llamado`);
   console.log(
-    `   Archivos: ${targetFiles === 'diff' ? 'diff (git)' : Array.isArray(targetFiles) ? targetFiles.join(', ') : String(targetFiles)}`
+    `   🔍 [DEBUG] input.targetFiles tipo original: ${typeof input?.targetFiles}`
+  );
+  console.log(
+    `   🔍 [DEBUG] input.targetFiles valor original: ${JSON.stringify(input?.targetFiles)}`
+  );
+  console.log(
+    `   Archivos normalizados: ${targetFiles === 'diff' ? 'diff (git)' : Array.isArray(targetFiles) ? targetFiles.join(', ') : String(targetFiles)}`
   );
 
   const errors: string[] = [];
