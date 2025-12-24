@@ -176,9 +176,10 @@ export async function handleUserMessage(
               const manager = StorybookManager.getInstance();
               const activeConfig = await manager.getActiveConfig();
 
-              let mcpServer = 'storybook-ubits'; // Default
+              // ⚠️ CRÍTICO: El servidor MCP debe ser "storybook" (no "storybook-ubits")
+              let mcpServer = 'storybook'; // Servidor unificado
               if (activeConfig) {
-                mcpServer = 'storybook-ubits'; // Mismo servidor, pero URL diferente en configuración
+                mcpServer = 'storybook'; // Siempre usar "storybook" (unificado)
               }
 
               console.log(
