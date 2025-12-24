@@ -2245,6 +2245,47 @@
           // Llamar método original
           const result = originalUpdateContent.call(this, section, subSection);
           
+          // ⚠️ CRÍTICO: Eliminar HeaderSection y content-sections dinámicamente
+          requestAnimationFrame(() => {
+            const contentArea = document.querySelector('.content-area');
+            if (contentArea) {
+              // Eliminar HeaderSection
+              const headerContainer = contentArea.querySelector('#header-section-container');
+              if (headerContainer) {
+                console.log('🔵 [Template] Eliminando HeaderSection');
+                headerContainer.remove();
+              }
+              
+              const headerSection = contentArea.querySelector('.ubits-header-section');
+              if (headerSection) {
+                const container = headerSection.closest('#header-section-container');
+                if (container) {
+                  container.remove();
+                } else {
+                  headerSection.remove();
+                }
+              }
+              
+              // Eliminar content-sections (contenedor de abajo)
+              const contentSections = contentArea.querySelector('.content-sections');
+              if (contentSections) {
+                console.log('🔵 [Template] Eliminando content-sections');
+                contentSections.remove();
+              }
+              
+              // Eliminar widget-contenido-principal si existe
+              const widgetPrincipal = contentArea.querySelector('.widget-contenido-principal');
+              if (widgetPrincipal) {
+                const sectionSingle = widgetPrincipal.closest('.section-single');
+                if (sectionSingle) {
+                  sectionSingle.remove();
+                } else {
+                  widgetPrincipal.remove();
+                }
+              }
+            }
+          });
+          
           // Restaurar componentes después
           setTimeout(() => {
             window.AUTORUN_PRESERVE_COMPONENTS.restoreAll();
@@ -2253,6 +2294,7 @@
           return result;
         };
         console.log('✅ [AutoPreserve] ContentManager.updateContent interceptado automáticamente');
+        console.log('✅ [Template] Interceptor configurado para eliminar HeaderSection y content-sections');
       }
     })();
   </script>
