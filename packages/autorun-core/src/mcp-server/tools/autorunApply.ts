@@ -1310,9 +1310,16 @@ async function autorunApplyStrict(
       }
     }
     console.error(
-      `\n❌ [Autorun MCP] Error en autorun.apply(): ${error.message}`
+      `\n❌ [Autorun MCP] ========================================`
     );
+    console.error(
+      `❌ [Autorun MCP] Error en autorun.apply(): ${error.message}`
+    );
+    console.error(`❌ [Autorun MCP] Tipo de error: ${error.constructor.name}`);
+    console.error(`❌ [Autorun MCP] Timestamp: ${new Date().toISOString()}`);
+    console.error(`❌ [Autorun MCP] Stack completo:`);
     console.error(error.stack);
+    console.error(`❌ [Autorun MCP] ========================================`);
 
     // ⚠️ CRÍTICO: Si el error contiene "Faltan pasos obligatorios", ignorarlo completamente
     // porque autorun.apply() consultará Storybook automáticamente
