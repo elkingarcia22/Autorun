@@ -496,11 +496,36 @@ export async function startAutorunMCPServer() {
         `✅ [Autorun MCP Server] Tool ${name} completado exitosamente`
       );
 
+      // ⚠️ CRÍTICO: Validar que el resultado sea serializable antes de retornar
+      let resultText: string;
+      try {
+        resultText = JSON.stringify(result, null, 2);
+      } catch (serializeError: any) {
+        console.error(
+          `   ⚠️ [MCP Server] Error serializando resultado: ${serializeError.message}`
+        );
+        // Si hay error de serialización, crear un resultado de error controlado
+        resultText = JSON.stringify(
+          {
+            success: false,
+            error: 'Error serializando resultado',
+            errorMessage: serializeError.message,
+            originalResult: {
+              success: result?.success,
+              errors: result?.errors || [],
+              warnings: result?.warnings || [],
+            },
+          },
+          null,
+          2
+        );
+      }
+
       return {
         content: [
           {
             type: 'text',
-            text: JSON.stringify(result, null, 2),
+            text: resultText,
           },
         ],
       };
@@ -510,16 +535,41 @@ export async function startAutorunMCPServer() {
       );
       console.error(error.stack);
 
-      // Si es un McpError, lanzarlo directamente
-      if (error instanceof McpError) {
-        throw error;
-      }
+      // ⚠️ CRÍTICO: Intentar retornar error controlado en lugar de lanzar excepción
+      // Esto previene que el servidor se cierre
+      try {
+        const errorResponse = {
+          success: false,
+          error: error.message,
+          errorType: error instanceof McpError ? 'McpError' : 'Error',
+          stack: error.stack,
+        };
 
-      // Si no, crear un McpError
-      throw new McpError(
-        ErrorCode.InternalError,
-        `Error ejecutando tool ${name}: ${error.message}`
-      );
+        return {
+          content: [
+            {
+              type: 'text',
+              text: JSON.stringify(errorResponse, null, 2),
+            },
+          ],
+        };
+      } catch (responseError: any) {
+        // Si incluso crear la respuesta de error falla, lanzar McpError
+        console.error(
+          `   ❌ [MCP Server] Error creando respuesta de error: ${responseError.message}`
+        );
+
+        // Si es un McpError, lanzarlo directamente
+        if (error instanceof McpError) {
+          throw error;
+        }
+
+        // Si no, crear un McpError
+        throw new McpError(
+          ErrorCode.InternalError,
+          `Error ejecutando tool ${name}: ${error.message}`
+        );
+      }
     }
   });
 
