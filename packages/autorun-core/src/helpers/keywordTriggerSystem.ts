@@ -36,6 +36,21 @@ export interface TriggerResult {
 export class KeywordTriggerSystem {
   private static readonly TRIGGERS: KeywordTrigger[] = [
     // Triggers de implementación (ALTA PRIORIDAD)
+    // ⚠️ CRÍTICO: Tabs DEBE estar ANTES de DataTable para evitar falsos positivos
+    // porque "tabla" puede aparecer en "Lista de encuestas" pero "tabs" es más específico
+    {
+      keywords: ['implementar', 'implementa', 'crear', 'agregar'],
+      patterns: [
+        /(?:implementar|implementa).*\btabs?\b/i, // ⚠️ \b para word boundary
+        /crear.*\btabs?\b/i,
+        /agregar.*\btabs?\b/i,
+        /\btabs?\b.*(?:debajo|abajo|bajo|después)/i, // "tabs debajo del subnav"
+        /\bpesta[ñn]as?\b/i, // "pestañas"
+      ],
+      componentName: 'Tabs',
+      priority: 'high',
+      action: 'activate-step-by-step',
+    },
     {
       keywords: [
         'implementar',
@@ -46,23 +61,16 @@ export class KeywordTriggerSystem {
         'hacer',
       ],
       patterns: [
-        /(?:implementar|implementa).*(?:data.?table|tabla|data-table)/i,
-        /crear.*(?:data.?table|tabla|data-table)/i,
-        /agregar.*(?:data.?table|tabla|data-table)/i,
-        /hacer.*(?:data.?table|tabla|data-table)/i,
+        // ⚠️ CRÍTICO: Evitar "tabla" cuando está en contexto de "Lista de"
+        /(?:implementar|implementa).*(?:data\s*table|data-table)(?!.*lista)/i,
+        /(?:implementar|implementa).*\btabla\s+de\s+datos\b/i, // "tabla de datos" es más específico
+        /crear.*(?:data\s*table|data-table|tabla\s+de\s+datos)/i,
+        /agregar.*(?:data\s*table|data-table|tabla\s+de\s+datos)/i,
+        /hacer.*(?:data\s*table|data-table|tabla\s+de\s+datos)/i,
+        // ⚠️ Solo detectar "tabla" si NO está precedido por "lista de"
+        /(?:implementar|implementa).*\btabla\b(?!\s+de\s+encuestas)(?!.*lista\s+de)/i,
       ],
       componentName: 'DataTable',
-      priority: 'high',
-      action: 'activate-step-by-step',
-    },
-    {
-      keywords: ['implementar', 'implementa', 'crear', 'agregar'],
-      patterns: [
-        /(?:implementar|implementa).*tabs?/i,
-        /crear.*tabs?/i,
-        /agregar.*tabs?/i,
-      ],
-      componentName: 'Tabs',
       priority: 'high',
       action: 'activate-step-by-step',
     },
