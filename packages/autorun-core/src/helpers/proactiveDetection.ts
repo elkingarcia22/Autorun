@@ -134,27 +134,7 @@ export function detectComponentsProactively(
         'Verificar si necesita Action Bar (si hay checkboxes)',
       ],
     },
-    {
-      name: 'Tabs',
-      patterns: [
-        {
-          pattern: /implementar.*tabs?|crear.*tabs?/i,
-          confidence: 'high' as const,
-        },
-        {
-          pattern: /tabs?.*dentro.*contenido|tabs?.*adicionales/i,
-          confidence: 'high' as const,
-        },
-        { pattern: /pestañas|tabs?/i, confidence: 'medium' as const },
-      ],
-      contextKeywords: ['pestañas', 'tabs', 'navegación', 'contenido'],
-      suggestedChecklist: [
-        'Verificar que NO es SubNav (ya existe en template)',
-        'Consultar Storybook para ver estructura exacta',
-        'Verificar formato de iconos (sin prefijos fa-)',
-        'NO agregar margin-top al contenedor',
-      ],
-    },
+    // ⚠️ REMOVIDO: Entrada duplicada de Tabs (ya está arriba con mayor prioridad)
     {
       name: 'Modal',
       patterns: [
