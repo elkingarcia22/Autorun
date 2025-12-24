@@ -136,12 +136,37 @@ export function detectComponentFromContent(content: string): string | null {
  */
 export function detectComponentFromMessage(message: string): string | null {
   const patterns = [
+    // ⚠️ CRÍTICO: Tabs DEBE estar ANTES de DataTable para evitar falsos positivos
+    // porque "tabla" puede aparecer en "Lista de encuestas" pero "tabs" es más específico
     {
-      // ⚠️ MEJORADO: Detección más amplia de DataTable
       pattern:
-        /(?:implementar|crear|agregar|poner|hacer|necesito|quiero|debe).*(?:data.?table|data-table|tabla|tabla de datos|tabla con|tabla que|tabla para)/i,
+        /(?:implementar|implementa|crear|agregar|poner|hacer).*\btabs?\b/i,
+      component: 'Tabs',
+      priority: 11, // Mayor prioridad que DataTable
+    },
+    {
+      pattern: /\btabs?\b.*(?:debajo|abajo|bajo|después)/i, // "tabs debajo del subnav"
+      component: 'Tabs',
+      priority: 11,
+    },
+    {
+      pattern: /\bpesta[ñn]as?\b/i,
+      component: 'Tabs',
+      priority: 11,
+    },
+    {
+      // ⚠️ MEJORADO: Detección más amplia de DataTable (evitando "tabla" en contexto de "lista de")
+      pattern:
+        /(?:implementar|implementa|crear|agregar|poner|hacer|necesito|quiero|debe).*(?:data\s*table|data-table|tabla\s+de\s+datos)(?!.*lista\s+de)/i,
       component: 'DataTable',
       priority: 10, // Alta prioridad
+    },
+    {
+      // ⚠️ Solo detectar "tabla" si NO está precedido por "lista de"
+      pattern:
+        /(?:implementar|implementa|crear|agregar|poner|hacer|necesito|quiero|debe).*\btabla\b(?!\s+de\s+encuestas)(?!.*lista\s+de)/i,
+      component: 'DataTable',
+      priority: 9, // Menor prioridad que Tabs
     },
     // Detección directa de "tabla" o "data table" (sin verbo)
     {
