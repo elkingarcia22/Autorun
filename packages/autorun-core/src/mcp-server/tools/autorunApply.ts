@@ -1445,18 +1445,29 @@ async function autorunApplyStrict(
       };
     }
 
+    // ⚠️ CRÍTICO: Asegurar que el error retornado sea serializable
+    // Extraer solo información serializable del error
+    const errorMessage = error?.message
+      ? String(error.message)
+      : error
+        ? String(error)
+        : 'Error desconocido';
+    const safeWarnings = Array.isArray(warnings)
+      ? warnings.map((w) => (typeof w === 'string' ? w : String(w)))
+      : [];
+
     return {
       success: false,
-      filesWritten,
+      filesWritten: Array.isArray(filesWritten) ? filesWritten : [],
       verification: {
         preImplementation: false,
         postImplementation: false,
-        errors: [error.message],
-        warnings,
+        errors: [errorMessage],
+        warnings: safeWarnings,
       },
       components: [],
-      errors: [error.message],
-      warnings: warnings.length > 0 ? warnings : undefined,
+      errors: [errorMessage],
+      warnings: safeWarnings.length > 0 ? safeWarnings : undefined,
     };
   }
 }
