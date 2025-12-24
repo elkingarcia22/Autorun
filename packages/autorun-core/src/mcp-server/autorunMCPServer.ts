@@ -325,26 +325,45 @@ export async function startAutorunMCPServer() {
 
   // Manejar llamadas a tools
   server.setRequestHandler(CallToolRequestSchema, async (request) => {
-    const { name, arguments: args } = request.params;
-
-    console.error(
-      `\n🔧 [Autorun MCP Server] ========================================`
-    );
-    console.error(`🔧 [Autorun MCP Server] Tool llamado: ${name}`);
-    console.error(
-      `🔧 [Autorun MCP Server] Timestamp: ${new Date().toISOString()}`
-    );
-    console.error(
-      `🔧 [Autorun MCP Server] Args recibidos: ${JSON.stringify(args, null, 2)}`
-    );
-    console.error(
-      `🔧 [Autorun MCP Server] ========================================`
-    );
-
-    // ⚠️ CRÍTICO: Validar inputs antes de procesar
+    // ⚠️ CRÍTICO: Envolver TODO en try-catch para capturar cualquier error
+    // Esto previene que el servidor se desconecte cuando hay errores
     try {
+      const { name, arguments: args } = request.params;
+
+      console.error(
+        `\n🔧 [Autorun MCP Server] ========================================`
+      );
+      console.error(`🔧 [Autorun MCP Server] Tool llamado: ${name}`);
+      console.error(
+        `🔧 [Autorun MCP Server] Timestamp: ${new Date().toISOString()}`
+      );
+      console.error(
+        `🔧 [Autorun MCP Server] Args recibidos: ${JSON.stringify(args, null, 2)}`
+      );
+      console.error(
+        `🔧 [Autorun MCP Server] ========================================`
+      );
+
+      // ⚠️ CRÍTICO: Validar inputs antes de procesar
       if (!name) {
-        throw new McpError(ErrorCode.InvalidParams, 'Tool name es requerido');
+        const errorMsg = 'Tool name es requerido';
+        console.error(`   ❌ [MCP Server] ${errorMsg}`);
+        return {
+          content: [
+            {
+              type: 'text',
+              text: JSON.stringify(
+                {
+                  success: false,
+                  error: errorMsg,
+                  errorType: 'InvalidParams',
+                },
+                null,
+                2
+              ),
+            },
+          ],
+        };
       }
 
       // Validar que args es un objeto (puede ser undefined)
@@ -354,15 +373,6 @@ export async function startAutorunMCPServer() {
         );
         request.params.arguments = {};
       }
-    } catch (validationError: any) {
-      console.error(
-        `   ❌ [MCP Server] Error validando inputs: ${validationError.message}`
-      );
-      throw new McpError(
-        ErrorCode.InvalidParams,
-        `Error validando inputs: ${validationError.message}`
-      );
-    }
 
     try {
       let result: any;
