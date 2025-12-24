@@ -323,7 +323,22 @@ export class KeywordTriggerSystem {
       };
     }
 
-    // 2. Ejecutar acción
+    // ⚠️ CRÍTICO: Si la acción principal es "activate-step-by-step", NO ejecutar bloqueo
+    // Esto previene que triggers de bloqueo genéricos bloqueen implementaciones válidas
+    if (triggerResult.action === 'activate-step-by-step') {
+      console.log(
+        `✅ [Keyword Trigger System] Acción principal es "activate-step-by-step", ignorando cualquier bloqueo`
+      );
+      return {
+        triggered: true,
+        componentName: triggerResult.componentName,
+        shouldActivateFlow: true,
+        blocked: false, // ⚠️ Forzar blocked=false para activate-step-by-step
+        reason: undefined,
+      };
+    }
+
+    // 2. Ejecutar acción solo si NO es activate-step-by-step
     const actionResult = await this.executeTriggerAction(triggerResult);
 
     return {
