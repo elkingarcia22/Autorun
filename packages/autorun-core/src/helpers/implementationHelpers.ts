@@ -249,7 +249,10 @@ export function detectComponentFromMessage(message: string): string | null {
     },
     // ⚠️ NUEVO: Detección de Drawer
     {
-      pattern: new RegExp(`${ACTION_VERBS_PATTERN}.*(?:drawer|caj[oó]n\\s+lateral|panel\\s+lateral)`, 'i'),
+      pattern: new RegExp(
+        `${ACTION_VERBS_PATTERN}.*(?:drawer|caj[oó]n\\s+lateral|panel\\s+lateral)`,
+        'i'
+      ),
       component: 'Drawer',
       priority: 7,
     },
