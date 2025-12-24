@@ -387,7 +387,7 @@ export function detectComponentFromMessage(message: string): string | null {
     // ⚠️ NUEVO: Detección de Calendar
     {
       pattern:
-        /(?:implementar|crear|agregar|poner|hacer).*(?:calendar|calendario)/i,
+        new RegExp(`${ACTION_VERBS_PATTERN}.*(?:calendar|calendario)`, 'i'),
       component: 'Calendar',
       priority: 7,
     },
@@ -399,7 +399,7 @@ export function detectComponentFromMessage(message: string): string | null {
     // ⚠️ NUEVO: Detección de Switch/Toggle
     {
       pattern:
-        /(?:implementar|crear|agregar|poner|hacer).*(?:switch|toggle|interruptor)/i,
+        new RegExp(`${ACTION_VERBS_PATTERN}.*(?:switch|toggle|interruptor)`, 'i'),
       component: 'Switch',
       priority: 7,
     },
@@ -411,7 +411,7 @@ export function detectComponentFromMessage(message: string): string | null {
     // ⚠️ NUEVO: Detección de Slider
     {
       pattern:
-        /(?:implementar|crear|agregar|poner|hacer).*(?:slider|deslizador|rango)/i,
+        new RegExp(`${ACTION_VERBS_PATTERN}.*(?:slider|deslizador|rango)`, 'i'),
       component: 'Slider',
       priority: 7,
     },
