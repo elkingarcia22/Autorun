@@ -499,7 +499,7 @@ export function detectComponentFromMessage(message: string): string | null {
       priority: 4,
     },
     {
-      pattern: /implementar.*subnav|crear.*subnav/i,
+      pattern: new RegExp(`${ACTION_VERBS_PATTERN}.*subnav`, 'i'),
       component: 'SubNav',
       priority: 4,
     },
