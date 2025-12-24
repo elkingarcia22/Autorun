@@ -1320,6 +1320,8 @@
                         } else if (tabId === 'datos-demograficos') {
                             if (datosContent) {
                                 datosContent.style.display = 'block';
+                                // Inicializar SelectionCard si aún no está inicializado
+                                initDatosDemograficosSelectionCard();
                             }
                         }
                     }
