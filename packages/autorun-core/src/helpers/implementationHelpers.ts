@@ -165,8 +165,10 @@ export function detectComponentFromMessage(message: string): string | null {
     },
     {
       // ⚠️ Solo detectar "tabla" si NO está precedido por "lista de"
-      pattern:
-        /(?:implementar|implementa|crear|agregar|poner|hacer|necesito|quiero|debe).*\btabla\b(?!\s+de\s+encuestas)(?!.*lista\s+de)/i,
+      pattern: new RegExp(
+        `${ACTION_VERBS_PATTERN}.*\\btabla\\b(?!\\s+de\\s+encuestas)(?!.*lista\\s+de)`,
+        'i'
+      ),
       component: 'DataTable',
       priority: 9, // Menor prioridad que Tabs
     },
