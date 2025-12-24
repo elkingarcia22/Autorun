@@ -281,7 +281,7 @@ export function detectComponentFromMessage(message: string): string | null {
     // ⚠️ NUEVO: Detección de DatePicker
     {
       pattern:
-        /(?:implementar|crear|agregar|poner|hacer).*(?:datepicker|date-picker|selector\s+de\s+fecha|calendario)/i,
+        new RegExp(`${ACTION_VERBS_PATTERN}.*(?:datepicker|date-picker|selector\\s+de\\s+fecha|calendario)`, 'i'),
       component: 'DatePicker',
       priority: 7,
     },
@@ -293,7 +293,7 @@ export function detectComponentFromMessage(message: string): string | null {
     // ⚠️ NUEVO: Detección de Toast
     {
       pattern:
-        /(?:implementar|crear|agregar|poner|hacer).*(?:toast|notificaci[oó]n|aviso\s+temporal)/i,
+        new RegExp(`${ACTION_VERBS_PATTERN}.*(?:toast|notificaci[oó]n|aviso\\s+temporal)`, 'i'),
       component: 'Toast',
       priority: 7,
     },
