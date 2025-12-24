@@ -140,6 +140,8 @@ export interface AutorunVerifyInput {
     // ✅ Paso 4: Soporte para staged y baseRef (para pre-commit y CI)
     staged?: boolean; // pre-commit: validar staged changes
     baseRef?: string; // CI/PR: comparar contra base (ej: origin/main)
+    // ⭐ NUEVO: Reversión automática de cambios sin watermark
+    autoRevert?: boolean; // Si es true, revierte automáticamente cambios sin watermark (default: true)
   };
 }
 
