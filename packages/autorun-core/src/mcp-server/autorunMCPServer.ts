@@ -317,6 +317,29 @@ export async function startAutorunMCPServer() {
 
     console.error(`🔧 [Autorun MCP Server] Tool llamado: ${name}`);
 
+    // ⚠️ CRÍTICO: Validar inputs antes de procesar
+    try {
+      if (!name) {
+        throw new McpError(ErrorCode.InvalidParams, 'Tool name es requerido');
+      }
+
+      // Validar que args es un objeto (puede ser undefined)
+      if (args && typeof args !== 'object') {
+        console.error(
+          `   ⚠️ [MCP Server] args tiene tipo inesperado: ${typeof args}, convirtiendo a objeto vacío`
+        );
+        request.params.arguments = {};
+      }
+    } catch (validationError: any) {
+      console.error(
+        `   ❌ [MCP Server] Error validando inputs: ${validationError.message}`
+      );
+      throw new McpError(
+        ErrorCode.InvalidParams,
+        `Error validando inputs: ${validationError.message}`
+      );
+    }
+
     try {
       let result: any;
 
