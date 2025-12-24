@@ -1,8 +1,12 @@
 /**
- * ⚠️ CONSTANTE REUTILIZABLE: Todas las variantes de verbos de acción en español
+ * ⚠️ CONSTANTE REUTILIZABLE: Todas las variantes de verbos de acción en español e inglés
  *
  * Incluye todas las formas verbales comunes para implementar, crear, agregar, etc.
  * Esta constante debe usarse en todos los patterns de detección de componentes.
+ *
+ * Idiomas soportados:
+ * - Español: implementar, crear, agregar, añadir, poner, hacer, colocar, instalar, insertar, etc.
+ * - Inglés: implement, create, add, insert, place, make, install, build, set up, do, etc.
  *
  * @example
  * ```typescript
