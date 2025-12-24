@@ -1533,6 +1533,12 @@
                 
                 console.log('✅ [Encuestas Tabs] Tabs inicializados correctamente');
                 
+                // Mostrar el contenedor padre de tabs
+                const tabsContent = document.getElementById('encuestas-tabs-content');
+                if (tabsContent) {
+                    tabsContent.style.display = 'block';
+                }
+                
                 // Inicializar contenido del tab activo inicial
                 const listaContent = document.getElementById('lista-encuestas-content');
                 if (listaContent) {
