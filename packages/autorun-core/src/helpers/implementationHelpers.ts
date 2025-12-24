@@ -102,12 +102,6 @@ ${checkResult.missingSteps?.map((step: string) => `  - ${step}`).join('\n') || '
   );
 }
 
-/**
- * ⚠️ CONSTANTE REUTILIZABLE: Todas las variantes de verbos de acción en español
- * Incluye: implementar, crear, agregar, añadir, poner, hacer, colocar, instalar, insertar, etc.
- */
-const ACTION_VERBS_PATTERN =
-  '(?:implementar|implementa|implemento|implementé|implementando|crear|crea|creo|creé|creando|agregar|agrega|agregó|agregando|añadir|añade|añadió|añadiendo|poner|pon|pongo|puse|poniendo|hacer|hace|hago|hice|haciendo|colocar|coloca|coloco|coloqué|colocando|instalar|instala|instalo|instalé|instalando|insertar|inserta|inserto|inserté|insertando|necesito|necesita|necesitamos|quiero|quiere|queremos|debe|deben|debería|deberían)';
 
 /**
  * Detectar componente del contenido o mensaje
