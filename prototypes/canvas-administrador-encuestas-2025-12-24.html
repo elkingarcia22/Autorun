@@ -1339,9 +1339,10 @@
         }
         
         // ========================================
-        // FUNCIÓN PARA INICIALIZAR SELECTION CARD
+        // FUNCIÓN PARA INICIALIZAR SELECTION CARD (Lista de encuestas)
         // ========================================
         function initSelectionCard() {
+            console.log('🔵 [SelectionCard] Iniciando inicialización para Lista de encuestas...');
             const container = document.getElementById('selection-card-container');
             if (!container) {
                 console.warn('⚠️ [SelectionCard] Contenedor no encontrado');
@@ -1379,6 +1380,51 @@
                 console.log('✅ [SelectionCard] SelectionCard inicializado correctamente');
             } catch (error) {
                 console.error('❌ [SelectionCard] Error al inicializar SelectionCard:', error);
+            }
+        }
+        
+        // ========================================
+        // FUNCIÓN PARA INICIALIZAR SELECTION CARD (Datos demográficos)
+        // ========================================
+        function initDatosDemograficosSelectionCard() {
+            console.log('🔵 [SelectionCard] Iniciando inicialización para Datos demográficos...');
+            const container = document.getElementById('datos-demograficos-selection-card-container');
+            if (!container) {
+                console.warn('⚠️ [SelectionCard] Contenedor de datos demográficos no encontrado');
+                return;
+            }
+            
+            // Verificar si ya está inicializado
+            if (container.querySelector('.ubits-selection-card')) {
+                console.log('✅ [SelectionCard] Datos demográficos ya está inicializado');
+                return;
+            }
+            
+            // Verificar que createSelectionCard esté disponible
+            if (typeof window.createSelectionCard !== 'function') {
+                console.warn('⚠️ [SelectionCard] window.createSelectionCard no está disponible, reintentando...');
+                setTimeout(initDatosDemograficosSelectionCard, 200);
+                return;
+            }
+            
+            // Crear SelectionCard
+            try {
+                console.log('🔵 [SelectionCard] Inicializando SelectionCard para Datos demográficos...');
+                const cardElement = window.createSelectionCard({
+                    id: 'datos-demograficos-selection-1',
+                    title: 'Análisis demográfico',
+                    description: 'Visualiza y analiza los datos demográficos de los participantes',
+                    icon: 'chart-pie',
+                    iconStyle: 'regular',
+                    state: 'default',
+                    size: 'md',
+                    value: 'datos-demograficos-1'
+                });
+                
+                container.appendChild(cardElement);
+                console.log('✅ [SelectionCard] SelectionCard de Datos demográficos inicializado correctamente');
+            } catch (error) {
+                console.error('❌ [SelectionCard] Error al inicializar SelectionCard de Datos demográficos:', error);
             }
         }
         
