@@ -801,40 +801,188 @@
 
     <!-- System Loaders -->
     <script src="https://ubits-storybook10.vercel.app/templates/components-loader.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
-    <!-- SelectionCard Component Script -->
-    <!-- Cargar como módulo ES6 y exponer en window -->
-    <script type="module">
+    <!-- SelectionCard Component Implementation -->
+    <!-- Implementación directa de createSelectionCard (similar a createTabs) -->
+    <script>
         // ========================================
-        // CARGAR Y EXPONER createSelectionCard
-        // El script es un módulo ES6, necesitamos importarlo y exponerlo
+        // SELECTION CARD COMPONENT
+        // Implementación directa porque el módulo ES6 no se puede cargar desde Vercel
         // ========================================
-        try {
-            const selectionCardModule = await import('https://ubits-storybook10.vercel.app/components/selection-card/src/index.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT');
-            
-            if (selectionCardModule && selectionCardModule.createSelectionCard) {
-                window.createSelectionCard = selectionCardModule.createSelectionCard;
-                console.log('✅ [SelectionCard] createSelectionCard expuesto desde módulo ES6');
-            } else {
-                console.error('❌ [SelectionCard] El módulo no exporta createSelectionCard');
-            }
-        } catch (error) {
-            console.error('❌ [SelectionCard] Error cargando módulo:', error);
-            // Fallback: intentar cargar como script normal
-            const script = document.createElement('script');
-            script.src = 'https://ubits-storybook10.vercel.app/components/selection-card/src/index.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT';
-            script.onload = function() {
-                console.log('✅ [SelectionCard] Script cargado como fallback');
-                // Intentar exponer desde window.UBITS si está disponible
-                if (typeof window.UBITS !== 'undefined' && window.UBITS.SelectionCard && window.UBITS.SelectionCard.create) {
-                    window.createSelectionCard = window.UBITS.SelectionCard.create;
-                    console.log('✅ [SelectionCard] createSelectionCard expuesto desde window.UBITS.SelectionCard.create (fallback)');
-                }
-            };
-            script.onerror = function() {
-                console.error('❌ [SelectionCard] Error cargando script de fallback');
-            };
-            document.head.appendChild(script);
+        
+        /**
+         * Helper para renderizar iconos FontAwesome
+         */
+        function renderSelectionCardIconHelper(iconName, iconStyle = 'regular') {
+            const iconClass = iconStyle === 'solid' ? 'fas' : 'far';
+            const name = iconName.startsWith('fa-') ? iconName : `fa-${iconName}`;
+            return `<i class="${iconClass} ${name}"></i>`;
         }
+        
+        /**
+         * Helper para renderizar radio button (versión simplificada)
+         */
+        function renderSelectionCardRadioButton(options) {
+            const {
+                value,
+                name,
+                checked = false,
+                disabled = false,
+                className = ''
+            } = options;
+            
+            const classes = [
+                'ubits-radio-button',
+                'ubits-radio-button--md',
+                checked ? 'ubits-radio-button--checked' : '',
+                disabled ? 'ubits-radio-button--disabled' : '',
+                className
+            ].filter(Boolean).join(' ');
+            
+            return `
+                <label class="${classes}">
+                    <input
+                        type="radio"
+                        id="radio-${name}-${value}"
+                        name="${name}"
+                        value="${value}"
+                        ${checked ? 'checked' : ''}
+                        ${disabled ? 'disabled' : ''}
+                        class="ubits-radio-button__input"
+                    />
+                    <span class="ubits-radio-button__circle" aria-hidden="true">
+                        ${checked ? '<span class="ubits-radio-button__dot"></span>' : ''}
+                    </span>
+                </label>
+            `.trim();
+        }
+        
+        /**
+         * Renderiza una selection-card individual como HTML string
+         */
+        function renderSelectionCard(cardData) {
+            const {
+                id,
+                title,
+                description,
+                icon,
+                iconStyle = 'regular',
+                image,
+                selectionCount,
+                state = 'default',
+                size = 'md',
+            } = cardData;
+            
+            const isSelected = state === 'selected';
+            const isDisabled = state === 'disabled';
+            
+            // Construir clases
+            const classes = [
+                'ubits-selection-card',
+                `ubits-selection-card--${size}`,
+                state !== 'default' ? `ubits-selection-card--${state}` : '',
+                isSelected ? 'ubits-selection-card--selected' : '',
+            ].filter(Boolean).join(' ');
+            
+            // Renderizar icono
+            let iconHTML = '';
+            if (icon && !image) {
+                iconHTML = `
+                    <div class="ubits-selection-card__icon">
+                        ${renderSelectionCardIconHelper(icon, iconStyle)}
+                    </div>
+                `;
+            }
+            
+            // Renderizar imagen
+            let imageHTML = '';
+            if (image) {
+                imageHTML = `
+                    <div class="ubits-selection-card__image">
+                        <img src="${image}" alt="${title}" />
+                    </div>
+                `;
+            }
+            
+            // Renderizar contador de selección
+            let selectionCountHTML = '';
+            if (selectionCount) {
+                const { current, total } = selectionCount;
+                selectionCountHTML = `
+                    <div class="ubits-selection-card__selection-count">
+                        <span class="ubits-selection-card__selection-count-number ubits-body-md-bold">${current}/${total}</span>
+                        <span class="ubits-selection-card__selection-count-text ubits-body-md-regular">seleccionados</span>
+                    </div>
+                `;
+            }
+            
+            // Renderizar radio button
+            const radioButtonHTML = renderSelectionCardRadioButton({
+                value: id,
+                name: `selection-card-group-${id}`,
+                checked: isSelected,
+                disabled: isDisabled,
+                className: 'ubits-selection-card__radio-button',
+            });
+            
+            const html = `
+                <div class="${classes}" data-card-id="${id}" ${isDisabled ? 'aria-disabled="true"' : ''} ${!isDisabled ? 'tabindex="0"' : ''}>
+                    ${imageHTML}
+                    <div class="ubits-selection-card__content">
+                        <h3 class="ubits-selection-card__title ubits-body-md-semibold">
+                            ${iconHTML}
+                            <span>${title}</span>
+                        </h3>
+                        ${description ? `<p class="ubits-selection-card__description ubits-body-sm">${description}</p>` : ''}
+                        ${selectionCountHTML}
+                    </div>
+                    <div class="ubits-selection-card__radio-wrapper">
+                        ${radioButtonHTML}
+                    </div>
+                </div>
+            `.trim();
+            
+            return html;
+        }
+        
+        /**
+         * Crea un elemento selection-card programáticamente
+         */
+        window.createSelectionCard = function(cardData) {
+            const cardHTML = renderSelectionCard(cardData);
+            
+            // Crear un contenedor temporal para parsear el HTML
+            const wrapper = document.createElement('div');
+            wrapper.innerHTML = cardHTML.trim();
+            
+            // Obtener el primer elemento hijo (la card)
+            const cardElement = wrapper.firstElementChild;
+            
+            if (!cardElement) {
+                console.error('❌ [SelectionCard] Error al parsear HTML. HTML generado:', cardHTML);
+                throw new Error('No se pudo crear el elemento selection-card. Verifica que el HTML sea válido.');
+            }
+            
+            // Agregar event listener para click si no está deshabilitado
+            if (cardData.state !== 'disabled' && cardData.onClick) {
+                cardElement.addEventListener('click', () => {
+                    if (cardData.state === 'disabled') return;
+                    cardData.onClick(cardData);
+                });
+                
+                // Soporte para teclado
+                cardElement.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        cardElement.click();
+                    }
+                });
+            }
+            
+            console.log('✅ [SelectionCard] SelectionCard creado correctamente');
+            return cardElement;
+        };
+        
+        console.log('✅ [SelectionCard] window.createSelectionCard implementado directamente');
     </script>
     <script src="https://ubits-storybook10.vercel.app/templates/config/products.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
     <script src="https://ubits-storybook10.vercel.app/templates/config/theme-manager.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
