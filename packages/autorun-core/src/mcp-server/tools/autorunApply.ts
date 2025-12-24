@@ -2182,17 +2182,27 @@ async function autorunApplyModeB(
     );
     console.error(error.stack);
 
+    // ⚠️ CRÍTICO: Asegurar que el error retornado sea serializable
+    // Extraer solo información serializable del error
+    const errorMessage = error?.message || String(error) || 'Error desconocido';
+    const errorStack = error?.stack ? String(error.stack) : undefined;
+
     return {
       success: false,
-      filesWritten: [],
+      filesWritten: filesWritten || [],
       verification: {
         preImplementation: false,
         postImplementation: false,
-        errors: [error.message],
+        errors: [errorMessage],
         warnings: [],
       },
       components: [],
-      errors: [error.message],
+      errors: [errorMessage],
+      // ⚠️ CRÍTICO: NO incluir stack directamente en el objeto principal
+      // Solo incluir si es necesario y de forma controlada
+      ...(errorStack
+        ? { _debug: { stack: errorStack.substring(0, 1000) } }
+        : {}),
     };
   }
 }
