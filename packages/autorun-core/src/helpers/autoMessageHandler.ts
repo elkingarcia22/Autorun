@@ -493,41 +493,45 @@ function detectAdditionalComponents(
       /(?:implementar|crear|agregar|poner|hacer).*(?:richtexteditor|editor\s+de\s+texto)/i,
     ],
 
+    // ========== COMPONENTES DE NAVEGACIÓN ==========
+    // ⚠️ CRÍTICO: Tabs DEBE estar ANTES de DataTable para evitar falsos positivos
+    // porque "tabla" puede aparecer en "Lista de encuestas" pero "tabs" es más específico
+    Tabs: [
+      /\btabs?\b/i, // "tabs" o "tab"
+      /\bpesta[ñn]as?\b/i, // "pestañas" o "pestaña"
+      /(?:implementar|implementa|crear|agregar|poner|hacer).*\btabs?\b/i,
+      /\btabs?\b.*(?:debajo|abajo|bajo|después)/i, // "tabs debajo del subnav"
+    ],
+
     // ========== COMPONENTES DE DATOS ==========
     DataTable: [
-      /\btabla\b/i,
-      /\btable\b/i,
+      // ⚠️ CRÍTICO: Evitar "tabla" cuando está en contexto de "Lista de"
       /\bdata\s*table\b/i,
       /\bdata-table\b/i,
-      /\btabla\s+de\s+datos\b/i,
-      /(?:implementar|crear|agregar|poner|hacer).*(?:tabla|data\s*table|data-table)/i,
+      /\btabla\s+de\s+datos\b/i, // "tabla de datos" es más específico
+      /(?:implementar|implementa|crear|agregar|poner|hacer).*(?:data\s*table|data-table|tabla\s+de\s+datos)/i,
+      // ⚠️ Solo detectar "tabla" si NO está precedido por "lista de"
+      /\btabla\b(?!\s+de\s+encuestas)(?!.*lista\s+de)/i,
     ],
     Table: [
       /\btable\b/i,
-      /\btabla\b/i,
-      /(?:implementar|crear|agregar|poner|hacer).*(?:table|tabla)/i,
+      /\btabla\b(?!\s+de\s+encuestas)(?!.*lista\s+de)/i,
+      /(?:implementar|implementa|crear|agregar|poner|hacer).*(?:table|tabla)(?!.*lista\s+de)/i,
     ],
     List: [
       /\blist\b/i,
       /\blista\b/i,
-      /(?:implementar|crear|agregar|poner|hacer).*(?:list|lista)/i,
+      /(?:implementar|implementa|crear|agregar|poner|hacer).*(?:list|lista)/i,
     ],
     Pagination: [
       /\bpagination\b/i,
       /\bpaginaci[oó]n\b/i,
-      /(?:implementar|crear|agregar|poner|hacer).*(?:pagination|paginaci[oó]n)/i,
+      /(?:implementar|implementa|crear|agregar|poner|hacer).*(?:pagination|paginaci[oó]n)/i,
     ],
     DataView: [
       /\bdataview\b/i,
       /\bvista\s+de\s+datos\b/i,
-      /(?:implementar|crear|agregar|poner|hacer).*(?:dataview|vista\s+de\s+datos)/i,
-    ],
-
-    // ========== COMPONENTES DE NAVEGACIÓN ==========
-    Tabs: [
-      /\btabs?\b/i,
-      /\bpesta[ñn]as?\b/i,
-      /(?:implementar|crear|agregar|poner|hacer).*(?:tabs?|pesta[ñn]as?)/i,
+      /(?:implementar|implementa|crear|agregar|poner|hacer).*(?:dataview|vista\s+de\s+datos)/i,
     ],
     Sidebar: [
       /\bsidebar\b/i,
