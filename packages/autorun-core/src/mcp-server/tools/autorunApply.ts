@@ -61,12 +61,15 @@ import * as path from 'path';
 export async function autorunApply(
   input: AutorunApplyInput
 ): Promise<AutorunApplyOutput> {
-  console.log(`\n🚀 [Autorun MCP] autorun.apply() llamado`);
+  console.log(`\n🚀 [Autorun MCP] ========================================`);
+  console.log(`🚀 [Autorun MCP] autorun.apply() llamado`);
+  console.log(`🚀 [Autorun MCP] Timestamp: ${new Date().toISOString()}`);
   console.log(`   Mensaje: ${input.message.substring(0, 100)}...`);
   console.log(
     `   Archivos objetivo: ${input.targetFiles?.join(', ') || 'auto-detect'}`
   );
-  console.log(`   Opciones:`, input.options || {});
+  console.log(`   Opciones:`, JSON.stringify(input.options || {}, null, 2));
+  console.log(`🚀 [Autorun MCP] ========================================`);
 
   // ✅ Paso 7: Detección automática de modo (MANTENER strict)
   let targetFile: string | null = null;
