@@ -461,11 +461,7 @@ export function detectComponentFromMessage(message: string): string | null {
       component: 'Rating',
       priority: 6,
     },
-    {
-      pattern: /implementar.*tabs?|crear.*tabs?/i,
-      component: 'Tabs',
-      priority: 5,
-    },
+    // ⚠️ REMOVIDO: Pattern duplicado de Tabs (ya está arriba con mayor prioridad)
     {
       pattern: /implementar.*sidebar|crear.*sidebar/i,
       component: 'Sidebar',
