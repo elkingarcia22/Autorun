@@ -214,7 +214,17 @@ export async function callStorybookMCPTool(
   const client = new MCPClient();
 
   try {
+    // ⚠️ CRÍTICO: El servidor MCP debe ser "storybook" (no "storybook-ubits")
     await client.connect('storybook');
+
+    // ⚠️ NUEVO MCP: Convertir componentIds a componentNames si es necesario
+    if (toolName === 'getComponentsProps' && args.componentIds) {
+      const { storybookIdsToComponentNames } = await import(
+        './storybookMCPNameMapper.js'
+      );
+      args.componentNames = storybookIdsToComponentNames(args.componentIds);
+      delete args.componentIds;
+    }
 
     // Llamar tool
     const result = await client.callMethod('tools/call', {
