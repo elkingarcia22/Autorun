@@ -122,19 +122,96 @@ const COMPONENT_NAME_TO_STORYBOOK_ID: Record<string, string> =
 // ⚠️ Mapeos adicionales para nombres de componentes sin categoría
 // Estos se usan cuando el componente se detecta como "RadioButton" en lugar de "Formularios/Radio Button"
 const ADDITIONAL_COMPONENT_NAME_MAPPINGS: Record<string, string> = {
-  RadioButton: 'Formularios/Radio Button',
-  Radio: 'Formularios/Radio Button',
+  // Básicos
   Button: 'Básicos/Button',
+  ButtonAI: 'Básicos/ButtonAI',
+  Avatar: 'Básicos/Avatar',
+  Badge: 'Básicos/Badge',
+  Chip: 'Básicos/Chip',
+  Scrollbar: 'Básicos/Scrollbar',
+  Skeleton: 'Básicos/Skeleton',
+  Spinner: 'Básicos/Spinner',
+  StatusTag: 'Básicos/Status Tag',
+  'Status Tag': 'Básicos/Status Tag',
+
+  // Formularios
   Input: 'Formularios/Input',
   Checkbox: 'Formularios/Checkbox',
+  RadioButton: 'Formularios/Radio Button',
+  Radio: 'Formularios/Radio Button',
   Select: 'Formularios/Select',
+  Calendar: 'Formularios/Calendar',
+  FileUpload: 'Formularios/File Upload',
+  'File Upload': 'Formularios/File Upload',
+  Toggle: 'Formularios/Toggle',
+  Slider: 'Formularios/Slider',
+  SearchButton: 'Formularios/Search Button',
+  'Search Button': 'Formularios/Search Button',
+
+  // Feedback
   Modal: 'Feedback/Modal',
   Drawer: 'Feedback/Drawer Navigation',
+  'Drawer Navigation': 'Feedback/Drawer Navigation',
+  Popover: 'Feedback/Popover',
+  Alert: 'Feedback/Alert',
+  Toast: 'Feedback/Toast',
+  Tooltip: 'Feedback/Tooltip',
+  EmptyState: 'Feedback/Empty State',
+  'Empty State': 'Feedback/Empty State',
+  Mask: 'Feedback/Mask',
+  ButtonFeedback: 'Feedback/Button Feedback',
+  'Button Feedback': 'Feedback/Button Feedback',
+
+  // Data
   DataTable: 'Data/Data Table',
+  'Data Table': 'Data/Data Table',
+  DataView: 'Data/DataView',
+  Pagination: 'Data/Pagination',
+  List: 'Data/List',
+
+  // Navegación
   Tabs: 'Navegación/Tabs',
   Sidebar: 'Navegación/Sidebar',
   SubNav: 'Navegación/SubNav',
   TabBar: 'Navegación/TabBar',
+  Breadcrumb: 'Navegación/Breadcrumb',
+  Menu: 'Navegación/Menu',
+  'Menu de Participantes': 'Navegación/Menu de Participantes',
+  MenuParticipantes: 'Navegación/Menu de Participantes',
+  SegmentControl: 'Navegación/Segment Control',
+  'Segment Control': 'Navegación/Segment Control',
+  TreeMenu: 'Navegación/TreeMenu',
+
+  // Layout
+  Card: 'Layout/Card Content',
+  'Card Content': 'Layout/Card Content',
+  Accordion: 'Layout/Accordion',
+  Carousel: 'Layout/Carousel',
+  Stepper: 'Layout/Stepper',
+  Timeline: 'Layout/Timeline',
+  Gallery: 'Layout/Gallery',
+  Contenedor: 'Layout/Contenedor',
+  HeaderSection: 'Layout/HeaderSection',
+  SelectionCard: 'Layout/Selection Card',
+  'Selection Card': 'Layout/Selection Card',
+  SimpleCard: 'Layout/Simple Card',
+  'Simple Card': 'Layout/Simple Card',
+
+  // Charts
+  BarMetricCard: 'Charts/Bar Metric Card',
+  'Bar Metric Card': 'Charts/Bar Metric Card',
+  CircleMetricCard: 'Charts/Circle Metric Card',
+  'Circle Metric Card': 'Charts/Circle Metric Card',
+  CSATMetricCard: 'Charts/CSAT Metric Card',
+  'CSAT Metric Card': 'Charts/CSAT Metric Card',
+  NPSCard: 'Charts/NPS Card',
+  'NPS Card': 'Charts/NPS Card',
+  ProgressBar: 'Charts/Progress Bar',
+  'Progress Bar': 'Charts/Progress Bar',
+  ScoreCardMetrics: 'Charts/Score Card Metrics',
+  'Score Card Metrics': 'Charts/Score Card Metrics',
+  TextMetricCard: 'Charts/Text Metric Card',
+  'Text Metric Card': 'Charts/Text Metric Card',
 };
 
 /**
