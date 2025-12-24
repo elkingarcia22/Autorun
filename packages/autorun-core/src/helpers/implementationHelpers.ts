@@ -263,8 +263,7 @@ export function detectComponentFromMessage(message: string): string | null {
     },
     // ⚠️ NUEVO: Detección de Checkbox
     {
-      pattern:
-        /(?:implementar|crear|agregar|poner|hacer).*(?:checkbox|casilla)/i,
+      pattern: new RegExp(`${ACTION_VERBS_PATTERN}.*(?:checkbox|casilla)`, 'i'),
       component: 'Checkbox',
       priority: 7,
     },
