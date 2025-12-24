@@ -198,7 +198,7 @@ export function detectComponentFromMessage(message: string): string | null {
       priority: 9,
     },
     {
-      pattern: /(?:implementar|crear|agregar|poner|hacer).*radio.*bot[oó]n/i,
+      pattern: new RegExp(`${ACTION_VERBS_PATTERN}.*radio.*bot[oó]n`, 'i'),
       component: 'RadioButton',
       priority: 9,
     },
