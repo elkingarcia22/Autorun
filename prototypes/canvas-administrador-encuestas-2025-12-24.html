@@ -1501,6 +1501,12 @@
                     onTabChange: (tabId, tabElement) => {
                         console.log('🔵 [Encuestas Tabs] Tab cambiado:', tabId);
                         
+                        // Mostrar el contenedor padre de tabs
+                        const tabsContent = document.getElementById('encuestas-tabs-content');
+                        if (tabsContent) {
+                            tabsContent.style.display = 'block';
+                        }
+                        
                         // Ocultar todos los contenidos de tabs
                         const listaContent = document.getElementById('lista-encuestas-content');
                         const datosContent = document.getElementById('datos-demograficos-content');
