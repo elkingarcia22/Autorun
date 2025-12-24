@@ -384,14 +384,48 @@ export async function startAutorunMCPServer() {
 
         case 'autorun.verify':
           // ⚠️ FIX: Normalizar targetFiles antes de pasar a autorunVerify
-          if (args && args.targetFiles) {
-            if (
-              Array.isArray(args.targetFiles) &&
-              args.targetFiles.length === 1 &&
-              args.targetFiles[0] === 'diff'
-            ) {
-              args.targetFiles = 'diff';
+          // Esto previene el error "input.targetFiles.join is not a function"
+          try {
+            if (args && args.targetFiles) {
+              if (
+                Array.isArray(args.targetFiles) &&
+                args.targetFiles.length === 1 &&
+                args.targetFiles[0] === 'diff'
+              ) {
+                args.targetFiles = 'diff';
+                console.error(
+                  `   ✅ [MCP Server] targetFiles normalizado de array ['diff'] a string 'diff'`
+                );
+              } else if (
+                typeof args.targetFiles === 'string' &&
+                args.targetFiles === 'diff'
+              ) {
+                // Ya es string 'diff', no hacer nada
+                console.error(
+                  `   ✅ [MCP Server] targetFiles ya es string 'diff'`
+                );
+              } else if (
+                !Array.isArray(args.targetFiles) &&
+                typeof args.targetFiles !== 'string'
+              ) {
+                // Si no es array ni string, convertir a array vacío
+                console.error(
+                  `   ⚠️ [MCP Server] targetFiles tiene tipo inesperado: ${typeof args.targetFiles}, convirtiendo a array vacío`
+                );
+                args.targetFiles = [];
+              }
+            } else {
+              // Si no existe, usar array vacío
+              args = args || {};
+              args.targetFiles = [];
             }
+          } catch (normalizeError: any) {
+            console.error(
+              `   ❌ [MCP Server] Error normalizando targetFiles: ${normalizeError.message}`
+            );
+            // En caso de error, usar array vacío como fallback
+            args = args || {};
+            args.targetFiles = [];
           }
           result = await autorunVerify(args as any);
           break;
