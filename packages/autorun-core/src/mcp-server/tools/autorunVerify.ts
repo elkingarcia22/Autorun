@@ -26,8 +26,26 @@ export async function autorunVerify(
   input: AutorunVerifyInput
 ): Promise<AutorunVerifyOutput> {
   console.log(`\n✅ [Autorun MCP] autorun.verify() llamado`);
+
+  // ⚠️ FIX: Manejar caso donde targetFiles viene como array ['diff'] en lugar de string 'diff'
+  let targetFiles: string[] | 'diff' = input.targetFiles;
+  if (
+    Array.isArray(input.targetFiles) &&
+    input.targetFiles.length === 1 &&
+    input.targetFiles[0] === 'diff'
+  ) {
+    targetFiles = 'diff';
+  } else if (
+    Array.isArray(input.targetFiles) &&
+    input.targetFiles.length === 1 &&
+    typeof input.targetFiles[0] === 'string' &&
+    input.targetFiles[0] === 'diff'
+  ) {
+    targetFiles = 'diff';
+  }
+
   console.log(
-    `   Archivos: ${input.targetFiles === 'diff' ? 'diff (git)' : Array.isArray(input.targetFiles) ? input.targetFiles.join(', ') : String(input.targetFiles)}`
+    `   Archivos: ${targetFiles === 'diff' ? 'diff (git)' : Array.isArray(targetFiles) ? targetFiles.join(', ') : String(targetFiles)}`
   );
 
   const errors: string[] = [];
@@ -37,7 +55,7 @@ export async function autorunVerify(
 
   try {
     // ✅ Paso 4: Si targetFiles es "diff", usar VerifyDiff
-    if (input.targetFiles === 'diff') {
+    if (targetFiles === 'diff') {
       console.log(
         `   [1/1] Verificando cambios usando git diff (diff-based)...`
       );
@@ -133,7 +151,7 @@ export async function autorunVerify(
     }
 
     // ✅ Flujo existente para otros casos (se mantiene intacto)
-    let filesToVerify: string[] = input.targetFiles;
+    let filesToVerify: string[] = Array.isArray(targetFiles) ? targetFiles : [];
 
     if (filesToVerify.length === 0) {
       console.warn(`   ⚠️ No hay archivos para verificar`);
