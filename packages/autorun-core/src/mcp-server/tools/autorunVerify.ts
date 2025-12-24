@@ -28,20 +28,20 @@ export async function autorunVerify(
   console.log(`\n✅ [Autorun MCP] autorun.verify() llamado`);
 
   // ⚠️ FIX: Manejar caso donde targetFiles viene como array ['diff'] en lugar de string 'diff'
-  let targetFiles: string[] | 'diff' = input.targetFiles;
-  if (
-    Array.isArray(input.targetFiles) &&
-    input.targetFiles.length === 1 &&
-    input.targetFiles[0] === 'diff'
-  ) {
+  // También manejar caso donde viene directamente como string 'diff'
+  let targetFiles: string[] | 'diff';
+
+  if (typeof input.targetFiles === 'string' && input.targetFiles === 'diff') {
     targetFiles = 'diff';
-  } else if (
-    Array.isArray(input.targetFiles) &&
-    input.targetFiles.length === 1 &&
-    typeof input.targetFiles[0] === 'string' &&
-    input.targetFiles[0] === 'diff'
-  ) {
-    targetFiles = 'diff';
+  } else if (Array.isArray(input.targetFiles)) {
+    if (input.targetFiles.length === 1 && input.targetFiles[0] === 'diff') {
+      targetFiles = 'diff';
+    } else {
+      targetFiles = input.targetFiles;
+    }
+  } else {
+    // Fallback: tratar como array vacío
+    targetFiles = [];
   }
 
   console.log(
