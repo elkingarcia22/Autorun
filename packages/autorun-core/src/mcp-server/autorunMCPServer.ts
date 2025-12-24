@@ -524,7 +524,7 @@ export async function startAutorunMCPServer() {
         if (obj === null || obj === undefined) {
           return obj;
         }
-        
+
         // Manejar referencias circulares
         if (typeof obj === 'object') {
           if (seen.has(obj)) {
@@ -532,17 +532,17 @@ export async function startAutorunMCPServer() {
           }
           seen.add(obj);
         }
-        
+
         // Eliminar funciones
         if (typeof obj === 'function') {
           return '[Function]';
         }
-        
+
         // Manejar arrays
         if (Array.isArray(obj)) {
           return obj.map((item) => cleanForSerialization(item, seen));
         }
-        
+
         // Manejar objetos
         if (typeof obj === 'object') {
           const cleaned: any = {};
@@ -564,7 +564,7 @@ export async function startAutorunMCPServer() {
           }
           return cleaned;
         }
-        
+
         // Retornar valores primitivos tal cual
         return obj;
       };
@@ -572,10 +572,10 @@ export async function startAutorunMCPServer() {
       let resultText: string;
       try {
         console.error(`   🔍 [MCP Server] Intentando serializar resultado...`);
-        
+
         // ⚠️ CRÍTICO: Limpiar resultado antes de serializar para evitar errores
         const cleanedResult = cleanForSerialization(result);
-        
+
         resultText = JSON.stringify(cleanedResult, null, 2);
         console.error(
           `   ✅ [MCP Server] Resultado serializado exitosamente (${resultText.length} caracteres)`
@@ -587,13 +587,11 @@ export async function startAutorunMCPServer() {
         console.error(
           `   ⚠️ [MCP Server] Stack del error: ${serializeError.stack}`
         );
-        console.error(
-          `   ⚠️ [MCP Server] Tipo de resultado: ${typeof result}`
-        );
+        console.error(`   ⚠️ [MCP Server] Tipo de resultado: ${typeof result}`);
         console.error(
           `   ⚠️ [MCP Server] Result es null/undefined?: ${result === null || result === undefined}`
         );
-        
+
         // Si hay error de serialización, crear un resultado de error controlado
         try {
           // Intentar extraer información básica del resultado
@@ -603,11 +601,11 @@ export async function startAutorunMCPServer() {
             errorMessage: serializeError.message,
             errorType: serializeError.name || 'SerializationError',
           };
-          
+
           // Intentar extraer arrays de errores y warnings de forma segura
           try {
             if (result?.errors && Array.isArray(result.errors)) {
-              basicInfo.errors = result.errors.map((e: any) => 
+              basicInfo.errors = result.errors.map((e: any) =>
                 typeof e === 'string' ? e : String(e)
               );
             } else {
@@ -616,10 +614,10 @@ export async function startAutorunMCPServer() {
           } catch (e) {
             basicInfo.errors = [];
           }
-          
+
           try {
             if (result?.warnings && Array.isArray(result.warnings)) {
-              basicInfo.warnings = result.warnings.map((w: any) => 
+              basicInfo.warnings = result.warnings.map((w: any) =>
                 typeof w === 'string' ? w : String(w)
               );
             } else {
@@ -628,25 +626,31 @@ export async function startAutorunMCPServer() {
           } catch (e) {
             basicInfo.warnings = [];
           }
-          
+
           // Intentar extraer información de verification de forma segura
           try {
             if (result?.verification) {
               basicInfo.verification = {
-                preImplementation: result.verification.preImplementation ?? false,
-                postImplementation: result.verification.postImplementation ?? false,
-                errors: Array.isArray(result.verification.errors) 
-                  ? result.verification.errors.map((e: any) => typeof e === 'string' ? e : String(e))
+                preImplementation:
+                  result.verification.preImplementation ?? false,
+                postImplementation:
+                  result.verification.postImplementation ?? false,
+                errors: Array.isArray(result.verification.errors)
+                  ? result.verification.errors.map((e: any) =>
+                      typeof e === 'string' ? e : String(e)
+                    )
                   : [],
                 warnings: Array.isArray(result.verification.warnings)
-                  ? result.verification.warnings.map((w: any) => typeof w === 'string' ? w : String(w))
+                  ? result.verification.warnings.map((w: any) =>
+                      typeof w === 'string' ? w : String(w)
+                    )
                   : [],
               };
             }
           } catch (e) {
             // Ignorar errores al extraer verification
           }
-          
+
           resultText = JSON.stringify(basicInfo, null, 2);
         } catch (fallbackError: any) {
           // Si incluso el fallback falla, usar respuesta mínima absoluta
@@ -752,21 +756,6 @@ export async function startAutorunMCPServer() {
       }
     }
   });
-
-  // Iniciar servidor
-  const transport = new StdioServerTransport();
-  await server.connect(transport);
-
-  console.error('✅ [Autorun MCP Server] Servidor iniciado y listo');
-}
-
-// Ejecutar si se llama directamente
-if (import.meta.url === `file://${process.argv[1]}`) {
-  startAutorunMCPServer().catch((error) => {
-    console.error('❌ [Autorun MCP Server] Error fatal:', error);
-    process.exit(1);
-  });
-}
 
   // Iniciar servidor
   const transport = new StdioServerTransport();
