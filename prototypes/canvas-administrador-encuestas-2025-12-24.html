@@ -145,6 +145,7 @@
             gap: var(--ubits-spacing-xl, 20px); /* Gap entre SubNav y Content Area */
             z-index: 5;
             box-sizing: border-box;
+            padding-top: 60px; /* ⚠️ Espacio para SubNav fijo */
         }
 
         /* Centrado para pantallas grandes - EXACTAMENTE igual que el proyecto UBITS original */
@@ -189,25 +190,26 @@
         }
 
         /* ========================================
-           TOP NAV CONTAINER (SubNav)
+           TOP NAV CONTAINER (SubNav) - FIXED
            ======================================== */
 
-        /* El SubNav debe mantener sus estilos originales del componente */
-        /* Solo establecer el contenedor para que el componente SubNav funcione correctamente */
+        /* ⚠️ SubNav fijo en la parte superior */
         #top-nav-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
             width: 100%;
             max-width: 100%;
             box-sizing: border-box;
+            z-index: 1000;
+            background-color: var(--ubits-bg-1, #ffffff);
+            border-bottom: 1px solid var(--ubits-border-default, #e5e7eb);
         }
-
-        /* ========================================
-           SUB NAV CONTAINER
-           ======================================== */
         
-        #top-nav-container {
-            width: 100%;
-            max-width: 100%;
-            box-sizing: border-box;
+        [data-theme="dark"] #top-nav-container {
+            background-color: var(--ubits-bg-1-dark, #1a1a1a);
+            border-bottom-color: var(--ubits-border-default-dark, #2d2d2d);
         }
 
         /* ========================================
