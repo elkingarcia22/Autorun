@@ -549,9 +549,6 @@ export async function startAutorunMCPServer() {
         );
       }
 
-      console.error(`   ✅ [MCP Server] Retornando resultado exitosamente`);
-      console.error(`🔧 [Autorun MCP Server] ========================================\n`);
-
       return {
         content: [
           {
@@ -561,13 +558,9 @@ export async function startAutorunMCPServer() {
         ],
       };
     } catch (error: any) {
-      console.error(`\n❌ [Autorun MCP Server] ========================================`);
       console.error(
         `❌ [Autorun MCP Server] Error en tool ${name}: ${error.message}`
       );
-      console.error(`❌ [Autorun MCP Server] Tipo de error: ${error.constructor.name}`);
-      console.error(`❌ [Autorun MCP Server] Es McpError?: ${error instanceof McpError}`);
-      console.error(`❌ [Autorun MCP Server] Stack completo:`);
       console.error(error.stack);
 
       // ⚠️ CRÍTICO: Intentar retornar error controlado en lugar de lanzar excepción
@@ -637,6 +630,27 @@ export async function startAutorunMCPServer() {
           throw new McpError(
             ErrorCode.InternalError,
             `Error ejecutando tool ${name}: ${error.message}`
+          );
+        }
+      }
+    }
+  });
+
+  // Iniciar servidor
+  const transport = new StdioServerTransport();
+  await server.connect(transport);
+
+  console.error('✅ [Autorun MCP Server] Servidor iniciado y listo');
+}
+
+// Ejecutar si se llama directamente
+if (import.meta.url === `file://${process.argv[1]}`) {
+  startAutorunMCPServer().catch((error) => {
+    console.error('❌ [Autorun MCP Server] Error fatal:', error);
+    process.exit(1);
+  });
+}
+    `Error ejecutando tool ${name}: ${error.message}`
           );
         }
       }
