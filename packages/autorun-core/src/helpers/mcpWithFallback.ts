@@ -53,12 +53,19 @@ export async function getComponentPropsWithFallback(
     // 3. Intentar consultar MCP
     // ⚠️ NOTA: call_mcp_tool debe ser ejecutado por el agente
     // Por ahora, emitimos instrucciones y usamos fallback visual
+    // ⚠️ NUEVO MCP: Convertir componentId a nombre de componente
+    const { storybookIdToComponentName } = await import(
+      './storybookMCPNameMapper.js'
+    );
+    const componentName =
+      storybookIdToComponentName(componentId) || componentId;
+
     console.log(`   📡 Instrucciones para consultar MCP:`);
     console.log(`      El agente DEBE ejecutar:`);
     console.log(`      call_mcp_tool({`);
     console.log(`        server: "${mcpServer}",`);
-    console.log(`        toolName: "mcp_storybook_getComponentsProps",`);
-    console.log(`        arguments: { componentIds: ["${componentId}"] }`);
+    console.log(`        toolName: "getComponentsProps",`); // ⚠️ NUEVO MCP: Sin prefijo mcp_storybook_
+    console.log(`        arguments: { componentNames: ["${componentName}"] }`); // ⚠️ NUEVO MCP: Usar componentNames
     console.log(`      })`);
     console.log(`   ⚠️ Por ahora, usando fallback visual...`);
 
@@ -100,14 +107,10 @@ export async function getComponentPropsWithFallback(
  * Determina el servidor MCP correcto para el Storybook activo
  */
 function getMCPServerForStorybook(config: any): string {
-  // Mapeo de URLs de Storybook a servidores MCP
-  const urlToServer: Record<string, string> = {
-    'https://ubits-storybook10.vercel.app': 'storybook-ubits-mcp',
-    // 'https://libraries-ui.ubitslearning.com': 'storybook-libraries-ui-mcp', // Deshabilitado temporalmente - solo usando UBITS Storybook
-  };
-
-  const baseUrl = config.url.replace(/\/$/, '');
-  return urlToServer[baseUrl] || 'storybook'; // Servidor unificado
+  // ⚠️ CRÍTICO: El servidor MCP debe ser "storybook" (no "storybook-ubits")
+  // El wizard configura el MCP con el nombre "storybook" (unificado)
+  // Todos los Storybooks usan el mismo servidor MCP, solo cambia la URL en STORYBOOK_URL
+  return 'storybook'; // Servidor unificado
 }
 
 /**

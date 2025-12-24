@@ -760,7 +760,7 @@ AL INICIO de cada mensaje del usuario, DEBES:
    - 📚 Consultar Storybook MCP para TODOS los componentes automáticamente
    - Para cada mensaje en result.mcpMessages:
      call_mcp_tool({
-       server: "storybook-ubits",
+       server: "storybook", // ⚠️ CORREGIDO: Usar "storybook" (no "storybook-ubits")
        toolName: "getComponentsProps", // ⚠️ NUEVO MCP: Sin prefijo mcp_storybook_
        arguments: { componentIds: [message.storybookId] }
      })

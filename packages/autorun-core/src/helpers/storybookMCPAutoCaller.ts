@@ -88,9 +88,9 @@ export async function autoCallStorybookMCP(
       );
 
       // 3. Determinar servidor MCP dinámicamente según el Storybook activo
-      // ⚠️ CRÍTICO: Usar el nombre real del servidor configurado en Cursor
-      // El servidor MCP está configurado como "storybook-ubits" en Cursor
-      let mcpServer = 'storybook-ubits'; // ⚠️ CORREGIDO: Usar el nombre real del servidor configurado
+      // ⚠️ CRÍTICO: El servidor MCP debe ser "storybook" (no "storybook-ubits")
+      // El wizard configura el MCP con el nombre "storybook"
+      let mcpServer = 'storybook'; // ⚠️ CORREGIDO: Usar "storybook" (unificado)
 
       // ⚠️ TEMPORALMENTE DESHABILITADO: Solo usando UBITS Storybook
       // Si el Storybook activo es Libraries UI, usar el mismo servidor pero con URL de Libraries UI
