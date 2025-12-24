@@ -6,6 +6,7 @@
  */
 
 import { getAutorunHub } from '@autorun/core';
+import { ACTION_VERBS_PATTERN } from './actionVerbsPattern.js';
 
 /**
  * ⚠️ OBLIGATORIO: Verificar que se completó el checklist obligatorio antes de implementar
