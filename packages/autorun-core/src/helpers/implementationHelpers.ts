@@ -373,7 +373,7 @@ export function detectComponentFromMessage(message: string): string | null {
     // ⚠️ NUEVO: Detección de FileUpload
     {
       pattern:
-        /(?:implementar|crear|agregar|poner|hacer).*(?:file\s+upload|subir\s+archivo|carga\s+de\s+archivo)/i,
+        new RegExp(`${ACTION_VERBS_PATTERN}.*(?:file\\s+upload|subir\\s+archivo|carga\\s+de\\s+archivo)`, 'i'),
       component: 'FileUpload',
       priority: 7,
     },
