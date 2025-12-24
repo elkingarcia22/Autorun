@@ -57,9 +57,14 @@ export async function autoDetectComponent(
   let confidence: 'high' | 'medium' | 'low' | undefined = undefined;
 
   // ⚠️ MEJORADO: Priorizar detección básica, pero también considerar proactiva
+  // ⚠️ CRÍTICO: Si la detección básica encuentra un componente, SIEMPRE usarlo
+  // porque tiene mayor precisión (usa patterns con prioridades)
   if (basicDetection) {
     componentName = basicDetection;
     confidence = 'high';
+    console.log(
+      `   ✅ [Auto Component Detection] Usando detección básica: ${componentName} (prioridad sobre proactiva)`
+    );
   } else if (proactiveDetection.components.length > 0) {
     // Usar el componente con mayor confianza
     const sortedComponents = proactiveDetection.components.sort((a, b) => {
@@ -68,6 +73,9 @@ export async function autoDetectComponent(
     });
     componentName = sortedComponents[0].name;
     confidence = sortedComponents[0].confidence;
+    console.log(
+      `   ✅ [Auto Component Detection] Usando detección proactiva: ${componentName}`
+    );
   }
 
   // ⚠️ NUEVO: Si detectamos Button pero el mensaje también menciona Modal,
