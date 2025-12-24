@@ -49,6 +49,7 @@
     <link rel="stylesheet" href="https://ubits-storybook10.vercel.app/components/stepper/src/styles/stepper.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
     <link rel="stylesheet" href="https://ubits-storybook10.vercel.app/components/participants-menu/src/styles/participants-menu.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
     <link rel="stylesheet" href="https://ubits-storybook10.vercel.app/components/metric-card/src/styles/metric-card.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
+    <link rel="stylesheet" href="https://ubits-storybook10.vercel.app/components/header-section/src/styles/header-section.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
     
     <style>
         /* ========================================
@@ -232,6 +233,32 @@
             gap: 0;
         }
 
+        /* ========================================
+           HEADER SECTION CONTAINER
+           ======================================== */
+        
+        #header-section-container {
+            width: 100%;
+            background: transparent;
+            padding: 0;
+            margin-top: 0;
+            margin-bottom: 0;
+            box-sizing: border-box;
+        }
+
+        /* Ajustes responsive para header-section-container */
+        @media (max-width: 1023px) {
+            #header-section-container {
+                padding: 0;
+                margin-top: 0;
+            }
+        }
+
+        @media (max-width: 479px) {
+            #header-section-container {
+                margin-top: 0;
+            }
+        }
 
         .content-area.no-background {
             background-color: transparent !important;
@@ -756,42 +783,18 @@
             <!-- Top Navigation -->
             <div id="top-nav-container"></div>
             
-            <!-- Tabs Container (debajo del SubNav) -->
-<!-- AUTORUN:ANCHOR:CONTENT -->
-<!-- AUTORUN: {"v":2,"mode":"prototypeTokens","components":[],"widgets":["navegación-tabs"],"deps":[],"storybookId":"navegación-tabs","hash":"3826e6afacff8e30"} -->
-<div class="ubits-simple-card" style="
-  background: var(--ubits-bg-1);
-  border: 1px solid var(--ubits-border-1);
-  border-radius: var(--ubits-border-radius-md);
-  padding: var(--ubits-spacing-md);
-">
-  <h3 style="
-    color: var(--ubits-fg-1-high);
-    font-size: 18px;
-    margin-bottom: var(--ubits-spacing-md);
-  ">Tabs</h3>
-  <div><p>Contenido de Tabs</p></div>
-</div>
-<!-- /AUTORUN -->
-<!-- AUTORUN: {"v":2,"mode":"prototypeTokens","components":[],"widgets":["navegación-tabs"],"deps":[],"storybookId":"navegación-tabs","hash":"3826e6afacff8e30"} -->
-            <div id="encuestas-tabs-container"></div>
-<!-- /AUTORUN -->
-            
-            <!-- Contenedor para contenido de tabs -->
-            <div id="encuestas-tabs-content" style="display: none;">
-                <!-- Contenido del tab "Lista de encuestas" -->
-                <div id="lista-encuestas-content" style="display: none;">
-                    <div id="selection-card-container" style="padding: 24px;"></div>
-                </div>
-                <!-- Contenido del tab "Datos demográficos" -->
-                <div id="datos-demograficos-content" style="display: none;">
-                    <div id="datos-demograficos-selection-card-container" style="padding: 24px;"></div>
-                </div>
-            </div>
-            
             <!-- Content Area -->
             <div class="content-area">
-                <!-- Contenido se carga dinámicamente por ContentManager -->
+                <!-- Content wrapper con secciones de widgets -->
+                <div class="content-sections">
+                    <!-- Sección contenido principal -->
+                    <div class="section-single">
+                        <div class="widget-contenido-principal">
+                            <p class="ubits-body-md-regular">Contenido principal</p>
+                            <br><br><br><br><br><br><br><br><br><br><br>
+                        </div>
+                    </div>
+                </div>
             </div>
         </main>
     </div>
@@ -801,353 +804,11 @@
 
     <!-- System Loaders -->
     <script src="https://ubits-storybook10.vercel.app/templates/components-loader.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
-    <!-- SelectionCard Component Implementation -->
-    <!-- Implementación directa de createSelectionCard (similar a createTabs) -->
-    <script>
-        // ========================================
-        // SELECTION CARD COMPONENT
-        // Implementación directa porque el módulo ES6 no se puede cargar desde Vercel
-        // ========================================
-        
-        /**
-         * Helper para renderizar iconos FontAwesome
-         */
-        function renderSelectionCardIconHelper(iconName, iconStyle = 'regular') {
-            const iconClass = iconStyle === 'solid' ? 'fas' : 'far';
-            const name = iconName.startsWith('fa-') ? iconName : `fa-${iconName}`;
-            return `<i class="${iconClass} ${name}"></i>`;
-        }
-        
-        /**
-         * Helper para renderizar radio button (versión simplificada)
-         */
-        function renderSelectionCardRadioButton(options) {
-            const {
-                value,
-                name,
-                checked = false,
-                disabled = false,
-                className = ''
-            } = options;
-            
-            const classes = [
-                'ubits-radio-button',
-                'ubits-radio-button--md',
-                checked ? 'ubits-radio-button--checked' : '',
-                disabled ? 'ubits-radio-button--disabled' : '',
-                className
-            ].filter(Boolean).join(' ');
-            
-            return `
-                <label class="${classes}">
-                    <input
-                        type="radio"
-                        id="radio-${name}-${value}"
-                        name="${name}"
-                        value="${value}"
-                        ${checked ? 'checked' : ''}
-                        ${disabled ? 'disabled' : ''}
-                        class="ubits-radio-button__input"
-                    />
-                    <span class="ubits-radio-button__circle" aria-hidden="true">
-                        ${checked ? '<span class="ubits-radio-button__dot"></span>' : ''}
-                    </span>
-                </label>
-            `.trim();
-        }
-        
-        /**
-         * Renderiza una selection-card individual como HTML string
-         */
-        function renderSelectionCard(cardData) {
-            const {
-                id,
-                title,
-                description,
-                icon,
-                iconStyle = 'regular',
-                image,
-                selectionCount,
-                state = 'default',
-                size = 'md',
-            } = cardData;
-            
-            const isSelected = state === 'selected';
-            const isDisabled = state === 'disabled';
-            
-            // Construir clases
-            const classes = [
-                'ubits-selection-card',
-                `ubits-selection-card--${size}`,
-                state !== 'default' ? `ubits-selection-card--${state}` : '',
-                isSelected ? 'ubits-selection-card--selected' : '',
-            ].filter(Boolean).join(' ');
-            
-            // Renderizar icono
-            let iconHTML = '';
-            if (icon && !image) {
-                iconHTML = `
-                    <div class="ubits-selection-card__icon">
-                        ${renderSelectionCardIconHelper(icon, iconStyle)}
-                    </div>
-                `;
-            }
-            
-            // Renderizar imagen
-            let imageHTML = '';
-            if (image) {
-                imageHTML = `
-                    <div class="ubits-selection-card__image">
-                        <img src="${image}" alt="${title}" />
-                    </div>
-                `;
-            }
-            
-            // Renderizar contador de selección
-            let selectionCountHTML = '';
-            if (selectionCount) {
-                const { current, total } = selectionCount;
-                selectionCountHTML = `
-                    <div class="ubits-selection-card__selection-count">
-                        <span class="ubits-selection-card__selection-count-number ubits-body-md-bold">${current}/${total}</span>
-                        <span class="ubits-selection-card__selection-count-text ubits-body-md-regular">seleccionados</span>
-                    </div>
-                `;
-            }
-            
-            // Renderizar radio button
-            const radioButtonHTML = renderSelectionCardRadioButton({
-                value: id,
-                name: `selection-card-group-${id}`,
-                checked: isSelected,
-                disabled: isDisabled,
-                className: 'ubits-selection-card__radio-button',
-            });
-            
-            const html = `
-                <div class="${classes}" data-card-id="${id}" ${isDisabled ? 'aria-disabled="true"' : ''} ${!isDisabled ? 'tabindex="0"' : ''}>
-                    ${imageHTML}
-                    <div class="ubits-selection-card__content">
-                        <h3 class="ubits-selection-card__title ubits-body-md-semibold">
-                            ${iconHTML}
-                            <span>${title}</span>
-                        </h3>
-                        ${description ? `<p class="ubits-selection-card__description ubits-body-sm">${description}</p>` : ''}
-                        ${selectionCountHTML}
-                    </div>
-                    <div class="ubits-selection-card__radio-wrapper">
-                        ${radioButtonHTML}
-                    </div>
-                </div>
-            `.trim();
-            
-            return html;
-        }
-        
-        /**
-         * Crea un elemento selection-card programáticamente
-         */
-        window.createSelectionCard = function(cardData) {
-            const cardHTML = renderSelectionCard(cardData);
-            
-            // Crear un contenedor temporal para parsear el HTML
-            const wrapper = document.createElement('div');
-            wrapper.innerHTML = cardHTML.trim();
-            
-            // Obtener el primer elemento hijo (la card)
-            const cardElement = wrapper.firstElementChild;
-            
-            if (!cardElement) {
-                console.error('❌ [SelectionCard] Error al parsear HTML. HTML generado:', cardHTML);
-                throw new Error('No se pudo crear el elemento selection-card. Verifica que el HTML sea válido.');
-            }
-            
-            // Agregar event listener para click si no está deshabilitado
-            if (cardData.state !== 'disabled' && cardData.onClick) {
-                cardElement.addEventListener('click', () => {
-                    if (cardData.state === 'disabled') return;
-                    cardData.onClick(cardData);
-                });
-                
-                // Soporte para teclado
-                cardElement.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        cardElement.click();
-                    }
-                });
-            }
-            
-            console.log('✅ [SelectionCard] SelectionCard creado correctamente');
-            return cardElement;
-        };
-        
-        console.log('✅ [SelectionCard] window.createSelectionCard implementado directamente');
-    </script>
     <script src="https://ubits-storybook10.vercel.app/templates/config/products.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
     <script src="https://ubits-storybook10.vercel.app/templates/config/theme-manager.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
     <script src="https://ubits-storybook10.vercel.app/templates/config/responsive-manager.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
     <script src="https://ubits-storybook10.vercel.app/templates/engine/template-loader.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
     <script src="https://ubits-storybook10.vercel.app/templates/engine/content-manager.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
-    
-    <!-- ========================================
-         INTERCEPTAR ContentManager.updateContent
-         Para eliminar HeaderSection y content-sections dinámicamente
-         ⚠️ CRÍTICO: Interceptar INMEDIATAMENTE después de cargar content-manager.js
-         ======================================== -->
-    <script>
-        (function() {
-            const currentModule = document.body.getAttribute('data-module');
-            if (currentModule !== 'encuestas') {
-                return; // Solo interceptar en módulo encuestas
-            }
-            
-            function interceptContentManagerImmediately() {
-                if (!window.UBITS_ContentManager) {
-                    // Si ContentManager aún no existe, esperar
-                    setTimeout(interceptContentManagerImmediately, 50);
-                    return;
-                }
-                
-                // Verificar si ya está interceptado (evitar múltiples interceptaciones)
-                if (window.UBITS_ContentManager.updateContent._encuestasIntercepted) {
-                    return;
-                }
-                
-                // Guardar referencia al método original
-                const originalUpdateContent = window.UBITS_ContentManager.updateContent;
-                if (!originalUpdateContent) {
-                    setTimeout(interceptContentManagerImmediately, 50);
-                    return;
-                }
-                
-                // Interceptar el método
-                window.UBITS_ContentManager.updateContent = function(section, subSection) {
-                    // ⚠️ CRÍTICO: Solo interceptar si estamos en módulo encuestas
-                    const currentModule = document.body.getAttribute('data-module');
-                    if (currentModule !== 'encuestas') {
-                        return originalUpdateContent.call(this, section, subSection);
-                    }
-                    
-                    console.log('🔵 [Encuestas] updateContent interceptado para sección:', section);
-                    
-                    // Llamar al método original (que limpia el content-area y crea HeaderSection)
-                    const result = originalUpdateContent.call(this, section, subSection);
-                    
-                    // ⚠️ CRÍTICO: Usar requestAnimationFrame para timing correcto
-                    requestAnimationFrame(() => {
-                        const contentArea = document.querySelector('.content-area');
-                        if (!contentArea) {
-                            return;
-                        }
-                        
-                        // Eliminar TODOS los elementos relacionados
-                        const headerContainer = contentArea.querySelector('#header-section-container');
-                        if (headerContainer) {
-                            console.log('🔵 [Encuestas] Eliminando HeaderSection');
-                            headerContainer.remove();
-                        }
-                        
-                        const headerSection = contentArea.querySelector('.ubits-header-section');
-                        if (headerSection) {
-                            console.log('🔵 [Encuestas] Eliminando .ubits-header-section');
-                            const container = headerSection.closest('#header-section-container');
-                            if (container) {
-                                container.remove();
-                            } else {
-                                headerSection.remove();
-                            }
-                        }
-                        
-                        const contentSections = contentArea.querySelector('.content-sections');
-                        if (contentSections) {
-                            console.log('🔵 [Encuestas] Eliminando .content-sections');
-                            contentSections.remove();
-                        }
-                        
-                        const widgetPrincipal = contentArea.querySelector('.widget-contenido-principal');
-                        if (widgetPrincipal) {
-                            console.log('🔵 [Encuestas] Eliminando .widget-contenido-principal');
-                            widgetPrincipal.closest('.section-single')?.remove() || widgetPrincipal.remove();
-                        }
-                    });
-                    
-                    return result;
-                };
-                
-                // Marcar como interceptado
-                window.UBITS_ContentManager.updateContent._encuestasIntercepted = true;
-                console.log('✅ [Encuestas] ContentManager.updateContent interceptado INMEDIATAMENTE');
-            }
-            
-            // ⚠️ CRÍTICO: Ejecutar inmediatamente y con múltiples intentos
-            interceptContentManagerImmediately();
-            setTimeout(interceptContentManagerImmediately, 100);
-            setTimeout(interceptContentManagerImmediately, 500);
-            
-            // ⚠️ CRÍTICO: MutationObserver para eliminar elementos que se crean dinámicamente
-            function setupAggressiveObserver() {
-                const contentArea = document.querySelector('.content-area');
-                if (!contentArea) {
-                    setTimeout(setupAggressiveObserver, 50);
-                    return;
-                }
-                
-                const observer = new MutationObserver((mutations) => {
-                    mutations.forEach((mutation) => {
-                        if (mutation.type === 'childList') {
-                            mutation.addedNodes.forEach((node) => {
-                                if (node.nodeType === 1) {
-                                    // Eliminar HeaderSection
-                                    if (node.id === 'header-section-container' || 
-                                        node.classList?.contains('ubits-header-section') ||
-                                        node.querySelector?.('#header-section-container') ||
-                                        node.querySelector?.('.ubits-header-section')) {
-                                        const headerContainer = document.getElementById('header-section-container');
-                                        if (headerContainer) headerContainer.remove();
-                                        
-                                        const headerSection = document.querySelector('.ubits-header-section');
-                                        if (headerSection) {
-                                            const container = headerSection.closest('#header-section-container');
-                                            if (container) {
-                                                container.remove();
-                                            } else {
-                                                headerSection.remove();
-                                            }
-                                        }
-                                    }
-                                    
-                                    // Eliminar content-sections
-                                    if (node.classList?.contains('content-sections') ||
-                                        node.querySelector?.('.content-sections')) {
-                                        const contentSections = document.querySelector('.content-sections');
-                                        if (contentSections) contentSections.remove();
-                                    }
-                                }
-                            });
-                        }
-                    });
-                });
-                
-                observer.observe(contentArea, {
-                    childList: true,
-                    subtree: true
-                });
-                
-                console.log('✅ [Encuestas] MutationObserver agresivo configurado');
-            }
-            
-            // Configurar observer
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', setupAggressiveObserver);
-            } else {
-                setupAggressiveObserver();
-            }
-            
-            setTimeout(setupAggressiveObserver, 100);
-            setTimeout(setupAggressiveObserver, 500);
-        })();
-    </script>
     
     <!-- UBITS Components System -->
     <!-- Los componentes se cargan dinámicamente a través de components-loader.js -->
@@ -1440,229 +1101,12 @@
                                         debugLayout();
                                     }, 300);
                                 });
-                                
-                                // ========================================
-                                // INICIALIZAR TABS DE ENCUESTAS
-                                // ========================================
-                                initEncuestasTabs();
                             }, 200); // Delay mínimo solo para asegurar que el DOM esté listo
                         });
                     }
                 }, 100);
             });
         });
-        
-        // ========================================
-        // FUNCIÓN PARA INICIALIZAR TABS DE ENCUESTAS
-        // ========================================
-        function initEncuestasTabs() {
-            const currentModule = document.body.getAttribute('data-module');
-            if (currentModule !== 'encuestas') {
-                return; // Solo inicializar en módulo encuestas
-            }
-            
-            const container = document.getElementById('encuestas-tabs-container');
-            if (!container) {
-                console.warn('⚠️ [Encuestas Tabs] Contenedor no encontrado');
-                return;
-            }
-            
-            // Verificar si ya están inicializados
-            const existingTabs = container.querySelector('.ubits-tabs');
-            if (existingTabs) {
-                console.log('✅ [Encuestas Tabs] Tabs ya inicializados');
-                return;
-            }
-            
-            // Verificar que createTabs esté disponible
-            if (typeof window.createTabs !== 'function') {
-                console.warn('⚠️ [Encuestas Tabs] window.createTabs no está disponible, reintentando...');
-                setTimeout(initEncuestasTabs, 200);
-                return;
-            }
-            
-            // Crear tabs
-            try {
-                console.log('🔵 [Encuestas Tabs] Inicializando tabs...');
-                window.createTabs({
-                    tabs: [
-                        { 
-                            id: 'lista-encuestas', 
-                            label: 'Lista de encuestas', 
-                            icon: 'clipboard-list' 
-                        },
-                        { 
-                            id: 'datos-demograficos', 
-                            label: 'Datos demográficos', 
-                            icon: 'chart-pie' 
-                        }
-                    ],
-                    activeTabId: 'lista-encuestas',
-                    onTabChange: (tabId, tabElement) => {
-                        console.log('🔵 [Encuestas Tabs] Tab cambiado:', tabId);
-                        
-                        // Mostrar el contenedor padre de tabs
-                        const tabsContent = document.getElementById('encuestas-tabs-content');
-                        if (tabsContent) {
-                            tabsContent.style.display = 'block';
-                        }
-                        
-                        // Ocultar todos los contenidos de tabs
-                        const listaContent = document.getElementById('lista-encuestas-content');
-                        const datosContent = document.getElementById('datos-demograficos-content');
-                        
-                        if (listaContent) listaContent.style.display = 'none';
-                        if (datosContent) datosContent.style.display = 'none';
-                        
-                        // Mostrar el contenido del tab activo
-                        if (tabId === 'lista-encuestas') {
-                            if (listaContent) {
-                                listaContent.style.display = 'block';
-                                // Inicializar SelectionCard si aún no está inicializado
-                                initSelectionCard();
-                            }
-                        } else if (tabId === 'datos-demograficos') {
-                            if (datosContent) {
-                                datosContent.style.display = 'block';
-                                // Inicializar SelectionCard si aún no está inicializado
-                                initDatosDemograficosSelectionCard();
-                            }
-                        }
-                    }
-                }, 'encuestas-tabs-container');
-                
-                console.log('✅ [Encuestas Tabs] Tabs inicializados correctamente');
-                
-                // Mostrar el contenedor padre de tabs
-                const tabsContent = document.getElementById('encuestas-tabs-content');
-                if (tabsContent) {
-                    tabsContent.style.display = 'block';
-                }
-                
-                // Inicializar contenido del tab activo inicial
-                const listaContent = document.getElementById('lista-encuestas-content');
-                if (listaContent) {
-                    listaContent.style.display = 'block';
-                    initSelectionCard();
-                }
-            } catch (error) {
-                console.error('❌ [Encuestas Tabs] Error al inicializar tabs:', error);
-            }
-        }
-        
-        // ========================================
-        // FUNCIÓN PARA INICIALIZAR SELECTION CARD (Lista de encuestas)
-        // ========================================
-        function initSelectionCard() {
-            console.log('🔵 [SelectionCard] Iniciando inicialización para Lista de encuestas...');
-            const container = document.getElementById('selection-card-container');
-            if (!container) {
-                console.warn('⚠️ [SelectionCard] Contenedor no encontrado');
-                return;
-            }
-            
-            // Verificar si ya está inicializado
-            if (container.querySelector('.ubits-selection-card')) {
-                console.log('✅ [SelectionCard] Ya está inicializado');
-                return;
-            }
-            
-            // Verificar que createSelectionCard esté disponible
-            if (typeof window.createSelectionCard !== 'function') {
-                console.warn('⚠️ [SelectionCard] window.createSelectionCard no está disponible, reintentando...');
-                // Limitar reintentos a 50 intentos (10 segundos máximo)
-                if (!initSelectionCard.retryCount) {
-                    initSelectionCard.retryCount = 0;
-                }
-                initSelectionCard.retryCount++;
-                if (initSelectionCard.retryCount > 50) {
-                    console.error('❌ [SelectionCard] Timeout: window.createSelectionCard no está disponible después de 50 intentos');
-                    return;
-                }
-                setTimeout(initSelectionCard, 200);
-                return;
-            }
-            
-            // Resetear contador si la función está disponible
-            initSelectionCard.retryCount = 0;
-            
-            // Crear SelectionCard
-            try {
-                console.log('🔵 [SelectionCard] Inicializando SelectionCard...');
-                const cardElement = window.createSelectionCard({
-                    id: 'encuesta-selection-1',
-                    title: 'Encuesta de satisfacción',
-                    description: 'Encuesta para medir la satisfacción de los colaboradores',
-                    icon: 'clipboard-list',
-                    iconStyle: 'regular',
-                    state: 'default',
-                    size: 'md',
-                    value: 'encuesta-1'
-                });
-                
-                container.appendChild(cardElement);
-                console.log('✅ [SelectionCard] SelectionCard inicializado correctamente');
-            } catch (error) {
-                console.error('❌ [SelectionCard] Error al inicializar SelectionCard:', error);
-            }
-        }
-        
-        // ========================================
-        // FUNCIÓN PARA INICIALIZAR SELECTION CARD (Datos demográficos)
-        // ========================================
-        function initDatosDemograficosSelectionCard() {
-            console.log('🔵 [SelectionCard] Iniciando inicialización para Datos demográficos...');
-            const container = document.getElementById('datos-demograficos-selection-card-container');
-            if (!container) {
-                console.warn('⚠️ [SelectionCard] Contenedor de datos demográficos no encontrado');
-                return;
-            }
-            
-            // Verificar si ya está inicializado
-            if (container.querySelector('.ubits-selection-card')) {
-                console.log('✅ [SelectionCard] Datos demográficos ya está inicializado');
-                return;
-            }
-            
-            // Verificar que createSelectionCard esté disponible
-            if (typeof window.createSelectionCard !== 'function') {
-                console.warn('⚠️ [SelectionCard] window.createSelectionCard no está disponible, reintentando...');
-                // Limitar reintentos a 50 intentos (10 segundos máximo)
-                if (!initDatosDemograficosSelectionCard.retryCount) {
-                    initDatosDemograficosSelectionCard.retryCount = 0;
-                }
-                initDatosDemograficosSelectionCard.retryCount++;
-                if (initDatosDemograficosSelectionCard.retryCount > 50) {
-                    console.error('❌ [SelectionCard] Timeout: window.createSelectionCard no está disponible después de 50 intentos');
-                    return;
-                }
-                setTimeout(initDatosDemograficosSelectionCard, 200);
-                return;
-            }
-            
-            // Resetear contador si la función está disponible
-            initDatosDemograficosSelectionCard.retryCount = 0;
-            
-            // Crear SelectionCard
-            try {
-                console.log('🔵 [SelectionCard] Inicializando SelectionCard para Datos demográficos...');
-                const cardElement = window.createSelectionCard({
-                    id: 'datos-demograficos-selection-1',
-                    title: 'Análisis demográfico',
-                    description: 'Visualiza y analiza los datos demográficos de los participantes',
-                    icon: 'chart-pie',
-                    iconStyle: 'regular',
-                    state: 'default',
-                    size: 'md',
-                    value: 'datos-demograficos-1'
-                });
-                
-                container.appendChild(cardElement);
-                console.log('✅ [SelectionCard] SelectionCard de Datos demográficos inicializado correctamente');
-            } catch (error) {
-                console.error('❌ [SelectionCard] Error al inicializar SelectionCard de Datos demográficos:', error);
-            }
-        }
         
         // ⚠️ FUNCIÓN DE DEBUG ESPECÍFICA PARA EL LAYOUT
         function debugLayout() {
@@ -2809,6 +2253,5 @@
       }
     })();
   </script>
-<!-- AUTORUN:ANCHOR:SCRIPTS -->
 </body>
 </html>
