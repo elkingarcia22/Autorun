@@ -158,9 +158,17 @@ export class KeywordTriggerSystem {
         );
 
         // Actualizar prioridad más alta
+        // ⚠️ CRÍTICO: Si hay múltiples triggers con la misma prioridad, priorizar "activate-step-by-step" sobre "block-implementation"
         const priorityOrder = { high: 3, medium: 2, low: 1 };
         if (priorityOrder[trigger.priority] > priorityOrder[highestPriority]) {
           highestPriority = trigger.priority;
+          primaryAction = trigger.action;
+        } else if (
+          priorityOrder[trigger.priority] === priorityOrder[highestPriority] &&
+          trigger.action === 'activate-step-by-step' &&
+          primaryAction === 'block-implementation'
+        ) {
+          // Si tienen la misma prioridad, priorizar "activate-step-by-step" sobre "block-implementation"
           primaryAction = trigger.action;
         }
 
