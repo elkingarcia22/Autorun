@@ -102,7 +102,6 @@ ${checkResult.missingSteps?.map((step: string) => `  - ${step}`).join('\n') || '
   );
 }
 
-
 /**
  * Detectar componente del contenido o mensaje
  */
