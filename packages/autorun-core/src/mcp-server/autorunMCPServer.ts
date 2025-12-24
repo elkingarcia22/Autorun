@@ -554,21 +554,56 @@ export async function startAutorunMCPServer() {
           ],
         };
       } catch (responseError: any) {
-        // Si incluso crear la respuesta de error falla, lanzar McpError
+        // Si incluso crear la respuesta de error falla, intentar respuesta mínima
         console.error(
           `   ❌ [MCP Server] Error creando respuesta de error: ${responseError.message}`
         );
-
-        // Si es un McpError, lanzarlo directamente
-        if (error instanceof McpError) {
-          throw error;
-        }
-
-        // Si no, crear un McpError
-        throw new McpError(
-          ErrorCode.InternalError,
-          `Error ejecutando tool ${name}: ${error.message}`
+        console.error(
+          `   ⚠️ [MCP Server] Intentando respuesta mínima de error...`
         );
+
+        // Intentar respuesta mínima sin serialización compleja
+        try {
+          return {
+            content: [
+              {
+                type: 'text',
+                text: JSON.stringify(
+                  {
+                    success: false,
+                    error: 'Error crítico en MCP Server',
+                    toolName: name,
+                    errorMessage: error.message || 'Error desconocido',
+                  },
+                  null,
+                  2
+                ),
+              },
+            ],
+          };
+        } catch (minimalError: any) {
+          // Si incluso la respuesta mínima falla, solo entonces lanzar excepción
+          console.error(
+            `   ❌ [MCP Server] Error crítico: No se pudo crear ninguna respuesta de error`
+          );
+          console.error(`   ❌ [MCP Server] Error original: ${error.message}`);
+          console.error(
+            `   ❌ [MCP Server] Error de respuesta: ${responseError.message}`
+          );
+          console.error(
+            `   ❌ [MCP Server] Error mínimo: ${minimalError.message}`
+          );
+
+          // Solo lanzar si es absolutamente necesario
+          if (error instanceof McpError) {
+            throw error;
+          }
+
+          throw new McpError(
+            ErrorCode.InternalError,
+            `Error ejecutando tool ${name}: ${error.message}`
+          );
+        }
       }
     }
   });
