@@ -304,8 +304,10 @@ export function detectComponentFromMessage(message: string): string | null {
     },
     // ⚠️ NUEVO: Detección de Alert
     {
-      pattern:
-        /(?:implementar|crear|agregar|poner|hacer).*(?:alert|alerta|aviso)/i,
+      pattern: new RegExp(
+        `${ACTION_VERBS_PATTERN}.*(?:alert|alerta|aviso)`,
+        'i'
+      ),
       component: 'Alert',
       priority: 7,
     },
