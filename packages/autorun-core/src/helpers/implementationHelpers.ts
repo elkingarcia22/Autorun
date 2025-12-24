@@ -361,7 +361,7 @@ export function detectComponentFromMessage(message: string): string | null {
     // ⚠️ NUEVO: Detección de Pagination
     {
       pattern:
-        /(?:implementar|crear|agregar|poner|hacer).*(?:pagination|paginaci[oó]n)/i,
+        new RegExp(`${ACTION_VERBS_PATTERN}.*(?:pagination|paginaci[oó]n)`, 'i'),
       component: 'Pagination',
       priority: 7,
     },
