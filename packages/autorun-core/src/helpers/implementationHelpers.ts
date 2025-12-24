@@ -438,8 +438,10 @@ export function detectComponentFromMessage(message: string): string | null {
     },
     // ⚠️ NUEVO: Detección de Skeleton
     {
-      pattern:
-        new RegExp(`${ACTION_VERBS_PATTERN}.*(?:skeleton|esqueleto|placeholder)`, 'i'),
+      pattern: new RegExp(
+        `${ACTION_VERBS_PATTERN}.*(?:skeleton|esqueleto|placeholder)`,
+        'i'
+      ),
       component: 'Skeleton',
       priority: 7,
     },
@@ -450,8 +452,10 @@ export function detectComponentFromMessage(message: string): string | null {
     },
     // ⚠️ NUEVO: Detección de Spinner
     {
-      pattern:
-        new RegExp(`${ACTION_VERBS_PATTERN}.*(?:spinner|cargador|loading)`, 'i'),
+      pattern: new RegExp(
+        `${ACTION_VERBS_PATTERN}.*(?:spinner|cargador|loading)`,
+        'i'
+      ),
       component: 'Spinner',
       priority: 7,
     },
@@ -462,8 +466,10 @@ export function detectComponentFromMessage(message: string): string | null {
     },
     // ⚠️ NUEVO: Detección de Progress
     {
-      pattern:
-        new RegExp(`${ACTION_VERBS_PATTERN}.*(?:progress|barra\\s+de\\s+progreso)`, 'i'),
+      pattern: new RegExp(
+        `${ACTION_VERBS_PATTERN}.*(?:progress|barra\\s+de\\s+progreso)`,
+        'i'
+      ),
       component: 'Progress',
       priority: 7,
     },
@@ -474,8 +480,10 @@ export function detectComponentFromMessage(message: string): string | null {
     },
     // ⚠️ NUEVO: Detección de Rating
     {
-      pattern:
-        new RegExp(`${ACTION_VERBS_PATTERN}.*(?:rating|calificaci[oó]n|estrellas)`, 'i'),
+      pattern: new RegExp(
+        `${ACTION_VERBS_PATTERN}.*(?:rating|calificaci[oó]n|estrellas)`,
+        'i'
+      ),
       component: 'Rating',
       priority: 7,
     },
