@@ -486,7 +486,7 @@ export function detectComponentFromMessage(message: string): string | null {
     },
     // ⚠️ REMOVIDO: Pattern duplicado de Tabs (ya está arriba con mayor prioridad)
     {
-      pattern: /implementar.*sidebar|crear.*sidebar/i,
+      pattern: new RegExp(`${ACTION_VERBS_PATTERN}.*sidebar`, 'i'),
       component: 'Sidebar',
       priority: 4,
     },
