@@ -202,7 +202,7 @@ export async function handleUserMessage(
                 `📚 [Auto Message Handler] ⚠️ OBLIGATORIO: El agente DEBE ejecutar automáticamente:`
               );
               console.log(`   call_mcp_tool({`);
-              console.log(`     server: "storybook-ubits",`);
+              console.log(`     server: "storybook",`); // ⚠️ CORREGIDO: Usar "storybook" (no "storybook-ubits")
               console.log(`     toolName: "getComponentsProps",`); // ⚠️ NUEVO MCP: Sin prefijo mcp_storybook_
               console.log(
                 `     arguments: { componentIds: ["${storybookId}"] }`
