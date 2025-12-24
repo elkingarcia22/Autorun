@@ -60,12 +60,19 @@ export async function autorunVerify(
   // ⚠️ CRÍTICO: Proteger console.log para evitar errores con tipos inesperados
   try {
     const inputType = typeof input?.targetFiles;
-    const inputValue =
-      input?.targetFiles !== undefined
-        ? Array.isArray(input.targetFiles)
-          ? `[${input.targetFiles.join(', ')}]`
-          : String(input.targetFiles)
-        : 'undefined';
+    let inputValue: string;
+    try {
+      if (input?.targetFiles === undefined) {
+        inputValue = 'undefined';
+      } else if (Array.isArray(input.targetFiles)) {
+        // ⚠️ CRÍTICO: Verificar que es array ANTES de llamar .join()
+        inputValue = `[${input.targetFiles.join(', ')}]`;
+      } else {
+        inputValue = String(input.targetFiles);
+      }
+    } catch (stringifyError: any) {
+      inputValue = `[Error serializando: ${stringifyError.message}]`;
+    }
 
     console.log(`   🔍 [DEBUG] input.targetFiles tipo original: ${inputType}`);
     console.log(
