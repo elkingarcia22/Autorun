@@ -199,14 +199,31 @@
         #top-nav-container {
             position: fixed;
             top: 0;
-            left: 0;
+            left: calc(96px + 23px); /* ⚠️ Espacio para sidebar (96px + 23px gap) */
             right: 0;
-            width: 100%;
+            width: calc(100% - calc(96px + 23px));
             max-width: 100%;
             box-sizing: border-box;
             z-index: 1000;
             background-color: var(--ubits-bg-1, #ffffff);
             border-bottom: 1px solid var(--ubits-border-default, #e5e7eb);
+        }
+        
+        /* Ajustar left en pantallas grandes (centrado) */
+        @media (min-width: 1440px) {
+            #top-nav-container {
+                left: calc((100% - 1607px) / 2 + 96px + 23px + 24px); /* Centrado + sidebar + padding */
+                width: 1607px;
+                max-width: 1607px;
+            }
+        }
+        
+        /* Ajustar en móvil (sin sidebar) */
+        @media (max-width: 1023px) {
+            #top-nav-container {
+                left: 0;
+                width: 100%;
+            }
         }
         
         [data-theme="dark"] #top-nav-container {
