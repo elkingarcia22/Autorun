@@ -102,7 +102,6 @@ ${checkResult.missingSteps?.map((step: string) => `  - ${step}`).join('\n') || '
   );
 }
 
-
 /**
  * Detectar componente del contenido o mensaje
  */
@@ -157,7 +156,10 @@ export function detectComponentFromMessage(message: string): string | null {
     },
     {
       // ⚠️ MEJORADO: Detección más amplia de DataTable (evitando "tabla" en contexto de "lista de")
-      pattern: new RegExp(`${ACTION_VERBS_PATTERN}.*(?:data\\s*table|data-table|tabla\\s+de\\s+datos)(?!.*lista\\s+de)`, 'i'),
+      pattern: new RegExp(
+        `${ACTION_VERBS_PATTERN}.*(?:data\\s*table|data-table|tabla\\s+de\\s+datos)(?!.*lista\\s+de)`,
+        'i'
+      ),
       component: 'DataTable',
       priority: 10, // Alta prioridad
     },
