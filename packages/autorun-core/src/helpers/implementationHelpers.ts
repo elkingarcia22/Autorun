@@ -304,10 +304,8 @@ export function detectComponentFromMessage(message: string): string | null {
     },
     // ⚠️ NUEVO: Detección de Alert
     {
-      pattern: new RegExp(
-        `${ACTION_VERBS_PATTERN}.*(?:alert|alerta|aviso)`,
-        'i'
-      ),
+      pattern:
+        new RegExp(`${ACTION_VERBS_PATTERN}.*(?:alert|alerta|aviso)`, 'i'),
       component: 'Alert',
       priority: 7,
     },
@@ -319,7 +317,7 @@ export function detectComponentFromMessage(message: string): string | null {
     // ⚠️ NUEVO: Detección de Tooltip
     {
       pattern:
-        /(?:implementar|crear|agregar|poner|hacer).*(?:tooltip|informaci[oó]n\s+adicional)/i,
+        new RegExp(`${ACTION_VERBS_PATTERN}.*(?:tooltip|informaci[oó]n\\s+adicional)`, 'i'),
       component: 'Tooltip',
       priority: 7,
     },
@@ -331,7 +329,7 @@ export function detectComponentFromMessage(message: string): string | null {
     // ⚠️ NUEVO: Detección de Accordion
     {
       pattern:
-        /(?:implementar|crear|agregar|poner|hacer).*(?:accordion|acorde[oó]n)/i,
+        new RegExp(`${ACTION_VERBS_PATTERN}.*(?:accordion|acorde[oó]n)`, 'i'),
       component: 'Accordion',
       priority: 7,
     },
