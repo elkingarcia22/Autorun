@@ -420,8 +420,10 @@ export function detectComponentFromMessage(message: string): string | null {
     },
     // ⚠️ NUEVO: Detección de Slider
     {
-      pattern:
-        /(?:implementar|crear|agregar|poner|hacer).*(?:slider|deslizador|rango)/i,
+      pattern: new RegExp(
+        `${ACTION_VERBS_PATTERN}.*(?:slider|deslizador|rango)`,
+        'i'
+      ),
       component: 'Slider',
       priority: 7,
     },
