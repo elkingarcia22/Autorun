@@ -1375,9 +1375,21 @@
             // Verificar que createSelectionCard esté disponible
             if (typeof window.createSelectionCard !== 'function') {
                 console.warn('⚠️ [SelectionCard] window.createSelectionCard no está disponible, reintentando...');
+                // Limitar reintentos a 50 intentos (10 segundos máximo)
+                if (!initSelectionCard.retryCount) {
+                    initSelectionCard.retryCount = 0;
+                }
+                initSelectionCard.retryCount++;
+                if (initSelectionCard.retryCount > 50) {
+                    console.error('❌ [SelectionCard] Timeout: window.createSelectionCard no está disponible después de 50 intentos');
+                    return;
+                }
                 setTimeout(initSelectionCard, 200);
                 return;
             }
+            
+            // Resetear contador si la función está disponible
+            initSelectionCard.retryCount = 0;
             
             // Crear SelectionCard
             try {
