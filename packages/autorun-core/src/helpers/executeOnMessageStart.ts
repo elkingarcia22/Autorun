@@ -147,17 +147,31 @@ export async function executeOnMessageStart(
   const triggerResult =
     await KeywordTriggerSystem.executeTriggerSystem(userMessage);
 
+  // ⚠️ CRÍTICO: Si skipPreCheck=true, ignorar bloqueo de triggers
+  // porque autorun.apply() consultará Storybook automáticamente
   if (triggerResult.triggered && triggerResult.blocked) {
-    console.error(
-      `❌ [Execute On Message Start] BLOQUEADO por trigger: ${triggerResult.reason}`
-    );
-    return {
-      detected: triggerResult.componentName !== undefined,
-      componentName: triggerResult.componentName,
-      blocked: true,
-      reason: triggerResult.reason,
-      shouldExecuteFlow: false,
-    };
+    if (skipCheck) {
+      console.warn(
+        `   ⚠️ [Execute On Message Start] Trigger bloqueado pero skipPreCheck=true, ignorando bloqueo`
+      );
+      console.warn(
+        `   ⚠️ [Execute On Message Start] Razón original: ${triggerResult.reason}`
+      );
+      console.log(
+        `   ✅ [Execute On Message Start] Bloqueo ignorado (skipPreCheck=true)`
+      );
+    } else {
+      console.error(
+        `❌ [Execute On Message Start] BLOQUEADO por trigger: ${triggerResult.reason}`
+      );
+      return {
+        detected: triggerResult.componentName !== undefined,
+        componentName: triggerResult.componentName,
+        blocked: true,
+        reason: triggerResult.reason,
+        shouldExecuteFlow: false,
+      };
+    }
   }
 
   // 1. Detección automática
