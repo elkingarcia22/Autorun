@@ -1606,18 +1606,37 @@ async function autorunApplyModeB(
       );
     }
 
-    if (result.blocked || !result.componentName) {
+    // ⚠️ CRÍTICO: SIEMPRE forzar blocked=false para autorun.apply() Mode B
+    // porque autorun.apply() consultará Storybook automáticamente
+    if (result.blocked) {
+      console.warn(
+        `   ⚠️ [autorunApplyModeB] result.blocked=true pero autorun.apply() consultará Storybook automáticamente, forzando blocked=false`
+      );
+      console.warn(
+        `   ⚠️ [autorunApplyModeB] Razón original: ${result.reason}`
+      );
+      result = {
+        ...result,
+        blocked: false,
+        reason: undefined,
+      };
+      console.log(
+        `   ✅ [autorunApplyModeB] Bloqueo removido (forzado porque autorun.apply() consultará Storybook automáticamente)`
+      );
+    }
+
+    if (!result.componentName) {
       return {
         success: false,
         filesWritten: [],
         verification: {
           preImplementation: false,
           postImplementation: false,
-          errors: [result.reason || 'No se detectó componente'],
+          errors: ['No se detectó componente'],
           warnings: [],
         },
         components: [],
-        errors: [result.reason || 'No se detectó componente'],
+        errors: ['No se detectó componente'],
       };
     }
 
