@@ -1489,6 +1489,65 @@
       }, 2000);
     })();
     
+    // ========================================
+    // CREAR TABS DE ENCUESTAS
+    // ========================================
+    function createEncuestasTabs() {
+        const tabsContainer = document.getElementById('tabs-container');
+        if (!tabsContainer) {
+            console.warn('⚠️ Contenedor tabs-container no encontrado');
+            return false;
+        }
+
+        // Verificar si window.createTabs está disponible
+        if (typeof window.createTabs !== 'function') {
+            console.warn('⚠️ window.createTabs no está disponible aún, reintentando...');
+            setTimeout(createEncuestasTabs, 100);
+            return false;
+        }
+
+        try {
+            window.createTabs({
+                tabs: [
+                    { 
+                        id: 'lista-encuestas', 
+                        label: 'Lista de encuestas', 
+                        icon: 'list-ul' 
+                    },
+                    { 
+                        id: 'datos-demograficos', 
+                        label: 'Datos demográficos', 
+                        icon: 'chart-pie' 
+                    }
+                ],
+                activeTabId: 'lista-encuestas',
+                onTabChange: (tabId, tabElement) => {
+                    console.log('📊 [Tabs] Tab cambiado a:', tabId);
+                    // Aquí puedes agregar lógica para cambiar el contenido según el tab activo
+                }
+            }, 'tabs-container');
+
+            console.log('✅ [Tabs] Tabs de encuestas creados exitosamente');
+            return true;
+        } catch (error) {
+            console.error('❌ [Tabs] Error al crear tabs:', error);
+            return false;
+        }
+    }
+
+    // Intentar crear tabs cuando el DOM esté listo
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(createEncuestasTabs, 500);
+        });
+    } else {
+        setTimeout(createEncuestasTabs, 500);
+    }
+
+    // También intentar después de que los componentes se carguen
+    setTimeout(createEncuestasTabs, 1000);
+    setTimeout(createEncuestasTabs, 2000);
+
     // Activar el producto DESPUÉS de que el template termine su inicialización
     // El template ya activa el módulo usando initialActiveSection, solo necesitamos activar el producto
     document.addEventListener('DOMContentLoaded', () => {
