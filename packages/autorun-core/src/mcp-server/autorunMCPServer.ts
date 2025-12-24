@@ -767,12 +767,6 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     process.exit(1);
   });
 }
-    `Error ejecutando tool ${name}: ${error.message}`
-          );
-        }
-      }
-    }
-  });
 
   // Iniciar servidor
   const transport = new StdioServerTransport();
