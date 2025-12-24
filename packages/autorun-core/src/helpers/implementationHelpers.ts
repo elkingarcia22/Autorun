@@ -438,8 +438,10 @@ export function detectComponentFromMessage(message: string): string | null {
     },
     // ⚠️ NUEVO: Detección de Skeleton
     {
-      pattern:
-        new RegExp(`${ACTION_VERBS_PATTERN}.*(?:skeleton|esqueleto|placeholder)`, 'i'),
+      pattern: new RegExp(
+        `${ACTION_VERBS_PATTERN}.*(?:skeleton|esqueleto|placeholder)`,
+        'i'
+      ),
       component: 'Skeleton',
       priority: 7,
     },
