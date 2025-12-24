@@ -50,266 +50,277 @@ export async function startAutorunMCPServer() {
       console.error('📋 [Autorun MCP Server] ListToolsRequest recibido');
 
       return {
-      tools: [
-        {
-          name: 'autorun.plan',
-          description:
-            'Genera un plan de implementación basado en el mensaje del usuario sin ejecutar la implementación',
-          inputSchema: {
-            type: 'object',
-            properties: {
-              message: {
-                type: 'string',
-                description: 'Mensaje del usuario describiendo qué implementar',
+        tools: [
+          {
+            name: 'autorun.plan',
+            description:
+              'Genera un plan de implementación basado en el mensaje del usuario sin ejecutar la implementación',
+            inputSchema: {
+              type: 'object',
+              properties: {
+                message: {
+                  type: 'string',
+                  description:
+                    'Mensaje del usuario describiendo qué implementar',
+                },
               },
+              required: ['message'],
             },
-            required: ['message'],
           },
-        },
-        {
-          name: 'autorun.apply',
-          description:
-            'Ejecuta TODO el flujo de implementación automáticamente: detección → Storybook MCP → extracción → validación → implementación → post-procesamiento',
-          inputSchema: {
-            type: 'object',
-            properties: {
-              message: {
-                type: 'string',
-                description: 'Mensaje del usuario describiendo qué implementar',
-              },
-              targetFiles: {
-                type: 'array',
-                items: { type: 'string' },
-                description:
-                  'Archivos objetivo (opcional, se detecta automáticamente si no se especifica)',
-              },
-              options: {
-                type: 'object',
-                properties: {
-                  skipVerification: {
-                    type: 'boolean',
-                    description: 'Saltar verificación pre-implementación',
-                  },
-                  dryRun: {
-                    type: 'boolean',
-                    description:
-                      'Ejecutar sin escribir archivos (solo simular)',
-                  },
-                  skipFormatting: {
-                    type: 'boolean',
-                    description: 'Saltar formateo con Prettier',
-                  },
-                  skipLinting: {
-                    type: 'boolean',
-                    description: 'Saltar validación con ESLint',
-                  },
-                  skipAutoReload: {
-                    type: 'boolean',
-                    description: 'Saltar recarga automática del browser',
-                  },
-                  skipAutoCommit: {
-                    type: 'boolean',
-                    description: 'Saltar auto-commit de GitHub',
-                  },
-                  runVisualTests: {
-                    type: 'boolean',
-                    description:
-                      'Ejecutar tests visuales con Chromatic (opcional)',
+          {
+            name: 'autorun.apply',
+            description:
+              'Ejecuta TODO el flujo de implementación automáticamente: detección → Storybook MCP → extracción → validación → implementación → post-procesamiento',
+            inputSchema: {
+              type: 'object',
+              properties: {
+                message: {
+                  type: 'string',
+                  description:
+                    'Mensaje del usuario describiendo qué implementar',
+                },
+                targetFiles: {
+                  type: 'array',
+                  items: { type: 'string' },
+                  description:
+                    'Archivos objetivo (opcional, se detecta automáticamente si no se especifica)',
+                },
+                options: {
+                  type: 'object',
+                  properties: {
+                    skipVerification: {
+                      type: 'boolean',
+                      description: 'Saltar verificación pre-implementación',
+                    },
+                    dryRun: {
+                      type: 'boolean',
+                      description:
+                        'Ejecutar sin escribir archivos (solo simular)',
+                    },
+                    skipFormatting: {
+                      type: 'boolean',
+                      description: 'Saltar formateo con Prettier',
+                    },
+                    skipLinting: {
+                      type: 'boolean',
+                      description: 'Saltar validación con ESLint',
+                    },
+                    skipAutoReload: {
+                      type: 'boolean',
+                      description: 'Saltar recarga automática del browser',
+                    },
+                    skipAutoCommit: {
+                      type: 'boolean',
+                      description: 'Saltar auto-commit de GitHub',
+                    },
+                    runVisualTests: {
+                      type: 'boolean',
+                      description:
+                        'Ejecutar tests visuales con Chromatic (opcional)',
+                    },
                   },
                 },
               },
+              required: ['message'],
             },
-            required: ['message'],
           },
-        },
-        {
-          name: 'autorun.verify',
-          description:
-            'Verifica que los archivos fueron generados correctamente por Autorun y cumplen con todas las validaciones',
-          inputSchema: {
-            type: 'object',
-            properties: {
-              targetFiles: {
-                oneOf: [
-                  { type: 'array', items: { type: 'string' } },
-                  { type: 'string', enum: ['diff'] },
-                ],
-                description:
-                  'Archivos a verificar o "diff" para verificar cambios de git',
-              },
-              options: {
-                type: 'object',
-                properties: {
-                  strict: {
-                    type: 'boolean',
-                    description:
-                      'Modo estricto: errores en lugar de advertencias',
-                  },
-                  checkAutorunMarks: {
-                    type: 'boolean',
-                    description: 'Verificar presencia de marcas Autorun',
-                  },
-                  checkStructure: {
-                    type: 'boolean',
-                    description: 'Verificar estructura del código',
-                  },
-                  checkAccessibility: {
-                    type: 'boolean',
-                    description: 'Verificar accesibilidad básica',
+          {
+            name: 'autorun.verify',
+            description:
+              'Verifica que los archivos fueron generados correctamente por Autorun y cumplen con todas las validaciones',
+            inputSchema: {
+              type: 'object',
+              properties: {
+                targetFiles: {
+                  oneOf: [
+                    { type: 'array', items: { type: 'string' } },
+                    { type: 'string', enum: ['diff'] },
+                  ],
+                  description:
+                    'Archivos a verificar o "diff" para verificar cambios de git',
+                },
+                options: {
+                  type: 'object',
+                  properties: {
+                    strict: {
+                      type: 'boolean',
+                      description:
+                        'Modo estricto: errores en lugar de advertencias',
+                    },
+                    checkAutorunMarks: {
+                      type: 'boolean',
+                      description: 'Verificar presencia de marcas Autorun',
+                    },
+                    checkStructure: {
+                      type: 'boolean',
+                      description: 'Verificar estructura del código',
+                    },
+                    checkAccessibility: {
+                      type: 'boolean',
+                      description: 'Verificar accesibilidad básica',
+                    },
                   },
                 },
               },
+              required: ['targetFiles'],
             },
-            required: ['targetFiles'],
           },
-        },
-        {
-          name: 'autorun.checklist',
-          description:
-            'Obtiene checklist de implementación para un componente específico',
-          inputSchema: {
-            type: 'object',
-            properties: {
-              componentName: {
-                type: 'string',
-                description: 'Nombre del componente',
+          {
+            name: 'autorun.checklist',
+            description:
+              'Obtiene checklist de implementación para un componente específico',
+            inputSchema: {
+              type: 'object',
+              properties: {
+                componentName: {
+                  type: 'string',
+                  description: 'Nombre del componente',
+                },
               },
-            },
-            required: ['componentName'],
-          },
-        },
-        {
-          name: 'autorun.storybook.start',
-          description: 'Inicia servidor de Storybook local',
-          inputSchema: {
-            type: 'object',
-            properties: {
-              port: { type: 'number', description: 'Puerto (opcional)' },
-              host: { type: 'string', description: 'Host (opcional)' },
+              required: ['componentName'],
             },
           },
-        },
-        {
-          name: 'autorun.storybook.build',
-          description: 'Construye Storybook estático',
-          inputSchema: {
-            type: 'object',
-            properties: {
-              outputDir: {
-                type: 'string',
-                description: 'Directorio de salida (opcional)',
+          {
+            name: 'autorun.storybook.start',
+            description: 'Inicia servidor de Storybook local',
+            inputSchema: {
+              type: 'object',
+              properties: {
+                port: { type: 'number', description: 'Puerto (opcional)' },
+                host: { type: 'string', description: 'Host (opcional)' },
               },
             },
           },
-        },
-        {
-          name: 'autorun.storybook.extract',
-          description:
-            'Extrae código HTML/JS directamente desde Storybook usando Browser MCP internamente. Evita tener que modificar Storybook para crear historias "code".',
-          inputSchema: {
-            type: 'object',
-            properties: {
-              componentId: {
-                type: 'string',
-                description:
-                  'ID del componente en Storybook (ej: "formularios-radio-button")',
-              },
-              componentName: {
-                type: 'string',
-                description:
-                  'Nombre del componente (ej: "RadioButton") - se mapea automáticamente a componentId',
-              },
-              storyName: {
-                type: 'string',
-                description:
-                  'Nombre de la historia a extraer (default: "auto" - busca "code" primero, luego "implementation")',
+          {
+            name: 'autorun.storybook.build',
+            description: 'Construye Storybook estático',
+            inputSchema: {
+              type: 'object',
+              properties: {
+                outputDir: {
+                  type: 'string',
+                  description: 'Directorio de salida (opcional)',
+                },
               },
             },
           },
-        },
-        {
-          name: 'autorun.problems.list',
-          description: 'Lista problemas detectados por Problem Tracker',
-          inputSchema: {
-            type: 'object',
-            properties: {
-              category: {
-                type: 'string',
-                description: 'Filtrar por categoría (opcional)',
-              },
-              severity: {
-                type: 'string',
-                enum: ['low', 'medium', 'high', 'critical'],
-                description: 'Filtrar por severidad (opcional)',
-              },
-              limit: {
-                type: 'number',
-                description: 'Límite de resultados (opcional)',
-              },
-            },
-          },
-        },
-        {
-          name: 'autorun.github.commit',
-          description: 'Hace commit manual de archivos en GitHub',
-          inputSchema: {
-            type: 'object',
-            properties: {
-              files: {
-                type: 'array',
-                items: { type: 'string' },
-                description: 'Archivos a commitear',
-              },
-              message: {
-                type: 'string',
-                description: 'Mensaje de commit',
-              },
-              push: {
-                type: 'boolean',
-                description: 'Hacer push después del commit',
-              },
-            },
-            required: ['files', 'message'],
-          },
-        },
-        {
-          name: 'autorun.lint',
-          description: 'Ejecuta ESLint en archivos',
-          inputSchema: {
-            type: 'object',
-            properties: {
-              files: {
-                type: 'array',
-                items: { type: 'string' },
-                description: 'Archivos a validar',
-              },
-              fix: {
-                type: 'boolean',
-                description: 'Auto-corregir errores automáticamente',
-              },
-            },
-            required: ['files'],
-          },
-        },
-        {
-          name: 'autorun.visual.test',
-          description: 'Ejecuta tests visuales con Chromatic',
-          inputSchema: {
-            type: 'object',
-            properties: {
-              componentId: {
-                type: 'string',
-                description: 'ID del componente (opcional)',
-              },
-              storyId: {
-                type: 'string',
-                description: 'ID de la historia (opcional)',
+          {
+            name: 'autorun.storybook.extract',
+            description:
+              'Extrae código HTML/JS directamente desde Storybook usando Browser MCP internamente. Evita tener que modificar Storybook para crear historias "code".',
+            inputSchema: {
+              type: 'object',
+              properties: {
+                componentId: {
+                  type: 'string',
+                  description:
+                    'ID del componente en Storybook (ej: "formularios-radio-button")',
+                },
+                componentName: {
+                  type: 'string',
+                  description:
+                    'Nombre del componente (ej: "RadioButton") - se mapea automáticamente a componentId',
+                },
+                storyName: {
+                  type: 'string',
+                  description:
+                    'Nombre de la historia a extraer (default: "auto" - busca "code" primero, luego "implementation")',
+                },
               },
             },
           },
-        },
-      ],
-    };
+          {
+            name: 'autorun.problems.list',
+            description: 'Lista problemas detectados por Problem Tracker',
+            inputSchema: {
+              type: 'object',
+              properties: {
+                category: {
+                  type: 'string',
+                  description: 'Filtrar por categoría (opcional)',
+                },
+                severity: {
+                  type: 'string',
+                  enum: ['low', 'medium', 'high', 'critical'],
+                  description: 'Filtrar por severidad (opcional)',
+                },
+                limit: {
+                  type: 'number',
+                  description: 'Límite de resultados (opcional)',
+                },
+              },
+            },
+          },
+          {
+            name: 'autorun.github.commit',
+            description: 'Hace commit manual de archivos en GitHub',
+            inputSchema: {
+              type: 'object',
+              properties: {
+                files: {
+                  type: 'array',
+                  items: { type: 'string' },
+                  description: 'Archivos a commitear',
+                },
+                message: {
+                  type: 'string',
+                  description: 'Mensaje de commit',
+                },
+                push: {
+                  type: 'boolean',
+                  description: 'Hacer push después del commit',
+                },
+              },
+              required: ['files', 'message'],
+            },
+          },
+          {
+            name: 'autorun.lint',
+            description: 'Ejecuta ESLint en archivos',
+            inputSchema: {
+              type: 'object',
+              properties: {
+                files: {
+                  type: 'array',
+                  items: { type: 'string' },
+                  description: 'Archivos a validar',
+                },
+                fix: {
+                  type: 'boolean',
+                  description: 'Auto-corregir errores automáticamente',
+                },
+              },
+              required: ['files'],
+            },
+          },
+          {
+            name: 'autorun.visual.test',
+            description: 'Ejecuta tests visuales con Chromatic',
+            inputSchema: {
+              type: 'object',
+              properties: {
+                componentId: {
+                  type: 'string',
+                  description: 'ID del componente (opcional)',
+                },
+                storyId: {
+                  type: 'string',
+                  description: 'ID de la historia (opcional)',
+                },
+              },
+            },
+          },
+        ],
+      };
+    } catch (error: any) {
+      console.error(
+        '❌ [Autorun MCP Server] Error en ListToolsRequest:',
+        error
+      );
+      console.error('   Stack:', error.stack);
+      // Retornar lista vacía en caso de error para no crashear el servidor
+      return { tools: [] };
+    }
   });
 
   // Manejar llamadas a tools
