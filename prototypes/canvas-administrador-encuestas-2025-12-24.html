@@ -1125,12 +1125,58 @@
                                         debugLayout();
                                     }, 300);
                                 });
+                                
+                                // ⚠️ Inicializar Tabs de Encuestas
+                                initEncuestasTabs();
                             }, 200); // Delay mínimo solo para asegurar que el DOM esté listo
                         });
                     }
                 }, 100);
             });
         });
+        
+        // ========================================
+        // INICIALIZACIÓN DE TABS DE ENCUESTAS
+        // ========================================
+        function initEncuestasTabs() {
+            const tabsContainer = document.getElementById('encuestas-tabs-container');
+            if (!tabsContainer) {
+                console.warn('⚠️ [Encuestas Tabs] Contenedor no encontrado');
+                return;
+            }
+            
+            // Verificar que window.createTabs esté disponible
+            if (typeof window.createTabs !== 'function') {
+                console.warn('⚠️ [Encuestas Tabs] window.createTabs no está disponible, reintentando...');
+                setTimeout(initEncuestasTabs, 100);
+                return;
+            }
+            
+            console.log('✅ [Encuestas Tabs] Inicializando tabs...');
+            
+            // Crear tabs con iconos
+            const tabsHTML = window.createTabs({
+                tabs: [
+                    {
+                        id: 'lista-encuestas',
+                        label: 'Lista de encuestas',
+                        icon: 'clipboard-list' // ⚠️ Solo el nombre, sin prefijos
+                    },
+                    {
+                        id: 'datos-demograficos',
+                        label: 'Datos demográficos',
+                        icon: 'chart-pie' // ⚠️ Solo el nombre, sin prefijos
+                    }
+                ],
+                activeTabId: 'lista-encuestas',
+                onTabChange: (tabId, tabElement) => {
+                    console.log('🔵 [Encuestas Tabs] Tab cambiado:', tabId);
+                    // Aquí puedes agregar lógica para cambiar el contenido según el tab
+                }
+            }, 'encuestas-tabs-container');
+            
+            console.log('✅ [Encuestas Tabs] Tabs inicializados correctamente');
+        }
         
         // ⚠️ FUNCIÓN DE DEBUG ESPECÍFICA PARA EL LAYOUT
         function debugLayout() {
