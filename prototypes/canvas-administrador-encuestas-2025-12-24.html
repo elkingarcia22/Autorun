@@ -1326,8 +1326,59 @@
                 }, 'encuestas-tabs-container');
                 
                 console.log('✅ [Encuestas Tabs] Tabs inicializados correctamente');
+                
+                // Inicializar contenido del tab activo inicial
+                const listaContent = document.getElementById('lista-encuestas-content');
+                if (listaContent) {
+                    listaContent.style.display = 'block';
+                    initSelectionCard();
+                }
             } catch (error) {
                 console.error('❌ [Encuestas Tabs] Error al inicializar tabs:', error);
+            }
+        }
+        
+        // ========================================
+        // FUNCIÓN PARA INICIALIZAR SELECTION CARD
+        // ========================================
+        function initSelectionCard() {
+            const container = document.getElementById('selection-card-container');
+            if (!container) {
+                console.warn('⚠️ [SelectionCard] Contenedor no encontrado');
+                return;
+            }
+            
+            // Verificar si ya está inicializado
+            if (container.querySelector('.ubits-selection-card')) {
+                console.log('✅ [SelectionCard] Ya está inicializado');
+                return;
+            }
+            
+            // Verificar que createSelectionCard esté disponible
+            if (typeof window.createSelectionCard !== 'function') {
+                console.warn('⚠️ [SelectionCard] window.createSelectionCard no está disponible, reintentando...');
+                setTimeout(initSelectionCard, 200);
+                return;
+            }
+            
+            // Crear SelectionCard
+            try {
+                console.log('🔵 [SelectionCard] Inicializando SelectionCard...');
+                const cardElement = window.createSelectionCard({
+                    id: 'encuesta-selection-1',
+                    title: 'Encuesta de satisfacción',
+                    description: 'Encuesta para medir la satisfacción de los colaboradores',
+                    icon: 'clipboard-list',
+                    iconStyle: 'regular',
+                    state: 'default',
+                    size: 'md',
+                    value: 'encuesta-1'
+                });
+                
+                container.appendChild(cardElement);
+                console.log('✅ [SelectionCard] SelectionCard inicializado correctamente');
+            } catch (error) {
+                console.error('❌ [SelectionCard] Error al inicializar SelectionCard:', error);
             }
         }
         
