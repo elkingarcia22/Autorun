@@ -518,10 +518,65 @@ export async function startAutorunMCPServer() {
       );
 
       // ⚠️ CRÍTICO: Validar que el resultado sea serializable antes de retornar
+      // Función helper para limpiar objetos antes de serializar (elimina funciones, referencias circulares, etc.)
+      const cleanForSerialization = (obj: any, seen = new WeakSet()): any => {
+        // Manejar valores primitivos
+        if (obj === null || obj === undefined) {
+          return obj;
+        }
+        
+        // Manejar referencias circulares
+        if (typeof obj === 'object') {
+          if (seen.has(obj)) {
+            return '[Circular Reference]';
+          }
+          seen.add(obj);
+        }
+        
+        // Eliminar funciones
+        if (typeof obj === 'function') {
+          return '[Function]';
+        }
+        
+        // Manejar arrays
+        if (Array.isArray(obj)) {
+          return obj.map((item) => cleanForSerialization(item, seen));
+        }
+        
+        // Manejar objetos
+        if (typeof obj === 'object') {
+          const cleaned: any = {};
+          for (const key in obj) {
+            if (Object.prototype.hasOwnProperty.call(obj, key)) {
+              try {
+                const value = obj[key];
+                // Saltar funciones y símbolos
+                if (typeof value === 'function' || typeof value === 'symbol') {
+                  continue;
+                }
+                // Limpiar recursivamente
+                cleaned[key] = cleanForSerialization(value, seen);
+              } catch (error) {
+                // Si hay error al acceder a la propiedad, saltarla
+                cleaned[key] = '[Error accessing property]';
+              }
+            }
+          }
+          return cleaned;
+        }
+        
+        // Retornar valores primitivos tal cual
+        return obj;
+      };
+
       let resultText: string;
       try {
         console.error(`   🔍 [MCP Server] Intentando serializar resultado...`);
-        resultText = JSON.stringify(result, null, 2);
+        
+        // ⚠️ CRÍTICO: Limpiar resultado antes de serializar para evitar errores
+        const cleanedResult = cleanForSerialization(result);
+        
+        resultText = JSON.stringify(cleanedResult, null, 2);
         console.error(
           `   ✅ [MCP Server] Resultado serializado exitosamente (${resultText.length} caracteres)`
         );
@@ -532,21 +587,83 @@ export async function startAutorunMCPServer() {
         console.error(
           `   ⚠️ [MCP Server] Stack del error: ${serializeError.stack}`
         );
+        console.error(
+          `   ⚠️ [MCP Server] Tipo de resultado: ${typeof result}`
+        );
+        console.error(
+          `   ⚠️ [MCP Server] Result es null/undefined?: ${result === null || result === undefined}`
+        );
+        
         // Si hay error de serialización, crear un resultado de error controlado
-        resultText = JSON.stringify(
-          {
-            success: false,
+        try {
+          // Intentar extraer información básica del resultado
+          const basicInfo: any = {
+            success: result?.success ?? false,
             error: 'Error serializando resultado',
             errorMessage: serializeError.message,
-            originalResult: {
-              success: result?.success,
-              errors: result?.errors || [],
-              warnings: result?.warnings || [],
+            errorType: serializeError.name || 'SerializationError',
+          };
+          
+          // Intentar extraer arrays de errores y warnings de forma segura
+          try {
+            if (result?.errors && Array.isArray(result.errors)) {
+              basicInfo.errors = result.errors.map((e: any) => 
+                typeof e === 'string' ? e : String(e)
+              );
+            } else {
+              basicInfo.errors = [];
+            }
+          } catch (e) {
+            basicInfo.errors = [];
+          }
+          
+          try {
+            if (result?.warnings && Array.isArray(result.warnings)) {
+              basicInfo.warnings = result.warnings.map((w: any) => 
+                typeof w === 'string' ? w : String(w)
+              );
+            } else {
+              basicInfo.warnings = [];
+            }
+          } catch (e) {
+            basicInfo.warnings = [];
+          }
+          
+          // Intentar extraer información de verification de forma segura
+          try {
+            if (result?.verification) {
+              basicInfo.verification = {
+                preImplementation: result.verification.preImplementation ?? false,
+                postImplementation: result.verification.postImplementation ?? false,
+                errors: Array.isArray(result.verification.errors) 
+                  ? result.verification.errors.map((e: any) => typeof e === 'string' ? e : String(e))
+                  : [],
+                warnings: Array.isArray(result.verification.warnings)
+                  ? result.verification.warnings.map((w: any) => typeof w === 'string' ? w : String(w))
+                  : [],
+              };
+            }
+          } catch (e) {
+            // Ignorar errores al extraer verification
+          }
+          
+          resultText = JSON.stringify(basicInfo, null, 2);
+        } catch (fallbackError: any) {
+          // Si incluso el fallback falla, usar respuesta mínima absoluta
+          console.error(
+            `   ❌ [MCP Server] Error incluso en fallback: ${fallbackError.message}`
+          );
+          resultText = JSON.stringify(
+            {
+              success: false,
+              error: 'Error crítico serializando resultado',
+              errorMessage: serializeError.message,
+              fallbackError: fallbackError.message,
             },
-          },
-          null,
-          2
-        );
+            null,
+            2
+          );
+        }
       }
 
       return {
