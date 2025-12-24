@@ -27,7 +27,7 @@ export async function autorunVerify(
 ): Promise<AutorunVerifyOutput> {
   console.log(`\n✅ [Autorun MCP] autorun.verify() llamado`);
   console.log(
-    `   Archivos: ${input.targetFiles === 'diff' ? 'diff (git)' : input.targetFiles.join(', ')}`
+    `   Archivos: ${input.targetFiles === 'diff' ? 'diff (git)' : Array.isArray(input.targetFiles) ? input.targetFiles.join(', ') : String(input.targetFiles)}`
   );
 
   const errors: string[] = [];
