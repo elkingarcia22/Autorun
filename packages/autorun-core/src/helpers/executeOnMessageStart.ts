@@ -225,14 +225,12 @@ export async function executeOnMessageStart(
       const manager = StorybookManager.getInstance();
       const activeConfig = await manager.getActiveConfig();
 
-      let mcpServer = 'storybook-ubits'; // ⚠️ CORREGIDO: Usar el nombre real del servidor configurado
+      // ⚠️ CRÍTICO: El servidor MCP debe ser "storybook" (no "storybook-ubits")
+      // El wizard configura el MCP con el nombre "storybook"
+      let mcpServer = 'storybook';
       if (activeConfig) {
-        // Si el Storybook activo es UBITS, usar 'storybook-ubits'
-        if (activeConfig.id === 'ubits-storybook10-vercel-app') {
-          mcpServer = 'storybook-ubits';
-        } else {
-          mcpServer = 'storybook'; // Fallback para otros Storybooks
-        }
+        // Siempre usar "storybook" como nombre del servidor (unificado)
+        mcpServer = 'storybook';
         console.log(
           `📚 [Execute On Message Start] Storybook activo: ${activeConfig.name} (${activeConfig.url})`
         );
@@ -243,7 +241,7 @@ export async function executeOnMessageStart(
       console.log(`     server: "${mcpServer}",`);
     } catch (error) {
       // Si no se puede obtener Storybook activo, usar default
-      console.log(`     server: "storybook-ubits",`);
+      console.log(`     server: "storybook",`); // ⚠️ CORREGIDO: Usar "storybook" (no "storybook-ubits")
     }
 
     // ⚠️ NUEVO MCP: Convertir storybookId a nombre de componente
