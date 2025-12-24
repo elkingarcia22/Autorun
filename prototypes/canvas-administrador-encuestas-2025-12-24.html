@@ -1432,9 +1432,21 @@
             // Verificar que createSelectionCard esté disponible
             if (typeof window.createSelectionCard !== 'function') {
                 console.warn('⚠️ [SelectionCard] window.createSelectionCard no está disponible, reintentando...');
+                // Limitar reintentos a 50 intentos (10 segundos máximo)
+                if (!initDatosDemograficosSelectionCard.retryCount) {
+                    initDatosDemograficosSelectionCard.retryCount = 0;
+                }
+                initDatosDemograficosSelectionCard.retryCount++;
+                if (initDatosDemograficosSelectionCard.retryCount > 50) {
+                    console.error('❌ [SelectionCard] Timeout: window.createSelectionCard no está disponible después de 50 intentos');
+                    return;
+                }
                 setTimeout(initDatosDemograficosSelectionCard, 200);
                 return;
             }
+            
+            // Resetear contador si la función está disponible
+            initDatosDemograficosSelectionCard.retryCount = 0;
             
             // Crear SelectionCard
             try {
