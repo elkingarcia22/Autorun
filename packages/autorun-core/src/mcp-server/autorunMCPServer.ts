@@ -46,9 +46,10 @@ export async function startAutorunMCPServer() {
 
   // Listar tools disponibles
   server.setRequestHandler(ListToolsRequestSchema, async () => {
-    console.error('📋 [Autorun MCP Server] ListToolsRequest recibido');
+    try {
+      console.error('📋 [Autorun MCP Server] ListToolsRequest recibido');
 
-    return {
+      return {
       tools: [
         {
           name: 'autorun.plan',
@@ -355,7 +356,12 @@ export async function startAutorunMCPServer() {
     try {
       let result: any;
 
-      switch (name) {
+      // ⚠️ SOPORTE PARA AMBOS FORMATOS: Con punto y con guión bajo
+      // El sistema MCP puede convertir "autorun.apply" a "autorun_apply"
+      // Por lo tanto, normalizamos el nombre antes del switch
+      const normalizedName = name.replace(/_/g, '.');
+
+      switch (normalizedName) {
         case 'autorun.plan':
           result = await autorunPlan(args as any);
           break;
@@ -498,9 +504,15 @@ export async function startAutorunMCPServer() {
           break;
 
         default:
+          // Intentar con el nombre original (por si acaso)
+          if (name !== normalizedName) {
+            console.error(
+              `   ⚠️ [MCP Server] Tool '${name}' no encontrado, intentando con nombre normalizado '${normalizedName}'`
+            );
+          }
           throw new McpError(
             ErrorCode.MethodNotFound,
-            `Tool desconocido: ${name}`
+            `Tool desconocido: ${name} (normalizado: ${normalizedName}). Tools disponibles: autorun.plan, autorun.apply, autorun.verify, autorun.checklist, autorun.storybook.start, autorun.storybook.build, autorun.storybook.extract, autorun.problems.list, autorun.github.commit, autorun.lint, autorun.visual.test`
           );
       }
 
@@ -758,10 +770,16 @@ export async function startAutorunMCPServer() {
   });
 
   // Iniciar servidor
-  const transport = new StdioServerTransport();
-  await server.connect(transport);
+  try {
+    const transport = new StdioServerTransport();
+    await server.connect(transport);
 
-  console.error('✅ [Autorun MCP Server] Servidor iniciado y listo');
+    console.error('✅ [Autorun MCP Server] Servidor iniciado y listo');
+  } catch (error: any) {
+    console.error('❌ [Autorun MCP Server] Error conectando servidor:', error);
+    console.error('   Stack:', error.stack);
+    throw error;
+  }
 }
 
 // Ejecutar si se llama directamente
