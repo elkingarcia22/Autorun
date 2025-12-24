@@ -803,6 +803,33 @@
     <script src="https://ubits-storybook10.vercel.app/templates/components-loader.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
     <!-- SelectionCard Component Script -->
     <script src="https://ubits-storybook10.vercel.app/components/selection-card/src/index.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
+    <script>
+        // Exponer createSelectionCard en window si no está disponible
+        (function() {
+            if (typeof window.createSelectionCard === 'undefined') {
+                // Intentar obtener desde el módulo cargado
+                if (typeof window.UBITS !== 'undefined' && window.UBITS.SelectionCard && window.UBITS.SelectionCard.create) {
+                    window.createSelectionCard = window.UBITS.SelectionCard.create;
+                    console.log('✅ [SelectionCard] createSelectionCard expuesto desde window.UBITS.SelectionCard.create');
+                } else {
+                    // Esperar a que el módulo se cargue
+                    let attempts = 0;
+                    const maxAttempts = 50;
+                    const checkInterval = setInterval(() => {
+                        attempts++;
+                        if (typeof window.UBITS !== 'undefined' && window.UBITS.SelectionCard && window.UBITS.SelectionCard.create) {
+                            window.createSelectionCard = window.UBITS.SelectionCard.create;
+                            console.log('✅ [SelectionCard] createSelectionCard expuesto desde window.UBITS.SelectionCard.create');
+                            clearInterval(checkInterval);
+                        } else if (attempts >= maxAttempts) {
+                            console.warn('⚠️ [SelectionCard] No se pudo exponer createSelectionCard después de ' + maxAttempts + ' intentos');
+                            clearInterval(checkInterval);
+                        }
+                    }, 200);
+                }
+            }
+        })();
+    </script>
     <script src="https://ubits-storybook10.vercel.app/templates/config/products.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
     <script src="https://ubits-storybook10.vercel.app/templates/config/theme-manager.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
     <script src="https://ubits-storybook10.vercel.app/templates/config/responsive-manager.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
