@@ -49,7 +49,6 @@
     <link rel="stylesheet" href="https://ubits-storybook10.vercel.app/components/stepper/src/styles/stepper.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
     <link rel="stylesheet" href="https://ubits-storybook10.vercel.app/components/participants-menu/src/styles/participants-menu.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
     <link rel="stylesheet" href="https://ubits-storybook10.vercel.app/components/metric-card/src/styles/metric-card.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
-    <link rel="stylesheet" href="https://ubits-storybook10.vercel.app/components/header-section/src/styles/header-section.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
     
     <style>
         /* ========================================
@@ -233,32 +232,6 @@
             gap: 0;
         }
 
-        /* ========================================
-           HEADER SECTION CONTAINER
-           ======================================== */
-        
-        #header-section-container {
-            width: 100%;
-            background: transparent;
-            padding: 0;
-            margin-top: 0;
-            margin-bottom: 0;
-            box-sizing: border-box;
-        }
-
-        /* Ajustes responsive para header-section-container */
-        @media (max-width: 1023px) {
-            #header-section-container {
-                padding: 0;
-                margin-top: 0;
-            }
-        }
-
-        @media (max-width: 479px) {
-            #header-section-container {
-                margin-top: 0;
-            }
-        }
 
         .content-area.no-background {
             background-color: transparent !important;
@@ -785,16 +758,7 @@
             
             <!-- Content Area -->
             <div class="content-area">
-                <!-- Content wrapper con secciones de widgets -->
-                <div class="content-sections">
-                    <!-- Sección contenido principal -->
-                    <div class="section-single">
-                        <div class="widget-contenido-principal">
-                            <p class="ubits-body-md-regular">Contenido principal</p>
-                            <br><br><br><br><br><br><br><br><br><br><br>
-                        </div>
-                    </div>
-                </div>
+                <!-- Contenido se carga dinámicamente por ContentManager -->
             </div>
         </main>
     </div>
