@@ -125,6 +125,10 @@ export class KeywordTriggerSystem {
       action: 'load-guides',
     },
 
+    // ⚠️ TEMPORAL: Trigger de bloqueo deshabilitado para debugging
+    // TODO: Re-habilitar después de arreglar el problema de detección
+    // El problema es que se está detectando incorrectamente en mensajes como "Implementa tabs debajo del subnav"
+    /*
     // Triggers de bloqueo (MEDIA PRIORIDAD - menor que activate-step-by-step)
     // ⚠️ CRÍTICO: Usar solo patterns para evitar falsos positivos (ej: "subnav" contiene "no")
     // ⚠️ CRÍTICO: Prioridad "medium" para que no sobrescriba "activate-step-by-step" (high)
@@ -142,6 +146,7 @@ export class KeywordTriggerSystem {
       priority: 'medium', // ⚠️ Cambiado de 'high' a 'medium' para que no sobrescriba activate-step-by-step
       action: 'block-implementation',
     },
+    */
   ];
 
   /**
