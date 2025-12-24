@@ -55,6 +55,27 @@ export class KeywordTriggerSystem {
       priority: 'high',
       action: 'activate-step-by-step',
     },
+    // ⚠️ TEMPORAL: Deshabilitar trigger de bloqueo para debugging
+    // TODO: Re-habilitar después de arreglar el problema de detección
+    /*
+    // Triggers de bloqueo (MEDIA PRIORIDAD - menor que activate-step-by-step)
+    // ⚠️ CRÍTICO: Usar solo patterns para evitar falsos positivos (ej: "subnav" contiene "no")
+    // ⚠️ CRÍTICO: Prioridad "medium" para que no sobrescriba "activate-step-by-step" (high)
+    {
+      keywords: [], // Vacío - solo usar patterns
+      patterns: [
+        /\bno\s+implementar/i, // "no implementar" como palabras separadas
+        /\bno\s+crear/i, // "no crear" como palabras separadas
+        /\bno\s+hacer/i, // "no hacer" como palabras separadas
+        /\besperar\s+.*implementar/i, // "esperar ... implementar"
+        /\bparar\s+.*implementación/i, // "parar ... implementación"
+        /\bno\s+implementes/i, // "no implementes"
+        /\bno\s+implemente/i, // "no implemente"
+      ],
+      priority: 'medium', // ⚠️ Cambiado de 'high' a 'medium' para que no sobrescriba activate-step-by-step
+      action: 'block-implementation',
+    },
+    */
     {
       keywords: ['implementar', 'crear', 'agregar'],
       patterns: [/implementar.*modal/i, /crear.*modal/i, /agregar.*modal/i],
