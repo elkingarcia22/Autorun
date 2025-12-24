@@ -802,53 +802,39 @@
     <!-- System Loaders -->
     <script src="https://ubits-storybook10.vercel.app/templates/components-loader.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
     <!-- SelectionCard Component Script -->
-    <script src="https://ubits-storybook10.vercel.app/components/selection-card/src/index.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
-    <script>
+    <!-- Cargar como módulo ES6 y exponer en window -->
+    <script type="module">
         // ========================================
-        // EXPONER createSelectionCard EN WINDOW
-        // El script de SelectionCard puede no exponerlo directamente en window
+        // CARGAR Y EXPONER createSelectionCard
+        // El script es un módulo ES6, necesitamos importarlo y exponerlo
         // ========================================
-        (function() {
-            console.log('🔵 [SelectionCard] Verificando exposición de createSelectionCard...');
+        try {
+            const selectionCardModule = await import('https://ubits-storybook10.vercel.app/components/selection-card/src/index.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT');
             
-            // Función para exponer createSelectionCard
-            function exposeCreateSelectionCard() {
-                // Opción 1: Ya está en window
-                if (typeof window.createSelectionCard === 'function') {
-                    console.log('✅ [SelectionCard] window.createSelectionCard ya está disponible');
-                    return true;
-                }
-                
-                // Opción 2: Está en window.UBITS.SelectionCard.create
-                if (typeof window.UBITS !== 'undefined' && window.UBITS.SelectionCard && typeof window.UBITS.SelectionCard.create === 'function') {
+            if (selectionCardModule && selectionCardModule.createSelectionCard) {
+                window.createSelectionCard = selectionCardModule.createSelectionCard;
+                console.log('✅ [SelectionCard] createSelectionCard expuesto desde módulo ES6');
+            } else {
+                console.error('❌ [SelectionCard] El módulo no exporta createSelectionCard');
+            }
+        } catch (error) {
+            console.error('❌ [SelectionCard] Error cargando módulo:', error);
+            // Fallback: intentar cargar como script normal
+            const script = document.createElement('script');
+            script.src = 'https://ubits-storybook10.vercel.app/components/selection-card/src/index.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT';
+            script.onload = function() {
+                console.log('✅ [SelectionCard] Script cargado como fallback');
+                // Intentar exponer desde window.UBITS si está disponible
+                if (typeof window.UBITS !== 'undefined' && window.UBITS.SelectionCard && window.UBITS.SelectionCard.create) {
                     window.createSelectionCard = window.UBITS.SelectionCard.create;
-                    console.log('✅ [SelectionCard] createSelectionCard expuesto desde window.UBITS.SelectionCard.create');
-                    return true;
+                    console.log('✅ [SelectionCard] createSelectionCard expuesto desde window.UBITS.SelectionCard.create (fallback)');
                 }
-                
-                // Opción 3: Está en el módulo ES6 (si se importó)
-                // Los módulos ES6 no se exponen automáticamente, necesitamos usar el script directamente
-                
-                return false;
-            }
-            
-            // Intentar exponer inmediatamente
-            if (!exposeCreateSelectionCard()) {
-                // Esperar a que el script se cargue
-                let attempts = 0;
-                const maxAttempts = 50;
-                const checkInterval = setInterval(() => {
-                    attempts++;
-                    if (exposeCreateSelectionCard()) {
-                        clearInterval(checkInterval);
-                    } else if (attempts >= maxAttempts) {
-                        console.error('❌ [SelectionCard] No se pudo exponer createSelectionCard después de ' + maxAttempts + ' intentos');
-                        console.error('   ⚠️ [SelectionCard] Verificar que el script se cargue correctamente');
-                        clearInterval(checkInterval);
-                    }
-                }, 200);
-            }
-        })();
+            };
+            script.onerror = function() {
+                console.error('❌ [SelectionCard] Error cargando script de fallback');
+            };
+            document.head.appendChild(script);
+        }
     </script>
     <script src="https://ubits-storybook10.vercel.app/templates/config/products.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
     <script src="https://ubits-storybook10.vercel.app/templates/config/theme-manager.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
