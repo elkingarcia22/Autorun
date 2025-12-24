@@ -787,6 +787,44 @@ export async function startAutorunMCPServer() {
           );
         }
       }
+    } catch (outerError: any) {
+      // ⚠️ CRÍTICO: Capturar cualquier error que no fue capturado en los try-catch internos
+      // Esto incluye errores de validación que se lanzan con throw
+      console.error(
+        `❌ [Autorun MCP Server] Error NO CAPTURADO en tool ${name || 'unknown'}: ${outerError.message}`
+      );
+      console.error('   Stack completo:', outerError.stack);
+      console.error(
+        `   ⚠️ [MCP Server] Este error podría causar que el servidor se desconecte`
+      );
+
+      // Intentar retornar error controlado
+      try {
+        return {
+          content: [
+            {
+              type: 'text',
+              text: JSON.stringify(
+                {
+                  success: false,
+                  error: outerError.message || 'Error desconocido',
+                  errorType: outerError instanceof McpError ? 'McpError' : 'Error',
+                  toolName: name || 'unknown',
+                  message: 'Error ejecutando tool. Ver logs del servidor para más detalles.',
+                },
+                null,
+                2
+              ),
+            },
+          ],
+        };
+      } catch (finalError: any) {
+        // Si incluso esto falla, lanzar el error original
+        console.error(
+          `   ❌ [MCP Server] Error crítico: No se pudo crear respuesta de error`
+        );
+        throw outerError;
+      }
     }
   });
 
