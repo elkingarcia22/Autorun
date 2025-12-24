@@ -104,8 +104,9 @@ export class KeywordTriggerSystem {
       action: 'load-guides',
     },
 
-    // Triggers de bloqueo (ALTA PRIORIDAD)
+    // Triggers de bloqueo (MEDIA PRIORIDAD - menor que activate-step-by-step)
     // ⚠️ CRÍTICO: Usar solo patterns para evitar falsos positivos (ej: "subnav" contiene "no")
+    // ⚠️ CRÍTICO: Prioridad "medium" para que no sobrescriba "activate-step-by-step" (high)
     {
       keywords: [], // Vacío - solo usar patterns
       patterns: [
@@ -117,7 +118,7 @@ export class KeywordTriggerSystem {
         /\bno\s+implementes/i, // "no implementes"
         /\bno\s+implemente/i, // "no implemente"
       ],
-      priority: 'high',
+      priority: 'medium', // ⚠️ Cambiado de 'high' a 'medium' para que no sobrescriba activate-step-by-step
       action: 'block-implementation',
     },
   ];
