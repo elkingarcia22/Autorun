@@ -26,14 +26,18 @@ export async function autorunVerify(
   input: AutorunVerifyInput | any
 ): Promise<AutorunVerifyOutput> {
   console.log(`\n✅ [Autorun MCP] autorun.verify() llamado`);
-  console.log(`   🔍 [DEBUG] input.targetFiles tipo: ${typeof input.targetFiles}`);
-  console.log(`   🔍 [DEBUG] input.targetFiles valor: ${JSON.stringify(input.targetFiles)}`);
+  console.log(
+    `   🔍 [DEBUG] input.targetFiles tipo: ${typeof input.targetFiles}`
+  );
+  console.log(
+    `   🔍 [DEBUG] input.targetFiles valor: ${JSON.stringify(input.targetFiles)}`
+  );
   console.log(`   🔍 [DEBUG] Es array?: ${Array.isArray(input.targetFiles)}`);
 
   // ⚠️ FIX: Manejar caso donde targetFiles viene como array ['diff'] en lugar de string 'diff'
   // También manejar caso donde viene directamente como string 'diff'
   let targetFiles: string[] | 'diff';
-  
+
   try {
     if (typeof input.targetFiles === 'string' && input.targetFiles === 'diff') {
       targetFiles = 'diff';
@@ -48,7 +52,9 @@ export async function autorunVerify(
       targetFiles = [];
     }
   } catch (error: any) {
-    console.error(`   ❌ [DEBUG] Error procesando targetFiles: ${error.message}`);
+    console.error(
+      `   ❌ [DEBUG] Error procesando targetFiles: ${error.message}`
+    );
     // Si hay error, intentar usar directamente
     targetFiles = input.targetFiles || [];
   }
