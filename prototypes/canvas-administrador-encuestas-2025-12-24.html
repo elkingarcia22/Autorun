@@ -1227,12 +1227,75 @@
                                         debugLayout();
                                     }, 300);
                                 });
+                                
+                                // ========================================
+                                // INICIALIZAR TABS DE ENCUESTAS
+                                // ========================================
+                                initEncuestasTabs();
                             }, 200); // Delay mínimo solo para asegurar que el DOM esté listo
                         });
                     }
                 }, 100);
             });
         });
+        
+        // ========================================
+        // FUNCIÓN PARA INICIALIZAR TABS DE ENCUESTAS
+        // ========================================
+        function initEncuestasTabs() {
+            const currentModule = document.body.getAttribute('data-module');
+            if (currentModule !== 'encuestas') {
+                return; // Solo inicializar en módulo encuestas
+            }
+            
+            const container = document.getElementById('encuestas-tabs-container');
+            if (!container) {
+                console.warn('⚠️ [Encuestas Tabs] Contenedor no encontrado');
+                return;
+            }
+            
+            // Verificar si ya están inicializados
+            const existingTabs = container.querySelector('.ubits-tabs');
+            if (existingTabs) {
+                console.log('✅ [Encuestas Tabs] Tabs ya inicializados');
+                return;
+            }
+            
+            // Verificar que createTabs esté disponible
+            if (typeof window.createTabs !== 'function') {
+                console.warn('⚠️ [Encuestas Tabs] window.createTabs no está disponible, reintentando...');
+                setTimeout(initEncuestasTabs, 200);
+                return;
+            }
+            
+            // Crear tabs
+            try {
+                console.log('🔵 [Encuestas Tabs] Inicializando tabs...');
+                window.createTabs({
+                    tabs: [
+                        { 
+                            id: 'lista-encuestas', 
+                            label: 'Lista de encuestas', 
+                            icon: 'clipboard-list' 
+                        },
+                        { 
+                            id: 'datos-demograficos', 
+                            label: 'Datos demográficos', 
+                            icon: 'chart-pie' 
+                        }
+                    ],
+                    activeTabId: 'lista-encuestas',
+                    onTabChange: (tabId, tabElement) => {
+                        console.log('🔵 [Encuestas Tabs] Tab cambiado:', tabId);
+                        // Aquí puedes agregar lógica para cambiar el contenido según el tab activo
+                    }
+                }, 'encuestas-tabs-container');
+                
+                console.log('✅ [Encuestas Tabs] Tabs inicializados correctamente');
+            } catch (error) {
+                console.error('❌ [Encuestas Tabs] Error al inicializar tabs:', error);
+            }
+        }
         
         // ⚠️ FUNCIÓN DE DEBUG ESPECÍFICA PARA EL LAYOUT
         function debugLayout() {
