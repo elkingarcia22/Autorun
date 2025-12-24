@@ -383,6 +383,16 @@ export async function startAutorunMCPServer() {
           break;
 
         case 'autorun.verify':
+          // ⚠️ FIX: Normalizar targetFiles antes de pasar a autorunVerify
+          if (args && args.targetFiles) {
+            if (
+              Array.isArray(args.targetFiles) &&
+              args.targetFiles.length === 1 &&
+              args.targetFiles[0] === 'diff'
+            ) {
+              args.targetFiles = 'diff';
+            }
+          }
           result = await autorunVerify(args as any);
           break;
 
