@@ -2181,7 +2181,8 @@ async function autorunApplyModeB(
           );
           // ⚠️ CRÍTICO: NO usar fallback - retornar error en lugar de lanzar
           // NO usar throw porque causa que el servidor MCP se cierre
-          const browserMCPError = `No se pudo extraer código desde Storybook. El código se carga dinámicamente y requiere Browser MCP. ` +
+          const browserMCPError =
+            `No se pudo extraer código desde Storybook. El código se carga dinámicamente y requiere Browser MCP. ` +
             `URL de Docs: ${error.docsUrl}. ` +
             `El agente DEBE ejecutar Browser MCP para navegar a Docs y extraer desde el snapshot.`;
           errors.push(browserMCPError);
@@ -2204,7 +2205,8 @@ async function autorunApplyModeB(
           );
           // ⚠️ CRÍTICO: NO usar fallback - retornar error en lugar de lanzar
           // NO usar throw porque causa que el servidor MCP se cierre
-          const browserMCPError = `No se pudo extraer código desde Storybook: ${error.message}. ` +
+          const browserMCPError =
+            `No se pudo extraer código desde Storybook: ${error.message}. ` +
             `El código se carga dinámicamente y requiere Browser MCP. ` +
             `El agente DEBE ejecutar Browser MCP para navegar a Docs y extraer desde el snapshot.`;
           errors.push(browserMCPError);
@@ -2240,7 +2242,8 @@ async function autorunApplyModeB(
 
       // ⚠️ CRÍTICO: NO usar throw porque causa que el servidor MCP se cierre
       // Retornar error en lugar de lanzar
-      const noCodeError = `No se pudo extraer código desde Storybook para ${componentName}. ` +
+      const noCodeError =
+        `No se pudo extraer código desde Storybook para ${componentName}. ` +
         `El código DEBE extraerse desde Storybook usando Browser MCP. ` +
         `URL de Docs: ${docsUrl}. ` +
         `El agente DEBE: 1) Navegar a Docs, 2) Esperar 2 segundos, 3) Tomar snapshot, 4) Extraer HTML desde snapshot.`;
