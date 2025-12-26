@@ -66,6 +66,10 @@ export async function autorunApply(
   console.log(`🚀 [Autorun MCP] autorun.apply() llamado`);
   console.log(`🚀 [Autorun MCP] Timestamp: ${new Date().toISOString()}`);
   console.log(`   Mensaje: ${input.message.substring(0, 100)}...`);
+  console.log(
+    `   🔍 [DEBUG] Input completo:`,
+    JSON.stringify(input, null, 2).substring(0, 500)
+  );
   // ⚠️ FIX: Verificar que targetFiles es array antes de usar .join()
   const targetFilesDisplay =
     input.targetFiles && Array.isArray(input.targetFiles)
@@ -1995,10 +1999,55 @@ async function autorunApplyModeB(
     // Si no se encontró en documentación, intentar desde Storybook
     if (!htmlFromDocs?.found) {
       try {
-        const exactCode = await extractExactCodeFromStorybookWithBrowser(
-          componentId,
-          storyName
-        );
+        // ⚠️ CRÍTICO: Envolver en try-catch adicional para capturar TODOS los errores
+        // incluso si extractExactCodeFromStorybookWithBrowser lanza errores internos
+        let exactCode: any = null;
+        try {
+          exactCode = await extractExactCodeFromStorybookWithBrowser(
+            componentId,
+            storyName
+          );
+        } catch (extractError: any) {
+          // ⚠️ CRÍTICO: Capturar el error ANTES de que cierre el servidor MCP
+          console.error(
+            `   ❌ Error en extractExactCodeFromStorybookWithBrowser: ${extractError.message}`
+          );
+
+          // Verificar si es un error de Browser MCP Required
+          const { isBrowserMCPRequiredError } = await import(
+            '../../helpers/browserMCPAutoExtractor.js'
+          );
+
+          if (isBrowserMCPRequiredError(extractError)) {
+            console.error(
+              `   ⚠️ CAUSA: Storybook carga el código dinámicamente con JavaScript`
+            );
+            console.error(
+              `   💡 SOLUCIÓN: Necesitamos usar Browser MCP para navegar y extraer desde el snapshot`
+            );
+            console.error(`   📋 URL: ${extractError.docsUrl}`);
+            console.error(`   📋 Historia: ${extractError.storyName}`);
+
+            const browserMCPError =
+              `No se pudo extraer código desde Storybook. El código se carga dinámicamente y requiere Browser MCP. ` +
+              `URL de Docs: ${extractError.docsUrl}. ` +
+              `El agente DEBE ejecutar Browser MCP para navegar a Docs y extraer desde el snapshot.`;
+            errors.push(browserMCPError);
+            codeToInsert = '';
+            componentExists = false;
+            // NO lanzar el error - continuar para que el catch externo maneje el flujo
+            exactCode = null;
+          } else {
+            // Para otros errores, también agregar a errors pero no lanzar
+            const genericError = `Error extrayendo código desde Storybook: ${extractError.message}`;
+            errors.push(genericError);
+            codeToInsert = '';
+            componentExists = false;
+            exactCode = null;
+          }
+        }
+
+        // Solo procesar si tenemos código válido
         if (exactCode && exactCode.html) {
           codeToInsert = exactCode.html;
           componentExists = true;
@@ -2159,66 +2208,26 @@ async function autorunApplyModeB(
             );
             // No bloquear, solo advertir
           }
+        } else {
+          // Si no hay código válido, ya fue manejado en el catch interno
+          console.log(
+            `   ⚠️ No se pudo extraer código desde Storybook (ya manejado en catch interno)`
+          );
         }
       } catch (error: any) {
-        // ⚠️ NUEVO: Detectar si el error requiere Browser MCP
-        const { isBrowserMCPRequiredError } = await import(
-          '../../helpers/browserMCPAutoExtractor.js'
+        // ⚠️ CRÍTICO: Este catch es una capa adicional de seguridad
+        // Solo debería ejecutarse si hay un error inesperado que no fue capturado por el catch interno
+        // La mayoría de los errores ya deberían estar manejados en el catch interno
+        console.error(
+          `   ❌ ERROR INESPERADO en bloque try externo (no debería ocurrir): ${error.message}`
         );
+        console.error(`   📋 Stack: ${error.stack}`);
 
-        if (isBrowserMCPRequiredError(error)) {
-          console.error(
-            `   ❌ Error extrayendo código desde Storybook: ${error.message}`
-          );
-          console.error(
-            `   ⚠️ CAUSA: Storybook carga el código dinámicamente con JavaScript`
-          );
-          console.error(
-            `   💡 SOLUCIÓN: Necesitamos usar Browser MCP para navegar y extraer desde el snapshot`
-          );
-          console.error(`   📋 URL: ${error.docsUrl}`);
-          console.error(`   📋 Historia: ${error.storyName}`);
-          console.error(
-            `   ⚠️ CRÍTICO: El agente DEBE ejecutar Browser MCP para extraer el código`
-          );
-          console.error(
-            `   ❌ DETENIÉNDOSE: No se usará fallback. El código DEBE extraerse desde Storybook.`
-          );
-          // ⚠️ CRÍTICO: NO usar fallback - retornar error en lugar de lanzar
-          // NO usar throw porque causa que el servidor MCP se cierre
-          const browserMCPError =
-            `No se pudo extraer código desde Storybook. El código se carga dinámicamente y requiere Browser MCP. ` +
-            `URL de Docs: ${error.docsUrl}. ` +
-            `El agente DEBE ejecutar Browser MCP para navegar a Docs y extraer desde el snapshot.`;
-          errors.push(browserMCPError);
-          // Continuar sin código - el catch final manejará el error
-          codeToInsert = '';
-          componentExists = false;
-        } else {
-          console.error(
-            `   ❌ Error extrayendo código desde Storybook: ${error.message}`
-          );
-          console.error(`   📋 Stack trace: ${error.stack}`);
-          console.error(
-            `   ⚠️ CAUSA PROBABLE: Storybook carga el código dinámicamente con JavaScript, por lo que fetch() no puede obtenerlo`
-          );
-          console.error(
-            `   💡 SOLUCIÓN: Necesitamos usar Browser MCP para navegar y extraer desde el snapshot`
-          );
-          console.error(
-            `   ❌ DETENIÉNDOSE: No se usará fallback. El código DEBE extraerse desde Storybook.`
-          );
-          // ⚠️ CRÍTICO: NO usar fallback - retornar error en lugar de lanzar
-          // NO usar throw porque causa que el servidor MCP se cierre
-          const browserMCPError =
-            `No se pudo extraer código desde Storybook: ${error.message}. ` +
-            `El código se carga dinámicamente y requiere Browser MCP. ` +
-            `El agente DEBE ejecutar Browser MCP para navegar a Docs y extraer desde el snapshot.`;
-          errors.push(browserMCPError);
-          // Continuar sin código - el catch final manejará el error
-          codeToInsert = '';
-          componentExists = false;
-        }
+        // Agregar error pero NO lanzar - solo registrar
+        const unexpectedError = `Error inesperado extrayendo código: ${error.message}`;
+        errors.push(unexpectedError);
+        codeToInsert = '';
+        componentExists = false;
       }
     }
 
