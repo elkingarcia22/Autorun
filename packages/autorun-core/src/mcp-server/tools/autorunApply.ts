@@ -2119,7 +2119,7 @@ async function autorunApplyModeB(
           }
         }
       } catch (error: any) {
-      // ⚠️ NUEVO: Detectar si el error requiere Browser MCP
+        // ⚠️ NUEVO: Detectar si el error requiere Browser MCP
       const { isBrowserMCPRequiredError } = await import(
         '../../helpers/browserMCPAutoExtractor.js'
       );
