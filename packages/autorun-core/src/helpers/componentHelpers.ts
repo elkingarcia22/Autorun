@@ -363,7 +363,7 @@ export async function extractHTMLFromDocumentation(
       if (genericMatches.length > 0) {
         // Buscar el bloque que parece HTML (contiene <div, <button, etc.)
         for (const match of genericMatches) {
-          const code = match[1].trim();
+          const code = (match as RegExpMatchArray)[1].trim();
           if (
             code.includes('<div') ||
             code.includes('<button') ||
@@ -400,7 +400,7 @@ export async function extractHTMLFromDocumentation(
     }
 
     // 5. Usar el primer bloque HTML encontrado
-    const firstHTML = htmlMatches[0][1].trim();
+    const firstHTML = (htmlMatches[0] as RegExpMatchArray)[1].trim();
     console.log(
       `✅ [HTML Extractor] HTML extraído desde documentación de: ${componentName}`
     );
