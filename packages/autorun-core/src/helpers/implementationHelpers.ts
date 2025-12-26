@@ -226,6 +226,20 @@ export function detectComponentFromMessage(message: string): string | null {
       component: 'Button',
       priority: 6,
     },
+    // ⚠️ NUEVO: Detección de Avatar
+    {
+      pattern: new RegExp(
+        `${ACTION_VERBS_PATTERN}.*(?:avatar|foto\\s+de\\s+perfil|imagen\\s+de\\s+usuario)`,
+        'i'
+      ),
+      component: 'Avatar',
+      priority: 7,
+    },
+    {
+      pattern: /\bavatar\b/i,
+      component: 'Avatar',
+      priority: 6,
+    },
     // ⚠️ MEJORADO: Detección de Modal con más patrones
     {
       pattern: new RegExp(
@@ -376,6 +390,20 @@ export function detectComponentFromMessage(message: string): string | null {
       component: 'Pagination',
       priority: 6,
     },
+    // ⚠️ NUEVO: Detección de List (lista de elementos)
+    {
+      pattern: new RegExp(
+        `${ACTION_VERBS_PATTERN}.*(?:lista|list)(?!.*tabla)(?!.*encuestas)`,
+        'i'
+      ),
+      component: 'List',
+      priority: 7,
+    },
+    {
+      pattern: /\blist\b(?!.*tabla)(?!.*encuestas)/i,
+      component: 'List',
+      priority: 6,
+    },
     // ⚠️ NUEVO: Detección de FileUpload
     {
       pattern: new RegExp(
@@ -501,6 +529,54 @@ export function detectComponentFromMessage(message: string): string | null {
       pattern: /\brating\b/i,
       component: 'Rating',
       priority: 6,
+    },
+    // ⚠️ NUEVO: Detección de EmptyState
+    {
+      pattern: new RegExp(
+        `${ACTION_VERBS_PATTERN}.*(?:empty\\s+state|emptystate|estado\\s+vac[ií]o|sin\\s+datos)`,
+        'i'
+      ),
+      component: 'EmptyState',
+      priority: 7,
+    },
+    {
+      pattern: /\bempty\s+state\b|\bemptystate\b|\bestado\s+vac[ií]o\b/i,
+      component: 'EmptyState',
+      priority: 6,
+    },
+    // ⚠️ CRÍTICO: Carousel DEBE estar ANTES de SelectionCard para evitar falsos positivos
+    // porque "carousel" puede aparecer en otros contextos pero debe tener prioridad
+    {
+      pattern: new RegExp(
+        `${ACTION_VERBS_PATTERN}.*(?:carousel|carrusel)`,
+        'i'
+      ),
+      component: 'Carousel',
+      priority: 12, // Mayor prioridad que SelectionCard
+    },
+    {
+      pattern: /\bcarousel\b.*(?:debajo|abajo|bajo|después)/i, // "carousel debajo de la selection card"
+      component: 'Carousel',
+      priority: 12,
+    },
+    {
+      pattern: /\bcarrusel\b/i,
+      component: 'Carousel',
+      priority: 11,
+    },
+    // ⚠️ NUEVO: Detección de SelectionCard
+    {
+      pattern: new RegExp(
+        `${ACTION_VERBS_PATTERN}.*(?:selection\\s+card|tarjeta\\s+de\\s+selecci[oó]n|selectioncard)`,
+        'i'
+      ),
+      component: 'SelectionCard',
+      priority: 8,
+    },
+    {
+      pattern: /\bselection\s+card\b|\bselectioncard\b/i,
+      component: 'SelectionCard',
+      priority: 7,
     },
     // ⚠️ REMOVIDO: Pattern duplicado de Tabs (ya está arriba con mayor prioridad)
     {
