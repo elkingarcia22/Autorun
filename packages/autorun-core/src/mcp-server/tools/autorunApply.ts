@@ -1904,13 +1904,14 @@ async function autorunApplyModeB(
     }
 
     // ⭐ NUEVO: Intentar extraer HTML desde documentación PRIMERO (más confiable)
-    let htmlFromDocs: { html: string; found: boolean; source: string } | null = null;
+    let htmlFromDocs: { html: string; found: boolean; source: string } | null =
+      null;
     try {
       const { extractHTMLFromDocumentation } = await import(
         '../../helpers/componentHelpers.js'
       );
       htmlFromDocs = await extractHTMLFromDocumentation(componentName);
-      
+
       if (htmlFromDocs.found && htmlFromDocs.html) {
         codeToInsert = htmlFromDocs.html;
         componentExists = true;
@@ -1920,9 +1921,11 @@ async function autorunApplyModeB(
         console.log(
           `   📚 Fuente: ${htmlFromDocs.source} (docs/referencia/componentes/${mapComponentNameToDocFile(componentName)}.md)`
         );
-        
+
         // ✅ MEJORA 2: Sanitizar código extraído para hardcoded colors
-        console.log(`   [5.1] Sanitizando código extraído desde documentación...`);
+        console.log(
+          `   [5.1] Sanitizando código extraído desde documentación...`
+        );
         const { sanitizeCodeFromStorybook } = await import(
           '../../helpers/codeSanitizer.js'
         );
@@ -2063,7 +2066,8 @@ async function autorunApplyModeB(
               if (umdUrl) {
                 const separator = umdUrl.includes('?') ? '&' : '?';
                 const bypassToken =
-                  activeConfig.bypassToken || 'dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT';
+                  activeConfig.bypassToken ||
+                  'dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT';
                 const bypassParams = `x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=${bypassToken}`;
                 const scriptTag = `    <script src="${umdUrl}${separator}${bypassParams}"></script>`;
 
@@ -2120,43 +2124,44 @@ async function autorunApplyModeB(
         }
       } catch (error: any) {
         // ⚠️ NUEVO: Detectar si el error requiere Browser MCP
-      const { isBrowserMCPRequiredError } = await import(
-        '../../helpers/browserMCPAutoExtractor.js'
-      );
+        const { isBrowserMCPRequiredError } = await import(
+          '../../helpers/browserMCPAutoExtractor.js'
+        );
 
-      if (isBrowserMCPRequiredError(error)) {
-        console.error(
-          `   ❌ Error extrayendo código desde Storybook: ${error.message}`
-        );
-        console.error(
-          `   ⚠️ CAUSA: Storybook carga el código dinámicamente con JavaScript`
-        );
-        console.error(
-          `   💡 SOLUCIÓN: Necesitamos usar Browser MCP para navegar y extraer desde el snapshot`
-        );
-        console.error(`   📋 URL: ${error.docsUrl}`);
-        console.error(`   📋 Historia: ${error.storyName}`);
-        console.error(
-          `   ⚠️ CRÍTICO: El agente DEBE ejecutar Browser MCP para extraer el código`
-        );
-        console.error(
-          `   📦 Usando PrototypeTokenKit como fallback temporal...`
-        );
-        console.error(
-          `   ⚠️ ADVERTENCIA: El código generado será genérico, no el código real del componente`
-        );
-      } else {
-        console.error(
-          `   ❌ Error extrayendo código desde Storybook: ${error.message}`
-        );
-        console.error(`   📋 Stack trace: ${error.stack}`);
-        console.error(
-          `   ⚠️ CAUSA PROBABLE: Storybook carga el código dinámicamente con JavaScript, por lo que fetch() no puede obtenerlo`
-        );
-        console.error(
-          `   💡 SOLUCIÓN: Necesitamos usar Browser MCP para navegar y extraer desde el snapshot`
-        );
-        console.log(`   📦 Usando PrototypeTokenKit como fallback...`);
+        if (isBrowserMCPRequiredError(error)) {
+          console.error(
+            `   ❌ Error extrayendo código desde Storybook: ${error.message}`
+          );
+          console.error(
+            `   ⚠️ CAUSA: Storybook carga el código dinámicamente con JavaScript`
+          );
+          console.error(
+            `   💡 SOLUCIÓN: Necesitamos usar Browser MCP para navegar y extraer desde el snapshot`
+          );
+          console.error(`   📋 URL: ${error.docsUrl}`);
+          console.error(`   📋 Historia: ${error.storyName}`);
+          console.error(
+            `   ⚠️ CRÍTICO: El agente DEBE ejecutar Browser MCP para extraer el código`
+          );
+          console.error(
+            `   📦 Usando PrototypeTokenKit como fallback temporal...`
+          );
+          console.error(
+            `   ⚠️ ADVERTENCIA: El código generado será genérico, no el código real del componente`
+          );
+        } else {
+          console.error(
+            `   ❌ Error extrayendo código desde Storybook: ${error.message}`
+          );
+          console.error(`   📋 Stack trace: ${error.stack}`);
+          console.error(
+            `   ⚠️ CAUSA PROBABLE: Storybook carga el código dinámicamente con JavaScript, por lo que fetch() no puede obtenerlo`
+          );
+          console.error(
+            `   💡 SOLUCIÓN: Necesitamos usar Browser MCP para navegar y extraer desde el snapshot`
+          );
+          console.log(`   📦 Usando PrototypeTokenKit como fallback...`);
+        }
       }
     }
 
