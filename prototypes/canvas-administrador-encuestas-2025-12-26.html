@@ -755,6 +755,58 @@
                 return; // Solo interceptar en módulo encuestas
             }
             
+            // ========================================
+            // FUNCIÓN HELPER: Inicializar Tabs para módulo encuestas
+            // ========================================
+            const initEncuestasTabs = () => {
+                const tabsContainer = document.getElementById('tabs-implementation-container');
+                if (!tabsContainer) {
+                    console.warn('⚠️ [Tabs] Contenedor #tabs-implementation-container no encontrado');
+                    return false;
+                }
+                
+                // Verificar si los tabs ya están inicializados
+                const existingTabs = tabsContainer.querySelector('.ubits-tabs');
+                if (existingTabs) {
+                    console.log('✅ [Tabs] Tabs ya están inicializados');
+                    return true;
+                }
+                
+                if (!window.createTabs) {
+                    console.warn('⚠️ [Tabs] window.createTabs no está disponible aún');
+                    return false;
+                }
+                
+                try {
+                    window.createTabs({
+                        tabs: [
+                            {
+                                id: 'tab-lista-encuestas',
+                                label: 'Lista de encuestas',
+                                icon: 'list',
+                                active: true
+                            },
+                            {
+                                id: 'tab-datos-demograficos',
+                                label: 'Datos demográficos',
+                                icon: 'chart-bar',
+                                active: false
+                            }
+                        ],
+                        activeTabId: 'tab-lista-encuestas',
+                        onTabChange: (tabId, tabElement) => {
+                            console.log('🔵 [Tabs] Tab cambiado:', tabId);
+                            // Aquí puedes actualizar el contenido según el tab seleccionado
+                        }
+                    }, 'tabs-implementation-container');
+                    console.log('✅ [Tabs] Tabs inicializados correctamente');
+                    return true;
+                } catch (error) {
+                    console.error('❌ [Tabs] Error al inicializar tabs:', error);
+                    return false;
+                }
+            };
+            
             function interceptContentManagerImmediately() {
                 if (!window.UBITS_ContentManager) {
                     // Si ContentManager aún no existe, esperar
