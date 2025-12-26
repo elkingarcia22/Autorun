@@ -1244,23 +1244,22 @@
                                 // ========================================
                                 // INICIALIZAR TABS (solo para módulo encuestas)
                                 // ========================================
-                                if (initialSection === 'encuestas' && window.UBITS && window.UBITS.Tabs) {
+                                if (initialSection === 'encuestas' && window.createTabs) {
                                     const tabsContainer = document.getElementById('tabs-implementation-container');
                                     if (tabsContainer) {
                                         try {
-                                            window.UBITS.Tabs.create({
-                                                containerId: 'tabs-implementation-container',
+                                            window.createTabs({
                                                 tabs: [
                                                     {
                                                         id: 'tab-lista-encuestas',
                                                         label: 'Lista de encuestas',
-                                                        icon: 'far fa-list',
+                                                        icon: 'list',
                                                         active: true
                                                     },
                                                     {
                                                         id: 'tab-datos-demograficos',
                                                         label: 'Datos demográficos',
-                                                        icon: 'far fa-chart-bar',
+                                                        icon: 'chart-bar',
                                                         active: false
                                                     }
                                                 ],
@@ -1269,11 +1268,47 @@
                                                     console.log('🔵 [Tabs] Tab cambiado:', tabId);
                                                     // Aquí puedes actualizar el contenido según el tab seleccionado
                                                 }
-                                            });
+                                            }, 'tabs-implementation-container');
                                             console.log('✅ [Tabs] Tabs inicializados correctamente');
                                         } catch (error) {
                                             console.error('❌ [Tabs] Error al inicializar tabs:', error);
                                         }
+                                    } else if (!window.createTabs) {
+                                        console.warn('⚠️ [Tabs] window.createTabs no está disponible aún, esperando...');
+                                        // Reintentar después de que components-loader.js se cargue
+                                        let retries = 0;
+                                        const checkCreateTabs = setInterval(() => {
+                                            retries++;
+                                            if (window.createTabs) {
+                                                clearInterval(checkCreateTabs);
+                                                const tabsContainer = document.getElementById('tabs-implementation-container');
+                                                if (tabsContainer) {
+                                                    window.createTabs({
+                                                        tabs: [
+                                                            {
+                                                                id: 'tab-lista-encuestas',
+                                                                label: 'Lista de encuestas',
+                                                                icon: 'list',
+                                                                active: true
+                                                            },
+                                                            {
+                                                                id: 'tab-datos-demograficos',
+                                                                label: 'Datos demográficos',
+                                                                icon: 'chart-bar',
+                                                                active: false
+                                                            }
+                                                        ],
+                                                        activeTabId: 'tab-lista-encuestas',
+                                                        onTabChange: (tabId, tabElement) => {
+                                                            console.log('🔵 [Tabs] Tab cambiado:', tabId);
+                                                        }
+                                                    }, 'tabs-implementation-container');
+                                                }
+                                            } else if (retries > 20) {
+                                                clearInterval(checkCreateTabs);
+                                                console.error('❌ [Tabs] window.createTabs no se cargó después de 10 segundos');
+                                            }
+                                        }, 500);
                                     }
                                 }
                                 
