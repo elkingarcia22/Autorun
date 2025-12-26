@@ -2240,9 +2240,9 @@ async function autorunApplyModeB(
       );
     }
     
-    // ⚠️ CÓDIGO COMENTADO: NO usar fallback genérico
+    // ⚠️ CÓDIGO COMENTADO: NO usar fallback genérico - el código DEBE extraerse desde Storybook
     /*
-    // ✅ 6. Si no existe, generar widget tokenizado
+    // ✅ 6. Si no existe, generar widget tokenizado (DESHABILITADO - NO usar fallback)
     if (!componentExists) {
       // ⚠️ CRÍTICO: Verificar que el registro esté inicializado antes de usarlo
       if (!tokenRegistry || tokenRegistry.getAll().length === 0) {
