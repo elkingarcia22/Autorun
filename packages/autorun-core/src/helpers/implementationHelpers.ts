@@ -393,14 +393,15 @@ export function detectComponentFromMessage(message: string): string | null {
     // ⚠️ NUEVO: Detección de List (lista de elementos)
     {
       pattern: new RegExp(
-        `${ACTION_VERBS_PATTERN}.*(?:lista|list)(?!.*tabla)(?!.*encuestas)`,
+        `${ACTION_VERBS_PATTERN}.*(?:lista|list)(?!.*tabla)(?!.*encuestas)(?!.*data\\s*table)`,
         'i'
       ),
       component: 'List',
       priority: 7,
     },
     {
-      pattern: /\blist\b(?!.*tabla)(?!.*encuestas)/i,
+      pattern:
+        /\b(?:componente\s+)?list\b(?!.*tabla)(?!.*encuestas)(?!.*data\s*table)/i,
       component: 'List',
       priority: 6,
     },
