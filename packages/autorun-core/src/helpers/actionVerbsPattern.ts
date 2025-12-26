@@ -36,6 +36,8 @@ export const ACTION_VERBS_PATTERN =
   'instalar|instala|instalo|instalé|instalando|instalamos|' +
   // Insertar
   'insertar|inserta|inserto|inserté|insertando|insertamos|' +
+  // Extraer
+  'extraer|extrae|extraigo|extraje|extrayendo|extraemos|' +
   // Necesitar
   'necesito|necesita|necesitamos|necesitan|' +
   // Querer
@@ -51,6 +53,8 @@ export const ACTION_VERBS_PATTERN =
   'add|adds|adding|added|' +
   // Insert
   'insert|inserts|inserting|inserted|' +
+  // Extract
+  'extract|extracts|extracting|extracted|' +
   // Place
   'place|places|placing|placed|' +
   // Make
