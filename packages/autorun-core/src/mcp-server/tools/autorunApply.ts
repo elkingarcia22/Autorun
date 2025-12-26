@@ -2314,9 +2314,23 @@ async function autorunApplyModeB(
         console.error(
           `   💡 SOLUCIÓN: El código debe extraerse desde Storybook usando Browser MCP`
         );
-        throw new Error(
-          `No se puede generar widget genérico para componente UBITS: ${componentName}. El código debe extraerse desde Storybook.`
-        );
+        // ⚠️ CRÍTICO: NO usar throw porque causa que el servidor MCP se cierre
+        // Retornar error en lugar de lanzar
+        const ubitsError = `No se puede generar widget genérico para componente UBITS: ${componentName}. El código debe extraerse desde Storybook.`;
+        errors.push(ubitsError);
+        // Retornar error en lugar de lanzar
+        return {
+          success: false,
+          filesWritten: [],
+          verification: {
+            preImplementation: false,
+            postImplementation: false,
+            errors: [ubitsError],
+            warnings: [],
+          },
+          components: [],
+          errors: [ubitsError],
+        };
       } else if (
         input.message.toLowerCase().includes('kpi') &&
         !input.message.toLowerCase().includes('card')
