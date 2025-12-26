@@ -1920,6 +1920,30 @@ async function autorunApplyModeB(
         console.log(
           `   📚 Fuente: ${htmlFromDocs.source} (docs/referencia/componentes/${mapComponentNameToDocFile(componentName)}.md)`
         );
+        
+        // ✅ MEJORA 2: Sanitizar código extraído para hardcoded colors
+        console.log(`   [5.1] Sanitizando código extraído desde documentación...`);
+        const { sanitizeCodeFromStorybook } = await import(
+          '../../helpers/codeSanitizer.js'
+        );
+        const sanitizeResult = await sanitizeCodeFromStorybook(
+          codeToInsert,
+          tokenRegistry
+        );
+
+        if (sanitizeResult.replaced > 0) {
+          console.log(
+            `   ✅ Sanitizado: ${sanitizeResult.replaced} colores reemplazados con tokens`
+          );
+          codeToInsert = sanitizeResult.sanitized;
+        }
+
+        if (sanitizeResult.errors.length > 0) {
+          console.error(
+            `   ❌ Errores en sanitización: ${sanitizeResult.errors.join(', ')}`
+          );
+          errors.push(...sanitizeResult.errors);
+        }
       }
     } catch (error: any) {
       console.warn(
