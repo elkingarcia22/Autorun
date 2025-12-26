@@ -43,7 +43,6 @@
     <link rel="stylesheet" href="https://ubits-storybook10.vercel.app/components/tooltip/src/styles/tooltip.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
     <link rel="stylesheet" href="https://ubits-storybook10.vercel.app/components/spinner/src/styles/spinner.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
     <link rel="stylesheet" href="https://ubits-storybook10.vercel.app/components/calendar/src/styles/calendar.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
-    <link rel="stylesheet" href="https://ubits-storybook10.vercel.app/components/tabs/src/styles/tabs.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
     <link rel="stylesheet" href="https://ubits-storybook10.vercel.app/components/segment-control/src/styles/segment-control.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
     <link rel="stylesheet" href="https://ubits-storybook10.vercel.app/components/breadcrumb/src/styles/breadcrumb.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
     <link rel="stylesheet" href="https://ubits-storybook10.vercel.app/components/stepper/src/styles/stepper.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
@@ -719,11 +718,25 @@
 
         <!-- Main Content -->
         <main class="main-content">
+<!-- AUTORUN:ANCHOR:CONTENT -->
+<!-- AUTORUN: {"v":2,"mode":"prototypeTokens","components":[],"widgets":["formularios-file-upload"],"deps":[],"storybookId":"formularios-file-upload","hash":"182b5565803adc30"} -->
+<div class="ubits-simple-card" style="
+  background: var(--ubits-bg-1);
+  border: 1px solid var(--ubits-border-1);
+  border-radius: var(--ubits-border-radius-md);
+  padding: var(--ubits-spacing-md);
+">
+  <h3 style="
+    color: var(--ubits-fg-1-high);
+    font-size: 18px;
+    margin-bottom: var(--ubits-spacing-md);
+  ">FileUpload</h3>
+  <div><p>Contenido de FileUpload</p></div>
+</div>
+<!-- /AUTORUN -->
+
             <!-- Top Navigation -->
             <div id="top-nav-container"></div>
-            
-            <!-- Tabs Container (debajo del SubNav) -->
-            <div id="tabs-implementation-container"></div>
             
             <!-- Content Area -->
             <div class="content-area">
@@ -754,58 +767,6 @@
             if (currentModule !== 'encuestas') {
                 return; // Solo interceptar en módulo encuestas
             }
-            
-            // ========================================
-            // FUNCIÓN HELPER: Inicializar Tabs para módulo encuestas
-            // ========================================
-            const initEncuestasTabs = () => {
-                const tabsContainer = document.getElementById('tabs-implementation-container');
-                if (!tabsContainer) {
-                    console.warn('⚠️ [Tabs] Contenedor #tabs-implementation-container no encontrado');
-                    return false;
-                }
-                
-                // Verificar si los tabs ya están inicializados
-                const existingTabs = tabsContainer.querySelector('.ubits-tabs');
-                if (existingTabs) {
-                    console.log('✅ [Tabs] Tabs ya están inicializados');
-                    return true;
-                }
-                
-                if (!window.createTabs) {
-                    console.warn('⚠️ [Tabs] window.createTabs no está disponible aún');
-                    return false;
-                }
-                
-                try {
-                    window.createTabs({
-                        tabs: [
-                            {
-                                id: 'tab-lista-encuestas',
-                                label: 'Lista de encuestas',
-                                icon: 'list',
-                                active: true
-                            },
-                            {
-                                id: 'tab-datos-demograficos',
-                                label: 'Datos demográficos',
-                                icon: 'chart-bar',
-                                active: false
-                            }
-                        ],
-                        activeTabId: 'tab-lista-encuestas',
-                        onTabChange: (tabId, tabElement) => {
-                            console.log('🔵 [Tabs] Tab cambiado:', tabId);
-                            // Aquí puedes actualizar el contenido según el tab seleccionado
-                        }
-                    }, 'tabs-implementation-container');
-                    console.log('✅ [Tabs] Tabs inicializados correctamente');
-                    return true;
-                } catch (error) {
-                    console.error('❌ [Tabs] Error al inicializar tabs:', error);
-                    return false;
-                }
-            };
             
             function interceptContentManagerImmediately() {
                 if (!window.UBITS_ContentManager) {
@@ -876,24 +837,6 @@
                             widgetPrincipal.closest('.section-single')?.remove() || widgetPrincipal.remove();
                         }
                         
-                        // ========================================
-                        // INICIALIZAR TABS (después de que el contenido se actualice)
-                        // ========================================
-                        setTimeout(() => {
-                            if (!initEncuestasTabs()) {
-                                // Reintentar si no se pudo inicializar (window.createTabs no está disponible aún)
-                                let retries = 0;
-                                const retryInterval = setInterval(() => {
-                                    retries++;
-                                    if (initEncuestasTabs()) {
-                                        clearInterval(retryInterval);
-                                    } else if (retries >= 10) {
-                                        clearInterval(retryInterval);
-                                        console.error('❌ [Tabs] window.createTabs no se cargó después de 5 segundos');
-                                    }
-                                }, 500);
-                            }
-                        }, 100);
                     });
                     
                     return result;
@@ -1245,25 +1188,6 @@
                                 // El ContentManager actualizará el SubNav y el contenido automáticamente
                                 // El botón ya está activo gracias a initialActiveSection, no necesitamos activarlo de nuevo
                                 window.UBITS_ContentManager.handleSectionChange(initialSection);
-                                
-                                // ========================================
-                                // INICIALIZAR TABS (solo para módulo encuestas)
-                                // ========================================
-                                if (initialSection === 'encuestas') {
-                                    if (!initEncuestasTabs()) {
-                                        // Reintentar después de que components-loader.js se cargue
-                                        let retries = 0;
-                                        const checkCreateTabs = setInterval(() => {
-                                            retries++;
-                                            if (initEncuestasTabs()) {
-                                                clearInterval(checkCreateTabs);
-                                            } else if (retries > 20) {
-                                                clearInterval(checkCreateTabs);
-                                                console.error('❌ [Tabs] window.createTabs no se cargó después de 10 segundos');
-                                            }
-                                        }, 500);
-                                    }
-                                }
                                 
                                 // Asegurar que el tooltip esté oculto y que ningún botón tenga focus
                                 const tooltipElement = document.getElementById('ubits-sidebar-tooltip');
