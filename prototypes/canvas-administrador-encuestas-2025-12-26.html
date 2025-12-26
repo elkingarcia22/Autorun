@@ -2354,5 +2354,38 @@
     })();
   </script>
 <!-- AUTORUN:ANCHOR:SCRIPTS -->
+    <!-- FileUpload Script - Extraído desde Storybook MCP -->
+    <script>
+        (function() {
+            // Esperar a que UBITS esté disponible
+            function initFileUpload() {
+                if (window.UBITS && window.UBITS.FileUpload) {
+                    window.UBITS.FileUpload.create({
+                        containerId: 'fileupload-implementation-container',
+                        state: 'default',
+                        files: [],
+                        maxFiles: 6,
+                        maxSize: 5242880,
+                        dropText: 'Arrastra tus archivos aquí',
+                        selectButtonText: 'Seleccionar archivos',
+                        showIcon: false,
+                        showFileSize: true,
+                        showProgress: true,
+                        showActions: true
+                    });
+                    console.log('✅ [FileUpload] Componente inicializado desde Storybook');
+                } else {
+                    setTimeout(initFileUpload, 100);
+                }
+            }
+            
+            // Inicializar cuando el DOM esté listo
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initFileUpload);
+            } else {
+                initFileUpload();
+            }
+        })();
+    </script>
 </body>
 </html>
