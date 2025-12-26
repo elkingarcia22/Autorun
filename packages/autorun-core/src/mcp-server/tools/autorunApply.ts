@@ -769,7 +769,12 @@ async function autorunApplyStrict(
         storyName
       );
       if (!exactCode || !exactCode.html) {
-        throw new Error('No se pudo extraer código desde Storybook');
+        // ⚠️ CRÍTICO: NO usar throw porque causa que el servidor MCP se cierre
+        // Retornar error en lugar de lanzar
+        const extractionError = 'No se pudo extraer código desde Storybook';
+        errors.push(extractionError);
+        codeToInsert = '';
+        componentExists = false;
       }
       console.log(`   ✅ Código extraído: ${exactCode.html.length} caracteres`);
 
