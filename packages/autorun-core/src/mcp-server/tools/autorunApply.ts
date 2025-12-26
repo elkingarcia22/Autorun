@@ -19,6 +19,7 @@ import { extractExactCodeFromStorybookWithBrowser } from '../../helpers/storyboo
 import { verifyBeforeImplementation } from '../../helpers/preImplementationVerification.js';
 import { analyzeComponentInternals } from '../../helpers/componentInternalAnalysis.js';
 import { mapAndValidateComponentNameToStorybookId } from '../../helpers/storybookStories.js';
+import { mapComponentNameToDocFile } from '../../helpers/componentHelpers.js';
 import {
   combineCodeWithProps,
   validateCompleteStructure,
@@ -65,9 +66,14 @@ export async function autorunApply(
   console.log(`🚀 [Autorun MCP] autorun.apply() llamado`);
   console.log(`🚀 [Autorun MCP] Timestamp: ${new Date().toISOString()}`);
   console.log(`   Mensaje: ${input.message.substring(0, 100)}...`);
-  console.log(
-    `   Archivos objetivo: ${input.targetFiles?.join(', ') || 'auto-detect'}`
-  );
+  // ⚠️ FIX: Verificar que targetFiles es array antes de usar .join()
+  const targetFilesDisplay =
+    input.targetFiles && Array.isArray(input.targetFiles)
+      ? input.targetFiles.join(', ')
+      : input.targetFiles
+        ? String(input.targetFiles)
+        : 'auto-detect';
+  console.log(`   Archivos objetivo: ${targetFilesDisplay}`);
   console.log(`   Opciones:`, JSON.stringify(input.options || {}, null, 2));
   console.log(`🚀 [Autorun MCP] ========================================`);
 
@@ -1690,7 +1696,20 @@ async function autorunApplyModeB(
     // ✅ 3. Cargar GlobalTokenRegistry
     console.log(`   [3] Cargando GlobalTokenRegistry...`);
     const tokenRegistry = await getGlobalTokenRegistry();
-    console.log(`   ✅ ${tokenRegistry.getAll().length} tokens cargados`);
+    // ⚠️ CRÍTICO: Asegurar que el registro esté inicializado
+    await tokenRegistry.initialize();
+    const tokenCount = tokenRegistry.getAll().length;
+    console.log(`   ✅ ${tokenCount} tokens cargados`);
+
+    // ⚠️ ADVERTENCIA: Si no hay tokens, usar fallback o cambiar a Mode A
+    if (tokenCount === 0) {
+      console.warn(
+        `   ⚠️ ADVERTENCIA: No se cargaron tokens. El sistema puede fallar al generar widgets.`
+      );
+      console.warn(
+        `   ⚠️ Considera cambiar a Mode A (strict) o cargar tokens manualmente.`
+      );
+    }
 
     // ✅ 4. Resolver dependencias desde contratos (NO desde Storybook MCP)
     console.log(`   [4] Resolviendo dependencias desde contratos...`);
@@ -1828,6 +1847,7 @@ async function autorunApplyModeB(
       `   [5.0] Consultando Storybook MCP para obtener información completa...`
     );
     let mcpInfo: any = null;
+    let mcpConsulted = false;
     try {
       const { callStorybookMCPTool } = await import(
         '../../helpers/mcpClient.js'
@@ -1838,31 +1858,88 @@ async function autorunApplyModeB(
       const componentName =
         storybookIdToComponentName(componentId) || componentId;
 
+      console.log(
+        `   📡 Intentando consultar Storybook MCP para: ${componentName} (${componentId})`
+      );
+
       mcpInfo = await callStorybookMCPTool('getComponentsProps', {
         componentNames: [componentName],
       });
 
       if (mcpInfo && mcpInfo.components && mcpInfo.components.length > 0) {
+        mcpConsulted = true;
         console.log(`   ✅ Información obtenida desde Storybook MCP`);
         console.log(
           `   📋 Props disponibles: ${mcpInfo.components[0].props?.length || 0}`
         );
+        console.log(
+          `   📋 Componente: ${mcpInfo.components[0].name || componentName}`
+        );
+      } else {
+        console.warn(
+          `   ⚠️ Storybook MCP retornó resultado vacío o sin componentes`
+        );
       }
     } catch (mcpError: any) {
-      console.warn(`   ⚠️ Storybook MCP no disponible: ${mcpError.message}`);
+      console.warn(
+        `   ⚠️ Storybook MCP no disponible desde Node.js: ${mcpError.message}`
+      );
+      console.warn(
+        `   💡 SOLUCIÓN: El agente DEBE consultar Storybook MCP ANTES de llamar autorun.apply()`
+      );
+      console.warn(
+        `   💡 Usar: call_mcp_tool({ server: 'storybook', toolName: 'getComponentsProps', arguments: { componentNames: ['${componentName}'] } })`
+      );
+      console.warn(
+        `   ⚠️ Continuando con extracción de código sin props del MCP...`
+      );
+      // No bloquear - continuar con extracción de código
     }
 
-    try {
-      const exactCode = await extractExactCodeFromStorybookWithBrowser(
-        componentId,
-        storyName
+    // ⚠️ ADVERTENCIA si no se consultó Storybook MCP
+    if (!mcpConsulted) {
+      warnings.push(
+        `Storybook MCP no se pudo consultar desde Node.js. El agente DEBE consultar Storybook MCP ANTES de llamar autorun.apply() usando call_mcp_tool({ server: 'storybook', toolName: 'getComponentsProps', ... }). Se usará extracción de código directa como fallback.`
       );
-      if (exactCode && exactCode.html) {
-        codeToInsert = exactCode.html;
+    }
+
+    // ⭐ NUEVO: Intentar extraer HTML desde documentación PRIMERO (más confiable)
+    let htmlFromDocs: { html: string; found: boolean; source: string } | null = null;
+    try {
+      const { extractHTMLFromDocumentation } = await import(
+        '../../helpers/componentHelpers.js'
+      );
+      htmlFromDocs = await extractHTMLFromDocumentation(componentName);
+      
+      if (htmlFromDocs.found && htmlFromDocs.html) {
+        codeToInsert = htmlFromDocs.html;
         componentExists = true;
         console.log(
-          `   ✅ Código UBITS extraído: ${codeToInsert.length} caracteres`
+          `   ✅ HTML extraído desde documentación: ${codeToInsert.length} caracteres`
         );
+        console.log(
+          `   📚 Fuente: ${htmlFromDocs.source} (docs/referencia/componentes/${mapComponentNameToDocFile(componentName)}.md)`
+        );
+      }
+    } catch (error: any) {
+      console.warn(
+        `   ⚠️ No se pudo extraer HTML desde documentación: ${error.message}`
+      );
+    }
+
+    // Si no se encontró en documentación, intentar desde Storybook
+    if (!htmlFromDocs?.found) {
+      try {
+        const exactCode = await extractExactCodeFromStorybookWithBrowser(
+          componentId,
+          storyName
+        );
+        if (exactCode && exactCode.html) {
+          codeToInsert = exactCode.html;
+          componentExists = true;
+          console.log(
+            `   ✅ Código UBITS extraído desde Storybook: ${codeToInsert.length} caracteres`
+          );
 
         // ✅ MEJORA 2: Sanitizar código extraído para hardcoded colors
         console.log(`   [5.1] Sanitizando código extraído...`);
@@ -2061,12 +2138,54 @@ async function autorunApplyModeB(
 
     // ✅ 6. Si no existe, generar widget tokenizado
     if (!componentExists) {
+      // ⚠️ CRÍTICO: Verificar que el registro esté inicializado antes de usarlo
+      if (!tokenRegistry || tokenRegistry.getAll().length === 0) {
+        console.warn(
+          `   ⚠️ ADVERTENCIA: TokenRegistry está vacío, intentando reinicializar...`
+        );
+        try {
+          await tokenRegistry.initialize();
+          const newTokenCount = tokenRegistry.getAll().length;
+          console.log(
+            `   ✅ TokenRegistry reinicializado: ${newTokenCount} tokens`
+          );
+        } catch (initError: any) {
+          console.warn(
+            `   ⚠️ No se pudo reinicializar TokenRegistry: ${initError.message}`
+          );
+        }
+      }
+
       const tokenKit = new PrototypeTokenKit(tokenRegistry);
 
       // Detectar tipo de widget según el mensaje
-      if (
-        input.message.toLowerCase().includes('kpi') ||
-        input.message.toLowerCase().includes('card')
+      // ⚠️ CORRECCIÓN: No generar KpiCard si el componente es Carousel, SelectionCard, SimpleCard, etc.
+      const isCarousel =
+        input.message.toLowerCase().includes('carousel') ||
+        input.message.toLowerCase().includes('carrusel') ||
+        componentName.toLowerCase().includes('carousel');
+      const isSelectionCard =
+        input.message.toLowerCase().includes('selection card') ||
+        componentName.toLowerCase().includes('selectioncard');
+      const isSimpleCard =
+        input.message.toLowerCase().includes('simple card') ||
+        componentName.toLowerCase().includes('simplecard');
+
+      if (isCarousel || isSelectionCard || isSimpleCard) {
+        // ⚠️ CRÍTICO: No generar widget genérico para componentes UBITS reales
+        // Debe extraerse el código real desde Storybook
+        console.error(
+          `   ❌ No se puede generar widget genérico para componente UBITS: ${componentName}`
+        );
+        console.error(
+          `   💡 SOLUCIÓN: El código debe extraerse desde Storybook usando Browser MCP`
+        );
+        throw new Error(
+          `No se puede generar widget genérico para componente UBITS: ${componentName}. El código debe extraerse desde Storybook.`
+        );
+      } else if (
+        input.message.toLowerCase().includes('kpi') &&
+        !input.message.toLowerCase().includes('card')
       ) {
         codeToInsert = tokenKit.generateKpiCard({
           title: componentName,
@@ -2163,7 +2282,38 @@ async function autorunApplyModeB(
       console.log(`   ⚠️ DRY-RUN: No se insertó el código`);
     }
 
-    // ✅ 9. Recomendar verify("diff")
+    // ✅ 9. POST-IMPLEMENTACIÓN (Prettier, ESLint, Auto-Reload, GitHub)
+    console.log(`\n✨ [Autorun MCP] FASE 9: POST-IMPLEMENTACIÓN (Mode B)`);
+    let postImplementationResult: any = {
+      prettier: { executed: false, formatted: 0 },
+      eslint: { executed: false, errors: 0, warnings: 0, fixed: 0 },
+      autoReload: { executed: false, reloaded: false },
+      github: { executed: false, committed: false, pushed: false },
+      problemTracker: { executed: false, problemsDetected: 0 },
+    };
+
+    if (!input.options?.dryRun && filesWritten.length > 0) {
+      try {
+        const orchestrator = new AddonOrchestrator();
+        postImplementationResult =
+          await orchestrator.executePostImplementationPhase(
+            filesWritten,
+            componentName
+          );
+        console.log(`   ✅ Post-implementación completada`);
+      } catch (postError: any) {
+        console.warn(
+          `   ⚠️ Error en post-implementación: ${postError.message}`
+        );
+        warnings.push(`Error en post-implementación: ${postError.message}`);
+      }
+    } else {
+      console.log(
+        `   ⚠️ Saltando fase post-implementación (dry-run o sin archivos)`
+      );
+    }
+
+    // ✅ 10. Recomendar verify("diff")
     warnings.push(
       'Ejecuta autorun.verify({ targetFiles: "diff" }) para validar cambios'
     );
@@ -2173,7 +2323,8 @@ async function autorunApplyModeB(
       filesWritten,
       verification: {
         preImplementation: true,
-        postImplementation: true,
+        postImplementation:
+          postImplementationResult.prettier?.executed || false,
         errors: [],
         warnings: warnings.length > 0 ? warnings : [],
       },
