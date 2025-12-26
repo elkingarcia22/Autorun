@@ -2182,8 +2182,8 @@ async function autorunApplyModeB(
           // ⚠️ CRÍTICO: NO usar fallback - detenerse y reportar error
           throw new Error(
             `No se pudo extraer código desde Storybook. El código se carga dinámicamente y requiere Browser MCP. ` +
-            `URL de Docs: ${error.docsUrl}. ` +
-            `El agente DEBE ejecutar Browser MCP para navegar a Docs y extraer desde el snapshot.`
+              `URL de Docs: ${error.docsUrl}. ` +
+              `El agente DEBE ejecutar Browser MCP para navegar a Docs y extraer desde el snapshot.`
           );
         } else {
           console.error(
@@ -2202,8 +2202,8 @@ async function autorunApplyModeB(
           // ⚠️ CRÍTICO: NO usar fallback - detenerse y reportar error
           throw new Error(
             `No se pudo extraer código desde Storybook: ${error.message}. ` +
-            `El código se carga dinámicamente y requiere Browser MCP. ` +
-            `El agente DEBE ejecutar Browser MCP para navegar a Docs y extraer desde el snapshot.`
+              `El código se carga dinámicamente y requiere Browser MCP. ` +
+              `El agente DEBE ejecutar Browser MCP para navegar a Docs y extraer desde el snapshot.`
           );
         }
       }
@@ -2221,7 +2221,7 @@ async function autorunApplyModeB(
       console.error(
         `   💡 SOLUCIÓN: El agente DEBE usar Browser MCP para navegar a Docs y extraer desde el snapshot`
       );
-      
+
       // Construir URL de Docs para el error
       const { StorybookManager } = await import(
         '../../helpers/storybookManager.js'
@@ -2231,15 +2231,15 @@ async function autorunApplyModeB(
       const docsUrl = activeConfig
         ? `${activeConfig.url}/?path=/docs/${componentId}--docs`
         : `https://ubits-storybook10.vercel.app/?path=/docs/${componentId}--docs`;
-      
+
       throw new Error(
         `No se pudo extraer código desde Storybook para ${componentName}. ` +
-        `El código DEBE extraerse desde Storybook usando Browser MCP. ` +
-        `URL de Docs: ${docsUrl}. ` +
-        `El agente DEBE: 1) Navegar a Docs, 2) Esperar 2 segundos, 3) Tomar snapshot, 4) Extraer HTML desde snapshot.`
+          `El código DEBE extraerse desde Storybook usando Browser MCP. ` +
+          `URL de Docs: ${docsUrl}. ` +
+          `El agente DEBE: 1) Navegar a Docs, 2) Esperar 2 segundos, 3) Tomar snapshot, 4) Extraer HTML desde snapshot.`
       );
     }
-    
+
     // ⚠️ CÓDIGO COMENTADO: NO usar fallback genérico - el código DEBE extraerse desde Storybook
     /*
     // ✅ 6. Si no existe, generar widget tokenizado (DESHABILITADO - NO usar fallback)
@@ -2321,6 +2321,7 @@ async function autorunApplyModeB(
       }
       console.log(`   ✅ Widget tokenizado generado`);
     }
+    */
 
     // ✅ 7. Determinar archivo objetivo
     if (!targetFile) {
