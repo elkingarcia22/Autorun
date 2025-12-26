@@ -15,6 +15,7 @@ import {
 } from '@modelcontextprotocol/sdk/types.js';
 
 // Importar tools
+import { autorunTest } from './tools/test.js';
 import { autorunApply } from './tools/apply.js';
 import { autorunVerify } from './tools/verify.js';
 import { autorunPlan } from './tools/plan.js';
@@ -33,6 +34,160 @@ import { autorunVisualTest } from './tools/visualTest.js';
 export async function startAutorunMCPServerV2(): Promise<void> {
   // ⚠️ CRÍTICO: Usar stderr para logs (stdout es para comunicación MCP)
   console.error('🚀 [Autorun MCP v2] Iniciando servidor...');
+  console.error(`   🔍 [DEBUG] process.cwd(): ${process.cwd()}`);
+  console.error(
+    `   🔍 [DEBUG] __dirname: ${typeof __dirname !== 'undefined' ? __dirname : 'undefined'}`
+  );
+
+  // ⚠️ CRÍTICO: Asegurar que process.cwd() apunte al directorio del proyecto
+  // El MCP puede ejecutarse desde cualquier directorio, necesitamos encontrar el root del proyecto
+  // ⚠️ CRÍTICO: Esto DEBE ejecutarse ANTES de cualquier otra cosa
+  console.error(`   🔍 [DEBUG] ========================================`);
+  console.error(`   🔍 [DEBUG] INICIANDO BÚSQUEDA DEL PROYECTO`);
+  console.error(`   🔍 [DEBUG] process.cwd() inicial: ${process.cwd()}`);
+  console.error(
+    `   🔍 [DEBUG] HOME: ${process.env.HOME || process.env.USERPROFILE || 'NO DEFINIDO'}`
+  );
+
+  try {
+    const path = await import('path');
+    const fs = await import('fs/promises');
+    let currentDir = process.cwd();
+    let projectRoot: string | null = null;
+
+    console.error(
+      `   🔍 [DEBUG] ESTRATEGIA 1: Buscando hacia arriba desde: ${currentDir}`
+    );
+
+    // Estrategia 1: Buscar hacia arriba (directorios padres)
+    for (let i = 0; i < 20; i++) {
+      const configPath = path.join(currentDir, '.ubits', 'project-config.json');
+      console.error(`   🔍 [DEBUG]   [${i}] Intentando: ${configPath}`);
+      try {
+        await fs.access(configPath);
+        projectRoot = currentDir;
+        console.error(
+          `   ✅ [DEBUG] ✅✅✅ PROYECTO ENCONTRADO (hacia arriba) en: ${projectRoot}`
+        );
+        console.error(`   ✅ [DEBUG] ✅✅✅ Archivo encontrado: ${configPath}`);
+        break;
+      } catch (err: any) {
+        console.error(
+          `   🔍 [DEBUG]   [${i}] No encontrado: ${err.code || err.message}`
+        );
+        const parent = path.dirname(currentDir);
+        if (parent === currentDir) {
+          console.error(
+            `   ⚠️ [DEBUG] Llegamos a la raíz del sistema: ${currentDir}`
+          );
+          break;
+        }
+        currentDir = parent;
+      }
+    }
+
+    // Estrategia 2: Si no se encontró hacia arriba, buscar en subdirectorios comunes
+    if (!projectRoot) {
+      console.error(
+        `   🔍 [DEBUG] ESTRATEGIA 2: No encontrado hacia arriba, buscando en subdirectorios...`
+      );
+      const homeDir = process.env.HOME || process.env.USERPROFILE;
+      if (homeDir) {
+        console.error(`   🔍 [DEBUG] HOME dir: ${homeDir}`);
+        const commonDirs = [
+          'Desktop',
+          'Documents',
+          'Projects',
+          'dev',
+          'workspace',
+        ];
+        for (const dir of commonDirs) {
+          const testDir = path.join(homeDir, dir);
+          console.error(`   🔍 [DEBUG] Buscando en: ${testDir}`);
+          try {
+            const entries = await fs.readdir(testDir, { withFileTypes: true });
+            console.error(
+              `   🔍 [DEBUG] Encontrados ${entries.length} directorios en ${testDir}`
+            );
+            for (const entry of entries) {
+              if (entry.isDirectory()) {
+                const testPath = path.join(
+                  testDir,
+                  entry.name,
+                  '.ubits',
+                  'project-config.json'
+                );
+                console.error(`   🔍 [DEBUG]   Verificando: ${testPath}`);
+                try {
+                  await fs.access(testPath);
+                  projectRoot = path.join(testDir, entry.name);
+                  console.error(
+                    `   ✅ [DEBUG] ✅✅✅ PROYECTO ENCONTRADO (en subdirectorio) en: ${projectRoot}`
+                  );
+                  console.error(
+                    `   ✅ [DEBUG] ✅✅✅ Archivo encontrado: ${testPath}`
+                  );
+                  break;
+                } catch (err: any) {
+                  // Continuar buscando
+                }
+              }
+            }
+            if (projectRoot) break;
+          } catch (err: any) {
+            console.error(
+              `   ⚠️ [DEBUG] Error leyendo ${testDir}: ${err.code || err.message}`
+            );
+            // Continuar con el siguiente directorio común
+          }
+        }
+      } else {
+        console.error(
+          `   ⚠️ [DEBUG] HOME no está definido, no se puede buscar en subdirectorios`
+        );
+      }
+    }
+
+    console.error(`   🔍 [DEBUG] ========================================`);
+    if (projectRoot && projectRoot !== process.cwd()) {
+      console.error(
+        `   🔄 [DEBUG] Cambiando process.cwd() de ${process.cwd()} a ${projectRoot}`
+      );
+      process.chdir(projectRoot);
+      console.error(
+        `   ✅ [DEBUG] ✅✅✅ process.cwd() CAMBIADO a: ${process.cwd()}`
+      );
+      console.error(`   ✅ [DEBUG] Verificando que el cambio funcionó...`);
+      try {
+        const verifyPath = path.join(
+          process.cwd(),
+          '.ubits',
+          'project-config.json'
+        );
+        await fs.access(verifyPath);
+        console.error(
+          `   ✅ [DEBUG] ✅✅✅ VERIFICACIÓN EXITOSA: ${verifyPath} existe`
+        );
+      } catch (err: any) {
+        console.error(
+          `   ❌ [DEBUG] ❌❌❌ VERIFICACIÓN FALLÓ: ${err.message}`
+        );
+      }
+    } else if (!projectRoot) {
+      console.error(`   ❌ [DEBUG] ❌❌❌ NO SE ENCONTRÓ PROYECTO`);
+      console.error(`   ❌ [DEBUG] process.cwd() permanece: ${process.cwd()}`);
+    } else {
+      console.error(
+        `   ✅ [DEBUG] Proyecto ya está en el cwd correcto: ${process.cwd()}`
+      );
+    }
+    console.error(`   🔍 [DEBUG] ========================================`);
+  } catch (error: any) {
+    console.error(
+      `   ❌ [DEBUG] ❌❌❌ ERROR CRÍTICO ajustando cwd: ${error.message}`
+    );
+    console.error(`   ❌ [DEBUG] Stack: ${error.stack}`);
+  }
 
   // Crear servidor MCP
   const server = new Server(
@@ -53,6 +208,21 @@ export async function startAutorunMCPServerV2(): Promise<void> {
 
     return {
       tools: [
+        {
+          name: 'autorun.test',
+          description:
+            'Herramienta de prueba simple para verificar que el MCP funciona sin errores',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              message: {
+                type: 'string',
+                description: 'Mensaje de prueba opcional',
+              },
+            },
+            required: [],
+          },
+        },
         {
           name: 'autorun.plan',
           description:
@@ -291,6 +461,19 @@ export async function startAutorunMCPServerV2(): Promise<void> {
       const normalizedName = name.replace(/_/g, '.');
 
       switch (normalizedName) {
+        case 'autorun.test': {
+          console.error(`   🧪 [MCP Server] Llamando autorunTest...`);
+          const result = await autorunTest(args as any);
+          return {
+            content: [
+              {
+                type: 'text',
+                text: JSON.stringify(result, null, 2),
+              },
+            ],
+          };
+        }
+
         case 'autorun.plan': {
           const result = await autorunPlan(args as any);
           return {
