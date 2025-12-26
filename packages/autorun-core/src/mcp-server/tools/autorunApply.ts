@@ -2115,10 +2115,10 @@ async function autorunApplyModeB(
             console.warn(
               `   ⚠️ Error extrayendo código de inicialización: ${initError.message}`
             );
-          // No bloquear, solo advertir
+            // No bloquear, solo advertir
+          }
         }
-      }
-    } catch (error: any) {
+      } catch (error: any) {
       // ⚠️ NUEVO: Detectar si el error requiere Browser MCP
       const { isBrowserMCPRequiredError } = await import(
         '../../helpers/browserMCPAutoExtractor.js'
