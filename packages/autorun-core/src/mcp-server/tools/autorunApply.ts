@@ -1904,13 +1904,46 @@ async function autorunApplyModeB(
     }
 
     // ⭐ NUEVO: Intentar extraer HTML desde documentación PRIMERO (más confiable)
-    let htmlFromDocs: { html: string; found: boolean; source: string } | null =
-      null;
+    let htmlFromDocs: {
+      html: string;
+      found: boolean;
+      source: string;
+      requiresBrowserMCP?: boolean;
+      docsUrl?: string;
+    } | null = null;
     try {
       const { extractHTMLFromDocumentation } = await import(
         '../../helpers/componentHelpers.js'
       );
       htmlFromDocs = await extractHTMLFromDocumentation(componentName);
+
+      // ⭐ NUEVO: Si se requiere Browser MCP, intentar usarlo automáticamente
+      if (htmlFromDocs.requiresBrowserMCP && htmlFromDocs.docsUrl) {
+        console.log(
+          `   🔍 [Browser MCP] HTML requiere Browser MCP - intentando extraer desde Docs...`
+        );
+        console.log(`   📋 URL de Docs: ${htmlFromDocs.docsUrl}`);
+
+        // ⚠️ IMPORTANTE: El agente DEBE ejecutar Browser MCP aquí
+        // Por ahora, emitimos instrucciones claras
+        console.log(`   ⚠️ [Browser MCP] INSTRUCCIONES PARA EL AGENTE:`);
+        console.log(
+          `      1. Navegar a Docs: call_mcp_tool({ server: "cursor-ide-browser", toolName: "browser_navigate", arguments: { url: "${htmlFromDocs.docsUrl}" } })`
+        );
+        console.log(
+          `      2. Esperar 2 segundos para que se cargue el contenido`
+        );
+        console.log(
+          `      3. Tomar snapshot: call_mcp_tool({ server: "cursor-ide-browser", toolName: "browser_snapshot" })`
+        );
+        console.log(
+          `      4. Llamar extractHTMLFromDocumentation(componentName, snapshot) con el snapshot`
+        );
+
+        // Intentar obtener snapshot si Browser MCP está disponible
+        // Nota: Esto requiere que el agente ejecute Browser MCP primero
+        // Por ahora, continuamos con el flujo normal y el agente puede ejecutar Browser MCP después
+      }
 
       if (htmlFromDocs.found && htmlFromDocs.html) {
         codeToInsert = htmlFromDocs.html;
@@ -2144,10 +2177,13 @@ async function autorunApplyModeB(
             `   ⚠️ CRÍTICO: El agente DEBE ejecutar Browser MCP para extraer el código`
           );
           console.error(
-            `   📦 Usando PrototypeTokenKit como fallback temporal...`
+            `   ❌ DETENIÉNDOSE: No se usará fallback. El código DEBE extraerse desde Storybook.`
           );
-          console.error(
-            `   ⚠️ ADVERTENCIA: El código generado será genérico, no el código real del componente`
+          // ⚠️ CRÍTICO: NO usar fallback - detenerse y reportar error
+          throw new Error(
+            `No se pudo extraer código desde Storybook. El código se carga dinámicamente y requiere Browser MCP. ` +
+            `URL de Docs: ${error.docsUrl}. ` +
+            `El agente DEBE ejecutar Browser MCP para navegar a Docs y extraer desde el snapshot.`
           );
         } else {
           console.error(
@@ -2160,11 +2196,52 @@ async function autorunApplyModeB(
           console.error(
             `   💡 SOLUCIÓN: Necesitamos usar Browser MCP para navegar y extraer desde el snapshot`
           );
-          console.log(`   📦 Usando PrototypeTokenKit como fallback...`);
+          console.error(
+            `   ❌ DETENIÉNDOSE: No se usará fallback. El código DEBE extraerse desde Storybook.`
+          );
+          // ⚠️ CRÍTICO: NO usar fallback - detenerse y reportar error
+          throw new Error(
+            `No se pudo extraer código desde Storybook: ${error.message}. ` +
+            `El código se carga dinámicamente y requiere Browser MCP. ` +
+            `El agente DEBE ejecutar Browser MCP para navegar a Docs y extraer desde el snapshot.`
+          );
         }
       }
     }
 
+    // ✅ 6. Si no existe, ERROR - no usar fallback
+    if (!componentExists) {
+      // ⚠️ CRÍTICO: NO generar widget genérico - el código DEBE extraerse desde Storybook
+      console.error(
+        `   ❌ ERROR CRÍTICO: No se pudo extraer código desde Storybook para: ${componentName}`
+      );
+      console.error(
+        `   ⚠️ El código NO se encontró en ninguna fuente (documentación, Storybook, Docs)`
+      );
+      console.error(
+        `   💡 SOLUCIÓN: El agente DEBE usar Browser MCP para navegar a Docs y extraer desde el snapshot`
+      );
+      
+      // Construir URL de Docs para el error
+      const { StorybookManager } = await import(
+        '../../helpers/storybookManager.js'
+      );
+      const manager = StorybookManager.getInstance();
+      const activeConfig = await manager.getActiveConfig();
+      const docsUrl = activeConfig
+        ? `${activeConfig.url}/?path=/docs/${componentId}--docs`
+        : `https://ubits-storybook10.vercel.app/?path=/docs/${componentId}--docs`;
+      
+      throw new Error(
+        `No se pudo extraer código desde Storybook para ${componentName}. ` +
+        `El código DEBE extraerse desde Storybook usando Browser MCP. ` +
+        `URL de Docs: ${docsUrl}. ` +
+        `El agente DEBE: 1) Navegar a Docs, 2) Esperar 2 segundos, 3) Tomar snapshot, 4) Extraer HTML desde snapshot.`
+      );
+    }
+    
+    // ⚠️ CÓDIGO COMENTADO: NO usar fallback genérico
+    /*
     // ✅ 6. Si no existe, generar widget tokenizado
     if (!componentExists) {
       // ⚠️ CRÍTICO: Verificar que el registro esté inicializado antes de usarlo
