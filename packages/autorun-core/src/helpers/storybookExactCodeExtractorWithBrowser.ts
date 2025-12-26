@@ -23,6 +23,9 @@ export async function extractExactCodeFromStorybookWithBrowser(
   console.log(
     `🔍 [Exact Code Extractor with Browser] Extrayendo código exacto para: ${componentId}--${storyName}`
   );
+  console.log(`   📋 [DEBUG] Timestamp: ${new Date().toISOString()}`);
+  console.log(`   📋 [DEBUG] componentId recibido: "${componentId}"`);
+  console.log(`   📋 [DEBUG] storyName recibido: "${storyName}"`);
 
   // 1. Obtener Storybook activo
   const { StorybookManager } = await import('./storybookManager');
@@ -30,10 +33,15 @@ export async function extractExactCodeFromStorybookWithBrowser(
   const activeConfig = await manager.getActiveConfig();
 
   if (!activeConfig) {
+    console.error(`   ❌ [DEBUG] No hay Storybook activo configurado`);
     throw new Error(
       `❌ No hay Storybook activo configurado. Por favor, conecta un Storybook usando: npm run storybook:connect`
     );
   }
+
+  console.log(`   ✅ [DEBUG] Storybook activo encontrado:`);
+  console.log(`      - URL: ${activeConfig.url}`);
+  console.log(`      - Tipo: ${activeConfig.type || 'unknown'}`);
 
   // ⚠️ CRÍTICO: Si storyName es "default", buscar "code" primero, luego "implementation"
   let finalStoryName = storyName;
@@ -68,17 +76,254 @@ export async function extractExactCodeFromStorybookWithBrowser(
     }
   }
 
-  // 2. ⚠️ MODIFICADO: Intentar múltiples fuentes en orden de prioridad (SOLO URL por ahora)
-  // Prioridad 1: URL de la historia directamente
-  // Prioridad 2: Docs (requiere Browser MCP)
-  // ⚠️ NOTA: Código fuente local deshabilitado temporalmente para probar solo con URL
+  // 2. ⚠️ NUEVO FLUJO: Primero obtener lista de componentes, luego buscar nombre exacto
+  // Paso 1: Obtener lista completa de componentes disponibles
+  // Paso 2: Buscar el componente en la lista por nombre o ID
+  // Paso 3: Usar el nombre exacto encontrado para extraer código
 
   let codeFromTab: { html: string; js?: string } | null = null;
+  let exactComponentName: string | null = null;
+  let exactComponentId: string | null = componentId;
 
   // Definir storyUrl aquí para usarlo en el error si es necesario
   const storyUrl = `${activeConfig.url}/?path=/story/${componentId}--${finalStoryName}`;
 
-  // INTENTO 1: Extraer desde URL de la historia directamente
+  // INTENTO 1: Obtener lista de componentes y buscar nombre exacto
+  if (!codeFromTab || !codeFromTab.html) {
+    console.log(
+      `   📋 [PASO 1] Obteniendo lista completa de componentes del Storybook...`
+    );
+
+    try {
+      const { callStorybookMCPTool } = await import('./mcpClient.js');
+
+      // Paso 1.1: Obtener lista de componentes
+      console.log(`   🔍 Llamando getComponentList del Storybook MCP...`);
+      const componentListResult = await callStorybookMCPTool(
+        'getComponentList',
+        {}
+      );
+
+      console.log(
+        `   📋 Resultado de getComponentList:`,
+        JSON.stringify(componentListResult, null, 2).substring(0, 500)
+      );
+
+      if (
+        componentListResult &&
+        componentListResult.content &&
+        componentListResult.content.length > 0
+      ) {
+        const listText = componentListResult.content[0].text;
+        console.log(
+          `   📋 Texto recibido (primeros 500 caracteres):`,
+          listText.substring(0, 500)
+        );
+
+        let componentList: string[] = [];
+
+        try {
+          // Intentar parsear como JSON
+          const parsed = JSON.parse(listText);
+
+          // ⚠️ CRÍTICO: Si el JSON tiene success: false, es un error
+          if (parsed.success === false) {
+            console.warn(
+              `   ⚠️ getComponentList retornó error: ${parsed.error || 'unknown error'}`
+            );
+            console.warn(
+              `   💡 SOLUCIÓN: Verificar que STORYBOOK_URL esté configurado correctamente`
+            );
+            console.warn(
+              `   💡 URL esperada: https://ubits-storybook10.vercel.app/index.json`
+            );
+            console.warn(
+              `   💡 Continuando con ID original "${componentId}" directamente`
+            );
+            // Continuar con lista vacía, pero intentar usar el ID directamente
+            componentList = [];
+          } else {
+            componentList = Array.isArray(parsed)
+              ? parsed
+              : parsed.components || [];
+            console.log(
+              `   ✅ Parseado como JSON: ${componentList.length} componentes`
+            );
+          }
+        } catch {
+          // Si no es JSON, intentar parsear como texto plano
+          // El formato puede ser: "Available components:\nComponent1\nComponent2..."
+          const lines = listText
+            .split('\n')
+            .map((line) => line.trim())
+            .filter((line) => {
+              // Filtrar líneas vacías y encabezados como "Available components:"
+              return (
+                line &&
+                !line.toLowerCase().startsWith('available') &&
+                !line.toLowerCase().startsWith('componentes') &&
+                line !== ':'
+              );
+            });
+          componentList = lines;
+          console.log(
+            `   ✅ Parseado como texto: ${componentList.length} componentes`
+          );
+          if (componentList.length > 0) {
+            console.log(
+              `   📋 Primeros 5 componentes: ${componentList.slice(0, 5).join(', ')}`
+            );
+          }
+        }
+
+        console.log(
+          `   ✅ Lista de componentes obtenida: ${componentList.length} componentes`
+        );
+
+        // Paso 1.2: Buscar el componente en la lista
+        console.log(
+          `   🔍 [PASO 2] Buscando componente "${componentId}" en la lista...`
+        );
+
+        // Buscar por ID exacto primero (ej: "layout-carousel")
+        let foundComponent = componentList.find(
+          (comp) =>
+            comp.toLowerCase().includes(componentId.toLowerCase()) ||
+            componentId
+              .toLowerCase()
+              .includes(comp.toLowerCase().replace(/\//g, '-'))
+        );
+
+        // Si no se encuentra, buscar por nombre sin categoría (ej: "Carousel" en "Layout/Carousel")
+        if (!foundComponent) {
+          const componentNameWithoutCategory =
+            componentId.split('-').pop() || componentId;
+          foundComponent = componentList.find((comp) => {
+            const compName = comp.split('/').pop() || comp;
+            return (
+              compName.toLowerCase() ===
+                componentNameWithoutCategory.toLowerCase() ||
+              comp
+                .toLowerCase()
+                .includes(componentNameWithoutCategory.toLowerCase())
+            );
+          });
+        }
+
+        // Si aún no se encuentra, buscar por coincidencia parcial
+        if (!foundComponent) {
+          const searchTerms = componentId.split('-');
+          foundComponent = componentList.find((comp) => {
+            const compLower = comp.toLowerCase();
+            return searchTerms.some((term) =>
+              compLower.includes(term.toLowerCase())
+            );
+          });
+        }
+
+        if (foundComponent) {
+          exactComponentName = foundComponent;
+          console.log(
+            `   ✅ Componente encontrado en la lista: "${exactComponentName}"`
+          );
+
+          // Convertir nombre a ID si es necesario (ej: "Layout/Carousel" -> "layout-carousel")
+          const { storybookIdToComponentName, COMPONENT_NAME_TO_STORYBOOK_ID } =
+            await import('./storybookMCPNameMapper.js');
+
+          // Intentar obtener ID desde el mapeo inverso
+          const mappedId = COMPONENT_NAME_TO_STORYBOOK_ID[exactComponentName];
+          if (mappedId) {
+            exactComponentId = mappedId;
+            console.log(`   ✅ ID mapeado: "${exactComponentId}"`);
+          } else {
+            // Si no hay mapeo, construir ID desde el nombre
+            exactComponentId = exactComponentName
+              .toLowerCase()
+              .replace(/\//g, '-')
+              .replace(/\s+/g, '-');
+            console.log(
+              `   ⚠️ ID construido desde nombre: "${exactComponentId}"`
+            );
+          }
+        } else {
+          console.warn(
+            `   ⚠️ Componente "${componentId}" no encontrado en la lista de componentes`
+          );
+          console.warn(
+            `   💡 Componentes disponibles (primeros 10): ${componentList.slice(0, 10).join(', ')}`
+          );
+        }
+      } else {
+        console.warn(`   ⚠️ No se pudo obtener lista de componentes`);
+      }
+    } catch (listError: any) {
+      console.warn(
+        `   ⚠️ Error obteniendo lista de componentes: ${listError.message}`
+      );
+    }
+  }
+
+  // INTENTO 2: Usar getComponentCode del Storybook MCP con el ID/nombre exacto encontrado
+  if (!codeFromTab || !codeFromTab.html) {
+    console.log(
+      `   🔧 [PASO 3] Intentando extraer código con getComponentCode usando ID: "${exactComponentId || componentId}"...`
+    );
+
+    try {
+      const { callStorybookMCPTool } = await import('./mcpClient.js');
+
+      const mcpResult = await callStorybookMCPTool('getComponentCode', {
+        componentId: exactComponentId || componentId,
+        storyName: finalStoryName,
+      });
+
+      // Parsear resultado del MCP
+      if (mcpResult && mcpResult.content && mcpResult.content.length > 0) {
+        const contentText = mcpResult.content[0].text;
+        const parsed = JSON.parse(contentText);
+
+        if (parsed.success && parsed.html) {
+          codeFromTab = {
+            html: parsed.html,
+            js: parsed.js,
+          };
+
+          console.log(
+            `   ✅ Código extraído con getComponentCode: ${codeFromTab.html.length} caracteres HTML, ${codeFromTab.js?.length || 0} caracteres JS`
+          );
+          console.log(
+            `   📋 Método de extracción: ${parsed.extractionMethod || 'unknown'}`
+          );
+          console.log(
+            `   📋 Selector usado: ${parsed.extractionSelector || 'unknown'}`
+          );
+          console.log(
+            `   📋 Componente usado: "${exactComponentName || exactComponentId || componentId}"`
+          );
+        } else {
+          console.warn(
+            `   ⚠️ getComponentCode no retornó código válido: ${parsed.error || 'unknown error'}`
+          );
+        }
+      } else {
+        console.warn(`   ⚠️ getComponentCode retornó resultado vacío`);
+      }
+    } catch (mcpError: any) {
+      console.error(`   ❌ [DEBUG] Error completo en getComponentCode:`);
+      console.error(`      - Mensaje: ${mcpError.message}`);
+      console.error(
+        `      - Stack: ${mcpError.stack?.substring(0, 500) || 'N/A'}`
+      );
+      console.error(`      - Tipo: ${mcpError.type || 'N/A'}`);
+      console.warn(
+        `   ⚠️ Error llamando getComponentCode del Storybook MCP: ${mcpError.message}`
+      );
+      console.warn(`   🔄 Continuando con método fallback (fetch)...`);
+    }
+  }
+
+  // INTENTO 2: Extraer desde URL de la historia directamente (fallback)
   if (!codeFromTab || !codeFromTab.html) {
     console.log(`   📚 Intentando extraer desde URL de historia: ${storyUrl}`);
 
@@ -197,8 +442,8 @@ export async function extractExactCodeFromStorybookWithBrowser(
   if (!codeFromTab || !codeFromTab.html) {
     const error = new Error(
       `No se pudo extraer código desde ninguna fuente. ` +
-        `Intentado: 1) URL de historia, 2) Docs. ` +
-        `El código puede estar cargado dinámicamente y requerir Browser MCP.`
+        `Intentado: 1) getComponentCode (Storybook MCP con Playwright), 2) URL de historia (fetch), 3) Docs (fetch). ` +
+        `Verifica que el Storybook MCP esté configurado correctamente con STORYBOOK_URL.`
     ) as any;
     error.type = 'BROWSER_MCP_REQUIRED';
     error.docsUrl = `${activeConfig.url}/?path=/docs/${componentId}--docs`;
