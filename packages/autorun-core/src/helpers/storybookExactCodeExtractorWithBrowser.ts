@@ -34,9 +34,11 @@ export async function extractExactCodeFromStorybookWithBrowser(
 
   if (!activeConfig) {
     console.error(`   ❌ [DEBUG] No hay Storybook activo configurado`);
-    throw new Error(
+    const error = new Error(
       `❌ No hay Storybook activo configurado. Por favor, conecta un Storybook usando: npm run storybook:connect`
-    );
+    ) as any;
+    error.type = 'NO_STORYBOOK_CONFIG';
+    throw error;
   }
 
   console.log(`   ✅ [DEBUG] Storybook activo encontrado:`);
@@ -67,12 +69,20 @@ export async function extractExactCodeFromStorybookWithBrowser(
           console.log(
             `   ✅ Usando historia "implementation" encontrada: ${finalStoryName}`
           );
+        } else {
+          // ⚠️ NUEVO: Si no hay "code" ni "implementation", intentar "default" directamente
+          // pero también registrar que estamos usando "default"
+          console.log(
+            `   ⚠️ No se encontraron historias "code" ni "implementation", usando "default" directamente`
+          );
+          finalStoryName = 'default';
         }
       }
     } catch (error: any) {
       console.warn(
         `   ⚠️ Error buscando historias: ${error.message}, usando "default"`
       );
+      finalStoryName = 'default';
     }
   }
 
