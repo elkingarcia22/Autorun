@@ -1175,6 +1175,42 @@
                                 // El botón ya está activo gracias a initialActiveSection, no necesitamos activarlo de nuevo
                                 window.UBITS_ContentManager.handleSectionChange(initialSection);
                                 
+                                // ========================================
+                                // INICIALIZAR TABS (solo para módulo encuestas)
+                                // ========================================
+                                if (initialSection === 'encuestas' && window.UBITS && window.UBITS.Tabs) {
+                                    const tabsContainer = document.getElementById('tabs-implementation-container');
+                                    if (tabsContainer) {
+                                        try {
+                                            window.UBITS.Tabs.create({
+                                                containerId: 'tabs-implementation-container',
+                                                tabs: [
+                                                    {
+                                                        id: 'tab-lista-encuestas',
+                                                        label: 'Lista de encuestas',
+                                                        icon: 'far fa-list',
+                                                        active: true
+                                                    },
+                                                    {
+                                                        id: 'tab-datos-demograficos',
+                                                        label: 'Datos demográficos',
+                                                        icon: 'far fa-chart-bar',
+                                                        active: false
+                                                    }
+                                                ],
+                                                activeTabId: 'tab-lista-encuestas',
+                                                onTabChange: (tabId, tabElement) => {
+                                                    console.log('🔵 [Tabs] Tab cambiado:', tabId);
+                                                    // Aquí puedes actualizar el contenido según el tab seleccionado
+                                                }
+                                            });
+                                            console.log('✅ [Tabs] Tabs inicializados correctamente');
+                                        } catch (error) {
+                                            console.error('❌ [Tabs] Error al inicializar tabs:', error);
+                                        }
+                                    }
+                                }
+                                
                                 // Asegurar que el tooltip esté oculto y que ningún botón tenga focus
                                 const tooltipElement = document.getElementById('ubits-sidebar-tooltip');
                                 if (tooltipElement) {
