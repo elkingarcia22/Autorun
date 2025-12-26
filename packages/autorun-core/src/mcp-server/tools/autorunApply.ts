@@ -2179,12 +2179,15 @@ async function autorunApplyModeB(
           console.error(
             `   ❌ DETENIÉNDOSE: No se usará fallback. El código DEBE extraerse desde Storybook.`
           );
-          // ⚠️ CRÍTICO: NO usar fallback - detenerse y reportar error
-          throw new Error(
-            `No se pudo extraer código desde Storybook. El código se carga dinámicamente y requiere Browser MCP. ` +
-              `URL de Docs: ${error.docsUrl}. ` +
-              `El agente DEBE ejecutar Browser MCP para navegar a Docs y extraer desde el snapshot.`
-          );
+          // ⚠️ CRÍTICO: NO usar fallback - retornar error en lugar de lanzar
+          // NO usar throw porque causa que el servidor MCP se cierre
+          const browserMCPError = `No se pudo extraer código desde Storybook. El código se carga dinámicamente y requiere Browser MCP. ` +
+            `URL de Docs: ${error.docsUrl}. ` +
+            `El agente DEBE ejecutar Browser MCP para navegar a Docs y extraer desde el snapshot.`;
+          errors.push(browserMCPError);
+          // Continuar sin código - el catch final manejará el error
+          codeToInsert = '';
+          componentExists = false;
         } else {
           console.error(
             `   ❌ Error extrayendo código desde Storybook: ${error.message}`
@@ -2199,12 +2202,15 @@ async function autorunApplyModeB(
           console.error(
             `   ❌ DETENIÉNDOSE: No se usará fallback. El código DEBE extraerse desde Storybook.`
           );
-          // ⚠️ CRÍTICO: NO usar fallback - detenerse y reportar error
-          throw new Error(
-            `No se pudo extraer código desde Storybook: ${error.message}. ` +
-              `El código se carga dinámicamente y requiere Browser MCP. ` +
-              `El agente DEBE ejecutar Browser MCP para navegar a Docs y extraer desde el snapshot.`
-          );
+          // ⚠️ CRÍTICO: NO usar fallback - retornar error en lugar de lanzar
+          // NO usar throw porque causa que el servidor MCP se cierre
+          const browserMCPError = `No se pudo extraer código desde Storybook: ${error.message}. ` +
+            `El código se carga dinámicamente y requiere Browser MCP. ` +
+            `El agente DEBE ejecutar Browser MCP para navegar a Docs y extraer desde el snapshot.`;
+          errors.push(browserMCPError);
+          // Continuar sin código - el catch final manejará el error
+          codeToInsert = '';
+          componentExists = false;
         }
       }
     }
@@ -2232,12 +2238,26 @@ async function autorunApplyModeB(
         ? `${activeConfig.url}/?path=/docs/${componentId}--docs`
         : `https://ubits-storybook10.vercel.app/?path=/docs/${componentId}--docs`;
 
-      throw new Error(
-        `No se pudo extraer código desde Storybook para ${componentName}. ` +
-          `El código DEBE extraerse desde Storybook usando Browser MCP. ` +
-          `URL de Docs: ${docsUrl}. ` +
-          `El agente DEBE: 1) Navegar a Docs, 2) Esperar 2 segundos, 3) Tomar snapshot, 4) Extraer HTML desde snapshot.`
-      );
+      // ⚠️ CRÍTICO: NO usar throw porque causa que el servidor MCP se cierre
+      // Retornar error en lugar de lanzar
+      const noCodeError = `No se pudo extraer código desde Storybook para ${componentName}. ` +
+        `El código DEBE extraerse desde Storybook usando Browser MCP. ` +
+        `URL de Docs: ${docsUrl}. ` +
+        `El agente DEBE: 1) Navegar a Docs, 2) Esperar 2 segundos, 3) Tomar snapshot, 4) Extraer HTML desde snapshot.`;
+      errors.push(noCodeError);
+      // Retornar error en lugar de lanzar
+      return {
+        success: false,
+        filesWritten: [],
+        verification: {
+          preImplementation: false,
+          postImplementation: false,
+          errors: [noCodeError],
+          warnings: [],
+        },
+        components: [],
+        errors: [noCodeError],
+      };
     }
 
     // ⚠️ CÓDIGO COMENTADO: NO usar fallback genérico - el código DEBE extraerse desde Storybook
