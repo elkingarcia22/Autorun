@@ -433,17 +433,28 @@ export function detectComponentFromMessage(message: string): string | null {
       component: 'Calendar',
       priority: 6,
     },
-    // ⚠️ NUEVO: Detección de Switch/Toggle
+    // ⚠️ NUEVO: Detección de Toggle (prioridad sobre Switch)
     {
       pattern: new RegExp(
-        `${ACTION_VERBS_PATTERN}.*(?:switch|toggle|interruptor)`,
+        `${ACTION_VERBS_PATTERN}.*(?:toggle|interruptor)`,
         'i'
       ),
+      component: 'Toggle',
+      priority: 8,
+    },
+    {
+      pattern: /\btoggle\b/i,
+      component: 'Toggle',
+      priority: 7,
+    },
+    // ⚠️ NUEVO: Detección de Switch (diferente de Toggle)
+    {
+      pattern: new RegExp(`${ACTION_VERBS_PATTERN}.*(?:switch)`, 'i'),
       component: 'Switch',
       priority: 7,
     },
     {
-      pattern: /\bswitch\b|\btoggle\b/i,
+      pattern: /\bswitch\b/i,
       component: 'Switch',
       priority: 6,
     },
