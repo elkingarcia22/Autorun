@@ -6,6 +6,11 @@
  */
 
 /**
+ * ✅ AutorunMode - Modos de implementación de Autorun
+ */
+export type AutorunMode = 'strict' | 'prototypeTokens';
+
+/**
  * Input para autorun.apply
  */
 export interface AutorunApplyInput {
@@ -18,6 +23,26 @@ export interface AutorunApplyInput {
     skipLinting?: boolean;
     skipAutoReload?: boolean;
     skipAutoCommit?: boolean;
+    runVisualTests?: boolean;
+    // ✅ Paso 7: Soporte para Mode B
+    mode?: AutorunMode; // default: "strict" o auto-detectado por path
+    requireStorybookMcp?: boolean; // default: true (fail-closed)
+    allowPrototypeTokens?: boolean; // default: mode==="prototypeTokens"
+    anchors?: {
+      content: string; // default: "<!-- AUTORUN:ANCHOR:CONTENT -->"
+      scripts: string; // default: "<!-- AUTORUN:ANCHOR:SCRIPTS -->"
+    };
+  };
+  // ✅ Paso 7: Soporte para design intake (Figma/Image)
+  design?: {
+    figma?: {
+      url: string;
+      frameNodeId?: string;
+    };
+    image?: {
+      kind: 'file' | 'url';
+      value: string;
+    };
   };
 }
 
@@ -27,12 +52,44 @@ export interface AutorunApplyInput {
 export interface AutorunApplyOutput {
   success: boolean;
   filesWritten: string[];
-  errors?: string[];
-  warnings?: string[];
-  verification?: {
+  verification: {
     preImplementation: boolean;
     postImplementation: boolean;
+    prettier?: boolean;
+    eslint?: {
+      errors: number;
+      fixed: number;
+      warnings: number;
+    };
+    autoReload?: boolean;
+    github?: {
+      committed: boolean;
+      pushed: boolean;
+      commitHash?: string;
+    };
+    visual?: {
+      passed: number;
+      failed: number;
+      new: number;
+    };
+    errors: string[];
+    warnings: string[];
   };
+  components: Array<{
+    name: string;
+    storybookId: string;
+    implemented: boolean;
+    verification?: {
+      cssClasses: boolean;
+      structure: boolean;
+      requiredElements: boolean;
+      accessibility: boolean;
+      sourceCodeMatch: boolean;
+    };
+  }>;
+  errors?: string[];
+  warnings?: string[];
+  plan?: any; // Plan basado en historias si está disponible
 }
 
 /**
