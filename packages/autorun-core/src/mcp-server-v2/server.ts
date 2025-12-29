@@ -628,8 +628,125 @@ export async function startAutorunMCPServerV2(): Promise<void> {
           };
         }
 
+        case 'autorun.handleUserMessage': {
+          console.error(`   🚀 [MCP Server] Llamando autorunHandleUserMessage...`);
+          const result = await autorunHandleUserMessage(args as any);
+          return {
+            content: [
+              {
+                type: 'text',
+                text: JSON.stringify(result, null, 2),
+              },
+            ],
+          };
+        }
+
+        case 'autorun.discoverComponent': {
+          console.error(`   🔍 [MCP Server] Llamando autorunDiscoverComponent...`);
+          const result = await autorunDiscoverComponent(args as any);
+          return {
+            content: [
+              {
+                type: 'text',
+                text: JSON.stringify(result, null, 2),
+              },
+            ],
+          };
+        }
+
+        case 'autorun.storybook.start': {
+          console.error(`   📚 [MCP Server] Llamando autorunStorybookStart...`);
+          const result = await autorunStorybookStart(args as any);
+          return {
+            content: [
+              {
+                type: 'text',
+                text: JSON.stringify(result, null, 2),
+              },
+            ],
+          };
+        }
+
+        case 'autorun.storybook.build': {
+          console.error(`   📚 [MCP Server] Llamando autorunStorybookBuild...`);
+          const result = await autorunStorybookBuild(args as any);
+          return {
+            content: [
+              {
+                type: 'text',
+                text: JSON.stringify(result, null, 2),
+              },
+            ],
+          };
+        }
+
+        case 'autorun.storybook.extract': {
+          console.error(`   📚 [MCP Server] Llamando autorunStorybookExtract...`);
+          const result = await autorunStorybookExtract(args as any);
+          return {
+            content: [
+              {
+                type: 'text',
+                text: JSON.stringify(result, null, 2),
+              },
+            ],
+          };
+        }
+
+        case 'autorun.problems.list': {
+          console.error(`   📋 [MCP Server] Llamando autorunProblemsList...`);
+          const result = await autorunProblemsList(args as any);
+          return {
+            content: [
+              {
+                type: 'text',
+                text: JSON.stringify(result, null, 2),
+              },
+            ],
+          };
+        }
+
+        case 'autorun.github.commit': {
+          console.error(`   🔗 [MCP Server] Llamando autorunGitHubCommit...`);
+          const result = await autorunGitHubCommit(args as any);
+          return {
+            content: [
+              {
+                type: 'text',
+                text: JSON.stringify(result, null, 2),
+              },
+            ],
+          };
+        }
+
+        case 'autorun.lint': {
+          console.error(`   🔍 [MCP Server] Llamando autorunLint...`);
+          const result = await autorunLint(args as any);
+          return {
+            content: [
+              {
+                type: 'text',
+                text: JSON.stringify(result, null, 2),
+              },
+            ],
+          };
+        }
+
+        case 'autorun.visualTest': {
+          console.error(`   🎨 [MCP Server] Llamando autorunVisualTest...`);
+          const result = await autorunVisualTest(args as any);
+          return {
+            content: [
+              {
+                type: 'text',
+                text: JSON.stringify(result, null, 2),
+              },
+            ],
+          };
+        }
+
         default:
-          // ⚠️ Herramientas disponibles: autorun.test, autorun.plan, autorun.checklist, autorun.verify, autorun.apply
+          // ⚠️ Herramientas disponibles
           return {
             content: [
               {
@@ -637,7 +754,7 @@ export async function startAutorunMCPServerV2(): Promise<void> {
                 text: JSON.stringify(
                   {
                     success: false,
-                    error: `Tool desconocido: ${name}. Herramientas disponibles: autorun.test, autorun.plan, autorun.checklist, autorun.verify, autorun.apply`,
+                    error: `Tool desconocido: ${name}. Herramientas disponibles: autorun.test, autorun.plan, autorun.checklist, autorun.verify, autorun.apply, autorun.handleUserMessage, autorun.discoverComponent, autorun.storybook.start, autorun.storybook.build, autorun.storybook.extract, autorun.problems.list, autorun.github.commit, autorun.lint, autorun.visualTest`,
                   },
                   null,
                   2
