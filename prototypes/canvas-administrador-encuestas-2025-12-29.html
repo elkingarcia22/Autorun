@@ -820,7 +820,7 @@
                     // Llamar al método original (que limpia el content-area y crea HeaderSection)
                     const result = originalUpdateContent.call(this, section, subSection);
                     
-                    // Función para eliminar HeaderSection y contenedor
+                    // Función para eliminar HeaderSection y contenedor (MÁS AGRESIVA)
                     const removeHeaderSectionAndContainer = () => {
                         const contentArea = document.querySelector('.content-area');
                         if (!contentArea) {
@@ -829,29 +829,48 @@
                         
                         let removed = false;
                         
-                        // Eliminar TODOS los elementos relacionados
+                        // 1. Eliminar por ID
                         const headerContainer = contentArea.querySelector('#header-section-container');
                         if (headerContainer) {
-                            console.log('🔵 [Encuestas] Eliminando HeaderSection');
+                            console.log('🔵 [Encuestas] Eliminando #header-section-container');
                             headerContainer.remove();
                             removed = true;
                         }
                         
-                        const headerSection = contentArea.querySelector('.ubits-header-section');
-                        if (headerSection) {
+                        // 2. Eliminar por clase .ubits-header-section
+                        const headerSections = contentArea.querySelectorAll('.ubits-header-section');
+                        headerSections.forEach(headerSection => {
                             console.log('🔵 [Encuestas] Eliminando .ubits-header-section');
-                            const container = headerSection.closest('#header-section-container');
-                            if (container) {
+                            const container = headerSection.closest('#header-section-container') || 
+                                            headerSection.closest('.section-single') ||
+                                            headerSection.parentElement;
+                            if (container && container !== contentArea) {
                                 container.remove();
                             } else {
                                 headerSection.remove();
                             }
                             removed = true;
-                        }
+                        });
                         
-                        // Eliminar contenedor debajo del HeaderSection (widget-contenido-principal)
-                        const widgetPrincipal = contentArea.querySelector('.widget-contenido-principal');
-                        if (widgetPrincipal) {
+                        // 3. Eliminar cualquier elemento que contenga "Encuestas" como título y tenga un botón "Acción"
+                        const allSections = contentArea.querySelectorAll('.section-single, [class*="header"], [class*="section"]');
+                        allSections.forEach(section => {
+                            const heading = section.querySelector('h1, h2, h3, h4, h5, h6');
+                            const button = section.querySelector('button');
+                            
+                            // Si tiene un heading con "Encuestas" y un botón, probablemente es el HeaderSection
+                            if (heading && button && 
+                                (heading.textContent.includes('Encuestas') || heading.textContent.includes('Módulo')) &&
+                                (button.textContent.includes('Acción') || button.querySelector('i.fa-plus'))) {
+                                console.log('🔵 [Encuestas] Eliminando HeaderSection detectado por contenido (título + botón)');
+                                section.remove();
+                                removed = true;
+                            }
+                        });
+                        
+                        // 4. Eliminar contenedor debajo del HeaderSection (widget-contenido-principal)
+                        const widgetPrincipals = contentArea.querySelectorAll('.widget-contenido-principal');
+                        widgetPrincipals.forEach(widgetPrincipal => {
                             console.log('🔵 [Encuestas] Eliminando .widget-contenido-principal');
                             const sectionSingle = widgetPrincipal.closest('.section-single');
                             if (sectionSingle) {
@@ -860,28 +879,34 @@
                                 widgetPrincipal.remove();
                             }
                             removed = true;
-                        }
+                        });
                         
-                        // También eliminar cualquier .content-sections que tenga contenido no deseado
+                        // 5. Eliminar cualquier .content-sections que tenga contenido no deseado
                         const contentSections = contentArea.querySelector('.content-sections');
                         if (contentSections) {
-                            // Solo eliminar si tiene contenido no deseado
-                            const hasUnwantedContent = contentSections.querySelector('.widget-contenido-principal') || 
-                                                      contentSections.querySelector('#header-section-container') ||
-                                                      contentSections.querySelector('.ubits-header-section');
-                            if (hasUnwantedContent) {
-                                console.log('🔵 [Encuestas] Limpiando .content-sections de contenido no deseado');
-                                // Eliminar solo el contenido no deseado, no todo el contenedor
-                                contentSections.querySelectorAll('.widget-contenido-principal, #header-section-container, .ubits-header-section').forEach(el => {
+                            // Buscar y eliminar cualquier elemento no deseado dentro de content-sections
+                            const unwantedSelectors = [
+                                '.widget-contenido-principal',
+                                '#header-section-container',
+                                '.ubits-header-section',
+                                '[class*="header-section"]',
+                                '[id*="header-section"]'
+                            ];
+                            
+                            unwantedSelectors.forEach(selector => {
+                                const elements = contentSections.querySelectorAll(selector);
+                                elements.forEach(el => {
                                     const parent = el.closest('.section-single');
                                     if (parent) {
+                                        console.log(`🔵 [Encuestas] Eliminando ${selector} dentro de .section-single`);
                                         parent.remove();
                                     } else {
+                                        console.log(`🔵 [Encuestas] Eliminando ${selector}`);
                                         el.remove();
                                     }
+                                    removed = true;
                                 });
-                                removed = true;
-                            }
+                            });
                         }
                         
                         return removed;
