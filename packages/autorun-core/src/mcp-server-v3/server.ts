@@ -85,20 +85,54 @@ export async function startAutorunMCPServerV3(): Promise<void> {
   server.setRequestHandler(CallToolRequestSchema, async (request) => {
     const { name, arguments: args } = request.params;
 
-    console.error(`🔧 [Autorun MCP v3] Tool llamado: ${name}`);
     console.error(
-      `   📝 Args: ${JSON.stringify(args, null, 2).substring(0, 200)}`
+      `🔧 [Autorun MCP v3] ========================================`
+    );
+    console.error(`🔧 [Autorun MCP v3] Tool llamado: ${name}`);
+    console.error(`   ⏰ Timestamp: ${new Date().toISOString()}`);
+    console.error(
+      `   📝 Args: ${JSON.stringify(args, null, 2).substring(0, 500)}`
     );
 
     try {
       // Normalizar nombre (soporta con punto y con guión bajo)
       const normalizedName = name.replace(/_/g, '.');
+      console.error(`   🔍 Nombre normalizado: ${normalizedName}`);
 
       switch (normalizedName) {
         case 'autorun.apply': {
+          console.error(`   ✅ [PASO 1] Importando autorunApply...`);
           const { autorunApply } = await import('./tools/apply.js');
+          console.error(`   ✅ [PASO 1] autorunApply importado`);
+
+          console.error(`   ✅ [PASO 2] Ejecutando autorunApply...`);
           const result = await autorunApply(args as any);
-          console.error(`✅ [Autorun MCP v3] autorun.apply completado`);
+          console.error(`   ✅ [PASO 2] autorunApply completado`);
+
+          console.error(
+            `✅ [Autorun MCP v3] autorun.apply completado exitosamente`
+          );
+          console.error(`   📊 Success: ${result.success}`);
+          console.error(
+            `   📁 Archivos escritos: ${result.filesWritten?.length || 0}`
+          );
+          console.error(`   ❌ Errores: ${result.errors?.length || 0}`);
+
+          // ⚠️ CRÍTICO: Verificar que el resultado sea serializable
+          try {
+            const serialized = JSON.stringify(result);
+            console.error(
+              `   ✅ Resultado serializable (${serialized.length} caracteres)`
+            );
+          } catch (serializeError: any) {
+            console.error(
+              `   ❌ Error serializando resultado: ${serializeError.message}`
+            );
+            throw new Error(
+              `Resultado no serializable: ${serializeError.message}`
+            );
+          }
+
           return {
             content: [
               {
@@ -116,9 +150,17 @@ export async function startAutorunMCPServerV3(): Promise<void> {
         }
       }
     } catch (error: any) {
+      console.error(
+        `❌ [Autorun MCP v3] ========================================`
+      );
       console.error(`❌ [Autorun MCP v3] Error ejecutando tool ${name}:`);
+      console.error(`   ⏰ Timestamp: ${new Date().toISOString()}`);
       console.error(`   Mensaje: ${error.message}`);
+      console.error(`   Tipo: ${error.constructor.name}`);
       console.error(`   Stack: ${error.stack}`);
+      if (error.cause) {
+        console.error(`   Causa: ${error.cause}`);
+      }
 
       // Retornar error estructurado
       throw new McpError(
