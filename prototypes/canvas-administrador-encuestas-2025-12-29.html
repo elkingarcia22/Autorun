@@ -1265,6 +1265,31 @@
                                 // Llamar al método original
                                 const result = originalUpdateContent.call(this, section, subSection);
                                 
+                                // Restaurar CardContent después de actualizar
+                                if (cardHTML) {
+                                    setTimeout(() => {
+                                        const newCardContainer = document.getElementById('card-content-container');
+                                        if (!newCardContainer) {
+                                            // Recrear contenedor si fue eliminado
+                                            createCardContent();
+                                        } else if (newCardContainer.innerHTML.trim() === '') {
+                                            // Restaurar contenido si fue vaciado
+                                            newCardContainer.innerHTML = cardHTML;
+                                            console.log('✅ [CardContent] CardContent restaurado después de updateContent');
+                                        }
+                                    }, 100);
+                                }
+                                
+                                return result;
+                            };
+                        }
+                    }
+                    
+                    // Ejecutar createCardContent después de que el ContentManager actualice el contenido
+                    setTimeout(() => {
+                        createCardContent();
+                    }, 1500); // Esperar a que el ContentManager termine de actualizar
+                                
                                 // Después de que ContentManager actualice, agregar CardContent
                                 setTimeout(() => {
                                     createCardContent();
