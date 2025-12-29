@@ -1108,6 +1108,59 @@
                             }, 200); // Delay mínimo solo para asegurar que el DOM esté listo
                         });
                     }
+                    
+                    // ========================================
+                    // CARD CONTENT - Implementación debajo del SubNav
+                    // ========================================
+                    setTimeout(() => {
+                        const cardContainer = document.getElementById('card-content-container');
+                        if (cardContainer && window.createCard) {
+                            try {
+                                const cardElement = window.createCard({
+                                    type: 'Curso',
+                                    title: 'Segmenta la experiencia del cliente',
+                                    provider: 'UBITS',
+                                    duration: '60 min',
+                                    level: 'Básico',
+                                    progress: 0,
+                                    status: 'default',
+                                    image: 'images/cards-learn/segmenta-la-experiencia-del-cliente.jpg',
+                                    competency: 'Product design',
+                                    language: 'Español'
+                                });
+                                if (cardElement) {
+                                    cardContainer.appendChild(cardElement);
+                                    console.log('✅ [CardContent] CardContent creado exitosamente');
+                                }
+                            } catch (error) {
+                                console.error('❌ [CardContent] Error creando CardContent:', error);
+                            }
+                        } else if (cardContainer && window.renderCardContent) {
+                            // Fallback: usar renderCardContent si createCard no está disponible
+                            try {
+                                const cardHTML = window.renderCardContent({
+                                    type: 'Curso',
+                                    title: 'Segmenta la experiencia del cliente',
+                                    provider: 'UBITS',
+                                    duration: '60 min',
+                                    level: 'Básico',
+                                    progress: 0,
+                                    status: 'default',
+                                    image: 'images/cards-learn/segmenta-la-experiencia-del-cliente.jpg',
+                                    competency: 'Product design',
+                                    language: 'Español'
+                                });
+                                if (cardHTML) {
+                                    cardContainer.innerHTML = cardHTML;
+                                    console.log('✅ [CardContent] CardContent renderizado exitosamente');
+                                }
+                            } catch (error) {
+                                console.error('❌ [CardContent] Error renderizando CardContent:', error);
+                            }
+                        } else {
+                            console.warn('⚠️ [CardContent] Contenedor o función createCard/renderCardContent no disponible');
+                        }
+                    }, 500); // Esperar un poco más para asegurar que los componentes estén cargados
                 }, 100);
             });
         });
