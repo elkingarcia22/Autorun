@@ -1294,11 +1294,12 @@
                         }
                     }
                     
-                    // Crear CardContent inicial después de que todo esté listo
-                    setTimeout(() => {
-                        createCardContent();
-                    }, 1500); // Esperar más tiempo para asegurar que los componentes estén cargados
-                }, 100);
+                        // Crear CardContent inicial después de que todo esté listo
+                        setTimeout(() => {
+                            createCardContent();
+                        }, 1500); // Esperar más tiempo para asegurar que los componentes estén cargados
+                    }, 100);
+                }, 1500); // Esperar a que el DOMContentLoaded principal termine
             });
         }); // Fin del bloque DOMContentLoaded
         
