@@ -948,7 +948,9 @@
                                 node.querySelector?.('#header-section-container') ||
                                 node.querySelector?.('.ubits-header-section')) {
                                 console.log('🔵 [Encuestas] MutationObserver: Eliminando HeaderSection detectado dinámicamente');
-                                requestAnimationFrame(() => {
+                                
+                                // Función para eliminar HeaderSection
+                                const removeHeaderSection = () => {
                                     const contentArea = document.querySelector('.content-area');
                                     if (contentArea) {
                                         const headerContainer = contentArea.querySelector('#header-section-container');
@@ -965,14 +967,27 @@
                                             }
                                         }
                                     }
-                                });
+                                };
+                                
+                                // Intentar eliminar inmediatamente
+                                removeHeaderSection();
+                                
+                                // Intentar con requestAnimationFrame
+                                requestAnimationFrame(removeHeaderSection);
+                                
+                                // Intentar con setTimeout
+                                setTimeout(removeHeaderSection, 0);
+                                setTimeout(removeHeaderSection, 50);
+                                setTimeout(removeHeaderSection, 100);
                             }
                             
                             // Verificar si es widget-contenido-principal
                             if (node.classList?.contains('widget-contenido-principal') ||
                                 node.querySelector?.('.widget-contenido-principal')) {
                                 console.log('🔵 [Encuestas] MutationObserver: Eliminando widget-contenido-principal detectado dinámicamente');
-                                requestAnimationFrame(() => {
+                                
+                                // Función para eliminar widget-contenido-principal
+                                const removeWidgetPrincipal = () => {
                                     const widgetPrincipal = document.querySelector('.widget-contenido-principal');
                                     if (widgetPrincipal) {
                                         const sectionSingle = widgetPrincipal.closest('.section-single');
@@ -982,7 +997,18 @@
                                             widgetPrincipal.remove();
                                         }
                                     }
-                                });
+                                };
+                                
+                                // Intentar eliminar inmediatamente
+                                removeWidgetPrincipal();
+                                
+                                // Intentar con requestAnimationFrame
+                                requestAnimationFrame(removeWidgetPrincipal);
+                                
+                                // Intentar con setTimeout
+                                setTimeout(removeWidgetPrincipal, 0);
+                                setTimeout(removeWidgetPrincipal, 50);
+                                setTimeout(removeWidgetPrincipal, 100);
                             }
                         }
                     });
