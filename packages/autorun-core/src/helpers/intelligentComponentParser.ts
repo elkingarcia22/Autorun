@@ -319,6 +319,16 @@ export class IntelligentComponentParser {
           /\bdropdown\b/i,
         ],
       },
+      {
+        name: 'CardContent',
+        patterns: [
+          /\bcard\s+content\b/i,
+          /\bcardcontent\b/i,
+          /\bcontenido\s+de\s+tarjeta\b/i,
+          /\bcontentcard\b/i,
+          /(?:implementar|crear|agregar|poner|hacer).*(?:card\s+content|contenido\s+de\s+tarjeta|contentcard)/i,
+        ],
+      },
     ];
   }
 
