@@ -1206,6 +1206,8 @@
                                 cardContainer = document.createElement('div');
                                 cardContainer.id = 'card-content-container';
                                 cardContainer.className = 'section-single';
+                                // ⚠️ CRÍTICO: Agregar estilo para limitar el ancho de la card (como en Storybook)
+                                cardContainer.style.cssText = 'max-width: 400px; width: 100%;';
                                 // Insertar al inicio de content-sections (después del header-section si existe)
                                 const headerSection = contentArea.querySelector('#header-section-container');
                                 if (headerSection && headerSection.nextElementSibling === contentSections) {
@@ -1213,7 +1215,7 @@
                                 } else {
                                     contentSections.insertBefore(cardContainer, contentSections.firstChild);
                                 }
-                                console.log('✅ [CardContent] Contenedor creado');
+                                console.log('✅ [CardContent] Contenedor creado con max-width: 400px');
                             } else {
                                 console.warn('⚠️ [CardContent] content-sections no encontrado');
                                 return;
