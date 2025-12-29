@@ -616,7 +616,11 @@ export function detectComponentFromMessage(message: string): string | null {
       priority: 4,
     },
     {
-      pattern: new RegExp(`${ACTION_VERBS_PATTERN}.*subnav`, 'i'),
+      // ⚠️ MEJORADO: Solo detectar SubNav si NO hay otro componente mencionado explícitamente
+      pattern: new RegExp(
+        `${ACTION_VERBS_PATTERN}.*subnav(?!.*(?:card|button|input|table|modal|drawer|tabs|accordion|carousel|gallery|stepper|timeline|header|footer|sidebar|breadcrumb|menu|select|checkbox|radio|datepicker|calendar|list|pagination|data\s*table|data-table))`,
+        'i'
+      ),
       component: 'SubNav',
       priority: 4,
     },
