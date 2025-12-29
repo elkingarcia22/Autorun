@@ -252,7 +252,10 @@ export interface AutorunProblemsListOutput {
     id: string;
     category: string;
     severity: string;
-    message: string;
+    message?: string; // Opcional para compatibilidad
+    description?: string; // Opcional para compatibilidad
+    detectedAt?: string; // Opcional para compatibilidad
+    metadata?: any; // Opcional para compatibilidad
     resolved: boolean;
   }>;
   total: number;
