@@ -793,6 +793,14 @@
                     
                     console.log('🔵 [Encuestas] updateContent interceptado para sección:', section);
                     
+                    // ⚠️ CRÍTICO: Preservar Card Content antes de que se limpie el content-area
+                    const cardContainer = document.getElementById('card-content-container');
+                    let cardHTML = null;
+                    if (cardContainer && cardContainer.innerHTML.trim()) {
+                        cardHTML = cardContainer.innerHTML;
+                        console.log('🔵 [Encuestas] Card Content preservada antes de updateContent');
+                    }
+                    
                     // Llamar al método original (que limpia el content-area y crea HeaderSection)
                     const result = originalUpdateContent.call(this, section, subSection);
                     
@@ -831,6 +839,21 @@
                         if (widgetPrincipal) {
                             console.log('🔵 [Encuestas] Eliminando .widget-contenido-principal');
                             widgetPrincipal.closest('.section-single')?.remove() || widgetPrincipal.remove();
+                        }
+                        
+                        // ⚠️ CRÍTICO: Restaurar Card Content después de limpiar
+                        if (cardHTML) {
+                            let restoredContainer = document.getElementById('card-content-container');
+                            if (!restoredContainer) {
+                                // Recrear contenedor si fue eliminado
+                                restoredContainer = document.createElement('div');
+                                restoredContainer.id = 'card-content-container';
+                                restoredContainer.style.padding = 'var(--ubits-spacing-xl, 20px) 0';
+                                contentArea.appendChild(restoredContainer);
+                                console.log('🔵 [Encuestas] Contenedor de Card Content recreado');
+                            }
+                            restoredContainer.innerHTML = cardHTML;
+                            console.log('🔵 [Encuestas] Card Content restaurada después de updateContent');
                         }
                     });
                     
