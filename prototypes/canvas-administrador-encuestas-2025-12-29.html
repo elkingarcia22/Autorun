@@ -1363,10 +1363,73 @@
 
         // Función para crear el SimpleCard
         function createSimpleCard() {
-            const simpleCardContainer = document.getElementById('simple-card-container');
-            if (!simpleCardContainer) {
-                console.warn('⚠️ [SimpleCard] Contenedor no encontrado');
+            const contentArea = document.querySelector('.content-area');
+            if (!contentArea) {
+                console.warn('⚠️ [SimpleCard] content-area no encontrado');
                 return;
+            }
+
+            // Buscar o crear contenedor
+            let simpleCardContainer = document.getElementById('simple-card-container');
+            if (!simpleCardContainer) {
+                const contentSections = contentArea.querySelector('.content-sections');
+                if (contentSections) {
+                    // Buscar el contenedor padre que tiene ambos cards (CardContent y SimpleCard)
+                    const cardsWrapper = contentSections.querySelector('[style*="display: flex"]');
+                    if (cardsWrapper) {
+                        // Si existe el wrapper, crear el contenedor dentro de él
+                        simpleCardContainer = document.createElement('div');
+                        simpleCardContainer.id = 'simple-card-container';
+                        simpleCardContainer.className = 'section-single';
+                        simpleCardContainer.style.cssText = 'max-width: 400px; width: 100%;';
+                        cardsWrapper.appendChild(simpleCardContainer);
+                        console.log('✅ [SimpleCard] Contenedor creado dentro del wrapper existente');
+                    } else {
+                        // Si no existe el wrapper, crearlo con ambos contenedores
+                        const cardContentContainer = document.getElementById('card-content-container');
+                        if (cardContentContainer) {
+                            // Crear wrapper
+                            const wrapper = document.createElement('div');
+                            wrapper.style.cssText = 'display: flex; gap: var(--ubits-spacing-lg, 24px); width: 100%; flex-wrap: wrap;';
+                            
+                            // Mover CardContent al wrapper
+                            const parent = cardContentContainer.parentNode;
+                            parent.insertBefore(wrapper, cardContentContainer);
+                            wrapper.appendChild(cardContentContainer);
+                            
+                            // Crear SimpleCard container
+                            simpleCardContainer = document.createElement('div');
+                            simpleCardContainer.id = 'simple-card-container';
+                            simpleCardContainer.className = 'section-single';
+                            simpleCardContainer.style.cssText = 'max-width: 400px; width: 100%;';
+                            wrapper.appendChild(simpleCardContainer);
+                            console.log('✅ [SimpleCard] Wrapper y contenedor creados');
+                        } else {
+                            // Crear wrapper y ambos contenedores desde cero
+                            const wrapper = document.createElement('div');
+                            wrapper.style.cssText = 'display: flex; gap: var(--ubits-spacing-lg, 24px); width: 100%; flex-wrap: wrap;';
+                            
+                            // Insertar al inicio de content-sections
+                            const headerSection = contentArea.querySelector('#header-section-container');
+                            if (headerSection && headerSection.nextElementSibling === contentSections) {
+                                contentSections.insertBefore(wrapper, contentSections.firstChild);
+                            } else {
+                                contentSections.insertBefore(wrapper, contentSections.firstChild);
+                            }
+                            
+                            // Crear SimpleCard container
+                            simpleCardContainer = document.createElement('div');
+                            simpleCardContainer.id = 'simple-card-container';
+                            simpleCardContainer.className = 'section-single';
+                            simpleCardContainer.style.cssText = 'max-width: 400px; width: 100%;';
+                            wrapper.appendChild(simpleCardContainer);
+                            console.log('✅ [SimpleCard] Wrapper y contenedor creados desde cero');
+                        }
+                    }
+                } else {
+                    console.warn('⚠️ [SimpleCard] content-sections no encontrado');
+                    return;
+                }
             }
 
             // Si ya tiene contenido, no recrear
