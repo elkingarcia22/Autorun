@@ -1113,11 +1113,42 @@
                     
                     // ========================================
                     // CARD CONTENT - Implementación debajo del SubNav
+                    // ⚠️ CRÍTICO: Interceptar ContentManager para preservar CardContent
                     // ========================================
-                    setTimeout(() => {
-                        const cardContainer = document.getElementById('card-content-container');
+                    
+                    // Función para crear el CardContent
+                    function createCardContent() {
+                        const contentArea = document.querySelector('.content-area');
+                        if (!contentArea) {
+                            console.warn('⚠️ [CardContent] content-area no encontrado');
+                            return;
+                        }
+                        
+                        // Buscar o crear contenedor
+                        let cardContainer = document.getElementById('card-content-container');
                         if (!cardContainer) {
-                            console.warn('⚠️ [CardContent] Contenedor no encontrado');
+                            const contentSections = contentArea.querySelector('.content-sections');
+                            if (contentSections) {
+                                cardContainer = document.createElement('div');
+                                cardContainer.id = 'card-content-container';
+                                cardContainer.className = 'section-single';
+                                // Insertar al inicio de content-sections (después del header-section si existe)
+                                const headerSection = contentArea.querySelector('#header-section-container');
+                                if (headerSection && headerSection.nextElementSibling === contentSections) {
+                                    contentSections.insertBefore(cardContainer, contentSections.firstChild);
+                                } else {
+                                    contentSections.insertBefore(cardContainer, contentSections.firstChild);
+                                }
+                                console.log('✅ [CardContent] Contenedor creado');
+                            } else {
+                                console.warn('⚠️ [CardContent] content-sections no encontrado');
+                                return;
+                            }
+                        }
+                        
+                        // Si ya tiene contenido, no recrear
+                        if (cardContainer.children.length > 0) {
+                            console.log('✅ [CardContent] CardContent ya existe');
                             return;
                         }
                         
@@ -1183,28 +1214,7 @@
                                 console.log('✅ [CardContent] Script cargado, intentando crear CardContent...');
                                 // Reintentar después de cargar el script
                                 setTimeout(() => {
-                                    if (window.createCard) {
-                                        try {
-                                            const cardElement = window.createCard({
-                                                type: 'Curso',
-                                                title: 'Segmenta la experiencia del cliente',
-                                                provider: 'UBITS',
-                                                duration: '60 min',
-                                                level: 'Básico',
-                                                progress: 0,
-                                                status: 'default',
-                                                image: 'images/cards-learn/segmenta-la-experiencia-del-cliente.jpg',
-                                                competency: 'Product design',
-                                                language: 'Español'
-                                            });
-                                            if (cardElement) {
-                                                cardContainer.appendChild(cardElement);
-                                                console.log('✅ [CardContent] CardContent creado después de cargar script');
-                                            }
-                                        } catch (error) {
-                                            console.error('❌ [CardContent] Error después de cargar script:', error);
-                                        }
-                                    }
+                                    createCardContent(); // Llamar recursivamente
                                 }, 200);
                             };
                             script.onerror = () => {
@@ -1212,7 +1222,31 @@
                             };
                             document.head.appendChild(script);
                         }
-                    }, 1000); // Esperar más tiempo para asegurar que los componentes estén cargados
+                    }
+                    
+                    // Interceptar ContentManager.updateContent para preservar CardContent
+                    if (window.UBITS_ContentManager) {
+                        const originalUpdateContent = window.UBITS_ContentManager.updateContent;
+                        if (originalUpdateContent) {
+                            window.UBITS_ContentManager.updateContent = function(section, subSection) {
+                                // Llamar al método original
+                                const result = originalUpdateContent.call(this, section, subSection);
+                                
+                                // Después de que ContentManager actualice, agregar CardContent
+                                setTimeout(() => {
+                                    createCardContent();
+                                }, 100);
+                                
+                                return result;
+                            };
+                            console.log('✅ [CardContent] ContentManager.updateContent interceptado');
+                        }
+                    }
+                    
+                    // Crear CardContent inicial después de que todo esté listo
+                    setTimeout(() => {
+                        createCardContent();
+                    }, 1500); // Esperar más tiempo para asegurar que los componentes estén cargados
                 }, 100);
             });
         });
