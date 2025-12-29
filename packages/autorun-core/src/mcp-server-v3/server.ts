@@ -5,7 +5,7 @@
  * - Sin complejidad innecesaria
  * - Manejo robusto de errores
  * - Logs claros y útiles
- * - Solo herramientas esenciales
+ * - TODAS las herramientas necesarias para el flujo completo
  */
 
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
@@ -16,6 +16,22 @@ import {
   ErrorCode,
   McpError,
 } from '@modelcontextprotocol/sdk/types.js';
+
+// Importar todas las herramientas necesarias
+import { autorunTest } from '../mcp-server-v2/tools/test.js';
+import { autorunPlan } from '../mcp-server-v2/tools/plan.js';
+import { autorunChecklist } from '../mcp-server-v2/tools/checklist.js';
+import { autorunVerify } from '../mcp-server-v2/tools/verify.js';
+import { autorunApply } from '../mcp-server-v2/tools/apply.js';
+import { autorunHandleUserMessage } from '../mcp-server-v2/tools/handleUserMessage.js';
+import { autorunDiscoverComponent } from '../mcp-server-v2/tools/discoverComponent.js';
+import { autorunStorybookStart } from '../mcp-server-v2/tools/storybookStart.js';
+import { autorunStorybookBuild } from '../mcp-server-v2/tools/storybookBuild.js';
+import { autorunStorybookExtract } from '../mcp-server-v2/tools/storybookExtract.js';
+import { autorunProblemsList } from '../mcp-server-v2/tools/problemsList.js';
+import { autorunGitHubCommit } from '../mcp-server-v2/tools/githubCommit.js';
+import { autorunLint } from '../mcp-server-v2/tools/lint.js';
+import { autorunVisualTest } from '../mcp-server-v2/tools/visualTest.js';
 
 /**
  * ✅ Inicia el servidor MCP de Autorun v3
