@@ -556,6 +556,25 @@ export function detectComponentFromMessage(message: string): string | null {
       component: 'EmptyState',
       priority: 6,
     },
+    // ⚠️ CRÍTICO: CardContent DEBE estar ANTES de SelectionCard y Carousel para evitar falsos positivos
+    {
+      pattern: new RegExp(
+        `${ACTION_VERBS_PATTERN}.*(?:card\s+content|cardcontent|contenido\s+de\s+tarjeta|contentcard)`,
+        'i'
+      ),
+      component: 'CardContent',
+      priority: 13, // Mayor prioridad que SelectionCard y Carousel
+    },
+    {
+      pattern: /\bcard\s+content\b|\bcardcontent\b|\bcontentcard\b/i,
+      component: 'CardContent',
+      priority: 12,
+    },
+    {
+      pattern: /\bcontenido\s+de\s+tarjeta\b/i,
+      component: 'CardContent',
+      priority: 11,
+    },
     // ⚠️ CRÍTICO: Carousel DEBE estar ANTES de SelectionCard para evitar falsos positivos
     // porque "carousel" puede aparecer en otros contextos pero debe tener prioridad
     {
