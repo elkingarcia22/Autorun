@@ -1116,6 +1116,80 @@
                     // ⚠️ CRÍTICO: Interceptar ContentManager para preservar CardContent
                     // ========================================
                     
+                    // Función helper para renderizar iconos
+                    function renderIconHelper(iconName, iconStyle = 'regular') {
+                        const iconClass = iconStyle === 'regular' ? 'far' : 'fas';
+                        const name = iconName.startsWith('fa-') ? iconName : `fa-${iconName}`;
+                        return `<i class="${iconClass} ${name}"></i>`;
+                    }
+                    
+                    // Función para renderizar CardContent HTML directamente
+                    function renderCardContentHTML(cardData) {
+                        const statusConfig = {
+                            default: { class: '', text: '' },
+                            progress: { class: 'course-status--progress', text: 'En progreso' },
+                            completed: { class: 'course-status--completed', text: 'Completado' }
+                        };
+                        const status = statusConfig[cardData.status] || statusConfig.default;
+                        const levelIcon = cardData.level === 'Básico' ? 'fa-circle' : cardData.level === 'Intermedio' ? 'fa-circle-half-stroke' : 'fa-circle-check';
+                        
+                        return `
+    <div class="course-card" data-progress="${cardData.progress}" data-status="${cardData.status}">
+      <div class="course-thumbnail-wrapper">
+        <div class="course-thumbnail">
+          <img src="${cardData.image}" alt="${cardData.title}" class="course-image">
+        </div>
+        <div class="course-progress-overlay">
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: ${cardData.progress}%"></div>
+          </div>
+        </div>
+      </div>
+      <div class="course-content">
+        <div class="course-header">
+          <div class="course-type-status">
+            <span class="course-type ubits-body-sm-regular">${cardData.type}</span>
+            ${status.text ? `<span class="course-status ${status.class} ubits-body-sm-bold">${status.text}</span>` : ''}
+          </div>
+        </div>
+        <h3 class="course-title ubits-body-sm-bold">${cardData.title}</h3>
+        <div class="course-provider">
+          <div class="provider-avatar">
+            <img src="${cardData.providerLogo || '/images/providers/ubits-logo.png'}" alt="${cardData.provider}" class="provider-icon">
+          </div>
+          <span class="provider-name ubits-body-sm-regular">${cardData.provider}</span>
+        </div>
+        <div class="course-competency">
+          <div class="spec-icon">
+            ${renderIconHelper('tag', 'regular')}
+          </div>
+          <span class="ubits-body-sm-regular">${cardData.competency}</span>
+        </div>
+        <div class="course-specs">
+          <div class="spec-item">
+            <div class="spec-icon">
+              ${renderIconHelper(levelIcon.replace('fa-', ''), 'regular')}
+            </div>
+            <span class="ubits-body-sm-regular">${cardData.level}</span>
+          </div>
+          <div class="spec-item">
+            <div class="spec-icon">
+              ${renderIconHelper('clock', 'regular')}
+            </div>
+            <span class="ubits-body-sm-regular">${cardData.duration}</span>
+          </div>
+          <div class="spec-item">
+            <div class="spec-icon">
+              ${renderIconHelper('globe', 'regular')}
+            </div>
+            <span class="ubits-body-sm-regular">${cardData.language}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  `.trim();
+                    }
+                    
                     // Función para crear el CardContent
                     function createCardContent() {
                         const contentArea = document.querySelector('.content-area');
@@ -1152,75 +1226,27 @@
                             return;
                         }
                         
-                        // Intentar múltiples métodos para crear el CardContent
-                        let cardCreated = false;
-                        
-                        // Método 1: window.createCard (si está disponible)
-                        if (window.createCard && !cardCreated) {
-                            try {
-                                const cardElement = window.createCard({
-                                    type: 'Curso',
-                                    title: 'Segmenta la experiencia del cliente',
-                                    provider: 'UBITS',
-                                    duration: '60 min',
-                                    level: 'Básico',
-                                    progress: 0,
-                                    status: 'default',
-                                    image: 'images/cards-learn/segmenta-la-experiencia-del-cliente.jpg',
-                                    competency: 'Product design',
-                                    language: 'Español'
-                                });
-                                if (cardElement) {
-                                    cardContainer.appendChild(cardElement);
-                                    console.log('✅ [CardContent] CardContent creado con createCard()');
-                                    cardCreated = true;
-                                }
-                            } catch (error) {
-                                console.warn('⚠️ [CardContent] Error con createCard():', error.message);
-                            }
-                        }
-                        
-                        // Método 2: window.renderCardContent (si está disponible)
-                        if (!cardCreated && window.renderCardContent) {
-                            try {
-                                const cardHTML = window.renderCardContent({
-                                    type: 'Curso',
-                                    title: 'Segmenta la experiencia del cliente',
-                                    provider: 'UBITS',
-                                    duration: '60 min',
-                                    level: 'Básico',
-                                    progress: 0,
-                                    status: 'default',
-                                    image: 'images/cards-learn/segmenta-la-experiencia-del-cliente.jpg',
-                                    competency: 'Product design',
-                                    language: 'Español'
-                                });
-                                if (cardHTML) {
-                                    cardContainer.innerHTML = cardHTML;
-                                    console.log('✅ [CardContent] CardContent renderizado con renderCardContent()');
-                                    cardCreated = true;
-                                }
-                            } catch (error) {
-                                console.warn('⚠️ [CardContent] Error con renderCardContent():', error.message);
-                            }
-                        }
-                        
-                        // Método 3: Cargar dinámicamente desde Storybook
-                        if (!cardCreated) {
-                            console.log('📚 [CardContent] Cargando componente dinámicamente desde Storybook...');
-                            const script = document.createElement('script');
-                            script.src = 'https://ubits-storybook10.vercel.app/components/card/src/CardContentProvider.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT';
-                            script.onload = () => {
-                                console.log('✅ [CardContent] Script cargado, intentando crear CardContent...');
-                                // Reintentar después de cargar el script
-                                setTimeout(() => {
-                                    createCardContent(); // Llamar recursivamente
-                                }, 200);
+                        // Crear CardContent usando HTML directo
+                        try {
+                            const cardData = {
+                                type: 'Curso',
+                                title: 'Segmenta la experiencia del cliente',
+                                provider: 'UBITS',
+                                providerLogo: '/images/providers/ubits-logo.png',
+                                duration: '60 min',
+                                level: 'Básico',
+                                progress: 0,
+                                status: 'default',
+                                image: 'images/cards-learn/segmenta-la-experiencia-del-cliente.jpg',
+                                competency: 'Product design',
+                                language: 'Español'
                             };
-                            script.onerror = () => {
-                                console.error('❌ [CardContent] Error cargando script desde Storybook');
-                            };
-                            document.head.appendChild(script);
+                            
+                            const cardHTML = renderCardContentHTML(cardData);
+                            cardContainer.innerHTML = cardHTML;
+                            console.log('✅ [CardContent] CardContent creado exitosamente');
+                        } catch (error) {
+                            console.error('❌ [CardContent] Error creando CardContent:', error);
                         }
                     }
                     
@@ -1229,6 +1255,13 @@
                         const originalUpdateContent = window.UBITS_ContentManager.updateContent;
                         if (originalUpdateContent) {
                             window.UBITS_ContentManager.updateContent = function(section, subSection) {
+                                // Preservar CardContent antes de actualizar
+                                const cardContainer = document.getElementById('card-content-container');
+                                let cardHTML = null;
+                                if (cardContainer) {
+                                    cardHTML = cardContainer.innerHTML;
+                                }
+                                
                                 // Llamar al método original
                                 const result = originalUpdateContent.call(this, section, subSection);
                                 
