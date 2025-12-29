@@ -64,7 +64,10 @@ export async function autorunApply(
         verification: {
           preImplementation: false,
           postImplementation: false,
+          errors: ['El mensaje no puede estar vacío'],
+          warnings: [],
         },
+        components: [],
       };
     }
     console.error('   ✅ [PASO 1] Input válido');
@@ -255,7 +258,12 @@ export async function autorunApply(
       verification: {
         preImplementation: false,
         postImplementation: false,
+        errors: [
+          error.message || 'Error desconocido al ejecutar autorun.apply()',
+        ],
+        warnings: [],
       },
+      components: [],
     };
   }
 }
