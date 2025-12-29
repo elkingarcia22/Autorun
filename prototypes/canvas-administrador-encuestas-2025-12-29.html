@@ -1229,28 +1229,32 @@
                         }
                         
                         // Función helper para obtener la ruta del logo del proveedor
+                        // ⚠️ CRÍTICO: Las rutas en PROVIDERS usan 'assets/images/', pero en Storybook se mapean a '/images/'
+                        // En Vercel, las imágenes están en: https://ubits-storybook10.vercel.app/images/
                         function getProviderLogo(provider) {
                             const PROVIDERS = {
-                                'UBITS': 'https://ubits-storybook10.vercel.app/images/providers/ubits-logo.png',
-                                'Microsoft': 'https://ubits-storybook10.vercel.app/images/providers/microsoft-logo.png',
-                                'Hubspot': 'https://ubits-storybook10.vercel.app/images/providers/hubspot-logo.png',
-                                'Harvard Business Publishing': 'https://ubits-storybook10.vercel.app/images/providers/harvard-logo.png',
-                                'TED': 'https://ubits-storybook10.vercel.app/images/providers/ted-logo.png',
-                                'AWS': 'https://ubits-storybook10.vercel.app/images/providers/aws-logo.png',
-                                'Universidad de Los Andes': 'https://ubits-storybook10.vercel.app/images/providers/andes-logo.png',
-                                'Advanced English': 'https://ubits-storybook10.vercel.app/images/providers/advanced-english-logo.png',
-                                'IE University': 'https://ubits-storybook10.vercel.app/images/providers/ie-university-logo.png',
-                                'Código Facilito': 'https://ubits-storybook10.vercel.app/images/providers/codigo-facilito-logo.png',
-                                'Hackers del Talento': 'https://ubits-storybook10.vercel.app/images/providers/hackers-logo.png',
-                                'All Ears English': 'https://ubits-storybook10.vercel.app/images/providers/all-ears-logo.png',
-                                'American & British Academy': 'https://ubits-storybook10.vercel.app/images/providers/american-british-logo.png',
-                                'Bureau Veritas': 'https://ubits-storybook10.vercel.app/images/providers/bureau-veritas-logo.png',
-                                'Welu': 'https://ubits-storybook10.vercel.app/images/providers/welu-logo.png',
-                                'Figsha Smart Consulting': 'https://ubits-storybook10.vercel.app/images/providers/figsha-logo.png',
-                                'Instafit': 'https://ubits-storybook10.vercel.app/images/providers/instafit-logo.png',
-                                'WOBI': 'https://ubits-storybook10.vercel.app/images/providers/wobi-logo.png'
+                                'UBITS': 'assets/images/Favicons/UBITS.jpg',
+                                'Microsoft': 'assets/images/Favicons/Microsoft.jpg',
+                                'Hubspot': 'assets/images/Favicons/Hubspot.jpg',
+                                'Harvard Business Publishing': 'assets/images/Favicons/Harvard-Business-Publishing.jpg',
+                                'TED': 'assets/images/Favicons/TED.jpg',
+                                'AWS': 'assets/images/Favicons/AWS.jpg',
+                                'Universidad de Los Andes': 'assets/images/Favicons/Universidad-de-Los Andes.jpg',
+                                'Advanced English': 'assets/images/Favicons/Advanced-English.jpg',
+                                'IE University': 'assets/images/Favicons/IE-University-Publishing.jpg',
+                                'Código Facilito': 'assets/images/Favicons/Código-Facilito.jpg',
+                                'Hackers del Talento': 'assets/images/Favicons/Hackers-del-Talento.jpg',
+                                'All Ears English': 'assets/images/Favicons/All Ears English.jpg',
+                                'American & British Academy': 'assets/images/Favicons/American & British Academy.jpg',
+                                'Bureau Veritas': 'assets/images/Favicons/Bureau-Veritas.jpg',
+                                'Welu': 'assets/images/Favicons/Welu.jpg',
+                                'Figsha Smart Consulting': 'assets/images/Favicons/Figsha Smart Consulting.jpg',
+                                'Instafit': 'assets/images/Favicons/Instafit.jpg',
+                                'WOBI': 'assets/images/Favicons/WOBI.jpg'
                             };
-                            return PROVIDERS[provider] || PROVIDERS['UBITS']; // Fallback a UBITS
+                            const logoPath = PROVIDERS[provider] || PROVIDERS['UBITS']; // Fallback a UBITS
+                            // Convertir 'assets/images/' a ruta de Vercel '/images/'
+                            return `https://ubits-storybook10.vercel.app${logoPath.replace('assets/images/', '/images/')}?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT`;
                         }
                         
                         // Crear CardContent usando HTML directo
