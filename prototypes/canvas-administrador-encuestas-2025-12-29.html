@@ -820,18 +820,21 @@
                     // Llamar al método original (que limpia el content-area y crea HeaderSection)
                     const result = originalUpdateContent.call(this, section, subSection);
                     
-                    // ⚠️ CRÍTICO: Usar requestAnimationFrame para timing correcto
-                    requestAnimationFrame(() => {
+                    // Función para eliminar HeaderSection y contenedor
+                    const removeHeaderSectionAndContainer = () => {
                         const contentArea = document.querySelector('.content-area');
                         if (!contentArea) {
-                            return;
+                            return false;
                         }
+                        
+                        let removed = false;
                         
                         // Eliminar TODOS los elementos relacionados
                         const headerContainer = contentArea.querySelector('#header-section-container');
                         if (headerContainer) {
                             console.log('🔵 [Encuestas] Eliminando HeaderSection');
                             headerContainer.remove();
+                            removed = true;
                         }
                         
                         const headerSection = contentArea.querySelector('.ubits-header-section');
@@ -843,6 +846,7 @@
                             } else {
                                 headerSection.remove();
                             }
+                            removed = true;
                         }
                         
                         // Eliminar contenedor debajo del HeaderSection (widget-contenido-principal)
@@ -855,6 +859,7 @@
                             } else {
                                 widgetPrincipal.remove();
                             }
+                            removed = true;
                         }
                         
                         // También eliminar cualquier .content-sections que tenga contenido no deseado
@@ -862,11 +867,12 @@
                         if (contentSections) {
                             // Solo eliminar si tiene contenido no deseado
                             const hasUnwantedContent = contentSections.querySelector('.widget-contenido-principal') || 
-                                                      contentSections.querySelector('#header-section-container');
+                                                      contentSections.querySelector('#header-section-container') ||
+                                                      contentSections.querySelector('.ubits-header-section');
                             if (hasUnwantedContent) {
                                 console.log('🔵 [Encuestas] Limpiando .content-sections de contenido no deseado');
                                 // Eliminar solo el contenido no deseado, no todo el contenedor
-                                contentSections.querySelectorAll('.widget-contenido-principal, #header-section-container').forEach(el => {
+                                contentSections.querySelectorAll('.widget-contenido-principal, #header-section-container, .ubits-header-section').forEach(el => {
                                     const parent = el.closest('.section-single');
                                     if (parent) {
                                         parent.remove();
@@ -874,9 +880,38 @@
                                         el.remove();
                                     }
                                 });
+                                removed = true;
                             }
                         }
+                        
+                        return removed;
+                    };
+                    
+                    // ⚠️ CRÍTICO: Intentar eliminar inmediatamente y luego con múltiples intentos
+                    // Intentar inmediatamente
+                    removeHeaderSectionAndContainer();
+                    
+                    // Intentar con requestAnimationFrame
+                    requestAnimationFrame(() => {
+                        removeHeaderSectionAndContainer();
                     });
+                    
+                    // Intentar con setTimeout (múltiples intentos para asegurar eliminación)
+                    setTimeout(() => {
+                        removeHeaderSectionAndContainer();
+                    }, 0);
+                    
+                    setTimeout(() => {
+                        removeHeaderSectionAndContainer();
+                    }, 50);
+                    
+                    setTimeout(() => {
+                        removeHeaderSectionAndContainer();
+                    }, 100);
+                    
+                    setTimeout(() => {
+                        removeHeaderSectionAndContainer();
+                    }, 200);
                     
                     return result;
                 };
