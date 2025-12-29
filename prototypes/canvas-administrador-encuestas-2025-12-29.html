@@ -1060,6 +1060,75 @@
                     }
                 }, 100);
             }
+            
+            // ⚠️ CRÍTICO: Intervalo periódico para eliminar elementos no deseados (última línea de defensa)
+            const periodicCleanup = () => {
+                const currentModule = document.body.getAttribute('data-module');
+                if (currentModule !== 'encuestas') {
+                    return;
+                }
+                
+                const contentArea = document.querySelector('.content-area');
+                if (!contentArea) {
+                    return;
+                }
+                
+                // Función de limpieza agresiva
+                const cleanup = () => {
+                    // Eliminar por ID
+                    const headerContainer = contentArea.querySelector('#header-section-container');
+                    if (headerContainer) {
+                        console.log('🔵 [Encuestas] [Intervalo] Eliminando #header-section-container');
+                        headerContainer.remove();
+                    }
+                    
+                    // Eliminar por clase
+                    const headerSections = contentArea.querySelectorAll('.ubits-header-section');
+                    headerSections.forEach(headerSection => {
+                        console.log('🔵 [Encuestas] [Intervalo] Eliminando .ubits-header-section');
+                        const container = headerSection.closest('#header-section-container') || 
+                                        headerSection.closest('.section-single') ||
+                                        headerSection.parentElement;
+                        if (container && container !== contentArea) {
+                            container.remove();
+                        } else {
+                            headerSection.remove();
+                        }
+                    });
+                    
+                    // Eliminar por contenido (título + botón)
+                    const allSections = contentArea.querySelectorAll('.section-single, [class*="header"], [class*="section"]');
+                    allSections.forEach(section => {
+                        const heading = section.querySelector('h1, h2, h3, h4, h5, h6');
+                        const button = section.querySelector('button');
+                        
+                        if (heading && button && 
+                            (heading.textContent.includes('Encuestas') || heading.textContent.includes('Módulo')) &&
+                            (button.textContent.includes('Acción') || button.querySelector('i.fa-plus'))) {
+                            console.log('🔵 [Encuestas] [Intervalo] Eliminando HeaderSection detectado por contenido');
+                            section.remove();
+                        }
+                    });
+                    
+                    // Eliminar widget-contenido-principal
+                    const widgetPrincipals = contentArea.querySelectorAll('.widget-contenido-principal');
+                    widgetPrincipals.forEach(widgetPrincipal => {
+                        console.log('🔵 [Encuestas] [Intervalo] Eliminando .widget-contenido-principal');
+                        const sectionSingle = widgetPrincipal.closest('.section-single');
+                        if (sectionSingle) {
+                            sectionSingle.remove();
+                        } else {
+                            widgetPrincipal.remove();
+                        }
+                    });
+                };
+                
+                cleanup();
+            };
+            
+            // Ejecutar cada 500ms para asegurar eliminación continua
+            const cleanupInterval = setInterval(periodicCleanup, 500);
+            console.log('🔵 [Encuestas] ✅ Intervalo de limpieza periódica activo (cada 500ms)');
         })();
     </script>
     
