@@ -1290,46 +1290,72 @@
                         }
                     }
                     
-                    // Interceptar ContentManager.updateContent para preservar CardContent
-                    if (window.UBITS_ContentManager) {
-                        const originalUpdateContent = window.UBITS_ContentManager.updateContent;
-                        if (originalUpdateContent) {
-                            window.UBITS_ContentManager.updateContent = function(section, subSection) {
-                                // Preservar CardContent antes de actualizar
-                                const cardContainer = document.getElementById('card-content-container');
-                                let cardHTML = null;
-                                if (cardContainer) {
-                                    cardHTML = cardContainer.innerHTML;
-                                }
-                                
-                                // Llamar al método original
-                                const result = originalUpdateContent.call(this, section, subSection);
-                                
-                                // Restaurar CardContent después de actualizar
-                                if (cardHTML) {
-                                    setTimeout(() => {
-                                        const newCardContainer = document.getElementById('card-content-container');
-                                        if (!newCardContainer) {
-                                            // Recrear contenedor si fue eliminado
-                                            createCardContent();
-                                        } else if (newCardContainer.innerHTML.trim() === '') {
-                                            // Restaurar contenido si fue vaciado
-                                            newCardContainer.innerHTML = cardHTML;
-                                            console.log('✅ [CardContent] CardContent restaurado después de updateContent');
-                                        }
-                                    }, 100);
-                                } else {
-                                    // Si no había CardContent antes, crearlo después de updateContent
-                                    setTimeout(() => {
-                                        createCardContent();
-                                    }, 100);
-                                }
-                                
-                                return result;
-                            };
-                            console.log('✅ [CardContent] ContentManager.updateContent interceptado');
-                        }
+        // Interceptar ContentManager.updateContent para preservar CardContent y SimpleCard
+        if (window.UBITS_ContentManager) {
+            const originalUpdateContent = window.UBITS_ContentManager.updateContent;
+            if (originalUpdateContent) {
+                window.UBITS_ContentManager.updateContent = function(section, subSection) {
+                    // Preservar CardContent y SimpleCard antes de actualizar
+                    const cardContainer = document.getElementById('card-content-container');
+                    const simpleCardContainer = document.getElementById('simple-card-container');
+                    let cardHTML = null;
+                    let simpleCardHTML = null;
+                    
+                    if (cardContainer) {
+                        cardHTML = cardContainer.innerHTML;
                     }
+                    if (simpleCardContainer) {
+                        simpleCardHTML = simpleCardContainer.innerHTML;
+                    }
+
+                    // Llamar al método original
+                    const result = originalUpdateContent.call(this, section, subSection);
+
+                    // Restaurar CardContent después de actualizar
+                    if (cardHTML) {
+                        setTimeout(() => {
+                            const newCardContainer = document.getElementById('card-content-container');
+                            if (!newCardContainer) {
+                                // Recrear contenedor si fue eliminado
+                                createCardContent();
+                            } else if (newCardContainer.innerHTML.trim() === '') {
+                                // Restaurar contenido si fue vaciado
+                                newCardContainer.innerHTML = cardHTML;
+                                console.log('✅ [CardContent] CardContent restaurado después de updateContent');
+                            }
+                        }, 100);
+                    } else {
+                        // Si no había CardContent antes, crearlo después de updateContent
+                        setTimeout(() => {
+                            createCardContent();
+                        }, 100);
+                    }
+
+                    // Restaurar SimpleCard después de actualizar
+                    if (simpleCardHTML) {
+                        setTimeout(() => {
+                            const newSimpleCardContainer = document.getElementById('simple-card-container');
+                            if (!newSimpleCardContainer) {
+                                // Recrear contenedor si fue eliminado
+                                createSimpleCard();
+                            } else if (newSimpleCardContainer.innerHTML.trim() === '') {
+                                // Restaurar contenido si fue vaciado
+                                newSimpleCardContainer.innerHTML = simpleCardHTML;
+                                console.log('✅ [SimpleCard] SimpleCard restaurado después de updateContent');
+                            }
+                        }, 100);
+                    } else {
+                        // Si no había SimpleCard antes, crearlo después de updateContent
+                        setTimeout(() => {
+                            createSimpleCard();
+                        }, 100);
+                    }
+
+                    return result;
+                };
+                console.log('✅ [CardContent/SimpleCard] ContentManager.updateContent interceptado');
+            }
+        }
                     
         // ========================================
         // SIMPLE CARD - Implementación al lado del CardContent
