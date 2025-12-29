@@ -10,22 +10,10 @@
  * 3. Retorna el nombre exacto del componente encontrado
  */
 
-export interface AutorunDiscoverComponentInput {
-  searchTerm: string;
-  /**
-   * Término de búsqueda (ej: "ContentCard", "card content", "button")
-   * El sistema buscará coincidencias en la lista de componentes disponibles
-   */
-}
-
-export interface AutorunDiscoverComponentOutput {
-  success: boolean;
-  found: boolean;
-  exactName?: string;
-  componentId?: string;
-  suggestions?: string[];
-  error?: string;
-}
+import type {
+  AutorunDiscoverComponentInput,
+  AutorunDiscoverComponentOutput,
+} from '../types.js';
 
 /**
  * ✅ Descubre el nombre exacto del componente en Storybook

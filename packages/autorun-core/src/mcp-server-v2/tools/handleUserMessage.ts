@@ -12,40 +12,10 @@
  * 4. Retorna información de detección y bloqueo
  */
 
-export interface AutorunHandleUserMessageInput {
-  message: string;
-  options?: {
-    skipPreCheck?: boolean;
-  };
-}
-
-export interface AutorunHandleUserMessageOutput {
-  success: boolean;
-  detected: boolean;
-  componentName?: string;
-  blocked: boolean;
-  reason?: string;
-  mcpMessages?: Array<{
-    componentName: string;
-    storybookId: string;
-    variant?: string;
-    type?: string;
-    properties?: string[];
-  }>;
-  plan?: {
-    components: string[];
-    steps: Array<{
-      id: string;
-      description: string;
-      component?: string;
-      story?: string;
-    }>;
-    totalSteps: number;
-  };
-  currentPhase?: string;
-  nextPhase?: string;
-  error?: string;
-}
+import type {
+  AutorunHandleUserMessageInput,
+  AutorunHandleUserMessageOutput,
+} from '../types.js';
 
 /**
  * ✅ Maneja mensaje del usuario automáticamente
