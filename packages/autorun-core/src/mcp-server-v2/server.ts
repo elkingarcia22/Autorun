@@ -15,11 +15,14 @@ import {
 } from '@modelcontextprotocol/sdk/types.js';
 
 // Importar tools
+// ⚠️ EMPEZANDO DESDE CERO: Agregando herramientas una por una
 import { autorunTest } from './tools/test.js';
-import { autorunApply } from './tools/apply.js';
-import { autorunVerify } from './tools/verify.js';
 import { autorunPlan } from './tools/plan.js';
 import { autorunChecklist } from './tools/checklist.js';
+import { autorunVerify } from './tools/verify.js';
+import { autorunApply } from './tools/apply.js';
+import { autorunHandleUserMessage } from './tools/handleUserMessage.js';
+import { autorunDiscoverComponent } from './tools/discoverComponent.js';
 import { autorunStorybookStart } from './tools/storybookStart.js';
 import { autorunStorybookBuild } from './tools/storybookBuild.js';
 import { autorunStorybookExtract } from './tools/storybookExtract.js';
@@ -239,67 +242,6 @@ export async function startAutorunMCPServerV2(): Promise<void> {
           },
         },
         {
-          name: 'autorun.apply',
-          description:
-            'Ejecuta TODO el flujo de implementación automáticamente: detección → Storybook MCP → extracción → validación → implementación → post-procesamiento',
-          inputSchema: {
-            type: 'object',
-            properties: {
-              message: {
-                type: 'string',
-                description: 'Mensaje del usuario describiendo qué implementar',
-              },
-              targetFiles: {
-                type: 'array',
-                items: { type: 'string' },
-                description:
-                  'Archivos objetivo (opcional, se detecta automáticamente si no se especifica)',
-              },
-              options: {
-                type: 'object',
-                properties: {
-                  skipVerification: { type: 'boolean' },
-                  dryRun: { type: 'boolean' },
-                  skipFormatting: { type: 'boolean' },
-                  skipLinting: { type: 'boolean' },
-                  skipAutoReload: { type: 'boolean' },
-                  skipAutoCommit: { type: 'boolean' },
-                  runVisualTests: { type: 'boolean' },
-                },
-              },
-            },
-            required: ['message'],
-          },
-        },
-        {
-          name: 'autorun.verify',
-          description:
-            'Verifica que los archivos fueron generados correctamente por Autorun y cumplen con todas las validaciones',
-          inputSchema: {
-            type: 'object',
-            properties: {
-              targetFiles: {
-                oneOf: [
-                  { type: 'array', items: { type: 'string' } },
-                  { type: 'string', enum: ['diff'] },
-                ],
-                description:
-                  'Archivos a verificar o "diff" para verificar cambios de git',
-              },
-              options: {
-                type: 'object',
-                properties: {
-                  strict: { type: 'boolean' },
-                  checkAutorunMarks: { type: 'boolean' },
-                  checkStructure: { type: 'boolean' },
-                  checkAccessibility: { type: 'boolean' },
-                },
-              },
-            },
-            required: ['targetFiles'],
-          },
-        },
-        {
           name: 'autorun.checklist',
           description:
             'Obtiene checklist de implementación para un componente específico',
@@ -315,14 +257,192 @@ export async function startAutorunMCPServerV2(): Promise<void> {
           },
         },
         {
+          name: 'autorun.verify',
+          description:
+            'Verifica que los archivos fueron generados correctamente por Autorun y que cumplen con todas las validaciones',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              targetFiles: {
+                oneOf: [
+                  {
+                    type: 'string',
+                    enum: ['diff'],
+                    description: 'Verificar todos los cambios en git (diff)',
+                  },
+                  {
+                    type: 'array',
+                    items: {
+                      type: 'string',
+                    },
+                    description: 'Lista de archivos específicos a verificar',
+                  },
+                ],
+                description:
+                  'Archivos a verificar. Usa "diff" para verificar todos los cambios en git',
+              },
+              options: {
+                type: 'object',
+                properties: {
+                  strict: {
+                    type: 'boolean',
+                    description: 'Modo estricto (default: false)',
+                  },
+                  checkAutorunMarks: {
+                    type: 'boolean',
+                    description:
+                      'Verificar marcas Autorun (watermarks) (default: true)',
+                  },
+                  checkStructure: {
+                    type: 'boolean',
+                    description:
+                      'Verificar estructura del código (default: true)',
+                  },
+                  checkAccessibility: {
+                    type: 'boolean',
+                    description: 'Verificar accesibilidad (default: true)',
+                  },
+                  staged: {
+                    type: 'boolean',
+                    description: 'Verificar solo cambios staged (pre-commit)',
+                  },
+                  baseRef: {
+                    type: 'string',
+                    description:
+                      'Comparar contra base ref (ej: origin/main para CI/PR)',
+                  },
+                  autoRevert: {
+                    type: 'boolean',
+                    description:
+                      'Revertir automáticamente cambios sin watermark (default: true)',
+                  },
+                },
+                description: 'Opciones de verificación',
+              },
+            },
+            required: [],
+          },
+        },
+        {
+          name: 'autorun.apply',
+          description:
+            'Ejecuta el flujo completo de implementación automática de componentes desde Storybook. Esta es la herramienta principal para implementar componentes.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              message: {
+                type: 'string',
+                description: 'Mensaje del usuario describiendo qué implementar',
+              },
+              targetFiles: {
+                type: 'array',
+                items: {
+                  type: 'string',
+                },
+                description:
+                  'Lista de archivos objetivo (opcional, se detecta automáticamente si no se especifica)',
+              },
+              options: {
+                type: 'object',
+                properties: {
+                  skipVerification: {
+                    type: 'boolean',
+                    description:
+                      'Saltar verificación pre-implementación (default: false)',
+                  },
+                  dryRun: {
+                    type: 'boolean',
+                    description:
+                      'Ejecutar sin escribir archivos (default: false)',
+                  },
+                  skipFormatting: {
+                    type: 'boolean',
+                    description:
+                      'Saltar formateo con Prettier (default: false)',
+                  },
+                  skipLinting: {
+                    type: 'boolean',
+                    description:
+                      'Saltar validación con ESLint (default: false)',
+                  },
+                  skipAutoReload: {
+                    type: 'boolean',
+                    description:
+                      'Saltar auto-reload del browser (default: false)',
+                  },
+                  skipAutoCommit: {
+                    type: 'boolean',
+                    description: 'Saltar auto-commit a GitHub (default: false)',
+                  },
+                  mode: {
+                    type: 'string',
+                    enum: ['strict', 'prototypeTokens'],
+                    description:
+                      'Modo de implementación (default: auto-detectado por path)',
+                  },
+                  requireStorybookMcp: {
+                    type: 'boolean',
+                    description:
+                      'Requerir Storybook MCP (fail-closed) (default: true)',
+                  },
+                },
+                description: 'Opciones de implementación',
+              },
+            },
+            required: ['message'],
+          },
+        },
+        {
+          name: 'autorun.handleUserMessage',
+          description:
+            '⚠️ CRÍTICO: Maneja mensaje del usuario automáticamente. DEBE ejecutarse al inicio de cada mensaje para detectar componentes y preparar el flujo completo.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              message: {
+                type: 'string',
+                description: 'Mensaje completo del usuario',
+              },
+              options: {
+                type: 'object',
+                properties: {
+                  skipPreCheck: {
+                    type: 'boolean',
+                    description: 'Saltar verificación pre-implementación (default: false)',
+                  },
+                },
+              },
+            },
+            required: ['message'],
+          },
+        },
+        {
+          name: 'autorun.discoverComponent',
+          description:
+            '⚠️ CRÍTICO: Descubre el nombre exacto del componente en Storybook. NUNCA adivinar nombres - siempre consultar getComponentList() primero.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              searchTerm: {
+                type: 'string',
+                description: 'Término de búsqueda (ej: "ContentCard", "card content", "button")',
+              },
+            },
+            required: ['searchTerm'],
+          },
+        },
+        {
           name: 'autorun.storybook.start',
           description: 'Inicia servidor de Storybook local',
           inputSchema: {
             type: 'object',
             properties: {
-              port: { type: 'number', description: 'Puerto (opcional)' },
-              host: { type: 'string', description: 'Host (opcional)' },
+              port: {
+                type: 'number',
+                description: 'Puerto para el servidor (default: 6006)',
+              },
             },
+            required: [],
           },
         },
         {
@@ -333,34 +453,28 @@ export async function startAutorunMCPServerV2(): Promise<void> {
             properties: {
               outputDir: {
                 type: 'string',
-                description: 'Directorio de salida (opcional)',
+                description: 'Directorio de salida (default: storybook-static)',
               },
             },
+            required: [],
           },
         },
         {
           name: 'autorun.storybook.extract',
-          description:
-            'Extrae código HTML/JS directamente desde Storybook usando Browser MCP internamente. Evita tener que modificar Storybook para crear historias "code".',
+          description: 'Extrae código HTML/JS desde Storybook',
           inputSchema: {
             type: 'object',
             properties: {
               componentId: {
                 type: 'string',
-                description:
-                  'ID del componente en Storybook (ej: "formularios-radio-button")',
-              },
-              componentName: {
-                type: 'string',
-                description:
-                  'Nombre del componente (ej: "RadioButton") - se mapea automáticamente a componentId',
+                description: 'ID del componente en Storybook',
               },
               storyName: {
                 type: 'string',
-                description:
-                  'Nombre de la historia a extraer (default: "auto" - busca "code" primero, luego "implementation")',
+                description: 'Nombre de la historia (default: "default")',
               },
             },
+            required: ['componentId'],
           },
         },
         {
@@ -369,20 +483,13 @@ export async function startAutorunMCPServerV2(): Promise<void> {
           inputSchema: {
             type: 'object',
             properties: {
-              category: {
-                type: 'string',
-                description: 'Filtrar por categoría (opcional)',
-              },
               severity: {
                 type: 'string',
-                enum: ['low', 'medium', 'high', 'critical'],
-                description: 'Filtrar por severidad (opcional)',
-              },
-              limit: {
-                type: 'number',
-                description: 'Límite de resultados (opcional)',
+                enum: ['error', 'warning', 'info', 'all'],
+                description: 'Filtrar por severidad (default: "all")',
               },
             },
+            required: [],
           },
         },
         {
@@ -394,15 +501,11 @@ export async function startAutorunMCPServerV2(): Promise<void> {
               files: {
                 type: 'array',
                 items: { type: 'string' },
-                description: 'Archivos a commitear',
+                description: 'Lista de archivos a commitear',
               },
               message: {
                 type: 'string',
-                description: 'Mensaje de commit',
-              },
-              push: {
-                type: 'boolean',
-                description: 'Hacer push después del commit',
+                description: 'Mensaje del commit',
               },
             },
             required: ['files', 'message'],
@@ -417,31 +520,28 @@ export async function startAutorunMCPServerV2(): Promise<void> {
               files: {
                 type: 'array',
                 items: { type: 'string' },
-                description: 'Archivos a validar',
+                description: 'Lista de archivos a verificar',
               },
               fix: {
                 type: 'boolean',
-                description: 'Auto-corregir errores automáticamente',
+                description: 'Auto-corregir errores (default: false)',
               },
             },
             required: ['files'],
           },
         },
         {
-          name: 'autorun.visual.test',
-          description: 'Ejecuta tests visuales con Chromatic',
+          name: 'autorun.visualTest',
+          description: 'Ejecuta pruebas visuales de componentes',
           inputSchema: {
             type: 'object',
             properties: {
               componentId: {
                 type: 'string',
-                description: 'ID del componente (opcional)',
-              },
-              storyId: {
-                type: 'string',
-                description: 'ID de la historia (opcional)',
+                description: 'ID del componente a probar',
               },
             },
+            required: ['componentId'],
           },
         },
       ],
@@ -475,6 +575,7 @@ export async function startAutorunMCPServerV2(): Promise<void> {
         }
 
         case 'autorun.plan': {
+          console.error(`   📋 [MCP Server] Llamando autorunPlan...`);
           const result = await autorunPlan(args as any);
           return {
             content: [
@@ -486,63 +587,8 @@ export async function startAutorunMCPServerV2(): Promise<void> {
           };
         }
 
-        case 'autorun.apply': {
-          console.error(`   🔍 [MCP Server] Llamando autorunApply...`);
-          console.error(`   ⏰ Timestamp antes: ${new Date().toISOString()}`);
-
-          let result: any = null;
-          try {
-            result = await autorunApply(args as any);
-            console.error(
-              `   ✅ [MCP Server] autorunApply completado: success=${result?.success}`
-            );
-            console.error(
-              `   ⏰ Timestamp después: ${new Date().toISOString()}`
-            );
-          } catch (applyError: any) {
-            console.error(
-              `   ❌ [MCP Server] ERROR en autorunApply: ${applyError.message}`
-            );
-            console.error(`   📋 Stack: ${applyError.stack}`);
-            console.error(
-              `   ⏰ Timestamp del error: ${new Date().toISOString()}`
-            );
-
-            // Retornar error en formato JSON
-            result = {
-              success: false,
-              filesWritten: [],
-              errors: [`Error en autorunApply: ${applyError.message}`],
-              verification: {
-                preImplementation: false,
-                postImplementation: false,
-              },
-            };
-          }
-
-          return {
-            content: [
-              {
-                type: 'text',
-                text: JSON.stringify(result, null, 2),
-              },
-            ],
-          };
-        }
-
-        case 'autorun.verify': {
-          const result = await autorunVerify(args as any);
-          return {
-            content: [
-              {
-                type: 'text',
-                text: JSON.stringify(result, null, 2),
-              },
-            ],
-          };
-        }
-
         case 'autorun.checklist': {
+          console.error(`   ✅ [MCP Server] Llamando autorunChecklist...`);
           const result = await autorunChecklist(args as any);
           return {
             content: [
@@ -554,8 +600,9 @@ export async function startAutorunMCPServerV2(): Promise<void> {
           };
         }
 
-        case 'autorun.storybook.start': {
-          const result = await autorunStorybookStart(args as any);
+        case 'autorun.verify': {
+          console.error(`   🔍 [MCP Server] Llamando autorunVerify...`);
+          const result = await autorunVerify(args as any);
           return {
             content: [
               {
@@ -566,68 +613,9 @@ export async function startAutorunMCPServerV2(): Promise<void> {
           };
         }
 
-        case 'autorun.storybook.build': {
-          const result = await autorunStorybookBuild(args as any);
-          return {
-            content: [
-              {
-                type: 'text',
-                text: JSON.stringify(result, null, 2),
-              },
-            ],
-          };
-        }
-
-        case 'autorun.storybook.extract': {
-          const result = await autorunStorybookExtract(args as any);
-          return {
-            content: [
-              {
-                type: 'text',
-                text: JSON.stringify(result, null, 2),
-              },
-            ],
-          };
-        }
-
-        case 'autorun.problems.list': {
-          const result = await autorunProblemsList(args as any);
-          return {
-            content: [
-              {
-                type: 'text',
-                text: JSON.stringify(result, null, 2),
-              },
-            ],
-          };
-        }
-
-        case 'autorun.github.commit': {
-          const result = await autorunGitHubCommit(args as any);
-          return {
-            content: [
-              {
-                type: 'text',
-                text: JSON.stringify(result, null, 2),
-              },
-            ],
-          };
-        }
-
-        case 'autorun.lint': {
-          const result = await autorunLint(args as any);
-          return {
-            content: [
-              {
-                type: 'text',
-                text: JSON.stringify(result, null, 2),
-              },
-            ],
-          };
-        }
-
-        case 'autorun.visual.test': {
-          const result = await autorunVisualTest(args as any);
+        case 'autorun.apply': {
+          console.error(`   🚀 [MCP Server] Llamando autorunApply...`);
+          const result = await autorunApply(args as any);
           return {
             content: [
               {
@@ -639,10 +627,22 @@ export async function startAutorunMCPServerV2(): Promise<void> {
         }
 
         default:
-          throw new McpError(
-            ErrorCode.MethodNotFound,
-            `Tool desconocido: ${name}`
-          );
+          // ⚠️ Herramientas disponibles: autorun.test, autorun.plan, autorun.checklist, autorun.verify, autorun.apply
+          return {
+            content: [
+              {
+                type: 'text',
+                text: JSON.stringify(
+                  {
+                    success: false,
+                    error: `Tool desconocido: ${name}. Herramientas disponibles: autorun.test, autorun.plan, autorun.checklist, autorun.verify, autorun.apply`,
+                  },
+                  null,
+                  2
+                ),
+              },
+            ],
+          };
       }
     } catch (error: any) {
       console.error(`❌ [Autorun MCP v2] Error en tool ${name}:`, error);
