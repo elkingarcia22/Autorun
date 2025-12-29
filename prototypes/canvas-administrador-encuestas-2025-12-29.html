@@ -1190,6 +1190,37 @@
                                     }
                                 }
                                 
+                                // ========================================
+                                // CREAR CARD CONTENT DEBAJO DEL SUBNAV
+                                // ========================================
+                                setTimeout(() => {
+                                    const cardContainer = document.getElementById('card-content-container');
+                                    if (cardContainer && window.createCard) {
+                                        try {
+                                            const cardElement = window.createCard({
+                                                type: 'Curso',
+                                                title: 'Segmenta la experiencia del cliente',
+                                                provider: 'UBITS',
+                                                duration: '60 min',
+                                                level: 'Básico',
+                                                progress: 0,
+                                                status: 'default',
+                                                image: '/images/cards-learn/segmenta-la-experiencia-del-cliente.jpg',
+                                                competency: 'Product design',
+                                                language: 'Español'
+                                            });
+                                            
+                                            if (cardElement) {
+                                                cardContainer.appendChild(cardElement);
+                                                console.log('✅ [Card Content] Card Content creada exitosamente');
+                                            }
+                                        } catch (error) {
+                                            console.error('❌ [Card Content] Error al crear card:', error);
+                                        }
+                                    } else {
+                                        console.warn('⚠️ [Card Content] createCard no disponible o contenedor no encontrado');
+                                    }
+                                }, 500);
                                 
                                 // ⚠️ LOGS ESPECÍFICOS PARA DEBUG DEL LAYOUT
                                 debugLayout();
