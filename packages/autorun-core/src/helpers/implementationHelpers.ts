@@ -557,6 +557,7 @@ export function detectComponentFromMessage(message: string): string | null {
       priority: 6,
     },
     // ⚠️ CRÍTICO: CardContent DEBE estar ANTES de SelectionCard y Carousel para evitar falsos positivos
+    // Patrón más específico primero (con verbo de acción)
     {
       pattern: new RegExp(
         `${ACTION_VERBS_PATTERN}.*(?:card\s+content|cardcontent|contenido\s+de\s+tarjeta|contentcard)`,
@@ -565,6 +566,7 @@ export function detectComponentFromMessage(message: string): string | null {
       component: 'CardContent',
       priority: 13, // Mayor prioridad que SelectionCard y Carousel
     },
+    // Patrón sin verbo de acción (más flexible)
     {
       pattern: /\bcard\s+content\b|\bcardcontent\b|\bcontentcard\b/i,
       component: 'CardContent',
@@ -574,6 +576,12 @@ export function detectComponentFromMessage(message: string): string | null {
       pattern: /\bcontenido\s+de\s+tarjeta\b/i,
       component: 'CardContent',
       priority: 11,
+    },
+    // Patrón adicional: "CardContent" como palabra completa (PascalCase)
+    {
+      pattern: /\bCardContent\b/i,
+      component: 'CardContent',
+      priority: 14, // Mayor prioridad para PascalCase explícito
     },
     // ⚠️ CRÍTICO: Carousel DEBE estar ANTES de SelectionCard para evitar falsos positivos
     // porque "carousel" puede aparecer en otros contextos pero debe tener prioridad
