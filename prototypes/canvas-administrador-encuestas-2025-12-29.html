@@ -1449,48 +1449,6 @@
             }
         }
 
-        // Interceptar ContentManager.updateContent para preservar SimpleCard
-        if (window.UBITS_ContentManager) {
-            const originalUpdateContent = window.UBITS_ContentManager.updateContent;
-            if (originalUpdateContent) {
-                // Ya existe una intercepción para CardContent, extenderla para SimpleCard
-                const currentInterception = window.UBITS_ContentManager.updateContent;
-                window.UBITS_ContentManager.updateContent = function(section, subSection) {
-                    // Preservar SimpleCard antes de actualizar
-                    const simpleCardContainer = document.getElementById('simple-card-container');
-                    let simpleCardHTML = null;
-                    if (simpleCardContainer) {
-                        simpleCardHTML = simpleCardContainer.innerHTML;
-                    }
-
-                    // Llamar a la intercepción existente (que preserva CardContent)
-                    const result = currentInterception.call(this, section, subSection);
-
-                    // Restaurar SimpleCard después de actualizar
-                    if (simpleCardHTML) {
-                        setTimeout(() => {
-                            const newSimpleCardContainer = document.getElementById('simple-card-container');
-                            if (!newSimpleCardContainer) {
-                                // Recrear contenedor si fue eliminado
-                                createSimpleCard();
-                            } else if (newSimpleCardContainer.innerHTML.trim() === '') {
-                                // Restaurar contenido si fue vaciado
-                                newSimpleCardContainer.innerHTML = simpleCardHTML;
-                                console.log('✅ [SimpleCard] SimpleCard restaurado después de updateContent');
-                            }
-                        }, 100);
-                    } else {
-                        // Si no había SimpleCard antes, crearlo después de updateContent
-                        setTimeout(() => {
-                            createSimpleCard();
-                        }, 100);
-                    }
-
-                    return result;
-                };
-                console.log('✅ [SimpleCard] ContentManager.updateContent interceptado para SimpleCard');
-            }
-        }
 
         // Crear SimpleCard inicial después de que todo esté listo
         setTimeout(() => {
