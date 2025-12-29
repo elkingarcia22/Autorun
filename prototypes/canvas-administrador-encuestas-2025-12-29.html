@@ -1278,22 +1278,12 @@
                                             console.log('✅ [CardContent] CardContent restaurado después de updateContent');
                                         }
                                     }, 100);
+                                } else {
+                                    // Si no había CardContent antes, crearlo después de updateContent
+                                    setTimeout(() => {
+                                        createCardContent();
+                                    }, 100);
                                 }
-                                
-                                return result;
-                            };
-                        }
-                    }
-                    
-                    // Ejecutar createCardContent después de que el ContentManager actualice el contenido
-                    setTimeout(() => {
-                        createCardContent();
-                    }, 1500); // Esperar a que el ContentManager termine de actualizar
-                                
-                                // Después de que ContentManager actualice, agregar CardContent
-                                setTimeout(() => {
-                                    createCardContent();
-                                }, 100);
                                 
                                 return result;
                             };
