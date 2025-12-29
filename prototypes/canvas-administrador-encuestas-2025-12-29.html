@@ -1135,6 +1135,18 @@
                             widgetPrincipal.remove();
                         }
                     });
+                    
+                    // Eliminar widget-encuestas-main
+                    const widgetEncuestasMain = contentArea.querySelectorAll('.widget-encuestas-main');
+                    widgetEncuestasMain.forEach(widget => {
+                        console.log('🔵 [Encuestas] [Intervalo] Eliminando .widget-encuestas-main');
+                        const sectionSingle = widget.closest('.section-single');
+                        if (sectionSingle) {
+                            sectionSingle.remove();
+                        } else {
+                            widget.remove();
+                        }
+                    });
                 };
                 
                 cleanup();
