@@ -1116,7 +1116,16 @@
                     // ========================================
                     setTimeout(() => {
                         const cardContainer = document.getElementById('card-content-container');
-                        if (cardContainer && window.createCard) {
+                        if (!cardContainer) {
+                            console.warn('⚠️ [CardContent] Contenedor no encontrado');
+                            return;
+                        }
+                        
+                        // Intentar múltiples métodos para crear el CardContent
+                        let cardCreated = false;
+                        
+                        // Método 1: window.createCard (si está disponible)
+                        if (window.createCard && !cardCreated) {
                             try {
                                 const cardElement = window.createCard({
                                     type: 'Curso',
@@ -1132,13 +1141,16 @@
                                 });
                                 if (cardElement) {
                                     cardContainer.appendChild(cardElement);
-                                    console.log('✅ [CardContent] CardContent creado exitosamente');
+                                    console.log('✅ [CardContent] CardContent creado con createCard()');
+                                    cardCreated = true;
                                 }
                             } catch (error) {
-                                console.error('❌ [CardContent] Error creando CardContent:', error);
+                                console.warn('⚠️ [CardContent] Error con createCard():', error.message);
                             }
-                        } else if (cardContainer && window.renderCardContent) {
-                            // Fallback: usar renderCardContent si createCard no está disponible
+                        }
+                        
+                        // Método 2: window.renderCardContent (si está disponible)
+                        if (!cardCreated && window.renderCardContent) {
                             try {
                                 const cardHTML = window.renderCardContent({
                                     type: 'Curso',
@@ -1154,15 +1166,53 @@
                                 });
                                 if (cardHTML) {
                                     cardContainer.innerHTML = cardHTML;
-                                    console.log('✅ [CardContent] CardContent renderizado exitosamente');
+                                    console.log('✅ [CardContent] CardContent renderizado con renderCardContent()');
+                                    cardCreated = true;
                                 }
                             } catch (error) {
-                                console.error('❌ [CardContent] Error renderizando CardContent:', error);
+                                console.warn('⚠️ [CardContent] Error con renderCardContent():', error.message);
                             }
-                        } else {
-                            console.warn('⚠️ [CardContent] Contenedor o función createCard/renderCardContent no disponible');
                         }
-                    }, 500); // Esperar un poco más para asegurar que los componentes estén cargados
+                        
+                        // Método 3: Cargar dinámicamente desde Storybook
+                        if (!cardCreated) {
+                            console.log('📚 [CardContent] Cargando componente dinámicamente desde Storybook...');
+                            const script = document.createElement('script');
+                            script.src = 'https://ubits-storybook10.vercel.app/components/card/src/CardContentProvider.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT';
+                            script.onload = () => {
+                                console.log('✅ [CardContent] Script cargado, intentando crear CardContent...');
+                                // Reintentar después de cargar el script
+                                setTimeout(() => {
+                                    if (window.createCard) {
+                                        try {
+                                            const cardElement = window.createCard({
+                                                type: 'Curso',
+                                                title: 'Segmenta la experiencia del cliente',
+                                                provider: 'UBITS',
+                                                duration: '60 min',
+                                                level: 'Básico',
+                                                progress: 0,
+                                                status: 'default',
+                                                image: 'images/cards-learn/segmenta-la-experiencia-del-cliente.jpg',
+                                                competency: 'Product design',
+                                                language: 'Español'
+                                            });
+                                            if (cardElement) {
+                                                cardContainer.appendChild(cardElement);
+                                                console.log('✅ [CardContent] CardContent creado después de cargar script');
+                                            }
+                                        } catch (error) {
+                                            console.error('❌ [CardContent] Error después de cargar script:', error);
+                                        }
+                                    }
+                                }, 200);
+                            };
+                            script.onerror = () => {
+                                console.error('❌ [CardContent] Error cargando script desde Storybook');
+                            };
+                            document.head.appendChild(script);
+                        }
+                    }, 1000); // Esperar más tiempo para asegurar que los componentes estén cargados
                 }, 100);
             });
         });
