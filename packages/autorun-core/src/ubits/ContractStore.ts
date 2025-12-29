@@ -1,6 +1,6 @@
 /**
  * ✅ ContractStore - Acceso a contratos UBITS desde stories
- * 
+ *
  * Usa extractMetadataFromStory existente para leer parameters.ubits
  */
 
@@ -41,6 +41,9 @@ export class ContractStore {
 
   /**
    * ✅ Obtiene contrato por componentId (desde stories)
+   *
+   * ⭐ MEJORADO: Cachea con AMBOS IDs (Storybook ID y componentId del contrato)
+   * Esto resuelve el problema de desajuste de IDs (ej: "layout-card-content" vs "🧩-ux-card-content")
    */
   async getById(componentId: string): Promise<UBITSContract | null> {
     // Verificar cache
@@ -51,7 +54,7 @@ export class ContractStore {
     // Intentar extraer desde story
     try {
       const metadata = await extractMetadataFromStory(componentId, 'default');
-      
+
       if (metadata && metadata.componentId) {
         // Convertir StorybookMetadata a UBITSContract
         const contract: UBITSContract = {
@@ -62,11 +65,22 @@ export class ContractStore {
           slots: metadata.slots || {},
         };
 
-        this.cache.set(componentId, contract);
+        // ⭐ NUEVO: Cachear con ID de Storybook Y con componentId del contrato
+        // Esto permite buscar con cualquiera de los dos IDs
+        this.cache.set(componentId, contract); // Cachear con ID de Storybook
+        if (metadata.componentId !== componentId) {
+          this.cache.set(metadata.componentId, contract); // Cachear con componentId del contrato
+          console.log(
+            `   ✅ [ContractStore] Contrato cacheado con ambos IDs: "${componentId}" y "${metadata.componentId}"`
+          );
+        }
+
         return contract;
       }
     } catch (error: any) {
-      console.warn(`⚠️ Error obteniendo contrato para ${componentId}: ${error.message}`);
+      console.warn(
+        `⚠️ Error obteniendo contrato para ${componentId}: ${error.message}`
+      );
     }
 
     // Si no se encuentra, cachear null
@@ -84,7 +98,7 @@ export class ContractStore {
 
   /**
    * ✅ Busca componentes por nombre (fuzzy)
-   * 
+   *
    * Busca en todas las stories disponibles usando storybookStories
    */
   async findByNameLike(searchName: string): Promise<string[]> {
@@ -93,14 +107,20 @@ export class ContractStore {
 
     try {
       // Obtener lista de todos los componentes disponibles
-      const { discoverStorybookComponents } = await import('../helpers/storybookIdDiscovery.js');
+      const { discoverStorybookComponents } = await import(
+        '../helpers/storybookIdDiscovery.js'
+      );
       const discoveryResult = await discoverStorybookComponents();
-      const allComponents = discoveryResult.components.map(c => c.componentId);
+      const allComponents = discoveryResult.components.map(
+        (c) => c.componentId
+      );
 
       // Buscar coincidencias parciales
       for (const componentId of allComponents) {
-        const normalizedId = componentId.toLowerCase().replace(/[^a-z0-9]/g, '');
-        
+        const normalizedId = componentId
+          .toLowerCase()
+          .replace(/[^a-z0-9]/g, '');
+
         // Coincidencia exacta
         if (normalizedId === normalizedSearch) {
           results.push(componentId);
@@ -108,7 +128,10 @@ export class ContractStore {
         }
 
         // Coincidencia parcial (contiene el término de búsqueda)
-        if (normalizedId.includes(normalizedSearch) || normalizedSearch.includes(normalizedId)) {
+        if (
+          normalizedId.includes(normalizedSearch) ||
+          normalizedSearch.includes(normalizedId)
+        ) {
           results.push(componentId);
           continue;
         }
@@ -116,7 +139,9 @@ export class ContractStore {
         // Buscar en el contrato si existe
         const contract = await this.getById(componentId);
         if (contract) {
-          const contractName = (contract.componentId || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+          const contractName = (contract.componentId || '')
+            .toLowerCase()
+            .replace(/[^a-z0-9]/g, '');
           if (contractName.includes(normalizedSearch)) {
             results.push(componentId);
           }
