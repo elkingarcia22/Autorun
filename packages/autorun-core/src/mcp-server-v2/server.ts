@@ -408,7 +408,8 @@ export async function startAutorunMCPServerV2(): Promise<void> {
                 properties: {
                   skipPreCheck: {
                     type: 'boolean',
-                    description: 'Saltar verificación pre-implementación (default: false)',
+                    description:
+                      'Saltar verificación pre-implementación (default: false)',
                   },
                 },
               },
@@ -425,7 +426,8 @@ export async function startAutorunMCPServerV2(): Promise<void> {
             properties: {
               searchTerm: {
                 type: 'string',
-                description: 'Término de búsqueda (ej: "ContentCard", "card content", "button")',
+                description:
+                  'Término de búsqueda (ej: "ContentCard", "card content", "button")',
               },
             },
             required: ['searchTerm'],
