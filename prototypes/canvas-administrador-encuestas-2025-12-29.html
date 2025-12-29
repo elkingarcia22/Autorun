@@ -1049,6 +1049,36 @@
                                 setTimeout(removeWidgetPrincipal, 50);
                                 setTimeout(removeWidgetPrincipal, 100);
                             }
+                            
+                            // Verificar si es widget-encuestas-main
+                            if (node.classList?.contains('widget-encuestas-main') ||
+                                node.querySelector?.('.widget-encuestas-main')) {
+                                console.log('🔵 [Encuestas] MutationObserver: Eliminando widget-encuestas-main detectado dinámicamente');
+                                
+                                // Función para eliminar widget-encuestas-main
+                                const removeWidgetEncuestasMain = () => {
+                                    const widget = document.querySelector('.widget-encuestas-main');
+                                    if (widget) {
+                                        const sectionSingle = widget.closest('.section-single');
+                                        if (sectionSingle) {
+                                            sectionSingle.remove();
+                                        } else {
+                                            widget.remove();
+                                        }
+                                    }
+                                };
+                                
+                                // Intentar eliminar inmediatamente
+                                removeWidgetEncuestasMain();
+                                
+                                // Intentar con requestAnimationFrame
+                                requestAnimationFrame(removeWidgetEncuestasMain);
+                                
+                                // Intentar con setTimeout
+                                setTimeout(removeWidgetEncuestasMain, 0);
+                                setTimeout(removeWidgetEncuestasMain, 50);
+                                setTimeout(removeWidgetEncuestasMain, 100);
+                            }
                         }
                     });
                 });
