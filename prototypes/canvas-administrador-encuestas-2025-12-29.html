@@ -881,12 +881,26 @@
                             removed = true;
                         });
                         
+                        // 4.5. Eliminar widget-encuestas-main
+                        const widgetEncuestasMain = contentArea.querySelectorAll('.widget-encuestas-main');
+                        widgetEncuestasMain.forEach(widget => {
+                            console.log('🔵 [Encuestas] Eliminando .widget-encuestas-main');
+                            const sectionSingle = widget.closest('.section-single');
+                            if (sectionSingle) {
+                                sectionSingle.remove();
+                            } else {
+                                widget.remove();
+                            }
+                            removed = true;
+                        });
+                        
                         // 5. Eliminar cualquier .content-sections que tenga contenido no deseado
                         const contentSections = contentArea.querySelector('.content-sections');
                         if (contentSections) {
                             // Buscar y eliminar cualquier elemento no deseado dentro de content-sections
                             const unwantedSelectors = [
                                 '.widget-contenido-principal',
+                                '.widget-encuestas-main',
                                 '#header-section-container',
                                 '.ubits-header-section',
                                 '[class*="header-section"]',
