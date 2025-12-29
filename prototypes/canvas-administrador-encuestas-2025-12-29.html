@@ -1193,11 +1193,41 @@
                                 // ========================================
                                 // CREAR CARD CONTENT DEBAJO DEL SUBNAV
                                 // ========================================
-                                setTimeout(() => {
+                                function createCardContent() {
                                     const cardContainer = document.getElementById('card-content-container');
-                                    if (cardContainer && window.createCard) {
+                                    if (!cardContainer) {
+                                        console.warn('⚠️ [Card Content] Contenedor no encontrado');
+                                        return;
+                                    }
+                                    
+                                    // Intentar múltiples formas de crear la card
+                                    let cardElement = null;
+                                    
+                                    // Método 1: window.createCard (si está disponible)
+                                    if (window.createCard && typeof window.createCard === 'function') {
                                         try {
-                                            const cardElement = window.createCard({
+                                            cardElement = window.createCard({
+                                                type: 'Curso',
+                                                title: 'Segmenta la experiencia del cliente',
+                                                provider: 'UBITS',
+                                                duration: '60 min',
+                                                level: 'Básico',
+                                                progress: 0,
+                                                status: 'default',
+                                                image: '/images/cards-learn/segmenta-la-experiencia-del-cliente.jpg',
+                                                competency: 'Product design',
+                                                language: 'Español'
+                                            });
+                                            console.log('✅ [Card Content] Card creada usando window.createCard');
+                                        } catch (error) {
+                                            console.error('❌ [Card Content] Error con window.createCard:', error);
+                                        }
+                                    }
+                                    
+                                    // Método 2: renderCardContent (si está disponible)
+                                    if (!cardElement && window.renderCardContent && typeof window.renderCardContent === 'function') {
+                                        try {
+                                            const cardHTML = window.renderCardContent({
                                                 type: 'Curso',
                                                 title: 'Segmenta la experiencia del cliente',
                                                 provider: 'UBITS',
@@ -1210,17 +1240,39 @@
                                                 language: 'Español'
                                             });
                                             
-                                            if (cardElement) {
-                                                cardContainer.appendChild(cardElement);
-                                                console.log('✅ [Card Content] Card Content creada exitosamente');
+                                            if (cardHTML) {
+                                                const tempDiv = document.createElement('div');
+                                                tempDiv.innerHTML = cardHTML;
+                                                cardElement = tempDiv.firstElementChild;
+                                                console.log('✅ [Card Content] Card creada usando window.renderCardContent');
                                             }
                                         } catch (error) {
-                                            console.error('❌ [Card Content] Error al crear card:', error);
+                                            console.error('❌ [Card Content] Error con window.renderCardContent:', error);
                                         }
-                                    } else {
-                                        console.warn('⚠️ [Card Content] createCard no disponible o contenedor no encontrado');
                                     }
-                                }, 500);
+                                    
+                                    // Método 3: Cargar dinámicamente desde el componente
+                                    if (!cardElement) {
+                                        console.log('⚠️ [Card Content] Funciones no disponibles, cargando componente dinámicamente...');
+                                        // El componente se cargará automáticamente desde components-loader.js
+                                        // Solo necesitamos esperar a que esté disponible
+                                        setTimeout(createCardContent, 500);
+                                        return;
+                                    }
+                                    
+                                    // Insertar la card en el contenedor
+                                    if (cardElement) {
+                                        cardContainer.innerHTML = ''; // Limpiar contenedor
+                                        cardContainer.appendChild(cardElement);
+                                        console.log('✅ [Card Content] Card Content insertada exitosamente');
+                                    } else {
+                                        console.warn('⚠️ [Card Content] No se pudo crear la card, reintentando...');
+                                        setTimeout(createCardContent, 1000);
+                                    }
+                                }
+                                
+                                // Crear la card después de que los componentes estén cargados
+                                setTimeout(createCardContent, 1000);
                                 
                                 // ⚠️ LOGS ESPECÍFICOS PARA DEBUG DEL LAYOUT
                                 debugLayout();
