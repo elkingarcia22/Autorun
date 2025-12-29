@@ -650,6 +650,23 @@ export function detectComponentFromMessage(message: string): string | null {
     }
   }
 
+  // ⚠️ MEJORADO: Filtrar SubNav si hay otros componentes con mayor prioridad
+  // SubNav solo debe detectarse si es el único componente mencionado
+  if (matches.length > 1) {
+    const subNavMatch = matches.find((m) => m.component === 'SubNav');
+    const otherMatches = matches.filter((m) => m.component !== 'SubNav');
+
+    if (subNavMatch && otherMatches.length > 0) {
+      // Hay otros componentes además de SubNav, eliminar SubNav de las coincidencias
+      console.log(
+        `   ⚠️ [detectComponentFromMessage] SubNav detectado pero hay otros componentes, eliminando SubNav de coincidencias`
+      );
+      const filteredMatches = matches.filter((m) => m.component !== 'SubNav');
+      matches.length = 0;
+      matches.push(...filteredMatches);
+    }
+  }
+
   // Retornar el componente con mayor prioridad
   if (matches.length > 0) {
     matches.sort((a, b) => b.priority - a.priority);
