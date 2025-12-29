@@ -629,7 +629,9 @@ export async function startAutorunMCPServerV2(): Promise<void> {
         }
 
         case 'autorun.handleUserMessage': {
-          console.error(`   🚀 [MCP Server] Llamando autorunHandleUserMessage...`);
+          console.error(
+            `   🚀 [MCP Server] Llamando autorunHandleUserMessage...`
+          );
           const result = await autorunHandleUserMessage(args as any);
           return {
             content: [
@@ -642,7 +644,9 @@ export async function startAutorunMCPServerV2(): Promise<void> {
         }
 
         case 'autorun.discoverComponent': {
-          console.error(`   🔍 [MCP Server] Llamando autorunDiscoverComponent...`);
+          console.error(
+            `   🔍 [MCP Server] Llamando autorunDiscoverComponent...`
+          );
           const result = await autorunDiscoverComponent(args as any);
           return {
             content: [
@@ -681,7 +685,9 @@ export async function startAutorunMCPServerV2(): Promise<void> {
         }
 
         case 'autorun.storybook.extract': {
-          console.error(`   📚 [MCP Server] Llamando autorunStorybookExtract...`);
+          console.error(
+            `   📚 [MCP Server] Llamando autorunStorybookExtract...`
+          );
           const result = await autorunStorybookExtract(args as any);
           return {
             content: [
