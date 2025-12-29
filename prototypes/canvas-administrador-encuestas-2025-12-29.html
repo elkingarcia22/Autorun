@@ -1331,10 +1331,150 @@
                         }
                     }
                     
-                    // Crear CardContent inicial después de que todo esté listo
-                    setTimeout(() => {
-                        createCardContent();
-                    }, 2000); // Esperar más tiempo para asegurar que los componentes estén cargados
+        // ========================================
+        // SIMPLE CARD - Implementación al lado del CardContent
+        // ========================================
+
+        // Función para crear el SimpleCard
+        function createSimpleCard() {
+            const simpleCardContainer = document.getElementById('simple-card-container');
+            if (!simpleCardContainer) {
+                console.warn('⚠️ [SimpleCard] Contenedor no encontrado');
+                return;
+            }
+
+            // Si ya tiene contenido, no recrear
+            if (simpleCardContainer.children.length > 0) {
+                console.log('✅ [SimpleCard] SimpleCard ya existe');
+                return;
+            }
+
+            // Crear SimpleCard usando la API
+            try {
+                if (window.createSimpleCard) {
+                    const simpleCardElement = window.createSimpleCard({
+                        title: 'Información del Curso',
+                        subtitle: 'Detalles adicionales',
+                        content: 'Esta es una tarjeta simple que muestra información adicional sobre el curso. Puede incluir descripciones, requisitos o cualquier otro contenido relevante.',
+                        showHeader: true,
+                        headerDecorations: true,
+                        variant: 'default',
+                        size: 'md',
+                        showButtons: true,
+                        buttons: [
+                            {
+                                label: 'Ver más',
+                                variant: 'primary',
+                                size: 'md',
+                                onClick: () => {
+                                    console.log('Botón "Ver más" clickeado');
+                                }
+                            },
+                            {
+                                label: 'Cancelar',
+                                variant: 'secondary',
+                                size: 'md',
+                                onClick: () => {
+                                    console.log('Botón "Cancelar" clickeado');
+                                }
+                            }
+                        ]
+                    });
+                    
+                    if (simpleCardElement) {
+                        simpleCardContainer.appendChild(simpleCardElement);
+                        console.log('✅ [SimpleCard] SimpleCard creado exitosamente');
+                    } else {
+                        console.error('❌ [SimpleCard] createSimpleCard retornó null');
+                    }
+                } else if (window.renderSimpleCard) {
+                    // Fallback: usar renderSimpleCard si createSimpleCard no está disponible
+                    const simpleCardHTML = window.renderSimpleCard({
+                        title: 'Información del Curso',
+                        subtitle: 'Detalles adicionales',
+                        content: 'Esta es una tarjeta simple que muestra información adicional sobre el curso. Puede incluir descripciones, requisitos o cualquier otro contenido relevante.',
+                        showHeader: true,
+                        headerDecorations: true,
+                        variant: 'default',
+                        size: 'md',
+                        showButtons: true,
+                        buttons: [
+                            {
+                                label: 'Ver más',
+                                variant: 'primary',
+                                size: 'md'
+                            },
+                            {
+                                label: 'Cancelar',
+                                variant: 'secondary',
+                                size: 'md'
+                            }
+                        ]
+                    });
+                    
+                    simpleCardContainer.innerHTML = simpleCardHTML;
+                    console.log('✅ [SimpleCard] SimpleCard creado usando renderSimpleCard');
+                } else {
+                    console.error('❌ [SimpleCard] createSimpleCard y renderSimpleCard no están disponibles');
+                    console.error('   ⚠️ Asegúrate de que SimpleCardProvider.js esté cargado');
+                }
+            } catch (error) {
+                console.error('❌ [SimpleCard] Error creando SimpleCard:', error);
+            }
+        }
+
+        // Interceptar ContentManager.updateContent para preservar SimpleCard
+        if (window.UBITS_ContentManager) {
+            const originalUpdateContent = window.UBITS_ContentManager.updateContent;
+            if (originalUpdateContent) {
+                // Ya existe una intercepción para CardContent, extenderla para SimpleCard
+                const currentInterception = window.UBITS_ContentManager.updateContent;
+                window.UBITS_ContentManager.updateContent = function(section, subSection) {
+                    // Preservar SimpleCard antes de actualizar
+                    const simpleCardContainer = document.getElementById('simple-card-container');
+                    let simpleCardHTML = null;
+                    if (simpleCardContainer) {
+                        simpleCardHTML = simpleCardContainer.innerHTML;
+                    }
+
+                    // Llamar a la intercepción existente (que preserva CardContent)
+                    const result = currentInterception.call(this, section, subSection);
+
+                    // Restaurar SimpleCard después de actualizar
+                    if (simpleCardHTML) {
+                        setTimeout(() => {
+                            const newSimpleCardContainer = document.getElementById('simple-card-container');
+                            if (!newSimpleCardContainer) {
+                                // Recrear contenedor si fue eliminado
+                                createSimpleCard();
+                            } else if (newSimpleCardContainer.innerHTML.trim() === '') {
+                                // Restaurar contenido si fue vaciado
+                                newSimpleCardContainer.innerHTML = simpleCardHTML;
+                                console.log('✅ [SimpleCard] SimpleCard restaurado después de updateContent');
+                            }
+                        }, 100);
+                    } else {
+                        // Si no había SimpleCard antes, crearlo después de updateContent
+                        setTimeout(() => {
+                            createSimpleCard();
+                        }, 100);
+                    }
+
+                    return result;
+                };
+                console.log('✅ [SimpleCard] ContentManager.updateContent interceptado para SimpleCard');
+            }
+        }
+
+        // Crear SimpleCard inicial después de que todo esté listo
+        setTimeout(() => {
+            createSimpleCard();
+        }, 2000); // Esperar más tiempo para asegurar que los componentes estén cargados
+
+        // Crear CardContent inicial después de que todo esté listo
+        setTimeout(() => {
+            createCardContent();
+        }, 2000); // Esperar más tiempo para asegurar que los componentes estén cargados
                 }, 200); // Delay mínimo solo para asegurar que el DOM esté listo
             });
         }); // Fin del bloque DOMContentLoaded
