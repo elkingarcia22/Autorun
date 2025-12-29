@@ -627,18 +627,40 @@ export function detectComponentFromMessage(message: string): string | null {
   ];
 
   // Encontrar todos los componentes que coinciden
-  const matches: Array<{ component: string; priority: number }> = [];
+  const matches: Array<{
+    component: string;
+    priority: number;
+    pattern: RegExp;
+  }> = [];
   for (const { pattern, component, priority } of patterns) {
     if (pattern.test(message)) {
-      matches.push({ component, priority: priority || 1 });
+      matches.push({ component, priority: priority || 1, pattern });
+      console.log(
+        `   🔍 [detectComponentFromMessage] Patrón coincidió: ${component} (prioridad: ${priority || 1})`
+      );
     }
   }
 
   // Retornar el componente con mayor prioridad
   if (matches.length > 0) {
     matches.sort((a, b) => b.priority - a.priority);
-    return matches[0].component;
+    const selected = matches[0].component;
+    console.log(
+      `   ✅ [detectComponentFromMessage] Componente seleccionado: ${selected} (prioridad: ${matches[0].priority})`
+    );
+    if (matches.length > 1) {
+      console.log(
+        `   📋 [detectComponentFromMessage] Otros componentes detectados: ${matches
+          .slice(1)
+          .map((m) => `${m.component} (${m.priority})`)
+          .join(', ')}`
+      );
+    }
+    return selected;
   }
 
+  console.log(
+    `   ❌ [detectComponentFromMessage] No se detectó ningún componente`
+  );
   return null;
 }
