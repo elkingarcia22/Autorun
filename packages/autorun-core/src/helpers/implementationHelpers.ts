@@ -616,13 +616,14 @@ export function detectComponentFromMessage(message: string): string | null {
       priority: 4,
     },
     {
-      // ⚠️ MEJORADO: Solo detectar SubNav si NO hay otro componente mencionado explícitamente
+      // ⚠️ MEJORADO: Solo detectar SubNav si NO hay otro componente mencionado explícitamente ANTES o DESPUÉS
+      // Usar negative lookbehind y lookahead para evitar falsos positivos
       pattern: new RegExp(
-        `${ACTION_VERBS_PATTERN}.*subnav(?!.*(?:card|button|input|table|modal|drawer|tabs|accordion|carousel|gallery|stepper|timeline|header|footer|sidebar|breadcrumb|menu|select|checkbox|radio|datepicker|calendar|list|pagination|data\s*table|data-table))`,
+        `(?!.*(?:card\s+content|cardcontent|contentcard|button|input|table|modal|drawer|tabs|accordion|carousel|gallery|stepper|timeline|header|footer|sidebar|breadcrumb|menu|select|checkbox|radio|datepicker|calendar|list|pagination|data\s*table|data-table).*subnav)${ACTION_VERBS_PATTERN}.*subnav(?!.*(?:card\s+content|cardcontent|contentcard|button|input|table|modal|drawer|tabs|accordion|carousel|gallery|stepper|timeline|header|footer|sidebar|breadcrumb|menu|select|checkbox|radio|datepicker|calendar|list|pagination|data\s*table|data-table))`,
         'i'
       ),
       component: 'SubNav',
-      priority: 4,
+      priority: 3, // Reducir prioridad para que otros componentes tengan preferencia
     },
   ];
 
