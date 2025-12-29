@@ -28,7 +28,16 @@ export async function autorunProblemsList(
 
     // Convertir al formato esperado
     return {
-      problems: result.problems || [],
+      problems: (result.problems || []).map((p: any) => ({
+        id: p.id,
+        category: p.category,
+        severity: p.severity,
+        message: p.message || p.description || 'Problema sin descripción',
+        description: p.description,
+        detectedAt: p.detectedAt,
+        metadata: p.metadata,
+        resolved: p.resolved || false,
+      })),
       total: result.total || 0,
       unresolved: result.unresolved || 0,
     };

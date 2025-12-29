@@ -181,7 +181,12 @@ export async function autorunApply(
         verification: {
           preImplementation: false,
           postImplementation: false,
+          errors: [
+            `Error en autorun.apply() original: ${originalError.message}`,
+          ],
+          warnings: [],
         },
+        components: [],
       };
     }
 
