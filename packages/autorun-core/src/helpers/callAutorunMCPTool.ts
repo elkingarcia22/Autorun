@@ -42,14 +42,31 @@ export async function callAutorunMCPTool(
     await client.connect('autorun');
 
     // Llamar tool usando el formato correcto de MCP
-    const result = await client.callMethod('tools/call', {
+    const mcpResponse = await client.callMethod('tools/call', {
       name: toolName,
       arguments: args,
     });
 
+    // ⚠️ CRÍTICO: Parsear respuesta de MCP
+    // La respuesta puede venir en formato { content: [{ type: 'text', text: '...' }] }
+    let parsedResult = mcpResponse;
+    if (mcpResponse?.content && Array.isArray(mcpResponse.content)) {
+      const textContent = mcpResponse.content.find(
+        (c: any) => c.type === 'text'
+      );
+      if (textContent?.text) {
+        try {
+          parsedResult = JSON.parse(textContent.text);
+        } catch (e) {
+          // Si no es JSON, usar el texto directamente
+          parsedResult = textContent.text;
+        }
+      }
+    }
+
     return {
       success: true,
-      result,
+      result: parsedResult,
     };
   } catch (error: any) {
     console.error(
