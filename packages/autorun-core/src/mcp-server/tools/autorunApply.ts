@@ -2169,52 +2169,52 @@ async function autorunApplyModeB(
               storyName
             );
           } catch (extractError: any) {
-          // ⚠️ CRÍTICO: Capturar el error ANTES de que cierre el servidor MCP
-          console.error(
-            `   ❌ Error en extractExactCodeFromStorybookWithBrowser: ${extractError.message}`
-          );
-
-          // Verificar si es un error de Browser MCP Required
-          const { isBrowserMCPRequiredError } = await import(
-            '../../helpers/browserMCPAutoExtractor.js'
-          );
-
-          if (isBrowserMCPRequiredError(extractError)) {
+            // ⚠️ CRÍTICO: Capturar el error ANTES de que cierre el servidor MCP
             console.error(
-              `   ⚠️ CAUSA: Storybook carga el código dinámicamente con JavaScript`
+              `   ❌ Error en extractExactCodeFromStorybookWithBrowser: ${extractError.message}`
             );
-            console.error(
-              `   💡 SOLUCIÓN: Necesitamos usar Browser MCP para navegar y extraer desde el snapshot`
-            );
-            console.error(`   📋 URL: ${extractError.docsUrl}`);
-            console.error(`   📋 Historia: ${extractError.storyName}`);
 
-            const browserMCPError =
-              `No se pudo extraer código desde Storybook. El código se carga dinámicamente y requiere Browser MCP. ` +
-              `URL de Docs: ${extractError.docsUrl}. ` +
-              `El agente DEBE ejecutar Browser MCP para navegar a Docs y extraer desde el snapshot.`;
-            errors.push(browserMCPError);
-            codeToInsert = '';
-            componentExists = false;
-            // NO lanzar el error - continuar para que el catch externo maneje el flujo
-            exactCode = null;
-          } else {
-            // Para otros errores, también agregar a errors pero no lanzar
-            console.error(`   ❌ [DEBUG] Error completo:`);
-            console.error(`      - Tipo: ${extractError.type || 'N/A'}`);
-            console.error(`      - DocsUrl: ${extractError.docsUrl || 'N/A'}`);
-            console.error(`      - StoryUrl: ${extractError.storyUrl || 'N/A'}`);
-            console.error(`      - StoryName: ${extractError.storyName || 'N/A'}`);
-            console.error(`      - ComponentId usado: ${componentId}`);
-            console.error(`      - Stack: ${extractError.stack?.substring(0, 500) || 'N/A'}`);
-            
-            const genericError = `Error extrayendo código desde Storybook: ${extractError.message}. ComponentId: ${componentId}, DocsUrl: ${extractError.docsUrl || 'N/A'}, StoryUrl: ${extractError.storyUrl || 'N/A'}`;
-            errors.push(genericError);
-            codeToInsert = '';
-            componentExists = false;
-            exactCode = null;
+            // Verificar si es un error de Browser MCP Required
+            const { isBrowserMCPRequiredError } = await import(
+              '../../helpers/browserMCPAutoExtractor.js'
+            );
+
+            if (isBrowserMCPRequiredError(extractError)) {
+              console.error(
+                `   ⚠️ CAUSA: Storybook carga el código dinámicamente con JavaScript`
+              );
+              console.error(
+                `   💡 SOLUCIÓN: Necesitamos usar Browser MCP para navegar y extraer desde el snapshot`
+              );
+              console.error(`   📋 URL: ${extractError.docsUrl}`);
+              console.error(`   📋 Historia: ${extractError.storyName}`);
+
+              const browserMCPError =
+                `No se pudo extraer código desde Storybook. El código se carga dinámicamente y requiere Browser MCP. ` +
+                `URL de Docs: ${extractError.docsUrl}. ` +
+                `El agente DEBE ejecutar Browser MCP para navegar a Docs y extraer desde el snapshot.`;
+              errors.push(browserMCPError);
+              codeToInsert = '';
+              componentExists = false;
+              // NO lanzar el error - continuar para que el catch externo maneje el flujo
+              exactCode = null;
+            } else {
+              // Para otros errores, también agregar a errors pero no lanzar
+              console.error(`   ❌ [DEBUG] Error completo:`);
+              console.error(`      - Tipo: ${extractError.type || 'N/A'}`);
+              console.error(`      - DocsUrl: ${extractError.docsUrl || 'N/A'}`);
+              console.error(`      - StoryUrl: ${extractError.storyUrl || 'N/A'}`);
+              console.error(`      - StoryName: ${extractError.storyName || 'N/A'}`);
+              console.error(`      - ComponentId usado: ${componentId}`);
+              console.error(`      - Stack: ${extractError.stack?.substring(0, 500) || 'N/A'}`);
+              
+              const genericError = `Error extrayendo código desde Storybook: ${extractError.message}. ComponentId: ${componentId}, DocsUrl: ${extractError.docsUrl || 'N/A'}, StoryUrl: ${extractError.storyUrl || 'N/A'}`;
+              errors.push(genericError);
+              codeToInsert = '';
+              componentExists = false;
+              exactCode = null;
+            }
           }
-        }
 
         // Solo procesar si tenemos código válido (y no lo obtuvimos desde fuente local)
         if (!codeFromSource && exactCode && exactCode.html) {
