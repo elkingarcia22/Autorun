@@ -1030,16 +1030,20 @@ export function extractStoryCodeFromSource(
   // ⚠️ NUEVO: Priorizar extracción desde parameters.docs.source.code (más confiable)
   // Buscar específicamente para historias "Implementation" o "implementation"
   if (storyName.toLowerCase().includes('implementation')) {
-    // Buscar la historia específica primero - usar regex más específico
-    // Buscar: export const Implementation ... code: `...`
-    // ⚠️ OPTIMIZADO: Usar non-greedy para código extenso (más eficiente)
-    // El `;?` al final permite que el código termine con o sin punto y coma
-    const storySection = sourceCode.match(
-      new RegExp(
-        `export\\s+const\\s+${storyName}[\\s\\S]*?code:\\s*\`([\\s\\S]*?)\`;?`,
-        'i'
-      )
-    );
+    // ⚠️ CRÍTICO: Buscar "Implementation" con mayúscula primero (como está en el código fuente)
+    // Luego buscar con el nombre exacto de la historia
+    const implementationPatterns = [
+      `export\\s+const\\s+Implementation[\\s\\S]*?code:\\s*\`([\\s\\S]*?)\`;?`, // "Implementation" con mayúscula
+      `export\\s+const\\s+${storyName}[\\s\\S]*?code:\\s*\`([\\s\\S]*?)\`;?`, // Nombre exacto de la historia
+    ];
+
+    let storySection: RegExpMatchArray | null = null;
+    for (const pattern of implementationPatterns) {
+      storySection = sourceCode.match(new RegExp(pattern, 'i'));
+      if (storySection && storySection[1]) {
+        break;
+      }
+    }
 
     if (storySection && storySection[1]) {
       const code = storySection[1]
