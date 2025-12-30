@@ -1,10 +1,23 @@
 import * as fs from 'fs/promises';
+import { generateExecutableCode } from '../helpers/executableCodeGenerator.js';
+import {
+  detectComponentAvailability,
+  getComponentAPIInfo,
+} from '../helpers/componentAvailabilityDetector.js';
+import { ensureComponentLoaded } from '../helpers/dynamicComponentLoader.js';
 
 /**
  * ✅ HtmlPrototypeAdapter - Adapter estable para insertar contenido en prototypes/*.html
- * 
+ *
+ * ⭐ NUEVO: Sistema automático completo sin hardcode:
+ * - Detecta disponibilidad de componentes automáticamente
+ * - Carga componentes dinámicamente si faltan
+ * - Genera código ejecutable desde snippets de Storybook
+ * - Inserta contenedor en .content-area automáticamente
+ * - Inserta script de inicialización automáticamente
+ *
  * Usa anchors predefinidos para inserción consistente sin depender de strings largos.
- * 
+ *
  * Anchors por defecto:
  * - <!-- AUTORUN:ANCHOR:CONTENT --> (dentro de <main> o antes de </body>)
  * - <!-- AUTORUN:ANCHOR:SCRIPTS --> (antes de </body>)
@@ -12,7 +25,7 @@ import * as fs from 'fs/promises';
 export class HtmlPrototypeAdapter {
   private defaultAnchors = {
     content: '<!-- AUTORUN:ANCHOR:CONTENT -->',
-    scripts: '<!-- AUTORUN:ANCHOR:SCRIPTS -->'
+    scripts: '<!-- AUTORUN:ANCHOR:SCRIPTS -->',
   };
 
   /**
@@ -27,13 +40,13 @@ export class HtmlPrototypeAdapter {
 
     return {
       content: contentMatch ? contentMatch[0] : null,
-      scripts: scriptsMatch ? scriptsMatch[0] : null
+      scripts: scriptsMatch ? scriptsMatch[0] : null,
     };
   }
 
   /**
    * ✅ Crea anchors si no existen
-   * 
+   *
    * - CONTENT dentro de <main> o antes de </body>
    * - SCRIPTS antes de </body>
    */
@@ -91,7 +104,7 @@ export class HtmlPrototypeAdapter {
 
   /**
    * ✅ Inserta bloque de contenido con watermark
-   * 
+   *
    * El contenido ya viene con watermark aplicado desde emitWatermark().
    */
   async insertContentBlock(
@@ -105,7 +118,9 @@ export class HtmlPrototypeAdapter {
     const anchors = this.findAnchors(content);
 
     if (!anchors.content) {
-      throw new Error(`No se pudo encontrar o crear anchor CONTENT en ${filePath}`);
+      throw new Error(
+        `No se pudo encontrar o crear anchor CONTENT en ${filePath}`
+      );
     }
 
     // Insertar después del anchor CONTENT
@@ -119,7 +134,7 @@ export class HtmlPrototypeAdapter {
 
   /**
    * ✅ Inserta bloque de scripts con watermark
-   * 
+   *
    * El script ya viene con watermark aplicado desde emitWatermark().
    */
   async insertScriptBlock(
@@ -133,7 +148,9 @@ export class HtmlPrototypeAdapter {
     const anchors = this.findAnchors(content);
 
     if (!anchors.scripts) {
-      throw new Error(`No se pudo encontrar o crear anchor SCRIPTS en ${filePath}`);
+      throw new Error(
+        `No se pudo encontrar o crear anchor SCRIPTS en ${filePath}`
+      );
     }
 
     // Insertar después del anchor SCRIPTS
@@ -145,4 +162,3 @@ export class HtmlPrototypeAdapter {
     await fs.writeFile(filePath, newContent, 'utf-8');
   }
 }
-
