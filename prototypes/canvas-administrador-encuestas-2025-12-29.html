@@ -1453,6 +1453,90 @@ window.UBITS.SegmentControl.create({
                                     }
                                 }
                                 
+                                // ========================================
+                                // CREAR GALLERY DEBAJO DEL SUBNAV
+                                // ========================================
+                                function createGallery() {
+                                    const galleryContainer = document.getElementById('gallery-implementation-container');
+                                    if (!galleryContainer) {
+                                        console.warn('⚠️ [Gallery] Contenedor no encontrado');
+                                        return;
+                                    }
+                                    
+                                    // Verificar que window.UBITS.Gallery esté disponible
+                                    if (!window.UBITS || !window.UBITS.Gallery || !window.UBITS.Gallery.create) {
+                                        console.warn('⚠️ [Gallery] window.UBITS.Gallery no está disponible, esperando...');
+                                        setTimeout(createGallery, 500);
+                                        return;
+                                    }
+                                    
+                                    try {
+                                        const galleryElement = window.UBITS.Gallery.create({
+                                            items: [
+                                                {
+                                                    id: 1,
+                                                    image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop',
+                                                    thumbnail: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=200&h=200&fit=crop',
+                                                    title: 'Paisaje Montañoso',
+                                                    description: 'Hermoso paisaje montañoso con cielo despejado',
+                                                    alt: 'Paisaje montañoso'
+                                                },
+                                                {
+                                                    id: 2,
+                                                    image: 'https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=800&h=600&fit=crop',
+                                                    thumbnail: 'https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=200&h=200&fit=crop',
+                                                    title: 'Océano Azul',
+                                                    description: 'Vista del océano con olas suaves',
+                                                    alt: 'Océano azul'
+                                                },
+                                                {
+                                                    id: 3,
+                                                    image: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&h=600&fit=crop',
+                                                    thumbnail: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=200&h=200&fit=crop',
+                                                    title: 'Bosque Verde',
+                                                    description: 'Sendero a través de un bosque frondoso',
+                                                    alt: 'Bosque verde'
+                                                }
+                                            ],
+                                            layout: 'grid',
+                                            size: 'md',
+                                            columns: 3,
+                                            gap: 16,
+                                            showThumbnails: false,
+                                            lazyLoad: false,
+                                            lightbox: true,
+                                            aspectRatio: undefined,
+                                            onItemClick: (item, index) => {
+                                                console.log('📋 [Gallery] Item clickeado:', item, index);
+                                            },
+                                            onImageLoad: (item, index) => {
+                                                console.log('📋 [Gallery] Imagen cargada:', item, index);
+                                            },
+                                            onImageError: (item, index) => {
+                                                console.error('❌ [Gallery] Error cargando imagen:', item, index);
+                                            }
+                                        });
+                                        
+                                        galleryContainer.innerHTML = '';
+                                        galleryContainer.appendChild(galleryElement);
+                                        console.log('✅ [Gallery] Gallery creada exitosamente usando window.UBITS.Gallery.create()');
+                                        
+                                        // Registrar para preservación automática
+                                        if (window.AUTORUN_PRESERVE_COMPONENTS) {
+                                            window.AUTORUN_PRESERVE_COMPONENTS.register('gallery', 'gallery-implementation-container', {
+                                                onClick: (e) => {
+                                                    console.log('📋 [Gallery] Gallery clickeada');
+                                                }
+                                            });
+                                        }
+                                    } catch (error) {
+                                        console.error('❌ [Gallery] Error al crear gallery:', error);
+                                    }
+                                }
+                                
+                                // Crear gallery después de que los componentes estén cargados
+                                setTimeout(createGallery, 500);
+                                
                                 // Crear tabs después de que los componentes estén cargados
                                 setTimeout(createTabs, 1500);
                                 
