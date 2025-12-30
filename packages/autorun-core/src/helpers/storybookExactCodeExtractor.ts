@@ -241,7 +241,8 @@ export async function getSourceCode(
       .replace(/^navegacion-/, '')
       .replace(/^layout-/, '')
       .replace(/^b[aá]sicos-/, '')
-      .replace(/^basicos-/, '');
+      .replace(/^basicos-/, '')
+      .replace(/^básicos-/, '');
 
     // Convertir a PascalCase para nombres de archivos (ej: "radio-button" -> "RadioButton")
     // ⚠️ MEJORADO: Manejar acrónimos como "nps" -> "NPS" (no "Nps")
