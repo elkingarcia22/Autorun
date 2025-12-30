@@ -173,9 +173,19 @@ export async function executeCompleteImplementationFlow(
       errors.push(`apply falló: ${applyResult.error}`);
       return {
         success: false,
-        handleResult: handleResult.result,
         errors,
       };
+    }
+
+    // Extraer handleResult del applyResult si está disponible
+    let handleResult = null;
+    if (applyResult.result) {
+      // El resultado puede venir en diferentes formatos
+      if (typeof applyResult.result === 'object') {
+        handleResult = applyResult.result.handleResult || applyResult.result;
+      } else {
+        handleResult = applyResult.result;
+      }
     }
 
     // PASO 2: verify
