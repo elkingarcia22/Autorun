@@ -60,7 +60,9 @@ export async function extractExactCodeFromStorybook(
     `🔍 [Exact Code Extractor] Extrayendo código exacto para: ${componentId}--${storyName}`
   );
 
-  const storybookUrl = `${storybookBaseUrl}/?path=/story/${componentId}--${storyName}`;
+  // ⚠️ CRÍTICO: Codificar componentId para URLs (caracteres especiales como "á" en "básicos")
+  const encodedComponentId = encodeURIComponent(componentId);
+  const storybookUrl = `${storybookBaseUrl}/?path=/story/${encodedComponentId}--${storyName}`;
 
   try {
     // 1. Navegar a Storybook (requiere Browser MCP)
@@ -234,7 +236,12 @@ export async function getSourceCode(
       .replace('data-', '')
       .replace('formularios-', '')
       .replace('metricas-', '')
-      .replace('charts-', '');
+      .replace('charts-', '')
+      .replace('navegación-', '')
+      .replace('navegacion-', '')
+      .replace('layout-', '')
+      .replace('básicos-', '')
+      .replace('basicos-', '');
 
     // Convertir a PascalCase para nombres de archivos (ej: "radio-button" -> "RadioButton")
     // ⚠️ MEJORADO: Manejar acrónimos como "nps" -> "NPS" (no "Nps")
