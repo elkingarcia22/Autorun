@@ -49,6 +49,18 @@ export class KeywordTriggerSystem {
       priority: 'high',
       action: 'activate-step-by-step',
     },
+    // ⚠️ NUEVO: Trigger para Gallery
+    {
+      keywords: ['implementar', 'implementa', 'crear', 'agregar'],
+      patterns: [
+        /(?:implementar|implementa).*(?:gallery|galer[ií]a)/i,
+        /crear.*(?:gallery|galer[ií]a)/i,
+        /agregar.*(?:gallery|galer[ií]a)/i,
+      ],
+      componentName: 'Gallery',
+      priority: 'high',
+      action: 'activate-step-by-step',
+    },
     // ⚠️ CRÍTICO: Tabs DEBE estar DESPUÉS de SegmentControl para evitar falsos positivos
     // porque "tabla" puede aparecer en "Lista de encuestas" pero "tabs" es más específico
     {
