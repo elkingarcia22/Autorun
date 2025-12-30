@@ -154,11 +154,48 @@ export function detectComponentsProactively(
         'Verificar si necesita botones de acción',
       ],
     },
+    // ⚠️ CRÍTICO: SimpleCard DEBE estar ANTES de Button para evitar falsos positivos
+    {
+      name: 'SimpleCard',
+      patterns: [
+        {
+          pattern: /(?:Layout\/)?Simple\s+Card|layout-simple-card/i,
+          confidence: 'high' as const,
+        },
+        {
+          pattern: /\bSimpleCard\b/i,
+          confidence: 'high' as const,
+        },
+        {
+          pattern:
+            /(?:implementar|implementa|crear|agregar|poner|hacer).*(?:simple\s+card|simplecard|tarjeta\s+simple)/i,
+          confidence: 'high' as const,
+        },
+        {
+          pattern: /\bsimple\s+card\b|\bsimplecard\b|\btarjeta\s+simple\b/i,
+          confidence: 'medium' as const,
+        },
+      ],
+      contextKeywords: [
+        'simple card',
+        'simplecard',
+        'tarjeta simple',
+        'Layout/Simple Card',
+        'layout-simple-card',
+      ],
+      suggestedChecklist: [
+        'Consultar Storybook para ver opciones de SimpleCard',
+        'Verificar variantes (default, elevated, bordered, flat)',
+        'Verificar tamaños (sm, md, lg, xl)',
+        'Verificar si necesita botones',
+      ],
+    },
     {
       name: 'Button',
       patterns: [
         {
-          pattern: /implementar.*button|crear.*botón/i,
+          pattern:
+            /implementar.*button|crear.*botón(?!.*simple\s+card)(?!.*simplecard)/i,
           confidence: 'high' as const,
         },
         {
