@@ -154,6 +154,38 @@ export function detectComponentsProactively(
         'Verificar si necesita botones de acción',
       ],
     },
+    // ⚠️ CRÍTICO: SegmentControl DEBE estar ANTES de Tabs para evitar falsos positivos
+    {
+      name: 'SegmentControl',
+      patterns: [
+        {
+          pattern:
+            /(?:implementar|implementa|crear|agregar|poner|hacer).*(?:segment\s+control|segmentcontrol|control\s+de\s+segmentos)/i,
+          confidence: 'high' as const,
+        },
+        {
+          pattern: /\bsegment\s+control\b|\bsegmentcontrol\b/i,
+          confidence: 'high' as const,
+        },
+        {
+          pattern: /\bcontrol\s+de\s+segmentos\b/i,
+          confidence: 'medium' as const,
+        },
+      ],
+      contextKeywords: [
+        'segment control',
+        'segmentcontrol',
+        'control de segmentos',
+        'Navegación/Segment Control',
+        'navegación-segment-control',
+      ],
+      suggestedChecklist: [
+        'Consultar Storybook para ver opciones de SegmentControl',
+        'Verificar si necesita iconos',
+        'Configurar segmento activo inicial',
+        'Implementar callback onSegmentChange si es necesario',
+      ],
+    },
     // ⚠️ CRÍTICO: SimpleCard DEBE estar ANTES de Button para evitar falsos positivos
     {
       name: 'SimpleCard',
