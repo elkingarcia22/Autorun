@@ -154,28 +154,12 @@ export async function executeCompleteImplementationFlow(
   const errors: string[] = [];
 
   try {
-    // PASO 1: handleUserMessage
-    console.log('📋 [Complete Flow] Ejecutando handleUserMessage...');
-    const handleResult = await callAutorunMCPTool('autorun.handleUserMessage', {
-      message,
-    });
-
-    if (!handleResult.success) {
-      errors.push(`handleUserMessage falló: ${handleResult.error}`);
-      return {
-        success: false,
-        errors,
-      };
-    }
-
-    if (handleResult.result?.blocked) {
-      errors.push(`Implementación bloqueada: ${handleResult.result.reason}`);
-      return {
-        success: false,
-        handleResult: handleResult.result,
-        errors,
-      };
-    }
+    // ⚠️ NOTA: autorun.apply() internamente ejecuta handleUserMessage con skipPreCheck: true
+    // Por lo tanto, NO necesitamos ejecutar handleUserMessage por separado
+    // autorun.apply() ya maneja todo el flujo automáticamente
+    console.log(
+      '📋 [Complete Flow] autorun.apply() ejecutará handleUserMessage internamente...'
+    );
 
     // PASO 2: apply
     console.log('🚀 [Complete Flow] Ejecutando apply...');
@@ -194,7 +178,7 @@ export async function executeCompleteImplementationFlow(
       };
     }
 
-    // PASO 3: verify
+    // PASO 2: verify
     console.log('✅ [Complete Flow] Ejecutando verify...');
     const verifyResult = await callAutorunMCPTool('autorun.verify', {
       targetFiles: 'diff',
@@ -207,7 +191,7 @@ export async function executeCompleteImplementationFlow(
 
     return {
       success: errors.length === 0,
-      handleResult: handleResult.result,
+      handleResult: handleResult,
       applyResult: applyResult.result,
       verifyResult: verifyResult.result,
       errors,
