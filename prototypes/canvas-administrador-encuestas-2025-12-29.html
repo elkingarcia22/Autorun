@@ -730,6 +730,27 @@
 
         <!-- Main Content -->
         <main class="main-content">
+<!-- AUTORUN:ANCHOR:CONTENT -->
+<!-- AUTORUN: {"v":2,"mode":"prototypeTokens","components":["navegación-segment-control"],"widgets":[],"deps":[],"storybookId":"navegación-segment-control","hash":"12fa117911ebbf68"} -->
+// 1. Crear contenedor HTML
+<div id="segment-control-implementation-container"></div>
+
+// 2. Crear Segment Control
+window.UBITS.SegmentControl.create({
+  segments: [
+    { id: 'segment-1', label: 'Segment 1', icon: 'far fa-th', active: true },
+    { id: 'segment-2', label: 'Segment 2', icon: 'far fa-chart-line', active: false },
+    { id: 'segment-3', label: 'Segment 3', icon: 'far fa-cog', active: false },
+    { id: 'segment-4', label: 'Segment 4', icon: 'far fa-star', active: false },
+    { id: 'segment-5', label: 'Segment 5', icon: 'far fa-book', active: false }
+  ],
+  activeSegmentId: 'segment-1',
+  onSegmentChange: (segmentId, segmentElement) => {
+    console.log('Segmento cambiado:', segmentId);
+  }
+}, 'segment-control-implementation-container');
+<!-- /AUTORUN -->
+
             <!-- Top Navigation -->
             <div id="top-nav-container"></div>
             
@@ -2561,5 +2582,6 @@
       }
     })();
   </script>
+<!-- AUTORUN:ANCHOR:SCRIPTS -->
 </body>
 </html>
