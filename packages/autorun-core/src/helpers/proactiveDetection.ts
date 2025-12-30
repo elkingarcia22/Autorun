@@ -186,6 +186,34 @@ export function detectComponentsProactively(
         'Implementar callback onSegmentChange si es necesario',
       ],
     },
+    // ⚠️ NUEVO: Detección de Gallery
+    {
+      name: 'Gallery',
+      patterns: [
+        {
+          pattern:
+            /(?:implementar|implementa|crear|agregar|poner|hacer).*(?:gallery|galer[ií]a)/i,
+          confidence: 'high' as const,
+        },
+        {
+          pattern: /\bgallery\b|\bgaler[ií]a\b/i,
+          confidence: 'high' as const,
+        },
+      ],
+      contextKeywords: [
+        'gallery',
+        'galería',
+        'galeria',
+        'Layout/Gallery',
+        'layout-gallery',
+      ],
+      suggestedChecklist: [
+        'Consultar Storybook para ver opciones de Gallery',
+        'Verificar número de columnas',
+        'Verificar si necesita imágenes',
+        'Configurar tamaño de imágenes',
+      ],
+    },
     // ⚠️ CRÍTICO: SimpleCard DEBE estar ANTES de Button para evitar falsos positivos
     {
       name: 'SimpleCard',
