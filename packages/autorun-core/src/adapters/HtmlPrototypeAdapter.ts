@@ -5,6 +5,7 @@ import {
   getComponentAPIInfo,
 } from '../helpers/componentAvailabilityDetector.js';
 import { ensureComponentLoaded } from '../helpers/dynamicComponentLoader.js';
+import { emitWatermark } from '../verify/Watermark.js';
 
 /**
  * ✅ HtmlPrototypeAdapter - Adapter estable para insertar contenido en prototypes/*.html
@@ -162,9 +163,9 @@ export class HtmlPrototypeAdapter {
         });
 
         // 4. Insertar contenedor en .content-area (dentro del anchor CONTENT)
-        // Buscar .content-area dentro del contenido
+        // Buscar .content-area dentro del contenido (buscar hasta el cierre de </main> o </div>)
         const contentAreaMatch = content.match(
-          /(<div[^>]*class=["']content-area["'][^>]*>)([\s\S]*?)(<\/div>)/
+          /(<div[^>]*class=["']content-area["'][^>]*>)([\s\S]*?)(<\/div>\s*<\/main>|<\/div>\s*<\/div>|<\/div>\s*$)/m
         );
         if (contentAreaMatch) {
           // Insertar contenedor dentro de .content-area
