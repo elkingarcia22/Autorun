@@ -330,16 +330,21 @@ export async function findImplementationStory(
     );
 
     // ⚠️ CRÍTICO: Buscar historia "implementation" específicamente
-    // Prioridad 1: Nombre exacto "implementation"
-    let implementationStory = stories.find((s) => s.name === 'implementation');
+    // Prioridad 1: Nombre exacto "Implementation" (con mayúscula, como está en el código fuente)
+    let implementationStory = stories.find((s) => s.name === 'Implementation');
 
-    // Prioridad 2: Nombres que contengan "implementation"
+    // Prioridad 2: Nombre exacto "implementation" (minúsculas)
+    if (!implementationStory) {
+      implementationStory = stories.find((s) => s.name === 'implementation');
+    }
+
+    // Prioridad 3: Nombres que contengan "implementation" o "copy-paste"
     if (!implementationStory) {
       implementationStory = stories.find(
         (s) =>
           s.name.toLowerCase().includes('implementation') ||
           s.name.toLowerCase().includes('copy-paste') ||
-          s.name.toLowerCase().includes('copy-paste')
+          s.name.toLowerCase().includes('copy/paste')
       );
     }
 
@@ -371,7 +376,9 @@ export async function findImplementationStory(
         const activeConfig = await manager.getActiveConfig();
 
         if (activeConfig) {
-          const implementationUrl = `${activeConfig.url}/?path=/story/${componentId}--implementation`;
+          // ⚠️ CRÍTICO: Codificar componentId para URLs (caracteres especiales como "á" en "básicos")
+          const encodedComponentId = encodeURIComponent(componentId);
+          const implementationUrl = `${activeConfig.url}/?path=/story/${encodedComponentId}--implementation`;
           console.log(`   🔍 Verificando URL: ${implementationUrl}`);
 
           // Intentar fetch para verificar si existe
