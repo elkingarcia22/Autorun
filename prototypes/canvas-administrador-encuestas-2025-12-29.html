@@ -735,6 +735,9 @@
             
             <!-- Content Area -->
             <div class="content-area">
+                <!-- Tabs Container -->
+                <div id="tabs-container" style="padding: var(--ubits-spacing-md, 12px) 0;"></div>
+                
                 <!-- Card Content Container -->
                 <div id="card-content-container" style="padding: var(--ubits-spacing-xl, 20px) 0;"></div>
             </div>
@@ -1314,6 +1317,79 @@
                                     cardContainer.innerHTML = cardHTML;
                                     console.log('✅ [Card Content] Card Content creada e insertada exitosamente');
                                 }
+                                
+                                // ========================================
+                                // CREAR TABS DEBAJO DEL SUBNAV
+                                // ========================================
+                                function createTabs() {
+                                    const tabsContainer = document.getElementById('tabs-container');
+                                    if (!tabsContainer) {
+                                        console.warn('⚠️ [Tabs] Contenedor no encontrado');
+                                        return;
+                                    }
+                                    
+                                    // Verificar que window.createTabs esté disponible
+                                    if (!window.createTabs) {
+                                        console.warn('⚠️ [Tabs] window.createTabs no está disponible, esperando...');
+                                        setTimeout(createTabs, 500);
+                                        return;
+                                    }
+                                    
+                                    // Configuración de tabs para módulo Encuestas
+                                    const tabsOptions = {
+                                        tabs: [
+                                            {
+                                                id: 'tab-encuestas',
+                                                label: 'Encuestas',
+                                                icon: 'clipboard-list',
+                                                active: true
+                                            },
+                                            {
+                                                id: 'tab-resultados',
+                                                label: 'Resultados',
+                                                icon: 'chart-bar',
+                                                active: false
+                                            },
+                                            {
+                                                id: 'tab-configuracion',
+                                                label: 'Configuración',
+                                                icon: 'cog',
+                                                active: false
+                                            }
+                                        ],
+                                        activeTabId: 'tab-encuestas',
+                                        onTabChange: (tabId, tabElement) => {
+                                            console.log('📋 [Tabs] Tab cambiado:', tabId);
+                                            // Aquí puedes agregar lógica para cambiar el contenido según el tab
+                                        }
+                                    };
+                                    
+                                    // Crear tabs usando window.createTabs
+                                    try {
+                                        const tabsElement = window.createTabs(tabsOptions, 'tabs-container');
+                                        console.log('✅ [Tabs] Tabs creados exitosamente');
+                                        
+                                        // Registrar para preservación automática
+                                        if (window.AUTORUN_PRESERVE_COMPONENTS) {
+                                            window.AUTORUN_PRESERVE_COMPONENTS.register('tabs', 'tabs-container', {
+                                                onClick: (e) => {
+                                                    const tabButton = e.target.closest('.ubits-tab');
+                                                    if (tabButton) {
+                                                        const tabId = tabButton.getAttribute('data-tab-id');
+                                                        if (tabId && tabsOptions.onTabChange) {
+                                                            tabsOptions.onTabChange(tabId, tabButton);
+                                                        }
+                                                    }
+                                                }
+                                            });
+                                        }
+                                    } catch (error) {
+                                        console.error('❌ [Tabs] Error al crear tabs:', error);
+                                    }
+                                }
+                                
+                                // Crear tabs después de que los componentes estén cargados
+                                setTimeout(createTabs, 1500);
                                 
                                 // Crear la card después de que los componentes estén cargados
                                 setTimeout(createCardContent, 1000);
