@@ -1341,11 +1341,62 @@
                                     }
                                 }
                                 
+                                // ========================================
+                                // CREAR SIMPLE CARD DEBAJO DEL SUBNAV
+                                // ========================================
+                                function createSimpleCard() {
+                                    const simpleCardContainer = document.getElementById('simple-card-container');
+                                    if (!simpleCardContainer) {
+                                        console.warn('⚠️ [Simple Card] Contenedor no encontrado');
+                                        return;
+                                    }
+                                    
+                                    // Verificar que window.createSimpleCard esté disponible
+                                    if (!window.createSimpleCard) {
+                                        console.warn('⚠️ [Simple Card] window.createSimpleCard no está disponible, esperando...');
+                                        setTimeout(createSimpleCard, 500);
+                                        return;
+                                    }
+                                    
+                                    // Configuración de la simple card usando la API de UBITS
+                                    const simpleCardOptions = {
+                                        containerId: 'simple-card-container',
+                                        title: 'Mi Simple Card',
+                                        subtitle: 'Subtítulo de ejemplo',
+                                        content: 'Este es el contenido de la simple card',
+                                        showHeader: true,
+                                        headerDecorations: true,
+                                        variant: 'default',
+                                        size: 'md',
+                                        showButtons: false
+                                    };
+                                    
+                                    // Crear simple card usando window.createSimpleCard
+                                    try {
+                                        window.createSimpleCard(simpleCardOptions);
+                                        console.log('✅ [Simple Card] Simple Card creada exitosamente usando window.createSimpleCard()');
+                                        
+                                        // Registrar para preservación automática
+                                        if (window.AUTORUN_PRESERVE_COMPONENTS) {
+                                            window.AUTORUN_PRESERVE_COMPONENTS.register('simple-card', 'simple-card-container', {
+                                                onClick: (e) => {
+                                                    console.log('📋 [Simple Card] Card clickeada');
+                                                }
+                                            });
+                                        }
+                                    } catch (error) {
+                                        console.error('❌ [Simple Card] Error al crear simple card:', error);
+                                    }
+                                }
+                                
                                 // Crear tabs después de que los componentes estén cargados
                                 setTimeout(createTabs, 1500);
                                 
                                 // Crear la card después de que los componentes estén cargados
                                 setTimeout(createCardContent, 1000);
+                                
+                                // Crear la simple card después de que los componentes estén cargados
+                                setTimeout(createSimpleCard, 2000);
                                 
                                 // ⚠️ LOGS ESPECÍFICOS PARA DEBUG DEL LAYOUT
                                 debugLayout();
