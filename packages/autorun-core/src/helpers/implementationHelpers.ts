@@ -207,22 +207,23 @@ export function detectComponentFromMessage(message: string): string | null {
       component: 'RadioButton',
       priority: 9,
     },
-    // ⚠️ MEJORADO: Detección de Button con más patrones (excluyendo radio button)
+    // ⚠️ MEJORADO: Detección de Button con más patrones (excluyendo radio button y simple card)
+    // ⚠️ CRÍTICO: Button DEBE tener menor prioridad que SimpleCard para evitar falsos positivos
     {
       pattern: new RegExp(
-        `${ACTION_VERBS_PATTERN}.*(?:bot[oó]n|button)(?!.*radio)`,
+        `${ACTION_VERBS_PATTERN}.*(?:bot[oó]n|button)(?!.*radio)(?!.*simple\s+card)(?!.*simplecard)`,
         'i'
       ),
       component: 'Button',
       priority: 7,
     },
     {
-      pattern: /\bbot[oó]n\b(?!\s*radio)/i,
+      pattern: /\bbot[oó]n\b(?!\s*radio)(?!.*simple\s+card)(?!.*simplecard)/i,
       component: 'Button',
       priority: 6,
     },
     {
-      pattern: /\bbutton\b(?!\s*radio)/i,
+      pattern: /\bbutton\b(?!\s*radio)(?!.*simple\s+card)(?!.*simplecard)/i,
       component: 'Button',
       priority: 6,
     },
@@ -555,6 +556,33 @@ export function detectComponentFromMessage(message: string): string | null {
       pattern: /\bempty\s+state\b|\bemptystate\b|\bestado\s+vac[ií]o\b/i,
       component: 'EmptyState',
       priority: 6,
+    },
+    // ⚠️ CRÍTICO: SimpleCard DEBE estar ANTES de Button y Card genérico para evitar falsos positivos
+    // Detección de componentes mencionados explícitamente (Layout/Simple Card, layout-simple-card)
+    {
+      pattern: /\b(?:Layout\/)?Simple\s+Card\b|\blayout-simple-card\b/i,
+      component: 'SimpleCard',
+      priority: 15, // Mayor prioridad para menciones explícitas
+    },
+    {
+      pattern: /\bSimpleCard\b/i,
+      component: 'SimpleCard',
+      priority: 15, // Mayor prioridad para PascalCase explícito
+    },
+    // Patrón con verbo de acción
+    {
+      pattern: new RegExp(
+        `${ACTION_VERBS_PATTERN}.*(?:simple\s+card|simplecard|tarjeta\s+simple)`,
+        'i'
+      ),
+      component: 'SimpleCard',
+      priority: 14, // Mayor prioridad que Button (7) y Card genérico
+    },
+    // Patrón sin verbo de acción
+    {
+      pattern: /\bsimple\s+card\b|\bsimplecard\b|\btarjeta\s+simple\b/i,
+      component: 'SimpleCard',
+      priority: 13, // Mayor prioridad que Button (6)
     },
     // ⚠️ CRÍTICO: CardContent DEBE estar ANTES de SelectionCard y Carousel para evitar falsos positivos
     // Patrón más específico primero (con verbo de acción)
