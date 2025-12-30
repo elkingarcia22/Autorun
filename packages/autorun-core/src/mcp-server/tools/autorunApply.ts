@@ -18,6 +18,8 @@ import { handleUserMessage } from '../../helpers/autoMessageHandler.js';
 import { extractExactCodeFromStorybookWithBrowser } from '../../helpers/storybookExactCodeExtractorWithBrowser.js';
 import { verifyBeforeImplementation } from '../../helpers/preImplementationVerification.js';
 import { analyzeComponentInternals } from '../../helpers/componentInternalAnalysis.js';
+import { DeepComponentAnalyzer } from '../../helpers/deepComponentAnalyzer.js';
+import { StorybookSubcomponentExtractor } from '../../helpers/storybookSubcomponentExtractor.js';
 import { mapAndValidateComponentNameToStorybookId } from '../../helpers/storybookStories.js';
 import { mapComponentNameToDocFile } from '../../helpers/componentHelpers.js';
 import {
@@ -652,12 +654,12 @@ async function autorunApplyStrict(
         `   [2.1.1] Intentando consultar Storybook MCP directamente...`
       );
 
-      // ⚠️ NUEVO MCP: Usar getComponentsProps con componentNames
-      const { storybookIdToComponentName } = await import(
-        '../../helpers/storybookMCPNameMapper.js'
+      // ⚠️ MEJORADO: Usar StorybookDynamicMapper dinámico en lugar de hardcodeado
+      const { StorybookDynamicMapper } = await import(
+        '../../helpers/storybookDynamicMapper.js'
       );
       const componentName =
-        storybookIdToComponentName(componentId) || componentId;
+        (await StorybookDynamicMapper.storybookIdToComponentName(componentId)) || componentId;
 
       const mcpResult = await callStorybookMCPTool(
         'getComponentsProps', // ⚠️ NUEVO MCP: Sin prefijo mcp_storybook_
@@ -720,26 +722,56 @@ async function autorunApplyStrict(
       warnings.push(errorMsg);
     }
 
-    // ⚠️ CRÍTICO: El agente DEBE consultar Storybook MCP ANTES de continuar
-    // (Aunque usamos fallback, el MCP es la fuente de verdad)
-    console.log(
-      `   ⚠️ FAIL-CLOSED: El agente DEBE consultar Storybook MCP para cada componente:`
-    );
-    for (const msg of result.mcpMessages) {
+    // ⚠️ MEJORADO: Usar IntegrationHelper para llamar automáticamente al MCP
+    // Esto centraliza la lógica y usa el sistema dinámico completo
+    if (result.mcpMessages && result.mcpMessages.length > 0) {
       console.log(
-        `   📚 Componente: ${msg.componentName} (${msg.storybookId})`
+        `   ⚠️ CRÍTICO: Consultando Storybook MCP automáticamente para ${result.mcpMessages.length} componente(s)...`
       );
-      console.log(`   ⚠️ OBLIGATORIO ejecutar:`);
-      console.log(`      call_mcp_tool({`);
-      console.log(`        server: "storybook",`);
-      console.log(`        toolName: "getComponentsProps",`); // ⚠️ NUEVO MCP: Sin prefijo mcp_storybook_
-      console.log(
-        `        arguments: { componentIds: ["${msg.storybookId}"] }`
-      );
-      console.log(`      })`);
-      console.log(
-        `   ⚠️ Si esta consulta falla, autorun.apply() NO continuará`
-      );
+      try {
+        const { IntegrationHelper } = await import(
+          '../../helpers/integrationHelper.js'
+        );
+        const componentNames = result.mcpMessages.map(msg => msg.componentName);
+        const mcpResults = await IntegrationHelper.autoCallStorybookMCP(componentNames);
+        
+        console.log(
+          `   ✅ MCP consultado automáticamente: ${mcpResults.filter(r => r.success).length}/${mcpResults.length} exitoso(s)`
+        );
+        
+        // Si alguna consulta falló, agregar warning
+        const failed = mcpResults.filter(r => !r.success);
+        if (failed.length > 0) {
+          warnings.push(
+            `${failed.length} componente(s) no pudieron consultarse en MCP: ${failed.map(f => f.componentName).join(', ')}`
+          );
+        }
+      } catch (error: any) {
+        console.warn(
+          `   ⚠️ Error en consulta automática de MCP: ${error.message}`
+        );
+        warnings.push(
+          `Error consultando Storybook MCP automáticamente: ${error.message}`
+        );
+        
+        // Fallback: mostrar instrucciones manuales
+        console.log(
+          `   ⚠️ FALLBACK: El agente DEBE consultar Storybook MCP manualmente para cada componente:`
+        );
+        for (const msg of result.mcpMessages) {
+          console.log(
+            `   📚 Componente: ${msg.componentName} (${msg.storybookId})`
+          );
+          console.log(`   ⚠️ OBLIGATORIO ejecutar:`);
+          console.log(`      call_mcp_tool({`);
+          console.log(`        server: "storybook",`);
+          console.log(`        toolName: "getComponentsProps",`);
+          console.log(
+            `        arguments: { componentNames: ["${msg.componentName}"] }`
+          );
+          console.log(`      })`);
+        }
+      }
     }
 
     // ⚠️ NOTA: Como autorun.apply() se ejecuta desde Node.js y no puede llamar MCP directamente,
@@ -968,6 +1000,77 @@ async function autorunApplyStrict(
       console.log(
         `   ⚠️ Verificación pre-implementación saltada (skipVerification=true)`
       );
+    }
+
+    // 2.3 ⭐ NUEVO: Análisis profundo automático de subcomponentes (OBLIGATORIO)
+    console.log(`   [2.3] 🔍 Iniciando análisis profundo automático de subcomponentes...`);
+    let deepAnalysis = null;
+    let subcomponentAnalysis = null;
+    try {
+      // Análisis profundo del código fuente
+      deepAnalysis = await DeepComponentAnalyzer.analyzeComponent(
+        componentId,
+        result.componentName
+      );
+      console.log(
+        `   ✅ Análisis profundo: ${deepAnalysis.subcomponents.length} subcomponentes, ${deepAnalysis.dependencies.length} dependencias, ${deepAnalysis.interactions.length} interacciones`
+      );
+      
+      // Análisis de subcomponentes desde Storybook
+      subcomponentAnalysis = await StorybookSubcomponentExtractor.extractSubcomponents(
+        componentId,
+        result.componentName
+      );
+      console.log(
+        `   ✅ Análisis de subcomponentes: ${subcomponentAnalysis.subcomponents.length} subcomponentes, ${subcomponentAnalysis.interactiveFeatures.length} funcionalidades interactivas`
+      );
+      
+      // Combinar resultados
+      const allSubcomponents = [
+        ...deepAnalysis.subcomponents,
+        ...subcomponentAnalysis.subcomponents,
+      ];
+      const uniqueSubcomponents = Array.from(
+        new Map(allSubcomponents.map((s) => [s.name, s])).values()
+      );
+      
+      console.log(
+        `   ✅ Total subcomponentes detectados automáticamente: ${uniqueSubcomponents.length}`
+      );
+      uniqueSubcomponents.forEach((sub) => {
+        console.log(
+          `      - ${sub.name} (${sub.type}) - Trigger: ${sub.trigger} - ${sub.description || ''}`
+        );
+      });
+      
+      // Mostrar dependencias detectadas
+      if (deepAnalysis.dependencies.length > 0) {
+        console.log(
+          `   📦 Dependencias detectadas: ${deepAnalysis.dependencies.length}`
+        );
+        deepAnalysis.dependencies.forEach((dep) => {
+          console.log(
+            `      - ${dep.name} (${dep.type}) - ${dep.importPath}`
+          );
+        });
+      }
+      
+      // Mostrar interacciones detectadas
+      if (deepAnalysis.interactions.length > 0) {
+        console.log(
+          `   🎯 Interacciones detectadas: ${deepAnalysis.interactions.length}`
+        );
+        deepAnalysis.interactions.forEach((interaction) => {
+          console.log(
+            `      - ${interaction.name} (${interaction.trigger}) - ${interaction.description}`
+          );
+        });
+      }
+    } catch (error: any) {
+      console.warn(
+        `   ⚠️ Error en análisis profundo: ${error.message}`
+      );
+      // Continuar aunque falle el análisis profundo
     }
 
     // 2.4 Analizar componentes internos y dependencias (OBLIGATORIO)
@@ -1291,6 +1394,28 @@ async function autorunApplyStrict(
       warnings: warnings.length > 0 ? warnings : undefined,
     };
   } catch (error: any) {
+    console.error(
+      `\n❌ [autorunApplyModeB] ========================================`
+    );
+    console.error(
+      `❌ [autorunApplyModeB] ERROR EN CATCH PRINCIPAL: ${error.message}`
+    );
+    console.error(`   📋 Tipo de error: ${error.constructor.name}`);
+    console.error(`   📋 Nombre del error: ${error.name}`);
+    console.error(`   ⏰ Timestamp del error: ${new Date().toISOString()}`);
+    console.error(`   📋 Stack completo:`);
+    console.error(error.stack);
+    console.error(
+      `   📋 Error completo:`,
+      JSON.stringify(error, Object.getOwnPropertyNames(error), 2).substring(
+        0,
+        1000
+      )
+    );
+    console.error(
+      `❌ [autorunApplyModeB] ========================================`
+    );
+
     // ⚠️ CRÍTICO: Desactivar modo autorun.apply() y reactivar Pre-Implementation Check antes de retornar error
     if (typeof globalThis !== 'undefined') {
       (globalThis as any).__AUTORUN_APPLY_MODE__ = false;
@@ -1999,15 +2124,51 @@ async function autorunApplyModeB(
     // Si no se encontró en documentación, intentar desde Storybook
     if (!htmlFromDocs?.found) {
       try {
-        // ⚠️ CRÍTICO: Envolver en try-catch adicional para capturar TODOS los errores
-        // incluso si extractExactCodeFromStorybookWithBrowser lanza errores internos
-        let exactCode: any = null;
+        // ⚠️ NUEVO: INTENTO 1: Extraer desde código fuente local PRIMERO (más rápido y confiable)
+        console.log(`   [5.0.5] Intentando extraer desde código fuente local...`);
+        let codeFromSource: string | null = null;
         try {
-          exactCode = await extractExactCodeFromStorybookWithBrowser(
-            componentId,
-            storyName
+          const { getSourceCode } = await import(
+            '../../helpers/storybookExactCodeExtractor.js'
           );
-        } catch (extractError: any) {
+          const sourceCode = await getSourceCode(componentId);
+          
+          if (sourceCode) {
+            const { extractStoryCodeFromSource } = await import(
+              '../../helpers/storybookExactCodeExtractorWithBrowser.js'
+            );
+            const storyCode = extractStoryCodeFromSource(sourceCode, storyName);
+            
+            if (storyCode && storyCode.length > 20) {
+              codeFromSource = storyCode;
+              console.log(
+                `   ✅ Código extraído desde código fuente local: ${codeFromSource.length} caracteres`
+              );
+            }
+          }
+        } catch (sourceError: any) {
+          console.warn(
+            `   ⚠️ Error extrayendo desde código fuente local: ${sourceError.message}`
+          );
+        }
+        
+        // Si tenemos código desde fuente local, usarlo directamente
+        if (codeFromSource) {
+          codeToInsert = codeFromSource;
+          componentExists = true;
+          console.log(
+            `   ✅ Usando código desde fuente local (más confiable que Storybook)`
+          );
+        } else {
+          // ⚠️ CRÍTICO: Envolver en try-catch adicional para capturar TODOS los errores
+          // incluso si extractExactCodeFromStorybookWithBrowser lanza errores internos
+          let exactCode: any = null;
+          try {
+            exactCode = await extractExactCodeFromStorybookWithBrowser(
+              componentId,
+              storyName
+            );
+          } catch (extractError: any) {
           // ⚠️ CRÍTICO: Capturar el error ANTES de que cierre el servidor MCP
           console.error(
             `   ❌ Error en extractExactCodeFromStorybookWithBrowser: ${extractError.message}`
@@ -2039,7 +2200,15 @@ async function autorunApplyModeB(
             exactCode = null;
           } else {
             // Para otros errores, también agregar a errors pero no lanzar
-            const genericError = `Error extrayendo código desde Storybook: ${extractError.message}`;
+            console.error(`   ❌ [DEBUG] Error completo:`);
+            console.error(`      - Tipo: ${extractError.type || 'N/A'}`);
+            console.error(`      - DocsUrl: ${extractError.docsUrl || 'N/A'}`);
+            console.error(`      - StoryUrl: ${extractError.storyUrl || 'N/A'}`);
+            console.error(`      - StoryName: ${extractError.storyName || 'N/A'}`);
+            console.error(`      - ComponentId usado: ${componentId}`);
+            console.error(`      - Stack: ${extractError.stack?.substring(0, 500) || 'N/A'}`);
+            
+            const genericError = `Error extrayendo código desde Storybook: ${extractError.message}. ComponentId: ${componentId}, DocsUrl: ${extractError.docsUrl || 'N/A'}, StoryUrl: ${extractError.storyUrl || 'N/A'}`;
             errors.push(genericError);
             codeToInsert = '';
             componentExists = false;
@@ -2047,8 +2216,8 @@ async function autorunApplyModeB(
           }
         }
 
-        // Solo procesar si tenemos código válido
-        if (exactCode && exactCode.html) {
+        // Solo procesar si tenemos código válido (y no lo obtuvimos desde fuente local)
+        if (!codeFromSource && exactCode && exactCode.html) {
           codeToInsert = exactCode.html;
           componentExists = true;
           console.log(
