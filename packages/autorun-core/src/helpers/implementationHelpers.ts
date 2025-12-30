@@ -645,6 +645,25 @@ export function detectComponentFromMessage(message: string): string | null {
       component: 'SelectionCard',
       priority: 7,
     },
+    // ⚠️ NUEVO: Detección de SegmentControl
+    {
+      pattern: new RegExp(
+        `${ACTION_VERBS_PATTERN}.*(?:segment\\s+control|segmentcontrol|control\\s+de\\s+segmentos)`,
+        'i'
+      ),
+      component: 'SegmentControl',
+      priority: 8,
+    },
+    {
+      pattern: /\bsegment\s+control\b|\bsegmentcontrol\b/i,
+      component: 'SegmentControl',
+      priority: 7,
+    },
+    {
+      pattern: /\bcontrol\s+de\s+segmentos\b/i,
+      component: 'SegmentControl',
+      priority: 7,
+    },
     // ⚠️ REMOVIDO: Pattern duplicado de Tabs (ya está arriba con mayor prioridad)
     {
       pattern: new RegExp(`${ACTION_VERBS_PATTERN}.*sidebar`, 'i'),
