@@ -796,7 +796,8 @@ window.UBITS.SegmentControl.create({
             <div class="content-area">
                 <!-- AUTORUN: {"v":2,"mode":"prototypeTokens","components":["layout-gallery"],"widgets":[],"deps":[],"storybookId":"layout-gallery","hash":"bedf4e0a9b8448a8"} -->
                 <!-- Gallery Container -->
-                <div id="gallery-implementation-container" style="padding: var(--ubits-spacing-xl, 20px) 0;"></div>
+                <div id="gallery-implementation-container" style="padding: var(--ubits-spacing-xl, 20px) 0;">
+                <div id="gallery-implementation-container"></div>
                 <!-- /AUTORUN -->
                 
                 <!-- Tabs Container -->
@@ -2710,5 +2711,57 @@ window.UBITS.SegmentControl.create({
     })();
   </script>
 <!-- AUTORUN:ANCHOR:SCRIPTS -->
+<!-- AUTORUN: {"v":2,"mode":"prototypeTokens","components":["layout-gallery"],"storybookId":"layout-gallery","hash":"8fb579de9facc73b"} -->
+<script>
+// ========================================
+// CREAR GALLERY - GENERADO AUTOMÁTICAMENTE POR AUTORUN
+// ========================================
+function createGallery() {
+  const container = document.getElementById('gallery-implementation-container');
+  if (!container) {
+    console.warn('⚠️ [Gallery] Contenedor no encontrado: gallery-implementation-container');
+    return;
+  }
+  
+  // Verificar que la API esté disponible
+  const apiPath = 'window.UBITS.Gallery.create'.split('.');
+  let api = window;
+  for (const part of apiPath) {
+    if (api[part] === undefined) {
+      console.warn('⚠️ [Gallery] window.UBITS.Gallery.create no está disponible, esperando...');
+      setTimeout(createGallery, 500);
+      return;
+    }
+    api = api[part];
+  }
+  
+  try {
+    // Código extraído de Storybook
+    Insertar en el contenedor
+const container = document.getElementById('gallery-implementation-container');
+if (container) {
+  container.appendChild(galleryElement);
+}
+    
+    console.log('✅ [Gallery] Gallery creado exitosamente usando window.UBITS.Gallery.create');
+    
+    // Registrar para preservación automática
+    if (window.AUTORUN_PRESERVE_COMPONENTS) {
+      window.AUTORUN_PRESERVE_COMPONENTS.register('Gallery', 'gallery-implementation-container', {
+        onClick: (e) => {
+          console.log('📋 [Gallery] Gallery clickeado');
+        }
+      });
+    }
+  } catch (error) {
+    console.error('❌ [Gallery] Error al crear Gallery:', error);
+    console.error('   Stack:', error.stack);
+  }
+}
+
+// Ejecutar después de que los componentes estén cargados
+setTimeout(createGallery, 500);
+</script>
+<!-- /AUTORUN -->
 </body>
 </html>
