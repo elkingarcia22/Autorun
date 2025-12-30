@@ -664,6 +664,20 @@ export function detectComponentFromMessage(message: string): string | null {
       component: 'SegmentControl',
       priority: 7,
     },
+    // ⚠️ NUEVO: Detección de Gallery
+    {
+      pattern: new RegExp(
+        `${ACTION_VERBS_PATTERN}.*(?:gallery|galer[ií]a)`,
+        'i'
+      ),
+      component: 'Gallery',
+      priority: 8,
+    },
+    {
+      pattern: /\bgallery\b|\bgaler[ií]a\b/i,
+      component: 'Gallery',
+      priority: 7,
+    },
     // ⚠️ REMOVIDO: Pattern duplicado de Tabs (ya está arriba con mayor prioridad)
     {
       pattern: new RegExp(`${ACTION_VERBS_PATTERN}.*sidebar`, 'i'),
