@@ -468,9 +468,6 @@ export async function extractExactCodeFromStorybookWithBrowser(
 
       if (sourceCode) {
         // Extraer código de la historia específica
-        const { extractStoryCodeFromSource } = await import(
-          './storybookExactCodeExtractor.js'
-        );
         const storyCode = extractStoryCodeFromSource(
           sourceCode,
           finalStoryName
