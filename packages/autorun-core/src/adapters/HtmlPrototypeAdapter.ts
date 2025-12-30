@@ -6,6 +6,7 @@ import {
 } from '../helpers/componentAvailabilityDetector.js';
 import { ensureComponentLoaded } from '../helpers/dynamicComponentLoader.js';
 import { emitWatermark } from '../verify/Watermark.js';
+import { emitWatermark } from '../verify/Watermark.js';
 
 /**
  * ✅ HtmlPrototypeAdapter - Adapter estable para insertar contenido en prototypes/*.html
