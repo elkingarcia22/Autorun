@@ -1226,96 +1226,46 @@
                                         return;
                                     }
                                     
-                                    // Generar HTML directamente del componente Card Content
-                                    // Basado en renderCardContent de CardContentProvider.ts
+                                    // Verificar que window.createCard esté disponible
+                                    if (!window.createCard) {
+                                        console.warn('⚠️ [Card Content] window.createCard no está disponible, esperando...');
+                                        setTimeout(createCardContent, 500);
+                                        return;
+                                    }
+                                    
+                                    // Configuración de la card usando la API de UBITS
                                     const cardData = {
                                         type: 'Curso',
                                         title: 'Segmenta la experiencia del cliente',
                                         provider: 'UBITS',
-                                        providerLogo: '/images/providers/ubits-logo.png',
+                                        providerLogo: 'https://ubits-storybook10.vercel.app/images/Favicons/UBITS.jpg',
                                         duration: '60 min',
                                         level: 'Básico',
                                         progress: 0,
                                         status: 'default',
-                                        image: '/images/cards-learn/segmenta-la-experiencia-del-cliente.jpg',
+                                        image: 'https://ubits-storybook10.vercel.app/images/cards-learn/segmenta-la-experiencia-del-cliente.jpg',
                                         competency: 'Product design',
                                         language: 'Español'
                                     };
                                     
-                                    // Helper para iconos
-                                    function renderIcon(iconName, iconStyle = 'regular') {
-                                        const iconClass = iconStyle === 'solid' ? 'fas' : 'far';
-                                        const name = iconName.startsWith('fa-') ? iconName : `fa-${iconName}`;
-                                        return `<i class="${iconClass} ${name}"></i>`;
+                                    // Crear card usando window.createCard
+                                    try {
+                                        const cardElement = window.createCard(cardData);
+                                        cardContainer.innerHTML = '';
+                                        cardContainer.appendChild(cardElement);
+                                        console.log('✅ [Card Content] Card Content creada exitosamente usando window.createCard()');
+                                        
+                                        // Registrar para preservación automática
+                                        if (window.AUTORUN_PRESERVE_COMPONENTS) {
+                                            window.AUTORUN_PRESERVE_COMPONENTS.register('card-content', 'card-content-container', {
+                                                onClick: (e) => {
+                                                    console.log('📋 [Card Content] Card clickeada');
+                                                }
+                                            });
+                                        }
+                                    } catch (error) {
+                                        console.error('❌ [Card Content] Error al crear card:', error);
                                     }
-                                    
-                                    // Determinar icono según el nivel
-                                    const levelIcons = {
-                                        'Básico': 'fa-circle',
-                                        'Intermedio': 'fa-circle-half-stroke',
-                                        'Avanzado': 'fa-circle-check'
-                                    };
-                                    const levelIcon = levelIcons[cardData.level] || levelIcons['Intermedio'];
-                                    
-                                    // Generar HTML de la card
-                                    const cardHTML = `
-                                        <div class="course-card" data-progress="${cardData.progress}" data-status="${cardData.status}">
-                                            <div class="course-thumbnail-wrapper">
-                                                <div class="course-thumbnail">
-                                                    <img src="${cardData.image}" alt="${cardData.title}" class="course-image">
-                                                </div>
-                                                <div class="course-progress-overlay">
-                                                    <div class="progress-bar">
-                                                        <div class="progress-fill" style="width: ${cardData.progress}%"></div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="course-content">
-                                                <div class="course-header">
-                                                    <div class="course-type-status">
-                                                        <span class="course-type ubits-body-sm-regular">${cardData.type}</span>
-                                                    </div>
-                                                </div>
-                                                <h3 class="course-title ubits-body-sm-bold">${cardData.title}</h3>
-                                                <div class="course-provider">
-                                                    <div class="provider-avatar">
-                                                        <img src="${cardData.providerLogo}" alt="${cardData.provider}" class="provider-icon">
-                                                    </div>
-                                                    <span class="provider-name ubits-body-sm-regular">${cardData.provider}</span>
-                                                </div>
-                                                <div class="course-competency">
-                                                    <div class="spec-icon">
-                                                        ${renderIcon('fa-tag', 'regular')}
-                                                    </div>
-                                                    <span class="ubits-body-sm-regular">${cardData.competency}</span>
-                                                </div>
-                                                <div class="course-specs">
-                                                    <div class="spec-item">
-                                                        <div class="spec-icon">
-                                                            ${renderIcon(levelIcon, 'regular')}
-                                                        </div>
-                                                        <span class="ubits-body-sm-regular">${cardData.level}</span>
-                                                    </div>
-                                                    <div class="spec-item">
-                                                        <div class="spec-icon">
-                                                            ${renderIcon('fa-clock', 'regular')}
-                                                        </div>
-                                                        <span class="ubits-body-sm-regular">${cardData.duration}</span>
-                                                    </div>
-                                                    <div class="spec-item">
-                                                        <div class="spec-icon">
-                                                            ${renderIcon('fa-globe', 'regular')}
-                                                        </div>
-                                                        <span class="ubits-body-sm-regular">${cardData.language}</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    `.trim();
-                                    
-                                    // Insertar HTML en el contenedor
-                                    cardContainer.innerHTML = cardHTML;
-                                    console.log('✅ [Card Content] Card Content creada e insertada exitosamente');
                                 }
                                 
                                 // ========================================
