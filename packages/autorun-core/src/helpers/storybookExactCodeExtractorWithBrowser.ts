@@ -516,12 +516,45 @@ export async function extractExactCodeFromStorybookWithBrowser(
     }
   }
 
+  // ⚠️ NUEVO: INTENTO 5: Extraer desde documentación local (docs/referencia/componentes/)
+  if (!codeFromTab || !codeFromTab.html) {
+    console.log(
+      `   📚 [PASO 5] Intentando extraer desde documentación local...`
+    );
+    try {
+      const { extractHTMLFromDocumentation } = await import(
+        './componentHelpers.js'
+      );
+      const { StorybookDynamicMapper } = await import(
+        './storybookDynamicMapper.js'
+      );
+      const componentName =
+        await StorybookDynamicMapper.storybookIdToComponentName(
+          exactComponentId || componentId
+        );
+
+      if (componentName) {
+        const docResult = await extractHTMLFromDocumentation(componentName);
+        if (docResult.found && docResult.html && docResult.html.length > 20) {
+          codeFromTab = { html: docResult.html, js: undefined };
+          console.log(
+            `   ✅ Código extraído desde documentación local: ${docResult.html.length} caracteres`
+          );
+        }
+      }
+    } catch (docError: any) {
+      console.warn(
+        `   ⚠️ Error extrayendo desde documentación local: ${docError.message}`
+      );
+    }
+  }
+
   // Si aún no tenemos código, lanzar error
   if (!codeFromTab || !codeFromTab.html) {
     const error = new Error(
       `No se pudo extraer código desde ninguna fuente. ` +
-        `Intentado: 1) getComponentCode (Storybook MCP con Playwright), 2) URL de historia (fetch), 3) Docs (fetch), 4) Código fuente local. ` +
-        `Verifica que el Storybook MCP esté configurado correctamente con STORYBOOK_URL o que el código fuente esté disponible.`
+        `Intentado: 1) getComponentCode (Storybook MCP con Playwright), 2) URL de historia (fetch), 3) Docs (fetch), 4) Código fuente local, 5) Documentación local. ` +
+        `Verifica que el Storybook MCP esté configurado correctamente con STORYBOOK_URL o que el código fuente/documentación esté disponible.`
     ) as any;
     error.type = 'BROWSER_MCP_REQUIRED';
     // ⚠️ CRÍTICO: Codificar componentId para URLs
