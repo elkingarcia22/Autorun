@@ -97,6 +97,11 @@ export {
   type MessageStartResult,
 } from './helpers/executeOnMessageStart'; // ⭐ NUEVO: Ejecución automática al inicio de cada mensaje
 export {
+  callAutorunMCPTool,
+  callAutorunMCPTools,
+  executeCompleteImplementationFlow,
+} from './helpers/callAutorunMCPTool'; // ⭐ NUEVO: Helper para llamar herramientas MCP de Autorun
+export {
   handleUserMessage,
   AUTO_MESSAGE_HANDLER_INSTRUCTIONS,
 } from './helpers/autoMessageHandler'; // ⭐ NUEVO: Manejo automático de mensajes del usuario
