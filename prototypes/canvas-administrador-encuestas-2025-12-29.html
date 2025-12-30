@@ -731,6 +731,82 @@
         <!-- Main Content -->
         <main class="main-content">
 <!-- AUTORUN:ANCHOR:CONTENT -->
+<!-- AUTORUN: {"v":2,"mode":"prototypeTokens","components":["layout-gallery"],"widgets":[],"deps":[],"storybookId":"layout-gallery","hash":"bedf4e0a9b8448a8"} -->
+// 1. Crear contenedor HTML
+<div id="gallery-implementation-container"></div>
+
+// 2. Crear Gallery
+const galleryElement = window.UBITS.Gallery.create({
+  items: [
+    {
+      id: 1,
+      image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop',
+      thumbnail: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=200&h=200&fit=crop',
+      title: 'Paisaje Montañoso',
+      description: 'Hermoso paisaje montañoso con cielo despejado',
+      alt: 'Paisaje montañoso'
+    },
+    {
+      id: 2,
+      image: 'https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=800&h=600&fit=crop',
+      thumbnail: 'https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=200&h=200&fit=crop',
+      title: 'Océano Azul',
+      description: 'Vista del océano con olas suaves',
+      alt: 'Océano azul'
+    },
+    {
+      id: 3,
+      image: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&h=600&fit=crop',
+      thumbnail: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=200&h=200&fit=crop',
+      title: 'Bosque Verde',
+      description: 'Sendero a través de un bosque frondoso',
+      alt: 'Bosque verde'
+    }
+  ],
+  layout: 'grid',
+  size: 'md',
+  columns: 3,
+  gap: 16,
+  showThumbnails: false,
+  lazyLoad: false,
+  lightbox: true,
+  aspectRatio: undefined,
+  onItemClick: (item, index) => {
+    console.log('Item clickeado:', item, index);
+  },
+  onImageLoad: (item, index) => {
+    console.log('Imagen cargada:', item, index);
+  },
+  onImageError: (item, index) => {
+    console.error('Error cargando imagen:', item, index);
+  }
+});
+
+// 3. Insertar en el contenedor
+const container = document.getElementById('gallery-implementation-container');
+if (container) {
+  container.appendChild(galleryElement);
+}
+
+// Nota: createGallery retorna un HTMLElement directamente
+// Ejemplo con layout masonry:
+const galleryMasonry = window.UBITS.Gallery.create({
+  items: sampleItems,
+  layout: 'masonry',
+  size: 'lg',
+  columns: 4,
+  gap: 20,
+  lightbox: true
+});
+
+// Ejemplo con layout list:
+const galleryList = window.UBITS.Gallery.create({
+  items: sampleItems,
+  layout: 'list',
+  size: 'md',
+  gap: 12
+});
+<!-- /AUTORUN -->
 <!-- AUTORUN: {"v":2,"mode":"prototypeTokens","components":["navegación-segment-control"],"widgets":[],"deps":[],"storybookId":"navegación-segment-control","hash":"12fa117911ebbf68"} -->
 // 1. Crear contenedor HTML
 <div id="segment-control-implementation-container"></div>
