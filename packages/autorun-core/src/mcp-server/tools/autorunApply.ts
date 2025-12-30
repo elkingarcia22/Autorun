@@ -2617,9 +2617,17 @@ async function autorunApplyModeB(
     );
 
     if (!input.options?.dryRun) {
-      await adapter.insertContentBlock(targetFile, wrappedContent);
+      // ⭐ NUEVO: Pasar componentName y storybookId para sistema automático
+      await adapter.insertContentBlock(
+        targetFile,
+        wrappedContent,
+        componentName, // ⭐ NUEVO: Para sistema automático
+        componentId // ⭐ NUEVO: storybookId para sistema automático
+      );
       filesWritten.push(targetFile);
-      console.log(`   ✅ Código insertado con watermark v2`);
+      console.log(
+        `   ✅ Código insertado con watermark v2 (sistema automático activado)`
+      );
     } else {
       console.log(`   ⚠️ DRY-RUN: No se insertó el código`);
     }
