@@ -232,16 +232,16 @@ export async function getSourceCode(
 
     // Normalizar componentId (puede venir como "feedback-modal" o "modal")
     const normalizedId = componentId
-      .replace('feedback-', '')
-      .replace('data-', '')
-      .replace('formularios-', '')
-      .replace('metricas-', '')
-      .replace('charts-', '')
-      .replace('navegación-', '')
-      .replace('navegacion-', '')
-      .replace('layout-', '')
-      .replace('básicos-', '')
-      .replace('basicos-', '');
+      .replace(/^feedback-/, '')
+      .replace(/^data-/, '')
+      .replace(/^formularios-/, '')
+      .replace(/^metricas-/, '')
+      .replace(/^charts-/, '')
+      .replace(/^navegaci[oó]n-/, '')
+      .replace(/^navegacion-/, '')
+      .replace(/^layout-/, '')
+      .replace(/^b[aá]sicos-/, '')
+      .replace(/^basicos-/, '');
 
     // Convertir a PascalCase para nombres de archivos (ej: "radio-button" -> "RadioButton")
     // ⚠️ MEJORADO: Manejar acrónimos como "nps" -> "NPS" (no "Nps")
