@@ -36,14 +36,27 @@ export interface TriggerResult {
 export class KeywordTriggerSystem {
   private static readonly TRIGGERS: KeywordTrigger[] = [
     // Triggers de implementación (ALTA PRIORIDAD)
-    // ⚠️ CRÍTICO: Tabs DEBE estar ANTES de DataTable para evitar falsos positivos
+    // ⚠️ CRÍTICO: SegmentControl DEBE estar ANTES de Tabs para evitar falsos positivos
+    // porque "segment control" contiene "control" que podría confundirse
+    {
+      keywords: ['implementar', 'implementa', 'crear', 'agregar'],
+      patterns: [
+        /(?:implementar|implementa).*(?:segment\s+control|segmentcontrol|control\s+de\s+segmentos)/i,
+        /crear.*(?:segment\s+control|segmentcontrol|control\s+de\s+segmentos)/i,
+        /agregar.*(?:segment\s+control|segmentcontrol|control\s+de\s+segmentos)/i,
+      ],
+      componentName: 'SegmentControl',
+      priority: 'high',
+      action: 'activate-step-by-step',
+    },
+    // ⚠️ CRÍTICO: Tabs DEBE estar DESPUÉS de SegmentControl para evitar falsos positivos
     // porque "tabla" puede aparecer en "Lista de encuestas" pero "tabs" es más específico
     {
       keywords: ['implementar', 'implementa', 'crear', 'agregar'],
       patterns: [
-        /(?:implementar|implementa).*\btabs?\b/i, // ⚠️ \b para word boundary
-        /crear.*\btabs?\b/i,
-        /agregar.*\btabs?\b/i,
+        /(?:implementar|implementa).*\btabs?\b(?!.*segment\s+control)(?!.*segmentcontrol)/i, // ⚠️ \b para word boundary, excluir segment control
+        /crear.*\btabs?\b(?!.*segment\s+control)(?!.*segmentcontrol)/i,
+        /agregar.*\btabs?\b(?!.*segment\s+control)(?!.*segmentcontrol)/i,
         /\btabs?\b.*(?:debajo|abajo|bajo|después)/i, // "tabs debajo del subnav"
         /\bpesta[ñn]as?\b/i, // "pestañas"
       ],
