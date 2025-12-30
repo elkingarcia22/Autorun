@@ -92,6 +92,41 @@ export async function autoDetectComponent(
     }
   }
 
+  // ⚠️ CRÍTICO: Si detectamos Button pero el mensaje menciona explícitamente SimpleCard,
+  // priorizar SimpleCard (porque es más específico)
+  if (
+    componentName === 'Button' &&
+    /\b(?:simple\s+card|simplecard|Layout\/Simple\s+Card|layout-simple-card)\b/i.test(
+      userMessage
+    )
+  ) {
+    console.log(
+      `   ⚠️ [Auto Component Detection] Button detectado pero mensaje menciona SimpleCard explícitamente, corrigiendo...`
+    );
+    // Buscar SimpleCard en la detección proactiva o básica
+    const simpleCardInProactive = proactiveDetection.components.find(
+      (c) => c.name === 'SimpleCard' || c.name === 'Simple Card'
+    );
+    if (simpleCardInProactive) {
+      componentName = 'SimpleCard';
+      confidence = simpleCardInProactive.confidence || 'high';
+      console.log(
+        `   ✅ [Auto Component Detection] Corregido a SimpleCard (confianza: ${confidence})`
+      );
+    } else {
+      // Intentar detectar SimpleCard directamente
+      const simpleCardPattern =
+        /\b(?:simple\s+card|simplecard|Layout\/Simple\s+Card|layout-simple-card)\b/i;
+      if (simpleCardPattern.test(userMessage)) {
+        componentName = 'SimpleCard';
+        confidence = 'high';
+        console.log(
+          `   ✅ [Auto Component Detection] Corregido a SimpleCard basado en patrón explícito`
+        );
+      }
+    }
+  }
+
   if (!componentName) {
     console.log(
       '🔍 [Auto Component Detection] No se detectó ningún componente'
@@ -167,9 +202,9 @@ export async function autoDetectComponent(
     } else {
       // Intentar obtener plan manualmente
       try {
-        const {
-          getStoryBasedImplementationPlan,
-        } = require('./componentHelpers');
+        const { getStoryBasedImplementationPlan } = await import(
+          './componentHelpers.js'
+        );
         const componentId = (preCheckAddon as any).getStorybookId?.(
           componentName
         );
