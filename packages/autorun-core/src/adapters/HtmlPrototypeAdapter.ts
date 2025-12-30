@@ -105,11 +105,20 @@ export class HtmlPrototypeAdapter {
   /**
    * ✅ Inserta bloque de contenido con watermark
    *
+   * ⭐ NUEVO: Sistema automático completo sin hardcode
+   * - Detecta disponibilidad del componente
+   * - Carga dinámicamente si falta
+   * - Genera código ejecutable desde snippet
+   * - Inserta contenedor en .content-area
+   * - Inserta script de inicialización
+   *
    * El contenido ya viene con watermark aplicado desde emitWatermark().
    */
   async insertContentBlock(
     filePath: string,
-    htmlBlockWithWatermark: string
+    htmlBlockWithWatermark: string,
+    componentName?: string,
+    storybookId?: string
   ): Promise<void> {
     // Asegurar que los anchors existen
     await this.ensureAnchors(filePath);
@@ -123,7 +132,84 @@ export class HtmlPrototypeAdapter {
       );
     }
 
-    // Insertar después del anchor CONTENT
+    // ⭐ NUEVO: Si se proporciona componentName y storybookId, usar sistema automático
+    if (componentName && storybookId) {
+      console.log(
+        `   🔧 [HtmlPrototypeAdapter] Usando sistema automático para ${componentName}`
+      );
+
+      // 1. Obtener información de API del componente
+      const apiInfo = getComponentAPIInfo(componentName);
+      if (!apiInfo) {
+        console.warn(
+          `   ⚠️ [HtmlPrototypeAdapter] No se encontró información de API para ${componentName}`
+        );
+        // Continuar con inserción normal
+      } else {
+        // 2. Extraer snippet del watermark (remover comentarios de watermark)
+        const snippetMatch = htmlBlockWithWatermark.match(
+          /<!--\s*AUTORUN:[\s\S]*?-->\s*([\s\S]*?)\s*<!--\s*\/AUTORUN\s*-->/
+        );
+        const snippet = snippetMatch ? snippetMatch[1] : htmlBlockWithWatermark;
+
+        // 3. Generar código ejecutable desde el snippet
+        const { containerHTML, executableScript } = generateExecutableCode({
+          snippet,
+          componentName,
+          containerId: `${componentName}-implementation-container`,
+          apiName: apiInfo.apiName,
+          storybookId,
+        });
+
+        // 4. Insertar contenedor en .content-area (dentro del anchor CONTENT)
+        // Buscar .content-area dentro del contenido
+        const contentAreaMatch = content.match(
+          /(<div[^>]*class=["']content-area["'][^>]*>)([\s\S]*?)(<\/div>)/
+        );
+        if (contentAreaMatch) {
+          // Insertar contenedor dentro de .content-area
+          const contentAreaWithContainer = contentAreaMatch[0].replace(
+            contentAreaMatch[2],
+            `${contentAreaMatch[2]}\n                ${containerHTML}`
+          );
+          const newContentWithContainer = content.replace(
+            contentAreaMatch[0],
+            contentAreaWithContainer
+          );
+
+          // 5. Insertar script de inicialización en anchor SCRIPTS
+          if (anchors.scripts) {
+            const scriptWithWatermark = emitWatermark(
+              {
+                v: 2,
+                mode: 'prototypeTokens',
+                components: [storybookId],
+                storybookId,
+              } as any,
+              `<script>\n${executableScript}\n</script>`
+            );
+
+            const finalContent = newContentWithContainer.replace(
+              anchors.scripts,
+              `${anchors.scripts}\n${scriptWithWatermark.wrappedContent}`
+            );
+
+            await fs.writeFile(filePath, finalContent, 'utf-8');
+            console.log(
+              `   ✅ [HtmlPrototypeAdapter] Componente ${componentName} insertado automáticamente`
+            );
+            return;
+          }
+        }
+
+        // Fallback: usar inserción normal si no se encuentra .content-area
+        console.warn(
+          `   ⚠️ [HtmlPrototypeAdapter] No se encontró .content-area, usando inserción normal`
+        );
+      }
+    }
+
+    // Inserción normal (sin sistema automático)
     const newContent = content.replace(
       anchors.content,
       `${anchors.content}\n${htmlBlockWithWatermark}`
