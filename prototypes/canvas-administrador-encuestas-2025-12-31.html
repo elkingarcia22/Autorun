@@ -981,6 +981,83 @@ if (container) {
   headerBackground: 'var(--modifiers-normal-color-light-bg-4)
     </script>
 <!-- /AUTORUN -->
+<!-- AUTORUN: {"v":2,"mode":"prototypeTokens","components":["layout-simple-card"],"widgets":[],"deps":[],"storybookId":"layout-simple-card","hash":"9080b0d7dd1d9c52"} -->
+    <link rel="stylesheet" href="https://ubits-storybook10.vercel.app/components/card/src/styles/card.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT">
+    // 1. Importar funciones (si usas módulos)
+// import { createSimpleCard, renderSimpleCard } from '@ubits/card';
+
+// 2. Crear SimpleCard
+const cardElement = createSimpleCard({
+  title: 'Advanced Card',
+  subtitle: 'Card subtitle',
+  content: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit...',
+  showHeader: true,
+  headerDecorations: true,
+  headerBackground: 'var(--modifiers-normal-color-light-bg-4)',
+  backgroundColor: 'var(--modifiers-normal-color-light-bg-1)',
+  borderColor: 'var(--modifiers-normal-color-light-border-1)',
+  titleTypography: 'ubits-heading-h2',
+  subtitleTypography: 'ubits-body-md',
+  contentTypography: 'ubits-body-md',
+  buttons: [
+    {
+      label: 'Cancel',
+      variant: 'secondary',
+      size: 'md',
+      onClick: () => {
+        console.log('Cancel clicked');
+      }
+    },
+    {
+      label: 'Save',
+      variant: 'primary',
+      size: 'md',
+      onClick: () => {
+        console.log('Save clicked');
+      }
+    }
+  ],
+  showButtons: true,
+  variant: 'default', // 'default' | 'elevated' | 'bordered' | 'flat'
+  size: 'md', // 'sm' | 'md' | 'lg' | 'xl'
+  maxWidth: undefined, // Opcional: '500px' | '50%' | '100vw'
+  className: ''
+});
+
+// 3. Insertar en el DOM
+const container = document.getElementById('card-container');
+if (container) {
+  container.appendChild(cardElement);
+}
+
+// Nota: createSimpleCard retorna un HTMLElement directamente
+// Los botones con onClick se configuran automáticamente
+
+// Alternativa: Usar renderSimpleCard para obtener HTML string
+const cardHTML = renderSimpleCard({
+  title: 'Advanced Card',
+  subtitle: 'Card subtitle',
+  content: 'Lorem ipsum dolor sit amet...',
+  variant: 'elevated',
+  size: 'lg'
+});
+
+// Insertar HTML
+const container = document.getElementById('card-container');
+if (container) {
+  container.innerHTML = cardHTML;
+}
+    <script src="https://ubits-storybook10.vercel.app/components/card/dist/card.umd.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
+    <script>
+      createSimpleCard({
+  title: 'Advanced Card',
+  subtitle: 'Card subtitle',
+  content: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit...',
+  showHeader: true,
+  headerDecorations: true,
+  headerBackground: 'var(--modifiers-normal-color-light-bg-4)
+    </script>
+<!-- /AUTORUN -->
 
             <!-- Top Navigation -->
             <div id="top-nav-container"></div>
