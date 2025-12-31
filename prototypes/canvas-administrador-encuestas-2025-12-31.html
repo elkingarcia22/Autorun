@@ -937,6 +937,39 @@ window.UBITS.Tabs.create({
   onTabChange: (tabId, tabElement)
     </script>
 <!-- /AUTORUN -->
+<!-- AUTORUN: {"v":2,"mode":"prototypeTokens","components":["navegación-tabs"],"widgets":[],"deps":[],"storybookId":"navegación-tabs","hash":"4345abdbfa786ff1"} -->
+    <link rel="stylesheet" href="https://ubits-storybook10.vercel.app/components/navegación-tabs/src/styles/navegación-tabs.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT">
+    // 1. Crear contenedor HTML
+<div id="tabs-implementation-container"></div>
+
+// 2. Crear Tabs
+window.UBITS.Tabs.create({
+  tabs: [
+    { id: 'tab-1', label: 'Tab 1', icon: 'far fa-th', active: true },
+    { id: 'tab-2', label: 'Tab 2', icon: 'far fa-chart-line', active: false },
+    { id: 'tab-3', label: 'Tab 3', icon: 'far fa-cog', active: false },
+    { id: 'tab-4', label: 'Tab 4', icon: 'far fa-star', active: false },
+    { id: 'tab-5', label: 'Tab 5', icon: 'far fa-book', active: false }
+  ],
+  activeTabId: 'tab-1',
+  onTabChange: (tabId, tabElement) => {
+    console.log('Tab cambiado:', tabId);
+  }
+}, 'tabs-implementation-container');
+    <script src="https://ubits-storybook10.vercel.app/components/navegación-tabs/dist/navegación-tabs.umd.js?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT"></script>
+    <script>
+      window.UBITS.Tabs.create({
+  tabs: [
+    { id: 'tab-1', label: 'Tab 1', icon: 'far fa-th', active: true },
+    { id: 'tab-2', label: 'Tab 2', icon: 'far fa-chart-line', active: false },
+    { id: 'tab-3', label: 'Tab 3', icon: 'far fa-cog', active: false },
+    { id: 'tab-4', label: 'Tab 4', icon: 'far fa-star', active: false },
+    { id: 'tab-5', label: 'Tab 5', icon: 'far fa-book', active: false }
+  ],
+  activeTabId: 'tab-1',
+  onTabChange: (tabId, tabElement)
+    </script>
+<!-- /AUTORUN -->
 
 
 
