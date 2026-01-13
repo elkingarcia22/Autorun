@@ -447,8 +447,6 @@ export function parseCodeBlock(code: string): { html: string; js?: string } {
       }
 
       return { html: htmlPart, js: jsPart };
-
-      return { html: htmlPart, js: jsPart };
     }
 
     // Si NO hay HTML antes (o el HTML encontrado está después, lo cual sería raro)
