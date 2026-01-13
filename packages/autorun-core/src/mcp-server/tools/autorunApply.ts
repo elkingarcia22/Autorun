@@ -605,7 +605,8 @@ async function autorunApplyStrict(
             '../../helpers/storybookMCPNameMapper.js'
           );
           const componentNameForMCP =
-            storybookIdToComponentName(storybookId) || result.componentName;
+            (await storybookIdToComponentName(storybookId)) ||
+            result.componentName;
 
           result.mcpMessages = [
             {
@@ -809,15 +810,30 @@ async function autorunApplyStrict(
         componentId,
         storyName
       );
-      if (!exactCode || !exactCode.html) {
+      console.log(
+        `   ✅ Código extraído: ${exactCode.html?.length || 0} caracteres HTML, ${exactCode.js?.length || 0} caracteres JS`
+      );
+
+      // ✅ MEJORA: Envolver JS en <script> si existe y no está en el HTML
+      if (exactCode.js && exactCode.js.trim().length > 0) {
+        if (!exactCode.html || !exactCode.html.includes(exactCode.js)) {
+          console.log(`   ✅ Envolviendo JS extraído en <script> tags...`);
+          const wrappedJs = `<script>\n${exactCode.js}\n</script>`;
+          exactCode.html = exactCode.html
+            ? `${exactCode.html}\n${wrappedJs}`
+            : wrappedJs;
+        }
+      }
+
+      // ✅ MEJORA: Si no hay HTML pero hay JS, el componente existe
+      if (!exactCode.html && !exactCode.js) {
         // ⚠️ CRÍTICO: NO usar throw porque causa que el servidor MCP se cierre
         // Retornar error en lugar de lanzar
-        const extractionError = 'No se pudo extraer código desde Storybook';
+        const extractionError =
+          'No se pudo extraer ni HTML ni JS desde Storybook';
         errors.push(extractionError);
-        codeToInsert = '';
-        componentExists = false;
+        // ... rest of error handling ...
       }
-      console.log(`   ✅ Código extraído: ${exactCode.html.length} caracteres`);
 
       // ✅ MEJORA: Marcar paso del checklist como completado automáticamente
       // (extraer código implica navegar a Storybook en Vercel)
@@ -1243,9 +1259,70 @@ async function autorunApplyStrict(
     if (!input.options?.dryRun) {
       console.log(`   [2.8] Escribiendo archivo...`);
       try {
-        await fs.writeFile(targetFile, codeWithMarks, 'utf-8');
+        // ✅ SMART INSERTION: Verificar si existe el archivo para insertar en lugar de sobreescribir
+        let finalContent = codeWithMarks;
+        let originalContent = '';
+        try {
+          try {
+            // Verificar si existe antes de leer
+            const stats = await fs.stat(targetFile);
+            if (stats.isFile()) {
+              originalContent = await fs.readFile(targetFile, 'utf-8');
+            }
+          } catch (e) {
+            // Archivo no existe, se creará nuevo
+          }
+
+          if (originalContent.length > 0) {
+            // Estrategia 1: Insertar en #main-content (Prioridad Alta)
+            if (originalContent.includes('id="main-content"')) {
+              // Buscar la etiqueta completa para insertar después
+              const mainContentRegex = /(<[^>]*id="main-content"[^>]*>)/i;
+              const match = originalContent.match(mainContentRegex);
+
+              if (match) {
+                console.log(
+                  `   ✅ Inserción inteligente: Insertando dentro de ${match[1]}`
+                );
+                finalContent = originalContent.replace(
+                  mainContentRegex,
+                  `$1\n${codeWithMarks}`
+                );
+              } else {
+                // Fallback por si el regex falla (raro)
+                console.log(
+                  `   ✅ Inserción inteligente: Usando reemplazo simple para id="main-content"`
+                );
+                finalContent = originalContent.replace(
+                  'id="main-content">',
+                  `id="main-content">\n${codeWithMarks}`
+                );
+              }
+            }
+            // Estrategia 2: Insertar antes de cerrar body (Prioridad Media)
+            else if (originalContent.includes('</body>')) {
+              console.log(
+                `   ✅ Inserción inteligente: Insertando antes de </body>`
+              );
+              finalContent = originalContent.replace(
+                '</body>',
+                `${codeWithMarks}\n</body>`
+              );
+            } else {
+              console.warn(
+                `   ⚠️ No se encontró punto de inserción claro (main-content o body). Sobreescribiendo archivo...`
+              );
+            }
+          }
+        } catch (readError) {
+          console.warn(
+            `   ⚠️ Error leyendo archivo original: ${readError}. Se procederá a escribir nuevo.`
+          );
+        }
+
+        await fs.writeFile(targetFile, finalContent, 'utf-8');
         filesWritten.push(targetFile);
-        console.log(`   ✅ Archivo escrito: ${targetFile}`);
+        console.log(`   ✅ Archivo escrito (Smart Insert): ${targetFile}`);
       } catch (error: any) {
         const errorMsg = `Error escribiendo archivo: ${error.message}`;
         console.error(`   ❌ ${errorMsg}`);
@@ -1994,7 +2071,7 @@ async function autorunApplyModeB(
         '../../helpers/storybookMCPNameMapper.js'
       );
       const componentName =
-        storybookIdToComponentName(componentId) || componentId;
+        (await storybookIdToComponentName(componentId)) || componentId;
 
       console.log(
         `   📡 Intentando consultar Storybook MCP para: ${componentName} (${componentId})`
@@ -2125,278 +2202,257 @@ async function autorunApplyModeB(
       );
     }
 
-    // Si no se encontró en documentación, intentar desde Storybook
+    // Si no se encontró en documentación, intentar desde Storybook (incluyendo fallback local interno)
     if (!htmlFromDocs?.found) {
       try {
-        // ⚠️ NUEVO: INTENTO 1: Extraer desde código fuente local PRIMERO (más rápido y confiable)
-        console.log(
-          `   [5.0.5] Intentando extraer desde código fuente local...`
-        );
-        let codeFromSource: string | null = null;
+        // ⚠️ CRÍTICO: Envolver en try-catch adicional para capturar TODOS los errores
+        // incluso si extractExactCodeFromStorybookWithBrowser lanza errores internos
+        let exactCode: any = null;
         try {
-          const { getSourceCode } = await import(
-            '../../helpers/storybookExactCodeExtractor.js'
+          exactCode = await extractExactCodeFromStorybookWithBrowser(
+            componentId,
+            storyName
           );
-          const sourceCode = await getSourceCode(componentId);
+        } catch (extractError: any) {
+          // ⚠️ CRÍTICO: Capturar el error ANTES de que cierre el servidor MCP
+          console.error(
+            `   ❌ Error en extractExactCodeFromStorybookWithBrowser: ${extractError.message}`
+          );
 
-          if (sourceCode) {
-            const { extractStoryCodeFromSource } = await import(
-              '../../helpers/storybookExactCodeExtractorWithBrowser.js'
+          // Verificar si es un error de Browser MCP Required
+          const { isBrowserMCPRequiredError } = await import(
+            '../../helpers/browserMCPAutoExtractor.js'
+          );
+
+          if (isBrowserMCPRequiredError(extractError)) {
+            console.error(
+              `   ⚠️ CAUSA: Storybook carga el código dinámicamente con JavaScript`
             );
-            const storyCode = extractStoryCodeFromSource(sourceCode, storyName);
+            console.error(
+              `   💡 SOLUCIÓN: Necesitamos usar Browser MCP para navegar y extraer desde el snapshot`
+            );
+            console.error(`   📋 URL: ${extractError.docsUrl}`);
+            console.error(`   📋 Historia: ${extractError.storyName}`);
 
-            if (storyCode && storyCode.length > 20) {
-              codeFromSource = storyCode;
-              console.log(
-                `   ✅ Código extraído desde código fuente local: ${codeFromSource.length} caracteres`
-              );
-            }
+            const browserMCPError =
+              `No se pudo extraer código desde Storybook. El código se carga dinámicamente y requiere Browser MCP. ` +
+              `URL de Docs: ${extractError.docsUrl}. ` +
+              `El agente DEBE ejecutar Browser MCP para navegar a Docs y extraer desde el snapshot.`;
+            errors.push(browserMCPError);
+            codeToInsert = '';
+            componentExists = false;
+            // NO lanzar el error - continuar para que el catch externo maneje el flujo
+            exactCode = null;
+          } else {
+            // Para otros errores, también agregar a errors pero no lanzar
+            console.error(`   ❌ [DEBUG] Error completo:`);
+            console.error(`      - Tipo: ${extractError.type || 'N/A'}`);
+            console.error(`      - DocsUrl: ${extractError.docsUrl || 'N/A'}`);
+            console.error(
+              `      - StoryUrl: ${extractError.storyUrl || 'N/A'}`
+            );
+            console.error(
+              `      - StoryName: ${extractError.storyName || 'N/A'}`
+            );
+            console.error(`      - ComponentId usado: ${componentId}`);
+            console.error(
+              `      - Stack: ${extractError.stack?.substring(0, 500) || 'N/A'}`
+            );
+
+            const genericError = `Error extrayendo código desde Storybook: ${extractError.message}. ComponentId: ${componentId}, DocsUrl: ${extractError.docsUrl || 'N/A'}, StoryUrl: ${extractError.storyUrl || 'N/A'}`;
+            errors.push(genericError);
+            codeToInsert = '';
+            componentExists = false;
+            exactCode = null;
           }
-        } catch (sourceError: any) {
-          console.warn(
-            `   ⚠️ Error extrayendo desde código fuente local: ${sourceError.message}`
-          );
         }
 
-        // Si tenemos código desde fuente local, usarlo directamente
-        if (codeFromSource) {
-          codeToInsert = codeFromSource;
-          componentExists = true;
-          console.log(
-            `   ✅ Usando código desde fuente local (más confiable que Storybook)`
+        // Solo procesar si tenemos código válido
+        if (exactCode && (exactCode.html || exactCode.js)) {
+          console.error(
+            `   🔍 [Autorun Apply] Extraído HTML: ${exactCode.html?.substring(0, 100)}...`
           );
-        } else {
-          // ⚠️ CRÍTICO: Envolver en try-catch adicional para capturar TODOS los errores
-          // incluso si extractExactCodeFromStorybookWithBrowser lanza errores internos
-          let exactCode: any = null;
-          try {
-            exactCode = await extractExactCodeFromStorybookWithBrowser(
-              componentId,
-              storyName
-            );
-          } catch (extractError: any) {
-            // ⚠️ CRÍTICO: Capturar el error ANTES de que cierre el servidor MCP
-            console.error(
-              `   ❌ Error en extractExactCodeFromStorybookWithBrowser: ${extractError.message}`
-            );
+          console.error(
+            `   🔍 [Autorun Apply] Extraído JS: ${exactCode.js?.substring(0, 100)}...`
+          );
 
-            // Verificar si es un error de Browser MCP Required
-            const { isBrowserMCPRequiredError } = await import(
-              '../../helpers/browserMCPAutoExtractor.js'
-            );
-
-            if (isBrowserMCPRequiredError(extractError)) {
+          // ✅ MEJORA: Envolver JS en <script> si existe y no está en el HTML
+          if (exactCode.js && exactCode.js.trim().length > 0) {
+            if (!exactCode.html || !exactCode.html.includes(exactCode.js)) {
               console.error(
-                `   ⚠️ CAUSA: Storybook carga el código dinámicamente con JavaScript`
+                `   ✅ [Autorun Apply] Envolviendo JS extraído en <script> tags...`
               );
-              console.error(
-                `   💡 SOLUCIÓN: Necesitamos usar Browser MCP para navegar y extraer desde el snapshot`
-              );
-              console.error(`   📋 URL: ${extractError.docsUrl}`);
-              console.error(`   📋 Historia: ${extractError.storyName}`);
-
-              const browserMCPError =
-                `No se pudo extraer código desde Storybook. El código se carga dinámicamente y requiere Browser MCP. ` +
-                `URL de Docs: ${extractError.docsUrl}. ` +
-                `El agente DEBE ejecutar Browser MCP para navegar a Docs y extraer desde el snapshot.`;
-              errors.push(browserMCPError);
-              codeToInsert = '';
-              componentExists = false;
-              // NO lanzar el error - continuar para que el catch externo maneje el flujo
-              exactCode = null;
-            } else {
-              // Para otros errores, también agregar a errors pero no lanzar
-              console.error(`   ❌ [DEBUG] Error completo:`);
-              console.error(`      - Tipo: ${extractError.type || 'N/A'}`);
-              console.error(
-                `      - DocsUrl: ${extractError.docsUrl || 'N/A'}`
-              );
-              console.error(
-                `      - StoryUrl: ${extractError.storyUrl || 'N/A'}`
-              );
-              console.error(
-                `      - StoryName: ${extractError.storyName || 'N/A'}`
-              );
-              console.error(`      - ComponentId usado: ${componentId}`);
-              console.error(
-                `      - Stack: ${extractError.stack?.substring(0, 500) || 'N/A'}`
-              );
-
-              const genericError = `Error extrayendo código desde Storybook: ${extractError.message}. ComponentId: ${componentId}, DocsUrl: ${extractError.docsUrl || 'N/A'}, StoryUrl: ${extractError.storyUrl || 'N/A'}`;
-              errors.push(genericError);
-              codeToInsert = '';
-              componentExists = false;
-              exactCode = null;
+              const wrappedJs = `<script>\n${exactCode.js}\n</script>`;
+              exactCode.html = exactCode.html
+                ? `${exactCode.html}\n${wrappedJs}`
+                : wrappedJs;
             }
           }
 
-          // Solo procesar si tenemos código válido (y no lo obtuvimos desde fuente local)
-          if (!codeFromSource && exactCode && exactCode.html) {
-            codeToInsert = exactCode.html;
-            componentExists = true;
+          codeToInsert = exactCode.html || '';
+          componentExists = true;
+          console.log(
+            `   ✅ Código UBITS extraído desde Storybook: ${codeToInsert.length} caracteres`
+          );
+
+          // ✅ MEJORA 2: Sanitizar código extraído para hardcoded colors
+          console.log(`   [5.1] Sanitizando código extraído...`);
+          const { sanitizeCodeFromStorybook } = await import(
+            '../../helpers/codeSanitizer.js'
+          );
+          const sanitizeResult = await sanitizeCodeFromStorybook(
+            codeToInsert,
+            tokenRegistry
+          );
+
+          if (sanitizeResult.replaced > 0) {
             console.log(
-              `   ✅ Código UBITS extraído desde Storybook: ${codeToInsert.length} caracteres`
+              `   ✅ Sanitizado: ${sanitizeResult.replaced} colores reemplazados con tokens`
             );
+            codeToInsert = sanitizeResult.sanitized;
+          }
 
-            // ✅ MEJORA 2: Sanitizar código extraído para hardcoded colors
-            console.log(`   [5.1] Sanitizando código extraído...`);
-            const { sanitizeCodeFromStorybook } = await import(
-              '../../helpers/codeSanitizer.js'
+          if (sanitizeResult.errors.length > 0) {
+            console.error(
+              `   ❌ Errores en sanitización: ${sanitizeResult.errors.join(', ')}`
             );
-            const sanitizeResult = await sanitizeCodeFromStorybook(
-              codeToInsert,
-              tokenRegistry
-            );
-
-            if (sanitizeResult.replaced > 0) {
-              console.log(
-                `   ✅ Sanitizado: ${sanitizeResult.replaced} colores reemplazados con tokens`
-              );
-              codeToInsert = sanitizeResult.sanitized;
-            }
-
-            if (sanitizeResult.errors.length > 0) {
-              console.error(
-                `   ❌ Errores en sanitización: ${sanitizeResult.errors.join(', ')}`
-              );
-              errors.push(...sanitizeResult.errors);
-              // ⚠️ CRÍTICO: Si hay colores hardcodeados que no se pudieron reemplazar, fallar
-              if (
-                sanitizeResult.errors.some((e) => e.includes('no reemplazable'))
-              ) {
-                const errorMsg =
-                  'Código extraído contiene colores hardcodeados que no se pudieron reemplazar. Requiere revisión manual.';
-                console.error(`   ❌ ${errorMsg}`);
-                return {
-                  success: false,
-                  filesWritten: [],
-                  verification: {
-                    preImplementation: false,
-                    postImplementation: false,
-                    errors: [errorMsg, ...sanitizeResult.errors],
-                    warnings: sanitizeResult.warnings,
-                  },
-                  components: [],
+            errors.push(...sanitizeResult.errors);
+            // ⚠️ CRÍTICO: Si hay colores hardcodeados que no se pudieron reemplazar, fallar
+            if (
+              sanitizeResult.errors.some((e) => e.includes('no reemplazable'))
+            ) {
+              const errorMsg =
+                'Código extraído contiene colores hardcodeados que no se pudieron reemplazar. Requiere revisión manual.';
+              console.error(`   ❌ ${errorMsg}`);
+              return {
+                success: false,
+                filesWritten: [],
+                verification: {
+                  preImplementation: false,
+                  postImplementation: false,
                   errors: [errorMsg, ...sanitizeResult.errors],
-                };
-              }
+                  warnings: sanitizeResult.warnings,
+                },
+                components: [],
+                errors: [errorMsg, ...sanitizeResult.errors],
+              };
             }
+          }
 
-            if (sanitizeResult.warnings.length > 0) {
-              warnings.push(...sanitizeResult.warnings);
-            }
+          if (sanitizeResult.warnings.length > 0) {
+            warnings.push(...sanitizeResult.warnings);
+          }
 
-            // ✅ NUEVO: Insertar CSS automáticamente
-            console.log(`   [5.2] Insertando CSS automáticamente...`);
-            if (exactCode.cssUrls && exactCode.cssUrls.length > 0) {
-              const { StorybookManager } = await import(
-                '../../helpers/storybookManager.js'
-              );
-              const manager = StorybookManager.getInstance();
-              const activeConfig = await manager.getActiveConfig();
-              const bypassToken =
-                activeConfig?.bypassToken || 'dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT';
-
-              const cssLinks = exactCode.cssUrls
-                .map((url) => {
-                  // Agregar parámetros de bypass si es URL de Vercel
-                  const separator = url.includes('?') ? '&' : '?';
-                  const bypassParams = `x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=${bypassToken}`;
-                  return `    <link rel="stylesheet" href="${url}${separator}${bypassParams}">`;
-                })
-                .join('\n');
-
-              // Insertar CSS antes del contenido
-              codeToInsert = `${cssLinks}\n    ${codeToInsert}`;
-              console.log(
-                `   ✅ CSS agregado automáticamente: ${exactCode.cssUrls.length} archivo(s)`
-              );
-            } else {
-              console.warn(`   ⚠️ No se encontraron URLs de CSS para insertar`);
-            }
-
-            // ✅ NUEVO: Insertar bundle UMD automáticamente
-            console.log(`   [5.3] Insertando bundle UMD automáticamente...`);
-            try {
-              const { StorybookManager } = await import(
-                '../../helpers/storybookManager.js'
-              );
-              const manager = StorybookManager.getInstance();
-              const activeConfig = await manager.getActiveConfig();
-
-              if (activeConfig) {
-                const { extractUMDBundleUrl } = await import(
-                  '../../helpers/storybookExactCodeExtractorWithBrowser.js'
-                );
-                const umdUrl = await extractUMDBundleUrl(
-                  componentId,
-                  activeConfig.url
-                );
-
-                if (umdUrl) {
-                  const separator = umdUrl.includes('?') ? '&' : '?';
-                  const bypassToken =
-                    activeConfig.bypassToken ||
-                    'dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT';
-                  const bypassParams = `x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=${bypassToken}`;
-                  const scriptTag = `    <script src="${umdUrl}${separator}${bypassParams}"></script>`;
-
-                  // Insertar script después del contenido
-                  codeToInsert = `${codeToInsert}\n${scriptTag}`;
-                  console.log(
-                    `   ✅ Bundle UMD agregado automáticamente: ${umdUrl}`
-                  );
-                } else {
-                  console.warn(
-                    `   ⚠️ No se encontró bundle UMD para ${componentId}`
-                  );
-                }
-              }
-            } catch (umdError: any) {
-              console.warn(
-                `   ⚠️ Error obteniendo bundle UMD: ${umdError.message}`
-              );
-              // No bloquear, solo advertir
-            }
-
-            // ✅ NUEVO: Insertar código de inicialización automáticamente
-            console.log(
-              `   [5.4] Insertando código de inicialización automáticamente...`
+          // ✅ NUEVO: Insertar CSS automáticamente
+          console.log(`   [5.2] Insertando CSS automáticamente...`);
+          if (exactCode.cssUrls && exactCode.cssUrls.length > 0) {
+            const { StorybookManager } = await import(
+              '../../helpers/storybookManager.js'
             );
-            try {
-              const { extractInitializationCode } = await import(
+            const manager = StorybookManager.getInstance();
+            const activeConfig = await manager.getActiveConfig();
+            const bypassToken =
+              activeConfig?.bypassToken || 'dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT';
+
+            const cssLinks = exactCode.cssUrls
+              .map((url) => {
+                // Agregar parámetros de bypass si es URL de Vercel
+                const separator = url.includes('?') ? '&' : '?';
+                const bypassParams = `x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=${bypassToken}`;
+                return `    <link rel="stylesheet" href="${url}${separator}${bypassParams}">`;
+              })
+              .join('\n');
+
+            // Insertar CSS antes del contenido
+            codeToInsert = `${cssLinks}\n    ${codeToInsert}`;
+            console.log(
+              `   ✅ CSS agregado automáticamente: ${exactCode.cssUrls.length} archivo(s)`
+            );
+          } else {
+            console.warn(`   ⚠️ No se encontraron URLs de CSS para insertar`);
+          }
+
+          // ✅ NUEVO: Insertar bundle UMD automáticamente
+          console.log(`   [5.3] Insertando bundle UMD automáticamente...`);
+          try {
+            const { StorybookManager } = await import(
+              '../../helpers/storybookManager.js'
+            );
+            const manager = StorybookManager.getInstance();
+            const activeConfig = await manager.getActiveConfig();
+
+            if (activeConfig) {
+              const { extractUMDBundleUrl } = await import(
                 '../../helpers/storybookExactCodeExtractorWithBrowser.js'
               );
-              const initCode = extractInitializationCode(
-                exactCode.html,
-                componentId
+              const umdUrl = await extractUMDBundleUrl(
+                componentId,
+                activeConfig.url
               );
 
-              if (initCode) {
-                // Generar código de inicialización completo
-                // Por ahora, usar el código extraído directamente
-                const scriptInit = `    <script>\n      ${initCode}\n    </script>`;
-                codeToInsert = `${codeToInsert}\n${scriptInit}`;
+              if (umdUrl) {
+                const separator = umdUrl.includes('?') ? '&' : '?';
+                const bypassToken =
+                  activeConfig.bypassToken ||
+                  'dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT';
+                const bypassParams = `x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=${bypassToken}`;
+                const scriptTag = `    <script src="${umdUrl}${separator}${bypassParams}"></script>`;
+
+                // Insertar script después del contenido
+                codeToInsert = `${codeToInsert}\n${scriptTag}`;
                 console.log(
-                  `   ✅ Código de inicialización agregado automáticamente`
+                  `   ✅ Bundle UMD agregado automáticamente: ${umdUrl}`
                 );
               } else {
                 console.warn(
-                  `   ⚠️ No se encontró código de inicialización para ${componentId}`
+                  `   ⚠️ No se encontró bundle UMD para ${componentId}`
                 );
               }
-            } catch (initError: any) {
-              console.warn(
-                `   ⚠️ Error extrayendo código de inicialización: ${initError.message}`
-              );
-              // No bloquear, solo advertir
             }
-          } else {
-            // Si no hay código válido, ya fue manejado en el catch interno
-            console.log(
-              `   ⚠️ No se pudo extraer código desde Storybook (ya manejado en catch interno)`
+          } catch (umdError: any) {
+            console.warn(
+              `   ⚠️ Error obteniendo bundle UMD: ${umdError.message}`
             );
+            // No bloquear, solo advertir
           }
+
+          // ✅ NUEVO: Insertar código de inicialización automáticamente
+          console.log(
+            `   [5.4] Insertando código de inicialización automáticamente...`
+          );
+          try {
+            const { extractInitializationCode } = await import(
+              '../../helpers/storybookExactCodeExtractorWithBrowser.js'
+            );
+            const initCode = extractInitializationCode(
+              exactCode.html,
+              componentId
+            );
+
+            if (initCode) {
+              // Generar código de inicialización completo
+              // Por ahora, usar el código extraído directamente
+              const scriptInit = `    <script>\n      ${initCode}\n    </script>`;
+              codeToInsert = `${codeToInsert}\n${scriptInit}`;
+              console.log(
+                `   ✅ Código de inicialización agregado automáticamente`
+              );
+            } else {
+              console.warn(
+                `   ⚠️ No se encontró código de inicialización para ${componentId}`
+              );
+            }
+          } catch (initError: any) {
+            console.warn(
+              `   ⚠️ Error extrayendo código de inicialización: ${initError.message}`
+            );
+            // No bloquear, solo advertir
+          }
+        } else {
+          // Si no hay código válido, ya fue manejado en el catch interno
+          console.log(
+            `   ⚠️ No se pudo extraer código desde Storybook (ya manejado en catch interno)`
+          );
         }
       } catch (error: any) {
         // ⚠️ CRÍTICO: Este catch es una capa adicional de seguridad
@@ -2482,9 +2538,9 @@ async function autorunApplyModeB(
           );
         }
       }
-
+  
       const tokenKit = new PrototypeTokenKit(tokenRegistry);
-
+  
       // Detectar tipo de widget según el mensaje
       // ⚠️ CORRECCIÓN: No generar KpiCard si el componente es Carousel, SelectionCard, SimpleCard, etc.
       const isCarousel =
@@ -2497,7 +2553,7 @@ async function autorunApplyModeB(
       const isSimpleCard =
         input.message.toLowerCase().includes('simple card') ||
         componentName.toLowerCase().includes('simplecard');
-
+  
       if (isCarousel || isSelectionCard || isSimpleCard) {
         // ⚠️ CRÍTICO: No generar widget genérico para componentes UBITS reales
         // Debe extraerse el código real desde Storybook
