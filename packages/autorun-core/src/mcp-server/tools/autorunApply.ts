@@ -188,9 +188,8 @@ async function autorunApplyStrict(
     console.log(
       `   [1.0] Detectando componente para marcar checklist automáticamente...`
     );
-    const { detectComponentFromMessage } = await import(
-      '../../helpers/implementationHelpers.js'
-    );
+    const { detectComponentFromMessage } =
+      await import('../../helpers/implementationHelpers.js');
     const detectedComponentName = detectComponentFromMessage(input.message);
 
     // ✅ SOLUCIÓN PERMANENTE: Marcar pasos del checklist ANTES de cualquier verificación
@@ -601,9 +600,8 @@ async function autorunApplyStrict(
         );
         if (storybookId) {
           // Convertir storybookId a nombre de componente para MCP
-          const { storybookIdToComponentName } = await import(
-            '../../helpers/storybookMCPNameMapper.js'
-          );
+          const { storybookIdToComponentName } =
+            await import('../../helpers/storybookMCPNameMapper.js');
           const componentNameForMCP =
             (await storybookIdToComponentName(storybookId)) ||
             result.componentName;
@@ -648,17 +646,15 @@ async function autorunApplyStrict(
 
     // Intentar primero con MCP Client interno (llamada directa)
     try {
-      const { callStorybookMCPTool } = await import(
-        '../../helpers/mcpClient.js'
-      );
+      const { callStorybookMCPTool } =
+        await import('../../helpers/mcpClient.js');
       console.log(
         `   [2.1.1] Intentando consultar Storybook MCP directamente...`
       );
 
       // ⚠️ MEJORADO: Usar StorybookDynamicMapper dinámico en lugar de hardcodeado
-      const { StorybookDynamicMapper } = await import(
-        '../../helpers/storybookDynamicMapper.js'
-      );
+      const { StorybookDynamicMapper } =
+        await import('../../helpers/storybookDynamicMapper.js');
       const componentName =
         (await StorybookDynamicMapper.storybookIdToComponentName(
           componentId
@@ -689,9 +685,8 @@ async function autorunApplyStrict(
       console.log(`   [2.1.2] Usando fallback visual...`);
 
       // Fallback: usar extracción visual
-      const { getComponentPropsWithFallback } = await import(
-        '../../helpers/mcpWithFallback.js'
-      );
+      const { getComponentPropsWithFallback } =
+        await import('../../helpers/mcpWithFallback.js');
       try {
         const propsResult = await getComponentPropsWithFallback(componentId);
         if (propsResult.success && propsResult.props) {
@@ -732,9 +727,8 @@ async function autorunApplyStrict(
         `   ⚠️ CRÍTICO: Consultando Storybook MCP automáticamente para ${result.mcpMessages.length} componente(s)...`
       );
       try {
-        const { IntegrationHelper } = await import(
-          '../../helpers/integrationHelper.js'
-        );
+        const { IntegrationHelper } =
+          await import('../../helpers/integrationHelper.js');
         const componentNames = result.mcpMessages.map(
           (msg) => msg.componentName
         );
@@ -2080,12 +2074,10 @@ async function autorunApplyModeB(
     let mcpInfo: any = null;
     let mcpConsulted = false;
     try {
-      const { callStorybookMCPTool } = await import(
-        '../../helpers/mcpClient.js'
-      );
-      const { storybookIdToComponentName } = await import(
-        '../../helpers/storybookMCPNameMapper.js'
-      );
+      const { callStorybookMCPTool } =
+        await import('../../helpers/mcpClient.js');
+      const { storybookIdToComponentName } =
+        await import('../../helpers/storybookMCPNameMapper.js');
       const componentName =
         (await storybookIdToComponentName(componentId)) || componentId;
 
@@ -2143,9 +2135,8 @@ async function autorunApplyModeB(
       docsUrl?: string;
     } | null = null;
     try {
-      const { extractHTMLFromDocumentation } = await import(
-        '../../helpers/componentHelpers.js'
-      );
+      const { extractHTMLFromDocumentation } =
+        await import('../../helpers/componentHelpers.js');
       htmlFromDocs = await extractHTMLFromDocumentation(componentName);
 
       // ⭐ NUEVO: Si se requiere Browser MCP, intentar usarlo automáticamente
@@ -2190,9 +2181,8 @@ async function autorunApplyModeB(
         console.log(
           `   [5.1] Sanitizando código extraído desde documentación...`
         );
-        const { sanitizeCodeFromStorybook } = await import(
-          '../../helpers/codeSanitizer.js'
-        );
+        const { sanitizeCodeFromStorybook } =
+          await import('../../helpers/codeSanitizer.js');
         const sanitizeResult = await sanitizeCodeFromStorybook(
           codeToInsert,
           tokenRegistry
@@ -2236,9 +2226,8 @@ async function autorunApplyModeB(
           );
 
           // Verificar si es un error de Browser MCP Required
-          const { isBrowserMCPRequiredError } = await import(
-            '../../helpers/browserMCPAutoExtractor.js'
-          );
+          const { isBrowserMCPRequiredError } =
+            await import('../../helpers/browserMCPAutoExtractor.js');
 
           if (isBrowserMCPRequiredError(extractError)) {
             console.error(
@@ -2298,7 +2287,18 @@ async function autorunApplyModeB(
               console.error(
                 `   ✅ [Autorun Apply] Envolviendo JS extraído en <script> tags...`
               );
-              const wrappedJs = `<script>\n${exactCode.js}\n</script>`;
+              const resilientJs = `(function initAutorun() {
+              if (typeof window.UBITS !== 'undefined' && (window.UBITS.Tabs || !'${exactCode.js}'.includes('Tabs'))) {
+                try {
+                  ${exactCode.js}
+                } catch (e) {
+                  console.error('❌ Error ejecutando script de Autorun:', e);
+                }
+              } else {
+                setTimeout(initAutorun, 50);
+              }
+            })();`;
+              const wrappedJs = `<script>\n\${resilientJs}\n</script>`;
               exactCode.html = exactCode.html
                 ? `${exactCode.html}\n${wrappedJs}`
                 : wrappedJs;
@@ -2313,9 +2313,8 @@ async function autorunApplyModeB(
 
           // ✅ MEJORA 2: Sanitizar código extraído para hardcoded colors
           console.log(`   [5.1] Sanitizando código extraído...`);
-          const { sanitizeCodeFromStorybook } = await import(
-            '../../helpers/codeSanitizer.js'
-          );
+          const { sanitizeCodeFromStorybook } =
+            await import('../../helpers/codeSanitizer.js');
           const sanitizeResult = await sanitizeCodeFromStorybook(
             codeToInsert,
             tokenRegistry
@@ -2362,9 +2361,8 @@ async function autorunApplyModeB(
           // ✅ NUEVO: Insertar CSS automáticamente
           console.log(`   [5.2] Insertando CSS automáticamente...`);
           if (exactCode.cssUrls && exactCode.cssUrls.length > 0) {
-            const { StorybookManager } = await import(
-              '../../helpers/storybookManager.js'
-            );
+            const { StorybookManager } =
+              await import('../../helpers/storybookManager.js');
             const manager = StorybookManager.getInstance();
             const activeConfig = await manager.getActiveConfig();
             const bypassToken =
@@ -2391,16 +2389,14 @@ async function autorunApplyModeB(
           // ✅ NUEVO: Insertar bundle UMD automáticamente
           console.log(`   [5.3] Insertando bundle UMD automáticamente...`);
           try {
-            const { StorybookManager } = await import(
-              '../../helpers/storybookManager.js'
-            );
+            const { StorybookManager } =
+              await import('../../helpers/storybookManager.js');
             const manager = StorybookManager.getInstance();
             const activeConfig = await manager.getActiveConfig();
 
             if (activeConfig) {
-              const { extractUMDBundleUrl } = await import(
-                '../../helpers/storybookExactCodeExtractorWithBrowser.js'
-              );
+              const { extractUMDBundleUrl } =
+                await import('../../helpers/storybookExactCodeExtractorWithBrowser.js');
               const umdUrl = await extractUMDBundleUrl(
                 componentId,
                 activeConfig.url
@@ -2437,9 +2433,8 @@ async function autorunApplyModeB(
             `   [5.4] Insertando código de inicialización automáticamente...`
           );
           try {
-            const { extractInitializationCode } = await import(
-              '../../helpers/storybookExactCodeExtractorWithBrowser.js'
-            );
+            const { extractInitializationCode } =
+              await import('../../helpers/storybookExactCodeExtractorWithBrowser.js');
             const initCode = extractInitializationCode(
               exactCode.html,
               componentId
@@ -2501,9 +2496,8 @@ async function autorunApplyModeB(
       );
 
       // Construir URL de Docs para el error
-      const { StorybookManager } = await import(
-        '../../helpers/storybookManager.js'
-      );
+      const { StorybookManager } =
+        await import('../../helpers/storybookManager.js');
       const manager = StorybookManager.getInstance();
       const activeConfig = await manager.getActiveConfig();
       const docsUrl = activeConfig
