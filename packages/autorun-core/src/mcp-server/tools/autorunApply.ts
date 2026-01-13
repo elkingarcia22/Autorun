@@ -2302,12 +2302,14 @@ async function autorunApplyModeB(
               const needsTabs = exactCode.js.includes('Tabs');
               const resilientJs = `(function initAutorun() {
               if (typeof window.UBITS !== 'undefined'${needsTabs ? ' && window.UBITS.Tabs' : ''}) {
+                console.log('🚀 [Autorun] Inicializando componente: ${componentName}');
                 try {
                   ${exactCode.js}
                 } catch (e) {
                   console.error('❌ Error ejecutando script de Autorun:', e);
                 }
               } else {
+                console.log('⏳ [Autorun] Esperando UBITS para ${componentName}...');
                 setTimeout(initAutorun, 50);
               }
             })();`;
