@@ -2298,8 +2298,9 @@ async function autorunApplyModeB(
               console.error(
                 `   ✅ [Autorun Apply] Envolviendo JS extraído en <script> tags...`
               );
+              const needsTabs = exactCode.js.includes('Tabs');
               const resilientJs = `(function initAutorun() {
-              if (typeof window.UBITS !== 'undefined' && (window.UBITS.Tabs || !'${exactCode.js}'.includes('Tabs'))) {
+              if (typeof window.UBITS !== 'undefined'${needsTabs ? ' && window.UBITS.Tabs' : ''}) {
                 try {
                   ${exactCode.js}
                 } catch (e) {
