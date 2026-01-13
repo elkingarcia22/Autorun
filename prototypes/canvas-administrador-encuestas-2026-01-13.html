@@ -1,20 +1,33 @@
-<!-- AUTORUN: {"components":["Navegación/Tabs"],"storybookId":"navegación-tabs","story":"default","hash":"fc496a0a3743b0f9","timestamp":"2026-01-13T14:16:18.864Z","version":"1.0.0","dependsOn":{"required":[],"optional":[]},"internals":[]} -->
-// 1. Crear contenedor HTML
-<div id="tabs-implementation-container"></div>
-<script>
-// 2. Crear Tabs
-window.UBITS.Tabs.create({
-  tabs: [
-    { id: 'tab-1', label: 'Tab 1', icon: 'far fa-th', active: true },
-    { id: 'tab-2', label: 'Tab 2', icon: 'far fa-chart-line', active: false },
-    { id: 'tab-3', label: 'Tab 3', icon: 'far fa-cog', active: false },
-    { id: 'tab-4', label: 'Tab 4', icon: 'far fa-star', active: false },
-    { id: 'tab-5', label: 'Tab 5', icon: 'far fa-book', active: false }
-  ],
-  activeTabId: 'tab-1',
-  onTabChange: (tabId, tabElement) => {
-    console.log('Tab cambiado:', tabId);
-  }
-}, 'tabs-implementation-container');
-</script>
-<!-- /AUTORUN -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administrador Encuestas</title>
+    <!-- UBITS Core Styles (Simulated) -->
+    <style>
+        :root {
+            --ubits-color-primary: #007bff;
+            --ubits-color-text: #333;
+            --ubits-bg-color: #f4f6f8;
+        }
+        body { font-family: 'Inter', sans-serif; background-color: var(--ubits-bg-color); margin: 0; padding: 0; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        #subnav-container { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- SubNav Area -->
+        <div id="subnav-container">
+            <h3>SubNav Component</h3>
+            <!-- El SubNav usualmente se inyectaría aquí -->
+        </div>
+
+        <!-- Main Content Area where Tabs should go -->
+        <main id="main-content">
+            <!-- Tabs Component should be inserted here -->
+        </main>
+    </div>
+</body>
+</html>
