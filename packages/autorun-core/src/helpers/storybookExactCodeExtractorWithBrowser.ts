@@ -436,20 +436,17 @@ export function parseCodeBlock(code: string): { html: string; js?: string } {
       let htmlPart = code.substring(0, splitIndex).trim();
       let jsPart = code.substring(splitIndex).trim();
 
-      // ⭐ CLEANUP: Si la parte HTML termina con comentarios estilo JS (// ...),
-      // probablemente son comentarios que deberían ir en el bloque de JS
-      // Regex para encontrar comentarios al final del string
-      const trailingCommentRegex = /(\/\/.*)$/s;
-      const commentMatch = htmlPart.match(trailingCommentRegex);
-
-      if (commentMatch) {
-        // Mover el comentario al JS
-        const comment = commentMatch[1];
+      // ⭐ CLEANUP: Eliminar líneas que son comentarios JS (//) dentro del bloque HTML
+      // Esto evita que aparezcan como texto plano en el renderizado
+      if (htmlPart) {
         htmlPart = htmlPart
-          .substring(0, htmlPart.length - comment.length)
+          .split('\n')
+          .filter((line) => !line.trim().startsWith('//'))
+          .join('\n')
           .trim();
-        jsPart = `${comment}\n${jsPart}`;
       }
+
+      return { html: htmlPart, js: jsPart };
 
       return { html: htmlPart, js: jsPart };
     }
