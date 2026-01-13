@@ -1307,7 +1307,6 @@ async function autorunApplyStrict(
                 insertionPointMatch[0],
                 `${insertionPointMatch[0]}\n${codeWithMarks}`
               );
-            } else if (originalContent.includes('</body>')) {
             }
             // Estrategia 2: Insertar antes de cerrar body (Prioridad Media)
             else if (originalContent.includes('</body>')) {
