@@ -812,7 +812,18 @@ async function autorunApplyStrict(
       if (exactCode.js && exactCode.js.trim().length > 0) {
         if (!exactCode.html || !exactCode.html.includes(exactCode.js)) {
           console.log(`   ✅ Envolviendo JS extraído en <script> tags...`);
-          const wrappedJs = `<script>\n${exactCode.js}\n</script>`;
+          const resilientJs = `(function initAutorun() {
+              if (typeof window.UBITS !== 'undefined' && (window.UBITS.Tabs || !'${exactCode.js}'.includes('Tabs'))) {
+                try {
+                  ${exactCode.js}
+                } catch (e) {
+                  console.error('❌ Error ejecutando script de Autorun:', e);
+                }
+              } else {
+                setTimeout(initAutorun, 50);
+              }
+            })();`;
+          const wrappedJs = `<script>\n${resilientJs}\n</script>`;
           exactCode.html = exactCode.html
             ? `${exactCode.html}\n${wrappedJs}`
             : wrappedJs;
