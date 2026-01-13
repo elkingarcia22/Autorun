@@ -1274,30 +1274,40 @@ async function autorunApplyStrict(
           }
 
           if (originalContent.length > 0) {
-            // Estrategia 1: Insertar en #main-content (Prioridad Alta)
-            if (originalContent.includes('id="main-content"')) {
-              // Buscar la etiqueta completa para insertar después
-              const mainContentRegex = /(<[^>]*id="main-content"[^>]*>)/i;
-              const match = originalContent.match(mainContentRegex);
+            // Estrategia 1: Insertar en .content-sections (Prioridad Máxima - Para widgets)
+            const contentSectionsRegex =
+              /(<[^>]*class=["'][^"']*content-sections[^"']*["'][^>]*>)/i;
+            const contentAreaRegex =
+              /(<[^>]*class=["'][^"']*content-area[^"']*["'][^>]*>)/i;
+            const mainIdRegex = /(<[^>]*id=["']main-content["'][^>]*>)/i;
+            const mainTagRegex = /(<main[^>]*>)/i;
 
-              if (match) {
-                console.log(
-                  `   ✅ Inserción inteligente: Insertando dentro de ${match[1]}`
-                );
-                finalContent = originalContent.replace(
-                  mainContentRegex,
-                  `$1\n${codeWithMarks}`
-                );
-              } else {
-                // Fallback por si el regex falla (raro)
-                console.log(
-                  `   ✅ Inserción inteligente: Usando reemplazo simple para id="main-content"`
-                );
-                finalContent = originalContent.replace(
-                  'id="main-content">',
-                  `id="main-content">\n${codeWithMarks}`
-                );
-              }
+            let insertionPointMatch =
+              originalContent.match(contentSectionsRegex);
+            let insertionLabel = '.content-sections';
+
+            if (!insertionPointMatch) {
+              insertionPointMatch = originalContent.match(contentAreaRegex);
+              insertionLabel = '.content-area';
+            }
+            if (!insertionPointMatch) {
+              insertionPointMatch = originalContent.match(mainIdRegex);
+              insertionLabel = '#main-content';
+            }
+            if (!insertionPointMatch) {
+              insertionPointMatch = originalContent.match(mainTagRegex);
+              insertionLabel = '<main>';
+            }
+
+            if (insertionPointMatch) {
+              console.log(
+                `   ✅ Inserción inteligente: Insertando dentro de ${insertionLabel} (${insertionPointMatch[1]})`
+              );
+              finalContent = originalContent.replace(
+                insertionPointMatch[0],
+                `${insertionPointMatch[0]}\n${codeWithMarks}`
+              );
+            } else if (originalContent.includes('</body>')) {
             }
             // Estrategia 2: Insertar antes de cerrar body (Prioridad Media)
             else if (originalContent.includes('</body>')) {
