@@ -232,7 +232,7 @@ export async function extractExactCodeFromStorybookWithBrowser(
   // ---------------------------------------------------------------------------
   // INTENTO 3: Fetch directo de la historia (Fallback)
   // ---------------------------------------------------------------------------
-  if (!codeFromTab || !codeFromTab.html) {
+  if (!codeFromTab || (!codeFromTab.html && !codeFromTab.js)) {
     console.log(
       `   📚 [PASO 3] Intentando fetch directo de historia: ${storyUrl}`
     );
@@ -251,7 +251,7 @@ export async function extractExactCodeFromStorybookWithBrowser(
   // ---------------------------------------------------------------------------
   // INTENTO 4: Código fuente local
   // ---------------------------------------------------------------------------
-  if (!codeFromTab || !codeFromTab.html) {
+  if (!codeFromTab || (!codeFromTab.html && !codeFromTab.js)) {
     console.log(
       `   📚 [PASO 4] Intentando extraer desde código fuente local...`
     );
@@ -278,7 +278,7 @@ export async function extractExactCodeFromStorybookWithBrowser(
   // ---------------------------------------------------------------------------
   // INTENTO 5: Documentación local (Último recurso)
   // ---------------------------------------------------------------------------
-  if (!codeFromTab || !codeFromTab.html) {
+  if (!codeFromTab || (!codeFromTab.html && !codeFromTab.js)) {
     console.log(
       `   📚 [PASO 5] Intentando extraer desde documentación local...`
     );
