@@ -907,48 +907,6 @@
             <div id="top-nav-container"></div>
             
             <!-- Content Area -->
-<!-- AUTORUN: {"components":["Navegación/Tabs"],"storybookId":"navegación-tabs","story":"default","hash":"c5d51dc25b93999c","timestamp":"2026-01-13T19:29:52.049Z","version":"1.0.0","dependsOn":{"required":[],"optional":[]},"internals":[]} -->
-<div id="tabs-implementation-container"></div>
-<script>
-(function initAutorun() {
-              if (typeof window.UBITS !== 'undefined' && (window.UBITS.Tabs || !'// 2. Crear Tabs
-window.UBITS.Tabs.create({
-  tabs: [
-    { id: 'tab-1', label: 'Tab 1', icon: 'far fa-th', active: true },
-    { id: 'tab-2', label: 'Tab 2', icon: 'far fa-chart-line', active: false },
-    { id: 'tab-3', label: 'Tab 3', icon: 'far fa-cog', active: false },
-    { id: 'tab-4', label: 'Tab 4', icon: 'far fa-star', active: false },
-    { id: 'tab-5', label: 'Tab 5', icon: 'far fa-book', active: false }
-  ],
-  activeTabId: 'tab-1',
-  onTabChange: (tabId, tabElement) => {
-    console.log('Tab cambiado:', tabId);
-  }
-}, 'tabs-implementation-container');'.includes('Tabs'))) {
-                try {
-                  // 2. Crear Tabs
-window.UBITS.Tabs.create({
-  tabs: [
-    { id: 'tab-1', label: 'Tab 1', icon: 'far fa-th', active: true },
-    { id: 'tab-2', label: 'Tab 2', icon: 'far fa-chart-line', active: false },
-    { id: 'tab-3', label: 'Tab 3', icon: 'far fa-cog', active: false },
-    { id: 'tab-4', label: 'Tab 4', icon: 'far fa-star', active: false },
-    { id: 'tab-5', label: 'Tab 5', icon: 'far fa-book', active: false }
-  ],
-  activeTabId: 'tab-1',
-  onTabChange: (tabId, tabElement) => {
-    console.log('Tab cambiado:', tabId);
-  }
-}, 'tabs-implementation-container');
-                } catch (e) {
-                  console.error('❌ Error ejecutando script de Autorun:', e);
-                }
-              } else {
-                setTimeout(initAutorun, 50);
-              }
-            })();
-</script>
-<!-- /AUTORUN -->
 <div class="content-area">
                 <!-- Content wrapper con secciones de widgets -->
                 <div class="content-sections">
