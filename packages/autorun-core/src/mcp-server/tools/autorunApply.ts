@@ -2309,7 +2309,7 @@ async function autorunApplyModeB(
                 setTimeout(initAutorun, 50);
               }
             })();`;
-              const wrappedJs = `<script>\n\${resilientJs}\n</script>`;
+              const wrappedJs = `<script>\n${resilientJs}\n</script>`;
               exactCode.html = exactCode.html
                 ? `${exactCode.html}\n${wrappedJs}`
                 : wrappedJs;
