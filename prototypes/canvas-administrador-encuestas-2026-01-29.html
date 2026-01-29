@@ -2435,8 +2435,179 @@
       }
     })();
   </script>
+  </script>
+
   <script>
-    // FIX: Implementar Tabs robustos (Autorun Flow)
+    // ========================================
+    // CAROUSEL & SIMPLE CARD UTILS (Minified Implementation)
+    // ========================================
+    (function () {
+      // Render Button Helper
+      function renderButton(options) {
+        const variant = options.variant || 'secondary';
+        const size = options.size || 'md';
+        const text = options.text || '';
+        return `<button class="ubits-button ubits-button--${variant} ubits-button--${size}">${text}</button>`;
+      }
+
+      // Render Simple Card Helper
+      function renderSimpleCard(options) {
+        const {
+          title, subtitle, content = '', showHeader = true,
+          headerBackground = 'var(--modifiers-normal-color-light-bg-4)',
+          headerDecorations = true, backgroundColor = 'var(--modifiers-normal-color-light-bg-1)',
+          borderColor = 'var(--modifiers-normal-color-light-border-1)',
+          padding = 'var(--ubits-spacing-lg)', buttons = [], showButtons = true,
+          variant = 'default', size = 'md', maxWidth, className = ''
+        } = options;
+
+        const cardClasses = ['ubits-simple-card', `ubits-simple-card--${variant}`, `ubits-simple-card--${size}`, className].filter(Boolean).join(' ');
+        const cardStyles = [`background: ${backgroundColor}`, `border: 1px solid ${borderColor}`, `border-radius: 8px !important`, `padding: ${padding}`, maxWidth ? `max-width: ${maxWidth}` : ''].filter(Boolean).join('; ');
+        const headerStyle = headerBackground !== 'var(--modifiers-normal-color-light-bg-4)' ? `style="background: ${headerBackground}"` : '';
+
+        const headerHTML = showHeader ? `
+                    <div class="ubits-simple-card__header" ${headerStyle}>
+                        ${headerDecorations ? `<div class="ubits-simple-card__header-decoration ubits-simple-card__header-decoration--left"><div class="ubits-simple-card__bubble"><div class="ubits-simple-card__bubble-content"><div class="ubits-simple-card__logo">A</div></div></div></div><div class="ubits-simple-card__header-decoration ubits-simple-card__header-decoration--right"><div class="ubits-simple-card__bubble ubits-simple-card__bubble--small"><div class="ubits-simple-card__bubble-content"><div class="ubits-simple-card__logo">A</div></div></div></div>` : ''}
+                    </div>` : '';
+
+        const buttonsHTML = showButtons && buttons.length > 0 ? `
+                    <div class="ubits-simple-card__footer">
+                        ${buttons.map(btn => `<div class="ubits-simple-card__button">${renderButton({ variant: btn.variant, size: btn.size, text: btn.label })}</div>`).join('')}
+                    </div>` : '';
+
+        return `
+                    <div class="${cardClasses}" style="${cardStyles}">
+                        ${headerHTML}
+                        <div class="ubits-simple-card__body">
+                            ${title ? `<h2 class="ubits-simple-card__title ubits-heading-h2">${title}</h2>` : ''}
+                            ${subtitle ? `<p class="ubits-simple-card__subtitle ubits-body-md">${subtitle}</p>` : ''}
+                            ${content ? `<div class="ubits-simple-card__content ubits-body-md">${content}</div>` : ''}
+                        </div>
+                        ${buttonsHTML}
+                    </div>`.trim();
+      }
+
+      // Render Carousel Item
+      function renderCarouselItem(item, index) {
+        const { id, onItemClick, ...simpleCardOptions } = item;
+        const cardOptions = { ...simpleCardOptions, maxWidth: undefined };
+        const cardHTML = renderSimpleCard(cardOptions);
+        return `<div class="ubits-carousel-item" data-item-id="${id}" data-item-index="${index}">${cardHTML}</div>`;
+      }
+
+      // Carousel Core
+      function renderCarousel(options) {
+        const { items = [], itemsPerView = 3, showArrows = true, showDots = true, gap = 16, arrowPosition = 'outside' } = options;
+        if (items.length === 0) return '<div class="ubits-carousel">Empty</div>';
+
+        const classes = ['ubits-carousel', arrowPosition === 'inside' && 'ubits-carousel--arrows-inside'].filter(Boolean).join(' ');
+        const itemsHTML = items.map((item, index) => renderCarouselItem(item, index)).join('');
+        const dotsHTML = showDots ? `<div class="ubits-carousel__dots">${Array.from({ length: Math.ceil(items.length / itemsPerView) }, (_, i) => `<button class="ubits-carousel__dot ${i === 0 ? 'ubits-carousel__dot--active' : ''}" data-dot-index="${i}"></button>`).join('')}</div>` : '';
+
+        return `
+                    <div class="${classes}" data-items-per-view="${itemsPerView}" data-gap="${gap}" style="--carousel-gap: ${gap}px;">
+                        <div class="ubits-carousel__content-wrapper">
+                            ${showArrows ? `<button class="ubits-carousel__arrow ubits-carousel__arrow--prev"><i class="fas fa-chevron-left"></i></button>` : ''}
+                            <div class="ubits-carousel__container"><div class="ubits-carousel__track">${itemsHTML}</div></div>
+                            ${showArrows ? `<button class="ubits-carousel__arrow ubits-carousel__arrow--next"><i class="fas fa-chevron-right"></i></button>` : ''}
+                        </div>
+                        ${dotsHTML}
+                    </div>`;
+      }
+
+      function initializeCarousel(element, options) {
+        const track = element.querySelector('.ubits-carousel__track');
+        const items = element.querySelectorAll('.ubits-carousel-item');
+        const prevBtn = element.querySelector('.ubits-carousel__arrow--prev');
+        const nextBtn = element.querySelector('.ubits-carousel__arrow--next');
+        const dots = element.querySelectorAll('.ubits-carousel__dot');
+
+        if (!track || items.length === 0) return;
+
+        const itemsPerView = options.itemsPerView || 3;
+        let currentIndex = 0;
+
+        const update = () => {
+          const cardWidth = items[0].getBoundingClientRect().width + (options.gap || 16);
+          track.style.transform = `translateX(-${currentIndex * cardWidth}px)`;
+          dots.forEach((d, i) => d.classList.toggle('ubits-carousel__dot--active', i === Math.floor(currentIndex / itemsPerView)));
+        };
+
+        // Set heights
+        setTimeout(() => {
+          let maxHeight = 0;
+          items.forEach(item => {
+            const h = item.querySelector('.ubits-simple-card').offsetHeight;
+            if (h > maxHeight) maxHeight = h;
+          });
+          items.forEach(item => {
+            const card = item.querySelector('.ubits-simple-card');
+            if (card) card.style.height = maxHeight + 'px';
+            item.style.flex = `0 0 calc((100% - ${(itemsPerView - 1) * (options.gap || 16)}px) / ${itemsPerView})`;
+          });
+          update();
+        }, 100);
+
+        if (prevBtn) prevBtn.onclick = () => { if (currentIndex > 0) currentIndex--; update(); };
+        if (nextBtn) nextBtn.onclick = () => { if (currentIndex < items.length - itemsPerView) currentIndex++; update(); };
+      }
+
+      // Expose
+      window.UBITS = window.UBITS || {};
+      window.UBITS.Carousel = {
+        create: function (options) {
+          const div = document.createElement('div');
+          div.innerHTML = renderCarousel(options);
+          const el = div.firstElementChild;
+          if (el) setTimeout(() => initializeCarousel(el, options), 0);
+          return el;
+        }
+      };
+    })();
+
+    // Implementación específica
+    window.initCarouselImplementation = function () {
+      const container = document.getElementById('carousel-implementation-container');
+      if (!container || container.children.length > 0) return;
+
+      console.log('🔵 [Template Admin] Inicializando Carousel size-m...');
+
+      const carouselElement = window.UBITS.Carousel.create({
+        items: [
+          {
+            id: 1, title: 'Encuesta de Clima', subtitle: 'RRHH - 2024',
+            content: 'Evalúa el ambiente laboral de tu equipo.',
+            showHeader: true, headerDecorations: true, variant: 'elevated', size: 'md',
+            showButtons: true,
+            buttons: [{ label: 'Ver resultados', variant: 'primary', size: 'md' }]
+          },
+          {
+            id: 2, title: 'Evaluación de Desempeño', subtitle: 'Q1 - 2024',
+            content: 'Revisión de objetivos trimestrales.',
+            showHeader: true, headerDecorations: true, variant: 'elevated', size: 'md',
+            showButtons: true,
+            buttons: [{ label: 'Iniciar', variant: 'primary', size: 'md' }]
+          },
+          {
+            id: 3, title: 'Satisfacción del Cliente', subtitle: 'NPS Global',
+            content: 'Resultados de la última medición de NPS.',
+            showHeader: true, headerDecorations: true, variant: 'elevated', size: 'md',
+            showButtons: true,
+            buttons: [{ label: 'Analizar', variant: 'primary', size: 'md' }]
+          }
+        ],
+        itemsPerView: 3,
+        showArrows: true,
+        showDots: true,
+        gap: 16,
+        cardSize: 'md'
+      });
+
+      container.appendChild(carouselElement);
+    };
+  </script>
+  <script>
+    // FIX: Implementar Tabs robustos (Autorun Flow) + Carousel
     (function () {
       // Función para crear tabs
       function createTabsIfNeeded() {
@@ -2451,6 +2622,26 @@
             tabsContainer.id = 'tabs-container';
             // Insertar al principio o donde corresponda
             contentArea.prepend(tabsContainer);
+
+            // Crear contenedores de contenido
+            const encuestasContent = document.createElement('div');
+            encuestasContent.id = 'encuestas-content';
+            encuestasContent.style.display = 'block'; // Activo por defecto
+            encuestasContent.style.marginTop = '24px';
+            // Contenedor para el carrusel dentro de Encuestas
+            encuestasContent.innerHTML = `
+                <div class="ubits-text-h3" style="margin-bottom: 16px;">Encuestas disponibles</div>
+                <div id="carousel-implementation-container"></div>
+            `;
+
+            const demograficosContent = document.createElement('div');
+            demograficosContent.id = 'datos-demograficos-content';
+            demograficosContent.style.display = 'none'; // Inactivo por defecto
+            demograficosContent.innerHTML = '<div class="ubits-text-body-md">Contenido de Datos demográficos</div>';
+
+            contentArea.append(encuestasContent);
+            contentArea.append(demograficosContent);
+
           } else {
             console.warn('⚠️ [SubNav Fix] No se encontró .content-area para crear tabs');
             return;
@@ -2464,41 +2655,66 @@
 
         console.log('🔵 [SubNav Fix] Intentando crear tabs...');
 
-        // Asegurar que window.createTabs esté disponible
-        if (!window.createTabs) {
-          if (window.UBITS && window.UBITS.Tabs && window.UBITS.Tabs.create) {
-            window.createTabs = window.UBITS.Tabs.create;
-          } else {
-            console.warn('⚠️ [SubNav Fix] window.createTabs no disponible. Reintentando...');
-            setTimeout(createTabsIfNeeded, 500);
-            return;
-          }
+        // Asegurar que createTabs esté disponible
+        // (Asumimos que window.createTabs podría venir de components-loader.js o ser polyfilled)
+        // Pero arriba ya definimos window.UBITS.Carousel, no window.createTabs.
+        // El script de tabs original usa window.createTabs
+        // Debemos asegurarnos de que window.createTabs funcione.
+
+        let createTabsFn = window.createTabs;
+        if (!createTabsFn && window.UBITS && window.UBITS.Tabs && window.UBITS.Tabs.create) {
+          createTabsFn = window.UBITS.Tabs.create;
         }
 
-        try {
-          window.createTabs({
-            tabs: [
-              {
-                id: 'encuestas',
-                label: 'Encuestas',
-                icon: 'far fa-clipboard-list',
-                active: true
-              },
-              {
-                id: 'datos-demograficos',
-                label: 'Datos demográficos',
-                icon: 'far fa-users',
-                active: false
+        if (createTabsFn) {
+          try {
+            createTabsFn({
+              tabs: [
+                {
+                  id: 'encuestas',
+                  label: 'Encuestas',
+                  icon: 'far fa-clipboard-list',
+                  active: true
+                },
+                {
+                  id: 'datos-demograficos',
+                  label: 'Datos demográficos',
+                  icon: 'far fa-users',
+                  active: false
+                }
+              ],
+              activeTabId: 'encuestas',
+              onTabChange: (tabId, tabElement) => {
+                console.log('Tab cambiado:', tabId);
+
+                // Lógica de cambio de contenido
+                const encuestasContent = document.getElementById('encuestas-content');
+                const demograficosContent = document.getElementById('datos-demograficos-content');
+
+                if (encuestasContent && demograficosContent) {
+                  if (tabId === 'encuestas') {
+                    encuestasContent.style.display = 'block';
+                    demograficosContent.style.display = 'none';
+                  } else {
+                    encuestasContent.style.display = 'none';
+                    demograficosContent.style.display = 'block';
+                  }
+                }
               }
-            ],
-            activeTabId: 'encuestas',
-            onTabChange: (tabId, tabElement) => {
-              console.log('Tab cambiado:', tabId);
-            }
-          }, 'tabs-container');
-          console.log('✅ [SubNav Fix] Tabs creados exitosamente');
-        } catch (e) {
-          console.error('❌ [SubNav Fix] Error creando tabs:', e);
+            }, 'tabs-container');
+            console.log('✅ [SubNav Fix] Tabs creados exitosamente');
+
+            // Inicializar Carrusel
+            setTimeout(() => {
+              if (window.initCarouselImplementation) window.initCarouselImplementation();
+            }, 200);
+
+          } catch (e) {
+            console.error('❌ [SubNav Fix] Error creando tabs:', e);
+          }
+        } else {
+          console.warn('⚠️ [SubNav Fix] window.createTabs no disponible. Reintentando...');
+          setTimeout(createTabsIfNeeded, 500);
         }
       }
 
@@ -2512,8 +2728,8 @@
       // Y regenerar si ContentManager limpia el área
       const observer = new MutationObserver((mutations) => {
         const contentArea = document.querySelector('.content-area');
+        // Si content-area existe pero tabs-container NO, recrear
         if (contentArea && !document.getElementById('tabs-container')) {
-          // Si content-area existe pero tabs-container no, recrearlo
           createTabsIfNeeded();
         }
       });
