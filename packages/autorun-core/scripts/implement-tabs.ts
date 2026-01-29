@@ -73,7 +73,7 @@ async function main() {
     // Vamos a imprimir lo que extrajo para decidir.
 
     // Guardar resultado temporal para inspección
-    const debugPath = path.resolve(__dirname, '../../temp-tabs-extract.html');
+    const debugPath = path.resolve(process.cwd(), 'temp-tabs-extract.html');
     fs.writeFileSync(debugPath, result.html || '');
     console.log(`   📄 Resultado guardado en: ${debugPath}`);
   } catch (error) {
