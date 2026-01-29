@@ -95,6 +95,9 @@
   <link rel="stylesheet"
     href="https://ubits-storybook10.vercel.app/components/header-section/src/styles/header-section.css?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=dMReKsdpAT4Y3Vn3jntlWP7zQzsjCsrT" />
 
+  <!-- UBITS Local Component Bundle (for development) -->
+  <link rel="stylesheet" href="../vendor/ubits/packages/templates/dist/components-bundle.css" />
+
   <style>
     /* ========================================
            GLOBAL STYLES
@@ -2555,58 +2558,118 @@
         if (nextBtn) nextBtn.onclick = () => { if (currentIndex < items.length - itemsPerView) currentIndex++; update(); };
       }
 
-      // Expose
+      // Expose (Local Bundle will overwrite if available)
       window.UBITS = window.UBITS || {};
-      window.UBITS.Carousel = {
-        create: function (options) {
-          const div = document.createElement('div');
-          div.innerHTML = renderCarousel(options);
-          const el = div.firstElementChild;
-          if (el) setTimeout(() => initializeCarousel(el, options), 0);
-          return el;
+
+      // Intentar usar el bundle local si está disponible
+      window.addEventListener('DOMContentLoaded', () => {
+        if (window.UBITS && window.UBITS.Carousel && window.UBITS.Carousel.createCarousel) {
+          console.log('✅ [Prototype] Local Carousel Bundle detected');
+        } else {
+          // Mock fallback only if bundle fails
+          window.UBITS.Carousel = {
+            create: function (options) {
+              const div = document.createElement('div');
+              div.innerHTML = renderCarousel(options);
+              const el = div.firstElementChild;
+              if (el) setTimeout(() => initializeCarousel(el, options), 0);
+              return el;
+            }
+          };
         }
-      };
+      });
     })();
 
-    // Implementación específica
+    // Implementación específica Carusel
     window.initCarouselImplementation = function () {
       const container = document.getElementById('carousel-implementation-container');
       if (!container || container.children.length > 0) return;
 
-      console.log('🔵 [Template Admin] Inicializando Carousel size-m...');
+      console.log('🔵 [Prototype] Inicializando Carousel...');
 
-      const carouselElement = window.UBITS.Carousel.create({
-        items: [
-          {
-            id: 1, title: 'Encuesta de Clima', subtitle: 'RRHH - 2024',
-            content: 'Evalúa el ambiente laboral de tu equipo.',
-            showHeader: true, headerDecorations: true, variant: 'elevated', size: 'md',
-            showButtons: true,
-            buttons: [{ label: 'Ver resultados', variant: 'primary', size: 'md' }]
-          },
-          {
-            id: 2, title: 'Evaluación de Desempeño', subtitle: 'Q1 - 2024',
-            content: 'Revisión de objetivos trimestrales.',
-            showHeader: true, headerDecorations: true, variant: 'elevated', size: 'md',
-            showButtons: true,
-            buttons: [{ label: 'Iniciar', variant: 'primary', size: 'md' }]
-          },
-          {
-            id: 3, title: 'Satisfacción del Cliente', subtitle: 'NPS Global',
-            content: 'Resultados de la última medición de NPS.',
-            showHeader: true, headerDecorations: true, variant: 'elevated', size: 'md',
-            showButtons: true,
-            buttons: [{ label: 'Analizar', variant: 'primary', size: 'md' }]
-          }
-        ],
-        itemsPerView: 3,
-        showArrows: true,
-        showDots: true,
-        gap: 16,
-        cardSize: 'md'
-      });
+      // Usar bundle real o mock
+      const creator = (window.UBITS.Carousel && window.UBITS.Carousel.createCarousel)
+        ? window.UBITS.Carousel.createCarousel
+        : (window.UBITS.Carousel && window.UBITS.Carousel.create);
 
-      container.appendChild(carouselElement);
+      if (creator) {
+        const carouselElement = creator({
+          items: [
+            {
+              id: 1, title: 'Encuesta de Clima', subtitle: 'RRHH - 2024',
+              content: 'Evalúa el ambiente laboral de tu equipo.',
+              showHeader: true, headerDecorations: true, variant: 'elevated', size: 'md',
+              showButtons: true,
+              buttons: [{ label: 'Ver resultados', variant: 'primary', size: 'md' }]
+            },
+            {
+              id: 2, title: 'Evaluación de Desempeño', subtitle: 'Q1 - 2024',
+              content: 'Revisión de objetivos trimestrales.',
+              showHeader: true, headerDecorations: true, variant: 'elevated', size: 'md',
+              showButtons: true,
+              buttons: [{ label: 'Iniciar', variant: 'primary', size: 'md' }]
+            },
+            {
+              id: 3, title: 'Satisfacción del Cliente', subtitle: 'NPS Global',
+              content: 'Resultados de la última medición de NPS.',
+              showHeader: true, headerDecorations: true, variant: 'elevated', size: 'md',
+              showButtons: true,
+              buttons: [{ label: 'Analizar', variant: 'primary', size: 'md' }]
+            }
+          ],
+          itemsPerView: 3,
+          showArrows: true,
+          showDots: true,
+          gap: 16,
+          cardSize: 'md'
+        });
+
+        container.appendChild(carouselElement);
+
+        // Trigger CardContent after
+        setTimeout(window.initCardContentImplementation, 200);
+      }
+    };
+
+    // Implementación específica CardContent
+    window.initCardContentImplementation = function () {
+      let container = document.getElementById('card-content-container');
+      if (!container) {
+        const parent = document.getElementById('encuestas-content');
+        if (parent) {
+          const header = document.createElement('div');
+          header.className = 'ubits-text-h3';
+          header.style.margin = '40px 0 16px 0';
+          header.innerText = 'Contenido Destacado (Prueba Bundle)';
+          container = document.createElement('div');
+          container.id = 'card-content-container';
+          container.style.maxWidth = '350px';
+          parent.appendChild(header);
+          parent.appendChild(container);
+        }
+      }
+
+      if (!container || container.children.length > 0) return;
+
+      if (window.UBITS && window.UBITS.Card && window.UBITS.Card.createCard) {
+        console.log('🔵 [Prototype] Inicializando CardContent...');
+        const card = window.UBITS.Card.createCard({
+          type: 'Curso',
+          title: 'Liderazgo Efectivo en Equipos Remotos',
+          status: 'Iniciado',
+          level: 'Intermedio',
+          image: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
+          progress: 45,
+          provider: 'UBITS',
+          providerLogo: 'https://via.placeholder.com/24',
+          competency: 'Liderazgo',
+          duration: '2h 30m',
+          language: 'Español'
+        });
+        container.appendChild(card);
+      } else {
+        console.warn('⚠️ [Prototype] Card component not found in bundle');
+      }
     };
   </script>
   <script>
@@ -2758,6 +2821,8 @@
       setTimeout(createTabsIfNeeded, 3000);
     })();
   </script>
+  <!-- UBITS Local Component Bundle (for development) -->
+  <script src="../vendor/ubits/packages/templates/dist/components-bundle.js"></script>
 </body>
 
 </html>
